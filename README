@@ -1,0 +1,67 @@
+Qtractor - A MIDI/Audio multi-track sequencer
+---------------------------------------------
+
+Qtractor is a MIDI/Audio multi-track sequencer application written
+in C++ around the Qt3 toolkit using Qt Designer.
+
+The initial target platform will be Linux, where the Jack Audio
+Connection Kit (JACK) for audio, and the Advanced Linux Sound
+Architecture (ALSA) for MIDI, are the main infrastructures to
+evolve as a fairly-featured Linux Desktop Audio Workstation GUI,
+specially dedicated to the personal home-studio.
+
+Homepage: http://qtractor.sourceforge.net
+
+License: GNU General Public License (GPL)
+
+
+Installation
+------------
+
+The installation procedure follows the standard for source distributions.
+Unpack the tarball and in the extracted source directory:
+
+    ./configure [--prefix=/usr/local]
+    make
+
+and optionally as root:
+
+    make install
+
+This procedure will end installing the following couple of files:
+
+    ${prefix}/bin/qtractor
+    ${prefix}/share/icons/qtractor.png
+
+Just launch ${prefix}/bin/qtractor and you're off (hopefully).
+
+Note that the default installation path ${prefix} is /usr/local.
+
+
+Configuration
+-------------
+
+Qtractor holds its settings and configuration state per user, in a file
+located as $HOME/.qt/qtractorrc. Normally, there's no need to edit this file,
+as it is recreated and rewritten everytime qsampler is run.
+
+Bugs
+----
+
+Plenty still, after all this is early alpha software ;)
+
+
+Support
+-------
+
+Qtractor is open source free software. For bug reports, feature requests,
+discussion forums, mailling lists, or any other matter related to the
+development of this piece of software, please use the Sourceforge
+project page (http://sourceforge.net/projects/qtractor).
+
+
+Enjoy.
+
+rncbc aka Rui Nuno Capela
+rncbc at rncbc dot org
+
