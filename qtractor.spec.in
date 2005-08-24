@@ -1,0 +1,47 @@
+%define name    @PACKAGE_TARNAME@
+%define version @PACKAGE_VERSION@
+%define release 1
+%define prefix  /usr/local
+
+Summary:	A MIDI/Audio multi-track sequencer.
+Name:		%{name}
+Version:	%{version}
+Release:	%{release}
+Prefix:		%{prefix}
+Copyright:	GPL
+Group:		Sound
+Source0:	%{name}-%{version}.tar.gz
+URL:		http://qtractor.sourceforge.net/
+BuildRoot:	/var/tmp/%{name}-%{version}-buildroot
+Requires:	libsndfile >= 1.0.11
+
+%description
+A MIDI/Audio multi-track sequencer.
+
+%prep
+
+%setup
+[ -f Makefile.cvs ] && make -f Makefile.cvs
+
+%build
+export PATH=$QTDIR/bin:$PATH
+./configure --prefix=%{prefix}
+make
+
+%install
+if [ -d $RPM_BUILD_ROOT ]; then rm -rf $RPM_BUILD_ROOT; fi
+mkdir -p $RPM_BUILD_ROOT
+make prefix=$RPM_BUILD_ROOT%{prefix} install
+
+%clean
+if [ -d $RPM_BUILD_ROOT ]; then rm -rf $RPM_BUILD_ROOT; fi
+
+%files
+%defattr(-,root,root)
+%doc AUTHORS COPYING ChangeLog README TODO
+%{prefix}/bin/qtractor
+%{prefix}/share/icons/qtractor.png
+
+%changelog
+* Wed Aug 24 2004 Rui Nuno Capela <rncbc@users.sourceforge.net>
+- Created initial qtractor.spec
