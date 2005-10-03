@@ -1,0 +1,158 @@
+// qtractorAudioFile.cpp
+//
+/****************************************************************************
+   Copyright (C) 2005, rncbc aka Rui Nuno Capela. All rights reserved.
+
+   This program is free software; you can redistribute it and/or
+   modify it under the terms of the GNU General Public License
+   as published by the Free Software Foundation; either version 2
+   of the License, or (at your option) any later version.
+
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+
+   You should have received a copy of the GNU General Public License
+   along with this program; if not, write to the Free Software
+   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+
+*****************************************************************************/
+
+#include "qtractorAudioFile.h"
+#include "qtractorAudioSndFile.h"
+#include "qtractorAudioVorbisFile.h"
+
+#include <qobject.h>
+#include <qfileinfo.h>
+
+
+//----------------------------------------------------------------------
+// class qtractorAudioBuffer -- A special case of an audio ring-buffer audio.
+//
+
+// Overriden open method.
+bool qtractorAudioBuffer::open ( const char *pszName, int iMode )
+{
+	qtractorRingBuffer<float>::setFile(
+		qtractorAudioFileFactory::createAudioFile(pszName));
+	return qtractorRingBuffer<float>::open(pszName, iMode);
+}
+
+
+//----------------------------------------------------------------------
+// class qtractorAudioFileFactory -- Audio file factory (singleton).
+//
+
+// Initialize singleton instance pointer.
+qtractorAudioFileFactory *qtractorAudioFileFactory::g_pInstance = NULL;
+
+
+// Singleton instance accessor.
+qtractorAudioFileFactory& qtractorAudioFileFactory::Instance (void)
+{
+	// Create the singleton instance, if not already...
+	if (g_pInstance == NULL) {
+		g_pInstance = new qtractorAudioFileFactory();
+		std::atexit(Destroy);
+	}
+	return *g_pInstance;
+}
+
+
+// Singleton instance destroyer.
+void qtractorAudioFileFactory::Destroy (void)
+{
+	// OK. We're done with ourselves.
+	if (g_pInstance) {
+		delete g_pInstance;
+		g_pInstance = NULL;
+	}
+}
+
+
+// Constructor.
+qtractorAudioFileFactory::qtractorAudioFileFactory (void)
+{
+	// First for libsndfile stuff...
+	SF_FORMAT_INFO sffinfo;
+	int iCount = 0;
+	::sf_command(NULL, SFC_GET_FORMAT_MAJOR_COUNT, &iCount, sizeof(int));
+	for (int i = 0 ; i < iCount; i++) {
+		sffinfo.format = i;
+		::sf_command(NULL, SFC_GET_FORMAT_MAJOR, &sffinfo, sizeof(sffinfo));
+		m_types[sffinfo.extension] = SndFile;
+		m_filters.append(QString("%1 (*.%2)")
+			.arg(QString(sffinfo.name)
+				.replace('/', '-')	// Replace some illegal characters.
+				.replace('(', QString::null)
+				.replace(')', QString::null))
+			.arg(sffinfo.extension));
+	}
+
+	// Add for libvorbisfile (read-only)...
+	m_types["ogg"] = VorbisFile;
+	m_filters.append("OGG Vorbis (*.ogg)");
+
+	// Finally, simply build the all supported files entry.
+	QString sExts;
+	FileTypes::ConstIterator iter = m_types.begin();
+	for (;;) {
+		sExts.append("*." + iter.key());
+		if (++iter == m_types.end())
+			break;
+		sExts.append(' ');
+	}
+	m_filters.prepend(QObject::tr("Audio Files (%1)").arg(sExts));
+	m_filters.append(QObject::tr("All Files (*.*)"));
+}
+
+
+// Factory methods.
+qtractorAudioFile *qtractorAudioFileFactory::createAudioFile (
+	const QString& sFilename, unsigned int iBufferSize )
+{
+	return Instance().newAudioFile(sFilename, iBufferSize);
+}
+
+qtractorAudioFile *qtractorAudioFileFactory::createAudioFile (
+	FileType type, unsigned int iBufferSize )
+{
+	return Instance().newAudioFile(type, iBufferSize);
+}
+
+
+// Internal factory methods.
+qtractorAudioFile *qtractorAudioFileFactory::newAudioFile (
+	const QString& sFilename, unsigned int iBufferSize )
+{
+	const QString sExtension = QFileInfo(sFilename).extension(false).lower();
+	
+	FileTypes::ConstIterator iter = m_types.find(sExtension);
+	if (iter == m_types.end())
+		return NULL;
+
+	return newAudioFile(iter.data(), iBufferSize);
+}
+
+qtractorAudioFile *qtractorAudioFileFactory::newAudioFile (
+	FileType type, unsigned int iBufferSize )
+{
+	switch (type) {
+	case SndFile:
+		return new qtractorAudioSndFile(iBufferSize);
+	case VorbisFile:
+		return new qtractorAudioVorbisFile(iBufferSize);
+	default:
+		return NULL;
+	}
+}
+
+// Retrieve supported filters (suitable for QFileDialog usage).
+QString qtractorAudioFileFactory::filters (void)
+{
+	return Instance().m_filters.join(";;");
+}
+
+
+// end of qtractorAudioFile.cpp
