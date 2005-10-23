@@ -1,0 +1,81 @@
+// qtractorAudioClip.h
+//
+/****************************************************************************
+   Copyright (C) 2005, rncbc aka Rui Nuno Capela. All rights reserved.
+
+   This program is free software; you can redistribute it and/or
+   modify it under the terms of the GNU General Public License
+   as published by the Free Software Foundation; either version 2
+   of the License, or (at your option) any later version.
+
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+
+   You should have received a copy of the GNU General Public License
+   along with this program; if not, write to the Free Software
+   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+
+*****************************************************************************/
+
+#ifndef __qtractorAudioClip_h
+#define __qtractorAudioClip_h
+
+#include "qtractorClip.h"
+
+// Forward declarations.
+class qtractorAudioBuffer;
+class qtractorAudioPeak;
+
+
+//----------------------------------------------------------------------
+// class qtractorAudioClip -- Audio file/buffer clip.
+//
+
+class qtractorAudioClip : public qtractorClip
+{
+public:
+
+	// Constructor.
+	qtractorAudioClip(qtractorTrack *pTrack);
+	// Destructor.
+	~qtractorAudioClip();
+
+	// The main use method.
+	bool open(const QString& sFilename);
+
+	// Intra-clip frame positioning.
+	void seek(unsigned long iOffset);
+
+	// Reset clip state.
+	void reset();
+
+	// Audio clip special process cycle executive.
+	void process(float fGain,
+		unsigned long iFrameStart, unsigned long iFrameEnd);
+
+	// Clip paint method.
+	void drawClip(QPainter *pPainter, const QRect& rect,
+	    unsigned long iClipOffset);
+
+protected:
+
+	// Virtual document element methods.
+	bool loadClipElement(qtractorSessionDocument *pDocument,
+		QDomElement *pElement);
+	bool saveClipElement(qtractorSessionDocument *pDocument,
+		QDomElement *pElement);
+
+private:
+
+	// Instance variables.
+	qtractorAudioBuffer *m_pBuff;
+	qtractorAudioPeak   *m_pPeak;
+};
+
+
+#endif  // __qtractorAudioClip_h
+
+
+// end of qtractorAudioClip.h
