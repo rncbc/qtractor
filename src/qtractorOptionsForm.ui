@@ -1,0 +1,540 @@
+<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<class>qtractorOptionsForm</class>
+<comment>qtractor - A MIDI/Audio multi-track sequencer.
+
+   Copyright (C) 2005, rncbc aka Rui Nuno Capela. All rights reserved.
+
+   This program is free software; you can redistribute it and/or
+   modify it under the terms of the GNU General Public License
+   as published by the Free Software Foundation; either version 2
+   of the License, or (at your option) any later version.
+
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+
+   You should have received a copy of the GNU General Public License
+   along with this program; if not, write to the Free Software
+   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+
+</comment>
+<author>rncbc aka Rui Nuno Capela</author>
+<widget class="QDialog">
+    <property name="name">
+        <cstring>qtractorOptionsForm</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>529</width>
+            <height>380</height>
+        </rect>
+    </property>
+    <property name="sizePolicy">
+        <sizepolicy>
+            <hsizetype>1</hsizetype>
+            <vsizetype>1</vsizetype>
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+        </sizepolicy>
+    </property>
+    <property name="caption">
+        <string>Options - Qtractor</string>
+    </property>
+    <property name="sizeGripEnabled">
+        <bool>true</bool>
+    </property>
+    <grid>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <widget class="QLayoutWidget" row="1" column="0">
+            <property name="name">
+                <cstring>FooterLayout</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <spacer>
+                    <property name="name">
+                        <cstring>spacer01</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>250</width>
+                            <height>16</height>
+                        </size>
+                    </property>
+                </spacer>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>OkPushButton</cstring>
+                    </property>
+                    <property name="text">
+                        <string>OK</string>
+                    </property>
+                    <property name="iconSet">
+                        <iconset>formAccept.png</iconset>
+                    </property>
+                </widget>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>CancelPushButton</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Cancel</string>
+                    </property>
+                    <property name="iconSet">
+                        <iconset>formReject.png</iconset>
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
+        <widget class="QTabWidget" row="0" column="0">
+            <property name="name">
+                <cstring>OptionsTabWidget</cstring>
+            </property>
+            <property name="acceptDrops">
+                <bool>false</bool>
+            </property>
+            <widget class="QWidget">
+                <property name="name">
+                    <cstring>DisplayTabPage</cstring>
+                </property>
+                <attribute name="title">
+                    <string>&amp;Display</string>
+                </attribute>
+                <vbox>
+                    <property name="name">
+                        <cstring>unnamed</cstring>
+                    </property>
+                    <widget class="QGroupBox">
+                        <property name="name">
+                            <cstring>MessagesGroupBox</cstring>
+                        </property>
+                        <property name="font">
+                            <font>
+                                <bold>1</bold>
+                            </font>
+                        </property>
+                        <property name="margin">
+                            <number>4</number>
+                        </property>
+                        <property name="title">
+                            <string>Messages</string>
+                        </property>
+                        <property name="flat">
+                            <bool>true</bool>
+                        </property>
+                        <hbox>
+                            <property name="name">
+                                <cstring>unnamed</cstring>
+                            </property>
+                            <widget class="QLabel">
+                                <property name="name">
+                                    <cstring>MessagesFontTextLabel</cstring>
+                                </property>
+                                <property name="sizePolicy">
+                                    <sizepolicy>
+                                        <hsizetype>3</hsizetype>
+                                        <vsizetype>1</vsizetype>
+                                        <horstretch>0</horstretch>
+                                        <verstretch>0</verstretch>
+                                    </sizepolicy>
+                                </property>
+                                <property name="minimumSize">
+                                    <size>
+                                        <width>180</width>
+                                        <height>0</height>
+                                    </size>
+                                </property>
+                                <property name="maximumSize">
+                                    <size>
+                                        <width>180</width>
+                                        <height>32767</height>
+                                    </size>
+                                </property>
+                                <property name="paletteBackgroundColor">
+                                    <color>
+                                        <red>255</red>
+                                        <green>255</green>
+                                        <blue>255</blue>
+                                    </color>
+                                </property>
+                                <property name="font">
+                                    <font>
+                                        <bold>0</bold>
+                                    </font>
+                                </property>
+                                <property name="frameShape">
+                                    <enum>LineEditPanel</enum>
+                                </property>
+                                <property name="frameShadow">
+                                    <enum>Sunken</enum>
+                                </property>
+                                <property name="alignment">
+                                    <set>AlignCenter</set>
+                                </property>
+                                <property name="toolTip" stdset="0">
+                                    <string>Sample messages text font display</string>
+                                </property>
+                            </widget>
+                            <widget class="QPushButton">
+                                <property name="name">
+                                    <cstring>MessagesFontPushButton</cstring>
+                                </property>
+                                <property name="font">
+                                    <font>
+                                        <bold>0</bold>
+                                    </font>
+                                </property>
+                                <property name="text">
+                                    <string>&amp;Font...</string>
+                                </property>
+                                <property name="accel">
+                                    <string>Alt+F</string>
+                                </property>
+                                <property name="autoDefault">
+                                    <bool>false</bool>
+                                </property>
+                                <property name="toolTip" stdset="0">
+                                    <string>Select font for the messages text display</string>
+                                </property>
+                            </widget>
+                            <spacer>
+                                <property name="name">
+                                    <cstring>spacer22</cstring>
+                                </property>
+                                <property name="orientation">
+                                    <enum>Horizontal</enum>
+                                </property>
+                                <property name="sizeType">
+                                    <enum>Expanding</enum>
+                                </property>
+                                <property name="sizeHint">
+                                    <size>
+                                        <width>49</width>
+                                        <height>16</height>
+                                    </size>
+                                </property>
+                            </spacer>
+                            <widget class="QCheckBox">
+                                <property name="name">
+                                    <cstring>MessagesLimitCheckBox</cstring>
+                                </property>
+                                <property name="font">
+                                    <font>
+                                        <bold>0</bold>
+                                    </font>
+                                </property>
+                                <property name="text">
+                                    <string>&amp;Messages limit:</string>
+                                </property>
+                                <property name="accel">
+                                    <string>Alt+M</string>
+                                </property>
+                                <property name="toolTip" stdset="0">
+                                    <string>Whether to keep a maximum number of lines in the messages window</string>
+                                </property>
+                            </widget>
+                            <widget class="QSpinBox">
+                                <property name="name">
+                                    <cstring>MessagesLimitLinesSpinBox</cstring>
+                                </property>
+                                <property name="font">
+                                    <font>
+                                        <bold>0</bold>
+                                    </font>
+                                </property>
+                                <property name="suffix">
+                                    <string> lines</string>
+                                </property>
+                                <property name="maxValue">
+                                    <number>10000</number>
+                                </property>
+                                <property name="minValue">
+                                    <number>100</number>
+                                </property>
+                                <property name="lineStep">
+                                    <number>100</number>
+                                </property>
+                                <property name="value">
+                                    <number>1000</number>
+                                </property>
+                                <property name="toolTip" stdset="0">
+                                    <string>The maximum number of message lines to keep in view</string>
+                                </property>
+                            </widget>
+                        </hbox>
+                    </widget>
+                    <widget class="QGroupBox">
+                        <property name="name">
+                            <cstring>OtherGroupBox</cstring>
+                        </property>
+                        <property name="font">
+                            <font>
+                                <bold>1</bold>
+                            </font>
+                        </property>
+                        <property name="title">
+                            <string>Other</string>
+                        </property>
+                        <property name="flat">
+                            <bool>true</bool>
+                        </property>
+                        <grid>
+                            <property name="name">
+                                <cstring>unnamed</cstring>
+                            </property>
+                            <widget class="QLayoutWidget" row="0" column="0" rowspan="2" colspan="1">
+                                <property name="name">
+                                    <cstring>layout2</cstring>
+                                </property>
+                                <vbox>
+                                    <property name="name">
+                                        <cstring>unnamed</cstring>
+                                    </property>
+                                    <widget class="QCheckBox">
+                                        <property name="name">
+                                            <cstring>ConfirmRemoveCheckBox</cstring>
+                                        </property>
+                                        <property name="font">
+                                            <font>
+                                                <bold>0</bold>
+                                            </font>
+                                        </property>
+                                        <property name="text">
+                                            <string>&amp;Confirm track removal</string>
+                                        </property>
+                                        <property name="accel">
+                                            <string>Alt+C</string>
+                                        </property>
+                                        <property name="toolTip" stdset="0">
+                                            <string>Whether to ask for confirmation on track removal</string>
+                                        </property>
+                                    </widget>
+                                    <widget class="QCheckBox">
+                                        <property name="name">
+                                            <cstring>StdoutCaptureCheckBox</cstring>
+                                        </property>
+                                        <property name="font">
+                                            <font>
+                                                <bold>0</bold>
+                                            </font>
+                                        </property>
+                                        <property name="text">
+                                            <string>Capture standard &amp;output</string>
+                                        </property>
+                                        <property name="accel">
+                                            <string>Alt+O</string>
+                                        </property>
+                                        <property name="toolTip" stdset="0">
+                                            <string>Whether to capture standard output (stdout/stderr) into messages window</string>
+                                        </property>
+                                    </widget>
+                                    <widget class="QCheckBox">
+                                        <property name="name">
+                                            <cstring>CompletePathCheckBox</cstring>
+                                        </property>
+                                        <property name="font">
+                                            <font>
+                                                <bold>0</bold>
+                                            </font>
+                                        </property>
+                                        <property name="text">
+                                            <string>Show complete &amp;path of session files</string>
+                                        </property>
+                                        <property name="accel">
+                                            <string>Alt+P</string>
+                                        </property>
+                                        <property name="toolTip" stdset="0">
+                                            <string>Whether to show the complete directory path of loaded session files</string>
+                                        </property>
+                                    </widget>
+                                </vbox>
+                            </widget>
+                            <widget class="QSpinBox" row="0" column="3">
+                                <property name="name">
+                                    <cstring>MaxRecentFilesSpinBox</cstring>
+                                </property>
+                                <property name="font">
+                                    <font>
+                                        <bold>0</bold>
+                                    </font>
+                                </property>
+                                <property name="maxValue">
+                                    <number>20</number>
+                                </property>
+                                <property name="minValue">
+                                    <number>0</number>
+                                </property>
+                                <property name="value">
+                                    <number>5</number>
+                                </property>
+                                <property name="toolTip" stdset="0">
+                                    <string>The maximum number of recent files to keep in menu</string>
+                                </property>
+                            </widget>
+                            <widget class="QLabel" row="0" column="2">
+                                <property name="name">
+                                    <cstring>MaxRecentFilesTextLabel</cstring>
+                                </property>
+                                <property name="font">
+                                    <font>
+                                        <bold>0</bold>
+                                    </font>
+                                </property>
+                                <property name="text">
+                                    <string>&amp;Number of recent files:</string>
+                                </property>
+                                <property name="alignment">
+                                    <set>AlignVCenter|AlignRight</set>
+                                </property>
+                                <property name="buddy" stdset="0">
+                                    <cstring>MaxRecentFilesSpinBox</cstring>
+                                </property>
+                            </widget>
+                            <spacer row="0" column="1">
+                                <property name="name">
+                                    <cstring>spacer23</cstring>
+                                </property>
+                                <property name="orientation">
+                                    <enum>Horizontal</enum>
+                                </property>
+                                <property name="sizeType">
+                                    <enum>Expanding</enum>
+                                </property>
+                                <property name="sizeHint">
+                                    <size>
+                                        <width>110</width>
+                                        <height>16</height>
+                                    </size>
+                                </property>
+                            </spacer>
+                            <spacer row="1" column="1" rowspan="1" colspan="3">
+                                <property name="name">
+                                    <cstring>spacer24</cstring>
+                                </property>
+                                <property name="orientation">
+                                    <enum>Horizontal</enum>
+                                </property>
+                                <property name="sizeType">
+                                    <enum>Expanding</enum>
+                                </property>
+                                <property name="sizeHint">
+                                    <size>
+                                        <width>280</width>
+                                        <height>16</height>
+                                    </size>
+                                </property>
+                            </spacer>
+                        </grid>
+                    </widget>
+                </vbox>
+            </widget>
+        </widget>
+    </grid>
+</widget>
+<connections>
+    <connection>
+        <sender>OkPushButton</sender>
+        <signal>clicked()</signal>
+        <receiver>qtractorOptionsForm</receiver>
+        <slot>accept()</slot>
+    </connection>
+    <connection>
+        <sender>CancelPushButton</sender>
+        <signal>clicked()</signal>
+        <receiver>qtractorOptionsForm</receiver>
+        <slot>reject()</slot>
+    </connection>
+    <connection>
+        <sender>MessagesFontPushButton</sender>
+        <signal>clicked()</signal>
+        <receiver>qtractorOptionsForm</receiver>
+        <slot>chooseMessagesFont()</slot>
+    </connection>
+    <connection>
+        <sender>MessagesLimitCheckBox</sender>
+        <signal>stateChanged(int)</signal>
+        <receiver>qtractorOptionsForm</receiver>
+        <slot>changed()</slot>
+    </connection>
+    <connection>
+        <sender>MessagesLimitLinesSpinBox</sender>
+        <signal>valueChanged(int)</signal>
+        <receiver>qtractorOptionsForm</receiver>
+        <slot>changed()</slot>
+    </connection>
+    <connection>
+        <sender>ConfirmRemoveCheckBox</sender>
+        <signal>stateChanged(int)</signal>
+        <receiver>qtractorOptionsForm</receiver>
+        <slot>changed()</slot>
+    </connection>
+    <connection>
+        <sender>StdoutCaptureCheckBox</sender>
+        <signal>stateChanged(int)</signal>
+        <receiver>qtractorOptionsForm</receiver>
+        <slot>changed()</slot>
+    </connection>
+    <connection>
+        <sender>CompletePathCheckBox</sender>
+        <signal>stateChanged(int)</signal>
+        <receiver>qtractorOptionsForm</receiver>
+        <slot>changed()</slot>
+    </connection>
+    <connection>
+        <sender>MaxRecentFilesSpinBox</sender>
+        <signal>valueChanged(int)</signal>
+        <receiver>qtractorOptionsForm</receiver>
+        <slot>changed()</slot>
+    </connection>
+</connections>
+<tabstops>
+    <tabstop>OptionsTabWidget</tabstop>
+    <tabstop>MessagesFontPushButton</tabstop>
+    <tabstop>MessagesLimitCheckBox</tabstop>
+    <tabstop>MessagesLimitLinesSpinBox</tabstop>
+    <tabstop>ConfirmRemoveCheckBox</tabstop>
+    <tabstop>StdoutCaptureCheckBox</tabstop>
+    <tabstop>CompletePathCheckBox</tabstop>
+    <tabstop>MaxRecentFilesSpinBox</tabstop>
+    <tabstop>OkPushButton</tabstop>
+    <tabstop>CancelPushButton</tabstop>
+</tabstops>
+<includes>
+    <include location="local" impldecl="in implementation">qtractorOptionsForm.ui.h</include>
+</includes>
+<forwards>
+    <forward>class qtractorOptions;</forward>
+</forwards>
+<variables>
+    <variable access="private">qtractorOptions *m_pOptions;</variable>
+    <variable access="private">int m_iDirtyCount;</variable>
+</variables>
+<slots>
+    <slot specifier="non virtual">chooseMessagesFont()</slot>
+    <slot specifier="non virtual">accept()</slot>
+    <slot specifier="non virtual">reject()</slot>
+    <slot specifier="non virtual">changed()</slot>
+    <slot specifier="non virtual">stabilizeForm()</slot>
+</slots>
+<functions>
+    <function access="private" specifier="non virtual">init()</function>
+    <function access="private" specifier="non virtual">destroy()</function>
+    <function specifier="non virtual">setOptions( qtractorOptions *pOptions )</function>
+    <function specifier="non virtual" returnType="qtractorOptions *">options()</function>
+</functions>
+<pixmapinproject/>
+<layoutdefaults spacing="4" margin="4"/>
+</UI>
