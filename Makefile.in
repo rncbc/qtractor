@@ -1,0 +1,97 @@
+prefix  = @ac_prefix@
+qmake   = @ac_qmake@
+
+name    = qtractor
+
+headers = config.h \
+	src/qtractorAbout.h \
+	src/qtractorOptions.h \
+	src/qtractorMessages.h \
+	src/qtractorList.h \
+	src/qtractorFiles.h \
+	src/qtractorFileListView.h \
+	src/qtractorTrackList.h \
+	src/qtractorTrackTime.h \
+	src/qtractorTrackView.h \
+	src/qtractorTracks.h \
+	src/qtractorClipSelect.h \
+	src/qtractorClip.h \
+	src/qtractorTrack.h \
+	src/qtractorEngine.h \
+	src/qtractorSession.h \
+	src/qtractorSessionCursor.h \
+	src/qtractorRingBuffer.h \
+	src/qtractorRingBufferThread.h \
+	src/qtractorAudioFile.h \
+	src/qtractorAudioSndFile.h \
+	src/qtractorAudioVorbisFile.h \
+	src/qtractorAudioListView.h \
+	src/qtractorAudioPeak.h \
+	src/qtractorAudioClip.h \
+	src/qtractorAudioEngine.h \
+	src/qtractorMidiEvent.h \
+	src/qtractorMidiSequence.h \
+	src/qtractorMidiFile.h \
+	src/qtractorMidiListView.h \
+	src/qtractorMidiClip.h \
+	src/qtractorMidiEngine.h \
+	src/qtractorDocument.h \
+	src/qtractorSessionDocument.h \
+	src/qtractorMainForm.ui.h \
+	src/qtractorSessionForm.ui.h \
+	src/qtractorTrackForm.ui.h \
+	src/qtractorOptionsForm.ui.h
+
+sources = src/main.cpp \
+	src/qtractorOptions.cpp \
+	src/qtractorMessages.cpp \
+	src/qtractorFiles.cpp \
+	src/qtractorFileListView.cpp \
+	src/qtractorTrackList.cpp \
+	src/qtractorTrackTime.cpp \
+	src/qtractorTrackView.cpp \
+	src/qtractorTracks.cpp \
+	src/qtractorClipSelect.cpp \
+	src/qtractorClip.cpp \
+	src/qtractorTrack.cpp \
+	src/qtractorEngine.cpp \
+	src/qtractorSession.cpp \
+	src/qtractorSessionCursor.cpp \
+	src/qtractorRingBufferThread.cpp \
+	src/qtractorAudioFile.cpp \
+	src/qtractorAudioSndFile.cpp \
+	src/qtractorAudioVorbisFile.cpp \
+	src/qtractorAudioListView.cpp \
+	src/qtractorAudioPeak.cpp \
+	src/qtractorAudioClip.cpp \
+	src/qtractorAudioEngine.cpp \
+	src/qtractorMidiSequence.cpp \
+	src/qtractorMidiFile.cpp \
+	src/qtractorMidiListView.cpp \
+	src/qtractorMidiClip.cpp \
+	src/qtractorMidiEngine.cpp \
+	src/qtractorDocument.cpp \
+	src/qtractorSessionDocument.cpp
+
+all:	$(name)
+
+$(name).mak:	$(name).pro
+	@$(qmake) -o $(name).mak $(name).pro
+
+$(name):	$(name).mak $(sources) $(headers)
+	@make -f $(name).mak
+
+install:	$(name) icons/$(name).png
+	@install -d -v -m 0755 $(DESTDIR)$(prefix)/bin
+	@install -d -v -m 0755 $(DESTDIR)$(prefix)/share/icons
+	@install -v -m 0755 $(name) $(DESTDIR)$(prefix)/bin/$(name)
+	@install -v -m 0644 icons/$(name).png $(DESTDIR)$(prefix)/share/icons/$(name).png
+
+uninstall:	$(DESTDIR)$(prefix)/bin/$(name)
+	@rm -vf $(DESTDIR)$(prefix)/bin/$(name)
+	@rm -vf $(DESTDIR)$(prefix)/share/icons/$(name).png
+
+clean:	$(name).mak
+	@make -f $(name).mak clean
+	@rm -f $(name) $(name).mak
+	@rm -rf *.cache *.log *.status
