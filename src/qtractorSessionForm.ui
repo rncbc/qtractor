@@ -1,0 +1,578 @@
+<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<class>qtractorSessionForm</class>
+<comment>qtractor - A MIDI/Audio multi-track sequencer.
+
+   Copyright (C) 2005, rncbc aka Rui Nuno Capela. All rights reserved.
+
+   This program is free software; you can redistribute it and/or
+   modify it under the terms of the GNU General Public License
+   as published by the Free Software Foundation; either version 2
+   of the License, or (at your option) any later version.
+
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+
+   You should have received a copy of the GNU General Public License
+   along with this program; if not, write to the Free Software
+   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+
+</comment>
+<author>rncbc aka Rui Nuno Capela</author>
+<widget class="QDialog">
+    <property name="name">
+        <cstring>qtractorSessionForm</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>402</width>
+            <height>378</height>
+        </rect>
+    </property>
+    <property name="sizePolicy">
+        <sizepolicy>
+            <hsizetype>7</hsizetype>
+            <vsizetype>1</vsizetype>
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+        </sizepolicy>
+    </property>
+    <property name="caption">
+        <string>Session - Qtractor</string>
+    </property>
+    <property name="icon">
+        <pixmap>qtractor.png</pixmap>
+    </property>
+    <property name="focusPolicy">
+        <enum>StrongFocus</enum>
+    </property>
+    <grid>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <widget class="QGroupBox" row="4" column="0">
+            <property name="name">
+                <cstring>TimeGroupBox</cstring>
+            </property>
+            <property name="title">
+                <string>Time</string>
+            </property>
+            <grid>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QComboBox" row="0" column="1">
+                    <item>
+                        <property name="text">
+                            <string>44100</string>
+                        </property>
+                    </item>
+                    <item>
+                        <property name="text">
+                            <string>48000</string>
+                        </property>
+                    </item>
+                    <item>
+                        <property name="text">
+                            <string>96000</string>
+                        </property>
+                    </item>
+                    <property name="name">
+                        <cstring>SampleRateComboBox</cstring>
+                    </property>
+                    <property name="editable">
+                        <bool>true</bool>
+                    </property>
+                    <property name="toolTip" stdset="0">
+                        <string>Sample rate</string>
+                    </property>
+                </widget>
+                <widget class="QSpinBox" row="3" column="1">
+                    <property name="name">
+                        <cstring>TicksPerBeatSpinBox</cstring>
+                    </property>
+                    <property name="suffix">
+                        <string> ticks</string>
+                    </property>
+                    <property name="maxValue">
+                        <number>600</number>
+                    </property>
+                    <property name="minValue">
+                        <number>12</number>
+                    </property>
+                    <property name="lineStep">
+                        <number>12</number>
+                    </property>
+                    <property name="value">
+                        <number>96</number>
+                    </property>
+                    <property name="toolTip" stdset="0">
+                        <string>Resolution (ticks/beat; TPQN)</string>
+                    </property>
+                </widget>
+                <widget class="QSpinBox" row="1" column="1">
+                    <property name="name">
+                        <cstring>TempoSpinBox</cstring>
+                    </property>
+                    <property name="suffix">
+                        <string> bpm</string>
+                    </property>
+                    <property name="maxValue">
+                        <number>300</number>
+                    </property>
+                    <property name="minValue">
+                        <number>30</number>
+                    </property>
+                    <property name="value">
+                        <number>120</number>
+                    </property>
+                    <property name="toolTip" stdset="0">
+                        <string>Tempo (BPM)</string>
+                    </property>
+                </widget>
+                <widget class="QSpinBox" row="2" column="1">
+                    <property name="name">
+                        <cstring>BeatsPerBarSpinBox</cstring>
+                    </property>
+                    <property name="suffix">
+                        <string> / 4</string>
+                    </property>
+                    <property name="maxValue">
+                        <number>32</number>
+                    </property>
+                    <property name="minValue">
+                        <number>2</number>
+                    </property>
+                    <property name="value">
+                        <number>4</number>
+                    </property>
+                    <property name="toolTip" stdset="0">
+                        <string>Time signature (beats/bar)</string>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="0" column="0">
+                    <property name="name">
+                        <cstring>SampleRateTextLabel</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Sample &amp;Rate:</string>
+                    </property>
+                    <property name="alignment">
+                        <set>AlignVCenter|AlignRight</set>
+                    </property>
+                    <property name="buddy" stdset="0">
+                        <cstring>SampleRateComboBox</cstring>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="1" column="0">
+                    <property name="name">
+                        <cstring>TempoTextLabel</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&amp;Tempo:</string>
+                    </property>
+                    <property name="alignment">
+                        <set>AlignVCenter|AlignRight</set>
+                    </property>
+                    <property name="buddy" stdset="0">
+                        <cstring>TempoSpinBox</cstring>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="2" column="0">
+                    <property name="name">
+                        <cstring>BeatsPerBarTextLabel</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&amp;Beats/Bar:</string>
+                    </property>
+                    <property name="alignment">
+                        <set>AlignVCenter|AlignRight</set>
+                    </property>
+                    <property name="buddy" stdset="0">
+                        <cstring>BeatsPerBarSpinBox</cstring>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="3" column="0">
+                    <property name="name">
+                        <cstring>TicksPerBeatTextLabel</cstring>
+                    </property>
+                    <property name="text">
+                        <string>T&amp;icks/Beat:</string>
+                    </property>
+                    <property name="alignment">
+                        <set>AlignVCenter|AlignRight</set>
+                    </property>
+                    <property name="buddy" stdset="0">
+                        <cstring>TicksPerBeatSpinBox</cstring>
+                    </property>
+                </widget>
+            </grid>
+        </widget>
+        <widget class="QGroupBox" row="4" column="1">
+            <property name="name">
+                <cstring>ViewGroupBox</cstring>
+            </property>
+            <property name="title">
+                <string>View</string>
+            </property>
+            <grid>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QLabel" row="0" column="0">
+                    <property name="name">
+                        <cstring>SnapPerBeatTextLabel</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&amp;Snap/Beat:</string>
+                    </property>
+                    <property name="alignment">
+                        <set>AlignVCenter|AlignRight</set>
+                    </property>
+                    <property name="buddy" stdset="0">
+                        <cstring>SnapPerBeatSpinBox</cstring>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="1" column="0">
+                    <property name="name">
+                        <cstring>PixelsPerBeatTextLabel</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&amp;Pixels/Beat:</string>
+                    </property>
+                    <property name="alignment">
+                        <set>AlignVCenter|AlignRight</set>
+                    </property>
+                    <property name="buddy" stdset="0">
+                        <cstring>PixelsPerBeatSpinBox</cstring>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="2" column="0" rowspan="2" colspan="1">
+                    <property name="name">
+                        <cstring>HorizontalZoomTextLabel</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&amp;Horizontal Zoom:</string>
+                    </property>
+                    <property name="alignment">
+                        <set>AlignVCenter|AlignRight</set>
+                    </property>
+                    <property name="buddy" stdset="0">
+                        <cstring>HorizontalZoomSpinBox</cstring>
+                    </property>
+                </widget>
+                <widget class="QSpinBox" row="2" column="1">
+                    <property name="name">
+                        <cstring>HorizontalZoomSpinBox</cstring>
+                    </property>
+                    <property name="suffix">
+                        <string> %</string>
+                    </property>
+                    <property name="maxValue">
+                        <number>1000</number>
+                    </property>
+                    <property name="minValue">
+                        <number>10</number>
+                    </property>
+                    <property name="lineStep">
+                        <number>10</number>
+                    </property>
+                    <property name="value">
+                        <number>100</number>
+                    </property>
+                    <property name="toolTip" stdset="0">
+                        <string>Horizontal Zoom (%)</string>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="4" column="0">
+                    <property name="name">
+                        <cstring>VerticalZoomTextLabel</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&amp;Vertical Zoom:</string>
+                    </property>
+                    <property name="alignment">
+                        <set>AlignVCenter|AlignRight</set>
+                    </property>
+                    <property name="buddy" stdset="0">
+                        <cstring>VerticalZoomSpinBox</cstring>
+                    </property>
+                </widget>
+                <widget class="QSpinBox" row="3" column="1" rowspan="2" colspan="1">
+                    <property name="name">
+                        <cstring>VerticalZoomSpinBox</cstring>
+                    </property>
+                    <property name="suffix">
+                        <string> %</string>
+                    </property>
+                    <property name="maxValue">
+                        <number>1000</number>
+                    </property>
+                    <property name="minValue">
+                        <number>10</number>
+                    </property>
+                    <property name="lineStep">
+                        <number>10</number>
+                    </property>
+                    <property name="value">
+                        <number>100</number>
+                    </property>
+                    <property name="toolTip" stdset="0">
+                        <string>Vertical Zoom (%)</string>
+                    </property>
+                </widget>
+                <widget class="QSpinBox" row="1" column="1">
+                    <property name="name">
+                        <cstring>PixelsPerBeatSpinBox</cstring>
+                    </property>
+                    <property name="suffix">
+                        <string> px</string>
+                    </property>
+                    <property name="maxValue">
+                        <number>240</number>
+                    </property>
+                    <property name="minValue">
+                        <number>4</number>
+                    </property>
+                    <property name="lineStep">
+                        <number>4</number>
+                    </property>
+                    <property name="value">
+                        <number>32</number>
+                    </property>
+                    <property name="toolTip" stdset="0">
+                        <string>Pixels/beat</string>
+                    </property>
+                </widget>
+                <widget class="QSpinBox" row="0" column="1">
+                    <property name="name">
+                        <cstring>SnapPerBeatSpinBox</cstring>
+                    </property>
+                    <property name="maxValue">
+                        <number>32</number>
+                    </property>
+                    <property name="value">
+                        <number>4</number>
+                    </property>
+                    <property name="toolTip" stdset="0">
+                        <string>Snap/beat</string>
+                    </property>
+                </widget>
+            </grid>
+        </widget>
+        <widget class="QLayoutWidget" row="5" column="0" rowspan="1" colspan="2">
+            <property name="name">
+                <cstring>layout1</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <spacer>
+                    <property name="name">
+                        <cstring>spacer2</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>20</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                </spacer>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>OkPushButton</cstring>
+                    </property>
+                    <property name="text">
+                        <string>OK</string>
+                    </property>
+                    <property name="iconSet">
+                        <iconset>formAccept.png</iconset>
+                    </property>
+                </widget>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>CancelPushButton</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Cancel</string>
+                    </property>
+                    <property name="iconSet">
+                        <iconset>formReject.png</iconset>
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
+        <widget class="QTextEdit" row="3" column="0" rowspan="1" colspan="2">
+            <property name="name">
+                <cstring>DescriptionTextEdit</cstring>
+            </property>
+            <property name="sizePolicy">
+                <sizepolicy>
+                    <hsizetype>7</hsizetype>
+                    <vsizetype>3</vsizetype>
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                </sizepolicy>
+            </property>
+            <property name="toolTip" stdset="0">
+                <string>Session description</string>
+            </property>
+        </widget>
+        <widget class="QLineEdit" row="1" column="0" rowspan="1" colspan="2">
+            <property name="name">
+                <cstring>SessionNameLineEdit</cstring>
+            </property>
+            <property name="minimumSize">
+                <size>
+                    <width>320</width>
+                    <height>0</height>
+                </size>
+            </property>
+            <property name="toolTip" stdset="0">
+                <string>Session name</string>
+            </property>
+        </widget>
+        <widget class="QLabel" row="2" column="0" rowspan="1" colspan="2">
+            <property name="name">
+                <cstring>DescriptionTextLabel</cstring>
+            </property>
+            <property name="text">
+                <string>&amp;Description:</string>
+            </property>
+            <property name="buddy" stdset="0">
+                <cstring>DescriptionTextEdit</cstring>
+            </property>
+        </widget>
+        <widget class="QLabel" row="0" column="0" rowspan="1" colspan="2">
+            <property name="name">
+                <cstring>SessionNameTextLabel</cstring>
+            </property>
+            <property name="text">
+                <string>&amp;Name:</string>
+            </property>
+            <property name="buddy" stdset="0">
+                <cstring>SessionNameLineEdit</cstring>
+            </property>
+        </widget>
+    </grid>
+</widget>
+<connections>
+    <connection>
+        <sender>SessionNameLineEdit</sender>
+        <signal>textChanged(const QString&amp;)</signal>
+        <receiver>qtractorSessionForm</receiver>
+        <slot>changed()</slot>
+    </connection>
+    <connection>
+        <sender>DescriptionTextEdit</sender>
+        <signal>textChanged()</signal>
+        <receiver>qtractorSessionForm</receiver>
+        <slot>changed()</slot>
+    </connection>
+    <connection>
+        <sender>SampleRateComboBox</sender>
+        <signal>textChanged(const QString&amp;)</signal>
+        <receiver>qtractorSessionForm</receiver>
+        <slot>changed()</slot>
+    </connection>
+    <connection>
+        <sender>TempoSpinBox</sender>
+        <signal>valueChanged(int)</signal>
+        <receiver>qtractorSessionForm</receiver>
+        <slot>changed()</slot>
+    </connection>
+    <connection>
+        <sender>BeatsPerBarSpinBox</sender>
+        <signal>valueChanged(int)</signal>
+        <receiver>qtractorSessionForm</receiver>
+        <slot>changed()</slot>
+    </connection>
+    <connection>
+        <sender>TicksPerBeatSpinBox</sender>
+        <signal>valueChanged(int)</signal>
+        <receiver>qtractorSessionForm</receiver>
+        <slot>changed()</slot>
+    </connection>
+    <connection>
+        <sender>SnapPerBeatSpinBox</sender>
+        <signal>valueChanged(int)</signal>
+        <receiver>qtractorSessionForm</receiver>
+        <slot>changed()</slot>
+    </connection>
+    <connection>
+        <sender>PixelsPerBeatSpinBox</sender>
+        <signal>valueChanged(int)</signal>
+        <receiver>qtractorSessionForm</receiver>
+        <slot>changed()</slot>
+    </connection>
+    <connection>
+        <sender>HorizontalZoomSpinBox</sender>
+        <signal>valueChanged(int)</signal>
+        <receiver>qtractorSessionForm</receiver>
+        <slot>changed()</slot>
+    </connection>
+    <connection>
+        <sender>VerticalZoomSpinBox</sender>
+        <signal>valueChanged(int)</signal>
+        <receiver>qtractorSessionForm</receiver>
+        <slot>changed()</slot>
+    </connection>
+    <connection>
+        <sender>OkPushButton</sender>
+        <signal>clicked()</signal>
+        <receiver>qtractorSessionForm</receiver>
+        <slot>accept()</slot>
+    </connection>
+    <connection>
+        <sender>CancelPushButton</sender>
+        <signal>clicked()</signal>
+        <receiver>qtractorSessionForm</receiver>
+        <slot>reject()</slot>
+    </connection>
+</connections>
+<tabstops>
+    <tabstop>SessionNameLineEdit</tabstop>
+    <tabstop>DescriptionTextEdit</tabstop>
+    <tabstop>SampleRateComboBox</tabstop>
+    <tabstop>TempoSpinBox</tabstop>
+    <tabstop>BeatsPerBarSpinBox</tabstop>
+    <tabstop>TicksPerBeatSpinBox</tabstop>
+    <tabstop>SnapPerBeatSpinBox</tabstop>
+    <tabstop>PixelsPerBeatSpinBox</tabstop>
+    <tabstop>HorizontalZoomSpinBox</tabstop>
+    <tabstop>VerticalZoomSpinBox</tabstop>
+    <tabstop>OkPushButton</tabstop>
+    <tabstop>CancelPushButton</tabstop>
+</tabstops>
+<forwards>
+    <forward>class qtractorSession;</forward>
+</forwards>
+<variables>
+    <variable access="private">qtractorSession *m_pSession;</variable>
+    <variable access="private">int m_iDirtyCount;</variable>
+</variables>
+<slots>
+    <slot specifier="non virtual">accept()</slot>
+    <slot specifier="non virtual">reject()</slot>
+    <slot specifier="non virtual">changed()</slot>
+    <slot specifier="non virtual">stabilizeForm()</slot>
+</slots>
+<functions>
+    <function access="private" specifier="non virtual">init()</function>
+    <function access="private" specifier="non virtual">destroy()</function>
+    <function specifier="non virtual">setSession( qtractorSession *pSession )</function>
+    <function specifier="non virtual" returnType="qtractorSession *">session()</function>
+</functions>
+<pixmapinproject/>
+<layoutdefaults spacing="4" margin="8"/>
+</UI>
