@@ -1,0 +1,360 @@
+<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<class>qtractorTrackForm</class>
+<comment>qtractor - A MIDI/Audio multi-track sequencer.
+
+   Copyright (C) 2005, rncbc aka Rui Nuno Capela. All rights reserved.
+
+   This program is free software; you can redistribute it and/or
+   modify it under the terms of the GNU General Public License
+   as published by the Free Software Foundation; either version 2
+   of the License, or (at your option) any later version.
+
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+
+   You should have received a copy of the GNU General Public License
+   along with this program; if not, write to the Free Software
+   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+
+</comment>
+<author>rncbc aka Rui Nuno Capela</author>
+<widget class="QDialog">
+    <property name="name">
+        <cstring>qtractorTrackForm</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>314</width>
+            <height>230</height>
+        </rect>
+    </property>
+    <property name="sizePolicy">
+        <sizepolicy>
+            <hsizetype>7</hsizetype>
+            <vsizetype>1</vsizetype>
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+        </sizepolicy>
+    </property>
+    <property name="caption">
+        <string>Track - Qtractor</string>
+    </property>
+    <property name="icon">
+        <pixmap>trackProperties.png</pixmap>
+    </property>
+    <property name="focusPolicy">
+        <enum>StrongFocus</enum>
+    </property>
+    <vbox>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <widget class="QLabel">
+            <property name="name">
+                <cstring>TrackNameTextLabel</cstring>
+            </property>
+            <property name="text">
+                <string>&amp;Name:</string>
+            </property>
+            <property name="buddy" stdset="0">
+                <cstring>TrackNameTextEdit</cstring>
+            </property>
+        </widget>
+        <widget class="QTextEdit">
+            <property name="name">
+                <cstring>TrackNameTextEdit</cstring>
+            </property>
+            <property name="sizePolicy">
+                <sizepolicy>
+                    <hsizetype>7</hsizetype>
+                    <vsizetype>5</vsizetype>
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                </sizepolicy>
+            </property>
+            <property name="maximumSize">
+                <size>
+                    <width>32767</width>
+                    <height>48</height>
+                </size>
+            </property>
+            <property name="toolTip" stdset="0">
+                <string>Track name description</string>
+            </property>
+        </widget>
+        <widget class="QButtonGroup">
+            <property name="name">
+                <cstring>TrackTypeGroup</cstring>
+            </property>
+            <property name="title">
+                <string>Type</string>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QRadioButton">
+                    <property name="name">
+                        <cstring>AudioRadioButton</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&amp;Audio</string>
+                    </property>
+                    <property name="accel">
+                        <string>Alt+A</string>
+                    </property>
+                    <property name="toolTip" stdset="0">
+                        <string>Audio track type</string>
+                    </property>
+                </widget>
+                <widget class="QRadioButton">
+                    <property name="name">
+                        <cstring>MidiRadioButton</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&amp;MIDI</string>
+                    </property>
+                    <property name="accel">
+                        <string>Alt+M</string>
+                    </property>
+                    <property name="toolTip" stdset="0">
+                        <string>MIDI track type</string>
+                    </property>
+                </widget>
+                <spacer>
+                    <property name="name">
+                        <cstring>spacer1</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Minimum</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>20</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                </spacer>
+                <widget class="QLabel">
+                    <property name="name">
+                        <cstring>BusNameTextLabel</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>1</hsizetype>
+                            <vsizetype>5</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="text">
+                        <string>&amp;Bus:</string>
+                    </property>
+                    <property name="alignment">
+                        <set>AlignVCenter|AlignRight</set>
+                    </property>
+                    <property name="buddy" stdset="0">
+                        <cstring>BusNameComboBox</cstring>
+                    </property>
+                </widget>
+                <widget class="QComboBox">
+                    <property name="name">
+                        <cstring>BusNameComboBox</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>7</hsizetype>
+                            <vsizetype>0</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="toolTip" stdset="0">
+                        <string>Bus name</string>
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
+        <widget class="QGroupBox">
+            <property name="name">
+                <cstring>MidiGroupBox</cstring>
+            </property>
+            <property name="title">
+                <string>MIDI</string>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QLabel">
+                    <property name="name">
+                        <cstring>MidiChannelTextLabel</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&amp;Channel:</string>
+                    </property>
+                    <property name="buddy" stdset="0">
+                        <cstring>MidiChannelSpinBox</cstring>
+                    </property>
+                </widget>
+                <widget class="QSpinBox">
+                    <property name="name">
+                        <cstring>MidiChannelSpinBox</cstring>
+                    </property>
+                    <property name="maxValue">
+                        <number>16</number>
+                    </property>
+                    <property name="minValue">
+                        <number>1</number>
+                    </property>
+                    <property name="toolTip" stdset="0">
+                        <string>MIDI Channel (1-15)</string>
+                    </property>
+                </widget>
+				<spacer>
+					<property name="name">
+						<cstring>spacer2</cstring>
+					</property>
+					<property name="orientation">
+						<enum>Horizontal</enum>
+					</property>
+					<property name="sizeType">
+						<enum>Expanding</enum>
+					</property>
+					<property name="sizeHint">
+						<size>
+							<width>150</width>
+							<height>21</height>
+						</size>
+					</property>
+				</spacer>
+            </hbox>
+        </widget>
+        <widget class="QLayoutWidget">
+            <property name="name">
+                <cstring>layout1</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <spacer>
+                    <property name="name">
+                        <cstring>spacer3</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>20</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                </spacer>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>OkPushButton</cstring>
+                    </property>
+                    <property name="text">
+                        <string>OK</string>
+                    </property>
+                    <property name="iconSet">
+                        <iconset>formAccept.png</iconset>
+                    </property>
+                </widget>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>CancelPushButton</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Cancel</string>
+                    </property>
+                    <property name="iconSet">
+                        <iconset>formReject.png</iconset>
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
+    </vbox>
+</widget>
+<connections>
+    <connection>
+        <sender>TrackNameTextEdit</sender>
+        <signal>textChanged()</signal>
+        <receiver>qtractorTrackForm</receiver>
+        <slot>changed()</slot>
+    </connection>
+    <connection>
+        <sender>TrackTypeGroup</sender>
+        <signal>clicked(int)</signal>
+        <receiver>qtractorTrackForm</receiver>
+        <slot>trackTypeChanged(int)</slot>
+    </connection>
+    <connection>
+        <sender>BusNameComboBox</sender>
+        <signal>activated(int)</signal>
+        <receiver>qtractorTrackForm</receiver>
+        <slot>changed()</slot>
+    </connection>
+    <connection>
+        <sender>MidiChannelSpinBox</sender>
+        <signal>valueChanged(int)</signal>
+        <receiver>qtractorTrackForm</receiver>
+        <slot>changed()</slot>
+    </connection>
+    <connection>
+        <sender>OkPushButton</sender>
+        <signal>clicked()</signal>
+        <receiver>qtractorTrackForm</receiver>
+        <slot>accept()</slot>
+    </connection>
+    <connection>
+        <sender>CancelPushButton</sender>
+        <signal>clicked()</signal>
+        <receiver>qtractorTrackForm</receiver>
+        <slot>reject()</slot>
+    </connection>
+</connections>
+<tabstops>
+    <tabstop>TrackNameTextEdit</tabstop>
+    <tabstop>AudioRadioButton</tabstop>
+    <tabstop>MidiRadioButton</tabstop>
+    <tabstop>BusNameComboBox</tabstop>
+    <tabstop>MidiChannelSpinBox</tabstop>
+    <tabstop>OkPushButton</tabstop>
+    <tabstop>CancelPushButton</tabstop>
+</tabstops>
+<forwards>
+    <forward>class qtractorTrack;</forward>
+</forwards>
+<variables>
+    <variable access="private">qtractorTrack *m_pTrack;</variable>
+    <variable access="private">int m_iDirtyCount;</variable>
+</variables>
+<slots>
+    <slot specifier="non virtual">accept()</slot>
+    <slot specifier="non virtual">reject()</slot>
+    <slot specifier="non virtual">changed()</slot>
+    <slot specifier="non virtual">stabilizeForm()</slot>
+    <slot specifier="non virtual">trackTypeChanged( int iTrackType )</slot>
+</slots>
+<functions>
+    <function access="private" specifier="non virtual">init()</function>
+    <function access="private" specifier="non virtual">destroy()</function>
+    <function specifier="non virtual">setTrack( qtractorTrack *pTrack )</function>
+    <function specifier="non virtual" returnType="qtractorTrack *">track()</function>
+</functions>
+<pixmapinproject/>
+<layoutdefaults spacing="4" margin="8"/>
+</UI>
