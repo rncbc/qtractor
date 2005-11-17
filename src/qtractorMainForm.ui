@@ -1,0 +1,1271 @@
+<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<class>qtractorMainForm</class>
+<comment>qtractor - A MIDI/Audio multi-track sequencer.
+
+   Copyright (C) 2005, rncbc aka Rui Nuno Capela. All rights reserved.
+
+   This program is free software; you can redistribute it and/or
+   modify it under the terms of the GNU General Public License
+   as published by the Free Software Foundation; either version 2
+   of the License, or (at your option) any later version.
+
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+
+   You should have received a copy of the GNU General Public License
+   along with this program; if not, write to the Free Software
+   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+
+</comment>
+<author>rncbc aka Rui Nuno Capela</author>
+<widget class="QMainWindow">
+    <property name="name">
+        <cstring>qtractorMainForm</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>472</width>
+            <height>293</height>
+        </rect>
+    </property>
+    <property name="minimumSize">
+        <size>
+            <width>21</width>
+            <height>284</height>
+        </size>
+    </property>
+    <property name="caption">
+        <string>Qtractor</string>
+    </property>
+    <property name="icon">
+        <pixmap>qtractor.png</pixmap>
+    </property>
+</widget>
+<menubar>
+    <property name="name">
+        <cstring>MenuBar</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>472</width>
+            <height>29</height>
+        </rect>
+    </property>
+    <item text="&amp;File" name="fileMenu">
+        <action name="fileNewAction"/>
+        <separator/>
+        <action name="fileOpenAction"/>
+        <separator/>
+        <action name="fileSaveAction"/>
+        <action name="fileSaveAsAction"/>
+        <separator/>
+        <action name="filePropertiesAction"/>
+        <separator/>
+        <action name="fileExitAction"/>
+    </item>
+    <item text="&amp;Edit" name="editMenu">
+        <action name="editUndoAction"/>
+        <action name="editRedoAction"/>
+        <separator/>
+        <action name="editCutAction"/>
+        <action name="editCopyAction"/>
+        <action name="editPasteAction"/>
+        <separator/>
+        <action name="editDeleteAction"/>
+        <separator/>
+        <action name="editSelectTrackAction"/>
+        <action name="editSelectAllAction"/>
+    </item>
+    <item text="&amp;Track" name="trackMenu">
+        <action name="trackAddAction"/>
+        <action name="trackRemoveAction"/>
+        <separator/>
+        <action name="trackPropertiesAction"/>
+        <separator/>
+        <action name="trackImportAction"/>
+        <item text="&amp;Import" name="trackImportMenu">
+            <action name="trackImportAudioAction"/>
+            <action name="trackImportMidiAction"/>
+        </item>
+    </item>
+    <item text="&amp;View" name="viewMenu">
+        <action name="viewMenubarAction"/>
+        <action name="viewStatusbarAction"/>
+        <action name="viewToolbarsAction"/>
+        <item text="&amp;Toolbars" name="viewToolbarsMenu">
+            <action name="viewToolbarFileAction"/>
+            <action name="viewToolbarEditAction"/>
+            <action name="viewToolbarTrackAction"/>
+            <action name="viewToolbarTransportAction"/>
+        </item>
+        <separator/>
+        <action name="viewFilesAction"/>
+        <action name="viewMessagesAction"/>
+        <separator/>
+        <action name="viewRefreshAction"/>
+        <separator/>
+        <action name="viewOptionsAction"/>
+    </item>
+    <item text="T&amp;ransport" name="transportMenu">
+        <action name="transportRewindAction"/>
+        <action name="transportBackwardAction"/>
+        <action name="transportPlayAction"/>
+        <action name="transportForwardAction"/>
+    </item>
+    <separator/>
+    <item text="&amp;Help" name="helpMenu">
+        <action name="helpAboutAction"/>
+        <action name="helpAboutQtAction"/>
+    </item>
+</menubar>
+<toolbars>
+    <toolbar dock="2">
+        <property name="name">
+            <cstring>fileToolbar</cstring>
+        </property>
+        <property name="label">
+            <string>File Toolbar</string>
+        </property>
+        <action name="fileNewAction"/>
+        <action name="fileOpenAction"/>
+        <action name="fileSaveAction"/>
+    </toolbar>
+    <toolbar dock="2">
+        <property name="name">
+            <cstring>editToolbar</cstring>
+        </property>
+        <property name="label">
+            <string>Edit Toolbar</string>
+        </property>
+        <action name="editUndoAction"/>
+        <action name="editRedoAction"/>
+        <separator/>
+        <action name="editCutAction"/>
+        <action name="editCopyAction"/>
+        <action name="editPasteAction"/>
+        <separator/>
+        <action name="editDeleteAction"/>
+    </toolbar>
+    <toolbar dock="2">
+        <property name="name">
+            <cstring>trackToolbar</cstring>
+        </property>
+        <property name="label">
+            <string>Track Toolbar</string>
+        </property>
+        <action name="trackAddAction"/>
+        <action name="trackRemoveAction"/>
+        <separator/>
+        <action name="trackPropertiesAction"/>
+    </toolbar>
+    <toolbar dock="2">
+        <property name="name">
+            <cstring>transportToolbar</cstring>
+        </property>
+        <property name="label">
+            <string>Transport Toolbar</string>
+        </property>
+        <action name="transportRewindAction"/>
+        <action name="transportBackwardAction"/>
+        <action name="transportPlayAction"/>
+        <action name="transportForwardAction"/>
+    </toolbar>
+</toolbars>
+<actions>
+    <action>
+        <property name="name">
+            <cstring>fileNewAction</cstring>
+        </property>
+        <property name="iconSet">
+            <iconset>fileNew.png</iconset>
+        </property>
+        <property name="text">
+            <string>New</string>
+        </property>
+        <property name="menuText">
+            <string>&amp;New</string>
+        </property>
+        <property name="toolTip">
+            <string>New session</string>
+        </property>
+        <property name="statusTip">
+            <string>New session file</string>
+        </property>
+        <property name="accel">
+            <string>Ctrl+N</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>fileOpenAction</cstring>
+        </property>
+        <property name="iconSet">
+            <iconset>fileOpen.png</iconset>
+        </property>
+        <property name="text">
+            <string>Open</string>
+        </property>
+        <property name="menuText">
+            <string>&amp;Open...</string>
+        </property>
+        <property name="toolTip">
+            <string>Open session</string>
+        </property>
+        <property name="statusTip">
+            <string>Open session from file</string>
+        </property>
+        <property name="accel">
+            <string>Ctrl+O</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>fileSaveAction</cstring>
+        </property>
+        <property name="iconSet">
+            <iconset>fileSave.png</iconset>
+        </property>
+        <property name="text">
+            <string>Save</string>
+        </property>
+        <property name="menuText">
+            <string>&amp;Save</string>
+        </property>
+        <property name="toolTip">
+            <string>Save session</string>
+        </property>
+        <property name="statusTip">
+            <string>Save session to file</string>
+        </property>
+        <property name="accel">
+            <string>Ctrl+S</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>fileSaveAsAction</cstring>
+        </property>
+        <property name="text">
+            <string>Save As</string>
+        </property>
+        <property name="menuText">
+            <string>Save &amp;As...</string>
+        </property>
+        <property name="statusTip">
+            <string>Save current session with another file name</string>
+        </property>
+        <property name="accel">
+            <string></string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>filePropertiesAction</cstring>
+        </property>
+        <property name="text">
+            <string>Session Properties</string>
+        </property>
+        <property name="menuText">
+            <string>&amp;Properties...</string>
+        </property>
+        <property name="toolTip">
+            <string>Session properties</string>
+        </property>
+        <property name="statusTip">
+            <string>Edit current session properties</string>
+        </property>
+        <property name="accel">
+            <string>F2</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>fileExitAction</cstring>
+        </property>
+        <property name="text">
+            <string>Exit</string>
+        </property>
+        <property name="menuText">
+            <string>E&amp;xit</string>
+        </property>
+        <property name="statusTip">
+            <string>Exit this application program</string>
+        </property>
+        <property name="accel">
+            <string></string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>editUndoAction</cstring>
+        </property>
+        <property name="iconSet">
+            <iconset>editUndo.png</iconset>
+        </property>
+        <property name="text">
+            <string>Undo</string>
+        </property>
+        <property name="menuText">
+            <string>&amp;Undo</string>
+        </property>
+        <property name="toolTip">
+            <string>Undo</string>
+        </property>
+        <property name="statusTip">
+            <string>Undo last action</string>
+        </property>
+        <property name="accel">
+            <string>Ctrl+Z</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>editRedoAction</cstring>
+        </property>
+        <property name="iconSet">
+            <iconset>editRedo.png</iconset>
+        </property>
+        <property name="text">
+            <string>Redo</string>
+        </property>
+        <property name="menuText">
+            <string>&amp;Redo</string>
+        </property>
+        <property name="toolTip">
+            <string>Redo</string>
+        </property>
+        <property name="statusTip">
+            <string>Redo last action</string>
+        </property>
+        <property name="accel">
+            <string>Shift+Ctrl+Z</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>editCutAction</cstring>
+        </property>
+        <property name="iconSet">
+            <iconset>editCut.png</iconset>
+        </property>
+        <property name="text">
+            <string>Cut</string>
+        </property>
+        <property name="menuText">
+            <string>Cu&amp;t</string>
+        </property>
+        <property name="toolTip">
+            <string>Cut</string>
+        </property>
+        <property name="statusTip">
+            <string>Cut selection to clipboard</string>
+        </property>
+        <property name="accel">
+            <string>Ctrl+X</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>editCopyAction</cstring>
+        </property>
+        <property name="iconSet">
+            <iconset>editCopy.png</iconset>
+        </property>
+        <property name="text">
+            <string>Copy</string>
+        </property>
+        <property name="menuText">
+            <string>&amp;Copy</string>
+        </property>
+        <property name="toolTip">
+            <string>Copy</string>
+        </property>
+        <property name="statusTip">
+            <string>Copy selection to clipboard</string>
+        </property>
+        <property name="accel">
+            <string>Ctrl+C</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>editPasteAction</cstring>
+        </property>
+        <property name="iconSet">
+            <iconset>editPaste.png</iconset>
+        </property>
+        <property name="text">
+            <string>Paste</string>
+        </property>
+        <property name="menuText">
+            <string>&amp;Paste</string>
+        </property>
+        <property name="toolTip">
+            <string>Paste</string>
+        </property>
+        <property name="statusTip">
+            <string>Paste clipboard contents</string>
+        </property>
+        <property name="accel">
+            <string>Ctrl+P</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>editDeleteAction</cstring>
+        </property>
+        <property name="iconSet">
+            <iconset>editDelete.png</iconset>
+        </property>
+        <property name="text">
+            <string>Delete</string>
+        </property>
+        <property name="menuText">
+            <string>&amp;Delete</string>
+        </property>
+        <property name="toolTip">
+            <string>delete</string>
+        </property>
+        <property name="statusTip">
+            <string>Delete selection</string>
+        </property>
+        <property name="accel">
+            <string>Del</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>editSelectTrackAction</cstring>
+        </property>
+        <property name="text">
+            <string>Select Track</string>
+        </property>
+        <property name="menuText">
+            <string>Select &amp;Track</string>
+        </property>
+        <property name="toolTip">
+            <string>Select track</string>
+        </property>
+        <property name="statusTip">
+            <string>Mark track as selected</string>
+        </property>
+        <property name="accel">
+            <string>Ctrl+Shift+A</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>editSelectAllAction</cstring>
+        </property>
+        <property name="text">
+            <string>Select All</string>
+        </property>
+        <property name="menuText">
+            <string>Select &amp;All</string>
+        </property>
+        <property name="toolTip">
+            <string>Select all</string>
+        </property>
+        <property name="statusTip">
+            <string>Mark all as selected</string>
+        </property>
+        <property name="accel">
+            <string>Ctrl+A</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>trackAddAction</cstring>
+        </property>
+        <property name="iconSet">
+            <iconset>trackAdd.png</iconset>
+        </property>
+        <property name="text">
+            <string>Add Track</string>
+        </property>
+        <property name="menuText">
+            <string>&amp;Add Track...</string>
+        </property>
+        <property name="toolTip">
+            <string>Add track</string>
+        </property>
+        <property name="statusTip">
+            <string>Add a new track to session</string>
+        </property>
+        <property name="accel">
+            <string>Shift+Ins</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>trackRemoveAction</cstring>
+        </property>
+        <property name="iconSet">
+            <iconset>trackRemove.png</iconset>
+        </property>
+        <property name="text">
+            <string>Remove Track</string>
+        </property>
+        <property name="menuText">
+            <string>&amp;Remove Track</string>
+        </property>
+        <property name="toolTip">
+            <string>Remove track</string>
+        </property>
+        <property name="statusTip">
+            <string>Remove current track from session</string>
+        </property>
+        <property name="accel">
+            <string>Shift+Del</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>trackPropertiesAction</cstring>
+        </property>
+        <property name="iconSet">
+            <iconset>trackProperties.png</iconset>
+        </property>
+        <property name="text">
+            <string>Track Properties</string>
+        </property>
+        <property name="menuText">
+            <string>&amp;Track Properties...</string>
+        </property>
+        <property name="toolTip">
+            <string>Track properties</string>
+        </property>
+        <property name="statusTip">
+            <string>Edit current track properties</string>
+        </property>
+        <property name="accel">
+            <string>Shift+F2</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>trackImportAction</cstring>
+        </property>
+        <property name="text">
+            <string>Import Tracks</string>
+        </property>
+        <property name="menuText">
+            <string>&amp;Import</string>
+        </property>
+        <property name="toolTip">
+            <string>Import tracks</string>
+        </property>
+        <property name="statusTip">
+            <string>Import tracks from file</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>trackImportAudioAction</cstring>
+        </property>
+        <property name="text">
+            <string>Audio</string>
+        </property>
+        <property name="menuText">
+            <string>&amp;Audio...</string>
+        </property>
+        <property name="toolTip">
+            <string>Import Audio file</string>
+        </property>
+        <property name="statusTip">
+            <string>Import tracks from Audio file</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>trackImportMidiAction</cstring>
+        </property>
+        <property name="text">
+            <string>Midi</string>
+        </property>
+        <property name="menuText">
+            <string>&amp;MIDI...</string>
+        </property>
+        <property name="toolTip">
+            <string>Import MIDI file</string>
+        </property>
+        <property name="statusTip">
+            <string>Import tracks from MIDI file</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>viewMenubarAction</cstring>
+        </property>
+        <property name="toggleAction">
+            <bool>true</bool>
+        </property>
+        <property name="text">
+            <string>Menubar</string>
+        </property>
+        <property name="menuText">
+            <string>&amp;Menubar</string>
+        </property>
+        <property name="toolTip">
+            <string>Show/hide menubar</string>
+        </property>
+        <property name="statusTip">
+            <string>Show/hide the main program window menubar</string>
+        </property>
+        <property name="accel">
+            <string>Ctrl+M</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>viewStatusbarAction</cstring>
+        </property>
+        <property name="toggleAction">
+            <bool>true</bool>
+        </property>
+        <property name="text">
+            <string>Statusbar</string>
+        </property>
+        <property name="menuText">
+            <string>&amp;Statusbar</string>
+        </property>
+        <property name="toolTip">
+            <string>Show/hide statusbar</string>
+        </property>
+        <property name="statusTip">
+            <string>Show/hide the main program window statusbar</string>
+        </property>
+        <property name="accel">
+            <string></string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>viewToolbarsAction</cstring>
+        </property>
+        <property name="text">
+            <string>Toolbars</string>
+        </property>
+        <property name="menuText">
+            <string>&amp;Toolbars</string>
+        </property>
+        <property name="toolTip">
+            <string>Show/hide toolbars</string>
+        </property>
+        <property name="statusTip">
+            <string>Show/hide main program window toolbars</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>viewToolbarFileAction</cstring>
+        </property>
+        <property name="toggleAction">
+            <bool>true</bool>
+        </property>
+        <property name="text">
+            <string>File toolbar</string>
+        </property>
+        <property name="menuText">
+            <string>&amp;File</string>
+        </property>
+        <property name="toolTip">
+            <string>Show/hide file toolbar</string>
+        </property>
+        <property name="statusTip">
+            <string>Show/hide main program window file toolbar</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>viewToolbarEditAction</cstring>
+        </property>
+        <property name="toggleAction">
+            <bool>true</bool>
+        </property>
+        <property name="text">
+            <string>Edit toolbar</string>
+        </property>
+        <property name="menuText">
+            <string>&amp;Edit</string>
+        </property>
+        <property name="toolTip">
+            <string>Show/hide edit toolbar</string>
+        </property>
+        <property name="statusTip">
+            <string>Show/hide main program window edit toolbar</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>viewToolbarTrackAction</cstring>
+        </property>
+        <property name="toggleAction">
+            <bool>true</bool>
+        </property>
+        <property name="text">
+            <string>Track toolbar</string>
+        </property>
+        <property name="menuText">
+            <string>&amp;Track</string>
+        </property>
+        <property name="toolTip">
+            <string>Show/hide track toolbar</string>
+        </property>
+        <property name="statusTip">
+            <string>Show/hide main program window track toolbar</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>viewToolbarTransportAction</cstring>
+        </property>
+        <property name="toggleAction">
+            <bool>true</bool>
+        </property>
+        <property name="text">
+            <string>Transport toolbar</string>
+        </property>
+        <property name="menuText">
+            <string>T&amp;ransport</string>
+        </property>
+        <property name="toolTip">
+            <string>Show/hide transport toolbar</string>
+        </property>
+        <property name="statusTip">
+            <string>Show/hide main program window transport toolbar</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>viewFilesAction</cstring>
+        </property>
+        <property name="toggleAction">
+            <bool>true</bool>
+        </property>
+        <property name="text">
+            <string>Files</string>
+        </property>
+        <property name="menuText">
+            <string>&amp;Files</string>
+        </property>
+        <property name="toolTip">
+            <string>Show/hide files</string>
+        </property>
+        <property name="statusTip">
+            <string>Show/hide the files window</string>
+        </property>
+        <property name="accel">
+            <string></string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>viewMessagesAction</cstring>
+        </property>
+        <property name="toggleAction">
+            <bool>true</bool>
+        </property>
+        <property name="text">
+            <string>Messages</string>
+        </property>
+        <property name="menuText">
+            <string>M&amp;essages</string>
+        </property>
+        <property name="toolTip">
+            <string>Show/hide messages</string>
+        </property>
+        <property name="statusTip">
+            <string>Show/hide the messages window</string>
+        </property>
+        <property name="accel">
+            <string></string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>viewRefreshAction</cstring>
+        </property>
+        <property name="text">
+            <string>Refresh</string>
+        </property>
+        <property name="menuText">
+            <string>&amp;Refresh</string>
+        </property>
+        <property name="toolTip">
+            <string>Refresh view</string>
+        </property>
+        <property name="statusTip">
+            <string>Refresh view</string>
+        </property>
+        <property name="accel">
+            <string>F5</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>viewOptionsAction</cstring>
+        </property>
+        <property name="text">
+            <string>Options</string>
+        </property>
+        <property name="menuText">
+            <string>&amp;Options...</string>
+        </property>
+        <property name="toolTip">
+            <string>General options</string>
+        </property>
+        <property name="statusTip">
+            <string>Change general application program options</string>
+        </property>
+        <property name="accel">
+            <string>F12</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>transportRewindAction</cstring>
+        </property>
+        <property name="iconSet">
+            <iconset>transportRewind.png</iconset>
+        </property>
+        <property name="text">
+            <string>Rewind</string>
+        </property>
+        <property name="menuText">
+            <string>&amp;Rewind</string>
+        </property>
+        <property name="statusTip">
+            <string>Transport rewind</string>
+        </property>
+        <property name="accel">
+            <string>Backspace</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>transportBackwardAction</cstring>
+        </property>
+        <property name="iconSet">
+            <iconset>transportBackward.png</iconset>
+        </property>
+        <property name="text">
+            <string>Backward</string>
+        </property>
+        <property name="menuText">
+            <string>&amp;Backward</string>
+        </property>
+        <property name="statusTip">
+            <string>Transport backward</string>
+        </property>
+        <property name="accel">
+            <string></string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>transportPlayAction</cstring>
+        </property>
+        <property name="toggleAction">
+            <bool>true</bool>
+        </property>
+        <property name="iconSet">
+            <iconset>transportPlay.png</iconset>
+        </property>
+        <property name="text">
+            <string>Play</string>
+        </property>
+        <property name="menuText">
+            <string>&amp;Play</string>
+        </property>
+        <property name="statusTip">
+            <string>Transport play/pause</string>
+        </property>
+        <property name="accel">
+            <string>Space</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>transportForwardAction</cstring>
+        </property>
+        <property name="iconSet">
+            <iconset>transportForward.png</iconset>
+        </property>
+        <property name="text">
+            <string>Forward</string>
+        </property>
+        <property name="menuText">
+            <string>&amp;Forward</string>
+        </property>
+        <property name="statusTip">
+            <string>Transport forward</string>
+        </property>
+        <property name="accel">
+            <string></string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>helpAboutAction</cstring>
+        </property>
+        <property name="text">
+            <string>About</string>
+        </property>
+        <property name="menuText">
+            <string>&amp;About...</string>
+        </property>
+        <property name="statusTip">
+            <string>Show information about this application program</string>
+        </property>
+        <property name="accel">
+            <string></string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>helpAboutQtAction</cstring>
+        </property>
+        <property name="text">
+            <string>About Qt</string>
+        </property>
+        <property name="menuText">
+            <string>About &amp;Qt...</string>
+        </property>
+        <property name="statusTip">
+            <string>Show information about the Qt toolkit</string>
+        </property>
+        <property name="accel">
+            <string></string>
+        </property>
+    </action>
+</actions>
+<connections>
+    <connection>
+        <sender>fileNewAction</sender>
+        <signal>activated()</signal>
+        <receiver>qtractorMainForm</receiver>
+        <slot>fileNew()</slot>
+    </connection>
+    <connection>
+        <sender>fileOpenAction</sender>
+        <signal>activated()</signal>
+        <receiver>qtractorMainForm</receiver>
+        <slot>fileOpen()</slot>
+    </connection>
+    <connection>
+        <sender>fileSaveAction</sender>
+        <signal>activated()</signal>
+        <receiver>qtractorMainForm</receiver>
+        <slot>fileSave()</slot>
+    </connection>
+    <connection>
+        <sender>fileSaveAsAction</sender>
+        <signal>activated()</signal>
+        <receiver>qtractorMainForm</receiver>
+        <slot>fileSaveAs()</slot>
+    </connection>
+    <connection>
+        <sender>filePropertiesAction</sender>
+        <signal>activated()</signal>
+        <receiver>qtractorMainForm</receiver>
+        <slot>fileProperties()</slot>
+    </connection>
+    <connection>
+        <sender>fileExitAction</sender>
+        <signal>activated()</signal>
+        <receiver>qtractorMainForm</receiver>
+        <slot>fileExit()</slot>
+    </connection>
+    <connection>
+        <sender>editUndoAction</sender>
+        <signal>activated()</signal>
+        <receiver>qtractorMainForm</receiver>
+        <slot>editUndo()</slot>
+    </connection>
+    <connection>
+        <sender>editRedoAction</sender>
+        <signal>activated()</signal>
+        <receiver>qtractorMainForm</receiver>
+        <slot>editRedo()</slot>
+    </connection>
+    <connection>
+        <sender>editCutAction</sender>
+        <signal>activated()</signal>
+        <receiver>qtractorMainForm</receiver>
+        <slot>editCut()</slot>
+    </connection>
+    <connection>
+        <sender>editCopyAction</sender>
+        <signal>activated()</signal>
+        <receiver>qtractorMainForm</receiver>
+        <slot>editCopy()</slot>
+    </connection>
+    <connection>
+        <sender>editPasteAction</sender>
+        <signal>activated()</signal>
+        <receiver>qtractorMainForm</receiver>
+        <slot>editPaste()</slot>
+    </connection>
+    <connection>
+        <sender>editDeleteAction</sender>
+        <signal>activated()</signal>
+        <receiver>qtractorMainForm</receiver>
+        <slot>editDelete()</slot>
+    </connection>
+    <connection>
+        <sender>editSelectTrackAction</sender>
+        <signal>activated()</signal>
+        <receiver>qtractorMainForm</receiver>
+        <slot>editSelectTrack()</slot>
+    </connection>
+    <connection>
+        <sender>editSelectAllAction</sender>
+        <signal>activated()</signal>
+        <receiver>qtractorMainForm</receiver>
+        <slot>editSelectAll()</slot>
+    </connection>
+    <connection>
+        <sender>trackAddAction</sender>
+        <signal>activated()</signal>
+        <receiver>qtractorMainForm</receiver>
+        <slot>trackAdd()</slot>
+    </connection>
+    <connection>
+        <sender>trackRemoveAction</sender>
+        <signal>activated()</signal>
+        <receiver>qtractorMainForm</receiver>
+        <slot>trackRemove()</slot>
+    </connection>
+    <connection>
+        <sender>trackPropertiesAction</sender>
+        <signal>activated()</signal>
+        <receiver>qtractorMainForm</receiver>
+        <slot>trackProperties()</slot>
+    </connection>
+    <connection>
+        <sender>trackImportAudioAction</sender>
+        <signal>activated()</signal>
+        <receiver>qtractorMainForm</receiver>
+        <slot>trackImportAudio()</slot>
+    </connection>
+    <connection>
+        <sender>trackImportMidiAction</sender>
+        <signal>activated()</signal>
+        <receiver>qtractorMainForm</receiver>
+        <slot>trackImportMidi()</slot>
+    </connection>
+    <connection>
+        <sender>viewMenubarAction</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>qtractorMainForm</receiver>
+        <slot>viewMenubar(bool)</slot>
+    </connection>
+    <connection>
+        <sender>viewStatusbarAction</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>qtractorMainForm</receiver>
+        <slot>viewStatusbar(bool)</slot>
+    </connection>
+    <connection>
+        <sender>viewToolbarFileAction</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>qtractorMainForm</receiver>
+        <slot>viewToolbarFile(bool)</slot>
+    </connection>
+    <connection>
+        <sender>viewToolbarEditAction</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>qtractorMainForm</receiver>
+        <slot>viewToolbarEdit(bool)</slot>
+    </connection>
+    <connection>
+        <sender>viewToolbarTrackAction</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>qtractorMainForm</receiver>
+        <slot>viewToolbarTrack(bool)</slot>
+    </connection>
+    <connection>
+        <sender>viewToolbarTransportAction</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>qtractorMainForm</receiver>
+        <slot>viewToolbarTransport(bool)</slot>
+    </connection>
+    <connection>
+        <sender>viewFilesAction</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>qtractorMainForm</receiver>
+        <slot>viewFiles(bool)</slot>
+    </connection>
+    <connection>
+        <sender>viewMessagesAction</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>qtractorMainForm</receiver>
+        <slot>viewMessages(bool)</slot>
+    </connection>
+    <connection>
+        <sender>viewRefreshAction</sender>
+        <signal>activated()</signal>
+        <receiver>qtractorMainForm</receiver>
+        <slot>viewRefresh()</slot>
+    </connection>
+    <connection>
+        <sender>viewOptionsAction</sender>
+        <signal>activated()</signal>
+        <receiver>qtractorMainForm</receiver>
+        <slot>viewOptions()</slot>
+    </connection>
+    <connection>
+        <sender>transportRewindAction</sender>
+        <signal>activated()</signal>
+        <receiver>qtractorMainForm</receiver>
+        <slot>transportRewind()</slot>
+    </connection>
+    <connection>
+        <sender>transportBackwardAction</sender>
+        <signal>activated()</signal>
+        <receiver>qtractorMainForm</receiver>
+        <slot>transportBackward()</slot>
+    </connection>
+    <connection>
+        <sender>transportPlayAction</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>qtractorMainForm</receiver>
+        <slot>transportPlay(bool)</slot>
+    </connection>
+    <connection>
+        <sender>transportForwardAction</sender>
+        <signal>activated()</signal>
+        <receiver>qtractorMainForm</receiver>
+        <slot>transportForward()</slot>
+    </connection>
+    <connection>
+        <sender>helpAboutAction</sender>
+        <signal>activated()</signal>
+        <receiver>qtractorMainForm</receiver>
+        <slot>helpAbout()</slot>
+    </connection>
+    <connection>
+        <sender>helpAboutQtAction</sender>
+        <signal>activated()</signal>
+        <receiver>qtractorMainForm</receiver>
+        <slot>helpAboutQt()</slot>
+    </connection>
+</connections>
+<includes>
+    <include location="local" impldecl="in implementation">qtractorMainForm.ui.h</include>
+</includes>
+<forwards>
+    <forward>class QWorkspace;</forward>
+    <forward>class QLabel;</forward>
+    <forward>class qtractorOptions;</forward>
+    <forward>class qtractorMessages;</forward>
+    <forward>class qtractorFiles;</forward>
+    <forward>class qtractorSession;</forward>
+    <forward>class qtractorTracks;</forward>
+</forwards>
+<variables>
+    <variable access="private">qtractorOptions *m_pOptions;</variable>
+    <variable access="private">qtractorMessages *m_pMessages;</variable>
+    <variable access="private">qtractorFiles *m_pFiles;</variable>
+    <variable access="private">qtractorSession *m_pSession;</variable>
+    <variable access="private">qtractorTracks *m_pTracks;</variable>
+    <variable access="private">QWorkspace *m_pWorkspace;</variable>
+    <variable access="private">QString m_sFilename;</variable>
+    <variable access="private">int m_iUntitled;</variable>
+    <variable access="private">int m_iDirtyCount;</variable>
+    <variable access="private">QLabel *m_pTransportTime;</variable>
+    <variable access="private">QLabel *m_statusItems[4];</variable>
+    <variable access="private">QPopupMenu *m_pRecentFilesMenu;</variable>
+    <variable access="private">unsigned long m_iViewPlayhead;</variable>
+    <variable access="private">int m_iPeakTimer;</variable>
+	<variable access="private">int m_iPlayTimer;</variable>
+</variables>
+<slots>
+    <slot specifier="non virtual">fileNew( void )</slot>
+    <slot specifier="non virtual">fileOpen( void )</slot>
+    <slot specifier="non virtual">fileSave( void )</slot>
+    <slot specifier="non virtual">fileSaveAs( void )</slot>
+    <slot specifier="non virtual">fileProperties( void )</slot>
+    <slot specifier="non virtual">fileExit( void )</slot>
+    <slot specifier="non virtual">fileOpenRecent( int iIndex )</slot>
+    <slot specifier="non virtual">editUndo( void )</slot>
+    <slot specifier="non virtual">editRedo( void )</slot>
+    <slot specifier="non virtual">editCut( void )</slot>
+    <slot specifier="non virtual">editCopy( void )</slot>
+    <slot specifier="non virtual">editPaste( void )</slot>
+    <slot specifier="non virtual">editDelete( void )</slot>
+    <slot specifier="non virtual">editSelectTrack( void )</slot>
+    <slot specifier="non virtual">editSelectAll( void )</slot>
+    <slot specifier="non virtual">trackAdd( void )</slot>
+    <slot specifier="non virtual">trackRemove( void )</slot>
+    <slot specifier="non virtual">trackProperties( void )</slot>
+    <slot specifier="non virtual">trackImportAudio( void )</slot>
+    <slot specifier="non virtual">trackImportMidi( void )</slot>
+    <slot specifier="non virtual">viewMenubar( bool bOn )</slot>
+    <slot specifier="non virtual">viewStatusbar( bool bOn )</slot>
+    <slot specifier="non virtual">viewToolbarFile( bool bOn )</slot>
+    <slot specifier="non virtual">viewToolbarEdit( bool bOn )</slot>
+    <slot specifier="non virtual">viewToolbarTrack( bool bOn )</slot>
+    <slot specifier="non virtual">viewToolbarTransport( bool bOn )</slot>
+    <slot specifier="non virtual">viewFiles( bool bOn )</slot>
+    <slot specifier="non virtual">viewMessages( bool bOn )</slot>
+    <slot specifier="non virtual">viewRefresh( void )</slot>
+    <slot specifier="non virtual">viewOptions( void )</slot>
+    <slot specifier="non virtual">transportRewind( void )</slot>
+    <slot specifier="non virtual">transportBackward( void )</slot>
+    <slot specifier="non virtual">transportPlay( bool bPlaying )</slot>
+    <slot specifier="non virtual">transportForward( void )</slot>
+    <slot specifier="non virtual">helpAboutQt( void )</slot>
+    <slot specifier="non virtual">helpAbout( void )</slot>
+    <slot specifier="non virtual">stabilizeForm( void )</slot>
+    <slot specifier="non virtual">timerSlot( void )</slot>
+    <slot specifier="non virtual">tracksClosed( void )</slot>
+	<slot specifier="non virtual">addAudioFile( const QString &amp; sFilename )</slot>
+	<slot specifier="non virtual">activateAudioFile( const QString &amp; sFilename )</slot>
+	<slot specifier="non virtual">addMidiFile( const QString &amp; sFilename )</slot>
+	<slot specifier="non virtual">activateMidiFile( const QString &amp; sFilename )</slot>
+	<slot specifier="non virtual">selectionChanged( void )</slot>
+    <slot specifier="non virtual">contentsChanged( void )</slot>
+</slots>
+<functions>
+    <function access="private" specifier="non virtual">init()</function>
+    <function access="private" specifier="non virtual">destroy()</function>
+    <function specifier="non virtual">setup( qtractorOptions * pOptions )</function>
+    <function specifier="non virtual" returnType="QWorkspace *">workspace( void )</function>
+    <function access="private" specifier="non virtual" returnType="bool">queryClose( void )</function>
+    <function access="private" specifier="non virtual">closeEvent( QCloseEvent * pCloseEvent )</function>
+    <function access="private" specifier="non virtual" returnType="bool">decodeDragFiles( const QMimeSource * pEvent, QStringList &amp; files )</function>
+    <function access="private" specifier="non virtual">dragEnterEvent( QDragEnterEvent *pDragEnterEvent )</function>
+    <function access="private" specifier="non virtual">dropEvent( QDropEvent *pDropEvent )</function>
+    <function access="private" specifier="non virtual">customEvent( QCustomEvent *pCustomEvent )</function>
+    <function specifier="non virtual">contextMenuEvent( QContextMenuEvent *pEvent )</function>
+    <function specifier="non virtual" returnType="qtractorOptions *">options( void )</function>
+    <function specifier="non virtual" returnType="qtractorSession *">session( void )</function>
+    <function specifier="non virtual" returnType="QString">sessionName( const QString &amp; sFilename )</function>
+    <function access="private" specifier="non virtual" returnType="bool">newSession( void )</function>
+    <function access="private" specifier="non virtual" returnType="bool">openSession( void )</function>
+    <function access="private" specifier="non virtual" returnType="bool">saveSession( bool bPrompt )</function>
+    <function access="private" specifier="non virtual" returnType="bool">closeSession( void )</function>
+    <function access="private" specifier="non virtual" returnType="bool">loadSessionFile( const QString &amp; sFilename )</function>
+    <function access="private" specifier="non virtual" returnType="bool">saveSessionFile( const QString &amp; sFilename )</function>
+    <function access="private" specifier="non virtual">updateSession()</function>
+    <function access="private" specifier="non virtual">updateRecentFiles( const QString &amp; sFilename )</function>
+    <function access="private" specifier="non virtual">updateRecentFilesMenu( void )</function>
+    <function specifier="non virtual">appendMessages( const QString &amp; s )</function>
+    <function specifier="non virtual">appendMessagesColor( const QString &amp; s, const QString &amp; c )</function>
+    <function specifier="non virtual">appendMessagesText( const QString &amp; s )</function>
+    <function specifier="non virtual">appendMessagesError( const QString &amp; s )</function>
+    <function access="private" specifier="non virtual">updateMessagesFont( void )</function>
+    <function access="private" specifier="non virtual">updateMessagesLimit( void )</function>
+    <function access="private" specifier="non virtual">updateMessagesCapture( void )</function>
+</functions>
+<pixmapinproject/>
+<layoutdefaults spacing="4" margin="8"/>
+</UI>
