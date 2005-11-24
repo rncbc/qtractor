@@ -440,6 +440,20 @@ qtractorFileGroupItem *qtractorFileListView::groupItem ( QListViewItem *pItem ) 
 }
 
 
+// Prompt for proper file list open.
+QStringList qtractorFileListView::openFileNames (void)
+{
+	// Ask for the filename to open...
+	QStringList files = getOpenFileNames();
+
+	// Remember recent directory...
+	if (!files.isEmpty())
+	    setRecentDir(QFileInfo(files[0]).dirPath(true));
+
+	return files;
+}
+
+
 // Open and add a new file item below the current group one.
 void qtractorFileListView::openFileSlot (void)
 {
@@ -567,6 +581,18 @@ void qtractorFileListView::timeoutSlot (void)
 			m_pDropItem->repaint();
 		}
 	}
+}
+
+
+// Recently used directory, if any.
+void qtractorFileListView::setRecentDir ( const QString& sRecentDir )
+{
+    m_sRecentDir = sRecentDir;
+}
+
+const QString& qtractorFileListView::recentDir (void) const
+{
+	return m_sRecentDir;
 }
 
 

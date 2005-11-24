@@ -61,19 +61,38 @@ qtractorOptions::qtractorOptions (void)
 
 	m_settings.endGroup(); // Options group.
 
-	// Recent file list.
-	m_settings.beginGroup("/RecentFiles");
-	recentFiles.clear();
-	for (int i = 0; i < iMaxRecentFiles; i++) {
-		QString sFilename = m_settings.readEntry("/File" + QString::number(i + 1), QString::null);
-		if (!sFilename.isEmpty())
-			recentFiles.append(sFilename);
-	}
-	m_settings.endGroup();
-
 	// Last but not least, get the default directories.
 	m_settings.beginGroup("/Default");
 	sSessionDir = m_settings.readEntry("/SessionDir", QString::null);
+	sAudioDir   = m_settings.readEntry("/AudioDir", QString::null);
+	sMidiDir    = m_settings.readEntry("/MidiDir", QString::null);
+	sInstrumentDir = m_settings.readEntry("/InstrumentDir", QString::null);
+	m_settings.endGroup();
+
+	// Instrument file list.
+	const QString sFilePrefix = "/File";
+	int iFile = 0;
+	instrumentFiles.clear();
+	m_settings.beginGroup("/InstrumentFiles");
+	for (;;) {
+		QString sFilename = m_settings.readEntry(
+			sFilePrefix + QString::number(++iFile), QString::null);
+		if (sFilename.isEmpty())
+		    break;
+		instrumentFiles.append(sFilename);
+	}
+	m_settings.endGroup();
+
+	// Recent file list.
+	iFile = 0;
+	recentFiles.clear();
+	m_settings.beginGroup("/RecentFiles");
+	while (iFile < iMaxRecentFiles) {
+		QString sFilename = m_settings.readEntry(
+			sFilePrefix + QString::number(++iFile), QString::null);
+		if (!sFilename.isEmpty())
+			recentFiles.append(sFilename);
+	}
 	m_settings.endGroup();
 
 	// Tracks widget settings.
@@ -117,15 +136,31 @@ qtractorOptions::~qtractorOptions (void)
 
 	m_settings.endGroup(); // Options group.
 
-	// Recent file list.
-	m_settings.beginGroup("/RecentFiles");
-	for (int i = 0; i < (int) recentFiles.count(); i++)
-		m_settings.writeEntry("/File" + QString::number(i + 1), recentFiles[i]);
-	m_settings.endGroup();
-
 	// Default directories.
 	m_settings.beginGroup("/Default");
 	m_settings.writeEntry("/SessionDir", sSessionDir);
+	m_settings.writeEntry("/AudioDir", sAudioDir);
+	m_settings.writeEntry("/MidiDir", sMidiDir);
+	m_settings.writeEntry("/InstrumentDir", sInstrumentDir);
+	m_settings.endGroup();
+
+	// Instrument file list.
+	const QString sFilePrefix = "/File";
+	QStringList::Iterator iter;
+	int iFile = 0;
+	m_settings.beginGroup("/InstrumentFiles");
+    for (iter = instrumentFiles.begin(); iter != instrumentFiles.end(); iter++)
+		m_settings.writeEntry(sFilePrefix + QString::number(++iFile), *iter);
+    // Cleanup old entries, if any...
+    while (!m_settings.readEntry(sFilePrefix + QString::number(++iFile)).isEmpty())
+        m_settings.removeEntry(sFilePrefix + QString::number(iFile));
+	m_settings.endGroup();
+
+	// Recent file list.
+	iFile = 0;
+	m_settings.beginGroup("/RecentFiles");
+    for (iter = recentFiles.begin(); iter != recentFiles.end(); iter++)
+		m_settings.writeEntry(sFilePrefix + QString::number(++iFile), *iter);
 	m_settings.endGroup();
 
 	// Tracks widget settings.
@@ -135,6 +170,7 @@ qtractorOptions::~qtractorOptions (void)
 
 	m_settings.endGroup();
 }
+
 
 //-------------------------------------------------------------------------
 // Settings accessor.

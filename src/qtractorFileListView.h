@@ -189,8 +189,8 @@ public:
 	// QListViewItem::rtti() return values.
 	enum ItemType { GroupItem = 1001, FileItem = 1002, ChannelItem = 1003 };
 
-	// Prompt for proper file list open (pure virtual).
-	virtual QStringList openFileNames() = 0;
+	// Prompt for proper file list open.
+	QStringList openFileNames();
 
 	// Add a new group/file item, optionally under a given group.
 	qtractorFileGroupItem *addGroupItem(const QString& sName,
@@ -205,6 +205,10 @@ public:
 	// Auto-open timer methods.
 	void setAutoOpenTimeout(int iAutoOpenTimeout);
 	int autoOpenTimeout() const;
+
+	// Recently used directory, if any.
+	void setRecentDir(const QString& sRecentDir);
+	const QString& recentDir() const;
 
 	// Elemental loader/saver...
 	bool loadElement(qtractorDocument *pDocument,
@@ -257,6 +261,9 @@ protected:
 	virtual qtractorFileListItem *createFileItem(const QString& sPath,
 		qtractorFileGroupItem *pParentItem) = 0;
 
+	// Prompt for proper file list open (pure virtual).
+	virtual QStringList getOpenFileNames() = 0;
+
 	// Drag-n-drop stuff -- reimplemented virtual methods.
 	QDragObject *dragObject();
 	void dragEnterEvent(QDragEnterEvent *pDragEnterEvent);
@@ -297,6 +304,9 @@ private:
 	QAction *m_pOpenFileAction;
 	QAction *m_pRenameItemAction;
 	QAction *m_pDeleteItemAction;
+	
+	// Last recently used directory.
+	QString m_sRecentDir;
 };
 
 

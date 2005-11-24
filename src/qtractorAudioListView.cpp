@@ -125,14 +125,14 @@ qtractorAudioListView::qtractorAudioListView (
 
 
 // Prompt for proper file list open.
-QStringList qtractorAudioListView::openFileNames (void)
+QStringList qtractorAudioListView::getOpenFileNames (void)
 {
 	// Ask for the filename to open...
 	return QFileDialog::getOpenFileNames(
-			qtractorAudioFileFactory::filters(),// Filter files.
-			QString::null,                      // Start here.
-			this, 0,                            // Parent and name (none)
-			tr("Open Audio Files") // + " - " QTRACTOR_TITLE // Caption.
+		qtractorAudioFileFactory::filters(),// Filter files.
+		recentDir(),                        // Start here.
+		this, 0,                            // Parent and name (none)
+		tr("Open Audio Files") // + " - " QTRACTOR_TITLE // Caption.
 	);
 }
 

@@ -22,6 +22,7 @@
 
 #include "qtractorAbout.h"
 #include "qtractorOptions.h"
+#include "qtractorInstrument.h"
 #include "qtractorMessages.h"
 #include "qtractorFiles.h"
 #include "qtractorTracks.h"
@@ -36,6 +37,7 @@
 
 #include "qtractorSessionForm.h"
 #include "qtractorOptionsForm.h"
+#include "qtractorInstrumentForm.h"
 
 #include <qapplication.h>
 #include <qeventloop.h>
@@ -80,6 +82,7 @@ void qtractorMainForm::init (void)
 	// Initialize some pointer references.
 	m_pOptions = NULL;
 	m_pSession = new qtractorSession();
+	m_pInstruments = new qtractorInstrumentList();
 
 	// Configure the audio file peak factory.
 	qtractorAudioPeakFactory *pAudioPeakFactory
@@ -94,8 +97,8 @@ void qtractorMainForm::init (void)
 
 	// All child forms are to be created later, not earlier than setup.
 	m_pMessages = NULL;
-	m_pFiles = NULL;
-	m_pTracks = NULL;
+	m_pFiles    = NULL;
+	m_pTracks   = NULL;
 
 	// We'll start clean.
 	m_iUntitled   = 0;
@@ -193,8 +196,10 @@ void qtractorMainForm::destroy (void)
 	//  Free some data around...
 	if (m_pSession)
 		delete m_pSession;
+	if (m_pInstruments)
+	    delete m_pInstruments;
 
-	// Finally, delete recentfiles menu.
+	// Finally, delete recent files menu.
 	if (m_pRecentFilesMenu)
 		delete m_pRecentFilesMenu;
 }
@@ -209,6 +214,9 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 	// Some child forms are to be created right now.
 	m_pMessages = new qtractorMessages(this);
 	m_pFiles = new qtractorFiles(this);
+	m_pFiles->audioListView()->setRecentDir(m_pOptions->sAudioDir);
+	m_pFiles->midiListView()->setRecentDir(m_pOptions->sMidiDir);
+
 	// Set message defaults...
 	updateMessagesFont();
 	updateMessagesLimit();
@@ -259,6 +267,12 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 	// Try to restore old window positioning.
 	m_pOptions->loadWidgetGeometry(this);
 
+	// Load instrument definition files...
+	for (QStringList::Iterator iter = m_pOptions->instrumentFiles.begin();
+	    	iter != m_pOptions->instrumentFiles.end(); ++iter) {
+		m_pInstruments->load(*iter);
+	}
+
 	// Primary startup stabilization...
 	updateRecentFilesMenu();
 
@@ -297,6 +311,11 @@ bool qtractorMainForm::queryClose (void)
 		// Some windows default fonts is here on demand too.
 		if (bQueryClose && m_pMessages)
 			m_pOptions->sMessagesFont = m_pMessages->messagesFont().toString();
+		// Save recent directories...
+		if (bQueryClose && m_pFiles) {
+			m_pOptions->sAudioDir = m_pFiles->audioListView()->recentDir();
+			m_pOptions->sMidiDir = m_pFiles->midiListView()->recentDir();
+		}
 		// Try to save current positioning.
 		if (bQueryClose) {
 			// Save decorations state.
@@ -306,6 +325,8 @@ bool qtractorMainForm::queryClose (void)
 			m_pOptions->bEditToolbar = editToolbar->isVisible();
 			m_pOptions->bTrackToolbar = trackToolbar->isVisible();
 			m_pOptions->bTransportToolbar = transportToolbar->isVisible();
+			// Save instrument definition file list...
+			m_pOptions->instrumentFiles = m_pInstruments->files();
 			// Save the dock windows state.
 			QString sDockables;
 			QTextOStream ostr(&sDockables);
@@ -409,6 +430,12 @@ qtractorOptions *qtractorMainForm::options (void)
 qtractorSession *qtractorMainForm::session (void)
 {
 	return m_pSession;
+}
+
+// The global instruments repository.
+qtractorInstrumentList *qtractorMainForm::instruments (void)
+{
+	return m_pInstruments;
 }
 
 
@@ -981,6 +1008,17 @@ void qtractorMainForm::viewRefresh (void)
 		m_pTracks->updateContents(true);
 
 	stabilizeForm();
+}
+
+
+// Show instruments dialog.
+void qtractorMainForm::viewInstruments (void)
+{
+	// Just set and show the instruments dialog...
+	qtractorInstrumentForm instrumentForm(this);
+	instrumentForm.setInstruments(m_pInstruments);
+	instrumentForm.setOptions(m_pOptions);
+	instrumentForm.exec();
 }
 
 

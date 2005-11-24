@@ -110,6 +110,7 @@
         <separator/>
         <action name="viewRefreshAction"/>
         <separator/>
+        <action name="viewInstrumentsAction"/>
         <action name="viewOptionsAction"/>
     </item>
     <item text="T&amp;ransport" name="transportMenu">
@@ -810,6 +811,29 @@
     </action>
     <action>
         <property name="name">
+            <cstring>viewInstrumentsAction</cstring>
+        </property>
+        <property name="iconSet">
+            <iconset>itemInstrument.png</iconset>
+        </property>
+        <property name="text">
+            <string>Instruments</string>
+        </property>
+        <property name="menuText">
+            <string>&amp;Instruments...</string>
+        </property>
+        <property name="toolTip">
+            <string>Instrument definitions</string>
+        </property>
+        <property name="statusTip">
+            <string>Change instrument definitions and files</string>
+        </property>
+        <property name="accel">
+            <string></string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
             <cstring>viewOptionsAction</cstring>
         </property>
         <property name="text">
@@ -1116,6 +1140,12 @@
         <slot>viewRefresh()</slot>
     </connection>
     <connection>
+        <sender>viewInstrumentsAction</sender>
+        <signal>activated()</signal>
+        <receiver>qtractorMainForm</receiver>
+        <slot>viewInstruments()</slot>
+    </connection>
+    <connection>
         <sender>viewOptionsAction</sender>
         <signal>activated()</signal>
         <receiver>qtractorMainForm</receiver>
@@ -1165,6 +1195,7 @@
     <forward>class QWorkspace;</forward>
     <forward>class QLabel;</forward>
     <forward>class qtractorOptions;</forward>
+    <forward>class qtractorInstrumentList;</forward>
     <forward>class qtractorMessages;</forward>
     <forward>class qtractorFiles;</forward>
     <forward>class qtractorSession;</forward>
@@ -1172,6 +1203,7 @@
 </forwards>
 <variables>
     <variable access="private">qtractorOptions *m_pOptions;</variable>
+    <variable access="private">qtractorInstrumentList *m_pInstruments;</variable>
     <variable access="private">qtractorMessages *m_pMessages;</variable>
     <variable access="private">qtractorFiles *m_pFiles;</variable>
     <variable access="private">qtractorSession *m_pSession;</variable>
@@ -1217,6 +1249,7 @@
     <slot specifier="non virtual">viewFiles( bool bOn )</slot>
     <slot specifier="non virtual">viewMessages( bool bOn )</slot>
     <slot specifier="non virtual">viewRefresh( void )</slot>
+    <slot specifier="non virtual">viewInstruments( void )</slot>
     <slot specifier="non virtual">viewOptions( void )</slot>
     <slot specifier="non virtual">transportRewind( void )</slot>
     <slot specifier="non virtual">transportBackward( void )</slot>
@@ -1248,6 +1281,7 @@
     <function specifier="non virtual">contextMenuEvent( QContextMenuEvent *pEvent )</function>
     <function specifier="non virtual" returnType="qtractorOptions *">options( void )</function>
     <function specifier="non virtual" returnType="qtractorSession *">session( void )</function>
+    <function specifier="non virtual" returnType="qtractorInstrumentList *">instruments( void )</function>
     <function specifier="non virtual" returnType="QString">sessionName( const QString &amp; sFilename )</function>
     <function access="private" specifier="non virtual" returnType="bool">newSession( void )</function>
     <function access="private" specifier="non virtual" returnType="bool">openSession( void )</function>

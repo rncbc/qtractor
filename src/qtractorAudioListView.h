@@ -78,14 +78,14 @@ public:
 		Path        = 5
 	};
 
-	// Prompt for proper file list open.
-	QStringList openFileNames();
-
 protected:
 
 	// File item factory method.
 	qtractorFileListItem *createFileItem(const QString& sPath,
 		qtractorFileGroupItem *pParentItem);
+
+	// Prompt for proper file list open.
+	QStringList getOpenFileNames();
 };
 
 

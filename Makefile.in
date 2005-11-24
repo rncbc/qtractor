@@ -37,10 +37,12 @@ headers = config.h \
 	src/qtractorMidiEngine.h \
 	src/qtractorDocument.h \
 	src/qtractorSessionDocument.h \
+	src/qtractorInstrument.h \
 	src/qtractorMainForm.ui.h \
 	src/qtractorSessionForm.ui.h \
 	src/qtractorTrackForm.ui.h \
-	src/qtractorOptionsForm.ui.h
+	src/qtractorOptionsForm.ui.h \
+	src/qtractorInstrumentForm.ui.h
 
 sources = src/main.cpp \
 	src/qtractorOptions.cpp \
@@ -71,7 +73,8 @@ sources = src/main.cpp \
 	src/qtractorMidiClip.cpp \
 	src/qtractorMidiEngine.cpp \
 	src/qtractorDocument.cpp \
-	src/qtractorSessionDocument.cpp
+	src/qtractorSessionDocument.cpp \
+	src/qtractorInstrument.cpp \
 
 all:	$(name)
 

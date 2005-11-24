@@ -32,7 +32,8 @@ HEADERS += ../src/qtractorAbout.h \
            ../src/qtractorMidiClip.h \
            ../src/qtractorMidiEngine.h \
            ../src/qtractorDocument.h \
-           ../src/qtractorSessionDocument.h
+           ../src/qtractorSessionDocument.h \
+           ../src/qtractorInstrument.h
 
 SOURCES += ../src/main.cpp \
            ../src/qtractorOptions.cpp \
@@ -63,12 +64,14 @@ SOURCES += ../src/main.cpp \
            ../src/qtractorMidiClip.cpp \
            ../src/qtractorMidiEngine.cpp \
            ../src/qtractorDocument.cpp \
-           ../src/qtractorSessionDocument.cpp
+           ../src/qtractorSessionDocument.cpp \
+           ../src/qtractorInstrument.cpp
 
 FORMS    = ../src/qtractorMainForm.ui \
            ../src/qtractorSessionForm.ui \
            ../src/qtractorTrackForm.ui \
-           ../src/qtractorOptionsForm.ui
+           ../src/qtractorOptionsForm.ui \
+           ../src/qtractorInstrumentForm.ui
 
 IMAGES   = ../icons/qtractor.png \
            ../icons/qtractorTracks.png \
@@ -94,10 +97,23 @@ IMAGES   = ../icons/qtractor.png \
            ../icons/transportForward.png \
            ../icons/formAccept.png \
            ../icons/formReject.png \
+           ../icons/formOpen.png \
+           ../icons/formSave.png \
+           ../icons/formRemove.png \
+           ../icons/formMoveUp.png \
+           ../icons/formMoveDown.png \
+           ../icons/formRefresh.png \
            ../icons/itemChannel.png \
            ../icons/itemFile.png \
            ../icons/itemGroup.png \
-           ../icons/itemGroupOpen.png
+           ../icons/itemGroupOpen.png \
+           ../icons/itemInstrument.png \
+           ../icons/itemPatches.png \
+           ../icons/itemNotes.png \
+           ../icons/itemControllers.png \
+           ../icons/itemRpns.png \
+           ../icons/itemNrpns.png \
+           ../icons/itemProperty.png
 
 TEMPLATE = app
 CONFIG  += qt warn_on debug console

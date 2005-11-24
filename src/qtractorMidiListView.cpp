@@ -160,15 +160,15 @@ qtractorFileListItem *qtractorMidiListView::createFileItem (
 }
 
 
-// Open and add a new file item below the current group one.
-QStringList qtractorMidiListView::openFileNames (void)
+// Prompt for proper file list open.
+QStringList qtractorMidiListView::getOpenFileNames (void)
 {
 	// Ask for the filename to open...
 	return QFileDialog::getOpenFileNames(
-			tr("MIDI Files (*.mid)"),           // Filter files.
-			QString::null,                      // Start here.
-			this, 0,                            // Parent and name (none)
-			tr("Open MIDI Files") // + " - " QTRACTOR_TITLE // Caption.
+		tr("MIDI Files (*.mid)"),   // Filter files.
+		recentDir(),                // Start here.
+		this, 0,                    // Parent and name (none)
+		tr("Open MIDI Files") // + " - " QTRACTOR_TITLE // Caption.
 	);
 }
 

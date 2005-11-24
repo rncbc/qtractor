@@ -1,0 +1,453 @@
+<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<class>qtractorInstrumentForm</class>
+<comment>qtractor - A MIDI/Audio multi-track sequencer.
+
+   Copyright (C) 2005, rncbc aka Rui Nuno Capela. All rights reserved.
+
+   This program is free software; you can redistribute it and/or
+   modify it under the terms of the GNU General Public License
+   as published by the Free Software Foundation; either version 2
+   of the License, or (at your option) any later version.
+
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+
+   You should have received a copy of the GNU General Public License
+   along with this program; if not, write to the Free Software
+   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+
+</comment>
+<author>rncbc aka Rui Nuno Capela</author>
+<widget class="QDialog">
+    <property name="name">
+        <cstring>qtractorInstrumentForm</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>593</width>
+            <height>345</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>Instruments - Qtractor</string>
+    </property>
+    <property name="icon">
+        <pixmap>itemInstrument.png</pixmap>
+    </property>
+    <hbox>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <widget class="QSplitter">
+            <property name="name">
+                <cstring>splitter1</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+            <widget class="QListView">
+                <column>
+                    <property name="text">
+                        <string>Instruments</string>
+                    </property>
+                    <property name="clickable">
+                        <bool>true</bool>
+                    </property>
+                    <property name="resizable">
+                        <bool>true</bool>
+                    </property>
+                </column>
+                <property name="name">
+                    <cstring>InstrumentsListView</cstring>
+                </property>
+                <property name="sizePolicy">
+                    <sizepolicy>
+                        <hsizetype>7</hsizetype>
+                        <vsizetype>7</vsizetype>
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                    </sizepolicy>
+                </property>
+                <property name="minimumSize">
+                    <size>
+                        <width>240</width>
+                        <height>0</height>
+                    </size>
+                </property>
+                <property name="rootIsDecorated">
+                    <bool>true</bool>
+                </property>
+            </widget>
+            <widget class="QSplitter">
+                <property name="name">
+                    <cstring>splitter2</cstring>
+                </property>
+                <property name="orientation">
+                    <enum>Vertical</enum>
+                </property>
+                <widget class="QListView">
+                    <column>
+                        <property name="text">
+                            <string>Files</string>
+                        </property>
+                        <property name="clickable">
+                            <bool>true</bool>
+                        </property>
+                        <property name="resizable">
+                            <bool>true</bool>
+                        </property>
+                    </column>
+                    <column>
+                        <property name="text">
+                            <string>Path</string>
+                        </property>
+                        <property name="clickable">
+                            <bool>true</bool>
+                        </property>
+                        <property name="resizable">
+                            <bool>true</bool>
+                        </property>
+                    </column>
+                    <property name="name">
+                        <cstring>FilesListView</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>7</hsizetype>
+                            <vsizetype>7</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="minimumSize">
+                        <size>
+                            <width>240</width>
+                            <height>0</height>
+                        </size>
+                    </property>
+                </widget>
+                <widget class="QListView">
+                    <column>
+                        <property name="text">
+                            <string>Names</string>
+                        </property>
+                        <property name="clickable">
+                            <bool>true</bool>
+                        </property>
+                        <property name="resizable">
+                            <bool>true</bool>
+                        </property>
+                    </column>
+                    <property name="name">
+                        <cstring>NamesListView</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>7</hsizetype>
+                            <vsizetype>7</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="minimumSize">
+                        <size>
+                            <width>240</width>
+                            <height>0</height>
+                        </size>
+                    </property>
+                    <property name="rootIsDecorated">
+                        <bool>true</bool>
+                    </property>
+                </widget>
+            </widget>
+        </widget>
+        <widget class="QLayoutWidget">
+            <property name="name">
+                <cstring>layout1</cstring>
+            </property>
+            <vbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>ImportPushButton</cstring>
+                    </property>
+                    <property name="minimumSize">
+                        <size>
+                            <width>0</width>
+                            <height>24</height>
+                        </size>
+                    </property>
+                    <property name="text">
+                        <string>&amp;Import...</string>
+                    </property>
+                    <property name="accel">
+                        <string>Alt+I</string>
+                    </property>
+                    <property name="iconSet">
+                        <iconset>formOpen.png</iconset>
+                    </property>
+                    <property name="toolTip" stdset="0">
+                        <string>Import from instrument file</string>
+                    </property>
+                </widget>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>RemovePushButton</cstring>
+                    </property>
+                    <property name="minimumSize">
+                        <size>
+                            <width>0</width>
+                            <height>24</height>
+                        </size>
+                    </property>
+                    <property name="text">
+                        <string>&amp;Remove</string>
+                    </property>
+                    <property name="accel">
+                        <string>Alt+R</string>
+                    </property>
+                    <property name="iconSet">
+                        <iconset>formRemove.png</iconset>
+                    </property>
+                    <property name="toolTip" stdset="0">
+                        <string>Remove instrument file</string>
+                    </property>
+                </widget>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>MoveUpPushButton</cstring>
+                    </property>
+                    <property name="minimumSize">
+                        <size>
+                            <width>0</width>
+                            <height>24</height>
+                        </size>
+                    </property>
+                    <property name="text">
+                        <string>&amp;Up</string>
+                    </property>
+                    <property name="accel">
+                        <string>Alt+U</string>
+                    </property>
+                    <property name="iconSet">
+                        <iconset>formMoveUp.png</iconset>
+                    </property>
+                    <property name="toolTip" stdset="0">
+                        <string>Move instrument file up on list order</string>
+                    </property>
+                </widget>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>MoveDownPushButton</cstring>
+                    </property>
+                    <property name="minimumSize">
+                        <size>
+                            <width>0</width>
+                            <height>24</height>
+                        </size>
+                    </property>
+                    <property name="text">
+                        <string>&amp;Down</string>
+                    </property>
+                    <property name="accel">
+                        <string>Alt+D</string>
+                    </property>
+                    <property name="iconSet">
+                        <iconset>formMoveDown.png</iconset>
+                    </property>
+                    <property name="toolTip" stdset="0">
+                        <string>Move instrument file down on list order</string>
+                    </property>
+                </widget>
+                <spacer>
+                    <property name="name">
+                        <cstring>spacer1</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Vertical</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>20</width>
+                            <height>98</height>
+                        </size>
+                    </property>
+                </spacer>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>ReloadPushButton</cstring>
+                    </property>
+                    <property name="minimumSize">
+                        <size>
+                            <width>0</width>
+                            <height>24</height>
+                        </size>
+                    </property>
+                    <property name="text">
+                        <string>R&amp;eload</string>
+                    </property>
+                    <property name="accel">
+                        <string>Alt+E</string>
+                    </property>
+                    <property name="iconSet">
+                        <iconset>formRefresh.png</iconset>
+                    </property>
+                    <property name="toolTip" stdset="0">
+                        <string>Reload all instrument files</string>
+                    </property>
+                </widget>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>ExportPushButton</cstring>
+                    </property>
+                    <property name="minimumSize">
+                        <size>
+                            <width>0</width>
+                            <height>24</height>
+                        </size>
+                    </property>
+                    <property name="text">
+                        <string>&amp;Export...</string>
+                    </property>
+                    <property name="accel">
+                        <string>Alt+E</string>
+                    </property>
+                    <property name="iconSet">
+                        <iconset>formSave.png</iconset>
+                    </property>
+                    <property name="toolTip" stdset="0">
+                        <string>Export to instrument file</string>
+                    </property>
+                </widget>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>ClosePushButton</cstring>
+                    </property>
+                    <property name="minimumSize">
+                        <size>
+                            <width>0</width>
+                            <height>24</height>
+                        </size>
+                    </property>
+                    <property name="text">
+                        <string>Close</string>
+                    </property>
+                    <property name="accel">
+                        <string></string>
+                    </property>
+                    <property name="toolTip" stdset="0">
+                        <string>Close this dialog</string>
+                    </property>
+                </widget>
+            </vbox>
+        </widget>
+    </hbox>
+</widget>
+<connections>
+    <connection>
+        <sender>FilesListView</sender>
+        <signal>selectionChanged()</signal>
+        <receiver>qtractorInstrumentForm</receiver>
+        <slot>stabilizeForm()</slot>
+    </connection>
+    <connection>
+        <sender>ImportPushButton</sender>
+        <signal>clicked()</signal>
+        <receiver>qtractorInstrumentForm</receiver>
+        <slot>importSlot()</slot>
+    </connection>
+    <connection>
+        <sender>RemovePushButton</sender>
+        <signal>clicked()</signal>
+        <receiver>qtractorInstrumentForm</receiver>
+        <slot>removeSlot()</slot>
+    </connection>
+    <connection>
+        <sender>MoveUpPushButton</sender>
+        <signal>clicked()</signal>
+        <receiver>qtractorInstrumentForm</receiver>
+        <slot>moveUpSlot()</slot>
+    </connection>
+    <connection>
+        <sender>MoveDownPushButton</sender>
+        <signal>clicked()</signal>
+        <receiver>qtractorInstrumentForm</receiver>
+        <slot>moveDownSlot()</slot>
+    </connection>
+    <connection>
+        <sender>ReloadPushButton</sender>
+        <signal>clicked()</signal>
+        <receiver>qtractorInstrumentForm</receiver>
+        <slot>reloadSlot()</slot>
+    </connection>
+    <connection>
+        <sender>ExportPushButton</sender>
+        <signal>clicked()</signal>
+        <receiver>qtractorInstrumentForm</receiver>
+        <slot>exportSlot()</slot>
+    </connection>
+    <connection>
+        <sender>ClosePushButton</sender>
+        <signal>clicked()</signal>
+        <receiver>qtractorInstrumentForm</receiver>
+        <slot>reject()</slot>
+    </connection>
+</connections>
+<tabstops>
+    <tabstop>InstrumentsListView</tabstop>
+    <tabstop>FilesListView</tabstop>
+    <tabstop>NamesListView</tabstop>
+    <tabstop>ImportPushButton</tabstop>
+    <tabstop>RemovePushButton</tabstop>
+    <tabstop>MoveUpPushButton</tabstop>
+    <tabstop>MoveDownPushButton</tabstop>
+    <tabstop>ReloadPushButton</tabstop>
+    <tabstop>ExportPushButton</tabstop>
+    <tabstop>ClosePushButton</tabstop>
+</tabstops>
+<forwards>
+    <forward>class qtractorInstrumentData;</forward>
+    <forward>class qtractorInstrumentDataList;</forward>
+    <forward>class qtractorInstrumentList;</forward>
+    <forward>class qtractorOptions;</forward>
+</forwards>
+<variables>
+    <variable access="private">qtractorInstrumentList *m_pInstruments;</variable>
+    <variable access="private">qtractorOptions *m_pOptions;</variable>
+    <variable access="private">int *m_iDirtyCount;</variable>
+</variables>
+<slots>
+    <slot specifier="non virtual">accept()</slot>
+    <slot specifier="non virtual">reject()</slot>
+    <slot specifier="non virtual">importSlot()</slot>
+    <slot specifier="non virtual">removeSlot()</slot>
+    <slot specifier="non virtual">moveUpSlot()</slot>
+    <slot specifier="non virtual">moveDownSlot()</slot>
+    <slot specifier="non virtual">reloadSlot()</slot>
+    <slot specifier="non virtual">exportSlot()</slot>
+    <slot specifier="non virtual">stabilizeForm()</slot>
+    <slot specifier="non virtual">refreshForm()</slot>
+</slots>
+<functions>
+    <function access="private" specifier="non virtual">init()</function>
+    <function access="private" specifier="non virtual">destroy()</function>
+    <function specifier="non virtual">setInstruments( qtractorInstrumentList *pInstruments )</function>
+    <function specifier="non virtual" returnType="qtractorInstrumentList *">instruments()</function>
+    <function specifier="non virtual">setOptions( qtractorOptions *pOptions )</function>
+    <function specifier="non virtual" returnType="qtractorOptions *">options()</function>
+    <function access="private" specifier="non virtual">listInstrumentData( QListViewItem *pParentItem, qtractorInstrumentData &amp; data )</function>
+    <function access="private" specifier="non virtual">listInstrumentDataList( QListViewItem *pParentItem, qtractorInstrumentDataList &amp; list, const QPixmap &amp; pixmap )</function>
+    <function access="private" specifier="non virtual" returnType="QString">bankSelMethod( int iBankSelMethod )</function>
+</functions>
+<pixmapinproject/>
+<layoutdefaults spacing="4" margin="4"/>
+</UI>
