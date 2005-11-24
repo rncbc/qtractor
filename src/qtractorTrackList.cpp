@@ -240,7 +240,8 @@ qtractorTrackList::qtractorTrackList ( qtractorTracks *pTracks,
 	QListView::addColumn(tr("S"), 20);		// qtractorTrackList::Solo
 	QListView::addColumn(tr("Channel/Bus"));// qtractorTrackList::Bus
 
-	QListView::setColumnWidthMode(qtractorTrackList::Number, QListView::Maximum);
+	QListView::setColumnAlignment(qtractorTrackList::Number, Qt::AlignHCenter);
+
 	QListView::setColumnWidthMode(qtractorTrackList::Record, QListView::Manual);
 	QListView::setColumnWidthMode(qtractorTrackList::Mute, QListView::Manual);
 	QListView::setColumnWidthMode(qtractorTrackList::Solo, QListView::Manual);

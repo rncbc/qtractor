@@ -137,7 +137,9 @@ qtractorMidiListView::qtractorMidiListView (
 	QListView::addColumn(tr("TPQN"));		// qtractorMidiListView::Resolution
 	QListView::addColumn(tr("Path"));		// qtractorMidiListView::Path
 
-	QListView::setColumnWidthMode(qtractorMidiListView::Name, QListView::Maximum);
+	QListView::setColumnAlignment(qtractorMidiListView::Format, Qt::AlignRight);
+	QListView::setColumnAlignment(qtractorMidiListView::Tracks, Qt::AlignRight);
+	QListView::setColumnAlignment(qtractorMidiListView::Resolution, Qt::AlignRight);
 
 	QListView::setColumnWidth(qtractorMidiListView::Name, 120);
 }

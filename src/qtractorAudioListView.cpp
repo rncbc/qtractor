@@ -118,7 +118,9 @@ qtractorAudioListView::qtractorAudioListView (
 	QListView::addColumn(tr("Time"));		// qtractorAudioListView::Time
 	QListView::addColumn(tr("Path"));		// qtractorAudioListView::Path
 
-	QListView::setColumnWidthMode(qtractorAudioListView::Name, QListView::Maximum);
+	QListView::setColumnAlignment(qtractorAudioListView::Channels, Qt::AlignRight);
+	QListView::setColumnAlignment(qtractorAudioListView::Frames, Qt::AlignRight);
+	QListView::setColumnAlignment(qtractorAudioListView::Rate, Qt::AlignRight);
 
 	QListView::setColumnWidth(qtractorAudioListView::Name, 120);
 }
