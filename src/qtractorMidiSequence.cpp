@@ -50,7 +50,8 @@ qtractorMidiSequence::~qtractorMidiSequence (void)
 // Sequencer reset method.
 void qtractorMidiSequence::clear (void)
 {
-	m_iChannel = 0;
+	m_iBank    = -1;
+	m_iProgram = -1;
 
 	m_noteMax  = 0;
 	m_noteMin  = 0;
@@ -69,12 +70,32 @@ void qtractorMidiSequence::addEvent ( qtractorMidiEvent *pEvent )
 
 	m_events.insertAfter(pEvent, pEventAfter);
 
-	if (pEvent->type() == qtractorMidiEvent::NOTEON) {
-		unsigned char note = pEvent->note();
-		if (m_noteMin > note || m_noteMin == 0)
-			m_noteMin = note;
-		if (m_noteMax < note || m_noteMax == 0)
-			m_noteMax = note;
+	switch (pEvent->type()) {
+		case qtractorMidiEvent::NOTEON: {
+			unsigned char note = pEvent->note();
+			if (m_noteMin > note || m_noteMin == 0)
+				m_noteMin = note;
+			if (m_noteMax < note || m_noteMax == 0)
+				m_noteMax = note;
+			break;
+		}
+		case qtractorMidiEvent::CONTROLLER: {
+			unsigned char controller = pEvent->controller();
+			if (controller == 0x00) {
+				m_iBank &= 0x00ff;	// Bank MSB.
+				m_iBank |= (int) pEvent->value() << 8;
+			} else if (controller == 0x20) {
+				m_iBank &= 0xff00;	// Bank LSB.
+				m_iBank |= (int) pEvent->value();
+			}
+			break;
+		}
+		case qtractorMidiEvent::PGMCHANGE: {
+			m_iProgram = (int) pEvent->program();
+			break;
+		}
+		default:
+			break;
 	}
 }
 

@@ -46,10 +46,13 @@ public:
 	// The main use method.
 	bool open(const QString& sFilename, int iTrackChannel = 0);
 	// Overloaded open method; reuse an already open MIDI file.
-	bool open(qtractorMidiFile *pMidiFile, int iTrackChannel = 0);
+	bool open(qtractorMidiFile *pMidiFile, int iTrackChannel = 0,
+		bool bSetTempo = false);
 
 	// Sequence properties accessors.
 	unsigned short channel() const;
+	int bank() const;
+	int program() const;
 
 	// Intra-clip frame positioning.
 	void seek(unsigned long iOffset);

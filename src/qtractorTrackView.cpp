@@ -760,8 +760,11 @@ void qtractorTrackView::contentsDropEvent (
 			if (pMidiClip) {
 				pMidiClip->setClipStart(iClipStart);
 				pMidiClip->open(pDropItem->path, pDropItem->channel);
-				if (pTrack->clips().count() < 1)
+				if (pTrack->clips().count() < 1) {
 					pTrack->setMidiChannel(pMidiClip->channel());
+					pTrack->setMidiBank(pMidiClip->bank());
+					pTrack->setMidiProgram(pMidiClip->program());
+				}
 				pTrack->addClip(pMidiClip);
 				iClipStart += pMidiClip->clipLength();
 				// Don't forget to add this one to local repository.

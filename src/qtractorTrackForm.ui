@@ -28,8 +28,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>314</width>
-            <height>230</height>
+            <width>336</width>
+            <height>258</height>
         </rect>
     </property>
     <property name="sizePolicy">
@@ -76,6 +76,12 @@
                     <verstretch>0</verstretch>
                 </sizepolicy>
             </property>
+            <property name="minimumSize">
+                <size>
+                    <width>320</width>
+                    <height>0</height>
+                </size>
+            </property>
             <property name="maximumSize">
                 <size>
                     <width>32767</width>
@@ -91,7 +97,7 @@
                 <cstring>TrackTypeGroup</cstring>
             </property>
             <property name="title">
-                <string>Type</string>
+                <string>Type / Bus</string>
             </property>
             <hbox>
                 <property name="name">
@@ -125,52 +131,13 @@
                         <string>MIDI track type</string>
                     </property>
                 </widget>
-                <spacer>
-                    <property name="name">
-                        <cstring>spacer1</cstring>
-                    </property>
-                    <property name="orientation">
-                        <enum>Horizontal</enum>
-                    </property>
-                    <property name="sizeType">
-                        <enum>Minimum</enum>
-                    </property>
-                    <property name="sizeHint">
-                        <size>
-                            <width>20</width>
-                            <height>20</height>
-                        </size>
-                    </property>
-                </spacer>
-                <widget class="QLabel">
-                    <property name="name">
-                        <cstring>BusNameTextLabel</cstring>
-                    </property>
-                    <property name="sizePolicy">
-                        <sizepolicy>
-                            <hsizetype>1</hsizetype>
-                            <vsizetype>5</vsizetype>
-                            <horstretch>0</horstretch>
-                            <verstretch>0</verstretch>
-                        </sizepolicy>
-                    </property>
-                    <property name="text">
-                        <string>&amp;Bus:</string>
-                    </property>
-                    <property name="alignment">
-                        <set>AlignVCenter|AlignRight</set>
-                    </property>
-                    <property name="buddy" stdset="0">
-                        <cstring>BusNameComboBox</cstring>
-                    </property>
-                </widget>
                 <widget class="QComboBox">
                     <property name="name">
                         <cstring>BusNameComboBox</cstring>
                     </property>
                     <property name="sizePolicy">
                         <sizepolicy>
-                            <hsizetype>7</hsizetype>
+                            <hsizetype>3</hsizetype>
                             <vsizetype>0</vsizetype>
                             <horstretch>0</horstretch>
                             <verstretch>0</verstretch>
@@ -187,26 +154,48 @@
                 <cstring>MidiGroupBox</cstring>
             </property>
             <property name="title">
-                <string>MIDI</string>
+                <string>MIDI / Instrument</string>
             </property>
-            <hbox>
+            <grid>
                 <property name="name">
                     <cstring>unnamed</cstring>
                 </property>
-                <widget class="QLabel">
+                <widget class="QLabel" row="2" column="0">
                     <property name="name">
-                        <cstring>MidiChannelTextLabel</cstring>
+                        <cstring>ProgramTextLabel</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&amp;Program:</string>
+                    </property>
+                    <property name="buddy" stdset="0">
+                        <cstring>ProgramComboBox</cstring>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="1" column="0">
+                    <property name="name">
+                        <cstring>BankTextLabel</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&amp;Bank:</string>
+                    </property>
+                    <property name="buddy" stdset="0">
+                        <cstring>BankComboBox</cstring>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="0" column="0">
+                    <property name="name">
+                        <cstring>ChannelTextLabel</cstring>
                     </property>
                     <property name="text">
                         <string>&amp;Channel:</string>
                     </property>
                     <property name="buddy" stdset="0">
-                        <cstring>MidiChannelSpinBox</cstring>
+                        <cstring>ChannelSpinBox</cstring>
                     </property>
                 </widget>
-                <widget class="QSpinBox">
+                <widget class="QSpinBox" row="0" column="1">
                     <property name="name">
-                        <cstring>MidiChannelSpinBox</cstring>
+                        <cstring>ChannelSpinBox</cstring>
                     </property>
                     <property name="maxValue">
                         <number>16</number>
@@ -218,24 +207,55 @@
                         <string>MIDI Channel (1-15)</string>
                     </property>
                 </widget>
-				<spacer>
-					<property name="name">
-						<cstring>spacer2</cstring>
-					</property>
-					<property name="orientation">
-						<enum>Horizontal</enum>
-					</property>
-					<property name="sizeType">
-						<enum>Expanding</enum>
-					</property>
-					<property name="sizeHint">
-						<size>
-							<width>150</width>
-							<height>21</height>
-						</size>
-					</property>
-				</spacer>
-            </hbox>
+                <widget class="QComboBox" row="0" column="2">
+                    <property name="name">
+                        <cstring>InstrumentComboBox</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>3</hsizetype>
+                            <vsizetype>0</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="toolTip" stdset="0">
+                        <string>MIDI Patch: Instrument</string>
+                    </property>
+                </widget>
+                <widget class="QComboBox" row="1" column="1" rowspan="1" colspan="2">
+                    <property name="name">
+                        <cstring>BankComboBox</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>3</hsizetype>
+                            <vsizetype>0</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="toolTip" stdset="0">
+                        <string>MIDI Patch: Bank</string>
+                    </property>
+                </widget>
+                <widget class="QComboBox" row="2" column="1" rowspan="1" colspan="2">
+                    <property name="name">
+                        <cstring>ProgramComboBox</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>3</hsizetype>
+                            <vsizetype>0</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="toolTip" stdset="0">
+                        <string>MIDI Patch: Program</string>
+                    </property>
+                </widget>
+            </grid>
         </widget>
         <widget class="QLayoutWidget">
             <property name="name">
@@ -293,7 +313,7 @@
         <sender>TrackNameTextEdit</sender>
         <signal>textChanged()</signal>
         <receiver>qtractorTrackForm</receiver>
-        <slot>changed()</slot>
+        <slot>trackNameChanged()</slot>
     </connection>
     <connection>
         <sender>TrackTypeGroup</sender>
@@ -301,18 +321,36 @@
         <receiver>qtractorTrackForm</receiver>
         <slot>trackTypeChanged(int)</slot>
     </connection>
-    <connection>
-        <sender>BusNameComboBox</sender>
-        <signal>activated(int)</signal>
-        <receiver>qtractorTrackForm</receiver>
-        <slot>changed()</slot>
-    </connection>
-    <connection>
-        <sender>MidiChannelSpinBox</sender>
-        <signal>valueChanged(int)</signal>
-        <receiver>qtractorTrackForm</receiver>
-        <slot>changed()</slot>
-    </connection>
+	<connection>
+		<sender>BusNameComboBox</sender>
+		<signal>activated(const QString &amp;)</signal>
+		<receiver>qtractorTrackForm</receiver>
+		<slot>busNameChanged(const QString &amp;)</slot>
+	</connection>
+	<connection>
+		<sender>ChannelSpinBox</sender>
+		<signal>valueChanged(int)</signal>
+		<receiver>qtractorTrackForm</receiver>
+		<slot>channelChanged(int)</slot>
+	</connection>
+	<connection>
+		<sender>InstrumentComboBox</sender>
+		<signal>activated(const QString &amp;)</signal>
+		<receiver>qtractorTrackForm</receiver>
+		<slot>instrumentChanged(const QString &amp;)</slot>
+	</connection>
+	<connection>
+		<sender>BankComboBox</sender>
+		<signal>activated(int)</signal>
+		<receiver>qtractorTrackForm</receiver>
+		<slot>bankChanged(int)</slot>
+	</connection>
+	<connection>
+		<sender>ProgramComboBox</sender>
+		<signal>activated(int)</signal>
+		<receiver>qtractorTrackForm</receiver>
+		<slot>programChanged(int)</slot>
+	</connection>
     <connection>
         <sender>OkPushButton</sender>
         <signal>clicked()</signal>
@@ -331,27 +369,39 @@
     <tabstop>AudioRadioButton</tabstop>
     <tabstop>MidiRadioButton</tabstop>
     <tabstop>BusNameComboBox</tabstop>
-    <tabstop>MidiChannelSpinBox</tabstop>
+    <tabstop>ChannelSpinBox</tabstop>
+    <tabstop>InstrumentComboBox</tabstop>
+    <tabstop>BankComboBox</tabstop>
+    <tabstop>ProgramComboBox</tabstop>
     <tabstop>OkPushButton</tabstop>
     <tabstop>CancelPushButton</tabstop>
 </tabstops>
 <forwards>
+	<forward>class qtractorInstrumentList;</forward>
     <forward>class qtractorTrack;</forward>
 </forwards>
 <variables>
+	<variable access="private">qtractorInstrumentList *m_pInstruments;</variable>
     <variable access="private">qtractorTrack *m_pTrack;</variable>
     <variable access="private">int m_iDirtyCount;</variable>
 </variables>
 <slots>
     <slot specifier="non virtual">accept()</slot>
     <slot specifier="non virtual">reject()</slot>
-    <slot specifier="non virtual">changed()</slot>
     <slot specifier="non virtual">stabilizeForm()</slot>
-    <slot specifier="non virtual">trackTypeChanged( int iTrackType )</slot>
+	<slot specifier="non virtual">trackNameChanged()</slot>
+	<slot specifier="non virtual">trackTypeChanged( int iTrackType )</slot>
+	<slot specifier="non virtual">busNameChanged( const QString &amp; sBusName )</slot>
+	<slot specifier="non virtual">channelChanged( int iChannel )</slot>
+	<slot specifier="non virtual">instrumentChanged( const QString &amp; sInstrumentName )</slot>
+	<slot specifier="non virtual">bankChanged( int iBankIndex )</slot>
+	<slot specifier="non virtual">programChanged( int iProgramIndex )</slot>
 </slots>
 <functions>
     <function access="private" specifier="non virtual">init()</function>
     <function access="private" specifier="non virtual">destroy()</function>
+	<function specifier="non virtual">setInstruments( qtractorInstrumentList *pInstruments )</function>
+	<function specifier="non virtual" returnType="qtractorInstrumentList *">instruments()</function>
     <function specifier="non virtual">setTrack( qtractorTrack *pTrack )</function>
     <function specifier="non virtual" returnType="qtractorTrack *">track()</function>
 </functions>

@@ -43,8 +43,8 @@ qtractorTrack::qtractorTrack ( qtractorSession *pSession, TrackType trackType )
 	m_trackType = trackType;
 	m_pBus      = NULL;
 
-	m_iMidiChannel = 0;
 	m_iMidiTag     = 0;
+	m_iMidiChannel = 0;
 
 	m_clips.setAutoDelete(true);
 
@@ -66,6 +66,9 @@ void qtractorTrack::clear (void)
 {
 	m_clips.clear();
 
+	m_iMidiBank    = -1;
+	m_iMidiProgram = -1;
+
 	m_bRecord = false;
 	m_bMute   = false;
 	m_bSolo   = false;
@@ -75,6 +78,8 @@ void qtractorTrack::clear (void)
 // Track open method.
 bool qtractorTrack::open (void)
 {
+	close();
+
 	if (m_pSession == NULL)
 		return false;
 
@@ -200,6 +205,18 @@ void qtractorTrack::setSolo ( bool bSolo )
 }
 
 
+// MIDI specific: track-tag accessors.
+void qtractorTrack::setMidiTag ( unsigned short iMidiTag )
+{
+	m_iMidiTag = iMidiTag;
+}
+
+unsigned short qtractorTrack::midiTag (void) const
+{
+	return m_iMidiTag;
+}
+
+
 // MIDI specific: channel acessors.
 void qtractorTrack::setMidiChannel ( unsigned short iMidiChannel )
 {
@@ -212,15 +229,27 @@ unsigned short qtractorTrack::midiChannel (void) const
 }
 
 
-// MIDI specific: track tag.
-void qtractorTrack::setMidiTag ( unsigned short iMidiTag )
+// MIDI specific: bank accessors.
+void qtractorTrack::setMidiBank ( int iMidiBank )
 {
-	m_iMidiTag = iMidiTag;
+	m_iMidiBank = iMidiBank;
 }
 
-unsigned short qtractorTrack::midiTag (void) const
+int qtractorTrack::midiBank (void) const
 {
-	return m_iMidiTag;
+	return m_iMidiBank;
+}
+
+
+// MIDI specific: program accessors.
+void qtractorTrack::setMidiProgram ( int iMidiProgram )
+{
+	m_iMidiProgram = iMidiProgram;
+}
+
+int qtractorTrack::midiProgram (void) const
+{
+	return m_iMidiProgram;
 }
 
 
@@ -409,6 +438,10 @@ bool qtractorTrack::loadElement ( qtractorSessionDocument *pDocument,
 					qtractorTrack::setBusName(eProp.text());
 				else if (eProp.tagName() == "midi-channel")
 					qtractorTrack::setMidiChannel(eProp.text().toUShort());
+				else if (eProp.tagName() == "midi-bank")
+					qtractorTrack::setMidiBank(eProp.text().toInt());
+				else if (eProp.tagName() == "midi-program")
+					qtractorTrack::setMidiProgram(eProp.text().toInt());
 			}
 		}
 		else
@@ -427,11 +460,6 @@ bool qtractorTrack::loadElement ( qtractorSessionDocument *pDocument,
 					qtractorTrack::setSolo(pDocument->boolFromText(eStat.text()));
 				else if (eStat.tagName() == "record")
 					qtractorTrack::setRecord(pDocument->boolFromText(eStat.text()));
-				// FIXME: These should belong to track-properties...
-				else if (eStat.tagName() == "bus")
-					qtractorTrack::setBusName(eStat.text());
-				else if (eStat.tagName() == "midi-channel")
-					qtractorTrack::setMidiChannel(eStat.text().toUShort());
 			}
 		}
 		else
@@ -504,6 +532,14 @@ bool qtractorTrack::saveElement ( qtractorSessionDocument *pDocument,
 	if (qtractorTrack::trackType() == qtractorTrack::Midi) {
 		pDocument->saveTextElement("midi-channel",
 			QString::number(qtractorTrack::midiChannel()), &eProps);
+		if (qtractorTrack::midiBank() >= 0) {
+			pDocument->saveTextElement("midi-bank",
+				QString::number(qtractorTrack::midiBank()), &eProps);
+		}
+		if (qtractorTrack::midiProgram() >= 0) {
+			pDocument->saveTextElement("midi-program",
+				QString::number(qtractorTrack::midiProgram()), &eProps);
+		}
 	}
 	pElement->appendChild(eProps);
 

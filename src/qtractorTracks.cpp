@@ -474,10 +474,6 @@ bool qtractorTracks::editTrack ( qtractorTrack *pTrack )
 	if (!trackForm.exec())
 		return false;
 
-	// Refresh track item, at least the names...
-	pTrack->close();
-	pTrackItem->setText(qtractorTrackList::Name, pTrack->trackName());
-	pTrackItem->setText(qtractorTrackList::Bus,  pTrack->busName());
 	// Reopen to assign a probable new bus...
 	if (!pTrack->open()) {
 		m_pMainForm->appendMessagesError(
@@ -486,6 +482,10 @@ bool qtractorTracks::editTrack ( qtractorTrack *pTrack )
 			.arg(pTrack->trackName())
 			.arg(pTrack->busName()));
 	}
+
+	// Refresh track item, at least the names...
+	pTrackItem->setText(qtractorTrackList::Name, pTrack->trackName());
+	pTrackItem->setText(qtractorTrackList::Bus,  pTrack->busName());
 
 	// Notify who's watching...
 	contentsChangeNotify();
@@ -610,10 +610,12 @@ bool qtractorTracks::addMidiTracks ( QStringList files )
 				= new qtractorMidiClip(pTrack);
 			pMidiClip->setClipStart(0);
 			// Time for truth...
-			if (pMidiClip->open(&file, iTrackChannel)) {
+			if (pMidiClip->open(&file, iTrackChannel, iImport == 0)) {
 				// Time to add the new track/clip into session...
 				pTrack->setTrackName(pMidiClip->clipName());
 				pTrack->setMidiChannel(pMidiClip->channel());
+				pTrack->setMidiBank(pMidiClip->bank());
+				pTrack->setMidiProgram(pMidiClip->program());
 				pTrack->addClip(pMidiClip);
 				pSession->addTrack(pTrack);
 				// And the new track list view item too...
@@ -629,16 +631,14 @@ bool qtractorTracks::addMidiTracks ( QStringList files )
 				delete pMidiClip;
 				delete pTrack;
 			}
+			// As far as the standard goes and that we'll strictly follow,
+			// only the first track/channel has some tempo/time signature...
+			if (iTrackChannel == 0)
+				iImport++;
 		}
 		// Log this successful import operation...
 		mainForm()->appendMessages(
 			tr("MIDI file import succeeded: \"%1\".").arg(sPath));
-		// Set session time properties from MIDI file...
-		if (iImport == 0) {
-			pSession->setTempo(file.tempo());
-			pSession->setBeatsPerBar(file.beatsPerBar());
-			iImport++;
-		}
 		// Make things temporarily stable...
 		qtractorSession::stabilize();
 	}
@@ -648,7 +648,6 @@ bool qtractorTracks::addMidiTracks ( QStringList files )
 	    return false;
 
 	// Maybe, just maybe, we've made things larger...
-	pSession->updateTimeScale();
 	pSession->updateSessionLength();
 	// Refresh view.
 	updateContents(true);

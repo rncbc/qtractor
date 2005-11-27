@@ -126,9 +126,9 @@ qtractorOptions *qtractorInstrumentForm::options (void)
 void qtractorInstrumentForm::importSlot (void)
 {
 	if (m_pOptions == NULL)
-	    return;
+		return;
 	if (m_pInstruments == NULL)
-	    return;
+		return;
 
 	QStringList files = QFileDialog::getOpenFileNames(
 			tr("Instrument Files (*.ins)"),     // Filter files.
@@ -182,7 +182,7 @@ void qtractorInstrumentForm::importSlot (void)
 void qtractorInstrumentForm::removeSlot (void)
 {
 	if (m_pInstruments == NULL)
-	    return;
+		return;
 
 	QListViewItem *pItem = FilesListView->selectedItem();
 	if (pItem) {
@@ -243,16 +243,16 @@ void qtractorInstrumentForm::moveDownSlot (void)
 void qtractorInstrumentForm::reloadSlot (void)
 {
 	if (m_pInstruments == NULL)
-	    return;
+		return;
 
 	// Ooops...
 	m_pInstruments->clearAll();
 
 	// Load each file in order...
-    for (QListViewItem *pItem = FilesListView->firstChild();
+	for (QListViewItem *pItem = FilesListView->firstChild();
 			pItem; pItem = pItem->nextSibling()) {
-        m_pInstruments->load(pItem->text(1));
-    }
+		m_pInstruments->load(pItem->text(1));
+	}
 	// Not dirty anymore...
 	m_iDirtyCount = 0;
 
@@ -265,9 +265,9 @@ void qtractorInstrumentForm::reloadSlot (void)
 void qtractorInstrumentForm::exportSlot (void)
 {
 	if (m_pOptions == NULL)
-	    return;
+		return;
 	if (m_pInstruments == NULL)
-	    return;
+		return;
 
 	QString sPath = QFileDialog::getSaveFileName(
 			m_pOptions->sInstrumentDir,         // Start here.
@@ -279,22 +279,25 @@ void qtractorInstrumentForm::exportSlot (void)
 	if (sPath.isEmpty())
 		return;
 
-    // Check if already exists...
-    QFileInfo info(sPath);
-    if (info.exists()) {
-        if (QMessageBox::warning(this,
+	// Enforce .ins extension...
+	if (QFileInfo(sPath).extension().isEmpty())
+		sPath += ".ins";
+
+	// Check if already exists...
+	if (QFileInfo(sPath).exists()) {
+		if (QMessageBox::warning(this,
 			tr("Warning") + " - " QTRACTOR_TITLE,
-            tr("The instrument file already exists:\n\n"
-               "\"%1\"\n\n"
-               "Do you want to replace it?")
-               .arg(sPath),
-            tr("Replace"), tr("Cancel")) > 0)
-            return;
-    }
+			tr("The instrument file already exists:\n\n"
+			"\"%1\"\n\n"
+			"Do you want to replace it?")
+			.arg(sPath),
+			tr("Replace"), tr("Cancel")) > 0)
+			return;
+	}
 
 	// Just save the whole bunch...
 	if (m_pInstruments->save(sPath))
-		m_pOptions->sInstrumentDir = info.dirPath(true);
+		m_pOptions->sInstrumentDir = QFileInfo(sPath).dirPath(true);
 }
 
 
@@ -303,37 +306,37 @@ void qtractorInstrumentForm::accept (void)
 {
 	// If we're dirty do a complete and final reload...
 	if (m_iDirtyCount > 0)
-	    reloadSlot();
+		reloadSlot();
 
-    // Just go with dialog acceptance.
-    QDialog::accept();
+	// Just go with dialog acceptance.
+	QDialog::accept();
 }
 
 
 // Reject settings (Cancel button slot).
 void qtractorInstrumentForm::reject (void)
 {
-    bool bReject = true;
+	bool bReject = true;
 
-    // Check if there's any pending changes...
-    if (m_iDirtyCount > 0) {
-        switch (QMessageBox::warning(this,
+	// Check if there's any pending changes...
+	if (m_iDirtyCount > 0) {
+		switch (QMessageBox::warning(this,
 			tr("Warning") + " - " QTRACTOR_TITLE,
-            tr("Instrument settings have been changed.") + "\n\n" +
-            tr("Do you want to apply the changes?"),
-            tr("Apply"), tr("Discard"), tr("Cancel"))) {
-        case 0:     // Apply...
-            accept();
-            return;
-        case 1:     // Discard
-            break;
-        default:    // Cancel.
-            bReject = false;
-        }
-    }
+			tr("Instrument settings have been changed.") + "\n\n" +
+			tr("Do you want to apply the changes?"),
+			tr("Apply"), tr("Discard"), tr("Cancel"))) {
+		case 0:     // Apply...
+			accept();
+			return;
+		case 1:     // Discard
+			break;
+		default:    // Cancel.
+			bReject = false;
+		}
+	}
 
-    if (bReject)
-        QDialog::reject();
+	if (bReject)
+		QDialog::reject();
 }
 
 
@@ -363,7 +366,7 @@ void qtractorInstrumentForm::refreshForm (void)
 	FilesListView->clear();
 	QListViewItem *pFileItem = NULL;
 	for (QStringList::ConstIterator iter = m_pInstruments->files().begin();
-	        iter != m_pInstruments->files().end(); ++iter) {
+			iter != m_pInstruments->files().end(); ++iter) {
 		const QString& sPath = *iter;
 		pFileItem = new QListViewItem(FilesListView, pFileItem);
 		pFileItem->setPixmap(0, QPixmap::fromMimeSource("itemFile.png"));

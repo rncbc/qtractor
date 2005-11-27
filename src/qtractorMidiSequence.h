@@ -48,10 +48,18 @@ public:
 	// Sequence/track name accessors.
 	void setName(const QString& sName) { m_sName = sName; }
 	const QString& name() const { return m_sName; }
-	
+
 	// Sequence/track channel accessors.
 	void setChannel(unsigned short iChannel) { m_iChannel = (iChannel & 0x0f); }
 	unsigned short channel() const { return m_iChannel; }
+
+	// Sequence/track bank accessors (optional).
+	void setBank(int iBank) { m_iBank = iBank; }
+	int bank() const { return m_iBank; }
+
+	// Sequence/track prog accessors (optional).
+	void setProgram(int iProgram) { m_iProgram = iProgram; }
+	int program() const { return m_iProgram; }
 
 	// Sequence/track resolution accessors.
 	void setTicksPerBeat(unsigned short iTicksPerBeat)
@@ -80,6 +88,9 @@ private:
 	QString        m_sName;
 	unsigned short m_iChannel;
 	unsigned short m_iTicksPerBeat;
+	// Sequence/track optional properties.
+	int            m_iBank;
+	int            m_iProgram;
 	// Statictical helper variables.
 	unsigned char  m_noteMin;
 	unsigned char  m_noteMax;

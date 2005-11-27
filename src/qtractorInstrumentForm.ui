@@ -449,5 +449,5 @@
     <function access="private" specifier="non virtual" returnType="QString">bankSelMethod( int iBankSelMethod )</function>
 </functions>
 <pixmapinproject/>
-<layoutdefaults spacing="4" margin="4"/>
+<layoutdefaults spacing="4" margin="8"/>
 </UI>

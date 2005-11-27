@@ -84,13 +84,21 @@ public:
 	void setSolo(bool bSolo);
 	bool isSolo() const;
 
+	// MIDI specific: track-tag accessors.
+	void setMidiTag(unsigned short iMidiTag);
+	unsigned short midiTag() const;
+
 	// MIDI specific: channel acessors.
 	void setMidiChannel(unsigned short iMidiChannel);
 	unsigned short midiChannel() const;
 
-	// MIDI specific: track tagacessors.
-	void setMidiTag(unsigned short iMidiTag);
-	unsigned short midiTag() const;
+	// MIDI specific: bank acessors (optional).
+	void setMidiBank(int iMidiBank);
+	int midiBank() const;
+
+	// MIDI specific: program acessors (optional).
+	void setMidiProgram(int iMidiProgram);
+	int midiProgram() const;
 
 	// Assigned bus name accessors.
 	void setBusName(const QString& sBusName);
@@ -144,8 +152,11 @@ private:
 	bool m_bRecord;                 // Record status.
 	bool m_bSolo;                   // Solo status.
 
-	unsigned short m_iMidiChannel;  // MIDI specific: channel;
 	unsigned short m_iMidiTag;      // MIDI specific: track-tag;
+	unsigned short m_iMidiChannel;  // MIDI specific: channel;
+
+	int m_iMidiBank;                // MIDI specific: bank (optional);
+	int m_iMidiProgram;             // MIDI specific: program (optional);
 
 	QString      m_sBusName;        // Assigned bus name.
 	qtractorBus *m_pBus;            // Track assigned bus.

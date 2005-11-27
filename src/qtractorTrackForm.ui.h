@@ -23,6 +23,7 @@
 #include "qtractorAbout.h"
 #include "qtractorTrack.h"
 #include "qtractorSession.h"
+#include "qtractorInstrument.h"
 
 #include "qtractorAudioEngine.h"
 #include "qtractorMidiEngine.h"
@@ -34,6 +35,7 @@
 void qtractorTrackForm::init (void)
 {
 	// No settings descriptor initially (the caller will set it).
+	m_pInstruments = NULL;
 	m_pTrack = NULL;
 
 	// Initialize dirty control state.
@@ -47,6 +49,20 @@ void qtractorTrackForm::init (void)
 // Kind of destructor.
 void qtractorTrackForm::destroy (void)
 {
+}
+
+
+// Instrument list accessors.
+void qtractorTrackForm::setInstruments (
+	qtractorInstrumentList *pInstruments )
+{
+	m_pInstruments = pInstruments;
+}
+
+
+qtractorInstrumentList *qtractorTrackForm::instruments (void)
+{
+	return m_pInstruments;
 }
 
 
@@ -73,7 +89,7 @@ void qtractorTrackForm::setTrack ( qtractorTrack *pTrack )
 	trackTypeChanged(iTrackType);
 	if (!m_pTrack->busName().isEmpty())
 		BusNameComboBox->setCurrentText(m_pTrack->busName());
-	MidiChannelSpinBox->setValue(m_pTrack->midiChannel() + 1);
+	ChannelSpinBox->setValue(m_pTrack->midiChannel() + 1);
 	// Backup clean.
 	m_iDirtyCount = 0;
 
@@ -110,7 +126,7 @@ void qtractorTrackForm::accept (void)
 			break;
 		}
 		m_pTrack->setBusName(BusNameComboBox->currentText());
-		m_pTrack->setMidiChannel(MidiChannelSpinBox->value() - 1);
+		m_pTrack->setMidiChannel(ChannelSpinBox->value() - 1);
 		// Reset dirty flag.
 		m_iDirtyCount = 0;
 	}
@@ -147,20 +163,20 @@ void qtractorTrackForm::reject (void)
 }
 
 
-// Dirty up settings.
-void qtractorTrackForm::changed (void)
-{
-	m_iDirtyCount++;
-	stabilizeForm();
-}
-
-
 // Stabilize current form state.
 void qtractorTrackForm::stabilizeForm (void)
 {
 	bool bValid = (m_iDirtyCount > 0);
 	bValid = bValid && !TrackNameTextEdit->text().isEmpty();
 	OkPushButton->setEnabled(bValid);
+}
+
+
+// Make changes due to track name.
+void qtractorTrackForm::trackNameChanged (void)
+{
+	m_iDirtyCount++;
+	stabilizeForm();
 }
 
 
@@ -188,6 +204,46 @@ void qtractorTrackForm::trackTypeChanged ( int iTrackType )
 		}
 	}
 
+	m_iDirtyCount++;
+	stabilizeForm();
+}
+
+
+// Make changes due to bus name.
+void qtractorTrackForm::busNameChanged ( const QString& sBusName )
+{
+	m_iDirtyCount++;
+	stabilizeForm();
+}
+
+
+// Make changes due to MIDI channel.
+void qtractorTrackForm::channelChanged ( int iChannel )
+{
+	m_iDirtyCount++;
+	stabilizeForm();
+}
+
+
+// Make changes due to MIDI instrument.
+void qtractorTrackForm::instrumentChanged( const QString& sInstrumentName )
+{
+	m_iDirtyCount++;
+	stabilizeForm();
+}
+
+
+// Make changes due to MIDI bank.
+void qtractorTrackForm::bankChanged( int iBankIndex )
+{
+	m_iDirtyCount++;
+	stabilizeForm();
+}
+
+
+// Make changes due to MIDI program.
+void qtractorTrackForm::programChanged( int iProgramIndex )
+{
 	m_iDirtyCount++;
 	stabilizeForm();
 }

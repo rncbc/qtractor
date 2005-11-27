@@ -260,7 +260,7 @@ bool qtractorMidiFile::readTrack ( qtractorMidiSequence *pSeq,
 			// Check if its channel filtered...
 			if ((iChannelFilter & 0xf0) || (iChannelFilter == iChannel)) {
 				// Create the new event...
-				pEvent = new qtractorMidiEvent(time, type, data1);
+				pEvent = new qtractorMidiEvent(time, type, data1, data2);
 				pSeq->addEvent(pEvent);
 				pSeq->setChannel(iChannel);
 			}

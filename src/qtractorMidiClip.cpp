@@ -64,7 +64,8 @@ bool qtractorMidiClip::open ( const QString& sFilename, int iTrackChannel )
 
 
 // Overloaded open method; reuse an already open MIDI file.
-bool qtractorMidiClip::open ( qtractorMidiFile *pMidiFile, int iTrackChannel )
+bool qtractorMidiClip::open ( qtractorMidiFile *pMidiFile, int iTrackChannel,
+	bool bSetTempo )
 {
 	if (track() == NULL)
 		return false;
@@ -79,6 +80,14 @@ bool qtractorMidiClip::open ( qtractorMidiFile *pMidiFile, int iTrackChannel )
 	// Read the event sequence in...
 	if (!pMidiFile->readTrack(m_pSeq, iTrackChannel))
 		return false;
+
+	// On demand, set session time properties from MIDI file...
+	if (bSetTempo) {
+		pSession->setTempo(pMidiFile->tempo());
+		pSession->setBeatsPerBar(pMidiFile->beatsPerBar());
+		pSession->updateTimeScale();
+	}
+
 	// We must have events, otherwise this clip is of now use...
 	if (m_pSeq->events().count() < 1)
 	    return false;
@@ -127,6 +136,16 @@ void qtractorMidiClip::ClipCursor::seek ( qtractorMidiSequence *pSeq,
 unsigned short qtractorMidiClip::channel (void) const
 {
 	return m_pSeq->channel();
+}
+
+int qtractorMidiClip::bank (void) const
+{
+	return m_pSeq->bank();
+}
+
+int qtractorMidiClip::program (void) const
+{
+	return m_pSeq->program();
 }
 
 
