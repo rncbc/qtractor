@@ -57,6 +57,8 @@ void qtractorTrackForm::setInstruments (
 	qtractorInstrumentList *pInstruments )
 {
 	m_pInstruments = pInstruments;
+	
+	updateInstruments();
 }
 
 
@@ -169,6 +171,21 @@ void qtractorTrackForm::stabilizeForm (void)
 	bool bValid = (m_iDirtyCount > 0);
 	bValid = bValid && !TrackNameTextEdit->text().isEmpty();
 	OkPushButton->setEnabled(bValid);
+}
+
+
+// Refresh instrument list.
+void qtractorTrackForm::updateInstruments (void)
+{
+	if (m_pInstruments == NULL)
+	    return;
+
+	InstrumentComboBox->clear();
+	const QPixmap& pixmap = QPixmap::fromMimeSource("itemInstrument.png");
+	for (qtractorInstrumentList::Iterator iter = m_pInstruments->begin();
+			iter != m_pInstruments->end(); ++iter) {
+		InstrumentComboBox->insertItem(pixmap, iter.data().instrumentName());
+	}
 }
 
 

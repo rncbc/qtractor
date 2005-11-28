@@ -404,6 +404,7 @@
 	<function specifier="non virtual" returnType="qtractorInstrumentList *">instruments()</function>
     <function specifier="non virtual">setTrack( qtractorTrack *pTrack )</function>
     <function specifier="non virtual" returnType="qtractorTrack *">track()</function>
+    <function specifier="non virtual">updateInstruments()</function>
 </functions>
 <pixmapinproject/>
 <layoutdefaults spacing="4" margin="8"/>

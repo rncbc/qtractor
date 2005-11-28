@@ -193,7 +193,7 @@ void qtractorTrackView::updateContentsWidth (void)
 	qtractorSession *pSession = m_pTracks->session();
 	if (pSession) {
 		iContentsWidth = pSession->pixelFromFrame(pSession->sessionLength())
-			+ pSession->pixelFromBeat(4 * pSession->beatsPerBar());
+			+ pSession->pixelFromBeat(2 * pSession->beatsPerBar());
 	}
 
 #ifdef CONFIG_DEBUG
