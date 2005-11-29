@@ -515,8 +515,10 @@ bool qtractorMainForm::saveSession ( bool bPrompt )
 	// Ask for the file to save, if there's none...
 	if (bPrompt || sFilename.isEmpty()) {
 		// If none is given, assume default directory.
-		if (sFilename.isEmpty())
-			sFilename = m_pOptions->sSessionDir;
+		if (sFilename.isEmpty()) {
+			sFilename = QFileInfo(m_pOptions->sSessionDir,
+				m_pSession->sessionName()).filePath();
+		}
 		// Prompt the guy...
 		sFilename = QFileDialog::getSaveFileName(
 			sFilename,                              // Start here.

@@ -430,7 +430,7 @@ bool qtractorTrack::loadElement ( qtractorSessionDocument *pDocument,
 			for (QDomNode nProp = eChild.firstChild();
 					!nProp.isNull();
 						nProp = nProp.nextSibling()) {
-				// Convert state node to element...
+				// Convert property node to element...
 				QDomElement eProp = nProp.toElement();
 				if (eProp.isNull())
 					continue;

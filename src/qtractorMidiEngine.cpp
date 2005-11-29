@@ -602,6 +602,18 @@ bool qtractorMidiEngine::loadElement ( qtractorSessionDocument *pDocument,
 			qtractorMidiBus *pMidiBus
 				= new qtractorMidiBus(sBusName, busMode);
 			qtractorMidiEngine::addBus(pMidiBus);
+			// Load bus properties...
+			for (QDomNode nProp = eChild.firstChild();
+					!nProp.isNull();
+						nProp = nProp.nextSibling()) {
+				// Convert node to element...
+				QDomElement eProp = nProp.toElement();
+				if (eProp.isNull())
+					continue;
+				// Load map elements (non-critical)...
+				if (eProp.tagName() == "midi-map")
+					pMidiBus->loadElement(pDocument, &eProp);
+			}
 		}
 	}
 
@@ -625,6 +637,12 @@ bool qtractorMidiEngine::saveElement ( qtractorSessionDocument *pDocument,
 				pMidiBus->busName());
 			eMidiBus.setAttribute("mode",
 				pDocument->saveBusMode(pMidiBus->busMode()));
+			// Create the map element...
+			QDomElement eMidiMap
+				= pDocument->document()->createElement("midi-map");
+			pMidiBus->saveElement(pDocument, &eMidiMap);
+			// Add this clip...
+			eMidiBus.appendChild(eMidiMap);
 			pElement->appendChild(eMidiBus);
 		}
 	}
@@ -684,6 +702,77 @@ bool qtractorMidiBus::open (void)
 void qtractorMidiBus::close (void)
 {
 	// WTF?...
+}
+
+
+// Document element methods.
+bool qtractorMidiBus::loadElement ( qtractorSessionDocument * /* pDocument */,
+	QDomElement *pElement )
+{
+	m_map.clear();
+
+	// Load map items...
+	for (QDomNode nChild = pElement->firstChild();
+			!nChild.isNull();
+				nChild = nChild.nextSibling()) {
+
+		// Convert node to element...
+		QDomElement eChild = nChild.toElement();
+		if (eChild.isNull())
+			continue;
+
+		// Load (other) track properties..
+		if (eChild.tagName() == "midi-patch") {
+			Patch patch;
+			unsigned short iChannel = eChild.attribute("channel").toUShort();
+			for (QDomNode nPatch = eChild.firstChild();
+					!nPatch.isNull();
+						nPatch = nPatch.nextSibling()) {
+				// Convert patch node to element...
+				QDomElement ePatch = nPatch.toElement();
+				if (ePatch.isNull())
+					continue;
+				if (ePatch.tagName() == "midi-instrument")
+					patch.name = ePatch.text();
+				else if (ePatch.tagName() == "midi-bank")
+					patch.bank = ePatch.text().toInt();
+				else if (ePatch.tagName() == "midi-program")
+					patch.prog = ePatch.text().toInt();
+			}
+			// Add this one to map...
+			m_map[iChannel & 0x0f] = patch;
+		}
+	}
+
+	return true;
+}
+
+
+bool qtractorMidiBus::saveElement ( qtractorSessionDocument *pDocument,
+	QDomElement *pElement )
+{
+	// Save map items...
+	QMap<int, Patch>::Iterator iter;
+	for (iter = m_map.begin(); iter != m_map.end(); ++iter) {
+		const Patch& patch = iter.data();
+		QDomElement ePatch = pDocument->document()->createElement("midi-patch");
+		ePatch.setAttribute("channel", QString::number(iter.key()));
+		if (!patch.name.isEmpty()) {
+			pDocument->saveTextElement("midi-instrument",
+				patch.name, &ePatch);
+		}
+		if (patch.bank >= 0) {
+			pDocument->saveTextElement("midi-bank",
+				QString::number(patch.bank), &ePatch);
+		}
+		if (patch.prog >= 0) {
+			pDocument->saveTextElement("midi-program",
+				QString::number(patch.prog), &ePatch);
+		}
+		pElement->appendChild(ePatch);
+	}
+
+	return true;
 }
 
 

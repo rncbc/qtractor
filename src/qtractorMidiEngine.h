@@ -24,6 +24,8 @@
 
 #include "qtractorEngine.h"
 
+#include <qmap.h>
+
 #include <alsa/asoundlib.h>
 
 // Forward declarations.
@@ -109,10 +111,34 @@ public:
 	bool open();
 	void close();
 
+	// Channel map payload.
+	struct Patch
+	{
+		// Default payload constructor.
+		Patch() : bank(-1), prog(-1) {}
+		// Payload members.
+		QString name;
+		int     bank;
+		int     prog;
+	};
+
+	// Channel map accessor.
+	Patch& patch(unsigned short iChannel)
+		{ return m_map[iChannel & 0x0f]; }
+
+	// Document element methods.
+	bool loadElement(qtractorSessionDocument *pDocument,
+		QDomElement *pElement);
+	bool saveElement(qtractorSessionDocument *pDocument,
+		QDomElement *pElement);
+
 private:
 
 	// Instance variables.
 	int m_iAlsaPort;
+
+	// Channel mapper.
+ 	QMap<int, Patch> m_map;
 };
 
 
