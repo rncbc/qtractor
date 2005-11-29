@@ -1505,12 +1505,8 @@ void qtractorMainForm::addAudioFile  ( const QString& sFilename )
 
 
 // Audio file activation slot funtion.
-void qtractorMainForm::activateAudioFile  ( const QString& sFilename )
+void qtractorMainForm::activateAudioFile  ( const QString& /* sFilename */ )
 {
-#ifdef CONFIG_DEBUG
-	appendMessages("qtractorMainForm::activateAudioFile(\"" + sFilename + "\")");
-#endif
-
 	//
 	// TODO: Activate the just selected audio file...
 	//
@@ -1535,12 +1531,8 @@ void qtractorMainForm::addMidiFile  ( const QString& sFilename )
 
 
 // MIDI file activation slot funtion.
-void qtractorMainForm::activateMidiFile  ( const QString& sFilename )
+void qtractorMainForm::activateMidiFile  ( const QString& /* sFilename */ )
 {
-#ifdef CONFIG_DEBUG
-	appendMessages("qtractorMainForm::activateMidiFile(\"" + sFilename + "\")");
-#endif
-
 	//
 	// TODO: Activate the just selected MIDI file...
 	//

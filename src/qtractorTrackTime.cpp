@@ -67,12 +67,8 @@ void qtractorTrackTime::updateContents (void)
 
 
 // (Re)create the complete track view pixmap.
-void qtractorTrackTime::updatePixmap ( int cx, int cy )
+void qtractorTrackTime::updatePixmap ( int cx, int /* cy */)
 {
-#ifdef CONFIG_DEBUG
-	fprintf(stderr, "qtractorTrackTime::updatePixmap(cx=%d, cy=%d)\n", cx, cy);
-#endif
-
 	const QColorGroup& cg = QScrollView::colorGroup();
 
 #if 0

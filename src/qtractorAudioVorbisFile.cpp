@@ -84,7 +84,8 @@ bool qtractorAudioVorbisFile::open ( const char *pszName, int iMode )
 
 
 // Read method.
-int qtractorAudioVorbisFile::read ( float **ppFrames, unsigned int iFrames )
+int qtractorAudioVorbisFile::read ( float **ppFrames,
+	unsigned int iFrames )
 {
 #ifdef DEBUG_0
 	fprintf(stderr, "qtractorAudioVorbisFile::read(%p, %d)", ppFrames, iFrames);
@@ -107,11 +108,9 @@ int qtractorAudioVorbisFile::read ( float **ppFrames, unsigned int iFrames )
 
 
 // Write method.
-int qtractorAudioVorbisFile::write ( float **ppFrames, unsigned int iFrames )
+int qtractorAudioVorbisFile::write ( float ** /* ppFrames */,
+	unsigned int /* iFrames */ )
 {
-#ifdef DEBUG_0
-	fprintf(stderr, "qtractorAudioVorbisFile::write(%p, %d)\n", ppFrames, iFrames);
-#endif
 	return 0;
 }
 

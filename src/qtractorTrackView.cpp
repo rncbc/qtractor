@@ -273,10 +273,6 @@ void qtractorTrackView::resizeEvent ( QResizeEvent *pResizeEvent )
 // (Re)create the complete track view pixmap.
 void qtractorTrackView::updatePixmap ( int cx, int cy )
 {
-#ifdef CONFIG_DEBUG
-	fprintf(stderr, "qtractorTrackView::updatePixmap(cx=%d, cy=%d)\n", cx, cy);
-#endif
-
 #if 0
 	QWidget *pViewport = QScrollView::viewport();
 	int w = pViewport->width()  + 2;

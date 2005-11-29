@@ -333,7 +333,7 @@ bool qtractorMidiFile::readTrack ( qtractorMidiSequence *pSeq,
 
 
 // Sequence/track writer.
-bool qtractorMidiFile::writeTrack ( qtractorMidiSequence *pSeq )
+bool qtractorMidiFile::writeTrack ( qtractorMidiSequence * /* pSeq */ )
 {
 	if (m_pFile == NULL)
 		return false;
