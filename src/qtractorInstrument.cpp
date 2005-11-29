@@ -31,6 +31,16 @@
 // class qtractorInstrument -- instrument definition instance class.
 //
 
+// Retrieve patch/program list for given bank address.
+qtractorInstrumentData& qtractorInstrument::patch ( int iBank ) const
+{
+	if (m_pData->patches.contains(iBank))
+		return m_pData->patches[iBank];
+
+	return m_pData->patches[-1];
+}
+
+
 // Retrieve key/notes list for given (bank, prog) pair.
 qtractorInstrumentData& qtractorInstrument::notes ( int iBank, int iProg ) const
 {

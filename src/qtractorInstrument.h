@@ -169,8 +169,7 @@ public:
 
 	// Patch banks accessors.
 	qtractorInstrumentPatches& patches() { return m_pData->patches; }
-	qtractorInstrumentData& patch(int iBank)
-		{ return m_pData->patches[iBank]; }
+	qtractorInstrumentData& patch(int iBank) const;
 	void setPatch(int iBank, const qtractorInstrumentData& patch)
 		{ m_pData->patches[iBank] = patch; }
 

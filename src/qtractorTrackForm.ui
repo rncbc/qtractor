@@ -162,13 +162,13 @@
                 </property>
                 <widget class="QLabel" row="2" column="0">
                     <property name="name">
-                        <cstring>ProgramTextLabel</cstring>
+                        <cstring>ProgTextLabel</cstring>
                     </property>
                     <property name="text">
                         <string>&amp;Program:</string>
                     </property>
                     <property name="buddy" stdset="0">
-                        <cstring>ProgramComboBox</cstring>
+                        <cstring>ProgComboBox</cstring>
                     </property>
                 </widget>
                 <widget class="QLabel" row="1" column="0">
@@ -241,7 +241,7 @@
                 </widget>
                 <widget class="QComboBox" row="2" column="1" rowspan="1" colspan="2">
                     <property name="name">
-                        <cstring>ProgramComboBox</cstring>
+                        <cstring>ProgComboBox</cstring>
                     </property>
                     <property name="sizePolicy">
                         <sizepolicy>
@@ -346,10 +346,10 @@
 		<slot>bankChanged(int)</slot>
 	</connection>
 	<connection>
-		<sender>ProgramComboBox</sender>
+		<sender>ProgComboBox</sender>
 		<signal>activated(int)</signal>
 		<receiver>qtractorTrackForm</receiver>
-		<slot>programChanged(int)</slot>
+		<slot>progChanged(int)</slot>
 	</connection>
     <connection>
         <sender>OkPushButton</sender>
@@ -372,17 +372,23 @@
     <tabstop>ChannelSpinBox</tabstop>
     <tabstop>InstrumentComboBox</tabstop>
     <tabstop>BankComboBox</tabstop>
-    <tabstop>ProgramComboBox</tabstop>
+    <tabstop>ProgComboBox</tabstop>
     <tabstop>OkPushButton</tabstop>
     <tabstop>CancelPushButton</tabstop>
 </tabstops>
+<includes>
+    <include location="global" impldecl="in declaration">qmap.h</include>
+</includes>
 <forwards>
 	<forward>class qtractorInstrumentList;</forward>
     <forward>class qtractorTrack;</forward>
+	<forward>class qtractorMidiBus;</forward>
 </forwards>
 <variables>
 	<variable access="private">qtractorInstrumentList *m_pInstruments;</variable>
     <variable access="private">qtractorTrack *m_pTrack;</variable>
+    <variable access="private">QMap &lt; int, int &gt; m_banks;</variable>
+    <variable access="private">QMap &lt; int, int &gt; m_progs;</variable>
     <variable access="private">int m_iDirtyCount;</variable>
 </variables>
 <slots>
@@ -395,7 +401,7 @@
 	<slot specifier="non virtual">channelChanged( int iChannel )</slot>
 	<slot specifier="non virtual">instrumentChanged( const QString &amp; sInstrumentName )</slot>
 	<slot specifier="non virtual">bankChanged( int iBankIndex )</slot>
-	<slot specifier="non virtual">programChanged( int iProgramIndex )</slot>
+	<slot specifier="non virtual">progChanged( int iProgIndex )</slot>
 </slots>
 <functions>
     <function access="private" specifier="non virtual">init()</function>
@@ -404,7 +410,11 @@
 	<function specifier="non virtual" returnType="qtractorInstrumentList *">instruments()</function>
     <function specifier="non virtual">setTrack( qtractorTrack *pTrack )</function>
     <function specifier="non virtual" returnType="qtractorTrack *">track()</function>
+	<function specifier="non virtual" returnType="qtractorMidiBus *">midiBus()</function>
     <function specifier="non virtual">updateInstruments()</function>
+    <function specifier="non virtual">updateChannel( int iChannel )</function>
+    <function specifier="non virtual">updatePatches( const QString &amp; sInstrumentName, int iBank, int iProg )</function>
+    <function specifier="non virtual">updateBanks( const QString &amp; sInstrumentName, int iBank, int iProg )</function>
 </functions>
 <pixmapinproject/>
 <layoutdefaults spacing="4" margin="8"/>
