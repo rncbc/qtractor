@@ -413,8 +413,8 @@
 	<function specifier="non virtual" returnType="qtractorMidiBus *">midiBus()</function>
     <function specifier="non virtual">updateInstruments()</function>
     <function specifier="non virtual">updateChannel( int iChannel )</function>
-    <function specifier="non virtual">updatePatches( const QString &amp; sInstrumentName, int iBank, int iProg )</function>
     <function specifier="non virtual">updateBanks( const QString &amp; sInstrumentName, int iBank, int iProg )</function>
+    <function specifier="non virtual">updatePrograms( const QString &amp; sInstrumentName, int iBank, int iProg )</function>
 </functions>
 <pixmapinproject/>
 <layoutdefaults spacing="4" margin="8"/>

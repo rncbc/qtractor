@@ -80,6 +80,9 @@ public:
 
 	unsigned int count() const { return m_pData->map.count(); }
 
+	bool contains(int iKey) const
+		{ return m_pData->map.contains(iKey); }
+
 protected:
 
 	// Copy/clone method.

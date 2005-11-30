@@ -95,7 +95,7 @@ void qtractorTrackForm::setTrack ( qtractorTrack *pTrack )
 	ChannelSpinBox->setValue(m_pTrack->midiChannel() + 1);
 
 	// Make dependant widgets get real...
-	updateBanks(InstrumentComboBox->currentText(),
+	updatePrograms(InstrumentComboBox->currentText(),
 		m_pTrack->midiBank(), m_pTrack->midiProgram());
 
 	// Backup clean.
@@ -209,6 +209,10 @@ void qtractorTrackForm::updateInstruments (void)
 // Refresh channel instrument banks list.
 void qtractorTrackForm::updateChannel ( int iChannel )
 {
+	// Regular channel offset
+	if (--iChannel < 0)
+	    return;
+
 	// MIDI bus...
 	qtractorMidiBus *pMidiBus = midiBus();
 	if (pMidiBus == NULL)
@@ -230,12 +234,12 @@ void qtractorTrackForm::updateChannel ( int iChannel )
 	InstrumentComboBox->setCurrentItem(iInstrumentIndex);
 
 	// Update instrument, bank and program...
-	updatePatches(InstrumentComboBox->currentText(), patch.bank, patch.prog);
+	updateBanks(InstrumentComboBox->currentText(), patch.bank, patch.prog);
 }
 
 
 // Refresh instrument banks list.
-void qtractorTrackForm::updatePatches ( const QString& sInstrumentName,
+void qtractorTrackForm::updateBanks ( const QString& sInstrumentName,
 	int iBank, int iProg )
 {
 	if (m_pTrack == NULL)
@@ -246,7 +250,7 @@ void qtractorTrackForm::updatePatches ( const QString& sInstrumentName,
 		return;
 
 #ifdef CONFIG_DEBUG
-	fprintf(stderr, "qtractorTrackForm::updatePatches(\"%s\", %d, %d)\n",
+	fprintf(stderr, "qtractorTrackForm::updateBanks(\"%s\", %d, %d)\n",
 		sInstrumentName.latin1(), iBank, iProg);
 #endif
 
@@ -286,13 +290,13 @@ void qtractorTrackForm::updatePatches ( const QString& sInstrumentName,
 		iBankIndex = BankComboBox->listBox()->index(pItem);
 	BankComboBox->setCurrentItem(iBankIndex);
 
-	// And update the bank and program...
-	updateBanks(sInstrumentName, m_banks[iBankIndex], iProg);
+	// And update the bank and program listing...
+	updatePrograms(sInstrumentName, m_banks[iBankIndex], iProg);
 }
 
 
 // Refresh bank programs list.
-void qtractorTrackForm::updateBanks (  const QString& sInstrumentName,
+void qtractorTrackForm::updatePrograms (  const QString& sInstrumentName,
 	int iBank, int iProg )
 {
 	if (m_pTrack == NULL)
@@ -303,7 +307,7 @@ void qtractorTrackForm::updateBanks (  const QString& sInstrumentName,
 		return;
 
 #ifdef CONFIG_DEBUG
-	fprintf(stderr, "qtractorTrackForm::updateBanks(\"%s\", %d, %d)\n",
+	fprintf(stderr, "qtractorTrackForm::updatePrograms(\"%s\", %d, %d)\n",
 		sInstrumentName.latin1(), iBank, iProg);
 #endif
 
@@ -311,8 +315,6 @@ void qtractorTrackForm::updateBanks (  const QString& sInstrumentName,
 	qtractorInstrument& instr = (*m_pInstruments)[sInstrumentName];
 
 	// Bank reference...
-	if (iBank < 0)
-		iBank = m_banks[BankComboBox->currentItem()];
 	qtractorInstrumentData& bank = instr.patch(iBank);
 
 	// Refresh patch program mapping...
@@ -343,10 +345,12 @@ void qtractorTrackForm::updateBanks (  const QString& sInstrumentName,
 
 	// Select program...
 	iProgIndex = 0;
-	QListBoxItem *pItem	= ProgComboBox->listBox()->findItem(
-		bank[iProg], Qt::ExactMatch | Qt::CaseSensitive);
-	if (pItem)
-		iProgIndex = ProgComboBox->listBox()->index(pItem);
+	if (bank.contains(iProg)) {
+		QListBoxItem *pItem	= ProgComboBox->listBox()->findItem(
+			bank[iProg], Qt::ExactMatch | Qt::CaseSensitive);
+		if (pItem)
+			iProgIndex = ProgComboBox->listBox()->index(pItem);
+	}
 	ProgComboBox->setCurrentItem(iProgIndex);
 }
 
@@ -390,7 +394,7 @@ void qtractorTrackForm::trackTypeChanged ( int iTrackType )
 // Make changes due to bus name.
 void qtractorTrackForm::busNameChanged ( const QString& /* sBusName */ )
 {
-	channelChanged(ChannelSpinBox->value() - 1);
+	channelChanged(ChannelSpinBox->value());
 }
 
 
@@ -406,7 +410,8 @@ void qtractorTrackForm::channelChanged ( int iChannel )
 // Make changes due to MIDI instrument.
 void qtractorTrackForm::instrumentChanged ( const QString& sInstrumentName )
 {
-	updatePatches(sInstrumentName, 0, 0);
+	updateBanks(sInstrumentName, m_banks[BankComboBox->currentItem()],
+		m_progs[ProgComboBox->currentItem()]);
 
 	progChanged(ProgComboBox->currentItem());
 }
@@ -415,7 +420,8 @@ void qtractorTrackForm::instrumentChanged ( const QString& sInstrumentName )
 // Make changes due to MIDI bank.
 void qtractorTrackForm::bankChanged ( int iBankIndex )
 {
-	updateBanks(InstrumentComboBox->currentText(), m_banks[iBankIndex], 0);
+	updatePrograms(InstrumentComboBox->currentText(), m_banks[iBankIndex],
+		m_progs[ProgComboBox->currentItem()]);
 
 	progChanged(ProgComboBox->currentItem());
 }
@@ -425,8 +431,11 @@ void qtractorTrackForm::bankChanged ( int iBankIndex )
 void qtractorTrackForm::progChanged( int iProgIndex )
 {
 #ifdef CONFIG_DEBUG
-	fprintf(stderr, "qtractorTrackForm::progChanged(%d) -> iProg=%d\n",
-		iProgIndex, m_progs[iProgIndex]);
+	fprintf(stderr, "qtractorTrackForm::progChanged(%d)"
+		" -> Instrument=\"%s\" Bank=%d Prog=%d\n", iProgIndex,
+		InstrumentComboBox->currentText().latin1(),
+		m_banks[BankComboBox->currentItem()],
+		m_progs[iProgIndex]);
 #endif
 
 	m_iDirtyCount++;
@@ -439,22 +448,12 @@ qtractorMidiBus *qtractorTrackForm::midiBus (void)
 {
 	if (m_pTrack == NULL)
 		return NULL;
-	if (m_pInstruments == NULL)
-		return NULL;
 
 	// If it ain't MIDI, bail out...
 	if (TrackTypeGroup->id(TrackTypeGroup->selected()) != 1)
 		return NULL;
 
-	// MIDI engine...
-	qtractorMidiEngine *pMidiEngine
-		= m_pTrack->session()->midiEngine();
-	if (pMidiEngine == NULL)
-		return NULL;
-
-	// MIDI bus...
-	const QString& sBusName = BusNameComboBox->currentText();
-	return static_cast<qtractorMidiBus *> (pMidiEngine->findBus(sBusName));
+	return static_cast<qtractorMidiBus *> (m_pTrack->bus());
 }
 
 
