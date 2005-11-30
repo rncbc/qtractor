@@ -126,6 +126,10 @@ public:
 	Patch& patch(unsigned short iChannel)
 		{ return m_map[iChannel & 0x0f]; }
 
+	// Direct MIDI bank/program selection helper.
+	void setPatch(unsigned short iChannel, const QString& sInstrumentName,
+		int iBank, int iProg, int iBanklSelMethod = 0);
+
 	// Document element methods.
 	bool loadElement(qtractorSessionDocument *pDocument,
 		QDomElement *pElement);

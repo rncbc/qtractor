@@ -430,14 +430,30 @@ void qtractorTrackForm::bankChanged ( int iBankIndex )
 // Make changes due to MIDI program.
 void qtractorTrackForm::progChanged( int iProgIndex )
 {
+	qtractorMidiBus *pMidiBus = midiBus();
+	if (pMidiBus == NULL)
+	    return;
+
+	// Patch parameters...
+	unsigned short iChannel = ChannelSpinBox->value() - 1;
+	const QString& sInstrumentName = InstrumentComboBox->currentText();
+	int iBank = m_banks[BankComboBox->currentItem()];
+	int iProg = m_progs[iProgIndex];
+	int iBankSelMethod = 0;
+	if (!sInstrumentName.isEmpty()) {
+		qtractorInstrument& instr = (*m_pInstruments)[sInstrumentName];
+		iBankSelMethod = instr.bankSelMethod();
+	}
+
 #ifdef CONFIG_DEBUG
 	fprintf(stderr, "qtractorTrackForm::progChanged(%d)"
-		" -> Instrument=\"%s\" Bank=%d Prog=%d\n", iProgIndex,
-		InstrumentComboBox->currentText().latin1(),
-		m_banks[BankComboBox->currentItem()],
-		m_progs[iProgIndex]);
+		" -> channel=%d instrument=\"%s\" bank=%d prog=%d bankSelMethod=%d\n",
+		iProgIndex,	iChannel, sInstrumentName.latin1(), iBank, iProg, iBankSelMethod);
 #endif
 
+	// Patch it directly...
+	pMidiBus->setPatch(iChannel, sInstrumentName, iBank, iProg, iBankSelMethod);
+	
 	m_iDirtyCount++;
 	stabilizeForm();
 }

@@ -705,6 +705,64 @@ void qtractorMidiBus::close (void)
 }
 
 
+// Direct MIDI bank/program selection helper.
+void qtractorMidiBus::setPatch ( unsigned short iChannel,
+	const QString& sInstrumentName, int iBank, int iProg,
+	int iBankSelMethod )
+{
+	// We always need our MIDI engine refrence...
+	qtractorMidiEngine *pMidiEngine
+	    = static_cast<qtractorMidiEngine *> (engine());
+	if (pMidiEngine == NULL)
+	    return;
+
+	// Update patch mapping...
+	if (!sInstrumentName.isEmpty()) {
+		Patch& patch = qtractorMidiBus::patch(iChannel);
+		patch.name = sInstrumentName;
+		patch.bank = iBank;
+		patch.prog = iProg;
+	}
+
+	// Initialize sequencer event...
+	snd_seq_event_t ev;
+	snd_seq_ev_clear(&ev);
+
+	// Addressing...
+	snd_seq_ev_set_source(&ev, m_iAlsaPort);
+	snd_seq_ev_set_subs(&ev);
+
+	// The event will be direct...
+	snd_seq_ev_set_direct(&ev);
+
+	// Select Bank MSB.
+	if (iBank >= 0 && (iBankSelMethod == 0 || iBankSelMethod == 1)) {
+		ev.type = SND_SEQ_EVENT_CONTROLLER;
+		ev.data.control.channel = iChannel;
+		ev.data.control.param   = 0x00;		// Select Bank MSB.
+		ev.data.control.value   = (iBank & 0x3f80) >> 7;
+		snd_seq_event_output(pMidiEngine->alsaSeq(), &ev);
+	}
+
+	// Select Bank LSB.
+	if (iBank >= 0 && (iBankSelMethod == 0 || iBankSelMethod == 2)) {
+		ev.type = SND_SEQ_EVENT_CONTROLLER;
+		ev.data.control.channel = iChannel;
+		ev.data.control.param   = 0x20;		// Select Bank LSB.
+		ev.data.control.value   = (iBank & 0x007f);
+		snd_seq_event_output(pMidiEngine->alsaSeq(), &ev);
+	}
+
+	// Program change...
+	ev.type = SND_SEQ_EVENT_PGMCHANGE;
+	ev.data.control.channel = iChannel;
+	ev.data.control.value   = iProg;
+	snd_seq_event_output(pMidiEngine->alsaSeq(), &ev);
+
+	pMidiEngine->flush();
+}
+
+
 // Document element methods.
 bool qtractorMidiBus::loadElement ( qtractorSessionDocument * /* pDocument */,
 	QDomElement *pElement )

@@ -82,10 +82,10 @@ void qtractorMidiSequence::addEvent ( qtractorMidiEvent *pEvent )
 		case qtractorMidiEvent::CONTROLLER: {
 			unsigned char controller = pEvent->controller();
 			if (controller == 0x00) {
-				m_iBank &= 0x00ff;	// Bank MSB.
-				m_iBank |= (int) pEvent->value() << 8;
+				m_iBank &= 0x007f;	// Bank MSB.
+				m_iBank |= (int) pEvent->value() << 7;
 			} else if (controller == 0x20) {
-				m_iBank &= 0xff00;	// Bank LSB.
+				m_iBank &= 0x3f80;	// Bank LSB.
 				m_iBank |= (int) pEvent->value();
 			}
 			break;
