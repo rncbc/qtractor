@@ -28,6 +28,7 @@
 #include "qtractorSessionDocument.h"
 #include "qtractorAudioEngine.h"
 #include "qtractorMidiEngine.h"
+#include "qtractorInstrument.h"
 
 #include <qpainter.h>
 
@@ -404,6 +405,27 @@ void qtractorTrack::drawTrack ( QPainter *pPainter, const QRect& trackRect,
 		}
 		pClip = pClip->next();
 	}
+}
+
+
+// MIDI track instrument patching.
+void qtractorTrack::setMidiPatch ( qtractorInstrumentList *pInstruments )
+{
+	if (m_iMidiProgram < 0)
+	    return;
+
+	qtractorMidiBus *pMidiBus
+		= static_cast<qtractorMidiBus *> (m_pBus);
+	if (pMidiBus == NULL)
+	    return;
+
+	int iBankSelMethod = 0;
+	const qtractorMidiBus::Patch& patch = pMidiBus->patch(m_iMidiChannel);
+	if (!patch.name.isEmpty())
+		iBankSelMethod = (*pInstruments)[patch.name].bankSelMethod();
+
+	pMidiBus->setPatch(m_iMidiChannel, patch.name,
+		m_iMidiBank, m_iMidiProgram, iBankSelMethod);
 }
 
 

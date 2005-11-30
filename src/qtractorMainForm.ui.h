@@ -1210,7 +1210,9 @@ void qtractorMainForm::stabilizeForm (void)
 	editSelectTrackAction->setEnabled(bEnabled);
 	trackRemoveAction->setEnabled(bEnabled);
 	trackPropertiesAction->setEnabled(bEnabled);
-	
+	trackImportAudioAction->setEnabled(m_pTracks != NULL);
+	trackImportMidiAction->setEnabled(m_pTracks != NULL);
+
 	viewMessagesAction->setOn(m_pMessages && m_pMessages->isVisible());
 	viewFilesAction->setOn(m_pFiles && m_pFiles->isVisible());
 
@@ -1303,6 +1305,9 @@ void qtractorMainForm::updateSession (void)
 		appendMessagesError(tr("Cannot start audio engine.\n\n"
 			"Make sure the JACK audio server\n"
 			"(jackd) is up and running."));
+	} else {
+		// (Re)initialize MIDI instrument patching...
+		m_pSession->setMidiPatch(m_pInstruments);
 	}
 
 	// Update the session views...

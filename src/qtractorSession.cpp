@@ -664,6 +664,17 @@ void qtractorSession::releaseMidiTag ( qtractorTrack *pTrack )
 }
 
 
+// MIDI session/tracks instrument patching.
+void qtractorSession::setMidiPatch ( qtractorInstrumentList *pInstruments )
+{
+	for (qtractorTrack *pTrack = m_tracks.first();
+	        pTrack; pTrack = pTrack->next()) {
+		if (pTrack->trackType() == qtractorTrack::Midi)
+			pTrack->setMidiPatch(pInstruments);
+	}
+}
+
+
 // Document element methods.
 bool qtractorSession::loadElement ( qtractorSessionDocument *pDocument,
 	QDomElement *pElement )

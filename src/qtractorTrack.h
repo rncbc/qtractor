@@ -30,6 +30,7 @@
 // Forward declarations.
 class qtractorSession;
 class qtractorSessionDocument;
+class qtractorInstrumentList;
 class qtractorClip;
 class qtractorBus;
 
@@ -134,6 +135,9 @@ public:
 	void drawTrack(QPainter *pPainter, const QRect& trackRect,
 		unsigned long iTrackStart, unsigned long iTrackEnd,
 		qtractorClip *pClip = NULL);
+
+	// MIDI track instrument patching.
+	void setMidiPatch(qtractorInstrumentList *pInstruments);
 
 	// Document element methods.
 	bool loadElement(qtractorSessionDocument *pDocument,

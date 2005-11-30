@@ -183,6 +183,9 @@ public:
 	void acquireMidiTag(qtractorTrack *pTrack);
 	void releaseMidiTag(qtractorTrack *pTrack);
 
+	// MIDI session/tracks instrument patching.
+	void setMidiPatch(qtractorInstrumentList *pInstruments);
+
 	// Document element methods.
 	bool loadElement(qtractorSessionDocument *pDocument,
 		QDomElement *pElement);

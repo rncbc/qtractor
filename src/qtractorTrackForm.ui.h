@@ -440,10 +440,8 @@ void qtractorTrackForm::progChanged( int iProgIndex )
 	int iBank = m_banks[BankComboBox->currentItem()];
 	int iProg = m_progs[iProgIndex];
 	int iBankSelMethod = 0;
-	if (!sInstrumentName.isEmpty()) {
-		qtractorInstrument& instr = (*m_pInstruments)[sInstrumentName];
-		iBankSelMethod = instr.bankSelMethod();
-	}
+	if (!sInstrumentName.isEmpty())
+		iBankSelMethod = (*m_pInstruments)[sInstrumentName].bankSelMethod();
 
 #ifdef CONFIG_DEBUG
 	fprintf(stderr, "qtractorTrackForm::progChanged(%d)"
@@ -469,7 +467,14 @@ qtractorMidiBus *qtractorTrackForm::midiBus (void)
 	if (TrackTypeGroup->id(TrackTypeGroup->selected()) != 1)
 		return NULL;
 
-	return static_cast<qtractorMidiBus *> (m_pTrack->bus());
+	// MIDI engine...
+	qtractorMidiEngine *pMidiEngine = m_pTrack->session()->midiEngine();
+	if (pMidiEngine == NULL)
+	    return NULL;
+	    
+	// MIDI bus...
+	const QString& sBusName = BusNameComboBox->currentText();
+	return static_cast<qtractorMidiBus *> (pMidiEngine->findBus(sBusName));
 }
 
 
