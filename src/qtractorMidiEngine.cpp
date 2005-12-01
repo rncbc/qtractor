@@ -385,7 +385,7 @@ void qtractorMidiEngine::enqueue ( qtractorTrack *pTrack,
 		case qtractorMidiEvent::PGMCHANGE:
 			ev.type = SND_SEQ_EVENT_PGMCHANGE;
 			ev.data.control.channel = pTrack->midiChannel();
-			ev.data.control.value   = pEvent->program();
+			ev.data.control.value   = pEvent->value();
 			break;
 		case qtractorMidiEvent::CHANPRESS:
 			ev.type = SND_SEQ_EVENT_CHANPRESS;
@@ -715,6 +715,11 @@ void qtractorMidiBus::setPatch ( unsigned short iChannel,
 	    = static_cast<qtractorMidiEngine *> (engine());
 	if (pMidiEngine == NULL)
 	    return;
+
+#ifdef CONFIG_DEBUG
+	fprintf(stderr, "qtractorMidiBus::setPatch(%d, \"%s\", %d, %d, %d)\n",
+		iChannel, sInstrumentName.latin1(), iBank, iProg, iBankSelMethod);
+#endif
 
 	// Update patch mapping...
 	if (!sInstrumentName.isEmpty()) {

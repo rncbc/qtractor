@@ -70,32 +70,12 @@ void qtractorMidiSequence::addEvent ( qtractorMidiEvent *pEvent )
 
 	m_events.insertAfter(pEvent, pEventAfter);
 
-	switch (pEvent->type()) {
-		case qtractorMidiEvent::NOTEON: {
-			unsigned char note = pEvent->note();
-			if (m_noteMin > note || m_noteMin == 0)
-				m_noteMin = note;
-			if (m_noteMax < note || m_noteMax == 0)
-				m_noteMax = note;
-			break;
-		}
-		case qtractorMidiEvent::CONTROLLER: {
-			unsigned char controller = pEvent->controller();
-			if (controller == 0x00) {
-				m_iBank &= 0x007f;	// Bank MSB.
-				m_iBank |= (int) pEvent->value() << 7;
-			} else if (controller == 0x20) {
-				m_iBank &= 0x3f80;	// Bank LSB.
-				m_iBank |= (int) pEvent->value();
-			}
-			break;
-		}
-		case qtractorMidiEvent::PGMCHANGE: {
-			m_iProgram = (int) pEvent->program();
-			break;
-		}
-		default:
-			break;
+	if (pEvent->type() == qtractorMidiEvent::NOTEON) {
+		unsigned char note = pEvent->note();
+		if (m_noteMin > note || m_noteMin == 0)
+			m_noteMin = note;
+		if (m_noteMax < note || m_noteMax == 0)
+			m_noteMax = note;
 	}
 }
 

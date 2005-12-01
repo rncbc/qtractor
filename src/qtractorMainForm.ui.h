@@ -1115,6 +1115,10 @@ void qtractorMainForm::transportPlay ( bool bPlaying )
 	appendMessages("qtractorMainForm::transportPlay(" + QString::number((int) bPlaying) + ")");
 #endif
 
+	// In case of starting playback, send now
+	// all tracks MIDI bank select/program changes...
+	if (bPlaying)
+		m_pSession->setMidiPatch(m_pInstruments);
 	// Toggle engine play status...
 	m_pSession->setPlaying(bPlaying);
 	// Have some effective feedback...

@@ -211,7 +211,7 @@ bool qtractorMidiFile::readTrack ( qtractorMidiSequence *pSeq,
 
 		qtractorMidiEvent *pEvent;
 		unsigned char *data, data1, data2;
-		unsigned int len, meta;
+		unsigned int len, meta, bank;
 
 		switch (type) {
 		case qtractorMidiEvent::NOTEOFF:
@@ -238,8 +238,34 @@ bool qtractorMidiFile::readTrack ( qtractorMidiSequence *pSeq,
 				}
 			}
 			break;
-		case qtractorMidiEvent::KEYPRESS:
 		case qtractorMidiEvent::CONTROLLER:
+			data1 = readInt(1);
+			data2 = readInt(1);
+			// Check if its channel filtered...
+			if ((iChannelFilter & 0xf0) || (iChannelFilter == iChannel)) {
+				// We don't sequence bank select events here,
+				// just set the primordial bank patch...
+				switch (data1) {
+				case 0x00:
+					// Bank MSB...
+					bank = (pSeq->bank() < 0 ? 0 : (pSeq->bank() & 0x007f));
+					pSeq->setBank(bank | (data2 << 7));
+					break;
+				case 0x20:
+					// Bank LSB...
+					bank = (pSeq->bank() < 0 ? 0 : (pSeq->bank() & 0x3f80));
+					pSeq->setBank(bank | data2);
+					break;
+				default:
+					// Create the new event...
+					pEvent = new qtractorMidiEvent(time, type, data1, data2);
+					pSeq->addEvent(pEvent);
+					break;
+				}
+				pSeq->setChannel(iChannel);
+			}
+			break;
+		case qtractorMidiEvent::KEYPRESS:
 		case qtractorMidiEvent::PITCHBEND:
 			data1 = readInt(1);
 			data2 = readInt(1);
@@ -249,11 +275,20 @@ bool qtractorMidiFile::readTrack ( qtractorMidiSequence *pSeq,
 				pEvent = new qtractorMidiEvent(time, type, data1, data2);
 				pSeq->addEvent(pEvent);
 				pSeq->setChannel(iChannel);
-				if (type == qtractorMidiEvent::NOTEON)
-					notes[data1] = pEvent;
 			}
 			break;
 		case qtractorMidiEvent::PGMCHANGE:
+			data1 = 0;
+			data2 = readInt(1);
+			// Check if its channel filtered...
+			if ((iChannelFilter & 0xf0) || (iChannelFilter == iChannel)) {
+				// We don't sequence prog change events here,
+				// just set the primordial program patch...
+				if (pSeq->program() < 0)
+					pSeq->setProgram(data2);
+				pSeq->setChannel(iChannel);
+			}
+			break;
 		case qtractorMidiEvent::CHANPRESS:
 			data1 = 0;
 			data2 = readInt(1);

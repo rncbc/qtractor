@@ -87,7 +87,6 @@ public:
 	unsigned char velocity()   const { return m_data[1]; }
 	unsigned char controller() const { return m_data[0]; }
 	unsigned char value()      const { return m_data[1]; }
-	unsigned char program()    const { return m_data[1]; }
 
 	// Other special accessor.
 	void setDuration(unsigned long duration) { m_duration = duration; }

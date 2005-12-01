@@ -443,12 +443,6 @@ void qtractorTrackForm::progChanged( int iProgIndex )
 	if (!sInstrumentName.isEmpty())
 		iBankSelMethod = (*m_pInstruments)[sInstrumentName].bankSelMethod();
 
-#ifdef CONFIG_DEBUG
-	fprintf(stderr, "qtractorTrackForm::progChanged(%d)"
-		" -> channel=%d instrument=\"%s\" bank=%d prog=%d bankSelMethod=%d\n",
-		iProgIndex,	iChannel, sInstrumentName.latin1(), iBank, iProg, iBankSelMethod);
-#endif
-
 	// Patch it directly...
 	pMidiBus->setPatch(iChannel, sInstrumentName, iBank, iProg, iBankSelMethod);
 	
