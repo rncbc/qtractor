@@ -566,8 +566,6 @@ void qtractorMidiEngine::trackMute ( qtractorTrack *pTrack, bool bMute )
 			| SND_SEQ_REMOVE_TIME_AFTER | SND_SEQ_REMOVE_TIME_TICK
 			| SND_SEQ_REMOVE_DEST_CHANNEL | SND_SEQ_REMOVE_IGNORE_OFF
 			| SND_SEQ_REMOVE_TAG_MATCH);
-		// FIXME: We need somehow to differentiate the track we're
-		// muting, maybe giving a tag to each event? (iTrack aka track no?)
 		snd_seq_remove_events(m_pAlsaSeq, pre);
 		// Done mute.
 	} else {
@@ -712,9 +710,9 @@ void qtractorMidiBus::setPatch ( unsigned short iChannel,
 {
 	// We always need our MIDI engine refrence...
 	qtractorMidiEngine *pMidiEngine
-	    = static_cast<qtractorMidiEngine *> (engine());
+		= static_cast<qtractorMidiEngine *> (engine());
 	if (pMidiEngine == NULL)
-	    return;
+		return;
 
 #ifdef CONFIG_DEBUG
 	fprintf(stderr, "qtractorMidiBus::setPatch(%d, \"%s\", %d, %d, %d)\n",
@@ -728,6 +726,11 @@ void qtractorMidiBus::setPatch ( unsigned short iChannel,
 		patch.bank = iBank;
 		patch.prog = iProg;
 	}
+
+	// Don't do anything else if engine
+	// has not been activated...
+	if (pMidiEngine->alsaSeq() == NULL)
+		return;
 
 	// Initialize sequencer event...
 	snd_seq_event_t ev;
