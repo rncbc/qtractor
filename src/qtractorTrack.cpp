@@ -346,6 +346,14 @@ const QColor& qtractorTrack::foreground (void) const
 }
 
 
+// Generate a default track color.
+QColor qtractorTrack::trackColor ( int iTrack )
+{
+	int c[3] = { 0xff, 0xcc, 0x99 };
+
+	return QColor(c[iTrack % 3], c[(iTrack / 3) % 3], c[(iTrack / 9) % 3]);
+}
+
 
 // Track special process cycle executive.
 void qtractorTrack::process ( qtractorClip *pClip,

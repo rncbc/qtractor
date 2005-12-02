@@ -29,7 +29,58 @@
 #include "qtractorMidiEngine.h"
 
 #include <qmessagebox.h>
+#include <qcolordialog.h>
 #include <qlistbox.h>
+#include <qpainter.h>
+#include <qstyle.h>
+
+
+//----------------------------------------------------------------------
+// class qtractorColorItem -- Custom color listbox item.
+//
+
+class qtractorColorItem : public QListBoxItem
+{
+public:
+
+	// Constructor.
+	qtractorColorItem ( const QColor& color )
+	    : QListBoxItem(), m_color(color) { setCustomHighlighting(true); }
+
+	// Color accessors.
+	void setColor(const QColor& color) { m_color = color; }
+	const QColor& color() const { return m_color; }
+
+protected:
+
+	// Custom paint method.
+    void paint(QPainter *pPainter);
+
+	// Default item extents
+    int width  (const QListBox*) const { return 32; }
+    int height (const QListBox*) const { return 16; }
+
+private:
+
+	// Item color spec.
+	QColor m_color;
+};
+
+
+// ListBox item custom highlighting method.
+void qtractorColorItem::paint ( QPainter *pPainter )
+{
+    // Evil trick: find out whether we are painted onto our listbox...
+    QListBox *pListBox = listBox();
+	int w = pListBox->viewport()->width();
+	int h = height(pListBox);
+
+    QRect rect(0, 0, w, h);
+    if (isSelected())
+		pPainter->eraseRect(rect);
+
+    pPainter->fillRect(1, 1, w - 2, h - 2, m_color);
+}
 
 
 // Kind of constructor.
@@ -38,6 +89,17 @@ void qtractorTrackForm::init (void)
 	// No settings descriptor initially (the caller will set it).
 	m_pInstruments = NULL;
 	m_pTrack = NULL;
+
+	// Custom colors.
+	ForegroundColorComboBox->clear();
+	BackgroundColorComboBox->clear();
+	for (int i = 1; i < 28; i++) {
+		const QColor color = qtractorTrack::trackColor(i);
+		ForegroundColorComboBox->listBox()->insertItem(
+		    new qtractorColorItem(color.dark()));
+		BackgroundColorComboBox->listBox()->insertItem(
+		    new qtractorColorItem(color));
+	}
 
 	// Initialize dirty control state.
 	m_iDirtyCount = 0;
@@ -98,6 +160,10 @@ void qtractorTrackForm::setTrack ( qtractorTrack *pTrack )
 	updatePrograms(InstrumentComboBox->currentText(),
 		m_pTrack->midiBank(), m_pTrack->midiProgram());
 
+	// Update colors...
+	updateColorItem(ForegroundColorComboBox, m_pTrack->foreground());
+	updateColorItem(BackgroundColorComboBox, m_pTrack->background());
+
 	// Backup clean.
 	m_iDirtyCount = 0;
 
@@ -135,17 +201,20 @@ void qtractorTrackForm::accept (void)
 		}
 		m_pTrack->setBusName(BusNameComboBox->currentText());
 		// Special case for MIDI settings...
+		unsigned short iChannel = ChannelSpinBox->value() - 1;
+		m_pTrack->setMidiChannel(iChannel);
 		qtractorMidiBus *pMidiBus = midiBus();
 		if (pMidiBus) {
-			unsigned short iChannel = ChannelSpinBox->value() - 1;
 			qtractorMidiBus::Patch& patch = pMidiBus->patch(iChannel);
 			patch.name = InstrumentComboBox->currentText();
 			patch.bank = m_banks[BankComboBox->currentItem()];
 			patch.prog = m_progs[ProgComboBox->currentItem()];
-			m_pTrack->setMidiChannel(iChannel);
 			m_pTrack->setMidiBank(patch.bank);
 			m_pTrack->setMidiProgram(patch.prog);
 		}
+		// View colors...
+		m_pTrack->setForeground(colorItem(ForegroundColorComboBox));
+		m_pTrack->setBackground(colorItem(BackgroundColorComboBox));
 		// Reset dirty flag.
 		m_iDirtyCount = 0;
 	}
@@ -188,6 +257,27 @@ void qtractorTrackForm::stabilizeForm (void)
 	bool bValid = (m_iDirtyCount > 0);
 	bValid = bValid && !TrackNameTextEdit->text().isEmpty();
 	OkPushButton->setEnabled(bValid);
+}
+
+
+// Retrieve currently assigned MIDI bus, if applicable.
+qtractorMidiBus *qtractorTrackForm::midiBus (void)
+{
+	if (m_pTrack == NULL)
+		return NULL;
+
+	// If it ain't MIDI, bail out...
+	if (TrackTypeGroup->id(TrackTypeGroup->selected()) != 1)
+		return NULL;
+
+	// MIDI engine...
+	qtractorMidiEngine *pMidiEngine = m_pTrack->session()->midiEngine();
+	if (pMidiEngine == NULL)
+	    return NULL;
+
+	// MIDI bus...
+	const QString& sBusName = BusNameComboBox->currentText();
+	return static_cast<qtractorMidiBus *> (pMidiEngine->findBus(sBusName));
 }
 
 
@@ -355,8 +445,38 @@ void qtractorTrackForm::updatePrograms (  const QString& sInstrumentName,
 }
 
 
+// Update and set a color item.
+void qtractorTrackForm::updateColorItem ( QComboBox *pComboBox,
+	const QColor& color )
+{
+	// Check if already exists...
+	int iItem = 0;
+	for ( ; iItem < pComboBox->count(); iItem++) {
+		qtractorColorItem *pItem
+		    = static_cast<qtractorColorItem *> (pComboBox->listBox()->item(iItem));
+		if (pItem->color() == color) {
+			pComboBox->setCurrentItem(iItem);
+			return;
+		}
+	}
+	// Nope, we'll add it custom...
+	pComboBox->listBox()->insertItem(new qtractorColorItem(color));
+    pComboBox->setCurrentItem(iItem);
+}
+
+
+// Retreieve currently selected color item.
+const QColor& qtractorTrackForm::colorItem ( QComboBox *pComboBox )
+{
+	int iItem = pComboBox->currentItem();
+	qtractorColorItem *pItem
+	    = static_cast<qtractorColorItem *> (pComboBox->listBox()->item(iItem));
+	return pItem->color();
+}
+
+
 // Make changes due to track name.
-void qtractorTrackForm::trackNameChanged (void)
+void qtractorTrackForm::changed (void)
 {
 	m_iDirtyCount++;
 	stabilizeForm();
@@ -446,29 +566,33 @@ void qtractorTrackForm::progChanged( int iProgIndex )
 	// Patch it directly...
 	pMidiBus->setPatch(iChannel, sInstrumentName, iBank, iProg, iBankSelMethod);
 	
-	m_iDirtyCount++;
-	stabilizeForm();
+	changed();
 }
 
 
-// Retrieve currently assigned MIDI bus, if applicable.
-qtractorMidiBus *qtractorTrackForm::midiBus (void)
+// Select custom track foreground color.
+void qtractorTrackForm::selectForegroundColor (void)
 {
-	if (m_pTrack == NULL)
-		return NULL;
+	QColor color = QColorDialog::getColor(
+		colorItem(ForegroundColorComboBox), this);
 
-	// If it ain't MIDI, bail out...
-	if (TrackTypeGroup->id(TrackTypeGroup->selected()) != 1)
-		return NULL;
+	if (color.isValid()) {
+		updateColorItem(ForegroundColorComboBox, color);
+		changed();
+	}
+}
 
-	// MIDI engine...
-	qtractorMidiEngine *pMidiEngine = m_pTrack->session()->midiEngine();
-	if (pMidiEngine == NULL)
-	    return NULL;
-	    
-	// MIDI bus...
-	const QString& sBusName = BusNameComboBox->currentText();
-	return static_cast<qtractorMidiBus *> (pMidiEngine->findBus(sBusName));
+
+// Select custom track background color.
+void qtractorTrackForm::selectBackgroundColor (void)
+{
+	QColor color = QColorDialog::getColor(
+		colorItem(BackgroundColorComboBox), this);
+
+	if (color.isValid()) {
+		updateColorItem(BackgroundColorComboBox, color);
+		changed();
+	}
 }
 
 

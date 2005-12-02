@@ -28,8 +28,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>336</width>
-            <height>258</height>
+            <width>367</width>
+            <height>330</height>
         </rect>
     </property>
     <property name="sizePolicy">
@@ -257,6 +257,165 @@
                 </widget>
             </grid>
         </widget>
+        <widget class="QButtonGroup">
+            <property name="name">
+                <cstring>TrackViewGroup</cstring>
+            </property>
+            <property name="title">
+                <string>View / Colors</string>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QLabel">
+                    <property name="name">
+                        <cstring>ForegroundColorTextLabel</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&amp;Foreground:</string>
+                    </property>
+                    <property name="buddy" stdset="0">
+                        <cstring>ForegroundColorComboBox</cstring>
+                    </property>
+                </widget>
+                <widget class="QComboBox">
+                    <property name="name">
+                        <cstring>ForegroundColorComboBox</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>3</hsizetype>
+                            <vsizetype>0</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="minimumSize">
+                        <size>
+                            <width>64</width>
+                            <height>0</height>
+                        </size>
+                    </property>
+                    <property name="toolTip" stdset="0">
+                        <string>Foreground color</string>
+                    </property>
+                </widget>
+                <widget class="QToolButton">
+                    <property name="name">
+                        <cstring>ForegroundColorToolButton</cstring>
+                    </property>
+                    <property name="minimumSize">
+                        <size>
+                            <width>22</width>
+                            <height>22</height>
+                        </size>
+                    </property>
+                    <property name="maximumSize">
+                        <size>
+                            <width>24</width>
+                            <height>24</height>
+                        </size>
+                    </property>
+                    <property name="font">
+                        <font>
+                        </font>
+                    </property>
+                    <property name="focusPolicy">
+                        <enum>TabFocus</enum>
+                    </property>
+                    <property name="text">
+                        <string>...</string>
+                    </property>
+                    <property name="toolTip" stdset="0">
+                        <string>Select custom track foreground color</string>
+                    </property>
+                </widget>
+                <spacer>
+                    <property name="name">
+                        <cstring>spacer1</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>8</width>
+                            <height>8</height>
+                        </size>
+                    </property>
+                </spacer>
+                <widget class="QLabel">
+                    <property name="name">
+                        <cstring>BackgroundColorTextLabel</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&amp;Background:</string>
+                    </property>
+                    <property name="alignment">
+                        <set>AlignVCenter|AlignRight</set>
+                    </property>
+                    <property name="buddy" stdset="0">
+                        <cstring>BackgroundColorComboBox</cstring>
+                    </property>
+                </widget>
+                <widget class="QComboBox">
+                    <property name="name">
+                        <cstring>BackgroundColorComboBox</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>3</hsizetype>
+                            <vsizetype>0</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="minimumSize">
+                        <size>
+                            <width>64</width>
+                            <height>0</height>
+                        </size>
+                    </property>
+                    <property name="toolTip" stdset="0">
+                        <string>Background color</string>
+                    </property>
+                </widget>
+                <widget class="QToolButton">
+                    <property name="name">
+                        <cstring>BackgroundColorToolButton</cstring>
+                    </property>
+                    <property name="minimumSize">
+                        <size>
+                            <width>22</width>
+                            <height>22</height>
+                        </size>
+                    </property>
+                    <property name="maximumSize">
+                        <size>
+                            <width>24</width>
+                            <height>24</height>
+                        </size>
+                    </property>
+                    <property name="font">
+                        <font>
+                        </font>
+                    </property>
+                    <property name="focusPolicy">
+                        <enum>TabFocus</enum>
+                    </property>
+                    <property name="text">
+                        <string>...</string>
+                    </property>
+                    <property name="toolTip" stdset="0">
+                        <string>Select custom track background color</string>
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
         <widget class="QLayoutWidget">
             <property name="name">
                 <cstring>layout1</cstring>
@@ -267,7 +426,7 @@
                 </property>
                 <spacer>
                     <property name="name">
-                        <cstring>spacer3</cstring>
+                        <cstring>spacer2</cstring>
                     </property>
                     <property name="orientation">
                         <enum>Horizontal</enum>
@@ -277,8 +436,8 @@
                     </property>
                     <property name="sizeHint">
                         <size>
-                            <width>20</width>
-                            <height>20</height>
+                            <width>8</width>
+                            <height>8</height>
                         </size>
                     </property>
                 </spacer>
@@ -313,7 +472,7 @@
         <sender>TrackNameTextEdit</sender>
         <signal>textChanged()</signal>
         <receiver>qtractorTrackForm</receiver>
-        <slot>trackNameChanged()</slot>
+        <slot>changed()</slot>
     </connection>
     <connection>
         <sender>TrackTypeGroup</sender>
@@ -321,36 +480,60 @@
         <receiver>qtractorTrackForm</receiver>
         <slot>trackTypeChanged(int)</slot>
     </connection>
-	<connection>
-		<sender>BusNameComboBox</sender>
-		<signal>activated(const QString &amp;)</signal>
-		<receiver>qtractorTrackForm</receiver>
-		<slot>busNameChanged(const QString &amp;)</slot>
-	</connection>
-	<connection>
-		<sender>ChannelSpinBox</sender>
-		<signal>valueChanged(int)</signal>
-		<receiver>qtractorTrackForm</receiver>
-		<slot>channelChanged(int)</slot>
-	</connection>
-	<connection>
-		<sender>InstrumentComboBox</sender>
-		<signal>activated(const QString &amp;)</signal>
-		<receiver>qtractorTrackForm</receiver>
-		<slot>instrumentChanged(const QString &amp;)</slot>
-	</connection>
-	<connection>
-		<sender>BankComboBox</sender>
-		<signal>activated(int)</signal>
-		<receiver>qtractorTrackForm</receiver>
-		<slot>bankChanged(int)</slot>
-	</connection>
-	<connection>
-		<sender>ProgComboBox</sender>
-		<signal>activated(int)</signal>
-		<receiver>qtractorTrackForm</receiver>
-		<slot>progChanged(int)</slot>
-	</connection>
+    <connection>
+        <sender>BusNameComboBox</sender>
+        <signal>activated(const QString &amp;)</signal>
+        <receiver>qtractorTrackForm</receiver>
+        <slot>busNameChanged(const QString&amp;)</slot>
+    </connection>
+    <connection>
+        <sender>ChannelSpinBox</sender>
+        <signal>valueChanged(int)</signal>
+        <receiver>qtractorTrackForm</receiver>
+        <slot>channelChanged(int)</slot>
+    </connection>
+    <connection>
+        <sender>InstrumentComboBox</sender>
+        <signal>activated(const QString &amp;)</signal>
+        <receiver>qtractorTrackForm</receiver>
+        <slot>instrumentChanged(const QString&amp;)</slot>
+    </connection>
+    <connection>
+        <sender>BankComboBox</sender>
+        <signal>activated(int)</signal>
+        <receiver>qtractorTrackForm</receiver>
+        <slot>bankChanged(int)</slot>
+    </connection>
+    <connection>
+        <sender>ProgComboBox</sender>
+        <signal>activated(int)</signal>
+        <receiver>qtractorTrackForm</receiver>
+        <slot>progChanged(int)</slot>
+    </connection>
+    <connection>
+        <sender>ForegroundColorComboBox</sender>
+        <signal>activated(int)</signal>
+        <receiver>qtractorTrackForm</receiver>
+        <slot>changed()</slot>
+    </connection>
+    <connection>
+        <sender>ForegroundColorToolButton</sender>
+        <signal>clicked()</signal>
+        <receiver>qtractorTrackForm</receiver>
+        <slot>selectForegroundColor()</slot>
+    </connection>
+    <connection>
+        <sender>BackgroundColorComboBox</sender>
+        <signal>activated(int)</signal>
+        <receiver>qtractorTrackForm</receiver>
+        <slot>changed()</slot>
+    </connection>
+    <connection>
+        <sender>BackgroundColorToolButton</sender>
+        <signal>clicked()</signal>
+        <receiver>qtractorTrackForm</receiver>
+        <slot>selectBackgroundColor()</slot>
+    </connection>
     <connection>
         <sender>OkPushButton</sender>
         <signal>clicked()</signal>
@@ -373,6 +556,10 @@
     <tabstop>InstrumentComboBox</tabstop>
     <tabstop>BankComboBox</tabstop>
     <tabstop>ProgComboBox</tabstop>
+    <tabstop>ForegroundColorComboBox</tabstop>
+    <tabstop>ForegroundColorToolButton</tabstop>
+    <tabstop>BackgroundColorComboBox</tabstop>
+    <tabstop>BackgroundColorToolButton</tabstop>
     <tabstop>OkPushButton</tabstop>
     <tabstop>CancelPushButton</tabstop>
 </tabstops>
@@ -380,12 +567,12 @@
     <include location="global" impldecl="in declaration">qmap.h</include>
 </includes>
 <forwards>
-	<forward>class qtractorInstrumentList;</forward>
+    <forward>class qtractorInstrumentList;</forward>
     <forward>class qtractorTrack;</forward>
-	<forward>class qtractorMidiBus;</forward>
+    <forward>class qtractorMidiBus;</forward>
 </forwards>
 <variables>
-	<variable access="private">qtractorInstrumentList *m_pInstruments;</variable>
+    <variable access="private">qtractorInstrumentList *m_pInstruments;</variable>
     <variable access="private">qtractorTrack *m_pTrack;</variable>
     <variable access="private">QMap &lt; int, int &gt; m_banks;</variable>
     <variable access="private">QMap &lt; int, int &gt; m_progs;</variable>
@@ -394,27 +581,31 @@
 <slots>
     <slot specifier="non virtual">accept()</slot>
     <slot specifier="non virtual">reject()</slot>
+    <slot specifier="non virtual">changed()</slot>
+    <slot specifier="non virtual">trackTypeChanged( int iTrackType )</slot>
+    <slot specifier="non virtual">busNameChanged( const QString &amp; sBusName )</slot>
+    <slot specifier="non virtual">channelChanged( int iChannel )</slot>
+    <slot specifier="non virtual">instrumentChanged( const QString &amp; sInstrumentName )</slot>
+    <slot specifier="non virtual">bankChanged( int iBankIndex )</slot>
+    <slot specifier="non virtual">progChanged( int iProgIndex )</slot>
+    <slot specifier="non virtual">selectForegroundColor()</slot>
+    <slot specifier="non virtual">selectBackgroundColor()</slot>
     <slot specifier="non virtual">stabilizeForm()</slot>
-	<slot specifier="non virtual">trackNameChanged()</slot>
-	<slot specifier="non virtual">trackTypeChanged( int iTrackType )</slot>
-	<slot specifier="non virtual">busNameChanged( const QString &amp; sBusName )</slot>
-	<slot specifier="non virtual">channelChanged( int iChannel )</slot>
-	<slot specifier="non virtual">instrumentChanged( const QString &amp; sInstrumentName )</slot>
-	<slot specifier="non virtual">bankChanged( int iBankIndex )</slot>
-	<slot specifier="non virtual">progChanged( int iProgIndex )</slot>
 </slots>
 <functions>
     <function access="private" specifier="non virtual">init()</function>
     <function access="private" specifier="non virtual">destroy()</function>
-	<function specifier="non virtual">setInstruments( qtractorInstrumentList *pInstruments )</function>
-	<function specifier="non virtual" returnType="qtractorInstrumentList *">instruments()</function>
+    <function specifier="non virtual">setInstruments( qtractorInstrumentList *pInstruments )</function>
+    <function specifier="non virtual" returnType="qtractorInstrumentList *">instruments()</function>
     <function specifier="non virtual">setTrack( qtractorTrack *pTrack )</function>
     <function specifier="non virtual" returnType="qtractorTrack *">track()</function>
-	<function specifier="non virtual" returnType="qtractorMidiBus *">midiBus()</function>
-    <function specifier="non virtual">updateInstruments()</function>
-    <function specifier="non virtual">updateChannel( int iChannel )</function>
-    <function specifier="non virtual">updateBanks( const QString &amp; sInstrumentName, int iBank, int iProg )</function>
-    <function specifier="non virtual">updatePrograms( const QString &amp; sInstrumentName, int iBank, int iProg )</function>
+    <function access="private" specifier="non virtual" returnType="qtractorMidiBus *">midiBus()</function>
+    <function access="private" specifier="non virtual">updateInstruments()</function>
+    <function access="private" specifier="non virtual">updateChannel( int iChannel )</function>
+    <function access="private" specifier="non virtual">updateBanks( const QString &amp; sInstrumentName, int iBank, int iProg )</function>
+    <function access="private" specifier="non virtual">updatePrograms( const QString &amp; sInstrumentName, int iBank, int iProg )</function>
+    <function access="private" specifier="non virtual">updateColorItem( QComboBox *pComboBox, const QColor &amp; color )</function>
+    <function access="private" specifier="non virtual" returnType="const QColor &amp;">colorItem( QComboBox *pComboBox )</function>
 </functions>
 <pixmapinproject/>
 <layoutdefaults spacing="4" margin="8"/>

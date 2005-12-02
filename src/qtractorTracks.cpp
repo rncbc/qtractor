@@ -347,15 +347,6 @@ void qtractorTracks::selectAll ( bool bSelect )
 }
 
 
-// Generate a default track color.
-QColor qtractorTracks::trackColor ( int iTrack )
-{
-	int c[3] = { 0xff, 0xcc, 0x99 };
-
-	return QColor(c[iTrack % 3], c[(iTrack / 3) % 3], c[(iTrack / 9) % 3]);
-}
-
-
 // Adds a new track into session.
 qtractorTrack *qtractorTracks::addTrack (void)
 {
@@ -369,7 +360,7 @@ qtractorTrack *qtractorTracks::addTrack (void)
 
 	// Create a new track right away...
 	const int iTrack = pSession->tracks().count() + 1;
-	const QColor color = trackColor(iTrack);
+	const QColor color = qtractorTrack::trackColor(iTrack);
 	qtractorTrack *pTrack = new qtractorTrack(pSession, qtractorTrack::Audio);
 	pTrack->setTrackName(QString("Track %1").arg(iTrack));
 	pTrack->setBackground(color);
@@ -488,6 +479,8 @@ bool qtractorTracks::editTrack ( qtractorTrack *pTrack )
 	// Refresh track item, at least the names...
 	pTrackItem->setText(qtractorTrackList::Name, pTrack->trackName());
 	pTrackItem->setText(qtractorTrackList::Bus,  pTrack->busName());
+	// Refresh view.
+	updateContents(true);
 
 	// Notify who's watching...
 	contentsChangeNotify();
@@ -514,7 +507,7 @@ bool qtractorTracks::addAudioTracks ( QStringList files )
 		const QString& sPath = *iter;
 		// Create a new track right away...
 		const int iTrack = pSession->tracks().count() + 1;
-		const QColor color = trackColor(iTrack);
+		const QColor color = qtractorTrack::trackColor(iTrack);
 		qtractorTrack *pTrack
 			= new qtractorTrack(pSession, qtractorTrack::Audio);
 	//	pTrack->setTrackName(QFileInfo(sPath).baseName());
@@ -601,7 +594,7 @@ bool qtractorTracks::addMidiTracks ( QStringList files )
 		for (int iTrackChannel = 0; iTrackChannel < iTracks; iTrackChannel++) {
 			// Create a new track right away...
 			const int iTrack = pSession->tracks().count() + 1;
-			const QColor color = trackColor(iTrack);
+			const QColor color = qtractorTrack::trackColor(iTrack);
 			qtractorTrack *pTrack
 				= new qtractorTrack(pSession, qtractorTrack::Midi);
 		//	pTrack->setTrackName(QFileInfo(sPath).baseName());

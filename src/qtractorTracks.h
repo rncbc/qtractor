@@ -92,9 +92,6 @@ public:
 	void selectionChangeNotify();
 	void contentsChangeNotify();
 
-	// Generate a default track color.
-	static QColor trackColor(int iTrack);
-
 protected:
 
 	// Common zoom factor settlers.

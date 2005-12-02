@@ -127,6 +127,9 @@ public:
 	void setForeground(const QColor& fg);
 	const QColor& foreground() const;
 
+	// Generate a default track color.
+	static QColor trackColor(int iTrack);
+
 	// Track special process cycle executive.
 	void process(qtractorClip *pClip,
 		unsigned long iFrameStart, unsigned long iFrameEnd);
