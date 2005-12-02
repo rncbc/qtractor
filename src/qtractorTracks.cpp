@@ -363,6 +363,7 @@ qtractorTrack *qtractorTracks::addTrack (void)
 	const QColor color = qtractorTrack::trackColor(iTrack);
 	qtractorTrack *pTrack = new qtractorTrack(pSession, qtractorTrack::Audio);
 	pTrack->setTrackName(QString("Track %1").arg(iTrack));
+	pTrack->setMidiChannel(pSession->midiTag() % 16);
 	pTrack->setBackground(color);
 	pTrack->setForeground(color.dark());
 	

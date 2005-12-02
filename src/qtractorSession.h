@@ -180,6 +180,7 @@ public:
 	qtractorAudioPeakFactory *audioPeakFactory() const;
 
 	// MIDI track tagging specifics.
+	unsigned short midiTag() const;
 	void acquireMidiTag(qtractorTrack *pTrack);
 	void releaseMidiTag(qtractorTrack *pTrack);
 

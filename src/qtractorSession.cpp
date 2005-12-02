@@ -641,6 +641,11 @@ qtractorAudioPeakFactory *qtractorSession::audioPeakFactory (void) const
 
 
 // MIDI track tagging specifics.
+unsigned short qtractorSession::midiTag (void) const
+{
+	return m_iMidiTag;
+}
+
 void qtractorSession::acquireMidiTag ( qtractorTrack *pTrack )
 {
 	if (pTrack->midiTag() > 0)
