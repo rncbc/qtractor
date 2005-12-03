@@ -117,7 +117,7 @@ public:
 
 	// Direct MIDI bank/program selection helper.
 	void setPatch(unsigned short iChannel, const QString& sInstrumentName,
-		int iBank, int iProg, int iBanklSelMethod = 0);
+		int iBank, int iProg, int iBankSelMethod = 0);
 
 	// Document element methods.
 	bool loadElement(qtractorSessionDocument *pDocument,

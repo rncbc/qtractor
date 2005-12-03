@@ -217,6 +217,7 @@ void qtractorTrackForm::accept (void)
 		m_pTrack->setBusName(BusNameComboBox->currentText());
 		// Special case for MIDI settings...
 		m_pTrack->setMidiChannel(ChannelSpinBox->value() - 1);
+		m_pTrack->setMidiBankSelMethod(BankSelMethodComboBox->currentItem());
 		m_pTrack->setMidiBank(m_banks[BankComboBox->currentItem()]);
 		m_pTrack->setMidiProgram(m_progs[ProgComboBox->currentItem()]);
 		// View colors...
@@ -350,7 +351,7 @@ void qtractorTrackForm::updateChannel ( int iChannel )
 
 	// Select instrument...
 	int iInstrumentIndex = 0;
-	QListBoxItem *pItem	= InstrumentComboBox->listBox()->findItem(
+	QListBoxItem *pItem = InstrumentComboBox->listBox()->findItem(
 		sInstrumentName, Qt::ExactMatch | Qt::CaseSensitive);
 	if (pItem)
 		iInstrumentIndex = InstrumentComboBox->listBox()->index(pItem);
@@ -604,10 +605,10 @@ void qtractorTrackForm::progChanged( int iProgIndex )
 
 	// Patch parameters...
 	unsigned short iChannel = ChannelSpinBox->value() - 1;
-	const QString& sInstrumentName = pMidiBus->instrumentName(iChannel);
+	const QString& sInstrumentName = InstrumentComboBox->currentText();
+	int iBankSelMethod = BankSelMethodComboBox->currentItem();
 	int iBank = m_banks[BankComboBox->currentItem()];
 	int iProg = m_progs[iProgIndex];
-	int iBankSelMethod = BankSelMethodComboBox->currentItem();
 
 	// Patch it directly...
 	pMidiBus->setPatch(iChannel, sInstrumentName, iBank, iProg, iBankSelMethod);
