@@ -67,8 +67,9 @@ void qtractorTrack::clear (void)
 {
 	m_clips.clear();
 
-	m_iMidiBank    = -1;
-	m_iMidiProgram = -1;
+	m_iMidiBankSelMethod = -1;
+	m_iMidiBank          = -1;
+	m_iMidiProgram       = -1;
 
 	m_bRecord = false;
 	m_bMute   = false;
@@ -227,6 +228,18 @@ void qtractorTrack::setMidiChannel ( unsigned short iMidiChannel )
 unsigned short qtractorTrack::midiChannel (void) const
 {
 	return m_iMidiChannel;
+}
+
+
+// MIDI specific: bank accessors.
+void qtractorTrack::setMidiBankSelMethod ( int iMidiBankSelMethod )
+{
+	m_iMidiBankSelMethod = iMidiBankSelMethod;
+}
+
+int qtractorTrack::midiBankSelMethod (void) const
+{
+	return m_iMidiBankSelMethod;
 }
 
 
@@ -427,12 +440,12 @@ void qtractorTrack::setMidiPatch ( qtractorInstrumentList *pInstruments )
 	if (pMidiBus == NULL)
 	    return;
 
-	int iBankSelMethod = 0;
-	const qtractorMidiBus::Patch& patch = pMidiBus->patch(m_iMidiChannel);
-	if (!patch.name.isEmpty())
-		iBankSelMethod = (*pInstruments)[patch.name].bankSelMethod();
+	int iBankSelMethod = m_iMidiBankSelMethod;
+	const QString& sInstrumentName = pMidiBus->instrumentName(m_iMidiChannel);
+	if (!sInstrumentName.isEmpty() && iBankSelMethod < 0)
+		iBankSelMethod = (*pInstruments)[sInstrumentName].bankSelMethod();
 
-	pMidiBus->setPatch(m_iMidiChannel, patch.name,
+	pMidiBus->setPatch(m_iMidiChannel, sInstrumentName,
 		m_iMidiBank, m_iMidiProgram, iBankSelMethod);
 }
 
@@ -468,6 +481,8 @@ bool qtractorTrack::loadElement ( qtractorSessionDocument *pDocument,
 					qtractorTrack::setBusName(eProp.text());
 				else if (eProp.tagName() == "midi-channel")
 					qtractorTrack::setMidiChannel(eProp.text().toUShort());
+				else if (eProp.tagName() == "midi-bank-sel-method")
+					qtractorTrack::setMidiBankSelMethod(eProp.text().toInt());
 				else if (eProp.tagName() == "midi-bank")
 					qtractorTrack::setMidiBank(eProp.text().toInt());
 				else if (eProp.tagName() == "midi-program")
@@ -562,6 +577,10 @@ bool qtractorTrack::saveElement ( qtractorSessionDocument *pDocument,
 	if (qtractorTrack::trackType() == qtractorTrack::Midi) {
 		pDocument->saveTextElement("midi-channel",
 			QString::number(qtractorTrack::midiChannel()), &eProps);
+		if (qtractorTrack::midiBankSelMethod() >= 0) {
+			pDocument->saveTextElement("midi-bank-sel-method",
+				QString::number(qtractorTrack::midiBankSelMethod()), &eProps);
+		}
 		if (qtractorTrack::midiBank() >= 0) {
 			pDocument->saveTextElement("midi-bank",
 				QString::number(qtractorTrack::midiBank()), &eProps);

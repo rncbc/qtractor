@@ -111,19 +111,8 @@ public:
 	bool open();
 	void close();
 
-	// Channel map payload.
-	struct Patch
-	{
-		// Default payload constructor.
-		Patch() : bank(-1), prog(-1) {}
-		// Payload members.
-		QString name;
-		int     bank;
-		int     prog;
-	};
-
-	// Channel map accessor.
-	Patch& patch(unsigned short iChannel)
+	// Instrument channel map accessor.
+	const QString& instrumentName(unsigned short iChannel)
 		{ return m_map[iChannel & 0x0f]; }
 
 	// Direct MIDI bank/program selection helper.
@@ -142,7 +131,7 @@ private:
 	int m_iAlsaPort;
 
 	// Channel mapper.
- 	QMap<int, Patch> m_map;
+ 	QMap<int, QString> m_map;
 };
 
 

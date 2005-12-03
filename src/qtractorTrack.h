@@ -93,6 +93,10 @@ public:
 	void setMidiChannel(unsigned short iMidiChannel);
 	unsigned short midiChannel() const;
 
+	// MIDI specific: bank select method acessors (optional).
+	void setMidiBankSelMethod(int iMidiBankSelMethod);
+	int midiBankSelMethod() const;
+
 	// MIDI specific: bank acessors (optional).
 	void setMidiBank(int iMidiBank);
 	int midiBank() const;
@@ -162,6 +166,7 @@ private:
 	unsigned short m_iMidiTag;      // MIDI specific: track-tag;
 	unsigned short m_iMidiChannel;  // MIDI specific: channel;
 
+	int m_iMidiBankSelMethod;       // MIDI specific: bank select method (opt);
 	int m_iMidiBank;                // MIDI specific: bank (optional);
 	int m_iMidiProgram;             // MIDI specific: program (optional);
 

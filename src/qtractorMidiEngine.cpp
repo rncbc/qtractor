@@ -720,12 +720,8 @@ void qtractorMidiBus::setPatch ( unsigned short iChannel,
 #endif
 
 	// Update patch mapping...
-	if (!sInstrumentName.isEmpty()) {
-		Patch& patch = qtractorMidiBus::patch(iChannel);
-		patch.name = sInstrumentName;
-		patch.bank = iBank;
-		patch.prog = iProg;
-	}
+	if (!sInstrumentName.isEmpty())
+		m_map[iChannel & 0x0f] = sInstrumentName;
 
 	// Don't do anything else if engine
 	// has not been activated...
@@ -789,7 +785,6 @@ bool qtractorMidiBus::loadElement ( qtractorSessionDocument * /* pDocument */,
 
 		// Load (other) track properties..
 		if (eChild.tagName() == "midi-patch") {
-			Patch patch;
 			unsigned short iChannel = eChild.attribute("channel").toUShort();
 			for (QDomNode nPatch = eChild.firstChild();
 					!nPatch.isNull();
@@ -798,15 +793,10 @@ bool qtractorMidiBus::loadElement ( qtractorSessionDocument * /* pDocument */,
 				QDomElement ePatch = nPatch.toElement();
 				if (ePatch.isNull())
 					continue;
+				// Add this one to map...
 				if (ePatch.tagName() == "midi-instrument")
-					patch.name = ePatch.text();
-				else if (ePatch.tagName() == "midi-bank")
-					patch.bank = ePatch.text().toInt();
-				else if (ePatch.tagName() == "midi-program")
-					patch.prog = ePatch.text().toInt();
+					m_map[iChannel & 0x0f] = ePatch.text();
 			}
-			// Add this one to map...
-			m_map[iChannel & 0x0f] = patch;
 		}
 	}
 
@@ -818,22 +808,14 @@ bool qtractorMidiBus::saveElement ( qtractorSessionDocument *pDocument,
 	QDomElement *pElement )
 {
 	// Save map items...
-	QMap<int, Patch>::Iterator iter;
+	QMap<int, QString>::Iterator iter;
 	for (iter = m_map.begin(); iter != m_map.end(); ++iter) {
-		const Patch& patch = iter.data();
+		const QString& sInstrumentName = iter.data();
 		QDomElement ePatch = pDocument->document()->createElement("midi-patch");
 		ePatch.setAttribute("channel", QString::number(iter.key()));
-		if (!patch.name.isEmpty()) {
+		if (!sInstrumentName.isEmpty()) {
 			pDocument->saveTextElement("midi-instrument",
-				patch.name, &ePatch);
-		}
-		if (patch.bank >= 0) {
-			pDocument->saveTextElement("midi-bank",
-				QString::number(patch.bank), &ePatch);
-		}
-		if (patch.prog >= 0) {
-			pDocument->saveTextElement("midi-program",
-				QString::number(patch.prog), &ePatch);
+				sInstrumentName, &ePatch);
 		}
 		pElement->appendChild(ePatch);
 	}

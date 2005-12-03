@@ -366,7 +366,7 @@ qtractorTrack *qtractorTracks::addTrack (void)
 	pTrack->setMidiChannel(pSession->midiTag() % 16);
 	pTrack->setBackground(color);
 	pTrack->setForeground(color.dark());
-	
+
 	// Open dialog for settings...
 	qtractorTrackForm trackForm(this);
 	trackForm.setInstruments(m_pMainForm->instruments());

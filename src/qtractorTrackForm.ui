@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
 <class>qtractorTrackForm</class>
 <comment>qtractor - A MIDI/Audio multi-track sequencer.
 
@@ -28,8 +28,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>367</width>
-            <height>330</height>
+            <width>426</width>
+            <height>389</height>
         </rect>
     </property>
     <property name="sizePolicy">
@@ -160,7 +160,7 @@
                 <property name="name">
                     <cstring>unnamed</cstring>
                 </property>
-                <widget class="QLabel" row="2" column="0">
+                <widget class="QLabel" row="3" column="0">
                     <property name="name">
                         <cstring>ProgTextLabel</cstring>
                     </property>
@@ -171,7 +171,7 @@
                         <cstring>ProgComboBox</cstring>
                     </property>
                 </widget>
-                <widget class="QLabel" row="1" column="0">
+                <widget class="QLabel" row="2" column="0">
                     <property name="name">
                         <cstring>BankTextLabel</cstring>
                     </property>
@@ -180,6 +180,17 @@
                     </property>
                     <property name="buddy" stdset="0">
                         <cstring>BankComboBox</cstring>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="1" column="0" rowspan="1" colspan="2">
+                    <property name="name">
+                        <cstring>BankTextLabel</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Bank &amp;Select Method:</string>
+                    </property>
+                    <property name="buddy" stdset="0">
+                        <cstring>BankSelMethodComboBox</cstring>
                     </property>
                 </widget>
                 <widget class="QLabel" row="0" column="0">
@@ -223,7 +234,23 @@
                         <string>MIDI Patch: Instrument</string>
                     </property>
                 </widget>
-                <widget class="QComboBox" row="1" column="1" rowspan="1" colspan="2">
+                <widget class="QComboBox" row="1" column="2">
+                    <property name="name">
+                        <cstring>BankSelMethodComboBox</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>3</hsizetype>
+                            <vsizetype>0</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="toolTip" stdset="0">
+                        <string>MIDI Patch: Bank Select Method</string>
+                    </property>
+                </widget>
+                <widget class="QComboBox" row="2" column="1" rowspan="1" colspan="2">
                     <property name="name">
                         <cstring>BankComboBox</cstring>
                     </property>
@@ -239,7 +266,7 @@
                         <string>MIDI Patch: Bank</string>
                     </property>
                 </widget>
-                <widget class="QComboBox" row="2" column="1" rowspan="1" colspan="2">
+                <widget class="QComboBox" row="3" column="1" rowspan="1" colspan="2">
                     <property name="name">
                         <cstring>ProgComboBox</cstring>
                     </property>
@@ -554,6 +581,7 @@
     <tabstop>BusNameComboBox</tabstop>
     <tabstop>ChannelSpinBox</tabstop>
     <tabstop>InstrumentComboBox</tabstop>
+    <tabstop>BankSelMethodComboBox</tabstop>
     <tabstop>BankComboBox</tabstop>
     <tabstop>ProgComboBox</tabstop>
     <tabstop>ForegroundColorComboBox</tabstop>
@@ -576,21 +604,23 @@
     <variable access="private">qtractorTrack *m_pTrack;</variable>
     <variable access="private">QMap &lt; int, int &gt; m_banks;</variable>
     <variable access="private">QMap &lt; int, int &gt; m_progs;</variable>
+	<variable access="private">int m_iDirtySetup;</variable>
     <variable access="private">int m_iDirtyCount;</variable>
 </variables>
 <slots>
     <slot specifier="non virtual">accept()</slot>
     <slot specifier="non virtual">reject()</slot>
+    <slot specifier="non virtual">stabilizeForm()</slot>
     <slot specifier="non virtual">changed()</slot>
     <slot specifier="non virtual">trackTypeChanged( int iTrackType )</slot>
     <slot specifier="non virtual">busNameChanged( const QString &amp; sBusName )</slot>
     <slot specifier="non virtual">channelChanged( int iChannel )</slot>
     <slot specifier="non virtual">instrumentChanged( const QString &amp; sInstrumentName )</slot>
+    <slot specifier="non virtual">bankSelMethodChanged( int iBankSelMethod )</slot>
     <slot specifier="non virtual">bankChanged( int iBankIndex )</slot>
     <slot specifier="non virtual">progChanged( int iProgIndex )</slot>
     <slot specifier="non virtual">selectForegroundColor()</slot>
     <slot specifier="non virtual">selectBackgroundColor()</slot>
-    <slot specifier="non virtual">stabilizeForm()</slot>
 </slots>
 <functions>
     <function access="private" specifier="non virtual">init()</function>
@@ -601,6 +631,7 @@
     <function specifier="non virtual" returnType="qtractorTrack *">track()</function>
     <function access="private" specifier="non virtual" returnType="qtractorMidiBus *">midiBus()</function>
     <function access="private" specifier="non virtual">updateInstruments()</function>
+	<function access="private" specifier="non virtual">updateTrackType( int iTrackType )</function>
     <function access="private" specifier="non virtual">updateChannel( int iChannel )</function>
     <function access="private" specifier="non virtual">updateBanks( const QString &amp; sInstrumentName, int iBank, int iProg )</function>
     <function access="private" specifier="non virtual">updatePrograms( const QString &amp; sInstrumentName, int iBank, int iProg )</function>

@@ -45,7 +45,7 @@ public:
 
 	// Constructor.
 	qtractorColorItem ( const QColor& color )
-	    : QListBoxItem(), m_color(color) { setCustomHighlighting(true); }
+		: QListBoxItem(), m_color(color) { setCustomHighlighting(true); }
 
 	// Color accessors.
 	void setColor(const QColor& color) { m_color = color; }
@@ -54,11 +54,11 @@ public:
 protected:
 
 	// Custom paint method.
-    void paint(QPainter *pPainter);
+	void paint(QPainter *pPainter);
 
 	// Default item extents
-    int width  (const QListBox*) const { return 32; }
-    int height (const QListBox*) const { return 16; }
+	int width  (const QListBox*) const { return 32; }
+	int height (const QListBox*) const { return 16; }
 
 private:
 
@@ -70,16 +70,16 @@ private:
 // ListBox item custom highlighting method.
 void qtractorColorItem::paint ( QPainter *pPainter )
 {
-    // Evil trick: find out whether we are painted onto our listbox...
-    QListBox *pListBox = listBox();
+	// Evil trick: find out whether we are painted onto our listbox...
+	QListBox *pListBox = listBox();
 	int w = pListBox->viewport()->width();
 	int h = height(pListBox);
 
-    QRect rect(0, 0, w, h);
-    if (isSelected())
+	QRect rect(0, 0, w, h);
+	if (isSelected())
 		pPainter->eraseRect(rect);
 
-    pPainter->fillRect(1, 1, w - 2, h - 2, m_color);
+	pPainter->fillRect(1, 1, w - 2, h - 2, m_color);
 }
 
 
@@ -90,18 +90,27 @@ void qtractorTrackForm::init (void)
 	m_pInstruments = NULL;
 	m_pTrack = NULL;
 
+	// Bank select methods.
+	const QPixmap& pixmap = QPixmap::fromMimeSource("itemProperty.png");
+	BankSelMethodComboBox->clear();
+	BankSelMethodComboBox->insertItem(pixmap, tr("Normal"));
+	BankSelMethodComboBox->insertItem(pixmap, tr("Bank MSB"));
+	BankSelMethodComboBox->insertItem(pixmap, tr("Bank LSB"));
+	BankSelMethodComboBox->insertItem(pixmap, tr("Patch"));
+
 	// Custom colors.
 	ForegroundColorComboBox->clear();
 	BackgroundColorComboBox->clear();
 	for (int i = 1; i < 28; i++) {
 		const QColor color = qtractorTrack::trackColor(i);
 		ForegroundColorComboBox->listBox()->insertItem(
-		    new qtractorColorItem(color.dark()));
+			new qtractorColorItem(color.dark()));
 		BackgroundColorComboBox->listBox()->insertItem(
-		    new qtractorColorItem(color));
+			new qtractorColorItem(color));
 	}
 
 	// Initialize dirty control state.
+	m_iDirtySetup = 0;
 	m_iDirtyCount = 0;
 
 	// Try to restore old window positioning.
@@ -137,6 +146,9 @@ void qtractorTrackForm::setTrack ( qtractorTrack *pTrack )
 	// Set reference descriptor.
 	m_pTrack = pTrack;
 
+    // Avoid dirty this all up.
+    m_iDirtySetup++;
+
 	// Initialize dialog widgets...
 	TrackNameTextEdit->setText(m_pTrack->trackName());
 	int iTrackType = 0;
@@ -151,26 +163,29 @@ void qtractorTrackForm::setTrack ( qtractorTrack *pTrack )
 			break;
 	}
 	TrackTypeGroup->setButton(iTrackType);
-	trackTypeChanged(iTrackType);
+	updateTrackType(iTrackType);
+
 	if (!m_pTrack->busName().isEmpty())
 		BusNameComboBox->setCurrentText(m_pTrack->busName());
+
 	ChannelSpinBox->setValue(m_pTrack->midiChannel() + 1);
 
-	// Make dependant widgets get real...
-	updatePrograms(InstrumentComboBox->currentText(),
+	updateChannel(ChannelSpinBox->value());
+	updateBanks(InstrumentComboBox->currentText(),
 		m_pTrack->midiBank(), m_pTrack->midiProgram());
 
 	// Update colors...
 	updateColorItem(ForegroundColorComboBox, m_pTrack->foreground());
 	updateColorItem(BackgroundColorComboBox, m_pTrack->background());
 
-	// Backup clean.
-	m_iDirtyCount = 0;
-
 	// Cannot change track type, if track has clips already...
 	bool bEnabled = (m_pTrack->clips().count() == 0);
 	AudioRadioButton->setEnabled(bEnabled);
 	MidiRadioButton->setEnabled(bEnabled);
+
+	// Backup clean.
+	m_iDirtyCount = 0;
+	m_iDirtySetup--;
 
 	// Done.
 	stabilizeForm();
@@ -201,17 +216,9 @@ void qtractorTrackForm::accept (void)
 		}
 		m_pTrack->setBusName(BusNameComboBox->currentText());
 		// Special case for MIDI settings...
-		unsigned short iChannel = ChannelSpinBox->value() - 1;
-		m_pTrack->setMidiChannel(iChannel);
-		qtractorMidiBus *pMidiBus = midiBus();
-		if (pMidiBus) {
-			qtractorMidiBus::Patch& patch = pMidiBus->patch(iChannel);
-			patch.name = InstrumentComboBox->currentText();
-			patch.bank = m_banks[BankComboBox->currentItem()];
-			patch.prog = m_progs[ProgComboBox->currentItem()];
-			m_pTrack->setMidiBank(patch.bank);
-			m_pTrack->setMidiProgram(patch.prog);
-		}
+		m_pTrack->setMidiChannel(ChannelSpinBox->value() - 1);
+		m_pTrack->setMidiBank(m_banks[BankComboBox->currentItem()]);
+		m_pTrack->setMidiProgram(m_progs[ProgComboBox->currentItem()]);
 		// View colors...
 		m_pTrack->setForeground(colorItem(ForegroundColorComboBox));
 		m_pTrack->setBackground(colorItem(BackgroundColorComboBox));
@@ -273,7 +280,7 @@ qtractorMidiBus *qtractorTrackForm::midiBus (void)
 	// MIDI engine...
 	qtractorMidiEngine *pMidiEngine = m_pTrack->session()->midiEngine();
 	if (pMidiEngine == NULL)
-	    return NULL;
+		return NULL;
 
 	// MIDI bus...
 	const QString& sBusName = BusNameComboBox->currentText();
@@ -296,12 +303,38 @@ void qtractorTrackForm::updateInstruments (void)
 }
 
 
+// Update track type and busses.
+void qtractorTrackForm::updateTrackType ( int iTrackType )
+{
+	// Make changes due to track type change.
+	qtractorEngine *pEngine = NULL;
+	switch (iTrackType) {
+	case 0: // Audio track...
+		pEngine = m_pTrack->session()->audioEngine();
+		MidiGroupBox->setEnabled(false);
+		break;
+	case 1: // Midi track...
+		pEngine = m_pTrack->session()->midiEngine();
+		MidiGroupBox->setEnabled(true);
+		break;
+	}
+
+	BusNameComboBox->clear();
+	if (pEngine) {
+		for (qtractorBus *pBus = pEngine->busses().first();
+				pBus; pBus = pBus->next()) {
+			BusNameComboBox->insertItem(pBus->busName());
+		}
+	}
+}
+
+
 // Refresh channel instrument banks list.
 void qtractorTrackForm::updateChannel ( int iChannel )
 {
 	// Regular channel offset
 	if (--iChannel < 0)
-	    return;
+		return;
 
 	// MIDI bus...
 	qtractorMidiBus *pMidiBus = midiBus();
@@ -313,18 +346,15 @@ void qtractorTrackForm::updateChannel ( int iChannel )
 #endif
 
 	// MIDI channel patch...
-	const qtractorMidiBus::Patch& patch = pMidiBus->patch(iChannel);
+	const QString& sInstrumentName = pMidiBus->instrumentName(iChannel);
 
 	// Select instrument...
 	int iInstrumentIndex = 0;
 	QListBoxItem *pItem	= InstrumentComboBox->listBox()->findItem(
-		patch.name, Qt::ExactMatch | Qt::CaseSensitive);
+		sInstrumentName, Qt::ExactMatch | Qt::CaseSensitive);
 	if (pItem)
 		iInstrumentIndex = InstrumentComboBox->listBox()->index(pItem);
 	InstrumentComboBox->setCurrentItem(iInstrumentIndex);
-
-	// Update instrument, bank and program...
-	updateBanks(InstrumentComboBox->currentText(), patch.bank, patch.prog);
 }
 
 
@@ -453,7 +483,7 @@ void qtractorTrackForm::updateColorItem ( QComboBox *pComboBox,
 	int iItem = 0;
 	for ( ; iItem < pComboBox->count(); iItem++) {
 		qtractorColorItem *pItem
-		    = static_cast<qtractorColorItem *> (pComboBox->listBox()->item(iItem));
+			= static_cast<qtractorColorItem *> (pComboBox->listBox()->item(iItem));
 		if (pItem->color() == color) {
 			pComboBox->setCurrentItem(iItem);
 			return;
@@ -461,7 +491,7 @@ void qtractorTrackForm::updateColorItem ( QComboBox *pComboBox,
 	}
 	// Nope, we'll add it custom...
 	pComboBox->listBox()->insertItem(new qtractorColorItem(color));
-    pComboBox->setCurrentItem(iItem);
+	pComboBox->setCurrentItem(iItem);
 }
 
 
@@ -470,7 +500,7 @@ const QColor& qtractorTrackForm::colorItem ( QComboBox *pComboBox )
 {
 	int iItem = pComboBox->currentItem();
 	qtractorColorItem *pItem
-	    = static_cast<qtractorColorItem *> (pComboBox->listBox()->item(iItem));
+		= static_cast<qtractorColorItem *> (pComboBox->listBox()->item(iItem));
 	return pItem->color();
 }
 
@@ -478,6 +508,9 @@ const QColor& qtractorTrackForm::colorItem ( QComboBox *pComboBox )
 // Make changes due to track name.
 void qtractorTrackForm::changed (void)
 {
+	if (m_iDirtySetup > 0)
+		return;
+
 	m_iDirtyCount++;
 	stabilizeForm();
 }
@@ -486,34 +519,20 @@ void qtractorTrackForm::changed (void)
 // Make changes due to track type.
 void qtractorTrackForm::trackTypeChanged ( int iTrackType )
 {
-	// Make changes due to track type change.
-	qtractorEngine *pEngine = NULL;
-	switch (iTrackType) {
-	case 0: // Audio track...
-		pEngine = m_pTrack->session()->audioEngine();
-		MidiGroupBox->setEnabled(false);
-		break;
-	case 1: // Midi track...
-		pEngine = m_pTrack->session()->midiEngine();
-		MidiGroupBox->setEnabled(true);
-		break;
-	}
+	if (m_iDirtySetup > 0)
+		return;
 
-	BusNameComboBox->clear();
-	if (pEngine) {
-		for (qtractorBus *pBus = pEngine->busses().first();
-				pBus; pBus = pBus->next()) {
-			BusNameComboBox->insertItem(pBus->busName());
-		}
-	}
-
+	updateTrackType(iTrackType);
 	busNameChanged(BusNameComboBox->currentText());
 }
 
 
 // Make changes due to bus name.
-void qtractorTrackForm::busNameChanged ( const QString& /* sBusName */ )
+void qtractorTrackForm::busNameChanged ( const QString& sBusName )
 {
+	if (m_iDirtySetup > 0)
+		return;
+
 	channelChanged(ChannelSpinBox->value());
 }
 
@@ -521,7 +540,16 @@ void qtractorTrackForm::busNameChanged ( const QString& /* sBusName */ )
 // Make changes due to MIDI channel.
 void qtractorTrackForm::channelChanged ( int iChannel )
 {
+	if (m_iDirtySetup > 0)
+		return;
+
+	// First updtae channel instrument mapping...
 	updateChannel(iChannel);
+
+	// Then update bank and program...
+	updateBanks(InstrumentComboBox->currentText(),
+		m_banks[BankComboBox->currentItem()],
+		m_progs[ProgComboBox->currentItem()]);
 
 	progChanged(ProgComboBox->currentItem());
 }
@@ -530,8 +558,22 @@ void qtractorTrackForm::channelChanged ( int iChannel )
 // Make changes due to MIDI instrument.
 void qtractorTrackForm::instrumentChanged ( const QString& sInstrumentName )
 {
-	updateBanks(sInstrumentName, m_banks[BankComboBox->currentItem()],
+	if (m_iDirtySetup > 0)
+		return;
+
+	updateBanks(sInstrumentName,
+		m_banks[BankComboBox->currentItem()],
 		m_progs[ProgComboBox->currentItem()]);
+
+	progChanged(ProgComboBox->currentItem());
+}
+
+
+// Make changes due to MIDI bank selection method.
+void qtractorTrackForm::bankSelMethodChanged ( int /* iBankSelMethod */ )
+{
+	if (m_iDirtySetup > 0)
+		return;
 
 	progChanged(ProgComboBox->currentItem());
 }
@@ -540,6 +582,9 @@ void qtractorTrackForm::instrumentChanged ( const QString& sInstrumentName )
 // Make changes due to MIDI bank.
 void qtractorTrackForm::bankChanged ( int iBankIndex )
 {
+	if (m_iDirtySetup > 0)
+		return;
+
 	updatePrograms(InstrumentComboBox->currentText(), m_banks[iBankIndex],
 		m_progs[ProgComboBox->currentItem()]);
 
@@ -550,22 +595,23 @@ void qtractorTrackForm::bankChanged ( int iBankIndex )
 // Make changes due to MIDI program.
 void qtractorTrackForm::progChanged( int iProgIndex )
 {
+	if (m_iDirtySetup > 0)
+		return;
+
 	qtractorMidiBus *pMidiBus = midiBus();
 	if (pMidiBus == NULL)
-	    return;
+		return;
 
 	// Patch parameters...
 	unsigned short iChannel = ChannelSpinBox->value() - 1;
-	const QString& sInstrumentName = InstrumentComboBox->currentText();
+	const QString& sInstrumentName = pMidiBus->instrumentName(iChannel);
 	int iBank = m_banks[BankComboBox->currentItem()];
 	int iProg = m_progs[iProgIndex];
-	int iBankSelMethod = 0;
-	if (!sInstrumentName.isEmpty())
-		iBankSelMethod = (*m_pInstruments)[sInstrumentName].bankSelMethod();
+	int iBankSelMethod = BankSelMethodComboBox->currentItem();
 
 	// Patch it directly...
 	pMidiBus->setPatch(iChannel, sInstrumentName, iBank, iProg, iBankSelMethod);
-	
+
 	changed();
 }
 
