@@ -63,7 +63,7 @@ void qtractorSessionForm::setSession ( qtractorSession *pSession )
 	DescriptionTextEdit->setText(m_pSession->description());
 	// Time properties...
 	SampleRateComboBox->setCurrentText(QString::number(m_pSession->sampleRate()));
-	TempoSpinBox->setValue(int(::ceil(m_pSession->tempo())));
+	TempoSpinBox->setValueFloat(m_pSession->tempo());
 	BeatsPerBarSpinBox->setValue(int(m_pSession->beatsPerBar()));
 	TicksPerBeatSpinBox->setValue(int(m_pSession->ticksPerBeat()));
 	// View properties...
@@ -96,7 +96,7 @@ void qtractorSessionForm::accept (void)
 		m_pSession->setDescription(DescriptionTextEdit->text());
 		// Time properties...
 		m_pSession->setSampleRate(SampleRateComboBox->currentText().toUInt());
-		m_pSession->setTempo(float(TempoSpinBox->value()));
+		m_pSession->setTempo(TempoSpinBox->valueFloat());
 		m_pSession->setBeatsPerBar(BeatsPerBarSpinBox->value());
 		m_pSession->setTicksPerBeat(TicksPerBeatSpinBox->value());
 		// View properties...

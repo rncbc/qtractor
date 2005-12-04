@@ -87,15 +87,12 @@
                         <bool>true</bool>
                     </property>
                     <property name="toolTip" stdset="0">
-                        <string>Sample rate</string>
+                        <string>Sample rate (Hz)</string>
                     </property>
                 </widget>
                 <widget class="QSpinBox" row="3" column="1">
                     <property name="name">
                         <cstring>TicksPerBeatSpinBox</cstring>
-                    </property>
-                    <property name="suffix">
-                        <string> ticks</string>
                     </property>
                     <property name="maxValue">
                         <number>600</number>
@@ -113,21 +110,15 @@
                         <string>Resolution (ticks/beat; TPQN)</string>
                     </property>
                 </widget>
-                <widget class="QSpinBox" row="1" column="1">
+                <widget class="qtractorSpinBox" row="1" column="1">
                     <property name="name">
                         <cstring>TempoSpinBox</cstring>
                     </property>
-                    <property name="suffix">
-                        <string> bpm</string>
-                    </property>
                     <property name="maxValue">
-                        <number>300</number>
+                        <number>99999</number>
                     </property>
                     <property name="minValue">
-                        <number>30</number>
-                    </property>
-                    <property name="value">
-                        <number>120</number>
+                        <number>0</number>
                     </property>
                     <property name="toolTip" stdset="0">
                         <string>Tempo (BPM)</string>
@@ -327,9 +318,6 @@
                 <widget class="QSpinBox" row="1" column="1">
                     <property name="name">
                         <cstring>PixelsPerBeatSpinBox</cstring>
-                    </property>
-                    <property name="suffix">
-                        <string> px</string>
                     </property>
                     <property name="maxValue">
                         <number>240</number>
@@ -554,6 +542,9 @@
     <tabstop>OkPushButton</tabstop>
     <tabstop>CancelPushButton</tabstop>
 </tabstops>
+<includes>
+	<include location="local" impldecl="in declaration">qtractorSpinBox.h</include>
+</includes>
 <forwards>
     <forward>class qtractorSession;</forward>
 </forwards>
