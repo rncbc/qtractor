@@ -72,12 +72,12 @@ bool qtractorAudioVorbisFile::open ( const char *pszName, int iMode )
 		return false;
 	}
 
-	// Set open mode (deterministically).
-	m_iMode = iMode;
-
 	// Grab the vorbis file info...
 	m_ovinfo = ::ov_info(&m_ovfile, -1);
 	m_ovsect = 0;
+
+	// Set open mode (deterministically).
+	m_iMode = iMode;
 
 	return true;
 }

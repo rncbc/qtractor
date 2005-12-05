@@ -22,6 +22,7 @@
 #ifndef __qtractorAudioFile_h
 #define __qtractorAudioFile_h
 
+#include "qtractorAbout.h"
 #include "qtractorRingBuffer.h"
 
 #include <qstringlist.h>

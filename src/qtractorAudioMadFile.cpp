@@ -175,7 +175,8 @@ bool qtractorAudioMadFile::decode (void)
 
 
 // Read method.
-int qtractorAudioMadFile::read ( float **ppFrames, unsigned int iFrames )
+int qtractorAudioMadFile::read ( float **ppFrames,
+	unsigned int iFrames )
 {
 #ifdef DEBUG_0
 	fprintf(stderr, "qtractorAudioMadFile::read(%p, %d)", ppFrames, iFrames);
@@ -216,7 +217,8 @@ int qtractorAudioMadFile::read ( float **ppFrames, unsigned int iFrames )
 
 
 // Write method.
-int qtractorAudioMadFile::write ( float **ppFrames, unsigned int iFrames )
+int qtractorAudioMadFile::write ( float ** /* ppFrames */,
+	unsigned int /* iFrames */ )
 {
 #ifdef DEBUG_0
 	fprintf(stderr, "qtractorAudioMadFile::write(%p, %d)\n", ppFrames, iFrames);
