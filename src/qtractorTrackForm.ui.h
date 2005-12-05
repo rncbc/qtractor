@@ -529,7 +529,7 @@ void qtractorTrackForm::trackTypeChanged ( int iTrackType )
 
 
 // Make changes due to bus name.
-void qtractorTrackForm::busNameChanged ( const QString& sBusName )
+void qtractorTrackForm::busNameChanged ( const QString& /* sBusName */ )
 {
 	if (m_iDirtySetup > 0)
 		return;
