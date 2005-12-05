@@ -58,7 +58,7 @@ class qtractorAudioFileFactory
 public:
 
 	// Supported file types.
-	enum FileType { SndFile, VorbisFile };
+	enum FileType { SndFile, VorbisFile, MadFile };
 
 	// Factory methods.
 	static qtractorAudioFile *createAudioFile (

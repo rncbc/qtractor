@@ -7,6 +7,7 @@ headers = config.h \
 	src/qtractorAbout.h \
 	src/qtractorOptions.h \
 	src/qtractorMessages.h \
+	src/qtractorSpinBox.h \
 	src/qtractorList.h \
 	src/qtractorFiles.h \
 	src/qtractorFileListView.h \
@@ -25,6 +26,7 @@ headers = config.h \
 	src/qtractorAudioFile.h \
 	src/qtractorAudioSndFile.h \
 	src/qtractorAudioVorbisFile.h \
+	src/qtractorAudioMadFile.h \
 	src/qtractorAudioListView.h \
 	src/qtractorAudioPeak.h \
 	src/qtractorAudioClip.h \
@@ -63,6 +65,7 @@ sources = src/main.cpp \
 	src/qtractorAudioFile.cpp \
 	src/qtractorAudioSndFile.cpp \
 	src/qtractorAudioVorbisFile.cpp \
+	src/qtractorAudioMadFile.cpp \
 	src/qtractorAudioListView.cpp \
 	src/qtractorAudioPeak.cpp \
 	src/qtractorAudioClip.cpp \

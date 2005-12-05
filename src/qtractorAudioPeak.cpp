@@ -371,7 +371,7 @@ bool qtractorAudioPeakFile::openPeakFile (void)
 	fprintf(stderr, "frame    = %d\n", sizeof(qtractorAudioPeakFrame));
 	fprintf(stderr, "period   = %d\n", hdr.peakPeriod);
 	fprintf(stderr, "channels = %d\n", hdr.peakChannels);
-	fprintf(stderr, "frames   = %d\n", hdr.peakFrames);
+	fprintf(stderr, "frames   = %lu\n", hdr.peakFrames);
 	fprintf(stderr, "--------------------\n");
 #endif
 

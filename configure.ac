@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(Qtractor, 0.0.0.178, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.0.0.179, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractorMainForm.ui.h)
 AC_CONFIG_HEADERS(config.h)
@@ -24,6 +24,12 @@ AC_SUBST(ac_debug)
 if test "x$ac_debug" = "xdebug"; then
    AC_DEFINE(CONFIG_DEBUG, 1, [Define if debugging is enabled.])
 fi
+
+# Enable libmad availability.
+AC_ARG_ENABLE(libmad,
+  AC_HELP_STRING([--disable-libmad], [disable libmad interface (default=no)]),
+  [ac_libmad="no"],
+  [ac_libmad="yes"])
 
 # Checks for programs.
 AC_PROG_CC
@@ -153,6 +159,18 @@ else
    ac_libs="$ac_libs -lvorbisfile"
 fi
 
+# Check for optional libraries.
+if test "x$ac_libmad" = "xyes"; then
+   AC_CHECK_LIB(mad, main, [ac_libmad="yes"], [ac_libmad="no"])
+   if test "x$ac_libmad" = "xyes"; then
+      AC_DEFINE(CONFIG_LIBMAD, 1, [Define if libmad is available.])
+      ac_libs="$ac_libs -lmad"
+   else
+      AC_MSG_WARN([*** MAD library not found.])
+      AC_MSG_WARN([*** MPEG Layer III audio file support will be disabled.])
+   fi
+fi
+
 AC_SUBST(ac_libs)
 
 # Checks for header files.
@@ -182,6 +200,18 @@ fi
 AC_CHECK_HEADER(vorbis/vorbisfile.h, [ac_vorbisfile_h="yes"], [ac_vorbisfile_h="no"])
 if test "x$ac_vorbisfile_h" = "xno"; then
    AC_MSG_ERROR([vorbisfile headers not found.])
+fi
+
+# Check for optional dependable headers.
+if test "x$ac_libmad" = "xyes"; then
+   AC_CHECK_HEADER(mad.h, [ac_mad_h="yes"], [ac_mad_h="no"])
+   if test "x$ac_mad_h" = "xno"; then
+      AC_MSG_ERROR([mad.h header not found.])
+   fi
+   AC_CHECK_HEADER(sys/mman.h, [ac_mman_h="yes"], [ac_mman_h="no"])
+   if test "x$ac_mman_h" = "xno"; then
+      AC_MSG_ERROR([sys/mman.h header not found.])
+   fi
 fi
 
 # Checks for typedefs, structures, and compiler characteristics.

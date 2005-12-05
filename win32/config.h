@@ -7,4 +7,5 @@
 
 #undef  HAVE_SIGNAL_H
 
+#undef  CONFIG_LIBMAD
 

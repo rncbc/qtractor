@@ -22,6 +22,7 @@
 #include "qtractorAudioFile.h"
 #include "qtractorAudioSndFile.h"
 #include "qtractorAudioVorbisFile.h"
+#include "qtractorAudioMadFile.h"
 
 #include <qobject.h>
 #include <qfileinfo.h>
@@ -94,6 +95,12 @@ qtractorAudioFileFactory::qtractorAudioFileFactory (void)
 	m_types["ogg"] = VorbisFile;
 	m_filters.append("OGG Vorbis (*.ogg)");
 
+#ifdef CONFIG_LIBMAD
+	// Add for libmad (mp3 read-only)...
+	m_types["mp3"] = MadFile;
+	m_filters.append("MPEG Layer III (*.mp3)");
+#endif
+
 	// Finally, simply build the all supported files entry.
 	QString sExts;
 	FileTypes::ConstIterator iter = m_types.begin();
@@ -143,6 +150,8 @@ qtractorAudioFile *qtractorAudioFileFactory::newAudioFile (
 		return new qtractorAudioSndFile(iBufferSize);
 	case VorbisFile:
 		return new qtractorAudioVorbisFile(iBufferSize);
+	case MadFile:
+		return new qtractorAudioMadFile(iBufferSize);
 	default:
 		return NULL;
 	}

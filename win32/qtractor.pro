@@ -22,6 +22,7 @@ HEADERS += ../src/qtractorAbout.h \
            ../src/qtractorAudioFile.h \
            ../src/qtractorAudioSndFile.h \
            ../src/qtractorAudioVorbisFile.h \
+           ../src/qtractorAudioMadFile.h \
            ../src/qtractorAudioListView.h \
            ../src/qtractorAudioPeak.h \
            ../src/qtractorAudioClip.h \
@@ -55,6 +56,7 @@ SOURCES += ../src/main.cpp \
            ../src/qtractorAudioFile.cpp \
            ../src/qtractorAudioSndFile.cpp \
            ../src/qtractorAudioVorbisFile.cpp \
+           ../src/qtractorAudioMadFile.cpp \
            ../src/qtractorAudioListView.cpp \
            ../src/qtractorAudioPeak.cpp \
            ../src/qtractorAudioClip.cpp \
