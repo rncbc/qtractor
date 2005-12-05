@@ -43,6 +43,8 @@ qtractorAudioMadFile::qtractorAudioMadFile ( unsigned int iBufferSize )
 	m_iFramesEst   = 0;
 	m_pFile        = NULL;
 	m_iFileSize    = 0;
+	m_iSeekOffset  = 0;
+	m_fSeekRatio   = 0.0;
 	m_bEndOfStream = false;
 #ifdef CONFIG_LIBMAD
 	m_pFileMmap    = NULL;
@@ -132,7 +134,7 @@ bool qtractorAudioMadFile::open ( const char *pszName, int iMode )
 bool qtractorAudioMadFile::decode (void)
 {
 #ifdef DEBUG_0
-	fprintf(stderr, "qtractorAudioMadFile::decode()\n");
+	fprintf(stderr, "qtractorAudioMadFile::decode() ws=%d rs=%d\n", writable(), readable());
 #endif
 
 #ifdef CONFIG_LIBMAD
@@ -152,6 +154,10 @@ bool qtractorAudioMadFile::decode (void)
 		m_iBitRate    = m_madFrame.header.bitrate;
 		m_iChannels   = m_madSynth.pcm.channels;
 		m_iSampleRate = m_madSynth.pcm.samplerate;
+		m_iSeekOffset = 0;
+		m_fSeekRatio  = 0.0;
+		if (m_iSampleRate > 0)
+			m_fSeekRatio = (float) m_iBitRate / (8.0 * m_iSampleRate);
 		createBuffer(iFrames << 4);
 	}
 
@@ -184,6 +190,8 @@ int qtractorAudioMadFile::read ( float **ppFrames,
 
 	unsigned int nread = 0;
 	if (m_ppBuffer) {
+		if (iFrames > m_iBufferSize >> 1)
+			iFrames = m_iBufferSize >> 1;
 		while ((nread = readable()) < iFrames && !m_bEndOfStream)
 			m_bEndOfStream = !decode();
 		if (nread > iFrames)
@@ -207,6 +215,7 @@ int qtractorAudioMadFile::read ( float **ppFrames,
 			}
 		}
 		m_iReadIndex = (ri + nread) & m_iBufferMask;
+		m_iSeekOffset += nread;
 	}
 
 #ifdef DEBUG_0
@@ -233,19 +242,24 @@ bool qtractorAudioMadFile::seek ( unsigned long iOffset )
 	fprintf(stderr, "qtractorAudioMadFile::seek(%lu)\n", iOffset);
 #endif
 
+	// Avoid unprecise seeks...
+	if (iOffset == m_iSeekOffset)
+		return true;
+
 #ifdef CONFIG_LIBMAD
 
 	m_madStream.next_frame = m_madStream.buffer
-		+ iOffset * m_iBitRate / (8 * m_iSampleRate);
+		+ (unsigned long) (m_fSeekRatio * iOffset);
 	mad_stream_sync(&m_madStream);
 
 #endif  // CONFIG_LIBMAD
 
-	m_bEndOfStream = !decode();
-	
 	// Reset ring-buffer pointers.
+	m_iSeekOffset = iOffset;
 	m_iReadIndex  = 0;
 	m_iWriteIndex = 0;
+
+	m_bEndOfStream = !decode();
 
 	return !m_bEndOfStream;
 }

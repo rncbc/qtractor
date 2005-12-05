@@ -80,6 +80,8 @@ private:
 	unsigned long     m_iFramesEst;
 	FILE             *m_pFile;
 	unsigned long     m_iFileSize;
+	unsigned long     m_iSeekOffset;
+	float             m_fSeekRatio;
 	bool              m_bEndOfStream;
 #ifdef CONFIG_LIBMAD
 	void             *m_pFileMmap;
