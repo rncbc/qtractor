@@ -24,6 +24,8 @@
 
 #include "qtractorAudioFile.h"
 
+#include <qvaluelist.h>
+
 #ifdef CONFIG_LIBMAD
 #include <mad.h>
 #endif
@@ -60,12 +62,11 @@ public:
 
 protected:
 
-	// Spacial decode method.
+	// Special decode method.
+	bool input();
 	bool decode();
 
 	// Internal ring-buffer helper methods.
-	void createBuffer(unsigned int iBufferSize);
-	void deleteBuffer();
 	unsigned int readable() const;
 	unsigned int writable() const;
 
@@ -80,21 +81,40 @@ private:
 	unsigned long     m_iFramesEst;
 	FILE             *m_pFile;
 	unsigned long     m_iFileSize;
-	unsigned long     m_iSeekOffset;
-	float             m_fSeekRatio;
 	bool              m_bEndOfStream;
 #ifdef CONFIG_LIBMAD
-	void             *m_pFileMmap;
 	struct mad_stream m_madStream;
 	struct mad_frame  m_madFrame;
 	struct mad_synth  m_madSynth;
 #endif
-	// Ring-buffer stuff.
-	unsigned int      m_iBufferSize;
-	unsigned int      m_iBufferMask;
-	unsigned int      m_iReadIndex;
-	unsigned int      m_iWriteIndex;
-	float           **m_ppBuffer;
+	// Input buffer stuff.
+	unsigned int      m_iInputBufferSize;
+	unsigned char    *m_pInputBuffer;
+	// Output ring-buffer stuff.
+	unsigned int      m_iRingBufferSize;
+	unsigned int      m_iRingBufferMask;
+	unsigned int      m_iRingBufferRead;
+	unsigned int      m_iRingBufferWrite;
+	float           **m_ppRingBuffer;
+
+	// Decoding frame maping for sample-accurate seeking.
+	struct FrameNode {
+		// Member constructor.
+		FrameNode(unsigned long i = 0, unsigned long o = 0)
+			: iInputOffset(i), iOutputOffset(o) {}
+		// Member fields.
+		unsigned long iInputOffset;     // Bytes from input file.
+		unsigned long iOutputOffset;    // Sample frames on output.
+	};
+
+	typedef QValueList<FrameNode> FrameList;
+
+	FrameList m_frames;
+
+	unsigned long     m_iInputOffset;
+	unsigned long     m_iOutputOffset;
+	unsigned long     m_iSeekOffset;
+	unsigned int      m_iDecodeFrame;
 };
 
 

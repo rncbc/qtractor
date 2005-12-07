@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(Qtractor, 0.0.0.182, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.0.0.183, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractorMainForm.ui.h)
 AC_CONFIG_HEADERS(config.h)
@@ -176,7 +176,7 @@ AC_SUBST(ac_libs)
 # Checks for header files.
 AC_HEADER_STDC
 AC_HEADER_SYS_WAIT
-AC_CHECK_HEADERS(fcntl.h sys/ioctl.h unistd.h signal.h)
+AC_CHECK_HEADERS(fcntl.h sys/ioctl.h sys/stat.h unistd.h signal.h)
 
 # Check for JACK headers.
 AC_CHECK_HEADER(jack/jack.h, [ac_jack_h="yes"], [ac_jack_h="no"])
@@ -207,10 +207,6 @@ if test "x$ac_libmad" = "xyes"; then
    AC_CHECK_HEADER(mad.h, [ac_mad_h="yes"], [ac_mad_h="no"])
    if test "x$ac_mad_h" = "xno"; then
       AC_MSG_ERROR([mad.h header not found.])
-   fi
-   AC_CHECK_HEADER(sys/mman.h, [ac_mman_h="yes"], [ac_mman_h="no"])
-   if test "x$ac_mman_h" = "xno"; then
-      AC_MSG_ERROR([sys/mman.h header not found.])
    fi
 fi
 

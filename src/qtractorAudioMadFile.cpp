@@ -21,10 +21,7 @@
 
 #include "qtractorAudioMadFile.h"
 
-#ifdef CONFIG_LIBMAD
 #include <sys/stat.h>
-#include <sys/mman.h>
-#endif
 
 
 //----------------------------------------------------------------------
@@ -43,17 +40,24 @@ qtractorAudioMadFile::qtractorAudioMadFile ( unsigned int iBufferSize )
 	m_iFramesEst   = 0;
 	m_pFile        = NULL;
 	m_iFileSize    = 0;
-	m_iSeekOffset  = 0;
-	m_fSeekRatio   = 0.0;
 	m_bEndOfStream = false;
-#ifdef CONFIG_LIBMAD
-	m_pFileMmap    = NULL;
-#endif
-	m_iBufferSize  = iBufferSize;
-	m_iBufferMask  = 0;
-	m_iReadIndex   = 0;
-	m_iWriteIndex  = 0;
-	m_ppBuffer     = NULL;
+
+	// Input buffer stuff.
+	m_iInputBufferSize = iBufferSize;
+	m_pInputBuffer     = NULL;
+
+	// Output ring-buffer stuff.
+	m_iRingBufferSize  = 0;
+	m_iRingBufferMask  = 0;
+	m_iRingBufferRead  = 0;
+	m_iRingBufferWrite = 0;
+	m_ppRingBuffer     = NULL;
+
+	// Frame mapping for sample-accurate seeking.
+	m_iInputOffset  = 0;
+	m_iOutputOffset = 0;
+	m_iSeekOffset   = 0;
+	m_iDecodeFrame  = 0;
 }
 
 // Destructor.
@@ -80,27 +84,25 @@ bool qtractorAudioMadFile::open ( const char *pszName, int iMode )
 		return false;
 		
 #ifdef CONFIG_LIBMAD
-
 	mad_stream_init(&m_madStream);
 	mad_frame_init(&m_madFrame);
 	mad_synth_init(&m_madSynth);
+#endif  // CONFIG_LIBMAD
 
-	int fdFile = ::fileno(m_pFile);
+	int fdFile = fileno(m_pFile);
 	struct stat st;
 	if (::fstat(fdFile, &st) < 0 || st.st_size == 0) {
 		close();
 		return false;
 	}
-
 	m_iFileSize = st.st_size;
-	m_pFileMmap = ::mmap(0, m_iFileSize, PROT_READ, MAP_SHARED, fdFile, 0);
-	if (m_pFileMmap == MAP_FAILED) {
+
+	if (!input()) {
 		close();
 		return false;
 	}
 
-	mad_stream_buffer(&m_madStream, (unsigned char *) m_pFileMmap, m_iFileSize);
-
+#ifdef CONFIG_LIBMAD
 	if (mad_header_decode(&m_madFrame.header, &m_madStream) < 0) {
 		if (m_madStream.error == MAD_ERROR_BUFLEN) {
 			close();
@@ -111,7 +113,6 @@ bool qtractorAudioMadFile::open ( const char *pszName, int iMode )
 			return false;
 		}
 	}
-
 #endif  // CONFIG_LIBMAD
 
 	// Do the very first frame decoding...
@@ -130,53 +131,140 @@ bool qtractorAudioMadFile::open ( const char *pszName, int iMode )
 }
 
 
+// Local input method.
+bool qtractorAudioMadFile::input (void)
+{
+#ifdef DEBUG_0
+	fprintf(stderr, "qtractorAudioMadFile::input()\n");
+#endif
+
+#ifdef CONFIG_LIBMAD
+
+	// Can't go on if EOF.
+	if (feof(m_pFile))
+		return false;
+
+	// Allocate input buffer if not already.
+	if (m_pInputBuffer == NULL) {
+		unsigned int iBufferSize = (4096 << 1);
+		while (iBufferSize < m_iInputBufferSize)
+			iBufferSize <<= 1;
+		m_iInputBufferSize = iBufferSize;
+		m_pInputBuffer = new unsigned char [iBufferSize + MAD_BUFFER_GUARD];
+		m_iInputOffset = 0;
+	}
+
+	unsigned long  iRemaining;
+	unsigned char *pReadStart;
+	unsigned long  iReadSize;
+
+	if (m_madStream.next_frame) {
+		iRemaining = m_madStream.bufend - m_madStream.next_frame;
+		::memmove(m_pInputBuffer, m_madStream.next_frame, iRemaining);
+		pReadStart = m_pInputBuffer + iRemaining;
+		iReadSize  = m_iInputBufferSize - iRemaining;
+	} else {
+		iRemaining = 0;
+		pReadStart = m_pInputBuffer;
+		iReadSize  = m_iInputBufferSize;
+	}
+
+	long iRead = ::fread(pReadStart, 1, iReadSize, m_pFile);
+	if (iRead > 0) {
+		m_iInputOffset += iRead;
+		if (iRead < (int) iReadSize) {
+			::memset(pReadStart + iRead, 0, MAD_BUFFER_GUARD);
+			iRead += MAD_BUFFER_GUARD;
+		}
+		mad_stream_buffer(&m_madStream, m_pInputBuffer, iRead + iRemaining);
+	}
+
+	return (iRead > 0);
+	
+#else	// CONFIG_LIBMAD
+
+	return false;
+
+#endif
+}
+
+
 // Local decode method.
 bool qtractorAudioMadFile::decode (void)
 {
 #ifdef DEBUG_0
-	fprintf(stderr, "qtractorAudioMadFile::decode() ws=%d rs=%d\n", writable(), readable());
+	fprintf(stderr, "qtractorAudioMadFile::decode()\n");
 #endif
 
 #ifdef CONFIG_LIBMAD
 
 	bool bError = (mad_frame_decode(&m_madFrame, &m_madStream) < 0);
 	if (bError) {
-		if (m_madStream.error == MAD_ERROR_BUFLEN)
+		if (m_madStream.error == MAD_ERROR_BUFLEN) {
+			if (!input())
+				return false;
+			bError = (mad_frame_decode(&m_madFrame, &m_madStream) < 0);
+		}
+		if (bError && !MAD_RECOVERABLE(m_madStream.error))
 			return false;
-		if (!MAD_RECOVERABLE(m_madStream.error))
-		    return false;
 	}
 
 	mad_synth_frame(&m_madSynth, &m_madFrame);
 
 	unsigned int iFrames = m_madSynth.pcm.length;
-	if (m_ppBuffer == NULL) {
+	if (m_ppRingBuffer == NULL) {
+		// Set initial stream parameters.
 		m_iBitRate    = m_madFrame.header.bitrate;
 		m_iChannels   = m_madSynth.pcm.channels;
 		m_iSampleRate = m_madSynth.pcm.samplerate;
-		m_iSeekOffset = 0;
-		m_fSeekRatio  = 0.0;
-		if (m_iSampleRate > 0)
-			m_fSeekRatio = (float) m_iBitRate / (8.0 * m_iSampleRate);
-		createBuffer(iFrames << 4);
+		// Create/allocate internal output ring-buffer.
+		m_iRingBufferSize = (4096 << 1);
+		while (m_iRingBufferSize < m_iInputBufferSize)
+			m_iRingBufferSize <<= 1;
+		m_iRingBufferMask = (m_iRingBufferSize - 1);
+		// Allocate actual buffer stuff...
+		m_ppRingBuffer = new float* [m_iChannels];
+		for (unsigned short i = 0; i < m_iChannels; i++)
+			m_ppRingBuffer[i] = new float [m_iRingBufferSize];
+		// Reset ring-buffer pointers.
+		m_iRingBufferRead  = 0;
+		m_iRingBufferWrite = 0;
+		// Decoder mapping initialization.
+		m_iOutputOffset = 0;
+		m_iSeekOffset   = 0;
+		m_iDecodeFrame  = 0;
+		m_frames.clear();
 	}
 
-	const unsigned long iScale = (1 << 28);
+	const float fScale = (float) (1L << MAD_F_FRACBITS);
 	for (unsigned int n = 0; n < iFrames; n++) {
-		for (unsigned short i = 0; i < m_iChannels; i++) {
-			int iSample = bError ? 0 : *(m_madSynth.pcm.samples[i] + n);
-			m_ppBuffer[i][m_iWriteIndex] = (float) iSample / iScale;
+		if (m_iOutputOffset >= m_iSeekOffset) {
+			for (unsigned short i = 0; i < m_iChannels; i++) {
+				int iSample = bError ? 0 : *(m_madSynth.pcm.samples[i] + n);
+				m_ppRingBuffer[i][m_iRingBufferWrite] = (float) iSample / fScale;
+			}
+			++m_iRingBufferWrite &= m_iRingBufferMask;
 		}
-		++m_iWriteIndex &= m_iBufferMask;
+		++m_iOutputOffset;
+	}
+
+	if ((m_frames.count() < 1
+		|| m_frames.last().iOutputOffset < m_iOutputOffset)) {
+		// Only do mapping accounting each other 3rd decoded frame...
+		if ((++m_iDecodeFrame % 3) == 0) {
+			unsigned long iInputOffset = m_iInputOffset
+				- (m_madStream.bufend - m_madStream.next_frame);
+			m_frames.append(FrameNode(iInputOffset, m_iOutputOffset));
+		}
 	}
 
 	return true;
 
-#else
+#else	// CONFIG_LIBMAD
 
 	return false;
 
-#endif  // CONFIG_LIBMAD
+#endif
 }
 
 
@@ -189,38 +277,40 @@ int qtractorAudioMadFile::read ( float **ppFrames,
 #endif
 
 	unsigned int nread = 0;
-	if (m_ppBuffer) {
-		if (iFrames > m_iBufferSize >> 1)
-			iFrames = m_iBufferSize >> 1;
+
+	if (m_ppRingBuffer) {
+		if (iFrames > (m_iRingBufferSize >> 1))
+			iFrames = (m_iRingBufferSize >> 1);
 		while ((nread = readable()) < iFrames && !m_bEndOfStream)
 			m_bEndOfStream = !decode();
 		if (nread > iFrames)
 			nread = iFrames;
-    	// Move the data around...
-		unsigned int ri = m_iReadIndex;
+		// Move the data around...
+		unsigned int r = m_iRingBufferRead;
 		unsigned int n1, n2;
-		if (ri + nread > m_iBufferSize) {
-			n1 = (m_iBufferSize - ri);
-			n2 = (ri + nread) & m_iBufferMask;
+		if (r + nread > m_iRingBufferSize) {
+			n1 = (m_iRingBufferSize - r);
+			n2 = (r + nread) & m_iRingBufferMask;
 		} else {
 			n1 = nread;
 			n2 = 0;
 		}
 		for (unsigned short i = 0; i < m_iChannels; i++) {
-			::memcpy(ppFrames[i], (float *)(m_ppBuffer[i] + ri),
+			::memcpy(ppFrames[i], (float *)(m_ppRingBuffer[i] + r),
 				n1 * sizeof(float));
 			if (n2 > 0) {
-				::memcpy((float *)(ppFrames[i] + n1), m_ppBuffer[i],
+				::memcpy((float *)(ppFrames[i] + n1), m_ppRingBuffer[i],
 					n2 * sizeof(float));
 			}
 		}
-		m_iReadIndex = (ri + nread) & m_iBufferMask;
+		m_iRingBufferRead = (r + nread) & m_iRingBufferMask;
 		m_iSeekOffset += nread;
 	}
 
 #ifdef DEBUG_0
 	fprintf(stderr, " --> nread=%d\n", nread);
 #endif
+
 	return nread;
 }
 
@@ -229,11 +319,9 @@ int qtractorAudioMadFile::read ( float **ppFrames,
 int qtractorAudioMadFile::write ( float ** /* ppFrames */,
 	unsigned int /* iFrames */ )
 {
-#ifdef DEBUG_0
-	fprintf(stderr, "qtractorAudioMadFile::write(%p, %d)\n", ppFrames, iFrames);
-#endif
 	return 0;
 }
+
 
 // Seek method.
 bool qtractorAudioMadFile::seek ( unsigned long iOffset )
@@ -246,20 +334,50 @@ bool qtractorAudioMadFile::seek ( unsigned long iOffset )
 	if (iOffset == m_iSeekOffset)
 		return true;
 
+	// This is the target situation...
+	m_iSeekOffset = iOffset;
+
+	// Are qe seeking backward or forward 
+	// from last known decoded position?
+	if (m_frames.count() > 0 && m_frames.last().iOutputOffset > iOffset) {
+		// assume the worst case (seek to very beggining...)
+		m_iInputOffset  = 0;
+		m_iOutputOffset = 0;
+		// Find the previous mapped 3rd frame that fits location...
+		FrameList::ConstIterator iter = m_frames.fromLast();
+		while (--iter != m_frames.begin()) {
+			const FrameNode& frame = *iter;
+			if (frame.iOutputOffset < iOffset) {
+				m_iInputOffset  = frame.iInputOffset;
+				m_iOutputOffset = frame.iOutputOffset;
+				break;
+			}
+		}
+		// Rewind file position...
+		if (::fseek(m_pFile, m_iInputOffset, SEEK_SET))
+			return false;
 #ifdef CONFIG_LIBMAD
-
-	m_madStream.next_frame = m_madStream.buffer
-		+ (unsigned long) (m_fSeekRatio * iOffset);
-	mad_stream_sync(&m_madStream);
-
-#endif  // CONFIG_LIBMAD
+		// Release MAD structs...
+		mad_synth_finish(&m_madSynth);
+		mad_frame_finish(&m_madFrame);
+		mad_stream_finish(&m_madStream);
+		// Reset MAD structs...
+		mad_stream_init(&m_madStream);
+		mad_frame_init(&m_madFrame);
+		mad_synth_init(&m_madSynth);
+#endif	// CONFIG_LIBMAD
+		// Reread first seeked input bunch...
+		if (!input())
+			return false;
+	}
 
 	// Reset ring-buffer pointers.
-	m_iSeekOffset = iOffset;
-	m_iReadIndex  = 0;
-	m_iWriteIndex = 0;
+	m_iRingBufferRead  = 0;
+	m_iRingBufferWrite = 0;
 
-	m_bEndOfStream = !decode();
+	// Now loop until we find the target offset...
+	while (m_iOutputOffset < m_iSeekOffset && !m_bEndOfStream)
+		m_bEndOfStream = !decode();
 
 	return !m_bEndOfStream;
 }
@@ -272,24 +390,24 @@ void qtractorAudioMadFile::close()
 	fprintf(stderr, "qtractorAudioMadFile::close()\n");
 #endif
 
-	deleteBuffer();
+	if (m_ppRingBuffer) {
+		for (unsigned short i = 0; i < m_iChannels; i++)
+			delete [] m_ppRingBuffer[i];
+		delete [] m_ppRingBuffer;
+		m_ppRingBuffer = NULL;
+	}
 
-#ifdef CONFIG_LIBMAD
+	if (m_pInputBuffer) {
+		delete [] m_pInputBuffer;
+		m_pInputBuffer = NULL;
+	}
 
 	if (m_pFile) {
+#ifdef CONFIG_LIBMAD
 		mad_synth_finish(&m_madSynth);
 		mad_frame_finish(&m_madFrame);
 		mad_stream_finish(&m_madStream);
-	}
-
-	if (m_pFileMmap) {
-		::munmap(m_pFileMmap, m_iFileSize);
-		m_pFileMmap = NULL;
-	}
-
 #endif  // CONFIG_LIBMAD
-
-	if (m_pFile) {
 		::fclose(m_pFile);
 		m_pFile = NULL;
 	}
@@ -325,69 +443,28 @@ unsigned int qtractorAudioMadFile::samplerate() const
 
 
 // Internal ring-buffer helper methods.
-void qtractorAudioMadFile::createBuffer ( unsigned int iBufferSize )
-{
-	deleteBuffer();
-
-#ifdef DEBUG_0
-	fprintf(stderr, "qtractorAudioMadFile::createBuffer(%d)\n", iBufferSize);
-#endif
-
-	// The size overflow convenience mask.
-	m_iBufferSize = 4096;
-	while (m_iBufferSize < iBufferSize)
-		m_iBufferSize <<= 1;
-	m_iBufferMask = (m_iBufferSize - 1);
-	// Allocate actual buffer stuff...
-	m_ppBuffer = NULL;
-	if (m_iBufferSize > 0) {
-		m_ppBuffer = new float* [m_iChannels];
-		for (unsigned short i = 0; i < m_iChannels; i++)
-			m_ppBuffer[i] = new float [m_iBufferSize];
-	}
-	// Reset ring-buffer pointers.
-	m_iReadIndex  = 0;
-	m_iWriteIndex = 0;
-}
-
-void qtractorAudioMadFile::deleteBuffer (void)
-{
-#ifdef DEBUG_0
-	fprintf(stderr, "qtractorAudioMadFile::deleteBuffer()\n");
-#endif
-
-	// Deallocate any buffer stuff...
-	if (m_ppBuffer) {
-		for (unsigned short i = 0; i < m_iChannels; i++)
-			delete [] m_ppBuffer[i];
-		delete [] m_ppBuffer;
-		m_ppBuffer = NULL;
-	}
-}
-
-
 unsigned int qtractorAudioMadFile::readable (void) const
 {
-	unsigned int wi = m_iWriteIndex;
-	unsigned int ri = m_iReadIndex;
-	if (wi > ri) {
-		return (wi - ri);
+	unsigned int w = m_iRingBufferWrite;
+	unsigned int r = m_iRingBufferRead;
+	if (w > r) {
+		return (w - r);
 	} else {
-		return (wi - ri + m_iBufferSize) & m_iBufferMask;
+		return (w - r + m_iRingBufferSize) & m_iRingBufferMask;
 	}
 }
 
 
 unsigned int qtractorAudioMadFile::writable (void) const
 {
-	unsigned int wi = m_iWriteIndex;
-	unsigned int ri = m_iReadIndex;
-	if (wi > ri){
-		return ((ri - wi + m_iBufferSize) & m_iBufferMask) - 1;
-	} else if (ri > wi) {
-		return (ri - wi) - 1;
+	unsigned int w = m_iRingBufferWrite;
+	unsigned int r = m_iRingBufferRead;
+	if (w > r){
+		return ((r - w + m_iRingBufferSize) & m_iRingBufferMask) - 1;
+	} else if (r > w) {
+		return (r - w) - 1;
 	} else {
-		return m_iBufferSize - 1;
+		return m_iRingBufferSize - 1;
 	}
 }
 
