@@ -32,11 +32,14 @@ qtractorAudioVorbisFile::qtractorAudioVorbisFile ( unsigned int iBufferSize )
 	// Initialize state variables.
 	m_iMode  = qtractorAudioVorbisFile::None;
 	m_pFile  = NULL;
+
+#ifdef CONFIG_LIBVORBIS
 	m_ovinfo = NULL;
 	m_ovsect = 0;
+#endif	// CONFIG_LIBVORBIS
 
 	// Estimate buffer size.
-	m_iBufferSize = 4096;
+	m_iBufferSize = (4096 << 1);
 	// Adjust size the next nearest power-of-two.
 	while (m_iBufferSize < iBufferSize)
 		m_iBufferSize <<= 1;
@@ -66,20 +69,25 @@ bool qtractorAudioVorbisFile::open ( const char *pszName, int iMode )
 	if (m_pFile == NULL)
 		return false;
 
+#ifdef CONFIG_LIBVORBIS
 	// Now's time for the vorbis stuff...
 	if (::ov_open(m_pFile, &m_ovfile, NULL, 0) < 0) {
 		close();
 		return false;
 	}
-
 	// Grab the vorbis file info...
 	m_ovinfo = ::ov_info(&m_ovfile, -1);
 	m_ovsect = 0;
-
 	// Set open mode (deterministically).
 	m_iMode = iMode;
 
 	return true;
+
+#else	// CONFIG_LIBVORBIS
+
+	return false;
+
+#endif
 }
 
 
@@ -90,8 +98,12 @@ int qtractorAudioVorbisFile::read ( float **ppFrames,
 #ifdef DEBUG_0
 	fprintf(stderr, "qtractorAudioVorbisFile::read(%p, %d)", ppFrames, iFrames);
 #endif
+
+	int nread = 0;
+
+#ifdef CONFIG_LIBVORBIS
 	float **ppBuffer;
-	int nread = ::ov_read_float(&m_ovfile, &ppBuffer, iFrames, &m_ovsect);
+	nread = ::ov_read_float(&m_ovfile, &ppBuffer, iFrames, &m_ovsect);
 	if (nread < 0)	// HACK: Just in case things get go thru...
 		nread = ::ov_read_float(&m_ovfile, &ppBuffer, iFrames, &m_ovsect);
 	if (nread > 0) {
@@ -100,9 +112,12 @@ int qtractorAudioVorbisFile::read ( float **ppFrames,
 			::memcpy(ppFrames[i], ppBuffer[i], nread * sizeof(float));
 		}
 	}
+#endif	// CONFIG_LIBVORBIS
+
 #ifdef DEBUG_0
 	fprintf(stderr, " --> nread=%d\n", nread);
 #endif
+
 	return nread;
 }
 
@@ -120,7 +135,12 @@ bool qtractorAudioVorbisFile::seek ( unsigned long iOffset )
 #ifdef DEBUG_0
 	fprintf(stderr, "qtractorAudioVorbisFile::seek(%d)\n", iOffset);
 #endif
+
+#ifdef CONFIG_LIBVORBIS
 	return (::ov_pcm_seek(&m_ovfile, iOffset) == 0);
+#else
+	return false;
+#endif
 }
 
 
@@ -132,15 +152,21 @@ void qtractorAudioVorbisFile::close()
 #endif
 
 	if (m_pFile) {
+#ifdef CONFIG_LIBVORBIS
+		// Reinitialize libvorbisfile stuff.
 		::ov_clear(&m_ovfile);
-	//	::fclose(m_pFile); -- already closed on ov_clear?
-		m_pFile = NULL;
 		m_ovinfo = NULL;
-		m_iMode = qtractorAudioVorbisFile::None;
+#else
+		::fclose(m_pFile); 	// -- already closed on ov_clear?
+#endif
+		m_pFile = NULL;
 	}
 
-	// Reinitialize libvorbisfile stuff.
+	// Reset all other state relevant variables.
+#ifdef CONFIG_LIBVORBIS
 	::memset(&m_ovfile, 0, sizeof(m_ovfile));
+#endif
+	m_iMode = qtractorAudioVorbisFile::None;
 }
 
 
@@ -154,21 +180,33 @@ int qtractorAudioVorbisFile::mode() const
 // Open channel(s) accessor.
 unsigned short qtractorAudioVorbisFile::channels() const
 {
+#ifdef CONFIG_LIBVORBIS
 	return (m_ovinfo ? m_ovinfo->channels : 0);
+#else
+	return 0;
+#endif
 }
 
 
 // Estimated number of frames specialty (aprox. 8secs).
 unsigned long qtractorAudioVorbisFile::frames() const
 {
+#ifdef CONFIG_LIBVORBIS
 	return ::ov_pcm_total((OggVorbis_File *) &m_ovfile, -1);
+#else
+	return 0;
+#endif
 }
 
 
 // Sample rate specialty.
 unsigned int qtractorAudioVorbisFile::samplerate() const
 {
+#ifdef CONFIG_LIBVORBIS
 	return (m_ovinfo ? m_ovinfo->rate : 0);
+#else
+	return 0;
+#endif
 }
 
 

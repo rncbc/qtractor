@@ -24,10 +24,11 @@
 
 #include "qtractorAudioFile.h"
 
+#ifdef CONFIG_LIBVORBIS
 // libvorbisfile API.
 #include <vorbis/codec.h>
 #include <vorbis/vorbisfile.h>
-
+#endif
 
 //----------------------------------------------------------------------
 // class qtractorAudioVorbisFile -- Buffered audio file declaration.
@@ -62,9 +63,12 @@ private:
 
 	int            m_iMode;         // open mode (Read only).
 	FILE          *m_pFile;         // fopen file descriptor.
+
+#ifdef CONFIG_LIBVORBIS
 	OggVorbis_File m_ovfile;        // libsvorbisfile descriptor.
 	vorbis_info   *m_ovinfo;        // libvorbisfile info struct.
 	int            m_ovsect;        // libvorbisfile current section.
+#endif	// CONFIG_LIBVORBIS
 
 	unsigned int   m_iBufferSize;	// estimated buffer size.
 };

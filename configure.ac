@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(Qtractor, 0.0.0.183, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.0.0.184, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractorMainForm.ui.h)
 AC_CONFIG_HEADERS(config.h)
@@ -24,6 +24,12 @@ AC_SUBST(ac_debug)
 if test "x$ac_debug" = "xdebug"; then
    AC_DEFINE(CONFIG_DEBUG, 1, [Define if debugging is enabled.])
 fi
+
+# Enable libvorbis(file) availability.
+AC_ARG_ENABLE(libvorbis,
+  AC_HELP_STRING([--disable-libvorbis], [disable libvorbis interface (default=no)]),
+  [ac_libvorbis="no"],
+  [ac_libvorbis="yes"])
 
 # Enable libmad availability.
 AC_ARG_ENABLE(libmad,
@@ -151,22 +157,26 @@ else
    ac_libs="$ac_libs -lsndfile"
 fi
 
-# Check for vorbisfile library.
-AC_CHECK_LIB(vorbisfile, main, [ac_vorbisfile_lib="yes"], [ac_vorbisfile_lib="no"])
-if test "x$ac_vorbisfile_lib" = "xno"; then
-   AC_MSG_ERROR([vorbisfile library not found.])
-else
-   ac_libs="$ac_libs -lvorbisfile"
+# Check for option libvorbisfile library.
+if test "x$ac_libvorbis" = "xyes"; then
+   AC_CHECK_LIB(vorbisfile, main, [ac_libvorbis="yes"], [ac_libvorbis="no"])
+   if test "x$ac_libvorbis" = "xyes"; then
+      AC_DEFINE(CONFIG_LIBVORBIS, 1, [Define if libvorbisfile is available.])
+      ac_libs="$ac_libs -lvorbisfile"
+   else
+      AC_MSG_WARN([*** vorbisfile library not found.])
+      AC_MSG_WARN([*** Ogg Vorbis audio file support will be disabled.])
+   fi
 fi
 
-# Check for optional libraries.
+# Check for optional libmad library.
 if test "x$ac_libmad" = "xyes"; then
    AC_CHECK_LIB(mad, main, [ac_libmad="yes"], [ac_libmad="no"])
    if test "x$ac_libmad" = "xyes"; then
       AC_DEFINE(CONFIG_LIBMAD, 1, [Define if libmad is available.])
       ac_libs="$ac_libs -lmad"
    else
-      AC_MSG_WARN([*** MAD library not found.])
+      AC_MSG_WARN([*** mad library not found.])
       AC_MSG_WARN([*** MPEG Layer III audio file support will be disabled.])
    fi
 fi
@@ -193,20 +203,22 @@ fi
 # Check for sndfile headers.
 AC_CHECK_HEADER(sndfile.h, [ac_sndfile_h="yes"], [ac_sndfile_h="no"])
 if test "x$ac_sndfile_h" = "xno"; then
-   AC_MSG_ERROR([sndfile headers not found.])
+   AC_MSG_ERROR([sndfile.h header file not found.])
 fi
 
 # Check for vorbisfile headers.
-AC_CHECK_HEADER(vorbis/vorbisfile.h, [ac_vorbisfile_h="yes"], [ac_vorbisfile_h="no"])
-if test "x$ac_vorbisfile_h" = "xno"; then
-   AC_MSG_ERROR([vorbisfile headers not found.])
+if test "x$ac_libvorbis" = "xyes"; then
+   AC_CHECK_HEADER(vorbis/vorbisfile.h, [ac_vorbisfile_h="yes"], [ac_vorbisfile_h="no"])
+   if test "x$ac_vorbisfile_h" = "xno"; then
+      AC_MSG_ERROR([vorbisfile.h header file not found.])
+   fi
 fi
 
 # Check for optional dependable headers.
 if test "x$ac_libmad" = "xyes"; then
    AC_CHECK_HEADER(mad.h, [ac_mad_h="yes"], [ac_mad_h="no"])
    if test "x$ac_mad_h" = "xno"; then
-      AC_MSG_ERROR([mad.h header not found.])
+      AC_MSG_ERROR([mad.h header file not found.])
    fi
 fi
 

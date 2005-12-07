@@ -27,6 +27,7 @@
 #include <qvaluelist.h>
 
 #ifdef CONFIG_LIBMAD
+// libmad API
 #include <mad.h>
 #endif
 
@@ -74,22 +75,23 @@ private:
 
 	// Instance variables.
 	int               m_iMode;
-
+	FILE             *m_pFile;
+	unsigned int      m_iBitRate;
 	unsigned short    m_iChannels;
 	unsigned int      m_iSampleRate;
-	unsigned int      m_iBitRate;
 	unsigned long     m_iFramesEst;
-	FILE             *m_pFile;
-	unsigned long     m_iFileSize;
 	bool              m_bEndOfStream;
+
 #ifdef CONFIG_LIBMAD
 	struct mad_stream m_madStream;
 	struct mad_frame  m_madFrame;
 	struct mad_synth  m_madSynth;
 #endif
+
 	// Input buffer stuff.
 	unsigned int      m_iInputBufferSize;
 	unsigned char    *m_pInputBuffer;
+
 	// Output ring-buffer stuff.
 	unsigned int      m_iRingBufferSize;
 	unsigned int      m_iRingBufferMask;

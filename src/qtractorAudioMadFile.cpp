@@ -32,14 +32,12 @@
 qtractorAudioMadFile::qtractorAudioMadFile ( unsigned int iBufferSize )
 {
 	// Initialize state variables.
-	m_iMode = qtractorAudioMadFile::None;
-
+	m_iMode        = qtractorAudioMadFile::None;
+	m_pFile        = NULL;
+	m_iBitRate     = 0;
 	m_iChannels    = 0;
 	m_iSampleRate  = 0;
-	m_iBitRate     = 0;
 	m_iFramesEst   = 0;
-	m_pFile        = NULL;
-	m_iFileSize    = 0;
 	m_bEndOfStream = false;
 
 	// Input buffer stuff.
@@ -95,7 +93,6 @@ bool qtractorAudioMadFile::open ( const char *pszName, int iMode )
 		close();
 		return false;
 	}
-	m_iFileSize = st.st_size;
 
 	if (!input()) {
 		close();
@@ -121,7 +118,7 @@ bool qtractorAudioMadFile::open ( const char *pszName, int iMode )
 	// Get a rough estimate of the total decoded length of the file...
 	if (m_iBitRate > 0) {
 		m_iFramesEst = (unsigned long)
-			((float) m_iSampleRate * m_iFileSize * 8.0 / (float) m_iBitRate);
+			((float) m_iSampleRate * st.st_size * 8.0 / (float) m_iBitRate);
 	}
 
 	// Set open mode (deterministically).
@@ -390,6 +387,7 @@ void qtractorAudioMadFile::close()
 	fprintf(stderr, "qtractorAudioMadFile::close()\n");
 #endif
 
+	// Free allocated buffers, if any.
 	if (m_ppRingBuffer) {
 		for (unsigned short i = 0; i < m_iChannels; i++)
 			delete [] m_ppRingBuffer[i];
@@ -411,6 +409,14 @@ void qtractorAudioMadFile::close()
 		::fclose(m_pFile);
 		m_pFile = NULL;
 	}
+
+	// Reset all other state relevant variables.
+	m_bEndOfStream = false;
+	m_iFramesEst   = 0;
+	m_iSampleRate  = 0;
+	m_iChannels    = 0;
+	m_iBitRate     = 0;
+    m_iMode        = qtractorAudioMadFile::None;
 }
 
 
