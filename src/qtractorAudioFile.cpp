@@ -29,19 +29,6 @@
 
 
 //----------------------------------------------------------------------
-// class qtractorAudioBuffer -- A special case of an audio ring-buffer audio.
-//
-
-// Overriden open method.
-bool qtractorAudioBuffer::open ( const char *pszName, int iMode )
-{
-	qtractorRingBuffer<float>::setFile(
-		qtractorAudioFileFactory::createAudioFile(pszName));
-	return qtractorRingBuffer<float>::open(pszName, iMode);
-}
-
-
-//----------------------------------------------------------------------
 // class qtractorAudioFileFactory -- Audio file factory (singleton).
 //
 

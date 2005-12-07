@@ -22,8 +22,9 @@
 #include "qtractorAbout.h"
 #include "qtractorAudioClip.h"
 #include "qtractorAudioFile.h"
-#include "qtractorAudioPeak.h"
+#include "qtractorAudioBuffer.h"
 #include "qtractorAudioEngine.h"
+#include "qtractorAudioPeak.h"
 
 #include "qtractorSessionDocument.h"
 

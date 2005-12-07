@@ -16,9 +16,9 @@ HEADERS += ../src/qtractorAbout.h \
            ../src/qtractorTrack.h \
            ../src/qtractorEngine.h \
            ../src/qtractorSession.h \
-           ../src/qtractorRingBuffer.h \
            ../src/qtractorSessionCursor.h \
-           ../src/qtractorRingBufferThread.h \
+           ../src/qtractorRingBuffer.h \
+           ../src/qtractorAudioBuffer.h \
            ../src/qtractorAudioFile.h \
            ../src/qtractorAudioSndFile.h \
            ../src/qtractorAudioVorbisFile.h \
@@ -52,7 +52,7 @@ SOURCES += ../src/main.cpp \
            ../src/qtractorEngine.cpp \
            ../src/qtractorSession.cpp \
            ../src/qtractorSessionCursor.cpp \
-           ../src/qtractorRingBufferThread.cpp \
+           ../src/qtractorAudioBuffer.cpp \
            ../src/qtractorAudioFile.cpp \
            ../src/qtractorAudioSndFile.cpp \
            ../src/qtractorAudioVorbisFile.cpp \

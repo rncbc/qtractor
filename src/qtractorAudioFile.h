@@ -23,30 +23,42 @@
 #define __qtractorAudioFile_h
 
 #include "qtractorAbout.h"
-#include "qtractorRingBuffer.h"
 
 #include <qstringlist.h>
 #include <qmap.h>
 
 
-// Forward declarations.
-class qtractorAudioFileFactory;
-
-// Declare audio buffer file type.
-// typedef qtractorRingBufferFile<float> qtractorAudioFile;
-class qtractorAudioFile : public qtractorRingBufferFile<float> {};
-
-
 //----------------------------------------------------------------------
-// class qtractorAudioBuffer -- A special case of an audio ring-buffer audio.
+// class qtractorAudioFile -- Abstract audio file mockup.
 //
 
-class qtractorAudioBuffer : public qtractorRingBuffer<float>
+class qtractorAudioFile
 {
 public:
 
-	// Overriden open method.
-	bool open(const char *pszName, int iMode = qtractorAudioFile::Read);
+	// Virtual destructor.
+	virtual ~qtractorAudioFile() {}
+
+	// Basic file open mode.
+	enum { None = 0, Read = 1, Write = 2 };
+
+	// Pure virtual method mockups.
+	virtual bool open  (const char *pszName, int iMode = Read) = 0;
+	virtual int  read  (float **ppFrames, unsigned int iFrames) = 0;
+	virtual int  write (float **ppFrames, unsigned int iFrames) = 0;
+	virtual bool seek  (unsigned long iOffset) = 0;
+	virtual void close () = 0;
+
+	// Pure virtual accessor mockups.
+	virtual int mode() const = 0;
+
+	// These shall give us a clue on the size
+	// of the ring buffer size (in frames).
+	virtual unsigned short channels() const = 0;
+	virtual unsigned long frames() const = 0;
+
+	// Other special informational methods.
+	virtual unsigned int samplerate() const = 0;
 };
 
 
