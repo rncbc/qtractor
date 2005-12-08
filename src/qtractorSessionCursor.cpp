@@ -77,7 +77,7 @@ qtractorTrack::TrackType qtractorSessionCursor::syncType (void) const
 
 
 // General bi-directional locate method.
-void qtractorSessionCursor::seek ( unsigned long iFrame )
+void qtractorSessionCursor::seek ( unsigned long iFrame, bool bSync )
 {
 	if (iFrame > m_iFrame)
 		seekForward(iFrame);
@@ -85,13 +85,13 @@ void qtractorSessionCursor::seek ( unsigned long iFrame )
 	if (iFrame < m_iFrame)
 		seekBackward(iFrame);
 
-	if (m_syncType != qtractorTrack::None) {
+	if (bSync && m_syncType != qtractorTrack::None) {
 		unsigned int iTrack = 0;
 		qtractorTrack *pTrack = m_pSession->tracks().first();
 		while (pTrack && iTrack < m_iTracks) {
 			if (pTrack->trackType() == m_syncType) {
 				qtractorClip *pClip = m_ppClips[iTrack];
-				if (pClip && pClip->clipStart() < iFrame)
+				if (pClip && iFrame >= pClip->clipStart())
 					pClip->seek(iFrame - pClip->clipStart());
 			}
 			pTrack = pTrack->next();

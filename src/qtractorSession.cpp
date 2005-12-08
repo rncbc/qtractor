@@ -587,9 +587,9 @@ void qtractorSession::setPlayhead ( unsigned long iFrame )
 	if (m_pAudioEngine->sessionCursor()) {
 		bool bPlaying = isPlaying();
 		setPlaying(false);
-		m_pAudioEngine->sessionCursor()->seek(iFrame);
+		m_pAudioEngine->sessionCursor()->seek(iFrame, true);
 		if (m_pMidiEngine->sessionCursor())
-			m_pMidiEngine->sessionCursor()->seek(iFrame);
+			m_pMidiEngine->sessionCursor()->seek(iFrame, true);
 		stabilize();
 		setPlaying(bPlaying);
 	}

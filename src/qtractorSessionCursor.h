@@ -46,7 +46,7 @@ public:
 	qtractorSession *session() const;
 
 	// General bi-directional locate method.
-	void seek(unsigned long iFrame);
+	void seek(unsigned long iFrame, bool bSync = false);
 
 	// Current frame position accessor.
 	unsigned long frame() const;
