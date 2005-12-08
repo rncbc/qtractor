@@ -52,10 +52,7 @@ qtractorAudioMadFile::qtractorAudioMadFile ( unsigned int iBufferSize )
 	m_ppRingBuffer     = NULL;
 
 	// Frame mapping for sample-accurate seeking.
-	m_iInputOffset  = 0;
-	m_iOutputOffset = 0;
-	m_iSeekOffset   = 0;
-	m_iDecodeFrame  = 0;
+	m_iSeekOffset = 0;
 }
 
 // Destructor.
@@ -148,7 +145,7 @@ bool qtractorAudioMadFile::input (void)
 			iBufferSize <<= 1;
 		m_iInputBufferSize = iBufferSize;
 		m_pInputBuffer = new unsigned char [iBufferSize + MAD_BUFFER_GUARD];
-		m_iInputOffset = 0;
+		m_curr.iInputOffset = 0;
 	}
 
 	unsigned long  iRemaining;
@@ -168,7 +165,7 @@ bool qtractorAudioMadFile::input (void)
 
 	long iRead = ::fread(pReadStart, 1, iReadSize, m_pFile);
 	if (iRead > 0) {
-		m_iInputOffset += iRead;
+		m_curr.iInputOffset += iRead;
 		if (iRead < (int) iReadSize) {
 			::memset(pReadStart + iRead, 0, MAD_BUFFER_GUARD);
 			iRead += MAD_BUFFER_GUARD;
@@ -177,7 +174,7 @@ bool qtractorAudioMadFile::input (void)
 	}
 
 	return (iRead > 0);
-	
+
 #else	// CONFIG_LIBMAD
 
 	return false;
@@ -227,31 +224,32 @@ bool qtractorAudioMadFile::decode (void)
 		m_iRingBufferRead  = 0;
 		m_iRingBufferWrite = 0;
 		// Decoder mapping initialization.
-		m_iOutputOffset = 0;
-		m_iSeekOffset   = 0;
-		m_iDecodeFrame  = 0;
 		m_frames.clear();
+		m_curr.iInputOffset  = 0;
+		m_curr.iOutputOffset = 0;
+		m_curr.iDecodeCount  = 0;
 	}
 
 	const float fScale = (float) (1L << MAD_F_FRACBITS);
 	for (unsigned int n = 0; n < iFrames; n++) {
-		if (m_iOutputOffset >= m_iSeekOffset) {
+		if (m_curr.iOutputOffset >= m_iSeekOffset) {
 			for (unsigned short i = 0; i < m_iChannels; i++) {
 				int iSample = bError ? 0 : *(m_madSynth.pcm.samples[i] + n);
 				m_ppRingBuffer[i][m_iRingBufferWrite] = (float) iSample / fScale;
 			}
 			++m_iRingBufferWrite &= m_iRingBufferMask;
 		}
-		++m_iOutputOffset;
+		++m_curr.iOutputOffset;
 	}
 
 	if ((m_frames.count() < 1
-		|| m_frames.last().iOutputOffset < m_iOutputOffset)) {
+		|| m_frames.last().iOutputOffset < m_curr.iOutputOffset)) {
 		// Only do mapping accounting each other 3rd decoded frame...
-		if ((++m_iDecodeFrame % 3) == 0) {
-			unsigned long iInputOffset = m_iInputOffset
+		if ((++m_curr.iDecodeCount % 3) == 0) {
+			unsigned long iInputOffset = m_curr.iInputOffset
 				- (m_madStream.bufend - m_madStream.next_frame);
-			m_frames.append(FrameNode(iInputOffset, m_iOutputOffset));
+			m_frames.append(FrameNode(iInputOffset,
+				m_curr.iOutputOffset, m_curr.iDecodeCount));
 		}
 	}
 
@@ -337,21 +335,21 @@ bool qtractorAudioMadFile::seek ( unsigned long iOffset )
 	// Are qe seeking backward or forward 
 	// from last known decoded position?
 	if (m_frames.count() > 0 && m_frames.last().iOutputOffset > iOffset) {
-		// assume the worst case (seek to very beggining...)
-		m_iInputOffset  = 0;
-		m_iOutputOffset = 0;
+		// Assume the worst case (seek to very beggining...)
+		m_curr.iInputOffset  = 0;
+		m_curr.iOutputOffset = 0;
+		m_curr.iDecodeCount  = 0;
 		// Find the previous mapped 3rd frame that fits location...
 		FrameList::ConstIterator iter = m_frames.fromLast();
 		while (--iter != m_frames.begin()) {
 			const FrameNode& frame = *iter;
 			if (frame.iOutputOffset < iOffset) {
-				m_iInputOffset  = frame.iInputOffset;
-				m_iOutputOffset = frame.iOutputOffset;
+				m_curr = frame;
 				break;
 			}
 		}
 		// Rewind file position...
-		if (::fseek(m_pFile, m_iInputOffset, SEEK_SET))
+		if (::fseek(m_pFile, m_curr.iInputOffset, SEEK_SET))
 			return false;
 #ifdef CONFIG_LIBMAD
 		// Release MAD structs...
@@ -373,7 +371,7 @@ bool qtractorAudioMadFile::seek ( unsigned long iOffset )
 	m_iRingBufferWrite = 0;
 
 	// Now loop until we find the target offset...
-	while (m_iOutputOffset < m_iSeekOffset && !m_bEndOfStream)
+	while (m_curr.iOutputOffset < m_iSeekOffset && !m_bEndOfStream)
 		m_bEndOfStream = !decode();
 
 	return !m_bEndOfStream;
@@ -416,7 +414,7 @@ void qtractorAudioMadFile::close()
 	m_iSampleRate  = 0;
 	m_iChannels    = 0;
 	m_iBitRate     = 0;
-    m_iMode        = qtractorAudioMadFile::None;
+	m_iMode        = qtractorAudioMadFile::None;
 }
 
 

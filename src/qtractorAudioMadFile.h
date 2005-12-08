@@ -100,23 +100,22 @@ private:
 	float           **m_ppRingBuffer;
 
 	// Decoding frame maping for sample-accurate seeking.
+	unsigned long     m_iSeekOffset;
+	
 	struct FrameNode {
 		// Member constructor.
-		FrameNode(unsigned long i = 0, unsigned long o = 0)
-			: iInputOffset(i), iOutputOffset(o) {}
+		FrameNode(unsigned long i = 0, unsigned long o = 0, unsigned int c = 0)
+			: iInputOffset(i), iOutputOffset(o), iDecodeCount(c) {}
 		// Member fields.
 		unsigned long iInputOffset;     // Bytes from input file.
 		unsigned long iOutputOffset;    // Sample frames on output.
+		unsigned int  iDecodeCount;     // Decoder iteration count.
 	};
 
 	typedef QValueList<FrameNode> FrameList;
 
 	FrameList m_frames;
-
-	unsigned long     m_iInputOffset;
-	unsigned long     m_iOutputOffset;
-	unsigned long     m_iSeekOffset;
-	unsigned int      m_iDecodeFrame;
+	FrameNode m_curr;
 };
 
 
