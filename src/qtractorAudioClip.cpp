@@ -41,7 +41,7 @@ qtractorAudioClip::qtractorAudioClip ( qtractorTrack *pTrack )
 	: qtractorClip(pTrack)
 {
 	m_pPeak = NULL;
-	m_pBuff = new qtractorAudioBuffer();
+	m_pBuff = new qtractorAudioBuffer(pTrack->session()->sampleRate());
 }
 
 
@@ -68,7 +68,8 @@ bool qtractorAudioClip::open ( const QString& sFilename )
 	if (m_pPeak)
 		delete m_pPeak;
 
-	m_pPeak = track()->session()->audioPeakFactory()->createPeak(sFilename);
+	m_pPeak = track()->session()->audioPeakFactory()->createPeak(sFilename,
+		track()->session()->sampleRate());
 	if (m_pPeak == NULL)
 		return false;
 

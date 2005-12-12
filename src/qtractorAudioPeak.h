@@ -54,14 +54,15 @@ public:
 
 	// Constructor.
 	qtractorAudioPeakFile(qtractorAudioPeakFactory *pFactory,
-		const QString& sFilename, unsigned int iPeriod = 0);
+		const QString& sFilename, unsigned int iSampleRate);
 	// Default destructor.
 	~qtractorAudioPeakFile();
 
 	// Peak file accessors.
 	const QString& filename() const;
-	unsigned short period() const;
+	unsigned int   samplerate() const;
 	// Lazy-evaluated properties.
+	unsigned short period();
 	unsigned short channels();
 	unsigned long  frames();
 
@@ -94,8 +95,9 @@ private:
 	qtractorAudioPeakFactory *m_pFactory;
 
 	// Instance variables.
-	QString        m_sFilename;
 	QFile          m_peakFile;
+	QString        m_sFilename;
+	unsigned int   m_iSampleRate;
 	unsigned short m_iPeakPeriod;
 	unsigned short m_iPeakChannels;
 	unsigned long  m_iPeakFrames;
@@ -159,7 +161,7 @@ public:
 
 	// The peak file factory-method.
 	qtractorAudioPeak* createPeak(
-		const QString& sFilename, unsigned int iPeriod = 0);
+		const QString& sFilename, unsigned int iSampleRate);
 	void removePeak(qtractorAudioPeakFile *pPeakFile);
 
 	// Event notifier widget settings.

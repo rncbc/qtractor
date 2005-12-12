@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(Qtractor, 0.0.0.188, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.0.0.189, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractorMainForm.ui.h)
 AC_CONFIG_HEADERS(config.h)
@@ -36,6 +36,12 @@ AC_ARG_ENABLE(libmad,
   AC_HELP_STRING([--disable-libmad], [disable libmad interface (default=no)]),
   [ac_libmad="no"],
   [ac_libmad="yes"])
+
+# Enable libsamplerate availability.
+AC_ARG_ENABLE(libsamplerate,
+  AC_HELP_STRING([--disable-libsamplerate], [disable libsamplerate interface (default=no)]),
+  [ac_libsamplerate="no"],
+  [ac_libsamplerate="yes"])
 
 # Checks for programs.
 AC_PROG_CC
@@ -134,16 +140,16 @@ if test "x$ac_round" = "xyes"; then
 fi
 
 # Check for JACK libraries.
-AC_CHECK_LIB(jack, main, [ac_jack_lib="yes"], [ac_jack_lib="no"])
-if test "x$ac_jack_lib" = "xno"; then
+AC_CHECK_LIB(jack, main, [ac_libjack="yes"], [ac_libjack="no"])
+if test "x$ac_libjack" = "xno"; then
    AC_MSG_ERROR([JACK library not found.])
 else
    ac_libs="$ac_libs -ljack"
 fi
 
 # Check for ALSA libraries.
-AC_CHECK_LIB(asound, main, [ac_alsa_lib="yes"], [ac_alsa_lib="no"])
-if test "x$ac_alsa_lib" = "xno"; then
+AC_CHECK_LIB(asound, main, [ac_libasound="yes"], [ac_libasound="no"])
+if test "x$ac_libasound" = "xno"; then
    AC_MSG_ERROR([ALSA library not found.])
 else
    ac_libs="$ac_libs -lasound"
@@ -181,6 +187,18 @@ if test "x$ac_libmad" = "xyes"; then
    fi
 fi
 
+# Check for optional libsamplerate library.
+if test "x$ac_libsamplerate" = "xyes"; then
+   AC_CHECK_LIB(samplerate, main, [ac_libsamplerate="yes"], [ac_libsamplerate="no"])
+   if test "x$ac_libsamplerate" = "xyes"; then
+      AC_DEFINE(CONFIG_LIBSAMPLERATE, 1, [Define if libsamplerate is available.])
+      ac_libs="$ac_libs -lsamplerate"
+   else
+      AC_MSG_WARN([*** samplerate library not found.])
+      AC_MSG_WARN([*** Sample-rate conversion support will be disabled.])
+   fi
+fi
+
 AC_SUBST(ac_libs)
 
 # Checks for header files.
@@ -214,11 +232,19 @@ if test "x$ac_libvorbis" = "xyes"; then
    fi
 fi
 
-# Check for optional dependable headers.
+# Check for mad headers.
 if test "x$ac_libmad" = "xyes"; then
    AC_CHECK_HEADER(mad.h, [ac_mad_h="yes"], [ac_mad_h="no"])
    if test "x$ac_mad_h" = "xno"; then
       AC_MSG_ERROR([mad.h header file not found.])
+   fi
+fi
+
+# Check for samplerate headers.
+if test "x$ac_libsamplerate" = "xyes"; then
+   AC_CHECK_HEADER(samplerate.h, [ac_samplerate_h="yes"], [ac_samplerate_h="no"])
+   if test "x$ac_samplerate_h" = "xno"; then
+      AC_MSG_ERROR([samplerate.h header file not found.])
    fi
 fi
 

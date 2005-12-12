@@ -25,6 +25,11 @@
 #include "qtractorAudioFile.h"
 #include "qtractorRingBuffer.h"
 
+#ifdef CONFIG_LIBSAMPLERATE
+// libsamplerate API
+#include <samplerate.h>
+#endif
+
 #include <qthread.h>
 
 
@@ -37,9 +42,9 @@ class qtractorAudioBuffer
 public:
 
 	// Constructors.
-	qtractorAudioBuffer();
+	qtractorAudioBuffer(unsigned int iSampleRate);
 	// Default destructor.
-	virtual ~qtractorAudioBuffer();
+	~qtractorAudioBuffer();
 
 	// Internal file descriptor accessors.
 	qtractorAudioFile* file() const;
@@ -48,6 +53,9 @@ public:
 	unsigned short channels() const;
 	unsigned long frames() const;
 	unsigned int samplerate() const;
+
+ 	// Resample ratio accessor.
+	float resampleRatio() const;
 
 	// Operational initializer/terminator.
 	bool open(const char *pszName,int iMode = qtractorAudioFile::Read);
@@ -62,7 +70,7 @@ public:
 		unsigned int iOffset = 0, float fGain = 1.0);
 
 	// Buffer data seek.
-	bool seek (unsigned long iOffset);
+	bool seek(unsigned long iOffset);
 
 	// Reset this buffer's state.
 	void reset();
@@ -98,6 +106,17 @@ protected:
 	void readSync();
 	void writeSync();
 
+	// Buffer process methods.
+	int readBuffer  (unsigned int nframes);
+	int writeBuffer (unsigned int nframes);
+
+	// I/O buffer release.
+	void deleteIOBuffers();
+
+	// Frame position converters.
+	unsigned long framesIn(unsigned long iFrames) const;
+	unsigned long framesOut(unsigned long iFrames) const;
+
 private:
 
 	// Audio file instance variables.
@@ -114,7 +133,18 @@ private:
 	unsigned long  m_iLoopStart;
 	unsigned long  m_iLoopEnd;
 
+	unsigned int   m_iSeekPending;
+
+	unsigned int   m_iSampleRate;
+	bool           m_bResample;
+	float          m_fResampleRatio;
+	unsigned int   m_iInputPending;
 	float        **m_ppFrames;
+	float        **m_ppInBuffer;
+#ifdef CONFIG_LIBSAMPLERATE
+	float        **m_ppOutBuffer;
+	SRC_STATE    **m_ppSrcState;
+#endif  // CONFIG_LIBSAMPLERATE
 };
 
 

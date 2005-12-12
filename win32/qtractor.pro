@@ -125,9 +125,10 @@ LANGUAGE = C++
 win32 {
 CONFIG      += console
 INCLUDEPATH += C:\usr\local\include
-LIBS        += C:\usr\local\lib\libsndfile-1.lib \
+LIBS        += C:\usr\local\lib\libjack.lib \
+               C:\usr\local\lib\libasound.lib \
+               C:\usr\local\lib\libsndfile.lib \
                C:\usr\local\lib\libvorbisfile.lib \
                C:\usr\local\lib\libmad.lib \
-               C:\usr\local\lib\libasound.lib \
-               C:\usr\local\lib\libjack.lib
+               C:\usr\local\lib\libsamplerate.lib
 }
