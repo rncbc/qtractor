@@ -422,6 +422,7 @@ void qtractorAudioBuffer::readSync (void)
 	if (ws == 0 || m_bEndOfFile)
 		return;
 
+	// Check whether we have some hard-seek pending...
 	if (m_iSeekPending) {
 		m_iSeekPending  = 0;
 		m_iInputPending = 0;
@@ -677,6 +678,7 @@ void qtractorAudioBuffer::reset (void)
 	if (m_bIntegral) {
 		m_pRingBuffer->setWriteIndex(m_iLength);
 	} else {
+		m_iSeekPending++;
 		m_iLength = 0;
 		m_bEndOfFile = false;
 		qtractorAudioBufferThread::Instance().sync();
