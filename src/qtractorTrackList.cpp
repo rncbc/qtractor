@@ -169,10 +169,21 @@ void qtractorTrackListItem::paintCell ( QPainter *p, const QColorGroup& cg,
 	QColor bg = _cg.color(QColorGroup::Background);
 	QColor fg = _cg.color(QColorGroup::Foreground);
 
+	bool bSelected = isSelected();
+	if (column > qtractorTrackList::Number && bSelected) {
+		bg = _cg.color(QColorGroup::Shadow);
+		fg = _cg.color(QColorGroup::Light);
+	}
+
 	switch (column) {
 	case qtractorTrackList::Number:
-		bg = m_pTrack->foreground().light();
-		fg = m_pTrack->background().light();
+	    if (bSelected) {
+			bg = m_pTrack->background();
+			fg = m_pTrack->foreground();
+		} else {
+			bg = m_pTrack->foreground().light();
+			fg = m_pTrack->background().light();
+		}
 		break;
 	case qtractorTrackList::Record:
 		if (m_pTrack->isRecord()) {

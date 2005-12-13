@@ -22,6 +22,7 @@
 #ifndef __qtractorAudioBuffer_h
 #define __qtractorAudioBuffer_h
 
+#include "qtractorList.h"
 #include "qtractorAudioFile.h"
 #include "qtractorRingBuffer.h"
 
@@ -37,7 +38,7 @@
 // class qtractorAudioBuffer -- Ring buffer/cache template declaration.
 //
 
-class qtractorAudioBuffer
+class qtractorAudioBuffer : public qtractorListNode<qtractorAudioBuffer>
 {
 public:
 
@@ -193,7 +194,7 @@ private:
 	QWaitCondition m_cond;
 
 	// The list of managed audio buffers.
-	QPtrList<qtractorAudioBuffer> m_list;
+	qtractorList<qtractorAudioBuffer> m_list;
 };
 
 
