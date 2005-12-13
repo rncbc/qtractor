@@ -171,8 +171,8 @@ void qtractorTrackListItem::paintCell ( QPainter *p, const QColorGroup& cg,
 
 	bool bSelected = isSelected();
 	if (column > qtractorTrackList::Number && bSelected) {
-		bg = _cg.color(QColorGroup::Midlight).dark();
-		fg = _cg.color(QColorGroup::Midlight).light();
+		bg = _cg.color(QColorGroup::Midlight).dark(150);
+		fg = _cg.color(QColorGroup::Midlight).light(150);
 	}
 
 	switch (column) {
