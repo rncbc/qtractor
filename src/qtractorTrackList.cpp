@@ -177,13 +177,8 @@ void qtractorTrackListItem::paintCell ( QPainter *p, const QColorGroup& cg,
 
 	switch (column) {
 	case qtractorTrackList::Number:
-	    if (bSelected) {
-			bg = m_pTrack->background();
-			fg = m_pTrack->foreground();
-		} else {
-			bg = m_pTrack->foreground().light();
-			fg = m_pTrack->background().light();
-		}
+		bg = m_pTrack->foreground().light();
+		fg = m_pTrack->background().light();
 		break;
 	case qtractorTrackList::Record:
 		if (m_pTrack->isRecord()) {
@@ -214,11 +209,9 @@ void qtractorTrackListItem::paintCell ( QPainter *p, const QColorGroup& cg,
 
 	// Draw cell frame lines...
 	int height = QListViewItem::height();
-//	p->setPen(cg.color(QColorGroup::Midlight));
 	p->setPen(bg.light(150));
 	p->drawLine(0, 0, 0, height - 1);
 	p->drawLine(0, 0, width - 1, 0);
-//	p->setPen(cg.color(QColorGroup::Mid));
 	p->setPen(bg.dark(150));
 	p->drawLine(width - 1, 0, width - 1, height - 1);
 	p->drawLine(0, height - 1, width - 1, height - 1);
