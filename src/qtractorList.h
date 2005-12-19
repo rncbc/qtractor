@@ -24,33 +24,6 @@
 
 
 //----------------------------------------------------------------------
-// class qtractorListNode -- Doubly-linked list node.
-//
-
-template <class Node>
-class qtractorListNode
-{
-public:
-
-	// Constructor.
-	qtractorListNode() : m_pPrev(0), m_pNext(0) {}
-
-	// Accessors.
-	Node *prev() const { return m_pPrev; }
-	Node *next() const { return m_pNext; }
-
-	void setPrev(Node *pPrev) { m_pPrev = pPrev; }
-	void setNext(Node *pNext) { m_pNext = pNext; }
-
-private:
-
-	// Instance variables.
-	Node *m_pPrev;
-	Node *m_pNext;
-};
-
-
-//----------------------------------------------------------------------
 // class qtractorList -- Doubly-linked list base.
 //
 
@@ -60,8 +33,8 @@ class qtractorList
 public:
 
 	// Default constructor.
-	qtractorList() : m_pFirst(0), m_pLast(0),
-		m_iCount(0), m_bAutoDelete(false) {}
+	qtractorList() : m_pFirst(0), m_pLast(0), m_iCount(0),
+		m_pFreeList(0), m_bAutoDelete(false) {}
 	// Default destructor.
 	~qtractorList() { clear(); }
 
@@ -79,7 +52,7 @@ public:
 	void insertAfter(Node *pNode, Node *pPrevNode = 0);
 	void insertBefore(Node *pNode, Node *pNextNode = 0);
 
-	// Remove methods.
+	// Unlink/remove methods.
 	void unlink(Node *pNode);
 	void remove(Node *pNode);
 
@@ -93,10 +66,89 @@ public:
 	void prepend(Node *pNode) { insertBefore(pNode); }
 	void append(Node *pNode)  { insertAfter(pNode);  }
 
-	Node *operator[] (int iNode) const { return at(iNode); }
-
 	// Node searcher.
 	int find(Node *pNode) const;
+
+	//----------------------------------------------------------------------
+	// class qtractorList<Node>::Link -- Base list node.
+	//
+
+	class Link
+	{
+	public:
+
+		// Constructor.
+		Link() : m_pPrev(0), m_pNext(0), m_pNextFree(0) {}
+
+		// Linked node getters.
+		Node *prev() const { return m_pPrev; }
+		Node *next() const { return m_pNext; }
+
+		// Linked node setters.
+		void setPrev(Node *pPrev) { m_pPrev = pPrev; }
+		void setNext(Node *pNext) { m_pNext = pNext; }
+
+		// Linked free node accessors.
+		Node *nextFree() const { return m_pNextFree; }
+		void setNextFree(Node *pNextFree) { m_pNextFree = pNextFree; }
+
+	private:
+
+		// Instance variables.
+		Node *m_pPrev;
+		Node *m_pNext;
+
+		Node *m_pNextFree;
+	};
+
+	//----------------------------------------------------------------------
+	// class qtractorList<Node>::Iterator -- List iterator (aka cursor).
+	//
+
+	class Iterator
+	{
+	public:
+
+	    // Constructors.
+	    Iterator(qtractorList<Node>& list)
+			: m_list(list), m_pNode(0) {}
+	    Iterator(const Iterator& it)
+			: m_list(it.list()), m_pNode(it.node()) {}
+
+	    // Iterator methods.
+	    Iterator& first() { m_pNode = m_list.first(); return *this; }
+	    Iterator& next()  { m_pNode = m_pNode->next(); return *this; }
+	    Iterator& prev()  { m_pNode = m_pNode->prev(); return *this; }
+	    Iterator& last()  { m_pNode = m_list.last(); return *this; }
+
+	    // Operator methods
+
+	    Iterator& operator= (const Iterator& iter)
+	        { m_pNode = iter.m_pNode; return *this; }
+	    Iterator& operator= (Node *pNode)
+	        { m_pNode = pNode; return *this; }
+
+	    Iterator& operator++ ()
+			{ return next(); }
+	    Iterator  operator++ (int)
+			{ Iterator it(*this); next(); return it; }
+
+	    Iterator& operator-- ()
+			{ return prev(); }
+	    Iterator  operator-- (int)
+			{ Iterator it(*this); prev(); return it; }
+
+		// Simple accessors.
+		const qtractorList<Node>& list() const { return m_list; }
+	    Node *node() const { return m_pNode; }
+
+	private:
+
+	    // Instance variables.
+	    qtractorList<Node>& m_list;
+	    // Current cursory node reference.
+	    Node *m_pNode;
+	};
 
 private:
 
@@ -104,6 +156,8 @@ private:
 	Node *m_pFirst;
 	Node *m_pLast;
 	int m_iCount;
+	// The reclaimed freelist.
+	Node *m_pFreeList;
 	bool m_bAutoDelete;
 };
 
@@ -179,8 +233,12 @@ void qtractorList<Node>::remove ( Node *pNode )
 {
 	unlink(pNode);
 
-	if (m_bAutoDelete)
-		delete pNode;
+	// Add it to the alternate free list.
+	if (m_bAutoDelete) {
+		Node *pNextFree = m_pFreeList;
+		pNode->setNextFree(pNextFree);
+		m_pFreeList = pNode;
+	}
 }
 
 
@@ -188,39 +246,22 @@ void qtractorList<Node>::remove ( Node *pNode )
 template <class Node>
 void qtractorList<Node>::clear (void)
 {
-	if (m_bAutoDelete) {
-		while (m_pFirst) {
-			Node *pNextNode = m_pFirst->next();
-			delete m_pFirst;
-			m_pFirst = pNextNode;
-		}
+	// Remove pending items.
+	while (m_pLast)
+		remove(m_pLast);
+
+	// Free the free-list altogether...
+	while (m_pFreeList) {
+		Node *pFreeList = m_pFreeList;
+		Node *pNextFree = pFreeList->nextFree();
+		delete pFreeList;
+		m_pFreeList = pNextFree;
 	}
 
+	// Force clen up.
 	m_pFirst = m_pLast = 0;
 	m_iCount = 0;
-}
-
-
-// Random accessor.
-template <class Node>
-Node *qtractorList<Node>::at ( int iNode ) const
-{
-	int i;
-	Node *pNode;
-
-	if (iNode > (m_iCount >> 1)) {
-		for (i = m_iCount - 1, pNode = m_pLast;
-				pNode && i > iNode;
-					--i, pNode = pNode->prev())
-			;
-	} else {
-		for (i = 0, pNode = m_pFirst;
-				pNode && i < iNode;
-					++i, pNode = pNode->next())
-			;
-	}
-
-	return pNode;
+	m_pFreeList = 0;
 }
 
 

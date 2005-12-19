@@ -32,7 +32,7 @@
 // class qtractorMidiEvent -- The generic MIDI event element.
 //
 
-class qtractorMidiEvent : public qtractorListNode<qtractorMidiEvent>
+class qtractorMidiEvent : public qtractorList<qtractorMidiEvent>::Link
 {
 public:
 

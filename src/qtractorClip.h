@@ -28,7 +28,7 @@
 //-------------------------------------------------------------------------
 // qtractorClip -- Track clip capsule.
 
-class qtractorClip : public qtractorListNode<qtractorClip>
+class qtractorClip : public qtractorList<qtractorClip>::Link
 {
 public:
 

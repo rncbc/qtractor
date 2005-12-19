@@ -32,7 +32,7 @@ class qtractorClip;
 // class qtractorSessionCursor - declaration.
 //
 
-class qtractorSessionCursor : public qtractorListNode<qtractorSessionCursor>
+class qtractorSessionCursor : public qtractorList<qtractorSessionCursor>::Link
 {
 public:
 

@@ -43,7 +43,7 @@ class QRect;
 //-------------------------------------------------------------------------
 // qtractorTrack -- Track container.
 
-class qtractorTrack : public qtractorListNode<qtractorTrack>
+class qtractorTrack : public qtractorList<qtractorTrack>::Link
 {
 public:
 

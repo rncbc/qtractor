@@ -118,7 +118,7 @@ private:
 // class qtractorBus -- Abstract device bus.
 //
 
-class qtractorBus : public qtractorListNode<qtractorBus>
+class qtractorBus : public qtractorList<qtractorBus>::Link
 {
 public:
 

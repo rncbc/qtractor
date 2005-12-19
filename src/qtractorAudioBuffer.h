@@ -38,7 +38,7 @@
 // class qtractorAudioBuffer -- Ring buffer/cache template declaration.
 //
 
-class qtractorAudioBuffer : public qtractorListNode<qtractorAudioBuffer>
+class qtractorAudioBuffer : public qtractorList<qtractorAudioBuffer>::Link
 {
 public:
 
