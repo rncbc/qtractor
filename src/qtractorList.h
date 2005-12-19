@@ -66,6 +66,8 @@ public:
 	void prepend(Node *pNode) { insertBefore(pNode); }
 	void append(Node *pNode)  { insertAfter(pNode);  }
 
+	Node *operator[] (int iNode) const { return at(iNode); }
+
 	// Node searcher.
 	int find(Node *pNode) const;
 
@@ -262,6 +264,29 @@ void qtractorList<Node>::clear (void)
 	m_pFirst = m_pLast = 0;
 	m_iCount = 0;
 	m_pFreeList = 0;
+}
+
+
+// Random accessor.
+template <class Node>
+Node *qtractorList<Node>::at ( int iNode ) const
+{
+	int i;
+	Node *pNode;
+
+	if (iNode > (m_iCount >> 1)) {
+		for (i = m_iCount - 1, pNode = m_pLast;
+				pNode && i > iNode;
+					--i, pNode = pNode->prev())
+			;
+	} else {
+		for (i = 0, pNode = m_pFirst;
+				pNode && i < iNode;
+					++i, pNode = pNode->next())
+			;
+	}
+
+	return pNode;
 }
 
 
