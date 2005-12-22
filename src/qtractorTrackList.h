@@ -29,6 +29,7 @@ class qtractorTracks;
 class qtractorTrack;
 
 class qtractorTrackList;
+class qtractorInstrumentList;
 
 
 //----------------------------------------------------------------------------
@@ -85,12 +86,15 @@ public:
 
 	// Track list view column indexes.
 	enum ColumnIndex {
-		Number = 0,
-		Name   = 1,
-		Record = 2,
-		Mute   = 3,
-		Solo   = 4,
-		Bus    = 5
+		Number  = 0,
+		Name    = 1,
+		Record  = 2,
+		Mute    = 3,
+		Solo    = 4,
+		Bus     = 5,
+		Channel = 6,
+		Patch   = 7,
+		Instrument = 8
 	};
 
 	// Find the list view item from track pointer reference.
@@ -101,6 +105,9 @@ public:
 
 	// Zoom all tracks item height.
 	void zoomItemHeight(int iVerticalZoom);
+
+	// Instrument list accessor helper.
+	qtractorInstrumentList *instruments() const;
 
 protected:
 

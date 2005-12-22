@@ -26,12 +26,14 @@
 #include <qtoolbutton.h>
 
 // Forward declarations.
+class qtractorInstrumentList;
 class qtractorTrackList;
 class qtractorTrackTime;
 class qtractorTrackView;
 class qtractorTrack;
 class qtractorSession;
 class qtractorMainForm;
+
 
 class QScrollView;
 
@@ -56,6 +58,9 @@ public:
 
 	// Session accessors.
 	qtractorSession *session() const;
+
+	// Instrument list accessor.
+	qtractorInstrumentList *instruments() const;
 
 	// Child widgets accessors.
 	qtractorTrackList *trackList() const;

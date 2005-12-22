@@ -26,7 +26,9 @@
 #include "qtractorSession.h"
 
 #include "qtractorOptions.h"
+#include "qtractorInstrument.h"
 #include "qtractorAudioEngine.h"
+#include "qtractorMidiEngine.h"
 #include "qtractorMainForm.h"
 
 #include <qapplication.h>
@@ -66,6 +68,9 @@ qtractorTrackListItem::qtractorTrackListItem ( qtractorTrackList *pTrackList,
 	setText(qtractorTrackList::Mute,   "M");
 	setText(qtractorTrackList::Solo,   "S");
 	setText(qtractorTrackList::Bus,    pTrack->busName());
+	// qtractorTrackList::Channel
+	// qtractorTrackList::Patch
+	// qtractorTrackList::Instrument
 }
 
 
@@ -86,29 +91,63 @@ qtractorTrack *qtractorTrackListItem::track (void) const
 // Overriden to set extra text info.
 void qtractorTrackListItem::setText ( int iColumn, const QString& sText )
 {
-	if (m_pTrack && iColumn == qtractorTrackList::Bus) {
-		QString sPrefix;
-		switch (m_pTrack->trackType()) {
-			case qtractorTrack::Audio: {
-				qtractorAudioBus *pAudioBus
-					= static_cast<qtractorAudioBus *> (m_pTrack->bus());
-				sPrefix = QObject::tr("Audio (%1 channels)")
-					.arg(pAudioBus ? pAudioBus->channels() : 0);
-				break;
-			}
-			case qtractorTrack::Midi: {
-				sPrefix = QObject::tr("MIDI (Channel %1)")
-					.arg(m_pTrack->midiChannel() + 1);
-				break;
-			}
-			case qtractorTrack::None:
-			default:
-				sPrefix = QObject::tr("Unknown");
-				break;
-		}
-		QListViewItem::setText(iColumn, sPrefix + '\n' + sText);
-	} else {
+	if (m_pTrack == NULL || iColumn != qtractorTrackList::Bus) {
 		QListViewItem::setText(iColumn, sText);
+		return;
+	}
+
+	const QString s = "--";
+
+	switch (m_pTrack->trackType()) {
+
+		case qtractorTrack::Audio: {
+			qtractorAudioBus *pAudioBus
+				= static_cast<qtractorAudioBus *> (m_pTrack->bus());
+	        QListViewItem::setText(qtractorTrackList::Bus,
+				(pAudioBus ? pAudioBus->busName() : s)  + '\n'
+				+ QObject::tr("Audio"));
+			QListViewItem::setText(qtractorTrackList::Channel,
+				QString::number(pAudioBus->channels()));
+			QListViewItem::setText(qtractorTrackList::Patch, s);
+			QListViewItem::setText(qtractorTrackList::Instrument, s);
+			break;
+		}
+
+		case qtractorTrack::Midi: {
+			qtractorMidiBus *pMidiBus
+				= static_cast<qtractorMidiBus *> (m_pTrack->bus());
+	        QListViewItem::setText(qtractorTrackList::Bus,
+				(pMidiBus ? pMidiBus->busName() : s)  + '\n'
+				+ QObject::tr("MIDI"));
+			unsigned short iChannel = m_pTrack->midiChannel();
+	    	const QString& sInstrumentName
+				= pMidiBus->instrumentName(iChannel);
+			QListViewItem::setText(qtractorTrackList::Channel,
+				QString::number(iChannel + 1));
+			if (!sInstrumentName.isEmpty() && trackList()->instruments()) {
+				qtractorInstrument& instr
+					= (*trackList()->instruments())[sInstrumentName];
+				qtractorInstrumentData& patch
+					= instr.patch(m_pTrack->midiBank());
+				QListViewItem::setText(qtractorTrackList::Patch,
+				    patch[m_pTrack->midiProgram()] + '\n' + patch.name());
+				QListViewItem::setText(qtractorTrackList::Instrument,
+				    sInstrumentName);
+			} else {
+				QListViewItem::setText(qtractorTrackList::Patch, s);
+				QListViewItem::setText(qtractorTrackList::Instrument, s);
+			}
+			break;
+		}
+
+		case qtractorTrack::None:
+		default:
+	        QListViewItem::setText(qtractorTrackList::Bus,
+				s + '\n' + QObject::tr("Unknown"));
+			QListViewItem::setText(qtractorTrackList::Channel, s);
+			QListViewItem::setText(qtractorTrackList::Patch, s);
+			QListViewItem::setText(qtractorTrackList::Instrument, s);
+			break;
 	}
 }
 
@@ -242,15 +281,23 @@ qtractorTrackList::qtractorTrackList ( qtractorTracks *pTracks,
 	QListView::addColumn(tr("R"), 20);		// qtractorTrackList::Record
 	QListView::addColumn(tr("M"), 20);		// qtractorTrackList::Mute
 	QListView::addColumn(tr("S"), 20);		// qtractorTrackList::Solo
-	QListView::addColumn(tr("Channel/Bus"));// qtractorTrackList::Bus
+	QListView::addColumn(tr("Bus"));		// qtractorTrackList::Bus
+	QListView::addColumn(tr("Ch"));			// qtractorTrackList::Channel
+	QListView::addColumn(tr("Patch"));		// qtractorTrackList::Patch
+	QListView::addColumn(tr("Instrument"));	// qtractorTrackList::Instrumnet
 
 	QListView::setColumnAlignment(qtractorTrackList::Number, Qt::AlignHCenter);
+	QListView::setColumnAlignment(qtractorTrackList::Record, Qt::AlignHCenter);
+	QListView::setColumnAlignment(qtractorTrackList::Mute, Qt::AlignHCenter);
+	QListView::setColumnAlignment(qtractorTrackList::Solo, Qt::AlignHCenter);
+	QListView::setColumnAlignment(qtractorTrackList::Channel, Qt::AlignHCenter);
 
 	QListView::setColumnWidthMode(qtractorTrackList::Record, QListView::Manual);
 	QListView::setColumnWidthMode(qtractorTrackList::Mute, QListView::Manual);
 	QListView::setColumnWidthMode(qtractorTrackList::Solo, QListView::Manual);
+	QListView::setColumnWidthMode(qtractorTrackList::Channel, QListView::Manual);
 
-	QListView::setResizeMode(QListView::LastColumn);
+//	QListView::setResizeMode(QListView::LastColumn);
 	QListView::setSelectionMode(QListView::Single);
 	QListView::setAllColumnsShowFocus(true);
 	QListView::setItemMargin(4);
@@ -326,6 +373,13 @@ void qtractorTrackList::zoomItemHeight ( int iVerticalZoom )
 	// Update track view total contents height...
 	m_pTracks->trackView()->updateContentsHeight();
 	m_pTracks->trackView()->updateContents();
+}
+
+
+// Instrument list accessor helper.
+qtractorInstrumentList *qtractorTrackList::instruments() const
+{
+	return m_pTracks->instruments();
 }
 
 
