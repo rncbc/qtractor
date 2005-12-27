@@ -22,6 +22,7 @@
 #include "qtractorAbout.h"
 #include "qtractorTrackList.h"
 #include "qtractorTrackView.h"
+#include "qtractorTrackCommand.h"
 #include "qtractorTracks.h"
 #include "qtractorSession.h"
 
@@ -529,19 +530,9 @@ void qtractorTrackList::contentsMouseReleaseEvent ( QMouseEvent *pMouseEvent )
 					qtractorTrack *pTrackDrag = pTrackItemDrag->track();
 					qtractorTrack *pTrackDrop = pTrackItemDrop->track();
 					if (pTrackDrag && pTrackDrop && pTrackDrag != pTrackDrop) {
-						// Remove and insert back again...
-						pSession->tracks().unlink(pTrackDrag);
-						delete pTrackItemDrag;
-						pSession->tracks().insertAfter(pTrackDrag, pTrackDrop);
-						pSession->reset();
-						// Just insert under the track list position...
-						new qtractorTrackListItem(this, pTrackDrag,	pItemDrop);
-						// We'll renumber all items now...
-						renumberTrackItems();
-						// Update track view total contents height...
-						m_pTracks->trackView()->updateContents();
-						// Notify that we've changed somehow...
-						m_pTracks->contentsChangeNotify();
+						m_pTracks->mainForm()->commands()->exec(
+							new qtractorMoveTrackCommand(m_pTracks->mainForm(),
+								pTrackDrag, pTrackDrop));
 					}
 				}
 			}

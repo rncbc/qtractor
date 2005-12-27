@@ -1203,6 +1203,23 @@ void qtractorMainForm::helpAbout (void)
 //-------------------------------------------------------------------------
 // qtractorMainForm -- Main window stabilization.
 
+void qtractorMainForm::updateActionCommand ( QAction *pAction,
+	qtractorCommand *pCommand )
+{
+	const QRegExp rxBrackets(" \\([^\\)]+\\)$");
+	pAction->setMenuText(pAction->menuText().remove(rxBrackets));
+	pAction->setStatusTip(pAction->statusTip().remove(rxBrackets));
+	pAction->setToolTip(pAction->toolTip().remove(rxBrackets));
+	if (pCommand) {
+		const QString sBrackets = QString(" (%1)").arg(pCommand->name());
+		pAction->setMenuText(pAction->menuText() + sBrackets);
+		pAction->setStatusTip(pAction->statusTip() + sBrackets);
+		pAction->setToolTip(pAction->toolTip() + sBrackets);
+	}
+	pAction->setEnabled(pCommand != NULL);
+}
+
+
 void qtractorMainForm::stabilizeForm (void)
 {
 #ifdef CONFIG_DEBUG_0
@@ -1220,8 +1237,8 @@ void qtractorMainForm::stabilizeForm (void)
 
 	// Update edit menu state...
 	//
-	editUndoAction->setEnabled(m_pCommands->lastCommand() != NULL);
-	editRedoAction->setEnabled(m_pCommands->nextCommand() != NULL);
+	updateActionCommand(editUndoAction, m_pCommands->lastCommand());
+	updateActionCommand(editRedoAction, m_pCommands->nextCommand());
 	// TODO: Update edit menu state...
 	//
 	editCutAction->setEnabled(false);

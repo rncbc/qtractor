@@ -94,6 +94,29 @@ public:
 };
 
 
+//----------------------------------------------------------------------
+// class qtractorMoveTrackCommand - declaration.
+//
+
+class qtractorMoveTrackCommand : public qtractorTrackCommand
+{
+public:
+
+	// Constructor.
+	qtractorMoveTrackCommand(qtractorMainForm *pMainForm,
+		qtractorTrack *pTrack, qtractorTrack *pPrevTrack);
+
+	// Track-move command methods.
+	bool redo();
+	bool undo();
+
+private:
+
+	// Instance variables.
+	qtractorTrack *m_pPrevTrack;
+};
+
+
 #endif	// __qtractorTrackCommand_h
 
 // end of qtractorTrackCommand.h

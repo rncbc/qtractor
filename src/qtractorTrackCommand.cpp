@@ -27,6 +27,7 @@
 #include "qtractorSession.h"
 #include "qtractorTracks.h"
 #include "qtractorTrackList.h"
+#include "qtractorTrackView.h"
 
 
 //----------------------------------------------------------------------
@@ -139,7 +140,7 @@ bool qtractorTrackCommand::removeTrack (void)
 // Constructor.
 qtractorAddTrackCommand::qtractorAddTrackCommand (
 	qtractorMainForm *pMainForm, qtractorTrack *pTrack )
-	: qtractorTrackCommand(pMainForm, QObject::tr("Add track"), pTrack)
+	: qtractorTrackCommand(pMainForm, QObject::tr("add track"), pTrack)
 {
 }
 
@@ -163,7 +164,7 @@ bool qtractorAddTrackCommand::undo (void)
 // Constructor.
 qtractorRemoveTrackCommand::qtractorRemoveTrackCommand (
 	qtractorMainForm *pMainForm, qtractorTrack *pTrack )
-	: qtractorTrackCommand(pMainForm, QObject::tr("Remove track"), pTrack)
+	: qtractorTrackCommand(pMainForm, QObject::tr("remove track"), pTrack)
 {
 }
 
@@ -177,6 +178,77 @@ bool qtractorRemoveTrackCommand::redo (void)
 bool qtractorRemoveTrackCommand::undo (void)
 {
 	return addTrack();
+}
+
+
+//----------------------------------------------------------------------
+// class qtractorMoveTrackCommand - implementation
+//
+
+// Constructor.
+qtractorMoveTrackCommand::qtractorMoveTrackCommand (
+	qtractorMainForm *pMainForm, qtractorTrack *pTrack,
+		qtractorTrack *pPrevTrack )
+	: qtractorTrackCommand(pMainForm, QObject::tr("move track"), pTrack)
+{
+	m_pPrevTrack = pPrevTrack;
+}
+
+
+// Track-move command methods.
+bool qtractorMoveTrackCommand::redo (void)
+{
+	qtractorSession *pSession = mainForm()->session();
+	if (pSession == NULL)
+		return false;
+
+	qtractorTracks *pTracks = mainForm()->tracks();
+	if (pTracks == NULL)
+		return false;
+
+	qtractorTrackListItem *pPrevItem
+	    = pTracks->trackList()->trackItem(m_pPrevTrack);
+//	if (pPrevItem == NULL)
+//	    return false;
+	qtractorTrackListItem *pTrackItem
+	    = pTracks->trackList()->trackItem(track());
+	if (pTrackItem == NULL)
+	    return false;
+
+	// Save the previous track alright...
+	qtractorTrack *pPrevTrack = track()->prev();
+
+	// Remove and insert back again...
+	pSession->tracks().unlink(track());
+	delete pTrackItem;
+	if (m_pPrevTrack)
+		pSession->tracks().insertAfter(track(), m_pPrevTrack);
+	else
+		pSession->tracks().prepend(track());
+	// Make it all set back.
+	pSession->reset();
+	// Just insert under the track list position...
+	pTrackItem = new qtractorTrackListItem(pTracks->trackList(),
+		track(), pPrevItem);
+	// We'll renumber all items now...
+	pTracks->trackList()->renumberTrackItems();
+	// Make it the current item...
+	pTracks->trackList()->setCurrentItem(pTrackItem);
+	// Update track view total contents height...
+	pTracks->trackView()->updateContents();
+	// Notify that we've changed somehow...
+	pTracks->contentsChangeNotify();
+
+	// Swap it nice, finally.
+	m_pPrevTrack = pPrevTrack;
+
+	return true;
+}
+
+bool qtractorMoveTrackCommand::undo (void)
+{
+	// As we swap the prev/track this is non-identpotent.
+	return redo();
 }
 
 

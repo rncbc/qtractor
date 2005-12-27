@@ -1201,6 +1201,7 @@
     <forward>class qtractorFiles;</forward>
     <forward>class qtractorSession;</forward>
     <forward>class qtractorTracks;</forward>
+    <forward>class qtractorCommand;</forward>
 </forwards>
 <variables>
     <variable access="private">qtractorOptions *m_pOptions;</variable>
@@ -1296,6 +1297,7 @@
     <function access="private" specifier="non virtual">updateSession()</function>
     <function access="private" specifier="non virtual">updateRecentFiles( const QString &amp; sFilename )</function>
     <function access="private" specifier="non virtual">updateRecentFilesMenu( void )</function>
+    <function access="private" specifier="non virtual">updateActionCommand( QAction * pAction, qtractorCommand *pCommand )</function>
     <function specifier="non virtual">appendMessages( const QString &amp; s )</function>
     <function specifier="non virtual">appendMessagesColor( const QString &amp; s, const QString &amp; c )</function>
     <function specifier="non virtual">appendMessagesText( const QString &amp; s )</function>
