@@ -436,10 +436,21 @@ qtractorList<qtractorTrack>& qtractorSession::tracks (void)
 
 void qtractorSession::addTrack ( qtractorTrack *pTrack )
 {
+	insertTrack(pTrack, m_tracks.last());
+}
+
+
+void qtractorSession::insertTrack ( qtractorTrack *pTrack,
+	qtractorTrack *pPrevTrack )
+{
 	if (pTrack->trackType() == qtractorTrack::Midi)
 		acquireMidiTag(pTrack);
 
-	m_tracks.append(pTrack);
+	if (pPrevTrack) {
+		m_tracks.insertAfter(pTrack, pPrevTrack);
+	} else {
+		m_tracks.prepend(pTrack);
+	}
 
 	if (pTrack->isSolo())
 		setSoloTracks(true);
@@ -464,7 +475,7 @@ void qtractorSession::updateTrack ( qtractorTrack *pTrack )
 }
 
 
-void qtractorSession::removeTrack ( qtractorTrack *pTrack )
+void qtractorSession::unlinkTrack ( qtractorTrack *pTrack )
 {
 	pTrack->close();
 
@@ -480,7 +491,7 @@ void qtractorSession::removeTrack ( qtractorTrack *pTrack )
 	if (pTrack->trackType() == qtractorTrack::Midi)
 		releaseMidiTag(pTrack);
 
-	m_tracks.remove(pTrack);
+	m_tracks.unlink(pTrack);
 }
 
 

@@ -1,0 +1,183 @@
+// qtractorTrackCommand.cpp
+//
+/****************************************************************************
+   Copyright (C) 2005, rncbc aka Rui Nuno Capela. All rights reserved.
+
+   This program is free software; you can redistribute it and/or
+   modify it under the terms of the GNU General Public License
+   as published by the Free Software Foundation; either version 2
+   of the License, or (at your option) any later version.
+
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+
+   You should have received a copy of the GNU General Public License
+   along with this program; if not, write to the Free Software
+   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+
+*****************************************************************************/
+
+#include "qtractorAbout.h"
+#include "qtractorTrackCommand.h"
+
+#include "qtractorMainForm.h"
+
+#include "qtractorSession.h"
+#include "qtractorTracks.h"
+#include "qtractorTrackList.h"
+
+
+//----------------------------------------------------------------------
+// class qtractorTrackCommand - implementation
+//
+
+// Constructor.
+qtractorTrackCommand::qtractorTrackCommand ( qtractorMainForm *pMainForm,
+	const QString& sName, qtractorTrack *pTrack )
+	: qtractorCommand(pMainForm, sName), m_pTrack(pTrack)
+{
+}
+
+
+// Destructor.
+qtractorTrackCommand::~qtractorTrackCommand (void)
+{
+	qtractorSession *pSession = mainForm()->session();
+	if (pSession && isAutoDelete()) {
+	//	pSession->unlinkTrack(m_pTrack);
+		delete m_pTrack;
+	}
+}
+
+
+// Track command methods.
+bool qtractorTrackCommand::addTrack (void)
+{
+#ifdef CONFIG_DEBUG
+	fprintf(stderr, "qtractorTrackCommand::addTrack(%p)\n", m_pTrack);
+#endif
+	qtractorSession *pSession = mainForm()->session();
+	if (pSession == NULL)
+		return false;
+
+	qtractorTracks *pTracks = mainForm()->tracks();
+	if (pTracks == NULL)
+		return false;
+
+	// Guess which item we're adding after...
+	qtractorTrack *pAfterTrack = m_pTrack->prev();
+	if (pAfterTrack == NULL && m_pTrack->next() == NULL)
+		pAfterTrack = pSession->tracks().last();
+	qtractorTrackListItem *pAfterItem
+		= pTracks->trackList()->trackItem(pAfterTrack);
+	// Link the track into session...
+	pSession->insertTrack(m_pTrack, pAfterTrack);
+	// And the new track list view item too...
+	qtractorTrackListItem *pTrackItem
+		= new qtractorTrackListItem(pTracks->trackList(), m_pTrack, pAfterItem);
+	// Renumbering of all other remaining items.
+	pTracks->trackList()->renumberTrackItems(pAfterItem);
+	// Make it the current item...
+	pTracks->trackList()->setCurrentItem(pTrackItem);
+	// Refresh view.
+	pTracks->updateContents(true);
+	// Notify who's watching...
+	pTracks->contentsChangeNotify();
+
+	// Avoid disposal of the track reference.
+	setAutoDelete(false);
+
+	return true;
+}
+
+
+bool qtractorTrackCommand::removeTrack (void)
+{
+#ifdef CONFIG_DEBUG
+	fprintf(stderr, "qtractorTrackCommand::removeTrack(%p)\n", m_pTrack);
+#endif
+	qtractorSession *pSession = mainForm()->session();
+	if (pSession == NULL)
+		return false;
+
+	qtractorTracks *pTracks = mainForm()->tracks();
+	if (pTracks == NULL)
+		return false;
+
+	// Get the list view item reference of the intended track...
+	qtractorTrackListItem *pTrackItem
+		= pTracks->trackList()->trackItem(m_pTrack);
+	if (pTrackItem == NULL)
+		return false;
+
+	// First, make it unselected, avoiding excessive signals.
+	pTrackItem->setSelected(false);
+	// Second, remove from session...
+	pSession->unlinkTrack(m_pTrack);
+	// Third, remove track from list view...
+	delete pTrackItem;
+	// OK. Finally, force enumbering of all items.
+	pTracks->trackList()->renumberTrackItems();
+	// Refresh all.
+	pTracks->updateContents(true);
+	// Notify who's watching...
+	pTracks->contentsChangeNotify();
+
+	// Make ths track reference disposable.
+	setAutoDelete(true);
+
+	return true;
+}
+
+
+//----------------------------------------------------------------------
+// class qtractorAddTrackCommand - implementation
+//
+
+// Constructor.
+qtractorAddTrackCommand::qtractorAddTrackCommand (
+	qtractorMainForm *pMainForm, qtractorTrack *pTrack )
+	: qtractorTrackCommand(pMainForm, QObject::tr("Add track"), pTrack)
+{
+}
+
+
+// Track insertion command methods.
+bool qtractorAddTrackCommand::redo (void)
+{
+	return addTrack();
+}
+
+bool qtractorAddTrackCommand::undo (void)
+{
+	return removeTrack();
+}
+
+
+//----------------------------------------------------------------------
+// class qtractorRemoveTrackCommand - implementation
+//
+
+// Constructor.
+qtractorRemoveTrackCommand::qtractorRemoveTrackCommand (
+	qtractorMainForm *pMainForm, qtractorTrack *pTrack )
+	: qtractorTrackCommand(pMainForm, QObject::tr("Remove track"), pTrack)
+{
+}
+
+
+// Track-removal command methods.
+bool qtractorRemoveTrackCommand::redo (void)
+{
+	return removeTrack();
+}
+
+bool qtractorRemoveTrackCommand::undo (void)
+{
+	return addTrack();
+}
+
+
+// end of qtractorTrackCommand.cpp

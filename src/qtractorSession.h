@@ -137,8 +137,9 @@ public:
 	qtractorList<qtractorTrack>& tracks();
 
 	void addTrack(qtractorTrack *pTrack);
+	void insertTrack(qtractorTrack *pTrack, qtractorTrack *pPrevTrack = NULL);
 	void updateTrack(qtractorTrack *pTrack);
-	void removeTrack(qtractorTrack *pTrack);
+	void unlinkTrack(qtractorTrack *pTrack);
 
 	qtractorTrack *trackAt(int iTrack) const;
 

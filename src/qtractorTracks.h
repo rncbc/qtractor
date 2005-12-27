@@ -75,7 +75,7 @@ public:
 
 	// Primordial track management methods.
 	qtractorTrack *currentTrack() const;
-	qtractorTrack *addTrack();
+	bool addTrack();
 	bool removeTrack(qtractorTrack *pTrack = NULL);
 	bool editTrack(qtractorTrack *pTrack = NULL);
 

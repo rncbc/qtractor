@@ -40,6 +40,8 @@ headers = config.h \
 	src/qtractorDocument.h \
 	src/qtractorSessionDocument.h \
 	src/qtractorInstrument.h \
+	src/qtractorCommand.h \
+	src/qtractorTrackCommand.h \
 	src/qtractorMainForm.ui.h \
 	src/qtractorSessionForm.ui.h \
 	src/qtractorTrackForm.ui.h \
@@ -78,6 +80,8 @@ sources = src/main.cpp \
 	src/qtractorDocument.cpp \
 	src/qtractorSessionDocument.cpp \
 	src/qtractorInstrument.cpp \
+	src/qtractorCommand.cpp \
+	src/qtractorTrackCommand.cpp
 
 all:	$(name)
 

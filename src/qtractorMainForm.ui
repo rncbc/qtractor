@@ -1195,6 +1195,7 @@
     <forward>class QWorkspace;</forward>
     <forward>class QLabel;</forward>
     <forward>class qtractorOptions;</forward>
+    <forward>class qtractorCommandList;</forward>
     <forward>class qtractorInstrumentList;</forward>
     <forward>class qtractorMessages;</forward>
     <forward>class qtractorFiles;</forward>
@@ -1203,6 +1204,7 @@
 </forwards>
 <variables>
     <variable access="private">qtractorOptions *m_pOptions;</variable>
+    <variable access="private">qtractorCommandList *m_pCommands;</variable>
     <variable access="private">qtractorInstrumentList *m_pInstruments;</variable>
     <variable access="private">qtractorMessages *m_pMessages;</variable>
     <variable access="private">qtractorFiles *m_pFiles;</variable>
@@ -1281,6 +1283,8 @@
     <function specifier="non virtual">contextMenuEvent( QContextMenuEvent *pEvent )</function>
     <function specifier="non virtual" returnType="qtractorOptions *">options( void )</function>
     <function specifier="non virtual" returnType="qtractorSession *">session( void )</function>
+    <function specifier="non virtual" returnType="qtractorTracks *">tracks( void )</function>
+    <function specifier="non virtual" returnType="qtractorCommandList *">commands( void )</function>
     <function specifier="non virtual" returnType="qtractorInstrumentList *">instruments( void )</function>
     <function specifier="non virtual" returnType="QString">sessionName( const QString &amp; sFilename )</function>
     <function access="private" specifier="non virtual" returnType="bool">newSession( void )</function>

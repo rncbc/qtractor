@@ -50,11 +50,25 @@
 //----------------------------------------------------------------------------
 // qtractorTrackListItem -- Tracks list item.
 
-// Constructor.
+// Constructors.
+qtractorTrackListItem::qtractorTrackListItem ( qtractorTrackList *pTrackList,
+	qtractorTrack *pTrack )
+	: QListViewItem(pTrackList, pTrackList->lastItem())
+{
+	initItem(pTrackList, pTrack);
+}
+
 qtractorTrackListItem::qtractorTrackListItem ( qtractorTrackList *pTrackList,
 	qtractorTrack *pTrack, QListViewItem *pItemAfter )
-	: QListViewItem(pTrackList,
-		(pItemAfter ? pItemAfter : pTrackList->lastItem()))
+	: QListViewItem(pTrackList, pItemAfter)
+{
+	initItem(pTrackList, pTrack);
+}
+
+
+// Common item initializer.
+void qtractorTrackListItem::initItem ( qtractorTrackList *pTrackList,
+	qtractorTrack *pTrack )
 {
 	m_pTrack = pTrack;
 
@@ -342,7 +356,6 @@ void qtractorTrackList::renumberTrackItems ( QListViewItem *pItem )
 	// Gotta start from somewhere...
 	int iTrackNumber = 0;
 	if (pItem == NULL) {
-		iTrackNumber++;
 	    pItem = QListView::firstChild();
 	} else {
 		iTrackNumber += pItem->text(qtractorTrackList::Number).toInt();
@@ -352,7 +365,7 @@ void qtractorTrackList::renumberTrackItems ( QListViewItem *pItem )
 	// Renumbering of all other remaining items.
 	while (pItem) {
 		pItem->setText(qtractorTrackList::Number,
-			QString::number(iTrackNumber++));
+			QString::number(++iTrackNumber));
 		pItem = pItem->nextSibling();
 	}
 }

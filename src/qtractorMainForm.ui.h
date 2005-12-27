@@ -22,6 +22,7 @@
 
 #include "qtractorAbout.h"
 #include "qtractorOptions.h"
+#include "qtractorCommand.h"
 #include "qtractorInstrument.h"
 #include "qtractorMessages.h"
 #include "qtractorFiles.h"
@@ -82,6 +83,7 @@ void qtractorMainForm::init (void)
 	// Initialize some pointer references.
 	m_pOptions = NULL;
 	m_pSession = new qtractorSession();
+	m_pCommands = new qtractorCommandList();
 	m_pInstruments = new qtractorInstrumentList();
 
 	// Configure the audio file peak factory.
@@ -194,10 +196,12 @@ void qtractorMainForm::destroy (void)
 		delete m_pWorkspace;
 
 	//  Free some data around...
-	if (m_pSession)
-		delete m_pSession;
 	if (m_pInstruments)
 	    delete m_pInstruments;
+	if (m_pCommands)
+	    delete m_pCommands;
+	if (m_pSession)
+		delete m_pSession;
 
 	// Finally, delete recent files menu.
 	if (m_pRecentFilesMenu)
@@ -432,6 +436,18 @@ qtractorSession *qtractorMainForm::session (void)
 	return m_pSession;
 }
 
+// The global session tracks reference.
+qtractorTracks *qtractorMainForm::tracks (void)
+{
+	return m_pTracks;
+}
+
+// The global undoable command list reference.
+qtractorCommandList *qtractorMainForm::commands (void)
+{
+	return m_pCommands;
+}
+
 // The global instruments repository.
 qtractorInstrumentList *qtractorMainForm::instruments (void)
 {
@@ -580,6 +596,7 @@ bool qtractorMainForm::closeSession (void)
 		// Surely this will be deleted next...
 		m_pTracks = NULL;
 		// Reset session to default.
+		m_pCommands->clear();
 		m_pSession->close();
 		m_pFiles->clear();
 		// Reset playhead.
@@ -730,28 +747,28 @@ void qtractorMainForm::fileExit (void)
 // Undo last action.
 void qtractorMainForm::editUndo (void)
 {
-	// TODO: Undo...
-	//
 #ifdef CONFIG_DEBUG
 	appendMessages("qtractorMainForm::editUndo()");
 #endif
 
-	m_iDirtyCount++;
-	stabilizeForm();
+	if (m_pCommands->undo()) {
+		m_iDirtyCount++;
+		stabilizeForm();
+	}
 }
 
 
 // Redo last action.
 void qtractorMainForm::editRedo (void)
 {
-	// TODO: Redo...
-	//
 #ifdef CONFIG_DEBUG
 	appendMessages("qtractorMainForm::editRedo()");
 #endif
 
-	m_iDirtyCount++;
-	stabilizeForm();
+	if (m_pCommands->redo()) {
+		m_iDirtyCount++;
+		stabilizeForm();
+	}
 }
 
 
@@ -1201,10 +1218,12 @@ void qtractorMainForm::stabilizeForm (void)
 	// Update the main menu state...
 	fileSaveAction->setEnabled(m_iDirtyCount > 0);
 
+	// Update edit menu state...
+	//
+	editUndoAction->setEnabled(m_pCommands->lastCommand() != NULL);
+	editRedoAction->setEnabled(m_pCommands->nextCommand() != NULL);
 	// TODO: Update edit menu state...
 	//
-	editUndoAction->setEnabled(false);
-	editRedoAction->setEnabled(false);
 	editCutAction->setEnabled(false);
 	editCopyAction->setEnabled(false);
 	editPasteAction->setEnabled(false);

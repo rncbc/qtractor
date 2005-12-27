@@ -35,7 +35,9 @@ HEADERS += ../src/qtractorAbout.h \
            ../src/qtractorMidiEngine.h \
            ../src/qtractorDocument.h \
            ../src/qtractorSessionDocument.h \
-           ../src/qtractorInstrument.h
+           ../src/qtractorInstrument.h \
+           ../src/qtractorCommand.h \
+           ../src/qtractorTrackCommand.h
 
 SOURCES += ../src/main.cpp \
            ../src/qtractorOptions.cpp \
@@ -68,7 +70,9 @@ SOURCES += ../src/main.cpp \
            ../src/qtractorMidiEngine.cpp \
            ../src/qtractorDocument.cpp \
            ../src/qtractorSessionDocument.cpp \
-           ../src/qtractorInstrument.cpp
+           ../src/qtractorInstrument.cpp \
+           ../src/qtractorCommand.cpp \
+           ../src/qtractorTrackCommand.cpp
 
 FORMS    = ../src/qtractorMainForm.ui \
            ../src/qtractorSessionForm.ui \

@@ -39,9 +39,11 @@ class qtractorTrackListItem : public QListViewItem
 {
 public:
 
-	// Constructor.
+	// Constructors.
 	qtractorTrackListItem(qtractorTrackList *pTrackList,
-		qtractorTrack *pTrack, QListViewItem *pItemAfter = NULL);
+		qtractorTrack *pTrack);
+	qtractorTrackListItem(qtractorTrackList *pTrackList,
+		qtractorTrack *pTrack, QListViewItem *pItemAfter);
 
 	// Track list brainless accessor.
 	qtractorTrackList *trackList() const;
@@ -63,6 +65,11 @@ public:
 	// Overrriden cell painter.
 	virtual void paintCell(QPainter *p, const QColorGroup& cg,
 		int column, int width, int align);
+
+protected:
+
+	// Common item initializer.
+	void initItem(qtractorTrackList *pTrackList, qtractorTrack *pTrack);
 
 private:
 

@@ -24,6 +24,8 @@
 #include "qtractorTrackView.h"
 #include "qtractorTrackList.h"
 #include "qtractorTrackTime.h"
+#include "qtractorTrackCommand.h"
+
 #include "qtractorSession.h"
 #include "qtractorSessionCursor.h"
 
@@ -355,11 +357,11 @@ void qtractorTracks::selectAll ( bool bSelect )
 
 
 // Adds a new track into session.
-qtractorTrack *qtractorTracks::addTrack (void)
+bool qtractorTracks::addTrack (void)
 {
 	qtractorSession *pSession = session();
 	if (pSession == NULL)
-		return NULL;
+		return false;
 
 	//
 	// FIXME: Initial track name and type?
@@ -380,23 +382,12 @@ qtractorTrack *qtractorTracks::addTrack (void)
 	trackForm.setTrack(pTrack);
 	if (!trackForm.exec()) {
 		delete pTrack;
-		return NULL;
+		return false;
 	}
 
-	pSession->addTrack(pTrack);
-	// And the new track list view item too...
-	qtractorTrackListItem *pTrackItem =
-		new qtractorTrackListItem(m_pTrackList, pTrack);
-	// Make it the current item...
-	m_pTrackList->setCurrentItem(pTrackItem);
-	// Refresh view.
-	updateContents(true);
-
-	// Notify who's watching...
-	contentsChangeNotify();
-
-	// Done.
-	return pTrack;
+	// Put it in the form of an undoable command...
+	return m_pMainForm->commands()->exec(
+		new qtractorAddTrackCommand(m_pMainForm, pTrack));
 }
 
 
@@ -431,22 +422,9 @@ bool qtractorTracks::removeTrack ( qtractorTrack *pTrack )
 			return false;
 	}
 
-	// First, make it unselected, avoiding excessive signals.
-	pTrackItem->setSelected(false);
-	// Second, remove from session...
-	pSession->removeTrack(pTrack);
-	// Third, renumbering of all other remaining items.
-	m_pTrackList->renumberTrackItems(pTrackItem);
-	// OK. Finally remove track from list view...
-	delete pTrackItem;
-	// Refresh all.
-	updateContents(true);
-
-	// Notify who's watching...
-	contentsChangeNotify();
-
-	// Done.
-	return true;
+	// Put it in the form of an undoable command...
+	return m_pMainForm->commands()->exec(
+		new qtractorRemoveTrackCommand(m_pMainForm, pTrack));
 }
 
 

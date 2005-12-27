@@ -197,12 +197,12 @@ void qtractorSessionCursor::addTrack ( qtractorTrack *pTrack )
 	if (iTrack >= m_iSize) {
 		m_iSize += iTrack;
 		qtractorClip **ppClips = new qtractorClip * [m_iSize];
-		for (iTrack = 0; iTrack < m_iTracks; iTrack++)
-			ppClips[iTrack] = m_ppClips[iTrack];
+	//	for (iTrack = 0; iTrack < m_iTracks; iTrack++)
+	//		ppClips[iTrack] = m_ppClips[iTrack];
 		delete [] m_ppClips;
 		m_ppClips = ppClips;
 	}
-
+/*
 	qtractorClip *pClip = seekClipForward(pTrack,
 		pTrack->clips().first(), m_iFrame);
 	if (pClip && pClip->clipStart() < m_iFrame
@@ -210,7 +210,10 @@ void qtractorSessionCursor::addTrack ( qtractorTrack *pTrack )
 		pClip->seek(m_iFrame - pClip->clipStart());
 	}
 	m_ppClips[iTrack] = pClip;
+*/
 	++m_iTracks;
+
+	update();
 }
 
 

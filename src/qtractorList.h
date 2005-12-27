@@ -111,45 +111,45 @@ public:
 	{
 	public:
 
-	    // Constructors.
-	    Iterator(qtractorList<Node>& list)
+		// Constructors.
+		Iterator(qtractorList<Node>& list)
 			: m_list(list), m_pNode(0) {}
-	    Iterator(const Iterator& it)
+		Iterator(const Iterator& it)
 			: m_list(it.list()), m_pNode(it.node()) {}
 
-	    // Iterator methods.
-	    Iterator& first() { m_pNode = m_list.first(); return *this; }
-	    Iterator& next()  { m_pNode = m_pNode->next(); return *this; }
-	    Iterator& prev()  { m_pNode = m_pNode->prev(); return *this; }
-	    Iterator& last()  { m_pNode = m_list.last(); return *this; }
+		// Iterator methods.
+		Iterator& first() { m_pNode = m_list.first(); return *this; }
+		Iterator& next()  { m_pNode = m_pNode->next(); return *this; }
+		Iterator& prev()  { m_pNode = m_pNode->prev(); return *this; }
+		Iterator& last()  { m_pNode = m_list.last(); return *this; }
 
-	    // Operator methods
+		// Operator methods
 
-	    Iterator& operator= (const Iterator& iter)
-	        { m_pNode = iter.m_pNode; return *this; }
-	    Iterator& operator= (Node *pNode)
-	        { m_pNode = pNode; return *this; }
+		Iterator& operator= (const Iterator& iter)
+			{ m_pNode = iter.m_pNode; return *this; }
+		Iterator& operator= (Node *pNode)
+			{ m_pNode = pNode; return *this; }
 
-	    Iterator& operator++ ()
+		Iterator& operator++ ()
 			{ return next(); }
-	    Iterator  operator++ (int)
+		Iterator  operator++ (int)
 			{ Iterator it(*this); next(); return it; }
 
-	    Iterator& operator-- ()
+		Iterator& operator-- ()
 			{ return prev(); }
-	    Iterator  operator-- (int)
+		Iterator  operator-- (int)
 			{ Iterator it(*this); prev(); return it; }
 
 		// Simple accessors.
 		const qtractorList<Node>& list() const { return m_list; }
-	    Node *node() const { return m_pNode; }
+		Node *node() const { return m_pNode; }
 
 	private:
 
-	    // Instance variables.
-	    qtractorList<Node>& m_list;
-	    // Current cursory node reference.
-	    Node *m_pNode;
+		// Instance variables.
+		qtractorList<Node>& m_list;
+		// Current cursory node reference.
+		Node *m_pNode;
 	};
 
 private:
