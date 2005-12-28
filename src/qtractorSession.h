@@ -194,22 +194,29 @@ public:
 	bool saveElement(qtractorSessionDocument *pDocument,
 		QDomElement *pElement);
 
+	// Session property structure.
+	struct Properties
+	{
+		qtractorProperty<QString>        sessionName;
+		qtractorProperty<QString>        description;
+		qtractorProperty<unsigned int>   sampleRate;
+		qtractorProperty<float>          tempo;
+		qtractorProperty<unsigned short> ticksPerBeat;
+		qtractorProperty<unsigned short> beatsPerBar;
+		qtractorProperty<unsigned short> pixelsPerBeat;
+		qtractorProperty<unsigned short> horizontalZoom;
+		qtractorProperty<unsigned short> verticalZoom;
+		qtractorProperty<unsigned short> snapPerBeat;
+	};
+
+	// Alternate properties accessor.
+	const Properties& properties() const;
+
 private:
 
-	QString        m_sSessionName;      // Session filename.
-	QString        m_sDescription;      // Session description.
+	Properties     m_props;             // Session properties.
 
 	unsigned long  m_iSessionLength;    // Session length in frames.
-
-	unsigned int   m_iSampleRate;       // Sample rate (frames per second)
-	float          m_fTempo;            // Tempo (beats per minute; BPM)
-	unsigned short m_iTicksPerBeat;     // Resolution (pulses per beat; PPQN)
-	unsigned short m_iBeatsPerBar;      // Measure (beats per bar)
-
-	unsigned short m_iPixelsPerBeat;    // Pixels per beat (width).
-	unsigned short m_iHorizontalZoom;   // Horizontal zoom factor.
-	unsigned short m_iVerticalZoom;     // Vertical zoom factor.
-	unsigned short m_iSnapPerBeat;      // Beat snap divisor.
 
 	// Internal time scaling factors.
 	unsigned long  m_iScale_a;

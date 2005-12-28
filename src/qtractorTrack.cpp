@@ -38,21 +38,22 @@
 
 // Constructor.
 qtractorTrack::qtractorTrack ( qtractorSession *pSession, TrackType trackType )
-	: m_colorBackground(Qt::yellow), m_colorForeground(Qt::darkBlue)
 {
 	m_pSession  = pSession;
-	m_trackType = trackType;
-	m_pBus      = NULL;
 
-	m_iMidiTag     = 0;
-	m_iMidiChannel = 0;
+	m_props.trackType.init(trackType);
+	m_props.midiChannel.init(0);
+	m_props.background.init(Qt::yellow);
+	m_props.foreground.init(Qt::darkBlue);
+
+	m_pBus      = NULL;
+	m_iMidiTag  = 0;
+	m_iHeight   = 48;
 
 	m_clips.setAutoDelete(true);
 
 	clear();
 
-	// FIXME: Initial track (normalized) height?
-	m_iHeight = 48;
 }
 
 // Default constructor.
@@ -67,13 +68,13 @@ void qtractorTrack::clear (void)
 {
 	m_clips.clear();
 
-	m_iMidiBankSelMethod = -1;
-	m_iMidiBank          = -1;
-	m_iMidiProgram       = -1;
+	m_props.midiBankSelMethod.init(-1);
+	m_props.midiBank.init(-1);
+	m_props.midiProgram.init(-1);
 
-	m_bRecord = false;
-	m_bMute   = false;
-	m_bSolo   = false;
+	m_props.record.init(false);
+	m_props.mute.init(false);
+	m_props.solo.init(false);
 }
 
 
@@ -87,7 +88,7 @@ bool qtractorTrack::open (void)
 
 	// Depending on track type...
 	qtractorEngine *pEngine = NULL;
-	switch (m_trackType) {
+	switch (trackType()) {
 		case qtractorTrack::Audio:
 			pEngine = m_pSession->audioEngine();
 			break;
@@ -103,12 +104,12 @@ bool qtractorTrack::open (void)
 		return false;
 
 	// (Re)assign the bus to the track.
-	m_pBus = pEngine->findBus(m_sBusName);
+	m_pBus = pEngine->findBus(busName());
 	// Fallback to first usable one...
 	if (m_pBus == NULL) {
 		m_pBus = pEngine->busses().first();
 		if (m_pBus)
-			m_sBusName = m_pBus->busName();
+			setBusName(m_pBus->busName());
 	}
 
 	// Done.
@@ -133,32 +134,32 @@ qtractorSession *qtractorTrack::session (void) const
 // Track name accessors.
 const QString& qtractorTrack::trackName (void) const
 {
-	return m_sTrackName;
+	return m_props.trackName.value();
 }
 
 void qtractorTrack::setTrackName ( const QString& sTrackName )
 {
-	m_sTrackName = sTrackName;
+	m_props.trackName.setValue(sTrackName);
 }
 
 
 // Track type accessors.
 qtractorTrack::TrackType qtractorTrack::trackType (void) const
 {
-	return m_trackType;
+	return m_props.trackType.value();
 }
 
-void qtractorTrack::setTrackType ( qtractorTrack::TrackType trackType )
+void qtractorTrack::setTrackType ( qtractorTrack::TrackType tType )
 {
-	if (m_trackType == trackType)
+	if (trackType() == tType)
 		return;
 
-	if (m_trackType == qtractorTrack::Midi)
+	if (trackType() == qtractorTrack::Midi)
 		m_pSession->releaseMidiTag(this);
 
-	m_trackType = trackType;
+	m_props.trackType.setValue(tType);
 
-	if (m_trackType == qtractorTrack::Midi)
+	if (trackType() == qtractorTrack::Midi)
 		m_pSession->acquireMidiTag(this);
 }
 
@@ -166,24 +167,24 @@ void qtractorTrack::setTrackType ( qtractorTrack::TrackType trackType )
 // Record status accessors.
 bool qtractorTrack::isRecord (void) const
 {
-	return m_bRecord;
+	return m_props.record.value();
 }
 
 void qtractorTrack::setRecord ( bool bRecord )
 {
-	m_bRecord = bRecord;
+	m_props.record.setValue(bRecord);
 }
 
 
 // Mute status accessors.
 bool qtractorTrack::isMute (void) const
 {
-	return m_bMute;
+	return m_props.mute.value();
 }
 
 void qtractorTrack::setMute ( bool bMute )
 {
-	m_bMute = bMute;
+	m_props.mute.setValue(bMute);
 
 	if (m_pSession->isPlaying())
 		m_pSession->trackMute(this, bMute);
@@ -193,12 +194,12 @@ void qtractorTrack::setMute ( bool bMute )
 // Solo status accessors.
 bool qtractorTrack::isSolo (void) const
 {
-	return m_bSolo;
+	return m_props.solo.value();
 }
 
 void qtractorTrack::setSolo ( bool bSolo )
 {
-	m_bSolo = bSolo;
+	m_props.solo.setValue(bSolo);
 
 	if (m_pSession->isPlaying())
 		m_pSession->trackSolo(this, bSolo);
@@ -222,60 +223,60 @@ unsigned short qtractorTrack::midiTag (void) const
 // MIDI specific: channel acessors.
 void qtractorTrack::setMidiChannel ( unsigned short iMidiChannel )
 {
-	m_iMidiChannel = iMidiChannel;
+	m_props.midiChannel.setValue(iMidiChannel);
 }
 
 unsigned short qtractorTrack::midiChannel (void) const
 {
-	return m_iMidiChannel;
+	return m_props.midiChannel.value();
 }
 
 
 // MIDI specific: bank accessors.
 void qtractorTrack::setMidiBankSelMethod ( int iMidiBankSelMethod )
 {
-	m_iMidiBankSelMethod = iMidiBankSelMethod;
+	m_props.midiBankSelMethod.setValue(iMidiBankSelMethod);
 }
 
 int qtractorTrack::midiBankSelMethod (void) const
 {
-	return m_iMidiBankSelMethod;
+	return m_props.midiBankSelMethod.value();
 }
 
 
 // MIDI specific: bank accessors.
 void qtractorTrack::setMidiBank ( int iMidiBank )
 {
-	m_iMidiBank = iMidiBank;
+	m_props.midiBank.setValue(iMidiBank);
 }
 
 int qtractorTrack::midiBank (void) const
 {
-	return m_iMidiBank;
+	return m_props.midiBank.value();
 }
 
 
 // MIDI specific: program accessors.
 void qtractorTrack::setMidiProgram ( int iMidiProgram )
 {
-	m_iMidiProgram = iMidiProgram;
+	m_props.midiProgram.setValue(iMidiProgram);
 }
 
 int qtractorTrack::midiProgram (void) const
 {
-	return m_iMidiProgram;
+	return m_props.midiProgram.value();
 }
 
 
 // Assigned bus name accessors.
 void qtractorTrack::setBusName ( const QString& sBusName )
 {
-	m_sBusName = sBusName;
+	m_props.busName.setValue(sBusName);
 }
 
 const QString& qtractorTrack::busName (void) const
 {
-	return m_sBusName;
+	return m_props.busName.value();
 }
 
 
@@ -338,24 +339,24 @@ void qtractorTrack::removeClip ( qtractorClip *pClip )
 // Background color accessors.
 void qtractorTrack::setBackground ( const QColor& bg )
 {
-	m_colorBackground = bg;
+	m_props.background.setValue(bg);
 }
 
 const QColor& qtractorTrack::background (void) const
 {
-	return m_colorBackground;
+	return m_props.background.value();
 }
 
 
 // Foreground color accessors.
 void qtractorTrack::setForeground ( const QColor& fg )
 {
-	m_colorForeground = fg;
+	m_props.foreground.setValue(fg);
 }
 
 const QColor& qtractorTrack::foreground (void) const
 {
-	return m_colorForeground;
+	return m_props.foreground.value();
 }
 
 
@@ -368,13 +369,20 @@ QColor qtractorTrack::trackColor ( int iTrack )
 }
 
 
+// Alternate properties accessor.
+const qtractorTrack::Properties& qtractorTrack::properties (void) const
+{
+	return m_props;
+}
+
+
 // Track special process cycle executive.
 void qtractorTrack::process ( qtractorClip *pClip,
 	unsigned long iFrameStart, unsigned long iFrameEnd )
 {
 	// Emulate soloing/muting with zero gain;
 	float fGain = 1.0;
-	if ((m_pSession->soloTracks() && !m_bSolo) || m_bMute)
+	if ((m_pSession->soloTracks() && !isSolo()) || isMute())
 		fGain = 0.0;
 
 	// Now, for every clip...
@@ -432,7 +440,7 @@ void qtractorTrack::drawTrack ( QPainter *pPainter, const QRect& trackRect,
 // MIDI track instrument patching.
 void qtractorTrack::setMidiPatch ( qtractorInstrumentList *pInstruments )
 {
-	if (m_iMidiProgram < 0)
+	if (midiProgram() < 0)
 	    return;
 
 	qtractorMidiBus *pMidiBus
@@ -440,13 +448,13 @@ void qtractorTrack::setMidiPatch ( qtractorInstrumentList *pInstruments )
 	if (pMidiBus == NULL)
 	    return;
 
-	int iBankSelMethod = m_iMidiBankSelMethod;
-	const QString& sInstrumentName = pMidiBus->instrumentName(m_iMidiChannel);
+	int iBankSelMethod = midiBankSelMethod();
+	const QString& sInstrumentName = pMidiBus->instrumentName(midiChannel());
 	if (!sInstrumentName.isEmpty() && iBankSelMethod < 0)
 		iBankSelMethod = (*pInstruments)[sInstrumentName].bankSelMethod();
 
-	pMidiBus->setPatch(m_iMidiChannel, sInstrumentName,
-		m_iMidiBank, m_iMidiProgram, iBankSelMethod);
+	pMidiBus->setPatch(midiChannel(), sInstrumentName,
+		midiBank(), midiProgram(), iBankSelMethod);
 }
 
 

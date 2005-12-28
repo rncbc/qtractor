@@ -23,6 +23,7 @@
 #define __qtractorTrack_h
 
 #include "qtractorList.h"
+#include "qtractorProperty.h"
 
 #include <qcolor.h>
 
@@ -70,7 +71,7 @@ public:
 	const QString& trackName() const;
 
 	// Track type accessors.
-	void setTrackType(TrackType trackType);
+	void setTrackType(TrackType tType);
 	TrackType trackType() const;
 
 	// Record status accessors.
@@ -152,31 +153,35 @@ public:
 	bool saveElement(qtractorSessionDocument *pDocument,
 		QDomElement *pElement);
 
+	// Track property structure.
+	struct Properties
+	{
+		qtractorProperty<QString>        trackName;
+		qtractorProperty<TrackType>      trackType;
+		qtractorProperty<bool>           record;
+		qtractorProperty<bool>           mute;
+		qtractorProperty<bool>           solo;
+		qtractorProperty<QString>        busName;
+		qtractorProperty<unsigned short> midiChannel;
+		qtractorProperty<int>            midiBankSelMethod;
+		qtractorProperty<int>            midiBank;
+		qtractorProperty<int>            midiProgram;
+		qtractorProperty<QColor>         foreground;
+		qtractorProperty<QColor>         background;
+	};
+
+	// Alternate properties accessor.
+	const Properties& properties() const;
+
 private:
 
 	qtractorSession *m_pSession;    // Session reference.
 
-	QString   m_sTrackName;         // Track title name.
-	TrackType m_trackType;          // Track type
+	Properties       m_props;       // Track properties.
 
-	bool m_bMute;                   // Mute status.
-	bool m_bRecord;                 // Record status.
-	bool m_bSolo;                   // Solo status.
-
-	unsigned short m_iMidiTag;      // MIDI specific: track-tag;
-	unsigned short m_iMidiChannel;  // MIDI specific: channel;
-
-	int m_iMidiBankSelMethod;       // MIDI specific: bank select method (opt);
-	int m_iMidiBank;                // MIDI specific: bank (optional);
-	int m_iMidiProgram;             // MIDI specific: program (optional);
-
-	QString      m_sBusName;        // Assigned bus name.
-	qtractorBus *m_pBus;            // Track assigned bus.
-
-	int m_iHeight;                  // View height (normalized).
-
-	QColor m_colorBackground;       // Clip background color.
-	QColor m_colorForeground;       // Clip foreground color.
+	qtractorBus     *m_pBus;        // Track assigned bus.
+	unsigned short   m_iMidiTag;    // MIDI specific: track-tag;
+	int              m_iHeight;     // View height (normalized).
 
 	qtractorList<qtractorClip> m_clips; // List of clips.
 };
