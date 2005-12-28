@@ -82,10 +82,6 @@ bool qtractorTrackCommand::addTrack (void)
 	pTracks->trackList()->renumberTrackItems(pAfterItem);
 	// Make it the current item...
 	pTracks->trackList()->setCurrentItem(pTrackItem);
-	// Refresh view.
-	pTracks->updateContents(true);
-	// Notify who's watching...
-	pTracks->contentsChangeNotify();
 
 	// Avoid disposal of the track reference.
 	setAutoDelete(false);
@@ -121,10 +117,6 @@ bool qtractorTrackCommand::removeTrack (void)
 	delete pTrackItem;
 	// OK. Finally, force enumbering of all items.
 	pTracks->trackList()->renumberTrackItems();
-	// Refresh all.
-	pTracks->updateContents(true);
-	// Notify who's watching...
-	pTracks->contentsChangeNotify();
 
 	// Make ths track reference disposable.
 	setAutoDelete(true);
@@ -234,10 +226,6 @@ bool qtractorMoveTrackCommand::redo (void)
 	pTracks->trackList()->renumberTrackItems();
 	// Make it the current item...
 	pTracks->trackList()->setCurrentItem(pTrackItem);
-	// Update track view total contents height...
-	pTracks->trackView()->updateContents();
-	// Notify that we've changed somehow...
-	pTracks->contentsChangeNotify();
 
 	// Swap it nice, finally.
 	m_pPrevTrack = pPrevTrack;
@@ -249,6 +237,55 @@ bool qtractorMoveTrackCommand::undo (void)
 {
 	// As we swap the prev/track this is non-identpotent.
 	return redo();
+}
+
+
+//----------------------------------------------------------------------
+// class qtractorImportTrackCommand - implementation
+//
+
+// Constructor.
+qtractorImportTrackCommand::qtractorImportTrackCommand (
+	qtractorMainForm *pMainForm )
+	: qtractorCommand(pMainForm, QObject::tr("import track"))
+{
+	m_trackCommands.setAutoDelete(true);
+}
+
+
+// Track-import list methods.
+void qtractorImportTrackCommand::addTrack ( qtractorTrack *pTrack )
+{
+	m_trackCommands.append(
+		new qtractorAddTrackCommand(mainForm(), pTrack));
+}
+
+
+// Track-import command methods.
+bool qtractorImportTrackCommand::redo (void)
+{
+	bool bResult = true;
+
+	for (qtractorAddTrackCommand *pTrackCommand = m_trackCommands.first();
+	        pTrackCommand; pTrackCommand = m_trackCommands.next()) {
+		if (!pTrackCommand->redo())
+		    bResult = false;
+	}
+
+	return bResult;
+}
+
+bool qtractorImportTrackCommand::undo (void)
+{
+	bool bResult = true;
+
+	for (qtractorAddTrackCommand *pTrackCommand = m_trackCommands.last();
+	        pTrackCommand; pTrackCommand = m_trackCommands.prev()) {
+		if (!pTrackCommand->undo())
+		    bResult = false;
+	}
+
+	return bResult;
 }
 
 

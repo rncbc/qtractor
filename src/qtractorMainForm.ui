@@ -89,7 +89,7 @@
         <action name="trackPropertiesAction"/>
         <separator/>
         <action name="trackImportAction"/>
-        <item text="&amp;Import" name="trackImportMenu">
+        <item text="&amp;Import Tracks" name="trackImportMenu">
             <action name="trackImportAudioAction"/>
             <action name="trackImportMidiAction"/>
         </item>
@@ -557,7 +557,7 @@
             <string>Import Tracks</string>
         </property>
         <property name="menuText">
-            <string>&amp;Import</string>
+            <string>&amp;Import Tracks</string>
         </property>
         <property name="toolTip">
             <string>Import tracks</string>

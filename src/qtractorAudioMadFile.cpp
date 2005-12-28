@@ -369,6 +369,7 @@ bool qtractorAudioMadFile::seek ( unsigned long iOffset )
 	// Reset ring-buffer pointers.
 	m_iRingBufferRead  = 0;
 	m_iRingBufferWrite = 0;
+	m_bEndOfStream = false;
 
 	// Now loop until we find the target offset...
 	while (m_curr.iOutputOffset < m_iSeekOffset && !m_bEndOfStream)

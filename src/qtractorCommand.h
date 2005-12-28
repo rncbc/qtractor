@@ -53,6 +53,9 @@ public:
 	virtual bool redo() = 0;
 	virtual bool undo() = 0;
 
+	// Command update helper.
+	void update() const;
+
 protected:
 
 	// Auto-removal/deletion flag accessor.

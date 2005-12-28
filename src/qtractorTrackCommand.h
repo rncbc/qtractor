@@ -24,6 +24,9 @@
 
 #include "qtractorCommand.h"
 
+#include <qptrlist.h>
+
+
 // Forward declarations.
 class qtractorTrack;
 
@@ -114,6 +117,31 @@ private:
 
 	// Instance variables.
 	qtractorTrack *m_pPrevTrack;
+};
+
+
+//----------------------------------------------------------------------
+// class qtractorInportTrackCommand - declaration.
+//
+
+class qtractorImportTrackCommand : public qtractorCommand
+{
+public:
+
+	// Constructor.
+	qtractorImportTrackCommand(qtractorMainForm *pMainForm);
+
+	// Add track to command list.
+	void addTrack(qtractorTrack *pTrack);
+
+	// Track-import command methods.
+	bool redo();
+	bool undo();
+
+private:
+
+	// Instance variables.
+	QPtrList<qtractorAddTrackCommand> m_trackCommands;
 };
 
 

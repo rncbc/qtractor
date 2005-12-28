@@ -24,6 +24,9 @@
 
 #include "qtractorMainForm.h"
 
+#include "qtractorSession.h"
+#include "qtractorTracks.h"
+
 
 //----------------------------------------------------------------------
 // class qtractorCommand - implementation.
@@ -42,6 +45,27 @@ qtractorCommand::qtractorCommand ( qtractorMainForm *pMainForm,
 // Destructor.
 qtractorCommand::~qtractorCommand (void)
 {
+}
+
+
+// Command update helper.
+void qtractorCommand::update (void) const
+{
+	qtractorSession *pSession = mainForm()->session();
+	if (pSession == NULL)
+		return;
+
+	// Maybe, just maybe, we've made things larger...
+	pSession->updateSessionLength();
+
+	qtractorTracks *pTracks = mainForm()->tracks();
+	if (pTracks == NULL)
+		return;
+
+	// Refresh view.
+	pTracks->updateContents(true);
+	// Notify who's watching...
+	pTracks->contentsChangeNotify();
 }
 
 
@@ -105,8 +129,10 @@ bool qtractorCommandList::exec ( qtractorCommand *pCommand )
 	if (pCommand) {
 		m_commands.append(pCommand);
 		m_pLastCommand = m_commands.last();
-		if (m_pLastCommand)
+		if (m_pLastCommand) {
 			bResult = m_pLastCommand->redo();
+			m_pLastCommand->update();
+		}
 	}
 
 	return bResult;
@@ -118,6 +144,7 @@ bool qtractorCommandList::undo (void)
 
 	if (m_pLastCommand) {
 		bResult = m_pLastCommand->undo();
+		m_pLastCommand->update();
 		m_pLastCommand = m_pLastCommand->prev();
 	}
 
@@ -129,8 +156,10 @@ bool qtractorCommandList::redo (void)
 	bool bResult = false;
 
 	m_pLastCommand = nextCommand();
-	if (m_pLastCommand)
+	if (m_pLastCommand) {
 		bResult = m_pLastCommand->redo();
+		m_pLastCommand->update();
+	}
 
 	return bResult;
 }

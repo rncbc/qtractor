@@ -486,14 +486,20 @@ bool qtractorTracks::addAudioTracks ( QStringList files )
 	// Account for actual updates...
 	int iUpdate = 0;
 
+	// We'll build a composite command...
+	qtractorImportTrackCommand *pImportTrackCommand
+	    = new qtractorImportTrackCommand(m_pMainForm);
+
+	// Increment this for suggestive track coloring...
+	int iTrackCount = pSession->tracks().count();
+
 	// For each one of those files, if any...
 	for (QStringList::Iterator iter = files.begin();
 			iter != files.end(); ++iter) {
 		// This is one of the selected filenames....
 		const QString& sPath = *iter;
 		// Create a new track right away...
-		const int iTrack = pSession->tracks().count() + 1;
-		const QColor color = qtractorTrack::trackColor(iTrack);
+		const QColor color = qtractorTrack::trackColor(++iTrackCount);
 		qtractorTrack *pTrack
 			= new qtractorTrack(pSession, qtractorTrack::Audio);
 	//	pTrack->setTrackName(QFileInfo(sPath).baseName());
@@ -508,12 +514,8 @@ bool qtractorTracks::addAudioTracks ( QStringList files )
 			// Time to add the new track/clip into session...
 			pTrack->setTrackName(pAudioClip->clipName());
 			pTrack->addClip(pAudioClip);
-			pSession->addTrack(pTrack);
-			// And the new track list view item too...
-			qtractorTrackListItem *pTrackItem =
-				new qtractorTrackListItem(m_pTrackList, pTrack);
-			// Make it the current item...
-			m_pTrackList->setCurrentItem(pTrackItem);
+			// Add the new track to composite command...
+			pImportTrackCommand->addTrack(pTrack);
 			// Don't forget to add this one to local repository.
 			mainForm()->addAudioFile(sPath);
 			iUpdate++;
@@ -533,18 +535,13 @@ bool qtractorTracks::addAudioTracks ( QStringList files )
 	}
 
 	// Have we changed anything?
-	if (iUpdate < 1)
+	if (iUpdate < 1) {
+	 	delete pImportTrackCommand;
 	    return false;
-
-	// Maybe, just maybe, we've made things larger...
-	pSession->updateSessionLength();
-	// Refresh view.
-	updateContents(true);
-	// Notify who's watching...
-	contentsChangeNotify();
-
-	// Done.
-	return true;
+	}
+	
+	// Put it in the form of an undoable command...
+	return m_pMainForm->commands()->exec(pImportTrackCommand);
 }
 
 
@@ -555,12 +552,20 @@ bool qtractorTracks::addMidiTracks ( QStringList files )
 	if (pSession == NULL)
 		return false;
 
+
 	// Account for actual updates...
 	int iUpdate = 0;
 
+	// We'll build a composite command...
+	qtractorImportTrackCommand *pImportTrackCommand
+	    = new qtractorImportTrackCommand(m_pMainForm);
+
+	// Increment this for suggestive track coloring...
+	int iTrackCount = pSession->tracks().count();
+
 	// Needed to help on setting whole session properties
 	// from the first imported MIDI file...
-	int iImport = pSession->tracks().count();
+	int iImport = iTrackCount;
 
 	// For each one of those files, if any...
 	for (QStringList::Iterator iter = files.begin();
@@ -579,8 +584,7 @@ bool qtractorTracks::addMidiTracks ( QStringList files )
 		int iTracks = (file.format() == 1 ? file.tracks() : 16);
 		for (int iTrackChannel = 0; iTrackChannel < iTracks; iTrackChannel++) {
 			// Create a new track right away...
-			const int iTrack = pSession->tracks().count() + 1;
-			const QColor color = qtractorTrack::trackColor(iTrack);
+			const QColor color = qtractorTrack::trackColor(++iTrackCount);
 			qtractorTrack *pTrack
 				= new qtractorTrack(pSession, qtractorTrack::Midi);
 		//	pTrack->setTrackName(QFileInfo(sPath).baseName());
@@ -598,12 +602,8 @@ bool qtractorTracks::addMidiTracks ( QStringList files )
 				pTrack->setMidiBank(pMidiClip->bank());
 				pTrack->setMidiProgram(pMidiClip->program());
 				pTrack->addClip(pMidiClip);
-				pSession->addTrack(pTrack);
-				// And the new track list view item too...
-				qtractorTrackListItem *pTrackItem =
-					new qtractorTrackListItem(m_pTrackList, pTrack);
-				// Make it the current item...
-				m_pTrackList->setCurrentItem(pTrackItem);
+				// Add the new track to composite command...
+				pImportTrackCommand->addTrack(pTrack);
 				// Don't forget to add this one to local repository.
 				mainForm()->addMidiFile(sPath);
 				iUpdate++;
@@ -625,18 +625,13 @@ bool qtractorTracks::addMidiTracks ( QStringList files )
 	}
 
 	// Have we changed anything?
-	if (iUpdate < 1)
+	if (iUpdate < 1) {
+		delete pImportTrackCommand;
 	    return false;
+	}
 
-	// Maybe, just maybe, we've made things larger...
-	pSession->updateSessionLength();
-	// Refresh view.
-	updateContents(true);
-	// Notify who's watching...
-	contentsChangeNotify();
-
-	// Done.
-	return true;
+	// Put it in the form of an undoable command...
+	return m_pMainForm->commands()->exec(pImportTrackCommand);
 }
 
 
