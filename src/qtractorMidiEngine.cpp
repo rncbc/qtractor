@@ -177,7 +177,7 @@ qtractorSessionCursor *qtractorMidiOutputThread::midiCursorSync ( bool bStart )
 // The main thread executive.
 void qtractorMidiOutputThread::run (void)
 {
-#ifdef CONFIG_DEBUG
+#ifdef DEBUG
 	fprintf(stderr, "qtractorMidiOutputThread::run(%p): started.\n", this);
 #endif
 
@@ -187,7 +187,7 @@ void qtractorMidiOutputThread::run (void)
 	while (m_bRunState) {
 		// Wait for sync...
 		m_cond.wait(&m_mutex);
-#ifdef CONFIG_DEBUG
+#ifdef DEBUG
 		fprintf(stderr, "qtractorMidiOutputThread::run(%p): waked.\n", this);
 #endif
 		// Only if playing, the output process cycle.
@@ -196,7 +196,7 @@ void qtractorMidiOutputThread::run (void)
 	}
 	m_mutex.unlock();
 
-#ifdef CONFIG_DEBUG
+#ifdef DEBUG
 	fprintf(stderr, "qtractorMidiOutputThread::run(%p): stopped.\n", this);
 #endif
 }
@@ -212,7 +212,7 @@ void qtractorMidiOutputThread::process (void)
 		// Now for the next readahead bunch...
 		unsigned long iFrameStart = pMidiCursor->frame();
 		unsigned long iFrameEnd   = iFrameStart + m_iReadAhead;
-#ifdef CONFIG_DEBUG
+#ifdef DEBUG
 		fprintf(stderr, "qtractorMidiOutputThread::process(%p, %lu, %lu)\n",
 			this, iFrameStart, iFrameEnd);
 #endif
@@ -239,7 +239,7 @@ void qtractorMidiOutputThread::process (void)
 void qtractorMidiOutputThread::processSync (void)
 {
 	QMutexLocker locker(&m_mutex);
-#ifdef CONFIG_DEBUG
+#ifdef DEBUG
 	fprintf(stderr, "qtractorMidiOutputThread::processSync(%p)\n", this);
 #endif
 	process();
@@ -261,7 +261,7 @@ void qtractorMidiOutputThread::trackSync ( qtractorTrack *pTrack,
 	// This is the last framestamp to be trown out...
 	unsigned long iFrameEnd = pMidiCursor->frame();
 
-#ifdef CONFIG_DEBUG
+#ifdef DEBUG
 	fprintf(stderr, "qtractorMidiOutputThread::trackSync(%p, %lu, %lu)\n",
 		this, iFrameStart, iFrameEnd);
 #endif
@@ -287,7 +287,7 @@ void qtractorMidiOutputThread::sync (void)
 		m_cond.wakeAll();
 		m_mutex.unlock();
 	}
-#ifdef CONFIG_DEBUG_0
+#ifdef DEBUG_0
 	else fprintf(stderr, "qtractorMidiOutputThread::sync(%p): tryLock() failed.\n", this);
 #endif
 }

@@ -31,27 +31,50 @@ class qtractorProperty
 {
 public:
 
-	// Constructors.
+	// Default constructors.
 	qtractorProperty() {}
-	qtractorProperty(const T& value)
-		{ init(value); }
+	qtractorProperty(const T& value) { init(value); }
+
+	// Copy constructor.
+	qtractorProperty(const qtractorProperty<T>& prop) { copy(prop); }
 
 	// Initilalizer method.
-	void init(const T& value)
-		{ m_oldValue = m_curValue = value; }
+	void init(const T& value) { m_oldValue = m_curValue = value; }
+
+	// Copy helper.
+	qtractorProperty<T>& copy(const qtractorProperty<T>& prop)
+	{
+		m_oldValue = prop.m_oldValue;
+		m_curValue = prop.m_curValue;
+		return *this;
+	}
+
+	// Assignment operator,
+	qtractorProperty<T>& operator=(const qtractorProperty& prop)
+	{
+		if (&prop != this)
+			copy(prop);
+		return *this;
+	}
 
 	// Property value accessors.
 	const T& value() const { return m_curValue; }
 	void setValue(const T& value)
-		{ m_oldValue = m_curValue; m_curValue = value; }
+	{
+		m_oldValue = m_curValue;
+		m_curValue = value;
+	}
 
 	// Value change status.
-	bool isChanged() const
-		{ return (m_curValue != m_oldValue); }
+	bool isChanged() const { return (m_curValue != m_oldValue); }
 
 	// Value swap method.
 	void swap()
-		{ T temp = m_oldValue; m_oldValue = m_curValue; m_curValue = temp; }
+	{
+		T temp = m_oldValue;
+		m_oldValue = m_curValue;
+		m_curValue = temp;
+	}
 
 private:
 

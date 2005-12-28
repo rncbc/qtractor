@@ -35,6 +35,43 @@
 
 
 //-------------------------------------------------------------------------
+// qtractorSession::Properties -- Session properties structure.
+
+// Default constructor.
+qtractorSession::Properties::Properties (void)
+{
+	sessionName    = QString::null;
+	description    = QString::null;
+	sampleRate     = 44100;
+	tempo          = 120.0;
+	ticksPerBeat   = 120;
+	beatsPerBar    = 4;
+	pixelsPerBeat  = 32;
+	horizontalZoom = 100;
+	verticalZoom   = 100;
+	snapPerBeat    = 4;
+}
+
+// Helper copy method.
+qtractorSession::Properties& qtractorSession::Properties::copy (
+	const Properties& props )
+{
+	sessionName    = props.sessionName;
+	description    = props.description;
+	sampleRate     = props.sampleRate;
+	tempo          = props.tempo;
+	ticksPerBeat   = props.ticksPerBeat;
+	beatsPerBar    = props.beatsPerBar;
+	pixelsPerBeat  = props.pixelsPerBeat;
+	horizontalZoom = props.horizontalZoom;
+	verticalZoom   = props.verticalZoom;
+	snapPerBeat    = props.snapPerBeat;
+
+	return *this;
+}
+
+
+//-------------------------------------------------------------------------
 // qtractorSession -- Session container.
 
 // Constructor.

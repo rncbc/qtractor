@@ -153,9 +153,20 @@ public:
 	bool saveElement(qtractorSessionDocument *pDocument,
 		QDomElement *pElement);
 
-	// Track property structure.
+	// Track properties structure.
 	struct Properties
 	{
+		// Default constructor.
+		Properties();
+		// Copy constructor.
+		Properties(const Properties& props)
+			{ copy(props); }
+		// Assignment operator,
+		Properties& operator=(const Properties& props)
+			{ if (&props != this) copy(props); return *this; }
+		// Helper copy method.
+		Properties& copy(const Properties& props);
+		// Members.
 		qtractorProperty<QString>        trackName;
 		qtractorProperty<TrackType>      trackType;
 		qtractorProperty<bool>           record;

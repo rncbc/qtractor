@@ -32,6 +32,46 @@
 
 #include <qpainter.h>
 
+//-------------------------------------------------------------------------
+// qtractorTrack::Properties -- Track properties structure.
+
+// Default constructor.
+qtractorTrack::Properties::Properties (void)
+{
+	trackName   = QString::null;
+	trackType   = None;
+	record      = false;
+	mute        = false;
+	solo        = false;
+	busName     = QString::null;
+	midiChannel = 0;
+	midiBankSelMethod = -1;
+	midiBank    = -1;
+	midiProgram = -1;
+	foreground  = Qt::yellow;
+	background  = Qt::darkBlue;
+}
+
+// Helper copy method.
+qtractorTrack::Properties& qtractorTrack::Properties::copy (
+	const Properties& props )
+{
+	trackName   = props.trackName;
+	trackType   = props.trackType;
+	record      = props.record;
+	mute        = props.mute;
+	solo        = props.solo;
+	busName     = props.busName;
+	midiChannel = props.midiChannel;
+	midiBankSelMethod = props.midiBankSelMethod;
+	midiBank    = props.midiBank;
+	midiProgram = props.midiProgram;
+	foreground  = props.foreground;
+	background  = props.background;
+
+	return *this;
+}
+
 
 //-------------------------------------------------------------------------
 // qtractorTrack -- Track container.
@@ -42,9 +82,6 @@ qtractorTrack::qtractorTrack ( qtractorSession *pSession, TrackType trackType )
 	m_pSession  = pSession;
 
 	m_props.trackType.init(trackType);
-	m_props.midiChannel.init(0);
-	m_props.background.init(Qt::yellow);
-	m_props.foreground.init(Qt::darkBlue);
 
 	m_pBus      = NULL;
 	m_iMidiTag  = 0;
