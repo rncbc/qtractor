@@ -487,8 +487,8 @@ bool qtractorTracks::addAudioTracks ( QStringList files )
 	int iUpdate = 0;
 
 	// We'll build a composite command...
-	qtractorImportTrackCommand *pImportTrackCommand
-	    = new qtractorImportTrackCommand(m_pMainForm);
+	qtractorImportTracksCommand *pImportTracksCommand
+	    = new qtractorImportTracksCommand(m_pMainForm);
 
 	// Increment this for suggestive track coloring...
 	int iTrackCount = pSession->tracks().count();
@@ -515,7 +515,7 @@ bool qtractorTracks::addAudioTracks ( QStringList files )
 			pTrack->setTrackName(pAudioClip->clipName());
 			pTrack->addClip(pAudioClip);
 			// Add the new track to composite command...
-			pImportTrackCommand->addTrack(pTrack);
+			pImportTracksCommand->addTrack(pTrack);
 			// Don't forget to add this one to local repository.
 			mainForm()->addAudioFile(sPath);
 			iUpdate++;
@@ -536,12 +536,12 @@ bool qtractorTracks::addAudioTracks ( QStringList files )
 
 	// Have we changed anything?
 	if (iUpdate < 1) {
-	 	delete pImportTrackCommand;
+	 	delete pImportTracksCommand;
 	    return false;
 	}
 	
 	// Put it in the form of an undoable command...
-	return m_pMainForm->commands()->exec(pImportTrackCommand);
+	return m_pMainForm->commands()->exec(pImportTracksCommand);
 }
 
 
@@ -557,8 +557,8 @@ bool qtractorTracks::addMidiTracks ( QStringList files )
 	int iUpdate = 0;
 
 	// We'll build a composite command...
-	qtractorImportTrackCommand *pImportTrackCommand
-	    = new qtractorImportTrackCommand(m_pMainForm);
+	qtractorImportTracksCommand *pImportTracksCommand
+	    = new qtractorImportTracksCommand(m_pMainForm);
 
 	// Increment this for suggestive track coloring...
 	int iTrackCount = pSession->tracks().count();
@@ -603,7 +603,7 @@ bool qtractorTracks::addMidiTracks ( QStringList files )
 				pTrack->setMidiProgram(pMidiClip->program());
 				pTrack->addClip(pMidiClip);
 				// Add the new track to composite command...
-				pImportTrackCommand->addTrack(pTrack);
+				pImportTracksCommand->addTrack(pTrack);
 				// Don't forget to add this one to local repository.
 				mainForm()->addMidiFile(sPath);
 				iUpdate++;
@@ -626,12 +626,12 @@ bool qtractorTracks::addMidiTracks ( QStringList files )
 
 	// Have we changed anything?
 	if (iUpdate < 1) {
-		delete pImportTrackCommand;
+		delete pImportTracksCommand;
 	    return false;
 	}
 
 	// Put it in the form of an undoable command...
-	return m_pMainForm->commands()->exec(pImportTrackCommand);
+	return m_pMainForm->commands()->exec(pImportTracksCommand);
 }
 
 

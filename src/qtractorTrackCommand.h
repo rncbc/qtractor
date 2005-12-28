@@ -121,15 +121,15 @@ private:
 
 
 //----------------------------------------------------------------------
-// class qtractorInportTrackCommand - declaration.
+// class qtractorInportTracksCommand - declaration.
 //
 
-class qtractorImportTrackCommand : public qtractorCommand
+class qtractorImportTracksCommand : public qtractorCommand
 {
 public:
 
 	// Constructor.
-	qtractorImportTrackCommand(qtractorMainForm *pMainForm);
+	qtractorImportTracksCommand(qtractorMainForm *pMainForm);
 
 	// Add track to command list.
 	void addTrack(qtractorTrack *pTrack);

@@ -245,16 +245,16 @@ bool qtractorMoveTrackCommand::undo (void)
 //
 
 // Constructor.
-qtractorImportTrackCommand::qtractorImportTrackCommand (
+qtractorImportTracksCommand::qtractorImportTracksCommand (
 	qtractorMainForm *pMainForm )
-	: qtractorCommand(pMainForm, QObject::tr("import track"))
+	: qtractorCommand(pMainForm, QObject::tr("import tracks"))
 {
 	m_trackCommands.setAutoDelete(true);
 }
 
 
 // Track-import list methods.
-void qtractorImportTrackCommand::addTrack ( qtractorTrack *pTrack )
+void qtractorImportTracksCommand::addTrack ( qtractorTrack *pTrack )
 {
 	m_trackCommands.append(
 		new qtractorAddTrackCommand(mainForm(), pTrack));
@@ -262,7 +262,7 @@ void qtractorImportTrackCommand::addTrack ( qtractorTrack *pTrack )
 
 
 // Track-import command methods.
-bool qtractorImportTrackCommand::redo (void)
+bool qtractorImportTracksCommand::redo (void)
 {
 	bool bResult = true;
 
@@ -275,7 +275,7 @@ bool qtractorImportTrackCommand::redo (void)
 	return bResult;
 }
 
-bool qtractorImportTrackCommand::undo (void)
+bool qtractorImportTracksCommand::undo (void)
 {
 	bool bResult = true;
 

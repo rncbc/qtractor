@@ -529,10 +529,12 @@ void qtractorTrackList::contentsMouseReleaseEvent ( QMouseEvent *pMouseEvent )
 				if (pSession && pTrackItemDrag && pTrackItemDrop) {
 					qtractorTrack *pTrackDrag = pTrackItemDrag->track();
 					qtractorTrack *pTrackDrop = pTrackItemDrop->track();
-					if (pTrackDrag && pTrackDrop && pTrackDrag != pTrackDrop) {
+					if (pTrackDrag && pTrackDrop
+						&& pTrackDrag != pTrackDrop
+						&& pTrackDrag != pTrackDrop->next()) {
 						m_pTracks->mainForm()->commands()->exec(
-							new qtractorMoveTrackCommand(m_pTracks->mainForm(),
-								pTrackDrag, pTrackDrop));
+							new qtractorMoveTrackCommand(
+								m_pTracks->mainForm(), pTrackDrag, pTrackDrop));
 					}
 				}
 			}
