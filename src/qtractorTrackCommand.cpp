@@ -241,7 +241,51 @@ bool qtractorMoveTrackCommand::undo (void)
 
 
 //----------------------------------------------------------------------
-// class qtractorImportTrackCommand - implementation
+// class qtractorResizeTrackCommand - implementation
+//
+
+// Constructor.
+qtractorResizeTrackCommand::qtractorResizeTrackCommand (
+	qtractorMainForm *pMainForm, qtractorTrack *pTrack,	int iItemHeight )
+	: qtractorTrackCommand(pMainForm, QObject::tr("resize track"), pTrack)
+{
+	m_iItemHeight = iItemHeight;
+}
+
+
+// Track-resize command methods.
+bool qtractorResizeTrackCommand::redo (void)
+{
+	qtractorTracks *pTracks = mainForm()->tracks();
+	if (pTracks == NULL)
+		return false;
+
+	qtractorTrackListItem *pTrackItem
+	    = pTracks->trackList()->trackItem(track());
+	if (pTrackItem == NULL)
+	    return false;
+
+	// Save the previous item height alright...
+	int iItemHeight = pTrackItem->height();
+
+	// Just set new one...
+	pTrackItem->setItemHeight(m_iItemHeight);
+
+	// Swap it nice, finally.
+	m_iItemHeight = iItemHeight;
+
+	return true;
+}
+
+bool qtractorResizeTrackCommand::undo (void)
+{
+	// As we swap the prev/track this is non-identpotent.
+	return redo();
+}
+
+
+//----------------------------------------------------------------------
+// class qtractorImportTracksCommand - implementation
 //
 
 // Constructor.

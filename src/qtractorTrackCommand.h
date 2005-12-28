@@ -121,6 +121,29 @@ private:
 
 
 //----------------------------------------------------------------------
+// class qtractorResizeTrackCommand - declaration.
+//
+
+class qtractorResizeTrackCommand : public qtractorTrackCommand
+{
+public:
+
+	// Constructor.
+	qtractorResizeTrackCommand(qtractorMainForm *pMainForm,
+		qtractorTrack *pTrack, int iItemHeight);
+
+	// Track-move command methods.
+	bool redo();
+	bool undo();
+
+private:
+
+	// Instance variables.
+	int m_iItemHeight;
+};
+
+
+//----------------------------------------------------------------------
 // class qtractorInportTracksCommand - declaration.
 //
 

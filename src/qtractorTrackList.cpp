@@ -533,8 +533,8 @@ void qtractorTrackList::contentsMouseReleaseEvent ( QMouseEvent *pMouseEvent )
 						&& pTrackDrag != pTrackDrop
 						&& pTrackDrag != pTrackDrop->next()) {
 						m_pTracks->mainForm()->commands()->exec(
-							new qtractorMoveTrackCommand(
-								m_pTracks->mainForm(), pTrackDrag, pTrackDrop));
+							new qtractorMoveTrackCommand(m_pTracks->mainForm(),
+								pTrackDrag, pTrackDrop));
 					}
 				}
 			}
@@ -551,13 +551,9 @@ void qtractorTrackList::contentsMouseReleaseEvent ( QMouseEvent *pMouseEvent )
 			qtractorTrackListItem *pTrackItem
 				= static_cast<qtractorTrackListItem *> (m_pItemDrag);
 			if (pTrackItem) {
-				//Update item height on the fly...
-				pTrackItem->setItemHeight(iItemHeight);
-				// Update track view total contents height...
-				m_pTracks->trackView()->updateContentsHeight();
-				m_pTracks->trackView()->updateContents();
-				// Notify that we've changed somehow...
-				m_pTracks->contentsChangeNotify();
+				m_pTracks->mainForm()->commands()->exec(
+					new qtractorResizeTrackCommand(m_pTracks->mainForm(),
+						pTrackItem->track(), iItemHeight));
 			}
 		}
 		// Fall thru...
