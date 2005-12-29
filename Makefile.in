@@ -7,7 +7,6 @@ headers = config.h \
 	src/qtractorAbout.h \
 	src/qtractorOptions.h \
 	src/qtractorMessages.h \
-	src/qtractorProperty.h \
 	src/qtractorSpinBox.h \
 	src/qtractorList.h \
 	src/qtractorFiles.h \
@@ -42,6 +41,7 @@ headers = config.h \
 	src/qtractorSessionDocument.h \
 	src/qtractorInstrument.h \
 	src/qtractorCommand.h \
+	src/qtractorPropertyCommand.h \
 	src/qtractorTrackCommand.h \
 	src/qtractorMainForm.ui.h \
 	src/qtractorSessionForm.ui.h \

@@ -22,13 +22,10 @@
 #ifndef __qtractorTrackCommand_h
 #define __qtractorTrackCommand_h
 
-#include "qtractorCommand.h"
+#include "qtractorTrack.h"
+#include "qtractorPropertyCommand.h"
 
 #include <qptrlist.h>
-
-
-// Forward declarations.
-class qtractorTrack;
 
 
 //----------------------------------------------------------------------
@@ -165,6 +162,29 @@ private:
 
 	// Instance variables.
 	QPtrList<qtractorAddTrackCommand> m_trackCommands;
+};
+
+
+//----------------------------------------------------------------------
+// class qtractorEditTrackCommand - declaration.
+//
+
+class qtractorEditTrackCommand
+	: public qtractorPropertyCommand<qtractorTrack::Properties>
+{
+public:
+
+	// Constructor.
+	qtractorEditTrackCommand(qtractorMainForm *pMainForm,
+		qtractorTrack *pTrack, const qtractorTrack::Properties& props);
+
+	// Overridden track-edit command methods.
+	bool redo();
+
+private:
+
+	// Instance variables.
+	qtractorTrack *m_pTrack;
 };
 
 

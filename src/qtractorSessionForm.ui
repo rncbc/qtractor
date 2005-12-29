@@ -543,13 +543,11 @@
     <tabstop>CancelPushButton</tabstop>
 </tabstops>
 <includes>
+	<include location="local" impldecl="in declaration">qtractorSession.h</include>
 	<include location="local" impldecl="in declaration">qtractorSpinBox.h</include>
 </includes>
-<forwards>
-    <forward>class qtractorSession;</forward>
-</forwards>
 <variables>
-    <variable access="private">qtractorSession *m_pSession;</variable>
+    <variable access="private">qtractorSession::Properties m_props;</variable>
     <variable access="private">int m_iDirtyCount;</variable>
 </variables>
 <slots>
@@ -562,7 +560,7 @@
     <function access="private" specifier="non virtual">init()</function>
     <function access="private" specifier="non virtual">destroy()</function>
     <function specifier="non virtual">setSession( qtractorSession *pSession )</function>
-    <function specifier="non virtual" returnType="qtractorSession *">session()</function>
+    <function specifier="non virtual" returnType="const qtractorSession::Properties &amp;">properties()</function>
 </functions>
 <pixmapinproject/>
 <layoutdefaults spacing="4" margin="8"/>

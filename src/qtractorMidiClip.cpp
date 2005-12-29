@@ -81,7 +81,7 @@ bool qtractorMidiClip::open ( qtractorMidiFile *pMidiFile, int iTrackChannel,
 	if (!pMidiFile->readTrack(m_pSeq, iTrackChannel))
 		return false;
 
-	// On demand, set session time properties from MIDI file...
+	// FIXME: On demand, set session time properties from MIDI file...
 	if (bSetTempo) {
 		pSession->setTempo(pMidiFile->tempo());
 		pSession->setBeatsPerBar(pMidiFile->beatsPerBar());

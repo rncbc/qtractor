@@ -23,7 +23,6 @@
 #define __qtractorTrack_h
 
 #include "qtractorList.h"
-#include "qtractorProperty.h"
 
 #include <qcolor.h>
 
@@ -71,7 +70,7 @@ public:
 	const QString& trackName() const;
 
 	// Track type accessors.
-	void setTrackType(TrackType tType);
+	void setTrackType(TrackType trackType);
 	TrackType trackType() const;
 
 	// Record status accessors.
@@ -167,22 +166,22 @@ public:
 		// Helper copy method.
 		Properties& copy(const Properties& props);
 		// Members.
-		qtractorProperty<QString>        trackName;
-		qtractorProperty<TrackType>      trackType;
-		qtractorProperty<bool>           record;
-		qtractorProperty<bool>           mute;
-		qtractorProperty<bool>           solo;
-		qtractorProperty<QString>        busName;
-		qtractorProperty<unsigned short> midiChannel;
-		qtractorProperty<int>            midiBankSelMethod;
-		qtractorProperty<int>            midiBank;
-		qtractorProperty<int>            midiProgram;
-		qtractorProperty<QColor>         foreground;
-		qtractorProperty<QColor>         background;
+		QString        trackName;
+		TrackType      trackType;
+		bool           record;
+		bool           mute;
+		bool           solo;
+		QString        busName;
+		unsigned short midiChannel;
+		int            midiBankSelMethod;
+		int            midiBank;
+		int            midiProgram;
+		QColor         foreground;
+		QColor         background;
 	};
 
 	// Alternate properties accessor.
-	const Properties& properties() const;
+	Properties& properties();
 
 private:
 

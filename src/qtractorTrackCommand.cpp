@@ -333,4 +333,52 @@ bool qtractorImportTracksCommand::undo (void)
 }
 
 
+//----------------------------------------------------------------------
+// class qtractorEditTrackCommand - implementation
+//
+
+// Constructor.
+qtractorEditTrackCommand::qtractorEditTrackCommand (
+	qtractorMainForm *pMainForm, qtractorTrack *pTrack,
+	const qtractorTrack::Properties& props )
+	: qtractorPropertyCommand<qtractorTrack::Properties> (pMainForm,
+		QObject::tr("track properties"), pTrack->properties(), props)
+{
+	m_pTrack = pTrack;
+}
+
+
+// Overridden track-edit command methods.
+bool qtractorEditTrackCommand::redo (void)
+{
+	qtractorTracks *pTracks = mainForm()->tracks();
+	if (pTracks == NULL)
+		return false;
+
+	qtractorTrackListItem *pTrackItem
+	    = pTracks->trackList()->trackItem(m_pTrack);
+	if (pTrackItem == NULL)
+	    return false;
+
+	// Do the property dance.
+	if (!qtractorPropertyCommand<qtractorTrack::Properties>::redo())
+		return false;
+
+	// Reopen to assign a probable new bus...
+	if (!m_pTrack->open()) {
+		mainForm()->appendMessagesError(
+			QObject::tr("Track assignment failed:\n\n"
+				"Track: \"%1\" Bus: \"%2\"")
+				.arg(m_pTrack->trackName())
+				.arg(m_pTrack->busName()));
+	}
+
+	// Refresh track item, at least the names...
+	pTrackItem->setText(qtractorTrackList::Name, m_pTrack->trackName());
+	pTrackItem->setText(qtractorTrackList::Bus,  m_pTrack->busName());
+
+	return true;
+}
+
+
 // end of qtractorTrackCommand.cpp

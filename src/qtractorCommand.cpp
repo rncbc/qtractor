@@ -56,6 +56,7 @@ void qtractorCommand::update (void) const
 		return;
 
 	// Maybe, just maybe, we've made things larger...
+	pSession->updateTimeScale();
 	pSession->updateSessionLength();
 
 	qtractorTracks *pTracks = mainForm()->tracks();

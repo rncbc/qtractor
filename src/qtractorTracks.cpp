@@ -24,10 +24,11 @@
 #include "qtractorTrackView.h"
 #include "qtractorTrackList.h"
 #include "qtractorTrackTime.h"
-#include "qtractorTrackCommand.h"
 
 #include "qtractorSession.h"
 #include "qtractorSessionCursor.h"
+
+#include "qtractorTrackCommand.h"
 
 #include "qtractorAudioClip.h"
 #include "qtractorMidiClip.h"
@@ -453,26 +454,10 @@ bool qtractorTracks::editTrack ( qtractorTrack *pTrack )
 	if (!trackForm.exec())
 		return false;
 
-	// Reopen to assign a probable new bus...
-	if (!pTrack->open()) {
-		m_pMainForm->appendMessagesError(
-			tr("Track assignment failed:\n\n"
-			"Track: \"%1\" Bus: \"%2\"")
-			.arg(pTrack->trackName())
-			.arg(pTrack->busName()));
-	}
-
-	// Refresh track item, at least the names...
-	pTrackItem->setText(qtractorTrackList::Name, pTrack->trackName());
-	pTrackItem->setText(qtractorTrackList::Bus,  pTrack->busName());
-	// Refresh view.
-	updateContents(true);
-
-	// Notify who's watching...
-	contentsChangeNotify();
-
-	// Done.
-	return true;
+	// Put it in the form of an undoable command...
+	return m_pMainForm->commands()->exec(
+	    new qtractorEditTrackCommand(m_pMainForm, pTrack,
+			trackForm.properties()));
 }
 
 

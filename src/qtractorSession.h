@@ -198,7 +198,8 @@ public:
 	struct Properties
 	{
 		// Default constructor.
-		Properties();
+		Properties()
+			{ clear(); }
 		// Copy constructor.
 		Properties(const Properties& props)
 			{ copy(props); }
@@ -207,21 +208,23 @@ public:
 			{ if (&props != this) copy(props); return *this; }
 		// Helper copy method.
 		Properties& copy(const Properties& props);
+		// Helper clear/reset method.
+		void clear();
 		// Members.
-		qtractorProperty<QString>        sessionName;
-		qtractorProperty<QString>        description;
-		qtractorProperty<unsigned int>   sampleRate;
-		qtractorProperty<float>          tempo;
-		qtractorProperty<unsigned short> ticksPerBeat;
-		qtractorProperty<unsigned short> beatsPerBar;
-		qtractorProperty<unsigned short> pixelsPerBeat;
-		qtractorProperty<unsigned short> horizontalZoom;
-		qtractorProperty<unsigned short> verticalZoom;
-		qtractorProperty<unsigned short> snapPerBeat;
+		QString        sessionName;
+		QString        description;
+		unsigned int   sampleRate;
+		float          tempo;
+		unsigned short ticksPerBeat;
+		unsigned short beatsPerBar;
+		unsigned short pixelsPerBeat;
+		unsigned short horizontalZoom;
+		unsigned short verticalZoom;
+		unsigned short snapPerBeat;
 	};
 
 	// Alternate properties accessor.
-	const Properties& properties() const;
+	Properties& properties();
 
 private:
 

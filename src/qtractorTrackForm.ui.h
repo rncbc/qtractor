@@ -149,10 +149,13 @@ void qtractorTrackForm::setTrack ( qtractorTrack *pTrack )
     // Avoid dirty this all up.
     m_iDirtySetup++;
 
+	// Track properties reference...
+	const qtractorTrack::Properties& props = pTrack->properties();
+
 	// Initialize dialog widgets...
-	TrackNameTextEdit->setText(m_pTrack->trackName());
+	TrackNameTextEdit->setText(props.trackName);
 	int iTrackType = 0;
-	switch (m_pTrack->trackType()) {
+	switch (props.trackType) {
 		case qtractorTrack::Audio:
 			iTrackType = 0;
 			break;
@@ -165,21 +168,21 @@ void qtractorTrackForm::setTrack ( qtractorTrack *pTrack )
 	TrackTypeGroup->setButton(iTrackType);
 	updateTrackType(iTrackType);
 
-	if (!m_pTrack->busName().isEmpty())
-		BusNameComboBox->setCurrentText(m_pTrack->busName());
+	if (!props.busName.isEmpty())
+		BusNameComboBox->setCurrentText(props.busName);
 
-	ChannelSpinBox->setValue(m_pTrack->midiChannel() + 1);
+	ChannelSpinBox->setValue(props.midiChannel + 1);
 
 	updateChannel(ChannelSpinBox->value());
 	updateBanks(InstrumentComboBox->currentText(),
-		m_pTrack->midiBank(), m_pTrack->midiProgram());
+		props.midiBank, props.midiProgram);
 
 	// Update colors...
-	updateColorItem(ForegroundColorComboBox, m_pTrack->foreground());
-	updateColorItem(BackgroundColorComboBox, m_pTrack->background());
+	updateColorItem(ForegroundColorComboBox, props.foreground);
+	updateColorItem(BackgroundColorComboBox, props.background);
 
 	// Cannot change track type, if track has clips already...
-	bool bEnabled = (m_pTrack->clips().count() == 0);
+	bool bEnabled = (pTrack->clips().count() == 0);
 	AudioRadioButton->setEnabled(bEnabled);
 	MidiRadioButton->setEnabled(bEnabled);
 
@@ -199,30 +202,37 @@ qtractorTrack *qtractorTrackForm::track (void)
 }
 
 
+// Retrieve the accepted track properties, if the case arises.
+const qtractorTrack::Properties& qtractorTrackForm::properties (void)
+{
+	return m_props;
+}
+
+
 // Accept settings (OK button slot).
 void qtractorTrackForm::accept (void)
 {
 	// Save options...
 	if (m_iDirtyCount > 0) {
 		// Make changes permanent...
-		m_pTrack->setTrackName(TrackNameTextEdit->text());
+		m_props.trackName = TrackNameTextEdit->text();
 		switch (TrackTypeGroup->id(TrackTypeGroup->selected())) {
 		case 0: // Audio track...
-			m_pTrack->setTrackType(qtractorTrack::Audio);
+			m_props.trackType = qtractorTrack::Audio;
 			break;
 		case 1: // Midi track...
-			m_pTrack->setTrackType(qtractorTrack::Midi);
+			m_props.trackType = qtractorTrack::Midi;
 			break;
 		}
-		m_pTrack->setBusName(BusNameComboBox->currentText());
+		m_props.busName = BusNameComboBox->currentText();
 		// Special case for MIDI settings...
-		m_pTrack->setMidiChannel(ChannelSpinBox->value() - 1);
-		m_pTrack->setMidiBankSelMethod(BankSelMethodComboBox->currentItem());
-		m_pTrack->setMidiBank(m_banks[BankComboBox->currentItem()]);
-		m_pTrack->setMidiProgram(m_progs[ProgComboBox->currentItem()]);
+		m_props.midiChannel = (ChannelSpinBox->value() - 1);
+		m_props.midiBankSelMethod = BankSelMethodComboBox->currentItem();
+		m_props.midiBank    = m_banks[BankComboBox->currentItem()];
+		m_props.midiProgram = m_progs[ProgComboBox->currentItem()];
 		// View colors...
-		m_pTrack->setForeground(colorItem(ForegroundColorComboBox));
-		m_pTrack->setBackground(colorItem(BackgroundColorComboBox));
+		m_props.foreground = colorItem(ForegroundColorComboBox);
+		m_props.background = colorItem(BackgroundColorComboBox);
 		// Reset dirty flag.
 		m_iDirtyCount = 0;
 	}

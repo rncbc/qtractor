@@ -22,7 +22,6 @@
 
 #include "qtractorAbout.h"
 #include "qtractorOptions.h"
-#include "qtractorCommand.h"
 #include "qtractorInstrument.h"
 #include "qtractorMessages.h"
 #include "qtractorFiles.h"
@@ -35,6 +34,8 @@
 
 #include "qtractorSessionDocument.h"
 #include "qtractorSessionCursor.h"
+
+#include "qtractorPropertyCommand.h"
 
 #include "qtractorSessionForm.h"
 #include "qtractorOptionsForm.h"
@@ -727,8 +728,10 @@ void qtractorMainForm::fileProperties (void)
 	qtractorSessionForm sessionForm(this);
 	sessionForm.setSession(m_pSession);
 	if (sessionForm.exec()) {
-		m_iDirtyCount++;
-		viewRefresh();
+		m_pCommands->exec(
+			new qtractorPropertyCommand<qtractorSession::Properties> (this,
+			    tr("session properties"), m_pSession->properties(),
+					sessionForm.properties()));
 	}
 }
 

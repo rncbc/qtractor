@@ -592,16 +592,17 @@
     <tabstop>CancelPushButton</tabstop>
 </tabstops>
 <includes>
+	<include location="local" impldecl="in declaration">qtractorTrack.h</include>
     <include location="global" impldecl="in declaration">qmap.h</include>
 </includes>
 <forwards>
     <forward>class qtractorInstrumentList;</forward>
-    <forward>class qtractorTrack;</forward>
     <forward>class qtractorMidiBus;</forward>
 </forwards>
 <variables>
-    <variable access="private">qtractorInstrumentList *m_pInstruments;</variable>
     <variable access="private">qtractorTrack *m_pTrack;</variable>
+    <variable access="private">qtractorTrack::Properties m_props;</variable>
+    <variable access="private">qtractorInstrumentList *m_pInstruments;</variable>
     <variable access="private">QMap &lt; int, int &gt; m_banks;</variable>
     <variable access="private">QMap &lt; int, int &gt; m_progs;</variable>
 	<variable access="private">int m_iDirtySetup;</variable>
@@ -629,6 +630,7 @@
     <function specifier="non virtual" returnType="qtractorInstrumentList *">instruments()</function>
     <function specifier="non virtual">setTrack( qtractorTrack *pTrack )</function>
     <function specifier="non virtual" returnType="qtractorTrack *">track()</function>
+    <function specifier="non virtual" returnType="const qtractorTrack::Properties &amp;">properties()</function>
     <function access="private" specifier="non virtual" returnType="qtractorMidiBus *">midiBus()</function>
     <function access="private" specifier="non virtual">updateInstruments()</function>
 	<function access="private" specifier="non virtual">updateTrackType( int iTrackType )</function>
