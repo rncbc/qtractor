@@ -124,7 +124,7 @@ IMAGES   = ../icons/qtractor.png \
            ../icons/itemProperty.png
 
 TEMPLATE = app
-CONFIG  += qt warn_on debug console
+CONFIG  += qt warn_on debug
 LANGUAGE = C++
 
 win32 {

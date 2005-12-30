@@ -22,8 +22,10 @@
 #ifndef __qtractorTrackCommand_h
 #define __qtractorTrackCommand_h
 
-#include "qtractorTrack.h"
 #include "qtractorPropertyCommand.h"
+
+#include "qtractorSession.h"
+#include "qtractorTrack.h"
 
 #include <qptrlist.h>
 
@@ -150,6 +152,8 @@ public:
 
 	// Constructor.
 	qtractorImportTracksCommand(qtractorMainForm *pMainForm);
+	// Destructor.
+	~qtractorImportTracksCommand();
 
 	// Add track to command list.
 	void addTrack(qtractorTrack *pTrack);
@@ -162,6 +166,11 @@ private:
 
 	// Instance variables.
 	QPtrList<qtractorAddTrackCommand> m_trackCommands;
+
+	// Session properties backup stuff.
+    qtractorSession::Properties m_sessionProps;
+	qtractorPropertyCommand<qtractorSession::Properties> *m_pSaveCommand;
+	int m_iSaveCount;
 };
 
 

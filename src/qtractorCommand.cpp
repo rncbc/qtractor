@@ -131,8 +131,19 @@ bool qtractorCommandList::exec ( qtractorCommand *pCommand )
 		m_commands.append(pCommand);
 		m_pLastCommand = m_commands.last();
 		if (m_pLastCommand) {
+			// Execute operation...
 			bResult = m_pLastCommand->redo();
 			m_pLastCommand->update();
+			// Log this operation.
+			if (bResult) {
+				m_pLastCommand->mainForm()->appendMessages(
+					QObject::tr("Command (%1) succeeded.")
+						.arg(m_pLastCommand->name()));
+			} else {
+				m_pLastCommand->mainForm()->appendMessagesError(
+					QObject::tr("Command (%1) failed.")
+						.arg(m_pLastCommand->name()));
+			}
 		}
 	}
 
@@ -144,8 +155,20 @@ bool qtractorCommandList::undo (void)
 	bool bResult = false;
 
 	if (m_pLastCommand) {
+		// Undo operation...
 		bResult = m_pLastCommand->undo();
 		m_pLastCommand->update();
+		// Log this operation.
+		if (bResult) {
+			m_pLastCommand->mainForm()->appendMessages(
+				QObject::tr("Undo (%1) succeeded.")
+					.arg(m_pLastCommand->name()));
+		} else {
+			m_pLastCommand->mainForm()->appendMessagesError(
+				QObject::tr("Undo (%1) failed.")
+					.arg(m_pLastCommand->name()));
+		}
+		// Backward one command...
 		m_pLastCommand = m_pLastCommand->prev();
 	}
 
@@ -156,10 +179,22 @@ bool qtractorCommandList::redo (void)
 {
 	bool bResult = false;
 
+	// Forward one command...
 	m_pLastCommand = nextCommand();
 	if (m_pLastCommand) {
+		// Redo operation...
 		bResult = m_pLastCommand->redo();
 		m_pLastCommand->update();
+		// Log this operation.
+		if (bResult) {
+			m_pLastCommand->mainForm()->appendMessages(
+				QObject::tr("Redo (%1) succeeded.")
+					.arg(m_pLastCommand->name()));
+		} else {
+			m_pLastCommand->mainForm()->appendMessagesError(
+				QObject::tr("Redo (%1) failed.")
+					.arg(m_pLastCommand->name()));
+		}
 	}
 
 	return bResult;

@@ -294,6 +294,23 @@ qtractorImportTracksCommand::qtractorImportTracksCommand (
 	: qtractorCommand(pMainForm, QObject::tr("import tracks"))
 {
 	m_trackCommands.setAutoDelete(true);
+	
+	// Session properties backup preparation.
+	m_iSaveCount   = 0;
+	m_pSaveCommand = NULL;
+	qtractorSession *pSession = pMainForm->session();
+	if (pSession) {
+    	m_sessionProps = pSession->properties();
+		m_pSaveCommand = new qtractorPropertyCommand<qtractorSession::Properties>
+			(pMainForm, name(), pSession->properties(), m_sessionProps);
+	}
+}
+
+// Destructor.
+qtractorImportTracksCommand::~qtractorImportTracksCommand (void)
+{
+	if (m_pSaveCommand)
+	    delete m_pSaveCommand;
 }
 
 
@@ -309,6 +326,12 @@ void qtractorImportTracksCommand::addTrack ( qtractorTrack *pTrack )
 bool qtractorImportTracksCommand::redo (void)
 {
 	bool bResult = true;
+
+	if (m_pSaveCommand && m_iSaveCount > 0) {
+		if (!m_pSaveCommand->redo())
+		    bResult = false;
+	}
+	m_iSaveCount++;
 
 	for (qtractorAddTrackCommand *pTrackCommand = m_trackCommands.first();
 	        pTrackCommand; pTrackCommand = m_trackCommands.next()) {
@@ -328,6 +351,9 @@ bool qtractorImportTracksCommand::undo (void)
 		if (!pTrackCommand->undo())
 		    bResult = false;
 	}
+
+	if (m_pSaveCommand && !m_pSaveCommand->undo())
+		bResult = false;
 
 	return bResult;
 }
