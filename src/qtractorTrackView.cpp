@@ -1,7 +1,7 @@
 // qtractorTrackView.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2006, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -33,6 +33,7 @@
 #include "qtractorSessionCursor.h"
 #include "qtractorFileListView.h"
 #include "qtractorClipSelect.h"
+#include "qtractorClipCommand.h"
 
 #include "qtractorMainForm.h"
 
@@ -631,8 +632,15 @@ qtractorTrack *qtractorTrackView::dragDropTrack ( QDropEvent *pDropEvent )
 				= qtractorAudioFileFactory::createAudioFile(pDropItem->path);
 			if (pFile) {
 				if (pFile->open(pDropItem->path)) {
-					int w = pSession->pixelFromFrame(pFile->frames());
-					m_rectDrag.setWidth(m_rectDrag.width() + w);
+					unsigned long iFrames = pFile->frames();
+					if (pFile->sampleRate() > 0
+						&& pFile->sampleRate() != pSession->sampleRate()) {
+					    iFrames = (unsigned long) (iFrames
+					        * float(pSession->sampleRate())
+							/ float(pFile->sampleRate()));
+					}
+					m_rectDrag.setWidth(m_rectDrag.width()
+						+ pSession->pixelFromFrame(iFrames));
 				} else {
 					m_dropItems.remove(pDropItem);
 				}
@@ -648,8 +656,8 @@ qtractorTrack *qtractorTrackView::dragDropTrack ( QDropEvent *pDropEvent )
 				qtractorMidiSequence seq;
 				seq.setTicksPerBeat(pSession->ticksPerBeat());
 				if (file.readTrack(&seq, pDropItem->channel)) {
-					int w = pSession->pixelFromTick(seq.duration());
-					m_rectDrag.setWidth(m_rectDrag.width() + w);
+					m_rectDrag.setWidth(m_rectDrag.width()
+						+ pSession->pixelFromTick(seq.duration()));
 				} else {
 					m_dropItems.remove(pDropItem);
 				}
@@ -731,6 +739,10 @@ void qtractorTrackView::contentsDropEvent (
 		return;
 	}
 
+	// We'll build a composite command...
+	qtractorAddClipCommand *pAddClipCommand
+	    = new qtractorAddClipCommand(m_pTracks->mainForm());
+
 	// Add new clips on proper and consecutive track locations...
 	unsigned long iClipStart
 		= pSession->frameFromPixel(m_rectDrag.x() + m_iDraggingX);
@@ -744,7 +756,7 @@ void qtractorTrackView::contentsDropEvent (
 			if (pAudioClip) {
 				pAudioClip->setClipStart(iClipStart);
 				pAudioClip->open(pDropItem->path);
-				pTrack->addClip(pAudioClip);
+				pAddClipCommand->addClip(pAudioClip, pTrack, iClipStart);
 				iClipStart += pAudioClip->clipLength();
 				// Don't forget to add this one to local repository.
 				m_pTracks->mainForm()->addAudioFile(pDropItem->path);
@@ -761,7 +773,7 @@ void qtractorTrackView::contentsDropEvent (
 					pTrack->setMidiBank(pMidiClip->bank());
 					pTrack->setMidiProgram(pMidiClip->program());
 				}
-				pTrack->addClip(pMidiClip);
+				pAddClipCommand->addClip(pMidiClip, pTrack, iClipStart);
 				iClipStart += pMidiClip->clipLength();
 				// Don't forget to add this one to local repository.
 				m_pTracks->mainForm()->addMidiFile(pDropItem->path);
@@ -777,14 +789,8 @@ void qtractorTrackView::contentsDropEvent (
 	// Clean up.
 	resetDragState();
 
-	// Refresh view.
-	pSession->updateTrack(pTrack);
-	if (m_pTracks->session()->updateSessionLength())
-		updateContentsWidth();
-	updateContents();
-
-	// Don't let this be unnoticed.
-	m_pTracks->contentsChangeNotify();
+	// Put it in the form of an undoable command...
+	m_pTracks->mainForm()->commands()->exec(pAddClipCommand);
 }
 
 
@@ -886,34 +892,28 @@ void qtractorTrackView::contentsMouseReleaseEvent ( QMouseEvent *pMouseEvent )
 		break;
 	case DragMove:
 		if (m_pClipSelect->clips().count() > 0) {
-			qtractorTrack *pNewTrack = dragMoveTrack(pMouseEvent->pos());
-			qtractorTrack *pSingleTrack = m_pClipSelect->singleTrack();
 			qtractorSession *pSession = m_pTracks->session();
-			if (pNewTrack && pSession) {
+			qtractorTrack  *pNewTrack = dragMoveTrack(pMouseEvent->pos());
+			bool bSingleTrack = (m_pClipSelect->singleTrack() != NULL);
+			if (pSession && pNewTrack) {
+				// We'll build a composite command...
+				qtractorMoveClipCommand *pMoveClipCommand
+					= new qtractorMoveClipCommand(m_pTracks->mainForm());
 				qtractorClipSelect::Item *pClipItem
 					= m_pClipSelect->clips().first();
 				while (pClipItem) {
-					qtractorClip  *pClip = pClipItem->pClip;
+					qtractorClip  *pClip = pClipItem->clip;
 					qtractorTrack *pOldTrack = pClip->track();
-					if (pOldTrack) {
-						pOldTrack->unlinkClip(pClip);
-						if (pSingleTrack == NULL)
-							pNewTrack = pOldTrack;
-						else if (pOldTrack != pNewTrack)
-							pSession->updateTrack(pOldTrack);
-					}
+					if (!bSingleTrack)
+					    pNewTrack = pOldTrack;
 					int x = (pClipItem->rectClip.x() + m_iDraggingX);
-					if (x < 0) x = 0;
-					pClip->setClipStart(pSession->frameFromPixel(x));
-					pNewTrack->addClip(pClip);
-					pSession->updateTrack(pNewTrack);
+					pMoveClipCommand->addClip(pClip, pNewTrack,
+						pSession->frameFromPixel(x < 0 ? 0 : x));
 					pClipItem = m_pClipSelect->clips().next();
 				}
 				m_pClipSelect->clear();
-				if (pSession->updateSessionLength())
-					updateContentsWidth();
-				updateContents();
-				m_pTracks->contentsChangeNotify();
+				// Put it in the form of an undoable command...
+				m_pTracks->mainForm()->commands()->exec(pMoveClipCommand);
 			}
 		}
 		// Fall thru...
@@ -998,27 +998,25 @@ void qtractorTrackView::deleteClipSelect (void)
 	if (pSession == NULL)
 		return;
 
-	int iUpdate = 0;
-	QRect rectUpdate;
-	qtractorClipSelect::Item *pClipItem
-		= m_pClipSelect->clips().first();
+	// Check if anything is really selected...
+	if (m_pClipSelect->clips().count() < 1)
+	    return;
+
+	// We'll build a composite command...
+	qtractorRemoveClipCommand *pRemoveClipCommand
+	    = new qtractorRemoveClipCommand(m_pTracks->mainForm());
+
+	qtractorClipSelect::Item *pClipItem = m_pClipSelect->clips().first();
 	while (pClipItem) {
-		qtractorClip  *pClip  = pClipItem->pClip;
-		qtractorTrack *pTrack = pClip->track();
-		if (pTrack) {
-			pTrack->removeClip(pClip);
-			pSession->updateTrack(pTrack);
-		}
-		rectUpdate = rectUpdate.unite(pClipItem->rectClip);
-		iUpdate++;
+		pRemoveClipCommand->addClip(
+			pClipItem->clip, (pClipItem->clip)->track(), 0);
 		pClipItem = m_pClipSelect->clips().next();
 	}
 
-	if (iUpdate > 0) {
-		m_pClipSelect->clear();
-		updateContents(rectUpdate);
-		m_pTracks->contentsChangeNotify();
-	}
+	m_pClipSelect->clear();
+
+	// Put it in the form of an undoable command...
+	m_pTracks->mainForm()->commands()->exec(pRemoveClipCommand);
 }
 
 

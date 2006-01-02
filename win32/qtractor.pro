@@ -38,7 +38,8 @@ HEADERS += ../src/qtractorAbout.h \
            ../src/qtractorInstrument.h \
            ../src/qtractorCommand.h \
            ../src/qtractorPropertyCommand.h \
-           ../src/qtractorTrackCommand.h
+           ../src/qtractorTrackCommand.h \
+           ../src/qtractorClipCommand.h
 
 SOURCES += ../src/main.cpp \
            ../src/qtractorOptions.cpp \
@@ -73,7 +74,8 @@ SOURCES += ../src/main.cpp \
            ../src/qtractorSessionDocument.cpp \
            ../src/qtractorInstrument.cpp \
            ../src/qtractorCommand.cpp \
-           ../src/qtractorTrackCommand.cpp
+           ../src/qtractorTrackCommand.cpp \
+           ../src/qtractorClipCommand.cpp
 
 FORMS    = ../src/qtractorMainForm.ui \
            ../src/qtractorSessionForm.ui \

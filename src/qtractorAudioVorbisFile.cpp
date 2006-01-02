@@ -1,7 +1,7 @@
 // qtractorAudioVorbisFile.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2006, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -200,7 +200,7 @@ unsigned long qtractorAudioVorbisFile::frames() const
 
 
 // Sample rate specialty.
-unsigned int qtractorAudioVorbisFile::samplerate() const
+unsigned int qtractorAudioVorbisFile::sampleRate() const
 {
 #ifdef CONFIG_LIBVORBIS
 	return (m_ovinfo ? m_ovinfo->rate : 0);

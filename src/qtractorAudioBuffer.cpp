@@ -1,7 +1,7 @@
 // qtractorAudioBuffer.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2006, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -85,7 +85,7 @@ unsigned long qtractorAudioBuffer::frames (void) const
 
 
 // Working sample rate.
-unsigned int qtractorAudioBuffer::samplerate (void) const
+unsigned int qtractorAudioBuffer::sampleRate (void) const
 {
 	return m_iSampleRate;
 }
@@ -115,7 +115,7 @@ bool qtractorAudioBuffer::open ( const char *pszName, int iMode )
 	// Check samplerate and how many channels there are.
 	unsigned short iChannels = m_pFile->channels();
 	// Just one more sanity check...
-	if (iChannels < 1 || m_pFile->samplerate() < 1) {
+	if (iChannels < 1 || m_pFile->sampleRate() < 1) {
 		m_pFile->close();
 		return false;
 	}
@@ -124,9 +124,9 @@ bool qtractorAudioBuffer::open ( const char *pszName, int iMode )
 	m_iInputPending  = 0;
 	m_fResampleRatio = 1.0;
 #ifdef CONFIG_LIBSAMPLERATE
-	m_bResample = (m_iSampleRate != m_pFile->samplerate());
+	m_bResample = (m_iSampleRate != m_pFile->sampleRate());
 	if (m_bResample) {
-		m_fResampleRatio = (float) m_iSampleRate / m_pFile->samplerate();
+		m_fResampleRatio = (float) m_iSampleRate / m_pFile->sampleRate();
 		m_ppOutBuffer    = new float *     [iChannels];
 		m_ppSrcState     = new SRC_STATE * [iChannels];
 	}

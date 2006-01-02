@@ -1,7 +1,7 @@
 // qtractorClipSelect.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2006, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -48,17 +48,17 @@ qtractorClipSelect::~qtractorClipSelect (void)
 
 // Clip selection method.
 void qtractorClipSelect::selectClip ( qtractorClip *pClip,
-	const QRect& rectClip, bool bSelect )
+	const QRect& rect, bool bSelect )
 {
 	// Add/remove clip selection...
-	qtractorClipSelect::Item *pClipItem = findClip(pClip);
+	Item *pClipItem = findClip(pClip);
 	if (pClipItem && !bSelect) {
 	    m_clips.remove(pClipItem);
 		pClip->setClipSelected(false);
 		m_bTrackSingle = false;
 	} else if (pClipItem == NULL && bSelect) {
 		pClip->setClipSelected(true);
-		m_clips.append(new qtractorClipSelect::Item(pClip, rectClip));
+		m_clips.append(new Item(pClip, rect));
 		// Special optimization: no need to recache
 		// our single track reference if we add some outsider clip...
 		if (m_bTrackSingle && m_pTrackSingle
@@ -75,11 +75,11 @@ qtractorTrack *qtractorClipSelect::singleTrack (void)
 	// Check if predicate is already cached...
 	if (!m_bTrackSingle) {
 		m_pTrackSingle = NULL;
-		for (qtractorClipSelect::Item *pClipItem = m_clips.first();
+		for (Item *pClipItem = m_clips.first();
 				pClipItem; pClipItem = m_clips.next()) {
 			if (m_pTrackSingle == NULL)
-				m_pTrackSingle = (pClipItem->pClip)->track();
-			else if (m_pTrackSingle != (pClipItem->pClip)->track()) {
+				m_pTrackSingle = (pClipItem->clip)->track();
+			else if (m_pTrackSingle != (pClipItem->clip)->track()) {
 				m_pTrackSingle = NULL;
 				break;
 			}
@@ -103,9 +103,9 @@ QPtrList<qtractorClipSelect::Item>& qtractorClipSelect::clips (void)
 qtractorClipSelect::Item *qtractorClipSelect::findClip ( qtractorClip *pClip )
 {
 	// Check if this very clip already exists...
-	for (qtractorClipSelect::Item *pClipItem = m_clips.first();
+	for (Item *pClipItem = m_clips.first();
 			pClipItem; pClipItem = m_clips.next()) {
-		if (pClipItem->pClip == pClip)
+		if (pClipItem->clip == pClip)
 			return pClipItem;
 	}
 	// Not found.
@@ -119,9 +119,9 @@ void qtractorClipSelect::clear (void)
 	m_bTrackSingle = false;
 	m_pTrackSingle = NULL;
 
-	for (qtractorClipSelect::Item *pClipItem = m_clips.first();
+	for (Item *pClipItem = m_clips.first();
 	    	pClipItem; pClipItem = m_clips.next()) {
-		(pClipItem->pClip)->setClipSelected(false);
+		(pClipItem->clip)->setClipSelected(false);
 	}
 	
 	m_clips.clear();

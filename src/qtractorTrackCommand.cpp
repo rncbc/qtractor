@@ -1,7 +1,7 @@
 // qtractorTrackCommand.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2006, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -45,11 +45,8 @@ qtractorTrackCommand::qtractorTrackCommand ( qtractorMainForm *pMainForm,
 // Destructor.
 qtractorTrackCommand::~qtractorTrackCommand (void)
 {
-	qtractorSession *pSession = mainForm()->session();
-	if (pSession && isAutoDelete()) {
-	//	pSession->unlinkTrack(m_pTrack);
+	if (isAutoDelete())
 		delete m_pTrack;
-	}
 }
 
 
@@ -235,7 +232,7 @@ bool qtractorMoveTrackCommand::redo (void)
 
 bool qtractorMoveTrackCommand::undo (void)
 {
-	// As we swap the prev/track this is non-identpotent.
+	// As we swap the prev/track this is non-idempotent.
 	return redo();
 }
 

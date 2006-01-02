@@ -1,7 +1,7 @@
 // qtractorAudioBuffer.h
 //
 /****************************************************************************
-   Copyright (C) 2005, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2006, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -53,7 +53,7 @@ public:
 	// File implementation properties.
 	unsigned short channels() const;
 	unsigned long frames() const;
-	unsigned int samplerate() const;
+	unsigned int sampleRate() const;
 
  	// Resample ratio accessor.
 	float resampleRatio() const;

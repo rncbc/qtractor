@@ -1,7 +1,7 @@
 // qtractorTracks.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2006, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -364,10 +364,6 @@ bool qtractorTracks::addTrack (void)
 	if (pSession == NULL)
 		return false;
 
-	//
-	// FIXME: Initial track name and type?
-	//
-
 	// Create a new track right away...
 	const int iTrack = pSession->tracks().count() + 1;
 	const QColor color = qtractorTrack::trackColor(iTrack);
@@ -385,6 +381,9 @@ bool qtractorTracks::addTrack (void)
 		delete pTrack;
 		return false;
 	}
+
+	// Take care of user supplied properties...
+	pTrack->properties() = trackForm.properties();
 
 	// Put it in the form of an undoable command...
 	return m_pMainForm->commands()->exec(

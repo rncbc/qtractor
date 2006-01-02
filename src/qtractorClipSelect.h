@@ -1,7 +1,7 @@
 // qtractorClipSelect.h
 //
 /****************************************************************************
-   Copyright (C) 2005, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2006, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -44,23 +44,23 @@ public:
 	struct Item
 	{
 		// Item constructor.
-		Item(qtractorClip *p, const QRect& rect)
-			: pClip(p), rectClip(rect) {}
+		Item(qtractorClip *pClip, const QRect& rect)
+			: clip(pClip), rectClip(rect) {}
 		// Item members.
-		qtractorClip *pClip;
+		qtractorClip *clip;
 		QRect rectClip;
 	};
 
 	// Clip selection method.
 	void selectClip(qtractorClip *pClip,
-		const QRect& rectClip, bool bSelect = true);
+		const QRect& rect, bool bSelect = true);
 
 	// Dynamic helper:
 	// Do all selected clips belong to the same track?
 	qtractorTrack *singleTrack();
 
 	// Selection list accessor.
-	QPtrList<qtractorClipSelect::Item>& clips();
+	QPtrList<Item>& clips();
 
 	// Reset clip selection.
 	void clear();
@@ -68,12 +68,12 @@ public:
 protected:
 
 	// Clip selection item lookup.
-	qtractorClipSelect::Item *findClip(qtractorClip *pClip);
+	Item *findClip(qtractorClip *pClip);
 
 private:
 
 	// The clip selection list.
-	QPtrList<qtractorClipSelect::Item> m_clips;
+	QPtrList<Item> m_clips;
 
 	// To cache single track selection.
 	bool m_bTrackSingle;

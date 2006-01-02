@@ -29,7 +29,7 @@
 
 #define QTRACTOR_SUBTITLE     "A MIDI/Audio multi-track sequencer"
 #define QTRACTOR_WEBSITE      "http://qtractor.sourceforge.net"
-#define QTRACTOR_COPYRIGHT    "Copyright (C) 2005, rncbc aka Rui Nuno Capela. All rights reserved."
+#define QTRACTOR_COPYRIGHT    "Copyright (C) 2005-2006, rncbc aka Rui Nuno Capela. All rights reserved."
 
 #endif  // __qtractorAbout_h
 

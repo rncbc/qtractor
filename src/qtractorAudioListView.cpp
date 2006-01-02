@@ -1,7 +1,7 @@
 // qtractorAudioListView.cpp
 //
 /****************************************************************************
-   Copyright (C) 2003-2005, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2006, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -60,11 +60,11 @@ void qtractorAudioFileItem::initAudioFileItem ( const QString& sPath,
 	QListViewItem::setText(qtractorAudioListView::Frames,
 		QString::number(pFile->frames()));
 	QListViewItem::setText(qtractorAudioListView::Rate,
-		QString::number(pFile->samplerate()));
+		QString::number(pFile->sampleRate()));
 
 	QString sTime;
 	unsigned int hh, mm, ss, ddd;
-	float secs = (float) pFile->frames() / (float) pFile->samplerate();
+	float secs = (float) pFile->frames() / (float) pFile->sampleRate();
 	hh = mm = ss = 0;
 	if (secs >= 3600.0) {
 		hh = (unsigned int) (secs / 3600.0);

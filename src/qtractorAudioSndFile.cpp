@@ -1,7 +1,7 @@
 // qtractorAudioSndFile.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2006, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -187,7 +187,7 @@ unsigned long qtractorAudioSndFile::frames() const
 
 
 // Sample rate specialty.
-unsigned int qtractorAudioSndFile::samplerate() const
+unsigned int qtractorAudioSndFile::sampleRate() const
 {
 	return m_sfinfo.samplerate;
 }

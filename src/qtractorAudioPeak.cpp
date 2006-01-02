@@ -1,7 +1,7 @@
 // qtractorAudioPeak.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2006, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -152,8 +152,9 @@ void qtractorAudioPeakThread::createPeakFile (void)
 			}	
 			m_iPeak = 0;
 			// The resample-aware internal peak period...
-			m_iPeriod = (unsigned short) ((float) (c_iPeakPeriod
-				* m_pAudioFile->samplerate()) / m_pPeakFile->samplerate());
+			m_iPeriod = (unsigned short) (c_iPeakPeriod
+				* float(m_pAudioFile->sampleRate())
+				/ float(m_pPeakFile->sampleRate()));
 			// Write peak file header.
 			qtractorAudioPeakHeader hdr;
 			hdr.peakPeriod   = c_iPeakPeriod;
@@ -414,7 +415,7 @@ const QString& qtractorAudioPeakFile::filename (void) const
 	return m_sFilename;
 }
 
-unsigned int qtractorAudioPeakFile::samplerate (void) const
+unsigned int qtractorAudioPeakFile::sampleRate (void) const
 {
 	return m_iSampleRate;
 }

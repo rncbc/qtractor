@@ -2,7 +2,7 @@
 <class>qtractorInstrumentForm</class>
 <comment>qtractor - A MIDI/Audio multi-track sequencer.
 
-   Copyright (C) 2005, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2006, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -180,7 +180,7 @@
                     <property name="minimumSize">
                         <size>
                             <width>0</width>
-                            <height>24</height>
+                            <height>26</height>
                         </size>
                     </property>
                     <property name="text">
@@ -203,7 +203,7 @@
                     <property name="minimumSize">
                         <size>
                             <width>0</width>
-                            <height>24</height>
+                            <height>26</height>
                         </size>
                     </property>
                     <property name="text">
@@ -226,7 +226,7 @@
                     <property name="minimumSize">
                         <size>
                             <width>0</width>
-                            <height>24</height>
+                            <height>26</height>
                         </size>
                     </property>
                     <property name="text">
@@ -249,7 +249,7 @@
                     <property name="minimumSize">
                         <size>
                             <width>0</width>
-                            <height>24</height>
+                            <height>26</height>
                         </size>
                     </property>
                     <property name="text">
@@ -289,7 +289,7 @@
                     <property name="minimumSize">
                         <size>
                             <width>0</width>
-                            <height>24</height>
+                            <height>26</height>
                         </size>
                     </property>
                     <property name="text">
@@ -312,7 +312,7 @@
                     <property name="minimumSize">
                         <size>
                             <width>0</width>
-                            <height>24</height>
+                            <height>26</height>
                         </size>
                     </property>
                     <property name="text">
@@ -335,7 +335,7 @@
                     <property name="minimumSize">
                         <size>
                             <width>0</width>
-                            <height>24</height>
+                            <height>26</height>
                         </size>
                     </property>
                     <property name="text">
