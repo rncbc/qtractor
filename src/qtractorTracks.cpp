@@ -367,7 +367,7 @@ bool qtractorTracks::addTrack (void)
 	// Create a new track right away...
 	const int iTrack = pSession->tracks().count() + 1;
 	const QColor color = qtractorTrack::trackColor(iTrack);
-	qtractorTrack *pTrack = new qtractorTrack(pSession, qtractorTrack::Audio);
+	qtractorTrack *pTrack = new qtractorTrack(pSession);
 	pTrack->setTrackName(QString("Track %1").arg(iTrack));
 	pTrack->setMidiChannel(pSession->midiTag() % 16);
 	pTrack->setBackground(color);
@@ -471,8 +471,8 @@ bool qtractorTracks::addAudioTracks ( QStringList files )
 	int iUpdate = 0;
 
 	// We'll build a composite command...
-	qtractorImportTracksCommand *pImportTracksCommand
-	    = new qtractorImportTracksCommand(m_pMainForm);
+	qtractorImportTrackCommand *pImportTrackCommand
+	    = new qtractorImportTrackCommand(m_pMainForm);
 
 	// Increment this for suggestive track coloring...
 	int iTrackCount = pSession->tracks().count();
@@ -499,7 +499,7 @@ bool qtractorTracks::addAudioTracks ( QStringList files )
 			pTrack->setTrackName(pAudioClip->clipName());
 			pTrack->addClip(pAudioClip);
 			// Add the new track to composite command...
-			pImportTracksCommand->addTrack(pTrack);
+			pImportTrackCommand->addTrack(pTrack);
 			// Don't forget to add this one to local repository.
 			mainForm()->addAudioFile(sPath);
 			iUpdate++;
@@ -520,12 +520,12 @@ bool qtractorTracks::addAudioTracks ( QStringList files )
 
 	// Have we changed anything?
 	if (iUpdate < 1) {
-	 	delete pImportTracksCommand;
+	 	delete pImportTrackCommand;
 	    return false;
 	}
 	
 	// Put it in the form of an undoable command...
-	return m_pMainForm->commands()->exec(pImportTracksCommand);
+	return m_pMainForm->commands()->exec(pImportTrackCommand);
 }
 
 
@@ -536,13 +536,12 @@ bool qtractorTracks::addMidiTracks ( QStringList files )
 	if (pSession == NULL)
 		return false;
 
-
 	// Account for actual updates...
 	int iUpdate = 0;
 
 	// We'll build a composite command...
-	qtractorImportTracksCommand *pImportTracksCommand
-	    = new qtractorImportTracksCommand(m_pMainForm);
+	qtractorImportTrackCommand *pImportTrackCommand
+	    = new qtractorImportTrackCommand(m_pMainForm);
 
 	// Increment this for suggestive track coloring...
 	int iTrackCount = pSession->tracks().count();
@@ -587,7 +586,7 @@ bool qtractorTracks::addMidiTracks ( QStringList files )
 				pTrack->setMidiProgram(pMidiClip->program());
 				pTrack->addClip(pMidiClip);
 				// Add the new track to composite command...
-				pImportTracksCommand->addTrack(pTrack);
+				pImportTrackCommand->addTrack(pTrack);
 				// Don't forget to add this one to local repository.
 				mainForm()->addMidiFile(sPath);
 				iUpdate++;
@@ -610,12 +609,41 @@ bool qtractorTracks::addMidiTracks ( QStringList files )
 
 	// Have we changed anything?
 	if (iUpdate < 1) {
-		delete pImportTracksCommand;
+		delete pImportTrackCommand;
 	    return false;
 	}
 
 	// Put it in the form of an undoable command...
-	return m_pMainForm->commands()->exec(pImportTracksCommand);
+	return m_pMainForm->commands()->exec(pImportTrackCommand);
+}
+
+
+// MIDI track/bus/channel alias active maintenance method.
+void qtractorTracks::updateMidiTrack ( qtractorTrack *pMidiTrack )
+{
+	qtractorSession *pSession = session();
+	if (pSession == NULL)
+		return;
+
+	const QString& sBusName = pMidiTrack->busName();
+	unsigned short iChannel = pMidiTrack->midiChannel();
+
+	for (qtractorTrack *pTrack = pSession->tracks().first();
+	        pTrack; pTrack = pTrack->next()) {
+		if (pTrack != pMidiTrack
+			&& pTrack->trackType() == qtractorTrack::Midi
+			&& pTrack->busName() == sBusName
+			&& pTrack->midiChannel() == iChannel) {
+			// Make else tracks MIDI attributes the same....
+			pTrack->setMidiBankSelMethod(pMidiTrack->midiBankSelMethod());
+			pTrack->setMidiBank(pMidiTrack->midiBank());
+			pTrack->setMidiProgram(pMidiTrack->midiProgram());
+			// Update the track list view, immediately...
+			qtractorTrackListItem *pTrackItem = m_pTrackList->trackItem(pTrack);
+			if (pTrackItem)
+			    pTrackItem->setText(qtractorTrackList::Bus, sBusName);
+		}
+	}
 }
 
 

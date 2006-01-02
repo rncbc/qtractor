@@ -634,7 +634,7 @@
     <function access="private" specifier="non virtual" returnType="qtractorMidiBus *">midiBus()</function>
     <function access="private" specifier="non virtual">updateInstruments()</function>
 	<function access="private" specifier="non virtual">updateTrackType( int iTrackType )</function>
-    <function access="private" specifier="non virtual">updateChannel( int iChannel )</function>
+    <function access="private" specifier="non virtual">updateChannel( int iChannel, int iBank, int iProg )</function>
     <function access="private" specifier="non virtual">updateBanks( const QString &amp; sInstrumentName, int iBank, int iProg )</function>
     <function access="private" specifier="non virtual">updatePrograms( const QString &amp; sInstrumentName, int iBank, int iProg )</function>
     <function access="private" specifier="non virtual">updateColorItem( QComboBox *pComboBox, const QColor &amp; color )</function>

@@ -154,7 +154,7 @@ void qtractorTrackForm::setTrack ( qtractorTrack *pTrack )
 
 	// Initialize dialog widgets...
 	TrackNameTextEdit->setText(props.trackName);
-	int iTrackType = 0;
+	int iTrackType = -1;
 	switch (props.trackType) {
 		case qtractorTrack::Audio:
 			iTrackType = 0;
@@ -172,10 +172,7 @@ void qtractorTrackForm::setTrack ( qtractorTrack *pTrack )
 		BusNameComboBox->setCurrentText(props.busName);
 
 	ChannelSpinBox->setValue(props.midiChannel + 1);
-
-	updateChannel(ChannelSpinBox->value());
-	updateBanks(InstrumentComboBox->currentText(),
-		props.midiBank, props.midiProgram);
+	updateChannel(ChannelSpinBox->value(), props.midiBank, props.midiProgram);
 
 	// Update colors...
 	updateColorItem(ForegroundColorComboBox, props.foreground);
@@ -323,10 +320,16 @@ void qtractorTrackForm::updateTrackType ( int iTrackType )
 	case 0: // Audio track...
 		pEngine = m_pTrack->session()->audioEngine();
 		MidiGroupBox->setEnabled(false);
+		BusNameComboBox->setEnabled(true);
 		break;
 	case 1: // Midi track...
 		pEngine = m_pTrack->session()->midiEngine();
 		MidiGroupBox->setEnabled(true);
+		BusNameComboBox->setEnabled(true);
+		break;
+	default:
+		MidiGroupBox->setEnabled(false);
+		BusNameComboBox->setEnabled(false);
 		break;
 	}
 
@@ -341,7 +344,7 @@ void qtractorTrackForm::updateTrackType ( int iTrackType )
 
 
 // Refresh channel instrument banks list.
-void qtractorTrackForm::updateChannel ( int iChannel )
+void qtractorTrackForm::updateChannel ( int iChannel, int iBank, int iProg )
 {
 	// Regular channel offset
 	if (--iChannel < 0)
@@ -353,7 +356,8 @@ void qtractorTrackForm::updateChannel ( int iChannel )
 		return;
 
 #ifdef CONFIG_DEBUG
-	fprintf(stderr, "qtractorTrackForm::updateChannel(%d)\n", iChannel);
+	fprintf(stderr, "qtractorTrackForm::updateChannel(%d, %d, %d)\n",
+		iChannel, iBank, iProg);
 #endif
 
 	// MIDI channel patch...
@@ -366,6 +370,9 @@ void qtractorTrackForm::updateChannel ( int iChannel )
 	if (pItem)
 		iInstrumentIndex = InstrumentComboBox->listBox()->index(pItem);
 	InstrumentComboBox->setCurrentItem(iInstrumentIndex);
+	
+	// Go and update the bank and program listings...
+	updateBanks(InstrumentComboBox->currentText(), iBank, iProg);
 }
 
 
@@ -554,11 +561,8 @@ void qtractorTrackForm::channelChanged ( int iChannel )
 	if (m_iDirtySetup > 0)
 		return;
 
-	// First updtae channel instrument mapping...
-	updateChannel(iChannel);
-
-	// Then update bank and program...
-	updateBanks(InstrumentComboBox->currentText(),
+	// First update channel instrument mapping...
+	updateChannel(iChannel,
 		m_banks[BankComboBox->currentItem()],
 		m_progs[ProgComboBox->currentItem()]);
 
@@ -609,20 +613,21 @@ void qtractorTrackForm::progChanged( int iProgIndex )
 	if (m_iDirtySetup > 0)
 		return;
 
+	// Of course, only applicable on MIDI tracks...
 	qtractorMidiBus *pMidiBus = midiBus();
-	if (pMidiBus == NULL)
-		return;
-
-	// Patch parameters...
-	unsigned short iChannel = ChannelSpinBox->value() - 1;
-	const QString& sInstrumentName = InstrumentComboBox->currentText();
-	int iBankSelMethod = BankSelMethodComboBox->currentItem();
-	int iBank = m_banks[BankComboBox->currentItem()];
-	int iProg = m_progs[iProgIndex];
-
-	// Patch it directly...
-	pMidiBus->setPatch(iChannel, sInstrumentName, iBank, iProg, iBankSelMethod);
-
+	if (pMidiBus) {
+		// Patch parameters...
+		unsigned short iChannel = ChannelSpinBox->value() - 1;
+		const QString& sInstrumentName = InstrumentComboBox->currentText();
+		int iBankSelMethod = BankSelMethodComboBox->currentItem();
+		int iBank = m_banks[BankComboBox->currentItem()];
+		int iProg = m_progs[iProgIndex];
+		// Patch it directly...
+		pMidiBus->setPatch(iChannel,
+			sInstrumentName, iBank, iProg, iBankSelMethod);
+	}
+	
+	// Flag that it changed anyhow!
 	changed();
 }
 

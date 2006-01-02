@@ -83,6 +83,9 @@ public:
 	bool addAudioTracks(QStringList files);
 	bool addMidiTracks(QStringList files);
 
+	// MIDI track/bus/channel alias active maintenance method.
+	void updateMidiTrack(qtractorTrack *pMidiTrack);
+
 	// Whether there's any clip currently selected.
 	bool isClipSelected() const;
 

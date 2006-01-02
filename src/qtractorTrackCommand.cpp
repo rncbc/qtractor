@@ -77,6 +77,9 @@ bool qtractorTrackCommand::addTrack (void)
 		= new qtractorTrackListItem(pTracks->trackList(), m_pTrack, pAfterItem);
 	// Renumbering of all other remaining items.
 	pTracks->trackList()->renumberTrackItems(pAfterItem);
+	// Special MIDI track cases...
+	if (m_pTrack->trackType() == qtractorTrack::Midi)
+	    pTracks->updateMidiTrack(m_pTrack);
 	// Make it the current item...
 	pTracks->trackList()->setCurrentItem(pTrackItem);
 
@@ -282,13 +285,13 @@ bool qtractorResizeTrackCommand::undo (void)
 
 
 //----------------------------------------------------------------------
-// class qtractorImportTracksCommand - implementation
+// class qtractorImportTrackCommand - implementation
 //
 
 // Constructor.
-qtractorImportTracksCommand::qtractorImportTracksCommand (
+qtractorImportTrackCommand::qtractorImportTrackCommand (
 	qtractorMainForm *pMainForm )
-	: qtractorCommand(pMainForm, QObject::tr("import tracks"))
+	: qtractorCommand(pMainForm, QObject::tr("import track"))
 {
 	m_trackCommands.setAutoDelete(true);
 	
@@ -304,7 +307,7 @@ qtractorImportTracksCommand::qtractorImportTracksCommand (
 }
 
 // Destructor.
-qtractorImportTracksCommand::~qtractorImportTracksCommand (void)
+qtractorImportTrackCommand::~qtractorImportTrackCommand (void)
 {
 	if (m_pSaveCommand)
 	    delete m_pSaveCommand;
@@ -312,7 +315,7 @@ qtractorImportTracksCommand::~qtractorImportTracksCommand (void)
 
 
 // Track-import list methods.
-void qtractorImportTracksCommand::addTrack ( qtractorTrack *pTrack )
+void qtractorImportTrackCommand::addTrack ( qtractorTrack *pTrack )
 {
 	m_trackCommands.append(
 		new qtractorAddTrackCommand(mainForm(), pTrack));
@@ -320,7 +323,7 @@ void qtractorImportTracksCommand::addTrack ( qtractorTrack *pTrack )
 
 
 // Track-import command methods.
-bool qtractorImportTracksCommand::redo (void)
+bool qtractorImportTrackCommand::redo (void)
 {
 	bool bResult = true;
 
@@ -339,7 +342,7 @@ bool qtractorImportTracksCommand::redo (void)
 	return bResult;
 }
 
-bool qtractorImportTracksCommand::undo (void)
+bool qtractorImportTrackCommand::undo (void)
 {
 	bool bResult = true;
 
@@ -399,6 +402,9 @@ bool qtractorEditTrackCommand::redo (void)
 	// Refresh track item, at least the names...
 	pTrackItem->setText(qtractorTrackList::Name, m_pTrack->trackName());
 	pTrackItem->setText(qtractorTrackList::Bus,  m_pTrack->busName());
+	// Special MIDI track cases...
+	if (m_pTrack->trackType() == qtractorTrack::Midi)
+	    pTracks->updateMidiTrack(m_pTrack);
 
 	return true;
 }
