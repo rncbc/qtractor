@@ -245,11 +245,9 @@ void qtractorMidiClip::drawClip ( QPainter *pPainter, const QRect& clipRect,
 #endif
 
 	// Check maximum note span...
-	int iNoteSpan = (m_pSeq->noteMax() - m_pSeq->noteMin());
-	if (iNoteSpan < 1)
-		return;
-	if (iNoteSpan < 3)
-	    iNoteSpan = 3;
+	int iNoteSpan = (m_pSeq->noteMax() - m_pSeq->noteMin()) + 1;
+	if (iNoteSpan < 4)
+		iNoteSpan = 4;
 
 	unsigned long iTimeStart = pSession->tickFromFrame(iClipOffset);
 	unsigned long iTimeEnd
@@ -261,8 +259,7 @@ void qtractorMidiClip::drawClip ( QPainter *pPainter, const QRect& clipRect,
 
 	int cx = pSession->pixelFromTick(iTimeStart);
 	int h1 = clipRect.height() - 2;
-	int n1 = iNoteSpan + 1;
-	int h  = h1 / n1;
+	int h  = h1 / iNoteSpan;
 	if (h < 4) h = 4;
 
 	qtractorMidiEvent *pEvent = m_pSeq->events().first();
@@ -272,7 +269,7 @@ void qtractorMidiClip::drawClip ( QPainter *pPainter, const QRect& clipRect,
 			int x = clipRect.x()
 				+ pSession->pixelFromTick(pEvent->time()) - cx;
 			int y = clipRect.bottom()
-				- (h1 * (pEvent->note() - m_pSeq->noteMin() + 1)) / n1;
+				- (h1 * (pEvent->note() - m_pSeq->noteMin() + 1)) / iNoteSpan;
 			int w = pSession->pixelFromTick(pEvent->duration());
 			if (h > 4) {
 				if (w < 5) w = 5;
