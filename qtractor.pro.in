@@ -130,4 +130,5 @@ CONFIG  += qt @ac_thread@ warn_on @ac_debug@
 LANGUAGE = C++
 
 LIBS    += @ac_libs@
+INCPATH += @ac_incpath@
 

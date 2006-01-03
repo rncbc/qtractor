@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(Qtractor, 0.0.0.211, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.0.0.214, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractorMainForm.ui.h)
 AC_CONFIG_HEADERS(config.h)
@@ -43,6 +43,36 @@ AC_ARG_ENABLE(libsamplerate,
   [ac_libsamplerate="no"],
   [ac_libsamplerate="yes"])
 
+# Set for alternate JACK installation dir.
+AC_ARG_WITH(jack,
+  AC_HELP_STRING([--with-jack=PATH], [use alternate JACK install path]),
+  [ac_with_paths="$ac_with_paths $withval"])
+
+# Set for alternate ALSA installation dir.
+AC_ARG_WITH(alsa,
+  AC_HELP_STRING([--with-alsa=PATH], [use alternate ALSA install path]),
+  [ac_with_paths="$ac_with_paths $withval"])
+
+# Set for alternate libsndfile installation dir.
+AC_ARG_WITH(libsndfile,
+  AC_HELP_STRING([--with-libsndfile=PATH], [use alternate libsndfile path]),
+  [ac_with_paths="$ac_with_paths $withval"])
+
+# Set for alternate libvorbis installation dir.
+AC_ARG_WITH(libvorbis,
+  AC_HELP_STRING([--with-libvorbis=PATH], [use alternate libvorbis path]),
+  [ac_with_paths="$ac_with_paths $withval"])
+
+# Set for alternate libmad installation dir.
+AC_ARG_WITH(libmad,
+  AC_HELP_STRING([--with-libmad=PATH], [use alternate libmad path]),
+  [ac_with_paths="$ac_with_paths $withval"])
+
+# Set for alternate libsamplerate installation dir.
+AC_ARG_WITH(libsamplerate,
+  AC_HELP_STRING([--with-libsamplerate=PATH], [use alternate libsamplerate path]),
+  [ac_with_paths="$ac_with_paths $withval"])
+
 # Checks for programs.
 AC_PROG_CC
 AC_PROG_CPP
@@ -53,6 +83,19 @@ AC_PROG_GCC_TRADITIONAL
 # Checks for languages.
 AC_LANG_C
 AC_LANG_CPLUSPLUS
+
+# Prepend alternate dependencies paths.
+for X in $ac_with_paths; do
+  if test -d $X/include; then
+    CFLAGS="$CFLAGS -I$X/include"
+    CPPFLAGS="$CPPFLAGS -I$X/include"
+    ac_incpath="$X/include $ac_incpath"
+  fi
+  if test -d $X/lib; then
+    LIBS="$LIBS -L$X/lib"
+    ac_libs="-L$X/lib $ac_libs"
+  fi
+done
 
 # Check for QTDIR environment variable.
 AC_MSG_CHECKING([whether QTDIR environment variable is set])
@@ -65,7 +108,7 @@ fi
 
 CFLAGS="$CFLAGS -I$QTDIR/include"
 CPPFLAGS="$CPPFLAGS -I$QTDIR/include"
-LIBS="-L$QTDIR/lib"
+LIBS="$LIBS -L$QTDIR/lib"
 for X in qt qt3; do
   if test -d $QTDIR/include/$X; then
     CFLAGS="$CFLAGS -I$QTDIR/include/$X"
@@ -200,6 +243,7 @@ if test "x$ac_libsamplerate" = "xyes"; then
 fi
 
 AC_SUBST(ac_libs)
+AC_SUBST(ac_incpath)
 
 # Checks for header files.
 AC_HEADER_STDC
