@@ -76,9 +76,8 @@ private:
 	QPtrList<Item> m_clips;
 
 	// To cache single track selection.
-	bool m_bTrackSingle;
 	qtractorTrack *m_pTrackSingle;
-	
+	bool           m_bTrackSingle;
 };
 
 

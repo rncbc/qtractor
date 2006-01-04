@@ -80,8 +80,9 @@ private:
 
 	// Instance variables.
 	qtractorMidiSequence *m_pSeq;
-	QString               m_sFilename;
-	unsigned short        m_iTrackChannel;
+
+	QString        m_sFilename;
+	unsigned short m_iTrackChannel;
 
 	// To optimize and keep track of current playback
 	// position, mostly like an sequence cursor/iterator.

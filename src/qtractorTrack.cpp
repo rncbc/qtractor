@@ -584,7 +584,7 @@ bool qtractorTrack::loadElement ( qtractorSessionDocument *pDocument,
 					continue;
 				if (eClip.tagName() == "clip") {
 					qtractorClip *pClip = NULL;
-					switch (trackType()) {
+					switch (qtractorTrack::trackType()) {
 						case qtractorTrack::Audio:
 							pClip = new qtractorAudioClip(this);
 							break;

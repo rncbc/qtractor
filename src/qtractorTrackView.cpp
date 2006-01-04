@@ -903,9 +903,8 @@ void qtractorTrackView::contentsMouseReleaseEvent ( QMouseEvent *pMouseEvent )
 					= m_pClipSelect->clips().first();
 				while (pClipItem) {
 					qtractorClip  *pClip = pClipItem->clip;
-					qtractorTrack *pOldTrack = pClip->track();
 					if (!bSingleTrack)
-					    pNewTrack = pOldTrack;
+					    pNewTrack = pClip->track();
 					int x = (pClipItem->rectClip.x() + m_iDraggingX);
 					pMoveClipCommand->addClip(pClip, pNewTrack,
 						pSession->frameFromPixel(x < 0 ? 0 : x));
