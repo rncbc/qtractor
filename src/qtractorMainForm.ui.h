@@ -1239,9 +1239,9 @@ void qtractorMainForm::stabilizeForm (void)
 	fileSaveAction->setEnabled(m_iDirtyCount > 0);
 
 	// Update edit menu state...
-	//
 	updateActionCommand(editUndoAction, m_pCommands->lastCommand());
 	updateActionCommand(editRedoAction, m_pCommands->nextCommand());
+	//
 	// TODO: Update edit menu state...
 	//
 	editCutAction->setEnabled(false);
@@ -1251,6 +1251,7 @@ void qtractorMainForm::stabilizeForm (void)
 	bool bEnabled = (m_pTracks && m_pTracks->currentTrack() != NULL);
 	editDeleteAction->setEnabled(bEnabled && m_pTracks->isClipSelected());
 	editSelectTrackAction->setEnabled(bEnabled);
+	editSelectAllAction->setEnabled(m_pSession->sessionLength() > 0);
 	trackRemoveAction->setEnabled(bEnabled);
 	trackPropertiesAction->setEnabled(bEnabled);
 	trackImportAudioAction->setEnabled(m_pTracks != NULL);

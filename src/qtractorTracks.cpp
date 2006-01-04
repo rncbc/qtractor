@@ -477,6 +477,9 @@ bool qtractorTracks::addAudioTracks ( QStringList files )
 	// Increment this for suggestive track coloring...
 	int iTrackCount = pSession->tracks().count();
 
+	// To log this import into session description.
+	QString sDescription = pSession->description() + "--\n";
+
 	// For each one of those files, if any...
 	for (QStringList::Iterator iter = files.begin();
 			iter != files.end(); ++iter) {
@@ -504,6 +507,10 @@ bool qtractorTracks::addAudioTracks ( QStringList files )
 			mainForm()->addAudioFile(sPath);
 			iUpdate++;
 			// Log this successful import operation...
+			sDescription += tr("Audio file import \"%1\" succeeded on %2 %3.\n")
+				.arg(sPath)
+				.arg(QDate::currentDate().toString("MMM dd yyyy"))
+				.arg(QTime::currentTime().toString("hh:mm:ss"));
 			mainForm()->appendMessages(
 				tr("Audio file import succeeded: \"%1\".").arg(sPath));
 		} else {
@@ -524,6 +531,9 @@ bool qtractorTracks::addAudioTracks ( QStringList files )
 	    return false;
 	}
 	
+	// Log to session (undoable by import-track command)...
+	pSession->setDescription(sDescription);
+
 	// Put it in the form of an undoable command...
 	return m_pMainForm->commands()->exec(pImportTrackCommand);
 }
@@ -549,6 +559,9 @@ bool qtractorTracks::addMidiTracks ( QStringList files )
 	// Needed to help on setting whole session properties
 	// from the first imported MIDI file...
 	int iImport = iTrackCount;
+
+	// To log this import into session description.
+	QString sDescription = pSession->description() + "--\n";
 
 	// For each one of those files, if any...
 	for (QStringList::Iterator iter = files.begin();
@@ -601,6 +614,10 @@ bool qtractorTracks::addMidiTracks ( QStringList files )
 				iImport++;
 		}
 		// Log this successful import operation...
+		sDescription += tr("MIDI file import \"%1\" succeeded on %2 %3.\n")
+			.arg(sPath)
+			.arg(QDate::currentDate().toString("MMM dd yyyy"))
+			.arg(QTime::currentTime().toString("hh:mm:ss"));
 		mainForm()->appendMessages(
 			tr("MIDI file import succeeded: \"%1\".").arg(sPath));
 		// Make things temporarily stable...
@@ -612,6 +629,9 @@ bool qtractorTracks::addMidiTracks ( QStringList files )
 		delete pImportTrackCommand;
 	    return false;
 	}
+
+	// Log to session (undoable by import-track command)...
+	pSession->setDescription(sDescription);
 
 	// Put it in the form of an undoable command...
 	return m_pMainForm->commands()->exec(pImportTrackCommand);

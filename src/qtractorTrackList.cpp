@@ -291,13 +291,13 @@ qtractorTrackList::qtractorTrackList ( qtractorTracks *pTracks,
 
 	QListView::viewport()->setPaletteBackgroundColor(Qt::darkGray);
 
-	QListView::addColumn(tr("N"), 20);		// qtractorTrackList::Number
+	QListView::addColumn(tr("Nr"), 24);		// qtractorTrackList::Number
 	QListView::addColumn(tr("Track Name"));	// qtractorTrackList::Name
 	QListView::addColumn(tr("R"), 20);		// qtractorTrackList::Record
 	QListView::addColumn(tr("M"), 20);		// qtractorTrackList::Mute
 	QListView::addColumn(tr("S"), 20);		// qtractorTrackList::Solo
 	QListView::addColumn(tr("Bus"));		// qtractorTrackList::Bus
-	QListView::addColumn(tr("Ch"));			// qtractorTrackList::Channel
+	QListView::addColumn(tr("Ch"), 24);		// qtractorTrackList::Channel
 	QListView::addColumn(tr("Patch"));		// qtractorTrackList::Patch
 	QListView::addColumn(tr("Instrument"));	// qtractorTrackList::Instrumnet
 
