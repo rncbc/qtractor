@@ -67,7 +67,11 @@ qtractorTrackView::qtractorTrackView ( qtractorTracks *pTracks,
 	m_pClipDrag   = NULL;
 	m_pClipSelect = new qtractorClipSelect();
 
+	m_clipboard.setAutoDelete(false);
+	m_pClipboardSingleTrack = NULL;
+
 	m_iPlayheadX = 0;
+	m_iEditheadX = 0;
 
 	// Zoom tool widgets
 	m_pHzoomIn   = new QToolButton(this);
@@ -128,6 +132,8 @@ qtractorTrackView::qtractorTrackView ( qtractorTracks *pTracks,
 // Destructor.
 qtractorTrackView::~qtractorTrackView (void)
 {
+	clearClipboard();
+
 	if (m_pSessionCursor)
 		delete m_pSessionCursor;
 
@@ -635,8 +641,8 @@ qtractorTrack *qtractorTrackView::dragDropTrack ( QDropEvent *pDropEvent )
 					unsigned long iFrames = pFile->frames();
 					if (pFile->sampleRate() > 0
 						&& pFile->sampleRate() != pSession->sampleRate()) {
-					    iFrames = (unsigned long) (iFrames
-					        * float(pSession->sampleRate())
+						iFrames = (unsigned long) (iFrames
+							* float(pSession->sampleRate())
 							/ float(pFile->sampleRate()));
 					}
 					m_rectDrag.setWidth(m_rectDrag.width()
@@ -741,7 +747,7 @@ void qtractorTrackView::contentsDropEvent (
 
 	// We'll build a composite command...
 	qtractorAddClipCommand *pAddClipCommand
-	    = new qtractorAddClipCommand(m_pTracks->mainForm());
+		= new qtractorAddClipCommand(m_pTracks->mainForm());
 
 	// Add new clips on proper and consecutive track locations...
 	unsigned long iClipStart
@@ -904,7 +910,7 @@ void qtractorTrackView::contentsMouseReleaseEvent ( QMouseEvent *pMouseEvent )
 				while (pClipItem) {
 					qtractorClip  *pClip = pClipItem->clip;
 					if (!bSingleTrack)
-					    pNewTrack = pClip->track();
+						pNewTrack = pClip->track();
 					int x = (pClipItem->rectClip.x() + m_iDraggingX);
 					pMoveClipCommand->addClip(pClip, pNewTrack,
 						pSession->frameFromPixel(x < 0 ? 0 : x));
@@ -999,11 +1005,11 @@ void qtractorTrackView::deleteClipSelect (void)
 
 	// Check if anything is really selected...
 	if (m_pClipSelect->clips().count() < 1)
-	    return;
+		return;
 
 	// We'll build a composite command...
 	qtractorRemoveClipCommand *pRemoveClipCommand
-	    = new qtractorRemoveClipCommand(m_pTracks->mainForm());
+		= new qtractorRemoveClipCommand(m_pTracks->mainForm());
 
 	qtractorClipSelect::Item *pClipItem = m_pClipSelect->clips().first();
 	while (pClipItem) {
@@ -1296,17 +1302,19 @@ qtractorSessionCursor *qtractorTrackView::sessionCursor (void) const
 }
 
 
-// Playhead positioning.
-void qtractorTrackView::setPlayhead ( unsigned long iFrame )
+// Vertical line positioning.
+void qtractorTrackView::drawPositionX ( int& iPositionX,
+	unsigned long iFrame, const QColor& color )
 {
-	if (m_pTracks->session() == NULL)
+	qtractorSession *pSession = m_pTracks->session();
+	if (pSession == NULL)
 		return;
 
 	// Update playhead position...
 	QPainter p(QScrollView::viewport());
-	int x1 = m_pTracks->session()->pixelFromFrame(iFrame);
+	int x1 = pSession->pixelFromFrame(iFrame);
 	int x0 = QScrollView::contentsX();
-	int x  = m_iPlayheadX - x0;
+	int x  = iPositionX - x0;
 	int w  = m_pPixmap->width();
 	int h  = m_pPixmap->height();
 	int wm = (w >> 3);
@@ -1326,13 +1334,19 @@ void qtractorTrackView::setPlayhead ( unsigned long iFrame )
 		// New position is in...
 		x = x1 - x0;
 		if (x >= 0 && x < w) {
-			p.setPen(Qt::red);
+			p.setPen(color);
 			p.drawLine(x, 0, x, h);
 		}
-		m_iPlayheadX = x1;
+		iPositionX = x1;
 	}
 }
 
+
+// Playhead positioning.
+void qtractorTrackView::setPlayhead ( unsigned long iFrame )
+{
+	drawPositionX(m_iPlayheadX, iFrame, Qt::red);
+}
 
 int qtractorTrackView::playheadX (void) const
 {
@@ -1340,10 +1354,155 @@ int qtractorTrackView::playheadX (void) const
 }
 
 
+// edithead positioning
+void qtractorTrackView::setEdithead ( unsigned long iFrame )
+{
+	drawPositionX(m_iEditheadX, iFrame, Qt::blue);
+}
+
+int qtractorTrackView::editheadX (void) const
+{
+	return m_iEditheadX;
+}
+
+
 // Whether there's any clip currently selected.
 bool qtractorTrackView::isClipSelected (void) const
 {
 	return (m_pClipSelect->clips().count() > 0);
+}
+
+
+// Whether there's any clip on clipboard.
+bool qtractorTrackView::isClipboardEmpty (void) const
+{
+	return (m_clipboard.count() < 1);
+}
+
+
+// Clear clipboard.
+void qtractorTrackView::clearClipboard (void)
+{
+	m_clipboard.clear();
+	m_pClipboardSingleTrack = NULL;
+}
+
+
+// Copy current selected clips to clipboard.
+void qtractorTrackView::copyClipSelect (void)
+{
+	// Reset clipboard...
+	m_pClipboardSingleTrack = m_pClipSelect->singleTrack();
+	m_clipboard.clear();
+
+	// Copy each selected clip to clipboard...
+	qtractorClipSelect::Item *pClipItem = m_pClipSelect->clips().first();
+	while (pClipItem) {
+		m_clipboard.append(pClipItem->clip);
+		pClipItem = m_pClipSelect->clips().next();
+	}
+}
+
+
+// Copy current selected clips to clipboard.
+void qtractorTrackView::cutClipSelect (void)
+{
+	qtractorSession *pSession = m_pTracks->session();
+	if (pSession == NULL)
+		return;
+
+	// Check if anything is really selected...
+	if (m_pClipSelect->clips().count() < 1)
+		return;
+
+	// Reset clipboard...
+	m_pClipboardSingleTrack = m_pClipSelect->singleTrack();
+	m_clipboard.clear();
+
+	// We'll build a composite command...
+	qtractorRemoveClipCommand *pRemoveClipCommand
+		= new qtractorRemoveClipCommand(m_pTracks->mainForm());
+	// Override default command name.
+	pRemoveClipCommand->setName(tr("cut clip"));
+
+	qtractorClipSelect::Item *pClipItem = m_pClipSelect->clips().first();
+	while (pClipItem) {
+		m_clipboard.append(pClipItem->clip);
+		pRemoveClipCommand->addClip(
+			pClipItem->clip, (pClipItem->clip)->track(), 0);
+		pClipItem = m_pClipSelect->clips().next();
+	}
+
+	m_pClipSelect->clear();
+
+	// Put it in the form of an undoable command...
+	m_pTracks->mainForm()->commands()->exec(pRemoveClipCommand);
+}
+
+
+// Paste from clipboard.
+void qtractorTrackView::pasteClipSelect (void)
+{
+	qtractorSession *pSession = m_pTracks->session();
+	if (pSession == NULL)
+		return;
+
+	// Check if anythings really on clipboard...
+	if (m_clipboard.count() < 1)
+		return;
+
+	// Take hand on where we wish to start pasting clips...
+	qtractorTrack *pPasteTrack = m_pTracks->currentTrack();
+	bool bSingleTrack = (m_pClipboardSingleTrack && pPasteTrack
+		&& m_pClipboardSingleTrack->trackType() == pPasteTrack->trackType());
+
+	// We'll build a composite command...
+	qtractorAddClipCommand *pAddClipCommand
+		= new qtractorAddClipCommand(m_pTracks->mainForm());
+	// Override default command name.
+	pAddClipCommand->setName(tr("paste clip"));
+
+	qtractorClip *pClip = m_clipboard.first();
+	long delta = (pClip ?
+		(long) pSession->frameFromPixel(m_iEditheadX) - pClip->clipStart() : 0);
+	while (pClip) {
+		if (!bSingleTrack)
+			pPasteTrack = pClip->track();
+		unsigned long iClipStart = pClip->clipStart();
+		if ((long) iClipStart + delta > 0)
+			iClipStart += delta;
+		else
+			iClipStart = 0;
+		// Now, its imperative to make a proper copy of those clips...
+		switch (pPasteTrack->trackType()) {
+		case qtractorTrack::Audio: {
+			qtractorAudioClip *pAudioClip
+				= static_cast<qtractorAudioClip *> (pClip);
+			if (pAudioClip) {
+				pAudioClip = new qtractorAudioClip(*pAudioClip);
+				pAudioClip->setClipStart(iClipStart);
+				pAddClipCommand->addClip(pAudioClip, pPasteTrack, iClipStart);
+			}
+			break;
+		}
+		case qtractorTrack::Midi: {
+			qtractorMidiClip *pMidiClip
+				= static_cast<qtractorMidiClip *> (pClip);
+			if (pMidiClip) {
+				pMidiClip = new qtractorMidiClip(*pMidiClip);
+				pMidiClip->setClipStart(iClipStart);
+				pAddClipCommand->addClip(pMidiClip, pPasteTrack, iClipStart);
+			}
+			break;
+		}
+		default:
+			break;
+		}
+		pClip = m_clipboard.next();
+	}
+
+	// Put it in the form of an undoable command...
+	m_pTracks->mainForm()->commands()->exec(pAddClipCommand);
 }
 
 

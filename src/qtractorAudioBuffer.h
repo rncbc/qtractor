@@ -59,7 +59,7 @@ public:
 	float resampleRatio() const;
 
 	// Operational initializer/terminator.
-	bool open(const char *pszName,int iMode = qtractorAudioFile::Read);
+	bool open(const char *pszName, int iMode = qtractorAudioFile::Read);
 	void close();
 
 	// Buffer data read/write.

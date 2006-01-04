@@ -362,13 +362,13 @@ void qtractorTrack::addClip ( qtractorClip *pClip )
 
 void qtractorTrack::unlinkClip ( qtractorClip *pClip )
 {
-	pClip->setTrack(NULL);
+//	pClip->setTrack(NULL);
 	m_clips.unlink(pClip);
 }
 
 void qtractorTrack::removeClip ( qtractorClip *pClip )
 {
-	pClip->setTrack(NULL);
+//	pClip->setTrack(NULL);
 	m_clips.remove(pClip);
 }
 
@@ -478,12 +478,12 @@ void qtractorTrack::drawTrack ( QPainter *pPainter, const QRect& trackRect,
 void qtractorTrack::setMidiPatch ( qtractorInstrumentList *pInstruments )
 {
 	if (midiProgram() < 0)
-	    return;
+		return;
 
 	qtractorMidiBus *pMidiBus
 		= static_cast<qtractorMidiBus *> (m_pBus);
 	if (pMidiBus == NULL)
-	    return;
+		return;
 
 	int iBankSelMethod = midiBankSelMethod();
 	const QString& sInstrumentName = pMidiBus->instrumentName(midiChannel());

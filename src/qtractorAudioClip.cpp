@@ -1,7 +1,7 @@
 // qtractorAudioClip.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2006, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -44,6 +44,16 @@ qtractorAudioClip::qtractorAudioClip ( qtractorTrack *pTrack )
 	m_pBuff = new qtractorAudioBuffer(pTrack->session()->sampleRate());
 }
 
+// Copy constructor.
+qtractorAudioClip::qtractorAudioClip ( const qtractorAudioClip& clip )
+	: qtractorClip(clip.track())
+{
+	m_pPeak = NULL;
+	m_pBuff = new qtractorAudioBuffer(clip.track()->session()->sampleRate());
+
+	open(clip.filename());
+}
+
 
 // Destructor.
 qtractorAudioClip::~qtractorAudioClip (void)
@@ -79,10 +89,20 @@ bool qtractorAudioClip::open ( const QString& sFilename )
 		return false;
 	}
 
+	// Set local properties...
+	m_sFilename = sFilename;
+
 	qtractorClip::setClipName(QFileInfo(sFilename).baseName());
 	qtractorClip::setClipLength(m_pBuff->frames());
 
 	return true;
+}
+
+
+// MIDI file properties accessors.
+const QString& qtractorAudioClip::filename(void) const
+{
+	return m_sFilename;
 }
 
 

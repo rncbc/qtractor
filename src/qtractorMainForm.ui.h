@@ -84,7 +84,7 @@ void qtractorMainForm::init (void)
 	// Initialize some pointer references.
 	m_pOptions = NULL;
 	m_pSession = new qtractorSession();
-	m_pCommands = new qtractorCommandList();
+	m_pCommands = new qtractorCommandList(this);
 	m_pInstruments = new qtractorInstrumentList();
 
 	// Configure the audio file peak factory.
@@ -198,9 +198,9 @@ void qtractorMainForm::destroy (void)
 
 	//  Free some data around...
 	if (m_pInstruments)
-	    delete m_pInstruments;
+		delete m_pInstruments;
 	if (m_pCommands)
-	    delete m_pCommands;
+		delete m_pCommands;
 	if (m_pSession)
 		delete m_pSession;
 
@@ -274,7 +274,7 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 
 	// Load instrument definition files...
 	for (QStringList::Iterator iter = m_pOptions->instrumentFiles.begin();
-	    	iter != m_pOptions->instrumentFiles.end(); ++iter) {
+			iter != m_pOptions->instrumentFiles.end(); ++iter) {
 		m_pInstruments->load(*iter);
 	}
 
@@ -730,7 +730,7 @@ void qtractorMainForm::fileProperties (void)
 	if (sessionForm.exec()) {
 		m_pCommands->exec(
 			new qtractorPropertyCommand<qtractorSession::Properties> (this,
-			    tr("session properties"), m_pSession->properties(),
+				tr("session properties"), m_pSession->properties(),
 					sessionForm.properties()));
 	}
 }
@@ -754,10 +754,7 @@ void qtractorMainForm::editUndo (void)
 	appendMessages("qtractorMainForm::editUndo()");
 #endif
 
-	if (m_pCommands->undo()) {
-		m_iDirtyCount++;
-		stabilizeForm();
-	}
+	m_pCommands->undo();
 }
 
 
@@ -768,37 +765,34 @@ void qtractorMainForm::editRedo (void)
 	appendMessages("qtractorMainForm::editRedo()");
 #endif
 
-	if (m_pCommands->redo()) {
-		m_iDirtyCount++;
-		stabilizeForm();
-	}
+	m_pCommands->redo();
 }
 
 
 // Cut selection to clipboard.
 void qtractorMainForm::editCut (void)
 {
-	// TODO: Cut...
-	//
 #ifdef CONFIG_DEBUG
 	appendMessages("qtractorMainForm::editCut()");
 #endif
 
-	m_iDirtyCount++;
-	stabilizeForm();
+	// Cut selection...
+	if (m_pTracks)
+		m_pTracks->cutClipSelect();
 }
 
 
 // Copy selection to clipboard.
 void qtractorMainForm::editCopy (void)
 {
-	// TODO: Copy...
-	//
 #ifdef CONFIG_DEBUG
 	appendMessages("qtractorMainForm::editCopy()");
 #endif
 
-	m_iDirtyCount++;
+	// Copy selection...
+	if (m_pTracks)
+		m_pTracks->copyClipSelect();
+
 	stabilizeForm();
 }
 
@@ -806,21 +800,19 @@ void qtractorMainForm::editCopy (void)
 // Paste clipboard contents.
 void qtractorMainForm::editPaste (void)
 {
-	// TODO: Paste...
-	//
 #ifdef CONFIG_DEBUG
 	appendMessages("qtractorMainForm::editPaste()");
 #endif
 
-	m_iDirtyCount++;
-	stabilizeForm();
+	// Paste selection...
+	if (m_pTracks)
+		m_pTracks->pasteClipSelect();
 }
 
 
 // Delete selection.
 void qtractorMainForm::editDelete (void)
 {
-	//
 #ifdef CONFIG_DEBUG
 	appendMessages("qtractorMainForm::editDelete()");
 #endif
@@ -834,7 +826,6 @@ void qtractorMainForm::editDelete (void)
 // Mark track as selected.
 void qtractorMainForm::editSelectTrack (void)
 {
-	//
 #ifdef CONFIG_DEBUG
 	appendMessages("qtractorMainForm::editSelectTrack()");
 #endif
@@ -1119,9 +1110,9 @@ void qtractorMainForm::transportBackward (void)
 	// Move playhead one second backward....
 	unsigned long iPlayhead = m_pSession->playhead();
 	if (iPlayhead > m_pSession->sampleRate())
-	    iPlayhead -= m_pSession->sampleRate();
+		iPlayhead -= m_pSession->sampleRate();
 	else
-	    iPlayhead = 0;
+		iPlayhead = 0;
 	m_pSession->setPlayhead(iPlayhead);
 
 	stabilizeForm();
@@ -1241,22 +1232,25 @@ void qtractorMainForm::stabilizeForm (void)
 	// Update edit menu state...
 	updateActionCommand(editUndoAction, m_pCommands->lastCommand());
 	updateActionCommand(editRedoAction, m_pCommands->nextCommand());
-	//
-	// TODO: Update edit menu state...
-	//
-	editCutAction->setEnabled(false);
-	editCopyAction->setEnabled(false);
-	editPasteAction->setEnabled(false);
 
 	bool bEnabled = (m_pTracks && m_pTracks->currentTrack() != NULL);
-	editDeleteAction->setEnabled(bEnabled && m_pTracks->isClipSelected());
-	editSelectTrackAction->setEnabled(bEnabled);
-	editSelectAllAction->setEnabled(m_pSession->sessionLength() > 0);
+	bool bSelected = (m_pTracks && m_pTracks->isClipSelected());
+	bool bSelectable = (m_pSession->sessionLength() > 0);
+
+	editCutAction->setEnabled(bSelected);
+	editCopyAction->setEnabled(bSelected);
+	editPasteAction->setEnabled(m_pTracks && !m_pTracks->isClipboardEmpty());
+	editDeleteAction->setEnabled(bSelected);
+	editSelectTrackAction->setEnabled(bEnabled && bSelectable);
+	editSelectAllAction->setEnabled(bSelectable);
+
+	// Update track menu state...
 	trackRemoveAction->setEnabled(bEnabled);
 	trackPropertiesAction->setEnabled(bEnabled);
 	trackImportAudioAction->setEnabled(m_pTracks != NULL);
 	trackImportMidiAction->setEnabled(m_pTracks != NULL);
 
+	// Update view menu state...
 	viewMessagesAction->setOn(m_pMessages && m_pMessages->isVisible());
 	viewFilesAction->setOn(m_pFiles && m_pFiles->isVisible());
 
@@ -1295,17 +1289,11 @@ void qtractorMainForm::stabilizeForm (void)
 		tr("%1 Hz").arg(m_pSession->sampleRate()));
 
 	// Transport stuff...
-	if (m_pSession->isActivated()) {
-		transportRewindAction->setEnabled(true);
-		transportBackwardAction->setEnabled(true);
-		transportPlayAction->setEnabled(true);
-		transportForwardAction->setEnabled(true);
-	} else {
-		transportRewindAction->setEnabled(false);
-		transportBackwardAction->setEnabled(false);
-		transportPlayAction->setEnabled(false);
-		transportForwardAction->setEnabled(false);
-	}
+	bEnabled = m_pSession->isActivated();
+	transportRewindAction->setEnabled(bEnabled);
+	transportBackwardAction->setEnabled(bEnabled);
+	transportPlayAction->setEnabled(bEnabled);
+	transportForwardAction->setEnabled(bEnabled);
 }
 
 
@@ -1604,7 +1592,7 @@ void qtractorMainForm::selectionChanged (void)
 // Tracks view contents change slot.
 void qtractorMainForm::contentsChanged (void)
 {
-#ifdef CONFIG_DEBUG_0
+#ifdef CONFIG_DEBUG
 	appendMessages("qtractorMainForm::contentsChanged()");
 #endif
 

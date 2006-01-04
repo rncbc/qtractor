@@ -1,7 +1,7 @@
 // qtractorCommand.h
 //
 /****************************************************************************
-   Copyright (C) 2005, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2006, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -46,15 +46,13 @@ public:
 	// Main form accessor.
 	qtractorMainForm *mainForm() const { return m_pMainForm; }
 
-	// Descriptive command name accessor.
+	// Descriptive command name accessors.
+	void setName(const QString& sName) { m_sName = sName; }
 	const QString& name() const { return m_sName; }
 
 	// Cannonical command methods.
 	virtual bool redo() = 0;
 	virtual bool undo() = 0;
-
-	// Command update helper.
-	void update() const;
 
 protected:
 
@@ -80,7 +78,7 @@ class qtractorCommandList
 public:
 
 	// Constructor.
-	qtractorCommandList();
+	qtractorCommandList(qtractorMainForm *pMainForm);
 	// Destructor.
 	~qtractorCommandList();
 
@@ -97,11 +95,16 @@ public:
 	bool undo();
 	bool redo();
 
+	// Command update helper.
+	void update() const;
+
 private:
 
 	// Instance variables.
+	qtractorMainForm *m_pMainForm;
+	qtractorCommand  *m_pLastCommand;
+
 	qtractorList<qtractorCommand> m_commands;
-	qtractorCommand *m_pLastCommand;
 };
 
 

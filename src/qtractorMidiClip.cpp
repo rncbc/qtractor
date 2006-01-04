@@ -42,6 +42,16 @@ qtractorMidiClip::qtractorMidiClip ( qtractorTrack *pTrack )
 	m_iTrackChannel = 0;
 }
 
+// Copy constructor.
+qtractorMidiClip::qtractorMidiClip ( const qtractorMidiClip& clip )
+	: qtractorClip(clip.track())
+{
+	m_pSeq = new qtractorMidiSequence();
+	m_iTrackChannel = 0;
+
+	open(clip.filename(), clip.trackChannel());
+}
+
 
 // Destructor.
 qtractorMidiClip::~qtractorMidiClip (void)
@@ -90,7 +100,7 @@ bool qtractorMidiClip::open ( qtractorMidiFile *pMidiFile, int iTrackChannel,
 
 	// We must have events, otherwise this clip is of now use...
 	if (m_pSeq->events().count() < 1)
-	    return false;
+		return false;
 
 	// Set local properties...
 	m_sFilename = pMidiFile->filename();
@@ -105,6 +115,35 @@ bool qtractorMidiClip::open ( qtractorMidiFile *pMidiFile, int iTrackChannel,
 	m_clipCursor.reset(m_pSeq);
 
 	return true;
+}
+
+
+// MIDI file properties accessors.
+const QString& qtractorMidiClip::filename(void) const
+{
+	return m_sFilename;
+}
+
+unsigned short qtractorMidiClip::trackChannel(void) const
+{
+	return m_iTrackChannel;
+}
+
+
+// Sequence properties accessors.
+unsigned short qtractorMidiClip::channel (void) const
+{
+	return m_pSeq->channel();
+}
+
+int qtractorMidiClip::bank (void) const
+{
+	return m_pSeq->bank();
+}
+
+int qtractorMidiClip::program (void) const
+{
+	return m_pSeq->program();
 }
 
 
@@ -129,23 +168,6 @@ void qtractorMidiClip::ClipCursor::seek ( qtractorMidiSequence *pSeq,
 			event = event->prev();
 		time = tick;
 	}
-}
-
-
-// Sequence properties accessors.
-unsigned short qtractorMidiClip::channel (void) const
-{
-	return m_pSeq->channel();
-}
-
-int qtractorMidiClip::bank (void) const
-{
-	return m_pSeq->bank();
-}
-
-int qtractorMidiClip::program (void) const
-{
-	return m_pSeq->program();
 }
 
 

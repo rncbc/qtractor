@@ -40,6 +40,9 @@ public:
 
 	// Constructor.
 	qtractorMidiClip(qtractorTrack *pTrack);
+	// Copy constructor.
+	qtractorMidiClip(const qtractorMidiClip& clip);
+
 	// Destructor.
 	~qtractorMidiClip();
 
@@ -48,6 +51,10 @@ public:
 	// Overloaded open method; reuse an already open MIDI file.
 	bool open(qtractorMidiFile *pMidiFile, int iTrackChannel = 0,
 		bool bSetTempo = false);
+
+	// MIDI file properties accessors.
+	const QString& filename() const;
+	unsigned short trackChannel() const;
 
 	// Sequence properties accessors.
 	unsigned short channel() const;
@@ -66,7 +73,7 @@ public:
 
 	// Clip paint method.
 	void drawClip(QPainter *pPainter, const QRect& rect,
-	    unsigned long iClipOffset);
+		unsigned long iClipOffset);
 
 protected:
 

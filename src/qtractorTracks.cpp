@@ -334,6 +334,30 @@ bool qtractorTracks::isClipSelected (void) const
 }
 
 
+// Whether there's any clip on clipboard.
+bool qtractorTracks::isClipboardEmpty (void) const
+{
+	return m_pTrackView->isClipboardEmpty();
+}
+
+
+// Clipboard methods.
+void qtractorTracks::cutClipSelect (void)
+{
+	m_pTrackView->cutClipSelect();
+}
+
+void qtractorTracks::copyClipSelect (void)
+{
+	m_pTrackView->copyClipSelect();
+}
+
+void qtractorTracks::pasteClipSelect (void)
+{
+	m_pTrackView->pasteClipSelect();
+}
+
+
 // Delete current selection.
 void qtractorTracks::deleteClipSelect (void)
 {
@@ -455,7 +479,7 @@ bool qtractorTracks::editTrack ( qtractorTrack *pTrack )
 
 	// Put it in the form of an undoable command...
 	return m_pMainForm->commands()->exec(
-	    new qtractorEditTrackCommand(m_pMainForm, pTrack,
+		new qtractorEditTrackCommand(m_pMainForm, pTrack,
 			trackForm.properties()));
 }
 
@@ -472,7 +496,7 @@ bool qtractorTracks::addAudioTracks ( QStringList files )
 
 	// We'll build a composite command...
 	qtractorImportTrackCommand *pImportTrackCommand
-	    = new qtractorImportTrackCommand(m_pMainForm);
+		= new qtractorImportTrackCommand(m_pMainForm);
 
 	// Increment this for suggestive track coloring...
 	int iTrackCount = pSession->tracks().count();
@@ -527,8 +551,8 @@ bool qtractorTracks::addAudioTracks ( QStringList files )
 
 	// Have we changed anything?
 	if (iUpdate < 1) {
-	 	delete pImportTrackCommand;
-	    return false;
+		delete pImportTrackCommand;
+		return false;
 	}
 	
 	// Log to session (undoable by import-track command)...
@@ -551,7 +575,7 @@ bool qtractorTracks::addMidiTracks ( QStringList files )
 
 	// We'll build a composite command...
 	qtractorImportTrackCommand *pImportTrackCommand
-	    = new qtractorImportTrackCommand(m_pMainForm);
+		= new qtractorImportTrackCommand(m_pMainForm);
 
 	// Increment this for suggestive track coloring...
 	int iTrackCount = pSession->tracks().count();
@@ -574,7 +598,7 @@ bool qtractorTracks::addMidiTracks ( QStringList files )
 			// And tell everyone that things failed here.
 			mainForm()->appendMessagesError(
 				tr("MIDI file import failure:\n\n\"%1\".").arg(sPath));
-		    continue;
+			continue;
 		}
 		// It all depends on the format...
 		int iTracks = (file.format() == 1 ? file.tracks() : 16);
@@ -627,7 +651,7 @@ bool qtractorTracks::addMidiTracks ( QStringList files )
 	// Have we changed anything?
 	if (iUpdate < 1) {
 		delete pImportTrackCommand;
-	    return false;
+		return false;
 	}
 
 	// Log to session (undoable by import-track command)...
@@ -649,7 +673,7 @@ void qtractorTracks::updateMidiTrack ( qtractorTrack *pMidiTrack )
 	unsigned short iChannel = pMidiTrack->midiChannel();
 
 	for (qtractorTrack *pTrack = pSession->tracks().first();
-	        pTrack; pTrack = pTrack->next()) {
+			pTrack; pTrack = pTrack->next()) {
 		if (pTrack != pMidiTrack
 			&& pTrack->trackType() == qtractorTrack::Midi
 			&& pTrack->busName() == sBusName
@@ -661,7 +685,7 @@ void qtractorTracks::updateMidiTrack ( qtractorTrack *pMidiTrack )
 			// Update the track list view, immediately...
 			qtractorTrackListItem *pTrackItem = m_pTrackList->trackItem(pTrack);
 			if (pTrackItem)
-			    pTrackItem->setText(qtractorTrackList::Bus, sBusName);
+				pTrackItem->setText(qtractorTrackList::Bus, sBusName);
 		}
 	}
 }

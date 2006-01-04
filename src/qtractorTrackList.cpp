@@ -1,7 +1,7 @@
 // qtractorTrackList.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2006, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -118,7 +118,7 @@ void qtractorTrackListItem::setText ( int iColumn, const QString& sText )
 		case qtractorTrack::Audio: {
 			qtractorAudioBus *pAudioBus
 				= static_cast<qtractorAudioBus *> (m_pTrack->bus());
-	        QListViewItem::setText(qtractorTrackList::Bus,
+			QListViewItem::setText(qtractorTrackList::Bus,
 				(pAudioBus ? pAudioBus->busName() : s)  + '\n'
 				+ QObject::tr("Audio"));
 			QListViewItem::setText(qtractorTrackList::Channel,
@@ -131,11 +131,11 @@ void qtractorTrackListItem::setText ( int iColumn, const QString& sText )
 		case qtractorTrack::Midi: {
 			qtractorMidiBus *pMidiBus
 				= static_cast<qtractorMidiBus *> (m_pTrack->bus());
-	        QListViewItem::setText(qtractorTrackList::Bus,
+			QListViewItem::setText(qtractorTrackList::Bus,
 				(pMidiBus ? pMidiBus->busName() : s)  + '\n'
 				+ QObject::tr("MIDI"));
 			unsigned short iChannel = m_pTrack->midiChannel();
-	    	const QString& sInstrumentName
+			const QString& sInstrumentName
 				= pMidiBus->instrumentName(iChannel);
 			QListViewItem::setText(qtractorTrackList::Channel,
 				QString::number(iChannel + 1));
@@ -145,9 +145,9 @@ void qtractorTrackListItem::setText ( int iColumn, const QString& sText )
 				qtractorInstrumentData& patch
 					= instr.patch(m_pTrack->midiBank());
 				QListViewItem::setText(qtractorTrackList::Patch,
-				    patch[m_pTrack->midiProgram()] + '\n' + patch.name());
+					patch[m_pTrack->midiProgram()] + '\n' + patch.name());
 				QListViewItem::setText(qtractorTrackList::Instrument,
-				    sInstrumentName);
+					sInstrumentName);
 			} else {
 				QListViewItem::setText(qtractorTrackList::Patch, s);
 				QListViewItem::setText(qtractorTrackList::Instrument, s);
@@ -157,7 +157,7 @@ void qtractorTrackListItem::setText ( int iColumn, const QString& sText )
 
 		case qtractorTrack::None:
 		default:
-	        QListViewItem::setText(qtractorTrackList::Bus,
+			QListViewItem::setText(qtractorTrackList::Bus,
 				s + '\n' + QObject::tr("Unknown"));
 			QListViewItem::setText(qtractorTrackList::Channel, s);
 			QListViewItem::setText(qtractorTrackList::Patch, s);
@@ -291,13 +291,13 @@ qtractorTrackList::qtractorTrackList ( qtractorTracks *pTracks,
 
 	QListView::viewport()->setPaletteBackgroundColor(Qt::darkGray);
 
-	QListView::addColumn(tr("Nr"), 24);		// qtractorTrackList::Number
+	QListView::addColumn(tr("Nr"), 26);		// qtractorTrackList::Number
 	QListView::addColumn(tr("Track Name"));	// qtractorTrackList::Name
 	QListView::addColumn(tr("R"), 20);		// qtractorTrackList::Record
 	QListView::addColumn(tr("M"), 20);		// qtractorTrackList::Mute
 	QListView::addColumn(tr("S"), 20);		// qtractorTrackList::Solo
 	QListView::addColumn(tr("Bus"));		// qtractorTrackList::Bus
-	QListView::addColumn(tr("Ch"), 24);		// qtractorTrackList::Channel
+	QListView::addColumn(tr("Ch"), 26);		// qtractorTrackList::Channel
 	QListView::addColumn(tr("Patch"));		// qtractorTrackList::Patch
 	QListView::addColumn(tr("Instrument"));	// qtractorTrackList::Instrumnet
 
@@ -357,7 +357,7 @@ void qtractorTrackList::renumberTrackItems ( QListViewItem *pItem )
 	// Gotta start from somewhere...
 	int iTrackNumber = 0;
 	if (pItem == NULL) {
-	    pItem = QListView::firstChild();
+		pItem = QListView::firstChild();
 	} else {
 		iTrackNumber += pItem->text(qtractorTrackList::Number).toInt();
 		pItem = pItem->nextSibling();
@@ -429,7 +429,7 @@ void qtractorTrackList::contentsMousePressEvent ( QMouseEvent *pMouseEvent )
 {
 	if (m_dragState == DragNone) {
 		m_posDrag = pMouseEvent->pos();
-        if (m_pItemDrag) {
+		if (m_pItemDrag) {
 			QListView::setCursor(QCursor(Qt::SplitVCursor));
 			m_dragState = DragResize;
 			drawDragLine(m_posDrag);    // Show.
@@ -439,7 +439,7 @@ void qtractorTrackList::contentsMousePressEvent ( QMouseEvent *pMouseEvent )
 				QListView::contentsToViewport(m_posDrag));
 			if (m_pItemDrag) {
 				QListView::setCursor(QCursor(Qt::PointingHandCursor));
-			    m_dragState = DragStart;
+				m_dragState = DragStart;
 			}
 		}
 	}
@@ -451,10 +451,10 @@ void qtractorTrackList::contentsMouseMoveEvent ( QMouseEvent *pMouseEvent )
 	// We're already on some item dragging/resizing?...
 	switch (m_dragState) {
 	case DragMove:
-	    if (m_pItemDrag) {
+		if (m_pItemDrag) {
 			drawDragLine(m_posDrag);	// Hide.
 			QListViewItem *pItemDrop = QListView::itemAt(
-			    QListView::contentsToViewport(pMouseEvent->pos()));
+				QListView::contentsToViewport(pMouseEvent->pos()));
 			if (pItemDrop) {
 				m_posDrag = QListView::viewportToContents(
 					QListView::itemRect(pItemDrop).bottomLeft());
@@ -519,7 +519,7 @@ void qtractorTrackList::contentsMouseReleaseEvent ( QMouseEvent *pMouseEvent )
 	case DragMove:
 		if (m_pItemDrag) {
 			QListViewItem *pItemDrop = QListView::itemAt(
-			    QListView::contentsToViewport(pMouseEvent->pos()));
+				QListView::contentsToViewport(pMouseEvent->pos()));
 			if (pItemDrop) {
 				qtractorSession *pSession = m_pTracks->session();
 				qtractorTrackListItem *pTrackItemDrag
@@ -546,7 +546,7 @@ void qtractorTrackList::contentsMouseReleaseEvent ( QMouseEvent *pMouseEvent )
 			int iItemHeight = pMouseEvent->y() - m_iItemDragY;
 			// Check for minimum item height.
 			if (iItemHeight < QTRACTOR_ITEM_HEIGHT / 2)
-			    iItemHeight = QTRACTOR_ITEM_HEIGHT / 2;
+				iItemHeight = QTRACTOR_ITEM_HEIGHT / 2;
 			// Go for it...
 			qtractorTrackListItem *pTrackItem
 				= static_cast<qtractorTrackListItem *> (m_pItemDrag);
@@ -560,7 +560,7 @@ void qtractorTrackList::contentsMouseReleaseEvent ( QMouseEvent *pMouseEvent )
 	case DragStart:
 	case DragNone:
 	default:
-	    break;
+		break;
 	}
 	
 	resetDragState();
@@ -623,7 +623,7 @@ void qtractorTrackList::keyPressEvent ( QKeyEvent *pKeyEvent )
 		break;
 	default:
 		QListView::keyPressEvent(pKeyEvent);
-	    break;
+		break;
 	}
 }
 
@@ -667,8 +667,8 @@ void qtractorTrackList::clickedSlot ( QListViewItem *pItem,
 		pTrack->setSolo(!pTrack->isSolo());
 		break;
 	default:
-	    // Bail out.
-	    return;
+		// Bail out.
+		return;
 	}
 
 	// Update only the changed cell area...

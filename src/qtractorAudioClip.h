@@ -1,7 +1,7 @@
 // qtractorAudioClip.h
 //
 /****************************************************************************
-   Copyright (C) 2005, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2006, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -39,11 +39,17 @@ public:
 
 	// Constructor.
 	qtractorAudioClip(qtractorTrack *pTrack);
+	// Copy constructor.
+	qtractorAudioClip(const qtractorAudioClip& clip);
+
 	// Destructor.
 	~qtractorAudioClip();
 
 	// The main use method.
 	bool open(const QString& sFilename);
+
+	// Aduio file properties accessors.
+	const QString& filename() const;
 
 	// Intra-clip frame positioning.
 	void seek(unsigned long iOffset);
@@ -72,6 +78,8 @@ private:
 	// Instance variables.
 	qtractorAudioBuffer *m_pBuff;
 	qtractorAudioPeak   *m_pPeak;
+
+	QString m_sFilename;
 };
 
 

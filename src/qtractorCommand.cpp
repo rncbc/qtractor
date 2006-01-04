@@ -1,7 +1,7 @@
 // qtractorCommand.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2006, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -48,38 +48,17 @@ qtractorCommand::~qtractorCommand (void)
 }
 
 
-// Command update helper.
-void qtractorCommand::update (void) const
-{
-	qtractorSession *pSession = mainForm()->session();
-	if (pSession == NULL)
-		return;
-
-	// Maybe, just maybe, we've made things larger...
-	pSession->updateTimeScale();
-	pSession->updateSessionLength();
-
-	qtractorTracks *pTracks = mainForm()->tracks();
-	if (pTracks == NULL)
-		return;
-
-	// Refresh view.
-	pTracks->updateContents(true);
-	// Notify who's watching...
-	pTracks->contentsChangeNotify();
-}
-
-
 //----------------------------------------------------------------------
 // class qtractorCommandList - declaration.
 //
 
 // Constructor.
-qtractorCommandList::qtractorCommandList (void)
+qtractorCommandList::qtractorCommandList ( qtractorMainForm *pMainForm )
 {
-	m_commands.setAutoDelete(true);
-
+	m_pMainForm    = pMainForm;
 	m_pLastCommand = NULL;
+
+	m_commands.setAutoDelete(true);
 }
 
 // Destructor.
@@ -133,17 +112,18 @@ bool qtractorCommandList::exec ( qtractorCommand *pCommand )
 		if (m_pLastCommand) {
 			// Execute operation...
 			bResult = m_pLastCommand->redo();
-			m_pLastCommand->update();
 			// Log this operation.
 			if (bResult) {
-				m_pLastCommand->mainForm()->appendMessages(
+				m_pMainForm->appendMessages(
 					QObject::tr("Command (%1) succeeded.")
 						.arg(m_pLastCommand->name()));
 			} else {
-				m_pLastCommand->mainForm()->appendMessagesError(
+				m_pMainForm->appendMessagesError(
 					QObject::tr("Command (%1) failed.")
 						.arg(m_pLastCommand->name()));
 			}
+			// Notify commanders...
+			update();
 		}
 	}
 
@@ -157,19 +137,20 @@ bool qtractorCommandList::undo (void)
 	if (m_pLastCommand) {
 		// Undo operation...
 		bResult = m_pLastCommand->undo();
-		m_pLastCommand->update();
 		// Log this operation.
 		if (bResult) {
-			m_pLastCommand->mainForm()->appendMessages(
+			m_pMainForm->appendMessages(
 				QObject::tr("Undo (%1) succeeded.")
 					.arg(m_pLastCommand->name()));
 		} else {
-			m_pLastCommand->mainForm()->appendMessagesError(
+			m_pMainForm->appendMessagesError(
 				QObject::tr("Undo (%1) failed.")
 					.arg(m_pLastCommand->name()));
 		}
 		// Backward one command...
 		m_pLastCommand = m_pLastCommand->prev();
+		// Notify commanders...
+		update();
 	}
 
 	return bResult;
@@ -184,20 +165,43 @@ bool qtractorCommandList::redo (void)
 	if (m_pLastCommand) {
 		// Redo operation...
 		bResult = m_pLastCommand->redo();
-		m_pLastCommand->update();
 		// Log this operation.
 		if (bResult) {
-			m_pLastCommand->mainForm()->appendMessages(
+			m_pMainForm->appendMessages(
 				QObject::tr("Redo (%1) succeeded.")
 					.arg(m_pLastCommand->name()));
 		} else {
-			m_pLastCommand->mainForm()->appendMessagesError(
+			m_pMainForm->appendMessagesError(
 				QObject::tr("Redo (%1) failed.")
 					.arg(m_pLastCommand->name()));
 		}
+		// Notify commanders...
+		update();
 	}
 
 	return bResult;
+}
+
+
+// Command update helper.
+void qtractorCommandList::update (void) const
+{
+	qtractorSession *pSession = m_pMainForm->session();
+	if (pSession == NULL)
+		return;
+
+	// Maybe, just maybe, we've made things larger...
+	pSession->updateTimeScale();
+	pSession->updateSessionLength();
+
+	qtractorTracks *pTracks = m_pMainForm->tracks();
+	if (pTracks == NULL)
+		return;
+
+	// Refresh view.
+	pTracks->updateContents(true);
+	// Notify who's watching...
+	pTracks->contentsChangeNotify();
 }
 
 

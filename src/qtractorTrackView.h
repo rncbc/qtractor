@@ -80,15 +80,30 @@ public:
 	// Whether there's any clip currently selected.
 	bool isClipSelected() const;
 
+	// Whether there's any clip on clipboard.
+	bool isClipboardEmpty() const;
+
+	// Clipboard cleaner.
+	void clearClipboard();
+
+	// Clipboard methods.
+	void copyClipSelect();
+	void cutClipSelect();
+	void pasteClipSelect();
+
 	// Delete/remove current selection.
 	void deleteClipSelect();
-
-	// Current session cursor accessor.
-	qtractorSessionCursor *sessionCursor() const;
 
 	// Playhead positioning.
 	void setPlayhead(unsigned long iFrame);
 	int playheadX() const;
+
+	// Edithead positioning.
+	void setEdithead(unsigned long iFrame);
+	int editheadX() const;
+
+	// Current session cursor accessor.
+	qtractorSessionCursor *sessionCursor() const;
 
 protected:
 
@@ -152,6 +167,10 @@ protected:
 	// Keyboard event handler.
 	void keyPressEvent(QKeyEvent *pKeyEvent);
 
+	// Vertical line positioning.
+	void drawPositionX(int& iPositionX,
+		unsigned long iFrame, const QColor& color);
+
 protected slots:
 
 	// To have track view in v-sync with track list.
@@ -207,8 +226,14 @@ private:
 
 	qtractorClipSelect *m_pClipSelect;
 
+	// The local clipboard stuff.
+	QPtrList<qtractorClip> m_clipboard;
+	qtractorTrack *m_pClipboardSingleTrack;
+
 	// Playhead positioning.
 	int m_iPlayheadX;
+	// Edithead positioning.
+	int m_iEditheadX;
 };
 
 
