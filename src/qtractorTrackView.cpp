@@ -1354,7 +1354,7 @@ void qtractorTrackView::drawPositionX ( int& iPositionX, int x,
 	int wm = (w >> 3);
 
 	// Restore old position...
-	if (x1 >= 0 && x1 < w)
+	if (x1 > 0 && x1 < w)
 		p.drawPixmap(x1, 0, *m_pPixmap, x1, 0, 1, h);
 
 	// New position is in...

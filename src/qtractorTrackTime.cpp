@@ -68,7 +68,7 @@ void qtractorTrackTime::updateContents (void)
 
 
 // (Re)create the complete track view pixmap.
-void qtractorTrackTime::updatePixmap ( int cx, int cy )
+void qtractorTrackTime::updatePixmap ( int cx, int /* cy */)
 {
 	const QColorGroup& cg = QScrollView::colorGroup();
 
@@ -207,7 +207,7 @@ void qtractorTrackTime::contentsMousePressEvent ( QMouseEvent *pMouseEvent )
 				pSession->setPlayHead(
 					pSession->frameFromPixel(pMouseEvent->pos().x()));
 			// Playhead positioning...
-			sm_pTracks->trackView()->setPlayHeadX(pMouseEvent->pos().x());
+			m_pTracks->trackView()->setPlayHeadX(pMouseEvent->pos().x());
 			// Not quite a selection, but for
 			// immediate visual feedback...
 			m_pTracks->selectionChangeNotify();
