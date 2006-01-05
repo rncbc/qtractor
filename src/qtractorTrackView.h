@@ -95,11 +95,13 @@ public:
 	void deleteClipSelect();
 
 	// Playhead positioning.
-	void setPlayhead(unsigned long iFrame);
+	void setPlayhead(unsigned long iFrame, bool bSync = false);
+	void setPlayheadX(int iPlayheadX);
 	int playheadX() const;
 
 	// Edithead positioning.
 	void setEdithead(unsigned long iFrame);
+	void setEditheadX(int iEditheadX);
 	int editheadX() const;
 
 	// Current session cursor accessor.
@@ -168,8 +170,7 @@ protected:
 	void keyPressEvent(QKeyEvent *pKeyEvent);
 
 	// Vertical line positioning.
-	void drawPositionX(int& iPositionX,
-		unsigned long iFrame, const QColor& color);
+	void drawPositionX(int& iPositionX, int x, const QColor& color);
 
 protected slots:
 

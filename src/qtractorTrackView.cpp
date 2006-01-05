@@ -261,6 +261,12 @@ void qtractorTrackView::drawContents ( QPainter *p,
 		clipy - QScrollView::contentsY(),
 		clipw, cliph);
 
+	// Draw edithead line...
+	if (m_iEditheadX >= clipx && m_iEditheadX < clipx + clipw) {
+		p->setPen(Qt::blue);
+		p->drawLine(m_iEditheadX, clipy, m_iEditheadX, clipy + cliph);
+	}
+
 	// Draw playhead line...
 	if (m_iPlayheadX >= clipx && m_iPlayheadX < clipx + clipw) {
 		p->setPen(Qt::red);
@@ -829,9 +835,26 @@ void qtractorTrackView::contentsMousePressEvent ( QMouseEvent *pMouseEvent )
 				updateContents();
 				m_pTracks->selectionChangeNotify();
 			}
-		}   // Clear any selection out there?
-		else if (!bModifier)
-			selectAll(false);
+		}
+		else {
+			// Clear any selection out there?
+			if (!bModifier)
+				selectAll(false);
+			// Direct positioning...
+			if (pMouseEvent->button() == Qt::LeftButton) {
+				if (bModifier) {
+					// Playhead positioning...
+					unsigned long iFrame = 0;
+					qtractorSession *pSession = m_pTracks->session();
+					if (pSession)
+						iFrame = pSession->frameFromPixel(m_posDrag.x());
+					setPlayhead(iFrame, true);
+				} else {
+					// Edithead positioning...
+					setEditheadX(m_posDrag.x());
+				}
+			}
+		}
 	}
 
 	QScrollView::contentsMousePressEvent(pMouseEvent);
@@ -1303,27 +1326,22 @@ qtractorSessionCursor *qtractorTrackView::sessionCursor (void) const
 
 
 // Vertical line positioning.
-void qtractorTrackView::drawPositionX ( int& iPositionX,
-	unsigned long iFrame, const QColor& color )
+void qtractorTrackView::drawPositionX ( int& iPositionX, int x,
+	const QColor& color )
 {
-	qtractorSession *pSession = m_pTracks->session();
-	if (pSession == NULL)
-		return;
-
 	// Update playhead position...
 	QPainter p(QScrollView::viewport());
-	int x1 = pSession->pixelFromFrame(iFrame);
 	int x0 = QScrollView::contentsX();
-	int x  = iPositionX - x0;
+	int x1 = iPositionX - x0;
 	int w  = m_pPixmap->width();
 	int h  = m_pPixmap->height();
 	int wm = (w >> 3);
-	if (x >= 0 && x < w)
-		p.drawPixmap(x, 0, *m_pPixmap, x, 0, 1, h);
-	if (x1 < x0) {
+	if (x1 >= 0 && x1 < w)
+		p.drawPixmap(x1, 0, *m_pPixmap, x1, 0, 1, h);
+	if (x < x0) {
 		// Move backward....
-		QScrollView::setContentsPos(x1, QScrollView::contentsY());
-	} else if (x1 > x0 + w - wm) {
+		QScrollView::setContentsPos(x, QScrollView::contentsY());
+	} else if (x > x0 + w - wm) {
 		// Move forward....
 		if (x0 < QScrollView::contentsWidth() - w)
 			x0 += (w - wm);
@@ -1332,20 +1350,30 @@ void qtractorTrackView::drawPositionX ( int& iPositionX,
 		QScrollView::setContentsPos(x0, QScrollView::contentsY());
 	} else {
 		// New position is in...
-		x = x1 - x0;
-		if (x >= 0 && x < w) {
+		x1 = x - x0;
+		if (x1 >= 0 && x1 < w) {
 			p.setPen(color);
-			p.drawLine(x, 0, x, h);
+			p.drawLine(x1, 0, x1, h);
 		}
-		iPositionX = x1;
+		iPositionX = x;
 	}
 }
 
 
 // Playhead positioning.
-void qtractorTrackView::setPlayhead ( unsigned long iFrame )
+void qtractorTrackView::setPlayhead ( unsigned long iFrame, bool bSync )
 {
-	drawPositionX(m_iPlayheadX, iFrame, Qt::red);
+	qtractorSession *pSession = m_pTracks->session();
+	if (pSession) {
+		setPlayheadX(pSession->pixelFromFrame(iFrame));
+		if (bSync)
+		    pSession->setPlayhead(iFrame);
+	}
+}
+
+void qtractorTrackView::setPlayheadX ( int iPlayheadX )
+{
+	drawPositionX(m_iPlayheadX, iPlayheadX, Qt::red);
 }
 
 int qtractorTrackView::playheadX (void) const
@@ -1357,7 +1385,14 @@ int qtractorTrackView::playheadX (void) const
 // edithead positioning
 void qtractorTrackView::setEdithead ( unsigned long iFrame )
 {
-	drawPositionX(m_iEditheadX, iFrame, Qt::blue);
+	qtractorSession *pSession = m_pTracks->session();
+	if (pSession)
+		setEditheadX(pSession->pixelFromFrame(iFrame));
+}
+
+void qtractorTrackView::setEditheadX ( int iEditheadX )
+{
+	drawPositionX(m_iEditheadX, iEditheadX, Qt::blue);
 }
 
 int qtractorTrackView::editheadX (void) const
