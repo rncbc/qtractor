@@ -857,13 +857,13 @@ void qtractorTrackView::contentsMousePressEvent ( QMouseEvent *pMouseEvent )
 							pSession->frameFromPixel(m_posDrag.x()));
 					// Playhead positioning...
 					setPlayHeadX(m_posDrag.x());
+					// Not quite a selection, but for
+					// immediate visual feedback...
+					m_pTracks->selectionChangeNotify();
 				} else {
 					// Edit-head positioning...
 					setEditHeadX(m_posDrag.x());
 				}
-				// Not quite a selection, but for
-				// immediate visual feedback...
-				m_pTracks->selectionChangeNotify();
 			}
 			else if (!bModifier) {  // Right-button!
 				// Edittail positioning...

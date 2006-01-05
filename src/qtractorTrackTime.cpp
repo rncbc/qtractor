@@ -201,26 +201,26 @@ void qtractorTrackTime::contentsMousePressEvent ( QMouseEvent *pMouseEvent )
 	case Qt::LeftButton:
 		// Left-butoon indirect positioning...
 		if (bModifier) {
-			// Play-head positioning...
-			unsigned long iFrame = 0;
+			// First, set actual engine position...
 			qtractorSession *pSession = m_pTracks->session();
 			if (pSession)
-				iFrame = pSession->frameFromPixel(pMouseEvent->pos().x());
-			m_pTracks->trackView()->setPlayHead(iFrame, true);
+				pSession->setPlayHead(
+					pSession->frameFromPixel(pMouseEvent->pos().x()));
+			// Playhead positioning...
+			sm_pTracks->trackView()->setPlayHeadX(pMouseEvent->pos().x());
+			// Not quite a selection, but for
+			// immediate visual feedback...
+			m_pTracks->selectionChangeNotify();
 		} else {
 			// Edit-head positioning...
 			m_pTracks->trackView()->setEditHeadX(pMouseEvent->pos().x());
 		}
-		// Get some immediate visual feedback...
-		m_pTracks->selectionChangeNotify();
 		break;
 	case Qt::RightButton:
 		// Right-butoon indirect positioning...
 		if (!bModifier) {
 			// Edit-tail positioning...
 			m_pTracks->trackView()->setEditTailX(pMouseEvent->pos().x());
-			// Get some immediate visual feedback...
-			m_pTracks->selectionChangeNotify();
 		}
 	    break;
 	}
