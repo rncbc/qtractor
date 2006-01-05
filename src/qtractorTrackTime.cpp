@@ -1,4 +1,4 @@
-// qtractorTracks.cpp
+// qtractorTrackTime.cpp
 //
 /****************************************************************************
    Copyright (C) 2005-2006, rncbc aka Rui Nuno Capela. All rights reserved.
@@ -68,7 +68,7 @@ void qtractorTrackTime::updateContents (void)
 
 
 // (Re)create the complete track view pixmap.
-void qtractorTrackTime::updatePixmap ( int cx, int /* cy */)
+void qtractorTrackTime::updatePixmap ( int cx, int cy )
 {
 	const QColorGroup& cg = QScrollView::colorGroup();
 
@@ -92,8 +92,7 @@ void qtractorTrackTime::updatePixmap ( int cx, int /* cy */)
 	if (pSession == NULL)
 		return;
 
-	//
-	// TODO: Draw the time scale...
+	// Draw the time scale...
 	//
 	const QFontMetrics& fm = p.fontMetrics();
 
@@ -138,31 +137,45 @@ void qtractorTrackTime::drawContents ( QPainter *p,
 		clipy - QScrollView::contentsY(),
 		clipw, cliph);
 
-	// Draw edithead line...
-	int iEditheadX = m_pTracks->trackView()->editheadX();
-	if (iEditheadX >= clipx && iEditheadX < clipx + clipw) {
+	// Helpers a-head...
+	int h = p->viewport().height() - 1;
+	int d = (h >> 2);
+	int x;
+
+	// Draw edit-head line...
+	x = m_pTracks->trackView()->editHeadX();
+	if (x >= clipx - d && x < clipx + clipw + d) {
 		QPointArray polyg(3);
-		int y = clipy + cliph - 1;
-		int d = (cliph >> 2);
 		polyg.putPoints(0, 3,
-			iEditheadX, y - d,
-			iEditheadX, y,
-			iEditheadX + d, y - d);
+			x + d, h - d,
+			x, h,
+			x, h - d);
 		p->setPen(Qt::blue);
 		p->setBrush(Qt::blue);
 		p->drawPolygon(polyg);
 	}
 
-	// Draw playhead line...
-	int iPlayheadX = m_pTracks->trackView()->playheadX();
-	if (iPlayheadX >= clipx && iPlayheadX < clipx + clipw) {
+	// Draw edit-tail line...
+	x = m_pTracks->trackView()->editTailX();
+	if (x >= clipx - d && x < clipx + clipw + d) {
 		QPointArray polyg(3);
-		int y = clipy + cliph - 1;
-		int d = (cliph >> 2);
 		polyg.putPoints(0, 3,
-			iPlayheadX - d, y - d,
-			iPlayheadX, y,
-			iPlayheadX + d, y - d);
+			x, h - d,
+			x, h,
+			x - d, h - d);
+		p->setPen(Qt::blue);
+		p->setBrush(Qt::blue);
+		p->drawPolygon(polyg);
+	}
+
+	// Draw play-head line...
+	x = m_pTracks->trackView()->playHeadX();
+	if (x >= clipx - d && x < clipx + clipw + d) {
+		QPointArray polyg(3);
+		polyg.putPoints(0, 3,
+			x - d, h - d,
+			x, h,
+			x + d, h - d);
 		p->setPen(Qt::red);
 		p->setBrush(Qt::red);
 		p->drawPolygon(polyg);
@@ -181,22 +194,35 @@ void qtractorTrackTime::contentsMovingSlot ( int cx, int /*cy*/ )
 // Handle selection/dragging -- mouse button press.
 void qtractorTrackTime::contentsMousePressEvent ( QMouseEvent *pMouseEvent )
 {
-	if (pMouseEvent->button() == Qt::LeftButton) {
-		// Indirect positioning...
-		if (pMouseEvent->state() & (Qt::ShiftButton | Qt::ControlButton)) {
-			// Playhead positioning...
+	const bool bModifier = (pMouseEvent->state()
+		& (Qt::ShiftButton | Qt::ControlButton));
+
+	switch (pMouseEvent->button()) {
+	case Qt::LeftButton:
+		// Left-butoon indirect positioning...
+		if (bModifier) {
+			// Play-head positioning...
 			unsigned long iFrame = 0;
 			qtractorSession *pSession = m_pTracks->session();
 			if (pSession)
 				iFrame = pSession->frameFromPixel(pMouseEvent->pos().x());
-			m_pTracks->trackView()->setPlayhead(iFrame, true);
+			m_pTracks->trackView()->setPlayHead(iFrame, true);
 		} else {
-			// Edithead positioning...
-			m_pTracks->trackView()->setEditheadX(pMouseEvent->pos().x());
+			// Edit-head positioning...
+			m_pTracks->trackView()->setEditHeadX(pMouseEvent->pos().x());
 		}
-		// Not quite a selection, but for
-		// immediate visual feedback...
+		// Get some immediate visual feedback...
 		m_pTracks->selectionChangeNotify();
+		break;
+	case Qt::RightButton:
+		// Right-butoon indirect positioning...
+		if (!bModifier) {
+			// Edit-tail positioning...
+			m_pTracks->trackView()->setEditTailX(pMouseEvent->pos().x());
+			// Get some immediate visual feedback...
+			m_pTracks->selectionChangeNotify();
+		}
+	    break;
 	}
 
 	QScrollView::contentsMousePressEvent(pMouseEvent);

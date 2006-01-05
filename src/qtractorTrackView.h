@@ -94,15 +94,20 @@ public:
 	// Delete/remove current selection.
 	void deleteClipSelect();
 
-	// Playhead positioning.
-	void setPlayhead(unsigned long iFrame, bool bSync = false);
-	void setPlayheadX(int iPlayheadX);
-	int playheadX() const;
+	// Play-head positioning.
+	void setPlayHead(unsigned long iFrame, bool bSyncView = false);
+	void setPlayHeadX(int iPlayHeadX, bool bSyncView = false);
+	int playHeadX() const;
 
-	// Edithead positioning.
-	void setEdithead(unsigned long iFrame);
-	void setEditheadX(int iEditheadX);
-	int editheadX() const;
+	// Edit-head positioning.
+	void setEditHead(unsigned long iFrame, bool bSyncView = false);
+	void setEditHeadX(int iEditHeadX, bool bSyncView = false);
+	int editHeadX() const;
+
+	// Edit-tail positioning.
+	void setEditTail(unsigned long iFrame, bool bSyncView = false);
+	void setEditTailX(int iEditTailX, bool bSyncView = false);
+	int editTailX() const;
 
 	// Current session cursor accessor.
 	qtractorSessionCursor *sessionCursor() const;
@@ -170,7 +175,8 @@ protected:
 	void keyPressEvent(QKeyEvent *pKeyEvent);
 
 	// Vertical line positioning.
-	void drawPositionX(int& iPositionX, int x, const QColor& color);
+	void drawPositionX(int& iPositionX, int x,
+		const QColor& color, bool bSyncView = false);
 
 protected slots:
 
@@ -232,9 +238,10 @@ private:
 	qtractorTrack *m_pClipboardSingleTrack;
 
 	// Playhead positioning.
-	int m_iPlayheadX;
-	// Edithead positioning.
-	int m_iEditheadX;
+	int m_iPlayHeadX;
+	// Edit positioning.
+	int m_iEditHeadX;
+	int m_iEditTailX;
 };
 
 

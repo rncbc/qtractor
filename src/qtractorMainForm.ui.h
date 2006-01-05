@@ -96,7 +96,7 @@ void qtractorMainForm::init (void)
 	}
 
 	// To remember last time we've shown the playhead.
-	m_iViewPlayhead = 0;
+	m_iPlayHead = 0;
 
 	// All child forms are to be created later, not earlier than setup.
 	m_pMessages = NULL;
@@ -601,7 +601,7 @@ bool qtractorMainForm::closeSession (void)
 		m_pSession->close();
 		m_pFiles->clear();
 		// Reset playhead.
-		m_iViewPlayhead = 0;
+		m_iPlayHead = 0;
 		// Remove all channel strips from sight...
 		m_pWorkspace->setUpdatesEnabled(false);
 		QWidgetList wlist = m_pWorkspace->windowList();
@@ -1094,7 +1094,7 @@ void qtractorMainForm::transportRewind (void)
 #endif
 
 	// Just reset session playhead.
-	m_pSession->setPlayhead(0);
+	m_pSession->setPlayHead(0);
 
 	stabilizeForm();
 }
@@ -1108,12 +1108,12 @@ void qtractorMainForm::transportBackward (void)
 #endif
 
 	// Move playhead one second backward....
-	unsigned long iPlayhead = m_pSession->playhead();
-	if (iPlayhead > m_pSession->sampleRate())
-		iPlayhead -= m_pSession->sampleRate();
+	unsigned long iPlayHead = m_pSession->playHead();
+	if (iPlayHead > m_pSession->sampleRate())
+		iPlayHead -= m_pSession->sampleRate();
 	else
-		iPlayhead = 0;
-	m_pSession->setPlayhead(iPlayhead);
+		iPlayHead = 0;
+	m_pSession->setPlayHead(iPlayHead);
 
 	stabilizeForm();
 }
@@ -1149,7 +1149,7 @@ void qtractorMainForm::transportForward (void)
 #endif
 
 	// Move playhead one second forward....
-	m_pSession->setPlayhead(m_pSession->playhead() + m_pSession->sampleRate());
+	m_pSession->setPlayHead(m_pSession->playHead() + m_pSession->sampleRate());
 
 	stabilizeForm();
 }
@@ -1263,7 +1263,7 @@ void qtractorMainForm::stabilizeForm (void)
 
 	// Session status...
 	m_pTransportTime->setText(
-		m_pSession->timeFromFrame(m_iViewPlayhead));
+		m_pSession->timeFromFrame(m_iPlayHead));
 
 	if (m_pTracks && m_pTracks->currentTrack()) {
 		m_statusItems[QTRACTOR_STATUS_NAME]->setText(
@@ -1477,11 +1477,11 @@ void qtractorMainForm::timerSlot (void)
 {
 	// Playhead and transport status...
 	if (m_pSession->isActivated()) {
-		unsigned long iPlayhead = m_pSession->playhead();
-		if (iPlayhead != m_iViewPlayhead) {
+		unsigned long iPlayHead = m_pSession->playHead();
+		if (iPlayHead != m_iPlayHead) {
 			if (m_pTracks && m_pTracks->trackView())
-				m_pTracks->trackView()->setPlayhead(iPlayhead);
-			m_iViewPlayhead = iPlayhead;
+				m_pTracks->trackView()->setPlayHead(iPlayHead, true);
+			m_iPlayHead = iPlayHead;
 		}
 		// Check if its time to refresh playhead timer...
 		if (m_pSession->isPlaying() &&
@@ -1490,7 +1490,7 @@ void qtractorMainForm::timerSlot (void)
 			if (m_iPlayTimer >= QTRACTOR_TIMER_DELAY) {
 				m_iPlayTimer = 0;
 				m_pTransportTime->setText(
-					m_pSession->timeFromFrame(m_iViewPlayhead));
+					m_pSession->timeFromFrame(m_iPlayHead));
 			}
 		}
 	}

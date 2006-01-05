@@ -624,7 +624,7 @@ bool qtractorSession::isPlaying() const
 
 
 // Playhead positioning.
-void qtractorSession::setPlayhead ( unsigned long iFrame )
+void qtractorSession::setPlayHead ( unsigned long iFrame )
 {
 	if (m_pAudioEngine->sessionCursor()) {
 		bool bPlaying = isPlaying();
@@ -637,7 +637,7 @@ void qtractorSession::setPlayhead ( unsigned long iFrame )
 	}
 }
 
-unsigned long qtractorSession::playhead (void) const
+unsigned long qtractorSession::playHead (void) const
 {
 	return (m_pAudioEngine->sessionCursor() ?
 		m_pAudioEngine->sessionCursor()->frame() : 0);

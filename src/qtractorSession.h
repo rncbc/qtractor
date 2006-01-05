@@ -170,8 +170,8 @@ public:
 	bool isPlaying() const;
 
 	// Playhead positioning.
-	void setPlayhead(unsigned long iFrame);
-	unsigned long playhead() const;
+	void setPlayHead(unsigned long iFrame);
+	unsigned long playHead() const;
 
 	// Special track-immediate methods.
 	void trackMute(qtractorTrack *pTrack, bool bMute);
