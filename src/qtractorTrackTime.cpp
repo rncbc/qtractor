@@ -222,7 +222,9 @@ void qtractorTrackTime::contentsMousePressEvent ( QMouseEvent *pMouseEvent )
 			// Edit-tail positioning...
 			m_pTracks->trackView()->setEditTailX(pMouseEvent->pos().x());
 		}
-	    break;
+		break;
+	default:
+		break;
 	}
 
 	QScrollView::contentsMousePressEvent(pMouseEvent);
