@@ -1,7 +1,7 @@
 // qtractorTrackTime.h
 //
 /****************************************************************************
-   Copyright (C) 2005, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2006, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -54,6 +54,11 @@ protected:
 	// Draw the time scale.
 	void drawContents(QPainter *p,
 		int clipx, int clipy, int clipw, int cliph);
+
+	// Handle selection with mouse.
+	void contentsMousePressEvent(QMouseEvent *pMouseEvent);
+	void contentsMouseMoveEvent(QMouseEvent *pMouseEvent);
+	void contentsMouseReleaseEvent(QMouseEvent *pMouseEvent);
 
 protected slots:
 

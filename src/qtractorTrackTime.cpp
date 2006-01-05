@@ -1,7 +1,7 @@
 // qtractorTracks.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2006, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -21,8 +21,9 @@
 
 #include "qtractorAbout.h"
 #include "qtractorTrackTime.h"
-#include "qtractorTracks.h"
+#include "qtractorTrackView.h"
 #include "qtractorSession.h"
+#include "qtractorTracks.h"
 
 #include <qpainter.h>
 
@@ -136,6 +137,36 @@ void qtractorTrackTime::drawContents ( QPainter *p,
 		clipx - QScrollView::contentsX(),
 		clipy - QScrollView::contentsY(),
 		clipw, cliph);
+
+	// Draw edithead line...
+	int iEditheadX = m_pTracks->trackView()->editheadX();
+	if (iEditheadX >= clipx && iEditheadX < clipx + clipw) {
+		QPointArray polyg(3);
+		int y = clipy + cliph - 1;
+		int d = (cliph >> 2);
+		polyg.putPoints(0, 3,
+			iEditheadX, y - d,
+			iEditheadX, y,
+			iEditheadX + d, y - d);
+		p->setPen(Qt::blue);
+		p->setBrush(Qt::blue);
+		p->drawPolygon(polyg);
+	}
+
+	// Draw playhead line...
+	int iPlayheadX = m_pTracks->trackView()->playheadX();
+	if (iPlayheadX >= clipx && iPlayheadX < clipx + clipw) {
+		QPointArray polyg(3);
+		int y = clipy + cliph - 1;
+		int d = (cliph >> 2);
+		polyg.putPoints(0, 3,
+			iPlayheadX - d, y - d,
+			iPlayheadX, y,
+			iPlayheadX + d, y - d);
+		p->setPen(Qt::red);
+		p->setBrush(Qt::red);
+		p->drawPolygon(polyg);
+	}
 }
 
 
@@ -144,6 +175,47 @@ void qtractorTrackTime::contentsMovingSlot ( int cx, int /*cy*/ )
 {
 	if (QScrollView::contentsX() != cx)
 		m_pTracks->setContentsPos(this, cx, QScrollView::contentsY());
+}
+
+
+// Handle selection/dragging -- mouse button press.
+void qtractorTrackTime::contentsMousePressEvent ( QMouseEvent *pMouseEvent )
+{
+	if (pMouseEvent->button() == Qt::LeftButton) {
+		// Indirect positioning...
+		if (pMouseEvent->state() & (Qt::ShiftButton | Qt::ControlButton)) {
+			// Playhead positioning...
+			unsigned long iFrame = 0;
+			qtractorSession *pSession = m_pTracks->session();
+			if (pSession)
+				iFrame = pSession->frameFromPixel(pMouseEvent->pos().x());
+			m_pTracks->trackView()->setPlayhead(iFrame, true);
+		} else {
+			// Edithead positioning...
+			m_pTracks->trackView()->setEditheadX(pMouseEvent->pos().x());
+		}
+		// Not quite a selection, but for
+		// immediate visual feedback...
+		m_pTracks->selectionChangeNotify();
+	}
+
+	QScrollView::contentsMousePressEvent(pMouseEvent);
+}
+
+
+// Handle selection/dragging -- mouse pointer move.
+void qtractorTrackTime::contentsMouseMoveEvent ( QMouseEvent *pMouseEvent )
+{
+	// Just a stub for future tapping...
+	QScrollView::contentsMouseMoveEvent(pMouseEvent);
+}
+
+
+// Handle selection/dragging -- mouse button release.
+void qtractorTrackTime::contentsMouseReleaseEvent ( QMouseEvent *pMouseEvent )
+{
+	// Just a stub for future tapping...
+	QScrollView::contentsMouseReleaseEvent(pMouseEvent);
 }
 
 

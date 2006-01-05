@@ -853,6 +853,9 @@ void qtractorTrackView::contentsMousePressEvent ( QMouseEvent *pMouseEvent )
 					// Edithead positioning...
 					setEditheadX(m_posDrag.x());
 				}
+				// Not quite a selection, but for
+				// immediate visual feedback...
+				m_pTracks->selectionChangeNotify();
 			}
 		}
 	}
@@ -1329,7 +1332,7 @@ qtractorSessionCursor *qtractorTrackView::sessionCursor (void) const
 void qtractorTrackView::drawPositionX ( int& iPositionX, int x,
 	const QColor& color )
 {
-	// Update playhead position...
+	// Update track-view position...
 	QPainter p(QScrollView::viewport());
 	int x0 = QScrollView::contentsX();
 	int x1 = iPositionX - x0;
@@ -1357,6 +1360,8 @@ void qtractorTrackView::drawPositionX ( int& iPositionX, int x,
 		}
 		iPositionX = x;
 	}
+	// Update time-line position...
+	m_pTracks->trackTime()->updateContents();
 }
 
 
