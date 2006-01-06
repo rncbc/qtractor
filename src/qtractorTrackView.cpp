@@ -169,7 +169,7 @@ void qtractorTrackView::setVBarGeometry ( QScrollBar& vbar,
 // Update track view content height.
 void qtractorTrackView::updateContentsHeight (void)
 {
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	fprintf(stderr, "qtractorTrackView::updateContentsHeight()\n");
 #endif
 
@@ -180,7 +180,7 @@ void qtractorTrackView::updateContentsHeight (void)
 		pItem = pItem->nextSibling();
 	}
 
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	fprintf(stderr, " => iContentsHeight=%d\n", iContentsHeight);
 #endif
 
@@ -194,7 +194,7 @@ void qtractorTrackView::updateContentsHeight (void)
 // Update track view content width.
 void qtractorTrackView::updateContentsWidth (void)
 {
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	fprintf(stderr, "qtractorTrackView::updateContentsWidth()\n");
 #endif
 
@@ -205,7 +205,7 @@ void qtractorTrackView::updateContentsWidth (void)
 			+ pSession->pixelFromBeat(2 * pSession->beatsPerBar());
 	}
 
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	fprintf(stderr, " => iContentsWidth=%d\n", iContentsWidth);
 #endif
 
@@ -267,6 +267,12 @@ void qtractorTrackView::drawContents ( QPainter *p,
 	if (m_iEditHeadX >= clipx && m_iEditHeadX < clipx + clipw) {
 		p->setPen(Qt::blue);
 		p->drawLine(m_iEditHeadX, clipy, m_iEditHeadX, clipy + cliph);
+	}
+
+	// Draw edit-tail line...
+	if (m_iEditTailX >= clipx && m_iEditTailX < clipx + clipw) {
+		p->setPen(Qt::blue);
+		p->drawLine(m_iEditTailX, clipy, m_iEditTailX, clipy + cliph);
 	}
 
 	// Draw play-head line...
@@ -841,27 +847,28 @@ void qtractorTrackView::contentsMousePressEvent ( QMouseEvent *pMouseEvent )
 			// Clear any selection out there?
 			if (!bModifier)
 				selectAll(false);
-			// Direct positioning...
-			if (pMouseEvent->button() == Qt::LeftButton) {
-				if (bModifier) {
-					// First, set actual engine position...
-					qtractorSession *pSession = m_pTracks->session();
-					if (pSession)
-						pSession->setPlayHead(
-							pSession->frameFromPixel(m_posDrag.x()));
-					// Playhead positioning...
-					setPlayHeadX(m_posDrag.x());
-					// Not quite a selection, but for
-					// immediate visual feedback...
-					m_pTracks->selectionChangeNotify();
-				} else {
-					// Edit-head positioning...
-					setEditHeadX(m_posDrag.x());
+			qtractorSession *pSession = m_pTracks->session();
+			if (pSession) {
+				// Direct snap positioning...
+				int x = pSession->pixelSnap(pMouseEvent->pos().x());
+				if (pMouseEvent->button() == Qt::LeftButton) {
+					if (bModifier) {
+						// First, set actual engine position...
+						pSession->setPlayHead(pSession->frameFromPixel(x));
+						// Playhead positioning...
+						setPlayHeadX(x);
+						// Not quite a selection, but for
+						// immediate visual feedback...
+						m_pTracks->selectionChangeNotify();
+					} else {
+						// Edit-head positioning...
+						setEditHeadX(x);
+					}
 				}
-			}
-			else if (!bModifier) {  // Right-button!
-				// Edittail positioning...
-				setEditTailX(m_posDrag.x());
+				else if (!bModifier) {  // Right-button!
+					// Edittail positioning...
+					setEditTailX(x);
+				}
 			}
 		}
 	}
@@ -921,49 +928,51 @@ void qtractorTrackView::contentsMouseReleaseEvent ( QMouseEvent *pMouseEvent )
 {
 	QScrollView::contentsMouseReleaseEvent(pMouseEvent);
 
-	switch (m_dragState) {
-	case DragSelect:
+	qtractorSession *pSession = m_pTracks->session();
+	if (pSession) {
 		// Which mouse state?
 		const bool bModifier = (pMouseEvent->state()
-			& (Qt::ShiftButton | Qt::ControlButton));	
-		// That's nice but we'll also set edit-tail positioning...
-		if (!bModifier)
-			setEditTailX(pMouseEvent->pos().x());
-		// Here we're mainly supposed to select a few bunch
-		// of clips (all that fall inside the rubber-band...
-		selectDragRect(m_rectDrag, !bModifier);
-		break;
-	case DragMove:
-		if (m_pClipSelect->clips().count() > 0) {
-			qtractorSession *pSession = m_pTracks->session();
-			qtractorTrack  *pNewTrack = dragMoveTrack(pMouseEvent->pos());
-			bool bSingleTrack = (m_pClipSelect->singleTrack() != NULL);
-			if (pSession && pNewTrack) {
-				// We'll build a composite command...
-				qtractorMoveClipCommand *pMoveClipCommand
-					= new qtractorMoveClipCommand(m_pTracks->mainForm());
-				qtractorClipSelect::Item *pClipItem
-					= m_pClipSelect->clips().first();
-				while (pClipItem) {
-					qtractorClip  *pClip = pClipItem->clip;
-					if (!bSingleTrack)
-						pNewTrack = pClip->track();
-					int x = (pClipItem->rectClip.x() + m_iDraggingX);
-					pMoveClipCommand->addClip(pClip, pNewTrack,
-						pSession->frameFromPixel(x < 0 ? 0 : x));
-					pClipItem = m_pClipSelect->clips().next();
+			& (Qt::ShiftButton | Qt::ControlButton));
+		switch (m_dragState) {
+		case DragSelect:
+			// That's nice but we'll also set edit-tail positioning...
+			if (!bModifier)
+				setEditTailX(pSession->pixelSnap(pMouseEvent->pos().x()));
+			// Here we're mainly supposed to select a few bunch
+			// of clips (all that fall inside the rubber-band...
+			selectDragRect(m_rectDrag, !bModifier);
+			break;
+		case DragMove:
+			if (m_pClipSelect->clips().count() > 0) {
+				qtractorTrack *pNewTrack = dragMoveTrack(pMouseEvent->pos());
+				bool bSingleTrack = (m_pClipSelect->singleTrack() != NULL);
+				if (pNewTrack) {
+					// We'll build a composite command...
+					qtractorMoveClipCommand *pMoveClipCommand
+						= new qtractorMoveClipCommand(m_pTracks->mainForm());
+					qtractorClipSelect::Item *pClipItem
+						= m_pClipSelect->clips().first();
+					while (pClipItem) {
+						qtractorClip *pClip = pClipItem->clip;
+						if (!bSingleTrack)
+							pNewTrack = pClip->track();
+						int x = (pClipItem->rectClip.x() + m_iDraggingX);
+						pMoveClipCommand->addClip(pClip, pNewTrack,
+							pSession->frameFromPixel(x < 0 ? 0 : x));
+						pClipItem = m_pClipSelect->clips().next();
+					}
+					m_pClipSelect->clear();
+					// Put it in the form of an undoable command...
+					m_pTracks->mainForm()->commands()->exec(pMoveClipCommand);
 				}
-				m_pClipSelect->clear();
-				// Put it in the form of an undoable command...
-				m_pTracks->mainForm()->commands()->exec(pMoveClipCommand);
 			}
+			// Fall thru...
+		case DragStart:
+		case DragDrop:
+		case DragNone:
+		default:
+			break;
 		}
-		// Fall thru...
-	case DragStart:
-	case DragDrop:
-	case DragNone:
-	default:
-		break;
 	}
 
 	// Force null state.
@@ -1412,7 +1421,7 @@ void qtractorTrackView::setEditHead ( unsigned long iFrame )
 void qtractorTrackView::setEditHeadX ( int iEditHeadX )
 {
 	if (iEditHeadX > m_iEditTailX)
-		m_iEditTailX = iEditHeadX;
+		drawPositionX(m_iEditTailX, iEditHeadX, Qt::blue);
 	drawPositionX(m_iEditHeadX, iEditHeadX, Qt::blue);
 	m_pTracks->trackTime()->updateContents();
 }
@@ -1434,8 +1443,8 @@ void qtractorTrackView::setEditTail ( unsigned long iFrame )
 void qtractorTrackView::setEditTailX ( int iEditTailX )
 {
 	if (iEditTailX < m_iEditHeadX)
-		m_iEditHeadX = iEditTailX;
-	m_iEditTailX = iEditTailX;
+		drawPositionX(m_iEditHeadX, iEditTailX, Qt::blue);
+	drawPositionX(m_iEditTailX, iEditTailX, Qt::blue);
 	m_pTracks->trackTime()->updateContents();
 }
 

@@ -60,6 +60,15 @@ protected:
 	void contentsMouseMoveEvent(QMouseEvent *pMouseEvent);
 	void contentsMouseReleaseEvent(QMouseEvent *pMouseEvent);
 
+	// Draw/hide the current drag selection.
+	void drawDragSelect(const QRect& rectDrag) const;
+
+	// Reset drag/select state.
+	void resetDragState();
+
+	// Keyboard event handler.
+	void keyPressEvent(QKeyEvent *pKeyEvent);
+
 protected slots:
 
 	// To have timeline in h-sync with main track view.
@@ -75,6 +84,14 @@ private:
 
 	// Local double-buffering pixmap.
 	QPixmap *m_pPixmap;
+
+	// The current selecting/dragging head stuff.
+	enum DragState {
+		DragNone = 0, DragStart, DragSelect
+	} m_dragState;
+
+	QRect  m_rectDrag;
+	QPoint m_posDrag;
 };
 
 
