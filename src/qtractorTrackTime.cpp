@@ -117,6 +117,37 @@ void qtractorTrackTime::updatePixmap ( int cx, int /* cy */)
 		x += iBeatWidth;
 		iBeat++;
 	}
+
+	// Helpers a-head...
+	int d = (h >> 2);
+	h -= 4;
+
+	// Draw edit-head line...
+	x = m_pTracks->trackView()->editHeadX() - cx;
+	if (/* x >= -d && */ x < w + d) {
+		QPointArray polyg(3);
+		polyg.putPoints(0, 3,
+			x + d, h - d,
+			x, h,
+			x, h - d);
+		p.setPen(Qt::blue);
+		p.setBrush(Qt::blue);
+		p.drawPolygon(polyg);
+	}
+
+	// Draw edit-tail line...
+	x = m_pTracks->trackView()->editTailX() - cx;
+	if (/* x >= -d && */ x < w + d) {
+		QPointArray polyg(3);
+		polyg.putPoints(0, 3,
+			x, h - d,
+			x, h,
+			x - d, h - d);
+		p.setPen(Qt::blue);
+		p.setBrush(Qt::blue);
+		p.drawPolygon(polyg);
+	}
+
 }
 
 
@@ -137,39 +168,10 @@ void qtractorTrackTime::drawContents ( QPainter *p,
 		clipy - QScrollView::contentsY(),
 		clipw, cliph);
 
-	// Helpers a-head...
+	// Draw play-head header...
 	int h = p->viewport().height() - 1;
 	int d = (h >> 2);
-	int x;
-
-	// Draw edit-head line...
-	x = m_pTracks->trackView()->editHeadX();
-	if (x >= clipx - d && x < clipx + clipw + d) {
-		QPointArray polyg(3);
-		polyg.putPoints(0, 3,
-			x + d, h - d,
-			x, h,
-			x, h - d);
-		p->setPen(Qt::blue);
-		p->setBrush(Qt::blue);
-		p->drawPolygon(polyg);
-	}
-
-	// Draw edit-tail line...
-	x = m_pTracks->trackView()->editTailX();
-	if (x >= clipx - d && x < clipx + clipw + d) {
-		QPointArray polyg(3);
-		polyg.putPoints(0, 3,
-			x, h - d,
-			x, h,
-			x - d, h - d);
-		p->setPen(Qt::blue);
-		p->setBrush(Qt::blue);
-		p->drawPolygon(polyg);
-	}
-
-	// Draw play-head line...
-	x = m_pTracks->trackView()->playHeadX();
+	int x = m_pTracks->trackView()->playHeadX();
 	if (x >= clipx - d && x < clipx + clipw + d) {
 		QPointArray polyg(3);
 		polyg.putPoints(0, 3,

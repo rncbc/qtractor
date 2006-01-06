@@ -100,13 +100,13 @@ public:
 	int playHeadX() const;
 
 	// Edit-head positioning.
-	void setEditHead(unsigned long iFrame, bool bSyncView = false);
-	void setEditHeadX(int iEditHeadX, bool bSyncView = false);
+	void setEditHead(unsigned long iFrame);
+	void setEditHeadX(int iEditHeadX);
 	int editHeadX() const;
 
 	// Edit-tail positioning.
-	void setEditTail(unsigned long iFrame, bool bSyncView = false);
-	void setEditTailX(int iEditTailX, bool bSyncView = false);
+	void setEditTail(unsigned long iFrame);
+	void setEditTailX(int iEditTailX);
 	int editTailX() const;
 
 	// Current session cursor accessor.
