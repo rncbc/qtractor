@@ -116,7 +116,7 @@ void qtractorTrackTime::updatePixmap ( int cx, int /* cy */)
 	}
 
 	// Helpers a-head...
-	h -= 2;
+	h -= 4;
 	int d = (h >> 2);
 
 	// Draw edit-head line...
@@ -174,7 +174,7 @@ void qtractorTrackTime::drawContents ( QPainter *p,
 		clipw, cliph);
 
 	// Draw play-head header...
-	int h = QScrollView::height() - 2;
+	int h = QScrollView::height() - 4;
 	int d = (h >> 2);
 	int x = m_pTracks->trackView()->playHeadX();
 	if (x >= clipx - d && x < clipx + clipw + d) {
@@ -223,9 +223,6 @@ void qtractorTrackTime::contentsMousePressEvent ( QMouseEvent *pMouseEvent )
 				// Not quite a selection, but for
 				// immediate visual feedback...
 				m_pTracks->selectionChangeNotify();
-			} else {
-				// Edit-head positioning...
-				m_pTracks->trackView()->setEditHeadX(x);
 			}
 			break;
 		case Qt::RightButton:
@@ -234,7 +231,7 @@ void qtractorTrackTime::contentsMousePressEvent ( QMouseEvent *pMouseEvent )
 				// Edit-tail positioning...
 				m_pTracks->trackView()->setEditTailX(x);
 			}
-			break;
+			// Fall thru...
 		default:
 			break;
 		}
@@ -260,7 +257,7 @@ void qtractorTrackTime::contentsMouseMoveEvent ( QMouseEvent *pMouseEvent )
 			break;
 		case DragStart:
 			if ((m_posDrag - pos).manhattanLength()
-					> QApplication::startDragDistance()) {
+				> QApplication::startDragDistance()) {
 				// We'll start dragging alright...
 				int h = QScrollView::height() - 2;
 				m_rectDrag.setTop(h - (h >> 2));
@@ -290,14 +287,26 @@ void qtractorTrackTime::contentsMouseReleaseEvent ( QMouseEvent *pMouseEvent )
 	qtractorSession *pSession = m_pTracks->session();
 	if (pSession) {
 		// Which mouse state?
+		const bool bModifier = (pMouseEvent->state()
+			& (Qt::ShiftButton | Qt::ControlButton));
 		switch (m_dragState) {
 		case DragSelect:
 			drawDragSelect(m_rectDrag);	// Hide.
-			m_pTracks->trackView()->setEditTailX(
-				pSession->pixelSnap(pMouseEvent->pos().x()));
+			if (!bModifier) {
+				const QRect rect(m_rectDrag.normalize());
+				m_pTracks->trackView()->setEditHeadX(
+					pSession->pixelSnap(rect.left()));
+				m_pTracks->trackView()->setEditTailX(
+					pSession->pixelSnap(rect.right()));
+			}
 			break;
-			// Fall thru...
 		case DragStart:
+			// Deferred left-button edit-head positioning...
+			if (!bModifier) {
+				m_pTracks->trackView()->setEditHeadX(
+					pSession->pixelSnap(m_posDrag.x()));
+			}
+			// Fall thru...
 		case DragNone:
 		default:
 			break;

@@ -175,7 +175,7 @@ protected:
 	void keyPressEvent(QKeyEvent *pKeyEvent);
 
 	// Vertical line positioning.
-	void drawPositionX(int& iPositionX, int x,
+	void drawPositionX(int& iPositionX, int x, int x2,
 		const QColor& color, bool bSyncView = false);
 
 protected slots:
