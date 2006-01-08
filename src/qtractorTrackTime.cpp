@@ -259,7 +259,7 @@ void qtractorTrackTime::contentsMouseMoveEvent ( QMouseEvent *pMouseEvent )
 			if ((m_posDrag - pos).manhattanLength()
 				> QApplication::startDragDistance()) {
 				// We'll start dragging alright...
-				int h = QScrollView::height() - 2;
+				int h = QScrollView::height() - 4;
 				m_rectDrag.setTop(h - (h >> 2));
 				m_rectDrag.setLeft(pSession->pixelSnap(m_posDrag.x()));
 				m_rectDrag.setRight(pSession->pixelSnap(pos.x()));
