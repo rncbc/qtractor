@@ -43,6 +43,8 @@ public:
 	// Destructor.
 	~qtractorTrackTime();
 
+	// Rectangular contents update.
+	void updateContents(const QRect& rect);
 	// Overall contents update.
 	void updateContents();
 

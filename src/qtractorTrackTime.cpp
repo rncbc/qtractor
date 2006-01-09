@@ -114,37 +114,13 @@ void qtractorTrackTime::updatePixmap ( int cx, int /* cy */)
 		x += iBeatWidth;
 		iBeat++;
 	}
+}
 
-	// Helpers a-head...
-	h -= 4;
-	int d = (h >> 2);
 
-	// Draw edit-head line...
-	x = m_pTracks->trackView()->editHeadX() - cx;
-	if (/* x >= -d && */ x < w + d) {
-		QPointArray polyg(3);
-		polyg.putPoints(0, 3,
-			x + d, h - d,
-			x, h,
-			x, h - d);
-		p.setPen(Qt::blue);
-		p.setBrush(Qt::blue);
-		p.drawPolygon(polyg);
-	}
-
-	// Draw edit-tail line...
-	x = m_pTracks->trackView()->editTailX() - cx;
-	if (/* x >= -d && */ x < w + d) {
-		QPointArray polyg(3);
-		polyg.putPoints(0, 3,
-			x, h - d,
-			x, h,
-			x - d, h - d);
-		p.setPen(Qt::blue);
-		p.setBrush(Qt::blue);
-		p.drawPolygon(polyg);
-	}
-
+// Rectangular contents update.
+void qtractorTrackTime::updateContents ( const QRect& rect )
+{
+	QScrollView::updateContents(rect);
 }
 
 
@@ -185,6 +161,32 @@ void qtractorTrackTime::drawContents ( QPainter *p,
 			x + d, h - d);
 		p->setPen(Qt::red);
 		p->setBrush(Qt::red);
+		p->drawPolygon(polyg);
+	}
+
+	// Draw edit-head line...
+	x = m_pTracks->trackView()->editHeadX();
+	if (x >= clipx - d && x < clipx + clipw + d) {
+		QPointArray polyg(3);
+		polyg.putPoints(0, 3,
+			x + d, h - d,
+			x, h,
+			x, h - d);
+		p->setPen(Qt::blue);
+		p->setBrush(Qt::blue);
+		p->drawPolygon(polyg);
+	}
+
+	// Draw edit-tail line...
+	x = m_pTracks->trackView()->editTailX();
+	if (x >= clipx - d && x < clipx + clipw + d) {
+		QPointArray polyg(3);
+		polyg.putPoints(0, 3,
+			x, h - d,
+			x, h,
+			x - d, h - d);
+		p->setPen(Qt::blue);
+		p->setBrush(Qt::blue);
 		p->drawPolygon(polyg);
 	}
 }
@@ -259,8 +261,8 @@ void qtractorTrackTime::contentsMouseMoveEvent ( QMouseEvent *pMouseEvent )
 			if ((m_posDrag - pos).manhattanLength()
 				> QApplication::startDragDistance()) {
 				// We'll start dragging alright...
-				int h = QScrollView::height() - 4;
-				m_rectDrag.setTop(h - (h >> 2));
+				int h = QScrollView::height();	// - 4;
+				m_rectDrag.setTop(0);			// h - (h >> 2)
 				m_rectDrag.setLeft(pSession->pixelSnap(m_posDrag.x()));
 				m_rectDrag.setRight(pSession->pixelSnap(pos.x()));
 				m_rectDrag.setBottom(h);

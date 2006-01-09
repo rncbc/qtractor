@@ -865,6 +865,8 @@ void qtractorTrackView::contentsMousePressEvent ( QMouseEvent *pMouseEvent )
 				else if (!bModifier) {
 					// Edittail positioning...
 					setEditTailX(x);
+					// Nothing more...
+					m_dragState = DragNone;
 				}
 			}
 		}
@@ -1365,9 +1367,18 @@ void qtractorTrackView::drawPositionX ( int& iPositionX, int x, int x2,
 	int h  = m_pPixmap->height();
 	int wm = (w >> 3);
 
+	// Time-line header extents...
+	int h2 = m_pTracks->trackTime()->height();
+	int d2 = (h2 >> 1);
+
 	// Restore old position...
-	if (x1 >= 0 && x1 < w && iPositionX != x2)
-		p.drawPixmap(x1, 0, *m_pPixmap, x1, 0, 1, h);
+	if (x1 >= 0 && x1 < w) {
+		// Override old view line...
+		if (iPositionX != x2)
+			p.drawPixmap(x1, 0, *m_pPixmap, x1, 0, 1, h);
+		// Update the time-line header...
+		m_pTracks->trackTime()->updateContents(QRect(x1 - d2, d2, h2, d2));
+	}
 
 	// New position is in...
 	iPositionX = x;
@@ -1390,6 +1401,8 @@ void qtractorTrackView::drawPositionX ( int& iPositionX, int x, int x2,
 			p.setPen(color);
 			p.drawLine(x1, 0, x1, h);
 		}
+		// Update the time-line header...
+		m_pTracks->trackTime()->updateContents(QRect(x1 - d2, d2, h2, d2));
 	}
 }
 
@@ -1405,7 +1418,6 @@ void qtractorTrackView::setPlayHead ( unsigned long iFrame, bool bSyncView )
 void qtractorTrackView::setPlayHeadX ( int iPlayHeadX, bool bSyncView )
 {
 	drawPositionX(m_iPlayHeadX, iPlayHeadX, iPlayHeadX, Qt::red, bSyncView);
-	m_pTracks->trackTime()->updateContents();
 }
 
 int qtractorTrackView::playHeadX (void) const
@@ -1427,7 +1439,6 @@ void qtractorTrackView::setEditHeadX ( int iEditHeadX )
 	if (iEditHeadX > m_iEditTailX)
 		drawPositionX(m_iEditTailX, iEditHeadX, m_iEditHeadX, Qt::blue);
 	drawPositionX(m_iEditHeadX, iEditHeadX, m_iEditTailX, Qt::blue);
-	m_pTracks->trackTime()->updateContents();
 }
 
 int qtractorTrackView::editHeadX (void) const
@@ -1449,7 +1460,6 @@ void qtractorTrackView::setEditTailX ( int iEditTailX )
 	if (iEditTailX < m_iEditHeadX)
 		drawPositionX(m_iEditHeadX, iEditTailX, m_iEditTailX, Qt::blue);
 	drawPositionX(m_iEditTailX, iEditTailX, m_iEditHeadX, Qt::blue);
-	m_pTracks->trackTime()->updateContents();
 }
 
 int qtractorTrackView::editTailX (void) const
