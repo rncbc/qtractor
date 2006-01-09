@@ -40,6 +40,7 @@
 #include "qtractorTrackForm.h"
 
 #include <qmessagebox.h>
+#include <qfileinfo.h>
 #include <qheader.h>
 #include <qvbox.h>
 
@@ -532,7 +533,7 @@ bool qtractorTracks::addAudioTracks ( QStringList files )
 			iUpdate++;
 			// Log this successful import operation...
 			sDescription += tr("Audio file import \"%1\" succeeded on %2 %3.\n")
-				.arg(sPath)
+				.arg(QFileInfo(sPath).fileName())
 				.arg(QDate::currentDate().toString("MMM dd yyyy"))
 				.arg(QTime::currentTime().toString("hh:mm:ss"));
 			mainForm()->appendMessages(
@@ -639,7 +640,7 @@ bool qtractorTracks::addMidiTracks ( QStringList files )
 		}
 		// Log this successful import operation...
 		sDescription += tr("MIDI file import \"%1\" succeeded on %2 %3.\n")
-			.arg(sPath)
+			.arg(QFileInfo(sPath).fileName())
 			.arg(QDate::currentDate().toString("MMM dd yyyy"))
 			.arg(QTime::currentTime().toString("hh:mm:ss"));
 		mainForm()->appendMessages(

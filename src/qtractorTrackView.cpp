@@ -1377,7 +1377,7 @@ void qtractorTrackView::drawPositionX ( int& iPositionX, int x, int x2,
 		if (iPositionX != x2)
 			p.drawPixmap(x1, 0, *m_pPixmap, x1, 0, 1, h);
 		// Update the time-line header...
-		m_pTracks->trackTime()->updateContents(QRect(x1 - d2, d2, h2, d2));
+		m_pTracks->trackTime()->updateContents(QRect(x0 + x1 - d2, d2, h2, d2));
 	}
 
 	// New position is in...
@@ -1402,7 +1402,7 @@ void qtractorTrackView::drawPositionX ( int& iPositionX, int x, int x2,
 			p.drawLine(x1, 0, x1, h);
 		}
 		// Update the time-line header...
-		m_pTracks->trackTime()->updateContents(QRect(x1 - d2, d2, h2, d2));
+		m_pTracks->trackTime()->updateContents(QRect(x0 + x1 - d2, d2, h2, d2));
 	}
 }
 
