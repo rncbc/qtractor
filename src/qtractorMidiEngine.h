@@ -131,7 +131,7 @@ private:
 	int m_iAlsaPort;
 
 	// Channel mapper.
- 	QMap<int, QString> m_map;
+	QMap<int, QString> m_map;
 };
 
 

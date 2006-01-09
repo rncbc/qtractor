@@ -462,7 +462,7 @@ bool qtractorMidiEngine::start (void)
 	qtractorSession *pSession = session();
 	if (pSession == NULL)
 		return false;
-	// ouput thread must be around too...
+	// Output thread must be around too...
 	if (m_pOutputThread == NULL)
 		return false;
 
@@ -708,7 +708,7 @@ void qtractorMidiBus::setPatch ( unsigned short iChannel,
 	const QString& sInstrumentName, int iBank, int iProg,
 	int iBankSelMethod )
 {
-	// We always need our MIDI engine refrence...
+	// We always need our MIDI engine reference...
 	qtractorMidiEngine *pMidiEngine
 		= static_cast<qtractorMidiEngine *> (engine());
 	if (pMidiEngine == NULL)

@@ -149,21 +149,11 @@ void qtractorTrackTime::drawContents ( QPainter *p,
 		clipy - QScrollView::contentsY(),
 		clipw, cliph);
 
-	// Draw play-head header...
+	// Headers a-head...
 	int h = QScrollView::height() - 4;
 	int d = (h >> 2);
-	int x = m_pTracks->trackView()->playHeadX();
-	if (x >= clipx - d && x < clipx + clipw + d) {
-		QPointArray polyg(3);
-		polyg.putPoints(0, 3,
-			x - d, h - d,
-			x, h,
-			x + d, h - d);
-		p->setPen(Qt::red);
-		p->setBrush(Qt::red);
-		p->drawPolygon(polyg);
-	}
-
+	int x;
+	
 	// Draw edit-head line...
 	x = m_pTracks->trackView()->editHeadX();
 	if (x >= clipx - d && x < clipx + clipw + d) {
@@ -187,6 +177,19 @@ void qtractorTrackTime::drawContents ( QPainter *p,
 			x - d, h - d);
 		p->setPen(Qt::blue);
 		p->setBrush(Qt::blue);
+		p->drawPolygon(polyg);
+	}
+
+	// Draw play-head header...
+	x = m_pTracks->trackView()->playHeadX();
+	if (x >= clipx - d && x < clipx + clipw + d) {
+		QPointArray polyg(3);
+		polyg.putPoints(0, 3,
+			x - d, h - d,
+			x, h,
+			x + d, h - d);
+		p->setPen(Qt::red);
+		p->setBrush(Qt::red);
 		p->drawPolygon(polyg);
 	}
 }
@@ -356,8 +359,8 @@ void qtractorTrackTime::keyPressEvent ( QKeyEvent *pKeyEvent )
 #endif
 	switch (pKeyEvent->key()) {
 	case Qt::Key_Escape:
-	    if (m_dragState == DragSelect)
-	        drawDragSelect(m_rectDrag); // Hide.
+		if (m_dragState == DragSelect)
+			drawDragSelect(m_rectDrag); // Hide.
 		resetDragState();
 		break;
 	default:
