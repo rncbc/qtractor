@@ -111,13 +111,25 @@ public:
 	bool open();
 	void close();
 
-	// Instrument channel map accessor.
-	const QString& instrumentName(unsigned short iChannel)
+	// Channel map payload.
+	struct Patch
+	{
+		// Default payload constructor.
+		Patch() : bankSelMethod(-1), bank(-1), prog(-1) {}
+		// Payload members.
+		QString instrumentName;
+		int     bankSelMethod;
+		int     bank;
+		int     prog;
+	};
+
+	// Channel patch map accessor.
+	Patch& patch(unsigned short iChannel)
 		{ return m_map[iChannel & 0x0f]; }
 
 	// Direct MIDI bank/program selection helper.
 	void setPatch(unsigned short iChannel, const QString& sInstrumentName,
-		int iBank, int iProg, int iBankSelMethod = 0);
+		int iBankSelMethod, int iBank, int iProg);
 
 	// Document element methods.
 	bool loadElement(qtractorSessionDocument *pDocument,
@@ -131,7 +143,7 @@ private:
 	int m_iAlsaPort;
 
 	// Channel mapper.
-	QMap<int, QString> m_map;
+	QMap<int, Patch> m_map;
 };
 
 

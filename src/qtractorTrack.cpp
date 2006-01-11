@@ -485,13 +485,13 @@ void qtractorTrack::setMidiPatch ( qtractorInstrumentList *pInstruments )
 	if (pMidiBus == NULL)
 		return;
 
-	int iBankSelMethod = midiBankSelMethod();
-	const QString& sInstrumentName = pMidiBus->instrumentName(midiChannel());
-	if (!sInstrumentName.isEmpty() && iBankSelMethod < 0)
-		iBankSelMethod = (*pInstruments)[sInstrumentName].bankSelMethod();
+	const qtractorMidiBus::Patch& patch = pMidiBus->patch(midiChannel());
+	int iBankSelMethod = patch.bankSelMethod;
+	if (!patch.instrumentName.isEmpty() && iBankSelMethod < 0)
+		iBankSelMethod = (*pInstruments)[patch.instrumentName].bankSelMethod();
 
-	pMidiBus->setPatch(midiChannel(), sInstrumentName,
-		midiBank(), midiProgram(), iBankSelMethod);
+	pMidiBus->setPatch(midiChannel(), patch.instrumentName,
+		iBankSelMethod, midiBank(), midiProgram());
 }
 
 

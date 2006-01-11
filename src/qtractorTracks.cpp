@@ -31,6 +31,7 @@
 #include "qtractorTrackCommand.h"
 
 #include "qtractorAudioClip.h"
+#include "qtractorMidiEngine.h"
 #include "qtractorMidiClip.h"
 #include "qtractorMidiFile.h"
 
@@ -689,6 +690,22 @@ void qtractorTracks::updateMidiTrack ( qtractorTrack *pMidiTrack )
 				pTrackItem->setText(qtractorTrackList::Bus, sBusName);
 		}
 	}
+
+	// Update MIDI bus patch...
+	qtractorMidiEngine *pMidiEngine = pSession->midiEngine();
+	if (pMidiEngine == NULL)
+		return;
+
+	qtractorMidiBus *pMidiBus
+		= static_cast<qtractorMidiBus *> (pMidiEngine->findBus(sBusName));
+	if (pMidiBus == NULL)
+		return;
+
+	const qtractorMidiBus::Patch& patch = pMidiBus->patch(iChannel);
+	pMidiBus->setPatch(iChannel, patch.instrumentName,
+		pMidiTrack->midiBankSelMethod(),
+		pMidiTrack->midiBank(),
+		pMidiTrack->midiProgram());
 }
 
 

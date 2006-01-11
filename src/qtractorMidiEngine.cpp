@@ -705,8 +705,7 @@ void qtractorMidiBus::close (void)
 
 // Direct MIDI bank/program selection helper.
 void qtractorMidiBus::setPatch ( unsigned short iChannel,
-	const QString& sInstrumentName, int iBank, int iProg,
-	int iBankSelMethod )
+	const QString& sInstrumentName, int iBankSelMethod, int iBank, int iProg )
 {
 	// We always need our MIDI engine reference...
 	qtractorMidiEngine *pMidiEngine
@@ -716,12 +715,17 @@ void qtractorMidiBus::setPatch ( unsigned short iChannel,
 
 #ifdef CONFIG_DEBUG
 	fprintf(stderr, "qtractorMidiBus::setPatch(%d, \"%s\", %d, %d, %d)\n",
-		iChannel, sInstrumentName.latin1(), iBank, iProg, iBankSelMethod);
+		iChannel, sInstrumentName.latin1(), iBankSelMethod, iBank, iProg);
 #endif
 
 	// Update patch mapping...
-	if (!sInstrumentName.isEmpty())
-		m_map[iChannel & 0x0f] = sInstrumentName;
+	if (!sInstrumentName.isEmpty()) {
+		Patch& patch = m_map[iChannel & 0x0f];
+		patch.instrumentName = sInstrumentName;
+		patch.bankSelMethod  = iBankSelMethod;
+		patch.bank = iBank;
+		patch.prog = iProg;
+	}
 
 	// Don't do anything else if engine
 	// has not been activated...
@@ -786,6 +790,7 @@ bool qtractorMidiBus::loadElement ( qtractorSessionDocument * /* pDocument */,
 		// Load (other) track properties..
 		if (eChild.tagName() == "midi-patch") {
 			unsigned short iChannel = eChild.attribute("channel").toUShort();
+			Patch& patch = m_map[iChannel & 0x0f];
 			for (QDomNode nPatch = eChild.firstChild();
 					!nPatch.isNull();
 						nPatch = nPatch.nextSibling()) {
@@ -795,7 +800,16 @@ bool qtractorMidiBus::loadElement ( qtractorSessionDocument * /* pDocument */,
 					continue;
 				// Add this one to map...
 				if (ePatch.tagName() == "midi-instrument")
-					m_map[iChannel & 0x0f] = ePatch.text();
+					patch.instrumentName = ePatch.text();
+				else
+				if (ePatch.tagName() == "midi-bank-sel-method")
+					patch.bankSelMethod = ePatch.text().toInt();
+				else
+				if (ePatch.tagName() == "midi-bank")
+					patch.bank = ePatch.text().toInt();
+				else
+				if (ePatch.tagName() == "midi-program")
+					patch.prog = ePatch.text().toInt();
 			}
 		}
 	}
@@ -808,14 +822,26 @@ bool qtractorMidiBus::saveElement ( qtractorSessionDocument *pDocument,
 	QDomElement *pElement )
 {
 	// Save map items...
-	QMap<int, QString>::Iterator iter;
+	QMap<int, Patch>::Iterator iter;
 	for (iter = m_map.begin(); iter != m_map.end(); ++iter) {
-		const QString& sInstrumentName = iter.data();
+		const Patch& patch = iter.data();
 		QDomElement ePatch = pDocument->document()->createElement("midi-patch");
 		ePatch.setAttribute("channel", QString::number(iter.key()));
-		if (!sInstrumentName.isEmpty()) {
+		if (!patch.instrumentName.isEmpty()) {
 			pDocument->saveTextElement("midi-instrument",
-				sInstrumentName, &ePatch);
+				patch.instrumentName, &ePatch);
+		}
+		if (patch.bankSelMethod >= 0) {
+			pDocument->saveTextElement("midi-bank-sel-method",
+				QString::number(patch.bankSelMethod), &ePatch);
+		}
+		if (patch.bank >= 0) {
+			pDocument->saveTextElement("midi-bank",
+				QString::number(patch.bank), &ePatch);
+		}
+		if (patch.prog >= 0) {
+			pDocument->saveTextElement("midi-prog",
+				QString::number(patch.prog), &ePatch);
 		}
 		pElement->appendChild(ePatch);
 	}

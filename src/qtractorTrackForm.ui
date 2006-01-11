@@ -525,6 +525,12 @@
         <receiver>qtractorTrackForm</receiver>
         <slot>instrumentChanged(const QString&amp;)</slot>
     </connection>
+	<connection>
+		<sender>BankSelMethodComboBox</sender>
+		<signal>activated(int)</signal>
+		<receiver>qtractorTrackForm</receiver>
+		<slot>bankSelMethodChanged(int)</slot>
+	</connection>
     <connection>
         <sender>BankComboBox</sender>
         <signal>activated(int)</signal>
@@ -634,8 +640,8 @@
     <function access="private" specifier="non virtual" returnType="qtractorMidiBus *">midiBus()</function>
     <function access="private" specifier="non virtual">updateInstruments()</function>
 	<function access="private" specifier="non virtual">updateTrackType( int iTrackType )</function>
-    <function access="private" specifier="non virtual">updateChannel( int iChannel, int iBank, int iProg )</function>
-    <function access="private" specifier="non virtual">updateBanks( const QString &amp; sInstrumentName, int iBank, int iProg )</function>
+	<function access="private" specifier="non virtual">updateChannel( int iChannel, int iBankSelMethod, int iBank, int iProg )</function>
+	<function access="private" specifier="non virtual">updateBanks( const QString &amp; sInstrumentName, int iBankSelMethod, int iBank, int iProg )</function>
     <function access="private" specifier="non virtual">updatePrograms( const QString &amp; sInstrumentName, int iBank, int iProg )</function>
     <function access="private" specifier="non virtual">updateColorItem( QComboBox *pComboBox, const QColor &amp; color )</function>
     <function access="private" specifier="non virtual" returnType="const QColor &amp;">colorItem( QComboBox *pComboBox )</function>

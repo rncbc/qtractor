@@ -172,7 +172,8 @@ void qtractorTrackForm::setTrack ( qtractorTrack *pTrack )
 		BusNameComboBox->setCurrentText(props.busName);
 
 	ChannelSpinBox->setValue(props.midiChannel + 1);
-	updateChannel(ChannelSpinBox->value(), props.midiBank, props.midiProgram);
+	updateChannel(ChannelSpinBox->value(),
+		props.midiBankSelMethod, props.midiBank, props.midiProgram);
 
 	// Update colors...
 	updateColorItem(ForegroundColorComboBox, props.foreground);
@@ -344,7 +345,8 @@ void qtractorTrackForm::updateTrackType ( int iTrackType )
 
 
 // Refresh channel instrument banks list.
-void qtractorTrackForm::updateChannel ( int iChannel, int iBank, int iProg )
+void qtractorTrackForm::updateChannel ( int iChannel,
+	int iBankSelMethod, int iBank, int iProg )
 {
 	// Regular channel offset
 	if (--iChannel < 0)
@@ -356,29 +358,36 @@ void qtractorTrackForm::updateChannel ( int iChannel, int iBank, int iProg )
 		return;
 
 #ifdef CONFIG_DEBUG
-	fprintf(stderr, "qtractorTrackForm::updateChannel(%d, %d, %d)\n",
-		iChannel, iBank, iProg);
+	fprintf(stderr, "qtractorTrackForm::updateChannel(%d, %d, %d, %d)\n",
+		iChannel, iBankSelMethod, iBank, iProg);
 #endif
 
 	// MIDI channel patch...
-	const QString& sInstrumentName = pMidiBus->instrumentName(iChannel);
+	const qtractorMidiBus::Patch& patch = pMidiBus->patch(iChannel);
+	if (iBankSelMethod < 0)
+		iBankSelMethod = patch.bankSelMethod;
+	if (iBank < 0)
+		iBank = patch.bank;
+	if (iProg < 0)
+		iProg = patch.prog;
 
 	// Select instrument...
 	int iInstrumentIndex = 0;
 	QListBoxItem *pItem = InstrumentComboBox->listBox()->findItem(
-		sInstrumentName, Qt::ExactMatch | Qt::CaseSensitive);
+		patch.instrumentName, Qt::ExactMatch | Qt::CaseSensitive);
 	if (pItem)
 		iInstrumentIndex = InstrumentComboBox->listBox()->index(pItem);
 	InstrumentComboBox->setCurrentItem(iInstrumentIndex);
-	
+
 	// Go and update the bank and program listings...
-	updateBanks(InstrumentComboBox->currentText(), iBank, iProg);
+	updateBanks(InstrumentComboBox->currentText(),
+		iBankSelMethod, iBank, iProg);
 }
 
 
 // Refresh instrument banks list.
 void qtractorTrackForm::updateBanks ( const QString& sInstrumentName,
-	int iBank, int iProg )
+	int iBankSelMethod, int iBank, int iProg )
 {
 	if (m_pTrack == NULL)
 		return;
@@ -388,12 +397,17 @@ void qtractorTrackForm::updateBanks ( const QString& sInstrumentName,
 		return;
 
 #ifdef CONFIG_DEBUG
-	fprintf(stderr, "qtractorTrackForm::updateBanks(\"%s\", %d, %d)\n",
-		sInstrumentName.latin1(), iBank, iProg);
+	fprintf(stderr, "qtractorTrackForm::updateBanks(\"%s\", %d, %d, %d)\n",
+		sInstrumentName.latin1(), iBankSelMethod, iBank, iProg);
 #endif
 
 	// Instrument reference...
 	qtractorInstrument& instr = (*m_pInstruments)[sInstrumentName];
+
+	// Bank selection method...
+	if (iBankSelMethod < 0)
+		iBankSelMethod = instr.bankSelMethod();
+	BankSelMethodComboBox->setCurrentItem(iBankSelMethod);
 
 	// Refresh patch bank mapping...
 	m_banks.clear();
@@ -563,8 +577,9 @@ void qtractorTrackForm::channelChanged ( int iChannel )
 
 	// First update channel instrument mapping...
 	updateChannel(iChannel,
-		m_banks[BankComboBox->currentItem()],
-		m_progs[ProgComboBox->currentItem()]);
+		-1, // BankSelMethodComboBox->currentItem(),
+		-1, // m_banks[BankComboBox->currentItem()],
+		-1);// m_progs[ProgComboBox->currentItem()]);
 
 	progChanged(ProgComboBox->currentItem());
 }
@@ -577,6 +592,7 @@ void qtractorTrackForm::instrumentChanged ( const QString& sInstrumentName )
 		return;
 
 	updateBanks(sInstrumentName,
+		-1, // BankSelMethodComboBox->currentItem(),
 		m_banks[BankComboBox->currentItem()],
 		m_progs[ProgComboBox->currentItem()]);
 
@@ -608,7 +624,7 @@ void qtractorTrackForm::bankChanged ( int iBankIndex )
 
 
 // Make changes due to MIDI program.
-void qtractorTrackForm::progChanged( int iProgIndex )
+void qtractorTrackForm::progChanged ( int iProgIndex )
 {
 	if (m_iDirtySetup > 0)
 		return;
@@ -624,7 +640,7 @@ void qtractorTrackForm::progChanged( int iProgIndex )
 		int iProg = m_progs[iProgIndex];
 		// Patch it directly...
 		pMidiBus->setPatch(iChannel,
-			sInstrumentName, iBank, iProg, iBankSelMethod);
+			sInstrumentName, iBankSelMethod, iBank, iProg);
 	}
 	
 	// Flag that it changed anyhow!
