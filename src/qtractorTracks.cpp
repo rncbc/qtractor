@@ -697,7 +697,7 @@ void qtractorTracks::updateMidiTrack ( qtractorTrack *pMidiTrack )
 		return;
 
 	qtractorMidiBus *pMidiBus
-		= static_cast<qtractorMidiBus *> (pMidiEngine->findBus(sBusName));
+		= static_cast<qtractorMidiBus *> (pMidiTrack->bus());
 	if (pMidiBus == NULL)
 		return;
 

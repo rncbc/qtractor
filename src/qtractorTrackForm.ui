@@ -613,6 +613,12 @@
     <variable access="private">QMap &lt; int, int &gt; m_progs;</variable>
 	<variable access="private">int m_iDirtySetup;</variable>
     <variable access="private">int m_iDirtyCount;</variable>
+    <variable access="private">qtractorMidiBus *m_pOldMidiBus</variable>
+    <variable access="private">int m_iOldChannel</variable>
+    <variable access="private">QString m_sOldInstrumentName</variable>
+    <variable access="private">int m_iOldBankSelMethod</variable>
+    <variable access="private">int m_iOldBank</variable>
+    <variable access="private">int m_iOldProg</variable>
 </variables>
 <slots>
     <slot specifier="non virtual">accept()</slot>

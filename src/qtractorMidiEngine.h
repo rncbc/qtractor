@@ -111,6 +111,9 @@ public:
 	bool open();
 	void close();
 
+	// Shut-off everything out there.
+	void shutOff() const;
+
 	// Channel map payload.
 	struct Patch
 	{
@@ -125,11 +128,15 @@ public:
 
 	// Channel patch map accessor.
 	Patch& patch(unsigned short iChannel)
-		{ return m_map[iChannel & 0x0f]; }
+		{ return m_patches[iChannel & 0x0f]; }
 
 	// Direct MIDI bank/program selection helper.
 	void setPatch(unsigned short iChannel, const QString& sInstrumentName,
 		int iBankSelMethod, int iBank, int iProg);
+
+	// Direct MIDI controller helper.
+	void setController(unsigned short iChannel,
+		int iController, int iValue = 0) const;
 
 	// Document element methods.
 	bool loadElement(qtractorSessionDocument *pDocument,
@@ -142,8 +149,8 @@ private:
 	// Instance variables.
 	int m_iAlsaPort;
 
-	// Channel mapper.
-	QMap<int, Patch> m_map;
+	// Channel patch mapper.
+	QMap<unsigned short, Patch> m_patches;
 };
 
 

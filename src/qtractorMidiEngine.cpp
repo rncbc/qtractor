@@ -31,6 +31,14 @@
 #include <qthread.h>
 
 
+// Specific controller definitions
+#define BANK_SELECT_MSB		0x00
+#define BANK_SELECT_LSB		0x20
+#define ALL_SOUND_OFF		0x78
+#define ALL_CONTROLLERS_OFF	0x79
+#define ALL_NOTES_OFF		0x7b
+
+
 //----------------------------------------------------------------------
 // class qtractorMidiOutputThread -- MIDI output thread (singleton).
 //
@@ -505,6 +513,15 @@ void qtractorMidiEngine::stop (void)
 	snd_seq_drop_output(m_pAlsaSeq);
 	// Stop queue timer...
 	snd_seq_stop_queue(m_pAlsaSeq, m_iAlsaQueue, NULL);
+
+	// Shut-off all MIDI busses...
+	for (qtractorBus *pBus = qtractorEngine::busses().first();
+			pBus; pBus = pBus->next()) {
+		qtractorMidiBus *pMidiBus
+			= static_cast<qtractorMidiBus *> (pBus);
+		if (pMidiBus)
+		    pMidiBus->shutOff();
+	}
 }
 
 
@@ -567,6 +584,11 @@ void qtractorMidiEngine::trackMute ( qtractorTrack *pTrack, bool bMute )
 			| SND_SEQ_REMOVE_DEST_CHANNEL | SND_SEQ_REMOVE_IGNORE_OFF
 			| SND_SEQ_REMOVE_TAG_MATCH);
 		snd_seq_remove_events(m_pAlsaSeq, pre);
+		// Immediate all current notes off.
+		qtractorMidiBus *pMidiBus
+		    = static_cast<qtractorMidiBus *> (pTrack->bus());
+		if (pMidiBus)
+		    pMidiBus->setController(pTrack->midiChannel(), ALL_NOTES_OFF);
 		// Done mute.
 	} else {
 		// Must redirect to MIDI ouput thread:
@@ -622,13 +644,13 @@ bool qtractorMidiEngine::loadElement ( qtractorSessionDocument *pDocument,
 bool qtractorMidiEngine::saveElement ( qtractorSessionDocument *pDocument,
 	QDomElement *pElement )
 {
-	// Save audio busses...
+	// Save MIDI busses...
 	for (qtractorBus *pBus = qtractorEngine::busses().first();
 			pBus; pBus = pBus->next()) {
 		qtractorMidiBus *pMidiBus
 			= static_cast<qtractorMidiBus *> (pBus);
 		if (pMidiBus) {
-			// Create the new audio bus element...
+			// Create the new MIDI bus element...
 			QDomElement eMidiBus
 				= pDocument->document()->createElement("midi-bus");
 			eMidiBus.setAttribute("name",
@@ -700,6 +722,31 @@ bool qtractorMidiBus::open (void)
 void qtractorMidiBus::close (void)
 {
 	// WTF?...
+	shutOff();
+}
+
+
+// Shut-off everything out there.
+void qtractorMidiBus::shutOff (void) const
+{
+	qtractorMidiEngine *pMidiEngine
+		= static_cast<qtractorMidiEngine *> (engine());
+	if (pMidiEngine == NULL)
+		return;
+	if (pMidiEngine->alsaSeq() == NULL)
+		return;
+
+#ifdef CONFIG_DEBUG
+	fprintf(stderr, "qtractorMidiBus::shutOff()\n");
+#endif
+
+	QMap<unsigned short, Patch>::ConstIterator iter;
+	for (iter = m_patches.begin(); iter != m_patches.end(); ++iter) {
+		unsigned short iChannel = iter.key();
+		setController(iChannel, ALL_SOUND_OFF);
+		setController(iChannel, ALL_NOTES_OFF);
+		setController(iChannel, ALL_CONTROLLERS_OFF);
+	}
 }
 
 
@@ -720,7 +767,7 @@ void qtractorMidiBus::setPatch ( unsigned short iChannel,
 
 	// Update patch mapping...
 	if (!sInstrumentName.isEmpty()) {
-		Patch& patch = m_map[iChannel & 0x0f];
+		Patch& patch = m_patches[iChannel & 0x0f];
 		patch.instrumentName = sInstrumentName;
 		patch.bankSelMethod  = iBankSelMethod;
 		patch.bank = iBank;
@@ -747,7 +794,7 @@ void qtractorMidiBus::setPatch ( unsigned short iChannel,
 	if (iBank >= 0 && (iBankSelMethod == 0 || iBankSelMethod == 1)) {
 		ev.type = SND_SEQ_EVENT_CONTROLLER;
 		ev.data.control.channel = iChannel;
-		ev.data.control.param   = 0x00;		// Select Bank MSB.
+		ev.data.control.param   = BANK_SELECT_MSB;
 		ev.data.control.value   = (iBank & 0x3f80) >> 7;
 		snd_seq_event_output(pMidiEngine->alsaSeq(), &ev);
 	}
@@ -756,7 +803,7 @@ void qtractorMidiBus::setPatch ( unsigned short iChannel,
 	if (iBank >= 0 && (iBankSelMethod == 0 || iBankSelMethod == 2)) {
 		ev.type = SND_SEQ_EVENT_CONTROLLER;
 		ev.data.control.channel = iChannel;
-		ev.data.control.param   = 0x20;		// Select Bank LSB.
+		ev.data.control.param   = BANK_SELECT_LSB;
 		ev.data.control.value   = (iBank & 0x007f);
 		snd_seq_event_output(pMidiEngine->alsaSeq(), &ev);
 	}
@@ -771,11 +818,53 @@ void qtractorMidiBus::setPatch ( unsigned short iChannel,
 }
 
 
+// Direct MIDI controller helper.
+void qtractorMidiBus::setController ( unsigned short iChannel,
+	int iController, int iValue ) const
+{
+	// We always need our MIDI engine reference...
+	qtractorMidiEngine *pMidiEngine
+		= static_cast<qtractorMidiEngine *> (engine());
+	if (pMidiEngine == NULL)
+		return;
+
+#ifdef CONFIG_DEBUG
+	fprintf(stderr, "qtractorMidiBus::setController(%d, %d, %d)\n",
+		iChannel, iController, iValue );
+#endif
+
+	// Don't do anything else if engine
+	// has not been activated...
+	if (pMidiEngine->alsaSeq() == NULL)
+		return;
+
+	// Initialize sequencer event...
+	snd_seq_event_t ev;
+	snd_seq_ev_clear(&ev);
+
+	// Addressing...
+	snd_seq_ev_set_source(&ev, m_iAlsaPort);
+	snd_seq_ev_set_subs(&ev);
+
+	// The event will be direct...
+	snd_seq_ev_set_direct(&ev);
+
+	// Set controller parameters...
+	ev.type = SND_SEQ_EVENT_CONTROLLER;
+	ev.data.control.channel = iChannel;
+	ev.data.control.param   = iController;
+	ev.data.control.value   = iValue;
+	snd_seq_event_output(pMidiEngine->alsaSeq(), &ev);
+
+	pMidiEngine->flush();
+}
+
+
 // Document element methods.
 bool qtractorMidiBus::loadElement ( qtractorSessionDocument * /* pDocument */,
 	QDomElement *pElement )
 {
-	m_map.clear();
+	m_patches.clear();
 
 	// Load map items...
 	for (QDomNode nChild = pElement->firstChild();
@@ -790,7 +879,7 @@ bool qtractorMidiBus::loadElement ( qtractorSessionDocument * /* pDocument */,
 		// Load (other) track properties..
 		if (eChild.tagName() == "midi-patch") {
 			unsigned short iChannel = eChild.attribute("channel").toUShort();
-			Patch& patch = m_map[iChannel & 0x0f];
+			Patch& patch = m_patches[iChannel & 0x0f];
 			for (QDomNode nPatch = eChild.firstChild();
 					!nPatch.isNull();
 						nPatch = nPatch.nextSibling()) {
@@ -822,8 +911,8 @@ bool qtractorMidiBus::saveElement ( qtractorSessionDocument *pDocument,
 	QDomElement *pElement )
 {
 	// Save map items...
-	QMap<int, Patch>::Iterator iter;
-	for (iter = m_map.begin(); iter != m_map.end(); ++iter) {
+	QMap<unsigned short, Patch>::Iterator iter;
+	for (iter = m_patches.begin(); iter != m_patches.end(); ++iter) {
 		const Patch& patch = iter.data();
 		QDomElement ePatch = pDocument->document()->createElement("midi-patch");
 		ePatch.setAttribute("channel", QString::number(iter.key()));

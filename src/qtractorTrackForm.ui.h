@@ -109,6 +109,14 @@ void qtractorTrackForm::init (void)
 			new qtractorColorItem(color));
 	}
 
+	// To save and keep bus/channel patching consistency.
+    m_pOldMidiBus = NULL;
+    m_iOldChannel = -1;
+    m_sOldInstrumentName = QString::null;
+    m_iOldBankSelMethod  = -1;
+    m_iOldBank = -1;
+    m_iOldProg = -1;
+
 	// Initialize dirty control state.
 	m_iDirtySetup = 0;
 	m_iDirtyCount = 0;
@@ -262,8 +270,14 @@ void qtractorTrackForm::reject (void)
 		}
 	}
 
-	if (bReject)
+	if (bReject) {
+		// Try to restore the previously saved patch...
+		if (m_pOldMidiBus) {
+			m_pOldMidiBus->setPatch(m_iOldChannel, m_sOldInstrumentName,
+				m_iOldBankSelMethod, m_iOldBank, m_iOldProg);
+		}
 		QDialog::reject();
+	}
 }
 
 
@@ -554,6 +568,19 @@ void qtractorTrackForm::trackTypeChanged ( int iTrackType )
 	if (m_iDirtySetup > 0)
 		return;
 
+	if (m_pOldMidiBus) {
+		// Restore previously current/saved patch...
+		m_pOldMidiBus->setPatch(m_iOldChannel, m_sOldInstrumentName,
+			m_iOldBankSelMethod, m_iOldBank, m_iOldProg);
+		// Reset restorable patch reference...
+		m_pOldMidiBus = NULL;
+		m_iOldChannel = -1;
+		m_sOldInstrumentName = QString::null;
+		m_iOldBankSelMethod = -1;
+		m_iOldBank = -1;
+		m_iOldProg = -1;
+	}
+
 	updateTrackType(iTrackType);
 	busNameChanged(BusNameComboBox->currentText());
 }
@@ -638,9 +665,27 @@ void qtractorTrackForm::progChanged ( int iProgIndex )
 		int iBankSelMethod = BankSelMethodComboBox->currentItem();
 		int iBank = m_banks[BankComboBox->currentItem()];
 		int iProg = m_progs[iProgIndex];
+		// Keep old bus/channel patching consistency.
+		if (pMidiBus != m_pOldMidiBus || iChannel != m_iOldChannel) {
+			// Restore previously saved patch...
+			if (m_pOldMidiBus) {
+				m_pOldMidiBus->setPatch(m_iOldChannel, m_sOldInstrumentName,
+					m_iOldBankSelMethod, m_iOldBank, m_iOldProg);
+			}
+			// Save current channel patch...
+			const qtractorMidiBus::Patch& patch = pMidiBus->patch(iChannel);
+			if (!patch.instrumentName.isEmpty()) {
+				m_pOldMidiBus = pMidiBus;
+				m_iOldChannel = iChannel;
+				m_sOldInstrumentName = patch.instrumentName;
+				m_iOldBankSelMethod  = patch.bankSelMethod;
+				m_iOldBank = patch.bank;
+				m_iOldProg = patch.prog;
+			}
+		}
 		// Patch it directly...
-		pMidiBus->setPatch(iChannel,
-			sInstrumentName, iBankSelMethod, iBank, iProg);
+		pMidiBus->setPatch(iChannel, sInstrumentName,
+			iBankSelMethod, iBank, iProg);
 	}
 	
 	// Flag that it changed anyhow!
