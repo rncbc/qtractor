@@ -594,12 +594,15 @@ bool qtractorMainForm::closeSession (void)
 
 	// If we may close it, dot it.
 	if (bClose) {
-		// Surely this will be deleted next...
-		m_pTracks = NULL;
+		// Just in case we were in the middle of something...
+		if (m_pSession->isPlaying())
+			transportPlay(); // Toggle!
 		// Reset session to default.
 		m_pCommands->clear();
 		m_pSession->close();
 		m_pFiles->clear();
+		// Surely this will be deleted next...
+		m_pTracks = NULL;
 		// Reset playhead.
 		m_iPlayHead = 0;
 		// Remove all channel strips from sight...
@@ -1120,21 +1123,22 @@ void qtractorMainForm::transportBackward (void)
 
 
 // Transport play.
-void qtractorMainForm::transportPlay ( bool bPlaying )
+void qtractorMainForm::transportPlay (void)
 {
 #ifdef CONFIG_DEBUG
-	appendMessages("qtractorMainForm::transportPlay(" + QString::number((int) bPlaying) + ")");
+	appendMessages("qtractorMainForm::transportPlay()");
 #endif
 
 	// In case of starting playback, send now
 	// all tracks MIDI bank select/program changes...
+	bool bPlaying = !m_pSession->isPlaying();
 	if (bPlaying)
 		m_pSession->setMidiPatch(m_pInstruments);
 	// Toggle engine play status...
 	m_pSession->setPlaying(bPlaying);
 	// Have some effective feedback...
 	transportPlayAction->setIconSet(
-		QIconSet(QPixmap::fromMimeSource(m_pSession->isPlaying() ?
+		QIconSet(QPixmap::fromMimeSource(bPlaying ?
 		"transportPause.png" : "transportPlay.png")));
 
 	stabilizeForm();

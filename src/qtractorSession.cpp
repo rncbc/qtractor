@@ -668,7 +668,7 @@ void qtractorSession::trackSolo ( qtractorTrack *pTrack, bool bSolo )
 			pTrackMute; pTrackMute = pTrackMute->next()) {
 		// For all other track, but this one.
 		if (pTrack == pTrackMute || pTrackMute->isMute())
-		    continue;
+			continue;
 		// (Un)mute each other track...
 		trackMute(pTrackMute, bSolo);
 	}
@@ -715,7 +715,7 @@ void qtractorSession::releaseMidiTag ( qtractorTrack *pTrack )
 void qtractorSession::setMidiPatch ( qtractorInstrumentList *pInstruments )
 {
 	for (qtractorTrack *pTrack = m_tracks.first();
-	        pTrack; pTrack = pTrack->next()) {
+			pTrack; pTrack = pTrack->next()) {
 		if (pTrack->trackType() == qtractorTrack::Midi)
 			pTrack->setMidiPatch(pInstruments);
 	}

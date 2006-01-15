@@ -128,7 +128,7 @@ qtractorBus *qtractorEngine::findBus ( const QString& sBusName )
 // Device engine activation method.
 bool qtractorEngine::open ( const QString& sClientName )
 {
-	close();
+//	close();
 
 	// Damn it.
 	if (m_pSession == NULL)
@@ -175,14 +175,14 @@ void qtractorEngine::close (void)
 	// We're stopping now...
 	m_bActivated = false;
 
-	// Deactivate the derived engine first.
-	if (bActivated)
+	if (bActivated) {
+		// Deactivate the derived engine first.
 		deactivate();
-
-	// Close all dependant busses...
-	for (qtractorBus *pBus = m_busses.first();
-			pBus; pBus = pBus->next()) {
-		pBus->close();
+		// Close all dependant busses...
+		for (qtractorBus *pBus = m_busses.first();
+				pBus; pBus = pBus->next()) {
+			pBus->close();
+		}
 	}
 
 	// Get rid of our session cursor.
@@ -199,9 +199,11 @@ void qtractorEngine::close (void)
 // Engine state methods.
 void qtractorEngine::setPlaying ( bool bPlaying )
 {
-	if (bPlaying) {
+	if (bPlaying && !m_bPlaying) {
 		m_bPlaying = start();
-	} else {
+	}
+	else
+	if (!bPlaying && m_bPlaying) {
 		m_bPlaying = false;
 		stop();
 	}

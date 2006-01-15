@@ -414,7 +414,7 @@
             <string>Paste clipboard contents</string>
         </property>
         <property name="accel">
-            <string>Ctrl+P</string>
+            <string>Ctrl+V</string>
         </property>
     </action>
     <action>
@@ -897,7 +897,7 @@
             <cstring>transportPlayAction</cstring>
         </property>
         <property name="toggleAction">
-            <bool>true</bool>
+            <bool>false</bool>
         </property>
         <property name="iconSet">
             <iconset>transportPlay.png</iconset>
@@ -1165,9 +1165,9 @@
     </connection>
     <connection>
         <sender>transportPlayAction</sender>
-        <signal>toggled(bool)</signal>
+        <signal>activated()</signal>
         <receiver>qtractorMainForm</receiver>
-        <slot>transportPlay(bool)</slot>
+        <slot>transportPlay()</slot>
     </connection>
     <connection>
         <sender>transportForwardAction</sender>
@@ -1256,7 +1256,7 @@
     <slot specifier="non virtual">viewOptions( void )</slot>
     <slot specifier="non virtual">transportRewind( void )</slot>
     <slot specifier="non virtual">transportBackward( void )</slot>
-    <slot specifier="non virtual">transportPlay( bool bPlaying )</slot>
+    <slot specifier="non virtual">transportPlay( void )</slot>
     <slot specifier="non virtual">transportForward( void )</slot>
     <slot specifier="non virtual">helpAboutQt( void )</slot>
     <slot specifier="non virtual">helpAbout( void )</slot>

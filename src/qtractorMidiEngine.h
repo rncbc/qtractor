@@ -112,7 +112,7 @@ public:
 	void close();
 
 	// Shut-off everything out there.
-	void shutOff() const;
+	void shutOff(bool bClose = false) const;
 
 	// Channel map payload.
 	struct Patch

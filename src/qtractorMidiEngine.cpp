@@ -520,7 +520,7 @@ void qtractorMidiEngine::stop (void)
 		qtractorMidiBus *pMidiBus
 			= static_cast<qtractorMidiBus *> (pBus);
 		if (pMidiBus)
-		    pMidiBus->shutOff();
+			pMidiBus->shutOff();
 	}
 }
 
@@ -586,9 +586,9 @@ void qtractorMidiEngine::trackMute ( qtractorTrack *pTrack, bool bMute )
 		snd_seq_remove_events(m_pAlsaSeq, pre);
 		// Immediate all current notes off.
 		qtractorMidiBus *pMidiBus
-		    = static_cast<qtractorMidiBus *> (pTrack->bus());
+			= static_cast<qtractorMidiBus *> (pTrack->bus());
 		if (pMidiBus)
-		    pMidiBus->setController(pTrack->midiChannel(), ALL_NOTES_OFF);
+			pMidiBus->setController(pTrack->midiChannel(), ALL_NOTES_OFF);
 		// Done mute.
 	} else {
 		// Must redirect to MIDI ouput thread:
@@ -693,7 +693,7 @@ int qtractorMidiBus::alsaPort (void) const
 // Register and pre-allocate bus port buffers.
 bool qtractorMidiBus::open (void)
 {
-	close();
+//	close();
 
 	qtractorMidiEngine *pMidiEngine
 		= static_cast<qtractorMidiEngine *> (engine());
@@ -721,13 +721,12 @@ bool qtractorMidiBus::open (void)
 // Unregister and post-free bus port buffers.
 void qtractorMidiBus::close (void)
 {
-	// WTF?...
-	shutOff();
+	shutOff(true);
 }
 
 
 // Shut-off everything out there.
-void qtractorMidiBus::shutOff (void) const
+void qtractorMidiBus::shutOff ( bool bClose ) const
 {
 	qtractorMidiEngine *pMidiEngine
 		= static_cast<qtractorMidiEngine *> (engine());
@@ -737,7 +736,7 @@ void qtractorMidiBus::shutOff (void) const
 		return;
 
 #ifdef CONFIG_DEBUG
-	fprintf(stderr, "qtractorMidiBus::shutOff()\n");
+	fprintf(stderr, "qtractorMidiBus::shutOff(bClose=%d)\n", (int) bClose);
 #endif
 
 	QMap<unsigned short, Patch>::ConstIterator iter;
@@ -745,7 +744,8 @@ void qtractorMidiBus::shutOff (void) const
 		unsigned short iChannel = iter.key();
 		setController(iChannel, ALL_SOUND_OFF);
 		setController(iChannel, ALL_NOTES_OFF);
-		setController(iChannel, ALL_CONTROLLERS_OFF);
+		if (bClose)
+			setController(iChannel, ALL_CONTROLLERS_OFF);
 	}
 }
 
