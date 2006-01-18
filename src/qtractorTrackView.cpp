@@ -1200,7 +1200,7 @@ void qtractorTrackView::showClipSelect ( const QRect& rectDrag, int dx,
 	}
 }
 
-void qtractorTrackView::hideClipSelect ( const QRect& rectDrag, int dx ) const
+void qtractorTrackView::hideClipSelect ( const QRect& rectDrag, int dx )
 {
 	bool bSingleTrack = (m_pClipSelect->singleTrack() != NULL);
 	qtractorClipSelect::Item *pClipItem
@@ -1244,7 +1244,7 @@ void qtractorTrackView::showDragRect ( const QRect& rectDrag, int dx,
 	}
 }
 
-void qtractorTrackView::hideDragRect ( const QRect& rectDrag, int dx ) const
+void qtractorTrackView::hideDragRect ( const QRect& rectDrag, int dx )
 {
 	QRect rect(rectDrag.normalize());
 
