@@ -161,12 +161,14 @@ protected:
 	void selectDragRect(const QRect& rectDrag, bool bReset = false);
 
 	// Draw/hide the whole current clip selection.
-	void drawClipSelect(const QRect& rectDrag, int dx,
+	void showClipSelect(const QRect& rectDrag, int dx,
 		int iThickness = 3) const;
+	void hideClipSelect(const QRect& rectDrag, int dx) const;
 
 	// Draw/hide the current clip selection.
-	void drawDragRect(const QRect& rectDrag, int dx,
+	void showDragRect(const QRect& rectDrag, int dx,
 		int iThickness = 3) const;
+	void hideDragRect(const QRect& rectDrag, int dx) const;
 
 	// Reset drag/select/move state.
 	void resetDragState();

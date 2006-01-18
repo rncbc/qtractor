@@ -227,10 +227,10 @@ void qtractorTrackView::updateContents ( const QRect& rect )
 	updatePixmap(QScrollView::contentsX(), QScrollView::contentsY());
 	if (m_dragState == DragMove) {
 		QScrollView::repaintContents();
-		drawClipSelect(m_rectDrag, m_iDraggingX);	// Show.
+		showClipSelect(m_rectDrag, m_iDraggingX);
 	} else if (m_dragState == DragDrop && m_rectDrag.intersects(rect)) {
 		QScrollView::repaintContents(m_rectDrag.unite(rect));
-		drawDragRect(m_rectDrag, m_iDraggingX);	// Show.
+		showDragRect(m_rectDrag, m_iDraggingX);
 	} else {
 		QScrollView::updateContents(rect);
 	}
@@ -243,10 +243,10 @@ void qtractorTrackView::updateContents (void)
 	updatePixmap(QScrollView::contentsX(), QScrollView::contentsY());
 	if (m_dragState == DragMove) {
 		QScrollView::repaintContents();
-		drawClipSelect(m_rectDrag, m_iDraggingX);	// Show.
+		showClipSelect(m_rectDrag, m_iDraggingX);
 	} else if (m_dragState == DragDrop) {
 		QScrollView::repaintContents();
-		drawDragRect(m_rectDrag, m_iDraggingX);		// Show.
+		showDragRect(m_rectDrag, m_iDraggingX);
 	} else {
 		QScrollView::updateContents();
 	}
@@ -531,28 +531,33 @@ bool qtractorTrackView::clipInfo ( qtractorClip *pClip,
 // Selection-dragging, following the current mouse position.
 qtractorTrack *qtractorTrackView::dragMoveTrack ( const QPoint& pos )
 {
+	// Which track we're pointing at?
 	qtractorTrackViewInfo tvi;
 	qtractorTrack *pTrack = trackAt(pos, &tvi);
-	if (pTrack) {
-		drawClipSelect(m_rectDrag, m_iDraggingX);	// Hide.
-		// May change vertically, if we've only one track selected,
-		// and only between same track type...
-		qtractorTrack *pSingleTrack = m_pClipSelect->singleTrack();
-		if (pSingleTrack
-			&& pSingleTrack->trackType() == pTrack->trackType()) {
-			m_rectDrag.setY(tvi.trackRect.y() + 1);
-			m_rectDrag.setHeight(tvi.trackRect.height() - 2);
-		}
-		// Always change horizontally wise...
-		int  x = m_rectDrag.x();
-		int dx = (pos.x() - m_posDrag.x());
-		if (x + dx < 0)
-			dx = -(x);	// Force to origin (x=0).
-		m_iDraggingX = (m_pTracks->session()->pixelSnap(x + dx) - x);
-		QScrollView::ensureVisible(pos.x(), pos.y(), 8, 8);
-		drawClipSelect(m_rectDrag, m_iDraggingX);	// Show.
-	}
+	if (pTrack == NULL)
+	    return NULL;
 
+	hideClipSelect(m_rectDrag, m_iDraggingX);
+
+	// May change vertically, if we've only one track selected,
+	// and only between same track type...
+	qtractorTrack *pSingleTrack = m_pClipSelect->singleTrack();
+	if (pSingleTrack
+		&& pSingleTrack->trackType() == pTrack->trackType()) {
+		m_rectDrag.setY(tvi.trackRect.y() + 1);
+		m_rectDrag.setHeight(tvi.trackRect.height() - 2);
+	}
+	// Always change horizontally wise...
+	int  x = m_rectDrag.x();
+	int dx = (pos.x() - m_posDrag.x());
+	if (x + dx < 0)
+		dx = -(x);	// Force to origin (x=0).
+	m_iDraggingX = (m_pTracks->session()->pixelSnap(x + dx) - x);
+	QScrollView::ensureVisible(pos.x(), pos.y(), 8, 8);
+
+	showClipSelect(m_rectDrag, m_iDraggingX);
+
+	// OK, we've move it...
 	return pTrack;
 }
 
@@ -566,6 +571,8 @@ qtractorTrack *qtractorTrackView::dragDropTrack ( QDropEvent *pDropEvent )
 	qtractorTrack *pTrack = NULL;
 
 	if (!m_dropItems.isEmpty()) {
+		hideDragRect(m_rectDrag, m_iDraggingX);
+		// Which track we're pointing at?
 		qtractorTrackViewInfo tvi;
 		pTrack = trackAt(pos, &tvi);
 		if (pTrack == NULL)
@@ -573,7 +580,6 @@ qtractorTrack *qtractorTrackView::dragDropTrack ( QDropEvent *pDropEvent )
 		// Must be of same type...
 		if (pTrack->trackType() != m_dropType)
 			return NULL;
-		drawDragRect(m_rectDrag, m_iDraggingX);	// Hide.
 		// Adjust vertically to target track...
 		m_rectDrag.setY(tvi.trackRect.y() + 1);
 		m_rectDrag.setHeight(tvi.trackRect.height() - 2);
@@ -584,7 +590,7 @@ qtractorTrack *qtractorTrackView::dragDropTrack ( QDropEvent *pDropEvent )
 			dx = -(x);	// Force to origin (x=0).
 		m_iDraggingX = (m_pTracks->session()->pixelSnap(x + dx) - x);
 		QScrollView::ensureVisible(pos.x(), pos.y(), 8, 8);
-		drawDragRect(m_rectDrag, m_iDraggingX);	// Show.
+		showDragRect(m_rectDrag, m_iDraggingX);
 		// OK, we've move it...
 		return pTrack;
 	}
@@ -702,7 +708,7 @@ qtractorTrack *qtractorTrackView::dragDropTrack ( QDropEvent *pDropEvent )
 	// We can draw initial preview rectangle...
 	m_dragState = DragDrop;
 	m_iDraggingX = 0;
-	drawDragRect(m_rectDrag, m_iDraggingX);	// Show.
+	showDragRect(m_rectDrag, m_iDraggingX);
 	// Done.
 	return pTrack;
 }
@@ -887,10 +893,10 @@ void qtractorTrackView::contentsMouseMoveEvent ( QMouseEvent *pMouseEvent )
 		dragMoveTrack(pos);
 		break;
 	case DragSelect:
-		drawDragRect(m_rectDrag, 0, 1);	// Hide.
+		hideDragRect(m_rectDrag, 0);
 		m_rectDrag.setBottomRight(pos);
 		QScrollView::ensureVisible(pos.x(), pos.y(), 8, 8);
-		drawDragRect(m_rectDrag, 0, 1);	// Show.
+		showDragRect(m_rectDrag, 0, 1);
 		break;
 	case DragStart:
 		if ((m_posDrag - pos).manhattanLength()
@@ -901,14 +907,14 @@ void qtractorTrackView::contentsMouseMoveEvent ( QMouseEvent *pMouseEvent )
 				m_iDraggingX = (x - m_rectDrag.x());
 				m_dragState = DragMove;
 				QScrollView::setCursor(QCursor(Qt::SizeAllCursor));
-				drawClipSelect(m_rectDrag, m_iDraggingX);	// Show.
+				showClipSelect(m_rectDrag, m_iDraggingX);
 			} else {
 				// We'll start rubber banding...
 				m_rectDrag.setTopLeft(m_posDrag);
 				m_rectDrag.setBottomRight(pos);
 				m_dragState = DragSelect;
 				QScrollView::setCursor(QCursor(Qt::CrossCursor));
-				drawDragRect(m_rectDrag, 0, 1);	// Show.
+				showDragRect(m_rectDrag, 0, 1);
 			}
 		}
 		// Fall thru...
@@ -1177,7 +1183,7 @@ void qtractorTrackView::selectAll ( bool bSelect )
 
 
 // Draw/hide the whole current clip selection.
-void qtractorTrackView::drawClipSelect ( const QRect& rectDrag, int dx,
+void qtractorTrackView::showClipSelect ( const QRect& rectDrag, int dx,
 	int iThickness ) const
 {
 	bool bSingleTrack = (m_pClipSelect->singleTrack() != NULL);
@@ -1189,14 +1195,30 @@ void qtractorTrackView::drawClipSelect ( const QRect& rectDrag, int dx,
 			rectClip.setY(rectDrag.y());
 			rectClip.setHeight(rectDrag.height());
 		}
-		drawDragRect(rectClip, dx, iThickness);
+		showDragRect(rectClip, dx, iThickness);
+		pClipItem = m_pClipSelect->clips().next();
+	}
+}
+
+void qtractorTrackView::hideClipSelect ( const QRect& rectDrag, int dx ) const
+{
+	bool bSingleTrack = (m_pClipSelect->singleTrack() != NULL);
+	qtractorClipSelect::Item *pClipItem
+		= m_pClipSelect->clips().first();
+	while (pClipItem) {
+		QRect rectClip(pClipItem->rectClip);
+		if (bSingleTrack) {
+			rectClip.setY(rectDrag.y());
+			rectClip.setHeight(rectDrag.height());
+		}
+		hideDragRect(rectClip, dx);
 		pClipItem = m_pClipSelect->clips().next();
 	}
 }
 
 
 // Draw/hide the current clip selection.
-void qtractorTrackView::drawDragRect ( const QRect& rectDrag, int dx,
+void qtractorTrackView::showDragRect ( const QRect& rectDrag, int dx,
 	int iThickness ) const
 {
 	QPainter p(QScrollView::viewport());
@@ -1222,14 +1244,22 @@ void qtractorTrackView::drawDragRect ( const QRect& rectDrag, int dx,
 	}
 }
 
+void qtractorTrackView::hideDragRect ( const QRect& rectDrag, int dx ) const
+{
+	QRect rect(rectDrag.normalize());
+
+	// Horizontal adjust...
+	rect.moveBy(dx, 0);
+	QScrollView::repaintContents(rect);
+}
+
 
 // Reset drag/select/move state.
 void qtractorTrackView::resetDragState (void)
 {
 	// Cancel any dragging out there...
 	if (m_dragState == DragDrop) {
-		drawDragRect(m_rectDrag, m_iDraggingX, 1);	// Hide.
-		QScrollView::updateContents(m_rectDrag.normalize());
+		hideDragRect(m_rectDrag, m_iDraggingX);
 	} else if (m_dragState == DragSelect || m_dragState == DragMove) {
 		QScrollView::updateContents();
 	}
