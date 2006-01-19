@@ -1,7 +1,7 @@
 // qtractorOptions.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2006, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -57,6 +57,11 @@ qtractorOptions::qtractorOptions (void)
 	bEditToolbar    = m_settings.readBoolEntry("/EditToolbar", true);
 	bTrackToolbar   = m_settings.readBoolEntry("/TrackToolbar", true);
 	bTransportToolbar = m_settings.readBoolEntry("/TransportToolbar", true);
+	m_settings.endGroup();
+
+	// Transport options group.
+	m_settings.beginGroup("/Transport");
+	bFollowPlayhead = m_settings.readBoolEntry("/FollowPlayhead", true);
 	m_settings.endGroup();
 
 	m_settings.endGroup(); // Options group.
@@ -132,6 +137,11 @@ qtractorOptions::~qtractorOptions (void)
 	m_settings.writeEntry("/EditToolbar", bEditToolbar);
 	m_settings.writeEntry("/TrackToolbar", bTrackToolbar);
 	m_settings.writeEntry("/TransportToolbar", bTransportToolbar);
+	m_settings.endGroup();
+
+	// Transport options group.
+	m_settings.beginGroup("/Transport");
+	m_settings.writeEntry("/FollowPlayhead", bFollowPlayhead);
 	m_settings.endGroup();
 
 	m_settings.endGroup(); // Options group.

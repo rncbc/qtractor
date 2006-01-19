@@ -118,6 +118,8 @@
         <action name="transportBackwardAction"/>
         <action name="transportPlayAction"/>
         <action name="transportForwardAction"/>
+        <separator/>
+        <action name="transportFollowAction"/>
     </item>
     <separator/>
     <item text="&amp;Help" name="helpMenu">
@@ -176,6 +178,8 @@
         <action name="transportBackwardAction"/>
         <action name="transportPlayAction"/>
         <action name="transportForwardAction"/>
+        <separator/>
+        <action name="transportFollowAction"/>
     </toolbar>
 </toolbars>
 <actions>
@@ -937,6 +941,29 @@
     </action>
     <action>
         <property name="name">
+            <cstring>transportFollowAction</cstring>
+        </property>
+        <property name="toggleAction">
+            <bool>true</bool>
+        </property>
+        <property name="iconSet">
+            <iconset>transportFollow.png</iconset>
+        </property>
+        <property name="text">
+            <string>Follow playhead</string>
+        </property>
+        <property name="menuText">
+            <string>F&amp;ollow playhead</string>
+        </property>
+        <property name="statusTip">
+            <string>Follow playhead</string>
+        </property>
+        <property name="accel">
+            <string></string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
             <cstring>helpAboutAction</cstring>
         </property>
         <property name="text">
@@ -1176,6 +1203,12 @@
         <slot>transportForward()</slot>
     </connection>
     <connection>
+        <sender>transportFollowAction</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>qtractorMainForm</receiver>
+        <slot>transportFollow(bool)</slot>
+    </connection>
+    <connection>
         <sender>helpAboutAction</sender>
         <signal>activated()</signal>
         <receiver>qtractorMainForm</receiver>
@@ -1258,6 +1291,7 @@
     <slot specifier="non virtual">transportBackward( void )</slot>
     <slot specifier="non virtual">transportPlay( void )</slot>
     <slot specifier="non virtual">transportForward( void )</slot>
+    <slot specifier="non virtual">transportFollow( bool bOn )</slot>
     <slot specifier="non virtual">helpAboutQt( void )</slot>
     <slot specifier="non virtual">helpAbout( void )</slot>
     <slot specifier="non virtual">stabilizeForm( void )</slot>

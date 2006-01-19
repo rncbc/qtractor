@@ -250,6 +250,8 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 	viewToolbarTrackAction->setOn(m_pOptions->bTrackToolbar);
 	viewToolbarTransportAction->setOn(m_pOptions->bTransportToolbar);
 
+	transportFollowAction->setOn(m_pOptions->bFollowPlayhead);
+
 	// Initial decorations visibility state.
 	viewMenubar(m_pOptions->bMenubar);
 	viewStatusbar(m_pOptions->bStatusbar);
@@ -330,6 +332,7 @@ bool qtractorMainForm::queryClose (void)
 			m_pOptions->bEditToolbar = editToolbar->isVisible();
 			m_pOptions->bTrackToolbar = trackToolbar->isVisible();
 			m_pOptions->bTransportToolbar = transportToolbar->isVisible();
+			m_pOptions->bFollowPlayhead = transportFollowAction->isOn();
 			// Save instrument definition file list...
 			m_pOptions->instrumentFiles = m_pInstruments->files();
 			// Save the dock windows state.
@@ -1159,6 +1162,18 @@ void qtractorMainForm::transportForward (void)
 }
 
 
+// Transport follow playhead
+void qtractorMainForm::transportFollow ( bool /* bOn */ )
+{
+#ifdef CONFIG_DEBUG
+	appendMessages("qtractorMainForm::transportFollow()");
+#endif
+
+	// Toggle follow-playhead...
+	stabilizeForm();
+}
+
+
 //-------------------------------------------------------------------------
 // qtractorMainForm -- Help Action slots.
 
@@ -1257,6 +1272,9 @@ void qtractorMainForm::stabilizeForm (void)
 	// Update view menu state...
 	viewMessagesAction->setOn(m_pMessages && m_pMessages->isVisible());
 	viewFilesAction->setOn(m_pFiles && m_pFiles->isVisible());
+
+	// Transport state...
+	transportPlayAction->setOn(m_pSession->isPlaying());
 
 	// Recent files menu.
 	m_pRecentFilesMenu->setEnabled(m_pOptions->recentFiles.count() > 0);
@@ -1483,8 +1501,10 @@ void qtractorMainForm::timerSlot (void)
 	if (m_pSession->isActivated()) {
 		unsigned long iPlayHead = m_pSession->playHead();
 		if (iPlayHead != m_iPlayHead) {
-			if (m_pTracks && m_pTracks->trackView())
-				m_pTracks->trackView()->setPlayHead(iPlayHead, true);
+			if (m_pTracks && m_pTracks->trackView()) {
+				m_pTracks->trackView()->setPlayHead(iPlayHead,
+					transportFollowAction->isOn());
+			}
 			m_iPlayHead = iPlayHead;
 		}
 		// Check if its time to refresh playhead timer...
