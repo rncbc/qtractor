@@ -901,7 +901,7 @@
             <cstring>transportPlayAction</cstring>
         </property>
         <property name="toggleAction">
-            <bool>false</bool>
+            <bool>true</bool>
         </property>
         <property name="iconSet">
             <iconset>transportPlay.png</iconset>
@@ -1204,9 +1204,9 @@
     </connection>
     <connection>
         <sender>transportFollowAction</sender>
-        <signal>toggled(bool)</signal>
+        <signal>activated()</signal>
         <receiver>qtractorMainForm</receiver>
-        <slot>transportFollow(bool)</slot>
+        <slot>transportFollow()</slot>
     </connection>
     <connection>
         <sender>helpAboutAction</sender>
@@ -1291,7 +1291,7 @@
     <slot specifier="non virtual">transportBackward( void )</slot>
     <slot specifier="non virtual">transportPlay( void )</slot>
     <slot specifier="non virtual">transportForward( void )</slot>
-    <slot specifier="non virtual">transportFollow( bool bOn )</slot>
+    <slot specifier="non virtual">transportFollow( void )</slot>
     <slot specifier="non virtual">helpAboutQt( void )</slot>
     <slot specifier="non virtual">helpAbout( void )</slot>
     <slot specifier="non virtual">stabilizeForm( void )</slot>

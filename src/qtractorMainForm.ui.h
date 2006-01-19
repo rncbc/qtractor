@@ -1163,7 +1163,7 @@ void qtractorMainForm::transportForward (void)
 
 
 // Transport follow playhead
-void qtractorMainForm::transportFollow ( bool /* bOn */ )
+void qtractorMainForm::transportFollow (void)
 {
 #ifdef CONFIG_DEBUG
 	appendMessages("qtractorMainForm::transportFollow()");
@@ -1272,9 +1272,6 @@ void qtractorMainForm::stabilizeForm (void)
 	// Update view menu state...
 	viewMessagesAction->setOn(m_pMessages && m_pMessages->isVisible());
 	viewFilesAction->setOn(m_pFiles && m_pFiles->isVisible());
-
-	// Transport state...
-	transportPlayAction->setOn(m_pSession->isPlaying());
 
 	// Recent files menu.
 	m_pRecentFilesMenu->setEnabled(m_pOptions->recentFiles.count() > 0);
