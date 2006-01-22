@@ -166,6 +166,18 @@ bool qtractorAudioMadFile::input (void)
 	long iRead = ::fread(pReadStart, 1, iReadSize, m_pFile);
 	if (iRead > 0) {
 		m_curr.iInputOffset += iRead;
+		// Time to add some frame mapping, on each 3rd iteration...
+		if ((m_frames.count() < 1
+			|| m_frames.last().iOutputOffset < m_curr.iOutputOffset)) {
+			// Only do mapping accounting each other 3rd decoded frame...
+			if ((++m_curr.iDecodeCount % 3) == 0) {
+				unsigned long iInputOffset = m_curr.iInputOffset
+					- (m_madStream.bufend - m_madStream.next_frame);
+				m_frames.append(FrameNode(iInputOffset,
+					m_curr.iOutputOffset, m_curr.iDecodeCount));
+			}
+		}
+		// Add some decode buffer guard...
 		if (iRead < (int) iReadSize) {
 			::memset(pReadStart + iRead, 0, MAD_BUFFER_GUARD);
 			iRead += MAD_BUFFER_GUARD;
@@ -239,18 +251,16 @@ bool qtractorAudioMadFile::decode (void)
 			}
 			++m_iRingBufferWrite &= m_iRingBufferMask;
 		}
-		++m_curr.iOutputOffset;
-	}
-
-	if ((m_frames.count() < 1
-		|| m_frames.last().iOutputOffset < m_curr.iOutputOffset)) {
-		// Only do mapping accounting each other 3rd decoded frame...
-		if ((++m_curr.iDecodeCount % 3) == 0) {
-			unsigned long iInputOffset = m_curr.iInputOffset
-				- (m_madStream.bufend - m_madStream.next_frame);
-			m_frames.append(FrameNode(iInputOffset,
-				m_curr.iOutputOffset, m_curr.iDecodeCount));
+#ifdef DEBUG_0
+		else if (n == 0) {
+			fprintf(stderr, "qtractorAudioMadFile::decode(%lu) i=%lu o=%lu c=%u\n",
+				m_iSeekOffset,
+				m_curr.iInputOffset,
+				m_curr.iOutputOffset,
+				m_curr.iDecodeCount);
 		}
+#endif
+		++m_curr.iOutputOffset;
 	}
 
 	return true;
@@ -348,6 +358,13 @@ bool qtractorAudioMadFile::seek ( unsigned long iOffset )
 				break;
 			}
 		}
+#ifdef DEBUG_0
+		fprintf(stderr, "qtractorAudioMadFile::seek(%lu) i=%lu o=%lu c=%u\n",
+			iOffset,
+			m_curr.iInputOffset,
+			m_curr.iOutputOffset,
+			m_curr.iDecodeCount);
+#endif
 		// Rewind file position...
 		if (::fseek(m_pFile, m_curr.iInputOffset, SEEK_SET))
 			return false;
