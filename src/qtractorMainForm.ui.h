@@ -73,9 +73,9 @@
 
 
 // Specialties for thread-callback comunication.
-#define QTRACTOR_PEAK_EVENT		QEvent::Type(QEvent::User + 1)
-#define QTRACTOR_XRUN_EVENT		QEvent::Type(QEvent::User + 2)
-#define QTRACTOR_SHUT_EVENT		QEvent::Type(QEvent::User + 3)
+#define QTRACTOR_PEAK_EVENT     QEvent::Type(QEvent::User + 1)
+#define QTRACTOR_XRUN_EVENT     QEvent::Type(QEvent::User + 2)
+#define QTRACTOR_SHUT_EVENT     QEvent::Type(QEvent::User + 3)
 
 
 //-------------------------------------------------------------------------
@@ -89,6 +89,22 @@ void qtractorMainForm::init (void)
 	m_pSession = new qtractorSession();
 	m_pCommands = new qtractorCommandList(this);
 	m_pInstruments = new qtractorInstrumentList();
+
+	// Configure the audio engine event handling...
+	qtractorAudioEngine *pAudioEngine = m_pSession->audioEngine();
+	if (pAudioEngine) {
+		pAudioEngine->setNotifyWidget(this);
+		pAudioEngine->setNotifyShutdownType(QTRACTOR_SHUT_EVENT);
+		pAudioEngine->setNotifyXrunType(QTRACTOR_XRUN_EVENT);
+	}
+
+	// Configure the audio file peak factory...
+	qtractorAudioPeakFactory *pAudioPeakFactory
+		= m_pSession->audioPeakFactory();
+	if (pAudioPeakFactory) {
+		pAudioPeakFactory->setNotifyWidget(this);
+		pAudioPeakFactory->setNotifyPeakType(QTRACTOR_PEAK_EVENT);
+	}
 
 	// To remember last time we've shown the playhead.
 	m_iPlayHead = 0;
@@ -211,23 +227,6 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 	// We got options?
 	m_pOptions = pOptions;
 
-	// Configure the audio engine event handling...
-	qtractorAudioEngine *pAudioEngine = m_pSession->audioEngine();
-	if (pAudioEngine) {
-		pAudioEngine->setNotifyWidget(this);
-		pAudioEngine->setNotifyShutdownType(QTRACTOR_SHUT_EVENT);
-		pAudioEngine->setNotifyXrunType(QTRACTOR_XRUN_EVENT);
-	}
-
-	// Configure the audio file peak factory...
-	qtractorAudioPeakFactory *pAudioPeakFactory
-		= m_pSession->audioPeakFactory();
-	if (pAudioPeakFactory) {
-		pAudioPeakFactory->setNotifyWidget(this);
-		pAudioPeakFactory->setNotifyPeakType(QTRACTOR_PEAK_EVENT);
-		pAudioPeakFactory->setAutoRemove(m_pOptions->bPeakAutoRemove);
-	}
-
 	// Some child forms are to be created right now.
 	m_pMessages = new qtractorMessages(this);
 	m_pFiles = new qtractorFiles(this);
@@ -294,6 +293,7 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 
 	// Primary startup stabilization...
 	updateRecentFilesMenu();
+	updatePeakAutoRemove();
 
 	// Is any session pending to be loaded?
 	if (!m_pOptions->sSessionFile.isEmpty()) {
@@ -435,6 +435,11 @@ void qtractorMainForm::customEvent ( QCustomEvent *pCustomEvent )
 			tr("XRUN: some frames might have been lost."), "#cc0033");
 		break;
 	case QTRACTOR_SHUT_EVENT:
+		// Just in case we were in the middle of something...
+		if (m_pSession->isPlaying()) {
+			transportPlayAction->setOn(false);
+			transportPlay(); // Toggle!
+		}
 		// Engine shutdown is on demand...
 		m_pSession->close();
 		// Send an informative message box...
@@ -444,6 +449,8 @@ void qtractorMainForm::customEvent ( QCustomEvent *pCustomEvent )
 			"is up and running and then retry session."));
 		// Make things just bearable...
 		stabilizeForm();
+		// Fall thru.
+	default:
 		break;
 	}
 }
@@ -1095,6 +1102,7 @@ void qtractorMainForm::viewOptions (void)
 	int     bOldMessagesLimit   = m_pOptions->bMessagesLimit;
 	int     iOldMessagesLimitLines = m_pOptions->iMessagesLimitLines;
 	bool    bOldCompletePath    = m_pOptions->bCompletePath;
+	bool    bOldPeakAutoRemove  = m_pOptions->bPeakAutoRemove;
 	int     iOldMaxRecentFiles  = m_pOptions->iMaxRecentFiles;
 	// Load the current setup settings.
 	qtractorOptionsForm optionsForm(this);
@@ -1115,6 +1123,9 @@ void qtractorMainForm::viewOptions (void)
 			(!bOldCompletePath &&  m_pOptions->bCompletePath) ||
 			(iOldMaxRecentFiles != m_pOptions->iMaxRecentFiles))
 			updateRecentFilesMenu();
+		if (( bOldPeakAutoRemove && !m_pOptions->bPeakAutoRemove) ||
+			(!bOldPeakAutoRemove &&  m_pOptions->bPeakAutoRemove))
+			updatePeakAutoRemove();
 		if (sOldMessagesFont != m_pOptions->sMessagesFont)
 			updateMessagesFont();
 		if (( bOldMessagesLimit && !m_pOptions->bMessagesLimit) ||
@@ -1446,6 +1457,19 @@ void qtractorMainForm::updateRecentFilesMenu (void)
 				this, SLOT(fileOpenRecent(int)), 0, i);
 		}
 	}
+}
+
+
+// Force update of the peak-files auto-remove mode.
+void qtractorMainForm::updatePeakAutoRemove (void)
+{
+	if (m_pOptions == NULL)
+		return;
+
+	qtractorAudioPeakFactory *pAudioPeakFactory
+		= m_pSession->audioPeakFactory();
+	if (pAudioPeakFactory)
+		pAudioPeakFactory->setAutoRemove(m_pOptions->bPeakAutoRemove);	
 }
 
 

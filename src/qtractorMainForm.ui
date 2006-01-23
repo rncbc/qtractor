@@ -1331,6 +1331,7 @@
     <function access="private" specifier="non virtual">updateSession()</function>
     <function access="private" specifier="non virtual">updateRecentFiles( const QString &amp; sFilename )</function>
     <function access="private" specifier="non virtual">updateRecentFilesMenu( void )</function>
+	<function access="private" specifier="non virtual">updatePeakAutoRemove( void )</function>
     <function access="private" specifier="non virtual">updateActionCommand( QAction * pAction, qtractorCommand *pCommand )</function>
     <function specifier="non virtual">appendMessages( const QString &amp; s )</function>
     <function specifier="non virtual">appendMessagesColor( const QString &amp; s, const QString &amp; c )</function>
