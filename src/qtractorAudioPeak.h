@@ -72,7 +72,7 @@ public:
 
 	// Event notifier widget settings.
 	QWidget     *notifyWidget() const;
-	QEvent::Type notifyType() const;
+	QEvent::Type notifyPeakType() const;
 
 	// Auto-delete property.
 	bool autoRemove() const;
@@ -165,9 +165,11 @@ public:
 	void removePeak(qtractorAudioPeakFile *pPeakFile);
 
 	// Event notifier widget settings.
-	void setNotify(QWidget *pNotifyWidget, QEvent::Type eNotifyType);
+	void setNotifyWidget   (QWidget *pNotifyWidget);
+	void setNotifyPeakType (QEvent::Type eNotifyPeakType);
+
 	QWidget     *notifyWidget() const;
-	QEvent::Type notifyType() const;
+	QEvent::Type notifyPeakType() const;
 
 	// Auto-delete property.
 	void setAutoRemove(bool bAutoRemove);
@@ -180,7 +182,7 @@ private:
 
 	// The event notifier widget.
 	QWidget      *m_pNotifyWidget;
-	QEvent::Type  m_eNotifyType;
+	QEvent::Type  m_eNotifyPeakType;
 
 	// Auto-delete property.
 	bool m_bAutoRemove;

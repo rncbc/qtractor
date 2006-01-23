@@ -69,6 +69,10 @@ public:
 	// Destructor.
 	~qtractorAudioPeakThread();
 
+	// Thread run state accessors.
+	void setRunState(bool bRunState);
+	bool runState() const;
+
 protected:
 
 	// The main thread executive.
@@ -76,12 +80,14 @@ protected:
 
 	// Actual peak file creation methods.
 	// (this is just about to be used internally)
-	void createPeakFile();
-	bool createPeakFileChunk();	
+	bool createPeakFileChunk();
 	void writePeakFileFrame();
 	void closePeakFile();
 
 private:
+
+	// Whether the thread is logically running.
+	bool m_bRunState;
 
 	// The peak file instance reference.
 	qtractorAudioPeakFile *m_pPeakFile;
@@ -103,6 +109,7 @@ qtractorAudioPeakThread::qtractorAudioPeakThread (
 	qtractorAudioPeakFile *pPeakFile )
 	: m_peakFile(pPeakFile->filename() + c_sPeakFileExt)
 {
+	m_bRunState  = false;
 	m_pPeakFile  = pPeakFile;
 	m_pAudioFile =
 		qtractorAudioFileFactory::createAudioFile(pPeakFile->filename());
@@ -126,13 +133,9 @@ qtractorAudioPeakThread::~qtractorAudioPeakThread (void)
 // The main thread executive.
 void qtractorAudioPeakThread::run (void)
 {
-	createPeakFile();
-}
+	m_bRunState = true;
 
-
-// Create the peak file from the sample wave one.
-void qtractorAudioPeakThread::createPeakFile (void)
-{
+	// Create the peak file from the sample wave one...
 	if (m_peakFile.open(IO_ReadWrite | IO_Truncate)) {
 		// Open wave sample file...
 		if (m_pAudioFile->open(m_pPeakFile->filename())) {
@@ -149,7 +152,7 @@ void qtractorAudioPeakThread::createPeakFile (void)
 				m_peakMax[i] = m_peakMax[i + iChannels] = 0.0f;
 				m_peakMin[i] = m_peakMin[i + iChannels] = 0.0f;
 				m_peakRms[i] = m_peakRms[i + iChannels] = 0.0f;
-			}	
+			}
 			m_iPeak = 0;
 			// The resample-aware internal peak period...
 			m_iPeriod = (unsigned short) (c_iPeakPeriod
@@ -165,17 +168,29 @@ void qtractorAudioPeakThread::createPeakFile (void)
 				hdr.peakFrames++;
 			m_peakFile.writeBlock((const char *) &hdr, sizeof(hdr));
 			// Go ahead with the whole bunch...
-			while (createPeakFileChunk());
+			while (m_bRunState && createPeakFileChunk());
 		}
 		// We're done.
 		closePeakFile();
 	}
-	
+
 	// May send notification event, anyway...
 	if (m_pPeakFile->notifyWidget()) {
-		QApplication::postEvent(m_pPeakFile->notifyWidget(), 
-			new QCustomEvent(m_pPeakFile->notifyType(), m_pPeakFile));
+		QApplication::postEvent(m_pPeakFile->notifyWidget(),
+			new QCustomEvent(m_pPeakFile->notifyPeakType(), m_pPeakFile));
 	}
+}
+
+
+// Run state accessor.
+void qtractorAudioPeakThread::setRunState ( bool bRunState )
+{
+	m_bRunState = bRunState;
+}
+
+bool qtractorAudioPeakThread::runState (void) const
+{
+	return m_bRunState;
 }
 
 
@@ -320,6 +335,8 @@ qtractorAudioPeakFile::~qtractorAudioPeakFile (void)
 
 	// Check if peak thread is still running.
 	if (m_pPeakThread) {
+		// Try to wait for thread termination...
+		m_pPeakThread->setRunState(false);
 		if (m_pPeakThread->running()) {
 		//	m_pPeakThread->terminate();
 			m_pPeakThread->wait();
@@ -444,9 +461,9 @@ QWidget *qtractorAudioPeakFile::notifyWidget (void) const
 	return m_pFactory->notifyWidget();
 }
 
-QEvent::Type qtractorAudioPeakFile::notifyType (void) const
+QEvent::Type qtractorAudioPeakFile::notifyPeakType (void) const
 {
-	return m_pFactory->notifyType();
+	return m_pFactory->notifyPeakType();
 }
 
 
@@ -641,8 +658,8 @@ qtractorAudioPeakFactory::qtractorAudioPeakFactory (void)
 {
 	m_peaks.setAutoDelete(false);
 
-	m_pNotifyWidget = NULL;
-	m_eNotifyType   = QEvent::None;
+	m_pNotifyWidget   = NULL;
+	m_eNotifyPeakType = QEvent::None;
 	
 	m_bAutoRemove = false;
 }
@@ -679,21 +696,25 @@ void qtractorAudioPeakFactory::removePeak ( qtractorAudioPeakFile *pPeakFile )
 
 
 // Event notifier widget settings.
-void qtractorAudioPeakFactory::setNotify ( QWidget *pNotifyWidget,
-	QEvent::Type eNotifyType )
+void qtractorAudioPeakFactory::setNotifyWidget ( QWidget *pNotifyWidget )
 {
 	m_pNotifyWidget = pNotifyWidget;
-	m_eNotifyType   = eNotifyType;
 }
+
+void qtractorAudioPeakFactory::setNotifyPeakType ( QEvent::Type eNotifyPeakType )
+{
+	m_eNotifyPeakType = eNotifyPeakType;
+}
+
 
 QWidget *qtractorAudioPeakFactory::notifyWidget (void) const
 {
 	return m_pNotifyWidget;
 }
 
-QEvent::Type qtractorAudioPeakFactory::notifyType (void) const
+QEvent::Type qtractorAudioPeakFactory::notifyPeakType (void) const
 {
-	return m_eNotifyType;
+	return m_eNotifyPeakType;
 }
 
 

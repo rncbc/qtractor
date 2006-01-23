@@ -28,6 +28,8 @@
 
 #include "qtractorClip.h"
 
+#include <qapplication.h>
+
 
 //----------------------------------------------------------------------
 // qtractorAudioEngine_process -- JACK client process callback.
@@ -43,6 +45,40 @@ static int qtractorAudioEngine_process ( jack_nframes_t nframes, void *pvArg )
 
 
 //----------------------------------------------------------------------
+// qtractorAudioEngine_shutdown -- JACK client shutdown callback.
+//
+
+static void qtractorAudioEngine_shutdown ( void *pvArg )
+{
+	qtractorAudioEngine *pAudioEngine
+		= static_cast<qtractorAudioEngine *> (pvArg);
+
+	if (pAudioEngine->notifyWidget()) {
+		QApplication::postEvent(pAudioEngine->notifyWidget(),
+			new QCustomEvent(pAudioEngine->notifyShutdownType(), pAudioEngine));
+	}
+}
+
+
+//----------------------------------------------------------------------
+// qtractorAudioEngine_xrun -- JACK client XRUN callback.
+//
+
+static int qtractorAudioEngine_xrun ( void *pvArg )
+{
+	qtractorAudioEngine *pAudioEngine
+		= static_cast<qtractorAudioEngine *> (pvArg);
+
+	if (pAudioEngine->notifyWidget()) {
+		QApplication::postEvent(pAudioEngine->notifyWidget(),
+			new QCustomEvent(pAudioEngine->notifyXrunType(), pAudioEngine));
+	}
+
+	return 0;
+}
+
+
+//----------------------------------------------------------------------
 // class qtractorAudioEngine -- JACK client instance (singleton).
 //
 
@@ -51,6 +87,10 @@ qtractorAudioEngine::qtractorAudioEngine ( qtractorSession *pSession )
 	: qtractorEngine(pSession, qtractorTrack::Audio)
 {
 	m_pJackClient = NULL;
+
+	m_pNotifyWidget       = NULL;
+	m_eNotifyShutdownType = QEvent::None;
+	m_eNotifyXrunType     = QEvent::None;
 }
 
 
@@ -58,6 +98,39 @@ qtractorAudioEngine::qtractorAudioEngine ( qtractorSession *pSession )
 jack_client_t *qtractorAudioEngine::jackClient (void) const
 {
 	return m_pJackClient;
+}
+
+
+// Event notifier widget settings.
+void qtractorAudioEngine::setNotifyWidget ( QWidget *pNotifyWidget )
+{
+	m_pNotifyWidget = pNotifyWidget;
+}
+
+void qtractorAudioEngine::setNotifyShutdownType ( QEvent::Type eNotifyShutdownType )
+{
+	m_eNotifyShutdownType = eNotifyShutdownType;
+}
+
+void qtractorAudioEngine::setNotifyXrunType ( QEvent::Type eNotifyXrunType )
+{
+	m_eNotifyXrunType = eNotifyXrunType;
+}
+
+
+QWidget *qtractorAudioEngine::notifyWidget (void) const
+{
+	return m_pNotifyWidget;
+}
+
+QEvent::Type qtractorAudioEngine::notifyShutdownType (void) const
+{
+	return m_eNotifyShutdownType;
+}
+
+QEvent::Type qtractorAudioEngine::notifyXrunType (void) const
+{
+	return m_eNotifyXrunType;
 }
 
 
@@ -82,6 +155,10 @@ bool qtractorAudioEngine::activate (void)
 	// Set our main engine processor callbacks.
 	jack_set_process_callback(m_pJackClient,
 			qtractorAudioEngine_process, this);
+
+	// And some other event callbacks...
+    jack_set_xrun_callback(m_pJackClient, qtractorAudioEngine_xrun, this);
+    jack_on_shutdown(m_pJackClient, qtractorAudioEngine_shutdown, this);
 
 	// Time to activate ourselves...
 	jack_activate(m_pJackClient);

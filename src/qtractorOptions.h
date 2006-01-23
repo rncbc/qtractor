@@ -58,6 +58,7 @@ public:
 	bool    bConfirmRemove;
 	bool    bStdoutCapture;
 	bool    bCompletePath;
+	bool    bPeakAutoRemove;
 
 	// View options...
 	bool    bMenubar;

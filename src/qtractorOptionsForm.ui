@@ -360,6 +360,25 @@
                                             <string>Whether to show the complete directory path of loaded session files</string>
                                         </property>
                                     </widget>
+                                    <widget class="QCheckBox">
+                                        <property name="name">
+                                            <cstring>PeakAutoRemoveCheckBox</cstring>
+                                        </property>
+                                        <property name="font">
+                                            <font>
+                                                <bold>0</bold>
+                                            </font>
+                                        </property>
+                                        <property name="text">
+                                            <string>&amp;Auto-remove peak files</string>
+                                        </property>
+                                        <property name="accel">
+                                            <string>Alt+A</string>
+                                        </property>
+                                        <property name="toolTip" stdset="0">
+                                            <string>Whether to remove audio peak files on session close</string>
+                                        </property>
+                                    </widget>
                                 </vbox>
                             </widget>
                             <widget class="QSpinBox" row="0" column="3">
@@ -494,6 +513,12 @@
         <slot>changed()</slot>
     </connection>
     <connection>
+        <sender>PeakAutoRemoveCheckBox</sender>
+        <signal>stateChanged(int)</signal>
+        <receiver>qtractorOptionsForm</receiver>
+        <slot>changed()</slot>
+    </connection>
+    <connection>
         <sender>MaxRecentFilesSpinBox</sender>
         <signal>valueChanged(int)</signal>
         <receiver>qtractorOptionsForm</receiver>
@@ -508,6 +533,7 @@
     <tabstop>ConfirmRemoveCheckBox</tabstop>
     <tabstop>StdoutCaptureCheckBox</tabstop>
     <tabstop>CompletePathCheckBox</tabstop>
+    <tabstop>PeakAutoRemoveCheckBox</tabstop>
     <tabstop>MaxRecentFilesSpinBox</tabstop>
     <tabstop>OkPushButton</tabstop>
     <tabstop>CancelPushButton</tabstop>

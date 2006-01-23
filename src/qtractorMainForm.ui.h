@@ -31,6 +31,7 @@
 #include "qtractorTrackView.h"
 
 #include "qtractorAudioPeak.h"
+#include "qtractorAudioEngine.h"
 
 #include "qtractorSessionDocument.h"
 #include "qtractorSessionCursor.h"
@@ -71,8 +72,10 @@
 #define QTRACTOR_STATUS_RATE    4       // Current session sample rate.
 
 
-// qtractorAudioPeakFactory -- specialty for callback comunication.
+// Specialties for thread-callback comunication.
 #define QTRACTOR_PEAK_EVENT		QEvent::Type(QEvent::User + 1)
+#define QTRACTOR_XRUN_EVENT		QEvent::Type(QEvent::User + 2)
+#define QTRACTOR_SHUT_EVENT		QEvent::Type(QEvent::User + 3)
 
 
 //-------------------------------------------------------------------------
@@ -86,14 +89,6 @@ void qtractorMainForm::init (void)
 	m_pSession = new qtractorSession();
 	m_pCommands = new qtractorCommandList(this);
 	m_pInstruments = new qtractorInstrumentList();
-
-	// Configure the audio file peak factory.
-	qtractorAudioPeakFactory *pAudioPeakFactory
-		= m_pSession->audioPeakFactory();
-	if (pAudioPeakFactory) {
-		pAudioPeakFactory->setNotify(this, QTRACTOR_PEAK_EVENT);
-		pAudioPeakFactory->setAutoRemove(true);
-	}
 
 	// To remember last time we've shown the playhead.
 	m_iPlayHead = 0;
@@ -215,6 +210,23 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 {
 	// We got options?
 	m_pOptions = pOptions;
+
+	// Configure the audio engine event handling...
+	qtractorAudioEngine *pAudioEngine = m_pSession->audioEngine();
+	if (pAudioEngine) {
+		pAudioEngine->setNotifyWidget(this);
+		pAudioEngine->setNotifyShutdownType(QTRACTOR_SHUT_EVENT);
+		pAudioEngine->setNotifyXrunType(QTRACTOR_XRUN_EVENT);
+	}
+
+	// Configure the audio file peak factory...
+	qtractorAudioPeakFactory *pAudioPeakFactory
+		= m_pSession->audioPeakFactory();
+	if (pAudioPeakFactory) {
+		pAudioPeakFactory->setNotifyWidget(this);
+		pAudioPeakFactory->setNotifyPeakType(QTRACTOR_PEAK_EVENT);
+		pAudioPeakFactory->setAutoRemove(m_pOptions->bPeakAutoRemove);
+	}
 
 	// Some child forms are to be created right now.
 	m_pMessages = new qtractorMessages(this);
@@ -410,8 +422,30 @@ void qtractorMainForm::customEvent ( QCustomEvent *pCustomEvent )
 	appendMessages("qtractorMainForm::customEvent(" + QString::number((int) pCustomEvent->type()) + ")");
 #endif
 
-	if (pCustomEvent->type() == QTRACTOR_PEAK_EVENT)
+	switch (pCustomEvent->type()) {
+	case QTRACTOR_PEAK_EVENT:
+		// A peak file has just been (re)created;
+		// try to postpone the event effect a little more...
 		m_iPeakTimer += QTRACTOR_TIMER_DELAY;
+		break;
+	case QTRACTOR_XRUN_EVENT:
+		// An XRUN has just been notified;
+		// send some informative message...
+		appendMessagesColor(
+			tr("XRUN: some frames might have been lost."), "#cc0033");
+		break;
+	case QTRACTOR_SHUT_EVENT:
+		// Engine shutdown is on demand...
+		m_pSession->close();
+		// Send an informative message box...
+		appendMessagesError(
+			tr("Audio engine has been shutdown.\n\n"
+			"Make sure the JACK audio server (jackd)\n"
+			"is up and running and then retry session."));
+		// Make things just bearable...
+		stabilizeForm();
+		break;
+	}
 }
 
 
@@ -598,11 +632,15 @@ bool qtractorMainForm::closeSession (void)
 	// If we may close it, dot it.
 	if (bClose) {
 		// Just in case we were in the middle of something...
-		if (m_pSession->isPlaying())
+		if (m_pSession->isPlaying()) {
+			transportPlayAction->setOn(false);
 			transportPlay(); // Toggle!
+		}
+		// Close session engines.
+		m_pSession->close();
 		// Reset session to default.
 		m_pCommands->clear();
-		m_pSession->close();
+		m_pSession->clear();
 		m_pFiles->clear();
 		// Surely this will be deleted next...
 		m_pTracks = NULL;
@@ -616,6 +654,7 @@ bool qtractorMainForm::closeSession (void)
 		m_pWorkspace->setUpdatesEnabled(true);
 		// We're now clean, for sure.
 		m_iDirtyCount = 0;
+		appendMessages(tr("Session closed."));
 	}
 
 	return bClose;
@@ -1354,8 +1393,8 @@ void qtractorMainForm::updateSession (void)
 	//  Actually open session audio engine...
 	if (!m_pSession->open(QTRACTOR_TITLE)) {
 		appendMessagesError(tr("Cannot start audio engine.\n\n"
-			"Make sure the JACK audio server\n"
-			"(jackd) is up and running."));
+			"Make sure the JACK audio server (jackd)\n"
+			"is up and running and then retry session."));
 	} else {
 		// (Re)initialize MIDI instrument patching...
 		m_pSession->setMidiPatch(m_pInstruments);

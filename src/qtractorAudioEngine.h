@@ -1,7 +1,7 @@
 // qtractorAudioEngine.h
 //
 /****************************************************************************
-   Copyright (C) 2005, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2006, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -25,6 +25,9 @@
 #include "qtractorEngine.h"
 
 #include <jack/jack.h>
+
+#include <qevent.h>
+
 
 // Forward declarations.
 class qtractorAudioBus;
@@ -53,6 +56,15 @@ public:
 	bool saveElement(qtractorSessionDocument *pDocument,
 		QDomElement *pElement);
 
+	// Event notifier widget settings.
+	void setNotifyWidget       (QWidget *pNotifyWidget);
+	void setNotifyShutdownType (QEvent::Type eNotifyShutdownType);
+	void setNotifyXrunType     (QEvent::Type eNotifyXrunType);
+
+	QWidget     *notifyWidget() const;
+	QEvent::Type notifyShutdownType() const;
+	QEvent::Type notifyXrunType() const;
+
 protected:
 
 	// Concrete device (de)activation methods.
@@ -67,6 +79,11 @@ private:
 
 	// Audio device instance variables.
 	jack_client_t *m_pJackClient;
+
+	// The event notifier widget.
+	QWidget      *m_pNotifyWidget;
+	QEvent::Type  m_eNotifyShutdownType;
+	QEvent::Type  m_eNotifyXrunType;
 };
 
 

@@ -292,7 +292,7 @@ qtractorTrackList::qtractorTrackList ( qtractorTracks *pTracks,
 	QListView::viewport()->setPaletteBackgroundColor(Qt::darkGray);
 
 	QListView::addColumn(tr("Nr"), 26);		// qtractorTrackList::Number
-	QListView::addColumn(tr("Track Name"));	// qtractorTrackList::Name
+	QListView::addColumn(tr("Track Name"), 120);	// qtractorTrackList::Name
 	QListView::addColumn(tr("R"), 20);		// qtractorTrackList::Record
 	QListView::addColumn(tr("M"), 20);		// qtractorTrackList::Mute
 	QListView::addColumn(tr("S"), 20);		// qtractorTrackList::Solo
@@ -307,6 +307,7 @@ qtractorTrackList::qtractorTrackList ( qtractorTracks *pTracks,
 	QListView::setColumnAlignment(qtractorTrackList::Solo, Qt::AlignHCenter);
 	QListView::setColumnAlignment(qtractorTrackList::Channel, Qt::AlignHCenter);
 
+	QListView::setColumnWidthMode(qtractorTrackList::Name, QListView::Manual);
 	QListView::setColumnWidthMode(qtractorTrackList::Record, QListView::Manual);
 	QListView::setColumnWidthMode(qtractorTrackList::Mute, QListView::Manual);
 	QListView::setColumnWidthMode(qtractorTrackList::Solo, QListView::Manual);

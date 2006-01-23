@@ -1,7 +1,7 @@
 // qtractorSession.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2006, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -92,6 +92,7 @@ qtractorSession::qtractorSession (void)
 qtractorSession::~qtractorSession (void)
 {
 	close();
+	clear();
 
 	delete m_pAudioPeakFactory;
 	delete m_pAudioEngine;
@@ -135,7 +136,7 @@ void qtractorSession::close (void)
 		pTrack->close();
 	}
 
-	clear();
+//	clear();
 }
 
 
