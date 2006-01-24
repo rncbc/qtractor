@@ -1149,10 +1149,14 @@ void qtractorMainForm::transportRewind (void)
 	appendMessages("qtractorMainForm::transportRewind()");
 #endif
 
-	// Just reset session playhead.
-	m_pSession->setPlayHead(0);
-
-	stabilizeForm();
+	// Reset playhead if session is activated,
+	// otherwise try to (re)open the whole thing...
+	if (m_pSession->isActivated()) {
+		m_pSession->setPlayHead(0);
+		stabilizeForm();
+	} else {
+	    updateSession();
+	}
 }
 
 
@@ -1359,7 +1363,7 @@ void qtractorMainForm::stabilizeForm (void)
 
 	// Transport stuff...
 	bEnabled = m_pSession->isActivated();
-	transportRewindAction->setEnabled(bEnabled);
+//	transportRewindAction->setEnabled(bEnabled);
 	transportBackwardAction->setEnabled(bEnabled);
 	transportPlayAction->setEnabled(bEnabled);
 	transportForwardAction->setEnabled(bEnabled);

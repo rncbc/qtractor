@@ -1,7 +1,7 @@
 // qtractorSessionCursor.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2006, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -197,20 +197,9 @@ void qtractorSessionCursor::addTrack ( qtractorTrack *pTrack )
 	if (iTrack >= m_iSize) {
 		m_iSize += iTrack;
 		qtractorClip **ppClips = new qtractorClip * [m_iSize];
-	//	for (iTrack = 0; iTrack < m_iTracks; iTrack++)
-	//		ppClips[iTrack] = m_ppClips[iTrack];
 		delete [] m_ppClips;
 		m_ppClips = ppClips;
 	}
-/*
-	qtractorClip *pClip = seekClipForward(pTrack,
-		pTrack->clips().first(), m_iFrame);
-	if (pClip && pClip->clipStart() < m_iFrame
-		&& pTrack->trackType() == m_syncType) {
-		pClip->seek(m_iFrame - pClip->clipStart());
-	}
-	m_ppClips[iTrack] = pClip;
-*/
 	++m_iTracks;
 
 	update();
@@ -222,8 +211,13 @@ void qtractorSessionCursor::updateTrack ( qtractorTrack *pTrack )
 {
 	int iTrack = m_pSession->tracks().find(pTrack);
 	if (iTrack >= 0) {
-		m_ppClips[iTrack] = seekClipForward(pTrack,
+		qtractorClip *pClip = seekClipForward(pTrack,
 			pTrack->clips().first(), m_iFrame);
+		if (pClip && m_iFrame >= pClip->clipStart()
+			&& pTrack->trackType() == m_syncType) {
+			pClip->seek(m_iFrame - pClip->clipStart());
+		}
+		m_ppClips[iTrack] = pClip;
 	}
 }
 
@@ -252,8 +246,13 @@ void qtractorSessionCursor::update (void)
 	unsigned int iTrack = 0; 
 	qtractorTrack *pTrack = m_pSession->tracks().first();
 	while (pTrack && iTrack < m_iTracks) {
-		m_ppClips[iTrack] = seekClipForward(pTrack,
+		qtractorClip *pClip = seekClipForward(pTrack,
 			pTrack->clips().first(), m_iFrame);
+		if (pClip && pClip->clipStart() < m_iFrame
+			&& pTrack->trackType() == m_syncType) {
+			pClip->seek(m_iFrame - pClip->clipStart());
+		}
+		m_ppClips[iTrack] = pClip;
 		pTrack = pTrack->next();
 		iTrack++;
 	}
