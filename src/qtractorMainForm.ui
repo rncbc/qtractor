@@ -1328,7 +1328,8 @@
     <function access="private" specifier="non virtual" returnType="bool">closeSession( void )</function>
     <function access="private" specifier="non virtual" returnType="bool">loadSessionFile( const QString &amp; sFilename )</function>
     <function access="private" specifier="non virtual" returnType="bool">saveSessionFile( const QString &amp; sFilename )</function>
-    <function access="private" specifier="non virtual">updateSession()</function>
+	<function access="private" specifier="non virtual" returnType="bool">startSession( void )</function>
+    <function access="private" specifier="non virtual">updateSession( void )</function>
     <function access="private" specifier="non virtual">updateRecentFiles( const QString &amp; sFilename )</function>
     <function access="private" specifier="non virtual">updateRecentFilesMenu( void )</function>
 	<function access="private" specifier="non virtual">updatePeakAutoRemove( void )</function>

@@ -1,6 +1,7 @@
 INCLUDEPATH += ../src
 
 HEADERS += ../src/qtractorAbout.h \
+           ../src/qtractorAtomic.h \
            ../src/qtractorOptions.h \
            ../src/qtractorMessages.h \
            ../src/qtractorSpinBox.h \

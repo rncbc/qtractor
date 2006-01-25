@@ -446,7 +446,7 @@ void qtractorMainForm::customEvent ( QCustomEvent *pCustomEvent )
 		appendMessagesError(
 			tr("Audio engine has been shutdown.\n\n"
 			"Make sure the JACK audio server (jackd)\n"
-			"is up and running and then retry session."));
+			"is up and running and then restart session."));
 		// Make things just bearable...
 		stabilizeForm();
 		// Fall thru.
@@ -1149,14 +1149,11 @@ void qtractorMainForm::transportRewind (void)
 	appendMessages("qtractorMainForm::transportRewind()");
 #endif
 
-	// Reset playhead if session is activated,
-	// otherwise try to (re)open the whole thing...
-	if (m_pSession->isActivated()) {
-		m_pSession->setPlayHead(0);
-		stabilizeForm();
-	} else {
-	    updateSession();
-	}
+
+	// Reset playhead position...
+	m_pSession->setPlayHead(0);
+
+	stabilizeForm();
 }
 
 
@@ -1186,7 +1183,22 @@ void qtractorMainForm::transportPlay (void)
 	appendMessages("qtractorMainForm::transportPlay()");
 #endif
 
-	// In case of starting playback, send now
+	// Whether session is currently activated,
+	// try to (re)open the whole thing...
+	if (!m_pSession->isActivated()) {
+		// Save current playhead position, if any...
+		unsigned long iFrame = m_pSession->playHead();
+		// Bail out if can't start it...
+		if (!startSession()) {
+			transportPlayAction->setOn(false);
+			stabilizeForm();
+			return;
+		}
+		// Restore previous playhead position...
+		m_pSession->setPlayHead(iFrame);
+	}
+
+	// In case of (re)starting playback, send now
 	// all tracks MIDI bank select/program changes...
 	bool bPlaying = !m_pSession->isPlaying();
 	if (bPlaying)
@@ -1198,6 +1210,7 @@ void qtractorMainForm::transportPlay (void)
 		QIconSet(QPixmap::fromMimeSource(bPlaying ?
 		"transportPause.png" : "transportPlay.png")));
 
+	// Done with playback switch...
 	stabilizeForm();
 }
 
@@ -1363,10 +1376,24 @@ void qtractorMainForm::stabilizeForm (void)
 
 	// Transport stuff...
 	bEnabled = m_pSession->isActivated();
-//	transportRewindAction->setEnabled(bEnabled);
+	transportRewindAction->setEnabled(bEnabled);
 	transportBackwardAction->setEnabled(bEnabled);
-	transportPlayAction->setEnabled(bEnabled);
+//	transportPlayAction->setEnabled(bEnabled);
 	transportForwardAction->setEnabled(bEnabled);
+}
+
+
+// Actually start all session engines.
+bool qtractorMainForm::startSession (void)
+{
+	bool bResult = m_pSession->open(QTRACTOR_TITLE);
+	if (!bResult) {
+		appendMessagesError(
+			tr("Cannot start audio engine.\n\n"
+			"Make sure the JACK audio server (jackd)\n"
+			"is up and running and then restart session."));
+	}
+	return bResult;
 }
 
 
@@ -1405,12 +1432,8 @@ void qtractorMainForm::updateSession (void)
 		appendMessages(tr("Tracks open."));
 	}
 
-	//  Actually open session audio engine...
-	if (!m_pSession->open(QTRACTOR_TITLE)) {
-		appendMessagesError(tr("Cannot start audio engine.\n\n"
-			"Make sure the JACK audio server (jackd)\n"
-			"is up and running and then retry session."));
-	} else {
+	//  Actually (re)start session engines...
+	if (startSession()) {
 		// (Re)initialize MIDI instrument patching...
 		m_pSession->setMidiPatch(m_pInstruments);
 	}
