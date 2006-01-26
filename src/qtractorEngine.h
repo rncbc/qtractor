@@ -57,9 +57,6 @@ public:
 	// Session helper accessor.
 	qtractorSession *session() const;
 
-	// Session cursor sync type accessor.
-	qtractorTrack::TrackType syncType() const;
-
 	// Session cursor accessor.
 	qtractorSessionCursor *sessionCursor() const;
 
@@ -100,9 +97,8 @@ protected:
 private:
 
 	// Device instance variables.
-	qtractorSession         *m_pSession;
-	qtractorTrack::TrackType m_syncType;
-	qtractorSessionCursor   *m_pSessionCursor;
+	qtractorSession       *m_pSession;
+	qtractorSessionCursor *m_pSessionCursor;
 
 	QString m_sClientName;
 

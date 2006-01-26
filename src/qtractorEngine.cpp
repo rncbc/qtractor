@@ -33,7 +33,7 @@ qtractorEngine::qtractorEngine ( qtractorSession *pSession,
 	qtractorTrack::TrackType syncType )
 {
 	m_pSession       = pSession;
-	m_syncType       = syncType;
+	m_pSessionCursor = m_pSession->createSessionCursor(0, syncType);
 	m_pSessionCursor = NULL;
 	m_bActivated     = false;
 	m_bPlaying       = false;
@@ -45,6 +45,9 @@ qtractorEngine::qtractorEngine ( qtractorSession *pSession,
 qtractorEngine::~qtractorEngine (void)
 {
 	clear();
+
+	if (m_pSessionCursor)
+		delete m_pSessionCursor;
 }
 
 
@@ -59,13 +62,6 @@ void qtractorEngine::clear (void)
 qtractorSession *qtractorEngine::session (void) const
 {
 	return m_pSession;
-}
-
-
-// Session cursor sync type.
-qtractorTrack::TrackType qtractorEngine::syncType (void) const
-{
-	return m_syncType;
 }
 
 
@@ -138,9 +134,6 @@ bool qtractorEngine::open ( const QString& sClientName )
 	if (!init(sClientName))
 		return false;
 
-	// Create our session track cursor...
-	m_pSessionCursor = m_pSession->createSessionCursor(0, m_syncType);
-
 	// Set actual client name...
 	m_sClientName = sClientName;
 
@@ -183,12 +176,6 @@ void qtractorEngine::close (void)
 				pBus; pBus = pBus->next()) {
 			pBus->close();
 		}
-	}
-
-	// Get rid of our session cursor.
-	if (m_pSessionCursor) {
-		delete m_pSessionCursor;
-		m_pSessionCursor = NULL;
 	}
 
 	// Clean-up everything, finally
