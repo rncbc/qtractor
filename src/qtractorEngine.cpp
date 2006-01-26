@@ -34,7 +34,6 @@ qtractorEngine::qtractorEngine ( qtractorSession *pSession,
 {
 	m_pSession       = pSession;
 	m_pSessionCursor = m_pSession->createSessionCursor(0, syncType);
-	m_pSessionCursor = NULL;
 	m_bActivated     = false;
 	m_bPlaying       = false;
 
