@@ -22,6 +22,8 @@
 #ifndef __qtractorRingBuffer_h
 #define __qtractorRingBuffer_h
 
+#include "qtractorAtomic.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -73,8 +75,8 @@ private:
 	unsigned short m_iChannels;
 	unsigned int   m_iBufferSize;
 	unsigned int   m_iBufferMask;
-	unsigned int   m_iReadIndex;
-	unsigned int   m_iWriteIndex;
+	qtractorAtomic m_iReadIndex;
+	qtractorAtomic m_iWriteIndex;
 
 	T** m_ppBuffer;
 };
@@ -111,8 +113,8 @@ qtractorRingBuffer<T>::qtractorRingBuffer ( unsigned short iChannels,
 	for (unsigned short i = 0; i < m_iChannels; i++)
 		m_ppBuffer[i] = new T [m_iBufferSize];
 
-	m_iReadIndex  = 0;
-	m_iWriteIndex = 0;
+	ATOMIC_SET(&m_iReadIndex,  0);
+	ATOMIC_SET(&m_iWriteIndex, 0);
 }
 
 // Default destructor.
@@ -147,8 +149,8 @@ unsigned int qtractorRingBuffer<T>::size (void) const
 template<typename T>
 unsigned int qtractorRingBuffer<T>::readable (void) const
 {
-	unsigned int w = m_iWriteIndex;
-	unsigned int r = m_iReadIndex;
+	unsigned int w = ATOMIC_GET(&m_iWriteIndex);
+	unsigned int r = ATOMIC_GET(&m_iReadIndex);
 	if (w > r) {
 		return (w - r);
 	} else {
@@ -159,8 +161,8 @@ unsigned int qtractorRingBuffer<T>::readable (void) const
 template<typename T>
 unsigned int qtractorRingBuffer<T>::writable (void) const
 {
-	unsigned int w = m_iWriteIndex;
-	unsigned int r = m_iReadIndex;
+	unsigned int w = ATOMIC_GET(&m_iWriteIndex);
+	unsigned int r = ATOMIC_GET(&m_iReadIndex);
 	if (w > r){
 		return ((r - w + m_iBufferSize) & m_iBufferMask) - 1;
 	} else if (r > w) {
@@ -183,7 +185,7 @@ int qtractorRingBuffer<T>::read ( T **ppFrames, unsigned int iFrames,
 	if (iFrames > rs)
 		iFrames = rs;
 
-	unsigned int r = m_iReadIndex;
+	unsigned int r = ATOMIC_GET(&m_iReadIndex);
 
 	unsigned int n1, n2;
 	if (r + iFrames > m_iBufferSize) {
@@ -204,7 +206,7 @@ int qtractorRingBuffer<T>::read ( T **ppFrames, unsigned int iFrames,
 		}
 	}
 
-	m_iReadIndex = (r + iFrames) & m_iBufferMask;
+	ATOMIC_SET(&m_iReadIndex, (r + iFrames) & m_iBufferMask);
 
 	return iFrames;
 }
@@ -221,7 +223,7 @@ int qtractorRingBuffer<T>::write ( T **ppFrames, unsigned int iFrames )
 	if (iFrames > ws)
 		iFrames = ws;
 
-	unsigned int w = m_iWriteIndex;
+	unsigned int w = ATOMIC_GET(&m_iWriteIndex);
 
 	unsigned int n1, n2;
 	if (w + iFrames > m_iBufferSize) {
@@ -241,7 +243,7 @@ int qtractorRingBuffer<T>::write ( T **ppFrames, unsigned int iFrames )
 		}
 	}
 
-	m_iWriteIndex = (w + iFrames) & m_iBufferMask;
+	ATOMIC_SET(&m_iWriteIndex, (w + iFrames) & m_iBufferMask);
 
 	return iFrames;
 }
@@ -260,7 +262,7 @@ int qtractorRingBuffer<T>::readMix (
 	if (iFrames > rs)
 		iFrames = rs;
 
-	unsigned int r = m_iReadIndex;
+	unsigned int r = ATOMIC_GET(&m_iReadIndex);
 
 	unsigned short i, j, iAux;
 	unsigned int n, n1, n2;
@@ -305,7 +307,7 @@ int qtractorRingBuffer<T>::readMix (
 		}
 	}
 
-	m_iReadIndex = (r + iFrames) & m_iBufferMask;
+	ATOMIC_SET(&m_iReadIndex, (r + iFrames) & m_iBufferMask);
 
 	return iFrames;
 }
@@ -315,8 +317,8 @@ int qtractorRingBuffer<T>::readMix (
 template<typename T>
 void qtractorRingBuffer<T>::reset (void)
 {
-	m_iReadIndex  = 0;
-	m_iWriteIndex = 0;
+	ATOMIC_SET(&m_iReadIndex,  0);
+	ATOMIC_SET(&m_iWriteIndex, 0);
 }
 
 
@@ -324,13 +326,13 @@ void qtractorRingBuffer<T>::reset (void)
 template<typename T>
 void qtractorRingBuffer<T>::setReadIndex ( unsigned int iReadIndex )
 {
-	m_iReadIndex = (iReadIndex & m_iBufferMask);
+	ATOMIC_SET(&m_iReadIndex, (iReadIndex & m_iBufferMask));
 }
 
 template<typename T>
 unsigned int qtractorRingBuffer<T>::readIndex (void) const
 {
-	return m_iReadIndex;
+	return ATOMIC_GET(&m_iReadIndex);
 }
 
 
@@ -338,13 +340,13 @@ unsigned int qtractorRingBuffer<T>::readIndex (void) const
 template<typename T>
 void qtractorRingBuffer<T>::setWriteIndex ( unsigned int iWriteIndex )
 {
-	m_iWriteIndex = (iWriteIndex & m_iBufferMask);
+	ATOMIC_SET(&m_iWriteIndex, (iWriteIndex & m_iBufferMask));
 }
 
 template<typename T>
 unsigned int qtractorRingBuffer<T>::writeIndex (void) const
 {
-	return m_iWriteIndex;
+	return ATOMIC_GET(&m_iWriteIndex);
 }
 
 
