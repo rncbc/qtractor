@@ -136,6 +136,9 @@ bool qtractorEngine::open ( const QString& sClientName )
 	// Set actual client name...
 	m_sClientName = sClientName;
 
+	// Update the session cursor tracks...
+	m_pSessionCursor->reset();
+
 	// Open all busses (allocated and register ports...)
 	qtractorBus *pBus = m_busses.first();
 	while (pBus) {
