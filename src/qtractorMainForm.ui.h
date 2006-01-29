@@ -140,7 +140,7 @@ void qtractorMainForm::init (void)
 	transportToolbar->addSeparator();
 	m_pTransportTime = new QLabel(sTime, transportToolbar);
 	m_pTransportTime->setFont(
-		QFont(font().family(), 12, QFont::Bold));
+		QFont(font().family(), 10, QFont::Bold));
 	m_pTransportTime->setFrameShape(QFrame::Panel);
 	m_pTransportTime->setFrameShadow(QFrame::Sunken);
 	m_pTransportTime->setPaletteBackgroundColor(Qt::black);
