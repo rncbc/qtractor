@@ -31,6 +31,9 @@ class qtractorTrack;
 class qtractorTrackList;
 class qtractorInstrumentList;
 
+#ifdef QTOOLBUTTON_TEST
+class QToolButton;
+#endif
 
 //----------------------------------------------------------------------------
 // qtractorTrackListItem -- Tracks list item.
@@ -75,6 +78,10 @@ private:
 
 	// The track reference.
 	qtractorTrack *m_pTrack;
+
+#ifdef QTOOLBUTTON_TEST
+	QToolButton *m_pToolButton;
+#endif
 };
 
 

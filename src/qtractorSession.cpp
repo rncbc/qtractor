@@ -146,6 +146,9 @@ void qtractorSession::clear (void)
 	m_tracks.clear();
 	m_cursors.clear();
 
+	m_cursors.append(m_pAudioEngine->sessionCursor());
+	m_cursors.append(m_pMidiEngine->sessionCursor());
+
 	m_props.clear();
 
 	m_iSessionLength = 0;
@@ -484,8 +487,8 @@ void qtractorSession::insertTrack ( qtractorTrack *pTrack,
 		m_tracks.prepend(pTrack);
 	}
 
-	if (pTrack->isSolo())
-		setSoloTracks(true);
+//	if (pTrack->isSolo())
+//		setSoloTracks(true);
 
 	qtractorSessionCursor *pSessionCursor = m_cursors.first();
 	while (pSessionCursor) {

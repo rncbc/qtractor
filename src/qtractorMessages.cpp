@@ -1,7 +1,7 @@
 // qtractorMessages.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2006, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -34,12 +34,12 @@
 #endif
 
 // The default maximum number of message lines.
-#define qtractor_MESSAGES_MAXLINES  1000
+#define QTRACTOR_MESSAGES_MAXLINES  1000
 
 // Notification pipe descriptors
-#define qtractor_MESSAGES_FDNIL    -1
-#define qtractor_MESSAGES_FDREAD    0
-#define qtractor_MESSAGES_FDWRITE   1
+#define QTRACTOR_MESSAGES_FDNIL    -1
+#define QTRACTOR_MESSAGES_FDREAD    0
+#define QTRACTOR_MESSAGES_FDWRITE   1
 
 
 //-------------------------------------------------------------------------
@@ -52,8 +52,8 @@ qtractorMessages::qtractorMessages ( QWidget *pParent, const char *pszName )
 {
 	// Intialize stdout capture stuff.
 	m_pStdoutNotifier = NULL;
-	m_fdStdout[qtractor_MESSAGES_FDREAD]  = qtractor_MESSAGES_FDNIL;
-	m_fdStdout[qtractor_MESSAGES_FDWRITE] = qtractor_MESSAGES_FDNIL;
+	m_fdStdout[QTRACTOR_MESSAGES_FDREAD]  = QTRACTOR_MESSAGES_FDNIL;
+	m_fdStdout[QTRACTOR_MESSAGES_FDWRITE] = QTRACTOR_MESSAGES_FDNIL;
 
 	// Surely a name is crucial (e.g.for storing geometry settings)
 	if (pszName == 0)
@@ -71,7 +71,7 @@ qtractorMessages::qtractorMessages ( QWidget *pParent, const char *pszName )
 	m_pTextView->setTextFormat(Qt::LogText);
 #endif
 	// Initialize default message limit.
-	setMessagesLimit(qtractor_MESSAGES_MAXLINES);
+	setMessagesLimit(QTRACTOR_MESSAGES_MAXLINES);
 
 	// Prepare the dockable window stuff.
 	QDockWindow::setWidget(m_pTextView);
@@ -156,20 +156,20 @@ void qtractorMessages::setCaptureEnabled ( bool bCapture )
 		delete m_pStdoutNotifier;
 		m_pStdoutNotifier = NULL;
 		// Close the notification pipes.
-		if (m_fdStdout[qtractor_MESSAGES_FDREAD] != qtractor_MESSAGES_FDNIL) {
-			::close(m_fdStdout[qtractor_MESSAGES_FDREAD]);
-			m_fdStdout[qtractor_MESSAGES_FDREAD]  = qtractor_MESSAGES_FDNIL;
+		if (m_fdStdout[QTRACTOR_MESSAGES_FDREAD] != QTRACTOR_MESSAGES_FDNIL) {
+			::close(m_fdStdout[QTRACTOR_MESSAGES_FDREAD]);
+			m_fdStdout[QTRACTOR_MESSAGES_FDREAD]  = QTRACTOR_MESSAGES_FDNIL;
 		}
-		if (m_fdStdout[qtractor_MESSAGES_FDREAD] != qtractor_MESSAGES_FDNIL) {
-			::close(m_fdStdout[qtractor_MESSAGES_FDREAD]);
-			m_fdStdout[qtractor_MESSAGES_FDREAD]  = qtractor_MESSAGES_FDNIL;
+		if (m_fdStdout[QTRACTOR_MESSAGES_FDREAD] != QTRACTOR_MESSAGES_FDNIL) {
+			::close(m_fdStdout[QTRACTOR_MESSAGES_FDREAD]);
+			m_fdStdout[QTRACTOR_MESSAGES_FDREAD]  = QTRACTOR_MESSAGES_FDNIL;
 		}
 	}
 	// Are we going to make up the capture?
 	if (bCapture && m_pStdoutNotifier == NULL && ::pipe(m_fdStdout) == 0) {
-		::dup2(m_fdStdout[qtractor_MESSAGES_FDWRITE], STDOUT_FILENO);
-		::dup2(m_fdStdout[qtractor_MESSAGES_FDWRITE], STDERR_FILENO);
-		m_pStdoutNotifier = new QSocketNotifier(m_fdStdout[qtractor_MESSAGES_FDREAD], QSocketNotifier::Read, this);
+		::dup2(m_fdStdout[QTRACTOR_MESSAGES_FDWRITE], STDOUT_FILENO);
+		::dup2(m_fdStdout[QTRACTOR_MESSAGES_FDWRITE], STDERR_FILENO);
+		m_pStdoutNotifier = new QSocketNotifier(m_fdStdout[QTRACTOR_MESSAGES_FDREAD], QSocketNotifier::Read, this);
 		QObject::connect(m_pStdoutNotifier, SIGNAL(activated(int)), this, SLOT(stdoutNotify(int)));
 	}
 #endif

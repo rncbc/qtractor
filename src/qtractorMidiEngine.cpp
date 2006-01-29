@@ -900,6 +900,9 @@ bool qtractorMidiBus::loadElement ( qtractorSessionDocument * /* pDocument */,
 				if (ePatch.tagName() == "midi-program")
 					patch.prog = ePatch.text().toInt();
 			}
+			// Rollback if instrument-patch is invalid...
+			if (patch.instrumentName.isEmpty())
+				m_patches.erase(iChannel & 0x0f);
 		}
 	}
 

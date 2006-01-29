@@ -33,6 +33,7 @@
 #include "qtractorMainForm.h"
 
 #include <qapplication.h>
+#include <qtoolbutton.h>
 #include <qpopupmenu.h>
 #include <qpainter.h>
 #include <qcursor.h>
@@ -86,6 +87,18 @@ void qtractorTrackListItem::initItem ( qtractorTrackList *pTrackList,
 	// qtractorTrackList::Channel
 	// qtractorTrackList::Patch
 	// qtractorTrackList::Instrument
+
+#ifdef QTOOLBUTTON_TEST
+	static int n = 0;
+	QFont font(listView()->font().family(), 6, QFont::Bold);
+	m_pToolButton = new QToolButton(pTrackList->viewport());
+	m_pToolButton->setFont(font);
+	m_pToolButton->setTextLabel(QString("%1").arg(++n));
+	m_pToolButton->setUsesTextLabel(true);
+	m_pToolButton->setToggleButton(true);
+	m_pToolButton->resize(24, 18);
+	pTrackList->addChild(m_pToolButton);
+#endif
 }
 
 
@@ -234,6 +247,23 @@ void qtractorTrackListItem::paintCell ( QPainter *p, const QColorGroup& cg,
 		bg = m_pTrack->foreground().light();
 		fg = m_pTrack->background().light();
 		break;
+#ifdef QTOOLBUTTON_TEST
+	case qtractorTrackList::Name:
+	{
+		QPoint pos(30, 0);
+		pos = listView()->contentsToViewport(pos);
+		QRect rect = listView()->itemRect(this);
+		if (rect.isNull()) {
+			if (m_pToolButton->isVisible())
+				m_pToolButton->hide();
+		} else {
+			m_pToolButton->move(pos.x(), rect.height() - m_pToolButton->height() + rect.y() - 4);
+			if (!m_pToolButton->isVisible())
+				m_pToolButton->show();
+		}
+	    break;
+	}
+#endif
 	case qtractorTrackList::Record:
 		if (m_pTrack->isRecord()) {
 			bg = Qt::darkRed;

@@ -236,12 +236,13 @@ bool qtractorTrack::isSolo (void) const
 
 void qtractorTrack::setSolo ( bool bSolo )
 {
+	if ((m_props.solo && !bSolo) || (!m_props.solo && bSolo))
+		m_pSession->setSoloTracks(bSolo);
+
 	m_props.solo = bSolo;
 
 	if (m_pSession->isPlaying())
 		m_pSession->trackSolo(this, bSolo);
-
-	m_pSession->setSoloTracks(bSolo);
 }
 
 
