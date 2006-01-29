@@ -33,8 +33,8 @@
 #include "qtractorMainForm.h"
 
 #include <qapplication.h>
-#include <qtoolbutton.h>
 #include <qpopupmenu.h>
+#include <qtooltip.h>
 #include <qpainter.h>
 #include <qcursor.h>
 #include <qheader.h>
@@ -47,6 +47,83 @@
 #if QT_VERSION < 0x030200
 #define WNoAutoErase	(WResizeNoErase | WRepaintNoErase)
 #endif
+
+
+//----------------------------------------------------------------------------
+// qtractorTrackListToolButton -- Tracks list item tool button.
+
+// Constructor.
+qtractorTrackListToolButton::qtractorTrackListToolButton (
+	qtractorTrackListItem *pItem, ToolType toolType )
+	: QToolButton(pItem->listView()->viewport())
+{
+	m_pItem    = pItem;
+	m_toolType = toolType;
+
+	QToolButton::setFixedSize(22, 16);
+	QToolButton::setUsesTextLabel(true);
+	QToolButton::setToggleButton(true);
+
+	QToolButton::setFont(
+		QFont(pItem->listView()->font().family(), 6, QFont::Bold));
+
+	bool bOn = false;
+	qtractorTrack *pTrack = m_pItem->track();
+
+	m_rgbOff = QToolButton::paletteBackgroundColor();
+	switch (toolType) {
+	case Record:
+		bOn = (pTrack && pTrack->isRecord());
+		QToolButton::setTextLabel("R");
+		QToolTip::add(this, tr("Record"));
+		m_rgbOn = Qt::red;
+		break;
+	case Mute:
+		bOn = (pTrack && pTrack->isMute());
+		QToolButton::setTextLabel("M");
+		QToolTip::add(this, tr("Mute"));
+		m_rgbOn = Qt::yellow;
+		break;
+	case Solo:
+		bOn = (pTrack && pTrack->isSolo());
+		QToolButton::setTextLabel("S");
+		QToolTip::add(this, tr("Solo"));
+		m_rgbOn = Qt::cyan;
+		break;
+	}
+	
+	QToolButton::setOn(bOn);
+	QToolButton::setPaletteBackgroundColor(bOn ? m_rgbOn : m_rgbOff);
+
+	QObject::connect(this, SIGNAL(toggled(bool)), SLOT(toggledSlot(bool)));
+}
+
+
+// Special toggle slot.
+void qtractorTrackListToolButton::toggledSlot ( bool bOn )
+{
+	qtractorTrack *pTrack = m_pItem->track();
+	if (pTrack == NULL)
+		return;
+
+	// Do the proper tool action immediately...
+	switch (m_toolType) {
+	case Record:
+		pTrack->setRecord(bOn);
+		break;
+	case Mute:
+		pTrack->setMute(bOn);
+		break;
+	case Solo:
+		pTrack->setSolo(bOn);
+		break;
+	}
+
+	// Do some feedback...
+	QToolButton::setPaletteBackgroundColor(bOn ? m_rgbOn : m_rgbOff);
+
+	m_pItem->trackList()->contentsChangeNotify();
+}
 
 
 //----------------------------------------------------------------------------
@@ -68,6 +145,15 @@ qtractorTrackListItem::qtractorTrackListItem ( qtractorTrackList *pTrackList,
 }
 
 
+// Destructor.
+qtractorTrackListItem::~qtractorTrackListItem (void)
+{
+	delete m_pRecordButton;
+	delete m_pMuteButton;
+	delete m_pSoloButton;
+}
+
+
 // Common item initializer.
 void qtractorTrackListItem::initItem ( qtractorTrackList *pTrackList,
 	qtractorTrack *pTrack )
@@ -76,29 +162,56 @@ void qtractorTrackListItem::initItem ( qtractorTrackList *pTrackList,
 
 	QListViewItem::setMultiLinesEnabled(true);
 
-	// FIXME: Track number prone to confusion...
+	// FIXME: Track number's prone to confusion...
 	int iTrackNumber = pTrackList->childCount();
 	setText(qtractorTrackList::Number, QString::number(iTrackNumber));
 	setText(qtractorTrackList::Name,   pTrack->trackName());
-	setText(qtractorTrackList::Record, "R");
-	setText(qtractorTrackList::Mute,   "M");
-	setText(qtractorTrackList::Solo,   "S");
 	setText(qtractorTrackList::Bus,    pTrack->busName());
 	// qtractorTrackList::Channel
 	// qtractorTrackList::Patch
 	// qtractorTrackList::Instrument
 
-#ifdef QTOOLBUTTON_TEST
-	static int n = 0;
-	QFont font(listView()->font().family(), 6, QFont::Bold);
-	m_pToolButton = new QToolButton(pTrackList->viewport());
-	m_pToolButton->setFont(font);
-	m_pToolButton->setTextLabel(QString("%1").arg(++n));
-	m_pToolButton->setUsesTextLabel(true);
-	m_pToolButton->setToggleButton(true);
-	m_pToolButton->resize(24, 18);
-	pTrackList->addChild(m_pToolButton);
-#endif
+	m_pRecordButton = new qtractorTrackListToolButton(this,
+		qtractorTrackListToolButton::Record);
+	m_pMuteButton = new qtractorTrackListToolButton(this,
+		qtractorTrackListToolButton::Mute);
+	m_pSoloButton = new qtractorTrackListToolButton(this,
+		qtractorTrackListToolButton::Solo);
+
+	pTrackList->addChild(m_pRecordButton);
+	pTrackList->addChild(m_pMuteButton);
+	pTrackList->addChild(m_pSoloButton);
+}
+
+
+// Tool widget item updater.
+void qtractorTrackListItem::updateItem ( bool bShow )
+{
+	// Just hide every child tool widget?
+	if (!bShow) {
+		m_pRecordButton->hide();
+		m_pMuteButton->hide();
+		m_pSoloButton->hide();
+		return;
+	}
+
+	
+	QListView *pListView = QListViewItem::listView();
+	int x = pListView->header()->sectionRect(qtractorTrackList::Name).right();
+	int y = pListView->itemRect(this).bottom() - 22;
+	if (y >= 0) {
+		// Move to proper positioning layout...
+		x -= m_pSoloButton->width() + 4;
+		m_pSoloButton->move(x, y);
+		x -= m_pMuteButton->width() + 4;
+		m_pMuteButton->move(x, y);
+		x -= m_pRecordButton->width() + 4;
+		m_pRecordButton->move(x, y);
+		// Show up those buttons...
+		m_pMuteButton->show();
+		m_pSoloButton->show();
+		m_pRecordButton->show();
+	}
 }
 
 
@@ -183,6 +296,7 @@ void qtractorTrackListItem::setText ( int iColumn, const QString& sText )
 // Set track item height.
 void qtractorTrackListItem::setItemHeight ( int iItemHeight )
 {
+	updateItem(false);
 	QListViewItem::setHeight(iItemHeight);
 
 	if (m_pTrack == NULL)
@@ -194,6 +308,14 @@ void qtractorTrackListItem::setItemHeight ( int iItemHeight )
 
 	int iHeight = (iItemHeight * 100) / pSession->verticalZoom();
 	m_pTrack->setHeight(iHeight);
+
+	// Update all remaining items...
+	qtractorTrackListItem *pItem
+		= static_cast<qtractorTrackListItem *> (nextSibling());
+	while (pItem) {
+		pItem->updateItem(false);
+		pItem = static_cast<qtractorTrackListItem *> (pItem->nextSibling());
+	}
 }
 
 
@@ -247,40 +369,8 @@ void qtractorTrackListItem::paintCell ( QPainter *p, const QColorGroup& cg,
 		bg = m_pTrack->foreground().light();
 		fg = m_pTrack->background().light();
 		break;
-#ifdef QTOOLBUTTON_TEST
 	case qtractorTrackList::Name:
-	{
-		QPoint pos(30, 0);
-		pos = listView()->contentsToViewport(pos);
-		QRect rect = listView()->itemRect(this);
-		if (rect.isNull()) {
-			if (m_pToolButton->isVisible())
-				m_pToolButton->hide();
-		} else {
-			m_pToolButton->move(pos.x(), rect.height() - m_pToolButton->height() + rect.y() - 4);
-			if (!m_pToolButton->isVisible())
-				m_pToolButton->show();
-		}
-	    break;
-	}
-#endif
-	case qtractorTrackList::Record:
-		if (m_pTrack->isRecord()) {
-			bg = Qt::darkRed;
-			fg = bg.light(250);
-		}
-		break;
-	case qtractorTrackList::Mute:
-		if (m_pTrack->isMute()) {
-			bg = Qt::darkYellow;
-			fg = bg.light(250);
-		}
-		break;
-	case qtractorTrackList::Solo:
-		if (m_pTrack->isSolo()) {
-			bg = Qt::darkCyan;
-			fg = bg.light(250);
-		}
+		updateItem(true);
 		break;
 	}
 
@@ -320,27 +410,19 @@ qtractorTrackList::qtractorTrackList ( qtractorTracks *pTracks,
 //	QListView::header()->setFixedHeight(QTRACTOR_ITEM_HEIGHT);
 
 	QListView::viewport()->setPaletteBackgroundColor(Qt::darkGray);
+	//	QListView::colorGroup().color(QColorGroup::Background));
 
 	QListView::addColumn(tr("Nr"), 26);		// qtractorTrackList::Number
 	QListView::addColumn(tr("Track Name"), 120);	// qtractorTrackList::Name
-	QListView::addColumn(tr("R"), 20);		// qtractorTrackList::Record
-	QListView::addColumn(tr("M"), 20);		// qtractorTrackList::Mute
-	QListView::addColumn(tr("S"), 20);		// qtractorTrackList::Solo
 	QListView::addColumn(tr("Bus"));		// qtractorTrackList::Bus
 	QListView::addColumn(tr("Ch"), 26);		// qtractorTrackList::Channel
 	QListView::addColumn(tr("Patch"));		// qtractorTrackList::Patch
 	QListView::addColumn(tr("Instrument"));	// qtractorTrackList::Instrumnet
 
 	QListView::setColumnAlignment(qtractorTrackList::Number, Qt::AlignHCenter);
-	QListView::setColumnAlignment(qtractorTrackList::Record, Qt::AlignHCenter);
-	QListView::setColumnAlignment(qtractorTrackList::Mute, Qt::AlignHCenter);
-	QListView::setColumnAlignment(qtractorTrackList::Solo, Qt::AlignHCenter);
 	QListView::setColumnAlignment(qtractorTrackList::Channel, Qt::AlignHCenter);
 
 	QListView::setColumnWidthMode(qtractorTrackList::Name, QListView::Manual);
-	QListView::setColumnWidthMode(qtractorTrackList::Record, QListView::Manual);
-	QListView::setColumnWidthMode(qtractorTrackList::Mute, QListView::Manual);
-	QListView::setColumnWidthMode(qtractorTrackList::Solo, QListView::Manual);
 	QListView::setColumnWidthMode(qtractorTrackList::Channel, QListView::Manual);
 
 //	QListView::setResizeMode(QListView::LastColumn);
@@ -677,7 +759,7 @@ void qtractorTrackList::contextMenuSlot ( QListViewItem* /*pItem*/,
 
 // Simple click handler.
 void qtractorTrackList::clickedSlot ( QListViewItem *pItem,
-	const QPoint& /*pos*/, int col )
+	const QPoint& /*pos*/, int /*col*/ )
 {
 	qtractorTrack *pTrack = NULL;
 	qtractorTrackListItem *pTrackItem
@@ -687,28 +769,14 @@ void qtractorTrackList::clickedSlot ( QListViewItem *pItem,
 	if (pTrack == NULL)
 		return;
 
-	switch (col) {
-	case qtractorTrackList::Record:
-		pTrack->setRecord(!pTrack->isRecord());
-		break;
-	case qtractorTrackList::Mute:
-		pTrack->setMute(!pTrack->isMute());
-		break;
-	case qtractorTrackList::Solo:
-		pTrack->setSolo(!pTrack->isSolo());
-		break;
-	default:
-		// Bail out.
-		return;
-	}
+	// TODO: Maybe something might be done, regarding direct
+	// selection of track bus and/or MIDI instrument...
+}
 
-	// Update only the changed cell area...
-	QRect sectRect = QListView::header()->sectionRect(col);
-	QRect itemRect = QListView::itemRect(pItem);
-	itemRect.setX(sectRect.x());
-	itemRect.setWidth(sectRect.x());
-	QListView::viewport()->update(itemRect);
 
+// Notify whole setup that we changed something.
+void qtractorTrackList::contentsChangeNotify (void)
+{
 	m_pTracks->contentsChangeNotify();
 }
 

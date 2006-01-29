@@ -23,17 +23,54 @@
 #define __qtractorTrackList_h
 
 #include <qlistview.h>
+#include <qtoolbutton.h>
 
 // Forward declarations.
 class qtractorTracks;
 class qtractorTrack;
 
 class qtractorTrackList;
+class qtractorTrackListItem;
 class qtractorInstrumentList;
 
-#ifdef QTOOLBUTTON_TEST
-class QToolButton;
-#endif
+
+//----------------------------------------------------------------------------
+// qtractorTrackListToolButton -- Tracks list item tool button.
+
+class qtractorTrackListToolButton : public QToolButton
+{
+	Q_OBJECT
+
+public:
+
+	// Tool button specific types:
+	enum ToolType { Record, Mute, Solo };
+
+	// Constructor.
+	qtractorTrackListToolButton(qtractorTrackListItem *pItem,
+		ToolType toolType);
+
+	// Specific accessors.
+	qtractorTrackListItem *item() const { return m_pItem; }
+	ToolType toolType() const { return m_toolType; }
+
+protected slots:
+
+	// Special toggle slot.
+	void toggledSlot(bool bOn);
+
+private:
+
+	// Instance variables.
+	qtractorTrackListItem *m_pItem;
+	ToolType m_toolType;
+
+	// Special background colors.
+	QColor m_rgbOn;
+	QColor m_rgbOff;
+};
+
+
 
 //----------------------------------------------------------------------------
 // qtractorTrackListItem -- Tracks list item.
@@ -47,6 +84,9 @@ public:
 		qtractorTrack *pTrack);
 	qtractorTrackListItem(qtractorTrackList *pTrackList,
 		qtractorTrack *pTrack, QListViewItem *pItemAfter);
+
+	// Destructor.
+	~qtractorTrackListItem();
 
 	// Track list brainless accessor.
 	qtractorTrackList *trackList() const;
@@ -73,15 +113,16 @@ protected:
 
 	// Common item initializer.
 	void initItem(qtractorTrackList *pTrackList, qtractorTrack *pTrack);
+	void updateItem(bool bShow);
 
 private:
 
 	// The track reference.
 	qtractorTrack *m_pTrack;
 
-#ifdef QTOOLBUTTON_TEST
-	QToolButton *m_pToolButton;
-#endif
+	qtractorTrackListToolButton *m_pRecordButton;
+	qtractorTrackListToolButton *m_pMuteButton;
+	qtractorTrackListToolButton *m_pSoloButton;
 };
 
 
@@ -100,15 +141,12 @@ public:
 
 	// Track list view column indexes.
 	enum ColumnIndex {
-		Number  = 0,
-		Name    = 1,
-		Record  = 2,
-		Mute    = 3,
-		Solo    = 4,
-		Bus     = 5,
-		Channel = 6,
-		Patch   = 7,
-		Instrument = 8
+		Number     = 0,
+		Name       = 1,
+		Bus        = 2,
+		Channel    = 3,
+		Patch      = 4,
+		Instrument = 5
 	};
 
 	// Find the list view item from track pointer reference.
@@ -122,6 +160,9 @@ public:
 
 	// Instrument list accessor helper.
 	qtractorInstrumentList *instruments() const;
+
+	// Notify whole setup that we changed something.
+	void contentsChangeNotify();
 
 protected:
 
