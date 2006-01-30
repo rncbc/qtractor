@@ -1254,6 +1254,7 @@
     <variable access="private">unsigned long m_iPlayHead;</variable>
     <variable access="private">int m_iPeakTimer;</variable>
 	<variable access="private">int m_iPlayTimer;</variable>
+	<variable access="private">int m_iTransport;</variable>
 </variables>
 <slots>
     <slot specifier="non virtual">fileNew( void )</slot>

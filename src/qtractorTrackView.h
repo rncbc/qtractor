@@ -102,11 +102,13 @@ public:
 	// Edit-head positioning.
 	void setEditHead(unsigned long iFrame);
 	void setEditHeadX(int iEditHeadX);
+	unsigned long editHead() const;
 	int editHeadX() const;
 
 	// Edit-tail positioning.
 	void setEditTail(unsigned long iFrame);
 	void setEditTailX(int iEditTailX);
+	unsigned long editTail() const;
 	int editTailX() const;
 
 	// Current session cursor accessor.

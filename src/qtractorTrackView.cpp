@@ -1471,6 +1471,14 @@ void qtractorTrackView::setEditHeadX ( int iEditHeadX )
 	drawPositionX(m_iEditHeadX, iEditHeadX, m_iEditTailX, Qt::blue);
 }
 
+unsigned long qtractorTrackView::editHead (void) const
+{
+	qtractorSession *pSession = m_pTracks->session();
+	if (pSession == NULL)
+	    return 0;
+	return pSession->frameFromPixel(m_iEditHeadX);
+}
+
 int qtractorTrackView::editHeadX (void) const
 {
 	return m_iEditHeadX;
@@ -1490,6 +1498,14 @@ void qtractorTrackView::setEditTailX ( int iEditTailX )
 	if (iEditTailX < m_iEditHeadX)
 		drawPositionX(m_iEditHeadX, iEditTailX, m_iEditTailX, Qt::blue);
 	drawPositionX(m_iEditTailX, iEditTailX, m_iEditHeadX, Qt::blue);
+}
+
+unsigned long qtractorTrackView::editTail (void) const
+{
+	qtractorSession *pSession = m_pTracks->session();
+	if (pSession == NULL)
+	    return 0;
+	return pSession->frameFromPixel(m_iEditTailX);
 }
 
 int qtractorTrackView::editTailX (void) const

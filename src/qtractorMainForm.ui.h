@@ -120,6 +120,7 @@ void qtractorMainForm::init (void)
 
 	m_iPeakTimer = 0;
 	m_iPlayTimer = 0;
+	m_iTransport = 0;
 
 #ifdef HAVE_SIGNAL_H
 	// Set to ignore any fatal "Broken pipe" signals.
@@ -139,8 +140,7 @@ void qtractorMainForm::init (void)
 	const QString sTime("00:00:00.000");
 	transportToolbar->addSeparator();
 	m_pTransportTime = new QLabel(sTime, transportToolbar);
-	m_pTransportTime->setFont(
-		QFont(font().family(), 10, QFont::Bold));
+	m_pTransportTime->setFont(QFont(font().family(), 10));
 	m_pTransportTime->setFrameShape(QFrame::Panel);
 	m_pTransportTime->setFrameShadow(QFrame::Sunken);
 	m_pTransportTime->setPaletteBackgroundColor(Qt::black);
@@ -1151,9 +1151,9 @@ void qtractorMainForm::transportRewind (void)
 	appendMessages("qtractorMainForm::transportRewind()");
 #endif
 
-
 	// Reset playhead position...
 	m_pSession->setPlayHead(0);
+	m_iTransport++;
 
 	stabilizeForm();
 }
@@ -1166,13 +1166,19 @@ void qtractorMainForm::transportBackward (void)
 	appendMessages("qtractorMainForm::transportBackward()");
 #endif
 
-	// Move playhead one second backward....
+	// Move playhead to edit-head or one second backward....
+	unsigned long iEditHead = 0;
 	unsigned long iPlayHead = m_pSession->playHead();
-	if (iPlayHead > m_pSession->sampleRate())
+	if (m_pTracks)
+		iEditHead = m_pTracks->trackView()->editHead();
+	if (iEditHead > 0 && iEditHead < iPlayHead)
+		iPlayHead = iEditHead;
+	else if (iPlayHead > m_pSession->sampleRate())
 		iPlayHead -= m_pSession->sampleRate();
 	else
 		iPlayHead = 0;
 	m_pSession->setPlayHead(iPlayHead);
+	m_iTransport++;
 
 	stabilizeForm();
 }
@@ -1212,6 +1218,9 @@ void qtractorMainForm::transportPlay (void)
 		QIconSet(QPixmap::fromMimeSource(bPlaying ?
 		"transportPause.png" : "transportPlay.png")));
 
+	// Flag that we've changed transport status...
+	m_iTransport++;
+
 	// Done with playback switch...
 	stabilizeForm();
 }
@@ -1224,8 +1233,17 @@ void qtractorMainForm::transportForward (void)
 	appendMessages("qtractorMainForm::transportForward()");
 #endif
 
-	// Move playhead one second forward....
-	m_pSession->setPlayHead(m_pSession->playHead() + m_pSession->sampleRate());
+	// Move playhead to edit-tail or one second forward....
+	unsigned long iEditTail = 0;
+	unsigned long iPlayHead = m_pSession->playHead();
+	if (m_pTracks)
+		iEditTail = m_pTracks->trackView()->editTail();
+	if (iPlayHead < iEditTail)
+		iPlayHead = iEditTail;
+	else
+		iPlayHead += m_pSession->sampleRate();
+	m_pSession->setPlayHead(iPlayHead);
+	m_iTransport++;
 
 	stabilizeForm();
 }
@@ -1378,8 +1396,8 @@ void qtractorMainForm::stabilizeForm (void)
 
 	// Transport stuff...
 	bEnabled = m_pSession->isActivated();
-	transportRewindAction->setEnabled(bEnabled);
-	transportBackwardAction->setEnabled(bEnabled);
+	transportRewindAction->setEnabled(bEnabled && m_iPlayHead > 0);
+	transportBackwardAction->setEnabled(bEnabled && m_iPlayHead > 0);
 //	transportPlayAction->setEnabled(bEnabled);
 	transportForwardAction->setEnabled(bEnabled);
 }
@@ -1606,6 +1624,11 @@ void qtractorMainForm::timerSlot (void)
 				m_iPlayTimer = 0;
 				m_pTransportTime->setText(
 					m_pSession->timeFromFrame(m_iPlayHead));
+				// Transport status...
+				if (m_iTransport > 0) {
+					m_iTransport = 0;
+					stabilizeForm();
+				}
 			}
 		}
 	}
