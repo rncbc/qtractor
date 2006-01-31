@@ -172,12 +172,12 @@ bool qtractorAudioMadFile::input (void)
 			// Only do mapping accounting each other 3rd decoded frame...
 			if ((++m_curr.iDecodeCount % 3) == 0) {
 #if 0
+				m_frames.append(m_curr);
+#else
 				unsigned long iInputOffset = m_curr.iInputOffset
 					- (m_madStream.bufend - m_madStream.next_frame);
 				m_frames.append(FrameNode(iInputOffset,
 					m_curr.iOutputOffset, m_curr.iDecodeCount));
-#else
-				m_frames.append(m_curr);
 #endif
 			}
 		}
