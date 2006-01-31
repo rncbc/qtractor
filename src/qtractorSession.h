@@ -128,7 +128,7 @@ public:
 	unsigned int pixelSnap(unsigned int x) const;
 
 	// Convert frame to time string.
-	QString timeFromFrame(unsigned long iFrame) const;
+	QString timeFromFrame(unsigned long iFrame, bool bBBT = false) const;
 
 	// Update time scale divisor factors.
 	void updateTimeScale();

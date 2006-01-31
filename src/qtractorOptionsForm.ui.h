@@ -72,6 +72,7 @@ void qtractorOptionsForm::setOptions ( qtractorOptions *pOptions )
 	StdoutCaptureCheckBox->setChecked(m_pOptions->bStdoutCapture);
 	CompletePathCheckBox->setChecked(m_pOptions->bCompletePath);
 	PeakAutoRemoveCheckBox->setChecked(m_pOptions->bPeakAutoRemove);
+	TransportTimeCheckBox->setChecked(m_pOptions->bTransportTime);
 	MaxRecentFilesSpinBox->setValue(m_pOptions->iMaxRecentFiles);
 
 	// Donw. Restart clean.
@@ -101,6 +102,7 @@ void qtractorOptionsForm::accept (void)
 		m_pOptions->bStdoutCapture  = StdoutCaptureCheckBox->isChecked();
 		m_pOptions->bCompletePath   = CompletePathCheckBox->isChecked();
 		m_pOptions->bPeakAutoRemove = PeakAutoRemoveCheckBox->isChecked();
+		m_pOptions->bTransportTime  = TransportTimeCheckBox->isChecked();
 		m_pOptions->iMaxRecentFiles = MaxRecentFilesSpinBox->value();
 		// Reset dirty flag.
 		m_iDirtyCount = 0;

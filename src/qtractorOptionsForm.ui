@@ -379,6 +379,25 @@
                                             <string>Whether to remove audio peak files on session close</string>
                                         </property>
                                     </widget>
+                                    <widget class="QCheckBox">
+                                        <property name="name">
+                                            <cstring>TransportTimeCheckBox</cstring>
+                                        </property>
+                                        <property name="font">
+                                            <font>
+                                                <bold>0</bold>
+                                            </font>
+                                        </property>
+                                        <property name="text">
+                                            <string>&amp;Transport time in BBT format</string>
+                                        </property>
+                                        <property name="accel">
+                                            <string>Alt+T</string>
+                                        </property>
+                                        <property name="toolTip" stdset="0">
+                                            <string>Whether to show transport time in BBT format (bar:beat.tick)</string>
+                                        </property>
+                                    </widget>
                                 </vbox>
                             </widget>
                             <widget class="QSpinBox" row="0" column="3">
@@ -519,6 +538,12 @@
         <slot>changed()</slot>
     </connection>
     <connection>
+        <sender>TransportTimeCheckBox</sender>
+        <signal>stateChanged(int)</signal>
+        <receiver>qtractorOptionsForm</receiver>
+        <slot>changed()</slot>
+    </connection>
+    <connection>
         <sender>MaxRecentFilesSpinBox</sender>
         <signal>valueChanged(int)</signal>
         <receiver>qtractorOptionsForm</receiver>
@@ -534,6 +559,7 @@
     <tabstop>StdoutCaptureCheckBox</tabstop>
     <tabstop>CompletePathCheckBox</tabstop>
     <tabstop>PeakAutoRemoveCheckBox</tabstop>
+    <tabstop>TransportTimeCheckBox</tabstop>
     <tabstop>MaxRecentFilesSpinBox</tabstop>
     <tabstop>OkPushButton</tabstop>
     <tabstop>CancelPushButton</tabstop>

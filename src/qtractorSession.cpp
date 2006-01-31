@@ -329,12 +329,12 @@ unsigned int qtractorSession::pixelFromBeat ( unsigned int iBeat ) const
 
 
 // Pixel/Tick number conversion.
-unsigned long qtractorSession::tickFromPixel(unsigned int x) const
+unsigned long qtractorSession::tickFromPixel ( unsigned int x ) const
 {
 	return (unsigned long) ((m_fScale_d * x) / m_fScale_b);
 }
 
-unsigned int qtractorSession::pixelFromTick(unsigned long iTick) const
+unsigned int qtractorSession::pixelFromTick ( unsigned long iTick ) const
 {
 	return (unsigned int) ((m_fScale_b * iTick) / m_fScale_d);
 }
@@ -423,25 +423,42 @@ unsigned int qtractorSession::pixelSnap ( unsigned int x ) const
 
 
 // Convert frame to time string.
-QString qtractorSession::timeFromFrame ( unsigned long iFrame ) const
+QString qtractorSession::timeFromFrame ( unsigned long iFrame, bool bBBT ) const
 {
-	unsigned int hh, mm, ss, ddd;
-	float secs = (float) iFrame / (float) m_props.sampleRate;
-	hh = mm = ss = 0;
-	if (secs >= 3600.0) {
-		hh = (unsigned int) (secs / 3600.0);
-		secs -= (float) hh * 3600.0;
+	if (bBBT) {
+		// Time frame code in bars:beats.ticks ...
+		unsigned int bars, beats;
+		unsigned long ticks = tickFromFrame(iFrame);
+		bars = beats = 0;
+		if (ticks >= (unsigned int) m_props.ticksPerBeat) {
+			beats  = (unsigned int) (ticks / m_props.ticksPerBeat);
+			ticks -= (unsigned long) beats * m_props.ticksPerBeat;
+		}
+		if (beats >= (unsigned int) m_props.beatsPerBar) {
+			bars   = (unsigned int) (beats / m_props.beatsPerBar);
+			beats -= (unsigned long) bars  * m_props.beatsPerBar;
+		}
+		return QString().sprintf("%4u:%02u.%04u", bars, beats, ticks);
+	} else {
+		// Time frame code in hh:mm:ss.ddd ...
+		unsigned int hh, mm, ss, ddd;
+		float secs = (float) iFrame / (float) m_props.sampleRate;
+		hh = mm = ss = 0;
+		if (secs >= 3600.0) {
+			hh = (unsigned int) (secs / 3600.0);
+			secs -= (float) hh * 3600.0;
+		}
+		if (secs >= 60.0) {
+			mm = (unsigned int) (secs / 60.0);
+			secs -= (float) mm * 60.0;
+		}
+		if (secs >= 0.0) {
+			ss = (unsigned int) secs;
+			secs -= (float) ss;
+		}
+		ddd = (unsigned int) (secs * 1000.0);
+		return QString().sprintf("%02u:%02u:%02u.%03u", hh, mm, ss, ddd);
 	}
-	if (secs >= 60.0) {
-		mm = (unsigned int) (secs / 60.0);
-		secs -= (float) mm * 60.0;
-	}
-	if (secs >= 0.0) {
-		ss = (unsigned int) secs;
-		secs -= (float) ss;
-	}
-	ddd = (unsigned int) (secs * 1000.0);
-	return QString().sprintf("%02u:%02u:%02u.%03u", hh, mm, ss, ddd);
 }
 
 

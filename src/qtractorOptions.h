@@ -59,6 +59,7 @@ public:
 	bool    bStdoutCapture;
 	bool    bCompletePath;
 	bool    bPeakAutoRemove;
+	bool    bTransportTime;
 
 	// View options...
 	bool    bMenubar;

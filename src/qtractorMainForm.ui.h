@@ -136,6 +136,14 @@ void qtractorMainForm::init (void)
 	// Make it shine :-)
 	setCentralWidget(m_pWorkspace);
 
+    	// Have some effective feedback...
+	QIconSet icons;
+	icons.setPixmap(QPixmap::fromMimeSource("transportPlay.png"),
+		QIconSet::Automatic, QIconSet::Active, QIconSet::Off);
+	icons.setPixmap(QPixmap::fromMimeSource("transportPause.png"),
+		QIconSet::Automatic, QIconSet::Active, QIconSet::On);
+	transportPlayAction->setIconSet(icons);
+
 	// Additional toolbar controls...
 	const QString sTime("00:00:00.000");
 	transportToolbar->addSeparator();
@@ -1213,12 +1221,6 @@ void qtractorMainForm::transportPlay (void)
 		m_pSession->setMidiPatch(m_pInstruments);
 	// Toggle engine play status...
 	m_pSession->setPlaying(bPlaying);
-	// Have some effective feedback...
-	transportPlayAction->setIconSet(
-		QIconSet(QPixmap::fromMimeSource(bPlaying ?
-		"transportPause.png" : "transportPlay.png")));
-
-	// Flag that we've changed transport status...
 	m_iTransport++;
 
 	// Done with playback switch...
@@ -1375,7 +1377,9 @@ void qtractorMainForm::stabilizeForm (void)
 
 	// Session status...
 	m_pTransportTime->setText(
-		m_pSession->timeFromFrame(m_iPlayHead));
+		m_pSession->timeFromFrame(m_iPlayHead,
+			m_pOptions && m_pOptions->bTransportTime)
+	);
 
 	if (m_pTracks && m_pTracks->currentTrack()) {
 		m_statusItems[QTRACTOR_STATUS_NAME]->setText(
@@ -1629,7 +1633,9 @@ void qtractorMainForm::timerSlot (void)
 			if (m_iPlayTimer >= QTRACTOR_TIMER_DELAY) {
 				m_iPlayTimer = 0;
 				m_pTransportTime->setText(
-					m_pSession->timeFromFrame(m_iPlayHead));
+					m_pSession->timeFromFrame(m_iPlayHead,
+						m_pOptions && m_pOptions->bTransportTime)
+				);
 				// Transport status...
 				if (m_iTransport > 0) {
 					m_iTransport = 0;
