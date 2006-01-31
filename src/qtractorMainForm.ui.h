@@ -1234,10 +1234,16 @@ void qtractorMainForm::transportForward (void)
 #endif
 
 	// Move playhead to edit-tail or one second forward....
+	unsigned long iEditHead = 0;
 	unsigned long iEditTail = 0;
 	unsigned long iPlayHead = m_pSession->playHead();
-	if (m_pTracks)
+	if (m_pTracks) {
+		iEditHead = m_pTracks->trackView()->editHead();
 		iEditTail = m_pTracks->trackView()->editTail();
+	}
+	if (iPlayHead < iEditHead)
+		iPlayHead = iEditHead;
+	else
 	if (iPlayHead < iEditTail)
 		iPlayHead = iEditTail;
 	else

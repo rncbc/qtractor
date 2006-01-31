@@ -91,6 +91,7 @@ bool qtractorAudioMadFile::open ( const char *pszName, int iMode )
 		return false;
 	}
 
+	// Read the very first bunch of raw-data...
 	if (!input()) {
 		close();
 		return false;
@@ -165,18 +166,23 @@ bool qtractorAudioMadFile::input (void)
 
 	long iRead = ::fread(pReadStart, 1, iReadSize, m_pFile);
 	if (iRead > 0) {
-		m_curr.iInputOffset += iRead;
 		// Time to add some frame mapping, on each 3rd iteration...
 		if ((m_frames.count() < 1
 			|| m_frames.last().iOutputOffset < m_curr.iOutputOffset)) {
 			// Only do mapping accounting each other 3rd decoded frame...
 			if ((++m_curr.iDecodeCount % 3) == 0) {
+#if 0
 				unsigned long iInputOffset = m_curr.iInputOffset
 					- (m_madStream.bufend - m_madStream.next_frame);
 				m_frames.append(FrameNode(iInputOffset,
 					m_curr.iOutputOffset, m_curr.iDecodeCount));
+#else
+				m_frames.append(m_curr);
+#endif
 			}
 		}
+		// Update the input offset, as for next time...
+		m_curr.iInputOffset += iRead;
 		// Add some decode buffer guard...
 		if (iRead < (int) iReadSize) {
 			::memset(pReadStart + iRead, 0, MAD_BUFFER_GUARD);
@@ -397,7 +403,7 @@ bool qtractorAudioMadFile::seek ( unsigned long iOffset )
 
 
 // Close method.
-void qtractorAudioMadFile::close()
+void qtractorAudioMadFile::close (void)
 {
 #ifdef DEBUG_0
 	fprintf(stderr, "qtractorAudioMadFile::close()\n");
@@ -444,21 +450,21 @@ int qtractorAudioMadFile::mode() const
 
 
 // Open channel(s) accessor.
-unsigned short qtractorAudioMadFile::channels() const
+unsigned short qtractorAudioMadFile::channels (void) const
 {
 	return m_iChannels;
 }
 
 
 // Estimated number of frames specialty (aprox. 8secs).
-unsigned long qtractorAudioMadFile::frames() const
+unsigned long qtractorAudioMadFile::frames (void) const
 {
 	return m_iFramesEst;
 }
 
 
 // Sample rate specialty.
-unsigned int qtractorAudioMadFile::sampleRate() const
+unsigned int qtractorAudioMadFile::sampleRate (void) const
 {
 	return m_iSampleRate;
 }
