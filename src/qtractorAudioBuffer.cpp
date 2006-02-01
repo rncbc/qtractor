@@ -425,7 +425,7 @@ void qtractorAudioBuffer::readSync (void)
 			m_ppFrames[i] = m_ppInBuffer[i];
 		}
 #endif  // CONFIG_LIBSAMPLERATE
-		if (!m_pFile->seek(framesIn(offset)))
+		if (!m_pFile->seek(framesOut(offset)))
 			return;
 	}
 
@@ -451,7 +451,7 @@ void qtractorAudioBuffer::readSync (void)
 			ntotal += nread;
 			offset += nread;
 			if (ls < le && offset >= le) {
-				m_pFile->seek(framesIn(ls));
+				m_pFile->seek(framesOut(ls));
 				offset = ls;
 			}
 			nahead = ws - ntotal;
