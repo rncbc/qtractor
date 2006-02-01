@@ -166,23 +166,15 @@ bool qtractorAudioMadFile::input (void)
 
 	long iRead = ::fread(pReadStart, 1, iReadSize, m_pFile);
 	if (iRead > 0) {
-		// Time to add some frame mapping, on each 3rd iteration...
-		if ((m_frames.count() < 1
-			|| m_frames.last().iOutputOffset < m_curr.iOutputOffset)) {
-			// Only do mapping accounting each other 3rd decoded frame...
-			if ((++m_curr.iDecodeCount % 3) == 0) {
-#if 0
-				m_frames.append(m_curr);
-#else
-				unsigned long iInputOffset = m_curr.iInputOffset
-					- (m_madStream.bufend - m_madStream.next_frame);
-				m_frames.append(FrameNode(iInputOffset,
-					m_curr.iOutputOffset, m_curr.iDecodeCount));
-#endif
-			}
-		}
 		// Update the input offset, as for next time...
 		m_curr.iInputOffset += iRead;
+		// Time to add some frame mapping, on each 3rd iteration...
+		if ((++m_curr.iDecodeCount % 3) == 0 && (m_frames.count() < 1
+			|| m_frames.last().iOutputOffset < m_curr.iOutputOffset)) {
+			unsigned long iInputOffset = m_curr.iInputOffset - iRemaining;
+			m_frames.append(FrameNode(iInputOffset,
+				m_curr.iOutputOffset, m_curr.iDecodeCount));
+		}
 		// Add some decode buffer guard...
 		if (iRead < (int) iReadSize) {
 			::memset(pReadStart + iRead, 0, MAD_BUFFER_GUARD);
@@ -358,9 +350,9 @@ bool qtractorAudioMadFile::seek ( unsigned long iOffset )
 		// Find the previous mapped 3rd frame that fits location...
 		FrameList::ConstIterator iter = m_frames.fromLast();
 		while (--iter != m_frames.begin()) {
-			const FrameNode& frame = *iter;
-			if (frame.iOutputOffset < iOffset) {
-				m_curr = frame;
+			if ((*iter).iOutputOffset < iOffset) {
+				if (--iter != m_frames.begin())
+					m_curr = *iter;
 				break;
 			}
 		}

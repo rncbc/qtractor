@@ -438,8 +438,7 @@ QString qtractorSession::timeFromFrame ( unsigned long iFrame, bool bBBT ) const
 			bars   = (unsigned int) (beats / m_props.beatsPerBar);
 			beats -= (unsigned long) bars  * m_props.beatsPerBar;
 		}
-		if (iFrame > 0) { ++bars; ++beats; ++ticks; }
-		return QString().sprintf("%4u:%02u.%04u", bars, beats, ticks);
+		return QString().sprintf("%4u:%02u.%03lu", bars + 1, beats + 1, ticks);
 	} else {
 		// Time frame code in hh:mm:ss.ddd ...
 		unsigned int hh, mm, ss, ddd;
