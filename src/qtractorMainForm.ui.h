@@ -1203,7 +1203,7 @@ void qtractorMainForm::transportPlay (void)
 	// try to (re)open the whole thing...
 	if (!m_pSession->isActivated()) {
 		// Save current playhead position, if any...
-		unsigned long iFrame = m_pSession->playHead();
+		unsigned long iPlayHead = m_pSession->playHead();
 		// Bail out if can't start it...
 		if (!startSession()) {
 			transportPlayAction->setOn(false);
@@ -1211,7 +1211,7 @@ void qtractorMainForm::transportPlay (void)
 			return;
 		}
 		// Restore previous playhead position...
-		m_pSession->setPlayHead(iFrame);
+		m_pSession->setPlayHead(iPlayHead);
 	}
 
 	// In case of (re)starting playback, send now

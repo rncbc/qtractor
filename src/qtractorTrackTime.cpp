@@ -214,7 +214,8 @@ void qtractorTrackTime::contentsMousePressEvent ( QMouseEvent *pMouseEvent )
 		// Direct snap positioning...
 		const bool bModifier = (pMouseEvent->state()
 			& (Qt::ShiftButton | Qt::ControlButton));
-		int x = pSession->pixelSnap(pMouseEvent->pos().x());
+		unsigned long iFrame = pSession->frameSnap(
+			pSession->frameFromPixel(pMouseEvent->pos().x()));
 		switch (pMouseEvent->button()) {
 		case Qt::LeftButton:
 			// Remember what and where we'll be dragging/selecting...
@@ -222,9 +223,9 @@ void qtractorTrackTime::contentsMousePressEvent ( QMouseEvent *pMouseEvent )
 			m_posDrag   = pMouseEvent->pos();
 			// Left-butoon indirect positioning...
 			if (bModifier) {
-				pSession->setPlayHead(pSession->frameFromPixel(x));
+				pSession->setPlayHead(iFrame);
 				// Playhead positioning...
-				m_pTracks->trackView()->setPlayHeadX(x);
+				m_pTracks->trackView()->setPlayHead(iFrame);
 				// Not quite a selection, but for
 				// immediate visual feedback...
 				m_pTracks->selectionChangeNotify();
@@ -234,7 +235,7 @@ void qtractorTrackTime::contentsMousePressEvent ( QMouseEvent *pMouseEvent )
 			// Right-butoon indirect positioning...
 			if (!bModifier) {
 				// Edit-tail positioning...
-				m_pTracks->trackView()->setEditTailX(x);
+				m_pTracks->trackView()->setEditTail(iFrame);
 			}
 			// Fall thru...
 		default:
@@ -299,17 +300,17 @@ void qtractorTrackTime::contentsMouseReleaseEvent ( QMouseEvent *pMouseEvent )
 			drawDragSelect(m_rectDrag);	// Hide.
 			if (!bModifier) {
 				const QRect rect(m_rectDrag.normalize());
-				m_pTracks->trackView()->setEditHeadX(
-					pSession->pixelSnap(rect.left()));
-				m_pTracks->trackView()->setEditTailX(
-					pSession->pixelSnap(rect.right()));
+				m_pTracks->trackView()->setEditHead(pSession->frameSnap(
+					pSession->frameFromPixel(rect.left())));
+				m_pTracks->trackView()->setEditTail(pSession->frameSnap(
+					pSession->frameFromPixel(rect.right())));
 			}
 			break;
 		case DragStart:
 			// Deferred left-button edit-head positioning...
 			if (!bModifier) {
-				m_pTracks->trackView()->setEditHeadX(
-					pSession->pixelSnap(m_posDrag.x()));
+				m_pTracks->trackView()->setEditHead(pSession->frameSnap(
+					pSession->frameFromPixel(m_posDrag.x())));
 			}
 			// Fall thru...
 		case DragNone:

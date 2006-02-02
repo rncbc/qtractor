@@ -95,19 +95,17 @@ public:
 	void deleteClipSelect();
 
 	// Play-head positioning.
-	void setPlayHead(unsigned long iFrame, bool bSyncView = false);
-	void setPlayHeadX(int iPlayHeadX, bool bSyncView = false);
+	void setPlayHead(unsigned long iPlayHead, bool bSyncView = false);
+	unsigned long playHead() const;
 	int playHeadX() const;
 
 	// Edit-head positioning.
-	void setEditHead(unsigned long iFrame);
-	void setEditHeadX(int iEditHeadX);
+	void setEditHead(unsigned long iEditHead);
 	unsigned long editHead() const;
 	int editHeadX() const;
 
 	// Edit-tail positioning.
-	void setEditTail(unsigned long iFrame);
-	void setEditTailX(int iEditTailX);
+	void setEditTail(unsigned long iEditTail);
 	unsigned long editTail() const;
 	int editTailX() const;
 
@@ -178,6 +176,11 @@ protected:
 	// Keyboard event handler.
 	void keyPressEvent(QKeyEvent *pKeyEvent);
 
+	// Playhead and edit shadow-pixel line positioning.
+	void setPlayHeadX(int iPlayHeadX, bool bSyncView = false);
+	void setEditHeadX(int iEditHeadX);
+	void setEditTailX(int iEditTailX);
+
 	// Vertical line positioning.
 	void drawPositionX(int& iPositionX, int x, int x2,
 		const QColor& color, bool bSyncView = false);
@@ -241,9 +244,13 @@ private:
 	QPtrList<qtractorClip> m_clipboard;
 	qtractorTrack *m_pClipboardSingleTrack;
 
-	// Playhead positioning.
+	// Playhead and edit frame positioning.
+	unsigned long m_iPlayHead;
+	unsigned long m_iEditHead;
+	unsigned long m_iEditTail;
+
+	// Playhead and edit shadow pixel positioning.
 	int m_iPlayHeadX;
-	// Edit positioning.
 	int m_iEditHeadX;
 	int m_iEditTailX;
 };
