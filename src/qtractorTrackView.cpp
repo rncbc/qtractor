@@ -266,25 +266,32 @@ void qtractorTrackView::drawContents ( QPainter *p,
 		clipy - QScrollView::contentsY(),
 		clipw, cliph);
 
+	// Lines a-head...
+	qtractorSession *pSession = m_pTracks->session();
+	if (pSession == NULL)
+		return;
+
+	int x;
+
 	// Draw edit-head line...
-	int iEditHeadX = editHeadX();
-	if (iEditHeadX >= clipx && iEditHeadX < clipx + clipw) {
+	x = pSession->pixelFromFrame(editHead());
+	if (x >= clipx && x < clipx + clipw) {
 		p->setPen(Qt::blue);
-		p->drawLine(iEditHeadX, clipy, iEditHeadX, clipy + cliph);
+		p->drawLine(x, clipy, x, clipy + cliph);
 	}
 
 	// Draw edit-tail line...
-	int iEditTailX = editTailX();
-	if (iEditTailX >= clipx && iEditTailX < clipx + clipw) {
+	x = pSession->pixelFromFrame(editTail());
+	if (x >= clipx && x < clipx + clipw) {
 		p->setPen(Qt::blue);
-		p->drawLine(iEditTailX, clipy, iEditTailX, clipy + cliph);
+		p->drawLine(x, clipy, x, clipy + cliph);
 	}
 
 	// Draw play-head line...
-	int iPlayHeadX = playHeadX();
-	if (iPlayHeadX >= clipx && iPlayHeadX < clipx + clipw) {
+	x = pSession->pixelFromFrame(playHead());
+	if (x >= clipx && x < clipx + clipw) {
 		p->setPen(Qt::red);
-		p->drawLine(iPlayHeadX, clipy, iPlayHeadX, clipy + cliph);
+		p->drawLine(x, clipy, x, clipy + cliph);
 	}
 }
 
@@ -1468,14 +1475,6 @@ unsigned long qtractorTrackView::playHead (void) const
 	return m_iPlayHead;
 }
 
-int qtractorTrackView::playHeadX (void) const
-{
-	qtractorSession *pSession = m_pTracks->session();
-	if (pSession == NULL)
-	    return 0;
-	return pSession->pixelFromFrame(m_iPlayHead);
-}
-
 
 // Edit-head positioning
 void qtractorTrackView::setEditHead ( unsigned long iEditHead )
@@ -1499,14 +1498,6 @@ unsigned long qtractorTrackView::editHead (void) const
 	return m_iEditHead;
 }
 
-int qtractorTrackView::editHeadX (void) const
-{
-	qtractorSession *pSession = m_pTracks->session();
-	if (pSession == NULL)
-	    return 0;
-	return pSession->pixelFromFrame(m_iEditHead);
-}
-
 
 // Edit-tail positioning
 void qtractorTrackView::setEditTail ( unsigned long iEditTail )
@@ -1528,14 +1519,6 @@ void qtractorTrackView::setEditTailX ( int iEditTailX )
 unsigned long qtractorTrackView::editTail (void) const
 {
 	return m_iEditTail;
-}
-
-int qtractorTrackView::editTailX (void) const
-{
-	qtractorSession *pSession = m_pTracks->session();
-	if (pSession == NULL)
-	    return 0;
-	return pSession->pixelFromFrame(m_iEditTail);
 }
 
 
@@ -1636,8 +1619,7 @@ void qtractorTrackView::pasteClipSelect (void)
 	pAddClipCommand->setName(tr("paste clip"));
 
 	qtractorClip *pClip = m_clipboard.first();
-	long delta = (pClip ?
-		(long) pSession->frameFromPixel(m_iEditHeadX) - pClip->clipStart() : 0);
+	long delta = (pClip ? m_iEditHead - pClip->clipStart() : 0);
 	while (pClip) {
 		if (!bSingleTrack)
 			pPasteTrack = pClip->track();

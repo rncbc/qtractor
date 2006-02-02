@@ -1617,30 +1617,28 @@ void qtractorMainForm::updateMessagesCapture (void)
 void qtractorMainForm::timerSlot (void)
 {
 	// Playhead and transport status...
-	if (m_pSession->isActivated()) {
-		unsigned long iPlayHead = m_pSession->playHead();
-		if (iPlayHead != m_iPlayHead) {
-			if (m_pTracks && m_pTracks->trackView()) {
-				m_pTracks->trackView()->setPlayHead(iPlayHead,
-					transportFollowAction->isOn());
-			}
-			m_iPlayHead = iPlayHead;
+	unsigned long iPlayHead = m_pSession->playHead();
+	if (iPlayHead != m_iPlayHead) {
+		if (m_pTracks && m_pTracks->trackView()) {
+			m_pTracks->trackView()->setPlayHead(iPlayHead,
+				transportFollowAction->isOn());
 		}
-		// Check if its time to refresh playhead timer...
-		if (m_pSession->isPlaying() &&
-			m_iPlayTimer < QTRACTOR_TIMER_DELAY) {
-			m_iPlayTimer += QTRACTOR_TIMER_MSECS;
-			if (m_iPlayTimer >= QTRACTOR_TIMER_DELAY) {
-				m_iPlayTimer = 0;
-				m_pTransportTime->setText(
-					m_pSession->timeFromFrame(m_iPlayHead,
-						m_pOptions && m_pOptions->bTransportTime)
-				);
-				// Transport status...
-				if (m_iTransport > 0) {
-					m_iTransport = 0;
-					stabilizeForm();
-				}
+		m_iPlayHead = iPlayHead;
+	}
+	// Check if its time to refresh playhead timer...
+	if (m_pSession->isPlaying() &&
+		m_iPlayTimer < QTRACTOR_TIMER_DELAY) {
+		m_iPlayTimer += QTRACTOR_TIMER_MSECS;
+		if (m_iPlayTimer >= QTRACTOR_TIMER_DELAY) {
+			m_iPlayTimer = 0;
+			m_pTransportTime->setText(
+				m_pSession->timeFromFrame(m_iPlayHead,
+					m_pOptions && m_pOptions->bTransportTime)
+			);
+			// Transport status...
+			if (m_iTransport > 0) {
+				m_iTransport = 0;
+				stabilizeForm();
 			}
 		}
 	}

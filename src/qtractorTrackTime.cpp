@@ -150,12 +150,16 @@ void qtractorTrackTime::drawContents ( QPainter *p,
 		clipw, cliph);
 
 	// Headers a-head...
+	qtractorSession *pSession = m_pTracks->session();
+	if (pSession == NULL)
+		return;
+
 	int h = QScrollView::height() - 4;
 	int d = (h >> 2);
 	int x;
 	
 	// Draw edit-head line...
-	x = m_pTracks->trackView()->editHeadX();
+	x = pSession->pixelFromFrame(m_pTracks->trackView()->editHead());
 	if (x >= clipx - d && x < clipx + clipw + d) {
 		QPointArray polyg(3);
 		polyg.putPoints(0, 3,
@@ -168,7 +172,7 @@ void qtractorTrackTime::drawContents ( QPainter *p,
 	}
 
 	// Draw edit-tail line...
-	x = m_pTracks->trackView()->editTailX();
+	x = pSession->pixelFromFrame(m_pTracks->trackView()->editTail());
 	if (x >= clipx - d && x < clipx + clipw + d) {
 		QPointArray polyg(3);
 		polyg.putPoints(0, 3,
@@ -181,7 +185,7 @@ void qtractorTrackTime::drawContents ( QPainter *p,
 	}
 
 	// Draw play-head header...
-	x = m_pTracks->trackView()->playHeadX();
+	x = pSession->pixelFromFrame(m_pTracks->trackView()->playHead());
 	if (x >= clipx - d && x < clipx + clipw + d) {
 		QPointArray polyg(3);
 		polyg.putPoints(0, 3,

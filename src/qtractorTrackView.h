@@ -97,17 +97,14 @@ public:
 	// Play-head positioning.
 	void setPlayHead(unsigned long iPlayHead, bool bSyncView = false);
 	unsigned long playHead() const;
-	int playHeadX() const;
 
 	// Edit-head positioning.
 	void setEditHead(unsigned long iEditHead);
 	unsigned long editHead() const;
-	int editHeadX() const;
 
 	// Edit-tail positioning.
 	void setEditTail(unsigned long iEditTail);
 	unsigned long editTail() const;
-	int editTailX() const;
 
 	// Current session cursor accessor.
 	qtractorSessionCursor *sessionCursor() const;
