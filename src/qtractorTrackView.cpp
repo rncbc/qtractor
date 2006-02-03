@@ -1461,13 +1461,9 @@ void qtractorTrackView::setPlayHead ( unsigned long iPlayHead, bool bSyncView )
 	qtractorSession *pSession = m_pTracks->session();
 	if (pSession) {
 		m_iPlayHead = iPlayHead;
-		setPlayHeadX(pSession->pixelFromFrame(iPlayHead), bSyncView);
+		int iPlayHeadX = pSession->pixelFromFrame(iPlayHead);
+		drawPositionX(m_iPlayHeadX, iPlayHeadX, iPlayHeadX, Qt::red, bSyncView);
 	}
-}
-
-void qtractorTrackView::setPlayHeadX ( int iPlayHeadX, bool bSyncView )
-{
-	drawPositionX(m_iPlayHeadX, iPlayHeadX, iPlayHeadX, Qt::red, bSyncView);
 }
 
 unsigned long qtractorTrackView::playHead (void) const
@@ -1484,13 +1480,9 @@ void qtractorTrackView::setEditHead ( unsigned long iEditHead )
 		m_iEditHead = iEditHead;
 		if (iEditHead > m_iEditTail)
 			setEditTail(iEditHead);
-		setEditHeadX(pSession->pixelFromFrame(iEditHead));
+		int iEditHeadX = pSession->pixelFromFrame(iEditHead);
+		drawPositionX(m_iEditHeadX, iEditHeadX, m_iEditTailX, Qt::blue);
 	}
-}
-
-void qtractorTrackView::setEditHeadX ( int iEditHeadX )
-{
-	drawPositionX(m_iEditHeadX, iEditHeadX, m_iEditTailX, Qt::blue);
 }
 
 unsigned long qtractorTrackView::editHead (void) const
@@ -1507,13 +1499,9 @@ void qtractorTrackView::setEditTail ( unsigned long iEditTail )
 		m_iEditTail = iEditTail;
 		if (iEditTail < m_iEditHead)
 			setEditHead(iEditTail);
-		setEditTailX(pSession->pixelFromFrame(iEditTail));
+		int iEditTailX = pSession->pixelFromFrame(iEditTail);
+		drawPositionX(m_iEditTailX, iEditTailX, m_iEditHeadX, Qt::blue);
 	}
-}
-
-void qtractorTrackView::setEditTailX ( int iEditTailX )
-{
-	drawPositionX(m_iEditTailX, iEditTailX, m_iEditHeadX, Qt::blue);
 }
 
 unsigned long qtractorTrackView::editTail (void) const

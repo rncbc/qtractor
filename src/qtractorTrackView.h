@@ -173,11 +173,6 @@ protected:
 	// Keyboard event handler.
 	void keyPressEvent(QKeyEvent *pKeyEvent);
 
-	// Playhead and edit shadow-pixel line positioning.
-	void setPlayHeadX(int iPlayHeadX, bool bSyncView = false);
-	void setEditHeadX(int iEditHeadX);
-	void setEditTailX(int iEditTailX);
-
 	// Vertical line positioning.
 	void drawPositionX(int& iPositionX, int x, int x2,
 		const QColor& color, bool bSyncView = false);
