@@ -326,7 +326,7 @@ void qtractorTrackListItem::zoomItemHeight ( unsigned short iVerticalZoom )
 		return;
 
 	int iItemHeight = (m_pTrack->height() * iVerticalZoom) / 100;
-	if (iItemHeight > QTRACTOR_ITEM_HEIGHT / 2)
+	if (iItemHeight > QTRACTOR_ITEM_HEIGHT)	// Minimum item height.
 		QListViewItem::setHeight(iItemHeight);
 }
 
@@ -580,8 +580,8 @@ void qtractorTrackList::contentsMouseMoveEvent ( QMouseEvent *pMouseEvent )
 		if (m_pItemDrag) {
 			drawDragLine(m_posDrag);    // Hide.
 			int y = pMouseEvent->y();
-			if (y < m_iItemDragY + QTRACTOR_ITEM_HEIGHT / 2)
-				y = m_iItemDragY + QTRACTOR_ITEM_HEIGHT / 2;
+			if (y < m_iItemDragY + QTRACTOR_ITEM_HEIGHT) // Minimum item height.
+				y = m_iItemDragY + QTRACTOR_ITEM_HEIGHT;
 			m_posDrag.setY(y);
 			drawDragLine(m_posDrag);    // Show.
 		}
@@ -658,8 +658,8 @@ void qtractorTrackList::contentsMouseReleaseEvent ( QMouseEvent *pMouseEvent )
 			drawDragLine(m_posDrag);    // Hide.
 			int iItemHeight = pMouseEvent->y() - m_iItemDragY;
 			// Check for minimum item height.
-			if (iItemHeight < QTRACTOR_ITEM_HEIGHT / 2)
-				iItemHeight = QTRACTOR_ITEM_HEIGHT / 2;
+			if (iItemHeight < QTRACTOR_ITEM_HEIGHT) // Minimum item height.
+				iItemHeight = QTRACTOR_ITEM_HEIGHT;
 			// Go for it...
 			qtractorTrackListItem *pTrackItem
 				= static_cast<qtractorTrackListItem *> (m_pItemDrag);

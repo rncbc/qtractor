@@ -402,6 +402,8 @@ bool qtractorEditTrackCommand::redo (void)
 	// Refresh track item, at least the names...
 	pTrackItem->setText(qtractorTrackList::Name, m_pTrack->trackName());
 	pTrackItem->setText(qtractorTrackList::Bus,  m_pTrack->busName());
+	pTrackItem->repaint();
+
 	// Special MIDI track cases...
 	if (m_pTrack->trackType() == qtractorTrack::Midi)
 	    pTracks->updateMidiTrack(m_pTrack);
