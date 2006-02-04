@@ -270,13 +270,17 @@ void qtractorSessionCursor::update (void)
 void qtractorSessionCursor::reset (void)
 {
 	// Free existing clip references.
-	if (m_ppClips)
+	if (m_ppClips) {
 		delete m_ppClips;
+		m_ppClips = NULL;
+	}
 
 	// Rebuild the whole bunch...
 	m_iTracks = m_pSession->tracks().count();
 	m_iSize   = m_iTracks;
-	m_ppClips = new qtractorClip * [m_iSize];
+
+	if (m_iSize > 0)
+		m_ppClips = new qtractorClip * [m_iSize];
 
 	update();
 }

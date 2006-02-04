@@ -146,9 +146,6 @@ void qtractorSession::clear (void)
 	m_tracks.clear();
 	m_cursors.clear();
 
-	m_cursors.append(m_pAudioEngine->sessionCursor());
-	m_cursors.append(m_pMidiEngine->sessionCursor());
-
 	m_props.clear();
 
 	m_iSessionLength = 0;
@@ -158,6 +155,14 @@ void qtractorSession::clear (void)
 	m_midiTags.clear();
 
 	updateTimeScale();
+
+	m_pAudioEngine->sessionCursor()->reset();
+	m_pAudioEngine->sessionCursor()->seek(0);
+	m_cursors.append(m_pAudioEngine->sessionCursor());
+
+	m_pMidiEngine->sessionCursor()->reset();
+	m_pMidiEngine->sessionCursor()->seek(0);
+	m_cursors.append(m_pMidiEngine->sessionCursor());
 }
 
 
