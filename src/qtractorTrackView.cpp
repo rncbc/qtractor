@@ -372,9 +372,15 @@ void qtractorTrackView::updatePixmap ( int cx, int cy )
 
 	// Draw vertical grid lines...
 	if (cy < y2) {
-		int iBeat = pSession->beatFromPixel(cx);
+		unsigned short iBeat = pSession->beatFromPixel(cx);
+#if 0
+		unsigned int iPixelsPerBeat = pSession->pixelFromBeat(1);
 		int x = pSession->pixelFromBeat(iBeat);
-		int iBeatWidth = pSession->pixelFromBeat(1);
+#else
+		unsigned long iFrameFromBeat = pSession->frameFromBeat(iBeat);
+		unsigned long iFramesPerBeat = pSession->frameFromBeat(1);
+		int x = pSession->pixelFromFrame(iFrameFromBeat);
+#endif
 		while (x < cx + w) {
 			if (x >= cx && pSession->beatIsBar(iBeat)) {
 				p.setPen(Qt::lightGray);
@@ -384,7 +390,12 @@ void qtractorTrackView::updatePixmap ( int cx, int cy )
 				p.setPen(Qt::darkGray);
 				p.drawLine(x - cx - 1, 0, x - cx - 1, y2 - cy - 2);
 			}
-			x += iBeatWidth;
+#if 0
+			x += iPixelsPerBeat;
+#else
+			iFrameFromBeat += iFramesPerBeat;
+			x = pSession->pixelFromFrame(iFrameFromBeat);
+#endif
 			iBeat++;
 		}
 	}

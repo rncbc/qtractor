@@ -92,12 +92,17 @@ void qtractorTrackTime::updatePixmap ( int cx, int /* cy */)
 	// Draw the time scale...
 	//
 	const QFontMetrics& fm = p.fontMetrics();
-
-	int iBeat = pSession->beatFromPixel(cx);
-	int x = pSession->pixelFromBeat(iBeat) - cx;
 	int y1, y2 = h - 1;
-	int iBeatWidth = pSession->pixelFromBeat(1);
 
+	unsigned short iBeat = pSession->beatFromPixel(cx);
+#if 0
+	unsigned int iPixelsPerBeat = pSession->pixelFromBeat(1);
+	int x = pSession->pixelFromBeat(iBeat) - cx;
+#else
+	unsigned long iFrameFromBeat = pSession->frameFromBeat(iBeat);
+	unsigned long iFramesPerBeat = pSession->frameFromBeat(1);
+	int x = pSession->pixelFromFrame(iFrameFromBeat) - cx;
+#endif
 	while (x < w) {
 		if (pSession->beatIsBar(iBeat)) {
 			y1 = 0;
@@ -111,7 +116,12 @@ void qtractorTrackTime::updatePixmap ( int cx, int /* cy */)
 		p.drawLine(x, y1, x, y2);
 		p.setPen(cg.color(QColorGroup::Midlight));
 		p.drawLine(x + 1, y1, x + 1, y2);
-		x += iBeatWidth;
+#if 0
+		x += iPixelsPerBeat;
+#else
+		iFrameFromBeat += iFramesPerBeat;
+		x = pSession->pixelFromFrame(iFrameFromBeat) - cx;
+#endif
 		iBeat++;
 	}
 }
@@ -304,17 +314,17 @@ void qtractorTrackTime::contentsMouseReleaseEvent ( QMouseEvent *pMouseEvent )
 			drawDragSelect(m_rectDrag);	// Hide.
 			if (!bModifier) {
 				const QRect rect(m_rectDrag.normalize());
-				m_pTracks->trackView()->setEditHead(pSession->frameSnap(
-					pSession->frameFromPixel(rect.left())));
-				m_pTracks->trackView()->setEditTail(pSession->frameSnap(
-					pSession->frameFromPixel(rect.right())));
+				m_pTracks->trackView()->setEditHead(
+					pSession->frameFromPixel(rect.left()));
+				m_pTracks->trackView()->setEditTail(
+					pSession->frameFromPixel(rect.right()));
 			}
 			break;
 		case DragStart:
 			// Deferred left-button edit-head positioning...
 			if (!bModifier) {
-				m_pTracks->trackView()->setEditHead(pSession->frameSnap(
-					pSession->frameFromPixel(m_posDrag.x())));
+				m_pTracks->trackView()->setEditHead(
+					pSession->frameFromPixel(m_posDrag.x()));
 			}
 			// Fall thru...
 		case DragNone:

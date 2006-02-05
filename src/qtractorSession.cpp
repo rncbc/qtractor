@@ -400,12 +400,12 @@ unsigned long qtractorSession::frameSnap ( unsigned long iFrame ) const
 			}
 		}
 	}
-
 	return iFrameSnap;
 }
 
 unsigned int qtractorSession::pixelSnap ( unsigned int x ) const
 {
+#if 0
 	unsigned int iPixelSnap = x;
 
 	if (m_props.snapPerBeat > 0) {
@@ -422,8 +422,10 @@ unsigned int qtractorSession::pixelSnap ( unsigned int x ) const
 			}
 		}
 	}
-
 	return iPixelSnap;
+#else
+	return pixelFromFrame(frameSnap(frameFromPixel(x)));
+#endif
 }
 
 
