@@ -237,12 +237,38 @@ void qtractorTrackTime::contentsMousePressEvent ( QMouseEvent *pMouseEvent )
 			m_posDrag   = pMouseEvent->pos();
 			// Left-butoon indirect positioning...
 			if (bModifier) {
-				pSession->setPlayHead(iFrame);
 				// Playhead positioning...
 				m_pTracks->trackView()->setPlayHead(iFrame);
-				// Not quite a selection, but for
-				// immediate visual feedback...
+				// Immediately commited...
+				pSession->setPlayHead(iFrame);
+				// Not quite a selection, rather just
+				// for immediate visual feedback...
 				m_pTracks->selectionChangeNotify();
+			} else {
+				// Try to catch mouse clicks over the
+				// play/edit-head/tail cursors...
+				int h = QScrollView::height() - 4;
+				int d = (h >> 2);
+				QRect rect(0, h - d, d << 1, d);
+				// Check play-head header...
+				rect.moveLeft(pSession->pixelFromFrame(
+					m_pTracks->trackView()->playHead()) - d);
+				if (rect.contains(m_posDrag, true)) {
+					m_dragState = DragPlayHead;
+				} else {
+					// Check edit-head header...
+					rect.moveLeft(pSession->pixelFromFrame(
+						m_pTracks->trackView()->editHead()) - d);
+					if (rect.contains(m_posDrag, true)) {
+						m_dragState = DragEditHead;
+					} else {
+						// Check edit-tail header...
+						rect.moveLeft(pSession->pixelFromFrame(
+							m_pTracks->trackView()->editTail()) - d);
+						if (rect.contains(m_posDrag, true))
+							m_dragState = DragEditTail;
+					}
+				}
 			}
 			break;
 		case Qt::RightButton:
@@ -268,14 +294,33 @@ void qtractorTrackTime::contentsMouseMoveEvent ( QMouseEvent *pMouseEvent )
 	if (pSession) {
 		// Are we already moving/dragging something?
 		const QPoint& pos = pMouseEvent->pos();
+		unsigned long iFrame = pSession->frameSnap(
+			pSession->frameFromPixel(pos.x()));
 		switch (m_dragState) {
 		case DragSelect:
+			// Rubber-band selection...
 			drawDragSelect(m_rectDrag);	// Hide.
 			m_rectDrag.setRight(pSession->pixelSnap(pos.x()));
 			m_pTracks->trackView()->ensureVisible(pos.x(), pos.y(), 8, 8);
 			drawDragSelect(m_rectDrag);	// Show.
 			break;
+		case DragPlayHead:
+			// Play-head positioning...
+			m_pTracks->trackView()->ensureVisible(pos.x(), pos.y(), 8, 8);
+			m_pTracks->trackView()->setPlayHead(iFrame);
+			break;
+		case DragEditHead:
+			// Edit-head positioning...
+			m_pTracks->trackView()->ensureVisible(pos.x(), pos.y(), 8, 8);
+			m_pTracks->trackView()->setEditHead(iFrame);
+			break;
+		case DragEditTail:
+			// Edit-tail positioning...
+			m_pTracks->trackView()->ensureVisible(pos.x(), pos.y(), 8, 8);
+			m_pTracks->trackView()->setEditTail(iFrame);
+			break;
 		case DragStart:
+			// Rubber-band starting...
 			if ((m_posDrag - pos).manhattanLength()
 				> QApplication::startDragDistance()) {
 				// We'll start dragging alright...
@@ -319,6 +364,13 @@ void qtractorTrackTime::contentsMouseReleaseEvent ( QMouseEvent *pMouseEvent )
 				m_pTracks->trackView()->setEditTail(
 					pSession->frameFromPixel(rect.right()));
 			}
+			break;
+		case DragPlayHead:
+			// Play-head positioning commit...
+			pSession->setPlayHead(m_pTracks->trackView()->playHead());
+			// Not quite a selection, rather just
+			// for immediate visual feedback...
+			m_pTracks->selectionChangeNotify();
 			break;
 		case DragStart:
 			// Deferred left-button edit-head positioning...
@@ -376,6 +428,11 @@ void qtractorTrackTime::keyPressEvent ( QKeyEvent *pKeyEvent )
 	case Qt::Key_Escape:
 		if (m_dragState == DragSelect)
 			drawDragSelect(m_rectDrag); // Hide.
+		else // Restore uncommitted play-head position?...
+		if (m_dragState == DragPlayHead && m_pTracks->session()) {
+			m_pTracks->trackView()->setPlayHead(
+				m_pTracks->session()->playHead());
+		}
 		resetDragState();
 		break;
 	default:
