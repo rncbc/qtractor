@@ -409,7 +409,10 @@ bool qtractorAudioPeakFile::openPeakFile (void)
 	m_pPeakBuffer   = new char [m_iPeakBufSize];
 
 	// Request the first (or only) bunch into the peak buffer.
-	return readPeakChunk();
+	readPeakChunk();
+
+	// Its a certain success...
+	return true;
 }
 
 
@@ -534,15 +537,14 @@ void qtractorAudioPeakFile::readPeak ( char *pBuffer,
 			else
 				m_iPeakOffset = 0;
 			// Get the new bunch...
-			if (readPeakChunk()) {
-				ncache = iOffset - m_iPeakOffset;
-				::memcpy(&pBuffer[0], &m_pPeakBuffer[ncache], ndelta);	    	
-			}
+			readPeakChunk();
+			ncache = iOffset - m_iPeakOffset;
+			::memcpy(&pBuffer[0], &m_pPeakBuffer[ncache], ndelta);	    	
 		} else {
 			// Far-behind cache request...
 			m_iPeakOffset = iOffset;
-			if (readPeakChunk())
-				::memcpy(&pBuffer[0], &m_pPeakBuffer[0], iLength);
+			readPeakChunk();
+			::memcpy(&pBuffer[0], &m_pPeakBuffer[0], iLength);
 		}
 	}	// Full intra-cache...
 	else if (iOffset + iLength <= m_iPeakOffset + m_iPeakBufSize) {
@@ -551,33 +553,30 @@ void qtractorAudioPeakFile::readPeak ( char *pBuffer,
 	else if (iOffset > m_iPeakOffset + m_iPeakBufSize) {
 		// Far-beyond cache request...
 		m_iPeakOffset = iOffset;
-		if (readPeakChunk())
-			::memcpy(&pBuffer[0], &m_pPeakBuffer[0], iLength);
+		readPeakChunk();
+		::memcpy(&pBuffer[0], &m_pPeakBuffer[0], iLength);
 	} else {
 		// Forward cache request...
 		ndelta = iOffset - m_iPeakOffset;
 		ncache = m_iPeakBufSize - ndelta;
 		::memcpy(&pBuffer[0], &m_pPeakBuffer[ndelta], ncache);
 		m_iPeakOffset = iOffset;
-		if (readPeakChunk())
-			::memcpy(&pBuffer[ncache], &m_pPeakBuffer[ncache], iLength - ncache);
+		readPeakChunk();
+		::memcpy(&pBuffer[ncache], &m_pPeakBuffer[ncache], iLength - ncache);
 	}
 }
 
 
 // Read a whole peak file buffer.
-bool qtractorAudioPeakFile::readPeakChunk (void)
+void qtractorAudioPeakFile::readPeakChunk (void)
 {
-	int nread = 0;
-
 	// Set position and read peak frames from there.
+	int nread = 0;
 	if (m_peakFile.at(sizeof(qtractorAudioPeakHeader) + m_iPeakOffset))
 		nread = (int) m_peakFile.readBlock(&m_pPeakBuffer[0], m_iPeakBufSize);
 	// Zero the remaining...
 	if (nread < (int) m_iPeakBufSize)
 		::memset(&m_pPeakBuffer[nread], 0, m_iPeakBufSize - nread);
-
-	return (nread > 0);
 }
 
 

@@ -228,13 +228,14 @@ void qtractorTrackTime::contentsMousePressEvent ( QMouseEvent *pMouseEvent )
 		// Direct snap positioning...
 		const bool bModifier = (pMouseEvent->state()
 			& (Qt::ShiftButton | Qt::ControlButton));
+		const QPoint& pos = pMouseEvent->pos();
 		unsigned long iFrame = pSession->frameSnap(
-			pSession->frameFromPixel(pMouseEvent->pos().x()));
+			pSession->frameFromPixel(pos.x() > 0 ? pos.x() : 0));
 		switch (pMouseEvent->button()) {
 		case Qt::LeftButton:
 			// Remember what and where we'll be dragging/selecting...
 			m_dragState = DragStart;
-			m_posDrag   = pMouseEvent->pos();
+			m_posDrag   = pos;
 			// Left-butoon indirect positioning...
 			if (bModifier) {
 				// Playhead positioning...
@@ -248,25 +249,29 @@ void qtractorTrackTime::contentsMousePressEvent ( QMouseEvent *pMouseEvent )
 				// Try to catch mouse clicks over the
 				// play/edit-head/tail cursors...
 				int h = QScrollView::height() - 4;
-				int d = (h >> 2);
+				int d = (h >> 1);
 				QRect rect(0, h - d, d << 1, d);
 				// Check play-head header...
 				rect.moveLeft(pSession->pixelFromFrame(
 					m_pTracks->trackView()->playHead()) - d);
-				if (rect.contains(m_posDrag, true)) {
+				if (rect.contains(m_posDrag)) {
 					m_dragState = DragPlayHead;
+					QScrollView::setCursor(QCursor(Qt::SizeHorCursor));
 				} else {
 					// Check edit-head header...
 					rect.moveLeft(pSession->pixelFromFrame(
 						m_pTracks->trackView()->editHead()) - d);
-					if (rect.contains(m_posDrag, true)) {
+					if (rect.contains(m_posDrag)) {
 						m_dragState = DragEditHead;
+						QScrollView::setCursor(QCursor(Qt::SizeHorCursor));
 					} else {
 						// Check edit-tail header...
 						rect.moveLeft(pSession->pixelFromFrame(
 							m_pTracks->trackView()->editTail()) - d);
-						if (rect.contains(m_posDrag, true))
+						if (rect.contains(m_posDrag)) {
 							m_dragState = DragEditTail;
+							QScrollView::setCursor(QCursor(Qt::SizeHorCursor));
+						}
 					}
 				}
 			}
@@ -295,7 +300,7 @@ void qtractorTrackTime::contentsMouseMoveEvent ( QMouseEvent *pMouseEvent )
 		// Are we already moving/dragging something?
 		const QPoint& pos = pMouseEvent->pos();
 		unsigned long iFrame = pSession->frameSnap(
-			pSession->frameFromPixel(pos.x()));
+			pSession->frameFromPixel(pos.x() > 0 ? pos.x() : 0));
 		switch (m_dragState) {
 		case DragSelect:
 			// Rubber-band selection...
@@ -408,9 +413,18 @@ void qtractorTrackTime::drawDragSelect ( const QRect& rectDrag ) const
 void qtractorTrackTime::resetDragState (void)
 {
 	// Cancel any dragging out there...
-	if (m_dragState == DragSelect) {
+	switch (m_dragState) {
+	case DragSelect:
 		QScrollView::updateContents();
+		// Fall thru...
+	case DragPlayHead:
+	case DragEditHead:
+	case DragEditTail:
 		QScrollView::unsetCursor();
+		// Fall thru again...
+	case DragNone:
+	default:
+		break;
 	}
 
 	// Force null state.

@@ -86,7 +86,7 @@ protected:
 	// Internal pseudo-cache methods.
 	bool openPeakFile();
 	void readPeak(char *pBuffer, unsigned long iOffset, unsigned int iLength);
-	bool readPeakChunk();
+	void readPeakChunk();
 	void closePeakFile();
 	
 private:

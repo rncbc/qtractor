@@ -855,9 +855,10 @@ void qtractorTrackView::contentsMousePressEvent ( QMouseEvent *pMouseEvent )
 		// Which mouse state?
 		const bool bModifier = (pMouseEvent->state()
 			& (Qt::ShiftButton | Qt::ControlButton));
+		const QPoint& pos = pMouseEvent->pos();
 		// Remember what and where we'll be dragging/selecting...
 		m_dragState = DragStart;
-		m_posDrag   = pMouseEvent->pos();
+		m_posDrag   = pos;
 		m_pClipDrag = clipAt(m_posDrag, &m_rectDrag);
 		// Should it be selected(toggled)?
 		if (m_pClipDrag) {
@@ -881,7 +882,7 @@ void qtractorTrackView::contentsMousePressEvent ( QMouseEvent *pMouseEvent )
 			if (pSession) {
 				// Direct snap positioning...
 				unsigned long iFrame = pSession->frameSnap(
-					pSession->frameFromPixel(pMouseEvent->pos().x()));
+					pSession->frameFromPixel(pos.x() > 0 ? pos.x() : 0));
 				if (pMouseEvent->button() == Qt::LeftButton) {
 					if (bModifier) {
 						// First, set actual engine position...
@@ -1006,7 +1007,8 @@ void qtractorTrackView::contentsMouseReleaseEvent ( QMouseEvent *pMouseEvent )
 			// Deferred left-button edit-head positioning...
 			if (!bModifier) {
 				setEditHead(pSession->frameSnap(
-					pSession->frameFromPixel(m_posDrag.x())));
+					pSession->frameFromPixel(
+						m_posDrag.x() > 0 ? m_posDrag.x() : 0)));
 			}
 			// Fall thru...
 		case DragDrop:
