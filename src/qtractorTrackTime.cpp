@@ -381,7 +381,8 @@ void qtractorTrackTime::contentsMouseReleaseEvent ( QMouseEvent *pMouseEvent )
 			// Deferred left-button edit-head positioning...
 			if (!bModifier) {
 				m_pTracks->trackView()->setEditHead(
-					pSession->frameFromPixel(m_posDrag.x()));
+					pSession->frameSnap(pSession->frameFromPixel(
+						m_posDrag.x() > 0 ? m_posDrag.x() : 0)));
 			}
 			// Fall thru...
 		case DragNone:
