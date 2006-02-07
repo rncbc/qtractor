@@ -325,25 +325,28 @@ qtractorAudioPeakFile::qtractorAudioPeakFile (
 // Default destructor.
 qtractorAudioPeakFile::~qtractorAudioPeakFile (void)
 {
-	closePeakFile();
-
-	// Tell master-factory that we're out.
-	m_pFactory->removePeak(this);
-	// Do we get rid from the filesystem too?
-	if (m_pFactory->autoRemove())
-		m_peakFile.remove();
-
 	// Check if peak thread is still running.
+	bool bAborted = false;
 	if (m_pPeakThread) {
 		// Try to wait for thread termination...
 		m_pPeakThread->setRunState(false);
 		if (m_pPeakThread->running()) {
 		//	m_pPeakThread->terminate();
 			m_pPeakThread->wait();
+			bAborted = true;
 		}
 		delete m_pPeakThread;
 		m_pPeakThread = NULL;
 	}
+
+	// Close the file, now.
+	closePeakFile();
+
+	// Tell master-factory that we're out.
+	m_pFactory->removePeak(this);
+	// Do we get rid from the filesystem too?
+	if (m_pFactory->autoRemove() || bAborted)
+		m_peakFile.remove();
 }
 
 
@@ -388,7 +391,7 @@ bool qtractorAudioPeakFile::openPeakFile (void)
 		return false;
 	}
 
-#ifdef DEBUG
+#ifdef DEBUG_0
 	fprintf(stderr, "--- openPeakFile ---\n");
 	fprintf(stderr, "filename = %s\n", m_peakFile.name().latin1());
 	fprintf(stderr, "header   = %d\n", sizeof(qtractorAudioPeakHeader));
