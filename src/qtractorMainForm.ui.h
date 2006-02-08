@@ -966,7 +966,7 @@ void qtractorMainForm::trackImportAudio (void)
 	// Import Audio files into tracks...
 	if (m_pTracks) {
 		m_pTracks->addAudioTracks(m_pFiles->audioListView()->openFileNames(),
-			m_pTracks->tracksView()->editHead());
+			m_pTracks->trackView()->editHead());
 	}
 }
 
