@@ -438,7 +438,7 @@ qtractorTrackListItem *qtractorTrackView::trackListItemAt (
 		iTrack++;
 	}
 
-	if (pItem && pTrackViewInfo) {
+	if (pTrackViewInfo) {
 		qtractorSession *pSession = m_pTracks->session();
 		if (pSession == NULL)
 			return NULL;
@@ -446,6 +446,10 @@ qtractorTrackListItem *qtractorTrackView::trackListItemAt (
 			return NULL;
 		int x = QScrollView::contentsX();
 		int w = QScrollView::width();   	// View width, not contents.
+		if (pItem == NULL) {				// Below all tracks.
+			y1 = y2;
+			y2 = y1 + (48 * pSession->verticalZoom()) / 100;
+		}
 		pTrackViewInfo->trackIndex = iTrack;
 		pTrackViewInfo->trackStart = m_pSessionCursor->frame();
 		pTrackViewInfo->trackEnd   = pTrackViewInfo->trackStart
@@ -588,8 +592,13 @@ qtractorTrack *qtractorTrackView::dragMoveTrack ( const QPoint& pos )
 
 qtractorTrack *qtractorTrackView::dragDropTrack ( QDropEvent *pDropEvent )
 {
-	const QPoint& pos = pDropEvent->pos();
+	// It must be a valid session...
+	qtractorSession *pSession = m_pTracks->session();
+	if (pSession == NULL)
+		return NULL;
 	
+	const QPoint& pos = pDropEvent->pos();
+
 	// If we're already dragging something,
 	// find the current pointer track...
 	qtractorTrack *pTrack = NULL;
@@ -599,10 +608,8 @@ qtractorTrack *qtractorTrackView::dragDropTrack ( QDropEvent *pDropEvent )
 		// Which track we're pointing at?
 		qtractorTrackViewInfo tvi;
 		pTrack = trackAt(pos, &tvi);
-		if (pTrack == NULL)
-			return NULL;
 		// Must be of same type...
-		if (pTrack->trackType() != m_dropType)
+		if (pTrack && pTrack->trackType() != m_dropType)
 			return NULL;
 		// Adjust vertically to target track...
 		m_rectDrag.setY(tvi.trackRect.y() + 1);
@@ -612,72 +619,66 @@ qtractorTrack *qtractorTrackView::dragDropTrack ( QDropEvent *pDropEvent )
 		int dx = (pos.x() - m_posDrag.x());
 		if (x + dx < 0)
 			dx = -(x);	// Force to origin (x=0).
-		m_iDraggingX = (m_pTracks->session()->pixelSnap(x + dx) - x);
+		m_iDraggingX = (pSession->pixelSnap(x + dx) - x);
 		QScrollView::ensureVisible(pos.x(), pos.y(), 8, 8);
 		showDragRect(m_rectDrag, m_iDraggingX);
 		// OK, we've move it...
 		return pTrack;
 	}
 
-	// It must be a valid track...
-	qtractorSession *pSession = m_pTracks->session();
-	if (pSession == NULL)
-		return NULL;
-
-	qtractorTrackViewInfo tvi;
-	pTrack = trackAt(pos, &tvi);
-	if (pTrack == NULL)
-		return NULL;
-
-	// Test decoding the dragged in object...
-	switch (pTrack->trackType()) {
-	// Drop Audio files in Audio tracks...
-	case qtractorTrack::Audio: {
-		// Can we decode it as audio files?
-		if (!QUriDrag::canDecode(pDropEvent))
-			return NULL;
-		// Let's see how many files there are...
-		QStringList files;
-		if (!QUriDrag::decodeLocalFiles(pDropEvent, files))
-			return NULL;
-		for (QStringList::Iterator iter = files.begin();
-				iter != files.end(); ++iter) {
-			m_dropItems.append(new DropItem(*iter));
-		}
-		break;
-	}
-	// Drop MIDI sequences in MIDI tracks...
-	case qtractorTrack::Midi: {
-		// Must be a MIDI track...
-		if (!qtractorFileChannelDrag::canDecode(pDropEvent))
-			return NULL;
+	// Let's start from scratch...
+	m_dropItems.clear();
+	m_dropType = qtractorTrack::None;
+	
+	// Can it be single track channel (MIDI for sure)?
+	if (qtractorFileChannelDrag::canDecode(pDropEvent)) {
 		// In the meantime, it can only be only one...
 		QString sPath;
 		unsigned short iChannel = 0;
-		if (!qtractorFileChannelDrag::decode(pDropEvent, sPath, &iChannel))
-			return NULL;
-		m_dropItems.append(new DropItem(sPath, iChannel));
-		break;
-	}
-	// No others are allowed, anyway...
-	case qtractorTrack::None:
-	default:
-		return NULL;
+		if (qtractorFileChannelDrag::decode(pDropEvent, sPath, &iChannel)) {
+			m_dropItems.append(new DropItem(sPath, iChannel));
+			m_dropType = qtractorTrack::Midi;
+		}
+	}	// Can we decode it as Audio/MIDI files?
+	else if (QUriDrag::canDecode(pDropEvent)) {
+		// Let's see how many files there are...
+		QStringList files;
+		if (QUriDrag::decodeLocalFiles(pDropEvent, files)) {
+			for (QStringList::Iterator iter = files.begin();
+					iter != files.end(); ++iter) {
+				m_dropItems.append(new DropItem(*iter));
+			}
+		}
 	}
 
-	// Nice, now we'll try to check if those are actually
-	// audio files and get a preview selection rectangle...
-
-	m_posDrag.setX(pSession->pixelSnap(pos.x() - 8));
-	m_posDrag.setY(tvi.trackRect.y() + 1);
-	m_rectDrag.setRect(
-		m_posDrag.x(), m_posDrag.y(), 0, tvi.trackRect.height() - 2);
-	// Nows time to estimate the drag-rectangle width...
-	// we'll take the largest...
+	// Nows time to estimate the drag-rectangle width,
+	// as we'll take the largest...
+	int w = 0;
 	for (DropItem *pDropItem = m_dropItems.first();
 			pDropItem; pDropItem = m_dropItems.next()) {
-		switch (pTrack->trackType()) {
-		case qtractorTrack::Audio: {
+		// First test as a MIDI file...
+		if (m_dropType == qtractorTrack::None
+			|| m_dropType == qtractorTrack::Midi) {
+			qtractorMidiFile file;
+			if (file.open(pDropItem->path)) {
+				qtractorMidiSequence seq;
+				seq.setTicksPerBeat(pSession->ticksPerBeat());
+				if (file.readTrack(&seq, pDropItem->channel)) {
+					w += pSession->pixelFromTick(seq.duration());
+					if (m_dropType == qtractorTrack::None)
+						m_dropType = qtractorTrack::Midi;
+				} else if (m_dropType == qtractorTrack::Midi) {
+					m_dropItems.remove(pDropItem);
+				}
+				file.close();
+			} 
+			else if (m_dropType == qtractorTrack::Midi) {
+				m_dropItems.remove(pDropItem);
+			}
+		}
+		// Then as an Audio file ?
+		if (m_dropType == qtractorTrack::None
+			|| m_dropType == qtractorTrack::Audio) {
 			qtractorAudioFile *pFile
 				= qtractorAudioFileFactory::createAudioFile(pDropItem->path);
 			if (pFile) {
@@ -689,49 +690,41 @@ qtractorTrack *qtractorTrackView::dragDropTrack ( QDropEvent *pDropEvent )
 							* float(pSession->sampleRate())
 							/ float(pFile->sampleRate()));
 					}
-					m_rectDrag.setWidth(m_rectDrag.width()
-						+ pSession->pixelFromFrame(iFrames));
-				} else {
+					w += pSession->pixelFromFrame(iFrames);
+					if (m_dropType == qtractorTrack::None)
+						m_dropType = qtractorTrack::Audio;
+				} else if (m_dropType == qtractorTrack::Audio) {
 					m_dropItems.remove(pDropItem);
 				}
 				delete pFile;
-			} else {
+			} else if (m_dropType == qtractorTrack::Audio) {
 				m_dropItems.remove(pDropItem);
-			}
-			break;
-		}
-		case qtractorTrack::Midi: {
-			qtractorMidiFile file;
-			if (file.open(pDropItem->path)) {
-				qtractorMidiSequence seq;
-				seq.setTicksPerBeat(pSession->ticksPerBeat());
-				if (file.readTrack(&seq, pDropItem->channel)) {
-					m_rectDrag.setWidth(m_rectDrag.width()
-						+ pSession->pixelFromTick(seq.duration()));
-				} else {
-					m_dropItems.remove(pDropItem);
-				}
-			} else {
-				m_dropItems.remove(pDropItem);
-			}
-			break;
-		}
-		case qtractorTrack::None:
-		default:
-			break;
+			}		
 		}
 	}
 
-	// Maybe we have none anymore...
-	if (m_dropItems.isEmpty())
+	// Are we still here?
+	if (m_dropItems.isEmpty()) {
+		m_dropType = qtractorTrack::None;
+		return NULL;
+	}
+
+	// Ok, sure we're into some drag state...
+	m_dragState = DragDrop;
+	m_iDraggingX = 0;	
+
+	// Nice, now we'll try to set a preview selection rectangle...
+	qtractorTrackViewInfo tvi;
+	pTrack = trackAt(pos, &tvi);
+	m_posDrag.setX(pSession->pixelSnap(pos.x() - 8));
+	m_posDrag.setY(tvi.trackRect.y() + 1);
+	m_rectDrag.setRect(
+		m_posDrag.x(), m_posDrag.y(), w, tvi.trackRect.height() - 2);
+	// However, track must be of proper type...
+	if (pTrack && pTrack->trackType() != m_dropType)
 		return NULL;
 
-	// Set the according item type...
-	m_dropType = pTrack->trackType();
-
-	// We can draw initial preview rectangle...
-	m_dragState = DragDrop;
-	m_iDraggingX = 0;
+	// Finally, show it to the world...
 	showDragRect(m_rectDrag, m_iDraggingX);
 	// Done.
 	return pTrack;
@@ -743,7 +736,7 @@ void qtractorTrackView::contentsDragEnterEvent (
 	QDragEnterEvent *pDragEnterEvent )
 {
 	qtractorTrack *pTrack = dragDropTrack(pDragEnterEvent);
-	if (pTrack) {
+	if (pTrack || !m_dropItems.isEmpty()) {
 		pDragEnterEvent->accept();
 	} else {
 		pDragEnterEvent->ignore();
@@ -756,7 +749,7 @@ void qtractorTrackView::contentsDragMoveEvent (
 	QDragMoveEvent *pDragMoveEvent )
 {
 	qtractorTrack *pTrack = dragDropTrack(pDragMoveEvent);
-	if (pTrack) {
+	if (pTrack || !m_dropItems.isEmpty()) {
 		pDragMoveEvent->accept();
 	} else {
 		pDragMoveEvent->ignore();
@@ -777,14 +770,40 @@ void qtractorTrackView::contentsDragLeaveEvent ( QDragLeaveEvent * )
 void qtractorTrackView::contentsDropEvent (
 	QDropEvent *pDropEvent )
 {
-	qtractorTrack *pTrack = dragDropTrack(pDropEvent);
-	if (pTrack == NULL) {
+	qtractorSession *pSession = m_pTracks->session();
+	if (pSession == NULL) {
 		resetDragState();
 		return;
 	}
 
-	qtractorSession *pSession = m_pTracks->session();
-	if (pSession == NULL) {
+	// Add new clips on proper and consecutive track locations...
+	unsigned long iClipStart
+		= pSession->frameFromPixel(m_rectDrag.x() + m_iDraggingX);
+
+	// Now check whether the drop is intra-track...
+	qtractorTrack *pTrack = dragDropTrack(pDropEvent);
+	if (pTrack == NULL) {
+		// Do we have something tpo drop anyway?
+		// if yes, this is a extra-track drop...
+		if (!m_dropItems.isEmpty()) {
+			// Prepare file list for import...
+			QStringList files;
+			for (DropItem *pDropItem = m_dropItems.first();
+					pDropItem; pDropItem = m_dropItems.next()) {
+				files.append(pDropItem->path);
+			}
+			// Depending on import type...
+			switch (m_dropType) {
+			case qtractorTrack::Audio:
+				m_pTracks->addAudioTracks(files, iClipStart);
+				break;
+			case qtractorTrack::Midi:
+				m_pTracks->addMidiTracks(files, iClipStart);
+				break;
+			default:
+				break;
+			}
+		}
 		resetDragState();
 		return;
 	}
@@ -792,10 +811,6 @@ void qtractorTrackView::contentsDropEvent (
 	// We'll build a composite command...
 	qtractorAddClipCommand *pAddClipCommand
 		= new qtractorAddClipCommand(m_pTracks->mainForm());
-
-	// Add new clips on proper and consecutive track locations...
-	unsigned long iClipStart
-		= pSession->frameFromPixel(m_rectDrag.x() + m_iDraggingX);
 
 	// Nows time to create the clip(s)...
 	for (DropItem *pDropItem = m_dropItems.first();

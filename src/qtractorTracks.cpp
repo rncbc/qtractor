@@ -488,7 +488,8 @@ bool qtractorTracks::editTrack ( qtractorTrack *pTrack )
 
 
 // Import Audio files into new tracks...
-bool qtractorTracks::addAudioTracks ( QStringList files )
+bool qtractorTracks::addAudioTracks ( QStringList files,
+	unsigned long iClipStart )
 {
 	qtractorSession *pSession = session();
 	if (pSession == NULL)
@@ -520,9 +521,8 @@ bool qtractorTracks::addAudioTracks ( QStringList files )
 		pTrack->setBackground(color);
 		pTrack->setForeground(color.dark());
 		// Add the clip at once...
-		qtractorAudioClip *pAudioClip
-			= new qtractorAudioClip(pTrack);
-		pAudioClip->setClipStart(0);
+		qtractorAudioClip *pAudioClip = new qtractorAudioClip(pTrack);
+		pAudioClip->setClipStart(iClipStart);
 		// Time for truth...
 		if (pAudioClip->open(sPath)) {
 			// Time to add the new track/clip into session...
@@ -567,7 +567,8 @@ bool qtractorTracks::addAudioTracks ( QStringList files )
 
 
 // Import MIDI files into new tracks...
-bool qtractorTracks::addMidiTracks ( QStringList files )
+bool qtractorTracks::addMidiTracks ( QStringList files,
+	unsigned long iClipStart )
 {
 	qtractorSession *pSession = session();
 	if (pSession == NULL)
@@ -614,9 +615,8 @@ bool qtractorTracks::addMidiTracks ( QStringList files )
 			pTrack->setBackground(color);
 			pTrack->setForeground(color.dark());
 			// Add the clip at once...
-			qtractorMidiClip *pMidiClip
-				= new qtractorMidiClip(pTrack);
-			pMidiClip->setClipStart(0);
+			qtractorMidiClip *pMidiClip	= new qtractorMidiClip(pTrack);
+			pMidiClip->setClipStart(iClipStart);
 			// Time for truth...
 			if (pMidiClip->open(&file, iTrackChannel, iImport == 0)) {
 				// Time to add the new track/clip into session...
@@ -630,15 +630,19 @@ bool qtractorTracks::addMidiTracks ( QStringList files )
 				// Don't forget to add this one to local repository.
 				mainForm()->addMidiFile(sPath);
 				iUpdate++;
+				// As far the standards goes,from which we'll strictly follow,
+				// only the first track/channel has some tempo/time signature...
+				if (iTrackChannel == 0) {
+					iImport++;
+					// Some adjustment required...
+					iClipStart = pSession->frameSnap(iClipStart);
+					pMidiClip->setClipStart(iClipStart);
+				}
 			} else {
 				// Bummer. Do cleanup...
 				delete pMidiClip;
 				delete pTrack;
 			}
-			// As far as the standard goes and that we'll strictly follow,
-			// only the first track/channel has some tempo/time signature...
-			if (iTrackChannel == 0)
-				iImport++;
 		}
 		// Log this successful import operation...
 		sDescription += tr("MIDI file import \"%1\" succeeded on %2 %3.\n")
