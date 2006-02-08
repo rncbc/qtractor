@@ -964,8 +964,10 @@ void qtractorMainForm::trackImportAudio (void)
 #endif
 
 	// Import Audio files into tracks...
-	if (m_pTracks)
-		m_pTracks->addAudioTracks(m_pFiles->audioListView()->openFileNames());
+	if (m_pTracks) {
+		m_pTracks->addAudioTracks(m_pFiles->audioListView()->openFileNames(),
+			m_pTracks->tracksView()->editHead());
+	}
 }
 
 
@@ -977,8 +979,10 @@ void qtractorMainForm::trackImportMidi (void)
 #endif
 
 	// Import MIDI files into tracks...
-	if (m_pTracks)
-		m_pTracks->addMidiTracks(m_pFiles->midiListView()->openFileNames());
+	if (m_pTracks) {
+		m_pTracks->addMidiTracks(m_pFiles->midiListView()->openFileNames(),
+			m_pTracks->trackView()->editHead());
+	}
 }
 
 
