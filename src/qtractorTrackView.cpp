@@ -1423,6 +1423,25 @@ void qtractorTrackView::keyPressEvent ( QKeyEvent *pKeyEvent )
 }
 
 
+// Make given frame position visible in view.
+void qtractorTrackView::ensureVisibleFrame ( unsigned long iFrame )
+{
+	qtractorSession *pSession = m_pTracks->session();
+	if (pSession) {
+		int x0 = QScrollView::contentsX();
+		int x  = pSession->pixelFromFrame(iFrame);
+		int w  = m_pPixmap->width();
+		int wm = (w >> 3);
+		if (x < x0)
+			x -= wm;
+		else if (x > x0 + w - wm)
+			x += w - wm;
+		QScrollView::ensureVisible(
+			 x, QScrollView::contentsY(), 8, 8);
+	}
+}
+
+
 // Session cursor accessor.
 qtractorSessionCursor *qtractorTrackView::sessionCursor (void) const
 {

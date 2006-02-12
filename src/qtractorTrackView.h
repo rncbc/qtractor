@@ -106,6 +106,9 @@ public:
 	void setEditTail(unsigned long iEditTail);
 	unsigned long editTail() const;
 
+	// Make given frame position visible in view.
+	void ensureVisibleFrame(unsigned long iFrame);
+
 	// Current session cursor accessor.
 	qtractorSessionCursor *sessionCursor() const;
 

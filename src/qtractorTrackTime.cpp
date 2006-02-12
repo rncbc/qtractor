@@ -25,9 +25,12 @@
 #include "qtractorSession.h"
 #include "qtractorTracks.h"
 
+#include "qtractorMainForm.h"
+
 #include <qapplication.h>
 #include <qpainter.h>
 #include <qcursor.h>
+
 
 //----------------------------------------------------------------------------
 // qtractorTrackTime -- Track time scale widget.
@@ -313,6 +316,8 @@ void qtractorTrackTime::contentsMouseMoveEvent ( QMouseEvent *pMouseEvent )
 			// Play-head positioning...
 			m_pTracks->trackView()->ensureVisible(pos.x(), pos.y(), 8, 8);
 			m_pTracks->trackView()->setPlayHead(iFrame);
+			// Let the change get some immediate visual feedback...
+			m_pTracks->mainForm()->updateTransportTime(iFrame);
 			break;
 		case DragEditHead:
 			// Edit-head positioning...

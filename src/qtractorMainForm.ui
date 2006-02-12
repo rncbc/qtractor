@@ -1227,6 +1227,7 @@
 <forwards>
     <forward>class QWorkspace;</forward>
     <forward>class QLabel;</forward>
+	<forward>class QTime;</forward>
     <forward>class qtractorOptions;</forward>
     <forward>class qtractorCommandList;</forward>
     <forward>class qtractorInstrumentList;</forward>
@@ -1255,6 +1256,9 @@
     <variable access="private">int m_iPeakTimer;</variable>
 	<variable access="private">int m_iPlayTimer;</variable>
 	<variable access="private">int m_iTransport;</variable>
+	<variable access="private">QTime *m_pXrunTime;</variable>
+	<variable access="private">int m_iXrunCount;</variable>
+	<variable access="private">int m_iXrunSkip;</variable>
 </variables>
 <slots>
     <slot specifier="non virtual">fileNew( void )</slot>
@@ -1335,6 +1339,7 @@
     <function access="private" specifier="non virtual">updateRecentFilesMenu( void )</function>
 	<function access="private" specifier="non virtual">updatePeakAutoRemove( void )</function>
     <function access="private" specifier="non virtual">updateActionCommand( QAction * pAction, qtractorCommand *pCommand )</function>
+	<function specifier="non virtual">updateTransportTime( unsigned long iPlayHead )</function>
     <function specifier="non virtual">appendMessages( const QString &amp; s )</function>
     <function specifier="non virtual">appendMessagesColor( const QString &amp; s, const QString &amp; c )</function>
     <function specifier="non virtual">appendMessagesText( const QString &amp; s )</function>

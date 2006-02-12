@@ -55,6 +55,7 @@
 #include <qstatusbar.h>
 #include <qlabel.h>
 #include <qtimer.h>
+#include <qdatetime.h>
 
 #ifdef HAVE_SIGNAL_H
 #include <signal.h>
@@ -63,6 +64,7 @@
 // Timer constant stuff.
 #define QTRACTOR_TIMER_MSECS    50
 #define QTRACTOR_TIMER_DELAY    200
+#define QTRACTOR_TIMER_XRUN     1000
 
 // Status bar item indexes
 #define QTRACTOR_STATUS_NAME    0       // Active session track caption.
@@ -90,22 +92,6 @@ void qtractorMainForm::init (void)
 	m_pCommands = new qtractorCommandList(this);
 	m_pInstruments = new qtractorInstrumentList();
 
-	// Configure the audio engine event handling...
-	qtractorAudioEngine *pAudioEngine = m_pSession->audioEngine();
-	if (pAudioEngine) {
-		pAudioEngine->setNotifyWidget(this);
-		pAudioEngine->setNotifyShutdownType(QTRACTOR_SHUT_EVENT);
-		pAudioEngine->setNotifyXrunType(QTRACTOR_XRUN_EVENT);
-	}
-
-	// Configure the audio file peak factory...
-	qtractorAudioPeakFactory *pAudioPeakFactory
-		= m_pSession->audioPeakFactory();
-	if (pAudioPeakFactory) {
-		pAudioPeakFactory->setNotifyWidget(this);
-		pAudioPeakFactory->setNotifyPeakType(QTRACTOR_PEAK_EVENT);
-	}
-
 	// To remember last time we've shown the playhead.
 	m_iPlayHead = 0;
 
@@ -121,6 +107,28 @@ void qtractorMainForm::init (void)
 	m_iPeakTimer = 0;
 	m_iPlayTimer = 0;
 	m_iTransport = 0;
+
+	m_pXrunTime = new QTime();
+	m_pXrunTime->start();
+
+	m_iXrunCount = 0;
+	m_iXrunSkip  = 0;
+
+	// Configure the audio engine event handling...
+	qtractorAudioEngine *pAudioEngine = m_pSession->audioEngine();
+	if (pAudioEngine) {
+		pAudioEngine->setNotifyWidget(this);
+		pAudioEngine->setNotifyShutdownType(QTRACTOR_SHUT_EVENT);
+		pAudioEngine->setNotifyXrunType(QTRACTOR_XRUN_EVENT);
+	}
+
+	// Configure the audio file peak factory...
+	qtractorAudioPeakFactory *pAudioPeakFactory
+		= m_pSession->audioPeakFactory();
+	if (pAudioPeakFactory) {
+		pAudioPeakFactory->setNotifyWidget(this);
+		pAudioPeakFactory->setNotifyPeakType(QTRACTOR_PEAK_EVENT);
+	}
 
 #ifdef HAVE_SIGNAL_H
 	// Set to ignore any fatal "Broken pipe" signals.
@@ -224,6 +232,8 @@ void qtractorMainForm::destroy (void)
 		delete m_pCommands;
 	if (m_pSession)
 		delete m_pSession;
+	if (m_pXrunTime)
+		delete m_pXrunTime;
 
 	// Finally, delete recent files menu.
 	if (m_pRecentFilesMenu)
@@ -440,9 +450,17 @@ void qtractorMainForm::customEvent ( QCustomEvent *pCustomEvent )
 		break;
 	case QTRACTOR_XRUN_EVENT:
 		// An XRUN has just been notified;
-		// send some informative message...
-		appendMessagesColor(
-			tr("XRUN: some frames might have been lost."), "#cc0033");
+		m_iXrunCount++;
+		// Skip this one, maybe we're under some kind of storm;
+		if (m_pXrunTime->restart() < QTRACTOR_TIMER_XRUN) {
+			// Skip expensive messaging...
+			m_iXrunSkip++;
+		} else {
+			// Send some informative message...
+			appendMessagesColor(
+				tr("XRUN(%1): some frames might have been lost.")
+				.arg(m_iXrunCount), "#cc0033");
+		}
 		break;
 	case QTRACTOR_SHUT_EVENT:
 		// Just in case we were in the middle of something...
@@ -965,8 +983,10 @@ void qtractorMainForm::trackImportAudio (void)
 
 	// Import Audio files into tracks...
 	if (m_pTracks) {
+		unsigned long iClipStart = m_pTracks->trackView()->editHead();
 		m_pTracks->addAudioTracks(m_pFiles->audioListView()->openFileNames(),
-			m_pTracks->trackView()->editHead());
+			iClipStart);
+		m_pTracks->trackView()->ensureVisibleFrame(iClipStart);
 	}
 }
 
@@ -980,8 +1000,10 @@ void qtractorMainForm::trackImportMidi (void)
 
 	// Import MIDI files into tracks...
 	if (m_pTracks) {
+		unsigned long iClipStart = m_pTracks->trackView()->editHead();
 		m_pTracks->addMidiTracks(m_pFiles->midiListView()->openFileNames(),
-			m_pTracks->trackView()->editHead());
+			iClipStart);
+		m_pTracks->trackView()->ensureVisibleFrame(iClipStart);
 	}
 }
 
@@ -1315,6 +1337,15 @@ void qtractorMainForm::helpAbout (void)
 //-------------------------------------------------------------------------
 // qtractorMainForm -- Main window stabilization.
 
+void qtractorMainForm::updateTransportTime ( unsigned long iPlayHead )
+{
+	m_pTransportTime->setText(
+		m_pSession->timeFromFrame(iPlayHead,
+			m_pOptions && m_pOptions->bTransportTime)
+	);
+}
+
+
 void qtractorMainForm::updateActionCommand ( QAction *pAction,
 	qtractorCommand *pCommand )
 {
@@ -1380,10 +1411,7 @@ void qtractorMainForm::stabilizeForm (void)
 		m_pMessages->scrollToBottom();
 
 	// Session status...
-	m_pTransportTime->setText(
-		m_pSession->timeFromFrame(m_iPlayHead,
-			m_pOptions && m_pOptions->bTransportTime)
-	);
+	updateTransportTime(m_iPlayHead);
 
 	if (m_pTracks && m_pTracks->currentTrack()) {
 		m_statusItems[QTRACTOR_STATUS_NAME]->setText(
@@ -1420,6 +1448,11 @@ void qtractorMainForm::stabilizeForm (void)
 // Actually start all session engines.
 bool qtractorMainForm::startSession (void)
 {
+	m_iXrunCount = 0;
+	m_iXrunSkip  = 0;
+
+	m_pXrunTime->start();
+
 	bool bResult = m_pSession->open(QTRACTOR_TITLE);
 	if (!bResult) {
 		appendMessagesError(
@@ -1427,6 +1460,7 @@ bool qtractorMainForm::startSession (void)
 			"Make sure the JACK audio server (jackd)\n"
 			"is up and running and then restart session."));
 	}
+
 	return bResult;
 }
 
@@ -1635,13 +1669,12 @@ void qtractorMainForm::timerSlot (void)
 		m_iPlayTimer += QTRACTOR_TIMER_MSECS;
 		if (m_iPlayTimer >= QTRACTOR_TIMER_DELAY) {
 			m_iPlayTimer = 0;
-			m_pTransportTime->setText(
-				m_pSession->timeFromFrame(m_iPlayHead,
-					m_pOptions && m_pOptions->bTransportTime)
-			);
+			updateTransportTime(m_iPlayHead);
 			// Transport status...
 			if (m_iTransport > 0) {
 				m_iTransport = 0;
+				if (m_pTracks)
+					m_pTracks->trackView()->ensureVisibleFrame(m_iPlayHead);
 				stabilizeForm();
 			}
 		}
@@ -1655,6 +1688,13 @@ void qtractorMainForm::timerSlot (void)
 			if (m_pTracks && m_pTracks->trackView())
 				m_pTracks->trackView()->updateContents();
 		}
+	}
+
+	// Check if we're skipping some XRUN callbacks...
+	if (m_iXrunSkip > 0) {
+		appendMessagesColor(
+			tr("XRUN(%1 skipped)").arg(m_iXrunSkip), "#cc3366");
+		m_iXrunSkip = 0;
 	}
 
 	// Register the next timer slot.
