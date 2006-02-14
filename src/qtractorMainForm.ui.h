@@ -64,7 +64,6 @@
 // Timer constant stuff.
 #define QTRACTOR_TIMER_MSECS    50
 #define QTRACTOR_TIMER_DELAY    200
-#define QTRACTOR_TIMER_XRUN     1000
 
 // Status bar item indexes
 #define QTRACTOR_STATUS_NAME    0       // Active session track caption.
@@ -108,11 +107,9 @@ void qtractorMainForm::init (void)
 	m_iPlayTimer = 0;
 	m_iTransport = 0;
 
-	m_pXrunTime = new QTime();
-	m_pXrunTime->start();
-
 	m_iXrunCount = 0;
 	m_iXrunSkip  = 0;
+	m_iXrunTimer = 0;
 
 	// Configure the audio engine event handling...
 	qtractorAudioEngine *pAudioEngine = m_pSession->audioEngine();
@@ -232,8 +229,6 @@ void qtractorMainForm::destroy (void)
 		delete m_pCommands;
 	if (m_pSession)
 		delete m_pSession;
-	if (m_pXrunTime)
-		delete m_pXrunTime;
 
 	// Finally, delete recent files menu.
 	if (m_pRecentFilesMenu)
@@ -449,18 +444,13 @@ void qtractorMainForm::customEvent ( QCustomEvent *pCustomEvent )
 		m_iPeakTimer += QTRACTOR_TIMER_DELAY;
 		break;
 	case QTRACTOR_XRUN_EVENT:
-		// An XRUN has just been notified;
+		// An XRUN has just been notified...
 		m_iXrunCount++;
 		// Skip this one, maybe we're under some kind of storm;
-		if (m_pXrunTime->restart() < QTRACTOR_TIMER_XRUN) {
-			// Skip expensive messaging...
+		if (m_iXrunTimer > 0)
 			m_iXrunSkip++;
-		} else {
-			// Send some informative message...
-			appendMessagesColor(
-				tr("XRUN(%1): some frames might have been lost.")
-				.arg(m_iXrunCount), "#cc0033");
-		}
+		// Defer the informative effect...
+		m_iXrunTimer += QTRACTOR_TIMER_DELAY;
 		break;
 	case QTRACTOR_SHUT_EVENT:
 		// Just in case we were in the middle of something...
@@ -472,7 +462,7 @@ void qtractorMainForm::customEvent ( QCustomEvent *pCustomEvent )
 		m_pSession->close();
 		// Send an informative message box...
 		appendMessagesError(
-			tr("Audio engine has been shutdown.\n\n"
+			tr("The audio engine has been shutdown.\n\n"
 			"Make sure the JACK audio server (jackd)\n"
 			"is up and running and then restart session."));
 		// Make things just bearable...
@@ -1450,13 +1440,12 @@ bool qtractorMainForm::startSession (void)
 {
 	m_iXrunCount = 0;
 	m_iXrunSkip  = 0;
-
-	m_pXrunTime->start();
+	m_iXrunTimer = 0;
 
 	bool bResult = m_pSession->open(QTRACTOR_TITLE);
 	if (!bResult) {
 		appendMessagesError(
-			tr("Cannot start audio engine.\n\n"
+			tr("The audio engine could not be started.\n\n"
 			"Make sure the JACK audio server (jackd)\n"
 			"is up and running and then restart session."));
 	}
@@ -1690,11 +1679,22 @@ void qtractorMainForm::timerSlot (void)
 		}
 	}
 
-	// Check if we're skipping some XRUN callbacks...
-	if (m_iXrunSkip > 0) {
-		appendMessagesColor(
-			tr("XRUN(%1 skipped)").arg(m_iXrunSkip), "#cc3366");
-		m_iXrunSkip = 0;
+	// Check if we've got some XRUN callbacks...
+	if (m_iXrunTimer > 0) {
+		m_iXrunTimer -= QTRACTOR_TIMER_MSECS;
+		if (m_iXrunTimer < QTRACTOR_TIMER_MSECS) {
+			m_iXrunTimer = 0;
+			// Did we skip any?
+			if (m_iXrunSkip > 0) {
+				appendMessagesColor(
+					tr("XRUN(%1 skipped)").arg(m_iXrunSkip), "#cc6699");
+				m_iXrunSkip = 0;
+			}
+			// Just post an informative message...
+			appendMessagesColor(
+				tr("XRUN(%1): some frames might have been lost.")
+				.arg(m_iXrunCount), "#cc0033");
+		}
 	}
 
 	// Register the next timer slot.
