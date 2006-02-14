@@ -109,6 +109,7 @@ IMAGES   = ../icons/qtractor.png \
            ../icons/transportPlay.png \
            ../icons/transportRecord.png \
            ../icons/transportFollow.png \
+           ../icons/transportLoop.png \
            ../icons/formAccept.png \
            ../icons/formReject.png \
            ../icons/formOpen.png \

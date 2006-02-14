@@ -1275,6 +1275,20 @@ void qtractorMainForm::transportFastForward (void)
 }
 
 
+// Transport loop.
+void qtractorMainForm::transportLoop (void)
+{
+#ifdef CONFIG_DEBUG
+	appendMessages("qtractorMainForm::transportLoop()");
+#endif
+
+	// TODO: Loop switch...
+
+	// Done with loop switch...
+	stabilizeForm();
+}
+
+
 // Transport play.
 void qtractorMainForm::transportPlay (void)
 {
@@ -1488,6 +1502,7 @@ void qtractorMainForm::stabilizeForm (void)
 	transportForwardAction->setEnabled(bEnabled);
 	transportFastForwardAction->setEnabled(
 		bEnabled && m_iPlayHead < iSessionLength);
+	transportLoopAction->setEnabled(bEnabled);
 //	transportPlayAction->setEnabled(bEnabled);
  	transportRecordAction->setEnabled(bEnabled);
 }

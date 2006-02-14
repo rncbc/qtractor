@@ -120,6 +120,8 @@
         <action name="transportForwardAction"/>
         <action name="transportFastForwardAction"/>
         <separator/>
+        <action name="transportLoopAction"/>
+        <separator/>
         <action name="transportPlayAction"/>
         <action name="transportRecordAction"/>
         <separator/>
@@ -182,6 +184,8 @@
         <action name="transportBackwardAction"/>
         <action name="transportForwardAction"/>
         <action name="transportFastForwardAction"/>
+        <separator/>
+        <action name="transportLoopAction"/>
         <separator/>
         <action name="transportPlayAction"/>
         <action name="transportRecordAction"/>
@@ -973,6 +977,29 @@
     </action>
     <action>
         <property name="name">
+            <cstring>transportLoopAction</cstring>
+        </property>
+        <property name="toggleAction">
+            <bool>true</bool>
+        </property>
+        <property name="iconSet">
+            <iconset>transportLoop.png</iconset>
+        </property>
+        <property name="text">
+            <string>Loop</string>
+        </property>
+        <property name="menuText">
+            <string>&amp;Loop</string>
+        </property>
+        <property name="statusTip">
+            <string>Transport loop</string>
+        </property>
+        <property name="accel">
+            <string></string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
             <cstring>transportPlayAction</cstring>
         </property>
         <property name="toggleAction">
@@ -1287,6 +1314,12 @@
         <slot>transportFastForward()</slot>
     </connection>
     <connection>
+        <sender>transportLoopAction</sender>
+        <signal>activated()</signal>
+        <receiver>qtractorMainForm</receiver>
+        <slot>transportLoop()</slot>
+    </connection>
+    <connection>
         <sender>transportPlayAction</sender>
         <signal>activated()</signal>
         <receiver>qtractorMainForm</receiver>
@@ -1392,6 +1425,7 @@
     <slot specifier="non virtual">transportBackward( void )</slot>
     <slot specifier="non virtual">transportForward( void )</slot>
     <slot specifier="non virtual">transportFastForward( void )</slot>
+    <slot specifier="non virtual">transportLoop( void )</slot>
     <slot specifier="non virtual">transportPlay( void )</slot>
     <slot specifier="non virtual">transportRecord( void )</slot>
     <slot specifier="non virtual">transportFollow( void )</slot>
