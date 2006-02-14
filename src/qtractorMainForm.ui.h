@@ -141,7 +141,7 @@ void qtractorMainForm::init (void)
 	// Make it shine :-)
 	setCentralWidget(m_pWorkspace);
 
-    	// Have some effective feedback...
+	// Have some effective feedback...
 	QIconSet icons;
 	icons.setPixmap(QPixmap::fromMimeSource("transportPlay.png"),
 		QIconSet::Automatic, QIconSet::Active, QIconSet::Off);
@@ -157,13 +157,13 @@ void qtractorMainForm::init (void)
 	m_pTransportTime->setFrameShape(QFrame::Panel);
 	m_pTransportTime->setFrameShadow(QFrame::Sunken);
 	m_pTransportTime->setPaletteBackgroundColor(Qt::black);
-	m_pTransportTime->setPaletteForegroundColor(Qt::green);
+//	m_pTransportTime->setPaletteForegroundColor(Qt::green);
 	m_pTransportTime->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
 	m_pTransportTime->setMaximumHeight(
-		m_pTransportTime->sizeHint().height() + 4);
+		m_pTransportTime->sizeHint().height() + 2);
 	m_pTransportTime->setMinimumWidth(
-		m_pTransportTime->sizeHint().width() + 4);
-	QToolTip::add(m_pTransportTime, tr("Current transport time (play-head)"));
+		m_pTransportTime->sizeHint().width() + 2);
+	QToolTip::add(m_pTransportTime, tr("Current transport time (playhead)"));
 
 	// Create some statusbar labels...
 	QLabel *pLabel;
@@ -289,7 +289,8 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 	viewToolbarTime(m_pOptions->bTimeToolbar);
 
 	// Restore whole dock windows state.
-	QString sDockables = m_pOptions->settings().readEntry("/Layout/DockWindows" , QString::null);
+	QString sDockables = m_pOptions->settings().readEntry(
+		"/Layout/DockWindows", QString::null);
 	if (sDockables.isEmpty()) {
 		// Message window is forced to dock on the bottom.
 		moveDockWindow(m_pMessages, Qt::DockBottom);
@@ -389,7 +390,8 @@ void qtractorMainForm::closeEvent ( QCloseEvent *pCloseEvent )
 
 
 // Drag'n'drop file handler.
-bool qtractorMainForm::decodeDragFiles ( const QMimeSource *pEvent, QStringList& files )
+bool qtractorMainForm::decodeDragFiles ( const QMimeSource *pEvent,
+	QStringList& files )
 {
 	bool bDecode = false;
 
@@ -398,8 +400,11 @@ bool qtractorMainForm::decodeDragFiles ( const QMimeSource *pEvent, QStringList&
 		bDecode = QTextDrag::decode(pEvent, sText);
 		if (bDecode) {
 			files = QStringList::split('\n', sText);
-			for (QStringList::Iterator iter = files.begin(); iter != files.end(); iter++)
-				*iter = QUrl((*iter).stripWhiteSpace().replace(QRegExp("^file:"), QString::null)).path();
+			for (QStringList::Iterator iter = files.begin();
+					iter != files.end(); ++iter) {
+				*iter = QUrl((*iter).stripWhiteSpace()
+					.replace(QRegExp("^file:"), QString::null)).path();
+			}
 		}
 	}
 
@@ -422,7 +427,8 @@ void qtractorMainForm::dropEvent ( QDropEvent* pDropEvent )
 	if (!decodeDragFiles(pDropEvent, files))
 		return;
 
-	for (QStringList::Iterator iter = files.begin(); iter != files.end(); iter++) {
+	for (QStringList::Iterator iter = files.begin();
+			iter != files.end(); ++iter) {
 		const QString& sPath = *iter;
 		// Close current session and try to load the new one...
 		if (closeSession())
@@ -698,8 +704,12 @@ bool qtractorMainForm::loadSessionFile ( const QString& sFilename )
 
 	// Read the file.
 	QDomDocument doc("qtractorSession");
-	if (!qtractorSessionDocument(&doc, m_pSession, m_pFiles).load(sFilename))
-		appendMessagesError(tr("Session could not be loaded\nfrom \"%1\".\n\nSorry.").arg(sFilename));
+	if (!qtractorSessionDocument(&doc, m_pSession, m_pFiles).load(sFilename)) {
+		appendMessagesError(
+			tr("Session could not be loaded\n"
+			"from \"%1\".\n\n"
+			"Sorry.").arg(sFilename));
+	}
 
 	// Save as default session directory.
 	if (m_pOptions)
@@ -727,8 +737,12 @@ bool qtractorMainForm::saveSessionFile ( const QString& sFilename )
 
 	// Have we any errors?
 	QDomDocument doc("qtractorSession");
-	if (!qtractorSessionDocument(&doc, m_pSession, m_pFiles).save(sFilename))
-		appendMessagesError(tr("Some settings could not be saved\nto \"%1\" session file.\n\nSorry.").arg(sFilename));
+	if (!qtractorSessionDocument(&doc, m_pSession, m_pFiles).save(sFilename)) {
+		appendMessagesError(
+			tr("Some settings could not be saved\n"
+			"to \"%1\" session file.\n\n"
+			"Sorry.").arg(sFilename));
+	}
 
 	// Save as default session directory.
 	if (m_pOptions)
@@ -1516,7 +1530,9 @@ bool qtractorMainForm::startSession (void)
 	m_iXrunTimer = 0;
 
 	bool bResult = m_pSession->open(QTRACTOR_TITLE);
-	if (!bResult) {
+	if (bResult) {
+		appendMessages(tr("Session started."));
+	} else {
 		appendMessagesError(
 			tr("The audio engine could not be started.\n\n"
 			"Make sure the JACK audio server (jackd)\n"
