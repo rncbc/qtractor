@@ -103,9 +103,11 @@ IMAGES   = icons/qtractor.png \
            icons/viewZoomTool.png \
            icons/transportRewind.png \
            icons/transportBackward.png \
-           icons/transportPlay.png \
            icons/transportPause.png \
            icons/transportForward.png \
+           icons/transportFastForward.png \
+           icons/transportPlay.png \
+           icons/transportRecord.png \
            icons/transportFollow.png \
            icons/formAccept.png \
            icons/formReject.png \

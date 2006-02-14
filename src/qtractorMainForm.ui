@@ -103,6 +103,7 @@
             <action name="viewToolbarEditAction"/>
             <action name="viewToolbarTrackAction"/>
             <action name="viewToolbarTransportAction"/>
+            <action name="viewToolbarTimeAction"/>
         </item>
         <separator/>
         <action name="viewFilesAction"/>
@@ -116,8 +117,11 @@
     <item text="T&amp;ransport" name="transportMenu">
         <action name="transportRewindAction"/>
         <action name="transportBackwardAction"/>
-        <action name="transportPlayAction"/>
         <action name="transportForwardAction"/>
+        <action name="transportFastForwardAction"/>
+        <separator/>
+        <action name="transportPlayAction"/>
+        <action name="transportRecordAction"/>
         <separator/>
         <action name="transportFollowAction"/>
     </item>
@@ -133,7 +137,7 @@
             <cstring>fileToolbar</cstring>
         </property>
         <property name="label">
-            <string>File Toolbar</string>
+            <string>File</string>
         </property>
         <action name="fileNewAction"/>
         <action name="fileOpenAction"/>
@@ -144,7 +148,7 @@
             <cstring>editToolbar</cstring>
         </property>
         <property name="label">
-            <string>Edit Toolbar</string>
+            <string>Edit</string>
         </property>
         <action name="editUndoAction"/>
         <action name="editRedoAction"/>
@@ -160,7 +164,7 @@
             <cstring>trackToolbar</cstring>
         </property>
         <property name="label">
-            <string>Track Toolbar</string>
+            <string>Track</string>
         </property>
         <action name="trackAddAction"/>
         <action name="trackRemoveAction"/>
@@ -172,14 +176,25 @@
             <cstring>transportToolbar</cstring>
         </property>
         <property name="label">
-            <string>Transport Toolbar</string>
+            <string>Transport</string>
         </property>
         <action name="transportRewindAction"/>
         <action name="transportBackwardAction"/>
-        <action name="transportPlayAction"/>
         <action name="transportForwardAction"/>
+        <action name="transportFastForwardAction"/>
+        <separator/>
+        <action name="transportPlayAction"/>
+        <action name="transportRecordAction"/>
         <separator/>
         <action name="transportFollowAction"/>
+    </toolbar>
+    <toolbar dock="2">
+        <property name="name">
+            <cstring>timeToolbar</cstring>
+        </property>
+        <property name="label">
+            <string>Time</string>
+        </property>
     </toolbar>
 </toolbars>
 <actions>
@@ -749,6 +764,26 @@
     </action>
     <action>
         <property name="name">
+            <cstring>viewToolbarTimeAction</cstring>
+        </property>
+        <property name="toggleAction">
+            <bool>true</bool>
+        </property>
+        <property name="text">
+            <string>Time toolbar</string>
+        </property>
+        <property name="menuText">
+            <string>T&amp;ime</string>
+        </property>
+        <property name="toolTip">
+            <string>Show/hide time toolbar</string>
+        </property>
+        <property name="statusTip">
+            <string>Show/hide main program window time toolbar</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
             <cstring>viewFilesAction</cstring>
         </property>
         <property name="toggleAction">
@@ -867,7 +902,7 @@
             <string>Rewind</string>
         </property>
         <property name="menuText">
-            <string>&amp;Rewind</string>
+            <string>Re&amp;wind</string>
         </property>
         <property name="statusTip">
             <string>Transport rewind</string>
@@ -898,6 +933,46 @@
     </action>
     <action>
         <property name="name">
+            <cstring>transportForwardAction</cstring>
+        </property>
+        <property name="iconSet">
+            <iconset>transportForward.png</iconset>
+        </property>
+        <property name="text">
+            <string>Forward</string>
+        </property>
+        <property name="menuText">
+            <string>&amp;Forward</string>
+        </property>
+        <property name="statusTip">
+            <string>Transport forward</string>
+        </property>
+        <property name="accel">
+            <string></string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>transportFastForwardAction</cstring>
+        </property>
+        <property name="iconSet">
+            <iconset>transportFastForward.png</iconset>
+        </property>
+        <property name="text">
+            <string>Fast forward</string>
+        </property>
+        <property name="menuText">
+            <string>F&amp;ast Forward</string>
+        </property>
+        <property name="statusTip">
+            <string>Transport fast forward</string>
+        </property>
+        <property name="accel">
+            <string></string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
             <cstring>transportPlayAction</cstring>
         </property>
         <property name="toggleAction">
@@ -921,19 +996,22 @@
     </action>
     <action>
         <property name="name">
-            <cstring>transportForwardAction</cstring>
+            <cstring>transportRecordAction</cstring>
+        </property>
+        <property name="toggleAction">
+            <bool>true</bool>
         </property>
         <property name="iconSet">
-            <iconset>transportForward.png</iconset>
+            <iconset>transportRecord.png</iconset>
         </property>
         <property name="text">
-            <string>Forward</string>
+            <string>Record</string>
         </property>
         <property name="menuText">
-            <string>&amp;Forward</string>
+            <string>&amp;Record</string>
         </property>
         <property name="statusTip">
-            <string>Transport forward</string>
+            <string>Transport record</string>
         </property>
         <property name="accel">
             <string></string>
@@ -1149,6 +1227,12 @@
         <slot>viewToolbarTransport(bool)</slot>
     </connection>
     <connection>
+        <sender>viewToolbarTimeAction</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>qtractorMainForm</receiver>
+        <slot>viewToolbarTime(bool)</slot>
+    </connection>
+    <connection>
         <sender>viewFilesAction</sender>
         <signal>toggled(bool)</signal>
         <receiver>qtractorMainForm</receiver>
@@ -1191,16 +1275,28 @@
         <slot>transportBackward()</slot>
     </connection>
     <connection>
+        <sender>transportForwardAction</sender>
+        <signal>activated()</signal>
+        <receiver>qtractorMainForm</receiver>
+        <slot>transportForward()</slot>
+    </connection>
+    <connection>
+        <sender>transportFastForwardAction</sender>
+        <signal>activated()</signal>
+        <receiver>qtractorMainForm</receiver>
+        <slot>transportFastForward()</slot>
+    </connection>
+    <connection>
         <sender>transportPlayAction</sender>
         <signal>activated()</signal>
         <receiver>qtractorMainForm</receiver>
         <slot>transportPlay()</slot>
     </connection>
     <connection>
-        <sender>transportForwardAction</sender>
+        <sender>transportRecordAction</sender>
         <signal>activated()</signal>
         <receiver>qtractorMainForm</receiver>
-        <slot>transportForward()</slot>
+        <slot>transportRecord()</slot>
     </connection>
     <connection>
         <sender>transportFollowAction</sender>
@@ -1286,6 +1382,7 @@
     <slot specifier="non virtual">viewToolbarEdit( bool bOn )</slot>
     <slot specifier="non virtual">viewToolbarTrack( bool bOn )</slot>
     <slot specifier="non virtual">viewToolbarTransport( bool bOn )</slot>
+    <slot specifier="non virtual">viewToolbarTime( bool bOn )</slot>
     <slot specifier="non virtual">viewFiles( bool bOn )</slot>
     <slot specifier="non virtual">viewMessages( bool bOn )</slot>
     <slot specifier="non virtual">viewRefresh( void )</slot>
@@ -1293,8 +1390,10 @@
     <slot specifier="non virtual">viewOptions( void )</slot>
     <slot specifier="non virtual">transportRewind( void )</slot>
     <slot specifier="non virtual">transportBackward( void )</slot>
-    <slot specifier="non virtual">transportPlay( void )</slot>
     <slot specifier="non virtual">transportForward( void )</slot>
+    <slot specifier="non virtual">transportFastForward( void )</slot>
+    <slot specifier="non virtual">transportPlay( void )</slot>
+    <slot specifier="non virtual">transportRecord( void )</slot>
     <slot specifier="non virtual">transportFollow( void )</slot>
     <slot specifier="non virtual">helpAboutQt( void )</slot>
     <slot specifier="non virtual">helpAbout( void )</slot>
