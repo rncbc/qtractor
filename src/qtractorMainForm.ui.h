@@ -1717,14 +1717,15 @@ void qtractorMainForm::timerSlot (void)
 		if (m_iPlayTimer >= QTRACTOR_TIMER_DELAY) {
 			m_iPlayTimer = 0;
 			updateTransportTime(m_iPlayHead);
-			// Transport status...
-			if (m_iTransport > 0) {
-				m_iTransport = 0;
-				if (m_pTracks)
-					m_pTracks->trackView()->ensureVisibleFrame(m_iPlayHead);
-				stabilizeForm();
-			}
 		}
+	}
+
+	// Transport status...
+	if (m_iTransport > 0) {
+		m_iTransport = 0;
+		if (m_pTracks)
+			m_pTracks->trackView()->ensureVisibleFrame(m_iPlayHead);
+		stabilizeForm();
 	}
 
 	// Check if its time to refresh some tracks...

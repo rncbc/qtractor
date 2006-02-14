@@ -1434,7 +1434,7 @@ void qtractorTrackView::ensureVisibleFrame ( unsigned long iFrame )
 		int wm = (w >> 3);
 		if (x < x0)
 			x -= wm;
-		else if (x > x0 + w - wm)
+		else if (x > x0 + w - wm && iFrame < pSession->sessionLength())
 			x += w - wm;
 		QScrollView::ensureVisible(
 			 x, QScrollView::contentsY(), 8, 8);
