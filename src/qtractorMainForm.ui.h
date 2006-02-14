@@ -1203,6 +1203,10 @@ void qtractorMainForm::transportRewind (void)
 	appendMessages("qtractorMainForm::transportRewind()");
 #endif
 
+	// Make sure session is activated...
+	if (!checkRestartSession())
+		return;
+
 	// Move playhead to edit-tail, head or full session-start.
 	unsigned long iEditHead = 0;
 	unsigned long iEditTail = 0;
@@ -1232,6 +1236,10 @@ void qtractorMainForm::transportBackward (void)
 	appendMessages("qtractorMainForm::transportBackward()");
 #endif
 
+	// Make sure session is activated...
+	if (!checkRestartSession())
+		return;
+
 	// Move playhead one second backward....
 	unsigned long iPlayHead = m_pSession->playHead();
 	if (iPlayHead > m_pSession->sampleRate())
@@ -1252,6 +1260,10 @@ void qtractorMainForm::transportForward (void)
 	appendMessages("qtractorMainForm::transportForward()");
 #endif
 
+	// Make sure session is activated...
+	if (!checkRestartSession())
+		return;
+
 	// Move playhead one second forward....
 	m_pSession->setPlayHead(m_pSession->playHead() + m_pSession->sampleRate());
 	m_iTransport++;
@@ -1266,6 +1278,10 @@ void qtractorMainForm::transportFastForward (void)
 #ifdef CONFIG_DEBUG
 	appendMessages("qtractorMainForm::transportFastForward()");
 #endif
+
+	// Make sure session is activated...
+	if (!checkRestartSession())
+		return;
 
 	// Move playhead to edit-head, tail or full session-end.
 	unsigned long iEditHead = 0;
@@ -1296,7 +1312,13 @@ void qtractorMainForm::transportLoop (void)
 	appendMessages("qtractorMainForm::transportLoop()");
 #endif
 
+	// Make sure session is activated...
+	if (!checkRestartSession())
+		return;
+
+	//
 	// TODO: Loop switch...
+	//
 
 	// Done with loop switch...
 	stabilizeForm();
@@ -1310,20 +1332,9 @@ void qtractorMainForm::transportPlay (void)
 	appendMessages("qtractorMainForm::transportPlay()");
 #endif
 
-	// Whether session is currently activated,
-	// try to (re)open the whole thing...
-	if (!m_pSession->isActivated()) {
-		// Save current playhead position, if any...
-		unsigned long iPlayHead = m_pSession->playHead();
-		// Bail out if can't start it...
-		if (!startSession()) {
-			transportPlayAction->setOn(false);
-			stabilizeForm();
-			return;
-		}
-		// Restore previous playhead position...
-		m_pSession->setPlayHead(iPlayHead);
-	}
+	// Make sure session is activated...
+	if (!checkRestartSession())
+		return;
 
 	// In case of (re)starting playback, send now
 	// all tracks MIDI bank select/program changes...
@@ -1346,7 +1357,13 @@ void qtractorMainForm::transportRecord (void)
 	appendMessages("qtractorMainForm::transportRecord()");
 #endif
 
+	// Make sure session is activated...
+	if (!checkRestartSession())
+		return;
+
+	//
 	// TODO: Record switch...
+	//
 
 	// Done with record switch...
 	stabilizeForm();
@@ -1507,18 +1524,12 @@ void qtractorMainForm::stabilizeForm (void)
 	m_statusItems[QTRACTOR_STATUS_RATE]->setText(
 		tr("%1 Hz").arg(m_pSession->sampleRate()));
 
-	// Transport stuff...
-	bEnabled = m_pSession->isActivated();
+	// Transport stuff...	
 	m_pTransportTime->setPaletteForegroundColor(
-		bEnabled ? Qt::green : Qt::darkGreen);
-	transportRewindAction->setEnabled(bEnabled && m_iPlayHead > 0);
-	transportBackwardAction->setEnabled(bEnabled && m_iPlayHead > 0);
-	transportForwardAction->setEnabled(bEnabled);
-	transportFastForwardAction->setEnabled(
-		bEnabled && m_iPlayHead < iSessionLength);
-	transportLoopAction->setEnabled(bEnabled);
-//	transportPlayAction->setEnabled(bEnabled);
- 	transportRecordAction->setEnabled(bEnabled);
+		m_pSession->isActivated() ? Qt::green : Qt::darkGreen);
+	transportRewindAction->setEnabled(m_iPlayHead > 0);
+	transportBackwardAction->setEnabled(m_iPlayHead > 0);
+	transportFastForwardAction->setEnabled(m_iPlayHead < iSessionLength);
 }
 
 
@@ -1543,12 +1554,35 @@ bool qtractorMainForm::startSession (void)
 }
 
 
+// Check and restart session, if applicable.
+bool qtractorMainForm::checkRestartSession (void)
+{
+#ifdef CONFIG_DEBUG
+	appendMessages("qtractorMainForm::checkRestartSession()");
+#endif
+
+	// Whether session is currently activated,
+	// try to (re)open the whole thing...
+	if (!m_pSession->isActivated()) {
+		// Save current playhead position, if any...
+		unsigned long iPlayHead = m_pSession->playHead();
+		// Bail out if can't start it...
+		if (!startSession()) {
+			transportPlayAction->setOn(false);
+			stabilizeForm();
+			return false;
+		}
+		// Restore previous playhead position...
+		m_pSession->setPlayHead(iPlayHead);
+	}
+
+	return true;
+}
+
+
 // Grab and restore current sampler channels session.
 void qtractorMainForm::updateSession (void)
 {
-	if (m_pSession == NULL)
-		return;
-
 #ifdef CONFIG_DEBUG
 	appendMessages("qtractorMainForm::updateSession()");
 #endif
