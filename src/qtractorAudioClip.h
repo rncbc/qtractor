@@ -57,6 +57,9 @@ public:
 	// Reset clip state.
 	void reset();
 
+	// Loop positioning.
+	void loop(unsigned long iLoopStart, unsigned long iLoopEnd);
+
 	// Audio clip special process cycle executive.
 	void process(float fGain,
 		unsigned long iFrameStart, unsigned long iFrameEnd);

@@ -143,6 +143,10 @@ public:
 
 	qtractorTrack *trackAt(int iTrack) const;
 
+	// Current number of record-armed tracks.
+	void setRecordTracks(bool bRecord);
+	unsigned int recordTracks() const;
+
 	// Current number of solo tracks.
 	void setSoloTracks(bool bSolo);
 	unsigned int soloTracks() const;
@@ -172,6 +176,20 @@ public:
 	// Playhead positioning.
 	void setPlayHead(unsigned long iFrame);
 	unsigned long playHead() const;
+
+	// Edit-head positioning.
+	void setEditHead(unsigned long iEditHead);
+	unsigned long editHead() const;
+
+	// Edit-tail positioning.
+	void setEditTail(unsigned long iEditTail);
+	unsigned long editTail() const;
+
+	// Session loop points accessors.
+	void setLoop(unsigned long iLoopStart, unsigned long iLoopEnd);
+	unsigned long loopStart() const;
+	unsigned long loopEnd() const;
+	bool isLooping() const;
 
 	// Special track-immediate methods.
 	void trackMute(qtractorTrack *pTrack, bool bMute);
@@ -221,6 +239,8 @@ public:
 		unsigned short horizontalZoom;
 		unsigned short verticalZoom;
 		unsigned short snapPerBeat;
+		unsigned long  editHead;
+		unsigned long  editTail;
 	};
 
 	// Alternate properties accessor.
@@ -238,6 +258,7 @@ private:
 	float          m_fScale_c;
 	float          m_fScale_d;
 
+	unsigned int   m_iRecordTracks;     // Current number of record-armed tracks.
 	unsigned int   m_iSoloTracks;       // Current number of solo tracks.
 
 	// The track list.
@@ -256,6 +277,10 @@ private:
 	// MIDI track tagging specifics.
 	unsigned short m_iMidiTag;
 	QValueList<unsigned short> m_midiTags;
+	
+	// Session loop points.
+	unsigned long m_iLoopStart;
+	unsigned long m_iLoopEnd;
 };
 
 

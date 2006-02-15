@@ -68,9 +68,10 @@
 // Status bar item indexes
 #define QTRACTOR_STATUS_NAME    0       // Active session track caption.
 #define QTRACTOR_STATUS_MOD     1       // Current session modification state.
-#define QTRACTOR_STATUS_SOLO    2       // Current session soloing state.
-#define QTRACTOR_STATUS_TIME    3       // Current session length time.
-#define QTRACTOR_STATUS_RATE    4       // Current session sample rate.
+#define QTRACTOR_STATUS_REC     2       // Current session record-arming state.
+#define QTRACTOR_STATUS_SOLO    3       // Current session soloing state.
+#define QTRACTOR_STATUS_TIME    4       // Current session length time.
+#define QTRACTOR_STATUS_RATE    5       // Current session sample rate.
 
 
 // Specialties for thread-callback comunication.
@@ -179,6 +180,13 @@ void qtractorMainForm::init (void)
 	pLabel->setMinimumSize(pLabel->sizeHint());
 	QToolTip::add(pLabel, tr("Session modification state"));
 	m_statusItems[QTRACTOR_STATUS_MOD] = pLabel;
+	statusBar()->addWidget(pLabel);
+	// Session record-arming status.
+	pLabel = new QLabel(tr("REC"), this);
+	pLabel->setAlignment(Qt::AlignHCenter);
+	pLabel->setMinimumSize(pLabel->sizeHint());
+	QToolTip::add(pLabel, tr("Session record-arming state"));
+	m_statusItems[QTRACTOR_STATUS_REC] = pLabel;
 	statusBar()->addWidget(pLabel);
 	// Session soloing status.
 	pLabel = new QLabel(tr("SOLO"), this);
@@ -463,9 +471,13 @@ void qtractorMainForm::customEvent ( QCustomEvent *pCustomEvent )
 		break;
 	case QTRACTOR_SHUT_EVENT:
 		// Just in case we were in the middle of something...
+		if (m_pSession->isLooping()) {
+			transportLoopAction->setOn(false);
+			transportLoop(); // Toggle looping!
+		}
 		if (m_pSession->isPlaying()) {
 			transportPlayAction->setOn(false);
-			transportPlay(); // Toggle!
+			transportPlay(); // Toggle playing!
 		}
 		// Engine shutdown is on demand...
 		m_pSession->close();
@@ -666,9 +678,13 @@ bool qtractorMainForm::closeSession (void)
 	// If we may close it, dot it.
 	if (bClose) {
 		// Just in case we were in the middle of something...
+		if (m_pSession->isLooping()) {
+			transportLoopAction->setOn(false);
+			transportLoop(); // Toggle looping!
+		}
 		if (m_pSession->isPlaying()) {
 			transportPlayAction->setOn(false);
-			transportPlay(); // Toggle!
+			transportPlay(); // Toggle playing!
 		}
 		// Close session engines.
 		m_pSession->close();
@@ -990,7 +1006,7 @@ void qtractorMainForm::trackImportAudio (void)
 
 	// Import Audio files into tracks...
 	if (m_pTracks) {
-		unsigned long iClipStart = m_pTracks->trackView()->editHead();
+		unsigned long iClipStart = m_pSession->editHead();
 		m_pTracks->addAudioTracks(m_pFiles->audioListView()->openFileNames(),
 			iClipStart);
 		m_pTracks->trackView()->ensureVisibleFrame(iClipStart);
@@ -1007,7 +1023,7 @@ void qtractorMainForm::trackImportMidi (void)
 
 	// Import MIDI files into tracks...
 	if (m_pTracks) {
-		unsigned long iClipStart = m_pTracks->trackView()->editHead();
+		unsigned long iClipStart = m_pSession->editHead();
 		m_pTracks->addMidiTracks(m_pFiles->midiListView()->openFileNames(),
 			iClipStart);
 		m_pTracks->trackView()->ensureVisibleFrame(iClipStart);
@@ -1208,18 +1224,12 @@ void qtractorMainForm::transportRewind (void)
 		return;
 
 	// Move playhead to edit-tail, head or full session-start.
-	unsigned long iEditHead = 0;
-	unsigned long iEditTail = 0;
 	unsigned long iPlayHead = m_pSession->playHead();
-	if (m_pTracks) {
-		iEditHead = m_pTracks->trackView()->editHead();
-		iEditTail = m_pTracks->trackView()->editTail();
-	}
-	if (iPlayHead > iEditTail)
-		iPlayHead = iEditTail;
+	if (iPlayHead > m_pSession->editTail())
+		iPlayHead = m_pSession->editTail();
 	else
-	if (iPlayHead > iEditHead)
-		iPlayHead = iEditHead;
+	if (iPlayHead > m_pSession->editHead())
+		iPlayHead = m_pSession->editHead();
 	else
 		iPlayHead = 0;
 	m_pSession->setPlayHead(iPlayHead);
@@ -1284,18 +1294,12 @@ void qtractorMainForm::transportFastForward (void)
 		return;
 
 	// Move playhead to edit-head, tail or full session-end.
-	unsigned long iEditHead = 0;
-	unsigned long iEditTail = 0;
 	unsigned long iPlayHead = m_pSession->playHead();
-	if (m_pTracks) {
-		iEditHead = m_pTracks->trackView()->editHead();
-		iEditTail = m_pTracks->trackView()->editTail();
-	}
-	if (iPlayHead < iEditHead)
-		iPlayHead = iEditHead;
+	if (iPlayHead < m_pSession->editHead())
+		iPlayHead = m_pSession->editHead();
 	else
-	if (iPlayHead < iEditTail)
-		iPlayHead = iEditTail;
+	if (iPlayHead < m_pSession->editTail())
+		iPlayHead = m_pSession->editTail();
 	else
 		iPlayHead = m_pSession->sessionLength();
 	m_pSession->setPlayHead(iPlayHead);
@@ -1316,9 +1320,12 @@ void qtractorMainForm::transportLoop (void)
 	if (!checkRestartSession())
 		return;
 
-	//
-	// TODO: Loop switch...
-	//
+	// Do the loop switch...
+	if (!m_pSession->isLooping()) {
+		m_pSession->setLoop(m_pSession->editHead(), m_pSession->editTail());
+	} else {
+		m_pSession->setLoop(0, 0);
+	}
 
 	// Done with loop switch...
 	stabilizeForm();
@@ -1513,6 +1520,11 @@ void qtractorMainForm::stabilizeForm (void)
 	else
 		m_statusItems[QTRACTOR_STATUS_MOD]->clear();
 
+	if (m_pSession->recordTracks() > 0)
+		m_statusItems[QTRACTOR_STATUS_REC]->setText(tr("REC"));		
+	else
+		m_statusItems[QTRACTOR_STATUS_REC]->clear();
+
 	if (m_pSession->soloTracks() > 0)
 		m_statusItems[QTRACTOR_STATUS_SOLO]->setText(tr("SOLO"));
 	else
@@ -1530,6 +1542,9 @@ void qtractorMainForm::stabilizeForm (void)
 	transportRewindAction->setEnabled(m_iPlayHead > 0);
 	transportBackwardAction->setEnabled(m_iPlayHead > 0);
 	transportFastForwardAction->setEnabled(m_iPlayHead < iSessionLength);
+	transportLoopAction->setEnabled(m_pSession->isLooping()
+		|| m_pSession->editHead() < m_pSession->editTail());
+	transportRecordAction->setEnabled(m_pSession->recordTracks() > 0);
 }
 
 
@@ -1568,6 +1583,7 @@ bool qtractorMainForm::checkRestartSession (void)
 		unsigned long iPlayHead = m_pSession->playHead();
 		// Bail out if can't start it...
 		if (!startSession()) {
+			transportLoopAction->setOn(false);
 			transportPlayAction->setOn(false);
 			stabilizeForm();
 			return false;

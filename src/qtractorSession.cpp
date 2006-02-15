@@ -51,7 +51,9 @@ qtractorSession::Properties& qtractorSession::Properties::copy (
 	horizontalZoom = props.horizontalZoom;
 	verticalZoom   = props.verticalZoom;
 	snapPerBeat    = props.snapPerBeat;
-
+	editHead       = props.editHead;
+	editTail       = props.editTail;
+	
 	return *this;
 }
 
@@ -68,6 +70,8 @@ void qtractorSession::Properties::clear (void)
 	horizontalZoom = 100;
 	verticalZoom   = 100;
 	snapPerBeat    = 4;
+	editHead       = 0;
+	editTail       = 0;
 }
 
 
@@ -148,11 +152,13 @@ void qtractorSession::clear (void)
 
 	m_props.clear();
 
+	m_midiTags.clear();
+
 	m_iSessionLength = 0;
 	m_iSoloTracks    = 0;
 	m_iMidiTag       = 0;
-
-	m_midiTags.clear();
+	m_iLoopStart     = 0;
+	m_iLoopEnd       = 0;
 
 	updateTimeScale();
 
@@ -309,7 +315,7 @@ unsigned short qtractorSession::verticalZoom (void) const
 }
 
 
-// Beat divisor (snap) accesors.
+// Beat divisor (snap) accessors.
 void qtractorSession::setSnapPerBeat ( unsigned short iSnapPerBeat )
 {
 	m_props.snapPerBeat = iSnapPerBeat;
@@ -318,6 +324,29 @@ void qtractorSession::setSnapPerBeat ( unsigned short iSnapPerBeat )
 unsigned short qtractorSession::snapPerBeat (void) const
 {
 	return m_props.snapPerBeat;
+}
+
+
+// Edit-head frame accessors.
+void qtractorSession::setEditHead ( unsigned long iEditHead )
+{
+	m_props.editHead = iEditHead;
+}
+
+unsigned long qtractorSession::editHead (void) const
+{
+	return m_props.editHead;
+}
+
+
+void qtractorSession::setEditTail ( unsigned long iEditTail )
+{
+	m_props.editTail = iEditTail;
+}
+
+unsigned long qtractorSession::editTail (void) const
+{
+	return m_props.editTail;
 }
 
 
@@ -511,6 +540,8 @@ void qtractorSession::insertTrack ( qtractorTrack *pTrack,
 		m_tracks.prepend(pTrack);
 	}
 
+//	if (pTrack->isRecord())
+//		setRecordTracks(true);
 //	if (pTrack->isSolo())
 //		setSoloTracks(true);
 
@@ -544,6 +575,8 @@ void qtractorSession::unlinkTrack ( qtractorTrack *pTrack )
 		pSessionCursor = pSessionCursor->next();
 	}
 
+	if (pTrack->isRecord())
+		setRecordTracks(false);
 	if (pTrack->isSolo())
 		setSoloTracks(false);
 
@@ -557,6 +590,22 @@ void qtractorSession::unlinkTrack ( qtractorTrack *pTrack )
 qtractorTrack *qtractorSession::trackAt ( int iTrack ) const
 {
 	return m_tracks.at(iTrack);
+}
+
+
+// Current number of record-armed tracks.
+void qtractorSession::setRecordTracks ( bool bRecord )
+{
+	if (bRecord) {
+		m_iRecordTracks++;
+	} else if (m_iRecordTracks > 0) {
+		m_iRecordTracks--;
+	}
+}
+
+unsigned int qtractorSession::recordTracks (void) const
+{
+	return m_iRecordTracks;
 }
 
 
@@ -669,6 +718,35 @@ unsigned long qtractorSession::playHead (void) const
 {
 	return (m_pAudioEngine->sessionCursor() ?
 		m_pAudioEngine->sessionCursor()->frame() : 0);
+}
+
+
+// Session loop points accessors.
+void qtractorSession::setLoop ( unsigned long iLoopStart,
+	unsigned long iLoopEnd )
+{
+	if (iLoopStart < iLoopEnd) {
+		m_iLoopStart = iLoopStart;
+		m_iLoopEnd   = iLoopEnd;
+	} else {
+		m_iLoopStart = 0;
+		m_iLoopEnd   = 0;
+	}
+}
+
+unsigned long qtractorSession::loopStart (void) const
+{
+	return m_iLoopStart;
+}
+
+unsigned long qtractorSession::loopEnd (void) const
+{
+	return m_iLoopEnd;
+}
+
+bool qtractorSession::isLooping (void) const
+{
+	return (m_iLoopStart < m_iLoopEnd);
 }
 
 
@@ -877,6 +955,10 @@ bool qtractorSession::loadElement ( qtractorSessionDocument *pDocument,
 							qtractorSession::setVerticalZoom(eView.text().toUShort());
 						else if (eView.tagName() == "snap-per-beat")
 							qtractorSession::setSnapPerBeat(eView.text().toUShort());
+						else if (eView.tagName() == "edit-head")
+							qtractorSession::setEditHead(eView.text().toULong());
+						else if (eView.tagName() == "edit-tail")
+							qtractorSession::setEditTail(eView.text().toULong());
 					}
 					// Again, make view/time scaling factors permanent.
 					qtractorSession::updateTimeScale();
@@ -973,6 +1055,10 @@ bool qtractorSession::saveElement ( qtractorSessionDocument *pDocument,
 		QString::number(qtractorSession::verticalZoom()), &eView);
 	pDocument->saveTextElement("snap-per-beat",
 		QString::number(qtractorSession::snapPerBeat()), &eView);
+	pDocument->saveTextElement("edit-head",
+		QString::number(qtractorSession::editHead()), &eView);
+	pDocument->saveTextElement("edit-tail",
+		QString::number(qtractorSession::editTail()), &eView);
 	eTracks.appendChild(eView);
 	// Save session tracks...
 	for (qtractorTrack *pTrack = qtractorSession::tracks().first();

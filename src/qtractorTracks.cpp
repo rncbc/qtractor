@@ -193,7 +193,7 @@ void qtractorTracks::horizontalZoomStep ( int iZoomStep )
 	m_pTrackView->updateContents();
 
 	// Notify who's watching...
-	contentsChangeNotify();
+	selectionChangeNotify();
 }
 
 
@@ -226,7 +226,7 @@ void qtractorTracks::verticalZoomStep ( int iZoomStep )
 	m_pTrackList->zoomItemHeight(pSession->verticalZoom());
 
 	// Notify who's watching...
-	contentsChangeNotify();
+	selectionChangeNotify();
 }
 
 

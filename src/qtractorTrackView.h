@@ -98,13 +98,9 @@ public:
 	void setPlayHead(unsigned long iPlayHead, bool bSyncView = false);
 	unsigned long playHead() const;
 
-	// Edit-head positioning.
+	// Edit-head/tail positioning.
 	void setEditHead(unsigned long iEditHead);
-	unsigned long editHead() const;
-
-	// Edit-tail positioning.
 	void setEditTail(unsigned long iEditTail);
-	unsigned long editTail() const;
 
 	// Make given frame position visible in view.
 	void ensureVisibleFrame(unsigned long iFrame);
@@ -241,8 +237,6 @@ private:
 
 	// Playhead and edit frame positioning.
 	unsigned long m_iPlayHead;
-	unsigned long m_iEditHead;
-	unsigned long m_iEditTail;
 
 	// Playhead and edit shadow pixel positioning.
 	int m_iPlayHeadX;

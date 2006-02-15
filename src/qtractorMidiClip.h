@@ -67,6 +67,9 @@ public:
 	// Reset clip state.
 	void reset();
 
+	// Loop positioning.
+	void loop(unsigned long iLoopStart, unsigned long iLoopEnd);
+
 	// MIDI clip special process cycle executive.
 	void process(float fGain,
 		unsigned long iFrameStart, unsigned long iFrameEnd);

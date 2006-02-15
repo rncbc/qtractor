@@ -120,6 +120,19 @@ void qtractorAudioClip::reset (void)
 }
 
 
+// Loop positioning.
+void qtractorAudioClip::loop ( unsigned long iLoopStart,
+	unsigned long iLoopEnd )
+{
+#ifdef CONFIG_DEBUG_0
+	fprintf(stderr, "qtractorAudioClip::loop(%p, %lu, %lu)\n",
+		this, iLoopStart, iLoopEnd);
+#endif
+
+	m_pBuff->setLoop(iLoopStart, iLoopEnd);
+}
+
+
 // Audio clip special process cycle executive.
 void qtractorAudioClip::process ( float fGain,
 	unsigned long iFrameStart, unsigned long iFrameEnd )

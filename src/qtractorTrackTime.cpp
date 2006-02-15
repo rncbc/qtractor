@@ -172,7 +172,7 @@ void qtractorTrackTime::drawContents ( QPainter *p,
 	int x;
 	
 	// Draw edit-head line...
-	x = pSession->pixelFromFrame(m_pTracks->trackView()->editHead());
+	x = pSession->pixelFromFrame(pSession->editHead());
 	if (x >= clipx - d && x < clipx + clipw + d) {
 		QPointArray polyg(3);
 		polyg.putPoints(0, 3,
@@ -185,7 +185,7 @@ void qtractorTrackTime::drawContents ( QPainter *p,
 	}
 
 	// Draw edit-tail line...
-	x = pSession->pixelFromFrame(m_pTracks->trackView()->editTail());
+	x = pSession->pixelFromFrame(pSession->editTail());
 	if (x >= clipx - d && x < clipx + clipw + d) {
 		QPointArray polyg(3);
 		polyg.putPoints(0, 3,
@@ -197,7 +197,7 @@ void qtractorTrackTime::drawContents ( QPainter *p,
 		p->drawPolygon(polyg);
 	}
 
-	// Draw play-head header...
+	// Draw special play-head header...
 	x = pSession->pixelFromFrame(m_pTracks->trackView()->playHead());
 	if (x >= clipx - d && x < clipx + clipw + d) {
 		QPointArray polyg(3);
@@ -263,14 +263,14 @@ void qtractorTrackTime::contentsMousePressEvent ( QMouseEvent *pMouseEvent )
 				} else {
 					// Check edit-head header...
 					rect.moveLeft(pSession->pixelFromFrame(
-						m_pTracks->trackView()->editHead()) - d);
+						pSession->editHead()) - d);
 					if (rect.contains(m_posDrag)) {
 						m_dragState = DragEditHead;
 						QScrollView::setCursor(QCursor(Qt::SizeHorCursor));
 					} else {
 						// Check edit-tail header...
 						rect.moveLeft(pSession->pixelFromFrame(
-							m_pTracks->trackView()->editTail()) - d);
+							pSession->editTail()) - d);
 						if (rect.contains(m_posDrag)) {
 							m_dragState = DragEditTail;
 							QScrollView::setCursor(QCursor(Qt::SizeHorCursor));
@@ -284,6 +284,8 @@ void qtractorTrackTime::contentsMousePressEvent ( QMouseEvent *pMouseEvent )
 			if (!bModifier) {
 				// Edit-tail positioning...
 				m_pTracks->trackView()->setEditTail(iFrame);
+				// Not a selection, just for visual feedback...
+				m_pTracks->selectionChangeNotify();
 			}
 			// Fall thru...
 		default:
@@ -373,11 +375,16 @@ void qtractorTrackTime::contentsMouseReleaseEvent ( QMouseEvent *pMouseEvent )
 					pSession->frameFromPixel(rect.left()));
 				m_pTracks->trackView()->setEditTail(
 					pSession->frameFromPixel(rect.right()));
+				// Not a selection, rather just for visual feedback...
+				m_pTracks->selectionChangeNotify();
 			}
 			break;
 		case DragPlayHead:
 			// Play-head positioning commit...
 			pSession->setPlayHead(m_pTracks->trackView()->playHead());
+			// Fall thru...
+		case DragEditHead:
+		case DragEditTail:
 			// Not quite a selection, rather just
 			// for immediate visual feedback...
 			m_pTracks->selectionChangeNotify();
@@ -388,6 +395,8 @@ void qtractorTrackTime::contentsMouseReleaseEvent ( QMouseEvent *pMouseEvent )
 				m_pTracks->trackView()->setEditHead(
 					pSession->frameSnap(pSession->frameFromPixel(
 						m_posDrag.x() > 0 ? m_posDrag.x() : 0)));
+				// Not a selection, rather just for visual feedback...
+				m_pTracks->selectionChangeNotify();
 			}
 			// Fall thru...
 		case DragNone:

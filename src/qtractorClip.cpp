@@ -49,6 +49,9 @@ void qtractorClip::clear (void)
 	m_iClipStart  = 0;
 	m_iClipLength = 0;
 	m_bClipSelect = false;
+
+	m_iLoopStart  = 0;
+	m_iLoopEnd    = 0;
 }
 
 
@@ -109,6 +112,32 @@ void qtractorClip::setClipSelected ( bool bClipSelect )
 bool qtractorClip::isClipSelected (void) const
 {
 	return m_bClipSelect;
+}
+
+
+// Clip-loop points accessors.
+void qtractorClip::setClipLoop ( unsigned long iLoopStart,
+	unsigned long iLoopEnd )
+{
+	if (iLoopStart < iLoopEnd) {
+		m_iLoopStart = m_iLoopStart;
+		m_iLoopEnd   = m_iLoopEnd;
+	} else {
+		m_iLoopStart = 0;
+		m_iLoopEnd   = 0;
+	}
+
+	loop(m_iLoopStart, m_iLoopEnd);
+}
+
+unsigned long qtractorClip::clipLoopStart (void) const
+{
+	return m_iLoopStart;
+}
+
+unsigned long qtractorClip::clipLoopEnd (void) const
+{
+	return m_iLoopEnd;
 }
 
 

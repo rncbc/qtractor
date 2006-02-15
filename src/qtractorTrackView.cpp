@@ -71,8 +71,6 @@ qtractorTrackView::qtractorTrackView ( qtractorTracks *pTracks,
 	m_pClipboardSingleTrack = NULL;
 
 	m_iPlayHead  = 0;
-	m_iEditHead  = 0;
-	m_iEditTail  = 0;
 
 	m_iPlayHeadX = 0;
 	m_iEditHeadX = 0;
@@ -206,6 +204,8 @@ void qtractorTrackView::updateContentsWidth (void)
 	if (pSession) {
 		iContentsWidth = pSession->pixelFromFrame(pSession->sessionLength())
 			+ pSession->pixelFromBeat(2 * pSession->beatsPerBar());
+		m_iEditHeadX = pSession->pixelFromFrame(pSession->editHead());
+		m_iEditTailX = pSession->pixelFromFrame(pSession->editTail());
 	}
 
 #ifdef CONFIG_DEBUG_0
@@ -274,14 +274,14 @@ void qtractorTrackView::drawContents ( QPainter *p,
 	int x;
 
 	// Draw edit-head line...
-	x = pSession->pixelFromFrame(editHead());
+	x = pSession->pixelFromFrame(pSession->editHead());
 	if (x >= clipx && x < clipx + clipw) {
 		p->setPen(Qt::blue);
 		p->drawLine(x, clipy, x, clipy + cliph);
 	}
 
 	// Draw edit-tail line...
-	x = pSession->pixelFromFrame(editTail());
+	x = pSession->pixelFromFrame(pSession->editTail());
 	if (x >= clipx && x < clipx + clipw) {
 		p->setPen(Qt::blue);
 		p->drawLine(x, clipy, x, clipy + cliph);
@@ -912,6 +912,8 @@ void qtractorTrackView::contentsMousePressEvent ( QMouseEvent *pMouseEvent )
 				else if (!bModifier) {
 					// Edittail positioning...
 					setEditTail(iFrame);
+					// Not a selection, but for some visual feedback...
+					m_pTracks->selectionChangeNotify();
 					// Nothing more...
 					m_dragState = DragNone;
 				}
@@ -991,6 +993,8 @@ void qtractorTrackView::contentsMouseReleaseEvent ( QMouseEvent *pMouseEvent )
 					pSession->frameFromPixel(rect.left())));
 				setEditTail(pSession->frameSnap(
 					pSession->frameFromPixel(rect.right())));
+				// Not a selection, just for visual feedback...
+				m_pTracks->selectionChangeNotify();
 			}
 			break;
 		case DragMove:
@@ -1024,6 +1028,8 @@ void qtractorTrackView::contentsMouseReleaseEvent ( QMouseEvent *pMouseEvent )
 				setEditHead(pSession->frameSnap(
 					pSession->frameFromPixel(
 						m_posDrag.x() > 0 ? m_posDrag.x() : 0)));
+				// Not a selection, but for some visual feedback...
+				m_pTracks->selectionChangeNotify();
 			}
 			// Fall thru...
 		case DragDrop:
@@ -1524,17 +1530,12 @@ void qtractorTrackView::setEditHead ( unsigned long iEditHead )
 {
 	qtractorSession *pSession = m_pTracks->session();
 	if (pSession) {
-		m_iEditHead = iEditHead;
-		if (iEditHead > m_iEditTail)
+		if (iEditHead > pSession->editTail())
 			setEditTail(iEditHead);
+		pSession->setEditHead(iEditHead);
 		int iEditHeadX = pSession->pixelFromFrame(iEditHead);
 		drawPositionX(m_iEditHeadX, iEditHeadX, m_iEditTailX, Qt::blue);
 	}
-}
-
-unsigned long qtractorTrackView::editHead (void) const
-{
-	return m_iEditHead;
 }
 
 
@@ -1543,17 +1544,12 @@ void qtractorTrackView::setEditTail ( unsigned long iEditTail )
 {
 	qtractorSession *pSession = m_pTracks->session();
 	if (pSession) {
-		m_iEditTail = iEditTail;
-		if (iEditTail < m_iEditHead)
+		if (iEditTail < pSession->editHead())
 			setEditHead(iEditTail);
+		pSession->setEditTail(iEditTail);
 		int iEditTailX = pSession->pixelFromFrame(iEditTail);
 		drawPositionX(m_iEditTailX, iEditTailX, m_iEditHeadX, Qt::blue);
 	}
-}
-
-unsigned long qtractorTrackView::editTail (void) const
-{
-	return m_iEditTail;
 }
 
 
@@ -1654,7 +1650,7 @@ void qtractorTrackView::pasteClipSelect (void)
 	pAddClipCommand->setName(tr("paste clip"));
 
 	qtractorClip *pClip = m_clipboard.first();
-	long delta = (pClip ? m_iEditHead - pClip->clipStart() : 0);
+	long delta = (pClip ? pSession->editHead() - pClip->clipStart() : 0);
 	while (pClip) {
 		if (!bSingleTrack)
 			pPasteTrack = pClip->track();

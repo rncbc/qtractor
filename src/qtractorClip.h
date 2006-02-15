@@ -60,11 +60,19 @@ public:
 	void setClipSelected(bool bClipSelect);
 	bool isClipSelected() const;
 
+	// Clip loop point accessors.
+	void setClipLoop(unsigned long iLoopStart, unsigned long iLoopEnd);
+	unsigned long clipLoopStart() const;
+	unsigned long clipLoopEnd() const;
+
 	// Intra-clip frame positioning.
 	virtual void seek(unsigned long iOffset) = 0;
 
 	// Reset clip state.
 	virtual void reset() = 0;
+
+	// Clip loop point accessors.
+	virtual void loop(unsigned long iLoopStart, unsigned long iLoopEnd) = 0;
 
 	// Clip special process cycle executive.
 	virtual void process(float fGain,
@@ -98,6 +106,9 @@ private:
 	unsigned long m_iClipLength;    // Clip frame length.
 	
 	bool m_bClipSelect;             // Clip selection flag.
+
+	unsigned long m_iLoopStart;     // Clip loop start frame-offset.
+	unsigned long m_iLoopEnd;       // Clip loop end frame-offset.
 };
 
 #endif  // __qtractorClip_h

@@ -209,6 +209,9 @@ bool qtractorTrack::isRecord (void) const
 
 void qtractorTrack::setRecord ( bool bRecord )
 {
+	if ((m_props.record && !bRecord) || (!m_props.record && bRecord))
+		m_pSession->setRecordTracks(bRecord);
+
 	m_props.record = bRecord;
 }
 
