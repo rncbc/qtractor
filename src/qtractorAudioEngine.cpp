@@ -242,12 +242,15 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 		return 1;
 
 	// Make sure we have an actual session cursor...
+	qtractorSession *pSession = session();
+	if (pSession == NULL)
+		return 1;
 	qtractorSessionCursor *pAudioCursor = sessionCursor();
 	if (pAudioCursor == NULL)
 	    return 1;
 
 	// Always sync to MIDI output thread...
-	session()->midiEngine()->sync();
+	pSession->midiEngine()->sync();
 
 	// This the legal process cycle frame range...
 	unsigned long iFrameStart = pAudioCursor->frame();
@@ -264,6 +267,10 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 		pTrack = pTrack->next();
 		iTrack++;
 	}
+
+	// Synchro with loop boundaries...
+	if (pSession->isLooping() && iFrameEnd >= pSession->loopEnd())
+		iFrameEnd = pSession->loopStart() + (pSession->loopEnd() - iFrameEnd);
 
 	// Prepare advance for next cycle.
 	pAudioCursor->seek(iFrameEnd);

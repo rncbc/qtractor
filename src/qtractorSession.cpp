@@ -725,6 +725,9 @@ unsigned long qtractorSession::playHead (void) const
 void qtractorSession::setLoop ( unsigned long iLoopStart,
 	unsigned long iLoopEnd )
 {
+	bool bPlaying = isPlaying();
+	setPlaying(false);
+
 	if (iLoopStart < iLoopEnd) {
 		m_iLoopStart = iLoopStart;
 		m_iLoopEnd   = iLoopEnd;
@@ -732,6 +735,28 @@ void qtractorSession::setLoop ( unsigned long iLoopStart,
 		m_iLoopStart = 0;
 		m_iLoopEnd   = 0;
 	}
+
+	// Now, set proper loop points for every track and clip...
+	qtractorTrack *pTrack = m_tracks.first();
+	while (pTrack) {
+		qtractorClip *pClip = pTrack->clips().first();
+		while (pClip) {
+			unsigned long iClipStart = pClip->clipStart();
+			unsigned long iClipEnd   = iClipStart + pClip->clipLength();
+			if (m_iLoopStart < iClipEnd && m_iLoopEnd > iClipStart) {
+				pClip->setClipLoop(
+					(m_iLoopStart > iClipStart ? m_iLoopStart - iClipStart : 0),
+					(m_iLoopEnd < iClipEnd ? iClipEnd - m_iLoopEnd : iClipEnd));
+			} else {
+				pClip->setClipLoop(0, 0);
+			}
+			pClip = pClip->next();
+		}
+		pTrack = pTrack->next();
+	}
+
+	stabilize();
+	setPlaying(bPlaying);
 }
 
 unsigned long qtractorSession::loopStart (void) const
