@@ -68,10 +68,11 @@
 // Status bar item indexes
 #define QTRACTOR_STATUS_NAME    0       // Active session track caption.
 #define QTRACTOR_STATUS_MOD     1       // Current session modification state.
-#define QTRACTOR_STATUS_REC     2       // Current session record-arming state.
-#define QTRACTOR_STATUS_SOLO    3       // Current session soloing state.
-#define QTRACTOR_STATUS_TIME    4       // Current session length time.
-#define QTRACTOR_STATUS_RATE    5       // Current session sample rate.
+#define QTRACTOR_STATUS_REC     2       // Current session recording state.
+#define QTRACTOR_STATUS_MUTE    3       // Current session muting state.
+#define QTRACTOR_STATUS_SOLO    4       // Current session soloing state.
+#define QTRACTOR_STATUS_TIME    5       // Current session length time.
+#define QTRACTOR_STATUS_RATE    6       // Current session sample rate.
 
 
 // Specialties for thread-callback comunication.
@@ -181,12 +182,19 @@ void qtractorMainForm::init (void)
 	QToolTip::add(pLabel, tr("Session modification state"));
 	m_statusItems[QTRACTOR_STATUS_MOD] = pLabel;
 	statusBar()->addWidget(pLabel);
-	// Session record-arming status.
+	// Session recording status.
 	pLabel = new QLabel(tr("REC"), this);
 	pLabel->setAlignment(Qt::AlignHCenter);
 	pLabel->setMinimumSize(pLabel->sizeHint());
-	QToolTip::add(pLabel, tr("Session record-arming state"));
+	QToolTip::add(pLabel, tr("Session record state"));
 	m_statusItems[QTRACTOR_STATUS_REC] = pLabel;
+	statusBar()->addWidget(pLabel);
+	// Session muting status.
+	pLabel = new QLabel(tr("MUTE"), this);
+	pLabel->setAlignment(Qt::AlignHCenter);
+	pLabel->setMinimumSize(pLabel->sizeHint());
+	QToolTip::add(pLabel, tr("Session muting state"));
+	m_statusItems[QTRACTOR_STATUS_MUTE] = pLabel;
 	statusBar()->addWidget(pLabel);
 	// Session soloing status.
 	pLabel = new QLabel(tr("SOLO"), this);
@@ -1521,9 +1529,14 @@ void qtractorMainForm::stabilizeForm (void)
 		m_statusItems[QTRACTOR_STATUS_MOD]->clear();
 
 	if (m_pSession->recordTracks() > 0)
-		m_statusItems[QTRACTOR_STATUS_REC]->setText(tr("REC"));		
+		m_statusItems[QTRACTOR_STATUS_REC]->setText(tr("REC"));
 	else
 		m_statusItems[QTRACTOR_STATUS_REC]->clear();
+
+	if (m_pSession->muteTracks() > 0)
+		m_statusItems[QTRACTOR_STATUS_MUTE]->setText(tr("MUTE"));
+	else
+		m_statusItems[QTRACTOR_STATUS_MUTE]->clear();
 
 	if (m_pSession->soloTracks() > 0)
 		m_statusItems[QTRACTOR_STATUS_SOLO]->setText(tr("SOLO"));
@@ -1535,6 +1548,14 @@ void qtractorMainForm::stabilizeForm (void)
 
 	m_statusItems[QTRACTOR_STATUS_RATE]->setText(
 		tr("%1 Hz").arg(m_pSession->sampleRate()));
+
+	const QColor& backColor = statusBar()->paletteBackgroundColor();
+	m_statusItems[QTRACTOR_STATUS_REC]->setPaletteBackgroundColor(
+		transportRecordAction->isOn() ? Qt::red : backColor);
+	m_statusItems[QTRACTOR_STATUS_MUTE]->setPaletteBackgroundColor(
+		m_pSession->muteTracks() > 0 ? Qt::yellow : backColor);
+	m_statusItems[QTRACTOR_STATUS_SOLO]->setPaletteBackgroundColor(
+		m_pSession->soloTracks() > 0 ? Qt::cyan : backColor);
 
 	// Transport stuff...	
 	m_pTransportTime->setPaletteForegroundColor(

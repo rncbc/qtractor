@@ -120,8 +120,8 @@ void qtractorClip::setClipLoop ( unsigned long iLoopStart,
 	unsigned long iLoopEnd )
 {
 	if (iLoopStart < iLoopEnd) {
-		m_iLoopStart = m_iLoopStart;
-		m_iLoopEnd   = m_iLoopEnd;
+		m_iLoopStart = iLoopStart;
+		m_iLoopEnd   = iLoopEnd;
 	} else {
 		m_iLoopStart = 0;
 		m_iLoopEnd   = 0;

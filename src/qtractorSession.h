@@ -147,6 +147,10 @@ public:
 	void setRecordTracks(bool bRecord);
 	unsigned int recordTracks() const;
 
+	// Current number of mued tracks.
+	void setMuteTracks(bool bMute);
+	unsigned int muteTracks() const;
+
 	// Current number of solo tracks.
 	void setSoloTracks(bool bSolo);
 	unsigned int soloTracks() const;
@@ -259,6 +263,7 @@ private:
 	float          m_fScale_d;
 
 	unsigned int   m_iRecordTracks;     // Current number of record-armed tracks.
+	unsigned int   m_iMuteTracks;       // Current number of muted tracks.
 	unsigned int   m_iSoloTracks;       // Current number of solo tracks.
 
 	// The track list.

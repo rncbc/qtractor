@@ -157,6 +157,7 @@ void qtractorSession::clear (void)
 	m_iSessionLength = 0;
 
 	m_iRecordTracks  = 0;
+	m_iMuteTracks    = 0;
 	m_iSoloTracks    = 0;
 
 	m_iMidiTag       = 0;
@@ -546,6 +547,8 @@ void qtractorSession::insertTrack ( qtractorTrack *pTrack,
 
 //	if (pTrack->isRecord())
 //		setRecordTracks(true);
+//	if (pTrack->isMute())
+//		setMuteTracks(true);
 //	if (pTrack->isSolo())
 //		setSoloTracks(true);
 
@@ -581,6 +584,8 @@ void qtractorSession::unlinkTrack ( qtractorTrack *pTrack )
 
 	if (pTrack->isRecord())
 		setRecordTracks(false);
+	if (pTrack->isMute())
+		setMuteTracks(true);
 	if (pTrack->isSolo())
 		setSoloTracks(false);
 
@@ -610,6 +615,22 @@ void qtractorSession::setRecordTracks ( bool bRecord )
 unsigned int qtractorSession::recordTracks (void) const
 {
 	return m_iRecordTracks;
+}
+
+
+// Current number of muted tracks.
+void qtractorSession::setMuteTracks ( bool bMute )
+{
+	if (bMute) {
+		m_iMuteTracks++;
+	} else if (m_iMuteTracks > 0) {
+		m_iMuteTracks--;
+	}
+}
+
+unsigned int qtractorSession::muteTracks (void) const
+{
+	return m_iMuteTracks;
 }
 
 
@@ -745,13 +766,16 @@ void qtractorSession::setLoop ( unsigned long iLoopStart,
 	while (pTrack) {
 		qtractorClip *pClip = pTrack->clips().first();
 		while (pClip) {
+			// Convert loop-points from session to clip...
 			unsigned long iClipStart = pClip->clipStart();
 			unsigned long iClipEnd   = iClipStart + pClip->clipLength();
 			if (m_iLoopStart < iClipEnd && m_iLoopEnd > iClipStart) {
+				// Set clip inner-loop...
 				pClip->setClipLoop(
 					(m_iLoopStart > iClipStart ? m_iLoopStart - iClipStart : 0),
-					(m_iLoopEnd < iClipEnd ? iClipEnd - m_iLoopEnd : iClipEnd));
+					(m_iLoopEnd < iClipEnd ? m_iLoopEnd - iClipStart : iClipEnd));
 			} else {
+				// Clear/reaet clip-loop...
 				pClip->setClipLoop(0, 0);
 			}
 			pClip = pClip->next();

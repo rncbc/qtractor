@@ -1378,7 +1378,7 @@
     <variable access="private">int m_iUntitled;</variable>
     <variable access="private">int m_iDirtyCount;</variable>
     <variable access="private">QLabel *m_pTransportTime;</variable>
-    <variable access="private">QLabel *m_statusItems[5];</variable>
+    <variable access="private">QLabel *m_statusItems[6];</variable>
     <variable access="private">QPopupMenu *m_pRecentFilesMenu;</variable>
     <variable access="private">unsigned long m_iPlayHead;</variable>
     <variable access="private">int m_iPeakTimer;</variable>

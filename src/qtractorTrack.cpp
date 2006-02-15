@@ -224,6 +224,9 @@ bool qtractorTrack::isMute (void) const
 
 void qtractorTrack::setMute ( bool bMute )
 {
+	if ((m_props.mute && !bMute) || (!m_props.mute && bMute))
+		m_pSession->setMuteTracks(bMute);
+
 	m_props.mute = bMute;
 
 	if (m_pSession->isPlaying())

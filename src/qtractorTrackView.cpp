@@ -1487,7 +1487,7 @@ void qtractorTrackView::drawPositionX ( int& iPositionX, int x, int x2,
 	// Force position to be in view?
 	if (bSyncView && x < x0) {
 		// Move backward....
-		QScrollView::setContentsPos(x, QScrollView::contentsY());
+		QScrollView::setContentsPos(x - wm, QScrollView::contentsY());
 	} else if (bSyncView && x > x0 + w - wm) {
 		// Move forward....
 		if (x0 < QScrollView::contentsWidth() - w)
