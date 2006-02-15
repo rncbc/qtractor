@@ -124,7 +124,7 @@ void qtractorAudioClip::reset (void)
 void qtractorAudioClip::loop ( unsigned long iLoopStart,
 	unsigned long iLoopEnd )
 {
-#ifdef CONFIG_DEBUG_0
+#ifdef CONFIG_DEBUG
 	fprintf(stderr, "qtractorAudioClip::loop(%p, %lu, %lu)\n",
 		this, iLoopStart, iLoopEnd);
 #endif

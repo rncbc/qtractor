@@ -155,8 +155,12 @@ void qtractorSession::clear (void)
 	m_midiTags.clear();
 
 	m_iSessionLength = 0;
+
+	m_iRecordTracks  = 0;
 	m_iSoloTracks    = 0;
+
 	m_iMidiTag       = 0;
+
 	m_iLoopStart     = 0;
 	m_iLoopEnd       = 0;
 
