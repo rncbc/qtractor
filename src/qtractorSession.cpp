@@ -750,8 +750,10 @@ unsigned long qtractorSession::playHead (void) const
 void qtractorSession::setLoop ( unsigned long iLoopStart,
 	unsigned long iLoopEnd )
 {
+#if 0
 	bool bPlaying = isPlaying();
 	setPlaying(false);
+#endif
 
 	if (iLoopStart < iLoopEnd) {
 		m_iLoopStart = iLoopStart;
@@ -783,8 +785,10 @@ void qtractorSession::setLoop ( unsigned long iLoopStart,
 		pTrack = pTrack->next();
 	}
 
+#if 0
 	stabilize();
 	setPlaying(bPlaying);
+#endif
 }
 
 unsigned long qtractorSession::loopStart (void) const

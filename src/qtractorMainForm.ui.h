@@ -28,6 +28,7 @@
 #include "qtractorTracks.h"
 
 #include "qtractorTrackList.h"
+#include "qtractorTrackTime.h"
 #include "qtractorTrackView.h"
 
 #include "qtractorAudioPeak.h"
@@ -1333,6 +1334,12 @@ void qtractorMainForm::transportLoop (void)
 		m_pSession->setLoop(m_pSession->editHead(), m_pSession->editTail());
 	} else {
 		m_pSession->setLoop(0, 0);
+	}
+	
+	// Refresh track views...
+	if (m_pTracks) {
+		m_pTracks->trackTime()->updateContents();
+		m_pTracks->trackView()->updateContents();
 	}
 
 	// Done with loop switch...

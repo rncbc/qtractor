@@ -340,7 +340,7 @@ void qtractorTrackView::updatePixmap ( int cx, int cy )
 
 	// Draw track and horizontal lines...
 	int iTrack = 0;
-	int y1, y2;
+	int x, y1, y2;
 	y1 = y2 = 0;
 	QListViewItem *pItem = m_pTracks->trackList()->firstChild();
 	while (pItem && y2 < cy + h) {
@@ -375,36 +375,47 @@ void qtractorTrackView::updatePixmap ( int cx, int cy )
 		unsigned short iBeat = pSession->beatFromPixel(cx);
 #if 0
 		unsigned int iPixelsPerBeat = pSession->pixelFromBeat(1);
-		int x = pSession->pixelFromBeat(iBeat);
+		x = pSession->pixelFromBeat(iBeat) - cx;
 #else
 		unsigned long iFrameFromBeat = pSession->frameFromBeat(iBeat);
 		unsigned long iFramesPerBeat = pSession->frameFromBeat(1);
-		int x = pSession->pixelFromFrame(iFrameFromBeat);
+		x = pSession->pixelFromFrame(iFrameFromBeat) - cx;
 #endif
-		while (x < cx + w) {
-			if (x >= cx && pSession->beatIsBar(iBeat)) {
-				p.setPen(Qt::lightGray);
-				p.drawLine(x - cx, 0, x - cx, y2 - cy - 2);
-			}
-			if (x > cx) {
+		while (x < w) {
+			if (x >= 0) {
+				if (pSession->beatIsBar(iBeat)) {
+					p.setPen(Qt::lightGray);
+					p.drawLine(x, 0, x, y2 - cy - 2);
+				}
 				p.setPen(Qt::darkGray);
-				p.drawLine(x - cx - 1, 0, x - cx - 1, y2 - cy - 2);
+				p.drawLine(x - 1, 0, x - 1, y2 - cy - 2);
 			}
 #if 0
 			x += iPixelsPerBeat;
 #else
 			iFrameFromBeat += iFramesPerBeat;
-			x = pSession->pixelFromFrame(iFrameFromBeat);
+			x = pSession->pixelFromFrame(iFrameFromBeat) - cx;
 #endif
 			iBeat++;
 		}
 	}
 
-	// Finally fill the empty area...
+	// Fill the empty area...
 	if (y2 < cy + h) {
 		p.setPen(Qt::gray);
 		p.drawLine(0, y2 - cy, w, y2 - cy);
 	//	p->fillRect(0, y2 - cy + 1, w, h, Qt::darkGray);
+	}
+
+	// Draw loop boundaries, if applicable...
+	if (pSession->isLooping()) {
+		p.setPen(Qt::darkCyan);
+		x = pSession->pixelFromFrame(pSession->loopStart()) - cx;
+		if (x >= 0 && x < w)
+			p.drawLine(x, 0, x, h);
+		x = pSession->pixelFromFrame(pSession->loopEnd()) - cx;
+		if (x >= 0 && x < w)
+			p.drawLine(x, 0, x, h);
 	}
 }
 

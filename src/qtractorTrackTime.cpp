@@ -95,16 +95,16 @@ void qtractorTrackTime::updatePixmap ( int cx, int /* cy */)
 	// Draw the time scale...
 	//
 	const QFontMetrics& fm = p.fontMetrics();
-	int y1, y2 = h - 1;
+	int x, y1, y2 = h - 1;
 
 	unsigned short iBeat = pSession->beatFromPixel(cx);
 #if 0
 	unsigned int iPixelsPerBeat = pSession->pixelFromBeat(1);
-	int x = pSession->pixelFromBeat(iBeat) - cx;
+	x = pSession->pixelFromBeat(iBeat) - cx;
 #else
 	unsigned long iFrameFromBeat = pSession->frameFromBeat(iBeat);
 	unsigned long iFramesPerBeat = pSession->frameFromBeat(1);
-	int x = pSession->pixelFromFrame(iFrameFromBeat) - cx;
+	x = pSession->pixelFromFrame(iFrameFromBeat) - cx;
 #endif
 	while (x < w) {
 		if (pSession->beatIsBar(iBeat)) {
@@ -126,6 +126,31 @@ void qtractorTrackTime::updatePixmap ( int cx, int /* cy */)
 		x = pSession->pixelFromFrame(iFrameFromBeat) - cx;
 #endif
 		iBeat++;
+	}
+
+	// Draw loop boundaries, if applicable...
+	if (pSession->isLooping()) {
+		QPointArray polyg(3);
+		h -= 4;
+		int d = (h >> 2);
+		p.setPen(Qt::darkCyan);
+		p.setBrush(Qt::cyan);
+		x = pSession->pixelFromFrame(pSession->loopStart()) - cx;
+		if (x >= 0 && x < w) {
+			polyg.putPoints(0, 3,
+				x + d, h - d,
+				x, h,
+				x, h - d);
+			p.drawPolygon(polyg);
+		}
+		x = pSession->pixelFromFrame(pSession->loopEnd()) - cx;
+		if (x >= 0 && x < w) {
+			polyg.putPoints(0, 3,
+				x, h - d,
+				x, h,
+				x - d, h - d);
+			p.drawPolygon(polyg);
+		}
 	}
 }
 
