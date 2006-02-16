@@ -1945,7 +1945,7 @@ void qtractorMainForm::selectionChanged (void)
 // Tracks view contents change slot.
 void qtractorMainForm::contentsChanged (void)
 {
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	appendMessages("qtractorMainForm::contentsChanged()");
 #endif
 

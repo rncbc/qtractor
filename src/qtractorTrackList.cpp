@@ -123,7 +123,7 @@ void qtractorTrackListToolButton::toggledSlot ( bool bOn )
 	// Do some feedback...
 	QToolButton::setPaletteBackgroundColor(bOn ? m_rgbOn : m_rgbOff);
 
-	m_pItem->trackList()->contentsChangeNotify();
+	m_pItem->trackList()->selectionChangeNotify();
 }
 
 
@@ -776,6 +776,12 @@ void qtractorTrackList::clickedSlot ( QListViewItem *pItem,
 
 
 // Notify whole setup that we changed something.
+void qtractorTrackList::selectionChangeNotify (void)
+{
+	m_pTracks->selectionChangeNotify();
+}
+
+
 void qtractorTrackList::contentsChangeNotify (void)
 {
 	m_pTracks->contentsChangeNotify();
