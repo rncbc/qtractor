@@ -63,6 +63,10 @@ public:
 	// Special track-immediate methods.
 	void trackMute(qtractorTrack *pTrack, bool bMute);
 
+	// Current tick start time accessors.
+	void setTimeStart(unsigned long iTimeStart);
+	unsigned long timeStart() const;
+
 	// Document element methods.
 	bool loadElement(qtractorSessionDocument *pDocument,
 		QDomElement *pElement);

@@ -87,9 +87,8 @@ private:
 	// The thread launcher engine.
 	qtractorSession *m_pSession;
 
-	// State variables.
-	unsigned long m_iFrame;
-	unsigned int  m_iReadAhead;
+	// The number of frames to read-ahead.
+	unsigned int m_iReadAhead;
 
 	// Whether the thread is logically running.
 	bool m_bRunState;
@@ -113,7 +112,6 @@ qtractorMidiOutputThread::qtractorMidiOutputThread (
 
 	m_pSession   = pSession;
 	m_bRunState  = false;
-	m_iFrame     = 0;
 	m_iReadAhead = iReadAhead;
 }
 
@@ -229,15 +227,21 @@ void qtractorMidiOutputThread::process (void)
 #endif
 
 	// Split processing, in case we're looping...
-	if (m_pSession->isLooping()
-		&& iFrameStart < m_pSession->loopEnd()
-		&& iFrameEnd   > m_pSession->loopEnd()) {
-		// Process the remaining until end-of-loop...
-		m_pSession->process(pMidiCursor, iFrameStart, m_pSession->loopEnd());
-		// Reset to start-of-loop...
-		iFrameStart = m_pSession->loopStart();
-		iFrameEnd   = iFrameStart + (iFrameEnd - m_pSession->loopEnd());
-		pMidiCursor->seek(iFrameStart);
+	if (m_pSession->isLooping() && iFrameStart < m_pSession->loopEnd()) {
+		// Loop-length might be shorter than the read-ahead... 
+		while (iFrameEnd > m_pSession->loopEnd()) {
+			// Process the remaining until end-of-loop...
+			m_pSession->process(pMidiCursor, iFrameStart, m_pSession->loopEnd());
+			// Reset to start-of-loop...
+			iFrameStart = m_pSession->loopStart();
+			iFrameEnd   = iFrameStart + (iFrameEnd - m_pSession->loopEnd());
+			pMidiCursor->seek(iFrameStart);
+			// This is really a must...
+			m_pSession->midiEngine()->setTimeStart(
+				m_pSession->midiEngine()->timeStart()
+					+ m_pSession->tickFromFrame(
+						m_pSession->loopEnd() - m_pSession->loopStart()));
+		}
 	}
 
 	// Regular range...
@@ -608,6 +612,18 @@ void qtractorMidiEngine::trackMute ( qtractorTrack *pTrack, bool bMute )
 		m_pOutputThread->trackSync(pTrack, iFrame);
 		// Done unmute.
 	}
+}
+
+
+// Current tick start time accessors.
+void qtractorMidiEngine::setTimeStart ( unsigned long iTimeStart )
+{
+	m_iTimeStart = iTimeStart;
+}
+
+unsigned long qtractorMidiEngine::timeStart (void) const
+{
+	return m_iTimeStart;
 }
 
 

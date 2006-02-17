@@ -257,15 +257,16 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 	unsigned long iFrameEnd   = iFrameStart + nframes;
 
 	// Split processing, in case we're looping...
-	if (pSession->isLooping()
-		&& iFrameStart < pSession->loopEnd()
-		&& iFrameEnd   > pSession->loopEnd()) {
-		// Process the remaining until end-of-loop...
-		pSession->process(pAudioCursor, iFrameStart, pSession->loopEnd());
-		// Reset to start-of-loop...
-		iFrameStart = pSession->loopStart();
-		iFrameEnd   = iFrameStart + (iFrameEnd - pSession->loopEnd());
-		pAudioCursor->seek(iFrameStart);
+	if (pSession->isLooping() && iFrameStart < pSession->loopEnd()) {
+		// Loop-length might be shorter than the buffer-period... 
+		while (iFrameEnd > pSession->loopEnd()) {
+			// Process the remaining until end-of-loop...
+			pSession->process(pAudioCursor, iFrameStart, pSession->loopEnd());
+			// Reset to start-of-loop...
+			iFrameStart = pSession->loopStart();
+			iFrameEnd   = iFrameStart + (iFrameEnd - pSession->loopEnd());
+			pAudioCursor->seek(iFrameStart);
+		}
 	}
 
 	// Regular range...
