@@ -108,7 +108,7 @@ private:
 qtractorMidiOutputThread::qtractorMidiOutputThread (
 	qtractorSession *pSession, unsigned int iReadAhead ) : QThread()
 {
-	if (iReadAhead == 0)
+	if (iReadAhead < 1)
 		iReadAhead = pSession->sampleRate();
 
 	m_pSession   = pSession;
@@ -215,31 +215,43 @@ void qtractorMidiOutputThread::process (void)
 {
 	// Get a handle on our slave MIDI engine...
 	qtractorSessionCursor *pMidiCursor = midiCursorSync();
-	// IS MIDI slightly behind audio?
-	if (pMidiCursor) {
-		// Now for the next readahead bunch...
-		unsigned long iFrameStart = pMidiCursor->frame();
-		unsigned long iFrameEnd   = iFrameStart + m_iReadAhead;
+	// Isn't MIDI slightly behind audio?
+	if (pMidiCursor == NULL)
+		return;
+		
+	// Now for the next readahead bunch...
+	unsigned long iFrameStart = pMidiCursor->frame();
+	unsigned long iFrameEnd   = iFrameStart + m_iReadAhead;
+
 #ifdef DEBUG
-		fprintf(stderr, "qtractorMidiOutputThread::process(%p, %lu, %lu)\n",
-			this, iFrameStart, iFrameEnd);
+	fprintf(stderr, "qtractorMidiOutputThread::process(%p, %lu, %lu)\n",
+		this, iFrameStart, iFrameEnd);
 #endif
-		// For every MIDI track...
-		int iTrack = 0;
-		qtractorTrack *pTrack = m_pSession->tracks().first();
-		while (pTrack) {
-			if (pTrack->trackType() == qtractorTrack::Midi) {
-				pTrack->process(pMidiCursor->clip(iTrack),
-					iFrameStart, iFrameEnd);
-			}
-			pTrack = pTrack->next();
-			iTrack++;
-		}
-		// Flush the MIDI engine output queue...
-		m_pSession->midiEngine()->flush();
-		// Sync to last bunch.
-		pMidiCursor->seek(iFrameEnd);
+
+	// Split processing, in case we're looping...
+	if (m_pSession->isLooping()
+		&& iFrameStart < m_pSession->loopEnd()
+		&& iFrameEnd   > m_pSession->loopEnd()) {
+		// Process the remaining until end-of-loop...
+		m_pSession->process(pMidiCursor, iFrameStart, m_pSession->loopEnd());
+		// Reset to start-of-loop...
+		iFrameStart = m_pSession->loopStart();
+		iFrameEnd   = iFrameStart + (iFrameEnd - m_pSession->loopEnd());
+		pMidiCursor->seek(iFrameStart);
 	}
+
+	// Regular range...
+	m_pSession->process(pMidiCursor, iFrameStart, iFrameEnd);
+
+	// Sync with loop boundaries (unlikely?)...
+	if (m_pSession->isLooping() && iFrameEnd >= m_pSession->loopEnd())
+		iFrameEnd = m_pSession->loopStart() + (iFrameEnd - m_pSession->loopEnd());
+
+	// Sync to last bunch.
+	pMidiCursor->seek(iFrameEnd);
+
+	// Flush the MIDI engine output queue...
+	m_pSession->midiEngine()->flush();
 }
 
 
@@ -283,7 +295,7 @@ void qtractorMidiOutputThread::trackSync ( qtractorTrack *pTrack,
 		pClip = pClip->next();
 	}
 
-	// Surely if must realize the output queue...
+	// Surely must realize the output queue...
 	m_pSession->midiEngine()->flush();
 }
 

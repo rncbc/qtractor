@@ -256,21 +256,24 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 	unsigned long iFrameStart = pAudioCursor->frame();
 	unsigned long iFrameEnd   = iFrameStart + nframes;
 
-	// Now, for every Audio track...
-	int iTrack = 0;
-	qtractorTrack *pTrack = session()->tracks().first();
-	while (pTrack) {
-		if (pTrack->trackType() == qtractorTrack::Audio) {
-			pTrack->process(pAudioCursor->clip(iTrack),
-				iFrameStart, iFrameEnd);
-		}
-		pTrack = pTrack->next();
-		iTrack++;
+	// Split processing, in case we're looping...
+	if (pSession->isLooping()
+		&& iFrameStart < pSession->loopEnd()
+		&& iFrameEnd   > pSession->loopEnd()) {
+		// Process the remaining until end-of-loop...
+		pSession->process(pAudioCursor, iFrameStart, pSession->loopEnd());
+		// Reset to start-of-loop...
+		iFrameStart = pSession->loopStart();
+		iFrameEnd   = iFrameStart + (iFrameEnd - pSession->loopEnd());
+		pAudioCursor->seek(iFrameStart);
 	}
 
-	// Synchro with loop boundaries...
+	// Regular range...
+	pSession->process(pAudioCursor, iFrameStart, iFrameEnd);
+
+	// Sync with loop boundaries (unlikely?)...
 	if (pSession->isLooping() && iFrameEnd >= pSession->loopEnd())
-		iFrameEnd = pSession->loopStart() + (pSession->loopEnd() - iFrameEnd);
+		iFrameEnd = pSession->loopStart() + (iFrameEnd - pSession->loopEnd());
 
 	// Prepare advance for next cycle.
 	pAudioCursor->seek(iFrameEnd);

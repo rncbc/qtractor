@@ -210,6 +210,10 @@ public:
 	// MIDI session/tracks instrument patching.
 	void setMidiPatch(qtractorInstrumentList *pInstruments);
 
+	// Session special process cycle executive.
+	void process(qtractorSessionCursor *pSessionCursor,
+		unsigned long iFrameStart, unsigned long iFrameEnd);
+
 	// Document element methods.
 	bool loadElement(qtractorSessionDocument *pDocument,
 		QDomElement *pElement);

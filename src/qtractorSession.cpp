@@ -885,6 +885,24 @@ void qtractorSession::setMidiPatch ( qtractorInstrumentList *pInstruments )
 }
 
 
+// Session special process cycle executive.
+void qtractorSession::process ( qtractorSessionCursor *pSessionCursor,
+	unsigned long iFrameStart, unsigned long iFrameEnd )
+{
+	// Now, for every Audio track...
+	int iTrack = 0;
+	qtractorTrack *pTrack = m_tracks.first();
+	while (pTrack) {
+		if (pTrack->trackType() == pSessionCursor->syncType()) {
+			pTrack->process(pSessionCursor->clip(iTrack),
+				iFrameStart, iFrameEnd);
+		}
+		pTrack = pTrack->next();
+		iTrack++;
+	}
+}
+
+
 // Document element methods.
 bool qtractorSession::loadElement ( qtractorSessionDocument *pDocument,
 	QDomElement *pElement )
