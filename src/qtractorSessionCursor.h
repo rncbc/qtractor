@@ -51,6 +51,10 @@ public:
 	// Current frame position accessor.
 	unsigned long frame() const;
 
+	// Absolute frame-time posiion accessors.
+	void setFrameTime(unsigned long iFrameTime);
+	unsigned long frameTime() const;
+
 	// Clip sync flag accessor.
 	void setSyncType(qtractorTrack::TrackType syncType);
 	qtractorTrack::TrackType syncType() const;
@@ -69,6 +73,9 @@ public:
 	void update();
 	// Reset cursor.
 	void reset();
+
+	// Frame-time processor (increment only).
+	void process(unsigned int nframes);
 
 protected:
 
@@ -90,6 +97,7 @@ private:
 	// Instance variables.
 	qtractorSession         *m_pSession;
 	unsigned long            m_iFrame;
+	unsigned long            m_iFrameTime;
 	qtractorTrack::TrackType m_syncType;
 
 	unsigned int   m_iTracks;

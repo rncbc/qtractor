@@ -249,9 +249,6 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 	if (pAudioCursor == NULL)
 	    return 1;
 
-	// Always sync to MIDI output thread...
-	pSession->midiEngine()->sync();
-
 	// This the legal process cycle frame range...
 	unsigned long iFrameStart = pAudioCursor->frame();
 	unsigned long iFrameEnd   = iFrameStart + nframes;
@@ -278,6 +275,10 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 
 	// Prepare advance for next cycle.
 	pAudioCursor->seek(iFrameEnd);
+	pAudioCursor->process(nframes);
+
+	// Always sync to MIDI output thread...
+	pSession->midiEngine()->sync();
 
 	// Process session stuff...
 	return 1;

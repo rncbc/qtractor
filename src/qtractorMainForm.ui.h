@@ -144,13 +144,15 @@ void qtractorMainForm::init (void)
 	// Make it shine :-)
 	setCentralWidget(m_pWorkspace);
 
-	// Have some effective feedback...
+#if 0
+	// Have some effective feedback when toggling play/pause...
 	QIconSet icons;
 	icons.setPixmap(QPixmap::fromMimeSource("transportPlay.png"),
 		QIconSet::Automatic, QIconSet::Active, QIconSet::Off);
 	icons.setPixmap(QPixmap::fromMimeSource("transportPause.png"),
 		QIconSet::Automatic, QIconSet::Active, QIconSet::On);
 	transportPlayAction->setIconSet(icons);
+#endif
 
 	// Additional toolbar controls...
 	const QString sTime("00:00:00.000");

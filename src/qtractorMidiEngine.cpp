@@ -170,9 +170,12 @@ qtractorSessionCursor *qtractorMidiOutputThread::midiCursorSync ( bool bStart )
 		return NULL;
 
 	// Can MIDI be ever behind audio?
-	if (bStart)
+	if (bStart) {
 		pMidiCursor->seek(pAudioCursor->frame());
-	else if (pMidiCursor->frame() > pAudioCursor->frame() + m_iReadAhead)
+		pMidiCursor->setFrameTime(pAudioCursor->frameTime());
+	}
+	else // No, it cannot be behind more than the read-ahead period...
+	if (pMidiCursor->frameTime() > pAudioCursor->frameTime() + m_iReadAhead)
 		return NULL;
 
 	// Nope. OK.
@@ -235,7 +238,7 @@ void qtractorMidiOutputThread::process (void)
 			// Reset to start-of-loop...
 			iFrameStart = m_pSession->loopStart();
 			iFrameEnd   = iFrameStart + (iFrameEnd - m_pSession->loopEnd());
-			pMidiCursor->seek(iFrameStart);
+			pMidiCursor->seek(iFrameStart, true);
 			// This is really a must...
 			m_pSession->midiEngine()->setTimeStart(
 				m_pSession->midiEngine()->timeStart()
@@ -248,12 +251,17 @@ void qtractorMidiOutputThread::process (void)
 	m_pSession->process(pMidiCursor, iFrameStart, iFrameEnd);
 
 	// Sync with loop boundaries (unlikely?)...
-	if (m_pSession->isLooping() && iFrameEnd >= m_pSession->loopEnd())
+	if (m_pSession->isLooping() && iFrameEnd >= m_pSession->loopEnd()) {
 		iFrameEnd = m_pSession->loopStart() + (iFrameEnd - m_pSession->loopEnd());
-
-	// Sync to last bunch.
-	pMidiCursor->seek(iFrameEnd);
-
+		pMidiCursor->seek(iFrameEnd, true);
+	} else {
+		// Sync to the next bunch...
+		pMidiCursor->seek(iFrameEnd);
+	}
+	
+	// Critical for Audio-MIDI sync...
+	pMidiCursor->process(m_iReadAhead);
+	
 	// Flush the MIDI engine output queue...
 	m_pSession->midiEngine()->flush();
 }

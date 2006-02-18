@@ -40,6 +40,7 @@ qtractorSessionCursor::qtractorSessionCursor ( qtractorSession *pSession,
 	m_pSession = pSession;
 	m_iFrame   = iFrame;
 	m_syncType = syncType;
+
 	m_iTracks  = 0;
 	m_ppClips  = NULL;
 	m_iSize    = 0;
@@ -115,6 +116,18 @@ unsigned long qtractorSessionCursor::frame (void) const
 }
 
 
+// Absolute frame-time posiion accessor.
+void qtractorSessionCursor::setFrameTime ( unsigned long iFrameTime )
+{
+	m_iFrameTime = iFrameTime;
+}
+
+unsigned long qtractorSessionCursor::frameTime (void) const
+{
+	return m_iFrameTime;
+}
+
+
 // Current track clip accessor.
 qtractorClip *qtractorSessionCursor::clip ( unsigned int iTrack ) const
 {
@@ -127,8 +140,8 @@ qtractorClip *qtractorSessionCursor::clip ( unsigned int iTrack ) const
 // Forward locate method.
 void qtractorSessionCursor::seekForward ( unsigned long iFrame )
 {
-#ifdef DEBUG_0
-	fprintf(stderr, "qtractorSessionCursor::seekForward(iFrame=%ld)\n", iFrame);
+#ifdef CONFIG_DEBUG_0
+	fprintf(stderr, "qtractorSessionCursor[%p,%d]::seekForward(%lu)\n", this, (int) m_syncType, iFrame);
 #endif
 
 	unsigned int iTrack = 0; 
@@ -145,8 +158,8 @@ void qtractorSessionCursor::seekForward ( unsigned long iFrame )
 // Backward locate method.
 void qtractorSessionCursor::seekBackward ( unsigned long iFrame )
 {
-#ifdef DEBUG_0
-	fprintf(stderr, "qtractorSessionCursor::seekBackward(iFrame=%ld)\n", iFrame);
+#ifdef CONFIG_DEBUG_0
+	fprintf(stderr, "qtractorSessionCursor[%p,%d]::seekBackward(%lu)\n", this, (int) m_syncType, iFrame);
 #endif
 
 	unsigned int iTrack = 0; 
@@ -269,6 +282,12 @@ void qtractorSessionCursor::update (void)
 // Reset cursor.
 void qtractorSessionCursor::reset (void)
 {
+#ifdef CONFIG_DEBUG
+	fprintf(stderr, "qtractorSessionCursor[%p,%d]::reset()\n", this, (int) m_syncType);
+#endif
+
+	m_iFrameTime = 0;
+
 	// Free existing clip references.
 	if (m_ppClips) {
 		delete m_ppClips;
@@ -284,6 +303,14 @@ void qtractorSessionCursor::reset (void)
 
 	update();
 }
+
+
+// Frame-time processor (increment only).
+void qtractorSessionCursor::process ( unsigned int nframes )
+{
+	m_iFrameTime += nframes;
+}
+
 
 
 // end of qtractorSessionCursor.cpp
