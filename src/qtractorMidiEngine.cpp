@@ -238,12 +238,9 @@ void qtractorMidiOutputThread::process (void)
 			// Reset to start-of-loop...
 			iFrameStart = m_pSession->loopStart();
 			iFrameEnd   = iFrameStart + (iFrameEnd - m_pSession->loopEnd());
-			pMidiCursor->seek(iFrameStart, true);
+			pMidiCursor->seek(iFrameStart);
 			// This is really a must...
-			m_pSession->midiEngine()->setTimeStart(
-				m_pSession->midiEngine()->timeStart()
-					+ m_pSession->tickFromFrame(
-						m_pSession->loopEnd() - m_pSession->loopStart()));
+			m_pSession->midiEngine()->restartLoop();
 		}
 	}
 
@@ -251,17 +248,13 @@ void qtractorMidiOutputThread::process (void)
 	m_pSession->process(pMidiCursor, iFrameStart, iFrameEnd);
 
 	// Sync with loop boundaries (unlikely?)...
-	if (m_pSession->isLooping() && iFrameEnd >= m_pSession->loopEnd()) {
+	if (m_pSession->isLooping() && iFrameEnd >= m_pSession->loopEnd())
 		iFrameEnd = m_pSession->loopStart() + (iFrameEnd - m_pSession->loopEnd());
-		pMidiCursor->seek(iFrameEnd, true);
-	} else {
-		// Sync to the next bunch...
-		pMidiCursor->seek(iFrameEnd);
-	}
-	
-	// Critical for Audio-MIDI sync...
+
+	// Sync to the next bunch, also critical for Audio-MIDI sync...
+	pMidiCursor->seek(iFrameEnd);
 	pMidiCursor->process(m_iReadAhead);
-	
+
 	// Flush the MIDI engine output queue...
 	m_pSession->midiEngine()->flush();
 }
@@ -517,7 +510,7 @@ bool qtractorMidiEngine::start (void)
 		return false;
 
 	// Start queue timer...
-	m_iTimeStart = pSession->tickFromFrame(pMidiCursor->frame());
+	m_iTimeStart = (long) pSession->tickFromFrame(pMidiCursor->frame());
 	snd_seq_start_queue(m_pAlsaSeq, m_iAlsaQueue, NULL);
 
 	// We're now ready and running...
@@ -597,7 +590,7 @@ void qtractorMidiEngine::trackMute ( qtractorTrack *pTrack, bool bMute )
 		snd_seq_remove_events_t *pre;
 		snd_seq_remove_events_alloca(&pre);
 		snd_seq_timestamp_t ts;
-		unsigned long iTime = session()->tickFromFrame(iFrame);
+		long iTime = (long) session()->tickFromFrame(iFrame);
 		ts.tick = (iTime > m_iTimeStart ? iTime - m_iTimeStart : 0);
 		snd_seq_remove_events_set_time(pre, &ts);
 		snd_seq_remove_events_set_tag(pre, pTrack->midiTag());
@@ -623,15 +616,14 @@ void qtractorMidiEngine::trackMute ( qtractorTrack *pTrack, bool bMute )
 }
 
 
-// Current tick start time accessors.
-void qtractorMidiEngine::setTimeStart ( unsigned long iTimeStart )
+// Special rewind method, for queue loop.
+void qtractorMidiEngine::restartLoop (void)
 {
-	m_iTimeStart = iTimeStart;
-}
-
-unsigned long qtractorMidiEngine::timeStart (void) const
-{
-	return m_iTimeStart;
+	qtractorSession *pSession = session();
+	if (pSession && pSession->isLooping()) {
+		m_iTimeStart -= (long) pSession->tickFromFrame(
+			pSession->loopEnd() - pSession->loopStart());
+	}
 }
 
 

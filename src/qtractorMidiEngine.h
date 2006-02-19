@@ -60,12 +60,11 @@ public:
 	// Flush ouput queue (if necessary)...
 	void flush();
 
+	// Special rewind method, on queue loop.
+	void restartLoop();
+
 	// Special track-immediate methods.
 	void trackMute(qtractorTrack *pTrack, bool bMute);
-
-	// Current tick start time accessors.
-	void setTimeStart(unsigned long iTimeStart);
-	unsigned long timeStart() const;
 
 	// Document element methods.
 	bool loadElement(qtractorSessionDocument *pDocument,
@@ -92,8 +91,9 @@ private:
 	
 	// Name says it all.
 	qtractorMidiOutputThread *m_pOutputThread;
-	// The time when playback started.
-	unsigned long m_iTimeStart;
+
+	// The delta-time when playback started .
+	long m_iTimeStart;
 };
 
 
