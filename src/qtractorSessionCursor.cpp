@@ -24,10 +24,6 @@
 #include "qtractorSession.h"
 #include "qtractorClip.h"
 
-#ifdef DEBUG_0
-#include <stdio.h>
-#endif
-
 
 //----------------------------------------------------------------------
 // class qtractorSessionCursor - implementation.
@@ -282,7 +278,7 @@ void qtractorSessionCursor::update (void)
 // Reset cursor.
 void qtractorSessionCursor::reset (void)
 {
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	fprintf(stderr, "qtractorSessionCursor[%p,%d]::reset()\n", this, (int) m_syncType);
 #endif
 

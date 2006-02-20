@@ -657,9 +657,17 @@ void qtractorAudioBuffer::reset (void)
 	dump_state("+reset()");
 #endif
 
-	m_iOffset = 0;
+	// If looping, we'll reset to loop-start point,
+	// otherwise it's a buffer full-reset...
+	if (m_iOffset >= m_iLoopStart && m_iOffset < m_iLoopEnd) {
+		m_iOffset = m_iLoopStart;
+	} else {
+		m_iOffset = 0;
+	}
+
 	if (m_bIntegral) {
-		m_pRingBuffer->reset();
+	//	m_pRingBuffer->reset();
+		m_pRingBuffer->setReadIndex(m_iOffset);
 		m_pRingBuffer->setWriteIndex(m_iLength);
 	} else {
 		m_iSeekPending++;
