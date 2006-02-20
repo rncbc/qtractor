@@ -659,7 +659,7 @@ void qtractorAudioBuffer::reset (void)
 
 	// If looping, we'll reset to loop-start point,
 	// otherwise it's a buffer full-reset...
-	if (m_iOffset >= m_iLoopStart && m_iOffset < m_iLoopEnd) {
+	if (m_iLoopStart < m_iLoopEnd && m_iOffset >= m_iLoopStart) {
 		m_iOffset = m_iLoopStart;
 	} else {
 		m_iOffset = 0;

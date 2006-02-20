@@ -162,7 +162,6 @@ public:
 	qtractorInstrumentList *instruments() const;
 
 	// Notify whole setup that we changed something.
-	void selectionChangeNotify();
 	void contentsChangeNotify();
 
 protected:

@@ -924,7 +924,7 @@ void qtractorTrackView::contentsMousePressEvent ( QMouseEvent *pMouseEvent )
 					// Edittail positioning...
 					setEditTail(iFrame);
 					// Not a selection, but for some visual feedback...
-					m_pTracks->selectionChangeNotify();
+					m_pTracks->contentsChangeNotify();
 					// Nothing more...
 					m_dragState = DragNone;
 				}
@@ -1005,7 +1005,7 @@ void qtractorTrackView::contentsMouseReleaseEvent ( QMouseEvent *pMouseEvent )
 				setEditTail(pSession->frameSnap(
 					pSession->frameFromPixel(rect.right())));
 				// Not a selection, just for visual feedback...
-				m_pTracks->selectionChangeNotify();
+				m_pTracks->contentsChangeNotify();
 			}
 			break;
 		case DragMove:
@@ -1040,7 +1040,7 @@ void qtractorTrackView::contentsMouseReleaseEvent ( QMouseEvent *pMouseEvent )
 					pSession->frameFromPixel(
 						m_posDrag.x() > 0 ? m_posDrag.x() : 0)));
 				// Not a selection, but for some visual feedback...
-				m_pTracks->selectionChangeNotify();
+				m_pTracks->contentsChangeNotify();
 			}
 			// Fall thru...
 		case DragDrop:

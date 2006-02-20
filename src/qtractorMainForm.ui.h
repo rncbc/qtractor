@@ -1236,7 +1236,7 @@ void qtractorMainForm::transportRewind (void)
 
 	// Move playhead to edit-tail, head or full session-start.
 	unsigned long iPlayHead = m_pSession->playHead();
-	if (iPlayHead > m_pSession->editTail())
+	if (iPlayHead > m_pSession->editTail() && !m_pSession->isPlaying())
 		iPlayHead = m_pSession->editTail();
 	else
 	if (iPlayHead > m_pSession->editHead())
@@ -1305,6 +1305,7 @@ void qtractorMainForm::transportFastForward (void)
 		return;
 
 	// Move playhead to edit-head, tail or full session-end.
+	bool bPlaying = m_pSession->isPlaying();
 	unsigned long iPlayHead = m_pSession->playHead();
 	if (iPlayHead < m_pSession->editHead())
 		iPlayHead = m_pSession->editHead();

@@ -193,7 +193,7 @@ void qtractorTracks::horizontalZoomStep ( int iZoomStep )
 	m_pTrackView->updateContents();
 
 	// Notify who's watching...
-	selectionChangeNotify();
+	contentsChangeNotify();
 }
 
 
@@ -226,7 +226,7 @@ void qtractorTracks::verticalZoomStep ( int iZoomStep )
 	m_pTrackList->zoomItemHeight(pSession->verticalZoom());
 
 	// Notify who's watching...
-	selectionChangeNotify();
+	contentsChangeNotify();
 }
 
 
@@ -681,16 +681,15 @@ void qtractorTracks::updateMidiTrack ( qtractorTrack *pMidiTrack )
 
 	for (qtractorTrack *pTrack = pSession->tracks().first();
 			pTrack; pTrack = pTrack->next()) {
+		// If same channel, force same bank/program stuff...
 		if (pTrack != pMidiTrack
 			&& pTrack->trackType() == qtractorTrack::Midi
-			&& pTrack->busName() == sBusName) {
-			// If same channel, force same bank/program stuff...
-			if (pTrack->midiChannel() == iChannel) {
-				// Make else tracks MIDI attributes the same....
-				pTrack->setMidiBankSelMethod(pMidiTrack->midiBankSelMethod());
-				pTrack->setMidiBank(pMidiTrack->midiBank());
-				pTrack->setMidiProgram(pMidiTrack->midiProgram());
-			}
+			&& pTrack->busName() == sBusName
+			&& pTrack->midiChannel() == iChannel) {
+			// Make else tracks MIDI attributes the same....
+			pTrack->setMidiBankSelMethod(pMidiTrack->midiBankSelMethod());
+			pTrack->setMidiBank(pMidiTrack->midiBank());
+			pTrack->setMidiProgram(pMidiTrack->midiProgram());
 			// Update the track list view, immediately...
 			qtractorTrackListItem *pTrackItem = m_pTrackList->trackItem(pTrack);
 			if (pTrackItem)

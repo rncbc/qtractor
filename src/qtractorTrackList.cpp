@@ -123,7 +123,7 @@ void qtractorTrackListToolButton::toggledSlot ( bool bOn )
 	// Do some feedback...
 	QToolButton::setPaletteBackgroundColor(bOn ? m_rgbOn : m_rgbOff);
 
-	m_pItem->trackList()->selectionChangeNotify();
+	m_pItem->trackList()->contentsChangeNotify();
 }
 
 
@@ -772,13 +772,6 @@ void qtractorTrackList::clickedSlot ( QListViewItem *pItem,
 
 	// TODO: Maybe something might be done, regarding direct
 	// selection of track bus and/or MIDI instrument...
-}
-
-
-// Notify whole setup that we changed something.
-void qtractorTrackList::selectionChangeNotify (void)
-{
-	m_pTracks->selectionChangeNotify();
 }
 
 

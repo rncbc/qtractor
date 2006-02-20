@@ -309,8 +309,8 @@ void qtractorTrackTime::contentsMousePressEvent ( QMouseEvent *pMouseEvent )
 			if (!bModifier) {
 				// Edit-tail positioning...
 				m_pTracks->trackView()->setEditTail(iFrame);
-				// Not a selection, just for visual feedback...
-				m_pTracks->selectionChangeNotify();
+				// Logical contents changed, just for visual feedback...
+				m_pTracks->contentsChangeNotify();
 			}
 			// Fall thru...
 		default:
@@ -400,19 +400,21 @@ void qtractorTrackTime::contentsMouseReleaseEvent ( QMouseEvent *pMouseEvent )
 					pSession->frameFromPixel(rect.left()));
 				m_pTracks->trackView()->setEditTail(
 					pSession->frameFromPixel(rect.right()));
-				// Not a selection, rather just for visual feedback...
-				m_pTracks->selectionChangeNotify();
+				// Logical contents changed, just for visual feedback...
+				m_pTracks->contentsChangeNotify();
 			}
 			break;
 		case DragPlayHead:
 			// Play-head positioning commit...
 			pSession->setPlayHead(m_pTracks->trackView()->playHead());
-			// Fall thru...
-		case DragEditHead:
-		case DragEditTail:
 			// Not quite a selection, rather just
 			// for immediate visual feedback...
 			m_pTracks->selectionChangeNotify();
+			break;
+		case DragEditHead:
+		case DragEditTail:
+			// Not quite a contents change, but for visual feedback...
+			m_pTracks->contentsChangeNotify();
 			break;
 		case DragStart:
 			// Deferred left-button edit-head positioning...
@@ -421,7 +423,7 @@ void qtractorTrackTime::contentsMouseReleaseEvent ( QMouseEvent *pMouseEvent )
 					pSession->frameSnap(pSession->frameFromPixel(
 						m_posDrag.x() > 0 ? m_posDrag.x() : 0)));
 				// Not a selection, rather just for visual feedback...
-				m_pTracks->selectionChangeNotify();
+				m_pTracks->contentsChangeNotify();
 			}
 			// Fall thru...
 		case DragNone:
