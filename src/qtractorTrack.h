@@ -146,6 +146,9 @@ public:
 	// MIDI track instrument patching.
 	void setMidiPatch(qtractorInstrumentList *pInstruments);
 
+	// Track loop point setler.
+	void setLoop(unsigned long iLoopStart, unsigned long iLoopEnd);
+
 	// Document element methods.
 	bool loadElement(qtractorSessionDocument *pDocument,
 		QDomElement *pElement);

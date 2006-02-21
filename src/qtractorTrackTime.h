@@ -57,6 +57,9 @@ protected:
 	void drawContents(QPainter *p,
 		int clipx, int clipy, int clipw, int cliph);
 
+	// Check if some position header is to be dragged...
+	bool dragHeadStart(const QPoint& pos);
+
 	// Handle selection with mouse.
 	void contentsMousePressEvent(QMouseEvent *pMouseEvent);
 	void contentsMouseMoveEvent(QMouseEvent *pMouseEvent);
@@ -90,7 +93,8 @@ private:
 	// The current selecting/dragging head stuff.
 	enum DragState {
 		DragNone = 0, DragStart, DragSelect,
-		DragPlayHead, DragEditHead, DragEditTail
+		DragPlayHead, DragEditHead, DragEditTail,
+		DragLoopStart, DragLoopEnd
 	} m_dragState;
 
 	QRect  m_rectDrag;

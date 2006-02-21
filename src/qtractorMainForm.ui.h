@@ -482,10 +482,6 @@ void qtractorMainForm::customEvent ( QCustomEvent *pCustomEvent )
 		break;
 	case QTRACTOR_SHUT_EVENT:
 		// Just in case we were in the middle of something...
-		if (m_pSession->isLooping()) {
-			transportLoopAction->setOn(false);
-			transportLoop(); // Toggle looping!
-		}
 		if (m_pSession->isPlaying()) {
 			transportPlayAction->setOn(false);
 			transportPlay(); // Toggle playing!
@@ -689,10 +685,6 @@ bool qtractorMainForm::closeSession (void)
 	// If we may close it, dot it.
 	if (bClose) {
 		// Just in case we were in the middle of something...
-		if (m_pSession->isLooping()) {
-			transportLoopAction->setOn(false);
-			transportLoop(); // Toggle looping!
-		}
 		if (m_pSession->isPlaying()) {
 			transportPlayAction->setOn(false);
 			transportPlay(); // Toggle playing!
@@ -1231,8 +1223,7 @@ void qtractorMainForm::transportRewind (void)
 #endif
 
 	// Make sure session is activated...
-	if (!checkRestartSession())
-		return;
+	checkRestartSession();
 
 	// Move playhead to edit-tail, head or full session-start.
 	unsigned long iPlayHead = m_pSession->playHead();
@@ -1258,8 +1249,7 @@ void qtractorMainForm::transportBackward (void)
 #endif
 
 	// Make sure session is activated...
-	if (!checkRestartSession())
-		return;
+	checkRestartSession();
 
 	// Move playhead one second backward....
 	unsigned long iPlayHead = m_pSession->playHead();
@@ -1282,8 +1272,7 @@ void qtractorMainForm::transportForward (void)
 #endif
 
 	// Make sure session is activated...
-	if (!checkRestartSession())
-		return;
+	checkRestartSession();
 
 	// Move playhead one second forward....
 	m_pSession->setPlayHead(m_pSession->playHead() + m_pSession->sampleRate());
@@ -1301,11 +1290,9 @@ void qtractorMainForm::transportFastForward (void)
 #endif
 
 	// Make sure session is activated...
-	if (!checkRestartSession())
-		return;
+	checkRestartSession();
 
 	// Move playhead to edit-head, tail or full session-end.
-	bool bPlaying = m_pSession->isPlaying();
 	unsigned long iPlayHead = m_pSession->playHead();
 	if (iPlayHead < m_pSession->editHead())
 		iPlayHead = m_pSession->editHead();
@@ -1329,8 +1316,7 @@ void qtractorMainForm::transportLoop (void)
 #endif
 
 	// Make sure session is activated...
-	if (!checkRestartSession())
-		return;
+	checkRestartSession();
 
 	// Do the loop switch...
 	if (!m_pSession->isLooping()) {
@@ -1614,7 +1600,6 @@ bool qtractorMainForm::checkRestartSession (void)
 		unsigned long iPlayHead = m_pSession->playHead();
 		// Bail out if can't start it...
 		if (!startSession()) {
-			transportLoopAction->setOn(false);
 			transportPlayAction->setOn(false);
 			stabilizeForm();
 			return false;
@@ -1858,7 +1843,7 @@ void qtractorMainForm::timerSlot (void)
 			// Did we skip any?
 			if (m_iXrunSkip > 0) {
 				appendMessagesColor(
-					tr("XRUN(%1 skipped)").arg(m_iXrunSkip), "#cc6699");
+					tr("XRUN(%1 skipped)").arg(m_iXrunSkip), "#cc99cc");
 				m_iXrunSkip = 0;
 			}
 			// Just post an informative message...

@@ -481,6 +481,29 @@ void qtractorTrack::drawTrack ( QPainter *pPainter, const QRect& trackRect,
 }
 
 
+// Track loop point setler.
+void qtractorTrack::setLoop ( unsigned long iLoopStart,
+	unsigned long iLoopEnd )
+{
+	qtractorClip *pClip = m_clips.first();
+	while (pClip) {
+		// Convert loop-points from session to clip...
+		unsigned long iClipStart = pClip->clipStart();
+		unsigned long iClipEnd   = iClipStart + pClip->clipLength();
+		if (iLoopStart < iClipEnd && iLoopEnd > iClipStart) {
+			// Set clip inner-loop...
+			pClip->setClipLoop(
+				(iLoopStart > iClipStart ? iLoopStart - iClipStart : 0),
+				(iLoopEnd < iClipEnd ? iLoopEnd - iClipStart : iClipEnd));
+		} else {
+			// Clear/reaet clip-loop...
+			pClip->setClipLoop(0, 0);
+		}
+		pClip = pClip->next();
+	}
+}
+
+
 // MIDI track instrument patching.
 void qtractorTrack::setMidiPatch ( qtractorInstrumentList *pInstruments )
 {
@@ -544,19 +567,19 @@ bool qtractorTrack::loadElement ( qtractorSessionDocument *pDocument,
 		else
 		// Load track state..
 		if (eChild.tagName() == "state") {
-			for (QDomNode nStat = eChild.firstChild();
-					!nStat.isNull();
-						nStat = nStat.nextSibling()) {
+			for (QDomNode nState = eChild.firstChild();
+					!nState.isNull();
+						nState = nState.nextSibling()) {
 				// Convert state node to element...
-				QDomElement eStat = nStat.toElement();
-				if (eStat.isNull())
+				QDomElement eState = nState.toElement();
+				if (eState.isNull())
 					continue;
-				if (eStat.tagName() == "mute")
-					qtractorTrack::setMute(pDocument->boolFromText(eStat.text()));
-				else if (eStat.tagName() == "solo")
-					qtractorTrack::setSolo(pDocument->boolFromText(eStat.text()));
-				else if (eStat.tagName() == "record")
-					qtractorTrack::setRecord(pDocument->boolFromText(eStat.text()));
+				if (eState.tagName() == "mute")
+					qtractorTrack::setMute(pDocument->boolFromText(eState.text()));
+				else if (eState.tagName() == "solo")
+					qtractorTrack::setSolo(pDocument->boolFromText(eState.text()));
+				else if (eState.tagName() == "record")
+					qtractorTrack::setRecord(pDocument->boolFromText(eState.text()));
 			}
 		}
 		else

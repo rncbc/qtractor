@@ -245,6 +245,62 @@ void qtractorTrackTime::contentsMovingSlot ( int cx, int /*cy*/ )
 }
 
 
+// Check if some position header is to be dragged...
+bool qtractorTrackTime::dragHeadStart ( const QPoint& pos )
+{
+	qtractorSession *pSession = m_pTracks->session();
+	if (pSession == NULL)
+		return false;
+
+	// Try to catch mouse clicks over the
+	// play/edit-head/tail cursors...
+	int h = QScrollView::height() - 4;
+	int d = (h >> 1);
+	QRect rect(0, h - d, d << 1, d);
+
+	// Check play-head header...
+	rect.moveLeft(pSession->pixelFromFrame(
+		m_pTracks->trackView()->playHead()) - d);
+	if (rect.contains(pos)) {
+		m_dragState = DragPlayHead;
+		return true;
+	}
+
+	// Check loop-points, translating to edit-head/tail headers...
+	if (pSession->isLooping()) {
+		// Check loop-start header...
+		rect.moveLeft(pSession->pixelFromFrame(pSession->loopStart()) - d);
+		if (rect.contains(pos)) {
+			m_dragState = DragLoopStart;
+			return true;
+		}
+		// Check loop-end header...
+		rect.moveLeft(pSession->pixelFromFrame(pSession->loopEnd()) - d);
+		if (rect.contains(pos)) {
+			m_dragState = DragLoopEnd;
+			return true;
+		}
+	}
+
+	// Check edit-head header...
+	rect.moveLeft(pSession->pixelFromFrame(pSession->editHead()) - d);
+	if (rect.contains(pos)) {
+		m_dragState = DragEditHead;
+		return true;
+	}
+
+	// Check edit-tail header...
+	rect.moveLeft(pSession->pixelFromFrame(pSession->editTail()) - d);
+	if (rect.contains(pos)) {
+		m_dragState = DragEditTail;
+		return true;
+	}
+
+	// Nothing.
+	return false;
+}
+
+
 // Handle selection/dragging -- mouse button press.
 void qtractorTrackTime::contentsMousePressEvent ( QMouseEvent *pMouseEvent )
 {
@@ -273,35 +329,10 @@ void qtractorTrackTime::contentsMousePressEvent ( QMouseEvent *pMouseEvent )
 				// Not quite a selection, rather just
 				// for immediate visual feedback...
 				m_pTracks->selectionChangeNotify();
-			} else {
-				// Try to catch mouse clicks over the
-				// play/edit-head/tail cursors...
-				int h = QScrollView::height() - 4;
-				int d = (h >> 1);
-				QRect rect(0, h - d, d << 1, d);
-				// Check play-head header...
-				rect.moveLeft(pSession->pixelFromFrame(
-					m_pTracks->trackView()->playHead()) - d);
-				if (rect.contains(m_posDrag)) {
-					m_dragState = DragPlayHead;
-					QScrollView::setCursor(QCursor(Qt::SizeHorCursor));
-				} else {
-					// Check edit-head header...
-					rect.moveLeft(pSession->pixelFromFrame(
-						pSession->editHead()) - d);
-					if (rect.contains(m_posDrag)) {
-						m_dragState = DragEditHead;
-						QScrollView::setCursor(QCursor(Qt::SizeHorCursor));
-					} else {
-						// Check edit-tail header...
-						rect.moveLeft(pSession->pixelFromFrame(
-							pSession->editTail()) - d);
-						if (rect.contains(m_posDrag)) {
-							m_dragState = DragEditTail;
-							QScrollView::setCursor(QCursor(Qt::SizeHorCursor));
-						}
-					}
-				}
+			}	// Try to catch mouse clicks over the cursor heads...
+			else if (dragHeadStart(m_posDrag)) {
+				// We're starting something...
+				QScrollView::setCursor(QCursor(Qt::SizeHorCursor));
 			}
 			break;
 		case Qt::RightButton:
@@ -346,11 +377,13 @@ void qtractorTrackTime::contentsMouseMoveEvent ( QMouseEvent *pMouseEvent )
 			// Let the change get some immediate visual feedback...
 			m_pTracks->mainForm()->updateTransportTime(iFrame);
 			break;
+		case DragLoopStart:
 		case DragEditHead:
 			// Edit-head positioning...
 			m_pTracks->trackView()->ensureVisible(pos.x(), pos.y(), 8, 8);
 			m_pTracks->trackView()->setEditHead(iFrame);
 			break;
+		case DragLoopEnd:
 		case DragEditTail:
 			// Edit-tail positioning...
 			m_pTracks->trackView()->ensureVisible(pos.x(), pos.y(), 8, 8);
@@ -411,7 +444,28 @@ void qtractorTrackTime::contentsMouseReleaseEvent ( QMouseEvent *pMouseEvent )
 			// for immediate visual feedback...
 			m_pTracks->selectionChangeNotify();
 			break;
+		case DragLoopStart:
+			// New loop-start boundary...
+			if (pSession->editHead() < pSession->loopEnd()) {
+				// Yep, new loop-start point...
+				pSession->setLoop(pSession->editHead(), pSession->loopEnd());
+				m_pTracks->trackView()->updateContents();
+				updateContents();
+			}
+			// Fall thru here...
 		case DragEditHead:
+			// Not quite a contents change, but for visual feedback...
+			m_pTracks->contentsChangeNotify();
+			break;
+		case DragLoopEnd:
+			// New loop-end boundary...
+			if (pSession->loopStart() < pSession->editTail()) {
+				// Yep, new loop-end point...
+				pSession->setLoop(pSession->loopStart(), pSession->editTail());
+				m_pTracks->trackView()->updateContents();
+				updateContents();
+			}
+			// Fall thru here...
 		case DragEditTail:
 			// Not quite a contents change, but for visual feedback...
 			m_pTracks->contentsChangeNotify();
@@ -462,6 +516,8 @@ void qtractorTrackTime::resetDragState (void)
 	case DragPlayHead:
 	case DragEditHead:
 	case DragEditTail:
+	case DragLoopStart:
+	case DragLoopEnd:
 		QScrollView::unsetCursor();
 		// Fall thru again...
 	case DragNone:

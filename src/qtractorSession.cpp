@@ -545,12 +545,14 @@ void qtractorSession::insertTrack ( qtractorTrack *pTrack,
 		m_tracks.prepend(pTrack);
 	}
 
-//	if (pTrack->isRecord())
-//		setRecordTracks(true);
-//	if (pTrack->isMute())
-//		setMuteTracks(true);
-//	if (pTrack->isSolo())
-//		setSoloTracks(true);
+#if 0
+	if (pTrack->isRecord())
+		setRecordTracks(true);
+	if (pTrack->isMute())
+		setMuteTracks(true);
+	if (pTrack->isSolo())
+		setSoloTracks(true);
+#endif
 
 	qtractorSessionCursor *pSessionCursor = m_cursors.first();
 	while (pSessionCursor) {
@@ -558,12 +560,15 @@ void qtractorSession::insertTrack ( qtractorTrack *pTrack,
 		pSessionCursor = pSessionCursor->next();
 	}
 
+	pTrack->setLoop(m_iLoopStart, m_iLoopEnd);
 	pTrack->open();
 }
 
 
 void qtractorSession::updateTrack ( qtractorTrack *pTrack )
 {
+	pTrack->setLoop(m_iLoopStart, m_iLoopEnd);
+
 	qtractorSessionCursor *pSessionCursor = m_cursors.first();
 	while (pSessionCursor) {
 		pSessionCursor->updateTrack(pTrack);
@@ -574,6 +579,7 @@ void qtractorSession::updateTrack ( qtractorTrack *pTrack )
 
 void qtractorSession::unlinkTrack ( qtractorTrack *pTrack )
 {
+	pTrack->setLoop(0, 0);
 	pTrack->close();
 
 	qtractorSessionCursor *pSessionCursor = m_cursors.first();
@@ -763,25 +769,10 @@ void qtractorSession::setLoop ( unsigned long iLoopStart,
 		m_iLoopEnd   = 0;
 	}
 
-	// Now, set proper loop points for every track and clip...
+	// Now, set proper loop points for every track...
 	qtractorTrack *pTrack = m_tracks.first();
 	while (pTrack) {
-		qtractorClip *pClip = pTrack->clips().first();
-		while (pClip) {
-			// Convert loop-points from session to clip...
-			unsigned long iClipStart = pClip->clipStart();
-			unsigned long iClipEnd   = iClipStart + pClip->clipLength();
-			if (m_iLoopStart < iClipEnd && m_iLoopEnd > iClipStart) {
-				// Set clip inner-loop...
-				pClip->setClipLoop(
-					(m_iLoopStart > iClipStart ? m_iLoopStart - iClipStart : 0),
-					(m_iLoopEnd < iClipEnd ? m_iLoopEnd - iClipStart : iClipEnd));
-			} else {
-				// Clear/reaet clip-loop...
-				pClip->setClipLoop(0, 0);
-			}
-			pClip = pClip->next();
-		}
+		pTrack->setLoop(m_iLoopStart, m_iLoopEnd);
 		pTrack = pTrack->next();
 	}
 
@@ -910,6 +901,10 @@ bool qtractorSession::loadElement ( qtractorSessionDocument *pDocument,
 	qtractorSession::clear();
 	qtractorSession::setSessionName(pElement->attribute("name"));
 
+	// Session state should be postponed...
+	unsigned long iLoopStart = 0;
+	unsigned long iLoopEnd   = 0;
+
 	// Load session children...
 	for (QDomNode nChild = pElement->firstChild();
 			!nChild.isNull();
@@ -942,6 +937,21 @@ bool qtractorSession::loadElement ( qtractorSessionDocument *pDocument,
 			}
 			// We need to make this permanent, right now.
 			qtractorSession::updateTimeScale();
+		}
+		else
+		if (eChild.tagName() == "state") {
+			for (QDomNode nState = eChild.firstChild();
+					!nState.isNull();
+						nState = nState.nextSibling()) {
+				// Convert state node to element...
+				QDomElement eState = nState.toElement();
+				if (eState.isNull())
+					continue;
+				if (eState.tagName() == "loop-start")
+					iLoopStart = eState.text().toULong();
+				else if (eState.tagName() == "loop-end")
+					iLoopEnd = eState.text().toULong();
+			}
 		}
 		else
 		// Load file lists...
@@ -1055,6 +1065,10 @@ bool qtractorSession::loadElement ( qtractorSessionDocument *pDocument,
 	// Just stabilize things around.
 	qtractorSession::updateSessionLength();
 
+	// Check whether some deferred state needs to be set...
+	if (iLoopStart < iLoopEnd)
+		qtractorSession::setLoop(iLoopStart, iLoopEnd);
+
 	return true;
 }
 
@@ -1078,6 +1092,14 @@ bool qtractorSession::saveElement ( qtractorSessionDocument *pDocument,
 	pDocument->saveTextElement("beats-per-bar",
 		QString::number(qtractorSession::beatsPerBar()), &eProps);
 	pElement->appendChild(eProps);
+
+	// Save session state...
+	QDomElement eState = pDocument->document()->createElement("state");
+	pDocument->saveTextElement("loop-start",
+		QString::number(qtractorSession::loopStart()), &eState);
+	pDocument->saveTextElement("loop-end",
+		QString::number(qtractorSession::loopEnd()), &eState);
+	pElement->appendChild(eState);
 
 	// Save file lists...
 	QDomElement eFiles = pDocument->document()->createElement("files");
