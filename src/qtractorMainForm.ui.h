@@ -1589,10 +1589,6 @@ bool qtractorMainForm::startSession (void)
 // Check and restart session, if applicable.
 bool qtractorMainForm::checkRestartSession (void)
 {
-#ifdef CONFIG_DEBUG
-	appendMessages("qtractorMainForm::checkRestartSession()");
-#endif
-
 	// Whether session is currently activated,
 	// try to (re)open the whole thing...
 	if (!m_pSession->isActivated()) {
@@ -1643,6 +1639,9 @@ void qtractorMainForm::updateSession (void)
 		// Log this rather important event...
 		appendMessages(tr("Tracks open."));
 	}
+
+	// Remake loop state...
+	transportLoopAction->setOn(m_pSession->isLooping());
 
 	//  Actually (re)start session engines...
 	if (startSession()) {
