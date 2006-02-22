@@ -1455,6 +1455,7 @@ void qtractorTrackView::ensureVisibleFrame ( unsigned long iFrame )
 			x += w - wm;
 		QScrollView::ensureVisible(
 			 x, QScrollView::contentsY(), 8, 8);
+		QScrollView::setFocus();
 	}
 }
 

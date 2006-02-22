@@ -736,11 +736,35 @@ bool qtractorAudioBuffer::eof (void) const
 void qtractorAudioBuffer::setLoop ( unsigned long iLoopStart,
 	unsigned long iLoopEnd )
 {
-	if (iLoopEnd >= iLoopStart) {
+#if 1
+	// Make some just-in-time adjustments in case we had
+    // already read-ahead past the previous loop-end setting...
+	// (this is far from safe / glitch-free)
+	unsigned long wo = m_iOffset;
+	unsigned int  rs = m_pRingBuffer->readable();
+	if (wo > rs) {
+		unsigned long ro = wo - rs;
+		if (iLoopEnd > ro && wo > m_iLoopEnd) {
+			unsigned int ri = m_pRingBuffer->readIndex();
+			m_pRingBuffer->setWriteIndex(ri + (iLoopEnd - ro));
+		}
+	}
+#endif
+
+	// Make the new loop setting... 
+	if (iLoopStart < iLoopEnd) {
 		m_iLoopStart = iLoopStart;
 		m_iLoopEnd   = iLoopEnd;
+	} else {
+		m_iLoopStart = 0;
+		m_iLoopEnd   = 0;
 	}
+
+	// Time to sync()?
+	if (m_pRingBuffer->writable() > m_iThreshold)
+		qtractorAudioBufferThread::Instance().sync();
 }
+
 
 unsigned long qtractorAudioBuffer::loopStart (void) const
 {

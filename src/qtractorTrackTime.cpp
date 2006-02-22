@@ -527,6 +527,9 @@ void qtractorTrackTime::resetDragState (void)
 
 	// Force null state.
 	m_dragState = DragNone;
+	
+	// HACK: give focus to track-view... 
+	m_pTracks->trackView()->setFocus();
 }
 
 
