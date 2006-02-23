@@ -41,6 +41,7 @@ qtractorAudioBuffer::qtractorAudioBuffer ( unsigned int iSampleRate )
 
 	m_iLoopStart     = 0;
 	m_iLoopEnd       = 0;
+	m_iOffset0       = 0;
 
 	m_iSeekPending   = 0;
 
@@ -433,6 +434,8 @@ void qtractorAudioBuffer::readSync (void)
 	if (ws == 0 || m_bEndOfFile)
 		return;
 
+	m_iOffset0 = offset;
+
 	unsigned int nahead  = ws;
 	unsigned int ntotal  = 0;
 	unsigned int nbuffer = m_iThreshold;
@@ -641,7 +644,7 @@ void qtractorAudioBuffer::deleteIOBuffers (void)
 	}
 
 	// Remaining instance variables.
-	m_iInputPending  = 0;
+	m_iInputPending = 0;
 }
 
 
@@ -659,7 +662,8 @@ void qtractorAudioBuffer::reset (void)
 
 	// If looping, we'll reset to loop-start point,
 	// otherwise it's a buffer full-reset...
-	if (m_iLoopStart < m_iLoopEnd && m_iOffset >= m_iLoopStart) {
+	unsigned long offset = (m_bIntegral ? m_iOffset : m_iOffset0);
+	if (m_iLoopStart < m_iLoopEnd && offset > m_iLoopStart) {
 		m_iOffset = m_iLoopStart;
 	} else {
 		m_iOffset = 0;
@@ -736,17 +740,23 @@ bool qtractorAudioBuffer::eof (void) const
 void qtractorAudioBuffer::setLoop ( unsigned long iLoopStart,
 	unsigned long iLoopEnd )
 {
-#if 1
+#if 0
 	// Make some just-in-time adjustments in case we had
-    // already read-ahead past the previous loop-end setting...
+	// already read-ahead past the previous loop-end setting...
 	// (this is far from safe / glitch-free)
-	unsigned long wo = m_iOffset;
-	unsigned int  rs = m_pRingBuffer->readable();
-	if (wo > rs) {
-		unsigned long ro = wo - rs;
-		if (iLoopEnd > ro && wo > m_iLoopEnd) {
+	if (m_iLoopStart < m_iLoopEnd) {
+		unsigned long ro = m_iOffset0;
+		unsigned int  rs = m_pRingBuffer->readable();
+		fprintf(stderr, "DEBUG> setLoop(%lu,%lu) ro=%lu rs=%u le=%lu\n",
+			iLoopStart, iLoopEnd, ro, rs, m_iLoopEnd);
+		if (iLoopEnd > ro && m_iLoopEnd < ro + rs) {
 			unsigned int ri = m_pRingBuffer->readIndex();
-			m_pRingBuffer->setWriteIndex(ri + (iLoopEnd - ro));
+			unsigned int ndelta = (iLoopEnd - ro);
+			m_pRingBuffer->setWriteIndex(ri + ndelta);
+			m_iOffset = ro + ndelta;
+			m_iSeekPending++;
+			fprintf(stderr, "DEBUG> setLoop(%lu,%lu) *** ndelta=%u ***\n",
+				iLoopStart, iLoopEnd, ndelta);
 		}
 	}
 #endif
@@ -760,9 +770,11 @@ void qtractorAudioBuffer::setLoop ( unsigned long iLoopStart,
 		m_iLoopEnd   = 0;
 	}
 
-	// Time to sync()?
-	if (m_pRingBuffer->writable() > m_iThreshold)
+#if 0
+	// Take the chance and sync?...
+	if (m_iSeekPending > 0)
 		qtractorAudioBufferThread::Instance().sync();
+#endif
 }
 
 

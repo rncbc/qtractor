@@ -91,7 +91,7 @@ void qtractorSessionCursor::seek ( unsigned long iFrame, bool bSync )
 				if (pClip) {
 					unsigned long iClipStart = pClip->clipStart();
 					if (iFrame >= iClipStart
-						&& iFrame <  iClipStart + pClip->clipLength()) {
+						&& iFrame < iClipStart + pClip->clipLength()) {
 						pClip->seek(iFrame - iClipStart);
 					} else {
 						pClip->reset();

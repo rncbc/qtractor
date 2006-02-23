@@ -133,6 +133,7 @@ private:
 
 	unsigned long  m_iLoopStart;
 	unsigned long  m_iLoopEnd;
+	unsigned long  m_iOffset0;
 
 	unsigned int   m_iSeekPending;
 
