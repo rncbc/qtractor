@@ -89,8 +89,11 @@ public:
 	// Whether file read has exausted.
 	bool eof() const;
 
-	// Loop points accessors.
+	// Loop points (asynchronous) settlers.
 	void setLoop(unsigned long iLoopStart, unsigned long iLoopEnd);
+	void setLoopCommit();
+
+	// Loop points accessors.
 	unsigned long loopStart() const;
 	unsigned long loopEnd() const;
 
@@ -133,6 +136,8 @@ private:
 
 	unsigned long  m_iLoopStart;
 	unsigned long  m_iLoopEnd;
+	unsigned long  m_iLoopStart0;
+	unsigned long  m_iLoopEnd0;
 	unsigned long  m_iOffset0;
 
 	unsigned int   m_iSeekPending;
@@ -171,6 +176,12 @@ public:
 	void setRunState(bool bRunState);
 	bool runState() const;
 
+	// Asynchronous loop settings methods.
+	void setLoopPrepare();
+	void setLoopCommit();
+
+	bool loopSync();
+
 	// Wake from executive wait condition.
 	void sync();
 
@@ -196,6 +207,10 @@ private:
 
 	// The list of managed audio buffers.
 	qtractorList<qtractorAudioBuffer> m_list;
+
+	// Asynchronous loop settings stuff.
+	unsigned int m_iLoopPrepare;
+	unsigned int m_iLoopCommit;
 };
 
 

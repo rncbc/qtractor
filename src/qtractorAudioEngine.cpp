@@ -21,6 +21,7 @@
 
 #include "qtractorAbout.h"
 #include "qtractorAudioEngine.h"
+#include "qtractorAudioBuffer.h"
 
 #include "qtractorSessionCursor.h"
 #include "qtractorSessionDocument.h"
@@ -279,6 +280,10 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 
 	// Always sync to MIDI output thread...
 	pSession->midiEngine()->sync();
+
+	// Check whether we're setting loops asynchronously...
+	if (qtractorAudioBufferThread::Instance().loopSync())
+		pSession->setLoopCommit();
 
 	// Process session stuff...
 	return 1;

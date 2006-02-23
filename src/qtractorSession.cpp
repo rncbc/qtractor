@@ -28,6 +28,7 @@
 #include "qtractorAudioEngine.h"
 #include "qtractorAudioPeak.h"
 #include "qtractorAudioClip.h"
+#include "qtractorAudioBuffer.h"
 
 #include <qapplication.h>
 #include <qeventloop.h>
@@ -164,6 +165,9 @@ void qtractorSession::clear (void)
 
 	m_iLoopStart     = 0;
 	m_iLoopEnd       = 0;
+	m_iLoopStart0    = 0;
+	m_iLoopEnd0      = 0;
+	m_iLoopSync      = 0;
 
 	updateTimeScale();
 
@@ -752,36 +756,59 @@ unsigned long qtractorSession::playHead (void) const
 }
 
 
-// Session loop points accessors.
+// Session loop points (asynchronous) settlers.
 void qtractorSession::setLoop ( unsigned long iLoopStart,
 	unsigned long iLoopEnd )
 {
-#if 0
-	bool bPlaying = isPlaying();
-	setPlaying(false);
-#endif
-
+	// Local prepare...
 	if (iLoopStart < iLoopEnd) {
-		m_iLoopStart = iLoopStart;
-		m_iLoopEnd   = iLoopEnd;
+		m_iLoopStart0 = iLoopStart;
+		m_iLoopEnd0   = iLoopEnd;
 	} else {
-		m_iLoopStart = 0;
-		m_iLoopEnd   = 0;
+		m_iLoopStart0 = 0;
+		m_iLoopEnd0   = 0;
 	}
 
 	// Now, set proper loop points for every track...
 	qtractorTrack *pTrack = m_tracks.first();
 	while (pTrack) {
-		pTrack->setLoop(m_iLoopStart, m_iLoopEnd);
+		pTrack->setLoop(m_iLoopStart0, m_iLoopEnd0);
 		pTrack = pTrack->next();
 	}
-
-#if 0
-	stabilize();
-	setPlaying(bPlaying);
-#endif
+	
+	// Commit if not currently playing...
+	if (isPlaying()) {
+		qtractorAudioBufferThread::Instance().setLoopPrepare();
+	} else {
+		qtractorAudioBufferThread::Instance().setLoopCommit();
+		setLoopCommit();
+	}
 }
 
+
+void qtractorSession::setLoopCommit (void)
+{
+	m_iLoopStart = m_iLoopStart0;
+	m_iLoopEnd   = m_iLoopEnd0;
+
+	m_iLoopSync++;
+}
+
+
+bool qtractorSession::loopSync (void)
+{
+	bool bLoopSync = false;
+
+	if (m_iLoopSync > 0) {
+		m_iLoopSync = 0;
+		bLoopSync = true;
+	}
+
+	return bLoopSync;
+}
+
+
+// Session loop points accessors.
 unsigned long qtractorSession::loopStart (void) const
 {
 	return m_iLoopStart;

@@ -1324,12 +1324,14 @@ void qtractorMainForm::transportLoop (void)
 	} else {
 		m_pSession->setLoop(0, 0);
 	}
-	
+
+#if 0
 	// Refresh track views...
 	if (m_pTracks) {
 		m_pTracks->trackTime()->updateContents();
 		m_pTracks->trackView()->updateContents();
 	}
+#endif
 
 	// Done with loop switch...
 	stabilizeForm();
@@ -1821,6 +1823,15 @@ void qtractorMainForm::timerSlot (void)
 		m_iTransport = 0;
 		if (m_pTracks)
 			m_pTracks->trackView()->ensureVisibleFrame(m_iPlayHead);
+		stabilizeForm();
+	}
+
+	// Loop setting status...
+	if (m_pSession->loopSync()) {
+		if (m_pTracks) {
+			m_pTracks->trackView()->updateContents();
+			m_pTracks->trackTime()->updateContents();
+		}
 		stabilizeForm();
 	}
 

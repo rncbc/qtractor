@@ -41,6 +41,8 @@ qtractorAudioBuffer::qtractorAudioBuffer ( unsigned int iSampleRate )
 
 	m_iLoopStart     = 0;
 	m_iLoopEnd       = 0;
+	m_iLoopStart0    = 0;
+	m_iLoopEnd0      = 0;
 	m_iOffset0       = 0;
 
 	m_iSeekPending   = 0;
@@ -736,48 +738,29 @@ bool qtractorAudioBuffer::eof (void) const
 }
 
 
-// Loop settings.
+// Loop points (asynchronous) settlers.
 void qtractorAudioBuffer::setLoop ( unsigned long iLoopStart,
 	unsigned long iLoopEnd )
 {
-#if 0
-	// Make some just-in-time adjustments in case we had
-	// already read-ahead past the previous loop-end setting...
-	// (this is far from safe / glitch-free)
-	if (m_iLoopStart < m_iLoopEnd) {
-		unsigned long ro = m_iOffset0;
-		unsigned int  rs = m_pRingBuffer->readable();
-		fprintf(stderr, "DEBUG> setLoop(%lu,%lu) ro=%lu rs=%u le=%lu\n",
-			iLoopStart, iLoopEnd, ro, rs, m_iLoopEnd);
-		if (iLoopEnd > ro && m_iLoopEnd < ro + rs) {
-			unsigned int ri = m_pRingBuffer->readIndex();
-			unsigned int ndelta = (iLoopEnd - ro);
-			m_pRingBuffer->setWriteIndex(ri + ndelta);
-			m_iOffset = ro + ndelta;
-			m_iSeekPending++;
-			fprintf(stderr, "DEBUG> setLoop(%lu,%lu) *** ndelta=%u ***\n",
-				iLoopStart, iLoopEnd, ndelta);
-		}
-	}
-#endif
-
-	// Make the new loop setting... 
+	// Prepare new loop setting... 
 	if (iLoopStart < iLoopEnd) {
-		m_iLoopStart = iLoopStart;
-		m_iLoopEnd   = iLoopEnd;
+		m_iLoopStart0 = iLoopStart;
+		m_iLoopEnd0   = iLoopEnd;
 	} else {
-		m_iLoopStart = 0;
-		m_iLoopEnd   = 0;
+		m_iLoopStart0 = 0;
+		m_iLoopEnd0   = 0;
 	}
-
-#if 0
-	// Take the chance and sync?...
-	if (m_iSeekPending > 0)
-		qtractorAudioBufferThread::Instance().sync();
-#endif
 }
 
 
+void qtractorAudioBuffer::setLoopCommit (void)
+{
+	m_iLoopStart = m_iLoopStart0;
+	m_iLoopEnd   = m_iLoopEnd0;
+}
+
+
+// Loop points accessors.
 unsigned long qtractorAudioBuffer::loopStart (void) const
 {
 	return m_iLoopStart;
@@ -857,6 +840,9 @@ qtractorAudioBufferThread::qtractorAudioBufferThread (void)
 {
 	m_bRunState = false;
 	m_list.setAutoDelete(false);
+
+	m_iLoopPrepare = 0;
+	m_iLoopCommit  = 0;
 }
 
 
@@ -891,6 +877,46 @@ bool qtractorAudioBufferThread::runState (void) const
 }
 
 
+// Preapre loop settings for commit.
+void qtractorAudioBufferThread::setLoopPrepare (void)
+{
+	QMutexLocker locker(&m_mutex);
+	
+	m_iLoopPrepare++;
+	m_cond.wakeAll();
+}
+
+
+// Commit all audio-buffer loop settings.
+void qtractorAudioBufferThread::setLoopCommit (void)
+{
+	QMutexLocker locker(&m_mutex);
+	
+	qtractorAudioBuffer *pAudioBuffer = m_list.first();
+	while (pAudioBuffer) {
+		pAudioBuffer->setLoopCommit();
+		pAudioBuffer = pAudioBuffer->next();
+	}
+}
+
+
+// One-shot check whether we've set loop points asynchronously (RT-safe)
+bool qtractorAudioBufferThread::loopSync (void)
+{
+	bool bLoopSync = false;
+
+	if (m_mutex.tryLock()) {
+		if (m_iLoopCommit > 0) {
+			m_iLoopCommit = 0;
+			bLoopSync = true;
+		}
+		m_mutex.unlock();
+	}
+
+	return bLoopSync;
+}
+
+
 // Wake from executive wait condition.
 void qtractorAudioBufferThread::sync (void)
 {
@@ -916,10 +942,18 @@ void qtractorAudioBufferThread::run (void)
 
 	m_mutex.lock();
 	while (m_bRunState) {
+		// Do whatever we must, on all audio-buffers...
 		qtractorAudioBuffer *pAudioBuffer = m_list.first();
 		while (pAudioBuffer) {
+			if (m_iLoopPrepare > 0)
+				pAudioBuffer->setLoopCommit();
 			pAudioBuffer->sync();
 			pAudioBuffer = pAudioBuffer->next();
+		}
+		// Flag that we've committed something...
+		if (m_iLoopPrepare > 0) {
+			m_iLoopPrepare = 0;
+			m_iLoopCommit++;
 		}
 		m_cond.wait(&m_mutex);
 	}
