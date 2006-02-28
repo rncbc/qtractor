@@ -69,7 +69,7 @@ public:
 	virtual void seek(unsigned long iOffset) = 0;
 
 	// Reset clip state.
-	virtual void reset() = 0;
+	virtual void reset(bool bLooping) = 0;
 
 	// Clip loop point accessors.
 	virtual void loop(unsigned long iLoopStart, unsigned long iLoopEnd) = 0;

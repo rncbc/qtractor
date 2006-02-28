@@ -165,9 +165,6 @@ void qtractorSession::clear (void)
 
 	m_iLoopStart     = 0;
 	m_iLoopEnd       = 0;
-	m_iLoopStart0    = 0;
-	m_iLoopEnd0      = 0;
-	m_iLoopSync      = 0;
 
 	updateTimeScale();
 
@@ -738,77 +735,55 @@ bool qtractorSession::isPlaying() const
 // Playhead positioning.
 void qtractorSession::setPlayHead ( unsigned long iFrame )
 {
-	if (m_pAudioEngine->sessionCursor()) {
-		bool bPlaying = isPlaying();
-		setPlaying(false);
-		m_pAudioEngine->sessionCursor()->seek(iFrame, true);
-		if (m_pMidiEngine->sessionCursor())
-			m_pMidiEngine->sessionCursor()->seek(iFrame, true);
-		stabilize();
-		setPlaying(bPlaying);
-	}
+	bool bPlaying = isPlaying();
+	setPlaying(false);
+	m_pAudioEngine->sessionCursor()->seek(iFrame, true);
+	m_pMidiEngine->sessionCursor()->seek(iFrame, true);
+	stabilize();
+	setPlaying(bPlaying);
 }
 
 unsigned long qtractorSession::playHead (void) const
 {
-	return (m_pAudioEngine->sessionCursor() ?
-		m_pAudioEngine->sessionCursor()->frame() : 0);
-}
-
-
-// Session loop points (asynchronous) settlers.
-void qtractorSession::setLoop ( unsigned long iLoopStart,
-	unsigned long iLoopEnd )
-{
-	// Local prepare...
-	if (iLoopStart < iLoopEnd) {
-		m_iLoopStart0 = iLoopStart;
-		m_iLoopEnd0   = iLoopEnd;
-	} else {
-		m_iLoopStart0 = 0;
-		m_iLoopEnd0   = 0;
-	}
-
-	// Now, set proper loop points for every track...
-	qtractorTrack *pTrack = m_tracks.first();
-	while (pTrack) {
-		pTrack->setLoop(m_iLoopStart0, m_iLoopEnd0);
-		pTrack = pTrack->next();
-	}
-	
-	// Commit if not currently playing...
-	if (isPlaying()) {
-		qtractorAudioBufferThread::Instance().setLoopPrepare();
-	} else {
-		qtractorAudioBufferThread::Instance().setLoopCommit();
-		setLoopCommit();
-	}
-}
-
-
-void qtractorSession::setLoopCommit (void)
-{
-	m_iLoopStart = m_iLoopStart0;
-	m_iLoopEnd   = m_iLoopEnd0;
-
-	m_iLoopSync++;
-}
-
-
-bool qtractorSession::loopSync (void)
-{
-	bool bLoopSync = false;
-
-	if (m_iLoopSync > 0) {
-		m_iLoopSync = 0;
-		bLoopSync = true;
-	}
-
-	return bLoopSync;
+	return m_pAudioEngine->sessionCursor()->frame();
 }
 
 
 // Session loop points accessors.
+void qtractorSession::setLoop ( unsigned long iLoopStart,
+	unsigned long iLoopEnd )
+{
+	bool bPlaying = isPlaying();
+	setPlaying(false);
+
+	// Local prepare...
+	if (iLoopStart >= iLoopEnd) {
+		iLoopStart = 0;
+		iLoopEnd   = 0;
+	}
+
+	// Save exact current play-head position...
+	unsigned long iFrame = playHead();
+
+	// Set proper loop points for every track, clip and buffer...
+	qtractorTrack *pTrack = m_tracks.first();
+	while (pTrack) {
+		pTrack->setLoop(iLoopStart, iLoopEnd);
+		pTrack = pTrack->next();
+	}
+
+	// Local commit...
+	m_iLoopStart = iLoopStart;
+	m_iLoopEnd   = iLoopEnd;
+
+	// Replace last known play-head...
+	m_pAudioEngine->sessionCursor()->seek(iFrame, true);
+	m_pMidiEngine->sessionCursor()->seek(iFrame, true);
+
+	stabilize();
+	setPlaying(bPlaying);
+}
+
 unsigned long qtractorSession::loopStart (void) const
 {
 	return m_iLoopStart;

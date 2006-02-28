@@ -41,9 +41,6 @@ qtractorAudioBuffer::qtractorAudioBuffer ( unsigned int iSampleRate )
 
 	m_iLoopStart     = 0;
 	m_iLoopEnd       = 0;
-	m_iLoopStart0    = 0;
-	m_iLoopEnd0      = 0;
-	m_iOffset0       = 0;
 
 	m_iSeekPending   = 0;
 
@@ -436,8 +433,6 @@ void qtractorAudioBuffer::readSync (void)
 	if (ws == 0 || m_bEndOfFile)
 		return;
 
-	m_iOffset0 = offset;
-
 	unsigned int nahead  = ws;
 	unsigned int ntotal  = 0;
 	unsigned int nbuffer = m_iThreshold;
@@ -445,17 +440,18 @@ void qtractorAudioBuffer::readSync (void)
 	unsigned long ls = m_iLoopStart;
 	unsigned long le = m_iLoopEnd;
 
+	bool bLooping = (ls < le && offset < le);
+
 	while (nahead > 0) {
 		if (nahead > nbuffer)
 			nahead = nbuffer;
-		if (ls < le && offset < le
-			&& offset + framesOut(nahead) >= le)
+		if (bLooping && offset + framesOut(nahead) >= le)
 			nahead = framesOut(le - offset);
 		unsigned int nread = readBuffer(nahead);
 		if (nread > 0) {
 			ntotal += nread;
 			offset += nread;
-			if (ls < le && offset >= le) {
+			if (bLooping && offset >= le) {
 				m_pFile->seek(framesOut(ls));
 				offset = ls;
 			}
@@ -651,7 +647,7 @@ void qtractorAudioBuffer::deleteIOBuffers (void)
 
 
 // Reset this buffers state.
-void qtractorAudioBuffer::reset (void)
+void qtractorAudioBuffer::reset ( bool bLooping )
 {
 	if (m_pRingBuffer == NULL)
 		return;
@@ -664,8 +660,7 @@ void qtractorAudioBuffer::reset (void)
 
 	// If looping, we'll reset to loop-start point,
 	// otherwise it's a buffer full-reset...
-	unsigned long offset = (m_bIntegral ? m_iOffset : m_iOffset0);
-	if (m_iLoopStart < m_iLoopEnd && offset > m_iLoopStart) {
+	if (bLooping && m_iLoopStart < m_iLoopEnd) {
 		m_iOffset = m_iLoopStart;
 	} else {
 		m_iOffset = 0;
@@ -738,29 +733,19 @@ bool qtractorAudioBuffer::eof (void) const
 }
 
 
-// Loop points (asynchronous) settlers.
+// Loop points accessors.
 void qtractorAudioBuffer::setLoop ( unsigned long iLoopStart,
 	unsigned long iLoopEnd )
 {
-	// Prepare new loop setting... 
 	if (iLoopStart < iLoopEnd) {
-		m_iLoopStart0 = iLoopStart;
-		m_iLoopEnd0   = iLoopEnd;
+		m_iLoopStart = iLoopStart;
+		m_iLoopEnd   = iLoopEnd;
 	} else {
-		m_iLoopStart0 = 0;
-		m_iLoopEnd0   = 0;
+		m_iLoopStart = 0;
+		m_iLoopEnd   = 0;
 	}
 }
 
-
-void qtractorAudioBuffer::setLoopCommit (void)
-{
-	m_iLoopStart = m_iLoopStart0;
-	m_iLoopEnd   = m_iLoopEnd0;
-}
-
-
-// Loop points accessors.
 unsigned long qtractorAudioBuffer::loopStart (void) const
 {
 	return m_iLoopStart;
@@ -840,9 +825,6 @@ qtractorAudioBufferThread::qtractorAudioBufferThread (void)
 {
 	m_bRunState = false;
 	m_list.setAutoDelete(false);
-
-	m_iLoopPrepare = 0;
-	m_iLoopCommit  = 0;
 }
 
 
@@ -877,46 +859,6 @@ bool qtractorAudioBufferThread::runState (void) const
 }
 
 
-// Preapre loop settings for commit.
-void qtractorAudioBufferThread::setLoopPrepare (void)
-{
-	QMutexLocker locker(&m_mutex);
-	
-	m_iLoopPrepare++;
-	m_cond.wakeAll();
-}
-
-
-// Commit all audio-buffer loop settings.
-void qtractorAudioBufferThread::setLoopCommit (void)
-{
-	QMutexLocker locker(&m_mutex);
-	
-	qtractorAudioBuffer *pAudioBuffer = m_list.first();
-	while (pAudioBuffer) {
-		pAudioBuffer->setLoopCommit();
-		pAudioBuffer = pAudioBuffer->next();
-	}
-}
-
-
-// One-shot check whether we've set loop points asynchronously (RT-safe)
-bool qtractorAudioBufferThread::loopSync (void)
-{
-	bool bLoopSync = false;
-
-	if (m_mutex.tryLock()) {
-		if (m_iLoopCommit > 0) {
-			m_iLoopCommit = 0;
-			bLoopSync = true;
-		}
-		m_mutex.unlock();
-	}
-
-	return bLoopSync;
-}
-
-
 // Wake from executive wait condition.
 void qtractorAudioBufferThread::sync (void)
 {
@@ -945,15 +887,8 @@ void qtractorAudioBufferThread::run (void)
 		// Do whatever we must, on all audio-buffers...
 		qtractorAudioBuffer *pAudioBuffer = m_list.first();
 		while (pAudioBuffer) {
-			if (m_iLoopPrepare > 0)
-				pAudioBuffer->setLoopCommit();
 			pAudioBuffer->sync();
 			pAudioBuffer = pAudioBuffer->next();
-		}
-		// Flag that we've committed something...
-		if (m_iLoopPrepare > 0) {
-			m_iLoopPrepare = 0;
-			m_iLoopCommit++;
 		}
 		m_cond.wait(&m_mutex);
 	}

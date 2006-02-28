@@ -72,8 +72,9 @@
 #define QTRACTOR_STATUS_REC     2       // Current session recording state.
 #define QTRACTOR_STATUS_MUTE    3       // Current session muting state.
 #define QTRACTOR_STATUS_SOLO    4       // Current session soloing state.
-#define QTRACTOR_STATUS_TIME    5       // Current session length time.
-#define QTRACTOR_STATUS_RATE    6       // Current session sample rate.
+#define QTRACTOR_STATUS_LOOP    5       // Current session looping state.
+#define QTRACTOR_STATUS_TIME    6       // Current session length time.
+#define QTRACTOR_STATUS_RATE    7       // Current session sample rate.
 
 
 // Specialties for thread-callback comunication.
@@ -205,6 +206,13 @@ void qtractorMainForm::init (void)
 	pLabel->setMinimumSize(pLabel->sizeHint());
 	QToolTip::add(pLabel, tr("Session soloing state"));
 	m_statusItems[QTRACTOR_STATUS_SOLO] = pLabel;
+	statusBar()->addWidget(pLabel);
+	// Session looping status.
+	pLabel = new QLabel(tr("LOOP"), this);
+	pLabel->setAlignment(Qt::AlignHCenter);
+	pLabel->setMinimumSize(pLabel->sizeHint());
+	QToolTip::add(pLabel, tr("Session looping state"));
+	m_statusItems[QTRACTOR_STATUS_LOOP] = pLabel;
 	statusBar()->addWidget(pLabel);
 	// Session length time.
 	pLabel = new QLabel(sTime, this);
@@ -1325,13 +1333,11 @@ void qtractorMainForm::transportLoop (void)
 		m_pSession->setLoop(0, 0);
 	}
 
-#if 0
 	// Refresh track views...
 	if (m_pTracks) {
 		m_pTracks->trackTime()->updateContents();
 		m_pTracks->trackView()->updateContents();
 	}
-#endif
 
 	// Done with loop switch...
 	stabilizeForm();
@@ -1541,6 +1547,11 @@ void qtractorMainForm::stabilizeForm (void)
 	else
 		m_statusItems[QTRACTOR_STATUS_SOLO]->clear();
 
+	if (m_pSession->isLooping())
+		m_statusItems[QTRACTOR_STATUS_LOOP]->setText(tr("LOOP"));
+	else
+		m_statusItems[QTRACTOR_STATUS_LOOP]->clear();
+
 	m_statusItems[QTRACTOR_STATUS_TIME]->setText(
 		m_pSession->timeFromFrame(iSessionLength));
 
@@ -1554,6 +1565,8 @@ void qtractorMainForm::stabilizeForm (void)
 		m_pSession->muteTracks() > 0 ? Qt::yellow : backColor);
 	m_statusItems[QTRACTOR_STATUS_SOLO]->setPaletteBackgroundColor(
 		m_pSession->soloTracks() > 0 ? Qt::cyan : backColor);
+	m_statusItems[QTRACTOR_STATUS_LOOP]->setPaletteBackgroundColor(
+		m_pSession->isLooping() ? Qt::green : backColor);
 
 	// Transport stuff...	
 	m_pTransportTime->setPaletteForegroundColor(
@@ -1823,15 +1836,6 @@ void qtractorMainForm::timerSlot (void)
 		m_iTransport = 0;
 		if (m_pTracks)
 			m_pTracks->trackView()->ensureVisibleFrame(m_iPlayHead);
-		stabilizeForm();
-	}
-
-	// Loop setting status...
-	if (m_pSession->loopSync()) {
-		if (m_pTracks) {
-			m_pTracks->trackView()->updateContents();
-			m_pTracks->trackTime()->updateContents();
-		}
 		stabilizeForm();
 	}
 

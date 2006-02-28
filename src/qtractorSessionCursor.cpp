@@ -78,7 +78,7 @@ void qtractorSessionCursor::seek ( unsigned long iFrame, bool bSync )
 {
 	if (iFrame > m_iFrame)
 		seekForward(iFrame);
-	else 
+	else
 	if (iFrame < m_iFrame)
 		seekBackward(iFrame);
 
@@ -88,13 +88,16 @@ void qtractorSessionCursor::seek ( unsigned long iFrame, bool bSync )
 		while (pTrack && iTrack < m_iTracks) {
 			if (pTrack->trackType() == m_syncType) {
 				qtractorClip *pClip = m_ppClips[iTrack];
+				if (pClip == NULL)
+					pClip = pTrack->clips().last();
 				if (pClip) {
 					unsigned long iClipStart = pClip->clipStart();
-					if (iFrame >= iClipStart
-						&& iFrame < iClipStart + pClip->clipLength()) {
+					if (iFrame < iClipStart) {
+						pClip->seek(0);
+					} else if (iFrame < iClipStart + pClip->clipLength()) {
 						pClip->seek(iFrame - iClipStart);
 					} else {
-						pClip->reset();
+						pClip->reset(m_pSession->isLooping());
 					}
 				}
 			}
@@ -175,7 +178,7 @@ qtractorClip *qtractorSessionCursor::seekClipForward ( qtractorTrack *pTrack,
 {
 	while (pClip && iFrame > pClip->clipStart() + pClip->clipLength()) {
 		if (pTrack->trackType() == m_syncType)
-			pClip->reset();
+			pClip->reset(m_pSession->isLooping());
 		pClip = pClip->next();
 	}
 
@@ -192,7 +195,7 @@ qtractorClip *qtractorSessionCursor::seekClipBackward ( qtractorTrack *pTrack,
 
 	while (pClip && iFrame < pClip->clipStart()) {
 		if (pTrack->trackType() == m_syncType)
-			pClip->reset();
+			pClip->seek(0);
 		pClip = pClip->prev();
 	}
 

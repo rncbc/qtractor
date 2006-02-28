@@ -247,9 +247,11 @@ void qtractorMidiOutputThread::process (void)
 	// Regular range...
 	m_pSession->process(pMidiCursor, iFrameStart, iFrameEnd);
 
+#if 0
 	// Sync with loop boundaries (unlikely?)...
 	if (m_pSession->isLooping() && iFrameEnd >= m_pSession->loopEnd())
 		iFrameEnd = m_pSession->loopStart() + (iFrameEnd - m_pSession->loopEnd());
+#endif
 
 	// Sync to the next bunch, also critical for Audio-MIDI sync...
 	pMidiCursor->seek(iFrameEnd);

@@ -203,14 +203,18 @@ void qtractorMidiClip::seek ( unsigned long iOffset )
 
 
 // Reset clip state.
-void qtractorMidiClip::reset (void)
+void qtractorMidiClip::reset ( bool bLooping )
 {
 #ifdef CONFIG_DEBUG_0
-	fprintf(stderr, "qtractorMidiClip::reset(%p)\n", this);
+	fprintf(stderr, "qtractorMidiClip::reset(%p, %d)\n", this, (int) bLooping);
 #endif
 
 	// Reset to the first sequence event...
 	m_clipCursor.reset(m_pSeq);
+
+	// Take the time from loop-start?
+	if (bLooping && clipLoopStart() < clipLoopEnd())
+		seek(clipLoopStart());
 }
 
 

@@ -168,7 +168,7 @@ public:
 	qtractorAudioEngine *audioEngine() const;
 
 	// Wait for application stabilization.
-	static void stabilize(int msecs = 100);
+	static void stabilize(int msecs = 20);
 
 	// Consolidated session engine activation status.
 	bool isActivated() const;
@@ -189,12 +189,8 @@ public:
 	void setEditTail(unsigned long iEditTail);
 	unsigned long editTail() const;
 
-	// Session loop points (asynchronous) settlers.
-	void setLoop(unsigned long iLoopStart, unsigned long iLoopEnd);
-	void setLoopCommit();
-	bool loopSync();
-
 	// Session loop points accessors.
+	void setLoop(unsigned long iLoopStart, unsigned long iLoopEnd);
 	unsigned long loopStart() const;
 	unsigned long loopEnd() const;
 	bool isLooping() const;
@@ -294,10 +290,6 @@ private:
 	// Session loop points.
 	unsigned long m_iLoopStart;
 	unsigned long m_iLoopEnd;
-	// Session loop points (asynchronously prepared).
-	unsigned long m_iLoopStart0;
-	unsigned long m_iLoopEnd0;
-	unsigned int  m_iLoopSync;
 };
 
 

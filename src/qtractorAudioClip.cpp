@@ -114,9 +114,9 @@ void qtractorAudioClip::seek ( unsigned long iOffset )
 
 
 // Reset clip state.
-void qtractorAudioClip::reset (void)
+void qtractorAudioClip::reset ( bool bLooping )
 {
-	m_pBuff->reset();
+	m_pBuff->reset(bLooping);
 }
 
 

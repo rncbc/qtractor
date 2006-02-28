@@ -270,9 +270,11 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 	// Regular range...
 	pSession->process(pAudioCursor, iFrameStart, iFrameEnd);
 
+#if 0
 	// Sync with loop boundaries (unlikely?)...
 	if (pSession->isLooping() && iFrameEnd >= pSession->loopEnd())
 		iFrameEnd = pSession->loopStart() + (iFrameEnd - pSession->loopEnd());
+#endif
 
 	// Prepare advance for next cycle.
 	pAudioCursor->seek(iFrameEnd);
@@ -280,10 +282,6 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 
 	// Always sync to MIDI output thread...
 	pSession->midiEngine()->sync();
-
-	// Check whether we're setting loops asynchronously...
-	if (qtractorAudioBufferThread::Instance().loopSync())
-		pSession->setLoopCommit();
 
 	// Process session stuff...
 	return 1;

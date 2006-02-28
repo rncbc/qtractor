@@ -65,7 +65,7 @@ public:
 	void seek(unsigned long iOffset);
 
 	// Reset clip state.
-	void reset();
+	void reset(bool bLooping);
 
 	// Loop positioning.
 	void loop(unsigned long iLoopStart, unsigned long iLoopEnd);
