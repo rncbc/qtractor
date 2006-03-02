@@ -94,6 +94,7 @@ private:
 
 	// The delta-time when playback started .
 	long m_iTimeStart;
+	long m_iTimeDelta;
 };
 
 

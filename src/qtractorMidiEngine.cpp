@@ -172,7 +172,7 @@ qtractorSessionCursor *qtractorMidiOutputThread::midiCursorSync ( bool bStart )
 	// Can MIDI be ever behind audio?
 	if (bStart) {
 		pMidiCursor->seek(pAudioCursor->frame());
-		pMidiCursor->setFrameTime(pAudioCursor->frameTime());
+	//	pMidiCursor->setFrameTime(pAudioCursor->frameTime());
 	}
 	else // No, it cannot be behind more than the read-ahead period...
 	if (pMidiCursor->frameTime() > pAudioCursor->frameTime() + m_iReadAhead)
@@ -331,7 +331,9 @@ qtractorMidiEngine::qtractorMidiEngine ( qtractorSession *pSession )
 	m_iAlsaQueue  = 0;
 	
 	m_pOutputThread = NULL;
+
 	m_iTimeStart = 0;
+	m_iTimeDelta = 0;
 }
 
 
@@ -444,7 +446,29 @@ void qtractorMidiEngine::enqueue ( qtractorTrack *pTrack,
 // Flush ouput queue (if necessary)...
 void qtractorMidiEngine::flush (void)
 {
+	// Really flush MIDI output...
 	snd_seq_drain_output(m_pAlsaSeq);
+
+	// Time to have some corrective approach...?
+	snd_seq_queue_status_t *pQueueStatus;
+	snd_seq_queue_status_alloca(&pQueueStatus);
+	if (snd_seq_get_queue_status(
+			m_pAlsaSeq, m_iAlsaQueue, pQueueStatus) >= 0) {
+		unsigned long iMidiTime
+			= snd_seq_queue_status_get_tick_time(pQueueStatus);
+		unsigned long iAudioTime = session()->tickFromFrame(
+			session()->audioEngine()->sessionCursor()->frameTime());
+		long iTimeDelta = (iAudioTime - iMidiTime) - m_iTimeDelta;
+		if (iTimeDelta && iAudioTime > 0 && iMidiTime > 0) {
+			m_iTimeStart += iTimeDelta;
+			m_iTimeDelta += iTimeDelta;
+#ifdef CONFIG_DEBUG
+			fprintf(stderr,
+				"timer-delta: audio %lu, midi %lu, delta %ld (%ld)\n",
+				iAudioTime, iMidiTime, iTimeDelta, m_iTimeDelta);
+#endif
+		}
+	}
 }
 
 
@@ -471,7 +495,9 @@ bool qtractorMidiEngine::activate (void)
 	// create and start our own MIDI output queue thread...
 	m_pOutputThread = new qtractorMidiOutputThread(session());
 	m_pOutputThread->start(QThread::HighPriority);
+
 	m_iTimeStart = 0;
+	m_iTimeDelta = 0;
 
 	return true;
 }
@@ -511,6 +537,8 @@ bool qtractorMidiEngine::start (void)
 
 	// Start queue timer...
 	m_iTimeStart = (long) pSession->tickFromFrame(pMidiCursor->frame());
+	m_iTimeDelta = 0;
+
 	snd_seq_start_queue(m_pAlsaSeq, m_iAlsaQueue, NULL);
 
 	// We're now ready and running...
@@ -562,6 +590,7 @@ void qtractorMidiEngine::clean (void)
 		delete m_pOutputThread;
 		m_pOutputThread = NULL;
 		m_iTimeStart = 0;
+		m_iTimeDelta = 0;
 	}
 
 	// Drop everything else, finally.
