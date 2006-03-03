@@ -248,8 +248,11 @@ void qtractorMidiOutputThread::process (void)
 	m_pSession->process(pMidiCursor, iFrameStart, iFrameEnd);
 
 	// Sync with loop boundaries (unlikely?)...
-	if (m_pSession->isLooping() && iFrameEnd >= m_pSession->loopEnd())
-		iFrameEnd = m_pSession->loopStart() + (iFrameEnd - m_pSession->loopEnd());
+	if (m_pSession->isLooping() && iFrameStart < m_pSession->loopEnd()
+		&& iFrameEnd >= m_pSession->loopEnd()) {
+		iFrameEnd = m_pSession->loopStart()
+			+ (iFrameEnd - m_pSession->loopEnd());
+	}
 
 	// Sync to the next bunch, also critical for Audio-MIDI sync...
 	pMidiCursor->seek(iFrameEnd);
@@ -432,6 +435,7 @@ void qtractorMidiEngine::enqueue ( qtractorTrack *pTrack,
 			::memcpy(&pSysex[1], pEvent->sysex(), pEvent->sysex_len());
 			pSysex[iSysex - 1] = 0xf7;
 			snd_seq_ev_set_sysex(&ev, iSysex, pSysex);
+			delete [] pSysex;
 			break;
 		}
 		default:
@@ -463,8 +467,8 @@ void qtractorMidiEngine::flush (void)
 			m_iTimeStart += iTimeDelta;
 			m_iTimeDelta += iTimeDelta;
 #ifdef CONFIG_DEBUG
-			fprintf(stderr,
-				"timer-delta: audio %lu, midi %lu, delta %ld (%ld)\n",
+			fprintf(stderr, "qtractorMidiEngine::flush(): "
+				"iAudioTime=%lu iMidiTime=%lu iTimeDelta=%ld (%ld)\n",
 				iAudioTime, iMidiTime, iTimeDelta, m_iTimeDelta);
 #endif
 		}

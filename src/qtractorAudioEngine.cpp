@@ -271,8 +271,11 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 	pSession->process(pAudioCursor, iFrameStart, iFrameEnd);
 
 	// Sync with loop boundaries (unlikely?)...
-	if (pSession->isLooping() && iFrameEnd >= pSession->loopEnd())
-		iFrameEnd = pSession->loopStart() + (iFrameEnd - pSession->loopEnd());
+	if (pSession->isLooping() && iFrameStart < pSession->loopEnd()
+		&& iFrameEnd >= pSession->loopEnd()) {
+		iFrameEnd = pSession->loopStart()
+			+ (iFrameEnd - pSession->loopEnd());
+	}
 
 	// Prepare advance for next cycle.
 	pAudioCursor->seek(iFrameEnd);
