@@ -39,6 +39,8 @@
 
 #include "qtractorPropertyCommand.h"
 
+#include "qtractorSpinBox.h"
+
 #include "qtractorSessionForm.h"
 #include "qtractorOptionsForm.h"
 #include "qtractorInstrumentForm.h"
@@ -184,6 +186,15 @@ void qtractorMainForm::init (void)
 	m_pTransportTime->setMinimumWidth(
 		m_pTransportTime->sizeHint().width() + 2);
 	QToolTip::add(m_pTransportTime, tr("Current transport time (playhead)"));
+	timeToolbar->addSeparator();
+	m_pTempoSpinBox = new qtractorSpinBox(timeToolbar);
+	m_pTempoSpinBox->setAlignment(Qt::AlignHCenter);
+	m_pTempoSpinBox->setMinValue(1);
+	m_pTempoSpinBox->setMaxValue(99999);
+	QToolTip::add(m_pTempoSpinBox, tr("Tempo (BPM)"));
+
+	QObject::connect(m_pTempoSpinBox, SIGNAL(valueChanged(int)),
+		this, SLOT(tempoChanged()));
 
 	// Create some statusbar labels...
 	QLabel *pLabel;
@@ -1661,6 +1672,9 @@ void qtractorMainForm::updateSession (void)
 	if (m_pSession->sessionName().isEmpty())
 		m_pSession->setSessionName(QFileInfo(sessionName(m_sFilename)).baseName());
 
+	// Initialize toolbar widgets...
+	m_pTempoSpinBox->setValueFloat(m_pSession->tempo());
+
 	// Time to create the main session track list view...
 	if (m_pTracks == NULL) {
 		// Create the main tracks widget...
@@ -1985,8 +1999,29 @@ void qtractorMainForm::contentsChanged (void)
 	appendMessages("qtractorMainForm::contentsChanged()");
 #endif
 
+	// Stabilize session toolbar widgets...
+	m_pTempoSpinBox->setValueFloat(m_pSession->tempo());
+
 	m_iDirtyCount++;
 	stabilizeForm();
+}
+
+
+// Tempo spin-box change slot.
+void qtractorMainForm::tempoChanged (void)
+{
+#ifdef CONFIG_DEBUG_0
+	appendMessages("qtractorMainForm::tempoChanged()");
+#endif
+
+	// Get a copy of current session properties...
+	qtractorSession::Properties props(m_pSession->properties());
+	// Set the new property locally...
+	props.tempo = m_pTempoSpinBox->valueFloat();
+	// Now, express the change as a undoable command...
+	m_pCommands->exec(
+		new qtractorPropertyCommand<qtractorSession::Properties> (this,
+			tr("session tempo"), m_pSession->properties(), props));
 }
 
 

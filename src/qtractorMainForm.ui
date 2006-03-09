@@ -1356,6 +1356,7 @@
 <forwards>
     <forward>class QWorkspace;</forward>
     <forward>class QLabel;</forward>
+    <forward>class qtractorSpinBox;</forward>
     <forward>class qtractorOptions;</forward>
     <forward>class qtractorCommandList;</forward>
     <forward>class qtractorInstrumentList;</forward>
@@ -1378,6 +1379,7 @@
     <variable access="private">int m_iUntitled;</variable>
     <variable access="private">int m_iDirtyCount;</variable>
     <variable access="private">QLabel *m_pTransportTime;</variable>
+    <variable access="private">qtractorSpinBox *m_pTempoSpinBox;</variable>
     <variable access="private">QLabel *m_statusItems[7];</variable>
     <variable access="private">QPopupMenu *m_pRecentFilesMenu;</variable>
     <variable access="private">unsigned long m_iPlayHead;</variable>
@@ -1440,6 +1442,7 @@
 	<slot specifier="non virtual">activateMidiFile( const QString &amp; sFilename )</slot>
 	<slot specifier="non virtual">selectionChanged( void )</slot>
     <slot specifier="non virtual">contentsChanged( void )</slot>
+    <slot specifier="non virtual">tempoChanged( void )</slot>
 </slots>
 <functions>
     <function access="private" specifier="non virtual">init()</function>

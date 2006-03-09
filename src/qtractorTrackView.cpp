@@ -127,7 +127,8 @@ qtractorTrackView::qtractorTrackView ( qtractorTracks *pTracks,
 	QScrollView::viewport()->setAcceptDrops(true);
 	QScrollView::setDragAutoScroll(false);
 
-	QScrollView::setFont(QFont(QScrollView::font().family(), 6));
+	const QFont& font = QScrollView::font();
+	QScrollView::setFont(QFont(font.family(), font.pointSize() - 1));
 
 	QObject::connect(this, SIGNAL(contentsMoving(int,int)),
 		this, SLOT(updatePixmap(int,int)));

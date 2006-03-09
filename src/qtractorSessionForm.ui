@@ -118,7 +118,7 @@
                         <number>99999</number>
                     </property>
                     <property name="minValue">
-                        <number>0</number>
+                        <number>1</number>
                     </property>
                     <property name="toolTip" stdset="0">
                         <string>Tempo (BPM)</string>
