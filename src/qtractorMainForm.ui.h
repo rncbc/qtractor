@@ -48,6 +48,7 @@
 #include <qworkspace.h>
 #include <qmessagebox.h>
 #include <qdragobject.h>
+#include <qobjectlist.h>
 #include <qregexp.h>
 #include <qfiledialog.h>
 #include <qfileinfo.h>
@@ -154,6 +155,19 @@ void qtractorMainForm::init (void)
 		QIconSet::Automatic, QIconSet::Active, QIconSet::On);
 	transportPlayAction->setIconSet(icons);
 #endif
+
+	// HACK: transport toolbar controls needs be auto-repeatable ...
+	QObjectList *pObjList = transportToolbar->queryList(
+		"QToolButton", "^transport(Backward|Forward)Action");
+	if (pObjList) {	// Iterate over the intended transport tool-buttons...	
+		QObjectListIt it(*pObjList);
+		for (QObject *pObj; (pObj = it.current()) != NULL; ++it) {
+			QToolButton *pToolButton = static_cast<QToolButton *> (pObj);
+			if (pToolButton)
+				pToolButton->setAutoRepeat(true);
+		}
+		delete pObjList;
+	}
 
 	// Additional toolbar controls...
 	const QString sTime("00:00:00.000");
@@ -1611,6 +1625,19 @@ bool qtractorMainForm::checkRestartSession (void)
 		unsigned long iPlayHead = m_pSession->playHead();
 		// Bail out if can't start it...
 		if (!startSession()) {
+			// HACK: Auto-repeatable transport toolbar controls needs be up...
+			QObjectList *pObjList = transportToolbar->queryList(
+				"QToolButton", "^transport(Backward|Forward)Action");
+			if (pObjList) {	// Iterate over the intended transport tool-buttons...	
+				QObjectListIt it(*pObjList);
+				for (QObject *pObj; (pObj = it.current()) != NULL; ++it) {
+					QToolButton *pToolButton = static_cast<QToolButton *> (pObj);
+					if (pToolButton)
+						pToolButton->setDown(false);
+				}
+				delete pObjList;
+			}
+			// Can go on with no-business...
 			transportPlayAction->setOn(false);
 			stabilizeForm();
 			return false;
