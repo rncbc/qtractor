@@ -283,6 +283,11 @@ void qtractorMidiClip::drawClip ( QPainter *pPainter, const QRect& clipRect,
 	pPainter->drawRect(clipRect);
 #endif
 
+	// Draw clip name...
+	pPainter->drawText(clipRect,
+		Qt::AlignLeft | Qt::AlignTop | Qt::BreakAnywhere,
+		clipName());
+
 	// Check maximum note span...
 	int iNoteSpan = (m_pSeq->noteMax() - m_pSeq->noteMin()) + 1;
 	if (iNoteSpan < 4)
@@ -297,7 +302,7 @@ void qtractorMidiClip::drawClip ( QPainter *pPainter, const QRect& clipRect,
 	pPainter->setBrush(fg.light());
 
 	int cx = pSession->pixelFromTick(iTimeStart);
-	int h1 = clipRect.height() - 2;
+	int h1 = clipRect.height() - 4;
 	int h  = h1 / iNoteSpan;
 	if (h < 4) h = 4;
 

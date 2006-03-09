@@ -172,6 +172,11 @@ void qtractorAudioClip::drawClip ( QPainter *pPainter, const QRect& clipRect,
 	pPainter->drawRect(clipRect);
 #endif
 
+	// Draw clip name...
+	pPainter->drawText(clipRect,
+		Qt::AlignLeft | Qt::AlignTop | Qt::BreakAnywhere,
+		clipName());
+
 	// Cache some peak data...
 	if (m_pPeak == NULL)
 		return;

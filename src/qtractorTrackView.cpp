@@ -127,6 +127,8 @@ qtractorTrackView::qtractorTrackView ( qtractorTracks *pTracks,
 	QScrollView::viewport()->setAcceptDrops(true);
 	QScrollView::setDragAutoScroll(false);
 
+	QScrollView::setFont(QFont(QScrollView::font().family(), 6));
+
 	QObject::connect(this, SIGNAL(contentsMoving(int,int)),
 		this, SLOT(updatePixmap(int,int)));
 }
@@ -319,13 +321,14 @@ void qtractorTrackView::updatePixmap ( int cx, int cy )
 	m_pPixmap->resize(w, h);
 	m_pPixmap->fill(Qt::darkGray);
 
-	QPainter p(m_pPixmap);
-	p.setViewport(0, 0, w, h);
-	p.setWindow(0, 0, w, h);
-
 	qtractorSession *pSession = m_pTracks->session();
 	if (pSession == NULL)
 		return;
+
+	QPainter p(m_pPixmap);
+	p.setViewport(0, 0, w, h);
+	p.setWindow(0, 0, w, h);
+	p.setFont(QScrollView::font());
 
 	// Update view session cursor location,
 	// so that we'll start drawing clips from there...

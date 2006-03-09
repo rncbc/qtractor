@@ -286,6 +286,7 @@ void qtractorTrackForm::stabilizeForm (void)
 {
 	bool bValid = (m_iDirtyCount > 0);
 	bValid = bValid && !TrackNameTextEdit->text().isEmpty();
+	bValid = bValid && TrackTypeGroup->selected();
 	OkPushButton->setEnabled(bValid);
 }
 

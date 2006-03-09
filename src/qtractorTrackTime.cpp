@@ -84,13 +84,14 @@ void qtractorTrackTime::updatePixmap ( int cx, int /* cy */)
 	m_pPixmap->resize(w, h);
 	m_pPixmap->fill(cg.color(QColorGroup::Background));
 
-	QPainter p(m_pPixmap);
-	p.setViewport(0, 0, w, h);
-	p.setWindow(0, 0, w, h);
-
 	qtractorSession *pSession = m_pTracks->session();
 	if (pSession == NULL)
 		return;
+
+	QPainter p(m_pPixmap);
+	p.setViewport(0, 0, w, h);
+	p.setWindow(0, 0, w, h);
+//	p.setFont(QScrollView::font());
 
 	// Draw the time scale...
 	//
