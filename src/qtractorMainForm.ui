@@ -1356,6 +1356,7 @@
 <forwards>
     <forward>class QWorkspace;</forward>
     <forward>class QLabel;</forward>
+    <forward>class QComboBox;</forward>
     <forward>class qtractorSpinBox;</forward>
     <forward>class qtractorOptions;</forward>
     <forward>class qtractorCommandList;</forward>
@@ -1380,6 +1381,7 @@
     <variable access="private">int m_iDirtyCount;</variable>
     <variable access="private">QLabel *m_pTransportTime;</variable>
     <variable access="private">qtractorSpinBox *m_pTempoSpinBox;</variable>
+    <variable access="private">QComboBox *m_pSnapPerBeatComboBox;</variable>
     <variable access="private">QLabel *m_statusItems[7];</variable>
     <variable access="private">QPopupMenu *m_pRecentFilesMenu;</variable>
     <variable access="private">unsigned long m_iPlayHead;</variable>
@@ -1443,6 +1445,7 @@
 	<slot specifier="non virtual">selectionChanged( void )</slot>
     <slot specifier="non virtual">contentsChanged( void )</slot>
     <slot specifier="non virtual">tempoChanged( void )</slot>
+    <slot specifier="non virtual">snapPerBeatChanged( int iSnap )</slot>
 </slots>
 <functions>
     <function access="private" specifier="non virtual">init()</function>

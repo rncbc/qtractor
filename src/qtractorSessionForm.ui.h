@@ -63,7 +63,8 @@ void qtractorSessionForm::setSession ( qtractorSession *pSession )
 	BeatsPerBarSpinBox->setValue(int(props.beatsPerBar));
 	TicksPerBeatSpinBox->setValue(int(props.ticksPerBeat));
 	// View properties...
-	SnapPerBeatSpinBox->setValue(int(props.snapPerBeat));
+	SnapPerBeatComboBox->setCurrentItem(
+		qtractorSession::indexFromSnap(props.snapPerBeat));
 	PixelsPerBeatSpinBox->setValue(int(props.pixelsPerBeat));
 	HorizontalZoomSpinBox->setValue(int(props.horizontalZoom));
 	VerticalZoomSpinBox->setValue(int(props.verticalZoom));
@@ -96,7 +97,8 @@ void qtractorSessionForm::accept (void)
 		m_props.beatsPerBar    = BeatsPerBarSpinBox->value();
 		m_props.ticksPerBeat   = TicksPerBeatSpinBox->value();
 		// View properties...
-		m_props.snapPerBeat    = SnapPerBeatSpinBox->value();
+		m_props.snapPerBeat    = qtractorSession::snapFromIndex(
+			SnapPerBeatComboBox->currentItem());
 		m_props.pixelsPerBeat  = PixelsPerBeatSpinBox->value();
 		m_props.horizontalZoom = HorizontalZoomSpinBox->value();
 		m_props.verticalZoom   = VerticalZoomSpinBox->value();

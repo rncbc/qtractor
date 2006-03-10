@@ -57,6 +57,7 @@
 #include <qfile.h>
 #include <qtextstream.h>
 #include <qstatusbar.h>
+#include <qcombobox.h>
 #include <qlabel.h>
 #include <qtimer.h>
 #include <qdatetime.h>
@@ -192,9 +193,21 @@ void qtractorMainForm::init (void)
 	m_pTempoSpinBox->setMinValue(1);
 	m_pTempoSpinBox->setMaxValue(99999);
 	QToolTip::add(m_pTempoSpinBox, tr("Tempo (BPM)"));
+	timeToolbar->addSeparator();
+	m_pSnapPerBeatComboBox = new QComboBox(timeToolbar);
+	m_pSnapPerBeatComboBox->setEditable(false);
+	m_pSnapPerBeatComboBox->insertItem(tr("None"));
+	QString sPrefix = tr("Beat");
+	m_pSnapPerBeatComboBox->insertItem(sPrefix);
+	sPrefix += "/%1";
+	for (unsigned short iSnapPerBeat = 2; iSnapPerBeat < 64; iSnapPerBeat <<= 1)
+		m_pSnapPerBeatComboBox->insertItem(sPrefix.arg(iSnapPerBeat));
+	QToolTip::add(m_pSnapPerBeatComboBox, tr("Snap/beat"));
 
 	QObject::connect(m_pTempoSpinBox, SIGNAL(valueChanged(int)),
 		this, SLOT(tempoChanged()));
+	QObject::connect(m_pSnapPerBeatComboBox, SIGNAL(activated(int)),
+		this, SLOT(snapPerBeatChanged(int)));
 
 	// Create some statusbar labels...
 	QLabel *pLabel;
@@ -866,11 +879,24 @@ void qtractorMainForm::fileProperties (void)
 	// Session Properties...
 	qtractorSessionForm sessionForm(this);
 	sessionForm.setSession(m_pSession);
-	if (sessionForm.exec()) {
-		m_pCommands->exec(
-			new qtractorPropertyCommand<qtractorSession::Properties> (this,
-				tr("session properties"), m_pSession->properties(),
-					sessionForm.properties()));
+	if (!sessionForm.exec())
+		return;
+
+	// If currently playing, we need to do a stop and go...
+	bool bPlaying = m_pSession->isPlaying();
+	if (bPlaying)
+		m_pSession->setPlaying(false);
+
+	// Now, express the change as a undoable command...
+	m_pCommands->exec(
+		new qtractorPropertyCommand<qtractorSession::Properties> (this,
+			tr("session properties"), m_pSession->properties(),
+				sessionForm.properties()));
+
+	// Restore playback state, if needed...
+	if (bPlaying) {
+		m_pSession->setPlaying(true);
+		m_iTransport++;
 	}
 }
 
@@ -1674,6 +1700,8 @@ void qtractorMainForm::updateSession (void)
 
 	// Initialize toolbar widgets...
 	m_pTempoSpinBox->setValueFloat(m_pSession->tempo());
+	m_pSnapPerBeatComboBox->setCurrentItem(
+		qtractorSession::indexFromSnap(m_pSession->snapPerBeat()));
 
 	// Time to create the main session track list view...
 	if (m_pTracks == NULL) {
@@ -2001,6 +2029,8 @@ void qtractorMainForm::contentsChanged (void)
 
 	// Stabilize session toolbar widgets...
 	m_pTempoSpinBox->setValueFloat(m_pSession->tempo());
+	m_pSnapPerBeatComboBox->setCurrentItem(
+		qtractorSession::indexFromSnap(m_pSession->snapPerBeat()));
 
 	m_iDirtyCount++;
 	stabilizeForm();
@@ -2014,14 +2044,37 @@ void qtractorMainForm::tempoChanged (void)
 	appendMessages("qtractorMainForm::tempoChanged()");
 #endif
 
-	// Get a copy of current session properties...
-	qtractorSession::Properties props(m_pSession->properties());
-	// Set the new property locally...
-	props.tempo = m_pTempoSpinBox->valueFloat();
+	// If currently playing, we need to do a stop and go...
+	bool bPlaying = m_pSession->isPlaying();
+	if (bPlaying)
+		m_pSession->setPlaying(false);
+
 	// Now, express the change as a undoable command...
 	m_pCommands->exec(
-		new qtractorPropertyCommand<qtractorSession::Properties> (this,
-			tr("session tempo"), m_pSession->properties(), props));
+		new qtractorPropertyCommand<float> (this,
+			tr("session tempo"), m_pSession->properties().tempo,
+			m_pTempoSpinBox->valueFloat()));
+
+	// Restore playback state, if needed...
+	if (bPlaying) {
+		m_pSession->setPlaying(true);
+		m_iTransport++;
+	}
+}
+
+
+// Snap-per-beat spin-box change slot.
+void qtractorMainForm::snapPerBeatChanged ( int iSnap )
+{
+#ifdef CONFIG_DEBUG_0
+	appendMessages("qtractorMainForm::snapPerBeatChanged()");
+#endif
+
+	// Now, express the change as a undoable command...
+	m_pCommands->exec(
+		new qtractorPropertyCommand<unsigned short> (this,
+			tr("session snap/beat"), m_pSession->properties().snapPerBeat,
+			qtractorSession::snapFromIndex(iSnap)));
 }
 
 

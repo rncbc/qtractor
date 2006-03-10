@@ -333,6 +333,27 @@ unsigned short qtractorSession::snapPerBeat (void) const
 }
 
 
+// Beat divisor (snap index) accessors.
+unsigned short qtractorSession::snapFromIndex ( int iSnap )
+{
+	unsigned short iSnapPerBeat = 0;
+	if (iSnap > 0)
+		iSnapPerBeat++;
+	for (int i = 1; i < iSnap; i++)
+		iSnapPerBeat <<= 1;
+	return iSnapPerBeat;
+}
+
+
+int qtractorSession::indexFromSnap ( unsigned short iSnapPerBeat )
+{
+	int iSnap = 0;
+	for (unsigned short n = 1; n <= iSnapPerBeat; n <<= 1)
+		++iSnap;
+	return iSnap;
+}
+
+
 // Edit-head frame accessors.
 void qtractorSession::setEditHead ( unsigned long iEditHead )
 {

@@ -99,9 +99,13 @@ public:
 	void setPixelsPerBeat(unsigned short iPixelsPerBeat);
 	unsigned short pixelsPerBeat() const;
 
-	// Beat divisor (snap) accesors.
+	// Beat divisor (snap) accessors.
 	void setSnapPerBeat(unsigned short iSnapPerBeat);
 	unsigned short snapPerBeat(void) const;
+
+	// Beat divisor index helpers.
+	static unsigned short snapFromIndex(int iSnap);
+	static int indexFromSnap(unsigned short iSnapPerBeat);
 
 	// Pixel/Beat number conversion.
 	unsigned int beatFromPixel(unsigned int x) const;

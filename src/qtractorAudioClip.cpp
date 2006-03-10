@@ -173,11 +173,12 @@ void qtractorAudioClip::drawClip ( QPainter *pPainter, const QRect& clipRect,
 #endif
 
 	// Draw clip name label...
-	if (iClipOffset == 0) {
-		pPainter->drawText(clipRect,
-			Qt::AlignLeft | Qt::AlignTop | Qt::BreakAnywhere,
-			clipName());
-	}
+	QRect rect(clipRect);
+	if (iClipOffset > 0)
+		rect.setX(rect.x() - pSession->pixelFromFrame(iClipOffset));
+	pPainter->drawText(rect,
+		Qt::AlignLeft | Qt::AlignTop | Qt::BreakAnywhere,
+		clipName());
 
 	// Cache some peak data...
 	if (m_pPeak == NULL)
