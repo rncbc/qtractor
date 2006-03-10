@@ -172,9 +172,9 @@ void qtractorMainForm::init (void)
 		delete pObjList;
 	}
 
-	// Additional toolbar controls...
+	// Additional time-toolbar controls...
 	const QString sTime("00:00:00.000");
-//	timeToolbar->addSeparator();
+	timeToolbar->addSeparator();
 	m_pTransportTime = new QLabel(sTime, timeToolbar);
 	m_pTransportTime->setFont(QFont(font().family(), 10));
 	m_pTransportTime->setFrameShape(QFrame::Panel);
