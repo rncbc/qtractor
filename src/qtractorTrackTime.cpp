@@ -53,6 +53,9 @@ qtractorTrackTime::qtractorTrackTime ( qtractorTracks *pTracks,
 
 	QScrollView::viewport()->setFocusPolicy(QWidget::ClickFocus);
 
+	const QFont& font = QScrollView::font();
+	QScrollView::setFont(QFont(font.family(), font.pointSize() - 1));
+
 	QObject::connect(this, SIGNAL(contentsMoving(int,int)),
 		this, SLOT(updatePixmap(int,int)));
 }
@@ -91,7 +94,7 @@ void qtractorTrackTime::updatePixmap ( int cx, int /* cy */)
 	QPainter p(m_pPixmap);
 	p.setViewport(0, 0, w, h);
 	p.setWindow(0, 0, w, h);
-//	p.setFont(QScrollView::font());
+	p.setFont(QScrollView::font());
 
 	// Draw the time scale...
 	//
