@@ -177,16 +177,16 @@ void qtractorMainForm::init (void)
 //	timeToolbar->addSeparator();
 	const QFont& font = qtractorMainForm::font();
 	m_pTransportTime = new QLabel(sTime, timeToolbar);
-	m_pTransportTime->setFont(QFont(font.family(), font.pointSize() + 4));
+	m_pTransportTime->setFont(QFont(font.family(), font.pointSize() + 2));
 	m_pTransportTime->setFrameShape(QFrame::Panel);
 	m_pTransportTime->setFrameShadow(QFrame::Sunken);
 	m_pTransportTime->setPaletteBackgroundColor(Qt::black);
 //	m_pTransportTime->setPaletteForegroundColor(Qt::green);
 	m_pTransportTime->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
 	m_pTransportTime->setMinimumHeight(
-		m_pTransportTime->sizeHint().height() + 4);
+		m_pTransportTime->sizeHint().height() + 2);
 	m_pTransportTime->setMinimumWidth(
-		m_pTransportTime->sizeHint().width() + 4);
+		m_pTransportTime->sizeHint().width() + 2);
 	QToolTip::add(m_pTransportTime, tr("Current transport time (playhead)"));
 	timeToolbar->addSeparator();
 	m_pTempoSpinBox = new qtractorSpinBox(timeToolbar);
