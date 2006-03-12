@@ -189,6 +189,8 @@
         <separator/>
         <action name="transportPlayAction"/>
         <action name="transportRecordAction"/>
+        <separator/>
+        <action name="transportFollowAction"/>
     </toolbar>
     <toolbar dock="2">
         <property name="name">
@@ -197,7 +199,6 @@
         <property name="label">
             <string>Time</string>
         </property>
-        <action name="transportFollowAction"/>
     </toolbar>
 </toolbars>
 <actions>

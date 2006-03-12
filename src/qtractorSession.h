@@ -199,7 +199,12 @@ public:
 	unsigned long loopEnd() const;
 	bool isLooping() const;
 
+	// Consolidated session record state.
+	void setRecording(bool bRecording);
+	bool isRecording() const;
+
 	// Special track-immediate methods.
+	void trackRecord(qtractorTrack *pTrack, bool bRecord);
 	void trackMute(qtractorTrack *pTrack, bool bMute);
 	void trackSolo(qtractorTrack *pTrack, bool bSolo);
 
@@ -294,6 +299,9 @@ private:
 	// Session loop points.
 	unsigned long m_iLoopStart;
 	unsigned long m_iLoopEnd;
+
+	// Consolidated record state.
+	bool m_bRecording;
 };
 
 

@@ -102,20 +102,15 @@ void qtractorTrackTime::updatePixmap ( int cx, int /* cy */)
 	int x, y1, y2 = h - 1;
 
 	unsigned short iBeat = pSession->beatFromPixel(cx);
-#if 0
-	unsigned int iPixelsPerBeat = pSession->pixelFromBeat(1);
-	x = pSession->pixelFromBeat(iBeat) - cx;
-#else
 	unsigned long iFrameFromBeat = pSession->frameFromBeat(iBeat);
 	unsigned long iFramesPerBeat = pSession->frameFromBeat(1);
 	x = pSession->pixelFromFrame(iFrameFromBeat) - cx;
-#endif
 	while (x < w) {
 		if (pSession->beatIsBar(iBeat)) {
 			y1 = 0;
 			p.setPen(cg.color(QColorGroup::Text));
-			p.drawText(x + 2, y1 + fm.ascent(),
-				QString::number(1 + (iBeat / pSession->beatsPerBar())));
+			p.drawText(x + 2, y1 + fm.ascent(), QString::number(
+				1 + (iBeat / pSession->beatsPerBar())));
 		} else {
 			y1 = (y2 >> 1);
 		}
@@ -123,12 +118,8 @@ void qtractorTrackTime::updatePixmap ( int cx, int /* cy */)
 		p.drawLine(x, y1, x, y2);
 		p.setPen(cg.color(QColorGroup::Midlight));
 		p.drawLine(x + 1, y1, x + 1, y2);
-#if 0
-		x += iPixelsPerBeat;
-#else
 		iFrameFromBeat += iFramesPerBeat;
 		x = pSession->pixelFromFrame(iFrameFromBeat) - cx;
-#endif
 		iBeat++;
 	}
 

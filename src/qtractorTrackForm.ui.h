@@ -192,6 +192,9 @@ void qtractorTrackForm::setTrack ( qtractorTrack *pTrack )
 	AudioRadioButton->setEnabled(bEnabled);
 	MidiRadioButton->setEnabled(bEnabled);
 
+	// Cannot change bus-name, if track is already is armed.
+	BusNameComboBox->setEnabled(!props.record);
+
 	// Backup clean.
 	m_iDirtyCount = 0;
 	m_iDirtySetup--;

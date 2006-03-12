@@ -110,7 +110,7 @@ bool qtractorAudioBuffer::open ( const char *pszName, int iMode )
 
 	// Go open it...
 	if (!m_pFile->open(pszName, iMode))
-		return false;	
+		return false;
 
 	// Check samplerate and how many channels there are.
 	unsigned short iChannels = m_pFile->channels();

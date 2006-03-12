@@ -174,18 +174,19 @@ void qtractorMainForm::init (void)
 
 	// Additional time-toolbar controls...
 	const QString sTime("00:00:00.000");
-	timeToolbar->addSeparator();
+//	timeToolbar->addSeparator();
+	const QFont& font = qtractorMainForm::font();
 	m_pTransportTime = new QLabel(sTime, timeToolbar);
-	m_pTransportTime->setFont(QFont(font().family(), 10));
+	m_pTransportTime->setFont(QFont(font.family(), font.pointSize() + 4));
 	m_pTransportTime->setFrameShape(QFrame::Panel);
 	m_pTransportTime->setFrameShadow(QFrame::Sunken);
 	m_pTransportTime->setPaletteBackgroundColor(Qt::black);
 //	m_pTransportTime->setPaletteForegroundColor(Qt::green);
 	m_pTransportTime->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
-	m_pTransportTime->setMaximumHeight(
-		m_pTransportTime->sizeHint().height() + 2);
+	m_pTransportTime->setMinimumHeight(
+		m_pTransportTime->sizeHint().height() + 4);
 	m_pTransportTime->setMinimumWidth(
-		m_pTransportTime->sizeHint().width() + 2);
+		m_pTransportTime->sizeHint().width() + 4);
 	QToolTip::add(m_pTransportTime, tr("Current transport time (playhead)"));
 	timeToolbar->addSeparator();
 	m_pTempoSpinBox = new qtractorSpinBox(timeToolbar);
@@ -1434,6 +1435,7 @@ void qtractorMainForm::transportRecord (void)
 	//
 	// TODO: Record switch...
 	//
+	m_pSession->setRecording(!m_pSession->isRecording());
 
 	// Done with record switch...
 	stabilizeForm();
@@ -1611,7 +1613,8 @@ void qtractorMainForm::stabilizeForm (void)
 
 	const QColor& backColor = statusBar()->paletteBackgroundColor();
 	m_statusItems[QTRACTOR_STATUS_REC]->setPaletteBackgroundColor(
-		transportRecordAction->isOn() ? Qt::red : backColor);
+		m_pSession->isRecording() &&
+		m_pSession->recordTracks() > 0 ? Qt::red : backColor);
 	m_statusItems[QTRACTOR_STATUS_MUTE]->setPaletteBackgroundColor(
 		m_pSession->muteTracks() > 0 ? Qt::yellow : backColor);
 	m_statusItems[QTRACTOR_STATUS_SOLO]->setPaletteBackgroundColor(

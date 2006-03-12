@@ -213,6 +213,9 @@ void qtractorTrack::setRecord ( bool bRecord )
 		m_pSession->setRecordTracks(bRecord);
 
 	m_props.record = bRecord;
+
+	if (m_pSession->isRecording())
+		m_pSession->trackRecord(this, bRecord);
 }
 
 

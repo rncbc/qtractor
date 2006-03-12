@@ -128,7 +128,7 @@ qtractorTrackView::qtractorTrackView ( qtractorTracks *pTracks,
 	QScrollView::setDragAutoScroll(false);
 
 	const QFont& font = QScrollView::font();
-	QScrollView::setFont(QFont(font.family(), font.pointSize() - 1));
+	QScrollView::setFont(QFont(font.family(), font.pointSize() - 2));
 
 	QObject::connect(this, SIGNAL(contentsMoving(int,int)),
 		this, SLOT(updatePixmap(int,int)));
@@ -377,14 +377,9 @@ void qtractorTrackView::updatePixmap ( int cx, int cy )
 	// Draw vertical grid lines...
 	if (cy < y2) {
 		unsigned short iBeat = pSession->beatFromPixel(cx);
-#if 0
-		unsigned int iPixelsPerBeat = pSession->pixelFromBeat(1);
-		x = pSession->pixelFromBeat(iBeat) - cx;
-#else
 		unsigned long iFrameFromBeat = pSession->frameFromBeat(iBeat);
 		unsigned long iFramesPerBeat = pSession->frameFromBeat(1);
 		x = pSession->pixelFromFrame(iFrameFromBeat) - cx;
-#endif
 		while (x < w) {
 			if (x >= 0) {
 				if (pSession->beatIsBar(iBeat)) {
@@ -394,12 +389,8 @@ void qtractorTrackView::updatePixmap ( int cx, int cy )
 				p.setPen(Qt::darkGray);
 				p.drawLine(x - 1, 0, x - 1, y2 - cy - 2);
 			}
-#if 0
-			x += iPixelsPerBeat;
-#else
 			iFrameFromBeat += iFramesPerBeat;
 			x = pSession->pixelFromFrame(iFrameFromBeat) - cx;
-#endif
 			iBeat++;
 		}
 	}

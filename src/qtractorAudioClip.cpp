@@ -83,7 +83,7 @@ bool qtractorAudioClip::open ( const QString& sFilename )
 	if (m_pPeak == NULL)
 		return false;
 
-	if (!m_pBuff->open(sFilename)) {
+	if (!m_pBuff->open(sFilename, qtractorAudioFile::Read)) {
 		delete m_pPeak;
 		m_pPeak = NULL;
 		return false;

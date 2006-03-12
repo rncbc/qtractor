@@ -166,6 +166,8 @@ void qtractorSession::clear (void)
 	m_iLoopStart     = 0;
 	m_iLoopEnd       = 0;
 
+	m_bRecording     = false;
+
 	updateTimeScale();
 
 	m_pAudioEngine->sessionCursor()->reset();
@@ -501,7 +503,7 @@ QString qtractorSession::timeFromFrame ( unsigned long iFrame, bool bBBT ) const
 			bars   = (unsigned int) (beats / m_props.beatsPerBar);
 			beats -= (unsigned long) bars  * m_props.beatsPerBar;
 		}
-		return QString().sprintf("%4u:%02u.%03lu", bars + 1, beats + 1, ticks);
+		return QString().sprintf("%4u.%02u.%03lu", bars + 1, beats + 1, ticks);
 	} else {
 		// Time frame code in hh:mm:ss.ddd ...
 		unsigned int hh, mm, ss, ddd;
@@ -818,6 +820,24 @@ unsigned long qtractorSession::loopEnd (void) const
 bool qtractorSession::isLooping (void) const
 {
 	return (m_iLoopStart < m_iLoopEnd);
+}
+
+
+// Consolidated session record state.
+void qtractorSession::setRecording ( bool bRecording )
+{
+	m_bRecording = bRecording;
+}
+
+bool qtractorSession::isRecording() const
+{
+	return m_bRecording;
+}
+
+
+// Immediate track record-arming.
+void qtractorSession::trackRecord ( qtractorTrack *pTrack, bool bRecord )
+{
 }
 
 
