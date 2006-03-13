@@ -89,6 +89,8 @@ qtractorTrack::qtractorTrack ( qtractorSession *pSession, TrackType trackType )
 
 	m_clips.setAutoDelete(true);
 
+	m_pClipRecord = NULL;
+
 	clear();
 
 }
@@ -96,13 +98,15 @@ qtractorTrack::qtractorTrack ( qtractorSession *pSession, TrackType trackType )
 // Default constructor.
 qtractorTrack::~qtractorTrack (void)
 {
-	m_clips.clear();
+	clear();
 }
 
 
 // Reset track.
 void qtractorTrack::clear (void)
 {
+	setClipRecord(NULL);
+
 	m_clips.clear();
 
 	m_props.midiBankSelMethod = -1;
@@ -158,6 +162,8 @@ bool qtractorTrack::open (void)
 void qtractorTrack::close (void)
 {
 	m_pBus = NULL;
+
+	setClipRecord(NULL);
 }
 
 
@@ -380,6 +386,20 @@ void qtractorTrack::removeClip ( qtractorClip *pClip )
 {
 //	pClip->setTrack(NULL);
 	m_clips.remove(pClip);
+}
+
+
+// Current clip on record (capture).
+void qtractorTrack::setClipRecord ( qtractorClip *pClipRecord )
+{
+	if (m_pClipRecord)
+		delete m_pClipRecord;
+	m_pClipRecord = pClipRecord;
+}
+
+qtractorClip *qtractorTrack::clipRecord (void) const
+{
+	return m_pClipRecord;
 }
 
 

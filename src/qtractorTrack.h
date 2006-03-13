@@ -123,6 +123,10 @@ public:
 	void unlinkClip(qtractorClip *pClip);
 	void removeClip(qtractorClip *pClip);
 
+	// Current clip on record (capture).
+	void setClipRecord(qtractorClip *pClipRecord);
+	qtractorClip *clipRecord() const;
+
 	// Background color accessors.
 	void setBackground(const QColor& bg);
 	const QColor& background() const;
@@ -197,6 +201,8 @@ private:
 	int              m_iHeight;     // View height (normalized).
 
 	qtractorList<qtractorClip> m_clips; // List of clips.
+
+	qtractorClip *m_pClipRecord;    // Current clip on record (capture).
 };
 
 

@@ -38,6 +38,10 @@
 #include "qtractorSessionCursor.h"
 
 #include "qtractorPropertyCommand.h"
+#include "qtractorClipCommand.h"
+
+#include "qtractorAudioClip.h"
+#include "qtractorMidiClip.h"
 
 #include "qtractorSpinBox.h"
 
@@ -1416,6 +1420,12 @@ void qtractorMainForm::transportPlay (void)
 	m_pSession->setPlaying(bPlaying);
 	m_iTransport++;
 
+	// And shutdown recording anyway...
+	if (!bPlaying && m_pSession->isRecording()) {
+		transportRecordAction->setOn(false);
+		transportRecord(); // Toggle recording!
+	}
+
 	// Done with playback switch...
 	stabilizeForm();
 }
@@ -1432,10 +1442,64 @@ void qtractorMainForm::transportRecord (void)
 	if (!checkRestartSession())
 		return;
 
-	//
-	// TODO: Record switch...
-	//
-	m_pSession->setRecording(!m_pSession->isRecording());
+	// Record switch...
+	bool bRecording = !m_pSession->isRecording();
+
+	// If we're stopping recording, we must copy it for the records...
+	int iUpdate = 0;
+	if (!bRecording) {
+		// We'll build a composite command...
+		qtractorAddClipCommand *pAddClipCommand
+			= new qtractorAddClipCommand(this);
+		// Override default command name.
+		pAddClipCommand->setName(tr("record clip"));
+		// For all non-empty clip on record...
+		for (qtractorTrack *pTrack = m_pSession->tracks().first();
+				pTrack; pTrack = pTrack->next()) {
+			qtractorClip *pClip = pTrack->clipRecord();
+			if (pClip == NULL)
+				continue;
+			if (pClip->clipLength() == 0)
+				continue;
+			// Now, its imperative to make a proper copy of those clips...
+			unsigned long iClipStart = pClip->clipStart();
+			switch (pTrack->trackType()) {
+			case qtractorTrack::Audio: {
+				qtractorAudioClip *pAudioClip
+					= static_cast<qtractorAudioClip *> (pClip);
+				if (pAudioClip) {
+					pAudioClip = new qtractorAudioClip(*pAudioClip);
+					pAudioClip->setClipStart(iClipStart);
+					pAddClipCommand->addClip(pAudioClip, pTrack, iClipStart);
+					iUpdate++;
+				}
+				break;
+			}
+			case qtractorTrack::Midi: {
+				qtractorMidiClip *pMidiClip
+					= static_cast<qtractorMidiClip *> (pClip);
+				if (pMidiClip) {
+					pMidiClip = new qtractorMidiClip(*pMidiClip);
+					pMidiClip->setClipStart(iClipStart);
+					pAddClipCommand->addClip(pMidiClip, pTrack, iClipStart);
+					iUpdate++;
+				}
+				break;
+			}
+			default:
+				break;
+			}
+		}
+		// Put it in the form of an undoable command...
+		if (iUpdate > 0) {
+			m_pCommands->exec(pAddClipCommand);
+		} else {
+			delete pAddClipCommand;
+		}
+	}
+	
+	// Finally, toggle session record status...
+	m_pSession->setRecording(bRecording);
 
 	// Done with record switch...
 	stabilizeForm();
@@ -1678,6 +1742,7 @@ bool qtractorMainForm::checkRestartSession (void)
 				delete pObjList;
 			}
 			// Can go on with no-business...
+			transportRecordAction->setOn(false);
 			transportPlayAction->setOn(false);
 			stabilizeForm();
 			return false;

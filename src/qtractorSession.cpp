@@ -33,6 +33,8 @@
 #include <qapplication.h>
 #include <qeventloop.h>
 #include <qdatetime.h>
+#include <qregexp.h>
+#include <qfile.h>
 
 
 //-------------------------------------------------------------------------
@@ -745,6 +747,18 @@ bool qtractorSession::isActivated (void) const
 // Consolidated session engine start status.
 void qtractorSession::setPlaying ( bool bPlaying )
 {
+	// For all armed tracks...
+	if (bPlaying && isRecording()) {
+		unsigned long iClipStart = m_pAudioEngine->sessionCursor()->frame();
+		for (qtractorTrack *pTrack = m_tracks.first();
+				pTrack; pTrack = pTrack->next()) {
+			qtractorClip *pClipRecord = pTrack->clipRecord();
+			if (pClipRecord)
+				pClipRecord->setClipStart(iClipStart);
+		}
+	}
+
+	// Do it.
 	m_pAudioEngine->setPlaying(bPlaying);
 	m_pMidiEngine->setPlaying(bPlaying);
 }
@@ -823,10 +837,42 @@ bool qtractorSession::isLooping (void) const
 }
 
 
+// Sanitize a given name.
+QString qtractorSession::sanitize ( const QString& s ) 
+{
+	return s.replace(QRegExp("[\\s|\\.|_]+"), "-");
+}
+
+
+// Create a brand new filename.
+QString qtractorSession::createFilename ( const QString& sSessionName,
+	const QString& sTrackName, int iClipNo, const QString& sExt ) 
+{
+	QString sPrefix	= sanitize(sSessionName) + '_'
+		+ sanitize(sTrackName) + '_%1.' + sExt;
+
+	if (iClipNo < 1)
+		iClipNo++;
+
+	QString sFilename = sPrefix.arg(iClipNo);
+	while (QFile::exists(sFilename))
+		sFilename = sPrefix.arg(++iClipNo);
+	
+	return sFilename;
+}
+
+
 // Consolidated session record state.
 void qtractorSession::setRecording ( bool bRecording )
 {
 	m_bRecording = bRecording;
+
+	// For all armed tracks...
+	for (qtractorTrack *pTrack = m_tracks.first();
+			pTrack; pTrack = pTrack->next()) {
+		if (pTrack->isRecord())
+			trackRecord(pTrack, bRecording);
+	}
 }
 
 bool qtractorSession::isRecording() const
@@ -838,8 +884,29 @@ bool qtractorSession::isRecording() const
 // Immediate track record-arming.
 void qtractorSession::trackRecord ( qtractorTrack *pTrack, bool bRecord )
 {
-}
+#ifdef CONFIG_DEBUG
+	fprintf(stderr, "qtractorSession::trackRecord(\"%s\", %d)\n",
+		pTrack->trackName().latin1(), (int) bRecord);
+#endif
 
+	// Better redirected to  track class...
+	switch (pTrack->trackType()) {
+	case qtractorTrack::Audio:
+		if (bRecord) {
+			qtractorAudioClip *pAudioClip = new qtractorAudioClip(pTrack);
+			pAudioClip->setClipStart(playHead());
+			pAudioClip->open(
+				createFilename(sessionName(), pTrack->trackName(), 0, "wav"),
+				qtractorAudioFile::Write);
+			pTrack->setClipRecord(pAudioClip);
+		} else {
+			pTrack->setClipRecord(NULL);	
+		}
+		break;
+	case qtractorTrack::Midi:
+		break;
+	}
+}
 
 // Immediate track mute (engine indirection).
 void qtractorSession::trackMute ( qtractorTrack *pTrack, bool bMute )

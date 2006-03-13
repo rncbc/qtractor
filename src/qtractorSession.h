@@ -199,6 +199,12 @@ public:
 	unsigned long loopEnd() const;
 	bool isLooping() const;
 
+	// Sanitize a given name.
+	static QString sanitize(const QString& s); 
+	// Create a brand new filename.
+	static QString createFilename(const QString& sSessionName,
+		const QString& sTrackName, int iClipNo, const QString& sExt); 
+
 	// Consolidated session record state.
 	void setRecording(bool bRecording);
 	bool isRecording() const;
