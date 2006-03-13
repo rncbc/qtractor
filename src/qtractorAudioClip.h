@@ -23,6 +23,7 @@
 #define __qtractorAudioClip_h
 
 #include "qtractorClip.h"
+#include "qtractorAudioFile.h"
 
 // Forward declarations.
 class qtractorAudioBuffer;
@@ -46,7 +47,7 @@ public:
 	~qtractorAudioClip();
 
 	// The main use method.
-	bool open(const QString& sFilename);
+	bool open(const QString& sFilename, int iMode = qtractorAudioFile::Read);
 
 	// Aduio file properties accessors.
 	const QString& filename() const;

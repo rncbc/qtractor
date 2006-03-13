@@ -27,8 +27,12 @@
 //
 
 // Constructors.
-qtractorAudioBuffer::qtractorAudioBuffer ( unsigned int iSampleRate )
+qtractorAudioBuffer::qtractorAudioBuffer ( unsigned short iChannels,
+	unsigned int iSampleRate )
 {
+	m_iChannels      = iChannels;
+	m_iSampleRate    = iSampleRate;
+
 	m_pFile          = NULL;
 
 	m_pRingBuffer    = NULL;
@@ -44,7 +48,6 @@ qtractorAudioBuffer::qtractorAudioBuffer ( unsigned int iSampleRate )
 
 	m_iSeekPending   = 0;
 
-	m_iSampleRate    = iSampleRate;
 	m_bResample      = false;
 	m_fResampleRatio = 1.0;
 	m_iInputPending  = 0;
@@ -64,7 +67,7 @@ qtractorAudioBuffer::~qtractorAudioBuffer (void)
 
 
 // Return the internal file descriptor.
-qtractorAudioFile *qtractorAudioBuffer::file(void) const
+qtractorAudioFile *qtractorAudioBuffer::file (void) const
 {
 	return m_pFile;
 }
@@ -99,20 +102,22 @@ float qtractorAudioBuffer::resampleRatio (void) const
 
 
 // Operational buffer initializer/terminator.
-bool qtractorAudioBuffer::open ( const char *pszName, int iMode )
+bool qtractorAudioBuffer::open ( const QString& sFilename, int iMode )
 {
 	// Make sure everything starts closed.
 	close();
 
-	m_pFile = qtractorAudioFileFactory::createAudioFile(pszName);
+	// Get proper file type class...
+	m_pFile = qtractorAudioFileFactory::createAudioFile(
+		sFilename, m_iChannels, m_iSampleRate);
 	if (m_pFile == NULL)
 		return false;
 
 	// Go open it...
-	if (!m_pFile->open(pszName, iMode))
+	if (!m_pFile->open(sFilename.latin1(), iMode))
 		return false;
 
-	// Check samplerate and how many channels there are.
+	// Check samplerate and how many channels there really are.
 	unsigned short iChannels = m_pFile->channels();
 	// Just one more sanity check...
 	if (iChannels < 1 || m_pFile->sampleRate() < 1) {

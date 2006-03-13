@@ -75,9 +75,11 @@ public:
 
 	// Factory methods.
 	static qtractorAudioFile *createAudioFile (
-		const QString& sFilename, unsigned int iBufferSize = 0);
+		const QString& sFilename, unsigned short iChannels = 0,
+		unsigned int iSampleRate = 0, unsigned int iBufferSize = 0);
 	static qtractorAudioFile *createAudioFile (
-		FileType type, unsigned int iBufferSize = 0);
+		FileType type, unsigned short iChannels = 0,
+		unsigned int iSampleRate = 0, unsigned int iBufferSize = 0);
 
 	// Retrieve supported filters (suitable for QFileDialog usage).
 	static QString filters();
@@ -95,9 +97,11 @@ protected:
 
 	// Instance factory methods.
 	qtractorAudioFile *newAudioFile (
-		const QString& sFilename, unsigned int iBufferSize);
+		const QString& sFilename, unsigned short iChannels,
+		unsigned int iSampleRate, unsigned int iBufferSize);
 	qtractorAudioFile *newAudioFile (
-		FileType type, unsigned int iBufferSize);
+		FileType type, unsigned short iChannels,
+		unsigned int iSampleRate, unsigned int iBufferSize);
 
 private:
 

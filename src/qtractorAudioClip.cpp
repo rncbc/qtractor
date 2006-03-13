@@ -21,7 +21,6 @@
 
 #include "qtractorAbout.h"
 #include "qtractorAudioClip.h"
-#include "qtractorAudioFile.h"
 #include "qtractorAudioBuffer.h"
 #include "qtractorAudioEngine.h"
 #include "qtractorAudioPeak.h"
@@ -41,7 +40,7 @@ qtractorAudioClip::qtractorAudioClip ( qtractorTrack *pTrack )
 	: qtractorClip(pTrack)
 {
 	m_pPeak = NULL;
-	m_pBuff = new qtractorAudioBuffer(pTrack->session()->sampleRate());
+	m_pBuff = NULL;
 }
 
 // Copy constructor.
@@ -49,7 +48,7 @@ qtractorAudioClip::qtractorAudioClip ( const qtractorAudioClip& clip )
 	: qtractorClip(clip.track())
 {
 	m_pPeak = NULL;
-	m_pBuff = new qtractorAudioBuffer(clip.track()->session()->sampleRate());
+	m_pBuff = NULL;
 
 	open(clip.filename());
 }
@@ -66,24 +65,38 @@ qtractorAudioClip::~qtractorAudioClip (void)
 
 
 // The main use method.
-bool qtractorAudioClip::open ( const QString& sFilename )
+bool qtractorAudioClip::open ( const QString& sFilename, int iMode )
 {
 	if (track() == NULL)
 		return false;
-	if (track()->session() == NULL)
+
+	qtractorSession *pSession = track()->session();
+	if (pSession == NULL)
 		return false;
-	if (track()->session()->audioPeakFactory() == NULL)
+
+	if (pSession->audioPeakFactory() == NULL)
 		return false;
 
 	if (m_pPeak)
 		delete m_pPeak;
-
-	m_pPeak = track()->session()->audioPeakFactory()->createPeak(sFilename,
-		track()->session()->sampleRate());
+	if (m_pBuff)
+		delete m_pBuff;
+		
+	m_pPeak = pSession->audioPeakFactory()->createPeak(
+		sFilename, pSession->sampleRate());
 	if (m_pPeak == NULL)
 		return false;
 
-	if (!m_pBuff->open(sFilename, qtractorAudioFile::Read)) {
+	unsigned short iChannels = 0;
+	qtractorAudioBus *pAudioBus
+		= static_cast<qtractorAudioBus *> (track()->bus());
+	if (pAudioBus)
+		iChannels = pAudioBus->channels();
+	m_pBuff = new qtractorAudioBuffer(iChannels, pSession->sampleRate());
+
+	if (!m_pBuff->open(sFilename, iMode)) {
+		delete m_pBuff;
+		m_pBuff = NULL;
 		delete m_pPeak;
 		m_pPeak = NULL;
 		return false;
@@ -109,14 +122,14 @@ const QString& qtractorAudioClip::filename(void) const
 // Intra-clip frame positioning.
 void qtractorAudioClip::seek ( unsigned long iOffset )
 {
-	m_pBuff->seek(iOffset);
+	if (m_pBuff) m_pBuff->seek(iOffset);
 }
 
 
 // Reset clip state.
 void qtractorAudioClip::reset ( bool bLooping )
 {
-	m_pBuff->reset(bLooping);
+	if (m_pBuff) m_pBuff->reset(bLooping);
 }
 
 
@@ -129,7 +142,7 @@ void qtractorAudioClip::loop ( unsigned long iLoopStart,
 		this, iLoopStart, iLoopEnd);
 #endif
 
-	m_pBuff->setLoop(iLoopStart, iLoopEnd);
+	if (m_pBuff) m_pBuff->setLoop(iLoopStart, iLoopEnd);
 }
 
 

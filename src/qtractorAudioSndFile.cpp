@@ -27,8 +27,8 @@
 //
 
 // Constructor.
-qtractorAudioSndFile::qtractorAudioSndFile ( unsigned int iBufferSize,
-	unsigned short iChannels, unsigned int iSampleRate )
+qtractorAudioSndFile::qtractorAudioSndFile ( unsigned short iChannels,
+	unsigned int iSampleRate, unsigned int iBufferSize )
 {
 	// Need a minimum of specification, at least for write mode.
 	::memset(&m_sfinfo, 0, sizeof(m_sfinfo));

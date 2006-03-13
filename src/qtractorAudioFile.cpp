@@ -104,21 +104,25 @@ qtractorAudioFileFactory::qtractorAudioFileFactory (void)
 
 // Factory methods.
 qtractorAudioFile *qtractorAudioFileFactory::createAudioFile (
-	const QString& sFilename, unsigned int iBufferSize )
+	const QString& sFilename, unsigned short iChannels,
+	unsigned int iSampleRate, unsigned int iBufferSize )
 {
-	return Instance().newAudioFile(sFilename, iBufferSize);
+	return Instance().newAudioFile(
+		sFilename, iChannels, iSampleRate, iBufferSize);
 }
 
 qtractorAudioFile *qtractorAudioFileFactory::createAudioFile (
-	FileType type, unsigned int iBufferSize )
+	FileType type, unsigned short iChannels,
+	unsigned int iSampleRate, unsigned int iBufferSize )
 {
-	return Instance().newAudioFile(type, iBufferSize);
+	return Instance().newAudioFile(type, iChannels, iSampleRate, iBufferSize);
 }
 
 
 // Internal factory methods.
 qtractorAudioFile *qtractorAudioFileFactory::newAudioFile (
-	const QString& sFilename, unsigned int iBufferSize )
+	const QString& sFilename, unsigned short iChannels,
+	unsigned int iSampleRate, unsigned int iBufferSize )
 {
 	const QString sExtension = QFileInfo(sFilename).extension(false).lower();
 	
@@ -126,15 +130,16 @@ qtractorAudioFile *qtractorAudioFileFactory::newAudioFile (
 	if (iter == m_types.end())
 		return NULL;
 
-	return newAudioFile(iter.data(), iBufferSize);
+	return newAudioFile(iter.data(), iChannels, iSampleRate, iBufferSize);
 }
 
 qtractorAudioFile *qtractorAudioFileFactory::newAudioFile (
-	FileType type, unsigned int iBufferSize )
+	FileType type, unsigned short iChannels,
+	unsigned int iSampleRate, unsigned int iBufferSize )
 {
 	switch (type) {
 	case SndFile:
-		return new qtractorAudioSndFile(iBufferSize);
+		return new qtractorAudioSndFile(iChannels, iSampleRate, iBufferSize);
 	case VorbisFile:
 		return new qtractorAudioVorbisFile(iBufferSize);
 	case MadFile:

@@ -43,7 +43,7 @@ class qtractorAudioBuffer : public qtractorList<qtractorAudioBuffer>::Link
 public:
 
 	// Constructors.
-	qtractorAudioBuffer(unsigned int iSampleRate);
+	qtractorAudioBuffer(unsigned short iChannels, unsigned int iSampleRate);
 	// Default destructor.
 	~qtractorAudioBuffer();
 
@@ -59,7 +59,7 @@ public:
 	float resampleRatio() const;
 
 	// Operational initializer/terminator.
-	bool open(const char *pszName, int iMode = qtractorAudioFile::Read);
+	bool open(const QString& sFilename, int iMode = qtractorAudioFile::Read);
 	void close();
 
 	// Buffer data read/write.
@@ -121,6 +121,9 @@ protected:
 private:
 
 	// Audio file instance variables.
+	unsigned short m_iChannels;
+	unsigned int   m_iSampleRate;
+
 	qtractorAudioFile *m_pFile;
 
 	qtractorRingBuffer<float> *m_pRingBuffer;
@@ -136,7 +139,6 @@ private:
 
 	unsigned int   m_iSeekPending;
 
-	unsigned int   m_iSampleRate;
 	bool           m_bResample;
 	float          m_fResampleRatio;
 	unsigned int   m_iInputPending;

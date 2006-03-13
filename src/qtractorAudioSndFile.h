@@ -37,8 +37,8 @@ class qtractorAudioSndFile : public qtractorAudioFile
 public:
 
 	// Constructor.
-	qtractorAudioSndFile(unsigned int iBufferSize = 0,
-		unsigned short iChannels = 0, unsigned int iSampleRate = 0);
+	qtractorAudioSndFile(unsigned short iChannels = 0,
+		unsigned int iSampleRate = 0, unsigned int iBufferSize = 0);
 
 	// Destructor.
 	virtual ~qtractorAudioSndFile();
