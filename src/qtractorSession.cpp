@@ -840,7 +840,7 @@ bool qtractorSession::isLooping (void) const
 // Sanitize a given name.
 QString qtractorSession::sanitize ( const QString& s ) 
 {
-	return s.replace(QRegExp("[\\s|\\.|_]+"), "-");
+	return QString(s).replace(QRegExp("[\\s|\\.|_]+"), "-");
 }
 
 
@@ -849,7 +849,7 @@ QString qtractorSession::createFilename ( const QString& sSessionName,
 	const QString& sTrackName, int iClipNo, const QString& sExt ) 
 {
 	QString sPrefix	= sanitize(sSessionName) + '_'
-		+ sanitize(sTrackName) + '_%1.' + sExt;
+		+ sanitize(sTrackName) + "_%1." + sExt;
 
 	if (iClipNo < 1)
 		iClipNo++;
