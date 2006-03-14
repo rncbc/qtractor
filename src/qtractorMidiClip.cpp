@@ -231,6 +231,13 @@ void qtractorMidiClip::loop ( unsigned long iLoopStart,
 }
 
 
+// Clip close-commit (record specific)
+void qtractorMidiClip::close (void)
+{
+	// TODO: Nothing to be done, yet.
+}
+
+
 // Audio clip special process cycle executive.
 void qtractorMidiClip::process ( float fGain,
 	unsigned long iFrameStart, unsigned long iFrameEnd )

@@ -74,6 +74,9 @@ public:
 	// Clip loop point accessors.
 	virtual void loop(unsigned long iLoopStart, unsigned long iLoopEnd) = 0;
 
+	// Clip close-commit (record specific)
+	virtual void close() = 0;
+
 	// Clip special process cycle executive.
 	virtual void process(float fGain,
 		unsigned long iFrameStart, unsigned long iFrameEnd) = 0;

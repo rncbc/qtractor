@@ -77,15 +77,15 @@ bool qtractorAudioClip::open ( const QString& sFilename, int iMode )
 	if (pSession->audioPeakFactory() == NULL)
 		return false;
 
-	if (m_pPeak)
+	if (m_pPeak) {
 		delete m_pPeak;
-	if (m_pBuff)
+		m_pPeak = NULL;
+	}
+
+	if (m_pBuff) {
 		delete m_pBuff;
-		
-	m_pPeak = pSession->audioPeakFactory()->createPeak(
-		sFilename, pSession->sampleRate());
-	if (m_pPeak == NULL)
-		return false;
+		m_pBuff = NULL;
+	}
 
 	unsigned short iChannels = 0;
 	qtractorAudioBus *pAudioBus
@@ -97,8 +97,14 @@ bool qtractorAudioClip::open ( const QString& sFilename, int iMode )
 	if (!m_pBuff->open(sFilename, iMode)) {
 		delete m_pBuff;
 		m_pBuff = NULL;
-		delete m_pPeak;
-		m_pPeak = NULL;
+		return false;
+	}
+
+	m_pPeak = pSession->audioPeakFactory()->createPeak(
+		sFilename, pSession->sampleRate());
+	if (m_pPeak == NULL) {
+		delete m_pBuff;
+		m_pBuff = NULL;
 		return false;
 	}
 
@@ -109,6 +115,13 @@ bool qtractorAudioClip::open ( const QString& sFilename, int iMode )
 	qtractorClip::setClipLength(m_pBuff->frames());
 
 	return true;
+}
+
+
+// Direct write method.
+void qtractorAudioClip::write ( float **ppBuffer, unsigned int iFrames )
+{
+	if (m_pBuff) m_pBuff->write(ppBuffer, iFrames);
 }
 
 
@@ -143,6 +156,19 @@ void qtractorAudioClip::loop ( unsigned long iLoopStart,
 #endif
 
 	if (m_pBuff) m_pBuff->setLoop(iLoopStart, iLoopEnd);
+}
+
+
+// Clip close-commit (record specific)
+void qtractorAudioClip::close (void)
+{
+	if (m_pBuff == NULL)
+		return;
+
+	setClipLength(m_pBuff->length());
+
+	delete m_pBuff;
+	m_pBuff = NULL;
 }
 
 

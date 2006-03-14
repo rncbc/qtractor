@@ -49,6 +49,9 @@ public:
 	// The main use method.
 	bool open(const QString& sFilename, int iMode = qtractorAudioFile::Read);
 
+	// Direct write method.
+	void write(float **ppBuffer, unsigned int iFrames);
+
 	// Aduio file properties accessors.
 	const QString& filename() const;
 
@@ -60,6 +63,9 @@ public:
 
 	// Loop positioning.
 	void loop(unsigned long iLoopStart, unsigned long iLoopEnd);
+
+	// Clip close-commit (record specific)
+	void close();
 
 	// Audio clip special process cycle executive.
 	void process(float fGain,

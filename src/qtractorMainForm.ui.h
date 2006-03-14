@@ -1459,6 +1459,9 @@ void qtractorMainForm::transportRecord (void)
 			qtractorClip *pClip = pTrack->clipRecord();
 			if (pClip == NULL)
 				continue;
+			// Time to close the clip...
+			pClip->close();
+			// Check final length...
 			if (pClip->clipLength() == 0)
 				continue;
 			// Now, its imperative to make a proper copy of those clips...
@@ -1471,6 +1474,8 @@ void qtractorMainForm::transportRecord (void)
 					pAudioClip = new qtractorAudioClip(*pAudioClip);
 					pAudioClip->setClipStart(iClipStart);
 					pAddClipCommand->addClip(pAudioClip, pTrack, iClipStart);
+					if (m_pFiles)
+						m_pFiles->addAudioFile(pAudioClip->filename());
 					iUpdate++;
 				}
 				break;
@@ -1482,6 +1487,8 @@ void qtractorMainForm::transportRecord (void)
 					pMidiClip = new qtractorMidiClip(*pMidiClip);
 					pMidiClip->setClipStart(iClipStart);
 					pAddClipCommand->addClip(pMidiClip, pTrack, iClipStart);
+					if (m_pFiles)
+						m_pFiles->addMidiFile(pMidiClip->filename());
 					iUpdate++;
 				}
 				break;

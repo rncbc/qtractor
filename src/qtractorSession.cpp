@@ -857,7 +857,12 @@ QString qtractorSession::createFilename ( const QString& sSessionName,
 	QString sFilename = sPrefix.arg(iClipNo);
 	while (QFile::exists(sFilename))
 		sFilename = sPrefix.arg(++iClipNo);
-	
+
+#ifdef CONFIG_DEBUG
+	fprintf(stderr, "qtractorSession::createFilename(\"%s\")\n",
+		sFilename.latin1());
+#endif
+
 	return sFilename;
 }
 

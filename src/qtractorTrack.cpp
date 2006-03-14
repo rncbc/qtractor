@@ -457,6 +457,16 @@ void qtractorTrack::process ( qtractorClip *pClip,
 		pClip->process(fGain, iFrameStart, iFrameEnd);
 		pClip = pClip->next();
 	}
+
+	// Recording?
+	if (m_pClipRecord && m_props.trackType == qtractorTrack::Audio) {
+		qtractorAudioBus *pAudioBus
+			= static_cast<qtractorAudioBus *> (m_pBus);
+		qtractorAudioClip *pAudioClip
+			= static_cast<qtractorAudioClip *> (m_pClipRecord);
+		if (pAudioBus && pAudioClip)
+			pAudioClip->write(pAudioBus->in(), iFrameEnd - iFrameStart);
+	}
 }
 
 

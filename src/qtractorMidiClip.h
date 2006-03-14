@@ -70,6 +70,9 @@ public:
 	// Loop positioning.
 	void loop(unsigned long iLoopStart, unsigned long iLoopEnd);
 
+	// Clip close-commit (record specific)
+	void close();
+
 	// MIDI clip special process cycle executive.
 	void process(float fGain,
 		unsigned long iFrameStart, unsigned long iFrameEnd);
