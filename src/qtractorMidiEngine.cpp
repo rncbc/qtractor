@@ -207,7 +207,7 @@ void qtractorMidiInputThread::run (void)
 			//	 ...
 #ifdef CONFIG_DEBUG
 			// - show event for debug purposes...
-			fprintf(stderr, "MIDI In %05d event %02x",
+			fprintf(stderr, "MIDI In %05d 0x%02x",
 				pEv->time.tick, pEv->type);
 			if (pEv->type == SND_SEQ_EVENT_SYSEX) {
 				fprintf(stderr, " sysex {");

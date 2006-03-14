@@ -112,7 +112,7 @@ private:
 	EventType      m_type;
 	unsigned char  m_data[2];
 	unsigned long  m_duration;
-	// Sysex data (m_data has the length).
+	// Sysex data (m_data[0] has the length).
 	unsigned char *m_pSysex;
 };
 
