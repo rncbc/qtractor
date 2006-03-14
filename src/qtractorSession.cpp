@@ -33,8 +33,8 @@
 #include <qapplication.h>
 #include <qeventloop.h>
 #include <qdatetime.h>
+#include <qfileinfo.h>
 #include <qregexp.h>
-#include <qfile.h>
 
 
 //-------------------------------------------------------------------------
@@ -848,22 +848,22 @@ QString qtractorSession::sanitize ( const QString& s )
 QString qtractorSession::createFilename ( const QString& sSessionName,
 	const QString& sTrackName, int iClipNo, const QString& sExt ) 
 {
-	QString sPrefix	= sanitize(sSessionName) + '_'
+	QString sFilename = sanitize(sSessionName) + '_'
 		+ sanitize(sTrackName) + "_%1." + sExt;
 
 	if (iClipNo < 1)
 		iClipNo++;
 
-	QString sFilename = sPrefix.arg(iClipNo);
-	while (QFile::exists(sFilename))
-		sFilename = sPrefix.arg(++iClipNo);
+	QFileInfo fi(sFilename.arg(iClipNo));
+	while (fi.exists())
+		fi.setFile(sFilename.arg(++iClipNo));
 
 #ifdef CONFIG_DEBUG
 	fprintf(stderr, "qtractorSession::createFilename(\"%s\")\n",
-		sFilename.latin1());
+		fi.absFilePath().latin1());
 #endif
 
-	return sFilename;
+	return fi.absFilePath();
 }
 
 
@@ -894,20 +894,23 @@ void qtractorSession::trackRecord ( qtractorTrack *pTrack, bool bRecord )
 		pTrack->trackName().latin1(), (int) bRecord);
 #endif
 
-	// Better redirected to  track class...
+	// Just ditch the in-record clip...
+	if (!bRecord) {
+		pTrack->setClipRecord(NULL);	
+		return;
+	}
+
+	// here's the place to create and set the capture clip...
 	switch (pTrack->trackType()) {
-	case qtractorTrack::Audio:
-		if (bRecord) {
-			qtractorAudioClip *pAudioClip = new qtractorAudioClip(pTrack);
-			pAudioClip->setClipStart(playHead());
-			pAudioClip->open(
-				createFilename(sessionName(), pTrack->trackName(), 0, "wav"),
-				qtractorAudioFile::Write);
-			pTrack->setClipRecord(pAudioClip);
-		} else {
-			pTrack->setClipRecord(NULL);	
-		}
+	case qtractorTrack::Audio: {
+		qtractorAudioClip *pAudioClip = new qtractorAudioClip(pTrack);
+		pAudioClip->setClipStart(playHead());
+		pAudioClip->open(
+			createFilename(sessionName(), pTrack->trackName(), 0, "wav"),
+			qtractorAudioFile::Write);
+		pTrack->setClipRecord(pAudioClip);
 		break;
+	}
 	case qtractorTrack::Midi:
 		break;
 	}

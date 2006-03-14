@@ -165,10 +165,16 @@ void qtractorAudioClip::close (void)
 	if (m_pBuff == NULL)
 		return;
 
+	// Commit the final clip length...
 	setClipLength(m_pBuff->length());
 
+	// Close and ditch stuff...
 	delete m_pBuff;
 	m_pBuff = NULL;
+	
+	// If proven empty, remove the file.
+	if (clipLength() == 0)
+		QFile::remove(m_sFilename);
 }
 
 
