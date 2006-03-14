@@ -207,17 +207,19 @@ void qtractorMidiInputThread::run (void)
 			//	 ...
 #ifdef CONFIG_DEBUG
 			// - show event for debug purposes...
-			fprintf(stderr, "MIDI In(%05d) type %02x {",
+			fprintf(stderr, "MIDI In %05d event %02x",
 				pEv->time.tick, pEv->type);
 			if (pEv->type == SND_SEQ_EVENT_SYSEX) {
+				fprintf(stderr, " sysex {");
 				unsigned char *data = (unsigned char *) pEv->data.ext.ptr; 
 				for (unsigned int i = 0; i < pEv->data.ext.len; i++)
 					fprintf(stderr, " %02x", data[i]);
+				fprintf(stderr, " }\n");
 			} else {
 				for (unsigned int i = 0; i < sizeof(pEv->data.raw8.d); i++)
 					fprintf(stderr, " %3d", pEv->data.raw8.d[i]);
+				fprintf(stderr, "\n");
 			}
-			fprintf(stderr, " }\n");
 #endif
 		//	snd_seq_free_event(pEv);
 			iPoll = snd_seq_event_input_pending(pAlsaSeq, 0);
@@ -722,14 +724,17 @@ void qtractorMidiEngine::deactivate (void)
 	m_pOutputThread->setRunState(false);
 	m_pOutputThread->sync();
 
-	// Give it a go for cleanup...
-	qtractorSession::stabilize();
+	// Give it a first go for cleanup...
+	qtractorSession::stabilize(200);
 }
 
 
 // Device engine cleanup method.
 void qtractorMidiEngine::clean (void)
 {
+	// A second go, for cleanup...
+	qtractorSession::stabilize(200);
+
 	// Delete output thread...
 	if (m_pOutputThread) {
 		delete m_pOutputThread;

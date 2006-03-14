@@ -912,6 +912,7 @@ void qtractorSession::trackRecord ( qtractorTrack *pTrack, bool bRecord )
 		break;
 	}
 	case qtractorTrack::Midi:
+	default:
 		break;
 	}
 }
