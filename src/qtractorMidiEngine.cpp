@@ -193,7 +193,7 @@ void qtractorMidiInputThread::run (void)
 	int iPoll = 0;
 	while (m_bRunState && iPoll >= 0) {
 		// Wait for events...
-		iPoll = poll(pfds, nfds, 1000);
+		iPoll = poll(pfds, nfds, 200);
 		while (iPoll > 0) {
 			snd_seq_event_t *pEv = NULL;
 			snd_seq_event_input(pAlsaSeq, &pEv);
@@ -725,15 +725,15 @@ void qtractorMidiEngine::deactivate (void)
 	m_pOutputThread->sync();
 
 	// Give it a first go for cleanup...
-	qtractorSession::stabilize(200);
+	qtractorSession::stabilize(100);
 }
 
 
 // Device engine cleanup method.
 void qtractorMidiEngine::clean (void)
 {
-	// A second go, for cleanup...
-	qtractorSession::stabilize(200);
+	// A second go, as for final cleanup...
+	qtractorSession::stabilize(100);
 
 	// Delete output thread...
 	if (m_pOutputThread) {
@@ -935,6 +935,16 @@ bool qtractorMidiBus::open (void)
 void qtractorMidiBus::close (void)
 {
 	shutOff(true);
+
+	qtractorMidiEngine *pMidiEngine
+		= static_cast<qtractorMidiEngine *> (engine());
+	if (pMidiEngine == NULL)
+		return;
+	if (pMidiEngine->alsaSeq() == NULL)
+		return;
+
+	snd_seq_delete_simple_port(pMidiEngine->alsaSeq(), m_iAlsaPort);
+	m_iAlsaPort = 0;
 }
 
 
