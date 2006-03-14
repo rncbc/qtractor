@@ -40,6 +40,39 @@
 
 
 //----------------------------------------------------------------------
+// class qtractorMidiInputThread -- MIDI input thread (singleton).
+//
+
+class qtractorMidiInputThread : public QThread
+{
+public:
+
+	// Constructor.
+	qtractorMidiInputThread(qtractorSession *pSession);
+
+	// Destructor.
+	~qtractorMidiInputThread();
+
+	// Thread run state accessors.
+	void setRunState(bool bRunState);
+	bool runState() const;
+
+protected:
+
+	// The main thread executive.
+	void run();
+
+private:
+
+	// The thread launcher engine.
+	qtractorSession *m_pSession;
+
+	// Whether the thread is logically running.
+	bool m_bRunState;
+};
+
+
+//----------------------------------------------------------------------
 // class qtractorMidiOutputThread -- MIDI output thread (singleton).
 //
 
@@ -97,6 +130,104 @@ private:
 	QMutex m_mutex;
 	QWaitCondition m_cond;
 };
+
+
+//----------------------------------------------------------------------
+// class qtractorMidiInputThread -- MIDI input thread (singleton).
+//
+
+// Constructor.
+qtractorMidiInputThread::qtractorMidiInputThread (
+	qtractorSession *pSession ) : QThread()
+{
+	m_pSession  = pSession;
+	m_bRunState = false;
+}
+
+
+// Destructor.
+qtractorMidiInputThread::~qtractorMidiInputThread (void)
+{
+	// Try to wake and terminate executive thread.
+	if (runState())
+		setRunState(false);
+
+	// Give it a bit of time to cleanup...
+	if (running())
+		QThread::msleep(100);
+}
+
+
+// Thread run state accessors.
+void qtractorMidiInputThread::setRunState ( bool bRunState )
+{
+	m_bRunState = bRunState;
+}
+
+bool qtractorMidiInputThread::runState (void) const
+{
+	return m_bRunState;
+}
+
+
+// The main thread executive.
+void qtractorMidiInputThread::run (void)
+{
+	snd_seq_t *pAlsaSeq = m_pSession->midiEngine()->alsaSeq();
+	if (pAlsaSeq == NULL)
+		return;
+
+#ifdef DEBUG
+	fprintf(stderr, "qtractorMidiInputThread::run(%p): started.\n", this);
+#endif
+
+	int nfds;
+	struct pollfd *pfds;
+	
+	nfds = snd_seq_poll_descriptors_count(pAlsaSeq, POLLIN);
+	pfds = (struct pollfd *) alloca(nfds * sizeof(struct pollfd));
+	snd_seq_poll_descriptors(pAlsaSeq, pfds, nfds, POLLIN);
+
+	m_bRunState = true;
+
+	int iPoll = 0;
+	while (m_bRunState && iPoll >= 0) {
+		// Wait for events...
+		iPoll = poll(pfds, nfds, 1000);
+		while (iPoll > 0) {
+			snd_seq_event_t *pEv = NULL;
+			snd_seq_event_input(pAlsaSeq, &pEv);
+			// Process input event...
+			// - local timestamp;
+			pEv->time.tick = m_pSession->tickFromFrame(
+				m_pSession->audioEngine()->sessionCursor()->frameTime());
+			// - enqueue to input mapping;
+			//	 ...
+			// - direct route to output;
+			//	 ...
+#ifdef CONFIG_DEBUG
+			// - show event for debug purposes...
+			fprintf(stderr, "MIDI In(%05d) type %02x {",
+				pEv->time.tick, pEv->type);
+			if (pEv->type == SND_SEQ_EVENT_SYSEX) {
+				unsigned char *data = (unsigned char *) pEv->data.ext.ptr; 
+				for (unsigned int i = 0; i < pEv->data.ext.len; i++)
+					fprintf(stderr, " %02x", data[i]);
+			} else {
+				for (unsigned int i = 0; i < sizeof(pEv->data.raw8.d); i++)
+					fprintf(stderr, " %3d", pEv->data.raw8.d[i]);
+			}
+			fprintf(stderr, " }\n");
+#endif
+		//	snd_seq_free_event(pEv);
+			iPoll = snd_seq_event_input_pending(pAlsaSeq, 0);
+		}
+	}
+
+#ifdef DEBUG
+	fprintf(stderr, "qtractorMidiInputThread::run(%p): stopped.\n", this);
+#endif
+}
 
 
 //----------------------------------------------------------------------
@@ -333,6 +464,7 @@ qtractorMidiEngine::qtractorMidiEngine ( qtractorSession *pSession )
 	m_iAlsaClient = 0;
 	m_iAlsaQueue  = 0;
 	
+	m_pInputThread  = NULL;
 	m_pOutputThread = NULL;
 
 	m_iTimeStart = 0;
@@ -496,7 +628,11 @@ bool qtractorMidiEngine::init ( const QString& sClientName )
 // Device engine activation method.
 bool qtractorMidiEngine::activate (void)
 {
-	// create and start our own MIDI output queue thread...
+	// Create and start our own MIDI input queue thread...
+	m_pInputThread = new qtractorMidiInputThread(session());
+	m_pInputThread->start(QThread::TimeCriticalPriority);
+
+	// Create and start our own MIDI output queue thread...
 	m_pOutputThread = new qtractorMidiOutputThread(session());
 	m_pOutputThread->start(QThread::HighPriority);
 
@@ -558,7 +694,8 @@ void qtractorMidiEngine::stop (void)
 	if (!isActivated())
 		return;
 
-	// Cleanup queue...
+	// Cleanup queues...
+	snd_seq_drop_input(m_pAlsaSeq);
 	snd_seq_drop_output(m_pAlsaSeq);
 	// Stop queue timer...
 	snd_seq_stop_queue(m_pAlsaSeq, m_iAlsaQueue, NULL);
@@ -580,9 +717,13 @@ void qtractorMidiEngine::deactivate (void)
 	// We're stopping now...
 	setPlaying(false);
 
-	// Stop our output thread...
+	// Stop our queue threads...
+	m_pInputThread->setRunState(false);
 	m_pOutputThread->setRunState(false);
 	m_pOutputThread->sync();
+
+	// Give it a go for cleanup...
+	qtractorSession::stabilize();
 }
 
 
@@ -595,6 +736,12 @@ void qtractorMidiEngine::clean (void)
 		m_pOutputThread = NULL;
 		m_iTimeStart = 0;
 		m_iTimeDelta = 0;
+	}
+
+	// Last but not least, delete input thread...
+	if (m_pInputThread) {
+		delete m_pInputThread;
+		m_pInputThread = NULL;
 	}
 
 	// Drop everything else, finally.

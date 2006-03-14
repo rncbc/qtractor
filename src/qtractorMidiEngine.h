@@ -31,6 +31,7 @@
 // Forward declarations.
 class qtractorMidiBus;
 class qtractorMidiEvent;
+class qtractorMidiInputThread;
 class qtractorMidiOutputThread;
 
 
@@ -90,6 +91,7 @@ private:
 	int        m_iAlsaQueue;
 	
 	// Name says it all.
+	qtractorMidiInputThread  *m_pInputThread;
 	qtractorMidiOutputThread *m_pOutputThread;
 
 	// The delta-time when playback started .
