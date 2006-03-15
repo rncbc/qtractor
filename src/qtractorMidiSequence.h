@@ -25,6 +25,7 @@
 #include "qtractorMidiEvent.h"
 
 #include <qstring.h>
+#include <qmap.h>
 
 
 //----------------------------------------------------------------------
@@ -79,8 +80,8 @@ public:
 	void unlinkEvent (qtractorMidiEvent *pEvent);
 	void removeEvent (qtractorMidiEvent *pEvent);
 
-	// Update sequence duration helper.
-	void setEventDuration(qtractorMidiEvent *pEvent, unsigned long duration);
+	// Sequencer closure method.
+	void close();
 
 private:
 
@@ -98,6 +99,10 @@ private:
 
 	// Sequence instance event list (all same MIDI channel).
 	qtractorList<qtractorMidiEvent> m_events;
+
+	// To track note-ons.
+	typedef QMap<unsigned char, qtractorMidiEvent *> NoteMap;
+	NoteMap m_notes;
 };
 
 

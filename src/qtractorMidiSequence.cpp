@@ -58,25 +58,49 @@ void qtractorMidiSequence::clear (void)
 	m_duration = 0;
 
 	m_events.clear();
+	m_notes.clear();
 }
 
 
 // Add event to a channel sequence; preserve vent time sort order.
 void qtractorMidiSequence::addEvent ( qtractorMidiEvent *pEvent )
 {
+	// NOTE: Find previous note event and compute duration...
+	if (pEvent->type() == qtractorMidiEvent::NOTEOFF ||
+		pEvent->type() == qtractorMidiEvent::NOTEON) {
+		unsigned char note = pEvent->note();
+		NoteMap::Iterator iter = m_notes.find(note);
+		if (iter != m_notes.end()) {
+			unsigned long iTime = (*iter)->time();
+			unsigned long iDuration = pEvent->time() - iTime;
+			(*iter)->setDuration(iDuration);
+			iDuration += iTime;
+			if (m_duration < iDuration)
+				m_duration = iDuration;
+			m_notes.erase(iter);
+		}
+		// NOTEON: Keep note stats and make it pending on a NOTEOFF...
+		if (pEvent->type() == qtractorMidiEvent::NOTEON) {
+			if (m_noteMin > note || m_noteMin == 0)
+				m_noteMin = note;
+			if (m_noteMax < note || m_noteMax == 0)
+				m_noteMax = note;
+			// Add to lingering notes...
+			m_notes[note] = pEvent;
+		} else {
+			// NOTEOFF: Won't own this any longer...
+			delete pEvent;
+			return;
+		}
+	}
+
+	// Find the proper position in time sequence...
 	qtractorMidiEvent *pEventAfter = m_events.last();
 	while (pEventAfter && pEventAfter->time() > pEvent->time())
 		pEventAfter = pEventAfter->prev();
 
+	// Add it...
 	m_events.insertAfter(pEvent, pEventAfter);
-
-	if (pEvent->type() == qtractorMidiEvent::NOTEON) {
-		unsigned char note = pEvent->note();
-		if (m_noteMin > note || m_noteMin == 0)
-			m_noteMin = note;
-		if (m_noteMax < note || m_noteMax == 0)
-			m_noteMax = note;
-	}
 }
 
 
@@ -94,16 +118,17 @@ void qtractorMidiSequence::removeEvent ( qtractorMidiEvent *pEvent )
 }
 
 
-// Update sequence duration helper.
-void qtractorMidiSequence::setEventDuration ( qtractorMidiEvent *pEvent,
-	unsigned long duration )
+// Sequence closure method.
+void qtractorMidiSequence::close (void)
 {
-	// Set event duration.
-	pEvent->setDuration(duration);
-	// update sequence duration, if applicable.
-	duration += pEvent->time();
-	if (m_duration < duration)
-	    m_duration = duration;
+	// Finish all pending notes...
+	for (NoteMap::Iterator iter = m_notes.begin();
+			iter != m_notes.end(); ++iter) {
+		(*iter)->setDuration(m_duration - (*iter)->time());
+	}
+
+	// Reset all pending notes.
+	m_notes.clear();
 }
 
 

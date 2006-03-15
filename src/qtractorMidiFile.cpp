@@ -21,7 +21,12 @@
 
 #include "qtractorMidiFile.h"
 
+#include <qfileinfo.h>
 #include <qmap.h>
+
+// Symbolic header markers.
+#define SMF_MTHD 0x4d546864
+#define SMF_MTRK 0x4d54726b
 
 
 //----------------------------------------------------------------------
@@ -77,7 +82,7 @@ bool qtractorMidiFile::open ( const char *pszName, int iMode )
 
 	// First word must identify the file as a SMF;
 	// must be literal "MThd"
-	if (readInt(4) != 0x4d546864) {
+	if (readInt(4) != SMF_MTHD) {
 		close();
 		return false;
 	}
@@ -107,7 +112,7 @@ bool qtractorMidiFile::open ( const char *pszName, int iMode )
 	m_pTrackInfo = new TrackInfo [m_iTracks];
 	for (int iTrack = 0; iTrack < m_iTracks; iTrack++) {
 		// Must be a track header "MTrk"...
-		if (readInt(4) != 0x4d54726b) {
+		if (readInt(4) != SMF_MTRK) {
 			close();
 			return false;
 		}
@@ -172,10 +177,6 @@ bool qtractorMidiFile::readTrack ( qtractorMidiSequence *pSeq,
 		m_iOffset = iTrackStart;
 	}
 
-	// Track the note-ons.
-	typedef QMap<unsigned char, qtractorMidiEvent *> NoteMap;
-	NoteMap notes;
-	
 	// Now we're going into business...
 	unsigned long iTrackTime = 0;
 	unsigned long iTrackEnd = m_iOffset + m_pTrackInfo[iTrack].length;
@@ -222,20 +223,9 @@ bool qtractorMidiFile::readTrack ( qtractorMidiSequence *pSeq,
 			if ((iChannelFilter & 0xf0) || (iChannelFilter == iChannel)) {
 				if (data2 == 0 && type == qtractorMidiEvent::NOTEON)
 					type = qtractorMidiEvent::NOTEOFF;
-				// Find previous note event and compute duration...
-				NoteMap::Iterator iter = notes.find(data1);
-				if (iter != notes.end()) {
-					pSeq->setEventDuration(*iter, time - (*iter)->time());
-					notes.erase(iter);
-				}
-				// Create the new event (only for NOTEONs)...
-				if (type == qtractorMidiEvent::NOTEON) {
-					pEvent = new qtractorMidiEvent(time, type, data1, data2);
-					pSeq->addEvent(pEvent);
-					pSeq->setChannel(iChannel);
-					// Add to lingering notes...
-					notes[data1] = pEvent;
-				}
+				pEvent = new qtractorMidiEvent(time, type, data1, data2);
+				pSeq->addEvent(pEvent);
+				pSeq->setChannel(iChannel);
 			}
 			break;
 		case qtractorMidiEvent::CONTROLLER:
@@ -354,30 +344,174 @@ bool qtractorMidiFile::readTrack ( qtractorMidiSequence *pSeq,
 		}
 	}
 
-	// Last known time converted to sequence resolution...
-	unsigned long lasttime = (iTrackTime * pSeq->ticksPerBeat())
-		/ m_iTicksPerBeat;
-	// Finish all pending notes...
-	for (NoteMap::Iterator iter = notes.begin();
-			iter != notes.end(); ++iter) {
-		pSeq->setEventDuration(*iter, lasttime - (*iter)->time());
-	}
-
 	return true;
 }
 
 
-// Sequence/track writer.
-bool qtractorMidiFile::writeTrack ( qtractorMidiSequence * /* pSeq */ )
+// Header writer.
+bool qtractorMidiFile::writeHeader ( unsigned short iFormat,
+	unsigned short iTracks,	unsigned short iTicksPerBeat )
 {
 	if (m_pFile == NULL)
 		return false;
 	if (m_iMode != Write)
 		return false;
 
+	// First word must identify the file as a SMF;
+	// must be literal "MThd"
+	writeInt(SMF_MTHD, 4);
+
+	// Second word should be the total header chunk length...
+	writeInt(6, 4);
+
+	// Write header data (6 bytes)...
+	writeInt(m_iFormat = iFormat, 2);
+	writeInt(m_iTracks = iTracks, 2);
+	writeInt(m_iTicksPerBeat = iTicksPerBeat, 2);
+	
+	// Assume all is fine.
 	return true;
 }
 
+
+// Sequence/track writer.
+bool qtractorMidiFile::writeTrack ( qtractorMidiSequence *pSeq )
+{
+	if (m_pFile == NULL)
+		return false;
+	if (m_iMode != Write)
+		return false;
+
+	// Must be a track header "MTrk"...
+	writeInt(SMF_MTRK, 4);
+
+	// Write a dummy track length (we'll overwrite it later)...
+	unsigned long iMTrkOffset = m_iOffset;
+	writeInt(0, 4);
+
+	// Write basic META data...
+	if (m_iFormat == 0 || pSeq == NULL) {
+		// Tempo...
+		int iTempo = int(60000000.0 / m_fTempo);
+		writeInt(0); // time=0
+		writeInt(qtractorMidiEvent::META, 1);
+		writeInt(qtractorMidiEvent::TEMPO, 1);
+		writeInt(sizeInt(iTempo));
+		writeInt(iTempo);
+		// Time signature...
+		writeInt(0); // time=0
+		writeInt(qtractorMidiEvent::META, 1);
+		writeInt(qtractorMidiEvent::TIME, 1);
+		writeInt(4);
+		writeInt(m_iBeatsPerBar, 1);    // Numerator.
+		writeInt(2, 1);                 // Denominator.
+		writeInt(32, 1);                // MIDI clocks per metronome click.
+		writeInt(4, 1);                 // 32nd notes per quarter.
+		// Track name...
+		QString sTrackName
+			= (pSeq ? pSeq->name() : QFileInfo(m_sFilename).baseName());
+		writeInt(0); // time=0
+		writeInt(qtractorMidiEvent::META, 1);
+		writeInt(qtractorMidiEvent::TRACKNAME, 1);
+		writeInt(sTrackName.length());
+		writeData((unsigned char *) sTrackName.latin1(), sTrackName.length());
+	}
+	
+	// SMF format 1 files must have events
+	// which should be just writen down... 
+	if (pSeq) {
+		// Write the whole sequence out...
+		int iStatus, iLastStatus = 0;
+		unsigned long iLastTime = 0;
+		qtractorMidiEvent *pNoteAfter;
+		qtractorMidiEvent *pNoteOff = NULL;
+		qtractorList<qtractorMidiEvent> notesOff;
+		notesOff.setAutoDelete(true);
+		for (qtractorMidiEvent *pEvent = pSeq->events().first();
+				pEvent; pEvent->next()) {
+			// Event (absolute) time...
+			unsigned long iTime = pEvent->time();
+			// Check for pending note-offs...
+			if (pNoteOff == NULL)
+				pNoteOff = notesOff.first();
+			while (pNoteOff && pNoteOff->time() < iTime) {
+				// - Delta time...
+				unsigned long iTimeOff = pNoteOff->time();
+				writeInt(iTimeOff > iLastTime ? iTimeOff - iLastTime : 0);
+				iLastTime = iTimeOff;
+				// - Status byte...
+				iStatus = (pSeq->channel() | (pNoteOff->type() << 8));
+				// - Running status...
+				if (iStatus != iLastStatus) {
+					writeInt(iStatus, 1);
+					iLastStatus = iStatus;
+				}
+				// - Data bytes...
+				writeInt(pNoteOff->note(), 1);
+				writeInt(pNoteOff->velocity(), 1);
+				// Remove from note-off list and continue...
+				notesOff.remove(pNoteOff);
+				pNoteOff = notesOff.first();
+			}
+			// Let's get back to actual event...
+			// - Delta time...
+			writeInt(iTime > iLastTime ? iTime - iLastTime : 0);
+			iLastTime = iTime;
+			// - Status byte...
+			iStatus = (pSeq->channel() | (pEvent->type() << 8));
+			// - Running status?
+			if (iStatus != iLastStatus) {
+				writeInt(iStatus, 1);
+				iLastStatus = iStatus;
+			}
+			// - Data bytes...
+			switch (pEvent->type()) {
+			case qtractorMidiEvent::NOTEON:
+				writeInt(pEvent->note(), 1);
+				writeInt(pEvent->velocity(), 1);
+				pNoteOff = new qtractorMidiEvent(
+					pEvent->time() + pEvent->duration(), 
+					qtractorMidiEvent::NOTEOFF,
+					pEvent->note());
+				// Find the proper position in notes-off list ...
+				pNoteAfter = notesOff.last();
+				while (pNoteAfter && pNoteAfter->time() > pNoteOff->time())
+					pNoteAfter = pNoteAfter->prev();
+				notesOff.insertAfter(pNoteOff, pNoteAfter);
+				pNoteOff = NULL;
+				break;
+			case qtractorMidiEvent::CONTROLLER:
+				writeInt(pEvent->controller(), 1);
+				writeInt(pEvent->value(), 1);
+				break;
+			case qtractorMidiEvent::KEYPRESS:
+			case qtractorMidiEvent::PITCHBEND:
+				writeInt(pEvent->note(), 1);
+				writeInt(pEvent->value(), 1);
+				break;
+			case qtractorMidiEvent::PGMCHANGE:
+			case qtractorMidiEvent::CHANPRESS:
+				writeInt(pEvent->value(), 1);
+				break;
+			case qtractorMidiEvent::SYSEX:
+				writeInt(pEvent->sysex_len());
+				writeData(pEvent->sysex(), pEvent->sysex_len());
+				break;
+			default:
+				break;
+			}
+		}
+	}
+
+	// Time to overwrite the track length...
+	if (::fseek(m_pFile, iMTrkOffset, SEEK_SET) == 0) {
+		writeInt(m_iOffset - (iMTrkOffset + 4), 4);
+		m_iOffset -= 4;
+	}
+
+	// Restore file position to end-of-file...	
+	return (::fseek(m_pFile, 0, SEEK_END) == 0);
+}
 
 
 // Integer read method.
@@ -419,6 +553,28 @@ int qtractorMidiFile::readData ( unsigned char *pData, unsigned short n )
 	if (nread > 0)
 		m_iOffset += nread;
 	return nread;
+}
+
+
+// Integer write length method.
+int qtractorMidiFile::sizeInt ( int val )
+{
+	// Variable length integer length.
+	int n = 0;
+	int c = val & 0x7f;
+
+	while (val >>= 7) {
+		c <<= 8;
+		c |= ((val & 0x7f) | 0x80);
+	}
+	n++;
+
+	while (c & 0x80) {
+		c >>= 8;
+		n++;
+	}
+
+	return n;
 }
 
 

@@ -24,11 +24,13 @@
 #include "qtractorSessionCursor.h"
 #include "qtractorSessionDocument.h"
 
-#include "qtractorMidiEngine.h"
 #include "qtractorAudioEngine.h"
 #include "qtractorAudioPeak.h"
 #include "qtractorAudioClip.h"
 #include "qtractorAudioBuffer.h"
+
+#include "qtractorMidiEngine.h"
+#include "qtractorMidiClip.h"
 
 #include <qapplication.h>
 #include <qeventloop.h>
@@ -911,7 +913,16 @@ void qtractorSession::trackRecord ( qtractorTrack *pTrack, bool bRecord )
 		pTrack->setClipRecord(pAudioClip);
 		break;
 	}
-	case qtractorTrack::Midi:
+	case qtractorTrack::Midi: {
+		qtractorMidiClip *pMidiClip = new qtractorMidiClip(pTrack);
+		pMidiClip->setClipStart(playHead());
+		pMidiClip->open(
+			createFilename(sessionName(), pTrack->trackName(), 0, "mid"),
+			pTrack->midiChannel(),
+			qtractorMidiFile::Write);
+		pTrack->setClipRecord(pMidiClip);
+		break;
+	}
 	default:
 		break;
 	}

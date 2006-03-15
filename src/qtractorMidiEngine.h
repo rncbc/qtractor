@@ -54,6 +54,9 @@ public:
 	// Special slave sync method.
 	void sync();
 
+	// MIDI event capture method.
+	void capture(snd_seq_event_t *pEv);
+
 	// MIDI event enqueue method.
 	void enqueue(qtractorTrack *pTrack, qtractorMidiEvent *pEvent,
 		unsigned long iTime, float fGain = 1.0);

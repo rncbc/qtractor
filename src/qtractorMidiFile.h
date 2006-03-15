@@ -42,7 +42,7 @@ public:
 	enum { None = 0, Read = 1, Write = 2 };
 
 	// Open file methods.
-	bool open(const char *pszName, int mode = Read);
+	bool open(const char *pszName, int iMode = Read);
 	void close();
 
 	// Open file property accessors.
@@ -65,10 +65,15 @@ public:
 	unsigned short beatsPerBar() const { return m_iBeatsPerBar; }
 
 	// Sequence/track reader.
-	bool readTrack  (qtractorMidiSequence *pSeq,
-		unsigned short iTrackChannel);
-	// Sequence/track writer.
+	bool readTrack (qtractorMidiSequence *pSeq,
+		unsigned short iTrackChannel);		
+
+	// Sequence/track writers.
 	bool writeTrack (qtractorMidiSequence *pSeq);
+
+	// Header writer.
+	bool writeHeader(unsigned short iFormat,
+		unsigned short iTracks, unsigned short iTicksPerBeat);
 
 protected:
 
@@ -80,6 +85,8 @@ protected:
 	int writeInt  (int val, unsigned short n = 0);
 	int writeData (unsigned char *pData, unsigned short n);
 
+	int sizeInt   (int val);
+	
 private:
 
 	// SMF instance variables.

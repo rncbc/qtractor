@@ -26,7 +26,9 @@
 #include "qtractorSessionCursor.h"
 #include "qtractorSessionDocument.h"
 #include "qtractorAudioEngine.h"
-#include "qtractorClip.h"
+
+#include "qtractorMidiSequence.h"
+#include "qtractorMidiClip.h"
 
 #include <qthread.h>
 
@@ -202,25 +204,9 @@ void qtractorMidiInputThread::run (void)
 			pEv->time.tick = m_pSession->tickFromFrame(
 				m_pSession->audioEngine()->sessionCursor()->frameTime());
 			// - enqueue to input mapping;
-			//	 ...
+			m_pSession->midiEngine()->capture(pEv);
 			// - direct route to output;
 			//	 ...
-#ifdef CONFIG_DEBUG
-			// - show event for debug purposes...
-			fprintf(stderr, "MIDI In %05d 0x%02x",
-				pEv->time.tick, pEv->type);
-			if (pEv->type == SND_SEQ_EVENT_SYSEX) {
-				fprintf(stderr, " sysex {");
-				unsigned char *data = (unsigned char *) pEv->data.ext.ptr; 
-				for (unsigned int i = 0; i < pEv->data.ext.len; i++)
-					fprintf(stderr, " %02x", data[i]);
-				fprintf(stderr, " }\n");
-			} else {
-				for (unsigned int i = 0; i < sizeof(pEv->data.raw8.d); i++)
-					fprintf(stderr, " %3d", pEv->data.raw8.d[i]);
-				fprintf(stderr, "\n");
-			}
-#endif
 		//	snd_seq_free_event(pEv);
 			iPoll = snd_seq_event_input_pending(pAlsaSeq, 0);
 		}
@@ -497,6 +483,109 @@ void qtractorMidiEngine::sync (void)
 	// Pure conditional thread slave syncronization...
 	if (m_pOutputThread && m_pOutputThread->midiCursorSync())
 		m_pOutputThread->sync();
+}
+
+
+// MIDI event capture method.
+void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
+{
+	qtractorMidiEvent::EventType type;
+
+	unsigned short iChannel = 0;
+	unsigned char  data1    = 0;
+	unsigned char  data2    = 0;
+	unsigned long  duration = 0;	
+
+#ifdef CONFIG_DEBUG
+	// - show event for debug purposes...
+	fprintf(stderr, "MIDI In %05d 0x%02x", pEv->time.tick, pEv->type);
+	if (pEv->type == SND_SEQ_EVENT_SYSEX) {
+		fprintf(stderr, " sysex {");
+		unsigned char *data = (unsigned char *) pEv->data.ext.ptr; 
+		for (unsigned int i = 0; i < pEv->data.ext.len; i++)
+			fprintf(stderr, " %02x", data[i]);
+		fprintf(stderr, " }\n");
+	} else {
+		for (unsigned int i = 0; i < sizeof(pEv->data.raw8.d); i++)
+			fprintf(stderr, " %3d", pEv->data.raw8.d[i]);
+		fprintf(stderr, "\n");
+	}
+#endif
+
+	switch (pEv->type) {
+	case SND_SEQ_EVENT_NOTE:
+	case SND_SEQ_EVENT_NOTEON:
+		type     = qtractorMidiEvent::NOTEON;
+		iChannel = pEv->data.note.channel;
+		data1    = pEv->data.note.note;
+		data2    = pEv->data.note.velocity;
+		duration = pEv->data.note.duration;
+		if (data2 == 0)
+			type = qtractorMidiEvent::NOTEOFF;
+		break;
+	case SND_SEQ_EVENT_NOTEOFF:
+		type     = qtractorMidiEvent::NOTEOFF;
+		iChannel = pEv->data.note.channel;
+		data1    = pEv->data.note.note;
+		data2    = pEv->data.note.velocity;
+		duration = pEv->data.note.duration;
+		break;
+	case SND_SEQ_EVENT_KEYPRESS:
+		type     = qtractorMidiEvent::KEYPRESS;
+		iChannel = pEv->data.control.channel;
+		data1    = pEv->data.control.param;
+		data2    = pEv->data.control.value;
+		break;
+	case SND_SEQ_EVENT_CONTROLLER:
+		type     = qtractorMidiEvent::CONTROLLER;
+		iChannel = pEv->data.control.channel;
+		data1    = pEv->data.control.param;
+		data2    = pEv->data.control.value;
+		break;
+	case SND_SEQ_EVENT_PGMCHANGE:
+		type     = qtractorMidiEvent::PGMCHANGE;
+		iChannel = pEv->data.control.channel;
+		data1    = 0;
+		data2    = pEv->data.control.value;
+		break;
+	case SND_SEQ_EVENT_CHANPRESS:
+		type     = qtractorMidiEvent::CHANPRESS;
+		iChannel = pEv->data.control.channel;
+		data1    = 0;
+		data2    = pEv->data.control.value;
+		break;
+	case SND_SEQ_EVENT_PITCHBEND:
+		type     = qtractorMidiEvent::PITCHBEND;
+		iChannel = pEv->data.control.channel;
+		data1    = 0;
+		data2    = pEv->data.control.value;
+		break;
+	case SND_SEQ_EVENT_SYSEX:
+	default:
+		// Not handled here...
+		return;
+	}
+
+	// Now check which bus and track we're into...
+	for (qtractorTrack *pTrack = session()->tracks().first();
+			pTrack; pTrack = pTrack->next()) {
+		// Must be a MIDI track, in capture mode
+		// and for the intended channel...
+		if (pTrack->trackType() == qtractorTrack::Midi
+			&& pTrack->clipRecord() != NULL
+			&& pTrack->midiChannel() == iChannel) {
+			qtractorMidiBus *pMidiBus
+				= static_cast<qtractorMidiBus *> (pTrack->bus());
+			if (pMidiBus && pMidiBus->alsaPort() == pEv->dest.port) {
+				qtractorMidiClip *pMidiClip
+					= static_cast<qtractorMidiClip *> (pTrack->clipRecord());
+				if (pMidiClip) {
+					pMidiClip->sequence()->addEvent(new qtractorMidiEvent(
+						pEv->time.tick, type, data1, data2, duration));
+				}
+			}
+		}
+	}
 }
 
 

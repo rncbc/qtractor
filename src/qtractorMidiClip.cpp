@@ -38,7 +38,8 @@
 qtractorMidiClip::qtractorMidiClip ( qtractorTrack *pTrack )
 	: qtractorClip(pTrack)
 {
-	m_pSeq = new qtractorMidiSequence();
+	m_pFile = NULL;
+	m_pSeq  = new qtractorMidiSequence();
 	m_iTrackChannel = 0;
 }
 
@@ -46,7 +47,8 @@ qtractorMidiClip::qtractorMidiClip ( qtractorTrack *pTrack )
 qtractorMidiClip::qtractorMidiClip ( const qtractorMidiClip& clip )
 	: qtractorClip(clip.track())
 {
-	m_pSeq = new qtractorMidiSequence();
+	m_pFile = NULL;
+	m_pSeq  = new qtractorMidiSequence();
 	m_iTrackChannel = 0;
 
 	open(clip.filename(), clip.trackChannel());
@@ -58,23 +60,33 @@ qtractorMidiClip::~qtractorMidiClip (void)
 {
 	if (m_pSeq)
 		delete m_pSeq;
+	if (m_pFile)
+		delete m_pFile;
 }
 
 
 // The main use method.
-bool qtractorMidiClip::open ( const QString& sFilename, int iTrackChannel )
+bool qtractorMidiClip::open ( const QString& sFilename, int iTrackChannel,
+	int iMode )
 {
-	// Open up the MIDI file...
-	qtractorMidiFile file;
-	if (!file.open(sFilename))
+	if (m_pFile)
+		delete m_pFile;
+	
+	// Create and open up the MIDI file...
+	m_pFile = new qtractorMidiFile();
+	if (!m_pFile->open(sFilename, iMode)) {
+		delete m_pFile;
+		m_pFile = NULL;
 		return false;
+	}
 
-	return open(&file, iTrackChannel);
+	// Open-process mode...
+	return open(m_pFile, iTrackChannel, false);
 }
 
 
 // Overloaded open method; reuse an already open MIDI file.
-bool qtractorMidiClip::open ( qtractorMidiFile *pMidiFile, int iTrackChannel,
+bool qtractorMidiClip::open ( qtractorMidiFile *pFile, int iTrackChannel,
 	bool bSetTempo )
 {
 	if (track() == NULL)
@@ -84,26 +96,36 @@ bool qtractorMidiClip::open ( qtractorMidiFile *pMidiFile, int iTrackChannel,
 	if (pSession == NULL)
 		return false;
 
+	// Initialize event container...
 	m_pSeq->clear();
 	m_pSeq->setTicksPerBeat(pSession->ticksPerBeat());
 
-	// Read the event sequence in...
-	if (!pMidiFile->readTrack(m_pSeq, iTrackChannel))
-		return false;
-
-	// FIXME: On demand, set session time properties from MIDI file...
-	if (bSetTempo) {
-		pSession->setTempo(pMidiFile->tempo());
-		pSession->setBeatsPerBar(pMidiFile->beatsPerBar());
-		pSession->updateTimeScale();
+	// Are we on a pre-writing status?
+	if (pFile->mode() == qtractorMidiFile::Write) {
+		// Set initial local properties...
+		pFile->setTempo(pSession->tempo());
+		pFile->setBeatsPerBar(pSession->beatsPerBar());
+		// And initial clip name...
+		m_pSeq->setName(QFileInfo(pFile->filename()).baseName());
+		m_pSeq->setChannel(iTrackChannel);
+		// Nothing more as for writing...
+	} else {	
+		// Read the event sequence in...
+		if (!pFile->readTrack(m_pSeq, iTrackChannel))
+			return false;
+		// FIXME: On demand, set session time properties from MIDI file...
+		if (bSetTempo) {
+			pSession->setTempo(pFile->tempo());
+			pSession->setBeatsPerBar(pFile->beatsPerBar());
+			pSession->updateTimeScale();
+		}
+		// We must have events, otherwise this clip is of now use...
+		if (m_pSeq->events().count() < 1)
+			return false;
 	}
 
-	// We must have events, otherwise this clip is of now use...
-	if (m_pSeq->events().count() < 1)
-		return false;
-
 	// Set local properties...
-	m_sFilename = pMidiFile->filename();
+	m_sFilename = pFile->filename();
 	m_iTrackChannel = iTrackChannel;
 
 	// Clip name should be clear about it all.
@@ -119,18 +141,23 @@ bool qtractorMidiClip::open ( qtractorMidiFile *pMidiFile, int iTrackChannel,
 
 
 // MIDI file properties accessors.
-const QString& qtractorMidiClip::filename(void) const
+const QString& qtractorMidiClip::filename (void) const
 {
 	return m_sFilename;
 }
 
-unsigned short qtractorMidiClip::trackChannel(void) const
+unsigned short qtractorMidiClip::trackChannel (void) const
 {
 	return m_iTrackChannel;
 }
 
 
 // Sequence properties accessors.
+qtractorMidiSequence *qtractorMidiClip::sequence (void) const
+{
+	return m_pSeq;
+}
+
 unsigned short qtractorMidiClip::channel (void) const
 {
 	return m_pSeq->channel();
@@ -234,7 +261,26 @@ void qtractorMidiClip::loop ( unsigned long iLoopStart,
 // Clip close-commit (record specific)
 void qtractorMidiClip::close (void)
 {
-	// TODO: Nothing to be done, yet.
+	qtractorSession *pSession = track()->session();
+	if (pSession == NULL)
+		return;
+
+	// Actual sequence closure...
+	m_pSeq->close();
+
+	// Commit the final clip length...
+	setClipLength(pSession->frameFromTick(m_pSeq->duration()));
+	
+	// Now's time to write the whole thing, maybe as a SMF format 0...
+	if (m_pFile && m_pFile->mode() == qtractorMidiFile::Write) {
+		m_pFile->writeHeader(0, 1, m_pSeq->ticksPerBeat());
+		m_pFile->writeTrack(m_pSeq);
+		m_pFile->close();
+	}
+
+	// If proven empty, remove the file.
+	if (clipLength() == 0)
+		QFile::remove(m_sFilename);
 }
 
 

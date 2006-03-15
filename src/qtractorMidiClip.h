@@ -23,11 +23,7 @@
 #define __qtractorMidiClip_h
 
 #include "qtractorClip.h"
-
-// Forward declarations.
-class qtractorMidiFile;
-class qtractorMidiSequence;
-class qtractorMidiEvent;
+#include "qtractorMidiFile.h"
 
 
 //----------------------------------------------------------------------
@@ -47,9 +43,10 @@ public:
 	~qtractorMidiClip();
 
 	// The main use method.
-	bool open(const QString& sFilename, int iTrackChannel = 0);
+	bool open(const QString& sFilename, int iTrackChannel = 0,
+		int iMode = qtractorMidiFile::Read);
 	// Overloaded open method; reuse an already open MIDI file.
-	bool open(qtractorMidiFile *pMidiFile, int iTrackChannel = 0,
+	bool open(qtractorMidiFile *pFile, int iTrackChannel = 0,
 		bool bSetTempo = false);
 
 	// MIDI file properties accessors.
@@ -57,6 +54,7 @@ public:
 	unsigned short trackChannel() const;
 
 	// Sequence properties accessors.
+	qtractorMidiSequence *sequence() const;
 	unsigned short channel() const;
 	int bank() const;
 	int program() const;
@@ -92,6 +90,7 @@ protected:
 private:
 
 	// Instance variables.
+	qtractorMidiFile     *m_pFile;
 	qtractorMidiSequence *m_pSeq;
 
 	QString        m_sFilename;
