@@ -69,8 +69,8 @@ public:
 	void updateContentsWidth();
 
 	// Contents update overloaded methods.
-	void updateContents(const QRect& rect);
-	void updateContents();
+	void updateContents(const QRect& rect, bool bRefresh = true);
+	void updateContents(bool bRefresh = true);
 
 	// Select every clip of a given track.
 	void selectTrack(qtractorTrack *pTrack, bool bReset = true);

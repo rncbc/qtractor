@@ -228,9 +228,10 @@ void qtractorTrackView::updateContentsWidth (void)
 
 
 // Local rectangular contents update.
-void qtractorTrackView::updateContents ( const QRect& rect )
+void qtractorTrackView::updateContents ( const QRect& rect, bool bRefresh )
 {
-	updatePixmap(QScrollView::contentsX(), QScrollView::contentsY());
+	if (bRefresh)
+		updatePixmap(QScrollView::contentsX(), QScrollView::contentsY());
 	if (m_dragState == DragMove) {
 		QScrollView::repaintContents();
 		showClipSelect(m_rectDrag, m_iDraggingX);
@@ -244,9 +245,10 @@ void qtractorTrackView::updateContents ( const QRect& rect )
 
 
 // Overall contents update.
-void qtractorTrackView::updateContents (void)
+void qtractorTrackView::updateContents ( bool bRefresh )
 {
-	updatePixmap(QScrollView::contentsX(), QScrollView::contentsY());
+	if (bRefresh)
+		updatePixmap(QScrollView::contentsX(), QScrollView::contentsY());
 	if (m_dragState == DragMove) {
 		QScrollView::repaintContents();
 		showClipSelect(m_rectDrag, m_iDraggingX);
@@ -295,6 +297,48 @@ void qtractorTrackView::drawContents ( QPainter *p,
 	if (x >= clipx && x < clipx + clipw) {
 		p->setPen(Qt::red);
 		p->drawLine(x, clipy, x, clipy + cliph);
+	}
+
+	// On-the-fly recording clip drawing...
+	if (pSession->isRecording() && pSession->isPlaying()) {
+		unsigned long iTrackStart = pSession->frameFromPixel(clipx);
+		unsigned long iTrackEnd   = pSession->playHead();
+		if (iTrackStart < iTrackEnd) {
+			int y1 = 0;
+			int y2 = 0;
+			QListViewItem *pItem = m_pTracks->trackList()->firstChild();
+			while (pItem && y2 < clipy + cliph) {
+				y1  = y2;
+				y2 += pItem->totalHeight();
+				if (y2 > clipy) {
+					// Dispatch to paint this track...
+					qtractorTrack *pTrack = NULL;
+					qtractorTrackListItem *pTrackItem
+						= static_cast<qtractorTrackListItem *> (pItem);
+					if (pTrackItem)
+						pTrack = pTrackItem->track();
+					if (pTrack && pTrack->clipRecord()) {
+						int h = y2 - y1 - 2;
+						const QRect clipRect(clipx - 1, y1 + 1, clipw + 2, h);
+						qtractorClip *pClipRecord = pTrack->clipRecord(); 
+						unsigned long iClipStart  = pClipRecord->clipStart();
+						unsigned long iClipOffset = 0;
+						if (iClipStart < iTrackStart)
+							iClipOffset += iTrackStart - iClipStart;
+						x = pSession->pixelFromFrame(iClipStart);
+						int w = 0;
+						if (iClipStart < iTrackEnd)
+							w += pSession->pixelFromFrame(iTrackEnd - iClipStart);
+						const QRect rect(x, y1 + 1, w, h);
+						if (rect.intersects(clipRect)) {
+							pClipRecord->drawClip(p,
+								rect.intersect(clipRect), iClipOffset);
+						}
+					}
+				}
+				pItem = pItem->nextSibling();
+			}
+		}
 	}
 }
 
@@ -1449,8 +1493,7 @@ void qtractorTrackView::ensureVisibleFrame ( unsigned long iFrame )
 			x -= wm;
 		else if (x > x0 + w - wm && iFrame < pSession->sessionLength())
 			x += w - wm;
-		QScrollView::ensureVisible(
-			 x, QScrollView::contentsY(), 8, 8);
+		QScrollView::ensureVisible(x, QScrollView::contentsY(), 0, 0);
 		QScrollView::setFocus();
 	}
 }

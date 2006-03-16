@@ -1972,6 +1972,8 @@ void qtractorMainForm::timerSlot (void)
 		if (m_iPlayTimer >= QTRACTOR_TIMER_DELAY) {
 			m_iPlayTimer = 0;
 			updateTransportTime(m_iPlayHead);
+			if (m_pTracks && m_pSession->isRecording())
+				m_pTracks->trackView()->updateContents(false);
 		}
 	}
 

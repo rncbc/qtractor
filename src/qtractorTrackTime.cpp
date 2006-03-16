@@ -151,16 +151,19 @@ void qtractorTrackTime::updatePixmap ( int cx, int /* cy */)
 
 
 // Rectangular contents update.
-void qtractorTrackTime::updateContents ( const QRect& rect )
+void qtractorTrackTime::updateContents ( const QRect& rect, bool bRefresh )
 {
+	if (bRefresh)
+		updatePixmap(QScrollView::contentsX(), QScrollView::contentsY());
 	QScrollView::updateContents(rect);
 }
 
 
 // Overall contents update.
-void qtractorTrackTime::updateContents (void)
+void qtractorTrackTime::updateContents ( bool bRefresh )
 {
-	updatePixmap(QScrollView::contentsX(), QScrollView::contentsY());
+	if (bRefresh)
+		updatePixmap(QScrollView::contentsX(), QScrollView::contentsY());
 	QScrollView::updateContents();
 }
 

@@ -44,9 +44,9 @@ public:
 	~qtractorTrackTime();
 
 	// Rectangular contents update.
-	void updateContents(const QRect& rect);
+	void updateContents(const QRect& rect, bool bRefresh = true);
 	// Overall contents update.
-	void updateContents();
+	void updateContents(bool bRefresh = true);
 
 protected:
 
