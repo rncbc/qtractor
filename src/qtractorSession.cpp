@@ -898,13 +898,14 @@ void qtractorSession::trackRecord ( qtractorTrack *pTrack, bool bRecord )
 
 	// Just ditch the in-record clip...
 	if (!bRecord) {
-		pTrack->setClipRecord(NULL);	
+		pTrack->setClipRecord(NULL);
 		return;
 	}
 
 	// here's the place to create and set the capture clip...
 	switch (pTrack->trackType()) {
-	case qtractorTrack::Audio: {
+	case qtractorTrack::Audio:
+	{
 		qtractorAudioClip *pAudioClip = new qtractorAudioClip(pTrack);
 		pAudioClip->setClipStart(playHead());
 		pAudioClip->open(
@@ -913,12 +914,13 @@ void qtractorSession::trackRecord ( qtractorTrack *pTrack, bool bRecord )
 		pTrack->setClipRecord(pAudioClip);
 		break;
 	}
-	case qtractorTrack::Midi: {
+	case qtractorTrack::Midi:
+	{
 		qtractorMidiClip *pMidiClip = new qtractorMidiClip(pTrack);
 		pMidiClip->setClipStart(playHead());
 		pMidiClip->open(
 			createFilename(sessionName(), pTrack->trackName(), 0, "mid"),
-			pTrack->midiChannel(),
+			1, // iTrackChannel: Single-track SMF format 1 (2 tracks)
 			qtractorMidiFile::Write);
 		pTrack->setClipRecord(pMidiClip);
 		break;

@@ -68,12 +68,12 @@ public:
 	bool readTrack (qtractorMidiSequence *pSeq,
 		unsigned short iTrackChannel);		
 
-	// Sequence/track writers.
-	bool writeTrack (qtractorMidiSequence *pSeq);
-
 	// Header writer.
 	bool writeHeader(unsigned short iFormat,
 		unsigned short iTracks, unsigned short iTicksPerBeat);
+
+	// Sequence/track writers.
+	bool writeTrack (qtractorMidiSequence *pSeq);
 
 protected:
 
@@ -85,8 +85,6 @@ protected:
 	int writeInt  (int val, unsigned short n = 0);
 	int writeData (unsigned char *pData, unsigned short n);
 
-	int sizeInt   (int val);
-	
 private:
 
 	// SMF instance variables.

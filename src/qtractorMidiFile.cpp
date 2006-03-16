@@ -178,9 +178,9 @@ bool qtractorMidiFile::readTrack ( qtractorMidiSequence *pSeq,
 	}
 
 	// Now we're going into business...
-	unsigned long iTrackTime = 0;
-	unsigned long iTrackEnd = m_iOffset + m_pTrackInfo[iTrack].length;
-	int iLastStatus = 0;
+	unsigned long iTrackTime  = 0;
+	unsigned long iTrackEnd   = m_iOffset + m_pTrackInfo[iTrack].length;
+	unsigned int  iLastStatus = 0;
 	
 	// While this track lasts...
 	while (m_iOffset < iTrackEnd) {
@@ -350,7 +350,7 @@ bool qtractorMidiFile::readTrack ( qtractorMidiSequence *pSeq,
 
 // Header writer.
 bool qtractorMidiFile::writeHeader ( unsigned short iFormat,
-	unsigned short iTracks,	unsigned short iTicksPerBeat )
+	unsigned short iTracks, unsigned short iTicksPerBeat )
 {
 	if (m_pFile == NULL)
 		return false;
@@ -389,17 +389,25 @@ bool qtractorMidiFile::writeTrack ( qtractorMidiSequence *pSeq )
 	unsigned long iMTrkOffset = m_iOffset;
 	writeInt(0, 4);
 
+	// Track name...
+	QString sTrackName
+		= (pSeq ? pSeq->name() : QFileInfo(m_sFilename).baseName());
+	writeInt(0); // delta-time=0
+	writeInt(qtractorMidiEvent::META, 1);
+	writeInt(qtractorMidiEvent::TRACKNAME, 1);
+	writeInt(sTrackName.length());
+	writeData((unsigned char *) sTrackName.latin1(), sTrackName.length());
+
 	// Write basic META data...
 	if (m_iFormat == 0 || pSeq == NULL) {
 		// Tempo...
-		int iTempo = int(60000000.0 / m_fTempo);
-		writeInt(0); // time=0
+		writeInt(0); // delta-delta=0
 		writeInt(qtractorMidiEvent::META, 1);
 		writeInt(qtractorMidiEvent::TEMPO, 1);
-		writeInt(sizeInt(iTempo));
-		writeInt(iTempo);
+		writeInt(3);
+		writeInt(int(60000000.0 / m_fTempo), 3);
 		// Time signature...
-		writeInt(0); // time=0
+		writeInt(0); // delta-time=0
 		writeInt(qtractorMidiEvent::META, 1);
 		writeInt(qtractorMidiEvent::TIME, 1);
 		writeInt(4);
@@ -407,28 +415,21 @@ bool qtractorMidiFile::writeTrack ( qtractorMidiSequence *pSeq )
 		writeInt(2, 1);                 // Denominator.
 		writeInt(32, 1);                // MIDI clocks per metronome click.
 		writeInt(4, 1);                 // 32nd notes per quarter.
-		// Track name...
-		QString sTrackName
-			= (pSeq ? pSeq->name() : QFileInfo(m_sFilename).baseName());
-		writeInt(0); // time=0
-		writeInt(qtractorMidiEvent::META, 1);
-		writeInt(qtractorMidiEvent::TRACKNAME, 1);
-		writeInt(sTrackName.length());
-		writeData((unsigned char *) sTrackName.latin1(), sTrackName.length());
 	}
-	
+
 	// SMF format 1 files must have events
 	// which should be just writen down... 
 	if (pSeq) {
 		// Write the whole sequence out...
-		int iStatus, iLastStatus = 0;
-		unsigned long iLastTime = 0;
+		unsigned int  iStatus;
+		unsigned int  iLastStatus = 0;
+		unsigned long iLastTime   = 0;
 		qtractorMidiEvent *pNoteAfter;
 		qtractorMidiEvent *pNoteOff = NULL;
 		qtractorList<qtractorMidiEvent> notesOff;
 		notesOff.setAutoDelete(true);
 		for (qtractorMidiEvent *pEvent = pSeq->events().first();
-				pEvent; pEvent->next()) {
+				pEvent; pEvent = pEvent->next()) {
 			// Event (absolute) time...
 			unsigned long iTime = pEvent->time();
 			// Check for pending note-offs...
@@ -440,7 +441,7 @@ bool qtractorMidiFile::writeTrack ( qtractorMidiSequence *pSeq )
 				writeInt(iTimeOff > iLastTime ? iTimeOff - iLastTime : 0);
 				iLastTime = iTimeOff;
 				// - Status byte...
-				iStatus = (pSeq->channel() | (pNoteOff->type() << 8));
+				iStatus = (pNoteOff->type() | pSeq->channel()) & 0xff;
 				// - Running status...
 				if (iStatus != iLastStatus) {
 					writeInt(iStatus, 1);
@@ -458,7 +459,7 @@ bool qtractorMidiFile::writeTrack ( qtractorMidiSequence *pSeq )
 			writeInt(iTime > iLastTime ? iTime - iLastTime : 0);
 			iLastTime = iTime;
 			// - Status byte...
-			iStatus = (pSeq->channel() | (pEvent->type() << 8));
+			iStatus = (pEvent->type() | pSeq->channel()) & 0xff;
 			// - Running status?
 			if (iStatus != iLastStatus) {
 				writeInt(iStatus, 1);
@@ -501,16 +502,43 @@ bool qtractorMidiFile::writeTrack ( qtractorMidiSequence *pSeq )
 				break;
 			}
 		}
+		// And all remainu«ing note-offs...
+		while ((pNoteOff = notesOff.first()) != NULL) {
+			// - Delta time...
+			unsigned long iTimeOff = pNoteOff->time();
+			writeInt(iTimeOff > iLastTime ? iTimeOff - iLastTime : 0);
+			iLastTime = iTimeOff;
+			// - Status byte...
+			iStatus = (pNoteOff->type() | pSeq->channel()) & 0xff;
+			// - Running status...
+			if (iStatus != iLastStatus) {
+				writeInt(iStatus, 1);
+				iLastStatus = iStatus;
+			}
+			// - Data bytes...
+			writeInt(pNoteOff->note(), 1);
+			writeInt(pNoteOff->velocity(), 1);
+			// Remove from note-off list and continue...
+			notesOff.remove(pNoteOff);
+		}
+		// Done.
 	}
 
-	// Time to overwrite the track length...
-	if (::fseek(m_pFile, iMTrkOffset, SEEK_SET) == 0) {
-		writeInt(m_iOffset - (iMTrkOffset + 4), 4);
-		m_iOffset -= 4;
-	}
+	// End-of-track marker.
+	writeInt(0); // delta-time=0
+	writeInt(qtractorMidiEvent::META, 1);
+	writeInt(qtractorMidiEvent::EOT, 1);
+	writeInt(0); // length=0;
+
+	// Time to overwrite the actual track length...
+	if (::fseek(m_pFile, iMTrkOffset, SEEK_SET))
+		return false;
+	// Do it...
+	writeInt(m_iOffset - (iMTrkOffset + 4), 4);
+	m_iOffset -= 4;
 
 	// Restore file position to end-of-file...	
-	return (::fseek(m_pFile, 0, SEEK_END) == 0);
+	return (::fseek(m_pFile, m_iOffset, SEEK_SET) == 0);
 }
 
 
@@ -556,28 +584,6 @@ int qtractorMidiFile::readData ( unsigned char *pData, unsigned short n )
 }
 
 
-// Integer write length method.
-int qtractorMidiFile::sizeInt ( int val )
-{
-	// Variable length integer length.
-	int n = 0;
-	int c = val & 0x7f;
-
-	while (val >>= 7) {
-		c <<= 8;
-		c |= ((val & 0x7f) | 0x80);
-	}
-	n++;
-
-	while (c & 0x80) {
-		c >>= 8;
-		n++;
-	}
-
-	return n;
-}
-
-
 // Integer write method.
 int qtractorMidiFile::writeInt ( int val, unsigned short n )
 {
@@ -585,10 +591,8 @@ int qtractorMidiFile::writeInt ( int val, unsigned short n )
 
 	if (n > 0) {
 		// Fixed length (n bytes) integer write.
-		for (int i = n; i > 0; i--) {
-			c = val & (0xff << (i * 8));
-			if (--i > 0)
-				c >>= (i * 8);
+		for (int i = (n - 1) * 8; i >= 0; i -= 8) {
+			c = (val & (0xff << i)) >> i;
 			if (::fputc(c & 0xff, m_pFile) < 0)
 				return -1;
 			m_iOffset++;
@@ -599,16 +603,15 @@ int qtractorMidiFile::writeInt ( int val, unsigned short n )
 		c = val & 0x7f;
 		while (val >>= 7) {
 			c <<= 8;
-			c |= ((val & 0x7f) | 0x80);
+			c |= (val & 0x7f) | 0x80;
 		}
-		if (::fputc(c & 0xff, m_pFile) < 0)
-			return -1;
-		n++;
-		while (c & 0x80) {
-			c >>= 8;
+		while (true) {
 			if (::fputc(c & 0xff, m_pFile) < 0)
 				return -1;
 			n++;
+			if ((c & 0x80) == 0)
+				break;
+			c >>= 8;
 		}
 		m_iOffset += n;
 	}

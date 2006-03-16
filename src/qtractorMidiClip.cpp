@@ -89,10 +89,11 @@ bool qtractorMidiClip::open ( const QString& sFilename, int iTrackChannel,
 bool qtractorMidiClip::open ( qtractorMidiFile *pFile, int iTrackChannel,
 	bool bSetTempo )
 {
-	if (track() == NULL)
+	qtractorTrack *pTrack = track();
+	if (pTrack == NULL)
 		return false;
 
-	qtractorSession *pSession = track()->session();
+	qtractorSession *pSession = pTrack->session();
 	if (pSession == NULL)
 		return false;
 
@@ -107,7 +108,7 @@ bool qtractorMidiClip::open ( qtractorMidiFile *pFile, int iTrackChannel,
 		pFile->setBeatsPerBar(pSession->beatsPerBar());
 		// And initial clip name...
 		m_pSeq->setName(QFileInfo(pFile->filename()).baseName());
-		m_pSeq->setChannel(iTrackChannel);
+		m_pSeq->setChannel(pTrack->midiChannel());
 		// Nothing more as for writing...
 	} else {	
 		// Read the event sequence in...
@@ -271,10 +272,11 @@ void qtractorMidiClip::close (void)
 	// Commit the final clip length...
 	setClipLength(pSession->frameFromTick(m_pSeq->duration()));
 	
-	// Now's time to write the whole thing, maybe as a SMF format 0...
+	// Now's time to write the whole thing, maybe as a SMF format 1...
 	if (m_pFile && m_pFile->mode() == qtractorMidiFile::Write) {
-		m_pFile->writeHeader(0, 1, m_pSeq->ticksPerBeat());
-		m_pFile->writeTrack(m_pSeq);
+		m_pFile->writeHeader(1, 2, m_pSeq->ticksPerBeat());
+		m_pFile->writeTrack(NULL);   // Setup track.
+		m_pFile->writeTrack(m_pSeq); // Channel track.
 		m_pFile->close();
 	}
 

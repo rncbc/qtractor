@@ -669,7 +669,8 @@ qtractorTrack *qtractorTrackView::dragDropTrack ( QDropEvent *pDropEvent )
 			if (file.open(pDropItem->path)) {
 				qtractorMidiSequence seq;
 				seq.setTicksPerBeat(pSession->ticksPerBeat());
-				if (file.readTrack(&seq, pDropItem->channel)) {
+				if (file.readTrack(&seq, pDropItem->channel)
+					&& seq.duration() > 0) {
 					w += pSession->pixelFromTick(seq.duration());
 					if (m_dropType == qtractorTrack::None)
 						m_dropType = qtractorTrack::Midi;
