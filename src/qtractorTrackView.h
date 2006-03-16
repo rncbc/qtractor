@@ -66,7 +66,7 @@ public:
 	// Update track view content height.
 	void updateContentsHeight();
 	// Update track view content width.
-	void updateContentsWidth();
+	void updateContentsWidth(int iContentsWidth = 0);
 
 	// Contents update overloaded methods.
 	void updateContents(const QRect& rect, bool bRefresh = true);

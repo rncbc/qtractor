@@ -196,17 +196,17 @@ void qtractorTrackView::updateContentsHeight (void)
 
 
 // Update track view content width.
-void qtractorTrackView::updateContentsWidth (void)
+void qtractorTrackView::updateContentsWidth ( int iContentsWidth )
 {
 #ifdef CONFIG_DEBUG_0
-	fprintf(stderr, "qtractorTrackView::updateContentsWidth()\n");
+	fprintf(stderr, "qtractorTrackView::updateContentsWidth(%d)\n", iContentsWidth);
 #endif
 
-	int iContentsWidth = 0;
 	qtractorSession *pSession = m_pTracks->session();
 	if (pSession) {
-		iContentsWidth = pSession->pixelFromFrame(pSession->sessionLength())
-			+ pSession->pixelFromBeat(2 * pSession->beatsPerBar());
+		if (iContentsWidth < 1) 
+			iContentsWidth = pSession->pixelFromFrame(pSession->sessionLength());
+		iContentsWidth += pSession->pixelFromBeat(2 * pSession->beatsPerBar());
 		m_iEditHeadX = pSession->pixelFromFrame(pSession->editHead());
 		m_iEditTailX = pSession->pixelFromFrame(pSession->editTail());
 	}
@@ -217,6 +217,7 @@ void qtractorTrackView::updateContentsWidth (void)
 
 	// Reset any current selection out there...
 	m_pClipSelect->clear();
+
 	// Do the contents resize thing...
 	QScrollView::resizeContents(iContentsWidth,	QScrollView::contentsHeight());
 
@@ -1541,11 +1542,12 @@ void qtractorTrackView::drawPositionX ( int& iPositionX, int x, int x2,
 		QScrollView::setContentsPos(x - wm, QScrollView::contentsY());
 	} else if (bSyncView && x > x0 + w - wm) {
 		// Move forward....
-		if (x0 < QScrollView::contentsWidth() - w)
-			x0 += (w - wm);
-		else
-			x0 = QScrollView::contentsWidth() - w;
-		QScrollView::setContentsPos(x0, QScrollView::contentsY());
+		if (x0 < QScrollView::contentsWidth() - w) {
+			QScrollView::setContentsPos(
+				x0 + (w - wm), QScrollView::contentsY());
+		} else {
+			updateContentsWidth(x0 + w); // Maybe we'll need some head-room...
+		}
 	} else {
 		// Draw the line...
 		x1 = x - x0;

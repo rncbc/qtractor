@@ -1501,7 +1501,10 @@ void qtractorMainForm::transportRecord (void)
 		if (iUpdate > 0) {
 			m_pCommands->exec(pAddClipCommand);
 		} else {
+			// The allocated command is unhelpful...
 			delete pAddClipCommand;
+			// Try to postpone an overall refresh...
+			m_iPeakTimer += QTRACTOR_TIMER_DELAY;
 		}
 	}
 	
