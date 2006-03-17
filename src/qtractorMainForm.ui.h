@@ -1507,7 +1507,7 @@ void qtractorMainForm::transportRecord (void)
 			m_iPeakTimer += QTRACTOR_TIMER_DELAY;
 		}
 	}
-	
+
 	// Finally, toggle session record status...
 	m_pSession->setRecording(bRecording);
 
@@ -1702,9 +1702,11 @@ void qtractorMainForm::stabilizeForm (void)
 	transportRewindAction->setEnabled(m_iPlayHead > 0);
 	transportBackwardAction->setEnabled(m_iPlayHead > 0);
 	transportFastForwardAction->setEnabled(m_iPlayHead < iSessionLength);
-	transportLoopAction->setEnabled(m_pSession->isLooping()
-		|| m_pSession->editHead() < m_pSession->editTail());
-	transportRecordAction->setEnabled(m_pSession->recordTracks() > 0);
+	transportLoopAction->setEnabled(!m_pSession->isRecording()
+		&& (m_pSession->isLooping()
+			|| m_pSession->editHead() < m_pSession->editTail()));
+	transportRecordAction->setEnabled(!m_pSession->isLooping()
+		&& m_pSession->recordTracks() > 0);
 }
 
 

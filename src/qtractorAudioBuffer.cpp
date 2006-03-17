@@ -114,8 +114,11 @@ bool qtractorAudioBuffer::open ( const QString& sFilename, int iMode )
 		return false;
 
 	// Go open it...
-	if (!m_pFile->open(sFilename.latin1(), iMode))
+	if (!m_pFile->open(sFilename.latin1(), iMode)) {
+		delete m_pFile;
+		m_pFile = NULL;
 		return false;
+	}
 
 	// Check samplerate and how many channels there really are.
 	unsigned short iChannels = m_pFile->channels();

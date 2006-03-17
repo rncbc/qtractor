@@ -100,12 +100,15 @@ bool qtractorAudioClip::open ( const QString& sFilename, int iMode )
 		return false;
 	}
 
-	m_pPeak = pSession->audioPeakFactory()->createPeak(
-		sFilename, pSession->sampleRate());
-	if (m_pPeak == NULL) {
-		delete m_pBuff;
-		m_pBuff = NULL;
-		return false;
+	// FIXME: Peak files should be created on-the-fly?
+	if (iMode & qtractorAudioFile::Read) {
+		m_pPeak = pSession->audioPeakFactory()->createPeak(
+			sFilename, pSession->sampleRate());
+		if (m_pPeak == NULL) {
+			delete m_pBuff;
+			m_pBuff = NULL;
+			return false;
+		}
 	}
 
 	// Set local properties...
