@@ -390,8 +390,9 @@ bool qtractorEditTrackCommand::redo (void)
 	if (!qtractorPropertyCommand<qtractorTrack::Properties>::redo())
 		return false;
 
-	// Reopen to assign a probable new bus...
-	if (!m_pTrack->open()) {
+	// Reopen to assign a probable new bus,
+	// which is unchanged on record mode...
+	if (!m_pTrack->isRecord() && !m_pTrack->open()) {
 		mainForm()->appendMessagesError(
 			QObject::tr("Track assignment failed:\n\n"
 				"Track: \"%1\" Bus: \"%2\"")
