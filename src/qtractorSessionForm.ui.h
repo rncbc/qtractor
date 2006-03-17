@@ -52,22 +52,23 @@ void qtractorSessionForm::destroy (void)
 // Populate (setup) dialog controls from settings descriptors.
 void qtractorSessionForm::setSession ( qtractorSession *pSession )
 {
-	const qtractorSession::Properties& props = pSession->properties();
+	// Session properties cloning...
+	m_props = pSession->properties();
 
 	// Initialize dialog widgets...
-	SessionNameLineEdit->setText(props.sessionName);
-	DescriptionTextEdit->setText(props.description);
+	SessionNameLineEdit->setText(m_props.sessionName);
+	DescriptionTextEdit->setText(m_props.description);
 	// Time properties...
-	SampleRateComboBox->setCurrentText(QString::number(props.sampleRate));
-	TempoSpinBox->setValueFloat(props.tempo);
-	BeatsPerBarSpinBox->setValue(int(props.beatsPerBar));
-	TicksPerBeatSpinBox->setValue(int(props.ticksPerBeat));
+	SampleRateComboBox->setCurrentText(QString::number(m_props.sampleRate));
+	TempoSpinBox->setValueFloat(m_props.tempo);
+	BeatsPerBarSpinBox->setValue(int(m_props.beatsPerBar));
+	TicksPerBeatSpinBox->setValue(int(m_props.ticksPerBeat));
 	// View properties...
 	SnapPerBeatComboBox->setCurrentItem(
-		qtractorSession::indexFromSnap(props.snapPerBeat));
-	PixelsPerBeatSpinBox->setValue(int(props.pixelsPerBeat));
-	HorizontalZoomSpinBox->setValue(int(props.horizontalZoom));
-	VerticalZoomSpinBox->setValue(int(props.verticalZoom));
+		qtractorSession::indexFromSnap(m_props.snapPerBeat));
+	PixelsPerBeatSpinBox->setValue(int(m_props.pixelsPerBeat));
+	HorizontalZoomSpinBox->setValue(int(m_props.horizontalZoom));
+	VerticalZoomSpinBox->setValue(int(m_props.verticalZoom));
 	// Backup clean.
 	m_iDirtyCount = 0;
 
