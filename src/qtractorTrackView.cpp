@@ -45,6 +45,27 @@
 #include <qcursor.h>
 #include <qpen.h>
 
+//----------------------------------------------------------------------------
+// qtractor_alpha_blend -- alpha blending experimentalism.
+
+#include <qbitmap.h>
+
+inline void qtractor_alpha_blend ( QImage& image, int val )
+{
+	const int a = (256 - val) & 0xff;	
+	const int w = image.width();
+	const int h = image.height();
+
+	for (int y = 0; y < h; y++) {
+		QRgb *pScanLine = reinterpret_cast<QRgb *> (image.scanLine(y));
+		for (int x = 0; x < w; x++) {
+			const QRgb rgba = *pScanLine;
+			*pScanLine++ = qRgba(
+				qRed(rgba), qGreen(rgba), qBlue(rgba), a * qAlpha(rgba));
+		}
+	}
+}
+
 
 //----------------------------------------------------------------------------
 // qtractorTrackView -- Track view widget.
@@ -75,6 +96,8 @@ qtractorTrackView::qtractorTrackView ( qtractorTracks *pTracks,
 	m_iPlayHeadX = 0;
 	m_iEditHeadX = 0;
 	m_iEditTailX = 0;
+
+	m_iLastRecordX = 0;
 
 	// Zoom tool widgets
 	m_pHzoomIn   = new QToolButton(this);
@@ -262,6 +285,35 @@ void qtractorTrackView::updateContents ( bool bRefresh )
 }
 
 
+// Special recording visual feedback.
+void qtractorTrackView::updateContentsRecord ( bool bRefresh )
+{
+	qtractorSession *pSession = m_pTracks->session();
+	if (pSession == NULL)
+		return;
+
+	int x = QScrollView::contentsX();
+	int w = QScrollView::width();
+
+	int iCurrRecordX = m_iPlayHeadX;
+	if (iCurrRecordX > x + w)
+		iCurrRecordX = x + w;
+
+	if (m_iLastRecordX < iCurrRecordX) {
+		if (x < m_iLastRecordX && m_iLastRecordX < x + w)
+			x = m_iLastRecordX - 2;
+		w = iCurrRecordX - x + 2;
+		updateContents(
+			QRect(x, QScrollView::contentsY(), w, QScrollView::height()),
+			bRefresh);
+	}
+	else if (m_iLastRecordX > iCurrRecordX)
+		updateContents(bRefresh);
+
+	m_iLastRecordX = iCurrRecordX;
+}
+
+
 // Draw the track view.
 void qtractorTrackView::drawContents ( QPainter *p,
 	int clipx, int clipy, int clipw, int cliph )
@@ -278,27 +330,6 @@ void qtractorTrackView::drawContents ( QPainter *p,
 		return;
 
 	int x;
-
-	// Draw edit-head line...
-	x = pSession->pixelFromFrame(pSession->editHead());
-	if (x >= clipx && x < clipx + clipw) {
-		p->setPen(Qt::blue);
-		p->drawLine(x, clipy, x, clipy + cliph);
-	}
-
-	// Draw edit-tail line...
-	x = pSession->pixelFromFrame(pSession->editTail());
-	if (x >= clipx && x < clipx + clipw) {
-		p->setPen(Qt::blue);
-		p->drawLine(x, clipy, x, clipy + cliph);
-	}
-
-	// Draw play-head line...
-	x = pSession->pixelFromFrame(playHead());
-	if (x >= clipx && x < clipx + clipw) {
-		p->setPen(Qt::red);
-		p->drawLine(x, clipy, x, clipy + cliph);
-	}
 
 	// On-the-fly recording clip drawing...
 	if (pSession->isRecording() && pSession->isPlaying()) {
@@ -320,7 +351,7 @@ void qtractorTrackView::drawContents ( QPainter *p,
 						pTrack = pTrackItem->track();
 					if (pTrack && pTrack->clipRecord()) {
 						int h = y2 - y1 - 2;
-						const QRect clipRect(clipx - 1, y1 + 1, clipw + 2, h);
+						const QRect trackRect(clipx - 1, y1 + 1, clipw + 2, h);
 						qtractorClip *pClipRecord = pTrack->clipRecord(); 
 						unsigned long iClipStart  = pClipRecord->clipStart();
 						unsigned long iClipOffset = 0;
@@ -330,16 +361,53 @@ void qtractorTrackView::drawContents ( QPainter *p,
 						int w = 0;
 						if (iClipStart < iTrackEnd)
 							w += pSession->pixelFromFrame(iTrackEnd - iClipStart);
-						const QRect rect(x, y1 + 1, w, h);
-						if (rect.intersects(clipRect)) {
-							pClipRecord->drawClip(p,
-								rect.intersect(clipRect), iClipOffset);
+						const QRect& clipRect
+							= QRect(x, y1 + 1, w, h).intersect(trackRect);
+						if (!clipRect.isEmpty()) {
+#if 0
+							pClipRecord->drawClip(p, clipRect, iClipOffset);
+#else
+							w = clipRect.width();
+							h = clipRect.height();
+							QPixmap pm(w, h);
+							QBitmap bm(w, h);
+							bm.fill(Qt::color1);
+							pm.setMask(bm);
+							QPainter painter(&pm);
+							painter.setFont(QScrollView::font());
+							pClipRecord->drawClip(&painter,
+								QRect(0, 0, w, h), iClipOffset);
+							QImage img = pm.convertToImage();
+							qtractor_alpha_blend(img, 160);
+							p->drawImage(clipRect.x(), clipRect.y(), img);
+#endif
 						}
 					}
 				}
 				pItem = pItem->nextSibling();
 			}
 		}
+	}
+
+	// Draw edit-head line...
+	x = pSession->pixelFromFrame(pSession->editHead());
+	if (x >= clipx && x < clipx + clipw) {
+		p->setPen(Qt::blue);
+		p->drawLine(x, clipy, x, clipy + cliph);
+	}
+
+	// Draw edit-tail line...
+	x = pSession->pixelFromFrame(pSession->editTail());
+	if (x >= clipx && x < clipx + clipw) {
+		p->setPen(Qt::blue);
+		p->drawLine(x, clipy, x, clipy + cliph);
+	}
+
+	// Draw play-head line...
+	x = pSession->pixelFromFrame(playHead());
+	if (x >= clipx && x < clipx + clipw) {
+		p->setPen(Qt::red);
+		p->drawLine(x, clipy, x, clipy + cliph);
 	}
 }
 
@@ -1527,8 +1595,11 @@ void qtractorTrackView::drawPositionX ( int& iPositionX, int x, int x2,
 	// Restore old position...
 	if (x1 >= 0 && x1 < w) {
 		// Override old view line...
-		if (iPositionX != x2)
-			p.drawPixmap(x1, 0, *m_pPixmap, x1, 0, 1, h);
+		if (iPositionX != x2) {
+		//	p.drawPixmap(x1, 0, *m_pPixmap, x1, 0, 1, h);
+			updateContents(
+				QRect(x0 + x1, QScrollView::contentsY(), 1, h), false);
+		}
 		// Update the time-line header...
 		m_pTracks->trackTime()->updateContents(QRect(x0 + x1 - d2, d2, h2, d2));
 	}

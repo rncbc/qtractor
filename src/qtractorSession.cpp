@@ -775,6 +775,9 @@ bool qtractorSession::isPlaying() const
 void qtractorSession::setPlayHead ( unsigned long iFrame )
 {
 	bool bPlaying = isPlaying();
+	if (bPlaying && isRecording())
+		return;
+
 	setPlaying(false);
 	m_pAudioEngine->sessionCursor()->seek(iFrame, true);
 	m_pMidiEngine->sessionCursor()->seek(iFrame, true);
@@ -793,6 +796,9 @@ void qtractorSession::setLoop ( unsigned long iLoopStart,
 	unsigned long iLoopEnd )
 {
 	bool bPlaying = isPlaying();
+	if (bPlaying && isRecording())
+		return;
+
 	setPlaying(false);
 
 	// Local prepare...

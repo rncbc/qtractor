@@ -71,6 +71,8 @@ public:
 	// Contents update overloaded methods.
 	void updateContents(const QRect& rect, bool bRefresh = true);
 	void updateContents(bool bRefresh = true);
+	// Special recording visual feedback.
+	void updateContentsRecord(bool bRefresh = false);
 
 	// Select every clip of a given track.
 	void selectTrack(qtractorTrack *pTrack, bool bReset = true);
@@ -242,6 +244,9 @@ private:
 	int m_iPlayHeadX;
 	int m_iEditHeadX;
 	int m_iEditTailX;
+
+	// Recording state window.
+	int m_iLastRecordX;
 };
 
 

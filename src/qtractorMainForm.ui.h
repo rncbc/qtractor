@@ -190,7 +190,7 @@ void qtractorMainForm::init (void)
 	m_pTransportTime->setMinimumHeight(
 		m_pTransportTime->sizeHint().height() + 2);
 	m_pTransportTime->setMinimumWidth(
-		m_pTransportTime->sizeHint().width() + 2);
+		m_pTransportTime->sizeHint().width() + 4);
 	QToolTip::add(m_pTransportTime, tr("Current transport time (playhead)"));
 	timeToolbar->addSeparator();
 	m_pTempoSpinBox = new qtractorSpinBox(timeToolbar);
@@ -1978,7 +1978,7 @@ void qtractorMainForm::timerSlot (void)
 			m_iPlayTimer = 0;
 			updateTransportTime(m_iPlayHead);
 			if (m_pTracks && m_pSession->isRecording())
-				m_pTracks->trackView()->updateContents(false);
+				m_pTracks->trackView()->updateContentsRecord();
 		}
 	}
 
