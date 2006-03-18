@@ -1700,10 +1700,9 @@ void qtractorMainForm::stabilizeForm (void)
 	bEnabled = (!m_pSession->isPlaying() || !m_pSession->isRecording());
 	m_pTransportTime->setPaletteForegroundColor(
 		m_pSession->isActivated() ? Qt::green : Qt::darkGreen);
-	transportRewindAction->setEnabled(bEnabled
-		&& m_iPlayHead > 0);
-	transportBackwardAction->setEnabled(bEnabled
-		&& m_iPlayHead > 0);
+	transportRewindAction->setEnabled(bEnabled && m_iPlayHead > 0);
+	transportBackwardAction->setEnabled(bEnabled && m_iPlayHead > 0);
+	transportForwardAction->setEnabled(bEnabled);
 	transportFastForwardAction->setEnabled(bEnabled
 		&& m_iPlayHead < iSessionLength);
 	transportLoopAction->setEnabled(!m_pSession->isRecording()
