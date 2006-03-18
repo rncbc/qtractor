@@ -1696,12 +1696,16 @@ void qtractorMainForm::stabilizeForm (void)
 	m_statusItems[QTRACTOR_STATUS_LOOP]->setPaletteBackgroundColor(
 		m_pSession->isLooping() ? Qt::green : backColor);
 
-	// Transport stuff...	
+	// Transport stuff...
+	bEnabled = (!m_pSession->isPlaying() || !m_pSession->isRecording());
 	m_pTransportTime->setPaletteForegroundColor(
 		m_pSession->isActivated() ? Qt::green : Qt::darkGreen);
-	transportRewindAction->setEnabled(m_iPlayHead > 0);
-	transportBackwardAction->setEnabled(m_iPlayHead > 0);
-	transportFastForwardAction->setEnabled(m_iPlayHead < iSessionLength);
+	transportRewindAction->setEnabled(bEnabled
+		&& m_iPlayHead > 0);
+	transportBackwardAction->setEnabled(bEnabled
+		&& m_iPlayHead > 0);
+	transportFastForwardAction->setEnabled(bEnabled
+		&& m_iPlayHead < iSessionLength);
 	transportLoopAction->setEnabled(!m_pSession->isRecording()
 		&& (m_pSession->isLooping()
 			|| m_pSession->editHead() < m_pSession->editTail()));
