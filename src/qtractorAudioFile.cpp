@@ -69,13 +69,20 @@ qtractorAudioFileFactory::qtractorAudioFileFactory (void)
 	for (int i = 0 ; i < iCount; i++) {
 		sffinfo.format = i;
 		::sf_command(NULL, SFC_GET_FORMAT_MAJOR, &sffinfo, sizeof(sffinfo));
-		m_types[sffinfo.extension] = SndFile;
-		m_filters.append(QString("%1 (*.%2)")
-			.arg(QString(sffinfo.name)
-				.replace('/', '-')	// Replace some illegal characters.
-				.replace('(', QString::null)
-				.replace(')', QString::null))
-			.arg(sffinfo.extension));
+		const QString sName = QString(sffinfo.name)
+			.replace('/', '-')	// Replace some illegal characters.
+			.replace('(', QString::null)
+			.replace(')', QString::null);
+		QString sExt(sffinfo.extension);
+		m_types[sExt] = SndFile;
+		// Take care of some old 8.3 convention,
+		// specially regarding filename extensions...
+		if (sExt.length() > 3) {
+			sExt = sExt.left(3);
+			m_types[sExt] = SndFile;
+		}
+		// What we see on dialog is some excerpt...
+		m_filters.append(QString("%1 (*.%2)").arg(sName).arg(sExt));
 	}
 
 	// Add for libvorbisfile (read-only)...
