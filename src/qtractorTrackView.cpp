@@ -1596,9 +1596,9 @@ void qtractorTrackView::drawPositionX ( int& iPositionX, int x, int x2,
 	if (x1 >= 0 && x1 < w) {
 		// Override old view line...
 		if (iPositionX != x2) {
-		//	p.drawPixmap(x1, 0, *m_pPixmap, x1, 0, 1, h);
-			updateContents(
-				QRect(x0 + x1, QScrollView::contentsY(), 1, h), false);
+			p.drawPixmap(x1, 0, *m_pPixmap, x1, 0, 1, h);
+		//	updateContents(
+		//		QRect(x0 + x1, QScrollView::contentsY(), 1, h), false);
 		}
 		// Update the time-line header...
 		m_pTracks->trackTime()->updateContents(QRect(x0 + x1 - d2, d2, h2, d2));
