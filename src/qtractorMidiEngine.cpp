@@ -241,6 +241,7 @@ qtractorMidiOutputThread::~qtractorMidiOutputThread (void)
 	// Try to wake and terminate executive thread.
 	if (runState())
 		setRunState(false);
+
 	// Give it a bit of time to cleanup...
 	if (running()) {
 		sync();
@@ -812,20 +813,19 @@ void qtractorMidiEngine::deactivate (void)
 	m_pInputThread->setRunState(false);
 	m_pOutputThread->setRunState(false);
 	m_pOutputThread->sync();
-
-	// Give it a first go for cleanup...
-	qtractorSession::stabilize(100);
 }
 
 
 // Device engine cleanup method.
 void qtractorMidiEngine::clean (void)
 {
-	// A second go, as for final cleanup...
-	qtractorSession::stabilize(100);
-
 	// Delete output thread...
 	if (m_pOutputThread) {
+		// Make it nicely...
+		if (m_pOutputThread->running()) {
+		//	m_pOutputThread->terminate();
+			m_pOutputThread->wait();
+		}
 		delete m_pOutputThread;
 		m_pOutputThread = NULL;
 		m_iTimeStart = 0;
@@ -834,6 +834,11 @@ void qtractorMidiEngine::clean (void)
 
 	// Last but not least, delete input thread...
 	if (m_pInputThread) {
+		// Make it nicely...
+		if (m_pInputThread->running()) {
+		//	m_pInputThread->terminate();
+			m_pInputThread->wait();
+		}
 		delete m_pInputThread;
 		m_pInputThread = NULL;
 	}

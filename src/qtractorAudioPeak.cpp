@@ -109,10 +109,10 @@ qtractorAudioPeakThread::qtractorAudioPeakThread (
 	qtractorAudioPeakFile *pPeakFile )
 	: m_peakFile(pPeakFile->filename() + c_sPeakFileExt)
 {
-	m_bRunState  = false;
-	m_pPeakFile  = pPeakFile;
-	m_pAudioFile =
-		qtractorAudioFileFactory::createAudioFile(pPeakFile->filename());
+	m_bRunState = false;
+	m_pPeakFile = pPeakFile;
+	m_pAudioFile
+		= qtractorAudioFileFactory::createAudioFile(pPeakFile->filename());
 
 	m_ppWaveBuffer = NULL;
 	m_peakMax      = NULL;
@@ -133,6 +133,10 @@ qtractorAudioPeakThread::~qtractorAudioPeakThread (void)
 // The main thread executive.
 void qtractorAudioPeakThread::run (void)
 {
+#ifdef DEBUG
+	fprintf(stderr, "qtractorAudioPeakThread::run(%p): started.\n", this);
+#endif
+
 	m_bRunState = true;
 
 	// Create the peak file from the sample wave one...
@@ -179,6 +183,10 @@ void qtractorAudioPeakThread::run (void)
 		QApplication::postEvent(m_pPeakFile->notifyWidget(),
 			new QCustomEvent(m_pPeakFile->notifyPeakType(), m_pPeakFile));
 	}
+
+#ifdef DEBUG
+	fprintf(stderr, "qtractorAudioPeakThread::run(%p): stopped.\n", this);
+#endif
 }
 
 
@@ -197,31 +205,33 @@ bool qtractorAudioPeakThread::runState (void) const
 // Create the peak file chunk.
 bool qtractorAudioPeakThread::createPeakFileChunk (void)
 {
-	int nread = 0;
-	if (m_peakFile.status() == IO_Ok && m_ppWaveBuffer) {
-		// read another bunch of frames from the physical wave file...
-		nread = m_pAudioFile->read(m_ppWaveBuffer, c_iWaveBufSize);
-		if (nread > 0) {
-			unsigned short iChannels = m_pAudioFile->channels();
-			for (unsigned int n = 0; n < (unsigned int) nread; n++) {
-				for (unsigned short i = 0; i < iChannels; i++) {
-					// Accumulate for this sample frame...
-					float fSample = m_ppWaveBuffer[i][n];
-					if (m_peakMax[i] < fSample)
-						m_peakMax[i] = fSample;
-					else if (m_peakMin[i] > fSample)
-						m_peakMin[i] = fSample;
-					m_peakRms[i] += (fSample * fSample);
-				}
-				// Have we reached the peak accumulative period?
-				if (++m_iPeak >= m_iPeriod)
-					writePeakFileFrame();
+	if (m_ppWaveBuffer == NULL)
+		return false;
+
+	// Read another bunch of frames from the physical wave file...
+	int nread = m_pAudioFile->read(m_ppWaveBuffer, c_iWaveBufSize);
+	if (nread > 0) {
+		unsigned short iChannels = m_pAudioFile->channels();
+		for (unsigned int n = 0; n < (unsigned int) nread; n++) {
+			for (unsigned short i = 0; i < iChannels; i++) {
+				// Accumulate for this sample frame...
+				float fSample = m_ppWaveBuffer[i][n];
+				if (m_peakMax[i] < fSample)
+					m_peakMax[i] = fSample;
+				else if (m_peakMin[i] > fSample)
+					m_peakMin[i] = fSample;
+				m_peakRms[i] += (fSample * fSample);
 			}
+			// Have we reached the peak accumulative period?
+			if (++m_iPeak >= m_iPeriod)
+				writePeakFileFrame();
 		}
-		// End of file reached? Bail out the remaining peak tuple...
-		if (nread < 1 && m_iPeak > 0)
-			writePeakFileFrame();
 	}
+
+	// End of file reached? Bail out the remaining peak tuple...
+	if (nread < 1 && m_iPeak > 0)
+		writePeakFileFrame();
+
 	return (nread > 0);
 }
 
@@ -306,9 +316,9 @@ qtractorAudioPeakFile::qtractorAudioPeakFile (
 {
 	// Initialize instance variables.
 	m_pFactory      = pFactory;
-
 	m_sFilename     = sFilename;
 	m_iSampleRate   = iSampleRate;
+
 	m_iPeakPeriod   = 0;
 	m_iPeakChannels = 0;
 	m_iPeakFrames   = 0;
@@ -357,26 +367,26 @@ bool qtractorAudioPeakFile::openPeakFile (void)
 	if (m_peakFile.isOpen())
 		return true;
 
-	// Need some preliminary file information...
-	QFileInfo waveInfo(m_sFilename);
-	QFileInfo peakInfo(m_peakFile.name());
-	// Have we a peak file up-to-date,
-	// or must the peak file be (re)created?
-	if (!peakInfo.exists() ||
-		peakInfo.lastModified() < waveInfo.lastModified()) {
-		m_pPeakThread = new qtractorAudioPeakThread(this);
-		m_pPeakThread->start();
-		return false;
-	}
-
 	// Check if we're still on creative thread...
 	if (m_pPeakThread) {
 		// If running try waiting just 10 msec for it to finnish...
-		if (m_pPeakThread->running() && !m_pPeakThread->wait(10))
+		if (m_pPeakThread->running()/*&& !m_pPeakThread->wait(10) */)
 			return false;
 		// OK. We're done with our creative thread.
 		delete m_pPeakThread;
 		m_pPeakThread = NULL;
+	} else {
+		// Need some preliminary file information...
+		QFileInfo waveInfo(m_sFilename);
+		QFileInfo peakInfo(m_peakFile.name());
+		// Have we a peak file up-to-date,
+		// or must the peak file be (re)created?
+		if (!peakInfo.exists() ||
+			peakInfo.lastModified() < waveInfo.lastModified()) {
+			m_pPeakThread = new qtractorAudioPeakThread(this);
+			m_pPeakThread->start();
+			return false;
+		}
 	}
 
 	// Just open and go ahead with first bunch...

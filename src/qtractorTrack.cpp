@@ -527,7 +527,7 @@ void qtractorTrack::setLoop ( unsigned long iLoopStart,
 			// Set clip inner-loop...
 			pClip->setClipLoop(
 				(iLoopStart > iClipStart ? iLoopStart - iClipStart : 0),
-				(iLoopEnd < iClipEnd ? iLoopEnd - iClipStart : iClipEnd));
+				(iLoopEnd < iClipEnd ? iLoopEnd : iClipEnd) - iClipStart) ;
 		} else {
 			// Clear/reaet clip-loop...
 			pClip->setClipLoop(0, 0);

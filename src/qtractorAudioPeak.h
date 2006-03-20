@@ -98,6 +98,7 @@ private:
 	QFile          m_peakFile;
 	QString        m_sFilename;
 	unsigned int   m_iSampleRate;
+
 	unsigned short m_iPeakPeriod;
 	unsigned short m_iPeakChannels;
 	unsigned long  m_iPeakFrames;

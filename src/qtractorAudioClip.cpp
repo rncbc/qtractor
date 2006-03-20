@@ -101,7 +101,7 @@ bool qtractorAudioClip::open ( const QString& sFilename, int iMode )
 	}
 
 	// FIXME: Peak files should be created on-the-fly?
-	if (iMode & qtractorAudioFile::Read) {
+	if ((iMode & qtractorAudioFile::Write) == 0) {
 		m_pPeak = pSession->audioPeakFactory()->createPeak(
 			sFilename, pSession->sampleRate());
 		if (m_pPeak == NULL) {
