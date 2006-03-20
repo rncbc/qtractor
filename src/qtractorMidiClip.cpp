@@ -343,7 +343,7 @@ void qtractorMidiClip::drawClip ( QPainter *pPainter, const QRect& clipRect,
 	if (iClipOffset > 0)
 		rect.setX(rect.x() - pSession->pixelFromFrame(iClipOffset));
 	pPainter->drawText(rect,
-		Qt::AlignLeft | Qt::AlignTop | Qt::BreakAnywhere,
+		Qt::AlignLeft | Qt::AlignTop | Qt::SingleLine,
 		clipName());
 
 	// Check maximum note span...
