@@ -1705,11 +1705,9 @@ void qtractorMainForm::stabilizeForm (void)
 	transportForwardAction->setEnabled(bEnabled);
 	transportFastForwardAction->setEnabled(bEnabled
 		&& m_iPlayHead < iSessionLength);
-	transportLoopAction->setEnabled(!m_pSession->isRecording()
-		&& (m_pSession->isLooping()
-			|| m_pSession->editHead() < m_pSession->editTail()));
-	transportRecordAction->setEnabled(!m_pSession->isLooping()
-		&& m_pSession->recordTracks() > 0);
+	transportLoopAction->setEnabled(bEnabled && (m_pSession->isLooping()
+		|| m_pSession->editHead() < m_pSession->editTail()));
+	transportRecordAction->setEnabled(m_pSession->recordTracks() > 0);
 }
 
 
