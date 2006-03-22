@@ -724,6 +724,9 @@ qtractorTrack *qtractorTrackView::dragDropTrack ( QDropEvent *pDropEvent )
 
 	if (!m_dropItems.isEmpty()) {
 		hideDragRect(m_rectDrag, m_iDraggingX);
+		// Move edit head?
+		setEditHead(pSession->frameSnap(
+			pSession->frameFromPixel(pos.x())));
 		// Which track we're pointing at?
 		qtractorTrackViewInfo tvi;
 		pTrack = trackAt(pos, &tvi);
@@ -897,13 +900,13 @@ void qtractorTrackView::contentsDropEvent (
 	}
 
 	// Add new clips on proper and consecutive track locations...
-	unsigned long iClipStart
-		= pSession->frameFromPixel(m_rectDrag.x() + m_iDraggingX);
+	unsigned long iClipStart = pSession->frameSnap(
+		pSession->frameFromPixel(m_rectDrag.x() + m_iDraggingX));
 
 	// Now check whether the drop is intra-track...
 	qtractorTrack *pTrack = dragDropTrack(pDropEvent);
 	if (pTrack == NULL) {
-		// Do we have something tpo drop anyway?
+		// Do we have something to drop anyway?
 		// if yes, this is a extra-track drop...
 		if (!m_dropItems.isEmpty()) {
 			// Prepare file list for import...
@@ -1407,6 +1410,7 @@ void qtractorTrackView::showDragRect ( const QRect& rectDrag, int dx,
 		rect.setLeft(-(iThickness + 1));
 	if (rect.right() > QScrollView::width())
 		rect.setRight(QScrollView::width() + iThickness + 1);
+
 	// Now draw it with given thickness...
 	p.drawWinFocusRect(rect);
 	while (--iThickness > 0) {

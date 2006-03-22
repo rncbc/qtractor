@@ -495,7 +495,10 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 	unsigned short iChannel = 0;
 	unsigned char  data1    = 0;
 	unsigned char  data2    = 0;
-	unsigned long  duration = 0;	
+	unsigned long  duration = 0;
+
+	unsigned char *pSysex   = NULL;
+	unsigned short iSysex   = 0;
 
 #ifdef CONFIG_DEBUG
 	// - show event for debug purposes...
@@ -562,6 +565,9 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 		data2    = pEv->data.control.value;
 		break;
 	case SND_SEQ_EVENT_SYSEX:
+		pSysex   = (unsigned char *) pEv->data.ext.ptr; 
+		iSysex   = (unsigned short)  pEv->data.ext.len;
+		break;
 	default:
 		// Not handled here...
 		return;
@@ -581,8 +587,11 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 				qtractorMidiClip *pMidiClip
 					= static_cast<qtractorMidiClip *> (pTrack->clipRecord());
 				if (pMidiClip) {
-					pMidiClip->sequence()->addEvent(new qtractorMidiEvent(
-						pEv->time.tick, type, data1, data2, duration));
+					qtractorMidiEvent *pEvent = new qtractorMidiEvent(
+						pEv->time.tick, type, data1, data2, duration);
+					if (pSysex)
+						pEvent->setSysex(pSysex, iSysex);
+					pMidiClip->sequence()->addEvent(pEvent);
 				}
 			}
 		}
