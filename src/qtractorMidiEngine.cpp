@@ -565,6 +565,7 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 		data2    = pEv->data.control.value;
 		break;
 	case SND_SEQ_EVENT_SYSEX:
+		type     = qtractorMidiEvent::SYSEX;
 		pSysex   = (unsigned char *) pEv->data.ext.ptr; 
 		iSysex   = (unsigned short)  pEv->data.ext.len;
 		break;

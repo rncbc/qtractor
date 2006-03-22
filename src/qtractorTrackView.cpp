@@ -375,10 +375,13 @@ void qtractorTrackView::drawContents ( QPainter *p,
 							pm.setMask(bm);
 							QPainter painter(&pm);
 							painter.setFont(QScrollView::font());
-							pClipRecord->drawClip(&painter,
-								QRect(0, 0, w, h), iClipOffset);
+						//	pClipRecord->drawClip(&painter,
+						//		QRect(0, 0, w, h), iClipOffset);
+							painter.setPen(pTrack->background().dark());
+							painter.setBrush(pTrack->background());
+							painter.drawRect(0, 0, w, h);
 							QImage img = pm.convertToImage();
-							qtractor_alpha_blend(img, 160);
+							qtractor_alpha_blend(img, 120);
 							p->drawImage(clipRect.x(), clipRect.y(), img);
 #endif
 						}
@@ -724,9 +727,6 @@ qtractorTrack *qtractorTrackView::dragDropTrack ( QDropEvent *pDropEvent )
 
 	if (!m_dropItems.isEmpty()) {
 		hideDragRect(m_rectDrag, m_iDraggingX);
-		// Move edit head?
-		setEditHead(pSession->frameSnap(
-			pSession->frameFromPixel(pos.x())));
 		// Which track we're pointing at?
 		qtractorTrackViewInfo tvi;
 		pTrack = trackAt(pos, &tvi);
@@ -744,7 +744,7 @@ qtractorTrack *qtractorTrackView::dragDropTrack ( QDropEvent *pDropEvent )
 		m_iDraggingX = (pSession->pixelSnap(x + dx) - x);
 		QScrollView::ensureVisible(pos.x(), pos.y(), 8, 8);
 		showDragRect(m_rectDrag, m_iDraggingX);
-		// OK, we've move it...
+		// OK, we've moved it...
 		return pTrack;
 	}
 
@@ -790,12 +790,12 @@ qtractorTrack *qtractorTrackView::dragDropTrack ( QDropEvent *pDropEvent )
 					w += pSession->pixelFromTick(seq.duration());
 					if (m_dropType == qtractorTrack::None)
 						m_dropType = qtractorTrack::Midi;
-				} else if (m_dropType == qtractorTrack::Midi) {
+				} else /*if (m_dropType == qtractorTrack::Midi)*/ {
 					m_dropItems.remove(pDropItem);
 				}
 				file.close();
-			} 
-			else if (m_dropType == qtractorTrack::Midi) {
+				continue;
+			} else if (m_dropType == qtractorTrack::Midi) {
 				m_dropItems.remove(pDropItem);
 			}
 		}
@@ -820,9 +820,10 @@ qtractorTrack *qtractorTrackView::dragDropTrack ( QDropEvent *pDropEvent )
 					m_dropItems.remove(pDropItem);
 				}
 				delete pFile;
+				continue;
 			} else if (m_dropType == qtractorTrack::Audio) {
 				m_dropItems.remove(pDropItem);
-			}		
+			}
 		}
 	}
 
@@ -1412,11 +1413,11 @@ void qtractorTrackView::showDragRect ( const QRect& rectDrag, int dx,
 		rect.setRight(QScrollView::width() + iThickness + 1);
 
 	// Now draw it with given thickness...
-	p.drawWinFocusRect(rect);
+	p.drawWinFocusRect(rect, Qt::gray);
 	while (--iThickness > 0) {
 		rect.setTopLeft(rect.topLeft() + delta);
 		rect.setBottomRight(rect.bottomRight() - delta);
-		p.drawWinFocusRect(rect);
+		p.drawWinFocusRect(rect, Qt::gray);
 	}
 }
 
