@@ -335,14 +335,17 @@ void qtractorTrackForm::updateTrackType ( int iTrackType )
 {
 	// Make changes due to track type change.
 	qtractorEngine *pEngine = NULL;
+	QPixmap pixmap;
 	switch (iTrackType) {
 	case 0: // Audio track...
 		pEngine = m_pTrack->session()->audioEngine();
+		pixmap = QPixmap::fromMimeSource("trackAudio.png");
 		MidiGroupBox->setEnabled(false);
 		BusNameComboBox->setEnabled(true);
 		break;
 	case 1: // Midi track...
 		pEngine = m_pTrack->session()->midiEngine();
+		pixmap = QPixmap::fromMimeSource("trackMidi.png");
 		MidiGroupBox->setEnabled(true);
 		BusNameComboBox->setEnabled(true);
 		break;
@@ -356,7 +359,7 @@ void qtractorTrackForm::updateTrackType ( int iTrackType )
 	if (pEngine) {
 		for (qtractorBus *pBus = pEngine->busses().first();
 				pBus; pBus = pBus->next()) {
-			BusNameComboBox->insertItem(pBus->busName());
+			BusNameComboBox->insertItem(pixmap, pBus->busName());
 		}
 	}
 }

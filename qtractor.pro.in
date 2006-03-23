@@ -98,6 +98,8 @@ IMAGES   = icons/qtractor.png \
            icons/trackAdd.png \
            icons/trackRemove.png \
            icons/trackProperties.png \
+           icons/trackAudio.png \
+           icons/trackMidi.png \
            icons/viewZoomIn.png \
            icons/viewZoomOut.png \
            icons/viewZoomTool.png \

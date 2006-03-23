@@ -593,6 +593,9 @@
         <property name="name">
             <cstring>trackImportAudioAction</cstring>
         </property>
+        <property name="iconSet">
+            <iconset>trackAudio.png</iconset>
+        </property>
         <property name="text">
             <string>Audio</string>
         </property>
@@ -609,6 +612,9 @@
     <action>
         <property name="name">
             <cstring>trackImportMidiAction</cstring>
+        </property>
+        <property name="iconSet">
+            <iconset>trackMidi.png</iconset>
         </property>
         <property name="text">
             <string>Midi</string>

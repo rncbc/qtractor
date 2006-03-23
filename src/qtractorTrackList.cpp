@@ -245,6 +245,8 @@ void qtractorTrackListItem::setText ( int iColumn, const QString& sText )
 		case qtractorTrack::Audio: {
 			qtractorAudioBus *pAudioBus
 				= static_cast<qtractorAudioBus *> (m_pTrack->bus());
+			QListViewItem::setPixmap(qtractorTrackList::Bus,
+				QPixmap::fromMimeSource("trackAudio.png"));
 			QListViewItem::setText(qtractorTrackList::Bus,
 				(pAudioBus ? pAudioBus->busName() : s)  + '\n'
 				+ QObject::tr("Audio"));
@@ -258,6 +260,8 @@ void qtractorTrackListItem::setText ( int iColumn, const QString& sText )
 		case qtractorTrack::Midi: {
 			qtractorMidiBus *pMidiBus
 				= static_cast<qtractorMidiBus *> (m_pTrack->bus());
+			QListViewItem::setPixmap(qtractorTrackList::Bus,
+				QPixmap::fromMimeSource("trackMidi.png"));
 			QListViewItem::setText(qtractorTrackList::Bus,
 				(pMidiBus ? pMidiBus->busName() : s)  + '\n'
 				+ QObject::tr("MIDI"));
@@ -422,6 +426,7 @@ qtractorTrackList::qtractorTrackList ( qtractorTracks *pTracks,
 
 	QListView::setColumnAlignment(qtractorTrackList::Number, Qt::AlignHCenter);
 	QListView::setColumnAlignment(qtractorTrackList::Channel, Qt::AlignHCenter);
+	QListView::setColumnAlignment(qtractorTrackList::Bus, Qt::AlignTop);
 
 	QListView::setColumnWidthMode(qtractorTrackList::Name, QListView::Manual);
 	QListView::setColumnWidthMode(qtractorTrackList::Channel, QListView::Manual);
