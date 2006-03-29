@@ -199,10 +199,7 @@ void qtractorMidiInputThread::run (void)
 		while (iPoll > 0) {
 			snd_seq_event_t *pEv = NULL;
 			snd_seq_event_input(pAlsaSeq, &pEv);
-			// Process input event...
-			// - local timestamp;
-			pEv->time.tick = m_pSession->tickFromFrame(
-				m_pSession->audioEngine()->sessionCursor()->frameTime());
+			// Process input event - ...
 			// - enqueue to input mapping;
 			m_pSession->midiEngine()->capture(pEv);
 			// - direct route to output;
@@ -450,8 +447,8 @@ qtractorMidiEngine::qtractorMidiEngine ( qtractorSession *pSession )
 	: qtractorEngine(pSession, qtractorTrack::Midi)
 {
 	m_pAlsaSeq    = NULL;
-	m_iAlsaClient = 0;
-	m_iAlsaQueue  = 0;
+	m_iAlsaClient = -1;
+	m_iAlsaQueue  = -1;
 	
 	m_pInputThread  = NULL;
 	m_pOutputThread = NULL;
@@ -857,9 +854,9 @@ void qtractorMidiEngine::clean (void)
 	if (m_pAlsaSeq) {
 		snd_seq_free_queue(m_pAlsaSeq, m_iAlsaQueue);
 		snd_seq_close(m_pAlsaSeq);
-		m_iAlsaQueue  = 0;
-		m_iAlsaClient = 0;
-		m_pAlsaSeq = NULL;
+		m_iAlsaQueue  = -1;
+		m_iAlsaClient = -1;
+		m_pAlsaSeq    = NULL;
 	}
 }
 
@@ -996,7 +993,7 @@ bool qtractorMidiEngine::saveElement ( qtractorSessionDocument *pDocument,
 qtractorMidiBus::qtractorMidiBus ( const QString& sBusName,
 	BusMode mode ) : qtractorBus(sBusName, mode)
 {
-	m_iAlsaPort = 0;
+	m_iAlsaPort = -1;
 }
 
 
@@ -1019,11 +1016,11 @@ bool qtractorMidiBus::open (void)
 	if (pMidiEngine->alsaSeq() == NULL)
 		return false;
 
+	// The verry same port might be used for input and output...
 	unsigned int flags = 0;
-	
+
 	if (busMode() & qtractorBus::Input)
 		flags |= SND_SEQ_PORT_CAP_WRITE | SND_SEQ_PORT_CAP_SUBS_WRITE;
-
 	if (busMode() & qtractorBus::Output)
 		flags |= SND_SEQ_PORT_CAP_READ | SND_SEQ_PORT_CAP_SUBS_READ;
 
@@ -1031,7 +1028,25 @@ bool qtractorMidiBus::open (void)
 		pMidiEngine->alsaSeq(), busName().latin1(), flags,
 		SND_SEQ_PORT_TYPE_MIDI_GENERIC | SND_SEQ_PORT_TYPE_APPLICATION);
 
-	return (m_iAlsaPort >= 0);
+	if (m_iAlsaPort < 0)
+		return false;
+
+	// We want to know when the events get delivered to us...
+	snd_seq_port_info_t *pinfo;
+	snd_seq_port_info_alloca(&pinfo);
+
+	if (snd_seq_get_port_info(pMidiEngine->alsaSeq(), m_iAlsaPort, pinfo) < 0)
+		return false;
+
+	snd_seq_port_info_set_timestamping(pinfo, 1);
+	snd_seq_port_info_set_timestamp_queue(pinfo, pMidiEngine->alsaQueue());
+	snd_seq_port_info_set_timestamp_real(pinfo, 0);	// MIDI ticks.
+
+	if (snd_seq_set_port_info(pMidiEngine->alsaSeq(), m_iAlsaPort, pinfo) < 0)
+		return false;
+
+	// Done.
+	return true;
 }
 
 
@@ -1048,7 +1063,8 @@ void qtractorMidiBus::close (void)
 		return;
 
 	snd_seq_delete_simple_port(pMidiEngine->alsaSeq(), m_iAlsaPort);
-	m_iAlsaPort = 0;
+
+	m_iAlsaPort = -1;
 }
 
 
