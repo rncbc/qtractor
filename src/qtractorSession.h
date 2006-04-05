@@ -58,6 +58,10 @@ public:
 	// Reset session.
 	void clear();
 
+	// Session directory path accessors.
+	void setSessionDir(const QString& sSessionDir);
+	const QString& sessionDir() const;
+
 	// Session filename accessors.
 	void setSessionName(const QString& sSessionName);
 	const QString& sessionName() const;
@@ -201,9 +205,10 @@ public:
 
 	// Sanitize a given name.
 	static QString sanitize(const QString& s); 
-	// Create a brand new filename.
-	static QString createFilename(const QString& sSessionName,
-		const QString& sTrackName, int iClipNo, const QString& sExt); 
+
+	// Create a brand new filename (absolute file path).
+	QString createFilePath(const QString& sTrackName,
+		int iClipNo, const QString& sExt); 
 
 	// Consolidated session record state.
 	void setRecording(bool bRecording);
@@ -252,6 +257,7 @@ public:
 		// Helper clear/reset method.
 		void clear();
 		// Members.
+		QString        sessionDir;
 		QString        sessionName;
 		QString        description;
 		unsigned int   sampleRate;

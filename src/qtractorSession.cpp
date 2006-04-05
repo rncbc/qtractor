@@ -37,6 +37,7 @@
 #include <qdatetime.h>
 #include <qfileinfo.h>
 #include <qregexp.h>
+#include <qdir.h>
 
 
 //-------------------------------------------------------------------------
@@ -46,6 +47,7 @@
 qtractorSession::Properties& qtractorSession::Properties::copy (
 	const Properties& props )
 {
+	sessionDir     = props.sessionDir;
 	sessionName    = props.sessionName;
 	description    = props.description;
 	sampleRate     = props.sampleRate;
@@ -65,6 +67,7 @@ qtractorSession::Properties& qtractorSession::Properties::copy (
 // Helper clear/reset method.
 void qtractorSession::Properties::clear (void)
 {
+	sessionDir     = QDir().absPath();
 	sessionName    = QString::null;
 	description    = QString::null;
 	sampleRate     = 44100;
@@ -181,6 +184,18 @@ void qtractorSession::clear (void)
 	m_pMidiEngine->sessionCursor()->reset();
 	m_pMidiEngine->sessionCursor()->seek(0);
 	m_cursors.append(m_pMidiEngine->sessionCursor());
+}
+
+
+// Session directory path accessors.
+void qtractorSession::setSessionDir ( const QString& sSessionDir )
+{
+	m_props.sessionDir = sSessionDir;
+}
+
+const QString& qtractorSession::sessionDir (void) const
+{
+	return m_props.sessionDir;
 }
 
 
@@ -852,22 +867,22 @@ QString qtractorSession::sanitize ( const QString& s )
 }
 
 
-// Create a brand new filename.
-QString qtractorSession::createFilename ( const QString& sSessionName,
-	const QString& sTrackName, int iClipNo, const QString& sExt ) 
+// Create a brand new filename (absolute file path).
+QString qtractorSession::createFilePath ( const QString& sTrackName,
+	int iClipNo, const QString& sExt ) 
 {
-	QString sFilename = sanitize(sSessionName) + '-'
-		+ sanitize(sTrackName) + "-%1." + sExt;
+	QString sFilename = qtractorSession::sanitize(m_props.sessionName)
+		+ '-' + qtractorSession::sanitize(sTrackName) + "-%1." + sExt;
 
 	if (iClipNo < 1)
 		iClipNo++;
 
-	QFileInfo fi(sFilename.arg(iClipNo));
+	QFileInfo fi(m_props.sessionDir, sFilename.arg(iClipNo));
 	while (fi.exists())
-		fi.setFile(sFilename.arg(++iClipNo));
+		fi.setFile(m_props.sessionDir, sFilename.arg(++iClipNo));
 
 #ifdef CONFIG_DEBUG
-	fprintf(stderr, "qtractorSession::createFilename(\"%s\")\n",
+	fprintf(stderr, "qtractorSession::createFilePath(\"%s\")\n",
 		fi.absFilePath().latin1());
 #endif
 
@@ -915,7 +930,7 @@ void qtractorSession::trackRecord ( qtractorTrack *pTrack, bool bRecord )
 		qtractorAudioClip *pAudioClip = new qtractorAudioClip(pTrack);
 		pAudioClip->setClipStart(playHead());
 		pAudioClip->open(
-			createFilename(sessionName(), pTrack->trackName(), 0, "wav"),
+			createFilePath(pTrack->trackName(), 0, "wav"),
 			qtractorAudioFile::Write);
 		pTrack->setClipRecord(pAudioClip);
 		break;
@@ -925,7 +940,7 @@ void qtractorSession::trackRecord ( qtractorTrack *pTrack, bool bRecord )
 		qtractorMidiClip *pMidiClip = new qtractorMidiClip(pTrack);
 		pMidiClip->setClipStart(playHead());
 		pMidiClip->open(
-			createFilename(sessionName(), pTrack->trackName(), 0, "mid"),
+			createFilePath(pTrack->trackName(), 0, "mid"),
 			1, // iTrackChannel: Single-track SMF format 1 (2 tracks)
 			qtractorMidiFile::Write);
 		pTrack->setClipRecord(pMidiClip);
@@ -1062,7 +1077,9 @@ bool qtractorSession::loadElement ( qtractorSessionDocument *pDocument,
 				QDomElement eProp = nProp.toElement();
 				if (eProp.isNull())
 					continue;
-				if (eProp.tagName() == "description")
+				if (eProp.tagName() == "directory")
+					qtractorSession::setSessionDir(eProp.text());
+				else if (eProp.tagName() == "description")
 					qtractorSession::setDescription(eProp.text());
 				else if (eProp.tagName() == "sample-rate")
 					qtractorSession::setSampleRate(eProp.text().toUInt());
@@ -1219,6 +1236,8 @@ bool qtractorSession::saveElement ( qtractorSessionDocument *pDocument,
 
 	// Save session properties...
 	QDomElement eProps = pDocument->document()->createElement("properties");
+	pDocument->saveTextElement("directory",
+		qtractorSession::sessionDir(), &eProps);
 	pDocument->saveTextElement("description",
 		qtractorSession::description(), &eProps);
 	pDocument->saveTextElement("sample-rate",

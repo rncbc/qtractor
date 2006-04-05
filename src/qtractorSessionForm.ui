@@ -53,7 +53,7 @@
         <property name="name">
             <cstring>unnamed</cstring>
         </property>
-        <widget class="QGroupBox" row="4" column="0">
+        <widget class="QGroupBox" row="6" column="0">
             <property name="name">
                 <cstring>TimeGroupBox</cstring>
             </property>
@@ -78,6 +78,11 @@
                     <item>
                         <property name="text">
                             <string>96000</string>
+                        </property>
+                    </item>
+                    <item>
+                        <property name="text">
+                            <string>192000</string>
                         </property>
                     </item>
                     <property name="name">
@@ -202,7 +207,7 @@
                 </widget>
             </grid>
         </widget>
-        <widget class="QGroupBox" row="4" column="1">
+        <widget class="QGroupBox" row="6" column="1">
             <property name="name">
                 <cstring>ViewGroupBox</cstring>
             </property>
@@ -383,7 +388,7 @@
                 </widget>
             </grid>
         </widget>
-        <widget class="QLayoutWidget" row="5" column="0" rowspan="1" colspan="2">
+        <widget class="QLayoutWidget" row="7" column="0" rowspan="1" colspan="2">
             <property name="name">
                 <cstring>layout1</cstring>
             </property>
@@ -432,7 +437,7 @@
                 </widget>
             </hbox>
         </widget>
-        <widget class="QTextEdit" row="3" column="0" rowspan="1" colspan="2">
+        <widget class="QTextEdit" row="5" column="0" rowspan="1" colspan="2">
             <property name="name">
                 <cstring>DescriptionTextEdit</cstring>
             </property>
@@ -448,6 +453,81 @@
                 <string>Session description</string>
             </property>
         </widget>
+        <widget class="QLabel" row="4" column="0" rowspan="1" colspan="2">
+            <property name="name">
+                <cstring>DescriptionTextLabel</cstring>
+            </property>
+            <property name="text">
+                <string>&amp;Description:</string>
+            </property>
+            <property name="buddy" stdset="0">
+                <cstring>DescriptionTextEdit</cstring>
+            </property>
+        </widget>
+        <widget class="QLayoutWidget" row="3" column="0" rowspan="1" colspan="2">
+            <property name="name">
+                <cstring>layout2</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+				<widget class="QComboBox">
+					<property name="name">
+						<cstring>SessionDirComboBox</cstring>
+					</property>
+					<property name="minimumSize">
+						<size>
+							<width>320</width>
+							<height>0</height>
+						</size>
+					</property>
+					<property name="editable">
+						<bool>true</bool>
+					</property>
+					<property name="toolTip" stdset="0">
+						<string>Session directory</string>
+					</property>
+				</widget>
+				<widget class="QToolButton">
+					<property name="name">
+						<cstring>SessionDirToolButton</cstring>
+					</property>
+					<property name="minimumSize">
+						<size>
+							<width>22</width>
+							<height>22</height>
+						</size>
+					</property>
+					<property name="maximumSize">
+						<size>
+							<width>24</width>
+							<height>24</height>
+						</size>
+					</property>
+					<property name="focusPolicy">
+						<enum>TabFocus</enum>
+					</property>
+					<property name="text">
+						<string>...</string>
+					</property>
+					<property name="toolTip" stdset="0">
+						<string>Browse for session directory</string>
+					</property>
+				</widget>
+			</hbox>
+		</widget>
+        <widget class="QLabel" row="2" column="0" rowspan="1" colspan="2">
+            <property name="name">
+                <cstring>SessionDirTextLabel</cstring>
+            </property>
+            <property name="text">
+                <string>&amp;Directory:</string>
+            </property>
+            <property name="buddy" stdset="0">
+                <cstring>SessionDirComboBox</cstring>
+            </property>
+        </widget>
         <widget class="QLineEdit" row="1" column="0" rowspan="1" colspan="2">
             <property name="name">
                 <cstring>SessionNameLineEdit</cstring>
@@ -460,17 +540,6 @@
             </property>
             <property name="toolTip" stdset="0">
                 <string>Session name</string>
-            </property>
-        </widget>
-        <widget class="QLabel" row="2" column="0" rowspan="1" colspan="2">
-            <property name="name">
-                <cstring>DescriptionTextLabel</cstring>
-            </property>
-            <property name="text">
-                <string>&amp;Description:</string>
-            </property>
-            <property name="buddy" stdset="0">
-                <cstring>DescriptionTextEdit</cstring>
             </property>
         </widget>
         <widget class="QLabel" row="0" column="0" rowspan="1" colspan="2">
@@ -492,6 +561,18 @@
         <signal>textChanged(const QString&amp;)</signal>
         <receiver>qtractorSessionForm</receiver>
         <slot>changed()</slot>
+    </connection>
+    <connection>
+        <sender>SessionDirComboBox</sender>
+        <signal>textChanged(const QString&amp;)</signal>
+        <receiver>qtractorSessionForm</receiver>
+        <slot>changed()</slot>
+    </connection>
+    <connection>
+        <sender>SessionDirToolButton</sender>
+        <signal>clicked()</signal>
+        <receiver>qtractorSessionForm</receiver>
+        <slot>browseSessionDir()</slot>
     </connection>
     <connection>
         <sender>DescriptionTextEdit</sender>
@@ -562,6 +643,8 @@
 </connections>
 <tabstops>
     <tabstop>SessionNameLineEdit</tabstop>
+    <tabstop>SessionDirComboBox</tabstop>
+    <tabstop>SessionDirToolButton</tabstop>
     <tabstop>DescriptionTextEdit</tabstop>
     <tabstop>SampleRateComboBox</tabstop>
     <tabstop>TempoSpinBox</tabstop>
@@ -587,6 +670,7 @@
     <slot specifier="non virtual">reject()</slot>
     <slot specifier="non virtual">changed()</slot>
     <slot specifier="non virtual">stabilizeForm()</slot>
+    <slot specifier="non virtual">browseSessionDir()</slot>
 </slots>
 <functions>
     <function access="private" specifier="non virtual">init()</function>

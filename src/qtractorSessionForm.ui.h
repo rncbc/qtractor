@@ -25,6 +25,7 @@
 
 #include <qvalidator.h>
 #include <qmessagebox.h>
+#include <qfiledialog.h>
 
 #include <math.h>
 
@@ -57,9 +58,11 @@ void qtractorSessionForm::setSession ( qtractorSession *pSession )
 
 	// Initialize dialog widgets...
 	SessionNameLineEdit->setText(m_props.sessionName);
+	SessionDirComboBox->setCurrentText(m_props.sessionDir);
 	DescriptionTextEdit->setText(m_props.description);
 	// Time properties...
 	SampleRateComboBox->setCurrentText(QString::number(m_props.sampleRate));
+	SampleRateComboBox->setEnabled(!pSession->isActivated());
 	TempoSpinBox->setValueFloat(m_props.tempo);
 	BeatsPerBarSpinBox->setValue(int(m_props.beatsPerBar));
 	TicksPerBeatSpinBox->setValue(int(m_props.ticksPerBeat));
@@ -91,6 +94,7 @@ void qtractorSessionForm::accept (void)
 	if (m_iDirtyCount > 0) {
 		// Make changes permanent...
 		m_props.sessionName    = SessionNameLineEdit->text();
+		m_props.sessionDir     = SessionDirComboBox->currentText();
 		m_props.description    = DescriptionTextEdit->text();
 		// Time properties...
 		m_props.sampleRate     = SampleRateComboBox->currentText().toUInt();
@@ -152,8 +156,26 @@ void qtractorSessionForm::stabilizeForm (void)
 {
 	bool bValid = (m_iDirtyCount > 0);
 	bValid = bValid && !SessionNameLineEdit->text().isEmpty();
-	bValid = bValid && !DescriptionTextEdit->text().isEmpty();
+	bValid = bValid && QDir(SessionDirComboBox->currentText()).exists();
+//	bValid = bValid && !DescriptionTextEdit->text().isEmpty();
 	OkPushButton->setEnabled(bValid);
+}
+
+
+// Browse for session directory.
+void qtractorSessionForm::browseSessionDir (void)
+{
+    QString sSessionDir = QFileDialog::getExistingDirectory(
+		SessionDirComboBox->currentText(),	   // Start here.
+		this, 0,                               // Parent and name (none)
+		tr("Session Directory:")               // Caption.
+    );
+
+    if (!sSessionDir.isEmpty()) {
+        SessionDirComboBox->setCurrentText(sSessionDir);
+        SessionDirComboBox->setFocus();
+        changed();
+    }
 }
 
 
