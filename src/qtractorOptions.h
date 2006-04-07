@@ -25,6 +25,7 @@
 #include <qsettings.h>
 
 class QWidget;
+class QComboBox;
 
 
 //-------------------------------------------------------------------------
@@ -92,6 +93,10 @@ public:
 	// Widget geometry persistence helper prototypes.
 	void saveWidgetGeometry(QWidget *pWidget);
 	void loadWidgetGeometry(QWidget *pWidget);
+
+	// Combo box history persistence helper prototypes.
+	void loadComboBoxHistory(QComboBox *pComboBox, int iLimit = 8);
+	void saveComboBoxHistory(QComboBox *pComboBox, int iLimit = 8);
 
 private:
 

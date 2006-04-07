@@ -138,6 +138,7 @@ private:
 	unsigned long  m_iLoopEnd;
 
 	unsigned int   m_iSeekPending;
+	unsigned long  m_iSeekOffset;
 
 	bool           m_bResample;
 	float          m_fResampleRatio;
@@ -148,55 +149,6 @@ private:
 	float        **m_ppOutBuffer;
 	SRC_STATE    **m_ppSrcState;
 #endif  // CONFIG_LIBSAMPLERATE
-};
-
-
-//----------------------------------------------------------------------
-// class qtractorAudioBufferThread -- Ring-cache manager thread (singleton).
-//
-
-class qtractorAudioBufferThread : public QThread
-{
-public:
-
-	// Singleton instance accessor.
-	static qtractorAudioBufferThread& Instance();
-	// Singleton destroyer.
-	static void Destroy();
-
-	// Audio file list manager methods.
-	void attach(qtractorAudioBuffer *pAudioBuffer);
-	void detach(qtractorAudioBuffer *pAudioBuffer);
-
-	// Thread run state accessors.
-	void setRunState(bool bRunState);
-	bool runState() const;
-
-	// Wake from executive wait condition.
-	void sync();
-
-protected:
-
-	// Constructor.
-	qtractorAudioBufferThread();
-
-	// The main thread executive.
-	void run();
-
-private:
-
-	// The singleton instance.
-	static qtractorAudioBufferThread* g_pInstance;
-
-	// Whether the thread is logically running.
-	bool m_bRunState;
-
-	// Thread synchronization objects.
-	QMutex m_mutex;
-	QWaitCondition m_cond;
-
-	// The list of managed audio buffers.
-	qtractorList<qtractorAudioBuffer> m_list;
 };
 
 

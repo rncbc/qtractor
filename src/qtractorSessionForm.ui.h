@@ -23,6 +23,9 @@
 #include "qtractorAbout.h"
 #include "qtractorSession.h"
 
+#include "qtractorOptions.h"
+#include "qtractorMainForm.h"
+
 #include <qvalidator.h>
 #include <qmessagebox.h>
 #include <qfiledialog.h>
@@ -33,6 +36,15 @@
 // Kind of constructor.
 void qtractorSessionForm::init (void)
 {
+	// Initialize conveniency options...
+	qtractorMainForm *pMainForm
+		= static_cast<qtractorMainForm *> (parentWidget());
+	if (pMainForm) {
+		qtractorOptions *pOptions = pMainForm->options();
+		if (pOptions)
+			pOptions->loadComboBoxHistory(SessionDirComboBox);
+	}
+
 	// Setup some specific validators.
 	SampleRateComboBox->setValidator(new QIntValidator(SampleRateComboBox));
 
@@ -48,7 +60,6 @@ void qtractorSessionForm::init (void)
 void qtractorSessionForm::destroy (void)
 {
 }
-
 
 // Populate (setup) dialog controls from settings descriptors.
 void qtractorSessionForm::setSession ( qtractorSession *pSession )
@@ -109,6 +120,15 @@ void qtractorSessionForm::accept (void)
 		m_props.verticalZoom   = VerticalZoomSpinBox->value();
 		// Reset dirty flag.
 		m_iDirtyCount = 0;
+	}
+
+	// Save other conveniency options...
+	qtractorMainForm *pMainForm
+		= static_cast<qtractorMainForm *> (parentWidget());
+	if (pMainForm) {
+		qtractorOptions *pOptions = pMainForm->options();
+		if (pOptions)
+			pOptions->saveComboBoxHistory(SessionDirComboBox);
 	}
 
 	// Just go with dialog acceptance.

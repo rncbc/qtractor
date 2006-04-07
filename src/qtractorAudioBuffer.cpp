@@ -23,6 +23,56 @@
 
 
 //----------------------------------------------------------------------
+// class qtractorAudioBufferThread -- Ring-cache manager thread (singleton).
+//
+
+class qtractorAudioBufferThread : public QThread
+{
+public:
+
+	// Singleton instance accessor.
+	static qtractorAudioBufferThread& Instance();
+	// Singleton destroyer.
+	static void Destroy();
+
+	// Audio file list manager methods.
+	void attach(qtractorAudioBuffer *pAudioBuffer);
+	void detach(qtractorAudioBuffer *pAudioBuffer);
+
+	// Thread run state accessors.
+	void setRunState(bool bRunState);
+	bool runState() const;
+
+	// Wake from executive wait condition.
+	void sync();
+
+protected:
+
+	// Constructor.
+	qtractorAudioBufferThread();
+
+	// The main thread executive.
+	void run();
+
+private:
+
+	// The singleton instance.
+	static qtractorAudioBufferThread* g_pInstance;
+
+	// Whether the thread is logically running.
+	bool m_bRunState;
+
+	// Thread synchronization objects.
+	QMutex m_mutex;
+	QWaitCondition m_cond;
+
+	// The list of managed audio buffers.
+	qtractorList<qtractorAudioBuffer> m_list;
+};
+
+
+
+//----------------------------------------------------------------------
 // class qtractorAudioBuffer -- Ring buffer/cache method implementation.
 //
 
@@ -47,6 +97,7 @@ qtractorAudioBuffer::qtractorAudioBuffer ( unsigned short iChannels,
 	m_iLoopEnd       = 0;
 
 	m_iSeekPending   = 0;
+	m_iSeekOffset    = 0;
 
 	m_bResample      = false;
 	m_fResampleRatio = 1.0;
@@ -369,6 +420,9 @@ bool qtractorAudioBuffer::seek ( unsigned long iOffset )
 
 	// Check if target is already cached...
 	if (iOffset >= wo - rs && iOffset < wo) {
+		// This surely looks like a hack...
+		if (iOffset == 0)
+			return true;
 		// If not under loop, it won't break...
 		unsigned long ls = m_iLoopStart;
 		unsigned long le = m_iLoopEnd;
@@ -383,7 +437,7 @@ bool qtractorAudioBuffer::seek ( unsigned long iOffset )
 	//	if (!m_pFile->seek(iOffset))
 	//		return false;
 
-	m_iOffset = iOffset;
+	m_iSeekOffset = iOffset;
 	m_iSeekPending++;
 	// readSync();
 	qtractorAudioBufferThread::Instance().sync();
@@ -422,6 +476,8 @@ void qtractorAudioBuffer::readSync (void)
 	// Check whether we have some hard-seek pending...
 	if (m_iSeekPending > 0) {
 		m_iSeekPending = 0;
+		// Override with new intended offset...
+		offset = m_iSeekOffset;
 		// Refill the whole buffer....
 		m_pRingBuffer->reset();
 		m_bEndOfFile = false;
@@ -666,19 +722,20 @@ void qtractorAudioBuffer::reset ( bool bLooping )
 	dump_state("+reset()");
 #endif
 
+	unsigned long offset = 0;
+
 	// If looping, we'll reset to loop-start point,
 	// otherwise it's a buffer full-reset...
-	if (bLooping && m_iLoopStart < m_iLoopEnd) {
-		m_iOffset = m_iLoopStart;
-	} else {
-		m_iOffset = 0;
-	}
+	if (bLooping && m_iLoopStart < m_iLoopEnd)
+		offset = m_iLoopStart;
 
 	if (m_bIntegral) {
+		m_iOffset = offset;
 	//	m_pRingBuffer->reset();
 		m_pRingBuffer->setReadIndex(m_iOffset);
 		m_pRingBuffer->setWriteIndex(m_iLength);
 	} else {
+		m_iSeekOffset = offset;
 		m_iSeekPending++;
 		m_iLength = 0;
 		m_bEndOfFile = false;

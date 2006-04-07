@@ -23,6 +23,7 @@
 #include "qtractorOptions.h"
 
 #include <qwidget.h>
+#include <qcombobox.h>
 
 
 //-------------------------------------------------------------------------
@@ -316,6 +317,60 @@ void qtractorOptions::saveWidgetGeometry ( QWidget *pWidget )
 		m_settings.writeEntry("/visible", bVisible);
 		m_settings.endGroup();
 	}
+}
+
+
+//---------------------------------------------------------------------------
+// Combo box history persistence helper implementation.
+
+void qtractorOptions::loadComboBoxHistory ( QComboBox *pComboBox, int iLimit )
+{
+	pComboBox->setUpdatesEnabled(false);
+	pComboBox->setDuplicatesEnabled(false);
+	pComboBox->clear();
+
+	// Load combobox list from configuration settings file...
+	m_settings.beginGroup("/History/" + QString(pComboBox->name()));
+	for (int i = 0; i < iLimit; i++) {
+		const QString& sText = m_settings.readEntry(
+			"/Item" + QString::number(i + 1), QString::null);
+		if (sText.isEmpty())
+			break;
+		pComboBox->insertItem(sText);
+	}
+	m_settings.endGroup();
+
+	pComboBox->setUpdatesEnabled(true);
+}
+
+
+void qtractorOptions::saveComboBoxHistory ( QComboBox *pComboBox, int iLimit )
+{
+	// Add current text as latest item...
+	const QString& sCurrentText = pComboBox->currentText();
+	int iCount = pComboBox->count();
+	for (int i = 0; i < iCount; i++) {
+		const QString& sText = pComboBox->text(i);
+		if (sText == sCurrentText) {
+			pComboBox->removeItem(i);
+			iCount--;
+			break;
+		}
+	}
+	while (iCount >= iLimit)
+		pComboBox->removeItem(--iCount);
+	pComboBox->insertItem(sCurrentText, 0);
+	iCount++;
+
+	// Save combobox list to configuration settings file...
+	m_settings.beginGroup("/History/" + QString(pComboBox->name()));
+	for (int i = 0; i < iCount; i++) {
+		const QString& sText = pComboBox->text(i);
+		if (sText.isEmpty())
+			break;
+		m_settings.writeEntry("/Item" + QString::number(i + 1), sText);
+	}
+	m_settings.endGroup();
 }
 
 

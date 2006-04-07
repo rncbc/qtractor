@@ -66,6 +66,10 @@
 #include <qtimer.h>
 #include <qdatetime.h>
 
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>
+#endif
+
 #ifdef HAVE_SIGNAL_H
 #include <signal.h>
 #endif
@@ -382,6 +386,12 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 	// Primary startup stabilization...
 	updateRecentFilesMenu();
 	updatePeakAutoRemove();
+
+#ifdef HAVE_UNISTD_H
+	// Change to last known session dir...
+	if (!m_pOptions->sSessionDir.isEmpty())
+		::chdir(m_pOptions->sSessionDir);
+#endif
 
 	// Is any session pending to be loaded?
 	if (!m_pOptions->sSessionFile.isEmpty()) {
