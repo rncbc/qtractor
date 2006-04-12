@@ -63,12 +63,12 @@ public:
 	void close();
 
 	// Buffer data read/write.
-	int read(float **ppBuffer, unsigned int iFrames, unsigned int iOffset = 0);
-	int write(float **ppBuffer, unsigned int iFrames);
+	int read(float **ppFrames, unsigned int iFrames, unsigned int iOffset = 0);
+	int write(float **ppFrames, unsigned int iFrames);
 
 	// Special kind of super-read/channel-mix.
-	int readMix(float **ppBuffer, unsigned short iChannels, unsigned int iFrames,
-		unsigned int iOffset = 0, float fGain = 1.0);
+	int readMix(float **ppFrames, unsigned int iFrames,
+		unsigned short iChannels, unsigned int iOffset = 0, float fGain = 1.0f);
 
 	// Buffer data seek.
 	bool seek(unsigned long iOffset);
@@ -108,8 +108,12 @@ protected:
 	void writeSync();
 
 	// Buffer process methods.
-	int readBuffer  (unsigned int nframes);
-	int writeBuffer (unsigned int nframes);
+	int readBuffer  (unsigned int iFrames);
+	int writeBuffer (unsigned int iFrames);
+
+	// Special kind of super-read/channel-mix buffer helper.
+	int readMixBuffer(float **ppFrames, unsigned int iFrames,
+		unsigned short iChannels, unsigned int iOffset, float fGain);
 
 	// I/O buffer release.
 	void deleteIOBuffers();

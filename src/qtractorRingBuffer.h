@@ -44,20 +44,20 @@ public:
 	~qtractorRingBuffer();
 
 	// Implementation properties.
-	unsigned short channels() const;
+	unsigned short channels() const { return m_iChannels;   }
+	unsigned int bufferSize() const { return m_iBufferSize; }
+	unsigned int bufferMask() const { return m_iBufferMask; }
+
+	// Direct ring-buffer accessor (DANGEROUS).
+	T **buffer() const { return m_ppBuffer; }
 
 	// Ring-buffer cache properties.
-	unsigned int size() const;
 	unsigned int readable() const;
 	unsigned int writable() const;
 
 	// Buffer data read/write.
 	int read(T **ppBuffer, unsigned int iFrames, unsigned int iOffset = 0);
 	int write(T **ppBuffer, unsigned int iFrames);
-
-	// Special kind of super-read/channel-mix.
-	int readMix(T **ppBuffer, unsigned short iChannels, unsigned int iFrames,
-		unsigned int iOffset = 0, float fGain = 1.0);
 
 	// Reset this buffer's state.
 	void reset();
@@ -127,22 +127,6 @@ qtractorRingBuffer<T>::~qtractorRingBuffer (void)
 			delete [] m_ppBuffer[i];
 		delete [] m_ppBuffer;
 	}
-}
-
-
-// Buffer channels.
-template<typename T>
-unsigned short qtractorRingBuffer<T>::channels (void) const
-{
-	return m_iChannels;
-}
-
-
-// Buffer size in frames.
-template<typename T>
-unsigned int qtractorRingBuffer<T>::size (void) const
-{
-	return m_iBufferSize;
 }
 
 
@@ -244,70 +228,6 @@ int qtractorRingBuffer<T>::write ( T **ppFrames, unsigned int iFrames )
 	}
 
 	ATOMIC_SET(&m_iWriteIndex, (w + iFrames) & m_iBufferMask);
-
-	return iFrames;
-}
-
-
-// Special kind of super-read/channel-mix.
-template<typename T>
-int qtractorRingBuffer<T>::readMix (
-	T **ppFrames, unsigned short iChannels, unsigned int iFrames,
-	unsigned int iOffset, float fGain )
-{
-	unsigned int rs = readable();
-	if (rs == 0)
-		return 0;
-
-	if (iFrames > rs)
-		iFrames = rs;
-
-	unsigned int r = ATOMIC_GET(&m_iReadIndex);
-
-	unsigned short i, j, iAux;
-	unsigned int n, n1, n2;
-	if (r + iFrames > m_iBufferSize) {
-		n1 = (m_iBufferSize - r);
-		n2 = (r + iFrames) & m_iBufferMask;
-	} else {
-		n1 = iFrames;
-		n2 = 0;
-	}
-
-	if (iChannels == m_iChannels) {
-		for (i = 0; i < m_iChannels; i++) {
-			for (n = 0; n < n1; n++)
-				ppFrames[i][n + iOffset] += fGain * m_ppBuffer[i][n + r];
-			for (n = 0; n < n2; n++)
-				ppFrames[i][n + n1 + iOffset] += fGain * m_ppBuffer[i][n];
-		}
-	}
-	else if (iChannels > m_iChannels) {
-		j = 0;
-		iAux = (iChannels - (iChannels % m_iChannels));
-		for (i = 0; i < iAux; i++) {
-			for (n = 0; n < n1; n++)
-				ppFrames[i][n + iOffset] += fGain * m_ppBuffer[j][n + r];
-			for (n = 0; n < n2; n++)
-				ppFrames[i][n + n1 + iOffset] += fGain * m_ppBuffer[j][n];
-			if (++j >= m_iChannels)
-				j = 0;
-		}
-	}
-	else {
-		i = 0;
-		iAux = (m_iChannels - (m_iChannels % iChannels));
-		for (j = 0; j < iAux; j++) {
-			for (n = 0; n < n1; n++)
-				ppFrames[i][n + iOffset] += fGain * m_ppBuffer[j][n + r];
-			for (n = 0; n < n2; n++)
-				ppFrames[i][n + n1 + iOffset] += fGain * m_ppBuffer[j][n];
-			if (++i >= iChannels)
-				i = 0;
-		}
-	}
-
-	ATOMIC_SET(&m_iReadIndex, (r + iFrames) & m_iBufferMask);
 
 	return iFrames;
 }
