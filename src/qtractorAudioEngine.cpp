@@ -22,6 +22,7 @@
 #include "qtractorAbout.h"
 #include "qtractorAudioEngine.h"
 #include "qtractorAudioBuffer.h"
+#include "qtractorMonitor.h"
 
 #include "qtractorSessionCursor.h"
 #include "qtractorSessionDocument.h"
@@ -235,7 +236,7 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 		qtractorAudioBus *pAudioBus
 			= static_cast<qtractorAudioBus *> (pBus);
 		if (pAudioBus)
-			pAudioBus->process(nframes);
+			pAudioBus->process_prepare(nframes);
 	}
 
 	// Don't go any further, if not playing.
@@ -269,6 +270,15 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 
 	// Regular range...
 	pSession->process(pAudioCursor, iFrameStart, iFrameEnd);
+
+	// Commit current audio busses...
+	for (qtractorBus *pBus = busses().first();
+		pBus; pBus = pBus->next()) {
+		qtractorAudioBus *pAudioBus
+			= static_cast<qtractorAudioBus *> (pBus);
+		if (pAudioBus)
+			pAudioBus->process_commit(nframes);
+	}
 
 	// Sync with loop boundaries (unlikely?)
 	if (pSession->isLooping() && iFrameStart < pSession->loopEnd()
@@ -309,6 +319,8 @@ bool qtractorAudioEngine::loadElement ( qtractorSessionDocument *pDocument,
 			bool bAutoConnect = false;
 			unsigned short iChannels = 2;
 			QString sBusName = eChild.attribute("name");
+			float fIGain = 1.0f;
+			float fOGain = 1.0f;
 			qtractorBus::BusMode busMode
 				= pDocument->loadBusMode(eChild.attribute("mode"));
 			for (QDomNode nProp = eChild.firstChild();
@@ -320,11 +332,19 @@ bool qtractorAudioEngine::loadElement ( qtractorSessionDocument *pDocument,
 					continue;
 				if (eProp.tagName() == "channels")
 					iChannels = eProp.text().toUShort();
+				else if (eProp.tagName() == "input-gain")
+					fIGain = eProp.text().toFloat();
+				else if (eProp.tagName() == "output-gain")
+					fOGain = eProp.text().toFloat();
 				else if (eProp.tagName() == "auto-connect")
 					bAutoConnect = pDocument->boolFromText(eProp.text());
 			}
 			qtractorAudioBus *pAudioBus	= new qtractorAudioBus(
 				sBusName, busMode, iChannels, bAutoConnect);
+			if (busMode & qtractorBus::Input)
+				pAudioBus->monitor_in()->setGain(fIGain);
+			if (busMode & qtractorBus::Output)
+				pAudioBus->monitor_out()->setGain(fOGain);
 			qtractorEngine::addBus(pAudioBus);
 		}
 	}
@@ -352,6 +372,16 @@ bool qtractorAudioEngine::saveElement ( qtractorSessionDocument *pDocument,
 			pDocument->saveTextElement("channels",
 				QString::number(pAudioBus->channels()),
 					&eAudioBus);
+			if (pAudioBus->busMode() && qtractorBus::Input) {
+				pDocument->saveTextElement("input-gain",
+					QString::number(pAudioBus->monitor_in()->gain()),
+						&eAudioBus);
+			}
+			if (pAudioBus->busMode() && qtractorBus::Output) {
+				pDocument->saveTextElement("output-gain",
+					QString::number(pAudioBus->monitor_out()->gain()),
+						&eAudioBus);
+			}
 			pDocument->saveTextElement("auto-connect",
 				pDocument->textFromBool(pAudioBus->isAutoConnected()),
 					&eAudioBus);
@@ -372,16 +402,30 @@ qtractorAudioBus::qtractorAudioBus ( const QString& sBusName,
 	BusMode mode, unsigned short iChannels, bool bAutoConnect )
 	: qtractorBus(sBusName, mode)
 {
-	m_iChannels    = iChannels;
+//	m_iChannels    = iChannels;
 	m_bAutoConnect = bAutoConnect;
+
+	m_pIMonitor    = new qtractorMonitor(0);
+	m_pOMonitor    = new qtractorMonitor(0);
 
 	m_ppIPorts     = NULL;
 	m_ppOPorts     = NULL;
 
 	m_ppIBuffer    = NULL;
 	m_ppOBuffer    = NULL;
-	
+
 	m_ppXBuffer    = NULL;
+
+	setChannels(iChannels);
+}
+
+// Destructor.
+qtractorAudioBus::~qtractorAudioBus (void)
+{
+	close();
+
+	delete m_pIMonitor;
+	delete m_pOMonitor;
 }
 
 
@@ -389,6 +433,11 @@ qtractorAudioBus::qtractorAudioBus ( const QString& sBusName,
 void qtractorAudioBus::setChannels ( unsigned short iChannels )
 {
 	m_iChannels = iChannels;
+
+	if (busMode() & qtractorBus::Input)
+		m_pIMonitor->setChannels(iChannels);
+	if (busMode() & qtractorBus::Output)
+		m_pOMonitor->setChannels(iChannels);
 }
 
 unsigned short qtractorAudioBus::channels (void) const
@@ -569,8 +618,8 @@ void qtractorAudioBus::autoConnect (void)
 }
 
 
-// Process cycle (preparator only).
-void qtractorAudioBus::process ( unsigned int nframes )
+// Process cycle preparator.
+void qtractorAudioBus::process_prepare ( unsigned int nframes )
 {
 	for (unsigned short i = 0; i < m_iChannels; i++) {
 		if (busMode() & qtractorBus::Input) {
@@ -583,29 +632,40 @@ void qtractorAudioBus::process ( unsigned int nframes )
 			::memset(m_ppOBuffer[i], 0, nframes * sizeof(float));
 		}
 	}
+
+	if (busMode() & qtractorBus::Input)
+		m_pIMonitor->process(m_ppIBuffer, nframes);
 }
 
 
-// Frame buffer accessors.
-float **qtractorAudioBus::in (void) const
+// Process cycle commitment.
+void qtractorAudioBus::process_commit ( unsigned int nframes )
 {
-	return m_ppIBuffer;
+	if (busMode() & qtractorBus::Output)
+		m_pOMonitor->process(m_ppOBuffer, nframes);
 }
 
-float **qtractorAudioBus::out (void) const
+
+// I/O bus-monitor accessors.
+qtractorMonitor *qtractorAudioBus::monitor_in (void) const
 {
-	return m_ppOBuffer;
+	return m_pIMonitor;
+}
+
+qtractorMonitor *qtractorAudioBus::monitor_out (void) const
+{
+	return m_pOMonitor;
 }
 
 
 // Bus-buffering methods.
-void qtractorAudioBus::bufferPrepare ( unsigned int nframes )
+void qtractorAudioBus::buffer_prepare ( unsigned int nframes )
 {
 	for (unsigned short i = 0; i < m_iChannels; i++)
 		::memset(m_ppXBuffer[i], 0, nframes * sizeof(float));
 }
 
-void qtractorAudioBus::bufferCommit ( unsigned int nframes, float fGain )
+void qtractorAudioBus::buffer_commit ( unsigned int nframes, float fGain )
 {
 	if ((busMode() & qtractorBus::Output) == 0)
 		return;
@@ -619,6 +679,18 @@ void qtractorAudioBus::bufferCommit ( unsigned int nframes, float fGain )
 float **qtractorAudioBus::buffer (void) const
 {
 	return m_ppXBuffer;
+}
+
+
+// Frame buffer accessors.
+float **qtractorAudioBus::in (void) const
+{
+	return m_ppIBuffer;
+}
+
+float **qtractorAudioBus::out (void) const
+{
+	return m_ppOBuffer;
 }
 
 

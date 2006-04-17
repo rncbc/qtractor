@@ -30,6 +30,7 @@
 
 
 // Forward declarations.
+class qtractorMonitor;
 class qtractorAudioBus;
 
 
@@ -98,6 +99,8 @@ public:
 	// Constructor.
 	qtractorAudioBus(const QString& sBusName, BusMode mode = Duplex,
 		unsigned short iChannels = 2, bool bAutoConnect = true);
+	// Destructor.
+	~qtractorAudioBus();
 
 	// Channel number property accessor.
 	void setChannels(unsigned short iChannels);
@@ -115,31 +118,39 @@ public:
 	void autoConnect();
 
 	// Process cycle (preparator only).
-	void process(unsigned int nframes);
+	void process_prepare(unsigned int nframes);
+	void process_commit(unsigned int nframes);
 
-	// Frame buffer accessors.
-	float **in() const;
-	float **out() const;
+	// I/O bus-monitor accessors.
+	qtractorMonitor *monitor_in()  const;
+	qtractorMonitor *monitor_out() const;
 
 	// Bus-buffering methods.
-	void bufferPrepare(unsigned int nframes);
-	void bufferCommit(unsigned int nframes, float fGain = 1.0f);
+	void buffer_prepare(unsigned int nframes);
+	void buffer_commit(unsigned int nframes, float fGain = 1.0f);
 
 	float **buffer() const;
+
+	// Frame buffer accessors.
+	float **in()  const;
+	float **out() const;
 
 private:
 
 	// Instance variables.
-	unsigned short m_iChannels;
-	bool           m_bAutoConnect;
+	unsigned short   m_iChannels;
+	bool             m_bAutoConnect;
 
-	jack_port_t  **m_ppIPorts;
-	jack_port_t  **m_ppOPorts;
+	qtractorMonitor *m_pIMonitor;
+	qtractorMonitor *m_pOMonitor;
 
-	float        **m_ppIBuffer;
-	float        **m_ppOBuffer;
+	jack_port_t    **m_ppIPorts;
+	jack_port_t    **m_ppOPorts;
 
-	float        **m_ppXBuffer;
+	float          **m_ppIBuffer;
+	float          **m_ppOBuffer;
+
+	float          **m_ppXBuffer;
 };
 
 

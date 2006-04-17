@@ -31,6 +31,7 @@
 class qtractorSession;
 class qtractorSessionDocument;
 class qtractorInstrumentList;
+class qtractorMonitor;
 class qtractorClip;
 class qtractorBus;
 
@@ -111,6 +112,9 @@ public:
 
 	// Assigned bus accessors.
 	qtractorBus *bus() const;
+
+	// Track monitor accessors.
+	qtractorMonitor *monitor() const;
 
 	// Normalized view height accessors.
 	void setHeight(unsigned short iHeight);
@@ -197,6 +201,7 @@ private:
 	Properties       m_props;       // Track properties.
 
 	qtractorBus     *m_pBus;        // Track assigned bus.
+	qtractorMonitor *m_pMonitor;    // Track monitor.
 	unsigned short   m_iMidiTag;    // MIDI specific: track-tag;
 	int              m_iHeight;     // View height (normalized).
 

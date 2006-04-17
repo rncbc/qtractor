@@ -21,6 +21,7 @@
 
 #include "qtractorAbout.h"
 #include "qtractorTrack.h"
+#include "qtractorMonitor.h"
 
 #include "qtractorAudioClip.h"
 #include "qtractorMidiClip.h"
@@ -84,6 +85,7 @@ qtractorTrack::qtractorTrack ( qtractorSession *pSession, TrackType trackType )
 	m_props.trackType = trackType;
 
 	m_pBus     = NULL;
+	m_pMonitor = new qtractorMonitor(0);
 	m_iMidiTag = 0;
 	m_iHeight  = 48;
 
@@ -99,6 +101,8 @@ qtractorTrack::qtractorTrack ( qtractorSession *pSession, TrackType trackType )
 qtractorTrack::~qtractorTrack (void)
 {
 	clear();
+
+	delete m_pMonitor;
 }
 
 
@@ -151,6 +155,23 @@ bool qtractorTrack::open (void)
 		m_pBus = pEngine->busses().first();
 		if (m_pBus)
 			setBusName(m_pBus->busName());
+	}
+
+	// (Re)allocate monitor channels...
+	switch (trackType()) {
+		case qtractorTrack::Audio: {
+			qtractorAudioBus *pAudioBus
+				= static_cast<qtractorAudioBus *> (m_pBus);
+			if (pAudioBus)
+				m_pMonitor->setChannels(pAudioBus->channels());
+			break;
+		}
+		case qtractorTrack::Midi: {
+			m_pMonitor->setChannels(1);
+			break;
+		}
+		default:
+			break;
 	}
 
 	// Done.
@@ -339,6 +360,12 @@ qtractorBus *qtractorTrack::bus (void) const
 	return m_pBus;
 }
 
+// Track monitor accessors.
+qtractorMonitor *qtractorTrack::monitor (void) const
+{
+	return m_pMonitor;
+}
+
 
 // Normalized view height accessors.
 unsigned short qtractorTrack::height (void) const
@@ -454,11 +481,11 @@ void qtractorTrack::process ( qtractorClip *pClip,
 		pAudioBus = static_cast<qtractorAudioBus *> (m_pBus);
 		if (pAudioBus == NULL)
 			return;
-		pAudioBus->bufferPrepare(nframes);
+		pAudioBus->buffer_prepare(nframes);
 	}
 
 	// Emulate soloing/muting with zero gain;
-	float fGain = 1.0f;
+	float fGain = m_pMonitor->gain();
 	if ((m_pSession->soloTracks() && !isSolo()) || isMute())
 		fGain = 0.0f;
 
@@ -468,9 +495,10 @@ void qtractorTrack::process ( qtractorClip *pClip,
 		pClip = pClip->next();
 	}
 
-	// Audio buffers needs commitment...
+	// Audio buffers needs monitoring and commitment...
 	if (pAudioBus) {
-		pAudioBus->bufferCommit(nframes, fGain);
+		m_pMonitor->process(pAudioBus->buffer(), nframes);
+		pAudioBus->buffer_commit(nframes, fGain);
 		// Audio-recording?
 		qtractorAudioClip *pAudioClip
 			= static_cast<qtractorAudioClip *> (m_pClipRecord);
@@ -597,6 +625,8 @@ bool qtractorTrack::loadElement ( qtractorSessionDocument *pDocument,
 					continue;
 				if (eProp.tagName() == "bus")
 					qtractorTrack::setBusName(eProp.text());
+				else if (eProp.tagName() == "gain")
+					qtractorTrack::monitor()->setGain(eProp.text().toFloat());
 				else if (eProp.tagName() == "midi-channel")
 					qtractorTrack::setMidiChannel(eProp.text().toUShort());
 				else if (eProp.tagName() == "midi-bank-sel-method")
@@ -692,6 +722,8 @@ bool qtractorTrack::saveElement ( qtractorSessionDocument *pDocument,
 	// Save track properties...
 	QDomElement eProps = pDocument->document()->createElement("properties");
 	pDocument->saveTextElement("bus", qtractorTrack::busName(), &eProps);
+	pDocument->saveTextElement("gain",
+		QString::number(qtractorTrack::monitor()->gain()), &eProps);
 	if (qtractorTrack::trackType() == qtractorTrack::Midi) {
 		pDocument->saveTextElement("midi-channel",
 			QString::number(qtractorTrack::midiChannel()), &eProps);

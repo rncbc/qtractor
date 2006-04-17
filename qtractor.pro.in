@@ -4,6 +4,7 @@ HEADERS += src/qtractorAbout.h \
            src/qtractorAtomic.h \
            src/qtractorOptions.h \
            src/qtractorMessages.h \
+           src/qtractorMonitor.h \
            src/qtractorSpinBox.h \
            src/qtractorList.h \
            src/qtractorFiles.h \
