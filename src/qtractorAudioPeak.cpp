@@ -247,17 +247,17 @@ void qtractorAudioPeakThread::writePeakFileFrame (void)
 	for (unsigned short i = 0; i < iChannels; i++) {
 		// Write the smoothed peak maximum value...
 		unsigned short k = i + iChannels;
-		m_peakMax[k]  = (1.0 - c_fPeakExpCoef) * m_peakMax[k]
-			+ c_fPeakExpCoef * 254.0 * m_peakMax[i];
-		frame.peakMax = (unsigned char) (m_peakMax[k] > 254.0 ? 255 : m_peakMax[k]);
+		m_peakMax[k]  = (1.0f - c_fPeakExpCoef) * m_peakMax[k]
+			+ c_fPeakExpCoef * 254.0f * m_peakMax[i];
+		frame.peakMax = (unsigned char) (m_peakMax[k] > 254.0f ? 255 : m_peakMax[k]);
 		// Write the smoothed peak minimum value...
-		m_peakMin[k]  = (1.0 - c_fPeakExpCoef) * m_peakMin[k]
-			+ c_fPeakExpCoef * 254.0 * ::fabs(m_peakMin[i]);
-		frame.peakMin = (unsigned char) (m_peakMin[k] > 254.0 ? 255 : m_peakMin[k]);
+		m_peakMin[k]  = (1.0f - c_fPeakExpCoef) * m_peakMin[k]
+			+ c_fPeakExpCoef * 254.0f * ::fabs(m_peakMin[i]);
+		frame.peakMin = (unsigned char) (m_peakMin[k] > 254.0f ? 255 : m_peakMin[k]);
 		// Write the smoothed RMS value...
-		m_peakRms[k]  = (1.0 - c_fPeakExpCoef) * m_peakRms[k]
-			+ c_fPeakExpCoef * 254.0 * (::sqrt(m_peakRms[i] / (float) m_iPeak));
-		frame.peakRms = (unsigned char) (m_peakRms[k] > 254.0 ? 255 : m_peakRms[k]);
+		m_peakRms[k]  = (1.0f - c_fPeakExpCoef) * m_peakRms[k]
+			+ c_fPeakExpCoef * 254.0f * (::sqrt(m_peakRms[i] / (float) m_iPeak));
+		frame.peakRms = (unsigned char) (m_peakRms[k] > 254.0f ? 255 : m_peakRms[k]);
 		// Bail out...
 		m_peakFile.writeBlock((const char *) &frame, sizeof(frame));
 		// Reset peak period accumulators...

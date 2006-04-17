@@ -116,7 +116,7 @@ bool qtractorAudioMadFile::open ( const char *pszName, int iMode )
 	// Get a rough estimate of the total decoded length of the file...
 	if (m_iBitRate > 0) {
 		m_iFramesEst = (unsigned long)
-			((float) m_iSampleRate * st.st_size * 8.0 / (float) m_iBitRate);
+			((float) m_iSampleRate * st.st_size * 8.0f / (float) m_iBitRate);
 	}
 
 	// Set open mode (deterministically).

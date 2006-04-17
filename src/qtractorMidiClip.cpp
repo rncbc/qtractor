@@ -287,12 +287,12 @@ void qtractorMidiClip::close (void)
 
 
 // Audio clip special process cycle executive.
-void qtractorMidiClip::process ( float fGain,
-	unsigned long iFrameStart, unsigned long iFrameEnd )
+void qtractorMidiClip::process ( unsigned long iFrameStart,
+	unsigned long iFrameEnd )
 {
 #ifdef CONFIG_DEBUG_0
-	fprintf(stderr, "qtractorMidiClip::process(%p, %g, %lu, %lu)\n",
-		this, fGain, iFrameStart, iFrameEnd);
+	fprintf(stderr, "qtractorMidiClip::process(%p, %lu, %lu)\n",
+		this, iFrameStart, iFrameEnd);
 #endif
 
 	qtractorSession *pSession = track()->session();
@@ -310,8 +310,7 @@ void qtractorMidiClip::process ( float fGain,
 		if (iTimeEvent > iTimeEnd)
 			break;
 		if (iTimeEvent >= iTimeStart) {
-			pSession->midiEngine()->enqueue(track(),
-				pEvent, iTimeEvent, fGain);
+			pSession->midiEngine()->enqueue(track(), pEvent, iTimeEvent);
 		}
 		pEvent = pEvent->next();
 	}

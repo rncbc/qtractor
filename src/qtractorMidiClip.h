@@ -72,8 +72,7 @@ public:
 	void close();
 
 	// MIDI clip special process cycle executive.
-	void process(float fGain,
-		unsigned long iFrameStart, unsigned long iFrameEnd);
+	void process(unsigned long iFrameStart, unsigned long iFrameEnd);
 
 	// Clip paint method.
 	void drawClip(QPainter *pPainter, const QRect& rect,

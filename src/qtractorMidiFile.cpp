@@ -46,7 +46,7 @@ qtractorMidiFile::qtractorMidiFile (void)
 	m_iTracks       = 0;
 	m_iTicksPerBeat = 0;
 
-	m_fTempo        = 120.0;
+	m_fTempo        = 120.0f;
 	m_iBeatsPerBar  = 4;
 
 	m_pTrackInfo    = NULL;
@@ -313,7 +313,7 @@ bool qtractorMidiFile::readTrack ( qtractorMidiSequence *pSeq,
 			len = readInt();
 			if (len > 0) {
 				if (meta == qtractorMidiEvent::TEMPO) {
-					m_fTempo = (60000000.0 / float(readInt(len)));
+					m_fTempo = (60000000.0f / float(readInt(len)));
 				} else {
 					data = new unsigned char [len + 1];
 					if (readData(data, len) < (int) len) {
@@ -405,7 +405,7 @@ bool qtractorMidiFile::writeTrack ( qtractorMidiSequence *pSeq )
 		writeInt(qtractorMidiEvent::META, 1);
 		writeInt(qtractorMidiEvent::TEMPO, 1);
 		writeInt(3);
-		writeInt(int(60000000.0 / m_fTempo), 3);
+		writeInt(int(60000000.0f / m_fTempo), 3);
 		// Time signature...
 		writeInt(0); // delta-time=0
 		writeInt(qtractorMidiEvent::META, 1);

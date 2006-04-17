@@ -447,25 +447,35 @@ qtractorTrack::Properties& qtractorTrack::properties (void)
 void qtractorTrack::process ( qtractorClip *pClip,
 	unsigned long iFrameStart, unsigned long iFrameEnd )
 {
+	// Audio-buffers needs some preparation...
+	unsigned int nframes = iFrameEnd - iFrameStart;
+	qtractorAudioBus *pAudioBus = NULL;
+	if (m_props.trackType == qtractorTrack::Audio) {
+		pAudioBus = static_cast<qtractorAudioBus *> (m_pBus);
+		if (pAudioBus == NULL)
+			return;
+		pAudioBus->bufferPrepare(nframes);
+	}
+
 	// Emulate soloing/muting with zero gain;
-	float fGain = 1.0;
+	float fGain = 1.0f;
 	if ((m_pSession->soloTracks() && !isSolo()) || isMute())
-		fGain = 0.0;
+		fGain = 0.0f;
 
 	// Now, for every clip...
 	while (pClip && pClip->clipStart() < iFrameEnd) {
-		pClip->process(fGain, iFrameStart, iFrameEnd);
+		pClip->process(iFrameStart, iFrameEnd);
 		pClip = pClip->next();
 	}
 
-	// Recording?
-	if (m_pClipRecord && m_props.trackType == qtractorTrack::Audio) {
-		qtractorAudioBus *pAudioBus
-			= static_cast<qtractorAudioBus *> (m_pBus);
+	// Audio buffers needs commitment...
+	if (pAudioBus) {
+		pAudioBus->bufferCommit(nframes, fGain);
+		// Audio-recording?
 		qtractorAudioClip *pAudioClip
 			= static_cast<qtractorAudioClip *> (m_pClipRecord);
-		if (pAudioBus && pAudioClip)
-			pAudioClip->write(pAudioBus->in(), iFrameEnd - iFrameStart);
+		if (pAudioClip)
+			pAudioClip->write(pAudioBus->in(), nframes);
 	}
 }
 

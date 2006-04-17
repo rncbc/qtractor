@@ -380,6 +380,8 @@ qtractorAudioBus::qtractorAudioBus ( const QString& sBusName,
 
 	m_ppIBuffer    = NULL;
 	m_ppOBuffer    = NULL;
+	
+	m_ppXBuffer    = NULL;
 }
 
 
@@ -449,6 +451,12 @@ bool qtractorAudioBus::open (void)
 		}
 	}
 
+	// Allocate internal worlking bus buffers...
+	unsigned int iBufferSize = jack_get_buffer_size(pAudioEngine->jackClient());
+	m_ppXBuffer = new float * [m_iChannels];
+	for (i = 0; i < m_iChannels; i++)
+		m_ppXBuffer[i] = new float [iBufferSize];
+
 	return true;
 }
 
@@ -501,6 +509,15 @@ void qtractorAudioBus::close (void)
 		if (m_ppOBuffer)
 			delete [] m_ppOBuffer;
 		m_ppOBuffer = NULL;
+	}
+
+	// Free internal buffers.
+	if (m_ppXBuffer) {
+		for (i = 0; i < m_iChannels; i++)
+			delete [] m_ppXBuffer[i];
+		if (m_ppXBuffer)
+			delete [] m_ppXBuffer;
+		m_ppXBuffer = NULL;
 	}
 }
 
@@ -578,6 +595,30 @@ float **qtractorAudioBus::in (void) const
 float **qtractorAudioBus::out (void) const
 {
 	return m_ppOBuffer;
+}
+
+
+// Bus-buffering methods.
+void qtractorAudioBus::bufferPrepare ( unsigned int nframes )
+{
+	for (unsigned short i = 0; i < m_iChannels; i++)
+		::memset(m_ppXBuffer[i], 0, nframes * sizeof(float));
+}
+
+void qtractorAudioBus::bufferCommit ( unsigned int nframes, float fGain )
+{
+	if ((busMode() & qtractorBus::Output) == 0)
+		return;
+
+	for (unsigned short i = 0; i < m_iChannels; i++) {
+		for (unsigned int n = 0; n < nframes; n++)
+			m_ppOBuffer[i][n] += fGain * m_ppXBuffer[i][n];
+	}
+}
+
+float **qtractorAudioBus::buffer (void) const
+{
+	return m_ppXBuffer;
 }
 
 

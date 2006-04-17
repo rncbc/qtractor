@@ -66,19 +66,19 @@ void qtractorAudioFileItem::initAudioFileItem ( const QString& sPath,
 	unsigned int hh, mm, ss, ddd;
 	float secs = (float) pFile->frames() / (float) pFile->sampleRate();
 	hh = mm = ss = 0;
-	if (secs >= 3600.0) {
-		hh = (unsigned int) (secs / 3600.0);
-		secs -= (float) hh * 3600.0;
+	if (secs >= 3600.0f) {
+		hh = (unsigned int) (secs / 3600.0f);
+		secs -= (float) hh * 3600.0f;
 	}
-	if (secs >= 60.0) {
-		mm = (unsigned int) (secs / 60.0);
-		secs -= (float) mm * 60.0;
+	if (secs >= 60.0f) {
+		mm = (unsigned int) (secs / 60.0f);
+		secs -= (float) mm * 60.0f;
 	}
-	if (secs >= 0.0) {
+	if (secs >= 0.0f) {
 		ss = (unsigned int) secs;
 		secs -= (float) ss;
 	}
-	ddd = (unsigned int) (secs * 1000.0);
+	ddd = (unsigned int) (secs * 1000.0f);
 	sTime.sprintf("%02u:%02u:%02u.%03u", hh, mm, ss, ddd);
 	QListViewItem::setText(qtractorAudioListView::Time, sTime);
 

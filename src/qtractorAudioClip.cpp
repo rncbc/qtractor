@@ -182,8 +182,8 @@ void qtractorAudioClip::close (void)
 
 
 // Audio clip special process cycle executive.
-void qtractorAudioClip::process ( float fGain,
-	unsigned long iFrameStart, unsigned long iFrameEnd )
+void qtractorAudioClip::process ( unsigned long iFrameStart,
+	unsigned long iFrameEnd )
 {
 	qtractorAudioBus *pAudioBus
 		= static_cast<qtractorAudioBus *> (track()->bus());
@@ -194,11 +194,11 @@ void qtractorAudioClip::process ( float fGain,
 	unsigned long iClipStart = clipStart();
 	unsigned long iClipEnd   = iClipStart + clipLength();
 	if (iFrameStart < iClipStart && iFrameEnd > iClipStart) {
-		m_pBuff->readMix(pAudioBus->out(), iFrameEnd - iClipStart,
-			pAudioBus->channels(), iClipStart - iFrameStart, fGain);
+		m_pBuff->readMix(pAudioBus->buffer(), iFrameEnd - iClipStart,
+			pAudioBus->channels(), iClipStart - iFrameStart);
 	} else if (iFrameStart >= iClipStart && iFrameStart < iClipEnd) {
-		m_pBuff->readMix(pAudioBus->out(), iFrameEnd - iFrameStart,
-			pAudioBus->channels(), 0, fGain);
+		m_pBuff->readMix(pAudioBus->buffer(), iFrameEnd - iFrameStart,
+			pAudioBus->channels(), 0);
 	}
 }
 

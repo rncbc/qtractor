@@ -346,7 +346,7 @@ int qtractorAudioBuffer::write ( float **ppFrames, unsigned int iFrames )
 
 // Special kind of super-read/channel-mix.
 int qtractorAudioBuffer::readMix ( float **ppFrames, unsigned int iFrames,
-	unsigned short iChannels, unsigned int iOffset, float fGain )
+	unsigned short iChannels, unsigned int iOffset )
 {
 	if (m_pRingBuffer == NULL)
 		return -1;
@@ -366,7 +366,7 @@ int qtractorAudioBuffer::readMix ( float **ppFrames, unsigned int iFrames,
 			unsigned int ri = m_pRingBuffer->readIndex();
 			while (ri < le && ri + iFrames >= le) {
 				unsigned int nread = le - ri;
-				readMixBuffer(ppFrames, nread, iChannels, iOffset, fGain);
+				readMixBuffer(ppFrames, nread, iChannels, iOffset);
 				iOffset += nread;
 				iFrames -= nread;
 				m_pRingBuffer->setReadIndex(ls);
@@ -375,7 +375,7 @@ int qtractorAudioBuffer::readMix ( float **ppFrames, unsigned int iFrames,
 	}
 
 	// Mix the (remaining) data around...	
-	readMixBuffer(ppFrames, iFrames, iChannels, iOffset, fGain);
+	readMixBuffer(ppFrames, iFrames, iChannels, iOffset);
 
 #ifdef DEBUG_0
 	dump_state(QString("-readMix(%1)").arg(iFrames));
@@ -670,7 +670,7 @@ int qtractorAudioBuffer::writeBuffer ( unsigned int iFrames )
 // Special kind of super-read/channel-mix buffer helper.
 int qtractorAudioBuffer::readMixBuffer (
 	float **ppFrames, unsigned int iFrames, unsigned short iChannels,
-	unsigned int iOffset, float fGain )
+	unsigned int iOffset )
 {
 	unsigned int rs = m_pRingBuffer->readable();
 	if (rs == 0)
@@ -697,9 +697,9 @@ int qtractorAudioBuffer::readMixBuffer (
 	if (iChannels == iBuffers) {
 		for (i = 0; i < iBuffers; i++) {
 			for (n = 0; n < n1; n++)
-				ppFrames[i][n + iOffset] += fGain * ppBuffer[i][n + r];
+				ppFrames[i][n + iOffset] += ppBuffer[i][n + r];
 			for (n = 0; n < n2; n++)
-				ppFrames[i][n + n1 + iOffset] += fGain * ppBuffer[i][n];
+				ppFrames[i][n + n1 + iOffset] += ppBuffer[i][n];
 		}
 	}
 	else if (iChannels > iBuffers) {
@@ -707,9 +707,9 @@ int qtractorAudioBuffer::readMixBuffer (
 		iAux = (iChannels - (iChannels % iBuffers));
 		for (i = 0; i < iAux; i++) {
 			for (n = 0; n < n1; n++)
-				ppFrames[i][n + iOffset] += fGain * ppBuffer[j][n + r];
+				ppFrames[i][n + iOffset] += ppBuffer[j][n + r];
 			for (n = 0; n < n2; n++)
-				ppFrames[i][n + n1 + iOffset] += fGain * ppBuffer[j][n];
+				ppFrames[i][n + n1 + iOffset] += ppBuffer[j][n];
 			if (++j >= iBuffers)
 				j = 0;
 		}
@@ -719,9 +719,9 @@ int qtractorAudioBuffer::readMixBuffer (
 		iAux = (iBuffers - (iBuffers % iChannels));
 		for (j = 0; j < iAux; j++) {
 			for (n = 0; n < n1; n++)
-				ppFrames[i][n + iOffset] += fGain * ppBuffer[j][n + r];
+				ppFrames[i][n + iOffset] += ppBuffer[j][n + r];
 			for (n = 0; n < n2; n++)
-				ppFrames[i][n + n1 + iOffset] += fGain * ppBuffer[j][n];
+				ppFrames[i][n + n1 + iOffset] += ppBuffer[j][n];
 			if (++i >= iChannels)
 				i = 0;
 		}

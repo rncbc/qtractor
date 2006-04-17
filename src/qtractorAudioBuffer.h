@@ -68,7 +68,7 @@ public:
 
 	// Special kind of super-read/channel-mix.
 	int readMix(float **ppFrames, unsigned int iFrames,
-		unsigned short iChannels, unsigned int iOffset = 0, float fGain = 1.0f);
+		unsigned short iChannels, unsigned int iOffset = 0);
 
 	// Buffer data seek.
 	bool seek(unsigned long iOffset);
@@ -113,7 +113,7 @@ protected:
 
 	// Special kind of super-read/channel-mix buffer helper.
 	int readMixBuffer(float **ppFrames, unsigned int iFrames,
-		unsigned short iChannels, unsigned int iOffset, float fGain);
+		unsigned short iChannels, unsigned int iOffset);
 
 	// I/O buffer release.
 	void deleteIOBuffers();

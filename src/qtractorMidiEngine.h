@@ -59,7 +59,7 @@ public:
 
 	// MIDI event enqueue method.
 	void enqueue(qtractorTrack *pTrack, qtractorMidiEvent *pEvent,
-		unsigned long iTime, float fGain = 1.0);
+		unsigned long iTime);
 
 	// Flush ouput queue (if necessary)...
 	void flush();

@@ -71,7 +71,7 @@ void qtractorSession::Properties::clear (void)
 	sessionName    = QString::null;
 	description    = QString::null;
 	sampleRate     = 44100;
-	tempo          = 120.0;
+	tempo          = 120.0f;
 	ticksPerBeat   = 120;
 	beatsPerBar    = 4;
 	pixelsPerBeat  = 32;
@@ -528,19 +528,19 @@ QString qtractorSession::timeFromFrame ( unsigned long iFrame, bool bBBT ) const
 		unsigned int hh, mm, ss, ddd;
 		float secs = (float) iFrame / (float) m_props.sampleRate;
 		hh = mm = ss = 0;
-		if (secs >= 3600.0) {
-			hh = (unsigned int) (secs / 3600.0);
-			secs -= (float) hh * 3600.0;
+		if (secs >= 3600.0f) {
+			hh = (unsigned int) (secs / 3600.0f);
+			secs -= (float) hh * 3600.0f;
 		}
-		if (secs >= 60.0) {
-			mm = (unsigned int) (secs / 60.0);
-			secs -= (float) mm * 60.0;
+		if (secs >= 60.0f) {
+			mm = (unsigned int) (secs / 60.0f);
+			secs -= (float) mm * 60.0f;
 		}
-		if (secs >= 0.0) {
+		if (secs >= 0.0f) {
 			ss = (unsigned int) secs;
 			secs -= (float) ss;
 		}
-		ddd = (unsigned int) (secs * 1000.0);
+		ddd = (unsigned int) (secs * 1000.0f);
 		return QString().sprintf("%02u:%02u:%02u.%03u", hh, mm, ss, ddd);
 	}
 }
@@ -550,8 +550,8 @@ QString qtractorSession::timeFromFrame ( unsigned long iFrame, bool bBBT ) const
 void qtractorSession::updateTimeScale (void) 
 {
 	m_iScale_a = (unsigned int) (m_props.horizontalZoom * m_props.pixelsPerBeat);
-	m_fScale_b = (float) (0.01 * m_props.tempo * m_iScale_a);
-	m_fScale_c = (float) (60.0 * m_props.sampleRate);
+	m_fScale_b = (float) (0.01f * m_props.tempo * m_iScale_a);
+	m_fScale_c = (float) (60.0f * m_props.sampleRate);
 	m_fScale_d = (float) (m_props.tempo * m_props.ticksPerBeat);
 }
 

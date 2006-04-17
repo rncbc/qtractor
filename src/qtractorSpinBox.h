@@ -43,7 +43,7 @@ public:
 	qtractorSpinBox(QWidget *pParent = 0, const char *pszName = 0,
 		int iDecs = 1) : QSpinBox(pParent, pszName), m_iDecs(iDecs)
 	{	// Multiplier is intentionally stepped up for precision...
-		m_iMult = int(::pow(10.0, m_iDecs + 1));
+		m_iMult = int(::pow(10.0f, m_iDecs + 1));
 		QDoubleValidator *pValidator = new QDoubleValidator(this);
 		pValidator->setDecimals(iDecs);
 		setValidator(pValidator);

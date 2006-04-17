@@ -78,8 +78,7 @@ public:
 	virtual void close() = 0;
 
 	// Clip special process cycle executive.
-	virtual void process(float fGain,
-		unsigned long iFrameStart, unsigned long iFrameEnd) = 0;
+	virtual void process(unsigned long iFrameStart, unsigned long iFrameEnd) = 0;
 
 	// Clip paint method.
 	virtual void drawClip(QPainter *pPainter, const QRect& clipRect,

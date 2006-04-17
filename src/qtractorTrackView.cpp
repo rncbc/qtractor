@@ -775,7 +775,7 @@ qtractorTrack *qtractorTrackView::dragDropTrack ( QDropEvent *pDropEvent )
 
 	// Nows time to estimate the drag-rectangle width,
 	// as we'll take the largest...
-	int w = 0;
+	int wmax = 0;
 	for (DropItem *pDropItem = m_dropItems.first();
 			pDropItem; pDropItem = m_dropItems.next()) {
 		// First test as a MIDI file...
@@ -787,7 +787,9 @@ qtractorTrack *qtractorTrackView::dragDropTrack ( QDropEvent *pDropEvent )
 				seq.setTicksPerBeat(pSession->ticksPerBeat());
 				if (file.readTrack(&seq, pDropItem->channel)
 					&& seq.duration() > 0) {
-					w += pSession->pixelFromTick(seq.duration());
+					int w = pSession->pixelFromTick(seq.duration());
+					if (wmax < w)
+						wmax = w;
 					if (m_dropType == qtractorTrack::None)
 						m_dropType = qtractorTrack::Midi;
 				} else /*if (m_dropType == qtractorTrack::Midi)*/ {
@@ -813,7 +815,9 @@ qtractorTrack *qtractorTrackView::dragDropTrack ( QDropEvent *pDropEvent )
 							* float(pSession->sampleRate())
 							/ float(pFile->sampleRate()));
 					}
-					w += pSession->pixelFromFrame(iFrames);
+					int w = pSession->pixelFromFrame(iFrames);
+					if (wmax < w)
+						wmax = w;					
 					if (m_dropType == qtractorTrack::None)
 						m_dropType = qtractorTrack::Audio;
 				} else if (m_dropType == qtractorTrack::Audio) {
@@ -843,7 +847,7 @@ qtractorTrack *qtractorTrackView::dragDropTrack ( QDropEvent *pDropEvent )
 	m_posDrag.setX(pSession->pixelSnap(pos.x() - 8));
 	m_posDrag.setY(tvi.trackRect.y() + 1);
 	m_rectDrag.setRect(
-		m_posDrag.x(), m_posDrag.y(), w, tvi.trackRect.height() - 2);
+		m_posDrag.x(), m_posDrag.y(), wmax, tvi.trackRect.height() - 2);
 	// However, track must be of proper type...
 	if (pTrack && pTrack->trackType() != m_dropType)
 		return NULL;

@@ -121,6 +121,12 @@ public:
 	float **in() const;
 	float **out() const;
 
+	// Bus-buffering methods.
+	void bufferPrepare(unsigned int nframes);
+	void bufferCommit(unsigned int nframes, float fGain = 1.0f);
+
+	float **buffer() const;
+
 private:
 
 	// Instance variables.
@@ -132,6 +138,8 @@ private:
 
 	float        **m_ppIBuffer;
 	float        **m_ppOBuffer;
+
+	float        **m_ppXBuffer;
 };
 
 

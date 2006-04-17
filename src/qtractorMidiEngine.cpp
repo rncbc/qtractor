@@ -416,7 +416,7 @@ void qtractorMidiOutputThread::trackSync ( qtractorTrack *pTrack,
 	qtractorClip *pClip = pTrack->clips().first();
 	while (pClip && pClip->clipStart() < iFrameEnd) {
 		if (iFrameStart < pClip->clipStart() + pClip->clipLength())
-			pClip->process(1.0, iFrameStart, iFrameEnd);
+			pClip->process(iFrameStart, iFrameEnd);
 		pClip = pClip->next();
 	}
 
@@ -599,7 +599,7 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 
 // MIDI event enqueue method.
 void qtractorMidiEngine::enqueue ( qtractorTrack *pTrack,
-	qtractorMidiEvent *pEvent, unsigned long iTime, float fGain )
+	qtractorMidiEvent *pEvent, unsigned long iTime )
 {
 	// Target MIDI bus...
 	qtractorMidiBus *pMidiBus
@@ -628,7 +628,7 @@ void qtractorMidiEngine::enqueue ( qtractorTrack *pTrack,
 			ev.type = SND_SEQ_EVENT_NOTE;
 			ev.data.note.channel    = pTrack->midiChannel();
 			ev.data.note.note       = pEvent->note();
-			ev.data.note.velocity   = int(fGain * float(pEvent->velocity()));
+			ev.data.note.velocity   = pEvent->velocity();
 			ev.data.note.duration   = pEvent->duration();
 			break;
 		case qtractorMidiEvent::KEYPRESS:
@@ -764,7 +764,7 @@ bool qtractorMidiEngine::start (void)
 	// Set the new intended ones...
 	snd_seq_queue_tempo_set_ppq(tempo, (int) pSession->ticksPerBeat());
 	snd_seq_queue_tempo_set_tempo(tempo,
-		(unsigned int) (60000000.0 / pSession->tempo()));
+		(unsigned int) (60000000.0f / pSession->tempo()));
 	// give tempo struct to the queue.
 	snd_seq_set_queue_tempo(m_pAlsaSeq, m_iAlsaQueue, tempo);
 
