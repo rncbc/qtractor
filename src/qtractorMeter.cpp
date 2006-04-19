@@ -30,13 +30,16 @@
 #include <math.h>
 
 // Meter level limits (in dB).
-#define QTRACTORMETER_MAXDB			(+3.0f)
-#define QTRACTORMETER_MINDB			(-70.0f)
+#define QTRACTOR_METER_MAXDB		+3.0f
+#define QTRACTOR_METER_MINDB		-70.0f
 
-// The peak decay rate (magic goes here :).
-#define QTRACTORMETER_DECAY_RATE	(1.0f - 3E-2f)
-// Number of cycles the peak stays on hold (falloff).
-#define QTRACTORMETER_DECAY_HOLD	16
+// The decay rates (magic goes here :).
+// - value decay rate (faster)
+#define QTRACTOR_METER_DECAY_RATE1	(1.0f - 1E-3f)
+// - peak decay rate (slower)
+#define QTRACTOR_METER_DECAY_RATE2	(1.0f - 1E-6f)
+// Number of cycles the peak stays on hold before fall-off.
+#define QTRACTOR_METER_DECAY_HOLD	32
 
 #if defined(__BORLANDC__)
 static inline float log10f ( float x )  { return float(::log(x)) / M_LN10; }
@@ -100,8 +103,7 @@ qtractorMeterScale::qtractorMeterScale ( qtractorMeter *pMeter )
 	m_pMeter = pMeter;
 	m_iLastY = 0;
 
-//	QWidget::setMinimumWidth(14);
-	QWidget::setFixedWidth(16);
+	QWidget::setMinimumWidth(14);
 //	QWidget::setBackgroundMode(Qt::PaletteMid);
 }
 
@@ -142,16 +144,16 @@ void qtractorMeterScale::paintEvent ( QPaintEvent * )
 	QPainter p(this);
 
 	p.setFont(QFont("Helvetica", 5));
-	p.setPen(m_pMeter->color(QTRACTORMETER_FORE));
+	p.setPen(m_pMeter->color(QTRACTOR_METER_FORE));
 
 	m_iLastY = 0;
 
-	drawLineLabel(&p, m_pMeter->iec_level(QTRACTORMETER_0DB),  "0");
-	drawLineLabel(&p, m_pMeter->iec_level(QTRACTORMETER_3DB),  "3");
-	drawLineLabel(&p, m_pMeter->iec_level(QTRACTORMETER_6DB),  "6");
-	drawLineLabel(&p, m_pMeter->iec_level(QTRACTORMETER_10DB), "10");
+	drawLineLabel(&p, m_pMeter->iec_level(QTRACTOR_METER_0DB),  "0");
+	drawLineLabel(&p, m_pMeter->iec_level(QTRACTOR_METER_3DB),  "3");
+	drawLineLabel(&p, m_pMeter->iec_level(QTRACTOR_METER_6DB),  "6");
+	drawLineLabel(&p, m_pMeter->iec_level(QTRACTOR_METER_10DB), "10");
 
-	for (float dB = -20.0f; dB > QTRACTORMETER_MINDB; dB -= 10.0f)
+	for (float dB = -20.0f; dB > QTRACTOR_METER_MINDB; dB -= 10.0f)
 		drawLineLabel(&p, m_pMeter->iec_scale(dB), QString::number(-int(dB)));
 }
 
@@ -174,14 +176,13 @@ qtractorMeterValue::qtractorMeterValue( qtractorMeter *pMeter,
 	m_iChannel    = iChannel;
 
 	m_iValue      = 0;
-	m_fValueDecay = QTRACTORMETER_DECAY_RATE;
+	m_fValueDecay = QTRACTOR_METER_DECAY_RATE1;
 	m_iPeak       = 0;
 	m_iPeakHold   = 0;
-	m_fPeakDecay  = QTRACTORMETER_DECAY_RATE;
-	m_iPeakColor  = QTRACTORMETER_6DB;
+	m_fPeakDecay  = QTRACTOR_METER_DECAY_RATE2;
+	m_iPeakColor  = QTRACTOR_METER_6DB;
 
-//	QFrame::setMinimumWidth(8);
-	QWidget::setFixedWidth(8);
+	QFrame::setMinimumWidth(8);
 	QFrame::setBackgroundMode(Qt::NoBackground);
 
 	QFrame::setFrameShape(QFrame::StyledPanel);
@@ -215,23 +216,23 @@ void qtractorMeterValue::paintEvent ( QPaintEvent * )
 	p.setWindow(0, 0, iWidth, iHeight);
 
 	if (isEnabled()) {
-		pm.fill(m_pMeter->color(QTRACTORMETER_BACK));
-		y = m_pMeter->iec_level(QTRACTORMETER_0DB);
-		p.setPen(m_pMeter->color(QTRACTORMETER_FORE));
+		pm.fill(m_pMeter->color(QTRACTOR_METER_BACK));
+		y = m_pMeter->iec_level(QTRACTOR_METER_0DB);
+		p.setPen(m_pMeter->color(QTRACTOR_METER_FORE));
 		p.drawLine(0, iHeight - y, iWidth, iHeight - y);
 	} else {
 		pm.fill(Qt::gray);
 	}
 
-	float dB = QTRACTORMETER_MINDB;
+	float dB = QTRACTOR_METER_MINDB;
 	float fValue = m_pMeter->monitor()->value(m_iChannel);
 	if (fValue > 0.0f)
 		dB = 20.0f * ::log10f(fValue);
 
-	if (dB < QTRACTORMETER_MINDB)
-		dB = QTRACTORMETER_MINDB;
-	else if (dB > QTRACTORMETER_MAXDB)
-		dB = QTRACTORMETER_MAXDB;
+	if (dB < QTRACTOR_METER_MINDB)
+		dB = QTRACTOR_METER_MINDB;
+	else if (dB > QTRACTOR_METER_MAXDB)
+		dB = QTRACTOR_METER_MAXDB;
 
 	int y_over = 0;
 	int y_curr = 0;
@@ -239,7 +240,7 @@ void qtractorMeterValue::paintEvent ( QPaintEvent * )
 	y = m_pMeter->iec_scale(dB);
 	if (y > m_iValue) {
 		m_iValue = y;
-		m_fValueDecay = QTRACTORMETER_DECAY_RATE;
+		m_fValueDecay = QTRACTOR_METER_DECAY_RATE1;
 	} else {
 		m_iValue = (int) ((float) m_iValue * m_fValueDecay);
 		if (y > m_iValue) {
@@ -251,8 +252,8 @@ void qtractorMeterValue::paintEvent ( QPaintEvent * )
 	}
 
 	int iLevel;
-	for (iLevel = QTRACTORMETER_10DB;
-			iLevel > QTRACTORMETER_OVER && y >= y_over; iLevel--) {
+	for (iLevel = QTRACTOR_METER_10DB;
+			iLevel > QTRACTOR_METER_OVER && y >= y_over; iLevel--) {
 		y_curr = m_pMeter->iec_level(iLevel);
 		if (y < y_curr) {
 			p.fillRect(0, iHeight - y, iWidth, y - y_over,
@@ -266,21 +267,21 @@ void qtractorMeterValue::paintEvent ( QPaintEvent * )
 
 	if (y > y_over) {
 		p.fillRect(0, iHeight - y, iWidth, y - y_over,
-			m_pMeter->color(QTRACTORMETER_OVER));
+			m_pMeter->color(QTRACTOR_METER_OVER));
 	}
 
 	if (y > m_iPeak) {
 		m_iPeak = y;
 		m_iPeakHold  = 0;
-		m_fPeakDecay = QTRACTORMETER_DECAY_RATE;
+		m_fPeakDecay = QTRACTOR_METER_DECAY_RATE2;
 		m_iPeakColor = iLevel;
-	} else if (++m_iPeakHold > QTRACTORMETER_DECAY_HOLD) {
+	} else if (++m_iPeakHold > QTRACTOR_METER_DECAY_HOLD) {
 		m_iPeak = (int) ((float) m_iPeak * m_fPeakDecay);
 		if (y > m_iPeak) {
 			m_iPeak = y;
 		} else {
-			if (m_iPeak < m_pMeter->iec_level(QTRACTORMETER_10DB))
-				m_iPeakColor = QTRACTORMETER_6DB;
+			if (m_iPeak < m_pMeter->iec_level(QTRACTOR_METER_10DB))
+				m_iPeakColor = QTRACTOR_METER_6DB;
 			m_fPeakDecay *= m_fPeakDecay;
 		}
 	}
@@ -314,10 +315,10 @@ qtractorMeter::qtractorMeter ( qtractorMonitor *pMonitor,
 	m_pScale       = new qtractorMeterScale(this);
 	m_ppValues     = NULL;
 	m_fScale       = 0.0f;
-	m_iPeakFalloff = QTRACTORMETER_DECAY_HOLD;
+	m_iPeakFalloff = QTRACTOR_METER_DECAY_HOLD;
 
 	m_pSlider->setTickmarks(QSlider::NoMarks);
-	m_pSlider->setMinValue(-int(10000.0f * 0.025f * QTRACTORMETER_MAXDB));
+	m_pSlider->setMinValue(-int(10000.0f * 0.025f * QTRACTOR_METER_MAXDB));
 	m_pSlider->setMaxValue(10000);
 	m_pSlider->setPageStep(1000);
 	m_pSlider->setLineStep(100);
@@ -325,16 +326,16 @@ qtractorMeter::qtractorMeter ( qtractorMonitor *pMonitor,
 	
 	setGain(m_pMonitor->gain());
 
-	for (int i = 0; i < QTRACTORMETER_LEVELS; i++)
+	for (int i = 0; i < QTRACTOR_METER_LEVELS; i++)
 		m_iLevels[i] = 0;
 
-	m_pColors[QTRACTORMETER_OVER] = new QColor(240,  0, 20);
-	m_pColors[QTRACTORMETER_0DB]  = new QColor(240,160, 20);
-	m_pColors[QTRACTORMETER_3DB]  = new QColor(220,220, 20);
-	m_pColors[QTRACTORMETER_6DB]  = new QColor(160,220, 20);
-	m_pColors[QTRACTORMETER_10DB] = new QColor( 40,160, 40);
-	m_pColors[QTRACTORMETER_BACK] = new QColor( 20, 40, 20);
-	m_pColors[QTRACTORMETER_FORE] = new QColor( 80, 80, 80);
+	m_pColors[QTRACTOR_METER_OVER] = new QColor(240,  0, 20);
+	m_pColors[QTRACTOR_METER_0DB]  = new QColor(240,160, 20);
+	m_pColors[QTRACTOR_METER_3DB]  = new QColor(220,220, 20);
+	m_pColors[QTRACTOR_METER_6DB]  = new QColor(160,220, 20);
+	m_pColors[QTRACTOR_METER_10DB] = new QColor( 40,160, 40);
+	m_pColors[QTRACTOR_METER_BACK] = new QColor( 20, 40, 20);
+	m_pColors[QTRACTOR_METER_FORE] = new QColor( 80, 80, 80);
 
 	m_iChannels = m_pMonitor->channels();
 	if (m_iChannels > 0) {
@@ -369,7 +370,7 @@ qtractorMeter::~qtractorMeter (void)
 	delete m_pScale;
 	delete m_pSlider;
 
-	for (int i = 0; i < QTRACTORMETER_COLORS; i++)
+	for (int i = 0; i < QTRACTOR_METER_COLORS; i++)
 		delete m_pColors[i];
 }
 
@@ -457,12 +458,12 @@ void qtractorMeter::refresh (void)
 // Resize event handler.
 void qtractorMeter::resizeEvent ( QResizeEvent * )
 {
-	m_fScale = (1.0f - 0.025f * QTRACTORMETER_MAXDB) * float(QWidget::height());
+	m_fScale = (1.0f - 0.025f * QTRACTOR_METER_MAXDB) * float(QWidget::height());
 
-	m_iLevels[QTRACTORMETER_0DB]  = iec_scale(  0.0f);
-	m_iLevels[QTRACTORMETER_3DB]  = iec_scale( -3.0f);
-	m_iLevels[QTRACTORMETER_6DB]  = iec_scale( -6.0f);
-	m_iLevels[QTRACTORMETER_10DB] = iec_scale(-10.0f);
+	m_iLevels[QTRACTOR_METER_0DB]  = iec_scale(  0.0f);
+	m_iLevels[QTRACTOR_METER_3DB]  = iec_scale( -3.0f);
+	m_iLevels[QTRACTOR_METER_6DB]  = iec_scale( -6.0f);
+	m_iLevels[QTRACTOR_METER_10DB] = iec_scale(-10.0f);
 }
 
 

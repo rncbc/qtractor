@@ -24,6 +24,7 @@
 
 #include <qwidget.h>
 #include <qcombobox.h>
+#include <qsplitter.h>
 
 
 //-------------------------------------------------------------------------
@@ -371,6 +372,43 @@ void qtractorOptions::saveComboBoxHistory ( QComboBox *pComboBox, int iLimit )
 		m_settings.writeEntry("/Item" + QString::number(i + 1), sText);
 	}
 	m_settings.endGroup();
+}
+
+
+//---------------------------------------------------------------------------
+// Splitter widget sizes persistence helper methods.
+
+void qtractorOptions::loadSplitterSizes ( QSplitter *pSplitter )
+{
+	// Try to restore old splitter sizes...
+	if (pSplitter) {
+		m_settings.beginGroup("/Splitter/" + QString(pSplitter->name()));
+		QValueList<int> sizes;
+		QStringList list = m_settings.readListEntry("/sizes");
+		QStringList::Iterator iter = list.begin();
+		while (iter != list.end())
+			sizes.append((*iter++).toInt());
+		if (!sizes.isEmpty())
+			pSplitter->setSizes(sizes);
+		m_settings.endGroup();
+	}
+}
+
+
+void qtractorOptions::saveSplitterSizes ( QSplitter *pSplitter )
+{
+	// Try to save current splitter sizes...
+	if (pSplitter) {
+		m_settings.beginGroup("/Splitter/" + QString(pSplitter->name()));
+		QStringList list;
+		QValueList<int> sizes = pSplitter->sizes();
+		QValueList<int>::Iterator iter = sizes.begin();
+		while (iter != sizes.end())
+			list.append(QString::number(*iter++));
+		if (!list.isEmpty())
+			m_settings.writeEntry("/sizes", list);
+		m_settings.endGroup();
+	}
 }
 
 

@@ -84,7 +84,7 @@ public:
 	{
 		for (unsigned short i = 0; i < m_iChannels; i++) {
 			for (unsigned int n = 0; n < iFrames; n++)
-				setValue(i, ppFrames[i][n]);
+				setValue(i, ppFrames[i][n] *= m_fGain);
 		}
 	}
 

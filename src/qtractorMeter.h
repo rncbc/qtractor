@@ -19,23 +19,23 @@
 
 *****************************************************************************/
 
-#ifndef __qtractorMeter_h
-#define __qtractorMeter_h
+#ifndef __QTRACTOR_METER_h
+#define __QTRACTOR_METER_h
 
 #include <qptrlist.h>
 #include <qhbox.h>
 
 // Color/level indexes.
-#define QTRACTORMETER_OVER    0
-#define QTRACTORMETER_0DB     1
-#define QTRACTORMETER_3DB     2
-#define QTRACTORMETER_6DB     3
-#define QTRACTORMETER_10DB    4
-#define QTRACTORMETER_BACK    5
-#define QTRACTORMETER_FORE    6
+#define QTRACTOR_METER_OVER		0
+#define QTRACTOR_METER_0DB		1
+#define QTRACTOR_METER_3DB		2
+#define QTRACTOR_METER_6DB		3
+#define QTRACTOR_METER_10DB		4
+#define QTRACTOR_METER_BACK		5
+#define QTRACTOR_METER_FORE		6
 
-#define QTRACTORMETER_LEVELS  5
-#define QTRACTORMETER_COLORS  7
+#define QTRACTOR_METER_LEVELS	5
+#define QTRACTOR_METER_COLORS	7
 
 // Forward declarations.
 class qtractorMonitor;
@@ -178,8 +178,8 @@ private:
 	qtractorSlider      *m_pSlider;
 	qtractorMeterScale  *m_pScale;
 	qtractorMeterValue **m_ppValues;
-	int                  m_iLevels[QTRACTORMETER_LEVELS];
-	QColor              *m_pColors[QTRACTORMETER_COLORS];
+	int                  m_iLevels[QTRACTOR_METER_LEVELS];
+	QColor              *m_pColors[QTRACTOR_METER_COLORS];
 	float                m_fScale;
 
 	// Peak falloff mode setting (0=no peak falloff).
@@ -187,6 +187,6 @@ private:
 };
 
 	
-#endif  // __qtractorMeter_h
+#endif  // __QTRACTOR_METER_h
 
 // end of qtractorMeter.h

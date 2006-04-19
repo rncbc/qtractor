@@ -23,6 +23,7 @@
 #include "qtractorMeter.h"
 #include "qtractorMonitor.h"
 
+#include "qtractorOptions.h"
 #include "qtractorSession.h"
 #include "qtractorTrack.h"
 #include "qtractorAudioEngine.h"
@@ -50,11 +51,14 @@ qtractorMixerStrip::qtractorMixerStrip ( qtractorMixerRack *pRack,
 	
 	QFrame::setFrameShape(QFrame::StyledPanel);
 	QFrame::setFrameShadow(QFrame::Raised);
+	QFrame::setFixedWidth(16 * (2 + pMonitor->channels()));
 
 	m_pLayout = new QVBoxLayout(this, 4, 4);
 
 	m_pLabel = new QLabel(sName, this);
-	m_pLabel->setAlignment(Qt::AlignCenter);
+	m_pLabel->setFont(QFont(QFrame::font().family(), 6));
+	m_pLabel->setAlignment(m_pRack->alignment());
+	m_pLabel->setFixedHeight(16);
 	if (color == Qt::color0) {
 		m_pLabel->setPaletteBackgroundColor(cg.button());
 	} else {
@@ -62,6 +66,7 @@ qtractorMixerStrip::qtractorMixerStrip ( qtractorMixerRack *pRack,
 		m_pLabel->setPaletteForegroundColor(color.dark());
 	}
 	m_pLayout->addWidget(m_pLabel);
+	QToolTip::add(m_pLabel, sName);
 
 	m_pMeter = new qtractorMeter(pMonitor, this);
 	m_pLayout->addWidget(m_pMeter);
@@ -96,21 +101,26 @@ void qtractorMixerStrip::contextMenuEvent ( QContextMenuEvent *pContextMenuEvent
 // qtractorMixerRack -- Meter bridge rack.
 
 // Constructor.
-qtractorMixerRack::qtractorMixerRack ( QWidget *pParent, const char *pszName )
-	: QWidget(pParent, pszName)
+qtractorMixerRack::qtractorMixerRack ( int iAlignment,
+	QWidget *pParent, const char *pszName )
+	: QWidget(pParent, pszName), m_iAlignment(iAlignment)
 {
 	m_strips.setAutoDelete(true);
 
 	QWidget::setPaletteBackgroundColor(Qt::darkGray);
 	
 	m_pRackLayout = new QHBoxLayout(this, 0, 0);
-	
+	m_pStripSpacer
+		= new QSpacerItem(0, 0, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+	if (m_iAlignment & Qt::AlignRight)
+		m_pRackLayout->addItem(m_pStripSpacer);
+
 	m_pStripHBox = new QHBox(this);
 	m_pRackLayout->addWidget(m_pStripHBox);
 
-	m_pStripSpacer
-		= new QSpacerItem(0, 0, QSizePolicy::Expanding, QSizePolicy::Minimum);
-	m_pRackLayout->addItem(m_pStripSpacer);
+	if (m_iAlignment & Qt::AlignLeft)
+		m_pRackLayout->addItem(m_pStripSpacer);
 }
 
 // Default destructor.
@@ -156,6 +166,13 @@ qtractorMixerStrip *qtractorMixerRack::findStrip ( qtractorMonitor *pMonitor )
 int qtractorMixerRack::stripCount (void) const
 {
 	return m_strips.count();
+}
+
+
+// The strip alignment flags.
+int qtractorMixerRack::alignment (void) const
+{
+	return m_iAlignment;
 }
 
 
@@ -232,14 +249,14 @@ qtractorMixer::qtractorMixer ( qtractorMainForm *pMainForm,
 	if (pszName == 0)
 		QDockWindow::setName("qtractorMixer");
 
-	m_pSplitter = new QSplitter(Qt::Horizontal, this);
+	m_pSplitter = new QSplitter(Qt::Horizontal, this, "Mixer");
 
-    m_pInputRack  = new qtractorMixerRack(m_pSplitter);
-    m_pTrackRack  = new qtractorMixerRack(m_pSplitter);
-    m_pOutputRack = new qtractorMixerRack(m_pSplitter);
+	m_pInputRack  = new qtractorMixerRack(Qt::AlignLeft,  m_pSplitter);
+	m_pTrackRack  = new qtractorMixerRack(Qt::AlignLeft,  m_pSplitter);
+	m_pOutputRack = new qtractorMixerRack(Qt::AlignRight, m_pSplitter);
 
 #if QT_VERSION >= 0x030200
-    m_pSplitter->setChildrenCollapsible(false);
+	m_pSplitter->setChildrenCollapsible(false);
 #endif	
 
 	// Prepare the dockable window stuff.
@@ -255,12 +272,19 @@ qtractorMixer::qtractorMixer ( qtractorMainForm *pMainForm,
 	QString sCaption = tr("Mixer");
 	QToolTip::add(this, sCaption);
 	QDockWindow::setCaption(sCaption);
-}                 
+	QDockWindow::setIcon(QPixmap::fromMimeSource("qtractorTracks.png"));
+
+	// Get previously saved splitter sizes...
+	m_pMainForm->options()->loadSplitterSizes(m_pSplitter);
+}
 
 
 // Default destructor.
 qtractorMixer::~qtractorMixer (void)
 {
+	// Get previously saved splitter sizes...
+	m_pMainForm->options()->saveSplitterSizes(m_pSplitter);
+
 	// No need to delete child widgets, Qt does it all for us
 }
 
@@ -348,18 +372,18 @@ void qtractorMixer::updateTracks (void)
 // Complete mixer refreshment.
 void qtractorMixer::refresh (void)
 {
-    m_pInputRack->refresh();
-    m_pTrackRack->refresh();
-    m_pOutputRack->refresh();
+	m_pInputRack->refresh();
+	m_pTrackRack->refresh();
+	m_pOutputRack->refresh();
 }
 
 
 // Complete mixer recycle.
 void qtractorMixer::clear (void)
 {
-    m_pInputRack->clear();
-    m_pTrackRack->clear();
-    m_pOutputRack->clear();
+	m_pInputRack->clear();
+	m_pTrackRack->clear();
+	m_pOutputRack->clear();
 }
 
 

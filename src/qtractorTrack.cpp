@@ -484,11 +484,6 @@ void qtractorTrack::process ( qtractorClip *pClip,
 		pAudioBus->buffer_prepare(nframes);
 	}
 
-	// Emulate soloing/muting with zero gain;
-	float fGain = m_pMonitor->gain();
-	if ((m_pSession->soloTracks() && !isSolo()) || isMute())
-		fGain = 0.0f;
-
 	// Now, for every clip...
 	while (pClip && pClip->clipStart() < iFrameEnd) {
 		pClip->process(iFrameStart, iFrameEnd);
@@ -497,8 +492,11 @@ void qtractorTrack::process ( qtractorClip *pClip,
 
 	// Audio buffers needs monitoring and commitment...
 	if (pAudioBus) {
-		m_pMonitor->process(pAudioBus->buffer(), nframes);
-		pAudioBus->buffer_commit(nframes, fGain);
+		// It it ain't muted, of course...
+		if (!isMute() && (!m_pSession->soloTracks() || isSolo())) {
+			m_pMonitor->process(pAudioBus->buffer(), nframes);
+			pAudioBus->buffer_commit(nframes);
+		}
 		// Audio-recording?
 		qtractorAudioClip *pAudioClip
 			= static_cast<qtractorAudioClip *> (m_pClipRecord);

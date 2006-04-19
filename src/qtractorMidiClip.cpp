@@ -295,9 +295,16 @@ void qtractorMidiClip::process ( unsigned long iFrameStart,
 		this, iFrameStart, iFrameEnd);
 #endif
 
-	qtractorSession *pSession = track()->session();
+	qtractorTrack *pTrack = track();
+	if (pTrack == NULL)
+		return;
+	qtractorSession *pSession = pTrack->session();
 	if (pSession == NULL)
 		return;
+
+	// Track mute state...
+	bool bMute = (pTrack->isMute()
+		|| (pSession->soloTracks() && !pTrack->isSolo()));
 
 	// Enqueue the requested events...
 	unsigned long iTimeClip  = pSession->tickFromFrame(clipStart());
@@ -309,8 +316,9 @@ void qtractorMidiClip::process ( unsigned long iFrameStart,
 		unsigned long iTimeEvent = iTimeClip + pEvent->time();
 		if (iTimeEvent > iTimeEnd)
 			break;
-		if (iTimeEvent >= iTimeStart) {
-			pSession->midiEngine()->enqueue(track(), pEvent, iTimeEvent);
+		if (iTimeEvent >= iTimeStart
+			&& (!bMute || pEvent->type() != qtractorMidiEvent::NOTEON)) {
+			pSession->midiEngine()->enqueue(pTrack, pEvent, iTimeEvent);
 		}
 		pEvent = pEvent->next();
 	}

@@ -102,9 +102,13 @@ class qtractorMixerRack : public QWidget
 public:
 
 	// Constructor.
-	qtractorMixerRack(QWidget *pParent = 0, const char *pszName = 0);
+	qtractorMixerRack(int iAlignment,
+		QWidget *pParent = 0, const char *pszName = 0);
 	// Default destructor.
 	~qtractorMixerRack();
+
+	// The strip alignment flags.
+	int alignment() const;
 
 	// The strip workspace.
 	QHBox *workspace() const;
@@ -139,13 +143,16 @@ protected:
 
 private:
 
-	// The Strips list.
-	QPtrList<qtractorMixerStrip> m_strips;
-	
+	// Instance properties.
+	int m_iAlignment;
+
 	// Layout widgets.
 	QHBoxLayout *m_pRackLayout;
 	QHBox       *m_pStripHBox;
 	QSpacerItem *m_pStripSpacer;
+
+	// The Strips list.
+	QPtrList<qtractorMixerStrip> m_strips;
 };
 
 
@@ -154,15 +161,15 @@ private:
 
 class qtractorMixer : public QDockWindow
 {
-    Q_OBJECT
+	Q_OBJECT
 
 public:
 
 	// Constructor.
 	qtractorMixer(qtractorMainForm *pMainForm,
 		QWidget *pParent, const char *pszName = 0);
-    // Default destructor.
-    ~qtractorMixer();
+	// Default destructor.
+	~qtractorMixer();
 
 	// Main application form accessors.
 	qtractorMainForm *mainForm() const;
@@ -173,11 +180,6 @@ public:
 	// Update busses and tracks'racks.
 	void updateBusses();
 	void updateTracks();
-
-    // Widget accesors.
-    qtractorMixerRack *inputRack()  const { return m_pInputRack;  }
-    qtractorMixerRack *trackRack()  const { return m_pTrackRack;  }
-    qtractorMixerRack *outputRack() const { return m_pOutputRack; }
 
 	// Complete mixer refreshment.
 	void refresh();
@@ -193,12 +195,12 @@ protected:
 
 private:
 
-    // Child controls.
+	// Child controls.
 	QSplitter *m_pSplitter;
 
-    qtractorMixerRack *m_pInputRack;
-    qtractorMixerRack *m_pTrackRack;
-    qtractorMixerRack *m_pOutputRack;
+	qtractorMixerRack *m_pInputRack;
+	qtractorMixerRack *m_pTrackRack;
+	qtractorMixerRack *m_pOutputRack;
 
 	// Main application form reference.
 	qtractorMainForm *m_pMainForm;

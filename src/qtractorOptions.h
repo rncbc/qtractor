@@ -26,6 +26,7 @@
 
 class QWidget;
 class QComboBox;
+class QSplitter;
 
 
 //-------------------------------------------------------------------------
@@ -97,6 +98,10 @@ public:
 	// Combo box history persistence helper prototypes.
 	void loadComboBoxHistory(QComboBox *pComboBox, int iLimit = 8);
 	void saveComboBoxHistory(QComboBox *pComboBox, int iLimit = 8);
+
+	// Splitter widget sizes persistence helper methods.
+	void loadSplitterSizes(QSplitter *pSplitter);
+	void saveSplitterSizes(QSplitter *pSplitter);
 
 private:
 
