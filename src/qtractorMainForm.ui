@@ -108,6 +108,7 @@
         <separator/>
         <action name="viewFilesAction"/>
         <action name="viewMessagesAction"/>
+        <action name="viewMixerAction"/>
         <separator/>
         <action name="viewRefreshAction"/>
         <separator/>
@@ -840,6 +841,29 @@
     </action>
     <action>
         <property name="name">
+            <cstring>viewMixerAction</cstring>
+        </property>
+        <property name="toggleAction">
+            <bool>true</bool>
+        </property>
+        <property name="text">
+            <string>Mixer</string>
+        </property>
+        <property name="menuText">
+            <string>Mi&amp;xer</string>
+        </property>
+        <property name="toolTip">
+            <string>Show/hide mixer</string>
+        </property>
+        <property name="statusTip">
+            <string>Show/hide the mixer window</string>
+        </property>
+        <property name="accel">
+            <string></string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
             <cstring>viewRefreshAction</cstring>
         </property>
         <property name="text">
@@ -1278,6 +1302,12 @@
         <slot>viewMessages(bool)</slot>
     </connection>
     <connection>
+        <sender>viewMixerAction</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>qtractorMainForm</receiver>
+        <slot>viewMixer(bool)</slot>
+    </connection>
+    <connection>
         <sender>viewRefreshAction</sender>
         <signal>activated()</signal>
         <receiver>qtractorMainForm</receiver>
@@ -1371,6 +1401,7 @@
     <forward>class qtractorFiles;</forward>
     <forward>class qtractorSession;</forward>
     <forward>class qtractorTracks;</forward>
+    <forward>class qtractorMixer;</forward>
     <forward>class qtractorCommand;</forward>
 </forwards>
 <variables>
@@ -1380,6 +1411,7 @@
     <variable access="private">qtractorMessages *m_pMessages;</variable>
     <variable access="private">qtractorFiles *m_pFiles;</variable>
     <variable access="private">qtractorSession *m_pSession;</variable>
+    <variable access="private">qtractorMixer *m_pMixer;</variable>
     <variable access="private">qtractorTracks *m_pTracks;</variable>
     <variable access="private">QWorkspace *m_pWorkspace;</variable>
     <variable access="private">QString m_sFilename;</variable>
@@ -1428,6 +1460,7 @@
     <slot specifier="non virtual">viewToolbarTime( bool bOn )</slot>
     <slot specifier="non virtual">viewFiles( bool bOn )</slot>
     <slot specifier="non virtual">viewMessages( bool bOn )</slot>
+    <slot specifier="non virtual">viewMixer( bool bOn )</slot>
     <slot specifier="non virtual">viewRefresh( void )</slot>
     <slot specifier="non virtual">viewInstruments( void )</slot>
     <slot specifier="non virtual">viewOptions( void )</slot>
@@ -1468,6 +1501,7 @@
     <function specifier="non virtual" returnType="qtractorOptions *">options( void )</function>
     <function specifier="non virtual" returnType="qtractorSession *">session( void )</function>
     <function specifier="non virtual" returnType="qtractorTracks *">tracks( void )</function>
+    <function specifier="non virtual" returnType="qtractorMixer *">mixer( void )</function>
     <function specifier="non virtual" returnType="qtractorCommandList *">commands( void )</function>
     <function specifier="non virtual" returnType="qtractorInstrumentList *">instruments( void )</function>
     <function specifier="non virtual" returnType="QString">sessionName( const QString &amp; sFilename )</function>

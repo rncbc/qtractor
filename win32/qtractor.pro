@@ -6,6 +6,7 @@ HEADERS += ../src/qtractorAbout.h \
            ../src/qtractorMessages.h \
            ../src/qtractorMonitor.h \
            ../src/qtractorSpinBox.h \
+           ../src/qtractorSlider.h \
            ../src/qtractorList.h \
            ../src/qtractorFiles.h \
            ../src/qtractorFileListView.h \
@@ -13,6 +14,8 @@ HEADERS += ../src/qtractorAbout.h \
            ../src/qtractorTrackTime.h \
            ../src/qtractorTrackView.h \
            ../src/qtractorTracks.h \
+           ../src/qtractorMeter.h \
+           ../src/qtractorMixer.h \
            ../src/qtractorClipSelect.h \
            ../src/qtractorClip.h \
            ../src/qtractorTrack.h \
@@ -52,6 +55,8 @@ SOURCES += ../src/main.cpp \
            ../src/qtractorTrackTime.cpp \
            ../src/qtractorTrackView.cpp \
            ../src/qtractorTracks.cpp \
+           ../src/qtractorMeter.cpp \
+           ../src/qtractorMixer.cpp \
            ../src/qtractorClipSelect.cpp \
            ../src/qtractorClip.cpp \
            ../src/qtractorTrack.cpp \

@@ -25,6 +25,7 @@
 #include "qtractorInstrument.h"
 #include "qtractorMessages.h"
 #include "qtractorFiles.h"
+#include "qtractorMixer.h"
 #include "qtractorTracks.h"
 
 #include "qtractorTrackList.h"
@@ -113,6 +114,7 @@ void qtractorMainForm::init (void)
 	// All child forms are to be created later, not earlier than setup.
 	m_pMessages = NULL;
 	m_pFiles    = NULL;
+	m_pMixer    = NULL;
 	m_pTracks   = NULL;
 
 	// We'll start clean.
@@ -287,6 +289,8 @@ void qtractorMainForm::init (void)
 void qtractorMainForm::destroy (void)
 {
 	// Drop any widgets around (not really necessary)...
+	if (m_pMixer)
+		delete m_pMixer;
 	if (m_pTracks)
 		delete m_pTracks;
 	if (m_pFiles)
@@ -321,6 +325,7 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 	m_pFiles = new qtractorFiles(this);
 	m_pFiles->audioListView()->setRecentDir(m_pOptions->sAudioDir);
 	m_pFiles->midiListView()->setRecentDir(m_pOptions->sMidiDir);
+	m_pMixer = new qtractorMixer(this, this);
 
 	// Set message defaults...
 	updateMessagesFont();
@@ -328,6 +333,8 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 	updateMessagesCapture();
 
 	// Set the visibility signal.
+	QObject::connect(m_pMixer, SIGNAL(visibilityChanged(bool)),
+		this, SLOT(stabilizeForm()));
 	QObject::connect(m_pMessages, SIGNAL(visibilityChanged(bool)),
 		this, SLOT(stabilizeForm()));
 	QObject::connect(m_pFiles, SIGNAL(visibilityChanged(bool)),
@@ -369,6 +376,7 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 		// Message window is forced to dock on the bottom.
 		moveDockWindow(m_pMessages, Qt::DockBottom);
 		moveDockWindow(m_pFiles, Qt::DockRight);
+		moveDockWindow(m_pMixer, Qt::DockTornOff);
 	} else {
 		// Make it as the last time.
 		QTextIStream istr(&sDockables);
@@ -594,6 +602,12 @@ qtractorTracks *qtractorMainForm::tracks (void)
 	return m_pTracks;
 }
 
+// The global session mixer reference.
+qtractorMixer *qtractorMainForm::mixer (void)
+{
+	return m_pMixer;
+}
+
 // The global undoable command list reference.
 qtractorCommandList *qtractorMainForm::commands (void)
 {
@@ -756,6 +770,7 @@ bool qtractorMainForm::closeSession (void)
 		m_pCommands->clear();
 		m_pSession->clear();
 		m_pFiles->clear();
+		m_pMixer->clear();
 		// Surely this will be deleted next...
 		m_pTracks = NULL;
 		// Reset playhead.
@@ -1044,7 +1059,10 @@ void qtractorMainForm::trackAdd (void)
 #endif
 
 	// Add Track...
-	m_pTracks->addTrack();
+	if (m_pTracks)
+		m_pTracks->addTrack();
+	if (m_pMixer)
+		m_pMixer->updateTracks();
 }
 
 
@@ -1058,6 +1076,8 @@ void qtractorMainForm::trackRemove (void)
 	// Remove Track...
 	if (m_pTracks)
 		m_pTracks->removeTrack();
+	if (m_pMixer)
+		m_pMixer->updateTracks();
 }
 
 
@@ -1088,6 +1108,9 @@ void qtractorMainForm::trackImportAudio (void)
 			iClipStart);
 		m_pTracks->trackView()->ensureVisibleFrame(iClipStart);
 	}
+
+	if (m_pMixer)
+		m_pMixer->updateTracks();
 }
 
 
@@ -1105,6 +1128,9 @@ void qtractorMainForm::trackImportMidi (void)
 			iClipStart);
 		m_pTracks->trackView()->ensureVisibleFrame(iClipStart);
 	}
+
+	if (m_pMixer)
+		m_pMixer->updateTracks();
 }
 
 
@@ -1187,22 +1213,35 @@ void qtractorMainForm::viewToolbarTime ( bool bOn )
 
 
 // Show/hide the messages window logger.
+void qtractorMainForm::viewMixer ( bool bOn )
+{
+	if (bOn) {
+		m_pMixer->show();
+	} else {
+		m_pMixer->hide();
+	}
+}
+
+
+// Show/hide the messages window logger.
 void qtractorMainForm::viewMessages ( bool bOn )
 {
-	if (bOn)
+	if (bOn) {
 		m_pMessages->show();
-	else
+	} else {
 		m_pMessages->hide();
+	}
 }
 
 
 // Show/hide the files window view.
 void qtractorMainForm::viewFiles ( bool bOn )
 {
-	if (bOn)
+	if (bOn) {
 		m_pFiles->show();
-	else
+	} else {
 		m_pFiles->hide();
+	}
 }
 
 
@@ -1218,6 +1257,10 @@ void qtractorMainForm::viewRefresh (void)
 	m_pSession->updateSessionLength();
 	if (m_pTracks)
 		m_pTracks->updateContents(true);
+	if (m_pMixer) {
+		m_pMixer->updateBusses();
+		m_pMixer->updateTracks();
+	}
 
 	stabilizeForm();
 }
@@ -1646,6 +1689,7 @@ void qtractorMainForm::stabilizeForm (void)
 	// Update view menu state...
 	viewMessagesAction->setOn(m_pMessages && m_pMessages->isVisible());
 	viewFilesAction->setOn(m_pFiles && m_pFiles->isVisible());
+	viewMixerAction->setOn(m_pMixer && m_pMixer->isVisible());
 
 	// Recent files menu.
 	m_pRecentFilesMenu->setEnabled(m_pOptions->recentFiles.count() > 0);
@@ -2028,6 +2072,10 @@ void qtractorMainForm::timerSlot (void)
 				.arg(m_iXrunCount), "#cc0033");
 		}
 	}
+
+	// Always update mixer monitoring...
+	if (m_pMixer)
+		m_pMixer->refresh();
 
 	// Register the next timer slot.
 	QTimer::singleShot(QTRACTOR_TIMER_MSECS, this, SLOT(timerSlot()));
