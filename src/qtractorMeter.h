@@ -133,6 +133,9 @@ public:
 
 	// Monitor accessor.
 	qtractorMonitor *monitor() const;
+
+	// Channel count accessor.
+	unsigned short channels() const;
 	
 	// Gain accessors.
 	void setGain_dB(float dB);
@@ -170,6 +173,7 @@ protected slots:
 private:
 
 	// Local instance variables.
+	unsigned short       m_iChannels;
 	qtractorMonitor     *m_pMonitor;
 	qtractorSlider      *m_pSlider;
 	qtractorMeterScale  *m_pScale;

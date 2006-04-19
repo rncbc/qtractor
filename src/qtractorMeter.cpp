@@ -100,7 +100,8 @@ qtractorMeterScale::qtractorMeterScale ( qtractorMeter *pMeter )
 	m_pMeter = pMeter;
 	m_iLastY = 0;
 
-	QWidget::setMinimumWidth(14);
+//	QWidget::setMinimumWidth(14);
+	QWidget::setFixedWidth(16);
 //	QWidget::setBackgroundMode(Qt::PaletteMid);
 }
 
@@ -179,7 +180,8 @@ qtractorMeterValue::qtractorMeterValue( qtractorMeter *pMeter,
 	m_fPeakDecay  = QTRACTORMETER_DECAY_RATE;
 	m_iPeakColor  = QTRACTORMETER_6DB;
 
-	QFrame::setMinimumWidth(8);
+//	QFrame::setMinimumWidth(8);
+	QWidget::setFixedWidth(8);
 	QFrame::setBackgroundMode(Qt::NoBackground);
 
 	QFrame::setFrameShape(QFrame::StyledPanel);
@@ -334,10 +336,10 @@ qtractorMeter::qtractorMeter ( qtractorMonitor *pMonitor,
 	m_pColors[QTRACTORMETER_BACK] = new QColor( 20, 40, 20);
 	m_pColors[QTRACTORMETER_FORE] = new QColor( 80, 80, 80);
 
-	unsigned short iChannels = m_pMonitor->channels();
-	if (iChannels > 0) {
-		m_ppValues = new qtractorMeterValue *[iChannels];
-		for (unsigned short i = 0; i < iChannels; i++)
+	m_iChannels = m_pMonitor->channels();
+	if (m_iChannels > 0) {
+		m_ppValues = new qtractorMeterValue *[m_iChannels];
+		for (unsigned short i = 0; i < m_iChannels; i++)
 			m_ppValues[i] = new qtractorMeterValue(this, i);
 	}
 
@@ -359,7 +361,8 @@ qtractorMeter::qtractorMeter ( qtractorMonitor *pMonitor,
 // Default destructor.
 qtractorMeter::~qtractorMeter (void)
 {
-	for (unsigned short i = 0; i < m_pMonitor->channels(); i++)
+	// No need to delete child widgets, Qt does it all for us
+	for (unsigned short i = 0; i < m_iChannels; i++)
 		delete m_ppValues[i];
 
 	delete [] m_ppValues;
@@ -384,9 +387,17 @@ int qtractorMeter::iec_level ( int iIndex ) const
 }
 
 
+// Monitor accessor.
 qtractorMonitor *qtractorMeter::monitor (void) const
 {
 	return m_pMonitor;
+}
+
+
+// Channel count accessor.
+unsigned short qtractorMeter::channels (void) const
+{
+	return m_iChannels;
 }
 
 
@@ -430,7 +441,7 @@ int qtractorMeter::peakFalloff (void) const
 // Reset peak holder.
 void qtractorMeter::peakReset (void)
 {
-	for (unsigned short i = 0; i < m_pMonitor->channels(); i++)
+	for (unsigned short i = 0; i < m_iChannels; i++)
 		m_ppValues[i]->peakReset();
 }
 
@@ -438,7 +449,7 @@ void qtractorMeter::peakReset (void)
 // Slot refreshment.
 void qtractorMeter::refresh (void)
 {
-	for (unsigned short i = 0; i < m_pMonitor->channels(); i++)
+	for (unsigned short i = 0; i < m_iChannels; i++)
 		m_ppValues[i]->update();
 }
 

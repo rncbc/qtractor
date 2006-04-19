@@ -264,6 +264,7 @@ qtractorMixer::~qtractorMixer (void)
 	// No need to delete child widgets, Qt does it all for us
 }
 
+
 // Main application form accessors.
 qtractorMainForm *qtractorMixer::mainForm (void) const
 {
