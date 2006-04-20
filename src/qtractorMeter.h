@@ -134,9 +134,9 @@ public:
 	// Monitor accessor.
 	qtractorMonitor *monitor() const;
 
-	// Channel count accessor.
-	unsigned short channels() const;
-	
+	// Monitor reset.
+	void reset();
+
 	// Gain accessors.
 	void setGain_dB(float dB);
 	float gain_dB() const;

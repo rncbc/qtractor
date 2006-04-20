@@ -1061,8 +1061,6 @@ void qtractorMainForm::trackAdd (void)
 	// Add Track...
 	if (m_pTracks)
 		m_pTracks->addTrack();
-	if (m_pMixer)
-		m_pMixer->updateTracks();
 }
 
 
@@ -1076,8 +1074,6 @@ void qtractorMainForm::trackRemove (void)
 	// Remove Track...
 	if (m_pTracks)
 		m_pTracks->removeTrack();
-	if (m_pMixer)
-		m_pMixer->updateTracks();
 }
 
 
@@ -1108,9 +1104,6 @@ void qtractorMainForm::trackImportAudio (void)
 			iClipStart);
 		m_pTracks->trackView()->ensureVisibleFrame(iClipStart);
 	}
-
-	if (m_pMixer)
-		m_pMixer->updateTracks();
 }
 
 
@@ -1128,9 +1121,6 @@ void qtractorMainForm::trackImportMidi (void)
 			iClipStart);
 		m_pTracks->trackView()->ensureVisibleFrame(iClipStart);
 	}
-
-	if (m_pMixer)
-		m_pMixer->updateTracks();
 }
 
 

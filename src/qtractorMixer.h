@@ -62,9 +62,14 @@ public:
 	// Default destructor.
 	~qtractorMixerStrip();
 
+	// Delegated properties accessors.
+	void setName(const QString& sName);
+	QString name() const;
+	void setColor(const QColor& color);
+	const QColor&  color() const;
+
 	// Child accessors.
-	QLabel        *label() const { return m_pLabel; }
-	qtractorMeter *meter() const { return m_pMeter; }
+	qtractorMeter *meter() const;
 
 	// Strip refreshment.
 	void refresh();
@@ -177,6 +182,11 @@ public:
 	// The splitter layout widget accessor.
 	QSplitter *splitter() const;
 
+	// The mixer strips rack accessors.
+	qtractorMixerRack *inputs()  const;
+	qtractorMixerRack *tracks()  const;
+	qtractorMixerRack *outputs() const;
+	
 	// Update busses and tracks'racks.
 	void updateBusses();
 	void updateTracks();

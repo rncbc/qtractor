@@ -28,6 +28,10 @@
 #include "qtractorTracks.h"
 #include "qtractorTrackList.h"
 #include "qtractorTrackView.h"
+#include "qtractorMixer.h"
+#include "qtractorMeter.h"
+
+#include <qlabel.h>
 
 
 //----------------------------------------------------------------------
@@ -83,6 +87,11 @@ bool qtractorTrackCommand::addTrack (void)
 	// Make it the current item...
 	pTracks->trackList()->setCurrentItem(pTrackItem);
 
+	// Mixer turn...
+	qtractorMixer *pMixer = mainForm()->mixer();
+	if (pMixer)
+		pMixer->updateTracks();
+
 	// Avoid disposal of the track reference.
 	setAutoDelete(false);
 
@@ -117,6 +126,11 @@ bool qtractorTrackCommand::removeTrack (void)
 	delete pTrackItem;
 	// OK. Finally, force enumbering of all items.
 	pTracks->trackList()->renumberTrackItems();
+
+	// Mixer turn...
+	qtractorMixer *pMixer = mainForm()->mixer();
+	if (pMixer)
+		pMixer->updateTracks();
 
 	// Make ths track reference disposable.
 	setAutoDelete(true);
@@ -391,7 +405,7 @@ bool qtractorEditTrackCommand::redo (void)
 		return false;
 
 	// Reopen to assign a probable new bus,
-	// which is unchanged on record mode...
+	// which is certainly unchanged on record mode...
 	if (!m_pTrack->isRecord() && !m_pTrack->open()) {
 		mainForm()->appendMessagesError(
 			QObject::tr("Track assignment failed:\n\n"
@@ -409,6 +423,18 @@ bool qtractorEditTrackCommand::redo (void)
 	if (m_pTrack->trackType() == qtractorTrack::Midi)
 	    pTracks->updateMidiTrack(m_pTrack);
 
+	// Mixer turn...
+	qtractorMixer *pMixer = mainForm()->mixer();
+	if (pMixer) {
+		qtractorMixerStrip *pStrip
+			= pMixer->tracks()->findStrip(m_pTrack->monitor());
+		if (pStrip) {
+			pStrip->setName(m_pTrack->trackName());
+			pStrip->setColor(m_pTrack->foreground());
+			pStrip->meter()->reset();
+		}
+	}
+	
 	return true;
 }
 

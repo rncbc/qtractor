@@ -46,8 +46,7 @@ qtractorMixerStrip::qtractorMixerStrip ( qtractorMixerRack *pRack,
 	qtractorMonitor *pMonitor, const QString& sName, const QColor& color )
 	: QFrame(pRack->workspace()), m_pRack(pRack), m_iMark(0)
 {
-	const QColorGroup& cg = QFrame::colorGroup();
-	QWidget::setPaletteBackgroundColor(cg.button());
+	QWidget::setPaletteBackgroundColor(QFrame::colorGroup().button());
 	
 	int iWidth = 16 * (2 + pMonitor->channels());
 	QFrame::setFrameShape(QFrame::StyledPanel);
@@ -59,22 +58,20 @@ qtractorMixerStrip::qtractorMixerStrip ( qtractorMixerRack *pRack,
 	QFont font6(QFrame::font().family(), 6);
 	QFontMetrics fm(font6);
 
-	m_pLabel = new QLabel(sName, this);
+	m_pLabel = new QLabel(this);
 	m_pLabel->setFont(font6);
 	m_pLabel->setFixedHeight(fm.height());
 	if (fm.width(sName) < iWidth)
 		m_pLabel->setAlignment(Qt::AlignHCenter);
-	if (color == Qt::color0) {
-		m_pLabel->setPaletteBackgroundColor(cg.button());
-	} else {
-		m_pLabel->setPaletteBackgroundColor(color.light());
-		m_pLabel->setPaletteForegroundColor(color.dark());
-	}
+		
 	m_pLayout->addWidget(m_pLabel);
 	QToolTip::add(m_pLabel, sName);
 
 	m_pMeter = new qtractorMeter(pMonitor, this);
 	m_pLayout->addWidget(m_pMeter);
+
+	setName(sName);
+	setColor(color);
 
 //	QFrame::setSizePolicy(
 //		QSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding));
@@ -85,6 +82,45 @@ qtractorMixerStrip::qtractorMixerStrip ( qtractorMixerRack *pRack,
 qtractorMixerStrip::~qtractorMixerStrip (void)
 {
 	// No need to delete child widgets, Qt does it all for us
+}
+
+
+// Child properties accessors.
+void qtractorMixerStrip::setName ( const QString& sName )
+{
+	m_pLabel->setText(sName);
+
+	QToolTip::remove(m_pLabel);
+	QToolTip::add(m_pLabel, sName);
+}
+
+QString qtractorMixerStrip::name (void) const
+{
+	return m_pLabel->text();
+}
+
+void qtractorMixerStrip::setColor ( const QColor& color )
+{
+	if (color == Qt::color0) {
+		const QColorGroup& cg = QFrame::colorGroup();
+		m_pLabel->setPaletteBackgroundColor(cg.button());
+		m_pLabel->setPaletteForegroundColor(cg.text());
+	} else {
+		m_pLabel->setPaletteBackgroundColor(color.light());
+		m_pLabel->setPaletteForegroundColor(color.dark());
+	}
+}
+
+const QColor& qtractorMixerStrip::color (void) const
+{
+	return m_pLabel->paletteBackgroundColor();
+}
+
+
+// Child accessors.
+qtractorMeter *qtractorMixerStrip::meter (void) const
+{
+	return m_pMeter;
 }
 
 
@@ -308,6 +344,23 @@ qtractorSession *qtractorMixer::session (void) const
 QSplitter *qtractorMixer::splitter (void) const
 {
 	return m_pSplitter;
+}
+
+
+// The mixer strips rack accessors.
+qtractorMixerRack *qtractorMixer::inputs (void) const
+{
+	return m_pInputRack;
+}
+
+qtractorMixerRack *qtractorMixer::tracks (void) const
+{
+	return m_pTrackRack;
+}
+
+qtractorMixerRack *qtractorMixer::outputs (void) const
+{
+	return m_pOutputRack;
 }
 
 

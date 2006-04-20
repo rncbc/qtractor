@@ -310,6 +310,7 @@ qtractorMeter::qtractorMeter ( qtractorMonitor *pMonitor,
 	QWidget *pParent, const char *pszName )
 	: QHBox(pParent, pszName)
 {
+	m_iChannels    = 0;
 	m_pMonitor     = pMonitor;
 	m_pSlider      = new qtractorSlider(this);
 	m_pScale       = new qtractorMeterScale(this);
@@ -337,12 +338,7 @@ qtractorMeter::qtractorMeter ( qtractorMonitor *pMonitor,
 	m_pColors[QTRACTOR_METER_BACK] = new QColor( 20, 40, 20);
 	m_pColors[QTRACTOR_METER_FORE] = new QColor( 80, 80, 80);
 
-	m_iChannels = m_pMonitor->channels();
-	if (m_iChannels > 0) {
-		m_ppValues = new qtractorMeterValue *[m_iChannels];
-		for (unsigned short i = 0; i < m_iChannels; i++)
-			m_ppValues[i] = new qtractorMeterValue(this, i);
-	}
+	reset();
 
 	QHBox::setMinimumHeight(120);
 	QHBox::setSpacing(1);
@@ -396,10 +392,27 @@ qtractorMonitor *qtractorMeter::monitor (void) const
 }
 
 
-// Channel count accessor.
-unsigned short qtractorMeter::channels (void) const
+// Monitor reset
+void qtractorMeter::reset (void)
 {
-	return m_iChannels;
+	unsigned short iChannels = m_pMonitor->channels();
+
+	if (m_iChannels == iChannels)
+		return;
+
+	if (m_ppValues) {
+		for (unsigned short i = 0; i < m_iChannels; i++)
+			delete m_ppValues[i];
+		delete [] m_ppValues;
+		m_ppValues = NULL;
+	}
+
+	m_iChannels = iChannels;
+	if (m_iChannels > 0) {
+		m_ppValues = new qtractorMeterValue *[m_iChannels];
+		for (unsigned short i = 0; i < m_iChannels; i++)
+			m_ppValues[i] = new qtractorMeterValue(this, i);
+	}
 }
 
 
