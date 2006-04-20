@@ -49,16 +49,21 @@ qtractorMixerStrip::qtractorMixerStrip ( qtractorMixerRack *pRack,
 	const QColorGroup& cg = QFrame::colorGroup();
 	QWidget::setPaletteBackgroundColor(cg.button());
 	
+	int iWidth = 16 * (2 + pMonitor->channels());
 	QFrame::setFrameShape(QFrame::StyledPanel);
 	QFrame::setFrameShadow(QFrame::Raised);
-	QFrame::setFixedWidth(16 * (2 + pMonitor->channels()));
+	QFrame::setFixedWidth(iWidth);
 
 	m_pLayout = new QVBoxLayout(this, 4, 4);
 
+	QFont font6(QFrame::font().family(), 6);
+	QFontMetrics fm(font6);
+
 	m_pLabel = new QLabel(sName, this);
-	m_pLabel->setFont(QFont(QFrame::font().family(), 6));
-	m_pLabel->setAlignment(m_pRack->alignment());
-	m_pLabel->setFixedHeight(16);
+	m_pLabel->setFont(font6);
+	m_pLabel->setFixedHeight(fm.height());
+	if (fm.width(sName) < iWidth)
+		m_pLabel->setAlignment(Qt::AlignHCenter);
 	if (color == Qt::color0) {
 		m_pLabel->setPaletteBackgroundColor(cg.button());
 	} else {
@@ -101,9 +106,8 @@ void qtractorMixerStrip::contextMenuEvent ( QContextMenuEvent *pContextMenuEvent
 // qtractorMixerRack -- Meter bridge rack.
 
 // Constructor.
-qtractorMixerRack::qtractorMixerRack ( int iAlignment,
-	QWidget *pParent, const char *pszName )
-	: QWidget(pParent, pszName), m_iAlignment(iAlignment)
+qtractorMixerRack::qtractorMixerRack ( qtractorMixer *pMixer, int iAlignment )
+	: QWidget(pMixer->splitter()), m_pMixer(pMixer)
 {
 	m_strips.setAutoDelete(true);
 
@@ -113,15 +117,16 @@ qtractorMixerRack::qtractorMixerRack ( int iAlignment,
 	m_pStripSpacer
 		= new QSpacerItem(0, 0, QSizePolicy::Expanding, QSizePolicy::Minimum);
 
-	if (m_iAlignment & Qt::AlignRight)
+	if (iAlignment & Qt::AlignRight)
 		m_pRackLayout->addItem(m_pStripSpacer);
 
 	m_pStripHBox = new QHBox(this);
 	m_pRackLayout->addWidget(m_pStripHBox);
 
-	if (m_iAlignment & Qt::AlignLeft)
+	if (iAlignment & Qt::AlignLeft)
 		m_pRackLayout->addItem(m_pStripSpacer);
 }
+
 
 // Default destructor.
 qtractorMixerRack::~qtractorMixerRack (void)
@@ -166,13 +171,6 @@ qtractorMixerStrip *qtractorMixerRack::findStrip ( qtractorMonitor *pMonitor )
 int qtractorMixerRack::stripCount (void) const
 {
 	return m_strips.count();
-}
-
-
-// The strip alignment flags.
-int qtractorMixerRack::alignment (void) const
-{
-	return m_iAlignment;
 }
 
 
@@ -231,9 +229,7 @@ void qtractorMixerRack::contextMenuEvent (
 void qtractorMixerRack::contextMenu ( const QPoint& gpos,
 	qtractorMixerStrip * /* pStrip */ )
 {
-	qtractorMixer *pMixer = static_cast<qtractorMixer *> (parentWidget());
-	if (pMixer)
-		pMixer->mainForm()->trackMenu->exec(gpos);
+	m_pMixer->mainForm()->trackMenu->exec(gpos);
 }
 
 
@@ -251,9 +247,9 @@ qtractorMixer::qtractorMixer ( qtractorMainForm *pMainForm,
 
 	m_pSplitter = new QSplitter(Qt::Horizontal, this, "Mixer");
 
-	m_pInputRack  = new qtractorMixerRack(Qt::AlignLeft,  m_pSplitter);
-	m_pTrackRack  = new qtractorMixerRack(Qt::AlignLeft,  m_pSplitter);
-	m_pOutputRack = new qtractorMixerRack(Qt::AlignRight, m_pSplitter);
+	m_pInputRack  = new qtractorMixerRack(this);
+	m_pTrackRack  = new qtractorMixerRack(this);
+	m_pOutputRack = new qtractorMixerRack(this, Qt::AlignRight);
 
 #if QT_VERSION >= 0x030200
 	m_pSplitter->setChildrenCollapsible(false);
@@ -274,8 +270,13 @@ qtractorMixer::qtractorMixer ( qtractorMainForm *pMainForm,
 	QDockWindow::setCaption(sCaption);
 	QDockWindow::setIcon(QPixmap::fromMimeSource("qtractorTracks.png"));
 
-	// Get previously saved splitter sizes...
-	m_pMainForm->options()->loadSplitterSizes(m_pSplitter);
+	// Get previously saved splitter sizes,
+	// (with afair default...)
+	QValueList<int> sizes;
+	sizes.append(0);
+	sizes.append(120);
+	sizes.append(0);
+	m_pMainForm->options()->loadSplitterSizes(m_pSplitter, sizes);
 }
 
 
@@ -300,6 +301,13 @@ qtractorMainForm *qtractorMixer::mainForm (void) const
 qtractorSession *qtractorMixer::session (void) const
 {
 	return m_pMainForm->session();
+}
+
+
+// The splitter layout widget accessor.
+QSplitter *qtractorMixer::splitter (void) const
+{
+	return m_pSplitter;
 }
 
 

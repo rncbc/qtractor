@@ -30,6 +30,7 @@
 // Forward declarations.
 class qtractorMixerStrip;
 class qtractorMixerRack;
+class qtractorMixer;
 
 class qtractorMonitor;
 class qtractorMeter;
@@ -102,13 +103,9 @@ class qtractorMixerRack : public QWidget
 public:
 
 	// Constructor.
-	qtractorMixerRack(int iAlignment,
-		QWidget *pParent = 0, const char *pszName = 0);
+	qtractorMixerRack(qtractorMixer *pMixer, int iAlignment = Qt::AlignLeft);
 	// Default destructor.
 	~qtractorMixerRack();
-
-	// The strip alignment flags.
-	int alignment() const;
 
 	// The strip workspace.
 	QHBox *workspace() const;
@@ -144,7 +141,7 @@ protected:
 private:
 
 	// Instance properties.
-	int m_iAlignment;
+	qtractorMixer *m_pMixer;
 
 	// Layout widgets.
 	QHBoxLayout *m_pRackLayout;
@@ -177,6 +174,9 @@ public:
 	// Session accessors.
 	qtractorSession *session() const;
 
+	// The splitter layout widget accessor.
+	QSplitter *splitter() const;
+
 	// Update busses and tracks'racks.
 	void updateBusses();
 	void updateTracks();
@@ -195,16 +195,15 @@ protected:
 
 private:
 
+	// Main application form reference.
+	qtractorMainForm *m_pMainForm;
+
 	// Child controls.
 	QSplitter *m_pSplitter;
 
 	qtractorMixerRack *m_pInputRack;
 	qtractorMixerRack *m_pTrackRack;
 	qtractorMixerRack *m_pOutputRack;
-
-	// Main application form reference.
-	qtractorMainForm *m_pMainForm;
-
 };
 
 

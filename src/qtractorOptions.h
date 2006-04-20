@@ -100,7 +100,7 @@ public:
 	void saveComboBoxHistory(QComboBox *pComboBox, int iLimit = 8);
 
 	// Splitter widget sizes persistence helper methods.
-	void loadSplitterSizes(QSplitter *pSplitter);
+	void loadSplitterSizes(QSplitter *pSplitter, QValueList<int>& sizes);
 	void saveSplitterSizes(QSplitter *pSplitter);
 
 private:
