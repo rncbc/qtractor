@@ -1731,7 +1731,7 @@ void qtractorMainForm::stabilizeForm (void)
 
 	const QColor& backColor = statusBar()->paletteBackgroundColor();
 	m_statusItems[QTRACTOR_STATUS_REC]->setPaletteBackgroundColor(
-		m_pSession->isRecording() &&
+		m_pSession->isRecording() && m_pSession->isPlaying() &&
 		m_pSession->recordTracks() > 0 ? Qt::red : backColor);
 	m_statusItems[QTRACTOR_STATUS_MUTE]->setPaletteBackgroundColor(
 		m_pSession->muteTracks() > 0 ? Qt::yellow : backColor);

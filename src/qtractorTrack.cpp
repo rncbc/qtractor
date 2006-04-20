@@ -500,8 +500,10 @@ void qtractorTrack::process ( qtractorClip *pClip,
 		// Audio-recording?
 		qtractorAudioClip *pAudioClip
 			= static_cast<qtractorAudioClip *> (m_pClipRecord);
-		if (pAudioClip)
+		if (pAudioClip) {
+			m_pMonitor->process(pAudioBus->in(), nframes);
 			pAudioClip->write(pAudioBus->in(), nframes);
+		}
 	}
 }
 
