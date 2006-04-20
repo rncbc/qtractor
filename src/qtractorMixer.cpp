@@ -212,7 +212,7 @@ void qtractorMixerRack::cleanStrips ( int iMark )
 	for (qtractorMixerStrip *pStrip = m_strips.last();
 			pStrip; pStrip = m_strips.prev()) {
 		if (pStrip->mark() == iMark)
-			delete pStrip;
+			m_strips.remove(pStrip);
 	}
 }
 

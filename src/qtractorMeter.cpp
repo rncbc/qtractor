@@ -367,6 +367,7 @@ qtractorMeter::~qtractorMeter (void)
 		delete m_ppValues[i];
 
 	delete [] m_ppValues;
+
 	delete m_pScale;
 	delete m_pSlider;
 
