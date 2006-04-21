@@ -427,10 +427,11 @@ bool qtractorEditTrackCommand::redo (void)
 	qtractorMixer *pMixer = mainForm()->mixer();
 	if (pMixer) {
 		qtractorMixerStrip *pStrip
-			= pMixer->tracks()->findStrip(m_pTrack->monitor());
+			= pMixer->trackRack()->findStrip(m_pTrack->monitor());
 		if (pStrip) {
 			pStrip->setName(m_pTrack->trackName());
-			pStrip->setColor(m_pTrack->foreground());
+			pStrip->setForeground(m_pTrack->background().light());
+			pStrip->setBackground(m_pTrack->foreground().light());
 			pStrip->meter()->reset();
 		}
 	}

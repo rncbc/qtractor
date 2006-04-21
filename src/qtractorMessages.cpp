@@ -67,9 +67,8 @@ qtractorMessages::qtractorMessages ( QWidget *pParent, const char *pszName )
 	m_pTextView->setWordWrap(QTextEdit::NoWrap);
 	m_pTextView->setReadOnly(true);
 	m_pTextView->setUndoRedoEnabled(false);
-#if QT_VERSION >= 0x030200
 	m_pTextView->setTextFormat(Qt::LogText);
-#endif
+
 	// Initialize default message limit.
 	setMessagesLimit(QTRACTOR_MESSAGES_MAXLINES);
 
@@ -198,9 +197,7 @@ void qtractorMessages::setMessagesLimit ( int iMessagesLimit )
 {
 	m_iMessagesLimit = iMessagesLimit;
 	m_iMessagesHigh  = iMessagesLimit + (iMessagesLimit / 3);
-#if QT_VERSION >= 0x030200
 	m_pTextView->setMaxLogLines(iMessagesLimit);
-#endif
 }
 
 
@@ -217,21 +214,6 @@ void qtractorMessages::appendMessagesColor ( const QString& s, const QString &c 
 
 void qtractorMessages::appendMessagesText ( const QString& s )
 {
-#if QT_VERSION < 0x030200
-	// Check for message line limit...
-	if (m_iMessagesLimit > 0) {
-		int iParagraphs = m_pTextView->paragraphs();
-		if (iParagraphs > m_iMessagesHigh) {
-			m_pTextView->setUpdatesEnabled(false);
-			while (iParagraphs > m_iMessagesLimit) {
-				m_pTextView->removeParagraph(0);
-				iParagraphs--;
-			}
-			m_pTextView->scrollToBottom();
-			m_pTextView->setUpdatesEnabled(true);
-		}
-	}
-#endif
 	m_pTextView->append(s);
 }
 

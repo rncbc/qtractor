@@ -386,6 +386,13 @@ int qtractorMeter::iec_level ( int iIndex ) const
 
 
 // Monitor accessor.
+void qtractorMeter::setMonitor ( qtractorMonitor *pMonitor )
+{
+	m_pMonitor = pMonitor;
+
+	reset();
+}
+
 qtractorMonitor *qtractorMeter::monitor (void) const
 {
 	return m_pMonitor;

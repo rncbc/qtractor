@@ -43,15 +43,16 @@
 
 // Constructor.
 qtractorMixerStrip::qtractorMixerStrip ( qtractorMixerRack *pRack,
-	qtractorMonitor *pMonitor, const QString& sName, const QColor& color )
-	: QFrame(pRack->workspace()), m_pRack(pRack), m_iMark(0)
+	qtractorMonitor *pMonitor, const QString& sName )
+	: QFrame(pRack->workspace()),
+		m_pRack(pRack),	m_iMark(0)
 {
-	QWidget::setPaletteBackgroundColor(QFrame::colorGroup().button());
-	
 	int iWidth = 16 * (2 + pMonitor->channels());
 	QFrame::setFrameShape(QFrame::StyledPanel);
 	QFrame::setFrameShadow(QFrame::Raised);
-	QFrame::setFixedWidth(iWidth);
+	QFrame::setFixedWidth(iWidth);	
+//	QFrame::setSizePolicy(
+//		QSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding));
 
 	m_pLayout = new QVBoxLayout(this, 4, 4);
 
@@ -71,10 +72,7 @@ qtractorMixerStrip::qtractorMixerStrip ( qtractorMixerRack *pRack,
 	m_pLayout->addWidget(m_pMeter);
 
 	setName(sName);
-	setColor(color);
-
-//	QFrame::setSizePolicy(
-//		QSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding));
+	setSelected(false);
 }
 
 
@@ -86,6 +84,17 @@ qtractorMixerStrip::~qtractorMixerStrip (void)
 
 
 // Child properties accessors.
+void qtractorMixerStrip::setMonitor ( qtractorMonitor *pMonitor )
+{
+	m_pMeter->setMonitor(pMonitor);
+}
+
+qtractorMonitor *qtractorMixerStrip::monitor (void) const
+{
+	return m_pMeter->monitor();
+}
+
+
 void qtractorMixerStrip::setName ( const QString& sName )
 {
 	m_pLabel->setText(sName);
@@ -99,22 +108,28 @@ QString qtractorMixerStrip::name (void) const
 	return m_pLabel->text();
 }
 
-void qtractorMixerStrip::setColor ( const QColor& color )
+
+void qtractorMixerStrip::setForeground ( const QColor& fg )
 {
-	if (color == Qt::color0) {
-		const QColorGroup& cg = QFrame::colorGroup();
-		m_pLabel->setPaletteBackgroundColor(cg.button());
-		m_pLabel->setPaletteForegroundColor(cg.text());
-	} else {
-		m_pLabel->setPaletteBackgroundColor(color.light());
-		m_pLabel->setPaletteForegroundColor(color.dark());
-	}
+	m_pLabel->setPaletteForegroundColor(fg);
 }
 
-const QColor& qtractorMixerStrip::color (void) const
+const QColor& qtractorMixerStrip::foreground (void) const
+{
+	return m_pLabel->paletteForegroundColor();
+}
+
+
+void qtractorMixerStrip::setBackground ( const QColor& bg )
+{
+	m_pLabel->setPaletteBackgroundColor(bg);
+}
+
+const QColor& qtractorMixerStrip::background (void) const
 {
 	return m_pLabel->paletteBackgroundColor();
 }
+
 
 
 // Child accessors.
@@ -124,10 +139,51 @@ qtractorMeter *qtractorMixerStrip::meter (void) const
 }
 
 
+// Selection methods.
+void qtractorMixerStrip::setSelected ( bool bSelected )
+{
+	m_bSelected = bSelected;
+
+	const QColorGroup& cg = QFrame::colorGroup();
+	if (m_bSelected) {
+		QFrame::setPaletteBackgroundColor(cg.color(QColorGroup::Midlight).dark(150));
+		QFrame::setPaletteForegroundColor(cg.color(QColorGroup::Midlight).light(150));
+	} else { 
+		QFrame::setPaletteBackgroundColor(cg.button());
+		QFrame::setPaletteForegroundColor(cg.text());
+	}
+}
+
+bool qtractorMixerStrip::isSelected (void) const
+{
+	return m_bSelected;
+}
+
+
 // Strip refreshment.
 void qtractorMixerStrip::refresh (void)
 {
 	m_pMeter->refresh();
+}
+
+
+// Hacko-list-management marking...
+void qtractorMixerStrip::setMark ( int iMark )
+{
+	m_iMark = iMark;
+}
+
+int qtractorMixerStrip::mark (void) const
+{
+	return m_iMark;
+}
+
+// Mouse selection event handler.
+void qtractorMixerStrip::mousePressEvent ( QMouseEvent *pMouseEvent )
+{
+	QFrame::mousePressEvent(pMouseEvent);
+
+	m_pRack->setSelectedStrip(this);
 }
 
 
@@ -143,7 +199,8 @@ void qtractorMixerStrip::contextMenuEvent ( QContextMenuEvent *pContextMenuEvent
 
 // Constructor.
 qtractorMixerRack::qtractorMixerRack ( qtractorMixer *pMixer, int iAlignment )
-	: QWidget(pMixer->splitter()), m_pMixer(pMixer)
+	: QWidget(pMixer->splitter()), m_pMixer(pMixer),
+		m_bSelectEnabled(false), m_pSelectedStrip(NULL)
 {
 	m_strips.setAutoDelete(true);
 
@@ -234,6 +291,43 @@ void qtractorMixerRack::clear (void)
 }
 
 
+// Selection stuff.
+void qtractorMixerRack::setSelectEnabled ( bool bSelectEnabled )
+{
+	m_bSelectEnabled = bSelectEnabled;
+
+	if (!m_bSelectEnabled && m_pSelectedStrip) {
+		m_pSelectedStrip->setSelected(false);
+		m_pSelectedStrip = NULL;
+	}
+}
+
+bool qtractorMixerRack::isSelectEnabled (void) const
+{
+	return m_bSelectEnabled;
+}
+
+
+void qtractorMixerRack::setSelectedStrip ( qtractorMixerStrip *pStrip )
+{
+	if (m_bSelectEnabled && m_pSelectedStrip != pStrip) {
+		if (m_pSelectedStrip)
+			m_pSelectedStrip->setSelected(false);
+		m_pSelectedStrip = pStrip;
+		if (m_pSelectedStrip) {
+			m_pSelectedStrip->setSelected(true);
+			emit selectionChanged();
+		}
+	}
+}
+
+qtractorMixerStrip *qtractorMixerRack::selectedStrip (void) const
+{
+	return m_pSelectedStrip;
+}
+
+
+
 // Hacko-list-management marking...
 void qtractorMixerRack::markStrips ( int iMark )
 {
@@ -247,8 +341,13 @@ void qtractorMixerRack::cleanStrips ( int iMark )
 {
 	for (qtractorMixerStrip *pStrip = m_strips.last();
 			pStrip; pStrip = m_strips.prev()) {
-		if (pStrip->mark() == iMark)
+		if (pStrip->mark() == iMark) {
+			// Don't let current selection hanging...
+			if (m_pSelectedStrip == pStrip)
+				m_pSelectedStrip = NULL;
+			// Get rid of the marked strip...
 			m_strips.remove(pStrip);
+		}
 	}
 }
 
@@ -265,6 +364,9 @@ void qtractorMixerRack::contextMenuEvent (
 void qtractorMixerRack::contextMenu ( const QPoint& gpos,
 	qtractorMixerStrip * /* pStrip */ )
 {
+	if (!m_bSelectEnabled)
+		return;
+
 	m_pMixer->mainForm()->trackMenu->exec(gpos);
 }
 
@@ -273,24 +375,20 @@ void qtractorMixerRack::contextMenu ( const QPoint& gpos,
 // qtractorMixer -- Mixer widget.
 
 // Constructor.
-qtractorMixer::qtractorMixer ( qtractorMainForm *pMainForm,
-	QWidget *pParent, const char *pszName )
-	: QDockWindow(pParent, pszName), m_pMainForm(pMainForm)
+qtractorMixer::qtractorMixer ( qtractorMainForm *pMainForm )
+	: QDockWindow(pMainForm, "qtractorMixer"), m_pMainForm(pMainForm)
 {
 	// Surely a name is crucial (e.g.for storing geometry settings)
-	if (pszName == 0)
-		QDockWindow::setName("qtractorMixer");
+	// QDockWindow::setName("qtractorMixer");
 
 	m_pSplitter = new QSplitter(Qt::Horizontal, this, "Mixer");
+	m_pSplitter->setChildrenCollapsible(false);
 
 	m_pInputRack  = new qtractorMixerRack(this);
 	m_pTrackRack  = new qtractorMixerRack(this);
+	m_pTrackRack->setSelectEnabled(true);
 	m_pOutputRack = new qtractorMixerRack(this, Qt::AlignRight);
-
-#if QT_VERSION >= 0x030200
-	m_pSplitter->setChildrenCollapsible(false);
-#endif	
-
+	
 	// Prepare the dockable window stuff.
 	QDockWindow::setWidget(m_pSplitter);
 	QDockWindow::setOrientation(Qt::Horizontal);
@@ -348,31 +446,46 @@ QSplitter *qtractorMixer::splitter (void) const
 
 
 // The mixer strips rack accessors.
-qtractorMixerRack *qtractorMixer::inputs (void) const
+qtractorMixerRack *qtractorMixer::inputRack (void) const
 {
 	return m_pInputRack;
 }
 
-qtractorMixerRack *qtractorMixer::tracks (void) const
+qtractorMixerRack *qtractorMixer::trackRack (void) const
 {
 	return m_pTrackRack;
 }
 
-qtractorMixerRack *qtractorMixer::outputs (void) const
+qtractorMixerRack *qtractorMixer::outputRack (void) const
 {
 	return m_pOutputRack;
 }
 
 
 // Update mixer rack, checking if given monitor already exists.
-void qtractorMixer::updateRackStrip ( qtractorMixerRack *pRack,
-	qtractorMonitor *pMonitor, const QString& sName, const QColor& color )
+void qtractorMixer::updateBusStrip ( qtractorMixerRack *pRack,
+	qtractorMonitor *pMonitor, const QString& sName )
 {
 	qtractorMixerStrip *pStrip = pRack->findStrip(pMonitor);
-	if (pStrip) {
-		pStrip->setMark(0);
+	if (pStrip == NULL) {
+		pRack->addStrip(new qtractorMixerStrip(pRack, pMonitor, sName));
 	} else {
-		pRack->addStrip(new qtractorMixerStrip(pRack, pMonitor, sName, color));
+		pStrip->setMark(0);
+	}
+}
+
+
+void qtractorMixer::updateTrackStrip ( qtractorTrack *pTrack )
+{
+	qtractorMixerStrip *pStrip = m_pTrackRack->findStrip(pTrack->monitor());
+	if (pStrip == NULL) {
+		pStrip = new qtractorMixerStrip(m_pTrackRack,
+			pTrack->monitor(), pTrack->trackName());
+		pStrip->setForeground(pTrack->background().light());
+		pStrip->setBackground(pTrack->foreground().light());
+		m_pTrackRack->addStrip(pStrip);
+	} else {
+		pStrip->setMark(0);
 	}
 }
 
@@ -393,11 +506,11 @@ void qtractorMixer::updateBusses (void)
 		qtractorAudioBus *pAudioBus = static_cast<qtractorAudioBus *> (pBus);
 		if (pAudioBus) {
 			if (pAudioBus->busMode() & qtractorBus::Input) {
-				updateRackStrip(m_pInputRack,
+				updateBusStrip(m_pInputRack,
 					pAudioBus->monitor_in(), pAudioBus->busName() + tr(" In "));
 			}
 			if (pAudioBus->busMode() & qtractorBus::Output) {
-				updateRackStrip(m_pOutputRack,
+				updateBusStrip(m_pOutputRack,
 					pAudioBus->monitor_out(), pAudioBus->busName() + tr(" Out "));
 			}
 		}
@@ -420,10 +533,8 @@ void qtractorMixer::updateTracks (void)
 	// FIXME: Only audio tracks, in the time being...
 	for (qtractorTrack *pTrack = pSession->tracks().first();
 			pTrack; pTrack = pTrack->next()) {
-		if (pTrack->trackType() == qtractorTrack::Audio) {
-			updateRackStrip(m_pTrackRack,
-				pTrack->monitor(), pTrack->trackName(), pTrack->foreground());
-		}
+		if (pTrack->trackType() == qtractorTrack::Audio)
+			updateTrackStrip(pTrack);
 	}
 
 	m_pTrackRack->cleanStrips(1);

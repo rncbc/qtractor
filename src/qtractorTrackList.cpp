@@ -45,10 +45,6 @@
 #define QTRACTOR_ITEM_HEIGHT		48
 #define QTRACTOR_ITEM_HEIGHT_MIN	(QTRACTOR_ITEM_HEIGHT >> 1)
 
-#if QT_VERSION < 0x030200
-#define WNoAutoErase	(WResizeNoErase | WRepaintNoErase)
-#endif
-
 
 //----------------------------------------------------------------------------
 // qtractorTrackListToolButton -- Tracks list item tool button.
@@ -436,11 +432,7 @@ qtractorTrackList::qtractorTrackList ( qtractorTracks *pTracks,
 	QListView::setAllColumnsShowFocus(true);
 	QListView::setItemMargin(4);
 	// No sorting column.
-#if QT_VERSION >= 0x030200
 	QListView::setSortColumn(-1);
-#else
-	QListView::setSorting(-1);
-#endif
 	QListView::setHScrollBarMode(QListView::AlwaysOn);
 	QListView::setVScrollBarMode(QListView::AlwaysOff);
 
@@ -463,6 +455,22 @@ qtractorTrackListItem *qtractorTrackList::trackItem ( qtractorTrack *pTrack )
 		qtractorTrackListItem *pTrackItem
 			= static_cast<qtractorTrackListItem *> (pItem);
 		if (pTrackItem->track() == pTrack)
+			return pTrackItem;
+		pItem = pItem->nextSibling();
+	}
+	return NULL;
+}
+
+
+// Find the list view item from track monitor reference.
+qtractorTrackListItem *qtractorTrackList::trackItemMonitor (
+	qtractorMonitor *pMonitor )
+{
+	QListViewItem *pItem = QListView::firstChild();
+	while (pItem) {
+		qtractorTrackListItem *pTrackItem
+			= static_cast<qtractorTrackListItem *> (pItem);
+		if (pTrackItem->track()->monitor() == pMonitor)
 			return pTrackItem;
 		pItem = pItem->nextSibling();
 	}

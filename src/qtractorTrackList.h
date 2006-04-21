@@ -32,6 +32,7 @@ class qtractorTrack;
 class qtractorTrackList;
 class qtractorTrackListItem;
 class qtractorInstrumentList;
+class qtractorMonitor;
 
 
 //----------------------------------------------------------------------------
@@ -151,6 +152,8 @@ public:
 
 	// Find the list view item from track pointer reference.
 	qtractorTrackListItem *trackItem(qtractorTrack *pTrack);
+	// Find the list view item from track monitor reference.
+	qtractorTrackListItem *trackItemMonitor(qtractorMonitor *pMonitor);
 
 	// Renumber track list items.
 	void renumberTrackItems(QListViewItem *pItem = NULL);

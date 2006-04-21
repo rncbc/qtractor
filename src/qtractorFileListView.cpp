@@ -300,11 +300,7 @@ qtractorFileListView::qtractorFileListView (
 	QListView::setSizePolicy(
 		QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding));
 	QListView::setShowToolTips(false);
-#if QT_VERSION >= 0x030200
 	QListView::setSortColumn(-1);
-#else
-	QListView::setSorting(-1);
-#endif
 
 	setAutoOpenTimeout(800);
 

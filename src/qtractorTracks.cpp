@@ -73,9 +73,7 @@ qtractorTracks::qtractorTracks ( qtractorMainForm *pMainForm,
 	m_pTrackView = new qtractorTrackView(this, pVBox);
 
 	QSplitter::setResizeMode(m_pTrackList, QSplitter::KeepSize);
-#if QT_VERSION >= 0x030200
 	QSplitter::setHandleWidth(2);
-#endif
 	QWidget::setIcon(QPixmap::fromMimeSource("qtractorTracks.png"));
 	QWidget::setCaption(tr("Tracks"));
 
@@ -321,11 +319,11 @@ void qtractorTracks::updateContents ( bool bRefresh )
 }
 
 
-// Retrieves current track reference.
+// Retrieves current selected track reference.
 qtractorTrack *qtractorTracks::currentTrack (void) const
 {
 	qtractorTrackListItem *pTrackItem =
-		static_cast<qtractorTrackListItem *> (m_pTrackList->currentItem());
+		static_cast<qtractorTrackListItem *> (m_pTrackList->selectedItem());
 	return (pTrackItem ? pTrackItem->track() : NULL);
 }
 

@@ -132,6 +132,7 @@ public:
 	~qtractorMeter();
 
 	// Monitor accessor.
+	void setMonitor(qtractorMonitor *pMonitor);
 	qtractorMonitor *monitor() const;
 
 	// Monitor reset.

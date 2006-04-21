@@ -325,7 +325,7 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 	m_pFiles = new qtractorFiles(this);
 	m_pFiles->audioListView()->setRecentDir(m_pOptions->sAudioDir);
 	m_pFiles->midiListView()->setRecentDir(m_pOptions->sMidiDir);
-	m_pMixer = new qtractorMixer(this, this);
+	m_pMixer = new qtractorMixer(this);
 
 	// Set message defaults...
 	updateMessagesFont();
@@ -335,6 +335,8 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 	// Set the visibility signal.
 	QObject::connect(m_pMixer, SIGNAL(visibilityChanged(bool)),
 		this, SLOT(stabilizeForm()));
+	QObject::connect(m_pMixer->trackRack(), SIGNAL(selectionChanged()),
+		this, SLOT(mixerSelectionChanged()));
 	QObject::connect(m_pMessages, SIGNAL(visibilityChanged(bool)),
 		this, SLOT(stabilizeForm()));
 	QObject::connect(m_pFiles, SIGNAL(visibilityChanged(bool)),
@@ -1833,7 +1835,7 @@ void qtractorMainForm::updateSession (void)
 		// Create the main tracks widget...
 		m_pTracks = new qtractorTracks(this, workspace());
 		QObject::connect(m_pTracks, SIGNAL(selectionChangeSignal()),
-			this, SLOT(selectionChanged()));
+			this, SLOT(stabilizeForm()));
 		QObject::connect(m_pTracks, SIGNAL(contentsChangeSignal()),
 			this, SLOT(contentsChanged()));
 		QObject::connect(m_pTracks, SIGNAL(closeNotifySignal()),
@@ -1842,7 +1844,7 @@ void qtractorMainForm::updateSession (void)
 			SIGNAL(doubleClicked(QListViewItem*, const QPoint&, int)),
 			this, SLOT(trackProperties()));
 		QObject::connect(m_pTracks->trackList(), SIGNAL(selectionChanged()),
-			this, SLOT(stabilizeForm()));
+			this, SLOT(trackSelectionChanged()));
 		//
 		m_pTracks->showMaximized();
 		// Log this rather important event...
@@ -2141,11 +2143,42 @@ void qtractorMainForm::activateMidiFile  ( const QString& /* sFilename */ )
 
 
 // Tracks view selection change slot.
-void qtractorMainForm::selectionChanged (void)
+void qtractorMainForm::trackSelectionChanged (void)
 {
-#ifdef CONFIG_DEBUG_0
-	appendMessages("qtractorMainForm::selectionChanged()");
+#ifdef CONFIG_DEBUG
+	appendMessages("qtractorMainForm::trackSelectionChanged()");
 #endif
+
+	// Select sync to mixer...
+	if (m_pTracks && m_pMixer) {
+		qtractorMixerStrip *pStrip = NULL;
+		qtractorTrack *pTrack = m_pTracks->currentTrack();
+		if (pTrack)
+			pStrip = m_pMixer->trackRack()->findStrip(pTrack->monitor());
+		m_pMixer->trackRack()->setSelectedStrip(pStrip);
+	}
+
+	stabilizeForm();
+}
+
+
+// Mixer view selection change slot.
+void qtractorMainForm::mixerSelectionChanged (void)
+{
+#ifdef CONFIG_DEBUG
+	appendMessages("qtractorMainForm::mixerSelectionChanged()");
+#endif
+
+	// Select sync to tracks...
+	if (m_pTracks && m_pMixer) {
+		qtractorMixerStrip *pStrip = m_pMixer->trackRack()->selectedStrip();
+		if (pStrip) {
+			qtractorTrackListItem *pTrackItem
+				= m_pTracks->trackList()->trackItemMonitor(pStrip->monitor());
+			if (pTrackItem)
+				m_pTracks->trackList()->setSelected(pTrackItem, true);
+		}
+	}
 
 	stabilizeForm();
 }

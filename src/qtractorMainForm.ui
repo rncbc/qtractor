@@ -1481,7 +1481,8 @@
 	<slot specifier="non virtual">activateAudioFile( const QString &amp; sFilename )</slot>
 	<slot specifier="non virtual">addMidiFile( const QString &amp; sFilename )</slot>
 	<slot specifier="non virtual">activateMidiFile( const QString &amp; sFilename )</slot>
-	<slot specifier="non virtual">selectionChanged( void )</slot>
+	<slot specifier="non virtual">trackSelectionChanged( void )</slot>
+	<slot specifier="non virtual">mixerSelectionChanged( void )</slot>
     <slot specifier="non virtual">contentsChanged( void )</slot>
     <slot specifier="non virtual">tempoChanged( void )</slot>
     <slot specifier="non virtual">snapPerBeatChanged( int iSnap )</slot>

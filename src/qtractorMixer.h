@@ -35,8 +35,9 @@ class qtractorMixer;
 class qtractorMonitor;
 class qtractorMeter;
 
-class qtractorSession;
 class qtractorMainForm;
+class qtractorSession;
+class qtractorTrack;
 
 class QHBox;
 class QHBoxLayout;
@@ -57,29 +58,42 @@ class qtractorMixerStrip : public QFrame
 public:
 
 	// Constructor.
-	qtractorMixerStrip(qtractorMixerRack *pRack, qtractorMonitor *pMonitor,
-		const QString& sName, const QColor& color = Qt::color0);
+	qtractorMixerStrip(qtractorMixerRack *pRack,
+		qtractorMonitor *pMonitor, const QString& sName);
 	// Default destructor.
 	~qtractorMixerStrip();
 
 	// Delegated properties accessors.
+	void setMonitor(qtractorMonitor *pMonitor);
+	qtractorMonitor *monitor() const;
+
 	void setName(const QString& sName);
 	QString name() const;
-	void setColor(const QColor& color);
-	const QColor&  color() const;
+
+	void setForeground(const QColor& fg);
+	const QColor& foreground() const;
+
+	void setBackground(const QColor& bg);
+	const QColor& background() const;
 
 	// Child accessors.
 	qtractorMeter *meter() const;
+
+	// Selection methods.
+	void setSelected(bool bSelected);
+	bool isSelected() const;
 
 	// Strip refreshment.
 	void refresh();
 
 	// Hacko-list-management marking...
-	void setMark(int iMark) { m_iMark = iMark; }
-	int mark() const { return m_iMark; }
+	void setMark(int iMark);
+	int mark() const;
 
 protected:
 
+	// Mouse selection event handler.
+	void mousePressEvent(QMouseEvent *);
 	// Context menu request event handler.
 	void contextMenuEvent(QContextMenuEvent *);
 
@@ -92,6 +106,9 @@ private:
 	QVBoxLayout   *m_pLayout;
 	QLabel        *m_pLabel;
 	qtractorMeter *m_pMeter;
+	
+	// Selection stuff.
+	bool m_bSelected;
 
 	// Hacko-list-management mark...
 	int m_iMark;
@@ -131,6 +148,13 @@ public:
 	// Complete rack recycle.
 	void clear();
 
+	// Selection stuff.
+	void setSelectEnabled(bool bSelectEnabled);
+	bool isSelectEnabled() const;
+	
+	void setSelectedStrip(qtractorMixerStrip *pStrip);
+	qtractorMixerStrip *selectedStrip() const;
+
 	// Hacko-list-management marking...
 	void markStrips(int iMark);
 	void cleanStrips(int iMark);
@@ -138,10 +162,15 @@ public:
 	// Common context menu handler.
 	void contextMenu(const QPoint& gpos, qtractorMixerStrip *pStrip);
 
+signals:
+
+	// Selection changed signal.
+	void selectionChanged();
+
 protected:
 
 	// Context menu request event handler.
-	void contextMenuEvent (QContextMenuEvent *);
+	void contextMenuEvent(QContextMenuEvent *);
 
 private:
 
@@ -155,6 +184,10 @@ private:
 
 	// The Strips list.
 	QPtrList<qtractorMixerStrip> m_strips;
+	
+	// Selection stuff.
+	bool                m_bSelectEnabled;
+	qtractorMixerStrip *m_pSelectedStrip;
 };
 
 
@@ -168,8 +201,7 @@ class qtractorMixer : public QDockWindow
 public:
 
 	// Constructor.
-	qtractorMixer(qtractorMainForm *pMainForm,
-		QWidget *pParent, const char *pszName = 0);
+	qtractorMixer(qtractorMainForm *pMainForm);
 	// Default destructor.
 	~qtractorMixer();
 
@@ -183,9 +215,9 @@ public:
 	QSplitter *splitter() const;
 
 	// The mixer strips rack accessors.
-	qtractorMixerRack *inputs()  const;
-	qtractorMixerRack *tracks()  const;
-	qtractorMixerRack *outputs() const;
+	qtractorMixerRack *inputRack()  const;
+	qtractorMixerRack *trackRack()  const;
+	qtractorMixerRack *outputRack() const;
 	
 	// Update busses and tracks'racks.
 	void updateBusses();
@@ -200,8 +232,9 @@ public:
 protected:
 
 	// Update mixer rack, checking if given monitor already exists.
-	void updateRackStrip(qtractorMixerRack *pRack, qtractorMonitor *pMonitor,
-		const QString& sName, const QColor& color = Qt::color0);
+	void updateBusStrip(qtractorMixerRack *pRack,
+		qtractorMonitor *pMonitor, const QString& sName);
+	void updateTrackStrip(qtractorTrack *pTrack);
 
 private:
 
