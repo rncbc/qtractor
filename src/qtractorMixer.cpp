@@ -291,7 +291,7 @@ void qtractorMixerRack::refresh (void)
 // Complete rack recycle.
 void qtractorMixerRack::clear (void)
 {
-	m_pSelectedClip = NULL;
+	m_pSelectedStrip = NULL;
 	m_strips.clear();
 }
 
@@ -347,7 +347,7 @@ void qtractorMixerRack::cleanStrips ( int iMark )
 	for (qtractorMixerStrip *pStrip = m_strips.last();
 			pStrip; pStrip = m_strips.prev()) {
 		if (pStrip->mark() == iMark)
-			removeStrip(pStrip)
+			removeStrip(pStrip);
 	}
 }
 
