@@ -498,11 +498,14 @@ void qtractorTrack::process ( qtractorClip *pClip,
 			pAudioBus->buffer_commit(nframes);
 		}
 		// Audio-recording?
-		qtractorAudioClip *pAudioClip
-			= static_cast<qtractorAudioClip *> (m_pClipRecord);
-		if (pAudioClip) {
+		if (isRecord()) {
+			// Pre-monitoring...
 			m_pMonitor->process(pAudioBus->in(), nframes);
-			pAudioClip->write(pAudioBus->in(), nframes);
+			// Effective audio-recording?
+			qtractorAudioClip *pAudioClip
+				= static_cast<qtractorAudioClip *> (m_pClipRecord);
+			if (pAudioClip)
+				pAudioClip->write(pAudioBus->in(), nframes);
 		}
 	}
 }

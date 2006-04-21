@@ -99,12 +99,13 @@ qtractorAudioBuffer::qtractorAudioBuffer ( unsigned short iChannels,
 	m_iSeekPending   = 0;
 	m_iSeekOffset    = 0;
 
+	m_ppFrames       = NULL;
+
+#ifdef CONFIG_LIBSAMPLERATE
 	m_bResample      = false;
 	m_fResampleRatio = 1.0f;
 	m_iInputPending  = 0;
-	m_ppFrames       = NULL;
 	m_ppInBuffer     = NULL;
-#ifdef CONFIG_LIBSAMPLERATE
 	m_ppOutBuffer    = NULL;
 	m_ppSrcState     = NULL;
 #endif
@@ -148,7 +149,11 @@ unsigned int qtractorAudioBuffer::sampleRate (void) const
 // Working resample ratio.
 float qtractorAudioBuffer::resampleRatio (void) const
 {
+#ifdef CONFIG_LIBSAMPLERATE
 	return m_fResampleRatio;
+#else
+	return 1.0f;
+#endif
 }
 
 
@@ -179,18 +184,17 @@ bool qtractorAudioBuffer::open ( const QString& sFilename, int iMode )
 		return false;
 	}
 
+#ifdef CONFIG_LIBSAMPLERATE
 	// Compute sample rate converter stuff.
 	m_iInputPending  = 0;
 	m_fResampleRatio = 1.0f;
-#ifdef CONFIG_LIBSAMPLERATE
 	m_bResample = (m_iSampleRate != m_pFile->sampleRate());
 	if (m_bResample) {
 		m_fResampleRatio = (float) m_iSampleRate / m_pFile->sampleRate();
-		m_ppOutBuffer    = new float *     [iChannels];
-		m_ppSrcState     = new SRC_STATE * [iChannels];
+		m_ppInBuffer  = new float *     [iChannels];
+		m_ppOutBuffer = new float *     [iChannels];
+		m_ppSrcState  = new SRC_STATE * [iChannels];
 	}
-#else   // CONFIG_LIBSAMPLERATE
-	m_bResample = false;
 #endif
 
 	// Allocate ring-buffer now.
@@ -198,23 +202,21 @@ bool qtractorAudioBuffer::open ( const QString& sFilename, int iMode )
 	m_iThreshold  = (m_pRingBuffer->bufferSize() >> 2);
 
 	// Allocate actual buffer stuff...
-	m_ppFrames   = new float * [iChannels];
-	m_ppInBuffer = new float * [iChannels];
-	for (unsigned short i = 0; i < iChannels; i++) {
-		m_ppInBuffer[i] = new float [m_iThreshold];
-		m_ppFrames[i]   = m_ppInBuffer[i];
-	}
+	m_ppFrames = new float * [iChannels];
+	for (unsigned short i = 0; i < iChannels; i++)
+		m_ppFrames[i] = new float [m_iThreshold];
 
 #ifdef CONFIG_LIBSAMPLERATE
 	// Sample rate converter stuff, whether needed...
-	if (m_ppOutBuffer) {
+	if (m_bResample) {
 		int err = 0;
 		for (unsigned short i = 0; i < iChannels; i++) {
+			m_ppInBuffer[i]  = m_ppFrames[i];
 			m_ppOutBuffer[i] = new float [m_iThreshold];
 			m_ppSrcState[i]  = src_new(SRC_SINC_BEST_QUALITY, 1, &err);
 		}
 	}
-#endif  // CONFIG_LIBSAMPLERATE
+#endif
 
 	// Read-ahead a whole bunch, if applicable...
 	if (m_pFile->mode() & qtractorAudioFile::Read) {
@@ -481,14 +483,16 @@ void qtractorAudioBuffer::readSync (void)
 		// Refill the whole buffer....
 		m_pRingBuffer->reset();
 		m_bEndOfFile = false;
-		m_iInputPending = 0;
 #ifdef CONFIG_LIBSAMPLERATE
-		for (unsigned short i = 0; i < m_pRingBuffer->channels(); i++) {
-			if (m_ppSrcState && m_ppSrcState[i])
-				src_reset(m_ppSrcState[i]);
-			m_ppFrames[i] = m_ppInBuffer[i];
+		if (m_bResample) {
+			m_iInputPending = 0;
+			for (unsigned short i = 0; i < m_pRingBuffer->channels(); i++) {
+				if (m_ppSrcState && m_ppSrcState[i])
+					src_reset(m_ppSrcState[i]);
+				m_ppFrames[i] = m_ppInBuffer[i];
+			}
 		}
-#endif  // CONFIG_LIBSAMPLERATE
+#endif
 		if (!m_pFile->seek(framesOut(offset)))
 			return;
 	}
@@ -584,7 +588,7 @@ void qtractorAudioBuffer::writeSync (void)
 int qtractorAudioBuffer::readBuffer ( unsigned int iFrames )
 {
 #ifdef DEBUG_0
-	fprintf(stderr, "+readBuffer(%u) pending=%u\n", iFrames, m_iInputPending);
+	fprintf(stderr, "+readBuffer(%u)\n", iFrames);
 #endif
 
 	int nread = 0;
@@ -648,8 +652,8 @@ int qtractorAudioBuffer::readBuffer ( unsigned int iFrames )
 #endif   // CONFIG_LIBSAMPLERATE
 
 #ifdef DEBUG_0
-	fprintf(stderr, "-readBuffer(%u) pending=%u --> nread=%d\n",
-		iFrames, m_iInputPending, nread);
+	fprintf(stderr, "-readBuffer(%u) --> nread=%d\n",
+		iFrames, nread);
 #endif
 
 	return nread;
@@ -736,23 +740,20 @@ int qtractorAudioBuffer::readMixBuffer (
 // I/O buffer release.
 void qtractorAudioBuffer::deleteIOBuffers (void)
 {
+#ifdef CONFIG_LIBSAMPLERATE
 	// Release internal and resampler buffers.
 	for (unsigned short i = 0; i < m_pRingBuffer->channels(); i++) {
-#ifdef CONFIG_LIBSAMPLERATE
 		if (m_ppSrcState && m_ppSrcState[i])
 			m_ppSrcState[i] = src_delete(m_ppSrcState[i]);
 		if (m_ppOutBuffer && m_ppOutBuffer[i]) {
 			delete [] m_ppOutBuffer[i];
 			m_ppOutBuffer[i] = NULL;
 		}
-#endif	// CONFIG_LIBSAMPLERATE
 		if (m_ppInBuffer && m_ppInBuffer[i]) {
 			delete [] m_ppInBuffer[i];
 			m_ppInBuffer[i] = NULL;
 		}
 	}
-
-#ifdef CONFIG_LIBSAMPLERATE
 	if (m_ppSrcState) {
 		delete [] m_ppSrcState;
 		m_ppSrcState = NULL;
@@ -761,18 +762,17 @@ void qtractorAudioBuffer::deleteIOBuffers (void)
 		delete [] m_ppOutBuffer;
 		m_ppOutBuffer = NULL;
 	}
-#endif	// CONFIG_LIBSAMPLERATE
 	if (m_ppInBuffer) {
 		delete [] m_ppInBuffer;
 		m_ppInBuffer = NULL;
 	}
+	m_iInputPending = 0;
+#endif
+
 	if (m_ppFrames) {
 		delete [] m_ppFrames;
 		m_ppFrames = NULL;
 	}
-
-	// Remaining instance variables.
-	m_iInputPending = 0;
 }
 
 
@@ -816,17 +816,19 @@ void qtractorAudioBuffer::reset ( bool bLooping )
 // Frame position converters.
 unsigned long qtractorAudioBuffer::framesIn ( unsigned long iFrames ) const
 {
+#ifdef CONFIG_LIBSAMPLERATE
 	if (m_bResample)
 		iFrames = (unsigned long) ((float) iFrames * m_fResampleRatio);
-
+#endif
 	return iFrames;
 }
 
 unsigned long qtractorAudioBuffer::framesOut ( unsigned long iFrames ) const
 {
+#ifdef CONFIG_LIBSAMPLERATE
 	if (m_bResample)
 		iFrames = (unsigned long) ((float) iFrames / m_fResampleRatio);
-
+#endif
 	return iFrames;
 }
 

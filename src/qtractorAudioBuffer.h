@@ -55,7 +55,7 @@ public:
 	unsigned long frames() const;
 	unsigned int sampleRate() const;
 
- 	// Resample ratio accessor.
+	// Resample ratio accessor.
 	float resampleRatio() const;
 
 	// Operational initializer/terminator.
@@ -144,15 +144,16 @@ private:
 	unsigned int   m_iSeekPending;
 	unsigned long  m_iSeekOffset;
 
+	float        **m_ppFrames;
+
+#ifdef CONFIG_LIBSAMPLERATE
 	bool           m_bResample;
 	float          m_fResampleRatio;
 	unsigned int   m_iInputPending;
-	float        **m_ppFrames;
 	float        **m_ppInBuffer;
-#ifdef CONFIG_LIBSAMPLERATE
 	float        **m_ppOutBuffer;
 	SRC_STATE    **m_ppSrcState;
-#endif  // CONFIG_LIBSAMPLERATE
+#endif
 };
 
 
