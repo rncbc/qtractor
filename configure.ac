@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(Qtractor, 0.0.0.350, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.0.0.351, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractorMainForm.ui.h)
 AC_CONFIG_HEADERS(config.h)
@@ -141,15 +141,15 @@ if test "x$ac_qtlib" = "xqt-mt"; then
 fi
 AC_SUBST(ac_thread)
 
-AC_CACHE_CHECK([for Qt library version >= 3.1.1],
+AC_CACHE_CHECK([for Qt library version >= 3.2],
   ac_qtlib_version, [
   AC_TRY_LINK([#include "qglobal.h"], [
-#if QT_VERSION < 0x030101
-#error Qt library 3.1.1 or greater required.
+#if QT_VERSION < 0x030200
+#error Qt library 3.2 or greater required.
 #endif
     ],
     ac_qtlib_version="yes", [
-      echo "no; Qt 3.1.1 or greater is required"
+      echo "no; Qt 3.2 or greater is required"
       exit
     ])
 ])

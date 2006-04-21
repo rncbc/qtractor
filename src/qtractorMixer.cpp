@@ -241,6 +241,10 @@ void qtractorMixerRack::addStrip ( qtractorMixerStrip *pStrip )
 // Remove a mixer strip from rack list.
 void qtractorMixerRack::removeStrip ( qtractorMixerStrip *pStrip )
 {
+	// Don't let current selection hanging...
+	if (m_pSelectedStrip == pStrip)
+		m_pSelectedStrip = NULL;
+
 	pStrip->hide();
 
 	m_strips.remove(pStrip);
@@ -287,6 +291,7 @@ void qtractorMixerRack::refresh (void)
 // Complete rack recycle.
 void qtractorMixerRack::clear (void)
 {
+	m_pSelectedClip = NULL;
 	m_strips.clear();
 }
 
@@ -341,13 +346,8 @@ void qtractorMixerRack::cleanStrips ( int iMark )
 {
 	for (qtractorMixerStrip *pStrip = m_strips.last();
 			pStrip; pStrip = m_strips.prev()) {
-		if (pStrip->mark() == iMark) {
-			// Don't let current selection hanging...
-			if (m_pSelectedStrip == pStrip)
-				m_pSelectedStrip = NULL;
-			// Get rid of the marked strip...
-			m_strips.remove(pStrip);
-		}
+		if (pStrip->mark() == iMark)
+			removeStrip(pStrip)
 	}
 }
 
