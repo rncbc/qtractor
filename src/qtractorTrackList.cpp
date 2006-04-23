@@ -462,22 +462,6 @@ qtractorTrackListItem *qtractorTrackList::trackItem ( qtractorTrack *pTrack )
 }
 
 
-// Find the list view item from track monitor reference.
-qtractorTrackListItem *qtractorTrackList::trackItemMonitor (
-	qtractorMonitor *pMonitor )
-{
-	QListViewItem *pItem = QListView::firstChild();
-	while (pItem) {
-		qtractorTrackListItem *pTrackItem
-			= static_cast<qtractorTrackListItem *> (pItem);
-		if (pTrackItem->track()->monitor() == pMonitor)
-			return pTrackItem;
-		pItem = pItem->nextSibling();
-	}
-	return NULL;
-}
-
-
 // Renumber track list items.
 void qtractorTrackList::renumberTrackItems ( QListViewItem *pItem )
 {

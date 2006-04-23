@@ -57,9 +57,11 @@ class qtractorMixerStrip : public QFrame
 
 public:
 
-	// Constructor.
+	// Constructors.
 	qtractorMixerStrip(qtractorMixerRack *pRack,
 		qtractorMonitor *pMonitor, const QString& sName);
+	qtractorMixerStrip(qtractorMixerRack *pRack, qtractorTrack *pTrack);
+
 	// Default destructor.
 	~qtractorMixerStrip();
 
@@ -70,14 +72,12 @@ public:
 	void setName(const QString& sName);
 	QString name() const;
 
-	void setForeground(const QColor& fg);
-	const QColor& foreground() const;
-
-	void setBackground(const QColor& bg);
-	const QColor& background() const;
-
 	// Child accessors.
 	qtractorMeter *meter() const;
+
+	// Special properties accessors.
+	void setTrack(qtractorTrack *pTrack);
+	qtractorTrack *track() const;
 
 	// Selection methods.
 	void setSelected(bool bSelected);
@@ -92,21 +92,24 @@ public:
 
 protected:
 
-	// Mouse selection event handler.
+	// Common mixer-strip initializer.
+	void initMixerStrip(qtractorMonitor *pMonitor, const QString& sName);
+
+	// Mouse selection event handlers.
 	void mousePressEvent(QMouseEvent *);
-	// Context menu request event handler.
-	void contextMenuEvent(QContextMenuEvent *);
 
 private:
 
 	// Local instance variables.
 	qtractorMixerRack *m_pRack;
-	
+
 	// Local widgets.
 	QVBoxLayout   *m_pLayout;
 	QLabel        *m_pLabel;
 	qtractorMeter *m_pMeter;
-	
+
+	qtractorTrack *m_pTrack;
+
 	// Selection stuff.
 	bool m_bSelected;
 
@@ -159,15 +162,15 @@ public:
 	void markStrips(int iMark);
 	void cleanStrips(int iMark);
 
-	// Common context menu handler.
-	void contextMenu(const QPoint& gpos, qtractorMixerStrip *pStrip);
-
 signals:
 
 	// Selection changed signal.
 	void selectionChanged();
 
 protected:
+
+	// Mouse selection event handlers.
+	void mouseDoubleClickEvent(QMouseEvent *);
 
 	// Context menu request event handler.
 	void contextMenuEvent(QContextMenuEvent *);

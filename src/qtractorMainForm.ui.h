@@ -2172,9 +2172,9 @@ void qtractorMainForm::mixerSelectionChanged (void)
 	// Select sync to tracks...
 	if (m_pTracks && m_pMixer) {
 		qtractorMixerStrip *pStrip = m_pMixer->trackRack()->selectedStrip();
-		if (pStrip) {
+		if (pStrip && pStrip->track()) {
 			qtractorTrackListItem *pTrackItem
-				= m_pTracks->trackList()->trackItemMonitor(pStrip->monitor());
+				= m_pTracks->trackList()->trackItem(pStrip->track());
 			if (pTrackItem)
 				m_pTracks->trackList()->setSelected(pTrackItem, true);
 		}

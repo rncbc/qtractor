@@ -30,7 +30,7 @@
 #include <math.h>
 
 // Meter level limits (in dB).
-#define QTRACTOR_METER_MAXDB		+3.0f
+#define QTRACTOR_METER_MAXDB		+6.0f
 #define QTRACTOR_METER_MINDB		-70.0f
 
 // The decay rates (magic goes here :).

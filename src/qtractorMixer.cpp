@@ -41,12 +41,39 @@
 //----------------------------------------------------------------------------
 // qtractorMixerStrip -- Mixer strip widget.
 
-// Constructor.
+// Constructors.
 qtractorMixerStrip::qtractorMixerStrip ( qtractorMixerRack *pRack,
 	qtractorMonitor *pMonitor, const QString& sName )
 	: QFrame(pRack->workspace()),
-		m_pRack(pRack),	m_iMark(0)
+		m_pRack(pRack), m_pTrack(NULL)
 {
+	initMixerStrip(pMonitor, sName);
+}
+
+qtractorMixerStrip::qtractorMixerStrip ( qtractorMixerRack *pRack,
+	qtractorTrack * pTrack)
+	: QFrame(pRack->workspace()),
+		m_pRack(pRack), m_pTrack(pTrack)
+{
+	initMixerStrip(pTrack->monitor(), pTrack->trackName());
+
+	m_pLabel->setPaletteBackgroundColor(pTrack->foreground().light());
+	m_pLabel->setPaletteForegroundColor(pTrack->background().light());
+}
+
+
+// Default destructor.
+qtractorMixerStrip::~qtractorMixerStrip (void)
+{
+	// No need to delete child widgets, Qt does it all for us
+}
+
+// Common mixer-strip initializer.
+void qtractorMixerStrip::initMixerStrip ( qtractorMonitor *pMonitor,
+	const QString& sName )
+{
+	m_iMark = 0;
+
 	int iWidth = 16 * (2 + pMonitor->channels());
 	QFrame::setFrameShape(QFrame::StyledPanel);
 	QFrame::setFrameShadow(QFrame::Raised);
@@ -76,13 +103,6 @@ qtractorMixerStrip::qtractorMixerStrip ( qtractorMixerRack *pRack,
 }
 
 
-// Default destructor.
-qtractorMixerStrip::~qtractorMixerStrip (void)
-{
-	// No need to delete child widgets, Qt does it all for us
-}
-
-
 // Child properties accessors.
 void qtractorMixerStrip::setMonitor ( qtractorMonitor *pMonitor )
 {
@@ -109,33 +129,29 @@ QString qtractorMixerStrip::name (void) const
 }
 
 
-void qtractorMixerStrip::setForeground ( const QColor& fg )
-{
-	m_pLabel->setPaletteForegroundColor(fg);
-}
-
-const QColor& qtractorMixerStrip::foreground (void) const
-{
-	return m_pLabel->paletteForegroundColor();
-}
-
-
-void qtractorMixerStrip::setBackground ( const QColor& bg )
-{
-	m_pLabel->setPaletteBackgroundColor(bg);
-}
-
-const QColor& qtractorMixerStrip::background (void) const
-{
-	return m_pLabel->paletteBackgroundColor();
-}
-
-
-
 // Child accessors.
 qtractorMeter *qtractorMixerStrip::meter (void) const
 {
 	return m_pMeter;
+}
+
+
+// Special properties accessors.
+void qtractorMixerStrip::setTrack ( qtractorTrack *pTrack )
+{
+	m_pTrack = pTrack;
+
+	if (m_pTrack) {
+		setName(m_pTrack->trackName());
+		m_pLabel->setPaletteBackgroundColor(m_pTrack->foreground().light());
+		m_pLabel->setPaletteForegroundColor(m_pTrack->background().light());
+		m_pMeter->setMonitor(m_pTrack->monitor());
+	}
+}
+
+qtractorTrack *qtractorMixerStrip::track (void) const
+{
+	return m_pTrack;
 }
 
 
@@ -178,19 +194,12 @@ int qtractorMixerStrip::mark (void) const
 	return m_iMark;
 }
 
-// Mouse selection event handler.
+// Mouse selection event handlers.
 void qtractorMixerStrip::mousePressEvent ( QMouseEvent *pMouseEvent )
 {
 	QFrame::mousePressEvent(pMouseEvent);
 
 	m_pRack->setSelectedStrip(this);
-}
-
-
-// Context menu request event handler.
-void qtractorMixerStrip::contextMenuEvent ( QContextMenuEvent *pContextMenuEvent )
-{
-	m_pRack->contextMenu(pContextMenuEvent->globalPos(), this);
 }
 
 
@@ -352,22 +361,19 @@ void qtractorMixerRack::cleanStrips ( int iMark )
 }
 
 
-// Context menu request event handler.
-void qtractorMixerRack::contextMenuEvent (
-	QContextMenuEvent *pContextMenuEvent )
+// Mouse selection event handlers.
+void qtractorMixerRack::mouseDoubleClickEvent ( QMouseEvent *pMouseEvent )
 {
-	contextMenu(pContextMenuEvent->globalPos(), NULL);
+	if (m_bSelectEnabled)
+		m_pMixer->mainForm()->trackProperties();
 }
 
 
 // Context menu request event handler.
-void qtractorMixerRack::contextMenu ( const QPoint& gpos,
-	qtractorMixerStrip * /* pStrip */ )
+void qtractorMixerRack::contextMenuEvent ( QContextMenuEvent *pContextMenuEvent )
 {
-	if (!m_bSelectEnabled)
-		return;
-
-	m_pMixer->mainForm()->trackMenu->exec(gpos);
+	if (m_bSelectEnabled)
+		m_pMixer->mainForm()->trackMenu->exec(pContextMenuEvent->globalPos());
 }
 
 
@@ -479,11 +485,7 @@ void qtractorMixer::updateTrackStrip ( qtractorTrack *pTrack )
 {
 	qtractorMixerStrip *pStrip = m_pTrackRack->findStrip(pTrack->monitor());
 	if (pStrip == NULL) {
-		pStrip = new qtractorMixerStrip(m_pTrackRack,
-			pTrack->monitor(), pTrack->trackName());
-		pStrip->setForeground(pTrack->background().light());
-		pStrip->setBackground(pTrack->foreground().light());
-		m_pTrackRack->addStrip(pStrip);
+		m_pTrackRack->addStrip(new qtractorMixerStrip(m_pTrackRack, pTrack));
 	} else {
 		pStrip->setMark(0);
 	}
