@@ -727,4 +727,13 @@ void qtractorTracks::contentsChangeNotify (void)
 }
 
 
+// Track button notification.
+void qtractorTracks::trackChangedSlot ( qtractorTrack *pTrack )
+{
+	qtractorTrackListItem *pTrackItem = m_pTrackList->trackItem(pTrack);
+	if (pTrackItem)
+		pTrackItem->updateTrackButtons();
+}
+
+
 // end of qtractorTracks.cpp

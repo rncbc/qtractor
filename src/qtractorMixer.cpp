@@ -26,6 +26,8 @@
 #include "qtractorOptions.h"
 #include "qtractorSession.h"
 #include "qtractorTrack.h"
+#include "qtractorTracks.h"
+#include "qtractorTrackButton.h"
 #include "qtractorAudioEngine.h"
 
 #include "qtractorMainForm.h"
@@ -56,9 +58,6 @@ qtractorMixerStrip::qtractorMixerStrip ( qtractorMixerRack *pRack,
 		m_pRack(pRack), m_pTrack(pTrack)
 {
 	initMixerStrip(pTrack->monitor(), pTrack->trackName());
-
-	m_pLabel->setPaletteBackgroundColor(pTrack->foreground().light());
-	m_pLabel->setPaletteForegroundColor(pTrack->background().light());
 }
 
 
@@ -88,15 +87,49 @@ void qtractorMixerStrip::initMixerStrip ( qtractorMonitor *pMonitor,
 
 	m_pLabel = new QLabel(this);
 	m_pLabel->setFont(font6);
-	m_pLabel->setFixedHeight(fm.height());
+	m_pLabel->setFixedHeight(fm.lineSpacing());
 	if (fm.width(sName) < iWidth)
 		m_pLabel->setAlignment(Qt::AlignHCenter);
 		
 	m_pLayout->addWidget(m_pLabel);
 	QToolTip::add(m_pLabel, sName);
 
+	if (m_pTrack) {
+		m_pButtonLayout = new QHBoxLayout(m_pLayout, 2);
+		m_pRecordButton = new qtractorTrackButton(m_pTrack,
+			qtractorTrackButton::Record, this);
+		m_pMuteButton   = new qtractorTrackButton(m_pTrack,
+			qtractorTrackButton::Mute, this);
+		m_pSoloButton   = new qtractorTrackButton(m_pTrack,
+			qtractorTrackButton::Solo, this);
+		m_pRecordButton->setFixedWidth(16);
+		m_pMuteButton->setFixedWidth(16);
+		m_pSoloButton->setFixedWidth(16);
+		m_pButtonLayout->addWidget(m_pRecordButton);
+		m_pButtonLayout->addWidget(m_pMuteButton);
+		m_pButtonLayout->addWidget(m_pSoloButton);
+	//	m_pLayout->addLayout(m_pButtonLayout);
+		qtractorTracks *pTracks = m_pRack->mixer()->mainForm()->tracks();
+		QObject::connect(m_pRecordButton, SIGNAL(trackChanged(qtractorTrack *)),
+			pTracks, SLOT(trackChangedSlot(qtractorTrack *)));
+		QObject::connect(m_pMuteButton, SIGNAL(trackChanged(qtractorTrack *)),
+			pTracks, SLOT(trackChangedSlot(qtractorTrack *)));
+		QObject::connect(m_pSoloButton, SIGNAL(trackChanged(qtractorTrack *)),
+			pTracks, SLOT(trackChangedSlot(qtractorTrack *)));
+	} else {
+		m_pButtonLayout = NULL;
+		m_pRecordButton = NULL;
+		m_pMuteButton   = NULL;
+		m_pSoloButton   = NULL;
+	}
+
 	m_pMeter = new qtractorMeter(pMonitor, this);
 	m_pLayout->addWidget(m_pMeter);
+
+	if (m_pTrack) {
+		m_pLabel->setPaletteBackgroundColor(m_pTrack->foreground().light());
+		m_pLabel->setPaletteForegroundColor(m_pTrack->background().light());
+	}
 
 	setName(sName);
 	setSelected(false);
@@ -145,6 +178,9 @@ void qtractorMixerStrip::setTrack ( qtractorTrack *pTrack )
 		setName(m_pTrack->trackName());
 		m_pLabel->setPaletteBackgroundColor(m_pTrack->foreground().light());
 		m_pLabel->setPaletteForegroundColor(m_pTrack->background().light());
+		m_pRecordButton->setTrack(m_pTrack);
+		m_pMuteButton->setTrack(m_pTrack);
+		m_pSoloButton->setTrack(m_pTrack);
 		m_pMeter->setMonitor(m_pTrack->monitor());
 	}
 }
@@ -173,6 +209,18 @@ void qtractorMixerStrip::setSelected ( bool bSelected )
 bool qtractorMixerStrip::isSelected (void) const
 {
 	return m_bSelected;
+}
+
+
+// Update track buttons state.
+void qtractorMixerStrip::updateTrackButtons (void)
+{
+	if (m_pRecordButton)
+		m_pRecordButton->updateTrack();
+	if (m_pMuteButton)
+		m_pMuteButton->updateTrack();
+	if (m_pSoloButton)
+		m_pSoloButton->updateTrack();
 }
 
 
@@ -235,6 +283,13 @@ qtractorMixerRack::~qtractorMixerRack (void)
 {
 	// No need to delete child widgets, Qt does it all for us
 	clear();
+}
+
+
+// The main mixer widget accessor.
+qtractorMixer *qtractorMixerRack::mixer (void) const
+{
+	return m_pMixer;
 }
 
 
@@ -558,6 +613,15 @@ void qtractorMixer::clear (void)
 	m_pInputRack->clear();
 	m_pTrackRack->clear();
 	m_pOutputRack->clear();
+}
+
+
+// Track button notification.
+void qtractorMixer::trackChangedSlot ( qtractorTrack *pTrack )
+{
+	qtractorMixerStrip *pStrip = m_pTrackRack->findStrip(pTrack->monitor());
+	if (pStrip)
+		pStrip->updateTrackButtons();
 }
 
 

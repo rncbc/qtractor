@@ -23,8 +23,10 @@
 #include "qtractorTrackList.h"
 #include "qtractorTrackView.h"
 #include "qtractorTrackCommand.h"
+#include "qtractorTrackButton.h"
 #include "qtractorTracks.h"
 #include "qtractorSession.h"
+#include "qtractorMixer.h"
 
 #include "qtractorOptions.h"
 #include "qtractorInstrument.h"
@@ -44,83 +46,6 @@
 // Base item height (in pixels).
 #define QTRACTOR_ITEM_HEIGHT		48
 #define QTRACTOR_ITEM_HEIGHT_MIN	(QTRACTOR_ITEM_HEIGHT >> 1)
-
-
-//----------------------------------------------------------------------------
-// qtractorTrackListToolButton -- Tracks list item tool button.
-
-// Constructor.
-qtractorTrackListToolButton::qtractorTrackListToolButton (
-	qtractorTrackListItem *pItem, ToolType toolType )
-	: QToolButton(pItem->listView()->viewport())
-{
-	m_pItem    = pItem;
-	m_toolType = toolType;
-
-	QToolButton::setFixedSize(22, 16);
-	QToolButton::setUsesTextLabel(true);
-	QToolButton::setToggleButton(true);
-
-	QToolButton::setFont(
-		QFont(pItem->listView()->font().family(), 6, QFont::Bold));
-
-	bool bOn = false;
-	qtractorTrack *pTrack = m_pItem->track();
-
-	m_rgbOff = QToolButton::paletteBackgroundColor();
-	switch (toolType) {
-	case Record:
-		bOn = (pTrack && pTrack->isRecord());
-		QToolButton::setTextLabel("R");
-		QToolTip::add(this, tr("Record"));
-		m_rgbOn = Qt::red;
-		break;
-	case Mute:
-		bOn = (pTrack && pTrack->isMute());
-		QToolButton::setTextLabel("M");
-		QToolTip::add(this, tr("Mute"));
-		m_rgbOn = Qt::yellow;
-		break;
-	case Solo:
-		bOn = (pTrack && pTrack->isSolo());
-		QToolButton::setTextLabel("S");
-		QToolTip::add(this, tr("Solo"));
-		m_rgbOn = Qt::cyan;
-		break;
-	}
-	
-	QToolButton::setOn(bOn);
-	QToolButton::setPaletteBackgroundColor(bOn ? m_rgbOn : m_rgbOff);
-
-	QObject::connect(this, SIGNAL(toggled(bool)), SLOT(toggledSlot(bool)));
-}
-
-
-// Special toggle slot.
-void qtractorTrackListToolButton::toggledSlot ( bool bOn )
-{
-	qtractorTrack *pTrack = m_pItem->track();
-	if (pTrack == NULL)
-		return;
-
-	// Do the proper tool action immediately...
-	switch (m_toolType) {
-	case Record:
-		pTrack->setRecord(bOn);
-		break;
-	case Mute:
-		pTrack->setMute(bOn);
-		break;
-	case Solo:
-		pTrack->setSolo(bOn);
-		break;
-	}
-
-	// Do some feedback...
-	QToolButton::setPaletteBackgroundColor(bOn ? m_rgbOn : m_rgbOff);
-
-	m_pItem->trackList()->contentsChangeNotify();
-}
 
 
 //----------------------------------------------------------------------------
@@ -168,16 +93,24 @@ void qtractorTrackListItem::initItem ( qtractorTrackList *pTrackList,
 	// qtractorTrackList::Patch
 	// qtractorTrackList::Instrument
 
-	m_pRecordButton = new qtractorTrackListToolButton(this,
-		qtractorTrackListToolButton::Record);
-	m_pMuteButton = new qtractorTrackListToolButton(this,
-		qtractorTrackListToolButton::Mute);
-	m_pSoloButton = new qtractorTrackListToolButton(this,
-		qtractorTrackListToolButton::Solo);
+	m_pRecordButton = new qtractorTrackButton(m_pTrack,
+		qtractorTrackButton::Record, pTrackList->viewport());
+	m_pMuteButton   = new qtractorTrackButton(m_pTrack,
+		qtractorTrackButton::Mute, pTrackList->viewport());
+	m_pSoloButton   = new qtractorTrackButton(m_pTrack,
+		qtractorTrackButton::Solo, pTrackList->viewport());
 
 	pTrackList->addChild(m_pRecordButton);
 	pTrackList->addChild(m_pMuteButton);
 	pTrackList->addChild(m_pSoloButton);
+
+	qtractorMixer *pMixer = pTrackList->tracks()->mainForm()->mixer();
+	QObject::connect(m_pRecordButton, SIGNAL(trackChanged(qtractorTrack *)),
+		pMixer, SLOT(trackChangedSlot(qtractorTrack *)));
+	QObject::connect(m_pMuteButton, SIGNAL(trackChanged(qtractorTrack *)),
+		pMixer, SLOT(trackChangedSlot(qtractorTrack *)));
+	QObject::connect(m_pSoloButton, SIGNAL(trackChanged(qtractorTrack *)),
+		pMixer, SLOT(trackChangedSlot(qtractorTrack *)));
 }
 
 
@@ -223,6 +156,15 @@ qtractorTrackList *qtractorTrackListItem::trackList (void) const
 qtractorTrack *qtractorTrackListItem::track (void) const
 {
 	return m_pTrack;
+}
+
+
+// Update track buttons state.
+void qtractorTrackListItem::updateTrackButtons (void)
+{
+	m_pRecordButton->updateTrack();
+	m_pMuteButton->updateTrack();
+	m_pSoloButton->updateTrack();
 }
 
 
@@ -444,6 +386,13 @@ qtractorTrackList::qtractorTrackList ( qtractorTracks *pTracks,
 	QObject::connect(
 		this, SIGNAL(contextMenuRequested(QListViewItem*,const QPoint&,int)),
 		this, SLOT(contextMenuSlot(QListViewItem*,const QPoint&,int)));
+}
+
+
+// Main tracks widget accessor.
+qtractorTracks *qtractorTrackList::tracks (void) const
+{
+	return m_pTracks;
 }
 
 

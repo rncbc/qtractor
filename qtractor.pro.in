@@ -10,6 +10,7 @@ HEADERS += src/qtractorAbout.h \
            src/qtractorList.h \
            src/qtractorFiles.h \
            src/qtractorFileListView.h \
+           src/qtractorTrackButton.h \
            src/qtractorTrackList.h \
            src/qtractorTrackTime.h \
            src/qtractorTrackView.h \
@@ -51,6 +52,7 @@ SOURCES += src/main.cpp \
            src/qtractorMessages.cpp \
            src/qtractorFiles.cpp \
            src/qtractorFileListView.cpp \
+           src/qtractorTrackButton.cpp \
            src/qtractorTrackList.cpp \
            src/qtractorTrackTime.cpp \
            src/qtractorTrackView.cpp \

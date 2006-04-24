@@ -23,7 +23,6 @@
 #define __qtractorTrackList_h
 
 #include <qlistview.h>
-#include <qtoolbutton.h>
 
 // Forward declarations.
 class qtractorTracks;
@@ -31,46 +30,9 @@ class qtractorTrack;
 
 class qtractorTrackList;
 class qtractorTrackListItem;
+class qtractorTrackButton;
 class qtractorInstrumentList;
 class qtractorMonitor;
-
-
-//----------------------------------------------------------------------------
-// qtractorTrackListToolButton -- Tracks list item tool button.
-
-class qtractorTrackListToolButton : public QToolButton
-{
-	Q_OBJECT
-
-public:
-
-	// Tool button specific types:
-	enum ToolType { Record, Mute, Solo };
-
-	// Constructor.
-	qtractorTrackListToolButton(qtractorTrackListItem *pItem,
-		ToolType toolType);
-
-	// Specific accessors.
-	qtractorTrackListItem *item() const { return m_pItem; }
-	ToolType toolType() const { return m_toolType; }
-
-protected slots:
-
-	// Special toggle slot.
-	void toggledSlot(bool bOn);
-
-private:
-
-	// Instance variables.
-	qtractorTrackListItem *m_pItem;
-	ToolType m_toolType;
-
-	// Special background colors.
-	QColor m_rgbOn;
-	QColor m_rgbOff;
-};
-
 
 
 //----------------------------------------------------------------------------
@@ -94,6 +56,9 @@ public:
 
 	// Track container accessor.
 	qtractorTrack *track() const;
+
+	// Update track buttons state.
+	void updateTrackButtons();
 
 	// Overriden to set extra text info.
 	void setText(int iColumn, const QString& sText);
@@ -121,9 +86,9 @@ private:
 	// The track reference.
 	qtractorTrack *m_pTrack;
 
-	qtractorTrackListToolButton *m_pRecordButton;
-	qtractorTrackListToolButton *m_pMuteButton;
-	qtractorTrackListToolButton *m_pSoloButton;
+	qtractorTrackButton *m_pRecordButton;
+	qtractorTrackButton *m_pMuteButton;
+	qtractorTrackButton *m_pSoloButton;
 };
 
 
@@ -149,6 +114,9 @@ public:
 		Patch      = 4,
 		Instrument = 5
 	};
+
+	// Main tracks widget accessor.
+	qtractorTracks *tracks() const;
 
 	// Find the list view item from track pointer reference.
 	qtractorTrackListItem *trackItem(qtractorTrack *pTrack);

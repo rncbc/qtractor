@@ -38,6 +38,7 @@ class qtractorMeter;
 class qtractorMainForm;
 class qtractorSession;
 class qtractorTrack;
+class qtractorTrackButton;
 
 class QHBox;
 class QHBoxLayout;
@@ -83,6 +84,9 @@ public:
 	void setSelected(bool bSelected);
 	bool isSelected() const;
 
+	// Update track buttons state.
+	void updateTrackButtons();
+
 	// Strip refreshment.
 	void refresh();
 
@@ -110,6 +114,11 @@ private:
 
 	qtractorTrack *m_pTrack;
 
+	QHBoxLayout         *m_pButtonLayout;
+	qtractorTrackButton *m_pRecordButton;
+	qtractorTrackButton *m_pMuteButton;
+	qtractorTrackButton *m_pSoloButton;
+
 	// Selection stuff.
 	bool m_bSelected;
 
@@ -132,7 +141,10 @@ public:
 	// Default destructor.
 	~qtractorMixerRack();
 
-	// The strip workspace.
+	// The main mixer widget accessor.
+	qtractorMixer *mixer() const;
+
+	// The mixer strip workspace.
 	QHBox *workspace() const;
 
 	// Strip list primitive methods.
@@ -231,6 +243,11 @@ public:
 
 	// Complete mixer recycle.
 	void clear();
+
+public slots:
+
+	// Track button notification.
+	void trackChangedSlot(qtractorTrack *pTrack);
 
 protected:
 

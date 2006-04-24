@@ -117,6 +117,11 @@ protected:
 	// Close event override to save some geometry settings.
 	virtual void closeEvent(QCloseEvent *pCloseEvent);
 
+public slots:
+
+	// Track button notification.
+	void trackChangedSlot(qtractorTrack *pTrack);
+	
 protected slots:
 
 	// Early track list stabilization.
