@@ -219,6 +219,8 @@ void qtractorMixerStrip::updateTrackButtons (void)
 		m_pMuteButton->updateTrack();
 	if (m_pSoloButton)
 		m_pSoloButton->updateTrack();
+
+	m_pRack->mixer()->mainForm()->tracks()->selectionChangeNotify();
 }
 
 

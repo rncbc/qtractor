@@ -166,6 +166,8 @@ void qtractorTrackListItem::updateTrackButtons (void)
 	m_pRecordButton->updateTrack();
 	m_pMuteButton->updateTrack();
 	m_pSoloButton->updateTrack();
+
+	trackList()->tracks()->selectionChangeNotify();
 }
 
 
