@@ -41,8 +41,8 @@ public:
 	enum ToolType { Record, Mute, Solo };
 
 	// Constructor.
-	qtractorTrackButton(qtractorTrack *pTrack,
-		ToolType toolType, QWidget *pParent, const char *pszName = 0);
+	qtractorTrackButton(qtractorTrack *pTrack, ToolType toolType,
+		const QSize& fixedSize, QWidget *pParent, const char *pszName = 0);
 
 	// Specific accessors.
 	void setTrack(qtractorTrack *pTrack);

@@ -96,15 +96,13 @@ void qtractorMixerStrip::initMixerStrip ( qtractorMonitor *pMonitor,
 
 	if (m_pTrack) {
 		m_pButtonLayout = new QHBoxLayout(m_pLayout, 2);
+		const QSize buttonSize(16, 14);
 		m_pRecordButton = new qtractorTrackButton(m_pTrack,
-			qtractorTrackButton::Record, this);
+			qtractorTrackButton::Record, buttonSize, this);
 		m_pMuteButton   = new qtractorTrackButton(m_pTrack,
-			qtractorTrackButton::Mute, this);
+			qtractorTrackButton::Mute, buttonSize, this);
 		m_pSoloButton   = new qtractorTrackButton(m_pTrack,
-			qtractorTrackButton::Solo, this);
-		m_pRecordButton->setFixedWidth(16);
-		m_pMuteButton->setFixedWidth(16);
-		m_pSoloButton->setFixedWidth(16);
+			qtractorTrackButton::Solo, buttonSize, this);
 		m_pButtonLayout->addWidget(m_pRecordButton);
 		m_pButtonLayout->addWidget(m_pMuteButton);
 		m_pButtonLayout->addWidget(m_pSoloButton);

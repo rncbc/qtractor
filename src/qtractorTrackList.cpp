@@ -93,12 +93,13 @@ void qtractorTrackListItem::initItem ( qtractorTrackList *pTrackList,
 	// qtractorTrackList::Patch
 	// qtractorTrackList::Instrument
 
+	const QSize buttonSize(22, 16);
 	m_pRecordButton = new qtractorTrackButton(m_pTrack,
-		qtractorTrackButton::Record, pTrackList->viewport());
+		qtractorTrackButton::Record, buttonSize, pTrackList->viewport());
 	m_pMuteButton   = new qtractorTrackButton(m_pTrack,
-		qtractorTrackButton::Mute, pTrackList->viewport());
+		qtractorTrackButton::Mute, buttonSize, pTrackList->viewport());
 	m_pSoloButton   = new qtractorTrackButton(m_pTrack,
-		qtractorTrackButton::Solo, pTrackList->viewport());
+		qtractorTrackButton::Solo, buttonSize, pTrackList->viewport());
 
 	pTrackList->addChild(m_pRecordButton);
 	pTrackList->addChild(m_pMuteButton);

@@ -31,18 +31,19 @@
 
 // Constructor.
 qtractorTrackButton::qtractorTrackButton ( qtractorTrack *pTrack,
-	ToolType toolType, QWidget *pParent, const char *pszName )
+	ToolType toolType, const QSize& fixedSize,
+	QWidget *pParent, const char *pszName )
 	: QToolButton(pParent, pszName)
 {
 	m_pTrack   = pTrack;
 	m_toolType = toolType;
 
-	QToolButton::setFixedSize(22, 16);
+	QToolButton::setFixedSize(fixedSize);
 	QToolButton::setUsesTextLabel(true);
 	QToolButton::setToggleButton(true);
 
 	QToolButton::setFont(
-		QFont(QToolButton::font().family(), 6, QFont::Bold));
+		QFont(QToolButton::font().family(), (fixedSize.height() < 16 ? 5 : 6)));
 
 	m_rgbOff = QToolButton::paletteBackgroundColor();
 	switch (toolType) {
