@@ -455,7 +455,7 @@
             <string>&amp;Delete</string>
         </property>
         <property name="toolTip">
-            <string>delete</string>
+            <string>Delete</string>
         </property>
         <property name="statusTip">
             <string>Delete selection</string>

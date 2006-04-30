@@ -349,7 +349,7 @@ void qtractorMidiOutputThread::process (void)
 	// Split processing, in case we're looping...
 	if (m_pSession->isLooping() && iFrameStart < m_pSession->loopEnd()) {
 		// Loop-length might be shorter than the read-ahead... 
-		while (iFrameEnd > m_pSession->loopEnd()) {
+		while (iFrameEnd >= m_pSession->loopEnd()) {
 			// Process the remaining until end-of-loop...
 			m_pSession->process(pMidiCursor, iFrameStart, m_pSession->loopEnd());
 			// Reset to start-of-loop...
@@ -499,7 +499,7 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 
 #ifdef CONFIG_DEBUG
 	// - show event for debug purposes...
-	fprintf(stderr, "MIDI In %05d 0x%02x", pEv->time.tick, pEv->type);
+	fprintf(stderr, "MIDI In  %05d 0x%02x", pEv->time.tick, pEv->type);
 	if (pEv->type == SND_SEQ_EVENT_SYSEX) {
 		fprintf(stderr, " sysex {");
 		unsigned char *data = (unsigned char *) pEv->data.ext.ptr; 
@@ -606,6 +606,24 @@ void qtractorMidiEngine::enqueue ( qtractorTrack *pTrack,
 		= static_cast<qtractorMidiBus *> (pTrack->bus());
 	if (pMidiBus == NULL)
 		return;
+
+#ifdef CONFIG_DEBUG_0
+	// - show event for debug purposes...
+	fprintf(stderr, "MIDI Out %05lu 0x%02x", iTime - m_iTimeStart,
+		(int) pEvent->type() | pTrack->midiChannel());
+	if (pEvent->type() == qtractorMidiEvent::SYSEX) {
+		fprintf(stderr, " sysex {");
+		unsigned char *data = (unsigned char *) pEvent->sysex(); 
+		for (unsigned int i = 0; i < pEvent->sysex_len(); i++)
+			fprintf(stderr, " %02x", data[i]);
+		fprintf(stderr, " }\n");
+	} else {
+		fprintf(stderr, " %3d %3d (duration=%lu)\n",
+			pEvent->note(), pEvent->velocity(),
+			pEvent->duration());
+	}
+#endif
+
 
 	// Initializing...
 	snd_seq_event_t ev;

@@ -212,16 +212,19 @@ void qtractorSessionCursor::addTrack ( qtractorTrack *pTrack )
 	if (pTrack == NULL)
 		pTrack = m_pSession->tracks().last();
 
-	unsigned int iTrack = m_iTracks;
-	if (iTrack >= m_iSize) {
-		m_iSize += iTrack;
-		qtractorClip **ppClips = new qtractorClip * [m_iSize];
-		delete [] m_ppClips;
-		m_ppClips = ppClips;
+	unsigned int iTracks = m_iTracks;
+	if (iTracks >= m_iSize) {
+		m_iSize += iTracks;
+		qtractorClip **ppOldClips = m_ppClips;
+		qtractorClip **ppNewClips = new qtractorClip * [m_iSize];
+		updateClips(ppNewClips, iTracks + 1);
+		m_ppClips = ppNewClips;
+		delete [] ppOldClips;
+	} else {
+		updateClips(m_ppClips, iTracks + 1);
 	}
-	++m_iTracks;
 
-	update();
+	m_iTracks++;
 }
 
 
@@ -259,19 +262,20 @@ void qtractorSessionCursor::removeTrack ( unsigned int iTrack )
 
 
 // Update (stabilize) cursor.
-void qtractorSessionCursor::update (void)
+void qtractorSessionCursor::updateClips ( qtractorClip **ppClips,
+	unsigned int iTracks )
 {
 	// Reset clip positions...
 	unsigned int iTrack = 0; 
 	qtractorTrack *pTrack = m_pSession->tracks().first();
-	while (pTrack && iTrack < m_iTracks) {
+	while (pTrack && iTrack < iTracks) {
 		qtractorClip *pClip = seekClipForward(pTrack,
 			pTrack->clips().first(), m_iFrame);
 		if (pClip && m_iFrame >= pClip->clipStart()
 			&& pTrack->trackType() == m_syncType) {
 			pClip->seek(m_iFrame - pClip->clipStart());
 		}
-		m_ppClips[iTrack] = pClip;
+		ppClips[iTrack] = pClip;
 		pTrack = pTrack->next();
 		iTrack++;
 	}
@@ -289,18 +293,20 @@ void qtractorSessionCursor::reset (void)
 
 	// Free existing clip references.
 	if (m_ppClips) {
-		delete m_ppClips;
+		qtractorClip **ppOldClips = m_ppClips;
 		m_ppClips = NULL;
+		delete [] ppOldClips;
 	}
 
 	// Rebuild the whole bunch...
 	m_iTracks = m_pSession->tracks().count();
 	m_iSize   = m_iTracks;
 
-	if (m_iSize > 0)
-		m_ppClips = new qtractorClip * [m_iSize];
-
-	update();
+	if (m_iSize > 0) {
+		qtractorClip **ppNewClips = new qtractorClip * [m_iSize];
+		updateClips(ppNewClips, m_iTracks);
+		m_ppClips = ppNewClips;
+	}
 }
 
 

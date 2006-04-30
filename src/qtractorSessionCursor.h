@@ -69,8 +69,6 @@ public:
 	// Remove a track from cursor.
 	void removeTrack (qtractorTrack *pTrack);
 
-	// Update (stabilize) cursor.
-	void update();
 	// Reset cursor.
 	void reset();
 
@@ -82,12 +80,15 @@ protected:
 	// Frame locate method.
 	void seekForward  (unsigned long iFrame);
 	void seekBackward (unsigned long iFrame);
-	
+
 	// Clip locate methods.
 	qtractorClip *seekClipForward  (qtractorTrack *pTrack,
 		qtractorClip *pClip, unsigned long iFrame);
 	qtractorClip *seekClipBackward (qtractorTrack *pTrack,
 		qtractorClip *pClip, unsigned long iFrame);
+
+	// Update (stabilize) cursor.
+	void updateClips(qtractorClip **ppClips, unsigned int iTracks);
 
 	// Remove a track from cursor (by index).
 	void removeTrack (unsigned int iTrack);

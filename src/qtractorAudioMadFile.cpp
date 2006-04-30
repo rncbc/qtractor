@@ -203,15 +203,24 @@ bool qtractorAudioMadFile::decode (void)
 #ifdef CONFIG_LIBMAD
 
 	bool bError = (mad_frame_decode(&m_madFrame, &m_madStream) < 0);
-	if (bError) {
-		if (m_madStream.error == MAD_ERROR_BUFLEN) {
-			if (!input())
-				return false;
-			bError = (mad_frame_decode(&m_madFrame, &m_madStream) < 0);
-		}
-		if (bError && !MAD_RECOVERABLE(m_madStream.error))
+	while (bError && m_madStream.error == MAD_ERROR_BUFLEN) {
+		if (!input())
 			return false;
+		bError = (mad_frame_decode(&m_madFrame, &m_madStream) < 0);
 	}
+
+#ifdef DEBUG_0
+	if (bError) {
+		fprintf(stderr, "MadFile::decode()"
+			" ERROR[%lu]: madStream.error=%d (0x%04x)\n",
+			m_curr.iOutputOffset,
+			m_madStream.error,
+			m_madStream.error);
+	}
+#endif
+
+	if (bError)
+		return MAD_RECOVERABLE(m_madStream.error);
 
 	mad_synth_frame(&m_madSynth, &m_madFrame);
 

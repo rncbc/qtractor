@@ -495,15 +495,19 @@ void qtractorTrackView::updatePixmap ( int cx, int cy )
 		unsigned short iBeat = pSession->beatFromPixel(cx);
 		unsigned long iFrameFromBeat = pSession->frameFromBeat(iBeat);
 		unsigned long iFramesPerBeat = pSession->frameFromBeat(1);
+		unsigned int  iPixelsPerBeat = pSession->pixelFromBeat(1);
 		x = pSession->pixelFromFrame(iFrameFromBeat) - cx;
 		while (x < w) {
 			if (x >= 0) {
-				if (pSession->beatIsBar(iBeat)) {
+				bool bBeatIsBar = pSession->beatIsBar(iBeat);
+				if (bBeatIsBar) {
 					p.setPen(Qt::lightGray);
 					p.drawLine(x, 0, x, y2 - cy - 2);
 				}
-				p.setPen(Qt::darkGray);
-				p.drawLine(x - 1, 0, x - 1, y2 - cy - 2);
+				if (bBeatIsBar || iPixelsPerBeat > 16) {
+					p.setPen(Qt::darkGray);
+					p.drawLine(x - 1, 0, x - 1, y2 - cy - 2);
+				}
 			}
 			iFrameFromBeat += iFramesPerBeat;
 			x = pSession->pixelFromFrame(iFrameFromBeat) - cx;
@@ -905,8 +909,8 @@ void qtractorTrackView::contentsDropEvent (
 	}
 
 	// Add new clips on proper and consecutive track locations...
-	unsigned long iClipStart = pSession->frameSnap(
-		pSession->frameFromPixel(m_rectDrag.x() + m_iDraggingX));
+	unsigned long iClipStart // = pSession->frameSnap(
+		= pSession->frameFromPixel(m_rectDrag.x() + m_iDraggingX);
 
 	// Now check whether the drop is intra-track...
 	qtractorTrack *pTrack = dragDropTrack(pDropEvent);
