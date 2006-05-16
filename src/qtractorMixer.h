@@ -22,6 +22,8 @@
 #ifndef __qtractorMixer_h
 #define __qtractorMixer_h
 
+#include "qtractorEngine.h"
+
 #include <qdockwindow.h>
 #include <qptrlist.h>
 #include <qframe.h>
@@ -32,12 +34,9 @@ class qtractorMixerStrip;
 class qtractorMixerRack;
 class qtractorMixer;
 
-class qtractorMonitor;
 class qtractorMeter;
 
 class qtractorMainForm;
-class qtractorSession;
-class qtractorTrack;
 class qtractorTrackButton;
 
 class QHBox;
@@ -47,6 +46,7 @@ class QSpacerItem;
 
 class QLabel;
 class QSplitter;
+class QToolButton;
 
 
 //----------------------------------------------------------------------------
@@ -59,8 +59,8 @@ class qtractorMixerStrip : public QFrame
 public:
 
 	// Constructors.
-	qtractorMixerStrip(qtractorMixerRack *pRack,
-		qtractorMonitor *pMonitor, const QString& sName);
+	qtractorMixerStrip(qtractorMixerRack *pRack, qtractorBus *pBus,
+		qtractorBus::BusMode busMode);
 	qtractorMixerStrip(qtractorMixerRack *pRack, qtractorTrack *pTrack);
 
 	// Default destructor.
@@ -76,7 +76,11 @@ public:
 	// Child accessors.
 	qtractorMeter *meter() const;
 
-	// Special properties accessors.
+	// Bus property accessors.
+	void setBus(qtractorBus *pBus);
+	qtractorBus *bus() const;
+
+	// Track property accessors.
 	void setTrack(qtractorTrack *pTrack);
 	qtractorTrack *track() const;
 
@@ -94,6 +98,11 @@ public:
 	void setMark(int iMark);
 	int mark() const;
 
+protected slots:
+
+	// Bus button notification.
+	void busButtonSlot();
+
 protected:
 
 	// Common mixer-strip initializer.
@@ -107,17 +116,22 @@ private:
 	// Local instance variables.
 	qtractorMixerRack *m_pRack;
 
+	qtractorBus   *m_pBus;
+	qtractorBus::BusMode m_busMode;
+
+	qtractorTrack *m_pTrack;
+
 	// Local widgets.
 	QVBoxLayout   *m_pLayout;
 	QLabel        *m_pLabel;
 	qtractorMeter *m_pMeter;
 
-	qtractorTrack *m_pTrack;
-
 	QHBoxLayout         *m_pButtonLayout;
 	qtractorTrackButton *m_pRecordButton;
 	qtractorTrackButton *m_pMuteButton;
 	qtractorTrackButton *m_pSoloButton;
+	
+	QToolButton *m_pBusButton;
 
 	// Selection stuff.
 	bool m_bSelected;
@@ -137,12 +151,17 @@ class qtractorMixerRack : public QWidget
 public:
 
 	// Constructor.
-	qtractorMixerRack(qtractorMixer *pMixer, int iAlignment = Qt::AlignLeft);
+	qtractorMixerRack(qtractorMixer *pMixer, const QString& sName,
+		int iAlignment = Qt::AlignLeft);
 	// Default destructor.
 	~qtractorMixerRack();
 
 	// The main mixer widget accessor.
 	qtractorMixer *mixer() const;
+
+	// Rack name accessor.
+	void setName(const QString& sName);
+	const QString& name() const;
 
 	// The mixer strip workspace.
 	QHBox *workspace() const;
@@ -192,6 +211,9 @@ private:
 	// Instance properties.
 	qtractorMixer *m_pMixer;
 
+	// Rack title.
+	QString m_sName;
+	
 	// Layout widgets.
 	QHBoxLayout *m_pRackLayout;
 	QHBox       *m_pStripHBox;
@@ -253,7 +275,7 @@ protected:
 
 	// Update mixer rack, checking if given monitor already exists.
 	void updateBusStrip(qtractorMixerRack *pRack,
-		qtractorMonitor *pMonitor, const QString& sName);
+		qtractorBus *pBus, qtractorBus::BusMode busMode);
 	void updateTrackStrip(qtractorTrack *pTrack);
 
 private:

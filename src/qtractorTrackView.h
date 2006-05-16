@@ -154,7 +154,10 @@ protected:
 	void contentsMousePressEvent(QMouseEvent *pMouseEvent);
 	void contentsMouseMoveEvent(QMouseEvent *pMouseEvent);
 	void contentsMouseReleaseEvent(QMouseEvent *pMouseEvent);
-	
+
+	// Clip file(item) selection convenience method.
+	void selectClipFile(qtractorClip *pClip) const;
+
 	// Select everything under a given (rubber-band) rectangle.
 	void selectDragRect(const QRect& rectDrag, bool bReset = false);
 

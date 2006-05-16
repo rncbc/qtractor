@@ -21,6 +21,7 @@
 
 #include "qtractorEngine.h"
 
+#include "qtractorMonitor.h"
 #include "qtractorSessionCursor.h"
 
 
@@ -68,6 +69,13 @@ qtractorSession *qtractorEngine::session (void) const
 qtractorSessionCursor *qtractorEngine::sessionCursor (void) const
 {
 	return m_pSessionCursor;
+}
+
+
+// Engine type accessor.
+qtractorTrack::TrackType qtractorEngine::syncType (void) const
+{
+	return m_pSessionCursor->syncType();
 }
 
 
@@ -215,15 +223,21 @@ bool qtractorEngine::isPlaying(void) const
 qtractorBus::qtractorBus ( const QString& sBusName,
 	BusMode mode )
 {
-	m_pEngine  = NULL;
-	m_sBusName = sBusName;
-	m_busMode  = mode;
+	m_pEngine   = NULL;
+	m_sBusName  = sBusName;
+	m_busMode   = mode;
+
+	m_pIMonitor = new qtractorMonitor(0);
+	m_pOMonitor = new qtractorMonitor(0);
+
 }
 
 
 // Destructor.
 qtractorBus::~qtractorBus (void)
 {
+	delete m_pIMonitor;
+	delete m_pOMonitor;
 }
 
 
@@ -236,6 +250,13 @@ void qtractorBus::setEngine ( qtractorEngine *pEngine )
 qtractorEngine *qtractorBus::engine (void) const
 {
 	return m_pEngine;
+}
+
+
+// Bus type accessor.
+qtractorTrack::TrackType qtractorBus::busType (void) const
+{
+	return (m_pEngine ? m_pEngine->syncType() : qtractorTrack::None);
 }
 
 
@@ -260,6 +281,18 @@ void qtractorBus::setBusMode ( qtractorBus::BusMode mode )
 qtractorBus::BusMode qtractorBus::busMode (void) const
 {
 	return m_busMode;
+}
+
+
+// I/O bus-monitor accessors.
+qtractorMonitor *qtractorBus::monitor_in (void) const
+{
+	return m_pIMonitor;
+}
+
+qtractorMonitor *qtractorBus::monitor_out (void) const
+{
+	return m_pOMonitor;
 }
 
 

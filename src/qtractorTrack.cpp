@@ -630,6 +630,8 @@ bool qtractorTrack::loadElement ( qtractorSessionDocument *pDocument,
 					qtractorTrack::setBusName(eProp.text());
 				else if (eProp.tagName() == "gain")
 					qtractorTrack::monitor()->setGain(eProp.text().toFloat());
+				else if (eProp.tagName() == "panning")
+					qtractorTrack::monitor()->setPanning(eProp.text().toFloat());
 				else if (eProp.tagName() == "midi-channel")
 					qtractorTrack::setMidiChannel(eProp.text().toUShort());
 				else if (eProp.tagName() == "midi-bank-sel-method")
@@ -727,6 +729,8 @@ bool qtractorTrack::saveElement ( qtractorSessionDocument *pDocument,
 	pDocument->saveTextElement("bus", qtractorTrack::busName(), &eProps);
 	pDocument->saveTextElement("gain",
 		QString::number(qtractorTrack::monitor()->gain()), &eProps);
+	pDocument->saveTextElement("panning",
+		QString::number(qtractorTrack::monitor()->panning()), &eProps);
 	if (qtractorTrack::trackType() == qtractorTrack::Midi) {
 		pDocument->saveTextElement("midi-channel",
 			QString::number(qtractorTrack::midiChannel()), &eProps);

@@ -19,8 +19,10 @@
 
 *****************************************************************************/
 
+#include "qtractorAbout.h"
 #include "qtractorMixer.h"
-#include "qtractorMeter.h"
+#include "qtractorAudioMeter.h"
+#include "qtractorMidiMeter.h"
 #include "qtractorMonitor.h"
 
 #include "qtractorOptions.h"
@@ -29,6 +31,7 @@
 #include "qtractorTracks.h"
 #include "qtractorTrackButton.h"
 #include "qtractorAudioEngine.h"
+#include "qtractorMidiEngine.h"
 
 #include "qtractorMainForm.h"
 
@@ -45,17 +48,21 @@
 
 // Constructors.
 qtractorMixerStrip::qtractorMixerStrip ( qtractorMixerRack *pRack,
-	qtractorMonitor *pMonitor, const QString& sName )
-	: QFrame(pRack->workspace()),
-		m_pRack(pRack), m_pTrack(NULL)
+	qtractorBus *pBus, qtractorBus::BusMode busMode )
+	: QFrame(pRack->workspace()), m_pRack(pRack),
+		m_pBus(pBus), m_busMode(busMode), m_pTrack(NULL)
 {
-	initMixerStrip(pMonitor, sName);
+	if (busMode == qtractorBus::Input) {
+		initMixerStrip(pBus->monitor_in(), tr("%1 In").arg(pBus->busName()));
+	} else { // busMode == qtractorBus::Output
+		initMixerStrip(pBus->monitor_out(), tr("%1 Out").arg(pBus->busName()));
+	}
 }
 
 qtractorMixerStrip::qtractorMixerStrip ( qtractorMixerRack *pRack,
 	qtractorTrack * pTrack)
-	: QFrame(pRack->workspace()),
-		m_pRack(pRack), m_pTrack(pTrack)
+	: QFrame(pRack->workspace()), m_pRack(pRack),
+		m_pBus(NULL), m_busMode(qtractorBus::None),	m_pTrack(pTrack)
 {
 	initMixerStrip(pTrack->monitor(), pTrack->trackName());
 }
@@ -73,28 +80,21 @@ void qtractorMixerStrip::initMixerStrip ( qtractorMonitor *pMonitor,
 {
 	m_iMark = 0;
 
-	int iWidth = 16 * (2 + pMonitor->channels());
-	QFrame::setFrameShape(QFrame::StyledPanel);
-	QFrame::setFrameShadow(QFrame::Raised);
-	QFrame::setFixedWidth(iWidth);	
-//	QFrame::setSizePolicy(
-//		QSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding));
-
-	m_pLayout = new QVBoxLayout(this, 4, 4);
-
 	QFont font6(QFrame::font().family(), 6);
 	QFontMetrics fm(font6);
+
+	m_pLayout = new QVBoxLayout(this, 4, 4);
 
 	m_pLabel = new QLabel(this);
 	m_pLabel->setFont(font6);
 	m_pLabel->setFixedHeight(fm.lineSpacing());
-	if (fm.width(sName) < iWidth)
-		m_pLabel->setAlignment(Qt::AlignHCenter);
 		
 	m_pLayout->addWidget(m_pLabel);
-	QToolTip::add(m_pLabel, sName);
 
+	qtractorTrack::TrackType meterType = qtractorTrack::None;
 	if (m_pTrack) {
+		meterType = m_pTrack->trackType();
+		m_pBusButton = NULL;
 		m_pButtonLayout = new QHBoxLayout(m_pLayout, 2);
 		const QSize buttonSize(16, 14);
 		m_pRecordButton = new qtractorTrackButton(m_pTrack,
@@ -115,19 +115,56 @@ void qtractorMixerStrip::initMixerStrip ( qtractorMonitor *pMonitor,
 		QObject::connect(m_pSoloButton, SIGNAL(trackChanged(qtractorTrack *)),
 			pTracks, SLOT(trackChangedSlot(qtractorTrack *)));
 	} else {
+		meterType = m_pBus->busType();
+		const QString& sText = m_pRack->name().lower();
+		m_pBusButton = new QToolButton(this);
+		m_pBusButton->setFixedHeight(14);
+		m_pBusButton->setFont(font6);
+		m_pBusButton->setUsesTextLabel(true);
+		m_pBusButton->setTextLabel(sText);
+		QToolTip::add(m_pBusButton, tr("Connect %1").arg(sText));
+		m_pLayout->addWidget(m_pBusButton);
+		QObject::connect(m_pBusButton, SIGNAL(clicked()),
+			this, SLOT(busButtonSlot()));
 		m_pButtonLayout = NULL;
 		m_pRecordButton = NULL;
 		m_pMuteButton   = NULL;
 		m_pSoloButton   = NULL;
 	}
 
-	m_pMeter = new qtractorMeter(pMonitor, this);
-	m_pLayout->addWidget(m_pMeter);
+	// Now, there's whether we are Audio or MIDI related...
+	int iFixedWidth = 2 * 16;
+	switch (meterType) {
+	case qtractorTrack::Audio:
+		iFixedWidth += 16 * pMonitor->channels();
+		m_pMeter = new qtractorAudioMeter(pMonitor, this);
+		break;
+	case qtractorTrack::Midi:
+		iFixedWidth += 16 * 2;
+		m_pMeter = new qtractorMidiMeter(pMonitor, this);
+		break;
+	case qtractorTrack::None:
+	default:
+		m_pMeter = NULL;
+		break;
+	}
+	// Eventually the right one...
+	if (m_pMeter)
+		m_pLayout->addWidget(m_pMeter);
 
 	if (m_pTrack) {
 		m_pLabel->setPaletteBackgroundColor(m_pTrack->foreground().light());
 		m_pLabel->setPaletteForegroundColor(m_pTrack->background().light());
 	}
+	if (fm.width(sName) < iFixedWidth)
+		m_pLabel->setAlignment(Qt::AlignHCenter);
+	QToolTip::add(m_pLabel, sName);
+
+	QFrame::setFrameShape(QFrame::StyledPanel);
+	QFrame::setFrameShadow(QFrame::Raised);
+	QFrame::setFixedWidth(iFixedWidth);	
+//	QFrame::setSizePolicy(
+//		QSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding));
 
 	setName(sName);
 	setSelected(false);
@@ -137,12 +174,13 @@ void qtractorMixerStrip::initMixerStrip ( qtractorMonitor *pMonitor,
 // Child properties accessors.
 void qtractorMixerStrip::setMonitor ( qtractorMonitor *pMonitor )
 {
-	m_pMeter->setMonitor(pMonitor);
+	if (m_pMeter)
+		m_pMeter->setMonitor(pMonitor);
 }
 
 qtractorMonitor *qtractorMixerStrip::monitor (void) const
 {
-	return m_pMeter->monitor();
+	return (m_pMeter ? m_pMeter->monitor() : NULL);
 }
 
 
@@ -150,8 +188,8 @@ void qtractorMixerStrip::setName ( const QString& sName )
 {
 	m_pLabel->setText(sName);
 
-	QToolTip::remove(m_pLabel);
-	QToolTip::add(m_pLabel, sName);
+	QToolTip::remove(this);
+	QToolTip::add(this, sName);
 }
 
 QString qtractorMixerStrip::name (void) const
@@ -167,9 +205,37 @@ qtractorMeter *qtractorMixerStrip::meter (void) const
 }
 
 
-// Special properties accessors.
+// Bus property accessors.
+void qtractorMixerStrip::setBus ( qtractorBus *pBus )
+{
+	// Must be actual bus...
+	if (m_pBus == NULL || pBus == NULL)
+		return;
+
+	m_pBus = pBus;
+
+	if (m_busMode & qtractorBus::Input) {
+		setName(tr("%1 In").arg(m_pBus->busName()));
+		setMonitor(m_pBus->monitor_in());
+	} else {
+		setName(tr("%1 Out").arg(pBus->busName()));
+		setMonitor(m_pBus->monitor_out());
+	}
+}
+
+qtractorBus *qtractorMixerStrip::bus (void) const
+{
+	return m_pBus;
+}
+
+
+// Track property accessors.
 void qtractorMixerStrip::setTrack ( qtractorTrack *pTrack )
 {
+	// Must be actual track...
+	if (m_pTrack == NULL || pTrack == NULL)
+		return;
+
 	m_pTrack = pTrack;
 
 	if (m_pTrack) {
@@ -179,7 +245,7 @@ void qtractorMixerStrip::setTrack ( qtractorTrack *pTrack )
 		m_pRecordButton->setTrack(m_pTrack);
 		m_pMuteButton->setTrack(m_pTrack);
 		m_pSoloButton->setTrack(m_pTrack);
-		m_pMeter->setMonitor(m_pTrack->monitor());
+		setMonitor(m_pTrack->monitor());
 	}
 }
 
@@ -227,7 +293,8 @@ void qtractorMixerStrip::updateTrackButtons (void)
 // Strip refreshment.
 void qtractorMixerStrip::refresh (void)
 {
-	m_pMeter->refresh();
+	if (m_pMeter)
+		m_pMeter->refresh();
 }
 
 
@@ -251,12 +318,25 @@ void qtractorMixerStrip::mousePressEvent ( QMouseEvent *pMouseEvent )
 }
 
 
+// Bus connection button slot
+void qtractorMixerStrip::busButtonSlot (void)
+{
+	if (m_pBus == NULL)
+		return;
+
+#ifdef CONFIG_DEBUG
+	fprintf(stderr, "qtractorMixerStrip::busButtonSlot() name=\"%s\"\n", name().latin1());
+#endif
+}
+
+
 //----------------------------------------------------------------------------
 // qtractorMixerRack -- Meter bridge rack.
 
 // Constructor.
-qtractorMixerRack::qtractorMixerRack ( qtractorMixer *pMixer, int iAlignment )
-	: QWidget(pMixer->splitter()), m_pMixer(pMixer),
+qtractorMixerRack::qtractorMixerRack ( qtractorMixer *pMixer,
+	const QString& sName, int iAlignment )
+	: QWidget(pMixer->splitter()), m_pMixer(pMixer), m_sName(sName),
 		m_bSelectEnabled(false), m_pSelectedStrip(NULL)
 {
 	m_strips.setAutoDelete(true);
@@ -290,6 +370,18 @@ qtractorMixerRack::~qtractorMixerRack (void)
 qtractorMixer *qtractorMixerRack::mixer (void) const
 {
 	return m_pMixer;
+}
+
+
+// Rack name accessors.
+void qtractorMixerRack::setName ( const QString& sName )
+{
+	m_sName = sName;
+}
+
+const QString& qtractorMixerRack::name (void) const
+{
+	return m_sName;
 }
 
 
@@ -417,7 +509,7 @@ void qtractorMixerRack::cleanStrips ( int iMark )
 
 
 // Mouse selection event handlers.
-void qtractorMixerRack::mouseDoubleClickEvent ( QMouseEvent *pMouseEvent )
+void qtractorMixerRack::mouseDoubleClickEvent ( QMouseEvent * /*pMouseEvent*/ )
 {
 	if (m_bSelectEnabled)
 		m_pMixer->mainForm()->trackProperties();
@@ -445,10 +537,10 @@ qtractorMixer::qtractorMixer ( qtractorMainForm *pMainForm )
 	m_pSplitter = new QSplitter(Qt::Horizontal, this, "Mixer");
 	m_pSplitter->setChildrenCollapsible(false);
 
-	m_pInputRack  = new qtractorMixerRack(this);
-	m_pTrackRack  = new qtractorMixerRack(this);
+	m_pInputRack  = new qtractorMixerRack(this, tr("Inputs"));
+	m_pTrackRack  = new qtractorMixerRack(this, tr("Tracks"));
 	m_pTrackRack->setSelectEnabled(true);
-	m_pOutputRack = new qtractorMixerRack(this, Qt::AlignRight);
+	m_pOutputRack = new qtractorMixerRack(this, tr("Outputs"), Qt::AlignRight);
 	
 	// Prepare the dockable window stuff.
 	QDockWindow::setWidget(m_pSplitter);
@@ -525,11 +617,15 @@ qtractorMixerRack *qtractorMixer::outputRack (void) const
 
 // Update mixer rack, checking if given monitor already exists.
 void qtractorMixer::updateBusStrip ( qtractorMixerRack *pRack,
-	qtractorMonitor *pMonitor, const QString& sName )
+	qtractorBus *pBus, qtractorBus::BusMode busMode )
 {
+	qtractorMonitor *pMonitor
+		= (busMode == qtractorBus::Input ?
+			pBus->monitor_in() : pBus->monitor_out());
+
 	qtractorMixerStrip *pStrip = pRack->findStrip(pMonitor);
 	if (pStrip == NULL) {
-		pRack->addStrip(new qtractorMixerStrip(pRack, pMonitor, sName));
+		pRack->addStrip(new qtractorMixerStrip(pRack, pBus, busMode));
 	} else {
 		pStrip->setMark(0);
 	}
@@ -557,19 +653,25 @@ void qtractorMixer::updateBusses (void)
 	m_pInputRack->markStrips(1);
 	m_pOutputRack->markStrips(1);
 
-	// FIXME: Only audio busses, for the time being...
+	// Audio busses first...
 	for (qtractorBus *pBus = pSession->audioEngine()->busses().first();
 			pBus; pBus = pBus->next()) {
-		qtractorAudioBus *pAudioBus = static_cast<qtractorAudioBus *> (pBus);
-		if (pAudioBus) {
-			if (pAudioBus->busMode() & qtractorBus::Input) {
-				updateBusStrip(m_pInputRack,
-					pAudioBus->monitor_in(), pAudioBus->busName() + tr(" In "));
-			}
-			if (pAudioBus->busMode() & qtractorBus::Output) {
-				updateBusStrip(m_pOutputRack,
-					pAudioBus->monitor_out(), pAudioBus->busName() + tr(" Out "));
-			}
+		if (pBus->busMode() & qtractorBus::Input) {
+			updateBusStrip(m_pInputRack, pBus, qtractorBus::Input);
+		}
+		if (pBus->busMode() & qtractorBus::Output) {
+			updateBusStrip(m_pOutputRack, pBus, qtractorBus::Output);
+		}
+	}
+
+	// MIDI busses are next...
+	for (qtractorBus *pBus = pSession->midiEngine()->busses().first();
+			pBus; pBus = pBus->next()) {
+		if (pBus->busMode() & qtractorBus::Input) {
+			updateBusStrip(m_pInputRack, pBus, qtractorBus::Input);
+		}
+		if (pBus->busMode() & qtractorBus::Output) {
+			updateBusStrip(m_pOutputRack, pBus, qtractorBus::Output);
 		}
 	}
 
@@ -587,11 +689,9 @@ void qtractorMixer::updateTracks (void)
 
 	m_pTrackRack->markStrips(1);
 
-	// FIXME: Only audio tracks, in the time being...
 	for (qtractorTrack *pTrack = pSession->tracks().first();
 			pTrack; pTrack = pTrack->next()) {
-		if (pTrack->trackType() == qtractorTrack::Audio)
-			updateTrackStrip(pTrack);
+		updateTrackStrip(pTrack);
 	}
 
 	m_pTrackRack->cleanStrips(1);

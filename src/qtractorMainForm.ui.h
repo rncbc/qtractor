@@ -598,6 +598,12 @@ qtractorSession *qtractorMainForm::session (void)
 	return m_pSession;
 }
 
+// The global session file(lists) reference.
+qtractorFiles *qtractorMainForm::files (void)
+{
+	return m_pFiles;
+}
+
 // The global session tracks reference.
 qtractorTracks *qtractorMainForm::tracks (void)
 {

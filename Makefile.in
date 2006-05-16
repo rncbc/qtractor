@@ -20,6 +20,8 @@ headers = config.h \
 	src/qtractorTrackView.h \
 	src/qtractorTracks.h \
 	src/qtractorMeter.h \
+	src/qtractorAudioMeter.h \
+	src/qtractorMidiMeter.h \
 	src/qtractorMixer.h \
 	src/qtractorClipSelect.h \
 	src/qtractorClip.h \
@@ -67,6 +69,8 @@ sources = src/main.cpp \
 	src/qtractorTrackView.cpp \
 	src/qtractorTracks.cpp \
 	src/qtractorMeter.cpp \
+	src/qtractorAudioMeter.cpp \
+	src/qtractorMidiMeter.cpp \
 	src/qtractorMixer.cpp \
 	src/qtractorClipSelect.cpp \
 	src/qtractorClip.cpp \

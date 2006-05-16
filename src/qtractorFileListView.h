@@ -202,6 +202,9 @@ public:
 	qtractorFileGroupItem *findGroupItem(const QString& sName) const;
 	qtractorFileListItem  *findFileItem(const QString& sPath) const;
 
+	// Make as current selection an existing file item.
+	qtractorFileListItem *selectFileItem(const QString& sPath);
+
 	// Auto-open timer methods.
 	void setAutoOpenTimeout(int iAutoOpenTimeout);
 	int autoOpenTimeout() const;

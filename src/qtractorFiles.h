@@ -57,9 +57,13 @@ public:
 	// Clear evrything on sight.
 	void clear();
 
-	// Convenience helper methods.
+	// File addition Convenience helper methods.
 	void addAudioFile (const QString& sFilename);
 	void addMidiFile  (const QString& sFilename);
+
+	// File selection Convenience helper methods.
+	void selectAudioFile (const QString& sFilename);
+	void selectMidiFile  (const QString& sFilename);
 
 private:
 

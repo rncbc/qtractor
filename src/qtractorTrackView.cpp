@@ -23,8 +23,9 @@
 #include "qtractorTrackView.h"
 #include "qtractorTrackList.h"
 #include "qtractorTrackTime.h"
-#include "qtractorTracks.h"
 #include "qtractorSession.h"
+#include "qtractorTracks.h"
+#include "qtractorFiles.h"
 
 #include "qtractorAudioClip.h"
 #include "qtractorAudioFile.h"
@@ -1021,6 +1022,9 @@ void qtractorTrackView::contentsMousePressEvent ( QMouseEvent *pMouseEvent )
 				updateContents();
 				m_pTracks->selectionChangeNotify();
 			}
+			// Make it right on the file view...,
+			selectClipFile(m_pClipDrag);
+			// Done, yeah.
 		} else {
 			// Clear any selection out there?
 			if (!bModifier)
@@ -1173,6 +1177,38 @@ void qtractorTrackView::contentsMouseReleaseEvent ( QMouseEvent *pMouseEvent )
 
 	// Force null state.
 	resetDragState();
+}
+
+
+// Clip file(item) selection convenience method.
+void qtractorTrackView::selectClipFile ( qtractorClip *pClip ) const
+{
+	qtractorTrack *pTrack = pClip->track();
+	if (pTrack == NULL)
+		return;
+
+	qtractorFiles *pFiles = m_pTracks->mainForm()->files();
+	if (pFiles == NULL)
+		return;
+
+	switch (pTrack->trackType()) {
+	case qtractorTrack::Audio: {
+		qtractorAudioClip *pAudioClip
+			= static_cast<qtractorAudioClip *> (pClip);
+		if (pAudioClip)
+			pFiles->selectAudioFile(pAudioClip->filename());
+		break;
+	}
+	case qtractorTrack::Midi: {
+		qtractorMidiClip *pMidiClip
+			= static_cast<qtractorMidiClip *> (pClip);
+		if (pMidiClip)
+			pFiles->selectMidiFile(pMidiClip->filename());
+		break;
+	}
+	default:
+		break;
+	}
 }
 
 

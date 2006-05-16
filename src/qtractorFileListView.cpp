@@ -380,6 +380,18 @@ qtractorFileGroupItem *qtractorFileListView::addGroupItem (
 }
 
 
+// Make as current selection an existing file item.
+qtractorFileListItem *qtractorFileListView::selectFileItem (
+	const QString& sPath )
+{
+	qtractorFileListItem *pFileItem = findFileItem(sPath);
+	if (pFileItem)
+		QListView::setSelected(pFileItem, true);
+
+	return pFileItem;
+}
+
+
 // Find a group item, given its name.
 qtractorFileGroupItem *qtractorFileListView::findGroupItem (
 	const QString& sName ) const

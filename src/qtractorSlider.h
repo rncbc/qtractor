@@ -37,8 +37,9 @@ class qtractorSlider : public QSlider
 public:
 
 	// Constructor.
-	qtractorSlider(QWidget *pParent = 0, const char *pszName = 0)
-		: QSlider(Qt::Vertical, pParent, pszName), m_iDefaultValue(0) {}
+	qtractorSlider(Qt::Orientation orientation,
+		QWidget *pParent = 0, const char *pszName = 0)
+		: QSlider(orientation, pParent, pszName), m_iDefaultValue(0) {}
 
 	// Get default (mid) value.
 	int getDefaultValue() const

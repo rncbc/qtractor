@@ -250,7 +250,7 @@ void qtractorMidiClip::reset ( bool bLooping )
 void qtractorMidiClip::loop ( unsigned long iLoopStart,
 	unsigned long iLoopEnd )
 {
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	fprintf(stderr, "qtractorMidiClip::loop(%p, %lu, %lu)\n",
 		this, iLoopStart, iLoopEnd);
 #endif

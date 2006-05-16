@@ -1501,6 +1501,7 @@
     <function specifier="non virtual">contextMenuEvent( QContextMenuEvent *pEvent )</function>
     <function specifier="non virtual" returnType="qtractorOptions *">options( void )</function>
     <function specifier="non virtual" returnType="qtractorSession *">session( void )</function>
+    <function specifier="non virtual" returnType="qtractorFiles *">files( void )</function>
     <function specifier="non virtual" returnType="qtractorTracks *">tracks( void )</function>
     <function specifier="non virtual" returnType="qtractorMixer *">mixer( void )</function>
     <function specifier="non virtual" returnType="qtractorCommandList *">commands( void )</function>

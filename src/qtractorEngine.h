@@ -29,6 +29,7 @@
 class qtractorBus;
 class qtractorSessionCursor;
 class qtractorSessionDocument;
+class qtractorMonitor;
 
 class QDomElement;
 
@@ -59,6 +60,9 @@ public:
 
 	// Session cursor accessor.
 	qtractorSessionCursor *sessionCursor() const;
+
+	// Engine type method.
+	qtractorTrack::TrackType syncType() const;
 
 	// Client name accessor.
 	const QString& clientName() const;
@@ -131,6 +135,9 @@ public:
 	void setEngine(qtractorEngine *pEngine);
 	qtractorEngine *engine() const;
 
+	// Bus type method.
+	qtractorTrack::TrackType busType() const;
+
 	// Bus name accessors.
 	void setBusName(const QString& sBusName);
 	const QString& busName() const;
@@ -138,6 +145,10 @@ public:
 	// Bus mode property accessor.
 	void setBusMode(BusMode mode);
 	BusMode busMode() const;
+
+	// I/O bus-monitor accessors.
+	qtractorMonitor *monitor_in()  const;
+	qtractorMonitor *monitor_out() const;
 
 	// Pure virtual activation methods.
 	virtual bool open() = 0;
@@ -150,6 +161,9 @@ private:
 
 	QString m_sBusName;
 	BusMode m_busMode;
+
+	qtractorMonitor *m_pIMonitor;
+	qtractorMonitor *m_pOMonitor;
 };
 
 

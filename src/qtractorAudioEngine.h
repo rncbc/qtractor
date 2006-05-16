@@ -30,7 +30,6 @@
 
 
 // Forward declarations.
-class qtractorMonitor;
 class qtractorAudioBus;
 
 
@@ -121,10 +120,6 @@ public:
 	void process_prepare(unsigned int nframes);
 	void process_commit(unsigned int nframes);
 
-	// I/O bus-monitor accessors.
-	qtractorMonitor *monitor_in()  const;
-	qtractorMonitor *monitor_out() const;
-
 	// Bus-buffering methods.
 	void buffer_prepare(unsigned int nframes);
 	void buffer_commit(unsigned int nframes, float fGain = 1.0f);
@@ -140,9 +135,6 @@ private:
 	// Instance variables.
 	unsigned short   m_iChannels;
 	bool             m_bAutoConnect;
-
-	qtractorMonitor *m_pIMonitor;
-	qtractorMonitor *m_pOMonitor;
 
 	jack_port_t    **m_ppIPorts;
 	jack_port_t    **m_ppOPorts;

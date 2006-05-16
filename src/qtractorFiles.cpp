@@ -112,4 +112,20 @@ void qtractorFiles::addMidiFile  ( const QString& sFilename )
 }
 
 
+// Audio file selection convenience method.
+void qtractorFiles::selectAudioFile  ( const QString& sFilename )
+{
+	m_pTabWidget->setCurrentPage(qtractorFiles::Audio);
+	m_pAudioListView->selectFileItem(sFilename);
+}
+
+
+// MIDI file selection convenience method.
+void qtractorFiles::selectMidiFile  ( const QString& sFilename )
+{
+	m_pTabWidget->setCurrentPage(qtractorFiles::Midi);
+	m_pMidiListView->selectFileItem(sFilename);
+}
+
+
 // end of qtractorFiles.cpp
