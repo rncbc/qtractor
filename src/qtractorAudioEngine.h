@@ -31,6 +31,7 @@
 
 // Forward declarations.
 class qtractorAudioBus;
+class qtractorAudioMonitor;
 
 
 //----------------------------------------------------------------------
@@ -96,8 +97,10 @@ class qtractorAudioBus : public qtractorBus
 public:
 
 	// Constructor.
-	qtractorAudioBus(const QString& sBusName, BusMode mode = Duplex,
+	qtractorAudioBus(qtractorAudioEngine *pAudioEngine,
+		const QString& sBusName, BusMode busMode = Duplex,
 		unsigned short iChannels = 2, bool bAutoConnect = true);
+
 	// Destructor.
 	~qtractorAudioBus();
 
@@ -130,18 +133,29 @@ public:
 	float **in()  const;
 	float **out() const;
 
+	// Virtual I/O bus-monitor accessors.
+	qtractorMonitor *monitor_in()  const;
+	qtractorMonitor *monitor_out() const;
+
+	// Audio I/O bus-monitor accessors.
+	qtractorAudioMonitor *audioMonitor_in()  const;
+	qtractorAudioMonitor *audioMonitor_out() const;
+
 private:
 
 	// Instance variables.
-	unsigned short   m_iChannels;
-	bool             m_bAutoConnect;
+	unsigned short m_iChannels;
+	bool           m_bAutoConnect;
 
+	// Specific monitor instances.
+	qtractorAudioMonitor *m_pIAudioMonitor;
+	qtractorAudioMonitor *m_pOAudioMonitor;
+
+	// Specific JACK ports stuff.
 	jack_port_t    **m_ppIPorts;
 	jack_port_t    **m_ppOPorts;
-
 	float          **m_ppIBuffer;
 	float          **m_ppOBuffer;
-
 	float          **m_ppXBuffer;
 };
 

@@ -21,6 +21,7 @@
 
 #include "qtractorAbout.h"
 #include "qtractorMidiEngine.h"
+#include "qtractorMidiMonitor.h"
 #include "qtractorMidiEvent.h"
 
 #include "qtractorSessionCursor.h"
@@ -200,7 +201,7 @@ void qtractorMidiInputThread::run (void)
 			snd_seq_event_t *pEv = NULL;
 			snd_seq_event_input(pAlsaSeq, &pEv);
 			// Process input event - ...
-			// - enqueue to input mapping;
+			// - enqueue to input track mapping;
 			m_pSession->midiEngine()->capture(pEv);
 			// - direct route to output;
 			//	 ...
@@ -484,6 +485,19 @@ void qtractorMidiEngine::sync (void)
 }
 
 
+// Read ahead frames configuration.
+void qtractorMidiEngine::setReadAhead ( unsigned int iReadAhead )
+{
+	if (m_pOutputThread)
+		m_pOutputThread->setReadAhead(iReadAhead);
+}
+
+unsigned int qtractorMidiEngine::readAhead (void) const
+{
+	return (m_pOutputThread ? m_pOutputThread->readAhead() : 0);
+}
+
+
 // MIDI event capture method.
 void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 {
@@ -582,16 +596,33 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 			qtractorMidiBus *pMidiBus
 				= static_cast<qtractorMidiBus *> (pTrack->bus());
 			if (pMidiBus && pMidiBus->alsaPort() == pEv->dest.port) {
+				// Is it recording?...
 				qtractorMidiClip *pMidiClip
 					= static_cast<qtractorMidiClip *> (pTrack->clipRecord());
 				if (pMidiClip) {
+					// Yep, we got a new MIDI event...
 					qtractorMidiEvent *pEvent = new qtractorMidiEvent(
 						pEv->time.tick, type, data1, data2, duration);
 					if (pSysex)
 						pEvent->setSysex(pSysex, iSysex);
 					pMidiClip->sequence()->addEvent(pEvent);
+					// Track input monitoring...
+					qtractorMidiMonitor *pMidiMonitor
+						= static_cast<qtractorMidiMonitor *> (pTrack->monitor());
+					if (pMidiMonitor)
+						pMidiMonitor->enqueue(type, data2, pEv->time.tick);
 				}
 			}
+		}
+	}
+
+	// Bus monitoring...
+	for (qtractorBus *pBus = busses().first(); pBus; pBus = pBus->next()) {
+		qtractorMidiBus *pMidiBus
+			= static_cast<qtractorMidiBus *> (pBus);
+		if (pMidiBus && pMidiBus->alsaPort() == pEv->dest.port
+			&& pMidiBus->midiMonitor_in()) {
+			pMidiBus->midiMonitor_in()->enqueue(type, data2, pEv->time.tick);
 		}
 	}
 }
@@ -624,7 +655,6 @@ void qtractorMidiEngine::enqueue ( qtractorTrack *pTrack,
 	}
 #endif
 
-
 	// Initializing...
 	snd_seq_event_t ev;
 	snd_seq_ev_clear(&ev);
@@ -638,7 +668,8 @@ void qtractorMidiEngine::enqueue ( qtractorTrack *pTrack,
 
 	// Scheduled delivery: take into account
 	// the time playback/queue started...
-	snd_seq_ev_schedule_tick(&ev, m_iAlsaQueue, 0, iTime - m_iTimeStart);
+	unsigned long tick = iTime - m_iTimeStart;
+	snd_seq_ev_schedule_tick(&ev, m_iAlsaQueue, 0, tick);
 
 	// Set proper event data...
 	switch (pEvent->type()) {
@@ -693,6 +724,17 @@ void qtractorMidiEngine::enqueue ( qtractorTrack *pTrack,
 
 	// Pump it into the queue.
 	snd_seq_event_output(m_pAlsaSeq, &ev);
+	
+	// Monitor stuff...
+	// Target MIDI track monitor...
+	qtractorMidiMonitor *pMidiMonitor
+		= static_cast<qtractorMidiMonitor *> (pTrack->monitor());
+	if (pMidiMonitor)
+		pMidiMonitor->enqueue(pEvent->type(), pEvent->value(), tick);
+	if (pMidiBus->midiMonitor_out()) {
+		pMidiBus->midiMonitor_out()->enqueue(
+			pEvent->type(), pEvent->value(), tick);
+	}
 }
 
 
@@ -952,7 +994,7 @@ bool qtractorMidiEngine::loadElement ( qtractorSessionDocument *pDocument,
 			qtractorMidiBus::BusMode busMode
 				= pDocument->loadBusMode(eChild.attribute("mode"));
 			qtractorMidiBus *pMidiBus
-				= new qtractorMidiBus(sBusName, busMode);
+				= new qtractorMidiBus(this, sBusName, busMode);
 			qtractorMidiEngine::addBus(pMidiBus);
 			// Load bus properties...
 			for (QDomNode nProp = eChild.firstChild();
@@ -1008,10 +1050,33 @@ bool qtractorMidiEngine::saveElement ( qtractorSessionDocument *pDocument,
 //
 
 // Constructor.
-qtractorMidiBus::qtractorMidiBus ( const QString& sBusName,
-	BusMode mode ) : qtractorBus(sBusName, mode)
+qtractorMidiBus::qtractorMidiBus ( qtractorMidiEngine *pMidiEngine,
+	const QString& sBusName, BusMode busMode )
+	: qtractorBus(pMidiEngine, sBusName, busMode)
 {
 	m_iAlsaPort = -1;
+
+	if (busMode & qtractorBus::Input)
+		m_pIMidiMonitor = new qtractorMidiMonitor(pMidiEngine->session());
+	else
+		m_pIMidiMonitor = NULL;
+		
+	if (busMode & qtractorBus::Output)
+		m_pOMidiMonitor = new qtractorMidiMonitor(pMidiEngine->session());
+	else
+		m_pOMidiMonitor = NULL;
+
+}
+
+// Destructor.
+qtractorMidiBus::~qtractorMidiBus (void)
+{
+	close();
+
+	if (m_pIMidiMonitor)
+		delete m_pIMidiMonitor;
+	if (m_pOMidiMonitor)
+		delete m_pOMidiMonitor;
 }
 
 
@@ -1218,6 +1283,30 @@ void qtractorMidiBus::setController ( unsigned short iChannel,
 	snd_seq_event_output(pMidiEngine->alsaSeq(), &ev);
 
 	pMidiEngine->flush();
+}
+
+
+// Virtual I/O bus-monitor accessors.
+qtractorMonitor *qtractorMidiBus::monitor_in (void) const
+{
+	return midiMonitor_in();
+}
+
+qtractorMonitor *qtractorMidiBus::monitor_out (void) const
+{
+	return midiMonitor_out();
+}
+
+
+// MIDI I/O bus-monitor accessors.
+qtractorMidiMonitor *qtractorMidiBus::midiMonitor_in (void) const
+{
+	return m_pIMidiMonitor;
+}
+
+qtractorMidiMonitor *qtractorMidiBus::midiMonitor_out (void) const
+{
+	return m_pOMidiMonitor;
 }
 
 

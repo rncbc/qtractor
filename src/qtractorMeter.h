@@ -26,8 +26,8 @@
 #include <qhbox.h>
 
 // Forward declarations.
-class qtractorMonitor;
 class qtractorMeter;
+class qtractorMonitor;
 class qtractorSlider;
 
 
@@ -82,14 +82,9 @@ class qtractorMeter : public QVBox
 public:
 
 	// Constructor.
-	qtractorMeter(qtractorMonitor *pMonitor,
-		QWidget *pParent = 0, const char *pszName = 0);
+	qtractorMeter(QWidget *pParent = 0, const char *pszName = 0);
 	// Default destructor.
-	~qtractorMeter();
-
-	// Monitor accessor.
-	void setMonitor(qtractorMonitor *pMonitor);
-	qtractorMonitor *monitor() const;
+	virtual ~qtractorMeter();
 
 	// Dynamic layout accessor.
 	QHBox *hbox() const;
@@ -104,6 +99,10 @@ public:
 	// Meter reset.
 	virtual void reset() = 0;
 
+	// Monitor accessors.
+	virtual void setMonitor(qtractorMonitor *pMonitor) = 0;
+	virtual qtractorMonitor *monitor() const = 0;
+
 	// Peak falloff mode setting.
 	void setPeakFalloff(int bPeakFalloff);
 	int peakFalloff() const;
@@ -111,7 +110,6 @@ public:
 private:
 
 	// Local instance variables.
-	qtractorMonitor     *m_pMonitor;
 	qtractorSlider      *m_pPanSlider;
 	QHBox               *m_pHBox;
 	qtractorSlider      *m_pGainSlider;

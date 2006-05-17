@@ -106,7 +106,7 @@ protected slots:
 protected:
 
 	// Common mixer-strip initializer.
-	void initMixerStrip(qtractorMonitor *pMonitor, const QString& sName);
+	void initMixerStrip();
 
 	// Mouse selection event handlers.
 	void mousePressEvent(QMouseEvent *);

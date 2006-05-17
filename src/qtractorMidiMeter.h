@@ -35,6 +35,7 @@
 // Forward declarations.
 class qtractorMidiMeter;
 class qtractorMidiMeterValue;
+class qtractorMidiMonitor;
 
 
 //----------------------------------------------------------------------------
@@ -105,10 +106,18 @@ class qtractorMidiMeter : public qtractorMeter
 public:
 
 	// Constructor.
-	qtractorMidiMeter(qtractorMonitor *pMonitor,
+	qtractorMidiMeter(qtractorMidiMonitor *pMidiMonitor,
 		QWidget *pParent = 0, const char *pszName = 0);
 	// Default destructor.
 	~qtractorMidiMeter();
+
+	// Virtual monitor accessor.
+	void setMonitor(qtractorMonitor *pMonitor);
+	qtractorMonitor *monitor() const;
+
+	// MIDI monitor accessor.
+	void setMidiMonitor(qtractorMidiMonitor *pMidiMonitor);
+	qtractorMidiMonitor *midiMonitor() const;
 
 	// Monitor reset.
 	void reset();
@@ -144,6 +153,7 @@ protected slots:
 private:
 
 	// Local instance variables.
+	qtractorMidiMonitor    *m_pMidiMonitor;
 	qtractorMidiMeterScale *m_pMidiScale;
 	qtractorMidiMeterValue *m_pMidiValue;
 

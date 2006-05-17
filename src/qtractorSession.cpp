@@ -117,11 +117,11 @@ bool qtractorSession::open ( const QString& sClientName )
 {
 	// A default MIDI master bus is always in order...
 	if (m_pMidiEngine->busses().count() == 0)
-		m_pMidiEngine->addBus(new qtractorMidiBus("Master"));
+		m_pMidiEngine->addBus(new qtractorMidiBus(m_pMidiEngine, "Master"));
 
 	// FIXME: Get over the stereo playback default master bus...
 	if (m_pAudioEngine->busses().count() == 0)
-		m_pAudioEngine->addBus(new qtractorAudioBus("Master"));
+		m_pAudioEngine->addBus(new qtractorAudioBus(m_pAudioEngine, "Master"));
 
 	// Open all tracks (assign busses)...
 	for (qtractorTrack *pTrack = m_tracks.first();

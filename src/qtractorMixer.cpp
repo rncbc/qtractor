@@ -23,7 +23,8 @@
 #include "qtractorMixer.h"
 #include "qtractorAudioMeter.h"
 #include "qtractorMidiMeter.h"
-#include "qtractorMonitor.h"
+#include "qtractorAudioMonitor.h"
+#include "qtractorMidiMonitor.h"
 
 #include "qtractorOptions.h"
 #include "qtractorSession.h"
@@ -52,11 +53,7 @@ qtractorMixerStrip::qtractorMixerStrip ( qtractorMixerRack *pRack,
 	: QFrame(pRack->workspace()), m_pRack(pRack),
 		m_pBus(pBus), m_busMode(busMode), m_pTrack(NULL)
 {
-	if (busMode == qtractorBus::Input) {
-		initMixerStrip(pBus->monitor_in(), tr("%1 In").arg(pBus->busName()));
-	} else { // busMode == qtractorBus::Output
-		initMixerStrip(pBus->monitor_out(), tr("%1 Out").arg(pBus->busName()));
-	}
+	initMixerStrip();
 }
 
 qtractorMixerStrip::qtractorMixerStrip ( qtractorMixerRack *pRack,
@@ -64,7 +61,7 @@ qtractorMixerStrip::qtractorMixerStrip ( qtractorMixerRack *pRack,
 	: QFrame(pRack->workspace()), m_pRack(pRack),
 		m_pBus(NULL), m_busMode(qtractorBus::None),	m_pTrack(pTrack)
 {
-	initMixerStrip(pTrack->monitor(), pTrack->trackName());
+	initMixerStrip();
 }
 
 
@@ -74,9 +71,9 @@ qtractorMixerStrip::~qtractorMixerStrip (void)
 	// No need to delete child widgets, Qt does it all for us
 }
 
+
 // Common mixer-strip initializer.
-void qtractorMixerStrip::initMixerStrip ( qtractorMonitor *pMonitor,
-	const QString& sName )
+void qtractorMixerStrip::initMixerStrip (void)
 {
 	m_iMark = 0;
 
@@ -91,8 +88,10 @@ void qtractorMixerStrip::initMixerStrip ( qtractorMonitor *pMonitor,
 		
 	m_pLayout->addWidget(m_pLabel);
 
+	QString sName;
 	qtractorTrack::TrackType meterType = qtractorTrack::None;
 	if (m_pTrack) {
+		sName = m_pTrack->trackName();
 		meterType = m_pTrack->trackType();
 		m_pBusButton = NULL;
 		m_pButtonLayout = new QHBoxLayout(m_pLayout, 2);
@@ -115,6 +114,8 @@ void qtractorMixerStrip::initMixerStrip ( qtractorMonitor *pMonitor,
 		QObject::connect(m_pSoloButton, SIGNAL(trackChanged(qtractorTrack *)),
 			pTracks, SLOT(trackChangedSlot(qtractorTrack *)));
 	} else {
+		sName = m_pBus->busName()
+			+ (m_busMode & qtractorBus::Input ? " In" : " Out");
 		meterType = m_pBus->busType();
 		const QString& sText = m_pRack->name().lower();
 		m_pBusButton = new QToolButton(this);
@@ -133,21 +134,62 @@ void qtractorMixerStrip::initMixerStrip ( qtractorMonitor *pMonitor,
 	}
 
 	// Now, there's whether we are Audio or MIDI related...
+	m_pMeter = NULL;
 	int iFixedWidth = 2 * 16;
 	switch (meterType) {
 	case qtractorTrack::Audio:
-		iFixedWidth += 16 * pMonitor->channels();
-		m_pMeter = new qtractorAudioMeter(pMonitor, this);
-		break;
-	case qtractorTrack::Midi:
-		iFixedWidth += 16 * 2;
-		m_pMeter = new qtractorMidiMeter(pMonitor, this);
-		break;
-	case qtractorTrack::None:
-	default:
-		m_pMeter = NULL;
+	{
+		// Type cast for proper audio monitor...
+		qtractorAudioMonitor *pAudioMonitor = NULL;
+		if (m_pTrack) {
+			pAudioMonitor
+				= static_cast<qtractorAudioMonitor *> (m_pTrack->monitor());
+		} else {
+			qtractorAudioBus *pAudioBus
+				= static_cast<qtractorAudioBus *> (m_pBus);
+			if (pAudioBus) {
+				if (m_busMode & qtractorBus::Input)
+					pAudioMonitor = pAudioBus->audioMonitor_in();
+				else
+					pAudioMonitor = pAudioBus->audioMonitor_out();
+			}
+		}
+		// Have we an audio monitor/meter?...
+		if (pAudioMonitor) {
+			iFixedWidth += 16 * pAudioMonitor->channels();
+			m_pMeter = new qtractorAudioMeter(pAudioMonitor, this);
+		}
 		break;
 	}
+	case qtractorTrack::Midi:
+	{
+		// Type cast for proper MIDI monitor...
+		qtractorMidiMonitor *pMidiMonitor = NULL;
+		if (m_pTrack) {
+			pMidiMonitor
+				= static_cast<qtractorMidiMonitor *> (m_pTrack->monitor());
+		} else {
+			qtractorMidiBus *pMidiBus
+				= static_cast<qtractorMidiBus *> (m_pBus);
+			if (pMidiBus) {
+				if (m_busMode & qtractorBus::Input)
+					pMidiMonitor = pMidiBus->midiMonitor_in();
+				else
+					pMidiMonitor = pMidiBus->midiMonitor_out();
+			}
+		}
+		// Have we a MIDI monitor/meter?...
+		if (pMidiMonitor) {
+			iFixedWidth += 16 * 2;
+			m_pMeter = new qtractorMidiMeter(pMidiMonitor, this);
+		}
+		break;
+	}
+	case qtractorTrack::None:
+	default:
+		break;
+	}
+
 	// Eventually the right one...
 	if (m_pMeter)
 		m_pLayout->addWidget(m_pMeter);

@@ -5,6 +5,8 @@ HEADERS += ../src/qtractorAbout.h \
            ../src/qtractorOptions.h \
            ../src/qtractorMessages.h \
            ../src/qtractorMonitor.h \
+           ../src/qtractorAudioMonitor.h \
+           ../src/qtractorMidiMonitor.h \
            ../src/qtractorSpinBox.h \
            ../src/qtractorSlider.h \
            ../src/qtractorList.h \

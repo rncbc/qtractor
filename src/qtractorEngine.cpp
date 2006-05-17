@@ -21,7 +21,6 @@
 
 #include "qtractorEngine.h"
 
-#include "qtractorMonitor.h"
 #include "qtractorSessionCursor.h"
 
 
@@ -103,7 +102,6 @@ qtractorList<qtractorBus>& qtractorEngine::busses (void)
 // Add a bus to a device engine.
 void qtractorEngine::addBus ( qtractorBus *pBus )
 {
-	pBus->setEngine(this);
 	m_busses.append(pBus);
 }
 
@@ -220,33 +218,21 @@ bool qtractorEngine::isPlaying(void) const
 //
 
 // Constructor.
-qtractorBus::qtractorBus ( const QString& sBusName,
-	BusMode mode )
+qtractorBus::qtractorBus ( qtractorEngine *pEngine,
+	const QString& sBusName, BusMode busMode )
 {
-	m_pEngine   = NULL;
+	m_pEngine   = pEngine;
 	m_sBusName  = sBusName;
-	m_busMode   = mode;
-
-	m_pIMonitor = new qtractorMonitor(0);
-	m_pOMonitor = new qtractorMonitor(0);
-
+	m_busMode   = busMode;
 }
-
 
 // Destructor.
 qtractorBus::~qtractorBus (void)
 {
-	delete m_pIMonitor;
-	delete m_pOMonitor;
 }
 
 
-// Device accessor.
-void qtractorBus::setEngine ( qtractorEngine *pEngine )
-{
-	m_pEngine = pEngine;
-}
-
+// Engine accessor.
 qtractorEngine *qtractorBus::engine (void) const
 {
 	return m_pEngine;
@@ -281,18 +267,6 @@ void qtractorBus::setBusMode ( qtractorBus::BusMode mode )
 qtractorBus::BusMode qtractorBus::busMode (void) const
 {
 	return m_busMode;
-}
-
-
-// I/O bus-monitor accessors.
-qtractorMonitor *qtractorBus::monitor_in (void) const
-{
-	return m_pIMonitor;
-}
-
-qtractorMonitor *qtractorBus::monitor_out (void) const
-{
-	return m_pOMonitor;
 }
 
 

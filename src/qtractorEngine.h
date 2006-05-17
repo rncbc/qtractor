@@ -126,13 +126,12 @@ public:
 	enum BusMode { None = 0, Input = 1, Output = 2, Duplex = 3 };
 
 	// Constructor.
-	qtractorBus(const QString& sBusName, BusMode mode = Duplex);
-
+	qtractorBus(qtractorEngine *pEngine,
+		const QString& sBusName, BusMode busMode = Duplex);
 	// Destructor.
 	virtual ~qtractorBus();
 
 	// Device accessor.
-	void setEngine(qtractorEngine *pEngine);
 	qtractorEngine *engine() const;
 
 	// Bus type method.
@@ -146,13 +145,13 @@ public:
 	void setBusMode(BusMode mode);
 	BusMode busMode() const;
 
-	// I/O bus-monitor accessors.
-	qtractorMonitor *monitor_in()  const;
-	qtractorMonitor *monitor_out() const;
-
 	// Pure virtual activation methods.
 	virtual bool open() = 0;
 	virtual void close() = 0;
+
+	// I/O bus-monitor accessors.
+	virtual qtractorMonitor *monitor_in()  const = 0;
+	virtual qtractorMonitor *monitor_out() const = 0;
 
 private:
 
@@ -161,9 +160,6 @@ private:
 
 	QString m_sBusName;
 	BusMode m_busMode;
-
-	qtractorMonitor *m_pIMonitor;
-	qtractorMonitor *m_pOMonitor;
 };
 
 

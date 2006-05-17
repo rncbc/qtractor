@@ -20,7 +20,6 @@
 *****************************************************************************/
 
 #include "qtractorMeter.h"
-#include "qtractorMonitor.h"
 #include "qtractorSlider.h"
 
 #include <qpainter.h>
@@ -112,11 +111,9 @@ void qtractorMeterScale::resizeEvent ( QResizeEvent * )
 // qtractorMeter -- Meter bridge slot widget.
 
 // Constructor.
-qtractorMeter::qtractorMeter ( qtractorMonitor *pMonitor,
-	QWidget *pParent, const char *pszName )
+qtractorMeter::qtractorMeter ( QWidget *pParent, const char *pszName )
 	: QVBox(pParent, pszName)
 {
-	m_pMonitor     = pMonitor;
 	m_pPanSlider   = new qtractorSlider(Qt::Horizontal, this);
 	m_pHBox        = new QHBox(this);
 	m_pHBox->setSpacing(1);
@@ -152,20 +149,6 @@ qtractorMeter::~qtractorMeter (void)
 	delete m_pGainSlider;
 	delete m_pHBox;
 	delete m_pPanSlider;
-}
-
-
-// Monitor accessor.
-void qtractorMeter::setMonitor ( qtractorMonitor *pMonitor )
-{
-	m_pMonitor = pMonitor;
-
-	reset();
-}
-
-qtractorMonitor *qtractorMeter::monitor (void) const
-{
-	return m_pMonitor;
 }
 
 

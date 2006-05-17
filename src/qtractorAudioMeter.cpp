@@ -20,7 +20,7 @@
 *****************************************************************************/
 
 #include "qtractorAudioMeter.h"
-#include "qtractorMonitor.h"
+#include "qtractorAudioMonitor.h"
 #include "qtractorSlider.h"
 
 #include <qtooltip.h>
@@ -175,7 +175,7 @@ void qtractorAudioMeterValue::paintEvent ( QPaintEvent * )
 	}
 
 	float dB = QTRACTOR_AUDIO_METER_MINDB;
-	float fValue = m_pAudioMeter->monitor()->value(m_iChannel);
+	float fValue = m_pAudioMeter->audioMonitor()->value(m_iChannel);
 	if (fValue > 0.0f)
 		dB = 20.0f * ::log10f(fValue);
 
@@ -256,10 +256,12 @@ void qtractorAudioMeterValue::resizeEvent ( QResizeEvent * )
 // qtractorAudioMeter -- Audio meter bridge slot widget.
 
 // Constructor.
-qtractorAudioMeter::qtractorAudioMeter ( qtractorMonitor *pMonitor,
+qtractorAudioMeter::qtractorAudioMeter ( qtractorAudioMonitor *pAudioMonitor,
 	QWidget *pParent, const char *pszName )
-	: qtractorMeter(pMonitor, pParent, pszName)
+	: qtractorMeter(pParent, pszName)
 {
+	m_pAudioMonitor = pAudioMonitor;
+
 	m_iChannels     = 0;
 	m_pAudioScale   = new qtractorAudioMeterScale(this, hbox());
 	m_fScale        = 0.0f;
@@ -322,7 +324,10 @@ int qtractorAudioMeter::iec_level ( int iIndex ) const
 // Audio monitor reset
 void qtractorAudioMeter::reset (void)
 {
-	unsigned short iChannels = monitor()->channels();
+	if (m_pAudioMonitor == NULL)
+		return;
+
+	unsigned short iChannels = m_pAudioMonitor->channels();
 
 	if (m_iChannels == iChannels)
 		return;
@@ -408,6 +413,32 @@ void qtractorAudioMeter::resizeEvent ( QResizeEvent * )
 	m_levels[QTRACTOR_AUDIO_METER_3DB]  = iec_scale( -3.0f);
 	m_levels[QTRACTOR_AUDIO_METER_6DB]  = iec_scale( -6.0f);
 	m_levels[QTRACTOR_AUDIO_METER_10DB] = iec_scale(-10.0f);
+}
+
+
+// Virtual monitor accessor.
+void qtractorAudioMeter::setMonitor ( qtractorMonitor *pMonitor )
+{
+	setAudioMonitor(static_cast<qtractorAudioMonitor *> (pMonitor));
+}
+
+qtractorMonitor *qtractorAudioMeter::monitor (void) const
+{
+	return audioMonitor();
+}
+
+
+// Audio monitor accessor.
+void qtractorAudioMeter::setAudioMonitor ( qtractorAudioMonitor *pAudioMonitor )
+{
+	m_pAudioMonitor = pAudioMonitor;
+
+	reset();
+}
+
+qtractorAudioMonitor *qtractorAudioMeter::audioMonitor (void) const
+{
+	return m_pAudioMonitor;
 }
 
 

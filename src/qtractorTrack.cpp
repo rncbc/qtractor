@@ -21,7 +21,6 @@
 
 #include "qtractorAbout.h"
 #include "qtractorTrack.h"
-#include "qtractorMonitor.h"
 
 #include "qtractorAudioClip.h"
 #include "qtractorMidiClip.h"
@@ -29,9 +28,12 @@
 #include "qtractorSessionDocument.h"
 #include "qtractorAudioEngine.h"
 #include "qtractorMidiEngine.h"
+#include "qtractorAudioMonitor.h"
+#include "qtractorMidiMonitor.h"
 #include "qtractorInstrument.h"
 
 #include <qpainter.h>
+
 
 //-------------------------------------------------------------------------
 // qtractorTrack::Properties -- Track properties structure.
@@ -85,7 +87,7 @@ qtractorTrack::qtractorTrack ( qtractorSession *pSession, TrackType trackType )
 	m_props.trackType = trackType;
 
 	m_pBus     = NULL;
-	m_pMonitor = new qtractorMonitor(0);
+	m_pMonitor = NULL;
 	m_iMidiTag = 0;
 	m_iHeight  = 48;
 
@@ -93,8 +95,20 @@ qtractorTrack::qtractorTrack ( qtractorSession *pSession, TrackType trackType )
 
 	m_pClipRecord = NULL;
 
-	clear();
+	// Alloocate the track monitor instance...
+	switch (trackType) {
+	case qtractorTrack::Audio:
+		m_pMonitor = new qtractorAudioMonitor(0);
+		break;
+	case qtractorTrack::Midi:
+		m_pMonitor = new qtractorMidiMonitor(pSession);
+		break;
+	case qtractorTrack::None:
+	default:
+		break;
+	}
 
+	clear();
 }
 
 // Default constructor.
@@ -102,7 +116,8 @@ qtractorTrack::~qtractorTrack (void)
 {
 	clear();
 
-	delete m_pMonitor;
+	if (m_pMonitor)
+		delete m_pMonitor;
 }
 
 
@@ -159,19 +174,25 @@ bool qtractorTrack::open (void)
 
 	// (Re)allocate monitor channels...
 	switch (trackType()) {
-		case qtractorTrack::Audio: {
-			qtractorAudioBus *pAudioBus
-				= static_cast<qtractorAudioBus *> (m_pBus);
-			if (pAudioBus)
-				m_pMonitor->setChannels(pAudioBus->channels());
-			break;
-		}
-		case qtractorTrack::Midi: {
-			m_pMonitor->setChannels(1);
-			break;
-		}
-		default:
-			break;
+	case qtractorTrack::Audio: {
+		qtractorAudioBus *pAudioBus
+			= static_cast<qtractorAudioBus *> (m_pBus);
+		qtractorAudioMonitor *pAudioMonitor
+			= static_cast<qtractorAudioMonitor *> (m_pMonitor);
+		if (pAudioBus && pAudioMonitor)
+			pAudioMonitor->setChannels(pAudioBus->channels());
+		break;
+	}
+	case qtractorTrack::Midi: {
+		qtractorMidiMonitor *pMidiMonitor
+			= static_cast<qtractorMidiMonitor *> (m_pMonitor);
+		if (pMidiMonitor)
+			pMidiMonitor->resetBuffer();
+		break;
+	}
+	case qtractorTrack::None:
+	default:
+		break;
 	}
 
 	// Done.
@@ -215,14 +236,45 @@ qtractorTrack::TrackType qtractorTrack::trackType (void) const
 
 void qtractorTrack::setTrackType ( qtractorTrack::TrackType trackType )
 {
+	// Don't change anything if we're already the same type...
 	if (m_props.trackType == trackType)
 		return;
 
+	// Acquire a new midi-tag... 
 	if (m_props.trackType == qtractorTrack::Midi)
 		m_pSession->releaseMidiTag(this);
 
+	// Set new track type, now...
 	m_props.trackType = trackType;
 
+	// We'll have a new monitor type, for sure...
+	qtractorMonitor *pOldMonitor = m_pMonitor;
+	qtractorMonitor *pNewMonitor = NULL;
+	switch (trackType) {
+	case qtractorTrack::Audio: {
+		unsigned short iChannels = 0;
+		qtractorAudioBus *pAudioBus
+			= static_cast<qtractorAudioBus *> (m_pBus);
+		if (pAudioBus)
+			iChannels = pAudioBus->channels();
+		pNewMonitor = new qtractorAudioMonitor(iChannels);
+		break;
+	}
+	case qtractorTrack::Midi: {
+		pNewMonitor = new qtractorMidiMonitor(m_pSession);
+		break;
+	}
+	case qtractorTrack::None:
+	default:
+		break;
+	}
+
+	// Reset to new monitor...
+	m_pMonitor = pNewMonitor;
+	if (pOldMonitor)
+		delete pOldMonitor;
+
+	// Acquire a new midi-tag... 
 	if (m_props.trackType == qtractorTrack::Midi)
 		m_pSession->acquireMidiTag(this);
 }
@@ -477,9 +529,11 @@ void qtractorTrack::process ( qtractorClip *pClip,
 	// Audio-buffers needs some preparation...
 	unsigned int nframes = iFrameEnd - iFrameStart;
 	qtractorAudioBus *pAudioBus = NULL;
+	qtractorAudioMonitor *pAudioMonitor = NULL;
 	if (m_props.trackType == qtractorTrack::Audio) {
 		pAudioBus = static_cast<qtractorAudioBus *> (m_pBus);
-		if (pAudioBus == NULL)
+		pAudioMonitor = static_cast<qtractorAudioMonitor *> (m_pMonitor);
+		if (pAudioBus == NULL || pAudioMonitor == NULL)
 			return;
 		pAudioBus->buffer_prepare(nframes);
 	}
@@ -491,16 +545,16 @@ void qtractorTrack::process ( qtractorClip *pClip,
 	}
 
 	// Audio buffers needs monitoring and commitment...
-	if (pAudioBus) {
+	if (pAudioBus && pAudioMonitor) {
 		// It it ain't muted, of course...
 		if (!isMute() && (!m_pSession->soloTracks() || isSolo())) {
-			m_pMonitor->process(pAudioBus->buffer(), nframes);
+			pAudioMonitor->process(pAudioBus->buffer(), nframes);
 			pAudioBus->buffer_commit(nframes);
 		}
 		// Audio-recording?
 		if (isRecord()) {
 			// Pre-monitoring...
-			m_pMonitor->process(pAudioBus->in(), nframes);
+			pAudioMonitor->process(pAudioBus->in(), nframes);
 			// Effective audio-recording?
 			qtractorAudioClip *pAudioClip
 				= static_cast<qtractorAudioClip *> (m_pClipRecord);

@@ -21,6 +21,7 @@
 
 #include "qtractorAbout.h"
 #include "qtractorAudioEngine.h"
+#include "qtractorAudioMonitor.h"
 #include "qtractorAudioBuffer.h"
 
 #include "qtractorMonitor.h"
@@ -345,7 +346,7 @@ bool qtractorAudioEngine::loadElement ( qtractorSessionDocument *pDocument,
 				else if (eProp.tagName() == "auto-connect")
 					bAutoConnect = pDocument->boolFromText(eProp.text());
 			}
-			qtractorAudioBus *pAudioBus	= new qtractorAudioBus(
+			qtractorAudioBus *pAudioBus	= new qtractorAudioBus(this,
 				sBusName, busMode, iChannels, bAutoConnect);
 			if (busMode & qtractorBus::Input) {
 				pAudioBus->monitor_in()->setGain(fIGain);
@@ -414,11 +415,23 @@ bool qtractorAudioEngine::saveElement ( qtractorSessionDocument *pDocument,
 //
 
 // Constructor.
-qtractorAudioBus::qtractorAudioBus ( const QString& sBusName,
-	BusMode mode, unsigned short iChannels, bool bAutoConnect )
-	: qtractorBus(sBusName, mode)
+qtractorAudioBus::qtractorAudioBus ( qtractorAudioEngine *pAudioEngine,
+	const QString& sBusName, BusMode busMode,
+	unsigned short iChannels, bool bAutoConnect )
+	: qtractorBus(pAudioEngine, sBusName, busMode)
 {
-//	m_iChannels    = iChannels;
+	m_iChannels = iChannels;
+
+	if (busMode & qtractorBus::Input)
+		m_pIAudioMonitor = new qtractorAudioMonitor(iChannels);
+	else
+		m_pIAudioMonitor = NULL;
+		
+	if (busMode & qtractorBus::Output)
+		m_pOAudioMonitor = new qtractorAudioMonitor(iChannels);
+	else
+		m_pOAudioMonitor = NULL;
+
 	m_bAutoConnect = bAutoConnect;
 
 	m_ppIPorts     = NULL;
@@ -428,14 +441,17 @@ qtractorAudioBus::qtractorAudioBus ( const QString& sBusName,
 	m_ppOBuffer    = NULL;
 
 	m_ppXBuffer    = NULL;
-
-	setChannels(iChannels);
 }
 
 // Destructor.
 qtractorAudioBus::~qtractorAudioBus (void)
 {
 	close();
+	
+	if (m_pIAudioMonitor)
+		delete m_pIAudioMonitor;
+	if (m_pOAudioMonitor)
+		delete m_pOAudioMonitor;
 }
 
 
@@ -444,10 +460,10 @@ void qtractorAudioBus::setChannels ( unsigned short iChannels )
 {
 	m_iChannels = iChannels;
 
-	if (busMode() & qtractorBus::Input)
-		monitor_in()->setChannels(iChannels);
-	if (busMode() & qtractorBus::Output)
-		monitor_out()->setChannels(iChannels);
+	if (m_pIAudioMonitor)
+		m_pIAudioMonitor->setChannels(iChannels);
+	if (m_pOAudioMonitor)
+		m_pOAudioMonitor->setChannels(iChannels);
 }
 
 unsigned short qtractorAudioBus::channels (void) const
@@ -643,16 +659,16 @@ void qtractorAudioBus::process_prepare ( unsigned int nframes )
 		}
 	}
 
-	if (busMode() & qtractorBus::Input)
-		monitor_in()->process(m_ppIBuffer, nframes);
+	if (m_pIAudioMonitor)
+		m_pIAudioMonitor->process(m_ppIBuffer, nframes);
 }
 
 
 // Process cycle commitment.
 void qtractorAudioBus::process_commit ( unsigned int nframes )
 {
-	if (busMode() & qtractorBus::Output)
-		monitor_out()->process(m_ppOBuffer, nframes);
+	if (m_pOAudioMonitor)
+		m_pOAudioMonitor->process(m_ppOBuffer, nframes);
 }
 
 
@@ -689,6 +705,30 @@ float **qtractorAudioBus::in (void) const
 float **qtractorAudioBus::out (void) const
 {
 	return m_ppOBuffer;
+}
+
+
+// Virtual I/O bus-monitor accessors.
+qtractorMonitor *qtractorAudioBus::monitor_in (void) const
+{
+	return audioMonitor_in();
+}
+
+qtractorMonitor *qtractorAudioBus::monitor_out (void) const
+{
+	return audioMonitor_out();
+}
+
+
+// Audio I/O bus-monitor accessors.
+qtractorAudioMonitor *qtractorAudioBus::audioMonitor_in (void) const
+{
+	return m_pIAudioMonitor;
+}
+
+qtractorAudioMonitor *qtractorAudioBus::audioMonitor_out (void) const
+{
+	return m_pOAudioMonitor;
 }
 
 

@@ -39,6 +39,7 @@
 // Forward declarations.
 class qtractorAudioMeter;
 class qtractorAudioMeterValue;
+class qtractorAudioMonitor;
 
 
 //----------------------------------------------------------------------------
@@ -111,10 +112,18 @@ class qtractorAudioMeter : public qtractorMeter
 public:
 
 	// Constructor.
-	qtractorAudioMeter(qtractorMonitor *pMonitor,
+	qtractorAudioMeter(qtractorAudioMonitor *pAudioMonitor,
 		QWidget *pParent = 0, const char *pszName = 0);
 	// Default destructor.
 	~qtractorAudioMeter();
+
+	// Virtual monitor accessor.
+	void setMonitor(qtractorMonitor *pMonitor);
+	qtractorMonitor *monitor() const;
+
+	// Audio monitor accessor.
+	void setAudioMonitor(qtractorAudioMonitor *pAudioMonitor);
+	qtractorAudioMonitor *audioMonitor() const;
 
 	// Monitor reset.
 	void reset();
@@ -156,8 +165,8 @@ protected slots:
 private:
 
 	// Local instance variables.
-	unsigned short m_iChannels;
-
+	qtractorAudioMonitor     *m_pAudioMonitor;
+	unsigned short            m_iChannels;
 	qtractorAudioMeterScale  *m_pAudioScale;
 	qtractorAudioMeterValue **m_ppAudioValues;
 

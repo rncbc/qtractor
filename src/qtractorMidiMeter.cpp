@@ -20,7 +20,7 @@
 *****************************************************************************/
 
 #include "qtractorMidiMeter.h"
-#include "qtractorMonitor.h"
+#include "qtractorMidiMonitor.h"
 #include "qtractorSlider.h"
 
 #include <qtooltip.h>
@@ -115,9 +115,9 @@ void qtractorMidiMeterValue::paintEvent ( QPaintEvent * )
 	}
 
 	int y = 0;
-	float fValue = 0.0f;	/* FIXME: eventual dequeued value. */
-	if (fValue > 0.0f)
-		y = iHeight - (int) ((float) iHeight * fValue / 127.0f);
+	unsigned char val = m_pMidiMeter->midiMonitor()->dequeue();
+	if (val > 0)
+		y = iHeight - (iHeight * int(val)) / 127;
 
 	if (y > m_iValue) {
 		m_iValue = y;
@@ -168,10 +168,12 @@ void qtractorMidiMeterValue::resizeEvent ( QResizeEvent * )
 // qtractorMidiMeter -- Audio meter bridge slot widget.
 
 // Constructor.
-qtractorMidiMeter::qtractorMidiMeter ( qtractorMonitor *pMonitor,
+qtractorMidiMeter::qtractorMidiMeter ( qtractorMidiMonitor *pMidiMonitor,
 	QWidget *pParent, const char *pszName )
-	: qtractorMeter(pMonitor, pParent, pszName)
+	: qtractorMeter(pParent, pszName)
 {
+	m_pMidiMonitor = pMidiMonitor;
+
 	m_pMidiScale = new qtractorMidiMeterScale(this, hbox());
 	m_pMidiValue = new qtractorMidiMeterValue(this, hbox());
 
@@ -251,6 +253,31 @@ void qtractorMidiMeter::refresh (void)
 // Resize event handler.
 void qtractorMidiMeter::resizeEvent ( QResizeEvent * )
 {
+}
+
+
+// Virtual monitor accessor.
+void qtractorMidiMeter::setMonitor ( qtractorMonitor *pMonitor )
+{
+	setMidiMonitor(static_cast<qtractorMidiMonitor *> (pMonitor));
+}
+
+qtractorMonitor *qtractorMidiMeter::monitor (void) const
+{
+	return midiMonitor();
+}
+
+// MIDI monitor accessor.
+void qtractorMidiMeter::setMidiMonitor ( qtractorMidiMonitor *pMidiMonitor )
+{
+	m_pMidiMonitor = pMidiMonitor;
+
+	reset();
+}
+
+qtractorMidiMonitor *qtractorMidiMeter::midiMonitor (void) const
+{
+	return m_pMidiMonitor;
 }
 
 

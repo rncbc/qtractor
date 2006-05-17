@@ -33,6 +33,7 @@ class qtractorMidiBus;
 class qtractorMidiEvent;
 class qtractorMidiInputThread;
 class qtractorMidiOutputThread;
+class qtractorMidiMonitor;
 
 
 //----------------------------------------------------------------------
@@ -53,6 +54,10 @@ public:
 
 	// Special slave sync method.
 	void sync();
+
+	// Read ahead frames configuration.
+	void setReadAhead(unsigned int iReadAhead);
+	unsigned int readAhead() const;
 
 	// MIDI event capture method.
 	void capture(snd_seq_event_t *pEv);
@@ -112,7 +117,11 @@ class qtractorMidiBus : public qtractorBus
 public:
 
 	// Constructor.
-	qtractorMidiBus(const QString& sBusName, BusMode mode = Duplex);
+	qtractorMidiBus(qtractorMidiEngine *pMidiEngine,
+		const QString& sBusName, BusMode mode = Duplex);
+
+	// Destructor.
+	~qtractorMidiBus();
 
 	// ALSA sequencer port accessor.
 	int alsaPort() const;
@@ -148,6 +157,14 @@ public:
 	void setController(unsigned short iChannel,
 		int iController, int iValue = 0) const;
 
+	// Virtual I/O bus-monitor accessors.
+	qtractorMonitor *monitor_in()  const;
+	qtractorMonitor *monitor_out() const;
+
+	// MIDI I/O bus-monitor accessors.
+	qtractorMidiMonitor *midiMonitor_in()  const;
+	qtractorMidiMonitor *midiMonitor_out() const;
+
 	// Document element methods.
 	bool loadElement(qtractorSessionDocument *pDocument,
 		QDomElement *pElement);
@@ -158,6 +175,10 @@ private:
 
 	// Instance variables.
 	int m_iAlsaPort;
+
+	// Specific monitor instances.
+	qtractorMidiMonitor *m_pIMidiMonitor;
+	qtractorMidiMonitor *m_pOMidiMonitor;
 
 	// Channel patch mapper.
 	QMap<unsigned short, Patch> m_patches;
