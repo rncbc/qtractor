@@ -27,6 +27,14 @@
 #include <qpainter.h>
 #include <qpixmap.h>
 
+#include <math.h>
+
+#if defined(__BORLANDC__)
+// BCC32 doesn't have these float versions...
+static inline float log10f ( float x )  { return float(::log(x)) / M_LN10; }
+static inline float powf ( float x, float y ) { return float(::pow(x, y)); }
+#endif
+
 
 // Meter level limits (in dB).
 #define QTRACTOR_AUDIO_METER_MAXDB			+6.0f
@@ -34,9 +42,12 @@
 
 // The decay rates (magic goes here :).
 // - value decay rate (faster)
-#define QTRACTOR_AUDIO_METER_DECAY_RATE1	(1.0f - 1E-3f)
+#define QTRACTOR_AUDIO_METER_DECAY_RATE1	(1.0f - 1E-2f)
 // - peak decay rate (slower)
 #define QTRACTOR_AUDIO_METER_DECAY_RATE2	(1.0f - 1E-6f)
+
+// Number of cycles the peak stays on hold before fall-off.
+#define QTRACTOR_AUDIO_METER_PEAK_FALLOFF	32
 
 
 //----------------------------------------------------------------------------
@@ -269,7 +280,9 @@ qtractorAudioMeter::qtractorAudioMeter ( qtractorAudioMonitor *pAudioMonitor,
 
 	gainSlider()->setMinValue(
 		-int(10000.0f * 0.025f * QTRACTOR_AUDIO_METER_MAXDB));
-	
+
+	setPeakFalloff(QTRACTOR_AUDIO_METER_PEAK_FALLOFF);
+
 	setGain(monitor()->gain());
 	setPanning(monitor()->panning());
 
@@ -308,7 +321,7 @@ qtractorAudioMeter::~qtractorAudioMeter (void)
 }
 
 
-// IEC standard 
+// IEC standard
 int qtractorAudioMeter::iec_scale ( float dB ) const
 {
 	return int(m_fScale * IEC_Scale(dB));
@@ -345,7 +358,7 @@ void qtractorAudioMeter::reset (void)
 		for (unsigned short i = 0; i < m_iChannels; i++)
 			m_ppAudioValues[i] = new qtractorAudioMeterValue(this, i, hbox());
 	}
-	
+
 	panSlider()->setEnabled(m_iChannels > 1);
 }
 

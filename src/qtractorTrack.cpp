@@ -46,6 +46,8 @@ qtractorTrack::Properties::Properties (void)
 	record      = false;
 	mute        = false;
 	solo        = false;
+	gain        = 1.0f;
+	panning     = 0.0f;
 	busName     = QString::null;
 	midiChannel = 0;
 	midiBankSelMethod = -1;
@@ -64,6 +66,8 @@ qtractorTrack::Properties& qtractorTrack::Properties::copy (
 	record      = props.record;
 	mute        = props.mute;
 	solo        = props.solo;
+	gain        = props.gain;
+	panning     = props.panning;
 	busName     = props.busName;
 	midiChannel = props.midiChannel;
 	midiBankSelMethod = props.midiBankSelMethod;
@@ -95,29 +99,14 @@ qtractorTrack::qtractorTrack ( qtractorSession *pSession, TrackType trackType )
 
 	m_pClipRecord = NULL;
 
-	// Alloocate the track monitor instance...
-	switch (trackType) {
-	case qtractorTrack::Audio:
-		m_pMonitor = new qtractorAudioMonitor(0);
-		break;
-	case qtractorTrack::Midi:
-		m_pMonitor = new qtractorMidiMonitor(pSession);
-		break;
-	case qtractorTrack::None:
-	default:
-		break;
-	}
-
 	clear();
 }
 
 // Default constructor.
 qtractorTrack::~qtractorTrack (void)
 {
+	close();
 	clear();
-
-	if (m_pMonitor)
-		delete m_pMonitor;
 }
 
 
@@ -132,9 +121,11 @@ void qtractorTrack::clear (void)
 	m_props.midiBank          = -1;
 	m_props.midiProgram       = -1;
 
-	m_props.record = false;
-	m_props.mute   = false;
-	m_props.solo   = false;
+	m_props.record  = false;
+	m_props.mute    = false;
+	m_props.solo    = false;
+	m_props.gain    = 1.0f;
+	m_props.panning = 0.0f;
 }
 
 
@@ -149,14 +140,14 @@ bool qtractorTrack::open (void)
 	// Depending on track type...
 	qtractorEngine *pEngine = NULL;
 	switch (trackType()) {
-		case qtractorTrack::Audio:
-			pEngine = m_pSession->audioEngine();
-			break;
-		case qtractorTrack::Midi:
-			pEngine = m_pSession->midiEngine();
-			break;
-		default:
-			break;
+	case qtractorTrack::Audio:
+		pEngine = m_pSession->audioEngine();
+		break;
+	case qtractorTrack::Midi:
+		pEngine = m_pSession->midiEngine();
+		break;
+	default:
+		break;
 	}
 
 	// Got it?
@@ -172,31 +163,35 @@ bool qtractorTrack::open (void)
 			setBusName(m_pBus->busName());
 	}
 
-	// (Re)allocate monitor channels...
+	if (m_pBus == NULL)
+		return false;
+
+	// (Re)allocate audio monitor...
 	switch (trackType()) {
 	case qtractorTrack::Audio: {
 		qtractorAudioBus *pAudioBus
 			= static_cast<qtractorAudioBus *> (m_pBus);
-		qtractorAudioMonitor *pAudioMonitor
-			= static_cast<qtractorAudioMonitor *> (m_pMonitor);
-		if (pAudioBus && pAudioMonitor)
-			pAudioMonitor->setChannels(pAudioBus->channels());
+		if (pAudioBus) {
+			m_pMonitor = new qtractorAudioMonitor(pAudioBus->channels(),
+				m_props.gain, m_props.panning);
+		}
 		break;
 	}
 	case qtractorTrack::Midi: {
-		qtractorMidiMonitor *pMidiMonitor
-			= static_cast<qtractorMidiMonitor *> (m_pMonitor);
-		if (pMidiMonitor)
-			pMidiMonitor->resetBuffer();
+		qtractorMidiBus *pMidiBus
+			= static_cast<qtractorMidiBus *> (m_pBus);
+		if (pMidiBus) {
+			m_pMonitor = new qtractorMidiMonitor(m_pSession,
+				m_props.gain, m_props.panning);
+		}
 		break;
 	}
-	case qtractorTrack::None:
 	default:
 		break;
 	}
 
 	// Done.
-	return (m_pBus != NULL);
+	return (m_pMonitor != NULL);
 }
 
 
@@ -204,6 +199,11 @@ bool qtractorTrack::open (void)
 void qtractorTrack::close (void)
 {
 	m_pBus = NULL;
+
+	if (m_pMonitor) {
+		delete m_pMonitor;
+		m_pMonitor = NULL;
+	}
 
 	setClipRecord(NULL);
 }
@@ -240,41 +240,14 @@ void qtractorTrack::setTrackType ( qtractorTrack::TrackType trackType )
 	if (m_props.trackType == trackType)
 		return;
 
-	// Acquire a new midi-tag... 
+	// Acquire a new midi-tag...
 	if (m_props.trackType == qtractorTrack::Midi)
 		m_pSession->releaseMidiTag(this);
 
 	// Set new track type, now...
 	m_props.trackType = trackType;
 
-	// We'll have a new monitor type, for sure...
-	qtractorMonitor *pOldMonitor = m_pMonitor;
-	qtractorMonitor *pNewMonitor = NULL;
-	switch (trackType) {
-	case qtractorTrack::Audio: {
-		unsigned short iChannels = 0;
-		qtractorAudioBus *pAudioBus
-			= static_cast<qtractorAudioBus *> (m_pBus);
-		if (pAudioBus)
-			iChannels = pAudioBus->channels();
-		pNewMonitor = new qtractorAudioMonitor(iChannels);
-		break;
-	}
-	case qtractorTrack::Midi: {
-		pNewMonitor = new qtractorMidiMonitor(m_pSession);
-		break;
-	}
-	case qtractorTrack::None:
-	default:
-		break;
-	}
-
-	// Reset to new monitor...
-	m_pMonitor = pNewMonitor;
-	if (pOldMonitor)
-		delete pOldMonitor;
-
-	// Acquire a new midi-tag... 
+	// Acquire a new midi-tag...
 	if (m_props.trackType == qtractorTrack::Midi)
 		m_pSession->acquireMidiTag(this);
 }
@@ -331,6 +304,36 @@ void qtractorTrack::setSolo ( bool bSolo )
 
 	if (m_pSession->isPlaying())
 		m_pSession->trackSolo(this, bSolo);
+}
+
+
+// Track gain (volume) accessor.
+void qtractorTrack::setGain ( float fGain )
+{
+	m_props.gain = fGain;
+
+	if (m_pMonitor)
+		m_pMonitor->setGain(fGain);
+}
+
+float qtractorTrack::gain (void) const
+{
+	return (m_pMonitor ? m_pMonitor->gain() : m_props.gain);
+}
+
+
+// Track stereo-panning accessor.
+void qtractorTrack::setPanning ( float fPanning )
+{
+	m_props.panning = fPanning;
+
+	if (m_pMonitor)
+		m_pMonitor->setPanning(fPanning);
+}
+
+float qtractorTrack::panning (void) const
+{
+	return (m_pMonitor ? m_pMonitor->panning() : m_props.panning);
 }
 
 
@@ -574,7 +577,7 @@ void qtractorTrack::drawTrack ( QPainter *pPainter, const QRect& trackRect,
 
 	if (pClip == NULL)
 		pClip = m_clips.first();
-		
+
 	while (pClip) {
 		unsigned long iClipStart = pClip->clipStart();
 		if (iClipStart > iTrackEnd)
@@ -682,10 +685,6 @@ bool qtractorTrack::loadElement ( qtractorSessionDocument *pDocument,
 					continue;
 				if (eProp.tagName() == "bus")
 					qtractorTrack::setBusName(eProp.text());
-				else if (eProp.tagName() == "gain")
-					qtractorTrack::monitor()->setGain(eProp.text().toFloat());
-				else if (eProp.tagName() == "panning")
-					qtractorTrack::monitor()->setPanning(eProp.text().toFloat());
 				else if (eProp.tagName() == "midi-channel")
 					qtractorTrack::setMidiChannel(eProp.text().toUShort());
 				else if (eProp.tagName() == "midi-bank-sel-method")
@@ -712,6 +711,10 @@ bool qtractorTrack::loadElement ( qtractorSessionDocument *pDocument,
 					qtractorTrack::setSolo(pDocument->boolFromText(eState.text()));
 				else if (eState.tagName() == "record")
 					qtractorTrack::setRecord(pDocument->boolFromText(eState.text()));
+				else if (eState.tagName() == "gain")
+					qtractorTrack::setGain(eState.text().toFloat());
+				else if (eState.tagName() == "panning")
+					qtractorTrack::setPanning(eState.text().toFloat());
 			}
 		}
 		else
@@ -781,10 +784,6 @@ bool qtractorTrack::saveElement ( qtractorSessionDocument *pDocument,
 	// Save track properties...
 	QDomElement eProps = pDocument->document()->createElement("properties");
 	pDocument->saveTextElement("bus", qtractorTrack::busName(), &eProps);
-	pDocument->saveTextElement("gain",
-		QString::number(qtractorTrack::monitor()->gain()), &eProps);
-	pDocument->saveTextElement("panning",
-		QString::number(qtractorTrack::monitor()->panning()), &eProps);
 	if (qtractorTrack::trackType() == qtractorTrack::Midi) {
 		pDocument->saveTextElement("midi-channel",
 			QString::number(qtractorTrack::midiChannel()), &eProps);
@@ -811,6 +810,10 @@ bool qtractorTrack::saveElement ( qtractorSessionDocument *pDocument,
 		pDocument->textFromBool(qtractorTrack::isSolo()), &eState);
 	pDocument->saveTextElement("record",
 		pDocument->textFromBool(qtractorTrack::isRecord()), &eState);
+	pDocument->saveTextElement("gain",
+		QString::number(qtractorTrack::gain()), &eState);
+	pDocument->saveTextElement("panning",
+		QString::number(qtractorTrack::panning()), &eState);
 	pElement->appendChild(eState);
 
 	// Save track view attributes...

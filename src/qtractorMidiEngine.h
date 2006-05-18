@@ -97,7 +97,7 @@ private:
 	snd_seq_t *m_pAlsaSeq;
 	int        m_iAlsaClient;
 	int        m_iAlsaQueue;
-	
+
 	// Name says it all.
 	qtractorMidiInputThread  *m_pInputThread;
 	qtractorMidiOutputThread *m_pOutputThread;

@@ -86,6 +86,14 @@ public:
 	void setSolo(bool bSolo);
 	bool isSolo() const;
 
+	// Track gain (volume) accessor.
+	void setGain(float fGain);
+	float gain() const;
+
+	// Track stereo-panning accessor.
+	void setPanning(float fPanning);
+	float panning() const;
+
 	// MIDI specific: track-tag accessors.
 	void setMidiTag(unsigned short iMidiTag);
 	unsigned short midiTag() const;
@@ -182,6 +190,8 @@ public:
 		bool           record;
 		bool           mute;
 		bool           solo;
+		float          gain;
+		float          panning;
 		QString        busName;
 		unsigned short midiChannel;
 		int            midiBankSelMethod;

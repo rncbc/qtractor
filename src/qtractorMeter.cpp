@@ -25,10 +25,6 @@
 #include <qpainter.h>
 
 
-// Number of cycles the peak stays on hold before fall-off.
-#define QTRACTOR_METER_PEAK_FALLOFF	32
-
-
 //----------------------------------------------------------------------------
 // qtractorMeterScale -- Meter bridge scale widget.
 
@@ -67,7 +63,7 @@ void qtractorMeterScale::drawLineLabel ( QPainter *p,
 		m_iLastY = iCurrY + 1;
 		return;
 	}
-		
+
 	const QFontMetrics& fm = p->fontMetrics();
 	int iMidHeight = (fm.height() >> 1);
 	if (y < iMidHeight)
@@ -119,7 +115,7 @@ qtractorMeter::qtractorMeter ( QWidget *pParent, const char *pszName )
 	m_pHBox->setSpacing(1);
 	m_pGainSlider  = new qtractorSlider(Qt::Vertical, m_pHBox);
 
-	m_iPeakFalloff = QTRACTOR_METER_PEAK_FALLOFF;
+	m_iPeakFalloff = 0;
 
 	m_pPanSlider->setTickmarks(QSlider::NoMarks);
 	m_pPanSlider->setMinValue(-100);

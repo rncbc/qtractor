@@ -30,9 +30,12 @@
 
 // The decay rates (magic goes here :).
 // - value decay rate (faster)
-#define QTRACTOR_MIDI_METER_DECAY_RATE1	(1.0f - 1E-3f)
+#define QTRACTOR_MIDI_METER_DECAY_RATE1		(1.0f - 1E-4f)
 // - peak decay rate (slower)
-#define QTRACTOR_MIDI_METER_DECAY_RATE2	(1.0f - 1E-6f)
+#define QTRACTOR_MIDI_METER_DECAY_RATE2		(1.0f - 1E-6f)
+
+// Number of cycles the peak stays on hold before fall-off.
+#define QTRACTOR_MIDI_METER_PEAK_FALLOFF	16
 
 
 //----------------------------------------------------------------------------
@@ -114,11 +117,7 @@ void qtractorMidiMeterValue::paintEvent ( QPaintEvent * )
 		pm.fill(Qt::gray);
 	}
 
-	int y = 0;
-	unsigned char val = m_pMidiMeter->midiMonitor()->dequeue();
-	if (val > 0)
-		y = iHeight - (iHeight * int(val)) / 127;
-
+	int y = (iHeight * int(m_pMidiMeter->midiMonitor()->dequeue())) / 127;
 	if (y > m_iValue) {
 		m_iValue = y;
 		m_fValueDecay = QTRACTOR_MIDI_METER_DECAY_RATE1;
@@ -176,6 +175,8 @@ qtractorMidiMeter::qtractorMidiMeter ( qtractorMidiMonitor *pMidiMonitor,
 
 	m_pMidiScale = new qtractorMidiMeterScale(this, hbox());
 	m_pMidiValue = new qtractorMidiMeterValue(this, hbox());
+
+	setPeakFalloff(QTRACTOR_MIDI_METER_PEAK_FALLOFF);
 
 	setGain(monitor()->gain());
 	setPanning(monitor()->panning());

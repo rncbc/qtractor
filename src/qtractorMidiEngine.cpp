@@ -180,13 +180,13 @@ void qtractorMidiInputThread::run (void)
 	if (pAlsaSeq == NULL)
 		return;
 
-#ifdef DEBUG
+#ifdef CONFIG_DEBUG_0
 	fprintf(stderr, "qtractorMidiInputThread::run(%p): started.\n", this);
 #endif
 
 	int nfds;
 	struct pollfd *pfds;
-	
+
 	nfds = snd_seq_poll_descriptors_count(pAlsaSeq, POLLIN);
 	pfds = (struct pollfd *) alloca(nfds * sizeof(struct pollfd));
 	snd_seq_poll_descriptors(pAlsaSeq, pfds, nfds, POLLIN);
@@ -210,7 +210,7 @@ void qtractorMidiInputThread::run (void)
 		}
 	}
 
-#ifdef DEBUG
+#ifdef CONFIG_DEBUG_0
 	fprintf(stderr, "qtractorMidiInputThread::run(%p): stopped.\n", this);
 #endif
 }
@@ -304,7 +304,7 @@ qtractorSessionCursor *qtractorMidiOutputThread::midiCursorSync ( bool bStart )
 // The main thread executive.
 void qtractorMidiOutputThread::run (void)
 {
-#ifdef DEBUG
+#ifdef CONFIG_DEBUG_0
 	fprintf(stderr, "qtractorMidiOutputThread::run(%p): started.\n", this);
 #endif
 
@@ -314,7 +314,7 @@ void qtractorMidiOutputThread::run (void)
 	while (m_bRunState) {
 		// Wait for sync...
 		m_cond.wait(&m_mutex);
-#ifdef DEBUG
+#ifdef CONFIG_DEBUG_0
 		fprintf(stderr, "qtractorMidiOutputThread::run(%p): waked.\n", this);
 #endif
 		// Only if playing, the output process cycle.
@@ -323,7 +323,7 @@ void qtractorMidiOutputThread::run (void)
 	}
 	m_mutex.unlock();
 
-#ifdef DEBUG
+#ifdef CONFIG_DEBUG_0
 	fprintf(stderr, "qtractorMidiOutputThread::run(%p): stopped.\n", this);
 #endif
 }
@@ -337,19 +337,19 @@ void qtractorMidiOutputThread::process (void)
 	// Isn't MIDI slightly behind audio?
 	if (pMidiCursor == NULL)
 		return;
-		
+
 	// Now for the next readahead bunch...
 	unsigned long iFrameStart = pMidiCursor->frame();
 	unsigned long iFrameEnd   = iFrameStart + m_iReadAhead;
 
-#ifdef DEBUG
+#ifdef CONFIG_DEBUG_0
 	fprintf(stderr, "qtractorMidiOutputThread::process(%p, %lu, %lu)\n",
 		this, iFrameStart, iFrameEnd);
 #endif
 
 	// Split processing, in case we're looping...
 	if (m_pSession->isLooping() && iFrameStart < m_pSession->loopEnd()) {
-		// Loop-length might be shorter than the read-ahead... 
+		// Loop-length might be shorter than the read-ahead...
 		while (iFrameEnd >= m_pSession->loopEnd()) {
 			// Process the remaining until end-of-loop...
 			m_pSession->process(pMidiCursor, iFrameStart, m_pSession->loopEnd());
@@ -385,7 +385,7 @@ void qtractorMidiOutputThread::process (void)
 void qtractorMidiOutputThread::processSync (void)
 {
 	QMutexLocker locker(&m_mutex);
-#ifdef DEBUG
+#ifdef CONFIG_DEBUG_0
 	fprintf(stderr, "qtractorMidiOutputThread::processSync(%p)\n", this);
 #endif
 	process();
@@ -407,7 +407,7 @@ void qtractorMidiOutputThread::trackSync ( qtractorTrack *pTrack,
 	// This is the last framestamp to be trown out...
 	unsigned long iFrameEnd = pMidiCursor->frame();
 
-#ifdef DEBUG
+#ifdef CONFIG_DEBUG_0
 	fprintf(stderr, "qtractorMidiOutputThread::trackSync(%p, %lu, %lu)\n",
 		this, iFrameStart, iFrameEnd);
 #endif
@@ -433,7 +433,7 @@ void qtractorMidiOutputThread::sync (void)
 		m_cond.wakeAll();
 		m_mutex.unlock();
 	}
-#ifdef DEBUG_0
+#ifdef CONFIG_DEBUG_0
 	else fprintf(stderr, "qtractorMidiOutputThread::sync(%p): tryLock() failed.\n", this);
 #endif
 }
@@ -450,7 +450,7 @@ qtractorMidiEngine::qtractorMidiEngine ( qtractorSession *pSession )
 	m_pAlsaSeq    = NULL;
 	m_iAlsaClient = -1;
 	m_iAlsaQueue  = -1;
-	
+
 	m_pInputThread  = NULL;
 	m_pOutputThread = NULL;
 
@@ -516,7 +516,7 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 	fprintf(stderr, "MIDI In  %05d 0x%02x", pEv->time.tick, pEv->type);
 	if (pEv->type == SND_SEQ_EVENT_SYSEX) {
 		fprintf(stderr, " sysex {");
-		unsigned char *data = (unsigned char *) pEv->data.ext.ptr; 
+		unsigned char *data = (unsigned char *) pEv->data.ext.ptr;
 		for (unsigned int i = 0; i < pEv->data.ext.len; i++)
 			fprintf(stderr, " %02x", data[i]);
 		fprintf(stderr, " }\n");
@@ -577,7 +577,7 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 		break;
 	case SND_SEQ_EVENT_SYSEX:
 		type     = qtractorMidiEvent::SYSEX;
-		pSysex   = (unsigned char *) pEv->data.ext.ptr; 
+		pSysex   = (unsigned char *) pEv->data.ext.ptr;
 		iSysex   = (unsigned short)  pEv->data.ext.len;
 		break;
 	default:
@@ -638,13 +638,17 @@ void qtractorMidiEngine::enqueue ( qtractorTrack *pTrack,
 	if (pMidiBus == NULL)
 		return;
 
+	// Scheduled delivery: take into account
+	// the time playback/queue started...
+	unsigned long tick = iTime - m_iTimeStart;
+
 #ifdef CONFIG_DEBUG_0
 	// - show event for debug purposes...
-	fprintf(stderr, "MIDI Out %05lu 0x%02x", iTime - m_iTimeStart,
+	fprintf(stderr, "MIDI Out %05lu 0x%02x", tick,
 		(int) pEvent->type() | pTrack->midiChannel());
 	if (pEvent->type() == qtractorMidiEvent::SYSEX) {
 		fprintf(stderr, " sysex {");
-		unsigned char *data = (unsigned char *) pEvent->sysex(); 
+		unsigned char *data = (unsigned char *) pEvent->sysex();
 		for (unsigned int i = 0; i < pEvent->sysex_len(); i++)
 			fprintf(stderr, " %02x", data[i]);
 		fprintf(stderr, " }\n");
@@ -655,7 +659,7 @@ void qtractorMidiEngine::enqueue ( qtractorTrack *pTrack,
 	}
 #endif
 
-	// Initializing...
+	// INtialize outbound event...
 	snd_seq_event_t ev;
 	snd_seq_ev_clear(&ev);
 
@@ -666,9 +670,7 @@ void qtractorMidiEngine::enqueue ( qtractorTrack *pTrack,
 	snd_seq_ev_set_source(&ev, pMidiBus->alsaPort());
 	snd_seq_ev_set_subs(&ev);
 
-	// Scheduled delivery: take into account
-	// the time playback/queue started...
-	unsigned long tick = iTime - m_iTimeStart;
+	// Scheduled delivery...
 	snd_seq_ev_schedule_tick(&ev, m_iAlsaQueue, 0, tick);
 
 	// Set proper event data...
@@ -724,7 +726,7 @@ void qtractorMidiEngine::enqueue ( qtractorTrack *pTrack,
 
 	// Pump it into the queue.
 	snd_seq_event_output(m_pAlsaSeq, &ev);
-	
+
 	// Monitor stuff...
 	// Target MIDI track monitor...
 	qtractorMidiMonitor *pMidiMonitor
@@ -1060,7 +1062,7 @@ qtractorMidiBus::qtractorMidiBus ( qtractorMidiEngine *pMidiEngine,
 		m_pIMidiMonitor = new qtractorMidiMonitor(pMidiEngine->session());
 	else
 		m_pIMidiMonitor = NULL;
-		
+
 	if (busMode & qtractorBus::Output)
 		m_pOMidiMonitor = new qtractorMidiMonitor(pMidiEngine->session());
 	else

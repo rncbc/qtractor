@@ -4,9 +4,6 @@ HEADERS += ../src/qtractorAbout.h \
            ../src/qtractorAtomic.h \
            ../src/qtractorOptions.h \
            ../src/qtractorMessages.h \
-           ../src/qtractorMonitor.h \
-           ../src/qtractorAudioMonitor.h \
-           ../src/qtractorMidiMonitor.h \
            ../src/qtractorSpinBox.h \
            ../src/qtractorSlider.h \
            ../src/qtractorList.h \
@@ -20,6 +17,9 @@ HEADERS += ../src/qtractorAbout.h \
            ../src/qtractorMeter.h \
            ../src/qtractorAudioMeter.h \
            ../src/qtractorMidiMeter.h \
+           ../src/qtractorMonitor.h \
+           ../src/qtractorAudioMonitor.h \
+           ../src/qtractorMidiMonitor.h \
            ../src/qtractorMixer.h \
            ../src/qtractorClipSelect.h \
            ../src/qtractorClip.h \
@@ -64,6 +64,8 @@ SOURCES += ../src/main.cpp \
            ../src/qtractorMeter.cpp \
            ../src/qtractorAudioMeter.cpp \
            ../src/qtractorMidiMeter.cpp \
+           ../src/qtractorAudioMonitor.cpp \
+           ../src/qtractorMidiMonitor.cpp \
            ../src/qtractorMixer.cpp \
            ../src/qtractorClipSelect.cpp \
            ../src/qtractorClip.cpp \

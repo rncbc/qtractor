@@ -258,7 +258,7 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 
 	// Split processing, in case we're looping...
 	if (pSession->isLooping() && iFrameStart < pSession->loopEnd()) {
-		// Loop-length might be shorter than the buffer-period... 
+		// Loop-length might be shorter than the buffer-period...
 		while (iFrameEnd > pSession->loopEnd()) {
 			// Process the remaining until end-of-loop...
 			pSession->process(pAudioCursor, iFrameStart, pSession->loopEnd());
@@ -426,7 +426,7 @@ qtractorAudioBus::qtractorAudioBus ( qtractorAudioEngine *pAudioEngine,
 		m_pIAudioMonitor = new qtractorAudioMonitor(iChannels);
 	else
 		m_pIAudioMonitor = NULL;
-		
+
 	if (busMode & qtractorBus::Output)
 		m_pOAudioMonitor = new qtractorAudioMonitor(iChannels);
 	else
@@ -447,7 +447,7 @@ qtractorAudioBus::qtractorAudioBus ( qtractorAudioEngine *pAudioEngine,
 qtractorAudioBus::~qtractorAudioBus (void)
 {
 	close();
-	
+
 	if (m_pIAudioMonitor)
 		delete m_pIAudioMonitor;
 	if (m_pOAudioMonitor)
@@ -497,7 +497,7 @@ bool qtractorAudioBus::open (void)
 		return false;
 
 	unsigned short i;
-	
+
 	if (busMode() & qtractorBus::Input) {
 		// Register and allocate input port buffers...
 		m_ppIPorts  = new jack_port_t * [m_iChannels];

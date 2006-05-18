@@ -31,7 +31,11 @@ class qtractorMonitor
 public:
 
 	// Constructor.
-	qtractorMonitor() : m_fGain(1.0f), m_fPanning(0.0f) {}
+	qtractorMonitor(float fGain = 1.0f, float fPanning = 0.0f)
+		: m_fGain(fGain), m_fPanning(fPanning) {}
+
+	// Virtual destructor.
+	virtual ~qtractorMonitor() {}
 
 	// Gain accessors.
 	float gain() const
