@@ -41,18 +41,18 @@ public:
 	float gain() const
 		{ return m_fGain; }
 	void setGain(float fGain)
-		{ m_fGain = fGain; reset(); }
+		{ m_fGain = fGain; update(); }
 
 	// Stereo panning accessors.
 	float panning() const
 		{ return m_fPanning; }
 	void setPanning(float fPanning)
-		{ m_fPanning = fPanning; reset(); }
+		{ m_fPanning = fPanning; update(); }
 
 protected:
 
 	// Rebuild the whole panning-gain array...
-	virtual void reset() = 0;
+	virtual void update() = 0;
 
 private:
 

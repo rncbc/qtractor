@@ -54,15 +54,19 @@ public:
 	// Monitor dequeue method.
 	unsigned char dequeue();
 
+	// Reset monitor.
+	void reset();
+
 protected:
 
-	// Reset monitor (nothing really done here).
-	void reset();
+	// Update monitor (nothing really done here).
+	void update();
 
 private:
 
 	// Instance variables.
 	qtractorSession *m_pSession;
+	unsigned char    m_value;
 	unsigned int     m_iBufferSize;
 	unsigned int     m_iBufferMask;
 	unsigned char   *m_pBuffer;

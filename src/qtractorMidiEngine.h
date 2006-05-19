@@ -59,6 +59,9 @@ public:
 	void setReadAhead(unsigned int iReadAhead);
 	unsigned int readAhead() const;
 
+	// Reset all MIDI monitoring...
+	void resetAllMonitors();
+
 	// MIDI event capture method.
 	void capture(snd_seq_event_t *pEv);
 

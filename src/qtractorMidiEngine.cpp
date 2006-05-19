@@ -498,6 +498,40 @@ unsigned int qtractorMidiEngine::readAhead (void) const
 }
 
 
+// Reset all MIDI monitoring...
+void qtractorMidiEngine::resetAllMonitors (void)
+{
+	// There must a session reference...
+	qtractorSession *pSession = session();
+	if (pSession == NULL)
+		return;
+
+	// Reset all MIDI busses monitors...
+	for (qtractorBus *pBus = busses().first();
+			pBus; pBus = pBus->next()) {
+		qtractorMidiBus *pMidiBus
+			= static_cast<qtractorMidiBus *> (pBus);
+		if (pMidiBus) {
+			if (pMidiBus->midiMonitor_in())
+				pMidiBus->midiMonitor_in()->reset();
+			if (pMidiBus->midiMonitor_out())
+				pMidiBus->midiMonitor_out()->reset();
+		}
+	}
+
+	// Reset all MIDI monitors...
+	for (qtractorTrack *pTrack = pSession->tracks().first();
+			pTrack; pTrack = pTrack->next()) {
+		if (pTrack->trackType() == qtractorTrack::Midi) {
+			qtractorMidiMonitor *pMidiMonitor
+				= static_cast<qtractorMidiMonitor *> (pTrack->monitor());
+			if (pMidiMonitor)
+				pMidiMonitor->reset();
+		}
+	}
+}
+
+
 // MIDI event capture method.
 void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 {
@@ -610,7 +644,7 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 					qtractorMidiMonitor *pMidiMonitor
 						= static_cast<qtractorMidiMonitor *> (pTrack->monitor());
 					if (pMidiMonitor)
-						pMidiMonitor->enqueue(type, data2, pEv->time.tick);
+						pMidiMonitor->enqueue(type, data2, 0);
 				}
 			}
 		}
@@ -622,7 +656,7 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 			= static_cast<qtractorMidiBus *> (pBus);
 		if (pMidiBus && pMidiBus->alsaPort() == pEv->dest.port
 			&& pMidiBus->midiMonitor_in()) {
-			pMidiBus->midiMonitor_in()->enqueue(type, data2, pEv->time.tick);
+			pMidiBus->midiMonitor_in()->enqueue(type, data2, 0);
 		}
 	}
 }
@@ -800,6 +834,9 @@ bool qtractorMidiEngine::activate (void)
 	m_iTimeStart = 0;
 	m_iTimeDelta = 0;
 
+	// Reset all dependable monitoring...
+	resetAllMonitors();
+
 	return true;
 }
 
@@ -835,6 +872,9 @@ bool qtractorMidiEngine::start (void)
 		= m_pOutputThread->midiCursorSync(true);
 	if (pMidiCursor == NULL)
 		return false;
+
+	// Reset all dependable monitoring...
+	resetAllMonitors();
 
 	// Start queue timer...
 	m_iTimeStart = (long) pSession->tickFromFrame(pMidiCursor->frame());
@@ -954,6 +994,11 @@ void qtractorMidiEngine::trackMute ( qtractorTrack *pTrack, bool bMute )
 			= static_cast<qtractorMidiBus *> (pTrack->bus());
 		if (pMidiBus)
 			pMidiBus->setController(pTrack->midiChannel(), ALL_NOTES_OFF);
+		// Reset track monitor...
+		qtractorMidiMonitor *pMidiMonitor
+			= static_cast<qtractorMidiMonitor *> (pTrack->monitor());
+		if (pMidiMonitor)
+			pMidiMonitor->reset();
 		// Done mute.
 	} else {
 		// Must redirect to MIDI ouput thread:

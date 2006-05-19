@@ -53,7 +53,7 @@ public:
 protected:
 
 	// Rebuild the whole panning-gain array...
-	void reset();
+	void update();
 
 private:
 
