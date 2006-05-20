@@ -26,6 +26,7 @@
 
 #include <qobject.h>
 #include <qfileinfo.h>
+#include <qregexp.h>
 
 
 //----------------------------------------------------------------------
@@ -96,15 +97,14 @@ qtractorAudioFileFactory::qtractorAudioFileFactory (void)
 #endif
 
 	// Finally, simply build the all supported files entry.
-	QString sExts;
-	FileTypes::ConstIterator iter = m_types.begin();
-	for (;;) {
-		sExts.append("*." + iter.key());
-		if (++iter == m_types.end())
-			break;
-		sExts.append(' ');
+	QRegExp rx("^(aif(|f)|fla(|c)|mp3|ogg|w(av|64))", false);
+	QStringList exts;
+	for (FileTypes::ConstIterator iter = m_types.begin();
+			iter != m_types.end(); ++iter) {
+		if (rx.exactMatch(iter.key()))
+			exts.append("*." + iter.key());
 	}
-	m_filters.prepend(QObject::tr("Audio Files (%1)").arg(sExts));
+	m_filters.prepend(QObject::tr("Audio Files (%1)").arg(exts.join(" ")));
 	m_filters.append(QObject::tr("All Files (*.*)"));
 }
 

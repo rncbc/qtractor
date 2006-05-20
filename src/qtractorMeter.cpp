@@ -155,6 +155,35 @@ QHBox *qtractorMeter::hbox (void) const
 }
 
 
+// Stereo panning accessors.
+void qtractorMeter::setPanning ( float fPanning )
+{
+	m_pPanSlider->setValue(int(100.0f * fPanning));
+}
+
+float qtractorMeter::panning (void) const
+{
+	return float(m_pPanSlider->value()) / 100.0f;
+}
+
+
+// Gain accessors.
+void qtractorMeter::setGain ( float fGain )
+{
+	m_pGainSlider->setValue(10000 - int(10000.0f * scaleFromGain(fGain)));
+}
+
+float qtractorMeter::gain (void) const
+{
+	return gainFromScale(gainScale());
+}
+
+float qtractorMeter::gainScale (void) const
+{
+	return float(10000 - m_pGainSlider->value()) / 10000.0f;
+}
+
+
 // Common slider accessors.
 qtractorSlider *qtractorMeter::panSlider (void) const
 {

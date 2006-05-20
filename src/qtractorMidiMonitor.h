@@ -39,20 +39,21 @@ public:
 	// Constructor.
 	qtractorMidiMonitor(qtractorSession *pSession,
 		float fGain = 1.0f, float fPanning = 0.0f,
-		unsigned int iBufferSize = 32);
+		unsigned int iQueueSize = 32);
 	// Destructor.
 	~qtractorMidiMonitor();
 
-	// Buffer property accessors.
-	void setBufferSize(unsigned int iBufferSize);
-	unsigned int bufferSize() const;
+	// Queue property accessors.
+	void setQueueSize(unsigned int iQueueSize);
+	unsigned int queueSize() const;
 
 	// Monitor enqueue method.
 	void enqueue(qtractorMidiEvent::EventType type,
-		unsigned char val, unsigned long tick );
+		unsigned char val, unsigned long tick = 0);
 
-	// Monitor dequeue method.
+	// Monitor dequeue methods.
 	unsigned char dequeue();
+	unsigned char count();
 
 	// Reset monitor.
 	void reset();
@@ -64,15 +65,22 @@ protected:
 
 private:
 
+	// Queue iten struct.
+	struct QueueItem
+	{
+		unsigned char value;
+		unsigned char count;
+	};
+
 	// Instance variables.
 	qtractorSession *m_pSession;
-	unsigned char    m_value;
-	unsigned int     m_iBufferSize;
-	unsigned int     m_iBufferMask;
-	unsigned char   *m_pBuffer;
+	unsigned int     m_iQueueSize;
+	unsigned int     m_iQueueMask;
+	QueueItem       *m_pQueue;
 	unsigned int     m_iReadIndex;
 	unsigned long    m_iTimeStart;
 	unsigned long    m_iTimeSlot;
+	QueueItem        m_item;
 };
 
 

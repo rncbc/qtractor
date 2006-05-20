@@ -43,6 +43,10 @@
 #include <qtooltip.h>
 #include <qpopupmenu.h>
 
+// Some useful MIDI magig numbers.
+#define MIDI_CC_VOLUME	7
+#define MIDI_CC_PAN		10
+
 
 //----------------------------------------------------------------------------
 // qtractorMixerStrip -- Mixer strip widget.
@@ -85,13 +89,11 @@ void qtractorMixerStrip::initMixerStrip (void)
 	m_pLabel = new QLabel(this);
 	m_pLabel->setFont(font6);
 	m_pLabel->setFixedHeight(fm.lineSpacing());
-		
+
 	m_pLayout->addWidget(m_pLabel);
 
-	QString sName;
 	qtractorTrack::TrackType meterType = qtractorTrack::None;
 	if (m_pTrack) {
-		sName = m_pTrack->trackName();
 		meterType = m_pTrack->trackType();
 		m_pBusButton = NULL;
 		m_pButtonLayout = new QHBoxLayout(m_pLayout, 2);
@@ -114,8 +116,6 @@ void qtractorMixerStrip::initMixerStrip (void)
 		QObject::connect(m_pSoloButton, SIGNAL(trackChanged(qtractorTrack *)),
 			pTracks, SLOT(trackChangedSlot(qtractorTrack *)));
 	} else {
-		sName = m_pBus->busName()
-			+ (m_busMode & qtractorBus::Input ? " In" : " Out");
 		meterType = m_pBus->busType();
 		const QString& sText = m_pRack->name().lower();
 		m_pBusButton = new QToolButton(this);
@@ -137,8 +137,7 @@ void qtractorMixerStrip::initMixerStrip (void)
 	m_pMeter = NULL;
 	int iFixedWidth = 2 * 16;
 	switch (meterType) {
-	case qtractorTrack::Audio:
-	{
+	case qtractorTrack::Audio: {
 		// Type cast for proper audio monitor...
 		qtractorAudioMonitor *pAudioMonitor = NULL;
 		if (m_pTrack) {
@@ -161,8 +160,7 @@ void qtractorMixerStrip::initMixerStrip (void)
 		}
 		break;
 	}
-	case qtractorTrack::Midi:
-	{
+	case qtractorTrack::Midi: {
 		// Type cast for proper MIDI monitor...
 		qtractorMidiMonitor *pMidiMonitor = NULL;
 		if (m_pTrack) {
@@ -191,16 +189,13 @@ void qtractorMixerStrip::initMixerStrip (void)
 	}
 
 	// Eventually the right one...
-	if (m_pMeter)
+	if (m_pMeter) {
 		m_pLayout->addWidget(m_pMeter);
-
-	if (m_pTrack) {
-		m_pLabel->setPaletteBackgroundColor(m_pTrack->foreground().light());
-		m_pLabel->setPaletteForegroundColor(m_pTrack->background().light());
+		QObject::connect(m_pMeter, SIGNAL(panChangedSignal()),
+			this, SLOT(panChangedSlot()));
+		QObject::connect(m_pMeter, SIGNAL(gainChangedSignal()),
+			this, SLOT(gainChangedSlot()));
 	}
-	if (fm.width(sName) < iFixedWidth)
-		m_pLabel->setAlignment(Qt::AlignHCenter);
-	QToolTip::add(m_pLabel, sName);
 
 	QFrame::setFrameShape(QFrame::StyledPanel);
 	QFrame::setFrameShadow(QFrame::Raised);
@@ -208,7 +203,7 @@ void qtractorMixerStrip::initMixerStrip (void)
 //	QFrame::setSizePolicy(
 //		QSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding));
 
-	setName(sName);
+	updateName();
 	setSelected(false);
 }
 
@@ -226,18 +221,46 @@ qtractorMonitor *qtractorMixerStrip::monitor (void) const
 }
 
 
-void qtractorMixerStrip::setName ( const QString& sName )
+// Common mixer-strip caption title updater.
+void qtractorMixerStrip::updateName (void)
 {
+	QString sName;
+	qtractorTrack::TrackType meterType = qtractorTrack::None;
+	if (m_pTrack) {
+		meterType = m_pTrack->trackType();
+		sName = m_pTrack->trackName();
+		m_pLabel->setPaletteBackgroundColor(m_pTrack->foreground().light());
+		m_pLabel->setPaletteForegroundColor(m_pTrack->background().light());
+		m_pLabel->setAlignment(Qt::AlignAuto);
+	} else if (m_pBus) {
+		meterType = m_pBus->busType();
+		if (m_busMode & qtractorBus::Input) {
+			sName = tr("%1 In").arg(m_pBus->busName());
+		} else {
+			sName = tr("%1 Out").arg(m_pBus->busName());
+		}
+		m_pLabel->setAlignment(Qt::AlignHCenter);
+	}
 	m_pLabel->setText(sName);
 
+	QString sSuffix;
+	switch (meterType) {
+	case qtractorTrack::Audio:
+		sSuffix = tr("(Audio)");
+		break;
+	case qtractorTrack::Midi:
+		sSuffix = tr("(MIDI)");
+		break;
+	case qtractorTrack::None:
+	default:
+		sSuffix = tr("(None)");
+		break;
+	}
+
 	QToolTip::remove(this);
-	QToolTip::add(this, sName);
+	QToolTip::add(this, sName + ' ' + sSuffix);
 }
 
-QString qtractorMixerStrip::name (void) const
-{
-	return m_pLabel->text();
-}
 
 
 // Child accessors.
@@ -257,12 +280,12 @@ void qtractorMixerStrip::setBus ( qtractorBus *pBus )
 	m_pBus = pBus;
 
 	if (m_busMode & qtractorBus::Input) {
-		setName(tr("%1 In").arg(m_pBus->busName()));
 		setMonitor(m_pBus->monitor_in());
 	} else {
-		setName(tr("%1 Out").arg(pBus->busName()));
 		setMonitor(m_pBus->monitor_out());
 	}
+
+	updateName();
 }
 
 qtractorBus *qtractorMixerStrip::bus (void) const
@@ -281,14 +304,13 @@ void qtractorMixerStrip::setTrack ( qtractorTrack *pTrack )
 	m_pTrack = pTrack;
 
 	if (m_pTrack) {
-		setName(m_pTrack->trackName());
-		m_pLabel->setPaletteBackgroundColor(m_pTrack->foreground().light());
-		m_pLabel->setPaletteForegroundColor(m_pTrack->background().light());
 		m_pRecordButton->setTrack(m_pTrack);
 		m_pMuteButton->setTrack(m_pTrack);
 		m_pSoloButton->setTrack(m_pTrack);
 		setMonitor(m_pTrack->monitor());
 	}
+
+	updateName();
 }
 
 qtractorTrack *qtractorMixerStrip::track (void) const
@@ -367,9 +389,65 @@ void qtractorMixerStrip::busButtonSlot (void)
 		return;
 
 #ifdef CONFIG_DEBUG
-	fprintf(stderr, "qtractorMixerStrip::busButtonSlot() name=\"%s\"\n", name().latin1());
+	fprintf(stderr, "qtractorMixerStrip::busButtonSlot() name=\"%s\"\n", m_pLabel->text().latin1());
 #endif
 }
+
+
+// Pan-meter value change slot.
+void qtractorMixerStrip::panChangedSlot (void)
+{
+	if (m_pMeter == NULL)
+		return;
+
+	// Make sure we're on a MIDI track mixer strip...
+	if (m_pTrack == NULL)
+		return;
+	if (m_pTrack->trackType() != qtractorTrack::Midi)
+		return;
+	// Now we gotta make sure of proper MIDI bus...
+	qtractorMidiBus *pMidiBus
+		= static_cast<qtractorMidiBus *> (m_pTrack->bus());
+	if (pMidiBus == NULL)
+		return;
+
+	// Let it go...
+	pMidiBus->setController(m_pTrack->midiChannel(),
+		MIDI_CC_PAN, int(63.0f * (1.0f + m_pMeter->panning())) + 1);
+}
+
+// Gain-meter value change slot.
+void qtractorMixerStrip::gainChangedSlot (void)
+{
+	if (m_pMeter == NULL)
+		return;
+
+	// Make sure we're on a MIDI mixer strip...
+	qtractorTrack::TrackType meterType = qtractorTrack::None;
+	if (m_pTrack)
+		meterType = m_pTrack->trackType();
+	else if (m_pBus)
+		meterType = m_pBus->busType();
+	// Gotta be sure we're on MIDI only...
+	if (meterType != qtractorTrack::Midi)
+		return;
+
+	// Now we gotta make sure of proper MIDI bus...
+	qtractorMidiBus *pMidiBus = NULL;
+	if (m_pTrack) {
+		pMidiBus = static_cast<qtractorMidiBus *> (m_pTrack->bus());
+		if (pMidiBus) {
+			pMidiBus->setController(m_pTrack->midiChannel(),
+				MIDI_CC_VOLUME, int(127.0f * m_pMeter->gain()));
+		}
+	} else {
+		pMidiBus = static_cast<qtractorMidiBus *> (m_pBus);
+		if (pMidiBus) {
+			// Build some Universal SysEx and let it go...
+		}
+	}
+}
+
 
 
 //----------------------------------------------------------------------------

@@ -128,16 +128,6 @@ public:
 	// Monitor reset.
 	void reset();
 
-	// Gain accessors.
-	void setGain_dB(float dB);
-	float gain_dB() const;
-	void setGain(float fGain);
-	float gain() const;
-
-	// Panning accessors.
-	void setPanning(float fPanning);
-	float panning() const;
-
 	// IEC scale accessors.
 	int iec_scale(float dB) const;
 	int iec_level(int iIndex) const;
@@ -153,8 +143,16 @@ public:
 
 protected:
 
+	// Gain-scale converters...
+	float gainFromScale(float fScale) const;
+	float scaleFromGain(float fGain)  const;
+
 	// Specific event handlers.
 	void resizeEvent(QResizeEvent *);
+
+	// Local slider update methods.
+	void updatePanning();
+	void updateGain();
 
 protected slots:
 

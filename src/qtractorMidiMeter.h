@@ -122,14 +122,6 @@ public:
 	// Monitor reset.
 	void reset();
 
-	// Gain accessors.
-	void setGain(float fGain);
-	float gain() const;
-
-	// Panning accessors.
-	void setPanning(float fPanning);
-	float panning() const;
-
 	// Slot refreshment.
 	void refresh();
 
@@ -143,6 +135,10 @@ protected:
 
 	// Specific event handlers.
 	void resizeEvent(QResizeEvent *);
+
+	// Local slider update methods.
+	void updatePanning();
+	void updateGain();
 
 protected slots:
 

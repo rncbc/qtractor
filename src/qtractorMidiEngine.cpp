@@ -644,7 +644,7 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 					qtractorMidiMonitor *pMidiMonitor
 						= static_cast<qtractorMidiMonitor *> (pTrack->monitor());
 					if (pMidiMonitor)
-						pMidiMonitor->enqueue(type, data2, 0);
+						pMidiMonitor->enqueue(type, data2);
 				}
 			}
 		}
@@ -656,7 +656,7 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 			= static_cast<qtractorMidiBus *> (pBus);
 		if (pMidiBus && pMidiBus->alsaPort() == pEv->dest.port
 			&& pMidiBus->midiMonitor_in()) {
-			pMidiBus->midiMonitor_in()->enqueue(type, data2, 0);
+			pMidiBus->midiMonitor_in()->enqueue(type, data2);
 		}
 	}
 }
@@ -761,12 +761,12 @@ void qtractorMidiEngine::enqueue ( qtractorTrack *pTrack,
 	// Pump it into the queue.
 	snd_seq_event_output(m_pAlsaSeq, &ev);
 
-	// Monitor stuff...
-	// Target MIDI track monitor...
+	// MIDI track monitoring...
 	qtractorMidiMonitor *pMidiMonitor
 		= static_cast<qtractorMidiMonitor *> (pTrack->monitor());
 	if (pMidiMonitor)
 		pMidiMonitor->enqueue(pEvent->type(), pEvent->value(), tick);
+	// MIDI bus monitoring...
 	if (pMidiBus->midiMonitor_out()) {
 		pMidiBus->midiMonitor_out()->enqueue(
 			pEvent->type(), pEvent->value(), tick);

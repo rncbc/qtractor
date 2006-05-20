@@ -93,6 +93,15 @@ public:
 	qtractorSlider *panSlider() const;
 	qtractorSlider *gainSlider() const;
 
+	// Panning accessors.
+	void setPanning(float fPanning);
+	float panning() const;
+
+	// Gain accessors.
+	void setGain(float fGain);
+	float gainScale() const;
+	float gain() const;
+
 	// Slot refreshment.
 	virtual void refresh() = 0;
 
@@ -106,6 +115,18 @@ public:
 	// Peak falloff mode setting.
 	void setPeakFalloff(int bPeakFalloff);
 	int peakFalloff() const;
+
+protected:
+
+	// Gain-scale converters...
+	virtual float gainFromScale(float fScale) const { return fScale; }
+	virtual float scaleFromGain(float fGain)  const { return fGain;  }
+
+signals:
+
+	// Backfired sliders signals.
+	void panChangedSignal();
+	void gainChangedSignal();
 
 private:
 

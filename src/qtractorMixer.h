@@ -70,9 +70,6 @@ public:
 	void setMonitor(qtractorMonitor *pMonitor);
 	qtractorMonitor *monitor() const;
 
-	void setName(const QString& sName);
-	QString name() const;
-
 	// Child accessors.
 	qtractorMeter *meter() const;
 
@@ -103,10 +100,15 @@ protected slots:
 	// Bus button notification.
 	void busButtonSlot();
 
+	// Meter value change slot.
+	void panChangedSlot();
+	void gainChangedSlot();
+
 protected:
 
 	// Common mixer-strip initializer.
 	void initMixerStrip();
+	void updateName();
 
 	// Mouse selection event handlers.
 	void mousePressEvent(QMouseEvent *);

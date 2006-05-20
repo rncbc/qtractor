@@ -162,7 +162,6 @@ void qtractorAudioMeterValue::peakReset (void)
 	m_iPeak = 0;
 }
 
-
 // Paint event handler.
 void qtractorAudioMeterValue::paintEvent ( QPaintEvent * )
 {
@@ -297,6 +296,9 @@ qtractorAudioMeter::qtractorAudioMeter ( qtractorAudioMonitor *pAudioMonitor,
 	m_colors[QTRACTOR_AUDIO_METER_BACK] = QColor( 20, 40, 20);
 	m_colors[QTRACTOR_AUDIO_METER_FORE] = QColor( 80, 80, 80);
 
+	updatePanning();
+	updateGain();
+
 	reset();
 
 	QObject::connect(panSlider(), SIGNAL(valueChanged(int)),
@@ -304,8 +306,6 @@ qtractorAudioMeter::qtractorAudioMeter ( qtractorAudioMonitor *pAudioMonitor,
 	QObject::connect(gainSlider(), SIGNAL(valueChanged(int)),
 		this, SLOT(gainChangedSlot(int)));
 
-	panChangedSlot(panSlider()->value());
-	gainChangedSlot(gainSlider()->value());
 }
 
 
@@ -331,6 +331,21 @@ int qtractorAudioMeter::iec_scale ( float dB ) const
 int qtractorAudioMeter::iec_level ( int iIndex ) const
 {
 	return m_levels[iIndex];
+}
+
+
+// Gain-scale converters...
+float qtractorAudioMeter::gainFromScale ( float fScale ) const
+{
+	return ::powf(10.0f, IEC_dB(fScale) / 20.0f);
+}
+
+float qtractorAudioMeter::scaleFromGain ( float fGain ) const
+{
+	float dB = 0.0f;
+	if (fGain > 0.0f)
+		dB = 20.0f * ::log10f(fGain);
+	return IEC_Scale(dB);
 }
 
 
@@ -360,43 +375,6 @@ void qtractorAudioMeter::reset (void)
 	}
 
 	panSlider()->setEnabled(m_iChannels > 1);
-}
-
-
-// Gain accessors.
-void qtractorAudioMeter::setGain_dB ( float dB )
-{
-	gainSlider()->setValue(10000 - int(10000.0f * IEC_Scale(dB)));
-}
-
-float qtractorAudioMeter::gain_dB (void) const
-{
-	return IEC_dB(float(10000 - gainSlider()->value()) / 10000.0f);
-}
-
-void qtractorAudioMeter::setGain ( float fGain )
-{
-	float dB = 0.0f;
-	if (fGain > 0.0f)
-		dB = 20.0f * ::log10f(fGain);
-	setGain_dB(dB);
-}
-
-float qtractorAudioMeter::gain (void) const
-{
-	return ::powf(10.0f, gain_dB() / 20.0f);
-}
-
-
-// Stereo panning accessors.
-void qtractorAudioMeter::setPanning ( float fPanning )
-{
-	panSlider()->setValue(int(100.0f * fPanning));
-}
-
-float qtractorAudioMeter::panning (void) const
-{
-	return float(panSlider()->value()) / 100.0f;
 }
 
 
@@ -462,23 +440,41 @@ const QColor& qtractorAudioMeter::color ( int iIndex ) const
 }
 
 
+// Pan-slider value change method.
+void qtractorAudioMeter::updatePanning (void)
+{
+	m_pAudioMonitor->setPanning(panning());
+
+	QToolTip::remove(panSlider());
+	QToolTip::add(panSlider(),
+		tr("Pan: %1").arg(panning(), 0, 'g', 3));
+}
+
+// Gain-slider value change method.
+void qtractorAudioMeter::updateGain (void)
+{
+	m_pAudioMonitor->setGain(gain());
+
+	QToolTip::remove(gainSlider());
+	QToolTip::add(gainSlider(),
+		tr("Gain: %1 dB").arg(IEC_dB(gainScale()), 0, 'g', 3));
+}
+
+
 // Pan-slider value change slot.
 void qtractorAudioMeter::panChangedSlot ( int /*iValue*/ )
 {
-	monitor()->setPanning(panning());
+	updatePanning();
 
-	QToolTip::remove(panSlider());
-	QToolTip::add(panSlider(), tr("Pan: %1").arg(panning(), 0, 'g', 3));
+	emit panChangedSignal();
 }
-
 
 // Gain-slider value change slot.
 void qtractorAudioMeter::gainChangedSlot ( int /*iValue*/ )
 {
-	monitor()->setGain(gain());
+	updateGain();
 
-	QToolTip::remove(gainSlider());
-	QToolTip::add(gainSlider(), tr("Gain: %1 dB").arg(gain_dB(), 0, 'g', 3));
+	emit gainChangedSignal();
 }
 
 
