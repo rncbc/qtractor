@@ -47,7 +47,7 @@ public:
 	void setQueueSize(unsigned int iQueueSize);
 	unsigned int queueSize() const;
 
-	// Monitor enqueue method.
+	// Monitor enqueue methods.
 	void enqueue(qtractorMidiEvent::EventType type,
 		unsigned char val, unsigned long tick = 0);
 
