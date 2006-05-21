@@ -33,6 +33,7 @@
 #include "qtractorTrackButton.h"
 #include "qtractorAudioEngine.h"
 #include "qtractorMidiEngine.h"
+#include "qtractorSlider.h"
 
 #include "qtractorMainForm.h"
 
@@ -44,7 +45,7 @@
 #include <qpopupmenu.h>
 
 // Some useful MIDI magig numbers.
-#define MIDI_CC_VOLUME	7
+#define MIDI_CC_VOL		7
 #define MIDI_CC_PAN		10
 
 
@@ -180,6 +181,8 @@ void qtractorMixerStrip::initMixerStrip (void)
 		if (pMidiMonitor) {
 			iFixedWidth += 16 * 2;
 			m_pMeter = new qtractorMidiMeter(pMidiMonitor, this);
+			// No panning on these thingies...
+			m_pMeter->panSlider()->setEnabled(false);
 		}
 		break;
 	}
@@ -412,8 +415,8 @@ void qtractorMixerStrip::panChangedSlot (void)
 		return;
 
 	// Let it go...
-	pMidiBus->setController(m_pTrack->midiChannel(),
-		MIDI_CC_PAN, int(63.0f * (1.0f + m_pMeter->panning())) + 1);
+	unsigned char pan = (int(63.0f * (1.0f + m_pMeter->panning())) + 1) & 0x7f;
+	pMidiBus->setController(m_pTrack->midiChannel(), MIDI_CC_PAN, pan);
 }
 
 // Gain-meter value change slot.
@@ -433,17 +436,22 @@ void qtractorMixerStrip::gainChangedSlot (void)
 		return;
 
 	// Now we gotta make sure of proper MIDI bus...
+	unsigned char vol = (unsigned char) (int(127.0f * m_pMeter->gain()) & 0x7f);
 	qtractorMidiBus *pMidiBus = NULL;
 	if (m_pTrack) {
 		pMidiBus = static_cast<qtractorMidiBus *> (m_pTrack->bus());
 		if (pMidiBus) {
-			pMidiBus->setController(m_pTrack->midiChannel(),
-				MIDI_CC_VOLUME, int(127.0f * m_pMeter->gain()));
+			pMidiBus->setController(m_pTrack->midiChannel(), MIDI_CC_VOL, vol);
 		}
 	} else {
 		pMidiBus = static_cast<qtractorMidiBus *> (m_pBus);
 		if (pMidiBus) {
 			// Build some Universal SysEx and let it go...
+			static unsigned char aMasterVolSysex[]
+				= { 0xf0, 0x7f, 0x7f, 0x04, 0x01, 0x00, 0x00, 0xf7 };
+			// Set the course value right...
+			aMasterVolSysex[6] = vol;
+			pMidiBus->sendSysex(aMasterVolSysex, sizeof(aMasterVolSysex));
 		}
 	}
 }

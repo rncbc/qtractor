@@ -693,7 +693,7 @@ void qtractorMidiEngine::enqueue ( qtractorTrack *pTrack,
 	}
 #endif
 
-	// INtialize outbound event...
+	// Intialize outbound event...
 	snd_seq_event_t ev;
 	snd_seq_ev_clear(&ev);
 
@@ -1233,6 +1233,11 @@ void qtractorMidiBus::setPatch ( unsigned short iChannel,
 	if (pMidiEngine == NULL)
 		return;
 
+	// Don't do anything else if engine
+	// has not been activated...
+	if (pMidiEngine->alsaSeq() == NULL)
+		return;
+
 #ifdef CONFIG_DEBUG
 	fprintf(stderr, "qtractorMidiBus::setPatch(%d, \"%s\", %d, %d, %d)\n",
 		iChannel, sInstrumentName.latin1(), iBankSelMethod, iBank, iProg);
@@ -1246,11 +1251,6 @@ void qtractorMidiBus::setPatch ( unsigned short iChannel,
 		patch.bank = iBank;
 		patch.prog = iProg;
 	}
-
-	// Don't do anything else if engine
-	// has not been activated...
-	if (pMidiEngine->alsaSeq() == NULL)
-		return;
 
 	// Initialize sequencer event...
 	snd_seq_event_t ev;
@@ -1301,15 +1301,15 @@ void qtractorMidiBus::setController ( unsigned short iChannel,
 	if (pMidiEngine == NULL)
 		return;
 
-#ifdef CONFIG_DEBUG
-	fprintf(stderr, "qtractorMidiBus::setController(%d, %d, %d)\n",
-		iChannel, iController, iValue );
-#endif
-
 	// Don't do anything else if engine
 	// has not been activated...
 	if (pMidiEngine->alsaSeq() == NULL)
 		return;
+
+#ifdef CONFIG_DEBUG
+	fprintf(stderr, "qtractorMidiBus::setController(%d, %d, %d)\n",
+		iChannel, iController, iValue);
+#endif
 
 	// Initialize sequencer event...
 	snd_seq_event_t ev;
@@ -1327,6 +1327,48 @@ void qtractorMidiBus::setController ( unsigned short iChannel,
 	ev.data.control.channel = iChannel;
 	ev.data.control.param   = iController;
 	ev.data.control.value   = iValue;
+	snd_seq_event_output(pMidiEngine->alsaSeq(), &ev);
+
+	pMidiEngine->flush();
+}
+
+
+// Direct SysEx helper.
+void qtractorMidiBus::sendSysex ( unsigned char *pSysex, unsigned int iSysex )
+{
+	// Yet again, we need our MIDI engine reference...
+	qtractorMidiEngine *pMidiEngine
+		= static_cast<qtractorMidiEngine *> (engine());
+	if (pMidiEngine == NULL)
+		return;
+
+	// Don't do anything else if engine
+	// has not been activated...
+	if (pMidiEngine->alsaSeq() == NULL)
+		return;
+
+#ifdef CONFIG_DEBUG
+	fprintf(stderr, "qtractorMidiBus::sendSysEx(%p, %u)", pSysex, iSysex);
+	fprintf(stderr, " sysex {");
+	for (unsigned int i = 0; i < iSysex; i++)
+		fprintf(stderr, " %02x", pSysex[i]);
+	fprintf(stderr, " }\n");
+#endif
+
+	// Initialize sequencer event...
+	snd_seq_event_t ev;
+	snd_seq_ev_clear(&ev);
+
+	// Addressing...
+	snd_seq_ev_set_source(&ev, m_iAlsaPort);
+	snd_seq_ev_set_subs(&ev);
+
+	// The event will be direct...
+	snd_seq_ev_set_direct(&ev);
+
+	// Just set SYSEX stuff and send it out..
+	ev.type = SND_SEQ_EVENT_SYSEX;
+	snd_seq_ev_set_sysex(&ev, iSysex, pSysex);
 	snd_seq_event_output(pMidiEngine->alsaSeq(), &ev);
 
 	pMidiEngine->flush();

@@ -399,8 +399,13 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 
 #ifdef HAVE_UNISTD_H
 	// Change to last known session dir...
-	if (!m_pOptions->sSessionDir.isEmpty())
-		::chdir(m_pOptions->sSessionDir);
+	if (!m_pOptions->sSessionDir.isEmpty()) {
+		if (::chdir(m_pOptions->sSessionDir) != 0) {
+			appendMessagesError(
+				tr("Could not set default session directory:\n\n"
+				"%1\n\nSorry.").arg(m_pOptions->sSessionDir));
+		}
+	}
 #endif
 
 	// Is any session pending to be loaded?
