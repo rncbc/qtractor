@@ -1052,11 +1052,14 @@ bool qtractorMidiEngine::loadElement ( qtractorSessionDocument *pDocument,
 
 		if (eChild.tagName() == "midi-bus") {
 			QString sBusName = eChild.attribute("name");
+			float fIGain     = 1.0f;
+			float fOGain     = 1.0f;
+			float fIPanning  = 0.0f;
+			float fOPanning  = 0.0f;
 			qtractorMidiBus::BusMode busMode
 				= pDocument->loadBusMode(eChild.attribute("mode"));
 			qtractorMidiBus *pMidiBus
 				= new qtractorMidiBus(this, sBusName, busMode);
-			qtractorMidiEngine::addBus(pMidiBus);
 			// Load bus properties...
 			for (QDomNode nProp = eChild.firstChild();
 					!nProp.isNull();
@@ -1068,7 +1071,24 @@ bool qtractorMidiEngine::loadElement ( qtractorSessionDocument *pDocument,
 				// Load map elements (non-critical)...
 				if (eProp.tagName() == "midi-map")
 					pMidiBus->loadElement(pDocument, &eProp);
+				else if (eProp.tagName() == "input-gain")
+					fIGain = eProp.text().toFloat();
+				else if (eProp.tagName() == "input-panning")
+					fIPanning = eProp.text().toFloat();
+				else if (eProp.tagName() == "output-gain")
+					fOGain = eProp.text().toFloat();
+				else if (eProp.tagName() == "output-panning")
+					fOPanning = eProp.text().toFloat();
 			}
+			if (busMode & qtractorBus::Input) {
+				pMidiBus->monitor_in()->setGain(fIGain);
+				pMidiBus->monitor_in()->setPanning(fIPanning);
+			}
+			if (busMode & qtractorBus::Output) {
+				pMidiBus->monitor_out()->setGain(fOGain);
+				pMidiBus->monitor_out()->setPanning(fOPanning);
+			}
+			qtractorMidiEngine::addBus(pMidiBus);
 		}
 	}
 
@@ -1092,6 +1112,22 @@ bool qtractorMidiEngine::saveElement ( qtractorSessionDocument *pDocument,
 				pMidiBus->busName());
 			eMidiBus.setAttribute("mode",
 				pDocument->saveBusMode(pMidiBus->busMode()));
+			if (pMidiBus->busMode() && qtractorBus::Input) {
+				pDocument->saveTextElement("input-gain",
+					QString::number(pMidiBus->monitor_in()->gain()),
+						&eMidiBus);
+				pDocument->saveTextElement("input-panning",
+					QString::number(pMidiBus->monitor_in()->panning()),
+						&eMidiBus);
+			}
+			if (pMidiBus->busMode() && qtractorBus::Output) {
+				pDocument->saveTextElement("output-gain",
+					QString::number(pMidiBus->monitor_out()->gain()),
+						&eMidiBus);
+				pDocument->saveTextElement("output-panning",
+					QString::number(pMidiBus->monitor_out()->panning()),
+						&eMidiBus);
+			}
 			// Create the map element...
 			QDomElement eMidiMap
 				= pDocument->document()->createElement("midi-map");
