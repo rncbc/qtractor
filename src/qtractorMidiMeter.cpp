@@ -39,7 +39,7 @@
 #define QTRACTOR_MIDI_METER_PEAK_FALLOFF	16
 
 // Number of cycles the MIDI LED stays on before going off.
-#define QTRACTOR_MIDI_METER_HOLD_LEDON  	8
+#define QTRACTOR_MIDI_METER_HOLD_LEDON  	4
 
 
 //----------------------------------------------------------------------------

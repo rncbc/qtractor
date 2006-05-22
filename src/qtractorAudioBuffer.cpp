@@ -221,7 +221,8 @@ bool qtractorAudioBuffer::open ( const QString& sFilename, int iMode )
 	// Read-ahead a whole bunch, if applicable...
 	if (m_pFile->mode() & qtractorAudioFile::Read) {
 		readSync();
-		if (m_pRingBuffer->writeIndex() < m_pRingBuffer->bufferSize() - 1) {
+		if (m_pRingBuffer->writeIndex()
+				< m_pRingBuffer->bufferSize() - m_iThreshold) {
 			m_bIntegral = true;
 			deleteIOBuffers();
 		}
