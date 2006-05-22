@@ -90,7 +90,6 @@ public:
 	// Dynamic layout accessors.
 	QLabel *topLabel() const;
 	QHBox  *hbox() const;
-	QLabel *bottomLabel() const;
 
 	// Common slider accessors.
 	qtractorSlider *panSlider() const;
@@ -138,7 +137,6 @@ private:
 	QLabel         *m_pTopLabel;
 	QHBox          *m_pHBox;
 	qtractorSlider *m_pGainSlider;
-	QLabel         *m_pBottomLabel;
 
 	// Peak falloff mode setting (0=no peak falloff).
 	int m_iPeakFalloff;

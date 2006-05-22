@@ -48,7 +48,7 @@
 
 // Constructor.
 qtractorMessages::qtractorMessages ( QWidget *pParent, const char *pszName )
-	: QDockWindow(pParent, pszName)
+	: QDockWindow(pParent, pszName, WStyle_Tool | WStyle_StaysOnTop)
 {
 	// Intialize stdout capture stuff.
 	m_pStdoutNotifier = NULL;

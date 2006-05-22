@@ -37,9 +37,13 @@
 // Specific controller definitions
 #define BANK_SELECT_MSB		0x00
 #define BANK_SELECT_LSB		0x20
+
 #define ALL_SOUND_OFF		0x78
 #define ALL_CONTROLLERS_OFF	0x79
 #define ALL_NOTES_OFF		0x7b
+
+#define CHANNEL_VOLUME		0x07
+#define CHANNEL_PANNING		0x0a
 
 
 //----------------------------------------------------------------------
@@ -512,10 +516,15 @@ void qtractorMidiEngine::resetAllMonitors (void)
 		qtractorMidiBus *pMidiBus
 			= static_cast<qtractorMidiBus *> (pBus);
 		if (pMidiBus) {
-			if (pMidiBus->midiMonitor_in())
+			if (pMidiBus->midiMonitor_in()) {
 				pMidiBus->midiMonitor_in()->reset();
-			if (pMidiBus->midiMonitor_out())
+				if (pMidiBus->midiMonitor_out() == NULL)
+					pMidiBus->setMasterVolume(pMidiBus->midiMonitor_in()->gain());
+			}
+			if (pMidiBus->midiMonitor_out()) {
 				pMidiBus->midiMonitor_out()->reset();
+				pMidiBus->setMasterVolume(pMidiBus->midiMonitor_out()->gain());
+			}
 		}
 	}
 
@@ -523,10 +532,15 @@ void qtractorMidiEngine::resetAllMonitors (void)
 	for (qtractorTrack *pTrack = pSession->tracks().first();
 			pTrack; pTrack = pTrack->next()) {
 		if (pTrack->trackType() == qtractorTrack::Midi) {
+			qtractorMidiBus *pMidiBus
+				= static_cast<qtractorMidiBus *> (pTrack->bus());
 			qtractorMidiMonitor *pMidiMonitor
 				= static_cast<qtractorMidiMonitor *> (pTrack->monitor());
-			if (pMidiMonitor)
+			if (pMidiBus && pMidiMonitor) {
 				pMidiMonitor->reset();
+				pMidiBus->setVolume(pTrack->midiChannel(), pMidiMonitor->gain());
+				pMidiBus->setPanning(pTrack->midiChannel(), pMidiMonitor->panning());
+			}
 		}
 	}
 }
@@ -1396,6 +1410,35 @@ qtractorMidiMonitor *qtractorMidiBus::midiMonitor_in (void) const
 qtractorMidiMonitor *qtractorMidiBus::midiMonitor_out (void) const
 {
 	return m_pOMidiMonitor;
+}
+
+
+// MIDI master volume.
+void qtractorMidiBus::setMasterVolume ( float fVolume )
+{
+	unsigned char vol = (unsigned char) (int(127.0f * fVolume) & 0x7f);
+	// Build Universal SysEx and let it go...
+	static unsigned char aMasterVolSysex[]
+		= { 0xf0, 0x7f, 0x7f, 0x04, 0x01, 0x00, 0x00, 0xf7 };
+	// Set the course value right...
+	aMasterVolSysex[6] = vol;
+	sendSysex(aMasterVolSysex, sizeof(aMasterVolSysex));
+}
+
+
+// MIDI channel volume.
+void qtractorMidiBus::setVolume ( unsigned short iChannel, float fVolume )
+{
+	unsigned char vol = (unsigned char) (int(127.0f * fVolume) & 0x7f);
+	setController((unsigned short) iChannel, CHANNEL_VOLUME, vol);
+}
+
+
+// MIDI channel stereo panning.
+void qtractorMidiBus::setPanning ( unsigned short iChannel, float fPanning )
+{
+	unsigned char pan = (int(63.0f * (1.0f + fPanning)) + 1) & 0x7f;
+	setController(iChannel, CHANNEL_PANNING, pan);
 }
 
 

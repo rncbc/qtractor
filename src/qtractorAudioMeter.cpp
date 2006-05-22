@@ -281,7 +281,6 @@ qtractorAudioMeter::qtractorAudioMeter ( qtractorAudioMonitor *pAudioMonitor,
 	topLabel()->hide();
 	gainSlider()->setMinValue(
 		-int(10000.0f * 0.025f * QTRACTOR_AUDIO_METER_MAXDB));
-	bottomLabel()->hide();
 
 	setPeakFalloff(QTRACTOR_AUDIO_METER_PEAK_FALLOFF);
 
@@ -450,7 +449,7 @@ void qtractorAudioMeter::updatePanning (void)
 
 	QToolTip::remove(panSlider());
 	QToolTip::add(panSlider(),
-		tr("Pan: %1").arg(panning(), 0, 'g', 3));
+		tr("Pan: %1").arg(panning(), 0, 'g', 2));
 }
 
 // Gain-slider value change method.

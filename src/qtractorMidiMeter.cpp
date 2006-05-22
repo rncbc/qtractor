@@ -62,9 +62,12 @@ void qtractorMidiMeterScale::paintScale ( QPainter *p )
 		return;
 
 	int h = QWidget::height();
-	drawLineLabel(p, (3 * h) / 4, "75");
-	drawLineLabel(p, (2 * h) / 4, "50");
-	drawLineLabel(p,      h  / 4, "25");
+	int d = (h / 5);
+	int n = 100;
+	while (h > 0) { 
+		drawLineLabel(p, h, QString::number(n).latin1());
+		h -= d; n -= 20;
+	}
 }
 
 
@@ -182,15 +185,11 @@ qtractorMidiMeter::qtractorMidiMeter ( qtractorMidiMonitor *pMidiMonitor,
 
 	m_iMidiCount = 0;
 
-//	topLabel()->setAlignment(Qt::AlignRight | Qt::AlignBottom);
-//	topLabel()->setPixmap(QPixmap::fromMimeSource("trackMidi.png"));
+	topLabel()->setAlignment(Qt::AlignRight | Qt::AlignBottom);
+	topLabel()->setPixmap(*m_pMidiPixmap[0]);
 
 	m_pMidiScale = new qtractorMidiMeterScale(this, hbox());
 	m_pMidiValue = new qtractorMidiMeterValue(this, hbox());
-
-	bottomLabel()->setAlignment(Qt::AlignRight);
-	bottomLabel()->setPixmap(*m_pMidiPixmap[0]);
-	bottomLabel()->setFixedHeight(16);
 
 	setPeakFalloff(QTRACTOR_MIDI_METER_PEAK_FALLOFF);
 
@@ -249,12 +248,12 @@ void qtractorMidiMeter::refresh (void)
 	bool bMidiOn = (m_pMidiMonitor->count() > 0);
 	if (bMidiOn) {
 		if (m_iMidiCount == 0)
-			bottomLabel()->setPixmap(*m_pMidiPixmap[1]);
+			topLabel()->setPixmap(*m_pMidiPixmap[1]);
 		m_iMidiCount = QTRACTOR_MIDI_METER_HOLD_LEDON;
 	} else if (m_iMidiCount > 0) {
 		m_iMidiCount--;
 		if (m_iMidiCount == 0)
-			bottomLabel()->setPixmap(*m_pMidiPixmap[0]);
+			topLabel()->setPixmap(*m_pMidiPixmap[0]);
 	}
 }
 
@@ -264,7 +263,10 @@ void qtractorMidiMeter::resizeEvent ( QResizeEvent * )
 {
 	// HACK: make so that the MIDI gain slider (volume)
 	// aligns its top at the Audio 0 dB gain level...
-	topLabel()->setFixedHeight(int(0.15f * float(hbox()->height())));
+	int iFixedHeight = int(0.15f * float(hbox()->height()));
+	if (iFixedHeight < 16)
+		iFixedHeight = 16;
+	topLabel()->setFixedHeight(iFixedHeight);
 }
 
 
@@ -318,7 +320,7 @@ void qtractorMidiMeter::updateGain (void)
 
 	QToolTip::remove(gainSlider());
 	QToolTip::add(gainSlider(),
-		tr("Volume: %1").arg(gain(), 0, 'g', 2));
+		tr("Volume: %1%").arg(100.0f * gain(), 0, 'g', 3));
 }
 
 

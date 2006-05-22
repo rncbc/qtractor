@@ -171,6 +171,13 @@ public:
 	qtractorMidiMonitor *midiMonitor_in()  const;
 	qtractorMidiMonitor *midiMonitor_out() const;
 
+	// MIDI master volume.
+	void setMasterVolume(float fVolume);
+	// MIDI channel volume.
+	void setVolume(unsigned short iChannel, float fVolume);
+	// MIDI channel stereo panning.
+	void setPanning(unsigned short iChannel, float fPanning);
+
 	// Document element methods.
 	bool loadElement(qtractorSessionDocument *pDocument,
 		QDomElement *pElement);

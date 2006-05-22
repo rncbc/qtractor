@@ -59,16 +59,8 @@ void qtractorMeterScale::drawLineLabel ( QPainter *p,
 	int iCurrY = QWidget::height() - y;
 	int iWidth = QWidget::width();
 
-	if (pszLabel == NULL) {
-		p->drawLine(2, iCurrY, iWidth - 3, iCurrY);
-		m_iLastY = iCurrY + 1;
-		return;
-	}
-
 	const QFontMetrics& fm = p->fontMetrics();
 	int iMidHeight = (fm.height() >> 1);
-	if (y < iMidHeight)
-		return;
 
 	if (fm.width(pszLabel) < iWidth - 5) {
 		p->drawLine(0, iCurrY, 2, iCurrY);
@@ -116,7 +108,6 @@ qtractorMeter::qtractorMeter ( QWidget *pParent, const char *pszName )
 	m_pHBox        = new QHBox(this);
 	m_pHBox->setSpacing(1);
 	m_pGainSlider  = new qtractorSlider(Qt::Vertical, m_pHBox);
-	m_pBottomLabel = new QLabel(this);
 
 	m_iPeakFalloff = 0;
 
@@ -145,7 +136,6 @@ qtractorMeter::qtractorMeter ( QWidget *pParent, const char *pszName )
 qtractorMeter::~qtractorMeter (void)
 {
 	// No need to delete child widgets, Qt does it all for us
-	delete m_pBottomLabel;
 	delete m_pGainSlider;
 	delete m_pHBox;
 	delete m_pTopLabel;
@@ -163,11 +153,6 @@ QLabel *qtractorMeter::topLabel (void) const
 QHBox *qtractorMeter::hbox (void) const
 {
 	return m_pHBox;
-}
-
-QLabel *qtractorMeter::bottomLabel (void) const
-{
-	return m_pBottomLabel;
 }
 
 
