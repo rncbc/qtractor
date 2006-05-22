@@ -26,6 +26,7 @@
 #include <qtooltip.h>
 #include <qpainter.h>
 #include <qpixmap.h>
+#include <qlabel.h>
 
 
 // The decay rates (magic goes here :).
@@ -36,6 +37,9 @@
 
 // Number of cycles the peak stays on hold before fall-off.
 #define QTRACTOR_MIDI_METER_PEAK_FALLOFF	16
+
+// Number of cycles the MIDI LED stays on before going off.
+#define QTRACTOR_MIDI_METER_HOLD_LEDON  	8
 
 
 //----------------------------------------------------------------------------
@@ -173,8 +177,20 @@ qtractorMidiMeter::qtractorMidiMeter ( qtractorMidiMonitor *pMidiMonitor,
 {
 	m_pMidiMonitor = pMidiMonitor;
 
+	m_pMidiPixmap[0] = new QPixmap(QPixmap::fromMimeSource("trackMidiOff.png"));
+	m_pMidiPixmap[1] = new QPixmap(QPixmap::fromMimeSource("trackMidiOn.png"));
+
+	m_iMidiCount = 0;
+
+//	topLabel()->setAlignment(Qt::AlignRight | Qt::AlignBottom);
+//	topLabel()->setPixmap(QPixmap::fromMimeSource("trackMidi.png"));
+
 	m_pMidiScale = new qtractorMidiMeterScale(this, hbox());
 	m_pMidiValue = new qtractorMidiMeterValue(this, hbox());
+
+	bottomLabel()->setAlignment(Qt::AlignRight);
+	bottomLabel()->setPixmap(*m_pMidiPixmap[0]);
+	bottomLabel()->setFixedHeight(16);
 
 	setPeakFalloff(QTRACTOR_MIDI_METER_PEAK_FALLOFF);
 
@@ -204,6 +220,9 @@ qtractorMidiMeter::~qtractorMidiMeter (void)
 	// No need to delete child widgets, Qt does it all for us
 	delete m_pMidiValue;
 	delete m_pMidiScale;
+
+	delete m_pMidiPixmap[0];
+	delete m_pMidiPixmap[1];
 }
 
 
@@ -217,6 +236,7 @@ void qtractorMidiMeter::reset (void)
 void qtractorMidiMeter::peakReset (void)
 {
 	m_pMidiValue->peakReset();
+	m_iMidiCount = 0;
 }
 
 
@@ -224,12 +244,27 @@ void qtractorMidiMeter::peakReset (void)
 void qtractorMidiMeter::refresh (void)
 {
 	m_pMidiValue->update();
+	
+	// Take care of the MIDI LED status...
+	bool bMidiOn = (m_pMidiMonitor->count() > 0);
+	if (bMidiOn) {
+		if (m_iMidiCount == 0)
+			bottomLabel()->setPixmap(*m_pMidiPixmap[1]);
+		m_iMidiCount = QTRACTOR_MIDI_METER_HOLD_LEDON;
+	} else if (m_iMidiCount > 0) {
+		m_iMidiCount--;
+		if (m_iMidiCount == 0)
+			bottomLabel()->setPixmap(*m_pMidiPixmap[0]);
+	}
 }
 
 
 // Resize event handler.
 void qtractorMidiMeter::resizeEvent ( QResizeEvent * )
 {
+	// HACK: make so that the MIDI gain slider (volume)
+	// aligns its top at the Audio 0 dB gain level...
+	topLabel()->setFixedHeight(int(0.15f * float(hbox()->height())));
 }
 
 

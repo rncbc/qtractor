@@ -23,6 +23,7 @@
 #include "qtractorSlider.h"
 
 #include <qpainter.h>
+#include <qlabel.h>
 
 
 //----------------------------------------------------------------------------
@@ -111,9 +112,11 @@ qtractorMeter::qtractorMeter ( QWidget *pParent, const char *pszName )
 	: QVBox(pParent, pszName)
 {
 	m_pPanSlider   = new qtractorSlider(Qt::Horizontal, this);
+	m_pTopLabel    = new QLabel(this);
 	m_pHBox        = new QHBox(this);
 	m_pHBox->setSpacing(1);
 	m_pGainSlider  = new qtractorSlider(Qt::Vertical, m_pHBox);
+	m_pBottomLabel = new QLabel(this);
 
 	m_iPeakFalloff = 0;
 
@@ -142,16 +145,29 @@ qtractorMeter::qtractorMeter ( QWidget *pParent, const char *pszName )
 qtractorMeter::~qtractorMeter (void)
 {
 	// No need to delete child widgets, Qt does it all for us
+	delete m_pBottomLabel;
 	delete m_pGainSlider;
 	delete m_pHBox;
+	delete m_pTopLabel;
 	delete m_pPanSlider;
 }
 
 
-// Dynamic layout accessor.
+// Dynamic layout accessors.
+QLabel *qtractorMeter::topLabel (void) const
+{
+	return m_pTopLabel;
+}
+
+
 QHBox *qtractorMeter::hbox (void) const
 {
 	return m_pHBox;
+}
+
+QLabel *qtractorMeter::bottomLabel (void) const
+{
+	return m_pBottomLabel;
 }
 
 

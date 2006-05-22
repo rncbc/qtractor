@@ -116,6 +116,8 @@ IMAGES   = ../icons/qtractor.png \
            ../icons/trackProperties.png \
            ../icons/trackAudio.png \
            ../icons/trackMidi.png \
+           ../icons/trackMidiOn.png \
+           ../icons/trackMidiOff.png \
            ../icons/viewZoomIn.png \
            ../icons/viewZoomOut.png \
            ../icons/viewZoomTool.png \

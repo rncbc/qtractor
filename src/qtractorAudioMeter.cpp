@@ -26,6 +26,7 @@
 #include <qtooltip.h>
 #include <qpainter.h>
 #include <qpixmap.h>
+#include <qlabel.h>
 
 #include <math.h>
 
@@ -277,8 +278,10 @@ qtractorAudioMeter::qtractorAudioMeter ( qtractorAudioMonitor *pAudioMonitor,
 	m_fScale        = 0.0f;
 	m_ppAudioValues = NULL;
 
+	topLabel()->hide();
 	gainSlider()->setMinValue(
 		-int(10000.0f * 0.025f * QTRACTOR_AUDIO_METER_MAXDB));
+	bottomLabel()->hide();
 
 	setPeakFalloff(QTRACTOR_AUDIO_METER_PEAK_FALLOFF);
 

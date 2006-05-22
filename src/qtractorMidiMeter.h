@@ -154,6 +154,10 @@ private:
 	qtractorMidiMeterValue *m_pMidiValue;
 
 	QColor m_colors[QTRACTOR_MIDI_METER_COLORS];
+
+	// MIDI I/O LED pixmap studd.
+	QPixmap     *m_pMidiPixmap[2];
+	unsigned int m_iMidiCount;
 };
 
 	

@@ -29,6 +29,7 @@
 class qtractorMeter;
 class qtractorMonitor;
 class qtractorSlider;
+class QLabel;
 
 
 //----------------------------------------------------------------------------
@@ -86,8 +87,10 @@ public:
 	// Default destructor.
 	virtual ~qtractorMeter();
 
-	// Dynamic layout accessor.
-	QHBox *hbox() const;
+	// Dynamic layout accessors.
+	QLabel *topLabel() const;
+	QHBox  *hbox() const;
+	QLabel *bottomLabel() const;
 
 	// Common slider accessors.
 	qtractorSlider *panSlider() const;
@@ -131,9 +134,11 @@ signals:
 private:
 
 	// Local instance variables.
-	qtractorSlider      *m_pPanSlider;
-	QHBox               *m_pHBox;
-	qtractorSlider      *m_pGainSlider;
+	qtractorSlider *m_pPanSlider;
+	QLabel         *m_pTopLabel;
+	QHBox          *m_pHBox;
+	qtractorSlider *m_pGainSlider;
+	QLabel         *m_pBottomLabel;
 
 	// Peak falloff mode setting (0=no peak falloff).
 	int m_iPeakFalloff;
