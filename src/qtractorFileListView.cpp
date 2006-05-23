@@ -293,7 +293,7 @@ qtractorFileListView::qtractorFileListView (
 
 	m_pToolTip = new qtractorFileListViewToolTip(this);
 
-//  QListView::setRootIsDecorated(true);
+	QListView::setRootIsDecorated(true);
 	QListView::setResizeMode(QListView::NoColumn);
 	QListView::setAcceptDrops(true);
 	QListView::setDragAutoScroll(true);
@@ -385,8 +385,12 @@ qtractorFileListItem *qtractorFileListView::selectFileItem (
 	const QString& sPath )
 {
 	qtractorFileListItem *pFileItem = findFileItem(sPath);
-	if (pFileItem)
+	if (pFileItem) {
+		qtractorFileGroupItem *pGroupItem = pFileItem->groupItem();
+		if (pGroupItem)
+			pGroupItem->setOpen(true);
 		QListView::setSelected(pFileItem, true);
+	}
 
 	return pFileItem;
 }

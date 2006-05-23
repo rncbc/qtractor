@@ -143,6 +143,7 @@ protected:
 	// Drag-n-drop event stuffer.
 	qtractorTrack *dragMoveTrack(const QPoint& pos);
 	qtractorTrack *dragDropTrack(QDropEvent *pDropEvent);
+	bool canDropTrack(QDropEvent *pDropEvent);
 
 	// Drag-n-drop event handlers.
 	void contentsDragEnterEvent(QDragEnterEvent *pDragEnterEvent);
@@ -162,14 +163,18 @@ protected:
 	void selectDragRect(const QRect& rectDrag, bool bReset = false);
 
 	// Draw/hide the whole current clip selection.
-	void showClipSelect(const QRect& rectDrag, int dx,
-		int iThickness = 3) const;
-	void hideClipSelect(const QRect& rectDrag, int dx);
+	void updateClipSelect(int y, int h);
+	void showClipSelect(int iThickness = 3) const;
+	void hideClipSelect();
+
+	// Draw/hide the whole drop rectagle list
+	void updateDropRects(int y, int h);
+	void showDropRects(int iThickness = 3) const;
+	void hideDropRects();
 
 	// Draw/hide a dragging rectangular selection.
-	void showDragRect(const QRect& rectDrag, int dx,
-		int iThickness = 3) const;
-	void hideDragRect(const QRect& rectDrag, int dx);
+	void showDragRect(const QRect& rectDrag, int iThickness) const;
+	void hideDragRect(const QRect& rectDrag);
 
 	// Reset drag/select/move state.
 	void resetDragState();
@@ -224,6 +229,9 @@ private:
 	QPtrList<qtractorTrackView::DropItem> m_dropItems;
 	qtractorTrack::TrackType m_dropType;
 
+	typedef QValueList<QRect> RectList;
+	RectList m_dropRects;
+	
 	// The current selecting/dragging clip stuff.
 	enum DragState {
 		DragNone = 0, DragStart, DragSelect, DragMove, DragDrop
