@@ -166,7 +166,7 @@ protected:
 		int iThickness = 3) const;
 	void hideClipSelect(const QRect& rectDrag, int dx);
 
-	// Draw/hide the current clip selection.
+	// Draw/hide a dragging rectangular selection.
 	void showDragRect(const QRect& rectDrag, int dx,
 		int iThickness = 3) const;
 	void hideDragRect(const QRect& rectDrag, int dx);
@@ -214,11 +214,11 @@ private:
 	struct DropItem
 	{
 		// Item constructor.
-		DropItem(const QString& sPath, unsigned short iChannel = 0)
+		DropItem(const QString& sPath, int iChannel = -1)
 			: path(sPath), channel(iChannel) {}
 		// Item members.
 		QString path;
-		unsigned short channel;
+		int channel;
 	};
 
 	QPtrList<qtractorTrackView::DropItem> m_dropItems;

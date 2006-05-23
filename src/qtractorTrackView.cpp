@@ -790,7 +790,20 @@ qtractorTrack *qtractorTrackView::dragDropTrack ( QDropEvent *pDropEvent )
 			if (file.open(pDropItem->path)) {
 				qtractorMidiSequence seq;
 				seq.setTicksPerBeat(pSession->ticksPerBeat());
-				if (file.readTrack(&seq, pDropItem->channel)
+				if (pDropItem->channel < 0) {
+					int iTracks = (file.format() == 1 ? file.tracks() : 16);
+					for (int iTrackChannel = 0;
+						iTrackChannel < iTracks; iTrackChannel++) {
+						if (file.readTrack(&seq, iTrackChannel)
+							&& seq.duration() > 0) {
+							int w = pSession->pixelFromTick(seq.duration());
+							if (wmax < w)
+								wmax = w;
+						}
+					}
+					if (m_dropType == qtractorTrack::None)
+						m_dropType = qtractorTrack::Midi;
+				} else if (file.readTrack(&seq, pDropItem->channel)
 					&& seq.duration() > 0) {
 					int w = pSession->pixelFromTick(seq.duration());
 					if (wmax < w)
@@ -923,7 +936,13 @@ void qtractorTrackView::contentsDropEvent (
 			QStringList files;
 			for (DropItem *pDropItem = m_dropItems.first();
 					pDropItem; pDropItem = m_dropItems.next()) {
-				files.append(pDropItem->path);
+				if (m_dropType == qtractorTrack::Midi
+					&& pDropItem->channel >= 0) {
+					m_pTracks->addMidiTrackChannel(
+						pDropItem->path, pDropItem->channel, iClipStart);
+				} else  {
+					files.append(pDropItem->path);
+				}
 			}
 			// Depending on import type...
 			switch (m_dropType) {
@@ -1437,7 +1456,7 @@ void qtractorTrackView::hideClipSelect ( const QRect& rectDrag, int dx )
 }
 
 
-// Draw/hide the current clip selection.
+// Draw/hide a dragging rectangular selection.
 void qtractorTrackView::showDragRect ( const QRect& rectDrag, int dx,
 	int iThickness ) const
 {

@@ -82,6 +82,8 @@ public:
 	// Import Audio/MIDI files into new tracks...
 	bool addAudioTracks(QStringList files, unsigned long iClipStart = 0);
 	bool addMidiTracks(QStringList files, unsigned long iClipStart = 0);
+	bool addMidiTrackChannel(const QString& sPath, int iTrackChannel,
+		unsigned long iClipStart = 0);
 
 	// MIDI track/bus/channel alias active maintenance method.
 	void updateMidiTrack(qtractorTrack *pMidiTrack);
