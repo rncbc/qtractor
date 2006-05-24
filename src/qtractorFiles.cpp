@@ -31,7 +31,7 @@
 
 // Constructor.
 qtractorFiles::qtractorFiles ( QWidget *pParent, const char *pszName )
-	: QDockWindow(pParent, pszName, WStyle_Tool | WStyle_StaysOnTop)
+	: QDockWindow(pParent, pszName)
 {
 	// Surely a name is crucial (e.g.for storing geometry settings)
 	if (pszName == 0)

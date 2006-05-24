@@ -686,6 +686,13 @@ void qtractorMidiEngine::enqueue ( qtractorTrack *pTrack,
 	if (pMidiBus == NULL)
 		return;
 
+	// HACK: Ignore our own mixer-monitor supplied controllers...
+	if (pEvent->type() == qtractorMidiEvent::CONTROLLER) {
+		if (pEvent->controller() == CHANNEL_VOLUME ||
+			pEvent->controller() == CHANNEL_PANNING)
+			return;
+	}
+
 	// Scheduled delivery: take into account
 	// the time playback/queue started...
 	unsigned long tick = iTime - m_iTimeStart;

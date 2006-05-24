@@ -465,9 +465,8 @@ qtractorMixerRack::qtractorMixerRack ( qtractorMixer *pMixer,
 
 	QWidget::setPaletteBackgroundColor(Qt::darkGray);
 	
-	m_pRackLayout = new QHBoxLayout(this, 0, 0);
-	m_pStripSpacer
-		= new QSpacerItem(0, 0, QSizePolicy::Expanding, QSizePolicy::Minimum);
+	m_pRackLayout  = new QHBoxLayout(this, 0, 0);
+	m_pStripSpacer = new QSpacerItem(10000, 0, QSizePolicy::Expanding);
 
 	if (iAlignment & Qt::AlignRight)
 		m_pRackLayout->addItem(m_pStripSpacer);
@@ -511,7 +510,6 @@ const QString& qtractorMixerRack::name (void) const
 void qtractorMixerRack::addStrip ( qtractorMixerStrip *pStrip )
 {
 	m_strips.append(pStrip);
-
 	pStrip->show();
 }
 
@@ -524,7 +522,6 @@ void qtractorMixerRack::removeStrip ( qtractorMixerStrip *pStrip )
 		m_pSelectedStrip = NULL;
 
 	pStrip->hide();
-
 	m_strips.remove(pStrip);
 }
 
@@ -651,10 +648,9 @@ void qtractorMixerRack::contextMenuEvent ( QContextMenuEvent *pContextMenuEvent 
 
 // Constructor.
 qtractorMixer::qtractorMixer ( qtractorMainForm *pMainForm )
-	: QDockWindow(pMainForm, "qtractorMixer", WStyle_Tool | WStyle_StaysOnTop),
-		m_pMainForm(pMainForm)
+	: QDockWindow(pMainForm, "qtractorMixer"), m_pMainForm(pMainForm)
 {
-	// Surely a name is crucial (e.g.for storing geometry settings)
+	// Surely a name is crucial (e.g. for storing geometry settings)
 	// QDockWindow::setName("qtractorMixer");
 
 	m_pSplitter = new QSplitter(Qt::Horizontal, this, "Mixer");

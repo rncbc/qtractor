@@ -305,9 +305,9 @@ qtractorFileListView::qtractorFileListView (
 	setAutoOpenTimeout(800);
 
 	m_pNewGroupAction   = new QAction(tr("New &Group"), tr("Ctrl+G"), this);
-	m_pOpenFileAction   = new QAction(tr("&Open..."), tr("Ctrl+O"), this);
-	m_pRenameItemAction = new QAction(tr("Re&name"), tr("Ctrl+N"), this);
-	m_pDeleteItemAction = new QAction(tr("&Delete"), tr("Ctrl+D"), this);
+	m_pOpenFileAction   = new QAction(tr("Add &Files..."), tr("Ctrl+F"), this);
+	m_pRenameItemAction = new QAction(tr("&Rename"), tr("Ctrl+R"), this);
+	m_pDeleteItemAction = new QAction(tr("&Delete"), tr("Del"), this);
 
 	QObject::connect(m_pNewGroupAction, SIGNAL(activated()),
 		this, SLOT(newGroupSlot()));
