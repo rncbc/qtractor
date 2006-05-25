@@ -95,23 +95,26 @@ void qtractorTrackListItem::initItem ( qtractorTrackList *pTrackList,
 
 	const QSize buttonSize(22, 16);
 	m_pRecordButton = new qtractorTrackButton(m_pTrack,
-		qtractorTrackButton::Record, buttonSize, pTrackList->viewport());
+		qtractorTrack::Record, buttonSize, pTrackList->viewport());
 	m_pMuteButton   = new qtractorTrackButton(m_pTrack,
-		qtractorTrackButton::Mute, buttonSize, pTrackList->viewport());
+		qtractorTrack::Mute, buttonSize, pTrackList->viewport());
 	m_pSoloButton   = new qtractorTrackButton(m_pTrack,
-		qtractorTrackButton::Solo, buttonSize, pTrackList->viewport());
+		qtractorTrack::Solo, buttonSize, pTrackList->viewport());
 
 	pTrackList->addChild(m_pRecordButton);
 	pTrackList->addChild(m_pMuteButton);
 	pTrackList->addChild(m_pSoloButton);
 
-	qtractorMixer *pMixer = pTrackList->tracks()->mainForm()->mixer();
-	QObject::connect(m_pRecordButton, SIGNAL(trackChanged(qtractorTrack *)),
-		pMixer, SLOT(trackChangedSlot(qtractorTrack *)));
-	QObject::connect(m_pMuteButton, SIGNAL(trackChanged(qtractorTrack *)),
-		pMixer, SLOT(trackChangedSlot(qtractorTrack *)));
-	QObject::connect(m_pSoloButton, SIGNAL(trackChanged(qtractorTrack *)),
-		pMixer, SLOT(trackChangedSlot(qtractorTrack *)));
+	qtractorTracks *pTracks = pTrackList->tracks();
+	QObject::connect(
+		m_pRecordButton, SIGNAL(trackButtonToggled(qtractorTrackButton *, bool)),
+		pTracks, SLOT(trackButtonToggledSlot(qtractorTrackButton *, bool)));
+	QObject::connect(
+		m_pMuteButton, SIGNAL(trackButtonToggled(qtractorTrackButton *, bool)),
+		pTracks, SLOT(trackButtonToggledSlot(qtractorTrackButton *, bool)));
+	QObject::connect(
+		m_pSoloButton, SIGNAL(trackButtonToggled(qtractorTrackButton *, bool)),
+		pTracks, SLOT(trackButtonToggledSlot(qtractorTrackButton *, bool)));
 }
 
 
@@ -166,8 +169,6 @@ void qtractorTrackListItem::updateTrackButtons (void)
 	m_pRecordButton->updateTrack();
 	m_pMuteButton->updateTrack();
 	m_pSoloButton->updateTrack();
-
-	trackList()->tracks()->selectionChangeNotify();
 }
 
 

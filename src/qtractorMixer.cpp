@@ -28,9 +28,9 @@
 
 #include "qtractorOptions.h"
 #include "qtractorSession.h"
-#include "qtractorTrack.h"
 #include "qtractorTracks.h"
 #include "qtractorTrackButton.h"
+#include "qtractorTrackCommand.h"
 #include "qtractorAudioEngine.h"
 #include "qtractorMidiEngine.h"
 #include "qtractorSlider.h"
@@ -96,22 +96,25 @@ void qtractorMixerStrip::initMixerStrip (void)
 		m_pButtonLayout = new QHBoxLayout(m_pLayout, 2);
 		const QSize buttonSize(16, 14);
 		m_pRecordButton = new qtractorTrackButton(m_pTrack,
-			qtractorTrackButton::Record, buttonSize, this);
+			qtractorTrack::Record, buttonSize, this);
 		m_pMuteButton   = new qtractorTrackButton(m_pTrack,
-			qtractorTrackButton::Mute, buttonSize, this);
+			qtractorTrack::Mute, buttonSize, this);
 		m_pSoloButton   = new qtractorTrackButton(m_pTrack,
-			qtractorTrackButton::Solo, buttonSize, this);
+			qtractorTrack::Solo, buttonSize, this);
 		m_pButtonLayout->addWidget(m_pRecordButton);
 		m_pButtonLayout->addWidget(m_pMuteButton);
 		m_pButtonLayout->addWidget(m_pSoloButton);
 	//	m_pLayout->addLayout(m_pButtonLayout);
-		qtractorTracks *pTracks = m_pRack->mixer()->mainForm()->tracks();
-		QObject::connect(m_pRecordButton, SIGNAL(trackChanged(qtractorTrack *)),
-			pTracks, SLOT(trackChangedSlot(qtractorTrack *)));
-		QObject::connect(m_pMuteButton, SIGNAL(trackChanged(qtractorTrack *)),
-			pTracks, SLOT(trackChangedSlot(qtractorTrack *)));
-		QObject::connect(m_pSoloButton, SIGNAL(trackChanged(qtractorTrack *)),
-			pTracks, SLOT(trackChangedSlot(qtractorTrack *)));
+		qtractorMixer *pMixer = m_pRack->mixer();
+		QObject::connect(
+			m_pRecordButton, SIGNAL(trackButtonToggled(qtractorTrackButton *, bool)),
+			pMixer, SLOT(trackButtonToggledSlot(qtractorTrackButton *, bool)));
+		QObject::connect(
+			m_pMuteButton, SIGNAL(trackButtonToggled(qtractorTrackButton *, bool)),
+			pMixer, SLOT(trackButtonToggledSlot(qtractorTrackButton *, bool)));
+		QObject::connect(
+			m_pSoloButton, SIGNAL(trackButtonToggled(qtractorTrackButton *, bool)),
+			pMixer, SLOT(trackButtonToggledSlot(qtractorTrackButton *, bool)));
 	} else {
 		meterType = m_pBus->busType();
 		const QString& sText = m_pRack->name().lower();
@@ -355,8 +358,6 @@ void qtractorMixerStrip::updateTrackButtons (void)
 		m_pMuteButton->updateTrack();
 	if (m_pSoloButton)
 		m_pSoloButton->updateTrack();
-
-	m_pRack->mixer()->mainForm()->tracks()->selectionChangeNotify();
 }
 
 
@@ -836,11 +837,12 @@ void qtractorMixer::clear (void)
 
 
 // Track button notification.
-void qtractorMixer::trackChangedSlot ( qtractorTrack *pTrack )
+void qtractorMixer::trackButtonToggledSlot (
+	qtractorTrackButton *pTrackButton, bool bOn )
 {
-	qtractorMixerStrip *pStrip = m_pTrackRack->findStrip(pTrack->monitor());
-	if (pStrip)
-		pStrip->updateTrackButtons();
+	// Put it in the form of an undoable command...
+	m_pMainForm->commands()->exec(
+		new qtractorTrackButtonCommand(m_pMainForm, pTrackButton, bOn));
 }
 
 

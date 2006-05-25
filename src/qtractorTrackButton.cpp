@@ -21,7 +21,6 @@
 
 #include "qtractorAbout.h"
 #include "qtractorTrackButton.h"
-#include "qtractorTrack.h"
 
 #include <qtooltip.h>
 
@@ -31,12 +30,13 @@
 
 // Constructor.
 qtractorTrackButton::qtractorTrackButton ( qtractorTrack *pTrack,
-	ToolType toolType, const QSize& fixedSize,
+	qtractorTrack::ToolType toolType, const QSize& fixedSize,
 	QWidget *pParent, const char *pszName )
 	: QToolButton(pParent, pszName)
 {
 	m_pTrack   = pTrack;
 	m_toolType = toolType;
+	m_iUpdate  = 0;
 
 	QToolButton::setFixedSize(fixedSize);
 	QToolButton::setUsesTextLabel(true);
@@ -47,17 +47,17 @@ qtractorTrackButton::qtractorTrackButton ( qtractorTrack *pTrack,
 
 	m_rgbOff = QToolButton::paletteBackgroundColor();
 	switch (toolType) {
-	case Record:
+	case qtractorTrack::Record:
 		QToolButton::setTextLabel("R");
 		QToolTip::add(this, tr("Record"));
 		m_rgbOn = Qt::red;
 		break;
-	case Mute:
+	case qtractorTrack::Mute:
 		QToolButton::setTextLabel("M");
 		QToolTip::add(this, tr("Mute"));
 		m_rgbOn = Qt::yellow;
 		break;
-	case Solo:
+	case qtractorTrack::Solo:
 		QToolButton::setTextLabel("S");
 		QToolTip::add(this, tr("Solo"));
 		m_rgbOn = Qt::cyan;
@@ -73,48 +73,38 @@ qtractorTrackButton::qtractorTrackButton ( qtractorTrack *pTrack,
 // Special state slot.
 void qtractorTrackButton::updateTrack (void)
 {
+	m_iUpdate++;
+
 	bool bOn = false;
 
 	switch (m_toolType) {
-	case Record:
+	case qtractorTrack::Record:
 		bOn = (m_pTrack && m_pTrack->isRecord());
 		break;
-	case Mute:
+	case qtractorTrack::Mute:
 		bOn = (m_pTrack && m_pTrack->isMute());
 		break;
-	case Solo:
+	case qtractorTrack::Solo:
 		bOn = (m_pTrack && m_pTrack->isSolo());
 		break;
 	}
 
 	QToolButton::setOn(bOn);
 	QToolButton::setPaletteBackgroundColor(bOn ? m_rgbOn : m_rgbOff);
+	
+	m_iUpdate--;
 }
 
 
 // Special toggle slot.
 void qtractorTrackButton::toggledSlot ( bool bOn )
 {
-	if (m_pTrack == NULL)
+	// Avoid self-triggering...
+	if (m_iUpdate > 0)
 		return;
 
-	// Do the proper tool action immediately...
-	switch (m_toolType) {
-	case Record:
-		m_pTrack->setRecord(bOn);
-		break;
-	case Mute:
-		m_pTrack->setMute(bOn);
-		break;
-	case Solo:
-		m_pTrack->setSolo(bOn);
-		break;
-	}
-
-	// Do some feedback...
-	QToolButton::setPaletteBackgroundColor(bOn ? m_rgbOn : m_rgbOff);
-
-	emit trackChanged(m_pTrack);
+	// Just emit proper signal...
+	emit trackButtonToggled(this, bOn);
 }
 
 
@@ -130,7 +120,7 @@ qtractorTrack *qtractorTrackButton::track (void) const
 	return m_pTrack;
 }
 
-qtractorTrackButton::ToolType qtractorTrackButton::toolType (void) const
+qtractorTrack::ToolType qtractorTrackButton::toolType (void) const
 {
 	return m_toolType;
 }

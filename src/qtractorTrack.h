@@ -50,6 +50,8 @@ public:
 
 	// Track type symbology.
 	enum TrackType { None = 0, Audio, Midi };
+	// Tool button specific types:
+	enum ToolType  { Record, Mute, Solo };
 
 	// Constructor.
 	qtractorTrack(qtractorSession *pSession, TrackType trackType = None);

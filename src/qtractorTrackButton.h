@@ -22,10 +22,9 @@
 #ifndef __qtractorTrackButton_h
 #define __qtractorTrackButton_h
 
-#include <qtoolbutton.h>
+#include "qtractorTrack.h"
 
-// Forward declarations.
-class qtractorTrack;
+#include <qtoolbutton.h>
 
 
 //----------------------------------------------------------------------------
@@ -37,17 +36,14 @@ class qtractorTrackButton : public QToolButton
 
 public:
 
-	// Tool button specific types:
-	enum ToolType { Record, Mute, Solo };
-
 	// Constructor.
-	qtractorTrackButton(qtractorTrack *pTrack, ToolType toolType,
+	qtractorTrackButton(qtractorTrack *pTrack, qtractorTrack::ToolType toolType,
 		const QSize& fixedSize, QWidget *pParent, const char *pszName = 0);
 
 	// Specific accessors.
 	void setTrack(qtractorTrack *pTrack);
 	qtractorTrack *track() const;
-	ToolType toolType() const;
+	qtractorTrack::ToolType toolType() const;
 
 	// Update track button state.
 	void updateTrack();
@@ -55,7 +51,7 @@ public:
 signals:
 
 	// Track change notification.
-	void trackChanged(qtractorTrack *pTrack);
+	void trackButtonToggled(qtractorTrackButton *pTrackButton, bool bOn);
 
 protected slots:
 
@@ -66,7 +62,8 @@ private:
 
 	// Instance variables.
 	qtractorTrack *m_pTrack;
-	ToolType m_toolType;
+	qtractorTrack::ToolType m_toolType;
+	int m_iUpdate;
 
 	// Special background colors.
 	QColor m_rgbOn;

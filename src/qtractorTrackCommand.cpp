@@ -28,6 +28,7 @@
 #include "qtractorTracks.h"
 #include "qtractorTrackList.h"
 #include "qtractorTrackView.h"
+#include "qtractorTrackButton.h"
 #include "qtractorMixer.h"
 #include "qtractorMeter.h"
 
@@ -434,6 +435,80 @@ bool qtractorEditTrackCommand::redo (void)
 	
 	return true;
 }
+
+
+//----------------------------------------------------------------------
+// class qtractorTrackButtonCommand - implementation.
+//
+
+// Constructor.
+qtractorTrackButtonCommand::qtractorTrackButtonCommand (
+	qtractorMainForm *pMainForm, qtractorTrackButton *pTrackButton, bool bOn )
+	: qtractorTrackCommand(pMainForm, QString::null, pTrackButton->track())
+{
+	m_toolType = pTrackButton->toolType();
+	m_bOn = bOn;
+
+	switch (m_toolType) {
+	case qtractorTrack::Record:
+		qtractorTrackCommand::setName(QObject::tr("track record"));
+		break;
+	case qtractorTrack::Mute:
+		qtractorTrackCommand::setName(QObject::tr("track mute"));
+		break;
+	case qtractorTrack::Solo:
+		qtractorTrackCommand::setName(QObject::tr("track solo"));
+		break;
+	}
+}
+
+
+// Track-button command method.
+bool qtractorTrackButtonCommand::redo (void)
+{
+	qtractorTrack *pTrack = track();
+	if (pTrack == NULL)
+		return false;
+	
+	bool bOn = false;	
+
+	switch (m_toolType) {
+	case qtractorTrack::Record:
+		bOn = pTrack->isRecord();
+		pTrack->setRecord(m_bOn);
+		break;
+	case qtractorTrack::Mute:
+		bOn = pTrack->isMute();
+		pTrack->setMute(m_bOn);
+		break;
+	case qtractorTrack::Solo:
+		bOn = pTrack->isSolo();
+		pTrack->setSolo(m_bOn);
+		break;
+	}
+	m_bOn = bOn;
+
+	// Track-list update...
+	qtractorTracks *pTracks = mainForm()->tracks();
+	if (pTracks) {
+		qtractorTrackListItem *pTrackItem
+			= pTracks->trackList()->trackItem(pTrack);
+		if (pTrackItem)
+			pTrackItem->updateTrackButtons();
+	}
+
+	// Mixer turn...
+	qtractorMixer *pMixer = mainForm()->mixer();
+	if (pMixer) {
+		qtractorMixerStrip *pStrip
+			= pMixer->trackRack()->findStrip(pTrack->monitor());
+		if (pStrip)
+			pStrip->updateTrackButtons();
+	}
+
+	return true;
+}
+
 
 
 // end of qtractorTrackCommand.cpp

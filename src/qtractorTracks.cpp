@@ -802,11 +802,12 @@ void qtractorTracks::contentsChangeNotify (void)
 
 
 // Track button notification.
-void qtractorTracks::trackChangedSlot ( qtractorTrack *pTrack )
+void qtractorTracks::trackButtonToggledSlot (
+	qtractorTrackButton *pTrackButton, bool bOn )
 {
-	qtractorTrackListItem *pTrackItem = m_pTrackList->trackItem(pTrack);
-	if (pTrackItem)
-		pTrackItem->updateTrackButtons();
+	// Put it in the form of an undoable command...
+	m_pMainForm->commands()->exec(
+		new qtractorTrackButtonCommand(m_pMainForm, pTrackButton, bOn));
 }
 
 

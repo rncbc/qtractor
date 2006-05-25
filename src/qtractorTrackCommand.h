@@ -29,6 +29,9 @@
 
 #include <qptrlist.h>
 
+// Forwrad declarations.
+class qtractorTrackButton;
+
 
 //----------------------------------------------------------------------
 // class qtractorTrackCommand - declaration.
@@ -194,6 +197,30 @@ private:
 
 	// Instance variables.
 	qtractorTrack *m_pTrack;
+};
+
+
+//----------------------------------------------------------------------
+// class qtractorTrackButtonCommand - declaration.
+//
+
+class qtractorTrackButtonCommand : public qtractorTrackCommand
+{
+public:
+
+	// Constructor.
+	qtractorTrackButtonCommand(qtractorMainForm *pMainForm,
+		qtractorTrackButton *pTrackButton, bool bOn);
+
+	// Track-button command methods.
+	bool redo();
+	bool undo() { return redo(); }
+
+private:
+
+	// Instance variables.
+	qtractorTrack::ToolType m_toolType;
+	bool m_bOn;
 };
 
 

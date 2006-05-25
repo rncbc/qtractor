@@ -27,6 +27,7 @@
 
 // Forward declarations.
 class qtractorInstrumentList;
+class qtractorTrackButton;
 class qtractorTrackList;
 class qtractorTrackTime;
 class qtractorTrackView;
@@ -122,8 +123,8 @@ protected:
 public slots:
 
 	// Track button notification.
-	void trackChangedSlot(qtractorTrack *pTrack);
-	
+	void trackButtonToggledSlot(qtractorTrackButton *pTrackButton, bool bOn);
+
 protected slots:
 
 	// Early track list stabilization.
