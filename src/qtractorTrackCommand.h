@@ -224,6 +224,52 @@ private:
 };
 
 
+//----------------------------------------------------------------------
+// class qtractorTrackGainCommand - declaration.
+//
+
+class qtractorTrackGainCommand : public qtractorTrackCommand
+{
+public:
+
+	// Constructor.
+	qtractorTrackGainCommand(qtractorMainForm *pMainForm,
+		qtractorTrack *pTrack, float fGain);
+
+	// Track-gain command methods.
+	bool redo();
+	bool undo() { return redo(); }
+
+private:
+
+	// Instance variables.
+	float m_fGain;
+};
+
+
+//----------------------------------------------------------------------
+// class qtractorTrackPanningCommand - declaration.
+//
+
+class qtractorTrackPanningCommand : public qtractorTrackCommand
+{
+public:
+
+	// Constructor.
+	qtractorTrackPanningCommand(qtractorMainForm *pMainForm,
+		qtractorTrack *pTrack, float fPanning);
+
+	// Track-panning command methods.
+	bool redo();
+	bool undo() { return redo(); }
+
+private:
+
+	// Instance variables.
+	float m_fPanning;
+};
+
+
 #endif	// __qtractorTrackCommand_h
 
 // end of qtractorTrackCommand.h

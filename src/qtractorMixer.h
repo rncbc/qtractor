@@ -100,9 +100,9 @@ protected slots:
 	// Bus button notification.
 	void busButtonSlot();
 
-	// Meter value change slot.
-	void panChangedSlot();
-	void gainChangedSlot();
+	// Meter slider change slots.
+	void panChangedSlot(int);
+	void gainChangedSlot(int);
 
 protected:
 

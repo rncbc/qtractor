@@ -119,32 +119,26 @@ public:
 	void setMidiMonitor(qtractorMidiMonitor *pMidiMonitor);
 	qtractorMidiMonitor *midiMonitor() const;
 
+	// Local slider update methods.
+	void updatePanning();
+	void updateGain();
+
 	// Monitor reset.
 	void reset();
 
 	// Slot refreshment.
 	void refresh();
 
-	// Common resource accessors.
-	const QColor& color(int iIndex) const;
-
 	// Reset peak holder.
 	void peakReset();
+
+	// Common resource accessors.
+	const QColor& color(int iIndex) const;
 
 protected:
 
 	// Specific event handlers.
 	void resizeEvent(QResizeEvent *);
-
-	// Local slider update methods.
-	void updatePanning();
-	void updateGain();
-
-protected slots:
-
-	// Slider value change slot.
-	void panChangedSlot(int iValue);
-	void gainChangedSlot(int iValue);
 
 private:
 

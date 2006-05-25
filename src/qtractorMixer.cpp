@@ -106,14 +106,14 @@ void qtractorMixerStrip::initMixerStrip (void)
 		m_pButtonLayout->addWidget(m_pSoloButton);
 	//	m_pLayout->addLayout(m_pButtonLayout);
 		qtractorMixer *pMixer = m_pRack->mixer();
-		QObject::connect(
-			m_pRecordButton, SIGNAL(trackButtonToggled(qtractorTrackButton *, bool)),
+		QObject::connect(m_pRecordButton,
+			SIGNAL(trackButtonToggled(qtractorTrackButton *, bool)),
 			pMixer, SLOT(trackButtonToggledSlot(qtractorTrackButton *, bool)));
-		QObject::connect(
-			m_pMuteButton, SIGNAL(trackButtonToggled(qtractorTrackButton *, bool)),
+		QObject::connect(m_pMuteButton,
+			SIGNAL(trackButtonToggled(qtractorTrackButton *, bool)),
 			pMixer, SLOT(trackButtonToggledSlot(qtractorTrackButton *, bool)));
-		QObject::connect(
-			m_pSoloButton, SIGNAL(trackButtonToggled(qtractorTrackButton *, bool)),
+		QObject::connect(m_pSoloButton,
+			SIGNAL(trackButtonToggled(qtractorTrackButton *, bool)),
 			pMixer, SLOT(trackButtonToggledSlot(qtractorTrackButton *, bool)));
 	} else {
 		meterType = m_pBus->busType();
@@ -200,10 +200,10 @@ void qtractorMixerStrip::initMixerStrip (void)
 	// Eventually the right one...
 	if (m_pMeter) {
 		m_pLayout->addWidget(m_pMeter);
-		QObject::connect(m_pMeter, SIGNAL(panChangedSignal()),
-			this, SLOT(panChangedSlot()));
-		QObject::connect(m_pMeter, SIGNAL(gainChangedSignal()),
-			this, SLOT(gainChangedSlot()));
+		QObject::connect(m_pMeter->panSlider(), SIGNAL(valueChanged(int)),
+			this, SLOT(panChangedSlot(int)));
+		QObject::connect(m_pMeter->gainSlider(), SIGNAL(valueChanged(int)),
+			this, SLOT(gainChangedSlot(int)));
 	}
 
 	QFrame::setFrameShape(QFrame::StyledPanel);
@@ -401,56 +401,85 @@ void qtractorMixerStrip::busButtonSlot (void)
 }
 
 
-// Pan-meter value change slot.
-void qtractorMixerStrip::panChangedSlot (void)
+// Pan-meter slider value change slot.
+void qtractorMixerStrip::panChangedSlot ( int /*iValue*/ )
 {
 	if (m_pMeter == NULL)
 		return;
 
-	// Make sure we're on a MIDI track mixer strip...
+	// Command action is just for tracks...
 	if (m_pTrack == NULL)
 		return;
-	if (m_pTrack->trackType() != qtractorTrack::Midi)
-		return;
-	// Now we gotta make sure of proper MIDI bus...
-	qtractorMidiBus *pMidiBus
-		= static_cast<qtractorMidiBus *> (m_pTrack->bus());
-	if (pMidiBus == NULL)
-		return;
 
-	// Let it go...
-	pMidiBus->setPanning(m_pTrack->midiChannel(), m_pMeter->panning());
+#ifdef QTRACTOR_TRACK_PANNING_COMMAND
+	// Put it in the form of an undoable command...
+	m_pRack->mixer()->mainForm()->commands()->exec(
+		new qtractorTrackPanningCommand(m_pRack->mixer()->mainForm(),
+			m_pTrack, m_pMeter->panning()));
+#else
+	// Set track panning (repective monitor gets set too...)
+	m_pTrack->setPanning(m_pMeter->panning());
+	// MIDI tracks are special...
+	if (m_pTrack->trackType() == qtractorTrack::Midi) {
+		// Now we gotta make sure of proper MIDI bus...
+		qtractorMidiBus *pMidiBus
+			= static_cast<qtractorMidiBus *> (m_pTrack->bus());
+		if (pMidiBus)
+			pMidiBus->setPanning(m_pTrack->midiChannel(), m_pTrack->panning());
+	}
+	// Mixer/Meter turn...
+	m_pMeter->updatePanning();
+#endif
 }
 
-// Gain-meter value change slot.
-void qtractorMixerStrip::gainChangedSlot (void)
+
+// Gain-meter slider value change slot.
+void qtractorMixerStrip::gainChangedSlot ( int /*iValue*/ )
 {
 	if (m_pMeter == NULL)
 		return;
 
-	// Make sure we're on a MIDI mixer strip...
-	qtractorTrack::TrackType meterType = qtractorTrack::None;
-	if (m_pTrack)
-		meterType = m_pTrack->trackType();
-	else if (m_pBus)
-		meterType = m_pBus->busType();
-	// Gotta be sure we're on MIDI only...
-	if (meterType != qtractorTrack::Midi)
+	// We've got special treatment for busses...
+	if (m_pBus) {
+		if ((m_busMode & qtractorBus::Input) && m_pBus->monitor_in())
+			m_pBus->monitor_in()->setGain(m_pMeter->gain());
+		if ((m_busMode & qtractorBus::Output) && m_pBus->monitor_out())
+			m_pBus->monitor_out()->setGain(m_pMeter->gain());
+		// Special stuff for MIDI busses...
+		if (m_pBus->busType() == qtractorTrack::Midi) {
+			qtractorMidiBus *pMidiBus = static_cast<qtractorMidiBus *> (m_pBus);
+			if (pMidiBus)
+				pMidiBus->setMasterVolume(m_pMeter->gain());
+		}
+		// Done with busses.
+		m_pMeter->updateGain();
+		return;
+	}
+
+	// Command action is just for tracks...
+	if (m_pTrack == NULL)
 		return;
 
-	// Now we gotta make sure of proper MIDI bus...
-	qtractorMidiBus *pMidiBus;
-	if (m_pTrack) {
-		pMidiBus = static_cast<qtractorMidiBus *> (m_pTrack->bus());
+#ifdef QTRACTOR_TRACK_GAIN_COMMAND
+	// Put it in the form of an undoable command...
+	m_pRack->mixer()->mainForm()->commands()->exec(
+		new qtractorTrackGainCommand(m_pRack->mixer()->mainForm(),
+			m_pTrack, m_pMeter->gain()));
+#else
+	// Set track gain (repective monitor gets set too...)
+	m_pTrack->setGain(m_pMeter->gain());
+	// MIDI tracks are special...
+	if (m_pTrack->trackType() == qtractorTrack::Midi) {
+		// Now we gotta make sure of proper MIDI bus...
+		qtractorMidiBus *pMidiBus
+			= static_cast<qtractorMidiBus *> (m_pTrack->bus());
 		if (pMidiBus)
-			pMidiBus->setVolume(m_pTrack->midiChannel(), m_pMeter->gain());
-	} else {
-		pMidiBus = static_cast<qtractorMidiBus *> (m_pBus);
-		if (pMidiBus)
-			pMidiBus->setMasterVolume(m_pMeter->gain());
+			pMidiBus->setVolume(m_pTrack->midiChannel(), m_pTrack->gain());
 	}
+	// Mixer/Meter turn...
+	m_pMeter->updateGain();
+#endif
 }
-
 
 
 //----------------------------------------------------------------------------

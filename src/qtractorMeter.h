@@ -104,15 +104,22 @@ public:
 	float gainScale() const;
 	float gain() const;
 
+	// Monitor accessors.
+	virtual void setMonitor(qtractorMonitor *pMonitor) = 0;
+	virtual qtractorMonitor *monitor() const = 0;
+
+	// Local slider update methods.
+	virtual void updatePanning() = 0;
+	virtual void updateGain() = 0;
+
 	// Slot refreshment.
 	virtual void refresh() = 0;
 
 	// Meter reset.
 	virtual void reset() = 0;
 
-	// Monitor accessors.
-	virtual void setMonitor(qtractorMonitor *pMonitor) = 0;
-	virtual qtractorMonitor *monitor() const = 0;
+	// Reset peak holder.
+	virtual void peakReset() = 0;
 
 	// Peak falloff mode setting.
 	void setPeakFalloff(int bPeakFalloff);
@@ -123,12 +130,6 @@ protected:
 	// Gain-scale converters...
 	virtual float gainFromScale(float fScale) const { return fScale; }
 	virtual float scaleFromGain(float fGain)  const { return fGain;  }
-
-signals:
-
-	// Backfired sliders signals.
-	void panChangedSignal();
-	void gainChangedSignal();
 
 private:
 

@@ -106,14 +106,14 @@ void qtractorTrackListItem::initItem ( qtractorTrackList *pTrackList,
 	pTrackList->addChild(m_pSoloButton);
 
 	qtractorTracks *pTracks = pTrackList->tracks();
-	QObject::connect(
-		m_pRecordButton, SIGNAL(trackButtonToggled(qtractorTrackButton *, bool)),
+	QObject::connect(m_pRecordButton,
+		SIGNAL(trackButtonToggled(qtractorTrackButton *, bool)),
 		pTracks, SLOT(trackButtonToggledSlot(qtractorTrackButton *, bool)));
-	QObject::connect(
-		m_pMuteButton, SIGNAL(trackButtonToggled(qtractorTrackButton *, bool)),
+	QObject::connect(m_pMuteButton,
+		SIGNAL(trackButtonToggled(qtractorTrackButton *, bool)),
 		pTracks, SLOT(trackButtonToggledSlot(qtractorTrackButton *, bool)));
-	QObject::connect(
-		m_pSoloButton, SIGNAL(trackButtonToggled(qtractorTrackButton *, bool)),
+	QObject::connect(m_pSoloButton,
+		SIGNAL(trackButtonToggled(qtractorTrackButton *, bool)),
 		pTracks, SLOT(trackButtonToggledSlot(qtractorTrackButton *, bool)));
 }
 

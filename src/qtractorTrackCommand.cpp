@@ -29,6 +29,7 @@
 #include "qtractorTrackList.h"
 #include "qtractorTrackView.h"
 #include "qtractorTrackButton.h"
+#include "qtractorMidiEngine.h"
 #include "qtractorMixer.h"
 #include "qtractorMeter.h"
 
@@ -509,6 +510,99 @@ bool qtractorTrackButtonCommand::redo (void)
 	return true;
 }
 
+
+//----------------------------------------------------------------------
+// class qtractorTrackGainCommand - implementation.
+//
+
+// Constructor.
+qtractorTrackGainCommand::qtractorTrackGainCommand (
+	qtractorMainForm *pMainForm, qtractorTrack *pTrack, float fGain )
+	: qtractorTrackCommand(pMainForm, "track gain", pTrack)
+{
+	m_fGain = fGain;
+}
+
+
+// Track-gain command method.
+bool qtractorTrackGainCommand::redo (void)
+{
+	qtractorTrack *pTrack = track();
+	if (pTrack == NULL)
+		return false;
+
+	// Set track gain (repective monitor gets set too...)
+	float fGain = pTrack->gain();	
+	pTrack->setGain(m_fGain);
+	m_fGain = fGain;
+
+	// MIDI tracks are special...
+	if (pTrack->trackType() == qtractorTrack::Midi) {
+		// Now we gotta make sure of proper MIDI bus...
+		qtractorMidiBus *pMidiBus
+			= static_cast<qtractorMidiBus *> (pTrack->bus());
+		if (pMidiBus)
+			pMidiBus->setVolume(pTrack->midiChannel(), pTrack->gain());
+	}
+
+	// Mixer/Meter turn...
+	qtractorMixer *pMixer = mainForm()->mixer();
+	if (pMixer) {
+		qtractorMixerStrip *pStrip
+			= pMixer->trackRack()->findStrip(pTrack->monitor());
+		if (pStrip && pStrip->meter())
+			pStrip->meter()->updateGain();
+	}
+
+	return true;
+}
+
+
+//----------------------------------------------------------------------
+// class qtractorTrackPanningCommand - implementation.
+//
+
+// Constructor.
+qtractorTrackPanningCommand::qtractorTrackPanningCommand (
+	qtractorMainForm *pMainForm, qtractorTrack *pTrack, float fPanning )
+	: qtractorTrackCommand(pMainForm, "track panning", pTrack)
+{
+	m_fPanning = fPanning;
+}
+
+
+// Track-panning command method.
+bool qtractorTrackPanningCommand::redo (void)
+{
+	qtractorTrack *pTrack = track();
+	if (pTrack == NULL)
+		return false;
+
+	// Set track panning (repective monitor gets set too...)
+	float fPanning = pTrack->panning();	
+	pTrack->setPanning(m_fPanning);
+	m_fPanning = fPanning;
+
+	// MIDI tracks are special...
+	if (pTrack->trackType() == qtractorTrack::Midi) {
+		// Now we gotta make sure of proper MIDI bus...
+		qtractorMidiBus *pMidiBus
+			= static_cast<qtractorMidiBus *> (pTrack->bus());
+		if (pMidiBus)
+			pMidiBus->setPanning(pTrack->midiChannel(), pTrack->panning());
+	}
+
+	// Mixer/Meter turn...
+	qtractorMixer *pMixer = mainForm()->mixer();
+	if (pMixer) {
+		qtractorMixerStrip *pStrip
+			= pMixer->trackRack()->findStrip(pTrack->monitor());
+		if (pStrip && pStrip->meter())
+			pStrip->meter()->updatePanning();
+	}
+
+	return true;
+}
 
 
 // end of qtractorTrackCommand.cpp

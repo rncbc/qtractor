@@ -125,21 +125,25 @@ public:
 	void setAudioMonitor(qtractorAudioMonitor *pAudioMonitor);
 	qtractorAudioMonitor *audioMonitor() const;
 
+	// Local slider update methods.
+	void updatePanning();
+	void updateGain();
+
 	// Monitor reset.
 	void reset();
+
+	// Slot refreshment.
+	void refresh();
+
+	// Reset peak holder.
+	void peakReset();
 
 	// IEC scale accessors.
 	int iec_scale(float dB) const;
 	int iec_level(int iIndex) const;
 
-	// Slot refreshment.
-	void refresh();
-
 	// Common resource accessors.
 	const QColor& color(int iIndex) const;
-
-	// Reset peak holder.
-	void peakReset();
 
 protected:
 
@@ -149,16 +153,6 @@ protected:
 
 	// Specific event handlers.
 	void resizeEvent(QResizeEvent *);
-
-	// Local slider update methods.
-	void updatePanning();
-	void updateGain();
-
-protected slots:
-
-	// Slider value change slot.
-	void panChangedSlot(int iValue);
-	void gainChangedSlot(int iValue);
 
 private:
 

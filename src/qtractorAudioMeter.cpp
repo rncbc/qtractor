@@ -284,9 +284,6 @@ qtractorAudioMeter::qtractorAudioMeter ( qtractorAudioMonitor *pAudioMonitor,
 
 	setPeakFalloff(QTRACTOR_AUDIO_METER_PEAK_FALLOFF);
 
-	setGain(monitor()->gain());
-	setPanning(monitor()->panning());
-
 	for (int i = 0; i < QTRACTOR_AUDIO_METER_LEVELS; i++)
 		m_levels[i] = 0;
 
@@ -302,12 +299,6 @@ qtractorAudioMeter::qtractorAudioMeter ( qtractorAudioMonitor *pAudioMonitor,
 	updateGain();
 
 	reset();
-
-	QObject::connect(panSlider(), SIGNAL(valueChanged(int)),
-		this, SLOT(panChangedSlot(int)));
-	QObject::connect(gainSlider(), SIGNAL(valueChanged(int)),
-		this, SLOT(gainChangedSlot(int)));
-
 }
 
 
@@ -445,7 +436,7 @@ const QColor& qtractorAudioMeter::color ( int iIndex ) const
 // Pan-slider value change method.
 void qtractorAudioMeter::updatePanning (void)
 {
-	m_pAudioMonitor->setPanning(panning());
+	setPanning(monitor()->panning());
 
 	QToolTip::remove(panSlider());
 	QToolTip::add(panSlider(),
@@ -455,28 +446,11 @@ void qtractorAudioMeter::updatePanning (void)
 // Gain-slider value change method.
 void qtractorAudioMeter::updateGain (void)
 {
-	m_pAudioMonitor->setGain(gain());
+	setGain(monitor()->gain());
 
 	QToolTip::remove(gainSlider());
 	QToolTip::add(gainSlider(),
 		tr("Gain: %1 dB").arg(IEC_dB(gainScale()), 0, 'g', 3));
-}
-
-
-// Pan-slider value change slot.
-void qtractorAudioMeter::panChangedSlot ( int /*iValue*/ )
-{
-	updatePanning();
-
-	emit panChangedSignal();
-}
-
-// Gain-slider value change slot.
-void qtractorAudioMeter::gainChangedSlot ( int /*iValue*/ )
-{
-	updateGain();
-
-	emit gainChangedSignal();
 }
 
 

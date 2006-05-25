@@ -205,11 +205,6 @@ qtractorMidiMeter::qtractorMidiMeter ( qtractorMidiMonitor *pMidiMonitor,
 	updateGain();
 
 	reset();
-
-	QObject::connect(panSlider(), SIGNAL(valueChanged(int)),
-		this, SLOT(panChangedSlot(int)));
-	QObject::connect(gainSlider(), SIGNAL(valueChanged(int)),
-		this, SLOT(gainChangedSlot(int)));
 }
 
 
@@ -305,8 +300,6 @@ const QColor& qtractorMidiMeter::color ( int iIndex ) const
 // Pan-slider value change method.
 void qtractorMidiMeter::updatePanning (void)
 {
-	m_pMidiMonitor->setPanning(panning());
-
 	QToolTip::remove(panSlider());
 	QToolTip::add(panSlider(),
 		tr("Pan: %1").arg(panning(), 0, 'g', 2));
@@ -316,29 +309,9 @@ void qtractorMidiMeter::updatePanning (void)
 // Gain-slider value change method.
 void qtractorMidiMeter::updateGain (void)
 {
-	m_pMidiMonitor->setGain(gain());
-
 	QToolTip::remove(gainSlider());
 	QToolTip::add(gainSlider(),
 		tr("Volume: %1%").arg(100.0f * gain(), 0, 'g', 3));
-}
-
-
-// Pan-slider value change slot.
-void qtractorMidiMeter::panChangedSlot ( int /*iValue*/ )
-{
-	updatePanning();
-
-	emit panChangedSignal();
-}
-
-
-// Gain-slider value change slot.
-void qtractorMidiMeter::gainChangedSlot ( int /*iValue*/ )
-{
-	updateGain();
-
-	emit gainChangedSignal();
 }
 
 
