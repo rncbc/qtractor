@@ -52,6 +52,7 @@ headers = config.h \
 	src/qtractorInstrument.h \
 	src/qtractorCommand.h \
 	src/qtractorPropertyCommand.h \
+	src/qtractorEngineCommand.h \
 	src/qtractorTrackCommand.h \
 	src/qtractorClipCommand.h \
 	src/qtractorMainForm.ui.h \
@@ -100,6 +101,7 @@ sources = src/main.cpp \
 	src/qtractorSessionDocument.cpp \
 	src/qtractorInstrument.cpp \
 	src/qtractorCommand.cpp \
+	src/qtractorEngineCommand.cpp \
 	src/qtractorTrackCommand.cpp \
 	src/qtractorClipCommand.cpp
 

@@ -31,6 +31,7 @@
 #include "qtractorTracks.h"
 #include "qtractorTrackButton.h"
 #include "qtractorTrackCommand.h"
+#include "qtractorEngineCommand.h"
 #include "qtractorAudioEngine.h"
 #include "qtractorMidiEngine.h"
 #include "qtractorSlider.h"
@@ -411,26 +412,16 @@ void qtractorMixerStrip::panChangedSlot ( float fPanning )
 	fprintf(stderr, "qtractorMixerStrip::panChangedSlot(%.3g)\n", fPanning);
 #endif
 
-	// We've got special treatment for busses...
-	if (m_pBus) {
-		if ((m_busMode & qtractorBus::Input) && m_pBus->monitor_in())
-			m_pBus->monitor_in()->setPanning(fPanning);
-		if ((m_busMode & qtractorBus::Output) && m_pBus->monitor_out())
-			m_pBus->monitor_out()->setGain(fPanning);
-		// Done with busses.
-		m_pMeter->updatePanning();
-		m_pRack->mixer()->mainForm()->contentsChanged();
-		return;
-	}
-
-	// Command action is just for tracks...
-	if (m_pTrack == NULL)
-		return;
-
 	// Put it in the form of an undoable command...
-	m_pRack->mixer()->mainForm()->commands()->exec(
-		new qtractorTrackPanningCommand(m_pRack->mixer()->mainForm(),
-			m_pTrack, fPanning));
+	if (m_pTrack) {
+		m_pRack->mixer()->mainForm()->commands()->exec(
+			new qtractorTrackPanningCommand(m_pRack->mixer()->mainForm(),
+				m_pTrack, fPanning));
+	} else if (m_pBus) {
+		m_pRack->mixer()->mainForm()->commands()->exec(
+			new qtractorBusPanningCommand(m_pRack->mixer()->mainForm(),
+				m_pBus, m_busMode, fPanning));
+	}
 }
 
 
@@ -444,32 +435,16 @@ void qtractorMixerStrip::gainChangedSlot ( float fGain )
 	fprintf(stderr, "qtractorMixerStrip::gainChangedSlot(%.3g)\n", fGain);
 #endif
 
-	// We've got special treatment for busses...
-	if (m_pBus) {
-		if ((m_busMode & qtractorBus::Input) && m_pBus->monitor_in())
-			m_pBus->monitor_in()->setGain(fGain);
-		if ((m_busMode & qtractorBus::Output) && m_pBus->monitor_out())
-			m_pBus->monitor_out()->setGain(fGain);
-		// Special stuff for MIDI busses...
-		if (m_pBus->busType() == qtractorTrack::Midi) {
-			qtractorMidiBus *pMidiBus = static_cast<qtractorMidiBus *> (m_pBus);
-			if (pMidiBus)
-				pMidiBus->setMasterVolume(fGain);
-		}
-		// Done with busses.
-		m_pMeter->updateGain();
-		m_pRack->mixer()->mainForm()->contentsChanged();
-		return;
-	}
-
-	// Command action is just for tracks...
-	if (m_pTrack == NULL)
-		return;
-
 	// Put it in the form of an undoable command...
-	m_pRack->mixer()->mainForm()->commands()->exec(
-		new qtractorTrackGainCommand(m_pRack->mixer()->mainForm(),
-			m_pTrack, fGain));
+	if (m_pTrack) {
+		m_pRack->mixer()->mainForm()->commands()->exec(
+			new qtractorTrackGainCommand(m_pRack->mixer()->mainForm(),
+				m_pTrack, fGain));
+	} else if (m_pBus) {
+		m_pRack->mixer()->mainForm()->commands()->exec(
+			new qtractorBusGainCommand(m_pRack->mixer()->mainForm(),
+				m_pBus, m_busMode, fGain));
+	}
 }
 
 

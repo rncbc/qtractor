@@ -29,7 +29,7 @@
 
 #include <qptrlist.h>
 
-// Forwrad declarations.
+// Forward declarations.
 class qtractorTrackButton;
 
 
