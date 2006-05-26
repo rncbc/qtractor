@@ -107,7 +107,7 @@ public:
 	void selectCurrentTrack(bool bReset = true);
 	void selectAll(bool bSelect = true);
 
-	// Simple signal events redirectors.
+	// Simple main-form redirectors.
 	void selectionChangeNotify();
 	void contentsChangeNotify();
 
@@ -139,10 +139,6 @@ protected slots:
 
 signals:
 
-	// Emitted on any selection change event.
-	void selectionChangeSignal();
-	// Emitted on any contents change event.
-	void contentsChangeSignal();
 	// Emitted on late close.
 	void closeNotifySignal();
 

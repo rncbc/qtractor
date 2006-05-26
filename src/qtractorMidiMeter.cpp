@@ -258,7 +258,7 @@ void qtractorMidiMeter::resizeEvent ( QResizeEvent * )
 {
 	// HACK: make so that the MIDI gain slider (volume)
 	// aligns its top at the Audio 0 dB gain level...
-	int iFixedHeight = int(0.15f * float(hbox()->height()));
+	int iFixedHeight = int(0.15f * float(hbox()->height())) - 4;
 	if (iFixedHeight < 16)
 		iFixedHeight = 16;
 	topLabel()->setFixedHeight(iFixedHeight);
@@ -300,6 +300,8 @@ const QColor& qtractorMidiMeter::color ( int iIndex ) const
 // Pan-slider value change method.
 void qtractorMidiMeter::updatePanning (void)
 {
+	setPanning(m_pMidiMonitor->panning());
+
 	QToolTip::remove(panSlider());
 	QToolTip::add(panSlider(),
 		tr("Pan: %1").arg(panning(), 0, 'g', 2));
@@ -309,6 +311,8 @@ void qtractorMidiMeter::updatePanning (void)
 // Gain-slider value change method.
 void qtractorMidiMeter::updateGain (void)
 {
+	setGain(m_pMidiMonitor->gain());
+
 	QToolTip::remove(gainSlider());
 	QToolTip::add(gainSlider(),
 		tr("Volume: %1%").arg(100.0f * gain(), 0, 'g', 3));

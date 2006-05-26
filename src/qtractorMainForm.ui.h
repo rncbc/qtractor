@@ -1845,10 +1845,6 @@ void qtractorMainForm::updateSession (void)
 	if (m_pTracks == NULL) {
 		// Create the main tracks widget...
 		m_pTracks = new qtractorTracks(this, workspace());
-		QObject::connect(m_pTracks, SIGNAL(selectionChangeSignal()),
-			this, SLOT(stabilizeForm()));
-		QObject::connect(m_pTracks, SIGNAL(contentsChangeSignal()),
-			this, SLOT(contentsChanged()));
 		QObject::connect(m_pTracks, SIGNAL(closeNotifySignal()),
 			this, SLOT(tracksClosed()));
 		QObject::connect(m_pTracks->trackList(),

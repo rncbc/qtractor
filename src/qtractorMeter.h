@@ -131,6 +131,18 @@ protected:
 	virtual float gainFromScale(float fScale) const { return fScale; }
 	virtual float scaleFromGain(float fGain)  const { return fGain;  }
 
+protected slots:
+
+	// Slider value-changed slots.
+	void panChangedSlot(int);
+	void gainChangedSlot(int);
+
+signals:
+
+	// Slider change signals.
+	void panChangedSignal(float fPanning);
+	void gainChangedSignal(float fGain);
+	
 private:
 
 	// Local instance variables.
@@ -138,6 +150,9 @@ private:
 	QLabel         *m_pTopLabel;
 	QHBox          *m_pHBox;
 	qtractorSlider *m_pGainSlider;
+
+	// Update exclusiveness flag.
+	int m_iUpdate;
 
 	// Peak falloff mode setting (0=no peak falloff).
 	int m_iPeakFalloff;

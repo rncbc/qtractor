@@ -787,17 +787,17 @@ void qtractorTracks::updateMidiTrack ( qtractorTrack *pMidiTrack )
 }
 
 
-// Simple selectionChangeSignal redirector.
+// Simple main-form stabilizer redirector.
 void qtractorTracks::selectionChangeNotify (void)
 {
-	emit selectionChangeSignal();
+	m_pMainForm->stabilizeForm();
 }
 
 
-// Simple contentsChangeSignal redirector.
+// Simple main-form dirty-flag redirector.
 void qtractorTracks::contentsChangeNotify (void)
 {
-	emit contentsChangeSignal();
+	m_pMainForm->contentsChanged();
 }
 
 

@@ -461,6 +461,8 @@ qtractorTrackButtonCommand::qtractorTrackButtonCommand (
 		qtractorTrackCommand::setName(QObject::tr("track solo"));
 		break;
 	}
+
+	setRefresh(false);
 }
 
 
@@ -521,6 +523,8 @@ qtractorTrackGainCommand::qtractorTrackGainCommand (
 	: qtractorTrackCommand(pMainForm, "track gain", pTrack)
 {
 	m_fGain = fGain;
+
+	setRefresh(false);
 }
 
 
@@ -533,6 +537,7 @@ bool qtractorTrackGainCommand::redo (void)
 
 	// Set track gain (repective monitor gets set too...)
 	float fGain = pTrack->gain();	
+fprintf(stderr, "qtractorTrackGainCommand::redo() gain=%.3g -> %.3g\n", fGain, m_fGain);
 	pTrack->setGain(m_fGain);
 	m_fGain = fGain;
 
@@ -568,6 +573,8 @@ qtractorTrackPanningCommand::qtractorTrackPanningCommand (
 	: qtractorTrackCommand(pMainForm, "track panning", pTrack)
 {
 	m_fPanning = fPanning;
+	
+	setRefresh(false);
 }
 
 

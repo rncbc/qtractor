@@ -436,7 +436,7 @@ const QColor& qtractorAudioMeter::color ( int iIndex ) const
 // Pan-slider value change method.
 void qtractorAudioMeter::updatePanning (void)
 {
-	setPanning(monitor()->panning());
+	setPanning(m_pAudioMonitor->panning());
 
 	QToolTip::remove(panSlider());
 	QToolTip::add(panSlider(),
@@ -446,7 +446,7 @@ void qtractorAudioMeter::updatePanning (void)
 // Gain-slider value change method.
 void qtractorAudioMeter::updateGain (void)
 {
-	setGain(monitor()->gain());
+	setGain(m_pAudioMonitor->gain());
 
 	QToolTip::remove(gainSlider());
 	QToolTip::add(gainSlider(),

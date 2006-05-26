@@ -50,6 +50,10 @@ public:
 	void setName(const QString& sName) { m_sName = sName; }
 	const QString& name() const { return m_sName; }
 
+	// Contents-refresh accessor.
+	void setRefresh(bool bRefresh) { m_bRefresh = bRefresh; }
+	bool isRefresh() const { return m_bRefresh; }
+
 	// Cannonical command methods.
 	virtual bool redo() = 0;
 	virtual bool undo() = 0;
@@ -66,6 +70,7 @@ private:
 	qtractorMainForm *m_pMainForm;
 	QString           m_sName;
 	bool              m_bAutoDelete;
+	bool              m_bRefresh;
 };
 
 
@@ -96,7 +101,7 @@ public:
 	bool redo();
 
 	// Command update helper.
-	void update() const;
+	void update(bool bRefresh) const;
 
 private:
 

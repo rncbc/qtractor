@@ -39,6 +39,7 @@ qtractorCommand::qtractorCommand ( qtractorMainForm *pMainForm,
 	m_pMainForm   = pMainForm;
 	m_sName       = sName;
 	m_bAutoDelete = false;
+	m_bRefresh    = true;
 }
 
 
@@ -112,6 +113,8 @@ bool qtractorCommandList::exec ( qtractorCommand *pCommand )
 		if (m_pLastCommand) {
 			// Execute operation...
 			bResult = m_pLastCommand->redo();
+			// Notify commanders...
+			update(m_pLastCommand->isRefresh());
 			// Log this operation.
 			if (bResult) {
 				m_pMainForm->appendMessages(
@@ -122,8 +125,6 @@ bool qtractorCommandList::exec ( qtractorCommand *pCommand )
 					QObject::tr("Command (%1) failed.")
 						.arg(m_pLastCommand->name()));
 			}
-			// Notify commanders...
-			update();
 		}
 	}
 
@@ -148,9 +149,10 @@ bool qtractorCommandList::undo (void)
 					.arg(m_pLastCommand->name()));
 		}
 		// Backward one command...
+		bool bRefresh  = m_pLastCommand->isRefresh();
 		m_pLastCommand = m_pLastCommand->prev();
 		// Notify commanders...
-		update();
+		update(bRefresh);
 	}
 
 	return bResult;
@@ -176,7 +178,7 @@ bool qtractorCommandList::redo (void)
 					.arg(m_pLastCommand->name()));
 		}
 		// Notify commanders...
-		update();
+		update(m_pLastCommand->isRefresh());
 	}
 
 	return bResult;
@@ -184,7 +186,7 @@ bool qtractorCommandList::redo (void)
 
 
 // Command update helper.
-void qtractorCommandList::update (void) const
+void qtractorCommandList::update ( bool bRefresh ) const
 {
 	qtractorSession *pSession = m_pMainForm->session();
 	if (pSession == NULL)
@@ -194,14 +196,13 @@ void qtractorCommandList::update (void) const
 	pSession->updateTimeScale();
 	pSession->updateSessionLength();
 
+	// Refresh track-view?
 	qtractorTracks *pTracks = m_pMainForm->tracks();
-	if (pTracks == NULL)
-		return;
+	if (pTracks)
+		pTracks->updateContents(bRefresh);
 
-	// Refresh view.
-	pTracks->updateContents(true);
 	// Notify who's watching...
-	pTracks->contentsChangeNotify();
+	m_pMainForm->contentsChanged();
 }
 
 

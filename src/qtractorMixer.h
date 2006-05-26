@@ -101,8 +101,8 @@ protected slots:
 	void busButtonSlot();
 
 	// Meter slider change slots.
-	void panChangedSlot(int);
-	void gainChangedSlot(int);
+	void panChangedSlot(float);
+	void gainChangedSlot(float);
 
 protected:
 

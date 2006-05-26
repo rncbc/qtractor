@@ -109,6 +109,7 @@ qtractorMeter::qtractorMeter ( QWidget *pParent, const char *pszName )
 	m_pHBox->setSpacing(1);
 	m_pGainSlider  = new qtractorSlider(Qt::Vertical, m_pHBox);
 
+	m_iUpdate      = 0;
 	m_iPeakFalloff = 0;
 
 	m_pPanSlider->setTickmarks(QSlider::NoMarks);
@@ -129,6 +130,11 @@ qtractorMeter::qtractorMeter ( QWidget *pParent, const char *pszName )
 	QVBox::setSpacing(1);
 	QVBox::setSizePolicy(
 		QSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding));
+
+	QObject::connect(m_pPanSlider, SIGNAL(valueChanged(int)),
+		this, SLOT(panChangedSlot(int)));
+	QObject::connect(m_pGainSlider, SIGNAL(valueChanged(int)),
+		this, SLOT(gainChangedSlot(int)));
 }
 
 
@@ -159,7 +165,9 @@ QHBox *qtractorMeter::hbox (void) const
 // Stereo panning accessors.
 void qtractorMeter::setPanning ( float fPanning )
 {
+	m_iUpdate++;
 	m_pPanSlider->setValue(int(100.0f * fPanning));
+	m_iUpdate--;
 }
 
 float qtractorMeter::panning (void) const
@@ -171,7 +179,9 @@ float qtractorMeter::panning (void) const
 // Gain accessors.
 void qtractorMeter::setGain ( float fGain )
 {
+	m_iUpdate++;
 	m_pGainSlider->setValue(10000 - int(10000.0f * scaleFromGain(fGain)));
+	m_iUpdate--;
 }
 
 float qtractorMeter::gain (void) const
@@ -206,6 +216,26 @@ void qtractorMeter::setPeakFalloff ( int iPeakFalloff )
 int qtractorMeter::peakFalloff (void) const
 {
 	return m_iPeakFalloff;
+}
+
+
+// Panning-meter slider value change slot.
+void qtractorMeter::panChangedSlot ( int /*iValue*/ )
+{
+	if (m_iUpdate > 0)
+		return;
+		
+	emit panChangedSignal(panning());
+}
+
+
+// Gain-meter slider value change slot.
+void qtractorMeter::gainChangedSlot ( int /*iValue*/ )
+{
+	if (m_iUpdate > 0)
+		return;
+		
+	emit gainChangedSignal(gain());
 }
 
 
