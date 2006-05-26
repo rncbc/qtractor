@@ -52,8 +52,8 @@ public:
 		unsigned char val, unsigned long tick = 0);
 
 	// Monitor dequeue methods.
-	unsigned char dequeue();
-	unsigned char count();
+	float value();
+	int   count();
 
 	// Reset monitor.
 	void reset();

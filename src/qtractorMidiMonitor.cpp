@@ -121,7 +121,7 @@ void qtractorMidiMonitor::enqueue ( qtractorMidiEvent::EventType type,
 
 
 // Monitor value dequeue method.
-unsigned char qtractorMidiMonitor::dequeue (void)
+float qtractorMidiMonitor::value (void)
 {
 	// Grab-and-reset current direct value...
 	unsigned char val = m_item.value;
@@ -142,17 +142,17 @@ unsigned char qtractorMidiMonitor::dequeue (void)
 		}
 	}
 	// Dequeue done.
-	return val;
+	return (gain() * val) / 127.0f;
 }
 
 
 // Monitor count dequeue method.
-unsigned char qtractorMidiMonitor::count (void)
+int qtractorMidiMonitor::count (void)
 {
 	// Grab latest direct/dequeued count...
-	unsigned char cnt = m_item.count;
+	int iCount = int(m_item.count);
 	m_item.count = 0;
-	return cnt;
+	return iCount;
 }
 
 

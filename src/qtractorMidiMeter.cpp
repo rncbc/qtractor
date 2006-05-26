@@ -124,7 +124,7 @@ void qtractorMidiMeterValue::paintEvent ( QPaintEvent * )
 		pm.fill(Qt::gray);
 	}
 
-	int y = (iHeight * int(m_pMidiMeter->midiMonitor()->dequeue())) / 127;
+	int y = int(m_pMidiMeter->midiMonitor()->value() * float(iHeight));
 	if (y > m_iValue) {
 		m_iValue = y;
 		m_fValueDecay = QTRACTOR_MIDI_METER_DECAY_RATE1;
