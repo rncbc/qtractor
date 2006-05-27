@@ -53,8 +53,33 @@ qtractorBusGainCommand::qtractorBusGainCommand (
 	: qtractorBusCommand(pMainForm, "bus gain", pBus, busMode)
 {
 	m_fGain = fGain;
+	m_fPrevGain = 1.0f;
+	if ((busMode & qtractorBus::Input) && pBus->monitor_in())
+		m_fPrevGain = pBus->monitor_in()->gain();	
+	if ((busMode & qtractorBus::Output) && pBus->monitor_out())
+		m_fPrevGain = pBus->monitor_out()->gain();	
 
 	setRefresh(false);
+
+	// Try replacing an previously equivalent command...
+	static qtractorBusGainCommand *s_pPrevGainCommand = NULL;
+	if (s_pPrevGainCommand) {
+		qtractorCommand *pLastCommand
+			= mainForm()->commands()->lastCommand();
+		qtractorCommand *pPrevCommand
+			= static_cast<qtractorCommand *> (s_pPrevGainCommand);
+		if (pPrevCommand == pLastCommand
+			&& s_pPrevGainCommand->bus() == pBus
+			&& s_pPrevGainCommand->busMode() == busMode) {
+			qtractorBusGainCommand *pLastGainCommand
+				= static_cast<qtractorBusGainCommand *> (pLastCommand);
+			if (pLastGainCommand) {
+				m_fPrevGain = pLastGainCommand->gain();
+				mainForm()->commands()->removeLastCommand();
+			}
+		}
+	}
+	s_pPrevGainCommand = this;
 }
 
 
@@ -84,7 +109,8 @@ bool qtractorBusGainCommand::redo (void)
 			pMidiBus->setMasterVolume(m_fGain);
 	}
 	// Set undo value...
-	m_fGain = fGain;
+	m_fGain = m_fPrevGain;
+	m_fPrevGain = fGain;
 
 	// Mixer/Meter turn...
 	qtractorMixer *pMixer = mainForm()->mixer();
@@ -117,8 +143,33 @@ qtractorBusPanningCommand::qtractorBusPanningCommand (
 	: qtractorBusCommand(pMainForm, "bus pan", pBus, busMode)
 {
 	m_fPanning = fPanning;
-	
+	m_fPrevPanning = 0.0f;
+	if ((busMode & qtractorBus::Input) && pBus->monitor_in())
+		m_fPrevPanning = pBus->monitor_in()->panning();	
+	if ((busMode & qtractorBus::Output) && pBus->monitor_out())
+		m_fPrevPanning = pBus->monitor_out()->panning();	
+
 	setRefresh(false);
+
+	// Try replacing an previously equivalent command...
+	static qtractorBusPanningCommand *s_pPrevPanningCommand = NULL;
+	if (s_pPrevPanningCommand) {
+		qtractorCommand *pLastCommand
+			= mainForm()->commands()->lastCommand();
+		qtractorCommand *pPrevCommand
+			= static_cast<qtractorCommand *> (s_pPrevPanningCommand);
+		if (pPrevCommand == pLastCommand
+			&& s_pPrevPanningCommand->bus() == pBus
+			&& s_pPrevPanningCommand->busMode() == busMode) {
+			qtractorBusPanningCommand *pLastPanningCommand
+				= static_cast<qtractorBusPanningCommand *> (pLastCommand);
+			if (pLastPanningCommand) {
+				m_fPrevPanning = pLastPanningCommand->panning();
+				mainForm()->commands()->removeLastCommand();
+			}
+		}
+	}
+	s_pPrevPanningCommand = this;
 }
 
 
@@ -140,7 +191,8 @@ bool qtractorBusPanningCommand::redo (void)
 		pBus->monitor_out()->setPanning(m_fPanning);
 	}
 	// Set undo value...
-	m_fPanning = fPanning;
+	m_fPanning = m_fPrevPanning;
+	m_fPrevPanning = fPanning;
 
 	// Mixer/Meter turn...
 	qtractorMixer *pMixer = mainForm()->mixer();

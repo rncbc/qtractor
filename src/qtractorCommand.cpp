@@ -94,6 +94,17 @@ qtractorCommand *qtractorCommandList::nextCommand (void) const
 }
 
 
+// Remove last command from command chain.
+void qtractorCommandList::removeLastCommand (void)
+{
+	if (m_pLastCommand) {
+		qtractorCommand *pPrevCommand = m_pLastCommand->prev();
+		m_commands.remove(m_pLastCommand);
+		m_pLastCommand = pPrevCommand;
+	}
+}
+
+
 // Cannonical command methods.
 bool qtractorCommandList::exec ( qtractorCommand *pCommand )
 {

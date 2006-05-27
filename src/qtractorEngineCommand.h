@@ -67,10 +67,14 @@ public:
 	bool redo();
 	bool undo() { return redo(); }
 
+	// Gain value retrieval.
+	float gain() const { return m_fGain; }
+
 private:
 
 	// Instance variables.
 	float m_fGain;
+	float m_fPrevGain;
 };
 
 
@@ -90,10 +94,14 @@ public:
 	bool redo();
 	bool undo() { return redo(); }
 
+	// Panning value retrieval.
+	float panning() const { return m_fPanning; }
+
 private:
 
 	// Instance variables.
 	float m_fPanning;
+	float m_fPrevPanning;
 };
 
 

@@ -94,6 +94,9 @@ public:
 	qtractorCommand *lastCommand() const;
 	qtractorCommand *nextCommand() const;
 
+	// Remove last command from command chain.
+	void removeLastCommand();
+
 	// Cannonical command methods.
 	bool exec(qtractorCommand *pCommand);
 
