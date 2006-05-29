@@ -522,7 +522,8 @@ qtractorTrackGainCommand::qtractorTrackGainCommand (
 	: qtractorTrackCommand(pMainForm, "track gain", pTrack)
 {
 	m_fGain = fGain;
-	m_fPrevGain = pTrack->gain();
+	m_fPrevGain = 1.0f;
+	m_bPrevGain = false;
 
 	setRefresh(false);
 
@@ -539,6 +540,7 @@ qtractorTrackGainCommand::qtractorTrackGainCommand (
 				= static_cast<qtractorTrackGainCommand *> (pLastCommand);
 			if (pLastGainCommand) {
 				m_fPrevGain = pLastGainCommand->gain();
+				m_bPrevGain = true;
 				mainForm()->commands()->removeLastCommand();
 			}
 		}
@@ -555,7 +557,7 @@ bool qtractorTrackGainCommand::redo (void)
 		return false;
 
 	// Set track gain (repective monitor gets set too...)
-	float fGain = pTrack->gain();	
+	float fGain = (m_bPrevGain ? m_fPrevGain : pTrack->gain());	
 	pTrack->setGain(m_fGain);
 	// MIDI tracks are special...
 	if (pTrack->trackType() == qtractorTrack::Midi) {
@@ -566,8 +568,8 @@ bool qtractorTrackGainCommand::redo (void)
 			pMidiBus->setVolume(pTrack->midiChannel(), m_fGain);
 	}
 	// Set undo value...
-	m_fGain = m_fPrevGain;
-	m_fPrevGain = fGain;
+	m_fGain = fGain;
+	m_bPrevGain = false;
 
 	// Mixer/Meter turn...
 	qtractorMixer *pMixer = mainForm()->mixer();
@@ -592,7 +594,8 @@ qtractorTrackPanningCommand::qtractorTrackPanningCommand (
 	: qtractorTrackCommand(pMainForm, "track pan", pTrack)
 {
 	m_fPanning = fPanning;
-	m_fPrevPanning = pTrack->panning();
+	m_fPrevPanning = 0.0f;
+	m_bPrevPanning = false;
 
 	setRefresh(false);
 
@@ -609,6 +612,7 @@ qtractorTrackPanningCommand::qtractorTrackPanningCommand (
 				= static_cast<qtractorTrackPanningCommand *> (pLastCommand);
 			if (pLastPanningCommand) {
 				m_fPrevPanning = pLastPanningCommand->panning();
+				m_bPrevPanning = true;
 				mainForm()->commands()->removeLastCommand();
 			}
 		}
@@ -625,7 +629,7 @@ bool qtractorTrackPanningCommand::redo (void)
 		return false;
 
 	// Set track panning (repective monitor gets set too...)
-	float fPanning = pTrack->panning();	
+	float fPanning = (m_bPrevPanning ? m_fPrevPanning : pTrack->panning());	
 	pTrack->setPanning(m_fPanning);
 	// MIDI tracks are special...
 	if (pTrack->trackType() == qtractorTrack::Midi) {
@@ -636,8 +640,8 @@ bool qtractorTrackPanningCommand::redo (void)
 			pMidiBus->setPanning(pTrack->midiChannel(), m_fPanning);
 	}
 	// Set undo value...
-	m_fPanning = m_fPrevPanning;
-	m_fPrevPanning = fPanning;
+	m_fPanning = fPanning;
+	m_bPrevPanning = false;
 
 	// Mixer/Meter turn...
 	qtractorMixer *pMixer = mainForm()->mixer();

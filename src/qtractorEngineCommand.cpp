@@ -52,12 +52,9 @@ qtractorBusGainCommand::qtractorBusGainCommand (
 	qtractorBus::BusMode busMode, float fGain )
 	: qtractorBusCommand(pMainForm, "bus gain", pBus, busMode)
 {
-	m_fGain = fGain;
+	m_fGain     = fGain;
 	m_fPrevGain = 1.0f;
-	if ((busMode & qtractorBus::Input) && pBus->monitor_in())
-		m_fPrevGain = pBus->monitor_in()->gain();	
-	if ((busMode & qtractorBus::Output) && pBus->monitor_out())
-		m_fPrevGain = pBus->monitor_out()->gain();	
+	m_bPrevGain = false;
 
 	setRefresh(false);
 
@@ -75,6 +72,7 @@ qtractorBusGainCommand::qtractorBusGainCommand (
 				= static_cast<qtractorBusGainCommand *> (pLastCommand);
 			if (pLastGainCommand) {
 				m_fPrevGain = pLastGainCommand->gain();
+				m_bPrevGain = true;
 				mainForm()->commands()->removeLastCommand();
 			}
 		}
@@ -91,13 +89,15 @@ bool qtractorBusGainCommand::redo (void)
 		return false;
 
 	// Set Bus gain (repective monitor gets set too...)
-	float fGain = 1.0f;
+	float fGain = m_fPrevGain;
 	if ((busMode() & qtractorBus::Input) && pBus->monitor_in()) {
-		fGain = pBus->monitor_in()->gain();	
+		if (!m_bPrevGain)
+			fGain = pBus->monitor_in()->gain();	
 		pBus->monitor_in()->setGain(m_fGain);
 	}
 	if ((busMode() & qtractorBus::Output) && pBus->monitor_out()) {
-		fGain = pBus->monitor_out()->gain();	
+		if (!m_bPrevGain)
+			fGain = pBus->monitor_out()->gain();	
 		pBus->monitor_out()->setGain(m_fGain);
 	}
 	// MIDI busses are special...
@@ -109,8 +109,8 @@ bool qtractorBusGainCommand::redo (void)
 			pMidiBus->setMasterVolume(m_fGain);
 	}
 	// Set undo value...
-	m_fGain = m_fPrevGain;
-	m_fPrevGain = fGain;
+	m_fGain = fGain;
+	m_bPrevGain = false;
 
 	// Mixer/Meter turn...
 	qtractorMixer *pMixer = mainForm()->mixer();
@@ -144,10 +144,7 @@ qtractorBusPanningCommand::qtractorBusPanningCommand (
 {
 	m_fPanning = fPanning;
 	m_fPrevPanning = 0.0f;
-	if ((busMode & qtractorBus::Input) && pBus->monitor_in())
-		m_fPrevPanning = pBus->monitor_in()->panning();	
-	if ((busMode & qtractorBus::Output) && pBus->monitor_out())
-		m_fPrevPanning = pBus->monitor_out()->panning();	
+	m_bPrevPanning = false;
 
 	setRefresh(false);
 
@@ -165,6 +162,7 @@ qtractorBusPanningCommand::qtractorBusPanningCommand (
 				= static_cast<qtractorBusPanningCommand *> (pLastCommand);
 			if (pLastPanningCommand) {
 				m_fPrevPanning = pLastPanningCommand->panning();
+				m_bPrevPanning = true;
 				mainForm()->commands()->removeLastCommand();
 			}
 		}
@@ -181,18 +179,20 @@ bool qtractorBusPanningCommand::redo (void)
 		return false;
 
 	// Set bus panning (repective monitor gets set too...)
-	float fPanning = 0.0f;	
+	float fPanning = m_fPrevPanning;	
 	if ((busMode() & qtractorBus::Input) && pBus->monitor_in()) {
-		fPanning = pBus->monitor_in()->panning();	
+		if (!m_bPrevPanning)
+			fPanning = pBus->monitor_in()->panning();	
 		pBus->monitor_in()->setPanning(m_fPanning);
 	}
 	if ((busMode() & qtractorBus::Output) && pBus->monitor_out()) {
-		fPanning = pBus->monitor_out()->panning();	
+		if (!m_bPrevPanning)
+			fPanning = pBus->monitor_out()->panning();	
 		pBus->monitor_out()->setPanning(m_fPanning);
 	}
 	// Set undo value...
-	m_fPanning = m_fPrevPanning;
-	m_fPrevPanning = fPanning;
+	m_fPanning = fPanning;
+	m_bPrevPanning = false;
 
 	// Mixer/Meter turn...
 	qtractorMixer *pMixer = mainForm()->mixer();
