@@ -19,25 +19,20 @@
 
 *****************************************************************************/
 
+#include "qtractorAbout.h"
 #include "qtractorAudioBuffer.h"
 
 
 //----------------------------------------------------------------------
-// class qtractorAudioBufferThread -- Ring-cache manager thread (singleton).
+// class qtractorAudioBufferThread -- Ring-cache manager thread.
 //
 
 class qtractorAudioBufferThread : public QThread
 {
 public:
 
-	// Singleton instance accessor.
-	static qtractorAudioBufferThread& Instance();
-	// Singleton destroyer.
-	static void Destroy();
-
-	// Audio file list manager methods.
-	void attach(qtractorAudioBuffer *pAudioBuffer);
-	void detach(qtractorAudioBuffer *pAudioBuffer);
+	// Constructor.
+	qtractorAudioBufferThread(qtractorAudioBuffer *pAudioBuffer);
 
 	// Thread run state accessors.
 	void setRunState(bool bRunState);
@@ -48,16 +43,13 @@ public:
 
 protected:
 
-	// Constructor.
-	qtractorAudioBufferThread();
-
 	// The main thread executive.
 	void run();
 
 private:
 
-	// The singleton instance.
-	static qtractorAudioBufferThread* g_pInstance;
+	// Instance variable.
+	qtractorAudioBuffer* m_pAudioBuffer;
 
 	// Whether the thread is logically running.
 	bool m_bRunState;
@@ -65,9 +57,6 @@ private:
 	// Thread synchronization objects.
 	QMutex m_mutex;
 	QWaitCondition m_cond;
-
-	// The list of managed audio buffers.
-	qtractorList<qtractorAudioBuffer> m_list;
 };
 
 
@@ -86,6 +75,7 @@ qtractorAudioBuffer::qtractorAudioBuffer ( unsigned short iChannels,
 	m_pFile          = NULL;
 
 	m_pRingBuffer    = NULL;
+	m_pSyncThread    = NULL;
 
 	m_iThreshold     = 0;
 	m_iOffset        = 0;
@@ -218,18 +208,9 @@ bool qtractorAudioBuffer::open ( const QString& sFilename, int iMode )
 	}
 #endif
 
-	// Read-ahead a whole bunch, if applicable...
-	if (m_pFile->mode() & qtractorAudioFile::Read) {
-		readSync();
-		if (m_pRingBuffer->writeIndex()
-				< m_pRingBuffer->bufferSize() - m_iThreshold) {
-			m_bIntegral = true;
-			deleteIOBuffers();
-		}
-	}
-
 	// Make it sync-managed...
-	qtractorAudioBufferThread::Instance().attach(this);
+	m_pSyncThread = new qtractorAudioBufferThread(this);
+	m_pSyncThread->start(QThread::HighPriority);
 
 	return true;
 }
@@ -242,7 +223,14 @@ void qtractorAudioBuffer::close (void)
 		return;
 
 	// Not sync-managed anymore...
-	qtractorAudioBufferThread::Instance().detach(this);
+	if (m_pSyncThread) {
+		m_pSyncThread->setRunState(false);
+		if (m_pSyncThread->running())
+			m_pSyncThread->sync();
+		m_pSyncThread->wait();
+		delete m_pSyncThread;
+		m_pSyncThread = NULL;
+	}
 
 	// Write-behind any remains, if applicable...
 	if (m_pFile->mode() & qtractorAudioFile::Write)
@@ -312,8 +300,8 @@ int qtractorAudioBuffer::read ( float **ppFrames, unsigned int iFrames,
 #endif
 
 	// Time to sync()?
-	if (m_pRingBuffer->writable() > m_iThreshold)
-		qtractorAudioBufferThread::Instance().sync();
+	if (m_pSyncThread && m_pRingBuffer->writable() > m_iThreshold)
+		m_pSyncThread->sync();
 
 	return iFrames;
 }
@@ -340,8 +328,8 @@ int qtractorAudioBuffer::write ( float **ppFrames, unsigned int iFrames )
 #endif
 
 	// Time to sync()?
-	if (m_pRingBuffer->readable() > m_iThreshold)
-		qtractorAudioBufferThread::Instance().sync();
+	if (m_pSyncThread && m_pRingBuffer->readable() > m_iThreshold)
+		m_pSyncThread->sync();
 
 	return iFrames;
 }
@@ -385,8 +373,8 @@ int qtractorAudioBuffer::readMix ( float **ppFrames, unsigned int iFrames,
 #endif
 
 	// Time to sync()?
-	if (m_pRingBuffer->writable() > m_iThreshold)
-		qtractorAudioBufferThread::Instance().sync();
+	if (m_pSyncThread && m_pRingBuffer->writable() > m_iThreshold)
+		m_pSyncThread->sync();
 
 	return iFrames;
 }
@@ -443,9 +431,32 @@ bool qtractorAudioBuffer::seek ( unsigned long iOffset )
 	m_iSeekOffset = iOffset;
 	m_iSeekPending++;
 	// readSync();
-	qtractorAudioBufferThread::Instance().sync();
+	if (m_pSyncThread)
+		m_pSyncThread->sync();
 
 	return true;
+}
+
+
+// Initial thread-sync executive (if file is on read mode,
+// check whether it can be cache-loaded integrally).
+bool qtractorAudioBuffer::initSync (void)
+{
+	if (m_pFile == NULL)
+		return false;
+		
+	// Read-ahead a whole bunch, if applicable...
+	if (m_pFile->mode() & qtractorAudioFile::Read) {
+		readSync();
+		if (m_pRingBuffer->writeIndex()
+				< m_pRingBuffer->bufferSize() - m_iThreshold) {
+			m_bIntegral = true;
+			deleteIOBuffers();
+		}
+	}
+
+	// Just carry on, if not integrally cached...
+	return !m_bIntegral;
 }
 
 
@@ -588,7 +599,7 @@ void qtractorAudioBuffer::writeSync (void)
 // I/O buffer read process.
 int qtractorAudioBuffer::readBuffer ( unsigned int iFrames )
 {
-#ifdef DEBUG_0
+#ifdef CONFIG_DEBUG_0
 	fprintf(stderr, "+readBuffer(%u)\n", iFrames);
 #endif
 
@@ -652,9 +663,8 @@ int qtractorAudioBuffer::readBuffer ( unsigned int iFrames )
 	}
 #endif   // CONFIG_LIBSAMPLERATE
 
-#ifdef DEBUG_0
-	fprintf(stderr, "-readBuffer(%u) --> nread=%d\n",
-		iFrames, nread);
+#ifdef CONFIG_DEBUG_0
+	fprintf(stderr, "-readBuffer(%u) --> nread=%d\n", iFrames, nread);
 #endif
 
 	return nread;
@@ -806,7 +816,8 @@ void qtractorAudioBuffer::reset ( bool bLooping )
 		m_iSeekPending++;
 		m_iLength = 0;
 		m_bEndOfFile = false;
-		qtractorAudioBufferThread::Instance().sync();
+		if (m_pSyncThread)
+			m_pSyncThread->sync();
 	}
 
 #ifdef DEBUG
@@ -908,77 +919,16 @@ void qtractorAudioBuffer::dump_state ( const char *pszPrefix ) const
 
 
 //----------------------------------------------------------------------
-// class qtractorAudioBufferThread -- Ring-cache manager thread (singleton).
+// class qtractorAudioBufferThread -- Ring-cache manager thread.
 //
 
-// Initialize singleton instance pointer.
-qtractorAudioBufferThread *qtractorAudioBufferThread::g_pInstance = NULL;
-
-
-// Singleton instance accessor.
-qtractorAudioBufferThread& qtractorAudioBufferThread::Instance (void)
-{
-	if (g_pInstance == NULL) {
-		// Create the singleton instance...
-		g_pInstance = new qtractorAudioBufferThread();
-		std::atexit(Destroy);
-		g_pInstance->start(QThread::HighPriority);
-		// Give it a bit of time to startup...
-		QThread::msleep(100);
-#ifdef DEBUG
-		fprintf(stderr, "qtractorAudioBufferThread::Instance(%p)\n", g_pInstance);
-#endif
-	}
-	return *g_pInstance;
-}
-
-
-// Singleton instance destroyer.
-void qtractorAudioBufferThread::Destroy (void)
-{
-	if (g_pInstance) {
-#ifdef DEBUG
-		fprintf(stderr, "qtractorAudioBufferThread::Destroy(%p)\n", g_pInstance);
-#endif
-		// Try to wake and terminate executive thread.
-		g_pInstance->setRunState(false);
-		if (g_pInstance->running())
-			g_pInstance->sync();
-		// Give it a bit of time to cleanup...
-		QThread::msleep(100);
-		// OK. We're done with ourselves.
-		delete g_pInstance;
-		g_pInstance = NULL;
-	}
-}
-
-
 // Constructor.
-qtractorAudioBufferThread::qtractorAudioBufferThread (void)
-	: QThread()
+qtractorAudioBufferThread::qtractorAudioBufferThread (
+	qtractorAudioBuffer *pAudioBuffer ) : QThread()
 {
-	m_bRunState = false;
-	m_list.setAutoDelete(false);
+	m_pAudioBuffer = pAudioBuffer;
+	m_bRunState    = false;
 }
-
-
-// Ring-cache list manager methods.
-void qtractorAudioBufferThread::attach ( qtractorAudioBuffer *pAudioBuffer )
-{
-	QMutexLocker locker(&m_mutex);
-
-	if (m_list.find(pAudioBuffer) < 0)
-		m_list.append(pAudioBuffer);
-}
-
-void qtractorAudioBufferThread::detach ( qtractorAudioBuffer *pAudioBuffer )
-{
-	QMutexLocker locker(&m_mutex);
-
-	if (m_list.find(pAudioBuffer) >= 0)
-		m_list.remove(pAudioBuffer);
-}
-
 
 
 // Run state accessor.
@@ -1000,7 +950,7 @@ void qtractorAudioBufferThread::sync (void)
 		m_cond.wakeAll();
 		m_mutex.unlock();
 	}
-#ifdef DEBUG_0
+#ifdef CONFIG_DEBUG_0
 	else fprintf(stderr, "qtractorAudioBufferThread::sync(%p): tryLock() failed.\n", this);
 	msleep(5);
 #endif
@@ -1010,25 +960,20 @@ void qtractorAudioBufferThread::sync (void)
 // Thread run executive.
 void qtractorAudioBufferThread::run (void)
 {
-#ifdef DEBUG
+#ifdef CONFIG_DEBUG
 	fprintf(stderr, "qtractorAudioBufferThread::run(%p): started.\n", this);
 #endif
 
-	m_bRunState = true;
-
 	m_mutex.lock();
+	m_bRunState = m_pAudioBuffer->initSync();
 	while (m_bRunState) {
-		// Do whatever we must, on all audio-buffers...
-		qtractorAudioBuffer *pAudioBuffer = m_list.first();
-		while (pAudioBuffer) {
-			pAudioBuffer->sync();
-			pAudioBuffer = pAudioBuffer->next();
-		}
+		// Do whatever we must, then wait for more...
+		m_pAudioBuffer->sync();
 		m_cond.wait(&m_mutex);
 	}
 	m_mutex.unlock();
 
-#ifdef DEBUG
+#ifdef CONFIG_DEBUG
 	fprintf(stderr, "qtractorAudioBufferThread::run(%p): stopped.\n", this);
 #endif
 }

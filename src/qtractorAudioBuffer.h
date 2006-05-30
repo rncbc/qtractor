@@ -33,6 +33,9 @@
 
 #include <qthread.h>
 
+// Forward declarations.
+class qtractorAudioBufferThread;
+
 
 //----------------------------------------------------------------------
 // class qtractorAudioBuffer -- Ring buffer/cache template declaration.
@@ -94,6 +97,10 @@ public:
 	unsigned long loopStart() const;
 	unsigned long loopEnd() const;
 
+	// Initial thread-sync executive (if file is on read mode,
+	// check whether it can be cache-loaded integrally).
+	bool initSync();
+
 	// Base sync method.
 	void sync();
 	
@@ -131,6 +138,7 @@ private:
 	qtractorAudioFile *m_pFile;
 
 	qtractorRingBuffer<float> *m_pRingBuffer;
+	qtractorAudioBufferThread *m_pSyncThread;
 
 	unsigned int   m_iThreshold;
 	unsigned long  m_iOffset;
