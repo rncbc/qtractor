@@ -265,7 +265,7 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 			// Reset to start-of-loop...
 			iFrameStart = pSession->loopStart();
 			iFrameEnd   = iFrameStart + (iFrameEnd - pSession->loopEnd());
-			pAudioCursor->seek(iFrameStart, true);
+			pAudioCursor->seek(iFrameStart);
 		}
 	}
 

@@ -409,6 +409,11 @@ bool qtractorAudioBuffer::seek ( unsigned long iOffset )
 	unsigned int  ri = m_pRingBuffer->readIndex();
 	unsigned long wo = m_iOffset;
 
+#ifdef CONFIG_DEBUG
+	fprintf(stderr, "qtractorAudioBuffer::seek(%p, %lu) pending=%d offset=%lu\n",
+		this, iOffset, m_iSeekPending, m_iSeekOffset);
+#endif
+
 	// Check if target is already cached...
 	if (iOffset >= wo - rs && iOffset < wo) {
 		// This surely looks like a hack...
@@ -472,7 +477,7 @@ void qtractorAudioBuffer::sync (void)
 
 	int mode = m_pFile->mode();
 	if (mode & qtractorAudioFile::Read)
-		readSync();
+		do { readSync(); } while (m_iSeekPending > 0);
 	if (mode & qtractorAudioFile::Write)
 		writeSync();
 }
@@ -485,13 +490,11 @@ void qtractorAudioBuffer::readSync (void)
 	dump_state("+readSync()");
 #endif
 
-	unsigned long offset = m_iOffset;
-
 	// Check whether we have some hard-seek pending...
 	if (m_iSeekPending > 0) {
 		m_iSeekPending = 0;
 		// Override with new intended offset...
-		offset = m_iSeekOffset;
+		m_iOffset = m_iSeekOffset;
 		// Refill the whole buffer....
 		m_pRingBuffer->reset();
 		m_bEndOfFile = false;
@@ -505,9 +508,11 @@ void qtractorAudioBuffer::readSync (void)
 			}
 		}
 #endif
-		if (!m_pFile->seek(framesOut(offset)))
+		if (!m_pFile->seek(framesOut(m_iOffset)))
 			return;
 	}
+
+	unsigned long offset = m_iOffset;
 
 	unsigned int ws = m_pRingBuffer->writable();
 	if (ws == 0 || m_bEndOfFile)
@@ -952,7 +957,6 @@ void qtractorAudioBufferThread::sync (void)
 	}
 #ifdef CONFIG_DEBUG_0
 	else fprintf(stderr, "qtractorAudioBufferThread::sync(%p): tryLock() failed.\n", this);
-	msleep(5);
 #endif
 }
 
