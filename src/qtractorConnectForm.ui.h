@@ -72,13 +72,13 @@ void qtractorConnectForm::setSession (
 {
 	m_pSession = pSession;
 
-	if (m_pSession == NULL)
-		return;
-
-	if (m_pSession->audioEngine())
+	if (m_pSession) {
 		m_pAudioConnect->setJackClient(m_pSession->audioEngine()->jackClient());
-	if (m_pSession->midiEngine())
 		m_pMidiConnect->setAlsaSeq(m_pSession->midiEngine()->alsaSeq());
+	} else {
+		m_pAudioConnect->setJackClient(NULL);
+		m_pMidiConnect->setAlsaSeq(NULL);
+	}
 
 	audioRefresh();
 	midiRefresh();
@@ -159,13 +159,15 @@ void qtractorConnectForm::audioRefresh (void)
 		m_pAudioConnect->pixmap(QTRACTOR_AUDIO_CLIENT_OUT));
 	updateClientsComboBox(AudioIClientsComboBox, AudioIListView,
 		m_pAudioConnect->pixmap(QTRACTOR_AUDIO_CLIENT_IN));
+
+	audioStabilize();
 }
 
 
 // A helper stabilization slot.
 void qtractorConnectForm::audioStabilize (void)
 {
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	fprintf(stderr, "qtractorConnectForm::audioStabilize()\n");
 #endif
 
@@ -232,13 +234,15 @@ void qtractorConnectForm::midiRefresh (void)
 		m_pMidiConnect->pixmap(QTRACTOR_MIDI_CLIENT_OUT));
 	updateClientsComboBox(MidiIClientsComboBox, MidiIListView,
 		m_pMidiConnect->pixmap(QTRACTOR_MIDI_CLIENT_IN));
+
+	midiStabilize();
 }
 
 
 // A helper stabilization slot.
 void qtractorConnectForm::midiStabilize (void)
 {
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	fprintf(stderr, "qtractorConnectForm::midiStabilize()\n");
 #endif
 

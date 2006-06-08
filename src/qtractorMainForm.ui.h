@@ -25,9 +25,10 @@
 #include "qtractorInstrument.h"
 #include "qtractorMessages.h"
 #include "qtractorFiles.h"
+#include "qtractorConnections.h"
 #include "qtractorMixer.h"
-#include "qtractorTracks.h"
 
+#include "qtractorTracks.h"
 #include "qtractorTrackList.h"
 #include "qtractorTrackTime.h"
 #include "qtractorTrackView.h"
@@ -115,6 +116,7 @@ void qtractorMainForm::init (void)
 	m_pMessages = NULL;
 	m_pFiles    = NULL;
 	m_pMixer    = NULL;
+	m_pConnections = NULL;
 	m_pTracks   = NULL;
 
 	// We'll start clean.
@@ -289,10 +291,12 @@ void qtractorMainForm::init (void)
 void qtractorMainForm::destroy (void)
 {
 	// Drop any widgets around (not really necessary)...
-	if (m_pMixer)
-		delete m_pMixer;
 	if (m_pTracks)
 		delete m_pTracks;
+	if (m_pMixer)
+		delete m_pMixer;
+	if (m_pConnections)
+		delete m_pConnections;
 	if (m_pFiles)
 		delete m_pFiles;
 	if (m_pMessages)
@@ -300,7 +304,7 @@ void qtractorMainForm::destroy (void)
 	if (m_pWorkspace)
 		delete m_pWorkspace;
 
-	//  Free some data around...
+	//  Free some more still around...
 	if (m_pInstruments)
 		delete m_pInstruments;
 	if (m_pCommands)
@@ -321,10 +325,11 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 	m_pOptions = pOptions;
 
 	// Some child forms are to be created right now.
-	m_pMessages = new qtractorMessages(this);
 	m_pFiles = new qtractorFiles(this);
+	m_pMessages = new qtractorMessages(this);
 	m_pFiles->audioListView()->setRecentDir(m_pOptions->sAudioDir);
 	m_pFiles->midiListView()->setRecentDir(m_pOptions->sMidiDir);
+	m_pConnections = new qtractorConnections(this);
 	m_pMixer = new qtractorMixer(this);
 
 	// Set message defaults...
@@ -333,14 +338,16 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 	updateMessagesCapture();
 
 	// Set the visibility signal.
+	QObject::connect(m_pFiles, SIGNAL(visibilityChanged(bool)),
+		this, SLOT(stabilizeForm()));
+	QObject::connect(m_pMessages, SIGNAL(visibilityChanged(bool)),
+		this, SLOT(stabilizeForm()));
+	QObject::connect(m_pConnections, SIGNAL(visibilityChanged(bool)),
+		this, SLOT(stabilizeForm()));
 	QObject::connect(m_pMixer, SIGNAL(visibilityChanged(bool)),
 		this, SLOT(stabilizeForm()));
 	QObject::connect(m_pMixer->trackRack(), SIGNAL(selectionChanged()),
 		this, SLOT(mixerSelectionChanged()));
-	QObject::connect(m_pMessages, SIGNAL(visibilityChanged(bool)),
-		this, SLOT(stabilizeForm()));
-	QObject::connect(m_pFiles, SIGNAL(visibilityChanged(bool)),
-		this, SLOT(stabilizeForm()));
 	// Contents change stuff...
 	QObject::connect(m_pFiles->audioListView(), SIGNAL(activated(const QString&)),
 		this, SLOT(activateAudioFile(const QString&)));
@@ -378,6 +385,7 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 		// Message window is forced to dock on the bottom.
 		moveDockWindow(m_pMessages, Qt::DockBottom);
 		moveDockWindow(m_pFiles, Qt::DockRight);
+		moveDockWindow(m_pConnections, Qt::DockTornOff);
 		moveDockWindow(m_pMixer, Qt::DockTornOff);
 	} else {
 		// Make it as the last time.
@@ -603,16 +611,22 @@ qtractorSession *qtractorMainForm::session (void)
 	return m_pSession;
 }
 
+// The global session tracks reference.
+qtractorTracks *qtractorMainForm::tracks (void)
+{
+	return m_pTracks;
+}
+
 // The global session file(lists) reference.
 qtractorFiles *qtractorMainForm::files (void)
 {
 	return m_pFiles;
 }
 
-// The global session tracks reference.
-qtractorTracks *qtractorMainForm::tracks (void)
+// The global session connections reference.
+qtractorConnections *qtractorMainForm::connections (void)
 {
-	return m_pTracks;
+	return m_pConnections;
 }
 
 // The global session mixer reference.
@@ -777,13 +791,14 @@ bool qtractorMainForm::closeSession (void)
 			transportPlayAction->setOn(false);
 			transportPlay(); // Toggle playing!
 		}
+		// Reset all dependables to default.
+		m_pCommands->clear();
+		m_pMixer->clear();
+		m_pConnections->clear();
+		m_pFiles->clear();
 		// Close session engines.
 		m_pSession->close();
-		// Reset session to default.
-		m_pCommands->clear();
 		m_pSession->clear();
-		m_pFiles->clear();
-		m_pMixer->clear();
 		// Surely this will be deleted next...
 		m_pTracks = NULL;
 		// Reset playhead.
@@ -1215,13 +1230,13 @@ void qtractorMainForm::viewToolbarTime ( bool bOn )
 }
 
 
-// Show/hide the messages window logger.
-void qtractorMainForm::viewMixer ( bool bOn )
+// Show/hide the files window view.
+void qtractorMainForm::viewFiles ( bool bOn )
 {
 	if (bOn) {
-		m_pMixer->show();
+		m_pFiles->show();
 	} else {
-		m_pMixer->hide();
+		m_pFiles->hide();
 	}
 }
 
@@ -1237,13 +1252,24 @@ void qtractorMainForm::viewMessages ( bool bOn )
 }
 
 
-// Show/hide the files window view.
-void qtractorMainForm::viewFiles ( bool bOn )
+// Show/hide the mixer window.
+void qtractorMainForm::viewMixer ( bool bOn )
 {
 	if (bOn) {
-		m_pFiles->show();
+		m_pMixer->show();
 	} else {
-		m_pFiles->hide();
+		m_pMixer->hide();
+	}
+}
+
+
+// Show/hide the connections window.
+void qtractorMainForm::viewConnections ( bool bOn )
+{
+	if (bOn) {
+		m_pConnections->show();
+	} else {
+		m_pConnections->hide();
 	}
 }
 
@@ -1260,6 +1286,8 @@ void qtractorMainForm::viewRefresh (void)
 	m_pSession->updateSessionLength();
 	if (m_pTracks)
 		m_pTracks->updateContents(true);
+	if (m_pConnections)
+		m_pConnections->refresh();
 	if (m_pMixer) {
 		m_pMixer->updateBusses();
 		m_pMixer->updateTracks();
@@ -1690,8 +1718,9 @@ void qtractorMainForm::stabilizeForm (void)
 	trackImportMidiAction->setEnabled(m_pTracks != NULL);
 
 	// Update view menu state...
-	viewMessagesAction->setOn(m_pMessages && m_pMessages->isVisible());
 	viewFilesAction->setOn(m_pFiles && m_pFiles->isVisible());
+	viewMessagesAction->setOn(m_pMessages && m_pMessages->isVisible());
+	viewConnectionsAction->setOn(m_pConnections && m_pConnections->isVisible());
 	viewMixerAction->setOn(m_pMixer && m_pMixer->isVisible());
 
 	// Recent files menu.

@@ -29,6 +29,7 @@
 #include "qtractorOptions.h"
 #include "qtractorSession.h"
 #include "qtractorTracks.h"
+#include "qtractorConnections.h"
 #include "qtractorTrackButton.h"
 #include "qtractorTrackCommand.h"
 #include "qtractorEngineCommand.h"
@@ -399,6 +400,9 @@ void qtractorMixerStrip::busButtonSlot (void)
 #ifdef CONFIG_DEBUG
 	fprintf(stderr, "qtractorMixerStrip::busButtonSlot() name=\"%s\"\n", m_pLabel->text().latin1());
 #endif
+
+	// Here we go...
+	m_pRack->mixer()->mainForm()->connections()->showBus(m_pBus, m_busMode);
 }
 
 
@@ -649,7 +653,7 @@ qtractorMixer::qtractorMixer ( qtractorMainForm *pMainForm )
 	// Surely a name is crucial (e.g. for storing geometry settings)
 	// QDockWindow::setName("qtractorMixer");
 
-	m_pSplitter = new QSplitter(Qt::Horizontal, this, "Mixer");
+	m_pSplitter = new QSplitter(Qt::Horizontal, this, "MixerSplitter");
 	m_pSplitter->setChildrenCollapsible(false);
 
 	m_pInputRack  = new qtractorMixerRack(this, tr("Inputs"));

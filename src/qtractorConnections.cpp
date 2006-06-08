@@ -22,7 +22,15 @@
 #include "qtractorAbout.h"
 #include "qtractorConnections.h"
 
+#include "qtractorOptions.h"
+#include "qtractorAudioEngine.h"
+#include "qtractorMidiEngine.h"
+
+#include "qtractorMainForm.h"
 #include "qtractorConnectForm.h"
+
+#include <qtabwidget.h>
+#include <qcombobox.h>
 
 
 //-------------------------------------------------------------------------
@@ -30,12 +38,11 @@
 //
 
 // Constructor.
-qtractorConnections::qtractorConnections ( QWidget *pParent, const char *pszName )
-	: QDockWindow(pParent, pszName)
+qtractorConnections::qtractorConnections ( qtractorMainForm *pMainForm )
+	: QDockWindow(pMainForm, "qtractorConnections"), m_pMainForm(pMainForm)
 {
 	// Surely a name is crucial (e.g.for storing geometry settings)
-	if (pszName == 0)
-		QDockWindow::setName("qtractorConnections");
+	// QDockWindow::setName("qtractorConnections");
 
 	// Create main inner widget.
 	m_pConnectForm = new qtractorConnectForm(this);
@@ -50,14 +57,38 @@ qtractorConnections::qtractorConnections ( QWidget *pParent, const char *pszName
 	QString sCaption = tr("Connections");
 	QToolTip::add(this, sCaption);
 	QDockWindow::setCaption(sCaption);
+
+	// Get previously saved splitter sizes,
+	// (with fair default...)
+	QValueList<int> sizes;
+	sizes.append(180);
+	sizes.append(60);
+	sizes.append(180);
+	m_pMainForm->options()->loadSplitterSizes(
+		m_pConnectForm->AudioConnectSplitter, sizes);
+	m_pMainForm->options()->loadSplitterSizes(
+		m_pConnectForm->MidiConnectSplitter, sizes);
 }
 
 
 // Destructor.
 qtractorConnections::~qtractorConnections (void)
 {
+	// Get previously saved splitter sizes...
+	m_pMainForm->options()->saveSplitterSizes(
+		m_pConnectForm->AudioConnectSplitter);
+	m_pMainForm->options()->saveSplitterSizes(
+		m_pConnectForm->MidiConnectSplitter);
+
 	// No need to delete child widgets, Qt does it all for us.
 	delete m_pConnectForm;
+}
+
+
+// Main application form accessors.
+qtractorMainForm *qtractorConnections::mainForm (void) const
+{
+	return m_pMainForm;
 }
 
 
@@ -65,6 +96,79 @@ qtractorConnections::~qtractorConnections (void)
 qtractorConnectForm *qtractorConnections::connectForm (void) const
 {
 	return m_pConnectForm;
+}
+
+
+// Session accessor.
+qtractorSession *qtractorConnections::session (void) const
+{
+	return m_pMainForm->session();
+}
+
+
+// Main bus mode switching.
+void qtractorConnections::showBus ( qtractorBus *pBus,
+	qtractorBus::BusMode busMode )
+{
+	qtractorSession *pSession = session();
+	if (pSession == NULL)
+		return;
+
+	switch (pBus->busType()) {
+	case qtractorTrack::Audio:
+	{	// Show exclusive Audio engine connections...
+		m_pConnectForm->ConnectionsTabWidget->setCurrentPage(0);
+		if (busMode & qtractorBus::Input) {
+			m_pConnectForm->AudioOClientsComboBox->setCurrentItem(0);
+			m_pConnectForm->AudioIClientsComboBox->setCurrentText(
+				pSession->audioEngine()->clientName());
+		} else {
+			m_pConnectForm->AudioOClientsComboBox->setCurrentText(
+				pSession->audioEngine()->clientName());
+			m_pConnectForm->AudioIClientsComboBox->setCurrentItem(0);
+		}
+		m_pConnectForm->audioRefresh();
+		break;
+	}
+	case qtractorTrack::Midi:
+	{	// Show exclusive MIDI engine connections...
+		m_pConnectForm->ConnectionsTabWidget->setCurrentPage(1);
+		if (busMode & qtractorBus::Input) {
+			m_pConnectForm->MidiOClientsComboBox->setCurrentItem(0);
+			m_pConnectForm->MidiIClientsComboBox->setCurrentText(
+				QString::number(pSession->midiEngine()->alsaClient())
+				+ ':'+ pSession->midiEngine()->clientName());
+		} else {
+			m_pConnectForm->MidiOClientsComboBox->setCurrentText(
+				QString::number(pSession->midiEngine()->alsaClient())
+				+ ':' + pSession->midiEngine()->clientName());
+			m_pConnectForm->MidiIClientsComboBox->setCurrentItem(0);
+		}
+		m_pConnectForm->midiRefresh();
+		break;
+	}
+	default:
+		break;
+	}
+		
+	// Make it stand out, sure...
+	show();
+	raise();
+	setActiveWindow();
+}
+
+
+// Complete connections refreshment.
+void qtractorConnections::refresh (void)
+{
+	m_pConnectForm->setSession(m_pMainForm->session());
+}
+
+
+// Complete connections recycle.
+void qtractorConnections::clear (void)
+{
+	m_pConnectForm->setSession(NULL);
 }
 
 

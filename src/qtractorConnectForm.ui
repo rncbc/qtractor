@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
 <class>qtractorConnectForm</class>
 <comment>qtractor - A MIDI/Audio multi-track sequencer.
 
@@ -68,7 +68,7 @@
                     </property>
                     <widget class="QSplitter">
                         <property name="name">
-                            <cstring>AudioSplitter</cstring>
+                            <cstring>AudioConnectSplitter</cstring>
                         </property>
                         <property name="orientation">
                             <enum>Horizontal</enum>
@@ -144,7 +144,7 @@
                                     <string>Alt+C</string>
                                 </property>
                                 <property name="iconSet">
-                                    <iconset>itemConnect.png</iconset>
+                                    <iconset>formConnect.png</iconset>
                                 </property>
                                 <property name="toolTip" stdset="0">
                                     <string>Connect currently selected ports</string>
@@ -161,7 +161,7 @@
                                     <string>Alt+D</string>
                                 </property>
                                 <property name="iconSet">
-                                    <iconset>itemDisconnect.png</iconset>
+                                    <iconset>formDisconnect.png</iconset>
                                 </property>
                                 <property name="toolTip" stdset="0">
                                     <string>Disconnect currently selected ports</string>
@@ -178,7 +178,7 @@
                                     <string>Alt+A</string>
                                 </property>
                                 <property name="iconSet">
-                                    <iconset>itemDisconnectAll.png</iconset>
+                                    <iconset>formDisconnectAll.png</iconset>
                                 </property>
                                 <property name="toolTip" stdset="0">
                                     <string>Disconnect all currently connected ports</string>
@@ -212,7 +212,7 @@
                                     <string>Alt+R</string>
                                 </property>
                                 <property name="iconSet">
-                                    <iconset>itemRefresh.png</iconset>
+                                    <iconset>formRefresh.png</iconset>
                                 </property>
                                 <property name="toolTip" stdset="0">
                                     <string>Refresh current connections view</string>
@@ -235,7 +235,7 @@
                     </property>
                     <widget class="QSplitter">
                         <property name="name">
-                            <cstring>MidiSplitter</cstring>
+                            <cstring>MidiConnectSplitter</cstring>
                         </property>
                         <property name="orientation">
                             <enum>Horizontal</enum>
@@ -311,7 +311,7 @@
                                     <string>Alt+C</string>
                                 </property>
                                 <property name="iconSet">
-                                    <iconset>itemConnect.png</iconset>
+                                    <iconset>formConnect.png</iconset>
                                 </property>
                                 <property name="toolTip" stdset="0">
                                     <string>Connect currently selected ports</string>
@@ -328,7 +328,7 @@
                                     <string>Alt+D</string>
                                 </property>
                                 <property name="iconSet">
-                                    <iconset>itemDisconnect.png</iconset>
+                                    <iconset>formDisconnect.png</iconset>
                                 </property>
                                 <property name="toolTip" stdset="0">
                                     <string>Disconnect currently selected ports</string>
@@ -345,7 +345,7 @@
                                     <string>Alt+A</string>
                                 </property>
                                 <property name="iconSet">
-                                    <iconset>itemDisconnectAll.png</iconset>
+                                    <iconset>formDisconnectAll.png</iconset>
                                 </property>
                                 <property name="toolTip" stdset="0">
                                     <string>Disconnect all currently connected ports</string>
@@ -379,7 +379,7 @@
                                     <string>Alt+R</string>
                                 </property>
                                 <property name="iconSet">
-                                    <iconset>itemRefresh.png</iconset>
+                                    <iconset>formRefresh.png</iconset>
                                 </property>
                                 <property name="toolTip" stdset="0">
                                     <string>Refresh current connections view</string>
@@ -441,6 +441,18 @@
 </customwidgets>
 <connections>
     <connection>
+        <sender>AudioIClientsComboBox</sender>
+        <signal>activated(int)</signal>
+        <receiver>qtractorConnectTestForm</receiver>
+        <slot>audioRefresh()</slot>
+    </connection>
+    <connection>
+        <sender>AudioOClientsComboBox</sender>
+        <signal>activated(int)</signal>
+        <receiver>qtractorConnectTestForm</receiver>
+        <slot>audioRefresh()</slot>
+    </connection>
+    <connection>
         <sender>AudioConnectPushButton</sender>
         <signal>clicked()</signal>
         <receiver>qtractorConnectTestForm</receiver>
@@ -463,6 +475,18 @@
         <signal>clicked()</signal>
         <receiver>qtractorConnectTestForm</receiver>
         <slot>audioRefresh()</slot>
+    </connection>
+    <connection>
+        <sender>MidiIClientsComboBox</sender>
+        <signal>activated(int)</signal>
+        <receiver>qtractorConnectTestForm</receiver>
+        <slot>midiRefresh()</slot>
+    </connection>
+    <connection>
+        <sender>MidiOClientsComboBox</sender>
+        <signal>activated(int)</signal>
+        <receiver>qtractorConnectTestForm</receiver>
+        <slot>midiRefresh()</slot>
     </connection>
     <connection>
         <sender>MidiConnectPushButton</sender>

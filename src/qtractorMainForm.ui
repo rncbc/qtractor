@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
 <class>qtractorMainForm</class>
 <comment>qtractor - A MIDI/Audio multi-track sequencer.
 
@@ -108,6 +108,7 @@
         <separator/>
         <action name="viewFilesAction"/>
         <action name="viewMessagesAction"/>
+        <action name="viewConnectionsAction"/>
         <action name="viewMixerAction"/>
         <separator/>
         <action name="viewRefreshAction"/>
@@ -841,6 +842,29 @@
     </action>
     <action>
         <property name="name">
+            <cstring>viewConnectionsAction</cstring>
+        </property>
+        <property name="toggleAction">
+            <bool>true</bool>
+        </property>
+        <property name="text">
+            <string>Connections</string>
+        </property>
+        <property name="menuText">
+            <string>&amp;Connections</string>
+        </property>
+        <property name="toolTip">
+            <string>Show/hide connections</string>
+        </property>
+        <property name="statusTip">
+            <string>Show/hide the connections window</string>
+        </property>
+        <property name="accel">
+            <string></string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
             <cstring>viewMixerAction</cstring>
         </property>
         <property name="toggleAction">
@@ -1302,6 +1326,12 @@
         <slot>viewMessages(bool)</slot>
     </connection>
     <connection>
+        <sender>viewConnectionsAction</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>qtractorMainForm</receiver>
+        <slot>viewConnections(bool)</slot>
+    </connection>
+    <connection>
         <sender>viewMixerAction</sender>
         <signal>toggled(bool)</signal>
         <receiver>qtractorMainForm</receiver>
@@ -1395,22 +1425,24 @@
     <forward>class QComboBox;</forward>
     <forward>class qtractorSpinBox;</forward>
     <forward>class qtractorOptions;</forward>
-    <forward>class qtractorCommandList;</forward>
-    <forward>class qtractorInstrumentList;</forward>
-    <forward>class qtractorMessages;</forward>
-    <forward>class qtractorFiles;</forward>
     <forward>class qtractorSession;</forward>
     <forward>class qtractorTracks;</forward>
-    <forward>class qtractorMixer;</forward>
     <forward>class qtractorCommand;</forward>
+    <forward>class qtractorCommandList;</forward>
+    <forward>class qtractorInstrumentList;</forward>
+    <forward>class qtractorFiles;</forward>
+    <forward>class qtractorMessages;</forward>
+    <forward>class qtractorConnections;</forward>
+    <forward>class qtractorMixer;</forward>
 </forwards>
 <variables>
     <variable access="private">qtractorOptions *m_pOptions;</variable>
+    <variable access="private">qtractorSession *m_pSession;</variable>
     <variable access="private">qtractorCommandList *m_pCommands;</variable>
     <variable access="private">qtractorInstrumentList *m_pInstruments;</variable>
-    <variable access="private">qtractorMessages *m_pMessages;</variable>
     <variable access="private">qtractorFiles *m_pFiles;</variable>
-    <variable access="private">qtractorSession *m_pSession;</variable>
+    <variable access="private">qtractorMessages *m_pMessages;</variable>
+    <variable access="private">qtractorConnections *m_pConnections;</variable>
     <variable access="private">qtractorMixer *m_pMixer;</variable>
     <variable access="private">qtractorTracks *m_pTracks;</variable>
     <variable access="private">QWorkspace *m_pWorkspace;</variable>
@@ -1460,6 +1492,7 @@
     <slot specifier="non virtual">viewToolbarTime( bool bOn )</slot>
     <slot specifier="non virtual">viewFiles( bool bOn )</slot>
     <slot specifier="non virtual">viewMessages( bool bOn )</slot>
+    <slot specifier="non virtual">viewConnections( bool bOn )</slot>
     <slot specifier="non virtual">viewMixer( bool bOn )</slot>
     <slot specifier="non virtual">viewRefresh( void )</slot>
     <slot specifier="non virtual">viewInstruments( void )</slot>
@@ -1501,8 +1534,9 @@
     <function specifier="non virtual">contextMenuEvent( QContextMenuEvent *pEvent )</function>
     <function specifier="non virtual" returnType="qtractorOptions *">options( void )</function>
     <function specifier="non virtual" returnType="qtractorSession *">session( void )</function>
-    <function specifier="non virtual" returnType="qtractorFiles *">files( void )</function>
     <function specifier="non virtual" returnType="qtractorTracks *">tracks( void )</function>
+    <function specifier="non virtual" returnType="qtractorFiles *">files( void )</function>
+    <function specifier="non virtual" returnType="qtractorConnections *">connections( void )</function>
     <function specifier="non virtual" returnType="qtractorMixer *">mixer( void )</function>
     <function specifier="non virtual" returnType="qtractorCommandList *">commands( void )</function>
     <function specifier="non virtual" returnType="qtractorInstrumentList *">instruments( void )</function>

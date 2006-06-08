@@ -22,10 +22,14 @@
 #ifndef __qtractorConnections_h
 #define __qtractorConnections_h
 
+#include "qtractorEngine.h"
+
 #include <qdockwindow.h>
 
 // Forward declarations.
+class qtractorMainForm;
 class qtractorConnectForm;
+
 
 //-------------------------------------------------------------------------
 // qtractorConnections - Connections dockable window.
@@ -38,16 +42,32 @@ class qtractorConnections : public QDockWindow
 public:
 
 	// Constructor.
-	qtractorConnections(QWidget *pParent, const char *pszName = 0);
+	qtractorConnections(qtractorMainForm *pMainForm);
 	// Destructor.
 	~qtractorConnections();
+
+	// Main application form accessors.
+	qtractorMainForm *mainForm() const;
 
 	// Connect form accessor.
 	qtractorConnectForm *connectForm() const;
 
+	// Session accessors.
+	qtractorSession *session() const;
+
+	// Main bus mode switching.
+	void showBus(qtractorBus *pBus, qtractorBus::BusMode busMode);
+
+	// Complete connections refreshment.
+	void refresh();
+
+	// Complete connections reset.
+	void clear();
+
 private:
 
 	// Instance variables.
+	qtractorMainForm    *m_pMainForm;
 	qtractorConnectForm *m_pConnectForm;
 };
 
