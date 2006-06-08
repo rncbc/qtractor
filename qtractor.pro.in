@@ -14,6 +14,10 @@ HEADERS += src/qtractorAbout.h \
            src/qtractorTrackTime.h \
            src/qtractorTrackView.h \
            src/qtractorTracks.h \
+           src/qtractorConnect.h \
+	       src/qtractorAudioConnect.h \
+	       src/qtractorMidiConnect.h \
+           src/qtractorConnections.h \
            src/qtractorMeter.h \
            src/qtractorAudioMeter.h \
            src/qtractorMidiMeter.h \
@@ -62,6 +66,10 @@ SOURCES += src/main.cpp \
            src/qtractorTrackTime.cpp \
            src/qtractorTrackView.cpp \
            src/qtractorTracks.cpp \
+           src/qtractorConnect.cpp \
+	       src/qtractorAudioConnect.cpp \
+	       src/qtractorMidiConnect.cpp \
+           src/qtractorConnections.cpp \
            src/qtractorMeter.cpp \
            src/qtractorAudioMeter.cpp \
            src/qtractorMidiMeter.cpp \
@@ -100,7 +108,8 @@ FORMS    = src/qtractorMainForm.ui \
            src/qtractorSessionForm.ui \
            src/qtractorTrackForm.ui \
            src/qtractorOptionsForm.ui \
-           src/qtractorInstrumentForm.ui
+           src/qtractorInstrumentForm.ui \
+           src/qtractorConnectForm.ui
 
 IMAGES   = icons/qtractor.png \
            icons/qtractorTracks.png \
@@ -140,6 +149,9 @@ IMAGES   = icons/qtractor.png \
            icons/formMoveUp.png \
            icons/formMoveDown.png \
            icons/formRefresh.png \
+           icons/formConnect.png \
+           icons/formDisconnect.png \
+           icons/formDisconnectAll.png \
            icons/itemChannel.png \
            icons/itemFile.png \
            icons/itemGroup.png \
@@ -150,7 +162,17 @@ IMAGES   = icons/qtractor.png \
            icons/itemControllers.png \
            icons/itemRpns.png \
            icons/itemNrpns.png \
-           icons/itemProperty.png
+           icons/itemProperty.png \
+	       icons/itemAudioClientIn.png \
+	       icons/itemAudioClientOut.png \
+	       icons/itemAudioPortIn.png \
+	       icons/itemAudioPortOut.png \
+	       icons/itemAudioPortPhysIn.png \
+	       icons/itemAudioPortPhysOut.png \
+	       icons/itemMidiClientIn.png \
+	       icons/itemMidiClientOut.png \
+	       icons/itemMidiPortIn.png \
+	       icons/itemMidiPortOut.png
 
 TEMPLATE = app
 CONFIG  += qt @ac_thread@ warn_on @ac_debug@

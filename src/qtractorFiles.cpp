@@ -26,7 +26,7 @@
 
 
 //-------------------------------------------------------------------------
-// qtractorFiles - Messages log dockable window.
+// qtractorFiles - File/Groups dockable window.
 //
 
 // Constructor.

@@ -18,6 +18,10 @@ headers = config.h \
 	src/qtractorTrackTime.h \
 	src/qtractorTrackView.h \
 	src/qtractorTracks.h \
+	src/qtractorConnect.h \
+	src/qtractorAudioConnect.h \
+	src/qtractorMidiConnect.h \
+	src/qtractorConnections.h \
 	src/qtractorMeter.h \
 	src/qtractorAudioMeter.h \
 	src/qtractorMidiMeter.h \
@@ -59,7 +63,8 @@ headers = config.h \
 	src/qtractorSessionForm.ui.h \
 	src/qtractorTrackForm.ui.h \
 	src/qtractorOptionsForm.ui.h \
-	src/qtractorInstrumentForm.ui.h
+	src/qtractorInstrumentForm.ui.h \
+	src/qtractorConnectForm.ui.h
 
 sources = src/main.cpp \
 	src/qtractorOptions.cpp \
@@ -71,6 +76,10 @@ sources = src/main.cpp \
 	src/qtractorTrackTime.cpp \
 	src/qtractorTrackView.cpp \
 	src/qtractorTracks.cpp \
+	src/qtractorConnect.cpp \
+	src/qtractorAudioConnect.cpp \
+	src/qtractorMidiConnect.cpp \
+	src/qtractorConnections.cpp \
 	src/qtractorMeter.cpp \
 	src/qtractorAudioMeter.cpp \
 	src/qtractorMidiMeter.cpp \
