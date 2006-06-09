@@ -226,13 +226,20 @@ public:
 	void setClientName(const QString& sClientName);
 	QString clientName() const;
 
+	// Port name filter helpers.
+	void setPortName(const QString& sPortName);
+	QString portName() const;
+
 	// Maintained current client name list.
 	const QStringList& clientNames() const;
 	void clearClientNames();
 
 	// Retrieve all cached connections from given client name.
 	QStringList connects(const QString& sClientName);
-	
+
+	// Whether items are all open (expanded) or closed (collapsed).
+	void setOpenAll(bool bOpen);
+
 	// Client ports cleanup marker.
 	void markClientPorts(int iMark);
 	void cleanClientPorts(int iMark);
@@ -257,8 +264,9 @@ protected slots:
 
 protected:
 
-	// Client filter function via regular expression.
+	// Client:port filter function via regular expression.
 	bool isClientName(const QString& sClientName);
+	bool isPortName(const QString& sPortName);
 
 	// Drag-n-drop stuff -- reimplemented virtual methods.
 	void dragEnterEvent(QDragEnterEvent *pDragEnterEvent);
@@ -287,8 +295,9 @@ private:
 	// The current highlighted item.
     QListViewItem *m_pHiliteItem;
 
-	// Client filter regular expression.
+	// Client:port regular expression filters.
 	QRegExp m_rxClientName;
+	QRegExp m_rxPortName;
 	
 	// Maintained list of client names.
 	QStringList m_clientNames;

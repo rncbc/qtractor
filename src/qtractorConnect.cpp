@@ -502,11 +502,26 @@ bool qtractorClientListView::isReadable (void) const
 void qtractorClientListView::setClientName ( const QString& sClientName )
 {
 	m_rxClientName.setPattern(sClientName);
+
+	if (sClientName.isEmpty())
+		m_rxPortName.setPattern(QString::null);
 }
 
 QString qtractorClientListView::clientName (void) const
 {
 	return m_rxClientName.pattern();
+}
+
+
+// Client name filter helpers.
+void qtractorClientListView::setPortName ( const QString& sPortName )
+{
+	m_rxPortName.setPattern(sPortName);
+}
+
+QString qtractorClientListView::portName (void) const
+{
+	return m_rxPortName.pattern();
 }
 
 
@@ -524,13 +539,22 @@ void qtractorClientListView::clearClientNames (void)
 
 // Client filter regular expression;
 // take the chance to add to maintained client name list.
-bool qtractorClientListView::isClientName (	const QString& sClientName )
+bool qtractorClientListView::isClientName ( const QString& sClientName )
 {
 	if (m_clientNames.find(sClientName) == m_clientNames.end())
 		m_clientNames.append(sClientName);
 
 	return (m_rxClientName.isEmpty()
 		|| m_rxClientName.exactMatch(sClientName));
+}
+
+
+// Port filter regular expression;
+bool qtractorClientListView::isPortName ( const QString& sPortName )
+{
+	return (m_rxClientName.isEmpty()
+		|| m_rxPortName.isEmpty()
+		|| m_rxPortName.exactMatch(sPortName));
 }
 
 
@@ -557,6 +581,30 @@ QStringList qtractorClientListView::connects ( const QString& sClientName )
 	}
 
 	return clist;
+}
+
+
+// Whether items are all open (expanded) or closed (collapsed).
+void qtractorClientListView::setOpenAll ( bool bOpen )
+{
+	QListViewItem *pListItem = QListView::firstChild();
+	while (pListItem && pListItem->rtti() == QTRACTOR_CLIENT_ITEM) {
+		QListViewItem *pItem = pListItem->firstChild();
+		while (pItem && pItem->rtti() == QTRACTOR_PORT_ITEM) {
+			qtractorPortListItem *pPortItem
+				= static_cast<qtractorPortListItem *> (pItem);
+			if (pPortItem) {
+				pListItem->setOpen(bOpen);
+				qtractorPortListItem *p = pPortItem->connects().first();
+				while (p) {
+					p->clientItem()->setOpen(bOpen);
+					p = pPortItem->connects().next();
+				}
+			}
+			pItem = pItem->nextSibling();
+		}
+		pListItem = pListItem->nextSibling();
+	}
 }
 
 

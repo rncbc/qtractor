@@ -205,34 +205,36 @@ int qtractorMidiClientListView::updateClientPorts (void)
 					sClientName += ':';
 					sClientName += snd_seq_client_info_get_name(pClientInfo);
 					if (isClientName(sClientName)) {
-						qtractorMidiPortItem *pPortItem = 0;
 						int iAlsaPort = snd_seq_port_info_get_port(pPortInfo);
-						if (pClientItem == 0) {
-							pClientItem = new qtractorMidiClientItem(this,
-								sClientName, iAlsaClient);
-							iDirtyCount++;
-						} else {
-							pPortItem = pClientItem->findPortItem(iAlsaPort);
-							if (sClientName != pClientItem->clientName()) {
-								pClientItem->setClientName(sClientName);
+						QString sPortName = QString::number(iAlsaPort);
+						sPortName += ':';
+						sPortName += snd_seq_port_info_get_name(pPortInfo);
+						if (isPortName(sPortName)) {
+							qtractorMidiPortItem *pPortItem = 0;
+							if (pClientItem == 0) {
+								pClientItem = new qtractorMidiClientItem(this,
+									sClientName, iAlsaClient);
 								iDirtyCount++;
+							} else {
+								pPortItem = pClientItem->findPortItem(iAlsaPort);
+								if (sClientName != pClientItem->clientName()) {
+									pClientItem->setClientName(sClientName);
+									iDirtyCount++;
+								}
 							}
-						}
-						if (pClientItem) {
-							QString sPortName = QString::number(iAlsaPort);
-							sPortName += ':';
-							sPortName += snd_seq_port_info_get_name(pPortInfo);
-							if (pPortItem == 0) {
-								pPortItem = new qtractorMidiPortItem(
-									pClientItem, sPortName, iAlsaPort);
-								iDirtyCount++;
-							} else if (sPortName != pPortItem->portName()) {
-								pPortItem->setPortName(sPortName);
-								iDirtyCount++;
+							if (pClientItem) {
+								if (pPortItem == 0) {
+									pPortItem = new qtractorMidiPortItem(
+										pClientItem, sPortName, iAlsaPort);
+									iDirtyCount++;
+								} else if (sPortName != pPortItem->portName()) {
+									pPortItem->setPortName(sPortName);
+									iDirtyCount++;
+								}
 							}
+							if (pPortItem)
+								pPortItem->markClientPort(1);
 						}
-						if (pPortItem)
-							pPortItem->markClientPort(1);
 					}
 				}
 			}
@@ -309,6 +311,8 @@ const QPixmap& qtractorMidiConnect::pixmap ( int iPixmap )
 void qtractorMidiConnect::setAlsaSeq ( snd_seq_t *pAlsaSeq )
 {
 	m_pAlsaSeq = pAlsaSeq;
+
+	updateContents(true);
 }
 
 snd_seq_t *qtractorMidiConnect::alsaSeq (void) const
@@ -378,6 +382,9 @@ bool qtractorMidiConnect::disconnectPorts ( qtractorPortListItem *pOPort,
 // Update port connection references.
 void qtractorMidiConnect::updateConnections (void)
 {
+	if (m_pAlsaSeq == 0)
+		return;
+
 	snd_seq_query_subscribe_t *pAlsaSubs;
 	snd_seq_addr_t seq_addr;
 

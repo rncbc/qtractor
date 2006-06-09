@@ -268,10 +268,12 @@ void qtractorConnectForm::updateClientsComboBox ( QComboBox *pComboBox,
 		pComboBox->insertItem(pixmap, *iter++);
 
 	const QString& sClientName = pClientListView->clientName();
-	if (sClientName.isEmpty())
+	if (sClientName.isEmpty()) {
 		pComboBox->setCurrentItem(0);
-	else
+	} else {
 		pComboBox->setCurrentText(sClientName);
+		pClientListView->setOpenAll(true);
+	}
 }
 
 

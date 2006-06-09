@@ -149,30 +149,32 @@ int qtractorAudioClientListView::updateClientPorts (void)
 				if (isClientName(sClientName)) {
 					QString sPortName
 						= sClientPort.right(sClientPort.length() - iColon - 1);
-					pClientItem
-						= static_cast<qtractorAudioClientItem *> (
-							findClientItem(sClientName));
-					if (pClientItem) {
-						pPortItem
-							= static_cast<qtractorAudioPortItem *> (
-								pClientItem->findPortItem(sPortName));
-					}
-					if (pClientItem == 0) {
-						pClientItem = new qtractorAudioClientItem(this,
-							sClientName);
-						iDirtyCount++;
-					}
-					if (pClientItem && pPortItem == 0) {
-						jack_port_t *pJackPort = jack_port_by_name(
-							pJackClient, ppszClientPorts[iClientPort]);
-						if (pJackPort) {
-							pPortItem = new qtractorAudioPortItem(
-								pClientItem, sPortName, pJackPort);
+					if (isPortName(sPortName)) {
+						pClientItem
+							= static_cast<qtractorAudioClientItem *> (
+								findClientItem(sClientName));
+						if (pClientItem) {
+							pPortItem
+								= static_cast<qtractorAudioPortItem *> (
+									pClientItem->findPortItem(sPortName));
+						}
+						if (pClientItem == 0) {
+							pClientItem = new qtractorAudioClientItem(this,
+								sClientName);
 							iDirtyCount++;
 						}
+						if (pClientItem && pPortItem == 0) {
+							jack_port_t *pJackPort = jack_port_by_name(
+								pJackClient, ppszClientPorts[iClientPort]);
+							if (pJackPort) {
+								pPortItem = new qtractorAudioPortItem(
+									pClientItem, sPortName, pJackPort);
+								iDirtyCount++;
+							}
+						}
+						if (pPortItem)
+							pPortItem->markClientPort(1);
 					}
-					if (pPortItem)
-						pPortItem->markClientPort(1);
 				}
 			}
 			iClientPort++;
@@ -255,6 +257,8 @@ const QPixmap& qtractorAudioConnect::pixmap ( int iPixmap )
 void qtractorAudioConnect::setJackClient( jack_client_t *pJackClient )
 {
 	m_pJackClient = pJackClient;
+
+	updateContents(true);
 }
 
 jack_client_t *qtractorAudioConnect::jackClient (void) const
@@ -302,6 +306,9 @@ bool qtractorAudioConnect::disconnectPorts ( qtractorPortListItem *pOPort,
 // Update port connection references.
 void qtractorAudioConnect::updateConnections (void)
 {
+	if (m_pJackClient == 0)
+		return;
+
 	// For each output client item...
 	QListViewItem *pOClientItem = OListView()->firstChild();
 	while (pOClientItem && pOClientItem->rtti() == QTRACTOR_CLIENT_ITEM) {

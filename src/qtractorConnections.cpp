@@ -46,17 +46,28 @@ qtractorConnections::qtractorConnections ( qtractorMainForm *pMainForm )
 
 	// Create main inner widget.
 	m_pConnectForm = new qtractorConnectForm(this);
+	// Set proper tab widget icons...
+	m_pConnectForm->ConnectTabWidget->setTabIconSet(
+		m_pConnectForm->ConnectTabWidget->page(0),
+		QIconSet(QPixmap::fromMimeSource("trackAudio.png")));
+	m_pConnectForm->ConnectTabWidget->setTabIconSet(
+		m_pConnectForm->ConnectTabWidget->page(1),
+		QIconSet(QPixmap::fromMimeSource("trackMidi.png")));
 
 	// Prepare the dockable window stuff.
 	QDockWindow::setWidget(m_pConnectForm);
 	QDockWindow::setOrientation(Qt::Horizontal);
 	QDockWindow::setCloseMode(QDockWindow::Always);
 	QDockWindow::setResizeEnabled(true);
+	// Some specialties to this kind of dock window...
+	QDockWindow::setFixedExtentHeight(240);
+	QDockWindow::setFixedExtentWidth(480);
 
 	// Finally set the default caption and tooltip.
 	QString sCaption = tr("Connections");
 	QToolTip::add(this, sCaption);
 	QDockWindow::setCaption(sCaption);
+	QDockWindow::setIcon(QPixmap::fromMimeSource("qtractorTracks.png"));
 
 	// Get previously saved splitter sizes,
 	// (with fair default...)
@@ -114,37 +125,57 @@ void qtractorConnections::showBus ( qtractorBus *pBus,
 	if (pSession == NULL)
 		return;
 
+	const QString sSuffix = ".*";
+
 	switch (pBus->busType()) {
 	case qtractorTrack::Audio:
 	{	// Show exclusive Audio engine connections...
-		m_pConnectForm->ConnectionsTabWidget->setCurrentPage(0);
-		if (busMode & qtractorBus::Input) {
-			m_pConnectForm->AudioOClientsComboBox->setCurrentItem(0);
-			m_pConnectForm->AudioIClientsComboBox->setCurrentText(
-				pSession->audioEngine()->clientName());
-		} else {
-			m_pConnectForm->AudioOClientsComboBox->setCurrentText(
-				pSession->audioEngine()->clientName());
-			m_pConnectForm->AudioIClientsComboBox->setCurrentItem(0);
+		qtractorAudioBus *pAudioBus
+			= static_cast<qtractorAudioBus *> (pBus);
+		if (pAudioBus) {
+			m_pConnectForm->ConnectTabWidget->setCurrentPage(0);
+			if (busMode & qtractorBus::Input) {
+				m_pConnectForm->AudioOClientsComboBox->setCurrentItem(0);
+				m_pConnectForm->AudioIClientsComboBox->setCurrentText(
+					pSession->audioEngine()->clientName());
+				m_pConnectForm->AudioIListView->setPortName(
+					pAudioBus->busName() + sSuffix);
+			} else {
+				m_pConnectForm->AudioOClientsComboBox->setCurrentText(
+					pSession->audioEngine()->clientName());
+				m_pConnectForm->AudioOListView->setPortName(
+					pAudioBus->busName() + sSuffix);
+				m_pConnectForm->AudioIClientsComboBox->setCurrentItem(0);
+			}
+			m_pConnectForm->audioRefresh();
 		}
-		m_pConnectForm->audioRefresh();
 		break;
 	}
 	case qtractorTrack::Midi:
 	{	// Show exclusive MIDI engine connections...
-		m_pConnectForm->ConnectionsTabWidget->setCurrentPage(1);
-		if (busMode & qtractorBus::Input) {
-			m_pConnectForm->MidiOClientsComboBox->setCurrentItem(0);
-			m_pConnectForm->MidiIClientsComboBox->setCurrentText(
-				QString::number(pSession->midiEngine()->alsaClient())
-				+ ':'+ pSession->midiEngine()->clientName());
-		} else {
-			m_pConnectForm->MidiOClientsComboBox->setCurrentText(
-				QString::number(pSession->midiEngine()->alsaClient())
-				+ ':' + pSession->midiEngine()->clientName());
-			m_pConnectForm->MidiIClientsComboBox->setCurrentItem(0);
+		qtractorMidiBus *pMidiBus
+			= static_cast<qtractorMidiBus *> (pBus);
+		if (pMidiBus) {
+			m_pConnectForm->ConnectTabWidget->setCurrentPage(1);
+			if (busMode & qtractorBus::Input) {
+				m_pConnectForm->MidiOClientsComboBox->setCurrentItem(0);
+				m_pConnectForm->MidiIClientsComboBox->setCurrentText(
+					QString::number(pSession->midiEngine()->alsaClient())
+					+ ':'+ pSession->midiEngine()->clientName());
+				m_pConnectForm->MidiIListView->setPortName(
+					QString::number(pMidiBus->alsaPort())
+					+ ':' + pMidiBus->busName() + sSuffix);
+			} else {
+				m_pConnectForm->MidiOClientsComboBox->setCurrentText(
+					QString::number(pSession->midiEngine()->alsaClient())
+					+ ':' + pSession->midiEngine()->clientName());
+				m_pConnectForm->MidiOListView->setPortName(
+					QString::number(pMidiBus->alsaPort())
+					+ ':' + pMidiBus->busName() + sSuffix);
+				m_pConnectForm->MidiIClientsComboBox->setCurrentItem(0);
+			}
+			m_pConnectForm->midiRefresh();
 		}
-		m_pConnectForm->midiRefresh();
 		break;
 	}
 	default:
