@@ -531,9 +531,12 @@ const QStringList& qtractorClientListView::clientNames (void) const
 	return m_clientNames;
 }
 
-void qtractorClientListView::clearClientNames (void)
+// Override clear method.
+void qtractorClientListView::clear (void)
 {
-	m_clientNames.clear();
+	m_pHiliteItem = 0;
+	m_clientNames.clear();	
+	QListView::clear();
 }
 
 
@@ -1570,9 +1573,7 @@ void qtractorConnect::updateContents ( bool bClear )
 
 	// Do we do a complete rebuild?
 	if (bClear) {
-		m_pOListView->clearClientNames();
 		m_pOListView->clear();
-		m_pIListView->clearClientNames();
 		m_pIListView->clear();
 	}
 

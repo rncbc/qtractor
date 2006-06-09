@@ -232,8 +232,11 @@ public:
 
 	// Maintained current client name list.
 	const QStringList& clientNames() const;
-	void clearClientNames();
 
+	// Override clear method.
+	void clear();
+
+	// Override
 	// Retrieve all cached connections from given client name.
 	QStringList connects(const QString& sClientName);
 

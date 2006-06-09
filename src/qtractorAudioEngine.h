@@ -61,10 +61,12 @@ public:
 	void setNotifyWidget       (QWidget *pNotifyWidget);
 	void setNotifyShutdownType (QEvent::Type eNotifyShutdownType);
 	void setNotifyXrunType     (QEvent::Type eNotifyXrunType);
+	void setNotifyPortType     (QEvent::Type eNotifyPortType);
 
 	QWidget     *notifyWidget() const;
 	QEvent::Type notifyShutdownType() const;
 	QEvent::Type notifyXrunType() const;
+	QEvent::Type notifyPortType() const;
 
 protected:
 
@@ -85,6 +87,7 @@ private:
 	QWidget      *m_pNotifyWidget;
 	QEvent::Type  m_eNotifyShutdownType;
 	QEvent::Type  m_eNotifyXrunType;
+	QEvent::Type  m_eNotifyPortType;
 };
 
 

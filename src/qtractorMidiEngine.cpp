@@ -32,6 +32,7 @@
 #include "qtractorMidiClip.h"
 
 #include <qthread.h>
+#include <qsocketnotifier.h>
 
 
 // Specific controller definitions
@@ -451,9 +452,12 @@ void qtractorMidiOutputThread::sync (void)
 qtractorMidiEngine::qtractorMidiEngine ( qtractorSession *pSession )
 	: qtractorEngine(pSession, qtractorTrack::Midi)
 {
-	m_pAlsaSeq    = NULL;
-	m_iAlsaClient = -1;
-	m_iAlsaQueue  = -1;
+	m_pAlsaSeq      = NULL;
+	m_iAlsaClient   = -1;
+	m_iAlsaQueue    = -1;
+	
+	m_iAlsaSubsPort = -1;
+	m_pAlsaNotifier = NULL;
 
 	m_pInputThread  = NULL;
 	m_pOutputThread = NULL;
@@ -477,6 +481,13 @@ int qtractorMidiEngine::alsaClient (void) const
 int qtractorMidiEngine::alsaQueue (void) const
 {
 	return m_iAlsaQueue;
+}
+
+
+// ALSA subscription port notifier.
+QSocketNotifier *qtractorMidiEngine::alsaNotifier (void) const
+{
+	return m_pAlsaNotifier;
 }
 
 
@@ -837,6 +848,28 @@ bool qtractorMidiEngine::init ( const QString& sClientName )
 	m_iAlsaClient = snd_seq_client_id(m_pAlsaSeq);
 	m_iAlsaQueue  = snd_seq_alloc_queue(m_pAlsaSeq);
 
+	// Setup subscription
+	m_iAlsaSubsPort = snd_seq_create_simple_port(
+		m_pAlsaSeq, clientName().latin1(),
+		SND_SEQ_PORT_CAP_WRITE | SND_SEQ_PORT_CAP_SUBS_WRITE |
+		SND_SEQ_PORT_CAP_NO_EXPORT, SND_SEQ_PORT_TYPE_APPLICATION);
+
+	if (m_iAlsaSubsPort >= 0) {
+		struct pollfd pfd[1];
+		snd_seq_addr_t seq_addr;
+		snd_seq_port_subscribe_t *pAlsaSubs;
+		snd_seq_port_subscribe_alloca(&pAlsaSubs);
+		seq_addr.client = SND_SEQ_CLIENT_SYSTEM;
+		seq_addr.port   = SND_SEQ_PORT_SYSTEM_ANNOUNCE;
+		snd_seq_port_subscribe_set_sender(pAlsaSubs, &seq_addr);
+		seq_addr.client = snd_seq_client_id(m_pAlsaSeq);
+		seq_addr.port   = m_iAlsaSubsPort;
+		snd_seq_port_subscribe_set_dest(pAlsaSubs, &seq_addr);
+		snd_seq_subscribe_port(m_pAlsaSeq, pAlsaSubs);
+		snd_seq_poll_descriptors(m_pAlsaSeq, pfd, 1, POLLIN);
+		m_pAlsaNotifier	= new QSocketNotifier(pfd[0].fd, QSocketNotifier::Read);
+	}
+
 	return true;
 }
 
@@ -973,8 +1006,19 @@ void qtractorMidiEngine::clean (void)
 		m_pInputThread = NULL;
 	}
 
+	
 	// Drop everything else, finally.
 	if (m_pAlsaSeq) {
+		// Drop subscription stuff.
+		if (m_pAlsaNotifier) {
+			delete m_pAlsaNotifier;
+			m_pAlsaNotifier = NULL;
+		}
+		if (m_iAlsaSubsPort >= 0) {
+			snd_seq_delete_simple_port(m_pAlsaSeq, m_iAlsaSubsPort);
+			m_iAlsaSubsPort = -1;
+		}
+		// And now, the sequencer queue and handle...
 		snd_seq_free_queue(m_pAlsaSeq, m_iAlsaQueue);
 		snd_seq_close(m_pAlsaSeq);
 		m_iAlsaQueue  = -1;

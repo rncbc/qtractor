@@ -82,6 +82,40 @@ static int qtractorAudioEngine_xrun ( void *pvArg )
 
 
 //----------------------------------------------------------------------
+// qtractorAudioEngine_graph -- JACK client graph change callback.
+//
+
+static int qtractorAudioEngine_graph_order ( void *pvArg )
+{
+	qtractorAudioEngine *pAudioEngine
+		= static_cast<qtractorAudioEngine *> (pvArg);
+
+	if (pAudioEngine->notifyWidget()) {
+		QApplication::postEvent(pAudioEngine->notifyWidget(),
+			new QCustomEvent(pAudioEngine->notifyPortType(), pAudioEngine));
+	}
+
+	return 0;
+}
+
+
+//----------------------------------------------------------------------
+// qtractorAudioEngine_port -- JACK client port registration callback.
+//
+
+static void qtractorAudioEngine_graph_port ( jack_port_id_t, int, void *pvArg )
+{
+	qtractorAudioEngine *pAudioEngine
+		= static_cast<qtractorAudioEngine *> (pvArg);
+
+	if (pAudioEngine->notifyWidget()) {
+		QApplication::postEvent(pAudioEngine->notifyWidget(),
+			new QCustomEvent(pAudioEngine->notifyPortType(), pAudioEngine));
+	}
+}
+
+
+//----------------------------------------------------------------------
 // class qtractorAudioEngine -- JACK client instance (singleton).
 //
 
@@ -94,6 +128,7 @@ qtractorAudioEngine::qtractorAudioEngine ( qtractorSession *pSession )
 	m_pNotifyWidget       = NULL;
 	m_eNotifyShutdownType = QEvent::None;
 	m_eNotifyXrunType     = QEvent::None;
+	m_eNotifyPortType    = QEvent::None;
 }
 
 
@@ -120,6 +155,11 @@ void qtractorAudioEngine::setNotifyXrunType ( QEvent::Type eNotifyXrunType )
 	m_eNotifyXrunType = eNotifyXrunType;
 }
 
+void qtractorAudioEngine::setNotifyPortType ( QEvent::Type eNotifyPortType )
+{
+	m_eNotifyPortType = eNotifyPortType;
+}
+
 
 QWidget *qtractorAudioEngine::notifyWidget (void) const
 {
@@ -134,6 +174,11 @@ QEvent::Type qtractorAudioEngine::notifyShutdownType (void) const
 QEvent::Type qtractorAudioEngine::notifyXrunType (void) const
 {
 	return m_eNotifyXrunType;
+}
+
+QEvent::Type qtractorAudioEngine::notifyPortType (void) const
+{
+	return m_eNotifyPortType;
 }
 
 
@@ -160,8 +205,14 @@ bool qtractorAudioEngine::activate (void)
 			qtractorAudioEngine_process, this);
 
 	// And some other event callbacks...
-    jack_set_xrun_callback(m_pJackClient, qtractorAudioEngine_xrun, this);
-    jack_on_shutdown(m_pJackClient, qtractorAudioEngine_shutdown, this);
+    jack_set_xrun_callback(m_pJackClient,
+		qtractorAudioEngine_xrun, this);
+    jack_on_shutdown(m_pJackClient,
+		qtractorAudioEngine_shutdown, this);
+    jack_set_graph_order_callback(m_pJackClient,
+		qtractorAudioEngine_graph_order, this);
+    jack_set_port_registration_callback(m_pJackClient,
+		qtractorAudioEngine_graph_port, this);
 
 	// Time to activate ourselves...
 	jack_activate(m_pJackClient);

@@ -35,6 +35,8 @@ class qtractorMidiInputThread;
 class qtractorMidiOutputThread;
 class qtractorMidiMonitor;
 
+class QSocketNotifier;
+
 
 //----------------------------------------------------------------------
 // class qtractorMidiEngine -- ALSA sequencer client instance (singleton).
@@ -51,6 +53,9 @@ public:
 	snd_seq_t *alsaSeq() const;
 	int alsaClient() const;
 	int alsaQueue() const;
+
+	// ALSA subscription port notifier.
+	QSocketNotifier *alsaNotifier() const;
 
 	// Special slave sync method.
 	void sync();
@@ -100,6 +105,10 @@ private:
 	snd_seq_t *m_pAlsaSeq;
 	int        m_iAlsaClient;
 	int        m_iAlsaQueue;
+
+	// Subscription notification stuff.
+	int              m_iAlsaSubsPort;
+	QSocketNotifier *m_pAlsaNotifier;
 
 	// Name says it all.
 	qtractorMidiInputThread  *m_pInputThread;

@@ -35,6 +35,7 @@
 
 #include "qtractorAudioPeak.h"
 #include "qtractorAudioEngine.h"
+#include "qtractorMidiEngine.h"
 
 #include "qtractorSessionDocument.h"
 #include "qtractorSessionCursor.h"
@@ -49,6 +50,7 @@
 
 #include "qtractorSessionForm.h"
 #include "qtractorOptionsForm.h"
+#include "qtractorConnectForm.h"
 #include "qtractorInstrumentForm.h"
 
 #include <qapplication.h>
@@ -95,6 +97,7 @@
 #define QTRACTOR_PEAK_EVENT     QEvent::Type(QEvent::User + 1)
 #define QTRACTOR_XRUN_EVENT     QEvent::Type(QEvent::User + 2)
 #define QTRACTOR_SHUT_EVENT     QEvent::Type(QEvent::User + 3)
+#define QTRACTOR_PORT_EVENT     QEvent::Type(QEvent::User + 4)
 
 
 //-------------------------------------------------------------------------
@@ -131,12 +134,16 @@ void qtractorMainForm::init (void)
 	m_iXrunSkip  = 0;
 	m_iXrunTimer = 0;
 
+	m_iAudioRefreshTimer = 0;
+	m_iMidiRefreshTimer  = 0;
+
 	// Configure the audio engine event handling...
 	qtractorAudioEngine *pAudioEngine = m_pSession->audioEngine();
 	if (pAudioEngine) {
 		pAudioEngine->setNotifyWidget(this);
 		pAudioEngine->setNotifyShutdownType(QTRACTOR_SHUT_EVENT);
 		pAudioEngine->setNotifyXrunType(QTRACTOR_XRUN_EVENT);
+		pAudioEngine->setNotifyPortType(QTRACTOR_PORT_EVENT);
 	}
 
 	// Configure the audio file peak factory...
@@ -554,6 +561,11 @@ void qtractorMainForm::customEvent ( QCustomEvent *pCustomEvent )
 		// A peak file has just been (re)created;
 		// try to postpone the event effect a little more...
 		m_iPeakTimer += QTRACTOR_TIMER_DELAY;
+		break;
+	case QTRACTOR_PORT_EVENT:
+		// An Audio graph change has just been issued;
+		// try to postpone the event effect a little more...
+		m_iAudioRefreshTimer += QTRACTOR_TIMER_DELAY;
 		break;
 	case QTRACTOR_XRUN_EVENT:
 		// An XRUN has just been notified...
@@ -1896,6 +1908,11 @@ void qtractorMainForm::updateSession (void)
 		m_pSession->setPlayHead(0);
 		// (Re)initialize MIDI instrument patching...
 		m_pSession->setMidiPatch(m_pInstruments);
+		// Get on with the special ALSA sequencer notifier...
+		if (m_pSession->midiEngine()->alsaNotifier()) {
+			QObject::connect(m_pSession->midiEngine()->alsaNotifier(),
+				SIGNAL(activated(int)), this, SLOT(alsaNotify()));			
+		}
 	}
 
 	// Update the session views...
@@ -2101,12 +2118,43 @@ void qtractorMainForm::timerSlot (void)
 		}
 	}
 
+	// Check if its time to refresh Audio connections...
+	if (m_iAudioRefreshTimer > 0) {
+		m_iAudioRefreshTimer -= QTRACTOR_TIMER_MSECS;
+		if (m_iAudioRefreshTimer < QTRACTOR_TIMER_MSECS) {
+			m_iAudioRefreshTimer = 0;
+			if (m_pConnections)
+				m_pConnections->connectForm()->audioRefresh();
+		}
+	}
+	// MIDI connections should be checked too...
+	if (m_iMidiRefreshTimer > 0) {
+		m_iMidiRefreshTimer -= QTRACTOR_TIMER_MSECS;
+		if (m_iMidiRefreshTimer < QTRACTOR_TIMER_MSECS) {
+			m_iMidiRefreshTimer = 0;
+			if (m_pConnections)
+				m_pConnections->connectForm()->midiRefresh();
+		}
+	}
+
 	// Always update mixer monitoring...
 	if (m_pMixer)
 		m_pMixer->refresh();
 
 	// Register the next timer slot.
 	QTimer::singleShot(QTRACTOR_TIMER_MSECS, this, SLOT(timerSlot()));
+}
+
+
+//-------------------------------------------------------------------------
+// qtractorMainForm -- MIDI engine notifications.
+
+// ALSA sequencer notification slot.
+void qtractorMainForm::alsaNotify (void)
+{
+	// A MIDI graph change has just been occurred;
+	// try to postpone the event effect a little more...
+	m_iMidiRefreshTimer += QTRACTOR_TIMER_DELAY;
 }
 
 

@@ -1461,6 +1461,8 @@
 	<variable access="private">int m_iXrunCount;</variable>
 	<variable access="private">int m_iXrunSkip;</variable>
 	<variable access="private">int m_iXrunTimer;</variable>
+    <variable access="private">int m_iAudioRefreshTimer;</variable>
+    <variable access="private">int m_iMidiRefreshTimer;</variable>
 </variables>
 <slots>
     <slot specifier="non virtual">fileNew( void )</slot>
@@ -1509,6 +1511,7 @@
     <slot specifier="non virtual">helpAbout( void )</slot>
     <slot specifier="non virtual">stabilizeForm( void )</slot>
     <slot specifier="non virtual">timerSlot( void )</slot>
+    <slot specifier="non virtual">alsaNotify( void )</slot>
     <slot specifier="non virtual">tracksClosed( void )</slot>
 	<slot specifier="non virtual">addAudioFile( const QString &amp; sFilename )</slot>
 	<slot specifier="non virtual">activateAudioFile( const QString &amp; sFilename )</slot>
