@@ -102,6 +102,7 @@
             <action name="viewToolbarFileAction"/>
             <action name="viewToolbarEditAction"/>
             <action name="viewToolbarTrackAction"/>
+			<action name="viewToolbarViewAction"/>
             <action name="viewToolbarTransportAction"/>
             <action name="viewToolbarTimeAction"/>
         </item>
@@ -175,6 +176,18 @@
         <separator/>
         <action name="trackPropertiesAction"/>
     </toolbar>
+	<toolbar dock="2">
+		<property name="name">
+			<cstring>viewToolbar</cstring>
+		</property>
+		<property name="label">
+			<string>View</string>
+		</property>
+		<action name="viewFilesAction"/>
+		<action name="viewMessagesAction"/>
+		<action name="viewConnectionsAction"/>
+		<action name="viewMixerAction"/>
+	</toolbar>
     <toolbar dock="2">
         <property name="name">
             <cstring>transportToolbar</cstring>
@@ -645,7 +658,7 @@
             <string>&amp;Menubar</string>
         </property>
         <property name="toolTip">
-            <string>Show/hide menubar</string>
+            <string>Menubar</string>
         </property>
         <property name="statusTip">
             <string>Show/hide the main program window menubar</string>
@@ -668,7 +681,7 @@
             <string>&amp;Statusbar</string>
         </property>
         <property name="toolTip">
-            <string>Show/hide statusbar</string>
+            <string>Statusbar</string>
         </property>
         <property name="statusTip">
             <string>Show/hide the main program window statusbar</string>
@@ -688,7 +701,7 @@
             <string>&amp;Toolbars</string>
         </property>
         <property name="toolTip">
-            <string>Show/hide toolbars</string>
+            <string>Toolbars</string>
         </property>
         <property name="statusTip">
             <string>Show/hide main program window toolbars</string>
@@ -708,7 +721,7 @@
             <string>&amp;File</string>
         </property>
         <property name="toolTip">
-            <string>Show/hide file toolbar</string>
+            <string>File toolbar</string>
         </property>
         <property name="statusTip">
             <string>Show/hide main program window file toolbar</string>
@@ -728,7 +741,7 @@
             <string>&amp;Edit</string>
         </property>
         <property name="toolTip">
-            <string>Show/hide edit toolbar</string>
+            <string>Edit toolbar</string>
         </property>
         <property name="statusTip">
             <string>Show/hide main program window edit toolbar</string>
@@ -748,12 +761,32 @@
             <string>&amp;Track</string>
         </property>
         <property name="toolTip">
-            <string>Show/hide track toolbar</string>
+            <string>Track toolbar</string>
         </property>
         <property name="statusTip">
             <string>Show/hide main program window track toolbar</string>
         </property>
     </action>
+	<action>
+		<property name="name">
+			<cstring>viewToolbarViewAction</cstring>
+		</property>
+		<property name="toggleAction">
+			<bool>true</bool>
+		</property>
+		<property name="text">
+			<string>View toolbar</string>
+		</property>
+		<property name="menuText">
+			<string>&amp;View</string>
+		</property>
+		<property name="toolTip">
+			<string>View toolbar</string>
+		</property>
+		<property name="statusTip">
+			<string>Show/hide main program window view toolbar</string>
+		</property>
+	</action>
     <action>
         <property name="name">
             <cstring>viewToolbarTransportAction</cstring>
@@ -768,7 +801,7 @@
             <string>T&amp;ransport</string>
         </property>
         <property name="toolTip">
-            <string>Show/hide transport toolbar</string>
+            <string>Transport toolbar</string>
         </property>
         <property name="statusTip">
             <string>Show/hide main program window transport toolbar</string>
@@ -788,7 +821,7 @@
             <string>T&amp;ime</string>
         </property>
         <property name="toolTip">
-            <string>Show/hide time toolbar</string>
+            <string>Time toolbar</string>
         </property>
         <property name="statusTip">
             <string>Show/hide main program window time toolbar</string>
@@ -801,6 +834,9 @@
         <property name="toggleAction">
             <bool>true</bool>
         </property>
+		<property name="iconSet">
+			<iconset>viewFiles.png</iconset>
+		</property>
         <property name="text">
             <string>Files</string>
         </property>
@@ -808,7 +844,7 @@
             <string>&amp;Files</string>
         </property>
         <property name="toolTip">
-            <string>Show/hide files</string>
+            <string>Files</string>
         </property>
         <property name="statusTip">
             <string>Show/hide the files window</string>
@@ -824,6 +860,9 @@
         <property name="toggleAction">
             <bool>true</bool>
         </property>
+		<property name="iconSet">
+			<iconset>viewMessages.png</iconset>
+		</property>
         <property name="text">
             <string>Messages</string>
         </property>
@@ -831,7 +870,7 @@
             <string>M&amp;essages</string>
         </property>
         <property name="toolTip">
-            <string>Show/hide messages</string>
+            <string>Messages</string>
         </property>
         <property name="statusTip">
             <string>Show/hide the messages window</string>
@@ -847,6 +886,9 @@
         <property name="toggleAction">
             <bool>true</bool>
         </property>
+		<property name="iconSet">
+			<iconset>viewConnections.png</iconset>
+		</property>
         <property name="text">
             <string>Connections</string>
         </property>
@@ -854,7 +896,7 @@
             <string>&amp;Connections</string>
         </property>
         <property name="toolTip">
-            <string>Show/hide connections</string>
+            <string>Connections</string>
         </property>
         <property name="statusTip">
             <string>Show/hide the connections window</string>
@@ -870,6 +912,9 @@
         <property name="toggleAction">
             <bool>true</bool>
         </property>
+		<property name="iconSet">
+			<iconset>viewMixer.png</iconset>
+		</property>
         <property name="text">
             <string>Mixer</string>
         </property>
@@ -877,7 +922,7 @@
             <string>Mi&amp;xer</string>
         </property>
         <property name="toolTip">
-            <string>Show/hide mixer</string>
+            <string>Mixer</string>
         </property>
         <property name="statusTip">
             <string>Show/hide the mixer window</string>
@@ -1301,6 +1346,12 @@
         <receiver>qtractorMainForm</receiver>
         <slot>viewToolbarTrack(bool)</slot>
     </connection>
+	<connection>
+		<sender>viewToolbarViewAction</sender>
+		<signal>toggled(bool)</signal>
+		<receiver>qtractorMainForm</receiver>
+		<slot>viewToolbarView(bool)</slot>
+	</connection>
     <connection>
         <sender>viewToolbarTransportAction</sender>
         <signal>toggled(bool)</signal>
@@ -1490,6 +1541,7 @@
     <slot specifier="non virtual">viewToolbarFile( bool bOn )</slot>
     <slot specifier="non virtual">viewToolbarEdit( bool bOn )</slot>
     <slot specifier="non virtual">viewToolbarTrack( bool bOn )</slot>
+	<slot specifier="non virtual">viewToolbarView( bool bOn )</slot>
     <slot specifier="non virtual">viewToolbarTransport( bool bOn )</slot>
     <slot specifier="non virtual">viewToolbarTime( bool bOn )</slot>
     <slot specifier="non virtual">viewFiles( bool bOn )</slot>

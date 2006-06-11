@@ -64,6 +64,7 @@ qtractorFiles::qtractorFiles ( QWidget *pParent, const char *pszName )
 	QString sCaption = tr("Files");
 	QToolTip::add(this, sCaption);
 	QDockWindow::setCaption(sCaption);
+	QDockWindow::setIcon(QPixmap::fromMimeSource("viewFiles.png"));
 }
 
 

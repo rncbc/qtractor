@@ -79,25 +79,26 @@
 #endif
 
 // Timer constant stuff.
-#define QTRACTOR_TIMER_MSECS    50
-#define QTRACTOR_TIMER_DELAY    200
+#define QTRACTOR_TIMER_MSECS        50
+#define QTRACTOR_TIMER_DELAY        200
+#define QTRACTOR_TIMER_DELAY_MAX    500
 
 // Status bar item indexes
-#define QTRACTOR_STATUS_NAME    0       // Active session track caption.
-#define QTRACTOR_STATUS_MOD     1       // Current session modification state.
-#define QTRACTOR_STATUS_REC     2       // Current session recording state.
-#define QTRACTOR_STATUS_MUTE    3       // Current session muting state.
-#define QTRACTOR_STATUS_SOLO    4       // Current session soloing state.
-#define QTRACTOR_STATUS_LOOP    5       // Current session looping state.
-#define QTRACTOR_STATUS_TIME    6       // Current session length time.
-#define QTRACTOR_STATUS_RATE    7       // Current session sample rate.
+#define QTRACTOR_STATUS_NAME        0   // Active session track caption.
+#define QTRACTOR_STATUS_MOD         1   // Current session modification state.
+#define QTRACTOR_STATUS_REC         2   // Current session recording state.
+#define QTRACTOR_STATUS_MUTE        3   // Current session muting state.
+#define QTRACTOR_STATUS_SOLO        4   // Current session soloing state.
+#define QTRACTOR_STATUS_LOOP        5   // Current session looping state.
+#define QTRACTOR_STATUS_TIME        6   // Current session length time.
+#define QTRACTOR_STATUS_RATE        7   // Current session sample rate.
 
 
 // Specialties for thread-callback comunication.
-#define QTRACTOR_PEAK_EVENT     QEvent::Type(QEvent::User + 1)
-#define QTRACTOR_XRUN_EVENT     QEvent::Type(QEvent::User + 2)
-#define QTRACTOR_SHUT_EVENT     QEvent::Type(QEvent::User + 3)
-#define QTRACTOR_PORT_EVENT     QEvent::Type(QEvent::User + 4)
+#define QTRACTOR_PEAK_EVENT         QEvent::Type(QEvent::User + 1)
+#define QTRACTOR_XRUN_EVENT         QEvent::Type(QEvent::User + 2)
+#define QTRACTOR_SHUT_EVENT         QEvent::Type(QEvent::User + 3)
+#define QTRACTOR_PORT_EVENT         QEvent::Type(QEvent::User + 4)
 
 
 //-------------------------------------------------------------------------
@@ -371,6 +372,7 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 	viewToolbarFileAction->setOn(m_pOptions->bFileToolbar);
 	viewToolbarEditAction->setOn(m_pOptions->bEditToolbar);
 	viewToolbarTrackAction->setOn(m_pOptions->bTrackToolbar);
+	viewToolbarViewAction->setOn(m_pOptions->bViewToolbar);
 	viewToolbarTransportAction->setOn(m_pOptions->bTransportToolbar);
 	viewToolbarTimeAction->setOn(m_pOptions->bTimeToolbar);
 
@@ -382,6 +384,7 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 	viewToolbarFile(m_pOptions->bFileToolbar);
 	viewToolbarEdit(m_pOptions->bEditToolbar);
 	viewToolbarTrack(m_pOptions->bTrackToolbar);
+	viewToolbarView(m_pOptions->bViewToolbar);
 	viewToolbarTransport(m_pOptions->bTransportToolbar);
 	viewToolbarTime(m_pOptions->bTimeToolbar);
 
@@ -471,6 +474,7 @@ bool qtractorMainForm::queryClose (void)
 			m_pOptions->bFileToolbar = fileToolbar->isVisible();
 			m_pOptions->bEditToolbar = editToolbar->isVisible();
 			m_pOptions->bTrackToolbar = trackToolbar->isVisible();
+			m_pOptions->bViewToolbar = viewToolbar->isVisible();
 			m_pOptions->bTransportToolbar = transportToolbar->isVisible();
 			m_pOptions->bTimeToolbar = timeToolbar->isVisible();
 			m_pOptions->bFollowPlayhead = transportFollowAction->isOn();
@@ -560,12 +564,14 @@ void qtractorMainForm::customEvent ( QCustomEvent *pCustomEvent )
 	case QTRACTOR_PEAK_EVENT:
 		// A peak file has just been (re)created;
 		// try to postpone the event effect a little more...
-		m_iPeakTimer += QTRACTOR_TIMER_DELAY;
+		if (m_iPeakTimer  < QTRACTOR_TIMER_DELAY_MAX)
+			m_iPeakTimer += QTRACTOR_TIMER_DELAY;
 		break;
 	case QTRACTOR_PORT_EVENT:
 		// An Audio graph change has just been issued;
 		// try to postpone the event effect a little more...
-		m_iAudioRefreshTimer += QTRACTOR_TIMER_DELAY;
+		if (m_iAudioRefreshTimer  < QTRACTOR_TIMER_DELAY_MAX)
+			m_iAudioRefreshTimer += QTRACTOR_TIMER_DELAY;
 		break;
 	case QTRACTOR_XRUN_EVENT:
 		// An XRUN has just been notified...
@@ -574,7 +580,8 @@ void qtractorMainForm::customEvent ( QCustomEvent *pCustomEvent )
 		if (m_iXrunTimer > 0)
 			m_iXrunSkip++;
 		// Defer the informative effect...
-		m_iXrunTimer += QTRACTOR_TIMER_DELAY;
+		if (m_iXrunTimer  < QTRACTOR_TIMER_DELAY_MAX)
+			m_iXrunTimer += QTRACTOR_TIMER_DELAY;
 		break;
 	case QTRACTOR_SHUT_EVENT:
 		// Just in case we were in the middle of something...
@@ -1220,6 +1227,17 @@ void qtractorMainForm::viewToolbarTrack ( bool bOn )
 }
 
 
+// Show/hide the view-toolbar.
+void qtractorMainForm::viewToolbarView ( bool bOn )
+{
+	if (bOn) {
+		viewToolbar->show();
+	} else {
+		viewToolbar->hide();
+	}
+}
+
+
 // Show/hide the transport toolbar.
 void qtractorMainForm::viewToolbarTransport ( bool bOn )
 {
@@ -1816,6 +1834,9 @@ bool qtractorMainForm::startSession (void)
 	m_iXrunSkip  = 0;
 	m_iXrunTimer = 0;
 
+	m_iAudioRefreshTimer = 0;
+	m_iMidiRefreshTimer  = 0;
+
 	bool bResult = m_pSession->open(QTRACTOR_TITLE);
 	if (bResult) {
 		appendMessages(tr("Session started."));
@@ -2154,7 +2175,8 @@ void qtractorMainForm::alsaNotify (void)
 {
 	// A MIDI graph change has just been occurred;
 	// try to postpone the event effect a little more...
-	m_iMidiRefreshTimer += QTRACTOR_TIMER_DELAY;
+	if (m_iMidiRefreshTimer  < QTRACTOR_TIMER_DELAY_MAX)
+		m_iMidiRefreshTimer += QTRACTOR_TIMER_DELAY;
 }
 
 

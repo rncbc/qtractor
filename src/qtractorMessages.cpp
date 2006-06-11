@@ -84,6 +84,7 @@ qtractorMessages::qtractorMessages ( QWidget *pParent, const char *pszName )
 	QString sCaption = tr("Messages");
 	QToolTip::add(this, sCaption);
 	QDockWindow::setCaption(sCaption);
+	QDockWindow::setIcon(QPixmap::fromMimeSource("viewMessages.png"));
 }
 
 

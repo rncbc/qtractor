@@ -250,6 +250,11 @@ qtractorClientListItem::qtractorClientListItem (
 // Default destructor.
 qtractorClientListItem::~qtractorClientListItem (void)
 {
+	// Take chance to update list's client name list...
+	qtractorClientListView *pClientListView
+		= static_cast<qtractorClientListView *> (listView());
+	if (pClientListView)
+		pClientListView->removeClientName(m_sClientName);
 }
 
 
@@ -530,6 +535,14 @@ const QStringList& qtractorClientListView::clientNames (void) const
 {
 	return m_clientNames;
 }
+
+
+// Special client-name list state-du-jour method.
+void qtractorClientListView::removeClientName ( const QString& sClientName )
+{
+	m_clientNames.remove(sClientName);
+}
+
 
 // Override clear method.
 void qtractorClientListView::clear (void)
@@ -1604,20 +1617,20 @@ void qtractorConnect::contextMenu ( const QPoint& gpos )
 	QPopupMenu* pContextMenu = new QPopupMenu(m_pConnectorView);
 
 	iItemID = pContextMenu->insertItem(
-		QIconSet(QPixmap::fromMimeSource("itemConnect.png")),
+		QIconSet(QPixmap::fromMimeSource("formConnect.png")),
 		tr("Connect"), this, SLOT(connectSelected()));
 	pContextMenu->setItemEnabled(iItemID, canConnectSelected());
 	iItemID = pContextMenu->insertItem(
-		QIconSet(QPixmap::fromMimeSource("itemDisconnect.png")),
+		QIconSet(QPixmap::fromMimeSource("formDisconnect.png")),
 		tr("Disconnect"), this, SLOT(disconnectSelected()));
 	pContextMenu->setItemEnabled(iItemID, canDisconnectSelected());
 	iItemID = pContextMenu->insertItem(
-		QIconSet(QPixmap::fromMimeSource("itemDisconnectAll.png")),
+		QIconSet(QPixmap::fromMimeSource("formDisconnectAll.png")),
 		tr("Disconnect All"), this, SLOT(disconnectAll()));
 	pContextMenu->setItemEnabled(iItemID, canDisconnectAll());
 	pContextMenu->insertSeparator();
 	iItemID = pContextMenu->insertItem(
-		QIconSet(QPixmap::fromMimeSource("itemRefresh.png")),
+		QIconSet(QPixmap::fromMimeSource("formRefresh.png")),
 		tr("Refresh"), this, SLOT(refresh()));
 
 	pContextMenu->exec(gpos);

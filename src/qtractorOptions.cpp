@@ -60,6 +60,7 @@ qtractorOptions::qtractorOptions (void)
 	bFileToolbar    = m_settings.readBoolEntry("/FileToolbar", true);
 	bEditToolbar    = m_settings.readBoolEntry("/EditToolbar", true);
 	bTrackToolbar   = m_settings.readBoolEntry("/TrackToolbar", true);
+	bViewToolbar    = m_settings.readBoolEntry("/ViewToolbar", true);
 	bTransportToolbar = m_settings.readBoolEntry("/TransportToolbar", true);
 	bTimeToolbar    = m_settings.readBoolEntry("/TimeToolbar", true);
 	m_settings.endGroup();
@@ -143,6 +144,7 @@ qtractorOptions::~qtractorOptions (void)
 	m_settings.writeEntry("/FileToolbar", bFileToolbar);
 	m_settings.writeEntry("/EditToolbar", bEditToolbar);
 	m_settings.writeEntry("/TrackToolbar", bTrackToolbar);
+	m_settings.writeEntry("/ViewToolbar", bViewToolbar);
 	m_settings.writeEntry("/TransportToolbar", bTransportToolbar);
 	m_settings.writeEntry("/TimeToolbar", bTimeToolbar);
 	m_settings.endGroup();

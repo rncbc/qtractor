@@ -67,7 +67,7 @@ qtractorConnections::qtractorConnections ( qtractorMainForm *pMainForm )
 	QString sCaption = tr("Connections");
 	QToolTip::add(this, sCaption);
 	QDockWindow::setCaption(sCaption);
-	QDockWindow::setIcon(QPixmap::fromMimeSource("qtractorTracks.png"));
+	QDockWindow::setIcon(QPixmap::fromMimeSource("viewConnections.png"));
 
 	// Get previously saved splitter sizes,
 	// (with fair default...)

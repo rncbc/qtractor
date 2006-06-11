@@ -233,6 +233,9 @@ public:
 	// Maintained current client name list.
 	const QStringList& clientNames() const;
 
+	// Special client-name list state-du-jour method.
+	void removeClientName(const QString& sClientName);
+
 	// Override clear method.
 	void clear();
 

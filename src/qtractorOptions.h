@@ -69,6 +69,7 @@ public:
 	bool    bFileToolbar;
 	bool    bEditToolbar;
 	bool    bTrackToolbar;
+	bool    bViewToolbar;
 	bool    bTransportToolbar;
 	bool    bTimeToolbar;
 

@@ -674,7 +674,7 @@ qtractorMixer::qtractorMixer ( qtractorMainForm *pMainForm )
 	QString sCaption = tr("Mixer");
 	QToolTip::add(this, sCaption);
 	QDockWindow::setCaption(sCaption);
-	QDockWindow::setIcon(QPixmap::fromMimeSource("qtractorTracks.png"));
+	QDockWindow::setIcon(QPixmap::fromMimeSource("viewMixer.png"));
 
 	// Get previously saved splitter sizes,
 	// (with afair default...)
