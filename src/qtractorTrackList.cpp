@@ -217,8 +217,13 @@ void qtractorTrackListItem::setText ( int iColumn, const QString& sText )
 					= (*trackList()->instruments())[patch.instrumentName];
 				qtractorInstrumentData& bank
 					= instr.patch(m_pTrack->midiBank());
-				QListViewItem::setText(qtractorTrackList::Patch,
-					bank[m_pTrack->midiProgram()] + '\n' + bank.name());
+				if (bank.contains(m_pTrack->midiProgram())) {
+					QListViewItem::setText(qtractorTrackList::Patch,
+						bank[m_pTrack->midiProgram()] + '\n' + bank.name());
+				} else {
+					QListViewItem::setText(qtractorTrackList::Patch,
+						QString::number(m_pTrack->midiProgram() + 1) + "  - -");
+				}
 				QListViewItem::setText(qtractorTrackList::Instrument,
 					patch.instrumentName);
 			} else {

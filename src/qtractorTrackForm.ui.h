@@ -499,7 +499,7 @@ void qtractorTrackForm::updatePrograms (  const QString& sInstrumentName,
 		// Enumerate the explicit given program list...
 		qtractorInstrumentData::Iterator it;
 		for (it = bank.begin(); it != bank.end(); ++it) {
-			if (it.key() >= 0) {
+			if (it.key() >= 0 && !it.data().isEmpty()) {
 				ProgComboBox->insertItem(pixmap, it.data());
 				m_progs[iProgIndex++] = it.key();
 			}
@@ -511,13 +511,13 @@ void qtractorTrackForm::updatePrograms (  const QString& sInstrumentName,
 		// Just make a generic program list...
 		for (iProgIndex = 0; iProgIndex < 128; iProgIndex++) {
 			ProgComboBox->insertItem(pixmap,
-				QString::number(iProgIndex + 1) + " --");
+				QString::number(iProgIndex + 1) + "  - -");
 			m_progs[iProgIndex] = iProgIndex;
 		}
 	}
 
 	// Select program...
-	iProgIndex = 0;
+	iProgIndex = iProg;
 	if (bank.contains(iProg)) {
 		QListBoxItem *pItem	= ProgComboBox->listBox()->findItem(
 			bank[iProg], Qt::ExactMatch | Qt::CaseSensitive);

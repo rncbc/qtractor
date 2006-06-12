@@ -499,7 +499,7 @@ bool qtractorInstrumentList::save ( const QString& sFilename )
 
 	// Done.
     file.close();
-    
+
 	return true;
 }
 
