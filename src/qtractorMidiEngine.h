@@ -56,6 +56,7 @@ public:
 
 	// ALSA subscription port notifier.
 	QSocketNotifier *alsaNotifier() const;
+	void alsaNotifyAck();
 
 	// Special slave sync method.
 	void sync();
@@ -107,6 +108,7 @@ private:
 	int        m_iAlsaQueue;
 
 	// Subscription notification stuff.
+	snd_seq_t       *m_pAlsaSubsSeq;
 	int              m_iAlsaSubsPort;
 	QSocketNotifier *m_pAlsaNotifier;
 

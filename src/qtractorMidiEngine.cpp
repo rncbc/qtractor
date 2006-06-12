@@ -455,15 +455,16 @@ qtractorMidiEngine::qtractorMidiEngine ( qtractorSession *pSession )
 	m_pAlsaSeq      = NULL;
 	m_iAlsaClient   = -1;
 	m_iAlsaQueue    = -1;
-	
+
+	m_pAlsaSubsSeq  = NULL;
 	m_iAlsaSubsPort = -1;
 	m_pAlsaNotifier = NULL;
 
 	m_pInputThread  = NULL;
 	m_pOutputThread = NULL;
 
-	m_iTimeStart = 0;
-	m_iTimeDelta = 0;
+	m_iTimeStart    = 0;
+	m_iTimeDelta    = 0;
 }
 
 
@@ -488,6 +489,21 @@ int qtractorMidiEngine::alsaQueue (void) const
 QSocketNotifier *qtractorMidiEngine::alsaNotifier (void) const
 {
 	return m_pAlsaNotifier;
+}
+
+
+// ALSA subscription notifier acknowledgment.
+void qtractorMidiEngine::alsaNotifyAck (void)
+{
+	if (m_pAlsaSubsSeq == NULL)
+		return;
+
+	do {
+		snd_seq_event_t *pAlsaEvent;
+		snd_seq_event_input(m_pAlsaSubsSeq, &pAlsaEvent);
+		snd_seq_free_event(pAlsaEvent);
+	}
+	while (snd_seq_event_input_pending(m_pAlsaSubsSeq, 0) > 0);
 }
 
 
@@ -848,26 +864,28 @@ bool qtractorMidiEngine::init ( const QString& sClientName )
 	m_iAlsaClient = snd_seq_client_id(m_pAlsaSeq);
 	m_iAlsaQueue  = snd_seq_alloc_queue(m_pAlsaSeq);
 
-	// Setup subscription
-	m_iAlsaSubsPort = snd_seq_create_simple_port(
-		m_pAlsaSeq, clientName().latin1(),
-		SND_SEQ_PORT_CAP_WRITE | SND_SEQ_PORT_CAP_SUBS_WRITE |
-		SND_SEQ_PORT_CAP_NO_EXPORT, SND_SEQ_PORT_TYPE_APPLICATION);
-
-	if (m_iAlsaSubsPort >= 0) {
-		struct pollfd pfd[1];
-		snd_seq_addr_t seq_addr;
-		snd_seq_port_subscribe_t *pAlsaSubs;
-		snd_seq_port_subscribe_alloca(&pAlsaSubs);
-		seq_addr.client = SND_SEQ_CLIENT_SYSTEM;
-		seq_addr.port   = SND_SEQ_PORT_SYSTEM_ANNOUNCE;
-		snd_seq_port_subscribe_set_sender(pAlsaSubs, &seq_addr);
-		seq_addr.client = snd_seq_client_id(m_pAlsaSeq);
-		seq_addr.port   = m_iAlsaSubsPort;
-		snd_seq_port_subscribe_set_dest(pAlsaSubs, &seq_addr);
-		snd_seq_subscribe_port(m_pAlsaSeq, pAlsaSubs);
-		snd_seq_poll_descriptors(m_pAlsaSeq, pfd, 1, POLLIN);
-		m_pAlsaNotifier	= new QSocketNotifier(pfd[0].fd, QSocketNotifier::Read);
+	// Setup subscriptions stuff...
+	if (snd_seq_open(&m_pAlsaSubsSeq, "hw", SND_SEQ_OPEN_DUPLEX, 0) >= 0) {
+		m_iAlsaSubsPort = snd_seq_create_simple_port(
+			m_pAlsaSubsSeq, clientName().latin1(),
+			SND_SEQ_PORT_CAP_WRITE | SND_SEQ_PORT_CAP_SUBS_WRITE |
+			SND_SEQ_PORT_CAP_NO_EXPORT, SND_SEQ_PORT_TYPE_APPLICATION);		
+		if (m_iAlsaSubsPort >= 0) {
+			struct pollfd pfd[1];
+			snd_seq_addr_t seq_addr;
+			snd_seq_port_subscribe_t *pAlsaSubs;
+			snd_seq_port_subscribe_alloca(&pAlsaSubs);
+			seq_addr.client = SND_SEQ_CLIENT_SYSTEM;
+			seq_addr.port   = SND_SEQ_PORT_SYSTEM_ANNOUNCE;
+			snd_seq_port_subscribe_set_sender(pAlsaSubs, &seq_addr);
+			seq_addr.client = snd_seq_client_id(m_pAlsaSubsSeq);
+			seq_addr.port   = m_iAlsaSubsPort;
+			snd_seq_port_subscribe_set_dest(pAlsaSubs, &seq_addr);
+			snd_seq_subscribe_port(m_pAlsaSubsSeq, pAlsaSubs);
+			snd_seq_poll_descriptors(m_pAlsaSubsSeq, pfd, 1, POLLIN);
+			m_pAlsaNotifier = new QSocketNotifier(
+				pfd[0].fd, QSocketNotifier::Read);
+		}
 	}
 
 	return true;
@@ -1007,17 +1025,22 @@ void qtractorMidiEngine::clean (void)
 	}
 
 	
-	// Drop everything else, finally.
-	if (m_pAlsaSeq) {
-		// Drop subscription stuff.
+	// Drop subscription stuff.
+	if (m_pAlsaSubsSeq) {
 		if (m_pAlsaNotifier) {
 			delete m_pAlsaNotifier;
 			m_pAlsaNotifier = NULL;
 		}
 		if (m_iAlsaSubsPort >= 0) {
-			snd_seq_delete_simple_port(m_pAlsaSeq, m_iAlsaSubsPort);
+			snd_seq_delete_simple_port(m_pAlsaSubsSeq, m_iAlsaSubsPort);
 			m_iAlsaSubsPort = -1;
 		}
+		snd_seq_close(m_pAlsaSubsSeq);
+		m_pAlsaSubsSeq = NULL;
+	}
+
+	// Drop everything else, finally.
+	if (m_pAlsaSeq) {
 		// And now, the sequencer queue and handle...
 		snd_seq_free_queue(m_pAlsaSeq, m_iAlsaQueue);
 		snd_seq_close(m_pAlsaSeq);
