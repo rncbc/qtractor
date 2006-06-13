@@ -48,6 +48,71 @@ static int qtractorAudioEngine_process ( jack_nframes_t nframes, void *pvArg )
 
 
 //----------------------------------------------------------------------
+// qtractorAudioEngine_timebase -- JACK timebase master callback.
+//
+
+static void qtractorAudioEngine_timebase ( jack_transport_state_t state,
+	jack_nframes_t nframes, jack_position_t *pPos, int bNewPos, void *pvArg )
+{
+	qtractorAudioEngine *pAudioEngine
+		= static_cast<qtractorAudioEngine *> (pvArg);
+
+	// TODO...
+	if (!bNewPos) {
+		qtractorSession *pSession = pAudioEngine->session();
+		if (pSession) {
+			unsigned short iTicksPerBeat = pSession->ticksPerBeat();
+			unsigned short iBeatsPerBar  = pSession->beatsPerBar();
+			unsigned int   bars  = 0;
+			unsigned int   beats = 0;
+			unsigned long  ticks = pSession->tickFromFrame(pPos->frame);
+			if (ticks >= (unsigned long) iTicksPerBeat) {
+				beats  = (unsigned int)  (ticks / iTicksPerBeat);
+				ticks -= (unsigned long) (beats * iTicksPerBeat);
+			}
+			if (beats >= (unsigned int) iBeatsPerBar) {
+				bars   = (unsigned int) (beats / iBeatsPerBar);
+				beats -= (unsigned int) (bars  * iBeatsPerBar);
+			}
+			// Time frame code in bars.beats.ticks ...
+			pPos->valid = JackPositionBBT;
+			pPos->bar   = bars  + 1;
+			pPos->beat  = beats + 1;
+			pPos->tick  = ticks;
+			// Keep current tempo (BPM)...
+			pPos->beats_per_minute = pSession->tempo();
+		}
+	}
+
+#ifdef CONFIG_DEBUG
+	static jack_transport_state_t g_state = JackTransportStopped;
+	if (g_state != state) {
+		const char *pszState;
+		switch (state) {
+		case JackTransportStopped:
+			pszState = "Stopped";
+			break;
+		case JackTransportRolling:
+			pszState = "Rolling";
+			break;
+		case JackTransportLooping:
+			pszState = "Looping";
+			break;
+		case JackTransportStarting:
+			pszState = "Starting";
+			break;
+		default:
+			pszState = "Unknown";
+			break;
+		}
+		fprintf(stderr, "DEBUG> timebase: state=%d (%s) new_pos=%d\n", (int) state, pszState, bNewPos);
+		g_state  = state;
+	}
+#endif
+}
+
+
+//----------------------------------------------------------------------
 // qtractorAudioEngine_shutdown -- JACK client shutdown callback.
 //
 
@@ -82,7 +147,7 @@ static int qtractorAudioEngine_xrun ( void *pvArg )
 
 
 //----------------------------------------------------------------------
-// qtractorAudioEngine_graph -- JACK client graph change callback.
+// qtractorAudioEngine_graph_order -- JACK graph change callback.
 //
 
 static int qtractorAudioEngine_graph_order ( void *pvArg )
@@ -100,7 +165,7 @@ static int qtractorAudioEngine_graph_order ( void *pvArg )
 
 
 //----------------------------------------------------------------------
-// qtractorAudioEngine_port -- JACK client port registration callback.
+// qtractorAudioEngine_graph_port -- JACK port registration callback.
 //
 
 static void qtractorAudioEngine_graph_port ( jack_port_id_t, int, void *pvArg )
@@ -128,7 +193,7 @@ qtractorAudioEngine::qtractorAudioEngine ( qtractorSession *pSession )
 	m_pNotifyWidget       = NULL;
 	m_eNotifyShutdownType = QEvent::None;
 	m_eNotifyXrunType     = QEvent::None;
-	m_eNotifyPortType    = QEvent::None;
+	m_eNotifyPortType     = QEvent::None;
 }
 
 
@@ -203,15 +268,17 @@ bool qtractorAudioEngine::activate (void)
 	// Set our main engine processor callbacks.
 	jack_set_process_callback(m_pJackClient,
 			qtractorAudioEngine_process, this);
-
+	// Trnsport callbacks...
+	jack_set_timebase_callback(m_pJackClient, 0 /* FIXME: un-conditional! */,
+		qtractorAudioEngine_timebase, this);
 	// And some other event callbacks...
-    jack_set_xrun_callback(m_pJackClient,
+	jack_set_xrun_callback(m_pJackClient,
 		qtractorAudioEngine_xrun, this);
-    jack_on_shutdown(m_pJackClient,
+	jack_on_shutdown(m_pJackClient,
 		qtractorAudioEngine_shutdown, this);
-    jack_set_graph_order_callback(m_pJackClient,
+	jack_set_graph_order_callback(m_pJackClient,
 		qtractorAudioEngine_graph_order, this);
-    jack_set_port_registration_callback(m_pJackClient,
+	jack_set_port_registration_callback(m_pJackClient,
 		qtractorAudioEngine_graph_port, this);
 
 	// Time to activate ourselves...
@@ -237,6 +304,9 @@ bool qtractorAudioEngine::start (void)
 	if (!isActivated())
 	    return false;
 
+	// Start trnsport rolling...
+	jack_transport_start(m_pJackClient);
+
 	// We're now ready and running...
 	return true;
 }
@@ -248,7 +318,7 @@ void qtractorAudioEngine::stop (void)
 	if (!isActivated())
 	    return;
 
-	// WTF?...
+	jack_transport_stop(m_pJackClient);
 }
 
 
@@ -317,6 +387,8 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 			iFrameStart = pSession->loopStart();
 			iFrameEnd   = iFrameStart + (iFrameEnd - pSession->loopEnd());
 			pAudioCursor->seek(iFrameStart);
+			// Set to new transport location...
+			jack_transport_locate(m_pJackClient, iFrameStart);
 		}
 	}
 
@@ -337,6 +409,8 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 		&& iFrameEnd >= pSession->loopEnd()) {
 		iFrameEnd = pSession->loopStart()
 			+ (iFrameEnd - pSession->loopEnd());
+		// Set to new transport location...
+		jack_transport_locate(m_pJackClient, iFrameEnd);
 	}
 
 	// Prepare advance for next cycle...

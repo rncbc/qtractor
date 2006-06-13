@@ -510,17 +510,17 @@ unsigned int qtractorSession::pixelSnap ( unsigned int x ) const
 QString qtractorSession::timeFromFrame ( unsigned long iFrame, bool bBBT ) const
 {
 	if (bBBT) {
-		// Time frame code in bars:beats.ticks ...
+		// Time frame code in bars.beats.ticks ...
 		unsigned int bars, beats;
 		unsigned long ticks = tickFromFrame(iFrame);
 		bars = beats = 0;
-		if (ticks >= (unsigned int) m_props.ticksPerBeat) {
-			beats  = (unsigned int) (ticks / m_props.ticksPerBeat);
-			ticks -= (unsigned long) beats * m_props.ticksPerBeat;
+		if (ticks >= (unsigned long) m_props.ticksPerBeat) {
+			beats  = (unsigned int)  (ticks / m_props.ticksPerBeat);
+			ticks -= (unsigned long) (beats * m_props.ticksPerBeat);
 		}
 		if (beats >= (unsigned int) m_props.beatsPerBar) {
 			bars   = (unsigned int) (beats / m_props.beatsPerBar);
-			beats -= (unsigned long) bars  * m_props.beatsPerBar;
+			beats -= (unsigned int) (bars  * m_props.beatsPerBar);
 		}
 		return QString().sprintf("%4u.%02u.%03lu", bars + 1, beats + 1, ticks);
 	} else {
@@ -796,6 +796,7 @@ void qtractorSession::setPlayHead ( unsigned long iFrame )
 	setPlaying(false);
 	m_pAudioEngine->sessionCursor()->seek(iFrame, true);
 	m_pMidiEngine->sessionCursor()->seek(iFrame, true);
+	jack_transport_locate(m_pAudioEngine->jackClient(), iFrame);
 	stabilize();
 	setPlaying(bPlaying);
 }
