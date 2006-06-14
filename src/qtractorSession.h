@@ -185,6 +185,9 @@ public:
 	void setPlaying(bool bPlaying);
 	bool isPlaying() const;
 
+	// (Hazardous) bi-directional locate method.
+	void seek(unsigned long iFrame, bool bSync = false);
+
 	// Playhead positioning.
 	void setPlayHead(unsigned long iFrame);
 	unsigned long playHead() const;

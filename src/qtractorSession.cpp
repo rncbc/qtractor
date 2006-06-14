@@ -786,6 +786,14 @@ bool qtractorSession::isPlaying() const
 }
 
 
+// (Hazardous) bi-directional locate method.
+void qtractorSession::seek ( unsigned long iFrame, bool bSync )
+{
+	m_pAudioEngine->sessionCursor()->seek(iFrame, bSync);
+	m_pMidiEngine->sessionCursor()->seek(iFrame, bSync);
+}
+
+
 // Playhead positioning.
 void qtractorSession::setPlayHead ( unsigned long iFrame )
 {
@@ -794,8 +802,7 @@ void qtractorSession::setPlayHead ( unsigned long iFrame )
 		return;
 
 	setPlaying(false);
-	m_pAudioEngine->sessionCursor()->seek(iFrame, true);
-	m_pMidiEngine->sessionCursor()->seek(iFrame, true);
+	seek(iFrame, true);
 	jack_transport_locate(m_pAudioEngine->jackClient(), iFrame);
 	stabilize();
 	setPlaying(bPlaying);

@@ -51,64 +51,38 @@ static int qtractorAudioEngine_process ( jack_nframes_t nframes, void *pvArg )
 // qtractorAudioEngine_timebase -- JACK timebase master callback.
 //
 
-static void qtractorAudioEngine_timebase ( jack_transport_state_t state,
-	jack_nframes_t nframes, jack_position_t *pPos, int bNewPos, void *pvArg )
+static void qtractorAudioEngine_timebase ( jack_transport_state_t,
+	jack_nframes_t, jack_position_t *pPos, int, void *pvArg )
 {
 	qtractorAudioEngine *pAudioEngine
 		= static_cast<qtractorAudioEngine *> (pvArg);
 
-	// TODO...
-	if (!bNewPos) {
-		qtractorSession *pSession = pAudioEngine->session();
-		if (pSession) {
-			unsigned short iTicksPerBeat = pSession->ticksPerBeat();
-			unsigned short iBeatsPerBar  = pSession->beatsPerBar();
-			unsigned int   bars  = 0;
-			unsigned int   beats = 0;
-			unsigned long  ticks = pSession->tickFromFrame(pPos->frame);
-			if (ticks >= (unsigned long) iTicksPerBeat) {
-				beats  = (unsigned int)  (ticks / iTicksPerBeat);
-				ticks -= (unsigned long) (beats * iTicksPerBeat);
-			}
-			if (beats >= (unsigned int) iBeatsPerBar) {
-				bars   = (unsigned int) (beats / iBeatsPerBar);
-				beats -= (unsigned int) (bars  * iBeatsPerBar);
-			}
-			// Time frame code in bars.beats.ticks ...
-			pPos->valid = JackPositionBBT;
-			pPos->bar   = bars  + 1;
-			pPos->beat  = beats + 1;
-			pPos->tick  = ticks;
-			// Keep current tempo (BPM)...
-			pPos->beats_per_minute = pSession->tempo();
+	qtractorSession *pSession = pAudioEngine->session();
+	if (pSession) {
+		unsigned short iTicksPerBeat = pSession->ticksPerBeat();
+		unsigned short iBeatsPerBar  = pSession->beatsPerBar();
+		unsigned int   bars  = 0;
+		unsigned int   beats = 0;
+		unsigned long  ticks = pSession->tickFromFrame(pPos->frame);
+		if (ticks >= (unsigned long) iTicksPerBeat) {
+			beats  = (unsigned int)  (ticks / iTicksPerBeat);
+			ticks -= (unsigned long) (beats * iTicksPerBeat);
 		}
-	}
-
-#ifdef CONFIG_DEBUG
-	static jack_transport_state_t g_state = JackTransportStopped;
-	if (g_state != state) {
-		const char *pszState;
-		switch (state) {
-		case JackTransportStopped:
-			pszState = "Stopped";
-			break;
-		case JackTransportRolling:
-			pszState = "Rolling";
-			break;
-		case JackTransportLooping:
-			pszState = "Looping";
-			break;
-		case JackTransportStarting:
-			pszState = "Starting";
-			break;
-		default:
-			pszState = "Unknown";
-			break;
+		if (beats >= (unsigned int) iBeatsPerBar) {
+			bars   = (unsigned int) (beats / iBeatsPerBar);
+			beats -= (unsigned int) (bars  * iBeatsPerBar);
 		}
-		fprintf(stderr, "DEBUG> timebase: state=%d (%s) new_pos=%d\n", (int) state, pszState, bNewPos);
-		g_state  = state;
+		// Time frame code in bars.beats.ticks ...
+		pPos->valid = JackPositionBBT;
+		pPos->bar   = bars  + 1;
+		pPos->beat  = beats + 1;
+		pPos->tick  = ticks;
+		// Keep current tempo (BPM)...
+		pPos->beats_per_bar    = iBeatsPerBar;
+		pPos->ticks_per_beat   = iTicksPerBeat;
+		pPos->beats_per_minute = pSession->tempo();
+	//	pPos->beat_type        = 4.0;	// Quarter note.
 	}
-#endif
 }
 
 
@@ -268,9 +242,11 @@ bool qtractorAudioEngine::activate (void)
 	// Set our main engine processor callbacks.
 	jack_set_process_callback(m_pJackClient,
 			qtractorAudioEngine_process, this);
-	// Trnsport callbacks...
-	jack_set_timebase_callback(m_pJackClient, 0 /* FIXME: un-conditional! */,
+
+	// Trnsport timebase callbacks...
+	jack_set_timebase_callback(m_pJackClient, 1 /* FIXME: conditional! */,
 		qtractorAudioEngine_timebase, this);
+
 	// And some other event callbacks...
 	jack_set_xrun_callback(m_pJackClient,
 		qtractorAudioEngine_xrun, this);
@@ -326,7 +302,7 @@ void qtractorAudioEngine::stop (void)
 void qtractorAudioEngine::deactivate (void)
 {
 	// We're stopping now...
-	setPlaying(false);
+	// setPlaying(false);
 
 	// Deactivate the JACK client first.
 	if (m_pJackClient)
