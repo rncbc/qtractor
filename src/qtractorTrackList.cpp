@@ -180,7 +180,7 @@ void qtractorTrackListItem::setText ( int iColumn, const QString& sText )
 		return;
 	}
 
-	const QString s = "--";
+	const QString s = " - -";
 
 	switch (m_pTrack->trackType()) {
 
@@ -222,7 +222,7 @@ void qtractorTrackListItem::setText ( int iColumn, const QString& sText )
 						bank[m_pTrack->midiProgram()] + '\n' + bank.name());
 				} else {
 					QListViewItem::setText(qtractorTrackList::Patch,
-						QString::number(m_pTrack->midiProgram() + 1) + "  - -");
+						QString::number(m_pTrack->midiProgram() + 1) + s + '\n');
 				}
 				QListViewItem::setText(qtractorTrackList::Instrument,
 					patch.instrumentName);
