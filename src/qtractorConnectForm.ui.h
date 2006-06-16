@@ -262,16 +262,24 @@ void qtractorConnectForm::updateClientsComboBox ( QComboBox *pComboBox,
 	pComboBox->clear();
 	pComboBox->insertItem(tr("(All)"));
 
+	// Refresh client names combo box contents...
 	const QStringList& clientNames = pClientListView->clientNames();
 	QStringList::ConstIterator iter = clientNames.begin();
 	while (iter != clientNames.end())
 		pComboBox->insertItem(pixmap, *iter++);
 
+	// Update current item/selection...
 	const QString& sClientName = pClientListView->clientName();
 	if (sClientName.isEmpty()) {
 		pComboBox->setCurrentItem(0);
 	} else {
+		// Select and expand all else...
 		pComboBox->setCurrentText(sClientName);
+		// Select and expand all else...
+		qtractorClientListItem *pClientItem
+			= pClientListView->findClientItem(sClientName);
+		if (pClientItem)
+			pClientListView->setSelected(pClientItem, true);
 		pClientListView->setOpenAll(true);
 	}
 }
