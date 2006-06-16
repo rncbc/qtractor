@@ -85,6 +85,9 @@ public:
 	// Constructor.
 	qtractorAddClipCommand(qtractorMainForm *pMainForm);
 
+	// Special clip record nethod.
+	bool addClipRecord(qtractorTrack *pTrack);
+
 	// Clip insertion command methods.
 	bool redo();
 	bool undo();

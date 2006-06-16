@@ -31,6 +31,7 @@
 
 // Forward declarations.
 class qtractorTrackButton;
+class qtractorAddClipCommand;
 
 
 //----------------------------------------------------------------------
@@ -212,15 +213,22 @@ public:
 	qtractorTrackButtonCommand(qtractorMainForm *pMainForm,
 		qtractorTrackButton *pTrackButton, bool bOn);
 
+	// Destructor.
+	~qtractorTrackButtonCommand();
+
 	// Track-button command methods.
 	bool redo();
-	bool undo() { return redo(); }
+	bool undo();
 
 private:
 
 	// Instance variables.
 	qtractorTrack::ToolType m_toolType;
 	bool m_bOn;
+
+	// Special sub-command needed to track recording clips.
+	qtractorAddClipCommand *m_pAddClipCommand;
+	int m_iRecordCount;
 };
 
 

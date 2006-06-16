@@ -1552,12 +1552,12 @@ void qtractorMainForm::transportRecord (void)
 	if (!checkRestartSession())
 		return;
 
-	// Record switch...
-	bool bRecording = !m_pSession->isRecording();
+	// Record status...
+	bool bRecording = m_pSession->isRecording();
 
 	// If we're stopping recording, we must copy it for the records...
 	int iUpdate = 0;
-	if (!bRecording) {
+	if (bRecording) {
 		// We'll build a composite command...
 		qtractorAddClipCommand *pAddClipCommand
 			= new qtractorAddClipCommand(this);
@@ -1566,46 +1566,8 @@ void qtractorMainForm::transportRecord (void)
 		// For all non-empty clip on record...
 		for (qtractorTrack *pTrack = m_pSession->tracks().first();
 				pTrack; pTrack = pTrack->next()) {
-			qtractorClip *pClip = pTrack->clipRecord();
-			if (pClip == NULL)
-				continue;
-			// Time to close the clip...
-			pClip->close();
-			// Check final length...
-			if (pClip->clipLength() == 0)
-				continue;
-			// Now, its imperative to make a proper copy of those clips...
-			unsigned long iClipStart = pClip->clipStart();
-			switch (pTrack->trackType()) {
-			case qtractorTrack::Audio: {
-				qtractorAudioClip *pAudioClip
-					= static_cast<qtractorAudioClip *> (pClip);
-				if (pAudioClip) {
-					pAudioClip = new qtractorAudioClip(*pAudioClip);
-					pAudioClip->setClipStart(iClipStart);
-					pAddClipCommand->addClip(pAudioClip, pTrack, iClipStart);
-					if (m_pFiles)
-						m_pFiles->addAudioFile(pAudioClip->filename());
-					iUpdate++;
-				}
-				break;
-			}
-			case qtractorTrack::Midi: {
-				qtractorMidiClip *pMidiClip
-					= static_cast<qtractorMidiClip *> (pClip);
-				if (pMidiClip) {
-					pMidiClip = new qtractorMidiClip(*pMidiClip);
-					pMidiClip->setClipStart(iClipStart);
-					pAddClipCommand->addClip(pMidiClip, pTrack, iClipStart);
-					if (m_pFiles)
-						m_pFiles->addMidiFile(pMidiClip->filename());
-					iUpdate++;
-				}
-				break;
-			}
-			default:
-				break;
-			}
+			if (pAddClipCommand->addClipRecord(pTrack))
+				iUpdate++;
 		}
 		// Put it in the form of an undoable command...
 		if (iUpdate > 0) {
@@ -1619,7 +1581,7 @@ void qtractorMainForm::transportRecord (void)
 	}
 
 	// Finally, toggle session record status...
-	m_pSession->setRecording(bRecording);
+	m_pSession->setRecording(!bRecording);
 
 	// Done with record switch...
 	stabilizeForm();

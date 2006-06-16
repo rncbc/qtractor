@@ -25,6 +25,9 @@
 #include "qtractorMainForm.h"
 
 #include "qtractorSession.h"
+#include "qtractorAudioClip.h"
+#include "qtractorMidiClip.h"
+#include "qtractorFiles.h"
 #include "qtractorTracks.h"
 #include "qtractorTrackView.h"
 
@@ -132,6 +135,60 @@ qtractorAddClipCommand::qtractorAddClipCommand (
 	: qtractorClipCommand(pMainForm, QObject::tr("add clip"))
 {
 }
+
+
+// Special clip record nethod.
+bool qtractorAddClipCommand::addClipRecord ( qtractorTrack *pTrack )
+{
+	qtractorClip *pClip = pTrack->clipRecord();
+	if (pClip == NULL)
+		return false;
+
+	// Time to close the clip...
+	pClip->close();
+
+	// Check final length...
+	if (pClip->clipLength() == 0)
+		return false;
+
+	// Reference for immediate file addition...
+	qtractorFiles *pFiles = mainForm()->files();
+
+	// Now, its imperative to make a proper copy of those clips...
+	unsigned long iClipStart = pClip->clipStart();
+	switch (pTrack->trackType()) {
+	case qtractorTrack::Audio: {
+		qtractorAudioClip *pAudioClip
+			= static_cast<qtractorAudioClip *> (pClip);
+		if (pAudioClip) {
+			pAudioClip = new qtractorAudioClip(*pAudioClip);
+			pAudioClip->setClipStart(iClipStart);
+			addClip(pAudioClip, pTrack, iClipStart);
+			if (pFiles)
+				pFiles->addAudioFile(pAudioClip->filename());
+		}
+		break;
+	}
+	case qtractorTrack::Midi: {
+		qtractorMidiClip *pMidiClip
+			= static_cast<qtractorMidiClip *> (pClip);
+		if (pMidiClip) {
+			pMidiClip = new qtractorMidiClip(*pMidiClip);
+			pMidiClip->setClipStart(iClipStart);
+			addClip(pMidiClip, pTrack, iClipStart);
+			if (pFiles)
+				pFiles->addMidiFile(pMidiClip->filename());
+		}
+		break;
+	}
+	default:
+		return false;
+	}
+
+	// Done.
+	return true;
+}
+
 
 // Clip insertion command methods.
 bool qtractorAddClipCommand::redo (void)

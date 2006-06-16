@@ -931,7 +931,7 @@ void qtractorSession::trackRecord ( qtractorTrack *pTrack, bool bRecord )
 		return;
 	}
 
-	// here's the place to create and set the capture clip...
+	// Here's the place to create and set the capture clip...
 	switch (pTrack->trackType()) {
 	case qtractorTrack::Audio:
 	{
