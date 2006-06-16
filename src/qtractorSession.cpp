@@ -553,6 +553,15 @@ void qtractorSession::updateTimeScale (void)
 	m_fScale_b = (float) (0.01f * m_props.tempo * m_iScale_a);
 	m_fScale_c = (float) (60.0f * m_props.sampleRate);
 	m_fScale_d = (float) (m_props.tempo * m_props.ticksPerBeat);
+
+	// Just (re)synchronize all clips to new tempo state, if any;
+	for (qtractorTrack *pTrack = m_tracks.first();
+			pTrack; pTrack = pTrack->next()) {
+		for (qtractorClip *pClip = pTrack->clips().first();
+				pClip; pClip = pClip->next()) {
+			pClip->updateClipTime();
+		}
+	}
 }
 
 

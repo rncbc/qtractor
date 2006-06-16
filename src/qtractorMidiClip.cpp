@@ -175,6 +175,21 @@ int qtractorMidiClip::program (void) const
 }
 
 
+// Clip time reference settler method.
+void qtractorMidiClip::updateClipTime (void)
+{
+	// Also set proper MIDI clip duration...
+	if (track() && track()->session()) {
+		qtractorClip::setClipLength(
+			track()->session()->frameFromTick(m_pSeq->duration()));
+	}
+
+	// Set new start time, as inherited...
+	qtractorClip::updateClipTime();
+}
+
+
+
 // Intra-clip tick/time positioning seek.
 void qtractorMidiClip::ClipCursor::seek ( qtractorMidiSequence *pSeq,
 	unsigned long tick )

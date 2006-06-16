@@ -59,6 +59,9 @@ public:
 	int bank() const;
 	int program() const;
 
+	// Clip time reference settler method.
+	void updateClipTime();
+
 	// Intra-clip frame positioning.
 	void seek(unsigned long iOffset);
 

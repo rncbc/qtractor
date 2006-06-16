@@ -65,6 +65,9 @@ public:
 	unsigned long clipLoopStart() const;
 	unsigned long clipLoopEnd() const;
 
+	// Clip time reference settler method.
+	virtual void updateClipTime();
+
 	// Intra-clip frame positioning.
 	virtual void seek(unsigned long iOffset) = 0;
 
@@ -106,7 +109,9 @@ private:
 
 	unsigned long m_iClipStart;     // Clip frame start.
 	unsigned long m_iClipLength;    // Clip frame length.
-	
+
+	unsigned long m_iClipTime;      // Clip time (tick) start.
+
 	bool m_bClipSelect;             // Clip selection flag.
 
 	unsigned long m_iLoopStart;     // Clip loop start frame-offset.

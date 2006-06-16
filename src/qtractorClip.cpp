@@ -46,8 +46,12 @@ qtractorClip::~qtractorClip (void)
 void qtractorClip::clear (void)
 {
 	m_sClipName   = QString::null;
+	
 	m_iClipStart  = 0;
 	m_iClipLength = 0;
+	
+	m_iClipTime   = 0;
+
 	m_bClipSelect = false;
 
 	m_iLoopStart  = 0;
@@ -87,6 +91,9 @@ unsigned long qtractorClip::clipStart (void) const
 
 void qtractorClip::setClipStart ( unsigned long iClipStart )
 {
+	if (m_pTrack && m_pTrack->session())
+		m_iClipTime = m_pTrack->session()->tickFromFrame(iClipStart);
+
 	m_iClipStart = iClipStart;
 }
 
@@ -138,6 +145,14 @@ unsigned long qtractorClip::clipLoopStart (void) const
 unsigned long qtractorClip::clipLoopEnd (void) const
 {
 	return m_iLoopEnd;
+}
+
+
+// Clip time reference settler method.
+void qtractorClip::updateClipTime (void)
+{
+	if (m_pTrack && m_pTrack->session())
+		m_iClipStart = m_pTrack->session()->frameFromTick(m_iClipTime);
 }
 
 

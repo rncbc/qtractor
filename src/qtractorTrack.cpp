@@ -444,6 +444,9 @@ qtractorList<qtractorClip>& qtractorTrack::clips (void)
 // Insert a new clip in garanteed sorted fashion.
 void qtractorTrack::addClip ( qtractorClip *pClip )
 {
+	pClip->setTrack(this);
+	pClip->updateClipTime();
+
 	qtractorClip *pNextClip = m_clips.first();
 
 	while (pNextClip && pNextClip->clipStart() < pClip->clipStart())
@@ -453,8 +456,6 @@ void qtractorTrack::addClip ( qtractorClip *pClip )
 		m_clips.insertBefore(pClip, pNextClip);
 	else
 		m_clips.append(pClip);
-
-	pClip->setTrack(this);
 }
 
 
