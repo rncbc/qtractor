@@ -244,7 +244,7 @@ bool qtractorAudioEngine::activate (void)
 			qtractorAudioEngine_process, this);
 
 	// Trnsport timebase callbacks...
-	jack_set_timebase_callback(m_pJackClient, 1 /* FIXME: conditional! */,
+	jack_set_timebase_callback(m_pJackClient, 0 /* FIXME: un-conditional! */,
 		qtractorAudioEngine_timebase, this);
 
 	// And some other event callbacks...
@@ -339,15 +339,15 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 
 	// Don't go any further, if not playing.
 	if (!isPlaying())
-		return 1;
+		return process_idle(nframes);
 
 	// Make sure we have an actual session cursor...
 	qtractorSession *pSession = session();
 	if (pSession == NULL)
-		return 1;
+		return 0;
 	qtractorSessionCursor *pAudioCursor = sessionCursor();
 	if (pAudioCursor == NULL)
-	    return 1;
+	    return 0;
 
 	// This the legal process cycle frame range...
 	unsigned long iFrameStart = pAudioCursor->frame();
@@ -397,6 +397,37 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 	pSession->midiEngine()->sync();
 
 	// Process session stuff...
+	return 1;
+}
+
+
+// Idle process cycle executive.
+int qtractorAudioEngine::process_idle ( unsigned int nframes )
+{
+	// At this time, we'll get this workaround for pre-monitoring
+	// those audio tracks that are currently armed for recording...
+	qtractorSession *pSession = session();
+	if (pSession == NULL)
+		return 0;
+
+	if (pSession->recordTracks() < 1)
+		return 1;
+
+	for (qtractorTrack *pTrack = pSession->tracks().first();
+			pTrack; pTrack = pTrack->next()) {
+		// Audio-buffers needs some preparation...
+		if (pTrack->isRecord()
+			&& pTrack->trackType() == qtractorTrack::Audio) {
+			qtractorAudioBus *pAudioBus
+				= static_cast<qtractorAudioBus *> (pTrack->bus());
+			qtractorAudioMonitor *pAudioMonitor
+				= static_cast<qtractorAudioMonitor *> (pTrack->monitor());
+			// Pre-monitoring...
+			if (pAudioBus && pAudioMonitor && pTrack->isRecord())
+				pAudioMonitor->process(pAudioBus->in(), nframes);
+		}
+	}
+
 	return 1;
 }
 

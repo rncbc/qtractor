@@ -634,7 +634,7 @@ void qtractorSession::unlinkTrack ( qtractorTrack *pTrack )
 	if (pTrack->isRecord())
 		setRecordTracks(false);
 	if (pTrack->isMute())
-		setMuteTracks(true);
+		setMuteTracks(false);
 	if (pTrack->isSolo())
 		setSoloTracks(false);
 

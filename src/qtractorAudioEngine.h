@@ -51,6 +51,9 @@ public:
 	// Process cycle executive.
 	int process(unsigned int nframes);
 
+	// Idle process cycle executive.
+	int process_idle(unsigned int nframes);
+
 	// Document element methods.
 	bool loadElement(qtractorSessionDocument *pDocument,
 		QDomElement *pElement);
