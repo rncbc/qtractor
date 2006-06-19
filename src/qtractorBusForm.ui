@@ -1,0 +1,283 @@
+<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
+<class>qtractorBusForm</class>
+<comment>qtractor - A MIDI/Audio multi-track sequencer.
+
+   Copyright (C) 2005-2006, rncbc aka Rui Nuno Capela. All rights reserved.
+
+   This program is free software; you can redistribute it and/or
+   modify it under the terms of the GNU General Public License
+   as published by the Free Software Foundation; either version 2
+   of the License, or (at your option) any later version.
+
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+
+   You should have received a copy of the GNU General Public License
+   along with this program; if not, write to the Free Software
+   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+
+</comment>
+<author>rncbc aka Rui Nuno Capela</author>
+<widget class="QWidget">
+    <property name="name">
+        <cstring>qtractorBusForm</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>570</width>
+            <height>361</height>
+        </rect>
+    </property>
+    <property name="sizePolicy">
+        <sizepolicy>
+            <hsizetype>7</hsizetype>
+            <vsizetype>1</vsizetype>
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+        </sizepolicy>
+    </property>
+    <property name="caption">
+        <string>Busses - Qtractor</string>
+    </property>
+    <property name="icon">
+        <pixmap>qtractorTracks.png</pixmap>
+    </property>
+    <property name="focusPolicy">
+        <enum>StrongFocus</enum>
+    </property>
+    <vbox>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <widget class="QSplitter">
+            <property name="name">
+                <cstring>BusSplitter</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+            <widget class="QListView">
+                <column>
+                    <property name="text">
+                        <string>Busses</string>
+                    </property>
+                    <property name="clickable">
+                        <bool>true</bool>
+                    </property>
+                    <property name="resizable">
+                        <bool>true</bool>
+                    </property>
+                </column>
+                <property name="name">
+                    <cstring>BusListView</cstring>
+                </property>
+                <property name="minimumSize">
+                    <size>
+                        <width>160</width>
+                        <height>0</height>
+                    </size>
+                </property>
+                <property name="rootIsDecorated">
+                    <bool>true</bool>
+                </property>
+                <property name="resizeMode">
+                    <enum>LastColumn</enum>
+                </property>
+                <property name="toolTip" stdset="0">
+                    <string>Bus list</string>
+                </property>
+            </widget>
+        </widget>
+        <widget class="QLayoutWidget">
+            <property name="name">
+                <cstring>BusFooterLayout</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>RefreshPushButton</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&amp;Refresh</string>
+                    </property>
+                    <property name="accel">
+                        <string>Alt+R</string>
+                    </property>
+                    <property name="iconSet">
+                        <iconset>formRefresh.png</iconset>
+                    </property>
+                    <property name="toolTip" stdset="0">
+                        <string>Refresh bus list view</string>
+                    </property>
+                </widget>
+                <spacer>
+                    <property name="name">
+                        <cstring>BusFooterSpacer</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>180</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                </spacer>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>CreatePushButton</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&amp;Create</string>
+                    </property>
+                    <property name="accel">
+                        <string>Alt+C</string>
+                    </property>
+                    <property name="iconSet">
+                        <iconset>formCreate.png</iconset>
+                    </property>
+                    <property name="toolTip" stdset="0">
+                        <string>Create bus</string>
+                    </property>
+                </widget>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>UpdatePushButton</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&amp;Update</string>
+                    </property>
+                    <property name="accel">
+                        <string>Alt+U</string>
+                    </property>
+                    <property name="iconSet">
+                        <iconset>formAccept.png</iconset>
+                    </property>
+                    <property name="toolTip" stdset="0">
+                        <string>Update bus</string>
+                    </property>
+                </widget>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>DeletePushButton</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&amp;Delete</string>
+                    </property>
+                    <property name="accel">
+                        <string>Alt+D</string>
+                    </property>
+                    <property name="iconSet">
+                        <iconset>formRemove.png</iconset>
+                    </property>
+                    <property name="toolTip" stdset="0">
+                        <string>Delete bus</string>
+                    </property>
+                </widget>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>ClosePushButton</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Close</string>
+                    </property>
+                    <property name="accel">
+                        <string></string>
+                    </property>
+                    <property name="toolTip" stdset="0">
+                        <string>Close this dialog</string>
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
+    </vbox>
+</widget>
+<connections>
+    <connection>
+        <sender>BusListView</sender>
+        <signal>selectionChanged()</signal>
+        <receiver>qtractorBusForm</receiver>
+        <slot>selectBus()</slot>
+    </connection>
+    <connection>
+        <sender>BusListView</sender>
+        <signal>contextMenuRequested(QListViewItem*,const QPoint&amp;,int)</signal>
+        <receiver>qtractorBusForm</receiver>
+        <slot>contextMenu(QListViewItem*,const QPoint&amp;,int)</slot>
+    </connection>
+    <connection>
+        <sender>RefreshPushButton</sender>
+        <signal>clicked()</signal>
+        <receiver>qtractorBusForm</receiver>
+        <slot>refreshBusses()</slot>
+    </connection>
+    <connection>
+        <sender>CreatePushButton</sender>
+        <signal>clicked()</signal>
+        <receiver>qtractorBusForm</receiver>
+        <slot>createBus()</slot>
+    </connection>
+    <connection>
+        <sender>UpdatePushButton</sender>
+        <signal>clicked()</signal>
+        <receiver>qtractorBusForm</receiver>
+        <slot>updateBus()</slot>
+    </connection>
+    <connection>
+        <sender>DeletePushButton</sender>
+        <signal>clicked()</signal>
+        <receiver>qtractorBusForm</receiver>
+        <slot>deleteBus()</slot>
+    </connection>
+    <connection>
+        <sender>ClosePushButton</sender>
+        <signal>clicked()</signal>
+        <receiver>qtractorBusForm</receiver>
+        <slot>close()</slot>
+    </connection>
+</connections>
+<tabstops>
+    <tabstop>BusListView</tabstop>
+    <tabstop>RefreshPushButton</tabstop>
+    <tabstop>CreatePushButton</tabstop>
+    <tabstop>UpdatePushButton</tabstop>
+    <tabstop>DeletePushButton</tabstop>
+    <tabstop>ClosePushButton</tabstop>
+</tabstops>
+<includes>
+    <include location="local" impldecl="in declaration">qtractorEngine.h</include>
+    <include location="local" impldecl="in implementation">qtractorBusForm.ui.h</include>
+</includes>
+<variables>
+    <variable access="private">qtractorTrack::TrackType m_busType;</variable>
+    <variable access="private">QListViewItem *m_pAudioRoot;</variable>
+    <variable access="private">QListViewItem *m_pMidiRoot;</variable>
+</variables>
+<slots>
+    <slot specifier="non virtual">refreshBusses()</slot>
+    <slot specifier="non virtual">selectBus()</slot>
+    <slot specifier="non virtual">createBus()</slot>
+    <slot specifier="non virtual">updateBus()</slot>
+    <slot specifier="non virtual">deleteBus()</slot>
+    <slot specifier="non virtual">contextMenu(QListViewItem *, const QPoint&amp;, int)</slot>
+    <slot specifier="non virtual">stabilizeForm()</slot>
+</slots>
+<functions>
+    <function access="private" specifier="non virtual">init()</function>
+    <function access="private" specifier="non virtual">destroy()</function>
+    <function specifier="non virtual">setBus( qtractorBus *pBus )</function>
+</functions>
+<pixmapinproject/>
+<layoutdefaults spacing="4" margin="4"/>
+</UI>

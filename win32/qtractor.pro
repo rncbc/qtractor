@@ -109,7 +109,8 @@ FORMS    = ../src/qtractorMainForm.ui \
            ../src/qtractorTrackForm.ui \
            ../src/qtractorOptionsForm.ui \
            ../src/qtractorInstrumentForm.ui \
-           ../src/qtractorConnectForm.ui
+           ../src/qtractorConnectForm.ui \
+           ../src/qtractorBusForm.ui
 
 IMAGES   = ../icons/qtractor.png \
            ../icons/qtractorTracks.png \
@@ -149,6 +150,7 @@ IMAGES   = ../icons/qtractor.png \
            ../icons/formReject.png \
            ../icons/formOpen.png \
            ../icons/formSave.png \
+           ../icons/formCreate.png \
            ../icons/formRemove.png \
            ../icons/formMoveUp.png \
            ../icons/formMoveDown.png \

@@ -64,7 +64,8 @@ headers = config.h \
 	src/qtractorTrackForm.ui.h \
 	src/qtractorOptionsForm.ui.h \
 	src/qtractorInstrumentForm.ui.h \
-	src/qtractorConnectForm.ui.h
+	src/qtractorConnectForm.ui.h \
+	src/qtractorBusForm.ui.h
 
 sources = src/main.cpp \
 	src/qtractorOptions.cpp \
