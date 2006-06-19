@@ -415,14 +415,13 @@
     <tabstop>ClosePushButton</tabstop>
 </tabstops>
 <forwards>
+	<forward>class qtractorMainForm;</forward>
     <forward>class qtractorInstrumentData;</forward>
     <forward>class qtractorInstrumentDataList;</forward>
     <forward>class qtractorInstrumentList;</forward>
-    <forward>class qtractorOptions;</forward>
 </forwards>
 <variables>
-    <variable access="private">qtractorInstrumentList *m_pInstruments;</variable>
-    <variable access="private">qtractorOptions *m_pOptions;</variable>
+    <variable access="private">qtractorMainForm *m_pMainForm;</variable>
     <variable access="private">int *m_iDirtyCount;</variable>
 </variables>
 <slots>
@@ -440,10 +439,8 @@
 <functions>
     <function access="private" specifier="non virtual">init()</function>
     <function access="private" specifier="non virtual">destroy()</function>
-    <function specifier="non virtual">setInstruments( qtractorInstrumentList *pInstruments )</function>
-    <function specifier="non virtual" returnType="qtractorInstrumentList *">instruments()</function>
-    <function specifier="non virtual">setOptions( qtractorOptions *pOptions )</function>
-    <function specifier="non virtual" returnType="qtractorOptions *">options()</function>
+	<function specifier="non virtual">setMainForm( qtractorMainForm *pMainForm )</function>
+	<function specifier="non virtual" returnType="qtractorMainForm *">mainForm()</function>
     <function access="private" specifier="non virtual">listInstrumentData( QListViewItem *pParentItem, qtractorInstrumentData &amp; data )</function>
     <function access="private" specifier="non virtual">listInstrumentDataList( QListViewItem *pParentItem, qtractorInstrumentDataList &amp; list, const QPixmap &amp; pixmap )</function>
     <function access="private" specifier="non virtual" returnType="QString">bankSelMethod( int iBankSelMethod )</function>

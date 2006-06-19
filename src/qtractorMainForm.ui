@@ -115,6 +115,7 @@
         <action name="viewRefreshAction"/>
         <separator/>
         <action name="viewInstrumentsAction"/>
+		<action name="viewBussesAction"/>
         <action name="viewOptionsAction"/>
     </item>
     <item text="T&amp;ransport" name="transportMenu">
@@ -965,7 +966,7 @@
             <string>&amp;Instruments...</string>
         </property>
         <property name="toolTip">
-            <string>Instrument definitions</string>
+            <string>Instruments</string>
         </property>
         <property name="statusTip">
             <string>Change instrument definitions and files</string>
@@ -974,6 +975,26 @@
             <string></string>
         </property>
     </action>
+	<action>
+		<property name="name">
+			<cstring>viewBussesAction</cstring>
+		</property>
+		<property name="text">
+			<string>Busses</string>
+		</property>
+		<property name="menuText">
+			<string>&amp;Busses...</string>
+		</property>
+		<property name="toolTip">
+			<string>Busses</string>
+		</property>
+		<property name="statusTip">
+			<string>Change session bus definitions</string>
+		</property>
+		<property name="accel">
+			<string></string>
+		</property>
+	</action>
     <action>
         <property name="name">
             <cstring>viewOptionsAction</cstring>
@@ -1400,6 +1421,12 @@
         <receiver>qtractorMainForm</receiver>
         <slot>viewInstruments()</slot>
     </connection>
+	<connection>
+		<sender>viewBussesAction</sender>
+		<signal>activated()</signal>
+		<receiver>qtractorMainForm</receiver>
+		<slot>viewBusses()</slot>
+	</connection>
     <connection>
         <sender>viewOptionsAction</sender>
         <signal>activated()</signal>
@@ -1467,9 +1494,6 @@
         <slot>helpAboutQt()</slot>
     </connection>
 </connections>
-<includes>
-    <include location="local" impldecl="in implementation">qtractorMainForm.ui.h</include>
-</includes>
 <forwards>
     <forward>class QWorkspace;</forward>
     <forward>class QLabel;</forward>
@@ -1550,6 +1574,7 @@
     <slot specifier="non virtual">viewMixer( bool bOn )</slot>
     <slot specifier="non virtual">viewRefresh( void )</slot>
     <slot specifier="non virtual">viewInstruments( void )</slot>
+	<slot specifier="non virtual">viewBusses( void )</slot>
     <slot specifier="non virtual">viewOptions( void )</slot>
     <slot specifier="non virtual">transportRewind( void )</slot>
     <slot specifier="non virtual">transportBackward( void )</slot>

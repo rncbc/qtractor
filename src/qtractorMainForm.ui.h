@@ -52,6 +52,7 @@
 #include "qtractorOptionsForm.h"
 #include "qtractorConnectForm.h"
 #include "qtractorInstrumentForm.h"
+#include "qtractorBusForm.h"
 
 #include <qapplication.h>
 #include <qeventloop.h>
@@ -1328,9 +1329,18 @@ void qtractorMainForm::viewInstruments (void)
 {
 	// Just set and show the instruments dialog...
 	qtractorInstrumentForm instrumentForm(this);
-	instrumentForm.setInstruments(m_pInstruments);
-	instrumentForm.setOptions(m_pOptions);
+	instrumentForm.setMainForm(this);
 	instrumentForm.exec();
+}
+
+
+// Show busses dialog.
+void qtractorMainForm::viewBusses (void)
+{
+	// Just set and show the instruments dialog...
+	qtractorBusForm busForm(this);
+	busForm.setMainForm(this);
+	busForm.exec();
 }
 
 

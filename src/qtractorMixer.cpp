@@ -38,6 +38,7 @@
 #include "qtractorSlider.h"
 
 #include "qtractorMainForm.h"
+#include "qtractorBusForm.h"
 
 #include <qhbox.h>
 #include <qlabel.h>
@@ -391,6 +392,20 @@ void qtractorMixerStrip::mousePressEvent ( QMouseEvent *pMouseEvent )
 }
 
 
+// Mouse selection event handlers.
+void qtractorMixerStrip::mouseDoubleClickEvent ( QMouseEvent * /*pMouseEvent*/ )
+{
+	if (m_pTrack) {
+		m_pRack->mixer()->mainForm()->trackProperties();
+	} else if (m_pBus) {
+		qtractorBusForm busForm(this);
+		busForm.setMainForm(m_pRack->mixer()->mainForm());
+		busForm.setBus(m_pBus);
+		busForm.exec();
+	}
+}
+
+
 // Bus connection button slot
 void qtractorMixerStrip::busButtonSlot (void)
 {
@@ -624,14 +639,6 @@ void qtractorMixerRack::cleanStrips ( int iMark )
 		if (pStrip->mark() == iMark)
 			removeStrip(pStrip);
 	}
-}
-
-
-// Mouse selection event handlers.
-void qtractorMixerRack::mouseDoubleClickEvent ( QMouseEvent * /*pMouseEvent*/ )
-{
-	if (m_bSelectEnabled)
-		m_pMixer->mainForm()->trackProperties();
 }
 
 

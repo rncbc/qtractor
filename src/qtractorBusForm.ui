@@ -20,7 +20,7 @@
 
 </comment>
 <author>rncbc aka Rui Nuno Capela</author>
-<widget class="QWidget">
+<widget class="QDialog">
     <property name="name">
         <cstring>qtractorBusForm</cstring>
     </property>
@@ -28,8 +28,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>570</width>
-            <height>361</height>
+            <width>481</width>
+            <height>255</height>
         </rect>
     </property>
     <property name="sizePolicy">
@@ -91,6 +91,188 @@
                     <string>Bus list</string>
                 </property>
             </widget>
+            <widget class="QLayoutWidget">
+                <property name="name">
+                    <cstring>BusLayout</cstring>
+                </property>
+                <vbox>
+                    <property name="name">
+                        <cstring>unnamed</cstring>
+                    </property>
+                    <widget class="QButtonGroup">
+                        <property name="name">
+                            <cstring>CommonBusGroup</cstring>
+                        </property>
+                        <property name="title">
+                            <string>Bus</string>
+                        </property>
+                        <grid>
+                            <property name="name">
+                                <cstring>unnamed</cstring>
+                            </property>
+                            <property name="margin">
+                                <number>8</number>
+                            </property>
+                            <widget class="QLabel" row="0" column="0">
+                                <property name="name">
+                                    <cstring>BusNameTextLabel</cstring>
+                                </property>
+                                <property name="text">
+                                    <string>&amp;Name:</string>
+                                </property>
+                                <property name="buddy" stdset="0">
+                                    <cstring>BusNameLineEdit</cstring>
+                                </property>
+                            </widget>
+                            <widget class="QLineEdit" row="0" column="1" rowspan="1" colspan="2">
+                                <property name="name">
+                                    <cstring>BusNameLineEdit</cstring>
+                                </property>
+                                <property name="toolTip" stdset="0">
+                                    <string>Bus name</string>
+                                </property>
+                            </widget>
+                            <widget class="QLabel" row="1" column="0">
+                                <property name="name">
+                                    <cstring>BusModeTextLabel</cstring>
+                                </property>
+                                <property name="text">
+                                    <string>&amp;Mode:</string>
+                                </property>
+                                <property name="buddy" stdset="0">
+                                    <cstring>BusModeComboBox</cstring>
+                                </property>
+                            </widget>
+                            <spacer row="1" column="2">
+                                <property name="name">
+                                    <cstring>BusModeSpacer</cstring>
+                                </property>
+                                <property name="orientation">
+                                    <enum>Horizontal</enum>
+                                </property>
+                                <property name="sizeType">
+                                    <enum>MinimumExpanding</enum>
+                                </property>
+                                <property name="sizeHint">
+                                    <size>
+                                        <width>20</width>
+                                        <height>20</height>
+                                    </size>
+                                </property>
+                            </spacer>
+                            <widget class="QComboBox" row="1" column="1">
+                                <item>
+                                    <property name="text">
+                                        <string>Input Only</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property name="text">
+                                        <string>Output Only</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property name="text">
+                                        <string>Duplex</string>
+                                    </property>
+                                </item>
+                                <property name="name">
+                                    <cstring>BusModeComboBox</cstring>
+                                </property>
+                                <property name="currentItem">
+                                    <number>2</number>
+                                </property>
+                            </widget>
+                        </grid>
+                    </widget>
+                    <widget class="QButtonGroup">
+                        <property name="name">
+                            <cstring>AudioBusGroup</cstring>
+                        </property>
+                        <property name="title">
+                            <string>Audio</string>
+                        </property>
+                        <grid>
+                            <property name="name">
+                                <cstring>unnamed</cstring>
+                            </property>
+                            <property name="margin">
+                                <number>8</number>
+                            </property>
+                            <widget class="QLabel" row="0" column="0">
+                                <property name="name">
+                                    <cstring>AudioChannelsTextLabel</cstring>
+                                </property>
+                                <property name="text">
+                                    <string>&amp;Channels:</string>
+                                </property>
+                                <property name="buddy" stdset="0">
+                                    <cstring>AudioChannelsSpinBox</cstring>
+                                </property>
+                            </widget>
+                            <widget class="QSpinBox" row="0" column="1">
+                                <property name="name">
+                                    <cstring>AudioChannelsSpinBox</cstring>
+                                </property>
+                                <property name="minValue">
+                                    <number>1</number>
+                                </property>
+                                <property name="value">
+                                    <number>2</number>
+                                </property>
+                                <property name="toolTip" stdset="0">
+                                    <string>Audio channels</string>
+                                </property>
+                            </widget>
+                            <spacer row="0" column="2">
+                                <property name="name">
+                                    <cstring>AudioChannelsSpacer</cstring>
+                                </property>
+                                <property name="orientation">
+                                    <enum>Horizontal</enum>
+                                </property>
+                                <property name="sizeType">
+                                    <enum>MinimumExpanding</enum>
+                                </property>
+                                <property name="sizeHint">
+                                    <size>
+                                        <width>20</width>
+                                        <height>20</height>
+                                    </size>
+                                </property>
+                            </spacer>
+                            <widget class="QCheckBox" row="1" column="0" rowspan="1" colspan="3">
+                                <property name="name">
+                                    <cstring>AudioAutoConnectCheckBox</cstring>
+                                </property>
+                                <property name="text">
+                                    <string>&amp;Auto connect</string>
+                                </property>
+                                <property name="accel">
+                                    <string>Alt+A</string>
+                                </property>
+                            </widget>
+                        </grid>
+                    </widget>
+                    <spacer>
+                        <property name="name">
+                            <cstring>BusTabSpacer</cstring>
+                        </property>
+                        <property name="orientation">
+                            <enum>Vertical</enum>
+                        </property>
+                        <property name="sizeType">
+                            <enum>Expanding</enum>
+                        </property>
+                        <property name="sizeHint">
+                            <size>
+                                <width>20</width>
+                                <height>60</height>
+                            </size>
+                        </property>
+                    </spacer>
+                </vbox>
+            </widget>
         </widget>
         <widget class="QLayoutWidget">
             <property name="name">
@@ -125,11 +307,11 @@
                         <enum>Horizontal</enum>
                     </property>
                     <property name="sizeType">
-                        <enum>Expanding</enum>
+                        <enum>MinimumExpanding</enum>
                     </property>
                     <property name="sizeHint">
                         <size>
-                            <width>180</width>
+                            <width>20</width>
                             <height>20</height>
                         </size>
                     </property>
@@ -205,18 +387,6 @@
 </widget>
 <connections>
     <connection>
-        <sender>BusListView</sender>
-        <signal>selectionChanged()</signal>
-        <receiver>qtractorBusForm</receiver>
-        <slot>selectBus()</slot>
-    </connection>
-    <connection>
-        <sender>BusListView</sender>
-        <signal>contextMenuRequested(QListViewItem*,const QPoint&amp;,int)</signal>
-        <receiver>qtractorBusForm</receiver>
-        <slot>contextMenu(QListViewItem*,const QPoint&amp;,int)</slot>
-    </connection>
-    <connection>
         <sender>RefreshPushButton</sender>
         <signal>clicked()</signal>
         <receiver>qtractorBusForm</receiver>
@@ -246,21 +416,38 @@
         <receiver>qtractorBusForm</receiver>
         <slot>close()</slot>
     </connection>
+    <connection>
+        <sender>BusListView</sender>
+        <signal>selectionChanged()</signal>
+        <receiver>qtractorBusForm</receiver>
+        <slot>selectBus()</slot>
+    </connection>
+    <connection>
+        <sender>BusListView</sender>
+        <signal>contextMenuRequested(QListViewItem*,const QPoint&amp;,int)</signal>
+        <receiver>qtractorBusForm</receiver>
+        <slot>contextMenu(QListViewItem*,const QPoint&amp;,int)</slot>
+    </connection>
 </connections>
 <tabstops>
     <tabstop>BusListView</tabstop>
+    <tabstop>BusNameLineEdit</tabstop>
+    <tabstop>BusModeComboBox</tabstop>
+    <tabstop>AudioChannelsSpinBox</tabstop>
+    <tabstop>AudioAutoConnectCheckBox</tabstop>
     <tabstop>RefreshPushButton</tabstop>
     <tabstop>CreatePushButton</tabstop>
     <tabstop>UpdatePushButton</tabstop>
     <tabstop>DeletePushButton</tabstop>
     <tabstop>ClosePushButton</tabstop>
 </tabstops>
-<includes>
-    <include location="local" impldecl="in declaration">qtractorEngine.h</include>
-    <include location="local" impldecl="in implementation">qtractorBusForm.ui.h</include>
-</includes>
+<forwards>
+	<forward>class qtractorMainForm;</forward>
+	<forward>class qtractorBus;</forward>
+</forwards>
 <variables>
-    <variable access="private">qtractorTrack::TrackType m_busType;</variable>
+	<variable access="private">qtractorMainForm *m_pMainForm;</variable>
+	<variable access="private">qtractorBus *m_pBus;</variable>
     <variable access="private">QListViewItem *m_pAudioRoot;</variable>
     <variable access="private">QListViewItem *m_pMidiRoot;</variable>
 </variables>
@@ -276,7 +463,10 @@
 <functions>
     <function access="private" specifier="non virtual">init()</function>
     <function access="private" specifier="non virtual">destroy()</function>
+	<function specifier="non virtual">setMainForm( qtractorMainForm *pMainForm )</function>
+	<function specifier="non virtual" returnType="qtractorMainForm *">mainForm()</function>
     <function specifier="non virtual">setBus( qtractorBus *pBus )</function>
+	<function specifier="non virtual" returnType="qtractorBus *">bus()</function>
 </functions>
 <pixmapinproject/>
 <layoutdefaults spacing="4" margin="4"/>

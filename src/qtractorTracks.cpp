@@ -400,7 +400,7 @@ bool qtractorTracks::addTrack (void)
 
 	// Open dialog for settings...
 	qtractorTrackForm trackForm(this);
-	trackForm.setInstruments(m_pMainForm->instruments());
+	trackForm.setMainForm(m_pMainForm);
 	trackForm.setTrack(pTrack);
 	if (!trackForm.exec()) {
 		delete pTrack;
@@ -473,7 +473,7 @@ bool qtractorTracks::editTrack ( qtractorTrack *pTrack )
 
 	// Open dialog for settings...
 	qtractorTrackForm trackForm(this);
-	trackForm.setInstruments(m_pMainForm->instruments());
+	trackForm.setMainForm(m_pMainForm);
 	trackForm.setTrack(pTrack);
 	if (!trackForm.exec())
 		return false;

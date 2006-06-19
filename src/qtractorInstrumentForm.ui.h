@@ -22,8 +22,9 @@
 
 #include "qtractorAbout.h"
 #include "qtractorInstrument.h"
-
 #include "qtractorOptions.h"
+
+#include "qtractorMainForm.h"
 
 #include <qfiledialog.h>
 #include <qmessagebox.h>
@@ -66,9 +67,8 @@ protected:
 // Kind of post-constructor.
 void qtractorInstrumentForm::init (void)
 {
-	m_pInstruments = NULL;
-	m_pOptions     = NULL;
-	m_iDirtyCount  = 0;
+	m_pMainForm   = NULL;
+	m_iDirtyCount = 0;
 
 	InstrumentsListView->setSorting(-1);
 	NamesListView->setSorting(-1);
@@ -91,48 +91,33 @@ void qtractorInstrumentForm::destroy (void)
 }
 
 
-// Instrument list accessors.
-void qtractorInstrumentForm::setInstruments (
-	qtractorInstrumentList *pInstruments )
+// Main form accessors.
+void qtractorInstrumentForm::setMainForm ( qtractorMainForm *pMainForm )
 {
-	m_pInstruments = pInstruments;
+	m_pMainForm = pMainForm;
 
 	refreshForm();
 	stabilizeForm();
 }
 
 
-qtractorInstrumentList *qtractorInstrumentForm::instruments (void)
-{
-	return m_pInstruments;
-}
-
-
-// General options accessors.
-void qtractorInstrumentForm::setOptions (
-	qtractorOptions *pOptions )
-{
-	m_pOptions = pOptions;
-}
-
-
-qtractorOptions *qtractorInstrumentForm::options (void)
-{
-	return m_pOptions;
-}
-
-
 // Import new intrument file(s) into listing.
 void qtractorInstrumentForm::importSlot (void)
 {
-	if (m_pOptions == NULL)
+	if (m_pMainForm == NULL)
 		return;
-	if (m_pInstruments == NULL)
+
+	qtractorOptions *pOptions = m_pMainForm->options();
+	if (pOptions == NULL)
+		return;
+
+	qtractorInstrumentList *pInstruments = m_pMainForm->instruments();
+	if (pInstruments == NULL)
 		return;
 
 	QStringList files = QFileDialog::getOpenFileNames(
 			tr("Instrument Files (*.ins)"),     // Filter files.
-			m_pOptions->sInstrumentDir,         // Start here.
+			pOptions->sInstrumentDir,           // Start here.
 			this, 0,                            // Parent and name (none)
 			tr("Import Instrument Files")       // Caption.
 	);
@@ -148,7 +133,7 @@ void qtractorInstrumentForm::importSlot (void)
 			iter != files.end(); iter++) {
 		// Merge the file contents into global container...
 		const QString& sPath = *iter;
-		if (m_pInstruments->load(sPath)) {
+		if (pInstruments->load(sPath)) {
 			// Start inserting in the current selected or last item...
 			if (pItem == NULL) {
 				pItem = FilesListView->selectedItem();
@@ -166,7 +151,7 @@ void qtractorInstrumentForm::importSlot (void)
 				pItem->setText(1, sPath);
 				pItem->setSelected(true);
 				FilesListView->setCurrentItem(pItem);
-				m_pOptions->sInstrumentDir = info.dirPath(true);
+				pOptions->sInstrumentDir = info.dirPath(true);
 			//	m_iDirtyCount++;
 			}
 		}
@@ -181,12 +166,16 @@ void qtractorInstrumentForm::importSlot (void)
 // Remove a file from instrument list.
 void qtractorInstrumentForm::removeSlot (void)
 {
-	if (m_pInstruments == NULL)
+	if (m_pMainForm == NULL)
+		return;
+
+	qtractorInstrumentList *pInstruments = m_pMainForm->instruments();
+	if (pInstruments == NULL)
 		return;
 
 	QListViewItem *pItem = FilesListView->selectedItem();
 	if (pItem) {
-		m_pInstruments->removeFile(pItem->text(1));
+		pInstruments->removeFile(pItem->text(1));
 		delete pItem;
 		m_iDirtyCount++;
 	}
@@ -242,16 +231,20 @@ void qtractorInstrumentForm::moveDownSlot (void)
 // Reload the complete instrument definitions, from list.
 void qtractorInstrumentForm::reloadSlot (void)
 {
-	if (m_pInstruments == NULL)
+	if (m_pMainForm == NULL)
+		return;
+
+	qtractorInstrumentList *pInstruments = m_pMainForm->instruments();
+	if (pInstruments == NULL)
 		return;
 
 	// Ooops...
-	m_pInstruments->clearAll();
+	pInstruments->clearAll();
 
 	// Load each file in order...
 	for (QListViewItem *pItem = FilesListView->firstChild();
 			pItem; pItem = pItem->nextSibling()) {
-		m_pInstruments->load(pItem->text(1));
+		pInstruments->load(pItem->text(1));
 	}
 	// Not dirty anymore...
 	m_iDirtyCount = 0;
@@ -264,13 +257,19 @@ void qtractorInstrumentForm::reloadSlot (void)
 // Export the whole state into a single instrument file.
 void qtractorInstrumentForm::exportSlot (void)
 {
-	if (m_pOptions == NULL)
+	if (m_pMainForm == NULL)
 		return;
-	if (m_pInstruments == NULL)
+
+	qtractorOptions *pOptions = m_pMainForm->options();
+	if (pOptions == NULL)
+		return;
+
+	qtractorInstrumentList *pInstruments = m_pMainForm->instruments();
+	if (pInstruments == NULL)
 		return;
 
 	QString sPath = QFileDialog::getSaveFileName(
-			m_pOptions->sInstrumentDir,         // Start here.
+			pOptions->sInstrumentDir,           // Start here.
 			tr("Instrument Files (*.ins)"),     // Filter files.
 			this, 0,                            // Parent and name (none)
 			tr("Export Instrument File")        // Caption.
@@ -296,8 +295,8 @@ void qtractorInstrumentForm::exportSlot (void)
 	}
 
 	// Just save the whole bunch...
-	if (m_pInstruments->save(sPath))
-		m_pOptions->sInstrumentDir = QFileInfo(sPath).dirPath(true);
+	if (pInstruments->save(sPath))
+		pOptions->sInstrumentDir = QFileInfo(sPath).dirPath(true);
 }
 
 
@@ -355,18 +354,29 @@ void qtractorInstrumentForm::stabilizeForm (void)
 	}
 
 	ReloadPushButton->setEnabled(m_iDirtyCount > 0);
-	ExportPushButton->setEnabled(m_pInstruments->count() > 0);
+
+	if (m_pMainForm && m_pMainForm->instruments())
+		ExportPushButton->setEnabled(m_pMainForm->instruments()->count() > 0);
+	else
+		ExportPushButton->setEnabled(false);
 }
 
 
 // Refresh all instrument definition views.
 void qtractorInstrumentForm::refreshForm (void)
 {
+	if (m_pMainForm == NULL)
+		return;
+
+	qtractorInstrumentList *pInstruments = m_pMainForm->instruments();
+	if (pInstruments == NULL)
+		return;
+
 	// Files list view...
 	FilesListView->clear();
 	QListViewItem *pFileItem = NULL;
-	for (QStringList::ConstIterator iter = m_pInstruments->files().begin();
-			iter != m_pInstruments->files().end(); ++iter) {
+	for (QStringList::ConstIterator iter = pInstruments->files().begin();
+			iter != pInstruments->files().end(); ++iter) {
 		const QString& sPath = *iter;
 		pFileItem = new QListViewItem(FilesListView, pFileItem);
 		pFileItem->setPixmap(0, QPixmap::fromMimeSource("itemFile.png"));
@@ -379,8 +389,8 @@ void qtractorInstrumentForm::refreshForm (void)
 	QListViewItem *pInstrItem = NULL;
 	QListViewItem *pChildItem = NULL;
 	qtractorInstrumentList::Iterator iter;
-	for (iter = m_pInstruments->begin();
-			iter != m_pInstruments->end(); ++iter) {
+	for (iter = pInstruments->begin();
+			iter != pInstruments->end(); ++iter) {
 		qtractorInstrument& instr = iter.data();
 		// Instrument Name...
 		pInstrItem = new QListViewItem(InstrumentsListView, pInstrItem);
@@ -459,37 +469,37 @@ void qtractorInstrumentForm::refreshForm (void)
 
 	// Names list view...
 	NamesListView->clear();
-	if (m_pInstruments->count() > 0) {
+	if (pInstruments->count() > 0) {
 		QListViewItem *pListItem = NULL;
 		// - Patch Names...
 		pListItem = new qtractorInstrumentGroupItem(NamesListView, pListItem);
 		pListItem->setText(0, tr("Patch Names"));
-		listInstrumentDataList(pListItem, m_pInstruments->patches(),
+		listInstrumentDataList(pListItem, pInstruments->patches(),
 			QPixmap::fromMimeSource("itemPatches.png"));
 		// - Note Names...
 		pListItem = new qtractorInstrumentGroupItem(NamesListView, pListItem);
 		pListItem->setText(0, tr("Note Names"));
-		listInstrumentDataList(pListItem, m_pInstruments->notes(),
+		listInstrumentDataList(pListItem, pInstruments->notes(),
 			QPixmap::fromMimeSource("itemNotes.png"));
 		// - Controller Names...
 		pListItem = new qtractorInstrumentGroupItem(NamesListView, pListItem);
 		pListItem->setText(0, tr("Controller Names"));
-		listInstrumentDataList(pListItem, m_pInstruments->controllers(),
+		listInstrumentDataList(pListItem, pInstruments->controllers(),
 			QPixmap::fromMimeSource("itemControllers.png"));
 		// - RPN Names...
 		pListItem = new qtractorInstrumentGroupItem(NamesListView, pListItem);
 		pListItem->setText(0, tr("RPN Names"));
-		listInstrumentDataList(pListItem, m_pInstruments->rpns(),
+		listInstrumentDataList(pListItem, pInstruments->rpns(),
 			QPixmap::fromMimeSource("itemRpns.png"));
 		// - NRPN Names...
 		pListItem = new qtractorInstrumentGroupItem(NamesListView, pListItem);
 		pListItem->setText(0, tr("NRPN Names"));
-		listInstrumentDataList(pListItem, m_pInstruments->nrpns(),
+		listInstrumentDataList(pListItem, pInstruments->nrpns(),
 			QPixmap::fromMimeSource("itemNrpns.png"));
 		// - Bank Select Methods...
 		pListItem = new qtractorInstrumentGroupItem(NamesListView, pListItem);
 		pListItem->setText(0, tr("Bank Select Methods"));
-		if (m_pInstruments->count() > 0) {
+		if (pInstruments->count() > 0) {
 			pChildItem = NULL;
 			for (int iBankSelMethod = 0; iBankSelMethod < 4; iBankSelMethod++) {
 				pChildItem = new qtractorInstrumentGroupItem(pListItem, pChildItem);

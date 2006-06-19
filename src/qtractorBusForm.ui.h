@@ -24,10 +24,15 @@
 #include "qtractorAudioEngine.h"
 #include "qtractorMidiEngine.h"
 
+#include "qtractorMainForm.h"
+
 #include <qpopupmenu.h>
 
 
-// Bus list view item.
+//----------------------------------------------------------------------
+// class qtractorBusListItem -- Custom bus listview item.
+//
+
 class qtractorBusListItem : public QListViewItem
 {
 public:
@@ -50,7 +55,8 @@ private:
 void qtractorBusForm::init (void)
 {
 	// Initialize locals.
-	m_busType    = qtractorTrack::None;
+	m_pMainForm  = NULL;
+	m_pBus       = NULL;
 	m_pAudioRoot = NULL;
 	m_pMidiRoot  = NULL;
 
@@ -68,9 +74,24 @@ void qtractorBusForm::destroy (void)
 }
 
 
+// Main form accessors.
+void qtractorBusForm::setMainForm ( qtractorMainForm *pMainForm )
+{
+	m_pMainForm = pMainForm;
+}
+
+qtractorMainForm *qtractorBusForm::mainForm (void)
+{
+	return m_pMainForm;
+}
+
+
 // Set current selected bus.
 void qtractorBusForm::setBus ( qtractorBus *pBus )
 {
+	// Set intended bus....
+	m_pBus = pBus;
+
 	// Get the device view root item...
 	QListViewItem *pRootItem = NULL;
 	switch (pBus->busType()) {
@@ -102,6 +123,12 @@ void qtractorBusForm::setBus ( qtractorBus *pBus )
 	}
 }
 
+
+// Current bus accessor.
+qtractorBus *qtractorBusForm::bus (void)
+{
+	return m_pBus;
+}
 
 
 // Refresh all busses list and views.

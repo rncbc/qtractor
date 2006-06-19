@@ -28,6 +28,9 @@
 #include "qtractorAudioEngine.h"
 #include "qtractorMidiEngine.h"
 
+#include "qtractorMainForm.h"
+#include "qtractorBusForm.h"
+
 #include <qmessagebox.h>
 #include <qcolordialog.h>
 #include <qlistbox.h>
@@ -87,7 +90,7 @@ void qtractorColorItem::paint ( QPainter *pPainter )
 void qtractorTrackForm::init (void)
 {
 	// No settings descriptor initially (the caller will set it).
-	m_pInstruments = NULL;
+	m_pMainForm = NULL;
 	m_pTrack = NULL;
 
 	// Bank select methods.
@@ -132,19 +135,18 @@ void qtractorTrackForm::destroy (void)
 }
 
 
-// Instrument list accessors.
-void qtractorTrackForm::setInstruments (
-	qtractorInstrumentList *pInstruments )
+// Main form accessors.
+void qtractorTrackForm::setMainForm ( qtractorMainForm *pMainForm )
 {
-	m_pInstruments = pInstruments;
+	m_pMainForm = pMainForm;
 	
 	updateInstruments();
 }
 
 
-qtractorInstrumentList *qtractorTrackForm::instruments (void)
+qtractorMainForm *qtractorTrackForm::mainForm (void)
 {
-	return m_pInstruments;
+	return m_pMainForm;
 }
 
 
@@ -318,13 +320,17 @@ qtractorMidiBus *qtractorTrackForm::midiBus (void)
 // Refresh instrument list.
 void qtractorTrackForm::updateInstruments (void)
 {
-	if (m_pInstruments == NULL)
+	if (m_pMainForm == NULL)
+		return;
+
+	qtractorInstrumentList *pInstruments = m_pMainForm->instruments();
+	if (pInstruments == NULL)
 		return;
 
 	InstrumentComboBox->clear();
 	const QPixmap& pixmap = QPixmap::fromMimeSource("itemInstrument.png");
-	for (qtractorInstrumentList::Iterator iter = m_pInstruments->begin();
-			iter != m_pInstruments->end(); ++iter) {
+	for (qtractorInstrumentList::Iterator iter = pInstruments->begin();
+			iter != pInstruments->end(); ++iter) {
 		InstrumentComboBox->insertItem(pixmap, iter.data().instrumentName());
 	}
 }
@@ -412,7 +418,7 @@ void qtractorTrackForm::updateBanks ( const QString& sInstrumentName,
 {
 	if (m_pTrack == NULL)
 		return;
-	if (m_pInstruments == NULL)
+	if (m_pMainForm == NULL)
 		return;
 	if (sInstrumentName.isEmpty())
 		return;
@@ -422,8 +428,12 @@ void qtractorTrackForm::updateBanks ( const QString& sInstrumentName,
 		sInstrumentName.latin1(), iBankSelMethod, iBank, iProg);
 #endif
 
+	qtractorInstrumentList *pInstruments = m_pMainForm->instruments();
+	if (pInstruments == NULL)
+		return;
+
 	// Instrument reference...
-	qtractorInstrument& instr = (*m_pInstruments)[sInstrumentName];
+	qtractorInstrument& instr = (*pInstruments)[sInstrumentName];
 
 	// Bank selection method...
 	if (iBankSelMethod < 0)
@@ -474,7 +484,7 @@ void qtractorTrackForm::updatePrograms (  const QString& sInstrumentName,
 {
 	if (m_pTrack == NULL)
 		return;
-	if (m_pInstruments == NULL)
+	if (m_pMainForm == NULL)
 		return;
 	if (sInstrumentName.isEmpty())
 		return;
@@ -484,8 +494,12 @@ void qtractorTrackForm::updatePrograms (  const QString& sInstrumentName,
 		sInstrumentName.latin1(), iBank, iProg);
 #endif
 
+	qtractorInstrumentList *pInstruments = m_pMainForm->instruments();
+	if (pInstruments == NULL)
+		return;
+
 	// Instrument reference...
-	qtractorInstrument& instr = (*m_pInstruments)[sInstrumentName];
+	qtractorInstrument& instr = (*pInstruments)[sInstrumentName];
 
 	// Bank reference...
 	qtractorInstrumentData& bank = instr.patch(iBank);
@@ -600,6 +614,37 @@ void qtractorTrackForm::busNameChanged ( const QString& /* sBusName */ )
 		return;
 
 	channelChanged(ChannelSpinBox->value());
+}
+
+
+// Manage busses.
+void qtractorTrackForm::busNameClicked (void)
+{
+	if (m_iDirtySetup > 0)
+		return;
+
+	// Depending on track type...
+	qtractorEngine *pEngine = NULL;
+	int iTrackType = TrackTypeGroup->id(TrackTypeGroup->selected());
+	switch (iTrackType) {
+	case 0: // Audio track...
+		pEngine = m_pTrack->session()->audioEngine();
+		break;
+	case 1: // Midi track...
+		pEngine = m_pTrack->session()->midiEngine();
+		break;
+	}
+
+	// Call here the bus management form.
+	qtractorBusForm busForm(this);
+	busForm.setMainForm(m_pMainForm);
+	// Pre-select bus...
+	const QString& sBusName = BusNameComboBox->currentText();
+	if (pEngine && !sBusName.isEmpty())
+		busForm.setBus(pEngine->findBus(sBusName));
+	// Go for it...
+	if (busForm.exec())
+		trackTypeChanged(iTrackType);
 }
 
 

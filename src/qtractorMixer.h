@@ -113,6 +113,9 @@ protected:
 	// Mouse selection event handlers.
 	void mousePressEvent(QMouseEvent *);
 
+	// Mouse selection event handlers.
+	void mouseDoubleClickEvent(QMouseEvent *);
+
 private:
 
 	// Local instance variables.
@@ -201,9 +204,6 @@ signals:
 	void selectionChanged();
 
 protected:
-
-	// Mouse selection event handlers.
-	void mouseDoubleClickEvent(QMouseEvent *);
 
 	// Context menu request event handler.
 	void contextMenuEvent(QContextMenuEvent *);
