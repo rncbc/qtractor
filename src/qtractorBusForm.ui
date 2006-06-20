@@ -82,7 +82,7 @@
                     </size>
                 </property>
                 <property name="rootIsDecorated">
-                    <bool>true</bool>
+                    <bool>false</bool>
                 </property>
                 <property name="resizeMode">
                     <enum>LastColumn</enum>
@@ -204,7 +204,7 @@
                                     <cstring>AudioChannelsTextLabel</cstring>
                                 </property>
                                 <property name="text">
-                                    <string>&amp;Channels:</string>
+                                    <string>Cha&amp;nnels:</string>
                                 </property>
                                 <property name="buddy" stdset="0">
                                     <cstring>AudioChannelsSpinBox</cstring>
@@ -387,6 +387,30 @@
 </widget>
 <connections>
     <connection>
+        <sender>BusListView</sender>
+        <signal>selectionChanged()</signal>
+        <receiver>qtractorBusForm</receiver>
+        <slot>selectBus()</slot>
+    </connection>
+    <connection>
+        <sender>BusListView</sender>
+        <signal>contextMenuRequested(QListViewItem*,const QPoint&amp;,int)</signal>
+        <receiver>qtractorBusForm</receiver>
+        <slot>contextMenu(QListViewItem*,const QPoint&amp;,int)</slot>
+    </connection>
+    <connection>
+        <sender>BusNameLineEdit</sender>
+        <signal>textChanged(const QString &amp;)</signal>
+        <receiver>qtractorBusForm</receiver>
+        <slot>changed()</slot>
+    </connection>
+    <connection>
+        <sender>BusModeComboBox</sender>
+        <signal>activated(int)</signal>
+        <receiver>qtractorBusForm</receiver>
+        <slot>changed()</slot>
+    </connection>
+    <connection>
         <sender>RefreshPushButton</sender>
         <signal>clicked()</signal>
         <receiver>qtractorBusForm</receiver>
@@ -416,18 +440,6 @@
         <receiver>qtractorBusForm</receiver>
         <slot>close()</slot>
     </connection>
-    <connection>
-        <sender>BusListView</sender>
-        <signal>selectionChanged()</signal>
-        <receiver>qtractorBusForm</receiver>
-        <slot>selectBus()</slot>
-    </connection>
-    <connection>
-        <sender>BusListView</sender>
-        <signal>contextMenuRequested(QListViewItem*,const QPoint&amp;,int)</signal>
-        <receiver>qtractorBusForm</receiver>
-        <slot>contextMenu(QListViewItem*,const QPoint&amp;,int)</slot>
-    </connection>
 </connections>
 <tabstops>
     <tabstop>BusListView</tabstop>
@@ -450,6 +462,8 @@
 	<variable access="private">qtractorBus *m_pBus;</variable>
     <variable access="private">QListViewItem *m_pAudioRoot;</variable>
     <variable access="private">QListViewItem *m_pMidiRoot;</variable>
+    <variable access="private">int m_iDirtySetup;</variable>
+    <variable access="private">int m_iDirtyCount;</variable>
 </variables>
 <slots>
     <slot specifier="non virtual">refreshBusses()</slot>
@@ -457,8 +471,9 @@
     <slot specifier="non virtual">createBus()</slot>
     <slot specifier="non virtual">updateBus()</slot>
     <slot specifier="non virtual">deleteBus()</slot>
-    <slot specifier="non virtual">contextMenu(QListViewItem *, const QPoint&amp;, int)</slot>
+    <slot specifier="non virtual">changed()</slot>
     <slot specifier="non virtual">stabilizeForm()</slot>
+    <slot specifier="non virtual">contextMenu(QListViewItem *, const QPoint&amp;, int)</slot>
 </slots>
 <functions>
     <function access="private" specifier="non virtual">init()</function>
@@ -467,6 +482,8 @@
 	<function specifier="non virtual" returnType="qtractorMainForm *">mainForm()</function>
     <function specifier="non virtual">setBus( qtractorBus *pBus )</function>
 	<function specifier="non virtual" returnType="qtractorBus *">bus()</function>
+    <function specifier="private">showBus( qtractorBus *pBus )</function>
+    <function specifier="private" returnType="bool">canCreateBus()</function>
 </functions>
 <pixmapinproject/>
 <layoutdefaults spacing="4" margin="4"/>

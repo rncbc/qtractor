@@ -115,8 +115,8 @@ public:
 	unsigned short channels() const;
 
 	// Auto-connection predicate.
-	void setAutoConnected(bool bAutoConnect);
-	bool isAutoConnected() const;
+	void setAutoConnect(bool bAutoConnect);
+	bool isAutoConnect() const;
 
 	// Concrete activation methods.
 	bool open();

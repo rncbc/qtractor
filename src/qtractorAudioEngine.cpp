@@ -532,7 +532,7 @@ bool qtractorAudioEngine::saveElement ( qtractorSessionDocument *pDocument,
 						&eAudioBus);
 			}
 			pDocument->saveTextElement("auto-connect",
-				pDocument->textFromBool(pAudioBus->isAutoConnected()),
+				pDocument->textFromBool(pAudioBus->isAutoConnect()),
 					&eAudioBus);
 			pElement->appendChild(eAudioBus);
 		}
@@ -605,12 +605,12 @@ unsigned short qtractorAudioBus::channels (void) const
 
 
 // Auto-connection predicate.
-void qtractorAudioBus::setAutoConnected ( bool bAutoConnect )
+void qtractorAudioBus::setAutoConnect ( bool bAutoConnect )
 {
 	m_bAutoConnect = bAutoConnect;
 }
 
-bool qtractorAudioBus::isAutoConnected (void) const
+bool qtractorAudioBus::isAutoConnect (void) const
 {
 	return m_bAutoConnect;
 }

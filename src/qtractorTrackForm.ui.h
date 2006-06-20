@@ -572,7 +572,7 @@ const QColor& qtractorTrackForm::colorItem ( QComboBox *pComboBox )
 }
 
 
-// Make changes due to track name.
+// Make changes due.
 void qtractorTrackForm::changed (void)
 {
 	if (m_iDirtySetup > 0)
