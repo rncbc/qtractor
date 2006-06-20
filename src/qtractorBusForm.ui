@@ -110,9 +110,6 @@
                             <property name="name">
                                 <cstring>unnamed</cstring>
                             </property>
-                            <property name="margin">
-                                <number>8</number>
-                            </property>
                             <widget class="QLabel" row="0" column="0">
                                 <property name="name">
                                     <cstring>BusNameTextLabel</cstring>
@@ -163,12 +160,12 @@
                             <widget class="QComboBox" row="1" column="1">
                                 <item>
                                     <property name="text">
-                                        <string>Input Only</string>
+                                        <string>Input</string>
                                     </property>
                                 </item>
                                 <item>
                                     <property name="text">
-                                        <string>Output Only</string>
+                                        <string>Output</string>
                                     </property>
                                 </item>
                                 <item>
@@ -195,9 +192,6 @@
                         <grid>
                             <property name="name">
                                 <cstring>unnamed</cstring>
-                            </property>
-                            <property name="margin">
-                                <number>8</number>
                             </property>
                             <widget class="QLabel" row="0" column="0">
                                 <property name="name">
@@ -411,6 +405,18 @@
         <slot>changed()</slot>
     </connection>
     <connection>
+        <sender>AudioChannelsSpinBox</sender>
+        <signal>valueChanged(int)</signal>
+        <receiver>qtractorBusForm</receiver>
+        <slot>changed()</slot>
+    </connection>
+    <connection>
+        <sender>AudioAutoConnectCheckBox</sender>
+        <signal>clicked()</signal>
+        <receiver>qtractorBusForm</receiver>
+        <slot>changed()</slot>
+    </connection>
+    <connection>
         <sender>RefreshPushButton</sender>
         <signal>clicked()</signal>
         <receiver>qtractorBusForm</receiver>
@@ -438,7 +444,7 @@
         <sender>ClosePushButton</sender>
         <signal>clicked()</signal>
         <receiver>qtractorBusForm</receiver>
-        <slot>close()</slot>
+        <slot>reject()</slot>
     </connection>
 </connections>
 <tabstops>
@@ -466,6 +472,7 @@
     <variable access="private">int m_iDirtyCount;</variable>
 </variables>
 <slots>
+    <slot specifier="non virtual">reject()</slot>
     <slot specifier="non virtual">refreshBusses()</slot>
     <slot specifier="non virtual">selectBus()</slot>
     <slot specifier="non virtual">createBus()</slot>
@@ -484,7 +491,9 @@
 	<function specifier="non virtual" returnType="qtractorBus *">bus()</function>
     <function specifier="private">showBus( qtractorBus *pBus )</function>
     <function specifier="private" returnType="bool">canCreateBus()</function>
+    <function specifier="private" returnType="bool">canUpdateBus()</function>
+    <function specifier="private" returnType="bool">canDeleteBus()</function>
 </functions>
 <pixmapinproject/>
-<layoutdefaults spacing="4" margin="4"/>
+<layoutdefaults spacing="4" margin="8"/>
 </UI>

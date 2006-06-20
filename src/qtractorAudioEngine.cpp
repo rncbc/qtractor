@@ -515,7 +515,7 @@ bool qtractorAudioEngine::saveElement ( qtractorSessionDocument *pDocument,
 			pDocument->saveTextElement("channels",
 				QString::number(pAudioBus->channels()),
 					&eAudioBus);
-			if (pAudioBus->busMode() && qtractorBus::Input) {
+			if (pAudioBus->busMode() & qtractorBus::Input) {
 				pDocument->saveTextElement("input-gain",
 					QString::number(pAudioBus->monitor_in()->gain()),
 						&eAudioBus);
@@ -523,7 +523,7 @@ bool qtractorAudioEngine::saveElement ( qtractorSessionDocument *pDocument,
 					QString::number(pAudioBus->monitor_in()->panning()),
 						&eAudioBus);
 			}
-			if (pAudioBus->busMode() && qtractorBus::Output) {
+			if (pAudioBus->busMode() & qtractorBus::Output) {
 				pDocument->saveTextElement("output-gain",
 					QString::number(pAudioBus->monitor_out()->gain()),
 						&eAudioBus);

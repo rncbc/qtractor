@@ -21,11 +21,13 @@
 *****************************************************************************/
 
 #include "qtractorAbout.h"
+#include "qtractorOptions.h"
 #include "qtractorAudioEngine.h"
 #include "qtractorMidiEngine.h"
 
 #include "qtractorMainForm.h"
 
+#include <qmessagebox.h>
 #include <qpopupmenu.h>
 
 
@@ -155,69 +157,24 @@ void qtractorBusForm::showBus ( qtractorBus *pBus )
 
 	// Show bus properties into view pane...
 	if (pBus) {
-		BusNameTextLabel->setEnabled(true);
-		BusNameLineEdit->setEnabled(true);
-		BusModeTextLabel->setEnabled(true);
-		BusModeComboBox->setEnabled(true);
 		BusNameLineEdit->setText(pBus->busName());
 		BusModeComboBox->setCurrentItem(int(pBus->busMode()) - 1);
 		qtractorAudioBus *pAudioBus = NULL;
 		if (pBus->busType() == qtractorTrack::Audio)
 			pAudioBus = static_cast<qtractorAudioBus *> (pBus);
 		if (pAudioBus) {
-			AudioBusGroup->setEnabled(true);
 			AudioChannelsSpinBox->setValue(pAudioBus->channels());
 			AudioAutoConnectCheckBox->setChecked(pAudioBus->isAutoConnect());
-		} else {
-			AudioBusGroup->setEnabled(false);
 		}
-	} else {
-		BusModeTextLabel->setEnabled(false);
-		BusModeComboBox->setEnabled(false);
-		BusNameTextLabel->setEnabled(false);
-		BusNameLineEdit->setEnabled(false);
-		AudioBusGroup->setEnabled(false);
 	}
+
+	// Reset dirty flag...
+	m_iDirtyCount = 0;
 	
 	m_iDirtySetup--;
 	
 	// Done.
 	stabilizeForm();
-}
-
-
-// Check whether the the current view is ellegible as a new bus.
-bool qtractorBusForm::canCreateBus (void)
-{
-	if (m_pMainForm == NULL)
-		return false;
-	if (m_pMainForm->session() == NULL)
-		return false;
-
-	const QString sBusName = BusNameLineEdit->text().stripWhiteSpace();
-	if (sBusName.isEmpty())
-		return false;
-
-	// Get the device view root item...
-	qtractorEngine *pEngine = NULL;
-	if (m_pBus) {
-		switch (m_pBus->busType()) {
-		case qtractorTrack::Audio:
-			pEngine = m_pMainForm->session()->audioEngine();
-			break;
-		case qtractorTrack::Midi:
-			pEngine = m_pMainForm->session()->midiEngine();
-			break;
-		default:
-			break;
-		}
-	}
-	// Is it still valid?
-	if (pEngine == NULL)
-		return false;
-
-	// Is there one already?
-	return (pEngine->findBus(sBusName) == NULL);
 }
 
 
@@ -239,7 +196,7 @@ void qtractorBusForm::refreshBusses (void)
 	// Audio busses...
 	qtractorAudioEngine *pAudioEngine = m_pMainForm->session()->audioEngine();
 	if (pAudioEngine) {
-		m_pAudioRoot = new QListViewItem(BusListView, tr("Audio"));
+		m_pAudioRoot = new QListViewItem(BusListView, ' ' + tr("Audio"));
 		m_pAudioRoot->setSelectable(false);
 		for (qtractorBus *pBus = pAudioEngine->busses().first();
 				pBus; pBus = pBus->next())
@@ -250,7 +207,7 @@ void qtractorBusForm::refreshBusses (void)
 	// MIDI busses...
 	qtractorMidiEngine *pMidiEngine = m_pMainForm->session()->midiEngine();
 	if (pMidiEngine) {
-		m_pMidiRoot = new QListViewItem(BusListView, tr("MIDI"));
+		m_pMidiRoot = new QListViewItem(BusListView, ' ' + tr("MIDI"));
 		m_pMidiRoot->setSelectable(false);
 		for (qtractorBus *pBus = pMidiEngine->busses().first();
 				pBus; pBus = pBus->next())
@@ -281,21 +238,293 @@ void qtractorBusForm::selectBus (void)
 }
 
 
+// Check whether the current view is elligible as a new bus.
+bool qtractorBusForm::canCreateBus (void)
+{
+	if (m_iDirtyCount == 0)
+		return false;
+	if (m_pBus == NULL)
+		return false;
+	if (m_pMainForm == NULL)
+		return false;
+	if (m_pMainForm->session() == NULL)
+		return false;
+
+	const QString sBusName = BusNameLineEdit->text().stripWhiteSpace();
+	if (sBusName.isEmpty())
+		return false;
+
+	// Get the device view root item...
+	qtractorEngine *pEngine = NULL;
+	switch (m_pBus->busType()) {
+	case qtractorTrack::Audio:
+		pEngine = m_pMainForm->session()->audioEngine();
+		break;
+	case qtractorTrack::Midi:
+		pEngine = m_pMainForm->session()->midiEngine();
+		break;
+	default:
+		break;
+	}
+	// Is it still valid?
+	if (pEngine == NULL)
+		return false;
+
+	// Is there one already?
+	return (pEngine->findBus(sBusName) == NULL);
+}
+
+
+// Check whether the current view is elligible for update.
+bool qtractorBusForm::canUpdateBus (void)
+{
+	if (m_iDirtyCount == 0)
+		return false;
+	if (m_pBus == NULL)
+		return false;
+	if (m_pMainForm == NULL)
+		return false;
+	if (m_pMainForm->session() == NULL)
+		return false;
+
+	const QString sBusName = BusNameLineEdit->text().stripWhiteSpace();
+	return (!sBusName.isEmpty());
+}
+
+
+// Check whether the current view is elligible for deletion.
+bool qtractorBusForm::canDeleteBus (void)
+{
+	if (m_pBus == NULL)
+		return false;
+	if (m_pMainForm == NULL)
+		return false;
+	if (m_pMainForm->session() == NULL)
+		return false;
+
+	// The very first bus is never deletable...
+	return (m_pBus->prev() != NULL);
+}
+
+
 // Create a new bus from current view.
 void qtractorBusForm::createBus (void)
 {
+	if (m_pBus == NULL)
+		return;
+	if (m_pMainForm == NULL)
+		return;
+	if (m_pMainForm->session() == NULL)
+		return;
+
+	const QString sBusName = BusNameLineEdit->text().stripWhiteSpace();
+	if (sBusName.isEmpty())
+		return;
+
+	qtractorBus::BusMode busMode;
+	switch (BusModeComboBox->currentItem()) {
+	case 0:
+		busMode = qtractorBus::Input;
+		break;
+	case 1:
+		busMode = qtractorBus::Output;
+		break;
+	case 2:
+		busMode = qtractorBus::Duplex;
+		break;
+	}
+		
+	// Get the device view root item...
+	switch (m_pBus->busType()) {
+	case qtractorTrack::Audio: {
+		qtractorAudioEngine *pAudioEngine
+			= m_pMainForm->session()->audioEngine();
+		if (pAudioEngine) {
+			qtractorAudioBus *pAudioBus
+				= new qtractorAudioBus(pAudioEngine, sBusName, busMode,
+					AudioChannelsSpinBox->value(),
+					AudioAutoConnectCheckBox->isChecked());
+			pAudioEngine->addBus(pAudioBus);
+			m_pBus = pAudioBus;
+		}
+		break;
+	}
+	case qtractorTrack::Midi: {
+		qtractorMidiEngine *pMidiEngine
+			= m_pMainForm->session()->midiEngine();
+		if (pMidiEngine) {
+			qtractorMidiBus *pMidiBus
+				= new qtractorMidiBus(pMidiEngine, sBusName, busMode);
+			pMidiEngine->addBus(pMidiBus);
+			m_pBus = pMidiBus;
+		}
+		break;
+	}
+	default:
+		break;
+	}
+
+	// Open up the bus...
+	m_pBus->open();
+
+	// Refresh main form.
+	m_pMainForm->contentsChanged();
+	m_pMainForm->viewRefresh();
+
+	// Done.
+	refreshBusses();
 }
 
 
 // Update current bus in view.
 void qtractorBusForm::updateBus (void)
 {
+	if (m_pBus == NULL)
+		return;
+	if (m_pMainForm == NULL)
+		return;
+
+	qtractorSession *pSession = m_pMainForm->session();
+	if (pSession == NULL)
+		return;
+
+	const QString sBusName = BusNameLineEdit->text().stripWhiteSpace();
+	if (sBusName.isEmpty())
+		return;
+
+	qtractorBus::BusMode busMode;
+	switch (BusModeComboBox->currentItem()) {
+	case 0:
+		busMode = qtractorBus::Input;
+		break;
+	case 1:
+		busMode = qtractorBus::Output;
+		break;
+	case 2:
+		busMode = qtractorBus::Duplex;
+		break;
+	}
+	
+	// We need to hold things for a while...
+	bool bPlaying = pSession->isPlaying();
+	pSession->setPlaying(false);
+
+	// Close all applicable tracks...
+	for (qtractorTrack *pTrack = pSession->tracks().first();
+			pTrack; pTrack = pTrack->next()) {
+		if (pTrack->bus() == m_pBus)
+			pTrack->close();
+	}
+	// May close now the bus...
+	m_pBus->close();
+
+	// Set new properties...
+	m_pBus->setBusName(sBusName);
+	m_pBus->setBusMode(busMode);
+	// Special case for Audio busses...
+	if (m_pBus->busType() == qtractorTrack::Audio) {
+		qtractorAudioBus *pAudioBus
+			= static_cast<qtractorAudioBus *> (m_pBus);
+		if (pAudioBus) {
+			pAudioBus->setChannels(AudioChannelsSpinBox->value());
+			pAudioBus->setAutoConnect(AudioAutoConnectCheckBox->isChecked());
+		}
+	}
+
+	// May open up the bus...
+	m_pBus->open();
+	// Open all applicable tracks...
+	for (qtractorTrack *pTrack = pSession->tracks().first();
+			pTrack; pTrack = pTrack->next()) {
+		if (pTrack->bus() == m_pBus)
+			pTrack->open();
+	}
+
+	// Carry on...
+	pSession->setPlaying(bPlaying);
+
+	// Refresh main form.
+	m_pMainForm->contentsChanged();
+	m_pMainForm->viewRefresh();
+
+	// Done.
+	refreshBusses();
 }
 
 
 // Delete current bus in view.
 void qtractorBusForm::deleteBus (void)
 {
+	if (m_pBus == NULL)
+		return;
+	if (m_pMainForm == NULL)
+		return;
+
+	qtractorSession *pSession = m_pMainForm->session();
+	if (pSession == NULL)
+		return;
+
+	// Get the device view root item...
+	QString sBusType;
+	qtractorEngine *pEngine = NULL;
+	switch (m_pBus->busType()) {
+	case qtractorTrack::Audio:
+		pEngine  = pSession->audioEngine();
+		sBusType = tr("Audio");
+		break;
+	case qtractorTrack::Midi:
+		pEngine  = pSession->midiEngine();
+		sBusType = tr("MIDI");
+		break;
+	default:
+		break;
+	}
+	// Still valid?
+	if (pEngine == NULL)
+		return;
+
+	// Prompt user if he/she's sure about this...
+	qtractorOptions *pOptions = m_pMainForm->options();
+	if (pOptions && pOptions->bConfirmRemove) {
+		if (QMessageBox::warning(this,
+			tr("Warning") + " - " QTRACTOR_TITLE,
+			tr("About to remove bus:\n\n"
+			"%1 (%2)\n\n"
+			"Are you sure?")
+			.arg(m_pBus->busName())
+			.arg(sBusType),
+			tr("OK"), tr("Cancel")) > 0)
+			return;
+	}
+
+	// We need to hold things for a while...
+	bool bPlaying = pSession->isPlaying();
+	pSession->setPlaying(false);
+
+	// Close all applicable tracks...
+	for (qtractorTrack *pTrack = pSession->tracks().first();
+			pTrack; pTrack = pTrack->next()) {
+		if (pTrack->bus() == m_pBus)
+			pTrack->close();
+	}
+	// May close now the bus...
+	m_pBus->close();
+
+	// And remove it...
+	qtractorBus *pBus = m_pBus;
+	m_pBus = NULL;
+	pEngine->removeBus(pBus);
+	delete pBus;
+
+	// Carry on...
+	pSession->setPlaying(bPlaying);
+
+	// Refresh main form.
+	m_pMainForm->contentsChanged();
+	m_pMainForm->viewRefresh();
+
+	// Done.
+	refreshBusses();
 }
 
 
@@ -310,39 +539,68 @@ void qtractorBusForm::changed (void)
 }
 
 
+// Reject settings (Close button slot).
+void qtractorBusForm::reject (void)
+{
+	bool bReject = true;
+
+	// Check if there's any pending changes...
+	if (m_iDirtyCount > 0) {
+		switch (QMessageBox::warning(this,
+			tr("Warning") + " - " QTRACTOR_TITLE,
+			tr("Some settings have been changed.\n\n"
+			"Do you want to discard the changes?"),
+			tr("Discard"), tr("Cancel"))) {
+		case 0:     // Discard
+			break;
+		default:    // Cancel.
+			bReject = false;
+		}
+	}
+
+	if (bReject)
+		QDialog::reject();
+}
+
+
 // Stabilize current form state.
 void qtractorBusForm::stabilizeForm (void)
 {
-	QListViewItem *pItem = BusListView->selectedItem();
-	bool bEnabled = (pItem != NULL);
+	if (m_pBus) {
+		CommonBusGroup->setEnabled(true);
+		AudioBusGroup->setEnabled(m_pBus->busType() == qtractorTrack::Audio);
+	} else {
+		CommonBusGroup->setEnabled(false);
+		AudioBusGroup->setEnabled(false);
+	}
+
 	RefreshPushButton->setEnabled(true);
-	CreatePushButton->setEnabled(canCreateBus() && m_iDirtyCount > 0);
-	UpdatePushButton->setEnabled(bEnabled && m_iDirtyCount > 0);
-	DeletePushButton->setEnabled(bEnabled);
+	CreatePushButton->setEnabled(canCreateBus());
+	UpdatePushButton->setEnabled(canUpdateBus());
+	DeletePushButton->setEnabled(canDeleteBus());
 }
 
 
 // Bus list view context menu handler.
-void qtractorBusForm::contextMenu ( QListViewItem *pItem, const QPoint& pos, int )
+void qtractorBusForm::contextMenu ( QListViewItem *, const QPoint& pos, int )
 {
 	int iItemID;
 
 	// Build the device context menu...
 	QPopupMenu* pContextMenu = new QPopupMenu(this);
 
-	bool bEnabled = (pItem != NULL);
 	iItemID = pContextMenu->insertItem(
 		QIconSet(QPixmap::fromMimeSource("formCreate.png")),
 		tr("&Create"), this, SLOT(createBus()));
-	pContextMenu->setItemEnabled(iItemID, canCreateBus() && m_iDirtyCount > 0);
+	pContextMenu->setItemEnabled(iItemID, canCreateBus());
 	iItemID = pContextMenu->insertItem(
 		QIconSet(QPixmap::fromMimeSource("formAccept.png")),
 		tr("&Update"), this, SLOT(updateBus()));
-	pContextMenu->setItemEnabled(iItemID, bEnabled && m_iDirtyCount > 0);
+	pContextMenu->setItemEnabled(iItemID, canUpdateBus());
 	iItemID = pContextMenu->insertItem(
 		QIconSet(QPixmap::fromMimeSource("formRemove.png")),
 		tr("&Delete"), this, SLOT(deleteBus()));
-	pContextMenu->setItemEnabled(iItemID, bEnabled);
+	pContextMenu->setItemEnabled(iItemID, canDeleteBus());
 	pContextMenu->insertSeparator();
 	iItemID = pContextMenu->insertItem(
 		QIconSet(QPixmap::fromMimeSource("formRefresh.png")),

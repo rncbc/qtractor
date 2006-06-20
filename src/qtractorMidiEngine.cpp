@@ -1186,7 +1186,7 @@ bool qtractorMidiEngine::saveElement ( qtractorSessionDocument *pDocument,
 				pMidiBus->busName());
 			eMidiBus.setAttribute("mode",
 				pDocument->saveBusMode(pMidiBus->busMode()));
-			if (pMidiBus->busMode() && qtractorBus::Input) {
+			if (pMidiBus->busMode() & qtractorBus::Input) {
 				pDocument->saveTextElement("input-gain",
 					QString::number(pMidiBus->monitor_in()->gain()),
 						&eMidiBus);
@@ -1194,7 +1194,7 @@ bool qtractorMidiEngine::saveElement ( qtractorSessionDocument *pDocument,
 					QString::number(pMidiBus->monitor_in()->panning()),
 						&eMidiBus);
 			}
-			if (pMidiBus->busMode() && qtractorBus::Output) {
+			if (pMidiBus->busMode() & qtractorBus::Output) {
 				pDocument->saveTextElement("output-gain",
 					QString::number(pMidiBus->monitor_out()->gain()),
 						&eMidiBus);

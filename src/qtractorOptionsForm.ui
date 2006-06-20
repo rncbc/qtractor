@@ -313,13 +313,13 @@
                                             </font>
                                         </property>
                                         <property name="text">
-                                            <string>&amp;Confirm track removal</string>
+                                            <string>&amp;Confirm removals</string>
                                         </property>
                                         <property name="accel">
                                             <string>Alt+C</string>
                                         </property>
                                         <property name="toolTip" stdset="0">
-                                            <string>Whether to ask for confirmation on track removal</string>
+                                            <string>Whether to ask for confirmation on removal</string>
                                         </property>
                                     </widget>
                                     <widget class="QCheckBox">
