@@ -195,6 +195,11 @@ public:
 	bool saveElement(qtractorSessionDocument *pDocument,
 		QDomElement *pElement);
 
+protected:
+
+	// Bus mode change event.
+	void updateBusMode();
+
 private:
 
 	// Instance variables.

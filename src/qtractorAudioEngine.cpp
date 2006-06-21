@@ -566,13 +566,15 @@ qtractorAudioBus::qtractorAudioBus ( qtractorAudioEngine *pAudioEngine,
 
 	m_bAutoConnect = bAutoConnect;
 
-	m_ppIPorts     = NULL;
-	m_ppOPorts     = NULL;
+	m_ppIPorts  = NULL;
+	m_ppOPorts  = NULL;
 
-	m_ppIBuffer    = NULL;
-	m_ppOBuffer    = NULL;
+	m_ppIBuffer = NULL;
+	m_ppOBuffer = NULL;
 
-	m_ppXBuffer    = NULL;
+	m_ppXBuffer = NULL;
+
+	m_bEnabled  = false;
 }
 
 // Destructor.
@@ -619,7 +621,7 @@ bool qtractorAudioBus::isAutoConnect (void) const
 // Register and pre-allocate bus port buffers.
 bool qtractorAudioBus::open (void)
 {
-	close();
+//	close();
 
 	qtractorAudioEngine *pAudioEngine
 		= static_cast<qtractorAudioEngine *> (engine());
@@ -664,6 +666,9 @@ bool qtractorAudioBus::open (void)
 	for (i = 0; i < m_iChannels; i++)
 		m_ppXBuffer[i] = new float [iBufferSize];
 
+	// Finally, open for biz...
+	m_bEnabled = true;
+
 	return true;
 }
 
@@ -671,6 +676,9 @@ bool qtractorAudioBus::open (void)
 // Unregister and post-free bus port buffers.
 void qtractorAudioBus::close (void)
 {
+	// Close for biz, immediate...
+	m_bEnabled = false;
+
 	qtractorAudioEngine *pAudioEngine
 		= static_cast<qtractorAudioEngine *> (engine());
 	if (pAudioEngine == NULL)
@@ -776,9 +784,35 @@ void qtractorAudioBus::autoConnect (void)
 }
 
 
+// Bus mode change event.
+void qtractorAudioBus::updateBusMode (void)
+{
+	// Have a new/old input monitor?
+	if (busMode() & qtractorBus::Input) {
+		if (m_pIAudioMonitor == NULL)
+			m_pIAudioMonitor = new qtractorAudioMonitor(m_iChannels);
+	} else if (m_pIAudioMonitor) {
+		delete m_pIAudioMonitor;
+		m_pIAudioMonitor = NULL;
+	}
+
+	// Have a new/old output monitor?
+	if (busMode() & qtractorBus::Output) {
+		if (m_pOAudioMonitor == NULL)
+			m_pOAudioMonitor = new qtractorAudioMonitor(m_iChannels);
+	} else if (m_pOAudioMonitor) {
+		delete m_pOAudioMonitor;
+		m_pOAudioMonitor = NULL;
+	}
+}
+
+
 // Process cycle preparator.
 void qtractorAudioBus::process_prepare ( unsigned int nframes )
 {
+	if (!m_bEnabled)
+		return;
+
 	for (unsigned short i = 0; i < m_iChannels; i++) {
 		if (busMode() & qtractorBus::Input) {
 			m_ppIBuffer[i] = static_cast<float *>
@@ -799,6 +833,9 @@ void qtractorAudioBus::process_prepare ( unsigned int nframes )
 // Process cycle commitment.
 void qtractorAudioBus::process_commit ( unsigned int nframes )
 {
+	if (!m_bEnabled)
+		return;
+
 	if (m_pOAudioMonitor)
 		m_pOAudioMonitor->process(m_ppOBuffer, nframes);
 }
@@ -807,13 +844,16 @@ void qtractorAudioBus::process_commit ( unsigned int nframes )
 // Bus-buffering methods.
 void qtractorAudioBus::buffer_prepare ( unsigned int nframes )
 {
+	if (!m_bEnabled)
+		return;
+
 	for (unsigned short i = 0; i < m_iChannels; i++)
 		::memset(m_ppXBuffer[i], 0, nframes * sizeof(float));
 }
 
 void qtractorAudioBus::buffer_commit ( unsigned int nframes, float fGain )
 {
-	if ((busMode() & qtractorBus::Output) == 0)
+	if (!m_bEnabled || (busMode() & qtractorBus::Output) == 0)
 		return;
 
 	for (unsigned short i = 0; i < m_iChannels; i++) {

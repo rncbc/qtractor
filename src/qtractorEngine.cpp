@@ -259,9 +259,11 @@ const QString& qtractorBus::busName (void) const
 
 
 // Bus mode property accessor.
-void qtractorBus::setBusMode ( qtractorBus::BusMode mode )
+void qtractorBus::setBusMode ( qtractorBus::BusMode busMode )
 {
-	m_busMode = mode;
+	m_busMode = busMode;
+
+	updateBusMode();
 }
 
 qtractorBus::BusMode qtractorBus::busMode (void) const

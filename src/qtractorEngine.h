@@ -142,7 +142,7 @@ public:
 	const QString& busName() const;
 
 	// Bus mode property accessor.
-	void setBusMode(BusMode mode);
+	void setBusMode(BusMode busMode);
 	BusMode busMode() const;
 
 	// Pure virtual activation methods.
@@ -152,6 +152,11 @@ public:
 	// I/O bus-monitor accessors.
 	virtual qtractorMonitor *monitor_in()  const = 0;
 	virtual qtractorMonitor *monitor_out() const = 0;
+
+protected:
+
+	// Bus mode change event.
+	virtual void updateBusMode() = 0;
 
 private:
 

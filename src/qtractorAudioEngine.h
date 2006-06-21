@@ -147,6 +147,11 @@ public:
 	qtractorAudioMonitor *audioMonitor_in()  const;
 	qtractorAudioMonitor *audioMonitor_out() const;
 
+protected:
+
+	// Bus mode change event.
+	void updateBusMode();
+
 private:
 
 	// Instance variables.
@@ -163,6 +168,10 @@ private:
 	float          **m_ppIBuffer;
 	float          **m_ppOBuffer;
 	float          **m_ppXBuffer;
+
+	// Special under-work flag...
+	// (r/w access should be atomic)
+	bool m_bEnabled;
 };
 
 

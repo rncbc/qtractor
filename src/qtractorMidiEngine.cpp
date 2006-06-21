@@ -1236,7 +1236,6 @@ qtractorMidiBus::qtractorMidiBus ( qtractorMidiEngine *pMidiEngine,
 		m_pOMidiMonitor = new qtractorMidiMonitor(pMidiEngine->session());
 	else
 		m_pOMidiMonitor = NULL;
-
 }
 
 // Destructor.
@@ -1307,8 +1306,6 @@ bool qtractorMidiBus::open (void)
 // Unregister and post-free bus port buffers.
 void qtractorMidiBus::close (void)
 {
-	shutOff(true);
-
 	qtractorMidiEngine *pMidiEngine
 		= static_cast<qtractorMidiEngine *> (engine());
 	if (pMidiEngine == NULL)
@@ -1316,9 +1313,34 @@ void qtractorMidiBus::close (void)
 	if (pMidiEngine->alsaSeq() == NULL)
 		return;
 
+	shutOff(true);
+
 	snd_seq_delete_simple_port(pMidiEngine->alsaSeq(), m_iAlsaPort);
 
 	m_iAlsaPort = -1;
+}
+
+
+// Bus mode change event.
+void qtractorMidiBus::updateBusMode (void)
+{
+	// Have a new/old input monitor?
+	if (busMode() & qtractorBus::Input) {
+		if (m_pIMidiMonitor == NULL)
+			m_pIMidiMonitor = new qtractorMidiMonitor(engine()->session());
+	} else if (m_pIMidiMonitor) {
+		delete m_pIMidiMonitor;
+		m_pIMidiMonitor = NULL;
+	}
+
+	// Have a new/old output monitor?
+	if (busMode() & qtractorBus::Output) {
+		if (m_pOMidiMonitor == NULL)
+			m_pOMidiMonitor = new qtractorMidiMonitor(engine()->session());
+	} else if (m_pOMidiMonitor) {
+		delete m_pOMidiMonitor;
+		m_pOMidiMonitor = NULL;
+	}
 }
 
 
