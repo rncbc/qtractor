@@ -129,7 +129,7 @@ qtractorOptions::~qtractorOptions (void)
 	m_settings.writeEntry("/MessagesFont", sMessagesFont);
 	m_settings.writeEntry("/MessagesLimit", bMessagesLimit);
 	m_settings.writeEntry("/MessagesLimitLines", iMessagesLimitLines);
-	m_settings.writeEntry("/ConfirmRemove", bStdoutCapture);
+	m_settings.writeEntry("/ConfirmRemove", bConfirmRemove);
 	m_settings.writeEntry("/StdoutCapture", bStdoutCapture);
 	m_settings.writeEntry("/CompletePath", bCompletePath);
 	m_settings.writeEntry("/PeakAutoRemove", bPeakAutoRemove);
