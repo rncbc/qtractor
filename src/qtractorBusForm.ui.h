@@ -514,7 +514,6 @@ void qtractorBusForm::deleteBus (void)
 	qtractorBus *pBus = m_pBus;
 	m_pBus = NULL;
 	pEngine->removeBus(pBus);
-	delete pBus;
 
 	// Carry on...
 	pSession->setPlaying(bPlaying);
