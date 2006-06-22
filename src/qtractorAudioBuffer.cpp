@@ -348,18 +348,16 @@ int qtractorAudioBuffer::write ( float **ppFrames, unsigned int iFrames,
 				n1 = nwrite;
 				n2 = 0;
 			}
-			unsigned short i, j, iAux;
+			unsigned short i, j;
 			float **ppBuffer = m_pRingBuffer->buffer();
 			if (iChannels > iBuffers) {
-				for (j = 0; j < iBuffers; j++) {
+				for (i = 0, j = 0; i < iBuffers; i++, j++) {
 					for (n = 0; n < n1; n++)
-						ppBuffer[j][n + w] = 0.0f;
+						ppBuffer[j][n + w] = ppFrames[i][n];
 					for (n = 0; n < n2; n++)
-						ppBuffer[j][n] = 0.0f;
+						ppBuffer[j][n] = ppFrames[i][n + n1];
 				}
-				j = 0;
-				iAux = (iChannels - (iChannels % iBuffers));
-				for (i = 0; i < iAux; i++) {
+				for (j = 0; i < iChannels; i++) {
 					for (n = 0; n < n1; n++)
 						ppBuffer[j][n + w] += ppFrames[i][n];
 					for (n = 0; n < n2; n++)
@@ -369,8 +367,7 @@ int qtractorAudioBuffer::write ( float **ppFrames, unsigned int iFrames,
 				}
 			} else { // (iChannels < iBuffers)
 				i = 0;
-				iAux = (iBuffers - (iBuffers % iChannels));
-				for (j = 0; j < iAux; j++) {
+				for (j = 0; j < iBuffers; j++) {
 					for (n = 0; n < n1; n++)
 						ppBuffer[j][n + w] = ppFrames[i][n];
 					for (n = 0; n < n2; n++)
@@ -783,7 +780,7 @@ int qtractorAudioBuffer::readMixBuffer (
 		n2 = 0;
 	}
 
-	unsigned short i, j, iAux;
+	unsigned short i, j;
 	unsigned short iBuffers = m_pRingBuffer->channels();
 	float **ppBuffer = m_pRingBuffer->buffer();
 	if (iChannels == iBuffers) {
@@ -796,8 +793,7 @@ int qtractorAudioBuffer::readMixBuffer (
 	}
 	else if (iChannels > iBuffers) {
 		j = 0;
-		iAux = (iChannels - (iChannels % iBuffers));
-		for (i = 0; i < iAux; i++) {
+		for (i = 0; i < iChannels; i++) {
 			for (n = 0; n < n1; n++)
 				ppFrames[i][n + iOffset] += ppBuffer[j][n + r];
 			for (n = 0; n < n2; n++)
@@ -808,8 +804,7 @@ int qtractorAudioBuffer::readMixBuffer (
 	}
 	else { // (iChannels < iBuffers)
 		i = 0;
-		iAux = (iBuffers - (iBuffers % iChannels));
-		for (j = 0; j < iAux; j++) {
+		for (j = 0; j < iBuffers; j++) {
 			for (n = 0; n < n1; n++)
 				ppFrames[i][n + iOffset] += ppBuffer[j][n + r];
 			for (n = 0; n < n2; n++)

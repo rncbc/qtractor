@@ -102,7 +102,7 @@ void qtractorAudioMonitor::process ( float **ppFrames,
 	if (iChannels < 1)
 		iChannels = m_iChannels;
 
-	unsigned short i, j, iAux;
+	unsigned short i, j;
 	unsigned int n;
 	if (iChannels == m_iChannels) {
 		for (i = 0; i < m_iChannels; i++) {
@@ -111,21 +111,21 @@ void qtractorAudioMonitor::process ( float **ppFrames,
 		}
 	}
 	else if (iChannels > m_iChannels) {
-		i = 0;
-		for (j = 0; j < iChannels; j++) {
+		j = 0;
+		for (i = 0; i < iChannels; i++) {
 			for (n = 0; n < iFrames; n++)
-				setValue(i, ppFrames[j][n] *= m_pfGains[i]);
-			if (++i >= m_iChannels)
-				i = 0;
+				setValue(j, ppFrames[i][n] *= m_pfGains[j]);
+			if (++j >= m_iChannels)
+				j = 0;
 		}
 	}
 	else { // (iChannels < m_iChannels)
-		j = 0;
-		for (i = 0; i < m_iChannels; i++) {
+		i = 0;
+		for (j = 0; j < m_iChannels; j++) {
 			for (n = 0; n < iFrames; n++)
-				setValue(i, ppFrames[j][n] *= m_pfGains[i]);
-			if (++j >= iChannels)
-				j = 0;
+				setValue(j, ppFrames[i][n] *= m_pfGains[j]);
+			if (++i >= iChannels)
+				i = 0;
 		}
 	}
 }
