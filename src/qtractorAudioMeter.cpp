@@ -144,7 +144,7 @@ qtractorAudioMeterValue::qtractorAudioMeterValue(
 	m_fPeakDecay  = QTRACTOR_AUDIO_METER_DECAY_RATE2;
 	m_iPeakColor  = QTRACTOR_AUDIO_METER_6DB;
 
-	QFrame::setFixedWidth(12);
+	QFrame::setFixedWidth(10);
 	QFrame::setBackgroundMode(Qt::NoBackground);
 
 	QFrame::setFrameShape(QFrame::StyledPanel);
@@ -363,8 +363,10 @@ void qtractorAudioMeter::reset (void)
 	m_iChannels = iChannels;
 	if (m_iChannels > 0) {
 		m_ppAudioValues = new qtractorAudioMeterValue *[m_iChannels];
-		for (unsigned short i = 0; i < m_iChannels; i++)
+		for (unsigned short i = 0; i < m_iChannels; i++) {
 			m_ppAudioValues[i] = new qtractorAudioMeterValue(this, i, hbox());
+			m_ppAudioValues[i]->show();
+		}
 	}
 
 	panSlider()->setEnabled(m_iChannels > 1);

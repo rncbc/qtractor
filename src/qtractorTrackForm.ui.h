@@ -164,12 +164,15 @@ void qtractorTrackForm::setTrack ( qtractorTrack *pTrack )
 
 	// Initialize dialog widgets...
 	TrackNameTextEdit->setText(m_props.trackName);
+	qtractorEngine *pEngine = NULL;
 	int iTrackType = -1;
 	switch (m_props.trackType) {
 		case qtractorTrack::Audio:
+			pEngine = pTrack->session()->audioEngine();
 			iTrackType = 0;
 			break;
 		case qtractorTrack::Midi:
+			pEngine = pTrack->session()->midiEngine();
 			iTrackType = 1;
 			break;
 		default:
@@ -178,9 +181,9 @@ void qtractorTrackForm::setTrack ( qtractorTrack *pTrack )
 	TrackTypeGroup->setButton(iTrackType);
 	updateTrackType(iTrackType);
 
-	if (!m_props.inputBusName.isEmpty())
+	if (pEngine && pEngine->findBus(m_props.inputBusName))
 		InputBusNameComboBox->setCurrentText(m_props.inputBusName);
-	if (!m_props.outputBusName.isEmpty())
+	if (pEngine && pEngine->findBus(m_props.outputBusName))
 		OutputBusNameComboBox->setCurrentText(m_props.outputBusName);
 
 	ChannelSpinBox->setValue(m_props.midiChannel + 1);

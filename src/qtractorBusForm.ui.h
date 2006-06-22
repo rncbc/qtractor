@@ -25,6 +25,9 @@
 #include "qtractorAudioEngine.h"
 #include "qtractorMidiEngine.h"
 
+#include "qtractorTracks.h"
+#include "qtractorTrackList.h"
+
 #include "qtractorMainForm.h"
 
 #include <qmessagebox.h>
@@ -425,7 +428,11 @@ void qtractorBusForm::updateBus (void)
 	// Close all applicable tracks...
 	for (qtractorTrack *pTrack = pSession->tracks().first();
 			pTrack; pTrack = pTrack->next()) {
-		if (pTrack->inputBus() == m_pBus || pTrack->outputBus() == m_pBus)
+		if (pTrack->inputBus() == m_pBus)
+			pTrack->setInputBusName(sBusName);
+		if (pTrack->outputBus() == m_pBus)
+			pTrack->setOutputBusName(sBusName);
+		if (pTrack->inputBus() == m_pBus ||	pTrack->outputBus() == m_pBus)
 			pTrack->close();
 	}
 	// May close now the bus...
@@ -444,13 +451,24 @@ void qtractorBusForm::updateBus (void)
 		}
 	}
 
-	// May open up the bus...
+	// May reopen up the bus...
 	m_pBus->open();
-	// Open all applicable tracks...
+	// (Re)open all applicable tracks...
+	qtractorTracks *pTracks = m_pMainForm->tracks();
 	for (qtractorTrack *pTrack = pSession->tracks().first();
 			pTrack; pTrack = pTrack->next()) {
-		if (pTrack->inputBus() == m_pBus || pTrack->outputBus() == m_pBus)
+		if (pTrack->inputBusName()  == sBusName ||
+			pTrack->outputBusName() == sBusName) {
+			// Reopen track back...
 			pTrack->open();
+			// Update track list item...
+			if (pTracks) {
+				qtractorTrackListItem *pTrackItem
+					= pTracks->trackList()->trackItem(pTrack);
+				if (pTrackItem)
+					pTrackItem->setText(qtractorTrackList::Bus, sBusName);
+			}
+		}
 	}
 
 	// Carry on...
