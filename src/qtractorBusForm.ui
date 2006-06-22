@@ -28,7 +28,7 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>481</width>
+            <width>484</width>
             <height>255</height>
         </rect>
     </property>
@@ -99,6 +99,40 @@
                     <property name="name">
                         <cstring>unnamed</cstring>
                     </property>
+                    <widget class="QLabel">
+                        <property name="name">
+                            <cstring>BusTitleTextLabel</cstring>
+                        </property>
+                        <property name="paletteForegroundColor">
+                            <color>
+                                <red>255</red>
+                                <green>255</green>
+                                <blue>255</blue>
+                            </color>
+                        </property>
+                        <property name="paletteBackgroundColor">
+                            <color>
+                                <red>153</red>
+                                <green>153</green>
+                                <blue>153</blue>
+                            </color>
+                        </property>
+                        <property name="font">
+                            <font>
+                                <pointsize>10</pointsize>
+                                <bold>1</bold>
+                            </font>
+                        </property>
+                        <property name="margin">
+                            <number>2</number>
+                        </property>
+                        <property name="text">
+                            <string>Bus</string>
+                        </property>
+                        <property name="indent">
+                            <number>6</number>
+                        </property>
+                    </widget>
                     <widget class="QButtonGroup">
                         <property name="name">
                             <cstring>CommonBusGroup</cstring>
@@ -460,12 +494,12 @@
     <tabstop>ClosePushButton</tabstop>
 </tabstops>
 <forwards>
-	<forward>class qtractorMainForm;</forward>
-	<forward>class qtractorBus;</forward>
+    <forward>class qtractorMainForm;</forward>
+    <forward>class qtractorBus;</forward>
 </forwards>
 <variables>
-	<variable access="private">qtractorMainForm *m_pMainForm;</variable>
-	<variable access="private">qtractorBus *m_pBus;</variable>
+    <variable access="private">qtractorMainForm *m_pMainForm;</variable>
+    <variable access="private">qtractorBus *m_pBus;</variable>
     <variable access="private">QListViewItem *m_pAudioRoot;</variable>
     <variable access="private">QListViewItem *m_pMidiRoot;</variable>
     <variable access="private">int m_iDirtySetup;</variable>
@@ -486,11 +520,11 @@
 <functions>
     <function access="private" specifier="non virtual">init()</function>
     <function access="private" specifier="non virtual">destroy()</function>
-	<function specifier="non virtual">setMainForm( qtractorMainForm *pMainForm )</function>
-	<function specifier="non virtual" returnType="qtractorMainForm *">mainForm()</function>
+    <function specifier="non virtual">setMainForm( qtractorMainForm *pMainForm )</function>
+    <function specifier="non virtual" returnType="qtractorMainForm *">mainForm()</function>
     <function specifier="non virtual">setBus( qtractorBus *pBus )</function>
-	<function specifier="non virtual" returnType="qtractorBus *">bus()</function>
-	<function specifier="non virtual" returnType="bool">isDirty()</function>
+    <function specifier="non virtual" returnType="qtractorBus *">bus()</function>
+    <function specifier="non virtual" returnType="bool">isDirty()</function>
     <function specifier="private">showBus( qtractorBus *pBus )</function>
     <function specifier="private" returnType="bool">canCreateBus()</function>
     <function specifier="private" returnType="bool">canUpdateBus()</function>

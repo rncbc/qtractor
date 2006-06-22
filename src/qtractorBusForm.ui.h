@@ -173,6 +173,14 @@ void qtractorBusForm::showBus ( qtractorBus *pBus )
 
 	// Show bus properties into view pane...
 	if (pBus) {
+		switch (pBus->busType()) {
+		case qtractorTrack::Audio:
+			BusTitleTextLabel->setText(tr("Audio bus"));
+			break;
+		case qtractorTrack::Midi:
+			BusTitleTextLabel->setText(tr("MIDI bus"));
+			break;
+		}
 		BusNameLineEdit->setText(pBus->busName());
 		BusModeComboBox->setCurrentItem(int(pBus->busMode()) - 1);
 		qtractorAudioBus *pAudioBus = NULL;
@@ -598,9 +606,11 @@ void qtractorBusForm::reject (void)
 void qtractorBusForm::stabilizeForm (void)
 {
 	if (m_pBus) {
+		BusTitleTextLabel->setEnabled(true);
 		CommonBusGroup->setEnabled(true);
 		AudioBusGroup->setEnabled(m_pBus->busType() == qtractorTrack::Audio);
 	} else {
+		BusTitleTextLabel->setEnabled(false);
 		CommonBusGroup->setEnabled(false);
 		AudioBusGroup->setEnabled(false);
 	}
