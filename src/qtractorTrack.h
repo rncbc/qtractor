@@ -117,11 +117,14 @@ public:
 	int midiProgram() const;
 
 	// Assigned bus name accessors.
-	void setBusName(const QString& sBusName);
-	const QString& busName() const;
+	void setInputBusName(const QString& sBusName);
+	const QString& inputBusName() const;
+	void setOutputBusName(const QString& sBusName);
+	const QString& outputBusName() const;
 
 	// Assigned bus accessors.
-	qtractorBus *bus() const;
+	qtractorBus *inputBus() const;
+	qtractorBus *outputBus() const;
 
 	// Track monitor accessors.
 	qtractorMonitor *monitor() const;
@@ -194,7 +197,8 @@ public:
 		bool           solo;
 		float          gain;
 		float          panning;
-		QString        busName;
+		QString        inputBusName;
+		QString        outputBusName;
 		unsigned short midiChannel;
 		int            midiBankSelMethod;
 		int            midiBank;
@@ -212,8 +216,11 @@ private:
 
 	Properties       m_props;       // Track properties.
 
-	qtractorBus     *m_pBus;        // Track assigned bus.
+	qtractorBus     *m_pInputBus;   // Track assigned input bus.
+	qtractorBus     *m_pOutputBus;  // Track assigned input bus.
+
 	qtractorMonitor *m_pMonitor;    // Track monitor.
+
 	unsigned short   m_iMidiTag;    // MIDI specific: track-tag;
 	int              m_iHeight;     // View height (normalized).
 

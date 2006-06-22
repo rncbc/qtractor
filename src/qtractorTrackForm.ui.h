@@ -178,8 +178,10 @@ void qtractorTrackForm::setTrack ( qtractorTrack *pTrack )
 	TrackTypeGroup->setButton(iTrackType);
 	updateTrackType(iTrackType);
 
-	if (!m_props.busName.isEmpty())
-		BusNameComboBox->setCurrentText(m_props.busName);
+	if (!m_props.inputBusName.isEmpty())
+		InputBusNameComboBox->setCurrentText(m_props.inputBusName);
+	if (!m_props.outputBusName.isEmpty())
+		OutputBusNameComboBox->setCurrentText(m_props.outputBusName);
 
 	ChannelSpinBox->setValue(m_props.midiChannel + 1);
 	updateChannel(ChannelSpinBox->value(),
@@ -193,9 +195,6 @@ void qtractorTrackForm::setTrack ( qtractorTrack *pTrack )
 	bool bEnabled = (pTrack->clips().count() == 0);
 	AudioRadioButton->setEnabled(bEnabled);
 	MidiRadioButton->setEnabled(bEnabled);
-
-	// Cannot change bus-name, if track is already is armed.
-	BusNameComboBox->setEnabled(!m_props.record);
 
 	// Backup clean.
 	m_iDirtyCount = 0;
@@ -235,7 +234,8 @@ void qtractorTrackForm::accept (void)
 			m_props.trackType = qtractorTrack::Midi;
 			break;
 		}
-		m_props.busName = BusNameComboBox->currentText();
+		m_props.inputBusName  = InputBusNameComboBox->currentText();
+		m_props.outputBusName = OutputBusNameComboBox->currentText();
 		// Special case for MIDI settings...
 		m_props.midiChannel = (ChannelSpinBox->value() - 1);
 		m_props.midiBankSelMethod = BankSelMethodComboBox->currentItem();
@@ -296,7 +296,7 @@ void qtractorTrackForm::stabilizeForm (void)
 }
 
 
-// Retrieve currently assigned MIDI bus, if applicable.
+// Retrieve currently assigned MIDI output-bus, if applicable.
 qtractorMidiBus *qtractorTrackForm::midiBus (void)
 {
 	if (m_pTrack == NULL)
@@ -312,7 +312,7 @@ qtractorMidiBus *qtractorTrackForm::midiBus (void)
 		return NULL;
 
 	// MIDI bus...
-	const QString& sBusName = BusNameComboBox->currentText();
+	const QString& sBusName = OutputBusNameComboBox->currentText();
 	return static_cast<qtractorMidiBus *> (pMidiEngine->findBus(sBusName));
 }
 
@@ -347,25 +347,32 @@ void qtractorTrackForm::updateTrackType ( int iTrackType )
 		pEngine = m_pTrack->session()->audioEngine();
 		pixmap = QPixmap::fromMimeSource("trackAudio.png");
 		MidiGroupBox->setEnabled(false);
-		BusNameComboBox->setEnabled(true);
+		InputBusNameComboBox->setEnabled(true);
+		OutputBusNameComboBox->setEnabled(true);
 		break;
 	case 1: // Midi track...
 		pEngine = m_pTrack->session()->midiEngine();
 		pixmap = QPixmap::fromMimeSource("trackMidi.png");
 		MidiGroupBox->setEnabled(true);
-		BusNameComboBox->setEnabled(true);
+		InputBusNameComboBox->setEnabled(true);
+		OutputBusNameComboBox->setEnabled(true);
 		break;
 	default:
 		MidiGroupBox->setEnabled(false);
-		BusNameComboBox->setEnabled(false);
+		InputBusNameComboBox->setEnabled(false);
+		OutputBusNameComboBox->setEnabled(false);
 		break;
 	}
 
-	BusNameComboBox->clear();
+	InputBusNameComboBox->clear();
+	OutputBusNameComboBox->clear();
 	if (pEngine) {
 		for (qtractorBus *pBus = pEngine->busses().first();
 				pBus; pBus = pBus->next()) {
-			BusNameComboBox->insertItem(pixmap, pBus->busName());
+			if (pBus->busMode() & qtractorBus::Input)
+				InputBusNameComboBox->insertItem(pixmap, pBus->busName());
+			if (pBus->busMode() & qtractorBus::Output)
+				OutputBusNameComboBox->insertItem(pixmap, pBus->busName());
 		}
 	}
 }
@@ -603,12 +610,20 @@ void qtractorTrackForm::trackTypeChanged ( int iTrackType )
 	}
 
 	updateTrackType(iTrackType);
-	busNameChanged(BusNameComboBox->currentText());
+//	inputBusNameChanged(InputBusNameComboBox->currentText());
+	outputBusNameChanged(OutputBusNameComboBox->currentText());
 }
 
 
-// Make changes due to bus name.
-void qtractorTrackForm::busNameChanged ( const QString& /* sBusName */ )
+// Make changes due to input-bus name.
+void qtractorTrackForm::inputBusNameChanged ( const QString& /* sBusName */ )
+{
+	changed();
+}
+
+
+// Make changes due to output-bus name.
+void qtractorTrackForm::outputBusNameChanged ( const QString& /* sBusName */ )
 {
 	if (m_iDirtySetup > 0)
 		return;
@@ -639,12 +654,25 @@ void qtractorTrackForm::busNameClicked (void)
 	qtractorBusForm busForm(this);
 	busForm.setMainForm(m_pMainForm);
 	// Pre-select bus...
-	const QString& sBusName = BusNameComboBox->currentText();
+	const QString& sBusName = OutputBusNameComboBox->currentText();
 	if (pEngine && !sBusName.isEmpty())
 		busForm.setBus(pEngine->findBus(sBusName));
 	// Go for it...
-	if (busForm.exec())
+	busForm.exec();
+
+	// Check if any busses have changed...
+	if (busForm.isDirty()) {
+		// Try to preserve current selected names...
+		const QString sInputBusName  = InputBusNameComboBox->currentText();
+		const QString sOutputBusName = OutputBusNameComboBox->currentText();
+		// Update the comboboxes...
 		trackTypeChanged(iTrackType);
+		// Restore old current selected ones...
+		if (pEngine->findBus(sInputBusName))
+			InputBusNameComboBox->setCurrentText(sInputBusName);
+		if (pEngine->findBus(sOutputBusName))
+			OutputBusNameComboBox->setCurrentText(sOutputBusName);
+	}
 }
 
 

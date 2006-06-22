@@ -470,6 +470,7 @@
     <variable access="private">QListViewItem *m_pMidiRoot;</variable>
     <variable access="private">int m_iDirtySetup;</variable>
     <variable access="private">int m_iDirtyCount;</variable>
+    <variable access="private">int m_iDirtyTotal;</variable>
 </variables>
 <slots>
     <slot specifier="non virtual">reject()</slot>
@@ -489,6 +490,7 @@
 	<function specifier="non virtual" returnType="qtractorMainForm *">mainForm()</function>
     <function specifier="non virtual">setBus( qtractorBus *pBus )</function>
 	<function specifier="non virtual" returnType="qtractorBus *">bus()</function>
+	<function specifier="non virtual" returnType="bool">isDirty()</function>
     <function specifier="private">showBus( qtractorBus *pBus )</function>
     <function specifier="private" returnType="bool">canCreateBus()</function>
     <function specifier="private" returnType="bool">canUpdateBus()</function>

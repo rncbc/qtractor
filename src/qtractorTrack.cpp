@@ -48,7 +48,8 @@ qtractorTrack::Properties::Properties (void)
 	solo        = false;
 	gain        = 1.0f;
 	panning     = 0.0f;
-	busName     = QString::null;
+	inputBusName  = QString::null;
+	outputBusName = QString::null;
 	midiChannel = 0;
 	midiBankSelMethod = -1;
 	midiBank    = -1;
@@ -68,7 +69,8 @@ qtractorTrack::Properties& qtractorTrack::Properties::copy (
 	solo        = props.solo;
 	gain        = props.gain;
 	panning     = props.panning;
-	busName     = props.busName;
+	inputBusName  = props.inputBusName;
+	outputBusName = props.outputBusName;
 	midiChannel = props.midiChannel;
 	midiBankSelMethod = props.midiBankSelMethod;
 	midiBank    = props.midiBank;
@@ -90,8 +92,11 @@ qtractorTrack::qtractorTrack ( qtractorSession *pSession, TrackType trackType )
 
 	m_props.trackType = trackType;
 
-	m_pBus     = NULL;
+	m_pInputBus  = NULL;
+	m_pOutputBus = NULL;
+
 	m_pMonitor = NULL;
+
 	m_iMidiTag = 0;
 	m_iHeight  = 48;
 
@@ -154,23 +159,47 @@ bool qtractorTrack::open (void)
 	if (pEngine == NULL)
 		return false;
 
-	// (Re)assign the bus to the track.
-	m_pBus = pEngine->findBus(busName());
+	// (Re)assign the input bus to the track.
+	m_pInputBus = pEngine->findBus(inputBusName());
 	// Fallback to first usable one...
-	if (m_pBus == NULL) {
-		m_pBus = pEngine->busses().first();
-		if (m_pBus)
-			setBusName(m_pBus->busName());
+	if (m_pInputBus == NULL) {
+		for (qtractorBus *pBus = pEngine->busses().first();
+				pBus; pBus->next()) {
+			if (pBus->busMode() & qtractorBus::Input) {
+				m_pInputBus = pBus;
+				break;
+			}
+		}
+		// Set the bus name back...
+		if (m_pInputBus)
+			setInputBusName(m_pInputBus->busName());
 	}
 
-	if (m_pBus == NULL)
+	// (Re)assign the output bus to the track.
+	m_pOutputBus = pEngine->findBus(outputBusName());
+	// Fallback to first usable one...
+	if (m_pOutputBus == NULL) {
+		for (qtractorBus *pBus = pEngine->busses().first();
+				pBus; pBus->next()) {
+			if (pBus->busMode() & qtractorBus::Output) {
+				m_pOutputBus = pBus;
+				break;
+			}
+		}
+		// Set the bus name back...
+		if (m_pOutputBus)
+			setOutputBusName(m_pOutputBus->busName());
+	}
+
+	// Check proper bus assignment...
+	if (m_pInputBus == NULL || m_pOutputBus == NULL)
 		return false;
 
-	// (Re)allocate audio monitor...
+	// (Re)allocate (output) monitor...
 	switch (trackType()) {
 	case qtractorTrack::Audio: {
 		qtractorAudioBus *pAudioBus
-			= static_cast<qtractorAudioBus *> (m_pBus);
+			= static_cast<qtractorAudioBus *> (m_pOutputBus);
 		if (pAudioBus) {
 			m_pMonitor = new qtractorAudioMonitor(pAudioBus->channels(),
 				m_props.gain, m_props.panning);
@@ -179,7 +208,7 @@ bool qtractorTrack::open (void)
 	}
 	case qtractorTrack::Midi: {
 		qtractorMidiBus *pMidiBus
-			= static_cast<qtractorMidiBus *> (m_pBus);
+			= static_cast<qtractorMidiBus *> (m_pOutputBus);
 		if (pMidiBus) {
 			m_pMonitor = new qtractorMidiMonitor(m_pSession,
 				m_props.gain, m_props.panning);
@@ -198,7 +227,8 @@ bool qtractorTrack::open (void)
 // Track close method.
 void qtractorTrack::close (void)
 {
-	m_pBus = NULL;
+	m_pInputBus  = NULL;
+	m_pOutputBus = NULL;
 
 	if (m_pMonitor) {
 		delete m_pMonitor;
@@ -397,23 +427,41 @@ int qtractorTrack::midiProgram (void) const
 }
 
 
-// Assigned bus name accessors.
-void qtractorTrack::setBusName ( const QString& sBusName )
+// Assigned input bus name accessors.
+void qtractorTrack::setInputBusName ( const QString& sBusName )
 {
-	m_props.busName = sBusName;
+	m_props.inputBusName = sBusName;
 }
 
-const QString& qtractorTrack::busName (void) const
+const QString& qtractorTrack::inputBusName (void) const
 {
-	return m_props.busName;
+	return m_props.inputBusName;
+}
+
+
+// Assigned output bus name accessors.
+void qtractorTrack::setOutputBusName ( const QString& sBusName )
+{
+	m_props.outputBusName = sBusName;
+}
+
+const QString& qtractorTrack::outputBusName (void) const
+{
+	return m_props.outputBusName;
 }
 
 
 // Assigned audio bus accessors.
-qtractorBus *qtractorTrack::bus (void) const
+qtractorBus *qtractorTrack::inputBus (void) const
 {
-	return m_pBus;
+	return m_pInputBus;
 }
+
+qtractorBus *qtractorTrack::outputBus (void) const
+{
+	return m_pOutputBus;
+}
+
 
 // Track monitor accessors.
 qtractorMonitor *qtractorTrack::monitor (void) const
@@ -535,7 +583,7 @@ void qtractorTrack::process ( qtractorClip *pClip,
 	qtractorAudioBus *pAudioBus = NULL;
 	qtractorAudioMonitor *pAudioMonitor = NULL;
 	if (m_props.trackType == qtractorTrack::Audio) {
-		pAudioBus = static_cast<qtractorAudioBus *> (m_pBus);
+		pAudioBus = static_cast<qtractorAudioBus *> (m_pOutputBus);
 		pAudioMonitor = static_cast<qtractorAudioMonitor *> (m_pMonitor);
 		if (pAudioBus == NULL || pAudioMonitor == NULL)
 			return;
@@ -549,21 +597,28 @@ void qtractorTrack::process ( qtractorClip *pClip,
 	}
 
 	// Audio buffers needs monitoring and commitment...
-	if (pAudioBus && pAudioMonitor) {
-		// It it ain't muted, of course...
-		if (!isMute() && (!m_pSession->soloTracks() || isSolo())) {
+	if (pAudioMonitor) {
+		// Commit output if it ain't muted, of course...
+		if (pAudioBus
+			&& !isMute() && (!m_pSession->soloTracks() || isSolo())) {
 			pAudioMonitor->process(pAudioBus->buffer(), nframes);
 			pAudioBus->buffer_commit(nframes);
 		}
 		// Audio-recording?
 		if (isRecord()) {
-			// Pre-monitoring...
-			pAudioMonitor->process(pAudioBus->in(), nframes);
-			// Effective audio-recording?
-			qtractorAudioClip *pAudioClip
-				= static_cast<qtractorAudioClip *> (m_pClipRecord);
-			if (pAudioClip)
-				pAudioClip->write(pAudioBus->in(), nframes);
+			// Input pre-monitoring...
+			pAudioBus = static_cast<qtractorAudioBus *> (m_pInputBus);
+			if (pAudioBus) {
+				pAudioMonitor->process(
+					pAudioBus->in(), nframes, pAudioBus->channels());
+				// Effective audio-recording?
+				qtractorAudioClip *pAudioClip
+					= static_cast<qtractorAudioClip *> (m_pClipRecord);
+				if (pAudioClip) {
+					pAudioClip->write(
+						pAudioBus->in(), nframes, pAudioBus->channels());
+				}
+			}
 		}
 	}
 }
@@ -643,7 +698,7 @@ void qtractorTrack::setMidiPatch ( qtractorInstrumentList *pInstruments )
 		return;
 
 	qtractorMidiBus *pMidiBus
-		= static_cast<qtractorMidiBus *> (m_pBus);
+		= static_cast<qtractorMidiBus *> (m_pOutputBus);
 	if (pMidiBus == NULL)
 		return;
 
@@ -684,8 +739,10 @@ bool qtractorTrack::loadElement ( qtractorSessionDocument *pDocument,
 				QDomElement eProp = nProp.toElement();
 				if (eProp.isNull())
 					continue;
-				if (eProp.tagName() == "bus")
-					qtractorTrack::setBusName(eProp.text());
+				if (eProp.tagName() == "input-bus")
+					qtractorTrack::setInputBusName(eProp.text());
+				else if (eProp.tagName() == "output-bus")
+					qtractorTrack::setOutputBusName(eProp.text());
 				else if (eProp.tagName() == "midi-channel")
 					qtractorTrack::setMidiChannel(eProp.text().toUShort());
 				else if (eProp.tagName() == "midi-bank-sel-method")
@@ -784,7 +841,10 @@ bool qtractorTrack::saveElement ( qtractorSessionDocument *pDocument,
 
 	// Save track properties...
 	QDomElement eProps = pDocument->document()->createElement("properties");
-	pDocument->saveTextElement("bus", qtractorTrack::busName(), &eProps);
+	pDocument->saveTextElement("input-bus",
+		qtractorTrack::inputBusName(), &eProps);
+	pDocument->saveTextElement("output-bus",
+		qtractorTrack::outputBusName(), &eProps);
 	if (qtractorTrack::trackType() == qtractorTrack::Midi) {
 		pDocument->saveTextElement("midi-channel",
 			QString::number(qtractorTrack::midiChannel()), &eProps);

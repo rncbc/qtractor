@@ -92,89 +92,123 @@
                 <string>Track name description</string>
             </property>
         </widget>
-        <widget class="QButtonGroup">
-            <property name="name">
-                <cstring>TrackTypeGroup</cstring>
-            </property>
-            <property name="title">
-                <string>Type / Bus</string>
-            </property>
-            <hbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="QRadioButton">
-                    <property name="name">
-                        <cstring>AudioRadioButton</cstring>
-                    </property>
-                    <property name="text">
-                        <string>&amp;Audio</string>
-                    </property>
-                    <property name="accel">
-                        <string>Alt+A</string>
-                    </property>
-                    <property name="toolTip" stdset="0">
-                        <string>Audio track type</string>
-                    </property>
-                </widget>
-                <widget class="QRadioButton">
-                    <property name="name">
-                        <cstring>MidiRadioButton</cstring>
-                    </property>
-                    <property name="text">
-                        <string>&amp;MIDI</string>
-                    </property>
-                    <property name="accel">
-                        <string>Alt+M</string>
-                    </property>
-                    <property name="toolTip" stdset="0">
-                        <string>MIDI track type</string>
-                    </property>
-                </widget>
-                <widget class="QComboBox">
-                    <property name="name">
-                        <cstring>BusNameComboBox</cstring>
-                    </property>
-                    <property name="sizePolicy">
-                        <sizepolicy>
-                            <hsizetype>3</hsizetype>
-                            <vsizetype>0</vsizetype>
-                            <horstretch>0</horstretch>
-                            <verstretch>0</verstretch>
-                        </sizepolicy>
-                    </property>
-                    <property name="toolTip" stdset="0">
-                        <string>Bus name</string>
-                    </property>
-                </widget>
-				<widget class="QToolButton">
+		<hbox>
+			<property name="name">
+				<cstring>unnamed</cstring>
+			</property>
+			<widget class="QButtonGroup">
+				<property name="name">
+					<cstring>TrackTypeGroup</cstring>
+				</property>
+				<property name="title">
+					<string>Type</string>
+				</property>
+				<hbox>
 					<property name="name">
-						<cstring>BusNameToolButton</cstring>
+						<cstring>unnamed</cstring>
 					</property>
-					<property name="minimumSize">
-						<size>
-							<width>22</width>
-							<height>22</height>
-						</size>
+					<widget class="QRadioButton">
+						<property name="name">
+							<cstring>AudioRadioButton</cstring>
+						</property>
+						<property name="text">
+							<string>&amp;Audio</string>
+						</property>
+						<property name="accel">
+							<string>Alt+A</string>
+						</property>
+						<property name="toolTip" stdset="0">
+							<string>Audio track type</string>
+						</property>
+					</widget>
+					<widget class="QRadioButton">
+						<property name="name">
+							<cstring>MidiRadioButton</cstring>
+						</property>
+						<property name="text">
+							<string>&amp;MIDI</string>
+						</property>
+						<property name="accel">
+							<string>Alt+M</string>
+						</property>
+						<property name="toolTip" stdset="0">
+							<string>MIDI track type</string>
+						</property>
+					</widget>
+				</hbox>
+			</widget>
+			<widget class="QButtonGroup">
+				<property name="name">
+					<cstring>TrackBusGroup</cstring>
+				</property>
+				<property name="title">
+					<string>Input / Output</string>
+				</property>
+				<hbox>
+					<property name="name">
+						<cstring>unnamed</cstring>
 					</property>
-					<property name="maximumSize">
-						<size>
-							<width>24</width>
-							<height>24</height>
-						</size>
-					</property>
-					<property name="focusPolicy">
-						<enum>TabFocus</enum>
-					</property>
-					<property name="text">
-						<string>...</string>
-					</property>
-					<property name="toolTip" stdset="0">
-						<string>Manage busses</string>
-					</property>
-				</widget>
-            </hbox>
-        </widget>
+					<widget class="QComboBox">
+						<property name="name">
+							<cstring>InputBusNameComboBox</cstring>
+						</property>
+						<property name="sizePolicy">
+							<sizepolicy>
+								<hsizetype>3</hsizetype>
+								<vsizetype>0</vsizetype>
+								<horstretch>0</horstretch>
+								<verstretch>0</verstretch>
+							</sizepolicy>
+						</property>
+						<property name="toolTip" stdset="0">
+							<string>Input bus name</string>
+						</property>
+					</widget>
+					<widget class="QComboBox">
+						<property name="name">
+							<cstring>OutputBusNameComboBox</cstring>
+						</property>
+						<property name="sizePolicy">
+							<sizepolicy>
+								<hsizetype>3</hsizetype>
+								<vsizetype>0</vsizetype>
+								<horstretch>0</horstretch>
+								<verstretch>0</verstretch>
+							</sizepolicy>
+						</property>
+						<property name="toolTip" stdset="0">
+							<string>Ouput bus name</string>
+						</property>
+					</widget>
+					<widget class="QToolButton">
+						<property name="name">
+							<cstring>BusNameToolButton</cstring>
+						</property>
+						<property name="minimumSize">
+							<size>
+								<width>22</width>
+								<height>22</height>
+							</size>
+						</property>
+						<property name="maximumSize">
+							<size>
+								<width>24</width>
+								<height>24</height>
+							</size>
+						</property>
+						<property name="focusPolicy">
+							<enum>TabFocus</enum>
+						</property>
+						<property name="text">
+							<string>...</string>
+						</property>
+						<property name="toolTip" stdset="0">
+							<string>Manage busses</string>
+						</property>
+					</widget>
+				</hbox>
+			</widget>
+		</hbox>
         <widget class="QGroupBox">
             <property name="name">
                 <cstring>MidiGroupBox</cstring>
@@ -534,10 +568,16 @@
         <slot>trackTypeChanged(int)</slot>
     </connection>
     <connection>
-        <sender>BusNameComboBox</sender>
+        <sender>InputBusNameComboBox</sender>
         <signal>activated(const QString &amp;)</signal>
         <receiver>qtractorTrackForm</receiver>
-        <slot>busNameChanged(const QString&amp;)</slot>
+        <slot>inputBusNameChanged(const QString&amp;)</slot>
+    </connection>
+    <connection>
+        <sender>OutputBusNameComboBox</sender>
+        <signal>activated(const QString &amp;)</signal>
+        <receiver>qtractorTrackForm</receiver>
+        <slot>outputBusNameChanged(const QString&amp;)</slot>
     </connection>
 	<connection>
 		<sender>BusNameToolButton</sender>
@@ -616,7 +656,8 @@
     <tabstop>TrackNameTextEdit</tabstop>
     <tabstop>AudioRadioButton</tabstop>
     <tabstop>MidiRadioButton</tabstop>
-    <tabstop>BusNameComboBox</tabstop>
+    <tabstop>InputBusNameComboBox</tabstop>
+    <tabstop>OutputBusNameComboBox</tabstop>
 	<tabstop>BusNameToolButton</tabstop>
     <tabstop>ChannelSpinBox</tabstop>
     <tabstop>InstrumentComboBox</tabstop>
@@ -659,7 +700,8 @@
     <slot specifier="non virtual">stabilizeForm()</slot>
     <slot specifier="non virtual">changed()</slot>
     <slot specifier="non virtual">trackTypeChanged( int iTrackType )</slot>
-    <slot specifier="non virtual">busNameChanged( const QString &amp; sBusName )</slot>
+    <slot specifier="non virtual">inputBusNameChanged( const QString &amp; sBusName )</slot>
+    <slot specifier="non virtual">outputBusNameChanged( const QString &amp; sBusName )</slot>
 	<slot specifier="non virtual">busNameClicked()</slot>
     <slot specifier="non virtual">channelChanged( int iChannel )</slot>
     <slot specifier="non virtual">instrumentChanged( const QString &amp; sInstrumentName )</slot>

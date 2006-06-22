@@ -87,8 +87,8 @@ void qtractorTrackListItem::initItem ( qtractorTrackList *pTrackList,
 	// FIXME: Track number's prone to confusion...
 	int iTrackNumber = pTrackList->childCount();
 	setText(qtractorTrackList::Number, QString::number(iTrackNumber));
-	setText(qtractorTrackList::Name,   pTrack->trackName());
-	setText(qtractorTrackList::Bus,    pTrack->busName());
+	setText(qtractorTrackList::Name, pTrack->trackName());
+	setText(qtractorTrackList::Bus, pTrack->inputBusName());
 	// qtractorTrackList::Channel
 	// qtractorTrackList::Patch
 	// qtractorTrackList::Instrument
@@ -181,17 +181,21 @@ void qtractorTrackListItem::setText ( int iColumn, const QString& sText )
 	}
 
 	const QString s = " - -";
+	QString sBusText;
 
 	switch (m_pTrack->trackType()) {
 
 		case qtractorTrack::Audio: {
-			qtractorAudioBus *pAudioBus
-				= static_cast<qtractorAudioBus *> (m_pTrack->bus());
+			qtractorAudioBus *pAudioBus;
+			pAudioBus = static_cast<qtractorAudioBus *> (m_pTrack->inputBus());
 			QListViewItem::setPixmap(qtractorTrackList::Bus,
 				QPixmap::fromMimeSource("trackAudio.png"));
+			sBusText = (pAudioBus ? pAudioBus->busName() : s);
+			pAudioBus = static_cast<qtractorAudioBus *> (m_pTrack->outputBus());
+			if (m_pTrack->inputBus() != m_pTrack->outputBus())
+				sBusText += '/' + (pAudioBus ? pAudioBus->busName() : s);
 			QListViewItem::setText(qtractorTrackList::Bus,
-				(pAudioBus ? pAudioBus->busName() : s)  + '\n'
-				+ QObject::tr("Audio"));
+				sBusText + '\n' + QObject::tr("Audio"));
 			QListViewItem::setText(qtractorTrackList::Channel,
 				QString::number(pAudioBus->channels()));
 			QListViewItem::setText(qtractorTrackList::Patch, s);
@@ -200,13 +204,16 @@ void qtractorTrackListItem::setText ( int iColumn, const QString& sText )
 		}
 
 		case qtractorTrack::Midi: {
-			qtractorMidiBus *pMidiBus
-				= static_cast<qtractorMidiBus *> (m_pTrack->bus());
+			qtractorMidiBus *pMidiBus;
+			pMidiBus = static_cast<qtractorMidiBus *> (m_pTrack->inputBus());
 			QListViewItem::setPixmap(qtractorTrackList::Bus,
 				QPixmap::fromMimeSource("trackMidi.png"));
+			sBusText = (pMidiBus ? pMidiBus->busName() : s);
+			pMidiBus = static_cast<qtractorMidiBus *> (m_pTrack->outputBus());
+			if (m_pTrack->inputBus() != m_pTrack->outputBus())
+				sBusText += '/' + (pMidiBus ? pMidiBus->busName() : s);
 			QListViewItem::setText(qtractorTrackList::Bus,
-				(pMidiBus ? pMidiBus->busName() : s)  + '\n'
-				+ QObject::tr("MIDI"));
+				sBusText + '\n' + QObject::tr("MIDI"));
 			unsigned short iChannel = m_pTrack->midiChannel();
 			const qtractorMidiBus::Patch& patch = pMidiBus->patch(iChannel);
 			QListViewItem::setText(qtractorTrackList::Channel,
@@ -234,13 +241,14 @@ void qtractorTrackListItem::setText ( int iColumn, const QString& sText )
 		}
 
 		case qtractorTrack::None:
-		default:
-			QListViewItem::setText(qtractorTrackList::Bus,
-				s + '\n' + QObject::tr("Unknown"));
+		default: {
+			const QString sText  = s + '\n' + QObject::tr("Unknown");
+			QListViewItem::setText(qtractorTrackList::Bus, sText);
 			QListViewItem::setText(qtractorTrackList::Channel, s);
 			QListViewItem::setText(qtractorTrackList::Patch, s);
 			QListViewItem::setText(qtractorTrackList::Instrument, s);
 			break;
+		}
 	}
 }
 
@@ -372,8 +380,8 @@ qtractorTrackList::qtractorTrackList ( qtractorTracks *pTracks,
 	QListView::addColumn(tr("Instrument"));	// qtractorTrackList::Instrumnet
 
 	QListView::setColumnAlignment(qtractorTrackList::Number, Qt::AlignHCenter);
-	QListView::setColumnAlignment(qtractorTrackList::Channel, Qt::AlignHCenter);
 	QListView::setColumnAlignment(qtractorTrackList::Bus, Qt::AlignTop);
+	QListView::setColumnAlignment(qtractorTrackList::Channel, Qt::AlignHCenter);
 
 	QListView::setColumnWidthMode(qtractorTrackList::Name, QListView::Manual);
 	QListView::setColumnWidthMode(qtractorTrackList::Channel, QListView::Manual);
@@ -726,7 +734,7 @@ void qtractorTrackList::clickedSlot ( QListViewItem *pItem,
 		return;
 
 	// TODO: Maybe something might be done, regarding direct
-	// selection of track bus and/or MIDI instrument...
+	// selection of track busses and/or MIDI instruments...
 }
 
 

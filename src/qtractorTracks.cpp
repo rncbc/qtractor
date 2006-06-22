@@ -748,7 +748,7 @@ void qtractorTracks::updateMidiTrack ( qtractorTrack *pMidiTrack )
 	if (pSession == NULL)
 		return;
 
-	const QString& sBusName = pMidiTrack->busName();
+	const QString& sBusName = pMidiTrack->outputBusName();
 	unsigned short iChannel = pMidiTrack->midiChannel();
 
 	for (qtractorTrack *pTrack = pSession->tracks().first();
@@ -756,7 +756,7 @@ void qtractorTracks::updateMidiTrack ( qtractorTrack *pMidiTrack )
 		// If same channel, force same bank/program stuff...
 		if (pTrack != pMidiTrack
 			&& pTrack->trackType() == qtractorTrack::Midi
-			&& pTrack->busName() == sBusName
+			&& pTrack->outputBusName() == sBusName
 			&& pTrack->midiChannel() == iChannel) {
 			// Make else tracks MIDI attributes the same....
 			pTrack->setMidiBankSelMethod(pMidiTrack->midiBankSelMethod());
@@ -775,7 +775,7 @@ void qtractorTracks::updateMidiTrack ( qtractorTrack *pMidiTrack )
 		return;
 
 	qtractorMidiBus *pMidiBus
-		= static_cast<qtractorMidiBus *> (pMidiTrack->bus());
+		= static_cast<qtractorMidiBus *> (pMidiTrack->outputBus());
 	if (pMidiBus == NULL)
 		return;
 

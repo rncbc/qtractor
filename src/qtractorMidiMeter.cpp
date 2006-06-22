@@ -86,7 +86,7 @@ qtractorMidiMeterValue::qtractorMidiMeterValue(
 	m_iPeakHold   = 0;
 	m_fPeakDecay  = QTRACTOR_MIDI_METER_DECAY_RATE2;
 
-	QFrame::setMinimumWidth(12);
+	QFrame::setFixedWidth(14);
 	QFrame::setBackgroundMode(Qt::NoBackground);
 
 	QFrame::setFrameShape(QFrame::StyledPanel);

@@ -407,19 +407,19 @@ bool qtractorEditTrackCommand::redo (void)
 	if (!qtractorPropertyCommand<qtractorTrack::Properties>::redo())
 		return false;
 
-	// Reopen to assign a probable new bus,
-	// which is certainly unchanged on record mode...
-	if (!m_pTrack->isRecord() && !m_pTrack->open()) {
+	// Reopen to assign a probable new bus...
+	if (!m_pTrack->open()) {
 		mainForm()->appendMessagesError(
 			QObject::tr("Track assignment failed:\n\n"
-				"Track: \"%1\" Bus: \"%2\"")
+				"Track: \"%1\" Input: \"%2\" Output: \"%3\"")
 				.arg(m_pTrack->trackName())
-				.arg(m_pTrack->busName()));
+				.arg(m_pTrack->inputBusName())
+				.arg(m_pTrack->outputBusName()));
 	}
 
 	// Refresh track item, at least the names...
 	pTrackItem->setText(qtractorTrackList::Name, m_pTrack->trackName());
-	pTrackItem->setText(qtractorTrackList::Bus,  m_pTrack->busName());
+	pTrackItem->setText(qtractorTrackList::Bus, m_pTrack->inputBusName());
 	pTrackItem->repaint();
 
 	// Special MIDI track cases...
@@ -601,7 +601,7 @@ bool qtractorTrackGainCommand::redo (void)
 	if (pTrack->trackType() == qtractorTrack::Midi) {
 		// Now we gotta make sure of proper MIDI bus...
 		qtractorMidiBus *pMidiBus
-			= static_cast<qtractorMidiBus *> (pTrack->bus());
+			= static_cast<qtractorMidiBus *> (pTrack->outputBus());
 		if (pMidiBus)
 			pMidiBus->setVolume(pTrack->midiChannel(), m_fGain);
 	}
@@ -673,7 +673,7 @@ bool qtractorTrackPanningCommand::redo (void)
 	if (pTrack->trackType() == qtractorTrack::Midi) {
 		// Now we gotta make sure of proper MIDI bus...
 		qtractorMidiBus *pMidiBus
-			= static_cast<qtractorMidiBus *> (pTrack->bus());
+			= static_cast<qtractorMidiBus *> (pTrack->outputBus());
 		if (pMidiBus)
 			pMidiBus->setPanning(pTrack->midiChannel(), m_fPanning);
 	}

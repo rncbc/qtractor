@@ -66,8 +66,10 @@ public:
 	void close();
 
 	// Buffer data read/write.
-	int read(float **ppFrames, unsigned int iFrames, unsigned int iOffset = 0);
-	int write(float **ppFrames, unsigned int iFrames);
+	int read(float **ppFrames, unsigned int iFrames,
+		unsigned int iOffset = 0);
+	int write(float **ppFrames, unsigned int iFrames,
+		unsigned short iChannels = 0);
 
 	// Special kind of super-read/channel-mix.
 	int readMix(float **ppFrames, unsigned int iFrames,

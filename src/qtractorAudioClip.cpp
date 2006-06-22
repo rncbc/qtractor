@@ -89,7 +89,7 @@ bool qtractorAudioClip::open ( const QString& sFilename, int iMode )
 
 	unsigned short iChannels = 0;
 	qtractorAudioBus *pAudioBus
-		= static_cast<qtractorAudioBus *> (track()->bus());
+		= static_cast<qtractorAudioBus *> (track()->outputBus());
 	if (pAudioBus)
 		iChannels = pAudioBus->channels();
 	m_pBuff = new qtractorAudioBuffer(iChannels, pSession->sampleRate());
@@ -122,9 +122,10 @@ bool qtractorAudioClip::open ( const QString& sFilename, int iMode )
 
 
 // Direct write method.
-void qtractorAudioClip::write ( float **ppBuffer, unsigned int iFrames )
+void qtractorAudioClip::write ( float **ppBuffer,
+	unsigned int iFrames, unsigned short iChannels )
 {
-	if (m_pBuff) m_pBuff->write(ppBuffer, iFrames);
+	if (m_pBuff) m_pBuff->write(ppBuffer, iFrames, iChannels);
 }
 
 
@@ -186,7 +187,7 @@ void qtractorAudioClip::process ( unsigned long iFrameStart,
 	unsigned long iFrameEnd )
 {
 	qtractorAudioBus *pAudioBus
-		= static_cast<qtractorAudioBus *> (track()->bus());
+		= static_cast<qtractorAudioBus *> (track()->outputBus());
 	if (pAudioBus == NULL)
 		return;
 

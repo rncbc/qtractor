@@ -45,10 +45,12 @@ public:
 	{
 		switch (m_pBus->busType()) {
 		case qtractorTrack::Audio:
-			setPixmap(0, QPixmap::fromMimeSource("trackAudio.png"));
+			QListViewItem::setPixmap(0,
+				QPixmap::fromMimeSource("trackAudio.png"));
 			break;
 		case qtractorTrack::Midi:
-			setPixmap(0, QPixmap::fromMimeSource("trackMidi.png"));
+			QListViewItem::setPixmap(0,
+				QPixmap::fromMimeSource("trackMidi.png"));
 			break;
 		default:
 			break;
@@ -75,6 +77,10 @@ void qtractorBusForm::init (void)
 	m_pMidiRoot   = NULL;
 	m_iDirtySetup = 0;
 	m_iDirtyCount = 0;
+	m_iDirtyTotal = 0;
+
+	// Start with unsorted bus list...
+	BusListView->setSorting(2);
 }
 
 
@@ -147,6 +153,13 @@ qtractorBus *qtractorBusForm::bus (void)
 }
 
 
+// Current bus accessor.
+bool qtractorBusForm::isDirty (void)
+{
+	return (m_iDirtyTotal > 0);
+}
+
+
 // Show current selected bus.
 void qtractorBusForm::showBus ( qtractorBus *pBus )
 {
@@ -169,8 +182,7 @@ void qtractorBusForm::showBus ( qtractorBus *pBus )
 	}
 
 	// Reset dirty flag...
-	m_iDirtyCount = 0;
-	
+	m_iDirtyCount = 0;	
 	m_iDirtySetup--;
 	
 	// Done.
@@ -193,28 +205,28 @@ void qtractorBusForm::refreshBusses (void)
 	if (m_pMainForm->session() == NULL)
 		return;
 
-	// Audio busses...
-	qtractorAudioEngine *pAudioEngine = m_pMainForm->session()->audioEngine();
-	if (pAudioEngine) {
-		m_pAudioRoot = new QListViewItem(BusListView, ' ' + tr("Audio"));
-		m_pAudioRoot->setSelectable(false);
-		for (qtractorBus *pBus = pAudioEngine->busses().first();
-				pBus; pBus = pBus->next())
-			new qtractorBusListItem(m_pAudioRoot, pBus);
-		m_pAudioRoot->setOpen(true);
-	}
-
 	// MIDI busses...
 	qtractorMidiEngine *pMidiEngine = m_pMainForm->session()->midiEngine();
 	if (pMidiEngine) {
 		m_pMidiRoot = new QListViewItem(BusListView, ' ' + tr("MIDI"));
 		m_pMidiRoot->setSelectable(false);
-		for (qtractorBus *pBus = pMidiEngine->busses().first();
-				pBus; pBus = pBus->next())
+		for (qtractorBus *pBus = pMidiEngine->busses().last();
+				pBus; pBus = pBus->prev())
 			new qtractorBusListItem(m_pMidiRoot, pBus);
 		m_pMidiRoot->setOpen(true);
 	}
-	
+
+	// Audio busses...
+	qtractorAudioEngine *pAudioEngine = m_pMainForm->session()->audioEngine();
+	if (pAudioEngine) {
+		m_pAudioRoot = new QListViewItem(BusListView, ' ' + tr("Audio"));
+		m_pAudioRoot->setSelectable(false);
+		for (qtractorBus *pBus = pAudioEngine->busses().last();
+				pBus; pBus = pBus->prev())
+			new qtractorBusListItem(m_pAudioRoot, pBus);
+		m_pAudioRoot->setOpen(true);
+	}
+
 	// Reselect current bus, if any.
 	setBus(m_pBus);
 }
@@ -321,7 +333,7 @@ void qtractorBusForm::createBus (void)
 	if (sBusName.isEmpty())
 		return;
 
-	qtractorBus::BusMode busMode;
+	qtractorBus::BusMode busMode = qtractorBus::None;
 	switch (BusModeComboBox->currentItem()) {
 	case 0:
 		busMode = qtractorBus::Input;
@@ -368,6 +380,7 @@ void qtractorBusForm::createBus (void)
 	m_pBus->open();
 
 	// Refresh main form.
+	m_iDirtyTotal++;
 	m_pMainForm->contentsChanged();
 	m_pMainForm->viewRefresh();
 
@@ -392,7 +405,7 @@ void qtractorBusForm::updateBus (void)
 	if (sBusName.isEmpty())
 		return;
 
-	qtractorBus::BusMode busMode;
+	qtractorBus::BusMode busMode = qtractorBus::None;
 	switch (BusModeComboBox->currentItem()) {
 	case 0:
 		busMode = qtractorBus::Input;
@@ -412,7 +425,7 @@ void qtractorBusForm::updateBus (void)
 	// Close all applicable tracks...
 	for (qtractorTrack *pTrack = pSession->tracks().first();
 			pTrack; pTrack = pTrack->next()) {
-		if (pTrack->bus() == m_pBus)
+		if (pTrack->inputBus() == m_pBus || pTrack->outputBus() == m_pBus)
 			pTrack->close();
 	}
 	// May close now the bus...
@@ -436,7 +449,7 @@ void qtractorBusForm::updateBus (void)
 	// Open all applicable tracks...
 	for (qtractorTrack *pTrack = pSession->tracks().first();
 			pTrack; pTrack = pTrack->next()) {
-		if (pTrack->bus() == m_pBus)
+		if (pTrack->inputBus() == m_pBus || pTrack->outputBus() == m_pBus)
 			pTrack->open();
 	}
 
@@ -444,6 +457,7 @@ void qtractorBusForm::updateBus (void)
 	pSession->setPlaying(bPlaying);
 
 	// Refresh main form.
+	m_iDirtyTotal++;
 	m_pMainForm->contentsChanged();
 	m_pMainForm->viewRefresh();
 
@@ -504,21 +518,21 @@ void qtractorBusForm::deleteBus (void)
 	// Close all applicable tracks...
 	for (qtractorTrack *pTrack = pSession->tracks().first();
 			pTrack; pTrack = pTrack->next()) {
-		if (pTrack->bus() == m_pBus)
+		if (pTrack->inputBus() == m_pBus || pTrack->outputBus() == m_pBus)
 			pTrack->close();
 	}
 	// May close now the bus...
 	m_pBus->close();
 
 	// And remove it...
-	qtractorBus *pBus = m_pBus;
+	pEngine->removeBus(m_pBus);
 	m_pBus = NULL;
-	pEngine->removeBus(pBus);
 
 	// Carry on...
 	pSession->setPlaying(bPlaying);
 
 	// Refresh main form.
+	m_iDirtyTotal++;
 	m_pMainForm->contentsChanged();
 	m_pMainForm->viewRefresh();
 
@@ -573,7 +587,7 @@ void qtractorBusForm::stabilizeForm (void)
 		AudioBusGroup->setEnabled(false);
 	}
 
-	RefreshPushButton->setEnabled(true);
+	RefreshPushButton->setEnabled(m_iDirtyCount > 0);
 	CreatePushButton->setEnabled(canCreateBus());
 	UpdatePushButton->setEnabled(canUpdateBus());
 	DeletePushButton->setEnabled(canDeleteBus());
@@ -604,7 +618,7 @@ void qtractorBusForm::contextMenu ( QListViewItem *, const QPoint& pos, int )
 	iItemID = pContextMenu->insertItem(
 		QIconSet(QPixmap::fromMimeSource("formRefresh.png")),
 		tr("&Refresh"), this, SLOT(refreshBusses()));
-	pContextMenu->setItemEnabled(iItemID, true);
+	pContextMenu->setItemEnabled(iItemID, m_iDirtyCount > 0);
 
 	pContextMenu->exec(pos);
 

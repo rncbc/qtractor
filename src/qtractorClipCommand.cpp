@@ -185,6 +185,8 @@ bool qtractorAddClipCommand::addClipRecord ( qtractorTrack *pTrack )
 		return false;
 	}
 
+	// Can get rid of the recorded clip.
+	pTrack->setClipRecord(NULL);
 	// Done.
 	return true;
 }

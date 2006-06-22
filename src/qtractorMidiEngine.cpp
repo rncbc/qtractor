@@ -560,7 +560,7 @@ void qtractorMidiEngine::resetAllMonitors (void)
 			pTrack; pTrack = pTrack->next()) {
 		if (pTrack->trackType() == qtractorTrack::Midi) {
 			qtractorMidiBus *pMidiBus
-				= static_cast<qtractorMidiBus *> (pTrack->bus());
+				= static_cast<qtractorMidiBus *> (pTrack->outputBus());
 			qtractorMidiMonitor *pMidiMonitor
 				= static_cast<qtractorMidiMonitor *> (pTrack->monitor());
 			if (pMidiBus && pMidiMonitor) {
@@ -669,7 +669,7 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 			&& pTrack->clipRecord() != NULL
 			&& pTrack->midiChannel() == iChannel) {
 			qtractorMidiBus *pMidiBus
-				= static_cast<qtractorMidiBus *> (pTrack->bus());
+				= static_cast<qtractorMidiBus *> (pTrack->inputBus());
 			if (pMidiBus && pMidiBus->alsaPort() == pEv->dest.port) {
 				// Is it recording?...
 				qtractorMidiClip *pMidiClip
@@ -709,7 +709,7 @@ void qtractorMidiEngine::enqueue ( qtractorTrack *pTrack,
 {
 	// Target MIDI bus...
 	qtractorMidiBus *pMidiBus
-		= static_cast<qtractorMidiBus *> (pTrack->bus());
+		= static_cast<qtractorMidiBus *> (pTrack->outputBus());
 	if (pMidiBus == NULL)
 		return;
 
@@ -1079,7 +1079,7 @@ void qtractorMidiEngine::trackMute ( qtractorTrack *pTrack, bool bMute )
 		snd_seq_remove_events(m_pAlsaSeq, pre);
 		// Immediate all current notes off.
 		qtractorMidiBus *pMidiBus
-			= static_cast<qtractorMidiBus *> (pTrack->bus());
+			= static_cast<qtractorMidiBus *> (pTrack->outputBus());
 		if (pMidiBus)
 			pMidiBus->setController(pTrack->midiChannel(), ALL_NOTES_OFF);
 		// Reset track monitor...

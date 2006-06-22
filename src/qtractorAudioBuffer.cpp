@@ -255,11 +255,14 @@ void qtractorAudioBuffer::close (void)
 	}
 
 	// Reset all relevant state variables.
-	m_iThreshold  = 0;
-	m_iOffset     = 0;
-	m_iLength     = 0;
-	m_bIntegral   = false;
-	m_bEndOfFile  = false;
+	m_iThreshold   = 0;
+	m_iOffset      = 0;
+	m_iLength      = 0;
+	m_bIntegral    = false;
+	m_bEndOfFile   = false;
+
+	m_iSeekPending = 0;
+	m_iSeekOffset  = 0;
 }
 
 
@@ -308,20 +311,80 @@ int qtractorAudioBuffer::read ( float **ppFrames, unsigned int iFrames,
 
 
 // Buffer data write.
-int qtractorAudioBuffer::write ( float **ppFrames, unsigned int iFrames )
+int qtractorAudioBuffer::write ( float **ppFrames, unsigned int iFrames,
+	unsigned short iChannels )
 {
 	if (m_pRingBuffer == NULL)
 		return -1;
 	if (m_pFile == NULL)
 		return -1;
 
+	unsigned short iBuffers = m_pRingBuffer->channels();
+	if (iChannels < 1)
+		iChannels = iBuffers;
+
 #ifdef DEBUG_0
 	dump_state(QString("+write(%1)").arg(iFrames));
 #endif
 
-	// Move the data around...
-	m_pRingBuffer->write(ppFrames, iFrames);
-	m_iOffset += iFrames;
+	unsigned int nwrite = iFrames;
+
+	if (iChannels == iBuffers) {
+		// Direct write...
+		nwrite = m_pRingBuffer->write(ppFrames, nwrite);
+	} else {
+		// Multiplexed write...
+		unsigned int ws = m_pRingBuffer->writable();
+		if (nwrite > ws)
+			nwrite = ws;
+		if (nwrite > 0) {
+			unsigned int w = m_pRingBuffer->writeIndex();
+			unsigned int n, n1, n2;
+			unsigned int bs = m_pRingBuffer->bufferSize();
+			if (w + nwrite > bs) {
+				n1 = (bs - w);
+				n2 = (w + nwrite) & m_pRingBuffer->bufferMask();
+			} else {
+				n1 = nwrite;
+				n2 = 0;
+			}
+			unsigned short i, j, iAux;
+			float **ppBuffer = m_pRingBuffer->buffer();
+			if (iChannels > iBuffers) {
+				for (j = 0; j < iBuffers; j++) {
+					for (n = 0; n < n1; n++)
+						ppBuffer[j][n + w] = 0.0f;
+					for (n = 0; n < n2; n++)
+						ppBuffer[j][n] = 0.0f;
+				}
+				j = 0;
+				iAux = (iChannels - (iChannels % iBuffers));
+				for (i = 0; i < iAux; i++) {
+					for (n = 0; n < n1; n++)
+						ppBuffer[j][n + w] += ppFrames[i][n];
+					for (n = 0; n < n2; n++)
+						ppBuffer[j][n] += ppFrames[i][n + n1];
+					if (++j >= iBuffers)
+						j = 0;
+				}
+			} else { // (iChannels < iBuffers)
+				i = 0;
+				iAux = (iBuffers - (iBuffers % iChannels));
+				for (j = 0; j < iAux; j++) {
+					for (n = 0; n < n1; n++)
+						ppBuffer[j][n + w] = ppFrames[i][n];
+					for (n = 0; n < n2; n++)
+						ppBuffer[j][n] = ppFrames[i][n + n1];
+					if (++i >= iChannels)
+						i = 0;
+				}
+			}
+			m_pRingBuffer->setWriteIndex(w + nwrite);
+		}
+	}
+
+	// Make it statiscally correct...
+	m_iOffset += nwrite;
 
 #ifdef DEBUG_0
 	dump_state(QString("-write(%1)").arg(iFrames));
@@ -331,7 +394,7 @@ int qtractorAudioBuffer::write ( float **ppFrames, unsigned int iFrames )
 	if (m_pSyncThread && m_pRingBuffer->readable() > m_iThreshold)
 		m_pSyncThread->sync();
 
-	return iFrames;
+	return nwrite;
 }
 
 
@@ -449,7 +512,16 @@ bool qtractorAudioBuffer::initSync (void)
 {
 	if (m_pFile == NULL)
 		return false;
-		
+
+	// Reset all relevant state variables.
+	m_iOffset      = 0;
+	m_iLength      = 0;
+	m_bIntegral    = false;
+	m_bEndOfFile   = false;
+
+	m_iSeekPending = 0;
+	m_iSeekOffset  = 0;
+
 	// Read-ahead a whole bunch, if applicable...
 	if (m_pFile->mode() & qtractorAudioFile::Read) {
 		readSync();
@@ -734,7 +806,7 @@ int qtractorAudioBuffer::readMixBuffer (
 				j = 0;
 		}
 	}
-	else {
+	else { // (iChannels < iBuffers)
 		i = 0;
 		iAux = (iBuffers - (iBuffers % iChannels));
 		for (j = 0; j < iAux; j++) {

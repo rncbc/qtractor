@@ -50,7 +50,8 @@ public:
 	bool open(const QString& sFilename, int iMode = qtractorAudioFile::Read);
 
 	// Direct write method.
-	void write(float **ppBuffer, unsigned int iFrames);
+	void write(float **ppBuffer, unsigned int iFrames,
+		unsigned short iChannels = 0);
 
 	// Aduio file properties accessors.
 	const QString& filename() const;

@@ -419,12 +419,14 @@ int qtractorAudioEngine::process_idle ( unsigned int nframes )
 		if (pTrack->isRecord()
 			&& pTrack->trackType() == qtractorTrack::Audio) {
 			qtractorAudioBus *pAudioBus
-				= static_cast<qtractorAudioBus *> (pTrack->bus());
+				= static_cast<qtractorAudioBus *> (pTrack->inputBus());
 			qtractorAudioMonitor *pAudioMonitor
 				= static_cast<qtractorAudioMonitor *> (pTrack->monitor());
 			// Pre-monitoring...
-			if (pAudioBus && pAudioMonitor && pTrack->isRecord())
-				pAudioMonitor->process(pAudioBus->in(), nframes);
+			if (pAudioBus && pAudioMonitor && pTrack->isRecord()) {
+				pAudioMonitor->process(
+					pAudioBus->in(), nframes, pAudioBus->channels());
+			}
 		}
 	}
 

@@ -48,7 +48,8 @@ public:
 	float value(unsigned short iChannel) const;
 
 	// Batch processor.
-	void process(float **ppFrames, unsigned int iFrames);
+	void process(float **ppFrames,
+		unsigned int iFrames, unsigned short iChannels = 0);
 
 protected:
 

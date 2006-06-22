@@ -96,11 +96,37 @@ float qtractorAudioMonitor::value ( unsigned short iChannel ) const
 
 
 // Batch processor.
-void qtractorAudioMonitor::process ( float **ppFrames, unsigned int iFrames )
+void qtractorAudioMonitor::process ( float **ppFrames,
+	unsigned int iFrames, unsigned short iChannels )
 {
-	for (unsigned short i = 0; i < m_iChannels; i++) {
-		for (unsigned int n = 0; n < iFrames; n++)
-			setValue(i, ppFrames[i][n] *= m_pfGains[i]);
+	if (iChannels < 1)
+		iChannels = m_iChannels;
+
+	unsigned short i, j, iAux;
+	unsigned int n;
+	if (iChannels == m_iChannels) {
+		for (i = 0; i < m_iChannels; i++) {
+			for (n = 0; n < iFrames; n++)
+				setValue(i, ppFrames[i][n] *= m_pfGains[i]);
+		}
+	}
+	else if (iChannels > m_iChannels) {
+		i = 0;
+		for (j = 0; j < iChannels; j++) {
+			for (n = 0; n < iFrames; n++)
+				setValue(i, ppFrames[j][n] *= m_pfGains[i]);
+			if (++i >= m_iChannels)
+				i = 0;
+		}
+	}
+	else { // (iChannels < m_iChannels)
+		j = 0;
+		for (i = 0; i < m_iChannels; i++) {
+			for (n = 0; n < iFrames; n++)
+				setValue(i, ppFrames[j][n] *= m_pfGains[i]);
+			if (++j >= iChannels)
+				j = 0;
+		}
 	}
 }
 

@@ -138,7 +138,7 @@ void qtractorMixerStrip::initMixerStrip (void)
 
 	// Now, there's whether we are Audio or MIDI related...
 	m_pMeter = NULL;
-	int iFixedWidth = 2 * 16;
+	int iFixedWidth = 34;
 	switch (meterType) {
 	case qtractorTrack::Audio: {
 		// Type cast for proper audio monitor...
@@ -158,7 +158,8 @@ void qtractorMixerStrip::initMixerStrip (void)
 		}
 		// Have we an audio monitor/meter?...
 		if (pAudioMonitor) {
-			iFixedWidth += 16 * pAudioMonitor->channels();
+			iFixedWidth += 16 * (pAudioMonitor->channels() < 2
+				? 2 : pAudioMonitor->channels());
 			m_pMeter = new qtractorAudioMeter(pAudioMonitor, this);
 		}
 		break;
@@ -181,7 +182,7 @@ void qtractorMixerStrip::initMixerStrip (void)
 		}
 		// Have we a MIDI monitor/meter?...
 		if (pMidiMonitor) {
-			iFixedWidth += 16 * 2;
+			iFixedWidth += 32;
 			m_pMeter = new qtractorMidiMeter(pMidiMonitor, this);
 			// No panning on MIDI bus monitors and on duplex ones
 			// only the output gain (volume) should be enabled...

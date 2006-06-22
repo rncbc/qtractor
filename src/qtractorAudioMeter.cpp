@@ -144,7 +144,7 @@ qtractorAudioMeterValue::qtractorAudioMeterValue(
 	m_fPeakDecay  = QTRACTOR_AUDIO_METER_DECAY_RATE2;
 	m_iPeakColor  = QTRACTOR_AUDIO_METER_6DB;
 
-	QFrame::setMinimumWidth(8);
+	QFrame::setFixedWidth(12);
 	QFrame::setBackgroundMode(Qt::NoBackground);
 
 	QFrame::setFrameShape(QFrame::StyledPanel);

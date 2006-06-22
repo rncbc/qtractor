@@ -104,10 +104,12 @@ qtractorMeter::qtractorMeter ( QWidget *pParent, const char *pszName )
 	: QVBox(pParent, pszName)
 {
 	m_pPanSlider   = new qtractorSlider(Qt::Horizontal, this);
+	m_pPanSlider->setFixedHeight(20);
 	m_pTopLabel    = new QLabel(this);
 	m_pHBox        = new QHBox(this);
 	m_pHBox->setSpacing(1);
 	m_pGainSlider  = new qtractorSlider(Qt::Vertical, m_pHBox);
+	m_pGainSlider->setFixedWidth(20);
 
 	m_iUpdate      = 0;
 	m_iPeakFalloff = 0;
