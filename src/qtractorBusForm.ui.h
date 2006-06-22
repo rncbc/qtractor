@@ -27,6 +27,7 @@
 
 #include "qtractorTracks.h"
 #include "qtractorTrackList.h"
+#include "qtractorMixer.h"
 
 #include "qtractorMainForm.h"
 
@@ -173,19 +174,21 @@ void qtractorBusForm::showBus ( qtractorBus *pBus )
 
 	// Show bus properties into view pane...
 	if (pBus) {
+		qtractorAudioBus *pAudioBus = NULL;
 		switch (pBus->busType()) {
 		case qtractorTrack::Audio:
 			BusTitleTextLabel->setText(tr("Audio bus"));
+			pAudioBus = static_cast<qtractorAudioBus *> (pBus);
 			break;
 		case qtractorTrack::Midi:
 			BusTitleTextLabel->setText(tr("MIDI bus"));
 			break;
+		case qtractorTrack::None:
+			BusTitleTextLabel->setText(tr("Bus"));
+			break;
 		}
 		BusNameLineEdit->setText(pBus->busName());
 		BusModeComboBox->setCurrentItem(int(pBus->busMode()) - 1);
-		qtractorAudioBus *pAudioBus = NULL;
-		if (pBus->busType() == qtractorTrack::Audio)
-			pAudioBus = static_cast<qtractorAudioBus *> (pBus);
 		if (pAudioBus) {
 			AudioChannelsSpinBox->setValue(pAudioBus->channels());
 			AudioAutoConnectCheckBox->setChecked(pAudioBus->isAutoConnect());
@@ -443,6 +446,7 @@ void qtractorBusForm::updateBus (void)
 		if (pTrack->inputBus() == m_pBus ||	pTrack->outputBus() == m_pBus)
 			pTrack->close();
 	}
+
 	// May close now the bus...
 	m_pBus->close();
 
@@ -461,7 +465,22 @@ void qtractorBusForm::updateBus (void)
 
 	// May reopen up the bus...
 	m_pBus->open();
-	// (Re)open all applicable tracks...
+
+	// Update (reset) all applicable mixer strips...
+	qtractorMixer *pMixer = m_pMainForm->mixer();
+	if (pMixer) {
+		if (m_pBus->busMode() & qtractorBus::Input) {
+			pMixer->updateBusStrip(pMixer->inputRack(),
+				m_pBus, qtractorBus::Input, true);
+		}
+		if (m_pBus->busMode() & qtractorBus::Output) {
+			pMixer->updateBusStrip(pMixer->outputRack(),
+				m_pBus, qtractorBus::Output, true);
+		}
+	}
+
+	// (Re)open all applicable tracks
+	// and (reset) respective mixer strips too ...
 	qtractorTracks *pTracks = m_pMainForm->tracks();
 	for (qtractorTrack *pTrack = pSession->tracks().first();
 			pTrack; pTrack = pTrack->next()) {
@@ -476,6 +495,9 @@ void qtractorBusForm::updateBus (void)
 				if (pTrackItem)
 					pTrackItem->setText(qtractorTrackList::Bus, sBusName);
 			}
+			// Update mixer strip...
+			if (pMixer)
+				pMixer->updateTrackStrip(pTrack, true);
 		}
 	}
 
@@ -606,11 +628,9 @@ void qtractorBusForm::reject (void)
 void qtractorBusForm::stabilizeForm (void)
 {
 	if (m_pBus) {
-		BusTitleTextLabel->setEnabled(true);
 		CommonBusGroup->setEnabled(true);
 		AudioBusGroup->setEnabled(m_pBus->busType() == qtractorTrack::Audio);
 	} else {
-		BusTitleTextLabel->setEnabled(false);
 		CommonBusGroup->setEnabled(false);
 		AudioBusGroup->setEnabled(false);
 	}

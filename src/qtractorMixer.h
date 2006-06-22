@@ -262,6 +262,11 @@ public:
 	void updateBusses();
 	void updateTracks();
 
+	// Update mixer rack, checking whether the monitor actually exists.
+	void updateBusStrip(qtractorMixerRack *pRack, qtractorBus *pBus,
+		qtractorBus::BusMode busMode, bool bReset = false);
+	void updateTrackStrip(qtractorTrack *pTrack, bool bReset = false);
+
 	// Complete mixer refreshment.
 	void refresh();
 
@@ -272,13 +277,6 @@ public slots:
 
 	// Track button notification.
 	void trackButtonToggledSlot(qtractorTrackButton *pTrackButton, bool bOn);
-
-protected:
-
-	// Update mixer rack, checking if given monitor already exists.
-	void updateBusStrip(qtractorMixerRack *pRack,
-		qtractorBus *pBus, qtractorBus::BusMode busMode);
-	void updateTrackStrip(qtractorTrack *pTrack);
 
 private:
 

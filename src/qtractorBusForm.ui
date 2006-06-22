@@ -28,8 +28,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>484</width>
-            <height>255</height>
+            <width>478</width>
+            <height>298</height>
         </rect>
     </property>
     <property name="sizePolicy">
@@ -99,6 +99,9 @@
                     <property name="name">
                         <cstring>unnamed</cstring>
                     </property>
+                    <property name="margin">
+                        <number>0</number>
+                    </property>
                     <widget class="QLabel">
                         <property name="name">
                             <cstring>BusTitleTextLabel</cstring>
@@ -119,7 +122,7 @@
                         </property>
                         <property name="font">
                             <font>
-                                <pointsize>10</pointsize>
+                                <pointsize>12</pointsize>
                                 <bold>1</bold>
                             </font>
                         </property>

@@ -744,7 +744,7 @@ qtractorMixerRack *qtractorMixer::outputRack (void) const
 
 // Update mixer rack, checking if given monitor already exists.
 void qtractorMixer::updateBusStrip ( qtractorMixerRack *pRack,
-	qtractorBus *pBus, qtractorBus::BusMode busMode )
+	qtractorBus *pBus, qtractorBus::BusMode busMode, bool bReset )
 {
 	qtractorMonitor *pMonitor
 		= (busMode == qtractorBus::Input ?
@@ -755,17 +755,21 @@ void qtractorMixer::updateBusStrip ( qtractorMixerRack *pRack,
 		pRack->addStrip(new qtractorMixerStrip(pRack, pBus, busMode));
 	} else {
 		pStrip->setMark(0);
+		if (bReset)
+			pStrip->setBus(pBus);
 	}
 }
 
 
-void qtractorMixer::updateTrackStrip ( qtractorTrack *pTrack )
+void qtractorMixer::updateTrackStrip ( qtractorTrack *pTrack, bool bReset )
 {
 	qtractorMixerStrip *pStrip = m_pTrackRack->findStrip(pTrack->monitor());
 	if (pStrip == NULL) {
 		m_pTrackRack->addStrip(new qtractorMixerStrip(m_pTrackRack, pTrack));
 	} else {
 		pStrip->setMark(0);
+		if (bReset)
+			pStrip->setTrack(pTrack);
 	}
 }
 
