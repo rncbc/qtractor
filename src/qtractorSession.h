@@ -273,6 +273,9 @@ public:
 		unsigned short snapPerBeat;
 		unsigned long  editHead;
 		unsigned long  editTail;
+		// Derived members.
+		unsigned long  editHeadTime;
+		unsigned long  editTailTime;
 	};
 
 	// Alternate properties accessor.
@@ -314,6 +317,10 @@ private:
 	// Session loop points.
 	unsigned long m_iLoopStart;
 	unsigned long m_iLoopEnd;
+	
+	// Session time-normalized loop points.
+	unsigned long m_iLoopStartTime;
+	unsigned long m_iLoopEndTime;
 
 	// Consolidated record state.
 	bool m_bRecording;

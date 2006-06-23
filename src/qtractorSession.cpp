@@ -60,6 +60,8 @@ qtractorSession::Properties& qtractorSession::Properties::copy (
 	snapPerBeat    = props.snapPerBeat;
 	editHead       = props.editHead;
 	editTail       = props.editTail;
+	editHeadTime   = props.editHeadTime;
+	editTailTime   = props.editTailTime;
 	
 	return *this;
 }
@@ -80,6 +82,8 @@ void qtractorSession::Properties::clear (void)
 	snapPerBeat    = 4;
 	editHead       = 0;
 	editTail       = 0;
+	editHeadTime   = 0;
+	editTailTime   = 0;
 }
 
 
@@ -175,6 +179,8 @@ void qtractorSession::clear (void)
 
 	m_iLoopStart     = 0;
 	m_iLoopEnd       = 0;
+	m_iLoopStartTime = 0;
+	m_iLoopEndTime   = 0;
 
 	m_bRecording     = false;
 
@@ -381,7 +387,8 @@ int qtractorSession::indexFromSnap ( unsigned short iSnapPerBeat )
 // Edit-head frame accessors.
 void qtractorSession::setEditHead ( unsigned long iEditHead )
 {
-	m_props.editHead = iEditHead;
+	m_props.editHead     = iEditHead;
+	m_props.editHeadTime = tickFromFrame(iEditHead);
 }
 
 unsigned long qtractorSession::editHead (void) const
@@ -392,7 +399,8 @@ unsigned long qtractorSession::editHead (void) const
 
 void qtractorSession::setEditTail ( unsigned long iEditTail )
 {
-	m_props.editTail = iEditTail;
+	m_props.editTail     = iEditTail;
+	m_props.editTailTime = tickFromFrame(iEditTail);
 }
 
 unsigned long qtractorSession::editTail (void) const
@@ -552,6 +560,7 @@ QString qtractorSession::timeFromFrame ( unsigned long iFrame, bool bBBT ) const
 // Update scale divisor factors.
 void qtractorSession::updateTimeScale (void) 
 {
+	// Recompute scale divisor factors...
 	m_iScale_a = (unsigned int) (m_props.horizontalZoom * m_props.pixelsPerBeat);
 	m_fScale_b = (float) (0.01f * m_props.tempo * m_iScale_a);
 	m_fScale_c = (float) (60.0f * m_props.sampleRate);
@@ -565,6 +574,22 @@ void qtractorSession::updateTimeScale (void)
 			pClip->updateClipTime();
 		}
 	}
+
+	// Update loop points...
+	if (m_iLoopStart < m_iLoopEnd) {
+		m_iLoopStart = frameFromTick(m_iLoopStartTime);
+		m_iLoopEnd   = frameFromTick(m_iLoopEndTime);
+		// Set proper loop points for every track, clip and buffer...
+		qtractorTrack *pTrack = m_tracks.first();
+		while (pTrack) {
+			pTrack->setLoop(m_iLoopStart, m_iLoopEnd);
+			pTrack = pTrack->next();
+		}
+	}
+
+	// Do not forget those edit points too...
+	m_props.editHead = frameFromTick(m_props.editHeadTime);
+	m_props.editTail = frameFromTick(m_props.editTailTime);
 }
 
 
@@ -855,6 +880,10 @@ void qtractorSession::setLoop ( unsigned long iLoopStart,
 	// Local commit...
 	m_iLoopStart = iLoopStart;
 	m_iLoopEnd   = iLoopEnd;
+
+	// Time-normalized references too...
+	m_iLoopStartTime = tickFromFrame(iLoopStart);
+	m_iLoopEndTime   = tickFromFrame(iLoopEnd);
 
 	// Replace last known play-head...
 	m_pAudioEngine->sessionCursor()->seek(iFrame, true);
