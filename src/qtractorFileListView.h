@@ -76,7 +76,7 @@ public:
 	qtractorFileGroupItem(qtractorFileGroupItem *pGroupItem,
 		const QString& sName);
 	// Default destructor.
-	~qtractorFileGroupItem();
+	virtual ~qtractorFileGroupItem();
 
 	// Instance accessors.
 	void setName(const QString& sName);
@@ -92,7 +92,7 @@ public:
 	int rtti() const;
 
 	// Virtual tooltip renderer.
-	QString toolTip() const;
+	virtual QString toolTip() const;
 };
 
 
