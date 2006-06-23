@@ -1081,6 +1081,8 @@ void qtractorTrackView::contentsMousePressEvent ( QMouseEvent *pMouseEvent )
 		default:
 			break;
 		}
+		// Make sure we've get focus back...
+		QScrollView::setFocus();
 	}
 
 	QScrollView::contentsMousePressEvent(pMouseEvent);
@@ -1236,9 +1238,6 @@ void qtractorTrackView::selectClipFile ( qtractorClip *pClip ) const
 	default:
 		break;
 	}
-
-	// Make sure we've focus back...
-	QScrollView::setFocus();
 }
 
 
@@ -1589,7 +1588,7 @@ void qtractorTrackView::keyPressEvent ( QKeyEvent *pKeyEvent )
 				QScrollView::contentsY());
 		} else {
 			QScrollView::setContentsPos(
-				QScrollView::contentsX() - 8,
+				QScrollView::contentsX() - 16,
 				QScrollView::contentsY());
 		}
 		break;
@@ -1600,7 +1599,7 @@ void qtractorTrackView::keyPressEvent ( QKeyEvent *pKeyEvent )
 				QScrollView::contentsY());
 		} else {
 			QScrollView::setContentsPos(
-				QScrollView::contentsX() + 8,
+				QScrollView::contentsX() + 16,
 				QScrollView::contentsY());
 		}
 		break;
@@ -1612,7 +1611,7 @@ void qtractorTrackView::keyPressEvent ( QKeyEvent *pKeyEvent )
 		} else {
 			QScrollView::setContentsPos(
 				QScrollView::contentsX(),
-				QScrollView::contentsY() - 8);
+				QScrollView::contentsY() - 16);
 		}
 		break;
 	case Qt::Key_Down:
@@ -1623,13 +1622,13 @@ void qtractorTrackView::keyPressEvent ( QKeyEvent *pKeyEvent )
 		} else {
 			QScrollView::setContentsPos(
 				QScrollView::contentsX(),
-				QScrollView::contentsY() + 8);
+				QScrollView::contentsY() + 16);
 		}
 		break;
 	case Qt::Key_Prior:
 		if (pKeyEvent->state() & Qt::ControlButton) {
 			QScrollView::setContentsPos(
-				QScrollView::contentsX(), 0);
+				QScrollView::contentsX(), 16);
 		} else {
 			QScrollView::setContentsPos(
 				QScrollView::contentsX(),
