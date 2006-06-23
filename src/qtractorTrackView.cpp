@@ -1013,62 +1013,73 @@ void qtractorTrackView::contentsMousePressEvent ( QMouseEvent *pMouseEvent )
 	// Force null state.
 	resetDragState();
 
-	if (pMouseEvent->button() == Qt::LeftButton
-		|| pMouseEvent->button() == Qt::RightButton) {
-		// Which mouse state?
-		const bool bModifier = (pMouseEvent->state()
-			& (Qt::ShiftButton | Qt::ControlButton));
-		const QPoint& pos = pMouseEvent->pos();
-		// Remember what and where we'll be dragging/selecting...
-		m_dragState = DragStart;
-		m_posDrag   = pos;
-		m_pClipDrag = clipAt(m_posDrag, &m_rectDrag);
-		// Should it be selected(toggled)?
-		if (m_pClipDrag) {
-			QScrollView::setCursor(QCursor(Qt::PointingHandCursor));
-			const bool bSelect = !m_pClipDrag->isClipSelected();
-			if (bModifier) {
-				m_pClipSelect->selectClip(m_pClipDrag, m_rectDrag, bSelect);
-				updateContents(m_rectDrag.normalize());
-				m_pTracks->selectionChangeNotify();
-			} else if (bSelect) {
-				m_pClipSelect->clear();
-				m_pClipSelect->selectClip(m_pClipDrag, m_rectDrag, true);
-				updateContents();
-				m_pTracks->selectionChangeNotify();
-			}
-			// Make it right on the file view...,
-			selectClipFile(m_pClipDrag);
-			// Done, yeah.
-		} else {
-			// Clear any selection out there?
-			if (!bModifier)
-				selectAll(false);
-			qtractorSession *pSession = m_pTracks->session();
-			if (pSession) {
-				// Direct snap positioning...
-				unsigned long iFrame = pSession->frameSnap(
-					pSession->frameFromPixel(pos.x() > 0 ? pos.x() : 0));
-				if (pMouseEvent->button() == Qt::LeftButton) {
-					if (bModifier) {
-						// First, set actual engine position...
-						pSession->setPlayHead(iFrame);
-						// Playhead positioning...
-						setPlayHead(iFrame);
-						// Not quite a selection, but for
-						// immediate visual feedback...
-						m_pTracks->selectionChangeNotify();
-					}
-				}	// RightButton!...
-				else if (!bModifier) {
-					// Edittail positioning...
-					setEditTail(iFrame);
-					// Not a selection, but for some visual feedback...
-					m_pTracks->contentsChangeNotify();
-					// Nothing more...
-					m_dragState = DragNone;
+	// Which mouse state?
+	const bool bModifier = (pMouseEvent->state()
+		& (Qt::ShiftButton | Qt::ControlButton));
+	const QPoint& pos = pMouseEvent->pos();
+
+	// We need a session and a location...
+	qtractorSession *pSession = m_pTracks->session();
+	if (pSession) {
+		// Direct snap positioning...
+		unsigned long iFrame = pSession->frameSnap(
+			pSession->frameFromPixel(pos.x() > 0 ? pos.x() : 0));
+		// Which button is being pressed?
+		switch (pMouseEvent->button()) {
+		case Qt::LeftButton:
+			// Remember what and where we'll be dragging/selecting...
+			m_dragState = DragStart;
+			m_posDrag   = pos;
+			m_pClipDrag = clipAt(m_posDrag, &m_rectDrag);
+			// Should it be selected(toggled)?
+			if (m_pClipDrag) {
+				QScrollView::setCursor(QCursor(Qt::PointingHandCursor));
+				const bool bSelect = !m_pClipDrag->isClipSelected();
+				if (bModifier) {
+					m_pClipSelect->selectClip(m_pClipDrag, m_rectDrag, bSelect);
+					updateContents(m_rectDrag.normalize());
+					m_pTracks->selectionChangeNotify();
+				} else if (bSelect) {
+					m_pClipSelect->clear();
+					m_pClipSelect->selectClip(m_pClipDrag, m_rectDrag, true);
+					updateContents();
+					m_pTracks->selectionChangeNotify();
 				}
+				// Make it right on the file view...,
+				selectClipFile(m_pClipDrag);
+				// Done, yeah.
+			} else {
+				// Direct playhead positioning...
+				if (bModifier) {
+					// First, set actual engine position...
+					pSession->setPlayHead(iFrame);
+					// Playhead positioning...
+					setPlayHead(iFrame);
+					// Not quite a selection, but for
+					// immediate visual feedback...
+					m_pTracks->selectionChangeNotify();
+				}	// Clear any selection out there?
+				else selectAll(false);
 			}
+			break;
+		case Qt::MidButton:
+			if (!bModifier) {
+				// Edit cursor positioning...
+				setEditHead(iFrame);
+				setEditTail(iFrame);
+				// Not quite a selection, but some visual feedback...
+				m_pTracks->contentsChangeNotify();
+			}
+			break;
+		case Qt::RightButton:
+			if (!bModifier) {
+				// Edittail positioning...
+				setEditTail(iFrame);
+				// Not quite a selection, but some visual feedback...
+				m_pTracks->contentsChangeNotify();
+			}
+		default:
+			break;
 		}
 	}
 
