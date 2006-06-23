@@ -55,8 +55,8 @@ void qtractorFileListViewToolTip::maybeTip ( const QPoint& pos )
 	if (!rect.isValid())
 		return;
 
-	qtractorFileGroupItem *pGroupItem =
-		static_cast<qtractorFileGroupItem *>(pItem);
+	qtractorFileGroupItem *pGroupItem
+		= static_cast<qtractorFileGroupItem *> (pItem);
 	if (pGroupItem)
 		QToolTip::tip(rect, pGroupItem->toolTip());
 }
@@ -117,13 +117,13 @@ qtractorFileGroupItem *qtractorFileGroupItem::groupItem (void) const
 	QListViewItem *pParent = QListViewItem::parent();
 	while (pParent && pParent->rtti() != qtractorFileListView::GroupItem)
 		pParent = pParent->parent();
-	return static_cast<qtractorFileGroupItem *>(pParent);
+	return static_cast<qtractorFileGroupItem *> (pParent);
 }
 
 
 qtractorFileListView *qtractorFileGroupItem::listView (void) const
 {
-	return static_cast<qtractorFileListView *>(QListViewItem::listView());
+	return static_cast<qtractorFileListView *> (QListViewItem::listView());
 }
 
 
@@ -227,7 +227,7 @@ int qtractorFileChannelItem::rtti (void) const
 }
 
 
-// Filoe chhannel accessor.
+// File channel accessor.
 unsigned short qtractorFileChannelItem::channel (void) const
 {
 	return m_iChannel;
@@ -382,15 +382,38 @@ qtractorFileGroupItem *qtractorFileListView::addGroupItem (
 
 // Make as current selection an existing file item.
 qtractorFileListItem *qtractorFileListView::selectFileItem (
-	const QString& sPath )
+	const QString& sPath, int iChannel )
 {
 	qtractorFileListItem *pFileItem = findFileItem(sPath);
-	if (pFileItem) {
-		qtractorFileGroupItem *pGroupItem = pFileItem->groupItem();
-		if (pGroupItem)
-			pGroupItem->setOpen(true);
-		QListView::setSelected(pFileItem, true);
+	if (pFileItem == NULL)
+		return NULL;
+
+	// Shall we go deep further intto a channel item?
+	if (iChannel > 0) {
+		// Open file item...
+		pFileItem->setOpen(true);
+		// Select channel item...
+		for (QListViewItem *pItem = pFileItem->firstChild();
+			pItem; pItem = pItem->nextSibling()) {
+			if (pItem->rtti() == qtractorFileListView::ChannelItem) {
+				qtractorFileChannelItem *pChannelItem
+					= static_cast<qtractorFileChannelItem *> (pItem);
+				if (pChannelItem && pChannelItem->channel() == iChannel) {
+					QListView::setSelected(pChannelItem, true);
+					// Done.
+					return pFileItem;
+				}
+			}
+		}
 	}
+
+	// Open file group, if any...
+	qtractorFileGroupItem *pGroupItem = pFileItem->groupItem();
+	if (pGroupItem)
+		pGroupItem->setOpen(true);
+
+	// Nothing else than select file item...
+	QListView::setSelected(pFileItem, true);
 
 	return pFileItem;
 }
@@ -400,7 +423,7 @@ qtractorFileListItem *qtractorFileListView::selectFileItem (
 qtractorFileGroupItem *qtractorFileListView::findGroupItem (
 	const QString& sName ) const
 {
-	return static_cast<qtractorFileGroupItem *>(findItem(GroupItem, sName));
+	return static_cast<qtractorFileGroupItem *> (findItem(GroupItem, sName));
 }
 
 
@@ -408,7 +431,7 @@ qtractorFileGroupItem *qtractorFileListView::findGroupItem (
 qtractorFileListItem *qtractorFileListView::findFileItem (
 	const QString& sPath ) const
 {
-	return static_cast<qtractorFileListItem *>(findItem(FileItem, sPath));
+	return static_cast<qtractorFileListItem *> (findItem(FileItem, sPath));
 }
 
 
@@ -428,8 +451,8 @@ QListViewItem *qtractorFileListView::findItem (
 					break;
 				}
 				case qtractorFileListView::FileItem: {
-					qtractorFileListItem *pFileItem =
-						static_cast<qtractorFileListItem *>(pItem);
+					qtractorFileListItem *pFileItem
+						= static_cast<qtractorFileListItem *> (pItem);
 					if (pFileItem && pFileItem->path() == sText)
 						return pItem;
 					break;
@@ -543,8 +566,8 @@ void qtractorFileListView::selectionChangedSlot (void)
 void qtractorFileListView::activatedSlot ( QListViewItem *pItem )
 {
 	if (pItem && pItem->rtti() == FileItem) {
-		qtractorFileListItem *pFileItem =
-			static_cast<qtractorFileListItem *> (pItem);
+		qtractorFileListItem *pFileItem
+			= static_cast<qtractorFileListItem *> (pItem);
 		if (pFileItem)
 			emit activated(pFileItem->path());
 	}
@@ -620,8 +643,8 @@ QDragObject *qtractorFileListView::dragObject (void)
 				break;
 			}
 			case FileItem: {
-				qtractorFileListItem *pFileItem =
-					static_cast<qtractorFileListItem *>(pItem);
+				qtractorFileListItem *pFileItem
+					= static_cast<qtractorFileListItem *> (pItem);
 				if (pFileItem) {
 					QUriDrag *pUriDrag = new QUriDrag(this);
 					pUriDrag->setFileNames(pFileItem->path());
@@ -630,10 +653,10 @@ QDragObject *qtractorFileListView::dragObject (void)
 				break;
 			}
 			case ChannelItem: {
-				qtractorFileListItem *pFileItem =
-					static_cast<qtractorFileListItem *>(pItem->parent());
-				qtractorFileChannelItem *pChannelItem =
-					static_cast<qtractorFileChannelItem *>(pItem);
+				qtractorFileListItem *pFileItem
+					= static_cast<qtractorFileListItem *> (pItem->parent());
+				qtractorFileChannelItem *pChannelItem
+					= static_cast<qtractorFileChannelItem *> (pItem);
 				if (pFileItem && pChannelItem) {
 					pDragObject = new qtractorFileChannelDrag(
 						pFileItem->path(), pChannelItem->channel(), this);

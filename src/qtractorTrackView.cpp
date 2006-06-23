@@ -706,7 +706,7 @@ qtractorTrack *qtractorTrackView::dragMoveTrack ( const QPoint& pos )
 	if (x + dx < 0)
 		dx = -(x);	// Force to origin (x=0).
 	m_iDraggingX = (m_pTracks->session()->pixelSnap(x + dx) - x);
-	QScrollView::ensureVisible(pos.x(), pos.y(), 8, 8);
+	QScrollView::ensureVisible(pos.x(), pos.y(), 16, 16);
 
 	showClipSelect();
 
@@ -737,7 +737,7 @@ qtractorTrack *qtractorTrackView::dragDropTrack ( QDropEvent *pDropEvent )
 		if (x + dx < 0)
 			dx = -(x);	// Force to origin (x=0).
 		m_iDraggingX = (pSession->pixelSnap(x + dx) - x);
-		QScrollView::ensureVisible(pos.x(), pos.y(), 8, 8);
+		QScrollView::ensureVisible(pos.x(), pos.y(), 16, 16);
 		showDropRects();
 		// OK, we've moved it...
 		return pTrack;
@@ -1089,7 +1089,7 @@ void qtractorTrackView::contentsMouseMoveEvent ( QMouseEvent *pMouseEvent )
 	case DragSelect:
 		hideDragRect(m_rectDrag);
 		m_rectDrag.setBottomRight(pos);
-		QScrollView::ensureVisible(pos.x(), pos.y(), 8, 8);
+		QScrollView::ensureVisible(pos.x(), pos.y(), 16, 16);
 		showDragRect(m_rectDrag, 1);
 		break;
 	case DragStart:
@@ -1218,12 +1218,16 @@ void qtractorTrackView::selectClipFile ( qtractorClip *pClip ) const
 		qtractorMidiClip *pMidiClip
 			= static_cast<qtractorMidiClip *> (pClip);
 		if (pMidiClip)
-			pFiles->selectMidiFile(pMidiClip->filename());
+			pFiles->selectMidiFile(
+				pMidiClip->filename(), pMidiClip->trackChannel());
 		break;
 	}
 	default:
 		break;
 	}
+
+	// Make sure we've focus back...
+	QScrollView::setFocus();
 }
 
 

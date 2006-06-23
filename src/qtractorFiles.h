@@ -63,7 +63,7 @@ public:
 
 	// File selection Convenience helper methods.
 	void selectAudioFile (const QString& sFilename);
-	void selectMidiFile  (const QString& sFilename);
+	void selectMidiFile  (const QString& sFilename, int iTrackChannel);
 
 private:
 

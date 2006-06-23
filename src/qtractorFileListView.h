@@ -76,7 +76,7 @@ public:
 	qtractorFileGroupItem(qtractorFileGroupItem *pGroupItem,
 		const QString& sName);
 	// Default destructor.
-	virtual ~qtractorFileGroupItem();
+	~qtractorFileGroupItem();
 
 	// Instance accessors.
 	void setName(const QString& sName);
@@ -86,13 +86,13 @@ public:
 	qtractorFileGroupItem *groupItem() const;
 
 	// To show up whether its open or not.
-	virtual void setOpen(bool bOpen);
+	void setOpen(bool bOpen);
 
 	// To virtually distinguish between list view items.
-	virtual int rtti() const;
+	int rtti() const;
 
 	// Virtual tooltip renderer.
-	virtual QString toolTip() const;
+	QString toolTip() const;
 };
 
 
@@ -110,10 +110,10 @@ public:
 	qtractorFileListItem(qtractorFileGroupItem *pGroupItem,
 		const QString& sPath);
 	// Default destructor.
-	virtual ~qtractorFileListItem();
+	~qtractorFileListItem();
 
 	// To virtually distinguish between list view items.
-	virtual int rtti() const;
+	int rtti() const;
 
 	// Full path accessor.
 	const QString& path() const;
@@ -137,10 +137,10 @@ public:
 	qtractorFileChannelItem(qtractorFileListItem *pFileItem,
 		const QString& sName, unsigned short iChannel);
 	// Default destructor.
-	virtual ~qtractorFileChannelItem();
+	~qtractorFileChannelItem();
 
 	// To virtually distinguish between list view items.
-	virtual int rtti() const;
+	int rtti() const;
 
 	// Filoe chhannel accessor.
 	unsigned short channel() const;
@@ -203,7 +203,8 @@ public:
 	qtractorFileListItem  *findFileItem(const QString& sPath) const;
 
 	// Make as current selection an existing file item.
-	qtractorFileListItem *selectFileItem(const QString& sPath);
+	qtractorFileListItem *selectFileItem(const QString& sPath,
+		int iChannel = -1);
 
 	// Auto-open timer methods.
 	void setAutoOpenTimeout(int iAutoOpenTimeout);

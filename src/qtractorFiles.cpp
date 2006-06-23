@@ -122,10 +122,11 @@ void qtractorFiles::selectAudioFile  ( const QString& sFilename )
 
 
 // MIDI file selection convenience method.
-void qtractorFiles::selectMidiFile  ( const QString& sFilename )
+void qtractorFiles::selectMidiFile  ( const QString& sFilename,
+	int iTrackChannel )
 {
 	m_pTabWidget->setCurrentPage(qtractorFiles::Midi);
-	m_pMidiListView->selectFileItem(sFilename);
+	m_pMidiListView->selectFileItem(sFilename, iTrackChannel);
 }
 
 
