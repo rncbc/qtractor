@@ -74,8 +74,8 @@ qtractorTracks::qtractorTracks ( qtractorMainForm *pMainForm,
 
 	QSplitter::setResizeMode(m_pTrackList, QSplitter::KeepSize);
 	QSplitter::setHandleWidth(2);
-	QWidget::setIcon(QPixmap::fromMimeSource("qtractorTracks.png"));
-	QWidget::setCaption(tr("Tracks"));
+	QSplitter::setIcon(QPixmap::fromMimeSource("qtractorTracks.png"));
+	QSplitter::setCaption(tr("Tracks"));
 
 	// Resize the left pane track list as last remembered.
 	qtractorOptions *pOptions = m_pMainForm->options();

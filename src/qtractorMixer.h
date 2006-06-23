@@ -25,6 +25,7 @@
 #include "qtractorEngine.h"
 
 #include <qdockwindow.h>
+#include <qscrollview.h>
 #include <qptrlist.h>
 #include <qframe.h>
 
@@ -149,15 +150,14 @@ private:
 //----------------------------------------------------------------------------
 // qtractorMixerRack -- Mixer strip rack.
 
-class qtractorMixerRack : public QWidget
+class qtractorMixerRack : public QScrollView
 {
 	Q_OBJECT
 
 public:
 
 	// Constructor.
-	qtractorMixerRack(qtractorMixer *pMixer, const QString& sName,
-		int iAlignment = Qt::AlignLeft);
+	qtractorMixerRack(qtractorMixer *pMixer, const QString& sName);
 	// Default destructor.
 	~qtractorMixerRack();
 
@@ -205,6 +205,9 @@ signals:
 
 protected:
 
+	// Resize event handler.
+	void resizeEvent(QResizeEvent *pResizeEvent);
+
 	// Context menu request event handler.
 	void contextMenuEvent(QContextMenuEvent *);
 
@@ -217,9 +220,7 @@ private:
 	QString m_sName;
 	
 	// Layout widgets.
-	QHBoxLayout *m_pRackLayout;
-	QHBox       *m_pStripHBox;
-	QSpacerItem *m_pStripSpacer;
+	QHBox *m_pStripHBox;
 
 	// The Strips list.
 	QPtrList<qtractorMixerStrip> m_strips;

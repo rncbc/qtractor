@@ -472,26 +472,19 @@ void qtractorMixerStrip::gainChangedSlot ( float fGain )
 // qtractorMixerRack -- Meter bridge rack.
 
 // Constructor.
-qtractorMixerRack::qtractorMixerRack ( qtractorMixer *pMixer,
-	const QString& sName, int iAlignment )
-	: QWidget(pMixer->splitter()), m_pMixer(pMixer), m_sName(sName),
+qtractorMixerRack::qtractorMixerRack (
+	qtractorMixer *pMixer, const QString& sName)
+	: QScrollView(pMixer->splitter()), m_pMixer(pMixer), m_sName(sName),
 		m_bSelectEnabled(false), m_pSelectedStrip(NULL)
 {
 	m_strips.setAutoDelete(true);
 
-	QWidget::setPaletteBackgroundColor(Qt::darkGray);
-	
-	m_pRackLayout  = new QHBoxLayout(this, 0, 0);
-	m_pStripSpacer = new QSpacerItem(10000, 0, QSizePolicy::Expanding);
-
-	if (iAlignment & Qt::AlignRight)
-		m_pRackLayout->addItem(m_pStripSpacer);
-
 	m_pStripHBox = new QHBox(this);
-	m_pRackLayout->addWidget(m_pStripHBox);
+	QScrollView::addChild(m_pStripHBox);
 
-	if (iAlignment & Qt::AlignLeft)
-		m_pRackLayout->addItem(m_pStripSpacer);
+//	QScrollView::setPaletteBackgroundColor(Qt::darkGray);
+//	QScrollView::setHScrollBarMode(QScrollView::AlwaysOn);
+	QScrollView::setVScrollBarMode(QScrollView::AlwaysOff);
 }
 
 
@@ -643,6 +636,16 @@ void qtractorMixerRack::cleanStrips ( int iMark )
 }
 
 
+// Resize event handler.
+void qtractorMixerRack::resizeEvent ( QResizeEvent *pResizeEvent )
+{
+	QScrollView::resizeEvent(pResizeEvent);
+
+	m_pStripHBox->setFixedHeight(QScrollView::viewport()->height());
+}
+
+
+
 // Context menu request event handler.
 void qtractorMixerRack::contextMenuEvent ( QContextMenuEvent *pContextMenuEvent )
 {
@@ -663,20 +666,25 @@ qtractorMixer::qtractorMixer ( qtractorMainForm *pMainForm )
 
 	m_pSplitter = new QSplitter(Qt::Horizontal, this, "MixerSplitter");
 	m_pSplitter->setChildrenCollapsible(false);
+	m_pSplitter->setOpaqueResize(false);
+	m_pSplitter->setHandleWidth(2);
 
 	m_pInputRack  = new qtractorMixerRack(this, tr("Inputs"));
 	m_pTrackRack  = new qtractorMixerRack(this, tr("Tracks"));
 	m_pTrackRack->setSelectEnabled(true);
-	m_pOutputRack = new qtractorMixerRack(this, tr("Outputs"), Qt::AlignRight);
-	
+	m_pOutputRack = new qtractorMixerRack(this, tr("Outputs"));
+
+	m_pSplitter->setResizeMode(m_pInputRack,  QSplitter::KeepSize);
+	m_pSplitter->setResizeMode(m_pOutputRack, QSplitter::KeepSize);
+
 	// Prepare the dockable window stuff.
 	QDockWindow::setWidget(m_pSplitter);
 	QDockWindow::setOrientation(Qt::Horizontal);
 	QDockWindow::setCloseMode(QDockWindow::Always);
 	QDockWindow::setResizeEnabled(true);
 	// Some specialties to this kind of dock window...
-	QDockWindow::setFixedExtentHeight(120);
-	QDockWindow::setFixedExtentWidth(240);
+	QDockWindow::setFixedExtentHeight(140);
+	QDockWindow::setFixedExtentWidth(440);
 
 	// Finally set the default caption and tooltip.
 	QString sCaption = tr("Mixer");
@@ -687,9 +695,9 @@ qtractorMixer::qtractorMixer ( qtractorMainForm *pMainForm )
 	// Get previously saved splitter sizes,
 	// (with afair default...)
 	QValueList<int> sizes;
-	sizes.append(0);
-	sizes.append(120);
-	sizes.append(0);
+	sizes.append(140);
+	sizes.append(160);
+	sizes.append(140);
 	m_pMainForm->options()->loadSplitterSizes(m_pSplitter, sizes);
 }
 
