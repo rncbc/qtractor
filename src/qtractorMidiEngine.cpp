@@ -1627,6 +1627,9 @@ int qtractorMidiBus::updateConnects ( qtractorBus::BusMode busMode,
 	if (!bConnect)
 		return 0;
 
+	snd_seq_port_subscribe_t *pPortSubs;
+	snd_seq_port_subscribe_alloca(&pPortSubs);
+
 	// For each (remaining) connection, try...
 	int iUpdate = 0;
 	for (ConnectItem *pItem = connects.first();
@@ -1637,17 +1640,17 @@ int qtractorMidiBus::updateConnects ( qtractorBus::BusMode busMode,
 		if (busMode == qtractorBus::Input) {
 			seq_addr.client = iAlsaClient;
 			seq_addr.port   = iAlsaPort;
-			snd_seq_port_subscribe_set_sender(pAlsaSubs, &seq_addr);
+			snd_seq_port_subscribe_set_sender(pPortSubs, &seq_addr);
 			seq_addr.client = pMidiEngine->alsaClient();
 			seq_addr.port   = m_iAlsaPort;
-			snd_seq_port_subscribe_set_dest(pAlsaSubs, &seq_addr);
+			snd_seq_port_subscribe_set_dest(pPortSubs, &seq_addr);
 		} else {
 			seq_addr.client = pMidiEngine->alsaClient();
 			seq_addr.port   = m_iAlsaPort;
-			snd_seq_port_subscribe_set_sender(pAlsaSubs, &seq_addr);
+			snd_seq_port_subscribe_set_sender(pPortSubs, &seq_addr);
 			seq_addr.client = iAlsaClient;
 			seq_addr.port   = iAlsaPort;
-			snd_seq_port_subscribe_set_dest(pAlsaSubs, &seq_addr);
+			snd_seq_port_subscribe_set_dest(pPortSubs, &seq_addr);
 		}
 #ifdef CONFIG_DEBUG
 		const QString sPortName	= QString::number(m_iAlsaPort) + ':' + busName();
@@ -1656,7 +1659,7 @@ int qtractorMidiBus::updateConnects ( qtractorBus::BusMode busMode,
 				pMidiEngine->alsaClient(), sPortName.latin1(),
 				iAlsaClient, pItem->portName.latin1());
 #endif
-		if (snd_seq_subscribe_port(pMidiEngine->alsaSeq(), pAlsaSubs) == 0)
+		if (snd_seq_subscribe_port(pMidiEngine->alsaSeq(), pPortSubs) == 0)
 			iUpdate++;
 	}
 
