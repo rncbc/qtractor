@@ -337,6 +337,16 @@ void qtractorTrackTime::contentsMousePressEvent ( QMouseEvent *pMouseEvent )
 				QScrollView::setCursor(QCursor(Qt::SizeHorCursor));
 			}
 			break;
+		case Qt::MidButton:
+			// Mid-butoon indirect positioning...
+			if (!bModifier) {
+				// Edit-tail positioning...
+				m_pTracks->trackView()->setEditHead(iFrame);
+				m_pTracks->trackView()->setEditTail(iFrame);
+				// Logical contents changed, just for visual feedback...
+				m_pTracks->contentsChangeNotify();
+			}
+			// Fall thru...
 		case Qt::RightButton:
 			// Right-butoon indirect positioning...
 			if (!bModifier) {
