@@ -476,7 +476,7 @@ bool qtractorAudioEngine::loadElement ( qtractorSessionDocument *pDocument,
 					if (pAudioBus->monitor_in())
 						pAudioBus->monitor_in()->setPanning(
 							eProp.text().toFloat());
-				} else if (eProp.tagName() == "input-connections") {
+				} else if (eProp.tagName() == "input-connects") {
 					pAudioBus->loadConnects(
 						pAudioBus->inputs(), pDocument, &eProp);
 				} else if (eProp.tagName() == "output-gain") {
@@ -487,7 +487,7 @@ bool qtractorAudioEngine::loadElement ( qtractorSessionDocument *pDocument,
 					if (pAudioBus->monitor_out())
 						pAudioBus->monitor_out()->setGain(
 							eProp.text().toFloat());
-				} else if (eProp.tagName() == "output-connections") {
+				} else if (eProp.tagName() == "output-connects") {
 					pAudioBus->loadConnects(
 						pAudioBus->outputs(), pDocument, &eProp);
 				}
@@ -528,7 +528,7 @@ bool qtractorAudioEngine::saveElement ( qtractorSessionDocument *pDocument,
 					QString::number(pAudioBus->monitor_in()->panning()),
 						&eAudioBus);
 				QDomElement eAudioInputs
-					= pDocument->document()->createElement("input-connections");
+					= pDocument->document()->createElement("input-connects");
 				qtractorBus::ConnectList inputs;
 				pAudioBus->updateConnects(qtractorBus::Input, inputs);
 				pAudioBus->saveConnects(inputs, pDocument, &eAudioInputs);
@@ -542,7 +542,7 @@ bool qtractorAudioEngine::saveElement ( qtractorSessionDocument *pDocument,
 					QString::number(pAudioBus->monitor_out()->panning()),
 						&eAudioBus);
 				QDomElement eAudioOutputs
-					= pDocument->document()->createElement("output-connections");
+					= pDocument->document()->createElement("output-connects");
 				qtractorBus::ConnectList outputs;
 				pAudioBus->updateConnects(qtractorBus::Output, outputs);
 				pAudioBus->saveConnects(outputs, pDocument, &eAudioOutputs);
@@ -931,6 +931,8 @@ int qtractorAudioBus::updateConnects ( qtractorBus::BusMode busMode,
 	// Modes must match, at least...
 	if ((busMode & qtractorAudioBus::busMode()) == 0)
 		return 0;
+	if (bConnect && connects.isEmpty())
+		return 0;
 
 	// Which kind of ports?
 	jack_port_t **ppPorts
@@ -953,10 +955,10 @@ int qtractorAudioBus::updateConnects ( qtractorBus::BusMode busMode,
 				item.clientName = sClientPort.section(':', 0, 0);
 				item.portName   = sClientPort.section(':', 1, 1);
 				ConnectItem *pItem = connects.find(item);
-				if (pItem == NULL)
-					connects.append(new ConnectItem(item));
-				else if (bConnect)
+				if (pItem && bConnect)
 					connects.remove(pItem);
+				else if (!bConnect)
+					connects.append(new ConnectItem(item));
 				iClientPort++;
 			}
 			::free(ppszClientPorts);
@@ -995,8 +997,10 @@ int qtractorAudioBus::updateConnects ( qtractorBus::BusMode busMode,
 #endif
 		// Do it...
 		if (jack_connect(pAudioEngine->jackClient(),
-				sOutputPort.latin1(), sInputPort.latin1()) == 0)
+				sOutputPort.latin1(), sInputPort.latin1()) == 0) {
+			connects.remove(pItem);
 			iUpdate++;
+		}
 	}
 	
 	// Done.

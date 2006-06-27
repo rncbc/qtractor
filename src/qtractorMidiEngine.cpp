@@ -1149,7 +1149,7 @@ bool qtractorMidiEngine::loadElement ( qtractorSessionDocument *pDocument,
 					if (pMidiBus->monitor_in())
 						pMidiBus->monitor_in()->setPanning(
 							eProp.text().toFloat());
-				} else if (eProp.tagName() == "input-connections") {
+				} else if (eProp.tagName() == "input-connects") {
 					pMidiBus->loadConnects(
 						pMidiBus->inputs(), pDocument, &eProp);
 				} else if (eProp.tagName() == "output-gain") {
@@ -1160,7 +1160,7 @@ bool qtractorMidiEngine::loadElement ( qtractorSessionDocument *pDocument,
 					if (pMidiBus->monitor_out())
 						pMidiBus->monitor_out()->setGain(
 							eProp.text().toFloat());
-				} else if (eProp.tagName() == "output-connections") {
+				} else if (eProp.tagName() == "output-connects") {
 					pMidiBus->loadConnects(
 						pMidiBus->outputs(), pDocument, &eProp);
 				}
@@ -1197,7 +1197,7 @@ bool qtractorMidiEngine::saveElement ( qtractorSessionDocument *pDocument,
 					QString::number(pMidiBus->monitor_in()->panning()),
 						&eMidiBus);
 				QDomElement eMidiInputs
-					= pDocument->document()->createElement("input-connections");
+					= pDocument->document()->createElement("input-connects");
 				qtractorBus::ConnectList inputs;
 				pMidiBus->updateConnects(qtractorBus::Input, inputs);
 				pMidiBus->saveConnects(inputs, pDocument, &eMidiInputs);
@@ -1211,7 +1211,7 @@ bool qtractorMidiEngine::saveElement ( qtractorSessionDocument *pDocument,
 					QString::number(pMidiBus->monitor_out()->panning()),
 						&eMidiBus);
 				QDomElement eMidiOutputs
-					= pDocument->document()->createElement("output-connections");
+					= pDocument->document()->createElement("output-connects");
 				qtractorBus::ConnectList outputs;
 				pMidiBus->updateConnects(qtractorBus::Output, outputs);
 				pMidiBus->saveConnects(outputs, pDocument, &eMidiOutputs);
@@ -1573,11 +1573,13 @@ int qtractorMidiBus::updateConnects ( qtractorBus::BusMode busMode,
 	// Modes must match, at least...
 	if ((busMode & qtractorMidiBus::busMode()) == 0)
 		return 0;
+	if (bConnect && connects.isEmpty())
+		return 0;
 
 	// Which kind of subscription?
 	snd_seq_query_subs_type_t subs_type
 		= (busMode == qtractorBus::Input ?
-			SND_SEQ_QUERY_SUBS_READ : SND_SEQ_QUERY_SUBS_WRITE);
+			SND_SEQ_QUERY_SUBS_WRITE : SND_SEQ_QUERY_SUBS_READ);
 
 	snd_seq_query_subscribe_t *pAlsaSubs;
 	snd_seq_addr_t seq_addr;
@@ -1614,10 +1616,10 @@ int qtractorMidiBus::updateConnects ( qtractorBus::BusMode busMode,
 		item.portName += snd_seq_port_info_get_name(pPortInfo);
 		// Check if already in list/connected...
 		ConnectItem *pItem = connects.find(item);
-		if (pItem == NULL)
-			connects.append(new ConnectItem(item));
-		else if (bConnect)
+		if (pItem && bConnect)
 			connects.remove(pItem);
+		else if (!bConnect)
+			connects.append(new ConnectItem(item));
 		// Fetch next connection...
 		snd_seq_query_subscribe_set_index(pAlsaSubs,
 			snd_seq_query_subscribe_get_index(pAlsaSubs) + 1);
@@ -1659,8 +1661,10 @@ int qtractorMidiBus::updateConnects ( qtractorBus::BusMode busMode,
 				pMidiEngine->alsaClient(), sPortName.latin1(),
 				iAlsaClient, pItem->portName.latin1());
 #endif
-		if (snd_seq_subscribe_port(pMidiEngine->alsaSeq(), pPortSubs) == 0)
+		if (snd_seq_subscribe_port(pMidiEngine->alsaSeq(), pPortSubs) == 0) {
+			connects.remove(pItem);
 			iUpdate++;
+		}
 	}
 
 	// Done.
