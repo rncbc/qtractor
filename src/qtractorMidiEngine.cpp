@@ -1158,7 +1158,7 @@ bool qtractorMidiEngine::loadElement ( qtractorSessionDocument *pDocument,
 							eProp.text().toFloat());
 				} else if (eProp.tagName() == "output-panning") {
 					if (pMidiBus->monitor_out())
-						pMidiBus->monitor_out()->setGain(
+						pMidiBus->monitor_out()->setPanning(
 							eProp.text().toFloat());
 				} else if (eProp.tagName() == "output-connects") {
 					pMidiBus->loadConnects(

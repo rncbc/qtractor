@@ -485,7 +485,7 @@ bool qtractorAudioEngine::loadElement ( qtractorSessionDocument *pDocument,
 							eProp.text().toFloat());
 				} else if (eProp.tagName() == "output-panning") {
 					if (pAudioBus->monitor_out())
-						pAudioBus->monitor_out()->setGain(
+						pAudioBus->monitor_out()->setPanning(
 							eProp.text().toFloat());
 				} else if (eProp.tagName() == "output-connects") {
 					pAudioBus->loadConnects(
