@@ -182,6 +182,11 @@ public:
 	qtractorMidiMonitor *midiMonitor_in()  const;
 	qtractorMidiMonitor *midiMonitor_out() const;
 
+	// Retrieve/restore client:port connections.
+	// return the effective number of connection attempts.
+	int updateConnects(BusMode busMode,
+		ConnectList& connects, bool bConnect = false);
+
 	// MIDI master volume.
 	void setMasterVolume(float fVolume);
 	// MIDI channel volume.
@@ -190,9 +195,9 @@ public:
 	void setPanning(unsigned short iChannel, float fPanning);
 
 	// Document element methods.
-	bool loadElement(qtractorSessionDocument *pDocument,
+	bool loadMidiMap(qtractorSessionDocument *pDocument,
 		QDomElement *pElement);
-	bool saveElement(qtractorSessionDocument *pDocument,
+	bool saveMidiMap(qtractorSessionDocument *pDocument,
 		QDomElement *pElement);
 
 protected:

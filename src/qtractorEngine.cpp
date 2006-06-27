@@ -22,6 +22,7 @@
 #include "qtractorEngine.h"
 
 #include "qtractorSessionCursor.h"
+#include "qtractorSessionDocument.h"
 
 
 //----------------------------------------------------------------------
@@ -212,6 +213,33 @@ bool qtractorEngine::isPlaying(void) const
 }
 
 
+// Retrieve/restore all connections, on all bussess.
+// return the total number of effective (re)connection attempts...
+int qtractorEngine::updateConnects ( bool bConnect )
+{
+	// It mus be activated, sure...
+	if (!isActivated())
+		return 0;
+
+	// On all dependable busses...
+	int iUpdate = 0;
+	for (qtractorBus *pBus = m_busses.first(); pBus; pBus = pBus->next()) {
+		// Input connections...
+		if (pBus->busMode() & qtractorBus::Input) {
+			iUpdate += pBus->updateConnects(qtractorBus::Input,
+				pBus->inputs(), bConnect);
+		}
+		// Output connections...
+		if (pBus->busMode() & qtractorBus::Output) {
+			iUpdate += pBus->updateConnects(qtractorBus::Output,
+				pBus->outputs(), bConnect);
+		}
+	}
+
+	// Done.
+	return iUpdate;
+}
+
 
 //----------------------------------------------------------------------
 // class qtractorBus -- Managed ALSA sequencer port set
@@ -269,6 +297,63 @@ void qtractorBus::setBusMode ( qtractorBus::BusMode busMode )
 qtractorBus::BusMode qtractorBus::busMode (void) const
 {
 	return m_busMode;
+}
+
+
+// Document element methods.
+bool qtractorBus::loadConnects ( ConnectList& connects,
+	qtractorSessionDocument * /*pDocument*/, QDomElement *pElement )
+{
+	connects.clear();
+
+	// Load map items...
+	for (QDomNode nChild = pElement->firstChild();
+			!nChild.isNull();
+				nChild = nChild.nextSibling()) {
+
+		// Convert node to element...
+		QDomElement eChild = nChild.toElement();
+		if (eChild.isNull())
+			continue;
+
+		// Load (other) track properties..
+		if (eChild.tagName() == "connect") {
+			ConnectItem *pItem = new ConnectItem;
+			pItem->index = eChild.attribute("index").toUShort();
+			for (QDomNode nConnect = eChild.firstChild();
+					!nConnect.isNull();
+						nConnect = nConnect.nextSibling()) {
+				// Convert connect node to element...
+				QDomElement eConnect = nConnect.toElement();
+				if (eConnect.isNull())
+					continue;
+				// Add this one to map...
+				if (eConnect.tagName() == "client")
+					pItem->clientName = eConnect.text();
+				else
+				if (eConnect.tagName() == "port")
+					pItem->portName = eConnect.text();
+			}
+			connects.append(pItem);
+		}
+	}
+
+	return true;
+}
+
+bool qtractorBus::saveConnects ( ConnectList& connects,
+	qtractorSessionDocument *pDocument,	QDomElement *pElement )
+{
+	// Save connect items...
+	for (ConnectItem *pItem = connects.first();	pItem; pItem = connects.next()) {
+		QDomElement eItem = pDocument->document()->createElement("connect");
+		eItem.setAttribute("index", QString::number(pItem->index));
+		pDocument->saveTextElement("client", pItem->clientName, &eItem);
+		pDocument->saveTextElement("port", pItem->portName, &eItem);
+		pElement->appendChild(eItem);
+	}
+
+	return true;
 }
 
 

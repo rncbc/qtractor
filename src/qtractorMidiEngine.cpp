@@ -1126,10 +1126,6 @@ bool qtractorMidiEngine::loadElement ( qtractorSessionDocument *pDocument,
 
 		if (eChild.tagName() == "midi-bus") {
 			QString sBusName = eChild.attribute("name");
-			float fIGain     = 1.0f;
-			float fOGain     = 1.0f;
-			float fIPanning  = 0.0f;
-			float fOPanning  = 0.0f;
 			qtractorMidiBus::BusMode busMode
 				= pDocument->loadBusMode(eChild.attribute("mode"));
 			qtractorMidiBus *pMidiBus
@@ -1143,24 +1139,31 @@ bool qtractorMidiEngine::loadElement ( qtractorSessionDocument *pDocument,
 				if (eProp.isNull())
 					continue;
 				// Load map elements (non-critical)...
-				if (eProp.tagName() == "midi-map")
-					pMidiBus->loadElement(pDocument, &eProp);
-				else if (eProp.tagName() == "input-gain")
-					fIGain = eProp.text().toFloat();
-				else if (eProp.tagName() == "input-panning")
-					fIPanning = eProp.text().toFloat();
-				else if (eProp.tagName() == "output-gain")
-					fOGain = eProp.text().toFloat();
-				else if (eProp.tagName() == "output-panning")
-					fOPanning = eProp.text().toFloat();
-			}
-			if (busMode & qtractorBus::Input) {
-				pMidiBus->monitor_in()->setGain(fIGain);
-				pMidiBus->monitor_in()->setPanning(fIPanning);
-			}
-			if (busMode & qtractorBus::Output) {
-				pMidiBus->monitor_out()->setGain(fOGain);
-				pMidiBus->monitor_out()->setPanning(fOPanning);
+				if (eProp.tagName() == "midi-map") {
+					pMidiBus->loadMidiMap(pDocument, &eProp);
+				} else if (eProp.tagName() == "input-gain") {
+					if (pMidiBus->monitor_in())
+						pMidiBus->monitor_in()->setGain(
+							eProp.text().toFloat());
+				} else if (eProp.tagName() == "input-panning") {
+					if (pMidiBus->monitor_in())
+						pMidiBus->monitor_in()->setPanning(
+							eProp.text().toFloat());
+				} else if (eProp.tagName() == "input-connections") {
+					pMidiBus->loadConnects(
+						pMidiBus->inputs(), pDocument, &eProp);
+				} else if (eProp.tagName() == "output-gain") {
+					if (pMidiBus->monitor_out())
+						pMidiBus->monitor_out()->setGain(
+							eProp.text().toFloat());
+				} else if (eProp.tagName() == "output-panning") {
+					if (pMidiBus->monitor_out())
+						pMidiBus->monitor_out()->setGain(
+							eProp.text().toFloat());
+				} else if (eProp.tagName() == "output-connections") {
+					pMidiBus->loadConnects(
+						pMidiBus->outputs(), pDocument, &eProp);
+				}
 			}
 			qtractorMidiEngine::addBus(pMidiBus);
 		}
@@ -1193,6 +1196,12 @@ bool qtractorMidiEngine::saveElement ( qtractorSessionDocument *pDocument,
 				pDocument->saveTextElement("input-panning",
 					QString::number(pMidiBus->monitor_in()->panning()),
 						&eMidiBus);
+				QDomElement eMidiInputs
+					= pDocument->document()->createElement("input-connections");
+				qtractorBus::ConnectList inputs;
+				pMidiBus->updateConnects(qtractorBus::Input, inputs);
+				pMidiBus->saveConnects(inputs, pDocument, &eMidiInputs);
+				eMidiBus.appendChild(eMidiInputs);
 			}
 			if (pMidiBus->busMode() & qtractorBus::Output) {
 				pDocument->saveTextElement("output-gain",
@@ -1201,11 +1210,17 @@ bool qtractorMidiEngine::saveElement ( qtractorSessionDocument *pDocument,
 				pDocument->saveTextElement("output-panning",
 					QString::number(pMidiBus->monitor_out()->panning()),
 						&eMidiBus);
+				QDomElement eMidiOutputs
+					= pDocument->document()->createElement("output-connections");
+				qtractorBus::ConnectList outputs;
+				pMidiBus->updateConnects(qtractorBus::Output, outputs);
+				pMidiBus->saveConnects(outputs, pDocument, &eMidiOutputs);
+				eMidiBus.appendChild(eMidiOutputs);
 			}
 			// Create the map element...
 			QDomElement eMidiMap
 				= pDocument->document()->createElement("midi-map");
-			pMidiBus->saveElement(pDocument, &eMidiMap);
+			pMidiBus->saveMidiMap(pDocument, &eMidiMap);
 			// Add this clip...
 			eMidiBus.appendChild(eMidiMap);
 			pElement->appendChild(eMidiBus);
@@ -1545,6 +1560,111 @@ qtractorMidiMonitor *qtractorMidiBus::midiMonitor_out (void) const
 }
 
 
+// Retrive all current ALSA connections for a given bus mode interface;
+// return the effective number of connection attempts...
+int qtractorMidiBus::updateConnects ( qtractorBus::BusMode busMode,
+	ConnectList& connects, bool bConnect )
+{
+	qtractorMidiEngine *pMidiEngine
+		= static_cast<qtractorMidiEngine *> (engine());
+	if (pMidiEngine == NULL)
+		return 0;
+
+	// Modes must match, at least...
+	if ((busMode & qtractorMidiBus::busMode()) == 0)
+		return 0;
+
+	// Which kind of subscription?
+	snd_seq_query_subs_type_t subs_type
+		= (busMode == qtractorBus::Input ?
+			SND_SEQ_QUERY_SUBS_READ : SND_SEQ_QUERY_SUBS_WRITE);
+
+	snd_seq_query_subscribe_t *pAlsaSubs;
+	snd_seq_addr_t seq_addr;
+	
+	snd_seq_query_subscribe_alloca(&pAlsaSubs);
+
+	snd_seq_client_info_t *pClientInfo;
+	snd_seq_port_info_t   *pPortInfo;
+
+	snd_seq_client_info_alloca(&pClientInfo);
+	snd_seq_port_info_alloca(&pPortInfo);
+
+	ConnectItem item;
+	item.index = 0;
+
+	// Get port connections...
+	snd_seq_query_subscribe_set_type(pAlsaSubs, subs_type);
+	snd_seq_query_subscribe_set_index(pAlsaSubs, 0);
+	seq_addr.client = pMidiEngine->alsaClient();
+	seq_addr.port   = m_iAlsaPort;
+	snd_seq_query_subscribe_set_root(pAlsaSubs, &seq_addr);
+	while (snd_seq_query_port_subscribers(
+			pMidiEngine->alsaSeq(), pAlsaSubs) >= 0) {
+		seq_addr = *snd_seq_query_subscribe_get_addr(pAlsaSubs);
+		snd_seq_get_any_client_info(
+			pMidiEngine->alsaSeq(), seq_addr.client, pClientInfo);
+		item.clientName  = QString::number(seq_addr.client);
+		item.clientName += ':';
+		item.clientName += snd_seq_client_info_get_name(pClientInfo);
+		snd_seq_get_any_port_info(
+			pMidiEngine->alsaSeq(), seq_addr.client, seq_addr.port, pPortInfo);
+		item.portName  = QString::number(seq_addr.port);
+		item.portName += ':';
+		item.portName += snd_seq_port_info_get_name(pPortInfo);
+		// Check if already in list/connected...
+		ConnectItem *pItem = connects.find(item);
+		if (pItem == NULL)
+			connects.append(new ConnectItem(item));
+		else if (bConnect)
+			connects.remove(pItem);
+		// Fetch next connection...
+		snd_seq_query_subscribe_set_index(pAlsaSubs,
+			snd_seq_query_subscribe_get_index(pAlsaSubs) + 1);
+	}
+
+	// Shall we proceed for actual connections?
+	if (!bConnect)
+		return 0;
+
+	// For each (remaining) connection, try...
+	int iUpdate = 0;
+	for (ConnectItem *pItem = connects.first();
+			pItem; pItem = connects.next()) {
+		int iAlsaClient = pItem->clientName.section(':', 0, 0).toInt();
+		int iAlsaPort   = pItem->portName.section(':', 0, 0).toInt();
+		// Mangle which is output and input...
+		if (busMode == qtractorBus::Input) {
+			seq_addr.client = iAlsaClient;
+			seq_addr.port   = iAlsaPort;
+			snd_seq_port_subscribe_set_sender(pAlsaSubs, &seq_addr);
+			seq_addr.client = pMidiEngine->alsaClient();
+			seq_addr.port   = m_iAlsaPort;
+			snd_seq_port_subscribe_set_dest(pAlsaSubs, &seq_addr);
+		} else {
+			seq_addr.client = pMidiEngine->alsaClient();
+			seq_addr.port   = m_iAlsaPort;
+			snd_seq_port_subscribe_set_sender(pAlsaSubs, &seq_addr);
+			seq_addr.client = iAlsaClient;
+			seq_addr.port   = iAlsaPort;
+			snd_seq_port_subscribe_set_dest(pAlsaSubs, &seq_addr);
+		}
+#ifdef CONFIG_DEBUG
+		const QString sPortName	= QString::number(m_iAlsaPort) + ':' + busName();
+		fprintf(stderr, "qtractorMidiBus::updateConnects(%p, %d): "
+			"snd_seq_subscribe_port: [%d:%s] => [%d:%s]\n", this, (int) busMode,
+				pMidiEngine->alsaClient(), sPortName.latin1(),
+				iAlsaClient, pItem->portName.latin1());
+#endif
+		if (snd_seq_subscribe_port(pMidiEngine->alsaSeq(), pAlsaSubs) == 0)
+			iUpdate++;
+	}
+
+	// Done.
+	return iUpdate;
+}
+
+
 // MIDI master volume.
 void qtractorMidiBus::setMasterVolume ( float fVolume )
 {
@@ -1575,7 +1695,7 @@ void qtractorMidiBus::setPanning ( unsigned short iChannel, float fPanning )
 
 
 // Document element methods.
-bool qtractorMidiBus::loadElement ( qtractorSessionDocument * /* pDocument */,
+bool qtractorMidiBus::loadMidiMap ( qtractorSessionDocument * /* pDocument */,
 	QDomElement *pElement )
 {
 	m_patches.clear();
@@ -1590,7 +1710,7 @@ bool qtractorMidiBus::loadElement ( qtractorSessionDocument * /* pDocument */,
 		if (eChild.isNull())
 			continue;
 
-		// Load (other) track properties..
+		// Load map item...
 		if (eChild.tagName() == "midi-patch") {
 			unsigned short iChannel = eChild.attribute("channel").toUShort();
 			Patch& patch = m_patches[iChannel & 0x0f];
@@ -1624,7 +1744,7 @@ bool qtractorMidiBus::loadElement ( qtractorSessionDocument * /* pDocument */,
 }
 
 
-bool qtractorMidiBus::saveElement ( qtractorSessionDocument *pDocument,
+bool qtractorMidiBus::saveMidiMap ( qtractorSessionDocument *pDocument,
 	QDomElement *pElement )
 {
 	// Save map items...

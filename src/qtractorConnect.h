@@ -239,10 +239,6 @@ public:
 	// Override clear method.
 	void clear();
 
-	// Override
-	// Retrieve all cached connections from given client name.
-	QStringList connects(const QString& sClientName);
-
 	// Whether items are all open (expanded) or closed (collapsed).
 	void setOpenAll(bool bOpen);
 
@@ -402,7 +398,7 @@ public slots:
 
 	// Complete/incremental contents rebuilder;
 	// check dirty status if incremental.
-	void updateContents (bool bClear);
+	void updateContents(bool bClear);
 
 	// Incremental contents refreshner; check dirty status.
 	void refresh();

@@ -482,7 +482,7 @@ qtractorMixerRack::qtractorMixerRack (
 	m_pStripHBox = new QHBox(this);
 	QScrollView::addChild(m_pStripHBox);
 
-//	QScrollView::setPaletteBackgroundColor(Qt::darkGray);
+	QScrollView::viewport()->setPaletteBackgroundColor(Qt::darkGray);
 //	QScrollView::setHScrollBarMode(QScrollView::AlwaysOn);
 	QScrollView::setVScrollBarMode(QScrollView::AlwaysOff);
 }

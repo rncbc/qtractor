@@ -2140,6 +2140,8 @@ void qtractorMainForm::timerSlot (void)
 		m_iAudioRefreshTimer -= QTRACTOR_TIMER_MSECS;
 		if (m_iAudioRefreshTimer < QTRACTOR_TIMER_MSECS) {
 			m_iAudioRefreshTimer = 0;
+			if (m_pSession->audioEngine()->updateConnects(true) > 0)
+			    m_iAudioRefreshTimer += QTRACTOR_TIMER_DELAY;
 			if (m_pConnections)
 				m_pConnections->connectForm()->audioRefresh();
 		}
@@ -2149,6 +2151,8 @@ void qtractorMainForm::timerSlot (void)
 		m_iMidiRefreshTimer -= QTRACTOR_TIMER_MSECS;
 		if (m_iMidiRefreshTimer < QTRACTOR_TIMER_MSECS) {
 			m_iMidiRefreshTimer = 0;
+			if (m_pSession->midiEngine()->updateConnects(true) > 0)
+			    m_iMidiRefreshTimer += QTRACTOR_TIMER_DELAY;
 			if (m_pConnections)
 				m_pConnections->connectForm()->midiRefresh();
 		}

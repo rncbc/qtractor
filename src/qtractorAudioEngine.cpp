@@ -451,15 +451,11 @@ bool qtractorAudioEngine::loadElement ( qtractorSessionDocument *pDocument,
 			continue;
 
 		if (eChild.tagName() == "audio-bus") {
-			bool bAutoConnect = false;
-			unsigned short iChannels = 2;
 			QString sBusName = eChild.attribute("name");
-			float fIGain     = 1.0f;
-			float fOGain     = 1.0f;
-			float fIPanning  = 0.0f;
-			float fOPanning  = 0.0f;
 			qtractorBus::BusMode busMode
 				= pDocument->loadBusMode(eChild.attribute("mode"));
+			qtractorAudioBus *pAudioBus
+				= new qtractorAudioBus(this, sBusName, busMode);
 			for (QDomNode nProp = eChild.firstChild();
 					!nProp.isNull();
 						nProp = nProp.nextSibling()) {
@@ -467,28 +463,34 @@ bool qtractorAudioEngine::loadElement ( qtractorSessionDocument *pDocument,
 				QDomElement eProp = nProp.toElement();
 				if (eProp.isNull())
 					continue;
-				if (eProp.tagName() == "channels")
-					iChannels = eProp.text().toUShort();
-				else if (eProp.tagName() == "input-gain")
-					fIGain = eProp.text().toFloat();
-				else if (eProp.tagName() == "input-panning")
-					fIPanning = eProp.text().toFloat();
-				else if (eProp.tagName() == "output-gain")
-					fOGain = eProp.text().toFloat();
-				else if (eProp.tagName() == "output-panning")
-					fOPanning = eProp.text().toFloat();
-				else if (eProp.tagName() == "auto-connect")
-					bAutoConnect = pDocument->boolFromText(eProp.text());
-			}
-			qtractorAudioBus *pAudioBus	= new qtractorAudioBus(this,
-				sBusName, busMode, iChannels, bAutoConnect);
-			if (busMode & qtractorBus::Input) {
-				pAudioBus->monitor_in()->setGain(fIGain);
-				pAudioBus->monitor_in()->setPanning(fIPanning);
-			}
-			if (busMode & qtractorBus::Output) {
-				pAudioBus->monitor_out()->setGain(fOGain);
-				pAudioBus->monitor_out()->setPanning(fOPanning);
+				if (eProp.tagName() == "channels") {
+					pAudioBus->setChannels(eProp.text().toUShort());
+				} else if (eProp.tagName() == "auto-connect") {
+					pAudioBus->setAutoConnect(
+						pDocument->boolFromText(eProp.text()));
+				} else if (eProp.tagName() == "input-gain") {
+					if (pAudioBus->monitor_in())
+						pAudioBus->monitor_in()->setGain(
+							eProp.text().toFloat());
+				} else if (eProp.tagName() == "input-panning") {
+					if (pAudioBus->monitor_in())
+						pAudioBus->monitor_in()->setPanning(
+							eProp.text().toFloat());
+				} else if (eProp.tagName() == "input-connections") {
+					pAudioBus->loadConnects(
+						pAudioBus->inputs(), pDocument, &eProp);
+				} else if (eProp.tagName() == "output-gain") {
+					if (pAudioBus->monitor_out())
+						pAudioBus->monitor_out()->setGain(
+							eProp.text().toFloat());
+				} else if (eProp.tagName() == "output-panning") {
+					if (pAudioBus->monitor_out())
+						pAudioBus->monitor_out()->setGain(
+							eProp.text().toFloat());
+				} else if (eProp.tagName() == "output-connections") {
+					pAudioBus->loadConnects(
+						pAudioBus->outputs(), pDocument, &eProp);
+				}
 			}
 			qtractorEngine::addBus(pAudioBus);
 		}
@@ -515,8 +517,9 @@ bool qtractorAudioEngine::saveElement ( qtractorSessionDocument *pDocument,
 			eAudioBus.setAttribute("mode",
 				pDocument->saveBusMode(pAudioBus->busMode()));
 			pDocument->saveTextElement("channels",
-				QString::number(pAudioBus->channels()),
-					&eAudioBus);
+				QString::number(pAudioBus->channels()), &eAudioBus);
+			pDocument->saveTextElement("auto-connect",
+				pDocument->textFromBool(pAudioBus->isAutoConnect()), &eAudioBus);
 			if (pAudioBus->busMode() & qtractorBus::Input) {
 				pDocument->saveTextElement("input-gain",
 					QString::number(pAudioBus->monitor_in()->gain()),
@@ -524,6 +527,12 @@ bool qtractorAudioEngine::saveElement ( qtractorSessionDocument *pDocument,
 				pDocument->saveTextElement("input-panning",
 					QString::number(pAudioBus->monitor_in()->panning()),
 						&eAudioBus);
+				QDomElement eAudioInputs
+					= pDocument->document()->createElement("input-connections");
+				qtractorBus::ConnectList inputs;
+				pAudioBus->updateConnects(qtractorBus::Input, inputs);
+				pAudioBus->saveConnects(inputs, pDocument, &eAudioInputs);
+				eAudioBus.appendChild(eAudioInputs);
 			}
 			if (pAudioBus->busMode() & qtractorBus::Output) {
 				pDocument->saveTextElement("output-gain",
@@ -532,10 +541,13 @@ bool qtractorAudioEngine::saveElement ( qtractorSessionDocument *pDocument,
 				pDocument->saveTextElement("output-panning",
 					QString::number(pAudioBus->monitor_out()->panning()),
 						&eAudioBus);
+				QDomElement eAudioOutputs
+					= pDocument->document()->createElement("output-connections");
+				qtractorBus::ConnectList outputs;
+				pAudioBus->updateConnects(qtractorBus::Output, outputs);
+				pAudioBus->saveConnects(outputs, pDocument, &eAudioOutputs);
+				eAudioBus.appendChild(eAudioOutputs);
 			}
-			pDocument->saveTextElement("auto-connect",
-				pDocument->textFromBool(pAudioBus->isAutoConnect()),
-					&eAudioBus);
 			pElement->appendChild(eAudioBus);
 		}
 	}
@@ -903,6 +915,92 @@ qtractorAudioMonitor *qtractorAudioBus::audioMonitor_in (void) const
 qtractorAudioMonitor *qtractorAudioBus::audioMonitor_out (void) const
 {
 	return m_pOAudioMonitor;
+}
+
+
+// Retrive all current JACK connections for a given bus mode interface;
+// return the effective number of connection attempts...
+int qtractorAudioBus::updateConnects ( qtractorBus::BusMode busMode,
+	ConnectList& connects, bool bConnect )
+{
+	qtractorAudioEngine *pAudioEngine
+		= static_cast<qtractorAudioEngine *> (engine());
+	if (pAudioEngine == NULL)
+		return 0;
+
+	// Modes must match, at least...
+	if ((busMode & qtractorAudioBus::busMode()) == 0)
+		return 0;
+
+	// Which kind of ports?
+	jack_port_t **ppPorts
+		= (busMode == qtractorBus::Input ? m_ppIPorts : m_ppOPorts);
+	if (ppPorts == NULL)
+		return 0;
+
+	// For each channel...
+	ConnectItem item;
+	for (item.index = 0; item.index < m_iChannels; item.index++) {
+		// Get port connections...
+		const char **ppszClientPorts = jack_port_get_all_connections(
+			pAudioEngine->jackClient(), ppPorts[item.index]);
+		if (ppszClientPorts) {
+			// Now, for each port...
+			int iClientPort = 0;
+			while (ppszClientPorts[iClientPort]) {
+				// Check if already in list/connected...
+				const QString sClientPort = ppszClientPorts[iClientPort];
+				item.clientName = sClientPort.section(':', 0, 0);
+				item.portName   = sClientPort.section(':', 1, 1);
+				ConnectItem *pItem = connects.find(item);
+				if (pItem == NULL)
+					connects.append(new ConnectItem(item));
+				else if (bConnect)
+					connects.remove(pItem);
+				iClientPort++;
+			}
+			::free(ppszClientPorts);
+		}
+	}
+
+	// Shall we proceed for actual connections?
+	if (!bConnect)
+		return 0;
+
+	// Our client:port prefix template...
+	QString sClientPort = pAudioEngine->clientName() + ':';
+	sClientPort += busName() + '/';
+	sClientPort += (busMode == qtractorBus::Input ? "in" : "out");
+	sClientPort += "_%1";
+
+	QString sOutputPort;
+	QString sInputPort;
+
+	// For each (remaining) connection, try...
+	int iUpdate = 0;
+	for (ConnectItem *pItem = connects.first();
+			pItem; pItem = connects.next()) {
+		// Mangle which is output and input...
+		if (busMode == qtractorBus::Input) {
+			sOutputPort = pItem->clientName + ':' + pItem->portName;
+			sInputPort  = sClientPort.arg(pItem->index + 1);
+		} else {
+			sOutputPort = sClientPort.arg(pItem->index + 1);
+			sInputPort  = pItem->clientName + ':' + pItem->portName;
+		}
+#ifdef CONFIG_DEBUG
+		fprintf(stderr, "qtractorAudioBus::updateConnects(%p, %d): "
+			"jack_connect: [%s] => [%s]\n", this, (int) busMode,
+				sOutputPort.latin1(), sInputPort.latin1());
+#endif
+		// Do it...
+		if (jack_connect(pAudioEngine->jackClient(),
+				sOutputPort.latin1(), sInputPort.latin1()) == 0)
+			iUpdate++;
+	}
+	
+	// Done.
+	return iUpdate;
 }
 
 

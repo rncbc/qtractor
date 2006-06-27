@@ -24,6 +24,7 @@
 
 #include "qtractorSession.h"
 
+#include <qptrlist.h>
 
 // Forward declarations.
 class qtractorBus;
@@ -81,6 +82,10 @@ public:
 	void removeBus(qtractorBus *pBus);
 
 	qtractorBus *findBus(const QString& sBusName);
+
+	// Retrieve/restore all connections, on all bussess;
+	// return the effective number of connection attempts.
+	int updateConnects(bool bConnect = false);
 
 	// Document element methods.
 	virtual bool loadElement(qtractorSessionDocument *pDocument,
@@ -153,6 +158,49 @@ public:
 	virtual qtractorMonitor *monitor_in()  const = 0;
 	virtual qtractorMonitor *monitor_out() const = 0;
 
+	// Connection list stuff.
+	struct ConnectItem
+	{
+		unsigned short index;
+		QString clientName;
+		QString portName;
+	};
+
+	class ConnectList : public QPtrList<ConnectItem>
+	{
+	public:
+	
+		// Constructor
+		ConnectList() { setAutoDelete(true); }
+	
+		// Item finder...
+		ConnectItem *find(const ConnectItem& item)
+		{
+			for (ConnectItem *pItem = first(); pItem; pItem = next()) {
+				if (pItem->index      == item.index &&
+					pItem->clientName == item.clientName &&
+					pItem->portName   == item.portName) 
+					return pItem;
+			}
+			return NULL;
+		}
+	};
+
+	// Connection lists accessors.
+	ConnectList& inputs()  { return m_inputs;  }
+	ConnectList& outputs() { return m_outputs; }
+	
+	// Retrieve/restore client:port connections;
+	// return the effective number of connection attempts.
+	virtual int updateConnects(BusMode busMode,
+		ConnectList& connects, bool bConnect = false) = 0;
+
+	// Document element methods.
+	bool loadConnects(ConnectList& connects,
+		qtractorSessionDocument *pDocument, QDomElement *pElement);
+	bool saveConnects(ConnectList& connects,
+		qtractorSessionDocument *pDocument, QDomElement *pElement);
+
 protected:
 
 	// Bus mode change event.
@@ -165,6 +213,10 @@ private:
 
 	QString m_sBusName;
 	BusMode m_busMode;
+	
+	// Connections stuff.
+	ConnectList m_inputs;
+	ConnectList m_outputs;
 };
 
 

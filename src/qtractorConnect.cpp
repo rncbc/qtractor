@@ -574,32 +574,6 @@ bool qtractorClientListView::isPortName ( const QString& sPortName )
 }
 
 
-// Retrieve all cached connections from given client name.
-QStringList qtractorClientListView::connects ( const QString& sClientName )
-{
-	QStringList clist;
-	
-	qtractorClientListItem *pClientItem = findClientItem(sClientName);
-	if (pClientItem) {
-		QListViewItem *pListItem = pClientItem->firstChild();
-		while (pListItem && pListItem->rtti() == QTRACTOR_PORT_ITEM) {
-			qtractorPortListItem *pPortItem
-				= static_cast<qtractorPortListItem *> (pListItem);
-			if (pPortItem) {
-				qtractorPortListItem *p = pPortItem->connects().first();
-				while (p) {
-					clist.append(p->clientPortName());
-					p = pPortItem->connects().next();
-				}
-			}
-			pListItem = pListItem->nextSibling();
-		}
-	}
-
-	return clist;
-}
-
-
 // Whether items are all open (expanded) or closed (collapsed).
 void qtractorClientListView::setOpenAll ( bool bOpen )
 {

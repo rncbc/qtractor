@@ -259,8 +259,28 @@ void qtractorBusForm::selectBus (void)
 	// Just make it in current view...
 	qtractorBusListItem *pBusItem
 		= static_cast<qtractorBusListItem *> (pItem);
-	if (pBusItem)
-		showBus(pBusItem->bus());
+	if (pBusItem == NULL)
+		return;
+
+	// Check if we need an update?...
+	if (m_pBus && pBusItem->bus() != m_pBus && m_iDirtyCount > 0) {
+		switch (QMessageBox::warning(this,
+			tr("Warning") + " - " QTRACTOR_TITLE,
+			tr("Some settings have been changed.\n\n"
+			"Do you want to apply the changes?"),
+			tr("Apply"), tr("Discard"), tr("Cancel"))) {
+		case 0:     // Apply
+			updateBus();
+			break;
+		case 1:     // Discard
+			break;;
+		default:    // Cancel.
+			return;
+		}
+	}
+
+	// Get new one into view...
+	showBus(pBusItem->bus());
 }
 
 

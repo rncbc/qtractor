@@ -259,10 +259,9 @@ void qtractorConnectForm::midiStabilize (void)
 void qtractorConnectForm::updateClientsComboBox ( QComboBox *pComboBox,
 	qtractorClientListView *pClientListView, const QPixmap& pixmap )
 {
+	// Refresh client names combo box contents...
 	pComboBox->clear();
 	pComboBox->insertItem(tr("(All)"));
-
-	// Refresh client names combo box contents...
 	const QStringList& clientNames = pClientListView->clientNames();
 	QStringList::ConstIterator iter = clientNames.begin();
 	while (iter != clientNames.end())

@@ -147,6 +147,11 @@ public:
 	qtractorAudioMonitor *audioMonitor_in()  const;
 	qtractorAudioMonitor *audioMonitor_out() const;
 
+	// Retrieve/restore client:port connections;
+	// return the effective number of connection attempts...
+	int updateConnects(BusMode busMode,
+		ConnectList& connects, bool bConnect = false);
+
 protected:
 
 	// Bus mode change event.
