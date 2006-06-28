@@ -137,7 +137,7 @@ void qtractorTrack::clear (void)
 // Track open method.
 bool qtractorTrack::open (void)
 {
-	close();
+//	close();
 
 	if (m_pSession == NULL)
 		return false;

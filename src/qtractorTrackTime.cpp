@@ -374,17 +374,18 @@ void qtractorTrackTime::contentsMouseMoveEvent ( QMouseEvent *pMouseEvent )
 		const QPoint& pos = pMouseEvent->pos();
 		unsigned long iFrame = pSession->frameSnap(
 			pSession->frameFromPixel(pos.x() > 0 ? pos.x() : 0));
+		int y = m_pTracks->trackView()->contentsY();
 		switch (m_dragState) {
 		case DragSelect:
 			// Rubber-band selection...
 			drawDragSelect(m_rectDrag);	// Hide.
 			m_rectDrag.setRight(pSession->pixelSnap(pos.x()));
-			m_pTracks->trackView()->ensureVisible(pos.x(), pos.y(), 8, 8);
+			m_pTracks->trackView()->ensureVisible(pos.x(), y, 16, 0);
 			drawDragSelect(m_rectDrag);	// Show.
 			break;
 		case DragPlayHead:
 			// Play-head positioning...
-			m_pTracks->trackView()->ensureVisible(pos.x(), pos.y(), 8, 8);
+			m_pTracks->trackView()->ensureVisible(pos.x(), y, 16, 0);
 			m_pTracks->trackView()->setPlayHead(iFrame);
 			// Let the change get some immediate visual feedback...
 			m_pTracks->mainForm()->updateTransportTime(iFrame);
@@ -392,13 +393,13 @@ void qtractorTrackTime::contentsMouseMoveEvent ( QMouseEvent *pMouseEvent )
 		case DragLoopStart:
 		case DragEditHead:
 			// Edit-head positioning...
-			m_pTracks->trackView()->ensureVisible(pos.x(), pos.y(), 8, 8);
+			m_pTracks->trackView()->ensureVisible(pos.x(), y, 16, 0);
 			m_pTracks->trackView()->setEditHead(iFrame);
 			break;
 		case DragLoopEnd:
 		case DragEditTail:
 			// Edit-tail positioning...
-			m_pTracks->trackView()->ensureVisible(pos.x(), pos.y(), 8, 8);
+			m_pTracks->trackView()->ensureVisible(pos.x(), y, 16, 0);
 			m_pTracks->trackView()->setEditTail(iFrame);
 			break;
 		case DragStart:

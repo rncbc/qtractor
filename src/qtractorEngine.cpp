@@ -215,7 +215,7 @@ bool qtractorEngine::isPlaying(void) const
 
 // Retrieve/restore all connections, on all bussess.
 // return the total number of effective (re)connection attempts...
-int qtractorEngine::updateConnects ( bool bConnect )
+int qtractorEngine::updateConnects (void)
 {
 	// It mus be activated, sure...
 	if (!isActivated())
@@ -226,13 +226,13 @@ int qtractorEngine::updateConnects ( bool bConnect )
 	for (qtractorBus *pBus = m_busses.first(); pBus; pBus = pBus->next()) {
 		// Input connections...
 		if (pBus->busMode() & qtractorBus::Input) {
-			iUpdate += pBus->updateConnects(qtractorBus::Input,
-				pBus->inputs(), bConnect);
+			iUpdate += pBus->updateConnects(
+				qtractorBus::Input, pBus->inputs(), true);
 		}
 		// Output connections...
 		if (pBus->busMode() & qtractorBus::Output) {
-			iUpdate += pBus->updateConnects(qtractorBus::Output,
-				pBus->outputs(), bConnect);
+			iUpdate += pBus->updateConnects(
+				qtractorBus::Output, pBus->outputs(), true);
 		}
 	}
 

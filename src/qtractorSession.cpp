@@ -130,13 +130,21 @@ bool qtractorSession::open ( const QString& sClientName )
 	// Open all tracks (assign busses)...
 	for (qtractorTrack *pTrack = m_tracks.first();
 			pTrack; pTrack = pTrack->next()) {
-		if (!pTrack->open())
+		if (!pTrack->open()) {
+			close();
 			return false;
+		}
 	}
 	
 	//  Actually open session device engines...
-	return m_pAudioEngine->open(sClientName)
-		&& m_pMidiEngine->open(sClientName);
+	if (!m_pAudioEngine->open(sClientName) ||
+		!m_pMidiEngine->open(sClientName)) {
+		close();
+		return false;
+	}
+	
+	// Done.
+	return true;
 }
 
 

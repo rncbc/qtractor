@@ -735,15 +735,22 @@ bool qtractorMainForm::saveSession ( bool bPrompt )
 	if (m_pOptions == NULL)
 		return false;
 
+	// It must be a session name...
+	if (m_pSession->sessionName().isEmpty() && !editSession())
+		return false;
+
+	// Suggest a filename, if there's none...
 	QString sFilename = m_sFilename;
 
-	// Ask for the file to save, if there's none...
-	if (bPrompt || sFilename.isEmpty()) {
+	if (sFilename.isEmpty()) {
+		sFilename = QFileInfo(m_pOptions->sSessionDir,
+			m_pSession->sessionName()).filePath();
+		bPrompt = true;
+	}
+
+	// Ask for the file to save...
+	if (bPrompt) {
 		// If none is given, assume default directory.
-		if (sFilename.isEmpty()) {
-			sFilename = QFileInfo(m_pOptions->sSessionDir,
-				m_pSession->sessionName()).filePath();
-		}
 		// Prompt the guy...
 		sFilename = QFileDialog::getSaveFileName(
 			sFilename,                              // Start here.
@@ -773,6 +780,38 @@ bool qtractorMainForm::saveSession ( bool bPrompt )
 	// Save it right away.
 	return saveSessionFile(sFilename);
 }
+
+
+// Edit session properties.
+bool qtractorMainForm::editSession (void)
+{
+	// Session Properties...
+	qtractorSessionForm sessionForm(this);
+	sessionForm.setSession(m_pSession);
+	if (!sessionForm.exec())
+		return false;
+
+	// If currently playing, we need to do a stop and go...
+	bool bPlaying = m_pSession->isPlaying();
+	if (bPlaying)
+		m_pSession->setPlaying(false);
+
+	// Now, express the change as a undoable command...
+	m_pCommands->exec(
+		new qtractorPropertyCommand<qtractorSession::Properties> (this,
+			tr("session properties"), m_pSession->properties(),
+				sessionForm.properties()));
+
+	// Restore playback state, if needed...
+	if (bPlaying) {
+		m_pSession->setPlaying(true);
+		m_iTransport++;
+	}
+	
+	// Done.
+	return true;
+}
+
 
 
 // Close current session.
@@ -951,27 +990,7 @@ void qtractorMainForm::fileProperties (void)
 #endif
 
 	// Session Properties...
-	qtractorSessionForm sessionForm(this);
-	sessionForm.setSession(m_pSession);
-	if (!sessionForm.exec())
-		return;
-
-	// If currently playing, we need to do a stop and go...
-	bool bPlaying = m_pSession->isPlaying();
-	if (bPlaying)
-		m_pSession->setPlaying(false);
-
-	// Now, express the change as a undoable command...
-	m_pCommands->exec(
-		new qtractorPropertyCommand<qtractorSession::Properties> (this,
-			tr("session properties"), m_pSession->properties(),
-				sessionForm.properties()));
-
-	// Restore playback state, if needed...
-	if (bPlaying) {
-		m_pSession->setPlaying(true);
-		m_iTransport++;
-	}
+	editSession();
 }
 
 
@@ -1588,6 +1607,12 @@ void qtractorMainForm::transportRecord (void)
 			// Try to postpone an overall refresh...
 			m_iPeakTimer += QTRACTOR_TIMER_DELAY;
 		}
+	}	// take a chance to set a proper session name...
+	// It must be a session name...
+	else if (m_pSession->sessionName().isEmpty() && !editSession()) {
+		transportRecordAction->setOn(false);
+		stabilizeForm();
+		return;
 	}
 
 	// Finally, toggle session record status...
@@ -1864,9 +1889,11 @@ void qtractorMainForm::updateSession (void)
 	appendMessages("qtractorMainForm::updateSession()");
 #endif
 
+#if 0
 	// Stabilize session name.
 	if (m_pSession->sessionName().isEmpty())
 		m_pSession->setSessionName(QFileInfo(sessionName(m_sFilename)).baseName());
+#endif
 
 	// Initialize toolbar widgets...
 	m_pTempoSpinBox->setValueFloat(m_pSession->tempo());
@@ -2140,7 +2167,7 @@ void qtractorMainForm::timerSlot (void)
 		m_iAudioRefreshTimer -= QTRACTOR_TIMER_MSECS;
 		if (m_iAudioRefreshTimer < QTRACTOR_TIMER_MSECS) {
 			m_iAudioRefreshTimer = 0;
-			if (m_pSession->audioEngine()->updateConnects(true) == 0) {
+			if (m_pSession->audioEngine()->updateConnects() == 0) {
 				if (m_pConnections)
 					m_pConnections->connectForm()->audioRefresh();
 			}
@@ -2151,7 +2178,7 @@ void qtractorMainForm::timerSlot (void)
 		m_iMidiRefreshTimer -= QTRACTOR_TIMER_MSECS;
 		if (m_iMidiRefreshTimer < QTRACTOR_TIMER_MSECS) {
 			m_iMidiRefreshTimer = 0;
-			if (m_pSession->midiEngine()->updateConnects(true) == 0) {
+			if (m_pSession->midiEngine()->updateConnects() == 0) {
 				if (m_pConnections)
 					m_pConnections->connectForm()->midiRefresh();
 			}

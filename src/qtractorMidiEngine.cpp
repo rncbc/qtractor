@@ -857,6 +857,8 @@ bool qtractorMidiEngine::init ( const QString& sClientName )
 	// Try open a new client...
 	if (snd_seq_open(&m_pAlsaSeq, "hw", SND_SEQ_OPEN_DUPLEX, 0) < 0)
 		return false;
+	if (m_pAlsaSeq == NULL)
+		return false;
 
 	// Fix client name.
 	snd_seq_set_client_name(m_pAlsaSeq, sClientName.latin1());

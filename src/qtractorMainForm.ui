@@ -1624,6 +1624,7 @@
     <function access="private" specifier="non virtual" returnType="bool">newSession( void )</function>
     <function access="private" specifier="non virtual" returnType="bool">openSession( void )</function>
     <function access="private" specifier="non virtual" returnType="bool">saveSession( bool bPrompt )</function>
+    <function access="private" specifier="non virtual" returnType="bool">editSession( void )</function>
     <function access="private" specifier="non virtual" returnType="bool">closeSession( void )</function>
     <function access="private" specifier="non virtual" returnType="bool">loadSessionFile( const QString &amp; sFilename )</function>
     <function access="private" specifier="non virtual" returnType="bool">saveSessionFile( const QString &amp; sFilename )</function>

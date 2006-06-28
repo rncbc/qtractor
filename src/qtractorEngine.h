@@ -85,7 +85,7 @@ public:
 
 	// Retrieve/restore all connections, on all bussess;
 	// return the effective number of connection attempts.
-	int updateConnects(bool bConnect = false);
+	int updateConnects();
 
 	// Document element methods.
 	virtual bool loadElement(qtractorSessionDocument *pDocument,

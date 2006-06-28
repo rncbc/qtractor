@@ -83,6 +83,11 @@ void qtractorSessionForm::setSession ( qtractorSession *pSession )
 	PixelsPerBeatSpinBox->setValue(int(m_props.pixelsPerBeat));
 	HorizontalZoomSpinBox->setValue(int(m_props.horizontalZoom));
 	VerticalZoomSpinBox->setValue(int(m_props.verticalZoom));
+
+	// Start editing session name, if empty...
+	if (m_props.sessionName.isEmpty())
+		SessionNameLineEdit->setFocus();
+
 	// Backup clean.
 	m_iDirtyCount = 0;
 

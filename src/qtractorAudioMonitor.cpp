@@ -53,6 +53,10 @@ qtractorAudioMonitor::~qtractorAudioMonitor (void)
 // Channel property accessors.
 void qtractorAudioMonitor::setChannels ( unsigned short iChannels )
 {
+	// Check if channels will really change...
+	if (m_iChannels == iChannels)
+		return;
+
 	// Delete old value holders...
 	if (m_pfValues) {
 		delete [] m_pfValues;
@@ -63,6 +67,7 @@ void qtractorAudioMonitor::setChannels ( unsigned short iChannels )
 		delete [] m_pfGains;
 		m_pfGains = 0;
 	}
+
 	// Set new value holders...
 	m_iChannels = iChannels;
 	if (m_iChannels > 0) {
