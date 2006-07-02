@@ -322,6 +322,9 @@
                             <verstretch>0</verstretch>
                         </sizepolicy>
                     </property>
+					<property name="editable">
+						<bool>true</bool>
+					</property>
                     <property name="toolTip" stdset="0">
                         <string>MIDI Patch: Bank</string>
                     </property>
@@ -338,6 +341,9 @@
                             <verstretch>0</verstretch>
                         </sizepolicy>
                     </property>
+					<property name="editable">
+						<bool>true</bool>
+					</property>
                     <property name="toolTip" stdset="0">
                         <string>MIDI Patch: Program</string>
                     </property>
@@ -603,18 +609,18 @@
 		<receiver>qtractorTrackForm</receiver>
 		<slot>bankSelMethodChanged(int)</slot>
 	</connection>
-    <connection>
-        <sender>BankComboBox</sender>
-        <signal>activated(int)</signal>
-        <receiver>qtractorTrackForm</receiver>
-        <slot>bankChanged(int)</slot>
-    </connection>
-    <connection>
-        <sender>ProgComboBox</sender>
-        <signal>activated(int)</signal>
-        <receiver>qtractorTrackForm</receiver>
-        <slot>progChanged(int)</slot>
-    </connection>
+	<connection>
+		<sender>BankComboBox</sender>
+		<signal>textChanged(const QString &amp;)</signal>
+		<receiver>qtractorTrackForm</receiver>
+		<slot>bankChanged()</slot>
+	</connection>
+	<connection>
+		<sender>ProgComboBox</sender>
+		<signal>textChanged(const QString &amp;)</signal>
+		<receiver>qtractorTrackForm</receiver>
+		<slot>progChanged()</slot>
+	</connection>
     <connection>
         <sender>ForegroundColorComboBox</sender>
         <signal>activated(int)</signal>
@@ -706,8 +712,8 @@
     <slot specifier="non virtual">channelChanged( int iChannel )</slot>
     <slot specifier="non virtual">instrumentChanged( const QString &amp; sInstrumentName )</slot>
     <slot specifier="non virtual">bankSelMethodChanged( int iBankSelMethod )</slot>
-    <slot specifier="non virtual">bankChanged( int iBankIndex )</slot>
-    <slot specifier="non virtual">progChanged( int iProgIndex )</slot>
+    <slot specifier="non virtual">bankChanged()</slot>
+    <slot specifier="non virtual">progChanged()</slot>
     <slot specifier="non virtual">selectForegroundColor()</slot>
     <slot specifier="non virtual">selectBackgroundColor()</slot>
 </slots>
@@ -720,6 +726,8 @@
     <function specifier="non virtual" returnType="qtractorTrack *">track()</function>
     <function specifier="non virtual" returnType="const qtractorTrack::Properties &amp;">properties()</function>
     <function access="private" specifier="non virtual" returnType="qtractorMidiBus *">midiBus()</function>
+	<function access="private" specifier="non virtual" returnType="int">midiBank()</function>
+	<function access="private" specifier="non virtual" returnType="int">midiProgram()</function>
     <function access="private" specifier="non virtual">updateInstruments()</function>
 	<function access="private" specifier="non virtual">updateTrackType( int iTrackType )</function>
 	<function access="private" specifier="non virtual">updateChannel( int iChannel, int iBankSelMethod, int iBank, int iProg )</function>

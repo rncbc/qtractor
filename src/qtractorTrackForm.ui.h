@@ -33,6 +33,7 @@
 
 #include <qmessagebox.h>
 #include <qcolordialog.h>
+#include <qvalidator.h>
 #include <qlistbox.h>
 #include <qpainter.h>
 #include <qstyle.h>
@@ -92,6 +93,10 @@ void qtractorTrackForm::init (void)
 	// No settings descriptor initially (the caller will set it).
 	m_pMainForm = NULL;
 	m_pTrack = NULL;
+
+    // Set some dialog validators...
+	BankComboBox->setValidator(new QIntValidator(BankComboBox));
+	ProgComboBox->setValidator(new QIntValidator(ProgComboBox));
 
 	// Bank select methods.
 	const QPixmap& pixmap = QPixmap::fromMimeSource("itemProperty.png");
@@ -242,8 +247,8 @@ void qtractorTrackForm::accept (void)
 		// Special case for MIDI settings...
 		m_props.midiChannel = (ChannelSpinBox->value() - 1);
 		m_props.midiBankSelMethod = BankSelMethodComboBox->currentItem();
-		m_props.midiBank    = m_banks[BankComboBox->currentItem()];
-		m_props.midiProgram = m_progs[ProgComboBox->currentItem()];
+		m_props.midiBank    = midiBank();
+		m_props.midiProgram = midiProgram();
 		// View colors...
 		m_props.foreground = colorItem(ForegroundColorComboBox);
 		m_props.background = colorItem(BackgroundColorComboBox);
@@ -320,6 +325,32 @@ qtractorMidiBus *qtractorTrackForm::midiBus (void)
 }
 
 
+// Retrieve currently selected MIDI bank number.
+int qtractorTrackForm::midiBank (void)
+{
+	int iBankIndex = BankComboBox->currentItem();
+	const QString& sBankText = BankComboBox->currentText();
+	if (m_banks.contains(iBankIndex)
+		&& BankComboBox->text(iBankIndex) == sBankText)
+		return m_banks[iBankIndex];
+
+	return sBankText.toInt();
+}
+
+
+// Retrieve currently selected MIDI program number.
+int qtractorTrackForm::midiProgram (void)
+{
+	int iProgIndex = ProgComboBox->currentItem();
+	const QString& sProgText = ProgComboBox->currentText();
+	if (m_progs.contains(iProgIndex)
+		&& ProgComboBox->text(iProgIndex) == sProgText)
+		return m_progs[iProgIndex];
+
+	return sProgText.toInt();
+}
+
+
 // Refresh instrument list.
 void qtractorTrackForm::updateInstruments (void)
 {
@@ -330,18 +361,27 @@ void qtractorTrackForm::updateInstruments (void)
 	if (pInstruments == NULL)
 		return;
 
+	// Avoid superfluos change notifications...
+	m_iDirtySetup++;
+
 	InstrumentComboBox->clear();
 	const QPixmap& pixmap = QPixmap::fromMimeSource("itemInstrument.png");
 	for (qtractorInstrumentList::Iterator iter = pInstruments->begin();
 			iter != pInstruments->end(); ++iter) {
 		InstrumentComboBox->insertItem(pixmap, iter.data().instrumentName());
 	}
+
+	// Done.
+	m_iDirtySetup--;
 }
 
 
 // Update track type and busses.
 void qtractorTrackForm::updateTrackType ( int iTrackType )
 {
+	// Avoid superfluos change notifications...
+	m_iDirtySetup++;
+
 	// Make changes due to track type change.
 	qtractorEngine *pEngine = NULL;
 	QPixmap pixmap;
@@ -378,6 +418,9 @@ void qtractorTrackForm::updateTrackType ( int iTrackType )
 				OutputBusNameComboBox->insertItem(pixmap, pBus->busName());
 		}
 	}
+
+	// Done.
+	m_iDirtySetup--;
 }
 
 
@@ -399,14 +442,19 @@ void qtractorTrackForm::updateChannel ( int iChannel,
 		iChannel, iBankSelMethod, iBank, iProg);
 #endif
 
+	// Avoid superfluos change notifications...
+	m_iDirtySetup++;
+
 	// MIDI channel patch...
 	const qtractorMidiBus::Patch& patch = pMidiBus->patch(iChannel);
 	if (iBankSelMethod < 0)
 		iBankSelMethod = patch.bankSelMethod;
+#if 0
 	if (iBank < 0)
 		iBank = patch.bank;
 	if (iProg < 0)
 		iProg = patch.prog;
+#endif
 
 	// Select instrument...
 	int iInstrumentIndex = 0;
@@ -419,6 +467,9 @@ void qtractorTrackForm::updateChannel ( int iChannel,
 	// Go and update the bank and program listings...
 	updateBanks(InstrumentComboBox->currentText(),
 		iBankSelMethod, iBank, iProg);
+
+	// Done.
+	m_iDirtySetup--;
 }
 
 
@@ -442,6 +493,9 @@ void qtractorTrackForm::updateBanks ( const QString& sInstrumentName,
 	if (pInstruments == NULL)
 		return;
 
+	// Avoid superfluos change notifications...
+	m_iDirtySetup++;
+
 	// Instrument reference...
 	qtractorInstrument& instr = (*pInstruments)[sInstrumentName];
 
@@ -451,10 +505,12 @@ void qtractorTrackForm::updateBanks ( const QString& sInstrumentName,
 	BankSelMethodComboBox->setCurrentItem(iBankSelMethod);
 
 	// Refresh patch bank mapping...
-	m_banks.clear();
 	int iBankIndex = 0;
 	const QPixmap& pixmap = QPixmap::fromMimeSource("itemPatches.png");
+	m_banks.clear();
 	BankComboBox->clear();
+	BankComboBox->insertItem(pixmap, tr("(None)"));
+	m_banks[iBankIndex++] = -1;
 	qtractorInstrumentPatches::Iterator it;
 	for (it = instr.patches().begin(); it != instr.patches().end(); ++it) {
 		if (it.key() >= 0) {
@@ -463,6 +519,7 @@ void qtractorTrackForm::updateBanks ( const QString& sInstrumentName,
 		}
 	}
 
+#if 0
 	// In case bank address is generic...
 	if (BankComboBox->count() < 1) {
 		qtractorInstrumentData& patch = instr.patch(iBank);
@@ -471,20 +528,29 @@ void qtractorTrackForm::updateBanks ( const QString& sInstrumentName,
 			m_banks[iBankIndex] = iBank;
 		}
 	}
+#endif
 
 	// Do the proper bank selection...
-	qtractorInstrumentData& bank = instr.patch(iBank);
-
-	// Select bank...
-	iBankIndex = 0;
-	QListBoxItem *pItem	= BankComboBox->listBox()->findItem(
-		bank.name(), Qt::ExactMatch | Qt::CaseSensitive);
-	if (pItem)
-		iBankIndex = BankComboBox->listBox()->index(pItem);
-	BankComboBox->setCurrentItem(iBankIndex);
+	if (iBank >= 0) {
+		qtractorInstrumentData& bank = instr.patch(iBank);
+		iBankIndex = 0;
+		QListBoxItem *pItem	= BankComboBox->listBox()->findItem(
+			bank.name(), Qt::ExactMatch | Qt::CaseSensitive);
+		if (pItem) {
+			iBankIndex = BankComboBox->listBox()->index(pItem);
+			BankComboBox->setCurrentItem(iBankIndex);
+		} else {
+			BankComboBox->setCurrentText(QString::number(iBank));
+		}
+	} else {
+		BankComboBox->setCurrentItem(0);
+	}
 
 	// And update the bank and program listing...
-	updatePrograms(sInstrumentName, m_banks[iBankIndex], iProg);
+	updatePrograms(sInstrumentName, iBank, iProg);
+
+	// Done.
+	m_iDirtySetup--;
 }
 
 
@@ -508,28 +574,32 @@ void qtractorTrackForm::updatePrograms (  const QString& sInstrumentName,
 	if (pInstruments == NULL)
 		return;
 
-	// Instrument reference...
+	// Avoid superfluos change notifications...
+	m_iDirtySetup++;
+
+// Instrument reference...
 	qtractorInstrument& instr = (*pInstruments)[sInstrumentName];
 
 	// Bank reference...
 	qtractorInstrumentData& bank = instr.patch(iBank);
 
 	// Refresh patch program mapping...
-	m_progs.clear();
 	int iProgIndex = 0;
 	const QPixmap& pixmap = QPixmap::fromMimeSource("itemChannel.png");
+	m_progs.clear();
 	ProgComboBox->clear();
-	if (bank.count() > 0) {
-		// Enumerate the explicit given program list...
-		qtractorInstrumentData::Iterator it;
-		for (it = bank.begin(); it != bank.end(); ++it) {
-			if (it.key() >= 0 && !it.data().isEmpty()) {
-				ProgComboBox->insertItem(pixmap, it.data());
-				m_progs[iProgIndex++] = it.key();
-			}
+	ProgComboBox->insertItem(pixmap, tr("(None)"));
+	m_progs[iProgIndex++] = -1;
+	// Enumerate the explicit given program list...
+	qtractorInstrumentData::Iterator it;
+	for (it = bank.begin(); it != bank.end(); ++it) {
+		if (it.key() >= 0 && !it.data().isEmpty()) {
+			ProgComboBox->insertItem(pixmap, it.data());
+			m_progs[iProgIndex++] = it.key();
 		}
 	}
 
+#if 0
 	// In case program address is generic...
 	if (ProgComboBox->count() < 1) {
 		// Just make a generic program list...
@@ -539,16 +609,27 @@ void qtractorTrackForm::updatePrograms (  const QString& sInstrumentName,
 			m_progs[iProgIndex] = iProgIndex;
 		}
 	}
+#endif
 
-	// Select program...
-	iProgIndex = iProg;
-	if (bank.contains(iProg)) {
-		QListBoxItem *pItem	= ProgComboBox->listBox()->findItem(
-			bank[iProg], Qt::ExactMatch | Qt::CaseSensitive);
-		if (pItem)
+	// Select proper program...
+	if (iProg >= 0) {
+		QListBoxItem *pItem	= NULL;
+		if (bank.contains(iProg)) {
+			pItem = ProgComboBox->listBox()->findItem(
+				bank[iProg], Qt::ExactMatch | Qt::CaseSensitive);
+		}
+		if (pItem) {
 			iProgIndex = ProgComboBox->listBox()->index(pItem);
+			ProgComboBox->setCurrentItem(iProgIndex);
+		} else {
+			ProgComboBox->setCurrentText(QString::number(iProg));
+		}
+	} else {
+		ProgComboBox->setCurrentItem(0);
 	}
-	ProgComboBox->setCurrentItem(iProgIndex);
+
+	// Done.
+	m_iDirtySetup--;
 }
 
 
@@ -688,10 +769,10 @@ void qtractorTrackForm::channelChanged ( int iChannel )
 	// First update channel instrument mapping...
 	updateChannel(iChannel,
 		-1, // BankSelMethodComboBox->currentItem(),
-		-1, // m_banks[BankComboBox->currentItem()],
-		-1);// m_progs[ProgComboBox->currentItem()]);
+		-1, // midiBank(),
+		-1);// midiProgram());
 
-	progChanged(ProgComboBox->currentItem());
+	progChanged();
 }
 
 
@@ -703,10 +784,10 @@ void qtractorTrackForm::instrumentChanged ( const QString& sInstrumentName )
 
 	updateBanks(sInstrumentName,
 		-1, // BankSelMethodComboBox->currentItem(),
-		m_banks[BankComboBox->currentItem()],
-		m_progs[ProgComboBox->currentItem()]);
+		midiBank(),
+		midiProgram());
 
-	progChanged(ProgComboBox->currentItem());
+	progChanged();
 }
 
 
@@ -716,25 +797,25 @@ void qtractorTrackForm::bankSelMethodChanged ( int /* iBankSelMethod */ )
 	if (m_iDirtySetup > 0)
 		return;
 
-	progChanged(ProgComboBox->currentItem());
+	progChanged();
 }
 
 
 // Make changes due to MIDI bank.
-void qtractorTrackForm::bankChanged ( int iBankIndex )
+void qtractorTrackForm::bankChanged (void)
 {
 	if (m_iDirtySetup > 0)
 		return;
 
-	updatePrograms(InstrumentComboBox->currentText(), m_banks[iBankIndex],
-		m_progs[ProgComboBox->currentItem()]);
+	updatePrograms(InstrumentComboBox->currentText(),
+		midiBank(), midiProgram());
 
-	progChanged(ProgComboBox->currentItem());
+	progChanged();
 }
 
 
 // Make changes due to MIDI program.
-void qtractorTrackForm::progChanged ( int iProgIndex )
+void qtractorTrackForm::progChanged (void)
 {
 	if (m_iDirtySetup > 0)
 		return;
@@ -746,8 +827,8 @@ void qtractorTrackForm::progChanged ( int iProgIndex )
 		unsigned short iChannel = ChannelSpinBox->value() - 1;
 		const QString& sInstrumentName = InstrumentComboBox->currentText();
 		int iBankSelMethod = BankSelMethodComboBox->currentItem();
-		int iBank = m_banks[BankComboBox->currentItem()];
-		int iProg = m_progs[iProgIndex];
+		int iBank = midiBank();
+		int iProg = midiProgram();
 		// Keep old bus/channel patching consistency.
 		if (pMidiBus != m_pOldMidiBus || iChannel != m_iOldChannel) {
 			// Restore previously saved patch...
