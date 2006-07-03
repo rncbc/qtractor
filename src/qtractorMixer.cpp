@@ -540,7 +540,7 @@ qtractorMixerStrip *qtractorMixerRack::findStrip ( qtractorMonitor *pMonitor )
 {
 	for (qtractorMixerStrip *pStrip = m_strips.first();
 			pStrip; pStrip = m_strips.next()) {
-		if ((pStrip->meter())->monitor() == pMonitor)
+		if (pStrip->meter() && (pStrip->meter())->monitor() == pMonitor)
 			return pStrip;
 	}
 	

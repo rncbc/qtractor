@@ -111,6 +111,12 @@ qtractorTrack::qtractorTrack ( qtractorSession *pSession, TrackType trackType )
 qtractorTrack::~qtractorTrack (void)
 {
 	close();
+
+	if (m_pMonitor) {
+		delete m_pMonitor;
+		m_pMonitor = NULL;
+	}
+
 	clear();
 }
 
@@ -196,6 +202,10 @@ bool qtractorTrack::open (void)
 		return false;
 
 	// (Re)allocate (output) monitor...
+	if (m_pMonitor) {
+		delete m_pMonitor;
+		m_pMonitor = NULL;
+	}
 	switch (trackType()) {
 	case qtractorTrack::Audio: {
 		qtractorAudioBus *pAudioBus
@@ -227,13 +237,15 @@ bool qtractorTrack::open (void)
 // Track close method.
 void qtractorTrack::close (void)
 {
-	m_pInputBus  = NULL;
-	m_pOutputBus = NULL;
-
+#if 0
 	if (m_pMonitor) {
 		delete m_pMonitor;
 		m_pMonitor = NULL;
 	}
+#endif
+
+	m_pInputBus  = NULL;
+	m_pOutputBus = NULL;
 
 	setClipRecord(NULL);
 }

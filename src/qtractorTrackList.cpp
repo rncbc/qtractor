@@ -197,7 +197,7 @@ void qtractorTrackListItem::setText ( int iColumn, const QString& sText )
 			QListViewItem::setText(qtractorTrackList::Bus,
 				sBusText + '\n' + QObject::tr("Audio"));
 			QListViewItem::setText(qtractorTrackList::Channel,
-				QString::number(pAudioBus->channels()));
+				pAudioBus ? QString::number(pAudioBus->channels()) : s.left(1));
 			QListViewItem::setText(qtractorTrackList::Patch, s);
 			QListViewItem::setText(qtractorTrackList::Instrument, s);
 			break;
@@ -215,9 +215,14 @@ void qtractorTrackListItem::setText ( int iColumn, const QString& sText )
 			QListViewItem::setText(qtractorTrackList::Bus,
 				sBusText + '\n' + QObject::tr("MIDI"));
 			unsigned short iChannel = m_pTrack->midiChannel();
-			const qtractorMidiBus::Patch& patch = pMidiBus->patch(iChannel);
 			QListViewItem::setText(qtractorTrackList::Channel,
 				QString::number(iChannel + 1));
+			if (pMidiBus == NULL) {
+				QListViewItem::setText(qtractorTrackList::Patch, s);
+				QListViewItem::setText(qtractorTrackList::Instrument, s);
+				break;
+			}
+			const qtractorMidiBus::Patch& patch = pMidiBus->patch(iChannel);
 			if (!patch.instrumentName.isEmpty()
 				&& trackList()->instruments()) {
 				qtractorInstrument& instr
