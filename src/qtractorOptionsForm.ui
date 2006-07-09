@@ -28,8 +28,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>529</width>
-            <height>380</height>
+            <width>577</width>
+            <height>305</height>
         </rect>
     </property>
     <property name="sizePolicy">
@@ -295,111 +295,6 @@
                             <property name="name">
                                 <cstring>unnamed</cstring>
                             </property>
-                            <widget class="QLayoutWidget" row="0" column="0" rowspan="2" colspan="1">
-                                <property name="name">
-                                    <cstring>layout2</cstring>
-                                </property>
-                                <vbox>
-                                    <property name="name">
-                                        <cstring>unnamed</cstring>
-                                    </property>
-                                    <widget class="QCheckBox">
-                                        <property name="name">
-                                            <cstring>ConfirmRemoveCheckBox</cstring>
-                                        </property>
-                                        <property name="font">
-                                            <font>
-                                                <bold>0</bold>
-                                            </font>
-                                        </property>
-                                        <property name="text">
-                                            <string>&amp;Confirm removals</string>
-                                        </property>
-                                        <property name="accel">
-                                            <string>Alt+C</string>
-                                        </property>
-                                        <property name="toolTip" stdset="0">
-                                            <string>Whether to ask for confirmation on removal</string>
-                                        </property>
-                                    </widget>
-                                    <widget class="QCheckBox">
-                                        <property name="name">
-                                            <cstring>StdoutCaptureCheckBox</cstring>
-                                        </property>
-                                        <property name="font">
-                                            <font>
-                                                <bold>0</bold>
-                                            </font>
-                                        </property>
-                                        <property name="text">
-                                            <string>Capture standard &amp;output</string>
-                                        </property>
-                                        <property name="accel">
-                                            <string>Alt+O</string>
-                                        </property>
-                                        <property name="toolTip" stdset="0">
-                                            <string>Whether to capture standard output (stdout/stderr) into messages window</string>
-                                        </property>
-                                    </widget>
-                                    <widget class="QCheckBox">
-                                        <property name="name">
-                                            <cstring>CompletePathCheckBox</cstring>
-                                        </property>
-                                        <property name="font">
-                                            <font>
-                                                <bold>0</bold>
-                                            </font>
-                                        </property>
-                                        <property name="text">
-                                            <string>Show complete &amp;path of session files</string>
-                                        </property>
-                                        <property name="accel">
-                                            <string>Alt+P</string>
-                                        </property>
-                                        <property name="toolTip" stdset="0">
-                                            <string>Whether to show the complete directory path of loaded session files</string>
-                                        </property>
-                                    </widget>
-                                    <widget class="QCheckBox">
-                                        <property name="name">
-                                            <cstring>PeakAutoRemoveCheckBox</cstring>
-                                        </property>
-                                        <property name="font">
-                                            <font>
-                                                <bold>0</bold>
-                                            </font>
-                                        </property>
-                                        <property name="text">
-                                            <string>&amp;Auto-remove peak files</string>
-                                        </property>
-                                        <property name="accel">
-                                            <string>Alt+A</string>
-                                        </property>
-                                        <property name="toolTip" stdset="0">
-                                            <string>Whether to remove audio peak files on session close</string>
-                                        </property>
-                                    </widget>
-                                    <widget class="QCheckBox">
-                                        <property name="name">
-                                            <cstring>TransportTimeCheckBox</cstring>
-                                        </property>
-                                        <property name="font">
-                                            <font>
-                                                <bold>0</bold>
-                                            </font>
-                                        </property>
-                                        <property name="text">
-                                            <string>&amp;Transport time in BBT format</string>
-                                        </property>
-                                        <property name="accel">
-                                            <string>Alt+T</string>
-                                        </property>
-                                        <property name="toolTip" stdset="0">
-                                            <string>Whether to show transport time in BBT format (bar:beat.tick)</string>
-                                        </property>
-                                    </widget>
-                                </vbox>
-                            </widget>
                             <widget class="QSpinBox" row="0" column="3">
                                 <property name="name">
                                     <cstring>MaxRecentFilesSpinBox</cstring>
@@ -422,6 +317,189 @@
                                     <string>The maximum number of recent files to keep in menu</string>
                                 </property>
                             </widget>
+                            <spacer row="1" column="2" rowspan="2" colspan="1">
+                                <property name="name">
+                                    <cstring>spacer24</cstring>
+                                </property>
+                                <property name="orientation">
+                                    <enum>Vertical</enum>
+                                </property>
+                                <property name="sizeType">
+                                    <enum>Expanding</enum>
+                                </property>
+                                <property name="sizeHint">
+                                    <size>
+                                        <width>20</width>
+                                        <height>50</height>
+                                    </size>
+                                </property>
+                            </spacer>
+                            <widget class="QCheckBox" row="0" column="0">
+                                <property name="name">
+                                    <cstring>ConfirmRemoveCheckBox</cstring>
+                                </property>
+                                <property name="font">
+                                    <font>
+                                        <bold>0</bold>
+                                    </font>
+                                </property>
+                                <property name="text">
+                                    <string>&amp;Confirm removals</string>
+                                </property>
+                                <property name="accel">
+                                    <string>Alt+C</string>
+                                </property>
+                                <property name="toolTip" stdset="0">
+                                    <string>Whether to ask for confirmation on removal</string>
+                                </property>
+                            </widget>
+                            <widget class="QCheckBox" row="1" column="0">
+                                <property name="name">
+                                    <cstring>StdoutCaptureCheckBox</cstring>
+                                </property>
+                                <property name="font">
+                                    <font>
+                                        <bold>0</bold>
+                                    </font>
+                                </property>
+                                <property name="text">
+                                    <string>Capture standard &amp;output</string>
+                                </property>
+                                <property name="accel">
+                                    <string>Alt+O</string>
+                                </property>
+                                <property name="toolTip" stdset="0">
+                                    <string>Whether to capture standard output (stdout/stderr) into messages window</string>
+                                </property>
+                            </widget>
+                            <widget class="QCheckBox" row="3" column="0">
+                                <property name="name">
+                                    <cstring>PeakAutoRemoveCheckBox</cstring>
+                                </property>
+                                <property name="font">
+                                    <font>
+                                        <bold>0</bold>
+                                    </font>
+                                </property>
+                                <property name="text">
+                                    <string>&amp;Auto-remove peak files</string>
+                                </property>
+                                <property name="accel">
+                                    <string>Alt+A</string>
+                                </property>
+                                <property name="toolTip" stdset="0">
+                                    <string>Whether to remove audio peak files on session close</string>
+                                </property>
+                            </widget>
+                            <widget class="QCheckBox" row="4" column="0">
+                                <property name="name">
+                                    <cstring>TransportTimeCheckBox</cstring>
+                                </property>
+                                <property name="font">
+                                    <font>
+                                        <bold>0</bold>
+                                    </font>
+                                </property>
+                                <property name="text">
+                                    <string>&amp;Transport time in BBT format</string>
+                                </property>
+                                <property name="accel">
+                                    <string>Alt+T</string>
+                                </property>
+                                <property name="toolTip" stdset="0">
+                                    <string>Whether to show transport time in BBT format (bar:beat.tick)</string>
+                                </property>
+                            </widget>
+                            <widget class="QLabel" row="3" column="2" rowspan="1" colspan="2">
+                                <property name="name">
+                                    <cstring>ResampleTypeTextLabel</cstring>
+                                </property>
+                                <property name="font">
+                                    <font>
+                                        <bold>0</bold>
+                                    </font>
+                                </property>
+                                <property name="text">
+                                    <string>Sample-&amp;rate converter type:</string>
+                                </property>
+                                <property name="buddy" stdset="0">
+                                    <cstring>ResampleTypeComboBox</cstring>
+                                </property>
+                            </widget>
+                            <widget class="QComboBox" row="4" column="2" rowspan="1" colspan="2">
+                                <item>
+                                    <property name="text">
+                                        <string>Sinc (Best Quality)</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property name="text">
+                                        <string>Sinc (Medium Quality)</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property name="text">
+                                        <string>Sinc (Fastest)</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property name="text">
+                                        <string>Zero Order Hold</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property name="text">
+                                        <string>Linear</string>
+                                    </property>
+                                </item>
+                                <property name="name">
+                                    <cstring>ResampleTypeComboBox</cstring>
+                                </property>
+                                <property name="font">
+                                    <font>
+                                        <bold>0</bold>
+                                    </font>
+                                </property>
+                                <property name="toolTip" stdset="0">
+                                    <string>Sample-rate converter quality</string>
+                                </property>
+                            </widget>
+                            <spacer row="2" column="1">
+                                <property name="name">
+                                    <cstring>spacer23</cstring>
+                                </property>
+                                <property name="orientation">
+                                    <enum>Horizontal</enum>
+                                </property>
+                                <property name="sizeType">
+                                    <enum>Expanding</enum>
+                                </property>
+                                <property name="sizeHint">
+                                    <size>
+                                        <width>50</width>
+                                        <height>20</height>
+                                    </size>
+                                </property>
+                            </spacer>
+                            <widget class="QCheckBox" row="2" column="0">
+                                <property name="name">
+                                    <cstring>CompletePathCheckBox</cstring>
+                                </property>
+                                <property name="font">
+                                    <font>
+                                        <bold>0</bold>
+                                    </font>
+                                </property>
+                                <property name="text">
+                                    <string>Show complete &amp;path of session files</string>
+                                </property>
+                                <property name="accel">
+                                    <string>Alt+P</string>
+                                </property>
+                                <property name="toolTip" stdset="0">
+                                    <string>Whether to show the complete directory path of loaded session files</string>
+                                </property>
+                            </widget>
                             <widget class="QLabel" row="0" column="2">
                                 <property name="name">
                                     <cstring>MaxRecentFilesTextLabel</cstring>
@@ -441,40 +519,6 @@
                                     <cstring>MaxRecentFilesSpinBox</cstring>
                                 </property>
                             </widget>
-                            <spacer row="0" column="1">
-                                <property name="name">
-                                    <cstring>spacer23</cstring>
-                                </property>
-                                <property name="orientation">
-                                    <enum>Horizontal</enum>
-                                </property>
-                                <property name="sizeType">
-                                    <enum>Expanding</enum>
-                                </property>
-                                <property name="sizeHint">
-                                    <size>
-                                        <width>110</width>
-                                        <height>16</height>
-                                    </size>
-                                </property>
-                            </spacer>
-                            <spacer row="1" column="1" rowspan="1" colspan="3">
-                                <property name="name">
-                                    <cstring>spacer24</cstring>
-                                </property>
-                                <property name="orientation">
-                                    <enum>Horizontal</enum>
-                                </property>
-                                <property name="sizeType">
-                                    <enum>Expanding</enum>
-                                </property>
-                                <property name="sizeHint">
-                                    <size>
-                                        <width>280</width>
-                                        <height>16</height>
-                                    </size>
-                                </property>
-                            </spacer>
                         </grid>
                     </widget>
                 </vbox>
@@ -549,6 +593,12 @@
         <receiver>qtractorOptionsForm</receiver>
         <slot>changed()</slot>
     </connection>
+	<connection>
+		<sender>ResampleTypeComboBox</sender>
+		<signal>activated(int)</signal>
+		<receiver>qtractorOptionsForm</receiver>
+		<slot>changed()</slot>
+	</connection>
 </connections>
 <tabstops>
     <tabstop>OptionsTabWidget</tabstop>
@@ -561,6 +611,7 @@
     <tabstop>PeakAutoRemoveCheckBox</tabstop>
     <tabstop>TransportTimeCheckBox</tabstop>
     <tabstop>MaxRecentFilesSpinBox</tabstop>
+	<tabstop>ResampleTypeComboBox</tabstop>
     <tabstop>OkPushButton</tabstop>
     <tabstop>CancelPushButton</tabstop>
 </tabstops>
@@ -575,9 +626,9 @@
     <variable access="private">int m_iDirtyCount;</variable>
 </variables>
 <slots>
-    <slot specifier="non virtual">chooseMessagesFont()</slot>
     <slot specifier="non virtual">accept()</slot>
     <slot specifier="non virtual">reject()</slot>
+    <slot specifier="non virtual">chooseMessagesFont()</slot>
     <slot specifier="non virtual">changed()</slot>
     <slot specifier="non virtual">stabilizeForm()</slot>
 </slots>

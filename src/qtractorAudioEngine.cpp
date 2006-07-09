@@ -362,9 +362,9 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 			// Reset to start-of-loop...
 			iFrameStart = pSession->loopStart();
 			iFrameEnd   = iFrameStart + (iFrameEnd - pSession->loopEnd());
-			pAudioCursor->seek(iFrameStart);
 			// Set to new transport location...
 			jack_transport_locate(m_pJackClient, iFrameStart);
+			pAudioCursor->seek(iFrameStart);
 		}
 	}
 

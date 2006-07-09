@@ -105,7 +105,13 @@ public:
 
 	// Base sync method.
 	void sync();
-	
+
+#ifdef CONFIG_LIBSAMPLERATE
+	// Sample-rate converter type accessor (global option).
+	static void setResampleType(int iResampleType);
+	static int resampleType();
+#endif
+
 #ifdef DEBUG
 	void dump_state(const char *pszPrefix) const;
 #endif
@@ -115,6 +121,9 @@ protected:
 	// Sync mode methods.
 	void readSync();
 	void writeSync();
+
+	// Internal-seek sync executive.
+	bool seekSync(unsigned long iFrame);
 
 	// Buffer process methods.
 	int readBuffer  (unsigned int iFrames);
@@ -163,6 +172,8 @@ private:
 	float        **m_ppInBuffer;
 	float        **m_ppOutBuffer;
 	SRC_STATE    **m_ppSrcState;
+	// Sample-rate converter type global option.
+	static int     g_iResampleType;
 #endif
 };
 

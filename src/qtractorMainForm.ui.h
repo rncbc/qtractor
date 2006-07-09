@@ -34,6 +34,7 @@
 #include "qtractorTrackView.h"
 
 #include "qtractorAudioPeak.h"
+#include "qtractorAudioBuffer.h"
 #include "qtractorAudioEngine.h"
 #include "qtractorMidiEngine.h"
 
@@ -130,6 +131,7 @@ void qtractorMainForm::init (void)
 	m_iPeakTimer = 0;
 	m_iPlayTimer = 0;
 	m_iTransport = 0;
+	m_iLocate    = 0;
 
 	m_iXrunCount = 0;
 	m_iXrunSkip  = 0;
@@ -414,6 +416,9 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 	// Primary startup stabilization...
 	updateRecentFilesMenu();
 	updatePeakAutoRemove();
+
+	// Set default sample-rate converter quality...
+	qtractorAudioBuffer::setResampleType(m_pOptions->iResampleType);
 
 #ifdef HAVE_UNISTD_H
 	// Change to last known session dir...
@@ -1380,6 +1385,7 @@ void qtractorMainForm::viewOptions (void)
 	bool    bOldCompletePath    = m_pOptions->bCompletePath;
 	bool    bOldPeakAutoRemove  = m_pOptions->bPeakAutoRemove;
 	int     iOldMaxRecentFiles  = m_pOptions->iMaxRecentFiles;
+	int     iOldResampleType    = m_pOptions->iResampleType;
 	// Load the current setup settings.
 	qtractorOptionsForm optionsForm(this);
 	optionsForm.setOptions(m_pOptions);
@@ -1394,6 +1400,9 @@ void qtractorMainForm::viewOptions (void)
 				"next time you start this program."), tr("OK"));
 			updateMessagesCapture();
 		}
+		// Others will only be affective upon restarting the session...
+		if (iOldResampleType != m_pOptions->iResampleType)
+			qtractorAudioBuffer::setResampleType(m_pOptions->iResampleType);
 		// Check wheather something immediate has changed.
 		if (( bOldCompletePath && !m_pOptions->bCompletePath) ||
 			(!bOldCompletePath &&  m_pOptions->bCompletePath) ||
@@ -1535,6 +1544,7 @@ void qtractorMainForm::transportLoop (void)
 	}
 
 	// Done with loop switch...
+	m_iDirtyCount++;
 	stabilizeForm();
 }
 
@@ -2123,14 +2133,18 @@ void qtractorMainForm::timerSlot (void)
 				m_pSession->seek(pos.frame, true);
 		} else {
 			// Check on external transport location changes;
-			// note that we'll have a quadruple buffer-size guard...
+			// note that we'll have a doubled buffer-size guard...
 			long iDeltaFrame = (long) pos.frame - (long) m_pSession->playHead();
 			int iBufferSize2 = jack_get_buffer_size(
-				m_pSession->audioEngine()->jackClient()) << 2;
+				m_pSession->audioEngine()->jackClient()) << 1;
 			if (labs(iDeltaFrame) > iBufferSize2) {
-				m_pSession->setPlayHead(pos.frame);
-				m_iTransport++;
+				if (++m_iLocate > 1) {
+					m_iLocate = 0;
+					m_pSession->setPlayHead(pos.frame);
+					m_iTransport++;
+				}
 			}
+			else m_iLocate = 0;
 		}
 	}
 
@@ -2290,7 +2304,11 @@ void qtractorMainForm::trackSelectionChanged (void)
 		qtractorTrack *pTrack = m_pTracks->currentTrack();
 		if (pTrack)
 			pStrip = m_pMixer->trackRack()->findStrip(pTrack->monitor());
-		m_pMixer->trackRack()->setSelectedStrip(pStrip);
+		if (pStrip) {
+			m_pMixer->trackRack()->ensureVisible(
+				pStrip->pos().x(), 0, pStrip->width(), 0);
+			m_pMixer->trackRack()->setSelectedStrip(pStrip);
+		}
 	}
 
 	stabilizeForm();
@@ -2310,8 +2328,10 @@ void qtractorMainForm::mixerSelectionChanged (void)
 		if (pStrip && pStrip->track()) {
 			qtractorTrackListItem *pTrackItem
 				= m_pTracks->trackList()->trackItem(pStrip->track());
-			if (pTrackItem)
+			if (pTrackItem) {
+				m_pTracks->trackList()->ensureItemVisible(pTrackItem);
 				m_pTracks->trackList()->setSelected(pTrackItem, true);
+			}
 		}
 	}
 

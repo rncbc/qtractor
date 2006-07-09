@@ -217,31 +217,33 @@ void qtractorTrackListItem::setText ( int iColumn, const QString& sText )
 			unsigned short iChannel = m_pTrack->midiChannel();
 			QListViewItem::setText(qtractorTrackList::Channel,
 				QString::number(iChannel + 1));
-			if (pMidiBus == NULL) {
-				QListViewItem::setText(qtractorTrackList::Patch, s);
-				QListViewItem::setText(qtractorTrackList::Instrument, s);
-				break;
-			}
-			const qtractorMidiBus::Patch& patch = pMidiBus->patch(iChannel);
-			if (!patch.instrumentName.isEmpty()
-				&& trackList()->instruments()) {
-				qtractorInstrument& instr
-					= (*trackList()->instruments())[patch.instrumentName];
-				qtractorInstrumentData& bank
-					= instr.patch(m_pTrack->midiBank());
-				if (bank.contains(m_pTrack->midiProgram())) {
-					QListViewItem::setText(qtractorTrackList::Patch,
-						bank[m_pTrack->midiProgram()] + '\n' + bank.name());
-				} else {
-					QListViewItem::setText(qtractorTrackList::Patch,
-						QString::number(m_pTrack->midiProgram() + 1) + s + '\n');
+			// Care of MIDI instrument, program and bank numbers vs.names...
+			QString sInstrument = s;
+			QString sProgram = s;
+			QString sBank;
+			if (m_pTrack->midiProgram() >= 0)
+				sProgram = QString::number(m_pTrack->midiProgram()) + s;
+			if (m_pTrack->midiBank() >= 0)
+				sBank = QString::number(m_pTrack->midiBank());
+			if (pMidiBus) {
+				const qtractorMidiBus::Patch& patch
+					= pMidiBus->patch(iChannel);
+				if (!patch.instrumentName.isEmpty()
+					&& trackList()->instruments()) {
+					sInstrument = patch.instrumentName;
+					qtractorInstrument& instr
+						= (*trackList()->instruments())[patch.instrumentName];
+					qtractorInstrumentData& bank
+						= instr.patch(m_pTrack->midiBank());
+					if (bank.contains(m_pTrack->midiProgram())) {
+						sProgram = bank[m_pTrack->midiProgram()];
+						sBank = bank.name();
+					}
 				}
-				QListViewItem::setText(qtractorTrackList::Instrument,
-					patch.instrumentName);
-			} else {
-				QListViewItem::setText(qtractorTrackList::Patch, s);
-				QListViewItem::setText(qtractorTrackList::Instrument, s);
 			}
+			QListViewItem::setText(qtractorTrackList::Patch,
+				sProgram + '\n' + sBank);
+			QListViewItem::setText(qtractorTrackList::Instrument, sInstrument);
 			break;
 		}
 

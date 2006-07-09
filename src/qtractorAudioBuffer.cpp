@@ -203,7 +203,7 @@ bool qtractorAudioBuffer::open ( const QString& sFilename, int iMode )
 		for (unsigned short i = 0; i < iChannels; i++) {
 			m_ppInBuffer[i]  = m_ppFrames[i];
 			m_ppOutBuffer[i] = new float [m_iThreshold];
-			m_ppSrcState[i]  = src_new(SRC_SINC_BEST_QUALITY, 1, &err);
+			m_ppSrcState[i]  = src_new(g_iResampleType, 1, &err);
 		}
 	}
 #endif
@@ -490,7 +490,7 @@ bool qtractorAudioBuffer::seek ( unsigned long iOffset )
 	}
 
 	// Bad luck, gotta go straight down to disk...
-	//	if (!m_pFile->seek(iOffset))
+	//	if (!seekSync(iOffset))
 	//		return false;
 
 	m_iSeekOffset = iOffset;
@@ -567,17 +567,8 @@ void qtractorAudioBuffer::readSync (void)
 		// Refill the whole buffer....
 		m_pRingBuffer->reset();
 		m_bEndOfFile = false;
-#ifdef CONFIG_LIBSAMPLERATE
-		if (m_bResample) {
-			m_iInputPending = 0;
-			for (unsigned short i = 0; i < m_pRingBuffer->channels(); i++) {
-				if (m_ppSrcState && m_ppSrcState[i])
-					src_reset(m_ppSrcState[i]);
-				m_ppFrames[i] = m_ppInBuffer[i];
-			}
-		}
-#endif
-		if (!m_pFile->seek(framesOut(m_iOffset)))
+		// Do it...
+		if (!seekSync(m_iOffset))
 			return;
 	}
 
@@ -599,17 +590,15 @@ void qtractorAudioBuffer::readSync (void)
 	while (nahead > 0) {
 		if (nahead > nbuffer)
 			nahead = nbuffer;
-		if (bLooping && offset + framesOut(nahead) >= le)
-			nahead = framesOut(le - offset);
+		if (bLooping && offset + nahead >= le)
+			nahead = le - offset;
 		unsigned int nread = readBuffer(nahead);
 		if (nread > 0) {
 			ntotal += nread;
 			offset += nread;
-			if (bLooping && offset >= le) {
-				m_pFile->seek(framesOut(ls));
+			if (bLooping && offset >= le && seekSync(ls))
 				offset = ls;
-			}
-			nahead = ws - ntotal;
+			nahead = (ws > ntotal ? ws - ntotal : 0);
 		} else {
 			nahead = 0;
 			m_bEndOfFile = true;
@@ -667,6 +656,27 @@ void qtractorAudioBuffer::writeSync (void)
 #ifdef DEBUG
 	dump_state("-writeSync()");
 #endif
+}
+
+
+// Internal-seek sync executive.
+bool qtractorAudioBuffer::seekSync( unsigned long iFrame )
+{
+#ifdef CONFIG_DEBUG_0
+	fprintf(stderr, ">seekSync(%lu)\n", iFrame);
+#endif
+
+#ifdef CONFIG_LIBSAMPLERATE
+	if (m_bResample) {
+		m_iInputPending = 0;
+		for (unsigned short i = 0; i < m_pRingBuffer->channels(); i++) {
+			if (m_ppSrcState && m_ppSrcState[i])
+				src_reset(m_ppSrcState[i]);
+			m_ppFrames[i] = m_ppInBuffer[i];
+		}
+	}
+#endif
+	return m_pFile->seek(framesOut(iFrame));
 }
 
 
@@ -972,6 +982,24 @@ unsigned long qtractorAudioBuffer::loopEnd (void) const
 {
 	return m_iLoopEnd;
 }
+
+
+#ifdef CONFIG_LIBSAMPLERATE
+
+// Sample-rate converter type (global option).
+int qtractorAudioBuffer::g_iResampleType = SRC_SINC_BEST_QUALITY;
+
+void qtractorAudioBuffer::setResampleType ( int iResampleType )
+{
+	g_iResampleType = iResampleType;
+}
+
+int qtractorAudioBuffer::resampleType (void)
+{
+	return g_iResampleType;
+}
+
+#endif
 
 
 #ifdef DEBUG

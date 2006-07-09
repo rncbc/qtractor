@@ -1533,6 +1533,7 @@
     <variable access="private">int m_iPeakTimer;</variable>
 	<variable access="private">int m_iPlayTimer;</variable>
 	<variable access="private">int m_iTransport;</variable>
+	<variable access="private">int m_iLocate;</variable>
 	<variable access="private">int m_iXrunCount;</variable>
 	<variable access="private">int m_iXrunSkip;</variable>
 	<variable access="private">int m_iXrunTimer;</variable>

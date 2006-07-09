@@ -299,7 +299,20 @@ void qtractorTrackForm::stabilizeForm (void)
 {
 	bool bValid = (m_iDirtyCount > 0);
 	bValid = bValid && !TrackNameTextEdit->text().isEmpty();
+#if 0
+	switch (TrackTypeGroup->id(TrackTypeGroup->selected())) {
+	case 0: // Audio track...
+		break;
+	case 1: // Midi track...
+		bValid = bValid && (midiProgram() >= 0);
+		break;
+	default:
+		bValid = false;
+		break;
+	}
+#else
 	bValid = bValid && TrackTypeGroup->selected();
+#endif
 	OkPushButton->setEnabled(bValid);
 }
 

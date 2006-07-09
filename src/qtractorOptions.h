@@ -92,6 +92,9 @@ public:
 	// Tracks view options...
 	int     iTrackListWidth;
 
+	// Audio rendering options...
+	int     iResampleType;
+
 	// Widget geometry persistence helper prototypes.
 	void saveWidgetGeometry(QWidget *pWidget);
 	void loadWidgetGeometry(QWidget *pWidget);

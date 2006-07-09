@@ -70,6 +70,11 @@ qtractorOptions::qtractorOptions (void)
 	bFollowPlayhead = m_settings.readBoolEntry("/FollowPlayhead", true);
 	m_settings.endGroup();
 
+	// Audio redndering options group.
+	m_settings.beginGroup("/Audio");
+	iResampleType = m_settings.readNumEntry("/ResampleType", 0);
+	m_settings.endGroup();
+
 	m_settings.endGroup(); // Options group.
 
 	// Last but not least, get the default directories.
@@ -152,6 +157,11 @@ qtractorOptions::~qtractorOptions (void)
 	// Transport options group.
 	m_settings.beginGroup("/Transport");
 	m_settings.writeEntry("/FollowPlayhead", bFollowPlayhead);
+	m_settings.endGroup();
+
+	// Audio redndering options group.
+	m_settings.beginGroup("/Audio");
+	m_settings.writeEntry("/ResampleType", iResampleType);
 	m_settings.endGroup();
 
 	m_settings.endGroup(); // Options group.

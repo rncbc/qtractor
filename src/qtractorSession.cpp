@@ -847,8 +847,8 @@ void qtractorSession::setPlayHead ( unsigned long iFrame )
 		return;
 
 	setPlaying(false);
-	seek(iFrame, true);
 	jack_transport_locate(m_pAudioEngine->jackClient(), iFrame);
+	seek(iFrame, true);
 	stabilize();
 	setPlaying(bPlaying);
 }
