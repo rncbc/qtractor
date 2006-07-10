@@ -155,6 +155,24 @@ static void qtractorAudioEngine_graph_port ( jack_port_id_t, int, void *pvArg )
 
 
 //----------------------------------------------------------------------
+// qtractorAudioEngine_buffer_size -- JACK buffer-size change callback.
+//
+
+static int qtractorAudioEngine_buffer_size ( jack_nframes_t nframes, void *pvArg )
+{
+	qtractorAudioEngine *pAudioEngine
+		= static_cast<qtractorAudioEngine *> (pvArg);
+
+	if (pAudioEngine->notifyWidget()) {
+		QApplication::postEvent(pAudioEngine->notifyWidget(),
+			new QCustomEvent(pAudioEngine->notifyBufferType(), pAudioEngine));
+	}
+
+	return 0;
+}
+
+
+//----------------------------------------------------------------------
 // class qtractorAudioEngine -- JACK client instance (singleton).
 //
 
@@ -168,6 +186,7 @@ qtractorAudioEngine::qtractorAudioEngine ( qtractorSession *pSession )
 	m_eNotifyShutdownType = QEvent::None;
 	m_eNotifyXrunType     = QEvent::None;
 	m_eNotifyPortType     = QEvent::None;
+	m_eNotifyBufferType   = QEvent::None;
 }
 
 
@@ -199,6 +218,11 @@ void qtractorAudioEngine::setNotifyPortType ( QEvent::Type eNotifyPortType )
 	m_eNotifyPortType = eNotifyPortType;
 }
 
+void qtractorAudioEngine::setNotifyBufferType ( QEvent::Type eNotifyBufferType )
+{
+	m_eNotifyBufferType = eNotifyBufferType;
+}
+
 
 QWidget *qtractorAudioEngine::notifyWidget (void) const
 {
@@ -220,6 +244,24 @@ QEvent::Type qtractorAudioEngine::notifyPortType (void) const
 	return m_eNotifyPortType;
 }
 
+QEvent::Type qtractorAudioEngine::notifyBufferType (void) const
+{
+	return m_eNotifyBufferType;
+}
+
+
+// Internal sample-rate accessor.
+unsigned int qtractorAudioEngine::sampleRate (void) const
+{
+	return (m_pJackClient ? jack_get_sample_rate(m_pJackClient) : 0);
+}
+
+// Buffer size accessor.
+unsigned int qtractorAudioEngine::bufferSize (void) const
+{
+	return (m_pJackClient ? jack_get_buffer_size(m_pJackClient) : 0);
+}
+
 
 // Device engine initialization method.
 bool qtractorAudioEngine::init ( const QString& sClientName )
@@ -230,7 +272,7 @@ bool qtractorAudioEngine::init ( const QString& sClientName )
 		return false;
 
 	// ATTN: First thing to remember to set session sample rate.
-	session()->setSampleRate(jack_get_sample_rate(m_pJackClient));
+	session()->setSampleRate(sampleRate());
 
 	return true;
 }
@@ -256,6 +298,8 @@ bool qtractorAudioEngine::activate (void)
 		qtractorAudioEngine_graph_order, this);
 	jack_set_port_registration_callback(m_pJackClient,
 		qtractorAudioEngine_graph_port, this);
+    jack_set_buffer_size_callback(m_pJackClient,
+		qtractorAudioEngine_buffer_size, this);
 
 	// Time to activate ourselves...
 	jack_activate(m_pJackClient);
@@ -674,8 +718,8 @@ bool qtractorAudioBus::open (void)
 		}
 	}
 
-	// Allocate internal worlking bus buffers...
-	unsigned int iBufferSize = jack_get_buffer_size(pAudioEngine->jackClient());
+	// Allocate internal working bus buffers...
+	unsigned int iBufferSize = pAudioEngine->bufferSize();
 	m_ppXBuffer = new float * [m_iChannels];
 	for (i = 0; i < m_iChannels; i++)
 		m_ppXBuffer[i] = new float [iBufferSize];

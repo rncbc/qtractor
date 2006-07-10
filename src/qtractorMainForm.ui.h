@@ -100,6 +100,7 @@
 #define QTRACTOR_XRUN_EVENT     QEvent::Type(QEvent::User + 2)
 #define QTRACTOR_SHUT_EVENT     QEvent::Type(QEvent::User + 3)
 #define QTRACTOR_PORT_EVENT     QEvent::Type(QEvent::User + 4)
+#define QTRACTOR_BUFF_EVENT     QEvent::Type(QEvent::User + 5)
 
 
 //-------------------------------------------------------------------------
@@ -130,8 +131,9 @@ void qtractorMainForm::init (void)
 
 	m_iPeakTimer = 0;
 	m_iPlayTimer = 0;
-	m_iTransport = 0;
-	m_iLocate    = 0;
+
+	m_iTransportUpdate = 0; 
+	m_iTransportLocate = 0;
 
 	m_iXrunCount = 0;
 	m_iXrunSkip  = 0;
@@ -147,6 +149,7 @@ void qtractorMainForm::init (void)
 		pAudioEngine->setNotifyShutdownType(QTRACTOR_SHUT_EVENT);
 		pAudioEngine->setNotifyXrunType(QTRACTOR_XRUN_EVENT);
 		pAudioEngine->setNotifyPortType(QTRACTOR_PORT_EVENT);
+		pAudioEngine->setNotifyBufferType(QTRACTOR_BUFF_EVENT);
 	}
 
 	// Configure the audio file peak factory...
@@ -586,6 +589,7 @@ void qtractorMainForm::customEvent ( QCustomEvent *pCustomEvent )
 		m_iXrunTimer += QTRACTOR_TIMER_DELAY;
 		break;
 	case QTRACTOR_SHUT_EVENT:
+	case QTRACTOR_BUFF_EVENT:
 		// Just in case we were in the middle of something...
 		if (m_pSession->isPlaying()) {
 			transportPlayAction->setOn(false);
@@ -810,7 +814,7 @@ bool qtractorMainForm::editSession (void)
 	// Restore playback state, if needed...
 	if (bPlaying) {
 		m_pSession->setPlaying(true);
-		m_iTransport++;
+		m_iTransportUpdate++;
 	}
 	
 	// Done.
@@ -1447,7 +1451,7 @@ void qtractorMainForm::transportRewind (void)
 	else
 		iPlayHead = 0;
 	m_pSession->setPlayHead(iPlayHead);
-	m_iTransport++;
+	m_iTransportUpdate++;
 
 	stabilizeForm();
 }
@@ -1470,7 +1474,7 @@ void qtractorMainForm::transportBackward (void)
 	else
 		iPlayHead = 0;
 	m_pSession->setPlayHead(iPlayHead);
-	m_iTransport++;
+	m_iTransportUpdate++;
 
 	stabilizeForm();
 }
@@ -1488,7 +1492,7 @@ void qtractorMainForm::transportForward (void)
 
 	// Move playhead one second forward....
 	m_pSession->setPlayHead(m_pSession->playHead() + m_pSession->sampleRate());
-	m_iTransport++;
+	m_iTransportUpdate++;
 
 	stabilizeForm();
 }
@@ -1514,7 +1518,7 @@ void qtractorMainForm::transportFastForward (void)
 	else
 		iPlayHead = m_pSession->sessionLength();
 	m_pSession->setPlayHead(iPlayHead);
-	m_iTransport++;
+	m_iTransportUpdate++;
 
 	stabilizeForm();
 }
@@ -1567,7 +1571,7 @@ void qtractorMainForm::transportPlay (void)
 		m_pSession->setMidiPatch(m_pInstruments);
 	// Toggle engine play status...
 	m_pSession->setPlaying(bPlaying);
-	m_iTransport++;
+	m_iTransportUpdate++;
 
 	// And shutdown recording anyway...
 	if (!bPlaying && m_pSession->isRecording()) {
@@ -2112,8 +2116,8 @@ void qtractorMainForm::timerSlot (void)
 	}
 
 	// Transport status...
-	if (m_iTransport > 0) {
-		m_iTransport = 0;
+	if (m_iTransportUpdate > 0) {
+		m_iTransportUpdate = 0;
 		if (m_pTracks)
 			m_pTracks->trackView()->ensureVisibleFrame(m_iPlayHead);
 		stabilizeForm();
@@ -2135,16 +2139,15 @@ void qtractorMainForm::timerSlot (void)
 			// Check on external transport location changes;
 			// note that we'll have a doubled buffer-size guard...
 			long iDeltaFrame = (long) pos.frame - (long) m_pSession->playHead();
-			int iBufferSize2 = jack_get_buffer_size(
-				m_pSession->audioEngine()->jackClient()) << 1;
+			int iBufferSize2 = m_pSession->audioEngine()->bufferSize() << 1;
 			if (labs(iDeltaFrame) > iBufferSize2) {
-				if (++m_iLocate > 1) {
-					m_iLocate = 0;
+				if (++m_iTransportLocate > 1) {
+					m_iTransportLocate = 0;
 					m_pSession->setPlayHead(pos.frame);
-					m_iTransport++;
+					m_iTransportUpdate++;
 				}
-			}
-			else m_iLocate = 0;
+			}	// All quiet...
+			else m_iTransportLocate = 0;
 		}
 	}
 
@@ -2377,7 +2380,7 @@ void qtractorMainForm::tempoChanged (void)
 	// Restore playback state, if needed...
 	if (bPlaying) {
 		m_pSession->setPlaying(true);
-		m_iTransport++;
+		m_iTransportUpdate++;
 	}
 }
 

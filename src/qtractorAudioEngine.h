@@ -65,11 +65,18 @@ public:
 	void setNotifyShutdownType (QEvent::Type eNotifyShutdownType);
 	void setNotifyXrunType     (QEvent::Type eNotifyXrunType);
 	void setNotifyPortType     (QEvent::Type eNotifyPortType);
+	void setNotifyBufferType   (QEvent::Type eNotifyBufferType);
 
 	QWidget     *notifyWidget() const;
 	QEvent::Type notifyShutdownType() const;
 	QEvent::Type notifyXrunType() const;
 	QEvent::Type notifyPortType() const;
+	QEvent::Type notifyBufferType() const;
+
+	// Internal sample-rate accessor.
+	unsigned int sampleRate() const;
+	// Buffer size accessor.
+	unsigned int bufferSize() const;
 
 protected:
 
@@ -91,6 +98,7 @@ private:
 	QEvent::Type  m_eNotifyShutdownType;
 	QEvent::Type  m_eNotifyXrunType;
 	QEvent::Type  m_eNotifyPortType;
+	QEvent::Type  m_eNotifyBufferType;
 };
 
 
