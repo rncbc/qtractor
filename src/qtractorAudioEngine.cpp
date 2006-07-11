@@ -971,6 +971,8 @@ int qtractorAudioBus::updateConnects ( qtractorBus::BusMode busMode,
 		= static_cast<qtractorAudioEngine *> (engine());
 	if (pAudioEngine == NULL)
 		return 0;
+	if (pAudioEngine->jackClient() == NULL)
+		return 0;
 
 	// Modes must match, at least...
 	if ((busMode & qtractorAudioBus::busMode()) == 0)

@@ -1571,6 +1571,8 @@ int qtractorMidiBus::updateConnects ( qtractorBus::BusMode busMode,
 		= static_cast<qtractorMidiEngine *> (engine());
 	if (pMidiEngine == NULL)
 		return 0;
+	if (pMidiEngine->alsaSeq() == NULL)
+		return 0;
 
 	// Modes must match, at least...
 	if ((busMode & qtractorMidiBus::busMode()) == 0)
