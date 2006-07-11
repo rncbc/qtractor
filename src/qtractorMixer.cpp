@@ -687,7 +687,7 @@ qtractorMixer::qtractorMixer ( qtractorMainForm *pMainForm )
 	QDockWindow::setFixedExtentWidth(440);
 
 	// Finally set the default caption and tooltip.
-	QString sCaption = tr("Mixer");
+	const QString& sCaption = tr("Mixer");
 	QToolTip::add(this, sCaption);
 	QDockWindow::setCaption(sCaption);
 	QDockWindow::setIcon(QPixmap::fromMimeSource("viewMixer.png"));

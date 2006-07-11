@@ -61,7 +61,7 @@ qtractorFiles::qtractorFiles ( QWidget *pParent, const char *pszName )
 	QDockWindow::setFixedExtentWidth(160);
 
 	// Finally set the default caption and tooltip.
-	QString sCaption = tr("Files");
+	const QString& sCaption = tr("Files");
 	QToolTip::add(this, sCaption);
 	QDockWindow::setCaption(sCaption);
 	QDockWindow::setIcon(QPixmap::fromMimeSource("viewFiles.png"));

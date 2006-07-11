@@ -70,7 +70,7 @@ qtractorPortListItem::qtractorPortListItem (
 	m_pClientItem = pClientItem;
 	m_sPortName   = sPortName;
 	m_iPortMark   = 0;
-    m_bHilite     = false;
+	m_bHilite     = false;
 
 	QListViewItem::setDragEnabled(true);
 	QListViewItem::setDropEnabled(true);
@@ -250,11 +250,6 @@ qtractorClientListItem::qtractorClientListItem (
 // Default destructor.
 qtractorClientListItem::~qtractorClientListItem (void)
 {
-	// Take chance to update list's client name list...
-	qtractorClientListView *pClientListView
-		= static_cast<qtractorClientListView *> (listView());
-	if (pClientListView)
-		pClientListView->removeClientName(m_sClientName);
 }
 
 
@@ -537,18 +532,12 @@ const QStringList& qtractorClientListView::clientNames (void) const
 }
 
 
-// Special client-name list state-du-jour method.
-void qtractorClientListView::removeClientName ( const QString& sClientName )
-{
-	m_clientNames.remove(sClientName);
-}
-
-
 // Override clear method.
 void qtractorClientListView::clear (void)
 {
 	m_pHiliteItem = 0;
 	m_clientNames.clear();	
+
 	QListView::clear();
 }
 
@@ -601,7 +590,8 @@ void qtractorClientListView::setOpenAll ( bool bOpen )
 // Client:port set housekeeping marker.
 void qtractorClientListView::markClientPorts ( int iMark )
 {
-    m_pHiliteItem = 0;
+	m_clientNames.clear();
+	m_pHiliteItem = 0;
 
 	QListViewItem *pListItem = QListView::firstChild();
 	while (pListItem && pListItem->rtti() == QTRACTOR_CLIENT_ITEM) {

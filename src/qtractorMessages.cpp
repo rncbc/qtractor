@@ -81,7 +81,7 @@ qtractorMessages::qtractorMessages ( QWidget *pParent, const char *pszName )
 	QDockWindow::setFixedExtentHeight(120);
 
 	// Finally set the default caption and tooltip.
-	QString sCaption = tr("Messages");
+	const QString& sCaption = tr("Messages");
 	QToolTip::add(this, sCaption);
 	QDockWindow::setCaption(sCaption);
 	QDockWindow::setIcon(QPixmap::fromMimeSource("viewMessages.png"));

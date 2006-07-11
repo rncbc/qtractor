@@ -64,7 +64,7 @@ qtractorConnections::qtractorConnections ( qtractorMainForm *pMainForm )
 	QDockWindow::setFixedExtentWidth(480);
 
 	// Finally set the default caption and tooltip.
-	QString sCaption = tr("Connections");
+	const QString& sCaption = tr("Connections");
 	QToolTip::add(this, sCaption);
 	QDockWindow::setCaption(sCaption);
 	QDockWindow::setIcon(QPixmap::fromMimeSource("viewConnections.png"));

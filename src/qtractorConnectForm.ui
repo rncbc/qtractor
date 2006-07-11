@@ -464,13 +464,13 @@
         <sender>AudioIClientsComboBox</sender>
         <signal>activated(int)</signal>
         <receiver>qtractorConnectTestForm</receiver>
-        <slot>audioRefresh()</slot>
+        <slot>audioIClientChanged()</slot>
     </connection>
     <connection>
         <sender>AudioOClientsComboBox</sender>
         <signal>activated(int)</signal>
         <receiver>qtractorConnectTestForm</receiver>
-        <slot>audioRefresh()</slot>
+		<slot>audioOClientChanged</slot>
     </connection>
     <connection>
         <sender>AudioConnectPushButton</sender>
@@ -500,13 +500,13 @@
         <sender>MidiIClientsComboBox</sender>
         <signal>activated(int)</signal>
         <receiver>qtractorConnectTestForm</receiver>
-        <slot>midiRefresh()</slot>
+		<slot>midiIClientChanged()</slot>
     </connection>
     <connection>
         <sender>MidiOClientsComboBox</sender>
         <signal>activated(int)</signal>
         <receiver>qtractorConnectTestForm</receiver>
-        <slot>midiRefresh()</slot>
+		<slot>midiOClientChanged()</slot>
     </connection>
     <connection>
         <sender>MidiConnectPushButton</sender>
@@ -567,11 +567,15 @@
     <variable access="private">qtractorMidiConnect *m_pMidiConnect;</variable>
 </variables>
 <slots>
+	<slot specifier="non virtual">audioIClientChanged()</slot>
+	<slot specifier="non virtual">audioOClientChanged()</slot>
     <slot specifier="non virtual">audioConnectSelected()</slot>
     <slot specifier="non virtual">audioDisconnectSelected()</slot>
     <slot specifier="non virtual">audioDisconnectAll()</slot>
     <slot specifier="non virtual">audioRefresh()</slot>
     <slot specifier="non virtual">audioStabilize()</slot>
+	<slot specifier="non virtual">midiIClientChanged()</slot>
+	<slot specifier="non virtual">midiOClientChanged()</slot>
     <slot specifier="non virtual">midiConnectSelected()</slot>
     <slot specifier="non virtual">midiDisconnectSelected()</slot>
     <slot specifier="non virtual">midiDisconnectAll()</slot>

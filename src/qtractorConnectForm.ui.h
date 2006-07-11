@@ -105,6 +105,30 @@ qtractorOptions *qtractorConnectForm::options (void)
 }
 
 
+// Audio client name change slots.
+void qtractorConnectForm::audioIClientChanged (void)
+{
+#ifdef CONFIG_DEBUG
+	fprintf(stderr, "qtractorConnectForm::audioIClientChanged()\n");
+#endif
+
+	// Reset any port name pattern...
+	AudioIListView->setPortName(QString::null);
+	audioRefresh();
+}
+
+void qtractorConnectForm::audioOClientChanged (void)
+{
+#ifdef CONFIG_DEBUG
+	fprintf(stderr, "qtractorConnectForm::audioOClientChanged()\n");
+#endif
+
+	// Reset any port name pattern...
+	AudioOListView->setPortName(QString::null);
+	audioRefresh();
+}
+
+
 // Connect current selected ports.
 void qtractorConnectForm::audioConnectSelected (void)
 {
@@ -177,6 +201,30 @@ void qtractorConnectForm::audioStabilize (void)
 		m_pAudioConnect->canDisconnectSelected());
 	AudioDisconnectAllPushButton->setEnabled(
 		m_pAudioConnect->canDisconnectAll());
+}
+
+
+// MIDI client name change slots.
+void qtractorConnectForm::midiIClientChanged (void)
+{
+#ifdef CONFIG_DEBUG
+	fprintf(stderr, "qtractorConnectForm::midiIClientChanged()\n");
+#endif
+
+	// Reset any port name pattern...
+	MidiIListView->setPortName(QString::null);
+	midiRefresh();
+}
+
+void qtractorConnectForm::midiOClientChanged (void)
+{
+#ifdef CONFIG_DEBUG
+	fprintf(stderr, "qtractorConnectForm::midiOClientChanged()\n");
+#endif
+
+	// Reset any port name pattern...
+	MidiOListView->setPortName(QString::null);
+	midiRefresh();
 }
 
 
