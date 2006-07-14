@@ -470,7 +470,7 @@
         <sender>AudioOClientsComboBox</sender>
         <signal>activated(int)</signal>
         <receiver>qtractorConnectTestForm</receiver>
-		<slot>audioOClientChanged</slot>
+		<slot>audioOClientChanged()</slot>
     </connection>
     <connection>
         <sender>AudioConnectPushButton</sender>
