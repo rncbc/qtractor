@@ -2308,8 +2308,9 @@ void qtractorMainForm::trackSelectionChanged (void)
 		if (pTrack)
 			pStrip = m_pMixer->trackRack()->findStrip(pTrack->monitor());
 		if (pStrip) {
+			int wm = (pStrip->width() >> 1);
 			m_pMixer->trackRack()->ensureVisible(
-				pStrip->pos().x(), 0, pStrip->width(), 0);
+				pStrip->pos().x() + wm, 0, wm, 0);
 			m_pMixer->trackRack()->setSelectedStrip(pStrip);
 		}
 	}
