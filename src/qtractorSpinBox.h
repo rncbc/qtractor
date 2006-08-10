@@ -28,6 +28,14 @@
 
 #include <math.h>
 
+#if defined(__BORLANDC__)
+// BCC32 doesn't have these float versions...
+static inline float logf ( float x )	{ return float(::log(x)); }
+static inline float expf ( float x )	{ return float(::exp(x)); }
+static inline float powf ( float x, float y ) { return float(::pow(x, y)); }
+static inline float log10f ( float x )	{ return float(::log(x) / M_LN10); }
+#endif
+
 
 //----------------------------------------------------------------------
 // class qtractorSpinBox -- A rough floating-point enabled QSpinBox.
@@ -41,13 +49,15 @@ public:
 
 	// Constructor.
 	qtractorSpinBox(QWidget *pParent = 0, const char *pszName = 0,
-		int iDecs = 1) : QSpinBox(pParent, pszName), m_iDecs(iDecs)
+		int iDecs = 1) : QSpinBox(pParent, pszName), m_iDecs(iDecs), m_iMult(1)
 	{	// Multiplier is intentionally stepped up for precision...
-		m_iMult = int(::pow(10.0f, m_iDecs + 1));
-		QDoubleValidator *pValidator = new QDoubleValidator(this);
-		pValidator->setDecimals(iDecs);
-		setValidator(pValidator);
-		setLineStep(m_iMult / 10);
+		if (m_iDecs > 0) {
+			m_iMult = int(::powf(10.0f, m_iDecs + 1));
+			QDoubleValidator *pValidator = new QDoubleValidator(this);
+			pValidator->setDecimals(m_iDecs);
+			setValidator(pValidator);
+			setLineStep(10);
+		}
 	}
 
 	// Float value accessors.
@@ -55,6 +65,18 @@ public:
 		{ return (float(value()) / float(m_iMult)); }
 	void setValueFloat(float fValue)
 		{ directSetValue(int(fValue * m_iMult)); updateDisplay(); }
+
+	// Minimum float value accessors.
+	float minValueFloat() const
+		{ return (float(minValue()) / float(m_iMult)); }
+	void setMinValueFloat(float fMinValue)
+		{ setMinValue(int(fMinValue * m_iMult)); }
+
+	// Maximum float value accessors.
+	float maxValueFloat() const
+		{ return (float(maxValue()) / float(m_iMult)); }
+	void setMaxValueFloat(float fMaxValue)
+		{ setMaxValue(int(fMaxValue * m_iMult)); }
 
 	// Special alignment accessors.
 	void setAlignment(int flags)
@@ -65,9 +87,9 @@ public:
 protected:
 
 	// Virtual overrides.
-	QString mapValueToText (int iValue)
+	QString mapValueToText(int iValue)
 		{ return QString::number(float(iValue) / float(m_iMult), 'f', m_iDecs); }
-	int mapTextToValue (bool *pbOk)
+	int mapTextToValue(bool *pbOk)
 		{ return int(float(m_iMult) * text().toFloat(pbOk)); }
 
 private:

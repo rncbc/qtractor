@@ -31,6 +31,7 @@
 #include "qtractorAudioMonitor.h"
 #include "qtractorMidiMonitor.h"
 #include "qtractorInstrument.h"
+#include "qtractorPlugin.h"
 
 #include <qpainter.h>
 
@@ -104,6 +105,8 @@ qtractorTrack::qtractorTrack ( qtractorSession *pSession, TrackType trackType )
 
 	m_pClipRecord = NULL;
 
+	m_pPluginList = new qtractorPluginList(0, 0, 0);
+
 	clear();
 }
 
@@ -112,10 +115,10 @@ qtractorTrack::~qtractorTrack (void)
 {
 	close();
 
-	if (m_pMonitor) {
+	if (m_pPluginList)
+		delete m_pPluginList;
+	if (m_pMonitor)
 		delete m_pMonitor;
-		m_pMonitor = NULL;
-	}
 
 	clear();
 }
@@ -208,11 +211,15 @@ bool qtractorTrack::open (void)
 	}
 	switch (trackType()) {
 	case qtractorTrack::Audio: {
+		qtractorAudioEngine *pAudioEngine
+			= static_cast<qtractorAudioEngine *> (pEngine);
 		qtractorAudioBus *pAudioBus
 			= static_cast<qtractorAudioBus *> (m_pOutputBus);
 		if (pAudioBus) {
 			m_pMonitor = new qtractorAudioMonitor(pAudioBus->channels(),
 				m_props.gain, m_props.panning);
+			m_pPluginList->setBuffer(pAudioBus->channels(),
+				pAudioEngine->bufferSize(), pAudioEngine->sampleRate());
 		}
 		break;
 	}
@@ -222,6 +229,7 @@ bool qtractorTrack::open (void)
 		if (pMidiBus) {
 			m_pMonitor = new qtractorMidiMonitor(m_pSession,
 				m_props.gain, m_props.panning);
+			m_pPluginList->setBuffer(0, 0, 0);
 		}
 		break;
 	}
@@ -482,6 +490,13 @@ qtractorMonitor *qtractorTrack::monitor (void) const
 }
 
 
+// Track plugin-chain accessors.
+qtractorPluginList *qtractorTrack::pluginList (void) const
+{
+	return m_pPluginList;
+}
+
+
 // Normalized view height accessors.
 unsigned short qtractorTrack::height (void) const
 {
@@ -614,6 +629,10 @@ void qtractorTrack::process ( qtractorClip *pClip,
 		if (pAudioBus
 			&& !isMute() && (!m_pSession->soloTracks() || isSolo())) {
 			pAudioMonitor->process(pAudioBus->buffer(), nframes);
+			// Plugin chain post-processing...
+			if (m_pPluginList->activated())
+				m_pPluginList->process(pAudioBus->buffer(), nframes);
+			// Done, send it out...
 			pAudioBus->buffer_commit(nframes);
 		}
 		// Audio-recording?

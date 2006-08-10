@@ -28,7 +28,7 @@
 #include "qtractorSessionCursor.h"
 #include "qtractorSessionDocument.h"
 #include "qtractorMidiEngine.h"
-
+#include "qtractorPlugin.h"
 #include "qtractorClip.h"
 
 #include <qapplication.h>
@@ -158,7 +158,7 @@ static void qtractorAudioEngine_graph_port ( jack_port_id_t, int, void *pvArg )
 // qtractorAudioEngine_buffer_size -- JACK buffer-size change callback.
 //
 
-static int qtractorAudioEngine_buffer_size ( jack_nframes_t nframes, void *pvArg )
+static int qtractorAudioEngine_buffer_size ( jack_nframes_t, void *pvArg )
 {
 	qtractorAudioEngine *pAudioEngine
 		= static_cast<qtractorAudioEngine *> (pvArg);
@@ -612,15 +612,21 @@ qtractorAudioBus::qtractorAudioBus ( qtractorAudioEngine *pAudioEngine,
 {
 	m_iChannels = iChannels;
 
-	if (busMode & qtractorBus::Input)
+	if (busMode & qtractorBus::Input) {
 		m_pIAudioMonitor = new qtractorAudioMonitor(iChannels);
-	else
+		m_pIPluginList   = new qtractorPluginList(iChannels, 0, 0);
+	} else {
 		m_pIAudioMonitor = NULL;
+		m_pIPluginList   = NULL;
+	}
 
-	if (busMode & qtractorBus::Output)
+	if (busMode & qtractorBus::Output) {
 		m_pOAudioMonitor = new qtractorAudioMonitor(iChannels);
-	else
+		m_pOPluginList   = new qtractorPluginList(iChannels, 0, 0);
+	} else {
 		m_pOAudioMonitor = NULL;
+		m_pOPluginList   = NULL;
+	}
 
 	m_bAutoConnect = bAutoConnect;
 
@@ -644,18 +650,34 @@ qtractorAudioBus::~qtractorAudioBus (void)
 		delete m_pIAudioMonitor;
 	if (m_pOAudioMonitor)
 		delete m_pOAudioMonitor;
+
+	if (m_pIPluginList)
+		delete m_pIPluginList;
+	if (m_pOPluginList)
+		delete m_pOPluginList;
 }
 
 
 // Channel number property accessor.
 void qtractorAudioBus::setChannels ( unsigned short iChannels )
 {
+	qtractorAudioEngine *pAudioEngine
+		= static_cast<qtractorAudioEngine *> (engine());
+	if (pAudioEngine == NULL)
+		return;
+
 	m_iChannels = iChannels;
 
 	if (m_pIAudioMonitor)
 		m_pIAudioMonitor->setChannels(iChannels);
 	if (m_pOAudioMonitor)
 		m_pOAudioMonitor->setChannels(iChannels);
+
+	if (m_pIPluginList)
+		m_pIPluginList->setBuffer(iChannels, 0, 0);
+
+	if (m_pOPluginList)
+		m_pIPluginList->setBuffer(iChannels, 0, 0);
 }
 
 unsigned short qtractorAudioBus::channels (void) const
@@ -724,6 +746,13 @@ bool qtractorAudioBus::open (void)
 	for (i = 0; i < m_iChannels; i++)
 		m_ppXBuffer[i] = new float [iBufferSize];
 
+	// Plugin lists need some buffer (re)allocation too...
+	unsigned int iSampleRate = pAudioEngine->sampleRate(); 
+	if (m_pIPluginList)
+		m_pIPluginList->setBuffer(m_iChannels, iBufferSize, iSampleRate);
+	if (m_pOPluginList)
+		m_pOPluginList->setBuffer(m_iChannels, iBufferSize, iSampleRate);
+
 	// Finally, open for biz...
 	m_bEnabled = true;
 
@@ -788,8 +817,7 @@ void qtractorAudioBus::close (void)
 	if (m_ppXBuffer) {
 		for (i = 0; i < m_iChannels; i++)
 			delete [] m_ppXBuffer[i];
-		if (m_ppXBuffer)
-			delete [] m_ppXBuffer;
+		delete [] m_ppXBuffer;
 		m_ppXBuffer = NULL;
 	}
 }
@@ -845,22 +873,45 @@ void qtractorAudioBus::autoConnect (void)
 // Bus mode change event.
 void qtractorAudioBus::updateBusMode (void)
 {
+	qtractorAudioEngine *pAudioEngine
+		= static_cast<qtractorAudioEngine *> (engine());
+	if (pAudioEngine == NULL)
+		return;
+
 	// Have a new/old input monitor?
 	if (busMode() & qtractorBus::Input) {
 		if (m_pIAudioMonitor == NULL)
 			m_pIAudioMonitor = new qtractorAudioMonitor(m_iChannels);
-	} else if (m_pIAudioMonitor) {
-		delete m_pIAudioMonitor;
-		m_pIAudioMonitor = NULL;
+		if (m_pIPluginList == NULL)
+			m_pIPluginList = new qtractorPluginList(m_iChannels,
+				pAudioEngine->bufferSize(), pAudioEngine->sampleRate());
+	} else {
+		if (m_pIAudioMonitor) {
+			delete m_pIAudioMonitor;
+			m_pIAudioMonitor = NULL;
+		}
+		if (m_pOPluginList) {
+			delete m_pOPluginList;
+			m_pOPluginList = NULL;
+		}
 	}
 
 	// Have a new/old output monitor?
 	if (busMode() & qtractorBus::Output) {
 		if (m_pOAudioMonitor == NULL)
 			m_pOAudioMonitor = new qtractorAudioMonitor(m_iChannels);
-	} else if (m_pOAudioMonitor) {
-		delete m_pOAudioMonitor;
-		m_pOAudioMonitor = NULL;
+		if (m_pOPluginList == NULL)
+			m_pOPluginList = new qtractorPluginList(m_iChannels,
+				pAudioEngine->bufferSize(), pAudioEngine->sampleRate());
+	} else {
+		if (m_pOAudioMonitor) {
+			delete m_pOAudioMonitor;
+			m_pOAudioMonitor = NULL;
+		}
+		if (m_pOPluginList) {
+			delete m_pOPluginList;
+			m_pOPluginList = NULL;
+		}
 	}
 }
 
@@ -885,6 +936,8 @@ void qtractorAudioBus::process_prepare ( unsigned int nframes )
 
 	if (m_pIAudioMonitor)
 		m_pIAudioMonitor->process(m_ppIBuffer, nframes);
+	if (m_pIPluginList && m_pIPluginList->activated())
+		m_pIPluginList->process(m_ppIBuffer, nframes);
 }
 
 
@@ -896,6 +949,8 @@ void qtractorAudioBus::process_commit ( unsigned int nframes )
 
 	if (m_pOAudioMonitor)
 		m_pOAudioMonitor->process(m_ppOBuffer, nframes);
+	if (m_pOPluginList && m_pOPluginList->activated())
+		m_pOPluginList->process(m_ppOBuffer, nframes);
 }
 
 
@@ -960,6 +1015,19 @@ qtractorAudioMonitor *qtractorAudioBus::audioMonitor_out (void) const
 {
 	return m_pOAudioMonitor;
 }
+
+
+// Plugin-chain accessors.
+qtractorPluginList *qtractorAudioBus::pluginList_in (void) const
+{
+	return m_pIPluginList;
+}
+
+qtractorPluginList *qtractorAudioBus::pluginList_out (void) const
+{
+	return m_pOPluginList;
+}
+
 
 
 // Retrive all current JACK connections for a given bus mode interface;

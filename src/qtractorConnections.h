@@ -42,12 +42,9 @@ class qtractorConnections : public QDockWindow
 public:
 
 	// Constructor.
-	qtractorConnections(qtractorMainForm *pMainForm);
+	qtractorConnections(qtractorMainForm *pParent);
 	// Destructor.
 	~qtractorConnections();
-
-	// Main application form accessors.
-	qtractorMainForm *mainForm() const;
 
 	// Connect form accessor.
 	qtractorConnectForm *connectForm() const;
@@ -67,7 +64,6 @@ public:
 private:
 
 	// Instance variables.
-	qtractorMainForm    *m_pMainForm;
 	qtractorConnectForm *m_pConnectForm;
 };
 

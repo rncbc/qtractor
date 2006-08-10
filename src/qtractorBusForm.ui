@@ -497,11 +497,9 @@
     <tabstop>ClosePushButton</tabstop>
 </tabstops>
 <forwards>
-    <forward>class qtractorMainForm;</forward>
     <forward>class qtractorBus;</forward>
 </forwards>
 <variables>
-    <variable access="private">qtractorMainForm *m_pMainForm;</variable>
     <variable access="private">qtractorBus *m_pBus;</variable>
     <variable access="private">QListViewItem *m_pAudioRoot;</variable>
     <variable access="private">QListViewItem *m_pMidiRoot;</variable>
@@ -523,8 +521,6 @@
 <functions>
     <function access="private" specifier="non virtual">init()</function>
     <function access="private" specifier="non virtual">destroy()</function>
-    <function specifier="non virtual">setMainForm( qtractorMainForm *pMainForm )</function>
-    <function specifier="non virtual" returnType="qtractorMainForm *">mainForm()</function>
     <function specifier="non virtual">setBus( qtractorBus *pBus )</function>
     <function specifier="non virtual" returnType="qtractorBus *">bus()</function>
     <function specifier="non virtual" returnType="bool">isDirty()</function>

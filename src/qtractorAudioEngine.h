@@ -32,6 +32,7 @@
 // Forward declarations.
 class qtractorAudioBus;
 class qtractorAudioMonitor;
+class qtractorPluginList;
 
 
 //----------------------------------------------------------------------
@@ -155,6 +156,10 @@ public:
 	qtractorAudioMonitor *audioMonitor_in()  const;
 	qtractorAudioMonitor *audioMonitor_out() const;
 
+	// Plugin-chain accessors.
+	qtractorPluginList *pluginList_in()  const;
+	qtractorPluginList *pluginList_out() const;
+
 	// Retrieve/restore client:port connections;
 	// return the effective number of connection attempts...
 	int updateConnects(BusMode busMode,
@@ -174,6 +179,10 @@ private:
 	// Specific monitor instances.
 	qtractorAudioMonitor *m_pIAudioMonitor;
 	qtractorAudioMonitor *m_pOAudioMonitor;
+
+	// Plugin-chain instances.
+	qtractorPluginList *m_pIPluginList;
+	qtractorPluginList *m_pOPluginList;
 
 	// Specific JACK ports stuff.
 	jack_port_t    **m_ppIPorts;

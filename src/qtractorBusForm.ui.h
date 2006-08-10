@@ -75,7 +75,6 @@ private:
 void qtractorBusForm::init (void)
 {
 	// Initialize locals.
-	m_pMainForm   = NULL;
 	m_pBus        = NULL;
 	m_pAudioRoot  = NULL;
 	m_pMidiRoot   = NULL;
@@ -85,19 +84,6 @@ void qtractorBusForm::init (void)
 
 	// Start with unsorted bus list...
 	BusListView->setSorting(2);
-}
-
-
-// Kind of destructor.
-void qtractorBusForm::destroy (void)
-{
-}
-
-
-// Main form accessors.
-void qtractorBusForm::setMainForm ( qtractorMainForm *pMainForm )
-{
-	m_pMainForm = pMainForm;
 
 	// (Re)initial contents.
 	refreshBusses();
@@ -106,9 +92,10 @@ void qtractorBusForm::setMainForm ( qtractorMainForm *pMainForm )
 	adjustSize();
 }
 
-qtractorMainForm *qtractorBusForm::mainForm (void)
+
+// Kind of destructor.
+void qtractorBusForm::destroy (void)
 {
-	return m_pMainForm;
 }
 
 
@@ -213,14 +200,16 @@ void qtractorBusForm::refreshBusses (void)
 	m_pAudioRoot = NULL;
 	m_pMidiRoot  = NULL;
 	BusListView->clear();
-	
-	if (m_pMainForm == NULL)
+
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm == NULL)
 		return;
-	if (m_pMainForm->session() == NULL)
+	qtractorSession *pSession = pMainForm->session();
+	if (pSession == NULL)
 		return;
 
 	// MIDI busses...
-	qtractorMidiEngine *pMidiEngine = m_pMainForm->session()->midiEngine();
+	qtractorMidiEngine *pMidiEngine = pSession->midiEngine();
 	if (pMidiEngine) {
 		m_pMidiRoot = new QListViewItem(BusListView, ' ' + tr("MIDI"));
 		m_pMidiRoot->setSelectable(false);
@@ -231,7 +220,7 @@ void qtractorBusForm::refreshBusses (void)
 	}
 
 	// Audio busses...
-	qtractorAudioEngine *pAudioEngine = m_pMainForm->session()->audioEngine();
+	qtractorAudioEngine *pAudioEngine = pSession->audioEngine();
 	if (pAudioEngine) {
 		m_pAudioRoot = new QListViewItem(BusListView, ' ' + tr("Audio"));
 		m_pAudioRoot->setSelectable(false);
@@ -291,9 +280,12 @@ bool qtractorBusForm::canCreateBus (void)
 		return false;
 	if (m_pBus == NULL)
 		return false;
-	if (m_pMainForm == NULL)
+
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm == NULL)
 		return false;
-	if (m_pMainForm->session() == NULL)
+	qtractorSession *pSession = pMainForm->session();
+	if (pSession == NULL)
 		return false;
 
 	const QString sBusName = BusNameLineEdit->text().stripWhiteSpace();
@@ -304,10 +296,10 @@ bool qtractorBusForm::canCreateBus (void)
 	qtractorEngine *pEngine = NULL;
 	switch (m_pBus->busType()) {
 	case qtractorTrack::Audio:
-		pEngine = m_pMainForm->session()->audioEngine();
+		pEngine = pSession->audioEngine();
 		break;
 	case qtractorTrack::Midi:
-		pEngine = m_pMainForm->session()->midiEngine();
+		pEngine = pSession->midiEngine();
 		break;
 	default:
 		break;
@@ -328,9 +320,12 @@ bool qtractorBusForm::canUpdateBus (void)
 		return false;
 	if (m_pBus == NULL)
 		return false;
-	if (m_pMainForm == NULL)
+
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm == NULL)
 		return false;
-	if (m_pMainForm->session() == NULL)
+	qtractorSession *pSession = pMainForm->session();
+	if (pSession == NULL)
 		return false;
 
 	const QString sBusName = BusNameLineEdit->text().stripWhiteSpace();
@@ -343,9 +338,12 @@ bool qtractorBusForm::canDeleteBus (void)
 {
 	if (m_pBus == NULL)
 		return false;
-	if (m_pMainForm == NULL)
+
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm == NULL)
 		return false;
-	if (m_pMainForm->session() == NULL)
+	qtractorSession *pSession = pMainForm->session();
+	if (pSession == NULL)
 		return false;
 
 	// The very first bus is never deletable...
@@ -358,9 +356,12 @@ void qtractorBusForm::createBus (void)
 {
 	if (m_pBus == NULL)
 		return;
-	if (m_pMainForm == NULL)
+
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm == NULL)
 		return;
-	if (m_pMainForm->session() == NULL)
+	qtractorSession *pSession = pMainForm->session();
+	if (pSession == NULL)
 		return;
 
 	const QString sBusName = BusNameLineEdit->text().stripWhiteSpace();
@@ -383,8 +384,7 @@ void qtractorBusForm::createBus (void)
 	// Get the device view root item...
 	switch (m_pBus->busType()) {
 	case qtractorTrack::Audio: {
-		qtractorAudioEngine *pAudioEngine
-			= m_pMainForm->session()->audioEngine();
+		qtractorAudioEngine *pAudioEngine = pSession->audioEngine();
 		if (pAudioEngine) {
 			qtractorAudioBus *pAudioBus
 				= new qtractorAudioBus(pAudioEngine, sBusName, busMode,
@@ -396,8 +396,7 @@ void qtractorBusForm::createBus (void)
 		break;
 	}
 	case qtractorTrack::Midi: {
-		qtractorMidiEngine *pMidiEngine
-			= m_pMainForm->session()->midiEngine();
+		qtractorMidiEngine *pMidiEngine = pSession->midiEngine();
 		if (pMidiEngine) {
 			qtractorMidiBus *pMidiBus
 				= new qtractorMidiBus(pMidiEngine, sBusName, busMode);
@@ -415,8 +414,8 @@ void qtractorBusForm::createBus (void)
 
 	// Refresh main form.
 	m_iDirtyTotal++;
-	m_pMainForm->contentsChanged();
-	m_pMainForm->viewRefresh();
+	pMainForm->contentsChanged();
+	pMainForm->viewRefresh();
 
 	// Done.
 	refreshBusses();
@@ -428,10 +427,11 @@ void qtractorBusForm::updateBus (void)
 {
 	if (m_pBus == NULL)
 		return;
-	if (m_pMainForm == NULL)
-		return;
 
-	qtractorSession *pSession = m_pMainForm->session();
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm == NULL)
+		return;
+	qtractorSession *pSession = pMainForm->session();
 	if (pSession == NULL)
 		return;
 
@@ -487,7 +487,7 @@ void qtractorBusForm::updateBus (void)
 	m_pBus->open();
 
 	// Update (reset) all applicable mixer strips...
-	qtractorMixer *pMixer = m_pMainForm->mixer();
+	qtractorMixer *pMixer = pMainForm->mixer();
 	if (pMixer) {
 		if (m_pBus->busMode() & qtractorBus::Input) {
 			pMixer->updateBusStrip(pMixer->inputRack(),
@@ -501,7 +501,7 @@ void qtractorBusForm::updateBus (void)
 
 	// (Re)open all applicable tracks
 	// and (reset) respective mixer strips too ...
-	qtractorTracks *pTracks = m_pMainForm->tracks();
+	qtractorTracks *pTracks = pMainForm->tracks();
 	for (qtractorTrack *pTrack = pSession->tracks().first();
 			pTrack; pTrack = pTrack->next()) {
 		if (pTrack->inputBusName()  == sBusName ||
@@ -526,8 +526,8 @@ void qtractorBusForm::updateBus (void)
 
 	// Refresh main form.
 	m_iDirtyTotal++;
-	m_pMainForm->contentsChanged();
-	m_pMainForm->viewRefresh();
+	pMainForm->contentsChanged();
+	pMainForm->viewRefresh();
 
 	// Done.
 	refreshBusses();
@@ -539,10 +539,11 @@ void qtractorBusForm::deleteBus (void)
 {
 	if (m_pBus == NULL)
 		return;
-	if (m_pMainForm == NULL)
-		return;
 
-	qtractorSession *pSession = m_pMainForm->session();
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm == NULL)
+		return;
+	qtractorSession *pSession = pMainForm->session();
 	if (pSession == NULL)
 		return;
 
@@ -566,7 +567,7 @@ void qtractorBusForm::deleteBus (void)
 		return;
 
 	// Prompt user if he/she's sure about this...
-	qtractorOptions *pOptions = m_pMainForm->options();
+	qtractorOptions *pOptions = pMainForm->options();
 	if (pOptions && pOptions->bConfirmRemove) {
 		if (QMessageBox::warning(this,
 			tr("Warning") + " - " QTRACTOR_TITLE,
@@ -601,8 +602,8 @@ void qtractorBusForm::deleteBus (void)
 
 	// Refresh main form.
 	m_iDirtyTotal++;
-	m_pMainForm->contentsChanged();
-	m_pMainForm->viewRefresh();
+	pMainForm->contentsChanged();
+	pMainForm->viewRefresh();
 
 	// Done.
 	refreshBusses();

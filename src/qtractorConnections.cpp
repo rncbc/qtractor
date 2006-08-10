@@ -38,8 +38,8 @@
 //
 
 // Constructor.
-qtractorConnections::qtractorConnections ( qtractorMainForm *pMainForm )
-	: QDockWindow(pMainForm, "qtractorConnections"), m_pMainForm(pMainForm)
+qtractorConnections::qtractorConnections ( qtractorMainForm *pParent )
+	: QDockWindow(pParent, "qtractorConnections")
 {
 	// Surely a name is crucial (e.g.for storing geometry settings)
 	// QDockWindow::setName("qtractorConnections");
@@ -71,35 +71,40 @@ qtractorConnections::qtractorConnections ( qtractorMainForm *pMainForm )
 
 	// Get previously saved splitter sizes,
 	// (with fair default...)
-	QValueList<int> sizes;
-	sizes.append(180);
-	sizes.append(60);
-	sizes.append(180);
-	m_pMainForm->options()->loadSplitterSizes(
-		m_pConnectForm->AudioConnectSplitter, sizes);
-	m_pMainForm->options()->loadSplitterSizes(
-		m_pConnectForm->MidiConnectSplitter, sizes);
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm) {
+		qtractorOptions *pOptions = pMainForm->options();
+		if (pOptions) {
+			QValueList<int> sizes;
+			sizes.append(180);
+			sizes.append(60);
+			sizes.append(180);
+			pOptions->loadSplitterSizes(
+				m_pConnectForm->AudioConnectSplitter, sizes);
+			pOptions->loadSplitterSizes(
+				m_pConnectForm->MidiConnectSplitter, sizes);
+		}
+	}
 }
 
 
 // Destructor.
 qtractorConnections::~qtractorConnections (void)
 {
-	// Get previously saved splitter sizes...
-	m_pMainForm->options()->saveSplitterSizes(
-		m_pConnectForm->AudioConnectSplitter);
-	m_pMainForm->options()->saveSplitterSizes(
-		m_pConnectForm->MidiConnectSplitter);
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm) {
+		qtractorOptions *pOptions = pMainForm->options();
+		if (pOptions) {
+			// Get previously saved splitter sizes...
+			pOptions->saveSplitterSizes(
+				m_pConnectForm->AudioConnectSplitter);
+			pOptions->saveSplitterSizes(
+				m_pConnectForm->MidiConnectSplitter);
+		}
+	}
 
 	// No need to delete child widgets, Qt does it all for us.
 	delete m_pConnectForm;
-}
-
-
-// Main application form accessors.
-qtractorMainForm *qtractorConnections::mainForm (void) const
-{
-	return m_pMainForm;
 }
 
 
@@ -113,7 +118,8 @@ qtractorConnectForm *qtractorConnections::connectForm (void) const
 // Session accessor.
 qtractorSession *qtractorConnections::session (void) const
 {
-	return m_pMainForm->session();
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	return (pMainForm ? pMainForm->session() : NULL);
 }
 
 
@@ -192,7 +198,9 @@ void qtractorConnections::showBus ( qtractorBus *pBus,
 // Complete connections refreshment.
 void qtractorConnections::refresh (void)
 {
-	m_pConnectForm->setSession(m_pMainForm->session());
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm)
+		m_pConnectForm->setSession(pMainForm->session());
 }
 
 

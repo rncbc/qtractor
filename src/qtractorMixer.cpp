@@ -21,6 +21,9 @@
 
 #include "qtractorAbout.h"
 #include "qtractorMixer.h"
+
+#include "qtractorPluginListView.h"
+
 #include "qtractorAudioMeter.h"
 #include "qtractorMidiMeter.h"
 #include "qtractorAudioMonitor.h"
@@ -89,8 +92,11 @@ void qtractorMixerStrip::initMixerStrip (void)
 	m_pLabel = new QLabel(this);
 	m_pLabel->setFont(font6);
 	m_pLabel->setFixedHeight(fm.lineSpacing());
-
 	m_pLayout->addWidget(m_pLabel);
+
+	m_pPluginListView = new qtractorPluginListView(this);
+	m_pPluginListView->setFixedHeight(4 * fm.lineSpacing());
+	m_pLayout->addWidget(m_pPluginListView);
 
 	qtractorTrack::TrackType meterType = qtractorTrack::None;
 	if (m_pTrack) {
@@ -146,14 +152,20 @@ void qtractorMixerStrip::initMixerStrip (void)
 		if (m_pTrack) {
 			pAudioMonitor
 				= static_cast<qtractorAudioMonitor *> (m_pTrack->monitor());
+			m_pPluginListView->setPluginList(m_pTrack->pluginList());
 		} else {
 			qtractorAudioBus *pAudioBus
 				= static_cast<qtractorAudioBus *> (m_pBus);
 			if (pAudioBus) {
-				if (m_busMode & qtractorBus::Input)
+				if (m_busMode & qtractorBus::Input) {
+					m_pPluginListView->setPluginList(
+						pAudioBus->pluginList_in());
 					pAudioMonitor = pAudioBus->audioMonitor_in();
-				else
+				} else {
+					m_pPluginListView->setPluginList(
+						pAudioBus->pluginList_out());
 					pAudioMonitor = pAudioBus->audioMonitor_out();
+				}
 			}
 		}
 		// Have we an audio monitor/meter?...
@@ -162,6 +174,7 @@ void qtractorMixerStrip::initMixerStrip (void)
 				? 2 : pAudioMonitor->channels());
 			m_pMeter = new qtractorAudioMeter(pAudioMonitor, this);
 		}
+		m_pPluginListView->setEnabled(true);
 		break;
 	}
 	case qtractorTrack::Midi: {
@@ -194,6 +207,7 @@ void qtractorMixerStrip::initMixerStrip (void)
 				}
 			}
 		}
+		m_pPluginListView->setEnabled(false);
 		break;
 	}
 	case qtractorTrack::None:
@@ -277,6 +291,11 @@ void qtractorMixerStrip::updateName (void)
 
 
 // Child accessors.
+qtractorPluginListView *qtractorMixerStrip::pluginListView (void) const
+{
+	return m_pPluginListView;
+}
+
 qtractorMeter *qtractorMixerStrip::meter (void) const
 {
 	return m_pMeter;
@@ -298,6 +317,21 @@ void qtractorMixerStrip::setBus ( qtractorBus *pBus )
 		setMonitor(m_pBus->monitor_out());
 	}
 
+	if (m_pBus->busType() == qtractorTrack::Audio) {
+		qtractorAudioBus *pAudioBus
+			= static_cast<qtractorAudioBus *> (m_pBus);
+		if (pAudioBus) {
+			if (m_busMode & qtractorBus::Input) {
+				m_pPluginListView->setPluginList(pAudioBus->pluginList_in());
+			} else {
+				m_pPluginListView->setPluginList(pAudioBus->pluginList_out());
+			}
+		}
+		m_pPluginListView->setEnabled(true);
+	} else {
+		m_pPluginListView->setEnabled(false);
+	}
+
 	updateName();
 }
 
@@ -316,12 +350,15 @@ void qtractorMixerStrip::setTrack ( qtractorTrack *pTrack )
 
 	m_pTrack = pTrack;
 
-	if (m_pTrack) {
-		m_pRecordButton->setTrack(m_pTrack);
-		m_pMuteButton->setTrack(m_pTrack);
-		m_pSoloButton->setTrack(m_pTrack);
-		setMonitor(m_pTrack->monitor());
-	}
+	m_pPluginListView->setPluginList(m_pTrack->pluginList());
+	m_pPluginListView->setEnabled(
+		m_pTrack->trackType() == qtractorTrack::Audio);
+
+	m_pRecordButton->setTrack(m_pTrack);
+	m_pMuteButton->setTrack(m_pTrack);
+	m_pSoloButton->setTrack(m_pTrack);
+
+	setMonitor(m_pTrack->monitor());
 
 	updateName();
 }
@@ -397,10 +434,11 @@ void qtractorMixerStrip::mousePressEvent ( QMouseEvent *pMouseEvent )
 void qtractorMixerStrip::mouseDoubleClickEvent ( QMouseEvent * /*pMouseEvent*/ )
 {
 	if (m_pTrack) {
-		m_pRack->mixer()->mainForm()->trackProperties();
+		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+		if (pMainForm)
+			pMainForm->trackProperties();
 	} else if (m_pBus) {
 		qtractorBusForm busForm(this);
-		busForm.setMainForm(m_pRack->mixer()->mainForm());
 		busForm.setBus(m_pBus);
 		busForm.exec();
 	}
@@ -418,7 +456,9 @@ void qtractorMixerStrip::busButtonSlot (void)
 #endif
 
 	// Here we go...
-	m_pRack->mixer()->mainForm()->connections()->showBus(m_pBus, m_busMode);
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm)
+		pMainForm->connections()->showBus(m_pBus, m_busMode);
 }
 
 
@@ -432,14 +472,17 @@ void qtractorMixerStrip::panChangedSlot ( float fPanning )
 	fprintf(stderr, "qtractorMixerStrip::panChangedSlot(%.3g)\n", fPanning);
 #endif
 
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm == NULL)
+		return;
+
 	// Put it in the form of an undoable command...
 	if (m_pTrack) {
-		m_pRack->mixer()->mainForm()->commands()->exec(
-			new qtractorTrackPanningCommand(m_pRack->mixer()->mainForm(),
-				m_pTrack, fPanning));
+		pMainForm->commands()->exec(
+			new qtractorTrackPanningCommand(pMainForm, m_pTrack, fPanning));
 	} else if (m_pBus) {
-		m_pRack->mixer()->mainForm()->commands()->exec(
-			new qtractorBusPanningCommand(m_pRack->mixer()->mainForm(),
+		pMainForm->commands()->exec(
+			new qtractorBusPanningCommand(pMainForm,
 				m_pBus, m_busMode, fPanning));
 	}
 }
@@ -455,14 +498,17 @@ void qtractorMixerStrip::gainChangedSlot ( float fGain )
 	fprintf(stderr, "qtractorMixerStrip::gainChangedSlot(%.3g)\n", fGain);
 #endif
 
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm == NULL)
+		return;
+
 	// Put it in the form of an undoable command...
 	if (m_pTrack) {
-		m_pRack->mixer()->mainForm()->commands()->exec(
-			new qtractorTrackGainCommand(m_pRack->mixer()->mainForm(),
-				m_pTrack, fGain));
+		pMainForm->commands()->exec(
+			new qtractorTrackGainCommand(pMainForm, m_pTrack, fGain));
 	} else if (m_pBus) {
-		m_pRack->mixer()->mainForm()->commands()->exec(
-			new qtractorBusGainCommand(m_pRack->mixer()->mainForm(),
+		pMainForm->commands()->exec(
+			new qtractorBusGainCommand(pMainForm,
 				m_pBus, m_busMode, fGain));
 	}
 }
@@ -649,8 +695,11 @@ void qtractorMixerRack::resizeEvent ( QResizeEvent *pResizeEvent )
 // Context menu request event handler.
 void qtractorMixerRack::contextMenuEvent ( QContextMenuEvent *pContextMenuEvent )
 {
-	if (m_bSelectEnabled)
-		m_pMixer->mainForm()->trackMenu->exec(pContextMenuEvent->globalPos());
+	if (m_bSelectEnabled) {
+		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+		if (pMainForm)
+			pMainForm->trackMenu->exec(pContextMenuEvent->globalPos());
+	}
 }
 
 
@@ -658,8 +707,8 @@ void qtractorMixerRack::contextMenuEvent ( QContextMenuEvent *pContextMenuEvent 
 // qtractorMixer -- Mixer widget.
 
 // Constructor.
-qtractorMixer::qtractorMixer ( qtractorMainForm *pMainForm )
-	: QDockWindow(pMainForm, "qtractorMixer"), m_pMainForm(pMainForm)
+qtractorMixer::qtractorMixer ( qtractorMainForm *pParent )
+	: QDockWindow(pParent, "qtractorMixer")
 {
 	// Surely a name is crucial (e.g. for storing geometry settings)
 	// QDockWindow::setName("qtractorMixer");
@@ -694,11 +743,17 @@ qtractorMixer::qtractorMixer ( qtractorMainForm *pMainForm )
 
 	// Get previously saved splitter sizes,
 	// (with afair default...)
-	QValueList<int> sizes;
-	sizes.append(140);
-	sizes.append(160);
-	sizes.append(140);
-	m_pMainForm->options()->loadSplitterSizes(m_pSplitter, sizes);
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm) {
+		qtractorOptions *pOptions = pMainForm->options();
+		if (pOptions) {
+			QValueList<int> sizes;
+			sizes.append(140);
+			sizes.append(160);
+			sizes.append(140);
+			pOptions->loadSplitterSizes(m_pSplitter, sizes);
+		}
+	}
 }
 
 
@@ -706,23 +761,22 @@ qtractorMixer::qtractorMixer ( qtractorMainForm *pMainForm )
 qtractorMixer::~qtractorMixer (void)
 {
 	// Get previously saved splitter sizes...
-	m_pMainForm->options()->saveSplitterSizes(m_pSplitter);
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm) {
+		qtractorOptions *pOptions = pMainForm->options();
+		if (pOptions)
+			pOptions->saveSplitterSizes(m_pSplitter);
+	}
 
 	// No need to delete child widgets, Qt does it all for us
-}
-
-
-// Main application form accessors.
-qtractorMainForm *qtractorMixer::mainForm (void) const
-{
-	return m_pMainForm;
 }
 
 
 // Session accessor.
 qtractorSession *qtractorMixer::session (void) const
 {
-	return m_pMainForm->session();
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	return (pMainForm ? pMainForm->session() : NULL);
 }
 
 
@@ -856,8 +910,10 @@ void qtractorMixer::trackButtonToggledSlot (
 	qtractorTrackButton *pTrackButton, bool bOn )
 {
 	// Put it in the form of an undoable command...
-	m_pMainForm->commands()->exec(
-		new qtractorTrackButtonCommand(m_pMainForm, pTrackButton, bOn));
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm)
+		pMainForm->commands()->exec(
+			new qtractorTrackButtonCommand(pMainForm, pTrackButton, bOn));
 }
 
 

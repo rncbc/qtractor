@@ -45,6 +45,8 @@ headers = config.h \
 	src/qtractorAudioPeak.h \
 	src/qtractorAudioClip.h \
 	src/qtractorAudioEngine.h \
+	src/qtractorPlugin.h \
+	src/qtractorPluginListView.h \
 	src/qtractorMidiEvent.h \
 	src/qtractorMidiSequence.h \
 	src/qtractorMidiFile.h \
@@ -65,7 +67,9 @@ headers = config.h \
 	src/qtractorOptionsForm.ui.h \
 	src/qtractorInstrumentForm.ui.h \
 	src/qtractorConnectForm.ui.h \
-	src/qtractorBusForm.ui.h
+	src/qtractorBusForm.ui.h \
+	src/qtractorPluginForm.ui.h \
+	src/qtractorPluginSelectForm.ui.h
 
 sources = src/main.cpp \
 	src/qtractorOptions.cpp \
@@ -102,6 +106,8 @@ sources = src/main.cpp \
 	src/qtractorAudioPeak.cpp \
 	src/qtractorAudioClip.cpp \
 	src/qtractorAudioEngine.cpp \
+	src/qtractorPlugin.cpp \
+	src/qtractorPluginListView.cpp \
 	src/qtractorMidiSequence.cpp \
 	src/qtractorMidiFile.cpp \
 	src/qtractorMidiListView.cpp \

@@ -73,6 +73,7 @@ void qtractorSessionForm::setSession ( qtractorSession *pSession )
 	DescriptionTextEdit->setText(m_props.description);
 	// Time properties...
 	SampleRateComboBox->setCurrentText(QString::number(m_props.sampleRate));
+	SampleRateTextLabel->setEnabled(!pSession->isActivated());
 	SampleRateComboBox->setEnabled(!pSession->isActivated());
 	TempoSpinBox->setValueFloat(m_props.tempo);
 	BeatsPerBarSpinBox->setValue(int(m_props.beatsPerBar));

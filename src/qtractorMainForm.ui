@@ -1511,6 +1511,7 @@
     <forward>class qtractorMixer;</forward>
 </forwards>
 <variables>
+	<variable access="private">static qtractorMainForm *g_pMainForm;</variable>
     <variable access="private">qtractorOptions *m_pOptions;</variable>
     <variable access="private">qtractorSession *m_pSession;</variable>
     <variable access="private">qtractorCommandList *m_pCommands;</variable>
@@ -1604,7 +1605,8 @@
 <functions>
     <function access="private" specifier="non virtual">init()</function>
     <function access="private" specifier="non virtual">destroy()</function>
-    <function specifier="non virtual">setup( qtractorOptions * pOptions )</function>
+	<function specifier="non virtual" returnType="static qtractorMainForm *">getInstance( void )</function>
+    <function specifier="non virtual">setOptions( qtractorOptions * pOptions )</function>
     <function specifier="non virtual" returnType="QWorkspace *">workspace( void )</function>
     <function access="private" specifier="non virtual" returnType="bool">queryClose( void )</function>
     <function access="private" specifier="non virtual">closeEvent( QCloseEvent * pCloseEvent )</function>

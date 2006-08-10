@@ -15,9 +15,9 @@ HEADERS += ../src/qtractorAbout.h \
            ../src/qtractorTrackView.h \
            ../src/qtractorTracks.h \
            ../src/qtractorConnect.h \
-	       ../src/qtractorAudioConnect.h \
-	       ../src/qtractorMidiConnect.h \
-	       ../src/qtractorConnections.h \
+           ../src/qtractorAudioConnect.h \
+           ../src/qtractorMidiConnect.h \
+           ../src/qtractorConnections.h \
            ../src/qtractorMeter.h \
            ../src/qtractorAudioMeter.h \
            ../src/qtractorMidiMeter.h \
@@ -41,6 +41,8 @@ HEADERS += ../src/qtractorAbout.h \
            ../src/qtractorAudioPeak.h \
            ../src/qtractorAudioClip.h \
            ../src/qtractorAudioEngine.h \
+           ../src/qtractorPlugin.h \
+           ../src/qtractorPluginListView.h \
            ../src/qtractorMidiEvent.h \
            ../src/qtractorMidiSequence.h \
            ../src/qtractorMidiFile.h \
@@ -67,9 +69,9 @@ SOURCES += ../src/main.cpp \
            ../src/qtractorTrackView.cpp \
            ../src/qtractorTracks.cpp \
            ../src/qtractorConnect.cpp \
-	       ../src/qtractorAudioConnect.cpp \
-	       ../src/qtractorMidiConnect.cpp \
-	       ../src/qtractorConnections.cpp \
+           ../src/qtractorAudioConnect.cpp \
+           ../src/qtractorMidiConnect.cpp \
+           ../src/qtractorConnections.cpp \
            ../src/qtractorMeter.cpp \
            ../src/qtractorAudioMeter.cpp \
            ../src/qtractorMidiMeter.cpp \
@@ -91,6 +93,8 @@ SOURCES += ../src/main.cpp \
            ../src/qtractorAudioPeak.cpp \
            ../src/qtractorAudioClip.cpp \
            ../src/qtractorAudioEngine.cpp \
+           ../src/qtractorPlugin.cpp \
+           ../src/qtractorPluginListView.cpp \
            ../src/qtractorMidiSequence.cpp \
            ../src/qtractorMidiFile.cpp \
            ../src/qtractorMidiListView.cpp \
@@ -110,7 +114,9 @@ FORMS    = ../src/qtractorMainForm.ui \
            ../src/qtractorOptionsForm.ui \
            ../src/qtractorInstrumentForm.ui \
            ../src/qtractorConnectForm.ui \
-           ../src/qtractorBusForm.ui
+           ../src/qtractorBusForm.ui \
+           ../src/qtractorPluginForm.ui \
+           ../src/qtractorPluginSelectForm.ui
 
 IMAGES   = ../icons/qtractor.png \
            ../icons/qtractorTracks.png \
@@ -154,6 +160,7 @@ IMAGES   = ../icons/qtractor.png \
            ../icons/formRemove.png \
            ../icons/formMoveUp.png \
            ../icons/formMoveDown.png \
+           ../icons/formEdit.png \
            ../icons/formRefresh.png \
            ../icons/formConnect.png \
            ../icons/formDisconnect.png \
@@ -169,16 +176,19 @@ IMAGES   = ../icons/qtractor.png \
            ../icons/itemRpns.png \
            ../icons/itemNrpns.png \
            ../icons/itemProperty.png \
-	       ../icons/itemAudioClientIn.png \
-	       ../icons/itemAudioClientOut.png \
-	       ../icons/itemAudioPortIn.png \
-	       ../icons/itemAudioPortOut.png \
-	       ../icons/itemAudioPortPhysIn.png \
-	       ../icons/itemAudioPortPhysOut.png \
-	       ../icons/itemMidiClientIn.png \
-	       ../icons/itemMidiClientOut.png \
-	       ../icons/itemMidiPortIn.png \
-	       ../icons/itemMidiPortOut.png
+           ../icons/itemAudioClientIn.png \
+           ../icons/itemAudioClientOut.png \
+           ../icons/itemAudioPortIn.png \
+           ../icons/itemAudioPortOut.png \
+           ../icons/itemAudioPortPhysIn.png \
+           ../icons/itemAudioPortPhysOut.png \
+           ../icons/itemMidiClientIn.png \
+           ../icons/itemMidiClientOut.png \
+           ../icons/itemMidiPortIn.png \
+           ../icons/itemMidiPortOut.png \
+           ../icons/itemLedOff.png \
+           ../icons/itemLedOn.png
+
 
 TEMPLATE = app
 CONFIG  += qt warn_on debug

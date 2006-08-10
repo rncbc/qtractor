@@ -31,6 +31,7 @@
 class qtractorSession;
 class qtractorSessionDocument;
 class qtractorInstrumentList;
+class qtractorPluginList;
 class qtractorMonitor;
 class qtractorClip;
 class qtractorBus;
@@ -128,6 +129,9 @@ public:
 
 	// Track monitor accessors.
 	qtractorMonitor *monitor() const;
+
+	// Track plugin-chain accessor.
+	qtractorPluginList *pluginList() const;
 
 	// Normalized view height accessors.
 	void setHeight(unsigned short iHeight);
@@ -227,6 +231,8 @@ private:
 	qtractorList<qtractorClip> m_clips; // List of clips.
 
 	qtractorClip *m_pClipRecord;    // Current clip on record (capture).
+
+	qtractorPluginList *m_pPluginList;	// Plugin chain (audio).
 };
 
 
