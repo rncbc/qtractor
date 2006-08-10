@@ -912,11 +912,12 @@ void qtractorTrackView::contentsDragLeaveEvent ( QDragLeaveEvent * )
 void qtractorTrackView::contentsDropEvent (
 	QDropEvent *pDropEvent )
 {
-	qtractorSession *pSession = m_pTracks->session();
-	if (pSession == NULL) {
-		resetDragState();
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm == NULL)
 		return;
-	}
+	qtractorSession *pSession = m_pTracks->session();
+	if (pSession == NULL)
+		return;
 
 	// Add new clips on proper and consecutive track locations...
 	unsigned long iClipStart // = pSession->frameSnap(
@@ -958,7 +959,7 @@ void qtractorTrackView::contentsDropEvent (
 
 	// We'll build a composite command...
 	qtractorAddClipCommand *pAddClipCommand
-		= new qtractorAddClipCommand(m_pTracks->mainForm());
+		= new qtractorAddClipCommand(pMainForm);
 
 	// Nows time to create the clip(s)...
 	for (DropItem *pDropItem = m_dropItems.first();
@@ -972,7 +973,7 @@ void qtractorTrackView::contentsDropEvent (
 				pAddClipCommand->addClip(pAudioClip, pTrack, iClipStart);
 				iClipStart += pAudioClip->clipLength();
 				// Don't forget to add this one to local repository.
-				m_pTracks->mainForm()->addAudioFile(pDropItem->path);
+				pMainForm->addAudioFile(pDropItem->path);
 			}
 			break;
 		}
@@ -989,7 +990,7 @@ void qtractorTrackView::contentsDropEvent (
 				pAddClipCommand->addClip(pMidiClip, pTrack, iClipStart);
 				iClipStart += pMidiClip->clipLength();
 				// Don't forget to add this one to local repository.
-				m_pTracks->mainForm()->addMidiFile(pDropItem->path);
+				pMainForm->addMidiFile(pDropItem->path);
 			}
 			break;
 		}
@@ -1003,7 +1004,7 @@ void qtractorTrackView::contentsDropEvent (
 	resetDragState();
 
 	// Put it in the form of an undoable command...
-	m_pTracks->mainForm()->commands()->exec(pAddClipCommand);
+	pMainForm->commands()->exec(pAddClipCommand);
 }
 
 
@@ -1140,67 +1141,71 @@ void qtractorTrackView::contentsMouseReleaseEvent ( QMouseEvent *pMouseEvent )
 {
 	QScrollView::contentsMouseReleaseEvent(pMouseEvent);
 
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm == NULL)
+		return;
 	qtractorSession *pSession = m_pTracks->session();
-	if (pSession) {
-		// Which mouse state?
-		const bool bModifier = (pMouseEvent->state()
-			& (Qt::ShiftButton | Qt::ControlButton));
-		switch (m_dragState) {
-		case DragSelect:
-			// Here we're mainly supposed to select a few bunch
-			// of clips (all that fall inside the rubber-band...
-			selectDragRect(m_rectDrag, !bModifier);
-			// That's nice but we'll also set edit-range positioning...
-			if (!bModifier) {
-				const QRect rect(m_rectDrag.normalize());
-				setEditHead(pSession->frameSnap(
-					pSession->frameFromPixel(rect.left())));
-				setEditTail(pSession->frameSnap(
-					pSession->frameFromPixel(rect.right())));
-				// Not a selection, just for visual feedback...
-				m_pTracks->contentsChangeNotify();
-			}
-			break;
-		case DragMove:
-			if (m_pClipSelect->clips().count() > 0) {
-				qtractorTrack *pNewTrack = dragMoveTrack(pMouseEvent->pos());
-				bool bSingleTrack = (m_pClipSelect->singleTrack() != NULL);
-				if (pNewTrack) {
-					// We'll build a composite command...
-					qtractorMoveClipCommand *pMoveClipCommand
-						= new qtractorMoveClipCommand(m_pTracks->mainForm());
-					qtractorClipSelect::Item *pClipItem
-						= m_pClipSelect->clips().first();
-					while (pClipItem) {
-						qtractorClip *pClip = pClipItem->clip;
-						if (!bSingleTrack)
-							pNewTrack = pClip->track();
-						int x = (pClipItem->rectClip.x() + m_iDraggingX);
-						pMoveClipCommand->addClip(pClip, pNewTrack,
-							pSession->frameFromPixel(x < 0 ? 0 : x));
-						pClipItem = m_pClipSelect->clips().next();
-					}
-					m_pClipSelect->clear();
-					// Put it in the form of an undoable command...
-					m_pTracks->mainForm()->commands()->exec(pMoveClipCommand);
-				}
-			}
-			break;
-		case DragStart:
-			// Deferred left-button edit-head positioning...
-			if (!bModifier && m_pClipDrag == NULL) {
-				setEditHead(pSession->frameSnap(
-					pSession->frameFromPixel(
-						m_posDrag.x() > 0 ? m_posDrag.x() : 0)));
-				// Not a selection, but for some visual feedback...
-				m_pTracks->contentsChangeNotify();
-			}
-			// Fall thru...
-		case DragDrop:
-		case DragNone:
-		default:
-			break;
+	if (pSession == NULL)
+		return;
+
+	// Which mouse state?
+	const bool bModifier = (pMouseEvent->state()
+		& (Qt::ShiftButton | Qt::ControlButton));
+	switch (m_dragState) {
+	case DragSelect:
+		// Here we're mainly supposed to select a few bunch
+		// of clips (all that fall inside the rubber-band...
+		selectDragRect(m_rectDrag, !bModifier);
+		// That's nice but we'll also set edit-range positioning...
+		if (!bModifier) {
+			const QRect rect(m_rectDrag.normalize());
+			setEditHead(pSession->frameSnap(
+				pSession->frameFromPixel(rect.left())));
+			setEditTail(pSession->frameSnap(
+				pSession->frameFromPixel(rect.right())));
+			// Not a selection, just for visual feedback...
+			m_pTracks->contentsChangeNotify();
 		}
+		break;
+	case DragMove:
+		if (m_pClipSelect->clips().count() > 0) {
+			qtractorTrack *pNewTrack = dragMoveTrack(pMouseEvent->pos());
+			bool bSingleTrack = (m_pClipSelect->singleTrack() != NULL);
+			if (pNewTrack) {
+				// We'll build a composite command...
+				qtractorMoveClipCommand *pMoveClipCommand
+					= new qtractorMoveClipCommand(pMainForm);
+				qtractorClipSelect::Item *pClipItem
+					= m_pClipSelect->clips().first();
+				while (pClipItem) {
+					qtractorClip *pClip = pClipItem->clip;
+					if (!bSingleTrack)
+						pNewTrack = pClip->track();
+					int x = (pClipItem->rectClip.x() + m_iDraggingX);
+					pMoveClipCommand->addClip(pClip, pNewTrack,
+						pSession->frameFromPixel(x < 0 ? 0 : x));
+					pClipItem = m_pClipSelect->clips().next();
+				}
+				m_pClipSelect->clear();
+				// Put it in the form of an undoable command...
+				pMainForm->commands()->exec(pMoveClipCommand);
+			}
+		}
+		break;
+	case DragStart:
+		// Deferred left-button edit-head positioning...
+		if (!bModifier && m_pClipDrag == NULL) {
+			setEditHead(pSession->frameSnap(
+				pSession->frameFromPixel(
+					m_posDrag.x() > 0 ? m_posDrag.x() : 0)));
+			// Not a selection, but for some visual feedback...
+			m_pTracks->contentsChangeNotify();
+		}
+		// Fall thru...
+	case DragDrop:
+	case DragNone:
+	default:
+		break;
 	}
 
 	// Force null state.
@@ -1215,7 +1220,11 @@ void qtractorTrackView::selectClipFile ( qtractorClip *pClip ) const
 	if (pTrack == NULL)
 		return;
 
-	qtractorFiles *pFiles = m_pTracks->mainForm()->files();
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm == NULL)
+		return;
+
+	qtractorFiles *pFiles = pMainForm->files();
 	if (pFiles == NULL)
 		return;
 
@@ -1305,6 +1314,9 @@ void qtractorTrackView::selectDragRect ( const QRect& rectDrag,	bool bReset )
 // Delete/remove current selection.
 void qtractorTrackView::deleteClipSelect (void)
 {
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm == NULL)
+		return;
 	qtractorSession *pSession = m_pTracks->session();
 	if (pSession == NULL)
 		return;
@@ -1315,7 +1327,7 @@ void qtractorTrackView::deleteClipSelect (void)
 
 	// We'll build a composite command...
 	qtractorRemoveClipCommand *pRemoveClipCommand
-		= new qtractorRemoveClipCommand(m_pTracks->mainForm());
+		= new qtractorRemoveClipCommand(pMainForm);
 
 	qtractorClipSelect::Item *pClipItem = m_pClipSelect->clips().first();
 	while (pClipItem) {
@@ -1327,7 +1339,7 @@ void qtractorTrackView::deleteClipSelect (void)
 	m_pClipSelect->clear();
 
 	// Put it in the form of an undoable command...
-	m_pTracks->mainForm()->commands()->exec(pRemoveClipCommand);
+	pMainForm->commands()->exec(pRemoveClipCommand);
 }
 
 
@@ -1816,6 +1828,9 @@ void qtractorTrackView::copyClipSelect (void)
 // Copy current selected clips to clipboard.
 void qtractorTrackView::cutClipSelect (void)
 {
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm == NULL)
+		return;
 	qtractorSession *pSession = m_pTracks->session();
 	if (pSession == NULL)
 		return;
@@ -1830,7 +1845,7 @@ void qtractorTrackView::cutClipSelect (void)
 
 	// We'll build a composite command...
 	qtractorRemoveClipCommand *pRemoveClipCommand
-		= new qtractorRemoveClipCommand(m_pTracks->mainForm());
+		= new qtractorRemoveClipCommand(pMainForm);
 	// Override default command name.
 	pRemoveClipCommand->setName(tr("cut clip"));
 
@@ -1845,13 +1860,16 @@ void qtractorTrackView::cutClipSelect (void)
 	m_pClipSelect->clear();
 
 	// Put it in the form of an undoable command...
-	m_pTracks->mainForm()->commands()->exec(pRemoveClipCommand);
+	pMainForm->commands()->exec(pRemoveClipCommand);
 }
 
 
 // Paste from clipboard.
 void qtractorTrackView::pasteClipSelect (void)
 {
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm == NULL)
+		return;
 	qtractorSession *pSession = m_pTracks->session();
 	if (pSession == NULL)
 		return;
@@ -1867,7 +1885,7 @@ void qtractorTrackView::pasteClipSelect (void)
 
 	// We'll build a composite command...
 	qtractorAddClipCommand *pAddClipCommand
-		= new qtractorAddClipCommand(m_pTracks->mainForm());
+		= new qtractorAddClipCommand(pMainForm);
 	// Override default command name.
 	pAddClipCommand->setName(tr("paste clip"));
 
@@ -1910,7 +1928,7 @@ void qtractorTrackView::pasteClipSelect (void)
 	}
 
 	// Put it in the form of an undoable command...
-	m_pTracks->mainForm()->commands()->exec(pAddClipCommand);
+	pMainForm->commands()->exec(pAddClipCommand);
 }
 
 
@@ -1918,7 +1936,9 @@ void qtractorTrackView::pasteClipSelect (void)
 void qtractorTrackView::contentsContextMenuEvent (
 	QContextMenuEvent *pContextMenuEvent )
 {
-	m_pTracks->mainForm()->editMenu->exec(pContextMenuEvent->globalPos());
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm)
+		pMainForm->editMenu->exec(pContextMenuEvent->globalPos());
 }
 
 

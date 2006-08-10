@@ -123,9 +123,16 @@ bool qtractorSession::open ( const QString& sClientName )
 	if (m_pMidiEngine->busses().count() == 0)
 		m_pMidiEngine->addBus(new qtractorMidiBus(m_pMidiEngine, "Master"));
 
-	// FIXME: Get over the stereo playback default master bus...
+	// Get over the stereo playback default master bus...
 	if (m_pAudioEngine->busses().count() == 0)
 		m_pAudioEngine->addBus(new qtractorAudioBus(m_pAudioEngine, "Master"));
+
+	//  Actually open session device engines...
+	if (!m_pAudioEngine->open(sClientName) ||
+		!m_pMidiEngine->open(sClientName)) {
+		close();
+		return false;
+	}
 
 	// Open all tracks (assign busses)...
 	for (qtractorTrack *pTrack = m_tracks.first();
@@ -135,14 +142,7 @@ bool qtractorSession::open ( const QString& sClientName )
 			return false;
 		}
 	}
-	
-	//  Actually open session device engines...
-	if (!m_pAudioEngine->open(sClientName) ||
-		!m_pMidiEngine->open(sClientName)) {
-		close();
-		return false;
-	}
-	
+
 	// Done.
 	return true;
 }

@@ -56,10 +56,10 @@ int main ( int argc, char **argv )
 		return 1;
 	}
 
-	// Construct, setup and show the main form.
+	// Construct, setup and show the main form (a pseudo-singleton).
 	qtractorMainForm w;
 	app.setMainWidget(&w);
-	w.setup(&options);
+	w.setOptions(&options);
 	w.show();
 
 	// Register the quit signal/slot.

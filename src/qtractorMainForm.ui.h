@@ -103,12 +103,19 @@
 #define QTRACTOR_BUFF_EVENT     QEvent::Type(QEvent::User + 5)
 
 
+
 //-------------------------------------------------------------------------
 // qtractorMainForm -- Main window form implementation.
+
+// kind of singleton reference.
+qtractorMainForm *qtractorMainForm::g_pMainForm = NULL;
 
 // Kind of constructor.
 void qtractorMainForm::init (void)
 {
+	// Pseudo-singleton reference setup.
+	g_pMainForm = this;
+
 	// Initialize some pointer references.
 	m_pOptions = NULL;
 	m_pSession = new qtractorSession();
@@ -328,11 +335,21 @@ void qtractorMainForm::destroy (void)
 	// Finally, delete recent files menu.
 	if (m_pRecentFilesMenu)
 		delete m_pRecentFilesMenu;
+
+	// Pseudo-singleton reference shut-down.
+	g_pMainForm = NULL;
+}
+
+
+// kind of singleton reference.
+qtractorMainForm *qtractorMainForm::getInstance (void)
+{
+	return g_pMainForm;
 }
 
 
 // Make and set a proper setup options step.
-void qtractorMainForm::setup ( qtractorOptions *pOptions )
+void qtractorMainForm::setOptions ( qtractorOptions *pOptions )
 {
 	// We got options?
 	m_pOptions = pOptions;
@@ -1366,9 +1383,7 @@ void qtractorMainForm::viewInstruments (void)
 void qtractorMainForm::viewBusses (void)
 {
 	// Just set and show the instruments dialog...
-	qtractorBusForm busForm(this);
-	busForm.setMainForm(this);
-	busForm.exec();
+	qtractorBusForm(this).exec();
 }
 
 
@@ -1917,7 +1932,7 @@ void qtractorMainForm::updateSession (void)
 	// Time to create the main session track list view...
 	if (m_pTracks == NULL) {
 		// Create the main tracks widget...
-		m_pTracks = new qtractorTracks(this, workspace());
+		m_pTracks = new qtractorTracks(workspace());
 		QObject::connect(m_pTracks, SIGNAL(closeNotifySignal()),
 			this, SLOT(tracksClosed()));
 		QObject::connect(m_pTracks->trackList(),

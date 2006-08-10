@@ -33,7 +33,6 @@ class qtractorTrackTime;
 class qtractorTrackView;
 class qtractorTrack;
 class qtractorSession;
-class qtractorMainForm;
 
 
 class QScrollView;
@@ -49,15 +48,11 @@ class qtractorTracks : public QSplitter
 public:
 
 	// Constructor.
-	qtractorTracks(qtractorMainForm *pMainForm,
-		QWidget *pParent, const char *pszName = 0);
+	qtractorTracks(QWidget *pParent, const char *pszName = 0);
 	// Destructor.
 	~qtractorTracks();
 
-	// Main application form accessors.
-	qtractorMainForm *mainForm() const;
-
-	// Session accessors.
+	// Session helper accessor.
 	qtractorSession *session() const;
 
 	// Instrument list accessor.
@@ -148,9 +143,6 @@ private:
 	qtractorTrackList *m_pTrackList;
 	qtractorTrackTime *m_pTrackTime;
 	qtractorTrackView *m_pTrackView;
-
-	// Main application form reference.
-	qtractorMainForm *m_pMainForm;
 
 	// To avoid contents sync moving recursion.
 	int m_iContentsMoving;

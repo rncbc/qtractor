@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(Qtractor, 0.0.0.436, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.0.0.437, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractorMainForm.ui.h)
 AC_CONFIG_HEADERS(config.h)
@@ -298,6 +298,12 @@ if test "x$ac_libsamplerate" = "xyes"; then
    if test "x$ac_samplerate_h" = "xno"; then
       AC_MSG_ERROR([samplerate.h header file not found.])
    fi
+fi
+
+# Check for ladspa headers.
+AC_CHECK_HEADER(ladspa.h, [ac_ladspa_h="yes"], [ac_ladspa_h="no"])
+if test "x$ac_ladspa_h" = "xno"; then
+	AC_MSG_ERROR([ladspa.h header file not found.])
 fi
 
 # Checks for typedefs, structures, and compiler characteristics.

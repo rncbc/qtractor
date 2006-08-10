@@ -91,7 +91,6 @@ void qtractorColorItem::paint ( QPainter *pPainter )
 void qtractorTrackForm::init (void)
 {
 	// No settings descriptor initially (the caller will set it).
-	m_pMainForm = NULL;
 	m_pTrack = NULL;
 
     // Set some dialog validators...
@@ -129,6 +128,9 @@ void qtractorTrackForm::init (void)
 	m_iDirtySetup = 0;
 	m_iDirtyCount = 0;
 
+	// Already time for instrument cacheing...
+	updateInstruments();
+
 	// Try to restore old window positioning.
 	adjustSize();
 }
@@ -137,21 +139,6 @@ void qtractorTrackForm::init (void)
 // Kind of destructor.
 void qtractorTrackForm::destroy (void)
 {
-}
-
-
-// Main form accessors.
-void qtractorTrackForm::setMainForm ( qtractorMainForm *pMainForm )
-{
-	m_pMainForm = pMainForm;
-	
-	updateInstruments();
-}
-
-
-qtractorMainForm *qtractorTrackForm::mainForm (void)
-{
-	return m_pMainForm;
 }
 
 
@@ -367,10 +354,11 @@ int qtractorTrackForm::midiProgram (void)
 // Refresh instrument list.
 void qtractorTrackForm::updateInstruments (void)
 {
-	if (m_pMainForm == NULL)
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm == NULL)
 		return;
 
-	qtractorInstrumentList *pInstruments = m_pMainForm->instruments();
+	qtractorInstrumentList *pInstruments = pMainForm->instruments();
 	if (pInstruments == NULL)
 		return;
 
@@ -490,9 +478,11 @@ void qtractorTrackForm::updateChannel ( int iChannel,
 void qtractorTrackForm::updateBanks ( const QString& sInstrumentName,
 	int iBankSelMethod, int iBank, int iProg )
 {
-	if (m_pTrack == NULL)
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm == NULL)
 		return;
-	if (m_pMainForm == NULL)
+
+	if (m_pTrack == NULL)
 		return;
 	if (sInstrumentName.isEmpty())
 		return;
@@ -502,7 +492,7 @@ void qtractorTrackForm::updateBanks ( const QString& sInstrumentName,
 		sInstrumentName.latin1(), iBankSelMethod, iBank, iProg);
 #endif
 
-	qtractorInstrumentList *pInstruments = m_pMainForm->instruments();
+	qtractorInstrumentList *pInstruments = pMainForm->instruments();
 	if (pInstruments == NULL)
 		return;
 
@@ -571,9 +561,11 @@ void qtractorTrackForm::updateBanks ( const QString& sInstrumentName,
 void qtractorTrackForm::updatePrograms (  const QString& sInstrumentName,
 	int iBank, int iProg )
 {
-	if (m_pTrack == NULL)
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm == NULL)
 		return;
-	if (m_pMainForm == NULL)
+
+	if (m_pTrack == NULL)
 		return;
 	if (sInstrumentName.isEmpty())
 		return;
@@ -583,7 +575,7 @@ void qtractorTrackForm::updatePrograms (  const QString& sInstrumentName,
 		sInstrumentName.latin1(), iBank, iProg);
 #endif
 
-	qtractorInstrumentList *pInstruments = m_pMainForm->instruments();
+	qtractorInstrumentList *pInstruments = pMainForm->instruments();
 	if (pInstruments == NULL)
 		return;
 
@@ -749,7 +741,6 @@ void qtractorTrackForm::busNameClicked (void)
 
 	// Call here the bus management form.
 	qtractorBusForm busForm(this);
-	busForm.setMainForm(m_pMainForm);
 	// Pre-select bus...
 	const QString& sBusName = OutputBusNameComboBox->currentText();
 	if (pEngine && !sBusName.isEmpty())

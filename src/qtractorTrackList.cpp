@@ -486,9 +486,12 @@ void qtractorTrackList::resizeEvent ( QResizeEvent *pResizeEvent )
 {
 	// One shoukld only remember visible sizes.
 	if (QListView::isVisible()) {
-		qtractorOptions *pOptions = m_pTracks->mainForm()->options();
-		if (pOptions)
-			pOptions->iTrackListWidth = QListView::size().width();
+		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+		if (pMainForm) {
+			qtractorOptions *pOptions = pMainForm->options();
+			if (pOptions)
+				pOptions->iTrackListWidth = QListView::size().width();
+		}
 	}
 
 	QListView::resizeEvent(pResizeEvent);
@@ -597,6 +600,14 @@ void qtractorTrackList::contentsMouseReleaseEvent ( QMouseEvent *pMouseEvent )
 {
 	QListView::contentsMouseReleaseEvent(pMouseEvent);
 
+	// We'll need a reference for issuing commands...
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm == NULL)
+		return;
+	qtractorSession *pSession = pMainForm->session();
+	if (pSession == NULL)
+		return;
+
 	// If we were resizing, now's time to let
 	// things know that have changed somehow...
 	switch (m_dragState) {
@@ -605,7 +616,6 @@ void qtractorTrackList::contentsMouseReleaseEvent ( QMouseEvent *pMouseEvent )
 			QListViewItem *pItemDrop = QListView::itemAt(
 				QListView::contentsToViewport(pMouseEvent->pos()));
 			if (pItemDrop) {
-				qtractorSession *pSession = m_pTracks->session();
 				qtractorTrackListItem *pTrackItemDrag
 					= static_cast<qtractorTrackListItem *> (m_pItemDrag);
 				qtractorTrackListItem *pTrackItemDrop
@@ -616,8 +626,8 @@ void qtractorTrackList::contentsMouseReleaseEvent ( QMouseEvent *pMouseEvent )
 					if (pTrackDrag && pTrackDrop
 						&& pTrackDrag != pTrackDrop
 						&& pTrackDrag != pTrackDrop->next()) {
-						m_pTracks->mainForm()->commands()->exec(
-							new qtractorMoveTrackCommand(m_pTracks->mainForm(),
+						pMainForm->commands()->exec(
+							new qtractorMoveTrackCommand(pMainForm,
 								pTrackDrag, pTrackDrop));
 					}
 				}
@@ -635,8 +645,8 @@ void qtractorTrackList::contentsMouseReleaseEvent ( QMouseEvent *pMouseEvent )
 			qtractorTrackListItem *pTrackItem
 				= static_cast<qtractorTrackListItem *> (m_pItemDrag);
 			if (pTrackItem) {
-				m_pTracks->mainForm()->commands()->exec(
-					new qtractorResizeTrackCommand(m_pTracks->mainForm(),
+				pMainForm->commands()->exec(
+					new qtractorResizeTrackCommand(pMainForm,
 						pTrackItem->track(), iItemHeight));
 			}
 		}
@@ -724,7 +734,10 @@ void qtractorTrackList::contentsMovingSlot ( int /*cx*/, int cy )
 void qtractorTrackList::contextMenuSlot ( QListViewItem* /*pItem*/,
 	const QPoint& pos, int /*col*/ )
 {
-	m_pTracks->mainForm()->trackMenu->exec(pos);
+	// We'll need a reference for issuing commands...
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm)
+		pMainForm->trackMenu->exec(pos);
 }
 
 

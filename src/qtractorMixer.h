@@ -35,6 +35,7 @@ class qtractorMixerStrip;
 class qtractorMixerRack;
 class qtractorMixer;
 
+class qtractorPluginListView;
 class qtractorMeter;
 
 class qtractorMainForm;
@@ -72,6 +73,7 @@ public:
 	qtractorMonitor *monitor() const;
 
 	// Child accessors.
+	qtractorPluginListView *pluginListView() const;
 	qtractorMeter *meter() const;
 
 	// Bus property accessors.
@@ -128,16 +130,15 @@ private:
 	qtractorTrack *m_pTrack;
 
 	// Local widgets.
-	QVBoxLayout   *m_pLayout;
-	QLabel        *m_pLabel;
-	qtractorMeter *m_pMeter;
-
-	QHBoxLayout         *m_pButtonLayout;
-	qtractorTrackButton *m_pRecordButton;
-	qtractorTrackButton *m_pMuteButton;
-	qtractorTrackButton *m_pSoloButton;
-	
-	QToolButton *m_pBusButton;
+	QVBoxLayout            *m_pLayout;
+	QLabel                 *m_pLabel;
+	qtractorPluginListView *m_pPluginListView;
+	QHBoxLayout            *m_pButtonLayout;
+	qtractorTrackButton    *m_pRecordButton;
+	qtractorTrackButton    *m_pMuteButton;
+	qtractorTrackButton    *m_pSoloButton;
+	qtractorMeter          *m_pMeter;
+	QToolButton            *m_pBusButton;
 
 	// Selection stuff.
 	bool m_bSelected;
@@ -241,12 +242,9 @@ class qtractorMixer : public QDockWindow
 public:
 
 	// Constructor.
-	qtractorMixer(qtractorMainForm *pMainForm);
+	qtractorMixer(qtractorMainForm *pParent);
 	// Default destructor.
 	~qtractorMixer();
-
-	// Main application form accessors.
-	qtractorMainForm *mainForm() const;
 
 	// Session accessors.
 	qtractorSession *session() const;

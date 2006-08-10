@@ -57,12 +57,9 @@
 // qtractorTracks -- The main session track listview widget.
 
 // Constructor.
-qtractorTracks::qtractorTracks ( qtractorMainForm *pMainForm,
-	QWidget *pParent, const char *pszName )
+qtractorTracks::qtractorTracks ( QWidget *pParent, const char *pszName )
 	: QSplitter(Qt::Horizontal, pParent, pszName)
 {
-	m_pMainForm = pMainForm;
-
 	// To avoid contents sync moving recursion.
 	m_iContentsMoving = 0;
 
@@ -78,11 +75,14 @@ qtractorTracks::qtractorTracks ( qtractorMainForm *pMainForm,
 	QSplitter::setCaption(tr("Tracks"));
 
 	// Resize the left pane track list as last remembered.
-	qtractorOptions *pOptions = m_pMainForm->options();
-	if (pOptions) {
-		QSize size = m_pTrackList->size();
-		size.setWidth(pOptions->iTrackListWidth);
-		m_pTrackList->resize(size);
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm) {
+		qtractorOptions *pOptions = pMainForm->options();
+		if (pOptions) {
+			QSize size = m_pTrackList->size();
+			size.setWidth(pOptions->iTrackListWidth);
+			m_pTrackList->resize(size);
+		}
 	}
 
 	// Hook the early polishing notification...
@@ -115,24 +115,19 @@ void qtractorTracks::closeEvent ( QCloseEvent *pCloseEvent )
 }
 
 
-// Main application form accessors.
-qtractorMainForm *qtractorTracks::mainForm (void) const
-{
-	return m_pMainForm;
-}
-
-
-// Session accessor.
+// Session helper accessor.
 qtractorSession *qtractorTracks::session (void) const
 {
-	return m_pMainForm->session();
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	return (pMainForm ? pMainForm->session() : NULL);
 }
 
 
 // Instrument list accessor.
 qtractorInstrumentList *qtractorTracks::instruments (void) const
 {
-	return m_pMainForm->instruments();
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	return (pMainForm ? pMainForm->instruments() : NULL);
 }
 
 
@@ -160,7 +155,7 @@ void qtractorTracks::horizontalZoomStep ( int iZoomStep )
 	fprintf(stderr, "qtractorTracks::horizontalZoomStep(%d)\n", iZoomStep);
 #endif
 
-	qtractorSession *pSession = m_pMainForm->session();
+	qtractorSession *pSession = session();
 	if (pSession == NULL)
 		return;
 		
@@ -202,7 +197,7 @@ void qtractorTracks::verticalZoomStep ( int iZoomStep )
 	fprintf(stderr, "qtractorTracks::verticalZoomStep(%d)\n", iZoomStep);
 #endif
 
-	qtractorSession *pSession = m_pMainForm->session();
+	qtractorSession *pSession = session();
 	if (pSession == NULL)
 		return;
 		
@@ -260,7 +255,7 @@ void qtractorTracks::verticalZoomOutSlot (void)
 
 void qtractorTracks::viewZoomToolSlot (void)
 {
-	qtractorSession *pSession = m_pMainForm->session();
+	qtractorSession *pSession = session();
 	if (pSession == NULL)
 		return;
 
@@ -385,7 +380,10 @@ void qtractorTracks::selectAll ( bool bSelect )
 // Adds a new track into session.
 bool qtractorTracks::addTrack (void)
 {
-	qtractorSession *pSession = session();
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm == NULL)
+		return false;
+	qtractorSession *pSession = pMainForm->session();
 	if (pSession == NULL)
 		return false;
 
@@ -400,7 +398,6 @@ bool qtractorTracks::addTrack (void)
 
 	// Open dialog for settings...
 	qtractorTrackForm trackForm(this);
-	trackForm.setMainForm(m_pMainForm);
 	trackForm.setTrack(pTrack);
 	if (!trackForm.exec()) {
 		delete pTrack;
@@ -411,15 +408,18 @@ bool qtractorTracks::addTrack (void)
 	pTrack->properties() = trackForm.properties();
 
 	// Put it in the form of an undoable command...
-	return m_pMainForm->commands()->exec(
-		new qtractorAddTrackCommand(m_pMainForm, pTrack));
+	return pMainForm->commands()->exec(
+		new qtractorAddTrackCommand(pMainForm, pTrack));
 }
 
 
 // Remove given(current) track from session.
 bool qtractorTracks::removeTrack ( qtractorTrack *pTrack )
 {
-	qtractorSession *pSession = session();
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm == NULL)
+		return false;
+	qtractorSession *pSession = pMainForm->session();
 	if (pSession == NULL)
 		return false;
 
@@ -435,7 +435,7 @@ bool qtractorTracks::removeTrack ( qtractorTrack *pTrack )
 	pTrack = pTrackItem->track();
 
 	// Prompt user if he/she's sure about this...
-	qtractorOptions *pOptions = m_pMainForm->options();
+	qtractorOptions *pOptions = pMainForm->options();
 	if (pOptions && pOptions->bConfirmRemove) {
 		if (QMessageBox::warning(this,
 			tr("Warning") + " - " QTRACTOR_TITLE,
@@ -448,15 +448,18 @@ bool qtractorTracks::removeTrack ( qtractorTrack *pTrack )
 	}
 
 	// Put it in the form of an undoable command...
-	return m_pMainForm->commands()->exec(
-		new qtractorRemoveTrackCommand(m_pMainForm, pTrack));
+	return pMainForm->commands()->exec(
+		new qtractorRemoveTrackCommand(pMainForm, pTrack));
 }
 
 
 // Edit given(current) track properties.
 bool qtractorTracks::editTrack ( qtractorTrack *pTrack )
 {
-	qtractorSession *pSession = session();
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm == NULL)
+		return false;
+	qtractorSession *pSession = pMainForm->session();
 	if (pSession == NULL)
 		return false;
 
@@ -473,14 +476,13 @@ bool qtractorTracks::editTrack ( qtractorTrack *pTrack )
 
 	// Open dialog for settings...
 	qtractorTrackForm trackForm(this);
-	trackForm.setMainForm(m_pMainForm);
 	trackForm.setTrack(pTrack);
 	if (!trackForm.exec())
 		return false;
 
 	// Put it in the form of an undoable command...
-	return m_pMainForm->commands()->exec(
-		new qtractorEditTrackCommand(m_pMainForm, pTrack,
+	return pMainForm->commands()->exec(
+		new qtractorEditTrackCommand(pMainForm, pTrack,
 			trackForm.properties()));
 }
 
@@ -489,7 +491,10 @@ bool qtractorTracks::editTrack ( qtractorTrack *pTrack )
 bool qtractorTracks::addAudioTracks ( QStringList files,
 	unsigned long iClipStart )
 {
-	qtractorSession *pSession = session();
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm == NULL)
+		return false;
+	qtractorSession *pSession = pMainForm->session();
 	if (pSession == NULL)
 		return false;
 
@@ -498,7 +503,7 @@ bool qtractorTracks::addAudioTracks ( QStringList files,
 
 	// We'll build a composite command...
 	qtractorImportTrackCommand *pImportTrackCommand
-		= new qtractorImportTrackCommand(m_pMainForm);
+		= new qtractorImportTrackCommand(pMainForm);
 
 	// Increment this for suggestive track coloring...
 	int iTrackCount = pSession->tracks().count();
@@ -529,21 +534,21 @@ bool qtractorTracks::addAudioTracks ( QStringList files,
 			// Add the new track to composite command...
 			pImportTrackCommand->addTrack(pTrack);
 			// Don't forget to add this one to local repository.
-			mainForm()->addAudioFile(sPath);
+			pMainForm->addAudioFile(sPath);
 			iUpdate++;
 			// Log this successful import operation...
 			sDescription += tr("Audio file import \"%1\" succeeded on %2 %3.\n")
 				.arg(QFileInfo(sPath).fileName())
 				.arg(QDate::currentDate().toString("MMM dd yyyy"))
 				.arg(QTime::currentTime().toString("hh:mm:ss"));
-			mainForm()->appendMessages(
+			pMainForm->appendMessages(
 				tr("Audio file import succeeded: \"%1\".").arg(sPath));
 		} else {
 			// Bummer. Do cleanup...
 			delete pAudioClip;
 			delete pTrack;
 			// But tell everyone that things failed.
-			mainForm()->appendMessagesError(
+			pMainForm->appendMessagesError(
 				tr("Audio file import failure:\n\n\"%1\".").arg(sPath));
 		}
 		// Make things temporarily stable...
@@ -560,7 +565,7 @@ bool qtractorTracks::addAudioTracks ( QStringList files,
 	pSession->setDescription(sDescription);
 
 	// Put it in the form of an undoable command...
-	return m_pMainForm->commands()->exec(pImportTrackCommand);
+	return pMainForm->commands()->exec(pImportTrackCommand);
 }
 
 
@@ -568,7 +573,10 @@ bool qtractorTracks::addAudioTracks ( QStringList files,
 bool qtractorTracks::addMidiTracks ( QStringList files,
 	unsigned long iClipStart )
 {
-	qtractorSession *pSession = session();
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm == NULL)
+		return false;
+	qtractorSession *pSession = pMainForm->session();
 	if (pSession == NULL)
 		return false;
 
@@ -577,7 +585,7 @@ bool qtractorTracks::addMidiTracks ( QStringList files,
 
 	// We'll build a composite command...
 	qtractorImportTrackCommand *pImportTrackCommand
-		= new qtractorImportTrackCommand(m_pMainForm);
+		= new qtractorImportTrackCommand(pMainForm);
 
 	// Increment this for suggestive track coloring...
 	int iTrackCount = pSession->tracks().count();
@@ -598,7 +606,7 @@ bool qtractorTracks::addMidiTracks ( QStringList files,
 		qtractorMidiFile file;
 		if (!file.open(sPath)) {
 			// And tell everyone that things failed here.
-			mainForm()->appendMessagesError(
+			pMainForm->appendMessagesError(
 				tr("MIDI file import failure:\n\n\"%1\".").arg(sPath));
 			continue;
 		}
@@ -626,7 +634,7 @@ bool qtractorTracks::addMidiTracks ( QStringList files,
 				// Add the new track to composite command...
 				pImportTrackCommand->addTrack(pTrack);
 				// Don't forget to add this one to local repository.
-				mainForm()->addMidiFile(sPath);
+				pMainForm->addMidiFile(sPath);
 				iUpdate++;
 				// As far the standards goes,from which we'll strictly follow,
 				// only the first track/channel has some tempo/time signature...
@@ -647,7 +655,7 @@ bool qtractorTracks::addMidiTracks ( QStringList files,
 			.arg(QFileInfo(sPath).fileName())
 			.arg(QDate::currentDate().toString("MMM dd yyyy"))
 			.arg(QTime::currentTime().toString("hh:mm:ss"));
-		mainForm()->appendMessages(
+		pMainForm->appendMessages(
 			tr("MIDI file import succeeded: \"%1\".").arg(sPath));
 		// Make things temporarily stable...
 		qtractorSession::stabilize();
@@ -663,7 +671,7 @@ bool qtractorTracks::addMidiTracks ( QStringList files,
 	pSession->setDescription(sDescription);
 
 	// Put it in the form of an undoable command...
-	return m_pMainForm->commands()->exec(pImportTrackCommand);
+	return pMainForm->commands()->exec(pImportTrackCommand);
 }
 
 
@@ -671,7 +679,10 @@ bool qtractorTracks::addMidiTracks ( QStringList files,
 bool qtractorTracks::addMidiTrackChannel ( const QString& sPath,
 	int iTrackChannel, unsigned long iClipStart )
 {
-	qtractorSession *pSession = session();
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm == NULL)
+		return false;
+	qtractorSession *pSession = pMainForm->session();
 	if (pSession == NULL)
 		return false;
 
@@ -680,7 +691,7 @@ bool qtractorTracks::addMidiTrackChannel ( const QString& sPath,
 
 	// We'll build a composite command...
 	qtractorImportTrackCommand *pImportTrackCommand
-		= new qtractorImportTrackCommand(m_pMainForm);
+		= new qtractorImportTrackCommand(pMainForm);
 
 	// Increment this for suggestive track coloring...
 	int iTrackCount = pSession->tracks().count();
@@ -689,7 +700,7 @@ bool qtractorTracks::addMidiTrackChannel ( const QString& sPath,
 	qtractorMidiFile file;
 	if (!file.open(sPath)) {
 		// And tell everyone that things failed here.
-		mainForm()->appendMessagesError(
+		pMainForm->appendMessagesError(
 			tr("MIDI file track-channel import failure:\n\n\"%1\""
 				" Track-channel: %2.").arg(sPath).arg(iTrackChannel));
 		return false;
@@ -716,7 +727,7 @@ bool qtractorTracks::addMidiTrackChannel ( const QString& sPath,
 		// Add the new track to composite command...
 		pImportTrackCommand->addTrack(pTrack);
 		// Don't forget to add this one to local repository.
-		mainForm()->addMidiFile(sPath);
+		pMainForm->addMidiFile(sPath);
 		iUpdate++;
 	} else {
 		// Bummer. Do cleanup...
@@ -731,13 +742,13 @@ bool qtractorTracks::addMidiTrackChannel ( const QString& sPath,
 	}
 
 	// Make things temporarily stable...
-	mainForm()->appendMessages(
+	pMainForm->appendMessages(
 		tr("MIDI file track-channel import succeeded: \"%1\""
 			" Track-channel: %2.").arg(sPath).arg(iTrackChannel));
 	qtractorSession::stabilize();
 
 	// Put it in the form of an undoable command...
-	return m_pMainForm->commands()->exec(pImportTrackCommand);
+	return pMainForm->commands()->exec(pImportTrackCommand);
 }
 
 
@@ -790,14 +801,18 @@ void qtractorTracks::updateMidiTrack ( qtractorTrack *pMidiTrack )
 // Simple main-form stabilizer redirector.
 void qtractorTracks::selectionChangeNotify (void)
 {
-	m_pMainForm->stabilizeForm();
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm)
+		pMainForm->stabilizeForm();
 }
 
 
 // Simple main-form dirty-flag redirector.
 void qtractorTracks::contentsChangeNotify (void)
 {
-	m_pMainForm->contentsChanged();
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm)
+		pMainForm->contentsChanged();
 }
 
 
@@ -806,8 +821,10 @@ void qtractorTracks::trackButtonToggledSlot (
 	qtractorTrackButton *pTrackButton, bool bOn )
 {
 	// Put it in the form of an undoable command...
-	m_pMainForm->commands()->exec(
-		new qtractorTrackButtonCommand(m_pMainForm, pTrackButton, bOn));
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm)
+		pMainForm->commands()->exec(
+			new qtractorTrackButtonCommand(pMainForm, pTrackButton, bOn));
 }
 
 

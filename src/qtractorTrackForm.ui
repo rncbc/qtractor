@@ -682,11 +682,9 @@
     <include location="global" impldecl="in declaration">qmap.h</include>
 </includes>
 <forwards>
-    <forward>class qtractorMainForm;</forward>
     <forward>class qtractorMidiBus;</forward>
 </forwards>
 <variables>
-	<variable access="private">qtractorMainForm *m_pMainForm;</variable>
     <variable access="private">qtractorTrack *m_pTrack;</variable>
     <variable access="private">qtractorTrack::Properties m_props;</variable>
     <variable access="private">QMap &lt; int, int &gt; m_banks;</variable>
@@ -720,8 +718,6 @@
 <functions>
     <function access="private" specifier="non virtual">init()</function>
     <function access="private" specifier="non virtual">destroy()</function>
-    <function specifier="non virtual">setMainForm( qtractorMainForm *pMainForm )</function>
-    <function specifier="non virtual" returnType="qtractorMainForm *">mainForm()</function>
     <function specifier="non virtual">setTrack( qtractorTrack *pTrack )</function>
     <function specifier="non virtual" returnType="qtractorTrack *">track()</function>
     <function specifier="non virtual" returnType="const qtractorTrack::Properties &amp;">properties()</function>
