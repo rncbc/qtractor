@@ -857,6 +857,10 @@ bool qtractorTrack::loadElement ( qtractorSessionDocument *pDocument,
 				}
 			}
 		}
+		else
+		// Load plugins...
+		if (eChild.tagName() == "plugins")
+			m_pPluginList->loadElement(pDocument, &eChild);
 	}
 
 	return true;
@@ -930,6 +934,11 @@ bool qtractorTrack::saveElement ( qtractorSessionDocument *pDocument,
 		eClips.appendChild(eClip);
 	}
 	pElement->appendChild(eClips);
+
+	// Save track plugins...
+	QDomElement ePlugins = pDocument->document()->createElement("plugins");
+	m_pPluginList->saveElement(pDocument, &ePlugins);
+	pElement->appendChild(ePlugins);
 
 	return true;
 }

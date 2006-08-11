@@ -23,6 +23,8 @@
 #include "qtractorPluginListView.h"
 #include "qtractorPluginForm.h"
 
+#include "qtractorSessionDocument.h"
+
 #include <qdir.h>
 #include <qsettings.h>
 
@@ -559,6 +561,34 @@ qtractorPluginForm *qtractorPlugin::form (void)
 }
 
 
+// Plugin state serialization methods.
+void qtractorPlugin::setValues ( const QStringList& vlist )
+{
+	// Split it up...
+	QStringList::ConstIterator val = vlist.begin();
+	qtractorPluginPort *pPort = m_cports.first();
+	while (pPort && val != vlist.end()) {
+		pPort->setValue((*val).toFloat());	
+		pPort = m_cports.next();
+		++val;
+	}
+}
+
+QStringList qtractorPlugin::values (void)
+{
+	// Join it up...
+	QStringList vlist;
+
+	qtractorPluginPort *pPort = m_cports.first();
+	while (pPort) {
+		vlist.append(QString::number(pPort->value()));
+		pPort = m_cports.next();
+	}
+
+	return vlist;
+}
+
+
 // Plugin preset group - common identification prefix.
 QString qtractorPlugin::presetGroup (void) const
 {
@@ -590,22 +620,15 @@ bool qtractorPlugin::loadPreset (
 {
 	// Get the preset entry, if any...
 	settings.beginGroup(presetGroup());
-	QStringList values = settings.readListEntry(sPreset);
+	QStringList vlist = settings.readListEntry(sPreset);
 	settings.endGroup();
 
 	// Is it there?
-	if (values.isEmpty())
+	if (vlist.isEmpty())
 		return false;
 
 	// Split it up...
-	QStringList::Iterator val = values.begin();
-	qtractorPluginPort *pPort = m_cports.first();
-	while (pPort && val != values.end()) {
-		pPort->setValue((*val).toFloat());	
-		pPort = m_cports.next();
-		++val;
-	}
-
+	setValues(vlist);
 	// Done.
     return true;
 }
@@ -616,20 +639,14 @@ bool qtractorPlugin::savePreset (
 	QSettings& settings, const QString& sPreset )
 {
 	// Join it up...
-	QStringList values;
-	qtractorPluginPort *pPort = m_cports.first();
-	while (pPort) {
-		values.append(QString::number(pPort->value()));
-		pPort = m_cports.next();
-	}
-
+	QStringList vlist = values();
 	// Is there any?
-	if (values.isEmpty())
+	if (vlist.isEmpty())
 		return false;
 
 	// Set the preset entry...
 	settings.beginGroup(presetGroup());
-	bool bResult = settings.writeEntry(sPreset, values);
+	bool bResult = settings.writeEntry(sPreset, vlist);
 	settings.endGroup();
 
 	// Done.
@@ -852,6 +869,80 @@ void qtractorPluginList::process ( float **ppBuffer, unsigned int nframes )
 				nframes * sizeof(float));
 		}
 	}
+}
+
+
+// Document element methods.
+bool qtractorPluginList::loadElement ( qtractorSessionDocument *pDocument,
+	QDomElement *pElement )
+{
+	// Load plugin-list children...
+	for (QDomNode nPlugin = pElement->firstChild();
+			!nPlugin.isNull();
+				nPlugin = nPlugin.nextSibling()) {
+		// Convert clip node to element...
+		QDomElement ePlugin = nPlugin.toElement();
+		if (ePlugin.isNull())
+			continue;
+		if (ePlugin.tagName() == "plugin") {
+			QString sFilename;
+			unsigned long iIndex = 0;
+			QStringList vlist;
+			bool bActivated = false;
+			for (QDomNode nParam = ePlugin.firstChild();
+					!nParam.isNull();
+						nParam = nParam.nextSibling()) {
+				// Convert busses list node to element...
+				QDomElement eParam = nParam.toElement();
+				if (eParam.isNull())
+					continue;
+				if (eParam.tagName() == "filename")
+					sFilename = eParam.text();
+				else
+				if (eParam.tagName() == "index")
+					iIndex = eParam.text().toULong();
+				else
+				if (eParam.tagName() == "values")
+					vlist = QStringList::split(',', eParam.text());
+				else
+				if (eParam.tagName() == "activated")
+					bActivated = pDocument->boolFromText(eParam.text());
+			}
+			if (sFilename.isEmpty())
+				continue;
+			qtractorPlugin *pPlugin
+				= new qtractorPlugin(this, sFilename, iIndex);
+			pPlugin->setValues(vlist);
+			append(pPlugin);
+			pPlugin->setActivated(bActivated);
+		}
+	}
+
+	return true;
+}
+
+
+bool qtractorPluginList::saveElement ( qtractorSessionDocument *pDocument,
+	QDomElement *pElement )
+{
+	// Save plugins...
+	for (qtractorPlugin *pPlugin = first();
+			pPlugin; pPlugin = pPlugin->next()) {
+		// Create the new plugin element...
+		QDomElement ePlugin = pDocument->document()->createElement("plugin");
+		pDocument->saveTextElement("filename",
+			pPlugin->filename(), &ePlugin);
+		pDocument->saveTextElement("index",
+			QString::number(pPlugin->index()), &ePlugin);
+		pDocument->saveTextElement("values",
+			pPlugin->values().join(","), &ePlugin);
+		pDocument->saveTextElement("activated",
+			pDocument->textFromBool(pPlugin->isActivated()), &ePlugin);
+		// Add this plugin...
+		pElement->appendChild(ePlugin);
+	}
+
+	return true;
 }
 
 

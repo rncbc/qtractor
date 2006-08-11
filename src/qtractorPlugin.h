@@ -39,8 +39,10 @@ class qtractorPluginForm;
 class qtractorPlugin;
 
 class qtractorPluginListItem;
+class qtractorSessionDocument;
 
 class QSettings;
+class QDomElement;
 
 
 //----------------------------------------------------------------------------
@@ -199,6 +201,10 @@ public:
 	bool isVisible() const;
 	qtractorPluginForm *form();
 
+	// Plugin state serialization methods.
+	void setValues(const QStringList& vlist);
+	QStringList values();
+
 	// Preset name list
 	QStringList presetList(QSettings& settings) const;
 
@@ -276,6 +282,12 @@ public:
 
 	// The meta-main audio-processing plugin-chain procedure.
 	void process(float **ppBuffer, unsigned int nframes);
+
+	// Document element methods.
+	bool loadElement(qtractorSessionDocument *pDocument,
+		QDomElement *pElement);
+	bool saveElement(qtractorSessionDocument *pDocument,
+		QDomElement *pElement);
 
 private:
 
