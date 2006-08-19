@@ -26,7 +26,6 @@
 #include "qtractorSessionDocument.h"
 
 #include <qdir.h>
-#include <qsettings.h>
 
 
 #if defined(__WIN32__) || defined(_WIN32) || defined(WIN32)
@@ -607,67 +606,6 @@ QString qtractorPlugin::presetGroup (void) const
 }
 
 
-// Preset name list
-QStringList qtractorPlugin::presetList ( QSettings& settings ) const
-{
-	return settings.entryList(presetGroup());
-}
-
-
-// Load plugin state from given preset name.
-bool qtractorPlugin::loadPreset (
-	QSettings& settings, const QString& sPreset )
-{
-	// Get the preset entry, if any...
-	settings.beginGroup(presetGroup());
-	QStringList vlist = settings.readListEntry(sPreset);
-	settings.endGroup();
-
-	// Is it there?
-	if (vlist.isEmpty())
-		return false;
-
-	// Split it up...
-	setValues(vlist);
-	// Done.
-    return true;
-}
-
-
-// Save current plugin state as one given preset name.
-bool qtractorPlugin::savePreset (
-	QSettings& settings, const QString& sPreset )
-{
-	// Join it up...
-	QStringList vlist = values();
-	// Is there any?
-	if (vlist.isEmpty())
-		return false;
-
-	// Set the preset entry...
-	settings.beginGroup(presetGroup());
-	bool bResult = settings.writeEntry(sPreset, vlist);
-	settings.endGroup();
-
-	// Done.
-    return bResult;
-}
-
-
-// Remove an existing preset entry.
-bool qtractorPlugin::deletePreset (
-	QSettings& settings, const QString& sPreset ) const
-{
-	// Set the preset entry...
-	settings.beginGroup(presetGroup());
-	bool bResult = settings.removeEntry(sPreset);
-	settings.endGroup();
-
-	// Done.
-	return bResult;
-}
-
-
 // Reset-to-default method.
 void qtractorPlugin::reset (void)
 {
@@ -692,6 +630,8 @@ qtractorPluginList::qtractorPluginList ( unsigned short iChannels,
 
 	m_iActivated  = 0;
 
+	m_views.setAutoDelete(false);
+
 	m_pppBuffers[0] = NULL;
 	m_pppBuffers[1] = NULL;
 
@@ -701,9 +641,27 @@ qtractorPluginList::qtractorPluginList ( unsigned short iChannels,
 // Destructor.
 qtractorPluginList::~qtractorPluginList (void)
 {
-	setActivatedAll(false);
-
 	setBuffer(0, 0, 0);
+
+	// Clear out all dependables...
+	m_views.clear();
+}
+
+
+// The title to show up on plugin forms...
+void qtractorPluginList::setName ( const QString& sName )
+{
+	m_sName = sName;
+
+	for (qtractorPlugin *pPlugin = first();
+			pPlugin; pPlugin = pPlugin->next()) {
+		pPlugin->form()->updateCaption();
+	}
+}
+
+const QString& qtractorPluginList::name (void) const
+{
+	return m_sName;
 }
 
 
@@ -786,11 +744,10 @@ void qtractorPluginList::updateActivated ( bool bActivated )
 }
 
 
-void qtractorPluginList::setActivatedAll ( bool bActivated )
+// An accessible list of observers.
+QPtrList<qtractorPluginListView>& qtractorPluginList::views (void)
 {
-	for (qtractorPlugin *pPlugin = first();
-			pPlugin; pPlugin = pPlugin->next())
-		pPlugin->setActivated(bActivated);
+	return m_views;
 }
 
 

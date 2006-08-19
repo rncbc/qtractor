@@ -774,10 +774,14 @@ bool qtractorAudioBus::open (void)
 
 	// Plugin lists need some buffer (re)allocation too...
 	unsigned int iSampleRate = pAudioEngine->sampleRate(); 
-	if (m_pIPluginList)
+	if (m_pIPluginList) {
 		m_pIPluginList->setBuffer(m_iChannels, iBufferSize, iSampleRate);
-	if (m_pOPluginList)
+		m_pIPluginList->setName(QObject::tr("%1 In").arg(busName()));
+	}
+	if (m_pOPluginList) {
 		m_pOPluginList->setBuffer(m_iChannels, iBufferSize, iSampleRate);
+		m_pOPluginList->setName(QObject::tr("%1 Out").arg(busName()));
+	}
 
 	// Finally, open for biz...
 	m_bEnabled = true;

@@ -1718,12 +1718,13 @@ void qtractorMainForm::updateTransportTime ( unsigned long iPlayHead )
 void qtractorMainForm::updateActionCommand ( QAction *pAction,
 	qtractorCommand *pCommand )
 {
-	const QRegExp rxBrackets(" \\([^\\)]+\\)$");
+	const QRegExp rxBrackets("[\\s]+\\([^\\)]+\\)$");
 	pAction->setMenuText(pAction->menuText().remove(rxBrackets));
 	pAction->setStatusTip(pAction->statusTip().remove(rxBrackets));
 	pAction->setToolTip(pAction->toolTip().remove(rxBrackets));
 	if (pCommand) {
-		const QString sBrackets = QString(" (%1)").arg(pCommand->name());
+		const QString sCommand  = QString(pCommand->name()).remove(rxBrackets);
+		const QString sBrackets = QString(" (%1)").arg(sCommand);
 		pAction->setMenuText(pAction->menuText() + sBrackets);
 		pAction->setStatusTip(pAction->statusTip() + sBrackets);
 		pAction->setToolTip(pAction->toolTip() + sBrackets);

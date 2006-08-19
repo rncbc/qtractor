@@ -423,6 +423,9 @@ qtractorTracks *qtractorTrackList::tracks (void) const
 // Find the list view item from track pointer reference.
 qtractorTrackListItem *qtractorTrackList::trackItem ( qtractorTrack *pTrack )
 {
+	if (pTrack == NULL)
+		return NULL;
+
 	QListViewItem *pItem = QListView::firstChild();
 	while (pItem) {
 		qtractorTrackListItem *pTrackItem
@@ -431,6 +434,7 @@ qtractorTrackListItem *qtractorTrackList::trackItem ( qtractorTrack *pTrack )
 			return pTrackItem;
 		pItem = pItem->nextSibling();
 	}
+
 	return NULL;
 }
 

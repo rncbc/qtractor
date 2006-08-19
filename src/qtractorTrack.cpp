@@ -237,6 +237,9 @@ bool qtractorTrack::open (void)
 		break;
 	}
 
+	// Ah, at least make new name feedback...
+	m_pPluginList->setName(trackName());
+
 	// Done.
 	return (m_pMonitor != NULL);
 }

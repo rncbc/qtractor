@@ -43,6 +43,7 @@ HEADERS += ../src/qtractorAbout.h \
            ../src/qtractorAudioEngine.h \
            ../src/qtractorPlugin.h \
            ../src/qtractorPluginListView.h \
+           ../src/qtractorPluginCommand.h \
            ../src/qtractorMidiEvent.h \
            ../src/qtractorMidiSequence.h \
            ../src/qtractorMidiFile.h \
@@ -95,6 +96,7 @@ SOURCES += ../src/main.cpp \
            ../src/qtractorAudioEngine.cpp \
            ../src/qtractorPlugin.cpp \
            ../src/qtractorPluginListView.cpp \
+           ../src/qtractorPluginCommand.cpp \
            ../src/qtractorMidiSequence.cpp \
            ../src/qtractorMidiFile.cpp \
            ../src/qtractorMidiListView.cpp \

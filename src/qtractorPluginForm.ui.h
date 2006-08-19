@@ -20,11 +20,14 @@
 
 *****************************************************************************/
 
-#include "qtractorPluginListView.h"
-
+#include "qtractorAbout.h"
 #include "qtractorOptions.h"
+#include "qtractorPluginListView.h"
+#include "qtractorPluginCommand.h"
+
 #include "qtractorMainForm.h"
 
+#include <qmessagebox.h>
 #include <qvalidator.h>
 #include <qlistbox.h>
 
@@ -98,8 +101,9 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 			= new qtractorPluginPortWidget(pPort, this);
 		m_portWidgets.append(pPortWidget);
 		m_pGridLayout->addWidget(pPortWidget, iRow, iCol);
-		QObject::connect(pPortWidget, SIGNAL(valueChanged(float)),
-			this, SLOT(changeSlot()));
+		QObject::connect(
+			pPortWidget, SIGNAL(valueChanged(qtractorPluginPort *, float)),
+			this, SLOT(valueChangeSlot(qtractorPluginPort *, float)));
 		if (++iRow > iRows) {
 			iRow = 0;
 			iCol++;
@@ -107,7 +111,7 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 	}
 
 	// Set plugin name as title...
-	setCaption(m_pPlugin->name());
+	updateCaption();
 	adjustSize();
 
 	updateActivated();
@@ -122,17 +126,58 @@ qtractorPlugin *qtractorPluginForm::plugin (void)
 }
 
 
+// Update form caption.
+void qtractorPluginForm::updateCaption (void)
+{
+	if (m_pPlugin == NULL)
+		return;
+
+	QString sCaption = m_pPlugin->name();
+
+	qtractorPluginList *pPluginList = m_pPlugin->list();
+	if (pPluginList && !pPluginList->name().isEmpty()) {
+		sCaption += " - ";
+		sCaption += pPluginList->name();
+	}
+
+	setCaption(sCaption);
+}
+
+
 // Update activation state.
 void qtractorPluginForm::updateActivated (void)
 {
-	if (m_iUpdate > 0)
+	if (m_pPlugin == NULL)
 		return;
 
-	if (m_pPlugin == NULL)
+	if (m_iUpdate > 0)
 		return;
 
 	m_iUpdate++;
 	ActivateToolButton->setOn(m_pPlugin->isActivated());
+	m_iUpdate--;
+}
+
+
+// Update port widget state.
+void qtractorPluginForm::updatePort ( qtractorPluginPort *pPort )
+{
+	if (m_pPlugin == NULL)
+		return;
+
+	if (m_iUpdate > 0)
+		return;
+
+	m_iUpdate++;
+
+	for (qtractorPluginPortWidget *pPortWidget = m_portWidgets.first();
+			pPortWidget; pPortWidget = m_portWidgets.next()) {
+		if (pPortWidget->port() == pPort) {
+			pPortWidget->refresh();
+			break;
+		}
+	}
+
 	m_iUpdate--;
 }
 
@@ -152,27 +197,36 @@ void qtractorPluginForm::changePresetSlot ( const QString& sPreset )
 
 void qtractorPluginForm::loadPresetSlot ( const QString& sPreset )
 {
-	if (m_iUpdate > 0 || sPreset.isEmpty())
+	if (m_pPlugin == NULL)
 		return;
 
-	if (m_pPlugin == NULL)
+	if (m_iUpdate > 0 || sPreset.isEmpty())
 		return;
 
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm == NULL)
 		return;
 
-	qtractorOptions *pOptions = pMainForm->options();
-	if (pOptions == NULL)
-		return;
-
 	if (sPreset == g_sDefPreset) {
 		// Reset to default...
-		m_pPlugin->reset();
-		refresh();
-	} else if (m_pPlugin->loadPreset(pOptions->settings(), sPreset)) {
-		// An existing preset has just been loaded...
-		refresh();
+		pMainForm->commands()->exec(
+			new qtractorResetPluginCommand(pMainForm, m_pPlugin));
+	} else {
+		// An existing preset is about to be loaded...
+		qtractorOptions *pOptions = pMainForm->options();
+		if (pOptions) {
+			QSettings& settings = pOptions->settings();
+			// Get the preset entry, if any...
+			settings.beginGroup(m_pPlugin->presetGroup());
+			QStringList vlist = settings.readListEntry(sPreset);
+			settings.endGroup();
+			// Is it there?
+			if (!vlist.isEmpty()) {
+				pMainForm->commands()->exec(
+					new qtractorPresetPluginCommand(pMainForm,
+						m_pPlugin, vlist));
+			}
+		}
 	}
 #if 0
 	else {
@@ -191,46 +245,71 @@ void qtractorPluginForm::loadPresetSlot ( const QString& sPreset )
 
 void qtractorPluginForm::savePresetSlot (void)
 {
+	if (m_pPlugin == NULL)
+		return;
+
 	const QString& sPreset = PresetComboBox->currentText();
 	if (sPreset.isEmpty() || sPreset == g_sDefPreset)
 		return;
 
-	if (m_pPlugin == NULL)
-		return;
-
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
-		return;
-
-	qtractorOptions *pOptions = pMainForm->options();
-	if (pOptions == NULL)
-		return;
-
-	if (m_pPlugin->savePreset(pOptions->settings(), sPreset))
-		refresh();
+	// The current state preset is about to be saved...
+	QStringList vlist = m_pPlugin->values();
+	// Is there any?
+	if (!vlist.isEmpty()) {
+		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+		if (pMainForm) {
+			qtractorOptions *pOptions = pMainForm->options();
+			if (pOptions) {
+				QSettings& settings = pOptions->settings();
+				// Set the preset entry...
+				settings.beginGroup(m_pPlugin->presetGroup());
+				bool bResult = settings.writeEntry(sPreset, vlist);
+				settings.endGroup();
+				if (bResult)
+					refresh();
+			}
+		}
+	}
 
 	stabilize();
 }
+
 
 void qtractorPluginForm::deletePresetSlot (void)
 {
 	if (m_pPlugin == NULL)
 		return;
 
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
-		return;
-
-	qtractorOptions *pOptions = pMainForm->options();
-	if (pOptions == NULL)
-		return;
-
 	const QString& sPreset = PresetComboBox->currentText();
 	if (sPreset.isEmpty() || sPreset == g_sDefPreset)
 		return;
 
-	if (m_pPlugin->deletePreset(pOptions->settings(), sPreset))
-		refresh();
+	// A preset entry is about to be deleted...
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm) {
+		qtractorOptions *pOptions = pMainForm->options();
+		if (pOptions) {
+			// Prompt user if he/she's sure about this...
+			if (pOptions->bConfirmRemove) {
+				if (QMessageBox::warning(this,
+					tr("Warning") + " - " QTRACTOR_TITLE,
+					tr("About to delete preset:\n\n"
+					"%1 (%2)\n\n"
+					"Are you sure?")
+					.arg(sPreset)
+					.arg(m_pPlugin->name()),
+					tr("OK"), tr("Cancel")) > 0)
+					return;
+			}
+			// Go ahead...
+			QSettings& settings = pOptions->settings();
+			settings.beginGroup(m_pPlugin->presetGroup());
+			bool bResult = settings.removeEntry(sPreset);
+			settings.endGroup();
+			if (bResult)
+				refresh();
+		}
+	}
 
 	stabilize();
 }
@@ -239,23 +318,40 @@ void qtractorPluginForm::deletePresetSlot (void)
 // Activation slot.
 void qtractorPluginForm::activateSlot ( bool bOn )
 {
-	if (m_iUpdate > 0)
-		return;
-
 	if (m_pPlugin == NULL)
 		return;
 
+	if (m_iUpdate > 0)
+		return;
+
 	m_iUpdate++;
-	m_pPlugin->setActivated(bOn);
+
+	// Make it a undoable command...
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm)
+		pMainForm->commands()->exec(
+			new qtractorActivatePluginCommand(pMainForm, m_pPlugin, bOn));
+
 	m_iUpdate--;
 }
 
 
 // Something has changed.
-void qtractorPluginForm::changeSlot (void)
+void qtractorPluginForm::valueChangeSlot (
+	qtractorPluginPort *pPort, float fValue )
 {
 	if (m_iUpdate > 0)
 		return;
+
+	m_iUpdate++;
+
+	// Make it a undoable command...
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm)
+		pMainForm->commands()->exec(
+			new qtractorPluginPortCommand(pMainForm, pPort, fValue));
+
+	m_iUpdate--;
 
 	m_iDirtyCount++;
 	stabilize();
@@ -268,20 +364,18 @@ void qtractorPluginForm::refresh (void)
 	if (m_pPlugin == NULL)
 		return;
 
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
-		return;
-
-	qtractorOptions *pOptions = pMainForm->options();
-	if (pOptions == NULL)
-		return;
-
 	m_iUpdate++;
 
 	const QString sOldPreset = PresetComboBox->currentText();
 	PresetComboBox->clear();
-	PresetComboBox->insertStringList(
-		m_pPlugin->presetList(pOptions->settings()));
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm) {
+		qtractorOptions *pOptions = pMainForm->options();
+		if (pOptions) {
+			PresetComboBox->insertStringList(
+				pOptions->settings().entryList(m_pPlugin->presetGroup()));
+		}
+	}
 	PresetComboBox->insertItem(g_sDefPreset);
 	PresetComboBox->setCurrentText(sOldPreset);
 

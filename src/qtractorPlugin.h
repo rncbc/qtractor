@@ -38,10 +38,10 @@ class qtractorPluginPort;
 class qtractorPluginForm;
 class qtractorPlugin;
 
+class qtractorPluginListView;
 class qtractorPluginListItem;
 class qtractorSessionDocument;
 
-class QSettings;
 class QDomElement;
 
 
@@ -205,13 +205,8 @@ public:
 	void setValues(const QStringList& vlist);
 	QStringList values();
 
-	// Preset name list
-	QStringList presetList(QSettings& settings) const;
-
-	// Plugin preset management methods.
-	bool loadPreset(QSettings& settings, const QString& sPreset);
-	bool savePreset(QSettings& settings, const QString& sPreset);
-	bool deletePreset(QSettings& settings, const QString& sPreset) const;
+	// Plugin preset group - common identification prefix.
+	QString presetGroup() const;
 
 	// Reset-to-default method.
 	void reset();
@@ -221,9 +216,6 @@ protected:
 	// Plugin initializer.
 	void initPlugin(qtractorPluginList *pList,
 		const QString& sFilename, unsigned long iIndex);
-
-	// Plugin preset group - common identification prefix.
-	QString presetGroup() const;
 
 private:
 
@@ -265,6 +257,10 @@ public:
 	// Destructor.
 	~qtractorPluginList();
 
+	// The title to show up on plugin forms...
+	void setName(const QString& sName);
+	const QString& name() const;
+
 	// Main-parameters accessor.
 	void setBuffer(unsigned short iChannels,
 		unsigned int iBufferSize, unsigned int iSampleRate);
@@ -278,7 +274,9 @@ public:
 	unsigned int activated() const;
 	bool isActivatedAll() const;
 	void updateActivated(bool bActivated);
-	void setActivatedAll(bool bActivated);
+
+	// An accessible list of observers.
+	QPtrList<qtractorPluginListView>& views();
 
 	// The meta-main audio-processing plugin-chain procedure.
 	void process(float **ppBuffer, unsigned int nframes);
@@ -298,6 +296,12 @@ private:
 
 	// Activation state.
 	unsigned int   m_iActivated;
+
+	// Plugin-chain name.
+	QString m_sName;
+
+	// An accessible list of observers.
+	QPtrList<qtractorPluginListView> m_views;
 
 	// Internal running buffer chain references.
 	float **m_pppBuffers[2];

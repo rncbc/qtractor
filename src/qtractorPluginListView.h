@@ -99,6 +99,12 @@ public:
 	void setPluginList(qtractorPluginList *pPluginList);
 	qtractorPluginList *pluginList() const;
 
+	// Plugin list refreshner;
+	void refresh();
+
+	// Find an item, given the plugin reference...
+	qtractorPluginListItem *pluginItem(qtractorPlugin *pPlugin);
+
 	// Common pixmap accessors.
 	static QPixmap *itemPixmap(int iIndex);
 
@@ -165,7 +171,7 @@ public:
 signals:
 
 	// Change notification.
-	void valueChanged(float);
+	void valueChanged(qtractorPluginPort *, float);
 
 protected slots:
 

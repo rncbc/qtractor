@@ -214,6 +214,7 @@
 </includes>
 <forwards>
     <forward>class qtractorPlugin</forward>
+	<forward>class qtractorPluginPort</forward>
     <forward>class qtractorPluginPortWidget</forward>
 </forwards>
 <variables>
@@ -229,14 +230,16 @@
     <slot access="private" specifier="non virtual">savePresetSlot()</slot>
     <slot access="private" specifier="non virtual">deletePresetSlot()</slot>
     <slot access="private" specifier="non virtual">activateSlot( bool bOn )</slot>
-    <slot access="private" specifier="non virtual">changeSlot()</slot>
+	<slot access="private" specifier="non virtual">valueChangeSlot( qtractorPluginPort *, float )</slot>
 </slots>
 <functions>
     <function access="private" specifier="non virtual">init()</function>
     <function access="private" specifier="non virtual">destroy()</function>
     <function specifier="non virtual">setPlugin( qtractorPlugin *pPlugin )</function>
     <function specifier="non virtual" returnType="qtractorPlugin *">plugin()</function>
+	<function specifier="non virtual">updateCaption()</function>
     <function specifier="non virtual">updateActivated()</function>
+	<function specifier="non virtual">updatePort( qtractorPluginPort *pPort )</function>
     <function specifier="non virtual">refresh()</function>
     <function access="private" specifier="non virtual">stabilize()</function>
 </functions>

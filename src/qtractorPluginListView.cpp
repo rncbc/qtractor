@@ -20,9 +20,12 @@
 *****************************************************************************/
 
 #include "qtractorPluginListView.h"
+#include "qtractorPluginCommand.h"
 
 #include "qtractorPluginSelectForm.h"
 #include "qtractorPluginForm.h"
+
+#include "qtractorMainForm.h"
 
 #include "qtractorSlider.h"
 #include "qtractorSpinBox.h"
@@ -158,7 +161,7 @@ QPixmap *qtractorPluginListView::g_pItemPixmaps[2] = { NULL, NULL };
 // Construcctor.
 qtractorPluginListView::qtractorPluginListView (
 	QWidget *pParent, const char *pszName )
-	: QListView(pParent, pszName), m_pPluginList(0)
+	: QListView(pParent, pszName), m_pPluginList(NULL)
 {
 	if (++g_iItemRefCount == 1) {
 		g_pItemPixmaps[0] = new QPixmap(
@@ -168,7 +171,7 @@ qtractorPluginListView::qtractorPluginListView (
 	}
 
 	const QFont& font = QListView::font();
-	QListView::setFont(QFont(font.family(), font.pointSize() - 3));
+	QListView::setFont(QFont(font.family(), font.pointSize() - 4));
 
 	QListView::verticalScrollBar()->setStyle(&g_tinyScrollBarStyle);
 	QListView::horizontalScrollBar()->setStyle(&g_tinyScrollBarStyle);
@@ -218,12 +221,30 @@ qtractorPluginListView::~qtractorPluginListView (void)
 // Plugin list accessors.
 void qtractorPluginListView::setPluginList ( qtractorPluginList *pPluginList )
 {
-	QListView::clear();
+	if (m_pPluginList)
+		m_pPluginList->views().remove(this);
 
 	m_pPluginList = pPluginList;
 
 	if (m_pPluginList) {
 		m_pPluginList->setAutoDelete(true);
+		m_pPluginList->views().append(this);
+	}
+
+	refresh();
+}
+
+qtractorPluginList *qtractorPluginListView::pluginList (void) const
+{
+	return m_pPluginList;
+}
+
+// Plugin list refreshner
+void qtractorPluginListView::refresh (void)
+{
+	QListView::clear();
+
+	if (m_pPluginList) {
 		qtractorPluginListItem *pItem = NULL;
 		for (qtractorPlugin *pPlugin = m_pPluginList->first();
 				pPlugin; pPlugin = pPlugin->next()) {
@@ -232,9 +253,23 @@ void qtractorPluginListView::setPluginList ( qtractorPluginList *pPluginList )
 	}
 }
 
-qtractorPluginList *qtractorPluginListView::pluginList (void) const
+// Find an item, given the plugin reference...
+qtractorPluginListItem *qtractorPluginListView::pluginItem (
+	qtractorPlugin *pPlugin )
 {
-	return m_pPluginList;
+	if (pPlugin == NULL)
+		return NULL;
+
+	QListViewItem *pItem = QListView::firstChild();
+	while (pItem) {
+		qtractorPluginListItem *pPluginItem
+			= static_cast<qtractorPluginListItem *> (pItem);
+		if (pPluginItem->plugin() == pPlugin)
+			return pPluginItem;
+		pItem = pItem->nextSibling();
+	}
+
+	return NULL;
 }
 
 
@@ -245,21 +280,21 @@ void qtractorPluginListView::moveItem (
 	if (pItem == NULL)
 		return;
 
+	// The plugin to be moved...	
 	qtractorPlugin *pPlugin = pItem->plugin();
 	if (pPlugin == NULL)
 		return;
 
-	// Remove and insert back again...
-	m_pPluginList->unlink(pPlugin);
-	delete pItem;
-	if (pPrevItem && pPrevItem->plugin())
-		m_pPluginList->insertAfter(pPlugin, pPrevItem->plugin());
-	else
-		m_pPluginList->prepend(pPlugin);
-	pItem = new qtractorPluginListItem(this, pPlugin, pPrevItem);
+	// To be after this one...
+	qtractorPlugin *pPrevPlugin = NULL;
+	if (pPrevItem)
+		pPrevPlugin = pPrevItem->plugin();
 
-	// Make it selected again...
-	QListView::setSelected(pItem, true);
+	// Make it an undoable command...
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm)
+		pMainForm->commands()->exec(
+			new qtractorMovePluginCommand(pMainForm, pPlugin, pPrevPlugin));
 }
 
 
@@ -274,22 +309,24 @@ void qtractorPluginListView::addPlugin (void)
 	if (!selectForm.exec())
 		return;
 
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm == NULL)
+		return;
+
+	// Make it a undoable command...
+	qtractorAddPluginCommand *pAddPluginCommand
+		= new qtractorAddPluginCommand(pMainForm);
+
 	for (int i = 0; i < selectForm.pluginCount(); i++) {
 		// Add an actual plugin item...
 		qtractorPlugin *pPlugin
 			= new qtractorPlugin(m_pPluginList,
 				selectForm.pluginFilename(i),
 				selectForm.pluginIndex(i));
-		m_pPluginList->append(pPlugin);
-		qtractorPluginListItem *pItem
-			= new qtractorPluginListItem(this, pPlugin);
-		QListView::setSelected(pItem, true);
-		// show the plugin form right away...
-		qtractorPluginForm *pPluginForm = pPlugin->form();
-		pPluginForm->show();
-		pPluginForm->raise();
-		pPluginForm->setActiveWindow();
+		pAddPluginCommand->plugins().append(pPlugin);
 	}
+
+	pMainForm->commands()->exec(pAddPluginCommand);
 }
 
 
@@ -308,12 +345,11 @@ void qtractorPluginListView::removePlugin (void)
 	if (pPlugin == NULL)
 		return;
 
-	m_pPluginList->remove(pPlugin);
-
-	delete pItem;
-
-	pPlugin->setChannels(0);
-//	delete pPlugin;
+	// Make it a undoable command...
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm)
+		pMainForm->commands()->exec(
+			new qtractorRemovePluginCommand(pMainForm, pPlugin));
 }
 
 
@@ -329,21 +365,70 @@ void qtractorPluginListView::activatePlugin (void)
 	if (pPlugin == NULL)
 		return;
 
-	pPlugin->setActivated(!pPlugin->isActivated());
+	// Make it a undoable command...
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm)
+		pMainForm->commands()->exec(
+			new qtractorActivatePluginCommand(pMainForm,
+				pPlugin, !pPlugin->isActivated()));
 }
 
 
 // Activate all plugins.
 void qtractorPluginListView::activateAllPlugins (void)
 {
-	m_pPluginList->setActivatedAll(true);
+	if (m_pPluginList == NULL)
+		return;
+
+	// Check whether everyone is already activated...
+	if (m_pPluginList->count() < 1 || m_pPluginList->isActivatedAll())
+		return;
+
+	// Make it an undoable command...
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm == NULL)
+		return;
+
+	qtractorActivatePluginCommand *pActivateAllCommand
+		= new qtractorActivatePluginCommand(pMainForm, NULL, true);
+	pActivateAllCommand->setName(tr("activate all plugins"));
+
+	for (qtractorPlugin *pPlugin = m_pPluginList->first();
+			pPlugin; pPlugin = pPlugin->next()) {
+		if (!pPlugin->isActivated())
+			pActivateAllCommand->plugins().append(pPlugin);
+	}
+
+	pMainForm->commands()->exec(pActivateAllCommand);
 }
 
 
 // Dectivate all plugins.
 void qtractorPluginListView::deactivateAllPlugins (void)
 {
-	m_pPluginList->setActivatedAll(false);
+	if (m_pPluginList == NULL)
+		return;
+
+	// Check whether everyone is already dectivated...
+	if (m_pPluginList->activated() < 1)
+		return;
+
+	// Make it an undoable command...
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm == NULL)
+		return;
+
+	qtractorActivatePluginCommand *pDeactivateAllCommand
+		= new qtractorActivatePluginCommand(pMainForm, NULL, false);
+	pDeactivateAllCommand->setName(tr("deactivate all plugins"));
+
+	for (qtractorPlugin *pPlugin = m_pPluginList->first();
+			pPlugin; pPlugin = pPlugin->next()) {
+		if (pPlugin->isActivated())
+			pDeactivateAllCommand->plugins().append(pPlugin);
+	}
+
+	pMainForm->commands()->exec(pDeactivateAllCommand);
 }
 
 
@@ -353,8 +438,25 @@ void qtractorPluginListView::removeAllPlugins (void)
 	if (m_pPluginList == NULL)
 		return;
 
-	QListView::clear();
-	m_pPluginList->clear();
+	// Check whether there's any...
+	if (m_pPluginList->count() < 1)
+		return;
+
+	// Make it an undoable command...
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm == NULL)
+		return;
+
+	qtractorRemovePluginCommand *pRemoveAllCommand
+		= new qtractorRemovePluginCommand(pMainForm);
+	pRemoveAllCommand->setName(tr("remove all plugins"));
+
+	for (qtractorPlugin *pPlugin = m_pPluginList->first();
+			pPlugin; pPlugin = pPlugin->next()) {
+		pRemoveAllCommand->plugins().append(pPlugin);
+	}
+
+	pMainForm->commands()->exec(pRemoveAllCommand);
 }
 
 
@@ -434,7 +536,12 @@ void qtractorPluginListView::clickItem (
 	if (pPlugin == NULL)
 		return;
 
-	pPlugin->setActivated(!pPlugin->isActivated());
+	// Make it a undoable command...
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm)
+		pMainForm->commands()->exec(
+			new qtractorActivatePluginCommand(pMainForm,
+				pPlugin, !pPlugin->isActivated()));
 }
 
 
@@ -698,8 +805,8 @@ void qtractorPluginPortWidget::checkBoxToggled ( bool bOn )
 {
 	float fValue = (bOn ? 1.0f : 0.0f);
 
-	m_pPort->setValue(fValue);
-	emit valueChanged(fValue);
+//	m_pPort->setValue(fValue);
+	emit valueChanged(m_pPort, fValue);
 }
 
 void qtractorPluginPortWidget::spinBoxValueChanged ( const QString& sText )
@@ -718,8 +825,8 @@ void qtractorPluginPortWidget::spinBoxValueChanged ( const QString& sText )
 			m_pSlider->setValue(portToSlider(fValue));
 	}
 
-	m_pPort->setValue(fValue);
-	emit valueChanged(fValue);
+//	m_pPort->setValue(fValue);
+	emit valueChanged(m_pPort, fValue);
 
 	m_iUpdate--;
 }
@@ -735,8 +842,8 @@ void qtractorPluginPortWidget::sliderValueChanged ( int iValue )
 	if (m_pSpinBox)
 		m_pSpinBox->setValueFloat(fValue);
 
-	m_pPort->setValue(fValue);
-	emit valueChanged(fValue);
+//	m_pPort->setValue(fValue);
+	emit valueChanged(m_pPort, fValue);
 
 	m_iUpdate--;
 }
