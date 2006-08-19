@@ -170,8 +170,7 @@ qtractorPluginListView::qtractorPluginListView (
 			QPixmap::fromMimeSource("itemLedOn.png"));
 	}
 
-	const QFont& font = QListView::font();
-	QListView::setFont(QFont(font.family(), font.pointSize() - 4));
+	QListView::setFont(QFont(QListView::font().family(), 6));
 
 	QListView::verticalScrollBar()->setStyle(&g_tinyScrollBarStyle);
 	QListView::horizontalScrollBar()->setStyle(&g_tinyScrollBarStyle);

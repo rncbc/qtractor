@@ -456,9 +456,6 @@ const char *qtractorPlugin::name (void) const
 // Activation methods.
 void qtractorPlugin::setActivated ( bool bActivated )
 {
-	if (m_phInstances == NULL)
-		return;
-
 	const LADSPA_Descriptor *pDescriptor = descriptor();
 	if (pDescriptor == NULL)
 		return;
@@ -466,13 +463,13 @@ void qtractorPlugin::setActivated ( bool bActivated )
 	unsigned short i;
 
 	if (bActivated && !m_bActivated) {
-		if (pDescriptor->activate) {
+		if (m_phInstances && pDescriptor->activate) {
 			for (i = 0; i < m_iInstances; i++)
 				(*pDescriptor->activate)(m_phInstances[i]);
 		}
 		m_pList->updateActivated(true);
 	} else if (!bActivated && m_bActivated) {
-		if (pDescriptor->deactivate) {
+		if (m_phInstances && pDescriptor->deactivate) {
 			for (i = 0; i < m_iInstances; i++)
 				(*pDescriptor->deactivate)(m_phInstances[i]);
 		}
@@ -870,8 +867,8 @@ bool qtractorPluginList::loadElement ( qtractorSessionDocument *pDocument,
 			qtractorPlugin *pPlugin
 				= new qtractorPlugin(this, sFilename, iIndex);
 			pPlugin->setValues(vlist);
-			append(pPlugin);
 			pPlugin->setActivated(bActivated);
+			append(pPlugin);
 		}
 	}
 
