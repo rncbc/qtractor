@@ -470,15 +470,15 @@ bool qtractorAudioBuffer::seek ( unsigned long iOffset )
 	unsigned long wo = m_iOffset;
 
 #ifdef CONFIG_DEBUG
-	fprintf(stderr, "qtractorAudioBuffer::seek(%p, %lu) pending=%d offset=%lu\n",
-		this, iOffset, m_iSeekPending, m_iSeekOffset);
+	fprintf(stderr, "qtractorAudioBuffer::seek(%p, %lu) pending=%d offset=%lu wo=%lu\n",
+		this, iOffset, m_iSeekPending, m_iSeekOffset, wo);
 #endif
 
 	// Check if target is already cached...
 	if (iOffset >= wo - rs && iOffset < wo) {
-		// This surely looks like a hack...
-		if (iOffset == 0)
-			return true;
+		// FIXME: This surely looks like a hack...
+	//	if (iOffset == 0)
+	//		return true;
 		// If not under loop, it won't break...
 		unsigned long ls = m_iLoopStart;
 		unsigned long le = m_iLoopEnd;
@@ -572,32 +572,29 @@ void qtractorAudioBuffer::readSync (void)
 			return;
 	}
 
-	unsigned long offset = m_iOffset;
-
 	unsigned int ws = m_pRingBuffer->writable();
 	if (ws == 0 || m_bEndOfFile)
 		return;
 
 	unsigned int nahead  = ws;
 	unsigned int ntotal  = 0;
-	unsigned int nbuffer = m_iThreshold;
 
 	unsigned long ls = m_iLoopStart;
 	unsigned long le = m_iLoopEnd;
 
-	bool bLooping = (ls < le && offset < le);
+	bool bLooping = (ls < le && m_iOffset < le);
 
 	while (nahead > 0) {
-		if (nahead > nbuffer)
-			nahead = nbuffer;
-		if (bLooping && offset + nahead >= le)
-			nahead = le - offset;
+		if (nahead > m_iThreshold)
+			nahead = m_iThreshold;
+		if (bLooping && m_iOffset + nahead >= le)
+			nahead = le - m_iOffset;
 		unsigned int nread = readBuffer(nahead);
 		if (nread > 0) {
+			m_iOffset += nread;
+			if (bLooping && m_iOffset >= le && seekSync(ls))
+				m_iOffset = ls;
 			ntotal += nread;
-			offset += nread;
-			if (bLooping && offset >= le && seekSync(ls))
-				offset = ls;
 			nahead = (ws > ntotal ? ws - ntotal : 0);
 		} else {
 			nahead = 0;
@@ -605,10 +602,8 @@ void qtractorAudioBuffer::readSync (void)
 		}
 	}
 
-	m_iOffset = offset;
-
-	if (m_iLength < offset)
-		m_iLength = offset;
+	if (m_iLength < m_iOffset)
+		m_iLength = m_iOffset;
 
 #ifdef DEBUG
 	dump_state("-readSync()");
@@ -623,23 +618,20 @@ void qtractorAudioBuffer::writeSync (void)
 	dump_state("+writeSync()");
 #endif
 
-	unsigned long offset = m_iOffset;
-
 	unsigned int rs = m_pRingBuffer->readable();
 	if (rs == 0)
 		return;
 
 	unsigned int nbehind = rs;
 	unsigned int ntotal  = 0;
-	unsigned int nbuffer = m_iThreshold;
 
 	while (nbehind > 0) {
-		if (nbehind > nbuffer)
-			nbehind = nbuffer;
+		if (nbehind > m_iThreshold)
+			nbehind = m_iThreshold;
 		unsigned int nwrite = writeBuffer(nbehind);
 		if (nwrite > 0) {
+			m_iOffset += nwrite;
 			ntotal += nwrite;
-			offset += nwrite;
 		}
 		if (nwrite < nbehind) {
 			nbehind = 0;
@@ -647,8 +639,6 @@ void qtractorAudioBuffer::writeSync (void)
 			nbehind = rs - ntotal;
 		}
 	}
-
-	m_iOffset = offset;
 
 	if (m_iLength < m_iOffset)
 		m_iLength = m_iOffset;
@@ -662,8 +652,9 @@ void qtractorAudioBuffer::writeSync (void)
 // Internal-seek sync executive.
 bool qtractorAudioBuffer::seekSync( unsigned long iFrame )
 {
-#ifdef CONFIG_DEBUG_0
-	fprintf(stderr, ">seekSync(%lu)\n", iFrame);
+#ifdef CONFIG_DEBUG
+	fprintf(stderr, "qtractorAudioBuffer::seekSync(%p, %lu) pending=%d offset=%lu wo=%lu\n",
+		this, iFrame, m_iSeekPending, m_iSeekOffset, m_iOffset);
 #endif
 
 #ifdef CONFIG_LIBSAMPLERATE
