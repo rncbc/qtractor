@@ -76,23 +76,13 @@ public:
 		unsigned short iChannels, unsigned int iOffset = 0);
 
 	// Buffer data seek.
-	bool seek(unsigned long iOffset);
+	bool seek(unsigned long iFrame);
 
 	// Reset this buffer's state.
 	void reset(bool bLooping);
 
-	// Physical (next read-ahead/write-behind) offset accessors.
-	void setOffset(unsigned long iOffset);
-	unsigned long offset() const;
-
 	// Current known length (in frames).
 	unsigned long length() const;
-
-	// Whether concrete file fits completely in buffer.
-	bool integral() const;
-
-	// Whether file read has exausted.
-	bool eof() const;
 
 	// Loop points accessors.
 	void setLoop(unsigned long iLoopStart, unsigned long iLoopEnd);
@@ -152,10 +142,10 @@ private:
 	qtractorAudioBufferThread *m_pSyncThread;
 
 	unsigned int   m_iThreshold;
-	unsigned long  m_iOffset;
+	unsigned long  m_iReadOffset;
+	unsigned long  m_iWriteOffset;
 	unsigned long  m_iLength;
 	bool           m_bIntegral;
-	bool           m_bEndOfFile;
 
 	unsigned long  m_iLoopStart;
 	unsigned long  m_iLoopEnd;
