@@ -688,8 +688,10 @@ void qtractorPluginList::setBuffer ( unsigned short iChannels,
 	// Allocate new interim buffer...
 	if (m_iChannels > 0 && m_iBufferSize > 0) {
 		m_pppBuffers[1] = new float * [m_iChannels];
-		for (i = 0; i < m_iChannels; i++)
+		for (i = 0; i < m_iChannels; i++) {
 			m_pppBuffers[1][i] = new float [m_iBufferSize];
+			::memset(m_pppBuffers[1][i], 0, m_iBufferSize * sizeof(float));
+		}
 	}
 
 	// Reset all plugin chain channels...

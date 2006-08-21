@@ -506,7 +506,7 @@ bool qtractorAudioBuffer::seek ( unsigned long iFrame )
 	unsigned int  ri = m_pRingBuffer->readIndex();
 	unsigned long ro = m_iReadOffset;
 
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	fprintf(stderr, "qtractorAudioBuffer::seek(%p, %lu) pending(%d, %lu) wo=%lu ro=%lu\n",
 		this, iFrame, m_iSeekPending, m_iSeekOffset, m_iWriteOffset, m_iReadOffset);
 #endif
@@ -576,7 +576,7 @@ void qtractorAudioBuffer::sync (void)
 
 	int mode = m_pFile->mode();
 	if (mode & qtractorAudioFile::Read)
-		readSync();
+		do { readSync(); } while (m_iSeekPending > 0);
 	if (mode & qtractorAudioFile::Write)
 		writeSync();
 }
@@ -686,7 +686,7 @@ void qtractorAudioBuffer::writeSync (void)
 // Internal-seek sync executive.
 bool qtractorAudioBuffer::seekSync( unsigned long iFrame )
 {
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	fprintf(stderr, "qtractorAudioBuffer::seekSync(%p, %lu) pending(%d, %lu) wo=%lu ro=%lu\n",
 		this, iFrame, m_iSeekPending, m_iSeekOffset, m_iWriteOffset, m_iReadOffset);
 #endif
