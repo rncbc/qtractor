@@ -21,10 +21,13 @@
 
 #include "qtractorAbout.h"
 #include "qtractorEngineCommand.h"
+#include "qtractorAudioEngine.h"
+#include "qtractorMidiEngine.h"
 
 #include "qtractorMainForm.h"
 
-#include "qtractorMidiEngine.h"
+#include "qtractorTracks.h"
+#include "qtractorTrackList.h"
 #include "qtractorMonitor.h"
 #include "qtractorMixer.h"
 #include "qtractorMeter.h"
@@ -37,8 +40,307 @@
 // Constructor.
 qtractorBusCommand::qtractorBusCommand ( qtractorMainForm *pMainForm,
 	const QString& sName, qtractorBus *pBus, qtractorBus::BusMode busMode )
-	: qtractorCommand(pMainForm, sName), m_pBus(pBus), m_busMode(busMode)
+	: qtractorCommand(pMainForm, sName), m_pBus(pBus), m_busMode(busMode),
+		m_busType(qtractorTrack::None), m_iChannels(0), m_bAutoConnect(false)
 {
+	setRefresh(false);
+}
+
+
+// Create a new bus.
+bool qtractorBusCommand::createBus (void)
+{
+	if (m_pBus || m_sBusName.isEmpty())
+		return false;
+		
+	qtractorMainForm *pMainForm = mainForm();
+	if (pMainForm == NULL)
+		return false;
+
+	qtractorSession *pSession = pMainForm->session();
+	if (pSession == NULL)
+		return false;
+
+	// Create the bus of proper type...
+	m_pBus = NULL;
+	switch (m_busType) {
+	case qtractorTrack::Audio: {
+		qtractorAudioEngine *pAudioEngine = pSession->audioEngine();
+		if (pAudioEngine) {
+			qtractorAudioBus *pAudioBus
+				= new qtractorAudioBus(pAudioEngine, m_sBusName, m_busMode,
+					m_iChannels, m_bAutoConnect);
+			pAudioEngine->addBus(pAudioBus);
+			m_pBus = pAudioBus;
+		}
+		break;
+	}
+	case qtractorTrack::Midi: {
+		qtractorMidiEngine *pMidiEngine = pSession->midiEngine();
+		if (pMidiEngine) {
+			qtractorMidiBus *pMidiBus
+				= new qtractorMidiBus(pMidiEngine, m_sBusName, m_busMode);
+			pMidiEngine->addBus(pMidiBus);
+			m_pBus = pMidiBus;
+		}
+		break;
+	}
+	default:
+		break;
+	}
+
+	// Check if we really have a new bus...
+	if (m_pBus == NULL)
+		return false;
+
+	// Open up the new bus...
+	m_pBus->open();
+
+	// Done.
+	return true;
+}
+
+
+// Update bus properties.
+bool qtractorBusCommand::updateBus (void)
+{
+	if (m_pBus == NULL || m_sBusName.isEmpty())
+		return false;
+
+	qtractorMainForm *pMainForm = mainForm();
+	if (pMainForm == NULL)
+		return false;
+
+	qtractorSession *pSession = pMainForm->session();
+	if (pSession == NULL)
+		return false;
+
+	// We need to hold things for a while...
+	bool bPlaying = pSession->isPlaying();
+	pSession->setPlaying(false);
+
+	// Save current bus properties...
+	qtractorBus::BusMode busMode  = m_pBus->busMode();
+	QString              sBusName = m_pBus->busName();
+
+	// Special case for audio busses...
+	qtractorAudioBus *pAudioBus = NULL;
+	unsigned short iChannels = 0;
+	bool bAutoConnect = false;
+	if (m_pBus->busType() == qtractorTrack::Audio) {
+		pAudioBus = static_cast<qtractorAudioBus *> (m_pBus);
+		if (pAudioBus) {
+			iChannels = pAudioBus->channels();
+			bAutoConnect = pAudioBus->isAutoConnect();
+		}
+	}
+	
+	// Close all applicable tracks...
+	for (qtractorTrack *pTrack = pSession->tracks().first();
+			pTrack; pTrack = pTrack->next()) {
+		if (pTrack->inputBus() == m_pBus)
+			pTrack->setInputBusName(m_sBusName);
+		if (pTrack->outputBus() == m_pBus)
+			pTrack->setOutputBusName(m_sBusName);
+		if (pTrack->inputBus() == m_pBus || pTrack->outputBus() == m_pBus)
+			pTrack->close();
+	}
+
+	// May close now the bus...
+	m_pBus->close();
+
+	// Set new properties...
+	m_pBus->setBusName(m_sBusName);
+	m_pBus->setBusMode(m_busMode);
+	// Special case for Audio busses...
+	if (pAudioBus) {
+		pAudioBus->setChannels(m_iChannels);
+		pAudioBus->setAutoConnect(m_bAutoConnect);
+	}
+
+	// May reopen up the bus...
+	m_pBus->open();
+
+	// Update (reset) all applicable mixer strips...
+	qtractorMixer *pMixer = pMainForm->mixer();
+	if (pMixer) {
+		if (m_pBus->busMode() & qtractorBus::Input) {
+			pMixer->updateBusStrip(pMixer->inputRack(),
+				m_pBus, qtractorBus::Input, true);
+		}
+		if (m_pBus->busMode() & qtractorBus::Output) {
+			pMixer->updateBusStrip(pMixer->outputRack(),
+				m_pBus, qtractorBus::Output, true);
+		}
+	}
+
+	// (Re)open all applicable tracks
+	// and (reset) respective mixer strips too ...
+	qtractorTracks *pTracks = pMainForm->tracks();
+	for (qtractorTrack *pTrack = pSession->tracks().first();
+			pTrack; pTrack = pTrack->next()) {
+		if (pTrack->inputBusName()  == m_sBusName ||
+			pTrack->outputBusName() == m_sBusName) {
+			// Reopen track back...
+			pTrack->open();
+			// Update track list item...
+			if (pTracks) {
+				qtractorTrackListItem *pTrackItem
+					= pTracks->trackList()->trackItem(pTrack);
+				if (pTrackItem)
+					pTrackItem->setText(qtractorTrackList::Bus, m_sBusName);
+			}
+			// Update mixer strip...
+			if (pMixer)
+				pMixer->updateTrackStrip(pTrack, true);
+		}
+	}
+
+	// Swap saved bus properties...
+	m_busMode      = busMode;
+	m_sBusName     = sBusName;
+	m_iChannels    = iChannels;
+	m_bAutoConnect = bAutoConnect;
+	
+	// Carry on...
+	pSession->setPlaying(bPlaying);
+
+	// Done.
+	return true;
+}
+
+
+// Delete bus.
+bool qtractorBusCommand::deleteBus (void)
+{
+	if (m_pBus == NULL)
+		return false;
+
+	qtractorMainForm *pMainForm = mainForm();
+	if (pMainForm == NULL)
+		return false;
+
+	qtractorSession *pSession = pMainForm->session();
+	if (pSession == NULL)
+		return false;
+
+	// Get the device view root item...
+	qtractorEngine *pEngine = NULL;
+	switch (m_pBus->busType()) {
+	case qtractorTrack::Audio:
+		pEngine = pSession->audioEngine();
+		break;
+	case qtractorTrack::Midi:
+		pEngine = pSession->midiEngine();
+		break;
+	default:
+		break;
+	}
+	// Still valid?
+	if (pEngine == NULL)
+		return false;
+
+	// We need to hold things for a while...
+	bool bPlaying = pSession->isPlaying();
+	pSession->setPlaying(false);
+
+	// Close all applicable tracks...
+	for (qtractorTrack *pTrack = pSession->tracks().first();
+			pTrack; pTrack = pTrack->next()) {
+		if (pTrack->inputBus() == m_pBus || pTrack->outputBus() == m_pBus)
+			pTrack->close();
+	}
+
+	// May close now the bus...
+	m_pBus->close();
+
+	// And remove it...
+	pEngine->removeBus(m_pBus);
+	m_pBus = NULL;
+
+	// Carry on...
+	pSession->setPlaying(bPlaying);
+	
+	// Done.
+	return true;
+}
+
+
+
+//----------------------------------------------------------------------
+// class qtractorCreateBusCommand - implementation.
+//
+
+// Constructor.
+qtractorCreateBusCommand::qtractorCreateBusCommand (
+	qtractorMainForm *pMainForm )
+	: qtractorBusCommand(pMainForm, QObject::tr("create bus"))
+{
+}
+
+// Bus creation command methods.
+bool qtractorCreateBusCommand::redo (void)
+{
+	return createBus();
+}
+
+bool qtractorCreateBusCommand::undo (void)
+{
+	return deleteBus();
+}
+
+
+//----------------------------------------------------------------------
+// class qtractorUpdateBusCommand - implementation.
+//
+
+// Constructor.
+qtractorUpdateBusCommand::qtractorUpdateBusCommand (
+	qtractorMainForm *pMainForm, qtractorBus *pBus )
+	: qtractorBusCommand(pMainForm, QObject::tr("update bus"), pBus)
+{
+}
+
+// Bus update command methods.
+bool qtractorUpdateBusCommand::redo (void)
+{
+	return updateBus();
+}
+
+
+//----------------------------------------------------------------------
+// class qtractorDeleteBusCommand - implementation.
+//
+
+// Constructor.
+qtractorDeleteBusCommand::qtractorDeleteBusCommand (
+	qtractorMainForm *pMainForm, qtractorBus *pBus )
+	: qtractorBusCommand(pMainForm, QObject::tr("delete bus"), pBus)
+{
+	// Save bus properties for creation (undo)...
+	setBusType(pBus->busType());
+	setBusName(pBus->busName());
+	setBusMode(pBus->busMode());
+	// Special case for Audio busses...
+	if (pBus->busType() == qtractorTrack::Audio) {
+		qtractorAudioBus *pAudioBus
+			= static_cast <qtractorAudioBus *> (pBus);
+		if (pAudioBus) {
+			setChannels(pAudioBus->channels());
+			setAutoConnect(pAudioBus->isAutoConnect());
+		}
+	}
+}
+
+// Bus deletion command methods.
+bool qtractorDeleteBusCommand::redo (void)
+{
+	return deleteBus();
+}
+
+bool qtractorDeleteBusCommand::undo (void)
+{
+	return createBus();
 }
 
 
@@ -55,8 +357,6 @@ qtractorBusGainCommand::qtractorBusGainCommand (
 	m_fGain     = fGain;
 	m_fPrevGain = 1.0f;
 	m_bPrevGain = false;
-
-	setRefresh(false);
 
 	// Try replacing an previously equivalent command...
 	static qtractorBusGainCommand *s_pPrevGainCommand = NULL;
@@ -154,8 +454,6 @@ qtractorBusPanningCommand::qtractorBusPanningCommand (
 	m_fPanning = fPanning;
 	m_fPrevPanning = 0.0f;
 	m_bPrevPanning = false;
-
-	setRefresh(false);
 
 	// Try replacing an previously equivalent command...
 	static qtractorBusPanningCommand *s_pPrevPanningCommand = NULL;

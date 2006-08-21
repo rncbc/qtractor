@@ -577,9 +577,16 @@ qtractorTrackGainCommand::qtractorTrackGainCommand (
 			qtractorTrackGainCommand *pLastGainCommand
 				= static_cast<qtractorTrackGainCommand *> (pLastCommand);
 			if (pLastGainCommand) {
-				m_fPrevGain = pLastGainCommand->gain();
-				m_bPrevGain = true;
-				mainForm()->commands()->removeLastCommand();
+				// Equivalence means same (sign) direction too...
+				float fPrevGain = pLastGainCommand->prevGain();
+				float fLastGain = pLastGainCommand->gain();
+				int   iPrevSign = (fPrevGain > fLastGain ? +1 : -1);
+				int   iCurrSign = (fPrevGain < m_fGain   ? +1 : -1); 
+				if (iPrevSign == iCurrSign) {
+					m_fPrevGain = fLastGain;
+					m_bPrevGain = true;
+					mainForm()->commands()->removeLastCommand();
+				}
 			}
 		}
 	}
@@ -605,9 +612,11 @@ bool qtractorTrackGainCommand::redo (void)
 		if (pMidiBus)
 			pMidiBus->setVolume(pTrack->midiChannel(), m_fGain);
 	}
+
 	// Set undo value...
-	m_fGain = fGain;
 	m_bPrevGain = false;
+	m_fPrevGain = m_fGain;
+	m_fGain     = fGain;
 
 	// Mixer/Meter turn...
 	qtractorMixer *pMixer = mainForm()->mixer();
@@ -649,9 +658,16 @@ qtractorTrackPanningCommand::qtractorTrackPanningCommand (
 			qtractorTrackPanningCommand *pLastPanningCommand
 				= static_cast<qtractorTrackPanningCommand *> (pLastCommand);
 			if (pLastPanningCommand) {
-				m_fPrevPanning = pLastPanningCommand->panning();
-				m_bPrevPanning = true;
-				mainForm()->commands()->removeLastCommand();
+				// Equivalence means same (sign) direction too...
+				float fPrevPanning = pLastPanningCommand->prevPanning();
+				float fLastPanning = pLastPanningCommand->panning();
+				int   iPrevSign    = (fPrevPanning > fLastPanning ? +1 : -1);
+				int   iCurrSign    = (fPrevPanning < m_fPanning   ? +1 : -1); 
+				if (iPrevSign == iCurrSign) {
+					m_fPrevPanning = fLastPanning;
+					m_bPrevPanning = true;
+					mainForm()->commands()->removeLastCommand();
+				}
 			}
 		}
 	}
@@ -677,9 +693,11 @@ bool qtractorTrackPanningCommand::redo (void)
 		if (pMidiBus)
 			pMidiBus->setPanning(pTrack->midiChannel(), m_fPanning);
 	}
+	
 	// Set undo value...
-	m_fPanning = fPanning;
 	m_bPrevPanning = false;
+	m_fPrevPanning = m_fPanning;
+	m_fPanning     = fPanning;
 
 	// Mixer/Meter turn...
 	qtractorMixer *pMixer = mainForm()->mixer();

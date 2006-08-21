@@ -421,9 +421,16 @@ qtractorPluginPortCommand::qtractorPluginPortCommand (
 			qtractorPluginPortCommand *pLastPortCommand
 				= static_cast<qtractorPluginPortCommand *> (pLastCommand);
 			if (pLastPortCommand) {
-				m_fPrevValue = pLastPortCommand->value();
-				m_bPrevValue = true;
-				mainForm()->commands()->removeLastCommand();
+				// Equivalence means same (sign) direction too...
+				float fPrevValue = pLastPortCommand->prevValue();
+				float fLastValue = pLastPortCommand->value();
+				int   iPrevSign  = (fPrevValue > fLastValue ? +1 : -1);
+				int   iCurrSign  = (fPrevValue < m_fValue   ? +1 : -1); 
+				if (iPrevSign == iCurrSign) {
+					m_fPrevValue = fLastValue;
+					m_bPrevValue = true;
+					mainForm()->commands()->removeLastCommand();
+				}
 			}
 		}
 	}
@@ -441,9 +448,11 @@ bool qtractorPluginPortCommand::redo (void)
 	// Set plugin port value...
 	float fValue = (m_bPrevValue ? m_fPrevValue : m_pPort->value());
 	m_pPort->setValue(m_fValue);
+
 	// Set undo value...
-	m_fValue = fValue;
 	m_bPrevValue = false;
+	m_fPrevValue = m_fValue;
+	m_fValue     = fValue;
 
 	// Update the form, showing it up as necessary...
 	pPlugin->form()->updatePort(m_pPort);

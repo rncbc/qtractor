@@ -181,39 +181,34 @@ void qtractorTrackListItem::setText ( int iColumn, const QString& sText )
 	}
 
 	const QString s = " - -";
-	QString sBusText;
+
+	QString sBusText = m_pTrack->inputBusName();
+	if (m_pTrack->inputBusName() != m_pTrack->outputBusName())
+		sBusText += '/' + m_pTrack->outputBusName();
 
 	switch (m_pTrack->trackType()) {
 
 		case qtractorTrack::Audio: {
-			qtractorAudioBus *pAudioBus;
-			pAudioBus = static_cast<qtractorAudioBus *> (m_pTrack->inputBus());
 			QListViewItem::setPixmap(qtractorTrackList::Bus,
 				QPixmap::fromMimeSource("trackAudio.png"));
-			sBusText = (pAudioBus ? pAudioBus->busName() : s);
-			pAudioBus = static_cast<qtractorAudioBus *> (m_pTrack->outputBus());
-			if (m_pTrack->inputBus() != m_pTrack->outputBus())
-				sBusText += '/' + (pAudioBus ? pAudioBus->busName() : s);
 			QListViewItem::setText(qtractorTrackList::Bus,
 				sBusText + '\n' + QObject::tr("Audio"));
+			qtractorAudioBus *pAudioBus
+				= static_cast<qtractorAudioBus *> (m_pTrack->outputBus());
 			QListViewItem::setText(qtractorTrackList::Channel,
-				pAudioBus ? QString::number(pAudioBus->channels()) : s.left(1));
+				pAudioBus ? QString::number(pAudioBus->channels()) : s.right(1));
 			QListViewItem::setText(qtractorTrackList::Patch, s);
 			QListViewItem::setText(qtractorTrackList::Instrument, s);
 			break;
 		}
 
 		case qtractorTrack::Midi: {
-			qtractorMidiBus *pMidiBus;
-			pMidiBus = static_cast<qtractorMidiBus *> (m_pTrack->inputBus());
 			QListViewItem::setPixmap(qtractorTrackList::Bus,
 				QPixmap::fromMimeSource("trackMidi.png"));
-			sBusText = (pMidiBus ? pMidiBus->busName() : s);
-			pMidiBus = static_cast<qtractorMidiBus *> (m_pTrack->outputBus());
-			if (m_pTrack->inputBus() != m_pTrack->outputBus())
-				sBusText += '/' + (pMidiBus ? pMidiBus->busName() : s);
 			QListViewItem::setText(qtractorTrackList::Bus,
 				sBusText + '\n' + QObject::tr("MIDI"));
+			qtractorMidiBus *pMidiBus
+				= static_cast<qtractorMidiBus *> (m_pTrack->outputBus());
 			unsigned short iChannel = m_pTrack->midiChannel();
 			QListViewItem::setText(qtractorTrackList::Channel,
 				QString::number(iChannel + 1));

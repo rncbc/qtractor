@@ -209,9 +209,14 @@ public:
 	bool redo();
 	bool undo();
 
-	// Panning value retrieval.
+	// Plugin-port accessor.
 	qtractorPluginPort *port() const { return m_pPort; }
+
+	// Plugin-port value retrieval.
 	float value() const { return m_fValue; }
+
+	// Last known panning predicate.
+	float prevValue() const { return m_fPrevValue; }
 
 private:
 

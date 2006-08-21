@@ -251,6 +251,9 @@ public:
 	// Gain value retrieval.
 	float gain() const { return m_fGain; }
 
+	// Last known gain predicate.
+	float prevGain() const { return m_fPrevGain; }
+
 private:
 
 	// Instance variables.
@@ -278,6 +281,9 @@ public:
 
 	// Panning value retrieval.
 	float panning() const { return m_fPanning; }
+
+	// Last known panning predicate.
+	float prevPanning() const { return m_fPrevPanning; }
 
 private:
 

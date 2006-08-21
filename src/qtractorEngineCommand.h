@@ -36,18 +36,97 @@ public:
 
 	// Constructor.
 	qtractorBusCommand(qtractorMainForm *pMainForm,
-		const QString& sName, qtractorBus *pBus,
-		qtractorBus::BusMode busMode);
+		const QString& sName, qtractorBus *pBus = NULL,
+		qtractorBus::BusMode busMode = qtractorBus::None);
 
-	// Bus accessor.
+	// Bus accessors.
+	void setBus(qtractorBus *pBus){ m_pBus = pBus; }
 	qtractorBus *bus() const { return m_pBus; }
+
+	// Bus properties accessors.
+	void setBusMode(qtractorBus::BusMode busMode) { m_busMode = busMode; }
 	qtractorBus::BusMode busMode() const { return m_busMode; }
+
+	void setBusType(qtractorTrack::TrackType busType) { m_busType = busType; }
+	qtractorTrack::TrackType busType() const { return m_busType; }
+
+	void setBusName(const QString& sBusName) { m_sBusName = sBusName; }
+	const QString& busName() const { return m_sBusName; }
+
+	// Special Audio bus properties accessors.
+	void setChannels(unsigned short iChannels) { m_iChannels = iChannels; }
+	unsigned short channels() const { return m_iChannels; }
+
+	void setAutoConnect(bool bAutoConnect) { m_bAutoConnect = bAutoConnect; }
+	bool isAutoConnect() const { return m_bAutoConnect; }
+
+protected:
+
+	// Bus command methods.
+	bool createBus();
+	bool updateBus();
+	bool deleteBus();
 
 private:
 
 	// Instance variables.
-	qtractorBus *m_pBus;
-	qtractorBus::BusMode m_busMode;
+	qtractorBus             *m_pBus;
+	qtractorBus::BusMode     m_busMode;
+	qtractorTrack::TrackType m_busType;
+	QString                  m_sBusName;
+	unsigned short           m_iChannels;
+	bool                     m_bAutoConnect;
+};
+
+
+//----------------------------------------------------------------------
+// class qtractorCreateBusCommand - declaration.
+//
+
+class qtractorCreateBusCommand : public qtractorBusCommand
+{
+public:
+
+	// Constructor.
+	qtractorCreateBusCommand(qtractorMainForm *pMainForm);
+
+	// Bus creation command methods.
+	bool redo();
+	bool undo();
+};
+
+
+//----------------------------------------------------------------------
+// class qtractorUpdateBusCommand - declaration.
+//
+
+class qtractorUpdateBusCommand : public qtractorBusCommand
+{
+public:
+
+	// Constructor.
+	qtractorUpdateBusCommand(qtractorMainForm *pMainForm, qtractorBus *pBus);
+
+	// Bus update command methods.
+	bool redo();
+	bool undo() { return redo(); }
+};
+
+
+//----------------------------------------------------------------------
+// class qtractorDeleteBusCommand - declaration.
+//
+
+class qtractorDeleteBusCommand : public qtractorBusCommand
+{
+public:
+
+	// Constructor.
+	qtractorDeleteBusCommand(qtractorMainForm *pMainForm, qtractorBus *pBus);
+
+	// Bus deletion command methods.
+	bool redo();
+	bool undo();
 };
 
 
@@ -101,7 +180,7 @@ public:
 	// Panning value retrieval.
 	float panning() const { return m_fPanning; }
 
-	// Last known gain predicate.
+	// Last known panning predicate.
 	float prevPanning() const { return m_fPrevPanning; }
 
 private:

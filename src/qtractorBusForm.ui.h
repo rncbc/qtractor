@@ -22,12 +22,9 @@
 
 #include "qtractorAbout.h"
 #include "qtractorOptions.h"
+#include "qtractorEngineCommand.h"
 #include "qtractorAudioEngine.h"
 #include "qtractorMidiEngine.h"
-
-#include "qtractorTracks.h"
-#include "qtractorTrackList.h"
-#include "qtractorMixer.h"
 
 #include "qtractorMainForm.h"
 
@@ -360,10 +357,7 @@ void qtractorBusForm::createBus (void)
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm == NULL)
 		return;
-	qtractorSession *pSession = pMainForm->session();
-	if (pSession == NULL)
-		return;
-
+	
 	const QString sBusName = BusNameLineEdit->text().stripWhiteSpace();
 	if (sBusName.isEmpty())
 		return;
@@ -380,45 +374,28 @@ void qtractorBusForm::createBus (void)
 		busMode = qtractorBus::Duplex;
 		break;
 	}
-		
-	// Get the device view root item...
-	switch (m_pBus->busType()) {
-	case qtractorTrack::Audio: {
-		qtractorAudioEngine *pAudioEngine = pSession->audioEngine();
-		if (pAudioEngine) {
-			qtractorAudioBus *pAudioBus
-				= new qtractorAudioBus(pAudioEngine, sBusName, busMode,
-					AudioChannelsSpinBox->value(),
-					AudioAutoConnectCheckBox->isChecked());
-			pAudioEngine->addBus(pAudioBus);
-			m_pBus = pAudioBus;
-		}
-		break;
-	}
-	case qtractorTrack::Midi: {
-		qtractorMidiEngine *pMidiEngine = pSession->midiEngine();
-		if (pMidiEngine) {
-			qtractorMidiBus *pMidiBus
-				= new qtractorMidiBus(pMidiEngine, sBusName, busMode);
-			pMidiEngine->addBus(pMidiBus);
-			m_pBus = pMidiBus;
-		}
-		break;
-	}
-	default:
-		break;
+
+	// Make it as an unduable command...
+	qtractorCreateBusCommand *pCreateBusCommand
+		= new qtractorCreateBusCommand(pMainForm);
+
+	// Set all creational properties...
+	qtractorTrack::TrackType busType = m_pBus->busType();
+	pCreateBusCommand->setBusType(busType);
+	pCreateBusCommand->setBusName(sBusName);
+	pCreateBusCommand->setBusMode(busMode);	
+	// Specialties for Audio bussess...
+	if (busType == qtractorTrack::Audio)  {
+		pCreateBusCommand->setChannels(AudioChannelsSpinBox->value());
+		pCreateBusCommand->setAutoConnect(
+			AudioAutoConnectCheckBox->isChecked());
 	}
 
-	// Open up the bus...
-	m_pBus->open();
-
-	// Refresh main form.
-	m_iDirtyTotal++;
-	pMainForm->contentsChanged();
-	pMainForm->viewRefresh();
-
-	// Done.
-	refreshBusses();
+	// Execute and refresh form...
+	if (pMainForm->commands()->exec(pCreateBusCommand)) {
+		m_iDirtyTotal++;
+		refreshBusses();
+	}
 }
 
 
@@ -428,13 +405,13 @@ void qtractorBusForm::updateBus (void)
 	if (m_pBus == NULL)
 		return;
 
+	if (m_pBus == NULL)
+		return;
+
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm == NULL)
 		return;
-	qtractorSession *pSession = pMainForm->session();
-	if (pSession == NULL)
-		return;
-
+	
 	const QString sBusName = BusNameLineEdit->text().stripWhiteSpace();
 	if (sBusName.isEmpty())
 		return;
@@ -451,86 +428,28 @@ void qtractorBusForm::updateBus (void)
 		busMode = qtractorBus::Duplex;
 		break;
 	}
-	
-	// We need to hold things for a while...
-	bool bPlaying = pSession->isPlaying();
-	pSession->setPlaying(false);
 
-	// Close all applicable tracks...
-	for (qtractorTrack *pTrack = pSession->tracks().first();
-			pTrack; pTrack = pTrack->next()) {
-		if (pTrack->inputBus() == m_pBus)
-			pTrack->setInputBusName(sBusName);
-		if (pTrack->outputBus() == m_pBus)
-			pTrack->setOutputBusName(sBusName);
-		if (pTrack->inputBus() == m_pBus ||	pTrack->outputBus() == m_pBus)
-			pTrack->close();
+	// Make it as an unduable command...
+	qtractorUpdateBusCommand *pUpdateBusCommand
+		= new qtractorUpdateBusCommand(pMainForm, m_pBus);
+
+	// Set all updated properties...
+	qtractorTrack::TrackType busType = m_pBus->busType();
+	pUpdateBusCommand->setBusType(busType);
+	pUpdateBusCommand->setBusName(sBusName);
+	pUpdateBusCommand->setBusMode(busMode);	
+	// Specialties for Audio bussess...
+	if (busType == qtractorTrack::Audio)  {
+		pUpdateBusCommand->setChannels(AudioChannelsSpinBox->value());
+		pUpdateBusCommand->setAutoConnect(
+			AudioAutoConnectCheckBox->isChecked());
 	}
 
-	// May close now the bus...
-	m_pBus->close();
-
-	// Set new properties...
-	m_pBus->setBusName(sBusName);
-	m_pBus->setBusMode(busMode);
-	// Special case for Audio busses...
-	if (m_pBus->busType() == qtractorTrack::Audio) {
-		qtractorAudioBus *pAudioBus
-			= static_cast<qtractorAudioBus *> (m_pBus);
-		if (pAudioBus) {
-			pAudioBus->setChannels(AudioChannelsSpinBox->value());
-			pAudioBus->setAutoConnect(AudioAutoConnectCheckBox->isChecked());
-		}
+	// Execute and refresh form...
+	if (pMainForm->commands()->exec(pUpdateBusCommand)) {
+		m_iDirtyTotal++;
+		refreshBusses();
 	}
-
-	// May reopen up the bus...
-	m_pBus->open();
-
-	// Update (reset) all applicable mixer strips...
-	qtractorMixer *pMixer = pMainForm->mixer();
-	if (pMixer) {
-		if (m_pBus->busMode() & qtractorBus::Input) {
-			pMixer->updateBusStrip(pMixer->inputRack(),
-				m_pBus, qtractorBus::Input, true);
-		}
-		if (m_pBus->busMode() & qtractorBus::Output) {
-			pMixer->updateBusStrip(pMixer->outputRack(),
-				m_pBus, qtractorBus::Output, true);
-		}
-	}
-
-	// (Re)open all applicable tracks
-	// and (reset) respective mixer strips too ...
-	qtractorTracks *pTracks = pMainForm->tracks();
-	for (qtractorTrack *pTrack = pSession->tracks().first();
-			pTrack; pTrack = pTrack->next()) {
-		if (pTrack->inputBusName()  == sBusName ||
-			pTrack->outputBusName() == sBusName) {
-			// Reopen track back...
-			pTrack->open();
-			// Update track list item...
-			if (pTracks) {
-				qtractorTrackListItem *pTrackItem
-					= pTracks->trackList()->trackItem(pTrack);
-				if (pTrackItem)
-					pTrackItem->setText(qtractorTrackList::Bus, sBusName);
-			}
-			// Update mixer strip...
-			if (pMixer)
-				pMixer->updateTrackStrip(pTrack, true);
-		}
-	}
-
-	// Carry on...
-	pSession->setPlaying(bPlaying);
-
-	// Refresh main form.
-	m_iDirtyTotal++;
-	pMainForm->contentsChanged();
-	pMainForm->viewRefresh();
-
-	// Done.
-	refreshBusses();
 }
 
 
@@ -543,32 +462,23 @@ void qtractorBusForm::deleteBus (void)
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm == NULL)
 		return;
-	qtractorSession *pSession = pMainForm->session();
-	if (pSession == NULL)
-		return;
-
-	// Get the device view root item...
-	QString sBusType;
-	qtractorEngine *pEngine = NULL;
-	switch (m_pBus->busType()) {
-	case qtractorTrack::Audio:
-		pEngine  = pSession->audioEngine();
-		sBusType = tr("Audio");
-		break;
-	case qtractorTrack::Midi:
-		pEngine  = pSession->midiEngine();
-		sBusType = tr("MIDI");
-		break;
-	default:
-		break;
-	}
-	// Still valid?
-	if (pEngine == NULL)
-		return;
 
 	// Prompt user if he/she's sure about this...
 	qtractorOptions *pOptions = pMainForm->options();
 	if (pOptions && pOptions->bConfirmRemove) {
+		// Get some textual type...
+		QString sBusType;
+		switch (m_pBus->busType()) {
+		case qtractorTrack::Audio:
+			sBusType = tr("Audio");
+			break;
+		case qtractorTrack::Midi:
+			sBusType = tr("MIDI");
+			break;
+		default:
+			break;
+		}
+		// Show the warning...
 		if (QMessageBox::warning(this,
 			tr("Warning") + " - " QTRACTOR_TITLE,
 			tr("About to remove bus:\n\n"
@@ -580,33 +490,15 @@ void qtractorBusForm::deleteBus (void)
 			return;
 	}
 
-	// We need to hold things for a while...
-	bool bPlaying = pSession->isPlaying();
-	pSession->setPlaying(false);
+	// Make it as an unduable command...
+	qtractorDeleteBusCommand *pDeleteBusCommand
+		= new qtractorDeleteBusCommand(pMainForm, m_pBus);
 
-	// Close all applicable tracks...
-	for (qtractorTrack *pTrack = pSession->tracks().first();
-			pTrack; pTrack = pTrack->next()) {
-		if (pTrack->inputBus() == m_pBus || pTrack->outputBus() == m_pBus)
-			pTrack->close();
+	// Execute and refresh form...
+	if (pMainForm->commands()->exec(pDeleteBusCommand)) {
+		m_iDirtyTotal++;
+		refreshBusses();
 	}
-	// May close now the bus...
-	m_pBus->close();
-
-	// And remove it...
-	pEngine->removeBus(m_pBus);
-	m_pBus = NULL;
-
-	// Carry on...
-	pSession->setPlaying(bPlaying);
-
-	// Refresh main form.
-	m_iDirtyTotal++;
-	pMainForm->contentsChanged();
-	pMainForm->viewRefresh();
-
-	// Done.
-	refreshBusses();
 }
 
 
