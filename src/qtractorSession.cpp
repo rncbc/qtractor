@@ -1044,6 +1044,10 @@ void qtractorSession::trackMute ( qtractorTrack *pTrack, bool bMute )
 	// For the time being, only needed for ALSA sequencer...
 	if (pTrack->trackType() == qtractorTrack::Midi)
 		m_pMidiEngine->trackMute(pTrack, bMute);
+
+	// But not, plugins must also be muted (sort of)...
+	if (bMute && pTrack->pluginList())
+		pTrack->pluginList()->resetBuffer();
 }
 
 
