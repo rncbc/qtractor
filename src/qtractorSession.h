@@ -171,6 +171,9 @@ public:
 	// Reset all linked session cursors.
 	void reset();
 
+	// Reset (reactivate) all plugin chains...
+	void resetAllPlugins();
+
 	// Device engine accessors.
 	qtractorMidiEngine  *midiEngine() const;
 	qtractorAudioEngine *audioEngine() const;

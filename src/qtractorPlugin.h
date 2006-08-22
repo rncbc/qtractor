@@ -184,6 +184,10 @@ public:
 	void setActivated(bool bActivated);
 	bool isActivated() const;
 
+	// Do the actual (de)activation.
+	void activate();
+	void deactivate();
+
 	// The main plugin processing procedure.
 	void process(unsigned int nframes);
 
@@ -264,6 +268,9 @@ public:
 	// Main-parameters accessor.
 	void setBuffer(unsigned short iChannels,
 		unsigned int iBufferSize, unsigned int iSampleRate);
+
+	// Reset and (re)activate all plugin chain.
+	void resetBuffer();
 
 	// Brainless accessors.
 	unsigned short channels() const;

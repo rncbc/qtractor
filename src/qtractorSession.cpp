@@ -32,6 +32,8 @@
 #include "qtractorMidiEngine.h"
 #include "qtractorMidiClip.h"
 
+#include "qtractorPlugin.h"
+
 #include <qapplication.h>
 #include <qeventloop.h>
 #include <qdatetime.h>
@@ -774,6 +776,31 @@ void qtractorSession::reset (void)
 }
 
 
+// Reset (reactivate) all plugin chains...
+void qtractorSession::resetAllPlugins (void)
+{
+	// All tracks...
+	for (qtractorTrack *pTrack = m_tracks.first();
+			pTrack; pTrack = pTrack->next()) {
+		if (pTrack->pluginList())
+			pTrack->pluginList()->resetBuffer();
+	}
+	
+	// All audio busses...
+	for (qtractorBus *pBus = m_pAudioEngine->busses().first();
+			pBus; pBus = pBus->next()) {
+		qtractorAudioBus *pAudioBus
+			= static_cast<qtractorAudioBus *> (pBus);
+		if (pAudioBus) {
+			if (pAudioBus->pluginList_in())
+				pAudioBus->pluginList_in()->resetBuffer();
+			if (pAudioBus->pluginList_out())
+				pAudioBus->pluginList_out()->resetBuffer();
+		}
+	}
+}
+
+
 // MIDI engine accessor.
 qtractorMidiEngine *qtractorSession::midiEngine (void) const
 {
@@ -834,6 +861,9 @@ bool qtractorSession::isPlaying() const
 // (Hazardous) bi-directional locate method.
 void qtractorSession::seek ( unsigned long iFrame, bool bSync )
 {
+	if (bSync)
+		resetAllPlugins();
+
 	m_pAudioEngine->sessionCursor()->seek(iFrame, bSync);
 	m_pMidiEngine->sessionCursor()->seek(iFrame, bSync);
 }

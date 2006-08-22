@@ -456,23 +456,11 @@ const char *qtractorPlugin::name (void) const
 // Activation methods.
 void qtractorPlugin::setActivated ( bool bActivated )
 {
-	const LADSPA_Descriptor *pDescriptor = descriptor();
-	if (pDescriptor == NULL)
-		return;
-
-	unsigned short i;
-
 	if (bActivated && !m_bActivated) {
-		if (m_phInstances && pDescriptor->activate) {
-			for (i = 0; i < m_iInstances; i++)
-				(*pDescriptor->activate)(m_phInstances[i]);
-		}
+		activate();
 		m_pList->updateActivated(true);
 	} else if (!bActivated && m_bActivated) {
-		if (m_phInstances && pDescriptor->deactivate) {
-			for (i = 0; i < m_iInstances; i++)
-				(*pDescriptor->deactivate)(m_phInstances[i]);
-		}
+		deactivate();
 		m_pList->updateActivated(false);
 	}
 
@@ -489,6 +477,34 @@ void qtractorPlugin::setActivated ( bool bActivated )
 bool qtractorPlugin::isActivated (void) const
 {
 	return m_bActivated;
+}
+
+
+// Do the actual activation.
+void qtractorPlugin::activate (void)
+{
+	const LADSPA_Descriptor *pDescriptor = descriptor();
+	if (pDescriptor == NULL)
+		return;
+
+	if (m_phInstances && pDescriptor->activate) {
+		for (unsigned short i = 0; i < m_iInstances; i++)
+			(*pDescriptor->activate)(m_phInstances[i]);
+	}
+}
+
+
+// Do the actual deactivation.
+void qtractorPlugin::deactivate (void)
+{
+	const LADSPA_Descriptor *pDescriptor = descriptor();
+	if (pDescriptor == NULL)
+		return;
+
+	if (m_phInstances && pDescriptor->deactivate) {
+		for (unsigned short i = 0; i < m_iInstances; i++)
+			(*pDescriptor->deactivate)(m_phInstances[i]);
+	}
 }
 
 
@@ -698,6 +714,38 @@ void qtractorPluginList::setBuffer ( unsigned short iChannels,
 	for (qtractorPlugin *pPlugin = first();
 			pPlugin; pPlugin = pPlugin->next())
 		pPlugin->setChannels(m_iChannels);
+
+	// Get back to business...
+	m_iActivated = iActivated;
+}
+
+
+// Reset and (re)activate all plugin chain.
+void qtractorPluginList::resetBuffer (void)
+{
+	// Get lost for a while...
+	int iActivated = m_iActivated;
+	m_iActivated = 0;
+
+	// Temporarily deactivate all activated plugins...
+	for (qtractorPlugin *pPlugin = first();
+			pPlugin; pPlugin = pPlugin->next()) {
+		if (pPlugin->isActivated())
+			pPlugin->deactivate();
+	}
+
+	// Reset interim buffer, if any...
+	if (m_pppBuffers[1]) {
+		for (unsigned short i = 0; i < m_iChannels; i++)
+			::memset(m_pppBuffers[1][i], 0, m_iBufferSize * sizeof(float));
+	}
+
+	// Restore activation of all previously deactivated plugins...
+	for (qtractorPlugin *pPlugin = first();
+			pPlugin; pPlugin = pPlugin->next()) {
+		if (pPlugin->isActivated())
+			pPlugin->activate();
+	}
 
 	// Get back to business...
 	m_iActivated = iActivated;
