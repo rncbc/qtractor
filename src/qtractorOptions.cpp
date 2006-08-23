@@ -83,6 +83,7 @@ qtractorOptions::qtractorOptions (void)
 	sAudioDir   = m_settings.readEntry("/AudioDir", QString::null);
 	sMidiDir    = m_settings.readEntry("/MidiDir", QString::null);
 	sInstrumentDir = m_settings.readEntry("/InstrumentDir", QString::null);
+	sPluginSearch  = m_settings.readEntry("/PluginSearch", QString::null);
 	m_settings.endGroup();
 
 	// Instrument file list.
@@ -172,6 +173,7 @@ qtractorOptions::~qtractorOptions (void)
 	m_settings.writeEntry("/AudioDir", sAudioDir);
 	m_settings.writeEntry("/MidiDir", sMidiDir);
 	m_settings.writeEntry("/InstrumentDir", sInstrumentDir);
+	m_settings.writeEntry("/PluginSearch", sPluginSearch);
 	m_settings.endGroup();
 
 	// Instrument file list.

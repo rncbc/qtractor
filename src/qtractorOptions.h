@@ -82,6 +82,9 @@ public:
 	QString sMidiDir;
 	QString sInstrumentDir;
 
+	// Plugin search string.
+	QString sPluginSearch;
+
 	// The instrument file list.
 	QStringList instrumentFiles;
 

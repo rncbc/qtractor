@@ -96,8 +96,10 @@ void qtractorPluginSelectForm::init (void)
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm) {
 		qtractorOptions *pOptions = pMainForm->options();
-		if (pOptions)
+		if (pOptions) {
 			pOptions->loadComboBoxHistory(PluginSearchComboBox);
+			PluginSearchComboBox->setCurrentText(pOptions->sPluginSearch);
+		}
 	}
 
 	// Let the search begin...
@@ -274,8 +276,10 @@ void qtractorPluginSelectForm::accept (void)
 		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 		if (pMainForm) {
 			qtractorOptions *pOptions = pMainForm->options();
-			if (pOptions)
+			if (pOptions) {
+				pOptions->sPluginSearch = PluginSearchComboBox->currentText();
 				pOptions->saveComboBoxHistory(PluginSearchComboBox);
+			}
 		}
 		// Done.
 		QDialog::accept();
