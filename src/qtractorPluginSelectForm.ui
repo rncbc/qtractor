@@ -54,11 +54,48 @@
         <property name="name">
             <cstring>unnamed</cstring>
         </property>
-        <widget class="QLineEdit">
-            <property name="name">
-                <cstring>SearchLineEdit</cstring>
-            </property>
-        </widget>
+		<hbox>
+			<property name="name">
+				<cstring>unnamed</cstring>
+			</property>
+			<widget class="QToolButton">
+				<property name="name">
+					<cstring>PluginResetToolButton</cstring>
+				</property>
+				<property name="minimumSize">
+					<size>
+						<width>22</width>
+						<height>22</height>
+					</size>
+				</property>
+				<property name="maximumSize">
+					<size>
+						<width>22</width>
+						<height>22</height>
+					</size>
+				</property>
+				<property name="focusPolicy">
+					<enum>TabFocus</enum>
+				</property>
+				<property name="text">
+					<string>X</string>
+				</property>
+				<property name="toolTip" stdset="0">
+					<string>Reset filter</string>
+				</property>
+			</widget>
+			<widget class="QComboBox">
+				<property name="name">
+					<cstring>PluginSearchComboBox</cstring>
+				</property>
+				<property name="editable">
+					<bool>true</bool>
+				</property>
+				<property name="toolTip" stdset="0">
+					<string>Plugin search string (regular expression)</string>
+				</property>
+			</widget>
+		</hbox>
         <widget class="QListView">
             <column>
                 <property name="text">
@@ -209,6 +246,18 @@
 </widget>
 <connections>
     <connection>
+        <sender>PluginResetToolButton</sender>
+        <signal>clicked()</signal>
+        <receiver>qtractorPluginSelectForm</receiver>
+        <slot>reset()</slot>
+    </connection>
+    <connection>
+        <sender>PluginSearchComboBox</sender>
+        <signal>textChanged(const QString&amp;)</signal>
+        <receiver>qtractorPluginSelectForm</receiver>
+        <slot>refresh()</slot>
+    </connection>
+    <connection>
         <sender>PluginListView</sender>
         <signal>selectionChanged()</signal>
         <receiver>qtractorPluginSelectForm</receiver>
@@ -227,12 +276,6 @@
         <slot>accept()</slot>
     </connection>
     <connection>
-        <sender>SearchLineEdit</sender>
-        <signal>textChanged(const QString&amp;)</signal>
-        <receiver>qtractorPluginSelectForm</receiver>
-        <slot>refresh()</slot>
-    </connection>
-    <connection>
         <sender>OkPushButton</sender>
         <signal>clicked()</signal>
         <receiver>qtractorPluginSelectForm</receiver>
@@ -246,7 +289,8 @@
     </connection>
 </connections>
 <tabstops>
-    <tabstop>SearchLineEdit</tabstop>
+    <tabstop>PluginResetToolButton</tabstop>
+    <tabstop>PluginSearchComboBox</tabstop>
     <tabstop>PluginListView</tabstop>
     <tabstop>OkPushButton</tabstop>
     <tabstop>CancelPushButton</tabstop>
@@ -261,6 +305,7 @@
     <variable access="private">unsigned short m_iChannels;</variable>
 </variables>
 <slots>
+    <slot access="private" specifier="non virtual">reset()</slot>
     <slot access="private" specifier="non virtual">refresh()</slot>
     <slot access="private" specifier="non virtual">stabilize()</slot>
     <slot access="private" specifier="non virtual">accept()</slot>

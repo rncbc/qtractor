@@ -37,8 +37,7 @@
 void qtractorSessionForm::init (void)
 {
 	// Initialize conveniency options...
-	qtractorMainForm *pMainForm
-		= static_cast<qtractorMainForm *> (parentWidget());
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm) {
 		qtractorOptions *pOptions = pMainForm->options();
 		if (pOptions)
@@ -129,8 +128,7 @@ void qtractorSessionForm::accept (void)
 	}
 
 	// Save other conveniency options...
-	qtractorMainForm *pMainForm
-		= static_cast<qtractorMainForm *> (parentWidget());
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm) {
 		qtractorOptions *pOptions = pMainForm->options();
 		if (pOptions)

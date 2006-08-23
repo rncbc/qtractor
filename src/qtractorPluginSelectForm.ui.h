@@ -22,6 +22,8 @@
 
 #include "qtractorPlugin.h"
 
+#include "qtractorOptions.h"
+#include "qtractorMainForm.h"
 
 #include <qptrlist.h>
 #include <qregexp.h>
@@ -90,6 +92,17 @@ void qtractorPluginSelectForm::init (void)
 //	PluginListView->setAllColumnsShowFocus(true);
 //	PluginListView->setShowSortIndicator(true);
 
+	// Initialize conveniency options...
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm) {
+		qtractorOptions *pOptions = pMainForm->options();
+		if (pOptions)
+			pOptions->loadComboBoxHistory(PluginSearchComboBox);
+	}
+
+	// Let the search begin...
+	PluginSearchComboBox->setFocus();
+	
 	m_pPluginPath->open();
 
 	adjustSize();
@@ -140,10 +153,18 @@ unsigned long qtractorPluginSelectForm::pluginIndex ( int iPlugin )
 }
 
 
+// Reset plugin listing.
+void qtractorPluginSelectForm::reset (void)
+{
+	PluginSearchComboBox->setCurrentText(QString::null);
+//	refresh();
+}
+
+
 // Refresh plugin listing.
 void qtractorPluginSelectForm::refresh (void)
 {
-	QString sSearch = SearchLineEdit->text().simplifyWhiteSpace();
+	QString sSearch = PluginSearchComboBox->currentText().simplifyWhiteSpace();
 	QRegExp rx(sSearch.replace(QRegExp("[\\s]+"), ".*"), false);
 
 	PluginListView->setUpdatesEnabled(false);
@@ -211,6 +232,8 @@ void qtractorPluginSelectForm::refresh (void)
 
 	PluginListView->setUpdatesEnabled(true);
 	PluginListView->triggerUpdate();
+
+	PluginResetToolButton->setEnabled(!rx.isEmpty());
 	
 	stabilize();
 }
@@ -246,8 +269,17 @@ void qtractorPluginSelectForm::accept (void)
 		pItem = pItem->nextSibling();
 	}
 
-	if (m_pSelectList->count() > 0)
+	if (m_pSelectList->count() > 0) {
+		// Save other conveniency options...
+		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+		if (pMainForm) {
+			qtractorOptions *pOptions = pMainForm->options();
+			if (pOptions)
+				pOptions->saveComboBoxHistory(PluginSearchComboBox);
+		}
+		// Done.
 		QDialog::accept();
+	}
 }
 
 
