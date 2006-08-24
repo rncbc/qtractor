@@ -313,9 +313,13 @@ void qtractorPlugin::initPlugin ( qtractorPluginList *pList,
 						m_cports.append(new qtractorPluginPort(this, i));
 				}
 				else
-				if (LADSPA_IS_PORT_OUTPUT(portType)
-					&& LADSPA_IS_PORT_AUDIO(portType))
-					m_oports.append(i);
+				if (LADSPA_IS_PORT_OUTPUT(portType)) {
+					if (LADSPA_IS_PORT_AUDIO(portType))
+						m_oports.append(i);
+					else
+					if (LADSPA_IS_PORT_CONTROL(portType))
+						m_vports.append(i);
+				}
 			}
 			// Finally, instantiate each instance properly...
 			setChannels(m_pList->channels());
@@ -374,17 +378,26 @@ void qtractorPlugin::setChannels ( unsigned short iChannels )
 		return;
 	}
 
+	// FIXME: The dummy value for output control (dummy) port indexes...
+	static float s_fDummyData = 0.0f;
+	QValueList<unsigned long>::const_iterator it;
+
 	// Allocate new instances...
 	m_phInstances = new LADSPA_Handle [m_iInstances];
 	for (unsigned short i = 0; i < m_iInstances; i++) {
 		// Instantiate them properly first...
 		m_phInstances[i] = (*pDescriptor->instantiate)(
 			pDescriptor, m_pList->sampleRate());
-		// Connect all existing ports...
+		// Connect all existing input control ports...
 		for (qtractorPluginPort *pPort = m_cports.first();
 				pPort; pPort = m_cports.next()) {
 			(*pDescriptor->connect_port)(m_phInstances[i],
 				pPort->index(), pPort->data());
+		}
+		// Connect all existing output control (dummy) ports...
+		for (it = m_vports.begin(); it != m_vports.end(); ++it) {
+			(*pDescriptor->connect_port)(m_phInstances[i],
+				(*it), &s_fDummyData);
 		}
 	}
 
@@ -527,6 +540,13 @@ void qtractorPlugin::process ( unsigned int nframes )
 QPtrList<qtractorPluginPort>& qtractorPlugin::cports (void)
 {
 	return m_cports;
+}
+
+
+// Output control (dummy) port index-list accessors.
+const QValueList<unsigned long>& qtractorPlugin::vports (void) const
+{
+	return m_vports;
 }
 
 

@@ -96,6 +96,11 @@ bool qtractorBusCommand::createBus (void)
 	// Open up the new bus...
 	m_pBus->open();
 
+	// Update mixer (look for new strips...)
+	qtractorMixer *pMixer = pMainForm->mixer();
+	if (pMixer)
+		pMixer->updateBusses();
+
 	// Done.
 	return true;
 }
@@ -257,6 +262,11 @@ bool qtractorBusCommand::deleteBus (void)
 	// And remove it...
 	pEngine->removeBus(m_pBus);
 	m_pBus = NULL;
+
+	// Update mixer (clean old strips...)
+	qtractorMixer *pMixer = pMainForm->mixer();
+	if (pMixer)
+		pMixer->updateBusses();
 
 	// Carry on...
 	pSession->setPlaying(bPlaying);

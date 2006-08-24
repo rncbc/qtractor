@@ -194,6 +194,9 @@ public:
 	// Input control ports list accessor.
 	QPtrList<qtractorPluginPort>& cports();
 
+	// Output control (dummy) port index-list accessors.
+	const QValueList<unsigned long>& vports() const;
+
 	// Audio port index-list accessors.
 	const QValueList<unsigned long>& iports() const;
 	const QValueList<unsigned long>& oports() const;
@@ -234,6 +237,9 @@ private:
 
 	// List of input control ports.
 	QPtrList<qtractorPluginPort> m_cports;
+
+	// List of output control (dummy) port indexes.
+	QValueList<unsigned long> m_vports;
 
 	// List of audio port indexes.
 	QValueList<unsigned long> m_iports;
