@@ -142,6 +142,7 @@ private:
 	qtractorAudioBufferThread *m_pSyncThread;
 
 	unsigned int   m_iThreshold;
+	unsigned int   m_iBufferSize;
 	unsigned long  m_iReadOffset;
 	unsigned long  m_iWriteOffset;
 	unsigned long  m_iLength;

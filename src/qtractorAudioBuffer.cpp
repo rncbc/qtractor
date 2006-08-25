@@ -78,6 +78,7 @@ qtractorAudioBuffer::qtractorAudioBuffer ( unsigned short iChannels,
 	m_pSyncThread    = NULL;
 
 	m_iThreshold     = 0;
+	m_iBufferSize    = 0;
 	m_iWriteOffset   = 0;
 	m_iReadOffset    = 0;
 	m_iLength        = 0;
@@ -190,11 +191,19 @@ bool qtractorAudioBuffer::open ( const QString& sFilename, int iMode )
 	// Allocate ring-buffer now.
 	m_pRingBuffer = new qtractorRingBuffer<float> (iChannels, frames());
 	m_iThreshold  = (m_pRingBuffer->bufferSize() >> 2);
+	m_iBufferSize = m_iThreshold;
+#ifdef CONFIG_LIBSAMPLERATE
+	if (m_bResample && m_fResampleRatio < 1.0f) {
+		unsigned int iMinBufferSize = (unsigned int) framesOut(m_iThreshold);
+		while (m_iBufferSize < iMinBufferSize)
+			m_iBufferSize <<= 1;
+	}
+#endif
 
 	// Allocate actual buffer stuff...
 	m_ppFrames = new float * [iChannels];
 	for (unsigned short i = 0; i < iChannels; i++)
-		m_ppFrames[i] = new float [m_iThreshold];
+		m_ppFrames[i] = new float [m_iBufferSize];
 
 #ifdef CONFIG_LIBSAMPLERATE
 	// Sample rate converter stuff, whether needed...
@@ -202,7 +211,7 @@ bool qtractorAudioBuffer::open ( const QString& sFilename, int iMode )
 		int err = 0;
 		for (unsigned short i = 0; i < iChannels; i++) {
 			m_ppInBuffer[i]  = m_ppFrames[i];
-			m_ppOutBuffer[i] = new float [m_iThreshold];
+			m_ppOutBuffer[i] = new float [m_iBufferSize];
 			m_ppSrcState[i]  = src_new(g_iResampleType, 1, &err);
 		}
 	}
@@ -256,6 +265,7 @@ void qtractorAudioBuffer::close (void)
 
 	// Reset all relevant state variables.
 	m_iThreshold   = 0;
+	m_iBufferSize  = 0;
 	m_iWriteOffset = 0;
 	m_iReadOffset  = 0;
 	m_iLength      = 0;
@@ -615,8 +625,8 @@ void qtractorAudioBuffer::readSync (void)
 	bool bLooping = (ls < le && m_iWriteOffset < le);
 
 	while (nahead > 0) {
-		if (nahead > m_iThreshold)
-			nahead = m_iThreshold;
+		if (nahead > m_iBufferSize)
+			nahead = m_iBufferSize;
 		if (bLooping && m_iWriteOffset + nahead >= le)
 			nahead = le - m_iWriteOffset;
 		unsigned int nread = readBuffer(nahead);
@@ -661,8 +671,8 @@ void qtractorAudioBuffer::writeSync (void)
 	unsigned int ntotal  = 0;
 
 	while (nbehind > 0) {
-		if (nbehind > m_iThreshold)
-			nbehind = m_iThreshold;
+		if (nbehind > m_iBufferSize)
+			nbehind = m_iBufferSize;
 		unsigned int nwrite = writeBuffer(nbehind);
 		if (nwrite > 0) {
 			m_iReadOffset += nwrite;
