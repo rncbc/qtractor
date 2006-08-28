@@ -257,14 +257,17 @@ void qtractorMeter::panSliderChangedSlot ( int iValue )
 	if (m_iUpdate > 0)
 		return;
 
+	m_iUpdate++;
+
 	float fPanning = 0.01f * float(iValue);
-	if (::fabs(m_pPanSpinBox->valueFloat() - fPanning) > 0.01f) {
-		m_iUpdate++;
+	if (::fabsf(m_pPanSpinBox->valueFloat() - fPanning) > 0.01f) {
 		m_pPanSpinBox->setValueFloat(fPanning);
 		emit panChangedSignal(fPanning);
-		m_iUpdate--;
 	}
+
+	m_iUpdate--;
 }
+
 
 // Panning-meter spin-box value change slot.
 void qtractorMeter::panSpinBoxChangedSlot ( const QString& sValue )
@@ -272,13 +275,15 @@ void qtractorMeter::panSpinBoxChangedSlot ( const QString& sValue )
 	if (m_iUpdate > 0)
 		return;
 
+	m_iUpdate++;
+
 	float fPanning = sValue.toFloat();
-	if (::fabs(panning() - fPanning) > 0.01f) {
-		m_iUpdate++;
+	if (::fabsf(panning() - fPanning) > 0.01f) {
 		m_pPanSlider->setValue(int(100.0f * fPanning));
 		emit panChangedSignal(fPanning);
-		m_iUpdate--;
 	}
+
+	m_iUpdate--;
 }
 
 
@@ -288,13 +293,15 @@ void qtractorMeter::gainSliderChangedSlot ( int iValue )
 	if (m_iUpdate > 0)
 		return;
 
+	m_iUpdate++;
+
 	float fGain = gainFromScale(float(10000 - iValue) / 10000.0f);
-	if (::fabs(gainFromValue(m_pGainSpinBox->valueFloat()) - fGain) > 0.01f) {
-		m_iUpdate++;
+	if (::fabsf(gainFromValue(m_pGainSpinBox->valueFloat()) - fGain) > 0.01f) {
 		m_pGainSpinBox->setValueFloat(valueFromGain(fGain));
 		emit gainChangedSignal(fGain);
-		m_iUpdate--;
 	}
+
+	m_iUpdate--;
 }
 
 
@@ -304,13 +311,15 @@ void qtractorMeter::gainSpinBoxChangedSlot ( const QString& sValue )
 	if (m_iUpdate > 0)
 		return;
 		
+	m_iUpdate++;
+
 	float fGain = gainFromValue(sValue.toFloat());
-	if (::fabs(gain() - fGain) > 0.01f) {
-		m_iUpdate++;
+	if (::fabsf(gain() - fGain) > 0.01f) {
 		m_pGainSlider->setValue(10000 - int(10000.0f * scaleFromGain(fGain)));
 		emit gainChangedSignal(fGain);
-		m_iUpdate--;
 	}
+
+	m_iUpdate--;
 }
 
 

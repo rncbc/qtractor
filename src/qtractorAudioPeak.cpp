@@ -29,6 +29,12 @@
 
 #include <math.h>
 
+#if defined(__BORLANDC__)
+// BCC32 doesn't have these float versions...
+static inline float sqrtf ( float x )	{ return float(::sqrt(x)); }
+static inline float fabsf ( float x )	{ return float(::fabs(x)); }
+#endif
+
 // Audio file buffer size in frames per channel.
 static const unsigned int c_iAudioBufSize = (4 * 1024);
 
@@ -252,11 +258,11 @@ void qtractorAudioPeakThread::writePeakFileFrame (void)
 		frame.peakMax = (unsigned char) (m_peakMax[k] > 254.0f ? 255 : m_peakMax[k]);
 		// Write the smoothed peak minimum value...
 		m_peakMin[k]  = (1.0f - c_fPeakExpCoef) * m_peakMin[k]
-			+ c_fPeakExpCoef * 254.0f * ::fabs(m_peakMin[i]);
+			+ c_fPeakExpCoef * 254.0f * ::fabsf(m_peakMin[i]);
 		frame.peakMin = (unsigned char) (m_peakMin[k] > 254.0f ? 255 : m_peakMin[k]);
 		// Write the smoothed RMS value...
 		m_peakRms[k]  = (1.0f - c_fPeakExpCoef) * m_peakRms[k]
-			+ c_fPeakExpCoef * 254.0f * (::sqrt(m_peakRms[i] / (float) m_iPeak));
+			+ c_fPeakExpCoef * 254.0f * (::sqrtf(m_peakRms[i] / (float) m_iPeak));
 		frame.peakRms = (unsigned char) (m_peakRms[k] > 254.0f ? 255 : m_peakRms[k]);
 		// Bail out...
 		m_peakFile.writeBlock((const char *) &frame, sizeof(frame));

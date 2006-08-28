@@ -820,12 +820,15 @@ void qtractorPluginPortWidget::spinBoxValueChanged ( const QString& sText )
 		fValue = float(sText.toInt());
 	} else {
 		fValue = sText.toFloat();
-		if (m_pSlider)
-			m_pSlider->setValue(portToSlider(fValue));
 	}
 
-//	m_pPort->setValue(fValue);
-	emit valueChanged(m_pPort, fValue);
+	//	Don't let be no-changes...
+	if (::fabsf(m_pPort->value() - fValue)
+		> ::powf(10.0f, - float(portDecs()))) {
+		if (m_pSlider)
+			m_pSlider->setValue(portToSlider(fValue));
+		emit valueChanged(m_pPort, fValue);
+	}
 
 	m_iUpdate--;
 }
@@ -838,11 +841,13 @@ void qtractorPluginPortWidget::sliderValueChanged ( int iValue )
 	m_iUpdate++;
 
 	float fValue = sliderToPort(iValue);
-	if (m_pSpinBox)
-		m_pSpinBox->setValueFloat(fValue);
-
-//	m_pPort->setValue(fValue);
-	emit valueChanged(m_pPort, fValue);
+	//	Don't let be no-changes...
+	if (::fabsf(m_pPort->value() - fValue)
+		> ::powf(10.0f, - float(portDecs()))) {
+		if (m_pSpinBox)
+			m_pSpinBox->setValueFloat(fValue);
+		emit valueChanged(m_pPort, fValue);
+	}
 
 	m_iUpdate--;
 }

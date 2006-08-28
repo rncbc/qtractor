@@ -34,6 +34,7 @@ static inline float logf ( float x )	{ return float(::log(x)); }
 static inline float expf ( float x )	{ return float(::exp(x)); }
 static inline float powf ( float x, float y ) { return float(::pow(x, y)); }
 static inline float log10f ( float x )	{ return float(::log(x) / M_LN10); }
+static inline float fabsf ( float x )	{ return float(::fabs(x)); }
 #endif
 
 
