@@ -151,6 +151,10 @@ protected:
 	float gainFromScale(float fScale) const;
 	float scaleFromGain(float fGain)  const;
 
+	// Gain-value (dB) converters...
+	float gainFromValue(float fValue) const;
+	float valueFromGain(float fGain)  const;
+
 	// Specific event handlers.
 	void resizeEvent(QResizeEvent *);
 

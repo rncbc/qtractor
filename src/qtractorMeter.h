@@ -29,6 +29,7 @@
 class qtractorMeter;
 class qtractorMonitor;
 class qtractorSlider;
+class qtractorSpinBox;
 class QLabel;
 
 
@@ -91,9 +92,11 @@ public:
 	QLabel *topLabel() const;
 	QHBox  *hbox() const;
 
-	// Common slider accessors.
-	qtractorSlider *panSlider() const;
-	qtractorSlider *gainSlider() const;
+	// Common slider/spin-box accessors.
+	qtractorSlider  *panSlider()  const;
+	qtractorSpinBox *panSpinBox() const;
+	qtractorSlider  *gainSlider() const;
+	qtractorSpinBox *gainSpinBox() const;
 
 	// Panning accessors.
 	void setPanning(float fPanning);
@@ -130,12 +133,16 @@ protected:
 	// Gain-scale converters...
 	virtual float gainFromScale(float fScale) const { return fScale; }
 	virtual float scaleFromGain(float fGain)  const { return fGain;  }
+	virtual float gainFromValue(float fValue) const { return fValue; }
+	virtual float valueFromGain(float fGain)  const { return fGain; }
 
 protected slots:
 
 	// Slider value-changed slots.
-	void panChangedSlot(int);
-	void gainChangedSlot(int);
+	void panSliderChangedSlot(int);
+	void panSpinBoxChangedSlot(const QString&);
+	void gainSliderChangedSlot(int);
+	void gainSpinBoxChangedSlot(const QString&);
 
 signals:
 
@@ -146,10 +153,12 @@ signals:
 private:
 
 	// Local instance variables.
-	qtractorSlider *m_pPanSlider;
-	QLabel         *m_pTopLabel;
-	QHBox          *m_pHBox;
-	qtractorSlider *m_pGainSlider;
+	qtractorSpinBox *m_pPanSpinBox;
+	qtractorSlider  *m_pPanSlider;
+	QLabel          *m_pTopLabel;
+	QHBox           *m_pHBox;
+	qtractorSlider  *m_pGainSlider;
+	qtractorSpinBox *m_pGainSpinBox;
 
 	// Update exclusiveness flag.
 	int m_iUpdate;

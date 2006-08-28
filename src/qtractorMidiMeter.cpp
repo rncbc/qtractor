@@ -22,6 +22,7 @@
 #include "qtractorMidiMeter.h"
 #include "qtractorMidiMonitor.h"
 #include "qtractorSlider.h"
+#include "qtractorSpinBox.h"
 
 #include <qtooltip.h>
 #include <qpainter.h>
@@ -187,6 +188,9 @@ qtractorMidiMeter::qtractorMidiMeter ( qtractorMidiMonitor *pMidiMonitor,
 
 	topLabel()->setAlignment(Qt::AlignRight | Qt::AlignBottom);
 	topLabel()->setPixmap(*m_pMidiPixmap[0]);
+	gainSpinBox()->setMinValueFloat(0.0f);
+	gainSpinBox()->setMaxValueFloat(100.f);
+	QToolTip::add(gainSpinBox(), tr("Volume (%)"));
 
 	m_pMidiScale = new qtractorMidiMeterScale(this, hbox());
 	m_pMidiValue = new qtractorMidiMeterValue(this, hbox());
@@ -217,6 +221,18 @@ qtractorMidiMeter::~qtractorMidiMeter (void)
 
 	delete m_pMidiPixmap[0];
 	delete m_pMidiPixmap[1];
+}
+
+
+// Gain-value (percent) converters...
+float qtractorMidiMeter::gainFromValue ( float fValue ) const
+{
+	return (0.01f * fValue);
+}
+
+float qtractorMidiMeter::valueFromGain ( float fGain ) const
+{
+	return (100.0f * fGain);
 }
 
 

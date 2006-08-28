@@ -22,6 +22,7 @@
 #include "qtractorAudioMeter.h"
 #include "qtractorAudioMonitor.h"
 #include "qtractorSlider.h"
+#include "qtractorSpinBox.h"
 
 #include <qtooltip.h>
 #include <qpainter.h>
@@ -29,12 +30,6 @@
 #include <qlabel.h>
 
 #include <math.h>
-
-#if defined(__BORLANDC__)
-// BCC32 doesn't have these float versions...
-static inline float log10f ( float x )  { return float(::log(x)) / M_LN10; }
-static inline float powf ( float x, float y ) { return float(::pow(x, y)); }
-#endif
 
 
 // Meter level limits (in dB).
@@ -281,6 +276,9 @@ qtractorAudioMeter::qtractorAudioMeter ( qtractorAudioMonitor *pAudioMonitor,
 	topLabel()->hide();
 	gainSlider()->setMinValue(
 		-int(10000.0f * 0.025f * QTRACTOR_AUDIO_METER_MAXDB));
+	gainSpinBox()->setMinValueFloat(QTRACTOR_AUDIO_METER_MINDB);
+	gainSpinBox()->setMaxValueFloat(QTRACTOR_AUDIO_METER_MAXDB);
+	QToolTip::add(gainSpinBox(), tr("Gain (dB)"));
 
 	setPeakFalloff(QTRACTOR_AUDIO_METER_PEAK_FALLOFF);
 
@@ -335,10 +333,22 @@ float qtractorAudioMeter::gainFromScale ( float fScale ) const
 
 float qtractorAudioMeter::scaleFromGain ( float fGain ) const
 {
-	float dB = 0.0f;
+	return IEC_Scale(valueFromGain(fGain));
+}
+
+
+// Gain-value (dB) converters...
+float qtractorAudioMeter::gainFromValue ( float fValue ) const
+{
+	return gainFromScale(IEC_Scale(fValue));
+}
+
+float qtractorAudioMeter::valueFromGain ( float fGain ) const
+{
+	float fValue = 0.0f;
 	if (fGain > 0.0f)
-		dB = 20.0f * ::log10f(fGain);
-	return IEC_Scale(dB);
+		fValue = 20.0f * ::log10f(fGain);
+	return fValue;
 }
 
 
@@ -370,6 +380,7 @@ void qtractorAudioMeter::reset (void)
 	}
 
 	panSlider()->setEnabled(m_iChannels > 1);
+	panSpinBox()->setEnabled(m_iChannels > 1);
 }
 
 

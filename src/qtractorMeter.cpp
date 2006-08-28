@@ -21,7 +21,9 @@
 
 #include "qtractorMeter.h"
 #include "qtractorSlider.h"
+#include "qtractorSpinBox.h"
 
+#include <qtooltip.h>
 #include <qpainter.h>
 #include <qlabel.h>
 
@@ -103,6 +105,7 @@ void qtractorMeterScale::resizeEvent ( QResizeEvent * )
 qtractorMeter::qtractorMeter ( QWidget *pParent, const char *pszName )
 	: QVBox(pParent, pszName)
 {
+	m_pPanSpinBox  = new qtractorSpinBox(this);
 	m_pPanSlider   = new qtractorSlider(Qt::Horizontal, this);
 	m_pPanSlider->setFixedHeight(20);
 	m_pTopLabel    = new QLabel(this);
@@ -110,6 +113,7 @@ qtractorMeter::qtractorMeter ( QWidget *pParent, const char *pszName )
 	m_pHBox->setSpacing(1);
 	m_pGainSlider  = new qtractorSlider(Qt::Vertical, m_pHBox);
 	m_pGainSlider->setFixedWidth(20);
+	m_pGainSpinBox = new qtractorSpinBox(this);
 
 	m_iUpdate      = 0;
 	m_iPeakFalloff = 0;
@@ -121,6 +125,11 @@ qtractorMeter::qtractorMeter ( QWidget *pParent, const char *pszName )
 	m_pPanSlider->setLineStep(1);
 	m_pPanSlider->setDefaultValue(0);
 
+	m_pPanSpinBox->setAlignment(Qt::AlignHCenter);
+	m_pPanSpinBox->setMinValueFloat(-1.0f);
+	m_pPanSpinBox->setMaxValueFloat(+1.0f);
+	QToolTip::add(m_pPanSpinBox, tr("Pan"));
+
 	m_pGainSlider->setTickmarks(QSlider::NoMarks);
 	m_pGainSlider->setMinValue(0);
 	m_pGainSlider->setMaxValue(10000);
@@ -128,15 +137,22 @@ qtractorMeter::qtractorMeter ( QWidget *pParent, const char *pszName )
 	m_pGainSlider->setLineStep(100);
 	m_pGainSlider->setDefaultValue(0);
 
-	QVBox::setMinimumHeight(120);
+	m_pGainSpinBox->setAlignment(Qt::AlignHCenter);
+	QToolTip::add(m_pGainSpinBox, tr("Gain"));
+
+	QVBox::setMinimumHeight(140);
 	QVBox::setSpacing(1);
 	QVBox::setSizePolicy(
 		QSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding));
 
 	QObject::connect(m_pPanSlider, SIGNAL(valueChanged(int)),
-		this, SLOT(panChangedSlot(int)));
+		this, SLOT(panSliderChangedSlot(int)));
+	QObject::connect(m_pPanSpinBox, SIGNAL(valueChanged(const QString&)),
+		this, SLOT(panSpinBoxChangedSlot(const QString&)));
 	QObject::connect(m_pGainSlider, SIGNAL(valueChanged(int)),
-		this, SLOT(gainChangedSlot(int)));
+		this, SLOT(gainSliderChangedSlot(int)));
+	QObject::connect(m_pGainSpinBox, SIGNAL(valueChanged(const QString&)),
+		this, SLOT(gainSpinBoxChangedSlot(const QString&)));
 }
 
 
@@ -144,10 +160,12 @@ qtractorMeter::qtractorMeter ( QWidget *pParent, const char *pszName )
 qtractorMeter::~qtractorMeter (void)
 {
 	// No need to delete child widgets, Qt does it all for us
+	delete m_pGainSpinBox;
 	delete m_pGainSlider;
 	delete m_pHBox;
 	delete m_pTopLabel;
 	delete m_pPanSlider;
+	delete m_pPanSpinBox;
 }
 
 
@@ -169,6 +187,7 @@ void qtractorMeter::setPanning ( float fPanning )
 {
 	m_iUpdate++;
 	m_pPanSlider->setValue(int(100.0f * fPanning));
+	m_pPanSpinBox->setValueFloat(fPanning);
 	m_iUpdate--;
 }
 
@@ -183,6 +202,7 @@ void qtractorMeter::setGain ( float fGain )
 {
 	m_iUpdate++;
 	m_pGainSlider->setValue(10000 - int(10000.0f * scaleFromGain(fGain)));
+	m_pGainSpinBox->setValueFloat(valueFromGain(fGain));
 	m_iUpdate--;
 }
 
@@ -197,15 +217,25 @@ float qtractorMeter::gainScale (void) const
 }
 
 
-// Common slider accessors.
+// Common slider/spin-box accessors.
 qtractorSlider *qtractorMeter::panSlider (void) const
 {
 	return m_pPanSlider;
 }
 
+qtractorSpinBox *qtractorMeter::panSpinBox (void) const
+{
+	return m_pPanSpinBox;
+}
+
 qtractorSlider *qtractorMeter::gainSlider (void) const
 {
 	return m_pGainSlider;
+}
+
+qtractorSpinBox *qtractorMeter::gainSpinBox (void) const
+{
+	return m_pGainSpinBox;
 }
 
 
@@ -222,22 +252,65 @@ int qtractorMeter::peakFalloff (void) const
 
 
 // Panning-meter slider value change slot.
-void qtractorMeter::panChangedSlot ( int /*iValue*/ )
+void qtractorMeter::panSliderChangedSlot ( int iValue )
 {
 	if (m_iUpdate > 0)
 		return;
-		
-	emit panChangedSignal(panning());
+
+	float fPanning = 0.01f * float(iValue);
+	if (::fabs(m_pPanSpinBox->valueFloat() - fPanning) > 0.01f) {
+		m_iUpdate++;
+		m_pPanSpinBox->setValueFloat(fPanning);
+		emit panChangedSignal(fPanning);
+		m_iUpdate--;
+	}
+}
+
+// Panning-meter spin-box value change slot.
+void qtractorMeter::panSpinBoxChangedSlot ( const QString& sValue )
+{
+	if (m_iUpdate > 0)
+		return;
+
+	float fPanning = sValue.toFloat();
+	if (::fabs(panning() - fPanning) > 0.01f) {
+		m_iUpdate++;
+		m_pPanSlider->setValue(int(100.0f * fPanning));
+		emit panChangedSignal(fPanning);
+		m_iUpdate--;
+	}
 }
 
 
 // Gain-meter slider value change slot.
-void qtractorMeter::gainChangedSlot ( int /*iValue*/ )
+void qtractorMeter::gainSliderChangedSlot ( int iValue )
+{
+	if (m_iUpdate > 0)
+		return;
+
+	float fGain = gainFromScale(float(10000 - iValue) / 10000.0f);
+	if (::fabs(gainFromValue(m_pGainSpinBox->valueFloat()) - fGain) > 0.01f) {
+		m_iUpdate++;
+		m_pGainSpinBox->setValueFloat(valueFromGain(fGain));
+		emit gainChangedSignal(fGain);
+		m_iUpdate--;
+	}
+}
+
+
+// Gain-meter spin-box value change slot.
+void qtractorMeter::gainSpinBoxChangedSlot ( const QString& sValue )
 {
 	if (m_iUpdate > 0)
 		return;
 		
-	emit gainChangedSignal(gain());
+	float fGain = gainFromValue(sValue.toFloat());
+	if (::fabs(gain() - fGain) > 0.01f) {
+		m_iUpdate++;
+		m_pGainSlider->setValue(10000 - int(10000.0f * scaleFromGain(fGain)));
+		emit gainChangedSignal(fGain);
+		m_iUpdate--;
+	}
 }
 
 

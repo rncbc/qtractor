@@ -39,6 +39,7 @@
 #include "qtractorAudioEngine.h"
 #include "qtractorMidiEngine.h"
 #include "qtractorSlider.h"
+#include "qtractorSpinBox.h"
 
 #include "qtractorMainForm.h"
 #include "qtractorBusForm.h"
@@ -201,9 +202,11 @@ void qtractorMixerStrip::initMixerStrip (void)
 			// only the output gain (volume) should be enabled...
 			if (m_pBus) {
 				m_pMeter->panSlider()->setEnabled(false);
+				m_pMeter->panSpinBox()->setEnabled(false);
 				if ((m_busMode & qtractorBus::Input) &&
 					(m_pBus->busMode() & qtractorBus::Output)) {
 					m_pMeter->gainSlider()->setEnabled(false);
+					m_pMeter->gainSpinBox()->setEnabled(false);
 				}
 			}
 		}
