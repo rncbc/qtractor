@@ -141,7 +141,7 @@ qtractorMeter::qtractorMeter ( QWidget *pParent, const char *pszName )
 	QToolTip::add(m_pGainSpinBox, tr("Gain"));
 
 	QVBox::setMinimumHeight(140);
-	QVBox::setSpacing(1);
+	QVBox::setSpacing(2);
 	QVBox::setSizePolicy(
 		QSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding));
 
@@ -260,7 +260,7 @@ void qtractorMeter::panSliderChangedSlot ( int iValue )
 	m_iUpdate++;
 
 	float fPanning = 0.01f * float(iValue);
-	if (::fabsf(m_pPanSpinBox->valueFloat() - fPanning) > 0.01f) {
+	if (::fabsf(m_pPanSpinBox->valueFloat() - fPanning) > 0.1f) {
 		m_pPanSpinBox->setValueFloat(fPanning);
 		emit panChangedSignal(fPanning);
 	}
@@ -278,7 +278,7 @@ void qtractorMeter::panSpinBoxChangedSlot ( const QString& sValue )
 	m_iUpdate++;
 
 	float fPanning = sValue.toFloat();
-	if (::fabsf(panning() - fPanning) > 0.01f) {
+	if (::fabsf(panning() - fPanning) > 0.1f) {
 		m_pPanSlider->setValue(int(100.0f * fPanning));
 		emit panChangedSignal(fPanning);
 	}
