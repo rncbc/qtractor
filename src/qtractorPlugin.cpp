@@ -717,6 +717,12 @@ void qtractorPluginList::setBuffer ( unsigned short iChannels,
 		m_pppBuffers[1] = NULL;
 	}
 
+	// Some sanity is in order, at least for now...
+	if (iChannels == 0 || iBufferSize == 0 || iSampleRate == 0) {
+		m_iActivated = iActivated;
+		return;
+	}
+
 	// Go, go, go...
 	m_iChannels   = iChannels;
 	m_iBufferSize = iBufferSize;
