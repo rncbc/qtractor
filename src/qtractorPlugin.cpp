@@ -343,7 +343,6 @@ void qtractorPlugin::setChannels ( unsigned short iChannels )
 			iInstances = iChannels;
 	}
 
-
 	// Now see if instance count changed anyhow...
 	if (iInstances == m_iInstances)
 		return;
@@ -375,6 +374,8 @@ void qtractorPlugin::setChannels ( unsigned short iChannels )
 			delete m_pForm;
 			m_pForm = NULL;
 		}
+		// Let there be some consistency here...
+		setActivated(bActivated);
 		return;
 	}
 
@@ -789,7 +790,7 @@ unsigned int qtractorPluginList::bufferSize (void) const
 }
 
 
-// Special activation methods.
+// Special guard activation methods.
 unsigned int qtractorPluginList::activated (void) const
 {
 	return m_iActivated;
@@ -808,6 +809,105 @@ void qtractorPluginList::updateActivated ( bool bActivated )
 	} else  {
 		m_iActivated--;
 	}
+}
+
+
+// Add-guarded plugin method.
+void qtractorPluginList::addPlugin ( qtractorPlugin *pPlugin )
+{
+	// Save chain activation status...
+	unsigned int iActivated = m_iActivated;
+	m_iActivated = 0;
+
+	// Guess which item we're adding after...
+	qtractorPlugin *pPrevPlugin = pPlugin->prev();
+	if (pPrevPlugin == NULL && pPlugin->next() == NULL)
+		pPrevPlugin = last();
+
+	// Link the plugin into list...
+	insertAfter(pPlugin, pPrevPlugin);
+	pPlugin->setChannels(m_iChannels);
+
+	// Now update each observer list-view...
+	for (qtractorPluginListView *pListView = m_views.first();
+			pListView; pListView = m_views.next()) {
+		// Get the previous one, if any...
+		qtractorPluginListItem *pPrevItem = pListView->pluginItem(pPrevPlugin);
+		// Add the list-view item...
+		qtractorPluginListItem *pItem
+			= new qtractorPluginListItem(pListView, pPlugin, pPrevItem);
+		pListView->setSelected(pItem, true);
+	}
+
+	// Show the plugin form right away...
+	qtractorPluginForm *pPluginForm = pPlugin->form();
+	pPluginForm->show();
+	pPluginForm->raise();
+	pPluginForm->setActiveWindow();
+
+	// Restore chain activateion status...
+	m_iActivated = iActivated;
+}
+
+
+// Remove-guarded plugin method.
+void qtractorPluginList::removePlugin ( qtractorPlugin *pPlugin )
+{
+	// Save chain activation status...
+	unsigned int iActivated = m_iActivated;
+	m_iActivated = 0;
+
+	// Just unlink the plugin from the list...
+	pPlugin->setChannels(0);
+	unlink(pPlugin);
+
+	// Now update each observer list-view...
+	QPtrList<qtractorPluginListItem>& items = pPlugin->items();
+	for (qtractorPluginListItem *pItem = items.first();
+			pItem; pItem = items.next()) {
+		delete pItem;
+	}
+	
+	// Restore chain activateion status...
+	m_iActivated = iActivated;
+}
+
+
+// Move-guarded plugin method.
+void qtractorPluginList::movePlugin ( qtractorPlugin *pPlugin,
+	qtractorPlugin *pPrevPlugin )
+{
+	// Save chain activation status...
+	unsigned int iActivated = m_iActivated;
+	m_iActivated = 0;
+
+	// Remove and insert back again...
+	unlink(pPlugin);
+	if (pPrevPlugin) {
+		insertAfter(pPlugin, pPrevPlugin);
+	} else {
+		prepend(pPlugin);
+	}
+
+	// Now update each observer list-view...
+	QPtrList<qtractorPluginListItem>& items = pPlugin->items();
+	for (qtractorPluginListItem *pItem = items.first();
+			pItem; pItem = items.next()) {
+		qtractorPluginListView *pListView
+			= static_cast<qtractorPluginListView *> (pItem->listView());
+		if (pListView) {
+			qtractorPluginListItem *pPrevItem
+				= pListView->pluginItem(pPrevPlugin);
+			// Remove the old item...
+			delete pItem;
+			// Just insert under the track list position...
+			pItem = new qtractorPluginListItem(pListView, pPlugin, pPrevItem);
+			pListView->setSelected(pItem, true);
+		}
+	}
+
+	// Restore chain activateion status...
+	m_iActivated = iActivated;
 }
 
 

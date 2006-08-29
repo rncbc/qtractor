@@ -55,56 +55,14 @@ qtractorPluginCommand::~qtractorPluginCommand (void)
 
 
 // Add new plugin(s) command methods.
-bool qtractorPluginCommand::addPlugin ( qtractorPlugin *pPlugin )
-{
-	if (pPlugin == NULL)
-		return false;
-
-#ifdef CONFIG_DEBUG
-	fprintf(stderr, "qtractorPluginCommand::addPlugin(%p)\n", pPlugin);
-#endif
-
-	qtractorPluginList *pPluginList = pPlugin->list();
-	if (pPluginList == NULL)
-		return false;
-
-	// Guess which item we're adding after...
-	qtractorPlugin *pPrevPlugin = pPlugin->prev();
-	if (pPrevPlugin == NULL && pPlugin->next() == NULL)
-		pPrevPlugin = pPluginList->last();
-	// Link the track into session...
-	pPluginList->insertAfter(pPlugin, pPrevPlugin);
-	pPlugin->setChannels(pPluginList->channels());
-
-	// Now update each observer list-view...
-	QPtrList<qtractorPluginListView>& views = pPluginList->views();
-	for (qtractorPluginListView *pListView = views.first();
-			pListView; pListView = views.next()) {
-		// Get the previous one, if any...
-		qtractorPluginListItem *pPrevItem = pListView->pluginItem(pPrevPlugin);
-		// Add the list-view item...
-		qtractorPluginListItem *pItem
-			= new qtractorPluginListItem(pListView, pPlugin, pPrevItem);
-		pListView->setSelected(pItem, true);
-	}
-
-	// Show the plugin form right away...
-	qtractorPluginForm *pPluginForm = pPlugin->form();
-	pPluginForm->show();
-	pPluginForm->raise();
-	pPluginForm->setActiveWindow();
-
-	return true;
-}
-
-
 bool qtractorPluginCommand::addPlugins (void)
 {
 	// Add all listed plugins, in order...
 	for (qtractorPlugin *pPlugin = m_plugins.first();
 			pPlugin; pPlugin = m_plugins.next()) {
-		if (!addPlugin(pPlugin))
-			return false;
+		qtractorPluginList *pPluginList = pPlugin->list();
+		if (pPluginList)
+			pPluginList->addPlugin(pPlugin);
 	}
 
 	// Avoid the disposal of the plugin reference(s).
@@ -115,41 +73,14 @@ bool qtractorPluginCommand::addPlugins (void)
 
 
 // Remove existing plugin(s) command methods.
-bool qtractorPluginCommand::removePlugin ( qtractorPlugin *pPlugin )
-{
-	if (pPlugin == NULL)
-		return false;
-
-#ifdef CONFIG_DEBUG
-	fprintf(stderr, "qtractorPluginCommand::removePlugin(%p)\n", pPlugin);
-#endif
-
-	qtractorPluginList *pPluginList = pPlugin->list();
-	if (pPluginList == NULL)
-		return false;
-
-	// Just add the plugin to the list...
-	pPlugin->setChannels(0);
-	pPluginList->unlink(pPlugin);
-
-	// Now update each observer list-view...
-	QPtrList<qtractorPluginListItem>& items = pPlugin->items();
-	for (qtractorPluginListItem *pItem = items.first();
-			pItem; pItem = items.next()) {
-		delete pItem;
-	}
-
-	return true;
-}
-
-
 bool qtractorPluginCommand::removePlugins (void)
 {
-	// Add all listed plugins, in order...
+	// Unlink all listed plugins, in order...
 	for (qtractorPlugin *pPlugin = m_plugins.last();
 			pPlugin; pPlugin = m_plugins.prev()) {
-		if (!removePlugin(pPlugin))
-			return false;
+		qtractorPluginList *pPluginList = pPlugin->list();
+		if (pPluginList)
+			pPluginList->removePlugin(pPlugin);
 	}
 
 	// Allow the disposal of the plugin reference(s).
@@ -236,29 +167,8 @@ bool qtractorMovePluginCommand::redo (void)
 	// Save the previous track alright...
 	qtractorPlugin *pPrevPlugin = pPlugin->prev();
 
-	// Remove and insert back again...
-	pPluginList->unlink(pPlugin);
-	if (m_pPrevPlugin)
-		pPluginList->insertAfter(pPlugin, m_pPrevPlugin);
-	else
-		pPluginList->prepend(pPlugin);
-
-	// Now update each observer list-view...
-	QPtrList<qtractorPluginListItem>& items = pPlugin->items();
-	for (qtractorPluginListItem *pItem = items.first();
-			pItem; pItem = items.next()) {
-		qtractorPluginListView *pListView
-			= static_cast<qtractorPluginListView *> (pItem->listView());
-		if (pListView) {
-			qtractorPluginListItem *pPrevItem
-				= pListView->pluginItem(m_pPrevPlugin);
-			// Remove the old item...
-			delete pItem;
-			// Just insert under the track list position...
-			pItem = new qtractorPluginListItem(pListView, pPlugin, pPrevItem);
-			pListView->setSelected(pItem, true);
-		}
-	}
+	// Move it...
+	pPluginList->movePlugin(pPlugin, m_pPrevPlugin);
 
 	// Swap it nice, finally.
 	m_pPrevPlugin = pPrevPlugin;

@@ -49,12 +49,10 @@ public:
 
 protected:
 
-	// Add new plugin(s) command methods.
-	bool addPlugin(qtractorPlugin *pPlugin);
+	// Add new plugin(s) command method.
 	bool addPlugins();
 
-	// Remove existing plugin(s) command methods.
-	bool removePlugin(qtractorPlugin *pPlugin);
+	// Remove existing plugin(s) command method.
 	bool removePlugins();
 
 private:

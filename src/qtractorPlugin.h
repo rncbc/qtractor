@@ -288,6 +288,11 @@ public:
 	bool isActivatedAll() const;
 	void updateActivated(bool bActivated);
 
+	// Guarded plugin methods.
+	void addPlugin(qtractorPlugin *pPlugin);
+	void removePlugin(qtractorPlugin *pPlugin);
+	void movePlugin(qtractorPlugin *pPlugin, qtractorPlugin *pPrevPlugin);
+
 	// An accessible list of observers.
 	QPtrList<qtractorPluginListView>& views();
 
