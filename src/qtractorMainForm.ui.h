@@ -2379,6 +2379,11 @@ void qtractorMainForm::contentsChanged (void)
 // Tempo spin-box change slot.
 void qtractorMainForm::tempoChanged (void)
 {
+	// Avoid bogus changes...
+	float fTempo = m_pTempoSpinBox->valueFloat();
+	if (::fabsf(m_pSession->tempo() - fTempo) < 0.01f)
+		return;
+
 #ifdef CONFIG_DEBUG_0
 	appendMessages("qtractorMainForm::tempoChanged()");
 #endif
@@ -2391,8 +2396,8 @@ void qtractorMainForm::tempoChanged (void)
 	// Now, express the change as a undoable command...
 	m_pCommands->exec(
 		new qtractorPropertyCommand<float> (this,
-			tr("session tempo"), m_pSession->properties().tempo,
-			m_pTempoSpinBox->valueFloat()));
+			tr("session tempo"),
+			m_pSession->properties().tempo, fTempo));
 
 	// Restore playback state, if needed...
 	if (bPlaying) {
@@ -2405,6 +2410,11 @@ void qtractorMainForm::tempoChanged (void)
 // Snap-per-beat spin-box change slot.
 void qtractorMainForm::snapPerBeatChanged ( int iSnap )
 {
+	// Avoid bogus changes...
+	unsigned short iSnapPerBeat = qtractorSession::snapFromIndex(iSnap);
+	if (iSnapPerBeat == m_pSession->snapPerBeat())
+		return;
+
 #ifdef CONFIG_DEBUG_0
 	appendMessages("qtractorMainForm::snapPerBeatChanged()");
 #endif
@@ -2412,8 +2422,8 @@ void qtractorMainForm::snapPerBeatChanged ( int iSnap )
 	// Now, express the change as a undoable command...
 	m_pCommands->exec(
 		new qtractorPropertyCommand<unsigned short> (this,
-			tr("session snap/beat"), m_pSession->properties().snapPerBeat,
-			qtractorSession::snapFromIndex(iSnap)));
+			tr("session snap/beat"),
+			m_pSession->properties().snapPerBeat, iSnapPerBeat));
 }
 
 
