@@ -1410,19 +1410,19 @@ void qtractorMainForm::viewOptions (void)
 	optionsForm.setOptions(m_pOptions);
 	// Show the setup dialog...
 	if (optionsForm.exec()) {
-		// Warn if something will be only effective on next run.
+		// Check wheather something immediate has changed.
+		QString sNeedRestart;
+		if (iOldResampleType != m_pOptions->iResampleType) {
+			qtractorAudioBuffer::setResampleType(m_pOptions->iResampleType);
+			sNeedRestart += tr("session");
+		}
 		if (( bOldStdoutCapture && !m_pOptions->bStdoutCapture) ||
 			(!bOldStdoutCapture &&  m_pOptions->bStdoutCapture)) {
-			QMessageBox::information(this,
-				tr("Information") + " - " QTRACTOR_TITLE,
-				tr("Some settings may be only effective\n"
-				"next time you start this program."), tr("OK"));
 			updateMessagesCapture();
+			if (!sNeedRestart.isEmpty())
+				sNeedRestart += tr(" or ");
+			sNeedRestart += tr("program");
 		}
-		// Others will only be affective upon restarting the session...
-		if (iOldResampleType != m_pOptions->iResampleType)
-			qtractorAudioBuffer::setResampleType(m_pOptions->iResampleType);
-		// Check wheather something immediate has changed.
 		if (( bOldCompletePath && !m_pOptions->bCompletePath) ||
 			(!bOldCompletePath &&  m_pOptions->bCompletePath) ||
 			(iOldMaxRecentFiles != m_pOptions->iMaxRecentFiles))
@@ -1436,6 +1436,13 @@ void qtractorMainForm::viewOptions (void)
 			(!bOldMessagesLimit &&  m_pOptions->bMessagesLimit) ||
 			(iOldMessagesLimitLines !=  m_pOptions->iMessagesLimitLines))
 			updateMessagesLimit();
+		// Warn if something will be only effective on next time.
+		if (!sNeedRestart.isEmpty()) {
+			QMessageBox::information(this,
+				tr("Information") + " - " QTRACTOR_TITLE,
+				tr("Some settings may be only effective\n"
+				"next time you start this %1.").arg(sNeedRestart), tr("OK"));
+		}
 	}
 
 	// This makes it.

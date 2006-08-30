@@ -108,7 +108,7 @@ qtractorOptions *qtractorConnectForm::options (void)
 // Audio client name change slots.
 void qtractorConnectForm::audioIClientChanged (void)
 {
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	fprintf(stderr, "qtractorConnectForm::audioIClientChanged()\n");
 #endif
 
@@ -119,7 +119,7 @@ void qtractorConnectForm::audioIClientChanged (void)
 
 void qtractorConnectForm::audioOClientChanged (void)
 {
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	fprintf(stderr, "qtractorConnectForm::audioOClientChanged()\n");
 #endif
 
@@ -132,7 +132,7 @@ void qtractorConnectForm::audioOClientChanged (void)
 // Connect current selected ports.
 void qtractorConnectForm::audioConnectSelected (void)
 {
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	fprintf(stderr, "qtractorConnectForm::audioConnectSelected()\n");
 #endif
 
@@ -144,7 +144,7 @@ void qtractorConnectForm::audioConnectSelected (void)
 // Disconnect current selected ports.
 void qtractorConnectForm::audioDisconnectSelected (void)
 {
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	fprintf(stderr, "qtractorConnectForm::audioDisconnectSelected()\n");
 #endif
 
@@ -156,7 +156,7 @@ void qtractorConnectForm::audioDisconnectSelected (void)
 // Disconnect all connected ports.
 void qtractorConnectForm::audioDisconnectAll (void)
 {
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	fprintf(stderr, "qtractorConnectForm::audioDisconnectAll()\n");
 #endif
 
@@ -168,7 +168,7 @@ void qtractorConnectForm::audioDisconnectAll (void)
 // Refresh complete form by notifying the parent form.
 void qtractorConnectForm::audioRefresh (void)
 {
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	fprintf(stderr, "qtractorConnectForm::audioRefresh()\n");
 #endif
 
@@ -207,7 +207,7 @@ void qtractorConnectForm::audioStabilize (void)
 // MIDI client name change slots.
 void qtractorConnectForm::midiIClientChanged (void)
 {
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	fprintf(stderr, "qtractorConnectForm::midiIClientChanged()\n");
 #endif
 
@@ -218,7 +218,7 @@ void qtractorConnectForm::midiIClientChanged (void)
 
 void qtractorConnectForm::midiOClientChanged (void)
 {
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	fprintf(stderr, "qtractorConnectForm::midiOClientChanged()\n");
 #endif
 
@@ -231,7 +231,7 @@ void qtractorConnectForm::midiOClientChanged (void)
 // Connect current selected ports.
 void qtractorConnectForm::midiConnectSelected (void)
 {
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	fprintf(stderr, "qtractorConnectForm::midiConnectSelected()\n");
 #endif
 
@@ -243,7 +243,7 @@ void qtractorConnectForm::midiConnectSelected (void)
 // Disconnect current selected ports.
 void qtractorConnectForm::midiDisconnectSelected (void)
 {
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	fprintf(stderr, "qtractorConnectForm::midiDisconnectSelected()\n");
 #endif
 
@@ -255,7 +255,7 @@ void qtractorConnectForm::midiDisconnectSelected (void)
 // Disconnect all connected ports.
 void qtractorConnectForm::midiDisconnectAll (void)
 {
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	fprintf(stderr, "qtractorConnectForm::midiDisconnectAll()\n");
 #endif
 
@@ -267,7 +267,7 @@ void qtractorConnectForm::midiDisconnectAll (void)
 // Refresh complete form by notifying the parent form.
 void qtractorConnectForm::midiRefresh (void)
 {
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	fprintf(stderr, "qtractorConnectForm::midiRefresh()\n");
 #endif
 

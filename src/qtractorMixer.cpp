@@ -454,8 +454,9 @@ void qtractorMixerStrip::busButtonSlot (void)
 	if (m_pBus == NULL)
 		return;
 
-#ifdef CONFIG_DEBUG
-	fprintf(stderr, "qtractorMixerStrip::busButtonSlot() name=\"%s\"\n", m_pLabel->text().latin1());
+#ifdef CONFIG_DEBUG_0
+	fprintf(stderr, "qtractorMixerStrip::busButtonSlot() name=\"%s\"\n",
+		m_pLabel->text().latin1());
 #endif
 
 	// Here we go...

@@ -56,6 +56,10 @@ public:
 	void setClipLength(unsigned long iClipLength);
 	unsigned long clipLength() const;
 
+	// Clip offset frame accessors.
+	void setClipOffset(unsigned long iClipOffset);
+	unsigned long clipOffset() const;
+
 	// Clip selection accessors.
 	void setClipSelected(bool bClipSelect);
 	bool isClipSelected() const;
@@ -71,11 +75,15 @@ public:
 	// Intra-clip frame positioning.
 	virtual void seek(unsigned long iOffset) = 0;
 
-	// Reset clip state.
+	// Reset clip state position.
 	virtual void reset(bool bLooping) = 0;
 
-	// Clip loop point accessors.
-	virtual void loop(unsigned long iLoopStart, unsigned long iLoopEnd) = 0;
+	// Clip implementation methods.
+	virtual void set_offset(unsigned long iOffset) = 0;
+	virtual void set_length(unsigned long iLength) = 0;
+
+	// Clip loop-point methods.
+	virtual void set_loop(unsigned long iLoopStart, unsigned long iLoopEnd) = 0;
 
 	// Clip close-commit (record specific)
 	virtual void close() = 0;
@@ -109,6 +117,7 @@ private:
 
 	unsigned long m_iClipStart;     // Clip frame start.
 	unsigned long m_iClipLength;    // Clip frame length.
+	unsigned long m_iClipOffset;    // Clip frame offset.
 
 	unsigned long m_iClipTime;      // Clip time (tick) start.
 

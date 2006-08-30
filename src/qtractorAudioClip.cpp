@@ -150,8 +150,29 @@ void qtractorAudioClip::reset ( bool bLooping )
 }
 
 
+// Offset implementation method.
+void qtractorAudioClip::set_offset ( unsigned long iOffset )
+{
+#ifdef CONFIG_DEBUG_0
+	fprintf(stderr, "qtractorMidiClip::set_offset(%p, %lu)\n", this, iOffset);
+#endif
+
+	if (m_pBuff) m_pBuff->setOffset(iOffset);
+}
+
+// Length implementation method.
+void qtractorAudioClip::set_length ( unsigned long iLength )
+{
+#ifdef CONFIG_DEBUG_0
+	fprintf(stderr, "qtractorMidiClip::set_length(%p, %lu)\n", this, iLength);
+#endif
+
+	if (m_pBuff) m_pBuff->setLength(iLength);
+}
+
+
 // Loop positioning.
-void qtractorAudioClip::loop ( unsigned long iLoopStart,
+void qtractorAudioClip::set_loop ( unsigned long iLoopStart,
 	unsigned long iLoopEnd )
 {
 #ifdef CONFIG_DEBUG_0

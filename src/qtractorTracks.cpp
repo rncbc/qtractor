@@ -284,13 +284,12 @@ void qtractorTracks::updateContents ( bool bRefresh )
 	qtractorSession *pSession = session();
 	if (pSession == NULL)
 		return;
-	//
-	// TODO: Update/sync from session tracks.
-	//
+
 #ifdef CONFIG_DEBUG
 	fprintf(stderr, "qtractorTracks::updateContents(bRefresh=%d)\n", (int) bRefresh);
 #endif
 
+	// Update/sync from session tracks.
 	int iRefresh = 0;
 	if (bRefresh)
 		iRefresh++;

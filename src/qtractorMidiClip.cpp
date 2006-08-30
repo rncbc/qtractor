@@ -261,12 +261,33 @@ void qtractorMidiClip::reset ( bool bLooping )
 }
 
 
+// Offset implementation method.
+void qtractorMidiClip::set_offset ( unsigned long iOffset )
+{
+#ifdef CONFIG_DEBUG_0
+	fprintf(stderr, "qtractorMidiClip::set_offset(%p, %lu)\n", this, iOffset);
+#endif
+
+	// Do nothing?
+}
+
+// Length implementation method.
+void qtractorMidiClip::set_length ( unsigned long iLength )
+{
+#ifdef CONFIG_DEBUG_0
+	fprintf(stderr, "qtractorMidiClip::set_length(%p, %lu)\n", this, iLength);
+#endif
+
+	// Do nothing?
+}
+
+
 // Loop positioning.
-void qtractorMidiClip::loop ( unsigned long iLoopStart,
+void qtractorMidiClip::set_loop ( unsigned long iLoopStart,
 	unsigned long iLoopEnd )
 {
 #ifdef CONFIG_DEBUG_0
-	fprintf(stderr, "qtractorMidiClip::loop(%p, %lu, %lu)\n",
+	fprintf(stderr, "qtractorMidiClip::set_loop(%p, %lu, %lu)\n",
 		this, iLoopStart, iLoopEnd);
 #endif
 

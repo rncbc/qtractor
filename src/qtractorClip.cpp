@@ -107,6 +107,22 @@ unsigned long qtractorClip::clipLength (void) const
 void qtractorClip::setClipLength ( unsigned long iClipLength )
 {
 	m_iClipLength = iClipLength;
+	
+	set_length(iClipLength);
+}
+
+
+// Clip frame offset accessors.
+unsigned long qtractorClip::clipOffset (void) const
+{
+	return m_iClipOffset;
+}
+
+void qtractorClip::setClipOffset ( unsigned long iClipOffset )
+{
+	m_iClipLength = iClipOffset;
+	
+	set_offset(iClipOffset);
 }
 
 
@@ -134,7 +150,7 @@ void qtractorClip::setClipLoop ( unsigned long iLoopStart,
 		m_iLoopEnd   = 0;
 	}
 
-	loop(m_iLoopStart, m_iLoopEnd);
+	set_loop(m_iLoopStart, m_iLoopEnd);
 }
 
 unsigned long qtractorClip::clipLoopStart (void) const

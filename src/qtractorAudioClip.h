@@ -62,8 +62,12 @@ public:
 	// Reset clip state.
 	void reset(bool bLooping);
 
+	// Implementation methods.
+	void set_offset(unsigned long iOffset);
+	void set_length(unsigned long iLength);
+
 	// Loop positioning.
-	void loop(unsigned long iLoopStart, unsigned long iLoopEnd);
+	void set_loop(unsigned long iLoopStart, unsigned long iLoopEnd);
 
 	// Clip close-commit (record specific)
 	void close();
