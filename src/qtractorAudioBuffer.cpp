@@ -81,8 +81,11 @@ qtractorAudioBuffer::qtractorAudioBuffer ( unsigned short iChannels,
 	m_iBufferSize    = 0;
 	m_iWriteOffset   = 0;
 	m_iReadOffset    = 0;
-	m_iLength        = 0;
+	m_iFileLength    = 0;
 	m_bIntegral      = false;
+
+	m_iOffset        = 0;
+	m_iLength        = 0;
 
 	m_iLoopStart     = 0;
 	m_iLoopEnd       = 0;
@@ -188,8 +191,17 @@ bool qtractorAudioBuffer::open ( const QString& sFilename, int iMode )
 	}
 #endif
 
+	// FIXME: default logical length gets it total...
+	if (m_iLength == 0) {
+		m_iLength = frames();
+		if (m_iOffset < m_iLength)
+			m_iLength -= m_iOffset;
+		else
+			m_iOffset = 0;
+	}
+
 	// Allocate ring-buffer now.
-	m_pRingBuffer = new qtractorRingBuffer<float> (iChannels, frames());
+	m_pRingBuffer = new qtractorRingBuffer<float> (iChannels, m_iLength);
 	m_iThreshold  = (m_pRingBuffer->bufferSize() >> 2);
 	m_iBufferSize = m_iThreshold;
 #ifdef CONFIG_LIBSAMPLERATE
@@ -268,7 +280,7 @@ void qtractorAudioBuffer::close (void)
 	m_iBufferSize  = 0;
 	m_iWriteOffset = 0;
 	m_iReadOffset  = 0;
-	m_iLength      = 0;
+	m_iFileLength  = 0;
 	m_bIntegral    = false;
 
 	m_iSeekPending = 0;
@@ -290,8 +302,8 @@ int qtractorAudioBuffer::read ( float **ppFrames, unsigned int iFrames,
 #endif
 
 	// Check for logical EOF...
-	if (m_iReadOffset + iFrames > m_iLength)
-		iFrames = m_iLength - m_iReadOffset;
+	if (m_iReadOffset + iFrames > m_iFileLength)
+		iFrames = m_iFileLength - m_iReadOffset;
 
 	// Are we self-contained (ie. got integral file in buffer) and looping?
 	unsigned int nframes = iFrames;
@@ -311,6 +323,8 @@ int qtractorAudioBuffer::read ( float **ppFrames, unsigned int iFrames,
 			}
 			iFrames = nframes;
 		} else {
+			ls += m_iOffset;
+			le += m_iOffset;
 			while (m_iReadOffset < le && m_iReadOffset + nframes >= le) {
 				nframes -= (le - m_iReadOffset);
 				m_iReadOffset = ls;
@@ -320,8 +334,8 @@ int qtractorAudioBuffer::read ( float **ppFrames, unsigned int iFrames,
 
 	// Move the (remaining) data around...	
 	m_pRingBuffer->read(ppFrames, iFrames, iOffset);
-	if (m_iReadOffset + nframes > m_iLength) {
-		m_iReadOffset = (ls < le ? ls : 0);
+	if (m_iReadOffset + nframes > m_iOffset + m_iLength) {
+		m_iReadOffset = (ls < le ? ls : m_iOffset);
 	} else {
 		m_iReadOffset += nframes;
 	}
@@ -437,8 +451,8 @@ int qtractorAudioBuffer::readMix ( float **ppFrames, unsigned int iFrames,
 #endif
 
 	// Check for logical EOF...
-	if (m_iReadOffset + iFrames > m_iLength)
-		iFrames = m_iLength - m_iReadOffset;
+	if (m_iReadOffset + iFrames > m_iFileLength)
+		iFrames = m_iFileLength - m_iReadOffset;
 
 	// Are we self-contained (ie. got integral file in buffer) and looping?
 	unsigned int nframes = iFrames;
@@ -458,6 +472,8 @@ int qtractorAudioBuffer::readMix ( float **ppFrames, unsigned int iFrames,
 			}
 			iFrames = nframes;
 		} else {
+			ls += m_iOffset;
+			le += m_iOffset;
 			while (m_iReadOffset < le && m_iReadOffset + nframes >= le) {
 				nframes -= (le - m_iReadOffset);
 				m_iReadOffset = ls;
@@ -468,8 +484,8 @@ int qtractorAudioBuffer::readMix ( float **ppFrames, unsigned int iFrames,
 
 	// Mix the (remaining) data around...
 	readMixBuffer(ppFrames, iFrames, iChannels, iOffset);
-	if (m_iReadOffset + nframes > m_iLength) {
-		m_iReadOffset = (ls < le ? ls : 0);
+	if (m_iReadOffset + nframes > m_iOffset + m_iLength) {
+		m_iReadOffset = (ls < le ? ls : m_iOffset);
 	} else {
 		m_iReadOffset += nframes;
 	}
@@ -507,6 +523,11 @@ bool qtractorAudioBuffer::seek ( unsigned long iFrame )
 		m_iReadOffset  = iFrame;
 		return true;
 	}
+
+	// Adjust to logical offset...
+	iFrame += m_iOffset;
+	if (iFrame >= m_iOffset + m_iLength)
+		return false;
 
 #ifdef DEBUG
 	dump_state(QString(">seek(%1)").arg(iFrame));
@@ -551,9 +572,9 @@ bool qtractorAudioBuffer::initSync (void)
 		return false;
 
 	// Reset all relevant state variables.
-	m_iWriteOffset = 0;
-	m_iReadOffset  = 0;
-	m_iLength      = 0;
+	m_iWriteOffset = m_iOffset;
+	m_iReadOffset  = m_iOffset;
+	m_iFileLength  = 0;
 	m_bIntegral    = false;
 
 	m_iSeekPending = 0;
@@ -619,8 +640,8 @@ void qtractorAudioBuffer::readSync (void)
 	unsigned int nahead  = ws;
 	unsigned int ntotal  = 0;
 
-	unsigned long ls = m_iLoopStart;
-	unsigned long le = m_iLoopEnd;
+	unsigned long ls = m_iLoopStart + m_iOffset;
+	unsigned long le = m_iLoopEnd   + m_iOffset;
 
 	bool bLooping = (ls < le && m_iWriteOffset < le);
 
@@ -629,18 +650,20 @@ void qtractorAudioBuffer::readSync (void)
 			nahead = m_iBufferSize;
 		if (bLooping && m_iWriteOffset + nahead >= le)
 			nahead = le - m_iWriteOffset;
+		if (m_iWriteOffset + nahead > m_iOffset + m_iLength)
+			nahead = (m_iOffset + m_iLength) - m_iWriteOffset; 
 		unsigned int nread = readBuffer(nahead);
 		if (nread > 0) {
 			m_iWriteOffset += nread;
-			if (m_iLength < m_iWriteOffset)
-				m_iLength = m_iWriteOffset;
+			if (m_iFileLength < m_iWriteOffset)
+				m_iFileLength = m_iWriteOffset;
 			if (bLooping && m_iWriteOffset >= le && seekSync(ls))
 				m_iWriteOffset = ls;
 			ntotal += nread;
 			nahead = (ws > ntotal ? ws - ntotal : 0);
 		} else {
 			// Think of end-of-file, but we can recache
-			unsigned long offset = (bLooping ? ls : 0);
+			unsigned long offset = (bLooping ? ls : m_iOffset);
 			if (seekSync(offset)) {
 				m_iWriteOffset = offset;
 				nahead = (ws > ntotal ? ws - ntotal : 0);
@@ -676,8 +699,8 @@ void qtractorAudioBuffer::writeSync (void)
 		unsigned int nwrite = writeBuffer(nbehind);
 		if (nwrite > 0) {
 			m_iReadOffset += nwrite;
-			if (m_iLength < m_iReadOffset)
-				m_iLength = m_iReadOffset;
+			if (m_iFileLength < m_iReadOffset)
+				m_iFileLength = m_iReadOffset;
 			ntotal += nwrite;
 		}
 		if (nwrite < nbehind) {
@@ -694,7 +717,7 @@ void qtractorAudioBuffer::writeSync (void)
 
 
 // Internal-seek sync executive.
-bool qtractorAudioBuffer::seekSync( unsigned long iFrame )
+bool qtractorAudioBuffer::seekSync ( unsigned long iFrame )
 {
 #ifdef CONFIG_DEBUG_0
 	fprintf(stderr, "qtractorAudioBuffer::seekSync(%p, %lu) pending(%d, %lu) wo=%lu ro=%lu\n",
@@ -924,11 +947,11 @@ void qtractorAudioBuffer::reset ( bool bLooping )
 		offset = m_iLoopStart;
 
 	if (m_bIntegral) {
-		m_iReadOffset = offset;
-		m_pRingBuffer->setReadIndex(m_iWriteOffset);
-	//	m_pRingBuffer->setWriteIndex(m_iLength);
+		m_iReadOffset = m_iOffset + offset;
+		m_pRingBuffer->setReadIndex(m_iWriteOffset - m_iOffset);
+	//	m_pRingBuffer->setWriteIndex(m_iLength - m_iOffset);
 	} else {
-		m_iSeekOffset = offset;
+		m_iSeekOffset = m_iOffset + offset;
 		m_iSeekPending++;
 	//	m_iLength = 0;
 		if (m_pSyncThread)
@@ -960,10 +983,33 @@ unsigned long qtractorAudioBuffer::framesOut ( unsigned long iFrames ) const
 }
 
 
-// Current known length (in frames).
+// Logical clip-offset (in frames from beginning-of-file).
+void qtractorAudioBuffer::setOffset ( unsigned long iOffset )
+{
+	m_iOffset = iOffset;
+}
+
+unsigned long qtractorAudioBuffer::offset() const
+{
+	return m_iOffset;
+}
+
+// Logical clip-length (in frames from clip-start/offset).
+void qtractorAudioBuffer::setLength ( unsigned long iLength )
+{
+	m_iLength = iLength;
+}
+
 unsigned long qtractorAudioBuffer::length (void) const
 {
 	return m_iLength;
+}
+
+
+// Current (last known) file length accessor.
+unsigned long qtractorAudioBuffer::fileLength (void) const
+{
+	return m_iFileLength;
 }
 
 
@@ -1018,10 +1064,11 @@ void qtractorAudioBuffer::dump_state ( const char *pszPrefix ) const
 	unsigned int  wi  = m_pRingBuffer->writeIndex();
 	unsigned long wo  = m_iWriteOffset;
 	unsigned long ro  = m_iReadOffset;
+	unsigned long ofs = m_iOffset;
 	unsigned long len = m_iLength;
 
-	fprintf(stderr, "%-16s rs=%6u ws=%6u ri=%6u wi=%6u wo=%8lu ro=%lu len=%8lu\n",
-		pszPrefix, rs, ws, ri, wi, wo, ro, len);
+	fprintf(stderr, "%s rs=%u ws=%u ri=%u wi=%u wo=%lu ro=%lu ofs=%lu len=%lu\n",
+		pszPrefix, rs, ws, ri, wi, wo, ro, ofs, len);
 }
 #endif
 

@@ -170,7 +170,7 @@ void qtractorAudioClip::close (void)
 		return;
 
 	// Commit the final clip length...
-	setClipLength(m_pBuff->length());
+	setClipLength(m_pBuff->fileLength());
 
 	// Close and ditch stuff...
 	delete m_pBuff;

@@ -81,8 +81,16 @@ public:
 	// Reset this buffer's state.
 	void reset(bool bLooping);
 
-	// Current known length (in frames).
+	// Logical clip-offset (in frames from beginning-of-file).
+	void setOffset(unsigned long iOffset);
+	unsigned long offset() const;
+
+	// Logical clip-length (in frames from clip-start/offset).
+	void setLength(unsigned long iLength);
 	unsigned long length() const;
+
+	// Current (last known) file length accessor.
+	unsigned long fileLength() const;
 
 	// Loop points accessors.
 	void setLoop(unsigned long iLoopStart, unsigned long iLoopEnd);
@@ -145,8 +153,11 @@ private:
 	unsigned int   m_iBufferSize;
 	unsigned long  m_iReadOffset;
 	unsigned long  m_iWriteOffset;
-	unsigned long  m_iLength;
+	unsigned long  m_iFileLength;
 	bool           m_bIntegral;
+
+	unsigned long  m_iOffset;
+	unsigned long  m_iLength;
 
 	unsigned long  m_iLoopStart;
 	unsigned long  m_iLoopEnd;
