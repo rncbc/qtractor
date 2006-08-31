@@ -696,10 +696,16 @@ void qtractorTrack::drawTrack ( QPainter *pPainter, const QRect& trackRect,
 				unsigned long iSelectEnd   = pClip->clipSelectEnd();
 				x = trackRect.x();
 				w = trackRect.width();
-				if (iSelectStart > iTrackStart)
+				if (iSelectStart >= iTrackStart) {
 					x += session()->pixelFromFrame(iSelectStart - iTrackStart);
-				if (iSelectEnd < iTrackEnd)
+				} else {
+					x--;	// Give selection some left-border room.
+				}
+				if (iSelectEnd < iTrackEnd) {
 					w -= session()->pixelFromFrame(iTrackEnd - iSelectEnd) + 1;
+				} else {
+					w++;	// Give selection some right-border room.
+				}
 				rect.setRect(x, y, w - x, h);
 				Qt::RasterOp rop = pPainter->rasterOp();
 				pPainter->setRasterOp(Qt::NotROP);

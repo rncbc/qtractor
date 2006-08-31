@@ -257,14 +257,13 @@ void qtractorTrackView::updateContents ( const QRect& rect, bool bRefresh )
 {
 	if (bRefresh)
 		updatePixmap(QScrollView::contentsX(), QScrollView::contentsY());
+
+	QScrollView::repaintContents(rect);
+
 	if (m_dragState == DragMove) {
-		QScrollView::repaintContents();
 		showClipSelect();
 	} else if (m_dragState == DragDrop) {
-		QScrollView::repaintContents();
 		showDropRects();
-	} else {
-		QScrollView::updateContents(rect);
 	}
 }
 
@@ -274,14 +273,13 @@ void qtractorTrackView::updateContents ( bool bRefresh )
 {
 	if (bRefresh)
 		updatePixmap(QScrollView::contentsX(), QScrollView::contentsY());
+
+	QScrollView::repaintContents();
+
 	if (m_dragState == DragMove) {
-		QScrollView::repaintContents();
 		showClipSelect();
 	} else if (m_dragState == DragDrop) {
-		QScrollView::repaintContents();
 		showDropRects();
-	} else {
-		QScrollView::updateContents();
 	}
 }
 
@@ -1104,13 +1102,16 @@ void qtractorTrackView::contentsMouseMoveEvent ( QMouseEvent *pMouseEvent )
 		hideDragRect(m_rectDrag);
 		m_rectDrag.setBottomRight(pos);
 		QScrollView::ensureVisible(pos.x(), pos.y(), 16, 16);
+#ifdef QTRACTOR_CLIP_SELECT_TEST
+		selectDragRect(m_rectDrag, true);
+#endif
 		showDragRect(m_rectDrag, 1);
 		break;
 	case DragStart:
 		if ((m_posDrag - pos).manhattanLength()
 			> QApplication::startDragDistance()) {
 			// We'll start dragging alright...
-			if (m_pClipSelect->clips().count() > 0) {
+			if (m_pClipDrag && m_pClipDrag->isClipSelected()) {
 				int x = m_pTracks->session()->pixelSnap(m_rectDrag.x());
 				m_iDraggingX = (x - m_rectDrag.x());
 				m_dragState = DragMove;
@@ -1265,6 +1266,12 @@ void qtractorTrackView::selectDragRect ( const QRect& rectDrag,	bool bReset )
 
 	const QRect rect(rectDrag.normalize());
 
+#ifdef QTRACTOR_CLIP_SELECT_TEST
+	unsigned long iSelectStart
+		= pSession->frameSnap(pSession->frameFromPixel(rect.left()));
+	unsigned long iSelectEnd 
+		= pSession->frameSnap(pSession->frameFromPixel(rect.right()));
+#endif
 	QRect rectUpdate;
 	int y1, y2 = 0;
 	QListViewItem *pItem = m_pTracks->trackList()->firstChild();
@@ -1292,6 +1299,9 @@ void qtractorTrackView::selectDragRect ( const QRect& rectDrag,	bool bReset )
 					const QRect rectClip(x, y, w, h);
 					if (rect.contains(rectClip) || rect.intersects(rectClip)) {
 						m_pClipSelect->selectClip(pClip, rectClip, bSelect);
+#ifdef QTRACTOR_CLIP_SELECT_TEST
+						pClip->setClipSelect(iSelectStart, iSelectEnd);
+#endif
 						rectUpdate = rectUpdate.unite(rectClip);
 						iUpdate++;
 					}
