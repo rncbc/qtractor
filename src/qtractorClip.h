@@ -61,8 +61,12 @@ public:
 	unsigned long clipOffset() const;
 
 	// Clip selection accessors.
-	void setClipSelected(bool bClipSelect);
+	void setClipSelected(bool bClipSelected);
 	bool isClipSelected() const;
+
+	void setClipSelect(unsigned long iSelectStart, unsigned long iSelectEnd);
+	unsigned long clipSelectStart() const;
+	unsigned long clipSelectEnd() const;
 
 	// Clip loop point accessors.
 	void setClipLoop(unsigned long iLoopStart, unsigned long iLoopEnd);
@@ -121,7 +125,8 @@ private:
 
 	unsigned long m_iClipTime;      // Clip time (tick) start.
 
-	bool m_bClipSelect;             // Clip selection flag.
+	unsigned long m_iSelectStart;   // Clip loop start frame-offset.
+	unsigned long m_iSelectEnd;     // Clip loop end frame-offset.
 
 	unsigned long m_iLoopStart;     // Clip loop start frame-offset.
 	unsigned long m_iLoopEnd;       // Clip loop end frame-offset.

@@ -688,12 +688,22 @@ void qtractorTrack::drawTrack ( QPainter *pPainter, const QRect& trackRect,
 			} else {
 				w++;	// Give some clip right-border room.
 			}
-			const QRect clipRect(x, y, w - x, h);
-			pClip->drawClip(pPainter, clipRect, iClipOffset);
+			QRect rect(x, y, w - x, h);
+			pClip->drawClip(pPainter, rect, iClipOffset);
+			// Draw the clip selection...
 			if (pClip->isClipSelected()) {
+				unsigned long iSelectStart = pClip->clipSelectStart();
+				unsigned long iSelectEnd   = pClip->clipSelectEnd();
+				x = trackRect.x();
+				w = trackRect.width();
+				if (iSelectStart > iTrackStart)
+					x += session()->pixelFromFrame(iSelectStart - iTrackStart);
+				if (iSelectEnd < iTrackEnd)
+					w -= session()->pixelFromFrame(iTrackEnd - iSelectEnd) + 1;
+				rect.setRect(x, y, w - x, h);
 				Qt::RasterOp rop = pPainter->rasterOp();
 				pPainter->setRasterOp(Qt::NotROP);
-				pPainter->fillRect(clipRect, Qt::gray);
+				pPainter->fillRect(rect, Qt::gray);
 				pPainter->setRasterOp(rop);
 			}
 		}

@@ -45,17 +45,19 @@ qtractorClip::~qtractorClip (void)
 // Reset clip.
 void qtractorClip::clear (void)
 {
-	m_sClipName   = QString::null;
+	m_sClipName    = QString::null;
 	
-	m_iClipStart  = 0;
-	m_iClipLength = 0;
+	m_iClipStart   = 0;
+	m_iClipLength  = 0;
+	m_iClipOffset  = 0;
 	
-	m_iClipTime   = 0;
+	m_iClipTime    = 0;
 
-	m_bClipSelect = false;
+	m_iSelectStart = 0;
+	m_iSelectEnd   = 0;
 
-	m_iLoopStart  = 0;
-	m_iLoopEnd    = 0;
+	m_iLoopStart   = 0;
+	m_iLoopEnd     = 0;
 }
 
 
@@ -127,14 +129,47 @@ void qtractorClip::setClipOffset ( unsigned long iClipOffset )
 
 
 // Clip selection accessors.
-void qtractorClip::setClipSelected ( bool bClipSelect )
+void qtractorClip::setClipSelected ( bool bClipSelected )
 {
-	m_bClipSelect = bClipSelect;
+	if (bClipSelected) {
+		setClipSelect(m_iClipStart, m_iClipStart + m_iClipLength);
+	} else {
+		setClipSelect(0, 0);
+	}
 }
 
 bool qtractorClip::isClipSelected (void) const
 {
-	return m_bClipSelect;
+	return (m_iSelectStart < m_iSelectEnd);
+}
+
+
+// Clip-selection points accessors.
+void qtractorClip::setClipSelect ( unsigned long iSelectStart,
+	unsigned long iSelectEnd )
+{
+	if (iSelectStart < m_iClipStart)
+		iSelectStart = m_iClipStart;
+	if (iSelectEnd > m_iClipStart + m_iClipLength)
+		iSelectEnd = m_iClipStart + m_iClipLength;
+
+	if (iSelectStart < iSelectEnd) {
+		m_iSelectStart = iSelectStart;
+		m_iSelectEnd   = iSelectEnd;
+	} else {
+		m_iSelectStart = 0;
+		m_iSelectEnd   = 0;
+	}
+}
+
+unsigned long qtractorClip::clipSelectStart (void) const
+{
+	return m_iSelectStart;
+}
+
+unsigned long qtractorClip::clipSelectEnd (void) const
+{
+	return m_iSelectEnd;
 }
 
 
