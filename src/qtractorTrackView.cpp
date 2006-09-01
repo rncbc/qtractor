@@ -18,6 +18,7 @@
    Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 *****************************************************************************/
+//#define QTRACTOR_CLIP_SELECT_TEST
 
 #include "qtractorAbout.h"
 #include "qtractorTrackView.h"
@@ -1102,7 +1103,7 @@ void qtractorTrackView::contentsMouseMoveEvent ( QMouseEvent *pMouseEvent )
 		hideDragRect(m_rectDrag);
 		m_rectDrag.setBottomRight(pos);
 		QScrollView::ensureVisible(pos.x(), pos.y(), 16, 16);
-#ifdef QTRACTOR_CLIP_SELECT_TEST
+#if defined(QTRACTOR_CLIP_SELECT_TEST)
 		selectDragRect(m_rectDrag, true);
 #endif
 		showDragRect(m_rectDrag, 1);
@@ -1157,16 +1158,8 @@ void qtractorTrackView::contentsMouseReleaseEvent ( QMouseEvent *pMouseEvent )
 		// Here we're mainly supposed to select a few bunch
 		// of clips (all that fall inside the rubber-band...
 		selectDragRect(m_rectDrag, !bModifier);
-		// That's nice but we'll also set edit-range positioning...
-		if (!bModifier) {
-			const QRect rect(m_rectDrag.normalize());
-			setEditHead(pSession->frameSnap(
-				pSession->frameFromPixel(rect.left())));
-			setEditTail(pSession->frameSnap(
-				pSession->frameFromPixel(rect.right())));
-			// Not a selection, just for visual feedback...
-			m_pTracks->contentsChangeNotify();
-		}
+		// Not a selection, just for visual feedback...
+		m_pTracks->contentsChangeNotify();
 		break;
 	case DragMove:
 		if (m_pClipSelect->clips().count() > 0) {
@@ -1258,21 +1251,31 @@ void qtractorTrackView::selectDragRect ( const QRect& rectDrag,	bool bReset )
 	if (pSession == NULL)
 		return;
 
+	const QRect rect(rectDrag.normalize());
+
 	int iUpdate = 0;
+	QRect rectUpdate;
 	if (bReset) {
+		// Build invalidated rectangle...
+		qtractorClipSelect::Item *pClipItem
+			= m_pClipSelect->clips().first();
+		while (pClipItem) {
+			rectUpdate = rectUpdate.unite(pClipItem->rectClip);
+			pClipItem = m_pClipSelect->clips().next();
+		}
+		// Reset all selected clips...
 		m_pClipSelect->clear();
 		iUpdate++;
 	}
 
-	const QRect rect(rectDrag.normalize());
-
-#ifdef QTRACTOR_CLIP_SELECT_TEST
+	// The precise (snapped) selection frame points...
 	unsigned long iSelectStart
 		= pSession->frameSnap(pSession->frameFromPixel(rect.left()));
 	unsigned long iSelectEnd 
 		= pSession->frameSnap(pSession->frameFromPixel(rect.right()));
-#endif
-	QRect rectUpdate;
+
+	// Now find all the clips/regions that fall
+	// in the given rectangular region...
 	int y1, y2 = 0;
 	QListViewItem *pItem = m_pTracks->trackList()->firstChild();
 	while (pItem) {
@@ -1299,10 +1302,12 @@ void qtractorTrackView::selectDragRect ( const QRect& rectDrag,	bool bReset )
 					const QRect rectClip(x, y, w, h);
 					if (rect.contains(rectClip) || rect.intersects(rectClip)) {
 						m_pClipSelect->selectClip(pClip, rectClip, bSelect);
-#ifdef QTRACTOR_CLIP_SELECT_TEST
+#if defined(QTRACTOR_CLIP_SELECT_TEST)
 						pClip->setClipSelect(iSelectStart, iSelectEnd);
-#endif
+						rectUpdate = rectUpdate.unite(rect.intersect(rectClip));
+#else
 						rectUpdate = rectUpdate.unite(rectClip);
+#endif
 						iUpdate++;
 					}
 				}
@@ -1312,12 +1317,16 @@ void qtractorTrackView::selectDragRect ( const QRect& rectDrag,	bool bReset )
 	}
 
 	if (iUpdate > 0) {
-		if (bReset || rectUpdate.isEmpty())
+		if (rectUpdate.isEmpty())
 			updateContents();
 		else
 			updateContents(rectUpdate);
 		m_pTracks->selectionChangeNotify();
 	}
+
+	// That's all very nice but we'll also set edit-range positioning...
+	setEditHead(iSelectStart);
+	setEditTail(iSelectEnd);
 }
 
 
