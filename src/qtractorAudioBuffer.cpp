@@ -1114,7 +1114,7 @@ void qtractorAudioBufferThread::sync (void)
 // Thread run executive.
 void qtractorAudioBufferThread::run (void)
 {
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	fprintf(stderr, "qtractorAudioBufferThread::run(%p): started.\n", this);
 #endif
 
@@ -1127,7 +1127,7 @@ void qtractorAudioBufferThread::run (void)
 	}
 	m_mutex.unlock();
 
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	fprintf(stderr, "qtractorAudioBufferThread::run(%p): stopped.\n", this);
 #endif
 }

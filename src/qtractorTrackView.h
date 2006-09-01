@@ -74,6 +74,13 @@ public:
 	// Special recording visual feedback.
 	void updateContentsRecord(bool bRefresh = false);
 
+	// The current clip selection mode.
+	enum SelectMode { SelectClip = 0, SelectRange = 1, SelectRect = 2 };
+
+	// Clip selection mode accessors.
+	void setSelectMode(SelectMode selectMode);
+	SelectMode selectMode() const;
+
 	// Select every clip of a given track.
 	void selectTrack(qtractorTrack *pTrack, bool bReset = true);
 	// Select all contents.
@@ -243,6 +250,9 @@ private:
 	qtractorClip *m_pClipDrag;
 
 	qtractorClipSelect *m_pClipSelect;
+
+	// The clip select mode.
+	SelectMode m_selectMode;
 
 	// The local clipboard stuff.
 	QPtrList<qtractorClip> m_clipboard;

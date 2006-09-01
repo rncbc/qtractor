@@ -18,7 +18,6 @@
    Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 *****************************************************************************/
-//#define QTRACTOR_CLIP_SELECT_TEST
 
 #include "qtractorAbout.h"
 #include "qtractorTrackView.h"
@@ -89,6 +88,7 @@ qtractorTrackView::qtractorTrackView ( qtractorTracks *pTracks,
 	m_iDraggingX  = 0;
 	m_pClipDrag   = NULL;
 	m_pClipSelect = new qtractorClipSelect();
+	m_selectMode  = SelectClip;
 
 	m_clipboard.setAutoDelete(false);
 	m_pClipboardSingleTrack = NULL;
@@ -1058,8 +1058,10 @@ void qtractorTrackView::contentsMousePressEvent ( QMouseEvent *pMouseEvent )
 					// Not quite a selection, but for
 					// immediate visual feedback...
 					m_pTracks->selectionChangeNotify();
-				}	// Clear any selection out there?
-				else selectAll(false);
+				}
+				// Clear any selection out there?
+				if (!bModifier || m_selectMode != SelectClip)
+					selectAll(false);
 			}
 			break;
 		case Qt::MidButton:
@@ -1100,13 +1102,14 @@ void qtractorTrackView::contentsMouseMoveEvent ( QMouseEvent *pMouseEvent )
 		dragMoveTrack(pos);
 		break;
 	case DragSelect:
-		hideDragRect(m_rectDrag);
+		if (m_selectMode != SelectRange)
+			hideDragRect(m_rectDrag);
 		m_rectDrag.setBottomRight(pos);
 		QScrollView::ensureVisible(pos.x(), pos.y(), 16, 16);
-#if defined(QTRACTOR_CLIP_SELECT_TEST)
-		selectDragRect(m_rectDrag, true);
-#endif
-		showDragRect(m_rectDrag, 1);
+		if (m_selectMode != SelectClip)
+			selectDragRect(m_rectDrag, true);
+		if (m_selectMode != SelectRange)
+			showDragRect(m_rectDrag, 1);
 		break;
 	case DragStart:
 		if ((m_posDrag - pos).manhattanLength()
@@ -1123,8 +1126,12 @@ void qtractorTrackView::contentsMouseMoveEvent ( QMouseEvent *pMouseEvent )
 				m_rectDrag.setTopLeft(m_posDrag);
 				m_rectDrag.setBottomRight(pos);
 				m_dragState = DragSelect;
-				QScrollView::setCursor(QCursor(Qt::CrossCursor));
-				showDragRect(m_rectDrag, 1);
+				if (m_selectMode == SelectRange) {
+					QScrollView::setCursor(QCursor(Qt::SizeHorCursor));
+				} else {
+					QScrollView::setCursor(QCursor(Qt::CrossCursor));
+					showDragRect(m_rectDrag, 1);
+				}
 			}
 		}
 		// Fall thru...
@@ -1157,7 +1164,7 @@ void qtractorTrackView::contentsMouseReleaseEvent ( QMouseEvent *pMouseEvent )
 	case DragSelect:
 		// Here we're mainly supposed to select a few bunch
 		// of clips (all that fall inside the rubber-band...
-		selectDragRect(m_rectDrag, !bModifier);
+		selectDragRect(m_rectDrag, !bModifier || m_selectMode != SelectClip);
 		// Not a selection, just for visual feedback...
 		m_pTracks->contentsChangeNotify();
 		break;
@@ -1251,7 +1258,11 @@ void qtractorTrackView::selectDragRect ( const QRect& rectDrag,	bool bReset )
 	if (pSession == NULL)
 		return;
 
-	const QRect rect(rectDrag.normalize());
+	QRect rect(rectDrag.normalize());
+	if (m_selectMode == SelectRange) {
+		rect.setTop(0);
+		rect.setBottom(QScrollView::contentsHeight());
+	}
 
 	int iUpdate = 0;
 	QRect rectUpdate;
@@ -1302,12 +1313,13 @@ void qtractorTrackView::selectDragRect ( const QRect& rectDrag,	bool bReset )
 					const QRect rectClip(x, y, w, h);
 					if (rect.contains(rectClip) || rect.intersects(rectClip)) {
 						m_pClipSelect->selectClip(pClip, rectClip, bSelect);
-#if defined(QTRACTOR_CLIP_SELECT_TEST)
-						pClip->setClipSelect(iSelectStart, iSelectEnd);
-						rectUpdate = rectUpdate.unite(rect.intersect(rectClip));
-#else
-						rectUpdate = rectUpdate.unite(rectClip);
-#endif
+						if (m_selectMode == SelectClip) {
+							rectUpdate = rectUpdate.unite(rectClip);
+						} else {
+							pClip->setClipSelect(iSelectStart, iSelectEnd);
+							rectUpdate = rectUpdate.unite(
+								rect.intersect(rectClip));
+						}
 						iUpdate++;
 					}
 				}
@@ -1359,6 +1371,19 @@ void qtractorTrackView::deleteClipSelect (void)
 
 	// Put it in the form of an undoable command...
 	pMainForm->commands()->exec(pRemoveClipCommand);
+}
+
+
+// Clip selection mode accessors.
+void qtractorTrackView::setSelectMode (
+	qtractorTrackView::SelectMode selectMode )
+{
+	m_selectMode = selectMode;
+}
+
+qtractorTrackView::SelectMode qtractorTrackView::selectMode (void) const
+{
+	return m_selectMode;
 }
 
 
