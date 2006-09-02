@@ -78,9 +78,16 @@
         <action name="editPasteAction"/>
         <separator/>
         <action name="editDeleteAction"/>
-        <separator/>
+		<separator/>
         <action name="editSelectTrackAction"/>
         <action name="editSelectAllAction"/>
+		<separator/>
+		<action name="editSelectModeAction"/>
+		<item text="Select &amp;Mode" name="editSelectModeMenu">
+			<action name="editSelectClipAction"/>
+			<action name="editSelectRangeAction"/>
+			<action name="editSelectRectAction"/>
+		</item>
     </item>
     <item text="&amp;Track" name="trackMenu">
         <action name="trackAddAction"/>
@@ -519,6 +526,92 @@
             <string>Ctrl+A</string>
         </property>
     </action>
+	<action>
+		<property name="name">
+			<cstring>editSelectModeAction</cstring>
+		</property>
+		<property name="text">
+			<string>Select Mode</string>
+		</property>
+		<property name="menuText">
+			<string>Select &amp;Mode</string>
+		</property>
+		<property name="toolTip">
+			<string>Select mode</string>
+		</property>
+		<property name="statusTip">
+			<string>Selection mode</string>
+		</property>
+	</action>
+	<action>
+		<property name="name">
+			<cstring>editSelectClipAction</cstring>
+		</property>
+		<property name="toggleAction">
+			<bool>true</bool>
+		</property>
+		<property name="iconSet">
+			<iconset>editSelectClip.png</iconset>
+		</property>
+		<property name="text">
+			<string>Clip</string>
+		</property>
+		<property name="menuText">
+			<string>&amp;Clip</string>
+		</property>
+		<property name="toolTip">
+			<string>Select clip</string>
+		</property>
+		<property name="statusTip">
+			<string>Clip selection mode</string>
+		</property>
+	</action>
+	<action>
+		<property name="name">
+			<cstring>editSelectRangeAction</cstring>
+		</property>
+		<property name="toggleAction">
+			<bool>true</bool>
+		</property>
+		<property name="iconSet">
+			<iconset>editSelectRange.png</iconset>
+		</property>
+		<property name="text">
+			<string>Range</string>
+		</property>
+		<property name="menuText">
+			<string>&amp;Range</string>
+		</property>
+		<property name="toolTip">
+			<string>Select range</string>
+		</property>
+		<property name="statusTip">
+			<string>Range selection mode</string>
+		</property>
+	</action>
+	<action>
+		<property name="name">
+			<cstring>editSelectRectAction</cstring>
+		</property>
+		<property name="toggleAction">
+			<bool>true</bool>
+		</property>
+		<property name="iconSet">
+			<iconset>editSelectRect.png</iconset>
+		</property>
+		<property name="text">
+			<string>Rect</string>
+		</property>
+		<property name="menuText">
+			<string>R&amp;ectangle</string>
+		</property>
+		<property name="toolTip">
+			<string>Select rectangle</string>
+		</property>
+		<property name="statusTip">
+			<string>Rectangular selection mode</string>
+		</property>
+	</action>
     <action>
         <property name="name">
             <cstring>trackAddAction</cstring>
@@ -1295,6 +1388,24 @@
         <receiver>qtractorMainForm</receiver>
         <slot>editDelete()</slot>
     </connection>
+	<connection>
+		<sender>editSelectClipAction</sender>
+		<signal>activated()</signal>
+		<receiver>qtractorMainForm</receiver>
+		<slot>editSelectClip()</slot>
+	</connection>
+	<connection>
+		<sender>editSelectRangeAction</sender>
+		<signal>activated()</signal>
+		<receiver>qtractorMainForm</receiver>
+		<slot>editSelectRange()</slot>
+	</connection>
+	<connection>
+		<sender>editSelectRectAction</sender>
+		<signal>activated()</signal>
+		<receiver>qtractorMainForm</receiver>
+		<slot>editSelectRect()</slot>
+	</connection>
     <connection>
         <sender>editSelectTrackAction</sender>
         <signal>activated()</signal>
@@ -1525,6 +1636,7 @@
     <variable access="private">QString m_sFilename;</variable>
     <variable access="private">int m_iUntitled;</variable>
     <variable access="private">int m_iDirtyCount;</variable>
+	<variable access="private">QActionGroup *m_pSelectModeActionGroup;</variable>
     <variable access="private">QLabel *m_pTransportTime;</variable>
     <variable access="private">qtractorSpinBox *m_pTempoSpinBox;</variable>
     <variable access="private">QComboBox *m_pSnapPerBeatComboBox;</variable>
@@ -1555,6 +1667,9 @@
     <slot specifier="non virtual">editCopy( void )</slot>
     <slot specifier="non virtual">editPaste( void )</slot>
     <slot specifier="non virtual">editDelete( void )</slot>
+	<slot specifier="non virtual">editSelectClip( void )</slot>
+	<slot specifier="non virtual">editSelectRange( void )</slot>
+	<slot specifier="non virtual">editSelectRect( void )</slot>
     <slot specifier="non virtual">editSelectTrack( void )</slot>
     <slot specifier="non virtual">editSelectAll( void )</slot>
     <slot specifier="non virtual">trackAdd( void )</slot>

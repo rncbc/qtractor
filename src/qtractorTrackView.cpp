@@ -1107,7 +1107,7 @@ void qtractorTrackView::contentsMouseMoveEvent ( QMouseEvent *pMouseEvent )
 		m_rectDrag.setBottomRight(pos);
 		QScrollView::ensureVisible(pos.x(), pos.y(), 16, 16);
 		if (m_selectMode != SelectClip)
-			selectDragRect(m_rectDrag, true);
+			selectRect(m_rectDrag, m_selectMode, true);
 		if (m_selectMode != SelectRange)
 			showDragRect(m_rectDrag, 1);
 		break;
@@ -1164,7 +1164,7 @@ void qtractorTrackView::contentsMouseReleaseEvent ( QMouseEvent *pMouseEvent )
 	case DragSelect:
 		// Here we're mainly supposed to select a few bunch
 		// of clips (all that fall inside the rubber-band...
-		selectDragRect(m_rectDrag, !bModifier || m_selectMode != SelectClip);
+		selectRect(m_rectDrag, m_selectMode, !bModifier);
 		// Not a selection, just for visual feedback...
 		m_pTracks->contentsChangeNotify();
 		break;
@@ -1252,20 +1252,38 @@ void qtractorTrackView::selectClipFile ( qtractorClip *pClip ) const
 
 
 // Select everything under a given (rubber-band) rectangle.
-void qtractorTrackView::selectDragRect ( const QRect& rectDrag,	bool bReset )
+void qtractorTrackView::selectRect ( const QRect& rectDrag,
+	qtractorTrackView::SelectMode selectMode, bool bReset )
 {
 	qtractorSession *pSession = m_pTracks->session();
 	if (pSession == NULL)
 		return;
 
+	// The precise (snapped) selection frame points...
 	QRect rect(rectDrag.normalize());
-	if (m_selectMode == SelectRange) {
-		rect.setTop(0);
-		rect.setBottom(QScrollView::contentsHeight());
+	unsigned long iSelectStart
+		= pSession->frameSnap(pSession->frameFromPixel(rect.left()));
+	unsigned long iSelectEnd 
+		= pSession->frameSnap(pSession->frameFromPixel(rect.right()));
+
+	// (Re)adjust selection range...
+	QRect rectRange(rect.x(), 0, rect.width(), QScrollView::contentsHeight());
+	rectRange.setLeft(pSession->pixelFromFrame(iSelectStart));
+	rectRange.setRight(pSession->pixelFromFrame(iSelectEnd));
+
+	// Special whole-vertical range case...
+	if (selectMode == SelectRange) {
+		rect.setTop(rectRange.top());
+		rect.setBottom(rectRange.height());
 	}
 
+	// Let's start invalidading things...
 	int iUpdate = 0;
 	QRect rectUpdate;
+
+	// Adjust reset flag...
+	if (selectMode != SelectClip)
+		bReset = true;
 	if (bReset) {
 		// Build invalidated rectangle...
 		qtractorClipSelect::Item *pClipItem
@@ -1278,12 +1296,6 @@ void qtractorTrackView::selectDragRect ( const QRect& rectDrag,	bool bReset )
 		m_pClipSelect->clear();
 		iUpdate++;
 	}
-
-	// The precise (snapped) selection frame points...
-	unsigned long iSelectStart
-		= pSession->frameSnap(pSession->frameFromPixel(rect.left()));
-	unsigned long iSelectEnd 
-		= pSession->frameSnap(pSession->frameFromPixel(rect.right()));
 
 	// Now find all the clips/regions that fall
 	// in the given rectangular region...
@@ -1309,17 +1321,17 @@ void qtractorTrackView::selectDragRect ( const QRect& rectDrag,	bool bReset )
 					int w = pSession->pixelFromFrame(pClip->clipLength());
 					if (x > rect.right())
 						break;
-					const bool bSelect = (bReset || !pClip->isClipSelected());
-					const QRect rectClip(x, y, w, h);
-					if (rect.contains(rectClip) || rect.intersects(rectClip)) {
-						m_pClipSelect->selectClip(pClip, rectClip, bSelect);
-						if (m_selectMode == SelectClip) {
-							rectUpdate = rectUpdate.unite(rectClip);
-						} else {
+					// Test whether the whole clip rectangle
+					// intersects the rubber-band range one...
+					QRect rectClip(x, y, w, h);
+					if (rect.intersects(rectClip)) {
+						if (selectMode != SelectClip)
+							rectClip = rectRange.intersect(rectClip);
+						m_pClipSelect->selectClip(pClip, rectClip,
+							(bReset || !pClip->isClipSelected()));
+						if (selectMode != SelectClip)
 							pClip->setClipSelect(iSelectStart, iSelectEnd);
-							rectUpdate = rectUpdate.unite(
-								rect.intersect(rectClip));
-						}
+						rectUpdate = rectUpdate.unite(rectClip);
 						iUpdate++;
 					}
 				}

@@ -115,6 +115,7 @@ qtractorOptions::qtractorOptions (void)
 	// Tracks widget settings.
 	m_settings.beginGroup("/Tracks");
 	iTrackListWidth = m_settings.readNumEntry("/TrackListWidth", 160);
+	iTrackViewSelectMode = m_settings.readNumEntry("/TrackViewSelectMode", 0);
 	m_settings.endGroup();
 }
 
@@ -198,6 +199,7 @@ qtractorOptions::~qtractorOptions (void)
 	// Tracks widget settings.
 	m_settings.beginGroup("/Tracks");
 	m_settings.writeEntry("/TrackListWidth", iTrackListWidth);
+	m_settings.writeEntry("/TrackViewSelectMode", iTrackViewSelectMode);
 	m_settings.endGroup();
 
 	m_settings.endGroup();

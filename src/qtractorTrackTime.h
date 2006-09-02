@@ -65,9 +65,6 @@ protected:
 	void contentsMouseMoveEvent(QMouseEvent *pMouseEvent);
 	void contentsMouseReleaseEvent(QMouseEvent *pMouseEvent);
 
-	// Draw/hide the current drag selection.
-	void drawDragSelect(const QRect& rectDrag) const;
-
 	// Reset drag/select state.
 	void resetDragState();
 

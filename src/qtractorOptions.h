@@ -94,6 +94,7 @@ public:
 
 	// Tracks view options...
 	int     iTrackListWidth;
+	int     iTrackViewSelectMode;
 
 	// Audio rendering options...
 	int     iResampleType;

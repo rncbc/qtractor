@@ -131,6 +131,9 @@ IMAGES   = icons/qtractor.png \
            icons/editCopy.png \
            icons/editPaste.png \
            icons/editDelete.png \
+           icons/editSelectClip.png \
+           icons/editSelectRange.png \
+           icons/editSelectRect.png \
            icons/trackAdd.png \
            icons/trackRemove.png \
            icons/trackProperties.png \

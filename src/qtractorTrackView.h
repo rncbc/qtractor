@@ -81,6 +81,9 @@ public:
 	void setSelectMode(SelectMode selectMode);
 	SelectMode selectMode() const;
 
+	// Select everything under a given (rubber-band) rectangle.
+	void selectRect(const QRect& rectDrag,
+		SelectMode selectMode = SelectClip, bool bReset = false);
 	// Select every clip of a given track.
 	void selectTrack(qtractorTrack *pTrack, bool bReset = true);
 	// Select all contents.
@@ -165,9 +168,6 @@ protected:
 
 	// Clip file(item) selection convenience method.
 	void selectClipFile(qtractorClip *pClip) const;
-
-	// Select everything under a given (rubber-band) rectangle.
-	void selectDragRect(const QRect& rectDrag, bool bReset = false);
 
 	// Draw/hide the whole current clip selection.
 	void updateClipSelect(int y, int h);

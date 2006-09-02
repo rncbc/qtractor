@@ -127,9 +127,10 @@ void qtractorMixerStrip::initMixerStrip (void)
 			pMixer, SLOT(trackButtonToggledSlot(qtractorTrackButton *, bool)));
 	} else {
 		meterType = m_pBus->busType();
-		const QString& sText = m_pRack->name().lower();
+		const QString& sText = m_pRack->name();
 		m_pBusButton = new QToolButton(this);
 		m_pBusButton->setFixedHeight(14);
+		m_pBusButton->setTextPosition(QToolButton::BesideIcon);
 		m_pBusButton->setFont(font6);
 		m_pBusButton->setUsesTextLabel(true);
 		m_pBusButton->setTextLabel(sText);

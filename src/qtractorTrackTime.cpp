@@ -383,10 +383,10 @@ void qtractorTrackTime::contentsMouseMoveEvent ( QMouseEvent *pMouseEvent )
 	switch (m_dragState) {
 	case DragSelect:
 		// Rubber-band selection...
-		drawDragSelect(m_rectDrag);	// Hide.
 		m_rectDrag.setRight(pSession->pixelSnap(pos.x()));
 		m_pTracks->trackView()->ensureVisible(pos.x(), y, 16, 0);
-		drawDragSelect(m_rectDrag);	// Show.
+		m_pTracks->trackView()->selectRect(m_rectDrag,
+			qtractorTrackView::SelectRange, true);
 		break;
 	case DragPlayHead:
 		// Play-head positioning...
@@ -418,8 +418,7 @@ void qtractorTrackTime::contentsMouseMoveEvent ( QMouseEvent *pMouseEvent )
 			m_rectDrag.setRight(pSession->pixelSnap(pos.x()));
 			m_rectDrag.setBottom(h);
 			m_dragState = DragSelect;
-			QScrollView::setCursor(QCursor(Qt::CrossCursor));
-			drawDragSelect(m_rectDrag);	// Show.
+			QScrollView::setCursor(QCursor(Qt::SizeHorCursor));
 		}
 		// Fall thru...
 	case DragNone:
@@ -443,16 +442,11 @@ void qtractorTrackTime::contentsMouseReleaseEvent ( QMouseEvent *pMouseEvent )
 			& (Qt::ShiftButton | Qt::ControlButton));
 		switch (m_dragState) {
 		case DragSelect:
-			drawDragSelect(m_rectDrag);	// Hide.
-			if (!bModifier) {
-				const QRect rect(m_rectDrag.normalize());
-				m_pTracks->trackView()->setEditHead(
-					pSession->frameFromPixel(rect.left()));
-				m_pTracks->trackView()->setEditTail(
-					pSession->frameFromPixel(rect.right()));
-				// Logical contents changed, just for visual feedback...
-				m_pTracks->contentsChangeNotify();
-			}
+			// Do the final range selection...
+			m_pTracks->trackView()->selectRect(m_rectDrag,
+				qtractorTrackView::SelectRange, true);
+			// Logical contents changed, just for visual feedback...
+			m_pTracks->contentsChangeNotify();
 			break;
 		case DragPlayHead:
 			// Play-head positioning commit...
@@ -508,20 +502,6 @@ void qtractorTrackTime::contentsMouseReleaseEvent ( QMouseEvent *pMouseEvent )
 }
 
 
-// Draw/hide the current drag selection.
-void qtractorTrackTime::drawDragSelect ( const QRect& rectDrag ) const
-{
-	QPainter p(QScrollView::viewport());
-	QRect rect(rectDrag.normalize());
-
-	// Convert rectangle into view coordinates...
-	rect.moveTopLeft(QScrollView::contentsToViewport(rect.topLeft()));
-
-	p.setRasterOp(Qt::NotROP);
-	p.fillRect(rect, Qt::gray);
-}
-
-
 // Reset drag/select state.
 void qtractorTrackTime::resetDragState (void)
 {
@@ -558,9 +538,7 @@ void qtractorTrackTime::keyPressEvent ( QKeyEvent *pKeyEvent )
 #endif
 	switch (pKeyEvent->key()) {
 	case Qt::Key_Escape:
-		if (m_dragState == DragSelect)
-			drawDragSelect(m_rectDrag); // Hide.
-		else // Restore uncommitted play-head position?...
+		// Restore uncommitted play-head position?...
 		if (m_dragState == DragPlayHead && m_pTracks->session()) {
 			m_pTracks->trackView()->setPlayHead(
 				m_pTracks->session()->playHead());
