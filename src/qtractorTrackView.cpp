@@ -700,7 +700,7 @@ qtractorTrack *qtractorTrackView::dragMoveTrack ( const QPoint& pos )
 		updateClipSelect(tvi.trackRect.y() + 1, tvi.trackRect.height() - 2);
 
 	// Always change horizontally wise...
-	int  x = m_rectDrag.x();
+	int  x = m_pClipSelect->rect().x();
 	int dx = (pos.x() - m_posDrag.x());
 	if (x + dx < 0)
 		dx = -(x);	// Force to origin (x=0).
@@ -709,7 +709,7 @@ qtractorTrack *qtractorTrackView::dragMoveTrack ( const QPoint& pos )
 
 	showClipSelect();
 
-	// OK, we've move it...
+	// OK, we've moved it...
 	return pTrack;
 }
 
@@ -1033,38 +1033,22 @@ void qtractorTrackView::contentsMousePressEvent ( QMouseEvent *pMouseEvent )
 			m_pClipDrag = clipAt(m_posDrag, &m_rectDrag);
 			// Should it be selected(toggled)?
 			if (m_pClipDrag) {
+				// Show that we're about to something...
 				QScrollView::setCursor(QCursor(Qt::PointingHandCursor));
-				const bool bSelect = !m_pClipDrag->isClipSelected();
-				if (bModifier) {
-					m_pClipSelect->selectClip(m_pClipDrag, m_rectDrag, bSelect);
-					updateContents(m_rectDrag.normalize());
-					m_pTracks->selectionChangeNotify();
-				} else if (bSelect) {
-					m_pClipSelect->clear();
-					m_pClipSelect->selectClip(m_pClipDrag, m_rectDrag, true);
-					updateContents();
-					m_pTracks->selectionChangeNotify();
-				}
-				// Make it right on the file view...,
-				selectClipFile(m_pClipDrag);
-				// Done, yeah.
-			} else {
-				// Direct playhead positioning...
-				if (bModifier) {
-					// First, set actual engine position...
-					pSession->setPlayHead(iFrame);
-					// Playhead positioning...
-					setPlayHead(iFrame);
-					// Not quite a selection, but for
-					// immediate visual feedback...
-					m_pTracks->selectionChangeNotify();
-				}
+				// Make it (un)selected, right on the file view too...
+				if (m_selectMode == SelectClip)
+					selectClipFile(m_pClipDrag, m_rectDrag, !bModifier);
+			}
+			// Something got it started?...
+			if (m_pClipDrag == NULL
+				|| (m_pClipDrag && !m_pClipDrag->isClipSelected())) {
 				// Clear any selection out there?
-				if (!bModifier || m_selectMode != SelectClip)
+				if (!bModifier /* || m_selectMode != SelectClip */)
 					selectAll(false);
 			}
 			break;
 		case Qt::MidButton:
+			// Mid-button positioningg...
 			if (!bModifier) {
 				// Edit cursor positioning...
 				setEditHead(iFrame);
@@ -1075,7 +1059,7 @@ void qtractorTrackView::contentsMousePressEvent ( QMouseEvent *pMouseEvent )
 			break;
 		case Qt::RightButton:
 			if (!bModifier) {
-				// Edittail positioning...
+				// Edit-tail positioning...
 				setEditTail(iFrame);
 				// Not quite a selection, but some visual feedback...
 				m_pTracks->contentsChangeNotify();
@@ -1115,7 +1099,10 @@ void qtractorTrackView::contentsMouseMoveEvent ( QMouseEvent *pMouseEvent )
 		if ((m_posDrag - pos).manhattanLength()
 			> QApplication::startDragDistance()) {
 			// We'll start dragging alright...
-			if (m_pClipDrag && m_pClipDrag->isClipSelected()) {
+			qtractorClipSelect::Item *pClipItem = NULL;
+			if (m_pClipDrag)
+				pClipItem = m_pClipSelect->findClip(m_pClipDrag);
+			if (pClipItem && pClipItem->rectClip.contains(pos)) {
 				int x = m_pTracks->session()->pixelSnap(m_rectDrag.x());
 				m_iDraggingX = (x - m_rectDrag.x());
 				m_dragState = DragMove;
@@ -1150,63 +1137,79 @@ void qtractorTrackView::contentsMouseReleaseEvent ( QMouseEvent *pMouseEvent )
 {
 	QScrollView::contentsMouseReleaseEvent(pMouseEvent);
 
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
-		return;
 	qtractorSession *pSession = m_pTracks->session();
-	if (pSession == NULL)
-		return;
-
-	// Which mouse state?
-	const bool bModifier = (pMouseEvent->state()
-		& (Qt::ShiftButton | Qt::ControlButton));
-	switch (m_dragState) {
-	case DragSelect:
-		// Here we're mainly supposed to select a few bunch
-		// of clips (all that fall inside the rubber-band...
-		selectRect(m_rectDrag, m_selectMode, !bModifier);
-		// Not a selection, just for visual feedback...
-		m_pTracks->contentsChangeNotify();
-		break;
-	case DragMove:
-		if (m_pClipSelect->clips().count() > 0) {
-			qtractorTrack *pNewTrack = dragMoveTrack(pMouseEvent->pos());
-			bool bSingleTrack = (m_pClipSelect->singleTrack() != NULL);
-			if (pNewTrack) {
-				// We'll build a composite command...
-				qtractorMoveClipCommand *pMoveClipCommand
-					= new qtractorMoveClipCommand(pMainForm);
-				qtractorClipSelect::Item *pClipItem
-					= m_pClipSelect->clips().first();
-				while (pClipItem) {
-					qtractorClip *pClip = pClipItem->clip;
-					if (!bSingleTrack)
-						pNewTrack = pClip->track();
-					int x = (pClipItem->rectClip.x() + m_iDraggingX);
-					pMoveClipCommand->addClip(pClip, pNewTrack,
-						pSession->frameFromPixel(x < 0 ? 0 : x));
-					pClipItem = m_pClipSelect->clips().next();
-				}
-				m_pClipSelect->clear();
-				// Put it in the form of an undoable command...
-				pMainForm->commands()->exec(pMoveClipCommand);
-			}
-		}
-		break;
-	case DragStart:
-		// Deferred left-button edit-head positioning...
-		if (!bModifier && m_pClipDrag == NULL) {
-			setEditHead(pSession->frameSnap(
-				pSession->frameFromPixel(
-					m_posDrag.x() > 0 ? m_posDrag.x() : 0)));
-			// Not a selection, but for some visual feedback...
+	if (pSession) {
+		// Direct snap positioning...
+		unsigned long iFrame = pSession->frameSnap(
+			pSession->frameFromPixel(m_posDrag.x() > 0 ? m_posDrag.x() : 0));
+		// Which mouse state?
+		const bool bModifier = (pMouseEvent->state()
+			& (Qt::ShiftButton | Qt::ControlButton));
+		switch (m_dragState) {
+		case DragSelect:
+			// Here we're mainly supposed to select a few bunch
+			// of clips (all that fall inside the rubber-band...
+			selectRect(m_rectDrag, m_selectMode, !bModifier);
+			// Not a selection, just for visual feedback...
 			m_pTracks->contentsChangeNotify();
+			break;
+		case DragMove:
+			if (m_pClipSelect->clips().count() > 0) {
+				qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+				qtractorTrack *pNewTrack = dragMoveTrack(pMouseEvent->pos());
+				if (pMainForm && pNewTrack) {
+					// We'll build a composite command...
+					bool bSingleTrack = (m_pClipSelect->singleTrack() != NULL);
+					qtractorMoveClipCommand *pMoveClipCommand
+						= new qtractorMoveClipCommand(pMainForm);
+					qtractorClipSelect::Item *pClipItem
+						= m_pClipSelect->clips().first();
+					while (pClipItem) {
+						qtractorClip *pClip = pClipItem->clip;
+						if (!bSingleTrack)
+							pNewTrack = pClip->track();
+						int x = (pClipItem->rectClip.x() + m_iDraggingX);
+						pMoveClipCommand->addClip(pClip, pNewTrack,
+							pSession->frameFromPixel(x < 0 ? 0 : x));
+						pClipItem = m_pClipSelect->clips().next();
+					}
+					m_pClipSelect->clear();
+					// Put it in the form of an undoable command...
+					pMainForm->commands()->exec(pMoveClipCommand);
+				}
+			}
+			break;
+		case DragStart:
+			// Deferred left-button positioning...
+			if (m_pClipDrag) {
+				// Make it right on the file view now...
+				if (m_selectMode != SelectClip)
+					selectClipFile(m_pClipDrag, m_rectDrag, !bModifier);
+				// Nothing more has been deferred...
+			} else {
+				// Direct play-head positioning...
+				if (bModifier) {
+					// First, set actual engine position...
+					pSession->setPlayHead(iFrame);
+					// Play-head positioning...
+					setPlayHead(iFrame);
+					// Not quite a selection, but for
+					// immediate visual feedback...
+					m_pTracks->selectionChangeNotify();
+					// Done with (deferred) play-head positioning.
+				} else {
+					// Deferred edit-tail positioning...
+					setEditHead(iFrame);
+					// Not a selection, but for some visual feedback...
+					m_pTracks->contentsChangeNotify();
+				}
+			}
+			// Fall thru...
+		case DragDrop:
+		case DragNone:
+		default:
+			break;
 		}
-		// Fall thru...
-	case DragDrop:
-	case DragNone:
-	default:
-		break;
 	}
 
 	// Force null state.
@@ -1215,8 +1218,23 @@ void qtractorTrackView::contentsMouseReleaseEvent ( QMouseEvent *pMouseEvent )
 
 
 // Clip file(item) selection convenience method.
-void qtractorTrackView::selectClipFile ( qtractorClip *pClip ) const
+void qtractorTrackView::selectClipFile ( qtractorClip *pClip,
+	const QRect& rectClip, bool bReset )
 {
+	// Do the slecvtion dance, first...
+	const bool bSelect = !pClip->isClipSelected();
+	if (!bReset) {
+		m_pClipSelect->selectClip(pClip, rectClip, bSelect);
+		updateContents(rectClip);
+		m_pTracks->selectionChangeNotify();
+	} else if (bSelect) {
+		m_pClipSelect->clear();
+		m_pClipSelect->selectClip(pClip, rectClip, true);
+		updateContents();
+		m_pTracks->selectionChangeNotify();
+	}
+
+	// Do the file view selection then...
 	qtractorTrack *pTrack = pClip->track();
 	if (pTrack == NULL)
 		return;
@@ -1285,13 +1303,8 @@ void qtractorTrackView::selectRect ( const QRect& rectDrag,
 	if (selectMode != SelectClip)
 		bReset = true;
 	if (bReset) {
-		// Build invalidated rectangle...
-		qtractorClipSelect::Item *pClipItem
-			= m_pClipSelect->clips().first();
-		while (pClipItem) {
-			rectUpdate = rectUpdate.unite(pClipItem->rectClip);
-			pClipItem = m_pClipSelect->clips().next();
-		}
+		// Get invalidated rectangle...
+		rectUpdate = m_pClipSelect->rect();
 		// Reset all selected clips...
 		m_pClipSelect->clear();
 		iUpdate++;
@@ -1488,7 +1501,7 @@ void qtractorTrackView::selectAll ( bool bSelect )
 		}
 	}
 	else
-	// clear all selections...
+	// Clear all selections...
 	if (m_pClipSelect->clips().count() > 0) {
 		m_pClipSelect->clear();
 		updateContents();

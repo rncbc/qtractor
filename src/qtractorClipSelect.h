@@ -55,6 +55,9 @@ public:
 	void selectClip(qtractorClip *pClip,
 		const QRect& rect, bool bSelect = true);
 
+	// The united selection rectangle.
+	const QRect& rect() const;
+
 	// Dynamic helper:
 	// Do all selected clips belong to the same track?
 	qtractorTrack *singleTrack();
@@ -62,18 +65,19 @@ public:
 	// Selection list accessor.
 	QPtrList<Item>& clips();
 
-	// Reset clip selection.
-	void clear();
-
-protected:
-
 	// Clip selection item lookup.
 	Item *findClip(qtractorClip *pClip);
+
+	// Reset clip selection.
+	void clear();
 
 private:
 
 	// The clip selection list.
 	QPtrList<Item> m_clips;
+
+	// The united selection rectangle.
+	QRect          m_rect;
 
 	// To cache single track selection.
 	qtractorTrack *m_pTrackSingle;

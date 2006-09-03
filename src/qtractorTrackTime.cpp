@@ -159,7 +159,8 @@ void qtractorTrackTime::updateContents ( const QRect& rect, bool bRefresh )
 {
 	if (bRefresh)
 		updatePixmap(QScrollView::contentsX(), QScrollView::contentsY());
-	QScrollView::updateContents(rect);
+
+	QScrollView::repaintContents(rect);
 }
 
 
@@ -168,7 +169,8 @@ void qtractorTrackTime::updateContents ( bool bRefresh )
 {
 	if (bRefresh)
 		updatePixmap(QScrollView::contentsX(), QScrollView::contentsY());
-	QScrollView::updateContents();
+
+	QScrollView::repaintContents();
 }
 
 
@@ -322,17 +324,8 @@ void qtractorTrackTime::contentsMousePressEvent ( QMouseEvent *pMouseEvent )
 			// Remember what and where we'll be dragging/selecting...
 			m_dragState = DragStart;
 			m_posDrag   = pos;
-			// Left-butoon indirect positioning...
-			if (bModifier) {
-				// Playhead positioning...
-				m_pTracks->trackView()->setPlayHead(iFrame);
-				// Immediately commited...
-				pSession->setPlayHead(iFrame);
-				// Not quite a selection, rather just
-				// for immediate visual feedback...
-				m_pTracks->selectionChangeNotify();
-			}	// Try to catch mouse clicks over the cursor heads...
-			else if (dragHeadStart(m_posDrag)) {
+			// Try to catch mouse clicks over the cursor heads...
+			if (dragHeadStart(m_posDrag)) {
 				// We're starting something...
 				QScrollView::setCursor(QCursor(Qt::SizeHorCursor));
 			}
@@ -437,6 +430,9 @@ void qtractorTrackTime::contentsMouseReleaseEvent ( QMouseEvent *pMouseEvent )
 
 	qtractorSession *pSession = m_pTracks->session();
 	if (pSession) {
+		// Direct snap positioning...
+		unsigned long iFrame = pSession->frameSnap(
+			pSession->frameFromPixel(m_posDrag.x() > 0 ? m_posDrag.x() : 0));
 		// Which mouse state?
 		const bool bModifier = (pMouseEvent->state()
 			& (Qt::ShiftButton | Qt::ControlButton));
@@ -482,8 +478,17 @@ void qtractorTrackTime::contentsMouseReleaseEvent ( QMouseEvent *pMouseEvent )
 			m_pTracks->contentsChangeNotify();
 			break;
 		case DragStart:
-			// Deferred left-button edit-head positioning...
-			if (!bModifier) {
+			// Left-button indirect positioning...
+			if (bModifier) {
+				// Playhead positioning...
+				m_pTracks->trackView()->setPlayHead(iFrame);
+				// Immediately commited...
+				pSession->setPlayHead(iFrame);
+				// Not quite a selection, rather just
+				// for immediate visual feedback...
+				m_pTracks->selectionChangeNotify();
+			} else {
+				// Deferred left-button edit-head positioning...
 				m_pTracks->trackView()->setEditHead(
 					pSession->frameSnap(pSession->frameFromPixel(
 						m_posDrag.x() > 0 ? m_posDrag.x() : 0)));

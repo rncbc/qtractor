@@ -56,6 +56,12 @@ void qtractorClipSelect::selectClip ( qtractorClip *pClip,
 	    m_clips.remove(pClipItem);
 		pClip->setClipSelected(false);
 		m_bTrackSingle = false;
+		// Reset united selection rectangle...
+		m_rect.setRect(0, 0, 0, 0);
+		for (pClipItem = m_clips.first();
+			pClipItem; pClipItem = m_clips.next())
+			m_rect = m_rect.unite(pClipItem->rectClip);
+		// Done with clip deselection.
 	} else if (pClipItem == NULL && bSelect) {
 		pClip->setClipSelected(true);
 		m_clips.append(new Item(pClip, rect));
@@ -64,7 +70,16 @@ void qtractorClipSelect::selectClip ( qtractorClip *pClip,
 		if (m_bTrackSingle && m_pTrackSingle
 			&& m_pTrackSingle != pClip->track())
 			m_pTrackSingle = NULL;
+		// Unite whole selection reactangular area...
+		m_rect = m_rect.unite(rect);
 	}
+}
+
+
+// The united selection rectangle.
+const QRect& qtractorClipSelect::rect (void) const
+{
+	return m_rect;
 }
 
 
@@ -123,7 +138,8 @@ void qtractorClipSelect::clear (void)
 	    	pClipItem; pClipItem = m_clips.next()) {
 		(pClipItem->clip)->setClipSelected(false);
 	}
-	
+
+	m_rect.setRect(0, 0, 0, 0);
 	m_clips.clear();
 }
 

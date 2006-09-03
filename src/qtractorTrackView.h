@@ -167,7 +167,8 @@ protected:
 	void contentsMouseReleaseEvent(QMouseEvent *pMouseEvent);
 
 	// Clip file(item) selection convenience method.
-	void selectClipFile(qtractorClip *pClip) const;
+	void selectClipFile(qtractorClip *pClip,
+		const QRect& rectClip, bool bReset);
 
 	// Draw/hide the whole current clip selection.
 	void updateClipSelect(int y, int h);
