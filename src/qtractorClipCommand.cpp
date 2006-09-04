@@ -40,90 +40,98 @@
 qtractorClipCommand::qtractorClipCommand ( qtractorMainForm *pMainForm,
 	const QString& sName ) : qtractorCommand(pMainForm, sName)
 {
-	m_clips.setAutoDelete(true);
+	m_items.setAutoDelete(true);
 }
 
 // Destructor.
 qtractorClipCommand::~qtractorClipCommand (void)
 {
-	if (isAutoDelete()) {
-		for (Item *pClipItem = m_clips.first();
-				pClipItem; pClipItem = m_clips.next()) {
-			delete pClipItem->clip;
+	for (Item *pItem = m_items.first();
+			pItem; pItem = m_items.next()) {
+		if (pItem->autoDelete)
+			delete pItem->clip;
+	}
+
+	m_items.clear();
+}
+
+
+// Add primitive clip item to command list.
+void qtractorClipCommand::addItem ( qtractorClipCommand::CommandType cmd,
+	qtractorClip *pClip, qtractorTrack *pTrack, unsigned long iClipStart,
+	unsigned long iClipOffset, unsigned long iClipLength )
+{
+	m_items.append(
+		new Item(cmd, pClip, pTrack, iClipStart, iClipOffset, iClipLength));
+}
+
+
+// Common executive method.
+bool qtractorClipCommand::execute ( bool bRedo )
+{
+	qtractorSession *pSession = mainForm()->session();
+	if (pSession == NULL)
+		return false;
+
+	for (Item *pItem = m_items.first();
+			pItem; pItem = m_items.next()) {
+
+		// Execute the command item...
+		switch (pItem->command) {
+			case AddClip: {
+				if (bRedo)
+					(pItem->track)->addClip(pItem->clip);
+				else
+					(pItem->track)->unlinkClip(pItem->clip);
+				pItem->autoDelete = !bRedo;
+				break;
+			}
+			case RemoveClip: {
+				if (bRedo)
+					(pItem->track)->unlinkClip(pItem->clip);
+				else
+					(pItem->track)->addClip(pItem->clip);
+				pItem->autoDelete = bRedo;
+				break;
+			}
+			case MoveClip: {
+				qtractorClip  *pClip = pItem->clip;
+				qtractorTrack *pOldTrack = pClip->track();
+				unsigned long  iOldStart = pClip->clipStart();
+				qtractorTrack *pNewTrack = pItem->track;
+				pOldTrack->unlinkClip(pClip);
+				pClip->setClipStart(pItem->clipStart);
+				pNewTrack->addClip(pClip);
+				pItem->track = pOldTrack;
+				pItem->clipStart = iOldStart;
+				if (pOldTrack != pNewTrack)
+					pSession->updateTrack(pOldTrack);
+				pSession->updateTrack(pNewTrack);
+				break;
+			}
+			case ChangeClip:
+			default:
+				break;
 		}
-	}
-
-	m_clips.clear();
-}
-
-
-// Add clip to command list.
-void qtractorClipCommand::addClip ( qtractorClip *pClip,
-	qtractorTrack *pTrack, unsigned long iClipStart )
-{
-	m_clips.append(new Item(pClip, pTrack, iClipStart));
-}
-
-
-// Clip command methods.
-bool qtractorClipCommand::addClipItems (void)
-{
-	qtractorSession *pSession = mainForm()->session();
-	if (pSession == NULL)
-		return false;
-
-	for (Item *pClipItem = m_clips.first();
-			pClipItem; pClipItem = m_clips.next()) {
-	    (pClipItem->track)->addClip(pClipItem->clip);
-		pSession->updateTrack(pClipItem->track);
-	}
-
-	setAutoDelete(false);
-
-	return true;
-}
-
-bool qtractorClipCommand::removeClipItems (void)
-{
-	qtractorSession *pSession = mainForm()->session();
-	if (pSession == NULL)
-		return false;
-
-	for (Item *pClipItem = m_clips.first();
-			pClipItem; pClipItem = m_clips.next()) {
-	    (pClipItem->track)->unlinkClip(pClipItem->clip);
-		pSession->updateTrack(pClipItem->track);
-	}
-
-	setAutoDelete(true);
-
-	return true;
-}
-
-bool qtractorClipCommand::moveClipItems (void)
-{
-	qtractorSession *pSession = mainForm()->session();
-	if (pSession == NULL)
-		return false;
-
-	for (Item *pClipItem = m_clips.first();
-			pClipItem; pClipItem = m_clips.next()) {
-		qtractorClip  *pClip = pClipItem->clip;
-		qtractorTrack *pOldTrack = pClip->track();
-		unsigned long  iOldStart = pClip->clipStart();
-		qtractorTrack *pNewTrack = pClipItem->track;
-	    pOldTrack->unlinkClip(pClip);
-	    pClip->setClipStart(pClipItem->clipStart);
-	    pNewTrack->addClip(pClip);
-	    pClipItem->track = pOldTrack;
-	    pClipItem->clipStart = iOldStart;
-		if (pOldTrack != pNewTrack)
-			pSession->updateTrack(pOldTrack);
-		pSession->updateTrack(pNewTrack);
+		// Always update the target track...
+		pSession->updateTrack(pItem->track);
 	}
 
 	return true;
 }
+
+
+// Virtual command methods.
+bool qtractorClipCommand::redo (void)
+{
+	return execute(true);
+}
+
+bool qtractorClipCommand::undo (void)
+{
+	return execute(false);
+}
+
 
 //----------------------------------------------------------------------
 // class qtractorAddClipCommand - declaration.
@@ -163,7 +171,7 @@ bool qtractorAddClipCommand::addClipRecord ( qtractorTrack *pTrack )
 		if (pAudioClip) {
 			pAudioClip = new qtractorAudioClip(*pAudioClip);
 			pAudioClip->setClipStart(iClipStart);
-			addClip(pAudioClip, pTrack, iClipStart);
+			addItem(pAudioClip, pTrack);
 			if (pFiles)
 				pFiles->addAudioFile(pAudioClip->filename());
 		}
@@ -175,7 +183,7 @@ bool qtractorAddClipCommand::addClipRecord ( qtractorTrack *pTrack )
 		if (pMidiClip) {
 			pMidiClip = new qtractorMidiClip(*pMidiClip);
 			pMidiClip->setClipStart(iClipStart);
-			addClip(pMidiClip, pTrack, iClipStart);
+			addItem(pMidiClip, pTrack);
 			if (pFiles)
 				pFiles->addMidiFile(pMidiClip->filename());
 		}
@@ -192,15 +200,11 @@ bool qtractorAddClipCommand::addClipRecord ( qtractorTrack *pTrack )
 }
 
 
-// Clip insertion command methods.
-bool qtractorAddClipCommand::redo (void)
+// Add clip item to command list.
+void qtractorAddClipCommand::addItem ( qtractorClip *pClip,
+	qtractorTrack *pTrack )
 {
-	return addClipItems();
-}
-
-bool qtractorAddClipCommand::undo (void)
-{
-	return removeClipItems();
+	qtractorClipCommand::addItem(AddClip, pClip, pTrack);
 }
 
 
@@ -215,15 +219,11 @@ qtractorRemoveClipCommand::qtractorRemoveClipCommand (
 {
 }
 
-// Clip removal command methods.
-bool qtractorRemoveClipCommand::redo (void)
-{
-	return removeClipItems();
-}
 
-bool qtractorRemoveClipCommand::undo (void)
+// Add clip item to command list.
+void qtractorRemoveClipCommand::addItem ( qtractorClip *pClip )
 {
-	return addClipItems();
+	qtractorClipCommand::addItem(RemoveClip, pClip, pClip->track());
 }
 
 
@@ -238,16 +238,12 @@ qtractorMoveClipCommand::qtractorMoveClipCommand (
 {
 }
 
-// Clip move command methods.
-bool qtractorMoveClipCommand::redo (void)
-{
-	return moveClipItems();
-}
 
-bool qtractorMoveClipCommand::undo (void)
+// Add clip item to command list.
+void qtractorMoveClipCommand::addItem ( qtractorClip *pClip,
+	qtractorTrack *pTrack, unsigned long iClipStart )
 {
-	// As we swap the prev/clip this is non-idempotent.
-	return redo();
+	qtractorClipCommand::addItem(MoveClip, pClip, pTrack, iClipStart);
 }
 
 

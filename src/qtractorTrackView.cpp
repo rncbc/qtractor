@@ -969,7 +969,7 @@ void qtractorTrackView::contentsDropEvent (
 			if (pAudioClip) {
 				pAudioClip->setClipStart(iClipStart);
 				pAudioClip->open(pDropItem->path);
-				pAddClipCommand->addClip(pAudioClip, pTrack, iClipStart);
+				pAddClipCommand->addItem(pAudioClip, pTrack);
 				iClipStart += pAudioClip->clipLength();
 				// Don't forget to add this one to local repository.
 				pMainForm->addAudioFile(pDropItem->path);
@@ -986,7 +986,7 @@ void qtractorTrackView::contentsDropEvent (
 					pTrack->setMidiBank(pMidiClip->bank());
 					pTrack->setMidiProgram(pMidiClip->program());
 				}
-				pAddClipCommand->addClip(pMidiClip, pTrack, iClipStart);
+				pAddClipCommand->addItem(pMidiClip, pTrack);
 				iClipStart += pMidiClip->clipLength();
 				// Don't forget to add this one to local repository.
 				pMainForm->addMidiFile(pDropItem->path);
@@ -1169,7 +1169,7 @@ void qtractorTrackView::contentsMouseReleaseEvent ( QMouseEvent *pMouseEvent )
 						if (!bSingleTrack)
 							pNewTrack = pClip->track();
 						int x = (pClipItem->rectClip.x() + m_iDraggingX);
-						pMoveClipCommand->addClip(pClip, pNewTrack,
+						pMoveClipCommand->addItem(pClip, pNewTrack,
 							pSession->frameFromPixel(x < 0 ? 0 : x));
 						pClipItem = m_pClipSelect->clips().next();
 					}
@@ -1387,8 +1387,7 @@ void qtractorTrackView::deleteClipSelect (void)
 
 	qtractorClipSelect::Item *pClipItem = m_pClipSelect->clips().first();
 	while (pClipItem) {
-		pRemoveClipCommand->addClip(
-			pClipItem->clip, (pClipItem->clip)->track(), 0);
+		pRemoveClipCommand->addItem(pClipItem->clip);
 		pClipItem = m_pClipSelect->clips().next();
 	}
 
@@ -1883,6 +1882,7 @@ void qtractorTrackView::copyClipSelect (void)
 {
 	// Reset clipboard...
 	m_pClipboardSingleTrack = m_pClipSelect->singleTrack();
+	m_rectClipboard = m_pClipSelect->rect();
 	m_clipboard.clear();
 
 	// Copy each selected clip to clipboard...
@@ -1910,6 +1910,7 @@ void qtractorTrackView::cutClipSelect (void)
 
 	// Reset clipboard...
 	m_pClipboardSingleTrack = m_pClipSelect->singleTrack();
+	m_rectClipboard = m_pClipSelect->rect();
 	m_clipboard.clear();
 
 	// We'll build a composite command...
@@ -1921,8 +1922,7 @@ void qtractorTrackView::cutClipSelect (void)
 	qtractorClipSelect::Item *pClipItem = m_pClipSelect->clips().first();
 	while (pClipItem) {
 		m_clipboard.append(pClipItem->clip);
-		pRemoveClipCommand->addClip(
-			pClipItem->clip, (pClipItem->clip)->track(), 0);
+		pRemoveClipCommand->addItem(pClipItem->clip);
 		pClipItem = m_pClipSelect->clips().next();
 	}
 
@@ -1958,8 +1958,10 @@ void qtractorTrackView::pasteClipSelect (void)
 	// Override default command name.
 	pAddClipCommand->setName(tr("paste clip"));
 
+	long delta = pSession->editHead()
+		- pSession->frameFromPixel(m_rectClipboard.x());
+
 	qtractorClip *pClip = m_clipboard.first();
-	long delta = (pClip ? pSession->editHead() - pClip->clipStart() : 0);
 	while (pClip) {
 		if (!bSingleTrack)
 			pPasteTrack = pClip->track();
@@ -1976,7 +1978,7 @@ void qtractorTrackView::pasteClipSelect (void)
 			if (pAudioClip) {
 				pAudioClip = new qtractorAudioClip(*pAudioClip);
 				pAudioClip->setClipStart(iClipStart);
-				pAddClipCommand->addClip(pAudioClip, pPasteTrack, iClipStart);
+				pAddClipCommand->addItem(pAudioClip, pPasteTrack);
 			}
 			break;
 		}
@@ -1986,7 +1988,7 @@ void qtractorTrackView::pasteClipSelect (void)
 			if (pMidiClip) {
 				pMidiClip = new qtractorMidiClip(*pMidiClip);
 				pMidiClip->setClipStart(iClipStart);
-				pAddClipCommand->addClip(pMidiClip, pPasteTrack, iClipStart);
+				pAddClipCommand->addItem(pMidiClip, pPasteTrack);
 			}
 			break;
 		}

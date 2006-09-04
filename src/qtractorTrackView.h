@@ -257,7 +257,8 @@ private:
 
 	// The local clipboard stuff.
 	QPtrList<qtractorClip> m_clipboard;
-	qtractorTrack *m_pClipboardSingleTrack;
+	qtractorTrack         *m_pClipboardSingleTrack;
+	QRect                  m_rectClipboard;
 
 	// Playhead and edit frame positioning.
 	unsigned long m_iPlayHead;

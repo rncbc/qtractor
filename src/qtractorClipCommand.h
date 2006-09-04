@@ -43,16 +43,22 @@ public:
 	// Destructor.
 	virtual ~qtractorClipCommand();
 
-	// Add clip to command list.
-	void addClip(qtractorClip *pClip,
-		qtractorTrack *pTrack, unsigned long iClipStart);
+	// Virtual command methods.
+	bool redo();
+	bool undo();
 
 protected:
 
-	// Clip command methods.
-	bool addClipItems();
-	bool removeClipItems();
-	bool moveClipItems();
+	// Primitive command types.
+	enum CommandType { AddClip, RemoveClip, MoveClip, ChangeClip };
+	
+	// Add primitive clip item to command list.
+	void addItem(CommandType cmd, qtractorClip *pClip,
+		qtractorTrack *pTrack, unsigned long iClipStart = 0,
+		unsigned long iClipOffset = 0, unsigned long iClipLength = 0);
+
+	// Common executive method.
+	bool execute(bool bRedo);
 
 private:
 
@@ -60,17 +66,26 @@ private:
 	struct Item
 	{
 		// Item constructor.
-		Item(qtractorClip *pClip,
-			qtractorTrack *pTrack, unsigned long iClipStart)
-			: clip(pClip), track(pTrack), clipStart(iClipStart) {}
+		Item(CommandType cmd, qtractorClip *pClip,
+			qtractorTrack *pTrack, unsigned long iClipStart,
+			unsigned long iClipOffset, unsigned long iClipLength)
+			: command(cmd), clip(pClip), track(pTrack),
+				clipStart(iClipStart),
+				clipOffset(iClipOffset),
+				clipLength(iClipLength),
+				autoDelete(false) {}
 		// Item members.
+		CommandType    command;
 		qtractorClip  *clip;
 		qtractorTrack *track;
 		unsigned long  clipStart;
+		unsigned long  clipOffset;
+		unsigned long  clipLength;
+		bool           autoDelete;
 	};
 
 	// Instance variables.
-	QPtrList<Item> m_clips;
+	QPtrList<Item> m_items;
 };
 
 
@@ -88,9 +103,8 @@ public:
 	// Special clip record nethod.
 	bool addClipRecord(qtractorTrack *pTrack);
 
-	// Clip insertion command methods.
-	bool redo();
-	bool undo();
+	// Add clip item to command list.
+	void addItem(qtractorClip *pClip, qtractorTrack *pTrack);
 };
 
 
@@ -105,9 +119,8 @@ public:
 	// Constructor.
 	qtractorRemoveClipCommand(qtractorMainForm *pMainForm);
 
-	// Clip-removal command methods.
-	bool redo();
-	bool undo();
+	// Add clip item to command list.
+	void addItem(qtractorClip *pClip);
 };
 
 
@@ -122,9 +135,9 @@ public:
 	// Constructor.
 	qtractorMoveClipCommand(qtractorMainForm *pMainForm);
 
-	// Clip-move command methods.
-	bool redo();
-	bool undo();
+	// Add clip item to command list.
+	void addItem(qtractorClip *pClip,
+		qtractorTrack *pTrack, unsigned long iClipStart);
 };
 
 
