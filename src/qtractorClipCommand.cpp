@@ -28,8 +28,6 @@
 #include "qtractorAudioClip.h"
 #include "qtractorMidiClip.h"
 #include "qtractorFiles.h"
-#include "qtractorTracks.h"
-#include "qtractorTrackView.h"
 
 
 //----------------------------------------------------------------------
@@ -76,45 +74,58 @@ bool qtractorClipCommand::execute ( bool bRedo )
 	for (Item *pItem = m_items.first();
 			pItem; pItem = m_items.next()) {
 
+		qtractorClip  *pClip  = pItem->clip;
+		qtractorTrack *pTrack = pItem->track;
+	
 		// Execute the command item...
 		switch (pItem->command) {
-			case AddClip: {
-				if (bRedo)
-					(pItem->track)->addClip(pItem->clip);
-				else
-					(pItem->track)->unlinkClip(pItem->clip);
-				pItem->autoDelete = !bRedo;
-				break;
-			}
-			case RemoveClip: {
-				if (bRedo)
-					(pItem->track)->unlinkClip(pItem->clip);
-				else
-					(pItem->track)->addClip(pItem->clip);
-				pItem->autoDelete = bRedo;
-				break;
-			}
-			case MoveClip: {
-				qtractorClip  *pClip = pItem->clip;
-				qtractorTrack *pOldTrack = pClip->track();
-				unsigned long  iOldStart = pClip->clipStart();
-				qtractorTrack *pNewTrack = pItem->track;
-				pOldTrack->unlinkClip(pClip);
-				pClip->setClipStart(pItem->clipStart);
-				pNewTrack->addClip(pClip);
-				pItem->track = pOldTrack;
-				pItem->clipStart = iOldStart;
-				if (pOldTrack != pNewTrack)
-					pSession->updateTrack(pOldTrack);
-				pSession->updateTrack(pNewTrack);
-				break;
-			}
-			case ChangeClip:
-			default:
-				break;
+		case AddClip: {
+			if (bRedo)
+				pTrack->addClip(pClip);
+			else
+				pTrack->unlinkClip(pClip);
+			pItem->autoDelete = !bRedo;
+			break;
 		}
+		case RemoveClip: {
+			if (bRedo)
+				pTrack->unlinkClip(pClip);
+			else
+				pTrack->addClip(pClip);
+			pItem->autoDelete = bRedo;
+			break;
+		}
+		case MoveClip: {
+			qtractorTrack *pOldTrack = pClip->track();
+			unsigned long  iOldStart = pClip->clipStart();
+			pOldTrack->unlinkClip(pClip);
+			pClip->setClipStart(pItem->clipStart);
+			pTrack->addClip(pClip);
+			pItem->track = pOldTrack;
+			pItem->clipStart = iOldStart;
+			if (pOldTrack != pTrack)
+				pSession->updateTrack(pOldTrack);
+			break;
+		}
+		case ChangeClip: {
+			unsigned long iOldStart  = pClip->clipStart();
+			unsigned long iOldOffset = pClip->clipOffset();
+			unsigned long iOldLength = pClip->clipLength();
+			pClip->setClipStart(pItem->clipStart);
+			pClip->setClipOffset(pItem->clipOffset);
+			pClip->setClipLength(pItem->clipLength);
+			pClip->open();
+			pItem->clipStart  = iOldStart;
+			pItem->clipOffset = iOldOffset;
+			pItem->clipLength = iOldLength;
+			break;
+		}
+		default:
+			break;
+		}
+
 		// Always update the target track...
-		pSession->updateTrack(pItem->track);
+		pSession->updateTrack(pTrack);
 	}
 
 	return true;
@@ -205,25 +216,6 @@ void qtractorAddClipCommand::addItem ( qtractorClip *pClip,
 	qtractorTrack *pTrack )
 {
 	qtractorClipCommand::addItem(AddClip, pClip, pTrack);
-}
-
-
-//----------------------------------------------------------------------
-// class qtractorRemoveClipCommand - declaration.
-//
-
-// Constructor.
-qtractorRemoveClipCommand::qtractorRemoveClipCommand (
-	qtractorMainForm *pMainForm )
-	: qtractorClipCommand(pMainForm, QObject::tr("remove clip"))
-{
-}
-
-
-// Add clip item to command list.
-void qtractorRemoveClipCommand::addItem ( qtractorClip *pClip )
-{
-	qtractorClipCommand::addItem(RemoveClip, pClip, pClip->track());
 }
 
 

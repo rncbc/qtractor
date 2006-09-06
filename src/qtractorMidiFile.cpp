@@ -210,6 +210,15 @@ bool qtractorMidiFile::readTrack ( qtractorMidiSequence *pSeq,
 		unsigned long time = (iTrackTime * pSeq->ticksPerBeat())
 			/ m_iTicksPerBeat;
 
+		// Check for sequence time length if any...
+		if (pSeq->timeLength() > 0
+			&& time > pSeq->timeOffset() + pSeq->timeLength())
+			break;
+
+		// Check whether it won't be channel filtered...
+		bool bChannelEvent = (time >= pSeq->timeOffset()
+			&& ((iChannelFilter & 0xf0) || (iChannelFilter == iChannel)));
+
 		qtractorMidiEvent *pEvent;
 		unsigned char *data, data1, data2;
 		unsigned int len, meta, bank;
@@ -220,7 +229,8 @@ bool qtractorMidiFile::readTrack ( qtractorMidiSequence *pSeq,
 			data1 = readInt(1);
 			data2 = readInt(1);
 			// Check if its channel filtered...
-			if ((iChannelFilter & 0xf0) || (iChannelFilter == iChannel)) {
+			if (bChannelEvent) {
+				time -= pSeq->timeOffset();
 				if (data2 == 0 && type == qtractorMidiEvent::NOTEON)
 					type = qtractorMidiEvent::NOTEOFF;
 				pEvent = new qtractorMidiEvent(time, type, data1, data2);
@@ -232,7 +242,8 @@ bool qtractorMidiFile::readTrack ( qtractorMidiSequence *pSeq,
 			data1 = readInt(1);
 			data2 = readInt(1);
 			// Check if its channel filtered...
-			if ((iChannelFilter & 0xf0) || (iChannelFilter == iChannel)) {
+			if (bChannelEvent) {
+				time -= pSeq->timeOffset();
 				// We don't sequence bank select events here,
 				// just set the primordial bank patch...
 				switch (data1) {
@@ -260,7 +271,8 @@ bool qtractorMidiFile::readTrack ( qtractorMidiSequence *pSeq,
 			data1 = readInt(1);
 			data2 = readInt(1);
 			// Check if its channel filtered...
-			if ((iChannelFilter & 0xf0) || (iChannelFilter == iChannel)) {
+			if (bChannelEvent) {
+				time -= pSeq->timeOffset();
 				// Create the new event...
 				pEvent = new qtractorMidiEvent(time, type, data1, data2);
 				pSeq->addEvent(pEvent);
@@ -271,7 +283,8 @@ bool qtractorMidiFile::readTrack ( qtractorMidiSequence *pSeq,
 			data1 = 0;
 			data2 = readInt(1);
 			// Check if its channel filtered...
-			if ((iChannelFilter & 0xf0) || (iChannelFilter == iChannel)) {
+			if (bChannelEvent) {
+				time -= pSeq->timeOffset();
 				// We don't sequence prog change events here,
 				// just set the primordial program patch...
 				if (pSeq->program() < 0)
@@ -283,7 +296,8 @@ bool qtractorMidiFile::readTrack ( qtractorMidiSequence *pSeq,
 			data1 = 0;
 			data2 = readInt(1);
 			// Check if its channel filtered...
-			if ((iChannelFilter & 0xf0) || (iChannelFilter == iChannel)) {
+			if (bChannelEvent) {
+				time -= pSeq->timeOffset();
 				// Create the new event...
 				pEvent = new qtractorMidiEvent(time, type, data1, data2);
 				pSeq->addEvent(pEvent);
@@ -299,7 +313,8 @@ bool qtractorMidiFile::readTrack ( qtractorMidiSequence *pSeq,
 			}
 			data[len] = (unsigned char) 0;
 			// Check if its channel filtered...
-			if ((iChannelFilter & 0xf0) || (iChannelFilter == iChannel)) {
+			if (bChannelEvent) {
+				time -= pSeq->timeOffset();
 				pEvent = new qtractorMidiEvent(time, type);
 				pEvent->setSysex(data, len);
 				pSeq->addEvent(pEvent);
@@ -343,6 +358,9 @@ bool qtractorMidiFile::readTrack ( qtractorMidiSequence *pSeq,
 			break;
 		}
 	}
+
+	// FIXME: Commit the sequence length...
+	pSeq->close();
 
 	return true;
 }

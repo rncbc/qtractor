@@ -29,10 +29,11 @@
 
 
 #if defined(__WIN32__) || defined(_WIN32) || defined(WIN32)
-#define PATH_SEPARATOR ';'
+#define PATH_SEPARATOR	';'
 typedef void (*LADSPA_Procedure_Function)(void);
 #else
-#define PATH_SEPARATOR ':'
+#define PATH_SEPARATOR	':'
+#define PATH_DEFAULT	"/usr/local/lib/ladspa:/usr/lib/ladspa"
 #endif
 
 #include <math.h>
@@ -54,6 +55,10 @@ qtractorPluginPath::qtractorPluginPath ( const QString& sPaths )
 	QString sPathStr = sPaths;
 	if (sPathStr.isEmpty())
 		sPathStr = ::getenv("LADSPA_PATH");
+#if defined(PATH_DEFAULT)
+	if (sPathStr.isEmpty())
+		sPathStr = PATH_DEFAULT;
+#endif
 	m_paths = QStringList::split(PATH_SEPARATOR, sPathStr);
 	m_files.setAutoDelete(true);
 }

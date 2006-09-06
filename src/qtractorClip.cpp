@@ -24,6 +24,8 @@
 
 #include "qtractorSessionDocument.h"
 
+#include <qfileinfo.h>
+
 
 //-------------------------------------------------------------------------
 // qtractorClip -- Track clip capsule.
@@ -73,6 +75,21 @@ qtractorTrack *qtractorClip::track (void) const
 }
 
 
+// Clip filename properties accessors.
+void qtractorClip::setFilename ( const QString& sFilename )
+{
+	m_sFilename = sFilename;
+	
+	if (clipName().isEmpty())
+		setClipName(QFileInfo(m_sFilename).baseName());
+}
+
+const QString& qtractorClip::filename (void) const
+{
+	return m_sFilename;
+}
+
+
 // Clip label accessors.
 const QString& qtractorClip::clipName (void) const
 {
@@ -109,8 +126,6 @@ unsigned long qtractorClip::clipLength (void) const
 void qtractorClip::setClipLength ( unsigned long iClipLength )
 {
 	m_iClipLength = iClipLength;
-	
-	set_length(iClipLength);
 }
 
 
@@ -122,9 +137,7 @@ unsigned long qtractorClip::clipOffset (void) const
 
 void qtractorClip::setClipOffset ( unsigned long iClipOffset )
 {
-	m_iClipLength = iClipOffset;
-	
-	set_offset(iClipOffset);
+	m_iClipOffset = iClipOffset;
 }
 
 
@@ -234,6 +247,8 @@ bool qtractorClip::loadElement ( qtractorSessionDocument *pDocument,
 					continue;
 				if (eProp.tagName() == "start")
 					qtractorClip::setClipStart(eProp.text().toULong());
+				else if (eProp.tagName() == "offset")
+					qtractorClip::setClipOffset(eProp.text().toULong());
 				else if (eProp.tagName() == "length")
 					qtractorClip::setClipLength(eProp.text().toULong());
 			}
@@ -260,6 +275,8 @@ bool qtractorClip::saveElement ( qtractorSessionDocument *pDocument,
 	QDomElement eProps = pDocument->document()->createElement("properties");
 	pDocument->saveTextElement("start",
 		QString::number(qtractorClip::clipStart()), &eProps);
+	pDocument->saveTextElement("offset",
+		QString::number(qtractorClip::clipOffset()), &eProps);
 	pDocument->saveTextElement("length",
 		QString::number(qtractorClip::clipLength()), &eProps);
 	pElement->appendChild(eProps);

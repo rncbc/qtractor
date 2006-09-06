@@ -75,15 +75,14 @@ public:
 	void updateContentsRecord(bool bRefresh = false);
 
 	// The current clip selection mode.
-	enum SelectMode { SelectClip = 0, SelectRange = 1, SelectRect = 2 };
+	enum SelectMode { SelectClip, SelectRange, SelectRect };
 
 	// Clip selection mode accessors.
 	void setSelectMode(SelectMode selectMode);
 	SelectMode selectMode() const;
 
 	// Select everything under a given (rubber-band) rectangle.
-	void selectRect(const QRect& rectDrag,
-		SelectMode selectMode = SelectClip, bool bReset = false);
+	void selectRect(const QRect& rectDrag, SelectMode selectMode);
 	// Select every clip of a given track.
 	void selectTrack(qtractorTrack *pTrack, bool bReset = true);
 	// Select all contents.
@@ -98,13 +97,14 @@ public:
 	// Clipboard cleaner.
 	void clearClipboard();
 
-	// Clipboard methods.
-	void copyClipSelect();
-	void cutClipSelect();
-	void pasteClipSelect();
+	// Clip selection command types.
+	enum Command { Cut, Copy, Delete };
+	
+	// Clip selection executive method.
+	void executeClipSelect(qtractorTrackView::Command cmd);
 
-	// Delete/remove current selection.
-	void deleteClipSelect();
+	// Clipboard paste method.
+	void pasteClipSelect();
 
 	// Play-head positioning.
 	void setPlayHead(unsigned long iPlayHead, bool bSyncView = false);
@@ -255,10 +255,29 @@ private:
 	// The clip select mode.
 	SelectMode m_selectMode;
 
+	// The local clipboard item.
+	struct ClipItem
+	{
+		// Item constructor.
+		ClipItem(qtractorClip *pClip, unsigned long iClipStart,
+			unsigned long iClipOffset, unsigned long iClipLength)
+			: clip(pClip), clipStart(iClipStart),
+				clipOffset(iClipOffset), clipLength(iClipLength) {}
+		// Item members.
+		qtractorClip *clip;
+		unsigned long clipStart;
+		unsigned long clipOffset;
+		unsigned long clipLength;
+	};
+
 	// The local clipboard stuff.
-	QPtrList<qtractorClip> m_clipboard;
-	qtractorTrack         *m_pClipboardSingleTrack;
-	QRect                  m_rectClipboard;
+	struct ClipBoard
+	{
+		QPtrList<ClipItem> items;
+		qtractorTrack     *singleTrack;
+		QRect              rect;
+
+	} m_clipboard;
 
 	// Playhead and edit frame positioning.
 	unsigned long m_iPlayHead;

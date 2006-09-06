@@ -40,6 +40,7 @@ qtractorMidiClip::qtractorMidiClip ( qtractorTrack *pTrack )
 {
 	m_pFile = NULL;
 	m_pSeq  = new qtractorMidiSequence();
+
 	m_iTrackChannel = 0;
 }
 
@@ -49,9 +50,9 @@ qtractorMidiClip::qtractorMidiClip ( const qtractorMidiClip& clip )
 {
 	m_pFile = NULL;
 	m_pSeq  = new qtractorMidiSequence();
-	m_iTrackChannel = 0;
 
-	open(clip.filename(), clip.trackChannel());
+	setFilename(clip.filename());
+	setTrackChannel(clip.trackChannel());
 }
 
 
@@ -66,9 +67,14 @@ qtractorMidiClip::~qtractorMidiClip (void)
 
 
 // The main use method.
-bool qtractorMidiClip::open ( const QString& sFilename, int iTrackChannel,
-	int iMode )
+bool qtractorMidiClip::openMidiFile ( const QString& sFilename,
+	int iTrackChannel, int iMode )
 {
+#ifdef CONFIG_DEBUG
+	fprintf(stderr, "qtractorMidiClip::openMidiFile(\"%s\", %d, %d)\n",
+		sFilename.latin1(), iTrackChannel, iMode);
+#endif
+
 	if (m_pFile)
 		delete m_pFile;
 	
@@ -81,13 +87,13 @@ bool qtractorMidiClip::open ( const QString& sFilename, int iTrackChannel,
 	}
 
 	// Open-process mode...
-	return open(m_pFile, iTrackChannel, false);
+	return openMidiFile(m_pFile, iTrackChannel, false);
 }
 
 
 // Overloaded open method; reuse an already open MIDI file.
-bool qtractorMidiClip::open ( qtractorMidiFile *pFile, int iTrackChannel,
-	bool bSetTempo )
+bool qtractorMidiClip::openMidiFile ( qtractorMidiFile *pFile,
+	int iTrackChannel, bool bSetTempo )
 {
 	qtractorTrack *pTrack = track();
 	if (pTrack == NULL)
@@ -100,6 +106,8 @@ bool qtractorMidiClip::open ( qtractorMidiFile *pFile, int iTrackChannel,
 	// Initialize event container...
 	m_pSeq->clear();
 	m_pSeq->setTicksPerBeat(pSession->ticksPerBeat());
+	m_pSeq->setTimeOffset(pSession->tickFromFrame(clipOffset()));
+	m_pSeq->setTimeLength(pSession->tickFromFrame(clipLength()));
 
 	// Are we on a pre-writing status?
 	if (pFile->mode() == qtractorMidiFile::Write) {
@@ -125,15 +133,17 @@ bool qtractorMidiClip::open ( qtractorMidiFile *pFile, int iTrackChannel,
 			return false;
 	}
 
-	// Set local properties...
-	m_sFilename = pFile->filename();
-	m_iTrackChannel = iTrackChannel;
-
 	// Clip name should be clear about it all.
-	qtractorClip::setClipName(m_pSeq->name());
-	// Clip length will be whole sequence duration.
-	qtractorClip::setClipLength(pSession->frameFromTick(m_pSeq->duration()));
+	setClipName(m_pSeq->name());
+	// Set local properties...
+	setFilename(pFile->filename());
+	setTrackChannel(iTrackChannel);
 
+	// Default clip length will be whole sequence duration.
+	if (clipLength() == 0)
+		setClipLength(pSession->frameFromTick(
+			m_pSeq->timeLength() - m_pSeq->timeOffset()));
+	
 	// Uh oh...
 	m_clipCursor.reset(m_pSeq);
 
@@ -142,9 +152,9 @@ bool qtractorMidiClip::open ( qtractorMidiFile *pFile, int iTrackChannel,
 
 
 // MIDI file properties accessors.
-const QString& qtractorMidiClip::filename (void) const
+void qtractorMidiClip::setTrackChannel ( unsigned short iTrackChannel )
 {
-	return m_sFilename;
+	m_iTrackChannel = iTrackChannel;
 }
 
 unsigned short qtractorMidiClip::trackChannel (void) const
@@ -181,7 +191,7 @@ void qtractorMidiClip::updateClipTime (void)
 	// Also set proper MIDI clip duration...
 	if (track() && track()->session()) {
 		qtractorClip::setClipLength(
-			track()->session()->frameFromTick(m_pSeq->duration()));
+			track()->session()->frameFromTick(m_pSeq->timeLength()));
 	}
 
 	// Set new start time, as inherited...
@@ -261,27 +271,6 @@ void qtractorMidiClip::reset ( bool bLooping )
 }
 
 
-// Offset implementation method.
-void qtractorMidiClip::set_offset ( unsigned long iOffset )
-{
-#ifdef CONFIG_DEBUG_0
-	fprintf(stderr, "qtractorMidiClip::set_offset(%p, %lu)\n", this, iOffset);
-#endif
-
-	// Do nothing?
-}
-
-// Length implementation method.
-void qtractorMidiClip::set_length ( unsigned long iLength )
-{
-#ifdef CONFIG_DEBUG_0
-	fprintf(stderr, "qtractorMidiClip::set_length(%p, %lu)\n", this, iLength);
-#endif
-
-	// Do nothing?
-}
-
-
 // Loop positioning.
 void qtractorMidiClip::set_loop ( unsigned long iLoopStart,
 	unsigned long iLoopEnd )
@@ -306,7 +295,8 @@ void qtractorMidiClip::close (void)
 	m_pSeq->close();
 
 	// Commit the final clip length...
-	setClipLength(pSession->frameFromTick(m_pSeq->duration()));
+	if (clipLength() == 0)
+		setClipLength(pSession->frameFromTick(m_pSeq->duration()));
 	
 	// Now's time to write the whole thing, maybe as a SMF format 1...
 	if (m_pFile && m_pFile->mode() == qtractorMidiFile::Write) {
@@ -318,7 +308,14 @@ void qtractorMidiClip::close (void)
 
 	// If proven empty, remove the file.
 	if (clipLength() == 0)
-		QFile::remove(m_sFilename);
+		QFile::remove(filename());
+}
+
+
+// MIDI clip (re)open method.
+void qtractorMidiClip::open (void)
+{
+	openMidiFile(filename(), m_iTrackChannel);
 }
 
 
@@ -434,9 +431,6 @@ void qtractorMidiClip::drawClip ( QPainter *pPainter, const QRect& clipRect,
 bool qtractorMidiClip::loadClipElement (
 	qtractorSessionDocument * /* pDocument */, QDomElement *pElement )
 {
-	QString sFilename;
-	unsigned short iTrackChannel = 0;
-
 	// Load track children...
 	for (QDomNode nChild = pElement->firstChild();
 			!nChild.isNull();
@@ -447,15 +441,12 @@ bool qtractorMidiClip::loadClipElement (
 			continue;
 		// Load track state..
 		if (eChild.tagName() == "filename")
-			sFilename = eChild.text();
+			qtractorMidiClip::setFilename(eChild.text());
 		else if (eChild.tagName() == "track-channel")
-			iTrackChannel = eChild.text().toUShort();
+			qtractorMidiClip::setTrackChannel(eChild.text().toUShort());
 	}
 
-	if (sFilename.isEmpty())
-		return false;
-
-	return qtractorMidiClip::open(sFilename, iTrackChannel);
+	return true;
 }
 
 
@@ -464,7 +455,7 @@ bool qtractorMidiClip::saveClipElement (
 {
 	QDomElement eMidiClip = pDocument->document()->createElement("midi-clip");
 	pDocument->saveTextElement("filename",
-		m_sFilename, &eMidiClip);
+		qtractorMidiClip::filename(), &eMidiClip);
 	pDocument->saveTextElement("track-channel",
 		QString::number(m_iTrackChannel), &eMidiClip);
 	pElement->appendChild(eMidiClip);

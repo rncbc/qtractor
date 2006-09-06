@@ -27,7 +27,6 @@
 
 #include "qtractorSessionDocument.h"
 
-#include <qfileinfo.h>
 #include <qpainter.h>
 
 
@@ -50,7 +49,7 @@ qtractorAudioClip::qtractorAudioClip ( const qtractorAudioClip& clip )
 	m_pPeak = NULL;
 	m_pBuff = NULL;
 
-	open(clip.filename());
+	setFilename(clip.filename());
 }
 
 
@@ -65,22 +64,19 @@ qtractorAudioClip::~qtractorAudioClip (void)
 
 
 // The main use method.
-bool qtractorAudioClip::open ( const QString& sFilename, int iMode )
+bool qtractorAudioClip::openAudioFile ( const QString& sFilename, int iMode )
 {
+#ifdef CONFIG_DEBUG
+	fprintf(stderr, "qtractorAudioClip::openAudioFile(\"%s\", %d)\n",
+		sFilename.latin1(), iMode);
+#endif
+
 	if (track() == NULL)
 		return false;
 
 	qtractorSession *pSession = track()->session();
 	if (pSession == NULL)
 		return false;
-
-	if (pSession->audioPeakFactory() == NULL)
-		return false;
-
-	if (m_pPeak) {
-		delete m_pPeak;
-		m_pPeak = NULL;
-	}
 
 	if (m_pBuff) {
 		delete m_pBuff;
@@ -93,6 +89,8 @@ bool qtractorAudioClip::open ( const QString& sFilename, int iMode )
 	if (pAudioBus)
 		iChannels = pAudioBus->channels();
 	m_pBuff = new qtractorAudioBuffer(iChannels, pSession->sampleRate());
+	m_pBuff->setOffset(clipOffset());
+	m_pBuff->setLength(clipLength());
 
 	if (!m_pBuff->open(sFilename, iMode)) {
 		delete m_pBuff;
@@ -101,21 +99,21 @@ bool qtractorAudioClip::open ( const QString& sFilename, int iMode )
 	}
 
 	// FIXME: Peak files should be created on-the-fly?
-	if ((iMode & qtractorAudioFile::Write) == 0) {
+	if ((iMode & qtractorAudioFile::Write) == 0
+		&& (m_pPeak == NULL || sFilename != filename())
+		&& pSession->audioPeakFactory()) {
+		if (m_pPeak)
+			delete m_pPeak;
 		m_pPeak = pSession->audioPeakFactory()->createPeak(
 			sFilename, pSession->sampleRate(), pSession->sessionDir());
-		if (m_pPeak == NULL) {
-			delete m_pBuff;
-			m_pBuff = NULL;
-			return false;
-		}
 	}
 
 	// Set local properties...
-	m_sFilename = sFilename;
+	setFilename(sFilename);
 
-	qtractorClip::setClipName(QFileInfo(sFilename).baseName());
-	qtractorClip::setClipLength(m_pBuff->frames());
+	// Default clip length will be whole file length.
+	if (clipLength() == 0)
+		setClipLength(m_pBuff->length() - m_pBuff->offset());
 
 	return true;
 }
@@ -126,13 +124,6 @@ void qtractorAudioClip::write ( float **ppBuffer,
 	unsigned int iFrames, unsigned short iChannels )
 {
 	if (m_pBuff) m_pBuff->write(ppBuffer, iFrames, iChannels);
-}
-
-
-// MIDI file properties accessors.
-const QString& qtractorAudioClip::filename(void) const
-{
-	return m_sFilename;
 }
 
 
@@ -147,27 +138,6 @@ void qtractorAudioClip::seek ( unsigned long iOffset )
 void qtractorAudioClip::reset ( bool bLooping )
 {
 	if (m_pBuff) m_pBuff->reset(bLooping);
-}
-
-
-// Offset implementation method.
-void qtractorAudioClip::set_offset ( unsigned long iOffset )
-{
-#ifdef CONFIG_DEBUG_0
-	fprintf(stderr, "qtractorMidiClip::set_offset(%p, %lu)\n", this, iOffset);
-#endif
-
-	if (m_pBuff) m_pBuff->setOffset(iOffset);
-}
-
-// Length implementation method.
-void qtractorAudioClip::set_length ( unsigned long iLength )
-{
-#ifdef CONFIG_DEBUG_0
-	fprintf(stderr, "qtractorMidiClip::set_length(%p, %lu)\n", this, iLength);
-#endif
-
-	if (m_pBuff) m_pBuff->setLength(iLength);
 }
 
 
@@ -199,7 +169,14 @@ void qtractorAudioClip::close (void)
 	
 	// If proven empty, remove the file.
 	if (clipLength() == 0)
-		QFile::remove(m_sFilename);
+		QFile::remove(filename());
+}
+
+
+// Audio clip (re)open method.
+void qtractorAudioClip::open (void)
+{
+	openAudioFile(filename());
 }
 
 
@@ -261,7 +238,7 @@ void qtractorAudioClip::drawClip ( QPainter *pPainter, const QRect& clipRect,
 		return;
 
 	// Draw peak chart...
-	unsigned long iframe = (iClipOffset / iPeriod);
+	unsigned long iframe = ((iClipOffset + clipOffset()) / iPeriod);
 	unsigned long nframes
 		= (pSession->frameFromPixel(clipRect.width()) / iPeriod) + 2;
 	if (nframes > m_pPeak->frames())
@@ -376,10 +353,8 @@ bool qtractorAudioClip::loadClipElement (
 		if (eChild.isNull())
 			continue;
 		// Load track state..
-		if (eChild.tagName() == "filename") {
-			if (!qtractorAudioClip::open(eChild.text()))
-				return false;
-		}
+		if (eChild.tagName() == "filename")
+			qtractorAudioClip::setFilename(eChild.text());
 	}
 
 	return true;
@@ -389,11 +364,9 @@ bool qtractorAudioClip::loadClipElement (
 bool qtractorAudioClip::saveClipElement (
 	qtractorSessionDocument *pDocument, QDomElement *pElement )
 {
-	if (m_pPeak == NULL)
-		return false;
-
 	QDomElement eAudioClip = pDocument->document()->createElement("audio-clip");
-	pDocument->saveTextElement("filename", m_pPeak->filename(), &eAudioClip);
+	pDocument->saveTextElement("filename",
+		qtractorAudioClip::filename(), &eAudioClip);
 	pElement->appendChild(eAudioClip);
 
 	return true;

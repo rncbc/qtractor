@@ -43,12 +43,6 @@ public:
 	// Destructor.
 	virtual ~qtractorClipCommand();
 
-	// Virtual command methods.
-	bool redo();
-	bool undo();
-
-protected:
-
 	// Primitive command types.
 	enum CommandType { AddClip, RemoveClip, MoveClip, ChangeClip };
 	
@@ -56,6 +50,12 @@ protected:
 	void addItem(CommandType cmd, qtractorClip *pClip,
 		qtractorTrack *pTrack, unsigned long iClipStart = 0,
 		unsigned long iClipOffset = 0, unsigned long iClipLength = 0);
+
+	// Virtual command methods.
+	bool redo();
+	bool undo();
+
+protected:
 
 	// Common executive method.
 	bool execute(bool bRedo);
@@ -105,22 +105,6 @@ public:
 
 	// Add clip item to command list.
 	void addItem(qtractorClip *pClip, qtractorTrack *pTrack);
-};
-
-
-//----------------------------------------------------------------------
-// class qtractorRemoveClipCommand - declaration.
-//
-
-class qtractorRemoveClipCommand : public qtractorClipCommand
-{
-public:
-
-	// Constructor.
-	qtractorRemoveClipCommand(qtractorMainForm *pMainForm);
-
-	// Add clip item to command list.
-	void addItem(qtractorClip *pClip);
 };
 
 

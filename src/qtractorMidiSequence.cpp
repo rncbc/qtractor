@@ -34,6 +34,9 @@ qtractorMidiSequence::qtractorMidiSequence ( const QString& sName,
 	m_iChannel = iChannel;
 	m_iTicksPerBeat = iTicksPerBeat;
 
+	m_iTimeOffset = 0;
+	m_iTimeLength = 0;
+
 	m_events.setAutoDelete(true);
 
 	clear();
@@ -129,6 +132,10 @@ void qtractorMidiSequence::close (void)
 
 	// Reset all pending notes.
 	m_notes.clear();
+	
+	// Commit sequence length...
+	if (m_iTimeLength == 0)
+		m_iTimeLength = m_duration;
 }
 
 

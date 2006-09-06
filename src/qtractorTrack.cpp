@@ -153,7 +153,7 @@ bool qtractorTrack::open (void)
 
 	// Depending on track type...
 	qtractorEngine *pEngine = NULL;
-	switch (trackType()) {
+	switch (m_props.trackType) {
 	case qtractorTrack::Audio:
 		pEngine = m_pSession->audioEngine();
 		break;
@@ -209,7 +209,7 @@ bool qtractorTrack::open (void)
 		delete m_pMonitor;
 		m_pMonitor = NULL;
 	}
-	switch (trackType()) {
+	switch (m_props.trackType) {
 	case qtractorTrack::Audio: {
 		qtractorAudioEngine *pAudioEngine
 			= static_cast<qtractorAudioEngine *> (pEngine);
@@ -522,14 +522,26 @@ qtractorList<qtractorClip>& qtractorTrack::clips (void)
 // Insert a new clip in garanteed sorted fashion.
 void qtractorTrack::addClip ( qtractorClip *pClip )
 {
+	// Priliminary settings...
 	pClip->setTrack(this);
+	pClip->open();
 	pClip->updateClipTime();
 
-	qtractorClip *pNextClip = m_clips.first();
+	// Special case for initial MIDI tracks.
+	if (m_props.trackType == qtractorTrack::Midi && m_clips.count() < 1) {
+		qtractorMidiClip *pMidiClip
+			= static_cast<qtractorMidiClip *> (pClip);
+		if (pMidiClip) {
+			setMidiChannel(pMidiClip->channel());
+			setMidiBank(pMidiClip->bank());
+			setMidiProgram(pMidiClip->program());
+		}
+	}
 
+	// Now do insert the clip in proper place in track...
+	qtractorClip *pNextClip = m_clips.first();
 	while (pNextClip && pNextClip->clipStart() < pClip->clipStart())
 		pNextClip = pNextClip->next();
-
 	if (pNextClip)
 		m_clips.insertBefore(pClip, pNextClip);
 	else

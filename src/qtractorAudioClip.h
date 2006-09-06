@@ -46,25 +46,21 @@ public:
 	// Destructor.
 	~qtractorAudioClip();
 
+	// Clip (re)open method.
+	void open();
+
 	// The main use method.
-	bool open(const QString& sFilename, int iMode = qtractorAudioFile::Read);
+	bool openAudioFile(const QString& sFilename, int iMode = qtractorAudioFile::Read);
 
 	// Direct write method.
 	void write(float **ppBuffer, unsigned int iFrames,
 		unsigned short iChannels = 0);
-
-	// Aduio file properties accessors.
-	const QString& filename() const;
 
 	// Intra-clip frame positioning.
 	void seek(unsigned long iOffset);
 
 	// Reset clip state.
 	void reset(bool bLooping);
-
-	// Implementation methods.
-	void set_offset(unsigned long iOffset);
-	void set_length(unsigned long iLength);
 
 	// Loop positioning.
 	void set_loop(unsigned long iLoopStart, unsigned long iLoopEnd);
@@ -92,8 +88,6 @@ private:
 	// Instance variables.
 	qtractorAudioBuffer *m_pBuff;
 	qtractorAudioPeak   *m_pPeak;
-
-	QString m_sFilename;
 };
 
 

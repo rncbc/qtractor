@@ -67,6 +67,16 @@ public:
 		{ m_iTicksPerBeat = iTicksPerBeat; }
 	unsigned short ticksPerBeat() const { return m_iTicksPerBeat; }
 
+	// Sequence time-offset parameter accessors.
+	void setTimeOffset(unsigned long iTimeOffset)
+		{ m_iTimeOffset = iTimeOffset; }
+	unsigned long timeOffset() const { return m_iTimeOffset; }
+
+	// Sequence duration parameter accessors.
+	void setTimeLength(unsigned long iTimeLength)
+		{ m_iTimeLength = iTimeLength; }
+	unsigned long timeLength() const { return m_iTimeLength; }
+
 	// Statiscal helper accessors.
 	unsigned char noteMin()  const { return m_noteMin;  }
 	unsigned char noteMax()  const { return m_noteMax;  }
@@ -89,9 +99,15 @@ private:
 	QString        m_sName;
 	unsigned short m_iChannel;
 	unsigned short m_iTicksPerBeat;
+
+	// Sequence time-offset/duration parameters.
+	unsigned long  m_iTimeOffset;
+	unsigned long  m_iTimeLength;
+
 	// Sequence/track optional properties.
 	int            m_iBank;
 	int            m_iProgram;
+
 	// Statictical helper variables.
 	unsigned char  m_noteMin;
 	unsigned char  m_noteMax;

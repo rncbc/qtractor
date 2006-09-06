@@ -44,6 +44,10 @@ public:
 	void setTrack(qtractorTrack *pTrack);
 	qtractorTrack *track() const;
 
+	// Filename properties accessors.
+	void setFilename(const QString&  sFilename);
+	const QString& filename() const;
+
 	// Clip label accessors.
 	void setClipName(const QString& sClipName);
 	const QString& clipName() const;
@@ -76,15 +80,14 @@ public:
 	// Clip time reference settler method.
 	virtual void updateClipTime();
 
+	// Clip (re)open method.
+	virtual void open() = 0;
+
 	// Intra-clip frame positioning.
 	virtual void seek(unsigned long iOffset) = 0;
 
 	// Reset clip state position.
 	virtual void reset(bool bLooping) = 0;
-
-	// Clip implementation methods.
-	virtual void set_offset(unsigned long iOffset) = 0;
-	virtual void set_length(unsigned long iLength) = 0;
 
 	// Clip loop-point methods.
 	virtual void set_loop(unsigned long iLoopStart, unsigned long iLoopEnd) = 0;
@@ -117,7 +120,8 @@ private:
 
 	qtractorTrack *m_pTrack;    	// Track reference.
 
-	QString m_sClipName;            // Clip label.
+	QString        m_sFilename;     // Clip filename (complete path).
+	QString        m_sClipName;     // Clip label.
 
 	unsigned long m_iClipStart;     // Clip frame start.
 	unsigned long m_iClipLength;    // Clip frame length.

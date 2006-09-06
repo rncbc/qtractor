@@ -1016,7 +1016,7 @@ void qtractorSession::trackRecord ( qtractorTrack *pTrack, bool bRecord )
 	{
 		qtractorAudioClip *pAudioClip = new qtractorAudioClip(pTrack);
 		pAudioClip->setClipStart(playHead());
-		pAudioClip->open(
+		pAudioClip->openAudioFile(
 			createFilePath(pTrack->trackName(), 0, "wav"),
 			qtractorAudioFile::Write);
 		pTrack->setClipRecord(pAudioClip);
@@ -1026,7 +1026,7 @@ void qtractorSession::trackRecord ( qtractorTrack *pTrack, bool bRecord )
 	{
 		qtractorMidiClip *pMidiClip = new qtractorMidiClip(pTrack);
 		pMidiClip->setClipStart(playHead());
-		pMidiClip->open(
+		pMidiClip->openMidiFile(
 			createFilePath(pTrack->trackName(), 0, "mid"),
 			1, // iTrackChannel: Single-track SMF format 1 (2 tracks)
 			qtractorMidiFile::Write);

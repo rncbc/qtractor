@@ -339,12 +339,12 @@ bool qtractorTracks::isClipboardEmpty (void) const
 // Clipboard methods.
 void qtractorTracks::cutClipSelect (void)
 {
-	m_pTrackView->cutClipSelect();
+	m_pTrackView->executeClipSelect(qtractorTrackView::Cut);
 }
 
 void qtractorTracks::copyClipSelect (void)
 {
-	m_pTrackView->copyClipSelect();
+	m_pTrackView->executeClipSelect(qtractorTrackView::Copy);
 }
 
 void qtractorTracks::pasteClipSelect (void)
@@ -356,7 +356,7 @@ void qtractorTracks::pasteClipSelect (void)
 // Delete current selection.
 void qtractorTracks::deleteClipSelect (void)
 {
-	m_pTrackView->deleteClipSelect();
+	m_pTrackView->executeClipSelect(qtractorTrackView::Delete);
 }
 
 
@@ -524,32 +524,23 @@ bool qtractorTracks::addAudioTracks ( QStringList files,
 		pTrack->setForeground(color.dark());
 		// Add the clip at once...
 		qtractorAudioClip *pAudioClip = new qtractorAudioClip(pTrack);
+		pAudioClip->setFilename(sPath);
 		pAudioClip->setClipStart(iClipStart);
-		// Time for truth...
-		if (pAudioClip->open(sPath)) {
-			// Time to add the new track/clip into session...
-			pTrack->setTrackName(pAudioClip->clipName());
-			pTrack->addClip(pAudioClip);
-			// Add the new track to composite command...
-			pImportTrackCommand->addTrack(pTrack);
-			// Don't forget to add this one to local repository.
-			pMainForm->addAudioFile(sPath);
-			iUpdate++;
-			// Log this successful import operation...
-			sDescription += tr("Audio file import \"%1\" succeeded on %2 %3.\n")
-				.arg(QFileInfo(sPath).fileName())
-				.arg(QDate::currentDate().toString("MMM dd yyyy"))
-				.arg(QTime::currentTime().toString("hh:mm:ss"));
-			pMainForm->appendMessages(
-				tr("Audio file import succeeded: \"%1\".").arg(sPath));
-		} else {
-			// Bummer. Do cleanup...
-			delete pAudioClip;
-			delete pTrack;
-			// But tell everyone that things failed.
-			pMainForm->appendMessagesError(
-				tr("Audio file import failure:\n\n\"%1\".").arg(sPath));
-		}
+		// Time to add the new track/clip into session...
+		pTrack->setTrackName(pAudioClip->clipName());
+		pTrack->addClip(pAudioClip);
+		// Add the new track to composite command...
+		pImportTrackCommand->addTrack(pTrack);
+		// Don't forget to add this one to local repository.
+		pMainForm->addAudioFile(sPath);
+		iUpdate++;
+		// Log this successful import operation...
+		sDescription += tr("Audio file import \"%1\" on %2 %3.\n")
+			.arg(QFileInfo(sPath).fileName())
+			.arg(QDate::currentDate().toString("MMM dd yyyy"))
+			.arg(QTime::currentTime().toString("hh:mm:ss"));
+		pMainForm->appendMessages(
+			tr("Audio file import: \"%1\".").arg(sPath));
 		// Make things temporarily stable...
 		qtractorSession::stabilize();
 	}
@@ -601,14 +592,10 @@ bool qtractorTracks::addMidiTracks ( QStringList files,
 			iter != files.end(); ++iter) {
 		// This is one of the selected filenames....
 		const QString& sPath = *iter;
-		// We'll be careful and pre-open the SMF here...
+		// We'll be careful and pre-open the SMF header here...
 		qtractorMidiFile file;
-		if (!file.open(sPath)) {
-			// And tell everyone that things failed here.
-			pMainForm->appendMessagesError(
-				tr("MIDI file import failure:\n\n\"%1\".").arg(sPath));
+		if (!file.open(sPath))
 			continue;
-		}
 		// It all depends on the format...
 		int iTracks = (file.format() == 1 ? file.tracks() : 16);
 		for (int iTrackChannel = 0; iTrackChannel < iTracks; iTrackChannel++) {
@@ -620,42 +607,34 @@ bool qtractorTracks::addMidiTracks ( QStringList files,
 			pTrack->setBackground(color);
 			pTrack->setForeground(color.dark());
 			// Add the clip at once...
-			qtractorMidiClip *pMidiClip	= new qtractorMidiClip(pTrack);
+			qtractorMidiClip *pMidiClip = new qtractorMidiClip(pTrack);
+			pMidiClip->setFilename(sPath);
+			pMidiClip->setTrackChannel(iTrackChannel);
 			pMidiClip->setClipStart(iClipStart);
-			// Time for truth...
-			if (pMidiClip->open(&file, iTrackChannel, iImport == 0)) {
-				// Time to add the new track/clip into session...
-				pTrack->setTrackName(pMidiClip->clipName());
-				pTrack->setMidiChannel(pMidiClip->channel());
-				pTrack->setMidiBank(pMidiClip->bank());
-				pTrack->setMidiProgram(pMidiClip->program());
-				pTrack->addClip(pMidiClip);
-				// Add the new track to composite command...
-				pImportTrackCommand->addTrack(pTrack);
-				// Don't forget to add this one to local repository.
-				pMainForm->addMidiFile(sPath);
-				iUpdate++;
-				// As far the standards goes,from which we'll strictly follow,
-				// only the first track/channel has some tempo/time signature...
-				if (iTrackChannel == 0) {
-					iImport++;
-					// Some adjustment required...
-					iClipStart = pSession->frameSnap(iClipStart);
-					pMidiClip->setClipStart(iClipStart);
-				}
-			} else {
-				// Bummer. Do cleanup...
-				delete pMidiClip;
-				delete pTrack;
+			// Time to add the new track/clip into session...
+			pTrack->addClip(pMidiClip);
+			pTrack->setTrackName(pMidiClip->clipName());
+			// Add the new track to composite command...
+			pImportTrackCommand->addTrack(pTrack);
+			// Don't forget to add this one to local repository.
+			pMainForm->addMidiFile(sPath);
+			iUpdate++;
+			// As far the standards goes,from which we'll strictly follow,
+			// only the first track/channel has some tempo/time signature...
+			if (iTrackChannel == 0) {
+				iImport++;
+				// Some adjustment required...
+				iClipStart = pSession->frameSnap(iClipStart);
+				pMidiClip->setClipStart(iClipStart);
 			}
 		}
 		// Log this successful import operation...
-		sDescription += tr("MIDI file import \"%1\" succeeded on %2 %3.\n")
+		sDescription += tr("MIDI file import \"%1\" on %2 %3.\n")
 			.arg(QFileInfo(sPath).fileName())
 			.arg(QDate::currentDate().toString("MMM dd yyyy"))
 			.arg(QTime::currentTime().toString("hh:mm:ss"));
 		pMainForm->appendMessages(
-			tr("MIDI file import succeeded: \"%1\".").arg(sPath));
+			tr("MIDI file import: \"%1\".").arg(sPath));
 		// Make things temporarily stable...
 		qtractorSession::stabilize();
 	}
@@ -695,16 +674,6 @@ bool qtractorTracks::addMidiTrackChannel ( const QString& sPath,
 	// Increment this for suggestive track coloring...
 	int iTrackCount = pSession->tracks().count();
 
-	// We'll be careful and pre-open the SMF here...
-	qtractorMidiFile file;
-	if (!file.open(sPath)) {
-		// And tell everyone that things failed here.
-		pMainForm->appendMessagesError(
-			tr("MIDI file track-channel import failure:\n\n\"%1\""
-				" Track-channel: %2.").arg(sPath).arg(iTrackChannel));
-		return false;
-	}
-
 	// Create a new track right away...
 	const QColor color = qtractorTrack::trackColor(++iTrackCount);
 	qtractorTrack *pTrack
@@ -713,37 +682,22 @@ bool qtractorTracks::addMidiTrackChannel ( const QString& sPath,
 	pTrack->setBackground(color);
 	pTrack->setForeground(color.dark());
 	// Add the clip at once...
-	qtractorMidiClip *pMidiClip	= new qtractorMidiClip(pTrack);
+	qtractorMidiClip *pMidiClip = new qtractorMidiClip(pTrack);
+	pMidiClip->setFilename(sPath);
+	pMidiClip->setTrackChannel(iTrackChannel);
 	pMidiClip->setClipStart(iClipStart);
-	// Time for truth...
-	if (pMidiClip->open(&file, iTrackChannel)) {
-		// Time to add the new track/clip into session...
-		pTrack->setTrackName(pMidiClip->clipName());
-		pTrack->setMidiChannel(pMidiClip->channel());
-		pTrack->setMidiBank(pMidiClip->bank());
-		pTrack->setMidiProgram(pMidiClip->program());
-		pTrack->addClip(pMidiClip);
-		// Add the new track to composite command...
-		pImportTrackCommand->addTrack(pTrack);
-		// Don't forget to add this one to local repository.
-		pMainForm->addMidiFile(sPath);
-		iUpdate++;
-	} else {
-		// Bummer. Do cleanup...
-		delete pMidiClip;
-		delete pTrack;
-	}
-
-	// Have we changed anything?
-	if (iUpdate < 1) {
-		delete pImportTrackCommand;
-		return false;
-	}
+	// Time to add the new track/clip into session...
+	pTrack->addClip(pMidiClip);
+	pTrack->setTrackName(pMidiClip->clipName());
+	// Add the new track to composite command...
+	pImportTrackCommand->addTrack(pTrack);
+	// Don't forget to add this one to local repository.
+	pMainForm->addMidiFile(sPath);
 
 	// Make things temporarily stable...
 	pMainForm->appendMessages(
-		tr("MIDI file track-channel import succeeded: \"%1\""
-			" Track-channel: %2.").arg(sPath).arg(iTrackChannel));
+		tr("MIDI file import: \"%1\""
+			", track-channel: %2.").arg(sPath).arg(iTrackChannel));
 	qtractorSession::stabilize();
 
 	// Put it in the form of an undoable command...

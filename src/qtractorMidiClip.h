@@ -42,15 +42,18 @@ public:
 	// Destructor.
 	~qtractorMidiClip();
 
+	// Clip (re)open method.
+	void open();
+
 	// The main use method.
-	bool open(const QString& sFilename, int iTrackChannel = 0,
+	bool openMidiFile(const QString& sFilename, int iTrackChannel = 0,
 		int iMode = qtractorMidiFile::Read);
 	// Overloaded open method; reuse an already open MIDI file.
-	bool open(qtractorMidiFile *pFile, int iTrackChannel = 0,
+	bool openMidiFile(qtractorMidiFile *pFile, int iTrackChannel = 0,
 		bool bSetTempo = false);
 
 	// MIDI file properties accessors.
-	const QString& filename() const;
+	void setTrackChannel(unsigned short iTrackChannel);
 	unsigned short trackChannel() const;
 
 	// Sequence properties accessors.
@@ -67,10 +70,6 @@ public:
 
 	// Reset clip state.
 	void reset(bool bLooping);
-
-	// Implementation methods.
-	void set_offset(unsigned long iOffset);
-	void set_length(unsigned long iLength);
 
 	// Loop positioning.
 	void set_loop(unsigned long iLoopStart, unsigned long iLoopEnd);
@@ -99,7 +98,6 @@ private:
 	qtractorMidiFile     *m_pFile;
 	qtractorMidiSequence *m_pSeq;
 
-	QString        m_sFilename;
 	unsigned short m_iTrackChannel;
 
 	// To optimize and keep track of current playback

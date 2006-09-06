@@ -596,7 +596,7 @@ void qtractorPluginListView::contextMenuEvent (
 
 	iItemID = pContextMenu->insertItem(
 		QIconSet(QPixmap::fromMimeSource("formCreate.png")),
-		tr("Add Puglin..."), this, SLOT(addPlugin()));
+		tr("Add Plugin..."), this, SLOT(addPlugin()));
 //	pContextMenu->setItemEnabled(iItemID, true);
 
 	iItemID = pContextMenu->insertItem(
