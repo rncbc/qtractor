@@ -70,7 +70,7 @@ qtractorMidiClip::~qtractorMidiClip (void)
 bool qtractorMidiClip::openMidiFile ( const QString& sFilename,
 	int iTrackChannel, int iMode )
 {
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	fprintf(stderr, "qtractorMidiClip::openMidiFile(\"%s\", %d, %d)\n",
 		sFilename.latin1(), iTrackChannel, iMode);
 #endif

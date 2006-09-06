@@ -79,14 +79,16 @@
         <separator/>
         <action name="editDeleteAction"/>
 		<separator/>
+		<action name="editSelectNoneAction"/>
+		<action name="editSelectRangeAction"/>
         <action name="editSelectTrackAction"/>
         <action name="editSelectAllAction"/>
 		<separator/>
 		<action name="editSelectModeAction"/>
 		<item text="Select &amp;Mode" name="editSelectModeMenu">
-			<action name="editSelectClipAction"/>
-			<action name="editSelectRangeAction"/>
-			<action name="editSelectRectAction"/>
+			<action name="editSelectModeClipAction"/>
+			<action name="editSelectModeRangeAction"/>
+			<action name="editSelectModeRectAction"/>
 		</item>
     </item>
     <item text="&amp;Track" name="trackMenu">
@@ -486,6 +488,46 @@
             <string>Del</string>
         </property>
     </action>
+	<action>
+		<property name="name">
+			<cstring>editSelectNoneAction</cstring>
+		</property>
+		<property name="text">
+			<string>Select None</string>
+		</property>
+		<property name="menuText">
+			<string>Select &amp;None</string>
+		</property>
+		<property name="toolTip">
+			<string>Select none</string>
+		</property>
+		<property name="statusTip">
+			<string>Mark all as unselected</string>
+		</property>
+		<property name="accel">
+			<string>Ctrl+Shift+A</string>
+		</property>
+	</action>
+	<action>
+		<property name="name">
+			<cstring>editSelectRangeAction</cstring>
+		</property>
+		<property name="text">
+			<string>Select Range</string>
+		</property>
+		<property name="menuText">
+			<string>Select &amp;Range</string>
+		</property>
+		<property name="toolTip">
+			<string>Select range</string>
+		</property>
+		<property name="statusTip">
+			<string>Mark range as selected</string>
+		</property>
+		<property name="accel">
+			<string>Ctrl+R</string>
+		</property>
+	</action>
     <action>
         <property name="name">
             <cstring>editSelectTrackAction</cstring>
@@ -503,7 +545,7 @@
             <string>Mark track as selected</string>
         </property>
         <property name="accel">
-            <string>Ctrl+Shift+A</string>
+            <string>Ctrl+T</string>
         </property>
     </action>
     <action>
@@ -545,7 +587,7 @@
 	</action>
 	<action>
 		<property name="name">
-			<cstring>editSelectClipAction</cstring>
+			<cstring>editSelectModeClipAction</cstring>
 		</property>
 		<property name="toggleAction">
 			<bool>true</bool>
@@ -568,7 +610,7 @@
 	</action>
 	<action>
 		<property name="name">
-			<cstring>editSelectRangeAction</cstring>
+			<cstring>editSelectModeRangeAction</cstring>
 		</property>
 		<property name="toggleAction">
 			<bool>true</bool>
@@ -591,7 +633,7 @@
 	</action>
 	<action>
 		<property name="name">
-			<cstring>editSelectRectAction</cstring>
+			<cstring>editSelectModeRectAction</cstring>
 		</property>
 		<property name="toggleAction">
 			<bool>true</bool>
@@ -1389,10 +1431,10 @@
         <slot>editDelete()</slot>
     </connection>
 	<connection>
-		<sender>editSelectClipAction</sender>
+		<sender>editSelectNoneAction</sender>
 		<signal>activated()</signal>
 		<receiver>qtractorMainForm</receiver>
-		<slot>editSelectClip()</slot>
+		<slot>editSelectNone()</slot>
 	</connection>
 	<connection>
 		<sender>editSelectRangeAction</sender>
@@ -1401,23 +1443,35 @@
 		<slot>editSelectRange()</slot>
 	</connection>
 	<connection>
-		<sender>editSelectRectAction</sender>
+		<sender>editSelectTrackAction</sender>
 		<signal>activated()</signal>
 		<receiver>qtractorMainForm</receiver>
-		<slot>editSelectRect()</slot>
+		<slot>editSelectTrack()</slot>
 	</connection>
-    <connection>
-        <sender>editSelectTrackAction</sender>
-        <signal>activated()</signal>
-        <receiver>qtractorMainForm</receiver>
-        <slot>editSelectTrack()</slot>
-    </connection>
-    <connection>
-        <sender>editSelectAllAction</sender>
-        <signal>activated()</signal>
-        <receiver>qtractorMainForm</receiver>
-        <slot>editSelectAll()</slot>
-    </connection>
+	<connection>
+		<sender>editSelectAllAction</sender>
+		<signal>activated()</signal>
+		<receiver>qtractorMainForm</receiver>
+		<slot>editSelectAll()</slot>
+	</connection>
+	<connection>
+		<sender>editSelectModeClipAction</sender>
+		<signal>activated()</signal>
+		<receiver>qtractorMainForm</receiver>
+		<slot>editSelectModeClip()</slot>
+	</connection>
+	<connection>
+		<sender>editSelectModeRangeAction</sender>
+		<signal>activated()</signal>
+		<receiver>qtractorMainForm</receiver>
+		<slot>editSelectModeRange()</slot>
+	</connection>
+	<connection>
+		<sender>editSelectModeRectAction</sender>
+		<signal>activated()</signal>
+		<receiver>qtractorMainForm</receiver>
+		<slot>editSelectModeRect()</slot>
+	</connection>
     <connection>
         <sender>trackAddAction</sender>
         <signal>activated()</signal>
@@ -1667,9 +1721,11 @@
     <slot specifier="non virtual">editCopy( void )</slot>
     <slot specifier="non virtual">editPaste( void )</slot>
     <slot specifier="non virtual">editDelete( void )</slot>
-	<slot specifier="non virtual">editSelectClip( void )</slot>
+	<slot specifier="non virtual">editSelectModeClip( void )</slot>
+	<slot specifier="non virtual">editSelectModeRange( void )</slot>
+	<slot specifier="non virtual">editSelectModeRect( void )</slot>
+	<slot specifier="non virtual">editSelectNone( void )</slot>
 	<slot specifier="non virtual">editSelectRange( void )</slot>
-	<slot specifier="non virtual">editSelectRect( void )</slot>
     <slot specifier="non virtual">editSelectTrack( void )</slot>
     <slot specifier="non virtual">editSelectAll( void )</slot>
     <slot specifier="non virtual">trackAdd( void )</slot>

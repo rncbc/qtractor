@@ -213,8 +213,6 @@ void qtractorTrackView::updateContentsHeight (void)
 	fprintf(stderr, " => iContentsHeight=%d\n", iContentsHeight);
 #endif
 
-	// Reset any current selection out there...
-	m_pClipSelect->clear();
 	// Do the contents resize thing...
 	QScrollView::resizeContents(QScrollView::contentsWidth(), iContentsHeight);
 }
@@ -239,9 +237,6 @@ void qtractorTrackView::updateContentsWidth ( int iContentsWidth )
 #ifdef CONFIG_DEBUG_0
 	fprintf(stderr, " => iContentsWidth=%d\n", iContentsWidth);
 #endif
-
-	// Reset any current selection out there...
-	m_pClipSelect->clear();
 
 	// Do the contents resize thing...
 	QScrollView::resizeContents(iContentsWidth,	QScrollView::contentsHeight());
@@ -1051,21 +1046,19 @@ void qtractorTrackView::contentsMousePressEvent ( QMouseEvent *pMouseEvent )
 			break;
 		case Qt::MidButton:
 			// Mid-button positioningg...
-			if (!bModifier) {
-				// Edit cursor positioning...
-				setEditHead(iFrame);
-				setEditTail(iFrame);
-				// Not quite a selection, but some visual feedback...
-				m_pTracks->contentsChangeNotify();
-			}
+			selectAll(false);
+			// Edit cursor positioning...
+			setEditHead(iFrame);
+			setEditTail(iFrame);
+			// Not quite a selection, but some visual feedback...
+			m_pTracks->contentsChangeNotify();
 			break;
 		case Qt::RightButton:
-			if (!bModifier) {
-				// Edit-tail positioning...
-				setEditTail(iFrame);
-				// Not quite a selection, but some visual feedback...
-				m_pTracks->contentsChangeNotify();
-			}
+			// Right-button edit-tail positioning...
+			setEditTail(iFrame);
+			// Not quite a selection, but some visual feedback...
+			m_pTracks->contentsChangeNotify();
+			// Fall thru...
 		default:
 			break;
 		}
@@ -1201,9 +1194,9 @@ void qtractorTrackView::contentsMouseReleaseEvent ( QMouseEvent *pMouseEvent )
 					m_pTracks->selectionChangeNotify();
 					// Done with (deferred) play-head positioning.
 				} else {
-					// Deferred edit-tail positioning...
+					// Deferred left-button edit-head positioning...
 					setEditHead(iFrame);
-					// Not a selection, but for some visual feedback...
+					// Not a selection, rather just for visual feedback...
 					m_pTracks->contentsChangeNotify();
 				}
 			}
@@ -1277,7 +1270,8 @@ void qtractorTrackView::selectClipFile ( qtractorClip *pClip,
 
 // Select everything under a given (rubber-band) rectangle.
 void qtractorTrackView::selectRect ( const QRect& rectDrag,
-	qtractorTrackView::SelectMode selectMode )
+	qtractorTrackView::SelectMode selectMode,
+	qtractorTrackView::SelectEdit selectEdit )
 {
 	qtractorSession *pSession = m_pTracks->session();
 	if (pSession == NULL)
@@ -1285,15 +1279,13 @@ void qtractorTrackView::selectRect ( const QRect& rectDrag,
 
 	// The precise (snapped) selection frame points...
 	QRect rect(rectDrag.normalize());
-	unsigned long iSelectStart
-		= pSession->frameSnap(pSession->frameFromPixel(rect.left()));
-	unsigned long iSelectEnd 
-		= pSession->frameSnap(pSession->frameFromPixel(rect.right()));
 
-	// (Re)adjust selection range...
-	QRect rectRange(rect.x(), 0, rect.width(), QScrollView::contentsHeight());
-	rectRange.setLeft(pSession->pixelFromFrame(iSelectStart));
-	rectRange.setRight(pSession->pixelFromFrame(iSelectEnd));
+	QRect rectRange(0, 0, 0, QScrollView::contentsHeight());
+	rectRange.setLeft(pSession->pixelSnap(rect.left()));
+	rectRange.setRight(pSession->pixelSnap(rect.right()));
+
+	unsigned long iSelectStart = pSession->frameFromPixel(rectRange.left());
+	unsigned long iSelectEnd   = pSession->frameFromPixel(rectRange.right());
 
 	// Special whole-vertical range case...
 	if (selectMode == SelectRange) {
@@ -1347,15 +1339,16 @@ void qtractorTrackView::selectRect ( const QRect& rectDrag,
 		pItem = pItem->nextSibling();
 	}
 
-	if (rectUpdate.isEmpty())
-		return;
-
 	// Update the screen real estate...
-	updateContents(rectUpdate);
+	if (!rectUpdate.isEmpty())
+		updateContents(rectUpdate);
 
 	// That's all very nice but we'll also set edit-range positioning...
-	setEditHead(iSelectStart);
-	setEditTail(iSelectEnd);
+	if (selectEdit & EditHead)
+		setEditHead(iSelectStart);
+	if (selectEdit & EditTail)
+		setEditTail(iSelectEnd);
+
 	m_pTracks->selectionChangeNotify();
 }
 

@@ -306,7 +306,7 @@ qtractorFileListView::qtractorFileListView (
 
 	m_pNewGroupAction   = new QAction(tr("New &Group"), tr("Ctrl+G"), this);
 	m_pOpenFileAction   = new QAction(tr("Add &Files..."), tr("Ctrl+F"), this);
-	m_pRenameItemAction = new QAction(tr("&Rename"), tr("Ctrl+R"), this);
+	m_pRenameItemAction = new QAction(tr("R&ename"), tr("Ctrl+E"), this);
 	m_pDeleteItemAction = new QAction(tr("&Delete"), tr("Ctrl+D"), this);
 
 	QObject::connect(m_pNewGroupAction, SIGNAL(activated()),

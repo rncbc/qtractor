@@ -360,6 +360,36 @@ void qtractorTracks::deleteClipSelect (void)
 }
 
 
+// Select range interval between edit head and tail.
+void qtractorTracks::selectEditRange (void)
+{
+	qtractorSession *pSession = session();
+	if (pSession == NULL)
+		return;
+
+	// Get and select the whole rectangular area
+	// between the edit head and tail points...
+	QRect rect(0, 0, 0, m_pTrackView->contentsHeight());
+	rect.setLeft(pSession->pixelFromFrame(pSession->editHead()));
+	rect.setRight(pSession->pixelFromFrame(pSession->editTail()));
+
+	// HACK: Make sure the snap goes straight...
+	unsigned short iSnapPerBeat4 = (pSession->snapPerBeat() << 2);
+	if (iSnapPerBeat4 > 0)
+		rect.moveBy(pSession->pixelsPerBeat() / iSnapPerBeat4, 0);
+
+	// Make the selection, but don't change edit head nor tail...
+	m_pTrackView->selectRect(rect,
+		qtractorTrackView::SelectRange,
+		qtractorTrackView::EditNone);
+
+	// Nothing has really changed,
+	// but we'll mark the session dirty anyway...
+	contentsChangeNotify();
+}
+
+
+
 // Select all clips on current track.
 void qtractorTracks::selectCurrentTrack ( bool bReset )
 {
@@ -663,9 +693,6 @@ bool qtractorTracks::addMidiTrackChannel ( const QString& sPath,
 	qtractorSession *pSession = pMainForm->session();
 	if (pSession == NULL)
 		return false;
-
-	// Account for actual updates...
-	int iUpdate = 0;
 
 	// We'll build a composite command...
 	qtractorImportTrackCommand *pImportTrackCommand

@@ -66,7 +66,7 @@ qtractorAudioClip::~qtractorAudioClip (void)
 // The main use method.
 bool qtractorAudioClip::openAudioFile ( const QString& sFilename, int iMode )
 {
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	fprintf(stderr, "qtractorAudioClip::openAudioFile(\"%s\", %d)\n",
 		sFilename.latin1(), iMode);
 #endif

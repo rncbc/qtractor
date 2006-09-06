@@ -314,8 +314,6 @@ void qtractorTrackTime::contentsMousePressEvent ( QMouseEvent *pMouseEvent )
 	qtractorSession *pSession = m_pTracks->session();
 	if (pSession) {
 		// Direct snap positioning...
-		const bool bModifier = (pMouseEvent->state()
-			& (Qt::ShiftButton | Qt::ControlButton));
 		const QPoint& pos = pMouseEvent->pos();
 		unsigned long iFrame = pSession->frameSnap(
 			pSession->frameFromPixel(pos.x() > 0 ? pos.x() : 0));
@@ -325,29 +323,23 @@ void qtractorTrackTime::contentsMousePressEvent ( QMouseEvent *pMouseEvent )
 			m_dragState = DragStart;
 			m_posDrag   = pos;
 			// Try to catch mouse clicks over the cursor heads...
-			if (dragHeadStart(m_posDrag)) {
-				// We're starting something...
+			if (dragHeadStart(m_posDrag))
 				QScrollView::setCursor(QCursor(Qt::SizeHorCursor));
-			}
 			break;
 		case Qt::MidButton:
-			// Mid-butoon indirect positioning...
-			if (!bModifier) {
-				// Edit-tail positioning...
-				m_pTracks->trackView()->setEditHead(iFrame);
-				m_pTracks->trackView()->setEditTail(iFrame);
-				// Logical contents changed, just for visual feedback...
-				m_pTracks->contentsChangeNotify();
-			}
-			// Fall thru...
+			// Mid-button direct positioning...
+			m_pTracks->trackView()->selectAll(false);
+			// Edit-tail positioning...
+			m_pTracks->trackView()->setEditHead(iFrame);
+			m_pTracks->trackView()->setEditTail(iFrame);
+			// Logical contents changed, just for visual feedback...
+			m_pTracks->contentsChangeNotify();
+			break;
 		case Qt::RightButton:
-			// Right-butoon indirect positioning...
-			if (!bModifier) {
-				// Edit-tail positioning...
-				m_pTracks->trackView()->setEditTail(iFrame);
-				// Logical contents changed, just for visual feedback...
-				m_pTracks->contentsChangeNotify();
-			}
+			// Right-button direct positioning...
+			m_pTracks->trackView()->setEditTail(iFrame);
+			// Logical contents changed, just for visual feedback...
+			m_pTracks->contentsChangeNotify();
 			// Fall thru...
 		default:
 			break;
@@ -364,59 +356,59 @@ void qtractorTrackTime::contentsMouseMoveEvent ( QMouseEvent *pMouseEvent )
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm == NULL)
 		return;
-	qtractorSession *pSession = pMainForm->session();
-	if (pSession == NULL)
-		return;
 
-	// Are we already moving/dragging something?
-	const QPoint& pos = pMouseEvent->pos();
-	unsigned long iFrame = pSession->frameSnap(
-		pSession->frameFromPixel(pos.x() > 0 ? pos.x() : 0));
-	int y = m_pTracks->trackView()->contentsY();
-	switch (m_dragState) {
-	case DragSelect:
-		// Rubber-band selection...
-		m_rectDrag.setRight(pSession->pixelSnap(pos.x()));
-		m_pTracks->trackView()->ensureVisible(pos.x(), y, 16, 0);
-		m_pTracks->trackView()->selectRect(m_rectDrag,
-			qtractorTrackView::SelectRange);
-		break;
-	case DragPlayHead:
-		// Play-head positioning...
-		m_pTracks->trackView()->ensureVisible(pos.x(), y, 16, 0);
-		m_pTracks->trackView()->setPlayHead(iFrame);
-		// Let the change get some immediate visual feedback...
-		pMainForm->updateTransportTime(iFrame);
-		break;
-	case DragLoopStart:
-	case DragEditHead:
-		// Edit-head positioning...
-		m_pTracks->trackView()->ensureVisible(pos.x(), y, 16, 0);
-		m_pTracks->trackView()->setEditHead(iFrame);
-		break;
-	case DragLoopEnd:
-	case DragEditTail:
-		// Edit-tail positioning...
-		m_pTracks->trackView()->ensureVisible(pos.x(), y, 16, 0);
-		m_pTracks->trackView()->setEditTail(iFrame);
-		break;
-	case DragStart:
-		// Rubber-band starting...
-		if ((m_posDrag - pos).manhattanLength()
-			> QApplication::startDragDistance()) {
-			// We'll start dragging alright...
-			int h = QScrollView::height();	// - 4;
-			m_rectDrag.setTop(0);			// h - (h >> 2)
-			m_rectDrag.setLeft(pSession->pixelSnap(m_posDrag.x()));
-			m_rectDrag.setRight(pSession->pixelSnap(pos.x()));
-			m_rectDrag.setBottom(h);
-			m_dragState = DragSelect;
-			QScrollView::setCursor(QCursor(Qt::SizeHorCursor));
+	qtractorSession *pSession = m_pTracks->session();
+	if (pSession) {
+		// Are we already moving/dragging something?
+		const QPoint& pos = pMouseEvent->pos();
+		unsigned long iFrame = pSession->frameSnap(
+			pSession->frameFromPixel(pos.x() > 0 ? pos.x() : 0));
+		int y = m_pTracks->trackView()->contentsY();
+		switch (m_dragState) {
+		case DragSelect:
+			// Rubber-band selection...
+			m_rectDrag.setRight(pos.x());
+			m_pTracks->trackView()->ensureVisible(pos.x(), y, 16, 0);
+			m_pTracks->trackView()->selectRect(m_rectDrag,
+				qtractorTrackView::SelectRange);
+			break;
+		case DragPlayHead:
+			// Play-head positioning...
+			m_pTracks->trackView()->ensureVisible(pos.x(), y, 16, 0);
+			m_pTracks->trackView()->setPlayHead(iFrame);
+			// Let the change get some immediate visual feedback...
+			pMainForm->updateTransportTime(iFrame);
+			break;
+		case DragLoopStart:
+		case DragEditHead:
+			// Edit-head positioning...
+			m_pTracks->trackView()->ensureVisible(pos.x(), y, 16, 0);
+			m_pTracks->trackView()->setEditHead(iFrame);
+			break;
+		case DragLoopEnd:
+		case DragEditTail:
+			// Edit-tail positioning...
+			m_pTracks->trackView()->ensureVisible(pos.x(), y, 16, 0);
+			m_pTracks->trackView()->setEditTail(iFrame);
+			break;
+		case DragStart:
+			// Rubber-band starting...
+			if ((m_posDrag - pos).manhattanLength()
+				> QApplication::startDragDistance()) {
+				// We'll start dragging alright...
+				int h = QScrollView::height();	// - 4;
+				m_rectDrag.setTop(0);			// h - (h >> 2)
+				m_rectDrag.setLeft(m_posDrag.x());
+				m_rectDrag.setRight(pos.x());
+				m_rectDrag.setBottom(h);
+				m_dragState = DragSelect;
+				QScrollView::setCursor(QCursor(Qt::SizeHorCursor));
+			}
+			// Fall thru...
+		case DragNone:
+		default:
+			break;
 		}
-		// Fall thru...
-	case DragNone:
-	default:
-		break;
 	}
 
 	QScrollView::contentsMouseMoveEvent(pMouseEvent);
@@ -430,12 +422,12 @@ void qtractorTrackTime::contentsMouseReleaseEvent ( QMouseEvent *pMouseEvent )
 
 	qtractorSession *pSession = m_pTracks->session();
 	if (pSession) {
-		// Direct snap positioning...
-		unsigned long iFrame = pSession->frameSnap(
-			pSession->frameFromPixel(m_posDrag.x() > 0 ? m_posDrag.x() : 0));
 		// Which mouse state?
 		const bool bModifier = (pMouseEvent->state()
 			& (Qt::ShiftButton | Qt::ControlButton));
+		// Direct snap positioning...
+		unsigned long iFrame = pSession->frameSnap(
+			pSession->frameFromPixel(m_posDrag.x() > 0 ? m_posDrag.x() : 0));
 		switch (m_dragState) {
 		case DragSelect:
 			// Do the final range selection...
@@ -489,9 +481,7 @@ void qtractorTrackTime::contentsMouseReleaseEvent ( QMouseEvent *pMouseEvent )
 				m_pTracks->selectionChangeNotify();
 			} else {
 				// Deferred left-button edit-head positioning...
-				m_pTracks->trackView()->setEditHead(
-					pSession->frameSnap(pSession->frameFromPixel(
-						m_posDrag.x() > 0 ? m_posDrag.x() : 0)));
+				m_pTracks->trackView()->setEditHead(iFrame);
 				// Not a selection, rather just for visual feedback...
 				m_pTracks->contentsChangeNotify();
 			}

@@ -76,13 +76,15 @@ public:
 
 	// The current clip selection mode.
 	enum SelectMode { SelectClip, SelectRange, SelectRect };
+	enum SelectEdit { EditNone = 0, EditHead = 1, EditTail = 2, EditBoth = 3 };
 
 	// Clip selection mode accessors.
 	void setSelectMode(SelectMode selectMode);
 	SelectMode selectMode() const;
 
 	// Select everything under a given (rubber-band) rectangle.
-	void selectRect(const QRect& rectDrag, SelectMode selectMode);
+	void selectRect(const QRect& rectDrag,
+		SelectMode selectMode, SelectEdit = EditBoth);
 	// Select every clip of a given track.
 	void selectTrack(qtractorTrack *pTrack, bool bReset = true);
 	// Select all contents.

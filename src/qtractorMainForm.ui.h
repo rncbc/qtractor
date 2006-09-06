@@ -186,9 +186,9 @@ void qtractorMainForm::init (void)
 	m_pSelectModeActionGroup = new QActionGroup(this);
 	m_pSelectModeActionGroup->setExclusive(true);
 	m_pSelectModeActionGroup->setUsesDropDown(true);
-	m_pSelectModeActionGroup->add(editSelectClipAction);
-	m_pSelectModeActionGroup->add(editSelectRangeAction);
-	m_pSelectModeActionGroup->add(editSelectRectAction);
+	m_pSelectModeActionGroup->add(editSelectModeClipAction);
+	m_pSelectModeActionGroup->add(editSelectModeRangeAction);
+	m_pSelectModeActionGroup->add(editSelectModeRectAction);
 	m_pSelectModeActionGroup->addTo(editToolbar);
 
 #if 0
@@ -405,14 +405,14 @@ void qtractorMainForm::setOptions ( qtractorOptions *pOptions )
 	// Track view select mode...
 	switch (pOptions->iTrackViewSelectMode) {
 	case 2:
-		editSelectRectAction->setOn(true);
+		editSelectModeRectAction->setOn(true);
 		break;
 	case 1:
-		editSelectRangeAction->setOn(true);
+		editSelectModeRangeAction->setOn(true);
 		break;
 	case 0:
 	default:
-		editSelectClipAction->setOn(true);
+		editSelectModeClipAction->setOn(true);
 		break;
 	}
 
@@ -1136,10 +1136,10 @@ void qtractorMainForm::editDelete (void)
 
 
 // Set selection to whole clip mode.
-void qtractorMainForm::editSelectClip (void)
+void qtractorMainForm::editSelectModeClip (void)
 {
 #ifdef CONFIG_DEBUG
-	appendMessages("qtractorMainForm::editSelectClip()");
+	appendMessages("qtractorMainForm::editSelectModeClip()");
 #endif
 
 	// Select clip mode...
@@ -1153,10 +1153,10 @@ void qtractorMainForm::editSelectClip (void)
 
 
 // Set selection to range mode.
-void qtractorMainForm::editSelectRange (void)
+void qtractorMainForm::editSelectModeRange (void)
 {
 #ifdef CONFIG_DEBUG
-	appendMessages("qtractorMainForm::editSelectRange()");
+	appendMessages("qtractorMainForm::editSelectModeRange()");
 #endif
 
 	// Select clip mode...
@@ -1170,10 +1170,10 @@ void qtractorMainForm::editSelectRange (void)
 
 
 // Set selection to rectangularmode.
-void qtractorMainForm::editSelectRect (void)
+void qtractorMainForm::editSelectModeRect (void)
 {
 #ifdef CONFIG_DEBUG
-	appendMessages("qtractorMainForm::editSelectRect()");
+	appendMessages("qtractorMainForm::editSelectModeRect()");
 #endif
 
 	// Select clip mode...
@@ -1181,6 +1181,36 @@ void qtractorMainForm::editSelectRect (void)
 		m_pTracks->trackView()->setSelectMode(qtractorTrackView::SelectRect);
 	if (m_pOptions)
 		m_pOptions->iTrackViewSelectMode = 2;
+
+	stabilizeForm();
+}
+
+
+// Mark all as unselected.
+void qtractorMainForm::editSelectNone (void)
+{
+#ifdef CONFIG_DEBUG
+	appendMessages("qtractorMainForm::editSelectNone()");
+#endif
+
+	// Select Track...
+	if (m_pTracks)
+		m_pTracks->selectAll(false);
+
+	stabilizeForm();
+}
+
+
+// Mark range as selected.
+void qtractorMainForm::editSelectRange (void)
+{
+#ifdef CONFIG_DEBUG
+	appendMessages("qtractorMainForm::editSelectRange()");
+#endif
+
+	// Select Track...
+	if (m_pTracks)
+		m_pTracks->selectEditRange();
 
 	stabilizeForm();
 }
@@ -1847,8 +1877,13 @@ void qtractorMainForm::stabilizeForm (void)
 	editCopyAction->setEnabled(bSelected);
 	editPasteAction->setEnabled(m_pTracks && !m_pTracks->isClipboardEmpty());
 	editDeleteAction->setEnabled(bSelected);
-	editSelectTrackAction->setEnabled(bEnabled && bSelectable);
+
 	editSelectAllAction->setEnabled(bSelectable);
+	editSelectTrackAction->setEnabled(bSelected);
+	if (bSelectable)
+		bSelectable  = (m_pSession->editHead() < m_pSession->editTail());
+	editSelectRangeAction->setEnabled(bSelectable);
+	editSelectNoneAction->setEnabled(bSelected);
 
 	// Update track menu state...
 	trackRemoveAction->setEnabled(bEnabled);
@@ -1932,8 +1967,8 @@ void qtractorMainForm::stabilizeForm (void)
 		&& (m_iPlayHead < iSessionLength
 			|| m_iPlayHead < m_pSession->editHead()
 			|| m_iPlayHead < m_pSession->editTail()));
-	transportLoopAction->setEnabled(bEnabled && (m_pSession->isLooping()
-		|| m_pSession->editHead() < m_pSession->editTail()));
+	transportLoopAction->setEnabled(bEnabled
+		&& (m_pSession->isLooping() || bSelectable));
 	transportRecordAction->setEnabled(m_pSession->recordTracks() > 0);
 }
 
@@ -2022,9 +2057,9 @@ void qtractorMainForm::updateSession (void)
 		m_pTracks = new qtractorTracks(workspace());
 		// Track view selection mode...
 		qtractorTrackView::SelectMode selMode = qtractorTrackView::SelectClip;
-		if (editSelectRangeAction->isOn())
+		if (editSelectModeRangeAction->isOn())
 			selMode = qtractorTrackView::SelectRange;
-		else if (editSelectRectAction->isOn())
+		else if (editSelectModeRectAction->isOn())
 			selMode = qtractorTrackView::SelectRect;
 		m_pTracks->trackView()->setSelectMode(selMode);
 		// Make basic tracks widget connections....
@@ -2035,7 +2070,7 @@ void qtractorMainForm::updateSession (void)
 			this, SLOT(trackProperties()));
 		QObject::connect(m_pTracks->trackList(), SIGNAL(selectionChanged()),
 			this, SLOT(trackSelectionChanged()));
-		//
+		// Always show tracks window maximized!
 		m_pTracks->showMaximized();
 		// Log this rather important event...
 		appendMessages(tr("Tracks open."));
