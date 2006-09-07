@@ -1149,31 +1149,8 @@ void qtractorTrackView::contentsMouseReleaseEvent ( QMouseEvent *pMouseEvent )
 			m_pTracks->contentsChangeNotify();
 			break;
 		case DragMove:
-			if (m_pClipSelect->clips().count() > 0) {
-				qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-				qtractorTrack *pTrack = dragMoveTrack(pMouseEvent->pos());
-				qtractorTrack *pSingleTrack = m_pClipSelect->singleTrack();
-				if (pMainForm && pTrack && (pSingleTrack == NULL
-					|| pSingleTrack->trackType() == pTrack->trackType())) {
-					// We'll build a composite command...
-					qtractorMoveClipCommand *pMoveClipCommand
-						= new qtractorMoveClipCommand(pMainForm);
-					qtractorClipSelect::Item *pClipItem
-						= m_pClipSelect->clips().first();
-					while (pClipItem) {
-						qtractorClip *pClip = pClipItem->clip;
-						if (pSingleTrack == NULL)
-							pTrack = pClip->track();
-						int x = (pClipItem->rectClip.x() + m_iDraggingX);
-						pMoveClipCommand->addItem(pClip, pTrack,
-							pSession->frameFromPixel(x < 0 ? 0 : x));
-						pClipItem = m_pClipSelect->clips().next();
-					}
-					m_pClipSelect->clear();
-					// Put it in the form of an undoable command...
-					pMainForm->commands()->exec(pMoveClipCommand);
-				}
-			}
+			// Let's move them...
+			moveClipSelect(dragMoveTrack(pMouseEvent->pos()), m_iDraggingX);
 			break;
 		case DragStart:
 			// Deferred left-button positioning...
@@ -1850,7 +1827,8 @@ void qtractorTrackView::executeClipSelect ( qtractorTrackView::Command cmd )
 		return;
 
 	// Reset clipboard...
-	if (cmd == Cut || cmd == Copy) {
+	bool bClipboard = (cmd == Cut || cmd == Copy);
+	if (bClipboard) {
 		m_clipboard.singleTrack = m_pClipSelect->singleTrack();
 		m_clipboard.rect = m_pClipSelect->rect();
 		m_clipboard.items.clear();
@@ -1865,20 +1843,93 @@ void qtractorTrackView::executeClipSelect ( qtractorTrackView::Command cmd )
 
 	qtractorClipSelect::Item *pClipItem = m_pClipSelect->clips().first();
 	while (pClipItem) {
-		// TODO: Take care of clip region selection...		
-		qtractorClip *pClip = pClipItem->clip;
-		unsigned long iClipStart  = pClip->clipStart();
-		unsigned long iClipOffset = pClip->clipOffset();
-		unsigned long iClipLength = pClip->clipLength();
-		// Put selected regions on the clipboard...
-		if (cmd == Cut || cmd == Copy) {
-			m_clipboard.items.append(
-				new ClipItem(pClip, iClipStart, iClipOffset, iClipLength));
+		qtractorClip  *pClip  = pClipItem->clip;
+		qtractorTrack *pTrack = pClip->track();
+		// Clip parameters.
+		unsigned long iClipStart    = pClip->clipStart();
+		unsigned long iClipOffset   = pClip->clipOffset();
+		unsigned long iClipLength   = pClip->clipLength();
+		unsigned long iClipEnd      = iClipStart + iClipLength;
+		// Clip selection points.
+		unsigned long iSelectStart  = pClip->clipSelectStart();
+		unsigned long iSelectEnd    = pClip->clipSelectEnd();
+		unsigned long iSelectOffset = iSelectStart - iClipStart;
+		unsigned long iSelectLength = iSelectEnd - iSelectStart;
+		// Determine and dispatch selected clip regions...
+		if (iSelectStart > iClipStart) {
+			if (iSelectEnd < iClipEnd) {
+				// -- Middle region...
+				if (bClipboard) {
+					m_clipboard.items.append(
+						new ClipItem(pClip,
+							iSelectStart,
+							iClipOffset + iSelectOffset,
+							iSelectLength));
+				}
+				if (pClipCommand) {
+					// Left-clip...
+					pClipCommand->addItem(
+						qtractorClipCommand::ChangeClip, pClip, pTrack,
+							iClipStart, iClipOffset, iSelectOffset);
+					// Right-clip...
+					qtractorClip *pClipEx = cloneClip(pClip);
+					if (pClipEx) {
+						pClipEx->setClipStart(iSelectEnd);
+						pClipEx->setClipOffset(iClipOffset
+							+ iSelectOffset + iSelectLength);
+						pClipEx->setClipLength(iClipEnd - iSelectEnd);
+						pClipCommand->addItem(
+							qtractorClipCommand::AddClip, pClipEx, pTrack);
+					}
+				}
+				// Done, middle region.
+			} else {
+				// -- Right region...
+				if (bClipboard) {
+					m_clipboard.items.append(
+						new ClipItem(pClip,
+							iSelectStart,
+							iClipOffset + iSelectOffset,
+							iSelectLength));
+				}
+				if (pClipCommand) {
+					pClipCommand->addItem(
+						qtractorClipCommand::ChangeClip, pClip, pTrack,
+							iClipStart, iClipOffset, iSelectOffset);
+				}
+				// Done, right region.
+			}
 		}
-		// Construct command item(s), just for cut or delete...
-		if (pClipCommand) {
-			pClipCommand->addItem(qtractorClipCommand::RemoveClip,
-				pClip, pClip->track(), iClipStart, iClipOffset, iClipLength);
+		else
+		if (iSelectEnd < iClipEnd) {
+			// -- Left region...
+			if (bClipboard) {
+				m_clipboard.items.append(
+					new ClipItem(pClip,	iClipStart, iClipOffset, iSelectLength));
+			}
+			if (pClipCommand) {
+				pClipCommand->addItem(
+					qtractorClipCommand::ChangeClip, pClip, pTrack,
+						iSelectEnd,
+						iClipOffset + iSelectLength,
+						iClipLength - iSelectLength);
+			}
+			// Done, left region.
+		} else {
+			// -- Whole clip...
+			if (bClipboard) {
+				m_clipboard.items.append(
+					new ClipItem(pClip,
+						iClipStart,
+						iClipOffset,
+						iClipLength));
+			}
+			if (pClipCommand) {
+				pClipCommand->addItem(
+					qtractorClipCommand::RemoveClip, pClip, pTrack,
+						iClipStart, iClipOffset, iClipLength);
+			}
+			// Done, whole clip.
 		}
 		// Next item in selection...
 		pClipItem = m_pClipSelect->clips().next();
@@ -1965,6 +2016,124 @@ void qtractorTrackView::pasteClipSelect (void)
 
 	// Put it in the form of an undoable command...
 	pMainForm->commands()->exec(pAddClipCommand);
+}
+
+
+// Intra-drag-n-drop clip move method.
+void qtractorTrackView::moveClipSelect ( qtractorTrack *pTrack, int dx )
+{
+	if (pTrack == NULL)
+		return;
+
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm == NULL)
+		return;
+	qtractorSession *pSession = m_pTracks->session();
+	if (pSession == NULL)
+		return;
+
+	// Check if anything is really selected...
+	if (m_pClipSelect->clips().count() < 1)
+		return;
+
+	// We can only move clips between tracks of the same type...
+	qtractorTrack *pSingleTrack = m_pClipSelect->singleTrack();
+	if (pSingleTrack && pSingleTrack->trackType() != pTrack->trackType())
+		return;
+
+	// We'll build a composite command...
+	qtractorClipCommand *pClipCommand
+		= new qtractorClipCommand(pMainForm, tr("move clip"));
+
+	qtractorClipSelect::Item *pClipItem
+		= m_pClipSelect->clips().first();
+	while (pClipItem) {
+		qtractorClip *pClip = pClipItem->clip;
+		if (pSingleTrack == NULL)
+			pTrack = pClip->track();
+		int x = (pClipItem->rectClip.x() + dx);
+		// Clip parameters.
+		unsigned long iClipStart    = pClip->clipStart();
+		unsigned long iClipOffset   = pClip->clipOffset();
+		unsigned long iClipLength   = pClip->clipLength();
+		unsigned long iClipEnd      = iClipStart + iClipLength;
+		// Clip selection points.
+		unsigned long iSelectStart  = pClip->clipSelectStart();
+		unsigned long iSelectEnd    = pClip->clipSelectEnd();
+		unsigned long iSelectOffset = iSelectStart - iClipStart;
+		unsigned long iSelectLength = iSelectEnd - iSelectStart;
+		// Determine and keep clip regions...
+		if (iSelectStart > iClipStart) {
+			// -- Left clip...
+			qtractorClip *pClipLeft = cloneClip(pClip);
+			pClipLeft->setClipStart(iClipStart);
+			pClipLeft->setClipOffset(iClipOffset);
+			pClipLeft->setClipLength(iSelectOffset);
+			pClipCommand->addItem(
+				qtractorClipCommand::AddClip, pClipLeft, pClipLeft->track());
+			// Done, leftt clip.
+		}
+		if (iSelectEnd < iClipEnd) {
+			// -- Right clip...
+			qtractorClip *pClipRight = cloneClip(pClip);
+			pClipRight->setClipStart(iSelectEnd);
+			pClipRight->setClipOffset(iClipOffset
+				+ iSelectOffset + iSelectLength);
+			pClipRight->setClipLength(iClipEnd - iSelectEnd);
+			pClipCommand->addItem(
+				qtractorClipCommand::AddClip, pClipRight, pClipRight->track());
+			// Done, right clip.
+		}
+		// -- Moved clip...
+		pClipCommand->addItem(
+			qtractorClipCommand::MoveClip, pClip, pTrack,
+				pSession->frameFromPixel(x < 0 ? 0 : x),
+				iClipOffset + iSelectOffset,
+				iSelectLength);
+		// Done, move clip.
+		pClipItem = m_pClipSelect->clips().next();
+	}
+
+	// May reset selection, yep.
+	m_pClipSelect->clear();
+
+	// Put it in the form of an undoable command...
+	pMainForm->commands()->exec(pClipCommand);
+}
+
+
+// Clip cloner helper.
+qtractorClip *qtractorTrackView::cloneClip ( qtractorClip *pClip )
+{
+	if (pClip == NULL)
+		return NULL;
+
+	qtractorTrack *pTrack = pClip->track();
+	if (pTrack == NULL)
+		return NULL;
+
+	qtractorClip *pNewClip = NULL;
+	switch (pTrack->trackType()) {
+		case qtractorTrack::Audio: {
+			qtractorAudioClip *pAudioClip
+				= static_cast<qtractorAudioClip *> (pClip);
+			if (pAudioClip)
+				pNewClip = new qtractorAudioClip(*pAudioClip);
+			break;
+		}
+		case qtractorTrack::Midi: {
+			qtractorMidiClip *pMidiClip
+				= static_cast<qtractorMidiClip *> (pClip);
+			if (pMidiClip)
+				pNewClip = new qtractorMidiClip(*pMidiClip);
+			break;
+		}
+		case qtractorTrack::None:
+		default:
+			break;
+	}
+
+	return pNewClip;
 }
 
 

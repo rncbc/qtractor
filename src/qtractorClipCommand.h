@@ -108,23 +108,6 @@ public:
 };
 
 
-//----------------------------------------------------------------------
-// class qtractorMoveClipCommand - declaration.
-//
-
-class qtractorMoveClipCommand : public qtractorClipCommand
-{
-public:
-
-	// Constructor.
-	qtractorMoveClipCommand(qtractorMainForm *pMainForm);
-
-	// Add clip item to command list.
-	void addItem(qtractorClip *pClip,
-		qtractorTrack *pTrack, unsigned long iClipStart);
-};
-
-
 #endif	// __qtractorClipCommand_h
 
 // end of qtractorClipCommand.h

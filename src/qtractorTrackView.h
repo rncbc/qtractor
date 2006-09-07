@@ -108,6 +108,9 @@ public:
 	// Clipboard paste method.
 	void pasteClipSelect();
 
+	// Intra-drag-n-drop clip move method.
+	void moveClipSelect(qtractorTrack *pTrack, int dx);
+
 	// Play-head positioning.
 	void setPlayHead(unsigned long iPlayHead, bool bSyncView = false);
 	unsigned long playHead() const;
@@ -121,6 +124,9 @@ public:
 
 	// Current session cursor accessor.
 	qtractorSessionCursor *sessionCursor() const;
+
+	// Clip cloner helper.
+	static qtractorClip *cloneClip(qtractorClip *pClip);
 
 protected:
 

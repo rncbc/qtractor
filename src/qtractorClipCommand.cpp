@@ -98,11 +98,17 @@ bool qtractorClipCommand::execute ( bool bRedo )
 		case MoveClip: {
 			qtractorTrack *pOldTrack = pClip->track();
 			unsigned long  iOldStart = pClip->clipStart();
+			unsigned long iOldOffset = pClip->clipOffset();
+			unsigned long iOldLength = pClip->clipLength();
 			pOldTrack->unlinkClip(pClip);
 			pClip->setClipStart(pItem->clipStart);
+			pClip->setClipOffset(pItem->clipOffset);
+			pClip->setClipLength(pItem->clipLength);
 			pTrack->addClip(pClip);
-			pItem->track = pOldTrack;
-			pItem->clipStart = iOldStart;
+			pItem->track      = pOldTrack;
+			pItem->clipStart  = iOldStart;
+			pItem->clipOffset = iOldOffset;
+			pItem->clipLength = iOldLength;
 			if (pOldTrack != pTrack)
 				pSession->updateTrack(pOldTrack);
 			break;
@@ -216,26 +222,6 @@ void qtractorAddClipCommand::addItem ( qtractorClip *pClip,
 	qtractorTrack *pTrack )
 {
 	qtractorClipCommand::addItem(AddClip, pClip, pTrack);
-}
-
-
-//----------------------------------------------------------------------
-// class qtractorMoveClipCommand - declaration.
-//
-
-// Constructor.
-qtractorMoveClipCommand::qtractorMoveClipCommand (
-	qtractorMainForm *pMainForm )
-	: qtractorClipCommand(pMainForm, QObject::tr("move clip"))
-{
-}
-
-
-// Add clip item to command list.
-void qtractorMoveClipCommand::addItem ( qtractorClip *pClip,
-	qtractorTrack *pTrack, unsigned long iClipStart )
-{
-	qtractorClipCommand::addItem(MoveClip, pClip, pTrack, iClipStart);
 }
 
 

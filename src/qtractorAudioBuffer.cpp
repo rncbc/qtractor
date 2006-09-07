@@ -650,8 +650,11 @@ void qtractorAudioBuffer::readSync (void)
 			nahead = m_iBufferSize;
 		if (bLooping && m_iWriteOffset + nahead >= le)
 			nahead = le - m_iWriteOffset;
-		if (m_iWriteOffset + nahead > m_iOffset + m_iLength)
-			nahead = (m_iOffset + m_iLength) - m_iWriteOffset; 
+		if (m_iWriteOffset + nahead >= m_iOffset + m_iLength) {
+			nahead = (m_iOffset + m_iLength) - m_iWriteOffset;
+			if (nahead == 0)
+				break;
+		}
 		unsigned int nread = readBuffer(nahead);
 		if (nread > 0) {
 			m_iWriteOffset += nread;
