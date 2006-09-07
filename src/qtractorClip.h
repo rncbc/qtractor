@@ -84,7 +84,7 @@ public:
 	virtual void open() = 0;
 
 	// Intra-clip frame positioning.
-	virtual void seek(unsigned long iOffset) = 0;
+	virtual void seek(unsigned long iFrame) = 0;
 
 	// Reset clip state position.
 	virtual void reset(bool bLooping) = 0;

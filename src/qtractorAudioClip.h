@@ -57,7 +57,7 @@ public:
 		unsigned short iChannels = 0);
 
 	// Intra-clip frame positioning.
-	void seek(unsigned long iOffset);
+	void seek(unsigned long iFrame);
 
 	// Reset clip state.
 	void reset(bool bLooping);

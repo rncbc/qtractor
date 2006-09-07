@@ -235,10 +235,10 @@ void qtractorMidiClip::ClipCursor::reset ( qtractorMidiSequence *pSeq )
 
 
 // Intra-clip playback frame positioning.
-void qtractorMidiClip::seek ( unsigned long iOffset )
+void qtractorMidiClip::seek ( unsigned long iFrame )
 {
 #ifdef CONFIG_DEBUG_0
-	fprintf(stderr, "qtractorMidiClip::seek(%p, %lu)\n", this, iOffset);
+	fprintf(stderr, "qtractorMidiClip::seek(%p, %lu)\n", this, iFrame);
 #endif
 
 	qtractorSession *pSession = track()->session();
@@ -246,7 +246,7 @@ void qtractorMidiClip::seek ( unsigned long iOffset )
 		return;
 
 	// Seek for the nearest sequence event...
-	unsigned long iTimeSeek = pSession->tickFromFrame(iOffset);
+	unsigned long iTimeSeek = pSession->tickFromFrame(iFrame);
 	if (iTimeSeek > 0) {
 		m_clipCursor.seek(m_pSeq, iTimeSeek);
 	} else {

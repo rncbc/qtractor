@@ -582,11 +582,13 @@ bool qtractorAudioBuffer::initSync (void)
 
 	// Read-ahead a whole bunch, if applicable...
 	if (m_pFile->mode() & qtractorAudioFile::Read) {
-		readSync();
-		if (m_pRingBuffer->writeIndex()
-				< m_pRingBuffer->bufferSize() - m_iThreshold) {
-			m_bIntegral = true;
-			deleteIOBuffers();
+		if (seekSync(m_iOffset)) {
+			readSync();
+			if (m_pRingBuffer->writeIndex()
+					< m_pRingBuffer->bufferSize() - m_iThreshold) {
+				m_bIntegral = true;
+				deleteIOBuffers();
+			}
 		}
 	}
 

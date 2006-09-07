@@ -128,9 +128,9 @@ void qtractorAudioClip::write ( float **ppBuffer,
 
 
 // Intra-clip frame positioning.
-void qtractorAudioClip::seek ( unsigned long iOffset )
+void qtractorAudioClip::seek ( unsigned long iFrame )
 {
-	if (m_pBuff) m_pBuff->seek(iOffset);
+	if (m_pBuff) m_pBuff->seek(iFrame);
 }
 
 
