@@ -206,7 +206,7 @@ bool qtractorAudioBuffer::open ( const QString& sFilename, int iMode )
 	m_iBufferSize = m_iThreshold;
 #ifdef CONFIG_LIBSAMPLERATE
 	if (m_bResample && m_fResampleRatio < 1.0f) {
-		unsigned int iMinBufferSize = (unsigned int) framesOut(m_iThreshold);
+		unsigned int iMinBufferSize = (unsigned int) framesOut(m_iBufferSize);
 		while (m_iBufferSize < iMinBufferSize)
 			m_iBufferSize <<= 1;
 	}
@@ -584,8 +584,7 @@ bool qtractorAudioBuffer::initSync (void)
 	if (m_pFile->mode() & qtractorAudioFile::Read) {
 		if (seekSync(m_iOffset)) {
 			readSync();
-			if (m_pRingBuffer->writeIndex()
-					< m_pRingBuffer->bufferSize() - m_iThreshold) {
+			if (m_iFileLength < m_pRingBuffer->bufferSize() - m_iThreshold) {
 				m_bIntegral = true;
 				deleteIOBuffers();
 			}
@@ -639,6 +638,7 @@ void qtractorAudioBuffer::readSync (void)
 	if (ws == 0)
 		return;
 
+	unsigned int nread;
 	unsigned int nahead  = ws;
 	unsigned int ntotal  = 0;
 
@@ -648,17 +648,26 @@ void qtractorAudioBuffer::readSync (void)
 	bool bLooping = (ls < le && m_iWriteOffset < le);
 
 	while (nahead > 0) {
+		// Adjust request for sane size...
 		if (nahead > m_iBufferSize)
 			nahead = m_iBufferSize;
-		if (bLooping && m_iWriteOffset + nahead >= le)
+		// Check whether behind the loop-end point...
+		if (bLooping && m_iWriteOffset + nahead > le)
 			nahead = le - m_iWriteOffset;
-		if (m_iWriteOffset + nahead >= m_iOffset + m_iLength) {
-			nahead = (m_iOffset + m_iLength) - m_iWriteOffset;
-			if (nahead == 0)
-				break;
+		// Check whether behind the logical end-of-file...
+		if (m_iWriteOffset + nahead > m_iOffset + m_iLength) {
+			if (m_iWriteOffset < m_iOffset + m_iLength) {
+				nahead = (m_iOffset + m_iLength) - m_iWriteOffset;
+			} else {
+				nahead = 0;
+			}
 		}
-		unsigned int nread = readBuffer(nahead);
+		// Read the block in...
+		nread = 0;
+		if (nahead > 0)
+			nread = readBuffer(nahead);
 		if (nread > 0) {
+			// Another block was read in...
 			m_iWriteOffset += nread;
 			if (m_iFileLength < m_iWriteOffset)
 				m_iFileLength = m_iWriteOffset;
@@ -667,13 +676,15 @@ void qtractorAudioBuffer::readSync (void)
 			ntotal += nread;
 			nahead = (ws > ntotal ? ws - ntotal : 0);
 		} else {
-			// Think of end-of-file, but we can recache
-			unsigned long offset = (bLooping ? ls : m_iOffset);
-			if (seekSync(offset)) {
-				m_iWriteOffset = offset;
-				nahead = (ws > ntotal ? ws - ntotal : 0);
-			} else {
-				nahead = 0;
+			// Think of end-of-file...
+			nahead = 0;
+			// But we can re-cache, if not an integral fit...
+			if (m_iFileLength > m_pRingBuffer->bufferSize() - m_iThreshold) {
+				unsigned long offset = (bLooping ? ls : m_iOffset);
+				if (seekSync(offset)) {
+					m_iWriteOffset = offset;
+					nahead = (ws > ntotal ? ws - ntotal : 0);
+				}
 			}
 		}
 	}
@@ -695,19 +706,24 @@ void qtractorAudioBuffer::writeSync (void)
 	if (rs == 0)
 		return;
 
+	unsigned int nwrite;
 	unsigned int nbehind = rs;
 	unsigned int ntotal  = 0;
 
 	while (nbehind > 0) {
+		// Adjust request for sane size...
 		if (nbehind > m_iBufferSize)
 			nbehind = m_iBufferSize;
-		unsigned int nwrite = writeBuffer(nbehind);
+		// Read the block out...
+		nwrite = writeBuffer(nbehind);
 		if (nwrite > 0) {
+			// Another block was written out...
 			m_iReadOffset += nwrite;
 			if (m_iFileLength < m_iReadOffset)
 				m_iFileLength = m_iReadOffset;
 			ntotal += nwrite;
 		}
+		// Think of end-of-turn...
 		if (nwrite < nbehind) {
 			nbehind = 0;
 		} else {

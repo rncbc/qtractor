@@ -272,14 +272,9 @@ void qtractorMidiClip::reset ( bool bLooping )
 
 
 // Loop positioning.
-void qtractorMidiClip::set_loop ( unsigned long iLoopStart,
-	unsigned long iLoopEnd )
+void qtractorMidiClip::set_loop ( unsigned long /* iLoopStart */,
+	unsigned long /* iLoopEnd */ )
 {
-#ifdef CONFIG_DEBUG_0
-	fprintf(stderr, "qtractorMidiClip::set_loop(%p, %lu, %lu)\n",
-		this, iLoopStart, iLoopEnd);
-#endif
-
 	// Do nothing?
 }
 
