@@ -210,7 +210,7 @@ bool qtractorMidiFile::readTrack ( qtractorMidiSequence *pSeq,
 		unsigned long time = (iTrackTime * pSeq->ticksPerBeat())
 			/ m_iTicksPerBeat;
 
-		// Check for sequence time length if any...
+		// Check for sequence time length, if any...
 		if (pSeq->timeLength() > 0
 			&& time > pSeq->timeOffset() + pSeq->timeLength())
 			break;

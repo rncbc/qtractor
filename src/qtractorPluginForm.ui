@@ -237,6 +237,8 @@
     <function access="private" specifier="non virtual">destroy()</function>
     <function specifier="non virtual">setPlugin( qtractorPlugin *pPlugin )</function>
     <function specifier="non virtual" returnType="qtractorPlugin *">plugin()</function>
+	<function specifier="non virtual">setPreset( const QString &amp; sPreset )</function>
+	<function specifier="non virtual" returnType="QString">preset()</function>
 	<function specifier="non virtual">updateCaption()</function>
     <function specifier="non virtual">updateActivated()</function>
 	<function specifier="non virtual">updatePort( qtractorPluginPort *pPort )</function>

@@ -301,6 +301,14 @@ void qtractorMidiClip::close (void)
 		m_pFile->close();
 	}
 
+	// Get rid of owned allocations...
+	if (m_pFile) {
+		delete m_pFile;
+		m_pFile = NULL;
+	}
+
+	m_pSeq->clear();
+
 	// If proven empty, remove the file.
 	if (clipLength() == 0)
 		QFile::remove(filename());

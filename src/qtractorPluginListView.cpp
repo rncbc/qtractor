@@ -126,8 +126,8 @@ void qtractorPluginListItem::paintCell ( QPainter *p, const QColorGroup& cg,
 	// Paint the original but with a different background...
 	QColorGroup _cg(cg);
 
-	QColor bg = _cg.color(QColorGroup::Background);
-	QColor fg = _cg.color(QColorGroup::Foreground);
+	QColor bg = _cg.color(QColorGroup::Button);
+	QColor fg = _cg.color(QColorGroup::ButtonText);
 
 	if (isSelected()) {
 		bg = _cg.color(QColorGroup::Midlight).dark(150);

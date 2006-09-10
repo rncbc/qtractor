@@ -738,7 +738,6 @@ qtractorTrack *qtractorTrackView::dragDropTrack ( QDropEvent *pDropEvent )
 	}
 
 	// Let's start from scratch...
-	m_dropRects.clear();
 	m_dropItems.clear();
 	m_dropType = qtractorTrack::None;
 	
@@ -788,7 +787,7 @@ qtractorTrack *qtractorTrackView::dragDropTrack ( QDropEvent *pDropEvent )
 							&& seq.duration() > 0) {
 							m_rectDrag.setWidth(
 								pSession->pixelFromTick(seq.duration()));
-							m_dropRects.append(m_rectDrag);
+							pDropItem->rect = m_rectDrag;
 							m_rectDrag.moveBy(0, m_rectDrag.height() + 4);
 						}
 					}
@@ -798,7 +797,7 @@ qtractorTrack *qtractorTrackView::dragDropTrack ( QDropEvent *pDropEvent )
 					&& seq.duration() > 0) {
 					m_rectDrag.setWidth(
 						pSession->pixelFromTick(seq.duration()));
-					m_dropRects.append(m_rectDrag);
+					pDropItem->rect = m_rectDrag;
 					m_rectDrag.moveBy(0, m_rectDrag.height() + 4);
 					if (m_dropType == qtractorTrack::None)
 						m_dropType = qtractorTrack::Midi;
@@ -826,7 +825,7 @@ qtractorTrack *qtractorTrackView::dragDropTrack ( QDropEvent *pDropEvent )
 							/ float(pFile->sampleRate()));
 					}
 					m_rectDrag.setWidth(pSession->pixelFromFrame(iFrames));
-					m_dropRects.append(m_rectDrag);
+					pDropItem->rect = m_rectDrag;
 					m_rectDrag.moveBy(0, m_rectDrag.height() + 4);
 					if (m_dropType == qtractorTrack::None)
 						m_dropType = qtractorTrack::Audio;
@@ -843,7 +842,6 @@ qtractorTrack *qtractorTrackView::dragDropTrack ( QDropEvent *pDropEvent )
 
 	// Are we still here?
 	if (m_dropItems.isEmpty()) {
-		m_dropRects.clear();
 		m_dropType = qtractorTrack::None;
 		return NULL;
 	}
@@ -864,7 +862,7 @@ bool qtractorTrackView::canDropTrack ( QDropEvent *pDropEvent )
 {
 	qtractorTrack *pTrack = dragDropTrack(pDropEvent);
 	return ((pTrack	&& pTrack->trackType() == m_dropType
-		&& m_dropRects.count() == 1)
+		&& m_dropItems.count() == 1)
 			|| (pTrack == NULL && !m_dropItems.isEmpty()));
 }
 
@@ -936,15 +934,17 @@ void qtractorTrackView::contentsDropEvent (
 				}
 			}
 			// Depending on import type...
-			switch (m_dropType) {
-			case qtractorTrack::Audio:
-				m_pTracks->addAudioTracks(files, iClipStart);
-				break;
-			case qtractorTrack::Midi:
-				m_pTracks->addMidiTracks(files, iClipStart);
-				break;
-			default:
-				break;
+			if (!files.isEmpty()) {
+				switch (m_dropType) {
+				case qtractorTrack::Audio:
+					m_pTracks->addAudioTracks(files, iClipStart);
+					break;
+				case qtractorTrack::Midi:
+					m_pTracks->addMidiTracks(files, iClipStart);
+					break;
+				default:
+					break;
+				}
 			}
 		}
 		resetDragState();
@@ -971,7 +971,6 @@ void qtractorTrackView::contentsDropEvent (
 				pAudioClip->setFilename(pDropItem->path);
 				pAudioClip->setClipStart(iClipStart);
 				pAddClipCommand->addItem(pAudioClip, pTrack);
-				iClipStart += pAudioClip->clipLength();
 				// Don't forget to add this one to local repository.
 				pMainForm->addAudioFile(pDropItem->path);
 			}
@@ -984,7 +983,6 @@ void qtractorTrackView::contentsDropEvent (
 				pMidiClip->setTrackChannel(pDropItem->channel);
 				pMidiClip->setClipStart(iClipStart);
 				pAddClipCommand->addItem(pMidiClip, pTrack);
-				iClipStart += pMidiClip->clipLength();
 				// Don't forget to add this one to local repository.
 				pMainForm->addMidiFile(pDropItem->path);
 			}
@@ -994,6 +992,8 @@ void qtractorTrackView::contentsDropEvent (
 		default:
 			break;
 		}
+		// If multiple items, just concatenate them...
+		iClipStart += pSession->frameFromPixel(pDropItem->rect.width());
 	}
 
 	// Clean up.
@@ -1051,13 +1051,13 @@ void qtractorTrackView::contentsMousePressEvent ( QMouseEvent *pMouseEvent )
 			setEditHead(iFrame);
 			setEditTail(iFrame);
 			// Not quite a selection, but some visual feedback...
-			m_pTracks->contentsChangeNotify();
+			m_pTracks->selectionChangeNotify();
 			break;
 		case Qt::RightButton:
 			// Right-button edit-tail positioning...
 			setEditTail(iFrame);
 			// Not quite a selection, but some visual feedback...
-			m_pTracks->contentsChangeNotify();
+			m_pTracks->selectionChangeNotify();
 			// Fall thru...
 		default:
 			break;
@@ -1145,8 +1145,6 @@ void qtractorTrackView::contentsMouseReleaseEvent ( QMouseEvent *pMouseEvent )
 			// Here we're mainly supposed to select a few bunch
 			// of clips (all that fall inside the rubber-band...
 			selectRect(m_rectDrag, m_selectMode);
-			// Not a selection, just for visual feedback...
-			m_pTracks->contentsChangeNotify();
 			break;
 		case DragMove:
 			// Let's move them...
@@ -1174,7 +1172,7 @@ void qtractorTrackView::contentsMouseReleaseEvent ( QMouseEvent *pMouseEvent )
 					// Deferred left-button edit-head positioning...
 					setEditHead(iFrame);
 					// Not a selection, rather just for visual feedback...
-					m_pTracks->contentsChangeNotify();
+					m_pTracks->selectionChangeNotify();
 				}
 			}
 			// Fall thru...
@@ -1477,27 +1475,27 @@ void qtractorTrackView::hideClipSelect (void)
 // Draw/hide the whole drop rectagle list
 void qtractorTrackView::updateDropRects ( int y, int h )
 {
-	for (RectList::Iterator iter = m_dropRects.begin();
-			iter != m_dropRects.end(); ++iter) {
-		(*iter).setY(y);
-		(*iter).setHeight(h);
+	for (DropItem *pDropItem = m_dropItems.first();
+			pDropItem; pDropItem = m_dropItems.next()) {
+		pDropItem->rect.setY(y);
+		pDropItem->rect.setHeight(h);
 		y += h + 4;
 	}
 }
 
-void qtractorTrackView::showDropRects ( int iThickness ) const
+void qtractorTrackView::showDropRects ( int iThickness )
 {
-	for (RectList::ConstIterator iter = m_dropRects.begin();
-			iter != m_dropRects.end(); ++iter) {
-		showDragRect(*iter, iThickness);
+	for (DropItem *pDropItem = m_dropItems.first();
+			pDropItem; pDropItem = m_dropItems.next()) {
+		showDragRect(pDropItem->rect, iThickness);
 	}
 }
 
 void qtractorTrackView::hideDropRects (void)
 {
-	for (RectList::ConstIterator iter = m_dropRects.begin();
-			iter != m_dropRects.end(); ++iter) {
-		hideDragRect(*iter);
+	for (DropItem *pDropItem = m_dropItems.first();
+			pDropItem; pDropItem = m_dropItems.next()) {
+		hideDragRect(pDropItem->rect);
 	}
 }
 
@@ -1560,7 +1558,6 @@ void qtractorTrackView::resetDragState (void)
 	m_pClipDrag  = NULL;
 
 	// No dropping files, whatsoever.
-	m_dropRects.clear();
 	m_dropItems.clear();
 	m_dropType = qtractorTrack::None;
 }

@@ -153,8 +153,8 @@ signals:
 private:
 
 	// Local instance variables.
-	qtractorSpinBox *m_pPanSpinBox;
 	qtractorSlider  *m_pPanSlider;
+	qtractorSpinBox *m_pPanSpinBox;
 	QLabel          *m_pTopLabel;
 	QHBox           *m_pHBox;
 	qtractorSlider  *m_pGainSlider;

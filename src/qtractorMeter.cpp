@@ -105,15 +105,22 @@ void qtractorMeterScale::resizeEvent ( QResizeEvent * )
 qtractorMeter::qtractorMeter ( QWidget *pParent, const char *pszName )
 	: QVBox(pParent, pszName)
 {
-	m_pPanSpinBox  = new qtractorSpinBox(this);
+	QFont font8(font().family(), 8);
+	QFontMetrics fm(font8);
+
 	m_pPanSlider   = new qtractorSlider(Qt::Horizontal, this);
 	m_pPanSlider->setFixedHeight(20);
+	m_pPanSpinBox  = new qtractorSpinBox(this);
+	m_pPanSpinBox->setFont(font8);
+	m_pPanSpinBox->setFixedHeight(fm.lineSpacing() + 2);
 	m_pTopLabel    = new QLabel(this);
 	m_pHBox        = new QHBox(this);
 	m_pHBox->setSpacing(1);
 	m_pGainSlider  = new qtractorSlider(Qt::Vertical, m_pHBox);
 	m_pGainSlider->setFixedWidth(20);
 	m_pGainSpinBox = new qtractorSpinBox(this);
+	m_pGainSpinBox->setFont(font8);
+	m_pGainSpinBox->setFixedHeight(fm.lineSpacing() + 2);
 
 	m_iUpdate      = 0;
 	m_iPeakFalloff = 0;

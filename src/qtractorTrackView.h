@@ -185,7 +185,7 @@ protected:
 
 	// Draw/hide the whole drop rectagle list
 	void updateDropRects(int y, int h);
-	void showDropRects(int iThickness = 3) const;
+	void showDropRects(int iThickness = 3);
 	void hideDropRects();
 
 	// Draw/hide a dragging rectangular selection.
@@ -240,14 +240,12 @@ private:
 		// Item members.
 		QString path;
 		int channel;
+		QRect rect;
 	};
 
 	QPtrList<qtractorTrackView::DropItem> m_dropItems;
 	qtractorTrack::TrackType m_dropType;
 
-	typedef QValueList<QRect> RectList;
-	RectList m_dropRects;
-	
 	// The current selecting/dragging clip stuff.
 	enum DragState {
 		DragNone = 0, DragStart, DragSelect, DragMove, DragDrop

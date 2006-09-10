@@ -208,6 +208,10 @@ public:
 	bool isVisible() const;
 	qtractorPluginForm *form();
 
+	// Plugin default preset name accessor (informational)
+	void setPreset(const QString& sName);
+	const QString& preset();
+
 	// Plugin state serialization methods.
 	void setValues(const QStringList& vlist);
 	QStringList values();
@@ -250,6 +254,7 @@ private:
 
 	// The plugin form reference.
 	qtractorPluginForm *m_pForm;
+	QString m_sPreset;
 };
 
 

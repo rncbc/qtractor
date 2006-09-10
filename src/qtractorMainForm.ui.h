@@ -850,11 +850,19 @@ bool qtractorMainForm::editSession (void)
 	if (bPlaying)
 		m_pSession->setPlaying(false);
 
+	// Take care of session name changes...
+	const QString sOldSessionName = m_pSession->sessionName();
+
 	// Now, express the change as a undoable command...
 	m_pCommands->exec(
 		new qtractorPropertyCommand<qtractorSession::Properties> (this,
 			tr("session properties"), m_pSession->properties(),
 				sessionForm.properties()));
+
+	// If session name has change, we'll prompt
+	// for correct filename when save is triggered...
+	if (m_pSession->sessionName() != sOldSessionName)
+		m_sFilename = QString::null;
 
 	// Restore playback state, if needed...
 	if (bPlaying) {

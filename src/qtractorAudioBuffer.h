@@ -104,6 +104,9 @@ public:
 	// Base sync method.
 	void sync();
 
+	// Audio frame process synchronization predicate method.
+	bool inSync(unsigned long iFrameStart, unsigned long iFrameEnd);
+
 #ifdef CONFIG_LIBSAMPLERATE
 	// Sample-rate converter type accessor (global option).
 	static void setResampleType(int iResampleType);
@@ -151,6 +154,7 @@ private:
 
 	unsigned int   m_iThreshold;
 	unsigned int   m_iBufferSize;
+	bool           m_bReadSync;
 	unsigned long  m_iReadOffset;
 	unsigned long  m_iWriteOffset;
 	unsigned long  m_iFileLength;
@@ -162,8 +166,8 @@ private:
 	unsigned long  m_iLoopStart;
 	unsigned long  m_iLoopEnd;
 
-	unsigned int   m_iSeekPending;
 	unsigned long  m_iSeekOffset;
+	unsigned int   m_iSeekPending;
 
 	float        **m_ppFrames;
 

@@ -58,6 +58,7 @@ void qtractorMidiSequence::clear (void)
 
 	m_noteMax  = 0;
 	m_noteMin  = 0;
+
 	m_duration = 0;
 
 	m_events.clear();
@@ -124,6 +125,12 @@ void qtractorMidiSequence::removeEvent ( qtractorMidiEvent *pEvent )
 // Sequence closure method.
 void qtractorMidiSequence::close (void)
 {
+	// Commit sequence length...
+	if (m_duration < m_iTimeLength)
+		m_duration = m_iTimeLength;
+	else if (m_iTimeLength == 0)
+		m_iTimeLength = m_duration;
+
 	// Finish all pending notes...
 	for (NoteMap::Iterator iter = m_notes.begin();
 			iter != m_notes.end(); ++iter) {
@@ -132,10 +139,6 @@ void qtractorMidiSequence::close (void)
 
 	// Reset all pending notes.
 	m_notes.clear();
-	
-	// Commit sequence length...
-	if (m_iTimeLength == 0)
-		m_iTimeLength = m_duration;
 }
 
 

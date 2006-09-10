@@ -79,16 +79,18 @@
         <separator/>
         <action name="editDeleteAction"/>
 		<separator/>
-		<action name="editSelectNoneAction"/>
-		<action name="editSelectRangeAction"/>
-        <action name="editSelectTrackAction"/>
-        <action name="editSelectAllAction"/>
-		<separator/>
 		<action name="editSelectModeAction"/>
 		<item text="Select &amp;Mode" name="editSelectModeMenu">
 			<action name="editSelectModeClipAction"/>
 			<action name="editSelectModeRangeAction"/>
 			<action name="editSelectModeRectAction"/>
+		</item>
+		<action name="editSelectAction"/>
+		<item text="&amp;Select" name="editSelectMenu">
+			<action name="editSelectNoneAction"/>
+			<action name="editSelectRangeAction"/>
+			<action name="editSelectTrackAction"/>
+			<action name="editSelectAllAction"/>
 		</item>
     </item>
     <item text="&amp;Track" name="trackMenu">
@@ -490,86 +492,6 @@
     </action>
 	<action>
 		<property name="name">
-			<cstring>editSelectNoneAction</cstring>
-		</property>
-		<property name="text">
-			<string>Select None</string>
-		</property>
-		<property name="menuText">
-			<string>Select &amp;None</string>
-		</property>
-		<property name="toolTip">
-			<string>Select none</string>
-		</property>
-		<property name="statusTip">
-			<string>Mark all as unselected</string>
-		</property>
-		<property name="accel">
-			<string>Ctrl+Shift+A</string>
-		</property>
-	</action>
-	<action>
-		<property name="name">
-			<cstring>editSelectRangeAction</cstring>
-		</property>
-		<property name="text">
-			<string>Select Range</string>
-		</property>
-		<property name="menuText">
-			<string>Select &amp;Range</string>
-		</property>
-		<property name="toolTip">
-			<string>Select range</string>
-		</property>
-		<property name="statusTip">
-			<string>Mark range as selected</string>
-		</property>
-		<property name="accel">
-			<string>Ctrl+R</string>
-		</property>
-	</action>
-    <action>
-        <property name="name">
-            <cstring>editSelectTrackAction</cstring>
-        </property>
-        <property name="text">
-            <string>Select Track</string>
-        </property>
-        <property name="menuText">
-            <string>Select &amp;Track</string>
-        </property>
-        <property name="toolTip">
-            <string>Select track</string>
-        </property>
-        <property name="statusTip">
-            <string>Mark track as selected</string>
-        </property>
-        <property name="accel">
-            <string>Ctrl+T</string>
-        </property>
-    </action>
-    <action>
-        <property name="name">
-            <cstring>editSelectAllAction</cstring>
-        </property>
-        <property name="text">
-            <string>Select All</string>
-        </property>
-        <property name="menuText">
-            <string>Select &amp;All</string>
-        </property>
-        <property name="toolTip">
-            <string>Select all</string>
-        </property>
-        <property name="statusTip">
-            <string>Mark all as selected</string>
-        </property>
-        <property name="accel">
-            <string>Ctrl+A</string>
-        </property>
-    </action>
-	<action>
-		<property name="name">
 			<cstring>editSelectModeAction</cstring>
 		</property>
 		<property name="text">
@@ -654,6 +576,103 @@
 			<string>Rectangular selection mode</string>
 		</property>
 	</action>
+	<action>
+		<property name="name">
+			<cstring>editSelectAction</cstring>
+		</property>
+		<property name="text">
+			<string>Select</string>
+		</property>
+		<property name="menuText">
+			<string>&amp;Select</string>
+		</property>
+		<property name="toolTip">
+			<string>Select</string>
+		</property>
+		<property name="statusTip">
+			<string>Selection</string>
+		</property>
+	</action>
+	<action>
+		<property name="name">
+			<cstring>editSelectNoneAction</cstring>
+		</property>
+		<property name="text">
+			<string>Select None</string>
+		</property>
+		<property name="menuText">
+			<string>&amp;None</string>
+		</property>
+		<property name="toolTip">
+			<string>Select none</string>
+		</property>
+		<property name="statusTip">
+			<string>Mark all as unselected</string>
+		</property>
+		<property name="accel">
+			<string>Ctrl+Shift+A</string>
+		</property>
+	</action>
+	<action>
+		<property name="name">
+			<cstring>editSelectRangeAction</cstring>
+		</property>
+		<property name="text">
+			<string>Select Range</string>
+		</property>
+		<property name="menuText">
+			<string>&amp;Range</string>
+		</property>
+		<property name="toolTip">
+			<string>Select range</string>
+		</property>
+		<property name="statusTip">
+			<string>Mark range as selected</string>
+		</property>
+		<property name="accel">
+			<string>Ctrl+R</string>
+		</property>
+	</action>
+    <action>
+        <property name="name">
+            <cstring>editSelectTrackAction</cstring>
+        </property>
+        <property name="text">
+            <string>Select Track</string>
+        </property>
+        <property name="menuText">
+            <string>&amp;Track</string>
+        </property>
+        <property name="toolTip">
+            <string>Select track</string>
+        </property>
+        <property name="statusTip">
+            <string>Mark track as selected</string>
+        </property>
+        <property name="accel">
+            <string>Ctrl+T</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>editSelectAllAction</cstring>
+        </property>
+        <property name="text">
+            <string>Select All</string>
+        </property>
+        <property name="menuText">
+            <string>&amp;All</string>
+        </property>
+        <property name="toolTip">
+            <string>Select all</string>
+        </property>
+        <property name="statusTip">
+            <string>Mark all as selected</string>
+        </property>
+        <property name="accel">
+            <string>Ctrl+A</string>
+        </property>
+    </action>
     <action>
         <property name="name">
             <cstring>trackAddAction</cstring>
@@ -1431,6 +1450,24 @@
         <slot>editDelete()</slot>
     </connection>
 	<connection>
+		<sender>editSelectModeClipAction</sender>
+		<signal>activated()</signal>
+		<receiver>qtractorMainForm</receiver>
+		<slot>editSelectModeClip()</slot>
+	</connection>
+	<connection>
+		<sender>editSelectModeRangeAction</sender>
+		<signal>activated()</signal>
+		<receiver>qtractorMainForm</receiver>
+		<slot>editSelectModeRange()</slot>
+	</connection>
+	<connection>
+		<sender>editSelectModeRectAction</sender>
+		<signal>activated()</signal>
+		<receiver>qtractorMainForm</receiver>
+		<slot>editSelectModeRect()</slot>
+	</connection>
+	<connection>
 		<sender>editSelectNoneAction</sender>
 		<signal>activated()</signal>
 		<receiver>qtractorMainForm</receiver>
@@ -1453,24 +1490,6 @@
 		<signal>activated()</signal>
 		<receiver>qtractorMainForm</receiver>
 		<slot>editSelectAll()</slot>
-	</connection>
-	<connection>
-		<sender>editSelectModeClipAction</sender>
-		<signal>activated()</signal>
-		<receiver>qtractorMainForm</receiver>
-		<slot>editSelectModeClip()</slot>
-	</connection>
-	<connection>
-		<sender>editSelectModeRangeAction</sender>
-		<signal>activated()</signal>
-		<receiver>qtractorMainForm</receiver>
-		<slot>editSelectModeRange()</slot>
-	</connection>
-	<connection>
-		<sender>editSelectModeRectAction</sender>
-		<signal>activated()</signal>
-		<receiver>qtractorMainForm</receiver>
-		<slot>editSelectModeRect()</slot>
 	</connection>
     <connection>
         <sender>trackAddAction</sender>

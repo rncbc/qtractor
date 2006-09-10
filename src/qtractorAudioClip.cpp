@@ -160,8 +160,9 @@ void qtractorAudioClip::close (void)
 	if (m_pBuff == NULL)
 		return;
 
-	// Commit the final clip length...
-	setClipLength(m_pBuff->fileLength());
+	// Commit the final clip length (record specific)...
+	if (clipLength() == 0)
+		setClipLength(m_pBuff->fileLength());
 
 	// Close and ditch stuff...
 	delete m_pBuff;
@@ -193,11 +194,16 @@ void qtractorAudioClip::process ( unsigned long iFrameStart,
 	unsigned long iClipStart = clipStart();
 	unsigned long iClipEnd   = iClipStart + clipLength();
 	if (iFrameStart < iClipStart && iFrameEnd > iClipStart) {
-		m_pBuff->readMix(pAudioBus->buffer(), iFrameEnd - iClipStart,
-			pAudioBus->channels(), iClipStart - iFrameStart);
-	} else if (iFrameStart >= iClipStart && iFrameStart < iClipEnd) {
-		m_pBuff->readMix(pAudioBus->buffer(), iFrameEnd - iFrameStart,
-			pAudioBus->channels(), 0);
+		if (m_pBuff->inSync(0, iFrameEnd - iClipStart)) {
+			m_pBuff->readMix(pAudioBus->buffer(), iFrameEnd - iClipStart,
+				pAudioBus->channels(), iClipStart - iFrameStart);
+		}
+	}
+	else if (iFrameStart >= iClipStart && iFrameStart < iClipEnd) {
+		if (m_pBuff->inSync(iFrameStart - iClipStart, iFrameEnd - iClipStart)) {
+			m_pBuff->readMix(pAudioBus->buffer(), iFrameEnd - iFrameStart,
+				pAudioBus->channels(), 0);
+		}
 	}
 }
 

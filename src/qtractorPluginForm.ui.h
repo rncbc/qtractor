@@ -125,6 +125,26 @@ qtractorPlugin *qtractorPluginForm::plugin (void)
 	return m_pPlugin;
 }
 
+// Plugin preset accessors.
+void qtractorPluginForm::setPreset ( const QString& sPreset )
+{
+	if (!sPreset.isEmpty()) {
+		m_iUpdate++;
+		PresetComboBox->setCurrentText(sPreset);
+		m_iUpdate--;
+	}
+}
+
+QString qtractorPluginForm::preset (void)
+{
+	QString sPreset = PresetComboBox->currentText();
+
+	if (sPreset == g_sDefPreset || m_iDirtyCount > 0)
+		sPreset = QString::null;
+
+	return sPreset;
+}
+
 
 // Update form caption.
 void qtractorPluginForm::updateCaption (void)

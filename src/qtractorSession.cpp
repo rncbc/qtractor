@@ -872,15 +872,13 @@ void qtractorSession::seek ( unsigned long iFrame, bool bSync )
 // Playhead positioning.
 void qtractorSession::setPlayHead ( unsigned long iFrame )
 {
-	bool bPlaying = isPlaying();
-	if (bPlaying && isRecording())
+	if (isPlaying() && isRecording())
 		return;
 
-	setPlaying(false);
 	jack_transport_locate(m_pAudioEngine->jackClient(), iFrame);
 	seek(iFrame, true);
+
 	stabilize();
-	setPlaying(bPlaying);
 }
 
 unsigned long qtractorSession::playHead (void) const
@@ -893,11 +891,8 @@ unsigned long qtractorSession::playHead (void) const
 void qtractorSession::setLoop ( unsigned long iLoopStart,
 	unsigned long iLoopEnd )
 {
-	bool bPlaying = isPlaying();
-	if (bPlaying && isRecording())
+	if (isPlaying() && isRecording())
 		return;
-
-	setPlaying(false);
 
 	// Local prepare...
 	if (iLoopStart >= iLoopEnd) {
@@ -928,7 +923,6 @@ void qtractorSession::setLoop ( unsigned long iLoopStart,
 	m_pMidiEngine->sessionCursor()->seek(iFrame, true);
 
 	stabilize();
-	setPlaying(bPlaying);
 }
 
 unsigned long qtractorSession::loopStart (void) const

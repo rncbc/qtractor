@@ -592,10 +592,29 @@ qtractorPluginForm *qtractorPlugin::form (void)
 			//	| Qt::WStyle_MinMax
 				| Qt::WStyle_Tool
 				| Qt::WType_TopLevel);
+		m_pForm->setPreset(m_sPreset);
 		m_pForm->setPlugin(this);
 	}
 
 	return m_pForm;
+}
+
+
+// Plugin default preset name accessor (informational)
+void qtractorPlugin::setPreset ( const QString& sPreset )
+{
+	m_sPreset = sPreset;
+
+	if (m_pForm)
+		m_pForm->setPreset(sPreset);
+}
+
+const QString& qtractorPlugin::preset (void)
+{
+	if (m_pForm)
+		m_sPreset = m_pForm->preset();
+
+	return m_sPreset;
 }
 
 
@@ -1022,6 +1041,7 @@ bool qtractorPluginList::loadElement ( qtractorSessionDocument *pDocument,
 		if (ePlugin.tagName() == "plugin") {
 			QString sFilename;
 			unsigned long iIndex = 0;
+			QString sPreset;
 			QStringList vlist;
 			bool bActivated = false;
 			for (QDomNode nParam = ePlugin.firstChild();
@@ -1037,6 +1057,9 @@ bool qtractorPluginList::loadElement ( qtractorSessionDocument *pDocument,
 				if (eParam.tagName() == "index")
 					iIndex = eParam.text().toULong();
 				else
+				if (eParam.tagName() == "preset")
+					sPreset = eParam.text();
+				else
 				if (eParam.tagName() == "values")
 					vlist = QStringList::split(',', eParam.text());
 				else
@@ -1047,6 +1070,7 @@ bool qtractorPluginList::loadElement ( qtractorSessionDocument *pDocument,
 				continue;
 			qtractorPlugin *pPlugin
 				= new qtractorPlugin(this, sFilename, iIndex);
+			pPlugin->setPreset(sPreset);
 			pPlugin->setValues(vlist);
 			pPlugin->setActivated(bActivated);
 			append(pPlugin);
@@ -1069,6 +1093,8 @@ bool qtractorPluginList::saveElement ( qtractorSessionDocument *pDocument,
 			pPlugin->filename(), &ePlugin);
 		pDocument->saveTextElement("index",
 			QString::number(pPlugin->index()), &ePlugin);
+		pDocument->saveTextElement("preset",
+			pPlugin->preset(), &ePlugin);
 		pDocument->saveTextElement("values",
 			pPlugin->values().join(","), &ePlugin);
 		pDocument->saveTextElement("activated",
