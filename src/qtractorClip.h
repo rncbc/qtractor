@@ -77,6 +77,14 @@ public:
 	unsigned long clipLoopStart() const;
 	unsigned long clipLoopEnd() const;
 
+	// Clip fade-in length accessors
+	void setFadeInLength(unsigned long iFadeInLength);
+	unsigned long fadeInLength() const;
+	
+	// Clip fade-out length accessors
+	void setFadeOutLength(unsigned long iFadeOutLength);
+	unsigned long fadeOutLength() const;
+
 	// Clip time reference settler method.
 	virtual void updateClipTime();
 
@@ -100,7 +108,7 @@ public:
 
 	// Clip paint method.
 	virtual void drawClip(QPainter *pPainter, const QRect& clipRect,
-		unsigned long iClipOffset) = 0;
+		unsigned long iClipOffset);
 
 	// Document element methods.
 	bool loadElement(qtractorSessionDocument *pDocument,
@@ -109,6 +117,9 @@ public:
 		QDomElement *pElement);
 
 protected:
+
+	// Compute clip gain, given current fade-in/out slopes.
+	float gain(unsigned long iFrameStart, unsigned long iFrameEnd) const;
 
 	// Virtual document element methods.
 	virtual bool loadClipElement(qtractorSessionDocument *pDocument,
@@ -134,6 +145,14 @@ private:
 
 	unsigned long m_iLoopStart;     // Clip loop start frame-offset.
 	unsigned long m_iLoopEnd;       // Clip loop end frame-offset.
+
+	// Fade-in/out stuff.
+	unsigned long m_iFadeInLength;  // Fade-in length (in frames).
+	float         m_fFadeInSlope;   // Fade-in gain slope.
+
+	unsigned long m_iFadeOutLength; // Fade-out length (in frames).
+	float         m_fFadeOutSlope;  // Fade-out gain slope.
+	float         m_fFadeOutOffset; // Fade-out gain offset.
 };
 
 #endif  // __qtractorClip_h

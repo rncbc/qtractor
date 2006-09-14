@@ -43,13 +43,19 @@ public:
 	// Destructor.
 	virtual ~qtractorClipCommand();
 
-	// Primitive command types.
-	enum CommandType { AddClip, RemoveClip, MoveClip, ChangeClip };
-	
-	// Add primitive clip item to command list.
-	void addItem(CommandType cmd, qtractorClip *pClip,
-		qtractorTrack *pTrack, unsigned long iClipStart = 0,
-		unsigned long iClipOffset = 0, unsigned long iClipLength = 0);
+	// Primitive command methods.
+	void addClip(qtractorClip *pClip, qtractorTrack *pTrack);
+	void removeClip(qtractorClip *pClip);
+	void moveClip(qtractorClip *pClip, qtractorTrack *pTrack,
+		unsigned long iClipStart, unsigned long iClipOffset,
+		unsigned long iClipLength);
+	void resizeClip(qtractorClip *pClip, unsigned long iClipStart,
+		unsigned long iClipOffset, unsigned long iClipLength);
+	void fadeInClip(qtractorClip *pClip, unsigned long iFadeInLength);
+	void fadeOutClip(qtractorClip *pClip, unsigned long iFadeOutLength);
+
+	// Special clip record method.
+	bool addClipRecord(qtractorTrack *pTrack);
 
 	// Virtual command methods.
 	bool redo();
@@ -62,18 +68,18 @@ protected:
 
 private:
 
+	// Primitive command types.
+	enum CommandType {
+		AddClip, RemoveClip, MoveClip, ResizeClip, FadeInClip, FadeOutClip };
+	
 	// Clip item struct.
 	struct Item
 	{
 		// Item constructor.
-		Item(CommandType cmd, qtractorClip *pClip,
-			qtractorTrack *pTrack, unsigned long iClipStart,
-			unsigned long iClipOffset, unsigned long iClipLength)
+		Item(CommandType cmd, qtractorClip *pClip, qtractorTrack *pTrack)
 			: command(cmd), clip(pClip), track(pTrack),
-				clipStart(iClipStart),
-				clipOffset(iClipOffset),
-				clipLength(iClipLength),
-				autoDelete(false) {}
+				clipStart(0), clipOffset(0), clipLength(0),
+				fadeInLength(0), fadeOutLength(0), autoDelete(false) {}
 		// Item members.
 		CommandType    command;
 		qtractorClip  *clip;
@@ -81,30 +87,13 @@ private:
 		unsigned long  clipStart;
 		unsigned long  clipOffset;
 		unsigned long  clipLength;
+		unsigned long  fadeInLength;
+		unsigned long  fadeOutLength;
 		bool           autoDelete;
 	};
 
 	// Instance variables.
 	QPtrList<Item> m_items;
-};
-
-
-//----------------------------------------------------------------------
-// class qtractorAddClipCommand - declaration.
-//
-
-class qtractorAddClipCommand : public qtractorClipCommand
-{
-public:
-
-	// Constructor.
-	qtractorAddClipCommand(qtractorMainForm *pMainForm);
-
-	// Special clip record nethod.
-	bool addClipRecord(qtractorTrack *pTrack);
-
-	// Add clip item to command list.
-	void addItem(qtractorClip *pClip, qtractorTrack *pTrack);
 };
 
 

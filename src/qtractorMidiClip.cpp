@@ -343,6 +343,7 @@ void qtractorMidiClip::process ( unsigned long iFrameStart,
 		|| (pSession->soloTracks() && !pTrack->isSolo()));
 
 	// Enqueue the requested events...
+	float fGain = gain(iFrameStart, iFrameEnd);
 	unsigned long iTimeClip  = pSession->tickFromFrame(clipStart());
 	unsigned long iTimeStart = pSession->tickFromFrame(iFrameStart);
 	unsigned long iTimeEnd   = pSession->tickFromFrame(iFrameEnd);
@@ -354,7 +355,7 @@ void qtractorMidiClip::process ( unsigned long iFrameStart,
 			break;
 		if (iTimeEvent >= iTimeStart
 			&& (!bMute || pEvent->type() != qtractorMidiEvent::NOTEON)) {
-			pSession->midiEngine()->enqueue(pTrack, pEvent, iTimeEvent);
+			pSession->midiEngine()->enqueue(pTrack, pEvent, iTimeEvent, fGain);
 		}
 		pEvent = pEvent->next();
 	}
@@ -368,26 +369,12 @@ void qtractorMidiClip::process ( unsigned long iFrameStart,
 void qtractorMidiClip::drawClip ( QPainter *pPainter, const QRect& clipRect,
 	unsigned long iClipOffset )
 {
+	// Fill clip background...
+	qtractorClip::drawClip(pPainter, clipRect, iClipOffset);
+
 	qtractorSession *pSession = track()->session();
 	if (pSession == NULL)
 		return;
-
-	// Fill clip background...
-#if 0
-	pPainter->fillRect(clipRect, track()->background());
-#else
-	pPainter->setPen(track()->background().dark());
-	pPainter->setBrush(track()->background());
-	pPainter->drawRect(clipRect);
-#endif
-
-	// Draw clip name label...
-	QRect rect(clipRect);
-	if (iClipOffset > 0)
-		rect.setX(rect.x() - pSession->pixelFromFrame(iClipOffset));
-	pPainter->drawText(rect,
-		Qt::AlignLeft | Qt::AlignTop | Qt::SingleLine,
-		clipName());
 
 	// Check maximum note span...
 	int iNoteSpan = (m_pSeq->noteMax() - m_pSeq->noteMin()) + 1;

@@ -25,7 +25,7 @@
 #include "qtractorSessionDocument.h"
 
 #include <qfileinfo.h>
-
+#include <qpainter.h>
 
 //-------------------------------------------------------------------------
 // qtractorClip -- Track clip capsule.
@@ -37,6 +37,7 @@ qtractorClip::qtractorClip ( qtractorTrack *pTrack )
 
 	clear();
 }
+
 
 // Default constructor.
 qtractorClip::~qtractorClip (void)
@@ -60,6 +61,13 @@ void qtractorClip::clear (void)
 
 	m_iLoopStart   = 0;
 	m_iLoopEnd     = 0;
+
+	m_iFadeInLength  = 0;
+	m_fFadeInSlope   = 0.0f;
+
+	m_iFadeOutLength = 0;
+	m_fFadeOutSlope  = 0.0f;
+	m_fFadeOutOffset = 0.0f;
 }
 
 
@@ -211,12 +219,132 @@ unsigned long qtractorClip::clipLoopEnd (void) const
 	return m_iLoopEnd;
 }
 
+// Clip fade-in length accessors
+unsigned long qtractorClip::fadeInLength (void) const
+{
+	return m_iFadeInLength;
+}
+
+void qtractorClip::setFadeInLength ( unsigned long iFadeInLength )
+{
+	if (iFadeInLength > m_iClipLength)
+		iFadeInLength = m_iClipLength;
+	
+	m_iFadeInLength = iFadeInLength;
+
+	if (m_iFadeInLength > 0)
+		m_fFadeInSlope = 1.0f / float(m_iFadeInLength);
+	else
+		m_fFadeInSlope = 0.0f;
+}
+
+
+// Clip fade-out length accessors
+unsigned long qtractorClip::fadeOutLength (void) const
+{
+	return m_iFadeOutLength;
+}
+
+void qtractorClip::setFadeOutLength ( unsigned long iFadeOutLength )
+{
+	if (iFadeOutLength > m_iClipLength)
+		iFadeOutLength = m_iClipLength;
+
+	m_iFadeOutLength = iFadeOutLength;
+
+	if (m_iFadeOutLength > 0) {
+		m_fFadeOutSlope = 1.0f / float(m_iFadeOutLength);
+		m_fFadeOutOffset
+			= m_fFadeOutSlope * (m_iClipLength - m_iFadeOutLength) + 1.0f;
+	} else {
+		m_fFadeOutSlope  = 0.0f;
+		m_fFadeOutOffset = 0.0f;
+	}
+}
+
+
+// Compute clip gain, given current fade-in/out slopes.
+float qtractorClip::gain (
+	unsigned long iFrameStart, unsigned long iFrameEnd ) const
+{ 
+	float fGain = 1.0f;
+
+	unsigned long iOffset = ((iFrameStart + iFrameEnd) >> 1) - m_iClipStart;
+	if (iOffset < m_iFadeInLength)
+		fGain = m_fFadeInSlope * float(iOffset);
+	else if (iOffset > m_iClipLength - m_iFadeOutLength)
+		fGain = m_fFadeOutOffset - m_fFadeOutSlope * float(iOffset);
+
+	return fGain;
+}
+
 
 // Clip time reference settler method.
 void qtractorClip::updateClipTime (void)
 {
 	if (m_pTrack && m_pTrack->session())
 		m_iClipStart = m_pTrack->session()->frameFromTick(m_iClipTime);
+}
+
+
+// Base clip drawing method.
+void qtractorClip::drawClip ( QPainter *pPainter, const QRect& clipRect,
+	unsigned long iClipOffset )
+{
+	// Fill clip background...
+	pPainter->setPen(m_pTrack->background().dark());
+	pPainter->setBrush(m_pTrack->background());
+	pPainter->drawRect(clipRect);
+
+	qtractorSession *pSession = m_pTrack->session();
+	if (pSession == NULL)
+		return;
+
+	// Adjust the clip rectangle left origin... 
+	QRect rect(clipRect);
+	if (iClipOffset > 0)
+		rect.setLeft(rect.left() - pSession->pixelFromFrame(iClipOffset));
+	rect.setRight(rect.left() + pSession->pixelFromFrame(m_iClipLength));
+
+	// Draw clip name label...
+	pPainter->drawText(rect,
+		Qt::AlignLeft | Qt::AlignBottom | Qt::SingleLine,
+		clipName());
+
+	// Fade in/out handle color...
+	const QColor& rgbFade = track()->foreground().light(160);
+	pPainter->setPen(rgbFade);
+	pPainter->setBrush(rgbFade);
+
+	// Fade-in handle...
+	int x = rect.left() + 1;
+	int y = rect.top()  + 1;
+	int w = pSession->pixelFromFrame(m_iFadeInLength);
+	QRect rectHandle(x + w, y, 8, 8);
+	if (rectHandle.intersects(clipRect))
+		pPainter->fillRect(rectHandle, rgbFade.dark(120));
+	if (w > 0) {
+		QPointArray poly(3);
+		poly.setPoint(0, x, y);
+		poly.setPoint(1, x, rect.bottom() - 1);
+		poly.setPoint(2, x + w, y);
+		pPainter->drawPolygon(poly);
+	}
+
+	// Fade-out handle...
+	x = rect.right() - 1;
+	w = pSession->pixelFromFrame(m_iFadeOutLength);
+	rectHandle.setRect(x - w - 8, y, 8, 8);
+	if (rectHandle.intersects(clipRect))
+		pPainter->fillRect(rectHandle, rgbFade.dark(120));
+	if (w > 0) {
+		QPointArray poly(3);
+		poly.setPoint(0, x, y);
+		poly.setPoint(1, x, rect.bottom() - 1);
+		poly.setPoint(2, x - w, y);
+		pPainter->drawPolygon(poly);
+	}
+
 }
 
 
@@ -251,6 +379,10 @@ bool qtractorClip::loadElement ( qtractorSessionDocument *pDocument,
 					qtractorClip::setClipOffset(eProp.text().toULong());
 				else if (eProp.tagName() == "length")
 					qtractorClip::setClipLength(eProp.text().toULong());
+				else if (eProp.tagName() == "fade-in")
+					qtractorClip::setFadeInLength(eProp.text().toULong());
+				else if (eProp.tagName() == "fade-out")
+					qtractorClip::setFadeOutLength(eProp.text().toULong());
 			}
 		}
 		else
@@ -279,6 +411,10 @@ bool qtractorClip::saveElement ( qtractorSessionDocument *pDocument,
 		QString::number(qtractorClip::clipOffset()), &eProps);
 	pDocument->saveTextElement("length",
 		QString::number(qtractorClip::clipLength()), &eProps);
+	pDocument->saveTextElement("fade-in",
+		QString::number(qtractorClip::fadeInLength()), &eProps);
+	pDocument->saveTextElement("fade-out",
+		QString::number(qtractorClip::fadeOutLength()), &eProps);
 	pElement->appendChild(eProps);
 
 	// Save clip derivative properties...

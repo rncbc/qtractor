@@ -31,7 +31,7 @@
 
 // Forward declarations.
 class qtractorTrackButton;
-class qtractorAddClipCommand;
+class qtractorClipCommand;
 
 
 //----------------------------------------------------------------------
@@ -227,7 +227,7 @@ private:
 	bool m_bOn;
 
 	// Special sub-command needed to track recording clips.
-	qtractorAddClipCommand *m_pAddClipCommand;
+	qtractorClipCommand *m_pClipCommand;
 	int m_iRecordCount;
 };
 

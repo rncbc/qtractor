@@ -175,8 +175,7 @@ protected:
 	void contentsMouseReleaseEvent(QMouseEvent *pMouseEvent);
 
 	// Clip file(item) selection convenience method.
-	void selectClipFile(qtractorClip *pClip,
-		const QRect& rectClip, bool bReset);
+	void selectClipFile(bool bReset);
 
 	// Draw/hide the whole current clip selection.
 	void updateClipSelect(int y, int h);
@@ -191,6 +190,14 @@ protected:
 	// Draw/hide a dragging rectangular selection.
 	void showDragRect(const QRect& rectDrag, int iThickness) const;
 	void hideDragRect(const QRect& rectDrag);
+
+	// Clip fade-in/out handle drag-move methods.
+	bool dragFadeStart(const QPoint& pos);
+	void dragFadeMove(const QPoint& pos);
+	void dragFadeDrop(const QPoint& pos);
+
+	// Show/hide a moving clip fade in/out handle.
+	void drawFadeHandle() const;
 
 	// Reset drag/select/move state.
 	void resetDragState();
@@ -248,13 +255,16 @@ private:
 
 	// The current selecting/dragging clip stuff.
 	enum DragState {
-		DragNone = 0, DragStart, DragSelect, DragMove, DragDrop
+		DragNone = 0, DragStart,
+		DragSelect, DragMove, DragDrop,
+		DragFadeIn, DragFadeOut
 	} m_dragState;
 
-	int           m_iDraggingX;
-	QRect         m_rectDrag;
-	QPoint        m_posDrag;
 	qtractorClip *m_pClipDrag;
+	QPoint        m_posDrag;
+	QRect         m_rectDrag;
+	QRect         m_rectHandle;
+	int           m_iDraggingX;
 
 	qtractorClipSelect *m_pClipSelect;
 
@@ -264,21 +274,33 @@ private:
 	// The local clipboard item.
 	struct ClipItem
 	{
-		// Item constructor.
+		// Clipboard item constructor.
 		ClipItem(qtractorClip *pClip, unsigned long iClipStart,
 			unsigned long iClipOffset, unsigned long iClipLength)
 			: clip(pClip), clipStart(iClipStart),
-				clipOffset(iClipOffset), clipLength(iClipLength) {}
-		// Item members.
+				clipOffset(iClipOffset), clipLength(iClipLength),
+				fadeInLength(0), fadeOutLength(0) {}
+		// Clipboard item members.
 		qtractorClip *clip;
 		unsigned long clipStart;
 		unsigned long clipOffset;
 		unsigned long clipLength;
+		unsigned long fadeInLength;
+		unsigned long fadeOutLength;
 	};
 
 	// The local clipboard stuff.
 	struct ClipBoard
 	{
+		// Clipbaord constructor.
+		ClipBoard() : singleTrack(NULL)
+			{ items.setAutoDelete(false); }
+		// Clipboard stuffer method.
+		void addItem(qtractorClip *pClip, unsigned long iClipStart,
+			unsigned long iClipOffset, unsigned long iClipLength);
+		// Clipboard reset method.
+		void clear();
+		// Clipboard members.
 		QPtrList<ClipItem> items;
 		qtractorTrack     *singleTrack;
 		QRect              rect;

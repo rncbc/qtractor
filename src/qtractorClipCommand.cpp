@@ -54,13 +54,122 @@ qtractorClipCommand::~qtractorClipCommand (void)
 }
 
 
-// Add primitive clip item to command list.
-void qtractorClipCommand::addItem ( qtractorClipCommand::CommandType cmd,
-	qtractorClip *pClip, qtractorTrack *pTrack, unsigned long iClipStart,
+// Primitive command methods.
+void qtractorClipCommand::addClip ( qtractorClip *pClip,
+	qtractorTrack *pTrack )
+{
+	m_items.append(new Item(AddClip, pClip, pTrack));
+}
+
+
+void qtractorClipCommand::removeClip ( qtractorClip *pClip )
+{
+	m_items.append(new Item(RemoveClip, pClip, pClip->track()));
+}
+
+
+void qtractorClipCommand::moveClip ( qtractorClip *pClip,
+	qtractorTrack *pTrack, unsigned long iClipStart,
 	unsigned long iClipOffset, unsigned long iClipLength )
 {
-	m_items.append(
-		new Item(cmd, pClip, pTrack, iClipStart, iClipOffset, iClipLength));
+	Item *pItem = new Item(MoveClip, pClip, pTrack);
+	pItem->clipStart  = iClipStart;
+	pItem->clipOffset = iClipOffset;
+	pItem->clipLength = iClipLength;
+	if (iClipOffset == pClip->clipOffset())
+		pItem->fadeInLength = pClip->fadeInLength();
+	if (iClipOffset + iClipLength == pClip->clipOffset() + pClip->clipLength())
+		pItem->fadeOutLength = pClip->fadeOutLength();
+	m_items.append(pItem);
+}
+
+
+void qtractorClipCommand::resizeClip ( qtractorClip *pClip,
+	unsigned long iClipStart, unsigned long iClipOffset,
+	unsigned long iClipLength )
+{
+	Item *pItem = new Item(ResizeClip, pClip, pClip->track());
+	pItem->clipStart  = iClipStart;
+	pItem->clipOffset = iClipOffset;
+	pItem->clipLength = iClipLength;
+	if (iClipOffset == pClip->clipOffset())
+		pItem->fadeInLength = pClip->fadeInLength();
+	if (iClipOffset + iClipLength == pClip->clipOffset() + pClip->clipLength())
+		pItem->fadeOutLength = pClip->fadeOutLength();
+	m_items.append(pItem);
+}
+
+
+void qtractorClipCommand::fadeInClip ( qtractorClip *pClip,
+	unsigned long iFadeInLength )
+{
+	Item *pItem = new Item(FadeInClip, pClip, pClip->track());
+	pItem->fadeInLength = iFadeInLength;
+	m_items.append(pItem);
+}
+
+
+void qtractorClipCommand::fadeOutClip ( qtractorClip *pClip,
+	unsigned long iFadeOutLength )
+{
+	Item *pItem = new Item(FadeOutClip, pClip, pClip->track());
+	pItem->fadeOutLength = iFadeOutLength;
+	m_items.append(pItem);
+}
+
+
+// Special clip record nethod.
+bool qtractorClipCommand::addClipRecord ( qtractorTrack *pTrack )
+{
+	qtractorClip *pClip = pTrack->clipRecord();
+	if (pClip == NULL)
+		return false;
+
+	// Time to close the clip...
+	pClip->close();
+
+	// Check final length...
+	if (pClip->clipLength() == 0)
+		return false;
+
+	// Reference for immediate file addition...
+	qtractorFiles *pFiles = mainForm()->files();
+
+	// Now, its imperative to make a proper copy of those clips...
+	unsigned long iClipStart = pClip->clipStart();
+	switch (pTrack->trackType()) {
+	case qtractorTrack::Audio: {
+		qtractorAudioClip *pAudioClip
+			= static_cast<qtractorAudioClip *> (pClip);
+		if (pAudioClip) {
+			pAudioClip = new qtractorAudioClip(*pAudioClip);
+			pAudioClip->setClipStart(iClipStart);
+			addClip(pAudioClip, pTrack);
+			if (pFiles)
+				pFiles->addAudioFile(pAudioClip->filename());
+		}
+		break;
+	}
+	case qtractorTrack::Midi: {
+		qtractorMidiClip *pMidiClip
+			= static_cast<qtractorMidiClip *> (pClip);
+		if (pMidiClip) {
+			pMidiClip = new qtractorMidiClip(*pMidiClip);
+			pMidiClip->setClipStart(iClipStart);
+			addClip(pMidiClip, pTrack);
+			if (pFiles)
+				pFiles->addMidiFile(pMidiClip->filename());
+		}
+		break;
+	}
+	default:
+		return false;
+	}
+
+	// Can get rid of the recorded clip.
+	pTrack->setClipRecord(NULL);
+	// Done.
+	return true;
 }
 
 
@@ -100,30 +209,54 @@ bool qtractorClipCommand::execute ( bool bRedo )
 			unsigned long  iOldStart = pClip->clipStart();
 			unsigned long iOldOffset = pClip->clipOffset();
 			unsigned long iOldLength = pClip->clipLength();
+			unsigned long iOldFadeIn = pClip->fadeInLength();
+			unsigned long iOldFadeOut = pClip->fadeOutLength();
 			pOldTrack->unlinkClip(pClip);
 			pClip->setClipStart(pItem->clipStart);
 			pClip->setClipOffset(pItem->clipOffset);
 			pClip->setClipLength(pItem->clipLength);
+			pClip->setFadeInLength(pItem->fadeInLength);
+			pClip->setFadeOutLength(pItem->fadeOutLength);
 			pTrack->addClip(pClip);
 			pItem->track      = pOldTrack;
 			pItem->clipStart  = iOldStart;
 			pItem->clipOffset = iOldOffset;
 			pItem->clipLength = iOldLength;
+			pItem->fadeInLength = iOldFadeIn;
+			pItem->fadeOutLength = iOldFadeOut;
 			if (pOldTrack != pTrack)
 				pSession->updateTrack(pOldTrack);
 			break;
 		}
-		case ChangeClip: {
+		case ResizeClip: {
 			unsigned long iOldStart  = pClip->clipStart();
 			unsigned long iOldOffset = pClip->clipOffset();
 			unsigned long iOldLength = pClip->clipLength();
+			unsigned long iOldFadeIn = pClip->fadeInLength();
+			unsigned long iOldFadeOut = pClip->fadeOutLength();
 			pClip->setClipStart(pItem->clipStart);
 			pClip->setClipOffset(pItem->clipOffset);
 			pClip->setClipLength(pItem->clipLength);
+			pClip->setFadeInLength(pItem->fadeInLength);
+			pClip->setFadeOutLength(pItem->fadeOutLength);
 			pClip->open();
 			pItem->clipStart  = iOldStart;
 			pItem->clipOffset = iOldOffset;
 			pItem->clipLength = iOldLength;
+			pItem->fadeInLength = iOldFadeIn;
+			pItem->fadeOutLength = iOldFadeOut;
+			break;
+		}
+		case FadeInClip: {
+			unsigned long iOldFadeIn = pClip->fadeInLength();
+			pClip->setFadeInLength(pItem->fadeInLength);
+			pItem->fadeInLength = iOldFadeIn;
+			break;
+		}
+		case FadeOutClip: {
+			unsigned long iOldFadeOut = pClip->fadeOutLength();
+			pClip->setFadeOutLength(pItem->fadeOutLength);
+			pItem->fadeOutLength = iOldFadeOut;
 			break;
 		}
 		default:
@@ -147,81 +280,6 @@ bool qtractorClipCommand::redo (void)
 bool qtractorClipCommand::undo (void)
 {
 	return execute(false);
-}
-
-
-//----------------------------------------------------------------------
-// class qtractorAddClipCommand - declaration.
-//
-
-// Constructor.
-qtractorAddClipCommand::qtractorAddClipCommand (
-	qtractorMainForm *pMainForm )
-	: qtractorClipCommand(pMainForm, QObject::tr("add clip"))
-{
-}
-
-
-// Special clip record nethod.
-bool qtractorAddClipCommand::addClipRecord ( qtractorTrack *pTrack )
-{
-	qtractorClip *pClip = pTrack->clipRecord();
-	if (pClip == NULL)
-		return false;
-
-	// Time to close the clip...
-	pClip->close();
-
-	// Check final length...
-	if (pClip->clipLength() == 0)
-		return false;
-
-	// Reference for immediate file addition...
-	qtractorFiles *pFiles = mainForm()->files();
-
-	// Now, its imperative to make a proper copy of those clips...
-	unsigned long iClipStart = pClip->clipStart();
-	switch (pTrack->trackType()) {
-	case qtractorTrack::Audio: {
-		qtractorAudioClip *pAudioClip
-			= static_cast<qtractorAudioClip *> (pClip);
-		if (pAudioClip) {
-			pAudioClip = new qtractorAudioClip(*pAudioClip);
-			pAudioClip->setClipStart(iClipStart);
-			addItem(pAudioClip, pTrack);
-			if (pFiles)
-				pFiles->addAudioFile(pAudioClip->filename());
-		}
-		break;
-	}
-	case qtractorTrack::Midi: {
-		qtractorMidiClip *pMidiClip
-			= static_cast<qtractorMidiClip *> (pClip);
-		if (pMidiClip) {
-			pMidiClip = new qtractorMidiClip(*pMidiClip);
-			pMidiClip->setClipStart(iClipStart);
-			addItem(pMidiClip, pTrack);
-			if (pFiles)
-				pFiles->addMidiFile(pMidiClip->filename());
-		}
-		break;
-	}
-	default:
-		return false;
-	}
-
-	// Can get rid of the recorded clip.
-	pTrack->setClipRecord(NULL);
-	// Done.
-	return true;
-}
-
-
-// Add clip item to command list.
-void qtractorAddClipCommand::addItem ( qtractorClip *pClip,
-	qtractorTrack *pTrack )
-{
-	qtractorClipCommand::addItem(AddClip, pClip, pTrack);
 }
 
 

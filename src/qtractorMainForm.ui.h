@@ -1741,22 +1741,20 @@ void qtractorMainForm::transportRecord (void)
 	int iUpdate = 0;
 	if (bRecording) {
 		// We'll build a composite command...
-		qtractorAddClipCommand *pAddClipCommand
-			= new qtractorAddClipCommand(this);
-		// Override default command name.
-		pAddClipCommand->setName(tr("record clip"));
+		qtractorClipCommand *pClipCommand
+			= new qtractorClipCommand(this, tr("record clip"));
 		// For all non-empty clip on record...
 		for (qtractorTrack *pTrack = m_pSession->tracks().first();
 				pTrack; pTrack = pTrack->next()) {
-			if (pAddClipCommand->addClipRecord(pTrack))
+			if (pClipCommand->addClipRecord(pTrack))
 				iUpdate++;
 		}
 		// Put it in the form of an undoable command...
 		if (iUpdate > 0) {
-			m_pCommands->exec(pAddClipCommand);
+			m_pCommands->exec(pClipCommand);
 		} else {
 			// The allocated command is unhelpful...
-			delete pAddClipCommand;
+			delete pClipCommand;
 			// Try to postpone an overall refresh...
 			m_iPeakTimer += QTRACTOR_TIMER_DELAY;
 		}

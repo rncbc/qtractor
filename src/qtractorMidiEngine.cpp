@@ -705,7 +705,7 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 
 // MIDI event enqueue method.
 void qtractorMidiEngine::enqueue ( qtractorTrack *pTrack,
-	qtractorMidiEvent *pEvent, unsigned long iTime )
+	qtractorMidiEvent *pEvent, unsigned long iTime, float fGain )
 {
 	// Target MIDI bus...
 	qtractorMidiBus *pMidiBus
@@ -761,7 +761,8 @@ void qtractorMidiEngine::enqueue ( qtractorTrack *pTrack,
 			ev.type = SND_SEQ_EVENT_NOTE;
 			ev.data.note.channel    = pTrack->midiChannel();
 			ev.data.note.note       = pEvent->note();
-			ev.data.note.velocity   = pEvent->velocity();
+			ev.data.note.velocity   = (unsigned char)
+				(fGain * float(pEvent->velocity()));
 			ev.data.note.duration   = pEvent->duration();
 			break;
 		case qtractorMidiEvent::KEYPRESS:

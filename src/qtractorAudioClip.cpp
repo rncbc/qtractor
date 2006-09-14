@@ -191,18 +191,19 @@ void qtractorAudioClip::process ( unsigned long iFrameStart,
 		return;
 
 	// Get the next bunch from the clip...
+	float fGain = gain(iFrameStart, iFrameEnd);
 	unsigned long iClipStart = clipStart();
 	unsigned long iClipEnd   = iClipStart + clipLength();
 	if (iFrameStart < iClipStart && iFrameEnd > iClipStart) {
 		if (m_pBuff->inSync(0, iFrameEnd - iClipStart)) {
 			m_pBuff->readMix(pAudioBus->buffer(), iFrameEnd - iClipStart,
-				pAudioBus->channels(), iClipStart - iFrameStart);
+				pAudioBus->channels(), iClipStart - iFrameStart, fGain);
 		}
 	}
 	else if (iFrameStart >= iClipStart && iFrameStart < iClipEnd) {
 		if (m_pBuff->inSync(iFrameStart - iClipStart, iFrameEnd - iClipStart)) {
 			m_pBuff->readMix(pAudioBus->buffer(), iFrameEnd - iFrameStart,
-				pAudioBus->channels(), 0);
+				pAudioBus->channels(), 0, fGain);
 		}
 	}
 }
@@ -212,26 +213,12 @@ void qtractorAudioClip::process ( unsigned long iFrameStart,
 void qtractorAudioClip::drawClip ( QPainter *pPainter, const QRect& clipRect,
 	unsigned long iClipOffset )
 {
+	// Fill clip background...
+	qtractorClip::drawClip(pPainter, clipRect, iClipOffset);
+
 	qtractorSession *pSession = track()->session();
 	if (pSession == NULL)
 		return;
-
-	// Fill clip background...
-#if 0
-	pPainter->fillRect(clipRect, track()->background());
-#else
-	pPainter->setPen(track()->background().dark());
-	pPainter->setBrush(track()->background());
-	pPainter->drawRect(clipRect);
-#endif
-
-	// Draw clip name label...
-	QRect rect(clipRect);
-	if (iClipOffset > 0)
-		rect.setX(rect.x() - pSession->pixelFromFrame(iClipOffset));
-	pPainter->drawText(rect,
-		Qt::AlignLeft | Qt::AlignTop | Qt::SingleLine,
-		clipName());
 
 	// Cache some peak data...
 	if (m_pPeak == NULL)
@@ -246,7 +233,7 @@ void qtractorAudioClip::drawClip ( QPainter *pPainter, const QRect& clipRect,
 	// Draw peak chart...
 	unsigned long iframe = ((iClipOffset + clipOffset()) / iPeriod);
 	unsigned long nframes
-		= (pSession->frameFromPixel(clipRect.width()) / iPeriod) + 2;
+		= (pSession->frameFromPixel(clipRect.width()) / iPeriod);
 	if (nframes > m_pPeak->frames())
 		nframes = m_pPeak->frames();
 	qtractorAudioPeakFrame *pframes

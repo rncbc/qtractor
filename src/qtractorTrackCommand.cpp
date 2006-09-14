@@ -451,7 +451,7 @@ qtractorTrackButtonCommand::qtractorTrackButtonCommand (
 	m_toolType = pTrackButton->toolType();
 	m_bOn = bOn;
 
-	m_pAddClipCommand = NULL;
+	m_pClipCommand = NULL;
 	m_iRecordCount = 0;
 
 	switch (m_toolType) {
@@ -472,8 +472,8 @@ qtractorTrackButtonCommand::qtractorTrackButtonCommand (
 // Destructor.
 qtractorTrackButtonCommand::~qtractorTrackButtonCommand (void)
 {
-	if (m_pAddClipCommand)
-		delete m_pAddClipCommand;
+	if (m_pClipCommand)
+		delete m_pClipCommand;
 }
 
 
@@ -491,21 +491,21 @@ bool qtractorTrackButtonCommand::redo (void)
 		// Special stuffing if currently recording at first place...
 		bOn = pTrack->isRecord();
 		if (bOn && !m_bOn
-			&& m_pAddClipCommand == NULL && m_iRecordCount == 0) {
-			m_pAddClipCommand = new qtractorAddClipCommand(mainForm());
+			&& m_pClipCommand == NULL && m_iRecordCount == 0) {
+			m_pClipCommand = new qtractorClipCommand(mainForm(), QString::null);
 			// Do all the record stuffing here...
-			if (m_pAddClipCommand->addClipRecord(pTrack)) {
+			if (m_pClipCommand->addClipRecord(pTrack)) {
 				// Yes, we've recorded something...
 				setRefresh(true);
 			} else {
 				// nothing was actually recorded...
-				delete m_pAddClipCommand;
-				m_pAddClipCommand = NULL;
+				delete m_pClipCommand;
+				m_pClipCommand = NULL;
 			}
 		}
 		// Was it before (skip undos)?
-		if (m_pAddClipCommand && (m_iRecordCount % 2) == 0)
-			m_pAddClipCommand->redo();
+		if (m_pClipCommand && (m_iRecordCount % 2) == 0)
+			m_pClipCommand->redo();
 		m_iRecordCount++;
 		// Carry on...
 		pTrack->setRecord(m_bOn);
@@ -544,8 +544,8 @@ bool qtractorTrackButtonCommand::redo (void)
 
 bool qtractorTrackButtonCommand::undo (void)
 {
-	if (m_pAddClipCommand)
-		m_pAddClipCommand->undo();
+	if (m_pClipCommand)
+		m_pClipCommand->undo();
 
 	return redo();
 }
