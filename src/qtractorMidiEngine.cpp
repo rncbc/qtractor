@@ -756,41 +756,42 @@ void qtractorMidiEngine::enqueue ( qtractorTrack *pTrack,
 	snd_seq_ev_schedule_tick(&ev, m_iAlsaQueue, 0, tick);
 
 	// Set proper event data...
+	unsigned char value = pEvent->value();
 	switch (pEvent->type()) {
 		case qtractorMidiEvent::NOTEON:
+			value = (unsigned char) (fGain * float(value)) & 0x7f;
 			ev.type = SND_SEQ_EVENT_NOTE;
 			ev.data.note.channel    = pTrack->midiChannel();
 			ev.data.note.note       = pEvent->note();
-			ev.data.note.velocity   = (unsigned char)
-				(fGain * float(pEvent->velocity()));
+			ev.data.note.velocity   = value;
 			ev.data.note.duration   = pEvent->duration();
 			break;
 		case qtractorMidiEvent::KEYPRESS:
 			ev.type = SND_SEQ_EVENT_KEYPRESS;
 			ev.data.control.channel = pTrack->midiChannel();
 			ev.data.control.param   = pEvent->note();
-			ev.data.control.value   = pEvent->value();
+			ev.data.control.value   = value;
 			break;
 		case qtractorMidiEvent::CONTROLLER:
 			ev.type = SND_SEQ_EVENT_CONTROLLER;
 			ev.data.control.channel = pTrack->midiChannel();
 			ev.data.control.param   = pEvent->controller();
-			ev.data.control.value   = pEvent->value();
+			ev.data.control.value   = value;
 			break;
 		case qtractorMidiEvent::PGMCHANGE:
 			ev.type = SND_SEQ_EVENT_PGMCHANGE;
 			ev.data.control.channel = pTrack->midiChannel();
-			ev.data.control.value   = pEvent->value();
+			ev.data.control.value   = value;
 			break;
 		case qtractorMidiEvent::CHANPRESS:
 			ev.type = SND_SEQ_EVENT_CHANPRESS;
 			ev.data.control.channel = pTrack->midiChannel();
-			ev.data.control.value   = pEvent->value();
+			ev.data.control.value   = value;
 			break;
 		case qtractorMidiEvent::PITCHBEND:
 			ev.type = SND_SEQ_EVENT_PITCHBEND;
 			ev.data.control.channel = pTrack->midiChannel();
-			ev.data.control.value   = pEvent->value();
+			ev.data.control.value   = value;
 			break;
 		case qtractorMidiEvent::SYSEX: {
 			ev.type = SND_SEQ_EVENT_SYSEX;
@@ -814,11 +815,10 @@ void qtractorMidiEngine::enqueue ( qtractorTrack *pTrack,
 	qtractorMidiMonitor *pMidiMonitor
 		= static_cast<qtractorMidiMonitor *> (pTrack->monitor());
 	if (pMidiMonitor)
-		pMidiMonitor->enqueue(pEvent->type(), pEvent->value(), tick);
+		pMidiMonitor->enqueue(pEvent->type(), value, tick);
 	// MIDI bus monitoring...
 	if (pMidiBus->midiMonitor_out()) {
-		pMidiBus->midiMonitor_out()->enqueue(
-			pEvent->type(), pEvent->value(), tick);
+		pMidiBus->midiMonitor_out()->enqueue(pEvent->type(), value, tick);
 	}
 }
 

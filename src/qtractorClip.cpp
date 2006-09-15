@@ -27,6 +27,10 @@
 #include <qfileinfo.h>
 #include <qpainter.h>
 
+// This seems a need trade-off between speed and effect.
+#define QTRACTOR_FADE_QUADRATIC
+
+
 //-------------------------------------------------------------------------
 // qtractorClip -- Track clip capsule.
 
@@ -64,12 +68,6 @@ void qtractorClip::clear (void)
 
 	m_iFadeInLength  = 0;
 	m_iFadeOutLength = 0;
-
-#ifdef QTRACTOR_FADE_LINEAR
-	m_fFadeInSlope   = 0.0f;
-	m_fFadeOutSlope  = 0.0f;
-	m_fFadeOutOffset = 0.0f;
-#endif
 }
 
 
@@ -234,24 +232,11 @@ void qtractorClip::setFadeInLength ( unsigned long iFadeInLength )
 	
 	m_iFadeInLength = iFadeInLength;
 
-#if defined(QTRACTOR_FADE_LINEAR)
-	if (m_iFadeInLength > 0)
-		m_fFadeInSlope = 1.0f / float(m_iFadeInLength);
-	else
-		m_fFadeInSlope = 0.0f;
-#elif defined(QTRACTOR_FADE_CUBIC)
 	if (m_iFadeInLength > 0) {
 		float a = 1.0f / float(m_iFadeInLength);
 		float b = 0.0f;
-		m_fadeIn.setCubicCoeffs(a, b);
+		m_fadeIn.setFadeCoeffs(a, b);
 	}
-#else
-	if (m_iFadeInLength > 0) {
-		float a = 1.0f / float(m_iFadeInLength);
-		float b = 0.0f;
-		m_fadeIn.setQuadCoeffs(a, b);
-	}
-#endif
 }
 
 
@@ -268,52 +253,33 @@ void qtractorClip::setFadeOutLength ( unsigned long iFadeOutLength )
 
 	m_iFadeOutLength = iFadeOutLength;
 
-#if defined(QTRACTOR_FADE_LINEAR)
-	if (m_iFadeOutLength > 0) {
-		m_fFadeOutSlope = 1.0f / float(m_iFadeOutLength);
-		m_fFadeOutOffset
-			= m_fFadeOutSlope * (m_iClipLength - m_iFadeOutLength) + 1.0f;
-	} else {
-		m_fFadeOutSlope  = 0.0f;
-		m_fFadeOutOffset = 0.0f;
-	}
-#elif defined(QTRACTOR_FADE_CUBIC)
 	if (m_iFadeOutLength > 0) {
 		float a = -1.0f / float(m_iFadeOutLength);
 		float b = float(m_iClipLength) / float(m_iFadeOutLength);
-		m_fadeOut.setCubicCoeffs(a, b);
+		m_fadeOut.setFadeCoeffs(a, b);
 	}
-#else
-	if (m_iFadeOutLength > 0) {
-		float a = -1.0f / float(m_iFadeOutLength);
-		float b = float(m_iClipLength) / float(m_iFadeOutLength);
-		m_fadeOut.setQuadCoeffs(a, b);
-	}
-#endif
 }
 
 
-#if defined(QTRACTOR_FADE_CUBIC)
-// Cubic coefficients settler.
-void qtractorClip::CubicCoeffs::setCubicCoeffs ( float a, float b )
+// Fade in/ou interpolation coefficients settler.
+void qtractorClip::FadeCoeffs::setFadeCoeffs ( float a, float b )
 {
+#if defined(QTRACTOR_FADE_LINEAR)
+	c1 = a;
+	c0 = b;
+#elif defined(QTRACTOR_FADE_QUADRATIC)
+	c2 = a * a;
+	c1 = 2.0f * a * b;
+	c0 = b * b;
+#elif defined(QTRACTOR_FADE_CUBIC)
 	float a2 = a * a;
 	float b2 = b * b;
 	c3 = a * a2;
 	c2 = 3.0f * a2 * b;
 	c1 = 3.0f * a * b2;
 	c0 = b * b2;
-}
 #endif
-
-// Quadratic coefficients settler.
-void qtractorClip::QuadCoeffs::setQuadCoeffs ( float a, float b )
-{
-	c2 = a * a;
-	c1 = 2.0f * a * b;
-	c0 = b * b;
 }
-
 
 // Compute clip gain, given current fade-in/out slopes.
 float qtractorClip::gain (
@@ -322,13 +288,18 @@ float qtractorClip::gain (
 	float fGain = 1.0f;
 
 	unsigned long iOffset = ((iFrameStart + iFrameEnd) >> 1) - m_iClipStart;
+	float f = float(iOffset);
 #if defined(QTRACTOR_FADE_LINEAR)
 	if (iOffset < m_iFadeInLength)
-		fGain *= m_fFadeInSlope * float(iOffset);
+		fGain *= m_fadeIn.c1 * f + m_fadeIn.c0;
 	if (iOffset > m_iClipLength - m_iFadeOutLength)
-		fGain *= m_fFadeOutOffset - m_fFadeOutSlope * float(iOffset);
+		fGain *= m_fadeOut.c1 * f + m_fadeOut.c0;
+#elif defined(QTRACTOR_FADE_QUADRATIC)
+	if (iOffset < m_iFadeInLength)
+		fGain *= m_fadeIn.c2 * f * f + m_fadeIn.c1 * f + m_fadeIn.c0;
+	if (iOffset > m_iClipLength - m_iFadeOutLength)
+		fGain *= m_fadeOut.c2 * f * f + m_fadeOut.c1 * f + m_fadeOut.c0;
 #elif defined(QTRACTOR_FADE_CUBIC)
-	float f  = float(iOffset);
 	float f2 = f * f;
 	if (iOffset < m_iFadeInLength) {
 		fGain *= m_fadeIn.c3 * f2 * f + m_fadeIn.c2 * f2
@@ -337,14 +308,6 @@ float qtractorClip::gain (
 	if (iOffset > m_iClipLength - m_iFadeOutLength) {
 		fGain *= m_fadeOut.c3 * f2 * f + m_fadeOut.c2 * f2
 			+ m_fadeOut.c1 * f + m_fadeOut.c0;
-	}
-#else
-	float f = float(iOffset);
-	if (iOffset < m_iFadeInLength) {
-		fGain *= m_fadeIn.c2 * f * f + m_fadeIn.c1 * f + m_fadeIn.c0;
-	}
-	if (iOffset > m_iClipLength - m_iFadeOutLength) {
-		fGain *= m_fadeOut.c2 * f * f + m_fadeOut.c1 * f + m_fadeOut.c0;
 	}
 #endif
 
