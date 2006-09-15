@@ -63,11 +63,13 @@ void qtractorClip::clear (void)
 	m_iLoopEnd     = 0;
 
 	m_iFadeInLength  = 0;
-	m_fFadeInSlope   = 0.0f;
-
 	m_iFadeOutLength = 0;
+
+#ifdef QTRACTOR_FADE_LINEAR
+	m_fFadeInSlope   = 0.0f;
 	m_fFadeOutSlope  = 0.0f;
 	m_fFadeOutOffset = 0.0f;
+#endif
 }
 
 
@@ -232,10 +234,18 @@ void qtractorClip::setFadeInLength ( unsigned long iFadeInLength )
 	
 	m_iFadeInLength = iFadeInLength;
 
+#ifdef QTRACTOR_FADE_LINEAR
 	if (m_iFadeInLength > 0)
 		m_fFadeInSlope = 1.0f / float(m_iFadeInLength);
 	else
 		m_fFadeInSlope = 0.0f;
+#else
+	if (m_iFadeInLength > 0) {
+		float a = 1.0f / float(m_iFadeInLength);
+		float b = 0.0f;
+		m_fadeIn.setCubicCoeffs(a, b);
+	}
+#endif
 }
 
 
@@ -252,6 +262,7 @@ void qtractorClip::setFadeOutLength ( unsigned long iFadeOutLength )
 
 	m_iFadeOutLength = iFadeOutLength;
 
+#ifdef QTRACTOR_FADE_LINEAR
 	if (m_iFadeOutLength > 0) {
 		m_fFadeOutSlope = 1.0f / float(m_iFadeOutLength);
 		m_fFadeOutOffset
@@ -260,7 +271,28 @@ void qtractorClip::setFadeOutLength ( unsigned long iFadeOutLength )
 		m_fFadeOutSlope  = 0.0f;
 		m_fFadeOutOffset = 0.0f;
 	}
+#else
+	if (m_iFadeOutLength > 0) {
+		float a = -1.0f / float(m_iFadeOutLength);
+		float b = float(m_iClipLength) / float(m_iFadeOutLength);
+		m_fadeOut.setCubicCoeffs(a, b);
+	}
+#endif
 }
+
+
+#ifndef QTRACTOR_FADE_LINEAR
+// Cubic coefficients settler.
+void qtractorClip::CubicCoeffs::setCubicCoeffs ( float a, float b )
+{
+	float a2 = a * a;
+	float b2 = b * b;
+	c3 = a * a2;
+	c2 = 3.0f * a2 * b;
+	c1 = 3.0f * a * b2;
+	c0 = b * b2;
+}
+#endif
 
 
 // Compute clip gain, given current fade-in/out slopes.
@@ -270,10 +302,23 @@ float qtractorClip::gain (
 	float fGain = 1.0f;
 
 	unsigned long iOffset = ((iFrameStart + iFrameEnd) >> 1) - m_iClipStart;
+#ifdef QTRACTOR_FADE_LINEAR
 	if (iOffset < m_iFadeInLength)
-		fGain = m_fFadeInSlope * float(iOffset);
-	else if (iOffset > m_iClipLength - m_iFadeOutLength)
-		fGain = m_fFadeOutOffset - m_fFadeOutSlope * float(iOffset);
+		fGain *= m_fFadeInSlope * float(iOffset);
+	if (iOffset > m_iClipLength - m_iFadeOutLength)
+		fGain *= m_fFadeOutOffset - m_fFadeOutSlope * float(iOffset);
+#else
+	float f  = float(iOffset);
+	float f2 = f * f;
+	if (iOffset < m_iFadeInLength) {
+		fGain *= m_fadeIn.c3 * f2 * f + m_fadeIn.c2 * f2
+			+ m_fadeIn.c1 * f + m_fadeIn.c0;
+	}
+	if (iOffset > m_iClipLength - m_iFadeOutLength) {
+		fGain *= m_fadeOut.c3 * f2 * f + m_fadeOut.c2 * f2
+			+ m_fadeOut.c1 * f + m_fadeOut.c0;
+	}
+#endif
 
 	return fGain;
 }
