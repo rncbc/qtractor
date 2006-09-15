@@ -150,11 +150,14 @@ private:
 	unsigned long m_iFadeInLength;  // Fade-in length (in frames).
 	unsigned long m_iFadeOutLength; // Fade-out length (in frames).
 
-#ifdef QTRACTOR_FADE_LINEAR
+#if defined(QTRACTOR_FADE_LINEAR)
+
 	float         m_fFadeInSlope;   // Fade-in gain slope.
 	float         m_fFadeOutSlope;  // Fade-out gain slope.
 	float         m_fFadeOutOffset; // Fade-out gain offset.
-#else
+
+#elif defined(QTRACTOR_FADE_CUBIC)
+
 	// Cubic aproximation to exponential interpolation.
 	struct CubicCoeffs 
 	{
@@ -168,6 +171,23 @@ private:
 
 	CubicCoeffs m_fadeIn;           // Fade-in cubic coefficients.
 	CubicCoeffs m_fadeOut;          // Fade-out cubic coefficients.
+
+#else
+
+	// Quadratic aproximation to exponential interpolation.
+	struct QuadCoeffs
+	{
+		// Constructor.
+		QuadCoeffs() : c2(0.0f), c1(0.0f), c0(0.0f) {}
+		// Cubic coefficients settler.
+		void setQuadCoeffs(float a, float b);
+		// Cubic coefficients members.
+		float c2, c1, c0;
+	};
+
+	QuadCoeffs m_fadeIn;           // Fade-in quadratic coefficients.
+	QuadCoeffs m_fadeOut;          // Fade-out quadratic coefficients.
+
 #endif
 };
 

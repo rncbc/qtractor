@@ -234,16 +234,22 @@ void qtractorClip::setFadeInLength ( unsigned long iFadeInLength )
 	
 	m_iFadeInLength = iFadeInLength;
 
-#ifdef QTRACTOR_FADE_LINEAR
+#if defined(QTRACTOR_FADE_LINEAR)
 	if (m_iFadeInLength > 0)
 		m_fFadeInSlope = 1.0f / float(m_iFadeInLength);
 	else
 		m_fFadeInSlope = 0.0f;
-#else
+#elif defined(QTRACTOR_FADE_CUBIC)
 	if (m_iFadeInLength > 0) {
 		float a = 1.0f / float(m_iFadeInLength);
 		float b = 0.0f;
 		m_fadeIn.setCubicCoeffs(a, b);
+	}
+#else
+	if (m_iFadeInLength > 0) {
+		float a = 1.0f / float(m_iFadeInLength);
+		float b = 0.0f;
+		m_fadeIn.setQuadCoeffs(a, b);
 	}
 #endif
 }
@@ -262,7 +268,7 @@ void qtractorClip::setFadeOutLength ( unsigned long iFadeOutLength )
 
 	m_iFadeOutLength = iFadeOutLength;
 
-#ifdef QTRACTOR_FADE_LINEAR
+#if defined(QTRACTOR_FADE_LINEAR)
 	if (m_iFadeOutLength > 0) {
 		m_fFadeOutSlope = 1.0f / float(m_iFadeOutLength);
 		m_fFadeOutOffset
@@ -271,17 +277,23 @@ void qtractorClip::setFadeOutLength ( unsigned long iFadeOutLength )
 		m_fFadeOutSlope  = 0.0f;
 		m_fFadeOutOffset = 0.0f;
 	}
-#else
+#elif defined(QTRACTOR_FADE_CUBIC)
 	if (m_iFadeOutLength > 0) {
 		float a = -1.0f / float(m_iFadeOutLength);
 		float b = float(m_iClipLength) / float(m_iFadeOutLength);
 		m_fadeOut.setCubicCoeffs(a, b);
 	}
+#else
+	if (m_iFadeOutLength > 0) {
+		float a = -1.0f / float(m_iFadeOutLength);
+		float b = float(m_iClipLength) / float(m_iFadeOutLength);
+		m_fadeOut.setQuadCoeffs(a, b);
+	}
 #endif
 }
 
 
-#ifndef QTRACTOR_FADE_LINEAR
+#if defined(QTRACTOR_FADE_CUBIC)
 // Cubic coefficients settler.
 void qtractorClip::CubicCoeffs::setCubicCoeffs ( float a, float b )
 {
@@ -294,6 +306,14 @@ void qtractorClip::CubicCoeffs::setCubicCoeffs ( float a, float b )
 }
 #endif
 
+// Quadratic coefficients settler.
+void qtractorClip::QuadCoeffs::setQuadCoeffs ( float a, float b )
+{
+	c2 = a * a;
+	c1 = 2.0f * a * b;
+	c0 = b * b;
+}
+
 
 // Compute clip gain, given current fade-in/out slopes.
 float qtractorClip::gain (
@@ -302,12 +322,12 @@ float qtractorClip::gain (
 	float fGain = 1.0f;
 
 	unsigned long iOffset = ((iFrameStart + iFrameEnd) >> 1) - m_iClipStart;
-#ifdef QTRACTOR_FADE_LINEAR
+#if defined(QTRACTOR_FADE_LINEAR)
 	if (iOffset < m_iFadeInLength)
 		fGain *= m_fFadeInSlope * float(iOffset);
 	if (iOffset > m_iClipLength - m_iFadeOutLength)
 		fGain *= m_fFadeOutOffset - m_fFadeOutSlope * float(iOffset);
-#else
+#elif defined(QTRACTOR_FADE_CUBIC)
 	float f  = float(iOffset);
 	float f2 = f * f;
 	if (iOffset < m_iFadeInLength) {
@@ -317,6 +337,14 @@ float qtractorClip::gain (
 	if (iOffset > m_iClipLength - m_iFadeOutLength) {
 		fGain *= m_fadeOut.c3 * f2 * f + m_fadeOut.c2 * f2
 			+ m_fadeOut.c1 * f + m_fadeOut.c0;
+	}
+#else
+	float f = float(iOffset);
+	if (iOffset < m_iFadeInLength) {
+		fGain *= m_fadeIn.c2 * f * f + m_fadeIn.c1 * f + m_fadeIn.c0;
+	}
+	if (iOffset > m_iClipLength - m_iFadeOutLength) {
+		fGain *= m_fadeOut.c2 * f * f + m_fadeOut.c1 * f + m_fadeOut.c0;
 	}
 #endif
 
