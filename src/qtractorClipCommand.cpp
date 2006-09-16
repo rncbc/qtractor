@@ -194,6 +194,7 @@ bool qtractorClipCommand::execute ( bool bRedo )
 			else
 				pTrack->unlinkClip(pClip);
 			pItem->autoDelete = !bRedo;
+			pSession->updateTrack(pTrack);
 			break;
 		}
 		case RemoveClip: {
@@ -202,6 +203,7 @@ bool qtractorClipCommand::execute ( bool bRedo )
 			else
 				pTrack->addClip(pClip);
 			pItem->autoDelete = bRedo;
+			pSession->updateTrack(pTrack);
 			break;
 		}
 		case MoveClip: {
@@ -226,6 +228,7 @@ bool qtractorClipCommand::execute ( bool bRedo )
 			pItem->fadeOutLength = iOldFadeOut;
 			if (pOldTrack != pTrack)
 				pSession->updateTrack(pOldTrack);
+			pSession->updateTrack(pTrack);
 			break;
 		}
 		case ResizeClip: {
@@ -245,6 +248,7 @@ bool qtractorClipCommand::execute ( bool bRedo )
 			pItem->clipLength = iOldLength;
 			pItem->fadeInLength = iOldFadeIn;
 			pItem->fadeOutLength = iOldFadeOut;
+			pSession->updateTrack(pTrack);
 			break;
 		}
 		case FadeInClip: {
@@ -262,9 +266,6 @@ bool qtractorClipCommand::execute ( bool bRedo )
 		default:
 			break;
 		}
-
-		// Always update the target track...
-		pSession->updateTrack(pTrack);
 	}
 
 	return true;

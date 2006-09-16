@@ -230,13 +230,13 @@ void qtractorClip::setFadeInLength ( unsigned long iFadeInLength )
 	if (iFadeInLength > m_iClipLength)
 		iFadeInLength = m_iClipLength;
 	
-	m_iFadeInLength = iFadeInLength;
-
-	if (m_iFadeInLength > 0) {
-		float a = 1.0f / float(m_iFadeInLength);
+	if (iFadeInLength > 0) {
+		float a = 1.0f / float(iFadeInLength);
 		float b = 0.0f;
 		m_fadeIn.setFadeCoeffs(a, b);
 	}
+
+	m_iFadeInLength = iFadeInLength;
 }
 
 
@@ -251,13 +251,13 @@ void qtractorClip::setFadeOutLength ( unsigned long iFadeOutLength )
 	if (iFadeOutLength > m_iClipLength)
 		iFadeOutLength = m_iClipLength;
 
-	m_iFadeOutLength = iFadeOutLength;
-
-	if (m_iFadeOutLength > 0) {
-		float a = -1.0f / float(m_iFadeOutLength);
-		float b = float(m_iClipLength) / float(m_iFadeOutLength);
+	if (iFadeOutLength > 0) {
+		float a = -1.0f / float(iFadeOutLength);
+		float b = float(m_iClipLength) / float(iFadeOutLength);
 		m_fadeOut.setFadeCoeffs(a, b);
 	}
+
+	m_iFadeOutLength = iFadeOutLength;
 }
 
 

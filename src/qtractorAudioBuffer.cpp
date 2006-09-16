@@ -1068,6 +1068,9 @@ unsigned long qtractorAudioBuffer::fileLength (void) const
 void qtractorAudioBuffer::setLoop ( unsigned long iLoopStart,
 	unsigned long iLoopEnd )
 {
+	if (iLoopStart == m_iLoopStart && iLoopEnd == m_iLoopEnd)
+		return;
+
 	if (iLoopStart < iLoopEnd) {
 		m_iLoopStart = iLoopStart;
 		m_iLoopEnd   = iLoopEnd;
