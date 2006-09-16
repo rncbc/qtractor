@@ -1885,7 +1885,7 @@ void qtractorMainForm::stabilizeForm (void)
 	editDeleteAction->setEnabled(bSelected);
 
 	editSelectAllAction->setEnabled(bSelectable);
-	editSelectTrackAction->setEnabled(bSelected);
+	editSelectTrackAction->setEnabled(bEnabled);
 	if (bSelectable)
 		bSelectable  = (m_pSession->editHead() < m_pSession->editTail());
 	editSelectRangeAction->setEnabled(bSelectable);

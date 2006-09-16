@@ -352,13 +352,11 @@ void qtractorClip::drawClip ( QPainter *pPainter, const QRect& clipRect,
 	pPainter->setPen(rgbFade);
 	pPainter->setBrush(rgbFade);
 
-	// Fade-in handle...
-	int x = rect.left() + 1;
+	// Fade-in slope...
 	int y = rect.top()  + 1;
+	int x = rect.left() + 1;
 	int w = pSession->pixelFromFrame(m_iFadeInLength);
-	QRect rectHandle(x + w, y, 8, 8);
-	if (rectHandle.intersects(clipRect))
-		pPainter->fillRect(rectHandle, rgbFade.dark(120));
+	QRect rectFadeIn(x + w, y, 8, 8);
 	if (w > 0) {
 		QPointArray poly(3);
 		poly.setPoint(0, x, y);
@@ -367,12 +365,10 @@ void qtractorClip::drawClip ( QPainter *pPainter, const QRect& clipRect,
 		pPainter->drawPolygon(poly);
 	}
 
-	// Fade-out handle...
+	// Fade-out slope...
 	x = rect.right() - 1;
 	w = pSession->pixelFromFrame(m_iFadeOutLength);
-	rectHandle.setRect(x - w - 8, y, 8, 8);
-	if (rectHandle.intersects(clipRect))
-		pPainter->fillRect(rectHandle, rgbFade.dark(120));
+	QRect rectFadeOut(x - w - 8, y, 8, 8);
 	if (w > 0) {
 		QPointArray poly(3);
 		poly.setPoint(0, x, y);
@@ -381,6 +377,11 @@ void qtractorClip::drawClip ( QPainter *pPainter, const QRect& clipRect,
 		pPainter->drawPolygon(poly);
 	}
 
+	// Fade in/out handles...
+	if (rectFadeIn.intersects(clipRect))
+		pPainter->fillRect(rectFadeIn, rgbFade.dark(120));
+	if (rectFadeOut.intersects(clipRect))
+		pPainter->fillRect(rectFadeOut, rgbFade.dark(120));
 }
 
 
