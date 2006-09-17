@@ -344,8 +344,7 @@ void qtractorClip::drawClip ( QPainter *pPainter, const QRect& clipRect,
 
 	// Draw clip name label...
 	pPainter->drawText(rect,
-		Qt::AlignLeft | Qt::AlignBottom | Qt::SingleLine,
-		clipName());
+		Qt::AlignLeft | Qt::AlignBottom | Qt::SingleLine, clipName());
 
 	// Fade in/out handle color...
 	const QColor& rgbFade = track()->foreground().light(160);
@@ -357,7 +356,7 @@ void qtractorClip::drawClip ( QPainter *pPainter, const QRect& clipRect,
 	int x = rect.left() + 1;
 	int w = pSession->pixelFromFrame(m_iFadeInLength);
 	QRect rectFadeIn(x + w, y, 8, 8);
-	if (w > 0) {
+	if (w > 0 && x + w > clipRect.left()) {
 		QPointArray poly(3);
 		poly.setPoint(0, x, y);
 		poly.setPoint(1, x, rect.bottom() - 1);
@@ -369,7 +368,7 @@ void qtractorClip::drawClip ( QPainter *pPainter, const QRect& clipRect,
 	x = rect.right() - 1;
 	w = pSession->pixelFromFrame(m_iFadeOutLength);
 	QRect rectFadeOut(x - w - 8, y, 8, 8);
-	if (w > 0) {
+	if (w > 0 && x - w < clipRect.right()) {
 		QPointArray poly(3);
 		poly.setPoint(0, x, y);
 		poly.setPoint(1, x, rect.bottom() - 1);
