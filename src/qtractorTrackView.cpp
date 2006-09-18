@@ -1215,15 +1215,17 @@ void qtractorTrackView::selectClipFile ( bool bReset )
 	if (m_pClipDrag == NULL)
 		return;
 
-	// Do the slecvtion dance, first...
-	const bool bSelect = !m_pClipDrag->isClipSelected();
+	// Do the selection dance, first...
+	qtractorClipSelect::Item *pClipItem = m_pClipSelect->findClip(m_pClipDrag);
+	bool bSelect = !(pClipItem && pClipItem->rectClip.contains(m_posDrag));
 	if (!bReset) {
 		m_pClipSelect->selectClip(m_pClipDrag, m_rectDrag, bSelect);
 		updateContents(m_rectDrag);
 		m_pTracks->selectionChangeNotify();
-	} else if (bSelect) {
+	} else if (bSelect || m_selectMode != SelectClip) {
 		m_pClipSelect->clear();
-		m_pClipSelect->selectClip(m_pClipDrag, m_rectDrag, true);
+		if (bSelect)
+			m_pClipSelect->selectClip(m_pClipDrag, m_rectDrag, true);
 		updateContents();
 		m_pTracks->selectionChangeNotify();
 	}

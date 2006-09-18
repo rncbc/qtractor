@@ -59,12 +59,14 @@ void qtractorClipSelect::selectClip ( qtractorClip *pClip,
 		// Reset united selection rectangle...
 		m_rect.setRect(0, 0, 0, 0);
 		for (pClipItem = m_clips.first();
-			pClipItem; pClipItem = m_clips.next())
+				pClipItem; pClipItem = m_clips.next())
 			m_rect = m_rect.unite(pClipItem->rectClip);
 		// Done with clip deselection.
 	} else if (bSelect) {
 		pClip->setClipSelected(true);
-		if (pClipItem == NULL)
+		if (pClipItem)
+			pClipItem->rectClip = rect;
+		else
 			m_clips.append(new Item(pClip, rect));
 		// Special optimization: no need to recache
 		// our single track reference if we add some outsider clip...
