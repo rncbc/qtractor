@@ -64,6 +64,7 @@ void qtractorAudioFileFactory::Destroy (void)
 qtractorAudioFileFactory::qtractorAudioFileFactory (void)
 {
 	// First for libsndfile stuff...
+	const QString sMask("*.%1");
 	SF_FORMAT_INFO sffinfo;
 	int iCount = 0;
 	::sf_command(NULL, SFC_GET_FORMAT_MAJOR_COUNT, &iCount, sizeof(int));
@@ -75,20 +76,24 @@ qtractorAudioFileFactory::qtractorAudioFileFactory (void)
 			.replace('(', QString::null)
 			.replace(')', QString::null);
 		QString sExt(sffinfo.extension);
+		QString sExts(sMask.arg(sExt));
 		m_types[sExt] = SndFile;
 		// Take care of some old 8.3 convention,
 		// specially regarding filename extensions...
 		if (sExt.length() > 3) {
 			sExt = sExt.left(3);
+			sExts = sMask.arg(sExt) + ' ' + sExts;
 			m_types[sExt] = SndFile;
 		}
 		// What we see on dialog is some excerpt...
-		m_filters.append(QString("%1 (*.%2)").arg(sName).arg(sExt));
+		m_filters.append(QString("%1 (%2)").arg(sName).arg(sExts));
 	}
 
+#ifdef CONFIG_LIBVORBIS
 	// Add for libvorbisfile (read-only)...
 	m_types["ogg"] = VorbisFile;
 	m_filters.append("OGG Vorbis (*.ogg)");
+#endif
 
 #ifdef CONFIG_LIBMAD
 	// Add for libmad (mp3 read-only)...
@@ -102,7 +107,7 @@ qtractorAudioFileFactory::qtractorAudioFileFactory (void)
 	for (FileTypes::ConstIterator iter = m_types.begin();
 			iter != m_types.end(); ++iter) {
 		if (rx.exactMatch(iter.key()))
-			exts.append("*." + iter.key());
+			exts.append(sMask.arg(iter.key()));
 	}
 	m_filters.prepend(QObject::tr("Audio Files (%1)").arg(exts.join(" ")));
 	m_filters.append(QObject::tr("All Files (*.*)"));
