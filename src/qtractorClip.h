@@ -77,10 +77,21 @@ public:
 	unsigned long clipLoopStart() const;
 	unsigned long clipLoopEnd() const;
 
+	// Fade types.
+	enum FadeType { Linear, Quadratic, Cubic };
+
+	// Clip fade-in type accessors
+	void setFadeInType(FadeType fadeType);
+	FadeType fadeInType() const;
+
 	// Clip fade-in length accessors
 	void setFadeInLength(unsigned long iFadeInLength);
 	unsigned long fadeInLength() const;
 	
+	// Clip fade-out type accessors
+	void setFadeOutType(FadeType fadeType);
+	FadeType fadeOutType() const;
+
 	// Clip fade-out length accessors
 	void setFadeOutLength(unsigned long iFadeOutLength);
 	unsigned long fadeOutLength() const;
@@ -150,19 +161,22 @@ private:
 	unsigned long m_iFadeInLength;  // Fade-in length (in frames).
 	unsigned long m_iFadeOutLength; // Fade-out length (in frames).
 
-	// Cubic aproximation to exponential interpolation.
-	struct FadeCoeffs
+	// Aproximations to exponential fade interpolation.
+	struct FadeMode
 	{
 		// Constructor.
-		FadeCoeffs() : c3(0.0f), c2(0.0f), c1(0.0f), c0(0.0f) {}
+		FadeMode() : fadeType(Quadratic),
+			c3(0.0f), c2(0.0f), c1(0.0f), c0(0.0f) {}
 		// Interpolation coefficients settler.
 		void setFadeCoeffs(float a, float b);
-		// Assorted coefficients members.
+		// Fade-type descriminator.
+		FadeType fadeType;
+		// Fade coefficient members.
 		float c3, c2, c1, c0;
 	};
 
-	FadeCoeffs m_fadeIn;            // Fade-in interpolate coefficients.
-	FadeCoeffs m_fadeOut;           // Fade-out interpolate coefficients.
+	FadeMode m_fadeIn;
+	FadeMode m_fadeOut;
 };
 
 #endif  // __qtractorClip_h

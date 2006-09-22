@@ -895,8 +895,10 @@ unsigned long qtractorSession::playHead (void) const
 void qtractorSession::setLoop ( unsigned long iLoopStart,
 	unsigned long iLoopEnd )
 {
-	if (isPlaying() && isRecording())
+	bool bPlaying = isPlaying();
+	if (bPlaying && isRecording())
 		return;
+	setPlaying(false);
 
 	// Local prepare...
 	if (iLoopStart >= iLoopEnd) {
@@ -927,6 +929,7 @@ void qtractorSession::setLoop ( unsigned long iLoopStart,
 	m_pMidiEngine->sessionCursor()->seek(iFrame, true);
 
 	stabilize();
+	setPlaying(bPlaying);
 }
 
 unsigned long qtractorSession::loopStart (void) const

@@ -27,9 +27,6 @@
 #include <qfileinfo.h>
 #include <qpainter.h>
 
-// This seems a need trade-off between speed and effect.
-#define QTRACTOR_FADE_QUADRATIC
-
 
 //-------------------------------------------------------------------------
 // qtractorClip -- Track clip capsule.
@@ -68,6 +65,13 @@ void qtractorClip::clear (void)
 
 	m_iFadeInLength  = 0;
 	m_iFadeOutLength = 0;
+#if 0
+	// This seems a need trade-off between speed and effect.
+	if (m_pTrack && m_pTrack->trackType() == qtractorTrack::Audio) {
+		m_fadeIn.fadeType  = Quadratic;
+		m_fadeOut.fadeType = Quadratic;
+	}
+#endif
 }
 
 
@@ -219,6 +223,19 @@ unsigned long qtractorClip::clipLoopEnd (void) const
 	return m_iLoopEnd;
 }
 
+
+// Clip fade-in type accessors
+void qtractorClip::setFadeInType( qtractorClip::FadeType fadeType )
+{
+	m_fadeIn.fadeType = fadeType;
+}
+
+qtractorClip::FadeType qtractorClip::fadeInType (void) const
+{
+	return m_fadeIn.fadeType;
+}
+
+
 // Clip fade-in length accessors
 unsigned long qtractorClip::fadeInLength (void) const
 {
@@ -237,6 +254,18 @@ void qtractorClip::setFadeInLength ( unsigned long iFadeInLength )
 	}
 
 	m_iFadeInLength = iFadeInLength;
+}
+
+
+// Clip fade-out type accessors
+void qtractorClip::setFadeOutType( qtractorClip::FadeType fadeType )
+{
+	m_fadeOut.fadeType = fadeType;
+}
+
+qtractorClip::FadeType qtractorClip::fadeOutType (void) const
+{
+	return m_fadeOut.fadeType;
 }
 
 
@@ -262,23 +291,27 @@ void qtractorClip::setFadeOutLength ( unsigned long iFadeOutLength )
 
 
 // Fade in/ou interpolation coefficients settler.
-void qtractorClip::FadeCoeffs::setFadeCoeffs ( float a, float b )
+void qtractorClip::FadeMode::setFadeCoeffs ( float a, float b )
 {
-#if defined(QTRACTOR_FADE_LINEAR)
-	c1 = a;
-	c0 = b;
-#elif defined(QTRACTOR_FADE_QUADRATIC)
-	c2 = a * a;
-	c1 = 2.0f * a * b;
-	c0 = b * b;
-#elif defined(QTRACTOR_FADE_CUBIC)
-	float a2 = a * a;
-	float b2 = b * b;
-	c3 = a * a2;
-	c2 = 3.0f * a2 * b;
-	c1 = 3.0f * a * b2;
-	c0 = b * b2;
-#endif
+	switch (fadeType) {
+	case Linear:
+		c1 = a;
+		c0 = b;
+		break;
+	case Quadratic:
+		c2 = a * a;
+		c1 = 2.0f * a * b;
+		c0 = b * b;
+		break;
+	case Cubic:
+		float a2 = a * a;
+		float b2 = b * b;
+		c3 = a * a2;
+		c2 = 3.0f * a2 * b;
+		c1 = 3.0f * a * b2;
+		c0 = b * b2;
+		break;
+	}
 }
 
 // Compute clip gain, given current fade-in/out slopes.
@@ -288,28 +321,40 @@ float qtractorClip::gain (
 	float fGain = 1.0f;
 
 	unsigned long iOffset = ((iFrameStart + iFrameEnd) >> 1) - m_iClipStart;
-	float f = float(iOffset);
-#if defined(QTRACTOR_FADE_LINEAR)
-	if (iOffset < m_iFadeInLength)
-		fGain *= m_fadeIn.c1 * f + m_fadeIn.c0;
-	if (iOffset > m_iClipLength - m_iFadeOutLength)
-		fGain *= m_fadeOut.c1 * f + m_fadeOut.c0;
-#elif defined(QTRACTOR_FADE_QUADRATIC)
-	if (iOffset < m_iFadeInLength)
-		fGain *= m_fadeIn.c2 * f * f + m_fadeIn.c1 * f + m_fadeIn.c0;
-	if (iOffset > m_iClipLength - m_iFadeOutLength)
-		fGain *= m_fadeOut.c2 * f * f + m_fadeOut.c1 * f + m_fadeOut.c0;
-#elif defined(QTRACTOR_FADE_CUBIC)
-	float f2 = f * f;
+
 	if (iOffset < m_iFadeInLength) {
-		fGain *= m_fadeIn.c3 * f2 * f + m_fadeIn.c2 * f2
-			+ m_fadeIn.c1 * f + m_fadeIn.c0;
+		float f  = float(iOffset);
+		float f2 = f * f;
+		switch (m_fadeIn.fadeType) {
+		case Linear:
+			fGain *= m_fadeIn.c1 * f + m_fadeIn.c0;
+			break;
+		case Quadratic:
+			fGain *= m_fadeIn.c2 * f2 + m_fadeIn.c1 * f + m_fadeIn.c0;
+			break;
+		case Cubic:
+			fGain *= m_fadeIn.c3 * f2 * f + m_fadeIn.c2 * f2
+				+ m_fadeIn.c1 * f + m_fadeIn.c0;
+			break;
+		}
 	}
+
 	if (iOffset > m_iClipLength - m_iFadeOutLength) {
-		fGain *= m_fadeOut.c3 * f2 * f + m_fadeOut.c2 * f2
-			+ m_fadeOut.c1 * f + m_fadeOut.c0;
+		float f  = float(iOffset);
+		float f2 = f * f;
+		switch (m_fadeOut.fadeType) {
+		case Linear:
+			fGain *= m_fadeOut.c1 * f + m_fadeOut.c0;
+			break;
+		case Quadratic:
+			fGain *= m_fadeOut.c2 * f2 + m_fadeOut.c1 * f + m_fadeOut.c0;
+			break;
+		case Cubic:
+			fGain *= m_fadeOut.c3 * f2 * f + m_fadeOut.c2 * f2
+				+ m_fadeOut.c1 * f + m_fadeOut.c0;
+			break;
+		}
 	}
-#endif
 
 	return fGain;
 }

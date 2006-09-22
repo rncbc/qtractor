@@ -42,6 +42,7 @@ qtractorMidiClip::qtractorMidiClip ( qtractorTrack *pTrack )
 	m_pSeq  = new qtractorMidiSequence();
 
 	m_iTrackChannel = 0;
+	m_bSessionFlag  = false;
 }
 
 // Copy constructor.
@@ -87,13 +88,13 @@ bool qtractorMidiClip::openMidiFile ( const QString& sFilename,
 	}
 
 	// Open-process mode...
-	return openMidiFile(m_pFile, iTrackChannel, false);
+	return openMidiFile(m_pFile, iTrackChannel);
 }
 
 
 // Overloaded open method; reuse an already open MIDI file.
 bool qtractorMidiClip::openMidiFile ( qtractorMidiFile *pFile,
-	int iTrackChannel, bool bSetTempo )
+	int iTrackChannel )
 {
 	qtractorTrack *pTrack = track();
 	if (pTrack == NULL)
@@ -123,10 +124,12 @@ bool qtractorMidiClip::openMidiFile ( qtractorMidiFile *pFile,
 		if (!pFile->readTrack(m_pSeq, iTrackChannel))
 			return false;
 		// FIXME: On demand, set session time properties from MIDI file...
-		if (bSetTempo) {
+		if (m_bSessionFlag) {
 			pSession->setTempo(pFile->tempo());
 			pSession->setBeatsPerBar(pFile->beatsPerBar());
 			pSession->updateTimeScale();
+			// Reset session flag now.
+			m_bSessionFlag = false;
 		}
 		// We must have events, otherwise this clip is of now use...
 		if (m_pSeq->events().count() < 1)
@@ -160,6 +163,18 @@ void qtractorMidiClip::setTrackChannel ( unsigned short iTrackChannel )
 unsigned short qtractorMidiClip::trackChannel (void) const
 {
 	return m_iTrackChannel;
+}
+
+
+// (Meta)Session flag accessors.
+void qtractorMidiClip::setSessionFlag ( bool bSessionFlag )
+{
+	m_bSessionFlag = bSessionFlag;
+}
+
+bool qtractorMidiClip::isSessionFlag (void) const
+{
+	return m_bSessionFlag;
 }
 
 

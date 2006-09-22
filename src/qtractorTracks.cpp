@@ -641,6 +641,8 @@ bool qtractorTracks::addMidiTracks ( QStringList files,
 			pMidiClip->setFilename(sPath);
 			pMidiClip->setTrackChannel(iTrackChannel);
 			pMidiClip->setClipStart(iClipStart);
+			if (iTrackChannel == 0 && iImport == 0)
+				pMidiClip->setSessionFlag(true);
 			// Time to add the new track/clip into session...
 			pTrack->addClip(pMidiClip);
 			pTrack->setTrackName(pMidiClip->clipName());
@@ -652,8 +654,8 @@ bool qtractorTracks::addMidiTracks ( QStringList files,
 			// As far the standards goes,from which we'll strictly follow,
 			// only the first track/channel has some tempo/time signature...
 			if (iTrackChannel == 0) {
-				iImport++;
 				// Some adjustment required...
+				iImport++;
 				iClipStart = pSession->frameSnap(iClipStart);
 				pMidiClip->setClipStart(iClipStart);
 			}

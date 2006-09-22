@@ -49,12 +49,15 @@ public:
 	bool openMidiFile(const QString& sFilename, int iTrackChannel = 0,
 		int iMode = qtractorMidiFile::Read);
 	// Overloaded open method; reuse an already open MIDI file.
-	bool openMidiFile(qtractorMidiFile *pFile, int iTrackChannel = 0,
-		bool bSetTempo = false);
+	bool openMidiFile(qtractorMidiFile *pFile, int iTrackChannel = 0);
 
 	// MIDI file properties accessors.
 	void setTrackChannel(unsigned short iTrackChannel);
 	unsigned short trackChannel() const;
+
+	// (Meta)Session flag accessors.
+	void setSessionFlag(bool bSessionFlag);
+	bool isSessionFlag() const;
 
 	// Sequence properties accessors.
 	qtractorMidiSequence *sequence() const;
@@ -99,6 +102,7 @@ private:
 	qtractorMidiSequence *m_pSeq;
 
 	unsigned short m_iTrackChannel;
+	bool           m_bSessionFlag;
 
 	// To optimize and keep track of current playback
 	// position, mostly like an sequence cursor/iterator.
