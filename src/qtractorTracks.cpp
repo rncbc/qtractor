@@ -13,9 +13,9 @@
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
 
-   You should have received a copy of the GNU General Public License
-   along with this program; if not, write to the Free Software
-   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+   You should have received a copy of the GNU General Public License along
+   with this program; if not, write to the Free Software Foundation, Inc.,
+   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 *****************************************************************************/
 
@@ -643,14 +643,10 @@ bool qtractorTracks::addMidiTracks ( QStringList files,
 			pMidiClip->setClipStart(iClipStart);
 			if (iTrackChannel == 0 && iImport == 0)
 				pMidiClip->setSessionFlag(true);
-			// Time to add the new track/clip into session...
+			// Time to add the new track/clip into session;
+			// actuallly, this is wheen the given MIDI file and
+			// track-channel gets open and read into the clip!
 			pTrack->addClip(pMidiClip);
-			pTrack->setTrackName(pMidiClip->clipName());
-			// Add the new track to composite command...
-			pImportTrackCommand->addTrack(pTrack);
-			// Don't forget to add this one to local repository.
-			pMainForm->addMidiFile(sPath);
-			iUpdate++;
 			// As far the standards goes,from which we'll strictly follow,
 			// only the first track/channel has some tempo/time signature...
 			if (iTrackChannel == 0) {
@@ -659,14 +655,30 @@ bool qtractorTracks::addMidiTracks ( QStringList files,
 				iClipStart = pSession->frameSnap(iClipStart);
 				pMidiClip->setClipStart(iClipStart);
 			}
+			// Time to check whether there is actual data on track...
+			if (pMidiClip->clipLength() > 0) {
+				// Add the new track to composite command...
+				pTrack->setTrackName(pMidiClip->clipName());
+				pImportTrackCommand->addTrack(pTrack);
+				// Don't forget to add this one to local repository.
+				pMainForm->addMidiFile(sPath);
+				iUpdate++;
+			} else {
+				// Get rid of these, now...
+				pTrack->unlinkClip(pMidiClip);
+				delete pMidiClip;
+				delete pTrack;
+			}
 		}
 		// Log this successful import operation...
-		sDescription += tr("MIDI file import \"%1\" on %2 %3.\n")
-			.arg(QFileInfo(sPath).fileName())
-			.arg(QDate::currentDate().toString("MMM dd yyyy"))
-			.arg(QTime::currentTime().toString("hh:mm:ss"));
-		pMainForm->appendMessages(
-			tr("MIDI file import: \"%1\".").arg(sPath));
+		if (iUpdate > 0) {
+			sDescription += tr("MIDI file import \"%1\" on %2 %3.\n")
+				.arg(QFileInfo(sPath).fileName())
+				.arg(QDate::currentDate().toString("MMM dd yyyy"))
+				.arg(QTime::currentTime().toString("hh:mm:ss"));
+			pMainForm->appendMessages(
+				tr("MIDI file import: \"%1\".").arg(sPath));
+		}
 		// Make things temporarily stable...
 		qtractorSession::stabilize();
 	}

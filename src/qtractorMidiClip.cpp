@@ -13,9 +13,9 @@
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
 
-   You should have received a copy of the GNU General Public License
-   along with this program; if not, write to the Free Software
-   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+   You should have received a copy of the GNU General Public License along
+   with this program; if not, write to the Free Software Foundation, Inc.,
+   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 *****************************************************************************/
 
@@ -305,11 +305,12 @@ void qtractorMidiClip::close (void)
 	m_pSeq->close();
 
 	// Commit the final clip length...
-	if (clipLength() == 0)
+	if (clipLength() < 1)
 		setClipLength(pSession->frameFromTick(m_pSeq->duration()));
 	
 	// Now's time to write the whole thing, maybe as a SMF format 1...
-	if (m_pFile && m_pFile->mode() == qtractorMidiFile::Write) {
+	bool bNewFile = (m_pFile && m_pFile->mode() == qtractorMidiFile::Write);
+	if (bNewFile && clipLength() > 0) {
 		m_pFile->writeHeader(1, 2, m_pSeq->ticksPerBeat());
 		m_pFile->writeTrack(NULL);   // Setup track.
 		m_pFile->writeTrack(m_pSeq); // Channel track.
@@ -325,7 +326,7 @@ void qtractorMidiClip::close (void)
 	m_pSeq->clear();
 
 	// If proven empty, remove the file.
-	if (clipLength() == 0)
+	if (bNewFile && clipLength() < 1)
 		QFile::remove(filename());
 }
 

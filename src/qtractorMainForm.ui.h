@@ -14,9 +14,9 @@
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
 
-   You should have received a copy of the GNU General Public License
-   along with this program; if not, write to the Free Software
-   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+   You should have received a copy of the GNU General Public License along
+   with this program; if not, write to the Free Software Foundation, Inc.,
+   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 *****************************************************************************/
 
@@ -2046,12 +2046,6 @@ void qtractorMainForm::updateSession (void)
 	appendMessages("qtractorMainForm::updateSession()");
 #endif
 
-#if 0
-	// Stabilize session name.
-	if (m_pSession->sessionName().isEmpty())
-		m_pSession->setSessionName(QFileInfo(sessionName(m_sFilename)).baseName());
-#endif
-
 	// Initialize toolbar widgets...
 	m_pTempoSpinBox->setValueFloat(m_pSession->tempo());
 	m_pSnapPerBeatComboBox->setCurrentItem(
@@ -2448,7 +2442,7 @@ void qtractorMainForm::activateMidiFile  ( const QString& /* sFilename */ )
 // Tracks view selection change slot.
 void qtractorMainForm::trackSelectionChanged (void)
 {
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	appendMessages("qtractorMainForm::trackSelectionChanged()");
 #endif
 
@@ -2473,7 +2467,7 @@ void qtractorMainForm::trackSelectionChanged (void)
 // Mixer view selection change slot.
 void qtractorMainForm::mixerSelectionChanged (void)
 {
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	appendMessages("qtractorMainForm::mixerSelectionChanged()");
 #endif
 
@@ -2519,7 +2513,7 @@ void qtractorMainForm::tempoChanged (void)
 	if (::fabsf(m_pSession->tempo() - fTempo) < 0.01f)
 		return;
 
-#ifdef CONFIG_DEBUG_0
+#ifdef CONFIG_DEBUG
 	appendMessages("qtractorMainForm::tempoChanged()");
 #endif
 
@@ -2550,7 +2544,7 @@ void qtractorMainForm::snapPerBeatChanged ( int iSnap )
 	if (iSnapPerBeat == m_pSession->snapPerBeat())
 		return;
 
-#ifdef CONFIG_DEBUG_0
+#ifdef CONFIG_DEBUG
 	appendMessages("qtractorMainForm::snapPerBeatChanged()");
 #endif
 

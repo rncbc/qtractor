@@ -13,9 +13,9 @@
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
 
-   You should have received a copy of the GNU General Public License
-   along with this program; if not, write to the Free Software
-   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+   You should have received a copy of the GNU General Public License along
+   with this program; if not, write to the Free Software Foundation, Inc.,
+   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 *****************************************************************************/
 
@@ -666,12 +666,11 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 		// Must be a MIDI track, in capture mode
 		// and for the intended channel...
 		if (pTrack->trackType() == qtractorTrack::Midi
-			&& pTrack->clipRecord() != NULL
-			&& pTrack->midiChannel() == iChannel) {
+			&& pTrack->isRecord() && pTrack->midiChannel() == iChannel) {
 			qtractorMidiBus *pMidiBus
 				= static_cast<qtractorMidiBus *> (pTrack->inputBus());
 			if (pMidiBus && pMidiBus->alsaPort() == pEv->dest.port) {
-				// Is it recording?...
+				// Is it actually recording?...
 				qtractorMidiClip *pMidiClip
 					= static_cast<qtractorMidiClip *> (pTrack->clipRecord());
 				if (pMidiClip) {
@@ -681,12 +680,12 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 					if (pSysex)
 						pEvent->setSysex(pSysex, iSysex);
 					pMidiClip->sequence()->addEvent(pEvent);
-					// Track input monitoring...
-					qtractorMidiMonitor *pMidiMonitor
-						= static_cast<qtractorMidiMonitor *> (pTrack->monitor());
-					if (pMidiMonitor)
-						pMidiMonitor->enqueue(type, data2);
 				}
+				// Track input monitoring...
+				qtractorMidiMonitor *pMidiMonitor
+					= static_cast<qtractorMidiMonitor *> (pTrack->monitor());
+				if (pMidiMonitor)
+					pMidiMonitor->enqueue(type, data2);
 			}
 		}
 	}
