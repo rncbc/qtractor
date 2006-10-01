@@ -114,6 +114,18 @@ void qtractorPluginSelectForm::init (void)
 // Kind of destructor.
 void qtractorPluginSelectForm::destroy (void)
 {
+	// Save other conveniency options, if convenient thought...
+	if (m_pSelectList->count() > 0) {
+		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+		if (pMainForm) {
+			qtractorOptions *pOptions = pMainForm->options();
+			if (pOptions) {
+				pOptions->sPluginSearch = PluginSearchComboBox->currentText();
+				pOptions->saveComboBoxHistory(PluginSearchComboBox);
+			}
+		}
+	}
+	// Ok, can go on with clean up...
 	m_pSelectList->clear();
 
 	delete m_pSelectList;
@@ -125,7 +137,6 @@ void qtractorPluginSelectForm::destroy (void)
 void qtractorPluginSelectForm::setChannels ( unsigned short iChannels )
 {
 	m_iChannels = iChannels;
-	
 	refresh();
 }
 
@@ -271,19 +282,9 @@ void qtractorPluginSelectForm::accept (void)
 		pItem = pItem->nextSibling();
 	}
 
-	if (m_pSelectList->count() > 0) {
-		// Save other conveniency options...
-		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-		if (pMainForm) {
-			qtractorOptions *pOptions = pMainForm->options();
-			if (pOptions) {
-				pOptions->sPluginSearch = PluginSearchComboBox->currentText();
-				pOptions->saveComboBoxHistory(PluginSearchComboBox);
-			}
-		}
-		// Done.
+	// Are we done?
+	if (m_pSelectList->count() > 0)
 		QDialog::accept();
-	}
 }
 
 

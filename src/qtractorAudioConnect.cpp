@@ -37,11 +37,11 @@ qtractorAudioPortItem::qtractorAudioPortItem (
 	if (ulPortFlags & JackPortIsInput) {
 		QListViewItem::setPixmap(0,
 			qtractorAudioConnect::pixmap(ulPortFlags & JackPortIsPhysical ?
-				QTRACTOR_AUDIO_PORT_PHYS_IN : QTRACTOR_AUDIO_PORT_IN));
+				qtractorAudioConnect::PortPhysIn : qtractorAudioConnect::PortIn));
 	} else {
 		QListViewItem::setPixmap(0,
 			qtractorAudioConnect::pixmap(ulPortFlags & JackPortIsPhysical ?
-				QTRACTOR_AUDIO_PORT_PHYS_OUT : QTRACTOR_AUDIO_PORT_OUT));
+				qtractorAudioConnect::PortPhysOut : qtractorAudioConnect::PortOut));
 	}
 }
 
@@ -76,10 +76,10 @@ qtractorAudioClientItem::qtractorAudioClientItem (
 {
 	if (pClientListView->isReadable()) {
 		QListViewItem::setPixmap(0,
-			qtractorAudioConnect::pixmap(QTRACTOR_AUDIO_CLIENT_OUT));
+			qtractorAudioConnect::pixmap(qtractorAudioConnect::ClientOut));
 	} else {
 		QListViewItem::setPixmap(0,
-			qtractorAudioConnect::pixmap(QTRACTOR_AUDIO_CLIENT_IN));
+			qtractorAudioConnect::pixmap(qtractorAudioConnect::ClientIn));
 	}
 }
 
@@ -212,23 +212,23 @@ qtractorAudioConnect::~qtractorAudioConnect (void)
 
 
 // Local pixmap-set janitor methods.
-QPixmap *qtractorAudioConnect::g_apPixmaps[QTRACTOR_AUDIO_PIXMAPS];
+QPixmap *qtractorAudioConnect::g_apPixmaps[qtractorAudioConnect::PixmapCount];
 int      qtractorAudioConnect::g_iPixmapsRefCount = 0;
 
 void qtractorAudioConnect::createIconPixmaps (void)
 {
 	if (++g_iPixmapsRefCount == 1) {
-		g_apPixmaps[QTRACTOR_AUDIO_CLIENT_IN]
+		g_apPixmaps[ClientIn]
 			= new QPixmap(QPixmap::fromMimeSource("itemAudioClientIn.png"));
-		g_apPixmaps[QTRACTOR_AUDIO_CLIENT_OUT]
+		g_apPixmaps[ClientOut]
 			= new QPixmap(QPixmap::fromMimeSource("itemAudioClientOut.png"));
-		g_apPixmaps[QTRACTOR_AUDIO_PORT_IN]
+		g_apPixmaps[PortIn]
 			= new QPixmap(QPixmap::fromMimeSource("itemAudioPortIn.png"));
-		g_apPixmaps[QTRACTOR_AUDIO_PORT_OUT]
+		g_apPixmaps[PortOut]
 			= new QPixmap(QPixmap::fromMimeSource("itemAudioPortOut.png"));
-		g_apPixmaps[QTRACTOR_AUDIO_PORT_PHYS_IN]
+		g_apPixmaps[PortPhysIn]
 			= new QPixmap(QPixmap::fromMimeSource("itemAudioPortPhysIn.png"));
-		g_apPixmaps[QTRACTOR_AUDIO_PORT_PHYS_OUT]
+		g_apPixmaps[PortPhysOut]
 			= new QPixmap(QPixmap::fromMimeSource("itemAudioPortPhysOut.png"));
 	}
 	
@@ -237,7 +237,7 @@ void qtractorAudioConnect::createIconPixmaps (void)
 void qtractorAudioConnect::deleteIconPixmaps (void)
 {
 	if (--g_iPixmapsRefCount == 0) {
-		for (int i = 0; i < QTRACTOR_AUDIO_PIXMAPS; i++) {
+		for (int i = 0; i < PixmapCount; i++) {
 			if (g_apPixmaps[i])
 				delete g_apPixmaps[i];
 			g_apPixmaps[i] = 0;

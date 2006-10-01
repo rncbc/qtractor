@@ -120,7 +120,7 @@ void qtractorMidiMeterValue::paintEvent ( QPaintEvent * )
 	p.setWindow(0, 0, iWidth, iHeight);
 
 	if (isEnabled()) {
-		pm.fill(m_pMidiMeter->color(QTRACTOR_MIDI_METER_BACK));
+		pm.fill(m_pMidiMeter->color(qtractorMidiMeter::ColorBack));
 	} else {
 		pm.fill(Qt::gray);
 	}
@@ -140,7 +140,7 @@ void qtractorMidiMeterValue::paintEvent ( QPaintEvent * )
 	}
 
 	p.fillRect(0, iHeight - y, iWidth, y,
-		m_pMidiMeter->color(QTRACTOR_MIDI_METER_OVER));
+		m_pMidiMeter->color(qtractorMidiMeter::ColorOver));
 
 	if (y > m_iPeak) {
 		m_iPeak = y;
@@ -155,7 +155,7 @@ void qtractorMidiMeterValue::paintEvent ( QPaintEvent * )
 		}
 	}
 
-	p.setPen(m_pMidiMeter->color(QTRACTOR_MIDI_METER_PEAK));
+	p.setPen(m_pMidiMeter->color(qtractorMidiMeter::ColorPeak));
 	p.drawLine(0, iHeight - m_iPeak, iWidth, iHeight - m_iPeak);
 
 	bitBlt(this, 0, 0, &pm);
@@ -200,10 +200,10 @@ qtractorMidiMeter::qtractorMidiMeter ( qtractorMidiMonitor *pMidiMonitor,
 	setGain(monitor()->gain());
 	setPanning(monitor()->panning());
 
-	m_colors[QTRACTOR_MIDI_METER_PEAK] = QColor(160,220, 20);
-	m_colors[QTRACTOR_MIDI_METER_OVER] = QColor( 40,160, 40);
-	m_colors[QTRACTOR_MIDI_METER_BACK] = QColor( 20, 40, 20);
-	m_colors[QTRACTOR_MIDI_METER_FORE] = QColor( 80, 80, 80);
+	m_colors[ColorPeak] = QColor(160,220, 20);
+	m_colors[ColorOver] = QColor( 40,160, 40);
+	m_colors[ColorBack] = QColor( 20, 40, 20);
+	m_colors[ColorFore] = QColor( 80, 80, 80);
 
 	updatePanning();
 	updateGain();

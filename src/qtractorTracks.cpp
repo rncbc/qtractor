@@ -46,13 +46,6 @@
 #include <qvbox.h>
 
 
-// Zoom factor constants.
-#define QTRACTOR_ZOOM_MIN		10
-#define QTRACTOR_ZOOM_BASE		100
-#define QTRACTOR_ZOOM_MAX		1000
-#define QTRACTOR_ZOOM_STEP		10
-
-
 //----------------------------------------------------------------------------
 // qtractorTracks -- The main session track listview widget.
 
@@ -160,10 +153,11 @@ void qtractorTracks::horizontalZoomStep ( int iZoomStep )
 		return;
 		
 	int iHorizontalZoom = pSession->horizontalZoom() + iZoomStep;
-	if (iHorizontalZoom < QTRACTOR_ZOOM_MIN)
-		iHorizontalZoom = QTRACTOR_ZOOM_MIN;
-	if (iHorizontalZoom > QTRACTOR_ZOOM_MAX)
-		iHorizontalZoom = QTRACTOR_ZOOM_MAX;
+	if (iHorizontalZoom < ZoomMin)
+		iHorizontalZoom = ZoomMin;
+	else
+	if (iHorizontalZoom > ZoomMax)
+		iHorizontalZoom = ZoomMax;
 	if (iHorizontalZoom == pSession->horizontalZoom())
 		return;
 
@@ -202,10 +196,11 @@ void qtractorTracks::verticalZoomStep ( int iZoomStep )
 		return;
 		
 	int iVerticalZoom = pSession->verticalZoom() + iZoomStep;
-	if (iVerticalZoom < QTRACTOR_ZOOM_MIN)
-		iVerticalZoom = QTRACTOR_ZOOM_MIN;
-	if (iVerticalZoom > QTRACTOR_ZOOM_MAX)
-		iVerticalZoom = QTRACTOR_ZOOM_MAX;
+	if (iVerticalZoom < ZoomMin)
+		iVerticalZoom = ZoomMin;
+	else
+	if (iVerticalZoom > ZoomMax)
+		iVerticalZoom = ZoomMax;
 	if (iVerticalZoom == pSession->verticalZoom())
 		return;
 
@@ -235,22 +230,22 @@ void qtractorTracks::trackListPolishSlot (void)
 // Zoom view slots.
 void qtractorTracks::horizontalZoomInSlot (void)
 {
-	horizontalZoomStep(+ QTRACTOR_ZOOM_STEP);
+	horizontalZoomStep(+ ZoomStep);
 }
 
 void qtractorTracks::horizontalZoomOutSlot (void)
 {
-	horizontalZoomStep(- QTRACTOR_ZOOM_STEP);
+	horizontalZoomStep(- ZoomStep);
 }
 
 void qtractorTracks::verticalZoomInSlot (void)
 {
-	verticalZoomStep(+ QTRACTOR_ZOOM_STEP);
+	verticalZoomStep(+ ZoomStep);
 }
 
 void qtractorTracks::verticalZoomOutSlot (void)
 {
-	verticalZoomStep(- QTRACTOR_ZOOM_STEP);
+	verticalZoomStep(- ZoomStep);
 }
 
 void qtractorTracks::viewZoomToolSlot (void)
@@ -260,8 +255,8 @@ void qtractorTracks::viewZoomToolSlot (void)
 		return;
 
 	// All zoom base are belong to us :)
-	verticalZoomStep(QTRACTOR_ZOOM_BASE - pSession->verticalZoom());
-	horizontalZoomStep(QTRACTOR_ZOOM_BASE - pSession->horizontalZoom());
+	verticalZoomStep(ZoomBase - pSession->verticalZoom());
+	horizontalZoomStep(ZoomBase - pSession->horizontalZoom());
 }
 
 

@@ -267,7 +267,7 @@ void qtractorMeter::panSliderChangedSlot ( int iValue )
 	m_iUpdate++;
 
 	float fPanning = 0.01f * float(iValue);
-	if (::fabsf(m_pPanSpinBox->valueFloat() - fPanning) > 0.1f) {
+	if (::fabsf(m_pPanSpinBox->valueFloat() - fPanning) > 0.01f) {
 		m_pPanSpinBox->setValueFloat(fPanning);
 		emit panChangedSignal(fPanning);
 	}

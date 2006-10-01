@@ -180,9 +180,9 @@ void qtractorConnectForm::audioRefresh (void)
 	m_pAudioConnect->refresh();
 
 	updateClientsComboBox(AudioOClientsComboBox, AudioOListView,
-		m_pAudioConnect->pixmap(QTRACTOR_AUDIO_CLIENT_OUT));
+		m_pAudioConnect->pixmap(qtractorAudioConnect::ClientOut));
 	updateClientsComboBox(AudioIClientsComboBox, AudioIListView,
-		m_pAudioConnect->pixmap(QTRACTOR_AUDIO_CLIENT_IN));
+		m_pAudioConnect->pixmap(qtractorAudioConnect::ClientIn));
 
 	audioStabilize();
 }
@@ -279,9 +279,9 @@ void qtractorConnectForm::midiRefresh (void)
 	m_pMidiConnect->refresh();
 	
 	updateClientsComboBox(MidiOClientsComboBox, MidiOListView,
-		m_pMidiConnect->pixmap(QTRACTOR_MIDI_CLIENT_OUT));
+		m_pMidiConnect->pixmap(qtractorMidiConnect::ClientOut));
 	updateClientsComboBox(MidiIClientsComboBox, MidiIListView,
-		m_pMidiConnect->pixmap(QTRACTOR_MIDI_CLIENT_IN));
+		m_pMidiConnect->pixmap(qtractorMidiConnect::ClientIn));
 
 	midiStabilize();
 }

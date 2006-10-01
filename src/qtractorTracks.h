@@ -109,6 +109,9 @@ public:
 
 protected:
 
+	// Zoom factor constants.
+	enum { ZoomMin = 10, ZoomBase = 100, ZoomMax = 1000, ZoomStep = 10 };
+
 	// Common zoom factor settlers.
 	void horizontalZoomStep(int iZoomStep);
 	void verticalZoomStep(int iZoomStep);

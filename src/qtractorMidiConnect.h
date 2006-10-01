@@ -32,13 +32,6 @@ class qtractorMidiClientItem;
 class qtractorMidiClientListView;
 class qtractorMidiConnect;
 
-// Pixmap-set array indexes.
-#define QTRACTOR_MIDI_CLIENT_OUT	0	// Output client item pixmap.
-#define QTRACTOR_MIDI_CLIENT_IN		1	// Input client item pixmap.
-#define QTRACTOR_MIDI_PORT_OUT		2	// Output port item pixmap.
-#define QTRACTOR_MIDI_PORT_IN		3	// Input port item pixmap.
-#define QTRACTOR_MIDI_PIXMAPS		4	// Number of pixmaps in local array.
-
 
 //----------------------------------------------------------------------
 // qtractorMidiPortItem -- Alsa port list item.
@@ -139,6 +132,15 @@ public:
 	void setAlsaSeq(snd_seq_t *pAlsaSeq);
 	snd_seq_t *alsaSeq() const;
 
+	// Pixmap-set array indexes.
+	enum {
+		ClientIn	= 0,	// Input client item pixmap.
+		ClientOut	= 1,	// Output client item pixmap.
+		PortIn		= 2,	// Input port item pixmap.
+		PortOut		= 3,	// Output port item pixmap.
+		PixmapCount	= 4		// Number of pixmaps in local array.
+	};
+
 	// Common pixmap accessor.
 	static const QPixmap& pixmap(int iPixmap);
 
@@ -163,7 +165,7 @@ private:
 	snd_seq_t *m_pAlsaSeq;
 
 	// Local static pixmap-set array.
-	static QPixmap *g_apPixmaps[QTRACTOR_MIDI_PIXMAPS];
+	static QPixmap *g_apPixmaps[PixmapCount];
 	static int      g_iPixmapsRefCount;
 };
 

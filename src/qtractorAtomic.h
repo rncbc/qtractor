@@ -131,6 +131,12 @@ static inline int ATOMIC_ADD ( qtractorAtomic *pVal, int add )
 	return val;
 }
 
+static inline int ATOMIC_TAS ( qtractorAtomic *pVal )
+{
+	return ATOMIC_CAS(&pVal->value, (void *) 0, (void *) 1);
+}
+
+
 #if defined(__cplusplus)
 }
 #endif

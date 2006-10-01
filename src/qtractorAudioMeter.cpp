@@ -111,10 +111,10 @@ void qtractorAudioMeterScale::paintScale ( QPainter *p )
 	if (pAudioMeter == NULL)
 		return;
 
-	drawLineLabel(p, pAudioMeter->iec_level(QTRACTOR_AUDIO_METER_0DB),  "0");
-	drawLineLabel(p, pAudioMeter->iec_level(QTRACTOR_AUDIO_METER_3DB),  "3");
-	drawLineLabel(p, pAudioMeter->iec_level(QTRACTOR_AUDIO_METER_6DB),  "6");
-	drawLineLabel(p, pAudioMeter->iec_level(QTRACTOR_AUDIO_METER_10DB), "10");
+	drawLineLabel(p, pAudioMeter->iec_level(qtractorAudioMeter::Color0dB), "0");
+	drawLineLabel(p, pAudioMeter->iec_level(qtractorAudioMeter::Color3dB), "3");
+	drawLineLabel(p, pAudioMeter->iec_level(qtractorAudioMeter::Color6dB), "6");
+	drawLineLabel(p, pAudioMeter->iec_level(qtractorAudioMeter::Color10dB), "10");
 
 	for (float dB = -20.0f; dB > QTRACTOR_AUDIO_METER_MINDB; dB -= 10.0f)
 		drawLineLabel(p, pAudioMeter->iec_scale(dB), QString::number(-int(dB)));
@@ -137,7 +137,7 @@ qtractorAudioMeterValue::qtractorAudioMeterValue(
 	m_iPeak       = 0;
 	m_iPeakHold   = 0;
 	m_fPeakDecay  = QTRACTOR_AUDIO_METER_DECAY_RATE2;
-	m_iPeakColor  = QTRACTOR_AUDIO_METER_6DB;
+	m_iPeakColor  = qtractorAudioMeter::Color6dB;
 
 	QFrame::setFixedWidth(10);
 	QFrame::setBackgroundMode(Qt::NoBackground);
@@ -172,9 +172,9 @@ void qtractorAudioMeterValue::paintEvent ( QPaintEvent * )
 	p.setWindow(0, 0, iWidth, iHeight);
 
 	if (isEnabled()) {
-		pm.fill(m_pAudioMeter->color(QTRACTOR_AUDIO_METER_BACK));
-		y = m_pAudioMeter->iec_level(QTRACTOR_AUDIO_METER_0DB);
-		p.setPen(m_pAudioMeter->color(QTRACTOR_AUDIO_METER_FORE));
+		pm.fill(m_pAudioMeter->color(qtractorAudioMeter::ColorBack));
+		y = m_pAudioMeter->iec_level(qtractorAudioMeter::Color0dB);
+		p.setPen(m_pAudioMeter->color(qtractorAudioMeter::ColorFore));
 		p.drawLine(0, iHeight - y, iWidth, iHeight - y);
 	} else {
 		pm.fill(Qt::gray);
@@ -208,8 +208,8 @@ void qtractorAudioMeterValue::paintEvent ( QPaintEvent * )
 	}
 
 	int iLevel;
-	for (iLevel = QTRACTOR_AUDIO_METER_10DB;
-			iLevel > QTRACTOR_AUDIO_METER_OVER && y >= y_over; iLevel--) {
+	for (iLevel = qtractorAudioMeter::Color10dB;
+			iLevel > qtractorAudioMeter::ColorOver && y >= y_over; iLevel--) {
 		y_curr = m_pAudioMeter->iec_level(iLevel);
 		if (y < y_curr) {
 			p.fillRect(0, iHeight - y, iWidth, y - y_over,
@@ -223,7 +223,7 @@ void qtractorAudioMeterValue::paintEvent ( QPaintEvent * )
 
 	if (y > y_over) {
 		p.fillRect(0, iHeight - y, iWidth, y - y_over,
-			m_pAudioMeter->color(QTRACTOR_AUDIO_METER_OVER));
+			m_pAudioMeter->color(qtractorAudioMeter::ColorOver));
 	}
 
 	if (y > m_iPeak) {
@@ -236,8 +236,8 @@ void qtractorAudioMeterValue::paintEvent ( QPaintEvent * )
 		if (y > m_iPeak) {
 			m_iPeak = y;
 		} else {
-			if (m_iPeak < m_pAudioMeter->iec_level(QTRACTOR_AUDIO_METER_10DB))
-				m_iPeakColor = QTRACTOR_AUDIO_METER_6DB;
+			if (m_iPeak < m_pAudioMeter->iec_level(qtractorAudioMeter::Color10dB))
+				m_iPeakColor = qtractorAudioMeter::Color6dB;
 			m_fPeakDecay *= m_fPeakDecay;
 		}
 	}
@@ -282,16 +282,16 @@ qtractorAudioMeter::qtractorAudioMeter ( qtractorAudioMonitor *pAudioMonitor,
 
 	setPeakFalloff(QTRACTOR_AUDIO_METER_PEAK_FALLOFF);
 
-	for (int i = 0; i < QTRACTOR_AUDIO_METER_LEVELS; i++)
+	for (int i = 0; i < LevelCount; i++)
 		m_levels[i] = 0;
 
-	m_colors[QTRACTOR_AUDIO_METER_OVER] = QColor(240,  0, 20);
-	m_colors[QTRACTOR_AUDIO_METER_0DB]  = QColor(240,160, 20);
-	m_colors[QTRACTOR_AUDIO_METER_3DB]  = QColor(220,220, 20);
-	m_colors[QTRACTOR_AUDIO_METER_6DB]  = QColor(160,220, 20);
-	m_colors[QTRACTOR_AUDIO_METER_10DB] = QColor( 40,160, 40);
-	m_colors[QTRACTOR_AUDIO_METER_BACK] = QColor( 20, 40, 20);
-	m_colors[QTRACTOR_AUDIO_METER_FORE] = QColor( 80, 80, 80);
+	m_colors[ColorOver] = QColor(240,  0, 20);
+	m_colors[Color0dB]  = QColor(240,160, 20);
+	m_colors[Color3dB]  = QColor(220,220, 20);
+	m_colors[Color6dB]  = QColor(160,220, 20);
+	m_colors[Color10dB] = QColor( 40,160, 40);
+	m_colors[ColorBack] = QColor( 20, 40, 20);
+	m_colors[ColorFore] = QColor( 80, 80, 80);
 
 	updatePanning();
 	updateGain();
@@ -406,10 +406,10 @@ void qtractorAudioMeter::resizeEvent ( QResizeEvent * )
 	m_fScale = (1.0f - 0.025f * QTRACTOR_AUDIO_METER_MAXDB)
 		* float(hbox()->height());
 
-	m_levels[QTRACTOR_AUDIO_METER_0DB]  = iec_scale(  0.0f);
-	m_levels[QTRACTOR_AUDIO_METER_3DB]  = iec_scale( -3.0f);
-	m_levels[QTRACTOR_AUDIO_METER_6DB]  = iec_scale( -6.0f);
-	m_levels[QTRACTOR_AUDIO_METER_10DB] = iec_scale(-10.0f);
+	m_levels[Color0dB]  = iec_scale(  0.0f);
+	m_levels[Color3dB]  = iec_scale( -3.0f);
+	m_levels[Color6dB]  = iec_scale( -6.0f);
+	m_levels[Color10dB] = iec_scale(-10.0f);
 }
 
 

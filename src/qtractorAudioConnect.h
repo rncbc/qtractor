@@ -128,6 +128,17 @@ public:
 	void setJackClient(jack_client_t *pJackClient);
 	jack_client_t *jackClient() const;
 
+	// Pixmap-set array indexes.
+	enum {
+		ClientIn	= 0,	// Input client item pixmap.
+		ClientOut	= 1,	// Output client item pixmap.
+		PortIn		= 2,	// Input port item pixmap.
+		PortOut		= 3,	// Output port item pixmap.
+		PortPhysIn	= 4,	// Physical input port item pixmap.
+		PortPhysOut	= 5,	// Physical output port item pixmap.,
+		PixmapCount	= 6		// Number of pixmaps in local array.
+	};
+
 	// Common pixmap accessor.
 	static const QPixmap& pixmap (int iPixmap);
 	
@@ -152,7 +163,7 @@ private:
 	jack_client_t *m_pJackClient;
 
 	// Local pixmap-set array.
-	static QPixmap *g_apPixmaps[QTRACTOR_AUDIO_PIXMAPS];
+	static QPixmap *g_apPixmaps[PixmapCount];
 	static int      g_iPixmapsRefCount;
 };
 

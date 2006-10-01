@@ -35,10 +35,10 @@ qtractorMidiPortItem::qtractorMidiPortItem (
 
 	if (pClientItem->isReadable()) {
 		QListViewItem::setPixmap(0,
-			qtractorMidiConnect::pixmap(QTRACTOR_MIDI_PORT_OUT));
+			qtractorMidiConnect::pixmap(qtractorMidiConnect::PortOut));
 	} else {
 		QListViewItem::setPixmap(0,
-			qtractorMidiConnect::pixmap(QTRACTOR_MIDI_PORT_IN));
+			qtractorMidiConnect::pixmap(qtractorMidiConnect::PortIn));
 	}
 }
 
@@ -75,10 +75,10 @@ qtractorMidiClientItem::qtractorMidiClientItem (
 
 	if (pClientListView->isReadable()) {
 		QListViewItem::setPixmap(0,
-			qtractorMidiConnect::pixmap(QTRACTOR_MIDI_CLIENT_OUT));
+			qtractorMidiConnect::pixmap(qtractorMidiConnect::ClientOut));
 	} else {
 		QListViewItem::setPixmap(0,
-			qtractorMidiConnect::pixmap(QTRACTOR_MIDI_CLIENT_IN));
+			qtractorMidiConnect::pixmap(qtractorMidiConnect::ClientIn));
 	}
 }
 
@@ -271,19 +271,19 @@ qtractorMidiConnect::~qtractorMidiConnect (void)
 
 
 // Local pixmap-set janitor methods.
-QPixmap *qtractorMidiConnect::g_apPixmaps[QTRACTOR_MIDI_PIXMAPS];
+QPixmap *qtractorMidiConnect::g_apPixmaps[qtractorMidiConnect::PixmapCount];
 int      qtractorMidiConnect::g_iPixmapsRefCount = 0;
 
 void qtractorMidiConnect::createIconPixmaps (void)
 {
 	if (++g_iPixmapsRefCount == 1) {
-		g_apPixmaps[QTRACTOR_MIDI_CLIENT_IN]
+		g_apPixmaps[ClientIn]
 			= new QPixmap(QPixmap::fromMimeSource("itemMidiClientIn.png"));
-		g_apPixmaps[QTRACTOR_MIDI_CLIENT_OUT]
+		g_apPixmaps[ClientOut]
 			= new QPixmap(QPixmap::fromMimeSource("itemMidiClientOut.png"));
-		g_apPixmaps[QTRACTOR_MIDI_PORT_IN]
+		g_apPixmaps[PortIn]
 			= new QPixmap(QPixmap::fromMimeSource("itemMidiPortIn.png"));
-		g_apPixmaps[QTRACTOR_MIDI_PORT_OUT]
+		g_apPixmaps[PortOut]
 			= new QPixmap(QPixmap::fromMimeSource("itemMidiPortOut.png"));
 	}
 }
@@ -291,7 +291,7 @@ void qtractorMidiConnect::createIconPixmaps (void)
 void qtractorMidiConnect::deleteIconPixmaps (void)
 {
 	if (--g_iPixmapsRefCount == 0) {
-		for (int i = 0; i < QTRACTOR_MIDI_PIXMAPS; i++) {
+		for (int i = 0; i < PixmapCount; i++) {
 			if (g_apPixmaps[i])
 				delete g_apPixmaps[i];
 			g_apPixmaps[i] = 0;

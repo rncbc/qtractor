@@ -24,17 +24,6 @@
 
 #include "qtractorMeter.h"
 
-// Color/level indexes.
-#define QTRACTOR_AUDIO_METER_OVER	0
-#define QTRACTOR_AUDIO_METER_0DB	1
-#define QTRACTOR_AUDIO_METER_3DB	2
-#define QTRACTOR_AUDIO_METER_6DB	3
-#define QTRACTOR_AUDIO_METER_10DB	4
-#define QTRACTOR_AUDIO_METER_BACK	5
-#define QTRACTOR_AUDIO_METER_FORE	6
-
-#define QTRACTOR_AUDIO_METER_LEVELS	5
-#define QTRACTOR_AUDIO_METER_COLORS	7
 
 // Forward declarations.
 class qtractorAudioMeter;
@@ -142,6 +131,19 @@ public:
 	int iec_scale(float dB) const;
 	int iec_level(int iIndex) const;
 
+	// Color/level indexes.
+	enum {
+		ColorOver	= 0,
+		Color0dB	= 1,
+		Color3dB	= 2,
+		Color6dB	= 3,
+		Color10dB	= 4,
+		LevelCount	= 5,
+		ColorBack	= 5,
+		ColorFore	= 6,
+		ColorCount	= 7
+	};
+
 	// Common resource accessors.
 	const QColor& color(int iIndex) const;
 
@@ -168,8 +170,8 @@ private:
 
 	float  m_fScale;
 
-	int    m_levels[QTRACTOR_AUDIO_METER_LEVELS];
-	QColor m_colors[QTRACTOR_AUDIO_METER_COLORS];
+	int    m_levels[LevelCount];
+	QColor m_colors[ColorCount];
 };
 
 	

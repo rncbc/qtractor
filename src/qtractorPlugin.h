@@ -22,6 +22,7 @@
 #ifndef __qtractorPlugin_h
 #define __qtractorPlugin_h
 
+#include "qtractorAtomic.h"
 #include "qtractorList.h"
 
 #include <qstringlist.h>
@@ -328,6 +329,9 @@ private:
 
 	// Internal running buffer chain references.
 	float **m_pppBuffers[2];
+
+	// RT-safeness hackish mutex.
+	qtractorAtomic m_mutex;
 };
 
 

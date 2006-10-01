@@ -124,6 +124,9 @@ public:
 	// Renumber track list items.
 	void renumberTrackItems(QListViewItem *pItem = NULL);
 
+	// Base item height (in pixels).
+	enum { ItemHeightMin = 24, ItemHeightBase = 48 };
+
 	// Zoom all tracks item height.
 	void zoomItemHeight(int iVerticalZoom);
 

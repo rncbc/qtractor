@@ -24,13 +24,6 @@
 
 #include "qtractorMeter.h"
 
-// Color/level indexes.
-#define QTRACTOR_MIDI_METER_PEAK	0
-#define QTRACTOR_MIDI_METER_OVER	1
-#define QTRACTOR_MIDI_METER_BACK	2
-#define QTRACTOR_MIDI_METER_FORE	3
-
-#define QTRACTOR_MIDI_METER_COLORS	4
 
 // Forward declarations.
 class qtractorMidiMeter;
@@ -132,6 +125,15 @@ public:
 	// Reset peak holder.
 	void peakReset();
 
+	// Color/level indexes.
+	enum {
+		ColorPeak	= 0,
+		ColorOver	= 1,
+		ColorBack	= 2,
+		ColorFore	= 3,
+		ColorCount	= 4
+	};
+
 	// Common resource accessors.
 	const QColor& color(int iIndex) const;
 
@@ -151,7 +153,7 @@ private:
 	qtractorMidiMeterScale *m_pMidiScale;
 	qtractorMidiMeterValue *m_pMidiValue;
 
-	QColor m_colors[QTRACTOR_MIDI_METER_COLORS];
+	QColor m_colors[ColorCount];
 
 	// MIDI I/O LED pixmap studd.
 	QPixmap     *m_pMidiPixmap[2];
