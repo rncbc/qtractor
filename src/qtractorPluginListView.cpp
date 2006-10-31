@@ -28,34 +28,41 @@
 #include "qtractorMainForm.h"
 
 #include "qtractorSlider.h"
-#include "qtractorSpinBox.h"
 
-#include <qheader.h>
-#include <qpainter.h>
-#include <qpopupmenu.h>
+#include <QItemDelegate>
+#include <QPainter>
+#include <QIcon>
+#include <QMenu>
+#include <QToolTip>
 
-#include <qlayout.h>
-#include <qlabel.h>
-#include <qcheckbox.h>
-#include <qtooltip.h>
+#include <QScrollBar>
+#include <QLabel>
+#include <QCheckBox>
+#include <QGridLayout>
+#include <QDoubleSpinBox>
+
+#include <QContextMenuEvent>
+
+#include <math.h>
 
 
 //----------------------------------------------------------------------------
 // qtractorTinyScrollBarStyle -- Custom style to have some tiny scrollbars
 //
-#include <qcdestyle.h>
+#include <QCDEStyle>
 
 class qtractorTinyScrollBarStyle : public QCDEStyle
 {
 public:
 
 	// Custom virtual override.
-	int pixelMetric( PixelMetric pm, const QWidget *pWidget = 0 ) const
+	int pixelMetric( PixelMetric pm,
+		const QStyleOption *option = 0,	const QWidget *pWidget = 0 ) const
 	{
 		if (pm == QStyle::PM_ScrollBarExtent)
 			return 8;
 
-		return QCDEStyle::pixelMetric(pm, pWidget);
+		return QCDEStyle::pixelMetric(pm, option, pWidget);
 	}
 };
 
@@ -64,42 +71,92 @@ static qtractorTinyScrollBarStyle g_tinyScrollBarStyle;
 
 
 //----------------------------------------------------------------------------
+// qtractorPluginListItemDelegate -- Plugin list view item delgate.
+
+class qtractorPluginListItemDelegate : public QItemDelegate
+{
+public:
+
+	// Constructor.
+	qtractorPluginListItemDelegate(QListWidget *pListWidget)
+		: QItemDelegate(pListWidget), m_pListWidget(pListWidget) {}
+
+	// Overridden paint method.
+	void paint(QPainter *pPainter, const QStyleOptionViewItem& option,
+		const QModelIndex& index) const
+	{
+		// Unselectable items get special grayed out painting...
+		QListWidgetItem *pItem = m_pListWidget->item(index.row());
+		if (pItem) {
+			pPainter->save();
+			const QPalette& pal = option.palette;
+			QColor rgbBack;
+			QColor rgbFore;
+			if (option.state & QStyle::State_HasFocus) {
+				rgbBack = pal.highlight().color();
+				rgbFore = pal.highlightedText().color();
+			} else {
+				rgbBack = pal.background().color();
+				rgbFore = pal.foreground().color();
+			}
+			// Fill the background...
+			pPainter->fillRect(option.rect, rgbBack);
+			// Draw the icon...
+			QRect rect = option.rect;
+			const QSize& iconSize = m_pListWidget->iconSize();
+			pPainter->drawPixmap(1, rect.top() + 1,
+				pItem->icon().pixmap(iconSize));
+			// Draw the text...
+			rect.setLeft(iconSize.width());
+			pPainter->setPen(rgbFore);
+			pPainter->drawText(rect,
+				Qt::AlignLeft | Qt::AlignVCenter, pItem->text());
+			// Draw frame lines...
+			pPainter->setPen(rgbBack.light(150));
+			pPainter->drawLine(
+				option.rect.left(),  option.rect.top(),
+				option.rect.right(), option.rect.top());
+			pPainter->setPen(rgbBack.dark(150));
+			pPainter->drawLine(
+				option.rect.left(),  option.rect.bottom(),
+				option.rect.right(), option.rect.bottom());
+			pPainter->restore();
+		//	if (option.state & QStyle::State_HasFocus)
+		//		QItemDelegate::drawFocus(pPainter, option, option.rect);
+		} else {
+			// Others do as default...
+			QItemDelegate::paint(pPainter, option, index);
+		}
+	}
+
+private:
+
+	QListWidget *m_pListWidget;
+};
+
+
+//----------------------------------------------------------------------------
 // qtractorPluginListItem -- Plugins list item.
 
 // Constructors.
-qtractorPluginListItem::qtractorPluginListItem (
-	qtractorPluginListView *pListView, qtractorPlugin *pPlugin )
-	: QListViewItem(pListView, pListView->lastItem())
+qtractorPluginListItem::qtractorPluginListItem ( qtractorPlugin *pPlugin )
+	: QListWidgetItem()
 {
-	initItem(pPlugin);
-}
+	m_pPlugin = pPlugin;
 
-qtractorPluginListItem::qtractorPluginListItem (
-	qtractorPluginListView *pListView, qtractorPlugin *pPlugin,
-	QListViewItem *pItemAfter )
-	: QListViewItem(pListView, pItemAfter)
-{
-	initItem(pPlugin);
-}
+	m_pPlugin->items().append(this);
 
+	QListWidgetItem::setText(m_pPlugin->name());
+
+	updateActivated();
+}
 
 // Destructor.
 qtractorPluginListItem::~qtractorPluginListItem (void)
 {
-	if (m_pPlugin)
-		m_pPlugin->items().remove(this);
-}
-
-
-// Common item initializer.
-void qtractorPluginListItem::initItem ( qtractorPlugin *pPlugin )
-{
-	m_pPlugin = pPlugin;
-
-	updateActivated();
-	QListViewItem::setText(1, m_pPlugin->name());
-
-	m_pPlugin->items().append(this);
+	int iItem = m_pPlugin->items().indexOf(this);
+	if (iItem >= 0)
+		m_pPlugin->items().removeAt(iItem);
 }
 
 
@@ -113,94 +170,50 @@ qtractorPlugin *qtractorPluginListItem::plugin (void) const
 // Activation methods.
 void qtractorPluginListItem::updateActivated (void)
 {
-	QListViewItem::setPixmap(0,
-		*qtractorPluginListView::itemPixmap(
+	QListWidgetItem::setIcon(
+		*qtractorPluginListView::itemIcon(
 			m_pPlugin && m_pPlugin->isActivated() ? 1 : 0));
-}
-
-
-// Overrriden cell painter.
-void qtractorPluginListItem::paintCell ( QPainter *p, const QColorGroup& cg,
-		int column, int width, int align )
-{
-	// Paint the original but with a different background...
-	QColorGroup _cg(cg);
-
-	QColor bg = _cg.color(QColorGroup::Button);
-	QColor fg = _cg.color(QColorGroup::ButtonText);
-
-	if (isSelected()) {
-		bg = _cg.color(QColorGroup::Midlight).dark(150);
-		fg = _cg.color(QColorGroup::Midlight).light(150);
-	}
-
-	_cg.setColor(QColorGroup::Base, bg);
-	_cg.setColor(QColorGroup::Text, fg);
-	_cg.setColor(QColorGroup::Highlight, bg);
-	_cg.setColor(QColorGroup::HighlightedText, fg);
-
-	QListViewItem::paintCell(p, _cg, column, width, align);
-
-	// Draw cell frame lines...
-	int height = QListViewItem::height();
-	p->setPen(bg.light(150));
-//	p->drawLine(0, 0, 0, height - 1);
-	p->drawLine(0, 0, width - 1, 0);
-	p->setPen(bg.dark(150));
-//	p->drawLine(width - 1, 0, width - 1, height - 1);
-	p->drawLine(0, height - 1, width - 1, height - 1);
 }
 
 
 //----------------------------------------------------------------------------
 // qtractorPluginListView -- Plugin chain list widget instance.
 //
-int      qtractorPluginListView::g_iItemRefCount   = 0;
-QPixmap *qtractorPluginListView::g_pItemPixmaps[2] = { NULL, NULL };
+int    qtractorPluginListView::g_iItemRefCount = 0;
+QIcon *qtractorPluginListView::g_pItemIcons[2] = { NULL, NULL };
 
 // Construcctor.
-qtractorPluginListView::qtractorPluginListView (
-	QWidget *pParent, const char *pszName )
-	: QListView(pParent, pszName), m_pPluginList(NULL)
+qtractorPluginListView::qtractorPluginListView ( QWidget *pParent )
+	: QListWidget(pParent), m_pPluginList(NULL), m_pClickedItem(NULL)
 {
 	if (++g_iItemRefCount == 1) {
-		g_pItemPixmaps[0] = new QPixmap(
-			QPixmap::fromMimeSource("itemLedOff.png"));
-		g_pItemPixmaps[1] = new QPixmap(
-			QPixmap::fromMimeSource("itemLedOn.png"));
+		g_pItemIcons[0] = new QIcon(":/icons/itemLedOff.png");
+		g_pItemIcons[1] = new QIcon(":/icons/itemLedOn.png");
 	}
 
-	QListView::setFont(QFont(QListView::font().family(), 6));
+	QListWidget::setFont(QFont(QListWidget::font().family(), 6));
+	QListWidget::verticalScrollBar()->setStyle(&g_tinyScrollBarStyle);
+	QListWidget::horizontalScrollBar()->setStyle(&g_tinyScrollBarStyle);
 
-	QListView::verticalScrollBar()->setStyle(&g_tinyScrollBarStyle);
-	QListView::horizontalScrollBar()->setStyle(&g_tinyScrollBarStyle);
+	QListWidget::setIconSize(QSize(10, 10));
+	QListWidget::setItemDelegate(new qtractorPluginListItemDelegate(this));
+	QListWidget::setSelectionMode(QAbstractItemView::SingleSelection);
 
-	QListView::header()->hide();
+	QListWidget::viewport()->setBackgroundRole(QPalette::Background);
 
-	QListView::addColumn(QString::null, 10);	// State
-	QListView::addColumn(QString::null);		// Name
+	QListWidget::setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+//	QListWidget::setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
-	QListView::setAllColumnsShowFocus(true);
-    QListView::setResizeMode(QListView::LastColumn);
-	QListView::setSortColumn(-1);
+	// Trap for help/tool-tips events.
+	QListWidget::viewport()->installEventFilter(this);
 
-	QListView::viewport()->setPaletteBackgroundColor(
-		QListView::colorGroup().color(QColorGroup::Background));
-
-//	QListView::setHScrollBarMode(QScrollView::AlwaysOff);
-//	QListView::setVScrollBarMode(QScrollView::AlwaysOn);
-
-	// Simple click handling...
-	QObject::connect(
-		this, SIGNAL(clicked(QListViewItem*, const QPoint&, int)),
-		this, SLOT(clickItem(QListViewItem*, const QPoint&, int)));
-	// Simple click handling...
-	QObject::connect(
-		this, SIGNAL(doubleClicked(QListViewItem *, const QPoint&, int)),
-		this, SLOT(doubleClickItem(QListViewItem *, const QPoint&, int)));
-	QObject::connect(
-		this, SIGNAL(returnPressed(QListViewItem *)),
-		this, SLOT(returnPressItem(QListViewItem *)));
+	// Double-click handling...
+	QObject::connect(this,
+		SIGNAL(itemDoubleClicked(QListWidgetItem*)),
+		SLOT(itemDoubleClickedSlot(QListWidgetItem*)));
+	QObject::connect(this,
+		SIGNAL(itemActivated(QListWidgetItem*)),
+		SLOT(itemActivatedSlot(QListWidgetItem*)));
 }
 
 
@@ -210,8 +223,8 @@ qtractorPluginListView::~qtractorPluginListView (void)
 	// No need to delete child widgets, Qt does it all for us
 	if (--g_iItemRefCount == 0) {
 		for (int i = 0; i < 2; i++) {
-			delete g_pItemPixmaps[i];
-			g_pItemPixmaps[i] = NULL;
+			delete g_pItemIcons[i];
+			g_pItemIcons[i] = NULL;
 		}
 	}
 }
@@ -220,8 +233,11 @@ qtractorPluginListView::~qtractorPluginListView (void)
 // Plugin list accessors.
 void qtractorPluginListView::setPluginList ( qtractorPluginList *pPluginList )
 {
-	if (m_pPluginList)
-		m_pPluginList->views().remove(this);
+	if (m_pPluginList) {
+		int iView = m_pPluginList->views().indexOf(this);
+		if (iView >= 0)
+			m_pPluginList->views().removeAt(iView);
+	}
 
 	m_pPluginList = pPluginList;
 
@@ -241,34 +257,33 @@ qtractorPluginList *qtractorPluginListView::pluginList (void) const
 // Plugin list refreshner
 void qtractorPluginListView::refresh (void)
 {
-	QListView::clear();
-
+	QListWidget::setUpdatesEnabled(false);
+	QListWidget::clear();
 	if (m_pPluginList) {
-		qtractorPluginListItem *pItem = NULL;
 		for (qtractorPlugin *pPlugin = m_pPluginList->first();
 				pPlugin; pPlugin = pPlugin->next()) {
-			pItem = new qtractorPluginListItem(this, pPlugin, pItem);
+			QListWidget::addItem(new qtractorPluginListItem(pPlugin));
 		}
 	}
+	QListWidget::setUpdatesEnabled(true);
 }
 
-// Find an item, given the plugin reference...
-qtractorPluginListItem *qtractorPluginListView::pluginItem (
-	qtractorPlugin *pPlugin )
+// Get an item index, given the plugin reference...
+int qtractorPluginListView::pluginItem ( qtractorPlugin *pPlugin )
 {
 	if (pPlugin == NULL)
-		return NULL;
+		return -1;
 
-	QListViewItem *pItem = QListView::firstChild();
-	while (pItem) {
+	int iItemCount = QListWidget::count();
+	for (int iItem = 0; iItem < iItemCount; ++iItem) {
+		QListWidgetItem *pItem = QListWidget::item(iItem);
 		qtractorPluginListItem *pPluginItem
 			= static_cast<qtractorPluginListItem *> (pItem);
 		if (pPluginItem->plugin() == pPlugin)
-			return pPluginItem;
-		pItem = pItem->nextSibling();
+			return iItem;
 	}
 
-	return NULL;
+	return -1;
 }
 
 
@@ -336,7 +351,7 @@ void qtractorPluginListView::removePlugin (void)
 		return;
 
 	qtractorPluginListItem *pItem
-		= static_cast<qtractorPluginListItem *> (QListView::selectedItem());
+		= static_cast<qtractorPluginListItem *> (QListWidget::currentItem());
 	if (pItem == NULL)
 		return;
 
@@ -356,7 +371,7 @@ void qtractorPluginListView::removePlugin (void)
 void qtractorPluginListView::activatePlugin (void)
 {
 	qtractorPluginListItem *pItem
-		= static_cast<qtractorPluginListItem *> (QListView::selectedItem());
+		= static_cast<qtractorPluginListItem *> (QListWidget::currentItem());
 	if (pItem == NULL)
 		return;
 
@@ -465,13 +480,17 @@ void qtractorPluginListView::moveUpPlugin (void)
 	if (m_pPluginList == NULL)
 		return;
 
-	QListViewItem *pItem  = QListView::selectedItem();
+	QListWidgetItem *pItem = QListWidget::currentItem();
 	if (pItem == NULL)
 		return;
 
-	QListViewItem *pPrevItem = pItem->itemAbove();
-	if (pPrevItem)
-		pPrevItem = pPrevItem->itemAbove();
+	int iPrevItem = QListWidget::row(pItem) - 1;
+	if (iPrevItem < 0)
+		return;
+
+	QListWidgetItem *pPrevItem = QListWidget::item(iPrevItem);
+	if (pPrevItem == NULL)
+		return;
 
 	moveItem(static_cast<qtractorPluginListItem *> (pItem),
 		static_cast<qtractorPluginListItem *> (pPrevItem));
@@ -484,12 +503,20 @@ void qtractorPluginListView::moveDownPlugin (void)
 	if (m_pPluginList == NULL)
 		return;
 
-	QListViewItem *pItem  = QListView::selectedItem();
+	QListWidgetItem *pItem = QListWidget::currentItem();
 	if (pItem == NULL)
 		return;
 
+	int iPrevItem = QListWidget::row(pItem) + 1;
+	if (iPrevItem >= QListWidget::count())
+		return;
+
+	QListWidgetItem *pPrevItem = QListWidget::item(iPrevItem);
+	if (pPrevItem == NULL)
+		return;
+
 	moveItem(static_cast<qtractorPluginListItem *> (pItem),
-		static_cast<qtractorPluginListItem *> (pItem->itemBelow()));
+		static_cast<qtractorPluginListItem *> (pPrevItem));
 }
 
 
@@ -500,7 +527,7 @@ void qtractorPluginListView::editPlugin (void)
 		return;
 
 	qtractorPluginListItem *pItem
-		= static_cast<qtractorPluginListItem *> (QListView::selectedItem());
+		= static_cast<qtractorPluginListItem *> (QListWidget::currentItem());
 	if (pItem == NULL)
 		return;
 
@@ -514,47 +541,18 @@ void qtractorPluginListView::editPlugin (void)
 	else {
 		pPluginForm->show();	
 		pPluginForm->raise();
-		pPluginForm->setActiveWindow();
+		pPluginForm->activateWindow();
 	}
 }
 
 
-// Toggle show an existing plugin activation slot.
-void qtractorPluginListView::clickItem (
-	QListViewItem *item, const QPoint& /*pos*/, int col )
-{
-	if (m_pPluginList == NULL || col != 0)
-		return;
-
-	qtractorPluginListItem *pItem
-		= static_cast<qtractorPluginListItem *> (item);
-	if (pItem == NULL)
-		return;
-
-	qtractorPlugin *pPlugin = pItem->plugin();
-	if (pPlugin == NULL)
-		return;
-
-	// Make it a undoable command...
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm)
-		pMainForm->commands()->exec(
-			new qtractorActivatePluginCommand(pMainForm,
-				pPlugin, !pPlugin->isActivated()));
-}
-
-
 // Show an existing plugin form slot.
-void qtractorPluginListView::doubleClickItem (
-	QListViewItem *item, const QPoint& /*pos*/, int col )
+void qtractorPluginListView::itemDoubleClickedSlot ( QListWidgetItem *item )
 {
-	if (col != 1)
-		return;
-
-	returnPressItem(item);
+	itemActivatedSlot(item);
 }
 
-void qtractorPluginListView::returnPressItem ( QListViewItem *item )
+void qtractorPluginListView::itemActivatedSlot ( QListWidgetItem *item )
 {
 	if (m_pPluginList == NULL)
 		return;
@@ -572,7 +570,72 @@ void qtractorPluginListView::returnPressItem ( QListViewItem *item )
 	if (!pPluginForm->isVisible())
 		pPluginForm->show();	
 	pPluginForm->raise();
-	pPluginForm->setActiveWindow();
+	pPluginForm->activateWindow();
+}
+
+
+// Trap for help/tool-tip events.
+bool qtractorPluginListView::eventFilter ( QObject *pObject, QEvent *pEvent )
+{
+	if (static_cast<QWidget *> (pObject) == QListWidget::viewport()
+		&& pEvent->type() == QEvent::ToolTip) {
+		QHelpEvent *pHelpEvent = static_cast<QHelpEvent *> (pEvent);
+		if (pHelpEvent) {
+			QListWidgetItem *pItem = QListWidget::itemAt(pHelpEvent->pos());
+			qtractorPluginListItem *pPluginItem
+				= static_cast<qtractorPluginListItem *> (pItem);
+			qtractorPlugin *pPlugin = NULL;
+			if (pPluginItem)
+				pPlugin = pPluginItem->plugin();
+			if (pPlugin) {
+				QToolTip::showText(
+					pHelpEvent->globalPos(), pPlugin->name());
+				return true;
+			}
+		}
+	}
+
+	// Not handled here.
+	return QListWidget::eventFilter(pObject, pEvent);
+}
+
+
+// To get precize clicking for in-place (de)activation.
+void qtractorPluginListView::mousePressEvent ( QMouseEvent *pMouseEvent )
+{
+	QListWidget::mousePressEvent(pMouseEvent);
+	
+	const QPoint& pos = pMouseEvent->pos();
+	QListWidgetItem *pItem = QListWidget::itemAt(pos);
+	if (pItem && pos.x() > 0 && pos.x() < QListWidget::iconSize().width())
+		m_pClickedItem = pItem;
+}
+
+void qtractorPluginListView::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
+{
+	QListWidget::mouseReleaseEvent(pMouseEvent);
+	
+	const QPoint& pos = pMouseEvent->pos();
+	QListWidgetItem *pItem = QListWidget::itemAt(pos);
+	if (pItem && pos.x() > 0 && pos.x() <= QListWidget::iconSize().width()
+		&& pItem == m_pClickedItem) {
+		qtractorPluginListItem *pPluginItem
+			= static_cast<qtractorPluginListItem *> (pItem);
+		if (pPluginItem) {
+			qtractorPlugin *pPlugin = pPluginItem->plugin();
+			if (pPlugin) {
+				// Make it a undoable command...
+				qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+				if (pMainForm) {
+					pMainForm->commands()->exec(
+						new qtractorActivatePluginCommand(pMainForm,
+							pPlugin, !pPlugin->isActivated()));
+				}
+			}
+		}
+	}
+	
+	m_pClickedItem = NULL;
 }
 
 
@@ -583,84 +646,90 @@ void qtractorPluginListView::contextMenuEvent (
 	if (m_pPluginList == NULL)
 		return;
 
-	int iItemID;
-	QPopupMenu* pContextMenu = new QPopupMenu(this);
+	QMenu menu(this);
+	QAction *pAction;
 
-	bool bEnabled = (QListView::childCount() > 0);
+	int iItem = -1;
+	int iItemCount = QListWidget::count();
+	bool bEnabled  = (iItemCount > 0);
 
 	qtractorPlugin *pPlugin = NULL;
 	qtractorPluginListItem *pItem
-		= static_cast<qtractorPluginListItem *> (QListView::selectedItem());
-	if (pItem)
+		= static_cast<qtractorPluginListItem *> (QListWidget::currentItem());
+	if (pItem) {
+		iItem = QListWidget::row(pItem);
 		pPlugin = pItem->plugin();
+	}
 
-	iItemID = pContextMenu->insertItem(
-		QIconSet(QPixmap::fromMimeSource("formCreate.png")),
+	pAction = menu.addAction(
+		QIcon(":/icons/formCreate.png"),
 		tr("Add Plugin..."), this, SLOT(addPlugin()));
-//	pContextMenu->setItemEnabled(iItemID, true);
+//	pAction->setEnabled(true);
 
-	iItemID = pContextMenu->insertItem(
-		QIconSet(QPixmap::fromMimeSource("formRemove.png")),
+	pAction = menu.addAction(
+		QIcon(":/icons/formRemove.png"),
 		tr("Remove Plugin"), this, SLOT(removePlugin()));
-	pContextMenu->setItemEnabled(iItemID, pPlugin != NULL);
+	pAction->setEnabled(pPlugin != NULL);
 
-	pContextMenu->insertSeparator();
+	menu.addSeparator();
 
-	iItemID = pContextMenu->insertItem(
+	pAction = menu.addAction(
 		tr("Activate"), this, SLOT(activatePlugin()));
-	pContextMenu->setItemEnabled(iItemID, pPlugin != NULL);
-	pContextMenu->setItemChecked(iItemID, pPlugin && pPlugin->isActivated());
+	pAction->setCheckable(true);
+	pAction->setChecked(pPlugin && pPlugin->isActivated());
+	pAction->setEnabled(pPlugin != NULL);
 
-	pContextMenu->insertSeparator();
+	menu.addSeparator();
 
-	bool bActivatedAll   = m_pPluginList->isActivatedAll();
-	iItemID = pContextMenu->insertItem(
+	bool bActivatedAll = m_pPluginList->isActivatedAll();
+	pAction = menu.addAction(
 		tr("Activate All"), this, SLOT(activateAllPlugins()));
-	pContextMenu->setItemEnabled(iItemID, bEnabled && !bActivatedAll);
-	pContextMenu->setItemChecked(iItemID, bActivatedAll);
+	pAction->setCheckable(true);
+	pAction->setChecked(bActivatedAll);
+	pAction->setEnabled(bEnabled && !bActivatedAll);
 
 	bool bDeactivatedAll = (m_pPluginList->activated() < 1);
-	iItemID = pContextMenu->insertItem(
+	pAction = menu.addAction(
 		tr("Deactivate All"), this, SLOT(deactivateAllPlugins()));
-	pContextMenu->setItemEnabled(iItemID, bEnabled && !bDeactivatedAll);
-	pContextMenu->setItemChecked(iItemID, bDeactivatedAll);
+	pAction->setCheckable(true);
+	pAction->setChecked(bDeactivatedAll);
+	pAction->setEnabled(bEnabled && !bDeactivatedAll);
 
-	pContextMenu->insertSeparator();
+	menu.addSeparator();
 
-	iItemID = pContextMenu->insertItem(
+	pAction = menu.addAction(
 		tr("Remove All"), this, SLOT(removeAllPlugins()));
-	pContextMenu->setItemEnabled(iItemID, bEnabled);
+	pAction->setEnabled(bEnabled);
 
-	pContextMenu->insertSeparator();
+	menu.addSeparator();
 
-	iItemID = pContextMenu->insertItem(
-		QIconSet(QPixmap::fromMimeSource("formMoveUp.png")),
+	pAction = menu.addAction(
+		QIcon(":/icons/formMoveUp.png"),
 		tr("Move Up"), this, SLOT(moveUpPlugin()));
-	pContextMenu->setItemEnabled(iItemID, pItem && pItem->itemAbove() != NULL);
+	pAction->setEnabled(pItem && iItem > 0);
 
-	iItemID = pContextMenu->insertItem(
-		QIconSet(QPixmap::fromMimeSource("formMoveDown.png")),
+	pAction = menu.addAction(
+		QIcon(":/icons/formMoveDown.png"),
 		tr("Move Down"), this, SLOT(moveDownPlugin()));
-	pContextMenu->setItemEnabled(iItemID, pItem && pItem->itemBelow() != NULL);
+	pAction->setEnabled(pItem && iItem < iItemCount - 1);
 
-	pContextMenu->insertSeparator();
+	menu.addSeparator();
 
-	iItemID = pContextMenu->insertItem(
-		QIconSet(QPixmap::fromMimeSource("formEdit.png")),
+	pAction = menu.addAction(
+		QIcon(":/icons/formEdit.png"),
 		tr("Edit"), this, SLOT(editPlugin()));
-	pContextMenu->setItemEnabled(iItemID, pItem != NULL);
-	pContextMenu->setItemChecked(iItemID, pPlugin && pPlugin->isVisible());
+	pAction->setCheckable(true);
+	pAction->setChecked(pPlugin && pPlugin->isVisible());
+	pAction->setEnabled(pItem != NULL);
 
-	pContextMenu->exec(pContextMenuEvent->globalPos());
-
-	delete pContextMenu;
+	menu.exec(pContextMenuEvent->globalPos());
 }
 
 
 // Common pixmap accessors.
-QPixmap *qtractorPluginListView::itemPixmap ( int iIndex )
+QIcon *qtractorPluginListView::itemIcon ( int iIndex )
 {
-	return g_pItemPixmaps[iIndex];
+	return g_pItemIcons[iIndex];
 }
 
 
@@ -670,10 +739,13 @@ QPixmap *qtractorPluginListView::itemPixmap ( int iIndex )
 
 // Constructor.
 qtractorPluginPortWidget::qtractorPluginPortWidget (
-	qtractorPluginPort *pPort, QWidget *pParent, const char *pszName )
-	: QFrame(pParent, pszName), m_pPort(pPort), m_iUpdate(0)
+	qtractorPluginPort *pPort, QWidget *pParent )
+	: QFrame(pParent), m_pPort(pPort), m_iUpdate(0)
 {
-	m_pGridLayout = NULL;
+	m_pGridLayout = new QGridLayout();
+	m_pGridLayout->setMargin(4);
+	m_pGridLayout->setSpacing(4);
+
 	m_pLabel      = NULL;
 	m_pSlider     = NULL;
 	m_pSpinBox    = NULL;
@@ -681,59 +753,64 @@ qtractorPluginPortWidget::qtractorPluginPortWidget (
 
 	const QString sColon = ":";
 	if (m_pPort->isToggled()) {
-		m_pGridLayout = new QGridLayout(this, 1, 3, 4);
 		m_pCheckBox = new QCheckBox(this);
 		m_pCheckBox->setText(m_pPort->name());
 	//	m_pCheckBox->setChecked(m_pPort->value() > 0.1f);
-		m_pGridLayout->addMultiCellWidget(m_pCheckBox, 0, 0, 0, 2);
-		QObject::connect(m_pCheckBox, SIGNAL(toggled(bool)),
-			this, SLOT(checkBoxToggled(bool)));
+		m_pGridLayout->addWidget(m_pCheckBox, 0, 0);
+		QObject::connect(m_pCheckBox,
+			SIGNAL(toggled(bool)),
+			SLOT(checkBoxToggled(bool)));
 	} else if (m_pPort->isInteger()) {
-		m_pGridLayout = new QGridLayout(this, 1, 3, 4);
-		m_pGridLayout->setColSpacing(0, 120);
+		m_pGridLayout->setColumnMinimumWidth(0, 120);
 		m_pLabel = new QLabel(this);
 		m_pLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
 		m_pLabel->setText(m_pPort->name() + sColon);
-		m_pGridLayout->addMultiCellWidget(m_pLabel, 0, 0, 0, 1);
-		m_pSpinBox = new qtractorSpinBox(this, NULL, 0);
-		m_pSpinBox->setAlignment(Qt::AlignHCenter);
+		m_pGridLayout->addWidget(m_pLabel, 0, 0, 1, 2);
+		m_pSpinBox = new QDoubleSpinBox(this);
 		m_pSpinBox->setMaximumWidth(80);
-		m_pSpinBox->setMinValue(int(m_pPort->minValue()));
-		m_pSpinBox->setMaxValue(int(m_pPort->maxValue()));
+		m_pSpinBox->setDecimals(0);
+		m_pSpinBox->setMinimum(m_pPort->minValue());
+		m_pSpinBox->setMaximum(m_pPort->maxValue());
+		m_pSpinBox->setAlignment(Qt::AlignHCenter);
 	//	m_pSpinBox->setValue(int(m_pPort->value()));
 		m_pGridLayout->addWidget(m_pSpinBox, 0, 2);
-		QObject::connect(m_pSpinBox, SIGNAL(valueChanged(const QString&)),
-			this, SLOT(spinBoxValueChanged(const QString&)));
+		QObject::connect(m_pSpinBox,
+			SIGNAL(valueChanged(const QString&)),
+			SLOT(spinBoxValueChanged(const QString&)));
 	} else {
-		m_pGridLayout = new QGridLayout(this, 2, 3, 4);
 		m_pLabel = new QLabel(this);
 		m_pLabel->setAlignment(Qt::AlignLeft | Qt::AlignBottom);
 		m_pLabel->setText(m_pPort->name() + sColon);
-		m_pGridLayout->addMultiCellWidget(m_pLabel, 0, 0, 0, 2);
+		m_pGridLayout->addWidget(m_pLabel, 0, 0, 1, 3);
 		m_pSlider = new qtractorSlider(Qt::Horizontal, this);
+		m_pSlider->setTickPosition(QSlider::NoTicks);
 		m_pSlider->setMinimumWidth(120);
-		m_pSlider->setMinValue(0);
-		m_pSlider->setMaxValue(10000);
+		m_pSlider->setMinimum(0);
+		m_pSlider->setMaximum(10000);
 		m_pSlider->setPageStep(1000);
-		m_pSlider->setLineStep(100);
-		m_pSlider->setDefaultValue(portToSlider(m_pPort->defaultValue()));
+		m_pSlider->setSingleStep(100);
+		m_pSlider->setDefault(portToSlider(m_pPort->defaultValue()));
 	//	m_pSlider->setValue(portToSlider(m_pPort->value()));
-		m_pGridLayout->addMultiCellWidget(m_pSlider, 1, 1, 0, 1);
-		m_pSpinBox = new qtractorSpinBox(this, NULL, portDecs());
+		m_pGridLayout->addWidget(m_pSlider, 1, 0, 1, 2);
+		m_pSpinBox = new QDoubleSpinBox(this);
 		m_pSpinBox->setMaximumWidth(80);
-		m_pSpinBox->setMinValueFloat(m_pPort->minValue());
-		m_pSpinBox->setMaxValueFloat(m_pPort->maxValue());
-	//	m_pSpinBox->setValueFloat(m_pPort->value());
+		m_pSpinBox->setDecimals(portDecs());
+		m_pSpinBox->setMinimum(m_pPort->minValue());
+		m_pSpinBox->setMaximum(m_pPort->maxValue());
+	//	m_pSpinBox->setValue(m_pPort->value());
 		m_pGridLayout->addWidget(m_pSpinBox, 1, 2);
-		QObject::connect(m_pSlider, SIGNAL(valueChanged(int)),
-			this, SLOT(sliderValueChanged(int)));
-		QObject::connect(m_pSpinBox, SIGNAL(valueChanged(const QString&)),
-			this, SLOT(spinBoxValueChanged(const QString&)));
+		QObject::connect(m_pSlider,
+			SIGNAL(valueChanged(int)),
+			SLOT(sliderValueChanged(int)));
+		QObject::connect(m_pSpinBox,
+			SIGNAL(valueChanged(const QString&)),
+			SLOT(spinBoxValueChanged(const QString&)));
 	}
 
+	QFrame::setLayout(m_pGridLayout);
 //	QFrame::setFrameShape(QFrame::StyledPanel);
 //	QFrame::setFrameShadow(QFrame::Raised);
-	QToolTip::add(this, m_pPort->name());
+	QFrame::setToolTip(m_pPort->name());
 }
 
 // Destructor.
@@ -759,7 +836,7 @@ void qtractorPluginPortWidget::refresh (void)
 		m_pSpinBox->setValue(int(m_pPort->value()));
 	} else {
 		m_pSlider->setValue(portToSlider(m_pPort->value()));
-		m_pSpinBox->setValueFloat(m_pPort->value());
+		m_pSpinBox->setValue(m_pPort->value());
 	}
 	m_iUpdate--;
 }
@@ -845,7 +922,7 @@ void qtractorPluginPortWidget::sliderValueChanged ( int iValue )
 	if (::fabsf(m_pPort->value() - fValue)
 		> ::powf(10.0f, - float(portDecs()))) {
 		if (m_pSpinBox)
-			m_pSpinBox->setValueFloat(fValue);
+			m_pSpinBox->setValue(fValue);
 		emit valueChanged(m_pPort, fValue);
 	}
 

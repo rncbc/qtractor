@@ -22,8 +22,8 @@
 #include "qtractorAudioListView.h"
 #include "qtractorAudioFile.h"
 
-#include <qpixmap.h>
-#include <qfiledialog.h>
+#include <QHeaderView>
+#include <QFileDialog>
 
 
 //----------------------------------------------------------------------
@@ -52,14 +52,21 @@ qtractorAudioFileItem::qtractorAudioFileItem (
 void qtractorAudioFileItem::initAudioFileItem ( const QString& sPath,
 	qtractorAudioFile *pFile )
 {
-	QListViewItem::setPixmap(qtractorAudioListView::Name,
-		QPixmap::fromMimeSource("itemFile.png"));
+	QTreeWidgetItem::setTextAlignment(
+		qtractorAudioListView::Channels, Qt::AlignRight);
+	QTreeWidgetItem::setTextAlignment(
+		qtractorAudioListView::Frames, Qt::AlignRight);
+	QTreeWidgetItem::setTextAlignment(
+		qtractorAudioListView::Rate, Qt::AlignRight);
 
-	QListViewItem::setText(qtractorAudioListView::Channels,
+	QTreeWidgetItem::setIcon(qtractorAudioListView::Name,
+		QIcon(":/icons/itemFile.png"));
+
+	QTreeWidgetItem::setText(qtractorAudioListView::Channels,
 		QString::number(pFile->channels()));
-	QListViewItem::setText(qtractorAudioListView::Frames,
+	QTreeWidgetItem::setText(qtractorAudioListView::Frames,
 		QString::number(pFile->frames()));
-	QListViewItem::setText(qtractorAudioListView::Rate,
+	QTreeWidgetItem::setText(qtractorAudioListView::Rate,
 		QString::number(pFile->sampleRate()));
 
 	QString sTime;
@@ -80,9 +87,9 @@ void qtractorAudioFileItem::initAudioFileItem ( const QString& sPath,
 	}
 	ddd = (unsigned int) (secs * 1000.0f);
 	sTime.sprintf("%02u:%02u:%02u.%03u", hh, mm, ss, ddd);
-	QListViewItem::setText(qtractorAudioListView::Time, sTime);
+	QTreeWidgetItem::setText(qtractorAudioListView::Time, sTime);
 
-	QListViewItem::setText(qtractorAudioListView::Path, sPath);
+	QTreeWidgetItem::setText(qtractorAudioListView::Path, sPath);
 }
 
 
@@ -90,15 +97,13 @@ void qtractorAudioFileItem::initAudioFileItem ( const QString& sPath,
 QString qtractorAudioFileItem::toolTip (void) const
 {
 	return QObject::tr(
-		"%1 (%5)\n"
-		"%2 channels, %3 frames, %4 Hz\n"
-		"%6")
-		.arg(QListViewItem::text(qtractorAudioListView::Name))
-		.arg(QListViewItem::text(qtractorAudioListView::Channels))
-		.arg(QListViewItem::text(qtractorAudioListView::Frames))
-		.arg(QListViewItem::text(qtractorAudioListView::Rate))
-		.arg(QListViewItem::text(qtractorAudioListView::Time))
-		.arg(QListViewItem::text(qtractorAudioListView::Path));
+		"%1 (%5)\n%2 channels  %3 frames  %4 Hz\n%6")
+		.arg(QTreeWidgetItem::text(qtractorAudioListView::Name))
+		.arg(QTreeWidgetItem::text(qtractorAudioListView::Channels))
+		.arg(QTreeWidgetItem::text(qtractorAudioListView::Frames))
+		.arg(QTreeWidgetItem::text(qtractorAudioListView::Rate))
+		.arg(QTreeWidgetItem::text(qtractorAudioListView::Time))
+		.arg(QTreeWidgetItem::text(qtractorAudioListView::Path));
 }
 
 
@@ -107,22 +112,34 @@ QString qtractorAudioFileItem::toolTip (void) const
 //
 
 // Constructor.
-qtractorAudioListView::qtractorAudioListView (
-	QWidget *pParent, const char *pszName )
-	: qtractorFileListView(pParent, pszName)
+qtractorAudioListView::qtractorAudioListView ( QWidget *pParent )
+	: qtractorFileListView(pParent)
 {
-	QListView::addColumn(tr("Name"));		// qtractorAudioListView::Name
-	QListView::addColumn(tr("Ch"));			// qtractorAudioListView::Channels
-	QListView::addColumn(tr("Frames"));		// qtractorAudioListView::Frames
-	QListView::addColumn(tr("Rate"));		// qtractorAudioListView::Rate
-	QListView::addColumn(tr("Time"));		// qtractorAudioListView::Time
-	QListView::addColumn(tr("Path"));		// qtractorAudioListView::Path
+	QTreeWidget::setColumnCount(qtractorAudioListView::LastColumn + 1);
+	
+	QTreeWidgetItem *pHeaderItem = QTreeWidget::headerItem();
+	pHeaderItem->setText(qtractorAudioListView::Name, tr("Name"));
+	pHeaderItem->setText(qtractorAudioListView::Channels, tr("Ch"));
+	pHeaderItem->setText(qtractorAudioListView::Frames,	tr("Frames"));
+	pHeaderItem->setText(qtractorAudioListView::Rate, tr("Rate"));
+	pHeaderItem->setText(qtractorAudioListView::Time, tr("Time"));
+	pHeaderItem->setText(qtractorAudioListView::Path, tr("Path"));
+	pHeaderItem->setText(qtractorAudioListView::LastColumn, QString::null);
 
-	QListView::setColumnAlignment(qtractorAudioListView::Channels, Qt::AlignRight);
-	QListView::setColumnAlignment(qtractorAudioListView::Frames, Qt::AlignRight);
-	QListView::setColumnAlignment(qtractorAudioListView::Rate, Qt::AlignRight);
+	pHeaderItem->setTextAlignment(
+		qtractorAudioListView::Channels, Qt::AlignRight);
+	pHeaderItem->setTextAlignment(
+		qtractorAudioListView::Frames, Qt::AlignRight);
+	pHeaderItem->setTextAlignment(
+		qtractorAudioListView::Rate, Qt::AlignRight);
 
-	QListView::setColumnWidth(qtractorAudioListView::Name, 120);
+	QHeaderView *pHeader = QTreeWidget::header();
+	pHeader->resizeSection(qtractorAudioListView::Name, 160);
+	QTreeWidget::resizeColumnToContents(qtractorAudioListView::Channels);
+	QTreeWidget::resizeColumnToContents(qtractorAudioListView::Frames);
+	QTreeWidget::resizeColumnToContents(qtractorAudioListView::Rate);
+	QTreeWidget::resizeColumnToContents(qtractorAudioListView::Time);
+	pHeader->resizeSection(qtractorAudioListView::Path, 160);
 }
 
 
@@ -131,10 +148,10 @@ QStringList qtractorAudioListView::getOpenFileNames (void)
 {
 	// Ask for the filename to open...
 	return QFileDialog::getOpenFileNames(
-		qtractorAudioFileFactory::filters(),// Filter files.
+		this,                               // Parent and name (none)
+		tr("Open Audio Files"),             // Caption.
 		recentDir(),                        // Start here.
-		this, 0,                            // Parent and name (none)
-		tr("Open Audio Files") // + " - " QTRACTOR_TITLE // Caption.
+		qtractorAudioFileFactory::filters() // Filter files.
 	);
 }
 

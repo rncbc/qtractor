@@ -34,8 +34,6 @@
 #include "qtractorMixer.h"
 #include "qtractorMeter.h"
 
-#include <qlabel.h>
-
 
 //----------------------------------------------------------------------
 // class qtractorTrackCommand - implementation
@@ -75,20 +73,14 @@ bool qtractorTrackCommand::addTrack (void)
 	qtractorTrack *pAfterTrack = m_pTrack->prev();
 	if (pAfterTrack == NULL && m_pTrack->next() == NULL)
 		pAfterTrack = pSession->tracks().last();
-	qtractorTrackListItem *pAfterItem
-		= pTracks->trackList()->trackItem(pAfterTrack);
+	int iTrack = pTracks->trackList()->trackRow(m_pTrack->next());
 	// Link the track into session...
 	pSession->insertTrack(m_pTrack, pAfterTrack);
 	// And the new track list view item too...
-	qtractorTrackListItem *pTrackItem
-		= new qtractorTrackListItem(pTracks->trackList(), m_pTrack, pAfterItem);
-	// Renumbering of all other remaining items.
-	pTracks->trackList()->renumberTrackItems(pAfterItem);
+	pTracks->trackList()->insertTrack(iTrack, m_pTrack);
 	// Special MIDI track cases...
 	if (m_pTrack->trackType() == qtractorTrack::Midi)
 	    pTracks->updateMidiTrack(m_pTrack);
-	// Make it the current item...
-	pTracks->trackList()->setCurrentItem(pTrackItem);
 
 	// Mixer turn...
 	qtractorMixer *pMixer = mainForm()->mixer();
@@ -116,19 +108,14 @@ bool qtractorTrackCommand::removeTrack (void)
 		return false;
 
 	// Get the list view item reference of the intended track...
-	qtractorTrackListItem *pTrackItem
-		= pTracks->trackList()->trackItem(m_pTrack);
-	if (pTrackItem == NULL)
+	int iTrack = pTracks->trackList()->trackRow(m_pTrack);
+	if (iTrack < 0)
 		return false;
 
-	// First, make it unselected, avoiding excessive signals.
-	pTrackItem->setSelected(false);
 	// Second, remove from session...
 	pSession->unlinkTrack(m_pTrack);
 	// Third, remove track from list view...
-	delete pTrackItem;
-	// OK. Finally, force enumbering of all items.
-	pTracks->trackList()->renumberTrackItems();
+	pTracks->trackList()->removeTrack(iTrack);
 
 	// Mixer turn...
 	qtractorMixer *pMixer = mainForm()->mixer();
@@ -197,10 +184,10 @@ bool qtractorRemoveTrackCommand::undo (void)
 // Constructor.
 qtractorMoveTrackCommand::qtractorMoveTrackCommand (
 	qtractorMainForm *pMainForm, qtractorTrack *pTrack,
-		qtractorTrack *pPrevTrack )
+		qtractorTrack *pNextTrack )
 	: qtractorTrackCommand(pMainForm, QObject::tr("move track"), pTrack)
 {
-	m_pPrevTrack = pPrevTrack;
+	m_pNextTrack = pNextTrack;
 }
 
 
@@ -215,37 +202,32 @@ bool qtractorMoveTrackCommand::redo (void)
 	if (pTracks == NULL)
 		return false;
 
-	qtractorTrackListItem *pPrevItem
-	    = pTracks->trackList()->trackItem(m_pPrevTrack);
-//	if (pPrevItem == NULL)
-//	    return false;
-	qtractorTrackListItem *pTrackItem
-	    = pTracks->trackList()->trackItem(track());
-	if (pTrackItem == NULL)
+	int iTrack = pTracks->trackList()->trackRow(track());
+	if (iTrack < 0)
 	    return false;
 
-	// Save the previous track alright...
-	qtractorTrack *pPrevTrack = track()->prev();
+	// Save the next track alright...
+	qtractorTrack *pNextTrack = track()->next();
 
 	// Remove and insert back again...
 	pSession->tracks().unlink(track());
-	delete pTrackItem;
-	if (m_pPrevTrack)
-		pSession->tracks().insertAfter(track(), m_pPrevTrack);
-	else
-		pSession->tracks().prepend(track());
+	pTracks->trackList()->removeTrack(iTrack);
+
+	// Get actual index of new position...
+	int iNextTrack = pTracks->trackList()->trackRow(m_pNextTrack);
+
 	// Make it all set back.
+	pSession->tracks().insertBefore(track(), m_pNextTrack);
 	pSession->reset();
+
 	// Just insert under the track list position...
-	pTrackItem = new qtractorTrackListItem(pTracks->trackList(),
-		track(), pPrevItem);
 	// We'll renumber all items now...
-	pTracks->trackList()->renumberTrackItems();
-	// Make it the current item...
-	pTracks->trackList()->setCurrentItem(pTrackItem);
+	pTracks->trackList()->insertTrack(iNextTrack, track());
+	// God'am, if we'll need this...
+	pTracks->trackList()->updateZoomHeight();
 
 	// Swap it nice, finally.
-	m_pPrevTrack = pPrevTrack;
+	m_pNextTrack = pNextTrack;
 
 	return true;
 }
@@ -263,10 +245,10 @@ bool qtractorMoveTrackCommand::undo (void)
 
 // Constructor.
 qtractorResizeTrackCommand::qtractorResizeTrackCommand (
-	qtractorMainForm *pMainForm, qtractorTrack *pTrack,	int iItemHeight )
+	qtractorMainForm *pMainForm, qtractorTrack *pTrack, int iZoomHeight )
 	: qtractorTrackCommand(pMainForm, QObject::tr("resize track"), pTrack)
 {
-	m_iItemHeight = iItemHeight;
+	m_iZoomHeight = iZoomHeight;
 }
 
 
@@ -277,19 +259,19 @@ bool qtractorResizeTrackCommand::redo (void)
 	if (pTracks == NULL)
 		return false;
 
-	qtractorTrackListItem *pTrackItem
-	    = pTracks->trackList()->trackItem(track());
-	if (pTrackItem == NULL)
+	int iTrack = pTracks->trackList()->trackRow(track());
+	if (iTrack < 0)
 	    return false;
 
 	// Save the previous item height alright...
-	int iItemHeight = pTrackItem->height();
+	int iZoomHeight = track()->zoomHeight();
 
 	// Just set new one...
-	pTrackItem->setItemHeight(m_iItemHeight);
+	track()->setZoomHeight(m_iZoomHeight);
+	pTracks->trackList()->setRowHeight(iTrack, m_iZoomHeight);
 
 	// Swap it nice, finally.
-	m_iItemHeight = iItemHeight;
+	m_iZoomHeight = iZoomHeight;
 
 	return true;
 }
@@ -310,8 +292,6 @@ qtractorImportTrackCommand::qtractorImportTrackCommand (
 	qtractorMainForm *pMainForm )
 	: qtractorCommand(pMainForm, QObject::tr("import track"))
 {
-	m_trackCommands.setAutoDelete(true);
-	
 	// Session properties backup preparation.
 	m_iSaveCount   = 0;
 	m_pSaveCommand = NULL;
@@ -328,6 +308,9 @@ qtractorImportTrackCommand::~qtractorImportTrackCommand (void)
 {
 	if (m_pSaveCommand)
 	    delete m_pSaveCommand;
+
+	qDeleteAll(m_trackCommands);
+	m_trackCommands.clear();
 }
 
 
@@ -350,8 +333,9 @@ bool qtractorImportTrackCommand::redo (void)
 	}
 	m_iSaveCount++;
 
-	for (qtractorAddTrackCommand *pTrackCommand = m_trackCommands.first();
-	        pTrackCommand; pTrackCommand = m_trackCommands.next()) {
+	QListIterator<qtractorAddTrackCommand *> iter(m_trackCommands);
+	while (iter.hasNext()) {
+	    qtractorAddTrackCommand *pTrackCommand = iter.next();
 		if (!pTrackCommand->redo())
 		    bResult = false;
 	}
@@ -363,8 +347,9 @@ bool qtractorImportTrackCommand::undo (void)
 {
 	bool bResult = true;
 
-	for (qtractorAddTrackCommand *pTrackCommand = m_trackCommands.last();
-	        pTrackCommand; pTrackCommand = m_trackCommands.prev()) {
+	QListIterator<qtractorAddTrackCommand *> iter(m_trackCommands);
+	while (iter.hasNext()) {
+	    qtractorAddTrackCommand *pTrackCommand = iter.next();
 		if (!pTrackCommand->undo())
 		    bResult = false;
 	}
@@ -398,11 +383,6 @@ bool qtractorEditTrackCommand::redo (void)
 	if (pTracks == NULL)
 		return false;
 
-	qtractorTrackListItem *pTrackItem
-	    = pTracks->trackList()->trackItem(m_pTrack);
-	if (pTrackItem == NULL)
-	    return false;
-
 	// Do the property dance.
 	if (!qtractorPropertyCommand<qtractorTrack::Properties>::redo())
 		return false;
@@ -418,9 +398,7 @@ bool qtractorEditTrackCommand::redo (void)
 	}
 
 	// Refresh track item, at least the names...
-	pTrackItem->setText(qtractorTrackList::Name, m_pTrack->trackName());
-	pTrackItem->setText(qtractorTrackList::Bus, m_pTrack->inputBusName());
-	pTrackItem->repaint();
+	pTracks->trackList()->updateTrack(m_pTrack);
 
 	// Special MIDI track cases...
 	if (m_pTrack->trackType() == qtractorTrack::Midi)
@@ -523,12 +501,8 @@ bool qtractorTrackButtonCommand::redo (void)
 
 	// Track-list update...
 	qtractorTracks *pTracks = mainForm()->tracks();
-	if (pTracks) {
-		qtractorTrackListItem *pTrackItem
-			= pTracks->trackList()->trackItem(pTrack);
-		if (pTrackItem)
-			pTrackItem->updateTrackButtons();
-	}
+	if (pTracks)
+		pTracks->trackList()->updateTrack(pTrack);
 
 	// Mixer turn...
 	qtractorMixer *pMixer = mainForm()->mixer();

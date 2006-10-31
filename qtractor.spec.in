@@ -8,7 +8,7 @@ Name:		%{name}
 Version:	%{version}
 Release:	%{release}
 Prefix:		%{prefix}
-Copyright:	GPL
+License:	GPL
 Group:		Sound
 Source0:	%{name}-%{version}.tar.gz
 URL:		http://qtractor.sourceforge.net/

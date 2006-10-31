@@ -31,7 +31,8 @@
 #include "qtractorPlugin.h"
 #include "qtractorClip.h"
 
-#include <qapplication.h>
+#include <QApplication>
+#include <QEvent>
 
 
 //----------------------------------------------------------------------
@@ -97,7 +98,7 @@ static void qtractorAudioEngine_shutdown ( void *pvArg )
 
 	if (pAudioEngine->notifyWidget()) {
 		QApplication::postEvent(pAudioEngine->notifyWidget(),
-			new QCustomEvent(pAudioEngine->notifyShutdownType(), pAudioEngine));
+			new QEvent(pAudioEngine->notifyShutdownType()));
 	}
 }
 
@@ -113,7 +114,7 @@ static int qtractorAudioEngine_xrun ( void *pvArg )
 
 	if (pAudioEngine->notifyWidget()) {
 		QApplication::postEvent(pAudioEngine->notifyWidget(),
-			new QCustomEvent(pAudioEngine->notifyXrunType(), pAudioEngine));
+			new QEvent(pAudioEngine->notifyXrunType()));
 	}
 
 	return 0;
@@ -131,7 +132,7 @@ static int qtractorAudioEngine_graph_order ( void *pvArg )
 
 	if (pAudioEngine->notifyWidget()) {
 		QApplication::postEvent(pAudioEngine->notifyWidget(),
-			new QCustomEvent(pAudioEngine->notifyPortType(), pAudioEngine));
+			new QEvent(pAudioEngine->notifyPortType()));
 	}
 
 	return 0;
@@ -149,7 +150,7 @@ static void qtractorAudioEngine_graph_port ( jack_port_id_t, int, void *pvArg )
 
 	if (pAudioEngine->notifyWidget()) {
 		QApplication::postEvent(pAudioEngine->notifyWidget(),
-			new QCustomEvent(pAudioEngine->notifyPortType(), pAudioEngine));
+			new QEvent(pAudioEngine->notifyPortType()));
 	}
 }
 
@@ -165,7 +166,7 @@ static int qtractorAudioEngine_buffer_size ( jack_nframes_t, void *pvArg )
 
 	if (pAudioEngine->notifyWidget()) {
 		QApplication::postEvent(pAudioEngine->notifyWidget(),
-			new QCustomEvent(pAudioEngine->notifyBufferType(), pAudioEngine));
+			new QEvent(pAudioEngine->notifyBufferType()));
 	}
 
 	return 0;
@@ -267,7 +268,7 @@ unsigned int qtractorAudioEngine::bufferSize (void) const
 bool qtractorAudioEngine::init ( const QString& sClientName )
 {
 	// Try open a new client...
-	m_pJackClient = jack_client_new(sClientName.latin1());
+	m_pJackClient = jack_client_new(sClientName.toUtf8().constData());
 	if (m_pJackClient == NULL)
 		return false;
 
@@ -746,7 +747,8 @@ bool qtractorAudioBus::open (void)
 		for (i = 0; i < m_iChannels; i++) {
 			m_ppIPorts[i] = jack_port_register(
 				pAudioEngine->jackClient(),
-				sIPortName.arg(i + 1).latin1(), JACK_DEFAULT_AUDIO_TYPE,
+				sIPortName.arg(i + 1).toUtf8().constData(),
+				JACK_DEFAULT_AUDIO_TYPE,
 				JackPortIsInput, 0);
 			m_ppIBuffer[i] = NULL;
 		}
@@ -760,7 +762,8 @@ bool qtractorAudioBus::open (void)
 		for (i = 0; i < m_iChannels; i++) {
 			m_ppOPorts[i] = jack_port_register(
 				pAudioEngine->jackClient(),
-				sOPortName.arg(i + 1).latin1(), JACK_DEFAULT_AUDIO_TYPE,
+				sOPortName.arg(i + 1).toUtf8().constData(),
+				JACK_DEFAULT_AUDIO_TYPE,
 				JackPortIsOutput, 0);
 			m_ppOBuffer[i] = NULL;
 		}
@@ -877,7 +880,7 @@ void qtractorAudioBus::autoConnect (void)
 				+ ':' + busName() + "/in_%1";
 			for (i = 0; i < m_iChannels && ppszOPorts[i]; i++) {
 				jack_connect(pAudioEngine->jackClient(),
-					ppszOPorts[i], sIPortName.arg(i + 1).latin1());
+					ppszOPorts[i], sIPortName.arg(i + 1).toUtf8().constData());
 			}
 			::free(ppszOPorts);
 		}
@@ -892,7 +895,7 @@ void qtractorAudioBus::autoConnect (void)
 				+ ':' + busName() + "/out_%1";
 			for (i = 0; i < m_iChannels && ppszIPorts[i]; i++) {
 				jack_connect(pAudioEngine->jackClient(),
-					sOPortName.arg(i + 1).latin1(), ppszIPorts[i]);
+					sOPortName.arg(i + 1).toUtf8().constData(), ppszIPorts[i]);
 			}
 			::free(ppszIPorts);
 		}
@@ -1098,9 +1101,14 @@ int qtractorAudioBus::updateConnects ( qtractorBus::BusMode busMode,
 				const QString sClientPort = ppszClientPorts[iClientPort];
 				item.clientName = sClientPort.section(':', 0, 0);
 				item.portName   = sClientPort.section(':', 1, 1);
-				ConnectItem *pItem = connects.find(item);
-				if (pItem && bConnect)
-					connects.remove(pItem);
+				ConnectItem *pItem = connects.findItem(item);
+				if (pItem && bConnect) {
+					int iItem = connects.indexOf(pItem);
+					if (iItem >= 0) {
+						connects.removeAt(iItem);
+						delete pItem;
+					}
+				} 
 				else if (!bConnect)
 					connects.append(new ConnectItem(item));
 				iClientPort++;
@@ -1124,8 +1132,9 @@ int qtractorAudioBus::updateConnects ( qtractorBus::BusMode busMode,
 
 	// For each (remaining) connection, try...
 	int iUpdate = 0;
-	for (ConnectItem *pItem = connects.first();
-			pItem; pItem = connects.next()) {
+	QListIterator<ConnectItem *> iter(connects);
+	while (iter.hasNext()) {
+		ConnectItem *pItem = iter.next();
 		// Mangle which is output and input...
 		if (busMode == qtractorBus::Input) {
 			sOutputPort = pItem->clientName + ':' + pItem->portName;
@@ -1137,13 +1146,19 @@ int qtractorAudioBus::updateConnects ( qtractorBus::BusMode busMode,
 #ifdef CONFIG_DEBUG
 		fprintf(stderr, "qtractorAudioBus::updateConnects(%p, %d): "
 			"jack_connect: [%s] => [%s]\n", this, (int) busMode,
-				sOutputPort.latin1(), sInputPort.latin1());
+				sOutputPort.toUtf8().constData(),
+				sInputPort.toUtf8().constData());
 #endif
 		// Do it...
 		if (jack_connect(pAudioEngine->jackClient(),
-				sOutputPort.latin1(), sInputPort.latin1()) == 0) {
-			connects.remove(pItem);
-			iUpdate++;
+				sOutputPort.toUtf8().constData(),
+				sInputPort.toUtf8().constData()) == 0) {
+			int iItem = connects.indexOf(pItem);
+			if (iItem >= 0) {
+				connects.removeAt(iItem);
+				delete pItem;
+				iUpdate++;
+			}
 		}
 	}
 	

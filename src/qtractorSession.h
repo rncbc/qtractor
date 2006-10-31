@@ -24,7 +24,6 @@
 
 #include "qtractorTrack.h"
 
-#include <qstring.h>
 
 // Forward declarations.
 class qtractorClip;
@@ -315,7 +314,7 @@ private:
 
 	// MIDI track tagging specifics.
 	unsigned short m_iMidiTag;
-	QValueList<unsigned short> m_midiTags;
+	QList<unsigned short> m_midiTags;
 	
 	// Session loop points.
 	unsigned long m_iLoopStart;

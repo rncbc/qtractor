@@ -26,7 +26,7 @@
 
 #include <jack/jack.h>
 
-#include <qevent.h>
+#include <QEvent>
 
 
 // Forward declarations.

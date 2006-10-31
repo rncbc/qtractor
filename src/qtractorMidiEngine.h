@@ -24,7 +24,7 @@
 
 #include "qtractorEngine.h"
 
-#include <qmap.h>
+#include <QMap>
 
 #include <alsa/asoundlib.h>
 

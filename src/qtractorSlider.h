@@ -22,7 +22,10 @@
 #ifndef __qtractorSlider_h
 #define __qtractorSlider_h
 
-#include <qslider.h>
+#include <QSlider>
+
+#include <QMouseEvent>
+#include <QWheelEvent>
 
 
 //----------------------------------------------------------------------
@@ -32,24 +35,22 @@
 class qtractorSlider : public QSlider
 {
 	Q_OBJECT
-	Q_PROPERTY( int defaultValue READ getDefaultValue WRITE setDefaultValue )
 
 public:
 
 	// Constructor.
-	qtractorSlider(Qt::Orientation orientation,
-		QWidget *pParent = 0, const char *pszName = 0)
-		: QSlider(orientation, pParent, pszName), m_iDefaultValue(0) {}
+	qtractorSlider(Qt::Orientation orientation, QWidget *pParent = 0)
+		: QSlider(orientation, pParent), m_iDefault(0) {}
 
 	// Get default (mid) value.
-	int getDefaultValue() const
-		{ return m_iDefaultValue; }
+	int getDefault() const
+		{ return m_iDefault; }
 
 public slots:
 
 	// Set default (mid) value.
-	void setDefaultValue(int iDefaultValue)
-		{ m_iDefaultValue = iDefaultValue; }
+	void setDefault(int iDefault)
+		{ m_iDefault = iDefault; }
 
 protected:
 
@@ -58,7 +59,7 @@ protected:
 	{
 		// Reset to default value...
 		if (pMouseEvent->button() == Qt::MidButton)
-			setValue(m_iDefaultValue);
+			setValue(m_iDefault);
 		else
 			QSlider::mousePressEvent(pMouseEvent);
 	}
@@ -70,18 +71,18 @@ protected:
 			iValue -= pageStep();
 		else
 			iValue += pageStep();
-		if (iValue > maxValue())
-			iValue = maxValue();
+		if (iValue > maximum())
+			iValue = maximum();
 		else
-		if (iValue < minValue())
-			iValue = minValue();
+		if (iValue < minimum())
+			iValue = minimum();
 		setValue(iValue);
 	}
 
 private:
 
 	// Default (mid) value.
-	int m_iDefaultValue;
+	int m_iDefault;
 };
 
 

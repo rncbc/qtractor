@@ -24,11 +24,16 @@
 
 #include "qtractorMeter.h"
 
+#include <QFrame>
+
 
 // Forward declarations.
 class qtractorAudioMeter;
 class qtractorAudioMeterValue;
 class qtractorAudioMonitor;
+
+class QResizeEvent;
+class QPaintEvent;
 
 
 //----------------------------------------------------------------------------
@@ -42,7 +47,7 @@ public:
 
 	// Constructor.
 	qtractorAudioMeterScale(qtractorAudioMeter *pAudioMeter,
-		QWidget *pParent = 0, const char *pszName = 0);
+		QWidget *pParent = 0);
 
 protected:
 
@@ -62,7 +67,7 @@ public:
 
 	// Constructor.
 	qtractorAudioMeterValue(qtractorAudioMeter *pAudioMeter,
-		unsigned short iChannel, QWidget *pParent = 0, const char *pszName = 0);
+		unsigned short iChannel, QWidget *pParent = 0);
 	// Default destructor.
 	~qtractorAudioMeterValue();
 
@@ -102,7 +107,7 @@ public:
 
 	// Constructor.
 	qtractorAudioMeter(qtractorAudioMonitor *pAudioMonitor,
-		QWidget *pParent = 0, const char *pszName = 0);
+		QWidget *pParent = 0);
 	// Default destructor.
 	~qtractorAudioMeter();
 

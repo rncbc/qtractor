@@ -21,8 +21,8 @@
 
 #include "qtractorDocument.h"
 
-#include <qfileinfo.h>
-#include <qtextstream.h>
+#include <QFileInfo>
+#include <QTextStream>
 
 
 //-------------------------------------------------------------------------
@@ -86,7 +86,7 @@ bool qtractorDocument::load ( const QString& sFilename )
 {
 	// Open file...
 	QFile file(sFilename);
-	if (!file.open(IO_ReadOnly))
+	if (!file.open(QIODevice::ReadOnly))
 		return false;
 	// Parse it a-la-DOM :-)
 	if (!m_pDocument->setContent(&file)) {
@@ -122,7 +122,7 @@ bool qtractorDocument::save ( const QString& sFilename )
 
 	// Finally, we're ready to save to external file.
 	QFile file(sFilename);
-	if (!file.open(IO_WriteOnly | IO_Truncate))
+	if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate))
 		return false;
 	QTextStream ts(&file);
 	ts << m_pDocument->toString() << endl;

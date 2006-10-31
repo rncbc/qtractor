@@ -54,10 +54,11 @@ qtractorAudioSndFile::~qtractorAudioSndFile (void)
 
 
 // Open method.
-bool qtractorAudioSndFile::open ( const char *pszName, int iMode )
+bool qtractorAudioSndFile::open ( const QString& sFilename, int iMode )
 {
 #ifdef DEBUG_0
-	fprintf(stderr, "qtractorAudioSndFile::open(\"%s\", %d)\n", pszName, iMode);
+	fprintf(stderr, "qtractorAudioSndFile::open(\"%s\", %d)\n",
+		sFilename.toUtf8().constData(), iMode);
 #endif
 	close();
 
@@ -82,7 +83,8 @@ bool qtractorAudioSndFile::open ( const char *pszName, int iMode )
 	}
 
 	// Now open it.
-	m_pSndFile = ::sf_open(pszName, sfmode, &m_sfinfo);
+	QByteArray aFilename = sFilename.toUtf8();
+	m_pSndFile = ::sf_open(aFilename.constData(), sfmode, &m_sfinfo);
 	if (m_pSndFile == NULL)
 		return false;
 

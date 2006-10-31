@@ -25,7 +25,7 @@
 #include "qtractorAudioListView.h"
 #include "qtractorMidiListView.h"
 
-#include <qdockwindow.h>
+#include <QDockWidget>
 
 
 // Forward declarations.
@@ -36,14 +36,14 @@ class QTabWidget;
 // qtractorFiles - File/Groups dockable window.
 //
 
-class qtractorFiles : public QDockWindow
+class qtractorFiles : public QDockWidget
 {
 	Q_OBJECT
 
 public:
 
 	// Constructor.
-	qtractorFiles(QWidget *pParent, const char *pszName = 0);
+	qtractorFiles(QWidget *pParent);
 	// Destructor.
 	~qtractorFiles();
 
@@ -64,6 +64,11 @@ public:
 	// File selection Convenience helper methods.
 	void selectAudioFile (const QString& sFilename);
 	void selectMidiFile  (const QString& sFilename, int iTrackChannel);
+
+protected:
+
+	// Just about to notify main-window that we're closing.
+	void closeEvent(QCloseEvent *);
 
 private:
 

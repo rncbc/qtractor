@@ -1,6 +1,6 @@
-<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
-<class>qtractorPluginSelectForm</class>
-<comment>qtractor - A MIDI/Audio multi-track sequencer.
+<ui version="4.0" >
+ <author>rncbc aka Rui Nuno Capela</author>
+ <comment>qtractor - A MIDI/Audio multi-track sequencer.
 
    Copyright (C) 2005-2006, rncbc aka Rui Nuno Capela. All rights reserved.
 
@@ -18,307 +18,214 @@
    with this program; if not, write to the Free Software Foundation, Inc.,
    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-</comment>
-<author>rncbc aka Rui Nuno Capela</author>
-<widget class="QDialog">
-    <property name="name">
-        <cstring>qtractorPluginSelectForm</cstring>
-    </property>
-    <property name="geometry">
-        <rect>
-            <x>0</x>
-            <y>0</y>
-            <width>480</width>
-            <height>320</height>
-        </rect>
-    </property>
-    <property name="sizePolicy">
-        <sizepolicy>
-            <hsizetype>1</hsizetype>
-            <vsizetype>1</vsizetype>
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-        </sizepolicy>
-    </property>
-    <property name="font">
-        <font>
-        </font>
-    </property>
-    <property name="caption">
-        <string>Plugins - Qtractor</string>
-    </property>
-    <property name="sizeGripEnabled">
+  </comment>
+ <exportmacro></exportmacro>
+ <class>qtractorPluginSelectForm</class>
+ <widget class="QDialog" name="qtractorPluginSelectForm" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>480</width>
+    <height>320</height>
+   </rect>
+  </property>
+  <property name="sizePolicy" >
+   <sizepolicy>
+    <hsizetype>1</hsizetype>
+    <vsizetype>1</vsizetype>
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="font" >
+   <font>
+    <family>Sans Serif</family>
+    <pointsize>8</pointsize>
+    <weight>50</weight>
+    <italic>false</italic>
+    <bold>false</bold>
+    <underline>false</underline>
+    <strikeout>false</strikeout>
+   </font>
+  </property>
+  <property name="windowTitle" >
+   <string>Plugins - Qtractor</string>
+  </property>
+  <property name="sizeGripEnabled" >
+   <bool>true</bool>
+  </property>
+  <layout class="QVBoxLayout" >
+   <property name="margin" >
+    <number>4</number>
+   </property>
+   <property name="spacing" >
+    <number>4</number>
+   </property>
+   <item>
+    <layout class="QHBoxLayout" >
+     <property name="margin" >
+      <number>0</number>
+     </property>
+     <property name="spacing" >
+      <number>4</number>
+     </property>
+     <item>
+      <widget class="QToolButton" name="PluginResetToolButton" >
+       <property name="minimumSize" >
+        <size>
+         <width>22</width>
+         <height>22</height>
+        </size>
+       </property>
+       <property name="maximumSize" >
+        <size>
+         <width>22</width>
+         <height>22</height>
+        </size>
+       </property>
+       <property name="focusPolicy" >
+        <enum>Qt::TabFocus</enum>
+       </property>
+       <property name="toolTip" >
+        <string>Reset filter</string>
+       </property>
+       <property name="text" >
+        <string>X</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="PluginSearchComboBox" >
+       <property name="toolTip" >
+        <string>Plugin search string (regular expression)</string>
+       </property>
+       <property name="editable" >
         <bool>true</bool>
-    </property>
-    <vbox>
-        <property name="name">
-            <cstring>unnamed</cstring>
-        </property>
-		<hbox>
-			<property name="name">
-				<cstring>unnamed</cstring>
-			</property>
-			<widget class="QToolButton">
-				<property name="name">
-					<cstring>PluginResetToolButton</cstring>
-				</property>
-				<property name="minimumSize">
-					<size>
-						<width>22</width>
-						<height>22</height>
-					</size>
-				</property>
-				<property name="maximumSize">
-					<size>
-						<width>22</width>
-						<height>22</height>
-					</size>
-				</property>
-				<property name="focusPolicy">
-					<enum>TabFocus</enum>
-				</property>
-				<property name="text">
-					<string>X</string>
-				</property>
-				<property name="toolTip" stdset="0">
-					<string>Reset filter</string>
-				</property>
-			</widget>
-			<widget class="QComboBox">
-				<property name="name">
-					<cstring>PluginSearchComboBox</cstring>
-				</property>
-				<property name="editable">
-					<bool>true</bool>
-				</property>
-				<property name="toolTip" stdset="0">
-					<string>Plugin search string (regular expression)</string>
-				</property>
-			</widget>
-		</hbox>
-        <widget class="QListView">
-            <column>
-                <property name="text">
-                    <string>Name</string>
-                </property>
-                <property name="clickable">
-                    <bool>true</bool>
-                </property>
-                <property name="resizable">
-                    <bool>true</bool>
-                </property>
-            </column>
-            <column>
-                <property name="text">
-                    <string>Audio</string>
-                </property>
-                <property name="clickable">
-                    <bool>true</bool>
-                </property>
-                <property name="resizable">
-                    <bool>true</bool>
-                </property>
-            </column>
-            <column>
-                <property name="text">
-                    <string>Control</string>
-                </property>
-                <property name="clickable">
-                    <bool>true</bool>
-                </property>
-                <property name="resizable">
-                    <bool>true</bool>
-                </property>
-            </column>
-            <column>
-                <property name="text">
-                    <string>Mode</string>
-                </property>
-                <property name="clickable">
-                    <bool>true</bool>
-                </property>
-                <property name="resizable">
-                    <bool>true</bool>
-                </property>
-            </column>
-            <column>
-                <property name="text">
-                    <string>Path</string>
-                </property>
-                <property name="clickable">
-                    <bool>true</bool>
-                </property>
-                <property name="resizable">
-                    <bool>true</bool>
-                </property>
-            </column>
-            <column>
-                <property name="text">
-                    <string>Index</string>
-                </property>
-                <property name="clickable">
-                    <bool>true</bool>
-                </property>
-                <property name="resizable">
-                    <bool>true</bool>
-                </property>
-            </column>
-            <column>
-                <property name="text">
-                    <string>Instances</string>
-                </property>
-                <property name="clickable">
-                    <bool>true</bool>
-                </property>
-                <property name="resizable">
-                    <bool>true</bool>
-                </property>
-            </column>
-            <property name="name">
-                <cstring>PluginListView</cstring>
-            </property>
-            <property name="selectionMode">
-                <enum>Extended</enum>
-            </property>
-            <property name="allColumnsShowFocus">
-                <bool>true</bool>
-            </property>
-            <property name="showSortIndicator">
-                <bool>true</bool>
-            </property>
-            <property name="resizeMode">
-                <enum>LastColumn</enum>
-            </property>
-            <property name="toolTip" stdset="0">
-                <string>Available plugins</string>
-            </property>
-        </widget>
-        <widget class="QLayoutWidget">
-            <property name="name">
-                <cstring>ButtonLayout</cstring>
-            </property>
-            <hbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <spacer>
-                    <property name="name">
-                        <cstring>ButtonSpacer</cstring>
-                    </property>
-                    <property name="orientation">
-                        <enum>Horizontal</enum>
-                    </property>
-                    <property name="sizeType">
-                        <enum>Expanding</enum>
-                    </property>
-                    <property name="sizeHint">
-                        <size>
-                            <width>321</width>
-                            <height>20</height>
-                        </size>
-                    </property>
-                </spacer>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>OkPushButton</cstring>
-                    </property>
-                    <property name="text">
-                        <string>OK</string>
-                    </property>
-                    <property name="iconSet">
-                        <iconset>formAccept.png</iconset>
-                    </property>
-                </widget>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>CancelPushButton</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Cancel</string>
-                    </property>
-                    <property name="iconSet">
-                        <iconset>formReject.png</iconset>
-                    </property>
-                </widget>
-            </hbox>
-        </widget>
-    </vbox>
-</widget>
-<connections>
-    <connection>
-        <sender>PluginResetToolButton</sender>
-        <signal>clicked()</signal>
-        <receiver>qtractorPluginSelectForm</receiver>
-        <slot>reset()</slot>
-    </connection>
-    <connection>
-        <sender>PluginSearchComboBox</sender>
-        <signal>textChanged(const QString&amp;)</signal>
-        <receiver>qtractorPluginSelectForm</receiver>
-        <slot>refresh()</slot>
-    </connection>
-    <connection>
-        <sender>PluginListView</sender>
-        <signal>selectionChanged()</signal>
-        <receiver>qtractorPluginSelectForm</receiver>
-        <slot>stabilize()</slot>
-    </connection>
-    <connection>
-        <sender>PluginListView</sender>
-        <signal>doubleClicked(QListViewItem *, const QPoint &amp;, int)</signal>
-        <receiver>qtractorPluginSelectForm</receiver>
-        <slot>accept()</slot>
-    </connection>
-    <connection>
-        <sender>PluginListView</sender>
-        <signal>returnPressed(QListViewItem *)</signal>
-        <receiver>qtractorPluginSelectForm</receiver>
-        <slot>accept()</slot>
-    </connection>
-    <connection>
-        <sender>OkPushButton</sender>
-        <signal>clicked()</signal>
-        <receiver>qtractorPluginSelectForm</receiver>
-        <slot>accept()</slot>
-    </connection>
-    <connection>
-        <sender>CancelPushButton</sender>
-        <signal>clicked()</signal>
-        <receiver>qtractorPluginSelectForm</receiver>
-        <slot>close()</slot>
-    </connection>
-</connections>
-<tabstops>
-    <tabstop>PluginResetToolButton</tabstop>
-    <tabstop>PluginSearchComboBox</tabstop>
-    <tabstop>PluginListView</tabstop>
-    <tabstop>OkPushButton</tabstop>
-    <tabstop>CancelPushButton</tabstop>
-</tabstops>
-<forwards>
-    <forward>class qtractorPluginPath;</forward>
-	<forward>class qtractorPluginSelectList;</forward>
-</forwards>
-<variables>
-    <variable access="private">qtractorPluginPath *m_pPluginPath;</variable>
-    <variable access="private">qtractorPluginSelectList *m_pSelectList;</variable>
-    <variable access="private">unsigned short m_iChannels;</variable>
-</variables>
-<slots>
-    <slot access="private" specifier="non virtual">reset()</slot>
-    <slot access="private" specifier="non virtual">refresh()</slot>
-    <slot access="private" specifier="non virtual">stabilize()</slot>
-    <slot access="private" specifier="non virtual">accept()</slot>
-</slots>
-<functions>
-    <function access="private" specifier="non virtual">init()</function>
-    <function access="private" specifier="non virtual">destroy()</function>
-	<function specifier="non virtual">setChannels( unsigned short iChannels )</function>
-	<function specifier="non virtual" returnType="unsigned short">channels()</function>
-	<function specifier="non virtual" returnType="int">pluginCount()</function>
-    <function specifier="non virtual" returnType="const QString &amp;">pluginFilename( int iPlugin )</function>
-    <function specifier="non virtual" returnType="unsigned long">pluginIndex( int iPlugin )</function>
-</functions>
-<pixmapinproject/>
-<layoutdefaults spacing="4" margin="4"/>
-</UI>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QTreeWidget" name="PluginListView" >
+     <property name="toolTip" >
+      <string>Available plugins</string>
+     </property>
+     <property name="alternatingRowColors" >
+      <bool>true</bool>
+     </property>
+     <property name="selectionMode" >
+      <enum>QAbstractItemView::ExtendedSelection</enum>
+     </property>
+     <property name="rootIsDecorated" >
+      <bool>false</bool>
+     </property>
+     <property name="uniformRowHeights" >
+      <bool>true</bool>
+     </property>
+     <property name="itemsExpandable" >
+      <bool>false</bool>
+     </property>
+     <property name="sortingEnabled" >
+      <bool>true</bool>
+     </property>
+     <column>
+      <property name="text" >
+       <string>Name</string>
+      </property>
+     </column>
+     <column>
+      <property name="text" >
+       <string>Audio</string>
+      </property>
+     </column>
+     <column>
+      <property name="text" >
+       <string>Control</string>
+      </property>
+     </column>
+     <column>
+      <property name="text" >
+       <string>Mode</string>
+      </property>
+     </column>
+     <column>
+      <property name="text" >
+       <string>Path</string>
+      </property>
+     </column>
+     <column>
+      <property name="text" >
+       <string>Index</string>
+      </property>
+     </column>
+     <column>
+      <property name="text" >
+       <string>Instances</string>
+      </property>
+     </column>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" >
+     <property name="margin" >
+      <number>0</number>
+     </property>
+     <property name="spacing" >
+      <number>4</number>
+     </property>
+     <item>
+      <spacer>
+       <property name="orientation" >
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeType" >
+        <enum>QSizePolicy::Expanding</enum>
+       </property>
+       <property name="sizeHint" >
+        <size>
+         <width>321</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="OkPushButton" >
+       <property name="text" >
+        <string>OK</string>
+       </property>
+       <property name="icon" >
+        <iconset resource="../icons/qtractor.qrc" >:/icons/formAccept.png</iconset>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="CancelPushButton" >
+       <property name="text" >
+        <string>Cancel</string>
+       </property>
+       <property name="icon" >
+        <iconset resource="../icons/qtractor.qrc" >:/icons/formReject.png</iconset>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <layoutdefault spacing="4" margin="4" />
+ <pixmapfunction></pixmapfunction>
+ <tabstops>
+  <tabstop>PluginResetToolButton</tabstop>
+  <tabstop>PluginSearchComboBox</tabstop>
+  <tabstop>PluginListView</tabstop>
+  <tabstop>OkPushButton</tabstop>
+  <tabstop>CancelPushButton</tabstop>
+ </tabstops>
+ <resources>
+  <include location="../icons/qtractor.qrc" />
+ </resources>
+ <connections/>
+</ui>

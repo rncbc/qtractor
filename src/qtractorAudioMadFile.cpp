@@ -63,10 +63,11 @@ qtractorAudioMadFile::~qtractorAudioMadFile (void)
 
 
 // Open method.
-bool qtractorAudioMadFile::open ( const char *pszName, int iMode )
+bool qtractorAudioMadFile::open ( const QString& sFilename, int iMode )
 {
 #ifdef DEBUG_0
-	fprintf(stderr, "qtractorAudioMadFile::open(\"%s\", %d)\n", pszName, iMode);
+	fprintf(stderr, "qtractorAudioMadFile::open(\"%s\", %d)\n",
+		sFilename.toUtf8().constData(), iMode);
 #endif
 	close();
 
@@ -74,7 +75,8 @@ bool qtractorAudioMadFile::open ( const char *pszName, int iMode )
 	if (iMode != qtractorAudioMadFile::Read)
 		return false;
 
-	m_pFile = ::fopen(pszName, "rb");
+	QByteArray aFilename = sFilename.toUtf8();
+	m_pFile = ::fopen(aFilename.constData(), "rb");
 	if (m_pFile == NULL)
 		return false;
 		
@@ -357,11 +359,12 @@ bool qtractorAudioMadFile::seek ( unsigned long iOffset )
 		m_curr.iOutputOffset = 0;
 		m_curr.iDecodeCount  = 0;
 		// Find the previous mapped 3rd frame that fits location...
-		FrameList::ConstIterator iter = m_frames.fromLast();
-		while (--iter != m_frames.begin()) {
-			if ((*iter).iOutputOffset < iOffset) {
-				if (--iter != m_frames.begin())
-					m_curr = *iter;
+		QListIterator<FrameNode> iter(m_frames);
+		iter.toBack();
+		while (iter.hasPrevious()) {
+			if (iter.previous().iOutputOffset < iOffset) {
+				if (iter.hasPrevious())
+					m_curr = iter.previous();
 				break;
 			}
 		}

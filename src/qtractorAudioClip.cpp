@@ -27,7 +27,8 @@
 
 #include "qtractorSessionDocument.h"
 
-#include <qpainter.h>
+#include <QPainter>
+#include <QPolygon>
 
 
 //----------------------------------------------------------------------
@@ -68,7 +69,7 @@ bool qtractorAudioClip::openAudioFile ( const QString& sFilename, int iMode )
 {
 #ifdef CONFIG_DEBUG_0
 	fprintf(stderr, "qtractorAudioClip::openAudioFile(\"%s\", %d)\n",
-		sFilename.latin1(), iMode);
+		sFilename.toUtf8().constData(), iMode);
 #endif
 
 	if (track() == NULL)
@@ -251,11 +252,11 @@ void qtractorAudioClip::drawClip ( QPainter *pPainter, const QRect& clipRect,
 		// Polygon mode...
 		int ymax, ymin, yrms;
 		unsigned int iPolyPoints = (nframes << 1);
-		QPointArray **pPolyMax = new QPointArray* [iChannels];
-		QPointArray **pPolyRms = new QPointArray* [iChannels];
+		QPolygon **pPolyMax = new QPolygon* [iChannels];
+		QPolygon **pPolyRms = new QPolygon* [iChannels];
 		for (i = 0; i < (int) iChannels; i++) {
-			pPolyMax[i] = new QPointArray(iPolyPoints);
-			pPolyRms[i] = new QPointArray(iPolyPoints);
+			pPolyMax[i] = new QPolygon(iPolyPoints);
+			pPolyRms[i] = new QPolygon(iPolyPoints);
 		}
 		// Build polygonal vertexes...
 		j = 0;

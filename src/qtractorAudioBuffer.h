@@ -31,7 +31,10 @@
 #include <samplerate.h>
 #endif
 
-#include <qthread.h>
+#include <QThread>
+#include <QMutex>
+#include <QWaitCondition>
+
 
 // Forward declarations.
 class qtractorAudioBufferThread;
@@ -107,11 +110,9 @@ public:
 	// Audio frame process synchronization predicate method.
 	bool inSync(unsigned long iFrameStart, unsigned long iFrameEnd);
 
-#ifdef CONFIG_LIBSAMPLERATE
 	// Sample-rate converter type accessor (global option).
 	static void setResampleType(int iResampleType);
 	static int resampleType();
-#endif
 
 #ifdef DEBUG
 	void dump_state(const char *pszPrefix) const;
@@ -178,9 +179,9 @@ private:
 	float        **m_ppInBuffer;
 	float        **m_ppOutBuffer;
 	SRC_STATE    **m_ppSrcState;
+#endif
 	// Sample-rate converter type global option.
 	static int     g_iResampleType;
-#endif
 };
 
 

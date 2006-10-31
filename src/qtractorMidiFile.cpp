@@ -21,8 +21,8 @@
 
 #include "qtractorMidiFile.h"
 
-#include <qfileinfo.h>
-#include <qmap.h>
+#include <QFileInfo>
+#include <QMap>
 
 // Symbolic header markers.
 #define SMF_MTHD 0x4d546864
@@ -61,18 +61,19 @@ qtractorMidiFile::~qtractorMidiFile (void)
 
 
 // Open file method.
-bool qtractorMidiFile::open ( const char *pszName, int iMode )
+bool qtractorMidiFile::open ( const QString& sFilename, int iMode )
 {
 	close();
 
 	if (iMode == None)
 		iMode = Read;
 
-	m_pFile = ::fopen(pszName, iMode == Write ? "w+b" : "rb");
+	QByteArray aFilename = sFilename.toUtf8();
+	m_pFile = ::fopen(aFilename.constData(), iMode == Write ? "w+b" : "rb");
 	if (m_pFile == NULL)
 		return false;
 
-	m_sFilename = pszName;
+	m_sFilename = sFilename;
 	m_iMode     = iMode;
 	m_iOffset   = 0;
 
@@ -414,7 +415,8 @@ bool qtractorMidiFile::writeTrack ( qtractorMidiSequence *pSeq )
 	writeInt(qtractorMidiEvent::META, 1);
 	writeInt(qtractorMidiEvent::TRACKNAME, 1);
 	writeInt(sTrackName.length());
-	writeData((unsigned char *) sTrackName.latin1(), sTrackName.length());
+	QByteArray aTrackName = sTrackName.toUtf8();
+	writeData((unsigned char *) aTrackName.constData(), aTrackName.length());
 
 	// Write basic META data...
 	if (m_iFormat == 0 || pSeq == NULL) {

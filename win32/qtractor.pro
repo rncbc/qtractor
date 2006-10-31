@@ -2,210 +2,156 @@ INCLUDEPATH += ../src
 
 HEADERS += ../src/qtractorAbout.h \
            ../src/qtractorAtomic.h \
-           ../src/qtractorOptions.h \
-           ../src/qtractorMessages.h \
-           ../src/qtractorSpinBox.h \
-           ../src/qtractorSlider.h \
-           ../src/qtractorList.h \
-           ../src/qtractorFiles.h \
+           ../src/qtractorAudioBuffer.h \
+           ../src/qtractorAudioClip.h \
+           ../src/qtractorAudioConnect.h \
+           ../src/qtractorAudioEngine.h \
+           ../src/qtractorAudioFile.h \
+           ../src/qtractorAudioListView.h \
+           ../src/qtractorAudioMadFile.h \
+           ../src/qtractorAudioMeter.h \
+           ../src/qtractorAudioMonitor.h \
+           ../src/qtractorAudioPeak.h \
+           ../src/qtractorAudioSndFile.h \
+           ../src/qtractorAudioVorbisFile.h \
+           ../src/qtractorClip.h \
+           ../src/qtractorClipCommand.h \
+           ../src/qtractorClipSelect.h \
+           ../src/qtractorCommand.h \
+           ../src/qtractorConnect.h \
+           ../src/qtractorConnections.h \
+           ../src/qtractorDocument.h \
+           ../src/qtractorEngine.h \
+           ../src/qtractorEngineCommand.h \
            ../src/qtractorFileListView.h \
+           ../src/qtractorFiles.h \
+           ../src/qtractorInstrument.h \
+           ../src/qtractorList.h \
+           ../src/qtractorMessages.h \
+           ../src/qtractorMeter.h \
+           ../src/qtractorMidiClip.h \
+           ../src/qtractorMidiConnect.h \
+           ../src/qtractorMidiEngine.h \
+           ../src/qtractorMidiEvent.h \
+           ../src/qtractorMidiFile.h \
+           ../src/qtractorMidiListView.h \
+           ../src/qtractorMidiMeter.h \
+           ../src/qtractorMidiMonitor.h \
+           ../src/qtractorMidiSequence.h \
+           ../src/qtractorMixer.h \
+           ../src/qtractorMonitor.h \
+           ../src/qtractorOptions.h \
+           ../src/qtractorPlugin.h \
+           ../src/qtractorPluginCommand.h \
+           ../src/qtractorPluginListView.h \
+           ../src/qtractorPropertyCommand.h \
+           ../src/qtractorRingBuffer.h \
+           ../src/qtractorScrollView.h \
+           ../src/qtractorSession.h \
+           ../src/qtractorSessionCursor.h \
+           ../src/qtractorSessionDocument.h \
+           ../src/qtractorSlider.h \
+           ../src/qtractorTrack.h \
            ../src/qtractorTrackButton.h \
+           ../src/qtractorTrackCommand.h \
            ../src/qtractorTrackList.h \
            ../src/qtractorTrackTime.h \
            ../src/qtractorTrackView.h \
            ../src/qtractorTracks.h \
-           ../src/qtractorConnect.h \
-           ../src/qtractorAudioConnect.h \
-           ../src/qtractorMidiConnect.h \
-           ../src/qtractorConnections.h \
-           ../src/qtractorMeter.h \
-           ../src/qtractorAudioMeter.h \
-           ../src/qtractorMidiMeter.h \
-           ../src/qtractorMonitor.h \
-           ../src/qtractorAudioMonitor.h \
-           ../src/qtractorMidiMonitor.h \
-           ../src/qtractorMixer.h \
-           ../src/qtractorClipSelect.h \
-           ../src/qtractorClip.h \
-           ../src/qtractorTrack.h \
-           ../src/qtractorEngine.h \
-           ../src/qtractorSession.h \
-           ../src/qtractorSessionCursor.h \
-           ../src/qtractorRingBuffer.h \
-           ../src/qtractorAudioBuffer.h \
-           ../src/qtractorAudioFile.h \
-           ../src/qtractorAudioSndFile.h \
-           ../src/qtractorAudioVorbisFile.h \
-           ../src/qtractorAudioMadFile.h \
-           ../src/qtractorAudioListView.h \
-           ../src/qtractorAudioPeak.h \
-           ../src/qtractorAudioClip.h \
-           ../src/qtractorAudioEngine.h \
-           ../src/qtractorPlugin.h \
-           ../src/qtractorPluginListView.h \
-           ../src/qtractorPluginCommand.h \
-           ../src/qtractorMidiEvent.h \
-           ../src/qtractorMidiSequence.h \
-           ../src/qtractorMidiFile.h \
-           ../src/qtractorMidiListView.h \
-           ../src/qtractorMidiClip.h \
-           ../src/qtractorMidiEngine.h \
-           ../src/qtractorDocument.h \
-           ../src/qtractorSessionDocument.h \
-           ../src/qtractorInstrument.h \
-           ../src/qtractorCommand.h \
-           ../src/qtractorPropertyCommand.h \
-           ../src/qtractorEngineCommand.h \
-           ../src/qtractorTrackCommand.h \
-           ../src/qtractorClipCommand.h
+           ../src/qtractorBusForm.h \
+           ../src/qtractorConnectForm.h \
+           ../src/qtractorInstrumentForm.h \
+           ../src/qtractorMainForm.h \
+           ../src/qtractorOptionsForm.h \
+           ../src/qtractorPluginForm.h \
+           ../src/qtractorPluginSelectForm.h \
+           ../src/qtractorSessionForm.h \
+           ../src/qtractorTrackForm.h
 
 SOURCES += ../src/main.cpp \
-           ../src/qtractorOptions.cpp \
-           ../src/qtractorMessages.cpp \
-           ../src/qtractorFiles.cpp \
+           ../src/qtractorAudioBuffer.cpp \
+           ../src/qtractorAudioClip.cpp \
+           ../src/qtractorAudioConnect.cpp \
+           ../src/qtractorAudioEngine.cpp \
+           ../src/qtractorAudioFile.cpp \
+           ../src/qtractorAudioListView.cpp \
+           ../src/qtractorAudioMadFile.cpp \
+           ../src/qtractorAudioMeter.cpp \
+           ../src/qtractorAudioMonitor.cpp \
+           ../src/qtractorAudioPeak.cpp \
+           ../src/qtractorAudioSndFile.cpp \
+           ../src/qtractorAudioVorbisFile.cpp \
+           ../src/qtractorClip.cpp \
+           ../src/qtractorClipCommand.cpp \
+           ../src/qtractorClipSelect.cpp \
+           ../src/qtractorCommand.cpp \
+           ../src/qtractorConnect.cpp \
+           ../src/qtractorConnections.cpp \
+           ../src/qtractorDocument.cpp \
+           ../src/qtractorEngine.cpp \
+           ../src/qtractorEngineCommand.cpp \
            ../src/qtractorFileListView.cpp \
+           ../src/qtractorFiles.cpp \
+           ../src/qtractorInstrument.cpp \
+           ../src/qtractorMessages.cpp \
+           ../src/qtractorMeter.cpp \
+           ../src/qtractorMidiClip.cpp \
+           ../src/qtractorMidiConnect.cpp \
+           ../src/qtractorMidiEngine.cpp \
+           ../src/qtractorMidiFile.cpp \
+           ../src/qtractorMidiListView.cpp \
+           ../src/qtractorMidiMeter.cpp \
+           ../src/qtractorMidiMonitor.cpp \
+           ../src/qtractorMidiSequence.cpp \
+           ../src/qtractorMixer.cpp \
+           ../src/qtractorOptions.cpp \
+           ../src/qtractorPlugin.cpp \
+           ../src/qtractorPluginCommand.cpp \
+           ../src/qtractorPluginListView.cpp \
+           ../src/qtractorScrollView.cpp \
+           ../src/qtractorSession.cpp \
+           ../src/qtractorSessionCursor.cpp \
+           ../src/qtractorSessionDocument.cpp \
+           ../src/qtractorTrack.cpp \
            ../src/qtractorTrackButton.cpp \
+           ../src/qtractorTrackCommand.cpp \
            ../src/qtractorTrackList.cpp \
            ../src/qtractorTrackTime.cpp \
            ../src/qtractorTrackView.cpp \
            ../src/qtractorTracks.cpp \
-           ../src/qtractorConnect.cpp \
-           ../src/qtractorAudioConnect.cpp \
-           ../src/qtractorMidiConnect.cpp \
-           ../src/qtractorConnections.cpp \
-           ../src/qtractorMeter.cpp \
-           ../src/qtractorAudioMeter.cpp \
-           ../src/qtractorMidiMeter.cpp \
-           ../src/qtractorAudioMonitor.cpp \
-           ../src/qtractorMidiMonitor.cpp \
-           ../src/qtractorMixer.cpp \
-           ../src/qtractorClipSelect.cpp \
-           ../src/qtractorClip.cpp \
-           ../src/qtractorTrack.cpp \
-           ../src/qtractorEngine.cpp \
-           ../src/qtractorSession.cpp \
-           ../src/qtractorSessionCursor.cpp \
-           ../src/qtractorAudioBuffer.cpp \
-           ../src/qtractorAudioFile.cpp \
-           ../src/qtractorAudioSndFile.cpp \
-           ../src/qtractorAudioVorbisFile.cpp \
-           ../src/qtractorAudioMadFile.cpp \
-           ../src/qtractorAudioListView.cpp \
-           ../src/qtractorAudioPeak.cpp \
-           ../src/qtractorAudioClip.cpp \
-           ../src/qtractorAudioEngine.cpp \
-           ../src/qtractorPlugin.cpp \
-           ../src/qtractorPluginListView.cpp \
-           ../src/qtractorPluginCommand.cpp \
-           ../src/qtractorMidiSequence.cpp \
-           ../src/qtractorMidiFile.cpp \
-           ../src/qtractorMidiListView.cpp \
-           ../src/qtractorMidiClip.cpp \
-           ../src/qtractorMidiEngine.cpp \
-           ../src/qtractorDocument.cpp \
-           ../src/qtractorSessionDocument.cpp \
-           ../src/qtractorInstrument.cpp \
-           ../src/qtractorCommand.cpp \
-           ../src/qtractorEngineCommand.cpp \
-           ../src/qtractorTrackCommand.cpp \
-           ../src/qtractorClipCommand.cpp
+           ../src/qtractorBusForm.cpp \
+           ../src/qtractorConnectForm.cpp \
+           ../src/qtractorInstrumentForm.cpp \
+           ../src/qtractorMainForm.cpp \
+           ../src/qtractorOptionsForm.cpp \
+           ../src/qtractorPluginForm.cpp \
+           ../src/qtractorPluginSelectForm.cpp \
+           ../src/qtractorSessionForm.cpp \
+           ../src/qtractorTrackForm.cpp
 
-FORMS    = ../src/qtractorMainForm.ui \
-           ../src/qtractorSessionForm.ui \
-           ../src/qtractorTrackForm.ui \
-           ../src/qtractorOptionsForm.ui \
-           ../src/qtractorInstrumentForm.ui \
+FORMS    = ../src/qtractorBusForm.ui \
            ../src/qtractorConnectForm.ui \
-           ../src/qtractorBusForm.ui \
+           ../src/qtractorInstrumentForm.ui \
+           ../src/qtractorMainForm.ui \
+           ../src/qtractorOptionsForm.ui \
            ../src/qtractorPluginForm.ui \
-           ../src/qtractorPluginSelectForm.ui
+           ../src/qtractorPluginSelectForm.ui \
+           ../src/qtractorSessionForm.ui \
+           ../src/qtractorTrackForm.ui
 
-IMAGES   = ../icons/qtractor.png \
-           ../icons/qtractorTracks.png \
-           ../icons/fileNew.png \
-           ../icons/fileOpen.png \
-           ../icons/fileSave.png \
-           ../icons/editUndo.png \
-           ../icons/editRedo.png \
-           ../icons/editCut.png \
-           ../icons/editCopy.png \
-           ../icons/editPaste.png \
-           ../icons/editDelete.png \
-           ../icons/editSelectClip.png \
-           ../icons/editSelectRange.png \
-           ../icons/editSelectRect.png \
-           ../icons/trackAdd.png \
-           ../icons/trackRemove.png \
-           ../icons/trackProperties.png \
-           ../icons/trackAudio.png \
-           ../icons/trackMidi.png \
-           ../icons/trackMidiOn.png \
-           ../icons/trackMidiOff.png \
-           ../icons/viewFiles.png \
-           ../icons/viewMessages.png \
-           ../icons/viewConnections.png \
-           ../icons/viewMixer.png \
-           ../icons/viewZoomIn.png \
-           ../icons/viewZoomOut.png \
-           ../icons/viewZoomTool.png \
-           ../icons/transportRewind.png \
-           ../icons/transportBackward.png \
-           ../icons/transportPause.png \
-           ../icons/transportForward.png \
-           ../icons/transportFastForward.png \
-           ../icons/transportPlay.png \
-           ../icons/transportRecord.png \
-           ../icons/transportFollow.png \
-           ../icons/transportLoop.png \
-           ../icons/formAccept.png \
-           ../icons/formReject.png \
-           ../icons/formOpen.png \
-           ../icons/formSave.png \
-           ../icons/formCreate.png \
-           ../icons/formRemove.png \
-           ../icons/formMoveUp.png \
-           ../icons/formMoveDown.png \
-           ../icons/formEdit.png \
-           ../icons/formRefresh.png \
-           ../icons/formConnect.png \
-           ../icons/formDisconnect.png \
-           ../icons/formDisconnectAll.png \
-           ../icons/itemChannel.png \
-           ../icons/itemFile.png \
-           ../icons/itemGroup.png \
-           ../icons/itemGroupOpen.png \
-           ../icons/itemInstrument.png \
-           ../icons/itemPatches.png \
-           ../icons/itemNotes.png \
-           ../icons/itemControllers.png \
-           ../icons/itemRpns.png \
-           ../icons/itemNrpns.png \
-           ../icons/itemProperty.png \
-           ../icons/itemAudioClientIn.png \
-           ../icons/itemAudioClientOut.png \
-           ../icons/itemAudioPortIn.png \
-           ../icons/itemAudioPortOut.png \
-           ../icons/itemAudioPortPhysIn.png \
-           ../icons/itemAudioPortPhysOut.png \
-           ../icons/itemMidiClientIn.png \
-           ../icons/itemMidiClientOut.png \
-           ../icons/itemMidiPortIn.png \
-           ../icons/itemMidiPortOut.png \
-           ../icons/itemLedOff.png \
-           ../icons/itemLedOn.png
-
+RESOURCES += ../icons/qtractor.qrc
 
 TEMPLATE = app
-CONFIG  += qt warn_on debug
+CONFIG  += qt thread warn_on release
 LANGUAGE = C++
 
 win32 {
-CONFIG      += console
-INCLUDEPATH += C:\usr\local\include
-LIBS        += C:\usr\local\lib\libjack.lib \
-               C:\usr\local\lib\libasound.lib \
-               C:\usr\local\lib\libsndfile.lib \
-               C:\usr\local\lib\libvorbisfile.lib \
-               C:\usr\local\lib\libmad.lib \
-               C:\usr\local\lib\libsamplerate.lib
+	CONFIG  += console
+	INCPATH += C:\usr\local\include
+	LIBS    += -LC:\usr\local\lib
 }
+
+LIBS += -ljack -lasound -lsndfile -lsamplerate -lvorbisfile -lmad
+
+# XML/DOM support
+QT += xml

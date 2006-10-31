@@ -34,318 +34,454 @@
 #include "qtractorMidiEngine.h"
 #include "qtractorMainForm.h"
 
-#include <qapplication.h>
-#include <qpopupmenu.h>
-#include <qtooltip.h>
-#include <qpainter.h>
-#include <qcursor.h>
-#include <qheader.h>
-#include <qpen.h>
+#include <QApplication>
+#include <QPainter>
+#include <QCursor>
+#include <QPixmap>
+
+#include <QResizeEvent>
+#include <QMouseEvent>
+#include <QKeyEvent>
+
+#include <QAbstractListModel>
+#include <QItemDelegate>
+#include <QVBoxLayout>
+#include <QVBoxLayout>
+#include <QHeaderView>
+#include <QScrollBar>
+
+#include <QRubberBand>
 
 
 //----------------------------------------------------------------------------
-// qtractorTrackListItem -- Tracks list item.
+// qtractorTrackListModel -- Track-list model.
 
-// Constructors.
-qtractorTrackListItem::qtractorTrackListItem ( qtractorTrackList *pTrackList,
-	qtractorTrack *pTrack )
-	: QListViewItem(pTrackList, pTrackList->lastItem())
+class qtractorTrackListModel : public QAbstractListModel
 {
-	initItem(pTrackList, pTrack);
-}
+public:
 
-qtractorTrackListItem::qtractorTrackListItem ( qtractorTrackList *pTrackList,
-	qtractorTrack *pTrack, QListViewItem *pItemAfter )
-	: QListViewItem(pTrackList, pItemAfter)
+	// Constructor.
+	qtractorTrackListModel(QObject *pParent = 0);
+	// Destructor.
+	~qtractorTrackListModel();
+
+	int rowCount(const QModelIndex& parent = QModelIndex()) const;
+	int columnCount(const QModelIndex& parent = QModelIndex()) const;
+
+	QVariant headerData(int section, Qt::Orientation orient, int role) const;
+	QVariant data(const QModelIndex& index, int role) const;
+
+	int insertTrack(int iTrack, qtractorTrack *pTrack);
+	int removeTrack(int iTrack);
+
+	int trackRow(qtractorTrack *pTrack) const;
+
+	void setTrack(int row, qtractorTrack *pTrack);
+	qtractorTrack *track(int row) const;
+
+	void updateTrack(qtractorTrack *pTrack);
+
+	void clear();
+
+private:
+
+	// Model variables.
+	QStringList m_headerText;
+
+	// Model cache item.
+	struct Item
+	{
+		// Constructor
+		Item(qtractorTrack *pTrack = NULL)
+			: track(pTrack) { update(); }
+		// Item updater.
+		void update();
+		// Item members.
+		qtractorTrack *track;
+		QStringList    text;
+	};
+
+	// Model cache item list.
+	QList<Item *> m_items;
+};
+
+
+//----------------------------------------------------------------------------
+// qtractorTrackItemDelegate -- track-list view item delgate.
+
+class qtractorTrackItemDelegate : public QItemDelegate
 {
-	initItem(pTrackList, pTrack);
-}
+public:
+
+	// Constructor.
+	qtractorTrackItemDelegate(QObject *pParent)
+		: QItemDelegate(pParent) {}
+
+	// Overridden paint method.
+	void paint ( QPainter *pPainter, const QStyleOptionViewItem& option,
+		const QModelIndex& index) const
+	{
+		const qtractorTrackListModel *pTrackModel
+			= static_cast<const qtractorTrackListModel *> (index.model());
+		qtractorTrack *pTrack = pTrackModel->track(index.row());
+		if (pTrack == NULL)
+			return;
+		const bool bSelected = (option.state & QStyle::State_Selected);
+		QColor bg, fg;
+		if (index.column() == qtractorTrackList::Number) {
+			bg = pTrack->foreground().light();
+			fg = pTrack->background().light();
+		} else if (bSelected) {
+			bg = option.palette.color(QPalette::Midlight).dark(150);
+			fg = option.palette.color(QPalette::Midlight).light(150);
+		} else {
+			bg = option.palette.color(QPalette::Window);
+			fg = option.palette.color(QPalette::Text);
+		}
+		// Draw text and decorations if any...
+		const QRect& rect = option.rect;
+		QRect rectText(
+			rect.topLeft() + QPoint(4, 4), rect.size() - QSize(8, 8));
+		pPainter->save();
+		pPainter->fillRect(rect, bg);
+		pPainter->setPen(fg);
+		if (index.column() == qtractorTrackList::Number) {
+			pPainter->drawText(rectText,
+				Qt::AlignHCenter | Qt::AlignTop,
+				QString::number(index.row() + 1));
+		} else {
+			if (index.column() == qtractorTrackList::Bus) {
+				QPixmap pm = index.data(Qt::DecorationRole).value<QPixmap>();
+				pPainter->drawPixmap(rectText.x(), rectText.y(), pm);
+				rectText.setLeft(rectText.left() + pm.width() + 4);
+			}
+			pPainter->drawText(rectText,
+				Qt::AlignLeft | Qt::AlignTop | Qt::TextWordWrap,
+				index.data(Qt::DisplayRole).toString());
+		}
+		// Do some simple embossing...
+		pPainter->setPen(bg.light(150));
+		pPainter->drawLine(
+			rect.left(), rect.top(), rect.left(), rect.bottom());
+		pPainter->drawLine(
+			rect.left(), rect.top(), rect.right(), rect.top());
+		if (bSelected) {
+			pPainter->setPen(bg.dark(150));
+			pPainter->drawLine(
+				rect.right(), rect.top(), rect.right(), rect.bottom());
+			pPainter->drawLine(
+				rect.left(), rect.bottom(), rect.right(), rect.bottom());
+		}
+		pPainter->restore();
+	}
+};
+
+
+
+//----------------------------------------------------------------------------
+// qtractorTrackItemWidget -- Track button layout widget.
+
+class qtractorTrackItemWidget : public QWidget
+{
+//	Q_OBJECT
+
+public:
+
+	// Constructor.
+	qtractorTrackItemWidget(qtractorTrackList *pTrackList,
+		qtractorTrack *pTrack ) : QWidget(pTrackList)
+	{
+		QWidget::setBackgroundRole(QPalette::Window);
+
+		QVBoxLayout *pVBoxLayout = new QVBoxLayout();
+		pVBoxLayout->setMargin(4);
+		pVBoxLayout->setSpacing(0);
+
+		QHBoxLayout *pHBoxLayout = new QHBoxLayout();
+		pHBoxLayout->setMargin(0);
+		pHBoxLayout->setSpacing(4);
+
+		const QSize buttonSize(22, 16);
+		m_pRecordButton = new qtractorTrackButton(pTrack,
+			qtractorTrack::Record, buttonSize, this);
+		m_pMuteButton   = new qtractorTrackButton(pTrack,
+			qtractorTrack::Mute, buttonSize, this);
+		m_pSoloButton   = new qtractorTrackButton(pTrack,
+			qtractorTrack::Solo, buttonSize, this);
+	
+		pHBoxLayout->addStretch();
+		pHBoxLayout->addWidget(m_pRecordButton);
+		pHBoxLayout->addWidget(m_pMuteButton);
+		pHBoxLayout->addWidget(m_pSoloButton);
+
+		pVBoxLayout->addStretch();
+		pVBoxLayout->addLayout(pHBoxLayout);
+		QWidget::setLayout(pVBoxLayout);
+
+		qtractorTracks *pTracks = pTrackList->tracks();
+		QObject::connect(m_pRecordButton,
+			SIGNAL(trackButtonToggled(qtractorTrackButton *, bool)),
+			pTracks, SLOT(trackButtonToggledSlot(qtractorTrackButton *, bool)));
+		QObject::connect(m_pMuteButton,
+			SIGNAL(trackButtonToggled(qtractorTrackButton *, bool)),
+			pTracks, SLOT(trackButtonToggledSlot(qtractorTrackButton *, bool)));
+		QObject::connect(m_pSoloButton,
+			SIGNAL(trackButtonToggled(qtractorTrackButton *, bool)),
+			pTracks, SLOT(trackButtonToggledSlot(qtractorTrackButton *, bool)));
+	}
+
+	// Public feedbacker.
+	void updateTrack()
+	{
+		m_pRecordButton->updateTrack();
+		m_pMuteButton->updateTrack();
+		m_pSoloButton->updateTrack();
+	}
+
+private:
+
+	// The local child widgets.
+	qtractorTrackButton *m_pRecordButton;
+	qtractorTrackButton *m_pMuteButton;
+	qtractorTrackButton *m_pSoloButton;
+};
+
+
+//----------------------------------------------------------------------------
+// qtractorTrackListModel -- Track-list model.
+
+// Constructor.
+qtractorTrackListModel::qtractorTrackListModel ( QObject *pParent )
+	: QAbstractListModel(pParent)
+{
+	m_headerText
+		<< tr("Nr")
+		<< tr("Track Name")
+		<< tr("Bus")
+		<< tr("Ch")
+		<< tr("Patch")
+		<< tr("Instrument");
+};
 
 
 // Destructor.
-qtractorTrackListItem::~qtractorTrackListItem (void)
+qtractorTrackListModel::~qtractorTrackListModel (void)
 {
-	delete m_pRecordButton;
-	delete m_pMuteButton;
-	delete m_pSoloButton;
+	qDeleteAll(m_items);
 }
 
 
-// Common item initializer.
-void qtractorTrackListItem::initItem ( qtractorTrackList *pTrackList,
-	qtractorTrack *pTrack )
+int qtractorTrackListModel::rowCount ( const QModelIndex& /*parent*/ ) const
 {
-	m_pTrack = pTrack;
-
-	QListViewItem::setMultiLinesEnabled(true);
-
-	// FIXME: Track number's prone to confusion...
-	int iTrackNumber = pTrackList->childCount();
-	setText(qtractorTrackList::Number, QString::number(iTrackNumber));
-	setText(qtractorTrackList::Name, pTrack->trackName());
-	setText(qtractorTrackList::Bus, pTrack->inputBusName());
-	// qtractorTrackList::Channel
-	// qtractorTrackList::Patch
-	// qtractorTrackList::Instrument
-
-	const QSize buttonSize(22, 16);
-	m_pRecordButton = new qtractorTrackButton(m_pTrack,
-		qtractorTrack::Record, buttonSize, pTrackList->viewport());
-	m_pMuteButton   = new qtractorTrackButton(m_pTrack,
-		qtractorTrack::Mute, buttonSize, pTrackList->viewport());
-	m_pSoloButton   = new qtractorTrackButton(m_pTrack,
-		qtractorTrack::Solo, buttonSize, pTrackList->viewport());
-
-	pTrackList->addChild(m_pRecordButton);
-	pTrackList->addChild(m_pMuteButton);
-	pTrackList->addChild(m_pSoloButton);
-
-	qtractorTracks *pTracks = pTrackList->tracks();
-	QObject::connect(m_pRecordButton,
-		SIGNAL(trackButtonToggled(qtractorTrackButton *, bool)),
-		pTracks, SLOT(trackButtonToggledSlot(qtractorTrackButton *, bool)));
-	QObject::connect(m_pMuteButton,
-		SIGNAL(trackButtonToggled(qtractorTrackButton *, bool)),
-		pTracks, SLOT(trackButtonToggledSlot(qtractorTrackButton *, bool)));
-	QObject::connect(m_pSoloButton,
-		SIGNAL(trackButtonToggled(qtractorTrackButton *, bool)),
-		pTracks, SLOT(trackButtonToggledSlot(qtractorTrackButton *, bool)));
+	return m_items.count();
 }
 
 
-// Tool widget item updater.
-void qtractorTrackListItem::updateItem ( bool bShow )
+int qtractorTrackListModel::columnCount ( const QModelIndex& /*parent*/ ) const
 {
-	// Just hide every child tool widget?
-	if (!bShow) {
-		m_pRecordButton->hide();
-		m_pMuteButton->hide();
-		m_pSoloButton->hide();
+	return m_headerText.count();
+}
+
+
+QVariant qtractorTrackListModel::headerData (
+	int section, Qt::Orientation orient, int role ) const
+{
+	if (orient == Qt::Horizontal && role == Qt::DisplayRole)
+		return m_headerText.at(section);
+
+	return QVariant();
+}
+
+
+QVariant qtractorTrackListModel::data (
+	const QModelIndex& index, int role ) const
+{
+	if (role == Qt::DisplayRole) {
+		if (index.column() > qtractorTrackList::Number) {
+			return m_items.at(index.row())->text.at(index.column() - 1);
+		} else {
+			return QString(index.row() + 1);
+		}
+	}
+	else
+	if (role == Qt::DecorationRole
+		&& index.column() == qtractorTrackList::Bus) {
+		switch (track(index.row())->trackType()) {
+			case qtractorTrack::Audio:
+				return QPixmap(":/icons/trackAudio.png");
+			case qtractorTrack::Midi:
+				return QPixmap(":/icons/trackMidi.png");
+			case qtractorTrack::None:
+			default:
+				break;
+		}
+	}
+
+	return QVariant();
+}
+
+
+int qtractorTrackListModel::insertTrack ( int iTrack, qtractorTrack *pTrack )
+{
+	if (iTrack < 0)
+		iTrack = m_items.count();
+
+	QAbstractListModel::beginInsertRows(QModelIndex(), iTrack, iTrack);
+	m_items.insert(iTrack, new Item(pTrack));
+	QAbstractListModel::endInsertRows();
+
+	return iTrack;
+}
+
+
+int qtractorTrackListModel::removeTrack ( int iTrack )
+{
+	if (iTrack < 0 || iTrack >= m_items.count())
+		return -1;
+
+	QAbstractListModel::beginRemoveRows(QModelIndex(), iTrack, iTrack);
+	delete m_items.at(iTrack);
+	m_items.removeAt(iTrack);
+	QAbstractListModel::endRemoveRows();
+
+	return (iTrack < m_items.count() ? iTrack : -1);
+}
+
+
+int qtractorTrackListModel::trackRow ( qtractorTrack *pTrack ) const
+{
+	int row = 0;
+
+	QListIterator<Item *> iter(m_items);
+	while (iter.hasNext()) {
+		if (pTrack == iter.next()->track)
+			return row;
+		++row;
+	}
+
+	return -1;
+}
+
+
+void qtractorTrackListModel::setTrack ( int row, qtractorTrack *pTrack )
+{
+	if (row < 0 || row >= m_items.count())
 		return;
+
+	Item *pItem = m_items.at(row);
+	pItem->track = pTrack;
+	pItem->update();
+}
+
+qtractorTrack *qtractorTrackListModel::track ( int row ) const
+{
+	if (row < 0 || row >= m_items.count())
+		return NULL;
+
+	return m_items.at(row)->track;
+}
+
+
+void qtractorTrackListModel::updateTrack ( qtractorTrack *pTrack )
+{
+	QListIterator<Item *> iter(m_items);
+	while (iter.hasNext()) {
+		Item *pItem = iter.next();
+		if (pTrack == pItem->track) {
+			pItem->update();
+			break;
+		}
 	}
-
-	
-	QListView *pListView = QListViewItem::listView();
-	int x = pListView->header()->sectionRect(qtractorTrackList::Name).right();
-	int y = pListView->itemRect(this).bottom() - 22;
-	if (y >= 0) {
-		// Move to proper positioning layout...
-		x -= m_pSoloButton->width() + 4;
-		m_pSoloButton->move(x, y);
-		x -= m_pMuteButton->width() + 4;
-		m_pMuteButton->move(x, y);
-		x -= m_pRecordButton->width() + 4;
-		m_pRecordButton->move(x, y);
-		// Show up those buttons...
-		m_pMuteButton->show();
-		m_pSoloButton->show();
-		m_pRecordButton->show();
-	}
 }
 
 
-// Track list brainless accessor.
-qtractorTrackList *qtractorTrackListItem::trackList (void) const
+void qtractorTrackListModel::clear (void)
 {
-	return static_cast<qtractorTrackList *> (QListViewItem::listView());
+	QAbstractListModel::beginRemoveRows(QModelIndex(), 0, m_items.count() - 1);
+	qDeleteAll(m_items);
+	m_items.clear();
+	QAbstractListModel::endRemoveRows();
 }
 
 
-// Track container accessor.
-qtractorTrack *qtractorTrackListItem::track (void) const
+// Track-list model item cache updater.
+void qtractorTrackListModel::Item::update (void)
 {
-	return m_pTrack;
-}
+	text.clear();
 
-
-// Update track buttons state.
-void qtractorTrackListItem::updateTrackButtons (void)
-{
-	m_pRecordButton->updateTrack();
-	m_pMuteButton->updateTrack();
-	m_pSoloButton->updateTrack();
-}
-
-
-// Overriden to set extra text info.
-void qtractorTrackListItem::setText ( int iColumn, const QString& sText )
-{
-	if (m_pTrack == NULL || iColumn != qtractorTrackList::Bus) {
-		QListViewItem::setText(iColumn, sText);
+	// Default initialization?
+	if (track == NULL)
 		return;
-	}
+
+	// Track name...
+	text << track->trackName();
 
 	const QString s = " - -";
 
-	QString sBusText = m_pTrack->inputBusName();
-	if (m_pTrack->inputBusName() != m_pTrack->outputBusName())
-		sBusText += '/' + m_pTrack->outputBusName();
+	QString sBusText = track->inputBusName();
+	if (track->inputBusName() != track->outputBusName())
+		sBusText += '/' + track->outputBusName();
 
-	switch (m_pTrack->trackType()) {
+	switch (track->trackType()) {
 
 		case qtractorTrack::Audio: {
-			QListViewItem::setPixmap(qtractorTrackList::Bus,
-				QPixmap::fromMimeSource("trackAudio.png"));
-			QListViewItem::setText(qtractorTrackList::Bus,
-				sBusText + '\n' + QObject::tr("Audio"));
+			// Audio Bus name...
+			text << sBusText + '\n' + QObject::tr("Audio");
+			// Audio channels...
 			qtractorAudioBus *pAudioBus
-				= static_cast<qtractorAudioBus *> (m_pTrack->outputBus());
-			QListViewItem::setText(qtractorTrackList::Channel,
-				pAudioBus ? QString::number(pAudioBus->channels()) : s.right(1));
-			QListViewItem::setText(qtractorTrackList::Patch, s);
-			QListViewItem::setText(qtractorTrackList::Instrument, s);
+				= static_cast<qtractorAudioBus *> (track->outputBus());
+			text << (pAudioBus ?
+				QString::number(pAudioBus->channels()) : s.right(1));
+			// Fillers...
+			text << s << s;
 			break;
 		}
 
 		case qtractorTrack::Midi: {
-			QListViewItem::setPixmap(qtractorTrackList::Bus,
-				QPixmap::fromMimeSource("trackMidi.png"));
-			QListViewItem::setText(qtractorTrackList::Bus,
-				sBusText + '\n' + QObject::tr("MIDI"));
+			// MIDI Bus name...
+			text << sBusText + '\n' + QObject::tr("MIDI");
 			qtractorMidiBus *pMidiBus
-				= static_cast<qtractorMidiBus *> (m_pTrack->outputBus());
-			unsigned short iChannel = m_pTrack->midiChannel();
-			QListViewItem::setText(qtractorTrackList::Channel,
-				QString::number(iChannel + 1));
+				= static_cast<qtractorMidiBus *> (track->outputBus());
+			// Audio channels...
+			unsigned short iChannel = track->midiChannel();
+			text << QString::number(iChannel + 1);
 			// Care of MIDI instrument, program and bank numbers vs.names...
 			QString sInstrument = s;
 			QString sProgram = s;
 			QString sBank;
-			if (m_pTrack->midiProgram() >= 0)
-				sProgram = QString::number(m_pTrack->midiProgram()) + s;
-			if (m_pTrack->midiBank() >= 0)
-				sBank = QString::number(m_pTrack->midiBank());
+			if (track->midiProgram() >= 0)
+				sProgram = QString::number(track->midiProgram()) + s;
+			if (track->midiBank() >= 0)
+				sBank = QString::number(track->midiBank());
 			if (pMidiBus) {
+				qtractorMainForm *pMainForm
+					= qtractorMainForm::getInstance();
 				const qtractorMidiBus::Patch& patch
 					= pMidiBus->patch(iChannel);
 				if (!patch.instrumentName.isEmpty()
-					&& trackList()->instruments()) {
+					&& pMainForm && pMainForm->instruments()) {
 					sInstrument = patch.instrumentName;
 					qtractorInstrument& instr
-						= (*trackList()->instruments())[patch.instrumentName];
+						= (*pMainForm->instruments())[patch.instrumentName];
 					qtractorInstrumentData& bank
-						= instr.patch(m_pTrack->midiBank());
-					if (bank.contains(m_pTrack->midiProgram())) {
-						sProgram = bank[m_pTrack->midiProgram()];
+						= instr.patch(track->midiBank());
+					if (bank.contains(track->midiProgram())) {
+						sProgram = bank[track->midiProgram()];
 						sBank = bank.name();
 					}
 				}
 			}
-			QListViewItem::setText(qtractorTrackList::Patch,
-				sProgram + '\n' + sBank);
-			QListViewItem::setText(qtractorTrackList::Instrument, sInstrument);
+			// This is it, MIDI Patch/Bank...
+			text << sProgram + '\n' + sBank << sInstrument;
 			break;
 		}
 
 		case qtractorTrack::None:
 		default: {
-			const QString sText  = s + '\n' + QObject::tr("Unknown");
-			QListViewItem::setText(qtractorTrackList::Bus, sText);
-			QListViewItem::setText(qtractorTrackList::Channel, s);
-			QListViewItem::setText(qtractorTrackList::Patch, s);
-			QListViewItem::setText(qtractorTrackList::Instrument, s);
+			text << s + '\n' + QObject::tr("Unknown") << s << s << s;
 			break;
 		}
 	}
-}
-
-
-// Set track item height.
-void qtractorTrackListItem::setItemHeight ( int iItemHeight )
-{
-	updateItem(false);
-	QListViewItem::setHeight(iItemHeight);
-
-	if (m_pTrack == NULL)
-		return;
-
-	qtractorSession *pSession = m_pTrack->session();
-	if (pSession == NULL)
-		return;
-
-	int iHeight = (iItemHeight * 100) / pSession->verticalZoom();
-	m_pTrack->setHeight(iHeight);
-
-	// Update all remaining items...
-	qtractorTrackListItem *pItem
-		= static_cast<qtractorTrackListItem *> (nextSibling());
-	while (pItem) {
-		pItem->updateItem(false);
-		pItem = static_cast<qtractorTrackListItem *> (pItem->nextSibling());
-	}
-}
-
-
-// Zoom item track's height.
-void qtractorTrackListItem::zoomItemHeight ( unsigned short iVerticalZoom )
-{
-	if (m_pTrack == NULL)
-		return;
-
-	int iItemHeight = (m_pTrack->height() * iVerticalZoom) / 100;
-	if (iItemHeight > qtractorTrackList::ItemHeightMin)
-		QListViewItem::setHeight(iItemHeight);
-}
-
-
-// Overriden view item setup .
-void qtractorTrackListItem::setup (void)
-{
-	QListViewItem::setup();
-
-	if (m_pTrack == NULL)
-		return;
-
-	qtractorSession *pSession = m_pTrack->session();
-	if (pSession == NULL)
-		return;
-
-	int iItemHeight = (m_pTrack->height() * pSession->verticalZoom()) / 100;
-	QListViewItem::setHeight(iItemHeight);
-}
-
-
-// Overrriden cell painter.
-void qtractorTrackListItem::paintCell ( QPainter *p, const QColorGroup& cg,
-		int column, int width, int align )
-{
-	// Paint the original but with a different background...
-	QColorGroup _cg(cg);
-
-	QColor bg = _cg.color(QColorGroup::Background);
-	QColor fg = _cg.color(QColorGroup::Foreground);
-
-	bool bSelected = isSelected();
-	if (column > qtractorTrackList::Number && bSelected) {
-		bg = _cg.color(QColorGroup::Midlight).dark(150);
-		fg = _cg.color(QColorGroup::Midlight).light(150);
-	}
-
-	switch (column) {
-	case qtractorTrackList::Number:
-		bg = m_pTrack->foreground().light();
-		fg = m_pTrack->background().light();
-		break;
-	case qtractorTrackList::Name:
-		updateItem(true);
-		break;
-	}
-
-	_cg.setColor(QColorGroup::Base, bg);
-	_cg.setColor(QColorGroup::Text, fg);
-	_cg.setColor(QColorGroup::Highlight, bg);
-	_cg.setColor(QColorGroup::HighlightedText, fg);
-
-	QListViewItem::paintCell(p, _cg, column, width, align);
-
-	// Draw cell frame lines...
-	int height = QListViewItem::height();
-	p->setPen(bg.light(150));
-	p->drawLine(0, 0, 0, height - 1);
-	p->drawLine(0, 0, width - 1, 0);
-	p->setPen(bg.dark(150));
-	p->drawLine(width - 1, 0, width - 1, height - 1);
-	p->drawLine(0, height - 1, width - 1, height - 1);
 }
 
 
@@ -353,53 +489,54 @@ void qtractorTrackListItem::paintCell ( QPainter *p, const QColorGroup& cg,
 // qtractorTrackList -- Track list widget.
 
 // Constructor.
-qtractorTrackList::qtractorTrackList ( qtractorTracks *pTracks,
-	QWidget *pParent, const char *pszName )
-	: QListView(pParent, pszName, WStaticContents | WNoAutoErase)
+qtractorTrackList::qtractorTrackList (
+	qtractorTracks *pTracks, QWidget *pParent )
+	: QTableView(pParent)
 {
 	m_pTracks = pTracks;
 
 	m_dragState  = DragNone;
-	m_pItemDrag  = NULL;
-	m_iItemDragY = 0;
+	m_iDragTrack = -1;
+	m_iDragY     = 0;
 
-//	QListView::header()->setClickEnabled(false);
-//	QListView::header()->setFixedHeight(ItemHeightBase);
+	m_pRubberBand = NULL;
 
-	QListView::viewport()->setPaletteBackgroundColor(Qt::darkGray);
-	//	QListView::colorGroup().color(QColorGroup::Background));
+	m_iContentsYMoving = 0;
 
-	QListView::addColumn(tr("Nr"), 26);		// qtractorTrackList::Number
-	QListView::addColumn(tr("Track Name"), 120);	// qtractorTrackList::Name
-	QListView::addColumn(tr("Bus"));		// qtractorTrackList::Bus
-	QListView::addColumn(tr("Ch"), 26);		// qtractorTrackList::Channel
-	QListView::addColumn(tr("Patch"));		// qtractorTrackList::Patch
-	QListView::addColumn(tr("Instrument"));	// qtractorTrackList::Instrumnet
+	m_pListModel = new qtractorTrackListModel(this);
+	QTableView::setModel(m_pListModel);
+	QTableView::setItemDelegate(new qtractorTrackItemDelegate(this));
+	QTableView::setSelectionMode(QAbstractItemView::SingleSelection);
+	QTableView::setSelectionBehavior(QAbstractItemView::SelectRows);
+	QTableView::verticalHeader()->hide();
 
-	QListView::setColumnAlignment(qtractorTrackList::Number, Qt::AlignHCenter);
-	QListView::setColumnAlignment(qtractorTrackList::Bus, Qt::AlignTop);
-	QListView::setColumnAlignment(qtractorTrackList::Channel, Qt::AlignHCenter);
+//	QTableView::setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+	QTableView::setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
-	QListView::setColumnWidthMode(qtractorTrackList::Name, QListView::Manual);
-	QListView::setColumnWidthMode(qtractorTrackList::Channel, QListView::Manual);
+	QHeaderView *pHeader = QTableView::horizontalHeader();
+	pHeader->setHighlightSections(false);
+	pHeader->setDefaultAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+//	pHeader->setStretchLastSection(true);
+	pHeader->setClickable(false);
 
-//	QListView::setResizeMode(QListView::LastColumn);
-	QListView::setSelectionMode(QListView::Single);
-	QListView::setAllColumnsShowFocus(true);
-	QListView::setItemMargin(4);
-	// No sorting column.
-	QListView::setSortColumn(-1);
-	QListView::setHScrollBarMode(QListView::AlwaysOn);
-	QListView::setVScrollBarMode(QListView::AlwaysOff);
+	pHeader->resizeSection(Number, 26);
+	pHeader->resizeSection(Name, 120);
+	pHeader->resizeSection(Channel, 22);
 
-	// Simple click handling...
-	QObject::connect(
-		this, SIGNAL(clicked(QListViewItem*,const QPoint&,int)),
-		this, SLOT(clickedSlot(QListViewItem*,const QPoint&,int)));
-	// Context menu handling...
-	QObject::connect(
-		this, SIGNAL(contextMenuRequested(QListViewItem*,const QPoint&,int)),
-		this, SLOT(contextMenuSlot(QListViewItem*,const QPoint&,int)));
+	QPalette pal(QTableView::palette());
+	pal.setColor(QPalette::Base, pal.color(QPalette::Dark));
+	pal.setColor(QPalette::Highlight, pal.color(QPalette::Mid).dark(120));
+	pal.setColor(QPalette::HighlightedText, pal.color(QPalette::Midlight));
+	QTableView::setPalette(pal);
+
+	// Simple double-click handling...
+	QObject::connect(this,
+		SIGNAL(doubleClicked(const QModelIndex&)),
+		SLOT(doubleClickedSlot(const QModelIndex&)));
+	// Vertical position handling...
+	QObject::connect(QTableView::verticalScrollBar(),
+		SIGNAL(valueChanged(int)),
+		SLOT(contentsYChangedSlot()));
 }
 
 
@@ -411,55 +548,96 @@ qtractorTracks *qtractorTrackList::tracks (void) const
 
 
 // Find the list view item from track pointer reference.
-qtractorTrackListItem *qtractorTrackList::trackItem ( qtractorTrack *pTrack )
+int qtractorTrackList::trackRow ( qtractorTrack *pTrack ) const
 {
-	if (pTrack == NULL)
-		return NULL;
-
-	QListViewItem *pItem = QListView::firstChild();
-	while (pItem) {
-		qtractorTrackListItem *pTrackItem
-			= static_cast<qtractorTrackListItem *> (pItem);
-		if (pTrackItem->track() == pTrack)
-			return pTrackItem;
-		pItem = pItem->nextSibling();
-	}
-
-	return NULL;
+	return m_pListModel->trackRow(pTrack);
 }
 
 
-// Renumber track list items.
-void qtractorTrackList::renumberTrackItems ( QListViewItem *pItem )
+// Find the track pointer reference from list view item row.
+qtractorTrack *qtractorTrackList::track ( int iTrack ) const
 {
-	// Gotta start from somewhere...
-	int iTrackNumber = 0;
-	if (pItem == NULL) {
-		pItem = QListView::firstChild();
-	} else {
-		iTrackNumber += pItem->text(qtractorTrackList::Number).toInt();
-		pItem = pItem->nextSibling();
-	}
+	return m_pListModel->track(iTrack);
+}
 
-	// Renumbering of all other remaining items.
-	while (pItem) {
-		pItem->setText(qtractorTrackList::Number,
-			QString::number(++iTrackNumber));
-		pItem = pItem->nextSibling();
+
+// Insert a track item.
+void qtractorTrackList::insertTrack ( int iTrack, qtractorTrack *pTrack )
+{
+	iTrack = m_pListModel->insertTrack(iTrack, pTrack);
+	if (iTrack >= 0) {
+		const QModelIndex& index = m_pListModel->index(iTrack, Name);
+		if (index.isValid()) {
+			QTableView::setRowHeight(iTrack, pTrack->zoomHeight());
+			QTableView::setIndexWidget(index,
+				new qtractorTrackItemWidget(this, pTrack));
+			selectTrack(iTrack);
+		}
 	}
+}
+
+
+// Remove a track item.
+void qtractorTrackList::removeTrack ( int iTrack )
+{
+	iTrack = m_pListModel->removeTrack(iTrack);
+	if (iTrack >= 0)
+		selectTrack(iTrack);
+}
+
+
+// Select a track item.
+void qtractorTrackList::selectTrack ( int iTrack )
+{
+	QTableView::setCurrentIndex(m_pListModel->index(iTrack, 0));
+}
+
+
+// Retrieves current selected track reference.
+qtractorTrack *qtractorTrackList::currentTrack (void) const
+{
+	return m_pListModel->track(QTableView::currentIndex().row());
+}
+
+
+// Find the list view item from track pointer reference.
+void qtractorTrackList::updateTrack ( qtractorTrack *pTrack )
+{
+	m_pListModel->updateTrack(pTrack);
+
+	int iTrack = m_pListModel->trackRow(pTrack);
+	if (iTrack < 0)
+		return;
+
+	const QModelIndex& index =  m_pListModel->index(iTrack, Name);
+	qtractorTrackItemWidget *pTrackItemWidget
+		= static_cast<qtractorTrackItemWidget *> (QTableView::indexWidget(index));
+	if (pTrackItemWidget)
+		pTrackItemWidget->updateTrack();
+}
+
+
+// Main table cleaner.
+void qtractorTrackList::clear (void)
+{
+	m_pListModel->clear();
 }
 
 
 // Zoom all tracks item height.
-void qtractorTrackList::zoomItemHeight ( int iVerticalZoom )
+void qtractorTrackList::updateZoomHeight (void)
 {
-	QListViewItem *pItem = QListView::firstChild();
-	while (pItem) {
-		qtractorTrackListItem *pTrackItem
-			= static_cast<qtractorTrackListItem *> (pItem);
-		if (pTrackItem)
-			pTrackItem->zoomItemHeight(iVerticalZoom);
-		pItem = pItem->nextSibling();
+	qtractorSession *pSession = m_pTracks->session();
+	if (pSession == NULL)
+		return;
+
+	int iTrack = 0;
+	qtractorTrack *pTrack = pSession->tracks().first();
+	while (pTrack) {
+		pTrack->updateZoomHeight();
+		QTableView::setRowHeight(iTrack, pTrack->zoomHeight());
+		pTrack = pTrack->next();
+		iTrack++;
 	}
 
 	// Update track view total contents height...
@@ -468,131 +646,89 @@ void qtractorTrackList::zoomItemHeight ( int iVerticalZoom )
 }
 
 
-// Instrument list accessor helper.
-qtractorInstrumentList *qtractorTrackList::instruments() const
+// Handle item height resizing and track move with mouse.
+void qtractorTrackList::mousePressEvent ( QMouseEvent *pMouseEvent )
 {
-	return m_pTracks->instruments();
-}
+	QTableView::mousePressEvent(pMouseEvent);
 
-
-// Trap this widget width for remembering it later.
-void qtractorTrackList::resizeEvent ( QResizeEvent *pResizeEvent )
-{
-	// One shoukld only remember visible sizes.
-	if (QListView::isVisible()) {
-		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-		if (pMainForm) {
-			qtractorOptions *pOptions = pMainForm->options();
-			if (pOptions)
-				pOptions->iTrackListWidth = QListView::size().width();
-		}
-	}
-
-	QListView::resizeEvent(pResizeEvent);
-}
-
-
-// Overriden to catch early attributes (e.g. header height)
-void qtractorTrackList::polish (void)
-{
-	// Highly recommended (avoid recursion?)
-	QListView::polish();
-
-	// Make sure header is polished by now too.
-	QListView::header()->polish();
-
-	emit polishNotifySignal();
-}
-
-
-// Handle item height resizing with mouse.
-void qtractorTrackList::contentsMousePressEvent ( QMouseEvent *pMouseEvent )
-{
 	if (m_dragState == DragNone) {
-		m_posDrag = pMouseEvent->pos();
-		if (m_pItemDrag) {
-			QListView::setCursor(QCursor(Qt::SplitVCursor));
-			m_dragState = DragResize;
-			drawDragLine(m_posDrag);    // Show.
-		} else {
-			QListView::contentsMousePressEvent(pMouseEvent);
-			m_pItemDrag = QListView::itemAt(
-				QListView::contentsToViewport(m_posDrag));
-			if (m_pItemDrag) {
-				QListView::setCursor(QCursor(Qt::PointingHandCursor));
-				m_dragState = DragStart;
+		// Look for the mouse hovering around some item boundary...
+		QModelIndex index = QTableView::indexAt(pMouseEvent->pos());
+		if (index.isValid()) {
+			m_posDrag  = pMouseEvent->pos();
+			QRect rect = QTableView::visualRect(index);
+			if (pMouseEvent->y() < rect.top() + 4) {
+				index = m_pListModel->index(index.row() - 1, index.column());
+				if (index.isValid()) {
+					m_iDragTrack = index.row();
+					m_iDragY     = QTableView::visualRect(index).top();
+					m_dragState  = DragResize;
+					QTableView::setCursor(QCursor(Qt::SplitVCursor));
+				}
+			} else if (pMouseEvent->y() > rect.bottom() - 4) {
+				m_iDragTrack = index.row();
+				m_iDragY     = rect.top();
+				m_dragState  = DragResize;
+				QTableView::setCursor(QCursor(Qt::SplitVCursor));
+			} else {
+				m_iDragTrack = index.row();
+				m_iDragY     = 0;
+				m_dragState  = DragStart;
+				QTableView::setCursor(QCursor(Qt::PointingHandCursor));
 			}
 		}
 	}
 }
 
 
-void qtractorTrackList::contentsMouseMoveEvent ( QMouseEvent *pMouseEvent )
+void qtractorTrackList::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 {
+	QTableView::mouseMoveEvent(pMouseEvent);
+
 	// We're already on some item dragging/resizing?...
 	switch (m_dragState) {
 	case DragMove:
-		if (m_pItemDrag) {
-			drawDragLine(m_posDrag);	// Hide.
-			QListViewItem *pItemDrop = QListView::itemAt(
-				QListView::contentsToViewport(pMouseEvent->pos()));
-			if (pItemDrop) {
-				m_posDrag = QListView::viewportToContents(
-					QListView::itemRect(pItemDrop).bottomLeft());
+		// Currently moving an item...
+		if (m_iDragTrack >= 0) {
+			const QModelIndex& index = QTableView::indexAt(pMouseEvent->pos());
+			if (index.isValid()) {
+				m_posDrag = QTableView::visualRect(index).topLeft();
+				moveRubberBand(m_posDrag);
 			}
-			drawDragLine(m_posDrag);	// Show.
 		}
 		break;
 	case DragResize:
 		// Currently resizing an item...
-		if (m_pItemDrag) {
-			drawDragLine(m_posDrag);    // Hide.
+		if (m_iDragTrack >= 0) {
 			int y = pMouseEvent->y();
-			if (y < m_iItemDragY + ItemHeightMin)
-				y = m_iItemDragY + ItemHeightMin;
+			if (y < m_iDragY + ItemHeightMin)
+				y = m_iDragY + ItemHeightMin;
 			m_posDrag.setY(y);
-			drawDragLine(m_posDrag);    // Show.
+			moveRubberBand(m_posDrag);
 		}
 		break;
 	case DragStart:
 		// About to start dragging an item...
-		if (m_pItemDrag && (m_posDrag - pMouseEvent->pos()).manhattanLength()
+		if (m_iDragTrack >= 0
+			&& (m_posDrag - pMouseEvent->pos()).manhattanLength()
 				> QApplication::startDragDistance()) {
-			QListView::setCursor(QCursor(Qt::SizeVerCursor));
+			QTableView::setCursor(QCursor(Qt::SizeVerCursor));
 			m_dragState = DragMove;
-			m_posDrag = QListView::viewportToContents(
-				QListView::itemRect(m_pItemDrag).bottomLeft());
-			drawDragLine(m_posDrag);	// Show.
+			m_posDrag = QTableView::visualRect(
+				m_pListModel->index(m_iDragTrack, 0)).topLeft();
+			moveRubberBand(m_posDrag);
 		}
-		break;
+		// Fall thru...
 	case DragNone:
 	default:
-		// Look for the mouse hovering around some item boundary...
-		int y = 0;
-		QListViewItem *pItem = QListView::firstChild();
-		while (pItem) {
-			m_iItemDragY = y;
-			y += pItem->totalHeight();
-			if (pMouseEvent->y() > y - 4 && pMouseEvent->y() < y + 4) {
-				m_pItemDrag = pItem;
-				QListView::setCursor(QCursor(Qt::SplitVCursor));
-				break;
-			} else if (m_pItemDrag && m_dragState == DragNone) {
-				m_pItemDrag = NULL;
-				QListView::unsetCursor();
-			}
-			pItem = pItem->nextSibling();
-		}
 		break;
 	}
-
-//	QListView::contentsMouseMoveEvent(pMouseEvent);
 }
 
 
-void qtractorTrackList::contentsMouseReleaseEvent ( QMouseEvent *pMouseEvent )
+void qtractorTrackList::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 {
-	QListView::contentsMouseReleaseEvent(pMouseEvent);
+	QTableView::mouseReleaseEvent(pMouseEvent);
 
 	// We'll need a reference for issuing commands...
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
@@ -606,42 +742,33 @@ void qtractorTrackList::contentsMouseReleaseEvent ( QMouseEvent *pMouseEvent )
 	// things know that have changed somehow...
 	switch (m_dragState) {
 	case DragMove:
-		if (m_pItemDrag) {
-			QListViewItem *pItemDrop = QListView::itemAt(
-				QListView::contentsToViewport(pMouseEvent->pos()));
-			if (pItemDrop) {
-				qtractorTrackListItem *pTrackItemDrag
-					= static_cast<qtractorTrackListItem *> (m_pItemDrag);
-				qtractorTrackListItem *pTrackItemDrop
-					= static_cast<qtractorTrackListItem *> (pItemDrop);
-				if (pSession && pTrackItemDrag && pTrackItemDrop) {
-					qtractorTrack *pTrackDrag = pTrackItemDrag->track();
-					qtractorTrack *pTrackDrop = pTrackItemDrop->track();
-					if (pTrackDrag && pTrackDrop
-						&& pTrackDrag != pTrackDrop
-						&& pTrackDrag != pTrackDrop->next()) {
-						pMainForm->commands()->exec(
-							new qtractorMoveTrackCommand(pMainForm,
-								pTrackDrag, pTrackDrop));
-					}
+		if (m_iDragTrack >= 0) {
+			const QModelIndex& index = QTableView::indexAt(pMouseEvent->pos());
+			if (index.isValid()) {
+				qtractorTrack *pTrackDrag = m_pListModel->track(m_iDragTrack);
+				qtractorTrack *pTrackDrop = m_pListModel->track(index.row());
+				if (pTrackDrag && pTrackDrop
+					&& pTrackDrag != pTrackDrop
+					&& pTrackDrag != pTrackDrop->prev()) {
+					pMainForm->commands()->exec(
+						new qtractorMoveTrackCommand(pMainForm,
+							pTrackDrag, pTrackDrop));
 				}
 			}
 		}
 		break;
 	case DragResize:
-		if (m_pItemDrag) {
-			drawDragLine(m_posDrag);    // Hide.
-			int iItemHeight = pMouseEvent->y() - m_iItemDragY;
+		if (m_iDragTrack >= 0) {
+			int iZoomHeight = pMouseEvent->y() - m_iDragY;
 			// Check for minimum item height.
-			if (iItemHeight < ItemHeightMin)
-				iItemHeight = ItemHeightMin;
+			if (iZoomHeight < ItemHeightMin)
+				iZoomHeight = ItemHeightMin;
 			// Go for it...
-			qtractorTrackListItem *pTrackItem
-				= static_cast<qtractorTrackListItem *> (m_pItemDrag);
-			if (pTrackItem) {
+			qtractorTrack *pTrack = m_pListModel->track(m_iDragTrack);
+			if (pTrack) {
 				pMainForm->commands()->exec(
 					new qtractorResizeTrackCommand(pMainForm,
-						pTrackItem->track(), iItemHeight));
+						pTrack, iZoomHeight));
 			}
 		}
 		// Fall thru...
@@ -650,34 +777,32 @@ void qtractorTrackList::contentsMouseReleaseEvent ( QMouseEvent *pMouseEvent )
 	default:
 		break;
 	}
-	
+
 	resetDragState();
 }
 
 
 // Draw a dragging separator line.
-void qtractorTrackList::drawDragLine ( const QPoint& posDrag, int iThickness ) const
+void qtractorTrackList::moveRubberBand ( const QPoint& posDrag )
 {
-	QWidget *pViewport = QListView::viewport();
-	int w = pViewport->width();
-	int h = pViewport->height();
 
-	// Make sure the line doesn't get too off view...
-	QPoint pos = QListView::contentsToViewport(posDrag);
-	if (pos.y() < 0)
-		pos.setY(0);
-	if (pos.y() > h)
-		pos.setY(h);
+	// Create the rubber-band if there's none...
+	if (m_pRubberBand == NULL) {
+		m_pRubberBand = new QRubberBand(
+			QRubberBand::Line, QTableView::viewport());
+		QPalette pal(m_pRubberBand->palette());
+		pal.setColor(m_pRubberBand->foregroundRole(), Qt::blue);
+		m_pRubberBand->setPalette(pal);
+		m_pRubberBand->setBackgroundRole(QPalette::NoRole);
+	}
+	
+	// Just move it
+	m_pRubberBand->setGeometry(
+		QRect(0, posDrag.y(), QTableView::viewport()->width(), 4));
 
-	QPainter p(pViewport);
-
-	QPen pen;
-	pen.setColor(Qt::gray);
-	pen.setWidth(iThickness);
-
-	p.setRasterOp(Qt::NotROP);
-	p.setPen(pen);
-	p.drawLine(0, pos.y(), w, pos.y());
+	// Ah, and make it visible, of course...
+	if (!m_pRubberBand->isVisible())
+		m_pRubberBand->show();
 }
 
 
@@ -685,17 +810,18 @@ void qtractorTrackList::drawDragLine ( const QPoint& posDrag, int iThickness ) c
 void qtractorTrackList::resetDragState (void)
 {
 	// Cancel any dragging out there...
-	if (m_dragState == DragMove || m_dragState == DragResize)
-		drawDragLine(m_posDrag);    // Hide.
+	// Just hide the rubber-band...
+	if (m_pRubberBand)
+		m_pRubberBand->hide();
 
 	// Should fallback mouse cursor...
 	if (m_dragState != DragNone)
-		QListView::unsetCursor();
+		QTableView::unsetCursor();
 
 	// Not dragging anymore.
 	m_dragState  = DragNone;
-	m_pItemDrag  = NULL;
-	m_iItemDragY = 0;
+	m_iDragTrack = -1;
+	m_iDragY     = 0;
 }
 
 
@@ -710,51 +836,83 @@ void qtractorTrackList::keyPressEvent ( QKeyEvent *pKeyEvent )
 		resetDragState();
 		break;
 	default:
-		QListView::keyPressEvent(pKeyEvent);
+		QTableView::keyPressEvent(pKeyEvent);
 		break;
 	}
 }
 
 
-// To have track list in v-sync with main track view.
-void qtractorTrackList::contentsMovingSlot ( int /*cx*/, int cy )
-{
-	if (QListView::contentsY() != cy)
-		m_pTracks->setContentsPos(this, QListView::contentsX(), cy);
-}
-
-
-// Context menu request slot.
-void qtractorTrackList::contextMenuSlot ( QListViewItem* /*pItem*/,
-	const QPoint& pos, int /*col*/ )
+// Context menu event handler.
+void qtractorTrackList::contextMenuEvent (
+	QContextMenuEvent *pContextMenuEvent )
 {
 	// We'll need a reference for issuing commands...
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm)
-		pMainForm->trackMenu->exec(pos);
+		pMainForm->trackMenu()->exec(pContextMenuEvent->globalPos());
 }
 
 
-// Simple click handler.
-void qtractorTrackList::clickedSlot ( QListViewItem *pItem,
-	const QPoint& /*pos*/, int /*col*/ )
+// Trap current index changes.
+void qtractorTrackList::currentChanged ( const QModelIndex& curr,
+	const QModelIndex& prev )
 {
-	qtractorTrack *pTrack = NULL;
-	qtractorTrackListItem *pTrackItem
-		= static_cast<qtractorTrackListItem *> (pItem);
-	if (pTrackItem)
-		pTrack = pTrackItem->track();
-	if (pTrack == NULL)
+	QTableView::currentChanged(curr, prev);
+
+	// We take care only on row changes...
+	if (curr.row() != prev.row())
+		emit selectionChanged();
+}
+
+
+// To have dircet access to track properties.
+void qtractorTrackList::doubleClickedSlot ( const QModelIndex& /*index*/ )
+{
+	// We'll need a reference for issuing commands...
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm)
+		pMainForm->trackProperties();
+}
+
+
+// Trap size changes.
+void qtractorTrackList::resizeEvent ( QResizeEvent *pResizeEvent )
+{
+	QTableView::resizeEvent(pResizeEvent);
+
+	contentsYChangedSlot();
+}
+
+
+// Vertical offset position change slot.
+void qtractorTrackList::contentsYChangedSlot (void)
+{
+	if (m_iContentsYMoving > 0)
 		return;
 
-	// TODO: Maybe something might be done, regarding direct
-	// selection of track busses and/or MIDI instruments...
+	m_iContentsYMoving++;
+	m_pTracks->trackView()->verticalScrollBar()->setSliderPosition(
+		QTableView::verticalOffset());
+	m_iContentsYMoving--;
 }
 
 
-void qtractorTrackList::contentsChangeNotify (void)
+// To have track list in v-sync with main track view.
+void qtractorTrackList::contentsYMovingSlot ( int /*cx*/, int cy )
 {
-	m_pTracks->contentsChangeNotify();
+	if (m_iContentsYMoving > 0)
+		return;
+
+	int iTrackViewMax = m_pTracks->trackView()->verticalScrollBar()->maximum();
+	if (iTrackViewMax > 0) {
+		m_iContentsYMoving++;
+		int iTrackListMax = QTableView::verticalScrollBar()->maximum();
+		QTableView::verticalScrollBar()->setSliderPosition(
+			(cy * iTrackListMax) / iTrackViewMax);
+		m_iContentsYMoving--;
+	} else {
+		QTableView::verticalScrollBar()->setSliderPosition(0);
+	}
 }
 
 

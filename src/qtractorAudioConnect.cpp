@@ -21,6 +21,8 @@
 
 #include "qtractorAudioConnect.h"
 
+#include <QIcon>
+
 
 //----------------------------------------------------------------------
 // class qtractorAudioPortItem -- Jack port list item.
@@ -35,12 +37,12 @@ qtractorAudioPortItem::qtractorAudioPortItem (
 
 	unsigned long ulPortFlags = jack_port_flags(m_pJackPort);
 	if (ulPortFlags & JackPortIsInput) {
-		QListViewItem::setPixmap(0,
-			qtractorAudioConnect::pixmap(ulPortFlags & JackPortIsPhysical ?
+		QTreeWidgetItem::setIcon(0,
+			qtractorAudioConnect::icon(ulPortFlags & JackPortIsPhysical ?
 				qtractorAudioConnect::PortPhysIn : qtractorAudioConnect::PortIn));
 	} else {
-		QListViewItem::setPixmap(0,
-			qtractorAudioConnect::pixmap(ulPortFlags & JackPortIsPhysical ?
+		QTreeWidgetItem::setIcon(0,
+			qtractorAudioConnect::icon(ulPortFlags & JackPortIsPhysical ?
 				qtractorAudioConnect::PortPhysOut : qtractorAudioConnect::PortOut));
 	}
 }
@@ -75,11 +77,11 @@ qtractorAudioClientItem::qtractorAudioClientItem (
 	: qtractorClientListItem(pClientListView, sClientName)
 {
 	if (pClientListView->isReadable()) {
-		QListViewItem::setPixmap(0,
-			qtractorAudioConnect::pixmap(qtractorAudioConnect::ClientOut));
+		QTreeWidgetItem::setIcon(0,
+			qtractorAudioConnect::icon(qtractorAudioConnect::ClientOut));
 	} else {
-		QListViewItem::setPixmap(0,
-			qtractorAudioConnect::pixmap(qtractorAudioConnect::ClientIn));
+		QTreeWidgetItem::setIcon(0,
+			qtractorAudioConnect::icon(qtractorAudioConnect::ClientIn));
 	}
 }
 
@@ -93,7 +95,7 @@ qtractorAudioClientItem::~qtractorAudioClientItem (void)
 jack_client_t *qtractorAudioClientItem::jackClient (void) const
 {
 	qtractorAudioClientListView *pClientListView
-		= static_cast<qtractorAudioClientListView *> (listView());
+		= static_cast<qtractorAudioClientListView *> (QTreeWidgetItem::treeWidget());
 	return (pClientListView ? pClientListView->jackClient() : 0);
 }
 
@@ -104,8 +106,7 @@ jack_client_t *qtractorAudioClientItem::jackClient (void) const
 
 // Constructor.
 qtractorAudioClientListView::qtractorAudioClientListView (
-	QWidget *pParent, const char *pszName )
-	: qtractorClientListView(pParent, pszName)
+	QWidget *pParent ) : qtractorClientListView(pParent)
 {
 }
 
@@ -128,7 +129,7 @@ jack_client_t *qtractorAudioClientListView::jackClient (void) const
 int qtractorAudioClientListView::updateClientPorts (void)
 {
 	jack_client_t *pJackClient = jackClient();
-	if (pJackClient == 0)
+	if (pJackClient == NULL)
 		return 0;
 
 	int iDirtyCount = 0;
@@ -141,9 +142,9 @@ int qtractorAudioClientListView::updateClientPorts (void)
 		int iClientPort = 0;
 		while (ppszClientPorts[iClientPort]) {
 			QString sClientPort = ppszClientPorts[iClientPort];
-			qtractorAudioClientItem *pClientItem = 0;
-			qtractorAudioPortItem   *pPortItem   = 0;
-			int iColon = sClientPort.find(":");
+			qtractorAudioClientItem *pClientItem = NULL;
+			qtractorAudioPortItem   *pPortItem   = NULL;
+			int iColon = sClientPort.indexOf(':');
 			if (iColon >= 0) {
 				QString sClientName = sClientPort.left(iColon);
 				if (isClientName(sClientName)) {
@@ -158,12 +159,12 @@ int qtractorAudioClientListView::updateClientPorts (void)
 								= static_cast<qtractorAudioPortItem *> (
 									pClientItem->findPortItem(sPortName));
 						}
-						if (pClientItem == 0) {
+						if (pClientItem == NULL) {
 							pClientItem = new qtractorAudioClientItem(this,
 								sClientName);
 							iDirtyCount++;
 						}
-						if (pClientItem && pPortItem == 0) {
+						if (pClientItem && pPortItem == NULL) {
 							jack_port_t *pJackPort = jack_port_by_name(
 								pJackClient, ppszClientPorts[iClientPort]);
 							if (pJackPort) {
@@ -199,57 +200,57 @@ qtractorAudioConnect::qtractorAudioConnect (
 	qtractorConnectorView *pConnectorView )
 	: qtractorConnect(pOListView, pIListView, pConnectorView)
 {
-	m_pJackClient = 0;
+	m_pJackClient = NULL;
 
-	createIconPixmaps();
+	createIcons();
 }
 
 // Default destructor.
 qtractorAudioConnect::~qtractorAudioConnect (void)
 {
-	deleteIconPixmaps();
+	deleteIcons();
 }
 
 
-// Local pixmap-set janitor methods.
-QPixmap *qtractorAudioConnect::g_apPixmaps[qtractorAudioConnect::PixmapCount];
-int      qtractorAudioConnect::g_iPixmapsRefCount = 0;
+// Local icon-set janitor methods.
+QIcon *qtractorAudioConnect::g_apIcons[qtractorAudioConnect::IconCount];
+int    qtractorAudioConnect::g_iIconsRefCount = 0;
 
-void qtractorAudioConnect::createIconPixmaps (void)
+void qtractorAudioConnect::createIcons (void)
 {
-	if (++g_iPixmapsRefCount == 1) {
-		g_apPixmaps[ClientIn]
-			= new QPixmap(QPixmap::fromMimeSource("itemAudioClientIn.png"));
-		g_apPixmaps[ClientOut]
-			= new QPixmap(QPixmap::fromMimeSource("itemAudioClientOut.png"));
-		g_apPixmaps[PortIn]
-			= new QPixmap(QPixmap::fromMimeSource("itemAudioPortIn.png"));
-		g_apPixmaps[PortOut]
-			= new QPixmap(QPixmap::fromMimeSource("itemAudioPortOut.png"));
-		g_apPixmaps[PortPhysIn]
-			= new QPixmap(QPixmap::fromMimeSource("itemAudioPortPhysIn.png"));
-		g_apPixmaps[PortPhysOut]
-			= new QPixmap(QPixmap::fromMimeSource("itemAudioPortPhysOut.png"));
+	if (++g_iIconsRefCount == 1) {
+		g_apIcons[ClientIn]
+			= new QIcon(":/icons/itemAudioClientIn.png");
+		g_apIcons[ClientOut]
+			= new QIcon(":/icons/itemAudioClientOut.png");
+		g_apIcons[PortIn]
+			= new QIcon(":/icons/itemAudioPortIn.png");
+		g_apIcons[PortOut]
+			= new QIcon(":/icons/itemAudioPortOut.png");
+		g_apIcons[PortPhysIn]
+			= new QIcon(":/icons/itemAudioPortPhysIn.png");
+		g_apIcons[PortPhysOut]
+			= new QIcon(":/icons/itemAudioPortPhysOut.png");
 	}
 	
 }
 
-void qtractorAudioConnect::deleteIconPixmaps (void)
+void qtractorAudioConnect::deleteIcons (void)
 {
-	if (--g_iPixmapsRefCount == 0) {
-		for (int i = 0; i < PixmapCount; i++) {
-			if (g_apPixmaps[i])
-				delete g_apPixmaps[i];
-			g_apPixmaps[i] = 0;
+	if (--g_iIconsRefCount == 0) {
+		for (int i = 0; i < IconCount; i++) {
+			if (g_apIcons[i])
+				delete g_apIcons[i];
+			g_apIcons[i] = NULL;
 		}
 	}
 }
 
 
-// Common pixmap accessor (static).
-const QPixmap& qtractorAudioConnect::pixmap ( int iPixmap )
+// Common icon accessor (static).
+const QIcon& qtractorAudioConnect::icon ( int iIcon )
 {
-	return *g_apPixmaps[iPixmap];
+	return *g_apIcons[iIcon];
 }
 
 
@@ -276,12 +277,12 @@ bool qtractorAudioConnect::connectPorts ( qtractorPortListItem *pOPort,
 	qtractorAudioPortItem *pIAudioPort
 		= static_cast<qtractorAudioPortItem *> (pIPort);
 
-	if (pOAudioPort == 0 || pIAudioPort == 0)
+	if (pOAudioPort == NULL || pIAudioPort == NULL)
 		return false;
 
 	return (jack_connect(pOAudioPort->jackClient(),
-		pOAudioPort->clientPortName().latin1(),
-		pIAudioPort->clientPortName().latin1()) == 0);
+		pOAudioPort->clientPortName().toUtf8().constData(),
+		pIAudioPort->clientPortName().toUtf8().constData()) == 0);
 }
 
 
@@ -294,40 +295,47 @@ bool qtractorAudioConnect::disconnectPorts ( qtractorPortListItem *pOPort,
 	qtractorAudioPortItem *pIAudioPort
 		= static_cast<qtractorAudioPortItem *> (pIPort);
 
-	if (pOAudioPort == 0 || pIAudioPort == 0)
+	if (pOAudioPort == NULL || pIAudioPort == NULL)
 		return false;
 
 	return (jack_disconnect(pOAudioPort->jackClient(),
-		pOAudioPort->clientPortName().latin1(),
-		pIAudioPort->clientPortName().latin1()) == 0);
+		pOAudioPort->clientPortName().toUtf8().constData(),
+		pIAudioPort->clientPortName().toUtf8().constData()) == 0);
 }
 
 
 // Update port connection references.
 void qtractorAudioConnect::updateConnections (void)
 {
-	if (m_pJackClient == 0)
+	if (m_pJackClient == NULL)
 		return;
 
-	// For each output client item...
-	QListViewItem *pOClientItem = OListView()->firstChild();
-	while (pOClientItem && pOClientItem->rtti() == QTRACTOR_CLIENT_ITEM) {
-		// For each output port item...
-		QListViewItem *pOPortItem = pOClientItem->firstChild();
-		while (pOPortItem && pOPortItem->rtti() == QTRACTOR_PORT_ITEM) {
-			// Hava a proper type cast.
-			qtractorPortListItem *pOPort
-				= static_cast<qtractorPortListItem *> (pOPortItem);
-			qtractorAudioPortItem *pOAudioPort
-				= static_cast<qtractorAudioPortItem *> (pOPort);
-			if (pOAudioPort == 0)
+	// For each client item...
+	int iItemCount = OListView()->topLevelItemCount();
+	for (int iItem = 0; iItem < iItemCount; ++iItem) {
+		QTreeWidgetItem *pItem = OListView()->topLevelItem(iItem);
+		if (pItem->type() != qtractorConnect::ClientItem)
+			continue;
+		qtractorAudioClientItem *pOClient
+			= static_cast<qtractorAudioClientItem *> (pItem);
+		if (pOClient == NULL)
+			continue;
+		// For each port item
+		int iChildCount = pOClient->childCount();
+		for (int iChild = 0; iChild < iChildCount; ++iChild) {
+			QTreeWidgetItem *pChild = pOClient->child(iChild);
+			if (pChild->type() != qtractorConnect::PortItem)
+				continue;
+			qtractorAudioPortItem *pOPort
+				= static_cast<qtractorAudioPortItem *> (pChild);
+			if (pOPort == NULL)
 				continue;
 			// Are there already any connections?
-			if (pOAudioPort->connects().count() > 0)
+			if (pOPort->connects().count() > 0)
 				continue;
 			// Get port connections...
 			const char **ppszClientPorts = jack_port_get_all_connections(
-				pOAudioPort->jackClient(), pOAudioPort->jackPort());
+				pOPort->jackClient(), pOPort->jackPort());
 			if (ppszClientPorts) {
 				// Now, for each input client port...
 				int iClientPort = 0;
@@ -343,9 +351,7 @@ void qtractorAudioConnect::updateConnections (void)
 				}
 				::free(ppszClientPorts);
 			}
-			pOPortItem = pOPortItem->nextSibling();
 		}
-		pOClientItem = pOClientItem->nextSibling();
 	}
 }
 

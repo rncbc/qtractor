@@ -22,9 +22,10 @@
 #include "qtractorAbout.h"
 #include "qtractorOptions.h"
 
-#include <qwidget.h>
-#include <qcombobox.h>
-#include <qsplitter.h>
+#include <QWidget>
+#include <QComboBox>
+#include <QSplitter>
+#include <QList>
 
 
 //-------------------------------------------------------------------------
@@ -33,67 +34,65 @@
 
 // Constructor.
 qtractorOptions::qtractorOptions (void)
+	: m_settings(QTRACTOR_DOMAIN, QTRACTOR_TITLE)
 {
-	// Begin master key group.
-	m_settings.beginGroup("/qtractor");
-
 	// And go into general options group.
 	m_settings.beginGroup("/Options");
 
 	// Load display options...
 	m_settings.beginGroup("/Display");
-	sMessagesFont   = m_settings.readEntry("/MessagesFont", QString::null);
-	bMessagesLimit  = m_settings.readBoolEntry("/MessagesLimit", true);
-	iMessagesLimitLines = m_settings.readNumEntry("/MessagesLimitLines", 1000);
-	bConfirmRemove  = m_settings.readBoolEntry("/ConfirmRemove", true);
-	bStdoutCapture  = m_settings.readBoolEntry("/StdoutCapture", true);
-	bCompletePath   = m_settings.readBoolEntry("/CompletePath", true);
-	bPeakAutoRemove = m_settings.readBoolEntry("/PeakAutoRemove", true);
-	bTransportTime  = m_settings.readBoolEntry("/TransportTime", true);
-	iMaxRecentFiles = m_settings.readNumEntry("/MaxRecentFiles", 5);
+	sMessagesFont   = m_settings.value("/MessagesFont").toString();
+	bMessagesLimit  = m_settings.value("/MessagesLimit", true).toBool();
+	iMessagesLimitLines = m_settings.value("/MessagesLimitLines", 1000).toInt();
+	bConfirmRemove  = m_settings.value("/ConfirmRemove", true).toBool();
+	bStdoutCapture  = m_settings.value("/StdoutCapture", true).toBool();
+	bCompletePath   = m_settings.value("/CompletePath", true).toBool();
+	bPeakAutoRemove = m_settings.value("/PeakAutoRemove", true).toBool();
+	bTransportTime  = m_settings.value("/TransportTime", true).toBool();
+	iMaxRecentFiles = m_settings.value("/MaxRecentFiles", 5).toInt();
 	m_settings.endGroup();
 
 	// And go into view options group.
 	m_settings.beginGroup("/View");
-	bMenubar        = m_settings.readBoolEntry("/Menubar", true);
-	bStatusbar      = m_settings.readBoolEntry("/Statusbar", true);
-	bFileToolbar    = m_settings.readBoolEntry("/FileToolbar", true);
-	bEditToolbar    = m_settings.readBoolEntry("/EditToolbar", true);
-	bTrackToolbar   = m_settings.readBoolEntry("/TrackToolbar", true);
-	bViewToolbar    = m_settings.readBoolEntry("/ViewToolbar", true);
-	bTransportToolbar = m_settings.readBoolEntry("/TransportToolbar", true);
-	bTimeToolbar    = m_settings.readBoolEntry("/TimeToolbar", true);
+	bMenubar        = m_settings.value("/Menubar", true).toBool();
+	bStatusbar      = m_settings.value("/Statusbar", true).toBool();
+	bFileToolbar    = m_settings.value("/FileToolbar", true).toBool();
+	bEditToolbar    = m_settings.value("/EditToolbar", true).toBool();
+	bTrackToolbar   = m_settings.value("/TrackToolbar", true).toBool();
+	bViewToolbar    = m_settings.value("/ViewToolbar", true).toBool();
+	bTransportToolbar = m_settings.value("/TransportToolbar", true).toBool();
+	bTimeToolbar    = m_settings.value("/TimeToolbar", true).toBool();
 	m_settings.endGroup();
 
 	// Transport options group.
 	m_settings.beginGroup("/Transport");
-	bFollowPlayhead = m_settings.readBoolEntry("/FollowPlayhead", true);
+	bFollowPlayhead = m_settings.value("/FollowPlayhead", true).toBool();
 	m_settings.endGroup();
 
 	// Audio redndering options group.
 	m_settings.beginGroup("/Audio");
-	iResampleType = m_settings.readNumEntry("/ResampleType", 0);
+	iResampleType = m_settings.value("/ResampleType", 0).toInt();
 	m_settings.endGroup();
 
 	m_settings.endGroup(); // Options group.
 
 	// Last but not least, get the default directories.
 	m_settings.beginGroup("/Default");
-	sSessionDir = m_settings.readEntry("/SessionDir", QString::null);
-	sAudioDir   = m_settings.readEntry("/AudioDir", QString::null);
-	sMidiDir    = m_settings.readEntry("/MidiDir", QString::null);
-	sInstrumentDir = m_settings.readEntry("/InstrumentDir", QString::null);
-	sPluginSearch  = m_settings.readEntry("/PluginSearch", QString::null);
+	sSessionDir = m_settings.value("/SessionDir").toString();
+	sAudioDir   = m_settings.value("/AudioDir").toString();
+	sMidiDir    = m_settings.value("/MidiDir").toString();
+	sInstrumentDir = m_settings.value("/InstrumentDir").toString();
+	sPluginSearch  = m_settings.value("/PluginSearch").toString();
 	m_settings.endGroup();
 
 	// Instrument file list.
-	const QString sFilePrefix = "/File";
+	const QString sFilePrefix = "/File%1";
 	int iFile = 0;
 	instrumentFiles.clear();
 	m_settings.beginGroup("/InstrumentFiles");
 	for (;;) {
-		QString sFilename = m_settings.readEntry(
-			sFilePrefix + QString::number(++iFile), QString::null);
+		QString sFilename = m_settings.value(
+			sFilePrefix.arg(++iFile)).toString();
 		if (sFilename.isEmpty())
 		    break;
 		instrumentFiles.append(sFilename);
@@ -105,8 +104,8 @@ qtractorOptions::qtractorOptions (void)
 	recentFiles.clear();
 	m_settings.beginGroup("/RecentFiles");
 	while (iFile < iMaxRecentFiles) {
-		QString sFilename = m_settings.readEntry(
-			sFilePrefix + QString::number(++iFile), QString::null);
+		QString sFilename = m_settings.value(
+			sFilePrefix.arg(++iFile)).toString();
 		if (!sFilename.isEmpty())
 			recentFiles.append(sFilename);
 	}
@@ -114,8 +113,7 @@ qtractorOptions::qtractorOptions (void)
 
 	// Tracks widget settings.
 	m_settings.beginGroup("/Tracks");
-	iTrackListWidth = m_settings.readNumEntry("/TrackListWidth", 160);
-	iTrackViewSelectMode = m_settings.readNumEntry("/TrackViewSelectMode", 0);
+	iTrackViewSelectMode = m_settings.value("/TrackViewSelectMode", 0).toInt();
 	m_settings.endGroup();
 }
 
@@ -125,7 +123,7 @@ qtractorOptions::~qtractorOptions (void)
 {
 	// Make program version available in the future.
 	m_settings.beginGroup("/Program");
-	m_settings.writeEntry("/Version", QTRACTOR_VERSION);
+	m_settings.setValue("/Version", QTRACTOR_VERSION);
 	m_settings.endGroup();
 
 	// And go into general options group.
@@ -133,75 +131,73 @@ qtractorOptions::~qtractorOptions (void)
 
 	// Save display options.
 	m_settings.beginGroup("/Display");
-	m_settings.writeEntry("/MessagesFont", sMessagesFont);
-	m_settings.writeEntry("/MessagesLimit", bMessagesLimit);
-	m_settings.writeEntry("/MessagesLimitLines", iMessagesLimitLines);
-	m_settings.writeEntry("/ConfirmRemove", bConfirmRemove);
-	m_settings.writeEntry("/StdoutCapture", bStdoutCapture);
-	m_settings.writeEntry("/CompletePath", bCompletePath);
-	m_settings.writeEntry("/PeakAutoRemove", bPeakAutoRemove);
-	m_settings.writeEntry("/TransportTime", bTransportTime);
-	m_settings.writeEntry("/MaxRecentFiles", iMaxRecentFiles);
+	m_settings.setValue("/MessagesFont", sMessagesFont);
+	m_settings.setValue("/MessagesLimit", bMessagesLimit);
+	m_settings.setValue("/MessagesLimitLines", iMessagesLimitLines);
+	m_settings.setValue("/ConfirmRemove", bConfirmRemove);
+	m_settings.setValue("/StdoutCapture", bStdoutCapture);
+	m_settings.setValue("/CompletePath", bCompletePath);
+	m_settings.setValue("/PeakAutoRemove", bPeakAutoRemove);
+	m_settings.setValue("/TransportTime", bTransportTime);
+	m_settings.setValue("/MaxRecentFiles", iMaxRecentFiles);
 	m_settings.endGroup();
 
 	// View options group.
 	m_settings.beginGroup("/View");
-	m_settings.writeEntry("/Menubar", bMenubar);
-	m_settings.writeEntry("/Statusbar", bStatusbar);
-	m_settings.writeEntry("/FileToolbar", bFileToolbar);
-	m_settings.writeEntry("/EditToolbar", bEditToolbar);
-	m_settings.writeEntry("/TrackToolbar", bTrackToolbar);
-	m_settings.writeEntry("/ViewToolbar", bViewToolbar);
-	m_settings.writeEntry("/TransportToolbar", bTransportToolbar);
-	m_settings.writeEntry("/TimeToolbar", bTimeToolbar);
+	m_settings.setValue("/Menubar", bMenubar);
+	m_settings.setValue("/Statusbar", bStatusbar);
+	m_settings.setValue("/FileToolbar", bFileToolbar);
+	m_settings.setValue("/EditToolbar", bEditToolbar);
+	m_settings.setValue("/TrackToolbar", bTrackToolbar);
+	m_settings.setValue("/ViewToolbar", bViewToolbar);
+	m_settings.setValue("/TransportToolbar", bTransportToolbar);
+	m_settings.setValue("/TimeToolbar", bTimeToolbar);
 	m_settings.endGroup();
 
 	// Transport options group.
 	m_settings.beginGroup("/Transport");
-	m_settings.writeEntry("/FollowPlayhead", bFollowPlayhead);
+	m_settings.setValue("/FollowPlayhead", bFollowPlayhead);
 	m_settings.endGroup();
 
 	// Audio redndering options group.
 	m_settings.beginGroup("/Audio");
-	m_settings.writeEntry("/ResampleType", iResampleType);
+	m_settings.setValue("/ResampleType", iResampleType);
 	m_settings.endGroup();
 
 	m_settings.endGroup(); // Options group.
 
 	// Default directories.
 	m_settings.beginGroup("/Default");
-	m_settings.writeEntry("/SessionDir", sSessionDir);
-	m_settings.writeEntry("/AudioDir", sAudioDir);
-	m_settings.writeEntry("/MidiDir", sMidiDir);
-	m_settings.writeEntry("/InstrumentDir", sInstrumentDir);
-	m_settings.writeEntry("/PluginSearch", sPluginSearch);
+	m_settings.setValue("/SessionDir", sSessionDir);
+	m_settings.setValue("/AudioDir", sAudioDir);
+	m_settings.setValue("/MidiDir", sMidiDir);
+	m_settings.setValue("/InstrumentDir", sInstrumentDir);
+	m_settings.setValue("/PluginSearch", sPluginSearch);
 	m_settings.endGroup();
 
 	// Instrument file list.
-	const QString sFilePrefix = "/File";
-	QStringList::Iterator iter;
+	const QString sFilePrefix = "/File%1";
 	int iFile = 0;
 	m_settings.beginGroup("/InstrumentFiles");
-    for (iter = instrumentFiles.begin(); iter != instrumentFiles.end(); iter++)
-		m_settings.writeEntry(sFilePrefix + QString::number(++iFile), *iter);
+	QStringListIterator iter1(instrumentFiles);
+    while (iter1.hasNext())
+		m_settings.setValue(sFilePrefix.arg(++iFile), iter1.next());
     // Cleanup old entries, if any...
-    while (!m_settings.readEntry(sFilePrefix + QString::number(++iFile)).isEmpty())
-        m_settings.removeEntry(sFilePrefix + QString::number(iFile));
+    while (!m_settings.value(sFilePrefix.arg(++iFile)).isNull())
+        m_settings.remove(sFilePrefix.arg(iFile));
 	m_settings.endGroup();
 
 	// Recent file list.
 	iFile = 0;
 	m_settings.beginGroup("/RecentFiles");
-    for (iter = recentFiles.begin(); iter != recentFiles.end(); iter++)
-		m_settings.writeEntry(sFilePrefix + QString::number(++iFile), *iter);
+	QStringListIterator iter2(recentFiles);
+    while (iter2.hasNext())
+		m_settings.setValue(sFilePrefix.arg(++iFile), iter2.next());
 	m_settings.endGroup();
 
 	// Tracks widget settings.
 	m_settings.beginGroup("/Tracks");
-	m_settings.writeEntry("/TrackListWidth", iTrackListWidth);
-	m_settings.writeEntry("/TrackViewSelectMode", iTrackViewSelectMode);
-	m_settings.endGroup();
-
+	m_settings.setValue("/TrackViewSelectMode", iTrackViewSelectMode);
 	m_settings.endGroup();
 }
 
@@ -223,17 +219,13 @@ QSettings& qtractorOptions::settings (void)
 // Help about command line options.
 void qtractorOptions::print_usage ( const char *arg0 )
 {
-	const QString sEot = "\n\t";
-	const QString sEol = "\n\n";
-
-	fprintf(stderr, QObject::tr("Usage") + ": %s [" + QObject::tr("options") + "] [" +
-		QObject::tr("session-file") + "]" + sEol, arg0);
-	fprintf(stderr, QTRACTOR_TITLE " - " + QObject::tr(QTRACTOR_SUBTITLE) + sEol);
-	fprintf(stderr, QObject::tr("Options") + ":" + sEol);
-	fprintf(stderr, "  -?, --help" + sEot +
-		QObject::tr("Show help about command line options") + sEol);
-	fprintf(stderr, "  -v, --version" + sEot +
-		QObject::tr("Show version information") + sEol);
+	fprintf(stderr,	QObject::tr(
+		"Usage: %1 [options] [session-file]\n\n"
+		QTRACTOR_TITLE " - " QTRACTOR_SUBTITLE "\n\n"
+		"Options:\n\n"
+		"  -?, --help\n\tShow help about command line options\n\n"
+		"  -v, --version\n\tShow version information")
+		.arg(arg0).toUtf8().constData());
 }
 
 
@@ -254,7 +246,7 @@ bool qtractorOptions::parse_args ( int argc, char **argv )
 
 		QString sArg = argv[i];
 		QString sVal = QString::null;
-		int iEqual = sArg.find("=");
+		int iEqual = sArg.indexOf('=');
 		if (iEqual >= 0) {
 			sVal = sArg.right(sArg.length() - iEqual - 1);
 			sArg = sArg.left(iEqual);
@@ -294,12 +286,12 @@ void qtractorOptions::loadWidgetGeometry ( QWidget *pWidget )
 		QPoint fpos;
 		QSize  fsize;
 		bool bVisible;
-		m_settings.beginGroup("/Geometry/" + QString(pWidget->name()));
-		fpos.setX(m_settings.readNumEntry("/x", -1));
-		fpos.setY(m_settings.readNumEntry("/y", -1));
-		fsize.setWidth(m_settings.readNumEntry("/width", -1));
-		fsize.setHeight(m_settings.readNumEntry("/height", -1));
-		bVisible = m_settings.readBoolEntry("/visible", false);
+		m_settings.beginGroup("/Geometry/" + pWidget->objectName());
+		fpos.setX(m_settings.value("/x", -1).toInt());
+		fpos.setY(m_settings.value("/y", -1).toInt());
+		fsize.setWidth(m_settings.value("/width", -1).toInt());
+		fsize.setHeight(m_settings.value("/height", -1).toInt());
+		bVisible = m_settings.value("/visible", false).toBool();
 		m_settings.endGroup();
 		if (fpos.x() > 0 && fpos.y() > 0)
 			pWidget->move(fpos);
@@ -321,17 +313,17 @@ void qtractorOptions::saveWidgetGeometry ( QWidget *pWidget )
 	// (due to X11 window managers ideossincrasies, we better
 	// only save the form geometry while its up and visible)
 	if (pWidget) {
-		m_settings.beginGroup("/Geometry/" + QString(pWidget->name()));
+		m_settings.beginGroup("/Geometry/" + pWidget->objectName());
 		bool bVisible = pWidget->isVisible();
 		if (bVisible) {
 			QPoint fpos  = pWidget->pos();
 			QSize  fsize = pWidget->size();
-			m_settings.writeEntry("/x", fpos.x());
-			m_settings.writeEntry("/y", fpos.y());
-			m_settings.writeEntry("/width", fsize.width());
-			m_settings.writeEntry("/height", fsize.height());
+			m_settings.setValue("/x", fpos.x());
+			m_settings.setValue("/y", fpos.y());
+			m_settings.setValue("/width", fsize.width());
+			m_settings.setValue("/height", fsize.height());
 		}
-		m_settings.writeEntry("/visible", bVisible);
+		m_settings.setValue("/visible", bVisible);
 		m_settings.endGroup();
 	}
 }
@@ -347,13 +339,13 @@ void qtractorOptions::loadComboBoxHistory ( QComboBox *pComboBox, int iLimit )
 	pComboBox->clear();
 
 	// Load combobox list from configuration settings file...
-	m_settings.beginGroup("/History/" + QString(pComboBox->name()));
+	m_settings.beginGroup("/History/" + pComboBox->objectName());
 	for (int i = 0; i < iLimit; i++) {
-		const QString& sText = m_settings.readEntry(
-			"/Item" + QString::number(i + 1), QString::null);
+		const QString& sText = m_settings.value(
+			"/Item" + QString::number(i + 1)).toString();
 		if (sText.isEmpty())
 			break;
-		pComboBox->insertItem(sText);
+		pComboBox->addItem(sText);
 	}
 	m_settings.endGroup();
 
@@ -367,7 +359,7 @@ void qtractorOptions::saveComboBoxHistory ( QComboBox *pComboBox, int iLimit )
 	const QString& sCurrentText = pComboBox->currentText();
 	int iCount = pComboBox->count();
 	for (int i = 0; i < iCount; i++) {
-		const QString& sText = pComboBox->text(i);
+		const QString& sText = pComboBox->itemText(i);
 		if (sText == sCurrentText) {
 			pComboBox->removeItem(i);
 			iCount--;
@@ -376,16 +368,16 @@ void qtractorOptions::saveComboBoxHistory ( QComboBox *pComboBox, int iLimit )
 	}
 	while (iCount >= iLimit)
 		pComboBox->removeItem(--iCount);
-	pComboBox->insertItem(sCurrentText, 0);
+	pComboBox->insertItem(0, sCurrentText);
 	iCount++;
 
 	// Save combobox list to configuration settings file...
-	m_settings.beginGroup("/History/" + QString(pComboBox->name()));
+	m_settings.beginGroup("/History/" + pComboBox->objectName());
 	for (int i = 0; i < iCount; i++) {
-		const QString& sText = pComboBox->text(i);
+		const QString& sText = pComboBox->itemText(i);
 		if (sText.isEmpty())
 			break;
-		m_settings.writeEntry("/Item" + QString::number(i + 1), sText);
+		m_settings.setValue("/Item" + QString::number(i + 1), sText);
 	}
 	m_settings.endGroup();
 }
@@ -395,17 +387,17 @@ void qtractorOptions::saveComboBoxHistory ( QComboBox *pComboBox, int iLimit )
 // Splitter widget sizes persistence helper methods.
 
 void qtractorOptions::loadSplitterSizes ( QSplitter *pSplitter,
-	QValueList<int>& sizes )
+	QList<int>& sizes )
 {
 	// Try to restore old splitter sizes...
 	if (pSplitter) {
-		m_settings.beginGroup("/Splitter/" + QString(pSplitter->name()));
-		QStringList list = m_settings.readListEntry("/sizes");
+		m_settings.beginGroup("/Splitter/" + pSplitter->objectName());
+		QStringList list = m_settings.value("/sizes").toStringList();
 		if (!list.isEmpty()) {
 			sizes.clear();
-			QStringList::Iterator iter = list.begin();
-			while (iter != list.end())
-				sizes.append((*iter++).toInt());
+			QStringListIterator iter(list);
+			while (iter.hasNext())
+				sizes.append(iter.next().toInt());
 		}
 		pSplitter->setSizes(sizes);
 		m_settings.endGroup();
@@ -417,14 +409,14 @@ void qtractorOptions::saveSplitterSizes ( QSplitter *pSplitter )
 {
 	// Try to save current splitter sizes...
 	if (pSplitter) {
-		m_settings.beginGroup("/Splitter/" + QString(pSplitter->name()));
+		m_settings.beginGroup("/Splitter/" + pSplitter->objectName());
 		QStringList list;
-		QValueList<int> sizes = pSplitter->sizes();
-		QValueList<int>::Iterator iter = sizes.begin();
-		while (iter != sizes.end())
-			list.append(QString::number(*iter++));
+		QList<int> sizes = pSplitter->sizes();
+		QListIterator<int> iter(sizes);
+		while (iter.hasNext())
+			list.append(QString::number(iter.next()));
 		if (!list.isEmpty())
-			m_settings.writeEntry("/sizes", list);
+			m_settings.setValue("/sizes", list);
 		m_settings.endGroup();
 	}
 }

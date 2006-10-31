@@ -24,10 +24,8 @@
 
 #include "qtractorEngine.h"
 
-#include <qdockwindow.h>
-#include <qscrollview.h>
-#include <qptrlist.h>
-#include <qframe.h>
+#include <QScrollArea>
+#include <QFrame>
 
 
 // Forward declarations.
@@ -41,10 +39,8 @@ class qtractorMeter;
 class qtractorMainForm;
 class qtractorTrackButton;
 
-class QHBox;
 class QHBoxLayout;
 class QVBoxLayout;
-class QSpacerItem;
 
 class QLabel;
 class QSplitter;
@@ -124,7 +120,7 @@ private:
 	// Local instance variables.
 	qtractorMixerRack *m_pRack;
 
-	qtractorBus   *m_pBus;
+	qtractorBus *m_pBus;
 	qtractorBus::BusMode m_busMode;
 
 	qtractorTrack *m_pTrack;
@@ -151,7 +147,7 @@ private:
 //----------------------------------------------------------------------------
 // qtractorMixerRack -- Mixer strip rack.
 
-class qtractorMixerRack : public QScrollView
+class qtractorMixerRack : public QScrollArea
 {
 	Q_OBJECT
 
@@ -170,11 +166,10 @@ public:
 	const QString& name() const;
 
 	// The mixer strip workspace.
-	QHBox *workspace() const;
+	QWidget *workspace() const;
 
 	// Strip list primitive methods.
 	void addStrip(qtractorMixerStrip *pStrip);
-	void removeStrip(qtractorMixerStrip *pStrip);
 
 	// Find a mixer strip, given its monitor handle.
 	qtractorMixerStrip *findStrip(qtractorMonitor *pMonitor);
@@ -221,10 +216,11 @@ private:
 	QString m_sName;
 	
 	// Layout widgets.
-	QHBox *m_pStripHBox;
+	QWidget     *m_pWorkspace;
+	QHBoxLayout *m_pWorkspaceLayout;
 
 	// The Strips list.
-	QPtrList<qtractorMixerStrip> m_strips;
+	QList<qtractorMixerStrip *> m_strips;
 	
 	// Selection stuff.
 	bool                m_bSelectEnabled;
@@ -235,14 +231,14 @@ private:
 //----------------------------------------------------------------------------
 // qtractorMixer -- Mixer widget.
 
-class qtractorMixer : public QDockWindow
+class qtractorMixer : public QWidget
 {
 	Q_OBJECT
 
 public:
 
 	// Constructor.
-	qtractorMixer(qtractorMainForm *pParent);
+	qtractorMixer(QWidget *pParent);
 	// Default destructor.
 	~qtractorMixer();
 
@@ -277,10 +273,16 @@ public slots:
 	// Track button notification.
 	void trackButtonToggledSlot(qtractorTrackButton *pTrackButton, bool bOn);
 
-private:
+protected:
 
-	// Main application form reference.
-	qtractorMainForm *m_pMainForm;
+	// Notify the main application widget that we're closing.
+	void showEvent(QShowEvent *);
+	void hideEvent(QHideEvent *);
+
+	// Just about to notify main-window that we're closing.
+	void closeEvent(QCloseEvent *);
+
+private:
 
 	// Child controls.
 	QSplitter *m_pSplitter;

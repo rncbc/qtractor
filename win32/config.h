@@ -1,13 +1,13 @@
 
 #define PACKAGE_NAME    "Qtractor"
-#define PACKAGE_VERSION "0.0.0"
+#define PACKAGE_VERSION "0.0.1.486"
 
 #define CONFIG_PREFIX   "."
 #define CONFIG_DEBUG    1
 
-#define CONFIG_LIBVORBIS        1
-#define CONFIG_LIBMAD           1
-#define CONFIG_LIBSAMPLERATE    1
+#define CONFIG_LIBVORBIS
+#define CONFIG_LIBMAD
+#define CONFIG_LIBSAMPLERATE
 
 #undef  HAVE_SIGNAL_H
 

@@ -2,7 +2,7 @@ Qtractor - A MIDI/Audio multi-track sequencer
 ---------------------------------------------
 
 Qtractor is a MIDI/Audio multi-track sequencer application written
-in C++ around the Qt3 toolkit using Qt Designer.
+in C++ around the Qt4 toolkit using Qt Designer.
 
 The initial target platform will be Linux, where the Jack Audio
 Connection Kit (JACK) for audio, and the Advanced Linux Sound
@@ -42,8 +42,10 @@ Configuration
 -------------
 
 Qtractor holds its settings and configuration state per user, in a file
-located as $HOME/.qt/qtractorrc. Normally, there's no need to edit this file,
-as it is recreated and rewritten everytime qsampler is run.
+located as $HOME/.config/rncbc.org/Qtractor.conf . Normally, there's no
+need to edit this file, as it is recreated and rewritten everytime
+qtractor is run.
+
 
 Bugs
 ----

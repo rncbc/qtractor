@@ -27,9 +27,16 @@
 
 #include "qtractorMainForm.h"
 
-#include <qapplication.h>
-#include <qpainter.h>
-#include <qcursor.h>
+#include <QApplication>
+#include <QPainter>
+#include <QCursor>
+#include <QPixmap>
+
+#include <QResizeEvent>
+#include <QMouseEvent>
+#include <QKeyEvent>
+
+#include <QPolygon>
 
 
 //----------------------------------------------------------------------------
@@ -37,64 +44,52 @@
 
 // Constructor.
 qtractorTrackTime::qtractorTrackTime ( qtractorTracks *pTracks,
-	QWidget *pParent, const char *pszName )
-	: QScrollView(pParent, pszName, WStaticContents)
+	QWidget *pParent ) : qtractorScrollView(pParent)
 {
 	m_pTracks = pTracks;
-	m_pPixmap = new QPixmap();
-
 	m_dragState = DragNone;
 
-	QScrollView::viewport()->setBackgroundMode(Qt::PaletteBackground);
-	QScrollView::setHScrollBarMode(QScrollView::AlwaysOff);
-	QScrollView::setVScrollBarMode(QScrollView::AlwaysOff);
+	qtractorScrollView::setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+	qtractorScrollView::setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
-	QScrollView::setFrameStyle(QFrame::ToolBarPanel | QFrame::Plain);
+	qtractorScrollView::setFrameStyle(QFrame::Panel | QFrame::Raised);
 
-	QScrollView::viewport()->setFocusPolicy(QWidget::ClickFocus);
+	qtractorScrollView::viewport()->setFocusPolicy(Qt::ClickFocus);
+//	qtractorScrollView::viewport()->setFocusProxy(this);
+//	qtractorScrollView::viewport()->setAcceptDrops(true);
+//	qtractorScrollView::setDragAutoScroll(false);
 
-	const QFont& font = QScrollView::font();
-	QScrollView::setFont(QFont(font.family(), font.pointSize() - 1));
+	const QFont& font = qtractorScrollView::font();
+	qtractorScrollView::setFont(QFont(font.family(), font.pointSize() - 1));
 
-	QObject::connect(this, SIGNAL(contentsMoving(int,int)),
-		this, SLOT(updatePixmap(int,int)));
+//	QObject::connect(this, SIGNAL(contentsMoving(int,int)),
+//		this, SLOT(updatePixmap(int,int)));
 }
 
 
 // Destructor.
 qtractorTrackTime::~qtractorTrackTime (void)
 {
-	if (m_pPixmap)
-		delete m_pPixmap;
-	m_pPixmap = NULL;
 }
 
 
 // (Re)create the complete track view pixmap.
 void qtractorTrackTime::updatePixmap ( int cx, int /* cy */)
 {
-	const QColorGroup& cg = QScrollView::colorGroup();
+	const QPalette& pal = qtractorScrollView::palette();
 
-#if 0
-	QWidget *pViewport = QScrollView::viewport();
-	int w = pViewport->width()  + 2;
-	int h = pViewport->height() + 2;
-#else
-	int w = QScrollView::width();
-	int h = QScrollView::height();
-#endif
+	int w = qtractorScrollView::width();
+	int h = qtractorScrollView::height();
 
-	m_pPixmap->resize(w, h);
-	m_pPixmap->fill(cg.color(QColorGroup::Background));
+	m_pixmap = QPixmap(w, h);
+	m_pixmap.fill(pal.background().color());
 
 	qtractorSession *pSession = m_pTracks->session();
 	if (pSession == NULL)
 		return;
 
-	QPainter p(m_pPixmap);
-	p.setViewport(0, 0, w, h);
-	p.setWindow(0, 0, w, h);
-	p.setFont(QScrollView::font());
+	QPainter p(&m_pixmap);
+	p.initFrom(this);
 
 	// Draw the time scale...
 	//
@@ -110,16 +105,16 @@ void qtractorTrackTime::updatePixmap ( int cx, int /* cy */)
 		bool bBeatIsBar = pSession->beatIsBar(iBeat);
 		if (bBeatIsBar) {
 			y1 = 0;
-			p.setPen(cg.color(QColorGroup::Text));
+			p.setPen(pal.text().color());
 			p.drawText(x + 2, y1 + fm.ascent(), QString::number(
 				1 + (iBeat / pSession->beatsPerBar())));
 		} else {
 			y1 = (y2 >> 1);
 		}
 		if (bBeatIsBar || iPixelsPerBeat > 16) {
-			p.setPen(cg.color(QColorGroup::Mid));
+			p.setPen(pal.mid().color());
 			p.drawLine(x, y1, x, y2);
-			p.setPen(cg.color(QColorGroup::Midlight));
+			p.setPen(pal.light().color());
 			p.drawLine(x + 1, y1, x + 1, y2);
 		}
 		iFrameFromBeat += iFramesPerBeat;
@@ -129,7 +124,7 @@ void qtractorTrackTime::updatePixmap ( int cx, int /* cy */)
 
 	// Draw loop boundaries, if applicable...
 	if (pSession->isLooping()) {
-		QPointArray polyg(3);
+		QPolygon polyg(3);
 		h -= 4;
 		int d = (h >> 2);
 		p.setPen(Qt::darkCyan);
@@ -155,97 +150,94 @@ void qtractorTrackTime::updatePixmap ( int cx, int /* cy */)
 
 
 // Rectangular contents update.
-void qtractorTrackTime::updateContents ( const QRect& rect, bool bRefresh )
+void qtractorTrackTime::updateContents ( const QRect& rect )
 {
-	if (bRefresh)
-		updatePixmap(QScrollView::contentsX(), QScrollView::contentsY());
-
-	QScrollView::repaintContents(rect);
+	updatePixmap(
+		qtractorScrollView::contentsX(), qtractorScrollView::contentsY());
+	qtractorScrollView::updateContents(rect);
 }
 
 
 // Overall contents update.
-void qtractorTrackTime::updateContents ( bool bRefresh )
+void qtractorTrackTime::updateContents (void)
 {
-	if (bRefresh)
-		updatePixmap(QScrollView::contentsX(), QScrollView::contentsY());
+	updatePixmap(
+		qtractorScrollView::contentsX(), qtractorScrollView::contentsY());
 
-	QScrollView::repaintContents();
+	qtractorScrollView::updateContents();
 }
 
 
 // Resize event handler.
 void qtractorTrackTime::resizeEvent ( QResizeEvent *pResizeEvent )
 {
-	QScrollView::resizeEvent(pResizeEvent);
+	qtractorScrollView::resizeEvent(pResizeEvent);
 	updateContents();
 }
 
 
 // Draw the time scale.
-void qtractorTrackTime::drawContents ( QPainter *p,
-	int clipx, int clipy, int clipw, int cliph )
+void qtractorTrackTime::drawContents ( QPainter *pPainter, const QRect& rect )
 {
-	p->drawPixmap(clipx, clipy, *m_pPixmap,
-		clipx - QScrollView::contentsX(),
-		clipy - QScrollView::contentsY(),
-		clipw, cliph);
+	// Render the famous pixmap region...
+	pPainter->drawPixmap(rect, m_pixmap, rect);
 
 	// Headers a-head...
 	qtractorSession *pSession = m_pTracks->session();
 	if (pSession == NULL)
 		return;
 
-	int h = QScrollView::height() - 4;
+	int cx = qtractorScrollView::contentsX();
+	int h = qtractorScrollView::height() - 4;
 	int d = (h >> 2);
 	int x;
 	
 	// Draw edit-head line...
-	x = pSession->pixelFromFrame(pSession->editHead());
-	if (x >= clipx - d && x < clipx + clipw + d) {
-		QPointArray polyg(3);
+	x = pSession->pixelFromFrame(pSession->editHead()) - cx;
+	if (x >= rect.left() - d && x <= rect.right() + d) {
+		QPolygon polyg(3);
 		polyg.putPoints(0, 3,
 			x + d, h - d,
 			x, h,
 			x, h - d);
-		p->setPen(Qt::blue);
-		p->setBrush(Qt::blue);
-		p->drawPolygon(polyg);
+		pPainter->setPen(Qt::blue);
+		pPainter->setBrush(Qt::blue);
+		pPainter->drawPolygon(polyg);
 	}
 
 	// Draw edit-tail line...
-	x = pSession->pixelFromFrame(pSession->editTail());
-	if (x >= clipx - d && x < clipx + clipw + d) {
-		QPointArray polyg(3);
+	x = pSession->pixelFromFrame(pSession->editTail()) - cx;
+	if (x >= rect.left() - d && x <= rect.right() + d) {
+		QPolygon polyg(3);
 		polyg.putPoints(0, 3,
 			x, h - d,
 			x, h,
 			x - d, h - d);
-		p->setPen(Qt::blue);
-		p->setBrush(Qt::blue);
-		p->drawPolygon(polyg);
+		pPainter->setPen(Qt::blue);
+		pPainter->setBrush(Qt::blue);
+		pPainter->drawPolygon(polyg);
 	}
 
 	// Draw special play-head header...
-	x = pSession->pixelFromFrame(m_pTracks->trackView()->playHead());
-	if (x >= clipx - d && x < clipx + clipw + d) {
-		QPointArray polyg(3);
+	x = pSession->pixelFromFrame(m_pTracks->trackView()->playHead()) - cx;
+	if (x >= rect.left() - d && x <= rect.right() + d) {
+		QPolygon polyg(3);
 		polyg.putPoints(0, 3,
 			x - d, h - d,
 			x, h,
 			x + d, h - d);
-		p->setPen(Qt::red);
-		p->setBrush(Qt::red);
-		p->drawPolygon(polyg);
+		pPainter->setPen(Qt::red);
+		pPainter->setBrush(Qt::red);
+		pPainter->drawPolygon(polyg);
 	}
 }
 
 
 // To have timeline in h-sync with main track view.
-void qtractorTrackTime::contentsMovingSlot ( int cx, int /*cy*/ )
+void qtractorTrackTime::contentsXMovingSlot ( int cx, int /*cy*/ )
 {
-	if (QScrollView::contentsX() != cx)
-		m_pTracks->setContentsPos(this, cx, QScrollView::contentsY());
+	if (qtractorScrollView::contentsX() != cx)
+		qtractorScrollView::setContentsPos(cx, qtractorScrollView::contentsY());
 }
 
 
@@ -258,7 +250,7 @@ bool qtractorTrackTime::dragHeadStart ( const QPoint& pos )
 
 	// Try to catch mouse clicks over the
 	// play/edit-head/tail cursors...
-	int h = QScrollView::height() - 4;
+	int h = qtractorScrollView::height() - 4;
 	int d = (h >> 1);
 	QRect rect(0, h - d, d << 1, d);
 
@@ -306,7 +298,7 @@ bool qtractorTrackTime::dragHeadStart ( const QPoint& pos )
 
 
 // Handle selection/dragging -- mouse button press.
-void qtractorTrackTime::contentsMousePressEvent ( QMouseEvent *pMouseEvent )
+void qtractorTrackTime::mousePressEvent ( QMouseEvent *pMouseEvent )
 {
 	// Force null state.
 	resetDragState();
@@ -314,7 +306,7 @@ void qtractorTrackTime::contentsMousePressEvent ( QMouseEvent *pMouseEvent )
 	qtractorSession *pSession = m_pTracks->session();
 	if (pSession) {
 		// Direct snap positioning...
-		const QPoint& pos = pMouseEvent->pos();
+		const QPoint& pos = viewportToContents(pMouseEvent->pos());
 		unsigned long iFrame = pSession->frameSnap(
 			pSession->frameFromPixel(pos.x() > 0 ? pos.x() : 0));
 		switch (pMouseEvent->button()) {
@@ -324,7 +316,7 @@ void qtractorTrackTime::contentsMousePressEvent ( QMouseEvent *pMouseEvent )
 			m_posDrag   = pos;
 			// Try to catch mouse clicks over the cursor heads...
 			if (dragHeadStart(m_posDrag))
-				QScrollView::setCursor(QCursor(Qt::SizeHorCursor));
+				qtractorScrollView::setCursor(QCursor(Qt::SizeHorCursor));
 			break;
 		case Qt::MidButton:
 			// Mid-button direct positioning...
@@ -346,12 +338,12 @@ void qtractorTrackTime::contentsMousePressEvent ( QMouseEvent *pMouseEvent )
 		}
 	}
 
-	QScrollView::contentsMousePressEvent(pMouseEvent);
+	qtractorScrollView::mousePressEvent(pMouseEvent);
 }
 
 
 // Handle selection/dragging -- mouse pointer move.
-void qtractorTrackTime::contentsMouseMoveEvent ( QMouseEvent *pMouseEvent )
+void qtractorTrackTime::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 {
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm == NULL)
@@ -360,7 +352,7 @@ void qtractorTrackTime::contentsMouseMoveEvent ( QMouseEvent *pMouseEvent )
 	qtractorSession *pSession = m_pTracks->session();
 	if (pSession) {
 		// Are we already moving/dragging something?
-		const QPoint& pos = pMouseEvent->pos();
+		const QPoint& pos = viewportToContents(pMouseEvent->pos());
 		unsigned long iFrame = pSession->frameSnap(
 			pSession->frameFromPixel(pos.x() > 0 ? pos.x() : 0));
 		int y = m_pTracks->trackView()->contentsY();
@@ -396,13 +388,13 @@ void qtractorTrackTime::contentsMouseMoveEvent ( QMouseEvent *pMouseEvent )
 			if ((m_posDrag - pos).manhattanLength()
 				> QApplication::startDragDistance()) {
 				// We'll start dragging alright...
-				int h = QScrollView::height();	// - 4;
+				int h = qtractorScrollView::height();	// - 4;
 				m_rectDrag.setTop(0);			// h - (h >> 2)
 				m_rectDrag.setLeft(m_posDrag.x());
 				m_rectDrag.setRight(pos.x());
 				m_rectDrag.setBottom(h);
 				m_dragState = DragSelect;
-				QScrollView::setCursor(QCursor(Qt::SizeHorCursor));
+				qtractorScrollView::setCursor(QCursor(Qt::SizeHorCursor));
 			}
 			// Fall thru...
 		case DragNone:
@@ -411,20 +403,20 @@ void qtractorTrackTime::contentsMouseMoveEvent ( QMouseEvent *pMouseEvent )
 		}
 	}
 
-	QScrollView::contentsMouseMoveEvent(pMouseEvent);
+	qtractorScrollView::mouseMoveEvent(pMouseEvent);
 }
 
 
 // Handle selection/dragging -- mouse button release.
-void qtractorTrackTime::contentsMouseReleaseEvent ( QMouseEvent *pMouseEvent )
+void qtractorTrackTime::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 {
-	QScrollView::contentsMouseReleaseEvent(pMouseEvent);
+	qtractorScrollView::mouseReleaseEvent(pMouseEvent);
 
 	qtractorSession *pSession = m_pTracks->session();
 	if (pSession) {
 		// Which mouse state?
-		const bool bModifier = (pMouseEvent->state()
-			& (Qt::ShiftButton | Qt::ControlButton));
+		const bool bModifier = (pMouseEvent->modifiers()
+			& (Qt::ShiftModifier | Qt::ControlModifier));
 		// Direct snap positioning...
 		unsigned long iFrame = pSession->frameSnap(
 			pSession->frameFromPixel(m_posDrag.x() > 0 ? m_posDrag.x() : 0));
@@ -501,14 +493,14 @@ void qtractorTrackTime::resetDragState (void)
 	// Cancel any dragging out there...
 	switch (m_dragState) {
 	case DragSelect:
-		QScrollView::updateContents();
+		qtractorScrollView::updateContents();
 		// Fall thru...
 	case DragPlayHead:
 	case DragEditHead:
 	case DragEditTail:
 	case DragLoopStart:
 	case DragLoopEnd:
-		QScrollView::unsetCursor();
+		qtractorScrollView::unsetCursor();
 		// Fall thru again...
 	case DragNone:
 	default:
@@ -539,7 +531,7 @@ void qtractorTrackTime::keyPressEvent ( QKeyEvent *pKeyEvent )
 		resetDragState();
 		break;
 	default:
-		QScrollView::keyPressEvent(pKeyEvent);
+		qtractorScrollView::keyPressEvent(pKeyEvent);
 		break;
 	}
 }

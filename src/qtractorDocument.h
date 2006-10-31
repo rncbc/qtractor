@@ -22,7 +22,7 @@
 #ifndef __qtractorDocument_h
 #define __qtractorDocument_h
 
-#include <qdom.h>
+#include <QDomDocument>
 
 
 //-------------------------------------------------------------------------

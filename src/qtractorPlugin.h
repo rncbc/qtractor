@@ -25,9 +25,8 @@
 #include "qtractorAtomic.h"
 #include "qtractorList.h"
 
-#include <qstringlist.h>
-#include <qptrlist.h>
-#include <qlibrary.h>
+#include <QStringList>
+#include <QLibrary>
 
 #include <ladspa.h>
 
@@ -67,7 +66,7 @@ public:
 	void close();
 
 	// Plugin file list.
-	QPtrList<qtractorPluginFile>& files();
+	QList<qtractorPluginFile *>& files();
 
 private:
 
@@ -75,7 +74,7 @@ private:
 	QStringList m_paths;
 	
 	// Internal plugin file list.
-	QPtrList<qtractorPluginFile> m_files;
+	QList<qtractorPluginFile *> m_files;
 };
 
 
@@ -97,7 +96,7 @@ public:
 	void close();
 
 	// Plugin type list.
-	QPtrList<qtractorPluginType>& types();
+	QList<qtractorPluginType *>& types();
 
 	// Descriptor function method.
 	const LADSPA_Descriptor *descriptor(unsigned long iIndex);
@@ -108,7 +107,7 @@ private:
 	LADSPA_Descriptor_Function m_pfnDescriptor;
 
 	// Internal plugin type list.
-	QPtrList<qtractorPluginType> m_types;
+	QList<qtractorPluginType *> m_types;
 	
 };
 
@@ -193,17 +192,17 @@ public:
 	void process(unsigned int nframes);
 
 	// Input control ports list accessor.
-	QPtrList<qtractorPluginPort>& cports();
+	QList<qtractorPluginPort *>& cports();
 
 	// Output control (dummy) port index-list accessors.
-	const QValueList<unsigned long>& vports() const;
+	const QList<unsigned long>& vports() const;
 
 	// Audio port index-list accessors.
-	const QValueList<unsigned long>& iports() const;
-	const QValueList<unsigned long>& oports() const;
+	const QList<unsigned long>& iports() const;
+	const QList<unsigned long>& oports() const;
 
 	// An accessible list of observers.
-	QPtrList<qtractorPluginListItem>& items();
+	QList<qtractorPluginListItem *>& items();
 
 	// Special plugin form accessors.
 	bool isVisible() const;
@@ -241,17 +240,17 @@ private:
 	bool m_bActivated;
 
 	// List of input control ports.
-	QPtrList<qtractorPluginPort> m_cports;
+	QList<qtractorPluginPort *> m_cports;
 
 	// List of output control (dummy) port indexes.
-	QValueList<unsigned long> m_vports;
+	QList<unsigned long> m_vports;
 
 	// List of audio port indexes.
-	QValueList<unsigned long> m_iports;
-	QValueList<unsigned long> m_oports;
+	QList<unsigned long> m_iports;
+	QList<unsigned long> m_oports;
 
 	// An accessible list of observers.
-	QPtrList<qtractorPluginListItem> m_items;
+	QList<qtractorPluginListItem *> m_items;
 
 	// The plugin form reference.
 	qtractorPluginForm *m_pForm;
@@ -300,7 +299,7 @@ public:
 	void movePlugin(qtractorPlugin *pPlugin, qtractorPlugin *pPrevPlugin);
 
 	// An accessible list of observers.
-	QPtrList<qtractorPluginListView>& views();
+	QList<qtractorPluginListView *>& views();
 
 	// The meta-main audio-processing plugin-chain procedure.
 	void process(float **ppBuffer, unsigned int nframes);
@@ -325,7 +324,7 @@ private:
 	QString m_sName;
 
 	// An accessible list of observers.
-	QPtrList<qtractorPluginListView> m_views;
+	QList<qtractorPluginListView *> m_views;
 
 	// Internal running buffer chain references.
 	float **m_pppBuffers[2];

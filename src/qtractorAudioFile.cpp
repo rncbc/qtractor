@@ -24,9 +24,8 @@
 #include "qtractorAudioVorbisFile.h"
 #include "qtractorAudioMadFile.h"
 
-#include <qobject.h>
-#include <qfileinfo.h>
-#include <qregexp.h>
+#include <QFileInfo>
+#include <QRegExp>
 
 
 //----------------------------------------------------------------------
@@ -102,7 +101,7 @@ qtractorAudioFileFactory::qtractorAudioFileFactory (void)
 #endif
 
 	// Finally, simply build the all supported files entry.
-	QRegExp rx("^(aif(|f)|fla(|c)|mp3|ogg|w(av|64))", false);
+	QRegExp rx("^(aif(|f)|fla(|c)|mp3|ogg|w(av|64))", Qt::CaseInsensitive);
 	QStringList exts;
 	for (FileTypes::ConstIterator iter = m_types.begin();
 			iter != m_types.end(); ++iter) {
@@ -136,13 +135,13 @@ qtractorAudioFile *qtractorAudioFileFactory::newAudioFile (
 	const QString& sFilename, unsigned short iChannels,
 	unsigned int iSampleRate, unsigned int iBufferSize )
 {
-	const QString sExtension = QFileInfo(sFilename).extension(false).lower();
+	const QString sExtension = QFileInfo(sFilename).suffix().toLower();
 	
 	FileTypes::ConstIterator iter = m_types.find(sExtension);
 	if (iter == m_types.end())
 		return NULL;
 
-	return newAudioFile(iter.data(), iChannels, iSampleRate, iBufferSize);
+	return newAudioFile(iter.value(), iChannels, iSampleRate, iBufferSize);
 }
 
 qtractorAudioFile *qtractorAudioFileFactory::newAudioFile (

@@ -32,15 +32,6 @@ class qtractorAudioClientItem;
 class qtractorAudioClientListView;
 class qtractorAudioConnect;
 
-// Pixmap-set array indexes.
-#define QTRACTOR_AUDIO_CLIENT_IN		0	// Input client item pixmap.
-#define QTRACTOR_AUDIO_CLIENT_OUT		1	// Output client item pixmap.
-#define QTRACTOR_AUDIO_PORT_IN			2	// Input port item pixmap.
-#define QTRACTOR_AUDIO_PORT_OUT			3	// Output port item pixmap.
-#define QTRACTOR_AUDIO_PORT_PHYS_IN		4	// Physical input port item pixmap.
-#define QTRACTOR_AUDIO_PORT_PHYS_OUT	5	// Physical output port item pixmap.
-#define QTRACTOR_AUDIO_PIXMAPS			6	// Number of pixmaps in local array.
-
 
 //----------------------------------------------------------------------
 // qtractorAudioPortItem -- Jack port list item.
@@ -95,7 +86,7 @@ class qtractorAudioClientListView : public qtractorClientListView
 public:
 
 	// Constructor.
-	qtractorAudioClientListView(QWidget *pParent = 0, const char *pszName = 0);
+	qtractorAudioClientListView(QWidget *pParent = NULL);
 	// Default destructor.
 	~qtractorAudioClientListView();
 
@@ -128,19 +119,19 @@ public:
 	void setJackClient(jack_client_t *pJackClient);
 	jack_client_t *jackClient() const;
 
-	// Pixmap-set array indexes.
+	// Icon-set array indexes.
 	enum {
-		ClientIn	= 0,	// Input client item pixmap.
-		ClientOut	= 1,	// Output client item pixmap.
-		PortIn		= 2,	// Input port item pixmap.
-		PortOut		= 3,	// Output port item pixmap.
-		PortPhysIn	= 4,	// Physical input port item pixmap.
-		PortPhysOut	= 5,	// Physical output port item pixmap.,
-		PixmapCount	= 6		// Number of pixmaps in local array.
+		ClientIn	= 0,	// Input client item icon.
+		ClientOut	= 1,	// Output client item icon.
+		PortIn		= 2,	// Input port item icon.
+		PortOut		= 3,	// Output port item icon.
+		PortPhysIn	= 4,	// Physical input port item icon.
+		PortPhysOut	= 5,	// Physical output port item icon.,
+		IconCount	= 6		// Number of icons in local array.
 	};
 
-	// Common pixmap accessor.
-	static const QPixmap& pixmap (int iPixmap);
+	// Common icon accessor.
+	static const QIcon& icon (int iIcon);
 	
 protected:
 
@@ -156,15 +147,15 @@ protected:
 private:
 
 	// Local pixmap-set janitor methods.
-	void createIconPixmaps();
-	void deleteIconPixmaps();
+	void createIcons();
+	void deleteIcons();
 
 	// Instance variables.
 	jack_client_t *m_pJackClient;
 
 	// Local pixmap-set array.
-	static QPixmap *g_apPixmaps[PixmapCount];
-	static int      g_iPixmapsRefCount;
+	static QIcon *g_apIcons[IconCount];
+	static int    g_iIconsRefCount;
 };
 
 

@@ -1,6 +1,6 @@
-<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
-<class>qtractorConnectForm</class>
-<comment>qtractor - A MIDI/Audio multi-track sequencer.
+<ui version="4.0" >
+ <author>rncbc aka Rui Nuno Capela</author>
+ <comment>qtractor - A MIDI/Audio multi-track sequencer.
 
    Copyright (C) 2005-2006, rncbc aka Rui Nuno Capela. All rights reserved.
 
@@ -18,579 +18,413 @@
    with this program; if not, write to the Free Software Foundation, Inc.,
    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-</comment>
-<author>rncbc aka Rui Nuno Capela</author>
-<widget class="QWidget">
-    <property name="name">
-        <cstring>qtractorConnectTestForm</cstring>
-    </property>
-    <property name="geometry">
-        <rect>
-            <x>0</x>
-            <y>0</y>
-            <width>506</width>
-            <height>250</height>
-        </rect>
-    </property>
-    <property name="sizePolicy">
-        <sizepolicy>
-            <hsizetype>1</hsizetype>
-            <vsizetype>1</vsizetype>
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-        </sizepolicy>
-    </property>
-    <property name="font">
-        <font>
-        </font>
-    </property>
-    <property name="caption">
-        <string>qtractorConnectTest</string>
-    </property>
-    <grid>
-        <property name="name">
-            <cstring>unnamed</cstring>
-        </property>
-        <widget class="QTabWidget" row="0" column="0">
-            <property name="name">
-                <cstring>ConnectTabWidget</cstring>
-            </property>
-            <widget class="QWidget">
-                <property name="name">
-                    <cstring>AudioConnectTab</cstring>
-                </property>
-                <attribute name="title">
-                    <string>Audio</string>
-                </attribute>
-                <vbox>
-                    <property name="name">
-                        <cstring>unnamed</cstring>
-                    </property>
-                    <widget class="QSplitter">
-                        <property name="name">
-                            <cstring>AudioConnectSplitter</cstring>
-                        </property>
-                        <property name="orientation">
-                            <enum>Horizontal</enum>
-                        </property>
-                        <widget class="QLayoutWidget">
-                            <property name="name">
-                                <cstring>AudioOLayout</cstring>
-                            </property>
-                            <vbox>
-                                <property name="name">
-                                    <cstring>unnamed</cstring>
-                                </property>
-                                <widget class="QComboBox">
-                                    <property name="name">
-                                        <cstring>AudioOClientsComboBox</cstring>
-                                    </property>
-                                    <property name="toolTip" stdset="0">
-                                        <string>Select output client/ports</string>
-                                    </property>
-                                </widget>
-                                <widget class="qtractorAudioClientListView">
-                                    <property name="name">
-                                        <cstring>AudioOListView</cstring>
-                                    </property>
-                                    <property name="focusPolicy">
-                                        <enum>WheelFocus</enum>
-                                    </property>
-                                </widget>
-                            </vbox>
-                        </widget>
-                        <widget class="qtractorConnectorView">
-                            <property name="name">
-                                <cstring>AudioConnectorView</cstring>
-                            </property>
-                        </widget>
-                        <widget class="QLayoutWidget">
-                            <property name="name">
-                                <cstring>AudioILayout</cstring>
-                            </property>
-                            <vbox>
-                                <property name="name">
-                                    <cstring>unnamed</cstring>
-                                </property>
-                                <widget class="QComboBox">
-                                    <property name="name">
-                                        <cstring>AudioIClientsComboBox</cstring>
-                                    </property>
-                                    <property name="toolTip" stdset="0">
-                                        <string>Select input client/ports</string>
-                                    </property>
-                                </widget>
-                                <widget class="qtractorAudioClientListView">
-                                    <property name="name">
-                                        <cstring>AudioIListView</cstring>
-                                    </property>
-                                    <property name="focusPolicy">
-                                        <enum>WheelFocus</enum>
-                                    </property>
-                                </widget>
-                            </vbox>
-                        </widget>
-                    </widget>
-                    <widget class="QLayoutWidget">
-                        <property name="name">
-                            <cstring>AudioConnectLayout1</cstring>
-                        </property>
-                        <hbox>
-                            <property name="name">
-                                <cstring>unnamed</cstring>
-                            </property>
-                            <widget class="QPushButton">
-                                <property name="name">
-                                    <cstring>AudioConnectPushButton</cstring>
-                                </property>
-                                <property name="text">
-                                    <string>&amp;Connect</string>
-                                </property>
-                                <property name="accel">
-                                    <string>Alt+C</string>
-                                </property>
-                                <property name="iconSet">
-                                    <iconset>formConnect.png</iconset>
-                                </property>
-                                <property name="toolTip" stdset="0">
-                                    <string>Connect currently selected ports</string>
-                                </property>
-                            </widget>
-                            <widget class="QPushButton">
-                                <property name="name">
-                                    <cstring>AudioDisconnectPushButton</cstring>
-                                </property>
-                                <property name="text">
-                                    <string>&amp;Disconnect</string>
-                                </property>
-                                <property name="accel">
-                                    <string>Alt+D</string>
-                                </property>
-                                <property name="iconSet">
-                                    <iconset>formDisconnect.png</iconset>
-                                </property>
-                                <property name="toolTip" stdset="0">
-                                    <string>Disconnect currently selected ports</string>
-                                </property>
-                            </widget>
-                            <widget class="QPushButton">
-                                <property name="name">
-                                    <cstring>AudioDisconnectAllPushButton</cstring>
-                                </property>
-                                <property name="text">
-                                    <string>Disconnect &amp;All</string>
-                                </property>
-                                <property name="accel">
-                                    <string>Alt+A</string>
-                                </property>
-                                <property name="iconSet">
-                                    <iconset>formDisconnectAll.png</iconset>
-                                </property>
-                                <property name="toolTip" stdset="0">
-                                    <string>Disconnect all currently connected ports</string>
-                                </property>
-                            </widget>
-                            <spacer>
-                                <property name="name">
-                                    <cstring>AudioConnectSpacer1</cstring>
-                                </property>
-                                <property name="orientation">
-                                    <enum>Horizontal</enum>
-                                </property>
-                                <property name="sizeType">
-                                    <enum>Expanding</enum>
-                                </property>
-                                <property name="sizeHint">
-                                    <size>
-                                        <width>87</width>
-                                        <height>8</height>
-                                    </size>
-                                </property>
-                            </spacer>
-                            <widget class="QPushButton">
-                                <property name="name">
-                                    <cstring>AudioRefreshPushButton</cstring>
-                                </property>
-                                <property name="text">
-                                    <string>&amp;Refresh</string>
-                                </property>
-                                <property name="accel">
-                                    <string>Alt+R</string>
-                                </property>
-                                <property name="iconSet">
-                                    <iconset>formRefresh.png</iconset>
-                                </property>
-                                <property name="toolTip" stdset="0">
-                                    <string>Refresh current connections view</string>
-                                </property>
-                            </widget>
-                        </hbox>
-                    </widget>
-                </vbox>
+ </comment>
+ <exportmacro></exportmacro>
+ <class>qtractorConnectForm</class>
+ <widget class="QWidget" name="qtractorConnectForm" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>506</width>
+    <height>250</height>
+   </rect>
+  </property>
+  <property name="sizePolicy" >
+   <sizepolicy>
+    <hsizetype>1</hsizetype>
+    <vsizetype>1</vsizetype>
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="windowTitle" >
+   <string>qtractorConnectTest</string>
+  </property>
+  <property name="windowIcon" >
+   <iconset resource="../icons/qtractor.qrc" >:/icons/viewConnections.png</iconset>
+  </property>
+  <layout class="QVBoxLayout" >
+   <property name="margin" >
+    <number>4</number>
+   </property>
+   <property name="spacing" >
+    <number>4</number>
+   </property>
+   <item>
+    <widget class="QTabWidget" name="ConnectTabWidget" >
+     <widget class="QWidget" name="AudioConnectTab" >
+      <attribute name="title" >
+       <string>Audio</string>
+      </attribute>
+      <layout class="QVBoxLayout" >
+       <property name="margin" >
+        <number>8</number>
+       </property>
+       <property name="spacing" >
+        <number>4</number>
+       </property>
+       <item>
+        <widget class="QSplitter" name="AudioConnectSplitter" >
+         <property name="orientation" >
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <widget class="QWidget" name="AudioOLayout" >
+          <layout class="QVBoxLayout" >
+           <property name="margin" >
+            <number>0</number>
+           </property>
+           <property name="spacing" >
+            <number>4</number>
+           </property>
+           <item>
+            <widget class="QComboBox" name="AudioOClientsComboBox" >
+             <property name="toolTip" >
+              <string>Select output client/ports</string>
+             </property>
             </widget>
-            <widget class="QWidget">
-                <property name="name">
-                    <cstring>MidiConnectTab</cstring>
-                </property>
-                <attribute name="title">
-                    <string>MIDI</string>
-                </attribute>
-                <vbox>
-                    <property name="name">
-                        <cstring>unnamed</cstring>
-                    </property>
-                    <widget class="QSplitter">
-                        <property name="name">
-                            <cstring>MidiConnectSplitter</cstring>
-                        </property>
-                        <property name="orientation">
-                            <enum>Horizontal</enum>
-                        </property>
-                        <widget class="QLayoutWidget">
-                            <property name="name">
-                                <cstring>MidiOLayout</cstring>
-                            </property>
-                            <vbox>
-                                <property name="name">
-                                    <cstring>unnamed</cstring>
-                                </property>
-                                <widget class="QComboBox">
-                                    <property name="name">
-                                        <cstring>MidiOClientsComboBox</cstring>
-                                    </property>
-                                    <property name="toolTip" stdset="0">
-                                        <string>Select output client/ports</string>
-                                    </property>
-                                </widget>
-                                <widget class="qtractorMidiClientListView">
-                                    <property name="name">
-                                        <cstring>MidiOListView</cstring>
-                                    </property>
-                                    <property name="focusPolicy">
-                                        <enum>WheelFocus</enum>
-                                    </property>
-                                </widget>
-                            </vbox>
-                        </widget>
-                        <widget class="qtractorConnectorView">
-                            <property name="name">
-                                <cstring>MidiConnectorView</cstring>
-                            </property>
-                        </widget>
-                        <widget class="QLayoutWidget">
-                            <property name="name">
-                                <cstring>MidiILayout</cstring>
-                            </property>
-                            <vbox>
-                                <property name="name">
-                                    <cstring>unnamed</cstring>
-                                </property>
-                                <widget class="QComboBox">
-                                    <property name="name">
-                                        <cstring>MidiIClientsComboBox</cstring>
-                                    </property>
-                                    <property name="toolTip" stdset="0">
-                                        <string>Select input client/ports</string>
-                                    </property>
-                                </widget>
-                                <widget class="qtractorMidiClientListView">
-                                    <property name="name">
-                                        <cstring>MidiIListView</cstring>
-                                    </property>
-                                    <property name="focusPolicy">
-                                        <enum>WheelFocus</enum>
-                                    </property>
-                                </widget>
-                            </vbox>
-                        </widget>
-                    </widget>
-                    <widget class="QLayoutWidget">
-                        <property name="name">
-                            <cstring>MidiConnectLayout1</cstring>
-                        </property>
-                        <hbox>
-                            <property name="name">
-                                <cstring>unnamed</cstring>
-                            </property>
-                            <widget class="QPushButton">
-                                <property name="name">
-                                    <cstring>MidiConnectPushButton</cstring>
-                                </property>
-                                <property name="text">
-                                    <string>&amp;Connect</string>
-                                </property>
-                                <property name="accel">
-                                    <string>Alt+C</string>
-                                </property>
-                                <property name="iconSet">
-                                    <iconset>formConnect.png</iconset>
-                                </property>
-                                <property name="toolTip" stdset="0">
-                                    <string>Connect currently selected ports</string>
-                                </property>
-                            </widget>
-                            <widget class="QPushButton">
-                                <property name="name">
-                                    <cstring>MidiDisconnectPushButton</cstring>
-                                </property>
-                                <property name="text">
-                                    <string>&amp;Disconnect</string>
-                                </property>
-                                <property name="accel">
-                                    <string>Alt+D</string>
-                                </property>
-                                <property name="iconSet">
-                                    <iconset>formDisconnect.png</iconset>
-                                </property>
-                                <property name="toolTip" stdset="0">
-                                    <string>Disconnect currently selected ports</string>
-                                </property>
-                            </widget>
-                            <widget class="QPushButton">
-                                <property name="name">
-                                    <cstring>MidiDisconnectAllPushButton</cstring>
-                                </property>
-                                <property name="text">
-                                    <string>Disconnect &amp;All</string>
-                                </property>
-                                <property name="accel">
-                                    <string>Alt+A</string>
-                                </property>
-                                <property name="iconSet">
-                                    <iconset>formDisconnectAll.png</iconset>
-                                </property>
-                                <property name="toolTip" stdset="0">
-                                    <string>Disconnect all currently connected ports</string>
-                                </property>
-                            </widget>
-                            <spacer>
-                                <property name="name">
-                                    <cstring>MidiConnectSpacer1</cstring>
-                                </property>
-                                <property name="orientation">
-                                    <enum>Horizontal</enum>
-                                </property>
-                                <property name="sizeType">
-                                    <enum>Expanding</enum>
-                                </property>
-                                <property name="sizeHint">
-                                    <size>
-                                        <width>87</width>
-                                        <height>8</height>
-                                    </size>
-                                </property>
-                            </spacer>
-                            <widget class="QPushButton">
-                                <property name="name">
-                                    <cstring>MidiRefreshPushButton</cstring>
-                                </property>
-                                <property name="text">
-                                    <string>&amp;Refresh</string>
-                                </property>
-                                <property name="accel">
-                                    <string>Alt+R</string>
-                                </property>
-                                <property name="iconSet">
-                                    <iconset>formRefresh.png</iconset>
-                                </property>
-                                <property name="toolTip" stdset="0">
-                                    <string>Refresh current connections view</string>
-                                </property>
-                            </widget>
-                        </hbox>
-                    </widget>
-                </vbox>
+           </item>
+           <item>
+            <widget class="qtractorAudioClientListView" name="AudioOListView" >
+             <property name="focusPolicy" >
+              <enum>Qt::WheelFocus</enum>
+             </property>
             </widget>
+           </item>
+          </layout>
+         </widget>
+         <widget class="qtractorConnectorView" name="AudioConnectorView" />
+         <widget class="QWidget" name="AudioILayout" >
+          <layout class="QVBoxLayout" >
+           <property name="margin" >
+            <number>0</number>
+           </property>
+           <property name="spacing" >
+            <number>4</number>
+           </property>
+           <item>
+            <widget class="QComboBox" name="AudioIClientsComboBox" >
+             <property name="toolTip" >
+              <string>Select input client/ports</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="qtractorAudioClientListView" name="AudioIListView" >
+             <property name="focusPolicy" >
+              <enum>Qt::WheelFocus</enum>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
         </widget>
-    </grid>
-</widget>
-<customwidgets>
-    <customwidget>
-        <class>qtractorAudioClientListView</class>
-        <header location="local">qtractorAudioConnect.h</header>
-        <sizehint>
-            <width>100</width>
-            <height>120</height>
-        </sizehint>
-        <container>0</container>
-        <sizepolicy>
-            <hordata>5</hordata>
-            <verdata>5</verdata>
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-        </sizepolicy>
-        <pixmap>image0</pixmap>
-    </customwidget>
-    <customwidget>
-        <class>qtractorMidiClientListView</class>
-        <header location="local">qtractorMidiConnect.h</header>
-        <sizehint>
-            <width>100</width>
-            <height>120</height>
-        </sizehint>
-        <container>0</container>
-        <sizepolicy>
-            <hordata>5</hordata>
-            <verdata>5</verdata>
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-        </sizepolicy>
-        <pixmap>image0</pixmap>
-    </customwidget>
-    <customwidget>
-        <class>qtractorConnectorView</class>
-        <header location="local">qtractorConnect.h</header>
-        <sizehint>
-            <width>60</width>
-            <height>120</height>
-        </sizehint>
-        <container>0</container>
-        <sizepolicy>
-            <hordata>5</hordata>
-            <verdata>5</verdata>
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-        </sizepolicy>
-        <pixmap>image0</pixmap>
-    </customwidget>
-</customwidgets>
-<images>
-    <image name="image0">
-        <data format="XPM.GZ" length="4462">789c9d97c76e24490e86effd1442f3d65870d2451a0ce6206f5adeb4cc620f8c34f2553225b5a4c1befb46927fe6a1d4c0ccac4287fa8a0c2623e8b27efbb670b6bfb3f0edb72fcf33995dd70bf5953c2d7c6b5eeeefdffffd9f3ffefcf2354916faff385a48befeebcbd783d942bdb03b9db43d3005a048ff948f94937ef54cd72367ca3272ae4c2397ba3f1e59940f47ae958f476e7a9645e56c789ec8c866ff7d64dd2f4be0ccfc91d9c82aa7ab91d53e1be7fd52fd1de532b0d9bb5796f08df99f28375117eb7dd047cf711496f977074ee254e58572d22f95ff504e6307fb9391d51fda5776710efd0f70093e03070f7af60fca795ce1fe5f06367d72e0dafc61e372602a95252c3bff09b8c6f9ce95ebb8313955c6496272b91dd9fc3b556e1367f6a5ed390873d8df554e922276eacf09b834a675e53269b07fd3388d20d7fb4d24e94cee6be3348e0ae5e9c816af03659fc6d8bf074ec12bca759ac49a8ff45db90b72cbcf149cc56a8f347e699c56c69c8125ae947f2a17591c195f2a97fdd2f310b8337dd91ed99ebfda7348cfdaec8be6679664ade993e663e6025b3e7b70175b3eabbdac7615ea2957ee9c37b96cf4ec225781b7c090d321b806eb7e4d478db7d778bac475967f5c19e711ea55efcfa5791c6bfff01d18f5ec9b91554ef1c049acfc044e6d3f6bfeb96cd0970b6597a7c67e32b0e5a3d7fb76799e997fb20c76e63f697c5c913bd48fdeafabf212e78906c6fd6afe39c92bd8eb064e34dfbdf63fe77341bd5c0e6c723a06fbd8cea7fdc3d583dcdf283739ea5156c10dce773730eca7239bbef617d78ecf3b027bbb3f79000ffde27660f387ed3c5dbf54dfe2dd057b56df35b8357daff997c7458cfadf07a31f90f6db3c2b52f3475ec05962fd660b9c23dfb5fe7317e4365f56c18817af80a12f7a9f795e840ea2fb6fc069a2fd85b53ef3a2407ce459598adc98357ff3a65fba9f95dba2c1f3f647d6f38af6cb222f4bdc6f06ae20d7fe59146591587fd80097765ef1239bfc0d8cfdbc36b2f5c365b0c0bee657d83ec8b57e0ae997b2cec3b21f4fe6bff6d7b2df6ef7adf12babaac6f92e8c25b27ecc1f239b7f3a5fca5a86fbd4f95a3681cddf257066f9458f039bbe987e27696af7cfe02cb5f368bcaa28e85b7d5d80f3c4ceb308aee0dfdec8362ff5fc552ce85fbc0e16f8b33c30e2a5f7512552c1bf73b04fb49f7a19d99eaff75565fd527e3516975a3d6a3cab5cd06fa933f691c557349e55e123cc8f4d708c7e1f8d6cf22d30e68fa781e18ff6d3aa1cf4650f9c245e9faff3aeaa7c8679b6087698ff3a0f2af131fa6b0346bf15cde7ca0ffed3043cd46f0c76b87fedcf551dd8fcdb00a33ef90c5ca0beedfe9af07cf3ff10ec30cf96c0c3fcdf0157e0d3916d1e18b7beb47aa007b020dfdb914d5febadea7c9459fc2fc195dd9f2460c13cd4792651b06ffde5192c96af5c823de2a9f927b1cfcc1f99822bdb2f4760d43317608f7ad47c92a45faaaff725a96f501f6b239b7fdaff259433faa9f673913a43fee97c93a6f6c87f7dff91b6aed13f749e48e7dbdcde07b59ffbc877b9e5bbc6df87173e63d1fbf3499321dfa381e1bf3edf87d795c2e6c101d839abcf17700ed6f87a37e8f314ecf07ced0fbe08af3f169f47700ef933b8003f8c6ce79b814bb0f64f5ffa5a341efc643cca1fc195b1d77ee59ba6453c75fef836b0ded7c1ac5f4c7fbd0e66833e0b7baeb9e1f617abe34bbeb21da61f3e79bee61bbee53bbee7094ff9811ff9899fc39af10bbff2cf39fd3a68bff13b7ff0222ff132aff02aaff13a6ff0266ff177de9ed36f782768eff21eeff3011ff25158c77cc23ff894cfc2aef339fd36787211b4238e8376c22967ecc2a798732eb8e4ea93fe3d2f862f88843cd5d4504b1d5dd2155dd30dddfec2fe8497e82e48ef6942537aa0477aa2679a050b2ff44af3e76d794a6ff44e1fc1f6222dd132ad04cd555aa3f5606383363fe93fd056907ca76ddaa15dda0bdafbbc46077418be3da2e34ffa4f74c247f4834ee94c6d0b9dd305451407fd84d24ffa8f94f131b970ca3c681754861d95b084ca142ff5677fa491960fa5934bb9926bb9915b3e923bb997894ce5615e5f1ee5499e83fe4c5ee4557eca9bbccb872cca922ccb8aacfec2fe9aaccb46886b2c9bb225df655b7682f692ecca9eeccfe97772c09b722847722c27c1f3eb70f66bf9116c9fca999ccbc59cfe25bf4a147e32869f591226a384d72b29a5f2ecc98bf77efebc572163b77de35bdff94b7fe5affd8dbff577b2eaeffdc44ffdfc79ffe6fafff4fffe8e7f5ceffffdfdcbff005562c408</data>
-    </image>
-</images>
-<connections>
-    <connection>
-        <sender>AudioIClientsComboBox</sender>
-        <signal>activated(int)</signal>
-        <receiver>qtractorConnectTestForm</receiver>
-        <slot>audioIClientChanged()</slot>
-    </connection>
-    <connection>
-        <sender>AudioOClientsComboBox</sender>
-        <signal>activated(int)</signal>
-        <receiver>qtractorConnectTestForm</receiver>
-		<slot>audioOClientChanged()</slot>
-    </connection>
-    <connection>
-        <sender>AudioConnectPushButton</sender>
-        <signal>clicked()</signal>
-        <receiver>qtractorConnectTestForm</receiver>
-        <slot>audioConnectSelected()</slot>
-    </connection>
-    <connection>
-        <sender>AudioDisconnectPushButton</sender>
-        <signal>clicked()</signal>
-        <receiver>qtractorConnectTestForm</receiver>
-        <slot>audioDisconnectSelected()</slot>
-    </connection>
-    <connection>
-        <sender>AudioDisconnectAllPushButton</sender>
-        <signal>clicked()</signal>
-        <receiver>qtractorConnectTestForm</receiver>
-        <slot>audioDisconnectAll()</slot>
-    </connection>
-    <connection>
-        <sender>AudioRefreshPushButton</sender>
-        <signal>clicked()</signal>
-        <receiver>qtractorConnectTestForm</receiver>
-        <slot>audioRefresh()</slot>
-    </connection>
-    <connection>
-        <sender>MidiIClientsComboBox</sender>
-        <signal>activated(int)</signal>
-        <receiver>qtractorConnectTestForm</receiver>
-		<slot>midiIClientChanged()</slot>
-    </connection>
-    <connection>
-        <sender>MidiOClientsComboBox</sender>
-        <signal>activated(int)</signal>
-        <receiver>qtractorConnectTestForm</receiver>
-		<slot>midiOClientChanged()</slot>
-    </connection>
-    <connection>
-        <sender>MidiConnectPushButton</sender>
-        <signal>clicked()</signal>
-        <receiver>qtractorConnectTestForm</receiver>
-        <slot>midiConnectSelected()</slot>
-    </connection>
-    <connection>
-        <sender>MidiDisconnectPushButton</sender>
-        <signal>clicked()</signal>
-        <receiver>qtractorConnectTestForm</receiver>
-        <slot>midiDisconnectSelected()</slot>
-    </connection>
-    <connection>
-        <sender>MidiDisconnectAllPushButton</sender>
-        <signal>clicked()</signal>
-        <receiver>qtractorConnectTestForm</receiver>
-        <slot>midiDisconnectAll()</slot>
-    </connection>
-    <connection>
-        <sender>MidiRefreshPushButton</sender>
-        <signal>clicked()</signal>
-        <receiver>qtractorConnectTestForm</receiver>
-        <slot>midiRefresh()</slot>
-    </connection>
-</connections>
-<tabstops>
-    <tabstop>ConnectTabWidget</tabstop>
-    <tabstop>AudioOClientsComboBox</tabstop>
-    <tabstop>AudioOListView</tabstop>
-    <tabstop>AudioIClientsComboBox</tabstop>
-    <tabstop>AudioIListView</tabstop>
-    <tabstop>AudioConnectPushButton</tabstop>
-    <tabstop>AudioDisconnectPushButton</tabstop>
-    <tabstop>AudioDisconnectAllPushButton</tabstop>
-    <tabstop>AudioRefreshPushButton</tabstop>
-    <tabstop>MidiOClientsComboBox</tabstop>
-    <tabstop>MidiOListView</tabstop>
-    <tabstop>MidiIClientsComboBox</tabstop>
-    <tabstop>MidiIListView</tabstop>
-    <tabstop>MidiConnectPushButton</tabstop>
-    <tabstop>MidiDisconnectPushButton</tabstop>
-    <tabstop>MidiDisconnectAllPushButton</tabstop>
-    <tabstop>MidiRefreshPushButton</tabstop>
-</tabstops>
-<includes>
-    <include location="local" impldecl="in declaration">qtractorAudioConnect.h</include>
-    <include location="local" impldecl="in declaration">qtractorMidiConnect.h</include>
-</includes>
-<forwards>
-    <forward>class qtractorSession;</forward>
-    <forward>class qtractorOptions;</forward>
-</forwards>
-<variables>
-    <variable access="private">qtractorSession *m_pSession;</variable>
-    <variable access="private">qtractorOptions *m_pOptions;</variable>
-    <variable access="private">qtractorAudioConnect *m_pAudioConnect;</variable>
-    <variable access="private">qtractorMidiConnect *m_pMidiConnect;</variable>
-</variables>
-<slots>
-	<slot specifier="non virtual">audioIClientChanged()</slot>
-	<slot specifier="non virtual">audioOClientChanged()</slot>
-    <slot specifier="non virtual">audioConnectSelected()</slot>
-    <slot specifier="non virtual">audioDisconnectSelected()</slot>
-    <slot specifier="non virtual">audioDisconnectAll()</slot>
-    <slot specifier="non virtual">audioRefresh()</slot>
-    <slot specifier="non virtual">audioStabilize()</slot>
-	<slot specifier="non virtual">midiIClientChanged()</slot>
-	<slot specifier="non virtual">midiOClientChanged()</slot>
-    <slot specifier="non virtual">midiConnectSelected()</slot>
-    <slot specifier="non virtual">midiDisconnectSelected()</slot>
-    <slot specifier="non virtual">midiDisconnectAll()</slot>
-    <slot specifier="non virtual">midiRefresh()</slot>
-    <slot specifier="non virtual">midiStabilize()</slot>
-</slots>
-<functions>
-    <function access="private" specifier="non virtual">init()</function>
-    <function access="private" specifier="non virtual">destroy()</function>
-    <function specifier="non virtual">setSession( qtractorSession *pSession )</function>
-    <function specifier="non virtual" returnType="qtractorSession *">session()</function>
-    <function specifier="non virtual">setOptions( qtractorOptions *pOptions )</function>
-    <function specifier="non virtual" returnType="qtractorOptions *">options()</function>
-    <function access="private" specifier="non virtual">updateClientsComboBox( QComboBox *pComboBox, qtractorClientListView *pClientListView, const QPixmap &amp; pixmap )</function>
-</functions>
-<pixmapinproject/>
-<layoutdefaults spacing="4" margin="4"/>
-</UI>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" >
+         <property name="margin" >
+          <number>0</number>
+         </property>
+         <property name="spacing" >
+          <number>4</number>
+         </property>
+         <item>
+          <widget class="QPushButton" name="AudioConnectPushButton" >
+           <property name="toolTip" >
+            <string>Connect currently selected ports</string>
+           </property>
+           <property name="text" >
+            <string>&amp;Connect</string>
+           </property>
+           <property name="icon" >
+            <iconset resource="../icons/qtractor.qrc" >:/icons/formConnect.png</iconset>
+           </property>
+           <property name="shortcut" >
+            <string>Alt+C</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="AudioDisconnectPushButton" >
+           <property name="toolTip" >
+            <string>Disconnect currently selected ports</string>
+           </property>
+           <property name="text" >
+            <string>&amp;Disconnect</string>
+           </property>
+           <property name="icon" >
+            <iconset resource="../icons/qtractor.qrc" >:/icons/formDisconnect.png</iconset>
+           </property>
+           <property name="shortcut" >
+            <string>Alt+D</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="AudioDisconnectAllPushButton" >
+           <property name="toolTip" >
+            <string>Disconnect all currently connected ports</string>
+           </property>
+           <property name="text" >
+            <string>Disconnect &amp;All</string>
+           </property>
+           <property name="icon" >
+            <iconset resource="../icons/qtractor.qrc" >:/icons/formDisconnectAll.png</iconset>
+           </property>
+           <property name="shortcut" >
+            <string>Alt+A</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer>
+           <property name="orientation" >
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeType" >
+            <enum>QSizePolicy::Expanding</enum>
+           </property>
+           <property name="sizeHint" >
+            <size>
+             <width>87</width>
+             <height>8</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QPushButton" name="AudioRefreshPushButton" >
+           <property name="toolTip" >
+            <string>Refresh current connections view</string>
+           </property>
+           <property name="text" >
+            <string>&amp;Refresh</string>
+           </property>
+           <property name="icon" >
+            <iconset resource="../icons/qtractor.qrc" >:/icons/formRefresh.png</iconset>
+           </property>
+           <property name="shortcut" >
+            <string>Alt+R</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="MidiConnectTab" >
+      <attribute name="title" >
+       <string>MIDI</string>
+      </attribute>
+      <layout class="QVBoxLayout" >
+       <property name="margin" >
+        <number>8</number>
+       </property>
+       <property name="spacing" >
+        <number>4</number>
+       </property>
+       <item>
+        <widget class="QSplitter" name="MidiConnectSplitter" >
+         <property name="orientation" >
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <widget class="QWidget" name="MidiOLayout" >
+          <layout class="QVBoxLayout" >
+           <property name="margin" >
+            <number>0</number>
+           </property>
+           <property name="spacing" >
+            <number>4</number>
+           </property>
+           <item>
+            <widget class="QComboBox" name="MidiOClientsComboBox" >
+             <property name="toolTip" >
+              <string>Select output client/ports</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="qtractorMidiClientListView" name="MidiOListView" >
+             <property name="focusPolicy" >
+              <enum>Qt::WheelFocus</enum>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+         <widget class="qtractorConnectorView" name="MidiConnectorView" />
+         <widget class="QWidget" name="MidiILayout" >
+          <layout class="QVBoxLayout" >
+           <property name="margin" >
+            <number>0</number>
+           </property>
+           <property name="spacing" >
+            <number>4</number>
+           </property>
+           <item>
+            <widget class="QComboBox" name="MidiIClientsComboBox" >
+             <property name="toolTip" >
+              <string>Select input client/ports</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="qtractorMidiClientListView" name="MidiIListView" >
+             <property name="focusPolicy" >
+              <enum>Qt::WheelFocus</enum>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </widget>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" >
+         <property name="margin" >
+          <number>0</number>
+         </property>
+         <property name="spacing" >
+          <number>4</number>
+         </property>
+         <item>
+          <widget class="QPushButton" name="MidiConnectPushButton" >
+           <property name="toolTip" >
+            <string>Connect currently selected ports</string>
+           </property>
+           <property name="text" >
+            <string>&amp;Connect</string>
+           </property>
+           <property name="icon" >
+            <iconset resource="../icons/qtractor.qrc" >:/icons/formConnect.png</iconset>
+           </property>
+           <property name="shortcut" >
+            <string>Alt+C</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="MidiDisconnectPushButton" >
+           <property name="toolTip" >
+            <string>Disconnect currently selected ports</string>
+           </property>
+           <property name="text" >
+            <string>&amp;Disconnect</string>
+           </property>
+           <property name="icon" >
+            <iconset resource="../icons/qtractor.qrc" >:/icons/formDisconnect.png</iconset>
+           </property>
+           <property name="shortcut" >
+            <string>Alt+D</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="MidiDisconnectAllPushButton" >
+           <property name="toolTip" >
+            <string>Disconnect all currently connected ports</string>
+           </property>
+           <property name="text" >
+            <string>Disconnect &amp;All</string>
+           </property>
+           <property name="icon" >
+            <iconset resource="../icons/qtractor.qrc" >:/icons/formDisconnectAll.png</iconset>
+           </property>
+           <property name="shortcut" >
+            <string>Alt+A</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer>
+           <property name="orientation" >
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeType" >
+            <enum>QSizePolicy::Expanding</enum>
+           </property>
+           <property name="sizeHint" >
+            <size>
+             <width>87</width>
+             <height>8</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QPushButton" name="MidiRefreshPushButton" >
+           <property name="toolTip" >
+            <string>Refresh current connections view</string>
+           </property>
+           <property name="text" >
+            <string>&amp;Refresh</string>
+           </property>
+           <property name="icon" >
+            <iconset resource="../icons/qtractor.qrc" >:/icons/formRefresh.png</iconset>
+           </property>
+           <property name="shortcut" >
+            <string>Alt+R</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <layoutdefault spacing="4" margin="4" />
+ <pixmapfunction></pixmapfunction>
+ <customwidgets>
+  <customwidget>
+   <class>qtractorAudioClientListView</class>
+   <extends></extends>
+   <header>qtractorAudioConnect.h</header>
+   <container>0</container>
+   <pixmap></pixmap>
+  </customwidget>
+  <customwidget>
+   <class>qtractorMidiClientListView</class>
+   <extends></extends>
+   <header>qtractorMidiConnect.h</header>
+   <container>0</container>
+   <pixmap></pixmap>
+  </customwidget>
+  <customwidget>
+   <class>qtractorConnectorView</class>
+   <extends></extends>
+   <header>qtractorConnect.h</header>
+   <container>0</container>
+   <pixmap></pixmap>
+  </customwidget>
+ </customwidgets>
+ <tabstops>
+  <tabstop>ConnectTabWidget</tabstop>
+  <tabstop>AudioOClientsComboBox</tabstop>
+  <tabstop>AudioOListView</tabstop>
+  <tabstop>AudioIClientsComboBox</tabstop>
+  <tabstop>AudioIListView</tabstop>
+  <tabstop>AudioConnectPushButton</tabstop>
+  <tabstop>AudioDisconnectPushButton</tabstop>
+  <tabstop>AudioDisconnectAllPushButton</tabstop>
+  <tabstop>AudioRefreshPushButton</tabstop>
+  <tabstop>MidiOClientsComboBox</tabstop>
+  <tabstop>MidiOListView</tabstop>
+  <tabstop>MidiIClientsComboBox</tabstop>
+  <tabstop>MidiIListView</tabstop>
+  <tabstop>MidiConnectPushButton</tabstop>
+  <tabstop>MidiDisconnectPushButton</tabstop>
+  <tabstop>MidiDisconnectAllPushButton</tabstop>
+  <tabstop>MidiRefreshPushButton</tabstop>
+ </tabstops>
+ <includes>
+  <include location="local" >qtractorAudioConnect.h</include>
+  <include location="local" >qtractorMidiConnect.h</include>
+ </includes>
+ <resources>
+  <include location="../icons/qtractor.qrc" />
+ </resources>
+ <connections/>
+</ui>

@@ -42,7 +42,7 @@ public:
 	enum { None = 0, Read = 1, Write = 2 };
 
 	// Open file methods.
-	bool open(const char *pszName, int iMode = Read);
+	bool open(const QString& sFilename, int iMode = Read);
 	void close();
 
 	// Open file property accessors.

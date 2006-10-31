@@ -22,9 +22,8 @@
 #ifndef __qtractorInstrument_h
 #define __qtractorInstrument_h
 
-#include <qstring.h>
-#include <qstringlist.h>
-#include <qmap.h>
+#include <QStringList>
+#include <QMap>
 
 
 // Forward declarations.
@@ -264,7 +263,11 @@ public:
 	void appendFile(const QString& sFilename)
 	    { m_files.append(sFilename); }
 	void removeFile(const QString& sFilename)
-	    { m_files.remove(sFilename); }
+	{
+		int iFile = m_files.indexOf(sFilename);
+		if (iFile >= 0)
+			m_files.removeAt(iFile);
+	}
 
 	// Patch Names definition accessors.
 	qtractorInstrumentDataList& patches()

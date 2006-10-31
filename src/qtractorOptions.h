@@ -22,7 +22,8 @@
 #ifndef __qtractorOptions_h
 #define __qtractorOptions_h
 
-#include <qsettings.h>
+#include <QSettings>
+#include <QStringList>
 
 class QWidget;
 class QComboBox;
@@ -89,15 +90,14 @@ public:
 	QStringList instrumentFiles;
 
 	// Recent file list.
-	int     iMaxRecentFiles;
+	int iMaxRecentFiles;
 	QStringList recentFiles;
 
 	// Tracks view options...
-	int     iTrackListWidth;
-	int     iTrackViewSelectMode;
+	int iTrackViewSelectMode;
 
 	// Audio rendering options...
-	int     iResampleType;
+	int iResampleType;
 
 	// Widget geometry persistence helper prototypes.
 	void saveWidgetGeometry(QWidget *pWidget);
@@ -108,7 +108,7 @@ public:
 	void saveComboBoxHistory(QComboBox *pComboBox, int iLimit = 8);
 
 	// Splitter widget sizes persistence helper methods.
-	void loadSplitterSizes(QSplitter *pSplitter, QValueList<int>& sizes);
+	void loadSplitterSizes(QSplitter *pSplitter, QList<int>& sizes);
 	void saveSplitterSizes(QSplitter *pSplitter);
 
 private:

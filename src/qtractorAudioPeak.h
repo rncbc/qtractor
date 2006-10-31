@@ -22,10 +22,10 @@
 #ifndef __qtractorAudioPeak_h
 #define __qtractorAudioPeak_h
 
-#include <qstring.h>
-#include <qevent.h>
-#include <qfile.h>
-#include <qdict.h>
+#include <QString>
+#include <QEvent>
+#include <QFile>
+#include <QHash>
 
 // Forward declarations.
 class qtractorAudioPeakThread;
@@ -64,7 +64,7 @@ public:
 	unsigned int   sampleRate() const;
 
 	// Peak file accessors.
-	QString name() const { return m_peakFile.name(); }
+	QString name() const { return m_peakFile.fileName(); }
 
 	// Lazy-evaluated properties.
 	unsigned short period();
@@ -80,7 +80,7 @@ public:
 	QEvent::Type notifyPeakType() const;
 
 	// Auto-delete property.
-	bool autoRemove() const;
+	bool isAutoRemove() const;
 
 	// Reference count methods.
 	void addRef();
@@ -180,12 +180,12 @@ public:
 
 	// Auto-delete property.
 	void setAutoRemove(bool bAutoRemove);
-	bool autoRemove() const;
+	bool isAutoRemove() const;
 
 private:
 
 	// The list of managed peak files.
-	QDict<qtractorAudioPeakFile> m_peaks;
+	QHash<QString, qtractorAudioPeakFile *> m_peaks;
 
 	// The event notifier widget.
 	QWidget      *m_pNotifyWidget;

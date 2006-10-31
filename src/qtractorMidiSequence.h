@@ -24,8 +24,8 @@
 
 #include "qtractorMidiEvent.h"
 
-#include <qstring.h>
-#include <qmap.h>
+#include <QString>
+#include <QMap>
 
 
 //----------------------------------------------------------------------

@@ -27,7 +27,7 @@
 #include "qtractorSession.h"
 #include "qtractorTrack.h"
 
-#include <qptrlist.h>
+#include <QList>
 
 // Forward declarations.
 class qtractorTrackButton;
@@ -110,7 +110,7 @@ public:
 
 	// Constructor.
 	qtractorMoveTrackCommand(qtractorMainForm *pMainForm,
-		qtractorTrack *pTrack, qtractorTrack *pPrevTrack);
+		qtractorTrack *pTrack, qtractorTrack *pNextTrack);
 
 	// Track-move command methods.
 	bool redo();
@@ -119,7 +119,7 @@ public:
 private:
 
 	// Instance variables.
-	qtractorTrack *m_pPrevTrack;
+	qtractorTrack *m_pNextTrack;
 };
 
 
@@ -133,7 +133,7 @@ public:
 
 	// Constructor.
 	qtractorResizeTrackCommand(qtractorMainForm *pMainForm,
-		qtractorTrack *pTrack, int iItemHeight);
+		qtractorTrack *pTrack, int iZoomHeight);
 
 	// Track-move command methods.
 	bool redo();
@@ -142,7 +142,7 @@ public:
 private:
 
 	// Instance variables.
-	int m_iItemHeight;
+	int m_iZoomHeight;
 };
 
 
@@ -169,7 +169,7 @@ public:
 private:
 
 	// Instance variables.
-	QPtrList<qtractorAddTrackCommand> m_trackCommands;
+	QList<qtractorAddTrackCommand *> m_trackCommands;
 
 	// Session properties backup stuff.
     qtractorSession::Properties m_sessionProps;

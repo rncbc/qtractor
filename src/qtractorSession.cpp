@@ -34,12 +34,11 @@
 
 #include "qtractorPlugin.h"
 
-#include <qapplication.h>
-#include <qeventloop.h>
-#include <qdatetime.h>
-#include <qfileinfo.h>
-#include <qregexp.h>
-#include <qdir.h>
+#include <QApplication>
+#include <QDateTime>
+#include <QFileInfo>
+#include <QRegExp>
+#include <QDir>
 
 
 //-------------------------------------------------------------------------
@@ -71,7 +70,7 @@ qtractorSession::Properties& qtractorSession::Properties::copy (
 // Helper clear/reset method.
 void qtractorSession::Properties::clear (void)
 {
-	sessionDir     = QDir().absPath();
+	sessionDir     = QDir().absolutePath();
 	sessionName    = QString::null;
 	description    = QString::null;
 	sampleRate     = 44100;
@@ -822,7 +821,7 @@ void qtractorSession::stabilize ( int msecs )
 	QTime t;
 	t.start();
 	while (t.elapsed() < msecs)
-		QApplication::eventLoop()->processEvents(QEventLoop::ExcludeUserInput);
+		QApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
 }
 
 
@@ -971,10 +970,10 @@ QString qtractorSession::createFilePath ( const QString& sTrackName,
 
 #ifdef CONFIG_DEBUG
 	fprintf(stderr, "qtractorSession::createFilePath(\"%s\")\n",
-		fi.absFilePath().latin1());
+		fi.absoluteFilePath().toUtf8().constData());
 #endif
 
-	return fi.absFilePath();
+	return fi.absoluteFilePath();
 }
 
 
@@ -1002,7 +1001,7 @@ void qtractorSession::trackRecord ( qtractorTrack *pTrack, bool bRecord )
 {
 #ifdef CONFIG_DEBUG
 	fprintf(stderr, "qtractorSession::trackRecord(\"%s\", %d)\n",
-		pTrack->trackName().latin1(), (int) bRecord);
+		pTrack->trackName().toUtf8().constData(), (int) bRecord);
 #endif
 
 	// Just ditch the in-record clip...

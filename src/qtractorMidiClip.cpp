@@ -26,8 +26,8 @@
 
 #include "qtractorSessionDocument.h"
 
-#include <qfileinfo.h>
-#include <qpainter.h>
+#include <QFileInfo>
+#include <QPainter>
 
 
 //----------------------------------------------------------------------
@@ -73,7 +73,7 @@ bool qtractorMidiClip::openMidiFile ( const QString& sFilename,
 {
 #ifdef CONFIG_DEBUG_0
 	fprintf(stderr, "qtractorMidiClip::openMidiFile(\"%s\", %d, %d)\n",
-		sFilename.latin1(), iTrackChannel, iMode);
+		sFilename.toUtf8().constData(), iTrackChannel, iMode);
 #endif
 
 	if (m_pFile)

@@ -31,6 +31,8 @@
 #define QTRACTOR_WEBSITE      "http://qtractor.sourceforge.net"
 #define QTRACTOR_COPYRIGHT    "Copyright (C) 2005-2006, rncbc aka Rui Nuno Capela. All rights reserved."
 
+#define QTRACTOR_DOMAIN       "rncbc.org"
+
 #endif  // __qtractorAbout_h
 
 // end of qtractorAbout.h

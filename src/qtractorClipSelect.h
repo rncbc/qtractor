@@ -24,8 +24,10 @@
 
 #include "qtractorClip.h"
 
-#include <qptrlist.h>
-#include <qrect.h>
+#include <QList>
+#include <QRect>
+
+#include <QRubberBand>
 
 
 //-------------------------------------------------------------------------
@@ -45,10 +47,18 @@ public:
 	{
 		// Item constructor.
 		Item(qtractorClip *pClip, const QRect& rect)
-			: clip(pClip), rectClip(rect) {}
+			: clip(pClip), rectClip(rect), rubberBand(NULL) {}
+		// Item destructor.
+		~Item() {
+			if (rubberBand) {
+				rubberBand->hide();
+				delete rubberBand;
+			}
+		}
 		// Item members.
 		qtractorClip *clip;
 		QRect rectClip;
+		QRubberBand *rubberBand;
 	};
 
 	// Clip selection method.
@@ -63,10 +73,10 @@ public:
 	qtractorTrack *singleTrack();
 
 	// Selection list accessor.
-	QPtrList<Item>& clips();
+	QList<Item *>& items();
 
 	// Clip selection item lookup.
-	Item *findClip(qtractorClip *pClip);
+	Item *findClipItem(qtractorClip *pClip);
 
 	// Reset clip selection.
 	void clear();
@@ -74,10 +84,10 @@ public:
 private:
 
 	// The clip selection list.
-	QPtrList<Item> m_clips;
+	QList<Item *> m_items;
 
 	// The united selection rectangle.
-	QRect          m_rect;
+	QRect m_rect;
 
 	// To cache single track selection.
 	qtractorTrack *m_pTrackSingle;

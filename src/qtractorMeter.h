@@ -22,15 +22,21 @@
 #ifndef __qtractorMeter_h
 #define __qtractorMeter_h
 
-#include <qvbox.h>
-#include <qhbox.h>
+#include <QWidget>
+
 
 // Forward declarations.
 class qtractorMeter;
 class qtractorMonitor;
 class qtractorSlider;
-class qtractorSpinBox;
+
+class QDoubleSpinBox;
+class QHBoxLayout;
+class QVBoxLayout;
 class QLabel;
+
+class QPaintEvent;
+class QResizeEvent;
 
 
 //----------------------------------------------------------------------------
@@ -43,8 +49,7 @@ class qtractorMeterScale : public QWidget
 public:
 
 	// Constructor.
-	qtractorMeterScale(qtractorMeter *pMeter,
-		QWidget *pParent = 0, const char *pszName = 0);
+	qtractorMeterScale(qtractorMeter *pMeter, QWidget *pParent = 0);
 
 	// Default destructor.
 	~qtractorMeterScale();
@@ -56,10 +61,9 @@ protected:
 	
 	// Specific event handlers.
 	void paintEvent(QPaintEvent *);
-	void resizeEvent(QResizeEvent *);
 
 	// Draw IEC scale line and label.
-	void drawLineLabel(QPainter *p, int y, const char* pszLabel = NULL);
+	void drawLineLabel(QPainter *p, int y, const QString& sLabel);
 
 	// Actual scale drawing method.
 	virtual void paintScale(QPainter *p) = 0;
@@ -77,26 +81,26 @@ private:
 //----------------------------------------------------------------------------
 // qtractorMeter -- Meter bridge slot widget.
 
-class qtractorMeter : public QVBox
+class qtractorMeter : public QWidget
 {
 	Q_OBJECT
 
 public:
 
 	// Constructor.
-	qtractorMeter(QWidget *pParent = 0, const char *pszName = 0);
+	qtractorMeter(QWidget *pParent = 0);
 	// Default destructor.
 	virtual ~qtractorMeter();
 
 	// Dynamic layout accessors.
-	QLabel *topLabel() const;
-	QHBox  *hbox() const;
+	QLabel  *topLabel() const;
+	QWidget *hbox() const;
 
 	// Common slider/spin-box accessors.
-	qtractorSlider  *panSlider()  const;
-	qtractorSpinBox *panSpinBox() const;
-	qtractorSlider  *gainSlider() const;
-	qtractorSpinBox *gainSpinBox() const;
+	qtractorSlider *panSlider() const;
+	QDoubleSpinBox *panSpinBox() const;
+	qtractorSlider *gainSlider() const;
+	QDoubleSpinBox *gainSpinBox() const;
 
 	// Panning accessors.
 	void setPanning(float fPanning);
@@ -153,12 +157,14 @@ signals:
 private:
 
 	// Local instance variables.
-	qtractorSlider  *m_pPanSlider;
-	qtractorSpinBox *m_pPanSpinBox;
-	QLabel          *m_pTopLabel;
-	QHBox           *m_pHBox;
-	qtractorSlider  *m_pGainSlider;
-	qtractorSpinBox *m_pGainSpinBox;
+	QVBoxLayout    *m_pVBoxLayout;
+	qtractorSlider *m_pPanSlider;
+	QDoubleSpinBox *m_pPanSpinBox;
+	QLabel         *m_pTopLabel;
+	QWidget        *m_pHBox;
+	QHBoxLayout    *m_pHBoxLayout;
+	qtractorSlider *m_pGainSlider;
+	QDoubleSpinBox *m_pGainSpinBox;
 
 	// Update exclusiveness flag.
 	int m_iUpdate;

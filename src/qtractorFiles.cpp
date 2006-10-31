@@ -22,7 +22,9 @@
 #include "qtractorAbout.h"
 #include "qtractorFiles.h"
 
-#include <qtabwidget.h>
+#include "qtractorMainForm.h"
+
+#include <QTabWidget>
 
 
 //-------------------------------------------------------------------------
@@ -30,41 +32,39 @@
 //
 
 // Constructor.
-qtractorFiles::qtractorFiles ( QWidget *pParent, const char *pszName )
-	: QDockWindow(pParent, pszName)
+qtractorFiles::qtractorFiles ( QWidget *pParent )
+	: QDockWidget(pParent)
 {
 	// Surely a name is crucial (e.g.for storing geometry settings)
-	if (pszName == 0)
-		QDockWindow::setName("qtractorFiles");
+	QDockWidget::setObjectName("qtractorFiles");
 
 	// Create file type selection tab widget.
 	m_pTabWidget = new QTabWidget(this);
-	m_pTabWidget->setTabPosition(QTabWidget::Bottom);
+	m_pTabWidget->setTabPosition(QTabWidget::South);
 
 	// Create local tabs.
-	m_pAudioListView = new qtractorAudioListView(this);
-	m_pMidiListView  = new qtractorMidiListView(this);
+	m_pAudioListView = new qtractorAudioListView();
+	m_pMidiListView  = new qtractorMidiListView();
 	// Add respective...
-	m_pTabWidget->insertTab(m_pAudioListView, tr("Audio"));
-	m_pTabWidget->setTabIconSet(m_pAudioListView,
-		QIconSet(QPixmap::fromMimeSource("trackAudio.png")));
-	m_pTabWidget->insertTab(m_pMidiListView, tr("MIDI"));
-	m_pTabWidget->setTabIconSet(m_pMidiListView,
-		QIconSet(QPixmap::fromMimeSource("trackMidi.png")));
+	m_pTabWidget->addTab(m_pAudioListView, tr("Audio"));
+	m_pTabWidget->addTab(m_pMidiListView, tr("MIDI"));
+	// Icons...
+	m_pTabWidget->setTabIcon(qtractorFiles::Audio, QIcon(":/icons/trackAudio.png"));
+	m_pTabWidget->setTabIcon(qtractorFiles::Midi,  QIcon(":/icons/trackMidi.png"));
 
 	// Prepare the dockable window stuff.
-	QDockWindow::setWidget(m_pTabWidget);
-	QDockWindow::setOrientation(Qt::Vertical);
-	QDockWindow::setCloseMode(QDockWindow::Always);
-	QDockWindow::setResizeEnabled(true);
+	QDockWidget::setWidget(m_pTabWidget);
+	QDockWidget::setFeatures(QDockWidget::AllDockWidgetFeatures);
+	QDockWidget::setAllowedAreas(
+		Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
 	// Some specialties to this kind of dock window...
-	QDockWindow::setFixedExtentWidth(160);
+	QDockWidget::setMinimumWidth(120);
 
 	// Finally set the default caption and tooltip.
 	const QString& sCaption = tr("Files");
-	QToolTip::add(this, sCaption);
-	QDockWindow::setCaption(sCaption);
-	QDockWindow::setIcon(QPixmap::fromMimeSource("viewFiles.png"));
+	QDockWidget::setWindowTitle(sCaption);
+	QDockWidget::setWindowIcon(QIcon(":/icons/viewFiles.png"));
+	QDockWidget::setToolTip(sCaption);
 }
 
 
@@ -72,6 +72,21 @@ qtractorFiles::qtractorFiles ( QWidget *pParent, const char *pszName )
 qtractorFiles::~qtractorFiles (void)
 {
 	// No need to delete child widgets, Qt does it all for us.
+}
+
+
+// Just about to notify main-window that we're closing.
+void qtractorFiles::closeEvent ( QCloseEvent * /*pCloseEvent*/ )
+{
+#ifdef CONFIG_DEBUG
+	fprintf(stderr, "qtractorFiles::closeEvent()\n");
+#endif
+
+	QDockWidget::hide();
+
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm)
+		pMainForm->stabilizeForm();
 }
 
 
@@ -100,7 +115,7 @@ void qtractorFiles::clear (void)
 // Audio file addition convenience method.
 void qtractorFiles::addAudioFile  ( const QString& sFilename )
 {
-	m_pTabWidget->setCurrentPage(qtractorFiles::Audio);
+	m_pTabWidget->setCurrentIndex(qtractorFiles::Audio);
 	m_pAudioListView->addFileItem(sFilename);
 }
 
@@ -108,7 +123,7 @@ void qtractorFiles::addAudioFile  ( const QString& sFilename )
 // MIDI file addition convenience method.
 void qtractorFiles::addMidiFile  ( const QString& sFilename )
 {
-	m_pTabWidget->setCurrentPage(qtractorFiles::Midi);
+	m_pTabWidget->setCurrentIndex(qtractorFiles::Midi);
 	m_pMidiListView->addFileItem(sFilename);
 }
 
@@ -116,7 +131,7 @@ void qtractorFiles::addMidiFile  ( const QString& sFilename )
 // Audio file selection convenience method.
 void qtractorFiles::selectAudioFile  ( const QString& sFilename )
 {
-	m_pTabWidget->setCurrentPage(qtractorFiles::Audio);
+	m_pTabWidget->setCurrentIndex(qtractorFiles::Audio);
 	m_pAudioListView->selectFileItem(sFilename);
 }
 
@@ -125,7 +140,7 @@ void qtractorFiles::selectAudioFile  ( const QString& sFilename )
 void qtractorFiles::selectMidiFile  ( const QString& sFilename,
 	int iTrackChannel )
 {
-	m_pTabWidget->setCurrentPage(qtractorFiles::Midi);
+	m_pTabWidget->setCurrentIndex(qtractorFiles::Midi);
 	m_pMidiListView->selectFileItem(sFilename, iTrackChannel);
 }
 

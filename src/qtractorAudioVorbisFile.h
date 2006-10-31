@@ -30,6 +30,7 @@
 #include <vorbis/vorbisfile.h>
 #endif
 
+
 //----------------------------------------------------------------------
 // class qtractorAudioVorbisFile -- Buffered audio file declaration.
 //
@@ -45,7 +46,7 @@ public:
 	virtual ~qtractorAudioVorbisFile();
 
 	// Virtual method mockups.
-	bool open  (const char *pszName, int iMode = Read);
+	bool open  (const QString& sFilename, int iMode = Read);
 	int  read  (float **ppFrames, unsigned int iFrames);
 	int  write (float **ppFrames, unsigned int iFrames);
 	bool seek  (unsigned long iOffset);

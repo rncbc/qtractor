@@ -22,31 +22,37 @@
 #ifndef __qtractorTrackTime_h
 #define __qtractorTrackTime_h
 
-#include <qscrollview.h>
+#include "qtractorScrollView.h"
+
+#include <QPixmap>
+
 
 // Forward declarations.
 class qtractorTracks;
+
+class QResizeEvent;
+class QMouseEvent;
+class QKeyEvent;
 
 
 //----------------------------------------------------------------------------
 // qtractorTrackTime -- Track time scale widget.
 
-class qtractorTrackTime : public QScrollView
+class qtractorTrackTime : public qtractorScrollView
 {
 	Q_OBJECT
 
 public:
 
 	// Constructor.
-	qtractorTrackTime(qtractorTracks *pTracks,
-		QWidget *pParent, const char *pszName = 0);
+	qtractorTrackTime(qtractorTracks *pTracks, QWidget *pParent = 0);
 	// Destructor.
 	~qtractorTrackTime();
 
 	// Rectangular contents update.
-	void updateContents(const QRect& rect, bool bRefresh = true);
+	void updateContents(const QRect& rect);
 	// Overall contents update.
-	void updateContents(bool bRefresh = true);
+	void updateContents();
 
 protected:
 
@@ -54,16 +60,15 @@ protected:
 	void resizeEvent(QResizeEvent *pResizeEvent);
 
 	// Draw the time scale.
-	void drawContents(QPainter *p,
-		int clipx, int clipy, int clipw, int cliph);
+	void drawContents(QPainter *pPainter, const QRect& rect);
 
 	// Check if some position header is to be dragged...
 	bool dragHeadStart(const QPoint& pos);
 
 	// Handle selection with mouse.
-	void contentsMousePressEvent(QMouseEvent *pMouseEvent);
-	void contentsMouseMoveEvent(QMouseEvent *pMouseEvent);
-	void contentsMouseReleaseEvent(QMouseEvent *pMouseEvent);
+	void mousePressEvent(QMouseEvent *pMouseEvent);
+	void mouseMoveEvent(QMouseEvent *pMouseEvent);
+	void mouseReleaseEvent(QMouseEvent *pMouseEvent);
 
 	// Reset drag/select state.
 	void resetDragState();
@@ -74,7 +79,7 @@ protected:
 protected slots:
 
 	// To have timeline in h-sync with main track view.
-	void contentsMovingSlot(int cx, int cy);
+	void contentsXMovingSlot(int cx, int cy);
 
 	// (Re)create the time scale pixmap.
 	void updatePixmap(int cx, int cy);
@@ -85,7 +90,7 @@ private:
 	qtractorTracks *m_pTracks;
 
 	// Local double-buffering pixmap.
-	QPixmap *m_pPixmap;
+	QPixmap m_pixmap;
 
 	// The current selecting/dragging head stuff.
 	enum DragState {

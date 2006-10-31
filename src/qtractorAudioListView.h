@@ -66,7 +66,7 @@ class qtractorAudioListView : public qtractorFileListView
 public:
 
 	// Constructor.
-	qtractorAudioListView(QWidget *pParent, const char *pszName = NULL);
+	qtractorAudioListView(QWidget *pParent = 0);
 
 	// QListView::addColumn() ids.
 	enum ItemColumn {
@@ -75,10 +75,14 @@ public:
 		Frames      = 2,
 		Rate        = 3,
 		Time        = 4,
-		Path        = 5
+		Path        = 5,
+		LastColumn  = 6
 	};
 
 protected:
+
+	// Which column is the complete file path?
+	int pathColumn() const { return Path; }
 
 	// File item factory method.
 	qtractorFileListItem *createFileItem(const QString& sPath,

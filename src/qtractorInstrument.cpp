@@ -21,10 +21,11 @@
 
 #include "qtractorInstrument.h"
 
-#include <qobject.h>
-#include <qregexp.h>
-#include <qfileinfo.h>
-#include <qfile.h>
+#include <QFileInfo>
+#include <QFile>
+#include <QTextStream>
+#include <QRegExp>
+#include <QDate>
 
 
 //----------------------------------------------------------------------
@@ -114,7 +115,7 @@ void qtractorInstrumentList::merge ( qtractorInstrumentList& instruments )
 	qtractorInstrumentList::Iterator it;
 	for (it = instruments.begin(); it != instruments.end(); ++it) {
 		qtractorInstrument& src_instr = (*this)[it.key()];
-		qtractorInstrument& dst_instr = it.data();
+		qtractorInstrument& dst_instr = it.value();
 		src_instr = dst_instr;
 	}
 }
@@ -124,21 +125,9 @@ void qtractorInstrumentList::merge ( qtractorInstrumentList& instruments )
 void qtractorInstrumentList::mergeDataList (
 	qtractorInstrumentDataList& dst, qtractorInstrumentDataList& src )
 {
-#if 0
-	qtractorInstrumentDataList::Iterator lit;
-	for (lit = src.begin(); lit != src.end(); ++lit) {
-		qtractorInstrumentData& dst_data = dst[lit.key()];
-		qtractorInstrumentData& src_data = lit.data();
-		qtractorInstrumentData::Iterator it;
-		for (it = src_data.begin(); it != src_data.end(); ++it)
-			dst_data[it.key()] = it.data();
-	}
-#else
-	qtractorInstrumentDataList::Iterator it;
-	for (it = src.begin(); it != src.end(); ++it) {
-		dst[it.key()] = it.data();
-	}
-#endif
+	qtractorInstrumentDataList::ConstIterator it;
+	for (it = src.begin(); it != src.end(); ++it)
+		dst[it.key()] = it.value();
 }
 
 
@@ -154,7 +143,7 @@ bool qtractorInstrumentList::load ( const QString& sFilename )
 {
 	// Open and read from real file.
 	QFile file(sFilename);
-	if (!file.open(IO_ReadOnly))
+	if (!file.open(QIODevice::ReadOnly))
 		return false;
 
 	enum FileSection {
@@ -195,7 +184,7 @@ bool qtractorInstrumentList::load ( const QString& sFilename )
 
 		// Read the line.
 		iLine++;
-		QString sLine = ts.readLine().simplifyWhiteSpace();
+		QString sLine = ts.readLine().simplified();
 		// If not empty, nor a comment, call the server...
 		if (sLine.isEmpty() || sLine[0] == ';')
 			continue;
@@ -235,7 +224,7 @@ bool qtractorInstrumentList::load ( const QString& sFilename )
 			else {
 				// Unknown section found...
 				fprintf(stderr, "%s(%d): %s: Unknown section.\n",
-					sFilename.latin1(), iLine, sLine.latin1());
+					sFilename.toUtf8().constData(), iLine, sLine.toUtf8().constData());
 			}
 			// Go on...
 			continue;
@@ -255,7 +244,7 @@ bool qtractorInstrumentList::load ( const QString& sFilename )
 					(*pData)[rxData.cap(1).toInt()] = rxData.cap(2);
 				} else {
 					fprintf(stderr, "%s(%d): %s: Unknown .Patch Names entry.\n",
-						sFilename.latin1(), iLine, sLine.latin1());
+						sFilename.toUtf8().constData(), iLine, sLine.toUtf8().constData());
 				}
 				break;
 			}
@@ -271,7 +260,7 @@ bool qtractorInstrumentList::load ( const QString& sFilename )
 					(*pData)[rxData.cap(1).toInt()] = rxData.cap(2);
 				} else {
 					fprintf(stderr, "%s(%d): %s: Unknown .Note Names entry.\n",
-						sFilename.latin1(), iLine, sLine.latin1());
+						sFilename.toUtf8().constData(), iLine, sLine.toUtf8().constData());
 				}
 				break;
 			}
@@ -287,7 +276,7 @@ bool qtractorInstrumentList::load ( const QString& sFilename )
 					(*pData)[rxData.cap(1).toInt()] = rxData.cap(2);
 				} else {
 					fprintf(stderr, "%s(%d): %s: Unknown .Controller Names entry.\n",
-						sFilename.latin1(), iLine, sLine.latin1());
+						sFilename.toUtf8().constData(), iLine, sLine.toUtf8().constData());
 				}
 				break;
 			}
@@ -303,7 +292,7 @@ bool qtractorInstrumentList::load ( const QString& sFilename )
 					(*pData)[rxData.cap(1).toInt()] = rxData.cap(2);
 				} else {
 					fprintf(stderr, "%s(%d): %s: Unknown .RPN Names entry.\n",
-						sFilename.latin1(), iLine, sLine.latin1());
+						sFilename.toUtf8().constData(), iLine, sLine.toUtf8().constData());
 				}
 				break;
 			}
@@ -319,7 +308,7 @@ bool qtractorInstrumentList::load ( const QString& sFilename )
 					(*pData)[rxData.cap(1).toInt()] = rxData.cap(2);
 				} else {
 					fprintf(stderr, "%s(%d): %s: Unknown .NRPN Names entry.\n",
-						sFilename.latin1(), iLine, sLine.latin1());
+						sFilename.toUtf8().constData(), iLine, sLine.toUtf8().constData());
 				}
 				break;
 			}
@@ -360,7 +349,7 @@ bool qtractorInstrumentList::load ( const QString& sFilename )
 						(bool) rxDrum.cap(3).toInt());
 				} else {
 					fprintf(stderr, "%s(%d): %s: Unknown .Instrument Definitions entry.\n",
-						sFilename.latin1(), iLine, sLine.latin1());
+						sFilename.toUtf8().constData(), iLine, sLine.toUtf8().constData());
 				}
 				break;
 			}
@@ -384,7 +373,7 @@ bool qtractorInstrumentList::save ( const QString& sFilename )
 {
     // Open and write into real file.
     QFile file(sFilename);
-    if (!file.open(IO_WriteOnly | IO_Truncate))
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate))
         return false;
 
 	// A visula separator line.
@@ -460,7 +449,7 @@ bool qtractorInstrumentList::save ( const QString& sFilename )
 			int iBank = pit.key();
 			const QString sBank = (iBank < 0
 				? QString("*") : QString::number(iBank));
-			ts << "Patch[" << sBank << "]=" << pit.data().name() << endl;
+			ts << "Patch[" << sBank << "]=" << pit.value().name() << endl;
 		}
 		// - Keys...
 		qtractorInstrumentKeys::Iterator kit;
@@ -468,14 +457,14 @@ bool qtractorInstrumentList::save ( const QString& sFilename )
 			int iBank = kit.key();
 			const QString sBank = (iBank < 0
 				? QString("*") : QString::number(iBank));
-			qtractorInstrumentNotes& notes = kit.data();
+			qtractorInstrumentNotes& notes = kit.value();
 			qtractorInstrumentNotes::Iterator nit;
 			for (nit = notes.begin(); nit != notes.end(); ++nit) {
 				int iProg = nit.key();
 				const QString sProg = (iProg < 0
 					? QString("*") : QString::number(iProg));
 				ts << "Key[" << sBank << "," << sProg << "]="
-				   << nit.data().name() << endl;
+				   << nit.value().name() << endl;
 			}
 		}
 		// - Drums...
@@ -484,14 +473,14 @@ bool qtractorInstrumentList::save ( const QString& sFilename )
 			int iBank = dit.key();
 			const QString sBank = (iBank < 0
 				? QString("*") : QString::number(iBank));
-			qtractorInstrumentDrumFlags& flags = dit.data();
+			qtractorInstrumentDrumFlags& flags = dit.value();
 			qtractorInstrumentDrumFlags::Iterator fit;
 			for (fit = flags.begin(); fit != flags.end(); ++fit) {
 				int iProg = fit.key();
 				const QString sProg = (iProg < 0
 					? QString("*") : QString::number(iProg));
 				ts << "Drum[" << sBank << "," << sProg << "]="
-				   << fit.data() << endl;
+				   << fit.value() << endl;
 			}
 		}
 		ts << endl;
@@ -510,8 +499,8 @@ void qtractorInstrumentList::saveDataList ( QTextStream& ts,
     ts << endl;
 	qtractorInstrumentDataList::Iterator it;
 	for (it = list.begin(); it != list.end(); ++it) {
-		ts << "[" << it.data().name() << "]" << endl;
-		saveData(ts, it.data());
+		ts << "[" << it.value().name() << "]" << endl;
+		saveData(ts, it.value());
 	}
 }
 
@@ -523,7 +512,7 @@ void qtractorInstrumentList::saveData ( QTextStream& ts,
 	    ts << "BasedOn=" << data.basedOn() << endl;
 	qtractorInstrumentData::Iterator it;
 	for (it = data.begin(); it != data.end(); ++it)
-		ts << it.key() << "=" << it.data() << endl;
+		ts << it.key() << "=" << it.value() << endl;
 	ts << endl;
 }
 

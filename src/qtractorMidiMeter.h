@@ -24,11 +24,16 @@
 
 #include "qtractorMeter.h"
 
+#include <QFrame>
+
 
 // Forward declarations.
 class qtractorMidiMeter;
 class qtractorMidiMeterValue;
 class qtractorMidiMonitor;
+
+class QResizeEvent;
+class QPaintEvent;
 
 
 //----------------------------------------------------------------------------
@@ -42,7 +47,7 @@ public:
 
 	// Constructor.
 	qtractorMidiMeterScale(qtractorMidiMeter *pMidiMeter,
-		QWidget *pParent = 0, const char *pszName = 0);
+		QWidget *pParent = 0);
 
 protected:
 
@@ -62,7 +67,7 @@ public:
 
 	// Constructor.
 	qtractorMidiMeterValue(qtractorMidiMeter *pMidiMeter,
-		QWidget *pParent = 0, const char *pszName = 0);
+		QWidget *pParent = 0);
 	// Default destructor.
 	~qtractorMidiMeterValue();
 
@@ -100,7 +105,7 @@ public:
 
 	// Constructor.
 	qtractorMidiMeter(qtractorMidiMonitor *pMidiMonitor,
-		QWidget *pParent = 0, const char *pszName = 0);
+		QWidget *pParent = 0);
 	// Default destructor.
 	~qtractorMidiMeter();
 

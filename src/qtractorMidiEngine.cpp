@@ -31,8 +31,11 @@
 #include "qtractorMidiSequence.h"
 #include "qtractorMidiClip.h"
 
-#include <qthread.h>
-#include <qsocketnotifier.h>
+#include <QThread>
+#include <QMutex>
+#include <QWaitCondition>
+
+#include <QSocketNotifier>
 
 
 // Specific controller definitions
@@ -161,7 +164,7 @@ qtractorMidiInputThread::~qtractorMidiInputThread (void)
 		setRunState(false);
 
 	// Give it a bit of time to cleanup...
-	if (running())
+	if (isRunning())
 		QThread::msleep(100);
 }
 
@@ -246,7 +249,7 @@ qtractorMidiOutputThread::~qtractorMidiOutputThread (void)
 		setRunState(false);
 
 	// Give it a bit of time to cleanup...
-	if (running()) {
+	if (isRunning()) {
 		sync();
 		QThread::msleep(100);
 	}
@@ -861,7 +864,7 @@ bool qtractorMidiEngine::init ( const QString& sClientName )
 		return false;
 
 	// Fix client name.
-	snd_seq_set_client_name(m_pAlsaSeq, sClientName.latin1());
+	snd_seq_set_client_name(m_pAlsaSeq, sClientName.toUtf8().constData());
 
 	m_iAlsaClient = snd_seq_client_id(m_pAlsaSeq);
 	m_iAlsaQueue  = snd_seq_alloc_queue(m_pAlsaSeq);
@@ -869,7 +872,7 @@ bool qtractorMidiEngine::init ( const QString& sClientName )
 	// Setup subscriptions stuff...
 	if (snd_seq_open(&m_pAlsaSubsSeq, "hw", SND_SEQ_OPEN_DUPLEX, 0) >= 0) {
 		m_iAlsaSubsPort = snd_seq_create_simple_port(
-			m_pAlsaSubsSeq, clientName().latin1(),
+			m_pAlsaSubsSeq, clientName().toUtf8().constData(),
 			SND_SEQ_PORT_CAP_WRITE | SND_SEQ_PORT_CAP_SUBS_WRITE |
 			SND_SEQ_PORT_CAP_NO_EXPORT, SND_SEQ_PORT_TYPE_APPLICATION);		
 		if (m_iAlsaSubsPort >= 0) {
@@ -1005,7 +1008,7 @@ void qtractorMidiEngine::clean (void)
 	// Delete output thread...
 	if (m_pOutputThread) {
 		// Make it nicely...
-		if (m_pOutputThread->running()) {
+		if (m_pOutputThread->isRunning()) {
 		//	m_pOutputThread->terminate();
 			m_pOutputThread->wait();
 		}
@@ -1018,7 +1021,7 @@ void qtractorMidiEngine::clean (void)
 	// Last but not least, delete input thread...
 	if (m_pInputThread) {
 		// Make it nicely...
-		if (m_pInputThread->running()) {
+		if (m_pInputThread->isRunning()) {
 		//	m_pInputThread->terminate();
 			m_pInputThread->wait();
 		}
@@ -1295,7 +1298,7 @@ bool qtractorMidiBus::open (void)
 		flags |= SND_SEQ_PORT_CAP_READ | SND_SEQ_PORT_CAP_SUBS_READ;
 
 	m_iAlsaPort = snd_seq_create_simple_port(
-		pMidiEngine->alsaSeq(), busName().latin1(), flags,
+		pMidiEngine->alsaSeq(), busName().toUtf8().constData(), flags,
 		SND_SEQ_PORT_TYPE_MIDI_GENERIC | SND_SEQ_PORT_TYPE_APPLICATION);
 
 	if (m_iAlsaPort < 0)
@@ -1403,7 +1406,7 @@ void qtractorMidiBus::setPatch ( unsigned short iChannel,
 
 #ifdef CONFIG_DEBUG
 	fprintf(stderr, "qtractorMidiBus::setPatch(%d, \"%s\", %d, %d, %d)\n",
-		iChannel, sInstrumentName.latin1(), iBankSelMethod, iBank, iProg);
+		iChannel, sInstrumentName.toUtf8().constData(), iBankSelMethod, iBank, iProg);
 #endif
 
 	// Update patch mapping...
@@ -1619,10 +1622,14 @@ int qtractorMidiBus::updateConnects ( qtractorBus::BusMode busMode,
 		item.portName += ':';
 		item.portName += snd_seq_port_info_get_name(pPortInfo);
 		// Check if already in list/connected...
-		ConnectItem *pItem = connects.find(item);
-		if (pItem && bConnect)
-			connects.remove(pItem);
-		else if (!bConnect)
+		ConnectItem *pItem = connects.findItem(item);
+		if (pItem && bConnect) {
+			int iItem = connects.indexOf(pItem);
+			if (iItem >= 0) {
+				connects.removeAt(iItem);
+				delete pItem;
+			}
+		} else if (!bConnect)
 			connects.append(new ConnectItem(item));
 		// Fetch next connection...
 		snd_seq_query_subscribe_set_index(pAlsaSubs,
@@ -1638,8 +1645,9 @@ int qtractorMidiBus::updateConnects ( qtractorBus::BusMode busMode,
 
 	// For each (remaining) connection, try...
 	int iUpdate = 0;
-	for (ConnectItem *pItem = connects.first();
-			pItem; pItem = connects.next()) {
+	QListIterator<ConnectItem *> iter(connects);
+	while (iter.hasNext()) {
+		ConnectItem *pItem = iter.next();
 		int iAlsaClient = pItem->clientName.section(':', 0, 0).toInt();
 		int iAlsaPort   = pItem->portName.section(':', 0, 0).toInt();
 		// Mangle which is output and input...
@@ -1662,12 +1670,16 @@ int qtractorMidiBus::updateConnects ( qtractorBus::BusMode busMode,
 		const QString sPortName	= QString::number(m_iAlsaPort) + ':' + busName();
 		fprintf(stderr, "qtractorMidiBus::updateConnects(%p, %d): "
 			"snd_seq_subscribe_port: [%d:%s] => [%d:%s]\n", this, (int) busMode,
-				pMidiEngine->alsaClient(), sPortName.latin1(),
-				iAlsaClient, pItem->portName.latin1());
+				pMidiEngine->alsaClient(), sPortName.toUtf8().constData(),
+				iAlsaClient, pItem->portName.toUtf8().constData());
 #endif
 		if (snd_seq_subscribe_port(pMidiEngine->alsaSeq(), pPortSubs) == 0) {
-			connects.remove(pItem);
-			iUpdate++;
+			int iItem = connects.indexOf(pItem);
+			if (iItem >= 0) {
+				connects.removeAt(iItem);
+				delete pItem;
+				iUpdate++;
+			}
 		}
 	}
 
@@ -1747,7 +1759,7 @@ bool qtractorMidiBus::loadMidiMap ( qtractorSessionDocument * /* pDocument */,
 			}
 			// Rollback if instrument-patch is invalid...
 			if (patch.instrumentName.isEmpty())
-				m_patches.erase(iChannel & 0x0f);
+				m_patches.remove(iChannel & 0x0f);
 		}
 	}
 
@@ -1761,7 +1773,7 @@ bool qtractorMidiBus::saveMidiMap ( qtractorSessionDocument *pDocument,
 	// Save map items...
 	QMap<unsigned short, Patch>::Iterator iter;
 	for (iter = m_patches.begin(); iter != m_patches.end(); ++iter) {
-		const Patch& patch = iter.data();
+		const Patch& patch = iter.value();
 		QDomElement ePatch = pDocument->document()->createElement("midi-patch");
 		ePatch.setAttribute("channel", QString::number(iter.key()));
 		if (!patch.instrumentName.isEmpty()) {

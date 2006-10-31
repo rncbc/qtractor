@@ -345,7 +345,9 @@ bool qtractorBus::saveConnects ( ConnectList& connects,
 	qtractorSessionDocument *pDocument,	QDomElement *pElement )
 {
 	// Save connect items...
-	for (ConnectItem *pItem = connects.first();	pItem; pItem = connects.next()) {
+	QListIterator<ConnectItem *> iter(connects);
+	while (iter.hasNext()) {
+		ConnectItem *pItem = iter.next();
 		QDomElement eItem = pDocument->document()->createElement("connect");
 		eItem.setAttribute("index", QString::number(pItem->index));
 		pDocument->saveTextElement("client", pItem->clientName, &eItem);

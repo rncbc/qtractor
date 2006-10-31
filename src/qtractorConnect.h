@@ -22,16 +22,10 @@
 #ifndef __qtractorConnect_h
 #define __qtractorConnect_h
 
-#include <qdragobject.h>
-#include <qlistview.h>
-#include <qptrlist.h>
-#include <qpainter.h>
-#include <qtooltip.h>
-#include <qregexp.h>
+#include <QTreeWidget>
 
-// QListViewItem::rtti return values.
-#define QTRACTOR_CLIENT_ITEM	1001
-#define QTRACTOR_PORT_ITEM		1002
+#include <QRegExp>
+#include <QList>
 
 
 // Forward declarations.
@@ -41,37 +35,26 @@ class qtractorClientListView;
 class qtractorConnectorView;
 class qtractorConnect;
 
+class qtractorClientListProxyModel;
 
-//----------------------------------------------------------------------
-// qtractorConnectToolTip -- custom list view tooltips.
-//
+class QPainter;
+class QTimer;
 
-class qtractorConnectToolTip : public QToolTip
-{
-public:
-
-	// Constructor.
-	qtractorConnectToolTip(qtractorClientListView *pListView);
-	// Virtual destructor.
-	virtual ~qtractorConnectToolTip() {}
-
-protected:
-
-	// Tooltip handler.
-	void maybeTip(const QPoint& pos);
-
-private:
-
-	// The actual parent widget holder.
-	qtractorClientListView *m_pListView;
-};
+class QPaintEvent;
+class QResizeEvent;
+class QMouseEvent;
+class QDragMoveEvent;
+class QDragEnterEvent;
+class QDragLeaveEvent;
+class QDropEvent;
+class QContextMenuEvent;
 
 
 //----------------------------------------------------------------------
 // qtractorPortListItem -- Port list item.
 //
 
-class qtractorPortListItem : public QListViewItem
+class qtractorPortListItem : public QTreeWidgetItem
 {
 public:
 
@@ -104,9 +87,9 @@ public:
 	void cleanConnects();
 
 	// Connected port finders.
-	qtractorPortListItem *findConnect(qtractorPortListItem *pPortItemPtr);
+	qtractorPortListItem *findConnect(qtractorPortListItem *pPortItem);
 	// Connection list accessor.
-	QPtrList<qtractorPortListItem>& connects();
+	QList<qtractorPortListItem *>& connects();
 
 	// To virtually distinguish between list view items.
 	int rtti() const;
@@ -114,15 +97,6 @@ public:
     // Connectiopn highlight methods.
     bool isHilite();
     void setHilite (bool bHilite);
-
-    // Special port name sorting virtual comparator.
-    int compare (QListViewItem* pPortItem, int iColumn, bool bAscending) const;
-
-protected:
-
-    // To highlight current connected ports when complementary-selected.
-    void paintCell(QPainter *pPainter, const QColorGroup& cg,
-		int iColumn, int iWidth, int iAlign);
 
 private:
 
@@ -134,7 +108,7 @@ private:
     bool    m_bHilite;
 
 	// Connection cache list.
-	QPtrList<qtractorPortListItem> m_connects;
+	QList<qtractorPortListItem *> m_connects;
 };
 
 
@@ -142,7 +116,7 @@ private:
 // qtractorClientListItem -- Client list item.
 //
 
-class qtractorClientListItem : public QListViewItem
+class qtractorClientListItem : public QTreeWidgetItem
 {
 public:
 
@@ -169,21 +143,9 @@ public:
 
 	int clientMark() const;
 
-	// To virtually distinguish between list view items.
-	int rtti() const;
-
-    // Connectiopn highlight methods.
+    // Connection highlight methods.
     bool isHilite();
     void setHilite (bool bHilite);
-
-    // Special port name sorting virtual comparator.
-    int compare (QListViewItem* pPortItem, int iColumn, bool bAscending) const;
-
-protected:
-
-    // To highlight current connected clients when complementary-selected.
-    void paintCell(QPainter *pPainter, const QColorGroup& cg,
-		int iColumn, int iWidth, int iAlign);
 
 private:
 
@@ -198,14 +160,14 @@ private:
 // qtractorClientListView -- Client list view, supporting drag-n-drop.
 //
 
-class qtractorClientListView : public QListView
+class qtractorClientListView : public QTreeWidget
 {
 	Q_OBJECT
 
 public:
 
 	// Constructor.
-	qtractorClientListView(QWidget *pParent = 0, const char *pszName = 0);
+	qtractorClientListView(QWidget *pParent = NULL);
 	// Default destructor.
 	virtual ~qtractorClientListView();
 
@@ -249,12 +211,13 @@ public:
     // Client:port hilite update stabilization.
     void hiliteClientPorts();
 
+	// Redirect this one as public.
+	QTreeWidgetItem *itemFromIndex(const QModelIndex& index) const
+		{ return QTreeWidget::itemFromIndex(index); }
+
 	// Auto-open timer methods.
 	void setAutoOpenTimeout(int iAutoOpenTimeout);
 	int autoOpenTimeout();
-
-    // Natural decimal sorting comparator helper.
-    static int compare (const QString& s1, const QString& s2, bool bAscending);
 
 protected slots:
 
@@ -267,19 +230,29 @@ protected:
 	bool isClientName(const QString& sClientName);
 	bool isPortName(const QString& sPortName);
 
+	// Trap for help/tool-tip events.
+	bool eventFilter(QObject *pObject, QEvent *pEvent);
+
+	// Drag-n-drop stuff.
+	QTreeWidgetItem *dragDropItem(const QPoint& pos);
+
 	// Drag-n-drop stuff -- reimplemented virtual methods.
 	void dragEnterEvent(QDragEnterEvent *pDragEnterEvent);
 	void dragMoveEvent(QDragMoveEvent *pDragMoveEvent);
 	void dragLeaveEvent(QDragLeaveEvent *);
 	void dropEvent(QDropEvent *pDropEvent);
-	QDragObject *dragObject();
+
+	// Handle mouse events for drag-and-drop stuff.
+	void mousePressEvent( QMouseEvent *pMouseEvent);
+	void mouseMoveEvent( QMouseEvent *pMouseEvent);
+
 	// Context menu request event handler.
 	void contextMenuEvent(QContextMenuEvent *);
 
 private:
 
-	// Drag-n-drop stuff.
-	QListViewItem *dragDropItem(const QPoint& pos);
+	// Custom sort proxy model.
+	qtractorClientListProxyModel *m_pProxyModel;
 
 	// Local instance variables.
 	qtractorConnect *m_pConnect;
@@ -288,11 +261,14 @@ private:
 	// Auto-open timer.
 	int     m_iAutoOpenTimeout;
 	QTimer *m_pAutoOpenTimer;
-	// Item we'll eventually drop something.
-	QListViewItem *m_pDragDropItem;
+	// Item we'll eventually drag-and-dropping something.
+	QTreeWidgetItem *m_pDragItem;
+	QTreeWidgetItem *m_pDropItem;
+	// The point from where drag started.
+	QPoint m_posDrag;
 
 	// The current highlighted item.
-    QListViewItem *m_pHiliteItem;
+    QTreeWidgetItem *m_pHiliteItem;
 
 	// Client:port regular expression filters.
 	QRegExp m_rxClientName;
@@ -300,9 +276,6 @@ private:
 	
 	// Maintained list of client names.
 	QStringList m_clientNames;
-
-	// Listview item tooltip.
-	qtractorConnectToolTip *m_pToolTip;
 };
 
 
@@ -317,7 +290,7 @@ class qtractorConnectorView : public QWidget
 public:
 
 	// Constructor.
-	qtractorConnectorView(QWidget *pParent = 0, const char *pszName = 0);
+	qtractorConnectorView(QWidget *pParent = NULL);
 	// Default destructor.
 	~qtractorConnectorView();
 
@@ -329,23 +302,22 @@ public slots:
 
 	// Useful slots (should this be protected?).
 	void contentsChanged();
-	void contentsMoved(int, int);
 
 protected:
 
 	// Specific event handlers.
 	void paintEvent(QPaintEvent *);
-	void resizeEvent(QResizeEvent *);
+
 	// Context menu request event handler.
 	void contextMenuEvent(QContextMenuEvent *);
 
 private:
 
 	// Legal client/port item position helper.
-	int itemY(QListViewItem *pListItem) const;
+	int itemY(QTreeWidgetItem *pListItem) const;
 
 	// Drawing methods.
-	void drawConnectionLine(QPainter& p,
+	void drawConnectionLine(QPainter *pPainter,
 		int x1, int y1, int x2, int y2, int h1, int h2);
 
 	// Local instance variables.
@@ -371,6 +343,9 @@ public:
 
 	// Default destructor.
 	virtual ~qtractorConnect();
+
+	// QTreeWidgetItem types.
+	enum { ClientItem = 1001, PortItem = 1002 };
 
 	// Widget accesors.
 	qtractorClientListView *OListView()     { return m_pOListView; }

@@ -23,8 +23,9 @@
 #include "qtractorOptions.h"
 #include "qtractorMainForm.h"
 
-#include <qapplication.h>
-#include <qtextcodec.h>
+#include <QApplication>
+#include <QTranslator>
+#include <QLocale>
 
 
 //-------------------------------------------------------------------------
@@ -37,14 +38,15 @@ int main ( int argc, char **argv )
 
 	// Load translation support.
 	QTranslator translator(0);
-	QString sLocale = QTextCodec::locale();
-	if (sLocale != "C") {
-		QString sLocName = "qtractor_" + sLocale;
+	QLocale loc;
+	if (loc.language() != QLocale::C) {
+		QString sLocName = "qtractor_" + loc.name();
 		if (!translator.load(sLocName, ".")) {
 			QString sLocPath = CONFIG_PREFIX "/share/locale";
 			if (!translator.load(sLocName, sLocPath))
 				fprintf(stderr, "Warning: no locale found: %s/%s.qm\n",
-					sLocPath.latin1(), sLocName.latin1());
+					sLocPath.toUtf8().constData(),
+					sLocName.toUtf8().constData());
 		}
 		app.installTranslator(&translator);
 	}
@@ -58,7 +60,7 @@ int main ( int argc, char **argv )
 
 	// Construct, setup and show the main form (a pseudo-singleton).
 	qtractorMainForm w;
-	app.setMainWidget(&w);
+//	app.setMainWidget(&w);
 	w.setOptions(&options);
 	w.show();
 

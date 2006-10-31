@@ -24,7 +24,7 @@
 
 #include "qtractorList.h"
 
-#include <qcolor.h>
+#include <QColor>
 
 
 // Forward declarations.
@@ -134,8 +134,14 @@ public:
 	qtractorPluginList *pluginList() const;
 
 	// Normalized view height accessors.
-	void setHeight(unsigned short iHeight);
-	unsigned short height() const;
+	void updateHeight();
+	void setHeight(int iHeight);
+	int height() const;
+
+	// Visual height accessors.
+	void updateZoomHeight();
+	void setZoomHeight(int iZoomHeight);
+	int zoomHeight() const;
 
 	// Clip list management methods.
 	qtractorList<qtractorClip>& clips();
@@ -226,7 +232,9 @@ private:
 	qtractorMonitor *m_pMonitor;    // Track monitor.
 
 	unsigned short   m_iMidiTag;    // MIDI specific: track-tag;
+
 	int              m_iHeight;     // View height (normalized).
+	int              m_iZoomHeight; // View height (zoomed).
 
 	qtractorList<qtractorClip> m_clips; // List of clips.
 

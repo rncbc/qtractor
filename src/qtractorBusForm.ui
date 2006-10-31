@@ -1,6 +1,6 @@
-<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
-<class>qtractorBusForm</class>
-<comment>qtractor - A MIDI/Audio multi-track sequencer.
+<ui version="4.0" >
+ <author>rncbc aka Rui Nuno Capela</author>
+ <comment>qtractor - A MIDI/Audio multi-track sequencer.
 
    Copyright (C) 2005-2006, rncbc aka Rui Nuno Capela. All rights reserved.
 
@@ -18,517 +18,389 @@
    with this program; if not, write to the Free Software Foundation, Inc.,
    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-</comment>
-<author>rncbc aka Rui Nuno Capela</author>
-<widget class="QDialog">
-    <property name="name">
-        <cstring>qtractorBusForm</cstring>
-    </property>
-    <property name="geometry">
-        <rect>
-            <x>0</x>
-            <y>0</y>
-            <width>478</width>
-            <height>298</height>
-        </rect>
-    </property>
-    <property name="sizePolicy">
-        <sizepolicy>
-            <hsizetype>7</hsizetype>
-            <vsizetype>1</vsizetype>
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-        </sizepolicy>
-    </property>
-    <property name="caption">
-        <string>Busses - Qtractor</string>
-    </property>
-    <property name="icon">
-        <pixmap>qtractorTracks.png</pixmap>
-    </property>
-    <property name="focusPolicy">
-        <enum>StrongFocus</enum>
-    </property>
-    <vbox>
-        <property name="name">
-            <cstring>unnamed</cstring>
-        </property>
-        <widget class="QSplitter">
-            <property name="name">
-                <cstring>BusSplitter</cstring>
-            </property>
-            <property name="orientation">
-                <enum>Horizontal</enum>
-            </property>
-            <widget class="QListView">
-                <column>
-                    <property name="text">
-                        <string>Busses</string>
-                    </property>
-                    <property name="clickable">
-                        <bool>true</bool>
-                    </property>
-                    <property name="resizable">
-                        <bool>true</bool>
-                    </property>
-                </column>
-                <property name="name">
-                    <cstring>BusListView</cstring>
-                </property>
-                <property name="minimumSize">
-                    <size>
-                        <width>160</width>
-                        <height>0</height>
-                    </size>
-                </property>
-                <property name="rootIsDecorated">
-                    <bool>false</bool>
-                </property>
-                <property name="resizeMode">
-                    <enum>LastColumn</enum>
-                </property>
-                <property name="toolTip" stdset="0">
-                    <string>Bus list</string>
-                </property>
-            </widget>
-            <widget class="QLayoutWidget">
-                <property name="name">
-                    <cstring>BusLayout</cstring>
-                </property>
-                <vbox>
-                    <property name="name">
-                        <cstring>unnamed</cstring>
-                    </property>
-                    <property name="margin">
-                        <number>0</number>
-                    </property>
-                    <widget class="QLabel">
-                        <property name="name">
-                            <cstring>BusTitleTextLabel</cstring>
-                        </property>
-                        <property name="paletteForegroundColor">
-                            <color>
-                                <red>255</red>
-                                <green>255</green>
-                                <blue>255</blue>
-                            </color>
-                        </property>
-                        <property name="paletteBackgroundColor">
-                            <color>
-                                <red>153</red>
-                                <green>153</green>
-                                <blue>153</blue>
-                            </color>
-                        </property>
-                        <property name="font">
-                            <font>
-                                <pointsize>12</pointsize>
-                                <bold>1</bold>
-                            </font>
-                        </property>
-                        <property name="margin">
-                            <number>2</number>
-                        </property>
-                        <property name="text">
-                            <string>Bus</string>
-                        </property>
-                        <property name="indent">
-                            <number>6</number>
-                        </property>
-                    </widget>
-                    <widget class="QButtonGroup">
-                        <property name="name">
-                            <cstring>CommonBusGroup</cstring>
-                        </property>
-                        <property name="title">
-                            <string>Bus</string>
-                        </property>
-                        <grid>
-                            <property name="name">
-                                <cstring>unnamed</cstring>
-                            </property>
-                            <widget class="QLabel" row="0" column="0">
-                                <property name="name">
-                                    <cstring>BusNameTextLabel</cstring>
-                                </property>
-                                <property name="text">
-                                    <string>&amp;Name:</string>
-                                </property>
-                                <property name="buddy" stdset="0">
-                                    <cstring>BusNameLineEdit</cstring>
-                                </property>
-                            </widget>
-                            <widget class="QLineEdit" row="0" column="1" rowspan="1" colspan="2">
-                                <property name="name">
-                                    <cstring>BusNameLineEdit</cstring>
-                                </property>
-                                <property name="toolTip" stdset="0">
-                                    <string>Bus name</string>
-                                </property>
-                            </widget>
-                            <widget class="QLabel" row="1" column="0">
-                                <property name="name">
-                                    <cstring>BusModeTextLabel</cstring>
-                                </property>
-                                <property name="text">
-                                    <string>&amp;Mode:</string>
-                                </property>
-                                <property name="buddy" stdset="0">
-                                    <cstring>BusModeComboBox</cstring>
-                                </property>
-                            </widget>
-                            <spacer row="1" column="2">
-                                <property name="name">
-                                    <cstring>BusModeSpacer</cstring>
-                                </property>
-                                <property name="orientation">
-                                    <enum>Horizontal</enum>
-                                </property>
-                                <property name="sizeType">
-                                    <enum>MinimumExpanding</enum>
-                                </property>
-                                <property name="sizeHint">
-                                    <size>
-                                        <width>20</width>
-                                        <height>20</height>
-                                    </size>
-                                </property>
-                            </spacer>
-                            <widget class="QComboBox" row="1" column="1">
-                                <item>
-                                    <property name="text">
-                                        <string>Input</string>
-                                    </property>
-                                </item>
-                                <item>
-                                    <property name="text">
-                                        <string>Output</string>
-                                    </property>
-                                </item>
-                                <item>
-                                    <property name="text">
-                                        <string>Duplex</string>
-                                    </property>
-                                </item>
-                                <property name="name">
-                                    <cstring>BusModeComboBox</cstring>
-                                </property>
-                                <property name="currentItem">
-                                    <number>2</number>
-                                </property>
-                            </widget>
-                        </grid>
-                    </widget>
-                    <widget class="QButtonGroup">
-                        <property name="name">
-                            <cstring>AudioBusGroup</cstring>
-                        </property>
-                        <property name="title">
-                            <string>Audio</string>
-                        </property>
-                        <grid>
-                            <property name="name">
-                                <cstring>unnamed</cstring>
-                            </property>
-                            <widget class="QLabel" row="0" column="0">
-                                <property name="name">
-                                    <cstring>AudioChannelsTextLabel</cstring>
-                                </property>
-                                <property name="text">
-                                    <string>Cha&amp;nnels:</string>
-                                </property>
-                                <property name="buddy" stdset="0">
-                                    <cstring>AudioChannelsSpinBox</cstring>
-                                </property>
-                            </widget>
-                            <widget class="QSpinBox" row="0" column="1">
-                                <property name="name">
-                                    <cstring>AudioChannelsSpinBox</cstring>
-                                </property>
-                                <property name="minValue">
-                                    <number>1</number>
-                                </property>
-                                <property name="value">
-                                    <number>2</number>
-                                </property>
-                                <property name="toolTip" stdset="0">
-                                    <string>Audio channels</string>
-                                </property>
-                            </widget>
-                            <spacer row="0" column="2">
-                                <property name="name">
-                                    <cstring>AudioChannelsSpacer</cstring>
-                                </property>
-                                <property name="orientation">
-                                    <enum>Horizontal</enum>
-                                </property>
-                                <property name="sizeType">
-                                    <enum>MinimumExpanding</enum>
-                                </property>
-                                <property name="sizeHint">
-                                    <size>
-                                        <width>20</width>
-                                        <height>20</height>
-                                    </size>
-                                </property>
-                            </spacer>
-                            <widget class="QCheckBox" row="1" column="0" rowspan="1" colspan="3">
-                                <property name="name">
-                                    <cstring>AudioAutoConnectCheckBox</cstring>
-                                </property>
-                                <property name="text">
-                                    <string>&amp;Auto connect</string>
-                                </property>
-                                <property name="accel">
-                                    <string>Alt+A</string>
-                                </property>
-                            </widget>
-                        </grid>
-                    </widget>
-                    <spacer>
-                        <property name="name">
-                            <cstring>BusTabSpacer</cstring>
-                        </property>
-                        <property name="orientation">
-                            <enum>Vertical</enum>
-                        </property>
-                        <property name="sizeType">
-                            <enum>Expanding</enum>
-                        </property>
-                        <property name="sizeHint">
-                            <size>
-                                <width>20</width>
-                                <height>60</height>
-                            </size>
-                        </property>
-                    </spacer>
-                </vbox>
-            </widget>
+ </comment>
+ <exportmacro></exportmacro>
+ <class>qtractorBusForm</class>
+ <widget class="QDialog" name="qtractorBusForm" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>478</width>
+    <height>298</height>
+   </rect>
+  </property>
+  <property name="sizePolicy" >
+   <sizepolicy>
+    <hsizetype>7</hsizetype>
+    <vsizetype>1</vsizetype>
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="focusPolicy" >
+   <enum>Qt::StrongFocus</enum>
+  </property>
+  <property name="windowTitle" >
+   <string>Busses - Qtractor</string>
+  </property>
+  <property name="windowIcon" >
+   <iconset resource="../icons/qtractor.qrc" >:/icons/qtractorTracks.png</iconset>
+  </property>
+  <layout class="QVBoxLayout" >
+   <property name="margin" >
+    <number>9</number>
+   </property>
+   <property name="spacing" >
+    <number>6</number>
+   </property>
+   <item>
+    <widget class="QSplitter" name="splitter" >
+     <property name="orientation" >
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="handleWidth" >
+      <number>4</number>
+     </property>
+     <widget class="QTreeWidget" name="BusListView" >
+      <property name="minimumSize" >
+       <size>
+        <width>160</width>
+        <height>0</height>
+       </size>
+      </property>
+      <property name="toolTip" >
+       <string>Bus list</string>
+      </property>
+      <property name="rootIsDecorated" >
+       <bool>false</bool>
+      </property>
+      <property name="uniformRowHeights" >
+       <bool>true</bool>
+      </property>
+      <column>
+       <property name="text" >
+        <string>Busses</string>
+       </property>
+      </column>
+     </widget>
+     <widget class="QWidget" name="BusLayout" >
+      <layout class="QVBoxLayout" >
+       <property name="margin" >
+        <number>0</number>
+       </property>
+       <property name="spacing" >
+        <number>4</number>
+       </property>
+       <item>
+        <widget class="QLabel" name="BusTitleTextLabel" >
+         <property name="font" >
+          <font>
+           <family>Sans Serif</family>
+           <pointsize>10</pointsize>
+           <weight>75</weight>
+           <italic>false</italic>
+           <bold>true</bold>
+           <underline>false</underline>
+           <strikeout>false</strikeout>
+          </font>
+         </property>
+         <property name="text" >
+          <string>Bus</string>
+         </property>
+         <property name="margin" >
+          <number>2</number>
+         </property>
+         <property name="indent" >
+          <number>6</number>
+         </property>
         </widget>
-        <widget class="QLayoutWidget">
-            <property name="name">
-                <cstring>BusFooterLayout</cstring>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="CommonBusGroup" >
+         <property name="title" >
+          <string>Bus</string>
+         </property>
+         <layout class="QGridLayout" >
+          <property name="margin" >
+           <number>8</number>
+          </property>
+          <property name="spacing" >
+           <number>4</number>
+          </property>
+          <item row="0" column="0" >
+           <widget class="QLabel" name="BusNameTextLabel" >
+            <property name="text" >
+             <string>&amp;Name:</string>
             </property>
-            <hbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>RefreshPushButton</cstring>
-                    </property>
-                    <property name="text">
-                        <string>&amp;Refresh</string>
-                    </property>
-                    <property name="accel">
-                        <string>Alt+R</string>
-                    </property>
-                    <property name="iconSet">
-                        <iconset>formRefresh.png</iconset>
-                    </property>
-                    <property name="toolTip" stdset="0">
-                        <string>Refresh bus list view</string>
-                    </property>
-                </widget>
-                <spacer>
-                    <property name="name">
-                        <cstring>BusFooterSpacer</cstring>
-                    </property>
-                    <property name="orientation">
-                        <enum>Horizontal</enum>
-                    </property>
-                    <property name="sizeType">
-                        <enum>MinimumExpanding</enum>
-                    </property>
-                    <property name="sizeHint">
-                        <size>
-                            <width>20</width>
-                            <height>20</height>
-                        </size>
-                    </property>
-                </spacer>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>CreatePushButton</cstring>
-                    </property>
-                    <property name="text">
-                        <string>&amp;Create</string>
-                    </property>
-                    <property name="accel">
-                        <string>Alt+C</string>
-                    </property>
-                    <property name="iconSet">
-                        <iconset>formCreate.png</iconset>
-                    </property>
-                    <property name="toolTip" stdset="0">
-                        <string>Create bus</string>
-                    </property>
-                </widget>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>UpdatePushButton</cstring>
-                    </property>
-                    <property name="text">
-                        <string>&amp;Update</string>
-                    </property>
-                    <property name="accel">
-                        <string>Alt+U</string>
-                    </property>
-                    <property name="iconSet">
-                        <iconset>formAccept.png</iconset>
-                    </property>
-                    <property name="toolTip" stdset="0">
-                        <string>Update bus</string>
-                    </property>
-                </widget>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>DeletePushButton</cstring>
-                    </property>
-                    <property name="text">
-                        <string>&amp;Delete</string>
-                    </property>
-                    <property name="accel">
-                        <string>Alt+D</string>
-                    </property>
-                    <property name="iconSet">
-                        <iconset>formRemove.png</iconset>
-                    </property>
-                    <property name="toolTip" stdset="0">
-                        <string>Delete bus</string>
-                    </property>
-                </widget>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>ClosePushButton</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Close</string>
-                    </property>
-                    <property name="accel">
-                        <string></string>
-                    </property>
-                    <property name="toolTip" stdset="0">
-                        <string>Close this dialog</string>
-                    </property>
-                </widget>
-            </hbox>
+            <property name="buddy" >
+             <cstring>BusNameLineEdit</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1" colspan="2" >
+           <widget class="QLineEdit" name="BusNameLineEdit" >
+            <property name="toolTip" >
+             <string>Bus name</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0" >
+           <widget class="QLabel" name="BusModeTextLabel" >
+            <property name="text" >
+             <string>&amp;Mode:</string>
+            </property>
+            <property name="buddy" >
+             <cstring>BusModeComboBox</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="2" >
+           <spacer>
+            <property name="orientation" >
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeType" >
+             <enum>QSizePolicy::MinimumExpanding</enum>
+            </property>
+            <property name="sizeHint" >
+             <size>
+              <width>20</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="1" column="1" >
+           <widget class="QComboBox" name="BusModeComboBox" >
+            <property name="currentIndex" >
+             <number>2</number>
+            </property>
+            <item>
+             <property name="text" >
+              <string>Input</string>
+             </property>
+            </item>
+            <item>
+             <property name="text" >
+              <string>Output</string>
+             </property>
+            </item>
+            <item>
+             <property name="text" >
+              <string>Duplex</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+         </layout>
         </widget>
-    </vbox>
-</widget>
-<connections>
-    <connection>
-        <sender>BusListView</sender>
-        <signal>selectionChanged()</signal>
-        <receiver>qtractorBusForm</receiver>
-        <slot>selectBus()</slot>
-    </connection>
-    <connection>
-        <sender>BusListView</sender>
-        <signal>contextMenuRequested(QListViewItem*,const QPoint&amp;,int)</signal>
-        <receiver>qtractorBusForm</receiver>
-        <slot>contextMenu(QListViewItem*,const QPoint&amp;,int)</slot>
-    </connection>
-    <connection>
-        <sender>BusNameLineEdit</sender>
-        <signal>textChanged(const QString &amp;)</signal>
-        <receiver>qtractorBusForm</receiver>
-        <slot>changed()</slot>
-    </connection>
-    <connection>
-        <sender>BusModeComboBox</sender>
-        <signal>activated(int)</signal>
-        <receiver>qtractorBusForm</receiver>
-        <slot>changed()</slot>
-    </connection>
-    <connection>
-        <sender>AudioChannelsSpinBox</sender>
-        <signal>valueChanged(int)</signal>
-        <receiver>qtractorBusForm</receiver>
-        <slot>changed()</slot>
-    </connection>
-    <connection>
-        <sender>AudioAutoConnectCheckBox</sender>
-        <signal>clicked()</signal>
-        <receiver>qtractorBusForm</receiver>
-        <slot>changed()</slot>
-    </connection>
-    <connection>
-        <sender>RefreshPushButton</sender>
-        <signal>clicked()</signal>
-        <receiver>qtractorBusForm</receiver>
-        <slot>refreshBusses()</slot>
-    </connection>
-    <connection>
-        <sender>CreatePushButton</sender>
-        <signal>clicked()</signal>
-        <receiver>qtractorBusForm</receiver>
-        <slot>createBus()</slot>
-    </connection>
-    <connection>
-        <sender>UpdatePushButton</sender>
-        <signal>clicked()</signal>
-        <receiver>qtractorBusForm</receiver>
-        <slot>updateBus()</slot>
-    </connection>
-    <connection>
-        <sender>DeletePushButton</sender>
-        <signal>clicked()</signal>
-        <receiver>qtractorBusForm</receiver>
-        <slot>deleteBus()</slot>
-    </connection>
-    <connection>
-        <sender>ClosePushButton</sender>
-        <signal>clicked()</signal>
-        <receiver>qtractorBusForm</receiver>
-        <slot>reject()</slot>
-    </connection>
-</connections>
-<tabstops>
-    <tabstop>BusListView</tabstop>
-    <tabstop>BusNameLineEdit</tabstop>
-    <tabstop>BusModeComboBox</tabstop>
-    <tabstop>AudioChannelsSpinBox</tabstop>
-    <tabstop>AudioAutoConnectCheckBox</tabstop>
-    <tabstop>RefreshPushButton</tabstop>
-    <tabstop>CreatePushButton</tabstop>
-    <tabstop>UpdatePushButton</tabstop>
-    <tabstop>DeletePushButton</tabstop>
-    <tabstop>ClosePushButton</tabstop>
-</tabstops>
-<forwards>
-    <forward>class qtractorBus;</forward>
-</forwards>
-<variables>
-    <variable access="private">qtractorBus *m_pBus;</variable>
-    <variable access="private">QListViewItem *m_pAudioRoot;</variable>
-    <variable access="private">QListViewItem *m_pMidiRoot;</variable>
-    <variable access="private">int m_iDirtySetup;</variable>
-    <variable access="private">int m_iDirtyCount;</variable>
-    <variable access="private">int m_iDirtyTotal;</variable>
-</variables>
-<slots>
-    <slot specifier="non virtual">reject()</slot>
-    <slot specifier="non virtual">refreshBusses()</slot>
-    <slot specifier="non virtual">selectBus()</slot>
-    <slot specifier="non virtual">createBus()</slot>
-    <slot specifier="non virtual">updateBus()</slot>
-    <slot specifier="non virtual">deleteBus()</slot>
-    <slot specifier="non virtual">changed()</slot>
-    <slot specifier="non virtual">stabilizeForm()</slot>
-    <slot specifier="non virtual">contextMenu(QListViewItem *, const QPoint&amp;, int)</slot>
-</slots>
-<functions>
-    <function access="private" specifier="non virtual">init()</function>
-    <function access="private" specifier="non virtual">destroy()</function>
-    <function specifier="non virtual">setBus( qtractorBus *pBus )</function>
-    <function specifier="non virtual" returnType="qtractorBus *">bus()</function>
-    <function specifier="non virtual" returnType="bool">isDirty()</function>
-    <function specifier="private">showBus( qtractorBus *pBus )</function>
-    <function specifier="private" returnType="bool">canCreateBus()</function>
-    <function specifier="private" returnType="bool">canUpdateBus()</function>
-    <function specifier="private" returnType="bool">canDeleteBus()</function>
-</functions>
-<pixmapinproject/>
-<layoutdefaults spacing="4" margin="8"/>
-</UI>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="AudioBusGroup" >
+         <property name="title" >
+          <string>Audio</string>
+         </property>
+         <layout class="QGridLayout" >
+          <property name="margin" >
+           <number>8</number>
+          </property>
+          <property name="spacing" >
+           <number>4</number>
+          </property>
+          <item row="0" column="0" >
+           <widget class="QLabel" name="AudioChannelsTextLabel" >
+            <property name="text" >
+             <string>Cha&amp;nnels:</string>
+            </property>
+            <property name="buddy" >
+             <cstring>AudioChannelsSpinBox</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1" >
+           <widget class="QSpinBox" name="AudioChannelsSpinBox" >
+            <property name="toolTip" >
+             <string>Audio channels</string>
+            </property>
+            <property name="minimum" >
+             <number>1</number>
+            </property>
+            <property name="value" >
+             <number>2</number>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="2" >
+           <spacer>
+            <property name="orientation" >
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeType" >
+             <enum>QSizePolicy::MinimumExpanding</enum>
+            </property>
+            <property name="sizeHint" >
+             <size>
+              <width>20</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="1" column="0" colspan="3" >
+           <widget class="QCheckBox" name="AudioAutoConnectCheckBox" >
+            <property name="text" >
+             <string>&amp;Auto connect</string>
+            </property>
+            <property name="shortcut" >
+             <string>Alt+A</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <spacer>
+         <property name="orientation" >
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeType" >
+          <enum>QSizePolicy::Expanding</enum>
+         </property>
+         <property name="sizeHint" >
+          <size>
+           <width>20</width>
+           <height>60</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" >
+     <property name="margin" >
+      <number>0</number>
+     </property>
+     <property name="spacing" >
+      <number>4</number>
+     </property>
+     <item>
+      <widget class="QPushButton" name="RefreshPushButton" >
+       <property name="toolTip" >
+        <string>Refresh bus list view</string>
+       </property>
+       <property name="text" >
+        <string>&amp;Refresh</string>
+       </property>
+       <property name="icon" >
+        <iconset resource="../icons/qtractor.qrc" >:/icons/formRefresh.png</iconset>
+       </property>
+       <property name="shortcut" >
+        <string>Alt+R</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer>
+       <property name="orientation" >
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeType" >
+        <enum>QSizePolicy::MinimumExpanding</enum>
+       </property>
+       <property name="sizeHint" >
+        <size>
+         <width>20</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="CreatePushButton" >
+       <property name="toolTip" >
+        <string>Create bus</string>
+       </property>
+       <property name="text" >
+        <string>&amp;Create</string>
+       </property>
+       <property name="icon" >
+        <iconset resource="../icons/qtractor.qrc" >:/icons/formCreate.png</iconset>
+       </property>
+       <property name="shortcut" >
+        <string>Alt+C</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="UpdatePushButton" >
+       <property name="toolTip" >
+        <string>Update bus</string>
+       </property>
+       <property name="text" >
+        <string>&amp;Update</string>
+       </property>
+       <property name="icon" >
+        <iconset resource="../icons/qtractor.qrc" >:/icons/formAccept.png</iconset>
+       </property>
+       <property name="shortcut" >
+        <string>Alt+U</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="DeletePushButton" >
+       <property name="toolTip" >
+        <string>Delete bus</string>
+       </property>
+       <property name="text" >
+        <string>&amp;Delete</string>
+       </property>
+       <property name="icon" >
+        <iconset resource="../icons/qtractor.qrc" >:/icons/formRemove.png</iconset>
+       </property>
+       <property name="shortcut" >
+        <string>Alt+D</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="ClosePushButton" >
+       <property name="toolTip" >
+        <string>Close this dialog</string>
+       </property>
+       <property name="text" >
+        <string>Close</string>
+       </property>
+       <property name="shortcut" >
+        <string/>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <layoutdefault spacing="4" margin="8" />
+ <pixmapfunction></pixmapfunction>
+ <tabstops>
+  <tabstop>BusListView</tabstop>
+  <tabstop>BusNameLineEdit</tabstop>
+  <tabstop>BusModeComboBox</tabstop>
+  <tabstop>AudioChannelsSpinBox</tabstop>
+  <tabstop>AudioAutoConnectCheckBox</tabstop>
+  <tabstop>RefreshPushButton</tabstop>
+  <tabstop>CreatePushButton</tabstop>
+  <tabstop>UpdatePushButton</tabstop>
+  <tabstop>DeletePushButton</tabstop>
+  <tabstop>ClosePushButton</tabstop>
+ </tabstops>
+ <resources>
+  <include location="../icons/qtractor.qrc" />
+ </resources>
+ <connections/>
+</ui>

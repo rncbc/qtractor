@@ -22,171 +22,35 @@
 #ifndef __qtractorFileListView_h
 #define __qtractorFileListView_h
 
-#include <qdragobject.h>
-#include <qlistview.h>
-#include <qheader.h>
-#include <qptrlist.h>
-#include <qtooltip.h>
+#include <QTreeWidget>
 
 
 // Forward declarations.
 class qtractorFileListView;
+class qtractorFileGroupItem;
+class qtractorFileListItem;
 class qtractorDocument;
 
 class QDomElement;
 class QAction;
 
 
-//----------------------------------------------------------------------
-// class qtractorFileListViewToolTip -- custom list view tooltips.
-//
-
-class qtractorFileListViewToolTip : public QToolTip
-{
-public:
-
-	// Constructor.
-	qtractorFileListViewToolTip(qtractorFileListView *pListView);
-	// Virtual destructor.
-	virtual ~qtractorFileListViewToolTip() {}
-
-protected:
-
-	// Tooltip handler.
-	void maybeTip(const QPoint& pos);
-
-private:
-
-	// The actual parent widget holder.
-	qtractorFileListView *m_pListView;
-};
-
-
-//----------------------------------------------------------------------
-// class qtractorFileGroupItem -- custom group list view item.
-//
-
-class qtractorFileGroupItem : public QListViewItem
-{
-public:
-
-	// Constructors.
-	qtractorFileGroupItem(qtractorFileListView *pListView,
-		const QString& sName);
-	qtractorFileGroupItem(qtractorFileGroupItem *pGroupItem,
-		const QString& sName);
-	// Default destructor.
-	virtual ~qtractorFileGroupItem();
-
-	// Instance accessors.
-	void setName(const QString& sName);
-	QString name() const;
-
-	qtractorFileListView  *listView() const;
-	qtractorFileGroupItem *groupItem() const;
-
-	// To show up whether its open or not.
-	void setOpen(bool bOpen);
-
-	// To virtually distinguish between list view items.
-	int rtti() const;
-
-	// Virtual tooltip renderer.
-	virtual QString toolTip() const;
-};
-
-
-//----------------------------------------------------------------------
-// class qtractorFileListItem -- custom file list view item.
-//
-
-class qtractorFileListItem : public qtractorFileGroupItem
-{
-public:
-
-	// Constructors.
-	qtractorFileListItem(qtractorFileListView *pListView,
-		const QString& sPath);
-	qtractorFileListItem(qtractorFileGroupItem *pGroupItem,
-		const QString& sPath);
-	// Default destructor.
-	~qtractorFileListItem();
-
-	// To virtually distinguish between list view items.
-	int rtti() const;
-
-	// Full path accessor.
-	const QString& path() const;
-
-private:
-
-	// File item full path.
-	QString m_sPath;
-};
-
-
-//----------------------------------------------------------------------
-// class qtractorFileChannelItem -- custom channel list view item.
-//
-
-class qtractorFileChannelItem : public qtractorFileGroupItem
-{
-public:
-
-	// Constructors.
-	qtractorFileChannelItem(qtractorFileListItem *pFileItem,
-		const QString& sName, unsigned short iChannel);
-	// Default destructor.
-	~qtractorFileChannelItem();
-
-	// To virtually distinguish between list view items.
-	int rtti() const;
-
-	// Filoe chhannel accessor.
-	unsigned short channel() const;
-
-private:
-
-	// File channel identifier.
-	unsigned short m_iChannel;
-};
-
-
-//----------------------------------------------------------------------
-// class qtractorFileChannelDrag -- custom file channel drag object.
-//
-
-class qtractorFileChannelDrag : public QStoredDrag
-{
-public:
-
-	// Constructor.
-	qtractorFileChannelDrag(const QString& sPath, unsigned short iChannel,
-		QWidget *pDragSource = NULL, const char *pszName = NULL);
-
-	// Decode methods.
-	static bool canDecode(const QMimeSource *pMimeSource);
-	static bool decode(const QMimeSource *pMimeSource,
-		QString& sPath, unsigned short *piChannel);
-};
-
-
 //----------------------------------------------------------------------------
 // qtractorFileListView -- Group/File list view, supporting drag-n-drop.
 //
 
-class qtractorFileListView : public QListView
+class qtractorFileListView : public QTreeWidget
 {
 	Q_OBJECT
 
 public:
 
 	// Constructor.
-	qtractorFileListView(QWidget *pParent, const char *pszName = NULL);
+	qtractorFileListView(QWidget *pParent = 0);
 	// Default destructor.
 	virtual ~qtractorFileListView();
 
-	// QListViewItem::rtti() return values.
+	// QListViewItem::type() return values.
 	enum ItemType { GroupItem = 1001, FileItem = 1002, ChannelItem = 1003 };
 
 	// Prompt for proper file list open.
@@ -243,22 +107,28 @@ protected slots:
 	void deleteItemSlot();
 
 	// In-place selection slot.
-	void selectionChangedSlot();
+	void currentItemChangedSlot();
 	// In-place activate slot.
-	void activatedSlot(QListViewItem *pItem);
-	// In-place aliasing slot.
-	void renamedSlot(QListViewItem *pItem);
+	void itemActivatedSlot(QTreeWidgetItem *pItem);
+	// In-place open/close slot.
+	void itemExpandedSlot(QTreeWidgetItem *pItem);
+	void itemCollapsedSlot(QTreeWidgetItem *pItem);
+	// Tracking of item changes (e.g in-place edits).
+	void itemRenamedSlot();
 
 	// Auto-open timeout slot.
 	void timeoutSlot();
 
 protected:
 
-	// Find a list view item, given its type and name.
-	QListViewItem *findItem(ItemType type, const QString& sText) const;
-
 	// Find and return the nearest group item...
-	qtractorFileGroupItem *groupItem(QListViewItem *pItem) const;
+	qtractorFileGroupItem *groupItem(QTreeWidgetItem *pItem) const;
+
+	// Find a list view item, given its type and name.
+	QTreeWidgetItem *findItem(const QString& sText, int iType) const;
+
+	// Which column is the complete file path?
+	virtual int pathColumn() const = 0;
 
 	// Pure virtual file item creation;
 	// must be implemented in derived classes.
@@ -268,8 +138,12 @@ protected:
 	// Prompt for proper file list open (pure virtual).
 	virtual QStringList getOpenFileNames() = 0;
 
+	// Trap for help/tool-tip events.
+	bool eventFilter(QObject *pObject, QEvent *pEvent);
+
 	// Drag-n-drop stuff -- reimplemented virtual methods.
-	QDragObject *dragObject();
+	void mousePressEvent(QMouseEvent *pMouseEvent);
+	void mouseMoveEvent(QMouseEvent *pMouseEvent);
 	void dragEnterEvent(QDragEnterEvent *pDragEnterEvent);
 	void dragMoveEvent(QDragMoveEvent *pDragMoveEvent);
 	void dragLeaveEvent(QDragLeaveEvent *);
@@ -280,28 +154,27 @@ protected:
 
 	// Internal recursive loaders/savers...
 	bool loadListElement(qtractorDocument *pDocument,
-		QDomElement *pElement, QListViewItem *pItem);
+		QDomElement *pElement, QTreeWidgetItem *pItem);
 	bool saveListElement(qtractorDocument *pDocument,
-		QDomElement *pElement, QListViewItem *pItem);
+		QDomElement *pElement, QTreeWidgetItem *pItem);
 
 private:
 
 	// Drag-n-drop stuff.
 	bool canDecodeEvent(QDropEvent *pDropEvent);
-	bool canDropItem(QListViewItem *pItem) const;
-	QListViewItem *dragDropItem(const QPoint& pos);
+	bool canDropItem(QTreeWidgetItem *pDropItem) const;
+	QTreeWidgetItem *dragDropItem(const QPoint& pos);
 
 	// Auto-open timer.
 	int     m_iAutoOpenTimeout;
 	QTimer *m_pAutoOpenTimer;
 
+	// The point from where drag started.
+	QPoint m_posDrag;
 	// Item we'll eventually drag around.
-	QListViewItem *m_pDragItem;
+	QTreeWidgetItem *m_pDragItem;
 	// Item we'll eventually drop something.
-	QListViewItem *m_pDropItem;
-
-	// Listview item tooltip.
-	qtractorFileListViewToolTip *m_pToolTip;
+	QTreeWidgetItem *m_pDropItem;
 
 	// List view actions.
 	QAction *m_pNewGroupAction;
@@ -311,6 +184,111 @@ private:
 	
 	// Last recently used directory.
 	QString m_sRecentDir;
+};
+
+
+//----------------------------------------------------------------------
+// class qtractorFileGroupItem -- custom group list view item.
+//
+
+class qtractorFileGroupItem : public QTreeWidgetItem
+{
+public:
+
+	// Constructors.
+	qtractorFileGroupItem(qtractorFileListView *pListView,
+		const QString& sName, int iType = qtractorFileListView::GroupItem);
+	qtractorFileGroupItem(qtractorFileGroupItem *pGroupItem,
+		const QString& sName, int iType = qtractorFileListView::GroupItem);
+	// Default destructor.
+	virtual ~qtractorFileGroupItem();
+
+	// Instance accessors.
+	void setName(const QString& sName);
+	QString name() const;
+
+	qtractorFileListView  *listView() const;
+	qtractorFileGroupItem *groupItem() const;
+
+	// To show up whether its open or not.
+	void setOpen(bool bOpen);
+
+	// Virtual tooltip renderer.
+	virtual QString toolTip() const;
+
+protected:
+
+	// Common group-item initializer.
+	void initFileGroupItem(const QString& sName, int iType);
+};
+
+
+//----------------------------------------------------------------------
+// class qtractorFileListItem -- custom file list view item.
+//
+
+class qtractorFileListItem : public qtractorFileGroupItem
+{
+public:
+
+	// Constructors.
+	qtractorFileListItem(qtractorFileListView *pListView,
+		const QString& sPath);
+	qtractorFileListItem(qtractorFileGroupItem *pGroupItem,
+		const QString& sPath);
+	// Default destructor.
+	~qtractorFileListItem();
+
+	// Full path accessor.
+	const QString& path() const;
+
+private:
+
+	// File item full path.
+	QString m_sPath;
+};
+
+
+//----------------------------------------------------------------------
+// class qtractorFileChannelItem -- custom channel list view item.
+//
+
+class qtractorFileChannelItem : public qtractorFileGroupItem
+{
+public:
+
+	// Constructors.
+	qtractorFileChannelItem(qtractorFileListItem *pFileItem,
+		const QString& sName, unsigned short iChannel);
+	// Default destructor.
+	~qtractorFileChannelItem();
+
+	// Filoe chhannel accessor.
+	unsigned short channel() const;
+
+private:
+
+	// File channel identifier.
+	unsigned short m_iChannel;
+};
+
+
+//----------------------------------------------------------------------
+// class qtractorFileChannelDrag -- custom file channel drag object.
+//
+
+class qtractorFileChannelDrag
+{
+public:
+
+	// Encode method.
+	static void encode(QMimeData *pMimeData,
+		const QString& sPath, unsigned short iChannel);
+
+	// Decode methods.
+	static bool canDecode(const QMimeData *pMimeData);
+	static bool decode(const QMimeData *pMimeData,
+		QString& sPath, unsigned short *piChannel);
 };
 
 

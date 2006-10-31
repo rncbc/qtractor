@@ -24,7 +24,7 @@
 
 #include "qtractorTrack.h"
 
-#include <qtoolbutton.h>
+#include <QToolButton>
 
 
 //----------------------------------------------------------------------------
@@ -37,8 +37,9 @@ class qtractorTrackButton : public QToolButton
 public:
 
 	// Constructor.
-	qtractorTrackButton(qtractorTrack *pTrack, qtractorTrack::ToolType toolType,
-		const QSize& fixedSize, QWidget *pParent, const char *pszName = 0);
+	qtractorTrackButton(qtractorTrack *pTrack,
+		qtractorTrack::ToolType toolType,
+		const QSize& fixedSize, QWidget *pParent = 0);
 
 	// Specific accessors.
 	void setTrack(qtractorTrack *pTrack);

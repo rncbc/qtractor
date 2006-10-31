@@ -26,6 +26,9 @@
 
 #include "qtractorPlugin.h"
 
+#include <QList>
+
+
 // Forward declarations...
 class qtractorPluginPortWidget;
 
@@ -45,7 +48,7 @@ public:
 	virtual ~qtractorPluginCommand();
 
 	// Plugin list accessor.
-	QPtrList<qtractorPlugin>& plugins() { return m_plugins; }
+	QList<qtractorPlugin *>& plugins() { return m_plugins; }
 
 protected:
 
@@ -58,7 +61,7 @@ protected:
 private:
 
 	// Instance variables.
-	QPtrList<qtractorPlugin> m_plugins;
+	QList<qtractorPlugin *> m_plugins;
 };
 
 

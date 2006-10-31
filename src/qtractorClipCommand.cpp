@@ -38,18 +38,19 @@
 qtractorClipCommand::qtractorClipCommand ( qtractorMainForm *pMainForm,
 	const QString& sName ) : qtractorCommand(pMainForm, sName)
 {
-	m_items.setAutoDelete(true);
 }
 
 // Destructor.
 qtractorClipCommand::~qtractorClipCommand (void)
 {
-	for (Item *pItem = m_items.first();
-			pItem; pItem = m_items.next()) {
+	QListIterator<Item *> iter(m_items);
+	while (iter.hasNext()) {
+		Item *pItem = iter.next();
 		if (pItem->autoDelete)
 			delete pItem->clip;
 	}
 
+	qDeleteAll(m_items);
 	m_items.clear();
 }
 
@@ -180,12 +181,11 @@ bool qtractorClipCommand::execute ( bool bRedo )
 	if (pSession == NULL)
 		return false;
 
-	for (Item *pItem = m_items.first();
-			pItem; pItem = m_items.next()) {
-
+	QListIterator<Item *> iter(m_items);
+	while (iter.hasNext()) {
+		Item *pItem = iter.next();
 		qtractorClip  *pClip  = pItem->clip;
 		qtractorTrack *pTrack = pItem->track;
-	
 		// Execute the command item...
 		switch (pItem->command) {
 		case AddClip: {

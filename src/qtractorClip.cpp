@@ -24,8 +24,9 @@
 
 #include "qtractorSessionDocument.h"
 
-#include <qfileinfo.h>
-#include <qpainter.h>
+#include <QFileInfo>
+#include <QPainter>
+#include <QPolygon>
 
 
 //-------------------------------------------------------------------------
@@ -389,7 +390,7 @@ void qtractorClip::drawClip ( QPainter *pPainter, const QRect& clipRect,
 
 	// Draw clip name label...
 	pPainter->drawText(rect,
-		Qt::AlignLeft | Qt::AlignBottom | Qt::SingleLine, clipName());
+		Qt::AlignLeft | Qt::AlignBottom | Qt::TextSingleLine, clipName());
 
 	// Fade in/out handle color...
 	const QColor& rgbFade = track()->foreground().light(160);
@@ -402,11 +403,11 @@ void qtractorClip::drawClip ( QPainter *pPainter, const QRect& clipRect,
 	int w = pSession->pixelFromFrame(m_iFadeInLength);
 	QRect rectFadeIn(x + w, y, 8, 8);
 	if (w > 0 && x + w > clipRect.left()) {
-		QPointArray poly(3);
-		poly.setPoint(0, x, y);
-		poly.setPoint(1, x, rect.bottom() - 1);
-		poly.setPoint(2, x + w, y);
-		pPainter->drawPolygon(poly);
+		QPolygon polyg(3);
+		polyg.setPoint(0, x, y);
+		polyg.setPoint(1, x, rect.bottom() - 1);
+		polyg.setPoint(2, x + w, y);
+		pPainter->drawPolygon(polyg);
 	}
 
 	// Fade-out slope...
@@ -414,11 +415,11 @@ void qtractorClip::drawClip ( QPainter *pPainter, const QRect& clipRect,
 	w = pSession->pixelFromFrame(m_iFadeOutLength);
 	QRect rectFadeOut(x - w - 8, y, 8, 8);
 	if (w > 0 && x - w < clipRect.right()) {
-		QPointArray poly(3);
-		poly.setPoint(0, x, y);
-		poly.setPoint(1, x, rect.bottom() - 1);
-		poly.setPoint(2, x - w, y);
-		pPainter->drawPolygon(poly);
+		QPolygon polyg(3);
+		polyg.setPoint(0, x, y);
+		polyg.setPoint(1, x, rect.bottom() - 1);
+		polyg.setPoint(2, x - w, y);
+		pPainter->drawPolygon(polyg);
 	}
 
 	// Fade in/out handles...

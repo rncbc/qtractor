@@ -25,7 +25,7 @@
 
 #include "qtractorSessionDocument.h"
 
-#include <qdir.h>
+#include <QDir>
 
 
 #if defined(__WIN32__) || defined(_WIN32) || defined(WIN32)
@@ -37,12 +37,6 @@ typedef void (*LADSPA_Procedure_Function)(void);
 #endif
 
 #include <math.h>
-
-#if defined(__BORLANDC__)
-// BCC32 doesn't have these float versions...
-static inline float logf ( float x )	{ return float(::log(x)); }
-static inline float expf ( float x )	{ return float(::exp(x)); }
-#endif
 
 
 //----------------------------------------------------------------------------
@@ -59,8 +53,7 @@ qtractorPluginPath::qtractorPluginPath ( const QString& sPaths )
 	if (sPathStr.isEmpty())
 		sPathStr = PATH_DEFAULT;
 #endif
-	m_paths = QStringList::split(PATH_SEPARATOR, sPathStr);
-	m_files.setAutoDelete(true);
+	m_paths = sPathStr.split(PATH_SEPARATOR);
 }
 
 // Destructor.
@@ -82,13 +75,14 @@ bool qtractorPluginPath::open (void)
 {
 	close();
 
-	for (QStringList::ConstIterator ipath = m_paths.begin();
-			ipath != m_paths.end(); ++ipath) {
-		const QDir dir(*ipath);
+	QStringListIterator ipath(m_paths);
+	while (ipath.hasNext()) {
+		const QDir dir(ipath.next());
 		const QStringList& list = dir.entryList(QDir::Files);
-		for (QStringList::ConstIterator iter = list.begin();
-				iter != list.end(); ++iter) {
-			m_files.append(new qtractorPluginFile(dir.absFilePath(*iter)));
+		QStringListIterator iter(list);
+		while (iter.hasNext()) {
+			m_files.append(
+				new qtractorPluginFile(dir.absoluteFilePath(iter.next())));
 		}
 	}
 
@@ -97,12 +91,13 @@ bool qtractorPluginPath::open (void)
 
 void qtractorPluginPath::close (void)
 {
+	qDeleteAll(m_files);
 	m_files.clear();
 }
 
 
 // Plugin file list.
-QPtrList<qtractorPluginFile>& qtractorPluginPath::files (void)
+QList<qtractorPluginFile *>& qtractorPluginPath::files (void)
 {
 	return m_files;
 }
@@ -117,7 +112,6 @@ qtractorPluginFile::qtractorPluginFile ( const QString& sFilename )
 	: QLibrary(sFilename)
 {
 	m_pfnDescriptor = NULL;
-	m_types.setAutoDelete(true);
 }
 
 // Destructor.
@@ -132,9 +126,10 @@ bool qtractorPluginFile::open (void)
 {
 //	close();
 
-	// Check whether library is loaded...
-	if (!QLibrary::load())
-		return false;
+	// ATTN: Not really need has it will be
+	// loaded automagically on resolve()...
+//	if (!QLibrary::load())
+//		return false;
 
 	// Do the openning dance...
 #if defined(__WIN32__) || defined(_WIN32) || defined(WIN32)
@@ -150,7 +145,7 @@ bool qtractorPluginFile::open (void)
 	// Nothing must be left behind...
 	if (m_pfnDescriptor == NULL)
 		close();
-	
+
 	return (m_pfnDescriptor != NULL);
 }
 
@@ -162,6 +157,8 @@ void qtractorPluginFile::close (void)
 
 	// Nothing should be left behind.-..
 	m_pfnDescriptor = NULL;
+
+	qDeleteAll(m_types);
 	m_types.clear();
 
 	// Do the closing dance...
@@ -177,7 +174,7 @@ void qtractorPluginFile::close (void)
 
 
 // Plugin type list.
-QPtrList<qtractorPluginType>& qtractorPluginFile::types (void)
+QList<qtractorPluginType *>& qtractorPluginFile::types (void)
 {
 	// Try to fill the types list at this moment...
 	if (m_pfnDescriptor && m_types.isEmpty()) {
@@ -241,7 +238,7 @@ const LADSPA_Descriptor *qtractorPluginType::descriptor (void) const
 // Derived accessors.
 QString qtractorPluginType::filename (void) const
 {
-	return m_pFile->library();
+	return m_pFile->fileName();
 }
 
 const char *qtractorPluginType::name (void) const
@@ -271,8 +268,9 @@ qtractorPlugin::qtractorPlugin ( qtractorPluginList *pList,
 qtractorPlugin::~qtractorPlugin (void)
 {
 	// Clear out all dependables...
-	m_items.clear();
+	qDeleteAll(m_cports);
 	m_cports.clear();
+	m_items.clear();
 
 	// Cleanup all plugin instances...
 	setChannels(0);
@@ -297,9 +295,6 @@ void qtractorPlugin::initPlugin ( qtractorPluginList *pList,
 	m_phInstances = NULL;
 	m_bActivated  = false;
 	m_pForm       = NULL;
-
-	m_cports.setAutoDelete(true);
-	m_items.setAutoDelete(false);
 
 	qtractorPluginFile *pFile = new qtractorPluginFile(sFilename);
 	if (pFile->open()) {
@@ -385,8 +380,6 @@ void qtractorPlugin::setChannels ( unsigned short iChannels )
 
 	// FIXME: The dummy value for output control (dummy) port indexes...
 	static float s_fDummyData = 0.0f;
-	QValueList<unsigned long>::const_iterator it;
-
 	// Allocate new instances...
 	m_phInstances = new LADSPA_Handle [m_iInstances];
 	for (unsigned short i = 0; i < m_iInstances; i++) {
@@ -394,15 +387,17 @@ void qtractorPlugin::setChannels ( unsigned short iChannels )
 		m_phInstances[i] = (*pDescriptor->instantiate)(
 			pDescriptor, m_pList->sampleRate());
 		// Connect all existing input control ports...
-		for (qtractorPluginPort *pPort = m_cports.first();
-				pPort; pPort = m_cports.next()) {
+		QListIterator<qtractorPluginPort *> cport(m_cports);
+		while (cport.hasNext()) {
+			qtractorPluginPort *pPort = cport.next();
 			(*pDescriptor->connect_port)(m_phInstances[i],
 				pPort->index(), pPort->data());
 		}
 		// Connect all existing output control (dummy) ports...
-		for (it = m_vports.begin(); it != m_vports.end(); ++it) {
+		QListIterator<unsigned long> vport(m_vports);
+		while (vport.hasNext()) {
 			(*pDescriptor->connect_port)(m_phInstances[i],
-				(*it), &s_fDummyData);
+				vport.next(), &s_fDummyData);
 		}
 	}
 
@@ -484,9 +479,9 @@ void qtractorPlugin::setActivated ( bool bActivated )
 
 	m_bActivated = bActivated;
 
-	for (qtractorPluginListItem *pItem = m_items.first();
-			pItem; pItem = m_items.next())
-		pItem->updateActivated();
+	QListIterator<qtractorPluginListItem *> iter(m_items);
+	while (iter.hasNext())
+		iter.next()->updateActivated();
 
 	if (m_pForm)
 		m_pForm->updateActivated();
@@ -542,33 +537,33 @@ void qtractorPlugin::process ( unsigned int nframes )
 
 
 // Input control ports list accessor.
-QPtrList<qtractorPluginPort>& qtractorPlugin::cports (void)
+QList<qtractorPluginPort *>& qtractorPlugin::cports (void)
 {
 	return m_cports;
 }
 
 
 // Output control (dummy) port index-list accessors.
-const QValueList<unsigned long>& qtractorPlugin::vports (void) const
+const QList<unsigned long>& qtractorPlugin::vports (void) const
 {
 	return m_vports;
 }
 
 
 // Audio port indexes list accessor.
-const QValueList<unsigned long>& qtractorPlugin::iports (void) const
+const QList<unsigned long>& qtractorPlugin::iports (void) const
 {
 	return m_iports;
 }
 
-const QValueList<unsigned long>& qtractorPlugin::oports (void) const
+const QList<unsigned long>& qtractorPlugin::oports (void) const
 {
 	return m_oports;
 }
 
 
 // An accessible list of observers.
-QPtrList<qtractorPluginListItem>& qtractorPlugin::items (void)
+QList<qtractorPluginListItem *>& qtractorPlugin::items (void)
 {
 	return m_items;
 }
@@ -584,13 +579,11 @@ qtractorPluginForm *qtractorPlugin::form (void)
 {
 	// Take the change and create the form if it doesn't current exist.
 	if (m_pForm == NULL) {
-		m_pForm = new qtractorPluginForm(0, 0,
-			Qt::WStyle_Customize
-				| Qt::WStyle_NormalBorder
-				| Qt::WStyle_SysMenu
-			//	| Qt::WStyle_MinMax
-				| Qt::WStyle_Tool
-				| Qt::WType_TopLevel);
+		m_pForm = new qtractorPluginForm(0,
+			Qt::Tool
+			| Qt::WindowTitleHint
+			| Qt::WindowSystemMenuHint
+			| Qt::WindowMinMaxButtonsHint);
 		m_pForm->setPreset(m_sPreset);
 		m_pForm->setPlugin(this);
 	}
@@ -621,25 +614,19 @@ const QString& qtractorPlugin::preset (void)
 void qtractorPlugin::setValues ( const QStringList& vlist )
 {
 	// Split it up...
-	QStringList::ConstIterator val = vlist.begin();
-	qtractorPluginPort *pPort = m_cports.first();
-	while (pPort && val != vlist.end()) {
-		pPort->setValue((*val).toFloat());	
-		pPort = m_cports.next();
-		++val;
-	}
+	QStringListIterator val(vlist);
+	QListIterator<qtractorPluginPort *> iter(m_cports);
+	while (iter.hasNext() && val.hasNext())
+		iter.next()->setValue(val.next().toFloat());
 }
 
 QStringList qtractorPlugin::values (void)
 {
 	// Join it up...
 	QStringList vlist;
-
-	qtractorPluginPort *pPort = m_cports.first();
-	while (pPort) {
-		vlist.append(QString::number(pPort->value()));
-		pPort = m_cports.next();
-	}
+	QListIterator<qtractorPluginPort *> iter(m_cports);
+	while (iter.hasNext())
+		vlist.append(QString::number(iter.next()->value()));
 
 	return vlist;
 }
@@ -666,10 +653,9 @@ QString qtractorPlugin::presetGroup (void) const
 // Reset-to-default method.
 void qtractorPlugin::reset (void)
 {
-	for (qtractorPluginPort *pPort = m_cports.first();
-			pPort; pPort = m_cports.next()) {
-		pPort->reset();
-	}
+	QListIterator<qtractorPluginPort *> iter(m_cports);
+	while (iter.hasNext())
+		iter.next()->reset();
 }
 
 
@@ -686,8 +672,6 @@ qtractorPluginList::qtractorPluginList ( unsigned short iChannels,
 	m_iSampleRate = 0;
 
 	m_iActivated  = 0;
-
-	m_views.setAutoDelete(false);
 
 	m_pppBuffers[0] = NULL;
 	m_pppBuffers[1] = NULL;
@@ -862,24 +846,25 @@ void qtractorPluginList::addPlugin ( qtractorPlugin *pPlugin )
 	insertAfter(pPlugin, pPrevPlugin);
 
 	// Now update each observer list-view...
-	for (qtractorPluginListView *pListView = m_views.first();
-			pListView; pListView = m_views.next()) {
+	QListIterator<qtractorPluginListView *> iter(m_views);
+	while (iter.hasNext()) {
+		qtractorPluginListView *pListView = iter.next();
 		// Get the previous one, if any...
-		qtractorPluginListItem *pPrevItem = pListView->pluginItem(pPrevPlugin);
+		int iItem = pListView->pluginItem(pPrevPlugin) + 1;
 		// Add the list-view item...
-		qtractorPluginListItem *pItem
-			= new qtractorPluginListItem(pListView, pPlugin, pPrevItem);
-		pListView->setSelected(pItem, true);
+		qtractorPluginListItem *pItem = new qtractorPluginListItem(pPlugin);
+		pListView->insertItem(iItem, pItem);
+		pListView->setCurrentItem(pItem);
 	}
+
+	// Get back to business...
+	ATOMIC_SET(&m_mutex, 0);
 
 	// Show the plugin form right away...
 	qtractorPluginForm *pPluginForm = pPlugin->form();
 	pPluginForm->show();
 	pPluginForm->raise();
-	pPluginForm->setActiveWindow();
-
-	// Get back to business...
-	ATOMIC_SET(&m_mutex, 0);
+	pPluginForm->activateWindow();
 }
 
 
@@ -895,9 +880,10 @@ void qtractorPluginList::removePlugin ( qtractorPlugin *pPlugin )
 	pPlugin->setChannels(0);
 
 	// Now update each observer list-view...
-	QPtrList<qtractorPluginListItem>& items = pPlugin->items();
-	for (qtractorPluginListItem *pItem = items.first();
-			pItem; pItem = items.next()) {
+	QMutableListIterator<qtractorPluginListItem *> iter(pPlugin->items());
+	while (iter.hasNext()) {
+		qtractorPluginListItem *pItem = iter.next();
+		iter.remove();
 		delete pItem;
 	}
 
@@ -923,19 +909,20 @@ void qtractorPluginList::movePlugin ( qtractorPlugin *pPlugin,
 	}
 
 	// Now update each observer list-view...
-	QPtrList<qtractorPluginListItem>& items = pPlugin->items();
-	for (qtractorPluginListItem *pItem = items.first();
-			pItem; pItem = items.next()) {
+	QList<qtractorPluginListItem *> items = pPlugin->items();
+	QListIterator<qtractorPluginListItem *> iter(items);
+	while (iter.hasNext()) {
+		qtractorPluginListItem *pItem = iter.next();
 		qtractorPluginListView *pListView
-			= static_cast<qtractorPluginListView *> (pItem->listView());
+			= static_cast<qtractorPluginListView *> (pItem->listWidget());
 		if (pListView) {
-			qtractorPluginListItem *pPrevItem
-				= pListView->pluginItem(pPrevPlugin);
+			int iPrevItem = pListView->pluginItem(pPrevPlugin);
 			// Remove the old item...
 			delete pItem;
 			// Just insert under the track list position...
-			pItem = new qtractorPluginListItem(pListView, pPlugin, pPrevItem);
-			pListView->setSelected(pItem, true);
+			pItem = new qtractorPluginListItem(pPlugin);
+			pListView->insertItem(iPrevItem, pItem);
+			pListView->setCurrentItem(pItem);
 		}
 	}
 
@@ -945,7 +932,7 @@ void qtractorPluginList::movePlugin ( qtractorPlugin *pPlugin,
 
 
 // An accessible list of observers.
-QPtrList<qtractorPluginListView>& qtractorPluginList::views (void)
+QList<qtractorPluginListView *>& qtractorPluginList::views (void)
 {
 	return m_views;
 }
@@ -967,9 +954,6 @@ void qtractorPluginList::process ( float **ppBuffer, unsigned int nframes )
 	// Start from first input buffer...
 	m_pppBuffers[0] = ppBuffer;
 
-	// We'll need this as a common iterator...
-	QValueList<unsigned long>::const_iterator it;
-
 	// Buffer binary iterator...
 	unsigned short iBuffer = 0;
 
@@ -986,10 +970,6 @@ void qtractorPluginList::process ( float **ppBuffer, unsigned int nframes )
 		if (pDescriptor == NULL)
 			continue;
 
-		// Get const-references to I/O port indexes...
-		const QValueList<unsigned long>& iports = pPlugin->iports();
-		const QValueList<unsigned long>& oports = pPlugin->oports();
-
 		// Set proper buffers for this plugin...
 		float **ppIBuffer = m_pppBuffers[  iBuffer & 1];
 		float **ppOBuffer = m_pppBuffers[++iBuffer & 1];
@@ -1001,16 +981,18 @@ void qtractorPluginList::process ( float **ppBuffer, unsigned int nframes )
 		// For each plugin instance...
 		for (unsigned short i = 0; i < pPlugin->instances(); i++) {
 			// For each instance audio input port...
-			for (it = iports.begin(); it != iports.end(); ++it) {
+			QListIterator<unsigned long> iport(pPlugin->iports());
+			while (iport.hasNext()) {
 				(*pDescriptor->connect_port)(pPlugin->handle(i),
-					(*it), ppIBuffer[iIChannel]);
+					iport.next(), ppIBuffer[iIChannel]);
 				if (++iIChannel >= m_iChannels)
 					iIChannel = 0;
 			}
 			// For each instance audio output port...
-			for (it = oports.begin(); it != oports.end(); ++it) {
+			QListIterator<unsigned long> oport(pPlugin->oports());
+			while (oport.hasNext()) {
 				(*pDescriptor->connect_port)(pPlugin->handle(i),
-					(*it), ppOBuffer[iOChannel]);
+					oport.next(), ppOBuffer[iOChannel]);
 				if (++iOChannel >= m_iChannels)
 					iOChannel = 0;
 			}
@@ -1073,7 +1055,7 @@ bool qtractorPluginList::loadElement ( qtractorSessionDocument *pDocument,
 					sPreset = eParam.text();
 				else
 				if (eParam.tagName() == "values")
-					vlist = QStringList::split(',', eParam.text());
+					vlist = eParam.text().split(',');
 				else
 				if (eParam.tagName() == "activated")
 					bActivated = pDocument->boolFromText(eParam.text());

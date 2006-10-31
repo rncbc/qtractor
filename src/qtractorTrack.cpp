@@ -33,7 +33,7 @@
 #include "qtractorInstrument.h"
 #include "qtractorPlugin.h"
 
-#include <qpainter.h>
+#include <QPainter>
 
 
 //-------------------------------------------------------------------------
@@ -95,18 +95,16 @@ qtractorTrack::qtractorTrack ( qtractorSession *pSession, TrackType trackType )
 
 	m_pInputBus  = NULL;
 	m_pOutputBus = NULL;
-
-	m_pMonitor = NULL;
-
-	m_iMidiTag = 0;
-	m_iHeight  = 48;
-
-	m_clips.setAutoDelete(true);
+	m_pMonitor   = NULL;
+	m_iMidiTag   = 0;
 
 	m_pClipRecord = NULL;
 
+	m_clips.setAutoDelete(true);
+
 	m_pPluginList = new qtractorPluginList(0, 0, 0);
 
+	setHeight(48);	// Default track height.
 	clear();
 }
 
@@ -501,14 +499,42 @@ qtractorPluginList *qtractorTrack::pluginList (void) const
 
 
 // Normalized view height accessors.
-unsigned short qtractorTrack::height (void) const
+int qtractorTrack::height (void) const
 {
 	return m_iHeight;
 }
 
-void qtractorTrack::setHeight ( unsigned short iHeight )
+void qtractorTrack::setHeight ( int iHeight )
 {
 	m_iHeight = iHeight;
+
+	updateZoomHeight();
+}
+
+void qtractorTrack::updateHeight (void)
+{
+	if (m_pSession)
+		m_iHeight = (100 * m_iZoomHeight) / m_pSession->verticalZoom();
+}
+
+
+// Zoomed view height accessors.
+int qtractorTrack::zoomHeight (void) const
+{
+	return m_iZoomHeight;
+}
+
+void qtractorTrack::setZoomHeight ( int iZoomHeight )
+{
+	m_iZoomHeight = iZoomHeight;
+
+	updateHeight();
+}
+
+void qtractorTrack::updateZoomHeight (void)
+{
+	if (m_pSession)
+		m_iZoomHeight = (m_iHeight * m_pSession->verticalZoom()) / 100;
 }
 
 
@@ -721,10 +747,7 @@ void qtractorTrack::drawTrack ( QPainter *pPainter, const QRect& trackRect,
 					w++;	// Give selection some right-border room.
 				}
 				rect.setRect(x, y, w - x, h);
-				Qt::RasterOp rop = pPainter->rasterOp();
-				pPainter->setRasterOp(Qt::NotROP);
-				pPainter->fillRect(rect, Qt::gray);
-				pPainter->setRasterOp(rop);
+				pPainter->fillRect(rect, QColor(0, 0, 255, 120));
 			}
 		}
 		pClip = pClip->next();
@@ -849,7 +872,7 @@ bool qtractorTrack::loadElement ( qtractorSessionDocument *pDocument,
 				if (eView.isNull())
 					continue;
 				if (eView.tagName() == "height") {
-					qtractorTrack::setHeight(eView.text().toUShort());
+					qtractorTrack::setHeight(eView.text().toInt());
 				} else if (eView.tagName() == "background-color") {
 					QColor bg; bg.setNamedColor(eView.text());
 					qtractorTrack::setBackground(bg);

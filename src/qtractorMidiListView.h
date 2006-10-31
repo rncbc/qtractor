@@ -85,7 +85,7 @@ class qtractorMidiListView : public qtractorFileListView
 public:
 
 	// Constructor.
-	qtractorMidiListView(QWidget *pParent, const char *pszName = NULL);
+	qtractorMidiListView(QWidget *pParent = 0);
 
 	// QListView::addColumn() ids.
 	enum ItemColumn {
@@ -93,10 +93,14 @@ public:
 		Format      = 1,
 		Tracks      = 2,
 		Resolution  = 3,
-		Path        = 4
+		Path        = 4,
+		LastColumn  = 5
 	};
 
 protected:
+
+	// Which column is the complete file path?
+	int pathColumn() const { return Path; }
 
 	// File item factory method.
 	qtractorFileListItem *createFileItem(const QString& sPath,

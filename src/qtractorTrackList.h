@@ -22,7 +22,8 @@
 #ifndef __qtractorTrackList_h
 #define __qtractorTrackList_h
 
-#include <qlistview.h>
+#include <QTableView>
+
 
 // Forward declarations.
 class qtractorTracks;
@@ -34,76 +35,26 @@ class qtractorTrackButton;
 class qtractorInstrumentList;
 class qtractorMonitor;
 
+class qtractorTrackListModel;
 
-//----------------------------------------------------------------------------
-// qtractorTrackListItem -- Tracks list item.
+class QResizeEvent;
+class QMouseEvent;
+class QKeyEvent;
 
-class qtractorTrackListItem : public QListViewItem
-{
-public:
-
-	// Constructors.
-	qtractorTrackListItem(qtractorTrackList *pTrackList,
-		qtractorTrack *pTrack);
-	qtractorTrackListItem(qtractorTrackList *pTrackList,
-		qtractorTrack *pTrack, QListViewItem *pItemAfter);
-
-	// Destructor.
-	~qtractorTrackListItem();
-
-	// Track list brainless accessor.
-	qtractorTrackList *trackList() const;
-
-	// Track container accessor.
-	qtractorTrack *track() const;
-
-	// Update track buttons state.
-	void updateTrackButtons();
-
-	// Overriden to set extra text info.
-	void setText(int iColumn, const QString& sText);
-
-	// Set track item height.
-	void setItemHeight(int iItemHeight);
-	// Zoom item track's height.
-	void zoomItemHeight(unsigned short iVerticalZoom);
-
-	// Overriden view item setup.
-	virtual void setup();
-
-	// Overrriden cell painter.
-	virtual void paintCell(QPainter *p, const QColorGroup& cg,
-		int column, int width, int align);
-
-protected:
-
-	// Common item initializer.
-	void initItem(qtractorTrackList *pTrackList, qtractorTrack *pTrack);
-	void updateItem(bool bShow);
-
-private:
-
-	// The track reference.
-	qtractorTrack *m_pTrack;
-
-	qtractorTrackButton *m_pRecordButton;
-	qtractorTrackButton *m_pMuteButton;
-	qtractorTrackButton *m_pSoloButton;
-};
+class QRubberBand;
 
 
 //----------------------------------------------------------------------------
 // qtractorTrackList -- Track list widget.
 
-class qtractorTrackList : public QListView
+class qtractorTrackList : public QTableView
 {
 	Q_OBJECT
 
 public:
 
 	// Constructor.
-	qtractorTrackList(qtractorTracks *pTracks,
-		QWidget *pParent, const char *pszName = 0);
+	qtractorTrackList(qtractorTracks *pTracks, QWidget *pParent = 0);
 
 	// Track list view column indexes.
 	enum ColumnIndex {
@@ -119,38 +70,46 @@ public:
 	qtractorTracks *tracks() const;
 
 	// Find the list view item from track pointer reference.
-	qtractorTrackListItem *trackItem(qtractorTrack *pTrack);
+	int trackRow(qtractorTrack *pTrack) const;
 
-	// Renumber track list items.
-	void renumberTrackItems(QListViewItem *pItem = NULL);
+	// Find the track pointer reference from list view item row.
+	qtractorTrack *track(int iTrack) const;
+
+	// Insert/remove/select a track item.
+	void insertTrack(int iTrack, qtractorTrack *pTrack);
+	void removeTrack(int iTrack);
+	void selectTrack(int iTrack);
+
+	// Retrieves current selected track reference.
+	qtractorTrack *currentTrack() const;
+
+	// Update the list view item from track pointer reference.
+	void updateTrack(qtractorTrack *pTrack);
+
+	// Main table cleaner.
+	void clear();
 
 	// Base item height (in pixels).
 	enum { ItemHeightMin = 24, ItemHeightBase = 48 };
 
 	// Zoom all tracks item height.
-	void zoomItemHeight(int iVerticalZoom);
-
-	// Instrument list accessor helper.
-	qtractorInstrumentList *instruments() const;
-
-	// Notify whole setup that we changed something.
-	void contentsChangeNotify();
+	void updateZoomHeight();
 
 protected:
 
-	// Handle item height resizing with mouse.
-	// Trap this widget width for remembering later.
+	// Trap size changes.
 	void resizeEvent(QResizeEvent *pResizeEvent);
 
-	// Overriden to catch early attributes (e.g. header height)
-	void polish();
+	// Context menu request slot.
+	void contextMenuEvent(QContextMenuEvent *pContextMenuEvent);
 
-	void contentsMousePressEvent(QMouseEvent *pMouseEvent);
-	void contentsMouseMoveEvent(QMouseEvent *pMouseEvent);
-	void contentsMouseReleaseEvent(QMouseEvent *pMouseEvent);
+	// Handle item height resizing and track move with mouse.
+	void mousePressEvent(QMouseEvent *pMouseEvent);
+	void mouseMoveEvent(QMouseEvent *pMouseEvent);
+	void mouseReleaseEvent(QMouseEvent *pMouseEvent);
 
-	// Draw a dragging separator line.
-	void drawDragLine(const QPoint& posDrag, int iThickness = 3) const;
+	// Show and move rubber-band item.
+	void moveRubberBand(const QPoint& posDrag);
 
 	// Keyboard event handler.
 	void keyPressEvent(QKeyEvent *pKeyEvent);
@@ -158,36 +117,47 @@ protected:
 	// Reset drag/select/move state.
 	void resetDragState();
 
-protected slots:
-
-	// To have track list in v-sync with main track view.
-	void contentsMovingSlot(int cx, int cy);
-
-	// Context menu request slot.
-	void contextMenuSlot(QListViewItem *pItem, const QPoint& pos, int col);
-
-	// Simple click handler.
-	void clickedSlot(QListViewItem *pItem, const QPoint& pos, int col);
-
 signals:
 
-	// Emitted on early polish.
-	void polishNotifySignal();
+	// More like current row has changed.
+	void selectionChanged();
+
+protected slots:
+
+	// Trap current index changes.
+	void currentChanged(const QModelIndex& curr, const QModelIndex& prev);
+
+	// To have dircet access to track properties.
+	void doubleClickedSlot(const QModelIndex& index);
+
+	// Vertical offset position change slot.
+	void contentsYChangedSlot();
+
+	// To have track list in v-sync with main track view.
+	void contentsYMovingSlot(int cx, int cy);
 
 private:
 
 	// The logical parent binding.
 	qtractorTracks *m_pTracks;
 
+	// Our own track-list model.
+	qtractorTrackListModel  *m_pListModel;
+
 	// The current selecting/dragging item stuff.
 	enum DragState {
 		DragNone = 0, DragStart, DragMove, DragResize
 	} m_dragState;
 
-	// Flag whether we're resizing an item;
-	QPoint         m_posDrag;
-	QListViewItem *m_pItemDrag;
-	int            m_iItemDragY;
+	// For whether we're resizing or moving an item;
+	QPoint m_posDrag;
+	int    m_iDragTrack;
+	int    m_iDragY;
+
+	QRubberBand *m_pRubberBand;
+
+	// Avoid vertical change recursion.
+	int m_iContentsYMoving;
 };
 
 

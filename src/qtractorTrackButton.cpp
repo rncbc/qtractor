@@ -22,8 +22,6 @@
 #include "qtractorAbout.h"
 #include "qtractorTrackButton.h"
 
-#include <qtooltip.h>
-
 
 //----------------------------------------------------------------------------
 // qtractorTrackButton -- Track tool button.
@@ -31,35 +29,34 @@
 // Constructor.
 qtractorTrackButton::qtractorTrackButton ( qtractorTrack *pTrack,
 	qtractorTrack::ToolType toolType, const QSize& fixedSize,
-	QWidget *pParent, const char *pszName )
-	: QToolButton(pParent, pszName)
+	QWidget *pParent ) : QToolButton(pParent)
 {
 	m_pTrack   = pTrack;
 	m_toolType = toolType;
 	m_iUpdate  = 0;
 
 	QToolButton::setFixedSize(fixedSize);
-	QToolButton::setUsesTextLabel(true);
-	QToolButton::setToggleButton(true);
+	QToolButton::setToolButtonStyle(Qt::ToolButtonTextOnly);
+	QToolButton::setCheckable(true);
 
 	QToolButton::setFont(
 		QFont(QToolButton::font().family(), (fixedSize.height() < 16 ? 5 : 6)));
 
-	m_rgbOff = QToolButton::paletteBackgroundColor();
+	m_rgbOff = QToolButton::palette().button().color();
 	switch (toolType) {
 	case qtractorTrack::Record:
-		QToolButton::setTextLabel("R");
-		QToolTip::add(this, tr("Record"));
+		QToolButton::setText("R");
+		QToolButton::setToolTip(tr("Record"));
 		m_rgbOn = Qt::red;
 		break;
 	case qtractorTrack::Mute:
-		QToolButton::setTextLabel("M");
-		QToolTip::add(this, tr("Mute"));
+		QToolButton::setText("M");
+		QToolButton::setToolTip(tr("Mute"));
 		m_rgbOn = Qt::yellow;
 		break;
 	case qtractorTrack::Solo:
-		QToolButton::setTextLabel("S");
-		QToolTip::add(this, tr("Solo"));
+		QToolButton::setText("S");
+		QToolButton::setToolTip(tr("Solo"));
 		m_rgbOn = Qt::cyan;
 		break;
 	}
@@ -89,9 +86,12 @@ void qtractorTrackButton::updateTrack (void)
 		break;
 	}
 
-	QToolButton::setOn(bOn);
-	QToolButton::setPaletteBackgroundColor(bOn ? m_rgbOn : m_rgbOff);
-	
+	QPalette pal(QToolButton::palette());
+	pal.setColor(QPalette::Button, bOn ? m_rgbOn : m_rgbOff);
+	QToolButton::setPalette(pal);
+
+	QToolButton::setChecked(bOn);
+
 	m_iUpdate--;
 }
 

@@ -1,6 +1,5 @@
-// qtractorBusForm.ui.h
+// qtractorBusForm.cpp
 //
-// ui.h extension file, included from the uic-generated form implementation.
 /****************************************************************************
    Copyright (C) 2005-2006, rncbc aka Rui Nuno Capela. All rights reserved.
 
@@ -20,6 +19,8 @@
 
 *****************************************************************************/
 
+#include "qtractorBusForm.h"
+
 #include "qtractorAbout.h"
 #include "qtractorOptions.h"
 #include "qtractorEngineCommand.h"
@@ -28,34 +29,35 @@
 
 #include "qtractorMainForm.h"
 
-#include <qmessagebox.h>
-#include <qpopupmenu.h>
+#include <QHeaderView>
+#include <QMessageBox>
+#include <QMenu>
 
 
 //----------------------------------------------------------------------
 // class qtractorBusListItem -- Custom bus listview item.
 //
 
-class qtractorBusListItem : public QListViewItem
+class qtractorBusListItem : public QTreeWidgetItem
 {
 public:
 
 	// Constructor.
-	qtractorBusListItem(QListViewItem *pRootItem, qtractorBus *pBus)
-		: QListViewItem(pRootItem, pBus->busName()), m_pBus(pBus)
+	qtractorBusListItem(QTreeWidgetItem *pRootItem, qtractorBus *pBus)
+		: QTreeWidgetItem(pRootItem), m_pBus(pBus)
 	{
 		switch (m_pBus->busType()) {
 		case qtractorTrack::Audio:
-			QListViewItem::setPixmap(0,
-				QPixmap::fromMimeSource("trackAudio.png"));
+			QTreeWidgetItem::setIcon(0, QIcon(":/icons/trackAudio.png"));
 			break;
 		case qtractorTrack::Midi:
-			QListViewItem::setPixmap(0,
-				QPixmap::fromMimeSource("trackMidi.png"));
+			QTreeWidgetItem::setIcon(0, QIcon(":/icons/trackMidi.png"));
 			break;
+		case qtractorTrack::None:
 		default:
 			break;
 		}
+		QTreeWidgetItem::setText(0, m_pBus->busName());
 	}
 
 	// Bus accessors.
@@ -68,9 +70,17 @@ private:
 };
 
 
-// Kind of constructor.
-void qtractorBusForm::init (void)
+
+//----------------------------------------------------------------------------
+// qtractorBusForm -- UI wrapper form.
+
+// Constructor.
+qtractorBusForm::qtractorBusForm (
+	QWidget *pParent, Qt::WFlags wflags ) : QDialog(pParent, wflags)
 {
+	// Setup UI struct...
+	m_ui.setupUi(this);
+
 	// Initialize locals.
 	m_pBus        = NULL;
 	m_pAudioRoot  = NULL;
@@ -79,19 +89,61 @@ void qtractorBusForm::init (void)
 	m_iDirtyCount = 0;
 	m_iDirtyTotal = 0;
 
-	// Start with unsorted bus list...
-	BusListView->setSorting(2);
+	QHeaderView *pHeader = m_ui.BusListView->header();
+	pHeader->setResizeMode(QHeaderView::Custom);
+	pHeader->setDefaultAlignment(Qt::AlignLeft);
+	pHeader->setMovable(false);
 
+	m_ui.BusListView->setContextMenuPolicy(Qt::CustomContextMenu);
+
+	m_ui.BusTitleTextLabel->setPalette(QPalette(Qt::darkGray));
+	m_ui.BusTitleTextLabel->setAutoFillBackground(true);
+	
 	// (Re)initial contents.
 	refreshBusses();
 
 	// Try to restore normal window positioning.
 	adjustSize();
+
+	// UI signal/slot connections...
+	QObject::connect(m_ui.BusListView,
+		SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)),
+		SLOT(selectBus()));
+	QObject::connect(m_ui.BusListView,
+		SIGNAL(customContextMenuRequested(const QPoint&)),
+		SLOT(contextMenu(const QPoint&)));
+	QObject::connect(m_ui.BusNameLineEdit,
+		SIGNAL(textChanged(const QString &)),
+		SLOT(changed()));
+	QObject::connect(m_ui.BusModeComboBox,
+		SIGNAL(activated(int)),
+		SLOT(changed()));
+	QObject::connect(m_ui.AudioChannelsSpinBox,
+		SIGNAL(valueChanged(int)),
+		SLOT(changed()));
+	QObject::connect(m_ui.AudioAutoConnectCheckBox,
+		SIGNAL(clicked()),
+		SLOT(changed()));
+	QObject::connect(m_ui.RefreshPushButton,
+		SIGNAL(clicked()),
+		SLOT(refreshBusses()));
+	QObject::connect(m_ui.CreatePushButton,
+		SIGNAL(clicked()),
+		SLOT(createBus()));
+	QObject::connect(m_ui.UpdatePushButton,
+		SIGNAL(clicked()),
+		SLOT(updateBus()));
+	QObject::connect(m_ui.DeletePushButton,
+		SIGNAL(clicked()),
+		SLOT(deleteBus()));
+	QObject::connect(m_ui.ClosePushButton,
+		SIGNAL(clicked()),
+		SLOT(reject()));
 }
 
 
-// Kind of destructor.
-void qtractorBusForm::destroy (void)
+// Destructor.
+qtractorBusForm::~qtractorBusForm (void)
 {
 }
 
@@ -100,7 +152,7 @@ void qtractorBusForm::destroy (void)
 void qtractorBusForm::setBus ( qtractorBus *pBus )
 {
 	// Get the device view root item...
-	QListViewItem *pRootItem = NULL;
+	QTreeWidgetItem *pRootItem = NULL;
 	if (pBus) {
 		switch (pBus->busType()) {
 		case qtractorTrack::Audio:
@@ -120,16 +172,16 @@ void qtractorBusForm::setBus ( qtractorBus *pBus )
 	}
 
 	// For each child, test for identity...
-	QListViewItem *pItem = pRootItem->firstChild();
-	while (pItem) {
+	int iChildCount = pRootItem->childCount();
+	for (int i = 0; i < iChildCount; i++) {
+		QTreeWidgetItem *pItem = pRootItem->child(i);
 		// If identities match, select as current device item.
 		qtractorBusListItem *pBusItem
 			= static_cast<qtractorBusListItem *> (pItem);
 		if (pBusItem && pBusItem->bus() == pBus) {
-			BusListView->setSelected(pItem, true);
+			m_ui.BusListView->setCurrentItem(pItem);
 			break;
 		}
-		pItem = pItem->nextSibling();
 	}
 }
 
@@ -161,21 +213,21 @@ void qtractorBusForm::showBus ( qtractorBus *pBus )
 		qtractorAudioBus *pAudioBus = NULL;
 		switch (pBus->busType()) {
 		case qtractorTrack::Audio:
-			BusTitleTextLabel->setText(tr("Audio bus"));
+			m_ui.BusTitleTextLabel->setText(tr("Audio Bus"));
 			pAudioBus = static_cast<qtractorAudioBus *> (pBus);
 			break;
 		case qtractorTrack::Midi:
-			BusTitleTextLabel->setText(tr("MIDI bus"));
+			m_ui.BusTitleTextLabel->setText(tr("MIDI Bus"));
 			break;
 		case qtractorTrack::None:
-			BusTitleTextLabel->setText(tr("Bus"));
+			m_ui.BusTitleTextLabel->setText(tr("Bus"));
 			break;
 		}
-		BusNameLineEdit->setText(pBus->busName());
-		BusModeComboBox->setCurrentItem(int(pBus->busMode()) - 1);
+		m_ui.BusNameLineEdit->setText(pBus->busName());
+		m_ui.BusModeComboBox->setCurrentIndex(int(pBus->busMode()) - 1);
 		if (pAudioBus) {
-			AudioChannelsSpinBox->setValue(pAudioBus->channels());
-			AudioAutoConnectCheckBox->setChecked(pAudioBus->isAutoConnect());
+			m_ui.AudioChannelsSpinBox->setValue(pAudioBus->channels());
+			m_ui.AudioAutoConnectCheckBox->setChecked(pAudioBus->isAutoConnect());
 		}
 	}
 
@@ -196,7 +248,7 @@ void qtractorBusForm::refreshBusses (void)
 	//
 	m_pAudioRoot = NULL;
 	m_pMidiRoot  = NULL;
-	BusListView->clear();
+	m_ui.BusListView->clear();
 
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm == NULL)
@@ -205,26 +257,30 @@ void qtractorBusForm::refreshBusses (void)
 	if (pSession == NULL)
 		return;
 
-	// MIDI busses...
-	qtractorMidiEngine *pMidiEngine = pSession->midiEngine();
-	if (pMidiEngine) {
-		m_pMidiRoot = new QListViewItem(BusListView, ' ' + tr("MIDI"));
-		m_pMidiRoot->setSelectable(false);
-		for (qtractorBus *pBus = pMidiEngine->busses().last();
-				pBus; pBus = pBus->prev())
-			new qtractorBusListItem(m_pMidiRoot, pBus);
-		m_pMidiRoot->setOpen(true);
-	}
-
 	// Audio busses...
 	qtractorAudioEngine *pAudioEngine = pSession->audioEngine();
 	if (pAudioEngine) {
-		m_pAudioRoot = new QListViewItem(BusListView, ' ' + tr("Audio"));
-		m_pAudioRoot->setSelectable(false);
+		m_pAudioRoot = new QTreeWidgetItem(m_ui.BusListView);
+		m_pAudioRoot->setText(0, ' ' + tr("Audio"));
+		m_pAudioRoot->setFlags(	// Audio root item is not selectable...
+			m_pAudioRoot->flags() & ~Qt::ItemIsSelectable);
 		for (qtractorBus *pBus = pAudioEngine->busses().last();
 				pBus; pBus = pBus->prev())
 			new qtractorBusListItem(m_pAudioRoot, pBus);
-		m_pAudioRoot->setOpen(true);
+		m_ui.BusListView->setItemExpanded(m_pAudioRoot, true);
+	}
+
+	// MIDI busses...
+	qtractorMidiEngine *pMidiEngine = pSession->midiEngine();
+	if (pMidiEngine) {
+		m_pMidiRoot = new QTreeWidgetItem(m_ui.BusListView);
+		m_pMidiRoot->setText(0, ' ' + tr("MIDI"));
+		m_pMidiRoot->setFlags(	// MIDI root item is not selectable...
+			m_pMidiRoot->flags() & ~Qt::ItemIsSelectable);
+		for (qtractorBus *pBus = pMidiEngine->busses().last();
+				pBus; pBus = pBus->prev())
+			new qtractorBusListItem(m_pMidiRoot, pBus);
+		m_ui.BusListView->setItemExpanded(m_pMidiRoot, true);
 	}
 
 	// Reselect current bus, if any.
@@ -236,7 +292,7 @@ void qtractorBusForm::refreshBusses (void)
 void qtractorBusForm::selectBus (void)
 {
 	// Get current selected item, must not be a root one...
-	QListViewItem *pItem = BusListView->selectedItem();
+	QTreeWidgetItem *pItem = m_ui.BusListView->currentItem();
 	if (pItem == NULL)
 		return;
 	if (pItem->parent() == NULL)
@@ -285,7 +341,7 @@ bool qtractorBusForm::canCreateBus (void)
 	if (pSession == NULL)
 		return false;
 
-	const QString sBusName = BusNameLineEdit->text().stripWhiteSpace();
+	const QString sBusName = m_ui.BusNameLineEdit->text().simplified();
 	if (sBusName.isEmpty())
 		return false;
 
@@ -325,7 +381,7 @@ bool qtractorBusForm::canUpdateBus (void)
 	if (pSession == NULL)
 		return false;
 
-	const QString sBusName = BusNameLineEdit->text().stripWhiteSpace();
+	const QString sBusName = m_ui.BusNameLineEdit->text().simplified();
 	return (!sBusName.isEmpty());
 }
 
@@ -358,12 +414,12 @@ void qtractorBusForm::createBus (void)
 	if (pMainForm == NULL)
 		return;
 	
-	const QString sBusName = BusNameLineEdit->text().stripWhiteSpace();
+	const QString sBusName = m_ui.BusNameLineEdit->text().simplified();
 	if (sBusName.isEmpty())
 		return;
 
 	qtractorBus::BusMode busMode = qtractorBus::None;
-	switch (BusModeComboBox->currentItem()) {
+	switch (m_ui.BusModeComboBox->currentIndex()) {
 	case 0:
 		busMode = qtractorBus::Input;
 		break;
@@ -386,9 +442,9 @@ void qtractorBusForm::createBus (void)
 	pCreateBusCommand->setBusMode(busMode);	
 	// Specialties for Audio bussess...
 	if (busType == qtractorTrack::Audio)  {
-		pCreateBusCommand->setChannels(AudioChannelsSpinBox->value());
+		pCreateBusCommand->setChannels(m_ui.AudioChannelsSpinBox->value());
 		pCreateBusCommand->setAutoConnect(
-			AudioAutoConnectCheckBox->isChecked());
+			m_ui.AudioAutoConnectCheckBox->isChecked());
 	}
 
 	// Execute and refresh form...
@@ -412,12 +468,12 @@ void qtractorBusForm::updateBus (void)
 	if (pMainForm == NULL)
 		return;
 	
-	const QString sBusName = BusNameLineEdit->text().stripWhiteSpace();
+	const QString sBusName = m_ui.BusNameLineEdit->text().simplified();
 	if (sBusName.isEmpty())
 		return;
 
 	qtractorBus::BusMode busMode = qtractorBus::None;
-	switch (BusModeComboBox->currentItem()) {
+	switch (m_ui.BusModeComboBox->currentIndex()) {
 	case 0:
 		busMode = qtractorBus::Input;
 		break;
@@ -440,9 +496,9 @@ void qtractorBusForm::updateBus (void)
 	pUpdateBusCommand->setBusMode(busMode);	
 	// Specialties for Audio bussess...
 	if (busType == qtractorTrack::Audio)  {
-		pUpdateBusCommand->setChannels(AudioChannelsSpinBox->value());
+		pUpdateBusCommand->setChannels(m_ui.AudioChannelsSpinBox->value());
 		pUpdateBusCommand->setAutoConnect(
-			AudioAutoConnectCheckBox->isChecked());
+			m_ui.AudioAutoConnectCheckBox->isChecked());
 	}
 
 	// Execute and refresh form...
@@ -541,50 +597,52 @@ void qtractorBusForm::reject (void)
 void qtractorBusForm::stabilizeForm (void)
 {
 	if (m_pBus) {
-		CommonBusGroup->setEnabled(true);
-		AudioBusGroup->setEnabled(m_pBus->busType() == qtractorTrack::Audio);
+		m_ui.CommonBusGroup->setEnabled(true);
+		m_ui.AudioBusGroup->setEnabled(m_pBus->busType() == qtractorTrack::Audio);
 	} else {
-		CommonBusGroup->setEnabled(false);
-		AudioBusGroup->setEnabled(false);
+		m_ui.CommonBusGroup->setEnabled(false);
+		m_ui.AudioBusGroup->setEnabled(false);
 	}
 
-	RefreshPushButton->setEnabled(m_iDirtyCount > 0);
-	CreatePushButton->setEnabled(canCreateBus());
-	UpdatePushButton->setEnabled(canUpdateBus());
-	DeletePushButton->setEnabled(canDeleteBus());
+	m_ui.RefreshPushButton->setEnabled(m_iDirtyCount > 0);
+	m_ui.CreatePushButton->setEnabled(canCreateBus());
+	m_ui.UpdatePushButton->setEnabled(canUpdateBus());
+	m_ui.DeletePushButton->setEnabled(canDeleteBus());
 }
 
 
 // Bus list view context menu handler.
-void qtractorBusForm::contextMenu ( QListViewItem *, const QPoint& pos, int )
+void qtractorBusForm::contextMenu ( const QPoint& /*pos*/ )
 {
-	int iItemID;
-
 	// Build the device context menu...
-	QPopupMenu* pContextMenu = new QPopupMenu(this);
-
-	iItemID = pContextMenu->insertItem(
-		QIconSet(QPixmap::fromMimeSource("formCreate.png")),
+	QMenu menu(this);
+	QAction *pAction;
+	
+	pAction = menu.addAction(
+		QIcon(":/icons/formCreate.png"),
 		tr("&Create"), this, SLOT(createBus()));
-	pContextMenu->setItemEnabled(iItemID, canCreateBus());
-	iItemID = pContextMenu->insertItem(
-		QIconSet(QPixmap::fromMimeSource("formAccept.png")),
+	pAction->setEnabled(canCreateBus());
+
+	pAction = menu.addAction(
+		QIcon(":/icons/formAccept.png"),
 		tr("&Update"), this, SLOT(updateBus()));
-	pContextMenu->setItemEnabled(iItemID, canUpdateBus());
-	iItemID = pContextMenu->insertItem(
-		QIconSet(QPixmap::fromMimeSource("formRemove.png")),
-		tr("&Delete"), this, SLOT(deleteBus()));
-	pContextMenu->setItemEnabled(iItemID, canDeleteBus());
-	pContextMenu->insertSeparator();
-	iItemID = pContextMenu->insertItem(
-		QIconSet(QPixmap::fromMimeSource("formRefresh.png")),
+	pAction->setEnabled(canUpdateBus());
+
+	pAction = menu.addAction(
+		QIcon(":/icons/formRemove.png"),
+		tr("&Remove"), this, SLOT(deleteBus()));
+	pAction->setEnabled(canDeleteBus());
+
+	menu.addSeparator();
+
+	pAction = menu.addAction(
+		QIcon(":/icons/formRefresh.png"),
 		tr("&Refresh"), this, SLOT(refreshBusses()));
-	pContextMenu->setItemEnabled(iItemID, m_iDirtyCount > 0);
+	pAction->setEnabled(m_iDirtyCount > 0);
 
-	pContextMenu->exec(pos);
-
-	delete pContextMenu;
+//	menu.exec(m_ui.BusListView->mapToGlobal(pos));
+	menu.exec(QCursor::pos());
 }
 
 
-// end of qtractorBusForm.ui.h
+// end of qtractorBusForm.cpp

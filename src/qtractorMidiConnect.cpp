@@ -21,6 +21,8 @@
 
 #include "qtractorMidiConnect.h"
 
+#include <QIcon>
+
 
 //----------------------------------------------------------------------
 // qtractorMidiPortItem -- Alsa port list item.
@@ -34,11 +36,11 @@ qtractorMidiPortItem::qtractorMidiPortItem (
 	m_iAlsaPort = iAlsaPort;
 
 	if (pClientItem->isReadable()) {
-		QListViewItem::setPixmap(0,
-			qtractorMidiConnect::pixmap(qtractorMidiConnect::PortOut));
+		QTreeWidgetItem::setIcon(0,
+			qtractorMidiConnect::icon(qtractorMidiConnect::PortOut));
 	} else {
-		QListViewItem::setPixmap(0,
-			qtractorMidiConnect::pixmap(qtractorMidiConnect::PortIn));
+		QTreeWidgetItem::setIcon(0,
+			qtractorMidiConnect::icon(qtractorMidiConnect::PortIn));
 	}
 }
 
@@ -74,11 +76,11 @@ qtractorMidiClientItem::qtractorMidiClientItem (
 	m_iAlsaClient = iAlsaClient;
 
 	if (pClientListView->isReadable()) {
-		QListViewItem::setPixmap(0,
-			qtractorMidiConnect::pixmap(qtractorMidiConnect::ClientOut));
+		QTreeWidgetItem::setIcon(0,
+			qtractorMidiConnect::icon(qtractorMidiConnect::ClientOut));
 	} else {
-		QListViewItem::setPixmap(0,
-			qtractorMidiConnect::pixmap(qtractorMidiConnect::ClientIn));
+		QTreeWidgetItem::setIcon(0,
+			qtractorMidiConnect::icon(qtractorMidiConnect::ClientIn));
 	}
 }
 
@@ -98,13 +100,15 @@ int qtractorMidiClientItem::alsaClient (void) const
 // Derived port finder.
 qtractorMidiPortItem *qtractorMidiClientItem::findPortItem ( int iAlsaPort )
 {
-	QListViewItem *pListItem = QListViewItem::firstChild();
-	while (pListItem && pListItem->rtti() == QTRACTOR_PORT_ITEM) {
+	int iChildCount = QTreeWidgetItem::childCount();
+	for (int iChild = 0; iChild < iChildCount; ++iChild) {
+		QTreeWidgetItem *pItem = QTreeWidgetItem::child(iChild);
+		if (pItem->type() != qtractorConnect::PortItem)
+			continue;
 		qtractorMidiPortItem *pPortItem
-			= static_cast<qtractorMidiPortItem *> (pListItem);
+			= static_cast<qtractorMidiPortItem *> (pItem);
 		if (pPortItem && pPortItem->alsaPort() == iAlsaPort)
 			return pPortItem;
-		pListItem = pListItem->nextSibling();
 	}
 
 	return 0;
@@ -117,8 +121,7 @@ qtractorMidiPortItem *qtractorMidiClientItem::findPortItem ( int iAlsaPort )
 
 // Constructor.
 qtractorMidiClientListView::qtractorMidiClientListView(
-	QWidget *pParent, const char *pszName )
-	: qtractorClientListView(pParent, pszName)
+	QWidget *pParent ) : qtractorClientListView(pParent)
 {
 }
 
@@ -141,13 +144,15 @@ snd_seq_t *qtractorMidiClientListView::alsaSeq (void) const
 qtractorMidiClientItem *qtractorMidiClientListView::findClientItem (
 	int iAlsaClient )
 {
-	QListViewItem *pListItem = QListView::firstChild();
-	while (pListItem && pListItem->rtti() == QTRACTOR_CLIENT_ITEM) {
+	int iItemCount = QTreeWidget::topLevelItemCount();
+	for (int iItem = 0; iItem < iItemCount; ++iItem) {
+		QTreeWidgetItem *pItem = QTreeWidget::topLevelItem(iItem);
+		if (pItem->type() != qtractorConnect::ClientItem)
+			continue;
 		qtractorMidiClientItem *pClientItem
-			= static_cast<qtractorMidiClientItem *> (pListItem);
+			= static_cast<qtractorMidiClientItem *> (pItem);
 		if (pClientItem && pClientItem->alsaClient() == iAlsaClient)
 			return pClientItem;
-		pListItem = pListItem->nextSibling();
 	}
 
 	return 0;
@@ -159,7 +164,7 @@ qtractorMidiPortItem *qtractorMidiClientListView::findClientPortItem (
 	int iAlsaClient, int iAlsaPort )
 {
 	qtractorMidiClientItem *pClientItem = findClientItem(iAlsaClient);
-	if (pClientItem == 0)
+	if (pClientItem == NULL)
 		return 0;
 
 	return pClientItem->findPortItem(iAlsaPort);
@@ -170,7 +175,7 @@ qtractorMidiPortItem *qtractorMidiClientListView::findClientPortItem (
 int qtractorMidiClientListView::updateClientPorts (void)
 {
 	snd_seq_t *pAlsaSeq = alsaSeq();
-	if (pAlsaSeq == 0)
+	if (pAlsaSeq == NULL)
 		return 0;
 
 	int iDirtyCount = 0;
@@ -210,8 +215,8 @@ int qtractorMidiClientListView::updateClientPorts (void)
 						sPortName += ':';
 						sPortName += snd_seq_port_info_get_name(pPortInfo);
 						if (isPortName(sPortName)) {
-							qtractorMidiPortItem *pPortItem = 0;
-							if (pClientItem == 0) {
+							qtractorMidiPortItem *pPortItem = NULL;
+							if (pClientItem == NULL) {
 								pClientItem = new qtractorMidiClientItem(this,
 									sClientName, iAlsaClient);
 								iDirtyCount++;
@@ -223,7 +228,7 @@ int qtractorMidiClientListView::updateClientPorts (void)
 								}
 							}
 							if (pClientItem) {
-								if (pPortItem == 0) {
+								if (pPortItem == NULL) {
 									pPortItem = new qtractorMidiPortItem(
 										pClientItem, sPortName, iAlsaPort);
 									iDirtyCount++;
@@ -258,52 +263,52 @@ qtractorMidiConnect::qtractorMidiConnect (
 	qtractorConnectorView *pConnectorView )
 	: qtractorConnect(pOListView, pIListView, pConnectorView)
 {
-	m_pAlsaSeq = 0;
+	m_pAlsaSeq = NULL;
 
-	createIconPixmaps();
+	createIcons();
 }
 
 // Default destructor.
 qtractorMidiConnect::~qtractorMidiConnect (void)
 {
-	deleteIconPixmaps();
+	deleteIcons();
 }
 
 
-// Local pixmap-set janitor methods.
-QPixmap *qtractorMidiConnect::g_apPixmaps[qtractorMidiConnect::PixmapCount];
-int      qtractorMidiConnect::g_iPixmapsRefCount = 0;
+// Local icon-set janitor methods.
+QIcon *qtractorMidiConnect::g_apIcons[qtractorMidiConnect::IconCount];
+int    qtractorMidiConnect::g_iIconsRefCount = 0;
 
-void qtractorMidiConnect::createIconPixmaps (void)
+void qtractorMidiConnect::createIcons (void)
 {
-	if (++g_iPixmapsRefCount == 1) {
-		g_apPixmaps[ClientIn]
-			= new QPixmap(QPixmap::fromMimeSource("itemMidiClientIn.png"));
-		g_apPixmaps[ClientOut]
-			= new QPixmap(QPixmap::fromMimeSource("itemMidiClientOut.png"));
-		g_apPixmaps[PortIn]
-			= new QPixmap(QPixmap::fromMimeSource("itemMidiPortIn.png"));
-		g_apPixmaps[PortOut]
-			= new QPixmap(QPixmap::fromMimeSource("itemMidiPortOut.png"));
+	if (++g_iIconsRefCount == 1) {
+		g_apIcons[ClientIn]
+			= new QIcon(":/icons/itemMidiClientIn.png");
+		g_apIcons[ClientOut]
+			= new QIcon(":/icons/itemMidiClientOut.png");
+		g_apIcons[PortIn]
+			= new QIcon(":/icons/itemMidiPortIn.png");
+		g_apIcons[PortOut]
+			= new QIcon(":/icons/itemMidiPortOut.png");
 	}
 }
 
-void qtractorMidiConnect::deleteIconPixmaps (void)
+void qtractorMidiConnect::deleteIcons (void)
 {
-	if (--g_iPixmapsRefCount == 0) {
-		for (int i = 0; i < PixmapCount; i++) {
-			if (g_apPixmaps[i])
-				delete g_apPixmaps[i];
-			g_apPixmaps[i] = 0;
+	if (--g_iIconsRefCount == 0) {
+		for (int i = 0; i < IconCount; i++) {
+			if (g_apIcons[i])
+				delete g_apIcons[i];
+			g_apIcons[i] = NULL;
 		}
 	}
 }
 
 
-// Common pixmap accessor (static).
-const QPixmap& qtractorMidiConnect::pixmap ( int iPixmap )
+// Common icon accessor (static).
+const QIcon& qtractorMidiConnect::icon ( int iIcon )
 {
-    return *g_apPixmaps[iPixmap];
+    return *g_apIcons[iIcon];
 }
 
 
@@ -330,7 +335,7 @@ bool qtractorMidiConnect::connectPorts ( qtractorPortListItem *pOPort,
 	qtractorMidiPortItem *pIMidiPort
 		= static_cast<qtractorMidiPortItem *> (pIPort);
 
-	if (pOMidiPort == 0 || pIMidiPort == 0)
+	if (pOMidiPort == NULL || pIMidiPort == NULL)
 		return false;
 
     snd_seq_port_subscribe_t *pAlsaSubs;
@@ -359,7 +364,7 @@ bool qtractorMidiConnect::disconnectPorts ( qtractorPortListItem *pOPort,
 	qtractorMidiPortItem *pIMidiPort
 		= static_cast<qtractorMidiPortItem *> (pIPort);
 
-	if (pOMidiPort == 0 || pIMidiPort == 0)
+	if (pOMidiPort == NULL || pIMidiPort == NULL)
 		return false;
 
     snd_seq_port_subscribe_t *pAlsaSubs;
@@ -382,7 +387,7 @@ bool qtractorMidiConnect::disconnectPorts ( qtractorPortListItem *pOPort,
 // Update port connection references.
 void qtractorMidiConnect::updateConnections (void)
 {
-	if (m_pAlsaSeq == 0)
+	if (m_pAlsaSeq == NULL)
 		return;
 
 	snd_seq_query_subscribe_t *pAlsaSubs;
@@ -396,35 +401,40 @@ void qtractorMidiConnect::updateConnections (void)
 	qtractorMidiClientListView *pIListView
 		= static_cast<qtractorMidiClientListView *> (IListView());
 
-	// For each output client item...
-	QListViewItem *pOClientItem = pOListView->firstChild();
-	while (pOClientItem && pOClientItem->rtti() == QTRACTOR_CLIENT_ITEM) {
-		// For each output port item...
-		QListViewItem *pOPortItem = pOClientItem->firstChild();
-		while (pOPortItem && pOPortItem->rtti() == QTRACTOR_PORT_ITEM) {
-			// Hava a proper type cast.
-			qtractorPortListItem *pOPort
-				= static_cast<qtractorPortListItem *> (pOPortItem);
-			qtractorMidiPortItem *pOMidiPort
-				= static_cast<qtractorMidiPortItem *> (pOPort);
-			if (pOMidiPort == 0)
+	// For each client item...
+	int iItemCount = pOListView->topLevelItemCount();
+	for (int iItem = 0; iItem < iItemCount; ++iItem) {
+		QTreeWidgetItem *pItem = pOListView->topLevelItem(iItem);
+		if (pItem->type() != qtractorConnect::ClientItem)
+			continue;
+		qtractorMidiClientItem *pOClient
+			= static_cast<qtractorMidiClientItem *> (pItem);
+		if (pOClient == NULL)
+			continue;
+		// For each port item
+		int iChildCount = pOClient->childCount();
+		for (int iChild = 0; iChild < iChildCount; ++iChild) {
+			QTreeWidgetItem *pChild = pOClient->child(iChild);
+			if (pChild->type() != qtractorConnect::PortItem)
+				continue;
+			qtractorMidiPortItem *pOPort
+				= static_cast<qtractorMidiPortItem *> (pChild);
+			if (pOPort == NULL)
 				continue;
 			// Are there already any connections?
-			if (pOMidiPort->connects().count() > 0)
+			if (pOPort->connects().count() > 0)
 				continue;
 			// Get port connections...
 			snd_seq_query_subscribe_set_type(pAlsaSubs, SND_SEQ_QUERY_SUBS_READ);
 			snd_seq_query_subscribe_set_index(pAlsaSubs, 0);
-			seq_addr.client = pOMidiPort->alsaClient();
-			seq_addr.port   = pOMidiPort->alsaPort();
+			seq_addr.client = pOPort->alsaClient();
+			seq_addr.port   = pOPort->alsaPort();
 			snd_seq_query_subscribe_set_root(pAlsaSubs, &seq_addr);
 			while (snd_seq_query_port_subscribers(m_pAlsaSeq, pAlsaSubs) >= 0) {
 				seq_addr = *snd_seq_query_subscribe_get_addr(pAlsaSubs);
-				qtractorMidiPortItem *pIMidiPort
+				qtractorMidiPortItem *pIPort
 					= pIListView->findClientPortItem(
 						seq_addr.client, seq_addr.port);
-				qtractorPortListItem *pIPort
-					= static_cast<qtractorPortListItem *> (pIMidiPort);
 				if (pIPort) {
 					pOPort->addConnect(pIPort);
 					pIPort->addConnect(pOPort);
@@ -432,9 +442,7 @@ void qtractorMidiConnect::updateConnections (void)
 				snd_seq_query_subscribe_set_index(pAlsaSubs,
 					snd_seq_query_subscribe_get_index(pAlsaSubs) + 1);
 			}
-			pOPortItem = pOPortItem->nextSibling();
 		}
-		pOClientItem = pOClientItem->nextSibling();
 	}
 }
 

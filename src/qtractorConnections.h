@@ -24,10 +24,10 @@
 
 #include "qtractorEngine.h"
 
-#include <qdockwindow.h>
+#include <QWidget>
+
 
 // Forward declarations.
-class qtractorMainForm;
 class qtractorConnectForm;
 
 
@@ -35,14 +35,14 @@ class qtractorConnectForm;
 // qtractorConnections - Connections dockable window.
 //
 
-class qtractorConnections : public QDockWindow
+class qtractorConnections : public QWidget
 {
 	Q_OBJECT
 
 public:
 
 	// Constructor.
-	qtractorConnections(qtractorMainForm *pParent);
+	qtractorConnections(QWidget *pParent);
 	// Destructor.
 	~qtractorConnections();
 
@@ -60,6 +60,15 @@ public:
 
 	// Complete connections reset.
 	void clear();
+
+protected:
+
+	// Notify the main application widget that we're closing.
+	void showEvent(QShowEvent *);
+	void hideEvent(QHideEvent *);
+
+	// Just about to notify main-window that we're closing.
+	void closeEvent(QCloseEvent *);
 
 private:
 

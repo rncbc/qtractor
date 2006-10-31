@@ -22,8 +22,7 @@
 #ifndef __qtractorTracks_h
 #define __qtractorTracks_h
 
-#include <qsplitter.h>
-#include <qtoolbutton.h>
+#include <QSplitter>
 
 // Forward declarations.
 class qtractorInstrumentList;
@@ -33,9 +32,6 @@ class qtractorTrackTime;
 class qtractorTrackView;
 class qtractorTrack;
 class qtractorSession;
-
-
-class QScrollView;
 
 
 //----------------------------------------------------------------------------
@@ -48,7 +44,7 @@ class qtractorTracks : public QSplitter
 public:
 
 	// Constructor.
-	qtractorTracks(QWidget *pParent, const char *pszName = 0);
+	qtractorTracks(QWidget *pParent);
 	// Destructor.
 	~qtractorTracks();
 
@@ -62,9 +58,6 @@ public:
 	qtractorTrackList *trackList() const;
 	qtractorTrackTime *trackTime() const;
 	qtractorTrackView *trackView() const;
-
-	// Common scroll view positional sync method.
-	void setContentsPos(QScrollView *pScrollView, int cx, int cy);
 
 	// Update/sync from session tracks.
 	void updateContents(bool bRefresh = false);
@@ -107,6 +100,9 @@ public:
 	void selectionChangeNotify();
 	void contentsChangeNotify();
 
+	// Overall contents reset.
+	void clear();
+
 protected:
 
 	// Zoom factor constants.
@@ -116,9 +112,6 @@ protected:
 	void horizontalZoomStep(int iZoomStep);
 	void verticalZoomStep(int iZoomStep);
 					
-	// Close event override to save some geometry settings.
-	virtual void closeEvent(QCloseEvent *pCloseEvent);
-
 public slots:
 
 	// Track button notification.
@@ -126,20 +119,12 @@ public slots:
 
 protected slots:
 
-	// Early track list stabilization.
-	void trackListPolishSlot();
-
 	// Zoom view slots.
 	void horizontalZoomInSlot();
 	void horizontalZoomOutSlot();
 	void verticalZoomInSlot();
 	void verticalZoomOutSlot();
-	void viewZoomToolSlot();
-
-signals:
-
-	// Emitted on late close.
-	void closeNotifySignal();
+	void viewZoomResetSlot();
 
 private:
 
@@ -147,9 +132,6 @@ private:
 	qtractorTrackList *m_pTrackList;
 	qtractorTrackTime *m_pTrackTime;
 	qtractorTrackView *m_pTrackView;
-
-	// To avoid contents sync moving recursion.
-	int m_iContentsMoving;
 };
 
 

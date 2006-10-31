@@ -40,71 +40,83 @@
 #include "qtractorMainForm.h"
 #include "qtractorTrackForm.h"
 
-#include <qmessagebox.h>
-#include <qfileinfo.h>
-#include <qheader.h>
-#include <qvbox.h>
+#include <QVBoxLayout>
+#include <QToolButton>
+#include <QMessageBox>
+#include <QFileInfo>
+#include <QDate>
+
+#include <QHeaderView>
 
 
 //----------------------------------------------------------------------------
 // qtractorTracks -- The main session track listview widget.
 
 // Constructor.
-qtractorTracks::qtractorTracks ( QWidget *pParent, const char *pszName )
-	: QSplitter(Qt::Horizontal, pParent, pszName)
+qtractorTracks::qtractorTracks ( QWidget *pParent )
+	: QSplitter(Qt::Horizontal, pParent)
 {
-	// To avoid contents sync moving recursion.
-	m_iContentsMoving = 0;
+	// Surely a name is crucial (e.g. for storing geometry settings)
+	QSplitter::setObjectName("qtractorTracks");
 
 	// Create child widgets...
 	m_pTrackList = new qtractorTrackList(this, this);
-	QVBox *pVBox = new QVBox(this);
+	QWidget *pVBox = new QWidget(this);
 	m_pTrackTime = new qtractorTrackTime(this, pVBox);
 	m_pTrackView = new qtractorTrackView(this, pVBox);
 
-	QSplitter::setResizeMode(m_pTrackList, QSplitter::KeepSize);
-	QSplitter::setHandleWidth(2);
-	QSplitter::setIcon(QPixmap::fromMimeSource("qtractorTracks.png"));
-	QSplitter::setCaption(tr("Tracks"));
+	// Create child box layouts...
+	QVBoxLayout *pVBoxLayout = new QVBoxLayout(pVBox);
+	pVBoxLayout->setMargin(0);
+	pVBoxLayout->setSpacing(0);
+	pVBoxLayout->addWidget(m_pTrackTime);
+	pVBoxLayout->addWidget(m_pTrackView);
+	pVBox->setLayout(pVBoxLayout);
 
-	// Resize the left pane track list as last remembered.
+//	QSplitter::setOpaqueResize(false);
+	QSplitter::setStretchFactor(QSplitter::indexOf(m_pTrackList), 0);
+	QSplitter::setHandleWidth(2);
+
+	QSplitter::setWindowTitle(tr("Tracks"));
+	QSplitter::setWindowIcon(QIcon(":/icons/qtractorTracks.png"));
+
+	// Get previously saved splitter sizes,
+	// (with some fair default...)
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm) {
 		qtractorOptions *pOptions = pMainForm->options();
 		if (pOptions) {
-			QSize size = m_pTrackList->size();
-			size.setWidth(pOptions->iTrackListWidth);
-			m_pTrackList->resize(size);
+			QList<int> sizes;
+			sizes.append(160);
+			sizes.append(480);
+			pOptions->loadSplitterSizes(this, sizes);
 		}
 	}
 
-	// Hook the early polishing notification...
-	// (needed for time scale height stabilization)
-	QObject::connect(m_pTrackList, SIGNAL(polishNotifySignal()),
-		this, SLOT(trackListPolishSlot()));
+	// Early track list stabilization.
+	m_pTrackTime->setFixedHeight(
+		m_pTrackList->horizontalHeader()->sizeHint().height());
 
 	// To have all views in positional sync.
 	QObject::connect(m_pTrackView, SIGNAL(contentsMoving(int,int)),
-		m_pTrackTime, SLOT(contentsMovingSlot(int,int)));
+		m_pTrackTime, SLOT(contentsXMovingSlot(int,int)));
 	QObject::connect(m_pTrackView, SIGNAL(contentsMoving(int,int)),
-		m_pTrackList, SLOT(contentsMovingSlot(int,int)));
+		m_pTrackList, SLOT(contentsYMovingSlot(int,int)));
 	QObject::connect(m_pTrackList, SIGNAL(contentsMoving(int,int)),
-		m_pTrackView, SLOT(contentsMovingSlot(int,int)));
+		m_pTrackView, SLOT(contentsYMovingSlot(int,int)));
 }
 
 
 // Destructor.
 qtractorTracks::~qtractorTracks (void)
 {
-}
-
-
-// Close event override to emit respective signal.
-void qtractorTracks::closeEvent ( QCloseEvent *pCloseEvent )
-{
-	emit closeNotifySignal();
-
-	QWidget::closeEvent(pCloseEvent);
+	// Save splitter sizes...
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm) {
+		qtractorOptions *pOptions = pMainForm->options();
+		if (pOptions)
+			pOptions->saveSplitterSizes(this);
+	}
 }
 
 
@@ -210,22 +222,14 @@ void qtractorTracks::verticalZoomStep ( int iZoomStep )
 
 	// Fix the session vertical view zoom.
 	pSession->setVerticalZoom(iVerticalZoom);
+
 	// Update the dependant views...
-	m_pTrackList->zoomItemHeight(pSession->verticalZoom());
+	m_pTrackList->updateZoomHeight();
 
 	// Notify who's watching...
 	contentsChangeNotify();
 }
 
-
-// Early track list stabilization.
-void qtractorTracks::trackListPolishSlot (void)
-{
-//	int iHeaderHeight = m_pTrackList->header()->sizeHint().height();
-	int iHeaderHeight = m_pTrackList->header()->height();
-	m_pTrackTime->setMaximumHeight(iHeaderHeight);
-	m_pTrackTime->setMinimumHeight(iHeaderHeight);
-}
 
 // Zoom view slots.
 void qtractorTracks::horizontalZoomInSlot (void)
@@ -248,7 +252,7 @@ void qtractorTracks::verticalZoomOutSlot (void)
 	verticalZoomStep(- ZoomStep);
 }
 
-void qtractorTracks::viewZoomToolSlot (void)
+void qtractorTracks::viewZoomResetSlot (void)
 {
 	qtractorSession *pSession = session();
 	if (pSession == NULL)
@@ -257,19 +261,6 @@ void qtractorTracks::viewZoomToolSlot (void)
 	// All zoom base are belong to us :)
 	verticalZoomStep(ZoomBase - pSession->verticalZoom());
 	horizontalZoomStep(ZoomBase - pSession->horizontalZoom());
-}
-
-
-// Common scroll view positional sync method.
-void qtractorTracks::setContentsPos ( QScrollView *pScrollView, int cx, int cy )
-{
-	// Avoid recursion...
-	if (m_iContentsMoving > 0)
-		return;
-
-	m_iContentsMoving++;
-	pScrollView->setContentsPos(cx, cy);
-	m_iContentsMoving--;
 }
 
 
@@ -288,15 +279,16 @@ void qtractorTracks::updateContents ( bool bRefresh )
 	int iRefresh = 0;
 	if (bRefresh)
 		iRefresh++;
-	for (qtractorTrack *pTrack = pSession->tracks().first();
-			pTrack;
-				pTrack = pTrack->next()) {
+	int iTrack = 0;
+	qtractorTrack *pTrack = pSession->tracks().first();
+	while (pTrack) {
 		// Check if item is already on list
-		qtractorTrackListItem *pTrackItem = m_pTrackList->trackItem(pTrack);
-		if (pTrackItem == NULL) {
-			new qtractorTrackListItem(m_pTrackList, pTrack);
+		if (m_pTrackList->trackRow(pTrack) < 0) {
+			m_pTrackList->insertTrack(iTrack, pTrack);
 			iRefresh++;
 		}
+		pTrack = pTrack->next();
+		iTrack++;
 	}
 
 	// Update dependant views.
@@ -311,9 +303,7 @@ void qtractorTracks::updateContents ( bool bRefresh )
 // Retrieves current selected track reference.
 qtractorTrack *qtractorTracks::currentTrack (void) const
 {
-	qtractorTrackListItem *pTrackItem =
-		static_cast<qtractorTrackListItem *> (m_pTrackList->selectedItem());
-	return (pTrackItem ? pTrackItem->track() : NULL);
+	return m_pTrackList->currentTrack();
 }
 
 
@@ -371,7 +361,7 @@ void qtractorTracks::selectEditRange (void)
 	// HACK: Make sure the snap goes straight...
 	unsigned short iSnapPerBeat4 = (pSession->snapPerBeat() << 2);
 	if (iSnapPerBeat4 > 0)
-		rect.moveBy(pSession->pixelsPerBeat() / iSnapPerBeat4, 0);
+		rect.translate(pSession->pixelsPerBeat() / iSnapPerBeat4, 0);
 
 	// Make the selection, but don't change edit head nor tail...
 	m_pTrackView->selectRect(rect,
@@ -448,15 +438,13 @@ bool qtractorTracks::removeTrack ( qtractorTrack *pTrack )
 		return false;
 
 	// Get the list view item reference of the intended track...
-	qtractorTrackListItem *pTrackItem = NULL;;
-	if (pTrack)
-		pTrackItem = m_pTrackList->trackItem(pTrack);
-	if (pTrackItem == NULL)
-		pTrackItem = static_cast<qtractorTrackListItem *> (m_pTrackList->currentItem());
-	if (pTrackItem == NULL)
+	int iTrack = m_pTrackList->trackRow(pTrack);
+	if (iTrack < 0)
+		iTrack = m_pTrackList->currentIndex().row();
+	if (iTrack < 0)
 		return false;
 	// Enforce which track to remove...
-	pTrack = pTrackItem->track();
+	pTrack = m_pTrackList->track(iTrack);
 
 	// Prompt user if he/she's sure about this...
 	qtractorOptions *pOptions = pMainForm->options();
@@ -488,15 +476,13 @@ bool qtractorTracks::editTrack ( qtractorTrack *pTrack )
 		return false;
 
 	// Get the list view item reference of the intended track...
-	qtractorTrackListItem *pTrackItem = NULL;;
-	if (pTrack)
-		pTrackItem = m_pTrackList->trackItem(pTrack);
-	if (pTrackItem == NULL)
-		pTrackItem = static_cast<qtractorTrackListItem *> (m_pTrackList->currentItem());
-	if (pTrackItem == NULL)
+	int iTrack = m_pTrackList->trackRow(pTrack);
+	if (iTrack < 0)
+		iTrack = m_pTrackList->currentIndex().row();
+	if (iTrack < 0)
 		return false;
-	// Enforce which track to edit...
-	pTrack = pTrackItem->track();
+	// Enforce which track to remove...
+	pTrack = m_pTrackList->track(iTrack);
 
 	// Open dialog for settings...
 	qtractorTrackForm trackForm(this);
@@ -536,10 +522,10 @@ bool qtractorTracks::addAudioTracks ( QStringList files,
 	QString sDescription = pSession->description() + "--\n";
 
 	// For each one of those files, if any...
-	for (QStringList::Iterator iter = files.begin();
-			iter != files.end(); ++iter) {
+	QStringListIterator iter(files);
+	while (iter.hasNext()) {
 		// This is one of the selected filenames....
-		const QString& sPath = *iter;
+		const QString& sPath = iter.next();
 		// Create a new track right away...
 		const QColor color = qtractorTrack::trackColor(++iTrackCount);
 		qtractorTrack *pTrack
@@ -613,10 +599,10 @@ bool qtractorTracks::addMidiTracks ( QStringList files,
 	QString sDescription = pSession->description() + "--\n";
 
 	// For each one of those files, if any...
-	for (QStringList::Iterator iter = files.begin();
-			iter != files.end(); ++iter) {
+	QStringListIterator iter(files);
+	while (iter.hasNext()) {
 		// This is one of the selected filenames....
-		const QString& sPath = *iter;
+		const QString& sPath = iter.next();
 		// We'll be careful and pre-open the SMF header here...
 		qtractorMidiFile file;
 		if (!file.open(sPath))
@@ -763,9 +749,7 @@ void qtractorTracks::updateMidiTrack ( qtractorTrack *pMidiTrack )
 			pTrack->setMidiBank(pMidiTrack->midiBank());
 			pTrack->setMidiProgram(pMidiTrack->midiProgram());
 			// Update the track list view, immediately...
-			qtractorTrackListItem *pTrackItem = m_pTrackList->trackItem(pTrack);
-			if (pTrackItem)
-				pTrackItem->setText(qtractorTrackList::Bus, sBusName);
+			m_pTrackList->updateTrack(pTrack);
 		}
 	}
 
@@ -802,6 +786,13 @@ void qtractorTracks::contentsChangeNotify (void)
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm)
 		pMainForm->contentsChanged();
+}
+
+
+// Overall contents reset.
+void qtractorTracks::clear(void)
+{
+	m_pTrackList->clear();
 }
 
 

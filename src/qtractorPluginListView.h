@@ -24,33 +24,31 @@
 
 #include "qtractorPlugin.h"
 
-#include <qlistview.h>
-#include <qframe.h>
+#include <QListWidget>
+#include <QFrame>
 
 // Forward declarations.
 class qtractorPluginListView;
+class qtractorSlider;
 
-class QGridLayout;
+class QIcon;
 class QLabel;
 class QCheckBox;
+class QGridLayout;
+class QDoubleSpinBox;
 
-class qtractorSlider;
-class qtractorSpinBox;
+class QContextMenuEvent;
 
 
 //----------------------------------------------------------------------------
 // qtractorPluginListItem -- Plugin list item.
 
-class qtractorPluginListItem : public QListViewItem
+class qtractorPluginListItem : public QListWidgetItem
 {
 public:
 
 	// Constructors.
-	qtractorPluginListItem(qtractorPluginListView *pListView,
-		qtractorPlugin *pPlugin);
-	qtractorPluginListItem(qtractorPluginListView *pListView,
-		qtractorPlugin *pPlugin, QListViewItem *pItemAfter);
-
+	qtractorPluginListItem(qtractorPlugin *pPlugin);
 	// Destructor.
 	~qtractorPluginListItem();
 
@@ -58,15 +56,10 @@ public:
 	qtractorPlugin *plugin() const;
 
 	// Special plugin form accessor.
-	qtractorPluginForm *setPluginForm(qtractorPluginForm *pPluginForm);
 	qtractorPluginForm *pluginForm();
 
 	// Activation methods.
 	void updateActivated();
-
-	// Overrriden virtual cell painter.
-	void paintCell(QPainter *p, const QColorGroup& cg,
-		int column, int width, int align);
 
 protected:
 
@@ -84,14 +77,14 @@ private:
 // qtractorPluginListView -- Plugin chain list widget instance.
 //
 
-class qtractorPluginListView : public QListView
+class qtractorPluginListView : public QListWidget
 {
 	Q_OBJECT
 
 public:
 
 	// Construcctor.
-	qtractorPluginListView(QWidget *pParent = 0, const char *pszName = 0);
+	qtractorPluginListView(QWidget *pParent = 0);
 	// Destructor.
 	~qtractorPluginListView();
 
@@ -102,11 +95,11 @@ public:
 	// Plugin list refreshner;
 	void refresh();
 
-	// Find an item, given the plugin reference...
-	qtractorPluginListItem *pluginItem(qtractorPlugin *pPlugin);
+	// Get an item index, given the plugin reference...
+	int pluginItem(qtractorPlugin *pPlugin);
 
 	// Common pixmap accessors.
-	static QPixmap *itemPixmap(int iIndex);
+	static QIcon *itemIcon(int iIndex);
 
 protected slots:
 
@@ -122,15 +115,21 @@ protected slots:
 	void editPlugin();
 
 	// Simple click handler.
-	void clickItem(QListViewItem *item, const QPoint& pos, int col);
-	void doubleClickItem(QListViewItem *item, const QPoint& pos, int col);
-	void returnPressItem(QListViewItem *item);
+	void itemDoubleClickedSlot(QListWidgetItem *);
+	void itemActivatedSlot(QListWidgetItem *);
 
 protected:
 
 	// Move item on list.
 	void moveItem(qtractorPluginListItem *pItem,
 		qtractorPluginListItem *pPrevItem = 0);
+
+	// Trap for help/tool-tip events.
+	bool eventFilter(QObject *pObject, QEvent *pEvent);
+
+	// To get precize clicking for in-place (de)activation.
+	void mousePressEvent(QMouseEvent *pMouseEvent);
+	void mouseReleaseEvent(QMouseEvent *pMouseEvent);
 
 	// Context menu event handler.
 	void contextMenuEvent(QContextMenuEvent *pContextMenuEvent);
@@ -139,10 +138,13 @@ private:
 
 	// Instance variables.
 	qtractorPluginList *m_pPluginList;
-	
+
+	// The mouse clicked item for in-place (de)activation.
+	QListWidgetItem *m_pClickedItem;
+
 	// Common pixmap stuff.
-	static QPixmap *g_pItemPixmaps[2];
-	static int      g_iItemRefCount;
+	static QIcon *g_pItemIcons[2];
+	static int    g_iItemRefCount;
 };
 
 
@@ -157,8 +159,7 @@ class qtractorPluginPortWidget : public QFrame
 public:
 
 	// Constructor.
-	qtractorPluginPortWidget(qtractorPluginPort *pPort,
-		QWidget *pParent = 0, const char *pszName = 0);
+	qtractorPluginPortWidget(qtractorPluginPort *pPort, QWidget *pParent = 0);
 	// Destructor.
 	~qtractorPluginPortWidget();
 
@@ -195,13 +196,13 @@ private:
 	qtractorPluginPort *m_pPort;
 
 	// Some basic layout managers.
-	QGridLayout     *m_pGridLayout;
+	QGridLayout    *m_pGridLayout;
 
 	// Some possible managed widgets.
-	QLabel          *m_pLabel;
-	QCheckBox       *m_pCheckBox;
-	qtractorSlider  *m_pSlider;
-	qtractorSpinBox *m_pSpinBox;
+	QLabel         *m_pLabel;
+	QCheckBox      *m_pCheckBox;
+	qtractorSlider *m_pSlider;
+	QDoubleSpinBox *m_pSpinBox;
 
 	// Avoid cascaded intra-notifications.
 	int m_iUpdate;

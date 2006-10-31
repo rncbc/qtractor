@@ -24,7 +24,7 @@
 
 #include "qtractorSession.h"
 
-#include <qptrlist.h>
+#include <QList>
 
 // Forward declarations.
 class qtractorBus;
@@ -166,17 +166,19 @@ public:
 		QString portName;
 	};
 
-	class ConnectList : public QPtrList<ConnectItem>
+	class ConnectList : public QList<ConnectItem *>
 	{
 	public:
-	
 		// Constructor
-		ConnectList() { setAutoDelete(true); }
-	
+		ConnectList() {}
+		// Destructor.
+		~ConnectList() { qDeleteAll(*this); }
 		// Item finder...
-		ConnectItem *find(const ConnectItem& item)
+		ConnectItem *findItem(const ConnectItem& item)
 		{
-			for (ConnectItem *pItem = first(); pItem; pItem = next()) {
+			QListIterator<ConnectItem *> iter(*this);
+			while (iter.hasNext()) {
+				ConnectItem *pItem = iter.next();
 				if (pItem->index      == item.index &&
 					pItem->clientName == item.clientName &&
 					pItem->portName   == item.portName) 

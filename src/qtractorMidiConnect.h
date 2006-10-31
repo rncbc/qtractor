@@ -26,6 +26,7 @@
 
 #include <alsa/asoundlib.h>
 
+
 // Forward declarations.
 class qtractorMidiPortItem;
 class qtractorMidiClientItem;
@@ -94,7 +95,7 @@ class qtractorMidiClientListView : public qtractorClientListView
 public:
 
 	// Constructor.
-	qtractorMidiClientListView(QWidget *pParent = 0, const char *pszName = 0);
+	qtractorMidiClientListView(QWidget *pParent = NULL);
 	// Default destructor.
 	~qtractorMidiClientListView();
 
@@ -132,17 +133,17 @@ public:
 	void setAlsaSeq(snd_seq_t *pAlsaSeq);
 	snd_seq_t *alsaSeq() const;
 
-	// Pixmap-set array indexes.
+	// icon-set array indexes.
 	enum {
-		ClientIn	= 0,	// Input client item pixmap.
-		ClientOut	= 1,	// Output client item pixmap.
-		PortIn		= 2,	// Input port item pixmap.
-		PortOut		= 3,	// Output port item pixmap.
-		PixmapCount	= 4		// Number of pixmaps in local array.
+		ClientIn	= 0,	// Input client item icon.
+		ClientOut	= 1,	// Output client item icon.
+		PortIn		= 2,	// Input port item icon.
+		PortOut		= 3,	// Output port item icon.
+		IconCount	= 4		// Number of icons in local array.
 	};
 
-	// Common pixmap accessor.
-	static const QPixmap& pixmap(int iPixmap);
+	// Common icon accessor.
+	static const QIcon& icon(int iIcon);
 
 protected:
 
@@ -158,15 +159,15 @@ protected:
 private:
 
 	// Local pixmap-set janitor methods.
-	void createIconPixmaps();
-	void deleteIconPixmaps();
+	void createIcons();
+	void deleteIcons();
 
 	// Instance variables.
 	snd_seq_t *m_pAlsaSeq;
 
 	// Local static pixmap-set array.
-	static QPixmap *g_apPixmaps[PixmapCount];
-	static int      g_iPixmapsRefCount;
+	static QIcon *g_apIcons[IconCount];
+	static int    g_iIconsRefCount;
 };
 
 

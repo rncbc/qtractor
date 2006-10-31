@@ -24,7 +24,7 @@
 
 #include "qtractorAudioFile.h"
 
-#include <qvaluelist.h>
+#include <QList>
 
 #ifdef CONFIG_LIBMAD
 // libmad API
@@ -47,7 +47,7 @@ public:
 	virtual ~qtractorAudioMadFile();
 
 	// Virtual method mockups.
-	bool open  (const char *pszName, int iMode = Read);
+	bool open  (const QString& sFilename, int iMode = Read);
 	int  read  (float **ppFrames, unsigned int iFrames);
 	int  write (float **ppFrames, unsigned int iFrames);
 	bool seek  (unsigned long iOffset);
@@ -112,7 +112,7 @@ private:
 		unsigned int  iDecodeCount;     // Decoder iteration count.
 	};
 
-	typedef QValueList<FrameNode> FrameList;
+	typedef QList<FrameNode> FrameList;
 
 	FrameList m_frames;
 	FrameNode m_curr;

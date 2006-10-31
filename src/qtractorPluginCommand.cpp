@@ -37,8 +37,6 @@ qtractorPluginCommand::qtractorPluginCommand ( qtractorMainForm *pMainForm,
 	const QString& sName, qtractorPlugin *pPlugin )
 	: qtractorCommand(pMainForm, sName)
 {
-	m_plugins.setAutoDelete(false);
-
 	if (pPlugin)
 		m_plugins.append(pPlugin);	
 
@@ -49,7 +47,8 @@ qtractorPluginCommand::qtractorPluginCommand ( qtractorMainForm *pMainForm,
 // Destructor.
 qtractorPluginCommand::~qtractorPluginCommand (void)
 {
-	m_plugins.setAutoDelete(isAutoDelete());
+	if (isAutoDelete())
+		qDeleteAll(m_plugins);
 	m_plugins.clear();
 }
 
@@ -58,8 +57,9 @@ qtractorPluginCommand::~qtractorPluginCommand (void)
 bool qtractorPluginCommand::addPlugins (void)
 {
 	// Add all listed plugins, in order...
-	for (qtractorPlugin *pPlugin = m_plugins.first();
-			pPlugin; pPlugin = m_plugins.next()) {
+	QListIterator<qtractorPlugin *> iter(m_plugins);
+	while (iter.hasNext()) {
+		qtractorPlugin *pPlugin = iter.next();
 		qtractorPluginList *pPluginList = pPlugin->list();
 		if (pPluginList)
 			pPluginList->addPlugin(pPlugin);
@@ -76,8 +76,10 @@ bool qtractorPluginCommand::addPlugins (void)
 bool qtractorPluginCommand::removePlugins (void)
 {
 	// Unlink all listed plugins, in order...
-	for (qtractorPlugin *pPlugin = m_plugins.last();
-			pPlugin; pPlugin = m_plugins.prev()) {
+	QListIterator<qtractorPlugin *> iter(m_plugins);
+	iter.toBack();
+	while (iter.hasPrevious()) {
+		qtractorPlugin *pPlugin = iter.previous();
 		qtractorPluginList *pPluginList = pPlugin->list();
 		if (pPluginList)
 			pPluginList->removePlugin(pPlugin);
@@ -202,10 +204,9 @@ bool qtractorActivatePluginCommand::redo (void)
 	// Save the toggled state alright...
 	bool bActivated = !m_bActivated;
 
-	for (qtractorPlugin *pPlugin = plugins().first();
-			pPlugin; pPlugin = plugins().next()) {
-		pPlugin->setActivated(m_bActivated);
-	}
+	QListIterator<qtractorPlugin *> iter(plugins());
+	while (iter.hasNext())
+		iter.next()->setActivated(m_bActivated);
 
 	// Swap it nice, finally.
 	m_bActivated = bActivated;
@@ -310,7 +311,7 @@ bool qtractorResetPluginCommand::undo (void)
 // Constructor.
 qtractorPluginPortCommand::qtractorPluginPortCommand (
 	qtractorMainForm *pMainForm, qtractorPluginPort *pPort, float fValue )
-	: qtractorCommand(pMainForm, QString(pPort->name()).lower()),
+	: qtractorCommand(pMainForm, QString(pPort->name()).toLower()),
 		m_pPort(pPort)
 {
 	m_fValue = fValue;

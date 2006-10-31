@@ -189,12 +189,8 @@ bool qtractorBusCommand::updateBus (void)
 			// Reopen track back...
 			pTrack->open();
 			// Update track list item...
-			if (pTracks) {
-				qtractorTrackListItem *pTrackItem
-					= pTracks->trackList()->trackItem(pTrack);
-				if (pTrackItem)
-					pTrackItem->setText(qtractorTrackList::Bus, m_sBusName);
-			}
+			if (pTracks)
+				pTracks->trackList()->updateTrack(pTrack);
 			// Update mixer strip...
 			if (pMixer)
 				pMixer->updateTrackStrip(pTrack, true);
@@ -334,7 +330,7 @@ qtractorDeleteBusCommand::qtractorDeleteBusCommand (
 	// Special case for Audio busses...
 	if (pBus->busType() == qtractorTrack::Audio) {
 		qtractorAudioBus *pAudioBus
-			= static_cast <qtractorAudioBus *> (pBus);
+			= static_cast<qtractorAudioBus *> (pBus);
 		if (pAudioBus) {
 			setChannels(pAudioBus->channels());
 			setAutoConnect(pAudioBus->isAutoConnect());

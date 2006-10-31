@@ -26,7 +26,7 @@
 
 #include "qtractorClip.h"
 
-#include <qptrlist.h>
+#include <QList>
 
 
 //----------------------------------------------------------------------
@@ -93,7 +93,7 @@ private:
 	};
 
 	// Instance variables.
-	QPtrList<Item> m_items;
+	QList<Item *> m_items;
 };
 
 

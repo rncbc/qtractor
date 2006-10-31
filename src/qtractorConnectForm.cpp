@@ -1,6 +1,5 @@
-// qtractorConnectForm.ui.h
+// qtractorConnectForm.cpp
 //
-// ui.h extension file, included from the uic-generated form implementation.
 /****************************************************************************
    Copyright (C) 2005-2006, rncbc aka Rui Nuno Capela. All rights reserved.
 
@@ -20,46 +19,101 @@
 
 *****************************************************************************/
 
+#include "qtractorConnectForm.h"
+
 #include "qtractorAbout.h"
 #include "qtractorOptions.h"
 #include "qtractorSession.h"
 #include "qtractorAudioEngine.h"
 #include "qtractorMidiEngine.h"
 
+#include <QPixmap>
 
-// Kind of constructor.
-void qtractorConnectForm::init (void)
+
+//----------------------------------------------------------------------------
+// qtractorConnectForm -- UI wrapper form.
+
+// Constructor.
+qtractorConnectForm::qtractorConnectForm (
+	QWidget *pParent, Qt::WFlags wflags ) : QWidget(pParent, wflags)
 {
+	// Setup UI struct...
+	m_ui.setupUi(this);
+
 	m_pSession = NULL;
 	m_pOptions = NULL;
 
 	m_pAudioConnect = new qtractorAudioConnect(
-		AudioOListView, AudioIListView,AudioConnectorView);
+		m_ui.AudioOListView, m_ui.AudioIListView, m_ui.AudioConnectorView);
 	m_pAudioConnect->setBezierLines(true);
 
 	m_pMidiConnect = new qtractorMidiConnect(
-		MidiOListView, MidiIListView, MidiConnectorView);
+		m_ui.MidiOListView, m_ui.MidiIListView, m_ui.MidiConnectorView);
 	m_pMidiConnect->setBezierLines(true);
 
-	// Connect it to some UI feedback slots.
-	QObject::connect(AudioOListView, SIGNAL(selectionChanged()),
-		this, SLOT(audioStabilize()));
-	QObject::connect(AudioIListView, SIGNAL(selectionChanged()),
-		this, SLOT(audioStabilize()));
-	QObject::connect(MidiOListView, SIGNAL(selectionChanged()),
-		this, SLOT(midiStabilize()));
-	QObject::connect(MidiIListView, SIGNAL(selectionChanged()),
-		this, SLOT(midiStabilize()));
+	// UI signal/slot connections...
+	QObject::connect(m_ui.AudioIClientsComboBox,
+		SIGNAL(activated(int)),
+		SLOT(audioIClientChanged()));
+	QObject::connect(m_ui.AudioOClientsComboBox,
+		SIGNAL(activated(int)),
+		SLOT(audioOClientChanged()));
+	QObject::connect(m_ui.AudioConnectPushButton,
+		SIGNAL(clicked()),
+		SLOT(audioConnectSelected()));
+	QObject::connect(m_ui.AudioDisconnectPushButton,
+		SIGNAL(clicked()),
+		SLOT(audioDisconnectSelected()));
+	QObject::connect(m_ui.AudioDisconnectAllPushButton,
+		SIGNAL(clicked()),
+		SLOT(audioDisconnectAll()));
+	QObject::connect(m_ui.AudioRefreshPushButton,
+		SIGNAL(clicked()),
+		SLOT(audioRefresh()));
+	QObject::connect(m_ui.MidiIClientsComboBox,
+		SIGNAL(activated(int)),
+		SLOT(midiIClientChanged()));
+	QObject::connect(m_ui.MidiOClientsComboBox,
+		SIGNAL(activated(int)),
+		SLOT(midiOClientChanged()));
+	QObject::connect(m_ui.MidiConnectPushButton,
+		SIGNAL(clicked()),
+		SLOT(midiConnectSelected()));
+	QObject::connect(m_ui.MidiDisconnectPushButton,
+		SIGNAL(clicked()),
+		SLOT(midiDisconnectSelected()));
+	QObject::connect(m_ui.MidiDisconnectAllPushButton,
+		SIGNAL(clicked()),
+		SLOT(midiDisconnectAll()));
+	QObject::connect(m_ui.MidiRefreshPushButton,
+		SIGNAL(clicked()),
+		SLOT(midiRefresh()));
 
-	QObject::connect(m_pAudioConnect, SIGNAL(connectChanged()),
-		this, SLOT(audioStabilize()));
-	QObject::connect(m_pMidiConnect, SIGNAL(connectChanged()),
-		this, SLOT(midiStabilize()));
+	// Connect it to some UI feedback slots.
+	QObject::connect(m_ui.AudioOListView,
+		SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)),
+		SLOT(audioStabilize()));
+	QObject::connect(m_ui.AudioIListView,
+		SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)),
+		SLOT(audioStabilize()));
+	QObject::connect(m_ui.MidiOListView,
+		SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)),
+		SLOT(midiStabilize()));
+	QObject::connect(m_ui.MidiIListView,
+		SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)),
+		SLOT(midiStabilize()));
+
+	QObject::connect(m_pAudioConnect,
+		SIGNAL(connectChanged()),
+		SLOT(audioStabilize()));
+	QObject::connect(m_pMidiConnect,
+		SIGNAL(connectChanged()),
+		SLOT(midiStabilize()));
 }
 
 
-// Kind of destructor.
-void qtractorConnectForm::destroy (void)
+// Destructor.
+qtractorConnectForm::~qtractorConnectForm (void)
 {
 	delete m_pAudioConnect;
 	delete m_pMidiConnect;
@@ -113,7 +167,7 @@ void qtractorConnectForm::audioIClientChanged (void)
 #endif
 
 	// Reset any port name pattern...
-	AudioIListView->setPortName(QString::null);
+	m_ui.AudioIListView->setPortName(QString::null);
 	audioRefresh();
 }
 
@@ -124,7 +178,7 @@ void qtractorConnectForm::audioOClientChanged (void)
 #endif
 
 	// Reset any port name pattern...
-	AudioOListView->setPortName(QString::null);
+	m_ui.AudioOListView->setPortName(QString::null);
 	audioRefresh();
 }
 
@@ -172,17 +226,19 @@ void qtractorConnectForm::audioRefresh (void)
 	fprintf(stderr, "qtractorConnectForm::audioRefresh()\n");
 #endif
 
-	AudioOListView->setClientName(AudioOClientsComboBox->currentItem() > 0 ?
-		AudioOClientsComboBox->currentText() : QString::null);
-	AudioIListView->setClientName(AudioIClientsComboBox->currentItem() > 0 ?
-		AudioIClientsComboBox->currentText() : QString::null);
+	m_ui.AudioOListView->setClientName(
+		m_ui.AudioOClientsComboBox->currentIndex() > 0 ?
+			m_ui.AudioOClientsComboBox->currentText() : QString::null);
+	m_ui.AudioIListView->setClientName(
+		m_ui.AudioIClientsComboBox->currentIndex() > 0 ?
+			m_ui.AudioIClientsComboBox->currentText() : QString::null);
 
 	m_pAudioConnect->refresh();
 
-	updateClientsComboBox(AudioOClientsComboBox, AudioOListView,
-		m_pAudioConnect->pixmap(qtractorAudioConnect::ClientOut));
-	updateClientsComboBox(AudioIClientsComboBox, AudioIListView,
-		m_pAudioConnect->pixmap(qtractorAudioConnect::ClientIn));
+	updateClientsComboBox(m_ui.AudioOClientsComboBox, m_ui.AudioOListView,
+		m_pAudioConnect->icon(qtractorAudioConnect::ClientOut));
+	updateClientsComboBox(m_ui.AudioIClientsComboBox, m_ui.AudioIListView,
+		m_pAudioConnect->icon(qtractorAudioConnect::ClientIn));
 
 	audioStabilize();
 }
@@ -195,11 +251,11 @@ void qtractorConnectForm::audioStabilize (void)
 	fprintf(stderr, "qtractorConnectForm::audioStabilize()\n");
 #endif
 
-	AudioConnectPushButton->setEnabled(
+	m_ui.AudioConnectPushButton->setEnabled(
 		m_pAudioConnect->canConnectSelected());
-	AudioDisconnectPushButton->setEnabled(
+	m_ui.AudioDisconnectPushButton->setEnabled(
 		m_pAudioConnect->canDisconnectSelected());
-	AudioDisconnectAllPushButton->setEnabled(
+	m_ui.AudioDisconnectAllPushButton->setEnabled(
 		m_pAudioConnect->canDisconnectAll());
 }
 
@@ -212,7 +268,7 @@ void qtractorConnectForm::midiIClientChanged (void)
 #endif
 
 	// Reset any port name pattern...
-	MidiIListView->setPortName(QString::null);
+	m_ui.MidiIListView->setPortName(QString::null);
 	midiRefresh();
 }
 
@@ -223,7 +279,7 @@ void qtractorConnectForm::midiOClientChanged (void)
 #endif
 
 	// Reset any port name pattern...
-	MidiOListView->setPortName(QString::null);
+	m_ui.MidiOListView->setPortName(QString::null);
 	midiRefresh();
 }
 
@@ -271,17 +327,19 @@ void qtractorConnectForm::midiRefresh (void)
 	fprintf(stderr, "qtractorConnectForm::midiRefresh()\n");
 #endif
 
-	MidiOListView->setClientName(MidiOClientsComboBox->currentItem() > 0 ?
-		MidiOClientsComboBox->currentText() : QString::null);
-	MidiIListView->setClientName(MidiIClientsComboBox->currentItem() > 0 ?
-		MidiIClientsComboBox->currentText() : QString::null);
+	m_ui.MidiOListView->setClientName(
+		m_ui.MidiOClientsComboBox->currentIndex() > 0 ?
+			m_ui.MidiOClientsComboBox->currentText() : QString::null);
+	m_ui.MidiIListView->setClientName(
+		m_ui.MidiIClientsComboBox->currentIndex() > 0 ?
+			m_ui.MidiIClientsComboBox->currentText() : QString::null);
 
 	m_pMidiConnect->refresh();
 	
-	updateClientsComboBox(MidiOClientsComboBox, MidiOListView,
-		m_pMidiConnect->pixmap(qtractorMidiConnect::ClientOut));
-	updateClientsComboBox(MidiIClientsComboBox, MidiIListView,
-		m_pMidiConnect->pixmap(qtractorMidiConnect::ClientIn));
+	updateClientsComboBox(m_ui.MidiOClientsComboBox, m_ui.MidiOListView,
+		m_pMidiConnect->icon(qtractorMidiConnect::ClientOut));
+	updateClientsComboBox(m_ui.MidiIClientsComboBox, m_ui.MidiIListView,
+		m_pMidiConnect->icon(qtractorMidiConnect::ClientIn));
 
 	midiStabilize();
 }
@@ -294,42 +352,42 @@ void qtractorConnectForm::midiStabilize (void)
 	fprintf(stderr, "qtractorConnectForm::midiStabilize()\n");
 #endif
 
-	MidiConnectPushButton->setEnabled(
+	m_ui.MidiConnectPushButton->setEnabled(
 		m_pMidiConnect->canConnectSelected());
-	MidiDisconnectPushButton->setEnabled(
+	m_ui.MidiDisconnectPushButton->setEnabled(
 		m_pMidiConnect->canDisconnectSelected());
-	MidiDisconnectAllPushButton->setEnabled(
+	m_ui.MidiDisconnectAllPushButton->setEnabled(
 		m_pMidiConnect->canDisconnectAll());
 }
 
 
 // Refresh given combo-box with client names.
 void qtractorConnectForm::updateClientsComboBox ( QComboBox *pComboBox,
-	qtractorClientListView *pClientListView, const QPixmap& pixmap )
+	qtractorClientListView *pClientListView, const QIcon& icon )
 {
 	// Refresh client names combo box contents...
 	pComboBox->clear();
-	pComboBox->insertItem(tr("(All)"));
+	pComboBox->addItem(tr("(All)"));
 	const QStringList& clientNames = pClientListView->clientNames();
-	QStringList::ConstIterator iter = clientNames.begin();
-	while (iter != clientNames.end())
-		pComboBox->insertItem(pixmap, *iter++);
+	QStringListIterator iter(clientNames);
+	while (iter.hasNext())
+		pComboBox->addItem(icon, iter.next());
 
 	// Update current item/selection...
 	const QString& sClientName = pClientListView->clientName();
 	if (sClientName.isEmpty()) {
-		pComboBox->setCurrentItem(0);
+		pComboBox->setCurrentIndex(0);
 	} else {
 		// Select and expand all else...
-		pComboBox->setCurrentText(sClientName);
+		pComboBox->setCurrentIndex(pComboBox->findText(sClientName));
 		// Select and expand all else...
 		qtractorClientListItem *pClientItem
 			= pClientListView->findClientItem(sClientName);
 		if (pClientItem)
-			pClientListView->setSelected(pClientItem, true);
+			pClientListView->setCurrentItem(pClientItem);
 		pClientListView->setOpenAll(true);
 	}
 }
 
 
-// end of qtractorConnectForm.ui.h
+// end of qtractorConnectForm.cpp

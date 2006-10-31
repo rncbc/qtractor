@@ -1,6 +1,6 @@
-<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
-<class>qtractorTrackForm</class>
-<comment>qtractor - A MIDI/Audio multi-track sequencer.
+<ui version="4.0" >
+ <author>rncbc aka Rui Nuno Capela</author>
+ <comment>qtractor - A MIDI/Audio multi-track sequencer.
 
    Copyright (C) 2005-2006, rncbc aka Rui Nuno Capela. All rights reserved.
 
@@ -18,720 +18,579 @@
    with this program; if not, write to the Free Software Foundation, Inc.,
    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-</comment>
-<author>rncbc aka Rui Nuno Capela</author>
-<widget class="QDialog">
-    <property name="name">
-        <cstring>qtractorTrackForm</cstring>
-    </property>
-    <property name="geometry">
-        <rect>
-            <x>0</x>
-            <y>0</y>
-            <width>426</width>
-            <height>389</height>
-        </rect>
-    </property>
-    <property name="sizePolicy">
-        <sizepolicy>
-            <hsizetype>7</hsizetype>
-            <vsizetype>1</vsizetype>
+  </comment>
+ <exportmacro></exportmacro>
+ <class>qtractorTrackForm</class>
+ <widget class="QDialog" name="qtractorTrackForm" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>382</width>
+    <height>400</height>
+   </rect>
+  </property>
+  <property name="sizePolicy" >
+   <sizepolicy>
+    <hsizetype>7</hsizetype>
+    <vsizetype>1</vsizetype>
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="focusPolicy" >
+   <enum>Qt::StrongFocus</enum>
+  </property>
+  <property name="windowTitle" >
+   <string>Track - Qtractor</string>
+  </property>
+  <property name="windowIcon" >
+   <iconset resource="../icons/qtractor.qrc" >:/icons/trackProperties.png</iconset>
+  </property>
+  <layout class="QVBoxLayout" >
+   <property name="margin" >
+    <number>9</number>
+   </property>
+   <property name="spacing" >
+    <number>6</number>
+   </property>
+   <item>
+    <widget class="QLabel" name="TrackNameTextLabel" >
+     <property name="text" >
+      <string>&amp;Name:</string>
+     </property>
+     <property name="buddy" >
+      <cstring>TrackNameTextEdit</cstring>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QTextEdit" name="TrackNameTextEdit" >
+     <property name="sizePolicy" >
+      <sizepolicy>
+       <hsizetype>7</hsizetype>
+       <vsizetype>5</vsizetype>
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize" >
+      <size>
+       <width>320</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="maximumSize" >
+      <size>
+       <width>32767</width>
+       <height>48</height>
+      </size>
+     </property>
+     <property name="toolTip" >
+      <string>Track name description</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" >
+     <property name="margin" >
+      <number>0</number>
+     </property>
+     <property name="spacing" >
+      <number>4</number>
+     </property>
+     <item>
+      <widget class="QGroupBox" name="TrackTypeGroup" >
+       <property name="title" >
+        <string>Type</string>
+       </property>
+       <layout class="QHBoxLayout" >
+        <property name="margin" >
+         <number>8</number>
+        </property>
+        <property name="spacing" >
+         <number>4</number>
+        </property>
+        <item>
+         <widget class="QRadioButton" name="AudioRadioButton" >
+          <property name="toolTip" >
+           <string>Audio track type</string>
+          </property>
+          <property name="text" >
+           <string>&amp;Audio</string>
+          </property>
+          <property name="shortcut" >
+           <string>Alt+A</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QRadioButton" name="MidiRadioButton" >
+          <property name="toolTip" >
+           <string>MIDI track type</string>
+          </property>
+          <property name="text" >
+           <string>&amp;MIDI</string>
+          </property>
+          <property name="shortcut" >
+           <string>Alt+M</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item>
+      <widget class="QGroupBox" name="TrackBusGroup" >
+       <property name="title" >
+        <string>Input / Output</string>
+       </property>
+       <layout class="QHBoxLayout" >
+        <property name="margin" >
+         <number>8</number>
+        </property>
+        <property name="spacing" >
+         <number>4</number>
+        </property>
+        <item>
+         <widget class="QComboBox" name="InputBusNameComboBox" >
+          <property name="sizePolicy" >
+           <sizepolicy>
+            <hsizetype>3</hsizetype>
+            <vsizetype>0</vsizetype>
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
-        </sizepolicy>
-    </property>
-    <property name="caption">
-        <string>Track - Qtractor</string>
-    </property>
-    <property name="icon">
-        <pixmap>trackProperties.png</pixmap>
-    </property>
-    <property name="focusPolicy">
-        <enum>StrongFocus</enum>
-    </property>
-    <vbox>
-        <property name="name">
-            <cstring>unnamed</cstring>
+           </sizepolicy>
+          </property>
+          <property name="toolTip" >
+           <string>Input bus name</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QComboBox" name="OutputBusNameComboBox" >
+          <property name="sizePolicy" >
+           <sizepolicy>
+            <hsizetype>3</hsizetype>
+            <vsizetype>0</vsizetype>
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="toolTip" >
+           <string>Ouput bus name</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QToolButton" name="BusNameToolButton" >
+          <property name="minimumSize" >
+           <size>
+            <width>22</width>
+            <height>22</height>
+           </size>
+          </property>
+          <property name="maximumSize" >
+           <size>
+            <width>24</width>
+            <height>24</height>
+           </size>
+          </property>
+          <property name="focusPolicy" >
+           <enum>Qt::TabFocus</enum>
+          </property>
+          <property name="toolTip" >
+           <string>Manage busses</string>
+          </property>
+          <property name="text" >
+           <string>...</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="MidiGroupBox" >
+     <property name="title" >
+      <string>MIDI / Instrument</string>
+     </property>
+     <layout class="QGridLayout" >
+      <property name="margin" >
+       <number>8</number>
+      </property>
+      <property name="spacing" >
+       <number>4</number>
+      </property>
+      <item row="3" column="0" >
+       <widget class="QLabel" name="ProgTextLabel" >
+        <property name="text" >
+         <string>&amp;Program:</string>
         </property>
-        <widget class="QLabel">
-            <property name="name">
-                <cstring>TrackNameTextLabel</cstring>
-            </property>
-            <property name="text">
-                <string>&amp;Name:</string>
-            </property>
-            <property name="buddy" stdset="0">
-                <cstring>TrackNameTextEdit</cstring>
-            </property>
-        </widget>
-        <widget class="QTextEdit">
-            <property name="name">
-                <cstring>TrackNameTextEdit</cstring>
-            </property>
-            <property name="sizePolicy">
-                <sizepolicy>
-                    <hsizetype>7</hsizetype>
-                    <vsizetype>5</vsizetype>
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                </sizepolicy>
-            </property>
-            <property name="minimumSize">
-                <size>
-                    <width>320</width>
-                    <height>0</height>
-                </size>
-            </property>
-            <property name="maximumSize">
-                <size>
-                    <width>32767</width>
-                    <height>48</height>
-                </size>
-            </property>
-            <property name="toolTip" stdset="0">
-                <string>Track name description</string>
-            </property>
-        </widget>
-		<hbox>
-			<property name="name">
-				<cstring>unnamed</cstring>
-			</property>
-			<widget class="QButtonGroup">
-				<property name="name">
-					<cstring>TrackTypeGroup</cstring>
-				</property>
-				<property name="title">
-					<string>Type</string>
-				</property>
-				<hbox>
-					<property name="name">
-						<cstring>unnamed</cstring>
-					</property>
-					<widget class="QRadioButton">
-						<property name="name">
-							<cstring>AudioRadioButton</cstring>
-						</property>
-						<property name="text">
-							<string>&amp;Audio</string>
-						</property>
-						<property name="accel">
-							<string>Alt+A</string>
-						</property>
-						<property name="toolTip" stdset="0">
-							<string>Audio track type</string>
-						</property>
-					</widget>
-					<widget class="QRadioButton">
-						<property name="name">
-							<cstring>MidiRadioButton</cstring>
-						</property>
-						<property name="text">
-							<string>&amp;MIDI</string>
-						</property>
-						<property name="accel">
-							<string>Alt+M</string>
-						</property>
-						<property name="toolTip" stdset="0">
-							<string>MIDI track type</string>
-						</property>
-					</widget>
-				</hbox>
-			</widget>
-			<widget class="QButtonGroup">
-				<property name="name">
-					<cstring>TrackBusGroup</cstring>
-				</property>
-				<property name="title">
-					<string>Input / Output</string>
-				</property>
-				<hbox>
-					<property name="name">
-						<cstring>unnamed</cstring>
-					</property>
-					<widget class="QComboBox">
-						<property name="name">
-							<cstring>InputBusNameComboBox</cstring>
-						</property>
-						<property name="sizePolicy">
-							<sizepolicy>
-								<hsizetype>3</hsizetype>
-								<vsizetype>0</vsizetype>
-								<horstretch>0</horstretch>
-								<verstretch>0</verstretch>
-							</sizepolicy>
-						</property>
-						<property name="toolTip" stdset="0">
-							<string>Input bus name</string>
-						</property>
-					</widget>
-					<widget class="QComboBox">
-						<property name="name">
-							<cstring>OutputBusNameComboBox</cstring>
-						</property>
-						<property name="sizePolicy">
-							<sizepolicy>
-								<hsizetype>3</hsizetype>
-								<vsizetype>0</vsizetype>
-								<horstretch>0</horstretch>
-								<verstretch>0</verstretch>
-							</sizepolicy>
-						</property>
-						<property name="toolTip" stdset="0">
-							<string>Ouput bus name</string>
-						</property>
-					</widget>
-					<widget class="QToolButton">
-						<property name="name">
-							<cstring>BusNameToolButton</cstring>
-						</property>
-						<property name="minimumSize">
-							<size>
-								<width>22</width>
-								<height>22</height>
-							</size>
-						</property>
-						<property name="maximumSize">
-							<size>
-								<width>24</width>
-								<height>24</height>
-							</size>
-						</property>
-						<property name="focusPolicy">
-							<enum>TabFocus</enum>
-						</property>
-						<property name="text">
-							<string>...</string>
-						</property>
-						<property name="toolTip" stdset="0">
-							<string>Manage busses</string>
-						</property>
-					</widget>
-				</hbox>
-			</widget>
-		</hbox>
-        <widget class="QGroupBox">
-            <property name="name">
-                <cstring>MidiGroupBox</cstring>
-            </property>
-            <property name="title">
-                <string>MIDI / Instrument</string>
-            </property>
-            <grid>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="QLabel" row="3" column="0">
-                    <property name="name">
-                        <cstring>ProgTextLabel</cstring>
-                    </property>
-                    <property name="text">
-                        <string>&amp;Program:</string>
-                    </property>
-                    <property name="buddy" stdset="0">
-                        <cstring>ProgComboBox</cstring>
-                    </property>
-                </widget>
-                <widget class="QLabel" row="2" column="0">
-                    <property name="name">
-                        <cstring>BankTextLabel</cstring>
-                    </property>
-                    <property name="text">
-                        <string>&amp;Bank:</string>
-                    </property>
-                    <property name="buddy" stdset="0">
-                        <cstring>BankComboBox</cstring>
-                    </property>
-                </widget>
-                <widget class="QLabel" row="1" column="0" rowspan="1" colspan="2">
-                    <property name="name">
-                        <cstring>BankSelMethodTextLabel</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Bank &amp;Select Method:</string>
-                    </property>
-                    <property name="buddy" stdset="0">
-                        <cstring>BankSelMethodComboBox</cstring>
-                    </property>
-                </widget>
-                <widget class="QLabel" row="0" column="0">
-                    <property name="name">
-                        <cstring>ChannelTextLabel</cstring>
-                    </property>
-                    <property name="text">
-                        <string>&amp;Channel:</string>
-                    </property>
-                    <property name="buddy" stdset="0">
-                        <cstring>ChannelSpinBox</cstring>
-                    </property>
-                </widget>
-                <widget class="QSpinBox" row="0" column="1">
-                    <property name="name">
-                        <cstring>ChannelSpinBox</cstring>
-                    </property>
-                    <property name="maxValue">
-                        <number>16</number>
-                    </property>
-                    <property name="minValue">
-                        <number>1</number>
-                    </property>
-                    <property name="toolTip" stdset="0">
-                        <string>MIDI Channel (1-15)</string>
-                    </property>
-                </widget>
-                <widget class="QComboBox" row="0" column="2">
-                    <property name="name">
-                        <cstring>InstrumentComboBox</cstring>
-                    </property>
-                    <property name="sizePolicy">
-                        <sizepolicy>
-                            <hsizetype>3</hsizetype>
-                            <vsizetype>0</vsizetype>
-                            <horstretch>0</horstretch>
-                            <verstretch>0</verstretch>
-                        </sizepolicy>
-                    </property>
-                    <property name="toolTip" stdset="0">
-                        <string>MIDI Patch: Instrument</string>
-                    </property>
-                </widget>
-                <widget class="QComboBox" row="1" column="2">
-                    <property name="name">
-                        <cstring>BankSelMethodComboBox</cstring>
-                    </property>
-                    <property name="sizePolicy">
-                        <sizepolicy>
-                            <hsizetype>3</hsizetype>
-                            <vsizetype>0</vsizetype>
-                            <horstretch>0</horstretch>
-                            <verstretch>0</verstretch>
-                        </sizepolicy>
-                    </property>
-                    <property name="toolTip" stdset="0">
-                        <string>MIDI Patch: Bank Select Method</string>
-                    </property>
-                </widget>
-                <widget class="QComboBox" row="2" column="1" rowspan="1" colspan="2">
-                    <property name="name">
-                        <cstring>BankComboBox</cstring>
-                    </property>
-                    <property name="sizePolicy">
-                        <sizepolicy>
-                            <hsizetype>3</hsizetype>
-                            <vsizetype>0</vsizetype>
-                            <horstretch>0</horstretch>
-                            <verstretch>0</verstretch>
-                        </sizepolicy>
-                    </property>
-					<property name="editable">
-						<bool>true</bool>
-					</property>
-                    <property name="toolTip" stdset="0">
-                        <string>MIDI Patch: Bank</string>
-                    </property>
-                </widget>
-                <widget class="QComboBox" row="3" column="1" rowspan="1" colspan="2">
-                    <property name="name">
-                        <cstring>ProgComboBox</cstring>
-                    </property>
-                    <property name="sizePolicy">
-                        <sizepolicy>
-                            <hsizetype>3</hsizetype>
-                            <vsizetype>0</vsizetype>
-                            <horstretch>0</horstretch>
-                            <verstretch>0</verstretch>
-                        </sizepolicy>
-                    </property>
-					<property name="editable">
-						<bool>true</bool>
-					</property>
-                    <property name="toolTip" stdset="0">
-                        <string>MIDI Patch: Program</string>
-                    </property>
-                </widget>
-            </grid>
-        </widget>
-        <widget class="QButtonGroup">
-            <property name="name">
-                <cstring>TrackViewGroup</cstring>
-            </property>
-            <property name="title">
-                <string>View / Colors</string>
-            </property>
-            <hbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="QLabel">
-                    <property name="name">
-                        <cstring>ForegroundColorTextLabel</cstring>
-                    </property>
-                    <property name="text">
-                        <string>&amp;Foreground:</string>
-                    </property>
-                    <property name="buddy" stdset="0">
-                        <cstring>ForegroundColorComboBox</cstring>
-                    </property>
-                </widget>
-                <widget class="QComboBox">
-                    <property name="name">
-                        <cstring>ForegroundColorComboBox</cstring>
-                    </property>
-                    <property name="sizePolicy">
-                        <sizepolicy>
-                            <hsizetype>3</hsizetype>
-                            <vsizetype>0</vsizetype>
-                            <horstretch>0</horstretch>
-                            <verstretch>0</verstretch>
-                        </sizepolicy>
-                    </property>
-                    <property name="minimumSize">
-                        <size>
-                            <width>64</width>
-                            <height>0</height>
-                        </size>
-                    </property>
-                    <property name="toolTip" stdset="0">
-                        <string>Foreground color</string>
-                    </property>
-                </widget>
-                <widget class="QToolButton">
-                    <property name="name">
-                        <cstring>ForegroundColorToolButton</cstring>
-                    </property>
-                    <property name="minimumSize">
-                        <size>
-                            <width>22</width>
-                            <height>22</height>
-                        </size>
-                    </property>
-                    <property name="maximumSize">
-                        <size>
-                            <width>24</width>
-                            <height>24</height>
-                        </size>
-                    </property>
-                    <property name="font">
-                        <font>
-                        </font>
-                    </property>
-                    <property name="focusPolicy">
-                        <enum>TabFocus</enum>
-                    </property>
-                    <property name="text">
-                        <string>...</string>
-                    </property>
-                    <property name="toolTip" stdset="0">
-                        <string>Select custom track foreground color</string>
-                    </property>
-                </widget>
-                <spacer>
-                    <property name="name">
-                        <cstring>spacer1</cstring>
-                    </property>
-                    <property name="orientation">
-                        <enum>Horizontal</enum>
-                    </property>
-                    <property name="sizeType">
-                        <enum>Expanding</enum>
-                    </property>
-                    <property name="sizeHint">
-                        <size>
-                            <width>8</width>
-                            <height>8</height>
-                        </size>
-                    </property>
-                </spacer>
-                <widget class="QLabel">
-                    <property name="name">
-                        <cstring>BackgroundColorTextLabel</cstring>
-                    </property>
-                    <property name="text">
-                        <string>&amp;Background:</string>
-                    </property>
-                    <property name="alignment">
-                        <set>AlignVCenter|AlignRight</set>
-                    </property>
-                    <property name="buddy" stdset="0">
-                        <cstring>BackgroundColorComboBox</cstring>
-                    </property>
-                </widget>
-                <widget class="QComboBox">
-                    <property name="name">
-                        <cstring>BackgroundColorComboBox</cstring>
-                    </property>
-                    <property name="sizePolicy">
-                        <sizepolicy>
-                            <hsizetype>3</hsizetype>
-                            <vsizetype>0</vsizetype>
-                            <horstretch>0</horstretch>
-                            <verstretch>0</verstretch>
-                        </sizepolicy>
-                    </property>
-                    <property name="minimumSize">
-                        <size>
-                            <width>64</width>
-                            <height>0</height>
-                        </size>
-                    </property>
-                    <property name="toolTip" stdset="0">
-                        <string>Background color</string>
-                    </property>
-                </widget>
-                <widget class="QToolButton">
-                    <property name="name">
-                        <cstring>BackgroundColorToolButton</cstring>
-                    </property>
-                    <property name="minimumSize">
-                        <size>
-                            <width>22</width>
-                            <height>22</height>
-                        </size>
-                    </property>
-                    <property name="maximumSize">
-                        <size>
-                            <width>24</width>
-                            <height>24</height>
-                        </size>
-                    </property>
-                    <property name="font">
-                        <font>
-                        </font>
-                    </property>
-                    <property name="focusPolicy">
-                        <enum>TabFocus</enum>
-                    </property>
-                    <property name="text">
-                        <string>...</string>
-                    </property>
-                    <property name="toolTip" stdset="0">
-                        <string>Select custom track background color</string>
-                    </property>
-                </widget>
-            </hbox>
-        </widget>
-        <widget class="QLayoutWidget">
-            <property name="name">
-                <cstring>layout1</cstring>
-            </property>
-            <hbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <spacer>
-                    <property name="name">
-                        <cstring>spacer2</cstring>
-                    </property>
-                    <property name="orientation">
-                        <enum>Horizontal</enum>
-                    </property>
-                    <property name="sizeType">
-                        <enum>Expanding</enum>
-                    </property>
-                    <property name="sizeHint">
-                        <size>
-                            <width>8</width>
-                            <height>8</height>
-                        </size>
-                    </property>
-                </spacer>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>OkPushButton</cstring>
-                    </property>
-                    <property name="text">
-                        <string>OK</string>
-                    </property>
-                    <property name="iconSet">
-                        <iconset>formAccept.png</iconset>
-                    </property>
-                </widget>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>CancelPushButton</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Cancel</string>
-                    </property>
-                    <property name="iconSet">
-                        <iconset>formReject.png</iconset>
-                    </property>
-                </widget>
-            </hbox>
-        </widget>
-    </vbox>
-</widget>
-<connections>
-    <connection>
-        <sender>TrackNameTextEdit</sender>
-        <signal>textChanged()</signal>
-        <receiver>qtractorTrackForm</receiver>
-        <slot>changed()</slot>
-    </connection>
-    <connection>
-        <sender>TrackTypeGroup</sender>
-        <signal>clicked(int)</signal>
-        <receiver>qtractorTrackForm</receiver>
-        <slot>trackTypeChanged(int)</slot>
-    </connection>
-    <connection>
-        <sender>InputBusNameComboBox</sender>
-        <signal>activated(const QString &amp;)</signal>
-        <receiver>qtractorTrackForm</receiver>
-        <slot>inputBusNameChanged(const QString&amp;)</slot>
-    </connection>
-    <connection>
-        <sender>OutputBusNameComboBox</sender>
-        <signal>activated(const QString &amp;)</signal>
-        <receiver>qtractorTrackForm</receiver>
-        <slot>outputBusNameChanged(const QString&amp;)</slot>
-    </connection>
-	<connection>
-		<sender>BusNameToolButton</sender>
-		<signal>clicked()</signal>
-		<receiver>qtractorTrackForm</receiver>
-		<slot>busNameClicked()</slot>
-	</connection>
-    <connection>
-        <sender>ChannelSpinBox</sender>
-        <signal>valueChanged(int)</signal>
-        <receiver>qtractorTrackForm</receiver>
-        <slot>channelChanged(int)</slot>
-    </connection>
-    <connection>
-        <sender>InstrumentComboBox</sender>
-        <signal>activated(const QString &amp;)</signal>
-        <receiver>qtractorTrackForm</receiver>
-        <slot>instrumentChanged(const QString&amp;)</slot>
-    </connection>
-	<connection>
-		<sender>BankSelMethodComboBox</sender>
-		<signal>activated(int)</signal>
-		<receiver>qtractorTrackForm</receiver>
-		<slot>bankSelMethodChanged(int)</slot>
-	</connection>
-	<connection>
-		<sender>BankComboBox</sender>
-		<signal>textChanged(const QString &amp;)</signal>
-		<receiver>qtractorTrackForm</receiver>
-		<slot>bankChanged()</slot>
-	</connection>
-	<connection>
-		<sender>ProgComboBox</sender>
-		<signal>textChanged(const QString &amp;)</signal>
-		<receiver>qtractorTrackForm</receiver>
-		<slot>progChanged()</slot>
-	</connection>
-    <connection>
-        <sender>ForegroundColorComboBox</sender>
-        <signal>activated(int)</signal>
-        <receiver>qtractorTrackForm</receiver>
-        <slot>changed()</slot>
-    </connection>
-    <connection>
-        <sender>ForegroundColorToolButton</sender>
-        <signal>clicked()</signal>
-        <receiver>qtractorTrackForm</receiver>
-        <slot>selectForegroundColor()</slot>
-    </connection>
-    <connection>
-        <sender>BackgroundColorComboBox</sender>
-        <signal>activated(int)</signal>
-        <receiver>qtractorTrackForm</receiver>
-        <slot>changed()</slot>
-    </connection>
-    <connection>
-        <sender>BackgroundColorToolButton</sender>
-        <signal>clicked()</signal>
-        <receiver>qtractorTrackForm</receiver>
-        <slot>selectBackgroundColor()</slot>
-    </connection>
-    <connection>
-        <sender>OkPushButton</sender>
-        <signal>clicked()</signal>
-        <receiver>qtractorTrackForm</receiver>
-        <slot>accept()</slot>
-    </connection>
-    <connection>
-        <sender>CancelPushButton</sender>
-        <signal>clicked()</signal>
-        <receiver>qtractorTrackForm</receiver>
-        <slot>reject()</slot>
-    </connection>
-</connections>
-<tabstops>
-    <tabstop>TrackNameTextEdit</tabstop>
-    <tabstop>AudioRadioButton</tabstop>
-    <tabstop>MidiRadioButton</tabstop>
-    <tabstop>InputBusNameComboBox</tabstop>
-    <tabstop>OutputBusNameComboBox</tabstop>
-	<tabstop>BusNameToolButton</tabstop>
-    <tabstop>ChannelSpinBox</tabstop>
-    <tabstop>InstrumentComboBox</tabstop>
-    <tabstop>BankSelMethodComboBox</tabstop>
-    <tabstop>BankComboBox</tabstop>
-    <tabstop>ProgComboBox</tabstop>
-    <tabstop>ForegroundColorComboBox</tabstop>
-    <tabstop>ForegroundColorToolButton</tabstop>
-    <tabstop>BackgroundColorComboBox</tabstop>
-    <tabstop>BackgroundColorToolButton</tabstop>
-    <tabstop>OkPushButton</tabstop>
-    <tabstop>CancelPushButton</tabstop>
-</tabstops>
-<includes>
-	<include location="local" impldecl="in declaration">qtractorTrack.h</include>
-    <include location="global" impldecl="in declaration">qmap.h</include>
-</includes>
-<forwards>
-    <forward>class qtractorMidiBus;</forward>
-</forwards>
-<variables>
-    <variable access="private">qtractorTrack *m_pTrack;</variable>
-    <variable access="private">qtractorTrack::Properties m_props;</variable>
-    <variable access="private">QMap &lt; int, int &gt; m_banks;</variable>
-    <variable access="private">QMap &lt; int, int &gt; m_progs;</variable>
-	<variable access="private">int m_iDirtySetup;</variable>
-    <variable access="private">int m_iDirtyCount;</variable>
-    <variable access="private">qtractorMidiBus *m_pOldMidiBus</variable>
-    <variable access="private">int m_iOldChannel</variable>
-    <variable access="private">QString m_sOldInstrumentName</variable>
-    <variable access="private">int m_iOldBankSelMethod</variable>
-    <variable access="private">int m_iOldBank</variable>
-    <variable access="private">int m_iOldProg</variable>
-</variables>
-<slots>
-    <slot specifier="non virtual">accept()</slot>
-    <slot specifier="non virtual">reject()</slot>
-    <slot specifier="non virtual">stabilizeForm()</slot>
-    <slot specifier="non virtual">changed()</slot>
-    <slot specifier="non virtual">trackTypeChanged( int iTrackType )</slot>
-    <slot specifier="non virtual">inputBusNameChanged( const QString &amp; sBusName )</slot>
-    <slot specifier="non virtual">outputBusNameChanged( const QString &amp; sBusName )</slot>
-	<slot specifier="non virtual">busNameClicked()</slot>
-    <slot specifier="non virtual">channelChanged( int iChannel )</slot>
-    <slot specifier="non virtual">instrumentChanged( const QString &amp; sInstrumentName )</slot>
-    <slot specifier="non virtual">bankSelMethodChanged( int iBankSelMethod )</slot>
-    <slot specifier="non virtual">bankChanged()</slot>
-    <slot specifier="non virtual">progChanged()</slot>
-    <slot specifier="non virtual">selectForegroundColor()</slot>
-    <slot specifier="non virtual">selectBackgroundColor()</slot>
-</slots>
-<functions>
-    <function access="private" specifier="non virtual">init()</function>
-    <function access="private" specifier="non virtual">destroy()</function>
-    <function specifier="non virtual">setTrack( qtractorTrack *pTrack )</function>
-    <function specifier="non virtual" returnType="qtractorTrack *">track()</function>
-    <function specifier="non virtual" returnType="const qtractorTrack::Properties &amp;">properties()</function>
-    <function access="private" specifier="non virtual" returnType="qtractorMidiBus *">midiBus()</function>
-	<function access="private" specifier="non virtual" returnType="int">midiBank()</function>
-	<function access="private" specifier="non virtual" returnType="int">midiProgram()</function>
-    <function access="private" specifier="non virtual">updateInstruments()</function>
-	<function access="private" specifier="non virtual">updateTrackType( int iTrackType )</function>
-	<function access="private" specifier="non virtual">updateChannel( int iChannel, int iBankSelMethod, int iBank, int iProg )</function>
-	<function access="private" specifier="non virtual">updateBanks( const QString &amp; sInstrumentName, int iBankSelMethod, int iBank, int iProg )</function>
-    <function access="private" specifier="non virtual">updatePrograms( const QString &amp; sInstrumentName, int iBank, int iProg )</function>
-    <function access="private" specifier="non virtual">updateColorItem( QComboBox *pComboBox, const QColor &amp; color )</function>
-    <function access="private" specifier="non virtual" returnType="const QColor &amp;">colorItem( QComboBox *pComboBox )</function>
-</functions>
-<pixmapinproject/>
-<layoutdefaults spacing="4" margin="8"/>
-</UI>
+        <property name="buddy" >
+         <cstring>ProgComboBox</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0" >
+       <widget class="QLabel" name="BankTextLabel" >
+        <property name="text" >
+         <string>&amp;Bank:</string>
+        </property>
+        <property name="buddy" >
+         <cstring>BankComboBox</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0" colspan="2" >
+       <widget class="QLabel" name="BankSelMethodTextLabel" >
+        <property name="text" >
+         <string>Bank &amp;Select Method:</string>
+        </property>
+        <property name="buddy" >
+         <cstring>BankSelMethodComboBox</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0" >
+       <widget class="QLabel" name="ChannelTextLabel" >
+        <property name="text" >
+         <string>&amp;Channel:</string>
+        </property>
+        <property name="buddy" >
+         <cstring>ChannelSpinBox</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1" >
+       <widget class="QSpinBox" name="ChannelSpinBox" >
+        <property name="toolTip" >
+         <string>MIDI Channel (1-15)</string>
+        </property>
+        <property name="maximum" >
+         <number>16</number>
+        </property>
+        <property name="minimum" >
+         <number>1</number>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="2" >
+       <widget class="QComboBox" name="InstrumentComboBox" >
+        <property name="sizePolicy" >
+         <sizepolicy>
+          <hsizetype>3</hsizetype>
+          <vsizetype>0</vsizetype>
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="toolTip" >
+         <string>MIDI Patch: Instrument</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="2" >
+       <widget class="QComboBox" name="BankSelMethodComboBox" >
+        <property name="sizePolicy" >
+         <sizepolicy>
+          <hsizetype>3</hsizetype>
+          <vsizetype>0</vsizetype>
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="toolTip" >
+         <string>MIDI Patch: Bank Select Method</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1" colspan="2" >
+       <widget class="QComboBox" name="BankComboBox" >
+        <property name="sizePolicy" >
+         <sizepolicy>
+          <hsizetype>3</hsizetype>
+          <vsizetype>0</vsizetype>
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="toolTip" >
+         <string>MIDI Patch: Bank</string>
+        </property>
+        <property name="editable" >
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1" colspan="2" >
+       <widget class="QComboBox" name="ProgComboBox" >
+        <property name="sizePolicy" >
+         <sizepolicy>
+          <hsizetype>3</hsizetype>
+          <vsizetype>0</vsizetype>
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="toolTip" >
+         <string>MIDI Patch: Program</string>
+        </property>
+        <property name="editable" >
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="TrackViewGroup" >
+     <property name="title" >
+      <string>View / Colors</string>
+     </property>
+     <layout class="QHBoxLayout" >
+      <property name="margin" >
+       <number>8</number>
+      </property>
+      <property name="spacing" >
+       <number>4</number>
+      </property>
+      <item>
+       <widget class="QLabel" name="ForegroundColorTextLabel" >
+        <property name="text" >
+         <string>&amp;Foreground:</string>
+        </property>
+        <property name="buddy" >
+         <cstring>ForegroundColorComboBox</cstring>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QComboBox" name="ForegroundColorComboBox" >
+        <property name="sizePolicy" >
+         <sizepolicy>
+          <hsizetype>3</hsizetype>
+          <vsizetype>0</vsizetype>
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize" >
+         <size>
+          <width>64</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="toolTip" >
+         <string>Foreground color</string>
+        </property>
+        <property name="editable" >
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QToolButton" name="ForegroundColorToolButton" >
+        <property name="minimumSize" >
+         <size>
+          <width>22</width>
+          <height>22</height>
+         </size>
+        </property>
+        <property name="maximumSize" >
+         <size>
+          <width>24</width>
+          <height>24</height>
+         </size>
+        </property>
+        <property name="font" >
+         <font>
+          <family>MS Shell Dlg 2</family>
+          <pointsize>8</pointsize>
+          <weight>50</weight>
+          <italic>false</italic>
+          <bold>false</bold>
+          <underline>false</underline>
+          <strikeout>false</strikeout>
+         </font>
+        </property>
+        <property name="focusPolicy" >
+         <enum>Qt::TabFocus</enum>
+        </property>
+        <property name="toolTip" >
+         <string>Select custom track foreground color</string>
+        </property>
+        <property name="text" >
+         <string>...</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer>
+        <property name="orientation" >
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeType" >
+         <enum>QSizePolicy::Expanding</enum>
+        </property>
+        <property name="sizeHint" >
+         <size>
+          <width>8</width>
+          <height>8</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QLabel" name="BackgroundColorTextLabel" >
+        <property name="text" >
+         <string>&amp;Background:</string>
+        </property>
+        <property name="alignment" >
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+        <property name="buddy" >
+         <cstring>BackgroundColorComboBox</cstring>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QComboBox" name="BackgroundColorComboBox" >
+        <property name="sizePolicy" >
+         <sizepolicy>
+          <hsizetype>3</hsizetype>
+          <vsizetype>0</vsizetype>
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize" >
+         <size>
+          <width>64</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="toolTip" >
+         <string>Background color</string>
+        </property>
+        <property name="editable" >
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QToolButton" name="BackgroundColorToolButton" >
+        <property name="minimumSize" >
+         <size>
+          <width>22</width>
+          <height>22</height>
+         </size>
+        </property>
+        <property name="maximumSize" >
+         <size>
+          <width>24</width>
+          <height>24</height>
+         </size>
+        </property>
+        <property name="font" >
+         <font>
+          <family>MS Shell Dlg 2</family>
+          <pointsize>8</pointsize>
+          <weight>50</weight>
+          <italic>false</italic>
+          <bold>false</bold>
+          <underline>false</underline>
+          <strikeout>false</strikeout>
+         </font>
+        </property>
+        <property name="focusPolicy" >
+         <enum>Qt::TabFocus</enum>
+        </property>
+        <property name="toolTip" >
+         <string>Select custom track background color</string>
+        </property>
+        <property name="text" >
+         <string>...</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" >
+     <property name="margin" >
+      <number>0</number>
+     </property>
+     <property name="spacing" >
+      <number>4</number>
+     </property>
+     <item>
+      <spacer>
+       <property name="orientation" >
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeType" >
+        <enum>QSizePolicy::Expanding</enum>
+       </property>
+       <property name="sizeHint" >
+        <size>
+         <width>8</width>
+         <height>8</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="OkPushButton" >
+       <property name="text" >
+        <string>OK</string>
+       </property>
+       <property name="icon" >
+        <iconset resource="../icons/qtractor.qrc" >:/icons/formAccept.png</iconset>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="CancelPushButton" >
+       <property name="text" >
+        <string>Cancel</string>
+       </property>
+       <property name="icon" >
+        <iconset resource="../icons/qtractor.qrc" >:/icons/formReject.png</iconset>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <layoutdefault spacing="4" margin="8" />
+ <pixmapfunction></pixmapfunction>
+ <tabstops>
+  <tabstop>TrackNameTextEdit</tabstop>
+  <tabstop>AudioRadioButton</tabstop>
+  <tabstop>MidiRadioButton</tabstop>
+  <tabstop>InputBusNameComboBox</tabstop>
+  <tabstop>OutputBusNameComboBox</tabstop>
+  <tabstop>BusNameToolButton</tabstop>
+  <tabstop>ChannelSpinBox</tabstop>
+  <tabstop>InstrumentComboBox</tabstop>
+  <tabstop>BankSelMethodComboBox</tabstop>
+  <tabstop>BankComboBox</tabstop>
+  <tabstop>ProgComboBox</tabstop>
+  <tabstop>ForegroundColorComboBox</tabstop>
+  <tabstop>ForegroundColorToolButton</tabstop>
+  <tabstop>BackgroundColorComboBox</tabstop>
+  <tabstop>BackgroundColorToolButton</tabstop>
+  <tabstop>OkPushButton</tabstop>
+  <tabstop>CancelPushButton</tabstop>
+ </tabstops>
+ <resources>
+  <include location="../icons/qtractor.qrc" />
+ </resources>
+ <connections/>
+</ui>

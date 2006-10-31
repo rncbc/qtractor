@@ -53,10 +53,11 @@ qtractorAudioVorbisFile::~qtractorAudioVorbisFile (void)
 
 
 // Open method.
-bool qtractorAudioVorbisFile::open ( const char *pszName, int iMode )
+bool qtractorAudioVorbisFile::open ( const QString& sFilename, int iMode )
 {
 #ifdef DEBUG_0
-	fprintf(stderr, "qtractorAudioVorbisFile::open(\"%s\", %d)\n", pszName, iMode);
+	fprintf(stderr, "qtractorAudioVorbisFile::open(\"%s\", %d)\n",
+		sFilename.toUtf8().constData(), iMode);
 #endif
 	close();
 
@@ -65,7 +66,8 @@ bool qtractorAudioVorbisFile::open ( const char *pszName, int iMode )
 		return false;
 
 	// Now open it.
-	m_pFile = ::fopen(pszName, "rb");
+	QByteArray aFilename = sFilename.toUtf8();
+	m_pFile = ::fopen(aFilename.constData(), "rb");
 	if (m_pFile == NULL)
 		return false;
 

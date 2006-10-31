@@ -22,27 +22,26 @@
 #include "qtractorAudioPeak.h"
 #include "qtractorAudioFile.h"
 
-#include <qapplication.h>
-#include <qfileinfo.h>
-#include <qthread.h>
-#include <qdir.h>
+#include <QApplication>
+#include <QFileInfo>
+#include <QThread>
+#include <QDir>
+
+#include <QDateTime>
+#include <QWidget>
+#include <QEvent>
 
 #include <math.h>
 
-#if defined(__BORLANDC__)
-// BCC32 doesn't have these float versions...
-static inline float sqrtf ( float x )	{ return float(::sqrt(x)); }
-static inline float fabsf ( float x )	{ return float(::fabs(x)); }
-#endif
 
 // Audio file buffer size in frames per channel.
-static const unsigned int c_iAudioBufSize = (4 * 1024);
+static const unsigned int c_iAudioBufSize = (16 * 1024);
 
 // Peak file buffer size in frames per channel.
 static const unsigned int c_iPeakBufSize = (4 * 1024);
 
 // Default peak period as a digest representation in frames per channel.
-static const unsigned short c_iPeakPeriod = 128;
+static const unsigned short c_iPeakPeriod = 1024;
 
 // Fixed peak smoothing coeficient (exponential average).
 static const float c_fPeakExpCoef = 0.5;
@@ -147,7 +146,7 @@ void qtractorAudioPeakThread::run (void)
 	m_bRunState = true;
 
 	// Create the peak file from the sample audio one...
-	if (m_peakFile.open(IO_ReadWrite | IO_Truncate)) {
+	if (m_peakFile.open(QIODevice::ReadWrite | QIODevice::Truncate)) {
 		// Open audio sample file...
 		if (m_pAudioFile->open(m_pPeakFile->filename())) {
 			unsigned short iChannels = m_pAudioFile->channels();
@@ -177,7 +176,7 @@ void qtractorAudioPeakThread::run (void)
 			// Maybe not perfectly divisible...
 			if (iFrames % m_iPeriod)
 				hdr.peakFrames++;
-			m_peakFile.writeBlock((const char *) &hdr, sizeof(hdr));
+			m_peakFile.write((const char *) &hdr, sizeof(hdr));
 			// Go ahead with the whole bunch...
 			while (m_bRunState && createPeakFileChunk());
 		}
@@ -188,7 +187,7 @@ void qtractorAudioPeakThread::run (void)
 	// May send notification event, anyway...
 	if (m_pPeakFile->notifyWidget()) {
 		QApplication::postEvent(m_pPeakFile->notifyWidget(),
-			new QCustomEvent(m_pPeakFile->notifyPeakType(), m_pPeakFile));
+			new QEvent(m_pPeakFile->notifyPeakType()));
 	}
 
 #ifdef DEBUG
@@ -265,7 +264,7 @@ void qtractorAudioPeakThread::writePeakFileFrame (void)
 			+ c_fPeakExpCoef * 254.0f * (::sqrtf(m_peakRms[i] / (float) m_iPeak));
 		frame.peakRms = (unsigned char) (m_peakRms[k] > 254.0f ? 255 : m_peakRms[k]);
 		// Bail out...
-		m_peakFile.writeBlock((const char *) &frame, sizeof(frame));
+		m_peakFile.write((const char *) &frame, sizeof(frame));
 		// Reset peak period accumulators...
 		m_peakMax[i] = 0.0f;
 		m_peakMin[i] = 0.0f;
@@ -350,7 +349,7 @@ qtractorAudioPeakFile::~qtractorAudioPeakFile (void)
 	if (m_pPeakThread) {
 		// Try to wait for thread termination...
 		m_pPeakThread->setRunState(false);
-		if (m_pPeakThread->running()) {
+		if (m_pPeakThread->isRunning()) {
 		//	m_pPeakThread->terminate();
 			m_pPeakThread->wait();
 			bAborted = true;
@@ -366,7 +365,7 @@ qtractorAudioPeakFile::~qtractorAudioPeakFile (void)
 	m_pFactory->removePeak(this);
 
 	// Do we get rid from the filesystem too?
-	if (m_pFactory->autoRemove() || bAborted)
+	if (m_pFactory->isAutoRemove() || bAborted)
 		m_peakFile.remove();
 }
 
@@ -381,7 +380,7 @@ bool qtractorAudioPeakFile::openPeakFile (void)
 	// Check if we're still on creative thread...
 	if (m_pPeakThread) {
 		// If running try waiting just 10 msec for it to finnish...
-		if (m_pPeakThread->running()/*&& !m_pPeakThread->wait(10) */)
+		if (m_pPeakThread->isRunning() /*&& !m_pPeakThread->wait(10) */)
 			return false;
 		// OK. We're done with our creative thread.
 		delete m_pPeakThread;
@@ -389,7 +388,7 @@ bool qtractorAudioPeakFile::openPeakFile (void)
 	} else {
 		// Need some preliminary file information...
 		QFileInfo fileInfo(m_sFilename);
-		QFileInfo peakInfo(m_peakFile.name());
+		QFileInfo peakInfo(m_peakFile.fileName());
 		// Have we a peak file up-to-date,
 		// or must the peak file be (re)created?
 		if (!peakInfo.exists() ||
@@ -401,21 +400,20 @@ bool qtractorAudioPeakFile::openPeakFile (void)
 	}
 
 	// Just open and go ahead with first bunch...
-	if (!m_peakFile.open(IO_Raw | IO_ReadOnly))
+	if (!m_peakFile.open(QIODevice::Unbuffered | QIODevice::ReadOnly))
 		return false;
 
 	// Read peak file header.
 	qtractorAudioPeakHeader hdr;
-	if (m_peakFile.readBlock((char *) &hdr, sizeof(hdr))
-		!= (Q_LONG) sizeof(hdr)) {
+	if (m_peakFile.read((char *) &hdr, sizeof(hdr))	!= (qint64) sizeof(hdr)) {
 		m_peakFile.close();
 		return false;
 	}
 
 #ifdef DEBUG_0
 	fprintf(stderr, "--- openPeakFile ---\n");
-	fprintf(stderr, "name       = %s\n", m_peakFile.name().latin1());
-	fprintf(stderr, "filename   = %s\n", m_sFilename.latin1());
+	fprintf(stderr, "name       = %s\n", m_peakFile.name().toUtf8().constData());
+	fprintf(stderr, "filename   = %s\n", m_sFilename.toUtf8().constData());
 	fprintf(stderr, "sampleRate = %u\n", m_iSampleRate);
 	fprintf(stderr, "header     = %d\n", sizeof(qtractorAudioPeakHeader));
 	fprintf(stderr, "frame      = %d\n", sizeof(qtractorAudioPeakFrame));
@@ -496,9 +494,9 @@ QEvent::Type qtractorAudioPeakFile::notifyPeakType (void) const
 
 
 // Auto-delete property.
-bool qtractorAudioPeakFile::autoRemove (void) const
+bool qtractorAudioPeakFile::isAutoRemove (void) const
 {
-	return m_pFactory->autoRemove();
+	return m_pFactory->isAutoRemove();
 }
 
 
@@ -597,8 +595,8 @@ void qtractorAudioPeakFile::readPeakChunk (void)
 {
 	// Set position and read peak frames from there.
 	int nread = 0;
-	if (m_peakFile.at(sizeof(qtractorAudioPeakHeader) + m_iPeakOffset))
-		nread = (int) m_peakFile.readBlock(&m_pPeakBuffer[0], m_iPeakBufSize);
+	if (m_peakFile.seek(sizeof(qtractorAudioPeakHeader) + m_iPeakOffset))
+		nread = (int) m_peakFile.read(&m_pPeakBuffer[0], m_iPeakBufSize);
 	// Zero the remaining...
 	if (nread < (int) m_iPeakBufSize)
 		::memset(&m_pPeakBuffer[nread], 0, m_iPeakBufSize - nread);
@@ -680,8 +678,6 @@ void qtractorAudioPeak::getPeak ( qtractorAudioPeakFrame *pframes,
 // Constructor.
 qtractorAudioPeakFactory::qtractorAudioPeakFactory (void)
 {
-	m_peaks.setAutoDelete(false);
-
 	m_pNotifyWidget   = NULL;
 	m_eNotifyPeakType = QEvent::None;
 	
@@ -692,9 +688,12 @@ qtractorAudioPeakFactory::qtractorAudioPeakFactory (void)
 // Default destructor.
 qtractorAudioPeakFactory::~qtractorAudioPeakFactory (void)
 {
-	QDictIterator<qtractorAudioPeakFile> iter(m_peaks);
-	for ( ; iter.current(); ++iter)
-		delete iter.current();
+	QMutableHashIterator<QString, qtractorAudioPeakFile *> iter(m_peaks);
+	while (iter.hasNext()) {
+		qtractorAudioPeakFile *pPeakFile = iter.next().value();
+		iter.remove();
+		delete pPeakFile;
+	}
 
 	m_peaks.clear();
 }
@@ -705,7 +704,7 @@ qtractorAudioPeak* qtractorAudioPeakFactory::createPeak (
 	const QString& sFilename, unsigned int iSampleRate,
 	const QString& sSessionDir )
 {
-	qtractorAudioPeakFile* pPeakFile = m_peaks.find(sFilename);
+	qtractorAudioPeakFile* pPeakFile = m_peaks.value(sFilename, NULL);
 	if (pPeakFile == NULL) {
 		pPeakFile = new qtractorAudioPeakFile(this,
 			sFilename, iSampleRate, sSessionDir);
@@ -750,7 +749,7 @@ void qtractorAudioPeakFactory::setAutoRemove ( bool bAutoRemove )
 	m_bAutoRemove = bAutoRemove;
 }
 
-bool qtractorAudioPeakFactory::autoRemove (void) const
+bool qtractorAudioPeakFactory::isAutoRemove (void) const
 {
 	return m_bAutoRemove;
 }

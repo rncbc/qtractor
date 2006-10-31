@@ -29,8 +29,8 @@
 #include "qtractorMainForm.h"
 #include "qtractorConnectForm.h"
 
-#include <qtabwidget.h>
-#include <qcombobox.h>
+#include <QTabWidget>
+#include <QComboBox>
 
 
 //-------------------------------------------------------------------------
@@ -38,36 +38,38 @@
 //
 
 // Constructor.
-qtractorConnections::qtractorConnections ( qtractorMainForm *pParent )
-	: QDockWindow(pParent, "qtractorConnections")
+qtractorConnections::qtractorConnections ( QWidget *pParent )
+	: QWidget(pParent, Qt::Tool
+		| Qt::WindowTitleHint
+		| Qt::WindowSystemMenuHint
+		| Qt::WindowMinMaxButtonsHint)
 {
 	// Surely a name is crucial (e.g.for storing geometry settings)
-	// QDockWindow::setName("qtractorConnections");
+	QWidget::setObjectName("qtractorConnections");
 
 	// Create main inner widget.
 	m_pConnectForm = new qtractorConnectForm(this);
 	// Set proper tab widget icons...
-	m_pConnectForm->ConnectTabWidget->setTabIconSet(
-		m_pConnectForm->ConnectTabWidget->page(0),
-		QIconSet(QPixmap::fromMimeSource("trackAudio.png")));
-	m_pConnectForm->ConnectTabWidget->setTabIconSet(
-		m_pConnectForm->ConnectTabWidget->page(1),
-		QIconSet(QPixmap::fromMimeSource("trackMidi.png")));
+	QTabWidget *pTabWidget = m_pConnectForm->connectTabWidget();
+	pTabWidget->setTabIcon(0, QIcon(":/icons/trackAudio.png"));
+	pTabWidget->setTabIcon(1, QIcon(":/icons/trackMidi.png"));
 
-	// Prepare the dockable window stuff.
-	QDockWindow::setWidget(m_pConnectForm);
-	QDockWindow::setOrientation(Qt::Horizontal);
-	QDockWindow::setCloseMode(QDockWindow::Always);
-	QDockWindow::setResizeEnabled(true);
+	// Prepare the layout stuff.
+	QHBoxLayout *pLayout = new QHBoxLayout();
+	pLayout->setMargin(0);
+	pLayout->setSpacing(0);
+	pLayout->addWidget(m_pConnectForm);
+	QWidget::setLayout(pLayout);
+
 	// Some specialties to this kind of dock window...
-	QDockWindow::setFixedExtentHeight(240);
-	QDockWindow::setFixedExtentWidth(480);
+	QWidget::setMinimumWidth(480);
+	QWidget::setMinimumHeight(240);
 
 	// Finally set the default caption and tooltip.
-	const QString& sCaption = tr("Connections");
-	QToolTip::add(this, sCaption);
-	QDockWindow::setCaption(sCaption);
-	QDockWindow::setIcon(QPixmap::fromMimeSource("viewConnections.png"));
+	const QString& sCaption = tr("Connections") + " - " QTRACTOR_TITLE;
+	QWidget::setWindowTitle(sCaption);
+	QWidget::setWindowIcon(QIcon(":/icons/viewConnections.png"));
+	QWidget::setToolTip(sCaption);
 
 	// Get previously saved splitter sizes,
 	// (with fair default...)
@@ -75,14 +77,14 @@ qtractorConnections::qtractorConnections ( qtractorMainForm *pParent )
 	if (pMainForm) {
 		qtractorOptions *pOptions = pMainForm->options();
 		if (pOptions) {
-			QValueList<int> sizes;
+			QList<int> sizes;
 			sizes.append(180);
 			sizes.append(60);
 			sizes.append(180);
 			pOptions->loadSplitterSizes(
-				m_pConnectForm->AudioConnectSplitter, sizes);
+				m_pConnectForm->audioConnectSplitter(), sizes);
 			pOptions->loadSplitterSizes(
-				m_pConnectForm->MidiConnectSplitter, sizes);
+				m_pConnectForm->midiConnectSplitter(), sizes);
 		}
 	}
 }
@@ -97,14 +99,58 @@ qtractorConnections::~qtractorConnections (void)
 		if (pOptions) {
 			// Get previously saved splitter sizes...
 			pOptions->saveSplitterSizes(
-				m_pConnectForm->AudioConnectSplitter);
+				m_pConnectForm->audioConnectSplitter());
 			pOptions->saveSplitterSizes(
-				m_pConnectForm->MidiConnectSplitter);
+				m_pConnectForm->midiConnectSplitter());
 		}
 	}
 
 	// No need to delete child widgets, Qt does it all for us.
 	delete m_pConnectForm;
+}
+
+
+// Notify the main application widget that we're emerging.
+void qtractorConnections::showEvent ( QShowEvent *pShowEvent )
+{
+#ifdef CONFIG_DEBUG
+	fprintf(stderr, "qtractorConnections::showEvent()\n");
+#endif
+
+    qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+    if (pMainForm)
+        pMainForm->stabilizeForm();
+
+    QWidget::showEvent(pShowEvent);
+}
+
+// Notify the main application widget that we're closing.
+void qtractorConnections::hideEvent ( QHideEvent *pHideEvent )
+{
+#ifdef CONFIG_DEBUG
+	fprintf(stderr, "qtractorConnections::hideEvent()\n");
+#endif
+
+    QWidget::hideEvent(pHideEvent);
+
+    qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+    if (pMainForm)
+        pMainForm->stabilizeForm();
+}
+
+
+// Just about to notify main-window that we're closing.
+void qtractorConnections::closeEvent ( QCloseEvent * /*pCloseEvent*/ )
+{
+#ifdef CONFIG_DEBUG
+	fprintf(stderr, "qtractorConnections::closeEvent()\n");
+#endif
+
+	QWidget::hide();
+
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm)
+		pMainForm->stabilizeForm();
 }
 
 
@@ -139,19 +185,21 @@ void qtractorConnections::showBus ( qtractorBus *pBus,
 		qtractorAudioBus *pAudioBus
 			= static_cast<qtractorAudioBus *> (pBus);
 		if (pAudioBus) {
-			m_pConnectForm->ConnectTabWidget->setCurrentPage(0);
+			m_pConnectForm->connectTabWidget()->setCurrentIndex(0);
 			if (busMode & qtractorBus::Input) {
-				m_pConnectForm->AudioOClientsComboBox->setCurrentItem(0);
-				m_pConnectForm->AudioIClientsComboBox->setCurrentText(
-					pSession->audioEngine()->clientName());
-				m_pConnectForm->AudioIListView->setPortName(
+				m_pConnectForm->audioOClientsComboBox()->setCurrentIndex(0);
+				m_pConnectForm->audioIClientsComboBox()->setCurrentIndex(
+					m_pConnectForm->audioIClientsComboBox()->findText(
+						pSession->audioEngine()->clientName()));
+				m_pConnectForm->audioIListView()->setPortName(
 					pAudioBus->busName() + sSuffix);
 			} else {
-				m_pConnectForm->AudioOClientsComboBox->setCurrentText(
-					pSession->audioEngine()->clientName());
-				m_pConnectForm->AudioOListView->setPortName(
+				m_pConnectForm->audioOClientsComboBox()->setCurrentIndex(
+					m_pConnectForm->audioOClientsComboBox()->findText(
+						pSession->audioEngine()->clientName()));
+				m_pConnectForm->audioOListView()->setPortName(
 					pAudioBus->busName() + sSuffix);
-				m_pConnectForm->AudioIClientsComboBox->setCurrentItem(0);
+				m_pConnectForm->audioIClientsComboBox()->setCurrentIndex(0);
 			}
 			m_pConnectForm->audioRefresh();
 		}
@@ -162,23 +210,25 @@ void qtractorConnections::showBus ( qtractorBus *pBus,
 		qtractorMidiBus *pMidiBus
 			= static_cast<qtractorMidiBus *> (pBus);
 		if (pMidiBus) {
-			m_pConnectForm->ConnectTabWidget->setCurrentPage(1);
+			m_pConnectForm->connectTabWidget()->setCurrentIndex(1);
 			if (busMode & qtractorBus::Input) {
-				m_pConnectForm->MidiOClientsComboBox->setCurrentItem(0);
-				m_pConnectForm->MidiIClientsComboBox->setCurrentText(
-					QString::number(pSession->midiEngine()->alsaClient())
-					+ ':'+ pSession->midiEngine()->clientName());
-				m_pConnectForm->MidiIListView->setPortName(
+				m_pConnectForm->midiOClientsComboBox()->setCurrentIndex(0);
+				m_pConnectForm->midiIClientsComboBox()->setCurrentIndex(
+					m_pConnectForm->midiIClientsComboBox()->findText(
+						QString::number(pSession->midiEngine()->alsaClient())
+						+ ':'+ pSession->midiEngine()->clientName()));
+				m_pConnectForm->midiIListView()->setPortName(
 					QString::number(pMidiBus->alsaPort())
 					+ ':' + pMidiBus->busName() + sSuffix);
 			} else {
-				m_pConnectForm->MidiOClientsComboBox->setCurrentText(
-					QString::number(pSession->midiEngine()->alsaClient())
-					+ ':' + pSession->midiEngine()->clientName());
-				m_pConnectForm->MidiOListView->setPortName(
+				m_pConnectForm->midiOClientsComboBox()->setCurrentIndex(
+					m_pConnectForm->midiOClientsComboBox()->findText(
+						QString::number(pSession->midiEngine()->alsaClient())
+						+ ':' + pSession->midiEngine()->clientName()));
+				m_pConnectForm->midiOListView()->setPortName(
 					QString::number(pMidiBus->alsaPort())
 					+ ':' + pMidiBus->busName() + sSuffix);
-				m_pConnectForm->MidiIClientsComboBox->setCurrentItem(0);
+				m_pConnectForm->midiIClientsComboBox()->setCurrentIndex(0);
 			}
 			m_pConnectForm->midiRefresh();
 		}
@@ -191,7 +241,7 @@ void qtractorConnections::showBus ( qtractorBus *pBus,
 	// Make it stand out, sure...
 	show();
 	raise();
-	setActiveWindow();
+	activateWindow();
 }
 
 

@@ -39,17 +39,20 @@
 #include "qtractorAudioEngine.h"
 #include "qtractorMidiEngine.h"
 #include "qtractorSlider.h"
-#include "qtractorSpinBox.h"
 
 #include "qtractorMainForm.h"
 #include "qtractorBusForm.h"
 
-#include <qhbox.h>
-#include <qlabel.h>
-#include <qlayout.h>
-#include <qsplitter.h>
-#include <qtooltip.h>
-#include <qpopupmenu.h>
+#include <QSplitter>
+#include <QFrame>
+#include <QLabel>
+
+#include <QHBoxLayout>
+#include <QVBoxLayout>
+
+#include <QContextMenuEvent>
+#include <QResizeEvent>
+#include <QMouseEvent>
 
 
 //----------------------------------------------------------------------------
@@ -67,7 +70,7 @@ qtractorMixerStrip::qtractorMixerStrip ( qtractorMixerRack *pRack,
 qtractorMixerStrip::qtractorMixerStrip ( qtractorMixerRack *pRack,
 	qtractorTrack * pTrack)
 	: QFrame(pRack->workspace()), m_pRack(pRack),
-		m_pBus(NULL), m_busMode(qtractorBus::None),	m_pTrack(pTrack)
+		m_pBus(NULL), m_busMode(qtractorBus::None), m_pTrack(pTrack)
 {
 	initMixerStrip();
 }
@@ -88,33 +91,43 @@ void qtractorMixerStrip::initMixerStrip (void)
 	QFont font6(QFrame::font().family(), 6);
 	QFontMetrics fm(font6);
 
-	m_pLayout = new QVBoxLayout(this, 4, 4);
+	m_pLayout = new QVBoxLayout(this);
+	m_pLayout->setMargin(4);
+	m_pLayout->setSpacing(4);
 
 	m_pLabel = new QLabel(this);
 	m_pLabel->setFont(font6);
 	m_pLabel->setFixedHeight(fm.lineSpacing());
+	m_pLabel->setBackgroundRole(QPalette::Button);
+	m_pLabel->setForegroundRole(QPalette::ButtonText);
+	m_pLabel->setAutoFillBackground(true);
 	m_pLayout->addWidget(m_pLabel);
 
 	m_pPluginListView = new qtractorPluginListView(this);
 	m_pPluginListView->setFixedHeight(4 * fm.lineSpacing());
 	m_pLayout->addWidget(m_pPluginListView);
 
+	const QSizePolicy buttonPolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 	qtractorTrack::TrackType meterType = qtractorTrack::None;
 	if (m_pTrack) {
 		meterType = m_pTrack->trackType();
 		m_pBusButton = NULL;
-		m_pButtonLayout = new QHBoxLayout(m_pLayout, 2);
+		m_pButtonLayout = new QHBoxLayout();
+		m_pButtonLayout->setSpacing(2);
 		const QSize buttonSize(16, 14);
 		m_pRecordButton = new qtractorTrackButton(m_pTrack,
 			qtractorTrack::Record, buttonSize, this);
-		m_pMuteButton   = new qtractorTrackButton(m_pTrack,
+		m_pRecordButton->setSizePolicy(buttonPolicy);
+		m_pMuteButton = new qtractorTrackButton(m_pTrack,
 			qtractorTrack::Mute, buttonSize, this);
-		m_pSoloButton   = new qtractorTrackButton(m_pTrack,
+		m_pMuteButton->setSizePolicy(buttonPolicy);
+		m_pSoloButton = new qtractorTrackButton(m_pTrack,
 			qtractorTrack::Solo, buttonSize, this);
+		m_pSoloButton->setSizePolicy(buttonPolicy);
 		m_pButtonLayout->addWidget(m_pRecordButton);
 		m_pButtonLayout->addWidget(m_pMuteButton);
 		m_pButtonLayout->addWidget(m_pSoloButton);
-	//	m_pLayout->addLayout(m_pButtonLayout);
+		m_pLayout->addLayout(m_pButtonLayout);
 		qtractorMixer *pMixer = m_pRack->mixer();
 		QObject::connect(m_pRecordButton,
 			SIGNAL(trackButtonToggled(qtractorTrackButton *, bool)),
@@ -130,11 +143,11 @@ void qtractorMixerStrip::initMixerStrip (void)
 		const QString& sText = m_pRack->name();
 		m_pBusButton = new QToolButton(this);
 		m_pBusButton->setFixedHeight(14);
-		m_pBusButton->setTextPosition(QToolButton::BesideIcon);
+		m_pBusButton->setSizePolicy(buttonPolicy);
+		m_pBusButton->setToolButtonStyle(Qt::ToolButtonTextOnly);
 		m_pBusButton->setFont(font6);
-		m_pBusButton->setUsesTextLabel(true);
-		m_pBusButton->setTextLabel(sText);
-		QToolTip::add(m_pBusButton, tr("Connect %1").arg(sText));
+		m_pBusButton->setText(sText);
+		m_pBusButton->setToolTip(tr("Connect %1").arg(sText));
 		m_pLayout->addWidget(m_pBusButton);
 		QObject::connect(m_pBusButton, SIGNAL(clicked()),
 			this, SLOT(busButtonSlot()));
@@ -146,7 +159,7 @@ void qtractorMixerStrip::initMixerStrip (void)
 
 	// Now, there's whether we are Audio or MIDI related...
 	m_pMeter = NULL;
-	int iFixedWidth = 34;
+	int iFixedWidth = 36;
 	switch (meterType) {
 	case qtractorTrack::Audio: {
 		// Type cast for proper audio monitor...
@@ -230,9 +243,13 @@ void qtractorMixerStrip::initMixerStrip (void)
 
 	QFrame::setFrameShape(QFrame::StyledPanel);
 	QFrame::setFrameShadow(QFrame::Raised);
-	QFrame::setFixedWidth(iFixedWidth);	
+	QFrame::setFixedWidth(iFixedWidth);
 //	QFrame::setSizePolicy(
 //		QSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding));
+
+	QFrame::setBackgroundRole(QPalette::Background);
+//	QFrame::setForegroundRole(QPalette::Foreground);
+	QFrame::setAutoFillBackground(true);
 
 	updateName();
 	setSelected(false);
@@ -260,9 +277,11 @@ void qtractorMixerStrip::updateName (void)
 	if (m_pTrack) {
 		meterType = m_pTrack->trackType();
 		sName = m_pTrack->trackName();
-		m_pLabel->setPaletteBackgroundColor(m_pTrack->foreground().light());
-		m_pLabel->setPaletteForegroundColor(m_pTrack->background().light());
-		m_pLabel->setAlignment(Qt::AlignAuto);
+		QPalette pal(m_pLabel->palette());
+		pal.setColor(QPalette::Button, m_pTrack->foreground().light());
+		pal.setColor(QPalette::ButtonText, m_pTrack->background().light());
+		m_pLabel->setPalette(pal);
+		m_pLabel->setAlignment(Qt::AlignLeft);
 	} else if (m_pBus) {
 		meterType = m_pBus->busType();
 		if (m_busMode & qtractorBus::Input) {
@@ -288,8 +307,7 @@ void qtractorMixerStrip::updateName (void)
 		break;
 	}
 
-	QToolTip::remove(this);
-	QToolTip::add(this, sName + ' ' + sSuffix);
+	QFrame::setToolTip(sName + ' ' + sSuffix);
 }
 
 
@@ -378,14 +396,16 @@ void qtractorMixerStrip::setSelected ( bool bSelected )
 {
 	m_bSelected = bSelected;
 
-	const QColorGroup& cg = QFrame::colorGroup();
+	QPalette pal;
 	if (m_bSelected) {
-		QFrame::setPaletteBackgroundColor(cg.color(QColorGroup::Midlight).dark(150));
-		QFrame::setPaletteForegroundColor(cg.color(QColorGroup::Midlight).light(150));
-	} else { 
-		QFrame::setPaletteBackgroundColor(cg.button());
-		QFrame::setPaletteForegroundColor(cg.text());
+		pal.setColor(QPalette::Background, pal.midlight().color().dark(150));
+		pal.setColor(QPalette::Foreground, pal.midlight().color().light(150));
+	} else {
+		pal.setColor(QPalette::Background, pal.background().color());
+		pal.setColor(QPalette::Foreground, pal.foreground().color());
 	}
+
+	QFrame::setPalette(pal);
 }
 
 bool qtractorMixerStrip::isSelected (void) const
@@ -457,7 +477,7 @@ void qtractorMixerStrip::busButtonSlot (void)
 
 #ifdef CONFIG_DEBUG_0
 	fprintf(stderr, "qtractorMixerStrip::busButtonSlot() name=\"%s\"\n",
-		m_pLabel->text().latin1());
+		m_pLabel->text().toUtf8().constData());
 #endif
 
 	// Here we go...
@@ -524,18 +544,24 @@ void qtractorMixerStrip::gainChangedSlot ( float fGain )
 
 // Constructor.
 qtractorMixerRack::qtractorMixerRack (
-	qtractorMixer *pMixer, const QString& sName)
-	: QScrollView(pMixer->splitter()), m_pMixer(pMixer), m_sName(sName),
+	qtractorMixer *pMixer, const QString& sName )
+	: QScrollArea(pMixer->splitter()), m_pMixer(pMixer), m_sName(sName),
 		m_bSelectEnabled(false), m_pSelectedStrip(NULL)
 {
-	m_strips.setAutoDelete(true);
+	m_pWorkspaceLayout = new QHBoxLayout();
+	m_pWorkspaceLayout->setMargin(0);
+	m_pWorkspaceLayout->setSpacing(0);
 
-	m_pStripHBox = new QHBox(this);
-	QScrollView::addChild(m_pStripHBox);
+	m_pWorkspace = new QWidget(this);
+	m_pWorkspace->setSizePolicy(
+		QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding));
+	m_pWorkspace->setLayout(m_pWorkspaceLayout);
 
-	QScrollView::viewport()->setPaletteBackgroundColor(Qt::darkGray);
-//	QScrollView::setHScrollBarMode(QScrollView::AlwaysOn);
-	QScrollView::setVScrollBarMode(QScrollView::AlwaysOff);
+	QScrollArea::viewport()->setBackgroundRole(QPalette::Dark);
+//	QScrollArea::setHorizontalScrollBarPolicy(Qt::ScrollBarAlwayOn);
+	QScrollArea::setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+
+	QScrollArea::setWidget(m_pWorkspace);
 }
 
 
@@ -569,28 +595,20 @@ const QString& qtractorMixerRack::name (void) const
 // Add a mixer strip to rack list.
 void qtractorMixerRack::addStrip ( qtractorMixerStrip *pStrip )
 {
+	// Add this to the workspace layout...
+	m_pWorkspaceLayout->addWidget(pStrip);
+
 	m_strips.append(pStrip);
-	pStrip->show();
-}
-
-
-// Remove a mixer strip from rack list.
-void qtractorMixerRack::removeStrip ( qtractorMixerStrip *pStrip )
-{
-	// Don't let current selection hanging...
-	if (m_pSelectedStrip == pStrip)
-		m_pSelectedStrip = NULL;
-
-	pStrip->hide();
-	m_strips.remove(pStrip);
+//	pStrip->show();
 }
 
 
 // Find a mixer strip, given its monitor handle.
 qtractorMixerStrip *qtractorMixerRack::findStrip ( qtractorMonitor *pMonitor )
 {
-	for (qtractorMixerStrip *pStrip = m_strips.first();
-			pStrip; pStrip = m_strips.next()) {
+	QListIterator<qtractorMixerStrip *> iter(m_strips);
+	while (iter.hasNext()) {
+		qtractorMixerStrip *pStrip = iter.next();
 		if (pStrip->meter() && (pStrip->meter())->monitor() == pMonitor)
 			return pStrip;
 	}
@@ -607,19 +625,18 @@ int qtractorMixerRack::stripCount (void) const
 
 
 // The strip workspace.
-QHBox *qtractorMixerRack::workspace (void) const
+QWidget *qtractorMixerRack::workspace (void) const
 {
-	return m_pStripHBox;
+	return m_pWorkspace;
 }
 
 
 // Complete rack refreshment.
 void qtractorMixerRack::refresh (void)
 {
-	for (qtractorMixerStrip *pStrip = m_strips.first();
-			pStrip; pStrip = m_strips.next()) {
-		pStrip->refresh();
-	}
+	QListIterator<qtractorMixerStrip *> iter(m_strips);
+	while (iter.hasNext())
+		iter.next()->refresh();
 }
 
 
@@ -627,6 +644,8 @@ void qtractorMixerRack::refresh (void)
 void qtractorMixerRack::clear (void)
 {
 	m_pSelectedStrip = NULL;
+
+	qDeleteAll(m_strips);
 	m_strips.clear();
 }
 
@@ -671,28 +690,44 @@ qtractorMixerStrip *qtractorMixerRack::selectedStrip (void) const
 // Hacko-list-management marking...
 void qtractorMixerRack::markStrips ( int iMark )
 {
-	for (qtractorMixerStrip *pStrip = m_strips.first();
-			pStrip; pStrip = m_strips.next()) {
-		pStrip->setMark(iMark);
-	}
+	m_pWorkspace->setUpdatesEnabled(false);
+
+	QListIterator<qtractorMixerStrip *> iter(m_strips);
+	while (iter.hasNext())
+		iter.next()->setMark(iMark);
 }
 
 void qtractorMixerRack::cleanStrips ( int iMark )
 {
-	for (qtractorMixerStrip *pStrip = m_strips.last();
-			pStrip; pStrip = m_strips.prev()) {
-		if (pStrip->mark() == iMark)
-			removeStrip(pStrip);
+	QMutableListIterator<qtractorMixerStrip *> iter(m_strips);
+	while (iter.hasNext()) {
+		qtractorMixerStrip *pStrip = iter.next();
+		if (pStrip->mark() == iMark) {
+			// Don't let current selection hanging...
+			if (m_pSelectedStrip == pStrip)
+				m_pSelectedStrip = NULL;
+			// Hide strip...
+			pStrip->hide();
+			// Remove from list...
+			iter.remove();
+			// and finally get rid of it.
+			delete pStrip;
+		}
 	}
+
+	m_pWorkspace->adjustSize();
+	m_pWorkspace->setUpdatesEnabled(true);
 }
 
 
 // Resize event handler.
 void qtractorMixerRack::resizeEvent ( QResizeEvent *pResizeEvent )
 {
-	QScrollView::resizeEvent(pResizeEvent);
+	QScrollArea::resizeEvent(pResizeEvent);
 
-	m_pStripHBox->setFixedHeight(QScrollView::viewport()->height());
+//	m_pWorkspace->setMinimumWidth(QScrollArea::viewport()->width());
+	m_pWorkspace->setFixedHeight(QScrollArea::viewport()->height());
+	m_pWorkspace->adjustSize();
 }
 
 
@@ -703,7 +738,7 @@ void qtractorMixerRack::contextMenuEvent ( QContextMenuEvent *pContextMenuEvent 
 	if (m_bSelectEnabled) {
 		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 		if (pMainForm)
-			pMainForm->trackMenu->exec(pContextMenuEvent->globalPos());
+			pMainForm->trackMenu()->exec(pContextMenuEvent->globalPos());
 	}
 }
 
@@ -712,15 +747,19 @@ void qtractorMixerRack::contextMenuEvent ( QContextMenuEvent *pContextMenuEvent 
 // qtractorMixer -- Mixer widget.
 
 // Constructor.
-qtractorMixer::qtractorMixer ( qtractorMainForm *pParent )
-	: QDockWindow(pParent, "qtractorMixer")
+qtractorMixer::qtractorMixer ( QWidget *pParent )
+	: QWidget(pParent, Qt::Tool
+		| Qt::WindowTitleHint
+		| Qt::WindowSystemMenuHint
+		| Qt::WindowMinMaxButtonsHint)
 {
 	// Surely a name is crucial (e.g. for storing geometry settings)
-	// QDockWindow::setName("qtractorMixer");
+	QWidget::setObjectName("qtractorMixer");
 
-	m_pSplitter = new QSplitter(Qt::Horizontal, this, "MixerSplitter");
+	m_pSplitter = new QSplitter(Qt::Horizontal, this);
+	m_pSplitter->setObjectName("MixerSplitter");
 	m_pSplitter->setChildrenCollapsible(false);
-	m_pSplitter->setOpaqueResize(false);
+//	m_pSplitter->setOpaqueResize(false);
 	m_pSplitter->setHandleWidth(2);
 
 	m_pInputRack  = new qtractorMixerRack(this, tr("Inputs"));
@@ -728,31 +767,33 @@ qtractorMixer::qtractorMixer ( qtractorMainForm *pParent )
 	m_pTrackRack->setSelectEnabled(true);
 	m_pOutputRack = new qtractorMixerRack(this, tr("Outputs"));
 
-	m_pSplitter->setResizeMode(m_pInputRack,  QSplitter::KeepSize);
-	m_pSplitter->setResizeMode(m_pOutputRack, QSplitter::KeepSize);
+	m_pSplitter->setStretchFactor(m_pSplitter->indexOf(m_pInputRack), 0);
+	m_pSplitter->setStretchFactor(m_pSplitter->indexOf(m_pOutputRack), 0);
 
-	// Prepare the dockable window stuff.
-	QDockWindow::setWidget(m_pSplitter);
-	QDockWindow::setOrientation(Qt::Horizontal);
-	QDockWindow::setCloseMode(QDockWindow::Always);
-	QDockWindow::setResizeEnabled(true);
+	// Prepare the layout stuff.
+	QHBoxLayout *pLayout = new QHBoxLayout();
+	pLayout->setMargin(0);
+	pLayout->setSpacing(0);
+	pLayout->addWidget(m_pSplitter);
+	QWidget::setLayout(pLayout);
+
 	// Some specialties to this kind of dock window...
-	QDockWindow::setFixedExtentHeight(140);
-	QDockWindow::setFixedExtentWidth(440);
+	QWidget::setMinimumWidth(440);
+	QWidget::setMinimumHeight(120);
 
 	// Finally set the default caption and tooltip.
-	const QString& sCaption = tr("Mixer");
-	QToolTip::add(this, sCaption);
-	QDockWindow::setCaption(sCaption);
-	QDockWindow::setIcon(QPixmap::fromMimeSource("viewMixer.png"));
+	const QString& sCaption = tr("Mixer") + " - " QTRACTOR_TITLE;
+	QWidget::setWindowTitle(sCaption);
+	QWidget::setWindowIcon(QIcon(":/icons/viewMixer.png"));
+	QWidget::setToolTip(sCaption);
 
 	// Get previously saved splitter sizes,
-	// (with afair default...)
+	// (with some fair default...)
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm) {
 		qtractorOptions *pOptions = pMainForm->options();
 		if (pOptions) {
-			QValueList<int> sizes;
+			QList<int> sizes;
 			sizes.append(140);
 			sizes.append(160);
 			sizes.append(140);
@@ -765,7 +806,7 @@ qtractorMixer::qtractorMixer ( qtractorMainForm *pParent )
 // Default destructor.
 qtractorMixer::~qtractorMixer (void)
 {
-	// Get previously saved splitter sizes...
+	// Save splitter sizes...
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm) {
 		qtractorOptions *pOptions = pMainForm->options();
@@ -774,6 +815,50 @@ qtractorMixer::~qtractorMixer (void)
 	}
 
 	// No need to delete child widgets, Qt does it all for us
+}
+
+
+// Notify the main application widget that we're emerging.
+void qtractorMixer::showEvent ( QShowEvent *pShowEvent )
+{
+#ifdef CONFIG_DEBUG
+	fprintf(stderr, "qtractorMixer::showEvent()\n");
+#endif
+
+    qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+    if (pMainForm)
+        pMainForm->stabilizeForm();
+
+    QWidget::showEvent(pShowEvent);
+}
+
+// Notify the main application widget that we're closing.
+void qtractorMixer::hideEvent ( QHideEvent *pHideEvent )
+{
+#ifdef CONFIG_DEBUG
+	fprintf(stderr, "qtractorMixer::hideEvent()\n");
+#endif
+
+    QWidget::hideEvent(pHideEvent);
+
+    qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+    if (pMainForm)
+        pMainForm->stabilizeForm();
+}
+
+
+// Just about to notify main-window that we're closing.
+void qtractorMixer::closeEvent ( QCloseEvent * /*pCloseEvent*/ )
+{
+#ifdef CONFIG_DEBUG
+	fprintf(stderr, "qtractorMixer::closeEvent()\n");
+#endif
+
+	QWidget::hide();
+
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm)
+		pMainForm->stabilizeForm();
 }
 
 

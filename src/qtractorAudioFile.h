@@ -24,8 +24,8 @@
 
 #include "qtractorAbout.h"
 
-#include <qstringlist.h>
-#include <qmap.h>
+#include <QStringList>
+#include <QMap>
 
 
 //----------------------------------------------------------------------
@@ -43,7 +43,7 @@ public:
 	enum { None = 0, Read = 1, Write = 2 };
 
 	// Pure virtual method mockups.
-	virtual bool open  (const char *pszName, int iMode = Read) = 0;
+	virtual bool open  (const QString& sFilename, int iMode = Read) = 0;
 	virtual int  read  (float **ppFrames, unsigned int iFrames) = 0;
 	virtual int  write (float **ppFrames, unsigned int iFrames) = 0;
 	virtual bool seek  (unsigned long iOffset) = 0;

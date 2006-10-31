@@ -1,7 +1,7 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(Qtractor, 0.0.0.485, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.0.1.486, rncbc@rncbc.org, qtractor)
 
-AC_CONFIG_SRCDIR(src/qtractorMainForm.ui.h)
+AC_CONFIG_SRCDIR(src/qtractorMainForm.ui)
 AC_CONFIG_HEADERS(config.h)
 AC_CONFIG_FILES(Makefile qtractor.pro qtractor.spec)
 
@@ -101,78 +101,38 @@ for X in $ac_with_paths; do
   fi
 done
 
-# Check for QTDIR environment variable.
-AC_MSG_CHECKING([whether QTDIR environment variable is set])
-if test "x$QTDIR" = "x"; then
-  AC_MSG_RESULT([no])
-  AC_MSG_ERROR([QTDIR must be properly set.])
-else
-  AC_MSG_RESULT([$QTDIR])
-fi
-
-CFLAGS="$CFLAGS -I$QTDIR/include"
-CPPFLAGS="$CPPFLAGS -I$QTDIR/include"
-if test -d $QTDIR/lib64; then
-  LIBS="$LIBS -L$QTDIR/lib64"
-else
-  LIBS="$LIBS -L$QTDIR/lib"
-fi
-for X in qt qt3; do
-  if test -d $QTDIR/include/$X; then
-    CFLAGS="$CFLAGS -I$QTDIR/include/$X"
-    CPPFLAGS="$CPPFLAGS -I$QTDIR/include/$X"
-  fi
-done
-
-# Checks for Qt library.
-for X in qt-mt qt; do
-  if test "x$ac_qtlib" = "x"; then
-     AC_CHECK_LIB($X, main, [ac_qtlib=$X])
-  fi
-done
-if test "x$ac_qtlib" = "x"; then
-  AC_MSG_ERROR([Qt library not found. Maybe QTDIR isn't properly set.])
-fi
-AC_SUBST(ac_qtlib)
-
-# Check for Qt multi-thread support.
-if test "x$ac_qtlib" = "xqt-mt"; then
-  ac_thread="thread"
-fi
-AC_SUBST(ac_thread)
-
-AC_CACHE_CHECK([for Qt library version >= 3.2],
+AC_CACHE_CHECK([for Qt library version >= 4.1],
   ac_qtlib_version, [
-  AC_TRY_LINK([#include "qglobal.h"], [
-#if QT_VERSION < 0x030200
-#error Qt library 3.2 or greater required.
+  AC_TRY_LINK([#include "Qt/qglobal.h"], [
+#if QT_VERSION < 0x040100
+#error Qt library 4.1 or greater required.
 #endif
     ],
     ac_qtlib_version="yes", [
-      echo "no; Qt 3.2 or greater is required"
+      echo "no; Qt 4.1 or greater is required"
       exit
     ])
 ])
 
 # A common error message:
-ac_qtdir_errmsg="not found in current PATH. Maybe QT development environment isn't available (qt3-devel)."
+ac_qtdir_errmsg="not found in current PATH. Maybe QT development environment isn't available (qt-devel)."
 
 # Check for Qt qmake utility.
-AC_PATH_PROG(ac_qmake, qmake, [no], $QTDIR/bin:${PATH})
+AC_PATH_PROG(ac_qmake, qmake, [no], ${PATH})
 if test "x$ac_qmake" = "xno"; then
    AC_MSG_ERROR([qmake $ac_qtdir_errmsg])
 fi
 AC_SUBST(ac_qmake)
 
 # Check for Qt moc utility.
-AC_PATH_PROG(ac_moc, moc, [no], $QTDIR/bin:${PATH})
+AC_PATH_PROG(ac_moc, moc, [no], ${PATH})
 if test "x$ac_moc" = "xno"; then
    AC_MSG_ERROR([moc $ac_qtdir_errmsg])
 fi
 AC_SUBST(ac_moc)
 
 # Check for Qt uic utility.
-AC_PATH_PROG(ac_uic, uic, [no], $QTDIR/bin:${PATH})
+AC_PATH_PROG(ac_uic, uic, [no], ${PATH})
 if test "x$ac_uic" = "xno"; then
    AC_MSG_ERROR([uic $ac_qtdir_errmsg])
 fi

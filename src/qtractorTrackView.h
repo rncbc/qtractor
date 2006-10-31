@@ -22,9 +22,13 @@
 #ifndef __qtractorTrackView_h
 #define __qtractorTrackView_h
 
+#include "qtractorScrollView.h"
+
 #include "qtractorTrack.h"
 
-#include <qscrollview.h>
+#include <QRubberBand>
+#include <QPixmap>
+
 
 // Forward declarations.
 class qtractorTracks;
@@ -34,6 +38,16 @@ class qtractorSessionCursor;
 class qtractorTrackListItem;
 
 class QToolButton;
+class QRubberBand;
+
+class QContextMenuEvent;
+class QDragEnterEvent;
+class QDragLeaveEvent;
+class QDragMoveEvent;
+class QDropEvent;
+class QMouseEvent;
+class QResizeEvent;
+class QKeyEvent;
 
 
 //----------------------------------------------------------------------------
@@ -51,15 +65,14 @@ struct qtractorTrackViewInfo
 //----------------------------------------------------------------------------
 // qtractorTrackView -- Track view widget.
 
-class qtractorTrackView : public QScrollView
+class qtractorTrackView : public qtractorScrollView
 {
 	Q_OBJECT
 
 public:
 
 	// Constructor.
-	qtractorTrackView(qtractorTracks *pTracks,
-		QWidget *pParent, const char *pszName = 0);
+	qtractorTrackView(qtractorTracks *pTracks, QWidget *pParent = 0);
 	// Destructor.
 	~qtractorTrackView();
 
@@ -69,10 +82,11 @@ public:
 	void updateContentsWidth(int iContentsWidth = 0);
 
 	// Contents update overloaded methods.
-	void updateContents(const QRect& rect, bool bRefresh = true);
-	void updateContents(bool bRefresh = true);
+	void updateContents(const QRect& rect);
+	void updateContents();
+
 	// Special recording visual feedback.
-	void updateContentsRecord(bool bRefresh = false);
+	void updateContentsRecord();
 
 	// The current clip selection mode.
 	enum SelectMode { SelectClip, SelectRange, SelectRect };
@@ -86,7 +100,7 @@ public:
 	void selectRect(const QRect& rectDrag,
 		SelectMode selectMode, SelectEdit = EditBoth);
 	// Select every clip of a given track.
-	void selectTrack(qtractorTrack *pTrack, bool bReset = true);
+	void selectTrack(qtractorTrack *pTrackPtr, bool bReset = true);
 	// Select all contents.
 	void selectAll(bool bSelect = true);
 
@@ -130,22 +144,12 @@ public:
 
 protected:
 
-	// Scrollbar/tools layout management.
-	void setHBarGeometry(QScrollBar& hbar,
-		int x, int y, int w, int h);
-	void setVBarGeometry(QScrollBar& vbar,
-		int x, int y, int w, int h);
-
 	// Resize event handler.
 	void resizeEvent(QResizeEvent *pResizeEvent);
 
 	// Draw the track view
-	void drawContents(QPainter *p,
-		int clipx, int clipy, int clipw, int cliph);
+	void drawContents(QPainter *pPainter, const QRect& rect);
 
-	// Get track list item from given contents vertical position.
-	qtractorTrackListItem *trackListItemAt(const QPoint& pos,
-		qtractorTrackViewInfo *pTrackViewInfo) const;
 	// Get track from given contents vertical position.
 	qtractorTrack *trackAt(const QPoint& pos,
 		qtractorTrackViewInfo *pTrackViewInfo = NULL) const;
@@ -153,7 +157,7 @@ protected:
 	qtractorClip *clipAt(const QPoint& pos,	QRect *pClipRect = NULL) const;
 
 	// Get contents visible rectangle from given track.
-	bool trackInfo(qtractorTrack *pTrack,
+	bool trackInfo(qtractorTrack *pTrackPtr,
 		qtractorTrackViewInfo *pTrackViewInfo) const;
 	// Get contents rectangle from given clip.
 	bool clipInfo(qtractorClip *pClip, QRect *pClipRect) const;
@@ -164,40 +168,36 @@ protected:
 	bool canDropTrack(QDropEvent *pDropEvent);
 
 	// Drag-n-drop event handlers.
-	void contentsDragEnterEvent(QDragEnterEvent *pDragEnterEvent);
-	void contentsDragMoveEvent(QDragMoveEvent *pDragMoveEvent);
-	void contentsDragLeaveEvent(QDragLeaveEvent *pDragLeaveEvent);
-	void contentsDropEvent(QDropEvent *pDropEvent);
+	void dragEnterEvent(QDragEnterEvent *pDragEnterEvent);
+	void dragMoveEvent(QDragMoveEvent *pDragMoveEvent);
+	void dragLeaveEvent(QDragLeaveEvent *pDragLeaveEvent);
+	void dropEvent(QDropEvent *pDropEvent);
 
 	// Handle item selection with mouse.
-	void contentsMousePressEvent(QMouseEvent *pMouseEvent);
-	void contentsMouseMoveEvent(QMouseEvent *pMouseEvent);
-	void contentsMouseReleaseEvent(QMouseEvent *pMouseEvent);
+	void mousePressEvent(QMouseEvent *pMouseEvent);
+	void mouseMoveEvent(QMouseEvent *pMouseEvent);
+	void mouseReleaseEvent(QMouseEvent *pMouseEvent);
 
 	// Clip file(item) selection convenience method.
 	void selectClipFile(bool bReset);
 
 	// Draw/hide the whole current clip selection.
-	void updateClipSelect(int y, int h);
-	void showClipSelect(int iThickness = 3) const;
-	void hideClipSelect();
+	void updateClipSelect(int y, int h) const;
+	void showClipSelect() const;
+	void hideClipSelect() const;
 
 	// Draw/hide the whole drop rectagle list
-	void updateDropRects(int y, int h);
-	void showDropRects(int iThickness = 3);
-	void hideDropRects();
+	void updateDropRects(int y, int h) const;
+	void showDropRects() const;
+	void hideDropRects() const;
 
 	// Draw/hide a dragging rectangular selection.
-	void showDragRect(const QRect& rectDrag, int iThickness) const;
-	void hideDragRect(const QRect& rectDrag);
+	void moveRubberBand(QRubberBand **ppRubberBand, const QRect& rectDrag) const;
 
 	// Clip fade-in/out handle drag-move methods.
 	bool dragFadeStart(const QPoint& pos);
 	void dragFadeMove(const QPoint& pos);
 	void dragFadeDrop(const QPoint& pos);
-
-	// Show/hide a moving clip fade in/out handle.
-	void drawFadeHandle() const;
 
 	// Reset drag/select/move state.
 	void resetDragState();
@@ -206,19 +206,21 @@ protected:
 	void keyPressEvent(QKeyEvent *pKeyEvent);
 
 	// Vertical line positioning.
-	void drawPositionX(int& iPositionX, int x, int x2,
-		const QColor& color, bool bSyncView = false);
+	void drawPositionX(int& iPositionX, int x, bool bSyncView = false);
 
 protected slots:
 
 	// To have track view in v-sync with track list.
-	void contentsMovingSlot(int cx, int cy);
+	void contentsYMovingSlot(int cx, int cy);
 
 	// Context menu request slot.
 	void contentsContextMenuEvent(QContextMenuEvent *pContextMenuEvent);
 
 	// (Re)create the complete track view pixmap.
 	void updatePixmap(int cx, int cy);
+
+	// Drag-reset timer slot.
+	void dragTimeout();
 
 private:
 
@@ -230,10 +232,10 @@ private:
 	QToolButton *m_pHzoomOut;
 	QToolButton *m_pVzoomIn;
 	QToolButton *m_pVzoomOut;
-	QToolButton *m_pXzoomTool;
+	QToolButton *m_pXzoomReset;
 
 	// Local double-buffering pixmap.
-	QPixmap *m_pPixmap;
+	QPixmap m_pixmap;
 
 	// To maintain the current track/clip positioning.
 	qtractorSessionCursor *m_pSessionCursor;
@@ -243,14 +245,22 @@ private:
 	{
 		// Item constructor.
 		DropItem(const QString& sPath, int iChannel = -1)
-			: path(sPath), channel(iChannel) {}
+			: path(sPath), channel(iChannel), rubberBand(NULL) {}
+		// Item destructor.
+		~DropItem() {
+			if (rubberBand) { 
+				rubberBand->hide();
+				delete rubberBand;
+			}
+		}
 		// Item members.
 		QString path;
 		int channel;
 		QRect rect;
+		QRubberBand *rubberBand;
 	};
 
-	QPtrList<qtractorTrackView::DropItem> m_dropItems;
+	QList<qtractorTrackView::DropItem *> m_dropItems;
 	qtractorTrack::TrackType m_dropType;
 
 	// The current selecting/dragging clip stuff.
@@ -265,6 +275,8 @@ private:
 	QRect         m_rectDrag;
 	QRect         m_rectHandle;
 	int           m_iDraggingX;
+	QRubberBand  *m_pRubberBand;
+	bool          m_bDragTimer;
 
 	qtractorClipSelect *m_pClipSelect;
 
@@ -293,17 +305,16 @@ private:
 	struct ClipBoard
 	{
 		// Clipbaord constructor.
-		ClipBoard() : singleTrack(NULL)
-			{ items.setAutoDelete(false); }
+		ClipBoard() : singleTrack(NULL) {}
 		// Clipboard stuffer method.
 		void addItem(qtractorClip *pClip, unsigned long iClipStart,
 			unsigned long iClipOffset, unsigned long iClipLength);
 		// Clipboard reset method.
 		void clear();
 		// Clipboard members.
-		QPtrList<ClipItem> items;
-		qtractorTrack     *singleTrack;
-		QRect              rect;
+		QList<ClipItem *> items;
+		qtractorTrack    *singleTrack;
+		QRect             rect;
 
 	} m_clipboard;
 

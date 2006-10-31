@@ -21,8 +21,8 @@
 
 #include "qtractorAbout.h"
 #include "qtractorTrackView.h"
-#include "qtractorTrackList.h"
 #include "qtractorTrackTime.h"
+#include "qtractorTrackList.h"
 #include "qtractorSession.h"
 #include "qtractorTracks.h"
 #include "qtractorFiles.h"
@@ -38,34 +38,23 @@
 
 #include "qtractorMainForm.h"
 
-#include <qapplication.h>
-#include <qdragobject.h>
-#include <qpopupmenu.h>
-#include <qtooltip.h>
-#include <qpainter.h>
-#include <qcursor.h>
-#include <qpen.h>
+#include <QToolButton>
+#include <QScrollBar>
 
-//----------------------------------------------------------------------------
-// qtractor_alpha_blend -- alpha blending experimentalism.
+#include <QContextMenuEvent>
+#include <QDragEnterEvent>
+#include <QDragLeaveEvent>
+#include <QDragMoveEvent>
+#include <QDropEvent>
+#include <QMouseEvent>
+#include <QResizeEvent>
+#include <QKeyEvent>
 
-#include <qbitmap.h>
-
-inline void qtractor_alpha_blend ( QImage& image, int val )
-{
-	const int a = (256 - val) & 0xff;	
-	const int w = image.width();
-	const int h = image.height();
-
-	for (int y = 0; y < h; y++) {
-		QRgb *pScanLine = reinterpret_cast<QRgb *> (image.scanLine(y));
-		for (int x = 0; x < w; x++) {
-			const QRgb rgba = *pScanLine;
-			*pScanLine++ = qRgba(
-				qRed(rgba), qGreen(rgba), qBlue(rgba), a * qAlpha(rgba));
-		}
-	}
-}
+#include <QApplication>
+#include <QPainter>
+#include <QCursor>
+#include <QTimer>
+#include <QUrl>
 
 
 //----------------------------------------------------------------------------
@@ -73,20 +62,20 @@ inline void qtractor_alpha_blend ( QImage& image, int val )
 
 // Constructor.
 qtractorTrackView::qtractorTrackView ( qtractorTracks *pTracks,
-	QWidget *pParent, const char *pszName )
-	: QScrollView(pParent, pszName, WStaticContents | WNoAutoErase)
+	QWidget *pParent ) : qtractorScrollView(pParent)
 {
 	m_pTracks = pTracks;
-	m_pPixmap = new QPixmap();
 
 	m_pSessionCursor = NULL;
 	
-	m_dropItems.setAutoDelete(true);
 	m_dropType = qtractorTrack::None;
 
 	m_dragState   = DragNone;
 	m_iDraggingX  = 0;
 	m_pClipDrag   = NULL;
+	m_pRubberBand = NULL;
+	m_bDragTimer  = false;
+
 	m_pClipSelect = new qtractorClipSelect();
 	m_selectMode  = SelectClip;
 
@@ -99,34 +88,32 @@ qtractorTrackView::qtractorTrackView ( qtractorTracks *pTracks,
 	m_iLastRecordX = 0;
 
 	// Zoom tool widgets
-	m_pHzoomIn   = new QToolButton(this);
-	m_pHzoomOut  = new QToolButton(this);
-	m_pVzoomIn   = new QToolButton(this);
-	m_pVzoomOut  = new QToolButton(this);
-	m_pXzoomTool = new QToolButton(this);
+	m_pHzoomIn    = new QToolButton(this);
+	m_pHzoomOut   = new QToolButton(this);
+	m_pVzoomIn    = new QToolButton(this);
+	m_pVzoomOut   = new QToolButton(this);
+	m_pXzoomReset = new QToolButton(this);
 
-	const QPixmap& pmZoomIn = QPixmap::fromMimeSource("viewZoomIn.png");
-	m_pHzoomIn->setPixmap(pmZoomIn);
-	m_pVzoomIn->setPixmap(pmZoomIn);
+	const QIcon& iconZoomIn = QIcon(":/icons/viewZoomIn.png");
+	m_pHzoomIn->setIcon(iconZoomIn);
+	m_pVzoomIn->setIcon(iconZoomIn);
 
-	const QPixmap& pmZoomOut = QPixmap::fromMimeSource("viewZoomOut.png");
-	m_pHzoomOut->setPixmap(pmZoomOut);
-	m_pVzoomOut->setPixmap(pmZoomOut);
+	const QIcon& iconZoomOut = QIcon(":/icons/viewZoomOut.png");
+	m_pHzoomOut->setIcon(iconZoomOut);
+	m_pVzoomOut->setIcon(iconZoomOut);
 
-	m_pXzoomTool->setPixmap(QPixmap::fromMimeSource("viewZoomTool.png"));
-
-	QScrollView::setCornerWidget(m_pXzoomTool);
+	m_pXzoomReset->setIcon(QIcon(":/icons/viewZoomTool.png"));
 
 	m_pHzoomIn->setAutoRepeat(true);
 	m_pHzoomOut->setAutoRepeat(true);
 	m_pVzoomIn->setAutoRepeat(true);
 	m_pVzoomOut->setAutoRepeat(true);
 
-	QToolTip::add(m_pHzoomIn,   tr("Zoom in (horizontal)"));
-	QToolTip::add(m_pHzoomOut,  tr("Zoom out (horizontal)"));
-	QToolTip::add(m_pVzoomIn,   tr("Zoom in (vertical)"));
-	QToolTip::add(m_pVzoomOut,  tr("Zoom out (vertical)"));
-	QToolTip::add(m_pXzoomTool, tr("Zoom reset"));
+	m_pHzoomIn->setToolTip(tr("Zoom in (horizontal)"));
+	m_pHzoomOut->setToolTip(tr("Zoom out (horizontal)"));
+	m_pVzoomIn->setToolTip(tr("Zoom in (vertical)"));
+	m_pVzoomOut->setToolTip(tr("Zoom out (vertical)"));
+	m_pXzoomReset->setToolTip(tr("Zoom reset"));
 
 	QObject::connect(m_pHzoomIn, SIGNAL(clicked()),
 		m_pTracks, SLOT(horizontalZoomInSlot()));
@@ -136,59 +123,39 @@ qtractorTrackView::qtractorTrackView ( qtractorTracks *pTracks,
 		m_pTracks, SLOT(verticalZoomInSlot()));
 	QObject::connect(m_pVzoomOut, SIGNAL(clicked()),
 		m_pTracks, SLOT(verticalZoomOutSlot()));
-	QObject::connect(m_pXzoomTool, SIGNAL(clicked()),
-		m_pTracks, SLOT(viewZoomToolSlot()));
+	QObject::connect(m_pXzoomReset, SIGNAL(clicked()),
+		m_pTracks, SLOT(viewZoomResetSlot()));
 
-	QScrollView::viewport()->setBackgroundMode(Qt::NoBackground);
+	qtractorScrollView::setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+	qtractorScrollView::setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
 
-	QScrollView::setHScrollBarMode(QScrollView::AlwaysOn);
-	QScrollView::setVScrollBarMode(QScrollView::AlwaysOn);
+	qtractorScrollView::viewport()->setFocusPolicy(Qt::StrongFocus);
+//	qtractorScrollView::viewport()->setFocusProxy(this);
+	qtractorScrollView::viewport()->setAcceptDrops(true);
+//	qtractorScrollView::setDragAutoScroll(false);
 
-	QScrollView::viewport()->setFocusPolicy(QWidget::StrongFocus);
-//	QScrollView::viewport()->setFocusProxy(this);
-	QScrollView::viewport()->setAcceptDrops(true);
-	QScrollView::setDragAutoScroll(false);
+	const QFont& font = qtractorScrollView::font();
+	qtractorScrollView::setFont(QFont(font.family(), font.pointSize() - 1));
 
-	const QFont& font = QScrollView::font();
-	QScrollView::setFont(QFont(font.family(), font.pointSize() - 2));
-
-	QObject::connect(this, SIGNAL(contentsMoving(int,int)),
-		this, SLOT(updatePixmap(int,int)));
+//	QObject::connect(this, SIGNAL(contentsMoving(int,int)),
+//		this, SLOT(updatePixmap(int,int)));
 }
 
 
 // Destructor.
 qtractorTrackView::~qtractorTrackView (void)
 {
+	m_bDragTimer = false;
+
 	clearClipboard();
 
 	if (m_pSessionCursor)
 		delete m_pSessionCursor;
 
+	if (m_pRubberBand)
+		delete m_pRubberBand;
+
 	delete m_pClipSelect;
-	delete m_pPixmap;
-}
-
-
-// Scrollbar/tools layout management.
-void qtractorTrackView::setHBarGeometry ( QScrollBar& hbar,
-	int x, int y, int w, int h )
-{
-	hbar.setGeometry(x, y, w - h * 2, h);
-	if (m_pHzoomOut)
-		m_pHzoomOut->setGeometry(x + w - h * 2, y, h, h);
-	if (m_pHzoomIn)
-		m_pHzoomIn->setGeometry(x + w - h, y, h, h);
-}
-
-void qtractorTrackView::setVBarGeometry ( QScrollBar& vbar,
-	int x, int y, int w, int h )
-{
-	vbar.setGeometry(x, y, w, h - w * 2);
-	if (m_pVzoomIn)
-		m_pVzoomIn->setGeometry(x, y + h - w * 2, w, w);
-	if (m_pVzoomOut)
-		m_pVzoomOut->setGeometry(x, y + h - w, w, w);
 }
 
 
@@ -199,19 +166,27 @@ void qtractorTrackView::updateContentsHeight (void)
 	fprintf(stderr, "qtractorTrackView::updateContentsHeight()\n");
 #endif
 
+	qtractorSession *pSession = m_pTracks->session();
+	if (pSession == NULL)
+		return;
+
 	int iContentsHeight = 0;
-	QListViewItem *pItem = m_pTracks->trackList()->firstChild();
-	while (pItem) {
-		iContentsHeight += pItem->totalHeight();
-		pItem = pItem->nextSibling();
+	qtractorTrack *pTrack = pSession->tracks().first();
+	while (pTrack) {
+		iContentsHeight += pTrack->zoomHeight();
+		pTrack = pTrack->next();
 	}
 
 #ifdef CONFIG_DEBUG_0
 	fprintf(stderr, " => iContentsHeight=%d\n", iContentsHeight);
 #endif
 
+	// No selection anymore (we'll update all contents anyway)...
+	m_pClipSelect->clear();
+
 	// Do the contents resize thing...
-	QScrollView::resizeContents(QScrollView::contentsWidth(), iContentsHeight);
+	qtractorScrollView::resizeContents(
+		qtractorScrollView::contentsWidth(), iContentsHeight);
 }
 
 
@@ -235,8 +210,12 @@ void qtractorTrackView::updateContentsWidth ( int iContentsWidth )
 	fprintf(stderr, " => iContentsWidth=%d\n", iContentsWidth);
 #endif
 
+	// No selection anymore (we'll update all contents anyway)...
+	m_pClipSelect->clear();
+
 	// Do the contents resize thing...
-	QScrollView::resizeContents(iContentsWidth,	QScrollView::contentsHeight());
+	qtractorScrollView::resizeContents(
+		iContentsWidth,	qtractorScrollView::contentsHeight());
 
 	// Force an update on the track time line too...
 	m_pTracks->trackTime()->resizeContents(
@@ -246,50 +225,31 @@ void qtractorTrackView::updateContentsWidth ( int iContentsWidth )
 
 
 // Local rectangular contents update.
-void qtractorTrackView::updateContents ( const QRect& rect, bool bRefresh )
+void qtractorTrackView::updateContents ( const QRect& rect )
 {
-	if (bRefresh)
-		updatePixmap(QScrollView::contentsX(), QScrollView::contentsY());
+	updatePixmap(
+		qtractorScrollView::contentsX(), qtractorScrollView::contentsY());
 
-	QScrollView::repaintContents(rect);
-
-	if (m_dragState == DragMove) {
-		showClipSelect();
-	} else if (m_dragState == DragDrop) {
-		showDropRects();
-	} else if (m_dragState == DragFadeIn || m_dragState == DragFadeOut) {
-		drawFadeHandle();
-	}
+	qtractorScrollView::updateContents(rect);
 }
 
 
 // Overall contents update.
-void qtractorTrackView::updateContents ( bool bRefresh )
+void qtractorTrackView::updateContents (void)
 {
-	if (bRefresh)
-		updatePixmap(QScrollView::contentsX(), QScrollView::contentsY());
+	updatePixmap(
+		qtractorScrollView::contentsX(), qtractorScrollView::contentsY());
 
-	QScrollView::repaintContents();
-
-	if (m_dragState == DragMove) {
-		showClipSelect();
-	} else if (m_dragState == DragDrop) {
-		showDropRects();
-	} else if (m_dragState == DragFadeIn || m_dragState == DragFadeOut) {
-		drawFadeHandle();
-	}
+	qtractorScrollView::updateContents();
 }
 
 
 // Special recording visual feedback.
-void qtractorTrackView::updateContentsRecord ( bool bRefresh )
+void qtractorTrackView::updateContentsRecord (void)
 {
-	qtractorSession *pSession = m_pTracks->session();
-	if (pSession == NULL)
-		return;
-
-	int x = QScrollView::contentsX();
-	int w = QScrollView::width();
+	int cx = qtractorScrollView::contentsX();
+	int x  = cx;
+	int w  = qtractorScrollView::width();
 
 	int iCurrRecordX = m_iPlayHeadX;
 	if (iCurrRecordX > x + w)
@@ -299,114 +259,117 @@ void qtractorTrackView::updateContentsRecord ( bool bRefresh )
 		if (x < m_iLastRecordX && m_iLastRecordX < x + w)
 			x = m_iLastRecordX - 2;
 		w = iCurrRecordX - x + 2;
-		updateContents(
-			QRect(x, QScrollView::contentsY(), w, QScrollView::height()),
-			bRefresh);
+		qtractorScrollView::viewport()->update(
+			QRect(x - cx, 0, w, qtractorScrollView::height()));
 	}
 	else if (m_iLastRecordX > iCurrRecordX)
-		updateContents(bRefresh);
+		qtractorScrollView::viewport()->update();
 
 	m_iLastRecordX = iCurrRecordX;
 }
 
 
 // Draw the track view.
-void qtractorTrackView::drawContents ( QPainter *p,
-	int clipx, int clipy, int clipw, int cliph )
+void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 {
 	// Draw viewport canvas...
-	p->drawPixmap(clipx, clipy, *m_pPixmap,
-		clipx - QScrollView::contentsX(),
-		clipy - QScrollView::contentsY(),
-		clipw, cliph);
+	pPainter->drawPixmap(rect, m_pixmap, rect);
 
 	// Lines a-head...
 	qtractorSession *pSession = m_pTracks->session();
 	if (pSession == NULL)
 		return;
 
+	int cx = qtractorScrollView::contentsX();
+	int cy = qtractorScrollView::contentsY();
+	int ch = qtractorScrollView::contentsHeight();
 	int x;
 
 	// On-the-fly recording clip drawing...
 	if (pSession->isRecording() && pSession->isPlaying()) {
-		unsigned long iTrackStart = pSession->frameFromPixel(clipx);
+		unsigned long iTrackStart = pSession->frameFromPixel(cx + rect.x());
 		unsigned long iTrackEnd   = pSession->playHead();
 		if (iTrackStart < iTrackEnd) {
 			int y1 = 0;
 			int y2 = 0;
-			QListViewItem *pItem = m_pTracks->trackList()->firstChild();
-			while (pItem && y2 < clipy + cliph) {
+			qtractorTrack *pTrack = pSession->tracks().first();
+			while (pTrack && y2 < ch) {
 				y1  = y2;
-				y2 += pItem->totalHeight();
-				if (y2 > clipy) {
-					// Dispatch to paint this track...
-					qtractorTrack *pTrack = NULL;
-					qtractorTrackListItem *pTrackItem
-						= static_cast<qtractorTrackListItem *> (pItem);
-					if (pTrackItem)
-						pTrack = pTrackItem->track();
-					if (pTrack && pTrack->clipRecord()) {
-						int h = y2 - y1 - 2;
-						const QRect trackRect(clipx - 1, y1 + 1, clipw + 2, h);
-						qtractorClip *pClipRecord = pTrack->clipRecord(); 
-						unsigned long iClipStart  = pClipRecord->clipStart();
-						unsigned long iClipOffset = 0;
-						if (iClipStart < iTrackStart)
-							iClipOffset += iTrackStart - iClipStart;
-						x = pSession->pixelFromFrame(iClipStart);
-						int w = 0;
-						if (iClipStart < iTrackEnd)
-							w += pSession->pixelFromFrame(iTrackEnd - iClipStart);
-						const QRect& clipRect
-							= QRect(x, y1 + 1, w, h).intersect(trackRect);
-						if (!clipRect.isEmpty()) {
-#if 0
-							pClipRecord->drawClip(p, clipRect, iClipOffset);
-#else
-							w = clipRect.width();
-							h = clipRect.height();
-							QPixmap pm(w, h);
-							QBitmap bm(w, h);
-							bm.fill(Qt::color1);
-							pm.setMask(bm);
-							QPainter painter(&pm);
-							painter.setFont(QScrollView::font());
-						//	pClipRecord->drawClip(&painter,
-						//		QRect(0, 0, w, h), iClipOffset);
-							painter.setPen(pTrack->background().dark());
-							painter.setBrush(pTrack->background());
-							painter.drawRect(0, 0, w, h);
-							QImage img = pm.convertToImage();
-							qtractor_alpha_blend(img, 120);
-							p->drawImage(clipRect.x(), clipRect.y(), img);
-#endif
-						}
+				y2 += pTrack->zoomHeight();
+				// Dispatch to paint this track...
+				if (y2 > cy && pTrack->clipRecord()) {
+					int h = y2 - y1 - 2;
+					const QRect trackRect(
+						rect.left() - 1, y1 - cy + 1, rect.width() + 2, h);
+					qtractorClip *pClipRecord = pTrack->clipRecord();
+					unsigned long iClipStart  = pClipRecord->clipStart();
+					unsigned long iClipOffset = 0;
+					if (iClipStart < iTrackStart)
+						iClipOffset += iTrackStart - iClipStart;
+					x = pSession->pixelFromFrame(iClipStart) - cx;
+					int w = 0;
+					if (iClipStart < iTrackEnd)
+						w += pSession->pixelFromFrame(iTrackEnd - iClipStart);
+					const QRect& clipRect
+						= QRect(x, y1 - cy + 1, w, h).intersect(trackRect);
+					if (!clipRect.isEmpty()) {
+						// Just draw a semi-transparent rectangle...
+						QColor rgbPen   = pTrack->background().dark();
+						QColor rgbBrush = pTrack->background();
+						rgbPen.setAlpha(120);
+						rgbBrush.setAlpha(120);
+						pPainter->setPen(rgbPen);
+						pPainter->setBrush(rgbBrush);
+						pPainter->drawRect(clipRect);
 					}
 				}
-				pItem = pItem->nextSibling();
+				pTrack = pTrack->next();
 			}
 		}
 	}
 
 	// Draw edit-head line...
-	x = pSession->pixelFromFrame(pSession->editHead());
-	if (x >= clipx && x < clipx + clipw) {
-		p->setPen(Qt::blue);
-		p->drawLine(x, clipy, x, clipy + cliph);
+	x = pSession->pixelFromFrame(pSession->editHead()) - cx;
+	if (x >= rect.left() && x <= rect.right()) {
+		pPainter->setPen(Qt::blue);
+		pPainter->drawLine(x, rect.top(), x, rect.bottom());
 	}
 
 	// Draw edit-tail line...
-	x = pSession->pixelFromFrame(pSession->editTail());
-	if (x >= clipx && x < clipx + clipw) {
-		p->setPen(Qt::blue);
-		p->drawLine(x, clipy, x, clipy + cliph);
+	x = pSession->pixelFromFrame(pSession->editTail()) - cx;
+	if (x >= rect.left() && x <= rect.right()) {
+		pPainter->setPen(Qt::blue);
+		pPainter->drawLine(x, rect.top(), x, rect.bottom());
 	}
 
 	// Draw play-head line...
-	x = pSession->pixelFromFrame(playHead());
-	if (x >= clipx && x < clipx + clipw) {
-		p->setPen(Qt::red);
-		p->drawLine(x, clipy, x, clipy + cliph);
+	x = pSession->pixelFromFrame(playHead()) - cx;
+	if (x >= rect.left() && x <= rect.right()) {
+		pPainter->setPen(Qt::red);
+		pPainter->drawLine(x, rect.top(), x, rect.bottom());
+	}
+
+	// Show/hide a moving clip fade in/out slope lines...
+	if (m_dragState == DragFadeIn || m_dragState == DragFadeOut) {
+		QRect rectHandle(m_rectHandle);
+		// Horizontal adjust...
+		rectHandle.translate(m_iDraggingX, 0);
+		// Convert rectangle into view coordinates...
+		rectHandle.moveTopLeft(contentsToViewport(rectHandle.topLeft()));
+		// Draw envelope line...
+		QPoint vpos;
+		pPainter->setPen(QColor(0, 0, 255, 120));
+		if (m_dragState == DragFadeIn) {
+			vpos = contentsToViewport(m_rectDrag.bottomLeft());
+			pPainter->drawLine(
+				vpos.x(), vpos.y(), rectHandle.left(), rectHandle.top());
+		} 
+		else 
+		if (m_dragState == DragFadeOut) {
+			vpos = contentsToViewport(m_rectDrag.bottomRight());
+			pPainter->drawLine(
+				rectHandle.right(), rectHandle.top(), vpos.x(), vpos.y());
+		}
 	}
 }
 
@@ -414,7 +377,35 @@ void qtractorTrackView::drawContents ( QPainter *p,
 // Resize event handler.
 void qtractorTrackView::resizeEvent ( QResizeEvent *pResizeEvent )
 {
-	QScrollView::resizeEvent(pResizeEvent);
+	qtractorScrollView::resizeEvent(pResizeEvent);
+
+	// Scrollbar/tools layout management.
+	const QSize& size = qtractorScrollView::size();
+	QScrollBar *pVScrollBar = qtractorScrollView::verticalScrollBar();
+	if (pVScrollBar->isVisible()) {
+		int h = size.height();
+		int w = pVScrollBar->width(); 
+		int x = size.width() - w - 2;
+		pVScrollBar->setFixedHeight(h - w * 3 - 2);
+		if (m_pVzoomIn)
+			m_pVzoomIn->setGeometry(x, h - w * 3, w, w);
+		if (m_pVzoomOut)
+			m_pVzoomOut->setGeometry(x, h - w * 2, w, w);
+		if (m_pXzoomReset)
+			m_pXzoomReset->setGeometry(x, h - w, w, w);
+	}
+	QScrollBar *pHScrollBar = qtractorScrollView::horizontalScrollBar();
+	if (pHScrollBar->isVisible()) {
+		int w = size.width();
+		int h = pHScrollBar->height(); 
+		int y = size.height() - h - 2;
+		pHScrollBar->setFixedWidth(w - h * 3 - 2);
+		if (m_pHzoomOut)
+			m_pHzoomOut->setGeometry(w - h * 3, y, h, h);
+		if (m_pHzoomIn)
+			m_pHzoomIn->setGeometry(w - h * 2, y, h, h);
+	}
+
 	updateContents();
 }
 
@@ -422,26 +413,20 @@ void qtractorTrackView::resizeEvent ( QResizeEvent *pResizeEvent )
 // (Re)create the complete track view pixmap.
 void qtractorTrackView::updatePixmap ( int cx, int cy )
 {
-#if 0
-	QWidget *pViewport = QScrollView::viewport();
-	int w = pViewport->width()  + 2;
-	int h = pViewport->height() + 2;
-#else
-	int w = QScrollView::width();
-	int h = QScrollView::height();
-#endif
+	const QPalette& pal = qtractorScrollView::palette();
 
-	m_pPixmap->resize(w, h);
-	m_pPixmap->fill(Qt::darkGray);
+	int w = qtractorScrollView::width();
+	int h = qtractorScrollView::height();
+
+	m_pixmap = QPixmap(w, h);
+	m_pixmap.fill(pal.dark().color());
 
 	qtractorSession *pSession = m_pTracks->session();
 	if (pSession == NULL)
 		return;
 
-	QPainter p(m_pPixmap);
-	p.setViewport(0, 0, w, h);
-	p.setWindow(0, 0, w, h);
-	p.setFont(QScrollView::font());
+	QPainter p(&m_pixmap);
+	p.initFrom(this);
 
 	// Update view session cursor location,
 	// so that we'll start drawing clips from there...
@@ -454,35 +439,32 @@ void qtractorTrackView::updatePixmap ( int cx, int cy )
 		m_pSessionCursor->seek(iTrackStart);
 	}
 
+	const QColor& rgbLight = pal.midlight().color().dark(120);
+	const QColor& rgbMid   = pal.mid().color();
+	const QColor& rgbDark  = rgbMid.dark(120);
+	
 	// Draw track and horizontal lines...
-	int iTrack = 0;
 	int x, y1, y2;
 	y1 = y2 = 0;
-	QListViewItem *pItem = m_pTracks->trackList()->firstChild();
-	while (pItem && y2 < cy + h) {
+	int iTrack = 0;
+	qtractorTrack *pTrack = pSession->tracks().first();
+	while (pTrack && y2 < cy + h) {
 		y1  = y2;
-		y2 += pItem->totalHeight();
+		y2 += pTrack->zoomHeight();
 		if (y2 > cy) {
 			// Dispatch to paint this track...
-			qtractorTrack *pTrack = NULL;
-			qtractorTrackListItem *pTrackItem
-				= static_cast<qtractorTrackListItem *> (pItem);
-			if (pTrackItem)
-				pTrack = pTrackItem->track();
-			if (pTrack) {
-				if (y1 > cy) {
-					p.setPen(Qt::lightGray);
-					p.drawLine(0, y1 - cy, w, y1 - cy);
-				}
-				QRect trackRect(0, y1 - cy + 1, w, y2 - y1 - 2);
-				p.fillRect(trackRect, Qt::gray);
-				pTrack->drawTrack(&p, trackRect, iTrackStart, iTrackEnd,
-					m_pSessionCursor->clip(iTrack));
+			if (y1 > cy) {
+				p.setPen(rgbLight);
+				p.drawLine(0, y1 - cy, w, y1 - cy);
 			}
-			p.setPen(Qt::darkGray);
+			QRect trackRect(0, y1 - cy + 1, w, y2 - y1 - 2);
+			p.fillRect(trackRect, rgbMid);
+			pTrack->drawTrack(&p, trackRect, iTrackStart, iTrackEnd,
+				m_pSessionCursor->clip(iTrack));
+			p.setPen(rgbDark);
 			p.drawLine(0, y2 - cy - 1, w, y2 - cy - 1);
 		}
-		pItem = pItem->nextSibling();
+		pTrack = pTrack->next();
 		iTrack++;
 	}
 
@@ -497,11 +479,11 @@ void qtractorTrackView::updatePixmap ( int cx, int cy )
 			if (x >= 0) {
 				bool bBeatIsBar = pSession->beatIsBar(iBeat);
 				if (bBeatIsBar) {
-					p.setPen(Qt::lightGray);
+					p.setPen(rgbLight);
 					p.drawLine(x, 0, x, y2 - cy - 2);
 				}
 				if (bBeatIsBar || iPixelsPerBeat > 16) {
-					p.setPen(Qt::darkGray);
+					p.setPen(rgbDark);
 					p.drawLine(x - 1, 0, x - 1, y2 - cy - 2);
 				}
 			}
@@ -513,9 +495,9 @@ void qtractorTrackView::updatePixmap ( int cx, int cy )
 
 	// Fill the empty area...
 	if (y2 < cy + h) {
-		p.setPen(Qt::gray);
+		p.setPen(rgbMid);
 		p.drawLine(0, y2 - cy, w, y2 - cy);
-	//	p->fillRect(0, y2 - cy + 1, w, h, Qt::darkGray);
+	//	pPainter->fillRect(0, y2 - cy + 1, w, h, pal.dark().color());
 	}
 
 	// Draw loop boundaries, if applicable...
@@ -532,43 +514,40 @@ void qtractorTrackView::updatePixmap ( int cx, int cy )
 
 
 // To have track view in v-sync with track list.
-void qtractorTrackView::contentsMovingSlot ( int /*cx*/, int cy )
+void qtractorTrackView::contentsYMovingSlot ( int /*cx*/, int cy )
 {
-	if (QScrollView::contentsY() != cy)
-		m_pTracks->setContentsPos(this, QScrollView::contentsX(), cy);
+	if (qtractorScrollView::contentsY() != cy)
+		qtractorScrollView::setContentsPos(qtractorScrollView::contentsX(), cy);
 }
 
 
-// Get track list item from given contents vertical position.
-qtractorTrackListItem *qtractorTrackView::trackListItemAt (
-	const QPoint& pos, qtractorTrackViewInfo *pTrackViewInfo ) const
+// Get track from given contents vertical position.
+qtractorTrack *qtractorTrackView::trackAt ( const QPoint& pos,
+	qtractorTrackViewInfo *pTrackViewInfo ) const
 {
+	qtractorSession *pSession = m_pTracks->session();
+	if (pSession == NULL || m_pSessionCursor == NULL)
+		return NULL;
+
 	int y1 = 0;
 	int y2 = 0;
 	int iTrack = 0;
-
-	QListViewItem *pItem = m_pTracks->trackList()->firstChild();
-	while (pItem) {
+	qtractorTrack *pTrack = pSession->tracks().first();
+	while (pTrack) {
 		y1  = y2;
-		y2 += pItem->totalHeight();
+		y2 += pTrack->zoomHeight();
 		if (y2 > pos.y()) {
-			// Force left pane current selection...
-			m_pTracks->trackList()->setSelected(pItem, true);
+			m_pTracks->trackList()->selectTrack(iTrack);
 			break;
 		}
-		pItem = pItem->nextSibling();
+		pTrack = pTrack->next();
 		iTrack++;
 	}
 
 	if (pTrackViewInfo) {
-		qtractorSession *pSession = m_pTracks->session();
-		if (pSession == NULL)
-			return NULL;
-		if (m_pSessionCursor == NULL)
-			return NULL;
-		int x = QScrollView::contentsX();
-		int w = QScrollView::width();   	// View width, not contents.
-		if (pItem == NULL) {				// Below all tracks.
+		int x = qtractorScrollView::contentsX();
+		int w = qtractorScrollView::width();// View width, not contents.
+		if (pTrack == NULL) {				// Below all tracks.
 			y1 = y2;
 			y2 = y1 + (48 * pSession->verticalZoom()) / 100;
 		}
@@ -579,16 +558,7 @@ qtractorTrackListItem *qtractorTrackView::trackListItemAt (
 		pTrackViewInfo->trackRect.setRect(x, y1 + 1, w, y2 - y1 - 2);
 	}
 
-	return static_cast<qtractorTrackListItem *> (pItem);
-}
-
-
-// Get track from given contents vertical position.
-qtractorTrack *qtractorTrackView::trackAt ( const QPoint& pos,
-	qtractorTrackViewInfo *pTrackViewInfo ) const
-{
-	qtractorTrackListItem *pTrackItem = trackListItemAt(pos, pTrackViewInfo);
-	return (pTrackItem ? pTrackItem->track() : NULL);
+	return pTrack;
 }
 
 
@@ -631,22 +601,22 @@ qtractorClip *qtractorTrackView::clipAt ( const QPoint& pos,
 
 
 // Get contents visible rectangle from given track.
-bool qtractorTrackView::trackInfo ( qtractorTrack *pTrack,
+bool qtractorTrackView::trackInfo ( qtractorTrack *pTrackPtr,
 	qtractorTrackViewInfo *pTrackViewInfo ) const
 {
+	qtractorSession *pSession = m_pTracks->session();
+	if (pSession == NULL || m_pSessionCursor == NULL)
+		return false;
+
 	int y1, y2 = 0;
 	int iTrack = 0;
-	qtractorTrackListItem *pTrackItem = NULL;
-	QListViewItem *pItem = m_pTracks->trackList()->firstChild();
-	while (pItem) {
+	qtractorTrack *pTrack = pSession->tracks().first();
+	while (pTrack) {
 		y1  = y2;
-		y2 += pItem->totalHeight();
-		pTrackItem = static_cast<qtractorTrackListItem *> (pItem);
-		if (pTrackItem == NULL)
-			return false;
-		if (pTrackItem->track() == pTrack && m_pSessionCursor) {
-			int x = QScrollView::contentsX();
-			int w = QScrollView::width();   	// View width, not contents.
+		y2 += pTrack->zoomHeight();
+		if (pTrack == pTrackPtr) {
+			int x = qtractorScrollView::contentsX();
+			int w = qtractorScrollView::width();   	// View width, not contents.
 			pTrackViewInfo->trackIndex = iTrack;
 			pTrackViewInfo->trackStart = m_pSessionCursor->frame();
 			pTrackViewInfo->trackEnd   = pTrackViewInfo->trackStart
@@ -654,7 +624,7 @@ bool qtractorTrackView::trackInfo ( qtractorTrack *pTrack,
 			pTrackViewInfo->trackRect.setRect(x, y1 + 1, w, y2 - y1 - 2);
 			return true;
 		}
-		pItem = pItem->nextSibling();
+		pTrack = pTrack->next();
 		iTrack++;
 	}
 
@@ -687,8 +657,6 @@ qtractorTrack *qtractorTrackView::dragMoveTrack ( const QPoint& pos )
 	if (pTrack == NULL)
 	    return NULL;
 
-	hideClipSelect();
-
 	// May change vertically, if we've only one track selected,
 	// and only between same track type...
 	qtractorTrack *pSingleTrack = m_pClipSelect->singleTrack();
@@ -701,7 +669,7 @@ qtractorTrack *qtractorTrackView::dragMoveTrack ( const QPoint& pos )
 	if (x + dx < 0)
 		dx = -(x);	// Force to origin (x=0).
 	m_iDraggingX = (m_pTracks->session()->pixelSnap(x + dx) - x);
-	QScrollView::ensureVisible(pos.x(), pos.y(), 16, 16);
+	qtractorScrollView::ensureVisible(pos.x(), pos.y(), 24, 24);
 
 	showClipSelect();
 
@@ -719,11 +687,10 @@ qtractorTrack *qtractorTrackView::dragDropTrack ( QDropEvent *pDropEvent )
 	
 	// If we're already dragging something,
 	// find the current pointer track...
-	const QPoint& pos = pDropEvent->pos();
+	const QPoint& pos = viewportToContents(pDropEvent->pos());
 	qtractorTrackViewInfo tvi;
 	qtractorTrack *pTrack = trackAt(pos, &tvi);
 	if (!m_dropItems.isEmpty()) {
-		hideDropRects();
 		// Adjust vertically to target track...
 		updateDropRects(tvi.trackRect.y() + 1, tvi.trackRect.height() - 2);
 		// Always change horizontally wise...
@@ -732,37 +699,40 @@ qtractorTrack *qtractorTrackView::dragDropTrack ( QDropEvent *pDropEvent )
 		if (x + dx < 0)
 			dx = -(x);	// Force to origin (x=0).
 		m_iDraggingX = (pSession->pixelSnap(x + dx) - x);
-		QScrollView::ensureVisible(pos.x(), pos.y(), 16, 16);
-		showDropRects();
+	//	showDropRects();
 		// OK, we've moved it...
 		return pTrack;
 	}
 
 	// Let's start from scratch...
+	qDeleteAll(m_dropItems);
 	m_dropItems.clear();
 	m_dropType = qtractorTrack::None;
-	
+
 	// Can it be single track channel (MIDI for sure)?
-	if (qtractorFileChannelDrag::canDecode(pDropEvent)) {
+	if (qtractorFileChannelDrag::canDecode(pDropEvent->mimeData())) {
 		// In the meantime, it can only be only one...
 		QString sPath;
 		unsigned short iChannel = 0;
-		if (qtractorFileChannelDrag::decode(pDropEvent, sPath, &iChannel)) {
+		if (qtractorFileChannelDrag::decode(
+				pDropEvent->mimeData(), sPath, &iChannel)) {
 			m_dropItems.append(new DropItem(sPath, iChannel));
 			m_dropType = qtractorTrack::Midi;
 		}
-	}	// Can we decode it as Audio/MIDI files?
-	else if (QUriDrag::canDecode(pDropEvent)) {
+	}
+	else
+	// Can we decode it as Audio/MIDI files?
+	if (pDropEvent->mimeData()->hasUrls()) {
 		// Let's see how many files there are...
-		QStringList files;
-		if (QUriDrag::decodeLocalFiles(pDropEvent, files)) {
-			for (QStringList::Iterator iter = files.begin();
-					iter != files.end(); ++iter) {
-				m_dropItems.append(new DropItem(*iter));
-			}
+		QList<QUrl> list = pDropEvent->mimeData()->urls();
+		QListIterator<QUrl> iter(list);
+		while (iter.hasNext()) {
+			const QString& sPath = iter.next().toLocalFile();
+			// Close current session and try to load the new one...
+			if (!sPath.isEmpty())
+				m_dropItems.append(new DropItem(sPath));
 		}
 	}
-
 
 	// Nice, now we'll try to set a preview selection rectangle set...
 	m_posDrag.setX(pSession->pixelSnap(pos.x() - 8));
@@ -771,8 +741,9 @@ qtractorTrack *qtractorTrackView::dragDropTrack ( QDropEvent *pDropEvent )
 		m_posDrag.x(), m_posDrag.y(), 0, tvi.trackRect.height() - 2);
 
 	// Nows time to add those rectangles...
-	for (DropItem *pDropItem = m_dropItems.first();
-			pDropItem; pDropItem = m_dropItems.next()) {
+	QMutableListIterator<DropItem *> iter(m_dropItems);
+	while (iter.hasNext()) {
+		DropItem *pDropItem = iter.next();
 		// First test as a MIDI file...
 		if (m_dropType == qtractorTrack::None
 			|| m_dropType == qtractorTrack::Midi) {
@@ -789,7 +760,7 @@ qtractorTrack *qtractorTrackView::dragDropTrack ( QDropEvent *pDropEvent )
 							m_rectDrag.setWidth(
 								pSession->pixelFromTick(seq.duration()));
 							pDropItem->rect = m_rectDrag;
-							m_rectDrag.moveBy(0, m_rectDrag.height() + 4);
+							m_rectDrag.translate(0, m_rectDrag.height() + 4);
 						}
 					}
 					if (m_dropType == qtractorTrack::None)
@@ -799,16 +770,18 @@ qtractorTrack *qtractorTrackView::dragDropTrack ( QDropEvent *pDropEvent )
 					m_rectDrag.setWidth(
 						pSession->pixelFromTick(seq.duration()));
 					pDropItem->rect = m_rectDrag;
-					m_rectDrag.moveBy(0, m_rectDrag.height() + 4);
+					m_rectDrag.translate(0, m_rectDrag.height() + 4);
 					if (m_dropType == qtractorTrack::None)
 						m_dropType = qtractorTrack::Midi;
 				} else /*if (m_dropType == qtractorTrack::Midi)*/ {
-					m_dropItems.remove(pDropItem);
+					iter.remove();
+					delete pDropItem;
 				}
 				file.close();
 				continue;
 			} else if (m_dropType == qtractorTrack::Midi) {
-				m_dropItems.remove(pDropItem);
+				iter.remove();
+				delete pDropItem;
 			}
 		}
 		// Then as an Audio file ?
@@ -827,22 +800,24 @@ qtractorTrack *qtractorTrackView::dragDropTrack ( QDropEvent *pDropEvent )
 					}
 					m_rectDrag.setWidth(pSession->pixelFromFrame(iFrames));
 					pDropItem->rect = m_rectDrag;
-					m_rectDrag.moveBy(0, m_rectDrag.height() + 4);
+					m_rectDrag.translate(0, m_rectDrag.height() + 4);
 					if (m_dropType == qtractorTrack::None)
 						m_dropType = qtractorTrack::Audio;
 				} else if (m_dropType == qtractorTrack::Audio) {
-					m_dropItems.remove(pDropItem);
+					iter.remove();
+					delete pDropItem;
 				}
 				delete pFile;
 				continue;
 			} else if (m_dropType == qtractorTrack::Audio) {
-				m_dropItems.remove(pDropItem);
+				iter.remove();
+				delete pDropItem;
 			}
 		}
 	}
 
 	// Are we still here?
-	if (m_dropItems.isEmpty()) {
+	if (m_dropItems.isEmpty() || m_dropType == qtractorTrack::None) {
 		m_dropType = qtractorTrack::None;
 		return NULL;
 	}
@@ -852,7 +827,7 @@ qtractorTrack *qtractorTrackView::dragDropTrack ( QDropEvent *pDropEvent )
 	m_iDraggingX = 0;	
 
 	// Finally, show it to the world...
-	showDropRects();
+//	showDropRects();
 
 	// Done.
 	return pTrack;
@@ -869,41 +844,79 @@ bool qtractorTrackView::canDropTrack ( QDropEvent *pDropEvent )
 
 
 // Drag enter event handler.
-void qtractorTrackView::contentsDragEnterEvent (
-	QDragEnterEvent *pDragEnterEvent )
+void qtractorTrackView::dragEnterEvent ( QDragEnterEvent *pDragEnterEvent )
 {
+#if 0
 	if (canDropTrack(pDragEnterEvent)) {
-		pDragEnterEvent->accept();
+		showDropRects();
+		if (!pDragEnterEvent->isAccepted()) {
+			pDragEnterEvent->setDropAction(Qt::CopyAction);
+			pDragEnterEvent->accept();
+			m_bDragTimer = false;
+		}
 	} else {
 		pDragEnterEvent->ignore();
+		hideDropRects();
 	}
+#else
+	// Always accept the drag-enter event,
+	// so let we deal with it during move later...
+	pDragEnterEvent->accept();
+	m_bDragTimer = false;
+#endif
 }
 
 
 // Drag move event handler.
-void qtractorTrackView::contentsDragMoveEvent (
-	QDragMoveEvent *pDragMoveEvent )
+void qtractorTrackView::dragMoveEvent (	QDragMoveEvent *pDragMoveEvent )
 {
 	if (canDropTrack(pDragMoveEvent)) {
-		pDragMoveEvent->accept();
+		showDropRects();
+		if (!pDragMoveEvent->isAccepted()) {
+			pDragMoveEvent->setDropAction(Qt::CopyAction);
+			pDragMoveEvent->accept();
+			m_bDragTimer = false;
+		}
 	} else {
 		pDragMoveEvent->ignore();
+		hideDropRects();
+	}
+
+	// Kind of auto-scroll...
+	const QPoint& pos = viewportToContents(pDragMoveEvent->pos());
+	qtractorScrollView::ensureVisible(pos.x(), pos.y(), 24, 24);
+}
+
+
+// Drag leave event handler.
+void qtractorTrackView::dragLeaveEvent ( QDragLeaveEvent *pDragLeaveEvent )
+{
+	// Maybe we have something currently going on?
+	if (pDragLeaveEvent->isAccepted()) {
+		if (!m_bDragTimer) {
+			m_bDragTimer = true;
+			QTimer::singleShot(100, this, SLOT(dragTimeout()));
+		}
+	} else {
+		// Nothing's being accepted...
+		m_bDragTimer = false;
+		resetDragState();
 	}
 }
 
 
-// Drag move event handler.
-void qtractorTrackView::contentsDragLeaveEvent ( QDragLeaveEvent * )
+// Drag timeout slot.
+void qtractorTrackView::dragTimeout (void)
 {
-	// Maybe we have something currently going on;
-	// redraw to hide preview selection rectangle...
-	resetDragState();
+	if (m_bDragTimer) {
+		resetDragState();
+		m_bDragTimer = false;
+	}
 }
 
 
 // Drop event handler.
-void qtractorTrackView::contentsDropEvent (
-	QDropEvent *pDropEvent )
+void qtractorTrackView::dropEvent (	QDropEvent *pDropEvent )
 {
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm == NULL)
@@ -924,8 +937,9 @@ void qtractorTrackView::contentsDropEvent (
 		if (!m_dropItems.isEmpty()) {
 			// Prepare file list for import...
 			QStringList files;
-			for (DropItem *pDropItem = m_dropItems.first();
-					pDropItem; pDropItem = m_dropItems.next()) {
+			QListIterator<DropItem *> iter(m_dropItems);
+			while (iter.hasNext()) {
+				DropItem *pDropItem = iter.next();
 				if (m_dropType == qtractorTrack::Midi
 					&& pDropItem->channel >= 0) {
 					m_pTracks->addMidiTrackChannel(
@@ -963,8 +977,9 @@ void qtractorTrackView::contentsDropEvent (
 		= new qtractorClipCommand(pMainForm, tr("add clip"));
 
 	// Nows time to create the clip(s)...
-	for (DropItem *pDropItem = m_dropItems.first();
-			pDropItem; pDropItem = m_dropItems.next()) {
+	QListIterator<DropItem *> iter(m_dropItems);
+	while (iter.hasNext()) {
+		DropItem *pDropItem = iter.next();
 		switch (pTrack->trackType()) {
 		case qtractorTrack::Audio: {
 			qtractorAudioClip *pAudioClip = new qtractorAudioClip(pTrack);
@@ -1006,15 +1021,15 @@ void qtractorTrackView::contentsDropEvent (
 
 
 // Handle item selection/dragging -- mouse button press.
-void qtractorTrackView::contentsMousePressEvent ( QMouseEvent *pMouseEvent )
+void qtractorTrackView::mousePressEvent ( QMouseEvent *pMouseEvent )
 {
 	// Force null state.
 	resetDragState();
 
 	// Which mouse state?
-	const bool bModifier = (pMouseEvent->state()
-		& (Qt::ShiftButton | Qt::ControlButton));
-	const QPoint& pos = pMouseEvent->pos();
+	const bool bModifier = (pMouseEvent->modifiers()
+		& (Qt::ShiftModifier | Qt::ControlModifier));
+	const QPoint& pos = viewportToContents(pMouseEvent->pos());
 
 	// We need a session and a location...
 	qtractorSession *pSession = m_pTracks->session();
@@ -1032,7 +1047,7 @@ void qtractorTrackView::contentsMousePressEvent ( QMouseEvent *pMouseEvent )
 			// Should it be selected(toggled)?
 			if (m_pClipDrag) {
 				// Show that we're about to something...
-				QScrollView::setCursor(QCursor(Qt::PointingHandCursor));
+				qtractorScrollView::setCursor(QCursor(Qt::PointingHandCursor));
 				// Make it (un)selected, right on the file view too...
 				if (m_selectMode == SelectClip)
 					selectClipFile(!bModifier);
@@ -1068,18 +1083,18 @@ void qtractorTrackView::contentsMousePressEvent ( QMouseEvent *pMouseEvent )
 		}
 	}
 
-	QScrollView::contentsMousePressEvent(pMouseEvent);
+	qtractorScrollView::mousePressEvent(pMouseEvent);
 
 	// Make sure we've get focus back...
-	QScrollView::setFocus();
+	qtractorScrollView::setFocus();
 }
 
 
 // Handle item selection/dragging -- mouse pointer move.
-void qtractorTrackView::contentsMouseMoveEvent ( QMouseEvent *pMouseEvent )
+void qtractorTrackView::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 {
 	// Are we already moving/dragging something?
-	const QPoint& pos = pMouseEvent->pos();
+	const QPoint& pos = viewportToContents(pMouseEvent->pos());
 
 	switch (m_dragState) {
 	case DragMove:
@@ -1090,13 +1105,10 @@ void qtractorTrackView::contentsMouseMoveEvent ( QMouseEvent *pMouseEvent )
 		dragFadeMove(pos);
 		break;
 	case DragSelect:
-		if (m_selectMode != SelectRange)
-			hideDragRect(m_rectDrag);
 		m_rectDrag.setBottomRight(pos);
-		QScrollView::ensureVisible(pos.x(), pos.y(), 16, 16);
+		moveRubberBand(&m_pRubberBand, m_rectDrag);
+		qtractorScrollView::ensureVisible(pos.x(), pos.y(), 24, 24);
 		selectRect(m_rectDrag, m_selectMode);
-		if (m_selectMode != SelectRange)
-			showDragRect(m_rectDrag, 1);
 		break;
 	case DragStart:
 		if ((m_posDrag - pos).manhattanLength()
@@ -1104,29 +1116,29 @@ void qtractorTrackView::contentsMouseMoveEvent ( QMouseEvent *pMouseEvent )
 			// Check if we're pointing in some fade-in/out handle...
 			if (dragFadeStart(m_posDrag)) {
 				m_iDraggingX = (pos.x() - m_posDrag.x());
-				drawFadeHandle();	// Show.
+				moveRubberBand(&m_pRubberBand, m_rectHandle);
 			} else {
 				// We'll start dragging clip/regions alright...
 				qtractorClipSelect::Item *pClipItem = NULL;
 				if (m_pClipDrag)
-					pClipItem = m_pClipSelect->findClip(m_pClipDrag);
+					pClipItem = m_pClipSelect->findClipItem(m_pClipDrag);
 				if (pClipItem && pClipItem->rectClip.contains(pos)) {
 					int x = m_pTracks->session()->pixelSnap(m_rectDrag.x());
 					m_iDraggingX = (x - m_rectDrag.x());
 					m_dragState = DragMove;
-					QScrollView::setCursor(QCursor(Qt::SizeAllCursor));
+					qtractorScrollView::setCursor(QCursor(Qt::SizeAllCursor));
 					showClipSelect();
 				} else {
 					// We'll start rubber banding...
 					m_rectDrag.setTopLeft(m_posDrag);
 					m_rectDrag.setBottomRight(pos);
 					m_dragState = DragSelect;
-					if (m_selectMode == SelectRange) {
-						QScrollView::setCursor(QCursor(Qt::SizeHorCursor));
-					} else {
-						QScrollView::setCursor(QCursor(Qt::CrossCursor));
-						showDragRect(m_rectDrag, 1);
-					}
+					// Set a proper cursor...
+					qtractorScrollView::setCursor(QCursor(
+						m_selectMode == SelectRange ?
+							Qt::SizeHorCursor : Qt::CrossCursor));
+					// Create the rubber-band if there's none...
+					moveRubberBand(&m_pRubberBand, m_rectDrag);
 				}
 			}
 		}
@@ -1137,23 +1149,24 @@ void qtractorTrackView::contentsMouseMoveEvent ( QMouseEvent *pMouseEvent )
 		break;
 	}
 
-	QScrollView::contentsMouseMoveEvent(pMouseEvent);
+	qtractorScrollView::mouseMoveEvent(pMouseEvent);
 }
 
 
 // Handle item selection/dragging -- mouse button release.
-void qtractorTrackView::contentsMouseReleaseEvent ( QMouseEvent *pMouseEvent )
+void qtractorTrackView::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 {
-	QScrollView::contentsMouseReleaseEvent(pMouseEvent);
+	qtractorScrollView::mouseReleaseEvent(pMouseEvent);
 
 	qtractorSession *pSession = m_pTracks->session();
 	if (pSession) {
 		// Direct snap positioning...
+		const QPoint& pos = viewportToContents(pMouseEvent->pos());
 		unsigned long iFrame = pSession->frameSnap(
 			pSession->frameFromPixel(m_posDrag.x() > 0 ? m_posDrag.x() : 0));
 		// Which mouse state?
-		const bool bModifier = (pMouseEvent->state()
-			& (Qt::ShiftButton | Qt::ControlButton));
+		const bool bModifier = (pMouseEvent->modifiers()
+			& (Qt::ShiftModifier | Qt::ControlModifier));
 		switch (m_dragState) {
 		case DragSelect:
 			// Here we're mainly supposed to select a few bunch
@@ -1162,11 +1175,11 @@ void qtractorTrackView::contentsMouseReleaseEvent ( QMouseEvent *pMouseEvent )
 			break;
 		case DragMove:
 			// Let's move them...
-			moveClipSelect(dragMoveTrack(pMouseEvent->pos()), m_iDraggingX);
+			moveClipSelect(dragMoveTrack(pos), m_iDraggingX);
 			break;
 		case DragFadeIn:
 		case DragFadeOut:
-			dragFadeDrop(pMouseEvent->pos());
+			dragFadeDrop(pos);
 			break;
 		case DragStart:
 			// Deferred left-button positioning...
@@ -1205,7 +1218,7 @@ void qtractorTrackView::contentsMouseReleaseEvent ( QMouseEvent *pMouseEvent )
 	resetDragState();
 
 	// Make sure we've get focus back...
-	QScrollView::setFocus();
+	qtractorScrollView::setFocus();
 }
 
 
@@ -1216,7 +1229,7 @@ void qtractorTrackView::selectClipFile ( bool bReset )
 		return;
 
 	// Do the selection dance, first...
-	qtractorClipSelect::Item *pClipItem = m_pClipSelect->findClip(m_pClipDrag);
+	qtractorClipSelect::Item *pClipItem = m_pClipSelect->findClipItem(m_pClipDrag);
 	bool bSelect = !(pClipItem && pClipItem->rectClip.contains(m_posDrag));
 	if (!bReset) {
 		m_pClipSelect->selectClip(m_pClipDrag, m_rectDrag, bSelect);
@@ -1275,9 +1288,9 @@ void qtractorTrackView::selectRect ( const QRect& rectDrag,
 		return;
 
 	// The precise (snapped) selection frame points...
-	QRect rect(rectDrag.normalize());
+	QRect rect(rectDrag.normalized());
 
-	QRect rectRange(0, 0, 0, QScrollView::contentsHeight());
+	QRect rectRange(0, 0, 0, qtractorScrollView::contentsHeight());
 	rectRange.setLeft(pSession->pixelSnap(rect.left()));
 	rectRange.setRight(pSession->pixelSnap(rect.right()));
 
@@ -1298,42 +1311,35 @@ void qtractorTrackView::selectRect ( const QRect& rectDrag,
 	// Now find all the clips/regions that fall
 	// in the given rectangular region...
 	int y1, y2 = 0;
-	QListViewItem *pItem = m_pTracks->trackList()->firstChild();
-	while (pItem) {
+	qtractorTrack *pTrack = pSession->tracks().first();
+	while (pTrack) {
 		y1  = y2;
-		y2 += pItem->totalHeight();
+		y2 += pTrack->zoomHeight();
 		if (rect.bottom() < y1)
 			break;
 		if (y2 >= rect.top()) {
-			qtractorTrack *pTrack = NULL;
-			qtractorTrackListItem *pTrackItem
-				= static_cast<qtractorTrackListItem *> (pItem);
-			if (pTrackItem)
-				pTrack = pTrackItem->track();
-			if (pTrack) {
-				int y = y1 + 1;
-				int h = y2 - y1 - 2;
-				for (qtractorClip *pClip = pTrack->clips().first();
-						pClip; pClip = pClip->next()) {
-					int x = pSession->pixelFromFrame(pClip->clipStart());
-					int w = pSession->pixelFromFrame(pClip->clipLength());
-					if (x > rect.right())
-						break;
-					// Test whether the whole clip rectangle
-					// intersects the rubber-band range one...
-					QRect rectClip(x, y, w, h);
-					if (rect.intersects(rectClip)) {
-						if (selectMode != SelectClip)
-							rectClip = rectRange.intersect(rectClip);
-						m_pClipSelect->selectClip(pClip, rectClip, true);
-						if (selectMode != SelectClip)
-							pClip->setClipSelect(iSelectStart, iSelectEnd);
-						rectUpdate = rectUpdate.unite(rectClip);
-					}
+			int y = y1 + 1;
+			int h = y2 - y1 - 2;
+			for (qtractorClip *pClip = pTrack->clips().first();
+					pClip; pClip = pClip->next()) {
+				int x = pSession->pixelFromFrame(pClip->clipStart());
+				int w = pSession->pixelFromFrame(pClip->clipLength());
+				if (x > rect.right())
+					break;
+				// Test whether the whole clip rectangle
+				// intersects the rubber-band range one...
+				QRect rectClip(x, y, w, h);
+				if (rect.intersects(rectClip)) {
+					if (selectMode != SelectClip)
+						rectClip = rectRange.intersect(rectClip);
+					m_pClipSelect->selectClip(pClip, rectClip, true);
+					if (selectMode != SelectClip)
+						pClip->setClipSelect(iSelectStart, iSelectEnd);
+					rectUpdate = rectUpdate.unite(rectClip);
 				}
 			}
 		}
-		pItem = pItem->nextSibling();
+		pTrack = pTrack->next();
 	}
 
 	// Update the screen real estate...
@@ -1364,7 +1370,7 @@ qtractorTrackView::SelectMode qtractorTrackView::selectMode (void) const
 
 
 // Select every clip of a given track.
-void qtractorTrackView::selectTrack ( qtractorTrack *pTrack, bool bReset )
+void qtractorTrackView::selectTrack ( qtractorTrack *pTrackPtr, bool bReset )
 {
 	qtractorSession *pSession = m_pTracks->session();
 	if (pSession == NULL)
@@ -1378,13 +1384,11 @@ void qtractorTrackView::selectTrack ( qtractorTrack *pTrack, bool bReset )
 
 	QRect rectUpdate;
 	int y1, y2 = 0;
-	QListViewItem *pItem = m_pTracks->trackList()->firstChild();
-	while (pItem) {
+	qtractorTrack *pTrack = pSession->tracks().first();
+	while (pTrack) {
 		y1  = y2;
-		y2 += pItem->totalHeight();
-		qtractorTrackListItem *pTrackItem
-			= static_cast<qtractorTrackListItem *> (pItem);
-		if (pTrackItem && pTrackItem->track() == pTrack) {
+		y2 += pTrack->zoomHeight();
+		if (pTrack == pTrackPtr) {
 			int y = y1 + 1;
 			int h = y2 - y1 - 2;
 			for (qtractorClip *pClip = pTrack->clips().first();
@@ -1397,8 +1401,9 @@ void qtractorTrackView::selectTrack ( qtractorTrack *pTrack, bool bReset )
 				rectUpdate = rectUpdate.unite(rectClip);
 				iUpdate++;
 			}
+			break;
 		}
-		pItem = pItem->nextSibling();
+		pTrack = pTrack->next();
 	}
 
 	if (iUpdate > 0) {
@@ -1422,141 +1427,143 @@ void qtractorTrackView::selectAll ( bool bSelect )
 		// Select all clips on all tracks...
 		int iUpdate = 0;
 		int y1, y2 = 0;
-		QListViewItem *pItem = m_pTracks->trackList()->firstChild();
-		while (pItem) {
+		qtractorTrack *pTrack = pSession->tracks().first();
+		while (pTrack) {
 			y1  = y2;
-			y2 += pItem->totalHeight();
-			qtractorTrack *pTrack = NULL;
-			qtractorTrackListItem *pTrackItem
-				= static_cast<qtractorTrackListItem *> (pItem);
-			if (pTrackItem)
-				pTrack = pTrackItem->track();
-			if (pTrack) {
-				int y = y1 + 1;
-				int h = y2 - y1 - 2;
-				for (qtractorClip *pClip = pTrack->clips().first();
-						pClip; pClip = pClip->next()) {
-					int x = pSession->pixelFromFrame(pClip->clipStart());
-					int w = pSession->pixelFromFrame(pClip->clipLength());
-					const QRect rectClip(x, y, w, h);
-					m_pClipSelect->selectClip(pClip, rectClip, bSelect);
-					iUpdate++;
-				}
+			y2 += pTrack->zoomHeight();
+			int y = y1 + 1;
+			int h = y2 - y1 - 2;
+			for (qtractorClip *pClip = pTrack->clips().first();
+					pClip; pClip = pClip->next()) {
+				int x = pSession->pixelFromFrame(pClip->clipStart());
+				int w = pSession->pixelFromFrame(pClip->clipLength());
+				const QRect rectClip(x, y, w, h);
+				m_pClipSelect->selectClip(pClip, rectClip, bSelect);
+				iUpdate++;
 			}
-			pItem = pItem->nextSibling();
+			pTrack = pTrack->next();
 		}
 		// This is most probably an overall update...
 		if (iUpdate > 0) {
-			updateContents();
+			updateContents(m_pClipSelect->rect());
 			m_pTracks->selectionChangeNotify();
 		}
 	}
 	else
 	// Clear all selections...
-	if (m_pClipSelect->clips().count() > 0) {
+	if (m_pClipSelect->items().count() > 0) {
+		QRect rectUpdate = m_pClipSelect->rect();
 		m_pClipSelect->clear();
-		updateContents();
+		if (!rectUpdate.isEmpty())
+			updateContents(rectUpdate);
 		m_pTracks->selectionChangeNotify();
 	}
 }
 
 
 // Draw/hide the whole current clip selection.
-void qtractorTrackView::updateClipSelect ( int y, int h )
+void qtractorTrackView::updateClipSelect ( int y, int h ) const
 {
 	bool bSingleTrack = (m_pClipSelect->singleTrack() != NULL);
-	qtractorClipSelect::Item *pClipItem	= m_pClipSelect->clips().first();
-	while (pClipItem) {
+	QListIterator<qtractorClipSelect::Item *> iter(m_pClipSelect->items());
+	while (iter.hasNext()) {
+		qtractorClipSelect::Item *pClipItem	= iter.next();
 		if (bSingleTrack) {
 			pClipItem->rectClip.setY(y);
 			pClipItem->rectClip.setHeight(h);
 		}
-		pClipItem = m_pClipSelect->clips().next();
 	}
 }
 
-void qtractorTrackView::showClipSelect ( int iThickness ) const
+void qtractorTrackView::showClipSelect (void) const
 {
-	qtractorClipSelect::Item *pClipItem	= m_pClipSelect->clips().first();
-	while (pClipItem) {
-		showDragRect(pClipItem->rectClip, iThickness);
-		pClipItem = m_pClipSelect->clips().next();
+	QListIterator<qtractorClipSelect::Item *> iter(m_pClipSelect->items());
+	while (iter.hasNext()) {
+		qtractorClipSelect::Item *pClipItem = iter.next();
+		moveRubberBand(&(pClipItem->rubberBand), pClipItem->rectClip);
 	}
 }
 
-void qtractorTrackView::hideClipSelect (void)
+void qtractorTrackView::hideClipSelect (void) const
 {
-	qtractorClipSelect::Item *pClipItem	= m_pClipSelect->clips().first();
-	while (pClipItem) {
-		hideDragRect(pClipItem->rectClip);
-		pClipItem = m_pClipSelect->clips().next();
+	QListIterator<qtractorClipSelect::Item *> iter(m_pClipSelect->items());
+	while (iter.hasNext()) {
+		QRubberBand *pRubberBand = iter.next()->rubberBand;
+		if (pRubberBand && pRubberBand->isVisible())
+			pRubberBand->hide();
 	}
 }
 
 
 // Draw/hide the whole drop rectagle list
-void qtractorTrackView::updateDropRects ( int y, int h )
+void qtractorTrackView::updateDropRects ( int y, int h ) const
 {
-	for (DropItem *pDropItem = m_dropItems.first();
-			pDropItem; pDropItem = m_dropItems.next()) {
+	QListIterator<DropItem *> iter(m_dropItems);
+	while (iter.hasNext()) {
+		DropItem *pDropItem = iter.next();
 		pDropItem->rect.setY(y);
 		pDropItem->rect.setHeight(h);
 		y += h + 4;
 	}
 }
 
-void qtractorTrackView::showDropRects ( int iThickness )
+void qtractorTrackView::showDropRects (void) const
 {
-	for (DropItem *pDropItem = m_dropItems.first();
-			pDropItem; pDropItem = m_dropItems.next()) {
-		showDragRect(pDropItem->rect, iThickness);
+	QListIterator<DropItem *> iter(m_dropItems);
+	while (iter.hasNext()) {
+		DropItem *pDropItem = iter.next();
+		moveRubberBand(&(pDropItem->rubberBand), pDropItem->rect);
 	}
 }
 
-void qtractorTrackView::hideDropRects (void)
+void qtractorTrackView::hideDropRects (void) const
 {
-	for (DropItem *pDropItem = m_dropItems.first();
-			pDropItem; pDropItem = m_dropItems.next()) {
-		hideDragRect(pDropItem->rect);
+	QListIterator<DropItem *> iter(m_dropItems);
+	while (iter.hasNext()) {
+		QRubberBand *pRubberBand = iter.next()->rubberBand;
+		if (pRubberBand && pRubberBand->isVisible())
+			pRubberBand->hide();
 	}
 }
 
 
-// Draw/hide a dragging rectangular selection.
-void qtractorTrackView::showDragRect ( const QRect& rectDrag,
-	int iThickness ) const
+
+// Show and move rubber-band item.
+void qtractorTrackView::moveRubberBand ( QRubberBand **ppRubberBand,
+	const QRect& rectDrag ) const
 {
-	QPainter p(QScrollView::viewport());
-	QRect rect(rectDrag.normalize());
-	const QPoint delta(1, 1);
+	QRect rect(rectDrag.normalized());
 
 	// Horizontal adjust...
-	rect.moveBy(m_iDraggingX, 0);
+	rect.translate(m_iDraggingX, 0);
 	// Convert rectangle into view coordinates...
-	rect.moveTopLeft(QScrollView::contentsToViewport(rect.topLeft()));
+	rect.moveTopLeft(qtractorScrollView::contentsToViewport(rect.topLeft()));
 	// Make sure the rectangle doesn't get too off view,
 	// which it would make it sluggish :)
 	if (rect.left() < 0)
-		rect.setLeft(-(iThickness + 1));
-	if (rect.right() > QScrollView::width())
-		rect.setRight(QScrollView::width() + iThickness + 1);
+		rect.setLeft(-8);
+	if (rect.right() > qtractorScrollView::width())
+		rect.setRight(qtractorScrollView::width() + 8);
 
-	// Now draw it with given thickness...
-	p.drawWinFocusRect(rect, Qt::gray);
-	while (--iThickness > 0) {
-		rect.setTopLeft(rect.topLeft() + delta);
-		rect.setBottomRight(rect.bottomRight() - delta);
-		p.drawWinFocusRect(rect, Qt::gray);
+	// Create the rubber-band if there's none...
+	QRubberBand *pRubberBand = *ppRubberBand;
+	if (pRubberBand == NULL) {
+		pRubberBand = new QRubberBand(
+			QRubberBand::Rectangle, qtractorScrollView::viewport());
+		QPalette pal(pRubberBand->palette());
+		pal.setColor(pRubberBand->foregroundRole(), Qt::blue);
+		pRubberBand->setPalette(pal);
+		pRubberBand->setBackgroundRole(QPalette::NoRole);
+		// Do not ever forget to set it back...
+		*ppRubberBand = pRubberBand;
 	}
-}
+	
+	// Just move it
+	pRubberBand->setGeometry(rect);
 
-void qtractorTrackView::hideDragRect ( const QRect& rectDrag )
-{
-	QRect rect(rectDrag.normalize());
-
-	// Horizontal adjust...
-	rect.moveBy(m_iDraggingX, 0);
-	QScrollView::repaintContents(rect);
+	// Ah, and make it visible, of course...
+	if (!pRubberBand->isVisible())
+		pRubberBand->show();
 }
 
 
@@ -1599,7 +1606,6 @@ void qtractorTrackView::dragFadeMove ( const QPoint& pos )
 	if (pSession == NULL)
 		return;
 
-	drawFadeHandle();	// Hide.
 	// Always change horizontally wise...
 	int dx = (pos.x() - m_posDrag.x());
 	if (m_rectHandle.left() + dx < m_rectDrag.left())
@@ -1607,8 +1613,12 @@ void qtractorTrackView::dragFadeMove ( const QPoint& pos )
 	else if (m_rectHandle.right() + dx > m_rectDrag.right())
 		dx = m_rectDrag.right() - m_rectHandle.right();
 	m_iDraggingX = dx;
-	QScrollView::ensureVisible(pos.x(), pos.y(), 16, 16);
-	drawFadeHandle();	// Show.
+	moveRubberBand(&m_pRubberBand, m_rectHandle);
+	qtractorScrollView::ensureVisible(pos.x(), pos.y(), 24, 24);
+
+	// Prepare to update the whole view area...
+	qtractorScrollView::viewport()->update(
+		QRect(contentsToViewport(m_rectDrag.topLeft()), m_rectDrag.size()));
 }
 
 
@@ -1636,69 +1646,53 @@ void qtractorTrackView::dragFadeDrop ( const QPoint& pos )
 		pClipCommand->fadeInClip(m_pClipDrag,
 				pSession->frameFromPixel(m_rectHandle.left()
 					+ m_iDraggingX - m_rectDrag.left()));
-	} else {
+	} 
+	else
+	if (m_dragState == DragFadeOut) {
 		pClipCommand->fadeOutClip(m_pClipDrag,
 				pSession->frameFromPixel(m_rectDrag.right()
 					- m_iDraggingX - m_rectHandle.right()));
 	}
+
+	// Reset state for proper redrawing...
+	m_dragState = DragNone;
 
 	// Put it in the form of an undoable command...
 	pMainForm->commands()->exec(pClipCommand);
 }		
 
 
-// Show/hide a moving clip fade in/out handle.
-void qtractorTrackView::drawFadeHandle (void) const
-{
-	QPainter p(QScrollView::viewport());
-	QRect rect(m_rectHandle);
-
-	// Horizontal adjust...
-	rect.moveBy(m_iDraggingX, 0);
-	// Convert rectangle into view coordinates...
-	rect.moveTopLeft(QScrollView::contentsToViewport(rect.topLeft()));
-
-	// Draw the handle rectangle...
-	p.setPen(Qt::gray);
-	p.setRasterOp(Qt::NotROP);
-	p.fillRect(rect, Qt::gray);
-
-	// Draw envelope line...
-	QPoint vpos;
-	if (m_dragState == DragFadeIn) {
-		vpos = QScrollView::contentsToViewport(m_rectDrag.bottomLeft());
-		p.drawLine(vpos.x(), vpos.y(), rect.x(), rect.y());
-	} 
-	else 
-	if (m_dragState == DragFadeOut) {
-		vpos = QScrollView::contentsToViewport(m_rectDrag.bottomRight());
-		p.drawLine(rect.x() + 8, rect.y(), vpos.x(), vpos.y());
-	}
-}
-
-
 // Reset drag/select/move state.
 void qtractorTrackView::resetDragState (void)
 {
-	// Cancel any dragging out there...
-	if (m_dragState == DragDrop) {
-		hideDropRects();
-	} else if (m_dragState == DragFadeIn || m_dragState == DragFadeOut) {
-		drawFadeHandle();	// Hide.
-	} else if (m_dragState == DragSelect || m_dragState == DragMove) {
-		QScrollView::updateContents();
-	}
+	// To remember what we were doing...
+	DragState dragState = m_dragState;
 
-	// Should fallback mouse cursor...
-	if (m_dragState != DragNone)
-		QScrollView::unsetCursor();
-
-	// Force null state.
+	// Force null state, now.
 	m_dragState  = DragNone;
 	m_iDraggingX = 0;
 	m_pClipDrag  = NULL;
 
+	// If we were moving clips around,
+	// just hide selection, of course.
+	hideClipSelect();
+
+	// Just hide the rubber-band...
+	if (m_pRubberBand)
+		m_pRubberBand->hide();
+
+	// If we were dragging fade-slope lines, refresh
+	if (dragState == DragFadeIn || dragState == DragFadeOut) {
+		qtractorScrollView::viewport()->update(
+			QRect(contentsToViewport(m_rectDrag.topLeft()), m_rectDrag.size()));
+	}
+
+	// Should fallback mouse cursor...
+	if (dragState != DragNone)
+		qtractorScrollView::unsetCursor();
+
 	// No dropping files, whatsoever.
+	qDeleteAll(m_dropItems);
 	m_dropItems.clear();
 	m_dropType = qtractorTrack::None;
 }
@@ -1715,93 +1709,96 @@ void qtractorTrackView::keyPressEvent ( QKeyEvent *pKeyEvent )
 		resetDragState();
 		break;
 	case Qt::Key_Home:
-		if (pKeyEvent->state() & Qt::ControlButton) {
-			QScrollView::setContentsPos(0, 0);
+		if (pKeyEvent->modifiers() & Qt::ControlModifier) {
+			qtractorScrollView::setContentsPos(0, 0);
 		} else {
-			QScrollView::setContentsPos(
-				0, QScrollView::contentsY());
+			qtractorScrollView::setContentsPos(
+				0, qtractorScrollView::contentsY());
 		}
 		break;
 	case Qt::Key_End:
-		if (pKeyEvent->state() & Qt::ControlButton) {
-			QScrollView::setContentsPos(
-				QScrollView::contentsWidth(), QScrollView::contentsHeight());
+		if (pKeyEvent->modifiers() & Qt::ControlModifier) {
+			qtractorScrollView::setContentsPos(
+				qtractorScrollView::contentsWidth(),
+				qtractorScrollView::contentsHeight());
 		} else {
-			QScrollView::setContentsPos(
-				QScrollView::contentsWidth(), QScrollView::contentsY());
+			qtractorScrollView::setContentsPos(
+				qtractorScrollView::contentsWidth(),
+				qtractorScrollView::contentsY());
 		}
 		break;
 	case Qt::Key_Left:
-		if (pKeyEvent->state() & Qt::ControlButton) {
-			QScrollView::setContentsPos(
-				QScrollView::contentsX() - QScrollView::width(),
-				QScrollView::contentsY());
+		if (pKeyEvent->modifiers() & Qt::ControlModifier) {
+			qtractorScrollView::setContentsPos(
+				qtractorScrollView::contentsX() - qtractorScrollView::width(),
+				qtractorScrollView::contentsY());
 		} else {
-			QScrollView::setContentsPos(
-				QScrollView::contentsX() - 16,
-				QScrollView::contentsY());
+			qtractorScrollView::setContentsPos(
+				qtractorScrollView::contentsX() - 16,
+				qtractorScrollView::contentsY());
 		}
 		break;
 	case Qt::Key_Right:
-		if (pKeyEvent->state() & Qt::ControlButton) {
-			QScrollView::setContentsPos(
-				QScrollView::contentsX() + QScrollView::width(),
-				QScrollView::contentsY());
+		if (pKeyEvent->modifiers() & Qt::ControlModifier) {
+			qtractorScrollView::setContentsPos(
+				qtractorScrollView::contentsX() + qtractorScrollView::width(),
+				qtractorScrollView::contentsY());
 		} else {
-			QScrollView::setContentsPos(
-				QScrollView::contentsX() + 16,
-				QScrollView::contentsY());
+			qtractorScrollView::setContentsPos(
+				qtractorScrollView::contentsX() + 16,
+				qtractorScrollView::contentsY());
 		}
 		break;
 	case Qt::Key_Up:
-		if (pKeyEvent->state() & Qt::ControlButton) {
-			QScrollView::setContentsPos(
-				QScrollView::contentsX(),
-				QScrollView::contentsY() - QScrollView::height());
+		if (pKeyEvent->modifiers() & Qt::ControlModifier) {
+			qtractorScrollView::setContentsPos(
+				qtractorScrollView::contentsX(),
+				qtractorScrollView::contentsY() - qtractorScrollView::height());
 		} else {
-			QScrollView::setContentsPos(
-				QScrollView::contentsX(),
-				QScrollView::contentsY() - 16);
+			qtractorScrollView::setContentsPos(
+				qtractorScrollView::contentsX(),
+				qtractorScrollView::contentsY() - 16);
 		}
 		break;
 	case Qt::Key_Down:
-		if (pKeyEvent->state() & Qt::ControlButton) {
-			QScrollView::setContentsPos(
-				QScrollView::contentsX(),
-				QScrollView::contentsY() + QScrollView::height());
+		if (pKeyEvent->modifiers() & Qt::ControlModifier) {
+			qtractorScrollView::setContentsPos(
+				qtractorScrollView::contentsX(),
+				qtractorScrollView::contentsY() + qtractorScrollView::height());
 		} else {
-			QScrollView::setContentsPos(
-				QScrollView::contentsX(),
-				QScrollView::contentsY() + 16);
+			qtractorScrollView::setContentsPos(
+				qtractorScrollView::contentsX(),
+				qtractorScrollView::contentsY() + 16);
 		}
 		break;
-	case Qt::Key_Prior:
-		if (pKeyEvent->state() & Qt::ControlButton) {
-			QScrollView::setContentsPos(
-				QScrollView::contentsX(), 16);
+	case Qt::Key_PageUp:
+		if (pKeyEvent->modifiers() & Qt::ControlModifier) {
+			qtractorScrollView::setContentsPos(
+				qtractorScrollView::contentsX(), 16);
 		} else {
-			QScrollView::setContentsPos(
-				QScrollView::contentsX(),
-				QScrollView::contentsY() - QScrollView::height());
+			qtractorScrollView::setContentsPos(
+				qtractorScrollView::contentsX(),
+				qtractorScrollView::contentsY() - qtractorScrollView::height());
 		}
 		break;
-	case Qt::Key_Next:
-		if (pKeyEvent->state() & Qt::ControlButton) {
-			QScrollView::setContentsPos(
-				QScrollView::contentsX(), QScrollView::contentsHeight());
+	case Qt::Key_PageDown:
+		if (pKeyEvent->modifiers() & Qt::ControlModifier) {
+			qtractorScrollView::setContentsPos(
+				qtractorScrollView::contentsX(),
+				qtractorScrollView::contentsHeight());
 		} else {
-			QScrollView::setContentsPos(
-				QScrollView::contentsX(),
-				QScrollView::contentsY() + QScrollView::height());
+			qtractorScrollView::setContentsPos(
+				qtractorScrollView::contentsX(),
+				qtractorScrollView::contentsY() + qtractorScrollView::height());
 		}
 		break;
 	default:
-		QScrollView::keyPressEvent(pKeyEvent);
+		qtractorScrollView::keyPressEvent(pKeyEvent);
 		break;
 	}
 
 	// Make sure we've get focus back...
-	QScrollView::setFocus();
+	qtractorScrollView::setFocus();
 }
 
 
@@ -1810,16 +1807,16 @@ void qtractorTrackView::ensureVisibleFrame ( unsigned long iFrame )
 {
 	qtractorSession *pSession = m_pTracks->session();
 	if (pSession) {
-		int x0 = QScrollView::contentsX();
+		int x0 = qtractorScrollView::contentsX();
 		int x  = pSession->pixelFromFrame(iFrame);
-		int w  = m_pPixmap->width();
+		int w  = m_pixmap.width();
 		int wm = (w >> 3);
 		if (x < x0)
 			x -= wm;
 		else if (x > x0 + w - wm && iFrame < pSession->sessionLength())
 			x += w - wm;
-		QScrollView::ensureVisible(x, QScrollView::contentsY(), 0, 0);
-		QScrollView::setFocus();
+		qtractorScrollView::ensureVisible(x, qtractorScrollView::contentsY(), 0, 0);
+		qtractorScrollView::setFocus();
 	}
 }
 
@@ -1832,16 +1829,13 @@ qtractorSessionCursor *qtractorTrackView::sessionCursor (void) const
 
 
 // Vertical line positioning.
-void qtractorTrackView::drawPositionX ( int& iPositionX, int x, int x2,
-	const QColor& color, bool bSyncView )
+void qtractorTrackView::drawPositionX ( int& iPositionX, int x, bool bSyncView )
 {
-	QPainter p(QScrollView::viewport());
-
 	// Update track-view position...
-	int x0 = QScrollView::contentsX();
-	int x1 = iPositionX - x0;
-	int w  = m_pPixmap->width();
-	int h  = m_pPixmap->height();
+	int cx = qtractorScrollView::contentsX();
+	int x1 = iPositionX - cx;
+	int w  = qtractorScrollView::width();
+	int h  = qtractorScrollView::height();
 	int wm = (w >> 3);
 
 	// Time-line header extents...
@@ -1849,36 +1843,29 @@ void qtractorTrackView::drawPositionX ( int& iPositionX, int x, int x2,
 	int d2 = (h2 >> 1);
 
 	// Restore old position...
-	if (x1 >= 0 && x1 < w) {
+	if (iPositionX != x && x1 >= 0 && x1 < w) {
 		// Override old view line...
-		if (iPositionX != x2) {
-			p.drawPixmap(x1, 0, *m_pPixmap, x1, 0, 1, h);
-		//	updateContents(
-		//		QRect(x0 + x1, QScrollView::contentsY(), 1, h), false);
-		}
-		// Update the time-line header...
-		m_pTracks->trackTime()->updateContents(QRect(x0 + x1 - d2, d2, h2, d2));
+		qtractorScrollView::viewport()->update(QRect(x1, 0, 1, h));
+		m_pTracks->trackTime()->viewport()->update(QRect(x1 - d2, d2, h2, d2));
 	}
 
 	// New position is in...
 	iPositionX = x;
 
 	// Force position to be in view?
-	if (bSyncView && (x < x0 || x > x0 + w - wm)) {
+	if (bSyncView && (x < cx || x > cx + w - wm)) {
 		// Move it...
-		QScrollView::setContentsPos(x - wm, QScrollView::contentsY());
-	} else if (bSyncView && x0 > QScrollView::contentsWidth() - w) {
+		qtractorScrollView::setContentsPos(x - wm, qtractorScrollView::contentsY());
+	} else if (bSyncView && cx > qtractorScrollView::contentsWidth() - w) {
 		 // Maybe we'll need some head-room...
-		updateContentsWidth(x0 + w);
+		updateContentsWidth(cx + w);
 	} else {
-		// Draw the line...
-		x1 = x - x0;
-		if (x1 >= 0 && x1 < w) {
-			p.setPen(color);
-			p.drawLine(x1, 0, x1, h);
-		}
+		// Draw the line, by updating the new region...
+		x1 = x - cx;
+		if (x1 >= 0 && x1 < w)
+			qtractorScrollView::viewport()->update(QRect(x1, 0, 1, h));
 		// Update the time-line header...
-		m_pTracks->trackTime()->updateContents(QRect(x0 + x1 - d2, d2, h2, d2));
+		m_pTracks->trackTime()->viewport()->update(QRect(x1 - d2, d2, h2, d2));
 	}
 }
 
@@ -1890,7 +1877,7 @@ void qtractorTrackView::setPlayHead ( unsigned long iPlayHead, bool bSyncView )
 	if (pSession) {
 		m_iPlayHead = iPlayHead;
 		int iPlayHeadX = pSession->pixelFromFrame(iPlayHead);
-		drawPositionX(m_iPlayHeadX, iPlayHeadX, iPlayHeadX, Qt::red, bSyncView);
+		drawPositionX(m_iPlayHeadX, iPlayHeadX, bSyncView);
 	}
 }
 
@@ -1909,7 +1896,7 @@ void qtractorTrackView::setEditHead ( unsigned long iEditHead )
 			setEditTail(iEditHead);
 		pSession->setEditHead(iEditHead);
 		int iEditHeadX = pSession->pixelFromFrame(iEditHead);
-		drawPositionX(m_iEditHeadX, iEditHeadX, m_iEditTailX, Qt::blue);
+		drawPositionX(m_iEditHeadX, iEditHeadX);
 	}
 }
 
@@ -1923,7 +1910,7 @@ void qtractorTrackView::setEditTail ( unsigned long iEditTail )
 			setEditHead(iEditTail);
 		pSession->setEditTail(iEditTail);
 		int iEditTailX = pSession->pixelFromFrame(iEditTail);
-		drawPositionX(m_iEditTailX, iEditTailX, m_iEditHeadX, Qt::blue);
+		drawPositionX(m_iEditTailX, iEditTailX);
 	}
 }
 
@@ -1931,7 +1918,7 @@ void qtractorTrackView::setEditTail ( unsigned long iEditTail )
 // Whether there's any clip currently selected.
 bool qtractorTrackView::isClipSelected (void) const
 {
-	return (m_pClipSelect->clips().count() > 0);
+	return (m_pClipSelect->items().count() > 0);
 }
 
 
@@ -1967,7 +1954,9 @@ void qtractorTrackView::ClipBoard::addItem ( qtractorClip *pClip,
 // Clipboard reset method.
 void qtractorTrackView::ClipBoard::clear (void)
 {
+	qDeleteAll(items);
 	items.clear();
+
 	singleTrack = NULL;
 }
 
@@ -1983,7 +1972,7 @@ void qtractorTrackView::executeClipSelect ( qtractorTrackView::Command cmd )
 		return;
 
 	// Check if anything is really selected...
-	if (m_pClipSelect->clips().count() < 1)
+	if (m_pClipSelect->items().count() < 1)
 		return;
 
 	// Reset clipboard...
@@ -2001,8 +1990,9 @@ void qtractorTrackView::executeClipSelect ( qtractorTrackView::Command cmd )
 			tr("%1 clip").arg(cmd == Cut ? tr("cut") : tr("delete")));
 	}
 
-	qtractorClipSelect::Item *pClipItem = m_pClipSelect->clips().first();
-	while (pClipItem) {
+	QListIterator<qtractorClipSelect::Item *> iter(m_pClipSelect->items());
+	while (iter.hasNext()) {
+		qtractorClipSelect::Item *pClipItem	= iter.next();
 		qtractorClip  *pClip  = pClipItem->clip;
 		qtractorTrack *pTrack = pClip->track();
 		// Clip parameters.
@@ -2089,8 +2079,6 @@ void qtractorTrackView::executeClipSelect ( qtractorTrackView::Command cmd )
 			}
 			// Done, whole clip.
 		}
-		// Next item in selection...
-		pClipItem = m_pClipSelect->clips().next();
 	}
 
 	// Reset selection on cut or delete;
@@ -2128,8 +2116,9 @@ void qtractorTrackView::pasteClipSelect (void)
 	long delta = pSession->editHead()
 		- pSession->frameFromPixel(m_clipboard.rect.x());
 
-	ClipItem *pClipItem = m_clipboard.items.first();
-	while (pClipItem) {
+	QListIterator<ClipItem *> iter(m_clipboard.items);
+	while (iter.hasNext()) {
+		ClipItem *pClipItem = iter.next();
 		qtractorClip *pClip = pClipItem->clip;
 		if (!bSingleTrack)
 			pPasteTrack = pClip->track();
@@ -2167,8 +2156,6 @@ void qtractorTrackView::pasteClipSelect (void)
 			pNewClip->setFadeOutLength(pClipItem->fadeOutLength);
 			pClipCommand->addClip(pNewClip, pPasteTrack);
 		}
-		// Carry on with next item...
-		pClipItem = m_clipboard.items.next();
 	}
 
 	// Put it in the form of an undoable command...
@@ -2190,7 +2177,7 @@ void qtractorTrackView::moveClipSelect ( qtractorTrack *pTrack, int dx )
 		return;
 
 	// Check if anything is really selected...
-	if (m_pClipSelect->clips().count() < 1)
+	if (m_pClipSelect->items().count() < 1)
 		return;
 
 	// We can only move clips between tracks of the same type...
@@ -2202,9 +2189,9 @@ void qtractorTrackView::moveClipSelect ( qtractorTrack *pTrack, int dx )
 	qtractorClipCommand *pClipCommand
 		= new qtractorClipCommand(pMainForm, tr("move clip"));
 
-	qtractorClipSelect::Item *pClipItem
-		= m_pClipSelect->clips().first();
-	while (pClipItem) {
+	QListIterator<qtractorClipSelect::Item *> iter(m_pClipSelect->items());
+	while (iter.hasNext()) {
+		qtractorClipSelect::Item *pClipItem	= iter.next();
 		qtractorClip *pClip = pClipItem->clip;
 		if (pSingleTrack == NULL)
 			pTrack = pClip->track();
@@ -2246,8 +2233,6 @@ void qtractorTrackView::moveClipSelect ( qtractorTrack *pTrack, int dx )
 			pSession->frameFromPixel(x < 0 ? 0 : x),
 			iClipOffset + iSelectOffset,
 			iSelectLength);
-		// Done, move clip.
-		pClipItem = m_pClipSelect->clips().next();
 	}
 
 	// May reset selection, yep.
@@ -2299,7 +2284,7 @@ void qtractorTrackView::contentsContextMenuEvent (
 {
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm)
-		pMainForm->editMenu->exec(pContextMenuEvent->globalPos());
+		pMainForm->editMenu()->exec(pContextMenuEvent->globalPos());
 }
 
 

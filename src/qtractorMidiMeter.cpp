@@ -22,12 +22,14 @@
 #include "qtractorMidiMeter.h"
 #include "qtractorMidiMonitor.h"
 #include "qtractorSlider.h"
-#include "qtractorSpinBox.h"
 
-#include <qtooltip.h>
-#include <qpainter.h>
-#include <qpixmap.h>
-#include <qlabel.h>
+#include <QDoubleSpinBox>
+#include <QResizeEvent>
+#include <QPaintEvent>
+#include <QPainter>
+#include <QPixmap>
+#include <QLayout>
+#include <QLabel>
 
 
 // The decay rates (magic goes here :).
@@ -48,9 +50,10 @@
 
 // Constructor.
 qtractorMidiMeterScale::qtractorMidiMeterScale (
-	qtractorMidiMeter *pMidiMeter, QWidget *pParent, const char *pszName )
-	: qtractorMeterScale(pMidiMeter, pParent, pszName)
+	qtractorMidiMeter *pMidiMeter, QWidget *pParent )
+	: qtractorMeterScale(pMidiMeter, pParent)
 {
+	pParent->layout()->addWidget(this);
 }
 
 
@@ -62,11 +65,11 @@ void qtractorMidiMeterScale::paintScale ( QPainter *p )
 	if (pMidiMeter == NULL)
 		return;
 
-	int h = QWidget::height();
-	int d = (h / 5);
+	int h = QWidget::height() - 4;
+	int d = (h - 4) / 5;
 	int n = 100;
-	while (h > 0) { 
-		drawLineLabel(p, h, QString::number(n).latin1());
+	while (h > 0) {
+		drawLineLabel(p, h, QString::number(n));
 		h -= d; n -= 20;
 	}
 }
@@ -77,8 +80,8 @@ void qtractorMidiMeterScale::paintScale ( QPainter *p )
 
 // Constructor.
 qtractorMidiMeterValue::qtractorMidiMeterValue(
-	qtractorMidiMeter *pMidiMeter, QWidget *pParent, const char *pszName )
-	: QFrame(pParent, pszName)
+	qtractorMidiMeter *pMidiMeter, QWidget *pParent )
+	: QFrame(pParent)
 {
 	m_pMidiMeter  = pMidiMeter;
 	m_iValue      = 0;
@@ -88,10 +91,12 @@ qtractorMidiMeterValue::qtractorMidiMeterValue(
 	m_fPeakDecay  = QTRACTOR_MIDI_METER_DECAY_RATE2;
 
 	QFrame::setFixedWidth(14);
-	QFrame::setBackgroundMode(Qt::NoBackground);
+	QFrame::setBackgroundRole(QPalette::NoRole);
 
 	QFrame::setFrameShape(QFrame::StyledPanel);
 	QFrame::setFrameShadow(QFrame::Sunken);
+
+	pParent->layout()->addWidget(this);
 }
 
 // Default destructor.
@@ -110,27 +115,24 @@ void qtractorMidiMeterValue::peakReset (void)
 // Paint event handler.
 void qtractorMidiMeterValue::paintEvent ( QPaintEvent * )
 {
-	int iWidth  = QWidget::width();
-	int iHeight = QWidget::height();
+	QPainter painter(this);
 
-	QPixmap pm(iWidth, iHeight);
-	QPainter p(&pm);
-
-	p.setViewport(0, 0, iWidth, iHeight);
-	p.setWindow(0, 0, iWidth, iHeight);
+	int w = QWidget::width();
+	int h = QWidget::height();
 
 	if (isEnabled()) {
-		pm.fill(m_pMidiMeter->color(qtractorMidiMeter::ColorBack));
+		painter.fillRect(0, 0, w, h,
+			m_pMidiMeter->color(qtractorMidiMeter::ColorBack));
 	} else {
-		pm.fill(Qt::gray);
+		painter.fillRect(0, 0, w, h, Qt::gray);
 	}
 
-	int y = int(m_pMidiMeter->midiMonitor()->value() * float(iHeight));
+	int y = int(m_pMidiMeter->midiMonitor()->value() * float(h));
 	if (y > m_iValue) {
 		m_iValue = y;
 		m_fValueDecay = QTRACTOR_MIDI_METER_DECAY_RATE1;
 	} else {
-		m_iValue = (int) ((float) m_iValue * m_fValueDecay);
+		m_iValue = int(float(m_iValue * m_fValueDecay));
 		if (y > m_iValue) {
 			m_iValue = y;
 		} else {
@@ -139,7 +141,7 @@ void qtractorMidiMeterValue::paintEvent ( QPaintEvent * )
 		}
 	}
 
-	p.fillRect(0, iHeight - y, iWidth, y,
+	painter.fillRect(0, h - y, w, y,
 		m_pMidiMeter->color(qtractorMidiMeter::ColorOver));
 
 	if (y > m_iPeak) {
@@ -147,7 +149,7 @@ void qtractorMidiMeterValue::paintEvent ( QPaintEvent * )
 		m_iPeakHold  = 0;
 		m_fPeakDecay = QTRACTOR_MIDI_METER_DECAY_RATE2;
 	} else if (++m_iPeakHold > m_pMidiMeter->peakFalloff()) {
-		m_iPeak = (int) ((float) m_iPeak * m_fPeakDecay);
+		m_iPeak = int(float(m_iPeak * m_fPeakDecay));
 		if (y > m_iPeak) {
 			m_iPeak = y;
 		} else {
@@ -155,19 +157,18 @@ void qtractorMidiMeterValue::paintEvent ( QPaintEvent * )
 		}
 	}
 
-	p.setPen(m_pMidiMeter->color(qtractorMidiMeter::ColorPeak));
-	p.drawLine(0, iHeight - m_iPeak, iWidth, iHeight - m_iPeak);
-
-	bitBlt(this, 0, 0, &pm);
+	painter.setPen(m_pMidiMeter->color(qtractorMidiMeter::ColorPeak));
+	painter.drawLine(0, h - m_iPeak, w, h - m_iPeak);
 }
 
 
 // Resize event handler.
-void qtractorMidiMeterValue::resizeEvent ( QResizeEvent * )
+void qtractorMidiMeterValue::resizeEvent ( QResizeEvent *pResizeEvent )
 {
 	m_iPeak = 0;
 
-	QWidget::repaint(true);
+	QWidget::resizeEvent(pResizeEvent);
+//	QWidget::repaint();
 }
 
 
@@ -176,21 +177,21 @@ void qtractorMidiMeterValue::resizeEvent ( QResizeEvent * )
 
 // Constructor.
 qtractorMidiMeter::qtractorMidiMeter ( qtractorMidiMonitor *pMidiMonitor,
-	QWidget *pParent, const char *pszName )
-	: qtractorMeter(pParent, pszName)
+	QWidget *pParent ) : qtractorMeter(pParent)
 {
 	m_pMidiMonitor = pMidiMonitor;
 
-	m_pMidiPixmap[0] = new QPixmap(QPixmap::fromMimeSource("trackMidiOff.png"));
-	m_pMidiPixmap[1] = new QPixmap(QPixmap::fromMimeSource("trackMidiOn.png"));
+	m_pMidiPixmap[0] = new QPixmap(":/icons/trackMidiOff.png");
+	m_pMidiPixmap[1] = new QPixmap(":/icons/trackMidiOn.png");
 
 	m_iMidiCount = 0;
 
 	topLabel()->setAlignment(Qt::AlignRight | Qt::AlignBottom);
 	topLabel()->setPixmap(*m_pMidiPixmap[0]);
-	gainSpinBox()->setMinValueFloat(0.0f);
-	gainSpinBox()->setMaxValueFloat(100.f);
-	QToolTip::add(gainSpinBox(), tr("Volume (%)"));
+
+	gainSpinBox()->setMinimum(0.0f);
+	gainSpinBox()->setMaximum(100.0f);
+	gainSpinBox()->setToolTip(tr("Volume (%)"));
 
 	m_pMidiScale = new qtractorMidiMeterScale(this, hbox());
 	m_pMidiValue = new qtractorMidiMeterValue(this, hbox());
@@ -318,8 +319,7 @@ void qtractorMidiMeter::updatePanning (void)
 {
 	setPanning(m_pMidiMonitor->panning());
 
-	QToolTip::remove(panSlider());
-	QToolTip::add(panSlider(),
+	panSlider()->setToolTip(
 		tr("Pan: %1").arg(panning(), 0, 'g', 2));
 }
 
@@ -329,8 +329,7 @@ void qtractorMidiMeter::updateGain (void)
 {
 	setGain(m_pMidiMonitor->gain());
 
-	QToolTip::remove(gainSlider());
-	QToolTip::add(gainSlider(),
+	gainSlider()->setToolTip(
 		tr("Volume: %1%").arg(100.0f * gain(), 0, 'g', 3));
 }
 

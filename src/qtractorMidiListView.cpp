@@ -22,8 +22,8 @@
 #include "qtractorMidiListView.h"
 #include "qtractorMidiFile.h"
 
-#include <qpixmap.h>
-#include <qfiledialog.h>
+#include <QHeaderView>
+#include <QFileDialog>
 
 
 //----------------------------------------------------------------------
@@ -52,27 +52,34 @@ qtractorMidiFileItem::qtractorMidiFileItem (
 void qtractorMidiFileItem::initMidiFileItem ( const QString& sPath,
 	qtractorMidiFile *pFile )
 {
-	QListViewItem::setPixmap(qtractorMidiListView::Name,
-		QPixmap::fromMimeSource("itemFile.png"));
+	QTreeWidgetItem::setTextAlignment(
+		qtractorMidiListView::Format, Qt::AlignRight);
+	QTreeWidgetItem::setTextAlignment(
+		qtractorMidiListView::Tracks, Qt::AlignRight);
+	QTreeWidgetItem::setTextAlignment(
+		qtractorMidiListView::Resolution, Qt::AlignRight);
 
-	QListViewItem::setText(qtractorMidiListView::Format,
+	QTreeWidgetItem::setIcon(qtractorMidiListView::Name,
+		QIcon(":/icons/itemFile.png"));
+
+	QTreeWidgetItem::setText(qtractorMidiListView::Format,
 		QString::number(pFile->format()));
-	QListViewItem::setText(qtractorMidiListView::Tracks,
+	QTreeWidgetItem::setText(qtractorMidiListView::Tracks,
 		QString::number(pFile->tracks()));
-	QListViewItem::setText(qtractorMidiListView::Resolution,
+	QTreeWidgetItem::setText(qtractorMidiListView::Resolution,
 		QString::number(pFile->ticksPerBeat()));
 
-	QListViewItem::setText(qtractorMidiListView::Path, sPath);
+	QTreeWidgetItem::setText(qtractorMidiListView::Path, sPath);
 
 	if (pFile->format() == 1) {
 		// Add track sub-items...
-		for (int iTrack = pFile->tracks() - 1; iTrack >= 0; --iTrack) {
+		for (int iTrack = 0; iTrack < pFile->tracks(); ++iTrack) {
 			new qtractorMidiChannelItem(this,
 				QObject::tr("Track %1").arg(iTrack), iTrack);
 		}
 	} else {
 		// Add channel sub-items...
-		for (int iChannel = 15; iChannel >= 0; --iChannel) {
+		for (int iChannel = 0; iChannel < 16; ++iChannel) {
 			new qtractorMidiChannelItem(this,
 				QObject::tr("Channel %1").arg(iChannel), iChannel);
 		}
@@ -83,12 +90,12 @@ void qtractorMidiFileItem::initMidiFileItem ( const QString& sPath,
 // Tooltip renderer.
 QString qtractorMidiFileItem::toolTip (void) const
 {
-	return QObject::tr("%1 (format %2)\n%3 tracks, %4 tpqn\n%5")
-		.arg(QListViewItem::text(qtractorMidiListView::Name))
-		.arg(QListViewItem::text(qtractorMidiListView::Format))
-		.arg(QListViewItem::text(qtractorMidiListView::Tracks))
-		.arg(QListViewItem::text(qtractorMidiListView::Resolution))
-		.arg(QListViewItem::text(qtractorMidiListView::Path));
+	return QObject::tr("%1 (format %2)\n%3 tracks  %4 tpqn\n%5")
+		.arg(QTreeWidgetItem::text(qtractorMidiListView::Name))
+		.arg(QTreeWidgetItem::text(qtractorMidiListView::Format))
+		.arg(QTreeWidgetItem::text(qtractorMidiListView::Tracks))
+		.arg(QTreeWidgetItem::text(qtractorMidiListView::Resolution))
+		.arg(QTreeWidgetItem::text(qtractorMidiListView::Path));
 }
 
 
@@ -102,8 +109,8 @@ qtractorMidiChannelItem::qtractorMidiChannelItem (
 	unsigned short iChannel )
 	: qtractorFileChannelItem(pFileItem, sName, iChannel)
 {
-	QListViewItem::setPixmap(qtractorMidiListView::Name,
-		QPixmap::fromMimeSource("itemChannel.png"));
+	QTreeWidgetItem::setIcon(qtractorMidiListView::Name,
+		QIcon(":/icons/itemChannel.png"));
 }
 
 
@@ -111,14 +118,14 @@ qtractorMidiChannelItem::qtractorMidiChannelItem (
 QString qtractorMidiChannelItem::toolTip (void) const
 {
 	qtractorMidiFileItem *pFileItem
-	    = static_cast<qtractorMidiFileItem *> (QListViewItem::parent());
+	    = static_cast<qtractorMidiFileItem *> (QTreeWidgetItem::parent());
 	if (pFileItem == NULL)
 	    return qtractorFileChannelItem::toolTip();
 
 	return QObject::tr("%1 (format %2)\n%3")
 		.arg(pFileItem->text(qtractorMidiListView::Name))
 		.arg(pFileItem->text(qtractorMidiListView::Format))
-		.arg(QListViewItem::text(qtractorMidiListView::Name));
+		.arg(QTreeWidgetItem::text(qtractorMidiListView::Name));
 }
 
 
@@ -127,21 +134,32 @@ QString qtractorMidiChannelItem::toolTip (void) const
 //
 
 // Constructor.
-qtractorMidiListView::qtractorMidiListView (
-	QWidget *pParent, const char *pszName )
-	: qtractorFileListView(pParent, pszName)
+qtractorMidiListView::qtractorMidiListView ( QWidget *pParent )
+	: qtractorFileListView(pParent)
 {
-	QListView::addColumn(tr("Name"));		// qtractorMidiListView::Name
-	QListView::addColumn(tr("Fmt"));		// qtractorMidiListView::Format
-	QListView::addColumn(tr("Tracks"));		// qtractorMidiListView::Tracks
-	QListView::addColumn(tr("TPQN"));		// qtractorMidiListView::Resolution
-	QListView::addColumn(tr("Path"));		// qtractorMidiListView::Path
+	QTreeWidget::setColumnCount(qtractorMidiListView::LastColumn + 1);
 
-	QListView::setColumnAlignment(qtractorMidiListView::Format, Qt::AlignRight);
-	QListView::setColumnAlignment(qtractorMidiListView::Tracks, Qt::AlignRight);
-	QListView::setColumnAlignment(qtractorMidiListView::Resolution, Qt::AlignRight);
+	QTreeWidgetItem *pHeaderItem = QTreeWidget::headerItem();
+	pHeaderItem->setText(qtractorMidiListView::Name, tr("Name"));	
+	pHeaderItem->setText(qtractorMidiListView::Format, tr("Fmt"));	
+	pHeaderItem->setText(qtractorMidiListView::Tracks, tr("Tracks"));	
+	pHeaderItem->setText(qtractorMidiListView::Resolution, tr("TPQN"));	
+	pHeaderItem->setText(qtractorMidiListView::Path, tr("Path"));	
+	pHeaderItem->setText(qtractorMidiListView::LastColumn, QString::null);
 
-	QListView::setColumnWidth(qtractorMidiListView::Name, 120);
+	pHeaderItem->setTextAlignment(
+		qtractorMidiListView::Format, Qt::AlignRight);
+	pHeaderItem->setTextAlignment(
+		qtractorMidiListView::Tracks, Qt::AlignRight);
+	pHeaderItem->setTextAlignment(
+		qtractorMidiListView::Resolution, Qt::AlignRight);
+
+	QHeaderView *pHeader = QTreeWidget::header();
+	pHeader->resizeSection(qtractorMidiListView::Name, 160);
+	QTreeWidget::resizeColumnToContents(qtractorMidiListView::Format);
+	QTreeWidget::resizeColumnToContents(qtractorMidiListView::Tracks);
+	QTreeWidget::resizeColumnToContents(qtractorMidiListView::Resolution);
+	pHeader->resizeSection(qtractorMidiListView::Path, 160);
 }
 
 
@@ -150,6 +168,7 @@ qtractorFileListItem *qtractorMidiListView::createFileItem (
 	const QString& sPath, qtractorFileGroupItem *pParentItem )
 {
 	qtractorFileListItem *pFileItem = NULL;
+
 	qtractorMidiFile file;
 	if (file.open(sPath)) {
 		if (pParentItem)
@@ -158,6 +177,7 @@ qtractorFileListItem *qtractorMidiListView::createFileItem (
 			pFileItem = new qtractorMidiFileItem(this, sPath, &file);
 		file.close();
 	}
+
 	return pFileItem;
 }
 
@@ -167,10 +187,10 @@ QStringList qtractorMidiListView::getOpenFileNames (void)
 {
 	// Ask for the filename to open...
 	return QFileDialog::getOpenFileNames(
-		tr("MIDI Files (*.mid)"),   // Filter files.
+		this,                       // Parent and name (none)
+		tr("Open MIDI Files"),		// Caption.
 		recentDir(),                // Start here.
-		this, 0,                    // Parent and name (none)
-		tr("Open MIDI Files") // + " - " QTRACTOR_TITLE // Caption.
+		tr("MIDI Files (*.mid)")    // Filter files.
 	);
 }
 

@@ -165,7 +165,7 @@ bool qtractorAudioBuffer::open ( const QString& sFilename, int iMode )
 		return false;
 
 	// Go open it...
-	if (!m_pFile->open(sFilename.latin1(), iMode)) {
+	if (!m_pFile->open(sFilename, iMode)) {
 		delete m_pFile;
 		m_pFile = NULL;
 		return false;
@@ -247,7 +247,7 @@ void qtractorAudioBuffer::close (void)
 	// Not sync-managed anymore...
 	if (m_pSyncThread) {
 		m_pSyncThread->setRunState(false);
-		if (m_pSyncThread->running())
+		if (m_pSyncThread->isRunning())
 			m_pSyncThread->sync();
 		m_pSyncThread->wait();
 		delete m_pSyncThread;
@@ -1094,10 +1094,8 @@ unsigned long qtractorAudioBuffer::loopEnd (void) const
 }
 
 
-#ifdef CONFIG_LIBSAMPLERATE
-
 // Sample-rate converter type (global option).
-int qtractorAudioBuffer::g_iResampleType = SRC_SINC_BEST_QUALITY;
+int qtractorAudioBuffer::g_iResampleType = 0;	// SRC_SINC_BEST_QUALITY;
 
 void qtractorAudioBuffer::setResampleType ( int iResampleType )
 {
@@ -1108,8 +1106,6 @@ int qtractorAudioBuffer::resampleType (void)
 {
 	return g_iResampleType;
 }
-
-#endif
 
 
 #ifdef DEBUG

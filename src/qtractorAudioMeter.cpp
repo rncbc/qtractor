@@ -22,12 +22,14 @@
 #include "qtractorAudioMeter.h"
 #include "qtractorAudioMonitor.h"
 #include "qtractorSlider.h"
-#include "qtractorSpinBox.h"
 
-#include <qtooltip.h>
-#include <qpainter.h>
-#include <qpixmap.h>
-#include <qlabel.h>
+#include <QDoubleSpinBox>
+#include <QResizeEvent>
+#include <QPaintEvent>
+#include <QPainter>
+#include <QPixmap>
+#include <QLayout>
+#include <QLabel>
 
 #include <math.h>
 
@@ -97,9 +99,10 @@ static inline float IEC_dB ( float fScale )
 
 // Constructor.
 qtractorAudioMeterScale::qtractorAudioMeterScale (
-	qtractorAudioMeter *pAudioMeter, QWidget *pParent, const char *pszName )
-	: qtractorMeterScale(pAudioMeter, pParent, pszName)
+	qtractorAudioMeter *pAudioMeter, QWidget *pParent )
+	: qtractorMeterScale(pAudioMeter, pParent)
 {
+	pParent->layout()->addWidget(this);
 }
 
 
@@ -110,6 +113,8 @@ void qtractorAudioMeterScale::paintScale ( QPainter *p )
 		= static_cast<qtractorAudioMeter *> (meter());
 	if (pAudioMeter == NULL)
 		return;
+
+	p->setWindow(0, -4, QWidget::width(), QWidget::height() + 8);
 
 	drawLineLabel(p, pAudioMeter->iec_level(qtractorAudioMeter::Color0dB), "0");
 	drawLineLabel(p, pAudioMeter->iec_level(qtractorAudioMeter::Color3dB), "3");
@@ -127,8 +132,7 @@ void qtractorAudioMeterScale::paintScale ( QPainter *p )
 // Constructor.
 qtractorAudioMeterValue::qtractorAudioMeterValue(
 	qtractorAudioMeter *pAudioMeter, unsigned short iChannel,
-	QWidget *pParent, const char *pszName )
-	: QFrame(pParent, pszName)
+	QWidget *pParent ): QFrame(pParent)
 {
 	m_pAudioMeter = pAudioMeter;
 	m_iChannel    = iChannel;
@@ -140,10 +144,12 @@ qtractorAudioMeterValue::qtractorAudioMeterValue(
 	m_iPeakColor  = qtractorAudioMeter::Color6dB;
 
 	QFrame::setFixedWidth(10);
-	QFrame::setBackgroundMode(Qt::NoBackground);
+	QFrame::setBackgroundRole(QPalette::NoRole);
 
 	QFrame::setFrameShape(QFrame::StyledPanel);
 	QFrame::setFrameShadow(QFrame::Sunken);
+
+	pParent->layout()->addWidget(this);
 }
 
 // Default destructor.
@@ -161,23 +167,20 @@ void qtractorAudioMeterValue::peakReset (void)
 // Paint event handler.
 void qtractorAudioMeterValue::paintEvent ( QPaintEvent * )
 {
-	int iWidth  = QWidget::width();
-	int iHeight = QWidget::height();
+	QPainter painter(this);
+
+	int w = QWidget::width();
+	int h = QWidget::height();
 	int y;
 
-	QPixmap pm(iWidth, iHeight);
-	QPainter p(&pm);
-
-	p.setViewport(0, 0, iWidth, iHeight);
-	p.setWindow(0, 0, iWidth, iHeight);
-
 	if (isEnabled()) {
-		pm.fill(m_pAudioMeter->color(qtractorAudioMeter::ColorBack));
+		painter.fillRect(0, 0, w, h,
+			m_pAudioMeter->color(qtractorAudioMeter::ColorBack));
 		y = m_pAudioMeter->iec_level(qtractorAudioMeter::Color0dB);
-		p.setPen(m_pAudioMeter->color(qtractorAudioMeter::ColorFore));
-		p.drawLine(0, iHeight - y, iWidth, iHeight - y);
+		painter.setPen(m_pAudioMeter->color(qtractorAudioMeter::ColorFore));
+		painter.drawLine(0, h - y, w, h - y);
 	} else {
-		pm.fill(Qt::gray);
+		painter.fillRect(0, 0, w, h, Qt::gray);
 	}
 
 	float dB = QTRACTOR_AUDIO_METER_MINDB;
@@ -198,7 +201,7 @@ void qtractorAudioMeterValue::paintEvent ( QPaintEvent * )
 		m_iValue = y;
 		m_fValueDecay = QTRACTOR_AUDIO_METER_DECAY_RATE1;
 	} else {
-		m_iValue = (int) ((float) m_iValue * m_fValueDecay);
+		m_iValue = int(float(m_iValue * m_fValueDecay));
 		if (y > m_iValue) {
 			m_iValue = y;
 		} else {
@@ -212,17 +215,17 @@ void qtractorAudioMeterValue::paintEvent ( QPaintEvent * )
 			iLevel > qtractorAudioMeter::ColorOver && y >= y_over; iLevel--) {
 		y_curr = m_pAudioMeter->iec_level(iLevel);
 		if (y < y_curr) {
-			p.fillRect(0, iHeight - y, iWidth, y - y_over,
+			painter.fillRect(0, h - y, w, y - y_over,
 				m_pAudioMeter->color(iLevel));
 		} else {
-			p.fillRect(0, iHeight - y_curr, iWidth, y_curr - y_over,
+			painter.fillRect(0, h - y_curr, w, y_curr - y_over,
 				m_pAudioMeter->color(iLevel));
 		}
 		y_over = y_curr;
 	}
 
 	if (y > y_over) {
-		p.fillRect(0, iHeight - y, iWidth, y - y_over,
+		painter.fillRect(0, h - y, w, y - y_over,
 			m_pAudioMeter->color(qtractorAudioMeter::ColorOver));
 	}
 
@@ -232,7 +235,7 @@ void qtractorAudioMeterValue::paintEvent ( QPaintEvent * )
 		m_fPeakDecay = QTRACTOR_AUDIO_METER_DECAY_RATE2;
 		m_iPeakColor = iLevel;
 	} else if (++m_iPeakHold > m_pAudioMeter->peakFalloff()) {
-		m_iPeak = (int) ((float) m_iPeak * m_fPeakDecay);
+		m_iPeak = int(float(m_iPeak * m_fPeakDecay));
 		if (y > m_iPeak) {
 			m_iPeak = y;
 		} else {
@@ -242,19 +245,18 @@ void qtractorAudioMeterValue::paintEvent ( QPaintEvent * )
 		}
 	}
 
-	p.setPen(m_pAudioMeter->color(m_iPeakColor));
-	p.drawLine(0, iHeight - m_iPeak, iWidth, iHeight - m_iPeak);
-
-	bitBlt(this, 0, 0, &pm);
+	painter.setPen(m_pAudioMeter->color(m_iPeakColor));
+	painter.drawLine(0, h - m_iPeak, w, h - m_iPeak);
 }
 
 
 // Resize event handler.
-void qtractorAudioMeterValue::resizeEvent ( QResizeEvent * )
+void qtractorAudioMeterValue::resizeEvent (QResizeEvent *pResizeEvent)
 {
 	m_iPeak = 0;
 
-	QWidget::repaint(true);
+	QWidget::resizeEvent(pResizeEvent);
+//	QWidget::repaint();
 }
 
 
@@ -263,8 +265,7 @@ void qtractorAudioMeterValue::resizeEvent ( QResizeEvent * )
 
 // Constructor.
 qtractorAudioMeter::qtractorAudioMeter ( qtractorAudioMonitor *pAudioMonitor,
-	QWidget *pParent, const char *pszName )
-	: qtractorMeter(pParent, pszName)
+	QWidget *pParent ) : qtractorMeter(pParent)
 {
 	m_pAudioMonitor = pAudioMonitor;
 
@@ -274,11 +275,13 @@ qtractorAudioMeter::qtractorAudioMeter ( qtractorAudioMonitor *pAudioMonitor,
 	m_ppAudioValues = NULL;
 
 	topLabel()->hide();
-	gainSlider()->setMinValue(
-		-int(10000.0f * 0.025f * QTRACTOR_AUDIO_METER_MAXDB));
-	gainSpinBox()->setMinValueFloat(QTRACTOR_AUDIO_METER_MINDB);
-	gainSpinBox()->setMaxValueFloat(QTRACTOR_AUDIO_METER_MAXDB);
-	QToolTip::add(gainSpinBox(), tr("Gain (dB)"));
+
+	gainSlider()->setMaximum(10000
+		+ int(10000.0f * 0.025f * QTRACTOR_AUDIO_METER_MAXDB));
+
+	gainSpinBox()->setMinimum(QTRACTOR_AUDIO_METER_MINDB);
+	gainSpinBox()->setMaximum(QTRACTOR_AUDIO_METER_MAXDB);
+	gainSpinBox()->setToolTip(tr("Gain (dB)"));
 
 	setPeakFalloff(QTRACTOR_AUDIO_METER_PEAK_FALLOFF);
 
@@ -345,7 +348,7 @@ float qtractorAudioMeter::gainFromValue ( float fValue ) const
 
 float qtractorAudioMeter::valueFromGain ( float fGain ) const
 {
-	float fValue = 0.0f;
+	float fValue = QTRACTOR_AUDIO_METER_MINDB;
 	if (fGain > 0.0f)
 		fValue = 20.0f * ::log10f(fGain);
 	return fValue;
@@ -451,8 +454,7 @@ void qtractorAudioMeter::updatePanning (void)
 {
 	setPanning(m_pAudioMonitor->panning());
 
-	QToolTip::remove(panSlider());
-	QToolTip::add(panSlider(),
+	panSlider()->setToolTip(
 		tr("Pan: %1").arg(panning(), 0, 'g', 2));
 }
 
@@ -461,8 +463,7 @@ void qtractorAudioMeter::updateGain (void)
 {
 	setGain(m_pAudioMonitor->gain());
 
-	QToolTip::remove(gainSlider());
-	QToolTip::add(gainSlider(),
+	gainSlider()->setToolTip(
 		tr("Gain: %1 dB").arg(IEC_dB(gainScale()), 0, 'g', 3));
 }
 

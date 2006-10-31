@@ -22,7 +22,7 @@
 #ifndef __qtractorMessages_h
 #define __qtractorMessages_h
 
-#include <qdockwindow.h>
+#include <QDockWidget>
 
 class QSocketNotifier;
 class QTextEdit;
@@ -32,14 +32,14 @@ class QTextEdit;
 // qtractorMessages - Messages log dockable window.
 //
 
-class qtractorMessages : public QDockWindow
+class qtractorMessages : public QDockWidget
 {
 	Q_OBJECT
 
 public:
 
 	// Constructor.
-	qtractorMessages(QWidget *pParent, const char *pszName = 0);
+	qtractorMessages(QWidget *pParent);
 	// Destructor.
 	~qtractorMessages();
 
@@ -60,11 +60,17 @@ public:
 	void appendMessagesColor(const QString& s, const QString &c);
 	void appendMessagesText(const QString& s);
 
-	void scrollToBottom();
-
 	// Stdout capture functions.
 	void appendStdoutBuffer(const QString& s);
 	void flushStdoutBuffer();
+
+	// History reset.
+	void clear();
+	
+protected:
+
+	// Just about to notify main-window that we're closing.
+	void closeEvent(QCloseEvent *);
 
 protected slots:
 
@@ -73,7 +79,8 @@ protected slots:
 
 private:
 
-	// The maximum number of message lines.
+	// The maximum number of message lines and current count.
+	int m_iMessagesLines;
 	int m_iMessagesLimit;
 	int m_iMessagesHigh;
 

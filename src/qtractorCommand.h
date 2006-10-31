@@ -24,7 +24,7 @@
 
 #include "qtractorList.h"
 
-#include <qstring.h>
+#include <QString>
 
 // Forward declarations.
 class qtractorMainForm;

@@ -1,6 +1,6 @@
-<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
-<class>qtractorPluginForm</class>
-<comment>qtractor - A MIDI/Audio multi-track sequencer.
+<ui version="4.0" >
+ <author>rncbc aka Rui Nuno Capela</author>
+ <comment>qtractor - A MIDI/Audio multi-track sequencer.
 
    Copyright (C) 2005-2006, rncbc aka Rui Nuno Capela. All rights reserved.
 
@@ -18,233 +18,166 @@
    with this program; if not, write to the Free Software Foundation, Inc.,
    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-</comment>
-<author>rncbc aka Rui Nuno Capela</author>
-<widget class="QWidget">
-    <property name="name">
-        <cstring>qtractorPluginForm</cstring>
-    </property>
-    <property name="geometry">
-        <rect>
-            <x>0</x>
-            <y>0</y>
-            <width>320</width>
-            <height>120</height>
-        </rect>
-    </property>
-    <property name="sizePolicy">
+  </comment>
+ <exportmacro></exportmacro>
+ <class>qtractorPluginForm</class>
+ <widget class="QWidget" name="qtractorPluginForm" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>408</width>
+    <height>48</height>
+   </rect>
+  </property>
+  <property name="sizePolicy" >
+   <sizepolicy>
+    <hsizetype>1</hsizetype>
+    <vsizetype>1</vsizetype>
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="font" >
+   <font>
+    <family>Sans Serif</family>
+    <pointsize>8</pointsize>
+    <weight>50</weight>
+    <italic>false</italic>
+    <bold>false</bold>
+    <underline>false</underline>
+    <strikeout>false</strikeout>
+   </font>
+  </property>
+  <property name="windowTitle" >
+   <string>qtractorPluginForm</string>
+  </property>
+  <property name="windowIcon" >
+   <iconset resource="../icons/qtractor.qrc" >:/icons/qtractorTracks.png</iconset>
+  </property>
+  <layout class="QVBoxLayout" >
+   <property name="margin" >
+    <number>8</number>
+   </property>
+   <property name="spacing" >
+    <number>6</number>
+   </property>
+   <item>
+    <layout class="QHBoxLayout" >
+     <property name="margin" >
+      <number>2</number>
+     </property>
+     <property name="spacing" >
+      <number>2</number>
+     </property>
+     <item>
+      <widget class="QComboBox" name="PresetComboBox" >
+       <property name="minimumSize" >
+        <size>
+         <width>160</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="toolTip" >
+        <string>Preset name</string>
+       </property>
+       <property name="editable" >
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="SavePresetToolButton" >
+       <property name="focusPolicy" >
+        <enum>Qt::TabFocus</enum>
+       </property>
+       <property name="toolTip" >
+        <string>Save preset</string>
+       </property>
+       <property name="text" >
+        <string/>
+       </property>
+       <property name="icon" >
+        <iconset resource="../icons/qtractor.qrc" >:/icons/fileSave.png</iconset>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="DeletePresetToolButton" >
+       <property name="focusPolicy" >
+        <enum>Qt::TabFocus</enum>
+       </property>
+       <property name="toolTip" >
+        <string>Delete preset</string>
+       </property>
+       <property name="text" >
+        <string/>
+       </property>
+       <property name="icon" >
+        <iconset resource="../icons/qtractor.qrc" >:/icons/formRemove.png</iconset>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer>
+       <property name="orientation" >
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeType" >
+        <enum>QSizePolicy::Expanding</enum>
+       </property>
+       <property name="sizeHint" >
+        <size>
+         <width>120</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QToolButton" name="ActivateToolButton" >
+       <property name="sizePolicy" >
         <sizepolicy>
-            <hsizetype>1</hsizetype>
-            <vsizetype>1</vsizetype>
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
+         <hsizetype>5</hsizetype>
+         <vsizetype>1</vsizetype>
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
         </sizepolicy>
-    </property>
-    <property name="font">
-        <font>
-        </font>
-    </property>
-    <property name="caption">
-        <string>qtractorPluginForm</string>
-    </property>
-    <vbox>
-        <property name="name">
-            <cstring>unnamed</cstring>
-        </property>
-        <widget class="QLayoutWidget">
-            <property name="name">
-                <cstring>PresetLayout</cstring>
-            </property>
-            <hbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <property name="margin">
-                    <number>2</number>
-                </property>
-                <property name="spacing">
-                    <number>2</number>
-                </property>
-                <widget class="QComboBox">
-                    <property name="name">
-                        <cstring>PresetComboBox</cstring>
-                    </property>
-                    <property name="minimumSize">
-                        <size>
-                            <width>160</width>
-                            <height>0</height>
-                        </size>
-                    </property>
-                    <property name="editable">
-                        <bool>true</bool>
-                    </property>
-                    <property name="toolTip" stdset="0">
-                        <string>Preset name</string>
-                    </property>
-                </widget>
-                <widget class="QToolButton">
-                    <property name="name">
-                        <cstring>SavePresetToolButton</cstring>
-                    </property>
-                    <property name="focusPolicy">
-                        <enum>TabFocus</enum>
-                    </property>
-                    <property name="text">
-                        <string></string>
-                    </property>
-                    <property name="iconSet">
-                        <iconset>formSave.png</iconset>
-                    </property>
-                    <property name="toolTip" stdset="0">
-                        <string>Save preset</string>
-                    </property>
-                </widget>
-                <widget class="QToolButton">
-                    <property name="name">
-                        <cstring>DeletePresetToolButton</cstring>
-                    </property>
-                    <property name="focusPolicy">
-                        <enum>TabFocus</enum>
-                    </property>
-                    <property name="text">
-                        <string></string>
-                    </property>
-                    <property name="iconSet">
-                        <iconset>formRemove.png</iconset>
-                    </property>
-                    <property name="toolTip" stdset="0">
-                        <string>Delete preset</string>
-                    </property>
-                </widget>
-                <spacer>
-                    <property name="name">
-                        <cstring>PresetSpacer</cstring>
-                    </property>
-                    <property name="orientation">
-                        <enum>Horizontal</enum>
-                    </property>
-                    <property name="sizeType">
-                        <enum>Expanding</enum>
-                    </property>
-                    <property name="sizeHint">
-                        <size>
-                            <width>120</width>
-                            <height>20</height>
-                        </size>
-                    </property>
-                </spacer>
-                <widget class="QToolButton">
-                    <property name="name">
-                        <cstring>ActivateToolButton</cstring>
-                    </property>
-                    <property name="sizePolicy">
-                        <sizepolicy>
-                            <hsizetype>5</hsizetype>
-                            <vsizetype>1</vsizetype>
-                            <horstretch>0</horstretch>
-                            <verstretch>0</verstretch>
-                        </sizepolicy>
-                    </property>
-                    <property name="focusPolicy">
-                        <enum>TabFocus</enum>
-                    </property>
-                    <property name="text">
-                        <string></string>
-                    </property>
-                    <property name="toggleButton">
-                        <bool>true</bool>
-                    </property>
-                    <property name="usesTextLabel">
-                        <bool>true</bool>
-                    </property>
-                    <property name="textLabel">
-                        <string>Active</string>
-                    </property>
-                    <property name="textPosition">
-                        <enum>BesideIcon</enum>
-                    </property>
-                    <property name="toolTip" stdset="0">
-                        <string>Activate plugin</string>
-                    </property>
-                </widget>
-            </hbox>
-        </widget>
-    </vbox>
-</widget>
-<connections>
-    <connection>
-        <sender>PresetComboBox</sender>
-        <signal>textChanged(const QString &amp;)</signal>
-        <receiver>qtractorPluginForm</receiver>
-        <slot>changePresetSlot(const QString&amp;)</slot>
-    </connection>
-    <connection>
-        <sender>PresetComboBox</sender>
-        <signal>activated(const QString &amp;)</signal>
-        <receiver>qtractorPluginForm</receiver>
-        <slot>loadPresetSlot(const QString&amp;)</slot>
-    </connection>
-    <connection>
-        <sender>SavePresetToolButton</sender>
-        <signal>clicked()</signal>
-        <receiver>qtractorPluginForm</receiver>
-        <slot>savePresetSlot()</slot>
-    </connection>
-    <connection>
-        <sender>DeletePresetToolButton</sender>
-        <signal>clicked()</signal>
-        <receiver>qtractorPluginForm</receiver>
-        <slot>deletePresetSlot()</slot>
-    </connection>
-    <connection>
-        <sender>ActivateToolButton</sender>
-        <signal>toggled(bool)</signal>
-        <receiver>qtractorPluginForm</receiver>
-        <slot>activateSlot(bool)</slot>
-    </connection>
-</connections>
-<tabstops>
-    <tabstop>PresetComboBox</tabstop>
-    <tabstop>SavePresetToolButton</tabstop>
-    <tabstop>DeletePresetToolButton</tabstop>
-    <tabstop>ActivateToolButton</tabstop>
-</tabstops>
-<includes>
-    <include location="local" impldecl="in declaration">qptrlist.h</include>
-</includes>
-<forwards>
-    <forward>class qtractorPlugin</forward>
-	<forward>class qtractorPluginPort</forward>
-    <forward>class qtractorPluginPortWidget</forward>
-</forwards>
-<variables>
-    <variable access="private">qtractorPlugin *m_pPlugin;</variable>
-    <variable access="private">QGridLayout *m_pGridLayout;</variable>
-    <variable access="private">QPtrList &lt; qtractorPluginPortWidget &gt; m_portWidgets;</variable>
-    <variable access="private">int m_iDirtyCount;</variable>
-    <variable access="private">int m_iUpdate;</variable>
-</variables>
-<slots>
-    <slot access="private" specifier="non virtual">changePresetSlot( const QString &amp; sPreset )</slot>
-    <slot access="private" specifier="non virtual">loadPresetSlot( const QString &amp; sPreset )</slot>
-    <slot access="private" specifier="non virtual">savePresetSlot()</slot>
-    <slot access="private" specifier="non virtual">deletePresetSlot()</slot>
-    <slot access="private" specifier="non virtual">activateSlot( bool bOn )</slot>
-	<slot access="private" specifier="non virtual">valueChangeSlot( qtractorPluginPort *, float )</slot>
-</slots>
-<functions>
-    <function access="private" specifier="non virtual">init()</function>
-    <function access="private" specifier="non virtual">destroy()</function>
-    <function specifier="non virtual">setPlugin( qtractorPlugin *pPlugin )</function>
-    <function specifier="non virtual" returnType="qtractorPlugin *">plugin()</function>
-	<function specifier="non virtual">setPreset( const QString &amp; sPreset )</function>
-	<function specifier="non virtual" returnType="QString">preset()</function>
-	<function specifier="non virtual">updateCaption()</function>
-    <function specifier="non virtual">updateActivated()</function>
-	<function specifier="non virtual">updatePort( qtractorPluginPort *pPort )</function>
-    <function specifier="non virtual">refresh()</function>
-    <function access="private" specifier="non virtual">stabilize()</function>
-</functions>
-<pixmapinproject/>
-<layoutdefaults spacing="4" margin="4"/>
-</UI>
+       </property>
+       <property name="focusPolicy" >
+        <enum>Qt::TabFocus</enum>
+       </property>
+       <property name="toolTip" >
+        <string>Activate plugin</string>
+       </property>
+       <property name="text" >
+        <string>Active</string>
+       </property>
+       <property name="icon" >
+        <iconset resource="../icons/qtractor.qrc" >:/icons/itemLedOff.png</iconset>
+       </property>
+       <property name="checkable" >
+        <bool>true</bool>
+       </property>
+       <property name="toolButtonStyle" >
+        <enum>Qt::ToolButtonTextBesideIcon</enum>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <layoutdefault spacing="4" margin="4" />
+ <pixmapfunction></pixmapfunction>
+ <tabstops>
+  <tabstop>PresetComboBox</tabstop>
+  <tabstop>SavePresetToolButton</tabstop>
+  <tabstop>DeletePresetToolButton</tabstop>
+  <tabstop>ActivateToolButton</tabstop>
+ </tabstops>
+ <resources>
+  <include location="../icons/qtractor.qrc" />
+ </resources>
+ <connections/>
+</ui>

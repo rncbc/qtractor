@@ -1,6 +1,5 @@
-// qtractorTrackForm.ui.h
+// qtractorTrackForm.cpp
 //
-// ui.h extension file, included from the uic-generated form implementation.
 /****************************************************************************
    Copyright (C) 2005-2006, rncbc aka Rui Nuno Capela. All rights reserved.
 
@@ -20,6 +19,8 @@
 
 *****************************************************************************/
 
+#include "qtractorTrackForm.h"
+
 #include "qtractorAbout.h"
 #include "qtractorTrack.h"
 #include "qtractorSession.h"
@@ -31,98 +32,100 @@
 #include "qtractorMainForm.h"
 #include "qtractorBusForm.h"
 
-#include <qmessagebox.h>
-#include <qcolordialog.h>
-#include <qvalidator.h>
-#include <qlistbox.h>
-#include <qpainter.h>
-#include <qstyle.h>
+#include <QColorDialog>
+#include <QItemDelegate>
+#include <QMessageBox>
+#include <QValidator>
+#include <QPainter>
 
 
 //----------------------------------------------------------------------
-// class qtractorColorItem -- Custom color listbox item.
+// class qtractorColorItemDelegate -- Custom color view item delegate.
 //
 
-class qtractorColorItem : public QListBoxItem
+class qtractorColorItemDelegate : public QItemDelegate
 {
 public:
 
 	// Constructor.
-	qtractorColorItem ( const QColor& color )
-		: QListBoxItem(), m_color(color) { setCustomHighlighting(true); }
+	qtractorColorItemDelegate ( QComboBox *pComboBox )
+		: QItemDelegate(pComboBox), m_pComboBox(pComboBox) {}
 
-	// Color accessors.
-	void setColor(const QColor& color) { m_color = color; }
-	const QColor& color() const { return m_color; }
-
-protected:
-
-	// Custom paint method.
-	void paint(QPainter *pPainter);
-
-	// Default item extents
-	int width  (const QListBox*) const { return 32; }
-	int height (const QListBox*) const { return 16; }
+	// Overridden paint method.
+	void paint(QPainter *pPainter, const QStyleOptionViewItem& option,
+		const QModelIndex& index) const
+	{
+		// Item data has the color...
+		const QPoint delta(2, 2);
+		QRect rect(option.rect);
+		rect.setTopLeft(rect.topLeft() + delta);
+		rect.setBottomRight(rect.bottomRight() - delta);
+		QColor color(m_pComboBox->itemText(index.row()));
+		pPainter->save();
+		if (option.state & QStyle::State_Selected)
+			pPainter->setPen(QPen(option.palette.highlight().color(), 2));
+		else
+			pPainter->setPen(QPen(option.palette.base().color(), 2));
+		pPainter->setBrush(color);
+		pPainter->drawRect(rect);
+		pPainter->restore();
+		if (option.state & QStyle::State_HasFocus)
+			QItemDelegate::drawFocus(pPainter, option, option.rect);
+	}
 
 private:
 
 	// Item color spec.
-	QColor m_color;
+	QComboBox *m_pComboBox;
 };
 
 
-// ListBox item custom highlighting method.
-void qtractorColorItem::paint ( QPainter *pPainter )
+//----------------------------------------------------------------------------
+// qtractorTrackForm -- UI wrapper form.
+
+// Constructor.
+qtractorTrackForm::qtractorTrackForm (
+	QWidget *pParent, Qt::WFlags wflags ) : QDialog(pParent, wflags)
 {
-	// Evil trick: find out whether we are painted onto our listbox...
-	QListBox *pListBox = listBox();
-	int w = pListBox->viewport()->width();
-	int h = height(pListBox);
+	// Setup UI struct...
+	m_ui.setupUi(this);
 
-	QRect rect(0, 0, w, h);
-	if (isSelected())
-		pPainter->eraseRect(rect);
-
-	pPainter->fillRect(1, 1, w - 2, h - 2, m_color);
-}
-
-
-// Kind of constructor.
-void qtractorTrackForm::init (void)
-{
 	// No settings descriptor initially (the caller will set it).
 	m_pTrack = NULL;
 
-    // Set some dialog validators...
-	BankComboBox->setValidator(new QIntValidator(BankComboBox));
-	ProgComboBox->setValidator(new QIntValidator(ProgComboBox));
+	// Set some dialog validators...
+	m_ui.BankComboBox->setValidator(new QIntValidator(m_ui.BankComboBox));
+	m_ui.ProgComboBox->setValidator(new QIntValidator(m_ui.ProgComboBox));
 
 	// Bank select methods.
-	const QPixmap& pixmap = QPixmap::fromMimeSource("itemProperty.png");
-	BankSelMethodComboBox->clear();
-	BankSelMethodComboBox->insertItem(pixmap, tr("Normal"));
-	BankSelMethodComboBox->insertItem(pixmap, tr("Bank MSB"));
-	BankSelMethodComboBox->insertItem(pixmap, tr("Bank LSB"));
-	BankSelMethodComboBox->insertItem(pixmap, tr("Patch"));
+	const QIcon& icon = QIcon(":/icons/itemProperty.png");
+	m_ui.BankSelMethodComboBox->clear();
+	m_ui.BankSelMethodComboBox->addItem(icon, tr("Normal"));
+	m_ui.BankSelMethodComboBox->addItem(icon, tr("Bank MSB"));
+	m_ui.BankSelMethodComboBox->addItem(icon, tr("Bank LSB"));
+	m_ui.BankSelMethodComboBox->addItem(icon, tr("Patch"));
 
 	// Custom colors.
-	ForegroundColorComboBox->clear();
-	BackgroundColorComboBox->clear();
+	m_ui.ForegroundColorComboBox->setItemDelegate(
+		new qtractorColorItemDelegate(m_ui.ForegroundColorComboBox));
+	m_ui.BackgroundColorComboBox->setItemDelegate(
+		new qtractorColorItemDelegate(m_ui.BackgroundColorComboBox));
+	m_ui.ForegroundColorComboBox->clear();
+	m_ui.BackgroundColorComboBox->clear();
 	for (int i = 1; i < 28; i++) {
-		const QColor color = qtractorTrack::trackColor(i);
-		ForegroundColorComboBox->listBox()->insertItem(
-			new qtractorColorItem(color.dark()));
-		BackgroundColorComboBox->listBox()->insertItem(
-			new qtractorColorItem(color));
+		const QColor rgbBack = qtractorTrack::trackColor(i);
+		const QColor rgbFore = rgbBack.dark();
+		m_ui.ForegroundColorComboBox->addItem(rgbFore.name());
+		m_ui.BackgroundColorComboBox->addItem(rgbBack.name());
 	}
-
+	
 	// To save and keep bus/channel patching consistency.
-    m_pOldMidiBus = NULL;
-    m_iOldChannel = -1;
-    m_sOldInstrumentName = QString::null;
-    m_iOldBankSelMethod  = -1;
-    m_iOldBank = -1;
-    m_iOldProg = -1;
+	m_pOldMidiBus = NULL;
+	m_iOldChannel = -1;
+	m_sOldInstrumentName = QString::null;
+	m_iOldBankSelMethod  = -1;
+	m_iOldBank = -1;
+	m_iOldProg = -1;
 
 	// Initialize dirty control state.
 	m_iDirtySetup = 0;
@@ -133,11 +136,64 @@ void qtractorTrackForm::init (void)
 
 	// Try to restore old window positioning.
 	adjustSize();
+
+	// UI signal/slot connections...
+	QObject::connect(m_ui.TrackNameTextEdit,
+		SIGNAL(textChanged()),
+		SLOT(changed()));
+	QObject::connect(m_ui.AudioRadioButton,
+		SIGNAL(toggled(bool)),
+		SLOT(trackTypeChanged()));
+	QObject::connect(m_ui.MidiRadioButton,
+		SIGNAL(toggled(bool)),
+		SLOT(trackTypeChanged()));
+	QObject::connect(m_ui.InputBusNameComboBox,
+		SIGNAL(activated(const QString &)),
+		SLOT(inputBusNameChanged(const QString&)));
+	QObject::connect(m_ui.OutputBusNameComboBox,
+		SIGNAL(activated(const QString &)),
+		SLOT(outputBusNameChanged(const QString&)));
+	QObject::connect(m_ui.BusNameToolButton,
+		SIGNAL(clicked()),
+		SLOT(busNameClicked()));
+	QObject::connect(m_ui.ChannelSpinBox,
+		SIGNAL(valueChanged(int)),
+		SLOT(channelChanged(int)));
+	QObject::connect(m_ui.InstrumentComboBox,
+		SIGNAL(activated(const QString &)),
+		SLOT(instrumentChanged(const QString&)));
+	QObject::connect(m_ui.BankSelMethodComboBox,
+		SIGNAL(activated(int)),
+		SLOT(bankSelMethodChanged(int)));
+	QObject::connect(m_ui.BankComboBox,
+		SIGNAL(textChanged(const QString &)),
+		SLOT(bankChanged()));
+	QObject::connect(m_ui.ProgComboBox,
+		SIGNAL(textChanged(const QString &)),
+		SLOT(progChanged()));
+	QObject::connect(m_ui.ForegroundColorComboBox,
+		SIGNAL(editTextChanged(const QString&)),
+		SLOT(foregroundColorChanged(const QString&)));
+	QObject::connect(m_ui.ForegroundColorToolButton,
+		SIGNAL(clicked()),
+		SLOT(selectForegroundColor()));
+	QObject::connect(m_ui.BackgroundColorComboBox,
+		SIGNAL(editTextChanged(const QString&)),
+		SLOT(backgroundColorChanged(const QString&)));
+	QObject::connect(m_ui.BackgroundColorToolButton,
+		SIGNAL(clicked()),
+		SLOT(selectBackgroundColor()));
+	QObject::connect(m_ui.OkPushButton,
+		SIGNAL(clicked()),
+		SLOT(accept()));
+	QObject::connect(m_ui.CancelPushButton,
+		SIGNAL(clicked()),
+		SLOT(reject()));
 }
 
 
-// Kind of destructor.
-void qtractorTrackForm::destroy (void)
+// Destructor.
+qtractorTrackForm::~qtractorTrackForm (void)
 {
 }
 
@@ -148,48 +204,48 @@ void qtractorTrackForm::setTrack ( qtractorTrack *pTrack )
 	// Set reference descriptor.
 	m_pTrack = pTrack;
 
-    // Avoid dirty this all up.
-    m_iDirtySetup++;
+	// Avoid dirty this all up.
+	m_iDirtySetup++;
 
 	// Track properties cloning...
 	m_props = pTrack->properties();
 
 	// Initialize dialog widgets...
-	TrackNameTextEdit->setText(m_props.trackName);
+	m_ui.TrackNameTextEdit->setPlainText(m_props.trackName);
 	qtractorEngine *pEngine = NULL;
-	int iTrackType = -1;
 	switch (m_props.trackType) {
 		case qtractorTrack::Audio:
 			pEngine = pTrack->session()->audioEngine();
-			iTrackType = 0;
+			m_ui.AudioRadioButton->setChecked(true);
 			break;
 		case qtractorTrack::Midi:
 			pEngine = pTrack->session()->midiEngine();
-			iTrackType = 1;
+			m_ui.MidiRadioButton->setChecked(true);
 			break;
 		default:
 			break;
 	}
-	TrackTypeGroup->setButton(iTrackType);
-	updateTrackType(iTrackType);
+	updateTrackType(m_props.trackType);
 
 	if (pEngine && pEngine->findBus(m_props.inputBusName))
-		InputBusNameComboBox->setCurrentText(m_props.inputBusName);
+		m_ui.InputBusNameComboBox->setCurrentIndex(
+			m_ui.InputBusNameComboBox->findText(m_props.inputBusName));
 	if (pEngine && pEngine->findBus(m_props.outputBusName))
-		OutputBusNameComboBox->setCurrentText(m_props.outputBusName);
+		m_ui.OutputBusNameComboBox->setCurrentIndex(
+			m_ui.OutputBusNameComboBox->findText(m_props.outputBusName));
 
-	ChannelSpinBox->setValue(m_props.midiChannel + 1);
-	updateChannel(ChannelSpinBox->value(),
+	m_ui.ChannelSpinBox->setValue(m_props.midiChannel + 1);
+	updateChannel(m_ui.ChannelSpinBox->value(),
 		m_props.midiBankSelMethod, m_props.midiBank, m_props.midiProgram);
 
 	// Update colors...
-	updateColorItem(ForegroundColorComboBox, m_props.foreground);
-	updateColorItem(BackgroundColorComboBox, m_props.background);
+	updateColorItem(m_ui.ForegroundColorComboBox, m_props.foreground);
+	updateColorItem(m_ui.BackgroundColorComboBox, m_props.background);
 
 	// Cannot change track type, if track has clips already...
 	bool bEnabled = (pTrack->clips().count() == 0);
-	AudioRadioButton->setEnabled(bEnabled);
-	MidiRadioButton->setEnabled(bEnabled);
+	m_ui.AudioRadioButton->setEnabled(bEnabled);
+	m_ui.MidiRadioButton->setEnabled(bEnabled);
 
 	// Backup clean.
 	m_iDirtyCount = 0;
@@ -201,16 +257,31 @@ void qtractorTrackForm::setTrack ( qtractorTrack *pTrack )
 
 
 // Retrieve the editing track, if the case arises.
-qtractorTrack *qtractorTrackForm::track (void)
+qtractorTrack *qtractorTrackForm::track (void) const
 {
 	return m_pTrack;
 }
 
 
 // Retrieve the accepted track properties, if the case arises.
-const qtractorTrack::Properties& qtractorTrackForm::properties (void)
+const qtractorTrack::Properties& qtractorTrackForm::properties (void) const
 {
 	return m_props;
+}
+
+
+// Selected track type determinator.
+qtractorTrack::TrackType qtractorTrackForm::trackType (void)
+{
+	qtractorTrack::TrackType trackType = qtractorTrack::None;
+
+	if (m_ui.AudioRadioButton->isChecked())
+		trackType = qtractorTrack::Audio;
+	else
+	if (m_ui.MidiRadioButton->isChecked())
+		trackType = qtractorTrack::Midi;
+
+	return trackType;
 }
 
 
@@ -220,25 +291,18 @@ void qtractorTrackForm::accept (void)
 	// Save options...
 	if (m_iDirtyCount > 0) {
 		// Make changes permanent...
-		m_props.trackName = TrackNameTextEdit->text();
-		switch (TrackTypeGroup->id(TrackTypeGroup->selected())) {
-		case 0: // Audio track...
-			m_props.trackType = qtractorTrack::Audio;
-			break;
-		case 1: // Midi track...
-			m_props.trackType = qtractorTrack::Midi;
-			break;
-		}
-		m_props.inputBusName  = InputBusNameComboBox->currentText();
-		m_props.outputBusName = OutputBusNameComboBox->currentText();
+		m_props.trackName = m_ui.TrackNameTextEdit->toPlainText();
+		m_props.trackType = trackType();
+		m_props.inputBusName  = m_ui.InputBusNameComboBox->currentText();
+		m_props.outputBusName = m_ui.OutputBusNameComboBox->currentText();
 		// Special case for MIDI settings...
-		m_props.midiChannel = (ChannelSpinBox->value() - 1);
-		m_props.midiBankSelMethod = BankSelMethodComboBox->currentItem();
+		m_props.midiChannel = (m_ui.ChannelSpinBox->value() - 1);
+		m_props.midiBankSelMethod = m_ui.BankSelMethodComboBox->currentIndex();
 		m_props.midiBank    = midiBank();
 		m_props.midiProgram = midiProgram();
 		// View colors...
-		m_props.foreground = colorItem(ForegroundColorComboBox);
-		m_props.background = colorItem(BackgroundColorComboBox);
+		m_props.foreground = colorItem(m_ui.ForegroundColorComboBox);
+		m_props.background = colorItem(m_ui.BackgroundColorComboBox);
 		// Reset dirty flag.
 		m_iDirtyCount = 0;
 	}
@@ -285,22 +349,9 @@ void qtractorTrackForm::reject (void)
 void qtractorTrackForm::stabilizeForm (void)
 {
 	bool bValid = (m_iDirtyCount > 0);
-	bValid = bValid && !TrackNameTextEdit->text().isEmpty();
-#if 0
-	switch (TrackTypeGroup->id(TrackTypeGroup->selected())) {
-	case 0: // Audio track...
-		break;
-	case 1: // Midi track...
-		bValid = bValid && (midiProgram() >= 0);
-		break;
-	default:
-		bValid = false;
-		break;
-	}
-#else
-	bValid = bValid && TrackTypeGroup->selected();
-#endif
-	OkPushButton->setEnabled(bValid);
+	bValid = bValid && !m_ui.TrackNameTextEdit->toPlainText().isEmpty();
+	bValid = bValid && trackType() != qtractorTrack::None;
+	m_ui.OkPushButton->setEnabled(bValid);
 }
 
 
@@ -311,7 +362,7 @@ qtractorMidiBus *qtractorTrackForm::midiBus (void)
 		return NULL;
 
 	// If it ain't MIDI, bail out...
-	if (TrackTypeGroup->id(TrackTypeGroup->selected()) != 1)
+	if (trackType() != qtractorTrack::Midi)
 		return NULL;
 
 	// MIDI engine...
@@ -320,7 +371,7 @@ qtractorMidiBus *qtractorTrackForm::midiBus (void)
 		return NULL;
 
 	// MIDI bus...
-	const QString& sBusName = OutputBusNameComboBox->currentText();
+	const QString& sBusName = m_ui.OutputBusNameComboBox->currentText();
 	return static_cast<qtractorMidiBus *> (pMidiEngine->findBus(sBusName));
 }
 
@@ -328,10 +379,10 @@ qtractorMidiBus *qtractorTrackForm::midiBus (void)
 // Retrieve currently selected MIDI bank number.
 int qtractorTrackForm::midiBank (void)
 {
-	int iBankIndex = BankComboBox->currentItem();
-	const QString& sBankText = BankComboBox->currentText();
+	int iBankIndex = m_ui.BankComboBox->currentIndex();
+	const QString& sBankText = m_ui.BankComboBox->currentText();
 	if (m_banks.contains(iBankIndex)
-		&& BankComboBox->text(iBankIndex) == sBankText)
+		&& m_ui.BankComboBox->itemText(iBankIndex) == sBankText)
 		return m_banks[iBankIndex];
 
 	return sBankText.toInt();
@@ -341,10 +392,10 @@ int qtractorTrackForm::midiBank (void)
 // Retrieve currently selected MIDI program number.
 int qtractorTrackForm::midiProgram (void)
 {
-	int iProgIndex = ProgComboBox->currentItem();
-	const QString& sProgText = ProgComboBox->currentText();
+	int iProgIndex = m_ui.ProgComboBox->currentIndex();
+	const QString& sProgText = m_ui.ProgComboBox->currentText();
 	if (m_progs.contains(iProgIndex)
-		&& ProgComboBox->text(iProgIndex) == sProgText)
+		&& m_ui.ProgComboBox->itemText(iProgIndex) == sProgText)
 		return m_progs[iProgIndex];
 
 	return sProgText.toInt();
@@ -365,11 +416,11 @@ void qtractorTrackForm::updateInstruments (void)
 	// Avoid superfluos change notifications...
 	m_iDirtySetup++;
 
-	InstrumentComboBox->clear();
-	const QPixmap& pixmap = QPixmap::fromMimeSource("itemInstrument.png");
+	m_ui.InstrumentComboBox->clear();
+	const QIcon& icon = QIcon(":/icons/itemInstrument.png");
 	for (qtractorInstrumentList::Iterator iter = pInstruments->begin();
 			iter != pInstruments->end(); ++iter) {
-		InstrumentComboBox->insertItem(pixmap, iter.data().instrumentName());
+		m_ui.InstrumentComboBox->addItem(icon, iter.value().instrumentName());
 	}
 
 	// Done.
@@ -378,45 +429,46 @@ void qtractorTrackForm::updateInstruments (void)
 
 
 // Update track type and busses.
-void qtractorTrackForm::updateTrackType ( int iTrackType )
+void qtractorTrackForm::updateTrackType ( qtractorTrack::TrackType trackType )
 {
 	// Avoid superfluos change notifications...
 	m_iDirtySetup++;
 
 	// Make changes due to track type change.
 	qtractorEngine *pEngine = NULL;
-	QPixmap pixmap;
-	switch (iTrackType) {
-	case 0: // Audio track...
+	QIcon icon;
+	switch (trackType) {
+	case qtractorTrack::Audio:
 		pEngine = m_pTrack->session()->audioEngine();
-		pixmap = QPixmap::fromMimeSource("trackAudio.png");
-		MidiGroupBox->setEnabled(false);
-		InputBusNameComboBox->setEnabled(true);
-		OutputBusNameComboBox->setEnabled(true);
+		icon = QIcon(":/icons/trackAudio.png");
+		m_ui.MidiGroupBox->setEnabled(false);
+		m_ui.InputBusNameComboBox->setEnabled(true);
+		m_ui.OutputBusNameComboBox->setEnabled(true);
 		break;
-	case 1: // Midi track...
+	case qtractorTrack::Midi:
 		pEngine = m_pTrack->session()->midiEngine();
-		pixmap = QPixmap::fromMimeSource("trackMidi.png");
-		MidiGroupBox->setEnabled(true);
-		InputBusNameComboBox->setEnabled(true);
-		OutputBusNameComboBox->setEnabled(true);
+		icon = QIcon(":/icons/trackMidi.png");
+		m_ui.MidiGroupBox->setEnabled(true);
+		m_ui.InputBusNameComboBox->setEnabled(true);
+		m_ui.OutputBusNameComboBox->setEnabled(true);
 		break;
+	case qtractorTrack::None:
 	default:
-		MidiGroupBox->setEnabled(false);
-		InputBusNameComboBox->setEnabled(false);
-		OutputBusNameComboBox->setEnabled(false);
+		m_ui.MidiGroupBox->setEnabled(false);
+		m_ui.InputBusNameComboBox->setEnabled(false);
+		m_ui.OutputBusNameComboBox->setEnabled(false);
 		break;
 	}
 
-	InputBusNameComboBox->clear();
-	OutputBusNameComboBox->clear();
+	m_ui.InputBusNameComboBox->clear();
+	m_ui.OutputBusNameComboBox->clear();
 	if (pEngine) {
 		for (qtractorBus *pBus = pEngine->busses().first();
 				pBus; pBus = pBus->next()) {
 			if (pBus->busMode() & qtractorBus::Input)
-				InputBusNameComboBox->insertItem(pixmap, pBus->busName());
+				m_ui.InputBusNameComboBox->addItem(icon, pBus->busName());
 			if (pBus->busMode() & qtractorBus::Output)
-				OutputBusNameComboBox->insertItem(pixmap, pBus->busName());
+				m_ui.OutputBusNameComboBox->addItem(icon, pBus->busName());
 		}
 	}
 
@@ -458,15 +510,11 @@ void qtractorTrackForm::updateChannel ( int iChannel,
 #endif
 
 	// Select instrument...
-	int iInstrumentIndex = 0;
-	QListBoxItem *pItem = InstrumentComboBox->listBox()->findItem(
-		patch.instrumentName, Qt::ExactMatch | Qt::CaseSensitive);
-	if (pItem)
-		iInstrumentIndex = InstrumentComboBox->listBox()->index(pItem);
-	InstrumentComboBox->setCurrentItem(iInstrumentIndex);
+	m_ui.InstrumentComboBox->setCurrentIndex(
+		m_ui.InstrumentComboBox->findText(patch.instrumentName));
 
 	// Go and update the bank and program listings...
-	updateBanks(InstrumentComboBox->currentText(),
+	updateBanks(m_ui.InstrumentComboBox->currentText(),
 		iBankSelMethod, iBank, iProg);
 
 	// Done.
@@ -489,7 +537,7 @@ void qtractorTrackForm::updateBanks ( const QString& sInstrumentName,
 
 #ifdef CONFIG_DEBUG
 	fprintf(stderr, "qtractorTrackForm::updateBanks(\"%s\", %d, %d, %d)\n",
-		sInstrumentName.latin1(), iBankSelMethod, iBank, iProg);
+		sInstrumentName.toUtf8().constData(), iBankSelMethod, iBank, iProg);
 #endif
 
 	qtractorInstrumentList *pInstruments = pMainForm->instruments();
@@ -505,29 +553,29 @@ void qtractorTrackForm::updateBanks ( const QString& sInstrumentName,
 	// Bank selection method...
 	if (iBankSelMethod < 0)
 		iBankSelMethod = instr.bankSelMethod();
-	BankSelMethodComboBox->setCurrentItem(iBankSelMethod);
+	m_ui.BankSelMethodComboBox->setCurrentIndex(iBankSelMethod);
 
 	// Refresh patch bank mapping...
 	int iBankIndex = 0;
-	const QPixmap& pixmap = QPixmap::fromMimeSource("itemPatches.png");
+	const QIcon& icon = QIcon(":/icons/itemPatches.png");
 	m_banks.clear();
-	BankComboBox->clear();
-	BankComboBox->insertItem(pixmap, tr("(None)"));
+	m_ui.BankComboBox->clear();
+	m_ui.BankComboBox->addItem(icon, tr("(None)"));
 	m_banks[iBankIndex++] = -1;
 	qtractorInstrumentPatches::Iterator it;
 	for (it = instr.patches().begin(); it != instr.patches().end(); ++it) {
 		if (it.key() >= 0) {
-			BankComboBox->insertItem(pixmap, it.data().name());
+			m_ui.BankComboBox->addItem(icon, it.value().name());
 			m_banks[iBankIndex++] = it.key();
 		}
 	}
 
 #if 0
 	// In case bank address is generic...
-	if (BankComboBox->count() < 1) {
+	if (m_ui.BankComboBox->count() < 1) {
 		qtractorInstrumentData& patch = instr.patch(iBank);
 		if (!patch.name().isEmpty()) {
-			BankComboBox->insertItem(pixmap, patch.name());
+			m_ui.BankComboBox->insertItem(pixmap, patch.name());
 			m_banks[iBankIndex] = iBank;
 		}
 	}
@@ -536,17 +584,14 @@ void qtractorTrackForm::updateBanks ( const QString& sInstrumentName,
 	// Do the proper bank selection...
 	if (iBank >= 0) {
 		qtractorInstrumentData& bank = instr.patch(iBank);
-		iBankIndex = 0;
-		QListBoxItem *pItem	= BankComboBox->listBox()->findItem(
-			bank.name(), Qt::ExactMatch | Qt::CaseSensitive);
-		if (pItem) {
-			iBankIndex = BankComboBox->listBox()->index(pItem);
-			BankComboBox->setCurrentItem(iBankIndex);
+		iBankIndex = m_ui.BankComboBox->findText(bank.name());
+		if (iBankIndex >= 0) {
+			m_ui.BankComboBox->setCurrentIndex(iBankIndex);
 		} else {
-			BankComboBox->setCurrentText(QString::number(iBank));
+			m_ui.BankComboBox->lineEdit()->setText(QString::number(iBank));
 		}
 	} else {
-		BankComboBox->setCurrentItem(0);
+		m_ui.BankComboBox->setCurrentIndex(0);
 	}
 
 	// And update the bank and program listing...
@@ -572,7 +617,7 @@ void qtractorTrackForm::updatePrograms (  const QString& sInstrumentName,
 
 #ifdef CONFIG_DEBUG
 	fprintf(stderr, "qtractorTrackForm::updatePrograms(\"%s\", %d, %d)\n",
-		sInstrumentName.latin1(), iBank, iProg);
+		sInstrumentName.toUtf8().constData(), iBank, iProg);
 #endif
 
 	qtractorInstrumentList *pInstruments = pMainForm->instruments();
@@ -590,26 +635,26 @@ void qtractorTrackForm::updatePrograms (  const QString& sInstrumentName,
 
 	// Refresh patch program mapping...
 	int iProgIndex = 0;
-	const QPixmap& pixmap = QPixmap::fromMimeSource("itemChannel.png");
+	const QIcon& icon = QIcon(":/icons/itemChannel.png");
 	m_progs.clear();
-	ProgComboBox->clear();
-	ProgComboBox->insertItem(pixmap, tr("(None)"));
+	m_ui.ProgComboBox->clear();
+	m_ui.ProgComboBox->addItem(icon, tr("(None)"));
 	m_progs[iProgIndex++] = -1;
 	// Enumerate the explicit given program list...
 	qtractorInstrumentData::Iterator it;
 	for (it = bank.begin(); it != bank.end(); ++it) {
-		if (it.key() >= 0 && !it.data().isEmpty()) {
-			ProgComboBox->insertItem(pixmap, it.data());
+		if (it.key() >= 0 && !it.value().isEmpty()) {
+			m_ui.ProgComboBox->addItem(icon, it.value());
 			m_progs[iProgIndex++] = it.key();
 		}
 	}
 
 #if 0
 	// In case program address is generic...
-	if (ProgComboBox->count() < 1) {
+	if (m_ui.ProgComboBox->count() < 1) {
 		// Just make a generic program list...
 		for (iProgIndex = 0; iProgIndex < 128; iProgIndex++) {
-			ProgComboBox->insertItem(pixmap,
+			m_ui.ProgComboBox->insertItem(pixmap,
 				QString::number(iProgIndex + 1) + "  - -");
 			m_progs[iProgIndex] = iProgIndex;
 		}
@@ -618,19 +663,16 @@ void qtractorTrackForm::updatePrograms (  const QString& sInstrumentName,
 
 	// Select proper program...
 	if (iProg >= 0) {
-		QListBoxItem *pItem	= NULL;
-		if (bank.contains(iProg)) {
-			pItem = ProgComboBox->listBox()->findItem(
-				bank[iProg], Qt::ExactMatch | Qt::CaseSensitive);
-		}
-		if (pItem) {
-			iProgIndex = ProgComboBox->listBox()->index(pItem);
-			ProgComboBox->setCurrentItem(iProgIndex);
+		iProgIndex = -1;
+		if (bank.contains(iProg))
+			iProgIndex = m_ui.ProgComboBox->findText(bank[iProg]);
+		if (iProgIndex >= 0) {
+			m_ui.ProgComboBox->setCurrentIndex(iProgIndex);
 		} else {
-			ProgComboBox->setCurrentText(QString::number(iProg));
+			m_ui.ProgComboBox->lineEdit()->setText(QString::number(iProg));
 		}
 	} else {
-		ProgComboBox->setCurrentItem(0);
+		m_ui.ProgComboBox->setCurrentIndex(0);
 	}
 
 	// Done.
@@ -642,33 +684,64 @@ void qtractorTrackForm::updatePrograms (  const QString& sInstrumentName,
 void qtractorTrackForm::updateColorItem ( QComboBox *pComboBox,
 	const QColor& color )
 {
+	// Have some immediate feedback...
+	updateColorText(pComboBox, color);
+
 	// Check if already exists...
-	int iItem = 0;
-	for ( ; iItem < pComboBox->count(); iItem++) {
-		qtractorColorItem *pItem
-			= static_cast<qtractorColorItem *> (pComboBox->listBox()->item(iItem));
-		if (pItem->color() == color) {
-			pComboBox->setCurrentItem(iItem);
-			return;
-		}
+	int iItem = pComboBox->findText(color.name());
+	if (iItem >= 0) {
+		pComboBox->setCurrentIndex(iItem);
+		return;
 	}
+
 	// Nope, we'll add it custom...
-	pComboBox->listBox()->insertItem(new qtractorColorItem(color));
-	pComboBox->setCurrentItem(iItem);
+	pComboBox->addItem(color.name());
+	pComboBox->setCurrentIndex(pComboBox->count() - 1);
+}
+
+
+// Update color item visual text.
+void qtractorTrackForm::updateColorText ( QComboBox *pComboBox,
+	const QColor& color )
+{
+	QPalette pal(color);
+	pal.setColor(QPalette::Base, color);
+	pComboBox->lineEdit()->setPalette(pal);
 }
 
 
 // Retreieve currently selected color item.
-const QColor& qtractorTrackForm::colorItem ( QComboBox *pComboBox )
+QColor qtractorTrackForm::colorItem ( QComboBox *pComboBox )
 {
-	int iItem = pComboBox->currentItem();
-	qtractorColorItem *pItem
-		= static_cast<qtractorColorItem *> (pComboBox->listBox()->item(iItem));
-	return pItem->color();
+	return QColor(pComboBox->currentText());
 }
 
 
-// Make changes due.
+// Make more changes due.
+void qtractorTrackForm::foregroundColorChanged ( const QString& sText )
+{
+	if (m_iDirtySetup > 0)
+		return;
+
+	updateColorText(m_ui.ForegroundColorComboBox, QColor(sText));
+
+	m_iDirtyCount++;
+	stabilizeForm();
+}
+
+
+void qtractorTrackForm::backgroundColorChanged ( const QString& sText )
+{
+	if (m_iDirtySetup > 0)
+		return;
+
+	updateColorText(m_ui.BackgroundColorComboBox, QColor(sText));
+
+	m_iDirtyCount++;
+	stabilizeForm();
+}
+
+
 void qtractorTrackForm::changed (void)
 {
 	if (m_iDirtySetup > 0)
@@ -680,7 +753,7 @@ void qtractorTrackForm::changed (void)
 
 
 // Make changes due to track type.
-void qtractorTrackForm::trackTypeChanged ( int iTrackType )
+void qtractorTrackForm::trackTypeChanged (void)
 {
 	if (m_iDirtySetup > 0)
 		return;
@@ -698,9 +771,9 @@ void qtractorTrackForm::trackTypeChanged ( int iTrackType )
 		m_iOldProg = -1;
 	}
 
-	updateTrackType(iTrackType);
-//	inputBusNameChanged(InputBusNameComboBox->currentText());
-	outputBusNameChanged(OutputBusNameComboBox->currentText());
+	updateTrackType(trackType());
+//	inputBusNameChanged(m_ui.InputBusNameComboBox->currentText());
+	outputBusNameChanged(m_ui.OutputBusNameComboBox->currentText());
 }
 
 
@@ -717,7 +790,7 @@ void qtractorTrackForm::outputBusNameChanged ( const QString& /* sBusName */ )
 	if (m_iDirtySetup > 0)
 		return;
 
-	channelChanged(ChannelSpinBox->value());
+	channelChanged(m_ui.ChannelSpinBox->value());
 }
 
 
@@ -729,20 +802,22 @@ void qtractorTrackForm::busNameClicked (void)
 
 	// Depending on track type...
 	qtractorEngine *pEngine = NULL;
-	int iTrackType = TrackTypeGroup->id(TrackTypeGroup->selected());
-	switch (iTrackType) {
-	case 0: // Audio track...
+	switch (trackType()) {
+	case qtractorTrack::Audio:
 		pEngine = m_pTrack->session()->audioEngine();
 		break;
-	case 1: // Midi track...
+	case qtractorTrack::Midi:
 		pEngine = m_pTrack->session()->midiEngine();
+		break;
+	case qtractorTrack::None:
+	default:
 		break;
 	}
 
 	// Call here the bus management form.
 	qtractorBusForm busForm(this);
 	// Pre-select bus...
-	const QString& sBusName = OutputBusNameComboBox->currentText();
+	const QString& sBusName = m_ui.OutputBusNameComboBox->currentText();
 	if (pEngine && !sBusName.isEmpty())
 		busForm.setBus(pEngine->findBus(sBusName));
 	// Go for it...
@@ -751,15 +826,17 @@ void qtractorTrackForm::busNameClicked (void)
 	// Check if any busses have changed...
 	if (busForm.isDirty()) {
 		// Try to preserve current selected names...
-		const QString sInputBusName  = InputBusNameComboBox->currentText();
-		const QString sOutputBusName = OutputBusNameComboBox->currentText();
+		const QString sInputBusName  = m_ui.InputBusNameComboBox->currentText();
+		const QString sOutputBusName = m_ui.OutputBusNameComboBox->currentText();
 		// Update the comboboxes...
-		trackTypeChanged(iTrackType);
+		trackTypeChanged();
 		// Restore old current selected ones...
 		if (pEngine->findBus(sInputBusName))
-			InputBusNameComboBox->setCurrentText(sInputBusName);
+			m_ui.InputBusNameComboBox->setCurrentIndex(
+				m_ui.InputBusNameComboBox->findText(sInputBusName));
 		if (pEngine->findBus(sOutputBusName))
-			OutputBusNameComboBox->setCurrentText(sOutputBusName);
+			m_ui.OutputBusNameComboBox->setCurrentIndex(
+				m_ui.OutputBusNameComboBox->findText(sOutputBusName));
 	}
 }
 
@@ -772,7 +849,7 @@ void qtractorTrackForm::channelChanged ( int iChannel )
 
 	// First update channel instrument mapping...
 	updateChannel(iChannel,
-		-1, // BankSelMethodComboBox->currentItem(),
+		-1, // m_ui.BankSelMethodComboBox->currentItem(),
 		-1, // midiBank(),
 		-1);// midiProgram());
 
@@ -787,7 +864,7 @@ void qtractorTrackForm::instrumentChanged ( const QString& sInstrumentName )
 		return;
 
 	updateBanks(sInstrumentName,
-		-1, // BankSelMethodComboBox->currentItem(),
+		-1, // m_ui.BankSelMethodComboBox->currentItem(),
 		midiBank(),
 		midiProgram());
 
@@ -811,7 +888,7 @@ void qtractorTrackForm::bankChanged (void)
 	if (m_iDirtySetup > 0)
 		return;
 
-	updatePrograms(InstrumentComboBox->currentText(),
+	updatePrograms(m_ui.InstrumentComboBox->currentText(),
 		midiBank(), midiProgram());
 
 	progChanged();
@@ -828,9 +905,9 @@ void qtractorTrackForm::progChanged (void)
 	qtractorMidiBus *pMidiBus = midiBus();
 	if (pMidiBus) {
 		// Patch parameters...
-		unsigned short iChannel = ChannelSpinBox->value() - 1;
-		const QString& sInstrumentName = InstrumentComboBox->currentText();
-		int iBankSelMethod = BankSelMethodComboBox->currentItem();
+		unsigned short iChannel = m_ui.ChannelSpinBox->value() - 1;
+		const QString& sInstrumentName = m_ui.InstrumentComboBox->currentText();
+		int iBankSelMethod = m_ui.BankSelMethodComboBox->currentIndex();
 		int iBank = midiBank();
 		int iProg = midiProgram();
 		// Keep old bus/channel patching consistency.
@@ -865,10 +942,9 @@ void qtractorTrackForm::progChanged (void)
 void qtractorTrackForm::selectForegroundColor (void)
 {
 	QColor color = QColorDialog::getColor(
-		colorItem(ForegroundColorComboBox), this);
-
+		colorItem(m_ui.ForegroundColorComboBox), this);
 	if (color.isValid()) {
-		updateColorItem(ForegroundColorComboBox, color);
+		updateColorItem(m_ui.ForegroundColorComboBox, color);
 		changed();
 	}
 }
@@ -878,13 +954,12 @@ void qtractorTrackForm::selectForegroundColor (void)
 void qtractorTrackForm::selectBackgroundColor (void)
 {
 	QColor color = QColorDialog::getColor(
-		colorItem(BackgroundColorComboBox), this);
-
+		colorItem(m_ui.BackgroundColorComboBox), this);
 	if (color.isValid()) {
-		updateColorItem(BackgroundColorComboBox, color);
+		updateColorItem(m_ui.BackgroundColorComboBox, color);
 		changed();
 	}
 }
 
 
-// end of qtractorTrackForm.ui.h
+// end of qtractorTrackForm.cpp

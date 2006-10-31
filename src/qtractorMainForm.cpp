@@ -1,6 +1,5 @@
-// qtractorMainForm.ui.h
+// qtractorMainForm.cpp
 //
-// ui.h extension file included from the uic-generated form implementation.
 /****************************************************************************
    Copyright (C) 2005-2006, rncbc aka Rui Nuno Capela. All rights reserved.
 
@@ -19,6 +18,8 @@
    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 *****************************************************************************/
+
+#include "qtractorMainForm.h"
 
 #include "qtractorAbout.h"
 #include "qtractorOptions.h"
@@ -47,52 +48,45 @@
 #include "qtractorAudioClip.h"
 #include "qtractorMidiClip.h"
 
-#include "qtractorSpinBox.h"
-
 #include "qtractorSessionForm.h"
 #include "qtractorOptionsForm.h"
 #include "qtractorConnectForm.h"
 #include "qtractorInstrumentForm.h"
 #include "qtractorBusForm.h"
 
-#include <qapplication.h>
-#include <qeventloop.h>
-#include <qworkspace.h>
-#include <qmessagebox.h>
-#include <qdragobject.h>
-#include <qobjectlist.h>
-#include <qregexp.h>
-#include <qfiledialog.h>
-#include <qfileinfo.h>
-#include <qfile.h>
-#include <qtextstream.h>
-#include <qstatusbar.h>
-#include <qcombobox.h>
-#include <qlabel.h>
-#include <qtimer.h>
-#include <qdatetime.h>
+#include <QApplication>
+#include <QMessageBox>
+#include <QFileDialog>
+#include <QFileInfo>
+#include <QFile>
+#include <QRegExp>
+#include <QUrl>
 
-#ifdef HAVE_UNISTD_H
-#include <unistd.h>
-#endif
+#include <QSocketNotifier>
+#include <QActionGroup>
+#include <QStatusBar>
+#include <QComboBox>
+#include <QFrame>
+#include <QLabel>
+#include <QTimer>
+#include <QDateTime>
+
+#include <QContextMenuEvent>
+#include <QDragEnterEvent>
+#include <QCloseEvent>
+#include <QDropEvent>
+
 
 #ifdef HAVE_SIGNAL_H
 #include <signal.h>
 #endif
 
+#include <math.h>
+
+
 // Timer constant stuff.
 #define QTRACTOR_TIMER_MSECS    50
 #define QTRACTOR_TIMER_DELAY    200
-
-// Status bar item indexes
-#define QTRACTOR_STATUS_NAME    0   // Active session track caption.
-#define QTRACTOR_STATUS_MOD     1   // Current session modification state.
-#define QTRACTOR_STATUS_REC     2   // Current session recording state.
-#define QTRACTOR_STATUS_MUTE    3   // Current session muting state.
-#define QTRACTOR_STATUS_SOLO    4   // Current session soloing state.
-#define QTRACTOR_STATUS_LOOP    5   // Current session looping state.
-#define QTRACTOR_STATUS_TIME    6   // Current session length time.
-#define QTRACTOR_STATUS_RATE    7   // Current session sample rate.
 
 
 // Specialties for thread-callback comunication.
@@ -103,16 +97,19 @@
 #define QTRACTOR_BUFF_EVENT     QEvent::Type(QEvent::User + 5)
 
 
-
 //-------------------------------------------------------------------------
 // qtractorMainForm -- Main window form implementation.
 
-// kind of singleton reference.
+// Kind of singleton reference.
 qtractorMainForm *qtractorMainForm::g_pMainForm = NULL;
 
-// Kind of constructor.
-void qtractorMainForm::init (void)
+// Constructor.
+qtractorMainForm::qtractorMainForm (
+	QWidget *pParent, Qt::WFlags wflags ) : QMainWindow(pParent, wflags)
 {
+	// Setup UI struct...
+	m_ui.setupUi(this);
+
 	// Pseudo-singleton reference setup.
 	g_pMainForm = this;
 
@@ -126,11 +123,11 @@ void qtractorMainForm::init (void)
 	m_iPlayHead = 0;
 
 	// All child forms are to be created later, not earlier than setup.
-	m_pMessages = NULL;
-	m_pFiles    = NULL;
-	m_pMixer    = NULL;
+	m_pMessages    = NULL;
+	m_pFiles       = NULL;
+	m_pMixer       = NULL;
 	m_pConnections = NULL;
-	m_pTracks   = NULL;
+	m_pTracks      = NULL;
 
 	// We'll start clean.
 	m_iUntitled   = 0;
@@ -172,157 +169,336 @@ void qtractorMainForm::init (void)
 	::signal(SIGPIPE, SIG_IGN);
 #endif
 
-	// Make it an MDI workspace.
-	m_pWorkspace = new QWorkspace(this);
-	m_pWorkspace->setScrollBarsEnabled(true);
-	// Set the activation connection.
-	QObject::connect(m_pWorkspace, SIGNAL(windowActivated(QWidget *)),
-		this, SLOT(stabilizeForm()));
-	// Make it shine :-)
-	setCentralWidget(m_pWorkspace);
-
 	// Get edit selection mode action group up...
-	editToolbar->addSeparator();
+	m_ui.editToolbar->addSeparator();
 	m_pSelectModeActionGroup = new QActionGroup(this);
 	m_pSelectModeActionGroup->setExclusive(true);
-	m_pSelectModeActionGroup->setUsesDropDown(true);
-	m_pSelectModeActionGroup->add(editSelectModeClipAction);
-	m_pSelectModeActionGroup->add(editSelectModeRangeAction);
-	m_pSelectModeActionGroup->add(editSelectModeRectAction);
-	m_pSelectModeActionGroup->addTo(editToolbar);
-
-#if 0
-	// Have some effective feedback when toggling play/pause...
-	QIconSet icons;
-	icons.setPixmap(QPixmap::fromMimeSource("transportPlay.png"),
-		QIconSet::Automatic, QIconSet::Active, QIconSet::Off);
-	icons.setPixmap(QPixmap::fromMimeSource("transportPause.png"),
-		QIconSet::Automatic, QIconSet::Active, QIconSet::On);
-	transportPlayAction->setIconSet(icons);
-#endif
+//	m_pSelectModeActionGroup->setUsesDropDown(true);
+	m_pSelectModeActionGroup->addAction(m_ui.editSelectModeClipAction);
+	m_pSelectModeActionGroup->addAction(m_ui.editSelectModeRangeAction);
+	m_pSelectModeActionGroup->addAction(m_ui.editSelectModeRectAction);
+	m_ui.editToolbar->addActions(m_pSelectModeActionGroup->actions());
 
 	// HACK: transport toolbar controls needs be auto-repeatable ...
-	QObjectList *pObjList = transportToolbar->queryList(
-		"QToolButton", "^transport(Backward|Forward)Action");
-	if (pObjList) {	// Iterate over the intended transport tool-buttons...	
-		QObjectListIt it(*pObjList);
-		for (QObject *pObj; (pObj = it.current()) != NULL; ++it) {
-			QToolButton *pToolButton = static_cast<QToolButton *> (pObj);
-			if (pToolButton)
-				pToolButton->setAutoRepeat(true);
-		}
-		delete pObjList;
+	QList<QToolButton *> list
+		= m_ui.transportToolbar->findChildren<QToolButton *> (
+			QRegExp("^transport(Backward|Forward)Action"));
+	// Iterate over the intended transport tool-buttons...	
+	QListIterator<QToolButton *> it(list);
+	while (it.hasNext()) {
+		QToolButton *pToolButton = it.next();
+		if (pToolButton)
+			pToolButton->setAutoRepeat(true);
 	}
 
 	// Additional time-toolbar controls...
+//	m_ui.timeToolbar->addSeparator();
+
+	// Transport time.
 	const QString sTime("00:00:00.000");
-//	timeToolbar->addSeparator();
 	const QFont& font = qtractorMainForm::font();
-	m_pTransportTime = new QLabel(sTime, timeToolbar);
+	m_pTransportTime = new QLabel(sTime);
 	m_pTransportTime->setFont(QFont(font.family(), font.pointSize() + 2));
 	m_pTransportTime->setFrameShape(QFrame::Panel);
 	m_pTransportTime->setFrameShadow(QFrame::Sunken);
-	m_pTransportTime->setPaletteBackgroundColor(Qt::black);
-//	m_pTransportTime->setPaletteForegroundColor(Qt::green);
+	QPalette pal;
+	pal.setColor(QPalette::Background, Qt::black);
+	pal.setColor(QPalette::Foreground, Qt::green);
+	m_pTransportTime->setPalette(pal);
+	m_pTransportTime->setAutoFillBackground(true);
 	m_pTransportTime->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
-	m_pTransportTime->setMinimumHeight(
-		m_pTransportTime->sizeHint().height() + 2);
-	m_pTransportTime->setMinimumWidth(
-		m_pTransportTime->sizeHint().width() + 4);
-	QToolTip::add(m_pTransportTime, tr("Current transport time (playhead)"));
-	timeToolbar->addSeparator();
-	m_pTempoSpinBox = new qtractorSpinBox(timeToolbar);
+	m_pTransportTime->setFixedSize(m_pTransportTime->sizeHint() + QSize(2, 2));
+	m_pTransportTime->setToolTip(tr("Current transport time (playhead)"));
+	m_ui.timeToolbar->addWidget(m_pTransportTime);
+	m_ui.timeToolbar->addSeparator();
+
+	// Tempo spin-box.
+	m_pTempoSpinBox = new QDoubleSpinBox();
+	m_pTempoSpinBox->setDecimals(1);
+	m_pTempoSpinBox->setMinimum(1.0f);
+	m_pTempoSpinBox->setMaximum(1000.0f);
 	m_pTempoSpinBox->setAlignment(Qt::AlignHCenter);
-	m_pTempoSpinBox->setMinValue(1);
-	m_pTempoSpinBox->setMaxValue(99999);
-	QToolTip::add(m_pTempoSpinBox, tr("Tempo (BPM)"));
-	timeToolbar->addSeparator();
-	m_pSnapPerBeatComboBox = new QComboBox(timeToolbar);
+	m_pTempoSpinBox->setToolTip(tr("Tempo (BPM)"));
+	m_ui.timeToolbar->addWidget(m_pTempoSpinBox);
+	m_ui.timeToolbar->addSeparator();
+
+	// Snap-per-beat combo-box.
+	m_pSnapPerBeatComboBox = new QComboBox();
 	m_pSnapPerBeatComboBox->setEditable(false);
-	m_pSnapPerBeatComboBox->insertItem(tr("None"));
+	m_pSnapPerBeatComboBox->addItem(tr("None"));
 	QString sPrefix = tr("Beat");
-	m_pSnapPerBeatComboBox->insertItem(sPrefix);
+	m_pSnapPerBeatComboBox->addItem(sPrefix);
 	sPrefix += "/%1";
 	for (unsigned short iSnapPerBeat = 2; iSnapPerBeat < 64; iSnapPerBeat <<= 1)
-		m_pSnapPerBeatComboBox->insertItem(sPrefix.arg(iSnapPerBeat));
-	QToolTip::add(m_pSnapPerBeatComboBox, tr("Snap/beat"));
+		m_pSnapPerBeatComboBox->addItem(sPrefix.arg(iSnapPerBeat));
+	m_pSnapPerBeatComboBox->setToolTip(tr("Snap/beat"));
+	m_ui.timeToolbar->addWidget(m_pSnapPerBeatComboBox);
 
-	QObject::connect(m_pTempoSpinBox, SIGNAL(valueChanged(int)),
+	QObject::connect(m_pTempoSpinBox, SIGNAL(valueChanged(double)),
 		this, SLOT(tempoChanged()));
 	QObject::connect(m_pSnapPerBeatComboBox, SIGNAL(activated(int)),
 		this, SLOT(snapPerBeatChanged(int)));
 
 	// Create some statusbar labels...
 	QLabel *pLabel;
+	const QSize pad(4, 0);
+	QPalette *pPalette = new QPalette(statusBar()->palette());
+	m_paletteItems[PaletteNone] = pPalette;
+
+	pPalette = new QPalette(statusBar()->palette());
+	pPalette->setColor(QPalette::Background, Qt::red);
+	m_paletteItems[PaletteRed] = pPalette;
+
+	pPalette = new QPalette(statusBar()->palette());
+	pPalette->setColor(QPalette::Background, Qt::yellow);
+	m_paletteItems[PaletteYellow] = pPalette;
+
+	pPalette = new QPalette(statusBar()->palette());
+	pPalette->setColor(QPalette::Background, Qt::cyan);
+	m_paletteItems[PaletteCyan] = pPalette;
+
+	pPalette = new QPalette(statusBar()->palette());
+	pPalette->setColor(QPalette::Background, Qt::green);
+	m_paletteItems[PaletteGreen] = pPalette;
+
 	// Track status.
-	pLabel = new QLabel(tr("Track"), this);
+	pLabel = new QLabel(tr("Track"));
 	pLabel->setAlignment(Qt::AlignLeft);
-	QToolTip::add(pLabel, tr("Current track name"));
-	m_statusItems[QTRACTOR_STATUS_NAME] = pLabel;
+	pLabel->setToolTip(tr("Current track name"));
+	pLabel->setAutoFillBackground(true);
+	m_statusItems[StatusName] = pLabel;
 	statusBar()->addWidget(pLabel, 2);
+
 	// Session modification status.
-	pLabel = new QLabel(tr("MOD"), this);
+	pLabel = new QLabel(tr("MOD"));
 	pLabel->setAlignment(Qt::AlignHCenter);
-	pLabel->setMinimumSize(pLabel->sizeHint());
-	QToolTip::add(pLabel, tr("Session modification state"));
-	m_statusItems[QTRACTOR_STATUS_MOD] = pLabel;
-	statusBar()->addWidget(pLabel);
-	// Session recording status.
-	pLabel = new QLabel(tr("REC"), this);
-	pLabel->setAlignment(Qt::AlignHCenter);
-	pLabel->setMinimumSize(pLabel->sizeHint());
-	QToolTip::add(pLabel, tr("Session record state"));
-	m_statusItems[QTRACTOR_STATUS_REC] = pLabel;
-	statusBar()->addWidget(pLabel);
-	// Session muting status.
-	pLabel = new QLabel(tr("MUTE"), this);
-	pLabel->setAlignment(Qt::AlignHCenter);
-	pLabel->setMinimumSize(pLabel->sizeHint());
-	QToolTip::add(pLabel, tr("Session muting state"));
-	m_statusItems[QTRACTOR_STATUS_MUTE] = pLabel;
-	statusBar()->addWidget(pLabel);
-	// Session soloing status.
-	pLabel = new QLabel(tr("SOLO"), this);
-	pLabel->setAlignment(Qt::AlignHCenter);
-	pLabel->setMinimumSize(pLabel->sizeHint());
-	QToolTip::add(pLabel, tr("Session soloing state"));
-	m_statusItems[QTRACTOR_STATUS_SOLO] = pLabel;
-	statusBar()->addWidget(pLabel);
-	// Session looping status.
-	pLabel = new QLabel(tr("LOOP"), this);
-	pLabel->setAlignment(Qt::AlignHCenter);
-	pLabel->setMinimumSize(pLabel->sizeHint());
-	QToolTip::add(pLabel, tr("Session looping state"));
-	m_statusItems[QTRACTOR_STATUS_LOOP] = pLabel;
-	statusBar()->addWidget(pLabel);
-	// Session length time.
-	pLabel = new QLabel(sTime, this);
-	pLabel->setAlignment(Qt::AlignRight);
-	pLabel->setMinimumSize(pLabel->sizeHint());
-	QToolTip::add(pLabel, tr("Session total time"));
-	m_statusItems[QTRACTOR_STATUS_TIME] = pLabel;
-	statusBar()->addWidget(pLabel);
-	// Session sample rate.
-	const QString sRate("44100 Hz");
-	pLabel = new QLabel(sRate, this);
-	pLabel->setAlignment(Qt::AlignHCenter);
-	pLabel->setMinimumSize(pLabel->sizeHint());
-	QToolTip::add(pLabel, tr("Session sample rate"));
-	m_statusItems[QTRACTOR_STATUS_RATE] = pLabel;
+	pLabel->setMinimumSize(pLabel->sizeHint() + pad);
+	pLabel->setToolTip(tr("Session modification state"));
+	pLabel->setAutoFillBackground(true);
+	m_statusItems[StatusMod] = pLabel;
 	statusBar()->addWidget(pLabel);
 
-	// Create the recent files sub-menu.
-	m_pRecentFilesMenu = new QPopupMenu(this);
-	fileMenu->insertItem(tr("Open &Recent"), m_pRecentFilesMenu, 0, 3);
+	// Session recording status.
+	pLabel = new QLabel(tr("REC"));
+	pLabel->setAlignment(Qt::AlignHCenter);
+	pLabel->setMinimumSize(pLabel->sizeHint() + pad);
+	pLabel->setToolTip(tr("Session record state"));
+	pLabel->setAutoFillBackground(true);
+	m_statusItems[StatusRec] = pLabel;
+	statusBar()->addWidget(pLabel);
+
+	// Session muting status.
+	pLabel = new QLabel(tr("MUTE"));
+	pLabel->setAlignment(Qt::AlignHCenter);
+	pLabel->setMinimumSize(pLabel->sizeHint() + pad);
+	pLabel->setToolTip(tr("Session muting state"));
+	pLabel->setAutoFillBackground(true);
+	m_statusItems[StatusMute] = pLabel;
+	statusBar()->addWidget(pLabel);
+
+	// Session soloing status.
+	pLabel = new QLabel(tr("SOLO"));
+	pLabel->setAlignment(Qt::AlignHCenter);
+	pLabel->setMinimumSize(pLabel->sizeHint() + pad);
+	pLabel->setToolTip(tr("Session soloing state"));
+	pLabel->setAutoFillBackground(true);
+	m_statusItems[StatusSolo] = pLabel;
+	statusBar()->addWidget(pLabel);
+
+	// Session looping status.
+	pLabel = new QLabel(tr("LOOP"));
+	pLabel->setAlignment(Qt::AlignHCenter);
+	pLabel->setMinimumSize(pLabel->sizeHint() + pad);
+	pLabel->setToolTip(tr("Session looping state"));
+	pLabel->setAutoFillBackground(true);
+	m_statusItems[StatusLoop] = pLabel;
+	statusBar()->addWidget(pLabel);
+
+	// Session length time.
+	pLabel = new QLabel(sTime);
+	pLabel->setAlignment(Qt::AlignRight);
+	pLabel->setMinimumSize(pLabel->sizeHint() + pad);
+	pLabel->setToolTip(tr("Session total time"));
+	pLabel->setAutoFillBackground(true);
+	m_statusItems[StatusTime] = pLabel;
+	statusBar()->addWidget(pLabel);
+
+	// Session sample rate.
+	const QString sRate("44100 Hz");
+	pLabel = new QLabel(sRate);
+	pLabel->setAlignment(Qt::AlignHCenter);
+	pLabel->setMinimumSize(pLabel->sizeHint() + pad);
+	pLabel->setAutoFillBackground(true);
+	pLabel->setToolTip(tr("Session sample rate"));
+	m_statusItems[StatusRate] = pLabel;
+	statusBar()->addWidget(pLabel);
+
+
+	// Ah, make it stand right.
+	setFocus();
+
+	// UI signal/slot connections...
+	QObject::connect(m_ui.fileNewAction,
+		SIGNAL(triggered(bool)),
+		SLOT(fileNew()));
+	QObject::connect(m_ui.fileOpenAction,
+		SIGNAL(triggered(bool)),
+		SLOT(fileOpen()));
+	QObject::connect(m_ui.fileSaveAction,
+		SIGNAL(triggered(bool)),
+		SLOT(fileSave()));
+	QObject::connect(m_ui.fileSaveAsAction,
+		SIGNAL(triggered(bool)),
+		SLOT(fileSaveAs()));
+	QObject::connect(m_ui.filePropertiesAction,
+		SIGNAL(triggered(bool)),
+		SLOT(fileProperties()));
+	QObject::connect(m_ui.fileExitAction,
+		SIGNAL(triggered(bool)),
+		SLOT(fileExit()));
+	QObject::connect(m_ui.editUndoAction,
+		SIGNAL(triggered(bool)),
+		SLOT(editUndo()));
+	QObject::connect(m_ui.editRedoAction,
+		SIGNAL(triggered(bool)),
+		SLOT(editRedo()));
+	QObject::connect(m_ui.editCutAction,
+		SIGNAL(triggered(bool)),
+		SLOT(editCut()));
+	QObject::connect(m_ui.editCopyAction,
+		SIGNAL(triggered(bool)),
+		SLOT(editCopy()));
+	QObject::connect(m_ui.editPasteAction,
+		SIGNAL(triggered(bool)),
+		SLOT(editPaste()));
+	QObject::connect(m_ui.editDeleteAction,
+		SIGNAL(triggered(bool)),
+		SLOT(editDelete()));
+	QObject::connect(m_ui.editSelectModeClipAction,
+		SIGNAL(triggered(bool)),
+		SLOT(editSelectModeClip()));
+	QObject::connect(m_ui.editSelectModeRangeAction,
+		SIGNAL(triggered(bool)),
+		SLOT(editSelectModeRange()));
+	QObject::connect(m_ui.editSelectModeRectAction,
+		SIGNAL(triggered(bool)),
+		SLOT(editSelectModeRect()));
+	QObject::connect(m_ui.editSelectNoneAction,
+		SIGNAL(triggered(bool)),
+		SLOT(editSelectNone()));
+	QObject::connect(m_ui.editSelectRangeAction,
+		SIGNAL(triggered(bool)),
+		SLOT(editSelectRange()));
+	QObject::connect(m_ui.editSelectTrackAction,
+		SIGNAL(triggered(bool)),
+		SLOT(editSelectTrack()));
+	QObject::connect(m_ui.editSelectAllAction,
+		SIGNAL(triggered(bool)),
+		SLOT(editSelectAll()));
+	QObject::connect(m_ui.trackAddAction,
+		SIGNAL(triggered(bool)),
+		SLOT(trackAdd()));
+	QObject::connect(m_ui.trackRemoveAction,
+		SIGNAL(triggered(bool)),
+		SLOT(trackRemove()));
+	QObject::connect(m_ui.trackPropertiesAction,
+		SIGNAL(triggered(bool)),
+		SLOT(trackProperties()));
+	QObject::connect(m_ui.trackImportAudioAction,
+		SIGNAL(triggered(bool)),
+		SLOT(trackImportAudio()));
+	QObject::connect(m_ui.trackImportMidiAction,
+		SIGNAL(triggered(bool)),
+		SLOT(trackImportMidi()));
+	QObject::connect(m_ui.viewMenubarAction,
+		SIGNAL(triggered(bool)),
+		SLOT(viewMenubar(bool)));
+	QObject::connect(m_ui.viewStatusbarAction,
+		SIGNAL(triggered(bool)),
+		SLOT(viewStatusbar(bool)));
+	QObject::connect(m_ui.viewToolbarFileAction,
+		SIGNAL(triggered(bool)),
+		SLOT(viewToolbarFile(bool)));
+	QObject::connect(m_ui.viewToolbarEditAction,
+		SIGNAL(triggered(bool)),
+		SLOT(viewToolbarEdit(bool)));
+	QObject::connect(m_ui.viewToolbarTrackAction,
+		SIGNAL(triggered(bool)),
+		SLOT(viewToolbarTrack(bool)));
+	QObject::connect(m_ui.viewToolbarViewAction,
+		SIGNAL(triggered(bool)),
+		SLOT(viewToolbarView(bool)));
+	QObject::connect(m_ui.viewToolbarTransportAction,
+		SIGNAL(triggered(bool)),
+		SLOT(viewToolbarTransport(bool)));
+	QObject::connect(m_ui.viewToolbarTimeAction,
+		SIGNAL(triggered(bool)),
+		SLOT(viewToolbarTime(bool)));
+	QObject::connect(m_ui.viewFilesAction,
+		SIGNAL(triggered(bool)),
+		SLOT(viewFiles(bool)));
+	QObject::connect(m_ui.viewMessagesAction,
+		SIGNAL(triggered(bool)),
+		SLOT(viewMessages(bool)));
+	QObject::connect(m_ui.viewConnectionsAction,
+		SIGNAL(triggered(bool)),
+		SLOT(viewConnections(bool)));
+	QObject::connect(m_ui.viewMixerAction,
+		SIGNAL(triggered(bool)),
+		SLOT(viewMixer(bool)));
+	QObject::connect(m_ui.viewRefreshAction,
+		SIGNAL(triggered(bool)),
+		SLOT(viewRefresh()));
+	QObject::connect(m_ui.viewInstrumentsAction,
+		SIGNAL(triggered(bool)),
+		SLOT(viewInstruments()));
+	QObject::connect(m_ui.viewBussesAction,
+		SIGNAL(triggered(bool)),
+		SLOT(viewBusses()));
+	QObject::connect(m_ui.viewOptionsAction,
+		SIGNAL(triggered(bool)),
+		SLOT(viewOptions()));
+	QObject::connect(m_ui.transportRewindAction,
+		SIGNAL(triggered(bool)),
+		SLOT(transportRewind()));
+	QObject::connect(m_ui.transportBackwardAction,
+		SIGNAL(triggered(bool)),
+		SLOT(transportBackward()));
+	QObject::connect(m_ui.transportForwardAction,
+		SIGNAL(triggered(bool)),
+		SLOT(transportForward()));
+	QObject::connect(m_ui.transportFastForwardAction,
+		SIGNAL(triggered(bool)),
+		SLOT(transportFastForward()));
+	QObject::connect(m_ui.transportLoopAction,
+		SIGNAL(triggered(bool)),
+		SLOT(transportLoop()));
+	QObject::connect(m_ui.transportPlayAction,
+		SIGNAL(triggered(bool)),
+		SLOT(transportPlay()));
+	QObject::connect(m_ui.transportRecordAction,
+		SIGNAL(triggered(bool)),
+		SLOT(transportRecord()));
+	QObject::connect(m_ui.transportFollowAction,
+		SIGNAL(triggered(bool)),
+		SLOT(transportFollow()));
+	QObject::connect(m_ui.helpAboutAction,
+		SIGNAL(triggered(bool)),
+		SLOT(helpAbout()));
+	QObject::connect(m_ui.helpAboutQtAction,
+		SIGNAL(triggered(bool)),
+		SLOT(helpAboutQt()));
+
+	QObject::connect(m_ui.fileMenu,
+		SIGNAL(aboutToShow()),
+		SLOT(updateRecentFilesMenu()));
 }
 
 
-// Kind of destructor.
-void qtractorMainForm::destroy (void)
+// Destructor.
+qtractorMainForm::~qtractorMainForm (void)
 {
 	// Drop any widgets around (not really necessary)...
-	if (m_pTracks)
-		delete m_pTracks;
 	if (m_pMixer)
 		delete m_pMixer;
 	if (m_pConnections)
@@ -331,8 +507,8 @@ void qtractorMainForm::destroy (void)
 		delete m_pFiles;
 	if (m_pMessages)
 		delete m_pMessages;
-	if (m_pWorkspace)
-		delete m_pWorkspace;
+	if (m_pTracks)
+		delete m_pTracks;
 
 	//  Free some more still around...
 	if (m_pInstruments)
@@ -346,9 +522,9 @@ void qtractorMainForm::destroy (void)
 	if (m_pSelectModeActionGroup)
 		delete m_pSelectModeActionGroup;
 
-	// Finally, delete recent files menu.
-	if (m_pRecentFilesMenu)
-		delete m_pRecentFilesMenu;
+	// Reclaim status items palettes...
+	for (int i = 0; i < PaletteItems; i++)
+		delete m_paletteItems[i];
 
 	// Pseudo-singleton reference shut-down.
 	g_pMainForm = NULL;
@@ -370,63 +546,56 @@ void qtractorMainForm::setOptions ( qtractorOptions *pOptions )
 
 	// Some child forms are to be created right now.
 	m_pFiles = new qtractorFiles(this);
-	m_pMessages = new qtractorMessages(this);
 	m_pFiles->audioListView()->setRecentDir(m_pOptions->sAudioDir);
 	m_pFiles->midiListView()->setRecentDir(m_pOptions->sMidiDir);
+	m_pMessages = new qtractorMessages(this);
 	m_pConnections = new qtractorConnections(this);
 	m_pMixer = new qtractorMixer(this);
+
+	// Make those primordially docked...
+	addDockWidget(Qt::RightDockWidgetArea, m_pFiles, Qt::Vertical);
+	addDockWidget(Qt::BottomDockWidgetArea, m_pMessages, Qt::Horizontal);
+
+	// Time to create the main session track list view...
+	m_pTracks = new qtractorTracks(this);
+	// Make it shine :-)
+	setCentralWidget(m_pTracks);
 
 	// Set message defaults...
 	updateMessagesFont();
 	updateMessagesLimit();
 	updateMessagesCapture();
 
-	// Set the visibility signal.
-	QObject::connect(m_pFiles, SIGNAL(visibilityChanged(bool)),
-		this, SLOT(stabilizeForm()));
-	QObject::connect(m_pMessages, SIGNAL(visibilityChanged(bool)),
-		this, SLOT(stabilizeForm()));
-	QObject::connect(m_pConnections, SIGNAL(visibilityChanged(bool)),
-		this, SLOT(stabilizeForm()));
-	QObject::connect(m_pMixer, SIGNAL(visibilityChanged(bool)),
-		this, SLOT(stabilizeForm()));
-	QObject::connect(m_pMixer->trackRack(), SIGNAL(selectionChanged()),
-		this, SLOT(mixerSelectionChanged()));
-	// Contents change stuff...
-	QObject::connect(m_pFiles->audioListView(), SIGNAL(activated(const QString&)),
-		this, SLOT(activateAudioFile(const QString&)));
-	QObject::connect(m_pFiles->midiListView(), SIGNAL(activated(const QString&)),
-		this, SLOT(activateMidiFile(const QString&)));
-	QObject::connect(m_pFiles->audioListView(), SIGNAL(contentsChanged()),
-		this, SLOT(contentsChanged()));
-	QObject::connect(m_pFiles->midiListView(), SIGNAL(contentsChanged()),
-		this, SLOT(contentsChanged()));
-
 	// Track view select mode...
+	qtractorTrackView::SelectMode selectMode;
 	switch (pOptions->iTrackViewSelectMode) {
 	case 2:
-		editSelectModeRectAction->setOn(true);
+		selectMode = qtractorTrackView::SelectRect;
+		m_ui.editSelectModeRectAction->setChecked(true);
 		break;
 	case 1:
-		editSelectModeRangeAction->setOn(true);
+		selectMode = qtractorTrackView::SelectRange;
+		m_ui.editSelectModeRangeAction->setChecked(true);
 		break;
 	case 0:
 	default:
-		editSelectModeClipAction->setOn(true);
+		selectMode = qtractorTrackView::SelectClip;
+		m_ui.editSelectModeClipAction->setChecked(true);
 		break;
 	}
+	m_pTracks->trackView()->setSelectMode(selectMode);
 
 	// Initial decorations toggle state.
-	viewMenubarAction->setOn(m_pOptions->bMenubar);
-	viewStatusbarAction->setOn(m_pOptions->bStatusbar);
-	viewToolbarFileAction->setOn(m_pOptions->bFileToolbar);
-	viewToolbarEditAction->setOn(m_pOptions->bEditToolbar);
-	viewToolbarTrackAction->setOn(m_pOptions->bTrackToolbar);
-	viewToolbarViewAction->setOn(m_pOptions->bViewToolbar);
-	viewToolbarTransportAction->setOn(m_pOptions->bTransportToolbar);
-	viewToolbarTimeAction->setOn(m_pOptions->bTimeToolbar);
+	m_ui.viewMenubarAction->setChecked(m_pOptions->bMenubar);
+	m_ui.viewStatusbarAction->setChecked(m_pOptions->bStatusbar);
+	m_ui.viewToolbarFileAction->setChecked(m_pOptions->bFileToolbar);
+	m_ui.viewToolbarEditAction->setChecked(m_pOptions->bEditToolbar);
+	m_ui.viewToolbarTrackAction->setChecked(m_pOptions->bTrackToolbar);
+	m_ui.viewToolbarViewAction->setChecked(m_pOptions->bViewToolbar);
+	m_ui.viewToolbarTransportAction->setChecked(m_pOptions->bTransportToolbar);
+	m_ui.viewToolbarTimeAction->setChecked(m_pOptions->bTimeToolbar);
 
-	transportFollowAction->setOn(m_pOptions->bFollowPlayhead);
+	m_ui.transportFollowAction->setChecked(m_pOptions->bFollowPlayhead);
 
 	// Initial decorations visibility state.
 	viewMenubar(m_pOptions->bMenubar);
@@ -439,27 +608,26 @@ void qtractorMainForm::setOptions ( qtractorOptions *pOptions )
 	viewToolbarTime(m_pOptions->bTimeToolbar);
 
 	// Restore whole dock windows state.
-	QString sDockables = m_pOptions->settings().readEntry(
-		"/Layout/DockWindows", QString::null);
-	if (sDockables.isEmpty()) {
-		// Message window is forced to dock on the bottom.
-		moveDockWindow(m_pMessages, Qt::DockBottom);
-		moveDockWindow(m_pFiles, Qt::DockRight);
-		moveDockWindow(m_pConnections, Qt::DockTornOff);
-		moveDockWindow(m_pMixer, Qt::DockTornOff);
+	QByteArray aDockables = m_pOptions->settings().value(
+		"/Layout/DockWindows").toByteArray();
+	if (aDockables.isEmpty()) {
+		// Some windows are forced initially as is...
+		insertToolBarBreak(m_ui.timeToolbar);
+		insertToolBarBreak(m_ui.transportToolbar);
 	} else {
 		// Make it as the last time.
-		QTextIStream istr(&sDockables);
-		istr >> *this;
+		restoreState(aDockables);
 	}
+
 	// Try to restore old window positioning.
 	m_pOptions->loadWidgetGeometry(this);
+	m_pOptions->loadWidgetGeometry(m_pMixer);
+	m_pOptions->loadWidgetGeometry(m_pConnections);
 
 	// Load instrument definition files...
-	for (QStringList::Iterator iter = m_pOptions->instrumentFiles.begin();
-			iter != m_pOptions->instrumentFiles.end(); ++iter) {
-		m_pInstruments->load(*iter);
-	}
+	QStringListIterator iter(m_pOptions->instrumentFiles);
+	while (iter.hasNext())
+		m_pInstruments->load(iter.next());
 
 	// Primary startup stabilization...
 	updateRecentFilesMenu();
@@ -468,16 +636,14 @@ void qtractorMainForm::setOptions ( qtractorOptions *pOptions )
 	// Set default sample-rate converter quality...
 	qtractorAudioBuffer::setResampleType(m_pOptions->iResampleType);
 
-#ifdef HAVE_UNISTD_H
 	// Change to last known session dir...
 	if (!m_pOptions->sSessionDir.isEmpty()) {
-		if (::chdir(m_pOptions->sSessionDir) != 0) {
+		if (!QDir::setCurrent(m_pOptions->sSessionDir)) {
 			appendMessagesError(
 				tr("Could not set default session directory:\n\n"
 				"%1\n\nSorry.").arg(m_pOptions->sSessionDir));
 		}
 	}
-#endif
 
 	// Is any session pending to be loaded?
 	if (!m_pOptions->sSessionFile.isEmpty()) {
@@ -489,18 +655,37 @@ void qtractorMainForm::setOptions ( qtractorOptions *pOptions )
 		newSession();
 	}
 
+	// Final widget slot connections....
+	QObject::connect(m_pFiles->toggleViewAction(),
+		SIGNAL(triggered(bool)),
+		SLOT(stabilizeForm()));
+	QObject::connect(m_pMessages->toggleViewAction(),
+		SIGNAL(triggered(bool)),
+		SLOT(stabilizeForm()));
+	QObject::connect(m_pMixer->trackRack(),
+		SIGNAL(selectionChanged()),
+		SLOT(mixerSelectionChanged()));
+	QObject::connect(m_pFiles->audioListView(),
+		SIGNAL(activated(const QString&)),
+		SLOT(activateAudioFile(const QString&)));
+	QObject::connect(m_pFiles->midiListView(),
+		SIGNAL(activated(const QString&)),
+		SLOT(activateMidiFile(const QString&)));
+	QObject::connect(m_pFiles->audioListView(),
+		SIGNAL(contentsChanged()),
+		SLOT(contentsChanged()));
+	QObject::connect(m_pFiles->midiListView(),
+		SIGNAL(contentsChanged()),
+		SLOT(contentsChanged()));
+	QObject::connect(m_pTracks->trackList(),
+		SIGNAL(selectionChanged()),
+		SLOT(trackSelectionChanged()));
+
 	// Make it ready :-)
-	statusBar()->message(tr("Ready"), 3000);
+	statusBar()->showMessage(tr("Ready"), 3000);
 
 	// Register the first timer slot.
 	QTimer::singleShot(QTRACTOR_TIMER_MSECS, this, SLOT(timerSlot()));
-}
-
-
-// The main MDI workspace widget accessor.
-QWorkspace *qtractorMainForm::workspace (void)
-{
-	return m_pWorkspace;
 }
 
 
@@ -522,23 +707,22 @@ bool qtractorMainForm::queryClose (void)
 		// Try to save current positioning.
 		if (bQueryClose) {
 			// Save decorations state.
-			m_pOptions->bMenubar = MenuBar->isVisible();
+			m_pOptions->bMenubar = m_ui.MenuBar->isVisible();
 			m_pOptions->bStatusbar = statusBar()->isVisible();
-			m_pOptions->bFileToolbar = fileToolbar->isVisible();
-			m_pOptions->bEditToolbar = editToolbar->isVisible();
-			m_pOptions->bTrackToolbar = trackToolbar->isVisible();
-			m_pOptions->bViewToolbar = viewToolbar->isVisible();
-			m_pOptions->bTransportToolbar = transportToolbar->isVisible();
-			m_pOptions->bTimeToolbar = timeToolbar->isVisible();
-			m_pOptions->bFollowPlayhead = transportFollowAction->isOn();
+			m_pOptions->bFileToolbar = m_ui.fileToolbar->isVisible();
+			m_pOptions->bEditToolbar = m_ui.editToolbar->isVisible();
+			m_pOptions->bTrackToolbar = m_ui.trackToolbar->isVisible();
+			m_pOptions->bViewToolbar = m_ui.viewToolbar->isVisible();
+			m_pOptions->bTransportToolbar = m_ui.transportToolbar->isVisible();
+			m_pOptions->bTimeToolbar = m_ui.timeToolbar->isVisible();
+			m_pOptions->bFollowPlayhead = m_ui.transportFollowAction->isChecked();
 			// Save instrument definition file list...
 			m_pOptions->instrumentFiles = m_pInstruments->files();
 			// Save the dock windows state.
-			QString sDockables;
-			QTextOStream ostr(&sDockables);
-			ostr << *this;
-			m_pOptions->settings().writeEntry("/Layout/DockWindows", sDockables);
+			m_pOptions->settings().setValue("/Layout/DockWindows", saveState());
 			// And the main windows state.
+			m_pOptions->saveWidgetGeometry(m_pConnections);
+			m_pOptions->saveWidgetGeometry(m_pMixer);
 			m_pOptions->saveWidgetGeometry(this);
 		}
 	}
@@ -556,64 +740,44 @@ void qtractorMainForm::closeEvent ( QCloseEvent *pCloseEvent )
 }
 
 
-// Drag'n'drop file handler.
-bool qtractorMainForm::decodeDragFiles ( const QMimeSource *pEvent,
-	QStringList& files )
-{
-	bool bDecode = false;
-
-	if (QTextDrag::canDecode(pEvent)) {
-		QString sText;
-		bDecode = QTextDrag::decode(pEvent, sText);
-		if (bDecode) {
-			files = QStringList::split('\n', sText);
-			for (QStringList::Iterator iter = files.begin();
-					iter != files.end(); ++iter) {
-				*iter = QUrl((*iter).stripWhiteSpace()
-					.replace(QRegExp("^file:"), QString::null)).path();
-			}
-		}
-	}
-
-	return bDecode;
-}
-
-
 // Window drag-n-drop event handlers.
 void qtractorMainForm::dragEnterEvent ( QDragEnterEvent* pDragEnterEvent )
 {
-	QStringList files;
-	pDragEnterEvent->accept(decodeDragFiles(pDragEnterEvent, files));
+	// Accept external drags only...
+	if (pDragEnterEvent->source() == NULL
+		&& pDragEnterEvent->mimeData()->hasUrls()) {
+		pDragEnterEvent->accept();
+	} else {
+		pDragEnterEvent->ignore();
+	}
 }
 
 
 void qtractorMainForm::dropEvent ( QDropEvent* pDropEvent )
 {
-	QStringList files;
-
-	if (!decodeDragFiles(pDropEvent, files))
+	// Accept externally originated drops only...
+	if (pDropEvent->source())
 		return;
 
-	for (QStringList::Iterator iter = files.begin();
-			iter != files.end(); ++iter) {
-		const QString& sPath = *iter;
+	const QMimeData *pMimeData = pDropEvent->mimeData();
+	if (pMimeData->hasUrls()) {
+		QString sFilename = pMimeData->urls().first().toLocalFile();
 		// Close current session and try to load the new one...
-		if (closeSession())
-			loadSessionFile(sPath);
-		// Make it look responsive...:)
-		QApplication::eventLoop()->processEvents(QEventLoop::ExcludeUserInput);
+		if (!sFilename.isEmpty() && closeSession())
+			loadSessionFile(sFilename);
 	}
 }
 
 
 // Custome event handler.
-void qtractorMainForm::customEvent ( QCustomEvent *pCustomEvent )
+void qtractorMainForm::customEvent ( QEvent *pEvent )
 {
 #ifdef CONFIG_DEBUG_0
-	appendMessages("qtractorMainForm::customEvent(" + QString::number((int) pCustomEvent->type()) + ")");
+	appendMessages("qtractorMainForm::customEvent("
+		+ QString::number((int) pEvent->type()) + ")");
 #endif
 
-	switch (pCustomEvent->type()) {
+	switch (pEvent->type()) {
 	case QTRACTOR_PEAK_EVENT:
 		// A peak file has just been (re)created;
 		// try to postpone the event effect a little more...
@@ -637,7 +801,7 @@ void qtractorMainForm::customEvent ( QCustomEvent *pCustomEvent )
 	case QTRACTOR_BUFF_EVENT:
 		// Just in case we were in the middle of something...
 		if (m_pSession->isPlaying()) {
-			transportPlayAction->setOn(false);
+			m_ui.transportPlayAction->setChecked(false);
 			transportPlay(); // Toggle playing!
 		}
 		// Engine shutdown is on demand...
@@ -662,7 +826,7 @@ void qtractorMainForm::contextMenuEvent( QContextMenuEvent *pEvent )
 	stabilizeForm();
 
 	// Primordial edit menu should be available...
-	editMenu->exec(pEvent->globalPos());
+	m_ui.editMenu->exec(pEvent->globalPos());
 }
 
 
@@ -670,49 +834,49 @@ void qtractorMainForm::contextMenuEvent( QContextMenuEvent *pEvent )
 // qtractorMainForm -- Brainless public property accessors.
 
 // The global options settings property.
-qtractorOptions *qtractorMainForm::options (void)
+qtractorOptions *qtractorMainForm::options (void) const
 {
 	return m_pOptions;
 }
 
 // The global session reference.
-qtractorSession *qtractorMainForm::session (void)
+qtractorSession *qtractorMainForm::session (void) const
 {
 	return m_pSession;
 }
 
 // The global session tracks reference.
-qtractorTracks *qtractorMainForm::tracks (void)
+qtractorTracks *qtractorMainForm::tracks (void) const
 {
 	return m_pTracks;
 }
 
 // The global session file(lists) reference.
-qtractorFiles *qtractorMainForm::files (void)
+qtractorFiles *qtractorMainForm::files (void) const
 {
 	return m_pFiles;
 }
 
 // The global session connections reference.
-qtractorConnections *qtractorMainForm::connections (void)
+qtractorConnections *qtractorMainForm::connections (void) const
 {
 	return m_pConnections;
 }
 
 // The global session mixer reference.
-qtractorMixer *qtractorMainForm::mixer (void)
+qtractorMixer *qtractorMainForm::mixer (void) const
 {
 	return m_pMixer;
 }
 
 // The global undoable command list reference.
-qtractorCommandList *qtractorMainForm::commands (void)
+qtractorCommandList *qtractorMainForm::commands (void) const
 {
 	return m_pCommands;
 }
 
 // The global instruments repository.
-qtractorInstrumentList *qtractorMainForm::instruments (void)
+qtractorInstrumentList *qtractorMainForm::instruments (void) const
 {
 	return m_pInstruments;
 }
@@ -764,10 +928,10 @@ bool qtractorMainForm::openSession (void)
 
 	// Ask for the filename to open...
 	QString sFilename = QFileDialog::getOpenFileName(
-		m_pOptions->sSessionDir,                // Start here.
-		tr("Session files") + " (*.qtr)",       // Filter files.
-		this, 0,                                // Parent and name (none)
-		tr("Open Session") + " - " QTRACTOR_TITLE // Caption.
+		this,                                       // Parent.
+		tr("Open Session") + " - " QTRACTOR_TITLE,  // Caption.
+		m_pOptions->sSessionDir,                    // Start here.
+		tr("Session files") + " (*.qtr)"            // Filter files.
 	);
 
 	// Have we cancelled?
@@ -807,16 +971,16 @@ bool qtractorMainForm::saveSession ( bool bPrompt )
 		// If none is given, assume default directory.
 		// Prompt the guy...
 		sFilename = QFileDialog::getSaveFileName(
-			sFilename,                              // Start here.
-			tr("Session files") + " (*.qtr)",       // Filter files.
-			this, 0,                                // Parent and name (none)
-			tr("Save Session") + " - " QTRACTOR_TITLE // Caption.
+			this,                                       // Parent.
+			tr("Save Session") + " - " QTRACTOR_TITLE,  // Caption.
+			sFilename,                                  // Start here.
+			tr("Session files") + " (*.qtr)"            // Filter files.
 		);
 		// Have we cancelled it?
 		if (sFilename.isEmpty())
 			return false;
 		// Enforce .qtr extension...
-		if (QFileInfo(sFilename).extension().isEmpty())
+		if (QFileInfo(sFilename).suffix().isEmpty())
 			sFilename += ".qtr";
 		// Check if already exists...
 		if (sFilename != m_sFilename && QFileInfo(sFilename).exists()) {
@@ -905,10 +1069,11 @@ bool qtractorMainForm::closeSession (void)
 	if (bClose) {
 		// Just in case we were in the middle of something...
 		if (m_pSession->isPlaying()) {
-			transportPlayAction->setOn(false);
+			m_ui.transportPlayAction->setChecked(false);
 			transportPlay(); // Toggle playing!
 		}
 		// Reset all dependables to default.
+		m_pTracks->clear();
 		m_pCommands->clear();
 		m_pMixer->clear();
 		m_pConnections->clear();
@@ -916,16 +1081,8 @@ bool qtractorMainForm::closeSession (void)
 		// Close session engines.
 		m_pSession->close();
 		m_pSession->clear();
-		// Surely this will be deleted next...
-		m_pTracks = NULL;
 		// Reset playhead.
 		m_iPlayHead = 0;
-		// Remove all channel strips from sight...
-		m_pWorkspace->setUpdatesEnabled(false);
-		QWidgetList wlist = m_pWorkspace->windowList();
-		for (int i = 0; i < (int) wlist.count(); i++)
-			delete wlist.at(i);
-		m_pWorkspace->setUpdatesEnabled(true);
 		// We're now clean, for sure.
 		m_iDirtyCount = 0;
 		appendMessages(tr("Session closed."));
@@ -944,7 +1101,14 @@ bool qtractorMainForm::loadSessionFile ( const QString& sFilename )
 
 	// Read the file.
 	QDomDocument doc("qtractorSession");
-	if (!qtractorSessionDocument(&doc, m_pSession, m_pFiles).load(sFilename)) {
+	bool bResult = qtractorSessionDocument(
+		&doc, m_pSession, m_pFiles).load(sFilename);
+	if (bResult) {
+		// We're not dirty anymore.
+		updateRecentFiles(sFilename);
+		m_iDirtyCount = 0;
+	} else {
+		// Something went wrong...
 		appendMessagesError(
 			tr("Session could not be loaded\n"
 			"from \"%1\".\n\n"
@@ -953,18 +1117,14 @@ bool qtractorMainForm::loadSessionFile ( const QString& sFilename )
 
 	// Save as default session directory.
 	if (m_pOptions)
-		m_pOptions->sSessionDir = QFileInfo(sFilename).dirPath(true);
-	// We're not dirty anymore.
-	m_iDirtyCount = 0;
+		m_pOptions->sSessionDir = QFileInfo(sFilename).absolutePath();
 	// Stabilize form...
 	m_sFilename = sFilename;
-	updateRecentFiles(sFilename);
 	appendMessages(tr("Open session: \"%1\".").arg(sessionName(m_sFilename)));
 
 	// Now we'll try to create (update) the whole GUI session.
 	updateSession();
-
-	return true;
+	return bResult;
 }
 
 
@@ -977,24 +1137,28 @@ bool qtractorMainForm::saveSessionFile ( const QString& sFilename )
 
 	// Have we any errors?
 	QDomDocument doc("qtractorSession");
-	if (!qtractorSessionDocument(&doc, m_pSession, m_pFiles).save(sFilename)) {
+	bool bResult = qtractorSessionDocument(
+		&doc, m_pSession, m_pFiles).save(sFilename);
+	if (bResult) {
+		// We're not dirty anymore.
+		updateRecentFiles(sFilename);
+		m_iDirtyCount = 0;
+	} else {
+		// Something went wrong...
 		appendMessagesError(
-			tr("Some settings could not be saved\n"
-			"to \"%1\" session file.\n\n"
+			tr("Session could not be saved\n"
+			"to \"%1\".\n\n"
 			"Sorry.").arg(sFilename));
 	}
 
 	// Save as default session directory.
 	if (m_pOptions)
-		m_pOptions->sSessionDir = QFileInfo(sFilename).dirPath(true);
-	// We're not dirty anymore.
-	m_iDirtyCount = 0;
+		m_pOptions->sSessionDir = QFileInfo(sFilename).absolutePath();
 	// Stabilize form...
 	m_sFilename = sFilename;
-	updateRecentFiles(sFilename);
 	appendMessages(tr("Save session: \"%1\".").arg(sessionName(m_sFilename)));
 	stabilizeForm();
-	return true;
+	return bResult;
 }
 
 
@@ -1018,12 +1182,18 @@ void qtractorMainForm::fileOpen (void)
 
 
 // Open a recent file session.
-void qtractorMainForm::fileOpenRecent ( int iIndex )
+void qtractorMainForm::fileOpenRecent (void)
 {
-	// Check if we can safely close the current session...
-	if (m_pOptions && closeSession()) {
-		QString sFilename = m_pOptions->recentFiles[iIndex];
-		loadSessionFile(sFilename);
+	// Retrive filename index from action data...
+	QAction *pAction = qobject_cast<QAction *> (sender());
+	if (pAction && m_pOptions) {
+		int iIndex = pAction->data().toInt();
+		if (iIndex >= 0 && iIndex < m_pOptions->recentFiles.count()) {
+			QString sFilename = m_pOptions->recentFiles[iIndex];
+			// Check if we can safely close the current session...
+			if (!sFilename.isEmpty() && closeSession())
+				loadSessionFile(sFilename);
+		}
 	}
 }
 
@@ -1337,9 +1507,9 @@ void qtractorMainForm::trackImportMidi (void)
 void qtractorMainForm::viewMenubar ( bool bOn )
 {
 	if (bOn)
-		MenuBar->show();
+		m_ui.MenuBar->show();
 	else
-		MenuBar->hide();
+		m_ui.MenuBar->hide();
 }
 
 
@@ -1357,9 +1527,9 @@ void qtractorMainForm::viewStatusbar ( bool bOn )
 void qtractorMainForm::viewToolbarFile ( bool bOn )
 {
 	if (bOn) {
-		fileToolbar->show();
+		m_ui.fileToolbar->show();
 	} else {
-		fileToolbar->hide();
+		m_ui.fileToolbar->hide();
 	}
 }
 
@@ -1368,9 +1538,9 @@ void qtractorMainForm::viewToolbarFile ( bool bOn )
 void qtractorMainForm::viewToolbarEdit ( bool bOn )
 {
 	if (bOn) {
-		editToolbar->show();
+		m_ui.editToolbar->show();
 	} else {
-		editToolbar->hide();
+		m_ui.editToolbar->hide();
 	}
 }
 
@@ -1379,9 +1549,9 @@ void qtractorMainForm::viewToolbarEdit ( bool bOn )
 void qtractorMainForm::viewToolbarTrack ( bool bOn )
 {
 	if (bOn) {
-		trackToolbar->show();
+		m_ui.trackToolbar->show();
 	} else {
-		trackToolbar->hide();
+		m_ui.trackToolbar->hide();
 	}
 }
 
@@ -1390,9 +1560,9 @@ void qtractorMainForm::viewToolbarTrack ( bool bOn )
 void qtractorMainForm::viewToolbarView ( bool bOn )
 {
 	if (bOn) {
-		viewToolbar->show();
+		m_ui.viewToolbar->show();
 	} else {
-		viewToolbar->hide();
+		m_ui.viewToolbar->hide();
 	}
 }
 
@@ -1401,9 +1571,9 @@ void qtractorMainForm::viewToolbarView ( bool bOn )
 void qtractorMainForm::viewToolbarTransport ( bool bOn )
 {
 	if (bOn) {
-		transportToolbar->show();
+		m_ui.transportToolbar->show();
 	} else {
-		transportToolbar->hide();
+		m_ui.transportToolbar->hide();
 	}
 }
 
@@ -1412,9 +1582,9 @@ void qtractorMainForm::viewToolbarTransport ( bool bOn )
 void qtractorMainForm::viewToolbarTime ( bool bOn )
 {
 	if (bOn) {
-		timeToolbar->show();
+		m_ui.timeToolbar->show();
 	} else {
-		timeToolbar->hide();
+		m_ui.timeToolbar->hide();
 	}
 }
 
@@ -1444,6 +1614,9 @@ void qtractorMainForm::viewMessages ( bool bOn )
 // Show/hide the mixer window.
 void qtractorMainForm::viewMixer ( bool bOn )
 {
+	if (m_pOptions)
+		m_pOptions->saveWidgetGeometry(m_pMixer);
+
 	if (bOn) {
 		m_pMixer->show();
 	} else {
@@ -1455,6 +1628,9 @@ void qtractorMainForm::viewMixer ( bool bOn )
 // Show/hide the connections window.
 void qtractorMainForm::viewConnections ( bool bOn )
 {
+	if (m_pOptions)
+		m_pOptions->saveWidgetGeometry(m_pConnections);
+
 	if (bOn) {
 		m_pConnections->show();
 	} else {
@@ -1490,9 +1666,7 @@ void qtractorMainForm::viewRefresh (void)
 void qtractorMainForm::viewInstruments (void)
 {
 	// Just set and show the instruments dialog...
-	qtractorInstrumentForm instrumentForm(this);
-	instrumentForm.setMainForm(this);
-	instrumentForm.exec();
+	qtractorInstrumentForm(this).exec();
 }
 
 
@@ -1714,7 +1888,7 @@ void qtractorMainForm::transportPlay (void)
 
 	// And shutdown recording anyway...
 	if (!bPlaying && m_pSession->isRecording()) {
-		transportRecordAction->setOn(false);
+		m_ui.transportRecordAction->setChecked(false);
 		transportRecord(); // Toggle recording!
 	}
 
@@ -1761,7 +1935,7 @@ void qtractorMainForm::transportRecord (void)
 	}	// take a chance to set a proper session name...
 	// It must be a session name...
 	else if (m_pSession->sessionName().isEmpty() && !editSession()) {
-		transportRecordAction->setOn(false);
+		m_ui.transportRecordAction->setChecked(false);
 		stabilizeForm();
 		return;
 	}
@@ -1841,13 +2015,13 @@ void qtractorMainForm::updateActionCommand ( QAction *pAction,
 	qtractorCommand *pCommand )
 {
 	const QRegExp rxBrackets("[\\s]+\\([^\\)]+\\)$");
-	pAction->setMenuText(pAction->menuText().remove(rxBrackets));
+	pAction->setText(pAction->text().remove(rxBrackets));
 	pAction->setStatusTip(pAction->statusTip().remove(rxBrackets));
 	pAction->setToolTip(pAction->toolTip().remove(rxBrackets));
 	if (pCommand) {
 		const QString sCommand  = QString(pCommand->name()).remove(rxBrackets);
 		const QString sBrackets = QString(" (%1)").arg(sCommand);
-		pAction->setMenuText(pAction->menuText() + sBrackets);
+		pAction->setText(pAction->text() + sBrackets);
 		pAction->setStatusTip(pAction->statusTip() + sBrackets);
 		pAction->setToolTip(pAction->toolTip() + sBrackets);
 	}
@@ -1865,117 +2039,114 @@ void qtractorMainForm::stabilizeForm (void)
 	QString sSessionName = sessionName(m_sFilename);
 	if (m_iDirtyCount > 0)
 		sSessionName += ' ' + tr("[modified]");
-	setCaption(sSessionName + " - " QTRACTOR_TITLE);
+	setWindowTitle(sSessionName + " - " QTRACTOR_TITLE);
 
 	// Update the main menu state...
-	fileSaveAction->setEnabled(m_iDirtyCount > 0);
+	m_ui.fileSaveAction->setEnabled(m_iDirtyCount > 0);
 
 	// Update edit menu state...
-	updateActionCommand(editUndoAction, m_pCommands->lastCommand());
-	updateActionCommand(editRedoAction, m_pCommands->nextCommand());
+	updateActionCommand(m_ui.editUndoAction, m_pCommands->lastCommand());
+	updateActionCommand(m_ui.editRedoAction, m_pCommands->nextCommand());
 
 	unsigned long iSessionLength = m_pSession->sessionLength();
 	bool bEnabled = (m_pTracks && m_pTracks->currentTrack() != NULL);
 	bool bSelected = (m_pTracks && m_pTracks->isClipSelected());
 	bool bSelectable = (iSessionLength > 0);
 
-	editCutAction->setEnabled(bSelected);
-	editCopyAction->setEnabled(bSelected);
-	editPasteAction->setEnabled(m_pTracks && !m_pTracks->isClipboardEmpty());
-	editDeleteAction->setEnabled(bSelected);
+	m_ui.editCutAction->setEnabled(bSelected);
+	m_ui.editCopyAction->setEnabled(bSelected);
+	m_ui.editPasteAction->setEnabled(m_pTracks && !m_pTracks->isClipboardEmpty());
+	m_ui.editDeleteAction->setEnabled(bSelected);
 
-	editSelectAllAction->setEnabled(bSelectable);
-	editSelectTrackAction->setEnabled(bEnabled);
+	m_ui.editSelectAllAction->setEnabled(bSelectable);
+	m_ui.editSelectTrackAction->setEnabled(bEnabled);
 	if (bSelectable)
 		bSelectable  = (m_pSession->editHead() < m_pSession->editTail());
-	editSelectRangeAction->setEnabled(bSelectable);
-	editSelectNoneAction->setEnabled(bSelected);
+	m_ui.editSelectRangeAction->setEnabled(bSelectable);
+	m_ui.editSelectNoneAction->setEnabled(bSelected);
 
 	// Update track menu state...
-	trackRemoveAction->setEnabled(bEnabled);
-	trackPropertiesAction->setEnabled(bEnabled);
-	trackImportAudioAction->setEnabled(m_pTracks != NULL);
-	trackImportMidiAction->setEnabled(m_pTracks != NULL);
+	m_ui.trackRemoveAction->setEnabled(bEnabled);
+	m_ui.trackPropertiesAction->setEnabled(bEnabled);
+	m_ui.trackImportAudioAction->setEnabled(m_pTracks != NULL);
+	m_ui.trackImportMidiAction->setEnabled(m_pTracks != NULL);
 
 	// Update view menu state...
-	viewFilesAction->setOn(m_pFiles && m_pFiles->isVisible());
-	viewMessagesAction->setOn(m_pMessages && m_pMessages->isVisible());
-	viewConnectionsAction->setOn(m_pConnections && m_pConnections->isVisible());
-	viewMixerAction->setOn(m_pMixer && m_pMixer->isVisible());
+	m_ui.viewFilesAction->setChecked(m_pFiles && m_pFiles->isVisible());
+	m_ui.viewMessagesAction->setChecked(m_pMessages && m_pMessages->isVisible());
+	m_ui.viewConnectionsAction->setChecked(m_pConnections && m_pConnections->isVisible());
+	m_ui.viewMixerAction->setChecked(m_pMixer && m_pMixer->isVisible());
 
 	// Recent files menu.
-	m_pRecentFilesMenu->setEnabled(m_pOptions->recentFiles.count() > 0);
+	m_ui.fileOpenRecentMenu->setEnabled(m_pOptions->recentFiles.count() > 0);
 
 	// Always make the latest message visible.
 	if (m_pMessages)
-		m_pMessages->scrollToBottom();
+		m_pMessages->flushStdoutBuffer();
 
 	// Session status...
 	updateTransportTime(m_iPlayHead);
 
 	if (m_pTracks && m_pTracks->currentTrack()) {
-		m_statusItems[QTRACTOR_STATUS_NAME]->setText(
-			m_pTracks->currentTrack()->trackName().simplifyWhiteSpace());
+		m_statusItems[StatusName]->setText(
+			m_pTracks->currentTrack()->trackName().simplified());
 	} else {
-		m_statusItems[QTRACTOR_STATUS_NAME]->clear();
+		m_statusItems[StatusName]->clear();
 	}
 
 	if (m_iDirtyCount > 0)
-		m_statusItems[QTRACTOR_STATUS_MOD]->setText(tr("MOD"));
+		m_statusItems[StatusMod]->setText(tr("MOD"));
 	else
-		m_statusItems[QTRACTOR_STATUS_MOD]->clear();
+		m_statusItems[StatusMod]->clear();
 
 	if (m_pSession->recordTracks() > 0)
-		m_statusItems[QTRACTOR_STATUS_REC]->setText(tr("REC"));
+		m_statusItems[StatusRec]->setText(tr("REC"));
 	else
-		m_statusItems[QTRACTOR_STATUS_REC]->clear();
+		m_statusItems[StatusRec]->clear();
 
 	if (m_pSession->muteTracks() > 0)
-		m_statusItems[QTRACTOR_STATUS_MUTE]->setText(tr("MUTE"));
+		m_statusItems[StatusMute]->setText(tr("MUTE"));
 	else
-		m_statusItems[QTRACTOR_STATUS_MUTE]->clear();
+		m_statusItems[StatusMute]->clear();
 
 	if (m_pSession->soloTracks() > 0)
-		m_statusItems[QTRACTOR_STATUS_SOLO]->setText(tr("SOLO"));
+		m_statusItems[StatusSolo]->setText(tr("SOLO"));
 	else
-		m_statusItems[QTRACTOR_STATUS_SOLO]->clear();
+		m_statusItems[StatusSolo]->clear();
 
 	if (m_pSession->isLooping())
-		m_statusItems[QTRACTOR_STATUS_LOOP]->setText(tr("LOOP"));
+		m_statusItems[StatusLoop]->setText(tr("LOOP"));
 	else
-		m_statusItems[QTRACTOR_STATUS_LOOP]->clear();
+		m_statusItems[StatusLoop]->clear();
 
-	m_statusItems[QTRACTOR_STATUS_TIME]->setText(
+	m_statusItems[StatusTime]->setText(
 		m_pSession->timeFromFrame(iSessionLength));
 
-	m_statusItems[QTRACTOR_STATUS_RATE]->setText(
+	m_statusItems[StatusRate]->setText(
 		tr("%1 Hz").arg(m_pSession->sampleRate()));
 
-	const QColor& backColor = statusBar()->paletteBackgroundColor();
-	m_statusItems[QTRACTOR_STATUS_REC]->setPaletteBackgroundColor(
+	m_statusItems[StatusRec]->setPalette(*m_paletteItems[
 		m_pSession->isRecording() && m_pSession->isPlaying() &&
-		m_pSession->recordTracks() > 0 ? Qt::red : backColor);
-	m_statusItems[QTRACTOR_STATUS_MUTE]->setPaletteBackgroundColor(
-		m_pSession->muteTracks() > 0 ? Qt::yellow : backColor);
-	m_statusItems[QTRACTOR_STATUS_SOLO]->setPaletteBackgroundColor(
-		m_pSession->soloTracks() > 0 ? Qt::cyan : backColor);
-	m_statusItems[QTRACTOR_STATUS_LOOP]->setPaletteBackgroundColor(
-		m_pSession->isLooping() ? Qt::green : backColor);
+		m_pSession->recordTracks() > 0 ? PaletteRed : PaletteNone]);
+	m_statusItems[StatusMute]->setPalette(*m_paletteItems[
+		m_pSession->muteTracks() > 0 ? PaletteYellow : PaletteNone]);
+	m_statusItems[StatusSolo]->setPalette(*m_paletteItems[
+		m_pSession->soloTracks() > 0 ? PaletteCyan : PaletteNone]);
+	m_statusItems[StatusLoop]->setPalette(*m_paletteItems[
+		m_pSession->isLooping() ? PaletteGreen : PaletteNone]);
 
 	// Transport stuff...
 	bEnabled = (!m_pSession->isPlaying() || !m_pSession->isRecording());
-	m_pTransportTime->setPaletteForegroundColor(
-		m_pSession->isActivated() ? Qt::green : Qt::darkGreen);
-	transportRewindAction->setEnabled(bEnabled && m_iPlayHead > 0);
-	transportBackwardAction->setEnabled(bEnabled && m_iPlayHead > 0);
-	transportForwardAction->setEnabled(bEnabled);
-	transportFastForwardAction->setEnabled(bEnabled
+	m_ui.transportRewindAction->setEnabled(bEnabled && m_iPlayHead > 0);
+	m_ui.transportBackwardAction->setEnabled(bEnabled && m_iPlayHead > 0);
+	m_ui.transportForwardAction->setEnabled(bEnabled);
+	m_ui.transportFastForwardAction->setEnabled(bEnabled
 		&& (m_iPlayHead < iSessionLength
 			|| m_iPlayHead < m_pSession->editHead()
 			|| m_iPlayHead < m_pSession->editTail()));
-	transportLoopAction->setEnabled(bEnabled
+	m_ui.transportLoopAction->setEnabled(bEnabled
 		&& (m_pSession->isLooping() || bSelectable));
-	transportRecordAction->setEnabled(m_pSession->recordTracks() > 0);
+	m_ui.transportRecordAction->setEnabled(m_pSession->recordTracks() > 0);
 }
 
 
@@ -2014,20 +2185,19 @@ bool qtractorMainForm::checkRestartSession (void)
 		// Bail out if can't start it...
 		if (!startSession()) {
 			// HACK: Auto-repeatable transport toolbar controls needs be up...
-			QObjectList *pObjList = transportToolbar->queryList(
-				"QToolButton", "^transport(Backward|Forward)Action");
-			if (pObjList) {	// Iterate over the intended transport tool-buttons...	
-				QObjectListIt it(*pObjList);
-				for (QObject *pObj; (pObj = it.current()) != NULL; ++it) {
-					QToolButton *pToolButton = static_cast<QToolButton *> (pObj);
-					if (pToolButton)
-						pToolButton->setDown(false);
-				}
-				delete pObjList;
+			QList<QToolButton *> list
+				= m_ui.transportToolbar->findChildren<QToolButton *> (
+					QRegExp("^transport(Backward|Forward)Action"));
+			// Iterate over the intended transport tool-buttons...	
+			QListIterator<QToolButton *> it(list);
+			while (it.hasNext()) {
+				QToolButton *pToolButton = it.next();
+				if (pToolButton)
+					pToolButton->setDown(false);
 			}
 			// Can go on with no-business...
-			transportRecordAction->setOn(false);
-			transportPlayAction->setOn(false);
+			m_ui.transportRecordAction->setChecked(false);
+			m_ui.transportPlayAction->setChecked(false);
 			stabilizeForm();
 			return false;
 		}
@@ -2047,37 +2217,12 @@ void qtractorMainForm::updateSession (void)
 #endif
 
 	// Initialize toolbar widgets...
-	m_pTempoSpinBox->setValueFloat(m_pSession->tempo());
-	m_pSnapPerBeatComboBox->setCurrentItem(
+	m_pTempoSpinBox->setValue(m_pSession->tempo());
+	m_pSnapPerBeatComboBox->setCurrentIndex(
 		qtractorSession::indexFromSnap(m_pSession->snapPerBeat()));
 
-	// Time to create the main session track list view...
-	if (m_pTracks == NULL) {
-		// Create the main tracks widget...
-		m_pTracks = new qtractorTracks(workspace());
-		// Track view selection mode...
-		qtractorTrackView::SelectMode selMode = qtractorTrackView::SelectClip;
-		if (editSelectModeRangeAction->isOn())
-			selMode = qtractorTrackView::SelectRange;
-		else if (editSelectModeRectAction->isOn())
-			selMode = qtractorTrackView::SelectRect;
-		m_pTracks->trackView()->setSelectMode(selMode);
-		// Make basic tracks widget connections....
-		QObject::connect(m_pTracks, SIGNAL(closeNotifySignal()),
-			this, SLOT(tracksClosed()));
-		QObject::connect(m_pTracks->trackList(),
-			SIGNAL(doubleClicked(QListViewItem*, const QPoint&, int)),
-			this, SLOT(trackProperties()));
-		QObject::connect(m_pTracks->trackList(), SIGNAL(selectionChanged()),
-			this, SLOT(trackSelectionChanged()));
-		// Always show tracks window maximized!
-		m_pTracks->showMaximized();
-		// Log this rather important event...
-		appendMessages(tr("Tracks open."));
-	}
-
 	// Remake loop state...
-	transportLoopAction->setOn(m_pSession->isLooping());
+	m_ui.transportLoopAction->setChecked(m_pSession->isLooping());
 
 	//  Actually (re)start session engines...
 	if (startSession()) {
@@ -2088,12 +2233,17 @@ void qtractorMainForm::updateSession (void)
 		// Get on with the special ALSA sequencer notifier...
 		if (m_pSession->midiEngine()->alsaNotifier()) {
 			QObject::connect(m_pSession->midiEngine()->alsaNotifier(),
-				SIGNAL(activated(int)), this, SLOT(alsaNotify()));			
+				SIGNAL(activated(int)),
+				SLOT(alsaNotify()));			
 		}
 	}
 
 	// Update the session views...
 	viewRefresh();
+
+	// Ah, make it stand right.
+	if (m_pTracks)
+		m_pTracks->trackView()->setFocus();
 }
 
 
@@ -2104,14 +2254,11 @@ void qtractorMainForm::updateRecentFiles ( const QString& sFilename )
 		return;
 
 	// Remove from list if already there (avoid duplicates)
-	QStringList::Iterator iter = m_pOptions->recentFiles.find(sFilename);
-	if (iter != m_pOptions->recentFiles.end())
-		m_pOptions->recentFiles.remove(iter);
+	int iIndex = m_pOptions->recentFiles.indexOf(sFilename);
+	if (iIndex >= 0)
+		m_pOptions->recentFiles.removeAt(iIndex);
 	// Put it to front...
 	m_pOptions->recentFiles.push_front(sFilename);
-
-	// May update the menu.
-	updateRecentFilesMenu();
 }
 
 
@@ -2128,14 +2275,15 @@ void qtractorMainForm::updateRecentFilesMenu (void)
 		iRecentFiles--;
 	}
 
-	// rebuild the recent files menu...
-	m_pRecentFilesMenu->clear();
+	// Rebuild the recent files menu...
+	m_ui.fileOpenRecentMenu->clear();
 	for (int i = 0; i < iRecentFiles; i++) {
 		const QString& sFilename = m_pOptions->recentFiles[i];
 		if (QFileInfo(sFilename).exists()) {
-			m_pRecentFilesMenu->insertItem(QString("&%1 %2")
-				.arg(i + 1).arg(sessionName(sFilename)),
-				this, SLOT(fileOpenRecent(int)), 0, i);
+			QAction *pAction = m_ui.fileOpenRecentMenu->addAction(
+				QString("&%1 %2").arg(i + 1).arg(sessionName(sFilename)),
+				this, SLOT(fileOpenRecent()));
+			pAction->setData(i);
 		}
 	}
 }
@@ -2163,7 +2311,7 @@ void qtractorMainForm::appendMessages( const QString& s )
 	if (m_pMessages)
 		m_pMessages->appendMessages(s);
 
-	statusBar()->message(s, 3000);
+	statusBar()->showMessage(s, 3000);
 }
 
 void qtractorMainForm::appendMessagesColor( const QString& s, const QString& c )
@@ -2171,7 +2319,7 @@ void qtractorMainForm::appendMessagesColor( const QString& s, const QString& c )
 	if (m_pMessages)
 		m_pMessages->appendMessagesColor(s, c);
 
-	statusBar()->message(s, 3000);
+	statusBar()->showMessage(s, 3000);
 }
 
 void qtractorMainForm::appendMessagesText( const QString& s )
@@ -2185,7 +2333,7 @@ void qtractorMainForm::appendMessagesError( const QString& s )
 	if (m_pMessages)
 		m_pMessages->show();
 
-	appendMessagesColor(s.simplifyWhiteSpace(), "#ff0000");
+	appendMessagesColor(s.simplified(), "#ff0000");
 
 	QMessageBox::critical(this,
 		tr("Error") + " - " QTRACTOR_TITLE, s, tr("Cancel"));
@@ -2243,7 +2391,7 @@ void qtractorMainForm::timerSlot (void)
 	if (iPlayHead != m_iPlayHead) {
 		if (m_pTracks && m_pTracks->trackView()) {
 			m_pTracks->trackView()->setPlayHead(iPlayHead,
-				transportFollowAction->isOn());
+				m_ui.transportFollowAction->isChecked());
 		}
 		m_iPlayHead = iPlayHead;
 	}
@@ -2276,7 +2424,7 @@ void qtractorMainForm::timerSlot (void)
 			(state == JackTransportRolling && !bPlaying)) {
 			if (!bPlaying)
 				m_pSession->seek(pos.frame, true);
-			transportPlayAction->setOn(!bPlaying);
+			m_ui.transportPlayAction->setChecked(!bPlaying);
 			transportPlay();
 			if (bPlaying)
 				m_pSession->seek(pos.frame, true);
@@ -2475,12 +2623,9 @@ void qtractorMainForm::mixerSelectionChanged (void)
 	if (m_pTracks && m_pMixer) {
 		qtractorMixerStrip *pStrip = m_pMixer->trackRack()->selectedStrip();
 		if (pStrip && pStrip->track()) {
-			qtractorTrackListItem *pTrackItem
-				= m_pTracks->trackList()->trackItem(pStrip->track());
-			if (pTrackItem) {
-				m_pTracks->trackList()->ensureItemVisible(pTrackItem);
-				m_pTracks->trackList()->setSelected(pTrackItem, true);
-			}
+			int iTrack = m_pTracks->trackList()->trackRow(pStrip->track());
+			if (iTrack >= 0)
+				m_pTracks->trackList()->selectTrack(iTrack);
 		}
 	}
 
@@ -2496,8 +2641,8 @@ void qtractorMainForm::contentsChanged (void)
 #endif
 
 	// Stabilize session toolbar widgets...
-	m_pTempoSpinBox->setValueFloat(m_pSession->tempo());
-	m_pSnapPerBeatComboBox->setCurrentItem(
+	m_pTempoSpinBox->setValue(m_pSession->tempo());
+	m_pSnapPerBeatComboBox->setCurrentIndex(
 		qtractorSession::indexFromSnap(m_pSession->snapPerBeat()));
 
 	m_iDirtyCount++;
@@ -2509,7 +2654,7 @@ void qtractorMainForm::contentsChanged (void)
 void qtractorMainForm::tempoChanged (void)
 {
 	// Avoid bogus changes...
-	float fTempo = m_pTempoSpinBox->valueFloat();
+	float fTempo = m_pTempoSpinBox->value();
 	if (::fabsf(m_pSession->tempo() - fTempo) < 0.01f)
 		return;
 
@@ -2556,4 +2701,4 @@ void qtractorMainForm::snapPerBeatChanged ( int iSnap )
 }
 
 
-// end of qtractorMainForm.ui.h
+// end of qtractorMainForm.cpp

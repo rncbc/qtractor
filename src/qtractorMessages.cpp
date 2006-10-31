@@ -22,12 +22,15 @@
 #include "qtractorAbout.h"
 #include "qtractorMessages.h"
 
-#include <qsocketnotifier.h>
-#include <qstringlist.h>
-#include <qtextedit.h>
-#include <qdatetime.h>
-#include <qtooltip.h>
-#include <qpixmap.h>
+#include "qtractorMainForm.h"
+
+#include <QSocketNotifier>
+#include <QTextEdit>
+#include <QTextCursor>
+#include <QTextBlock>
+#include <QScrollBar>
+#include <QDateTime>
+#include <QIcon>
 
 #if !defined(WIN32)
 #include <unistd.h>
@@ -47,44 +50,44 @@
 //
 
 // Constructor.
-qtractorMessages::qtractorMessages ( QWidget *pParent, const char *pszName )
-	: QDockWindow(pParent, pszName)
+qtractorMessages::qtractorMessages ( QWidget *pParent )
+	: QDockWidget(pParent)
 {
+	// Surely a name is crucial (e.g.for storing geometry settings)
+	QDockWidget::setObjectName("qtractorMessages");
+
 	// Intialize stdout capture stuff.
 	m_pStdoutNotifier = NULL;
 	m_fdStdout[QTRACTOR_MESSAGES_FDREAD]  = QTRACTOR_MESSAGES_FDNIL;
 	m_fdStdout[QTRACTOR_MESSAGES_FDWRITE] = QTRACTOR_MESSAGES_FDNIL;
-
-	// Surely a name is crucial (e.g.for storing geometry settings)
-	if (pszName == 0)
-		QDockWindow::setName("qtractorMessages");
 
 	// Create local text view widget.
 	m_pTextView = new QTextEdit(this);
 //  QFont font(m_pTextView->font());
 //  font.setFamily("Fixed");
 //  m_pTextView->setFont(font);
-	m_pTextView->setWordWrap(QTextEdit::NoWrap);
+	m_pTextView->setLineWrapMode(QTextEdit::NoWrap);
 	m_pTextView->setReadOnly(true);
 	m_pTextView->setUndoRedoEnabled(false);
-	m_pTextView->setTextFormat(Qt::LogText);
+//	m_pTextView->setTextFormat(Qt::LogText);
 
 	// Initialize default message limit.
+	m_iMessagesLines = 0;
 	setMessagesLimit(QTRACTOR_MESSAGES_MAXLINES);
 
 	// Prepare the dockable window stuff.
-	QDockWindow::setWidget(m_pTextView);
-	QDockWindow::setOrientation(Qt::Horizontal);
-	QDockWindow::setCloseMode(QDockWindow::Always);
-	QDockWindow::setResizeEnabled(true);
+	QDockWidget::setWidget(m_pTextView);
+	QDockWidget::setFeatures(QDockWidget::AllDockWidgetFeatures);
+	QDockWidget::setAllowedAreas(
+		Qt::TopDockWidgetArea | Qt::BottomDockWidgetArea);
 	// Some specialties to this kind of dock window...
-	QDockWindow::setFixedExtentHeight(120);
+	QDockWidget::setMinimumHeight(120);
 
 	// Finally set the default caption and tooltip.
 	const QString& sCaption = tr("Messages");
-	QToolTip::add(this, sCaption);
-	QDockWindow::setCaption(sCaption);
-	QDockWindow::setIcon(QPixmap::fromMimeSource("viewMessages.png"));
+	QDockWidget::setWindowTitle(sCaption);
+	QDockWidget::setWindowIcon(QIcon(":/icons/viewMessages.png"));
+	QDockWidget::setToolTip(sCaption);
 }
 
 
@@ -96,6 +99,21 @@ qtractorMessages::~qtractorMessages (void)
 		delete m_pStdoutNotifier;
 
 	// No need to delete child widgets, Qt does it all for us.
+}
+
+
+// Just about to notify main-window that we're closing.
+void qtractorMessages::closeEvent ( QCloseEvent * /*pCloseEvent*/ )
+{
+#ifdef CONFIG_DEBUG
+	fprintf(stderr, "qtractorMessages::closeEvent()\n");
+#endif
+
+	QDockWidget::hide();
+
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm)
+		pMainForm->stabilizeForm();
 }
 
 
@@ -118,13 +136,14 @@ void qtractorMessages::appendStdoutBuffer ( const QString& s )
 {
 	m_sStdoutBuffer.append(s);
 
-	int iLength = m_sStdoutBuffer.findRev('\n') + 1;
+	int iLength = m_sStdoutBuffer.lastIndexOf('\n') + 1;
 	if (iLength > 0) {
 		QString sTemp = m_sStdoutBuffer.left(iLength);
 		m_sStdoutBuffer.remove(0, iLength);
-		QStringList list = QStringList::split('\n', sTemp, true);
-		for (QStringList::Iterator iter = list.begin(); iter != list.end(); iter++)
-			appendMessagesText(*iter);
+		QStringList list = sTemp.split('\n');
+		QStringListIterator iter(list);
+		while (iter.hasNext())
+			appendMessagesText(iter.next());
 	}
 }
 
@@ -169,8 +188,11 @@ void qtractorMessages::setCaptureEnabled ( bool bCapture )
 	if (bCapture && m_pStdoutNotifier == NULL && ::pipe(m_fdStdout) == 0) {
 		::dup2(m_fdStdout[QTRACTOR_MESSAGES_FDWRITE], STDOUT_FILENO);
 		::dup2(m_fdStdout[QTRACTOR_MESSAGES_FDWRITE], STDERR_FILENO);
-		m_pStdoutNotifier = new QSocketNotifier(m_fdStdout[QTRACTOR_MESSAGES_FDREAD], QSocketNotifier::Read, this);
-		QObject::connect(m_pStdoutNotifier, SIGNAL(activated(int)), this, SLOT(stdoutNotify(int)));
+		m_pStdoutNotifier = new QSocketNotifier(
+			m_fdStdout[QTRACTOR_MESSAGES_FDREAD], QSocketNotifier::Read, this);
+		QObject::connect(m_pStdoutNotifier,
+			SIGNAL(activated(int)),
+			SLOT(stdoutNotify(int)));
 	}
 #endif
 }
@@ -197,8 +219,7 @@ int qtractorMessages::messagesLimit (void)
 void qtractorMessages::setMessagesLimit ( int iMessagesLimit )
 {
 	m_iMessagesLimit = iMessagesLimit;
-	m_iMessagesHigh  = iMessagesLimit + (iMessagesLimit / 3);
-	m_pTextView->setMaxLogLines(iMessagesLimit);
+	m_iMessagesHigh  = iMessagesLimit + (iMessagesLimit >> 2);
 }
 
 
@@ -210,20 +231,40 @@ void qtractorMessages::appendMessages ( const QString& s )
 
 void qtractorMessages::appendMessagesColor ( const QString& s, const QString &c )
 {
-	appendMessagesText("<font color=\"" + c + "\">" + QTime::currentTime().toString("hh:mm:ss.zzz") + " " + s + "</font>");
+	appendMessagesText("<font color=\"" + c + "\">"
+		+ QTime::currentTime().toString("hh:mm:ss.zzz")
+		+ ' ' + s + "</font>");
 }
 
 void qtractorMessages::appendMessagesText ( const QString& s )
 {
+    // Check for message line limit...
+    if (m_iMessagesLines > m_iMessagesHigh) {
+		m_pTextView->setUpdatesEnabled(false);
+		QTextCursor textCursor(m_pTextView->document()->begin());
+		while (m_iMessagesLines > m_iMessagesLimit) {
+			// Move cursor extending selection
+			// from start to next line-block...
+			textCursor.movePosition(
+				QTextCursor::NextBlock, QTextCursor::KeepAnchor);
+			m_iMessagesLines--;
+		}
+		// Remove the excessive line-blocks...
+		textCursor.removeSelectedText();
+		m_pTextView->setUpdatesEnabled(true);
+    }
+
+	// Count always as a new line out there...
 	m_pTextView->append(s);
+	m_iMessagesLines++;
 }
 
 
-// One time scroll to the most recent message.
-void qtractorMessages::scrollToBottom (void)
+// History reset.
+void qtractorMessages::clear (void)
 {
-	flushStdoutBuffer();
-	m_pTextView->scrollToBottom();
+	m_iMessagesLines = 0;
+	m_pTextView->clear();
 }
 
 
