@@ -247,8 +247,8 @@ void qtractorMixerStrip::initMixerStrip (void)
 //	QFrame::setSizePolicy(
 //		QSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding));
 
-	QFrame::setBackgroundRole(QPalette::Background);
-//	QFrame::setForegroundRole(QPalette::Foreground);
+	QFrame::setBackgroundRole(QPalette::Window);
+//	QFrame::setForegroundRole(QPalette::WindowText);
 	QFrame::setAutoFillBackground(true);
 
 	updateName();
@@ -398,13 +398,9 @@ void qtractorMixerStrip::setSelected ( bool bSelected )
 
 	QPalette pal;
 	if (m_bSelected) {
-		pal.setColor(QPalette::Background, pal.midlight().color().dark(150));
-		pal.setColor(QPalette::Foreground, pal.midlight().color().light(150));
-	} else {
-		pal.setColor(QPalette::Background, pal.background().color());
-		pal.setColor(QPalette::Foreground, pal.foreground().color());
+		pal.setColor(QPalette::Window, pal.midlight().color().dark(150));
+		pal.setColor(QPalette::WindowText, pal.midlight().color().light(150));
 	}
-
 	QFrame::setPalette(pal);
 }
 

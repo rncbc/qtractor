@@ -96,8 +96,8 @@ public:
 				rgbBack = pal.highlight().color();
 				rgbFore = pal.highlightedText().color();
 			} else {
-				rgbBack = pal.background().color();
-				rgbFore = pal.foreground().color();
+				rgbBack = pal.window().color();
+				rgbFore = pal.windowText().color();
 			}
 			// Fill the background...
 			pPainter->fillRect(option.rect, rgbBack);
@@ -199,7 +199,7 @@ qtractorPluginListView::qtractorPluginListView ( QWidget *pParent )
 	QListWidget::setItemDelegate(new qtractorPluginListItemDelegate(this));
 	QListWidget::setSelectionMode(QAbstractItemView::SingleSelection);
 
-	QListWidget::viewport()->setBackgroundRole(QPalette::Background);
+	QListWidget::viewport()->setBackgroundRole(QPalette::Window);
 
 	QListWidget::setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 //	QListWidget::setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);

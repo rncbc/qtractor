@@ -76,6 +76,9 @@ public:
 	// Destructor.
 	~qtractorTrackView();
 
+	// Track view state reset.
+	void clear();
+
 	// Update track view content height.
 	void updateContentsHeight();
 	// Update track view content width.

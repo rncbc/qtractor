@@ -16,7 +16,14 @@ BuildRoot:	/var/tmp/%{name}-%{version}-buildroot
 Requires:	libsndfile >= 1.0.11
 
 %description
-A MIDI/Audio multi-track sequencer.
+Qtractor is a MIDI/Audio multi-track sequencer application
+written in C++ around the Qt4 toolkit using Qt Designer.
+
+The initial target platform will be Linux, where the Jack Audio
+Connection Kit (JACK) for audio, and the Advanced Linux Sound
+Architecture (ALSA) for MIDI, are the main infrastructures to
+evolve as a fairly-featured Linux Desktop Audio Workstation GUI,
+specially dedicated to the personal home-studio.
 
 %prep
 
@@ -43,5 +50,7 @@ if [ -d $RPM_BUILD_ROOT ]; then rm -rf $RPM_BUILD_ROOT; fi
 %{prefix}/share/icons/qtractor.png
 
 %changelog
+* Thu Nov 02 2006 Rui Nuno Capela <rncbc@users.sourceforge.net>
+- Filled up package description
 * Wed Aug 24 2004 Rui Nuno Capela <rncbc@users.sourceforge.net>
 - Created initial qtractor.spec

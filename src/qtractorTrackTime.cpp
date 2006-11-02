@@ -82,18 +82,18 @@ void qtractorTrackTime::updatePixmap ( int cx, int /* cy */)
 	int h = qtractorScrollView::height();
 
 	m_pixmap = QPixmap(w, h);
-	m_pixmap.fill(pal.background().color());
+	m_pixmap.fill(pal.window().color());
 
 	qtractorSession *pSession = m_pTracks->session();
 	if (pSession == NULL)
 		return;
 
-	QPainter p(&m_pixmap);
-	p.initFrom(this);
+	QPainter painter(&m_pixmap);
+	painter.initFrom(this);
 
 	// Draw the time scale...
 	//
-	const QFontMetrics& fm = p.fontMetrics();
+	const QFontMetrics& fm = painter.fontMetrics();
 	int x, y1, y2 = h - 1;
 
 	unsigned short iBeat = pSession->beatFromPixel(cx);
@@ -105,17 +105,17 @@ void qtractorTrackTime::updatePixmap ( int cx, int /* cy */)
 		bool bBeatIsBar = pSession->beatIsBar(iBeat);
 		if (bBeatIsBar) {
 			y1 = 0;
-			p.setPen(pal.text().color());
-			p.drawText(x + 2, y1 + fm.ascent(), QString::number(
+			painter.setPen(pal.windowText().color());
+			painter.drawText(x + 2, y1 + fm.ascent(), QString::number(
 				1 + (iBeat / pSession->beatsPerBar())));
 		} else {
 			y1 = (y2 >> 1);
 		}
 		if (bBeatIsBar || iPixelsPerBeat > 16) {
-			p.setPen(pal.mid().color());
-			p.drawLine(x, y1, x, y2);
-			p.setPen(pal.light().color());
-			p.drawLine(x + 1, y1, x + 1, y2);
+			painter.setPen(pal.mid().color());
+			painter.drawLine(x, y1, x, y2);
+			painter.setPen(pal.light().color());
+			painter.drawLine(x + 1, y1, x + 1, y2);
 		}
 		iFrameFromBeat += iFramesPerBeat;
 		x = pSession->pixelFromFrame(iFrameFromBeat) - cx;
@@ -127,15 +127,15 @@ void qtractorTrackTime::updatePixmap ( int cx, int /* cy */)
 		QPolygon polyg(3);
 		h -= 4;
 		int d = (h >> 2);
-		p.setPen(Qt::darkCyan);
-		p.setBrush(Qt::cyan);
+		painter.setPen(Qt::darkCyan);
+		painter.setBrush(Qt::cyan);
 		x = pSession->pixelFromFrame(pSession->loopStart()) - cx;
 		if (x >= 0 && x < w) {
 			polyg.putPoints(0, 3,
 				x + d, h - d,
 				x, h,
 				x, h - d);
-			p.drawPolygon(polyg);
+			painter.drawPolygon(polyg);
 		}
 		x = pSession->pixelFromFrame(pSession->loopEnd()) - cx;
 		if (x >= 0 && x < w) {
@@ -143,7 +143,7 @@ void qtractorTrackTime::updatePixmap ( int cx, int /* cy */)
 				x, h - d,
 				x, h,
 				x - d, h - d);
-			p.drawPolygon(polyg);
+			painter.drawPolygon(polyg);
 		}
 	}
 }

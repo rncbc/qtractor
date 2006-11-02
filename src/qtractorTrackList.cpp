@@ -136,7 +136,7 @@ public:
 			fg = option.palette.color(QPalette::Midlight).light(150);
 		} else {
 			bg = option.palette.color(QPalette::Window);
-			fg = option.palette.color(QPalette::Text);
+			fg = option.palette.color(QPalette::WindowText);
 		}
 		// Draw text and decorations if any...
 		const QRect& rect = option.rect;
@@ -145,7 +145,8 @@ public:
 		pPainter->save();
 		pPainter->fillRect(rect, bg);
 		pPainter->setPen(fg);
-		if (index.column() == qtractorTrackList::Number) {
+		if (index.column() == qtractorTrackList::Number ||
+			index.column() == qtractorTrackList::Channel) {
 			pPainter->drawText(rectText,
 				Qt::AlignHCenter | Qt::AlignTop,
 				QString::number(index.row() + 1));
@@ -286,8 +287,16 @@ int qtractorTrackListModel::columnCount ( const QModelIndex& /*parent*/ ) const
 QVariant qtractorTrackListModel::headerData (
 	int section, Qt::Orientation orient, int role ) const
 {
-	if (orient == Qt::Horizontal && role == Qt::DisplayRole)
-		return m_headerText.at(section);
+	if (orient == Qt::Horizontal) {
+		if (role == Qt::DisplayRole)
+			return m_headerText.at(section);
+		else
+		if (role == Qt::TextAlignmentRole
+			&& (section == qtractorTrackList::Number
+				|| section == qtractorTrackList::Channel)) {
+			return int(Qt::AlignHCenter | Qt::AlignVCenter);
+		}
+	}
 
 	return QVariant();
 }
@@ -508,6 +517,7 @@ qtractorTrackList::qtractorTrackList (
 	QTableView::setItemDelegate(new qtractorTrackItemDelegate(this));
 	QTableView::setSelectionMode(QAbstractItemView::SingleSelection);
 	QTableView::setSelectionBehavior(QAbstractItemView::SelectRows);
+	QTableView::setMouseTracking(true);
 	QTableView::verticalHeader()->hide();
 
 //	QTableView::setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
@@ -518,7 +528,7 @@ qtractorTrackList::qtractorTrackList (
 	pHeader->setDefaultAlignment(Qt::AlignLeft | Qt::AlignVCenter);
 //	pHeader->setStretchLastSection(true);
 	pHeader->setClickable(false);
-
+	
 	pHeader->resizeSection(Number, 26);
 	pHeader->resizeSection(Name, 120);
 	pHeader->resizeSection(Channel, 22);
@@ -655,21 +665,9 @@ void qtractorTrackList::mousePressEvent ( QMouseEvent *pMouseEvent )
 		// Look for the mouse hovering around some item boundary...
 		QModelIndex index = QTableView::indexAt(pMouseEvent->pos());
 		if (index.isValid()) {
-			m_posDrag  = pMouseEvent->pos();
-			QRect rect = QTableView::visualRect(index);
-			if (pMouseEvent->y() < rect.top() + 4) {
-				index = m_pListModel->index(index.row() - 1, index.column());
-				if (index.isValid()) {
-					m_iDragTrack = index.row();
-					m_iDragY     = QTableView::visualRect(index).top();
-					m_dragState  = DragResize;
-					QTableView::setCursor(QCursor(Qt::SplitVCursor));
-				}
-			} else if (pMouseEvent->y() > rect.bottom() - 4) {
-				m_iDragTrack = index.row();
-				m_iDragY     = rect.top();
+			m_posDrag = pMouseEvent->pos();
+			if (m_iDragTrack >= 0) {
 				m_dragState  = DragResize;
-				QTableView::setCursor(QCursor(Qt::SplitVCursor));
 			} else {
 				m_iDragTrack = index.row();
 				m_iDragY     = 0;
@@ -718,8 +716,36 @@ void qtractorTrackList::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 				m_pListModel->index(m_iDragTrack, 0)).topLeft();
 			moveRubberBand(m_posDrag);
 		}
+		break;
+	case DragNone: {
+		// Look for the mouse hovering around first column item boundary...
+		QModelIndex index = QTableView::indexAt(pMouseEvent->pos());
+		if (index.isValid() && index.column() == Number) {
+			m_posDrag  = pMouseEvent->pos();
+			QRect rect = QTableView::visualRect(index);
+			if (pMouseEvent->y() >= rect.top()
+				&& pMouseEvent->y() < rect.top() + 4) {
+				index = m_pListModel->index(index.row() - 1, index.column());
+				if (index.isValid()) {
+					if (m_iDragTrack < 0)
+						QTableView::setCursor(QCursor(Qt::SplitVCursor));
+					m_iDragTrack = index.row();
+					m_iDragY = QTableView::visualRect(index).top();
+				}
+			} else if (pMouseEvent->y() >= rect.bottom() - 4
+				&& pMouseEvent->y() < rect.bottom() + 4) {
+				if (m_iDragTrack < 0)
+					QTableView::setCursor(QCursor(Qt::SplitVCursor));
+				m_iDragTrack = index.row();
+				m_iDragY = rect.top();
+			} else if (m_iDragTrack >= 0) {
+				QTableView::unsetCursor();
+				m_iDragTrack = -1;
+				m_iDragY = 0;
+			}
+		}
 		// Fall thru...
-	case DragNone:
+	}
 	default:
 		break;
 	}
@@ -815,7 +841,7 @@ void qtractorTrackList::resetDragState (void)
 		m_pRubberBand->hide();
 
 	// Should fallback mouse cursor...
-	if (m_dragState != DragNone)
+	if (m_dragState != DragNone || m_iDragTrack >= 0)
 		QTableView::unsetCursor();
 
 	// Not dragging anymore.

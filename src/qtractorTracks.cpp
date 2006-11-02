@@ -793,6 +793,9 @@ void qtractorTracks::contentsChangeNotify (void)
 void qtractorTracks::clear(void)
 {
 	m_pTrackList->clear();
+	m_pTrackView->clear();
+
+	updateContents(true);
 }
 
 

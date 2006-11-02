@@ -202,8 +202,8 @@ qtractorMainForm::qtractorMainForm (
 	m_pTransportTime->setFrameShape(QFrame::Panel);
 	m_pTransportTime->setFrameShadow(QFrame::Sunken);
 	QPalette pal;
-	pal.setColor(QPalette::Background, Qt::black);
-	pal.setColor(QPalette::Foreground, Qt::green);
+	pal.setColor(QPalette::Window, Qt::black);
+	pal.setColor(QPalette::WindowText, Qt::green);
 	m_pTransportTime->setPalette(pal);
 	m_pTransportTime->setAutoFillBackground(true);
 	m_pTransportTime->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
@@ -246,19 +246,19 @@ qtractorMainForm::qtractorMainForm (
 	m_paletteItems[PaletteNone] = pPalette;
 
 	pPalette = new QPalette(statusBar()->palette());
-	pPalette->setColor(QPalette::Background, Qt::red);
+	pPalette->setColor(QPalette::Window, Qt::red);
 	m_paletteItems[PaletteRed] = pPalette;
 
 	pPalette = new QPalette(statusBar()->palette());
-	pPalette->setColor(QPalette::Background, Qt::yellow);
+	pPalette->setColor(QPalette::Window, Qt::yellow);
 	m_paletteItems[PaletteYellow] = pPalette;
 
 	pPalette = new QPalette(statusBar()->palette());
-	pPalette->setColor(QPalette::Background, Qt::cyan);
+	pPalette->setColor(QPalette::Window, Qt::cyan);
 	m_paletteItems[PaletteCyan] = pPalette;
 
 	pPalette = new QPalette(statusBar()->palette());
-	pPalette->setColor(QPalette::Background, Qt::green);
+	pPalette->setColor(QPalette::Window, Qt::green);
 	m_paletteItems[PaletteGreen] = pPalette;
 
 	// Track status.
@@ -1072,15 +1072,15 @@ bool qtractorMainForm::closeSession (void)
 			m_ui.transportPlayAction->setChecked(false);
 			transportPlay(); // Toggle playing!
 		}
+		// Close session engines.
+		m_pSession->close();
+		m_pSession->clear();
 		// Reset all dependables to default.
 		m_pTracks->clear();
 		m_pCommands->clear();
 		m_pMixer->clear();
 		m_pConnections->clear();
 		m_pFiles->clear();
-		// Close session engines.
-		m_pSession->close();
-		m_pSession->clear();
 		// Reset playhead.
 		m_iPlayHead = 0;
 		// We're now clean, for sure.
@@ -2389,7 +2389,7 @@ void qtractorMainForm::timerSlot (void)
 	// Playhead and transport status...
 	unsigned long iPlayHead = m_pSession->playHead();
 	if (iPlayHead != m_iPlayHead) {
-		if (m_pTracks && m_pTracks->trackView()) {
+		if (m_pTracks) {
 			m_pTracks->trackView()->setPlayHead(iPlayHead,
 				m_ui.transportFollowAction->isChecked());
 		}

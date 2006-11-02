@@ -66,26 +66,13 @@ qtractorTrackView::qtractorTrackView ( qtractorTracks *pTracks,
 {
 	m_pTracks = pTracks;
 
+	m_pClipSelect    = new qtractorClipSelect();
 	m_pSessionCursor = NULL;
+	m_pRubberBand    = NULL;
+
+	m_selectMode = SelectClip;
 	
-	m_dropType = qtractorTrack::None;
-
-	m_dragState   = DragNone;
-	m_iDraggingX  = 0;
-	m_pClipDrag   = NULL;
-	m_pRubberBand = NULL;
-	m_bDragTimer  = false;
-
-	m_pClipSelect = new qtractorClipSelect();
-	m_selectMode  = SelectClip;
-
-	m_iPlayHead  = 0;
-
-	m_iPlayHeadX = 0;
-	m_iEditHeadX = 0;
-	m_iEditTailX = 0;
-
-	m_iLastRecordX = 0;
+	clear();
 
 	// Zoom tool widgets
 	m_pHzoomIn    = new QToolButton(this);
@@ -145,17 +132,34 @@ qtractorTrackView::qtractorTrackView ( qtractorTracks *pTracks,
 // Destructor.
 qtractorTrackView::~qtractorTrackView (void)
 {
-	m_bDragTimer = false;
-
+	clear();
 	clearClipboard();
 
-	if (m_pSessionCursor)
-		delete m_pSessionCursor;
-
-	if (m_pRubberBand)
-		delete m_pRubberBand;
-
 	delete m_pClipSelect;
+}
+
+
+// Track view state reset.
+void qtractorTrackView::clear (void)
+{
+	m_bDragTimer = false;
+
+	m_pClipSelect->clear();
+
+	m_dropType = qtractorTrack::None;
+
+	m_dragState  = DragNone;
+	m_iDraggingX = 0;
+	m_pClipDrag  = NULL;
+	m_bDragTimer = false;
+
+	m_iPlayHead  = 0;
+
+	m_iPlayHeadX = 0;
+	m_iEditHeadX = 0;
+	m_iEditTailX = 0;
+
+	m_iLastRecordX = 0;
 }
 
 
@@ -425,8 +429,8 @@ void qtractorTrackView::updatePixmap ( int cx, int cy )
 	if (pSession == NULL)
 		return;
 
-	QPainter p(&m_pixmap);
-	p.initFrom(this);
+	QPainter painter(&m_pixmap);
+	painter.initFrom(this);
 
 	// Update view session cursor location,
 	// so that we'll start drawing clips from there...
@@ -454,15 +458,15 @@ void qtractorTrackView::updatePixmap ( int cx, int cy )
 		if (y2 > cy) {
 			// Dispatch to paint this track...
 			if (y1 > cy) {
-				p.setPen(rgbLight);
-				p.drawLine(0, y1 - cy, w, y1 - cy);
+				painter.setPen(rgbLight);
+				painter.drawLine(0, y1 - cy, w, y1 - cy);
 			}
 			QRect trackRect(0, y1 - cy + 1, w, y2 - y1 - 2);
-			p.fillRect(trackRect, rgbMid);
-			pTrack->drawTrack(&p, trackRect, iTrackStart, iTrackEnd,
+			painter.fillRect(trackRect, rgbMid);
+			pTrack->drawTrack(&painter, trackRect, iTrackStart, iTrackEnd,
 				m_pSessionCursor->clip(iTrack));
-			p.setPen(rgbDark);
-			p.drawLine(0, y2 - cy - 1, w, y2 - cy - 1);
+			painter.setPen(rgbDark);
+			painter.drawLine(0, y2 - cy - 1, w, y2 - cy - 1);
 		}
 		pTrack = pTrack->next();
 		iTrack++;
@@ -479,12 +483,12 @@ void qtractorTrackView::updatePixmap ( int cx, int cy )
 			if (x >= 0) {
 				bool bBeatIsBar = pSession->beatIsBar(iBeat);
 				if (bBeatIsBar) {
-					p.setPen(rgbLight);
-					p.drawLine(x, 0, x, y2 - cy - 2);
+					painter.setPen(rgbLight);
+					painter.drawLine(x, 0, x, y2 - cy - 2);
 				}
 				if (bBeatIsBar || iPixelsPerBeat > 16) {
-					p.setPen(rgbDark);
-					p.drawLine(x - 1, 0, x - 1, y2 - cy - 2);
+					painter.setPen(rgbDark);
+					painter.drawLine(x - 1, 0, x - 1, y2 - cy - 2);
 				}
 			}
 			iFrameFromBeat += iFramesPerBeat;
@@ -495,20 +499,20 @@ void qtractorTrackView::updatePixmap ( int cx, int cy )
 
 	// Fill the empty area...
 	if (y2 < cy + h) {
-		p.setPen(rgbMid);
-		p.drawLine(0, y2 - cy, w, y2 - cy);
+		painter.setPen(rgbMid);
+		painter.drawLine(0, y2 - cy, w, y2 - cy);
 	//	pPainter->fillRect(0, y2 - cy + 1, w, h, pal.dark().color());
 	}
 
 	// Draw loop boundaries, if applicable...
 	if (pSession->isLooping()) {
-		p.setPen(Qt::darkCyan);
+		painter.setPen(Qt::darkCyan);
 		x = pSession->pixelFromFrame(pSession->loopStart()) - cx;
 		if (x >= 0 && x < w)
-			p.drawLine(x, 0, x, h);
+			painter.drawLine(x, 0, x, h);
 		x = pSession->pixelFromFrame(pSession->loopEnd()) - cx;
 		if (x >= 0 && x < w)
-			p.drawLine(x, 0, x, h);
+			painter.drawLine(x, 0, x, h);
 	}
 }
 
