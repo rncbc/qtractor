@@ -221,6 +221,8 @@ qtractorPluginListView::qtractorPluginListView ( QWidget *pParent )
 qtractorPluginListView::~qtractorPluginListView (void)
 {
 	// No need to delete child widgets, Qt does it all for us
+	setPluginList(NULL);
+
 	if (--g_iItemRefCount == 0) {
 		for (int i = 0; i < 2; i++) {
 			delete g_pItemIcons[i];

@@ -1072,15 +1072,16 @@ bool qtractorMainForm::closeSession (void)
 			m_ui.transportPlayAction->setChecked(false);
 			transportPlay(); // Toggle playing!
 		}
+		// Reset all dependables to default.
+		m_pCommands->clear();
+		m_pConnections->clear();
+		m_pMixer->clear();
+		m_pFiles->clear();
 		// Close session engines.
 		m_pSession->close();
 		m_pSession->clear();
-		// Reset all dependables to default.
+		// And last but not least.
 		m_pTracks->clear();
-		m_pCommands->clear();
-		m_pMixer->clear();
-		m_pConnections->clear();
-		m_pFiles->clear();
 		// Reset playhead.
 		m_iPlayHead = 0;
 		// We're now clean, for sure.
