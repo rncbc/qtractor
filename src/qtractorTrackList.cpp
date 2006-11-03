@@ -571,8 +571,8 @@ qtractorTrack *qtractorTrackList::track ( int iTrack ) const
 }
 
 
-// Insert a track item.
-void qtractorTrackList::insertTrack ( int iTrack, qtractorTrack *pTrack )
+// Insert a track item; return actual track row added.
+int qtractorTrackList::insertTrack ( int iTrack, qtractorTrack *pTrack )
 {
 	iTrack = m_pListModel->insertTrack(iTrack, pTrack);
 	if (iTrack >= 0) {
@@ -581,18 +581,16 @@ void qtractorTrackList::insertTrack ( int iTrack, qtractorTrack *pTrack )
 			QTableView::setRowHeight(iTrack, pTrack->zoomHeight());
 			QTableView::setIndexWidget(index,
 				new qtractorTrackItemWidget(this, pTrack));
-			selectTrack(iTrack);
 		}
 	}
+	return iTrack;
 }
 
 
-// Remove a track item.
-void qtractorTrackList::removeTrack ( int iTrack )
+// Remove a track item; return remaining track row.
+int qtractorTrackList::removeTrack ( int iTrack )
 {
-	iTrack = m_pListModel->removeTrack(iTrack);
-	if (iTrack >= 0)
-		selectTrack(iTrack);
+	return m_pListModel->removeTrack(iTrack);
 }
 
 
@@ -681,8 +679,6 @@ void qtractorTrackList::mousePressEvent ( QMouseEvent *pMouseEvent )
 
 void qtractorTrackList::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 {
-	QTableView::mouseMoveEvent(pMouseEvent);
-
 	// We're already on some item dragging/resizing?...
 	switch (m_dragState) {
 	case DragMove:
@@ -731,6 +727,7 @@ void qtractorTrackList::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 						QTableView::setCursor(QCursor(Qt::SplitVCursor));
 					m_iDragTrack = index.row();
 					m_iDragY = QTableView::visualRect(index).top();
+					return;
 				}
 			} else if (pMouseEvent->y() >= rect.bottom() - 4
 				&& pMouseEvent->y() < rect.bottom() + 4) {
@@ -738,17 +735,24 @@ void qtractorTrackList::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 					QTableView::setCursor(QCursor(Qt::SplitVCursor));
 				m_iDragTrack = index.row();
 				m_iDragY = rect.top();
-			} else if (m_iDragTrack >= 0) {
-				QTableView::unsetCursor();
-				m_iDragTrack = -1;
-				m_iDragY = 0;
+				return;
 			}
 		}
-		// Fall thru...
+		// If something has been going on, turn it off...
+ 		if (m_iDragTrack >= 0) {
+			QTableView::unsetCursor();
+			m_iDragTrack = -1;
+			m_iDragY = 0;
+		}
+		// Bail out, avoid default nasty
+		// mouse hovering behavior...
+		return;
 	}
 	default:
 		break;
 	}
+
+	QTableView::mouseMoveEvent(pMouseEvent);
 }
 
 

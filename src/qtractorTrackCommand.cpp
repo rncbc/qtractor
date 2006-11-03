@@ -77,7 +77,9 @@ bool qtractorTrackCommand::addTrack (void)
 	// Link the track into session...
 	pSession->insertTrack(m_pTrack, pAfterTrack);
 	// And the new track list view item too...
-	pTracks->trackList()->insertTrack(iTrack, m_pTrack);
+	iTrack = pTracks->trackList()->insertTrack(iTrack, m_pTrack);
+	if (iTrack >= 0)
+		pTracks->trackList()->selectTrack(iTrack);
 	// Special MIDI track cases...
 	if (m_pTrack->trackType() == qtractorTrack::Midi)
 	    pTracks->updateMidiTrack(m_pTrack);
@@ -115,7 +117,9 @@ bool qtractorTrackCommand::removeTrack (void)
 	// Second, remove from session...
 	pSession->unlinkTrack(m_pTrack);
 	// Third, remove track from list view...
-	pTracks->trackList()->removeTrack(iTrack);
+	iTrack = pTracks->trackList()->removeTrack(iTrack);
+	if (iTrack >= 0)
+		pTracks->trackList()->selectTrack(iTrack);
 
 	// Mixer turn...
 	qtractorMixer *pMixer = mainForm()->mixer();
@@ -222,7 +226,9 @@ bool qtractorMoveTrackCommand::redo (void)
 
 	// Just insert under the track list position...
 	// We'll renumber all items now...
-	pTracks->trackList()->insertTrack(iNextTrack, track());
+	iNextTrack = pTracks->trackList()->insertTrack(iNextTrack, track());
+	if (iNextTrack >= 0)
+		pTracks->trackList()->selectTrack(iNextTrack);
 	// God'am, if we'll need this...
 	pTracks->trackList()->updateZoomHeight();
 
