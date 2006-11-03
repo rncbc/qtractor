@@ -146,8 +146,7 @@ void qtractorTrackView::clear (void)
 
 	m_pClipSelect->clear();
 
-	m_dropType = qtractorTrack::None;
-
+	m_dropType   = qtractorTrack::None;
 	m_dragState  = DragNone;
 	m_iDraggingX = 0;
 	m_pClipDrag  = NULL;
@@ -160,6 +159,14 @@ void qtractorTrackView::clear (void)
 	m_iEditTailX = 0;
 
 	m_iLastRecordX = 0;
+
+	if (m_pSessionCursor)
+		delete m_pSessionCursor;
+	m_pSessionCursor = NULL;
+
+	if (m_pRubberBand)
+		delete m_pRubberBand;
+	m_pRubberBand = NULL;
 }
 
 

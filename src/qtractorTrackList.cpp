@@ -261,7 +261,8 @@ qtractorTrackListModel::qtractorTrackListModel ( QObject *pParent )
 		<< tr("Bus")
 		<< tr("Ch")
 		<< tr("Patch")
-		<< tr("Instrument");
+		<< tr("Instrument")
+		<< QString::null;
 };
 
 
@@ -491,6 +492,9 @@ void qtractorTrackListModel::Item::update (void)
 			break;
 		}
 	}
+	
+	// Final empty dummy-stretch column...
+	text << QString::null;
 }
 
 
@@ -518,15 +522,16 @@ qtractorTrackList::qtractorTrackList (
 	QTableView::setSelectionMode(QAbstractItemView::SingleSelection);
 	QTableView::setSelectionBehavior(QAbstractItemView::SelectRows);
 	QTableView::setMouseTracking(true);
-	QTableView::verticalHeader()->hide();
 
 //	QTableView::setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
 	QTableView::setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
+	QTableView::verticalHeader()->hide();
+
 	QHeaderView *pHeader = QTableView::horizontalHeader();
 	pHeader->setHighlightSections(false);
 	pHeader->setDefaultAlignment(Qt::AlignLeft | Qt::AlignVCenter);
-//	pHeader->setStretchLastSection(true);
+	pHeader->setStretchLastSection(true);
 	pHeader->setClickable(false);
 	
 	pHeader->resizeSection(Number, 26);
@@ -597,7 +602,8 @@ int qtractorTrackList::removeTrack ( int iTrack )
 // Select a track item.
 void qtractorTrackList::selectTrack ( int iTrack )
 {
-	QTableView::setCurrentIndex(m_pListModel->index(iTrack, 0));
+	QTableView::setCurrentIndex(
+		m_pListModel->index(iTrack,	QTableView::currentIndex().column()));
 }
 
 
