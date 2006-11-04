@@ -143,10 +143,11 @@ bool qtractorMidiClip::openMidiFile ( qtractorMidiFile *pFile,
 	setTrackChannel(iTrackChannel);
 
 	// Default clip length will be whole sequence duration.
-	if (clipLength() == 0)
+	if (clipLength() == 0) {
 		setClipLength(pSession->frameFromTick(
 			m_pSeq->timeLength() - m_pSeq->timeOffset()));
-	
+	}
+
 	// Uh oh...
 	m_clipCursor.reset(m_pSeq);
 
@@ -206,7 +207,8 @@ void qtractorMidiClip::updateClipTime (void)
 	// Also set proper MIDI clip duration...
 	if (track() && track()->session()) {
 		qtractorClip::setClipLength(
-			track()->session()->frameFromTick(m_pSeq->timeLength()));
+			track()->session()->frameFromTick(
+				m_pSeq->timeLength() - m_pSeq->timeOffset()));
 	}
 
 	// Set new start time, as inherited...
@@ -367,17 +369,19 @@ void qtractorMidiClip::process ( unsigned long iFrameStart,
 	qtractorMidiEvent *pEvent = m_clipCursor.event;
 	while (pEvent) {
 		unsigned long iTimeEvent = iTimeClip + pEvent->time();
-		if (iTimeEvent >= iTimeEnd)
+		if (iTimeEvent > iTimeEnd)
 			break;
 		if (iTimeEvent >= iTimeStart
-			&& (!bMute || pEvent->type() != qtractorMidiEvent::NOTEON)) {
+			&& (!bMute || pEvent->type() != qtractorMidiEvent::NOTEON))
 			pSession->midiEngine()->enqueue(pTrack, pEvent, iTimeEvent, fGain);
-		}
 		pEvent = pEvent->next();
 	}
 
-	if (pEvent)
-		m_clipCursor.time = pEvent->time();
+	// Prepare for next bunch...
+	if (pEvent) {
+		m_clipCursor.time  = pEvent->time();
+		m_clipCursor.event = pEvent;
+	}
 }
 
 

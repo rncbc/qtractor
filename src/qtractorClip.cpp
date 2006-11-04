@@ -323,7 +323,7 @@ float qtractorClip::gain (
 
 	unsigned long iOffset = ((iFrameStart + iFrameEnd) >> 1) - m_iClipStart;
 
-	if (iOffset < m_iFadeInLength) {
+	if (m_iFadeInLength > 0 && iOffset < m_iFadeInLength) {
 		float f  = float(iOffset);
 		float f2 = f * f;
 		switch (m_fadeIn.fadeType) {
@@ -340,7 +340,7 @@ float qtractorClip::gain (
 		}
 	}
 
-	if (iOffset > m_iClipLength - m_iFadeOutLength) {
+	if (m_iFadeOutLength > 0 && iOffset > m_iClipLength - m_iFadeOutLength) {
 		float f  = float(iOffset);
 		float f2 = f * f;
 		switch (m_fadeOut.fadeType) {
