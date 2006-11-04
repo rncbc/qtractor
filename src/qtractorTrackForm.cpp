@@ -214,16 +214,16 @@ void qtractorTrackForm::setTrack ( qtractorTrack *pTrack )
 	m_ui.TrackNameTextEdit->setPlainText(m_props.trackName);
 	qtractorEngine *pEngine = NULL;
 	switch (m_props.trackType) {
-		case qtractorTrack::Audio:
-			pEngine = pTrack->session()->audioEngine();
-			m_ui.AudioRadioButton->setChecked(true);
-			break;
-		case qtractorTrack::Midi:
-			pEngine = pTrack->session()->midiEngine();
-			m_ui.MidiRadioButton->setChecked(true);
-			break;
-		default:
-			break;
+	case qtractorTrack::Audio:
+		pEngine = pTrack->session()->audioEngine();
+		m_ui.AudioRadioButton->setChecked(true);
+		break;
+	case qtractorTrack::Midi:
+		pEngine = pTrack->session()->midiEngine();
+		m_ui.MidiRadioButton->setChecked(true);
+		break;
+	default:
+		break;
 	}
 	updateTrackType(m_props.trackType);
 

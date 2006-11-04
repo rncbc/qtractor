@@ -129,7 +129,9 @@ protected slots:
 	// Trap current index changes.
 	void currentChanged(const QModelIndex& curr, const QModelIndex& prev);
 
-	// To have dircet access to track properties.
+	// To test and select a tracka at a time.
+	void clickedSlot(const QModelIndex& index);
+	// To have direct access to track properties.
 	void doubleClickedSlot(const QModelIndex& index);
 
 	// Vertical offset position change slot.

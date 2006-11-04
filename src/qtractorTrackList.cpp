@@ -145,11 +145,14 @@ public:
 		pPainter->save();
 		pPainter->fillRect(rect, bg);
 		pPainter->setPen(fg);
-		if (index.column() == qtractorTrackList::Number ||
-			index.column() == qtractorTrackList::Channel) {
+		if (index.column() == qtractorTrackList::Number) {
 			pPainter->drawText(rectText,
 				Qt::AlignHCenter | Qt::AlignTop,
 				QString::number(index.row() + 1));
+		} else if (index.column() == qtractorTrackList::Channel) {
+			pPainter->drawText(rectText,
+				Qt::AlignHCenter | Qt::AlignTop,
+				index.data(Qt::DisplayRole).toString());
 		} else {
 			if (index.column() == qtractorTrackList::Bus) {
 				QPixmap pm = index.data(Qt::DecorationRole).value<QPixmap>();
@@ -261,8 +264,7 @@ qtractorTrackListModel::qtractorTrackListModel ( QObject *pParent )
 		<< tr("Bus")
 		<< tr("Ch")
 		<< tr("Patch")
-		<< tr("Instrument")
-		<< QString::null;
+		<< tr("Instrument");
 };
 
 
@@ -294,9 +296,8 @@ QVariant qtractorTrackListModel::headerData (
 		else
 		if (role == Qt::TextAlignmentRole
 			&& (section == qtractorTrackList::Number
-				|| section == qtractorTrackList::Channel)) {
+				|| section == qtractorTrackList::Channel))
 			return int(Qt::AlignHCenter | Qt::AlignVCenter);
-		}
 	}
 
 	return QVariant();
@@ -492,9 +493,6 @@ void qtractorTrackListModel::Item::update (void)
 			break;
 		}
 	}
-	
-	// Final empty dummy-stretch column...
-	text << QString::null;
 }
 
 
@@ -531,12 +529,12 @@ qtractorTrackList::qtractorTrackList (
 	QHeaderView *pHeader = QTableView::horizontalHeader();
 	pHeader->setHighlightSections(false);
 	pHeader->setDefaultAlignment(Qt::AlignLeft | Qt::AlignVCenter);
-	pHeader->setStretchLastSection(true);
+//	pHeader->setStretchLastSection(true);
 	pHeader->setClickable(false);
 	
 	pHeader->resizeSection(Number, 26);
 	pHeader->resizeSection(Name, 120);
-	pHeader->resizeSection(Channel, 22);
+	pHeader->resizeSection(Channel, 24);
 
 	QPalette pal(QTableView::palette());
 	pal.setColor(QPalette::Base, pal.color(QPalette::Dark));
@@ -544,7 +542,10 @@ qtractorTrackList::qtractorTrackList (
 	pal.setColor(QPalette::HighlightedText, pal.color(QPalette::Midlight));
 	QTableView::setPalette(pal);
 
-	// Simple double-click handling...
+	// Simple and double-click handling...
+	QObject::connect(this,
+		SIGNAL(clicked(const QModelIndex&)),
+		SLOT(clickedSlot(const QModelIndex&)));
 	QObject::connect(this,
 		SIGNAL(doubleClicked(const QModelIndex&)),
 		SLOT(doubleClickedSlot(const QModelIndex&)));
@@ -898,6 +899,15 @@ void qtractorTrackList::currentChanged ( const QModelIndex& curr,
 	// We take care only on row changes...
 	if (curr.row() != prev.row())
 		emit selectionChanged();
+}
+
+
+// To test and select a tracka at a time.
+void qtractorTrackList::clickedSlot ( const QModelIndex& index )
+{
+	// we're only interested in first-left column (track-number)...
+	if (index.column() == Number)
+		m_pTracks->selectCurrentTrack(true);
 }
 
 

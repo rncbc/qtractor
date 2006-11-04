@@ -553,14 +553,17 @@ void qtractorTrack::addClip ( qtractorClip *pClip )
 	pClip->open();
 	pClip->updateClipTime();
 
-	// Special case for initial MIDI tracks.
-	if (m_props.trackType == qtractorTrack::Midi && m_clips.count() < 1) {
+	// Special case for initial MIDI tracks...
+	if (m_props.trackType == qtractorTrack::Midi) {
 		qtractorMidiClip *pMidiClip
 			= static_cast<qtractorMidiClip *> (pClip);
 		if (pMidiClip) {
-			setMidiChannel(pMidiClip->channel());
-			setMidiBank(pMidiClip->bank());
-			setMidiProgram(pMidiClip->program());
+			if (m_clips.count() < 1)
+				setMidiChannel(pMidiClip->channel());
+			if (midiBank() < 0)
+				setMidiBank(pMidiClip->bank());
+			if (midiProgram() < 0)
+				setMidiProgram(pMidiClip->program());
 		}
 	}
 

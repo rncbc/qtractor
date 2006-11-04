@@ -980,8 +980,9 @@ bool qtractorMainForm::saveSession ( bool bPrompt )
 		if (sFilename.isEmpty())
 			return false;
 		// Enforce .qtr extension...
-		if (QFileInfo(sFilename).suffix().isEmpty())
-			sFilename += ".qtr";
+		const QString sExt("qtr");
+		if (QFileInfo(sFilename).suffix() != sExt)
+			sFilename += '.' + sExt;
 		// Check if already exists...
 		if (sFilename != m_sFilename && QFileInfo(sFilename).exists()) {
 			if (QMessageBox::warning(this,
