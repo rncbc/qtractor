@@ -360,12 +360,20 @@ void qtractorMidiClip::process ( unsigned long iFrameStart,
 	bool bMute = (pTrack->isMute()
 		|| (pSession->soloTracks() && !pTrack->isSolo()));
 
-	// Enqueue the requested events...
+	// FIXME: This seems a broken gain range computation...
 	float fGain = gain(iFrameStart, iFrameEnd);
 	unsigned long iTimeClip  = pSession->tickFromFrame(clipStart());
 	unsigned long iTimeStart = pSession->tickFromFrame(iFrameStart);
 	unsigned long iTimeEnd   = pSession->tickFromFrame(iFrameEnd);
 
+	// Set precise event cursory positioning...
+	if (iTimeStart > iTimeClip) {
+		m_clipCursor.seek(m_pSeq, iTimeStart - iTimeClip);
+	} else {
+		m_clipCursor.reset(m_pSeq);
+	}
+
+	// Enqueue the requested events...
 	qtractorMidiEvent *pEvent = m_clipCursor.event;
 	while (pEvent) {
 		unsigned long iTimeEvent = iTimeClip + pEvent->time();
@@ -375,12 +383,6 @@ void qtractorMidiClip::process ( unsigned long iFrameStart,
 			&& (!bMute || pEvent->type() != qtractorMidiEvent::NOTEON))
 			pSession->midiEngine()->enqueue(pTrack, pEvent, iTimeEvent, fGain);
 		pEvent = pEvent->next();
-	}
-
-	// Prepare for next bunch...
-	if (pEvent) {
-		m_clipCursor.time  = pEvent->time();
-		m_clipCursor.event = pEvent;
 	}
 }
 
