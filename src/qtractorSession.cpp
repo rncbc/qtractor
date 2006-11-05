@@ -40,6 +40,8 @@
 #include <QRegExp>
 #include <QDir>
 
+#include <math.h>
+
 
 //-------------------------------------------------------------------------
 // qtractorSession::Properties -- Session properties structure.
@@ -433,96 +435,70 @@ unsigned int qtractorSession::pixelFromBeat ( unsigned int iBeat ) const
 // Pixel/Tick number conversion.
 unsigned long qtractorSession::tickFromPixel ( unsigned int x ) const
 {
-	return (unsigned long) ((m_fScale_d * x) / m_fScale_b);
+	return (unsigned long) ::lroundf((m_fScale_d * x) / m_fScale_b);
 }
 
 unsigned int qtractorSession::pixelFromTick ( unsigned long iTick ) const
 {
-	return (unsigned int) ((m_fScale_b * iTick) / m_fScale_d);
+	return (unsigned int) ::lroundf((m_fScale_b * iTick) / m_fScale_d);
 }
 
 
 // Pixel/Frame number conversion.
 unsigned long qtractorSession::frameFromPixel ( unsigned int x ) const
 {
-	return (unsigned long) ((m_fScale_c * x) / m_fScale_b);
+	return (unsigned long) ::lroundf((m_fScale_c * x) / m_fScale_b);
 }
 
 unsigned int qtractorSession::pixelFromFrame ( unsigned long iFrame ) const
 { 
-	return (unsigned int) ((m_fScale_b * iFrame) / m_fScale_c);
+	return (unsigned int) ::lroundf((m_fScale_b * iFrame) / m_fScale_c);
 }
 
 
 // Beat/frame conversion.
 unsigned long qtractorSession::frameFromBeat ( unsigned int iBeat ) const
 {
-	return (unsigned long) ((m_fScale_c * iBeat) / m_props.tempo);
+	return (unsigned long) ::lroundf((m_fScale_c * iBeat) / m_props.tempo);
 }
 
 unsigned int qtractorSession::beatFromFrame ( unsigned long iFrame ) const
 {
-	return (unsigned int) ((m_props.tempo * iFrame) / m_fScale_c);
+	return (unsigned int) ::lroundf((m_props.tempo * iFrame) / m_fScale_c);
 }
 
 
 // Tick/Frame number conversion.
 unsigned long qtractorSession::frameFromTick ( unsigned long iTick ) const
 {
-	return (unsigned long) ((m_fScale_c * iTick) / m_fScale_d);
+	return (unsigned long) ::lroundf((m_fScale_c * iTick) / m_fScale_d);
 }
 
 unsigned long qtractorSession::tickFromFrame ( unsigned long iFrame ) const
 {
-	return (unsigned long) ((m_fScale_d * iFrame) / m_fScale_c);
+	return (unsigned long) ::lroundf((m_fScale_d * iFrame) / m_fScale_c);
 }
 
 
 // Beat/frame snap filters.
+unsigned long qtractorSession::tickSnap ( unsigned long iTick ) const
+{
+	unsigned long iTickSnap = iTick;
+	if (m_props.snapPerBeat > 0) {
+		unsigned long q = m_props.ticksPerBeat / m_props.snapPerBeat;
+		iTickSnap = q * ((iTickSnap + (q >> 1)) / q);
+	}
+	return iTickSnap;
+}
+
 unsigned long qtractorSession::frameSnap ( unsigned long iFrame ) const
 {
-	unsigned long iFrameSnap = iFrame;
-
-	if (m_props.snapPerBeat > 0) {
-		unsigned long iFramesPerBeat = frameFromBeat(1);
-		unsigned long iBeatRemainder = (iFrameSnap % iFramesPerBeat);
-		if (iBeatRemainder > 0) {
-			iFrameSnap -= iBeatRemainder;
-			if (m_props.snapPerBeat > 1) {
-				unsigned long n = (iFramesPerBeat / m_props.snapPerBeat);
-				unsigned long m = (iFramesPerBeat % n);
-				unsigned long q = (iBeatRemainder / n);
-				iBeatRemainder -= (iBeatRemainder % n);
-				iFrameSnap += iBeatRemainder + ((q * m) / m_props.snapPerBeat);
-			}
-		}
-	}
-	return iFrameSnap;
+	return frameFromTick(tickSnap(tickFromFrame(iFrame)));
 }
 
 unsigned int qtractorSession::pixelSnap ( unsigned int x ) const
 {
-#if 0
-	unsigned int iPixelSnap = x;
-
-	if (m_props.snapPerBeat > 0) {
-		unsigned int iPixelsPerBeat = pixelFromBeat(1);
-		unsigned int iBeatRemainder = (iPixelSnap % iPixelsPerBeat);
-		if (iBeatRemainder > 0) {
-			iPixelSnap -= iBeatRemainder;
-			if (m_props.snapPerBeat > 1) {
-				unsigned int n = (iPixelsPerBeat / m_props.snapPerBeat);
-				unsigned int m = (iPixelsPerBeat % n);
-				unsigned int q = (iBeatRemainder / n);
-				iBeatRemainder -= (iBeatRemainder % n);
-				iPixelSnap += iBeatRemainder + ((q * m) / m_props.snapPerBeat);
-			}
-		}
-	}
-	return iPixelSnap;
-#else
-	return pixelFromFrame(frameSnap(frameFromPixel(x)));
-#endif
+	return pixelFromTick(tickSnap(tickFromPixel(x)));
 }
 
 

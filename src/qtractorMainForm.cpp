@@ -2087,7 +2087,7 @@ void qtractorMainForm::stabilizeForm (void)
 		m_pMessages->flushStdoutBuffer();
 
 	// Session status...
-	updateTransportTime(m_iPlayHead);
+	updateTransportTime(m_pSession->playHead());
 
 	if (m_pTracks && m_pTracks->currentTrack()) {
 		m_statusItems[StatusName]->setText(

@@ -131,6 +131,7 @@ public:
 	unsigned long tickFromFrame(unsigned long iFrame) const;
 
 	// Beat/frame snap filters.
+	unsigned long tickSnap(unsigned long iTick) const;
 	unsigned long frameSnap(unsigned long iFrame) const;
 	unsigned int pixelSnap(unsigned int x) const;
 

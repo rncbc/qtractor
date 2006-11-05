@@ -937,8 +937,8 @@ void qtractorTrackView::dropEvent (	QDropEvent *pDropEvent )
 		return;
 
 	// Add new clips on proper and consecutive track locations...
-	unsigned long iClipStart // = pSession->frameSnap(
-		= pSession->frameFromPixel(m_rectDrag.x() + m_iDraggingX);
+	unsigned long iClipStart = pSession->frameSnap(
+		pSession->frameFromPixel(m_rectDrag.x() + m_iDraggingX));
 
 	// Now check whether the drop is intra-track...
 	qtractorTrack *pTrack = dragDropTrack(pDropEvent);
@@ -1298,17 +1298,18 @@ void qtractorTrackView::selectRect ( const QRect& rectDrag,
 	if (pSession == NULL)
 		return;
 
-	// The precise (snapped) selection frame points...
 	QRect rect(rectDrag.normalized());
 
-	QRect rectRange(0, 0, 0, qtractorScrollView::contentsHeight());
-	rectRange.setLeft(pSession->pixelSnap(rect.left()));
-	rectRange.setRight(pSession->pixelSnap(rect.right()));
-
-	unsigned long iSelectStart = pSession->frameFromPixel(rectRange.left());
-	unsigned long iSelectEnd   = pSession->frameFromPixel(rectRange.right());
+	// The precise (snapped) selection frame points...
+	unsigned long iSelectStart
+		= pSession->frameSnap(pSession->frameFromPixel(rect.left()));
+	unsigned long iSelectEnd
+		= pSession->frameSnap(pSession->frameFromPixel(rect.right()));
 
 	// Special whole-vertical range case...
+	QRect rectRange(0, 0, 0, qtractorScrollView::contentsHeight());
+	rectRange.setLeft(pSession->pixelFromFrame(iSelectStart));
+	rectRange.setRight(pSession->pixelFromFrame(iSelectEnd));
 	if (selectMode == SelectRange) {
 		rect.setTop(rectRange.top());
 		rect.setBottom(rectRange.height());
@@ -2241,7 +2242,7 @@ void qtractorTrackView::moveClipSelect ( qtractorTrack *pTrack, int dx )
 		}
 		// -- Moved clip...
 		pClipCommand->moveClip(pClip, pTrack,
-			pSession->frameFromPixel(x < 0 ? 0 : x),
+			pSession->frameSnap(pSession->frameFromPixel(x > 0 ? x : 0)),
 			iClipOffset + iSelectOffset,
 			iSelectLength);
 	}

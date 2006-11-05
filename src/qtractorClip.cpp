@@ -123,10 +123,12 @@ unsigned long qtractorClip::clipStart (void) const
 
 void qtractorClip::setClipStart ( unsigned long iClipStart )
 {
-	if (m_pTrack && m_pTrack->session())
-		m_iClipTime = m_pTrack->session()->tickFromFrame(iClipStart);
-
-	m_iClipStart = iClipStart;
+	if (m_pTrack && m_pTrack->session()) {
+		m_iClipTime  = m_pTrack->session()->tickFromFrame(iClipStart);
+		m_iClipStart = m_pTrack->session()->frameFromTick(m_iClipTime);
+	} else {
+		m_iClipStart = iClipStart;
+	}
 }
 
 
