@@ -396,20 +396,20 @@ void qtractorTrackView::resizeEvent ( QResizeEvent *pResizeEvent )
 	if (pVScrollBar->isVisible()) {
 		int h = size.height();
 		int w = pVScrollBar->width(); 
-		int x = size.width() - w - 2;
+		int x = size.width() - w - 1;
 		pVScrollBar->setFixedHeight(h - w * 3 - 2);
 		if (m_pVzoomIn)
 			m_pVzoomIn->setGeometry(x, h - w * 3, w, w);
 		if (m_pVzoomOut)
 			m_pVzoomOut->setGeometry(x, h - w * 2, w, w);
 		if (m_pXzoomReset)
-			m_pXzoomReset->setGeometry(x, h - w, w, w);
+			m_pXzoomReset->setGeometry(x, h - w - 1, w, w);
 	}
 	QScrollBar *pHScrollBar = qtractorScrollView::horizontalScrollBar();
 	if (pHScrollBar->isVisible()) {
 		int w = size.width();
 		int h = pHScrollBar->height(); 
-		int y = size.height() - h - 2;
+		int y = size.height() - h - 1;
 		pHScrollBar->setFixedWidth(w - h * 3 - 2);
 		if (m_pHzoomOut)
 			m_pHzoomOut->setGeometry(w - h * 3, y, h, h);
