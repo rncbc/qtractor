@@ -222,7 +222,13 @@ void qtractorMidiClip::updateClipTime (void)
 void qtractorMidiClip::ClipCursor::seek (
 	qtractorMidiSequence *pSeq, unsigned long tick )
 {
-	if (time < tick) {
+	// Plain reset...
+	if (tick == 0) {
+		event = pSeq->events().first();
+		time  = 0;
+	}
+	else
+	if (tick > time) {
 		// Seek forward...
 		if (event == NULL)
 			event = pSeq->events().first();
@@ -231,7 +237,7 @@ void qtractorMidiClip::ClipCursor::seek (
 		time = tick;
 	}
 	else
-	if (time > tick) {
+	if (tick < time) {
 		// Seek backward...
 		if (event == NULL)
 			event = pSeq->events().last();
@@ -252,7 +258,7 @@ void qtractorMidiClip::ClipCursor::reset (
 		time  = 0;
 	}
 	else
-	if (time < tick) {
+	if (tick > time) {
 		// Reset-seek forward...
 		if (event == NULL)
 			event = pSeq->events().first();
@@ -261,7 +267,7 @@ void qtractorMidiClip::ClipCursor::reset (
 		time = tick;
 	} 
 	else
-	if (time > tick) {
+	if (tick < time) {
 		// Reset-seek backward...
 		if (event == NULL)
 			event = pSeq->events().last();
@@ -284,12 +290,7 @@ void qtractorMidiClip::seek ( unsigned long iFrame )
 		return;
 
 	// Seek for the nearest sequence event...
-	unsigned long iTimeSeek = pSession->tickFromFrame(iFrame);
-	if (iTimeSeek > 0) {
-		m_playCursor.seek(m_pSeq, iTimeSeek);
-	} else {
-		m_playCursor.reset(m_pSeq);
-	}
+	m_playCursor.seek(m_pSeq, pSession->tickFromFrame(iFrame));
 }
 
 
@@ -388,11 +389,10 @@ void qtractorMidiClip::process ( unsigned long iFrameStart,
 	unsigned long iTimeEnd   = pSession->tickFromFrame(iFrameEnd);
 
 	// Set precise event cursory positioning...
-	if (iTimeStart > iTimeClip) {
-		m_playCursor.seek(m_pSeq, iTimeStart - iTimeClip);
-	} else {
-		m_playCursor.reset(m_pSeq);
-	}
+	unsigned long iTimeSeek = 0;
+	if (iTimeStart > iTimeClip)
+		iTimeSeek = iTimeStart - iTimeClip;
+	m_playCursor.seek(m_pSeq, iTimeSeek);
 
 	// Enqueue the requested events...
 	qtractorMidiEvent *pEvent = m_playCursor.event;

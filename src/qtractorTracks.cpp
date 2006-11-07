@@ -102,8 +102,6 @@ qtractorTracks::qtractorTracks ( QWidget *pParent )
 		m_pTrackTime, SLOT(contentsXMovingSlot(int,int)));
 	QObject::connect(m_pTrackView, SIGNAL(contentsMoving(int,int)),
 		m_pTrackList, SLOT(contentsYMovingSlot(int,int)));
-	QObject::connect(m_pTrackList, SIGNAL(contentsMoving(int,int)),
-		m_pTrackView, SLOT(contentsYMovingSlot(int,int)));
 }
 
 
