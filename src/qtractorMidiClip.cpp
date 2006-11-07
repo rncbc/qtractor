@@ -149,7 +149,8 @@ bool qtractorMidiClip::openMidiFile ( qtractorMidiFile *pFile,
 	}
 
 	// Uh oh...
-	m_clipCursor.reset(m_pSeq);
+	m_playCursor.reset(m_pSeq);
+	m_drawCursor.reset(m_pSeq);
 
 	return true;
 }
@@ -218,8 +219,8 @@ void qtractorMidiClip::updateClipTime (void)
 
 
 // Intra-clip tick/time positioning seek.
-void qtractorMidiClip::ClipCursor::seek ( qtractorMidiSequence *pSeq,
-	unsigned long tick )
+void qtractorMidiClip::ClipCursor::seek (
+	qtractorMidiSequence *pSeq, unsigned long tick )
 {
 	if (time < tick) {
 		// Seek forward...
@@ -242,12 +243,32 @@ void qtractorMidiClip::ClipCursor::seek ( qtractorMidiSequence *pSeq,
 
 
 // Intra-clip tick/time positioning reset.
-void qtractorMidiClip::ClipCursor::reset ( qtractorMidiSequence *pSeq )
+void qtractorMidiClip::ClipCursor::reset (
+	qtractorMidiSequence *pSeq,	unsigned long tick )
 {
-	event = pSeq->events().first();
-	time  = 0;
-//	if (event)
-//		time += event->time();
+	if (tick == 0) {
+		// Plain reset...
+		event = pSeq->events().first();
+		time  = 0;
+	}
+	else
+	if (time < tick) {
+		// Reset-seek forward...
+		if (event == NULL)
+			event = pSeq->events().first();
+		while (event && event->time() + event->duration() < tick)
+			event = event->next();
+		time = tick;
+	} 
+	else
+	if (time > tick) {
+		// Reset-seek backward...
+		if (event == NULL)
+			event = pSeq->events().last();
+		while (event && event->time() + event->duration() > tick)
+			event = event->prev();
+		time = tick;
+	}
 }
 
 
@@ -265,9 +286,9 @@ void qtractorMidiClip::seek ( unsigned long iFrame )
 	// Seek for the nearest sequence event...
 	unsigned long iTimeSeek = pSession->tickFromFrame(iFrame);
 	if (iTimeSeek > 0) {
-		m_clipCursor.seek(m_pSeq, iTimeSeek);
+		m_playCursor.seek(m_pSeq, iTimeSeek);
 	} else {
-		m_clipCursor.reset(m_pSeq);
+		m_playCursor.reset(m_pSeq);
 	}
 }
 
@@ -280,7 +301,7 @@ void qtractorMidiClip::reset ( bool bLooping )
 #endif
 
 	// Reset to the first sequence event...
-	m_clipCursor.reset(m_pSeq);
+	m_playCursor.reset(m_pSeq);
 
 	// Take the time from loop-start?
 	if (bLooping && clipLoopStart() < clipLoopEnd())
@@ -368,13 +389,13 @@ void qtractorMidiClip::process ( unsigned long iFrameStart,
 
 	// Set precise event cursory positioning...
 	if (iTimeStart > iTimeClip) {
-		m_clipCursor.seek(m_pSeq, iTimeStart - iTimeClip);
+		m_playCursor.seek(m_pSeq, iTimeStart - iTimeClip);
 	} else {
-		m_clipCursor.reset(m_pSeq);
+		m_playCursor.reset(m_pSeq);
 	}
 
 	// Enqueue the requested events...
-	qtractorMidiEvent *pEvent = m_clipCursor.event;
+	qtractorMidiEvent *pEvent = m_playCursor.event;
 	while (pEvent) {
 		unsigned long iTimeEvent = iTimeClip + pEvent->time();
 		if (iTimeEvent > iTimeEnd)
@@ -416,7 +437,9 @@ void qtractorMidiClip::drawClip ( QPainter *pPainter, const QRect& clipRect,
 	int h  = h1 / iNoteSpan;
 	if (h < 4) h = 4;
 
-	qtractorMidiEvent *pEvent = m_pSeq->events().first();
+	m_drawCursor.reset(m_pSeq, iTimeStart);
+
+	qtractorMidiEvent *pEvent = m_drawCursor.event;
 	while (pEvent && pEvent->time() < iTimeEnd) {
 		if (pEvent->type() == qtractorMidiEvent::NOTEON
 			&& pEvent->time() + pEvent->duration() >= iTimeStart) {

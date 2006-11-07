@@ -113,13 +113,15 @@ private:
 
 		// Specific methods.
 		void seek(qtractorMidiSequence *pSeq, unsigned long tick);
-		void reset(qtractorMidiSequence *pSeq);
+		void reset(qtractorMidiSequence *pSeq, unsigned long tick = 0);
 		
 		// Instance variables.
 		qtractorMidiEvent *event;
 		unsigned long time;
+	};
 
-	} m_clipCursor;
+	ClipCursor m_playCursor;
+	ClipCursor m_drawCursor;
 };
 
 
