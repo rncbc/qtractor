@@ -41,11 +41,11 @@ class qtractorInstrumentGroupItem : public QTreeWidgetItem
 public:
 
 	// Constructors.
+	qtractorInstrumentGroupItem()
+		: QTreeWidgetItem(qtractorInstrumentForm::GroupItem)
+		{ initGroupItem(); }
 	qtractorInstrumentGroupItem(QTreeWidgetItem *pParent, QTreeWidgetItem *pAfter)
 		: QTreeWidgetItem(pParent, pAfter, qtractorInstrumentForm::GroupItem)
-		{ initGroupItem(); }
-	qtractorInstrumentGroupItem(QTreeWidget *pListView, QTreeWidgetItem *pAfter)
-		: QTreeWidgetItem(pListView, pAfter, qtractorInstrumentForm::GroupItem)
 		{ initGroupItem(); }
 
 protected:
@@ -74,7 +74,7 @@ qtractorInstrumentForm::qtractorInstrumentForm (
 	pHeader->setMovable(false);
 
 	pHeader = m_ui.FilesListView->header();
-	pHeader->setResizeMode(QHeaderView::Custom);
+//	pHeader->setResizeMode(QHeaderView::Custom);
 	pHeader->setDefaultAlignment(Qt::AlignLeft);
 	pHeader->setMovable(false);
 
@@ -414,26 +414,28 @@ void qtractorInstrumentForm::refreshForm (void)
 
 	// Files list view...
 	m_ui.FilesListView->clear();
-	QTreeWidgetItem *pFileItem = NULL;
+	QList<QTreeWidgetItem *> files;
 	QStringListIterator ifile(pInstruments->files());
 	while (ifile.hasNext()) {
 		const QString& sPath = ifile.next();
-		pFileItem = new QTreeWidgetItem(m_ui.FilesListView, pFileItem);
+		QTreeWidgetItem *pFileItem = new QTreeWidgetItem();
 		pFileItem->setIcon(0, QIcon(":/icons/itemFile.png"));
 		pFileItem->setText(0, QFileInfo(sPath).fileName());
 		pFileItem->setText(1, sPath);
+		files.append(pFileItem);
 	}
+	m_ui.FilesListView->addTopLevelItems(files);
 
 	// Instruments list view...
 	m_ui.InstrumentsListView->clear();
-	QTreeWidgetItem *pInstrItem = NULL;
-	QTreeWidgetItem *pChildItem = NULL;
+	QList<QTreeWidgetItem *> instrs;
 	qtractorInstrumentList::Iterator iter;
 	for (iter = pInstruments->begin();
 			iter != pInstruments->end(); ++iter) {
 		qtractorInstrument& instr = iter.value();
 		// Instrument Name...
-		pInstrItem = new QTreeWidgetItem(m_ui.InstrumentsListView, pInstrItem);
+		QTreeWidgetItem *pChildItem = NULL;
+		QTreeWidgetItem *pInstrItem = new QTreeWidgetItem();
 		pInstrItem->setIcon(0, QIcon(":/icons/itemInstrument.png"));
 		pInstrItem->setText(0, instr.instrumentName());
 		// - Patches Names for Banks...
@@ -499,42 +501,50 @@ void qtractorInstrumentForm::refreshForm (void)
 		pChildItem->setText(0,
 			tr("Bank Select Method = %1")
 			.arg(bankSelMethod(instr.bankSelMethod())));
+		instrs.append(pInstrItem);
 	}
+	m_ui.InstrumentsListView->addTopLevelItems(instrs);
 
 	// Names list view...
 	m_ui.NamesListView->clear();
+	QList<QTreeWidgetItem *> names;
 	if (pInstruments->count() > 0) {
 		QTreeWidgetItem *pListItem = NULL;
 		// - Patch Names...
-		pListItem = new qtractorInstrumentGroupItem(m_ui.NamesListView, pListItem);
+		pListItem = new qtractorInstrumentGroupItem();
 		pListItem->setText(0, tr("Patch Names"));
 		listInstrumentDataList(pListItem, pInstruments->patches(),
 			QIcon(":/icons/itemPatches.png"));
+		names.append(pListItem);
 		// - Note Names...
-		pListItem = new qtractorInstrumentGroupItem(m_ui.NamesListView, pListItem);
+		pListItem = new qtractorInstrumentGroupItem();
 		pListItem->setText(0, tr("Note Names"));
 		listInstrumentDataList(pListItem, pInstruments->notes(),
 			QIcon(":/icons/itemNotes.png"));
+		names.append(pListItem);
 		// - Controller Names...
-		pListItem = new qtractorInstrumentGroupItem(m_ui.NamesListView, pListItem);
+		pListItem = new qtractorInstrumentGroupItem();
 		pListItem->setText(0, tr("Controller Names"));
 		listInstrumentDataList(pListItem, pInstruments->controllers(),
 			QIcon(":/icons/itemControllers.png"));
+		names.append(pListItem);
 		// - RPN Names...
-		pListItem = new qtractorInstrumentGroupItem(m_ui.NamesListView, pListItem);
+		pListItem = new qtractorInstrumentGroupItem();
 		pListItem->setText(0, tr("RPN Names"));
 		listInstrumentDataList(pListItem, pInstruments->rpns(),
 			QIcon(":/icons/itemRpns.png"));
+		names.append(pListItem);
 		// - NRPN Names...
-		pListItem = new qtractorInstrumentGroupItem(m_ui.NamesListView, pListItem);
+		pListItem = new qtractorInstrumentGroupItem();
 		pListItem->setText(0, tr("NRPN Names"));
 		listInstrumentDataList(pListItem, pInstruments->nrpns(),
 			QIcon(":/icons/itemNrpns.png"));
+		names.append(pListItem);
 		// - Bank Select Methods...
-		pListItem = new qtractorInstrumentGroupItem(m_ui.NamesListView, pListItem);
+		pListItem = new qtractorInstrumentGroupItem();
 		pListItem->setText(0, tr("Bank Select Methods"));
 		if (pInstruments->count() > 0) {
-			pChildItem = NULL;
+			QTreeWidgetItem *pChildItem = NULL;
 			for (int iBankSelMethod = 0; iBankSelMethod < 4; iBankSelMethod++) {
 				pChildItem = new qtractorInstrumentGroupItem(pListItem, pChildItem);
 				pChildItem->setIcon(0, QIcon(":/icons/itemProperty.png"));
@@ -543,7 +553,9 @@ void qtractorInstrumentForm::refreshForm (void)
 					.arg(bankSelMethod(iBankSelMethod)));
 			}
 		}
+		names.append(pListItem);
 	}
+	m_ui.NamesListView->addTopLevelItems(names);
 
 	// Bail out...
 	m_ui.NamesListView->setUpdatesEnabled(true);

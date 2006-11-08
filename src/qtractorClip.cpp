@@ -387,7 +387,7 @@ void qtractorClip::drawClip ( QPainter *pPainter, const QRect& clipRect,
 	// Adjust the clip rectangle left origin... 
 	QRect rect(clipRect);
 	if (iClipOffset > 0)
-		rect.setLeft(rect.left() - pSession->pixelFromFrame(iClipOffset));
+		rect.setLeft(rect.left() - pSession->pixelFromFrame(iClipOffset) + 1);
 	rect.setRight(rect.left() + pSession->pixelFromFrame(m_iClipLength));
 
 	// Draw clip name label...

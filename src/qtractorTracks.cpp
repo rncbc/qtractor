@@ -154,10 +154,6 @@ qtractorTrackView *qtractorTracks::trackView (void) const
 // Horizontal zoom factor.
 void qtractorTracks::horizontalZoomStep ( int iZoomStep )
 {
-#ifdef CONFIG_DEBUG
-	fprintf(stderr, "qtractorTracks::horizontalZoomStep(%d)\n", iZoomStep);
-#endif
-
 	qtractorSession *pSession = session();
 	if (pSession == NULL)
 		return;
@@ -172,7 +168,8 @@ void qtractorTracks::horizontalZoomStep ( int iZoomStep )
 		return;
 
 #ifdef CONFIG_DEBUG
-	fprintf(stderr, " => iHorizontalZoom=%d\n", iHorizontalZoom);
+	fprintf(stderr, "qtractorTracks::horizontalZoomStep(%d)"
+		" => iHorizontalZoom=%d\n", iZoomStep, iHorizontalZoom);
 #endif
 
 	// Save current session frame location...
@@ -197,10 +194,6 @@ void qtractorTracks::horizontalZoomStep ( int iZoomStep )
 // Vertical zoom factor.
 void qtractorTracks::verticalZoomStep ( int iZoomStep )
 {
-#ifdef CONFIG_DEBUG
-	fprintf(stderr, "qtractorTracks::verticalZoomStep(%d)\n", iZoomStep);
-#endif
-
 	qtractorSession *pSession = session();
 	if (pSession == NULL)
 		return;
@@ -215,7 +208,8 @@ void qtractorTracks::verticalZoomStep ( int iZoomStep )
 		return;
 
 #ifdef CONFIG_DEBUG
-	fprintf(stderr, " => iVerticalZoom=%d\n", iVerticalZoom);
+	fprintf(stderr, "qtractorTracks::verticalZoomStep(%d)"
+		" => iVerticalZoom=%d\n", iZoomStep, iVerticalZoom);
 #endif
 
 	// Fix the session vertical view zoom.

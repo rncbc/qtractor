@@ -745,7 +745,7 @@ void qtractorTrack::drawTrack ( QPainter *pPainter, const QRect& trackRect,
 					x--;	// Give selection some left-border room.
 				}
 				if (iSelectEnd < iTrackEnd) {
-					w -= session()->pixelFromFrame(iTrackEnd - iSelectEnd) + 1;
+					w -= session()->pixelFromFrame(iTrackEnd - iSelectEnd);
 				} else {
 					w++;	// Give selection some right-border room.
 				}

@@ -173,10 +173,6 @@ void qtractorTrackView::clear (void)
 // Update track view content height.
 void qtractorTrackView::updateContentsHeight (void)
 {
-#ifdef CONFIG_DEBUG_0
-	fprintf(stderr, "qtractorTrackView::updateContentsHeight()\n");
-#endif
-
 	qtractorSession *pSession = m_pTracks->session();
 	if (pSession == NULL)
 		return;
@@ -189,7 +185,8 @@ void qtractorTrackView::updateContentsHeight (void)
 	}
 
 #ifdef CONFIG_DEBUG_0
-	fprintf(stderr, " => iContentsHeight=%d\n", iContentsHeight);
+	fprintf(stderr, "qtractorTrackView::updateContentsHeight()");
+		" => iContentsHeight=%d\n", iContentsHeight);
 #endif
 
 	// No selection anymore (we'll update all contents anyway)...
@@ -204,10 +201,6 @@ void qtractorTrackView::updateContentsHeight (void)
 // Update track view content width.
 void qtractorTrackView::updateContentsWidth ( int iContentsWidth )
 {
-#ifdef CONFIG_DEBUG_0
-	fprintf(stderr, "qtractorTrackView::updateContentsWidth(%d)\n", iContentsWidth);
-#endif
-
 	qtractorSession *pSession = m_pTracks->session();
 	if (pSession) {
 		if (iContentsWidth < 1) 
@@ -218,7 +211,8 @@ void qtractorTrackView::updateContentsWidth ( int iContentsWidth )
 	}
 
 #ifdef CONFIG_DEBUG_0
-	fprintf(stderr, " => iContentsWidth=%d\n", iContentsWidth);
+	fprintf(stderr, "qtractorTrackView::updateContentsWidth()");
+		" => iContentsWidth=%d\n", iContentsWidth);
 #endif
 
 	// No selection anymore (we'll update all contents anyway)...
