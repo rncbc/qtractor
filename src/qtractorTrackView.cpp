@@ -1661,6 +1661,7 @@ void qtractorTrackView::dragFadeDrop ( const QPoint& pos )
 	}
 
 	// Reset state for proper redrawing...
+	qtractorScrollView::unsetCursor();
 	m_dragState = DragNone;
 
 	// Put it in the form of an undoable command...
@@ -1687,7 +1688,7 @@ void qtractorTrackView::resetDragState (void)
 	if (m_pRubberBand)
 		m_pRubberBand->hide();
 
-	// If we were dragging fade-slope lines, refresh
+	// If we were dragging fade-slope lines, refresh...
 	if (dragState == DragFadeIn || dragState == DragFadeOut) {
 		qtractorScrollView::viewport()->update(
 			QRect(contentsToViewport(m_rectDrag.topLeft()), m_rectDrag.size()));

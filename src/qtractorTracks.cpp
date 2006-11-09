@@ -586,6 +586,7 @@ bool qtractorTracks::addMidiTracks ( QStringList files,
 	// Needed to help on setting whole session properties
 	// from the first imported MIDI file...
 	int iImport = iTrackCount;
+	unsigned long iTimeStart = pSession->tickFromFrame(iClipStart);
 
 	// To log this import into session description.
 	QString sDescription = pSession->description() + "--\n";
@@ -625,7 +626,7 @@ bool qtractorTracks::addMidiTracks ( QStringList files,
 			if (iTrackChannel == 0) {
 				// Some adjustment required...
 				iImport++;
-				iClipStart = pSession->frameSnap(iClipStart);
+				iClipStart = pSession->frameFromTick(iTimeStart);
 				pMidiClip->setClipStart(iClipStart);
 			}
 			// Time to check whether there is actual data on track...

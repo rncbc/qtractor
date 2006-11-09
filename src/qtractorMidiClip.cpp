@@ -219,7 +219,7 @@ void qtractorMidiClip::updateClipTime (void)
 
 
 // Intra-clip tick/time positioning seek.
-void qtractorMidiClip::ClipCursor::seek (
+qtractorMidiEvent *qtractorMidiClip::ClipCursor::seek (
 	qtractorMidiSequence *pSeq, unsigned long tick )
 {
 	// Plain reset...
@@ -245,36 +245,26 @@ void qtractorMidiClip::ClipCursor::seek (
 			event = event->prev();
 		time = tick;
 	}
+	
+	return event;
 }
 
 
 // Intra-clip tick/time positioning reset.
-void qtractorMidiClip::ClipCursor::reset (
+qtractorMidiEvent *qtractorMidiClip::ClipCursor::reset (
 	qtractorMidiSequence *pSeq,	unsigned long tick )
 {
-	if (tick == 0) {
-		// Plain reset...
+	// Reset-seek forward...
+	if (time >= tick)
+		event = NULL;
+	if (event == NULL)
 		event = pSeq->events().first();
-		time  = 0;
-	}
-	else
-	if (tick > time) {
-		// Reset-seek forward...
-		if (event == NULL)
-			event = pSeq->events().first();
-		while (event && event->time() + event->duration() < tick)
-			event = event->next();
-		time = tick;
-	} 
-	else
-	if (tick < time) {
-		// Reset-seek backward...
-		if (event == NULL)
-			event = pSeq->events().last();
-		while (event && event->time() + event->duration() > tick)
-			event = event->prev();
-		time = tick;
-	}
+	while (event &&	event->time() + event->duration() < tick)
+		event = event->next();
+	// That was it...
+	time = tick;
+	
+	return event;
 }
 
 
@@ -392,10 +382,9 @@ void qtractorMidiClip::process ( unsigned long iFrameStart,
 	unsigned long iTimeSeek = 0;
 	if (iTimeStart > iTimeClip)
 		iTimeSeek = iTimeStart - iTimeClip;
-	m_playCursor.seek(m_pSeq, iTimeSeek);
 
 	// Enqueue the requested events...
-	qtractorMidiEvent *pEvent = m_playCursor.event;
+	qtractorMidiEvent *pEvent = m_playCursor.seek(m_pSeq, iTimeSeek);
 	while (pEvent) {
 		unsigned long iTimeEvent = iTimeClip + pEvent->time();
 		if (iTimeEvent > iTimeEnd)
@@ -437,9 +426,7 @@ void qtractorMidiClip::drawClip ( QPainter *pPainter, const QRect& clipRect,
 	int h  = h1 / iNoteSpan;
 	if (h < 4) h = 4;
 
-	m_drawCursor.reset(m_pSeq, iTimeStart);
-
-	qtractorMidiEvent *pEvent = m_drawCursor.event;
+	qtractorMidiEvent *pEvent = m_drawCursor.reset(m_pSeq, iTimeStart);
 	while (pEvent && pEvent->time() < iTimeEnd) {
 		if (pEvent->type() == qtractorMidiEvent::NOTEON
 			&& pEvent->time() + pEvent->duration() >= iTimeStart) {

@@ -112,8 +112,10 @@ private:
 		ClipCursor() : event(NULL), time(0) {}
 
 		// Specific methods.
-		void seek(qtractorMidiSequence *pSeq, unsigned long tick);
-		void reset(qtractorMidiSequence *pSeq, unsigned long tick = 0);
+		qtractorMidiEvent *seek(qtractorMidiSequence *pSeq,
+			unsigned long tick);
+		qtractorMidiEvent *reset(qtractorMidiSequence *pSeq,
+			unsigned long tick = 0);
 		
 		// Instance variables.
 		qtractorMidiEvent *event;
