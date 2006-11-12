@@ -390,7 +390,7 @@ void qtractorMidiClip::process ( unsigned long iFrameStart,
 		if (iTimeEvent >= iTimeStart
 			&& (!bMute || pEvent->type() != qtractorMidiEvent::NOTEON))
 			pSession->midiEngine()->enqueue(pTrack, pEvent, iTimeEvent,
-				gain(pSession->frameFromTick(iTimeEvent)));
+				gain(pSession->frameFromTick(pEvent->time())));
 		pEvent = pEvent->next();
 	}
 }
