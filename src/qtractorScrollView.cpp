@@ -132,13 +132,18 @@ void qtractorScrollView::updateScrollBars (void)
 	int h = pViewport->height() - 2;
 	
 	QScrollBar *pHScrollBar = QAbstractScrollArea::horizontalScrollBar();
-	QScrollBar *pVScrollBar = QAbstractScrollArea::verticalScrollBar();
-
-	pHScrollBar->setRange(0, m_rectContents.width() - w);
+	int cw = (m_rectContents.width() > w ? m_rectContents.width() - w : 0);
+	if (pHScrollBar->sliderPosition() > cw)
+		pHScrollBar->setSliderPosition(cw);
+	pHScrollBar->setRange(0, cw);
 	pHScrollBar->setSingleStep((w >> 4) + 1);
 	pHScrollBar->setPageStep(w);
 
-	pVScrollBar->setRange(0, m_rectContents.height() - h);
+	QScrollBar *pVScrollBar = QAbstractScrollArea::verticalScrollBar();
+	int ch = (m_rectContents.height() > h ? m_rectContents.height() - h : 0);
+	if (pVScrollBar->sliderPosition() > ch)
+		pVScrollBar->setSliderPosition(ch);
+	pVScrollBar->setRange(0, ch);
 	pVScrollBar->setSingleStep((h >> 4) + 1);
 	pVScrollBar->setPageStep(h);
 }
