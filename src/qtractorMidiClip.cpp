@@ -372,8 +372,6 @@ void qtractorMidiClip::process ( unsigned long iFrameStart,
 	bool bMute = (pTrack->isMute()
 		|| (pSession->soloTracks() && !pTrack->isSolo()));
 
-	// FIXME: This seems a broken gain range computation...
-	float fGain = gain(iFrameStart, iFrameEnd);
 	unsigned long iTimeClip  = pSession->tickFromFrame(clipStart());
 	unsigned long iTimeStart = pSession->tickFromFrame(iFrameStart);
 	unsigned long iTimeEnd   = pSession->tickFromFrame(iFrameEnd);
@@ -391,7 +389,8 @@ void qtractorMidiClip::process ( unsigned long iFrameStart,
 			break;
 		if (iTimeEvent >= iTimeStart
 			&& (!bMute || pEvent->type() != qtractorMidiEvent::NOTEON))
-			pSession->midiEngine()->enqueue(pTrack, pEvent, iTimeEvent, fGain);
+			pSession->midiEngine()->enqueue(pTrack, pEvent, iTimeEvent,
+				gain(pSession->frameFromTick(iTimeEvent)));
 		pEvent = pEvent->next();
 	}
 }

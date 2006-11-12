@@ -130,7 +130,7 @@ public:
 protected:
 
 	// Compute clip gain, given current fade-in/out slopes.
-	float gain(unsigned long iFrameStart, unsigned long iFrameEnd) const;
+	float gain(unsigned long iOffset) const;
 
 	// Virtual document element methods.
 	virtual bool loadClipElement(qtractorSessionDocument *pDocument,
