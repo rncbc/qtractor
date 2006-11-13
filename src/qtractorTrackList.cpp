@@ -395,13 +395,20 @@ qtractorTrack *qtractorTrackListModel::track ( int row ) const
 
 void qtractorTrackListModel::updateTrack ( qtractorTrack *pTrack )
 {
+	int row = 0;
 	QListIterator<Item *> iter(m_items);
 	while (iter.hasNext()) {
 		Item *pItem = iter.next();
 		if (pTrack == pItem->track) {
+			// Force update the data...
 			pItem->update();
+			// Signal that we changed this row...
+			emit dataChanged(
+				index(row, qtractorTrackList::Number),
+				index(row, qtractorTrackList::Instrument));
 			break;
 		}
+		row++;
 	}
 }
 

@@ -105,6 +105,20 @@ public:
 		::memcpy(m_pSysex, pSysex, iSysex);
 	}
 
+	// Special accessors for pitch-bend event types.
+	int pitchBend() const
+	{
+		unsigned short val = ((unsigned short) m_data[1] << 7) | m_data[0];
+		return int(val) - 0x2000;
+	}
+	
+	void setPitchBend(int iPitchBend)
+	{
+		unsigned short val = (unsigned short) (0x2000 + iPitchBend);
+		m_data[0] = (val & 0x007f);
+		m_data[1] = (val & 0x3f80) >> 7;
+	}
+
 private:
 
 	// Event instance members.
@@ -112,7 +126,7 @@ private:
 	EventType      m_type;
 	unsigned char  m_data[2];
 	unsigned long  m_duration;
-	// Sysex data (m_data[0] has the length).
+	// Sysex data (m_data[] has the length).
 	unsigned char *m_pSysex;
 };
 
