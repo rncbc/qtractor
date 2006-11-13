@@ -32,6 +32,9 @@
 #include "qtractorMidiMonitor.h"
 #include "qtractorInstrument.h"
 #include "qtractorPlugin.h"
+#include "qtractorMixer.h"
+
+#include "qtractorMainForm.h"
 
 #include <QPainter>
 
@@ -202,11 +205,10 @@ bool qtractorTrack::open (void)
 	if (m_pInputBus == NULL || m_pOutputBus == NULL)
 		return false;
 
+	// Remember current (output) monitor, for later deletion...
+	qtractorMonitor *pMonitor = m_pMonitor;
+
 	// (Re)allocate (output) monitor...
-	if (m_pMonitor) {
-		delete m_pMonitor;
-		m_pMonitor = NULL;
-	}
 	switch (m_props.trackType) {
 	case qtractorTrack::Audio: {
 		qtractorAudioEngine *pAudioEngine
@@ -237,6 +239,22 @@ bool qtractorTrack::open (void)
 
 	// Ah, at least make new name feedback...
 	m_pPluginList->setName(trackName());
+
+	// Mixer turn, before we get rid of old monitor...
+	if (pMonitor) {
+		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+		if (pMainForm) {
+			qtractorMixer *pMixer = pMainForm->mixer();
+			if (pMixer) {
+				qtractorMixerStrip *pStrip
+					= pMixer->trackRack()->findStrip(pMonitor);
+				if (pStrip)
+					pStrip->setTrack(this);
+			}
+		}
+		// That's it...
+		delete pMonitor;
+	}
 
 	// Done.
 	return (m_pMonitor != NULL);

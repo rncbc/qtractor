@@ -410,15 +410,6 @@ bool qtractorEditTrackCommand::redo (void)
 	if (m_pTrack->trackType() == qtractorTrack::Midi)
 	    pTracks->updateMidiTrack(m_pTrack);
 
-	// Mixer turn...
-	qtractorMixer *pMixer = mainForm()->mixer();
-	if (pMixer) {
-		qtractorMixerStrip *pStrip
-			= pMixer->trackRack()->findStrip(m_pTrack->monitor());
-		if (pStrip)
-			pStrip->setTrack(m_pTrack);
-	}
-	
 	return true;
 }
 

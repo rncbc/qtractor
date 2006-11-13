@@ -184,7 +184,9 @@ void qtractorAudioMeterValue::paintEvent ( QPaintEvent * )
 	}
 
 	float dB = QTRACTOR_AUDIO_METER_MINDB;
-	float fValue = m_pAudioMeter->audioMonitor()->value(m_iChannel);
+	float fValue = 0.0f;
+	if (m_pAudioMeter->audioMonitor())
+		fValue = m_pAudioMeter->audioMonitor()->value(m_iChannel);
 	if (fValue > 0.0f)
 		dB = 20.0f * ::log10f(fValue);
 
