@@ -207,6 +207,7 @@ bool qtractorTrack::open (void)
 
 	// Remember current (output) monitor, for later deletion...
 	qtractorMonitor *pMonitor = m_pMonitor;
+	m_pMonitor = NULL;
 
 	// (Re)allocate (output) monitor...
 	switch (m_props.trackType) {

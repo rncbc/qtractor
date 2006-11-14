@@ -114,13 +114,10 @@ qtractorMainForm::qtractorMainForm (
 	g_pMainForm = this;
 
 	// Initialize some pointer references.
-	m_pOptions = NULL;
-	m_pSession = new qtractorSession();
-	m_pCommands = new qtractorCommandList(this);
+	m_pOptions     = NULL;
+	m_pSession     = new qtractorSession();
+	m_pCommands    = new qtractorCommandList(this);
 	m_pInstruments = new qtractorInstrumentList();
-
-	// To remember last time we've shown the playhead.
-	m_iPlayHead = 0;
 
 	// All child forms are to be created later, not earlier than setup.
 	m_pMessages    = NULL;
@@ -128,6 +125,9 @@ qtractorMainForm::qtractorMainForm (
 	m_pMixer       = NULL;
 	m_pConnections = NULL;
 	m_pTracks      = NULL;
+
+	// To remember last time we've shown the playhead.
+	m_iPlayHead = 0;
 
 	// We'll start clean.
 	m_iUntitled   = 0;
@@ -184,12 +184,9 @@ qtractorMainForm::qtractorMainForm (
 		= m_ui.transportToolbar->findChildren<QToolButton *> (
 			QRegExp("^transport(Backward|Forward)Action"));
 	// Iterate over the intended transport tool-buttons...	
-	QListIterator<QToolButton *> it(list);
-	while (it.hasNext()) {
-		QToolButton *pToolButton = it.next();
-		if (pToolButton)
-			pToolButton->setAutoRepeat(true);
-	}
+	QListIterator<QToolButton *> iter(list);
+	while (iter.hasNext())
+		iter.next()->setAutoRepeat(true);
 
 	// Additional time-toolbar controls...
 //	m_ui.timeToolbar->addSeparator();
@@ -234,10 +231,12 @@ qtractorMainForm::qtractorMainForm (
 	m_pSnapPerBeatComboBox->setToolTip(tr("Snap/beat"));
 	m_ui.timeToolbar->addWidget(m_pSnapPerBeatComboBox);
 
-	QObject::connect(m_pTempoSpinBox, SIGNAL(valueChanged(double)),
-		this, SLOT(tempoChanged()));
-	QObject::connect(m_pSnapPerBeatComboBox, SIGNAL(activated(int)),
-		this, SLOT(snapPerBeatChanged(int)));
+	QObject::connect(m_pTempoSpinBox,
+		SIGNAL(valueChanged(double)),
+		SLOT(tempoChanged()));
+	QObject::connect(m_pSnapPerBeatComboBox,
+		SIGNAL(activated(int)),
+		SLOT(snapPerBeatChanged(int)));
 
 	// Create some statusbar labels...
 	QLabel *pLabel;
@@ -2191,12 +2190,9 @@ bool qtractorMainForm::checkRestartSession (void)
 				= m_ui.transportToolbar->findChildren<QToolButton *> (
 					QRegExp("^transport(Backward|Forward)Action"));
 			// Iterate over the intended transport tool-buttons...	
-			QListIterator<QToolButton *> it(list);
-			while (it.hasNext()) {
-				QToolButton *pToolButton = it.next();
-				if (pToolButton)
-					pToolButton->setDown(false);
-			}
+			QListIterator<QToolButton *> iter(list);
+			while (iter.hasNext())
+				iter.next()->setDown(false);
 			// Can go on with no-business...
 			m_ui.transportRecordAction->setChecked(false);
 			m_ui.transportPlayAction->setChecked(false);
