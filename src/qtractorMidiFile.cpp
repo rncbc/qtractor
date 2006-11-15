@@ -307,17 +307,17 @@ bool qtractorMidiFile::readTrack ( qtractorMidiSequence *pSeq,
 			break;
 		case qtractorMidiEvent::SYSEX:
 			len = readInt();
-			data = new unsigned char [len + 1];
-			if (readData(data, len) < (int) len) {
+			data = new unsigned char [1 + len];
+			data[0] = (unsigned char) type;	// Skip 0xf0 head.
+			if (readData(&data[1], len) < (int) len) {
 				delete [] data;
 				return false;
 			}
-			data[len] = (unsigned char) 0;
 			// Check if its channel filtered...
 			if (bChannelEvent) {
 				time -= pSeq->timeOffset();
 				pEvent = new qtractorMidiEvent(time, type);
-				pEvent->setSysex(data, len);
+				pEvent->setSysex(data, 1 + len);
 				pSeq->addEvent(pEvent);
 				pSeq->setChannel(iChannel);
 			}
@@ -444,6 +444,8 @@ bool qtractorMidiFile::writeTrack ( qtractorMidiSequence *pSeq )
 		unsigned int  iStatus;
 		unsigned int  iLastStatus = 0;
 		unsigned long iLastTime   = 0;
+		unsigned char *data;
+		unsigned int len;
 		qtractorMidiEvent *pNoteAfter;
 		qtractorMidiEvent *pNoteOff = NULL;
 		qtractorList<qtractorMidiEvent> notesOff;
@@ -515,8 +517,10 @@ bool qtractorMidiFile::writeTrack ( qtractorMidiSequence *pSeq )
 				writeInt(pEvent->value(), 1);
 				break;
 			case qtractorMidiEvent::SYSEX:
-				writeInt(pEvent->sysex_len());
-				writeData(pEvent->sysex(), pEvent->sysex_len());
+				data = pEvent->sysex() + 1;	// Skip 0xf0 head.
+				len  = pEvent->sysex_len() - 1;
+				writeInt(len);
+				writeData(data, len);
 				break;
 			default:
 				break;
@@ -553,6 +557,7 @@ bool qtractorMidiFile::writeTrack ( qtractorMidiSequence *pSeq )
 	// Time to overwrite the actual track length...
 	if (::fseek(m_pFile, iMTrkOffset, SEEK_SET))
 		return false;
+
 	// Do it...
 	writeInt(m_iOffset - (iMTrkOffset + 4), 4);
 	m_iOffset -= 4;

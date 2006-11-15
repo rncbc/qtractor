@@ -797,13 +797,7 @@ void qtractorMidiEngine::enqueue ( qtractorTrack *pTrack,
 			break;
 		case qtractorMidiEvent::SYSEX: {
 			ev.type = SND_SEQ_EVENT_SYSEX;
-			unsigned int   iSysex = pEvent->sysex_len() + 2;
-			unsigned char *pSysex = new unsigned char [iSysex];
-			pSysex[0] = 0xf0;
-			::memcpy(&pSysex[1], pEvent->sysex(), pEvent->sysex_len());
-			pSysex[iSysex - 1] = 0xf7;
-			snd_seq_ev_set_sysex(&ev, iSysex, pSysex);
-			delete [] pSysex;
+			snd_seq_ev_set_sysex(&ev, pEvent->sysex_len(), pEvent->sysex());
 			break;
 		}
 		default:
