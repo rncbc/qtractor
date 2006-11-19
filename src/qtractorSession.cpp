@@ -264,7 +264,7 @@ bool qtractorSession::updateSessionLength (void)
 }
 
 
-// Session length accessor.
+// Session length accessors.
 unsigned long qtractorSession::sessionLength (void) const
 {
 	return m_iSessionLength;

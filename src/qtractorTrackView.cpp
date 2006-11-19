@@ -37,6 +37,7 @@
 #include "qtractorClipCommand.h"
 
 #include "qtractorMainForm.h"
+#include "qtractorThumbView.h"
 
 #include <QToolButton>
 #include <QScrollBar>
@@ -412,6 +413,11 @@ void qtractorTrackView::resizeEvent ( QResizeEvent *pResizeEvent )
 	}
 
 	updateContents();
+
+	// HACK: let our (single) thumb view get notified...
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm)
+		pMainForm->thumbView()->updateThumb();
 }
 
 

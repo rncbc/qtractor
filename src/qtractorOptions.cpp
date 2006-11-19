@@ -62,6 +62,7 @@ qtractorOptions::qtractorOptions (void)
 	bViewToolbar    = m_settings.value("/ViewToolbar", true).toBool();
 	bTransportToolbar = m_settings.value("/TransportToolbar", true).toBool();
 	bTimeToolbar    = m_settings.value("/TimeToolbar", true).toBool();
+	bThumbToolbar   = m_settings.value("/ThumbToolbar", true).toBool();
 	m_settings.endGroup();
 
 	// Transport options group.
@@ -152,6 +153,7 @@ qtractorOptions::~qtractorOptions (void)
 	m_settings.setValue("/ViewToolbar", bViewToolbar);
 	m_settings.setValue("/TransportToolbar", bTransportToolbar);
 	m_settings.setValue("/TimeToolbar", bTimeToolbar);
+	m_settings.setValue("/ThumbToolbar", bThumbToolbar);
 	m_settings.endGroup();
 
 	// Transport options group.

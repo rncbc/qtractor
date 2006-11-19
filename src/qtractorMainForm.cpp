@@ -33,6 +33,7 @@
 #include "qtractorTrackList.h"
 #include "qtractorTrackTime.h"
 #include "qtractorTrackView.h"
+#include "qtractorThumbView.h"
 
 #include "qtractorAudioPeak.h"
 #include "qtractorAudioBuffer.h"
@@ -230,6 +231,12 @@ qtractorMainForm::qtractorMainForm (
 		m_pSnapPerBeatComboBox->addItem(sPrefix.arg(iSnapPerBeat));
 	m_pSnapPerBeatComboBox->setToolTip(tr("Snap/beat"));
 	m_ui.timeToolbar->addWidget(m_pSnapPerBeatComboBox);
+
+	// Track-line thumbnail view...
+	m_pThumbView = new qtractorThumbView();
+	m_ui.thumbToolbar->addWidget(m_pThumbView);
+	m_ui.thumbToolbar->setAllowedAreas(
+		Qt::TopToolBarArea | Qt::BottomToolBarArea);
 
 	QObject::connect(m_pTempoSpinBox,
 		SIGNAL(valueChanged(double)),
@@ -433,6 +440,9 @@ qtractorMainForm::qtractorMainForm (
 	QObject::connect(m_ui.viewToolbarTimeAction,
 		SIGNAL(triggered(bool)),
 		SLOT(viewToolbarTime(bool)));
+	QObject::connect(m_ui.viewToolbarThumbAction,
+		SIGNAL(triggered(bool)),
+		SLOT(viewToolbarThumb(bool)));
 	QObject::connect(m_ui.viewFilesAction,
 		SIGNAL(triggered(bool)),
 		SLOT(viewFiles(bool)));
@@ -593,6 +603,7 @@ void qtractorMainForm::setOptions ( qtractorOptions *pOptions )
 	m_ui.viewToolbarViewAction->setChecked(m_pOptions->bViewToolbar);
 	m_ui.viewToolbarTransportAction->setChecked(m_pOptions->bTransportToolbar);
 	m_ui.viewToolbarTimeAction->setChecked(m_pOptions->bTimeToolbar);
+	m_ui.viewToolbarThumbAction->setChecked(m_pOptions->bThumbToolbar);
 
 	m_ui.transportFollowAction->setChecked(m_pOptions->bFollowPlayhead);
 
@@ -605,6 +616,7 @@ void qtractorMainForm::setOptions ( qtractorOptions *pOptions )
 	viewToolbarView(m_pOptions->bViewToolbar);
 	viewToolbarTransport(m_pOptions->bTransportToolbar);
 	viewToolbarTime(m_pOptions->bTimeToolbar);
+	viewToolbarThumb(m_pOptions->bThumbToolbar);
 
 	// Restore whole dock windows state.
 	QByteArray aDockables = m_pOptions->settings().value(
@@ -680,9 +692,14 @@ void qtractorMainForm::setOptions ( qtractorOptions *pOptions )
 		SIGNAL(selectionChanged()),
 		SLOT(trackSelectionChanged()));
 
+	// Other dedicated signal/slot connections...
+	QObject::connect(m_pTracks->trackView(),
+		SIGNAL(contentsMoving(int,int)),
+		m_pThumbView, SLOT(updateThumb()));
+
 	// Make it ready :-)
 	statusBar()->showMessage(tr("Ready"), 3000);
-
+ 
 	// Register the first timer slot.
 	QTimer::singleShot(QTRACTOR_TIMER_MSECS, this, SLOT(timerSlot()));
 }
@@ -714,6 +731,7 @@ bool qtractorMainForm::queryClose (void)
 			m_pOptions->bViewToolbar = m_ui.viewToolbar->isVisible();
 			m_pOptions->bTransportToolbar = m_ui.transportToolbar->isVisible();
 			m_pOptions->bTimeToolbar = m_ui.timeToolbar->isVisible();
+			m_pOptions->bThumbToolbar = m_ui.thumbToolbar->isVisible();
 			m_pOptions->bFollowPlayhead = m_ui.transportFollowAction->isChecked();
 			// Save instrument definition file list...
 			m_pOptions->instrumentFiles = m_pInstruments->files();
@@ -878,6 +896,12 @@ qtractorCommandList *qtractorMainForm::commands (void) const
 qtractorInstrumentList *qtractorMainForm::instruments (void) const
 {
 	return m_pInstruments;
+}
+
+// The session thumb-view widget accessor.
+qtractorThumbView *qtractorMainForm::thumbView (void) const
+{
+	return m_pThumbView;
 }
 
 
@@ -1590,6 +1614,17 @@ void qtractorMainForm::viewToolbarTime ( bool bOn )
 }
 
 
+// Show/hide the thumb (track-line)ime toolbar.
+void qtractorMainForm::viewToolbarThumb ( bool bOn )
+{
+	if (bOn) {
+		m_ui.thumbToolbar->show();
+	} else {
+		m_ui.thumbToolbar->hide();
+	}
+}
+
+
 // Show/hide the files window view.
 void qtractorMainForm::viewFiles ( bool bOn )
 {
@@ -1658,6 +1693,8 @@ void qtractorMainForm::viewRefresh (void)
 		m_pMixer->updateBusses();
 		m_pMixer->updateTracks();
 	}
+
+	m_pThumbView->update();
 
 	stabilizeForm();
 }
@@ -2148,6 +2185,9 @@ void qtractorMainForm::stabilizeForm (void)
 	m_ui.transportLoopAction->setEnabled(bEnabled
 		&& (m_pSession->isLooping() || bSelectable));
 	m_ui.transportRecordAction->setEnabled(m_pSession->recordTracks() > 0);
+
+	m_pThumbView->update();
+	m_pThumbView->updateThumb();
 }
 
 
@@ -2385,13 +2425,13 @@ void qtractorMainForm::updateMessagesCapture (void)
 void qtractorMainForm::timerSlot (void)
 {
 	// Playhead and transport status...
-	unsigned long iPlayHead = m_pSession->playHead();
-	if (iPlayHead != m_iPlayHead) {
-		if (m_pTracks) {
+	if (m_pTracks) {
+		unsigned long iPlayHead = m_pSession->playHead();
+		if (m_iPlayHead != iPlayHead) {
 			m_pTracks->trackView()->setPlayHead(iPlayHead,
 				m_ui.transportFollowAction->isChecked());
+			m_iPlayHead = iPlayHead;
 		}
-		m_iPlayHead = iPlayHead;
 	}
 
 	// Check if its time to refresh playhead timer...
@@ -2642,6 +2682,8 @@ void qtractorMainForm::contentsChanged (void)
 	m_pTempoSpinBox->setValue(m_pSession->tempo());
 	m_pSnapPerBeatComboBox->setCurrentIndex(
 		qtractorSession::indexFromSnap(m_pSession->snapPerBeat()));
+
+	m_pThumbView->update();
 
 	m_iDirtyCount++;
 	stabilizeForm();

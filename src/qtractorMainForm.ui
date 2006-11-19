@@ -124,6 +124,14 @@
     <number>4</number>
    </attribute>
   </widget>
+  <widget class="QToolBar" name="thumbToolbar" >
+   <property name="orientation" >
+    <enum>Qt::Horizontal</enum>
+   </property>
+   <attribute name="toolBarArea" >
+    <number>4</number>
+   </attribute>
+  </widget>
   <widget class="QMenuBar" name="MenuBar" >
    <property name="geometry" >
     <rect>
@@ -165,6 +173,7 @@
      <addaction name="viewToolbarViewAction" />
      <addaction name="viewToolbarTransportAction" />
      <addaction name="viewToolbarTimeAction" />
+     <addaction name="viewToolbarThumbAction" />
     </widget>
     <addaction name="viewMenubarAction" />
     <addaction name="viewStatusbarAction" />
@@ -853,6 +862,23 @@
    </property>
    <property name="statusTip" >
     <string>Show/hide main program window time toolbar</string>
+   </property>
+  </action>
+  <action name="viewToolbarThumbAction" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="text" >
+    <string>Thum&amp;b</string>
+   </property>
+   <property name="iconText" >
+    <string>Thumb toolbar</string>
+   </property>
+   <property name="toolTip" >
+    <string>Thumb toolbar</string>
+   </property>
+   <property name="statusTip" >
+    <string>Show/hide main program window thumb toolbar</string>
    </property>
   </action>
   <action name="viewFilesAction" >

@@ -55,7 +55,7 @@ headers = config.h \
 	src/qtractorSessionCursor.h \
 	src/qtractorSessionDocument.h \
 	src/qtractorSlider.h \
-	src/qtractorScrollView.h \
+	src/qtractorThumbView.h \
 	src/qtractorTrack.h \
 	src/qtractorTrackButton.h \
 	src/qtractorTrackCommand.h \
@@ -117,7 +117,7 @@ sources = src/main.cpp \
 	src/qtractorSession.cpp \
 	src/qtractorSessionCursor.cpp \
 	src/qtractorSessionDocument.cpp \
-	src/qtractorScrollView.cpp \
+	src/qtractorThumbView.cpp \
 	src/qtractorTrack.cpp \
 	src/qtractorTrackButton.cpp \
 	src/qtractorTrackCommand.cpp \

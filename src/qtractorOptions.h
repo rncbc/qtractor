@@ -73,6 +73,7 @@ public:
 	bool    bViewToolbar;
 	bool    bTransportToolbar;
 	bool    bTimeToolbar;
+	bool    bThumbToolbar;
 
 	// Transport options...
 	bool    bFollowPlayhead;

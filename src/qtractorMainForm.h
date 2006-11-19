@@ -29,6 +29,7 @@
 class qtractorOptions;
 class qtractorSession;
 class qtractorTracks;
+class qtractorThumbView;
 class qtractorCommand;
 class qtractorCommandList;
 class qtractorInstrumentList;
@@ -70,6 +71,7 @@ public:
 	qtractorMixer *mixer() const;
 	qtractorCommandList *commands() const;
 	qtractorInstrumentList *instruments() const;
+	qtractorThumbView *thumbView() const;
 
 	QString sessionName(const QString& sFilename);
 
@@ -122,6 +124,7 @@ public slots:
 	void viewToolbarView(bool bOn);
 	void viewToolbarTransport(bool bOn);
 	void viewToolbarTime(bool bOn);
+	void viewToolbarThumb(bool bOn);
 	void viewFiles(bool bOn);
 	void viewMessages(bool bOn);
 	void viewConnections(bool bOn);
@@ -207,6 +210,7 @@ private:
 	QLabel *m_pTransportTime;
 	QDoubleSpinBox *m_pTempoSpinBox;
 	QComboBox *m_pSnapPerBeatComboBox;
+	qtractorThumbView *m_pThumbView;
 	unsigned long m_iPlayHead;
 	int m_iPeakTimer;
 	int m_iPlayTimer;
