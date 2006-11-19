@@ -34,6 +34,7 @@
 #include <QPaintEvent>
 #include <QResizeEvent>
 #include <QMouseEvent>
+#include <QKeyEvent>
 
 #include <QRubberBand>
 
@@ -51,10 +52,12 @@ qtractorThumbView::qtractorThumbView( QWidget *pParent )
 	QFrame::setSizePolicy(
 		QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding));
 
+	QFrame::setFocusPolicy(Qt::ClickFocus);
+
 	m_dragState   = DragNone;
 	m_pRubberBand = new QRubberBand(QRubberBand::Rectangle, this);
 	QPalette pal(m_pRubberBand->palette());
-	pal.setColor(m_pRubberBand->foregroundRole(), Qt::darkGray);
+	pal.setColor(m_pRubberBand->foregroundRole(), pal.highlight().color());
 	m_pRubberBand->setPalette(pal);
 	m_pRubberBand->setBackgroundRole(QPalette::NoRole);
 	m_pRubberBand->show();
@@ -228,12 +231,16 @@ void qtractorThumbView::resizeEvent ( QResizeEvent *pResizeEvent )
 // Handle selection with mouse.
 void qtractorThumbView::mousePressEvent ( QMouseEvent *pMouseEvent )
 {
+	// Force null state.
 	m_dragState = DragNone;
 
-	const QPoint& pos = pMouseEvent->pos();
-	if (m_pRubberBand->geometry().contains(pos)) {
+	m_posDrag = pMouseEvent->pos();
+	if (m_pRubberBand->geometry().contains(m_posDrag)) {
 		m_dragState = DragStart;
-		m_posDrag   = pos;
+		QFrame::setCursor(QCursor(Qt::SizeHorCursor));
+	} else {
+		m_dragState = DragClick;
+		QFrame::setCursor(QCursor(Qt::PointingHandCursor));
 	}
 
 	QFrame::mousePressEvent(pMouseEvent);
@@ -257,16 +264,55 @@ void qtractorThumbView::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 
 void qtractorThumbView::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 {
+	QFrame::mouseReleaseEvent(pMouseEvent);
+
 	const QPoint& pos = pMouseEvent->pos();
 	if (m_dragState == DragMove)
 		updateView(pos.x() - m_posDrag.x());
 	else
-	if (m_dragState == DragNone)
-		updateView(pos.x() - m_pRubberBand->pos().x());
+	if (m_dragState == DragClick)
+		updateView(pos.x() - m_pRubberBand->pos().x() - 8);
 
+	// Clean up.
+	resetDragState();
+}
+
+
+// Reset drag/select state.
+void qtractorThumbView::resetDragState (void)
+{
+	// Restore uncommitted thumb position?...
+	if (m_dragState == DragMove)
+		updateThumb();
+
+	// Cancel any dragging out there...
+	if (m_dragState != DragNone)
+		QFrame::unsetCursor();
+
+	// Force null state.
 	m_dragState = DragNone;
 
-	QFrame::mouseReleaseEvent(pMouseEvent);
+	// HACK: give focus to track-view...
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm && pMainForm->tracks())
+		pMainForm->tracks()->trackView()->setFocus();
+}
+
+
+// Keyboard event handler.
+void qtractorThumbView::keyPressEvent ( QKeyEvent *pKeyEvent )
+{
+//#ifdef CONFIG_DEBUG
+	fprintf(stderr, "qtractorThumbView::keyPressEvent(key=%d)\n", pKeyEvent->key());
+//#endif
+	switch (pKeyEvent->key()) {
+	case Qt::Key_Escape:
+		resetDragState();
+		break;
+	default:
+		QFrame::keyPressEvent(pKeyEvent);
+		break;
+	}
 }
 
 

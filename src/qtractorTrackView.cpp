@@ -416,7 +416,7 @@ void qtractorTrackView::resizeEvent ( QResizeEvent *pResizeEvent )
 
 	// HACK: let our (single) thumb view get notified...
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm)
+	if (pMainForm && pMainForm->thumbView())
 		pMainForm->thumbView()->updateThumb();
 }
 

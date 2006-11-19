@@ -301,7 +301,7 @@ bool qtractorTrackTime::dragHeadStart ( const QPoint& pos )
 void qtractorTrackTime::mousePressEvent ( QMouseEvent *pMouseEvent )
 {
 	// Force null state.
-	resetDragState();
+	m_dragState = DragNone;
 
 	qtractorSession *pSession = m_pTracks->session();
 	if (pSession) {

@@ -29,6 +29,7 @@
 class QPaintEvent;
 class QResizeEvent;
 class QMouseEvent;
+class QKeyEvent;
 
 class QRubberBand;
 
@@ -66,13 +67,19 @@ protected:
 	void mouseMoveEvent(QMouseEvent *pMouseEvent);
 	void mouseReleaseEvent(QMouseEvent *pMouseEvent);
 
+	// Reset drag state.
+	void resetDragState();
+
+	// Keyboard event handler.
+	void keyPressEvent(QKeyEvent *pKeyEvent);
+
 private:
 
 	// The thumb rubber-band widget.
 	QRubberBand *m_pRubberBand;
 
 	// Thumb drag-states.
-	enum { DragNone = 0, DragStart, DragMove } m_dragState;
+	enum { DragNone = 0, DragStart, DragMove, DragClick } m_dragState;
 	QPoint m_posDrag;
 };
 
