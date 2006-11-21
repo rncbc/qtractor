@@ -170,13 +170,15 @@ void qtractorThumbView::paintEvent ( QPaintEvent *pPaintEvent )
 	f2 /= w;
 	f2++;
 
-	qtractorTrack *pTrack = pSession->tracks().first();
-	if (pTrack) {
-		int h2 = ((h - 1) / pSession->tracks().count());
-		if (h2 < 1)
-			h2 = 1;
+	int c2 = pTracks->trackView()->contentsHeight();
+
+	if (c2 > 0) {
 		int y2 = 1;
-		while (pTrack) {
+		qtractorTrack *pTrack = pSession->tracks().first();
+		while (pTrack && y2 < h) {
+			int h2 = (h * pTrack->zoomHeight()) / c2;
+			if (h2 < 3)
+				h2 = 3;
 			painter.setPen(pTrack->foreground());
 			painter.setBrush(pTrack->background());
 			qtractorClip *pClip = pTrack->clips().first();
@@ -270,8 +272,10 @@ void qtractorThumbView::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 	if (m_dragState == DragMove)
 		updateView(pos.x() - m_posDrag.x());
 	else
-	if (m_dragState == DragClick)
-		updateView(pos.x() - m_pRubberBand->pos().x() - 8);
+	if (m_dragState == DragClick) {
+		const QRect& rect = m_pRubberBand->geometry();
+		updateView(pos.x() - ((rect.left() + rect.right()) >> 1));
+	}
 
 	// Clean up.
 	resetDragState();
