@@ -176,7 +176,7 @@ void qtractorThumbView::paintEvent ( QPaintEvent *pPaintEvent )
 		int y2 = 1;
 		qtractorTrack *pTrack = pSession->tracks().first();
 		while (pTrack && y2 < h) {
-			int h2 = (h * pTrack->zoomHeight()) / c2;
+			int h2 = ((h - 1) * pTrack->zoomHeight()) / c2;
 			if (h2 < 3)
 				h2 = 3;
 			painter.setPen(pTrack->foreground());
