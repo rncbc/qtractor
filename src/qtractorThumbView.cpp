@@ -236,13 +236,16 @@ void qtractorThumbView::mousePressEvent ( QMouseEvent *pMouseEvent )
 	// Force null state.
 	m_dragState = DragNone;
 
-	m_posDrag = pMouseEvent->pos();
-	if (m_pRubberBand->geometry().contains(m_posDrag)) {
-		m_dragState = DragStart;
-		QFrame::setCursor(QCursor(Qt::SizeHorCursor));
-	} else {
-		m_dragState = DragClick;
-		QFrame::setCursor(QCursor(Qt::PointingHandCursor));
+	// Only expected behavior with left-button pressed...
+	if (pMouseEvent->button() == Qt::LeftButton) {
+		m_posDrag = pMouseEvent->pos();
+		if (m_pRubberBand->geometry().contains(m_posDrag)) {
+			m_dragState = DragStart;
+			QFrame::setCursor(QCursor(Qt::SizeHorCursor));
+		} else {
+			m_dragState = DragClick;
+			QFrame::setCursor(QCursor(Qt::PointingHandCursor));
+		}
 	}
 
 	QFrame::mousePressEvent(pMouseEvent);
@@ -251,14 +254,16 @@ void qtractorThumbView::mousePressEvent ( QMouseEvent *pMouseEvent )
 
 void qtractorThumbView::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 {
-	const QPoint& pos = pMouseEvent->pos();
-	if (m_dragState == DragStart
-		&& (pos - m_posDrag).manhattanLength()
-			> QApplication::startDragDistance())
-		m_dragState = DragMove;
-
-	if (m_dragState == DragMove)
-		updateThumb(pos.x() - m_posDrag.x());
+	// Only expected behavior with left-button pressed...
+	if (pMouseEvent->buttons() & Qt::LeftButton) {
+		const QPoint& pos = pMouseEvent->pos();
+		if (m_dragState == DragStart
+			&& (pos - m_posDrag).manhattanLength()
+				> QApplication::startDragDistance())
+			m_dragState = DragMove;
+		if (m_dragState == DragMove)
+			updateThumb(pos.x() - m_posDrag.x());
+	}
 
 	QFrame::mouseMoveEvent(pMouseEvent);
 }
@@ -268,13 +273,16 @@ void qtractorThumbView::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 {
 	QFrame::mouseReleaseEvent(pMouseEvent);
 
-	const QPoint& pos = pMouseEvent->pos();
-	if (m_dragState == DragMove)
-		updateView(pos.x() - m_posDrag.x());
-	else
-	if (m_dragState == DragClick) {
-		const QRect& rect = m_pRubberBand->geometry();
-		updateView(pos.x() - ((rect.left() + rect.right()) >> 1));
+	// Only expected behavior with left-button pressed...
+	if (pMouseEvent->button() == Qt::LeftButton) {
+		const QPoint& pos = pMouseEvent->pos();
+		if (m_dragState == DragMove)
+			updateView(pos.x() - m_posDrag.x());
+		else
+		if (m_dragState == DragClick) {
+			const QRect& rect = m_pRubberBand->geometry();
+			updateView(pos.x() - ((rect.left() + rect.right()) >> 1));
+		}
 	}
 
 	// Clean up.
