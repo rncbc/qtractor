@@ -26,8 +26,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>577</width>
-    <height>305</height>
+    <width>506</width>
+    <height>320</height>
    </rect>
   </property>
   <property name="sizePolicy" >
@@ -58,6 +58,9 @@
     <widget class="QTabWidget" name="OptionsTabWidget" >
      <property name="acceptDrops" >
       <bool>false</bool>
+     </property>
+     <property name="currentIndex" >
+      <number>0</number>
      </property>
      <widget class="QWidget" name="DisplayTabPage" >
       <attribute name="title" >
@@ -270,39 +273,28 @@
          </property>
          <layout class="QGridLayout" >
           <property name="margin" >
-           <number>8</number>
+           <number>9</number>
           </property>
           <property name="spacing" >
-           <number>4</number>
+           <number>6</number>
           </property>
-          <item row="0" column="3" >
-           <widget class="QSpinBox" name="MaxRecentFilesSpinBox" >
-            <property name="font" >
-             <font>
-              <family>Sans Serif</family>
-              <pointsize>8</pointsize>
-              <weight>50</weight>
-              <italic>false</italic>
-              <bold>false</bold>
-              <underline>false</underline>
-              <strikeout>false</strikeout>
-             </font>
+          <item row="0" column="1" >
+           <spacer>
+            <property name="orientation" >
+             <enum>Qt::Horizontal</enum>
             </property>
-            <property name="toolTip" >
-             <string>The maximum number of recent files to keep in menu</string>
+            <property name="sizeType" >
+             <enum>QSizePolicy::Expanding</enum>
             </property>
-            <property name="maximum" >
-             <number>20</number>
+            <property name="sizeHint" >
+             <size>
+              <width>50</width>
+              <height>20</height>
+             </size>
             </property>
-            <property name="minimum" >
-             <number>0</number>
-            </property>
-            <property name="value" >
-             <number>5</number>
-            </property>
-           </widget>
+           </spacer>
           </item>
-          <item rowspan="2" row="1" column="2" >
+          <item rowspan="4" row="1" column="3" >
            <spacer>
             <property name="orientation" >
              <enum>Qt::Vertical</enum>
@@ -318,8 +310,8 @@
             </property>
            </spacer>
           </item>
-          <item row="0" column="0" >
-           <widget class="QCheckBox" name="ConfirmRemoveCheckBox" >
+          <item row="0" column="2" >
+           <widget class="QLabel" name="MaxRecentFilesTextLabel" >
             <property name="font" >
              <font>
               <family>Sans Serif</family>
@@ -331,19 +323,19 @@
               <strikeout>false</strikeout>
              </font>
             </property>
-            <property name="toolTip" >
-             <string>Whether to ask for confirmation on removal</string>
-            </property>
             <property name="text" >
-             <string>&amp;Confirm removals</string>
+             <string>&amp;Number of recent files:</string>
             </property>
-            <property name="shortcut" >
-             <string>Alt+C</string>
+            <property name="alignment" >
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+            <property name="buddy" >
+             <cstring>MaxRecentFilesSpinBox</cstring>
             </property>
            </widget>
           </item>
-          <item row="1" column="0" >
-           <widget class="QCheckBox" name="StdoutCaptureCheckBox" >
+          <item row="2" column="0" >
+           <widget class="QCheckBox" name="CompletePathCheckBox" >
             <property name="font" >
              <font>
               <family>Sans Serif</family>
@@ -356,37 +348,13 @@
              </font>
             </property>
             <property name="toolTip" >
-             <string>Whether to capture standard output (stdout/stderr) into messages window</string>
+             <string>Whether to show the complete directory path of loaded session files</string>
             </property>
             <property name="text" >
-             <string>Capture standard &amp;output</string>
+             <string>Show complete &amp;path of session files</string>
             </property>
             <property name="shortcut" >
-             <string>Alt+O</string>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="0" >
-           <widget class="QCheckBox" name="PeakAutoRemoveCheckBox" >
-            <property name="font" >
-             <font>
-              <family>Sans Serif</family>
-              <pointsize>8</pointsize>
-              <weight>50</weight>
-              <italic>false</italic>
-              <bold>false</bold>
-              <underline>false</underline>
-              <strikeout>false</strikeout>
-             </font>
-            </property>
-            <property name="toolTip" >
-             <string>Whether to remove audio peak files on session close</string>
-            </property>
-            <property name="text" >
-             <string>&amp;Auto-remove peak files</string>
-            </property>
-            <property name="shortcut" >
-             <string>Alt+A</string>
+             <string>Alt+P</string>
             </property>
            </widget>
           </item>
@@ -414,7 +382,361 @@
             </property>
            </widget>
           </item>
-          <item row="3" column="2" colspan="2" >
+          <item row="3" column="0" >
+           <widget class="QCheckBox" name="PeakAutoRemoveCheckBox" >
+            <property name="font" >
+             <font>
+              <family>Sans Serif</family>
+              <pointsize>8</pointsize>
+              <weight>50</weight>
+              <italic>false</italic>
+              <bold>false</bold>
+              <underline>false</underline>
+              <strikeout>false</strikeout>
+             </font>
+            </property>
+            <property name="toolTip" >
+             <string>Whether to remove audio peak files on session close</string>
+            </property>
+            <property name="text" >
+             <string>&amp;Auto-remove peak files</string>
+            </property>
+            <property name="shortcut" >
+             <string>Alt+A</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0" >
+           <widget class="QCheckBox" name="StdoutCaptureCheckBox" >
+            <property name="font" >
+             <font>
+              <family>Sans Serif</family>
+              <pointsize>8</pointsize>
+              <weight>50</weight>
+              <italic>false</italic>
+              <bold>false</bold>
+              <underline>false</underline>
+              <strikeout>false</strikeout>
+             </font>
+            </property>
+            <property name="toolTip" >
+             <string>Whether to capture standard output (stdout/stderr) into messages window</string>
+            </property>
+            <property name="text" >
+             <string>Capture standard &amp;output</string>
+            </property>
+            <property name="shortcut" >
+             <string>Alt+O</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0" >
+           <widget class="QCheckBox" name="ConfirmRemoveCheckBox" >
+            <property name="font" >
+             <font>
+              <family>Sans Serif</family>
+              <pointsize>8</pointsize>
+              <weight>50</weight>
+              <italic>false</italic>
+              <bold>false</bold>
+              <underline>false</underline>
+              <strikeout>false</strikeout>
+             </font>
+            </property>
+            <property name="toolTip" >
+             <string>Whether to ask for confirmation on removal</string>
+            </property>
+            <property name="text" >
+             <string>&amp;Confirm removals</string>
+            </property>
+            <property name="shortcut" >
+             <string>Alt+C</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="3" >
+           <widget class="QSpinBox" name="MaxRecentFilesSpinBox" >
+            <property name="font" >
+             <font>
+              <family>Sans Serif</family>
+              <pointsize>8</pointsize>
+              <weight>50</weight>
+              <italic>false</italic>
+              <bold>false</bold>
+              <underline>false</underline>
+              <strikeout>false</strikeout>
+             </font>
+            </property>
+            <property name="toolTip" >
+             <string>The maximum number of recent files to keep in menu</string>
+            </property>
+            <property name="maximum" >
+             <number>20</number>
+            </property>
+            <property name="minimum" >
+             <number>0</number>
+            </property>
+            <property name="value" >
+             <number>5</number>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="AudioTabPage" >
+      <attribute name="title" >
+       <string>&amp;Audio</string>
+      </attribute>
+      <layout class="QVBoxLayout" >
+       <property name="margin" >
+        <number>9</number>
+       </property>
+       <property name="spacing" >
+        <number>6</number>
+       </property>
+       <item>
+        <widget class="QGroupBox" name="CaptureGroupBox" >
+         <property name="font" >
+          <font>
+           <family>Sans Serif</family>
+           <pointsize>8</pointsize>
+           <weight>75</weight>
+           <italic>false</italic>
+           <bold>true</bold>
+           <underline>false</underline>
+           <strikeout>false</strikeout>
+          </font>
+         </property>
+         <property name="title" >
+          <string>Capture</string>
+         </property>
+         <property name="flat" >
+          <bool>true</bool>
+         </property>
+         <layout class="QGridLayout" >
+          <property name="margin" >
+           <number>9</number>
+          </property>
+          <property name="spacing" >
+           <number>6</number>
+          </property>
+          <item row="2" column="1" >
+           <widget class="QSpinBox" name="CaptureQualitySpinBox" >
+            <property name="font" >
+             <font>
+              <family>Sans Serif</family>
+              <pointsize>8</pointsize>
+              <weight>50</weight>
+              <italic>false</italic>
+              <bold>false</bold>
+              <underline>false</underline>
+              <strikeout>false</strikeout>
+             </font>
+            </property>
+            <property name="suffix" >
+             <string/>
+            </property>
+            <property name="maximum" >
+             <number>9</number>
+            </property>
+            <property name="minimum" >
+             <number>1</number>
+            </property>
+            <property name="singleStep" >
+             <number>1</number>
+            </property>
+            <property name="value" >
+             <number>4</number>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1" colspan="2" >
+           <widget class="QComboBox" name="CaptureFormatComboBox" >
+            <property name="sizePolicy" >
+             <sizepolicy>
+              <hsizetype>7</hsizetype>
+              <vsizetype>0</vsizetype>
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="font" >
+             <font>
+              <family>Sans Serif</family>
+              <pointsize>8</pointsize>
+              <weight>50</weight>
+              <italic>false</italic>
+              <bold>false</bold>
+              <underline>false</underline>
+              <strikeout>false</strikeout>
+             </font>
+            </property>
+            <property name="toolTip" >
+             <string>Audio sample format to use on capture (record)</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1" colspan="2" >
+           <widget class="QComboBox" name="CaptureTypeComboBox" >
+            <property name="sizePolicy" >
+             <sizepolicy>
+              <hsizetype>7</hsizetype>
+              <vsizetype>0</vsizetype>
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="font" >
+             <font>
+              <family>Sans Serif</family>
+              <pointsize>8</pointsize>
+              <weight>50</weight>
+              <italic>false</italic>
+              <bold>false</bold>
+              <underline>false</underline>
+              <strikeout>false</strikeout>
+             </font>
+            </property>
+            <property name="toolTip" >
+             <string>Audio file type to use on capture (record)</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="3" >
+           <spacer>
+            <property name="orientation" >
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" >
+             <size>
+              <width>61</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="0" column="0" >
+           <widget class="QLabel" name="CaptureTypeTextLabel" >
+            <property name="font" >
+             <font>
+              <family>Sans Serif</family>
+              <pointsize>8</pointsize>
+              <weight>50</weight>
+              <italic>false</italic>
+              <bold>false</bold>
+              <underline>false</underline>
+              <strikeout>false</strikeout>
+             </font>
+            </property>
+            <property name="text" >
+             <string>File &amp;type:</string>
+            </property>
+            <property name="buddy" >
+             <cstring>CaptureTypeComboBox</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0" >
+           <widget class="QLabel" name="CaptureFormatTextLabel" >
+            <property name="font" >
+             <font>
+              <family>Sans Serif</family>
+              <pointsize>8</pointsize>
+              <weight>50</weight>
+              <italic>false</italic>
+              <bold>false</bold>
+              <underline>false</underline>
+              <strikeout>false</strikeout>
+             </font>
+            </property>
+            <property name="text" >
+             <string>Sample &amp;format:</string>
+            </property>
+            <property name="buddy" >
+             <cstring>CaptureFormatComboBox</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0" >
+           <widget class="QLabel" name="CaptureQualityTextLabel" >
+            <property name="font" >
+             <font>
+              <family>Sans Serif</family>
+              <pointsize>8</pointsize>
+              <weight>50</weight>
+              <italic>false</italic>
+              <bold>false</bold>
+              <underline>false</underline>
+              <strikeout>false</strikeout>
+             </font>
+            </property>
+            <property name="text" >
+             <string>&amp;Quality:</string>
+            </property>
+            <property name="buddy" >
+             <cstring>CaptureFormatComboBox</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="2" colspan="2" >
+           <spacer>
+            <property name="orientation" >
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" >
+             <size>
+              <width>361</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="3" column="1" >
+           <spacer>
+            <property name="orientation" >
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" >
+             <size>
+              <width>20</width>
+              <height>40</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="PlaybackGroupBox" >
+         <property name="font" >
+          <font>
+           <family>Sans Serif</family>
+           <pointsize>8</pointsize>
+           <weight>75</weight>
+           <italic>false</italic>
+           <bold>true</bold>
+           <underline>false</underline>
+           <strikeout>false</strikeout>
+          </font>
+         </property>
+         <property name="title" >
+          <string>Playback</string>
+         </property>
+         <property name="flat" >
+          <bool>true</bool>
+         </property>
+         <layout class="QGridLayout" >
+          <property name="margin" >
+           <number>9</number>
+          </property>
+          <property name="spacing" >
+           <number>6</number>
+          </property>
+          <item row="0" column="0" >
            <widget class="QLabel" name="ResampleTypeTextLabel" >
             <property name="font" >
              <font>
@@ -435,7 +757,20 @@
             </property>
            </widget>
           </item>
-          <item row="4" column="2" colspan="2" >
+          <item row="0" column="2" >
+           <spacer>
+            <property name="orientation" >
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" >
+             <size>
+              <width>181</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="0" column="1" >
            <widget class="QComboBox" name="ResampleTypeComboBox" >
             <property name="font" >
              <font>
@@ -476,70 +811,6 @@
               <string>Linear</string>
              </property>
             </item>
-           </widget>
-          </item>
-          <item row="2" column="1" >
-           <spacer>
-            <property name="orientation" >
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeType" >
-             <enum>QSizePolicy::Expanding</enum>
-            </property>
-            <property name="sizeHint" >
-             <size>
-              <width>50</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item row="2" column="0" >
-           <widget class="QCheckBox" name="CompletePathCheckBox" >
-            <property name="font" >
-             <font>
-              <family>Sans Serif</family>
-              <pointsize>8</pointsize>
-              <weight>50</weight>
-              <italic>false</italic>
-              <bold>false</bold>
-              <underline>false</underline>
-              <strikeout>false</strikeout>
-             </font>
-            </property>
-            <property name="toolTip" >
-             <string>Whether to show the complete directory path of loaded session files</string>
-            </property>
-            <property name="text" >
-             <string>Show complete &amp;path of session files</string>
-            </property>
-            <property name="shortcut" >
-             <string>Alt+P</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="2" >
-           <widget class="QLabel" name="MaxRecentFilesTextLabel" >
-            <property name="font" >
-             <font>
-              <family>Sans Serif</family>
-              <pointsize>8</pointsize>
-              <weight>50</weight>
-              <italic>false</italic>
-              <bold>false</bold>
-              <underline>false</underline>
-              <strikeout>false</strikeout>
-             </font>
-            </property>
-            <property name="text" >
-             <string>&amp;Number of recent files:</string>
-            </property>
-            <property name="alignment" >
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-            <property name="buddy" >
-             <cstring>MaxRecentFilesSpinBox</cstring>
-            </property>
            </widget>
           </item>
          </layout>
@@ -610,6 +881,9 @@
   <tabstop>PeakAutoRemoveCheckBox</tabstop>
   <tabstop>TransportTimeCheckBox</tabstop>
   <tabstop>MaxRecentFilesSpinBox</tabstop>
+  <tabstop>CaptureTypeComboBox</tabstop>
+  <tabstop>CaptureFormatComboBox</tabstop>
+  <tabstop>CaptureQualitySpinBox</tabstop>
   <tabstop>ResampleTypeComboBox</tabstop>
   <tabstop>OkPushButton</tabstop>
   <tabstop>CancelPushButton</tabstop>

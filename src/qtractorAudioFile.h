@@ -92,7 +92,7 @@ public:
 
 	typedef QList<FileFormat *> FileFormats;
 
-	// File format list global accessor.
+	// File type/format global accessors.
 	static const FileFormats& formats();
 
 	// Retrieve supported filters (suitable for QFileDialog usage).
@@ -130,6 +130,9 @@ private:
 
 	// Supported filter strings.
 	QStringList m_filters;
+	
+	// Default file format (for capture/record)
+	FileFormat *m_pDefaultFormat;
 };
 
 

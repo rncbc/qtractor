@@ -86,16 +86,20 @@ qtractorAudioFileFactory::qtractorAudioFileFactory (void)
 		pFormat->ext  = sffinfo.extension;
 		pFormat->data = sffinfo.format;
 		m_formats.append(pFormat);
-		// Add for the extension map...
-		QString sExt  = pFormat->ext;
-		m_types[sExt] = pFormat;
-		// Take care of some old 8.3 convention,
-		// specially regarding filename extensions...
-		QString sExts(sExtMask.arg(pFormat->ext));
-		if (sExt.length() > 3) {
-			sExt  = sExt.left(3);
-			sExts = sExtMask.arg(sExt) + ' ' + sExts;
+		// Add for the extension map (should be unique)...
+		QString sExt = pFormat->ext;
+		QString sExts(sExtMask.arg(sExt));
+		if (m_types.find(sExt) == m_types.end()) {
 			m_types[sExt] = pFormat;
+			// Take care of some old 8.3 convention,
+			// specially regarding filename extensions...
+			if (sExt.length() > 3) {
+				sExt = sExt.left(3);
+				if (m_types.find(sExt) == m_types.end()) {
+					sExts = sExtMask.arg(sExt) + ' ' + sExts;
+					m_types[sExt] = pFormat;
+				}
+			}
 		}
 		// What we see on dialog is some excerpt...
 		m_filters.append(
@@ -163,9 +167,9 @@ qtractorAudioFile *qtractorAudioFileFactory::newAudioFile (
 	const QString& sFilename, unsigned short iChannels,
 	unsigned int iSampleRate, unsigned int iBufferSize )
 {
-	const QString sExtension = QFileInfo(sFilename).suffix().toLower();
+	const QString sExt = QFileInfo(sFilename).suffix().toLower();
 	
-	FileTypes::ConstIterator iter = m_types.find(sExtension);
+	FileTypes::ConstIterator iter = m_types.find(sExt);
 	if (iter == m_types.end())
 		return NULL;
 
@@ -189,7 +193,6 @@ qtractorAudioFile *qtractorAudioFileFactory::newAudioFile (
 }
 
 
-// File format list accessor.
 const qtractorAudioFileFactory::FileFormats& qtractorAudioFileFactory::formats (void)
 {
 	return getInstance().m_formats;

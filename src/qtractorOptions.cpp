@@ -27,6 +27,9 @@
 #include <QSplitter>
 #include <QList>
 
+// libsndfile API.
+#include <sndfile.h>
+
 
 //-------------------------------------------------------------------------
 // qtractorOptions - Prototype settings structure.
@@ -72,16 +75,20 @@ qtractorOptions::qtractorOptions (void)
 
 	// Audio redndering options group.
 	m_settings.beginGroup("/Audio");
-	iResampleType = m_settings.value("/ResampleType", 0).toInt();
+	sCaptureExt     = m_settings.value("/CaptureExt", "wav").toString();
+	iCaptureType    = m_settings.value("/CaptureType", SF_FORMAT_WAV).toInt();
+	iCaptureFormat  = m_settings.value("/CaptureFormat", 0).toInt();
+	iCaptureQuality = m_settings.value("/CaptureQuality", 4).toInt();
+	iResampleType   = m_settings.value("/ResampleType", 0).toInt();
 	m_settings.endGroup();
 
 	m_settings.endGroup(); // Options group.
 
 	// Last but not least, get the default directories.
 	m_settings.beginGroup("/Default");
-	sSessionDir = m_settings.value("/SessionDir").toString();
-	sAudioDir   = m_settings.value("/AudioDir").toString();
-	sMidiDir    = m_settings.value("/MidiDir").toString();
+	sSessionDir    = m_settings.value("/SessionDir").toString();
+	sAudioDir      = m_settings.value("/AudioDir").toString();
+	sMidiDir       = m_settings.value("/MidiDir").toString();
 	sInstrumentDir = m_settings.value("/InstrumentDir").toString();
 	sPluginSearch  = m_settings.value("/PluginSearch").toString();
 	m_settings.endGroup();
@@ -163,6 +170,10 @@ qtractorOptions::~qtractorOptions (void)
 
 	// Audio redndering options group.
 	m_settings.beginGroup("/Audio");
+	m_settings.setValue("/CaptureExt", sCaptureExt);
+	m_settings.setValue("/CaptureType", iCaptureType);
+	m_settings.setValue("/CaptureFormat", iCaptureFormat);
+	m_settings.setValue("/CaptureQuality", iCaptureQuality);
 	m_settings.setValue("/ResampleType", iResampleType);
 	m_settings.endGroup();
 

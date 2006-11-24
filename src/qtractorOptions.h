@@ -97,7 +97,11 @@ public:
 	// Tracks view options...
 	int iTrackViewSelectMode;
 
-	// Audio rendering options...
+	// Audio options...
+	QString sCaptureExt;
+	int iCaptureType;
+	int iCaptureFormat;
+	int iCaptureQuality;
 	int iResampleType;
 
 	// Widget geometry persistence helper prototypes.

@@ -119,12 +119,13 @@ bool qtractorAudioVorbisFile::open ( const QString& sFilename, int iMode )
 			m_ovinfo = new vorbis_info;
 			vorbis_info_init(m_ovinfo);
 			// Using a VBR quality mode:
-			// fQuality=0.1 (lowest quality, smallest file)
-			// fQuality=1.0 (highest quality, largest file).
-			float fQuality = 0.4f;
+			// Quality=0.1 (lowest quality, smallest file)
+			// Quality=1.0 (highest quality, largest file).
+			int iQuality = 4;
 			if (vorbis_encode_init_vbr(m_ovinfo, 
-					(long) m_iChannels, (long) m_iSampleRate,
-					fQuality) != 0) {
+					(long) m_iChannels,
+					(long) m_iSampleRate,
+					0.1f * float(iQuality)) != 0) {
 				close();
 				return false;
 			}
