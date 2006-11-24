@@ -817,7 +817,7 @@ qtractorMixer::~qtractorMixer (void)
 // Notify the main application widget that we're emerging.
 void qtractorMixer::showEvent ( QShowEvent *pShowEvent )
 {
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	fprintf(stderr, "qtractorMixer::showEvent()\n");
 #endif
 
@@ -831,7 +831,7 @@ void qtractorMixer::showEvent ( QShowEvent *pShowEvent )
 // Notify the main application widget that we're closing.
 void qtractorMixer::hideEvent ( QHideEvent *pHideEvent )
 {
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	fprintf(stderr, "qtractorMixer::hideEvent()\n");
 #endif
 
@@ -846,7 +846,7 @@ void qtractorMixer::hideEvent ( QHideEvent *pHideEvent )
 // Just about to notify main-window that we're closing.
 void qtractorMixer::closeEvent ( QCloseEvent * /*pCloseEvent*/ )
 {
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	fprintf(stderr, "qtractorMixer::closeEvent()\n");
 #endif
 

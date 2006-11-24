@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(Qtractor, 0.0.1.511, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.0.1.514, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractorMainForm.ui)
 AC_CONFIG_HEADERS(config.h)
@@ -174,16 +174,47 @@ else
    ac_libs="$ac_libs -lsndfile"
 fi
 
-# Check for option libvorbisfile library.
+# Check for option libvorbis libraries.
+if test "x$ac_libvorbis" = "xyes"; then
+   AC_CHECK_LIB(ogg, main, [ac_libvorbis="yes"], [ac_libvorbis="no"])
+   if test "x$ac_libvorbis" = "xyes"; then
+      ac_libs="$ac_libs -logg"
+   else
+      AC_MSG_WARN([*** ogg library not found.])
+   fi
+fi
+
+if test "x$ac_libvorbis" = "xyes"; then
+   AC_CHECK_LIB(vorbis, main, [ac_libvorbis="yes"], [ac_libvorbis="no"])
+   if test "x$ac_libvorbis" = "xyes"; then
+      ac_libs="$ac_libs -lvorbis"
+   else
+      AC_MSG_WARN([*** vorbis library not found.])
+   fi
+fi
+
+if test "x$ac_libvorbis" = "xyes"; then
+   AC_CHECK_LIB(vorbisenc, main, [ac_libvorbis="yes"], [ac_libvorbis="no"])
+   if test "x$ac_libvorbis" = "xyes"; then
+      ac_libs="$ac_libs -lvorbisenc"
+   else
+      AC_MSG_WARN([*** vorbisenc library not found.])
+   fi
+fi
+
 if test "x$ac_libvorbis" = "xyes"; then
    AC_CHECK_LIB(vorbisfile, main, [ac_libvorbis="yes"], [ac_libvorbis="no"])
    if test "x$ac_libvorbis" = "xyes"; then
-      AC_DEFINE(CONFIG_LIBVORBIS, 1, [Define if libvorbisfile is available.])
       ac_libs="$ac_libs -lvorbisfile"
    else
       AC_MSG_WARN([*** vorbisfile library not found.])
-      AC_MSG_WARN([*** Ogg Vorbis audio file support will be disabled.])
    fi
+fi
+
+if test "x$ac_libvorbis" = "xyes"; then
+   AC_DEFINE(CONFIG_LIBVORBIS, 1, [Define if libvorbis is available.])
+else
+   AC_MSG_WARN([*** Ogg Vorbis audio file support will be disabled.])
 fi
 
 # Check for optional libmad library.
@@ -238,6 +269,10 @@ fi
 
 # Check for vorbisfile headers.
 if test "x$ac_libvorbis" = "xyes"; then
+   AC_CHECK_HEADER(vorbis/vorbisenc.h, [ac_vorbisenc_h="yes"], [ac_vorbisenc_h="no"])
+   if test "x$ac_vorbisenc_h" = "xno"; then
+      AC_MSG_ERROR([vorbisenc.h header file not found.])
+   fi
    AC_CHECK_HEADER(vorbis/vorbisfile.h, [ac_vorbisfile_h="yes"], [ac_vorbisfile_h="no"])
    if test "x$ac_vorbisfile_h" = "xno"; then
       AC_MSG_ERROR([vorbisfile.h header file not found.])

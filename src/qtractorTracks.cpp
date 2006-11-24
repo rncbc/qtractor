@@ -263,7 +263,7 @@ void qtractorTracks::updateContents ( bool bRefresh )
 	if (pSession == NULL)
 		return;
 
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	fprintf(stderr, "qtractorTracks::updateContents(bRefresh=%d)\n", (int) bRefresh);
 #endif
 

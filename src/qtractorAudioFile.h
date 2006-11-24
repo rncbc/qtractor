@@ -25,7 +25,7 @@
 #include "qtractorAbout.h"
 
 #include <QStringList>
-#include <QMap>
+#include <QHash>
 
 
 //----------------------------------------------------------------------
@@ -81,6 +81,20 @@ public:
 		FileType type, unsigned short iChannels = 0,
 		unsigned int iSampleRate = 0, unsigned int iBufferSize = 0);
 
+	// Audio file format descriptor.
+	struct FileFormat
+	{
+		FileType type;
+		QString  name;
+		QString  ext;
+		int      data;
+	};
+
+	typedef QList<FileFormat *> FileFormats;
+
+	// File format list global accessor.
+	static const FileFormats& formats();
+
 	// Retrieve supported filters (suitable for QFileDialog usage).
 	static QString filters();
 
@@ -93,7 +107,7 @@ protected:
 	qtractorAudioFileFactory();
 
 	// Singleton instance accessor.
-	static qtractorAudioFileFactory& Instance();
+	static qtractorAudioFileFactory& getInstance();
 
 	// Instance factory methods.
 	qtractorAudioFile *newAudioFile (
@@ -109,8 +123,10 @@ private:
 	static qtractorAudioFileFactory* g_pInstance;
 
 	// The supported file types/extension map.
-	typedef QMap<QString, FileType> FileTypes;
-	FileTypes m_types;
+	typedef QHash<QString, FileFormat *> FileTypes;
+
+	FileFormats m_formats;
+	FileTypes   m_types;
 
 	// Supported filter strings.
 	QStringList m_filters;

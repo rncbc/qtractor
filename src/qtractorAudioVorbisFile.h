@@ -25,7 +25,7 @@
 #include "qtractorAudioFile.h"
 
 #ifdef CONFIG_LIBVORBIS
-// libvorbisfile API.
+// libvorbis API.
 #include <vorbis/codec.h>
 #include <vorbis/vorbisfile.h>
 #endif
@@ -40,7 +40,8 @@ class qtractorAudioVorbisFile : public qtractorAudioFile
 public:
 
 	// Constructor.
-	qtractorAudioVorbisFile(unsigned int iBufferSize = 0);
+	qtractorAudioVorbisFile(unsigned short iChannels = 0,
+		unsigned int iSampleRate = 0, unsigned int iBufferSize = 0);
 
 	// Destructor.
 	virtual ~qtractorAudioVorbisFile();
@@ -60,18 +61,38 @@ public:
 	// Specialty methods.
 	unsigned int   sampleRate() const;
 
+protected:
+
+	// Flush encoder buffers.
+	void flush(bool fEos = false);
+
 private:
 
-	int            m_iMode;         // open mode (Read only).
-	FILE          *m_pFile;         // fopen file descriptor.
+	int              m_iMode;       // open mode (Read only).
+	FILE            *m_pFile;       // fopen file descriptor.
+
+	unsigned short   m_iChannels;   // estimated channel count.
+	unsigned int     m_iSampleRate; // estimated sample rate;
+	unsigned long    m_iFrames;     // estimated encoded frames;
 
 #ifdef CONFIG_LIBVORBIS
-	OggVorbis_File m_ovfile;        // libsvorbisfile descriptor.
-	vorbis_info   *m_ovinfo;        // libvorbisfile info struct.
-	int            m_ovsect;        // libvorbisfile current section.
+
+	// Common codec variable.
+	vorbis_info     *m_ovinfo;      // libvorbisfile info struct.
+
+	// Encoder specific variables.
+	vorbis_comment   m_ovcomment;   // struct that stores all the user comments.
+	vorbis_dsp_state m_ovdsp;       // central working state for the encoder.
+	vorbis_block     m_ovblock;     // local working space for the encoder.
+	ogg_stream_state m_ovstate;     // physical pages, logical stream of packets.
+
+	// Decoder specific variables.
+	OggVorbis_File   m_ovfile;      // libsvorbisfile descriptor.
+	int              m_ovsect;      // libvorbisfile current section.
+
 #endif	// CONFIG_LIBVORBIS
 
-	unsigned int   m_iBufferSize;	// estimated buffer size.
+	unsigned int     m_iBufferSize; // estimated buffer size.
 };
 
 

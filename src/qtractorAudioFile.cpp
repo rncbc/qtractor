@@ -37,13 +37,14 @@ qtractorAudioFileFactory *qtractorAudioFileFactory::g_pInstance = NULL;
 
 
 // Singleton instance accessor.
-qtractorAudioFileFactory& qtractorAudioFileFactory::Instance (void)
+qtractorAudioFileFactory& qtractorAudioFileFactory::getInstance (void)
 {
 	// Create the singleton instance, if not already...
 	if (g_pInstance == NULL) {
 		g_pInstance = new qtractorAudioFileFactory();
 		std::atexit(Destroy);
 	}
+
 	return *g_pInstance;
 }
 
@@ -53,6 +54,10 @@ void qtractorAudioFileFactory::Destroy (void)
 {
 	// OK. We're done with ourselves.
 	if (g_pInstance) {
+		qDeleteAll(g_pInstance->m_formats);
+		g_pInstance->m_formats.clear();
+		g_pInstance->m_filters.clear();
+		g_pInstance->m_types.clear();
 		delete g_pInstance;
 		g_pInstance = NULL;
 	}
@@ -63,41 +68,64 @@ void qtractorAudioFileFactory::Destroy (void)
 qtractorAudioFileFactory::qtractorAudioFileFactory (void)
 {
 	// First for libsndfile stuff...
-	const QString sMask("*.%1");
+	FileFormat *pFormat;
+	const QString sExtMask("*.%1");
+	const QString sFilterMask("%1 (%2)");
 	SF_FORMAT_INFO sffinfo;
 	int iCount = 0;
 	::sf_command(NULL, SFC_GET_FORMAT_MAJOR_COUNT, &iCount, sizeof(int));
 	for (int i = 0 ; i < iCount; i++) {
 		sffinfo.format = i;
 		::sf_command(NULL, SFC_GET_FORMAT_MAJOR, &sffinfo, sizeof(sffinfo));
-		const QString sName = QString(sffinfo.name)
+		pFormat = new FileFormat;
+		pFormat->type = SndFile;
+		pFormat->name = QString(sffinfo.name)
 			.replace('/', '-')	// Replace some illegal characters.
 			.replace('(', QString::null)
 			.replace(')', QString::null);
-		QString sExt(sffinfo.extension);
-		QString sExts(sMask.arg(sExt));
-		m_types[sExt] = SndFile;
+		pFormat->ext  = sffinfo.extension;
+		pFormat->data = sffinfo.format;
+		m_formats.append(pFormat);
+		// Add for the extension map...
+		QString sExt  = pFormat->ext;
+		m_types[sExt] = pFormat;
 		// Take care of some old 8.3 convention,
 		// specially regarding filename extensions...
+		QString sExts(sExtMask.arg(pFormat->ext));
 		if (sExt.length() > 3) {
-			sExt = sExt.left(3);
-			sExts = sMask.arg(sExt) + ' ' + sExts;
-			m_types[sExt] = SndFile;
+			sExt  = sExt.left(3);
+			sExts = sExtMask.arg(sExt) + ' ' + sExts;
+			m_types[sExt] = pFormat;
 		}
 		// What we see on dialog is some excerpt...
-		m_filters.append(QString("%1 (%2)").arg(sName).arg(sExts));
+		m_filters.append(
+			sFilterMask.arg(pFormat->name).arg(sExts));
 	}
 
 #ifdef CONFIG_LIBVORBIS
-	// Add for libvorbisfile (read-only)...
-	m_types["ogg"] = VorbisFile;
-	m_filters.append("OGG Vorbis (*.ogg)");
+	// Add for libvorbis...
+	pFormat = new FileFormat;
+	pFormat->type = VorbisFile;
+	pFormat->name = "OGG Vorbis";
+	pFormat->ext  = "ogg";
+	pFormat->data = 0;
+	m_formats.append(pFormat);
+	m_types[pFormat->ext] = pFormat;
+	m_filters.append(
+		sFilterMask.arg(pFormat->name).arg(sExtMask.arg(pFormat->ext)));
 #endif
 
 #ifdef CONFIG_LIBMAD
 	// Add for libmad (mp3 read-only)...
-	m_types["mp3"] = MadFile;
-	m_filters.append("MPEG Layer III (*.mp3)");
+	pFormat = new FileFormat;
+	pFormat->type = MadFile;
+	pFormat->name = "MPEG Layer III";
+	pFormat->ext  = "mp3";
+	pFormat->data = 0;
+	m_formats.append(pFormat);
+	m_types[pFormat->ext] = pFormat;
+	m_filters.append(
+		sFilterMask.arg(pFormat->name).arg(sExtMask.arg(pFormat->ext)));
 #endif
 
 	// Finally, simply build the all supported files entry.
@@ -106,7 +134,7 @@ qtractorAudioFileFactory::qtractorAudioFileFactory (void)
 	for (FileTypes::ConstIterator iter = m_types.begin();
 			iter != m_types.end(); ++iter) {
 		if (rx.exactMatch(iter.key()))
-			exts.append(sMask.arg(iter.key()));
+			exts.append(sExtMask.arg(iter.key()));
 	}
 	m_filters.prepend(QObject::tr("Audio Files (%1)").arg(exts.join(" ")));
 	m_filters.append(QObject::tr("All Files (*.*)"));
@@ -118,7 +146,7 @@ qtractorAudioFile *qtractorAudioFileFactory::createAudioFile (
 	const QString& sFilename, unsigned short iChannels,
 	unsigned int iSampleRate, unsigned int iBufferSize )
 {
-	return Instance().newAudioFile(
+	return getInstance().newAudioFile(
 		sFilename, iChannels, iSampleRate, iBufferSize);
 }
 
@@ -126,7 +154,7 @@ qtractorAudioFile *qtractorAudioFileFactory::createAudioFile (
 	FileType type, unsigned short iChannels,
 	unsigned int iSampleRate, unsigned int iBufferSize )
 {
-	return Instance().newAudioFile(type, iChannels, iSampleRate, iBufferSize);
+	return getInstance().newAudioFile(type, iChannels, iSampleRate, iBufferSize);
 }
 
 
@@ -141,7 +169,7 @@ qtractorAudioFile *qtractorAudioFileFactory::newAudioFile (
 	if (iter == m_types.end())
 		return NULL;
 
-	return newAudioFile(iter.value(), iChannels, iSampleRate, iBufferSize);
+	return newAudioFile(iter.value()->type, iChannels, iSampleRate, iBufferSize);
 }
 
 qtractorAudioFile *qtractorAudioFileFactory::newAudioFile (
@@ -152,7 +180,7 @@ qtractorAudioFile *qtractorAudioFileFactory::newAudioFile (
 	case SndFile:
 		return new qtractorAudioSndFile(iChannels, iSampleRate, iBufferSize);
 	case VorbisFile:
-		return new qtractorAudioVorbisFile(iBufferSize);
+		return new qtractorAudioVorbisFile(iChannels, iSampleRate, iBufferSize);
 	case MadFile:
 		return new qtractorAudioMadFile(iBufferSize);
 	default:
@@ -160,10 +188,18 @@ qtractorAudioFile *qtractorAudioFileFactory::newAudioFile (
 	}
 }
 
+
+// File format list accessor.
+const qtractorAudioFileFactory::FileFormats& qtractorAudioFileFactory::formats (void)
+{
+	return getInstance().m_formats;
+}
+
+
 // Retrieve supported filters (suitable for QFileDialog usage).
 QString qtractorAudioFileFactory::filters (void)
 {
-	return Instance().m_filters.join(";;");
+	return getInstance().m_filters.join(";;");
 }
 
 
