@@ -67,7 +67,12 @@ void qtractorAudioFileFactory::Destroy (void)
 // Constructor.
 qtractorAudioFileFactory::qtractorAudioFileFactory (void)
 {
-	// First for libsndfile stuff...
+	// Default file format/type (for capture/record)
+	m_pDefaultFormat  = NULL;
+	m_iDefaultFormat  = SF_FORMAT_PCM_16;
+	m_iDefaultQuality = 4;
+
+	// Second for libsndfile stuff...
 	FileFormat *pFormat;
 	const QString sExtMask("*.%1");
 	const QString sFilterMask("%1 (%2)");
@@ -100,6 +105,8 @@ qtractorAudioFileFactory::qtractorAudioFileFactory (void)
 					m_types[sExt] = pFormat;
 				}
 			}
+			// Make a stance on the default format...
+			if (sExt == "wav") m_pDefaultFormat = pFormat;
 		}
 		// What we see on dialog is some excerpt...
 		m_filters.append(
@@ -117,6 +124,8 @@ qtractorAudioFileFactory::qtractorAudioFileFactory (void)
 	m_types[pFormat->ext] = pFormat;
 	m_filters.append(
 		sFilterMask.arg(pFormat->name).arg(sExtMask.arg(pFormat->ext)));
+	// Oh yeah, this will be the official default format...
+	m_pDefaultFormat = pFormat;
 #endif
 
 #ifdef CONFIG_LIBMAD
@@ -203,6 +212,84 @@ const qtractorAudioFileFactory::FileFormats& qtractorAudioFileFactory::formats (
 QString qtractorAudioFileFactory::filters (void)
 {
 	return getInstance().m_filters.join(";;");
+}
+
+
+// Default audio file format accessors
+// (specific to capture/recording)
+void qtractorAudioFileFactory::setDefaultType(const QString& sExt, int iType,
+	int iFormat, int iQuality )
+{
+	// Search for type-format first...
+	QListIterator<FileFormat *> iter(getInstance().m_formats);
+	while (iter.hasNext()) {
+		FileFormat *pFormat = iter.next();
+		if (sExt == pFormat->ext && iType == pFormat->data) {
+			getInstance().m_pDefaultFormat = pFormat;
+			break;
+		}
+	}
+
+	// Translate this to some libsndfile slang...
+	switch (iFormat) {
+	case 4:
+		iFormat = SF_FORMAT_DOUBLE;
+		break;
+	case 3:
+		iFormat = SF_FORMAT_FLOAT;
+		break;
+	case 2:
+		iFormat = SF_FORMAT_PCM_32;
+		break;
+	case 1:
+		iFormat = SF_FORMAT_PCM_24;
+		break;
+	case 0:
+	default:
+		iFormat = SF_FORMAT_PCM_16;
+		break;
+	}
+
+	// Rest is not so obviously trivial...
+	getInstance().m_iDefaultFormat  = iFormat;
+	getInstance().m_iDefaultQuality = iQuality;
+}
+
+
+QString qtractorAudioFileFactory::defaultExt (void)
+{
+	FileFormat *pFormat = getInstance().m_pDefaultFormat;
+	if (pFormat)
+		return pFormat->ext;
+
+#ifdef CONFIG_LIBVORBIS
+	return "ogg";
+#else
+	return "wav";
+#endif
+}
+
+int qtractorAudioFileFactory::defaultType (void)
+{
+	FileFormat *pFormat = getInstance().m_pDefaultFormat;
+	if (pFormat)
+		return pFormat->data;
+
+#ifdef CONFIG_LIBVORBIS
+	return 0;
+#else
+	return SF_FORMAT_WAV;
+#endif
+}
+
+int qtractorAudioFileFactory::defaultFormat (void)
+{
+	return getInstance().m_iDefaultFormat;
+}
+
+int qtractorAudioFileFactory::defaultQuality (void)
+{
+	return getInstance().m_iDefaultQuality;
 }
 
 

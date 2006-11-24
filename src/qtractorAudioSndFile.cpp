@@ -79,7 +79,9 @@ bool qtractorAudioSndFile::open ( const QString& sFilename, int iMode )
 	if (sfmode & SFM_WRITE) {
 		if (m_sfinfo.channels == 0 || m_sfinfo.samplerate == 0)
 			return false;
-		m_sfinfo.format = SF_FORMAT_WAV | SF_FORMAT_FLOAT;
+		m_sfinfo.format
+			= qtractorAudioFileFactory::defaultType()
+			| qtractorAudioFileFactory::defaultFormat();
 	}
 
 	// Now open it.

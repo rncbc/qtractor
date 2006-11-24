@@ -993,11 +993,8 @@ void qtractorSession::trackRecord ( qtractorTrack *pTrack, bool bRecord )
 		qtractorAudioClip *pAudioClip = new qtractorAudioClip(pTrack);
 		pAudioClip->setClipStart(playHead());
 		pAudioClip->openAudioFile(
-#ifdef CONFIG_LIBVORBIS
-			createFilePath(pTrack->trackName(), 0, "ogg"),
-#else
-			createFilePath(pTrack->trackName(), 0, "wav"),
-#endif
+			createFilePath(pTrack->trackName(), 0,
+				qtractorAudioFileFactory::defaultExt()),
 			qtractorAudioFile::Write);
 		pTrack->setClipRecord(pAudioClip);
 		break;

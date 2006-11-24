@@ -644,6 +644,13 @@ void qtractorMainForm::setOptions ( qtractorOptions *pOptions )
 	updateRecentFilesMenu();
 	updatePeakAutoRemove();
 
+	// FIXME: This is what it should ever be,
+	// make it right from this very moment...
+	qtractorAudioFileFactory::setDefaultType(
+		m_pOptions->sCaptureExt,
+		m_pOptions->iCaptureType,
+		m_pOptions->iCaptureFormat,
+		m_pOptions->iCaptureQuality);
 	// Set default sample-rate converter quality...
 	qtractorAudioBuffer::setResampleType(m_pOptions->iResampleType);
 
@@ -1765,6 +1772,13 @@ void qtractorMainForm::viewOptions (void)
 			(!bOldMessagesLimit &&  m_pOptions->bMessagesLimit) ||
 			(iOldMessagesLimitLines !=  m_pOptions->iMessagesLimitLines))
 			updateMessagesLimit();
+		// FIXME: This is what it should ever be,
+		// make it right from this very moment...
+		qtractorAudioFileFactory::setDefaultType(
+			m_pOptions->sCaptureExt,
+			m_pOptions->iCaptureType,
+			m_pOptions->iCaptureFormat,
+			m_pOptions->iCaptureQuality);
 		// Warn if something will be only effective on next time.
 		if (!sNeedRestart.isEmpty()) {
 			QMessageBox::information(this,

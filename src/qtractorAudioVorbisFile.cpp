@@ -121,7 +121,7 @@ bool qtractorAudioVorbisFile::open ( const QString& sFilename, int iMode )
 			// Using a VBR quality mode:
 			// Quality=0.1 (lowest quality, smallest file)
 			// Quality=1.0 (highest quality, largest file).
-			int iQuality = 4;
+			int iQuality = qtractorAudioFileFactory::defaultQuality();
 			if (vorbis_encode_init_vbr(m_ovinfo, 
 					(long) m_iChannels,
 					(long) m_iSampleRate,

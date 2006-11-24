@@ -98,6 +98,16 @@ public:
 	// Retrieve supported filters (suitable for QFileDialog usage).
 	static QString filters();
 
+	// Default audio file format accessors
+	// (specific to capture/recording)
+	static void setDefaultType(const QString& sExt, int iType,
+		int iFormat = 0, int iQuality = 0);
+
+	static QString defaultExt();
+	static int defaultType();
+	static int defaultFormat();
+	static int defaultQuality();
+
 	// Singleton destroyer.
 	static void Destroy();
 
@@ -131,8 +141,10 @@ private:
 	// Supported filter strings.
 	QStringList m_filters;
 	
-	// Default file format (for capture/record)
+	// Default file format/type (for capture/record)
 	FileFormat *m_pDefaultFormat;
+	int m_iDefaultFormat;
+	int m_iDefaultQuality;
 };
 
 

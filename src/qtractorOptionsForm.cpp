@@ -59,10 +59,11 @@ qtractorOptionsForm::qtractorOptionsForm (
 
 	// Populate the capture sample format combo-box.
 	m_ui.CaptureFormatComboBox->clear();
-	m_ui.CaptureFormatComboBox->addItem(tr("Float  32-Bit"));
 	m_ui.CaptureFormatComboBox->addItem(tr("Signed 16-Bit"));
 	m_ui.CaptureFormatComboBox->addItem(tr("Signed 24-Bit"));
 	m_ui.CaptureFormatComboBox->addItem(tr("Signed 32-Bit"));
+	m_ui.CaptureFormatComboBox->addItem(tr("Float  32-Bit"));
+	m_ui.CaptureFormatComboBox->addItem(tr("Float  64-Bit"));
 
 	// Initialize dirty control state.
 	m_iDirtyCount = 0;

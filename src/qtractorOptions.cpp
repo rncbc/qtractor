@@ -27,9 +27,6 @@
 #include <QSplitter>
 #include <QList>
 
-// libsndfile API.
-#include <sndfile.h>
-
 
 //-------------------------------------------------------------------------
 // qtractorOptions - Prototype settings structure.
@@ -75,8 +72,8 @@ qtractorOptions::qtractorOptions (void)
 
 	// Audio redndering options group.
 	m_settings.beginGroup("/Audio");
-	sCaptureExt     = m_settings.value("/CaptureExt", "wav").toString();
-	iCaptureType    = m_settings.value("/CaptureType", SF_FORMAT_WAV).toInt();
+	sCaptureExt     = m_settings.value("/CaptureExt").toString();
+	iCaptureType    = m_settings.value("/CaptureType", 0).toInt();
 	iCaptureFormat  = m_settings.value("/CaptureFormat", 0).toInt();
 	iCaptureQuality = m_settings.value("/CaptureQuality", 4).toInt();
 	iResampleType   = m_settings.value("/ResampleType", 0).toInt();
