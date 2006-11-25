@@ -101,12 +101,14 @@ public:
 	// Default audio file format accessors
 	// (specific to capture/recording)
 	static void setDefaultType(const QString& sExt, int iType,
-		int iFormat = 0, int iQuality = 0);
+		int iFormat = 0, int iQuality = 4);
 
 	static QString defaultExt();
-	static int defaultType();
 	static int defaultFormat();
 	static int defaultQuality();
+
+	// Check whether given file type/format is valid.
+	static bool isValidFormat(const FileFormat *pFormat, int iFormat);
 
 	// Singleton destroyer.
 	static void Destroy();
@@ -126,6 +128,9 @@ protected:
 	qtractorAudioFile *newAudioFile (
 		FileType type, unsigned short iChannels,
 		unsigned int iSampleRate, unsigned int iBufferSize);
+
+	// Translate format index into libsndfile specific...
+	static int format(const FileFormat *pFormat, int iFormat);
 
 private:
 

@@ -301,7 +301,13 @@ void qtractorOptionsForm::stabilizeForm (void)
 	m_ui.CaptureQualityTextLabel->setEnabled(bVorbisFile);
 	m_ui.CaptureQualitySpinBox->setEnabled(bVorbisFile);
 
-	m_ui.OkPushButton->setEnabled(m_iDirtyCount > 0);
+	bool bValid = (m_iDirtyCount > 0);
+	if (bValid) {
+		iFormat = m_ui.CaptureFormatComboBox->currentIndex();
+		bValid  = qtractorAudioFileFactory::isValidFormat(pFormat, iFormat);
+	}
+
+	m_ui.OkPushButton->setEnabled(bValid);
 }
 
 

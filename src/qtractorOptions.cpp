@@ -27,6 +27,14 @@
 #include <QSplitter>
 #include <QList>
 
+// Supposed to be determinant as default audio file type
+// (effective only for capture/record)
+#ifdef CONFIG_LIBVORBIS
+#define AUDIO_DEFAULT_EXT "ogg"
+#else
+#define AUDIO_DEFAULT_EXT "wav"
+#endif
+
 
 //-------------------------------------------------------------------------
 // qtractorOptions - Prototype settings structure.
@@ -72,7 +80,7 @@ qtractorOptions::qtractorOptions (void)
 
 	// Audio redndering options group.
 	m_settings.beginGroup("/Audio");
-	sCaptureExt     = m_settings.value("/CaptureExt").toString();
+	sCaptureExt     = m_settings.value("/CaptureExt", AUDIO_DEFAULT_EXT).toString();
 	iCaptureType    = m_settings.value("/CaptureType", 0).toInt();
 	iCaptureFormat  = m_settings.value("/CaptureFormat", 0).toInt();
 	iCaptureQuality = m_settings.value("/CaptureQuality", 4).toInt();

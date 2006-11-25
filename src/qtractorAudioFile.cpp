@@ -221,37 +221,19 @@ void qtractorAudioFileFactory::setDefaultType(const QString& sExt, int iType,
 	int iFormat, int iQuality )
 {
 	// Search for type-format first...
+	int iDefaultFormat = 0;
 	QListIterator<FileFormat *> iter(getInstance().m_formats);
 	while (iter.hasNext()) {
 		FileFormat *pFormat = iter.next();
 		if (sExt == pFormat->ext && iType == pFormat->data) {
 			getInstance().m_pDefaultFormat = pFormat;
+			iDefaultFormat = format(pFormat, iFormat);
 			break;
 		}
 	}
 
-	// Translate this to some libsndfile slang...
-	switch (iFormat) {
-	case 4:
-		iFormat = SF_FORMAT_DOUBLE;
-		break;
-	case 3:
-		iFormat = SF_FORMAT_FLOAT;
-		break;
-	case 2:
-		iFormat = SF_FORMAT_PCM_32;
-		break;
-	case 1:
-		iFormat = SF_FORMAT_PCM_24;
-		break;
-	case 0:
-	default:
-		iFormat = SF_FORMAT_PCM_16;
-		break;
-	}
-
 	// Rest is not so obviously trivial...
-	getInstance().m_iDefaultFormat  = iFormat;
+	getInstance().m_iDefaultFormat  = iDefaultFormat;
 	getInstance().m_iDefaultQuality = iQuality;
 }
 
@@ -269,27 +251,72 @@ QString qtractorAudioFileFactory::defaultExt (void)
 #endif
 }
 
-int qtractorAudioFileFactory::defaultType (void)
-{
-	FileFormat *pFormat = getInstance().m_pDefaultFormat;
-	if (pFormat)
-		return pFormat->data;
-
-#ifdef CONFIG_LIBVORBIS
-	return 0;
-#else
-	return SF_FORMAT_WAV;
-#endif
-}
-
 int qtractorAudioFileFactory::defaultFormat (void)
 {
-	return getInstance().m_iDefaultFormat;
+	int  iDefaultFormat = getInstance().m_iDefaultFormat;
+	FileFormat *pFormat = getInstance().m_pDefaultFormat;
+	if (pFormat)
+		iDefaultFormat |= pFormat->data;
+#ifndef CONFIG_LIBVORBIS
+	else
+		iDefaultFormat |= SF_FORMAT_WAV;
+#endif
+
+	return iDefaultFormat;
 }
+
 
 int qtractorAudioFileFactory::defaultQuality (void)
 {
 	return getInstance().m_iDefaultQuality;
+}
+
+
+// Check whether given file type/format is valid.
+bool qtractorAudioFileFactory::isValidFormat (
+	const qtractorAudioFileFactory::FileFormat *pFormat, int iFormat )
+{
+	if (pFormat == NULL)
+		return false;
+
+	bool bValid = true;
+
+	// Translate this to some libsndfile slang...
+	if (pFormat->type == SndFile) {
+		SF_INFO sfinfo;
+		::memset(&sfinfo, 0, sizeof(sfinfo));
+		sfinfo.samplerate = 44100;  // Dummy samplerate.
+		sfinfo.channels = 2;        // Dummy stereo.
+		sfinfo.format = pFormat->data | format(pFormat, iFormat);
+		bValid = ::sf_format_check(&sfinfo);
+	}
+
+	return bValid;
+}
+
+
+// Translate format index into libsndfile specific...
+int qtractorAudioFileFactory::format (
+	const qtractorAudioFileFactory::FileFormat *pFormat, int iFormat )
+{
+	// Translate this to some libsndfile slang...
+	if (pFormat && pFormat->type == SndFile) {
+		switch (iFormat) {
+		case 4:
+			return SF_FORMAT_DOUBLE;
+		case 3:
+			return SF_FORMAT_FLOAT;
+		case 2:
+			return SF_FORMAT_PCM_32;
+		case 1:
+			return SF_FORMAT_PCM_24;
+		case 0:
+		default:
+			return SF_FORMAT_PCM_16;
+		}
+	}
+
+	return 0;
 }
 
 
