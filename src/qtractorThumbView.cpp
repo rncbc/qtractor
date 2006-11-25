@@ -176,15 +176,15 @@ void qtractorThumbView::paintEvent ( QPaintEvent *pPaintEvent )
 		int y2 = 1;
 		qtractorTrack *pTrack = pSession->tracks().first();
 		while (pTrack && y2 < h) {
-			int h2 = ((h - 1) * pTrack->zoomHeight()) / c2;
+			int h2 = ((h * pTrack->zoomHeight()) / c2) - 1;
 			if (h2 < 3)
 				h2 = 3;
 			painter.setPen(pTrack->foreground());
 			painter.setBrush(pTrack->background());
 			qtractorClip *pClip = pTrack->clips().first();
 			while (pClip) {
-				x2 = pClip->clipStart()  / f2;
-				w2 = pClip->clipLength() / f2;
+				x2 = (pClip->clipStart()  / f2) + 1;
+				w2 = (pClip->clipLength() / f2);
 				painter.drawRect(x2, y2, w2, h2);
 				pClip = pClip->next();
 			}

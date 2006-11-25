@@ -391,8 +391,9 @@ bool qtractorAudioPeakFile::openPeakFile (void)
 		QFileInfo peakInfo(m_peakFile.fileName());
 		// Have we a peak file up-to-date,
 		// or must the peak file be (re)created?
-		if (!peakInfo.exists() ||
-			peakInfo.lastModified() < fileInfo.lastModified()) {
+		if (!peakInfo.exists()
+			|| peakInfo.created() < fileInfo.created()
+			|| peakInfo.lastModified() < fileInfo.lastModified()) {
 			m_pPeakThread = new qtractorAudioPeakThread(this);
 			m_pPeakThread->start();
 			return false;
