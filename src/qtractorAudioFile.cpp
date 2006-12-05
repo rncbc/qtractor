@@ -132,7 +132,7 @@ qtractorAudioFileFactory::qtractorAudioFileFactory (void)
 	// Add for libmad (mp3 read-only)...
 	pFormat = new FileFormat;
 	pFormat->type = MadFile;
-	pFormat->name = "MPEG Layer III";
+	pFormat->name = "MPEG-1 Audio Layer 3";
 	pFormat->ext  = "mp3";
 	pFormat->data = 0;
 	m_formats.append(pFormat);

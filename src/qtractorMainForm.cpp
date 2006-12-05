@@ -2036,6 +2036,21 @@ void qtractorMainForm::helpAbout (void)
 	sText += tr("Debugging option enabled.");
 	sText += "</font></small><br />";
 #endif
+#ifndef CONFIG_LIBVORBIS
+    sText += "<small><font color=\"red\">";
+    sText += tr("Ogg Vorbis (libvorbis) file support disabled.");
+    sText += "</font></small><br />";
+#endif
+#ifndef CONFIG_LIBMAD
+    sText += "<small><font color=\"red\">";
+    sText += tr("MPEG-1 Audio Layer 3 (libmad) file support disabled.");
+    sText += "</font></small><br />";
+#endif
+#ifndef CONFIG_LIBSAMPLERATE
+    sText += "<small><font color=\"red\">";
+    sText += tr("Sample-rate conversion (libsamplerate) disabled.");
+    sText += "</font></small><br />";
+#endif
 	sText += "<br />\n";
 	sText += tr("Website") + ": <a href=\"" QTRACTOR_WEBSITE "\">" QTRACTOR_WEBSITE "</a><br />\n";
 	sText += "<br />\n";
