@@ -180,14 +180,16 @@ qtractorMainForm::qtractorMainForm (
 	m_pSelectModeActionGroup->addAction(m_ui.editSelectModeRectAction);
 	m_ui.editToolbar->addActions(m_pSelectModeActionGroup->actions());
 
+#if QT_VERSION < 0x040201
 	// HACK: transport toolbar controls needs be auto-repeatable ...
 	QList<QToolButton *> list
 		= m_ui.transportToolbar->findChildren<QToolButton *> (
-			QRegExp("^transport(Backward|Forward)Action"));
+			QRegExp(c));
 	// Iterate over the intended transport tool-buttons...	
 	QListIterator<QToolButton *> iter(list);
 	while (iter.hasNext())
 		iter.next()->setAutoRepeat(true);
+#endif
 
 	// Additional time-toolbar controls...
 //	m_ui.timeToolbar->addSeparator();
@@ -2254,6 +2256,7 @@ bool qtractorMainForm::checkRestartSession (void)
 		unsigned long iPlayHead = m_pSession->playHead();
 		// Bail out if can't start it...
 		if (!startSession()) {
+#if QT_VERSION < 0x040201
 			// HACK: Auto-repeatable transport toolbar controls needs be up...
 			QList<QToolButton *> list
 				= m_ui.transportToolbar->findChildren<QToolButton *> (
@@ -2262,6 +2265,7 @@ bool qtractorMainForm::checkRestartSession (void)
 			QListIterator<QToolButton *> iter(list);
 			while (iter.hasNext())
 				iter.next()->setDown(false);
+#endif
 			// Can go on with no-business...
 			m_ui.transportRecordAction->setChecked(false);
 			m_ui.transportPlayAction->setChecked(false);

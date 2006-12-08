@@ -595,7 +595,7 @@ void qtractorMixerRack::addStrip ( qtractorMixerStrip *pStrip )
 	m_pWorkspaceLayout->addWidget(pStrip);
 
 	m_strips.append(pStrip);
-//	pStrip->show();
+	pStrip->show();
 }
 
 
