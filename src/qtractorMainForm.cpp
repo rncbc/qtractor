@@ -184,7 +184,7 @@ qtractorMainForm::qtractorMainForm (
 	// HACK: transport toolbar controls needs be auto-repeatable ...
 	QList<QToolButton *> list
 		= m_ui.transportToolbar->findChildren<QToolButton *> (
-			QRegExp(c));
+			QRegExp("^transport(Backward|Forward)Action"));
 	// Iterate over the intended transport tool-buttons...	
 	QListIterator<QToolButton *> iter(list);
 	while (iter.hasNext())
