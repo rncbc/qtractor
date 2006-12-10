@@ -538,7 +538,7 @@ qtractorTrackList::qtractorTrackList (
 	pHeader->setDefaultAlignment(Qt::AlignLeft | Qt::AlignVCenter);
 //	pHeader->setStretchLastSection(true);
 	pHeader->setClickable(false);
-	
+
 	pHeader->resizeSection(Number, 26);
 	pHeader->resizeSection(Name, 120);
 	pHeader->resizeSection(Channel, 24);
@@ -587,11 +587,14 @@ qtractorTrack *qtractorTrackList::track ( int iTrack ) const
 // Insert a track item; return actual track row added.
 int qtractorTrackList::insertTrack ( int iTrack, qtractorTrack *pTrack )
 {
+	QHeaderView *pHeader = QTableView::verticalHeader();
 	iTrack = m_pListModel->insertTrack(iTrack, pTrack);
 	if (iTrack >= 0) {
 		const QModelIndex& index = m_pListModel->index(iTrack, Name);
 		if (index.isValid()) {
-			QTableView::setRowHeight(iTrack, pTrack->zoomHeight());
+			int iRowHeight = pTrack->zoomHeight();
+			pHeader->resizeSection(iTrack, iRowHeight);
+			QTableView::setRowHeight(iTrack, iRowHeight);
 			QTableView::setIndexWidget(index,
 				new qtractorTrackItemWidget(this, pTrack));
 		}
@@ -654,10 +657,13 @@ void qtractorTrackList::updateZoomHeight (void)
 		return;
 
 	int iTrack = 0;
+	QHeaderView  *pHeader = QTableView::verticalHeader();
 	qtractorTrack *pTrack = pSession->tracks().first();
 	while (pTrack) {
 		pTrack->updateZoomHeight();
-		QTableView::setRowHeight(iTrack, pTrack->zoomHeight());
+		int iRowHeight = pTrack->zoomHeight();
+		pHeader->resizeSection(iTrack, iRowHeight);
+		QTableView::setRowHeight(iTrack, iRowHeight);
 		pTrack = pTrack->next();
 		iTrack++;
 	}
