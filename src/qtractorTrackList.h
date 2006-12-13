@@ -22,32 +22,28 @@
 #ifndef __qtractorTrackList_h
 #define __qtractorTrackList_h
 
-#include <QTableView>
+#include "qtractorScrollView.h"
+
+#include <QPixmap>
 
 
 // Forward declarations.
-class qtractorTracks;
 class qtractorTrack;
+class qtractorTracks;
+class qtractorTrackItemWidget;
 
-class qtractorTrackList;
-class qtractorTrackListItem;
-class qtractorTrackButton;
-class qtractorInstrumentList;
-class qtractorMonitor;
-
-class qtractorTrackListModel;
+class QHeaderView;
+class QRubberBand;
 
 class QResizeEvent;
 class QMouseEvent;
 class QKeyEvent;
 
-class QRubberBand;
-
 
 //----------------------------------------------------------------------------
 // qtractorTrackList -- Track list widget.
 
-class qtractorTrackList : public QTableView
+class qtractorTrackList : public qtractorScrollView
 {
 	Q_OBJECT
 
@@ -55,6 +51,8 @@ public:
 
 	// Constructor.
 	qtractorTrackList(qtractorTracks *pTracks, QWidget *pParent = 0);
+	// Destructor.
+	~qtractorTrackList();
 
 	// Track list view column indexes.
 	enum ColumnIndex {
@@ -69,8 +67,15 @@ public:
 	// Main tracks widget accessor.
 	qtractorTracks *tracks() const;
 
+	// Header view accessor.
+	QHeaderView *header() const;
+
 	// Find the list view item from track pointer reference.
 	int trackRow(qtractorTrack *pTrack) const;
+
+	// Find track row/column of given viewport point...
+	int trackRowAt(const QPoint& pos);
+	int trackColumnAt(const QPoint& pos);
 
 	// Find the track pointer reference from list view item row.
 	qtractorTrack *track(int iTrack) const;
@@ -94,18 +99,36 @@ public:
 	// Base item height (in pixels).
 	enum { ItemHeightMin = 24, ItemHeightBase = 48 };
 
-	// Zoom all tracks item height.
-	void updateZoomHeight();
+	// Update list content height.
+	void updateContentsHeight();
+
+	// Rectangular contents update.
+	void updateContents(const QRect& rect);
+	// Overall contents update.
+	void updateContents();
 
 protected:
 
-	// Trap size changes.
+	// Resize event handler.
 	void resizeEvent(QResizeEvent *pResizeEvent);
+
+	// Draw the time scale.
+	void drawContents(QPainter *pPainter, const QRect& rect);
+
+	// Retrive the given track row rectangular (in contents coordinates).
+	QRect trackRect(int iTrack) const;
+
+	// Draw table cell.
+	void drawCell(QPainter *pPainter, int iRow, int iCol,
+		const QRect& rect) const;
 
 	// Context menu request slot.
 	void contextMenuEvent(QContextMenuEvent *pContextMenuEvent);
 
-	// Handle item height resizing and track move with mouse.
+	// Handle mouse double-clicks.
+	void mouseDoubleClickEvent(QMouseEvent *pMouseEvent);
+
+	// Handle item selection with mouse.
 	void mousePressEvent(QMouseEvent *pMouseEvent);
 	void mouseMoveEvent(QMouseEvent *pMouseEvent);
 	void mouseReleaseEvent(QMouseEvent *pMouseEvent);
@@ -126,27 +149,47 @@ signals:
 
 protected slots:
 
-	// Trap current index changes.
-	void currentChanged(const QModelIndex& curr, const QModelIndex& prev);
-
-	// To test and select a tracka at a time.
-	void clickedSlot(const QModelIndex& index);
-	// To have direct access to track properties.
-	void doubleClickedSlot(const QModelIndex& index);
-
-	// Vertical offset position change slot.
-	void contentsYChangedSlot();
-
-	// To have track list in v-sync with main track view.
+	// To have timeline in h-sync with main track view.
 	void contentsYMovingSlot(int cx, int cy);
+
+	// (Re)create the time scale pixmap.
+	void updatePixmap(int cx, int cy);
+
+	// Update header extents.
+	void updateHeader();
 
 private:
 
 	// The logical parent binding.
 	qtractorTracks *m_pTracks;
 
-	// Our own track-list model.
-	qtractorTrackListModel  *m_pListModel;
+	// Local horizontal header.
+	QHeaderView *m_pHeader;
+
+	// Local double-buffering pixmap.
+	QPixmap m_pixmap;
+
+	// Model cache item.
+	struct Item
+	{
+		// Constructor
+		Item(qtractorTrackList *pTrackList, qtractorTrack *pTrack);
+		// Destructor.
+		~Item();
+		// Item updater.
+		void update(qtractorTrackList *pTrackList);
+		// Item members.
+		qtractorTrack *track;
+		QStringList    text;
+		// Track-list item widget.
+		qtractorTrackItemWidget *widget;
+	};
+
+	// Model cache item list.
+	QList<Item *> m_items;
+
+	// Current selected row.
+	int m_iCurrentTrack;
 
 	// The current selecting/dragging item stuff.
 	enum DragState {
@@ -159,9 +202,6 @@ private:
 	int    m_iDragY;
 
 	QRubberBand *m_pRubberBand;
-
-	// Avoid vertical change recursion.
-	int m_iContentsYMoving;
 };
 
 

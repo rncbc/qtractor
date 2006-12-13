@@ -229,8 +229,6 @@ bool qtractorMoveTrackCommand::redo (void)
 	iNextTrack = pTracks->trackList()->insertTrack(iNextTrack, track());
 	if (iNextTrack >= 0)
 		pTracks->trackList()->selectTrack(iNextTrack);
-	// God'am, if we'll need this...
-	pTracks->trackList()->updateZoomHeight();
 
 	// Swap it nice, finally.
 	m_pNextTrack = pNextTrack;
@@ -265,16 +263,11 @@ bool qtractorResizeTrackCommand::redo (void)
 	if (pTracks == NULL)
 		return false;
 
-	int iTrack = pTracks->trackList()->trackRow(track());
-	if (iTrack < 0)
-	    return false;
-
 	// Save the previous item height alright...
 	int iZoomHeight = track()->zoomHeight();
 
 	// Just set new one...
 	track()->setZoomHeight(m_iZoomHeight);
-	pTracks->trackList()->setRowHeight(iTrack, m_iZoomHeight);
 
 	// Swap it nice, finally.
 	m_iZoomHeight = iZoomHeight;

@@ -95,9 +95,11 @@ qtractorTracks::qtractorTracks ( QWidget *pParent )
 
 	// Early track list stabilization.
 	m_pTrackTime->setFixedHeight(
-		m_pTrackList->horizontalHeader()->sizeHint().height());
+		(m_pTrackList->header())->sizeHint().height());
 
 	// To have all views in positional sync.
+	QObject::connect(m_pTrackList, SIGNAL(contentsMoving(int,int)),
+		m_pTrackView, SLOT(contentsYMovingSlot(int,int)));
 	QObject::connect(m_pTrackView, SIGNAL(contentsMoving(int,int)),
 		m_pTrackTime, SLOT(contentsXMovingSlot(int,int)));
 	QObject::connect(m_pTrackView, SIGNAL(contentsMoving(int,int)),
@@ -216,7 +218,7 @@ void qtractorTracks::verticalZoomStep ( int iZoomStep )
 	pSession->setVerticalZoom(iVerticalZoom);
 
 	// Update the dependant views...
-	m_pTrackList->updateZoomHeight();
+	m_pTrackList->updateContentsHeight();
 
 	// Notify who's watching...
 	contentsChangeNotify();
@@ -285,9 +287,8 @@ void qtractorTracks::updateContents ( bool bRefresh )
 
 	// Update dependant views.
 	if (iRefresh > 0) {
-		m_pTrackView->updateContentsHeight();
 		m_pTrackView->updateContentsWidth();
-		m_pTrackView->updateContents();
+		m_pTrackList->updateContentsHeight();
 	}
 }
 
@@ -432,11 +433,9 @@ bool qtractorTracks::removeTrack ( qtractorTrack *pTrack )
 	// Get the list view item reference of the intended track...
 	int iTrack = m_pTrackList->trackRow(pTrack);
 	if (iTrack < 0)
-		iTrack = m_pTrackList->currentIndex().row();
-	if (iTrack < 0)
+		pTrack = m_pTrackList->currentTrack();
+	if (pTrack == NULL)
 		return false;
-	// Enforce which track to remove...
-	pTrack = m_pTrackList->track(iTrack);
 
 	// Prompt user if he/she's sure about this...
 	qtractorOptions *pOptions = pMainForm->options();
@@ -470,11 +469,9 @@ bool qtractorTracks::editTrack ( qtractorTrack *pTrack )
 	// Get the list view item reference of the intended track...
 	int iTrack = m_pTrackList->trackRow(pTrack);
 	if (iTrack < 0)
-		iTrack = m_pTrackList->currentIndex().row();
-	if (iTrack < 0)
+		pTrack = m_pTrackList->currentTrack();
+	if (pTrack == NULL)
 		return false;
-	// Enforce which track to remove...
-	pTrack = m_pTrackList->track(iTrack);
 
 	// Open dialog for settings...
 	qtractorTrackForm trackForm(this);

@@ -50,10 +50,14 @@ qtractorScrollView::~qtractorScrollView (void)
 // Virtual contents methods.
 void qtractorScrollView::setContentsPos ( int cx, int cy )
 {
-	if (cx >= 0 && m_rectContents.x() != cx)
+	if (cx < 0)
+		cx = 0;
+	if (cx != m_rectContents.x())
 		QAbstractScrollArea::horizontalScrollBar()->setSliderPosition(cx);
 
-	if (cy >= 0 && m_rectContents.y() != cy)
+	if (cy < 0)
+		cy = 0;
+	if (cy != m_rectContents.y())
 		QAbstractScrollArea::verticalScrollBar()->setSliderPosition(cy);
 }
 
