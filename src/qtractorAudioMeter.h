@@ -74,6 +74,9 @@ public:
 	// Reset peak holder.
 	void peakReset();
 
+	// Value refreshment.
+	void refresh();
+
 protected:
 
 	// Specific event handlers.
@@ -87,7 +90,8 @@ private:
 	unsigned short      m_iChannel;
 
 	// Running variables.
-	int   m_iValue;
+	float m_fValue;
+	int   m_iValueHold;
 	float m_fValueDecay;
 	int   m_iPeak;
 	int   m_iPeakHold;

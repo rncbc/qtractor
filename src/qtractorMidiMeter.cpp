@@ -84,7 +84,8 @@ qtractorMidiMeterValue::qtractorMidiMeterValue(
 	: QFrame(pParent)
 {
 	m_pMidiMeter  = pMidiMeter;
-	m_iValue      = 0;
+	m_fValue      = 0.0f;
+	m_iValueHold  = 0;
 	m_fValueDecay = QTRACTOR_MIDI_METER_DECAY_RATE1;
 	m_iPeak       = 0;
 	m_iPeakHold   = 0;
@@ -112,6 +113,24 @@ void qtractorMidiMeterValue::peakReset (void)
 }
 
 
+// Value refreshment.
+void qtractorMidiMeterValue::refresh (void)
+{
+	// Grab the value...
+	float fValue = 0.0f;
+	if (m_pMidiMeter->midiMonitor())
+		fValue = m_pMidiMeter->midiMonitor()->value();
+
+	// If not value pending of change, bail out...
+	if (m_fValue == fValue && m_iPeak < 1)
+		return;
+
+	// Proceed to update...
+	m_fValue = fValue;
+	update();
+}
+
+
 // Paint event handler.
 void qtractorMidiMeterValue::paintEvent ( QPaintEvent * )
 {
@@ -127,32 +146,30 @@ void qtractorMidiMeterValue::paintEvent ( QPaintEvent * )
 		painter.fillRect(0, 0, w, h, Qt::gray);
 	}
 
-	int y = 0;
-	if (m_pMidiMeter->midiMonitor())
-		y = int(m_pMidiMeter->midiMonitor()->value() * float(h));
-	if (y > m_iValue) {
-		m_iValue = y;
+	int y = int(m_fValue * float(h));
+	if (m_iValueHold < y) {
+		m_iValueHold = y;
 		m_fValueDecay = QTRACTOR_MIDI_METER_DECAY_RATE1;
 	} else {
-		m_iValue = int(float(m_iValue * m_fValueDecay));
-		if (y > m_iValue) {
-			m_iValue = y;
+		m_iValueHold = int(float(m_iValueHold * m_fValueDecay));
+		if (m_iValueHold < y) {
+			m_iValueHold = y;
 		} else {
 			m_fValueDecay *= m_fValueDecay;
-			y = m_iValue;
+			y = m_iValueHold;
 		}
 	}
 
 	painter.fillRect(0, h - y, w, y,
 		m_pMidiMeter->color(qtractorMidiMeter::ColorOver));
 
-	if (y > m_iPeak) {
+	if (m_iPeak < y) {
 		m_iPeak = y;
-		m_iPeakHold  = 0;
+		m_iPeakHold = 0;
 		m_fPeakDecay = QTRACTOR_MIDI_METER_DECAY_RATE2;
 	} else if (++m_iPeakHold > m_pMidiMeter->peakFalloff()) {
 		m_iPeak = int(float(m_iPeak * m_fPeakDecay));
-		if (y > m_iPeak) {
+		if (m_iPeak < y) {
 			m_iPeak = y;
 		} else {
 			m_fPeakDecay *= m_fPeakDecay;
@@ -256,7 +273,7 @@ void qtractorMidiMeter::peakReset (void)
 // Slot refreshment.
 void qtractorMidiMeter::refresh (void)
 {
-	m_pMidiValue->update();
+	m_pMidiValue->refresh();
 	
 	// Take care of the MIDI LED status...
 	bool bMidiOn = (m_pMidiMonitor->count() > 0);
