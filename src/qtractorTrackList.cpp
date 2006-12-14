@@ -38,7 +38,7 @@
 #include <QRubberBand>
 
 #include <QApplication>
-#include <QVBoxLayout>
+#include <QHBoxLayout>
 
 #include <QResizeEvent>
 #include <QMouseEvent>
@@ -114,12 +114,8 @@ public:
 	{
 		QWidget::setBackgroundRole(QPalette::Window);
 
-		QVBoxLayout *pVBoxLayout = new QVBoxLayout();
-		pVBoxLayout->setMargin(4);
-		pVBoxLayout->setSpacing(0);
-
 		QHBoxLayout *pHBoxLayout = new QHBoxLayout();
-		pHBoxLayout->setMargin(0);
+		pHBoxLayout->setMargin(4);
 		pHBoxLayout->setSpacing(4);
 
 		const QSize buttonSize(22, 16);
@@ -130,14 +126,11 @@ public:
 		m_pSoloButton   = new qtractorTrackButton(pTrack,
 			qtractorTrack::Solo, buttonSize, this);
 	
-		pHBoxLayout->addStretch();
+	//	pHBoxLayout->addStretch();
 		pHBoxLayout->addWidget(m_pRecordButton);
 		pHBoxLayout->addWidget(m_pMuteButton);
 		pHBoxLayout->addWidget(m_pSoloButton);
-
-		pVBoxLayout->addStretch();
-		pVBoxLayout->addLayout(pHBoxLayout);
-		QWidget::setLayout(pVBoxLayout);
+		QWidget::setLayout(pHBoxLayout);
 
 		qtractorTracks *pTracks = pTrackList->tracks();
 		QObject::connect(m_pRecordButton,
@@ -713,7 +706,11 @@ void qtractorTrackList::updatePixmap ( int cx, int cy )
 					rect.setWidth(dx);
 					drawCell(&painter, iTrack, iCol, rect);
 					if (iCol == Name && pItem->widget) {
-						(pItem->widget)->setGeometry(rect);
+						QRect rectWidget = rect;
+						QSize sizeWidget = (pItem->widget)->sizeHint();
+						rectWidget.setTop(rect.bottom() - sizeWidget.height());
+						rectWidget.setLeft(rect.right() - sizeWidget.width());
+						(pItem->widget)->setGeometry(rectWidget);
 						(pItem->widget)->show();
 					}
 				}
