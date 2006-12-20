@@ -180,8 +180,8 @@ qtractorMainForm::qtractorMainForm (
 	m_pSelectModeActionGroup->addAction(m_ui.editSelectModeRectAction);
 	m_ui.editToolbar->addActions(m_pSelectModeActionGroup->actions());
 
-#if QT_VERSION < 0x040201
 	// HACK: transport toolbar controls needs be auto-repeatable ...
+#if QT_VERSION < 0x040201
 	QList<QToolButton *> list
 		= m_ui.transportToolbar->findChildren<QToolButton *> (
 			QRegExp("^transport(Backward|Forward)Action"));
@@ -189,6 +189,18 @@ qtractorMainForm::qtractorMainForm (
 	QListIterator<QToolButton *> iter(list);
 	while (iter.hasNext())
 		iter.next()->setAutoRepeat(true);
+#else
+	QToolButton *pToolButton;
+	pToolButton = qobject_cast<QToolButton *> (
+		m_ui.transportToolbar->widgetForAction(
+			m_ui.transportBackwardAction));
+	if (pToolButton)
+		pToolButton->setAutoRepeat(true);
+	pToolButton = qobject_cast<QToolButton *> (
+		m_ui.transportToolbar->widgetForAction(
+			m_ui.transportForwardAction));
+	if (pToolButton)
+		pToolButton->setAutoRepeat(true);
 #endif
 
 	// Additional time-toolbar controls...
@@ -340,7 +352,6 @@ qtractorMainForm::qtractorMainForm (
 	pLabel->setToolTip(tr("Session sample rate"));
 	m_statusItems[StatusRate] = pLabel;
 	statusBar()->addWidget(pLabel);
-
 
 	// Ah, make it stand right.
 	setFocus();
@@ -2256,8 +2267,8 @@ bool qtractorMainForm::checkRestartSession (void)
 		unsigned long iPlayHead = m_pSession->playHead();
 		// Bail out if can't start it...
 		if (!startSession()) {
-#if QT_VERSION < 0x040201
 			// HACK: Auto-repeatable transport toolbar controls needs be up...
+#if QT_VERSION < 0x040201
 			QList<QToolButton *> list
 				= m_ui.transportToolbar->findChildren<QToolButton *> (
 					QRegExp("^transport(Backward|Forward)Action"));

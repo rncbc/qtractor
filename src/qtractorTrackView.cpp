@@ -533,7 +533,7 @@ void qtractorTrackView::updatePixmap ( int cx, int cy )
 	if (y2 < cy + h) {
 		painter.setPen(rgbMid);
 		painter.drawLine(0, y2 - cy, w, y2 - cy);
-	//	pPainter->fillRect(0, y2 - cy + 1, w, h, pal.dark().color());
+	//	painter.fillRect(0, y2 - cy + 1, w, h, pal.dark().color());
 	}
 
 	// Draw loop boundaries, if applicable...

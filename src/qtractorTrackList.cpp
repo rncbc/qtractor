@@ -729,8 +729,11 @@ void qtractorTrackList::updatePixmap ( int cx, int cy )
 		iTrack++;
 	}
 
-	if (cy + h > ch)
-		painter.fillRect(0, ch - cy, w, cy + h - ch, pal.dark().color());
+	if (cy + h > ch) {
+		painter.setPen(pal.mid().color());
+		painter.drawLine(0, ch - cy, w, ch - cy);
+		painter.fillRect(0, ch - cy + 1, w, cy + h - ch, pal.dark().color());
+	}
 }
 
 

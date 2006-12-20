@@ -200,8 +200,8 @@ qtractorMidiMeter::qtractorMidiMeter ( qtractorMidiMonitor *pMidiMonitor,
 
 	m_iMidiCount = 0;
 
-	topLabel()->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
 	topLabel()->setPixmap(*m_pMidiPixmap[LedOff]);
+	topLabel()->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
 
 	gainSpinBox()->setMinimum(0.0f);
 	gainSpinBox()->setMaximum(100.0f);
