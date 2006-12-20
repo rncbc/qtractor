@@ -117,17 +117,12 @@ void qtractorMidiMeterValue::peakReset (void)
 void qtractorMidiMeterValue::refresh (void)
 {
 	// Grab the value...
-	float fValue = 0.0f;
-	if (m_pMidiMeter->midiMonitor())
-		fValue = m_pMidiMeter->midiMonitor()->value();
-
-	// If not value pending of change, bail out...
-	if (m_fValue == fValue && m_iPeak < 1)
-		return;
-
-	// Proceed to update...
-	m_fValue = fValue;
-	update();
+	if (m_pMidiMeter->midiMonitor()) {
+		m_fValue = m_pMidiMeter->midiMonitor()->value();
+		// If value pending of change, proceed for update...
+		if (m_fValue > 0.001f || m_iPeak > 0)
+			update();
+	}
 }
 
 
@@ -200,13 +195,13 @@ qtractorMidiMeter::qtractorMidiMeter ( qtractorMidiMonitor *pMidiMonitor,
 {
 	m_pMidiMonitor = pMidiMonitor;
 
-	m_pMidiPixmap[0] = new QPixmap(":/icons/trackMidiOff.png");
-	m_pMidiPixmap[1] = new QPixmap(":/icons/trackMidiOn.png");
+	m_pMidiPixmap[LedOff] = new QPixmap(":/icons/trackMidiOff.png");
+	m_pMidiPixmap[LedOn]  = new QPixmap(":/icons/trackMidiOn.png");
 
 	m_iMidiCount = 0;
 
-	topLabel()->setAlignment(Qt::AlignRight | Qt::AlignBottom);
-	topLabel()->setPixmap(*m_pMidiPixmap[0]);
+	topLabel()->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+	topLabel()->setPixmap(*m_pMidiPixmap[LedOff]);
 
 	gainSpinBox()->setMinimum(0.0f);
 	gainSpinBox()->setMaximum(100.0f);
@@ -239,8 +234,8 @@ qtractorMidiMeter::~qtractorMidiMeter (void)
 	delete m_pMidiValue;
 	delete m_pMidiScale;
 
-	delete m_pMidiPixmap[0];
-	delete m_pMidiPixmap[1];
+	delete m_pMidiPixmap[LedOff];
+	delete m_pMidiPixmap[LedOn];
 }
 
 
@@ -279,12 +274,12 @@ void qtractorMidiMeter::refresh (void)
 	bool bMidiOn = (m_pMidiMonitor->count() > 0);
 	if (bMidiOn) {
 		if (m_iMidiCount == 0)
-			topLabel()->setPixmap(*m_pMidiPixmap[1]);
+			topLabel()->setPixmap(*m_pMidiPixmap[LedOn]);
 		m_iMidiCount = QTRACTOR_MIDI_METER_HOLD_LEDON;
 	} else if (m_iMidiCount > 0) {
 		m_iMidiCount--;
 		if (m_iMidiCount == 0)
-			topLabel()->setPixmap(*m_pMidiPixmap[0]);
+			topLabel()->setPixmap(*m_pMidiPixmap[LedOff]);
 	}
 }
 

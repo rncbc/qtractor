@@ -9,7 +9,7 @@ Version:	%{version}
 Release:	%{release}
 Prefix:		%{prefix}
 License:	GPL
-Group:		Sound
+Group:		Applications/Multimedia
 Source0:	%{name}-%{version}.tar.gz
 URL:		http://qtractor.sourceforge.net/
 BuildRoot:	/var/tmp/%{name}-%{version}-buildroot

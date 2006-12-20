@@ -164,8 +164,10 @@ private:
 
 	QColor m_colors[ColorCount];
 
-	// MIDI I/O LED pixmap studd.
-	QPixmap     *m_pMidiPixmap[2];
+	// MIDI I/O LED pixmap stuff.
+	enum { LedOff = 0, LedOn = 1, LedCount = 2 };
+
+	QPixmap     *m_pMidiPixmap[LedCount];
 	unsigned int m_iMidiCount;
 };
 

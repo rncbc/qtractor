@@ -178,6 +178,9 @@ qtractorTrackList::qtractorTrackList ( qtractorTracks *pTracks, QWidget *pParent
 
 	m_pRubberBand = NULL;
 
+	m_pPixmap[IconAudio] = new QPixmap(":/icons/trackAudio.png");
+	m_pPixmap[IconMidi]  = new QPixmap(":/icons/trackMidi.png");
+
 	// Allocate local header.
 	m_pHeader = new QHeaderView(Qt::Horizontal, qtractorScrollView::viewport());
 	m_pHeader->setModel(new qtractorTrackListHeaderModel(this));
@@ -214,6 +217,8 @@ qtractorTrackList::qtractorTrackList ( qtractorTracks *pTracks, QWidget *pParent
 // Destructor.
 qtractorTrackList::~qtractorTrackList (void)
 {
+	delete m_pPixmap[IconAudio];
+	delete m_pPixmap[IconMidi];
 }
 
 
@@ -633,21 +638,22 @@ void qtractorTrackList::drawCell ( QPainter *pPainter, int iRow, int iCol,
 			pItem->text.at(iCol - 1));
 	} else {
 		if (iCol == Bus) {
-			QPixmap pm;
-			// TODO: make pixmaps cached, plz.
+			const QPixmap *pPixmap = NULL;
 			switch ((pItem->track)->trackType()) {
-				case qtractorTrack::Audio:
-					pm = QPixmap(":/icons/trackAudio.png");
-					break;
-				case qtractorTrack::Midi:
-					pm = QPixmap(":/icons/trackMidi.png");
-					break;
-				case qtractorTrack::None:
-				default:
-					break;
+			case qtractorTrack::Audio:
+				pPixmap = m_pPixmap[IconAudio];
+				break;
+			case qtractorTrack::Midi:
+				pPixmap = m_pPixmap[IconMidi];
+				break;
+			case qtractorTrack::None:
+			default:
+				break;
 			}
-			pPainter->drawPixmap(rectText.x(), rectText.y(), pm);
-			rectText.setLeft(rectText.left() + pm.width() + 4);
+			if (pPixmap) {
+				pPainter->drawPixmap(rectText.x(), rectText.y(), *pPixmap);
+				rectText.setLeft(rectText.left() + pPixmap->width() + 4);
+			}
 		}
 		pPainter->drawText(rectText,
 			Qt::AlignLeft | Qt::AlignTop | Qt::TextWordWrap,
@@ -756,7 +762,7 @@ void qtractorTrackList::contextMenuEvent (
 
 
 // Handle mouse double-clicks.
-void qtractorTrackList::mouseDoubleClickEvent ( QMouseEvent *pMouseEvent )
+void qtractorTrackList::mouseDoubleClickEvent ( QMouseEvent * /*pMouseEvent*/ )
 {
 	// We'll need a reference for issuing commands...
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();

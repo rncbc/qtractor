@@ -382,14 +382,36 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 			pAudioBus->process_prepare(nframes);
 	}
 
-	// Don't go any further, if not playing.
-	if (!isPlaying())
-		return process_idle(nframes);
-
 	// Make sure we have an actual session cursor...
 	qtractorSession *pSession = session();
 	if (pSession == NULL)
 		return 0;
+
+	// Don't go any further, if not playing.
+	if (!isPlaying()) {
+		// Do the idle processing...
+		if (pSession->recordTracks() > 0) {
+			for (qtractorTrack *pTrack = pSession->tracks().first();
+					pTrack; pTrack = pTrack->next()) {
+				// Audio-buffers needs some preparation...
+				if (pTrack->isRecord()
+					&& pTrack->trackType() == qtractorTrack::Audio) {
+					qtractorAudioBus *pAudioBus
+						= static_cast<qtractorAudioBus *> (pTrack->inputBus());
+					qtractorAudioMonitor *pAudioMonitor
+						= static_cast<qtractorAudioMonitor *> (pTrack->monitor());
+					// Pre-monitoring...
+					if (pAudioBus && pAudioMonitor && pTrack->isRecord()) {
+						pAudioMonitor->process(
+							pAudioBus->in(), nframes, pAudioBus->channels());
+					}
+				}
+			}
+		}
+		// Done as idle...
+		return 1;
+	}
+
 	qtractorSessionCursor *pAudioCursor = sessionCursor();
 	if (pAudioCursor == NULL)
 	    return 0;
@@ -442,39 +464,6 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 	pSession->midiEngine()->sync();
 
 	// Process session stuff...
-	return 1;
-}
-
-
-// Idle process cycle executive.
-int qtractorAudioEngine::process_idle ( unsigned int nframes )
-{
-	// At this time, we'll get this workaround for pre-monitoring
-	// those audio tracks that are currently armed for recording...
-	qtractorSession *pSession = session();
-	if (pSession == NULL)
-		return 0;
-
-	if (pSession->recordTracks() < 1)
-		return 1;
-
-	for (qtractorTrack *pTrack = pSession->tracks().first();
-			pTrack; pTrack = pTrack->next()) {
-		// Audio-buffers needs some preparation...
-		if (pTrack->isRecord()
-			&& pTrack->trackType() == qtractorTrack::Audio) {
-			qtractorAudioBus *pAudioBus
-				= static_cast<qtractorAudioBus *> (pTrack->inputBus());
-			qtractorAudioMonitor *pAudioMonitor
-				= static_cast<qtractorAudioMonitor *> (pTrack->monitor());
-			// Pre-monitoring...
-			if (pAudioBus && pAudioMonitor && pTrack->isRecord()) {
-				pAudioMonitor->process(
-					pAudioBus->in(), nframes, pAudioBus->channels());
-			}
-		}
-	}
-
 	return 1;
 }
 

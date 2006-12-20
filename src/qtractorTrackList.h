@@ -202,6 +202,11 @@ private:
 	int    m_iDragY;
 
 	QRubberBand *m_pRubberBand;
+
+	// Track icon pixmap stuff.
+	enum { IconAudio = 0, IconMidi = 1, IconCount = 2 };
+
+	QPixmap *m_pPixmap[IconCount];
 };
 
 
