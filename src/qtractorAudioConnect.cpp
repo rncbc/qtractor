@@ -136,7 +136,8 @@ int qtractorAudioClientListView::updateClientPorts (void)
 	
 	markClientPorts(0);
 
-	const char **ppszClientPorts = jack_get_ports(pJackClient, 0, 0,
+	const char **ppszClientPorts = jack_get_ports(pJackClient,
+		0, JACK_DEFAULT_AUDIO_TYPE,
 		isReadable() ? JackPortIsOutput : JackPortIsInput);
 	if (ppszClientPorts) {
 		int iClientPort = 0;

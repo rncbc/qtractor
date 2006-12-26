@@ -862,7 +862,8 @@ void qtractorAudioBus::autoConnect (void)
 
 	if (busMode() & qtractorBus::Input) {
 		const char **ppszOPorts
-			= jack_get_ports(pAudioEngine->jackClient(), 0, 0,
+			= jack_get_ports(pAudioEngine->jackClient(),
+				0, JACK_DEFAULT_AUDIO_TYPE,
 				JackPortIsOutput | JackPortIsPhysical);
 		if (ppszOPorts) {
 			const QString sIPortName = pAudioEngine->clientName()
@@ -877,7 +878,8 @@ void qtractorAudioBus::autoConnect (void)
 
 	if (busMode() & qtractorBus::Output) {
 		const char **ppszIPorts
-			= jack_get_ports(pAudioEngine->jackClient(), 0, 0,
+			= jack_get_ports(pAudioEngine->jackClient(),
+				0, JACK_DEFAULT_AUDIO_TYPE,
 				JackPortIsInput | JackPortIsPhysical);
 		if (ppszIPorts) {
 			const QString sOPortName = pAudioEngine->clientName()
