@@ -1,6 +1,6 @@
 %define name    @PACKAGE_TARNAME@
 %define version @PACKAGE_VERSION@
-%define release 1
+%define release 2
 %define prefix  /usr/local
 
 Summary:	A MIDI/Audio multi-track sequencer.
@@ -31,7 +31,6 @@ specially dedicated to the personal home-studio.
 [ -f Makefile.cvs ] && make -f Makefile.cvs
 
 %build
-export PATH=$QTDIR/bin:$PATH
 ./configure --prefix=%{prefix}
 make
 
@@ -50,6 +49,8 @@ if [ -d $RPM_BUILD_ROOT ]; then rm -rf $RPM_BUILD_ROOT; fi
 %{prefix}/share/icons/qtractor.png
 
 %changelog
+* Fri Jan 05 2007 Rui Nuno Capela <rncbc@users.sourceforge.net>
+- Got rid of QTDIR setting from PATH.
 * Thu Nov 02 2006 Rui Nuno Capela <rncbc@users.sourceforge.net>
 - Filled up package description
 * Wed Aug 24 2004 Rui Nuno Capela <rncbc@users.sourceforge.net>
