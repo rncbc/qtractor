@@ -1,7 +1,7 @@
 // qtractorAudioPeak.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2006, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -44,7 +44,7 @@ static const unsigned int c_iPeakBufSize = (4 * 1024);
 static const unsigned short c_iPeakPeriod = 1024;
 
 // Fixed peak smoothing coeficient (exponential average).
-static const float c_fPeakExpCoef = 0.5;
+static const float c_fPeakExpCoef = 0.5f;
 
 // Default peak filename extension.
 static const QString c_sPeakFileExt = ".peak";
@@ -165,8 +165,8 @@ void qtractorAudioPeakThread::run (void)
 			}
 			m_iPeak = 0;
 			// The resample-aware internal peak period...
-			m_iPeriod = (unsigned short) (c_iPeakPeriod
-				* float(m_pAudioFile->sampleRate())
+			m_iPeriod = (unsigned short) ::lroundf(
+				float(c_iPeakPeriod * m_pAudioFile->sampleRate())
 				/ float(m_pPeakFile->sampleRate()));
 			// Write peak file header.
 			qtractorAudioPeakHeader hdr;
