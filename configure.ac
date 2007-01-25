@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(Qtractor, 0.0.1.530, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.0.1.531, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractorMainForm.ui)
 AC_CONFIG_HEADERS(config.h)
@@ -43,6 +43,11 @@ AC_ARG_ENABLE(libsamplerate,
   [ac_libsamplerate="no"],
   [ac_libsamplerate="yes"])
 
+# Set for alternate Qt installation dir.
+AC_ARG_WITH(qt,
+  AC_HELP_STRING([--with-qt=PATH], [use alternate Qt install path]),
+  [ac_with_paths="$ac_with_paths $withval"])
+
 # Set for alternate JACK installation dir.
 AC_ARG_WITH(jack,
   AC_HELP_STRING([--with-jack=PATH], [use alternate JACK install path]),
@@ -85,22 +90,27 @@ AC_LANG_C
 AC_LANG_CPLUSPLUS
 
 # Prepend alternate dependencies paths.
+ac_path=$PATH
 for X in $ac_with_paths; do
+  if test -d $X/bin; then
+    ac_path="$X/bin:$ac_path"
+  fi
   if test -d $X/include; then
-    CFLAGS="$CFLAGS -I$X/include"
-    CPPFLAGS="$CPPFLAGS -I$X/include"
-    ac_incpath="$ac_incpath $X/include"
+    CFLAGS="-I$X/include $CFLAGS"
+    CPPFLAGS="-I$X/include $CPPFLAGS"
+    ac_incpath="$X/include $ac_incpath"
   fi
   if test -d $X/lib64; then
-    LIBS="$LIBS -L$X/lib64"
-    ac_libs="$ac_libs -L$X/lib64"
+    LIBS="-L$X/lib64 $LIBS"
+    ac_libs="-L$X/lib64 $ac_libs"
   fi
   if test -d $X/lib; then
-    LIBS="$LIBS -L$X/lib"
-    ac_libs="$ac_libs -L$X/lib"
+    LIBS="-L$X/lib $LIBS"
+    ac_libs="-L$X/lib $ac_libs"
   fi
 done
 
+# Check for proper Qt version.
 AC_CACHE_CHECK([for Qt library version >= 4.1],
   ac_qtlib_version, [
   AC_TRY_LINK([#include "Qt/qglobal.h"], [
@@ -115,26 +125,26 @@ AC_CACHE_CHECK([for Qt library version >= 4.1],
 ])
 
 # A common error message:
-ac_qtdir_errmsg="not found in current PATH. Maybe QT development environment isn't available (qt-devel)."
+ac_errmsg="not found in current PATH. Maybe QT development environment isn't available (qt-devel)."
 
 # Check for Qt qmake utility.
-AC_PATH_PROG(ac_qmake, qmake, [no], ${PATH})
+AC_PATH_PROG(ac_qmake, qmake, [no], $ac_path)
 if test "x$ac_qmake" = "xno"; then
-   AC_MSG_ERROR([qmake $ac_qtdir_errmsg])
+   AC_MSG_ERROR([qmake $ac_errmsg])
 fi
 AC_SUBST(ac_qmake)
 
 # Check for Qt moc utility.
-AC_PATH_PROG(ac_moc, moc, [no], ${PATH})
+AC_PATH_PROG(ac_moc, moc, [no], $ac_path)
 if test "x$ac_moc" = "xno"; then
-   AC_MSG_ERROR([moc $ac_qtdir_errmsg])
+   AC_MSG_ERROR([moc $ac_errmsg])
 fi
 AC_SUBST(ac_moc)
 
 # Check for Qt uic utility.
-AC_PATH_PROG(ac_uic, uic, [no], ${PATH})
+AC_PATH_PROG(ac_uic, uic, [no], $ac_path)
 if test "x$ac_uic" = "xno"; then
-   AC_MSG_ERROR([uic $ac_qtdir_errmsg])
+   AC_MSG_ERROR([uic $ac_errmsg])
 fi
 AC_SUBST(ac_uic)
 
@@ -167,8 +177,8 @@ else
 fi
 
 # Check for sndfile library.
-AC_CHECK_LIB(sndfile, main, [ac_sndfile_lib="yes"], [ac_sndfile_lib="no"])
-if test "x$ac_sndfile_lib" = "xno"; then
+AC_CHECK_LIB(sndfile, main, [ac_libsndfile="yes"], [ac_libsndfile="no"])
+if test "x$ac_libsndfile" = "xno"; then
    AC_MSG_ERROR([sndfile library not found.])
 else
    ac_libs="$ac_libs -lsndfile"
