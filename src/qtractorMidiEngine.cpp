@@ -1,7 +1,7 @@
 // qtractorMidiEngine.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2006, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -532,6 +532,32 @@ unsigned int qtractorMidiEngine::readAhead (void) const
 }
 
 
+// Reset queue tempo.
+void qtractorMidiEngine::resetTempo (void)
+{
+	// It must be surely activated...
+	if (!isActivated())
+		return;
+
+	// There must a session reference...
+	qtractorSession *pSession = session();
+	if (pSession == NULL)
+		return;
+
+	// Set queue tempo...
+	snd_seq_queue_tempo_t *tempo;
+	snd_seq_queue_tempo_alloca(&tempo);
+	// Fill tempo struct with current tempo info.
+	snd_seq_get_queue_tempo(m_pAlsaSeq, m_iAlsaQueue, tempo);
+	// Set the new intended ones...
+	snd_seq_queue_tempo_set_ppq(tempo, (int) pSession->ticksPerBeat());
+	snd_seq_queue_tempo_set_tempo(tempo,
+		(unsigned int) (60000000.0f / pSession->tempo()));
+	// Give tempo struct to the queue.
+	snd_seq_set_queue_tempo(m_pAlsaSeq, m_iAlsaQueue, tempo);
+}
+
+
 // Reset all MIDI monitoring...
 void qtractorMidiEngine::resetAllMonitors (void)
 {
@@ -915,6 +941,7 @@ bool qtractorMidiEngine::activate (void)
 // Device engine start method.
 bool qtractorMidiEngine::start (void)
 {
+	// It must be surely activated...
 	if (!isActivated())
 		return false;
 
@@ -922,21 +949,10 @@ bool qtractorMidiEngine::start (void)
 	qtractorSession *pSession = session();
 	if (pSession == NULL)
 		return false;
+
 	// Output thread must be around too...
 	if (m_pOutputThread == NULL)
 		return false;
-
-	// Set queue tempo...
-	snd_seq_queue_tempo_t *tempo;
-	snd_seq_queue_tempo_alloca(&tempo);
-	// Fill tempo struct with current tempo info.
-	snd_seq_get_queue_tempo(m_pAlsaSeq, m_iAlsaQueue, tempo);
-	// Set the new intended ones...
-	snd_seq_queue_tempo_set_ppq(tempo, (int) pSession->ticksPerBeat());
-	snd_seq_queue_tempo_set_tempo(tempo,
-		(unsigned int) (60000000.0f / pSession->tempo()));
-	// give tempo struct to the queue.
-	snd_seq_set_queue_tempo(m_pAlsaSeq, m_iAlsaQueue, tempo);
 
 	// Initial output thread bumping...
 	qtractorSessionCursor *pMidiCursor
@@ -944,16 +960,18 @@ bool qtractorMidiEngine::start (void)
 	if (pMidiCursor == NULL)
 		return false;
 
-	// Reset all dependable monitoring...
+	// Reset all dependables...
+	resetTempo();
 	resetAllMonitors();
 
 	// Start queue timer...
 	m_iTimeStart = (long) pSession->tickFromFrame(pMidiCursor->frame());
 	m_iTimeDelta = 0;
 
+	// Effectively start sequencer queue timer...
 	snd_seq_start_queue(m_pAlsaSeq, m_iAlsaQueue, NULL);
 
-	// We're now ready and running...
+	// Carry on...
 	m_pOutputThread->processSync();
 
 	return true;
@@ -969,6 +987,7 @@ void qtractorMidiEngine::stop (void)
 	// Cleanup queues...
 	snd_seq_drop_input(m_pAlsaSeq);
 	snd_seq_drop_output(m_pAlsaSeq);
+
 	// Stop queue timer...
 	snd_seq_stop_queue(m_pAlsaSeq, m_iAlsaQueue, NULL);
 

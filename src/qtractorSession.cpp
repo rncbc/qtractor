@@ -1,7 +1,7 @@
 // qtractorSession.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2006, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -170,6 +170,9 @@ void qtractorSession::close (void)
 // Reset session.
 void qtractorSession::clear (void)
 {
+	ATOMIC_SET(&m_locks, 0);
+	ATOMIC_SET(&m_mutex, 0);
+
 	m_tracks.clear();
 	m_cursors.clear();
 
@@ -793,6 +796,9 @@ qtractorAudioEngine *qtractorSession::audioEngine (void) const
 // Wait for application stabilization.
 void qtractorSession::stabilize ( int msecs )
 {
+#ifdef CONFIG_DEBUG
+	fprintf(stderr, "qtractorSession::stabilize(%d)\n", msecs);
+#endif
 	// Wait a litle bit before continue...
 	QTime t;
 	t.start();
@@ -844,6 +850,34 @@ void qtractorSession::seek ( unsigned long iFrame, bool bSync )
 }
 
 
+// Session RT-safe pseudo-locking primitives.
+bool qtractorSession::tryLock (void)
+{
+	// Are we in business?
+	return ATOMIC_TAS(&m_mutex);
+}
+
+
+void qtractorSession::lock (void)
+{
+	// Wind up as pending lock...
+	if (ATOMIC_INC(&m_locks) == 1) {
+		// Get lost for a while...
+		while (!tryLock())
+			stabilize();
+	}
+}
+
+void qtractorSession::unlock (void)
+{
+	// Unwind pending locks and force back to business...
+	if (ATOMIC_DEC(&m_locks) < 1) {
+		ATOMIC_SET(&m_locks, 0);
+		ATOMIC_SET(&m_mutex, 0);
+	}
+}
+
+
 // Playhead positioning.
 void qtractorSession::setPlayHead ( unsigned long iFrame )
 {
@@ -851,13 +885,14 @@ void qtractorSession::setPlayHead ( unsigned long iFrame )
 	if (bPlaying && isRecording())
 		return;
 
+	lock();
 	setPlaying(false);
 
 	jack_transport_locate(m_pAudioEngine->jackClient(), iFrame);
 	seek(iFrame, true);
 
-	stabilize();
 	setPlaying(bPlaying);
+	unlock();
 }
 
 unsigned long qtractorSession::playHead (void) const
@@ -873,6 +908,8 @@ void qtractorSession::setLoop ( unsigned long iLoopStart,
 	bool bPlaying = isPlaying();
 	if (bPlaying && isRecording())
 		return;
+
+	lock();
 	setPlaying(false);
 
 	// Local prepare...
@@ -903,8 +940,8 @@ void qtractorSession::setLoop ( unsigned long iLoopStart,
 	m_pAudioEngine->sessionCursor()->seek(iFrame, true);
 	m_pMidiEngine->sessionCursor()->seek(iFrame, true);
 
-	stabilize();
 	setPlaying(bPlaying);
+	unlock();
 }
 
 unsigned long qtractorSession::loopStart (void) const

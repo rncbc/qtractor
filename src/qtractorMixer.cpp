@@ -159,7 +159,7 @@ void qtractorMixerStrip::initMixerStrip (void)
 
 	// Now, there's whether we are Audio or MIDI related...
 	m_pMeter = NULL;
-	int iFixedWidth = 36;
+	int iFixedWidth = 38;
 	switch (meterType) {
 	case qtractorTrack::Audio: {
 		// Type cast for proper audio monitor...

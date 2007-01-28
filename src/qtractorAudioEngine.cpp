@@ -1,7 +1,7 @@
 // qtractorAudioEngine.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -371,7 +371,16 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 {
 	// Don't bother with a thing, if not running.
 	if (!isActivated())
-		return 1;
+		return 0;
+
+	// Make sure we have an actual session cursor...
+	qtractorSession *pSession = session();
+	if (pSession == NULL)
+		return 0;
+
+	qtractorSessionCursor *pAudioCursor = sessionCursor();
+	if (pAudioCursor == NULL)
+		return 0;
 
 	// Prepare current audio busses...
 	for (qtractorBus *pBus = busses().first();
@@ -382,10 +391,9 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 			pAudioBus->process_prepare(nframes);
 	}
 
-	// Make sure we have an actual session cursor...
-	qtractorSession *pSession = session();
-	if (pSession == NULL)
-		return 0;
+	// Session RT-safeness lock...
+	if (!pSession->tryLock())
+		return 1;
 
 	// Don't go any further, if not playing.
 	if (!isPlaying()) {
@@ -409,12 +417,9 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 			}
 		}
 		// Done as idle...
+		pSession->unlock();
 		return 1;
 	}
-
-	qtractorSessionCursor *pAudioCursor = sessionCursor();
-	if (pAudioCursor == NULL)
-	    return 0;
 
 	// This the legal process cycle frame range...
 	unsigned long iFrameStart = pAudioCursor->frame();
@@ -461,7 +466,11 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 	pAudioCursor->process(nframes);
 
 	// Always sync to MIDI output thread...
+	// (sure we have a MIDI engine, no?)
 	pSession->midiEngine()->sync();
+
+	// Release RT-safeness lock...
+	pSession->unlock();
 
 	// Process session stuff...
 	return 1;

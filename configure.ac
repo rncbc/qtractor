@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(Qtractor, 0.0.1.531, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.0.1.532, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractorMainForm.ui)
 AC_CONFIG_HEADERS(config.h)
@@ -19,11 +19,12 @@ AC_ARG_ENABLE(debug,
   AC_HELP_STRING([--enable-debug], [enable debugging (default=no)]),
   [ac_debug="debug"],
   [ac_debug="release"])
-AC_SUBST(ac_debug)
 
 if test "x$ac_debug" = "xdebug"; then
    AC_DEFINE(CONFIG_DEBUG, 1, [Define if debugging is enabled.])
+#  ac_debug="release"
 fi
+AC_SUBST(ac_debug)
 
 # Enable libvorbis(file) availability.
 AC_ARG_ENABLE(libvorbis,
@@ -308,7 +309,7 @@ fi
 # Check for ladspa headers.
 AC_CHECK_HEADER(ladspa.h, [ac_ladspa_h="yes"], [ac_ladspa_h="no"])
 if test "x$ac_ladspa_h" = "xno"; then
-	AC_MSG_ERROR([ladspa.h header file not found.])
+   AC_MSG_ERROR([ladspa.h header file not found.])
 fi
 
 # Checks for typedefs, structures, and compiler characteristics.

@@ -1,7 +1,7 @@
 // qtractorSession.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2006, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -22,6 +22,7 @@
 #ifndef __qtractorSession_h
 #define __qtractorSession_h
 
+#include "qtractorAtomic.h"
 #include "qtractorTrack.h"
 
 
@@ -184,6 +185,11 @@ public:
 	// Consolidated session engine activation status.
 	bool isActivated() const;
 
+	// Session RT-safe pseudo-locking primitives.
+	bool tryLock();
+	void lock();
+	void unlock();
+
 	// Consolidated session engine start status.
 	void setPlaying(bool bPlaying);
 	bool isPlaying() const;
@@ -327,6 +333,10 @@ private:
 
 	// Consolidated record state.
 	bool m_bRecording;
+
+	// RT-safeness hackish lock-mutex.
+	qtractorAtomic m_locks;
+	qtractorAtomic m_mutex;
 };
 
 

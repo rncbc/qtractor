@@ -1,7 +1,7 @@
 // qtractorPlugin.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2006, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -676,8 +676,6 @@ qtractorPluginList::qtractorPluginList ( unsigned short iChannels,
 	m_pppBuffers[0] = NULL;
 	m_pppBuffers[1] = NULL;
 
-	ATOMIC_SET(&m_mutex, 0);
-
 	setBuffer(iChannels, iBufferSize, iSampleRate);
 }
 
@@ -712,10 +710,6 @@ const QString& qtractorPluginList::name (void) const
 void qtractorPluginList::setBuffer ( unsigned short iChannels,
 	unsigned int iBufferSize, unsigned int iSampleRate )
 {
-	// Get lost for a while...
-	while (!ATOMIC_TAS(&m_mutex))
-		qtractorSession::stabilize();
-
 	unsigned short i;
 
 	// Delete old interim buffer...
@@ -727,10 +721,8 @@ void qtractorPluginList::setBuffer ( unsigned short iChannels,
 	}
 
 	// Some sanity is in order, at least for now...
-	if (iChannels == 0 || iBufferSize == 0 || iSampleRate == 0) {
-		ATOMIC_SET(&m_mutex, 0);
+	if (iChannels == 0 || iBufferSize == 0 || iSampleRate == 0)
 		return;
-	}
 
 	// Go, go, go...
 	m_iChannels   = iChannels;
@@ -750,19 +742,12 @@ void qtractorPluginList::setBuffer ( unsigned short iChannels,
 	for (qtractorPlugin *pPlugin = first();
 			pPlugin; pPlugin = pPlugin->next())
 		pPlugin->setChannels(m_iChannels);
-
-	// Get back to business...
-	ATOMIC_SET(&m_mutex, 0);
 }
 
 
 // Reset and (re)activate all plugin chain.
 void qtractorPluginList::resetBuffer (void)
 {
-	// Get lost for a while...
-	while (!ATOMIC_TAS(&m_mutex))
-		qtractorSession::stabilize();
-
 	// Temporarily deactivate all activated plugins...
 	for (qtractorPlugin *pPlugin = first();
 			pPlugin; pPlugin = pPlugin->next()) {
@@ -782,9 +767,6 @@ void qtractorPluginList::resetBuffer (void)
 		if (pPlugin->isActivated())
 			pPlugin->activate();
 	}
-
-	// Get back to business...
-	ATOMIC_SET(&m_mutex, 0);
 }
 
 
@@ -830,10 +812,6 @@ void qtractorPluginList::updateActivated ( bool bActivated )
 // Add-guarded plugin method.
 void qtractorPluginList::addPlugin ( qtractorPlugin *pPlugin )
 {
-	// Get lost for a while...
-	while (!ATOMIC_TAS(&m_mutex))
-		qtractorSession::stabilize();
-
 	// We'll get prepared before plugging it in...
 	pPlugin->setChannels(m_iChannels);
 
@@ -857,9 +835,6 @@ void qtractorPluginList::addPlugin ( qtractorPlugin *pPlugin )
 		pListView->setCurrentItem(pItem);
 	}
 
-	// Get back to business...
-	ATOMIC_SET(&m_mutex, 0);
-
 	// Show the plugin form right away...
 	qtractorPluginForm *pPluginForm = pPlugin->form();
 	pPluginForm->show();
@@ -871,10 +846,6 @@ void qtractorPluginList::addPlugin ( qtractorPlugin *pPlugin )
 // Remove-guarded plugin method.
 void qtractorPluginList::removePlugin ( qtractorPlugin *pPlugin )
 {
-	// Get lost for a while...
-	while (!ATOMIC_TAS(&m_mutex))
-		qtractorSession::stabilize();
-
 	// Just unlink the plugin from the list...
 	unlink(pPlugin);
 	pPlugin->setChannels(0);
@@ -886,9 +857,6 @@ void qtractorPluginList::removePlugin ( qtractorPlugin *pPlugin )
 		iter.remove();
 		delete pItem;
 	}
-
-	// Get back to business...
-	ATOMIC_SET(&m_mutex, 0);
 }
 
 
@@ -896,10 +864,6 @@ void qtractorPluginList::removePlugin ( qtractorPlugin *pPlugin )
 void qtractorPluginList::movePlugin ( qtractorPlugin *pPlugin,
 	qtractorPlugin *pPrevPlugin )
 {
-	// Get lost for a while...
-	while (!ATOMIC_TAS(&m_mutex))
-		qtractorSession::stabilize();
-
 	// Remove and insert back again...
 	unlink(pPlugin);
 	if (pPrevPlugin) {
@@ -925,9 +889,6 @@ void qtractorPluginList::movePlugin ( qtractorPlugin *pPlugin,
 			pListView->setCurrentItem(pItem);
 		}
 	}
-
-	// Get back to business...
-	ATOMIC_SET(&m_mutex, 0);
 }
 
 
@@ -941,15 +902,9 @@ QList<qtractorPluginListView *>& qtractorPluginList::views (void)
 // The meta-main audio-processing plugin-chain procedure.
 void qtractorPluginList::process ( float **ppBuffer, unsigned int nframes )
 {
-	// Are we in business?
-	if (!ATOMIC_TAS(&m_mutex))
-		return;
-
 	// Sanity checks...
-	if (nframes > m_iBufferSize || m_pppBuffers[1] == NULL) {
-		ATOMIC_SET(&m_mutex, 0);
+	if (nframes > m_iBufferSize || m_pppBuffers[1] == NULL)
 		return;
-	}
 
 	// Start from first input buffer...
 	m_pppBuffers[0] = ppBuffer;
@@ -1014,9 +969,6 @@ void qtractorPluginList::process ( float **ppBuffer, unsigned int nframes )
 				nframes * sizeof(float));
 		}
 	}
-
-	// Done, for a while...
-	ATOMIC_SET(&m_mutex, 0);
 }
 
 

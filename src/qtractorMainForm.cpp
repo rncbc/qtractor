@@ -1,7 +1,7 @@
 // qtractorMainForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2006, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -1056,10 +1056,12 @@ bool qtractorMainForm::editSession (void)
 	// If currently playing, we need to do a stop and go...
 	bool bPlaying = m_pSession->isPlaying();
 	if (bPlaying)
-		m_pSession->setPlaying(false);
+		m_pSession->lock();
 
 	// Take care of session name changes...
 	const QString sOldSessionName = m_pSession->sessionName();
+	// And tempo changes too...
+	float fOldTempo = m_pSession->tempo();
 
 	// Now, express the change as a undoable command...
 	m_pCommands->exec(
@@ -1067,14 +1069,17 @@ bool qtractorMainForm::editSession (void)
 			tr("session properties"), m_pSession->properties(),
 				sessionForm.properties()));
 
-	// If session name has change, we'll prompt
+	// If session name has changed, we'll prompt
 	// for correct filename when save is triggered...
 	if (m_pSession->sessionName() != sOldSessionName)
 		m_sFilename = QString::null;
 
 	// Restore playback state, if needed...
 	if (bPlaying) {
-		m_pSession->setPlaying(true);
+		// On tempo change, the MIDI engine queue needs a reset...
+		if (m_pSession->midiEngine() && m_pSession->tempo() != fOldTempo)
+			m_pSession->midiEngine()->resetTempo();
+		m_pSession->unlock();
 		m_iTransportUpdate++;
 	}
 	
@@ -2243,9 +2248,22 @@ bool qtractorMainForm::startSession (void)
 	m_iAudioRefreshTimer = 0;
 	m_iMidiRefreshTimer  = 0;
 
+	unsigned int iOldSampleRate = m_pSession->sampleRate();
 	bool bResult = m_pSession->open(QTRACTOR_TITLE);
 	if (bResult) {
 		appendMessages(tr("Session started."));
+		// HACK: Special treatment for disparate sample rates,
+		// and only for (just loaded) non empty sessions...
+		if (m_pSession->sampleRate() != iOldSampleRate
+			&& m_pSession->sessionLength() > 0) {
+			appendMessagesError(
+				tr("The original session sample rate (%1 Hz)\n"
+				"is not the same of the current audio engine (%2 Hz).\n\n"
+				"Saving and reloading from a new session file\n"
+				"is highly recommended.")
+				.arg(iOldSampleRate)
+				.arg(m_pSession->sampleRate()));
+		}
 	} else {
 		appendMessagesError(
 			tr("The audio engine could not be started.\n\n"
@@ -2749,7 +2767,7 @@ void qtractorMainForm::tempoChanged (void)
 	// If currently playing, we need to do a stop and go...
 	bool bPlaying = m_pSession->isPlaying();
 	if (bPlaying)
-		m_pSession->setPlaying(false);
+		m_pSession->lock();
 
 	// Now, express the change as a undoable command...
 	m_pCommands->exec(
@@ -2759,7 +2777,10 @@ void qtractorMainForm::tempoChanged (void)
 
 	// Restore playback state, if needed...
 	if (bPlaying) {
-		m_pSession->setPlaying(true);
+		// The MIDI engine queue needs a reset...
+		if (m_pSession->midiEngine())
+			m_pSession->midiEngine()->resetTempo();
+		m_pSession->unlock();
 		m_iTransportUpdate++;
 	}
 }

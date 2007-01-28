@@ -1,7 +1,7 @@
 // qtractorMidiMeter.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2006, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -58,7 +58,7 @@ qtractorMidiMeterScale::qtractorMidiMeterScale (
 
 
 // Actual scale drawing method.
-void qtractorMidiMeterScale::paintScale ( QPainter *p )
+void qtractorMidiMeterScale::paintScale ( QPainter *pPainter )
 {
 	qtractorMidiMeter *pMidiMeter
 		= static_cast<qtractorMidiMeter *> (meter());
@@ -69,7 +69,7 @@ void qtractorMidiMeterScale::paintScale ( QPainter *p )
 	int d = (h - 4) / 5;
 	int n = 100;
 	while (h > 0) {
-		drawLineLabel(p, h, QString::number(n));
+		drawLineLabel(pPainter, h, QString::number(n));
 		h -= d; n -= 20;
 	}
 }

@@ -1,7 +1,7 @@
 // qtractorAudioBuffer.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2006, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -247,9 +247,11 @@ void qtractorAudioBuffer::close (void)
 	// Not sync-managed anymore...
 	if (m_pSyncThread) {
 		m_pSyncThread->setRunState(false);
-		if (m_pSyncThread->isRunning())
+		if (m_pSyncThread->isRunning()) {
+		//	m_pSyncThread->terminate();
 			m_pSyncThread->sync();
-		m_pSyncThread->wait();
+			m_pSyncThread->wait();
+		}
 		delete m_pSyncThread;
 		m_pSyncThread = NULL;
 	}

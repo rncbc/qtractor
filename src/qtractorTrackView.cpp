@@ -1,7 +1,7 @@
 // qtractorTrackView.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2006, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -348,21 +348,24 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 	}
 
 	// Draw edit-head line...
-	x = pSession->pixelFromFrame(pSession->editHead()) - cx;
+	m_iEditHeadX = pSession->pixelFromFrame(pSession->editHead());
+	x = m_iEditHeadX - cx;
 	if (x >= rect.left() && x <= rect.right()) {
 		pPainter->setPen(Qt::blue);
 		pPainter->drawLine(x, rect.top(), x, rect.bottom());
 	}
 
 	// Draw edit-tail line...
-	x = pSession->pixelFromFrame(pSession->editTail()) - cx;
+	m_iEditTailX = pSession->pixelFromFrame(pSession->editTail());
+	x = m_iEditTailX - cx;
 	if (x >= rect.left() && x <= rect.right()) {
 		pPainter->setPen(Qt::blue);
 		pPainter->drawLine(x, rect.top(), x, rect.bottom());
 	}
 
 	// Draw play-head line...
-	x = pSession->pixelFromFrame(playHead()) - cx;
+	m_iPlayHeadX = pSession->pixelFromFrame(playHead());
+	x = m_iPlayHeadX - cx;
 	if (x >= rect.left() && x <= rect.right()) {
 		pPainter->setPen(Qt::red);
 		pPainter->drawLine(x, rect.top(), x, rect.bottom());

@@ -1,7 +1,7 @@
 // qtractorAtomic.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2006, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -78,23 +78,6 @@ static inline int ATOMIC_CAS ( volatile void *pAddr,
 
 #elif defined(WIN32) || defined(__WIN32__) || defined(_WIN32)
 
-#if defined(__BORLANDC__)
-
-static inline int ATOMIC_CAS ( volatile void *pAddr,
-	volatile void *pOldValue, void *pNewValue )
-{
-	// Dummy CAS (NON ATOMIC whatsoever;)
-	unsigned int *pValue = (unsigned int *) pAddr;
-	if (*pValue == (unsigned int) pOldValue) {
-	    *pValue =  (unsigned int) pNewValue;
-	    return 1;
-	} else {
-		return 0;
-	}
-}
-
-#else
-
 static inline int ATOMIC_CAS ( volatile void *pAddr,
 	volatile void *pOldValue, void *pNewValue )
 {
@@ -113,8 +96,6 @@ static inline int ATOMIC_CAS ( volatile void *pAddr,
 	return result;
 }
 
-#endif
-
 #else
 #   error "qtractorAtomic.h: unsupported target compiler processor (WIN32)."
 #endif
@@ -122,19 +103,23 @@ static inline int ATOMIC_CAS ( volatile void *pAddr,
 #define ATOMIC_GET(a)	((a)->value)
 #define ATOMIC_SET(a,v)	((a)->value = (v))
 
-static inline int ATOMIC_ADD ( qtractorAtomic *pVal, int add )
-{
-	volatile int val;
-	do {
-		val = pVal->value;
-	} while (!ATOMIC_CAS(&pVal->value, (void *) val, (void *) (val + add)));
-	return val;
-}
-
 static inline int ATOMIC_TAS ( qtractorAtomic *pVal )
 {
 	return ATOMIC_CAS(&pVal->value, (void *) 0, (void *) 1);
 }
+
+static inline int ATOMIC_ADD ( qtractorAtomic *pVal, int iAddValue )
+{
+	volatile int iOldValue, iNewValue;
+	do {
+		iOldValue = pVal->value;
+		iNewValue = iOldValue + iAddValue;
+	} while (!ATOMIC_CAS(&pVal->value, (void *) iOldValue, (void *) iNewValue));
+	return iNewValue;
+}
+
+#define ATOMIC_INC(a) ATOMIC_ADD((a), (+1))
+#define ATOMIC_DEC(a) ATOMIC_ADD((a), (-1))
 
 
 #if defined(__cplusplus)

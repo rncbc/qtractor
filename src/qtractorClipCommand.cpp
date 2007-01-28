@@ -1,7 +1,7 @@
 // qtractorClipCommand.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2006, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -181,6 +181,8 @@ bool qtractorClipCommand::execute ( bool bRedo )
 	if (pSession == NULL)
 		return false;
 
+	pSession->lock();
+
 	QListIterator<Item *> iter(m_items);
 	while (iter.hasNext()) {
 		Item *pItem = iter.next();
@@ -267,6 +269,8 @@ bool qtractorClipCommand::execute ( bool bRedo )
 			break;
 		}
 	}
+
+	pSession->unlock();
 
 	return true;
 }

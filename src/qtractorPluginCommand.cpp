@@ -1,7 +1,7 @@
 // qtractorPluginCommand.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2006, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -23,9 +23,10 @@
 #include "qtractorPluginCommand.h"
 #include "qtractorPluginForm.h"
 
-#include "qtractorMainForm.h"
-
 #include "qtractorPluginListView.h"
+
+#include "qtractorMainForm.h"
+#include "qtractorSession.h"
 
 
 //----------------------------------------------------------------------
@@ -56,6 +57,12 @@ qtractorPluginCommand::~qtractorPluginCommand (void)
 // Add new plugin(s) command methods.
 bool qtractorPluginCommand::addPlugins (void)
 {
+	qtractorSession *pSession = mainForm()->session();
+	if (pSession == NULL)
+		return false;
+
+	pSession->lock();
+
 	// Add all listed plugins, in order...
 	QListIterator<qtractorPlugin *> iter(m_plugins);
 	while (iter.hasNext()) {
@@ -64,9 +71,10 @@ bool qtractorPluginCommand::addPlugins (void)
 		if (pPluginList)
 			pPluginList->addPlugin(pPlugin);
 	}
-
 	// Avoid the disposal of the plugin reference(s).
 	setAutoDelete(false);
+
+	pSession->unlock();
 
 	return true;
 }
@@ -75,6 +83,12 @@ bool qtractorPluginCommand::addPlugins (void)
 // Remove existing plugin(s) command methods.
 bool qtractorPluginCommand::removePlugins (void)
 {
+	qtractorSession *pSession = mainForm()->session();
+	if (pSession == NULL)
+		return false;
+
+	pSession->lock();
+
 	// Unlink all listed plugins, in order...
 	QListIterator<qtractorPlugin *> iter(m_plugins);
 	iter.toBack();
@@ -84,13 +98,13 @@ bool qtractorPluginCommand::removePlugins (void)
 		if (pPluginList)
 			pPluginList->removePlugin(pPlugin);
 	}
-
 	// Allow the disposal of the plugin reference(s).
 	setAutoDelete(true);
 
+	pSession->unlock();
+
 	return true;
 }
-
 
 
 //----------------------------------------------------------------------
@@ -166,14 +180,20 @@ bool qtractorMovePluginCommand::redo (void)
 	if (pPluginList == NULL)
 		return false;
 
+	qtractorSession *pSession = mainForm()->session();
+	if (pSession == NULL)
+		return false;
+
+	pSession->lock();
+
 	// Save the previous track alright...
 	qtractorPlugin *pPrevPlugin = pPlugin->prev();
-
 	// Move it...
 	pPluginList->movePlugin(pPlugin, m_pPrevPlugin);
-
 	// Swap it nice, finally.
 	m_pPrevPlugin = pPrevPlugin;
+
+	pSession->unlock();
 
 	return true;
 }
