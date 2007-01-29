@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(Qtractor, 0.0.1.532, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.0.1.533, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractorMainForm.ui)
 AC_CONFIG_HEADERS(config.h)
@@ -97,6 +97,13 @@ for X in $ac_with_paths; do
     ac_path="$X/bin:$ac_path"
   fi
   if test -d $X/include; then
+    for Y in qt qt4; do
+      if test -d $X/include/$Y; then
+        CFLAGS="-I$X/include/$Y $CFLAGS"
+        CPPFLAGS="-I$X/include/$Y $CPPFLAGS"
+        ac_incpath="$X/include/$Y $ac_incpath"
+      fi
+    done
     CFLAGS="-I$X/include $CFLAGS"
     CPPFLAGS="-I$X/include $CPPFLAGS"
     ac_incpath="$X/include $ac_incpath"
