@@ -211,22 +211,18 @@ bool qtractorMoveTrackCommand::redo (void)
 	    return false;
 
 	// Save the next track alright...
-	qtractorTrack *pNextTrack = track()->next();
+	qtractorTrack *pTrack = track();
+	qtractorTrack *pNextTrack = pTrack->next();
 
 	// Remove and insert back again...
-	pSession->tracks().unlink(track());
 	pTracks->trackList()->removeTrack(iTrack);
-
 	// Get actual index of new position...
 	int iNextTrack = pTracks->trackList()->trackRow(m_pNextTrack);
-
 	// Make it all set back.
-	pSession->tracks().insertBefore(track(), m_pNextTrack);
-	pSession->reset();
-
+	pSession->moveTrack(pTrack, m_pNextTrack);
 	// Just insert under the track list position...
 	// We'll renumber all items now...
-	iNextTrack = pTracks->trackList()->insertTrack(iNextTrack, track());
+	iNextTrack = pTracks->trackList()->insertTrack(iNextTrack, pTrack);
 	if (iNextTrack >= 0)
 		pTracks->trackList()->selectTrack(iNextTrack);
 
@@ -324,6 +320,12 @@ void qtractorImportTrackCommand::addTrack ( qtractorTrack *pTrack )
 // Track-import command methods.
 bool qtractorImportTrackCommand::redo (void)
 {
+	qtractorSession *pSession = mainForm()->session();
+	if (pSession == NULL)
+		return false;
+
+	pSession->lock();
+
 	bool bResult = true;
 
 	if (m_pSaveCommand && m_iSaveCount > 0) {
@@ -339,11 +341,19 @@ bool qtractorImportTrackCommand::redo (void)
 		    bResult = false;
 	}
 
+	pSession->unlock();
+
 	return bResult;
 }
 
 bool qtractorImportTrackCommand::undo (void)
 {
+	qtractorSession *pSession = mainForm()->session();
+	if (pSession == NULL)
+		return false;
+
+	pSession->lock();
+
 	bool bResult = true;
 
 	QListIterator<qtractorAddTrackCommand *> iter(m_trackCommands);
@@ -355,6 +365,8 @@ bool qtractorImportTrackCommand::undo (void)
 
 	if (m_pSaveCommand && !m_pSaveCommand->undo())
 		bResult = false;
+
+	pSession->unlock();
 
 	return bResult;
 }
@@ -382,12 +394,21 @@ bool qtractorEditTrackCommand::redo (void)
 	if (pTracks == NULL)
 		return false;
 
-	// Do the property dance.
-	if (!qtractorPropertyCommand<qtractorTrack::Properties>::redo())
+	qtractorSession *pSession = mainForm()->session();
+	if (pSession == NULL)
 		return false;
 
+	pSession->lock();
+
+	// Make the track property change...
+	bool bResult = qtractorPropertyCommand<qtractorTrack::Properties>::redo();
 	// Reopen to assign a probable new bus...
-	if (!m_pTrack->open()) {
+	if (bResult)
+		bResult = m_pTrack->open();
+
+	pSession->unlock();
+
+	if (!bResult) {
 		mainForm()->appendMessagesError(
 			QObject::tr("Track assignment failed:\n\n"
 				"Track: \"%1\" Input: \"%2\" Output: \"%3\"")
@@ -403,7 +424,7 @@ bool qtractorEditTrackCommand::redo (void)
 	if (m_pTrack->trackType() == qtractorTrack::Midi)
 	    pTracks->updateMidiTrack(m_pTrack);
 
-	return true;
+	return bResult;
 }
 
 

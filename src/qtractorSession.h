@@ -147,6 +147,7 @@ public:
 
 	void addTrack(qtractorTrack *pTrack);
 	void insertTrack(qtractorTrack *pTrack, qtractorTrack *pPrevTrack = NULL);
+	void moveTrack(qtractorTrack *pTrack, qtractorTrack *pNextTrack);
 	void updateTrack(qtractorTrack *pTrack);
 	void unlinkTrack(qtractorTrack *pTrack);
 
