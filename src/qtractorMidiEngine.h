@@ -24,6 +24,8 @@
 
 #include "qtractorEngine.h"
 
+#include "qtractorMmcEvent.h"
+
 #include <QMap>
 
 #include <alsa/asoundlib.h>
@@ -87,6 +89,13 @@ public:
 	// Special track-immediate methods.
 	void trackMute(qtractorTrack *pTrack, bool bMute);
 
+	// Event notifier widget settings.
+	void setNotifyWidget  (QWidget *pNotifyWidget);
+	void setNotifyMmcType (QEvent::Type eNotifyMmcType);
+
+	QWidget     *notifyWidget() const;
+	QEvent::Type notifyMmcType() const;
+
 	// Document element methods.
 	bool loadElement(qtractorSessionDocument *pDocument,
 		QDomElement *pElement);
@@ -122,6 +131,10 @@ private:
 	// The delta-time when playback started .
 	long m_iTimeStart;
 	long m_iTimeDelta;
+
+	// The event notifier widget.
+	QWidget      *m_pNotifyWidget;
+	QEvent::Type  m_eNotifyMmcType;
 };
 
 

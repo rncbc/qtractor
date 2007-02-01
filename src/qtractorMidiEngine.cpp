@@ -31,6 +31,8 @@
 #include "qtractorMidiSequence.h"
 #include "qtractorMidiClip.h"
 
+#include <QApplication>
+
 #include <QThread>
 #include <QMutex>
 #include <QWaitCondition>
@@ -455,19 +457,22 @@ void qtractorMidiOutputThread::sync (void)
 qtractorMidiEngine::qtractorMidiEngine ( qtractorSession *pSession )
 	: qtractorEngine(pSession, qtractorTrack::Midi)
 {
-	m_pAlsaSeq      = NULL;
-	m_iAlsaClient   = -1;
-	m_iAlsaQueue    = -1;
+	m_pAlsaSeq       = NULL;
+	m_iAlsaClient    = -1;
+	m_iAlsaQueue     = -1;
 
-	m_pAlsaSubsSeq  = NULL;
-	m_iAlsaSubsPort = -1;
-	m_pAlsaNotifier = NULL;
+	m_pAlsaSubsSeq   = NULL;
+	m_iAlsaSubsPort  = -1;
+	m_pAlsaNotifier  = NULL;
 
-	m_pInputThread  = NULL;
-	m_pOutputThread = NULL;
+	m_pInputThread   = NULL;
+	m_pOutputThread  = NULL;
 
-	m_iTimeStart    = 0;
-	m_iTimeDelta    = 0;
+	m_iTimeStart     = 0;
+	m_iTimeDelta     = 0;
+
+	m_pNotifyWidget  = NULL;
+	m_eNotifyMmcType = QEvent::None;
 }
 
 
@@ -683,6 +688,16 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 		type     = qtractorMidiEvent::SYSEX;
 		pSysex   = (unsigned char *) pEv->data.ext.ptr;
 		iSysex   = (unsigned short)  pEv->data.ext.len;
+		// Trap MMC commands...
+		if (pSysex[1] == 0x7f && pSysex[3] == 0x06) {
+			// Post the stuffed event...
+			if (m_pNotifyWidget) {
+				QApplication::postEvent(m_pNotifyWidget,
+					new qtractorMmcEvent(m_eNotifyMmcType, pSysex));
+			}
+			// Bail out, right now!
+			return;
+		}
 		break;
 	default:
 		// Not handled here...
@@ -1123,6 +1138,29 @@ void qtractorMidiEngine::restartLoop (void)
 		m_iTimeStart -= (long) pSession->tickFromFrame(
 			pSession->loopEnd() - pSession->loopStart());
 	}
+}
+
+
+// Event notifier widget settings.
+void qtractorMidiEngine::setNotifyWidget ( QWidget *pNotifyWidget )
+{
+	m_pNotifyWidget = pNotifyWidget;
+}
+
+void qtractorMidiEngine::setNotifyMmcType ( QEvent::Type eNotifyMmcType )
+{
+	m_eNotifyMmcType = eNotifyMmcType;
+}
+
+
+QWidget *qtractorMidiEngine::notifyWidget (void) const
+{
+	return m_pNotifyWidget;
+}
+
+QEvent::Type qtractorMidiEngine::notifyMmcType (void) const
+{
+	return m_eNotifyMmcType;
 }
 
 
