@@ -35,7 +35,7 @@ class qtractorMmcEvent : public QEvent
 public:
 
 	// MMC command codes.
-	enum EventType {
+	enum Command {
 		STOP                    = 0x01,
 		PLAY                    = 0x02,
 		DEFERRED_PLAY           = 0x03,
@@ -79,22 +79,28 @@ public:
 
 	// Contructor.
 	qtractorMmcEvent(QEvent::Type eType, unsigned char *pSysex)
-		: QEvent(eType), m_type(EventType(pSysex[4])),
+		: QEvent(eType), m_cmd(Command(pSysex[4])),
 			m_data((const char *) &pSysex[6], (int) pSysex[5]) {}
 
 	// Accessors.
-	EventType      type() const { return m_type; }
+	Command        cmd()  const { return m_cmd; }
 	unsigned char *data() const { return (unsigned char *) m_data.constData(); }
 	unsigned short len()  const { return (unsigned short)  m_data.length();    }
 
 	// Convert MMC time-code and standard frame position (SMTPE?).
-	void setLocate(unsigned long i);
+	void setLocate(unsigned long iLocate);
 	unsigned long locate() const;
-	
+
+	// Retrieve MMC shuttle-speed and direction.
+	float shuttle() const;
+
+	// Retrieve MMC step and direction.
+	int step() const;
+
 private:
 
 	// Instance variables.
-	EventType  m_type;
+	Command    m_cmd;
 	QByteArray m_data;
 };
 

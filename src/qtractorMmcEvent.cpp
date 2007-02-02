@@ -21,16 +21,18 @@
 
 #include "qtractorMmcEvent.h"
 
+
 //----------------------------------------------------------------------
 // qtractorMmcEvent - MMC custom event.
 //
 
 // Convert MMC time-code and standard frame position (SMTPE?).
-void qtractorMmcEvent::setLocate ( unsigned long i )
+void qtractorMmcEvent::setLocate ( unsigned long iLocate )
 {
+	unsigned long i = iLocate;
 	unsigned char data[6];
 
-	m_type = LOCATE;
+	m_cmd = LOCATE;
 
 	data[0] = 0x01;
 	data[1] = i / (60 * 60 * 30); i -= (60 * 60 * 30) * (int) data[1];
@@ -42,19 +44,58 @@ void qtractorMmcEvent::setLocate ( unsigned long i )
 	m_data.fromRawData((const char *) data, (int) sizeof(data));
 }
 
+
 unsigned long qtractorMmcEvent::locate (void) const
 {
-	unsigned long i = 0;
+	unsigned long iLocate = 0;
 	unsigned char *data = (unsigned char *) m_data.constData();
 
-	if (m_type == LOCATE && data[0] != 0x01) {
-		i = (60 * 60 * 30) * (int) data[1]	// hh - hours    [0..23]
-			+ (   60 * 30) * (int) data[2]	// mm - minutes  [0..59]
-			+ (        30) * (int) data[3]	// ss - seconds  [0..59]
-			+                (int) data[4];	// ff - frames   [0..29]
+	if (m_cmd == LOCATE && m_data.length() > 4 && data[0] == 0x01) {
+		iLocate = (60 * 60 * 30) * (int) data[1]	// hh - hours    [0..23]
+				+ (     60 * 30) * (int) data[2]	// mm - minutes  [0..59]
+				+ (          30) * (int) data[3]	// ss - seconds  [0..59]
+				+                  (int) data[4];	// ff - frames   [0..29]
 	}
 
-	return i;
+	return iLocate;
+}
+
+
+// Retrieve MMC shuttle-speed and direction.
+float qtractorMmcEvent::shuttle (void) const
+{
+	float fShuttle = 0.0f;
+	unsigned char *data = (unsigned char *) m_data.constData();
+
+	if (m_cmd == SHUTTLE && m_data.length() > 2) {
+		unsigned char sh = data[0];
+		unsigned char sm = data[1];
+		unsigned char sl = data[2];
+		unsigned int  n  = (sh & 0x38);
+		unsigned int  p  = ((sh & 0x07) << n) | (sm >> (7 - n));
+		unsigned int  q  = ((sm << n) << 7) | sl;
+		fShuttle = float(p) + float(q) / (1 << (14 - n));
+		if (sh & 0x40)
+			fShuttle = -(fShuttle);
+	}
+
+	return fShuttle;
+}
+
+
+// Retrieve MMC step and direction.
+int qtractorMmcEvent::step (void) const
+{
+	int iStep = 0;
+	unsigned char *data = (unsigned char *) m_data.constData();
+
+	if (m_cmd == STEP && m_data.length() > 0) {
+		iStep = (data[0] & 0x3f);
+		if (data[0] & 0x40)
+			iStep = -(iStep);
+	}
+
+	return iStep;
 }
 
 

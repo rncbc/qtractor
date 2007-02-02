@@ -96,6 +96,7 @@
 #define QTRACTOR_SHUT_EVENT     QEvent::Type(QEvent::User + 3)
 #define QTRACTOR_PORT_EVENT     QEvent::Type(QEvent::User + 4)
 #define QTRACTOR_BUFF_EVENT     QEvent::Type(QEvent::User + 5)
+#define QTRACTOR_MMC_EVENT      QEvent::Type(QEvent::User + 6)
 
 
 //-------------------------------------------------------------------------
@@ -163,6 +164,13 @@ qtractorMainForm::qtractorMainForm (
 	if (pAudioPeakFactory) {
 		pAudioPeakFactory->setNotifyWidget(this);
 		pAudioPeakFactory->setNotifyPeakType(QTRACTOR_PEAK_EVENT);
+	}
+
+	// Configure the MIDI engine event handling...
+	qtractorMidiEngine *pMidiEngine = m_pSession->midiEngine();
+	if (pMidiEngine) {
+		pMidiEngine->setNotifyWidget(this);
+		pMidiEngine->setNotifyMmcType(QTRACTOR_MMC_EVENT);
 	}
 
 #ifdef HAVE_SIGNAL_H
@@ -806,7 +814,7 @@ void qtractorMainForm::dropEvent ( QDropEvent* pDropEvent )
 }
 
 
-// Custome event handler.
+// Custom event handler.
 void qtractorMainForm::customEvent ( QEvent *pEvent )
 {
 #ifdef CONFIG_DEBUG_0
@@ -850,10 +858,74 @@ void qtractorMainForm::customEvent ( QEvent *pEvent )
 			"is up and running and then restart session."));
 		// Make things just bearable...
 		stabilizeForm();
+		break;
+	case QTRACTOR_MMC_EVENT:
+		// MMC event handling...
+		mmcEvent(static_cast<qtractorMmcEvent *> (pEvent));
 		// Fall thru.
 	default:
 		break;
 	}
+}
+
+
+// Custom MMC event handler.
+void qtractorMainForm::mmcEvent ( qtractorMmcEvent *pMmcEvent )
+{
+	QString sMmcText;
+	switch (pMmcEvent->cmd()) {
+	case qtractorMmcEvent::STOP:
+	case qtractorMmcEvent::PAUSE:
+		sMmcText = tr("STOP");
+		if (setPlaying(false))
+			m_ui.transportPlayAction->setChecked(false);
+		break;
+	case qtractorMmcEvent::PLAY:
+	case qtractorMmcEvent::DEFERRED_PLAY:
+		sMmcText = tr("PLAY");
+		if (setPlaying(true))
+			m_ui.transportPlayAction->setChecked(true);
+		break;
+	case qtractorMmcEvent::FAST_FORWARD:
+		sMmcText = tr("FFWD");
+	//	TODO: Start fast-forward...
+		break;
+	case qtractorMmcEvent::REWIND:
+		sMmcText = tr("REW");
+	//	TODO: Start rewind...
+		break;
+	case qtractorMmcEvent::RECORD_STROBE:
+	case qtractorMmcEvent::RECORD_PAUSE:
+		sMmcText = tr("REC ON");
+		setRecording(true);
+		break;
+	case qtractorMmcEvent::RECORD_EXIT:
+		sMmcText = tr("REC OFF");
+		setRecording(false);
+		break;
+	case qtractorMmcEvent::MMC_RESET:
+		sMmcText = tr("RESET");
+	//	TODO: Reset...
+		break;
+	case qtractorMmcEvent::LOCATE:
+		sMmcText = tr("LOCATE %1").arg(pMmcEvent->locate());
+	//	TODO: Set locate...
+		break;
+	case qtractorMmcEvent::SHUTTLE:
+		sMmcText = tr("SHUTTLE %1").arg(pMmcEvent->shuttle());
+	//	TODO: Set shuttle-speed...
+		break;
+	case qtractorMmcEvent::STEP:
+		sMmcText = tr("STEP %1").arg(pMmcEvent->step());;
+	//	TODO: Set step...
+		break;
+	default:
+		sMmcText = tr("Not implemented");
+		break;
+	}
+
+	appendMessages("MMC: " + sMmcText);
+	stabilizeForm();
 }
 
 
@@ -1947,22 +2019,13 @@ void qtractorMainForm::transportPlay (void)
 	if (!checkRestartSession())
 		return;
 
-	// In case of (re)starting playback, send now
-	// all tracks MIDI bank select/program changes...
+	// Toggle playing...
 	bool bPlaying = !m_pSession->isPlaying();
-	if (bPlaying)
-		m_pSession->setMidiPatch(m_pInstruments);
-	// Toggle engine play status...
-	m_pSession->setPlaying(bPlaying);
-	m_iTransportUpdate++;
-
-	// And shutdown recording anyway...
-	if (!bPlaying && m_pSession->isRecording()) {
-		m_ui.transportRecordAction->setChecked(false);
-		transportRecord(); // Toggle recording!
+	if (setPlaying(bPlaying)) {
+		// TODO: Send MMC PLAY/STOP command...
+		// ...
 	}
 
-	// Done with playback switch...
 	stabilizeForm();
 }
 
@@ -1978,42 +2041,13 @@ void qtractorMainForm::transportRecord (void)
 	if (!checkRestartSession())
 		return;
 
-	// Record status...
-	bool bRecording = m_pSession->isRecording();
-
-	// If we're stopping recording, we must copy it for the records...
-	int iUpdate = 0;
-	if (bRecording) {
-		// We'll build a composite command...
-		qtractorClipCommand *pClipCommand
-			= new qtractorClipCommand(this, tr("record clip"));
-		// For all non-empty clip on record...
-		for (qtractorTrack *pTrack = m_pSession->tracks().first();
-				pTrack; pTrack = pTrack->next()) {
-			if (pClipCommand->addClipRecord(pTrack))
-				iUpdate++;
-		}
-		// Put it in the form of an undoable command...
-		if (iUpdate > 0) {
-			m_pCommands->exec(pClipCommand);
-		} else {
-			// The allocated command is unhelpful...
-			delete pClipCommand;
-			// Try to postpone an overall refresh...
-			m_iPeakTimer += QTRACTOR_TIMER_DELAY;
-		}
-	}	// take a chance to set a proper session name...
-	// It must be a session name...
-	else if (m_pSession->sessionName().isEmpty() && !editSession()) {
-		m_ui.transportRecordAction->setChecked(false);
-		stabilizeForm();
-		return;
+	// Toggle recording...
+	bool bRecording = !m_pSession->isRecording();
+	if (setRecording(bRecording)) {
+		// TODO: Send MMC RECORD_STROBE/PAUSE/EXIT command...
+		// ...
 	}
 
-	// Finally, toggle session record status...
-	m_pSession->setRecording(!bRecording);
-
-	// Done with record switch...
 	stabilizeForm();
 }
 
@@ -2081,6 +2115,67 @@ void qtractorMainForm::helpAbout (void)
 	sText += "</p>\n";
 
 	QMessageBox::about(this, tr("About") + " " QTRACTOR_TITLE, sText);
+}
+
+
+//-------------------------------------------------------------------------
+// qtractorMainForm -- Internal transport stabilization.
+
+bool qtractorMainForm::setPlaying ( bool bPlaying )
+{
+	// In case of (re)starting playback, send now
+	// all tracks MIDI bank select/program changes...
+	if (bPlaying)
+		m_pSession->setMidiPatch(m_pInstruments);
+
+	// Toggle engine play status...
+	m_pSession->setPlaying(bPlaying);
+	m_iTransportUpdate++;
+
+	// And shutdown recording anyway...
+	if (!bPlaying && m_pSession->isRecording()) {
+		if (setRecording(false))
+			m_ui.transportRecordAction->setChecked(false);
+	}
+
+	// Done with playback switch...
+	return true;
+}
+
+bool qtractorMainForm::setRecording ( bool bRecording )
+{
+	// Stopping recording: must keep the new clips for the records...
+	if (!bRecording) {
+		// We'll build a composite command...
+		int iUpdate = 0;
+		qtractorClipCommand *pClipCommand
+			= new qtractorClipCommand(this, tr("record clip"));
+		// For all non-empty clip on record...
+		for (qtractorTrack *pTrack = m_pSession->tracks().first();
+				pTrack; pTrack = pTrack->next()) {
+			if (pClipCommand->addClipRecord(pTrack))
+				iUpdate++;
+		}
+		// Put it in the form of an undoable command...
+		if (iUpdate > 0) {
+			m_pCommands->exec(pClipCommand);
+		} else {
+			// The allocated command is unhelpful...
+			delete pClipCommand;
+			// Try to postpone an overall refresh...
+			m_iPeakTimer += QTRACTOR_TIMER_DELAY;
+		}
+	}	// Starting recording: we must have a session name...
+	else if (m_pSession->sessionName().isEmpty() && !editSession()) {
+		m_ui.transportRecordAction->setChecked(false);
+		return false;
+	}
+
+	// Finally, toggle session record status...
+	m_pSession->setRecording(bRecording);
+
+	// Done with record switch...
+	return true;
 }
 
 
@@ -2525,7 +2620,7 @@ void qtractorMainForm::timerSlot (void)
 			if (!bPlaying)
 				m_pSession->seek(pos.frame, true);
 			m_ui.transportPlayAction->setChecked(!bPlaying);
-			transportPlay();
+			transportPlay();	// Toggle playing!
 			if (bPlaying)
 				m_pSession->seek(pos.frame, true);
 		} else {

@@ -37,6 +37,7 @@ class qtractorFiles;
 class qtractorMessages;
 class qtractorConnections;
 class qtractorMixer;
+class qtractorMmcEvent;
 
 class QLabel;
 class QComboBox;
@@ -166,6 +167,8 @@ protected:
 	void dropEvent(QDropEvent *pDropEvent);
 	void customEvent(QEvent *pEvent);
 
+	void mmcEvent(qtractorMmcEvent *pMmcEvent);
+
 	bool queryClose();
 
 	bool newSession();
@@ -179,6 +182,9 @@ protected:
 
 	bool startSession();
 	bool checkRestartSession();
+
+	bool setPlaying(bool bPlaying);
+	bool setRecording(bool bRecording);
 
 	void updateSession();
 	void updateRecentFiles(const QString& sFilename);
