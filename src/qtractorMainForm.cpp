@@ -138,8 +138,9 @@ qtractorMainForm::qtractorMainForm (
 	m_iPeakTimer = 0;
 	m_iPlayTimer = 0;
 
-	m_iTransportUpdate = 0; 
-	m_iTransportLocate = 0;
+	m_iTransportUpdate  = 0; 
+	m_iTransportLocate  = 0;
+	m_iTransportRolling = 0;
 
 	m_iXrunCount = 0;
 	m_iXrunSkip  = 0;
@@ -187,29 +188,6 @@ qtractorMainForm::qtractorMainForm (
 	m_pSelectModeActionGroup->addAction(m_ui.editSelectModeRangeAction);
 	m_pSelectModeActionGroup->addAction(m_ui.editSelectModeRectAction);
 	m_ui.editToolbar->addActions(m_pSelectModeActionGroup->actions());
-
-	// HACK: transport toolbar controls needs be auto-repeatable ...
-#if QT_VERSION < 0x040201
-	QList<QToolButton *> list
-		= m_ui.transportToolbar->findChildren<QToolButton *> (
-			QRegExp("^transport(Backward|Forward)Action"));
-	// Iterate over the intended transport tool-buttons...	
-	QListIterator<QToolButton *> iter(list);
-	while (iter.hasNext())
-		iter.next()->setAutoRepeat(true);
-#else
-	QToolButton *pToolButton;
-	pToolButton = qobject_cast<QToolButton *> (
-		m_ui.transportToolbar->widgetForAction(
-			m_ui.transportBackwardAction));
-	if (pToolButton)
-		pToolButton->setAutoRepeat(true);
-	pToolButton = qobject_cast<QToolButton *> (
-		m_ui.transportToolbar->widgetForAction(
-			m_ui.transportForwardAction));
-	if (pToolButton)
-		pToolButton->setAutoRepeat(true);
-#endif
 
 	// Additional time-toolbar controls...
 //	m_ui.timeToolbar->addSeparator();
@@ -488,18 +466,18 @@ qtractorMainForm::qtractorMainForm (
 	QObject::connect(m_ui.viewOptionsAction,
 		SIGNAL(triggered(bool)),
 		SLOT(viewOptions()));
-	QObject::connect(m_ui.transportRewindAction,
-		SIGNAL(triggered(bool)),
-		SLOT(transportRewind()));
 	QObject::connect(m_ui.transportBackwardAction,
 		SIGNAL(triggered(bool)),
 		SLOT(transportBackward()));
-	QObject::connect(m_ui.transportForwardAction,
+	QObject::connect(m_ui.transportRewindAction,
 		SIGNAL(triggered(bool)),
-		SLOT(transportForward()));
+		SLOT(transportRewind()));
 	QObject::connect(m_ui.transportFastForwardAction,
 		SIGNAL(triggered(bool)),
 		SLOT(transportFastForward()));
+	QObject::connect(m_ui.transportForwardAction,
+		SIGNAL(triggered(bool)),
+		SLOT(transportForward()));
 	QObject::connect(m_ui.transportLoopAction,
 		SIGNAL(triggered(bool)),
 		SLOT(transportLoop()));
@@ -888,11 +866,13 @@ void qtractorMainForm::mmcEvent ( qtractorMmcEvent *pMmcEvent )
 		break;
 	case qtractorMmcEvent::FAST_FORWARD:
 		sMmcText = tr("FFWD");
-	//	TODO: Start fast-forward...
+		if (setRolling(+1) > 0)
+			m_ui.transportFastForwardAction->setChecked(true);
 		break;
 	case qtractorMmcEvent::REWIND:
 		sMmcText = tr("REW");
-	//	TODO: Start rewind...
+		if (setRolling(-1) < 0)
+			m_ui.transportRewindAction->setChecked(true);
 		break;
 	case qtractorMmcEvent::RECORD_STROBE:
 	case qtractorMmcEvent::RECORD_PAUSE:
@@ -1886,11 +1866,11 @@ void qtractorMainForm::viewOptions (void)
 //-------------------------------------------------------------------------
 // qtractorMainForm -- Transport Action slots.
 
-// Transport rewind.
-void qtractorMainForm::transportRewind (void)
+// Transport backward.
+void qtractorMainForm::transportBackward (void)
 {
 #ifdef CONFIG_DEBUG
-	appendMessages("qtractorMainForm::transportRewind()");
+	appendMessages("qtractorMainForm::transportBackward()");
 #endif
 
 	// Make sure session is activated...
@@ -1912,42 +1892,21 @@ void qtractorMainForm::transportRewind (void)
 }
 
 
-// Transport backward
-void qtractorMainForm::transportBackward (void)
+// Transport rewind.
+void qtractorMainForm::transportRewind (void)
 {
 #ifdef CONFIG_DEBUG
-	appendMessages("qtractorMainForm::transportBackward()");
+	appendMessages("qtractorMainForm::transportRewind()");
 #endif
 
 	// Make sure session is activated...
 	checkRestartSession();
 
-	// Move playhead one second backward....
-	unsigned long iPlayHead = m_pSession->playHead();
-	if (iPlayHead > m_pSession->sampleRate())
-		iPlayHead -= m_pSession->sampleRate();
-	else
-		iPlayHead = 0;
-	m_pSession->setPlayHead(iPlayHead);
-	m_iTransportUpdate++;
-
-	stabilizeForm();
-}
-
-
-// Transport forward
-void qtractorMainForm::transportForward (void)
-{
-#ifdef CONFIG_DEBUG
-	appendMessages("qtractorMainForm::transportForward()");
-#endif
-
-	// Make sure session is activated...
-	checkRestartSession();
-
-	// Move playhead one second forward....
-	m_pSession->setPlayHead(m_pSession->playHead() + m_pSession->sampleRate());
-	m_iTransportUpdate++;
+	// Toggle rolling backward...
+	if (setRolling(-1) < 0) {
+		// TODO: Send MMC REWIND command...
+		// ...
+	}
 
 	stabilizeForm();
 }
@@ -1958,6 +1917,26 @@ void qtractorMainForm::transportFastForward (void)
 {
 #ifdef CONFIG_DEBUG
 	appendMessages("qtractorMainForm::transportFastForward()");
+#endif
+
+	// Make sure session is activated...
+	checkRestartSession();
+
+	// Toggle rolling backward...
+	if (setRolling(+1) > 0) {
+		// TODO: Send MMC FAST_FORWARD command...
+		// ...
+	}
+
+	stabilizeForm();
+}
+
+
+// Transport forward
+void qtractorMainForm::transportForward (void)
+{
+#ifdef CONFIG_DEBUG
+	appendMessages("qtractorMainForm::transportForward()");
 #endif
 
 	// Make sure session is activated...
@@ -2132,21 +2111,38 @@ bool qtractorMainForm::setPlaying ( bool bPlaying )
 	m_pSession->setPlaying(bPlaying);
 	m_iTransportUpdate++;
 
-	// And shutdown recording anyway...
-	if (!bPlaying && m_pSession->isRecording()) {
-		if (setRecording(false))
+	// We must stop certain things...
+	if (!bPlaying) {
+		// And shutdown recording anyway...
+		if (m_pSession->isRecording() && setRecording(false))
 			m_ui.transportRecordAction->setChecked(false);
+		// Stop trasport rolling, immediately...
+		setRolling(0);
 	}
 
 	// Done with playback switch...
 	return true;
 }
 
+
 bool qtractorMainForm::setRecording ( bool bRecording )
 {
-	// Stopping recording: must keep the new clips for the records...
-	if (!bRecording) {
-		// We'll build a composite command...
+	// Avoid if no tracks are armed...
+	if (m_pSession->recordTracks() < 1)
+		return false;
+
+	if (bRecording) {
+		// Stop trasport rolling, immediately...
+		setRolling(0);
+		// Starting recording: we must have a session name...
+		if (m_pSession->sessionName().isEmpty() && !editSession()) {
+			m_ui.transportRecordAction->setChecked(false);
+			return false;
+		}
+		// Will start recording...
+	} else {
+		// Stopping recording: fetch and commit
+		// all new clips as a composite command...
 		int iUpdate = 0;
 		qtractorClipCommand *pClipCommand
 			= new qtractorClipCommand(this, tr("record clip"));
@@ -2165,10 +2161,6 @@ bool qtractorMainForm::setRecording ( bool bRecording )
 			// Try to postpone an overall refresh...
 			m_iPeakTimer += QTRACTOR_TIMER_DELAY;
 		}
-	}	// Starting recording: we must have a session name...
-	else if (m_pSession->sessionName().isEmpty() && !editSession()) {
-		m_ui.transportRecordAction->setChecked(false);
-		return false;
 	}
 
 	// Finally, toggle session record status...
@@ -2176,6 +2168,34 @@ bool qtractorMainForm::setRecording ( bool bRecording )
 
 	// Done with record switch...
 	return true;
+}
+
+
+int qtractorMainForm::setRolling ( int iRolling )
+{
+	// Avoid if recording is armed...
+	if (m_pSession->isRecording() || m_iTransportRolling == iRolling)
+		iRolling = 0;
+
+	// Where were we?
+	if (m_iTransportRolling < 0 && m_iTransportRolling < iRolling)
+		m_ui.transportRewindAction->setChecked(false);
+	else
+	if (m_iTransportRolling > 0 && m_iTransportRolling > iRolling)
+		m_ui.transportFastForwardAction->setChecked(false);
+
+	// Set the rolling flag.
+	m_iTransportRolling = iRolling;
+
+	// We've started something...
+	if (m_iTransportRolling) {
+		m_iTransportUpdate++;
+	} else {
+		// TODO: Send MMC LOCATE command...
+	}
+
+	// Done with rolling switch...
+	return m_iTransportRolling;
 }
 
 
@@ -2317,10 +2337,11 @@ void qtractorMainForm::stabilizeForm (void)
 
 	// Transport stuff...
 	bEnabled = (!m_pSession->isPlaying() || !m_pSession->isRecording());
-	m_ui.transportRewindAction->setEnabled(bEnabled && m_iPlayHead > 0);
 	m_ui.transportBackwardAction->setEnabled(bEnabled && m_iPlayHead > 0);
-	m_ui.transportForwardAction->setEnabled(bEnabled);
+	m_ui.transportRewindAction->setEnabled(bEnabled && m_iPlayHead > 0);
 	m_ui.transportFastForwardAction->setEnabled(bEnabled
+		&& m_iPlayHead < iSessionLength);
+	m_ui.transportForwardAction->setEnabled(bEnabled
 		&& (m_iPlayHead < iSessionLength
 			|| m_iPlayHead < m_pSession->editHead()
 			|| m_iPlayHead < m_pSession->editTail()));
@@ -2605,6 +2626,10 @@ void qtractorMainForm::timerSlot (void)
 
 	// Transport status...
 	if (m_iTransportUpdate > 0) {
+		if (m_iTransportRolling) {
+			// TODO: Playhead rollover...
+			long delta = m_iTransportRolling * m_pSession->sampleRate() / 20;
+		}
 		m_iTransportUpdate = 0;
 		if (m_pTracks)
 			m_pTracks->trackView()->ensureVisibleFrame(m_iPlayHead);

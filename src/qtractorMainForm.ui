@@ -2,7 +2,7 @@
  <author>rncbc aka Rui Nuno Capela</author>
  <comment>qtractor - A MIDI/Audio multi-track sequencer.
 
-   Copyright (C) 2005-2006, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -19,7 +19,6 @@
    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
  </comment>
- <exportmacro></exportmacro>
  <class>qtractorMainForm</class>
  <widget class="QMainWindow" name="qtractorMainForm" >
   <property name="geometry" >
@@ -104,10 +103,10 @@
    <attribute name="toolBarArea" >
     <number>4</number>
    </attribute>
-   <addaction name="transportRewindAction" />
    <addaction name="transportBackwardAction" />
-   <addaction name="transportForwardAction" />
+   <addaction name="transportRewindAction" />
    <addaction name="transportFastForwardAction" />
+   <addaction name="transportForwardAction" />
    <addaction name="separator" />
    <addaction name="transportLoopAction" />
    <addaction name="separator" />
@@ -138,7 +137,7 @@
      <x>0</x>
      <y>0</y>
      <width>683</width>
-     <height>28</height>
+     <height>30</height>
     </rect>
    </property>
    <widget class="QMenu" name="trackMenu" >
@@ -194,10 +193,10 @@
     <property name="title" >
      <string>T&amp;ransport</string>
     </property>
-    <addaction name="transportRewindAction" />
     <addaction name="transportBackwardAction" />
-    <addaction name="transportForwardAction" />
+    <addaction name="transportRewindAction" />
     <addaction name="transportFastForwardAction" />
+    <addaction name="transportForwardAction" />
     <addaction name="separator" />
     <addaction name="transportLoopAction" />
     <addaction name="separator" />
@@ -1044,23 +1043,6 @@
     <string>F12</string>
    </property>
   </action>
-  <action name="transportRewindAction" >
-   <property name="icon" >
-    <iconset resource="../icons/qtractor.qrc" >:/icons/transportRewind.png</iconset>
-   </property>
-   <property name="text" >
-    <string>Re&amp;wind</string>
-   </property>
-   <property name="iconText" >
-    <string>Rewind</string>
-   </property>
-   <property name="statusTip" >
-    <string>Transport rewind</string>
-   </property>
-   <property name="shortcut" >
-    <string>Backspace</string>
-   </property>
-  </action>
   <action name="transportBackwardAction" >
    <property name="icon" >
     <iconset resource="../icons/qtractor.qrc" >:/icons/transportBackward.png</iconset>
@@ -1078,6 +1060,46 @@
     <string/>
    </property>
   </action>
+  <action name="transportRewindAction" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="icon" >
+    <iconset resource="../icons/qtractor.qrc" >:/icons/transportRewind.png</iconset>
+   </property>
+   <property name="text" >
+    <string>Re&amp;wind</string>
+   </property>
+   <property name="iconText" >
+    <string>Rewind</string>
+   </property>
+   <property name="statusTip" >
+    <string>Transport rewind</string>
+   </property>
+   <property name="shortcut" >
+    <string>Backspace</string>
+   </property>
+  </action>
+  <action name="transportFastForwardAction" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="icon" >
+    <iconset resource="../icons/qtractor.qrc" >:/icons/transportFastForward.png</iconset>
+   </property>
+   <property name="text" >
+    <string>F&amp;ast Forward</string>
+   </property>
+   <property name="iconText" >
+    <string>Fast forward</string>
+   </property>
+   <property name="statusTip" >
+    <string>Transport fast forward</string>
+   </property>
+   <property name="shortcut" >
+    <string/>
+   </property>
+  </action>
   <action name="transportForwardAction" >
    <property name="icon" >
     <iconset resource="../icons/qtractor.qrc" >:/icons/transportForward.png</iconset>
@@ -1090,23 +1112,6 @@
    </property>
    <property name="statusTip" >
     <string>Transport forward</string>
-   </property>
-   <property name="shortcut" >
-    <string/>
-   </property>
-  </action>
-  <action name="transportFastForwardAction" >
-   <property name="icon" >
-    <iconset resource="../icons/qtractor.qrc" >:/icons/transportFastForward.png</iconset>
-   </property>
-   <property name="text" >
-    <string>F&amp;ast Forward</string>
-   </property>
-   <property name="iconText" >
-    <string>Fast forward</string>
-   </property>
-   <property name="statusTip" >
-    <string>Transport fast forward</string>
    </property>
    <property name="shortcut" >
     <string/>
@@ -1222,7 +1227,6 @@
   </action>
  </widget>
  <layoutdefault spacing="4" margin="8" />
- <pixmapfunction></pixmapfunction>
  <resources>
   <include location="../icons/qtractor.qrc" />
  </resources>

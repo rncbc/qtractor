@@ -134,10 +134,10 @@ public slots:
 	void viewInstruments();
 	void viewBusses();
 	void viewOptions();
-	void transportRewind();
 	void transportBackward();
-	void transportForward();
+	void transportRewind();
 	void transportFastForward();
+	void transportForward();
 	void transportLoop();
 	void transportPlay();
 	void transportRecord();
@@ -186,6 +186,8 @@ protected:
 	bool setPlaying(bool bPlaying);
 	bool setRecording(bool bRecording);
 
+	int setRolling(int iRolling);
+
 	void updateSession();
 	void updateRecentFiles(const QString& sFilename);
 	void updatePeakAutoRemove();
@@ -222,6 +224,7 @@ private:
 	int m_iPlayTimer;
 	int m_iTransportUpdate;
 	int m_iTransportLocate;
+	int m_iTransportRolling;
 	int m_iXrunCount;
 	int m_iXrunSkip;
 	int m_iXrunTimer;
@@ -254,7 +257,6 @@ private:
 	};
 
 	QPalette *m_paletteItems[PaletteItems];
-
 
 	// Kind-of singleton reference.
 	static qtractorMainForm *g_pMainForm;
