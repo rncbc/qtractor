@@ -2339,8 +2339,7 @@ void qtractorMainForm::stabilizeForm (void)
 	bEnabled = (!m_pSession->isPlaying() || !m_pSession->isRecording());
 	m_ui.transportBackwardAction->setEnabled(bEnabled && m_iPlayHead > 0);
 	m_ui.transportRewindAction->setEnabled(bEnabled && m_iPlayHead > 0);
-	m_ui.transportFastForwardAction->setEnabled(bEnabled
-		&& m_iPlayHead < iSessionLength);
+	m_ui.transportFastForwardAction->setEnabled(bEnabled);
 	m_ui.transportForwardAction->setEnabled(bEnabled
 		&& (m_iPlayHead < iSessionLength
 			|| m_iPlayHead < m_pSession->editHead()
@@ -2357,6 +2356,10 @@ void qtractorMainForm::stabilizeForm (void)
 // Actually start all session engines.
 bool qtractorMainForm::startSession (void)
 {
+	m_iTransportUpdate  = 0; 
+	m_iTransportLocate  = 0;
+	m_iTransportRolling = 0;
+
 	m_iXrunCount = 0;
 	m_iXrunSkip  = 0;
 	m_iXrunTimer = 0;
@@ -2381,6 +2384,7 @@ bool qtractorMainForm::startSession (void)
 				.arg(m_pSession->sampleRate()));
 		}
 	} else {
+		// Uh-oh, we can't go on like this...
 		appendMessagesError(
 			tr("The audio engine could not be started.\n\n"
 			"Make sure the JACK audio server (jackd)\n"
@@ -2401,17 +2405,9 @@ bool qtractorMainForm::checkRestartSession (void)
 		unsigned long iPlayHead = m_pSession->playHead();
 		// Bail out if can't start it...
 		if (!startSession()) {
-			// HACK: Auto-repeatable transport toolbar controls needs be up...
-#if QT_VERSION < 0x040201
-			QList<QToolButton *> list
-				= m_ui.transportToolbar->findChildren<QToolButton *> (
-					QRegExp("^transport(Backward|Forward)Action"));
-			// Iterate over the intended transport tool-buttons...	
-			QListIterator<QToolButton *> iter(list);
-			while (iter.hasNext())
-				iter.next()->setDown(false);
-#endif
 			// Can go on with no-business...
+			m_ui.transportRewindAction->setChecked(false);
+			m_ui.transportFastForwardAction->setChecked(false);
 			m_ui.transportRecordAction->setChecked(false);
 			m_ui.transportPlayAction->setChecked(false);
 			stabilizeForm();
@@ -2626,14 +2622,29 @@ void qtractorMainForm::timerSlot (void)
 
 	// Transport status...
 	if (m_iTransportUpdate > 0) {
-		if (m_iTransportRolling) {
-			// TODO: Playhead rollover...
-			long delta = m_iTransportRolling * m_pSession->sampleRate() / 20;
+		// Do some transport related tricks...
+		long iPlayHead = (long) m_pSession->playHead();
+		if (m_iTransportRolling == 0) {
+			m_iTransportUpdate = 0;
+		} else {
+			// Playhead rolling over...
+			float fSpeed = float(m_iTransportRolling);
+			iPlayHead += (long) (fSpeed * float(m_pSession->sampleRate()));
+			if (iPlayHead < 0) {
+				m_iTransportUpdate = setRolling(0);
+				iPlayHead = 0;
+			}
+			m_pSession->setPlayHead(iPlayHead);
 		}
-		m_iTransportUpdate = 0;
+		// Move track-view into visibility...
 		if (m_pTracks)
-			m_pTracks->trackView()->ensureVisibleFrame(m_iPlayHead);
-		stabilizeForm();
+			m_pTracks->trackView()->ensureVisibleFrame(iPlayHead);
+		// Take the change to give some visual feedback...
+		if (m_iTransportUpdate > 0)
+			updateTransportTime(iPlayHead);
+		else
+			stabilizeForm();
+		// Done with transport tricks.
 	} else if (m_pSession->isActivated()) {
 		// Read transport state and act iif out-of-sync..
 		jack_position_t pos;
