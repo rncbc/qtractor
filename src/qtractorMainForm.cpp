@@ -866,12 +866,12 @@ void qtractorMainForm::mmcEvent ( qtractorMmcEvent *pMmcEvent )
 		break;
 	case qtractorMmcEvent::FAST_FORWARD:
 		sMmcText = tr("FFWD");
-		if (setRolling(+1) > 0)
+		if (0 >= setRolling(+1))
 			m_ui.transportFastForwardAction->setChecked(true);
 		break;
 	case qtractorMmcEvent::REWIND:
 		sMmcText = tr("REW");
-		if (setRolling(-1) < 0)
+		if (setRolling(-1) >= 0)
 			m_ui.transportRewindAction->setChecked(true);
 		break;
 	case qtractorMmcEvent::RECORD_STROBE:
@@ -1906,6 +1906,10 @@ void qtractorMainForm::transportRewind (void)
 
 	// Toggle rolling backward...
 	if (setRolling(-1) < 0) {
+		// Send MMC STOP command...
+		m_pSession->midiEngine()->sendMmcCommand(
+			qtractorMmcEvent::STOP);
+	} else {
 		// Send MMC REWIND command...
 		m_pSession->midiEngine()->sendMmcCommand(
 			qtractorMmcEvent::REWIND);
@@ -1927,6 +1931,10 @@ void qtractorMainForm::transportFastForward (void)
 
 	// Toggle rolling backward...
 	if (setRolling(+1) > 0) {
+		// Send MMC STOP command...
+		m_pSession->midiEngine()->sendMmcCommand(
+			qtractorMmcEvent::STOP);
+	} else {
 		// Send MMC FAST_FORWARD command...
 		m_pSession->midiEngine()->sendMmcCommand(
 			qtractorMmcEvent::FAST_FORWARD);
@@ -2122,7 +2130,7 @@ bool qtractorMainForm::setPlaying ( bool bPlaying )
 		// And shutdown recording anyway...
 		if (m_pSession->isRecording() && setRecording(false))
 			m_ui.transportRecordAction->setChecked(false);
-		// Stop trasport rolling, immediately...
+		// Stop transport rolling, immediately...
 		setRolling(0);
 	}
 
@@ -2138,8 +2146,6 @@ bool qtractorMainForm::setRecording ( bool bRecording )
 		return false;
 
 	if (bRecording) {
-		// Stop trasport rolling, immediately...
-		setRolling(0);
 		// Starting recording: we must have a session name...
 		if (m_pSession->sessionName().isEmpty() && !editSession()) {
 			m_ui.transportRecordAction->setChecked(false);
@@ -2179,31 +2185,28 @@ bool qtractorMainForm::setRecording ( bool bRecording )
 
 int qtractorMainForm::setRolling ( int iRolling )
 {
+	int iOldRolling = m_iTransportRolling;
+
 	// Avoid if recording is armed...
-	if (m_pSession->isRecording() || m_iTransportRolling == iRolling)
+	if (m_pSession->isRecording() || iOldRolling == iRolling)
 		iRolling = 0;
 
 	// Where were we?
-	if (m_iTransportRolling < 0 && m_iTransportRolling < iRolling)
+	if (iOldRolling < 0 && iOldRolling < iRolling)
 		m_ui.transportRewindAction->setChecked(false);
 	else
-	if (m_iTransportRolling > 0 && m_iTransportRolling > iRolling)
+	if (iOldRolling > 0 && iOldRolling > iRolling)
 		m_ui.transportFastForwardAction->setChecked(false);
 
 	// Set the rolling flag.
 	m_iTransportRolling = iRolling;
 
 	// We've started something...
-	if (m_iTransportRolling) {
+	if (m_iTransportRolling)
 		m_iTransportUpdate++;
-	} else {
-		// Send MMC LOCATE command...
-		m_pSession->midiEngine()->sendMmcLocate(
-			m_pSession->locateFromFrame(m_pSession->playHead()));
-	}
 
 	// Done with rolling switch...
-	return m_iTransportRolling;
+	return iOldRolling;
 }
 
 
@@ -2642,8 +2645,15 @@ void qtractorMainForm::timerSlot (void)
 			float fSpeed = float(m_iTransportRolling);
 			iPlayHead += (long) (fSpeed * float(m_pSession->sampleRate()));
 			if (iPlayHead < 0) {
-				m_iTransportUpdate = setRolling(0);
 				iPlayHead = 0;
+				m_iTransportUpdate = 0;
+				// Stop playback for sure...
+				if (setPlaying(false)) {
+					m_ui.transportPlayAction->setChecked(false);
+					// Send MMC STOP command...
+					m_pSession->midiEngine()->sendMmcCommand(
+						qtractorMmcEvent::STOP);
+				}
 			}
 			// Make it thru...
 			m_pSession->setPlayHead(iPlayHead);
@@ -2652,10 +2662,12 @@ void qtractorMainForm::timerSlot (void)
 		if (m_pTracks)
 			m_pTracks->trackView()->ensureVisibleFrame(iPlayHead);
 		// Take the change to give some visual feedback...
-		if (m_iTransportUpdate > 0)
+		if (m_iTransportUpdate > 0) {
 			updateTransportTime(iPlayHead);
-		else
+			m_pThumbView->updateThumb();
+		} else {
 			stabilizeForm();
+		}
 		// Done with transport tricks.
 	} else if (m_pSession->isActivated()) {
 		// Read transport state and act iif out-of-sync..
