@@ -26,35 +26,17 @@
 // qtractorMmcEvent - MMC custom event.
 //
 
-// Convert MMC time-code and standard frame position (SMTPE?).
-void qtractorMmcEvent::setLocate ( unsigned long iLocate )
-{
-	unsigned long i = iLocate;
-	unsigned char data[6];
-
-	m_cmd = LOCATE;
-
-	data[0] = 0x01;
-	data[1] = i / (60 * 60 * 30); i -= (60 * 60 * 30) * (int) data[1];
-	data[2] = i / (     60 * 30); i -= (     60 * 30) * (int) data[2];
-	data[3] = i / (          30); i -= (          30) * (int) data[3];
-	data[4] = i;
-	data[5] = 0;
-
-	m_data.fromRawData((const char *) data, (int) sizeof(data));
-}
-
-
+	// Retrieve MMC time-code and standard frame position (SMPTE?).
 unsigned long qtractorMmcEvent::locate (void) const
 {
 	unsigned long iLocate = 0;
 	unsigned char *data = (unsigned char *) m_data.constData();
 
 	if (m_cmd == LOCATE && m_data.length() > 4 && data[0] == 0x01) {
-		iLocate = (60 * 60 * 30) * (int) data[1]	// hh - hours    [0..23]
-				+ (     60 * 30) * (int) data[2]	// mm - minutes  [0..59]
-				+ (          30) * (int) data[3]	// ss - seconds  [0..59]
-				+                  (int) data[4];	// ff - frames   [0..29]
+		iLocate = (3600 * 30) * (int) data[1]	// hh - hours    [0..23]
+				+ (  60 * 30) * (int) data[2]	// mm - minutes  [0..59]
+				+ (       30) * (int) data[3]	// ss - seconds  [0..59]
+				+               (int) data[4];	// ff - frames   [0..29]
 	}
 
 	return iLocate;

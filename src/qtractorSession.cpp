@@ -505,6 +505,18 @@ unsigned int qtractorSession::pixelSnap ( unsigned int x ) const
 }
 
 
+// Frame/locate (SMPTE) conversion.
+unsigned long qtractorSession::frameFromLocate ( unsigned long iLocate ) const
+{
+	return (iLocate * m_props.sampleRate) / 30;
+}
+
+unsigned long qtractorSession::locateFromFrame ( unsigned long iFrame ) const
+{ 
+	return (30 * iFrame) / m_props.sampleRate;
+}
+
+
 // Convert frame to time string.
 QString qtractorSession::timeFromFrame ( unsigned long iFrame, bool bBBT ) const
 {

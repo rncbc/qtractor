@@ -1,7 +1,7 @@
 // qtractorEngineCommand.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2006, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -122,6 +122,8 @@ bool qtractorBusCommand::updateBus (void)
 
 	// We need to hold things for a while...
 	bool bPlaying = pSession->isPlaying();
+
+	pSession->lock();
 	pSession->setPlaying(false);
 
 	// Save current bus properties...
@@ -205,6 +207,7 @@ bool qtractorBusCommand::updateBus (void)
 	
 	// Carry on...
 	pSession->setPlaying(bPlaying);
+	pSession->unlock();
 
 	// Done.
 	return true;
@@ -243,6 +246,8 @@ bool qtractorBusCommand::deleteBus (void)
 
 	// We need to hold things for a while...
 	bool bPlaying = pSession->isPlaying();
+
+	pSession->lock();
 	pSession->setPlaying(false);
 
 	// Close all applicable tracks...
@@ -266,7 +271,8 @@ bool qtractorBusCommand::deleteBus (void)
 
 	// Carry on...
 	pSession->setPlaying(bPlaying);
-	
+	pSession->unlock();
+
 	// Done.
 	return true;
 }

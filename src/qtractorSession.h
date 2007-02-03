@@ -136,6 +136,10 @@ public:
 	unsigned long frameSnap(unsigned long iFrame) const;
 	unsigned int pixelSnap(unsigned int x) const;
 
+	// Frame/locate (SMPTE) conversion.
+	unsigned long frameFromLocate(unsigned long iLocate) const;
+	unsigned long locateFromFrame(unsigned long iFrame) const;
+
 	// Convert frame to time string.
 	QString timeFromFrame(unsigned long iFrame, bool bBBT = false) const;
 

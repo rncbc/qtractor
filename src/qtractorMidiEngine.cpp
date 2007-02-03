@@ -473,6 +473,9 @@ qtractorMidiEngine::qtractorMidiEngine ( qtractorSession *pSession )
 
 	m_pNotifyWidget  = NULL;
 	m_eNotifyMmcType = QEvent::None;
+
+	m_pIControlBus   = NULL;
+	m_pOControlBus   = NULL;
 }
 
 
@@ -689,7 +692,10 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 		pSysex   = (unsigned char *) pEv->data.ext.ptr;
 		iSysex   = (unsigned short)  pEv->data.ext.len;
 		// Trap MMC commands...
-		if (pSysex[1] == 0x7f && pSysex[3] == 0x06) {
+		if (pSysex[1] == 0x7f && pSysex[3] == 0x06
+			// check if it was intended to our input control bus!
+			&& m_pIControlBus
+			&& m_pIControlBus->alsaPort() == pEv->dest.port) {
 			// Post the stuffed event...
 			if (m_pNotifyWidget) {
 				QApplication::postEvent(m_pNotifyWidget,
@@ -935,6 +941,17 @@ bool qtractorMidiEngine::init ( const QString& sClientName )
 // Device engine activation method.
 bool qtractorMidiEngine::activate (void)
 {
+	// HACK: Find available control busses...
+	for (qtractorBus *pBus = qtractorEngine::busses().first();
+			pBus; pBus = pBus->next()) {
+		if (m_pIControlBus == NULL
+			&& (pBus->busMode() & qtractorBus::Input))
+			m_pIControlBus = static_cast<qtractorMidiBus *> (pBus);
+		if (m_pOControlBus == NULL
+			&& (pBus->busMode() & qtractorBus::Output))
+			m_pOControlBus = static_cast<qtractorMidiBus *> (pBus);
+	}
+
 	// Create and start our own MIDI input queue thread...
 	m_pInputThread = new qtractorMidiInputThread(session());
 	m_pInputThread->start(QThread::TimeCriticalPriority);
@@ -1027,6 +1044,10 @@ void qtractorMidiEngine::deactivate (void)
 	m_pInputThread->setRunState(false);
 	m_pOutputThread->setRunState(false);
 	m_pOutputThread->sync();
+
+	// HACK: Reset existing control busses...
+	m_pIControlBus = NULL;
+	m_pOControlBus = NULL;
 }
 
 
@@ -1084,6 +1105,17 @@ void qtractorMidiEngine::clean (void)
 }
 
 
+// Special rewind method, for queue loop.
+void qtractorMidiEngine::restartLoop (void)
+{
+	qtractorSession *pSession = session();
+	if (pSession && pSession->isLooping()) {
+		m_iTimeStart -= (long) pSession->tickFromFrame(
+			pSession->loopEnd() - pSession->loopStart());
+	}
+}
+
+
 // Immediate track mute.
 void qtractorMidiEngine::trackMute ( qtractorTrack *pTrack, bool bMute )
 {
@@ -1130,17 +1162,6 @@ void qtractorMidiEngine::trackMute ( qtractorTrack *pTrack, bool bMute )
 }
 
 
-// Special rewind method, for queue loop.
-void qtractorMidiEngine::restartLoop (void)
-{
-	qtractorSession *pSession = session();
-	if (pSession && pSession->isLooping()) {
-		m_iTimeStart -= (long) pSession->tickFromFrame(
-			pSession->loopEnd() - pSession->loopStart());
-	}
-}
-
-
 // Event notifier widget settings.
 void qtractorMidiEngine::setNotifyWidget ( QWidget *pNotifyWidget )
 {
@@ -1161,6 +1182,70 @@ QWidget *qtractorMidiEngine::notifyWidget (void) const
 QEvent::Type qtractorMidiEngine::notifyMmcType (void) const
 {
 	return m_eNotifyMmcType;
+}
+
+
+// Control busses accessors.
+qtractorMidiBus *qtractorMidiEngine::controlBus_in() const
+{
+	return m_pIControlBus;
+}
+
+qtractorMidiBus *qtractorMidiEngine::controlBus_out() const
+{
+	return m_pOControlBus;
+}
+
+
+// MMC dispatch special commands.
+void qtractorMidiEngine::sendMmcLocate ( unsigned long iLocate ) const
+{
+	unsigned char data[6];
+
+	data[0] = 0x01;
+	data[1] = iLocate / (3600 * 30); iLocate -= (3600 * 30) * (int) data[1];
+	data[2] = iLocate / (  60 * 30); iLocate -= (  60 * 30) * (int) data[2];
+	data[3] = iLocate / (       30); iLocate -= (       30) * (int) data[3];
+	data[4] = iLocate;
+	data[5] = 0;
+
+	sendMmcCommand(qtractorMmcEvent::LOCATE, data, sizeof(data));
+}
+
+void qtractorMidiEngine::sendMmcCommand ( qtractorMmcEvent::Command cmd,
+	unsigned char *pMmcData, unsigned short iMmcData ) const
+{
+	// We surely need a output control bus...
+	if (m_pOControlBus == NULL)
+		return;
+
+	// Build up the MMC sysex message...
+	unsigned char *pSysex;
+	unsigned short iSysex;
+
+	iSysex = 6;
+	if (pMmcData && iMmcData > 0)
+		iSysex += 1 + iMmcData;
+	pSysex = new unsigned char [iSysex];
+	iSysex = 0;
+
+	pSysex[iSysex++] = 0xf0;				// Sysex header.
+	pSysex[iSysex++] = 0x7f;				// Realtime sysex.
+	pSysex[iSysex++] = 0x7f;				// All-caller-id.
+	pSysex[iSysex++] = 0x06;				// MMC command mode.
+	pSysex[iSysex++] = (unsigned char) cmd;	// MMC command code.
+	if (pMmcData && iMmcData > 0) {
+		pSysex[iSysex++] = iMmcData;
+		::memcpy(&pSysex[iSysex], pMmcData, iMmcData);
+		iSysex += iMmcData;
+	}
+	pSysex[iSysex++] = 0xf7;				// Sysex trailer.
+
+	// Send it out, now.
+	m_pOControlBus->sendSysex(pSysex, iSysex);
+
+	// Done.
+	delete pSysex;
 }
 
 

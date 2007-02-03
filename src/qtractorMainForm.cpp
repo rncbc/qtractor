@@ -889,7 +889,9 @@ void qtractorMainForm::mmcEvent ( qtractorMmcEvent *pMmcEvent )
 		break;
 	case qtractorMmcEvent::LOCATE:
 		sMmcText = tr("LOCATE %1").arg(pMmcEvent->locate());
-	//	TODO: Set locate...
+		m_pSession->setPlayHead(
+			m_pSession->frameFromLocate(pMmcEvent->locate()));
+		m_iTransportUpdate++;
 		break;
 	case qtractorMmcEvent::SHUTTLE:
 		sMmcText = tr("SHUTTLE %1").arg(pMmcEvent->shuttle());
@@ -1904,8 +1906,9 @@ void qtractorMainForm::transportRewind (void)
 
 	// Toggle rolling backward...
 	if (setRolling(-1) < 0) {
-		// TODO: Send MMC REWIND command...
-		// ...
+		// Send MMC REWIND command...
+		m_pSession->midiEngine()->sendMmcCommand(
+			qtractorMmcEvent::REWIND);
 	}
 
 	stabilizeForm();
@@ -1924,8 +1927,9 @@ void qtractorMainForm::transportFastForward (void)
 
 	// Toggle rolling backward...
 	if (setRolling(+1) > 0) {
-		// TODO: Send MMC FAST_FORWARD command...
-		// ...
+		// Send MMC FAST_FORWARD command...
+		m_pSession->midiEngine()->sendMmcCommand(
+			qtractorMmcEvent::FAST_FORWARD);
 	}
 
 	stabilizeForm();
@@ -2001,8 +2005,9 @@ void qtractorMainForm::transportPlay (void)
 	// Toggle playing...
 	bool bPlaying = !m_pSession->isPlaying();
 	if (setPlaying(bPlaying)) {
-		// TODO: Send MMC PLAY/STOP command...
-		// ...
+		// Send MMC PLAY/STOP command...
+		m_pSession->midiEngine()->sendMmcCommand(bPlaying ?
+			qtractorMmcEvent::PLAY : qtractorMmcEvent::STOP);
 	}
 
 	stabilizeForm();
@@ -2023,8 +2028,9 @@ void qtractorMainForm::transportRecord (void)
 	// Toggle recording...
 	bool bRecording = !m_pSession->isRecording();
 	if (setRecording(bRecording)) {
-		// TODO: Send MMC RECORD_STROBE/PAUSE/EXIT command...
-		// ...
+		// Send MMC RECORD_STROBE/EXIT command...
+		m_pSession->midiEngine()->sendMmcCommand(bRecording ?
+			qtractorMmcEvent::RECORD_STROBE : qtractorMmcEvent::RECORD_EXIT);
 	}
 
 	stabilizeForm();
@@ -2191,7 +2197,9 @@ int qtractorMainForm::setRolling ( int iRolling )
 	if (m_iTransportRolling) {
 		m_iTransportUpdate++;
 	} else {
-		// TODO: Send MMC LOCATE command...
+		// Send MMC LOCATE command...
+		m_pSession->midiEngine()->sendMmcLocate(
+			m_pSession->locateFromFrame(m_pSession->playHead()));
 	}
 
 	// Done with rolling switch...
@@ -2599,17 +2607,21 @@ void qtractorMainForm::updateMessagesCapture (void)
 void qtractorMainForm::timerSlot (void)
 {
 	// Playhead and transport status...
-	if (m_pTracks) {
-		unsigned long iPlayHead = m_pSession->playHead();
-		if (m_iPlayHead != iPlayHead) {
+	bool bPlaying  = m_pSession->isPlaying();
+	long iPlayHead = (long) m_pSession->playHead();
+	if (iPlayHead != (long) m_iPlayHead) {
+		m_iPlayHead = iPlayHead;
+		if (m_pTracks)
 			m_pTracks->trackView()->setPlayHead(iPlayHead,
-				m_ui.transportFollowAction->isChecked());
-			m_iPlayHead = iPlayHead;
+			m_ui.transportFollowAction->isChecked());
+		if (!bPlaying && m_iTransportRolling == 0) {
+			// Send MMC LOCATE command...
+			m_pSession->midiEngine()->sendMmcLocate(
+				m_pSession->locateFromFrame(iPlayHead));
 		}
 	}
 
 	// Check if its time to refresh playhead timer...
-	bool bPlaying = m_pSession->isPlaying();
 	if (bPlaying && m_iPlayTimer < QTRACTOR_TIMER_DELAY) {
 		m_iPlayTimer += QTRACTOR_TIMER_MSECS;
 		if (m_iPlayTimer >= QTRACTOR_TIMER_DELAY) {
@@ -2623,7 +2635,6 @@ void qtractorMainForm::timerSlot (void)
 	// Transport status...
 	if (m_iTransportUpdate > 0) {
 		// Do some transport related tricks...
-		long iPlayHead = (long) m_pSession->playHead();
 		if (m_iTransportRolling == 0) {
 			m_iTransportUpdate = 0;
 		} else {
@@ -2634,6 +2645,7 @@ void qtractorMainForm::timerSlot (void)
 				m_iTransportUpdate = setRolling(0);
 				iPlayHead = 0;
 			}
+			// Make it thru...
 			m_pSession->setPlayHead(iPlayHead);
 		}
 		// Move track-view into visibility...
@@ -2662,7 +2674,7 @@ void qtractorMainForm::timerSlot (void)
 		} else {
 			// Check on external transport location changes;
 			// note that we'll have a doubled buffer-size guard...
-			long iDeltaFrame = (long) pos.frame - (long) m_pSession->playHead();
+			long iDeltaFrame = (long) pos.frame - iPlayHead;
 			int iBufferSize2 = m_pSession->audioEngine()->bufferSize() << 1;
 			if (labs(iDeltaFrame) > iBufferSize2) {
 				if (++m_iTransportLocate > 1) {

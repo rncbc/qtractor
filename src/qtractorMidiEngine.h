@@ -23,7 +23,6 @@
 #define __qtractorMidiEngine_h
 
 #include "qtractorEngine.h"
-
 #include "qtractorMmcEvent.h"
 
 #include <QMap>
@@ -96,6 +95,15 @@ public:
 	QWidget     *notifyWidget() const;
 	QEvent::Type notifyMmcType() const;
 
+	// Control busses accessors.
+	qtractorMidiBus *controlBus_in() const;
+	qtractorMidiBus *controlBus_out() const;
+
+	// MMC dispatch special commands.
+	void sendMmcLocate(unsigned long iLocate) const;
+	void sendMmcCommand(qtractorMmcEvent::Command cmd,
+		unsigned char *pMmcData = NULL, unsigned short iMmcData = 0) const;
+
 	// Document element methods.
 	bool loadElement(qtractorSessionDocument *pDocument,
 		QDomElement *pElement);
@@ -135,6 +143,10 @@ private:
 	// The event notifier widget.
 	QWidget      *m_pNotifyWidget;
 	QEvent::Type  m_eNotifyMmcType;
+
+	// The assigned control busses.
+	qtractorMidiBus *m_pIControlBus;
+	qtractorMidiBus *m_pOControlBus;
 };
 
 

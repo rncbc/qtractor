@@ -87,8 +87,7 @@ public:
 	unsigned char *data() const { return (unsigned char *) m_data.constData(); }
 	unsigned short len()  const { return (unsigned short)  m_data.length();    }
 
-	// Convert MMC time-code and standard frame position (SMTPE?).
-	void setLocate(unsigned long iLocate);
+	// Retrieve MMC time-code and standard frame position (SMPTE?).
 	unsigned long locate() const;
 
 	// Retrieve MMC shuttle-speed and direction.
