@@ -187,6 +187,8 @@ protected:
 	bool setRecording(bool bRecording);
 
 	int setRolling(int iRolling);
+	void setShuttle(float fShuttle);
+	void setStep(int iStep);
 
 	void updateSession();
 	void updateRecentFiles(const QString& sFilename);
@@ -223,8 +225,9 @@ private:
 	int m_iPeakTimer;
 	int m_iPlayTimer;
 	int m_iTransportUpdate;
-	int m_iTransportLocate;
+	int m_iTransportDelta;
 	int m_iTransportRolling;
+	float m_fTransportShuttle;
 	int m_iXrunCount;
 	int m_iXrunSkip;
 	int m_iXrunTimer;

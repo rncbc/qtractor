@@ -1,7 +1,7 @@
 // qtractorTrackForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2006, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -208,7 +208,7 @@ void qtractorTrackForm::setTrack ( qtractorTrack *pTrack )
 	m_iDirtySetup++;
 
 	// Track properties cloning...
-	m_props = pTrack->properties();
+	m_props = m_pTrack->properties();
 
 	// Initialize dialog widgets...
 	m_ui.TrackNameTextEdit->setPlainText(m_props.trackName);
@@ -242,10 +242,9 @@ void qtractorTrackForm::setTrack ( qtractorTrack *pTrack )
 	updateColorItem(m_ui.ForegroundColorComboBox, m_props.foreground);
 	updateColorItem(m_ui.BackgroundColorComboBox, m_props.background);
 
-	// Cannot change track type, if track has clips already...
-	bool bEnabled = (pTrack->clips().count() == 0);
-	m_ui.AudioRadioButton->setEnabled(bEnabled);
-	m_ui.MidiRadioButton->setEnabled(bEnabled);
+	// Cannot change track type, if track is already chained in session..
+	m_ui.AudioRadioButton->setEnabled(m_props.trackType != qtractorTrack::Midi);
+	m_ui.MidiRadioButton->setEnabled(m_props.trackType != qtractorTrack::Audio);
 
 	// Backup clean.
 	m_iDirtyCount = 0;

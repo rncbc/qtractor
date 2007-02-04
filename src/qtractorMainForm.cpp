@@ -139,8 +139,9 @@ qtractorMainForm::qtractorMainForm (
 	m_iPlayTimer = 0;
 
 	m_iTransportUpdate  = 0; 
-	m_iTransportLocate  = 0;
+	m_iTransportDelta   = 0;
 	m_iTransportRolling = 0;
+	m_fTransportShuttle = 0.0f;
 
 	m_iXrunCount = 0;
 	m_iXrunSkip  = 0;
@@ -895,11 +896,11 @@ void qtractorMainForm::mmcEvent ( qtractorMmcEvent *pMmcEvent )
 		break;
 	case qtractorMmcEvent::SHUTTLE:
 		sMmcText = tr("SHUTTLE %1").arg(pMmcEvent->shuttle());
-	//	TODO: Set shuttle-speed...
+		setShuttle(pMmcEvent->shuttle());
 		break;
 	case qtractorMmcEvent::STEP:
 		sMmcText = tr("STEP %1").arg(pMmcEvent->step());;
-	//	TODO: Set step...
+		setStep(pMmcEvent->step());
 		break;
 	default:
 		sMmcText = tr("Not implemented");
@@ -2200,6 +2201,7 @@ int qtractorMainForm::setRolling ( int iRolling )
 
 	// Set the rolling flag.
 	m_iTransportRolling = iRolling;
+	m_fTransportShuttle = float(iRolling);
 
 	// We've started something...
 	if (m_iTransportRolling)
@@ -2207,6 +2209,32 @@ int qtractorMainForm::setRolling ( int iRolling )
 
 	// Done with rolling switch...
 	return iOldRolling;
+}
+
+
+void qtractorMainForm::setShuttle ( float fShuttle )
+{
+	float fOldShuttle = m_fTransportShuttle;
+
+	if (fShuttle < 0.0f && fOldShuttle >= 0.0f && setRolling(-1) >= 0)
+		m_ui.transportRewindAction->setChecked(true);
+	if (fShuttle > 0.0f && 0.0f >= fOldShuttle && 0 >= setRolling(+1))
+		m_ui.transportFastForwardAction->setChecked(true);
+
+	m_fTransportShuttle = fShuttle;
+}
+
+
+void qtractorMainForm::setStep ( int iStep )
+{
+	long iPlayHead = (long) m_pSession->playHead()
+		+ (long) (iStep * m_pSession->sampleRate()) / 20;
+
+	if (iPlayHead < 0)
+		iPlayHead = 0;
+
+	m_pSession->setPlayHead(iPlayHead);
+	m_iTransportUpdate++;
 }
 
 
@@ -2368,8 +2396,9 @@ void qtractorMainForm::stabilizeForm (void)
 bool qtractorMainForm::startSession (void)
 {
 	m_iTransportUpdate  = 0; 
-	m_iTransportLocate  = 0;
+	m_iTransportDelta   = 0;
 	m_iTransportRolling = 0;
+	m_fTransportShuttle = 0.0f;
 
 	m_iXrunCount = 0;
 	m_iXrunSkip  = 0;
@@ -2642,8 +2671,8 @@ void qtractorMainForm::timerSlot (void)
 			m_iTransportUpdate = 0;
 		} else {
 			// Playhead rolling over...
-			float fSpeed = float(m_iTransportRolling);
-			iPlayHead += (long) (fSpeed * float(m_pSession->sampleRate()));
+			iPlayHead += (long) (m_fTransportShuttle
+				* float(m_pSession->sampleRate())) / 2;
 			if (iPlayHead < 0) {
 				iPlayHead = 0;
 				m_iTransportUpdate = 0;
@@ -2689,13 +2718,13 @@ void qtractorMainForm::timerSlot (void)
 			long iDeltaFrame = (long) pos.frame - iPlayHead;
 			int iBufferSize2 = m_pSession->audioEngine()->bufferSize() << 1;
 			if (labs(iDeltaFrame) > iBufferSize2) {
-				if (++m_iTransportLocate > 1) {
-					m_iTransportLocate = 0;
+				if (++m_iTransportDelta > 1) {
+					m_iTransportDelta = 0;
 					m_pSession->setPlayHead(pos.frame);
 					m_iTransportUpdate++;
 				}
 			}	// All quiet...
-			else m_iTransportLocate = 0;
+			else m_iTransportDelta = 0;
 		}
 	}
 
