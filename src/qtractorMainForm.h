@@ -187,6 +187,8 @@ protected:
 	bool setRecording(bool bRecording);
 
 	int setRolling(int iRolling);
+
+	void setLocate(unsigned long iLocate);
 	void setShuttle(float fShuttle);
 	void setStep(int iStep);
 

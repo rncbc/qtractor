@@ -878,7 +878,11 @@ void qtractorMainForm::mmcEvent ( qtractorMmcEvent *pMmcEvent )
 	case qtractorMmcEvent::RECORD_STROBE:
 	case qtractorMmcEvent::RECORD_PAUSE:
 		sMmcText = tr("REC ON");
-		setRecording(true);
+		if (!setRecording(true)) {
+			// Send MMC RECORD_EXIT command immediate reply...
+			m_pSession->midiEngine()->sendMmcCommand(
+				qtractorMmcEvent::RECORD_EXIT);
+		}
 		break;
 	case qtractorMmcEvent::RECORD_EXIT:
 		sMmcText = tr("REC OFF");
@@ -886,13 +890,11 @@ void qtractorMainForm::mmcEvent ( qtractorMmcEvent *pMmcEvent )
 		break;
 	case qtractorMmcEvent::MMC_RESET:
 		sMmcText = tr("RESET");
-	//	TODO: Reset...
+		setRolling(0);
 		break;
 	case qtractorMmcEvent::LOCATE:
 		sMmcText = tr("LOCATE %1").arg(pMmcEvent->locate());
-		m_pSession->setPlayHead(
-			m_pSession->frameFromLocate(pMmcEvent->locate()));
-		m_iTransportUpdate++;
+		setLocate(pMmcEvent->locate());
 		break;
 	case qtractorMmcEvent::SHUTTLE:
 		sMmcText = tr("SHUTTLE %1").arg(pMmcEvent->shuttle());
@@ -2209,6 +2211,13 @@ int qtractorMainForm::setRolling ( int iRolling )
 
 	// Done with rolling switch...
 	return iOldRolling;
+}
+
+
+void qtractorMainForm::setLocate ( unsigned long iLocate )
+{
+	m_pSession->setPlayHead(m_pSession->frameFromLocate(iLocate));
+	m_iTransportUpdate++;
 }
 
 
