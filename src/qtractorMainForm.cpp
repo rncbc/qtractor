@@ -878,7 +878,9 @@ void qtractorMainForm::mmcEvent ( qtractorMmcEvent *pMmcEvent )
 	case qtractorMmcEvent::RECORD_STROBE:
 	case qtractorMmcEvent::RECORD_PAUSE:
 		sMmcText = tr("REC ON");
-		if (!setRecording(true)) {
+		if (setRecording(true)) {
+			m_ui.transportRecordAction->setChecked(true);
+		} else {
 			// Send MMC RECORD_EXIT command immediate reply...
 			m_pSession->midiEngine()->sendMmcCommand(
 				qtractorMmcEvent::RECORD_EXIT);
@@ -886,7 +888,8 @@ void qtractorMainForm::mmcEvent ( qtractorMmcEvent *pMmcEvent )
 		break;
 	case qtractorMmcEvent::RECORD_EXIT:
 		sMmcText = tr("REC OFF");
-		setRecording(false);
+		if (setRecording(false))
+			m_ui.transportRecordAction->setChecked(false);
 		break;
 	case qtractorMmcEvent::MMC_RESET:
 		sMmcText = tr("RESET");
