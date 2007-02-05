@@ -1905,7 +1905,8 @@ void qtractorMainForm::transportRewind (void)
 #endif
 
 	// Make sure session is activated...
-	checkRestartSession();
+	if (!checkRestartSession())
+		return;
 
 	// Toggle rolling backward...
 	if (setRolling(-1) < 0) {
@@ -1930,7 +1931,8 @@ void qtractorMainForm::transportFastForward (void)
 #endif
 
 	// Make sure session is activated...
-	checkRestartSession();
+	if (!checkRestartSession())
+		return;
 
 	// Toggle rolling backward...
 	if (setRolling(+1) > 0) {
