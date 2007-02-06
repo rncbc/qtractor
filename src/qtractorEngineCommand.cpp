@@ -81,6 +81,7 @@ bool qtractorBusCommand::createBus (void)
 			qtractorMidiBus *pMidiBus
 				= new qtractorMidiBus(pMidiEngine, m_sBusName, m_busMode);
 			pMidiEngine->addBus(pMidiBus);
+			pMidiEngine->resetControlBus(qtractorBus::Duplex);
 			m_pBus = pMidiBus;
 		}
 		break;
@@ -263,6 +264,10 @@ bool qtractorBusCommand::deleteBus (void)
 	// And remove it...
 	pEngine->removeBus(m_pBus);
 	m_pBus = NULL;
+
+	// Better update MIDI control busses anyway...
+	if (pEngine->syncType() == qtractorTrack::Midi)
+		pSession->midiEngine()->resetControlBus(qtractorBus::Duplex);
 
 	// Update mixer (clean old strips...)
 	qtractorMixer *pMixer = pMainForm->mixer();

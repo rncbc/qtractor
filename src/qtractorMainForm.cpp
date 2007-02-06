@@ -142,6 +142,7 @@ qtractorMainForm::qtractorMainForm (
 	m_iTransportDelta   = 0;
 	m_iTransportRolling = 0;
 	m_fTransportShuttle = 0.0f;
+	m_iTransportStep    = 0;
 
 	m_iXrunCount = 0;
 	m_iXrunSkip  = 0;
@@ -2209,6 +2210,7 @@ int qtractorMainForm::setRolling ( int iRolling )
 	// Set the rolling flag.
 	m_iTransportRolling = iRolling;
 	m_fTransportShuttle = float(iRolling);
+	m_iTransportStep    = 0;
 
 	// We've started something...
 	if (m_iTransportRolling)
@@ -2241,13 +2243,7 @@ void qtractorMainForm::setShuttle ( float fShuttle )
 
 void qtractorMainForm::setStep ( int iStep )
 {
-	long iPlayHead = (long) m_pSession->playHead()
-		+ (long) (iStep * m_pSession->sampleRate()) / 20;
-
-	if (iPlayHead < 0)
-		iPlayHead = 0;
-
-	m_pSession->setPlayHead(iPlayHead);
+	m_iTransportStep += iStep;
 	m_iTransportUpdate++;
 }
 
@@ -2413,6 +2409,7 @@ bool qtractorMainForm::startSession (void)
 	m_iTransportDelta   = 0;
 	m_iTransportRolling = 0;
 	m_fTransportShuttle = 0.0f;
+	m_iTransportStep    = 0;
 
 	m_iXrunCount = 0;
 	m_iXrunSkip  = 0;
@@ -2652,29 +2649,21 @@ void qtractorMainForm::updateMessagesCapture (void)
 // Timer slot funtion.
 void qtractorMainForm::timerSlot (void)
 {
-	// Playhead and transport status...
+	// Currrent state...
 	bool bPlaying  = m_pSession->isPlaying();
 	long iPlayHead = (long) m_pSession->playHead();
+	
+	// Playhead status...
 	if (iPlayHead != (long) m_iPlayHead) {
 		m_iPlayHead = iPlayHead;
-		if (m_pTracks)
+		if (m_pTracks) {
 			m_pTracks->trackView()->setPlayHead(iPlayHead,
-			m_ui.transportFollowAction->isChecked());
-		if (!bPlaying && m_iTransportRolling == 0) {
+				m_ui.transportFollowAction->isChecked());
+		}
+		if (!bPlaying && m_iTransportRolling == 0 && m_iTransportStep == 0) {
 			// Send MMC LOCATE command...
 			m_pSession->midiEngine()->sendMmcLocate(
 				m_pSession->locateFromFrame(iPlayHead));
-		}
-	}
-
-	// Check if its time to refresh playhead timer...
-	if (bPlaying && m_iPlayTimer < QTRACTOR_TIMER_DELAY) {
-		m_iPlayTimer += QTRACTOR_TIMER_MSECS;
-		if (m_iPlayTimer >= QTRACTOR_TIMER_DELAY) {
-			m_iPlayTimer = 0;
-			updateTransportTime(m_iPlayHead);
-			if (m_pTracks && m_pSession->isRecording())
-				m_pTracks->trackView()->updateContentsRecord();
 		}
 	}
 
@@ -2683,8 +2672,18 @@ void qtractorMainForm::timerSlot (void)
 		// Do some transport related tricks...
 		if (m_iTransportRolling == 0) {
 			m_iTransportUpdate = 0;
+			if (m_iTransportStep) {
+				// Transport stepping over...
+				iPlayHead += (long) (m_iTransportStep
+					* m_pSession->sampleRate()) / 20;
+				if (iPlayHead < 0)
+					iPlayHead = 0;
+				m_iTransportStep = 0;
+				// Make it thru...
+				m_pSession->setPlayHead(iPlayHead);
+			}
 		} else {
-			// Playhead rolling over...
+			// Transport rolling over...
 			iPlayHead += (long) (m_fTransportShuttle
 				* float(m_pSession->sampleRate())) / 2;
 			if (iPlayHead < 0) {
@@ -2701,7 +2700,7 @@ void qtractorMainForm::timerSlot (void)
 			// Make it thru...
 			m_pSession->setPlayHead(iPlayHead);
 		}
-		// Move track-view into visibility...
+		// Ensure track-view into visibility...
 		if (m_pTracks)
 			m_pTracks->trackView()->ensureVisibleFrame(iPlayHead);
 		// Take the change to give some visual feedback...
@@ -2713,7 +2712,7 @@ void qtractorMainForm::timerSlot (void)
 		}
 		// Done with transport tricks.
 	} else if (m_pSession->isActivated()) {
-		// Read transport state and act iif out-of-sync..
+		// Read transport state and react if out-of-sync..
 		jack_position_t pos;
 		jack_transport_state_t state = jack_transport_query(
 			m_pSession->audioEngine()->jackClient(), &pos);
@@ -2734,11 +2733,22 @@ void qtractorMainForm::timerSlot (void)
 			if (labs(iDeltaFrame) > iBufferSize2) {
 				if (++m_iTransportDelta > 1) {
 					m_iTransportDelta = 0;
-					m_pSession->setPlayHead(pos.frame);
+					iPlayHead = pos.frame;
+					m_pSession->setPlayHead(iPlayHead);
 					m_iTransportUpdate++;
 				}
 			}	// All quiet...
 			else m_iTransportDelta = 0;
+		}
+		// Check if its time to refresh playhead timer...
+		if (bPlaying && m_iPlayTimer < QTRACTOR_TIMER_DELAY) {
+			m_iPlayTimer += QTRACTOR_TIMER_MSECS;
+			if (m_iPlayTimer >= QTRACTOR_TIMER_DELAY) {
+				m_iPlayTimer = 0;
+				updateTransportTime(iPlayHead);
+				if (m_pTracks && m_pSession->isRecording())
+					m_pTracks->trackView()->updateContentsRecord();
+			}
 		}
 	}
 
@@ -2776,6 +2786,8 @@ void qtractorMainForm::timerSlot (void)
 		if (m_iAudioRefreshTimer < QTRACTOR_TIMER_MSECS) {
 			m_iAudioRefreshTimer = 0;
 			if (m_pSession->audioEngine()->updateConnects() == 0) {
+				appendMessagesColor(
+					tr("Audio connections change."), "#cc9966");
 				if (m_pConnections)
 					m_pConnections->connectForm()->audioRefresh();
 			}
@@ -2787,6 +2799,8 @@ void qtractorMainForm::timerSlot (void)
 		if (m_iMidiRefreshTimer < QTRACTOR_TIMER_MSECS) {
 			m_iMidiRefreshTimer = 0;
 			if (m_pSession->midiEngine()->updateConnects() == 0) {
+				appendMessagesColor(
+					tr("MIDI connections change."), "#66cc99");
 				if (m_pConnections)
 					m_pConnections->connectForm()->midiRefresh();
 			}
@@ -2825,6 +2839,7 @@ void qtractorMainForm::tracksClosed (void)
 {
 	// Log this simple event.
 	appendMessages(tr("Tracks closed."));
+
 	// Just reset the tracks handler, before something else does.
 	m_pTracks = NULL;
 }

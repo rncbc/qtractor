@@ -230,6 +230,7 @@ private:
 	int m_iTransportDelta;
 	int m_iTransportRolling;
 	float m_fTransportShuttle;
+	int m_iTransportStep;
 	int m_iXrunCount;
 	int m_iXrunSkip;
 	int m_iXrunTimer;

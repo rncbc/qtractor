@@ -610,6 +610,28 @@ void qtractorMidiEngine::resetAllMonitors (void)
 }
 
 
+// Control bus mode selector.
+void qtractorMidiEngine::resetControlBus ( qtractorBus::BusMode busMode )
+{
+	// Reset both control busses...
+	m_pIControlBus = NULL;
+	m_pOControlBus = NULL;
+
+	// Find available control busses...
+	if (busMode & qtractorBus::Duplex) {
+		for (qtractorBus *pBus = qtractorEngine::busses().first();
+				pBus; pBus = pBus->next()) {
+			if (m_pIControlBus == NULL
+				&& (pBus->busMode() & (busMode & qtractorBus::Input)))
+				m_pIControlBus = static_cast<qtractorMidiBus *> (pBus);
+			if (m_pOControlBus == NULL
+				&& (pBus->busMode() & (busMode & qtractorBus::Output)))
+				m_pOControlBus = static_cast<qtractorMidiBus *> (pBus);
+		}
+	}
+}
+
+
 // MIDI event capture method.
 void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 {
@@ -941,28 +963,24 @@ bool qtractorMidiEngine::init ( const QString& sClientName )
 // Device engine activation method.
 bool qtractorMidiEngine::activate (void)
 {
-	// HACK: Find available control busses...
-	for (qtractorBus *pBus = qtractorEngine::busses().first();
-			pBus; pBus = pBus->next()) {
-		if (m_pIControlBus == NULL
-			&& (pBus->busMode() & qtractorBus::Input))
-			m_pIControlBus = static_cast<qtractorMidiBus *> (pBus);
-		if (m_pOControlBus == NULL
-			&& (pBus->busMode() & qtractorBus::Output))
-			m_pOControlBus = static_cast<qtractorMidiBus *> (pBus);
-	}
+	// There must a session reference...
+	qtractorSession *pSession = session();
+	if (pSession == NULL)
+		return false;
 
 	// Create and start our own MIDI input queue thread...
-	m_pInputThread = new qtractorMidiInputThread(session());
+	m_pInputThread = new qtractorMidiInputThread(pSession);
 	m_pInputThread->start(QThread::TimeCriticalPriority);
 
 	// Create and start our own MIDI output queue thread...
-	m_pOutputThread = new qtractorMidiOutputThread(session());
+	m_pOutputThread = new qtractorMidiOutputThread(pSession);
 	m_pOutputThread->start(QThread::HighPriority);
 
 	m_iTimeStart = 0;
 	m_iTimeDelta = 0;
 
+	// Reset control busses...
+	resetControlBus(qtractorBus::Duplex);
 	// Reset all dependable monitoring...
 	resetAllMonitors();
 
@@ -1045,9 +1063,8 @@ void qtractorMidiEngine::deactivate (void)
 	m_pOutputThread->setRunState(false);
 	m_pOutputThread->sync();
 
-	// HACK: Reset existing control busses...
-	m_pIControlBus = NULL;
-	m_pOControlBus = NULL;
+	// Reset existing control busses...
+	resetControlBus(qtractorBus::None);
 }
 
 

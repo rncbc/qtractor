@@ -72,6 +72,9 @@ public:
 	// Reset all MIDI monitoring...
 	void resetAllMonitors();
 
+	// Reset control busses.
+	void resetControlBus(qtractorBus::BusMode busMode);
+
 	// MIDI event capture method.
 	void capture(snd_seq_event_t *pEv);
 
