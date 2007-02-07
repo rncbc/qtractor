@@ -1849,14 +1849,15 @@ void qtractorTrackView::ensureVisibleFrame ( unsigned long iFrame )
 	qtractorSession *pSession = m_pTracks->session();
 	if (pSession) {
 		int x0 = qtractorScrollView::contentsX();
+		int y  = qtractorScrollView::contentsY();
 		int x  = pSession->pixelFromFrame(iFrame);
 		int w  = m_pixmap.width();
-		int wm = (w >> 3);
+		int w3 = w - (w >> 3);
 		if (x < x0)
-			x -= wm;
-		else if (x > x0 + w - wm && iFrame < pSession->sessionLength())
-			x += w - wm;
-		qtractorScrollView::ensureVisible(x, qtractorScrollView::contentsY(), 0, 0);
+			x -= w3;
+		else if (x > x0 + w3)
+			x += w3;
+		qtractorScrollView::ensureVisible(x, y, 0, 0);
 		qtractorScrollView::setFocus();
 	}
 }
