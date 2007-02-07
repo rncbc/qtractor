@@ -2234,10 +2234,12 @@ void qtractorMainForm::setShuttle ( float fShuttle )
 
 	if (fShuttle < 0.0f && fOldShuttle >= 0.0f && setRolling(-1) >= 0)
 		m_ui.transportRewindAction->setChecked(true);
+	else
 	if (fShuttle > 0.0f && 0.0f >= fOldShuttle && 0 >= setRolling(+1))
 		m_ui.transportFastForwardAction->setChecked(true);
 
 	m_fTransportShuttle = fShuttle;
+	m_iTransportUpdate++;
 }
 
 
