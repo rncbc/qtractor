@@ -192,6 +192,8 @@ protected:
 	void setShuttle(float fShuttle);
 	void setStep(int iStep);
 
+	void setTrack(int scmd, int iTrack, bool bOn);
+
 	void updateSession();
 	void updateRecentFiles(const QString& sFilename);
 	void updatePeakAutoRemove();

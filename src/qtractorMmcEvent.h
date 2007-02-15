@@ -77,6 +77,14 @@ public:
 		RESUME                  = 0x7f
 	};
 
+	// MMC sub-command codes (as for MASKED_WRITE).
+	enum SubCommand {
+		TRACK_NONE              = 0x00,
+		TRACK_RECORD            = 0x4f,
+		TRACK_MUTE              = 0x62,
+		TRACK_SOLO              = 0x66 // Custom-implementation ;)
+	};
+
 	// Contructor.
 	qtractorMmcEvent(QEvent::Type eType, unsigned char *pSysex)
 		: QEvent(eType), m_cmd(Command(pSysex[4])),
@@ -95,6 +103,11 @@ public:
 
 	// Retrieve MMC step and direction.
 	int step() const;
+
+	// Retrieve MMC masked-write sub-command data.
+	SubCommand scmd() const;
+	int track() const;
+	bool isOn() const;
 
 private:
 

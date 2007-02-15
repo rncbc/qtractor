@@ -1229,6 +1229,20 @@ void qtractorMidiEngine::sendMmcLocate ( unsigned long iLocate ) const
 	sendMmcCommand(qtractorMmcEvent::LOCATE, data, sizeof(data));
 }
 
+void qtractorMidiEngine::sendMmcMaskedWrite ( qtractorMmcEvent::SubCommand scmd,
+	int iTrack,	bool bOn ) const
+{
+	unsigned char data[4];
+	int iMask = (1 << (iTrack < 2 ? iTrack + 5 : (iTrack - 2) % 7));
+
+	data[0] = scmd;
+	data[1] = (unsigned char) (iTrack < 2 ? 0 : 1 + (iTrack - 2) / 7);
+	data[2] = (unsigned char) iMask;
+	data[3] = (unsigned char) (bOn ? iMask : 0);
+
+	sendMmcCommand(qtractorMmcEvent::MASKED_WRITE, data, sizeof(data));
+}
+
 void qtractorMidiEngine::sendMmcCommand ( qtractorMmcEvent::Command cmd,
 	unsigned char *pMmcData, unsigned short iMmcData ) const
 {

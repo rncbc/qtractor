@@ -81,4 +81,53 @@ int qtractorMmcEvent::step (void) const
 }
 
 
+// Retrieve MMC masked-write sub-command data.
+qtractorMmcEvent::SubCommand qtractorMmcEvent::scmd (void) const
+{
+	SubCommand scmd = TRACK_NONE;
+	unsigned char *data = (unsigned char *) m_data.constData();
+
+	if (m_cmd == MASKED_WRITE && m_data.length() > 3)
+		scmd = SubCommand(data[0]);
+
+	return scmd;
+}
+
+int qtractorMmcEvent::track (void) const
+{
+	int iTrack = 0;
+	unsigned char *data = (unsigned char *) m_data.constData();
+
+	if (m_cmd == MASKED_WRITE && m_data.length() > 3) {
+		iTrack = (data[1] > 0 ? (data[1] * 7) : 0) - 5;
+		for (int i = 0; i < 7; ++i) {
+			int iMask = (1 << i);
+			if (data[2] & iMask)
+				break;
+			iTrack++;
+		}
+	}
+
+	return iTrack;
+}
+
+bool qtractorMmcEvent::isOn (void) const
+{
+	bool bOn = false;
+	unsigned char *data = (unsigned char *) m_data.constData();
+
+	if (m_cmd == MASKED_WRITE && m_data.length() > 3) {
+		for (int i = 0; i < 7; ++i) {
+			int iMask = (1 << i);
+			if (data[2] & iMask) {
+				bOn = (data[3] & iMask);
+				break;
+			}
+		}
+	}
+
+	return bOn;
+}
+
+
 // end of qtractorMmcEvent.cpp

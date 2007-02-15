@@ -905,8 +905,31 @@ void qtractorMainForm::mmcEvent ( qtractorMmcEvent *pMmcEvent )
 		setShuttle(pMmcEvent->shuttle());
 		break;
 	case qtractorMmcEvent::STEP:
-		sMmcText = tr("STEP %1").arg(pMmcEvent->step());;
+		sMmcText = tr("STEP %1").arg(pMmcEvent->step());
 		setStep(pMmcEvent->step());
+		break;
+	case qtractorMmcEvent::MASKED_WRITE:
+		switch (pMmcEvent->scmd()) {
+		case qtractorMmcEvent::TRACK_RECORD:
+			sMmcText = tr("TRACK RECORD %1 %2")
+				.arg(pMmcEvent->track())
+				.arg(pMmcEvent->isOn());
+			break;
+		case qtractorMmcEvent::TRACK_MUTE:
+			sMmcText = tr("TRACK MUTE %1 %2")
+				.arg(pMmcEvent->track())
+				.arg(pMmcEvent->isOn());
+			break;
+		case qtractorMmcEvent::TRACK_SOLO:
+			sMmcText = tr("TRACK SOLO %1 %2")
+				.arg(pMmcEvent->track())
+				.arg(pMmcEvent->isOn());
+			break;
+		default:
+			sMmcText = tr("Unknown sub-command");
+			break;
+		}
+		setTrack(pMmcEvent->scmd(), pMmcEvent->track(), pMmcEvent->isOn());
 		break;
 	default:
 		sMmcText = tr("Not implemented");
@@ -2247,6 +2270,41 @@ void qtractorMainForm::setStep ( int iStep )
 {
 	m_iTransportStep += iStep;
 	m_iTransportUpdate++;
+}
+
+
+void qtractorMainForm::setTrack ( int scmd, int iTrack, bool bOn )
+{
+	if (m_pTracks) {
+		// Find which ordinal track...
+		qtractorTrack *pTrack = m_pTracks->trackList()->track(iTrack);
+		if (pTrack) {
+			// Set session track mode state...
+			switch (qtractorMmcEvent::SubCommand(scmd)) {
+			case qtractorMmcEvent::TRACK_RECORD:
+				pTrack->setRecord(bOn);
+				break;
+			case qtractorMmcEvent::TRACK_MUTE:
+				pTrack->setMute(bOn);
+				break;
+			case qtractorMmcEvent::TRACK_SOLO:
+				pTrack->setSolo(bOn);
+				break;
+			default:
+				break;
+			}
+			// Update track-buttons...
+			m_pTracks->trackList()->updateTrack(pTrack);
+			if (m_pMixer) {
+				qtractorMixerStrip *pStrip
+					= m_pMixer->trackRack()->findStrip(pTrack->monitor());
+				if (pStrip)
+					pStrip->updateTrackButtons();
+			}
+			// Done.
+			stabilizeForm();
+		}
+	}
 }
 
 

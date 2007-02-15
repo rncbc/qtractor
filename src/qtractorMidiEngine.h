@@ -104,6 +104,8 @@ public:
 
 	// MMC dispatch special commands.
 	void sendMmcLocate(unsigned long iLocate) const;
+	void sendMmcMaskedWrite(qtractorMmcEvent::SubCommand scmd,
+		int iTrack, bool bOn) const;
 	void sendMmcCommand(qtractorMmcEvent::Command cmd,
 		unsigned char *pMmcData = NULL, unsigned short iMmcData = 0) const;
 

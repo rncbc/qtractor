@@ -474,9 +474,11 @@ bool qtractorTrackButtonCommand::redo (void)
 		return false;
 	
 	bool bOn = false;	
+	qtractorMmcEvent::SubCommand scmd = qtractorMmcEvent::TRACK_NONE;
 
 	switch (m_toolType) {
 	case qtractorTrack::Record:
+		scmd = qtractorMmcEvent::TRACK_RECORD;
 		// Special stuffing if currently recording at first place...
 		bOn = pTrack->isRecord();
 		if (bOn && !m_bOn
@@ -500,20 +502,27 @@ bool qtractorTrackButtonCommand::redo (void)
 		pTrack->setRecord(m_bOn);
 		break;
 	case qtractorTrack::Mute:
+		scmd = qtractorMmcEvent::TRACK_MUTE;
 		bOn = pTrack->isMute();
 		pTrack->setMute(m_bOn);
 		break;
 	case qtractorTrack::Solo:
+		scmd = qtractorMmcEvent::TRACK_SOLO;
 		bOn = pTrack->isSolo();
 		pTrack->setSolo(m_bOn);
 		break;
 	}
-	m_bOn = bOn;
-
+	
 	// Track-list update...
-	qtractorTracks *pTracks = mainForm()->tracks();
-	if (pTracks)
+	qtractorSession *pSession = mainForm()->session();
+	qtractorTracks  *pTracks  = mainForm()->tracks();
+	if (pSession && pTracks) {
+		// Send MMC MASKED_WRITE command...
+		pSession->midiEngine()->sendMmcMaskedWrite(scmd,
+			pTracks->trackList()->trackRow(pTrack), m_bOn);
+		// Update track list item...
 		pTracks->trackList()->updateTrack(pTrack);
+	}
 
 	// Mixer turn...
 	qtractorMixer *pMixer = mainForm()->mixer();
@@ -523,6 +532,9 @@ bool qtractorTrackButtonCommand::redo (void)
 		if (pStrip)
 			pStrip->updateTrackButtons();
 	}
+
+	// Reset for undo.
+	m_bOn = bOn;
 
 	return true;
 }
