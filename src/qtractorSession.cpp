@@ -1109,7 +1109,7 @@ void qtractorSession::trackSolo ( qtractorTrack *pTrack, bool bSolo )
 	// Check if we're going to (un)mute all others,
 	// due to soloing this one; if already soloing,
 	// no need for anything ado...
-	if ((bSolo && m_iSoloTracks > 0) || (!bSolo && m_iSoloTracks > 1)) {
+	if ((bSolo && m_iSoloTracks > 1) || (!bSolo && m_iSoloTracks > 0)) {
 		trackMute(pTrack, !bSolo);
 		return;
 	}
