@@ -1,7 +1,7 @@
 // qtractorTrackList.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2006, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -780,6 +780,8 @@ void qtractorTrackList::mousePressEvent ( QMouseEvent *pMouseEvent )
 	qtractorScrollView::mousePressEvent(pMouseEvent);
 
 	if (m_dragState == DragNone) {
+		const bool bModifier = (pMouseEvent->modifiers()
+			& (Qt::ShiftModifier | Qt::ControlModifier));
 		const QPoint& pos = pMouseEvent->pos();
 		int iTrack = trackRowAt(pos);
 		// Select current track...
@@ -789,7 +791,7 @@ void qtractorTrackList::mousePressEvent ( QMouseEvent *pMouseEvent )
 			// Special attitude, only of interest on
 			// the first-left column (track-number)...
 			if (trackColumnAt(pos) == Number)
-				m_pTracks->selectCurrentTrack(true);
+				m_pTracks->selectCurrentTrack(!bModifier);
 			// Try for drag-resize...
 			m_posDrag = pos;
 			if (m_iDragTrack >= 0) {
