@@ -607,8 +607,8 @@ void qtractorSession::updateSampleRate ( unsigned int iOldSampleRate )
 			pTrack; pTrack = pTrack->next()) {
 		for (qtractorClip *pClip = pTrack->clips().first();
 				pClip; pClip = pClip->next()) {
-			pClip->setClipStart(
-				::lroundf(fRatio * float(pClip->clipStart())));
+		//	pClip->setClipStart(
+		//		::lroundf(fRatio * float(pClip->clipStart())));
 			pClip->setClipOffset(
 				::lroundf(fRatio * float(pClip->clipOffset())));
 			pClip->setClipLength(
@@ -620,22 +620,6 @@ void qtractorSession::updateSampleRate ( unsigned int iOldSampleRate )
 			pClip->open();
 		}
 	}
-
-	// Loop points get converted also...
-	if (m_iLoopStart < m_iLoopEnd) {
-		m_iLoopStart = ::lroundf(fRatio * float(m_iLoopStart));
-		m_iLoopStart = ::lroundf(fRatio * float(m_iLoopEnd));
-		// Set proper loop points for every track, clip and buffer...
-		qtractorTrack *pTrack = m_tracks.first();
-		while (pTrack) {
-			pTrack->setLoop(m_iLoopStart, m_iLoopEnd);
-			pTrack = pTrack->next();
-		}
-	}
-
-	// Edit points (while in ticks it should remain the same)...
-	m_props.editHead = ::lroundf(fRatio * float(m_props.editHead));
-	m_props.editTail = ::lroundf(fRatio * float(m_props.editTail));
 }
 
 
