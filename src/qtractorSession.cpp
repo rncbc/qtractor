@@ -607,6 +607,8 @@ void qtractorSession::updateSampleRate ( unsigned int iOldSampleRate )
 			pTrack; pTrack = pTrack->next()) {
 		for (qtractorClip *pClip = pTrack->clips().first();
 				pClip; pClip = pClip->next()) {
+			// Force clip complete reset...
+			pClip->close();
 		//	pClip->setClipStart(
 		//		::lroundf(fRatio * float(pClip->clipStart())));
 			pClip->setClipOffset(

@@ -1,7 +1,7 @@
 // qtractorAudioClip.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2006, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -72,10 +72,11 @@ bool qtractorAudioClip::openAudioFile ( const QString& sFilename, int iMode )
 		sFilename.toUtf8().constData(), iMode);
 #endif
 
-	if (track() == NULL)
+	qtractorTrack *pTrack = track();
+	if (pTrack == NULL)
 		return false;
 
-	qtractorSession *pSession = track()->session();
+	qtractorSession *pSession = pTrack->session();
 	if (pSession == NULL)
 		return false;
 
@@ -158,6 +159,14 @@ void qtractorAudioClip::set_loop ( unsigned long iLoopStart,
 // Clip close-commit (record specific)
 void qtractorAudioClip::close (void)
 {
+#ifdef CONFIG_DEBUG_0
+	fprintf(stderr, "qtractorAudioClip::close(%p)\n", this);
+#endif
+
+	if (m_pPeak)
+		delete m_pPeak;
+	m_pPeak = NULL;
+
 	if (m_pBuff == NULL)
 		return;
 

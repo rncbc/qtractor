@@ -71,11 +71,6 @@ qtractorMidiClip::~qtractorMidiClip (void)
 bool qtractorMidiClip::openMidiFile ( const QString& sFilename,
 	int iTrackChannel, int iMode )
 {
-#ifdef CONFIG_DEBUG_0
-	fprintf(stderr, "qtractorMidiClip::openMidiFile(\"%s\", %d, %d)\n",
-		sFilename.toUtf8().constData(), iTrackChannel, iMode);
-#endif
-
 	if (m_pFile)
 		delete m_pFile;
 	
@@ -96,6 +91,11 @@ bool qtractorMidiClip::openMidiFile ( const QString& sFilename,
 bool qtractorMidiClip::openMidiFile ( qtractorMidiFile *pFile,
 	int iTrackChannel )
 {
+#ifdef CONFIG_DEBUG_0
+	fprintf(stderr, "qtractorMidiClip::openMidiFile(\"%s\", %d, %d)\n",
+		pFile->filename().toUtf8().constData(), iTrackChannel, pFile->mode());
+#endif
+
 	qtractorTrack *pTrack = track();
 	if (pTrack == NULL)
 		return false;
@@ -311,6 +311,10 @@ void qtractorMidiClip::set_loop ( unsigned long /* iLoopStart */,
 // Clip close-commit (record specific)
 void qtractorMidiClip::close (void)
 {
+#ifdef CONFIG_DEBUG_0
+	fprintf(stderr, "qtractorMidiClip::close(%p)\n", this);
+#endif
+
 	qtractorSession *pSession = track()->session();
 	if (pSession == NULL)
 		return;
