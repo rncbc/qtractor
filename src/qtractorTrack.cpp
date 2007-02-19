@@ -630,6 +630,7 @@ qtractorClip *qtractorTrack::clipRecord (void) const
 void qtractorTrack::setBackground ( const QColor& bg )
 {
 	m_props.background = bg;
+	m_props.background.setAlpha(192);
 }
 
 const QColor& qtractorTrack::background (void) const
