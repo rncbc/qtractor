@@ -146,6 +146,9 @@ public:
 	// Update time scale divisor factors.
 	void updateTimeScale();
 
+	// Update from disparate sample-rate.
+	void updateSampleRate(unsigned int iOldSampleRate); 
+
 	// Track list management methods.
 	qtractorList<qtractorTrack>& tracks();
 

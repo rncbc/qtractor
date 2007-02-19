@@ -593,6 +593,53 @@ void qtractorSession::updateTimeScale (void)
 }
 
 
+// Update from disparate sample-rate.
+void qtractorSession::updateSampleRate ( unsigned int iOldSampleRate ) 
+{
+	if (iOldSampleRate < 8000 || iOldSampleRate == m_props.sampleRate)
+		return;
+
+	// Set the conversion ratio...
+	float fRatio = float(m_props.sampleRate) / float(iOldSampleRate);
+
+	// Adjust all tracks and clips (reopening all those...)
+	for (qtractorTrack *pTrack = m_tracks.first();
+			pTrack; pTrack = pTrack->next()) {
+		for (qtractorClip *pClip = pTrack->clips().first();
+				pClip; pClip = pClip->next()) {
+			pClip->setClipStart(
+				::lroundf(fRatio * float(pClip->clipStart())));
+			pClip->setClipOffset(
+				::lroundf(fRatio * float(pClip->clipOffset())));
+			pClip->setClipLength(
+				::lroundf(fRatio * float(pClip->clipLength())));
+			pClip->setFadeInLength(
+				::lroundf(fRatio * float(pClip->fadeInLength())));
+			pClip->setFadeOutLength(
+				::lroundf(fRatio * float(pClip->fadeOutLength())));
+			pClip->open();
+		}
+	}
+
+	// Loop points get converted also...
+	if (m_iLoopStart < m_iLoopEnd) {
+		m_iLoopStart = ::lroundf(fRatio * float(m_iLoopStart));
+		m_iLoopStart = ::lroundf(fRatio * float(m_iLoopEnd));
+		// Set proper loop points for every track, clip and buffer...
+		qtractorTrack *pTrack = m_tracks.first();
+		while (pTrack) {
+			pTrack->setLoop(m_iLoopStart, m_iLoopEnd);
+			pTrack = pTrack->next();
+		}
+	}
+
+	// Edit points (while in ticks it should remain the same)...
+	m_props.editHead = ::lroundf(fRatio * float(m_props.editHead));
+	m_props.editTail = ::lroundf(fRatio * float(m_props.editTail));
+}
+
+
+
 // Alternate properties accessor.
 qtractorSession::Properties& qtractorSession::properties (void)
 {

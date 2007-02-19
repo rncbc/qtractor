@@ -2493,6 +2493,9 @@ bool qtractorMainForm::startSession (void)
 				"is highly recommended.")
 				.arg(iOldSampleRate)
 				.arg(m_pSession->sampleRate()));
+			// We'll doing the conversion right here and right now...
+			m_pSession->updateSampleRate(iOldSampleRate);
+			m_iDirtyCount++;
 		}
 	} else {
 		// Uh-oh, we can't go on like this...
