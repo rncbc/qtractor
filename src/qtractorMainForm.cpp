@@ -1233,10 +1233,17 @@ bool qtractorMainForm::loadSessionFile ( const QString& sFilename )
 	appendMessages("qtractorMainForm::loadSessionFile(\"" + sFilename + "\")");
 #endif
 
+	// Tell the world we'll take some time...
+	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+
 	// Read the file.
 	QDomDocument doc("qtractorSession");
 	bool bResult = qtractorSessionDocument(
 		&doc, m_pSession, m_pFiles).load(sFilename);
+
+	// We're formerly done.
+	QApplication::restoreOverrideCursor();
+
 	if (bResult) {
 		// We're not dirty anymore.
 		updateRecentFiles(sFilename);
@@ -1269,10 +1276,17 @@ bool qtractorMainForm::saveSessionFile ( const QString& sFilename )
 	appendMessages("qtractorMainForm::saveSessionFile(\"" + sFilename + "\")");
 #endif
 
+	// Tell the world we'll take some time...
+	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+
 	// Have we any errors?
 	QDomDocument doc("qtractorSession");
 	bool bResult = qtractorSessionDocument(
 		&doc, m_pSession, m_pFiles).save(sFilename);
+
+	// We're formerly done.
+	QApplication::restoreOverrideCursor();
+
 	if (bResult) {
 		// We're not dirty anymore.
 		updateRecentFiles(sFilename);
@@ -1791,6 +1805,9 @@ void qtractorMainForm::viewRefresh (void)
 	appendMessages("qtractorMainForm::viewRefresh()");
 #endif
 
+	// Tell the world we'll take some time...
+	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+
 	// Update the whole session view dependables...
 	m_pSession->updateTimeScale();
 	m_pSession->updateSessionLength();
@@ -1804,6 +1821,9 @@ void qtractorMainForm::viewRefresh (void)
 	}
 
 	m_pThumbView->update();
+
+	// We're formerly done.
+	QApplication::restoreOverrideCursor();
 
 	stabilizeForm();
 }
@@ -2479,7 +2499,11 @@ bool qtractorMainForm::startSession (void)
 	m_iMidiRefreshTimer  = 0;
 
 	unsigned int iOldSampleRate = m_pSession->sampleRate();
+
+	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 	bool bResult = m_pSession->open(QTRACTOR_TITLE);
+	QApplication::restoreOverrideCursor();
+
 	if (bResult) {
 		appendMessages(tr("Session started."));
 		// HACK: Special treatment for disparate sample rates,
@@ -2494,7 +2518,9 @@ bool qtractorMainForm::startSession (void)
 				.arg(iOldSampleRate)
 				.arg(m_pSession->sampleRate()));
 			// We'll doing the conversion right here and right now...
+			QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 			m_pSession->updateSampleRate(iOldSampleRate);
+			QApplication::restoreOverrideCursor();
 			m_iDirtyCount++;
 		}
 	} else {

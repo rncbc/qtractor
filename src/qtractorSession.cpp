@@ -599,6 +599,19 @@ void qtractorSession::updateSampleRate ( unsigned int iOldSampleRate )
 	if (iOldSampleRate < 8000 || iOldSampleRate == m_props.sampleRate)
 		return;
 
+	// Unfortunatelly we must close all clips first,
+	// so let at least all audio peaks be refreshned...
+	for (qtractorTrack *pTrack = m_tracks.first();
+			pTrack; pTrack = pTrack->next()) {
+		for (qtractorClip *pClip = pTrack->clips().first();
+				pClip; pClip = pClip->next()) {
+			pClip->close();
+		}
+	}
+
+	// Give it some room to just that...
+	stabilize();
+
 	// Set the conversion ratio...
 	float fRatio = float(m_props.sampleRate) / float(iOldSampleRate);
 
@@ -607,8 +620,6 @@ void qtractorSession::updateSampleRate ( unsigned int iOldSampleRate )
 			pTrack; pTrack = pTrack->next()) {
 		for (qtractorClip *pClip = pTrack->clips().first();
 				pClip; pClip = pClip->next()) {
-			// Force clip complete reset...
-			pClip->close();
 		//	pClip->setClipStart(
 		//		::lroundf(fRatio * float(pClip->clipStart())));
 			pClip->setClipOffset(
