@@ -1,7 +1,7 @@
 // qtractorPluginListView.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2006, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -340,6 +340,11 @@ void qtractorPluginListView::addPlugin (void)
 				selectForm.pluginFilename(i),
 				selectForm.pluginIndex(i));
 		pAddPluginCommand->plugins().append(pPlugin);
+		// Show the plugin form right away...
+		qtractorPluginForm *pPluginForm = pPlugin->form();
+		pPluginForm->show();
+		pPluginForm->raise();
+		pPluginForm->activateWindow();
 	}
 
 	pMainForm->commands()->exec(pAddPluginCommand);

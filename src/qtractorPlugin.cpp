@@ -834,12 +834,6 @@ void qtractorPluginList::addPlugin ( qtractorPlugin *pPlugin )
 		pListView->insertItem(iItem, pItem);
 		pListView->setCurrentItem(pItem);
 	}
-
-	// Show the plugin form right away...
-	qtractorPluginForm *pPluginForm = pPlugin->form();
-	pPluginForm->show();
-	pPluginForm->raise();
-	pPluginForm->activateWindow();
 }
 
 
