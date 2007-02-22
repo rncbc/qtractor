@@ -320,12 +320,6 @@ void qtractorImportTrackCommand::addTrack ( qtractorTrack *pTrack )
 // Track-import command methods.
 bool qtractorImportTrackCommand::redo (void)
 {
-	qtractorSession *pSession = mainForm()->session();
-	if (pSession == NULL)
-		return false;
-
-	pSession->lock();
-
 	bool bResult = true;
 
 	if (m_pSaveCommand && m_iSaveCount > 0) {
@@ -341,19 +335,11 @@ bool qtractorImportTrackCommand::redo (void)
 		    bResult = false;
 	}
 
-	pSession->unlock();
-
 	return bResult;
 }
 
 bool qtractorImportTrackCommand::undo (void)
 {
-	qtractorSession *pSession = mainForm()->session();
-	if (pSession == NULL)
-		return false;
-
-	pSession->lock();
-
 	bool bResult = true;
 
 	QListIterator<qtractorAddTrackCommand *> iter(m_trackCommands);
@@ -365,8 +351,6 @@ bool qtractorImportTrackCommand::undo (void)
 
 	if (m_pSaveCommand && !m_pSaveCommand->undo())
 		bResult = false;
-
-	pSession->unlock();
 
 	return bResult;
 }
@@ -394,19 +378,11 @@ bool qtractorEditTrackCommand::redo (void)
 	if (pTracks == NULL)
 		return false;
 
-	qtractorSession *pSession = mainForm()->session();
-	if (pSession == NULL)
-		return false;
-
-	pSession->lock();
-
 	// Make the track property change...
 	bool bResult = qtractorPropertyCommand<qtractorTrack::Properties>::redo();
 	// Reopen to assign a probable new bus...
 	if (bResult)
 		bResult = m_pTrack->open();
-
-	pSession->unlock();
 
 	if (!bResult) {
 		mainForm()->appendMessagesError(
