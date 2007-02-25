@@ -1211,6 +1211,8 @@ void qtractorTrackView::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 			// Here we're mainly supposed to select a few bunch
 			// of clips (all that fall inside the rubber-band...
 			selectRect(m_rectDrag, m_selectMode);
+			// For immediate visual feedback...
+			m_pTracks->selectionChangeNotify();
 			break;
 		case DragMove:
 			// Let's move them...
@@ -1234,16 +1236,14 @@ void qtractorTrackView::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 					pSession->setPlayHead(iFrame);
 					// Play-head positioning...
 					setPlayHead(iFrame);
-					// Not quite a selection, but for
-					// immediate visual feedback...
-					m_pTracks->selectionChangeNotify();
 					// Done with (deferred) play-head positioning.
 				} else {
 					// Deferred left-button edit-head positioning...
 					setEditHead(iFrame);
-					// Not a selection, rather just for visual feedback...
-					m_pTracks->selectionChangeNotify();
 				}
+				// Not quite a selection, but for
+				// immediate visual feedback...
+				m_pTracks->selectionChangeNotify();
 			}
 			// Fall thru...
 		case DragDrop:
@@ -1391,8 +1391,6 @@ void qtractorTrackView::selectRect ( const QRect& rectDrag,
 		setEditHead(iSelectStart);
 	if (selectEdit & EditTail)
 		setEditTail(iSelectEnd);
-
-	m_pTracks->selectionChangeNotify();
 }
 
 

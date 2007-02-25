@@ -1,7 +1,7 @@
 // qtractorTrackTime.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2006, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -425,6 +425,8 @@ void qtractorTrackTime::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 			// Do the final range selection...
 			m_pTracks->trackView()->selectRect(m_rectDrag,
 				qtractorTrackView::SelectRange);
+			// For immediate visual feedback...
+			m_pTracks->selectionChangeNotify();
 			break;
 		case DragPlayHead:
 			// Play-head positioning commit...
@@ -466,15 +468,13 @@ void qtractorTrackTime::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 				m_pTracks->trackView()->setPlayHead(iFrame);
 				// Immediately commited...
 				pSession->setPlayHead(iFrame);
-				// Not quite a selection, rather just
-				// for immediate visual feedback...
-				m_pTracks->selectionChangeNotify();
 			} else {
 				// Deferred left-button edit-head positioning...
 				m_pTracks->trackView()->setEditHead(iFrame);
-				// Not a selection, rather just for visual feedback...
-				m_pTracks->selectionChangeNotify();
 			}
+			// Not quite a selection, rather just
+			// for immediate visual feedback...
+			m_pTracks->selectionChangeNotify();
 			// Fall thru...
 		case DragNone:
 		default:
