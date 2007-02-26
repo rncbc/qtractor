@@ -50,6 +50,7 @@ headers = config.h \
 	src/qtractorPluginListView.h \
 	src/qtractorPropertyCommand.h \
 	src/qtractorRingBuffer.h \
+	src/qtractorRubberBand.h \
 	src/qtractorScrollView.h \
 	src/qtractorSession.h \
 	src/qtractorSessionCursor.h \
@@ -113,6 +114,7 @@ sources = src/main.cpp \
 	src/qtractorPlugin.cpp \
 	src/qtractorPluginCommand.cpp \
 	src/qtractorPluginListView.cpp \
+	src/qtractorRubberBand.cpp \
 	src/qtractorScrollView.cpp \
 	src/qtractorSession.cpp \
 	src/qtractorSessionCursor.cpp \

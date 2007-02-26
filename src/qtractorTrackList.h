@@ -31,9 +31,9 @@
 class qtractorTrack;
 class qtractorTracks;
 class qtractorTrackItemWidget;
+class qtractorRubberBand;
 
 class QHeaderView;
-class QRubberBand;
 
 class QResizeEvent;
 class QMouseEvent;
@@ -201,7 +201,7 @@ private:
 	int    m_iDragTrack;
 	int    m_iDragY;
 
-	QRubberBand *m_pRubberBand;
+	qtractorRubberBand *m_pRubberBand;
 
 	// Track icon pixmap stuff.
 	enum { IconAudio = 0, IconMidi = 1, IconCount = 2 };

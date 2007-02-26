@@ -1526,7 +1526,7 @@ void qtractorTrackView::hideClipSelect (void) const
 {
 	QListIterator<qtractorClipSelect::Item *> iter(m_pClipSelect->items());
 	while (iter.hasNext()) {
-		QRubberBand *pRubberBand = iter.next()->rubberBand;
+		qtractorRubberBand *pRubberBand = iter.next()->rubberBand;
 		if (pRubberBand && pRubberBand->isVisible())
 			pRubberBand->hide();
 	}
@@ -1558,7 +1558,7 @@ void qtractorTrackView::hideDropRects (void) const
 {
 	QListIterator<DropItem *> iter(m_dropItems);
 	while (iter.hasNext()) {
-		QRubberBand *pRubberBand = iter.next()->rubberBand;
+		qtractorRubberBand *pRubberBand = iter.next()->rubberBand;
 		if (pRubberBand && pRubberBand->isVisible())
 			pRubberBand->hide();
 	}
@@ -1567,7 +1567,7 @@ void qtractorTrackView::hideDropRects (void) const
 
 
 // Show and move rubber-band item.
-void qtractorTrackView::moveRubberBand ( QRubberBand **ppRubberBand,
+void qtractorTrackView::moveRubberBand ( qtractorRubberBand **ppRubberBand,
 	const QRect& rectDrag ) const
 {
 	QRect rect(rectDrag.normalized());
@@ -1584,14 +1584,14 @@ void qtractorTrackView::moveRubberBand ( QRubberBand **ppRubberBand,
 		rect.setRight(qtractorScrollView::width() + 8);
 
 	// Create the rubber-band if there's none...
-	QRubberBand *pRubberBand = *ppRubberBand;
+	qtractorRubberBand *pRubberBand = *ppRubberBand;
 	if (pRubberBand == NULL) {
-		pRubberBand = new QRubberBand(
+		pRubberBand = new qtractorRubberBand(
 			QRubberBand::Rectangle, qtractorScrollView::viewport());
-		QPalette pal(pRubberBand->palette());
-		pal.setColor(pRubberBand->foregroundRole(), Qt::blue);
-		pRubberBand->setPalette(pal);
-		pRubberBand->setBackgroundRole(QPalette::NoRole);
+	//	QPalette pal(pRubberBand->palette());
+	//	pal.setColor(pRubberBand->foregroundRole(), Qt::blue);
+	//	pRubberBand->setPalette(pal);
+	//	pRubberBand->setBackgroundRole(QPalette::NoRole);
 		// Do not ever forget to set it back...
 		*ppRubberBand = pRubberBand;
 	}

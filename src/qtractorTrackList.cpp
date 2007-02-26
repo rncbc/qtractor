@@ -32,10 +32,11 @@
 #include "qtractorAudioEngine.h"
 #include "qtractorMidiEngine.h"
 
+#include "qtractorRubberBand.h"
+
 #include "qtractorMainForm.h"
 
 #include <QHeaderView>
-#include <QRubberBand>
 
 #include <QApplication>
 #include <QHBoxLayout>
@@ -954,12 +955,12 @@ void qtractorTrackList::moveRubberBand ( const QPoint& posDrag )
 
 	// Create the rubber-band if there's none...
 	if (m_pRubberBand == NULL) {
-		m_pRubberBand = new QRubberBand(
+		m_pRubberBand = new qtractorRubberBand(
 			QRubberBand::Line, qtractorScrollView::viewport());
-		QPalette pal(m_pRubberBand->palette());
-		pal.setColor(m_pRubberBand->foregroundRole(), Qt::blue);
-		m_pRubberBand->setPalette(pal);
-		m_pRubberBand->setBackgroundRole(QPalette::NoRole);
+	//	QPalette pal(m_pRubberBand->palette());
+	//	pal.setColor(m_pRubberBand->foregroundRole(), Qt::blue);
+	//	m_pRubberBand->setPalette(pal);
+	//	m_pRubberBand->setBackgroundRole(QPalette::NoRole);
 	}
 	
 	// Just move it

@@ -1,7 +1,7 @@
 // qtractorThumbView.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2006, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -26,6 +26,8 @@
 #include "qtractorTracks.h"
 #include "qtractorClip.h"
 
+#include "qtractorRubberBand.h"
+
 #include "qtractorMainForm.h"
 
 #include <QApplication>
@@ -35,8 +37,6 @@
 #include <QResizeEvent>
 #include <QMouseEvent>
 #include <QKeyEvent>
-
-#include <QRubberBand>
 
 
 //-------------------------------------------------------------------------
@@ -55,11 +55,11 @@ qtractorThumbView::qtractorThumbView( QWidget *pParent )
 	QFrame::setFocusPolicy(Qt::ClickFocus);
 
 	m_dragState   = DragNone;
-	m_pRubberBand = new QRubberBand(QRubberBand::Rectangle, this);
-	QPalette pal(m_pRubberBand->palette());
-	pal.setColor(m_pRubberBand->foregroundRole(), pal.highlight().color());
-	m_pRubberBand->setPalette(pal);
-	m_pRubberBand->setBackgroundRole(QPalette::NoRole);
+	m_pRubberBand = new qtractorRubberBand(QRubberBand::Rectangle, this);
+//	QPalette pal(m_pRubberBand->palette());
+//	pal.setColor(m_pRubberBand->foregroundRole(), pal.highlight().color());
+//	m_pRubberBand->setPalette(pal);
+//	m_pRubberBand->setBackgroundRole(QPalette::NoRole);
 	m_pRubberBand->show();
 
 	QFrame::setToolTip(tr("Thumb view"));

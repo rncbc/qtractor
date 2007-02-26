@@ -23,10 +23,10 @@
 #define __qtractorTrackView_h
 
 #include "qtractorScrollView.h"
+#include "qtractorRubberBand.h"
 
 #include "qtractorTrack.h"
 
-#include <QRubberBand>
 #include <QPixmap>
 
 
@@ -38,7 +38,6 @@ class qtractorSessionCursor;
 class qtractorTrackListItem;
 
 class QToolButton;
-class QRubberBand;
 
 class QContextMenuEvent;
 class QDragEnterEvent;
@@ -195,7 +194,8 @@ protected:
 	void hideDropRects() const;
 
 	// Draw/hide a dragging rectangular selection.
-	void moveRubberBand(QRubberBand **ppRubberBand, const QRect& rectDrag) const;
+	void moveRubberBand(qtractorRubberBand **ppRubberBand,
+		const QRect& rectDrag) const;
 
 	// Clip fade-in/out handle drag-move methods.
 	bool dragFadeStart(const QPoint& pos);
@@ -260,7 +260,7 @@ private:
 		QString path;
 		int channel;
 		QRect rect;
-		QRubberBand *rubberBand;
+		qtractorRubberBand *rubberBand;
 	};
 
 	QList<qtractorTrackView::DropItem *> m_dropItems;
@@ -278,8 +278,9 @@ private:
 	QRect         m_rectDrag;
 	QRect         m_rectHandle;
 	int           m_iDraggingX;
-	QRubberBand  *m_pRubberBand;
 	bool          m_bDragTimer;
+
+	qtractorRubberBand *m_pRubberBand;
 
 	qtractorClipSelect *m_pClipSelect;
 

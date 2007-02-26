@@ -1,7 +1,7 @@
 // qtractorThumbView.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2006, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -26,12 +26,12 @@
 
 
 // Forward declarations.
+class qtractorRubberBand;
+
 class QPaintEvent;
 class QResizeEvent;
 class QMouseEvent;
 class QKeyEvent;
-
-class QRubberBand;
 
 
 //-------------------------------------------------------------------------
@@ -76,7 +76,7 @@ protected:
 private:
 
 	// The thumb rubber-band widget.
-	QRubberBand *m_pRubberBand;
+	qtractorRubberBand *m_pRubberBand;
 
 	// Thumb drag-states.
 	enum { DragNone = 0, DragStart, DragMove, DragClick } m_dragState;
