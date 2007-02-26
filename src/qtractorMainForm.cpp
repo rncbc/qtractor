@@ -341,6 +341,10 @@ qtractorMainForm::qtractorMainForm (
 	m_statusItems[StatusRate] = pLabel;
 	statusBar()->addWidget(pLabel);
 
+	// Some actions surely need those
+	// shortcuts firmly attached...
+	addAction(m_ui.viewMenubarAction);
+
 	// Ah, make it stand right.
 	setFocus();
 

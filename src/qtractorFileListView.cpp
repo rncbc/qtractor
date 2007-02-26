@@ -1,7 +1,7 @@
 // qtractorFileListView.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2006, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -19,10 +19,15 @@
 
 *****************************************************************************/
 
+#include "qtractorAbout.h"
 #include "qtractorFileListView.h"
 
 #include "qtractorDocument.h"
 
+#include "qtractorMainForm.h"
+#include "qtractorOptions.h"
+
+#include <QMessageBox>
 #include <QApplication>
 #include <QHeaderView>
 #include <QFileInfo>
@@ -287,6 +292,13 @@ qtractorFileListView::qtractorFileListView ( QWidget *pParent )
 	// Trap for help/tool-tips events.
 	QTreeWidget::viewport()->installEventFilter(this);
 
+	// Some actions surely need those
+	// shortcuts firmly attached...
+	QTreeWidget::addAction(m_pNewGroupAction);
+	QTreeWidget::addAction(m_pOpenFileAction);
+	QTreeWidget::addAction(m_pRenameItemAction);
+	QTreeWidget::addAction(m_pDeleteItemAction);
+
 	setAutoOpenTimeout(800);
 
 	QObject::connect(m_pNewGroupAction,
@@ -533,10 +545,29 @@ void qtractorFileListView::renameItemSlot (void)
 void qtractorFileListView::deleteItemSlot (void)
 {
 	QTreeWidgetItem *pItem = QTreeWidget::currentItem();
-	if (pItem) {
-		delete pItem;
-		emit contentsChanged();
+	if (pItem == NULL)
+		return;
+
+	// Prompt user if he/she's sure about this...
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm) {
+		qtractorOptions *pOptions = pMainForm->options();
+		if (pOptions && pOptions->bConfirmRemove) {
+			if (QMessageBox::warning(this,
+				tr("Warning") + " - " QTRACTOR_TITLE,
+				tr("About to remove %1 item:\n\n"
+				"%2\n\n"
+				"Are you sure?")
+				.arg(pItem->type() == GroupItem ? tr("group") : tr("file"))
+				.arg(pItem->text(0)),
+				tr("OK"), tr("Cancel")) > 0)
+				return;
+		}
 	}
+
+	// Definitive delete...
+	delete pItem;
+	emit contentsChanged();
 }
 
 
