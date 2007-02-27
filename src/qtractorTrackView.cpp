@@ -191,7 +191,9 @@ void qtractorTrackView::updateContentsHeight (void)
 	if (pSession == NULL)
 		return;
 
-	int iContentsHeight = 0;
+	// Allways give some room to drop something...
+	int iContentsHeight = qtractorTrackList::ItemHeightBase;
+	// Compute total track height...
 	qtractorTrack *pTrack = pSession->tracks().first();
 	while (pTrack) {
 		iContentsHeight += pTrack->zoomHeight();
@@ -234,7 +236,7 @@ void qtractorTrackView::updateContentsWidth ( int iContentsWidth )
 
 	// Do the contents resize thing...
 	qtractorScrollView::resizeContents(
-		iContentsWidth,	qtractorScrollView::contentsHeight());
+		iContentsWidth, qtractorScrollView::contentsHeight());
 
 	// Force an update on the track time line too...
 	m_pTracks->trackTime()->resizeContents(

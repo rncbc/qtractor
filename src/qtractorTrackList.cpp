@@ -541,7 +541,8 @@ void qtractorTrackList::clear (void)
 // Update all tracks item height.
 void qtractorTrackList::updateContentsHeight (void)
 {
-	int iContentsHeight = m_pHeader->sizeHint().height();
+	// Remember to give some room to drop something...
+	int iContentsHeight = m_pHeader->sizeHint().height() + ItemHeightBase;
 	QListIterator<Item *> iter(m_items);
 	while (iter.hasNext()) {
 		qtractorTrack *pTrack = iter.next()->track;
@@ -692,7 +693,8 @@ void qtractorTrackList::updatePixmap ( int cx, int cy )
 	// Draw all cells...
 	int iColCount = m_pHeader->count();
 	int hh = m_pHeader->sizeHint().height();
-	int ch = qtractorScrollView::contentsHeight();
+	// Account for the item dropping headroom...
+	int ch = qtractorScrollView::contentsHeight() - ItemHeightBase;
 
 	int x, y1, y2;
 	y1 = y2 = 0;
