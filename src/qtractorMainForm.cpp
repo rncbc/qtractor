@@ -466,9 +466,9 @@ qtractorMainForm::qtractorMainForm (
 	QObject::connect(m_ui.viewInstrumentsAction,
 		SIGNAL(triggered(bool)),
 		SLOT(viewInstruments()));
-	QObject::connect(m_ui.viewBussesAction,
+	QObject::connect(m_ui.viewBusesAction,
 		SIGNAL(triggered(bool)),
-		SLOT(viewBusses()));
+		SLOT(viewBuses()));
 	QObject::connect(m_ui.viewOptionsAction,
 		SIGNAL(triggered(bool)),
 		SLOT(viewOptions()));
@@ -1820,7 +1820,7 @@ void qtractorMainForm::viewRefresh (void)
 	if (m_pConnections)
 		m_pConnections->refresh();
 	if (m_pMixer) {
-		m_pMixer->updateBusses();
+		m_pMixer->updateBuses();
 		m_pMixer->updateTracks();
 	}
 
@@ -1841,8 +1841,8 @@ void qtractorMainForm::viewInstruments (void)
 }
 
 
-// Show busses dialog.
-void qtractorMainForm::viewBusses (void)
+// Show buses dialog.
+void qtractorMainForm::viewBuses (void)
 {
 	// Just set and show the instruments dialog...
 	qtractorBusForm(this).exec();

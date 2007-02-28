@@ -132,7 +132,7 @@ public slots:
 	void viewMixer(bool bOn);
 	void viewRefresh();
 	void viewInstruments();
-	void viewBusses();
+	void viewBuses();
 	void viewOptions();
 	void transportBackward();
 	void transportRewind();

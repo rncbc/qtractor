@@ -1,7 +1,7 @@
 // qtractorEngine.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2006, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -53,7 +53,7 @@ public:
 	bool open(const QString& sClientName);
 	void close();
 
-	// Busses list clear.
+	// Buses list clear.
 	void clear();
 
 	// Session helper accessor.
@@ -75,15 +75,15 @@ public:
 	void setPlaying(bool bPlaying);
 	bool isPlaying() const;
 
-	// Busses list managament methods.
-	qtractorList<qtractorBus>& busses();
+	// Buses list managament methods.
+	qtractorList<qtractorBus>& buses();
 
 	void addBus(qtractorBus *pBus);
 	void removeBus(qtractorBus *pBus);
 
 	qtractorBus *findBus(const QString& sBusName);
 
-	// Retrieve/restore all connections, on all bussess;
+	// Retrieve/restore all connections, on all buses;
 	// return the effective number of connection attempts.
 	int updateConnects();
 
@@ -115,7 +115,7 @@ private:
 	bool m_bActivated;
 	bool m_bPlaying;
 
-	qtractorList<qtractorBus> m_busses;
+	qtractorList<qtractorBus> m_buses;
 };
 
 

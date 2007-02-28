@@ -173,7 +173,7 @@ bool qtractorTrack::open (void)
 	m_pInputBus = pEngine->findBus(inputBusName());
 	// Fallback to first usable one...
 	if (m_pInputBus == NULL) {
-		for (qtractorBus *pBus = pEngine->busses().first();
+		for (qtractorBus *pBus = pEngine->buses().first();
 				pBus; pBus->next()) {
 			if (pBus->busMode() & qtractorBus::Input) {
 				m_pInputBus = pBus;
@@ -189,7 +189,7 @@ bool qtractorTrack::open (void)
 	m_pOutputBus = pEngine->findBus(outputBusName());
 	// Fallback to first usable one...
 	if (m_pOutputBus == NULL) {
-		for (qtractorBus *pBus = pEngine->busses().first();
+		for (qtractorBus *pBus = pEngine->buses().first();
 				pBus; pBus->next()) {
 			if (pBus->busMode() & qtractorBus::Output) {
 				m_pOutputBus = pBus;

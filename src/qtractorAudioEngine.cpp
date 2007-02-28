@@ -306,7 +306,7 @@ bool qtractorAudioEngine::activate (void)
 	jack_activate(m_pJackClient);
 
 	// Now, do all auto-connection stuff (if applicable...)
-	for (qtractorBus *pBus = busses().first();
+	for (qtractorBus *pBus = buses().first();
 			pBus; pBus = pBus->next()) {
 		qtractorAudioBus *pAudioBus
 			= static_cast<qtractorAudioBus *>(pBus);
@@ -382,8 +382,8 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 	if (pAudioCursor == NULL)
 		return 0;
 
-	// Prepare current audio busses...
-	for (qtractorBus *pBus = busses().first();
+	// Prepare current audio buses...
+	for (qtractorBus *pBus = buses().first();
 		pBus; pBus = pBus->next()) {
 		qtractorAudioBus *pAudioBus
 			= static_cast<qtractorAudioBus *> (pBus);
@@ -443,8 +443,8 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 	// Regular range...
 	pSession->process(pAudioCursor, iFrameStart, iFrameEnd);
 
-	// Commit current audio busses...
-	for (qtractorBus *pBus = busses().first();
+	// Commit current audio buses...
+	for (qtractorBus *pBus = buses().first();
 		pBus; pBus = pBus->next()) {
 		qtractorAudioBus *pAudioBus
 			= static_cast<qtractorAudioBus *> (pBus);
@@ -554,8 +554,8 @@ bool qtractorAudioEngine::loadElement ( qtractorSessionDocument *pDocument,
 bool qtractorAudioEngine::saveElement ( qtractorSessionDocument *pDocument,
 	QDomElement *pElement )
 {
-	// Save audio busses...
-	for (qtractorBus *pBus = qtractorEngine::busses().first();
+	// Save audio buses...
+	for (qtractorBus *pBus = qtractorEngine::buses().first();
 			pBus; pBus = pBus->next()) {
 		qtractorAudioBus *pAudioBus
 			= static_cast<qtractorAudioBus *> (pBus);

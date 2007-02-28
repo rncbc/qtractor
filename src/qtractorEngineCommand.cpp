@@ -100,7 +100,7 @@ bool qtractorBusCommand::createBus (void)
 	// Update mixer (look for new strips...)
 	qtractorMixer *pMixer = pMainForm->mixer();
 	if (pMixer)
-		pMixer->updateBusses();
+		pMixer->updateBuses();
 
 	// Done.
 	return true;
@@ -131,7 +131,7 @@ bool qtractorBusCommand::updateBus (void)
 	qtractorBus::BusMode busMode  = m_pBus->busMode();
 	QString              sBusName = m_pBus->busName();
 
-	// Special case for audio busses...
+	// Special case for Audio buses...
 	qtractorAudioBus *pAudioBus = NULL;
 	unsigned short iChannels = 0;
 	bool bAutoConnect = false;
@@ -160,7 +160,7 @@ bool qtractorBusCommand::updateBus (void)
 	// Set new properties...
 	m_pBus->setBusName(m_sBusName);
 	m_pBus->setBusMode(m_busMode);
-	// Special case for Audio busses...
+	// Special case for Audio buses...
 	if (pAudioBus) {
 		pAudioBus->setChannels(m_iChannels);
 		pAudioBus->setAutoConnect(m_bAutoConnect);
@@ -265,14 +265,14 @@ bool qtractorBusCommand::deleteBus (void)
 	pEngine->removeBus(m_pBus);
 	m_pBus = NULL;
 
-	// Better update MIDI control busses anyway...
+	// Better update MIDI control buses anyway...
 	if (pEngine->syncType() == qtractorTrack::Midi)
 		pSession->midiEngine()->resetControlBus(qtractorBus::Duplex);
 
 	// Update mixer (clean old strips...)
 	qtractorMixer *pMixer = pMainForm->mixer();
 	if (pMixer)
-		pMixer->updateBusses();
+		pMixer->updateBuses();
 
 	// Carry on...
 	pSession->setPlaying(bPlaying);
@@ -338,7 +338,7 @@ qtractorDeleteBusCommand::qtractorDeleteBusCommand (
 	setBusType(pBus->busType());
 	setBusName(pBus->busName());
 	setBusMode(pBus->busMode());
-	// Special case for Audio busses...
+	// Special case for Audio buses...
 	if (pBus->busType() == qtractorTrack::Audio) {
 		qtractorAudioBus *pAudioBus
 			= static_cast<qtractorAudioBus *> (pBus);
@@ -424,7 +424,7 @@ bool qtractorBusGainCommand::redo (void)
 			fGain = pBus->monitor_out()->gain();	
 		pBus->monitor_out()->setGain(m_fGain);
 	}
-	// MIDI busses are special...
+	// MIDI buses are special...
 	if (pBus->busType() == qtractorTrack::Midi) {
 		// Now we gotta make sure of proper MIDI bus...
 		qtractorMidiBus *pMidiBus

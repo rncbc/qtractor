@@ -1,7 +1,7 @@
 // qtractorMixer.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2006, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -253,8 +253,8 @@ public:
 	qtractorMixerRack *trackRack()  const;
 	qtractorMixerRack *outputRack() const;
 	
-	// Update busses and tracks'racks.
-	void updateBusses();
+	// Update buses and tracks'racks.
+	void updateBuses();
 	void updateTracks();
 
 	// Update mixer rack, checking whether the monitor actually exists.

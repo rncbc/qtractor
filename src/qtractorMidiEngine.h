@@ -72,7 +72,7 @@ public:
 	// Reset all MIDI monitoring...
 	void resetAllMonitors();
 
-	// Reset control busses.
+	// Reset control buses.
 	void resetControlBus(qtractorBus::BusMode busMode);
 
 	// MIDI event capture method.
@@ -98,7 +98,7 @@ public:
 	QWidget     *notifyWidget() const;
 	QEvent::Type notifyMmcType() const;
 
-	// Control busses accessors.
+	// Control buses accessors.
 	qtractorMidiBus *controlBus_in() const;
 	qtractorMidiBus *controlBus_out() const;
 
@@ -149,7 +149,7 @@ private:
 	QWidget      *m_pNotifyWidget;
 	QEvent::Type  m_eNotifyMmcType;
 
-	// The assigned control busses.
+	// The assigned control buses.
 	qtractorMidiBus *m_pIControlBus;
 	qtractorMidiBus *m_pOControlBus;
 };

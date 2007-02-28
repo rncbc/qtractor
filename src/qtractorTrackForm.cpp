@@ -427,7 +427,7 @@ void qtractorTrackForm::updateInstruments (void)
 }
 
 
-// Update track type and busses.
+// Update track type and buses.
 void qtractorTrackForm::updateTrackType ( qtractorTrack::TrackType trackType )
 {
 	// Avoid superfluos change notifications...
@@ -462,7 +462,7 @@ void qtractorTrackForm::updateTrackType ( qtractorTrack::TrackType trackType )
 	m_ui.InputBusNameComboBox->clear();
 	m_ui.OutputBusNameComboBox->clear();
 	if (pEngine) {
-		for (qtractorBus *pBus = pEngine->busses().first();
+		for (qtractorBus *pBus = pEngine->buses().first();
 				pBus; pBus = pBus->next()) {
 			if (pBus->busMode() & qtractorBus::Input)
 				m_ui.InputBusNameComboBox->addItem(icon, pBus->busName());
@@ -793,7 +793,7 @@ void qtractorTrackForm::outputBusNameChanged ( const QString& /* sBusName */ )
 }
 
 
-// Manage busses.
+// Manage buses.
 void qtractorTrackForm::busNameClicked (void)
 {
 	if (m_iDirtySetup > 0)
@@ -822,7 +822,7 @@ void qtractorTrackForm::busNameClicked (void)
 	// Go for it...
 	busForm.exec();
 
-	// Check if any busses have changed...
+	// Check if any buses have changed...
 	if (busForm.isDirty()) {
 		// Try to preserve current selected names...
 		const QString sInputBusName  = m_ui.InputBusNameComboBox->currentText();

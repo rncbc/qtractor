@@ -987,7 +987,7 @@ bool qtractorPluginList::loadElement ( qtractorSessionDocument *pDocument,
 			for (QDomNode nParam = ePlugin.firstChild();
 					!nParam.isNull();
 						nParam = nParam.nextSibling()) {
-				// Convert busses list node to element...
+				// Convert buses list node to element...
 				QDomElement eParam = nParam.toElement();
 				if (eParam.isNull())
 					continue;

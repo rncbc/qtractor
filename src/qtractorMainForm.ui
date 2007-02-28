@@ -186,7 +186,7 @@
     <addaction name="viewRefreshAction" />
     <addaction name="separator" />
     <addaction name="viewInstrumentsAction" />
-    <addaction name="viewBussesAction" />
+    <addaction name="viewBusesAction" />
     <addaction name="viewOptionsAction" />
    </widget>
    <widget class="QMenu" name="transportMenu" >
@@ -1009,15 +1009,15 @@
     <string/>
    </property>
   </action>
-  <action name="viewBussesAction" >
+  <action name="viewBusesAction" >
    <property name="text" >
-    <string>&amp;Busses...</string>
+    <string>&amp;Buses...</string>
    </property>
    <property name="iconText" >
-    <string>Busses</string>
+    <string>Buses</string>
    </property>
    <property name="toolTip" >
-    <string>Busses</string>
+    <string>Buses</string>
    </property>
    <property name="statusTip" >
     <string>Change session bus definitions</string>

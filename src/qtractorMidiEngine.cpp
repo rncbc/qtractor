@@ -574,8 +574,8 @@ void qtractorMidiEngine::resetAllMonitors (void)
 	if (pSession == NULL)
 		return;
 
-	// Reset all MIDI busses monitors...
-	for (qtractorBus *pBus = busses().first();
+	// Reset all MIDI buses monitors...
+	for (qtractorBus *pBus = buses().first();
 			pBus; pBus = pBus->next()) {
 		qtractorMidiBus *pMidiBus
 			= static_cast<qtractorMidiBus *> (pBus);
@@ -613,13 +613,13 @@ void qtractorMidiEngine::resetAllMonitors (void)
 // Control bus mode selector.
 void qtractorMidiEngine::resetControlBus ( qtractorBus::BusMode busMode )
 {
-	// Reset both control busses...
+	// Reset both control buses...
 	m_pIControlBus = NULL;
 	m_pOControlBus = NULL;
 
-	// Find available control busses...
+	// Find available control buses...
 	if (busMode & qtractorBus::Duplex) {
-		for (qtractorBus *pBus = qtractorEngine::busses().first();
+		for (qtractorBus *pBus = qtractorEngine::buses().first();
 				pBus; pBus = pBus->next()) {
 			if (m_pIControlBus == NULL
 				&& (pBus->busMode() & (busMode & qtractorBus::Input)))
@@ -763,7 +763,7 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 	}
 
 	// Bus monitoring...
-	for (qtractorBus *pBus = busses().first(); pBus; pBus = pBus->next()) {
+	for (qtractorBus *pBus = buses().first(); pBus; pBus = pBus->next()) {
 		qtractorMidiBus *pMidiBus
 			= static_cast<qtractorMidiBus *> (pBus);
 		if (pMidiBus && pMidiBus->alsaPort() == pEv->dest.port
@@ -979,7 +979,7 @@ bool qtractorMidiEngine::activate (void)
 	m_iTimeStart = 0;
 	m_iTimeDelta = 0;
 
-	// Reset control busses...
+	// Reset control buses...
 	resetControlBus(qtractorBus::Duplex);
 	// Reset all dependable monitoring...
 	resetAllMonitors();
@@ -1041,8 +1041,8 @@ void qtractorMidiEngine::stop (void)
 	// Stop queue timer...
 	snd_seq_stop_queue(m_pAlsaSeq, m_iAlsaQueue, NULL);
 
-	// Shut-off all MIDI busses...
-	for (qtractorBus *pBus = qtractorEngine::busses().first();
+	// Shut-off all MIDI buses...
+	for (qtractorBus *pBus = qtractorEngine::buses().first();
 			pBus; pBus = pBus->next()) {
 		qtractorMidiBus *pMidiBus
 			= static_cast<qtractorMidiBus *> (pBus);
@@ -1063,7 +1063,7 @@ void qtractorMidiEngine::deactivate (void)
 	m_pOutputThread->setRunState(false);
 	m_pOutputThread->sync();
 
-	// Reset existing control busses...
+	// Reset existing control buses...
 	resetControlBus(qtractorBus::None);
 }
 
@@ -1202,7 +1202,7 @@ QEvent::Type qtractorMidiEngine::notifyMmcType (void) const
 }
 
 
-// Control busses accessors.
+// Control buses accessors.
 qtractorMidiBus *qtractorMidiEngine::controlBus_in() const
 {
 	return m_pIControlBus;
@@ -1348,8 +1348,8 @@ bool qtractorMidiEngine::loadElement ( qtractorSessionDocument *pDocument,
 bool qtractorMidiEngine::saveElement ( qtractorSessionDocument *pDocument,
 	QDomElement *pElement )
 {
-	// Save MIDI busses...
-	for (qtractorBus *pBus = qtractorEngine::busses().first();
+	// Save MIDI buses...
+	for (qtractorBus *pBus = qtractorEngine::buses().first();
 			pBus; pBus = pBus->next()) {
 		qtractorMidiBus *pMidiBus
 			= static_cast<qtractorMidiBus *> (pBus);

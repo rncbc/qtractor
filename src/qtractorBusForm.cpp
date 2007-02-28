@@ -1,7 +1,7 @@
 // qtractorBusForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2006, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -100,7 +100,7 @@ qtractorBusForm::qtractorBusForm (
 	m_ui.BusTitleTextLabel->setAutoFillBackground(true);
 	
 	// (Re)initial contents.
-	refreshBusses();
+	refreshBuses();
 
 	// Try to restore normal window positioning.
 	adjustSize();
@@ -126,7 +126,7 @@ qtractorBusForm::qtractorBusForm (
 		SLOT(changed()));
 	QObject::connect(m_ui.RefreshPushButton,
 		SIGNAL(clicked()),
-		SLOT(refreshBusses()));
+		SLOT(refreshBuses()));
 	QObject::connect(m_ui.CreatePushButton,
 		SIGNAL(clicked()),
 		SLOT(createBus()));
@@ -240,8 +240,8 @@ void qtractorBusForm::showBus ( qtractorBus *pBus )
 }
 
 
-// Refresh all busses list and views.
-void qtractorBusForm::refreshBusses (void)
+// Refresh all buses list and views.
+void qtractorBusForm::refreshBuses (void)
 {
 	//
 	// (Re)Load complete bus listing ...
@@ -257,27 +257,27 @@ void qtractorBusForm::refreshBusses (void)
 	if (pSession == NULL)
 		return;
 
-	// Audio busses...
+	// Audio buses...
 	qtractorAudioEngine *pAudioEngine = pSession->audioEngine();
 	if (pAudioEngine) {
 		m_pAudioRoot = new QTreeWidgetItem(m_ui.BusListView);
 		m_pAudioRoot->setText(0, ' ' + tr("Audio"));
 		m_pAudioRoot->setFlags(	// Audio root item is not selectable...
 			m_pAudioRoot->flags() & ~Qt::ItemIsSelectable);
-		for (qtractorBus *pBus = pAudioEngine->busses().last();
+		for (qtractorBus *pBus = pAudioEngine->buses().last();
 				pBus; pBus = pBus->prev())
 			new qtractorBusListItem(m_pAudioRoot, pBus);
 		m_ui.BusListView->setItemExpanded(m_pAudioRoot, true);
 	}
 
-	// MIDI busses...
+	// MIDI buses...
 	qtractorMidiEngine *pMidiEngine = pSession->midiEngine();
 	if (pMidiEngine) {
 		m_pMidiRoot = new QTreeWidgetItem(m_ui.BusListView);
 		m_pMidiRoot->setText(0, ' ' + tr("MIDI"));
 		m_pMidiRoot->setFlags(	// MIDI root item is not selectable...
 			m_pMidiRoot->flags() & ~Qt::ItemIsSelectable);
-		for (qtractorBus *pBus = pMidiEngine->busses().last();
+		for (qtractorBus *pBus = pMidiEngine->buses().last();
 				pBus; pBus = pBus->prev())
 			new qtractorBusListItem(m_pMidiRoot, pBus);
 		m_ui.BusListView->setItemExpanded(m_pMidiRoot, true);
@@ -440,7 +440,7 @@ void qtractorBusForm::createBus (void)
 	pCreateBusCommand->setBusType(busType);
 	pCreateBusCommand->setBusName(sBusName);
 	pCreateBusCommand->setBusMode(busMode);	
-	// Specialties for Audio bussess...
+	// Specialties for Audio buses...
 	if (busType == qtractorTrack::Audio)  {
 		pCreateBusCommand->setChannels(m_ui.AudioChannelsSpinBox->value());
 		pCreateBusCommand->setAutoConnect(
@@ -450,7 +450,7 @@ void qtractorBusForm::createBus (void)
 	// Execute and refresh form...
 	if (pMainForm->commands()->exec(pCreateBusCommand)) {
 		m_iDirtyTotal++;
-		refreshBusses();
+		refreshBuses();
 	}
 }
 
@@ -494,7 +494,7 @@ void qtractorBusForm::updateBus (void)
 	pUpdateBusCommand->setBusType(busType);
 	pUpdateBusCommand->setBusName(sBusName);
 	pUpdateBusCommand->setBusMode(busMode);	
-	// Specialties for Audio bussess...
+	// Specialties for Audio buses...
 	if (busType == qtractorTrack::Audio)  {
 		pUpdateBusCommand->setChannels(m_ui.AudioChannelsSpinBox->value());
 		pUpdateBusCommand->setAutoConnect(
@@ -504,7 +504,7 @@ void qtractorBusForm::updateBus (void)
 	// Execute and refresh form...
 	if (pMainForm->commands()->exec(pUpdateBusCommand)) {
 		m_iDirtyTotal++;
-		refreshBusses();
+		refreshBuses();
 	}
 }
 
@@ -553,7 +553,7 @@ void qtractorBusForm::deleteBus (void)
 	// Execute and refresh form...
 	if (pMainForm->commands()->exec(pDeleteBusCommand)) {
 		m_iDirtyTotal++;
-		refreshBusses();
+		refreshBuses();
 	}
 }
 
@@ -637,7 +637,7 @@ void qtractorBusForm::contextMenu ( const QPoint& /*pos*/ )
 
 	pAction = menu.addAction(
 		QIcon(":/icons/formRefresh.png"),
-		tr("&Refresh"), this, SLOT(refreshBusses()));
+		tr("&Refresh"), this, SLOT(refreshBuses()));
 	pAction->setEnabled(m_iDirtyCount > 0);
 
 //	menu.exec(m_ui.BusListView->mapToGlobal(pos));

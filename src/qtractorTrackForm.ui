@@ -200,7 +200,7 @@
            <enum>Qt::TabFocus</enum>
           </property>
           <property name="toolTip" >
-           <string>Manage busses</string>
+           <string>Manage buses</string>
           </property>
           <property name="text" >
            <string>...</string>

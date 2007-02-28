@@ -123,11 +123,11 @@ qtractorSession::~qtractorSession (void)
 bool qtractorSession::open ( const QString& sClientName )
 {
 	// A default MIDI master bus is always in order...
-	if (m_pMidiEngine->busses().count() == 0)
+	if (m_pMidiEngine->buses().count() == 0)
 		m_pMidiEngine->addBus(new qtractorMidiBus(m_pMidiEngine, "Master"));
 
 	// Get over the stereo playback default master bus...
-	if (m_pAudioEngine->busses().count() == 0)
+	if (m_pAudioEngine->buses().count() == 0)
 		m_pAudioEngine->addBus(new qtractorAudioBus(m_pAudioEngine, "Master"));
 
 	//  Actually open session device engines...
@@ -137,7 +137,7 @@ bool qtractorSession::open ( const QString& sClientName )
 		return false;
 	}
 
-	// Open all tracks (assign busses)...
+	// Open all tracks (assign buses)...
 	for (qtractorTrack *pTrack = m_tracks.first();
 			pTrack; pTrack = pTrack->next()) {
 		if (!pTrack->open()) {
@@ -157,7 +157,7 @@ void qtractorSession::close (void)
 	m_pAudioEngine->close();
 	m_pMidiEngine->close();
 
-	// Close all tracks (unassign busses)...
+	// Close all tracks (unassign buses)...
 	for (qtractorTrack *pTrack = m_tracks.first();
 			pTrack; pTrack = pTrack->next()) {
 		pTrack->close();
@@ -846,8 +846,8 @@ void qtractorSession::resetAllPlugins (void)
 			pTrack->pluginList()->resetBuffer();
 	}
 	
-	// All audio busses...
-	for (qtractorBus *pBus = m_pAudioEngine->busses().first();
+	// All audio buses...
+	for (qtractorBus *pBus = m_pAudioEngine->buses().first();
 			pBus; pBus = pBus->next()) {
 		qtractorAudioBus *pAudioBus
 			= static_cast<qtractorAudioBus *> (pBus);
@@ -1334,7 +1334,7 @@ bool qtractorSession::loadElement ( qtractorSessionDocument *pDocument,
 			for (QDomNode nDevice = eChild.firstChild();
 					!nDevice.isNull();
 						nDevice = nDevice.nextSibling()) {
-				// Convert busses list node to element...
+				// Convert buses list node to element...
 				QDomElement eDevice = nDevice.toElement();
 				if (eDevice.isNull())
 					continue;

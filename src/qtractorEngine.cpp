@@ -1,7 +1,7 @@
 // qtractorEngine.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2006, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -38,7 +38,7 @@ qtractorEngine::qtractorEngine ( qtractorSession *pSession,
 	m_bActivated     = false;
 	m_bPlaying       = false;
 
-	m_busses.setAutoDelete(true);
+	m_buses.setAutoDelete(true);
 }
 
 // Destructor.
@@ -51,10 +51,10 @@ qtractorEngine::~qtractorEngine (void)
 }
 
 
-// Busses list clear.
+// Buses list clear.
 void qtractorEngine::clear (void)
 {
-	m_busses.clear();
+	m_buses.clear();
 }
 
 
@@ -93,31 +93,31 @@ bool qtractorEngine::isActivated(void) const
 }
 
 
-// Busses list managament methods.
-qtractorList<qtractorBus>& qtractorEngine::busses (void)
+// Buses list managament methods.
+qtractorList<qtractorBus>& qtractorEngine::buses (void)
 {
-	return m_busses;
+	return m_buses;
 }
 
 
 // Add a bus to a device engine.
 void qtractorEngine::addBus ( qtractorBus *pBus )
 {
-	m_busses.append(pBus);
+	m_buses.append(pBus);
 }
 
 
 // Remove a bus from a device.
 void qtractorEngine::removeBus ( qtractorBus *pBus )
 {
-	m_busses.remove(pBus);
+	m_buses.remove(pBus);
 }
 
 
 // Find a device bus by name
 qtractorBus *qtractorEngine::findBus ( const QString& sBusName )
 {
-	for (qtractorBus *pBus = m_busses.first();
+	for (qtractorBus *pBus = m_buses.first();
 			pBus; pBus = pBus->next()) {
 		if (pBus->busName() == sBusName)
 			return pBus;
@@ -146,8 +146,8 @@ bool qtractorEngine::open ( const QString& sClientName )
 	// Update the session cursor tracks...
 	m_pSessionCursor->reset();
 
-	// Open all busses (allocated and register ports...)
-	qtractorBus *pBus = m_busses.first();
+	// Open all buses (allocated and register ports...)
+	qtractorBus *pBus = m_buses.first();
 	while (pBus) {
 		if (!pBus->open()) {
 			close();
@@ -180,8 +180,8 @@ void qtractorEngine::close (void)
 	if (bActivated) {
 		// Deactivate the derived engine first.
 		deactivate();
-		// Close all dependant busses...
-		for (qtractorBus *pBus = m_busses.first();
+		// Close all dependant buses...
+		for (qtractorBus *pBus = m_buses.first();
 				pBus; pBus = pBus->next()) {
 			pBus->close();
 		}
@@ -213,7 +213,7 @@ bool qtractorEngine::isPlaying(void) const
 }
 
 
-// Retrieve/restore all connections, on all bussess.
+// Retrieve/restore all connections, on all buses.
 // return the total number of effective (re)connection attempts...
 int qtractorEngine::updateConnects (void)
 {
@@ -221,9 +221,9 @@ int qtractorEngine::updateConnects (void)
 	if (!isActivated())
 		return 0;
 
-	// On all dependable busses...
+	// On all dependable buses...
 	int iUpdate = 0;
-	for (qtractorBus *pBus = m_busses.first(); pBus; pBus = pBus->next()) {
+	for (qtractorBus *pBus = m_buses.first(); pBus; pBus = pBus->next()) {
 		// Input connections...
 		if (pBus->busMode() & qtractorBus::Input) {
 			iUpdate += pBus->updateConnects(

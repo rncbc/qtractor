@@ -1,7 +1,7 @@
 // qtractorMixer.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2006, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -922,8 +922,8 @@ void qtractorMixer::updateTrackStrip ( qtractorTrack *pTrack, bool bReset )
 }
 
 
-// Update busses'racks.
-void qtractorMixer::updateBusses (void)
+// Update buses'racks.
+void qtractorMixer::updateBuses (void)
 {
 	qtractorSession *pSession = session();
 	if (pSession == NULL)
@@ -932,8 +932,8 @@ void qtractorMixer::updateBusses (void)
 	m_pInputRack->markStrips(1);
 	m_pOutputRack->markStrips(1);
 
-	// Audio busses first...
-	for (qtractorBus *pBus = pSession->audioEngine()->busses().first();
+	// Audio buses first...
+	for (qtractorBus *pBus = pSession->audioEngine()->buses().first();
 			pBus; pBus = pBus->next()) {
 		if (pBus->busMode() & qtractorBus::Input)
 			updateBusStrip(m_pInputRack, pBus, qtractorBus::Input);
@@ -941,8 +941,8 @@ void qtractorMixer::updateBusses (void)
 			updateBusStrip(m_pOutputRack, pBus, qtractorBus::Output);
 	}
 
-	// MIDI busses are next...
-	for (qtractorBus *pBus = pSession->midiEngine()->busses().first();
+	// MIDI buses are next...
+	for (qtractorBus *pBus = pSession->midiEngine()->buses().first();
 			pBus; pBus = pBus->next()) {
 		if (pBus->busMode() & qtractorBus::Input)
 			updateBusStrip(m_pInputRack, pBus, qtractorBus::Input);
