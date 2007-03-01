@@ -1,7 +1,7 @@
 // qtractorConnect.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2006, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -237,7 +237,7 @@ qtractorPortListItem *qtractorPortListItem::findConnect (
 
 
 // Connection cache list accessor.
-QList<qtractorPortListItem *>& qtractorPortListItem::connects (void)
+const QList<qtractorPortListItem *>& qtractorPortListItem::connects (void) const
 {
 	return m_connects;
 }

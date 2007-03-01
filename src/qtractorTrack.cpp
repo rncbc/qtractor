@@ -558,7 +558,7 @@ void qtractorTrack::updateZoomHeight (void)
 
 
 // Clip list management methods.
-qtractorList<qtractorClip>& qtractorTrack::clips (void)
+const qtractorList<qtractorClip>& qtractorTrack::clips (void) const
 {
 	return m_clips;
 }

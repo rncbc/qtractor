@@ -94,7 +94,7 @@ bool qtractorEngine::isActivated(void) const
 
 
 // Buses list managament methods.
-qtractorList<qtractorBus>& qtractorEngine::buses (void)
+const qtractorList<qtractorBus>& qtractorEngine::buses (void) const
 {
 	return m_buses;
 }

@@ -76,7 +76,7 @@ public:
 	bool isPlaying() const;
 
 	// Buses list managament methods.
-	qtractorList<qtractorBus>& buses();
+	const qtractorList<qtractorBus>& buses() const;
 
 	void addBus(qtractorBus *pBus);
 	void removeBus(qtractorBus *pBus);

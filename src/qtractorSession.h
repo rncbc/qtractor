@@ -150,7 +150,7 @@ public:
 	void updateSampleRate(unsigned int iOldSampleRate); 
 
 	// Track list management methods.
-	qtractorList<qtractorTrack>& tracks();
+	const qtractorList<qtractorTrack>& tracks() const;
 
 	void addTrack(qtractorTrack *pTrack);
 	void insertTrack(qtractorTrack *pTrack, qtractorTrack *pPrevTrack = NULL);

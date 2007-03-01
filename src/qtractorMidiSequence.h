@@ -83,7 +83,7 @@ public:
 	unsigned long duration() const { return m_duration; }
 
 	// Event list accessor.
-	qtractorList<qtractorMidiEvent>& events() { return m_events; }
+	const qtractorList<qtractorMidiEvent>& events() const { return m_events; }
 
 	// Event list management methods.
 	void addEvent    (qtractorMidiEvent *pEvent);

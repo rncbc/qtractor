@@ -97,7 +97,7 @@ void qtractorPluginPath::close (void)
 
 
 // Plugin file list.
-QList<qtractorPluginFile *>& qtractorPluginPath::files (void)
+const QList<qtractorPluginFile *>& qtractorPluginPath::files (void) const
 {
 	return m_files;
 }
@@ -174,7 +174,7 @@ void qtractorPluginFile::close (void)
 
 
 // Plugin type list.
-QList<qtractorPluginType *>& qtractorPluginFile::types (void)
+const QList<qtractorPluginType *>& qtractorPluginFile::types (void)
 {
 	// Try to fill the types list at this moment...
 	if (m_pfnDescriptor && m_types.isEmpty()) {
@@ -537,7 +537,7 @@ void qtractorPlugin::process ( unsigned int nframes )
 
 
 // Input control ports list accessor.
-QList<qtractorPluginPort *>& qtractorPlugin::cports (void)
+const QList<qtractorPluginPort *>& qtractorPlugin::cports (void) const
 {
 	return m_cports;
 }

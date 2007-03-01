@@ -47,8 +47,11 @@ public:
 	// Destructor.
 	virtual ~qtractorPluginCommand();
 
-	// Plugin list accessor.
-	QList<qtractorPlugin *>& plugins() { return m_plugins; }
+	// Plugin list accessors.
+	const QList<qtractorPlugin *>& plugins() const { return m_plugins; }
+
+	void addPlugin(qtractorPlugin *pPlugin)
+		{ m_plugins.append(pPlugin); }
 
 protected:
 

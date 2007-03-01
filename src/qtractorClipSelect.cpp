@@ -120,7 +120,7 @@ qtractorTrack *qtractorClipSelect::singleTrack (void)
 
 
 // Selection list accessor.
-QList<qtractorClipSelect::Item *>& qtractorClipSelect::items (void)
+const QList<qtractorClipSelect::Item *>& qtractorClipSelect::items (void) const
 {
 	return m_items;
 }

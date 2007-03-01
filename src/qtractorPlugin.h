@@ -66,7 +66,7 @@ public:
 	void close();
 
 	// Plugin file list.
-	QList<qtractorPluginFile *>& files();
+	const QList<qtractorPluginFile *>& files() const;
 
 private:
 
@@ -96,7 +96,7 @@ public:
 	void close();
 
 	// Plugin type list.
-	QList<qtractorPluginType *>& types();
+	const QList<qtractorPluginType *>& types();
 
 	// Descriptor function method.
 	const LADSPA_Descriptor *descriptor(unsigned long iIndex);
@@ -192,7 +192,7 @@ public:
 	void process(unsigned int nframes);
 
 	// Input control ports list accessor.
-	QList<qtractorPluginPort *>& cports();
+	const QList<qtractorPluginPort *>& cports() const;
 
 	// Output control (dummy) port index-list accessors.
 	const QList<unsigned long>& vports() const;

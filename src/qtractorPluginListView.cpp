@@ -339,7 +339,7 @@ void qtractorPluginListView::addPlugin (void)
 			= new qtractorPlugin(m_pPluginList,
 				selectForm.pluginFilename(i),
 				selectForm.pluginIndex(i));
-		pAddPluginCommand->plugins().append(pPlugin);
+		pAddPluginCommand->addPlugin(pPlugin);
 		// Show the plugin form right away...
 		qtractorPluginForm *pPluginForm = pPlugin->form();
 		pPluginForm->show();
@@ -417,7 +417,7 @@ void qtractorPluginListView::activateAllPlugins (void)
 	for (qtractorPlugin *pPlugin = m_pPluginList->first();
 			pPlugin; pPlugin = pPlugin->next()) {
 		if (!pPlugin->isActivated())
-			pActivateAllCommand->plugins().append(pPlugin);
+			pActivateAllCommand->addPlugin(pPlugin);
 	}
 
 	pMainForm->commands()->exec(pActivateAllCommand);
@@ -446,7 +446,7 @@ void qtractorPluginListView::deactivateAllPlugins (void)
 	for (qtractorPlugin *pPlugin = m_pPluginList->first();
 			pPlugin; pPlugin = pPlugin->next()) {
 		if (pPlugin->isActivated())
-			pDeactivateAllCommand->plugins().append(pPlugin);
+			pDeactivateAllCommand->addPlugin(pPlugin);
 	}
 
 	pMainForm->commands()->exec(pDeactivateAllCommand);
@@ -474,7 +474,7 @@ void qtractorPluginListView::removeAllPlugins (void)
 
 	for (qtractorPlugin *pPlugin = m_pPluginList->first();
 			pPlugin; pPlugin = pPlugin->next()) {
-		pRemoveAllCommand->plugins().append(pPlugin);
+		pRemoveAllCommand->addPlugin(pPlugin);
 	}
 
 	pMainForm->commands()->exec(pRemoveAllCommand);

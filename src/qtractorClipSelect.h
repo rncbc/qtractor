@@ -73,7 +73,7 @@ public:
 	qtractorTrack *singleTrack();
 
 	// Selection list accessor.
-	QList<Item *>& items();
+	const QList<Item *>& items() const;
 
 	// Clip selection item lookup.
 	Item *findClipItem(qtractorClip *pClip);

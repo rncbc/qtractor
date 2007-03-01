@@ -144,7 +144,7 @@ public:
 	int zoomHeight() const;
 
 	// Clip list management methods.
-	qtractorList<qtractorClip>& clips();
+	const qtractorList<qtractorClip>& clips() const;
 
 	void addClip(qtractorClip *pClip);
 	void unlinkClip(qtractorClip *pClip);

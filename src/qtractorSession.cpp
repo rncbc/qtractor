@@ -645,7 +645,7 @@ qtractorSession::Properties& qtractorSession::properties (void)
 
 
 // Track list management methods.
-qtractorList<qtractorTrack>& qtractorSession::tracks (void)
+const qtractorList<qtractorTrack>& qtractorSession::tracks (void) const
 {
 	return m_tracks;
 }
