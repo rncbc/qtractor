@@ -202,7 +202,11 @@ public:
 	const QList<unsigned long>& oports() const;
 
 	// An accessible list of observers.
-	QList<qtractorPluginListItem *>& items();
+	const QList<qtractorPluginListItem *>& items() const;
+
+	void addItem(qtractorPluginListItem *pItem);
+	void removeItem(qtractorPluginListItem *pItem);
+	void clearItems();
 
 	// Special plugin form accessors.
 	bool isVisible() const;
@@ -299,7 +303,10 @@ public:
 	void movePlugin(qtractorPlugin *pPlugin, qtractorPlugin *pPrevPlugin);
 
 	// An accessible list of observers.
-	QList<qtractorPluginListView *>& views();
+	const QList<qtractorPluginListView *>& views() const;
+
+	void addView(qtractorPluginListView *pView);
+	void removeView(qtractorPluginListView *pView);
 
 	// The meta-main audio-processing plugin-chain procedure.
 	void process(float **ppBuffer, unsigned int nframes);

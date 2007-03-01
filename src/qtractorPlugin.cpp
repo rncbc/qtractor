@@ -270,7 +270,7 @@ qtractorPlugin::~qtractorPlugin (void)
 	// Clear out all dependables...
 	qDeleteAll(m_cports);
 	m_cports.clear();
-	m_items.clear();
+	clearItems();
 
 	// Cleanup all plugin instances...
 	setChannels(0);
@@ -563,9 +563,30 @@ const QList<unsigned long>& qtractorPlugin::oports (void) const
 
 
 // An accessible list of observers.
-QList<qtractorPluginListItem *>& qtractorPlugin::items (void)
+const QList<qtractorPluginListItem *>& qtractorPlugin::items (void) const
 {
 	return m_items;
+}
+
+
+void qtractorPlugin::addItem ( qtractorPluginListItem *pItem )
+{
+	m_items.append(pItem);
+}
+
+
+void qtractorPlugin::removeItem ( qtractorPluginListItem *pItem )
+{
+	int iItem = m_items.indexOf(pItem);
+	if (iItem >= 0)
+		m_items.removeAt(iItem);
+}
+
+
+void qtractorPlugin::clearItems (void)
+{
+	qDeleteAll(m_items);
+	m_items.clear();
 }
 
 
@@ -842,15 +863,9 @@ void qtractorPluginList::removePlugin ( qtractorPlugin *pPlugin )
 {
 	// Just unlink the plugin from the list...
 	unlink(pPlugin);
-	pPlugin->setChannels(0);
 
-	// Now update each observer list-view...
-	QMutableListIterator<qtractorPluginListItem *> iter(pPlugin->items());
-	while (iter.hasNext()) {
-		qtractorPluginListItem *pItem = iter.next();
-		iter.remove();
-		delete pItem;
-	}
+	pPlugin->setChannels(0);
+	pPlugin->clearItems();
 }
 
 
@@ -887,9 +902,23 @@ void qtractorPluginList::movePlugin ( qtractorPlugin *pPlugin,
 
 
 // An accessible list of observers.
-QList<qtractorPluginListView *>& qtractorPluginList::views (void)
+const QList<qtractorPluginListView *>& qtractorPluginList::views (void) const
 {
 	return m_views;
+}
+
+
+void qtractorPluginList::addView ( qtractorPluginListView *pView )
+{
+	m_views.append(pView);
+}
+
+
+void qtractorPluginList::removeView ( qtractorPluginListView *pView )
+{
+	int iView = m_views.indexOf(pView);
+	if (iView >= 0)
+		m_views.removeAt(iView);
 }
 
 

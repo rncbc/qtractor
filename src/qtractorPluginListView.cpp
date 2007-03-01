@@ -144,7 +144,7 @@ qtractorPluginListItem::qtractorPluginListItem ( qtractorPlugin *pPlugin )
 {
 	m_pPlugin = pPlugin;
 
-	m_pPlugin->items().append(this);
+	m_pPlugin->addItem(this);
 
 	QListWidgetItem::setText(m_pPlugin->name());
 
@@ -154,9 +154,7 @@ qtractorPluginListItem::qtractorPluginListItem ( qtractorPlugin *pPlugin )
 // Destructor.
 qtractorPluginListItem::~qtractorPluginListItem (void)
 {
-	int iItem = m_pPlugin->items().indexOf(this);
-	if (iItem >= 0)
-		m_pPlugin->items().removeAt(iItem);
+	m_pPlugin->removeItem(this);
 }
 
 
@@ -235,17 +233,14 @@ qtractorPluginListView::~qtractorPluginListView (void)
 // Plugin list accessors.
 void qtractorPluginListView::setPluginList ( qtractorPluginList *pPluginList )
 {
-	if (m_pPluginList) {
-		int iView = m_pPluginList->views().indexOf(this);
-		if (iView >= 0)
-			m_pPluginList->views().removeAt(iView);
-	}
+	if (m_pPluginList)
+		m_pPluginList->removeView(this);
 
 	m_pPluginList = pPluginList;
 
 	if (m_pPluginList) {
 		m_pPluginList->setAutoDelete(true);
-		m_pPluginList->views().append(this);
+		m_pPluginList->addView(this);
 	}
 
 	refresh();
