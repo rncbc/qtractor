@@ -195,7 +195,7 @@ protected:
 
 	// Draw/hide a dragging rectangular selection.
 	void moveRubberBand(qtractorRubberBand **ppRubberBand,
-		const QRect& rectDrag) const;
+		const QRect& rectDrag, int thick = 1) const;
 
 	// Clip fade-in/out handle drag-move methods.
 	bool dragFadeStart(const QPoint& pos);

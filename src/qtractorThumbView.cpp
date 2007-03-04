@@ -55,7 +55,7 @@ qtractorThumbView::qtractorThumbView( QWidget *pParent )
 	QFrame::setFocusPolicy(Qt::ClickFocus);
 
 	m_dragState   = DragNone;
-	m_pRubberBand = new qtractorRubberBand(QRubberBand::Rectangle, this);
+	m_pRubberBand = new qtractorRubberBand(QRubberBand::Rectangle, this, 2);
 //	QPalette pal(m_pRubberBand->palette());
 //	pal.setColor(m_pRubberBand->foregroundRole(), pal.highlight().color());
 //	m_pRubberBand->setPalette(pal);

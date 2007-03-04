@@ -810,12 +810,14 @@ void qtractorMainForm::customEvent ( QEvent *pEvent )
 	case QTRACTOR_PEAK_EVENT:
 		// A peak file has just been (re)created;
 		// try to postpone the event effect a little more...
-		m_iPeakTimer += QTRACTOR_TIMER_DELAY;
+		if (m_iPeakTimer  < QTRACTOR_TIMER_DELAY)
+			m_iPeakTimer += QTRACTOR_TIMER_DELAY;
 		break;
 	case QTRACTOR_PORT_EVENT:
 		// An Audio graph change has just been issued;
 		// try to postpone the event effect a little more...
-		m_iAudioRefreshTimer += QTRACTOR_TIMER_DELAY;
+		if (m_iAudioRefreshTimer  < QTRACTOR_TIMER_DELAY)
+			m_iAudioRefreshTimer += QTRACTOR_TIMER_DELAY;
 		break;
 	case QTRACTOR_XRUN_EVENT:
 		// An XRUN has just been notified...
@@ -824,14 +826,15 @@ void qtractorMainForm::customEvent ( QEvent *pEvent )
 		if (m_iXrunTimer > 0)
 			m_iXrunSkip++;
 		// Defer the informative effect...
-		m_iXrunTimer += QTRACTOR_TIMER_DELAY;
+		if (m_iXrunTimer  < QTRACTOR_TIMER_DELAY)
+			m_iXrunTimer += QTRACTOR_TIMER_DELAY;
 		break;
 	case QTRACTOR_SHUT_EVENT:
 	case QTRACTOR_BUFF_EVENT:
 		// Just in case we were in the middle of something...
 		if (m_pSession->isPlaying()) {
 			m_ui.transportPlayAction->setChecked(false);
-			transportPlay(); // Toggle playing!
+		//	transportPlay(); // Toggle playing!
 		}
 		// Engine shutdown is on demand...
 		m_pSession->close();
@@ -2227,7 +2230,8 @@ bool qtractorMainForm::setRecording ( bool bRecording )
 			// The allocated command is unhelpful...
 			delete pClipCommand;
 			// Try to postpone an overall refresh...
-			m_iPeakTimer += QTRACTOR_TIMER_DELAY;
+			if (m_iPeakTimer  < QTRACTOR_TIMER_DELAY)
+				m_iPeakTimer += QTRACTOR_TIMER_DELAY;
 		}
 	}
 
@@ -2757,6 +2761,8 @@ void qtractorMainForm::timerSlot (void)
 			// Send MMC LOCATE command...
 			m_pSession->midiEngine()->sendMmcLocate(
 				m_pSession->locateFromFrame(iPlayHead));
+			// Update transport status anyway...
+			m_iTransportUpdate++;
 		}
 	}
 
@@ -2920,7 +2926,8 @@ void qtractorMainForm::alsaNotify (void)
 
 	// A MIDI graph change has just been occurred;
 	// try to postpone the event effect a little more...
-	m_iMidiRefreshTimer += QTRACTOR_TIMER_DELAY;
+	if (m_iMidiRefreshTimer  < QTRACTOR_TIMER_DELAY)
+		m_iMidiRefreshTimer += QTRACTOR_TIMER_DELAY;
 }
 
 

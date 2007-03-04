@@ -34,7 +34,13 @@ class qtractorRubberBand : public QRubberBand
 public:
 
 	// Constructor.
-	qtractorRubberBand(Shape shape, QWidget *widget = 0);
+	qtractorRubberBand(Shape shape, QWidget *widget = 0, int thick = 1);
+	// Destructor.
+	~qtractorRubberBand();
+
+	// Rubberband thickness accessor.
+	void setThickness(int thick);
+	int thickness() const;
 
 private:
 
@@ -42,15 +48,21 @@ private:
 	class Style : public QWindowsStyle
 	{
 	public:
-	
+
+		// Constructor.
+		Style(int thick) : QWindowsStyle(), thickness(thick) {}
+
 		// Custom virtual override.
 		int styleHint( StyleHint sh,
 			const QStyleOption *opt = 0, const QWidget *widget = 0,
 			QStyleHintReturn *hint = 0 ) const;
+
+		// Rubberband thickness.
+		int thickness;
 	};
 
 	// Local style instance
-	static Style g_rubberBandStyle;
+	Style *m_pStyle;
 };
 
 

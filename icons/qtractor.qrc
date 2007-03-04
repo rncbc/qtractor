@@ -29,6 +29,7 @@
 		<file>formSave.png</file>
 		<file>itemAudioClientIn.png</file>
 		<file>itemAudioClientOut.png</file>
+		<file>itemAudioFile.png</file>
 		<file>itemAudioPortIn.png</file>
 		<file>itemAudioPortOut.png</file>
 		<file>itemAudioPortPhysIn.png</file>
@@ -43,6 +44,7 @@
 		<file>itemLedOn.png</file>
 		<file>itemMidiClientIn.png</file>
 		<file>itemMidiClientOut.png</file>
+		<file>itemMidiFile.png</file>
 		<file>itemMidiPortIn.png</file>
 		<file>itemMidiPortOut.png</file>
 		<file>itemNotes.png</file>

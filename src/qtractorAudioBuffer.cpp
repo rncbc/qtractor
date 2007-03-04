@@ -1096,7 +1096,7 @@ unsigned long qtractorAudioBuffer::loopEnd (void) const
 
 
 // Sample-rate converter type (global option).
-int qtractorAudioBuffer::g_iResampleType = 0;	// SRC_SINC_BEST_QUALITY;
+int qtractorAudioBuffer::g_iResampleType = 2;	// SRC_SINC_FASTEST;
 
 void qtractorAudioBuffer::setResampleType ( int iResampleType )
 {

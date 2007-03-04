@@ -29,19 +29,36 @@
 //----------------------------------------------------------------------------
 // qtractorRubberBand -- Custom rubber-band widget.
 
-// Local style instance
-qtractorRubberBand::Style qtractorRubberBand::g_rubberBandStyle;
-
 // Constructor.
-qtractorRubberBand::qtractorRubberBand ( Shape shape, QWidget *widget )
+qtractorRubberBand::qtractorRubberBand ( Shape shape, QWidget *widget, int thick )
 	: QRubberBand(shape, widget)
 {
-	setStyle(&g_rubberBandStyle);
+	m_pStyle = new qtractorRubberBand::Style(thick);
+
+	setStyle(m_pStyle);
+}
+
+// Destructor.
+qtractorRubberBand::~qtractorRubberBand (void)
+{
+	delete m_pStyle;
+}
+
+
+// Rubberband thickness accessor.
+void qtractorRubberBand::setThickness ( int thick )
+{
+	m_pStyle->thickness = thick;
+}
+
+int qtractorRubberBand::thickness (void) const
+{
+	return m_pStyle->thickness;
 }
 
 
 // Custom virtual override.
-int qtractorRubberBand::Style::styleHint( StyleHint sh,
+int qtractorRubberBand::Style::styleHint ( StyleHint sh,
 	const QStyleOption *opt, const QWidget *widget,
 	QStyleHintReturn *hint ) const
 {
@@ -52,10 +69,10 @@ int qtractorRubberBand::Style::styleHint( StyleHint sh,
 			= qstyleoption_cast<QStyleHintReturnMask *> (hint);
 		QRect rect(mask->region.boundingRect());
 		QRegion regn(rect);
-		rect.setX(rect.x() + 3);
-		rect.setY(rect.y() + 3);
-		rect.setWidth(rect.width() - 3);
-		rect.setHeight(rect.height() - 3);
+		rect.setX(rect.x() + thickness);
+		rect.setY(rect.y() + thickness);
+		rect.setWidth(rect.width() - thickness);
+		rect.setHeight(rect.height() - thickness);
 		mask->region = regn.subtracted(QRegion(rect));
 	}
 #endif
