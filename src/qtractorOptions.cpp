@@ -1,7 +1,7 @@
 // qtractorOptions.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2006, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -84,7 +84,7 @@ qtractorOptions::qtractorOptions (void)
 	iCaptureType    = m_settings.value("/CaptureType", 0).toInt();
 	iCaptureFormat  = m_settings.value("/CaptureFormat", 0).toInt();
 	iCaptureQuality = m_settings.value("/CaptureQuality", 4).toInt();
-	iResampleType   = m_settings.value("/ResampleType", 0).toInt();
+	iResampleType   = m_settings.value("/ResampleType", 2).toInt();
 	m_settings.endGroup();
 
 	m_settings.endGroup(); // Options group.
