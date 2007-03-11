@@ -85,11 +85,17 @@ bool qtractorAudioClip::openAudioFile ( const QString& sFilename, int iMode )
 		m_pBuff = NULL;
 	}
 
+	// Check file buffer number of channels...
 	unsigned short iChannels = 0;
 	qtractorAudioBus *pAudioBus
-		= static_cast<qtractorAudioBus *> (track()->outputBus());
+		= static_cast<qtractorAudioBus *> (
+			(iMode & qtractorAudioFile::Write) == 0
+				? pTrack->outputBus() : pTrack->inputBus());
 	if (pAudioBus)
 		iChannels = pAudioBus->channels();
+	if (iChannels < 1)
+		return false;
+
 	m_pBuff = new qtractorAudioBuffer(iChannels, pSession->sampleRate());
 	m_pBuff->setOffset(clipOffset());
 	m_pBuff->setLength(clipLength());
