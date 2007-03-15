@@ -87,13 +87,17 @@ bool qtractorAudioClip::openAudioFile ( const QString& sFilename, int iMode )
 
 	// Check file buffer number of channels...
 	unsigned short iChannels = 0;
+	bool bWrite = (iMode & qtractorAudioFile::Write);
 	qtractorAudioBus *pAudioBus
-		= static_cast<qtractorAudioBus *> (
-			(iMode & qtractorAudioFile::Write) == 0
-				? pTrack->outputBus() : pTrack->inputBus());
+		= static_cast<qtractorAudioBus *> (bWrite ?
+			pTrack->inputBus() : pTrack->outputBus());
 	if (pAudioBus)
 		iChannels = pAudioBus->channels();
-	if (iChannels < 1)
+
+	// However, this number of channels is only useful
+	// only when recording, otherwise we'll stick with
+	// source audio file's one...
+	if (bWrite && iChannels < 1)
 		return false;
 
 	m_pBuff = new qtractorAudioBuffer(iChannels, pSession->sampleRate());
@@ -106,8 +110,8 @@ bool qtractorAudioClip::openAudioFile ( const QString& sFilename, int iMode )
 		return false;
 	}
 
-	// FIXME: Peak files should be created on-the-fly?
-	if ((iMode & qtractorAudioFile::Write) == 0
+	// FIXME: Peak files shouldn't be created on-the-fly?
+	if (!bWrite
 		&& (m_pPeak == NULL || sFilename != filename())
 		&& pSession->audioPeakFactory()) {
 		if (m_pPeak)
@@ -119,7 +123,7 @@ bool qtractorAudioClip::openAudioFile ( const QString& sFilename, int iMode )
 	// Set local properties...
 	setFilename(sFilename);
 
-	// Default clip length will be whole file length.
+	// Default clip length will be the whole file length.
 	if (clipLength() == 0)
 		setClipLength(m_pBuff->length() - m_pBuff->offset());
 
