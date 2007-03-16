@@ -173,9 +173,11 @@ void qtractorAudioClip::close (void)
 	fprintf(stderr, "qtractorAudioClip::close(%p)\n", this);
 #endif
 
+#if 0
 	if (m_pPeak)
 		delete m_pPeak;
 	m_pPeak = NULL;
+#endif
 
 	if (m_pBuff == NULL)
 		return;
