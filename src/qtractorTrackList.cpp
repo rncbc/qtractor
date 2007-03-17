@@ -780,22 +780,22 @@ void qtractorTrackList::mouseDoubleClickEvent ( QMouseEvent * /*pMouseEvent*/ )
 // Handle item selection/dragging -- mouse button press.
 void qtractorTrackList::mousePressEvent ( QMouseEvent *pMouseEvent )
 {
-	// Force null state.
-	resetDragState();
+	// Which mouse state?
+	const bool bModifier = (pMouseEvent->modifiers()
+		& (Qt::ShiftModifier | Qt::ControlModifier));
+	const QPoint& pos = pMouseEvent->pos();
+	int iTrack = trackRowAt(pos);
 
-	if (pMouseEvent->button() == Qt::LeftButton) {
-		const bool bModifier = (pMouseEvent->modifiers()
-			& (Qt::ShiftModifier | Qt::ControlModifier));
-		const QPoint& pos = pMouseEvent->pos();
-		int iTrack = trackRowAt(pos);
-		// Select current track...
-		selectTrack(iTrack);
-		// Look for the mouse hovering around some item boundary...
-		if (iTrack >= 0) {
-			// Special attitude, only of interest on
-			// the first-left column (track-number)...
-			if (trackColumnAt(pos) == Number)
-				m_pTracks->selectCurrentTrack(!bModifier);
+	// Select current track...
+	selectTrack(iTrack);
+
+	// Look for the mouse hovering around some item boundary...
+	if (iTrack >= 0) {
+		// Special attitude, only of interest on
+		// the first-left column (track-number)...
+		if (trackColumnAt(pos) == Number)
+			m_pTracks->selectCurrentTrack(!bModifier);
+		if (pMouseEvent->button() == Qt::LeftButton) {
 			// Try for drag-resize...
 			m_posDrag = pos;
 			if (m_iDragTrack >= 0) {
@@ -809,6 +809,9 @@ void qtractorTrackList::mousePressEvent ( QMouseEvent *pMouseEvent )
 		}
 	}
 
+	// Probably this would be done ahead,
+	// just 'coz we're using ruberbands, which are
+	// in fact based on real widgets (WM entities)...
 	qtractorScrollView::mousePressEvent(pMouseEvent);
 
 	// Make sure we've get focus back...
