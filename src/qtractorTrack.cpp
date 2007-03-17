@@ -349,13 +349,16 @@ bool qtractorTrack::isMute (void) const
 
 void qtractorTrack::setMute ( bool bMute )
 {
-	if (m_pSession->isPlaying())
+	if (m_pSession->isPlaying() && bMute)
 		m_pSession->trackMute(this, bMute);
 
 	if ((m_props.mute && !bMute) || (!m_props.mute && bMute))
 		m_pSession->setMuteTracks(bMute);
 
 	m_props.mute = bMute;
+
+	if (m_pSession->isPlaying() && !bMute)
+		m_pSession->trackMute(this, bMute);
 }
 
 
@@ -367,12 +370,15 @@ bool qtractorTrack::isSolo (void) const
 
 void qtractorTrack::setSolo ( bool bSolo )
 {
+	if (m_pSession->isPlaying() && bSolo)
+		m_pSession->trackSolo(this, bSolo);
+
 	if ((m_props.solo && !bSolo) || (!m_props.solo && bSolo))
 		m_pSession->setSoloTracks(bSolo);
 
 	m_props.solo = bSolo;
 
-	if (m_pSession->isPlaying())
+	if (m_pSession->isPlaying() && !bSolo)
 		m_pSession->trackSolo(this, bSolo);
 }
 

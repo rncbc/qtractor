@@ -780,9 +780,10 @@ void qtractorTrackList::mouseDoubleClickEvent ( QMouseEvent * /*pMouseEvent*/ )
 // Handle item selection/dragging -- mouse button press.
 void qtractorTrackList::mousePressEvent ( QMouseEvent *pMouseEvent )
 {
-	qtractorScrollView::mousePressEvent(pMouseEvent);
+	// Force null state.
+	resetDragState();
 
-	if (m_dragState == DragNone) {
+	if (pMouseEvent->button() == Qt::LeftButton) {
 		const bool bModifier = (pMouseEvent->modifiers()
 			& (Qt::ShiftModifier | Qt::ControlModifier));
 		const QPoint& pos = pMouseEvent->pos();
@@ -807,6 +808,8 @@ void qtractorTrackList::mousePressEvent ( QMouseEvent *pMouseEvent )
 			}
 		}
 	}
+
+	qtractorScrollView::mousePressEvent(pMouseEvent);
 
 	// Make sure we've get focus back...
 	qtractorScrollView::setFocus();
