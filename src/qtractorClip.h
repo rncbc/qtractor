@@ -112,7 +112,7 @@ public:
 	virtual void set_loop(unsigned long iLoopStart, unsigned long iLoopEnd) = 0;
 
 	// Clip close-commit (record specific)
-	virtual void close() = 0;
+	virtual void close(bool bForce) = 0;
 
 	// Clip special process cycle executive.
 	virtual void process(unsigned long iFrameStart, unsigned long iFrameEnd) = 0;

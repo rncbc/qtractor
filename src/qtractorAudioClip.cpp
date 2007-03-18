@@ -167,17 +167,18 @@ void qtractorAudioClip::set_loop ( unsigned long iLoopStart,
 
 
 // Clip close-commit (record specific)
-void qtractorAudioClip::close (void)
+void qtractorAudioClip::close ( bool bForce )
 {
 #ifdef CONFIG_DEBUG_0
-	fprintf(stderr, "qtractorAudioClip::close(%p)\n", this);
+	fprintf(stderr, "qtractorAudioClip::close(%p, %d)\n", this, int(bForce));
 #endif
 
-#if 0
-	if (m_pPeak)
-		delete m_pPeak;
-	m_pPeak = NULL;
-#endif
+	// Enforce get rid of peak instance...
+	if (bForce) {
+		if (m_pPeak)
+			delete m_pPeak;
+		m_pPeak = NULL;
+	}
 
 	if (m_pBuff == NULL)
 		return;
@@ -191,7 +192,7 @@ void qtractorAudioClip::close (void)
 	m_pBuff = NULL;
 	
 	// If proven empty, remove the file.
-	if (clipLength() < 1)
+	if (bForce && clipLength() < 1)
 		QFile::remove(filename());
 }
 

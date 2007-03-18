@@ -127,7 +127,7 @@ bool qtractorClipCommand::addClipRecord ( qtractorTrack *pTrack )
 		return false;
 
 	// Time to close the clip...
-	pClip->close();
+	pClip->close(true);
 
 	// Check final length...
 	if (pClip->clipLength() == 0)

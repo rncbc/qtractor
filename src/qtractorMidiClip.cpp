@@ -309,13 +309,16 @@ void qtractorMidiClip::set_loop ( unsigned long /* iLoopStart */,
 
 
 // Clip close-commit (record specific)
-void qtractorMidiClip::close (void)
+void qtractorMidiClip::close ( bool bForce )
 {
 #ifdef CONFIG_DEBUG_0
-	fprintf(stderr, "qtractorMidiClip::close(%p)\n", this);
+	fprintf(stderr, "qtractorMidiClip::close(%p)\n", this, int(bForce));
 #endif
 
-	qtractorSession *pSession = track()->session();
+	qtractorTrack *pTrack = track();
+	if (pTrack == NULL)
+		return;
+	qtractorSession *pSession = pTrack->session();
 	if (pSession == NULL)
 		return;
 
@@ -344,7 +347,7 @@ void qtractorMidiClip::close (void)
 	m_pSeq->clear();
 
 	// If proven empty, remove the file.
-	if (bNewFile && clipLength() < 1)
+	if (bForce && bNewFile && clipLength() < 1)
 		QFile::remove(filename());
 }
 
