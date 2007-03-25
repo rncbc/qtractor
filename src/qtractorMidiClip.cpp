@@ -119,7 +119,7 @@ bool qtractorMidiClip::openMidiFile ( qtractorMidiFile *pFile,
 		m_pSeq->setName(QFileInfo(pFile->filename()).baseName());
 		m_pSeq->setChannel(pTrack->midiChannel());
 		// Nothing more as for writing...
-	} else {	
+	} else {
 		// Read the event sequence in...
 		if (!pFile->readTrack(m_pSeq, iTrackChannel))
 			return false;
@@ -131,9 +131,9 @@ bool qtractorMidiClip::openMidiFile ( qtractorMidiFile *pFile,
 			// Reset session flag now.
 			m_bSessionFlag = false;
 		}
-		// We must have events, otherwise this clip is of now use...
-		if (m_pSeq->events().count() < 1)
-			return false;
+		// We should have events, otherwise this clip is of no use...
+		//if (m_pSeq->events().count() < 1)
+		//	return false;
 	}
 
 	// Clip name should be clear about it all.
@@ -143,7 +143,7 @@ bool qtractorMidiClip::openMidiFile ( qtractorMidiFile *pFile,
 	setTrackChannel(iTrackChannel);
 
 	// Default clip length will be whole sequence duration.
-	if (clipLength() == 0) {
+	if (clipLength() == 0 && m_pSeq->timeLength() > m_pSeq->timeOffset()) {
 		setClipLength(pSession->frameFromTick(
 			m_pSeq->timeLength() - m_pSeq->timeOffset()));
 	}
@@ -200,22 +200,6 @@ int qtractorMidiClip::program (void) const
 {
 	return m_pSeq->program();
 }
-
-
-// Clip time reference settler method.
-void qtractorMidiClip::updateClipTime (void)
-{
-	// Also set proper MIDI clip duration...
-	if (track() && track()->session()) {
-		qtractorClip::setClipLength(
-			track()->session()->frameFromTick(
-				m_pSeq->timeLength() - m_pSeq->timeOffset()));
-	}
-
-	// Set new start time, as inherited...
-	qtractorClip::updateClipTime();
-}
-
 
 
 // Intra-clip tick/time positioning seek.

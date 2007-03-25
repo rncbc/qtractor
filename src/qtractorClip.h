@@ -1,7 +1,7 @@
 // qtractorClip.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2006, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -97,7 +97,7 @@ public:
 	unsigned long fadeOutLength() const;
 
 	// Clip time reference settler method.
-	virtual void updateClipTime();
+	void updateClipTime();
 
 	// Clip (re)open method.
 	virtual void open() = 0;
@@ -140,16 +140,17 @@ protected:
 
 private:
 
-	qtractorTrack *m_pTrack;    	// Track reference.
+	qtractorTrack *m_pTrack;        // Track reference.
 
-	QString        m_sFilename;     // Clip filename (complete path).
-	QString        m_sClipName;     // Clip label.
+	QString       m_sFilename;      // Clip filename (complete path).
+	QString       m_sClipName;      // Clip label.
 
 	unsigned long m_iClipStart;     // Clip frame start.
 	unsigned long m_iClipLength;    // Clip frame length.
 	unsigned long m_iClipOffset;    // Clip frame offset.
 
-	unsigned long m_iClipTime;      // Clip time (tick) start.
+	unsigned long m_iClipStartTime; // Clip time (tick) start.
+	unsigned long m_iClipLengthTime;// Clip time (tick) length.
 
 	unsigned long m_iSelectStart;   // Clip loop start frame-offset.
 	unsigned long m_iSelectEnd;     // Clip loop end frame-offset.

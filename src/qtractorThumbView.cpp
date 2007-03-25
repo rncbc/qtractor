@@ -84,20 +84,23 @@ void qtractorThumbView::updateThumb ( int dx )
 	int w = QFrame::width()  - 2;
 	int h = QFrame::height() - 2;
 
+	int w2 = 0;
+	int x2 = dx;
 	int f2 = pSession->pixelFromFrame(pSession->sessionLength());
-	if (f2 > 0)
+	if (f2 > 0) {
 		f2 += pSession->pixelFromBeat(2 * pSession->beatsPerBar());
-	else
-		f2 += pTracks->trackView()->viewport()->width();
+		w2 += (w * pTracks->trackView()->viewport()->width()) / f2;
+		x2 += (w * pTracks->trackView()->contentsX()) / f2;
+	} else {
+		w2 += w;
+	}
 
-	int w2 = (w * pTracks->trackView()->viewport()->width()) / f2;
 	if (w2 < 8)
 		w2 = 8;
 	else
 	if (w2 > w)
 		w2 = w;
 
-	int x2 = dx + (w * pTracks->trackView()->contentsX()) / f2;
 	if (x2 < 1)
 		x2 = 1;
 	else

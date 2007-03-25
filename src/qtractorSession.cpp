@@ -624,8 +624,8 @@ void qtractorSession::updateSampleRate ( unsigned int iOldSampleRate )
 		//		::lroundf(fRatio * float(pClip->clipStart())));
 			pClip->setClipOffset(
 				::lroundf(fRatio * float(pClip->clipOffset())));
-			pClip->setClipLength(
-				::lroundf(fRatio * float(pClip->clipLength())));
+		//	pClip->setClipLength(
+		//		::lroundf(fRatio * float(pClip->clipLength())));
 			pClip->setFadeInLength(
 				::lroundf(fRatio * float(pClip->fadeInLength())));
 			pClip->setFadeOutLength(

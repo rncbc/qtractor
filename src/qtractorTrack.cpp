@@ -573,10 +573,9 @@ const qtractorList<qtractorClip>& qtractorTrack::clips (void) const
 // Insert a new clip in garanteed sorted fashion.
 void qtractorTrack::addClip ( qtractorClip *pClip )
 {
-	// Priliminary settings...
+	// Preliminary settings...
 	pClip->setTrack(this);
 	pClip->open();
-	pClip->updateClipTime();
 
 	// Special case for initial MIDI tracks...
 	if (m_props.trackType == qtractorTrack::Midi) {

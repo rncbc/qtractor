@@ -1,7 +1,7 @@
 // qtractorClip.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2006, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -50,22 +50,23 @@ qtractorClip::~qtractorClip (void)
 // Reset clip.
 void qtractorClip::clear (void)
 {
-	m_sClipName    = QString::null;
+	m_sClipName       = QString::null;
 	
-	m_iClipStart   = 0;
-	m_iClipLength  = 0;
-	m_iClipOffset  = 0;
-	
-	m_iClipTime    = 0;
+	m_iClipStart      = 0;
+	m_iClipLength     = 0;
+	m_iClipOffset     = 0;
 
-	m_iSelectStart = 0;
-	m_iSelectEnd   = 0;
+    m_iClipStartTime  = 0;
+	m_iClipLengthTime = 0;
 
-	m_iLoopStart   = 0;
-	m_iLoopEnd     = 0;
+	m_iSelectStart    = 0;
+	m_iSelectEnd      = 0;
 
-	m_iFadeInLength  = 0;
-	m_iFadeOutLength = 0;
+	m_iLoopStart      = 0;
+	m_iLoopEnd        = 0;
+
+	m_iFadeInLength   = 0;
+	m_iFadeOutLength  = 0;
 #if 0
 	// This seems a need trade-off between speed and effect.
 	if (m_pTrack && m_pTrack->trackType() == qtractorTrack::Audio) {
@@ -124,8 +125,8 @@ unsigned long qtractorClip::clipStart (void) const
 void qtractorClip::setClipStart ( unsigned long iClipStart )
 {
 	if (m_pTrack && m_pTrack->session()) {
-		m_iClipTime  = m_pTrack->session()->tickFromFrame(iClipStart);
-		m_iClipStart = m_pTrack->session()->frameFromTick(m_iClipTime);
+		m_iClipStartTime = m_pTrack->session()->tickFromFrame(iClipStart);
+		m_iClipStart = m_pTrack->session()->frameFromTick(m_iClipStartTime);
 	} else {
 		m_iClipStart = iClipStart;
 	}
@@ -140,7 +141,12 @@ unsigned long qtractorClip::clipLength (void) const
 
 void qtractorClip::setClipLength ( unsigned long iClipLength )
 {
-	m_iClipLength = iClipLength;
+	if (m_pTrack && m_pTrack->session()) {
+		m_iClipLengthTime  = m_pTrack->session()->tickFromFrame(iClipLength);
+		m_iClipLength = m_pTrack->session()->frameFromTick(m_iClipLengthTime);
+	} else {
+		m_iClipLength = iClipLength;
+	}
 }
 
 
@@ -363,8 +369,10 @@ float qtractorClip::gain ( unsigned long iOffset ) const
 // Clip time reference settler method.
 void qtractorClip::updateClipTime (void)
 {
-	if (m_pTrack && m_pTrack->session())
-		m_iClipStart = m_pTrack->session()->frameFromTick(m_iClipTime);
+	if (m_pTrack && m_pTrack->session()) {
+		m_iClipStart  = m_pTrack->session()->frameFromTick(m_iClipStartTime);
+		m_iClipLength = m_pTrack->session()->frameFromTick(m_iClipLengthTime);
+	}
 }
 
 
