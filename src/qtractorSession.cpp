@@ -933,10 +933,16 @@ void qtractorSession::seek ( unsigned long iFrame, bool bSync )
 
 
 // Session RT-safe pseudo-locking primitives.
-bool qtractorSession::tryLock (void)
+bool qtractorSession::acquire (void)
 {
 	// Are we in business?
 	return ATOMIC_TAS(&m_mutex);
+}
+
+void qtractorSession::release (void)
+{
+	// We're not in business anymore.
+	ATOMIC_SET(&m_mutex, 0);
 }
 
 
@@ -945,7 +951,7 @@ void qtractorSession::lock (void)
 	// Wind up as pending lock...
 	if (ATOMIC_INC(&m_locks) == 1) {
 		// Get lost for a while...
-		while (!tryLock())
+		while (!acquire())
 			stabilize();
 	}
 }
@@ -955,7 +961,7 @@ void qtractorSession::unlock (void)
 	// Unwind pending locks and force back to business...
 	if (ATOMIC_DEC(&m_locks) < 1) {
 		ATOMIC_SET(&m_locks, 0);
-		ATOMIC_SET(&m_mutex, 0);
+		release();
 	}
 }
 

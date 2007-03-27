@@ -378,6 +378,10 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 	if (pSession == NULL)
 		return 0;
 
+	// Session RT-safeness lock...
+	if (!pSession->acquire())
+		return 1;
+
 	qtractorSessionCursor *pAudioCursor = sessionCursor();
 	if (pAudioCursor == NULL)
 		return 0;
@@ -390,10 +394,6 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 		if (pAudioBus)
 			pAudioBus->process_prepare(nframes);
 	}
-
-	// Session RT-safeness lock...
-	if (!pSession->tryLock())
-		return 1;
 
 	// Don't go any further, if not playing.
 	if (!isPlaying()) {
@@ -417,7 +417,7 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 			}
 		}
 		// Done as idle...
-		pSession->unlock();
+		pSession->release();
 		return 1;
 	}
 
@@ -470,7 +470,7 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 	pSession->midiEngine()->sync();
 
 	// Release RT-safeness lock...
-	pSession->unlock();
+	pSession->release();
 
 	// Process session stuff...
 	return 1;

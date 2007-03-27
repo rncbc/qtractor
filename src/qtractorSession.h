@@ -194,7 +194,8 @@ public:
 	bool isActivated() const;
 
 	// Session RT-safe pseudo-locking primitives.
-	bool tryLock();
+	bool acquire();
+	void release();
 	void lock();
 	void unlock();
 
