@@ -1,5 +1,5 @@
 Qtractor - An Audio/MIDI multi-track sequencer
----------------------------------------------
+----------------------------------------------
 
 Qtractor is an Audio/MIDI multi-track sequencer application written
 in C++ around the Qt4 toolkit using Qt Designer.
@@ -13,6 +13,43 @@ specially dedicated to the personal home-studio.
 Homepage: http://qtractor.sourceforge.net
 
 License: GNU General Public License (GPL)
+
+
+Requirements
+------------
+
+The software requirements for build and runtime are listed as follows:
+
+  Mandatory:
+
+  - Qt4 (core, gui, xml), C++ class library and tools for
+        crossplatform development and internationalization
+        http://www.trolltech.org/products/qt/
+
+  - JACK Audio Connection Kit
+        http://jackaudio.org/
+
+  - ALSA, Advanced Linux Sound Architecture
+        http://www.alsa-project.org/
+
+  - libsndfile, C library for reading and writing
+        files containing sampled sound
+        http://www.mega-nerd.com/libsndfile/
+
+  - LADSPA, Linux Audio Developer's Simple Plugin API
+        http://www.ladspa.org/
+
+  Optional (opted-in at build time):
+
+  - libvorbis (enc, file), Ogg Vorbis audio compression
+        http://xiph.org/vorbis/
+
+  - libmad, High-quality MPEG audio decoder
+        http://www.underbit.com/products/mad/
+
+  - libsamplerate, The secret rabbit code, C library
+        for audio sample rate conversion
+        http://www.mega-nerd.com/SRC/
 
 
 Installation
@@ -37,6 +74,11 @@ Just launch ${prefix}/bin/qtractor and you're off (hopefully).
 
 Note that the default installation path ${prefix} is /usr/local.
 
+If you're checking out from CVS, you'll have to prepare the configure
+script just before you proceed with the above instructions:
+
+   make -f Makefile.cvs
+
 
 Configuration
 -------------
@@ -60,6 +102,9 @@ Qtractor is open source free software. For bug reports, feature requests,
 discussion forums, mailling lists, or any other matter related to the
 development of this piece of software, please use the Sourceforge
 project page (http://sourceforge.net/projects/qtractor).
+
+You can also find timely and closer contact information on my personal
+web site (http://www.rncbc.org).
 
 
 Acknowledgments

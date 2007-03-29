@@ -660,7 +660,7 @@ void qtractorSession::addTrack ( qtractorTrack *pTrack )
 void qtractorSession::insertTrack ( qtractorTrack *pTrack,
 	qtractorTrack *pPrevTrack )
 {
-	lock();
+//	lock();
 
 	if (pTrack->trackType() == qtractorTrack::Midi)
 		acquireMidiTag(pTrack);
@@ -689,27 +689,27 @@ void qtractorSession::insertTrack ( qtractorTrack *pTrack,
 	pTrack->setLoop(m_iLoopStart, m_iLoopEnd);
 	pTrack->open();
 
-	unlock();
+//	unlock();
 }
 
 
 void qtractorSession::moveTrack ( qtractorTrack *pTrack,
 	qtractorTrack *pNextTrack )
 {
-	lock();
+//	lock();
 
 	m_tracks.unlink(pTrack);
 	m_tracks.insertBefore(pTrack, pNextTrack);
 
 	reset();
 
-	unlock();
+//	unlock();
 }
 
 
 void qtractorSession::updateTrack ( qtractorTrack *pTrack )
 {
-	lock();
+//	lock();
 
 	pTrack->setLoop(m_iLoopStart, m_iLoopEnd);
 
@@ -719,13 +719,13 @@ void qtractorSession::updateTrack ( qtractorTrack *pTrack )
 		pSessionCursor = pSessionCursor->next();
 	}
 
-	unlock();
+//	unlock();
 }
 
 
 void qtractorSession::unlinkTrack ( qtractorTrack *pTrack )
 {
-	lock();
+//	lock();
 
 	pTrack->setLoop(0, 0);
 	pTrack->close();
@@ -748,7 +748,7 @@ void qtractorSession::unlinkTrack ( qtractorTrack *pTrack )
 
 	m_tracks.unlink(pTrack);
 
-	unlock();
+//	unlock();
 }
 
 

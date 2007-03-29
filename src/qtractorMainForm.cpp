@@ -2534,9 +2534,10 @@ bool qtractorMainForm::startSession (void)
 	} else {
 		// Uh-oh, we can't go on like this...
 		appendMessagesError(
-			tr("The audio engine could not be started.\n\n"
-			"Make sure the JACK audio server (jackd)\n"
-			"is up and running and then restart session."));
+			tr("The audio/MIDI engines could not be started.\n\n"
+			"Make sure the JACK audio server (jackd) and\n"
+			"the ALSA Sequencer kernel module (snd-seq-midi)\n"
+			"are up and running and then restart session."));
 	}
 
 	return bResult;

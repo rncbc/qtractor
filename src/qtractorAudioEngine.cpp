@@ -96,6 +96,8 @@ static void qtractorAudioEngine_shutdown ( void *pvArg )
 	qtractorAudioEngine *pAudioEngine
 		= static_cast<qtractorAudioEngine *> (pvArg);
 
+	pAudioEngine->shutdown();
+
 	if (pAudioEngine->notifyWidget()) {
 		QApplication::postEvent(pAudioEngine->notifyWidget(),
 			new QEvent(pAudioEngine->notifyShutdownType()));
@@ -261,6 +263,13 @@ unsigned int qtractorAudioEngine::sampleRate (void) const
 unsigned int qtractorAudioEngine::bufferSize (void) const
 {
 	return (m_pJackClient ? jack_get_buffer_size(m_pJackClient) : 0);
+}
+
+
+// Special disaster recovery method.
+void qtractorAudioEngine::shutdown (void)
+{
+	m_pJackClient = NULL;
 }
 
 
@@ -801,19 +810,20 @@ void qtractorAudioBus::close (void)
 		= static_cast<qtractorAudioEngine *> (engine());
 	if (pAudioEngine == NULL)
 		return;
-	if (pAudioEngine->jackClient() == NULL)
-		return;
 
 	unsigned short i;
 
 	if (busMode() & qtractorBus::Input) {
 		// Free input ports.
 		if (m_ppIPorts) {
-			for (i = 0; i < m_iChannels; i++) {
-				if (m_ppIPorts[i]) {
-					jack_port_unregister(
-						pAudioEngine->jackClient(), m_ppIPorts[i]);
-					m_ppIPorts[i] = NULL;
+			// Unregister, if we're not shutdown...
+			if (pAudioEngine->jackClient()) {
+				for (i = 0; i < m_iChannels; i++) {
+					if (m_ppIPorts[i]) {
+						jack_port_unregister(
+							pAudioEngine->jackClient(), m_ppIPorts[i]);
+						m_ppIPorts[i] = NULL;
+					}
 				}
 			}
 			delete [] m_ppIPorts;
@@ -828,11 +838,14 @@ void qtractorAudioBus::close (void)
 	if (busMode() & qtractorBus::Output) {
 		// Free output ports.
 		if (m_ppOPorts) {
-			for (i = 0; i < m_iChannels; i++) {
-				if (m_ppOPorts[i]) {
-					jack_port_unregister(
-						pAudioEngine->jackClient(), m_ppOPorts[i]);
-					m_ppOPorts[i] = NULL;
+			// Unregister, if we're not shutdown...
+			if (pAudioEngine->jackClient()) {
+				for (i = 0; i < m_iChannels; i++) {
+					if (m_ppOPorts[i]) {
+						jack_port_unregister(
+							pAudioEngine->jackClient(), m_ppOPorts[i]);
+						m_ppOPorts[i] = NULL;
+					}
 				}
 			}
 			delete [] m_ppOPorts;

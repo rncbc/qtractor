@@ -181,7 +181,7 @@ bool qtractorClipCommand::execute ( bool bRedo )
 	if (pSession == NULL)
 		return false;
 
-	pSession->lock();
+//	pSession->lock();
 
 	QListIterator<Item *> iter(m_items);
 	while (iter.hasNext()) {
@@ -270,7 +270,7 @@ bool qtractorClipCommand::execute ( bool bRedo )
 		}
 	}
 
-	pSession->unlock();
+//	pSession->unlock();
 
 	return true;
 }

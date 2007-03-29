@@ -76,6 +76,9 @@ public:
 	// Buffer size accessor.
 	unsigned int bufferSize() const;
 
+	// Special disaster recovery method.
+	void shutdown();
+
 protected:
 
 	// Concrete device (de)activation methods.
