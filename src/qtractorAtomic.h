@@ -22,72 +22,89 @@
 #ifndef __qtractorAtomic_h
 #define __qtractorAtomic_h
 
+#ifndef HAVE_QATOMIC_H
+#define HAVE_QATOMIC_H
+#endif
+
+#if defined(HAVE_QATOMIC_H)
+#   include <qatomic.h>
+#endif
+
+
 #if defined(__cplusplus)
 extern "C" {
 #endif
 
-typedef struct { volatile int value; } qtractorAtomic;
 
-#if defined(__GNUC__)
+#if defined(HAVE_QATOMIC_H)
+
+static inline int ATOMIC_CAS ( volatile int *pAddr,
+	int iOldValue, int iNewValue )
+{
+	return q_atomic_test_and_set_int(pAddr, iOldValue, iNewValue);
+}
+
+#elif defined(__GNUC__)
 
 #if defined(powerpc) || defined(__ppc__)
 
-static inline int ATOMIC_CAS ( volatile void *pAddr,
-	volatile void *pOldValue, void *pNewValue )
+static inline int ATOMIC_CAS ( volatile int *pAddr,
+	int iOldValue, int iNewValue )
 {
 	register int result;
 	asm volatile (
 		"# ATOMIC_CAS			\n"
 		"	lwarx	r0, 0, %1	\n"
 		"	cmpw	r0, %2		\n"
-		"	bne-	1f          \n"
-		"	sync            	\n"
+		"	bne-	1f			\n"
+		"	sync				\n"
 		"	stwcx.	%3, 0, %1	\n"
-		"	bne-	1f          \n"
-		"   li      %0, 1       \n"
-		"	b		2f          \n"
-		"1:                     \n"
-		"   li      %0, 0       \n"
-		"2:                     \n"
-	:"=r" (result)
-	: "r" (pAddr), "r" (pOldValue), "r" (pNewValue)
-	: "r0"
+		"	bne-	1f			\n"
+		"	li		%0, 1		\n"
+		"	b		2f			\n"
+		"1:						\n"
+		"	li		%0, 0		\n"
+		"2:						\n"
+		: "=r" (result)
+		: "r" (pValue), "r" (iOldValue), "r" (iNewValue)
+		: "r0"
 	);
 	return result;
 }
 
 #elif defined(__i386__) || defined(__x86_64__)
 
-static inline int ATOMIC_CAS ( volatile void *pAddr,
-	volatile void *pOldValue, void *pNewValue )
+static inline int ATOMIC_CAS ( volatile int *pValue,
+	int iOldValue, int iNewValue )
 {
 	register char result;
-	__asm__ __volatile__ (
-		"# ATOMIC_CAS            \n\t"
-		"lock ; cmpxchg %2, (%1) \n\t"
-		"sete %0                 \n\t"
-		:"=a" (result)
-		:"c" (pAddr), "d" (pNewValue), "a" (pOldValue)
+	asm volatile (
+		"# ATOMIC_CAS			\n"
+		"lock ; cmpxchgl %2, %3	\n"
+		"sete %1				\n"
+		: "=a" (iNewValue), "=qm" (result)
+		: "r" (iNewValue), "m" (*pValue), "0" (iOldValue)
+		: "memory"
 	);
 	return result;
 }
 
 #else
-#   error "qtractorAtomic.h: unsupported target compiler processor (GNU)."
+#   error "qtractorAtomic.h: unsupported target compiler processor (GNUC)."
 #endif
 
 #elif defined(WIN32) || defined(__WIN32__) || defined(_WIN32)
 
-static inline int ATOMIC_CAS ( volatile void *pAddr,
-	volatile void *pOldValue, void *pNewValue )
+static inline int ATOMIC_CAS ( volatile int *pValue,
+	int iOldValue, int iNewValue )
 {
 	register char result;
 	__asm {
 		push	ebx
 		push	esi
-		mov		esi, pAddr
-		mov		eax, pOldValue
-		mov		ebx, pNewValue
+		mov		esi, pValue
+		mov		eax, iOldValue
+		mov		ebx, iNewValue
 		lock	cmpxchg dword ptr [esi], ebx
 		sete	result
 		pop		esi
@@ -100,12 +117,15 @@ static inline int ATOMIC_CAS ( volatile void *pAddr,
 #   error "qtractorAtomic.h: unsupported target compiler processor (WIN32)."
 #endif
 
+
+typedef struct { volatile int value; } qtractorAtomic;
+
 #define ATOMIC_GET(a)	((a)->value)
 #define ATOMIC_SET(a,v)	((a)->value = (v))
 
 static inline int ATOMIC_TAS ( qtractorAtomic *pVal )
 {
-	return ATOMIC_CAS(&pVal->value, (void *) 0, (void *) 1);
+	return ATOMIC_CAS(&(pVal->value), 0, 1);
 }
 
 static inline int ATOMIC_ADD ( qtractorAtomic *pVal, int iAddValue )
@@ -114,7 +134,7 @@ static inline int ATOMIC_ADD ( qtractorAtomic *pVal, int iAddValue )
 	do {
 		iOldValue = pVal->value;
 		iNewValue = iOldValue + iAddValue;
-	} while (!ATOMIC_CAS(&pVal->value, (void *) iOldValue, (void *) iNewValue));
+	} while (!ATOMIC_CAS(&(pVal->value), iOldValue, iNewValue));
 	return iNewValue;
 }
 
