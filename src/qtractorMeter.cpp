@@ -46,6 +46,9 @@ qtractorMeterScale::qtractorMeterScale ( qtractorMeter *pMeter,
 
 	QWidget::setMinimumWidth(16);
 //	QWidget::setBackgroundRole(QPalette::Mid);
+
+	const QFont& font = QWidget::font();
+	QWidget::setFont(QFont(font.family(), font.pointSize() - 2));
 }
 
 // Default destructor.
@@ -75,7 +78,7 @@ void qtractorMeterScale::drawLineLabel ( QPainter *p,
 		p->drawLine(iWidth - 3, iCurrY, iWidth - 1, iCurrY);
 	}
 
-	if (iCurrY > m_iLastY - iMidHeight) {
+	if (iCurrY < iMidHeight || iCurrY > m_iLastY + iMidHeight) {
 		p->drawText(2, iCurrY - iMidHeight, iWidth - 3, fm.height(),
 			Qt::AlignHCenter | Qt::AlignVCenter, sLabel);
 		m_iLastY = iCurrY + 1;
@@ -88,10 +91,9 @@ void qtractorMeterScale::paintEvent ( QPaintEvent * )
 {
 	QPainter p(this);
 
-	p.setFont(QFont(QWidget::font().family(), 5));
-	p.setPen(Qt::darkGray);
-
 	m_iLastY = 0;
+
+	p.setPen(Qt::darkGray);
 
 	paintScale(&p);
 }

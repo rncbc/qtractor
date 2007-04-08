@@ -108,6 +108,8 @@ protected slots:
 
 	// In-place selection slot.
 	void currentItemChangedSlot();
+	// In-place toggle slot.
+	void itemClickedSlot(QTreeWidgetItem *pItem);
 	// In-place activate slot.
 	void itemActivatedSlot(QTreeWidgetItem *pItem);
 	// In-place open/close slot.

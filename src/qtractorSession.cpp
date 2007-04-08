@@ -611,6 +611,8 @@ void qtractorSession::updateSampleRate ( unsigned int iOldSampleRate )
 
 	// Give it some room to just that...
 	stabilize();
+	updateTimeScale();
+	stabilize();
 
 	// Set the conversion ratio...
 	float fRatio = float(m_props.sampleRate) / float(iOldSampleRate);
@@ -976,7 +978,9 @@ void qtractorSession::setPlayHead ( unsigned long iFrame )
 	lock();
 	setPlaying(false);
 
-	jack_transport_locate(m_pAudioEngine->jackClient(), iFrame);
+	if (m_pAudioEngine->jackClient())
+		jack_transport_locate(m_pAudioEngine->jackClient(), iFrame);
+
 	seek(iFrame, true);
 
 	setPlaying(bPlaying);

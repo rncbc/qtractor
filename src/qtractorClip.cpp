@@ -124,12 +124,10 @@ unsigned long qtractorClip::clipStart (void) const
 
 void qtractorClip::setClipStart ( unsigned long iClipStart )
 {
-	if (m_pTrack && m_pTrack->session()) {
+	m_iClipStart = iClipStart;
+
+	if (m_pTrack && m_pTrack->session())
 		m_iClipStartTime = m_pTrack->session()->tickFromFrame(iClipStart);
-		m_iClipStart = m_pTrack->session()->frameFromTick(m_iClipStartTime);
-	} else {
-		m_iClipStart = iClipStart;
-	}
 }
 
 
@@ -141,12 +139,10 @@ unsigned long qtractorClip::clipLength (void) const
 
 void qtractorClip::setClipLength ( unsigned long iClipLength )
 {
-	if (m_pTrack && m_pTrack->session()) {
-		m_iClipLengthTime  = m_pTrack->session()->tickFromFrame(iClipLength);
-		m_iClipLength = m_pTrack->session()->frameFromTick(m_iClipLengthTime);
-	} else {
-		m_iClipLength = iClipLength;
-	}
+	m_iClipLength = iClipLength;
+
+	if (m_pTrack && m_pTrack->session())
+		m_iClipLengthTime = m_pTrack->session()->tickFromFrame(iClipLength);
 }
 
 
@@ -369,10 +365,15 @@ float qtractorClip::gain ( unsigned long iOffset ) const
 // Clip time reference settler method.
 void qtractorClip::updateClipTime (void)
 {
-	if (m_pTrack && m_pTrack->session()) {
-		m_iClipStart  = m_pTrack->session()->frameFromTick(m_iClipStartTime);
-		m_iClipLength = m_pTrack->session()->frameFromTick(m_iClipLengthTime);
-	}
+	if (m_pTrack == NULL)
+		return;
+
+	qtractorSession *pSession = m_pTrack->session();
+	if (pSession == NULL)
+		return;
+
+	m_iClipStart  = pSession->frameFromTick(m_iClipStartTime);
+	m_iClipLength = pSession->frameFromTick(m_iClipLengthTime);
 }
 
 

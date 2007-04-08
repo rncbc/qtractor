@@ -271,7 +271,7 @@ qtractorFileListView::qtractorFileListView ( QWidget *pParent )
 	m_pRenameItemAction->setShortcut(tr("Ctrl+E"));
 	m_pDeleteItemAction->setShortcut(tr("Ctrl+D"));
 
-	QTreeWidget::setRootIsDecorated(true);
+	QTreeWidget::setRootIsDecorated(false);
 	QTreeWidget::setUniformRowHeights(true);
 //	QTreeWidget::setDragEnabled(true);
 	QTreeWidget::setAcceptDrops(true);
@@ -317,6 +317,9 @@ qtractorFileListView::qtractorFileListView ( QWidget *pParent )
 	QObject::connect(this,
 		SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)),
 		SLOT(currentItemChangedSlot()));
+	QObject::connect(this,
+		SIGNAL(itemClicked(QTreeWidgetItem*,int)),
+		SLOT(itemClickedSlot(QTreeWidgetItem*)));
 	QObject::connect(this,
 		SIGNAL(itemDoubleClicked(QTreeWidgetItem*,int)),
 		SLOT(itemActivatedSlot(QTreeWidgetItem*)));
@@ -578,6 +581,18 @@ void qtractorFileListView::currentItemChangedSlot (void)
 	bool bEnabled = (pItem && pItem->type() != ChannelItem);
 	m_pRenameItemAction->setEnabled(bEnabled);
 	m_pDeleteItemAction->setEnabled(bEnabled);
+}
+
+
+// In-place toggle slot.
+void qtractorFileListView::itemClickedSlot ( QTreeWidgetItem *pItem )
+{
+	if (pItem && pItem->type() == GroupItem) {
+		qtractorFileGroupItem *pGroupItem
+			= static_cast<qtractorFileGroupItem *> (pItem);
+		if (pGroupItem)
+			pGroupItem->setExpanded(!pGroupItem->isExpanded());
+	}
 }
 
 

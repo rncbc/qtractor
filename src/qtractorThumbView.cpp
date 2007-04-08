@@ -46,6 +46,10 @@
 qtractorThumbView::qtractorThumbView( QWidget *pParent )
 	: QFrame(pParent)
 {
+	// Avoid intensively annoying repaints...
+	QFrame::setAttribute(Qt::WA_StaticContents);
+	QFrame::setAttribute(Qt::WA_OpaquePaintEvent);
+
 	QFrame::setFrameShape(QFrame::Panel);
 	QFrame::setFrameShadow(QFrame::Sunken);
 	QFrame::setMinimumSize(QSize(120, 32));
@@ -156,10 +160,14 @@ void qtractorThumbView::paintEvent ( QPaintEvent *pPaintEvent )
 	if (pTracks == NULL)
 		return;
 
-	QPainter painter(this);
-
 	int w = QFrame::width()  - 2;
 	int h = QFrame::height() - 2;
+	if (w < 2 || h < 2) {
+		QFrame::paintEvent(pPaintEvent);
+		return;
+	}
+
+	QPainter painter(this);
 
 	const QPalette& pal = QFrame::palette();
 	painter.fillRect(1, 1, w, h, pal.dark().color());
@@ -179,16 +187,14 @@ void qtractorThumbView::paintEvent ( QPaintEvent *pPaintEvent )
 		int y2 = 1;
 		qtractorTrack *pTrack = pSession->tracks().first();
 		while (pTrack && y2 < h) {
-			int h2 = ((h * pTrack->zoomHeight()) / c2) - 1;
+			int h2 = ((h * pTrack->zoomHeight()) / c2);
 			if (h2 < 3)
 				h2 = 3;
-			painter.setPen(pTrack->foreground());
-			painter.setBrush(pTrack->background());
 			qtractorClip *pClip = pTrack->clips().first();
 			while (pClip) {
-				x2 = (pClip->clipStart()  / f2) + 1;
+				x2 = (pClip->clipStart()  / f2);
 				w2 = (pClip->clipLength() / f2);
-				painter.drawRect(x2, y2, w2, h2);
+				painter.fillRect(x2, y2, w2 - 1, h2 - 1, pTrack->background());
 				pClip = pClip->next();
 			}
 			y2 += h2;
