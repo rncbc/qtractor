@@ -76,10 +76,14 @@ qtractorTrackTime::~qtractorTrackTime (void)
 // (Re)create the complete track view pixmap.
 void qtractorTrackTime::updatePixmap ( int cx, int /* cy */)
 {
-	const QPalette& pal = qtractorScrollView::palette();
+	QWidget *pViewport = qtractorScrollView::viewport();
+	int w = pViewport->width();
+	int h = pViewport->height();
 
-	int w = qtractorScrollView::width();
-	int h = qtractorScrollView::height();
+	if (w < 1 || h < 1)
+		return;
+
+	const QPalette& pal = qtractorScrollView::palette();
 
 	m_pixmap = QPixmap(w, h);
 	m_pixmap.fill(pal.window().color());

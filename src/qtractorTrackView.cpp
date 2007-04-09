@@ -454,10 +454,14 @@ void qtractorTrackView::resizeEvent ( QResizeEvent *pResizeEvent )
 // (Re)create the complete track view pixmap.
 void qtractorTrackView::updatePixmap ( int cx, int cy )
 {
+	QWidget *pViewport = qtractorScrollView::viewport();
+	int w = pViewport->width();
+	int h = pViewport->height();
+
 	const QPalette& pal = qtractorScrollView::palette();
 
-	int w = qtractorScrollView::width();
-	int h = qtractorScrollView::height();
+	if (w < 1 || h < 1)
+		return;
 
 	m_pixmap = QPixmap(w, h);
 	m_pixmap.fill(pal.dark().color());

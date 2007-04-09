@@ -675,11 +675,14 @@ void qtractorTrackList::drawCell ( QPainter *pPainter, int iRow, int iCol,
 // (Re)create the complete view pixmap.
 void qtractorTrackList::updatePixmap ( int cx, int cy )
 {
-	const QPalette& pal = qtractorScrollView::palette();
-
 	QWidget *pViewport = qtractorScrollView::viewport();
 	int w = pViewport->width();
 	int h = pViewport->height();
+
+	if (w < 1 || h < 1)
+		return;
+
+	const QPalette& pal = qtractorScrollView::palette();
 
 	m_pixmap = QPixmap(w, h);
 	m_pixmap.fill(pal.window().color());
