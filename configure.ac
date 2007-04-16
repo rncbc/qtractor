@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(Qtractor, 0.0.1.582, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.0.1.583, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractorMainForm.ui)
 AC_CONFIG_HEADERS(config.h)
@@ -17,31 +17,32 @@ AC_DEFINE_UNQUOTED(CONFIG_PREFIX, ["$ac_prefix"], [Default installation prefix.]
 # Enable debugging argument option.
 AC_ARG_ENABLE(debug,
   AC_HELP_STRING([--enable-debug], [enable debugging (default=no)]),
-  [ac_debug="debug"],
-  [ac_debug="release"])
+  [ac_debug="$enableval"])
 
-if test "x$ac_debug" = "xdebug"; then
+if test "x$ac_debug" = "xyes"; then
    AC_DEFINE(CONFIG_DEBUG, 1, [Define if debugging is enabled.])
-#  ac_debug="release"
+   ac_debug="debug"
+else
+   ac_debug="release"
 fi
 AC_SUBST(ac_debug)
 
 # Enable libvorbis(file) availability.
 AC_ARG_ENABLE(libvorbis,
-  AC_HELP_STRING([--disable-libvorbis], [disable libvorbis interface (default=no)]),
-  [ac_libvorbis="no"],
+  AC_HELP_STRING([--enable-libvorbis], [enable libvorbis interface (default=yes)]),
+  [ac_libvorbis="$enableval"],
   [ac_libvorbis="yes"])
 
 # Enable libmad availability.
 AC_ARG_ENABLE(libmad,
-  AC_HELP_STRING([--disable-libmad], [disable libmad interface (default=no)]),
-  [ac_libmad="no"],
+  AC_HELP_STRING([--enable-libmad], [enable libmad interface (default=yes)]),
+  [ac_libmad="$enableval"],
   [ac_libmad="yes"])
 
 # Enable libsamplerate availability.
 AC_ARG_ENABLE(libsamplerate,
-  AC_HELP_STRING([--disable-libsamplerate], [disable libsamplerate interface (default=no)]),
-  [ac_libsamplerate="no"],
+  AC_HELP_STRING([--enable-libsamplerate], [enable libsamplerate interface (default=yes)]),
+  [ac_libsamplerate="$enableval"],
   [ac_libsamplerate="yes"])
 
 # Standard installation base dirs.

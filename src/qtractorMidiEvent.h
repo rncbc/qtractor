@@ -73,11 +73,12 @@ public:
 	qtractorMidiEvent(unsigned long time, EventType type,
 		unsigned char data1 = 0, unsigned char data2 = 0,
 		unsigned long duration = 0)
-		: m_time(time), m_type(type), m_duration(duration), m_pSysex(NULL)
-		{ m_data[0] = data1; m_data[1] = data2; }
+		: m_time(time), m_type(type), m_flags(0)
+		{ m_data[0] = data1; m_data[1] = data2; m_u.duration = duration; }
 
 	// Destructor.
-	~qtractorMidiEvent() { if (m_pSysex) delete [] m_pSysex; }
+	~qtractorMidiEvent()
+		{ if (m_type == SYSEX && m_u.pSysex) delete [] m_u.pSysex; }
 
 	// Event properties accessors.
 	unsigned long time()       const { return m_time; }
@@ -88,21 +89,21 @@ public:
 	unsigned char controller() const { return m_data[0]; }
 	unsigned char value()      const { return m_data[1]; }
 
-	// Other special accessor.
-	void setDuration(unsigned long duration) { m_duration = duration; }
-	unsigned long duration()   const { return m_duration; }
+	// Duration accessors (NOTEON).
+	void setDuration(unsigned long duration) { m_u.duration = duration; }
+	unsigned long duration()   const { return m_u.duration; }
 
-	// Sysex data accessors.
-	unsigned char *sysex()     const { return m_pSysex; }
+	// Sysex data accessors (SYSEX).
+	unsigned char *sysex()     const { return m_u.pSysex; }
 	unsigned short sysex_len() const { return *(unsigned short *)(&m_data[0]); }
 
 	// Allocate and set a new sysex buffer.
 	void setSysex(unsigned char *pSysex, unsigned short iSysex)
 	{
-		if (m_pSysex) delete [] m_pSysex;
+		if (m_type == SYSEX && m_u.pSysex) delete [] m_u.pSysex;
 		*(unsigned short *)(&m_data[0]) = iSysex;
-		m_pSysex = new unsigned char [iSysex];
-		::memcpy(m_pSysex, pSysex, iSysex);
+		m_u.pSysex = new unsigned char [iSysex];
+		::memcpy(m_u.pSysex, pSysex, iSysex);
 	}
 
 	// Special accessors for pitch-bend event types.
@@ -119,15 +120,23 @@ public:
 		m_data[1] = (val & 0x3f80) >> 7;
 	}
 
+	// Flags accessors.
+	void setFlags(unsigned long flags) { m_flags = flags; }
+	unsigned long flags() const { return m_flags; }
+
 private:
 
 	// Event instance members.
 	unsigned long  m_time;
 	EventType      m_type;
 	unsigned char  m_data[2];
-	unsigned long  m_duration;
-	// Sysex data (m_data[] has the length).
-	unsigned char *m_pSysex;
+	// Extra event data.
+	union {
+		unsigned long  duration;	// type == NOTEON
+		unsigned char *pSysex;		// type == SYSEX
+	} m_u;
+	// Extra event flags.
+	unsigned long m_flags;
 };
 
 
