@@ -601,7 +601,7 @@ void qtractorFileListView::currentItemChangedSlot (void)
 // In-place toggle slot.
 void qtractorFileListView::itemClickedSlot ( QTreeWidgetItem *pItem )
 {
-	if (pItem && pItem->type() == GroupItem) {
+	if (pItem && pItem->childCount() > 0) {
 		qtractorFileGroupItem *pGroupItem
 			= static_cast<qtractorFileGroupItem *> (pItem);
 		if (pGroupItem)
