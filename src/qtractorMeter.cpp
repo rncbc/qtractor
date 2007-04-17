@@ -73,13 +73,11 @@ void qtractorMeterScale::drawLineLabel ( QPainter *p,
 	const QFontMetrics& fm = p->fontMetrics();
 	int iMidHeight = (fm.height() >> 1);
 
-	if (fm.width(sLabel) < iWidth - 5) {
-		p->drawLine(0, iCurrY, 2, iCurrY);
+	if (fm.width(sLabel) < iWidth - 5)
 		p->drawLine(iWidth - 3, iCurrY, iWidth - 1, iCurrY);
-	}
 
 	if (iCurrY < iMidHeight || iCurrY > m_iLastY + iMidHeight) {
-		p->drawText(2, iCurrY - iMidHeight, iWidth - 3, fm.height(),
+		p->drawText(0, iCurrY - iMidHeight, iWidth - 3, fm.height(),
 			Qt::AlignHCenter | Qt::AlignVCenter, sLabel);
 		m_iLastY = iCurrY + 1;
 	}

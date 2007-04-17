@@ -21,7 +21,6 @@
 
 #include "qtractorAbout.h"
 #include "qtractorMidiClip.h"
-#include "qtractorMidiFile.h"
 #include "qtractorMidiEngine.h"
 
 #include "qtractorSessionDocument.h"
@@ -199,56 +198,6 @@ int qtractorMidiClip::bank (void) const
 int qtractorMidiClip::program (void) const
 {
 	return m_pSeq->program();
-}
-
-
-// Intra-clip tick/time positioning seek.
-qtractorMidiEvent *qtractorMidiClip::ClipCursor::seek (
-	qtractorMidiSequence *pSeq, unsigned long tick )
-{
-	// Plain reset...
-	if (tick == 0) {
-		event = pSeq->events().first();
-		time  = 0;
-	}
-	else
-	if (tick > time) {
-		// Seek forward...
-		if (event == NULL)
-			event = pSeq->events().first();
-		while (event && event->time() < tick)
-			event = event->next();
-		time = tick;
-	}
-	else
-	if (tick < time) {
-		// Seek backward...
-		if (event == NULL)
-			event = pSeq->events().last();
-		while (event && event->time() > tick)
-			event = event->prev();
-		time = tick;
-	}
-	
-	return event;
-}
-
-
-// Intra-clip tick/time positioning reset.
-qtractorMidiEvent *qtractorMidiClip::ClipCursor::reset (
-	qtractorMidiSequence *pSeq,	unsigned long tick )
-{
-	// Reset-seek forward...
-	if (time >= tick)
-		event = NULL;
-	if (event == NULL)
-		event = pSeq->events().first();
-	while (event &&	event->time() + event->duration() < tick)
-		event = event->next();
-	// That was it...
-	time = tick;
-	
-	return event;
 }
 
 

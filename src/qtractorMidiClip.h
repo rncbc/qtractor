@@ -23,6 +23,7 @@
 #define __qtractorMidiClip_h
 
 #include "qtractorClip.h"
+#include "qtractorMidiCursor.h"
 #include "qtractorMidiFile.h"
 
 
@@ -103,24 +104,8 @@ private:
 
 	// To optimize and keep track of current playback
 	// position, mostly like an sequence cursor/iterator.
-	struct ClipCursor
-	{
-		// Constructor.
-		ClipCursor() : event(NULL), time(0) {}
-
-		// Specific methods.
-		qtractorMidiEvent *seek(qtractorMidiSequence *pSeq,
-			unsigned long tick);
-		qtractorMidiEvent *reset(qtractorMidiSequence *pSeq,
-			unsigned long tick = 0);
-		
-		// Instance variables.
-		qtractorMidiEvent *event;
-		unsigned long time;
-	};
-
-	ClipCursor m_playCursor;
-	ClipCursor m_drawCursor;
+	qtractorMidiCursor m_playCursor;
+	qtractorMidiCursor m_drawCursor;
 };
 
 

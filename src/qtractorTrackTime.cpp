@@ -446,8 +446,9 @@ void qtractorTrackTime::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 				pSession->setLoop(pSession->editHead(), pSession->loopEnd());
 				m_pTracks->trackView()->updateContents();
 				updateContents();
+				m_pTracks->contentsChangeNotify();
 			}
-			// Fall thru here...
+			break;
 		case DragEditHead:
 			// Not quite a contents change, but for visual feedback...
 			m_pTracks->selectionChangeNotify();
@@ -459,8 +460,9 @@ void qtractorTrackTime::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 				pSession->setLoop(pSession->loopStart(), pSession->editTail());
 				m_pTracks->trackView()->updateContents();
 				updateContents();
+				m_pTracks->contentsChangeNotify();
 			}
-			// Fall thru here...
+			break;
 		case DragEditTail:
 			// Not quite a contents change, but for visual feedback...
 			m_pTracks->selectionChangeNotify();
