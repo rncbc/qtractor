@@ -214,6 +214,7 @@ public:
 
 	// To show up whether its open or not.
 	void setOpen(bool bOpen);
+	bool isOpen() const;
 
 	// Virtual tooltip renderer.
 	virtual QString toolTip() const;

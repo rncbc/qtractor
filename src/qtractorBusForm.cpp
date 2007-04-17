@@ -267,7 +267,11 @@ void qtractorBusForm::refreshBuses (void)
 		for (qtractorBus *pBus = pAudioEngine->buses().last();
 				pBus; pBus = pBus->prev())
 			new qtractorBusListItem(m_pAudioRoot, pBus);
+#if QT_VERSION >= 0x040201
+		m_pAudioRoot->setExpanded(true);
+#else
 		m_ui.BusListView->setItemExpanded(m_pAudioRoot, true);
+#endif
 	}
 
 	// MIDI buses...
@@ -280,7 +284,11 @@ void qtractorBusForm::refreshBuses (void)
 		for (qtractorBus *pBus = pMidiEngine->buses().last();
 				pBus; pBus = pBus->prev())
 			new qtractorBusListItem(m_pMidiRoot, pBus);
+#if QT_VERSION >= 0x040201
+		m_pMidiRoot->setExpanded(true);
+#else
 		m_ui.BusListView->setItemExpanded(m_pMidiRoot, true);
+#endif
 	}
 
 	// Reselect current bus, if any.

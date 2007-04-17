@@ -95,8 +95,8 @@ public:
 	int rtti() const;
 
     // Connectiopn highlight methods.
-    bool isHilite();
     void setHilite (bool bHilite);
+    bool isHilite() const;
 
 private:
 
@@ -144,8 +144,12 @@ public:
 	int clientMark() const;
 
     // Connection highlight methods.
-    bool isHilite();
     void setHilite (bool bHilite);
+    bool isHilite() const;
+
+	// Client item openness status.
+	void setOpen(bool bOpen);
+	bool isOpen() const;
 
 private:
 

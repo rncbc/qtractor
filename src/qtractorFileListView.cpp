@@ -125,7 +125,11 @@ void qtractorFileGroupItem::setOpen ( bool bOpen )
 	}
 
 	// Open it up...
+#if QT_VERSION >= 0x040201
+	QTreeWidgetItem::setExpanded(bOpen);
+#else
 	QTreeWidgetItem::treeWidget()->setItemExpanded(this, bOpen);
+#endif
 
 	// All ancestors should be also visible.
 	if (bOpen) {
@@ -133,6 +137,16 @@ void qtractorFileGroupItem::setOpen ( bool bOpen )
 		if (pGroupItem)
 			pGroupItem->setOpen(true);
 	}
+}
+
+
+bool qtractorFileGroupItem::isOpen (void) const
+{
+#if QT_VERSION >= 0x040201
+	return QTreeWidgetItem::isExpanded();
+#else
+	return QTreeWidgetItem::treeWidget()->isItemExpanded(this);
+#endif
 }
 
 
@@ -591,7 +605,7 @@ void qtractorFileListView::itemClickedSlot ( QTreeWidgetItem *pItem )
 		qtractorFileGroupItem *pGroupItem
 			= static_cast<qtractorFileGroupItem *> (pItem);
 		if (pGroupItem)
-			pGroupItem->setExpanded(!pGroupItem->isExpanded());
+			pGroupItem->setOpen(!pGroupItem->isOpen());
 	}
 }
 
@@ -661,7 +675,7 @@ void qtractorFileListView::timeoutSlot (void)
 	if (m_pAutoOpenTimer) {
 		m_pAutoOpenTimer->stop();
 		qtractorFileGroupItem *pGroupItem = groupItem(m_pDropItem);
-		if (pGroupItem && !QTreeWidget::isItemExpanded(pGroupItem))
+		if (pGroupItem && !pGroupItem->isOpen())
 			pGroupItem->setOpen(true);
 	}
 }
@@ -1025,8 +1039,7 @@ bool qtractorFileListView::saveListElement ( qtractorDocument *pDocument,
 			= static_cast<qtractorFileGroupItem *> (pItem);
 		QDomElement eGroup = pDocument->document()->createElement("group");
 		eGroup.setAttribute("name",	pGroupItem->text(0));
-		eGroup.setAttribute("open",
-			pDocument->textFromBool(QTreeWidget::isItemExpanded(pGroupItem)));
+		eGroup.setAttribute("open",	pDocument->textFromBool(pGroupItem->isOpen()));
 		int iChildCount = pItem->childCount();
 		for (int i = 0; i < iChildCount; ++i)
 			saveListElement(pDocument, &eGroup, pGroupItem->child(i));

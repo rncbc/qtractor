@@ -244,11 +244,6 @@ const QList<qtractorPortListItem *>& qtractorPortListItem::connects (void) const
 
 
 // Connectiopn highlight methods.
-bool qtractorPortListItem::isHilite (void)
-{
-	return m_bHilite;
-}
-
 void qtractorPortListItem::setHilite ( bool bHilite )
 {
 	// Update the port highlightning if changed...
@@ -261,6 +256,11 @@ void qtractorPortListItem::setHilite ( bool bHilite )
 	// Set the new color.
 	QTreeWidgetItem::setTextColor(0, m_bHilite ? Qt::blue
 		: QTreeWidgetItem::treeWidget()->palette().text().color());
+}
+
+bool qtractorPortListItem::isHilite (void) const
+{
+	return m_bHilite;
 }
 
 
@@ -376,11 +376,6 @@ int qtractorClientListItem::clientMark (void) const
 
 
 // Connectiopn highlight methods.
-bool qtractorClientListItem::isHilite (void)
-{
-	return (m_iHilite > 0);
-}
-
 void qtractorClientListItem::setHilite ( bool bHilite )
 {
 	// Update the client highlightning if changed...
@@ -393,6 +388,32 @@ void qtractorClientListItem::setHilite ( bool bHilite )
 	// Set the new color.
 	QTreeWidgetItem::setTextColor(0, m_iHilite > 0 ? Qt::darkBlue
 		: QTreeWidgetItem::treeWidget()->palette().text().color());		
+}
+
+bool qtractorClientListItem::isHilite (void) const
+{
+	return (m_iHilite > 0);
+}
+
+
+// Client item openness status.
+void qtractorClientListItem::setOpen ( bool bOpen )
+{
+#if QT_VERSION >= 0x040201
+	QTreeWidgetItem::setExpanded(bOpen);
+#else
+	QTreeWidgetItem::treeWidget()->setItemExpanded(this, bOpen);
+#endif
+}
+
+
+bool qtractorClientListItem::isOpen (void) const
+{
+#if QT_VERSION >= 0x040201
+	return QTreeWidgetItem::isExpanded();
+#else
+	return QTreeWidgetItem::treeWidget()->isItemExpanded(this);
+#endif
 }
 
 
@@ -611,12 +632,11 @@ void qtractorClientListView::setOpenAll ( bool bOpen )
 			qtractorPortListItem *pPortItem
 				= static_cast<qtractorPortListItem *> (pChildItem);
 			if (pPortItem) {
-				QTreeWidget::setItemExpanded(pClientItem, bOpen);
+				pClientItem->setOpen(bOpen);
 				QListIterator<qtractorPortListItem *> iter(pPortItem->connects());
 				while (iter.hasNext()) {
 					qtractorPortListItem *pConnectItem = iter.next();
-					pConnectItem->treeWidget()->setItemExpanded(
-						pConnectItem->clientItem(), bOpen);
+					pConnectItem->clientItem()->setOpen(bOpen);
 				}
 			}
 		}
@@ -756,8 +776,13 @@ void qtractorClientListView::timeoutSlot (void)
 {
 	if (m_pAutoOpenTimer) {
 		m_pAutoOpenTimer->stop();
-		if (m_pDropItem && !QTreeWidget::isItemExpanded(m_pDropItem))
-			QTreeWidget::setItemExpanded(m_pDropItem, true);
+		if (m_pDropItem
+			&& m_pDropItem->type() == qtractorConnect::ClientItem) {
+			qtractorClientListItem *pClientItem
+				= static_cast<qtractorClientListItem *> (m_pDropItem);
+			if (pClientItem && !pClientItem->isOpen())
+				pClientItem->setOpen(true);
+		}
 	}
 }
 
@@ -948,8 +973,11 @@ int qtractorConnectorView::itemY ( QTreeWidgetItem *pItem ) const
 	QRect rect;
 	QTreeWidget *pList = pItem->treeWidget();
 	QTreeWidgetItem *pParent = pItem->parent();
-	if (pParent && !pList->isItemExpanded(pParent)) {
-		rect = pList->visualItemRect(pParent);
+	qtractorClientListItem *pClientItem = NULL;
+	if (pParent && pParent->type() == qtractorConnect::ClientItem)
+		pClientItem = static_cast<qtractorClientListItem *> (pParent);
+	if (pClientItem) {
+		rect = pList->visualItemRect(pClientItem);
 	} else {
 		rect = pList->visualItemRect(pItem);
 	}
