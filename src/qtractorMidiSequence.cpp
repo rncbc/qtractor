@@ -66,7 +66,7 @@ void qtractorMidiSequence::clear (void)
 }
 
 
-// Add event to a channel sequence; preserve vent time sort order.
+// Add event to a channel sequence, in time sort order.
 void qtractorMidiSequence::addEvent ( qtractorMidiEvent *pEvent )
 {
 	// NOTE: Find previous note event and compute duration...
@@ -98,13 +98,24 @@ void qtractorMidiSequence::addEvent ( qtractorMidiEvent *pEvent )
 		}
 	}
 
+	// Add it...
+	insertEvent(pEvent);
+}
+
+
+// Insert event in correct time sort order.
+void qtractorMidiSequence::insertEvent ( qtractorMidiEvent *pEvent )
+{
 	// Find the proper position in time sequence...
 	qtractorMidiEvent *pEventAfter = m_events.last();
 	while (pEventAfter && pEventAfter->time() > pEvent->time())
 		pEventAfter = pEventAfter->prev();
 
-	// Add it...
-	m_events.insertAfter(pEvent, pEventAfter);
+	// Insert it...
+	if (pEventAfter)
+		m_events.insertAfter(pEvent, pEventAfter);
+	else
+		m_events.prepend(pEvent);
 }
 
 

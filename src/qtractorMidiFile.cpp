@@ -190,7 +190,7 @@ bool qtractorMidiFile::readTrack ( qtractorMidiSequence *pSeq,
 		iTrackTime += readInt();
 
 		// Read probable status byte...
-		int iStatus = readInt(1);
+		unsigned int iStatus = readInt(1);
 		// Maybe a running status byte?
 		if ((iStatus & 0x80) == 0) {
 			// Go back one byte...
@@ -208,16 +208,16 @@ bool qtractorMidiFile::readTrack ( qtractorMidiSequence *pSeq,
 			type = qtractorMidiEvent::META;
 
 		// Event time converted to sequence resolution...
-		unsigned long time = (iTrackTime * pSeq->ticksPerBeat())
+		unsigned long iTime = (iTrackTime * pSeq->ticksPerBeat())
 			/ m_iTicksPerBeat;
 
 		// Check for sequence time length, if any...
 		if (pSeq->timeLength() > 0
-			&& time > pSeq->timeOffset() + pSeq->timeLength())
+			&& iTime > pSeq->timeOffset() + pSeq->timeLength())
 			break;
 
 		// Check whether it won't be channel filtered...
-		bool bChannelEvent = (time >= pSeq->timeOffset()
+		bool bChannelEvent = (iTime >= pSeq->timeOffset()
 			&& ((iChannelFilter & 0xf0) || (iChannelFilter == iChannel)));
 
 		qtractorMidiEvent *pEvent;
@@ -231,10 +231,10 @@ bool qtractorMidiFile::readTrack ( qtractorMidiSequence *pSeq,
 			data2 = readInt(1);
 			// Check if its channel filtered...
 			if (bChannelEvent) {
-				time -= pSeq->timeOffset();
+				iTime -= pSeq->timeOffset();
 				if (data2 == 0 && type == qtractorMidiEvent::NOTEON)
 					type = qtractorMidiEvent::NOTEOFF;
-				pEvent = new qtractorMidiEvent(time, type, data1, data2);
+				pEvent = new qtractorMidiEvent(iTime, type, data1, data2);
 				pSeq->addEvent(pEvent);
 				pSeq->setChannel(iChannel);
 			}
@@ -244,7 +244,7 @@ bool qtractorMidiFile::readTrack ( qtractorMidiSequence *pSeq,
 			data2 = readInt(1);
 			// Check if its channel filtered...
 			if (bChannelEvent) {
-				time -= pSeq->timeOffset();
+				iTime -= pSeq->timeOffset();
 				// We don't sequence bank select events here,
 				// just set the primordial bank patch...
 				switch (data1) {
@@ -260,7 +260,7 @@ bool qtractorMidiFile::readTrack ( qtractorMidiSequence *pSeq,
 					break;
 				default:
 					// Create the new event...
-					pEvent = new qtractorMidiEvent(time, type, data1, data2);
+					pEvent = new qtractorMidiEvent(iTime, type, data1, data2);
 					pSeq->addEvent(pEvent);
 					break;
 				}
@@ -273,9 +273,9 @@ bool qtractorMidiFile::readTrack ( qtractorMidiSequence *pSeq,
 			data2 = readInt(1);
 			// Check if its channel filtered...
 			if (bChannelEvent) {
-				time -= pSeq->timeOffset();
+				iTime -= pSeq->timeOffset();
 				// Create the new event...
-				pEvent = new qtractorMidiEvent(time, type, data1, data2);
+				pEvent = new qtractorMidiEvent(iTime, type, data1, data2);
 				pSeq->addEvent(pEvent);
 				pSeq->setChannel(iChannel);
 			}
@@ -285,7 +285,7 @@ bool qtractorMidiFile::readTrack ( qtractorMidiSequence *pSeq,
 			data2 = readInt(1);
 			// Check if its channel filtered...
 			if (bChannelEvent) {
-				time -= pSeq->timeOffset();
+				iTime -= pSeq->timeOffset();
 				// We don't sequence prog change events here,
 				// just set the primordial program patch...
 				if (pSeq->program() < 0)
@@ -298,9 +298,9 @@ bool qtractorMidiFile::readTrack ( qtractorMidiSequence *pSeq,
 			data2 = readInt(1);
 			// Check if its channel filtered...
 			if (bChannelEvent) {
-				time -= pSeq->timeOffset();
+				iTime -= pSeq->timeOffset();
 				// Create the new event...
-				pEvent = new qtractorMidiEvent(time, type, data1, data2);
+				pEvent = new qtractorMidiEvent(iTime, type, data1, data2);
 				pSeq->addEvent(pEvent);
 				pSeq->setChannel(iChannel);
 			}
@@ -315,8 +315,8 @@ bool qtractorMidiFile::readTrack ( qtractorMidiSequence *pSeq,
 			}
 			// Check if its channel filtered...
 			if (bChannelEvent) {
-				time -= pSeq->timeOffset();
-				pEvent = new qtractorMidiEvent(time, type);
+				iTime -= pSeq->timeOffset();
+				pEvent = new qtractorMidiEvent(iTime, type);
 				pEvent->setSysex(data, 1 + len);
 				pSeq->addEvent(pEvent);
 				pSeq->setChannel(iChannel);
@@ -443,23 +443,24 @@ bool qtractorMidiFile::writeTrack ( qtractorMidiSequence *pSeq )
 		// Write the whole sequence out...
 		unsigned int  iStatus;
 		unsigned int  iLastStatus = 0;
-		unsigned long iLastTime   = 0;
+		unsigned long iLastTime = 0;
+		unsigned long iTimeOff;
 		unsigned char *data;
 		unsigned int len;
 		qtractorMidiEvent *pNoteAfter;
-		qtractorMidiEvent *pNoteOff = NULL;
+		qtractorMidiEvent *pNoteOff;
 		qtractorList<qtractorMidiEvent> notesOff;
 		notesOff.setAutoDelete(true);
 		for (qtractorMidiEvent *pEvent = pSeq->events().first();
 				pEvent; pEvent = pEvent->next()) {
-			// Event (absolute) time...
-			unsigned long iTime = pEvent->time();
+			// Event (absolute) time converted to file resolution...
+			unsigned long iTime = (pEvent->time() * m_iTicksPerBeat)
+				/ pSeq->ticksPerBeat();
 			// Check for pending note-offs...
-			if (pNoteOff == NULL)
-				pNoteOff = notesOff.first();
-			while (pNoteOff && pNoteOff->time() < iTime) {
+			while ((pNoteOff = notesOff.first()) != NULL
+					&& pNoteOff->time() < iTime) {
 				// - Delta time...
-				unsigned long iTimeOff = pNoteOff->time();
+				iTimeOff = pNoteOff->time();
 				writeInt(iTimeOff > iLastTime ? iTimeOff - iLastTime : 0);
 				iLastTime = iTimeOff;
 				// - Status byte...
@@ -474,7 +475,6 @@ bool qtractorMidiFile::writeTrack ( qtractorMidiSequence *pSeq )
 				writeInt(pNoteOff->velocity(), 1);
 				// Remove from note-off list and continue...
 				notesOff.remove(pNoteOff);
-				pNoteOff = notesOff.first();
 			}
 			// Let's get back to actual event...
 			// - Delta time...
@@ -492,16 +492,19 @@ bool qtractorMidiFile::writeTrack ( qtractorMidiSequence *pSeq )
 			case qtractorMidiEvent::NOTEON:
 				writeInt(pEvent->note(), 1);
 				writeInt(pEvent->velocity(), 1);
+				iTimeOff = (pEvent->time() + pEvent->duration());
 				pNoteOff = new qtractorMidiEvent(
-					pEvent->time() + pEvent->duration(), 
+					(iTimeOff * m_iTicksPerBeat) / pSeq->ticksPerBeat(),
 					qtractorMidiEvent::NOTEOFF,
 					pEvent->note());
 				// Find the proper position in notes-off list ...
 				pNoteAfter = notesOff.last();
 				while (pNoteAfter && pNoteAfter->time() > pNoteOff->time())
 					pNoteAfter = pNoteAfter->prev();
-				notesOff.insertAfter(pNoteOff, pNoteAfter);
-				pNoteOff = NULL;
+				if (pNoteAfter)
+					notesOff.insertAfter(pNoteOff, pNoteAfter);
+				else
+					notesOff.prepend(pNoteOff);
 				break;
 			case qtractorMidiEvent::CONTROLLER:
 				writeInt(pEvent->controller(), 1);
@@ -529,7 +532,7 @@ bool qtractorMidiFile::writeTrack ( qtractorMidiSequence *pSeq )
 		// And all remaining note-offs...
 		while ((pNoteOff = notesOff.first()) != NULL) {
 			// - Delta time...
-			unsigned long iTimeOff = pNoteOff->time();
+			iTimeOff = pNoteOff->time();
 			writeInt(iTimeOff > iLastTime ? iTimeOff - iLastTime : 0);
 			iLastTime = iTimeOff;
 			// - Status byte...

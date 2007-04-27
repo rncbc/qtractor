@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(Qtractor, 0.0.1.586, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.0.1.587, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractorMainForm.ui)
 AC_CONFIG_HEADERS(config.h)
@@ -47,6 +47,15 @@ AC_ARG_ENABLE(libsamplerate,
 
 # Standard installation base dirs.
 ac_with_paths="/usr /usr/local"
+
+# Some a-la-debian alternatives...
+for X in /usr/lib /usr/share; do
+  for Y in qt qt4
+    if test -d $X/$Y/bin; then
+      ac_with_paths="$ac_with_paths $X/$Y"
+    fi
+  done
+done
 
 # Set for alternate Qt installation dir.
 AC_ARG_WITH(qt,

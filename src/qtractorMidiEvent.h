@@ -80,14 +80,25 @@ public:
 	~qtractorMidiEvent()
 		{ if (m_type == SYSEX && m_u.pSysex) delete [] m_u.pSysex; }
 
-	// Event properties accessors.
+	// Event properties accessors (getters).
 	unsigned long time()       const { return m_time; }
 	EventType     type()       const { return m_type; }
-	// Underloaded accessors.
+
+	// Underloaded accessors (getters).
 	unsigned char note()       const { return m_data[0]; }
 	unsigned char velocity()   const { return m_data[1]; }
 	unsigned char controller() const { return m_data[0]; }
 	unsigned char value()      const { return m_data[1]; }
+
+	// Event properties accessors (setters).
+	void setTime(unsigned long time) { m_time = time; }
+	void setType(EventType type)     { m_type = type; }
+
+	// Underloaded accessors (setters).
+	void setNote(unsigned char note)             { m_data[0] = note; }
+	void setVelocity(unsigned char velocity)     { m_data[1] = velocity; }
+	void setController(unsigned char controller) { m_data[0] = controller; }
+	void setValue(unsigned char value)           { m_data[1] = value; }
 
 	// Duration accessors (NOTEON).
 	void setDuration(unsigned long duration) { m_u.duration = duration; }

@@ -87,6 +87,7 @@ public:
 
 	// Event list management methods.
 	void addEvent    (qtractorMidiEvent *pEvent);
+	void insertEvent (qtractorMidiEvent *pEvent);
 	void unlinkEvent (qtractorMidiEvent *pEvent);
 	void removeEvent (qtractorMidiEvent *pEvent);
 
