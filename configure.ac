@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(Qtractor, 0.0.1.587, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.0.1.588, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractorMainForm.ui)
 AC_CONFIG_HEADERS(config.h)
@@ -50,7 +50,7 @@ ac_with_paths="/usr /usr/local"
 
 # Some a-la-debian alternatives...
 for X in /usr/lib /usr/share; do
-  for Y in qt qt4
+  for Y in qt qt4; do
     if test -d $X/$Y/bin; then
       ac_with_paths="$ac_with_paths $X/$Y"
     fi
