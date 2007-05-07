@@ -402,7 +402,7 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 
 	// Session RT-safeness lock...
 	if (!pSession->acquire())
-		return 1;
+		return 0;
 
 	// Don't go any further, if not playing.
 	if (!isPlaying()) {
@@ -427,7 +427,7 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 		}
 		// Done as idle...
 		pSession->release();
-		return 1;
+		return 0;
 	}
 
 	// This the legal process cycle frame range...
@@ -482,7 +482,7 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 	pSession->release();
 
 	// Process session stuff...
-	return 1;
+	return 0;
 }
 
 
