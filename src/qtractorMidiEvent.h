@@ -1,7 +1,7 @@
 // qtractorMidiEvent.h
 //
 /****************************************************************************
-   Copyright (C) 2005, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -76,6 +76,21 @@ public:
 		: m_time(time), m_type(type), m_flags(0)
 		{ m_data[0] = data1; m_data[1] = data2; m_u.duration = duration; }
 
+	// Copy constructor.
+	qtractorMidiEvent(const qtractorMidiEvent& e)
+		: qtractorList<qtractorMidiEvent>::Link(),
+		m_time(e.m_time), m_type(e.m_type), m_flags(e.m_flags)
+	{
+		m_data[0] = e.m_data[0]; m_data[1] = e.m_data[1]; 
+		if (m_type == SYSEX) {
+			unsigned short iSysex = e.sysex_len();
+			m_u.pSysex = new unsigned char [iSysex];
+			::memcpy(m_u.pSysex, e.sysex(), iSysex);
+		} else {
+			m_u.duration = e.m_u.duration;
+		}
+	}
+
 	// Destructor.
 	~qtractorMidiEvent()
 		{ if (m_type == SYSEX && m_u.pSysex) delete [] m_u.pSysex; }
@@ -132,8 +147,8 @@ public:
 	}
 
 	// Flags accessors.
-	void setFlags(unsigned long flags) { m_flags = flags; }
-	unsigned long flags() const { return m_flags; }
+	void setFlags(unsigned int flags) { m_flags = flags; }
+	unsigned int flags() const { return m_flags; }
 
 private:
 
@@ -147,7 +162,7 @@ private:
 		unsigned char *pSysex;		// type == SYSEX
 	} m_u;
 	// Extra event flags.
-	unsigned long m_flags;
+	unsigned int m_flags;
 };
 
 

@@ -500,11 +500,10 @@ void qtractorMixerStrip::panChangedSlot ( float fPanning )
 	// Put it in the form of an undoable command...
 	if (m_pTrack) {
 		pMainForm->commands()->exec(
-			new qtractorTrackPanningCommand(pMainForm, m_pTrack, fPanning));
+			new qtractorTrackPanningCommand(m_pTrack, fPanning));
 	} else if (m_pBus) {
 		pMainForm->commands()->exec(
-			new qtractorBusPanningCommand(pMainForm,
-				m_pBus, m_busMode, fPanning));
+			new qtractorBusPanningCommand(m_pBus, m_busMode, fPanning));
 	}
 }
 
@@ -526,11 +525,10 @@ void qtractorMixerStrip::gainChangedSlot ( float fGain )
 	// Put it in the form of an undoable command...
 	if (m_pTrack) {
 		pMainForm->commands()->exec(
-			new qtractorTrackGainCommand(pMainForm, m_pTrack, fGain));
+			new qtractorTrackGainCommand(m_pTrack, fGain));
 	} else if (m_pBus) {
 		pMainForm->commands()->exec(
-			new qtractorBusGainCommand(pMainForm,
-				m_pBus, m_busMode, fGain));
+			new qtractorBusGainCommand(m_pBus, m_busMode, fGain));
 	}
 }
 
@@ -999,7 +997,7 @@ void qtractorMixer::trackButtonToggledSlot (
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm)
 		pMainForm->commands()->exec(
-			new qtractorTrackButtonCommand(pMainForm, pTrackButton, bOn));
+			new qtractorTrackButtonCommand(pTrackButton, bOn));
 }
 
 

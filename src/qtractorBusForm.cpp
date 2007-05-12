@@ -441,7 +441,7 @@ void qtractorBusForm::createBus (void)
 
 	// Make it as an unduable command...
 	qtractorCreateBusCommand *pCreateBusCommand
-		= new qtractorCreateBusCommand(pMainForm);
+		= new qtractorCreateBusCommand();
 
 	// Set all creational properties...
 	qtractorTrack::TrackType busType = m_pBus->busType();
@@ -495,7 +495,7 @@ void qtractorBusForm::updateBus (void)
 
 	// Make it as an unduable command...
 	qtractorUpdateBusCommand *pUpdateBusCommand
-		= new qtractorUpdateBusCommand(pMainForm, m_pBus);
+		= new qtractorUpdateBusCommand(m_pBus);
 
 	// Set all updated properties...
 	qtractorTrack::TrackType busType = m_pBus->busType();
@@ -556,7 +556,7 @@ void qtractorBusForm::deleteBus (void)
 
 	// Make it as an unduable command...
 	qtractorDeleteBusCommand *pDeleteBusCommand
-		= new qtractorDeleteBusCommand(pMainForm, m_pBus);
+		= new qtractorDeleteBusCommand(m_pBus);
 
 	// Execute and refresh form...
 	if (pMainForm->commands()->exec(pDeleteBusCommand)) {

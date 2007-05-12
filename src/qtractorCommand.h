@@ -24,10 +24,11 @@
 
 #include "qtractorList.h"
 
+#include <QObject>
 #include <QString>
 
 // Forward declarations.
-class qtractorMainForm;
+class QAction;
 
 
 //----------------------------------------------------------------------
@@ -39,12 +40,9 @@ class qtractorCommand : public qtractorList<qtractorCommand>::Link
 public:
 
 	// Constructor.
-	qtractorCommand(qtractorMainForm *pMainForm, const QString& sName);
+	qtractorCommand(const QString& sName);
 	// Destructor.
 	virtual ~qtractorCommand();
-
-	// Main form accessor.
-	qtractorMainForm *mainForm() const { return m_pMainForm; }
 
 	// Descriptive command name accessors.
 	void setName(const QString& sName) { m_sName = sName; }
@@ -67,10 +65,9 @@ protected:
 private:
 
 	// Instance variables.
-	qtractorMainForm *m_pMainForm;
-	QString           m_sName;
-	bool              m_bAutoDelete;
-	bool              m_bRefresh;
+	QString m_sName;
+	bool    m_bAutoDelete;
+	bool    m_bRefresh;
 };
 
 
@@ -78,14 +75,17 @@ private:
 // class qtractorCommandList - declaration.
 //
 
-class qtractorCommandList
+class qtractorCommandList : public QObject
 {
+	Q_OBJECT
+
 public:
 
 	// Constructor.
-	qtractorCommandList(qtractorMainForm *pMainForm);
+	qtractorCommandList();
+
 	// Destructor.
-	~qtractorCommandList();
+	virtual ~qtractorCommandList();
 
 	// Command stack cleaner.
 	void clear();
@@ -103,16 +103,20 @@ public:
 	bool undo();
 	bool redo();
 
-	// Command update helper.
-	void update(bool bRefresh) const;
+	// Command action update helper.
+	void updateAction(QAction *pAction, qtractorCommand *pCommand) const;
+
+signals:
+
+	// Command update notification.
+	void updateNotifySignal(bool);
 
 private:
 
 	// Instance variables.
-	qtractorMainForm *m_pMainForm;
-	qtractorCommand  *m_pLastCommand;
-
 	qtractorList<qtractorCommand> m_commands;
+
+	qtractorCommand *m_pLastCommand;
 };
 
 

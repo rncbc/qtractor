@@ -118,7 +118,7 @@ qtractorMainForm::qtractorMainForm (
 	// Initialize some pointer references.
 	m_pOptions     = NULL;
 	m_pSession     = new qtractorSession();
-	m_pCommands    = new qtractorCommandList(this);
+	m_pCommands    = new qtractorCommandList();
 	m_pInstruments = new qtractorInstrumentList();
 
 	// All child forms are to be created later, not earlier than setup.
@@ -506,6 +506,10 @@ qtractorMainForm::qtractorMainForm (
 	QObject::connect(m_ui.fileMenu,
 		SIGNAL(aboutToShow()),
 		SLOT(updateRecentFilesMenu()));
+
+	QObject::connect(m_pCommands,
+		SIGNAL(updateNotifySignal(bool)),
+		SLOT(updateNotifySlot(bool)));
 }
 
 
@@ -1156,7 +1160,7 @@ bool qtractorMainForm::editSession (void)
 
 	// Now, express the change as a undoable command...
 	m_pCommands->exec(
-		new qtractorPropertyCommand<qtractorSession::Properties> (this,
+		new qtractorPropertyCommand<qtractorSession::Properties> (
 			tr("session properties"), m_pSession->properties(),
 				sessionForm.properties()));
 
@@ -2216,7 +2220,7 @@ bool qtractorMainForm::setRecording ( bool bRecording )
 		// all new clips as a composite command...
 		int iUpdate = 0;
 		qtractorClipCommand *pClipCommand
-			= new qtractorClipCommand(this, tr("record clip"));
+			= new qtractorClipCommand(tr("record clip"));
 		// For all non-empty clip on record...
 		for (qtractorTrack *pTrack = m_pSession->tracks().first();
 				pTrack; pTrack = pTrack->next()) {
@@ -2348,24 +2352,6 @@ void qtractorMainForm::updateTransportTime ( unsigned long iPlayHead )
 }
 
 
-void qtractorMainForm::updateActionCommand ( QAction *pAction,
-	qtractorCommand *pCommand )
-{
-	const QRegExp rxBrackets("[\\s]+\\([^\\)]+\\)$");
-	pAction->setText(pAction->text().remove(rxBrackets));
-	pAction->setStatusTip(pAction->statusTip().remove(rxBrackets));
-	pAction->setToolTip(pAction->toolTip().remove(rxBrackets));
-	if (pCommand) {
-		const QString sCommand  = QString(pCommand->name()).remove(rxBrackets);
-		const QString sBrackets = QString(" (%1)").arg(sCommand);
-		pAction->setText(pAction->text() + sBrackets);
-		pAction->setStatusTip(pAction->statusTip() + sBrackets);
-		pAction->setToolTip(pAction->toolTip() + sBrackets);
-	}
-	pAction->setEnabled(pCommand != NULL);
-}
-
-
 void qtractorMainForm::stabilizeForm (void)
 {
 #ifdef CONFIG_DEBUG_0
@@ -2382,8 +2368,8 @@ void qtractorMainForm::stabilizeForm (void)
 	m_ui.fileSaveAction->setEnabled(m_iDirtyCount > 0);
 
 	// Update edit menu state...
-	updateActionCommand(m_ui.editUndoAction, m_pCommands->lastCommand());
-	updateActionCommand(m_ui.editRedoAction, m_pCommands->nextCommand());
+	m_pCommands->updateAction(m_ui.editUndoAction, m_pCommands->lastCommand());
+	m_pCommands->updateAction(m_ui.editRedoAction, m_pCommands->nextCommand());
 
 	unsigned long iSessionLength = m_pSession->sessionLength();
 	bool bEnabled = (m_pTracks && m_pTracks->currentTrack() != NULL);
@@ -3047,6 +3033,22 @@ void qtractorMainForm::mixerSelectionChanged (void)
 }
 
 
+// Command update helper.
+void qtractorMainForm::updateNotifySlot ( bool bRefresh )
+{
+	// Maybe, just maybe, we've made things larger...
+	m_pSession->updateTimeScale();
+	m_pSession->updateSessionLength();
+
+	// Refresh track-view?
+	if (m_pTracks)
+		m_pTracks->updateContents(bRefresh);
+
+	// Notify who's watching...
+	contentsChanged();
+}
+
+
 // Tracks view contents change slot.
 void qtractorMainForm::contentsChanged (void)
 {
@@ -3085,7 +3087,7 @@ void qtractorMainForm::tempoChanged (void)
 
 	// Now, express the change as a undoable command...
 	m_pCommands->exec(
-		new qtractorPropertyCommand<float> (this,
+		new qtractorPropertyCommand<float> (
 			tr("session tempo"),
 			m_pSession->properties().tempo, fTempo));
 
@@ -3114,7 +3116,7 @@ void qtractorMainForm::snapPerBeatChanged ( int iSnap )
 
 	// Now, express the change as a undoable command...
 	m_pCommands->exec(
-		new qtractorPropertyCommand<unsigned short> (this,
+		new qtractorPropertyCommand<unsigned short> (
 			tr("session snap/beat"),
 			m_pSession->properties().snapPerBeat, iSnapPerBeat));
 }

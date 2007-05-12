@@ -43,8 +43,9 @@ class qtractorTrackCommand : public qtractorCommand
 public:
 
 	// Constructor.
-	qtractorTrackCommand(qtractorMainForm *pMainForm,
-		const QString& sName, qtractorTrack *pTrack);
+	qtractorTrackCommand(const QString& sName,
+		qtractorTrack *pTrack);
+
 	// Destructor.
 	virtual ~qtractorTrackCommand();
 
@@ -73,8 +74,7 @@ class qtractorAddTrackCommand : public qtractorTrackCommand
 public:
 
 	// Constructor.
-	qtractorAddTrackCommand(qtractorMainForm *pMainForm,
-		qtractorTrack *pTrack);
+	qtractorAddTrackCommand(qtractorTrack *pTrack);
 
 	// Track insertion command methods.
 	bool redo();
@@ -91,8 +91,7 @@ class qtractorRemoveTrackCommand : public qtractorTrackCommand
 public:
 
 	// Constructor.
-	qtractorRemoveTrackCommand(qtractorMainForm *pMainForm,
-		qtractorTrack *pTrack);
+	qtractorRemoveTrackCommand(qtractorTrack *pTrack);
 
 	// Track-removal command methods.
 	bool redo();
@@ -109,8 +108,8 @@ class qtractorMoveTrackCommand : public qtractorTrackCommand
 public:
 
 	// Constructor.
-	qtractorMoveTrackCommand(qtractorMainForm *pMainForm,
-		qtractorTrack *pTrack, qtractorTrack *pNextTrack);
+	qtractorMoveTrackCommand(qtractorTrack *pTrack,
+		qtractorTrack *pNextTrack);
 
 	// Track-move command methods.
 	bool redo();
@@ -132,8 +131,7 @@ class qtractorResizeTrackCommand : public qtractorTrackCommand
 public:
 
 	// Constructor.
-	qtractorResizeTrackCommand(qtractorMainForm *pMainForm,
-		qtractorTrack *pTrack, int iZoomHeight);
+	qtractorResizeTrackCommand(qtractorTrack *pTrack, int iZoomHeight);
 
 	// Track-move command methods.
 	bool redo();
@@ -155,7 +153,8 @@ class qtractorImportTrackCommand : public qtractorCommand
 public:
 
 	// Constructor.
-	qtractorImportTrackCommand(qtractorMainForm *pMainForm);
+	qtractorImportTrackCommand();
+
 	// Destructor.
 	~qtractorImportTrackCommand();
 
@@ -188,8 +187,8 @@ class qtractorEditTrackCommand
 public:
 
 	// Constructor.
-	qtractorEditTrackCommand(qtractorMainForm *pMainForm,
-		qtractorTrack *pTrack, const qtractorTrack::Properties& props);
+	qtractorEditTrackCommand(qtractorTrack *pTrack,
+		const qtractorTrack::Properties& props);
 
 	// Overridden track-edit command methods.
 	bool redo();
@@ -210,8 +209,7 @@ class qtractorTrackButtonCommand : public qtractorTrackCommand
 public:
 
 	// Constructor.
-	qtractorTrackButtonCommand(qtractorMainForm *pMainForm,
-		qtractorTrackButton *pTrackButton, bool bOn);
+	qtractorTrackButtonCommand(qtractorTrackButton *pTrackButton, bool bOn);
 
 	// Destructor.
 	~qtractorTrackButtonCommand();
@@ -241,8 +239,7 @@ class qtractorTrackGainCommand : public qtractorTrackCommand
 public:
 
 	// Constructor.
-	qtractorTrackGainCommand(qtractorMainForm *pMainForm,
-		qtractorTrack *pTrack, float fGain);
+	qtractorTrackGainCommand(qtractorTrack *pTrack, float fGain);
 
 	// Track-gain command methods.
 	bool redo();
@@ -272,8 +269,7 @@ class qtractorTrackPanningCommand : public qtractorTrackCommand
 public:
 
 	// Constructor.
-	qtractorTrackPanningCommand(qtractorMainForm *pMainForm,
-		qtractorTrack *pTrack, float fPanning);
+	qtractorTrackPanningCommand(qtractorTrack *pTrack, float fPanning);
 
 	// Track-panning command methods.
 	bool redo();

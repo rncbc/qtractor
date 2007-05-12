@@ -83,13 +83,8 @@ void qtractorMidiSequence::addEvent ( qtractorMidiEvent *pEvent )
 				m_duration = iDuration;
 			m_notes.erase(iter);
 		}
-		// NOTEON: Keep note stats and make it pending on a NOTEOFF...
 		if (pEvent->type() == qtractorMidiEvent::NOTEON) {
-			if (m_noteMin > note || m_noteMin == 0)
-				m_noteMin = note;
-			if (m_noteMax < note || m_noteMax == 0)
-				m_noteMax = note;
-			// Add to lingering notes...
+			// NOTEON: Add to lingering notes...
 			m_notes[note] = pEvent;
 		} else {
 			// NOTEOFF: Won't own this any longer...
@@ -116,6 +111,20 @@ void qtractorMidiSequence::insertEvent ( qtractorMidiEvent *pEvent )
 		m_events.insertAfter(pEvent, pEventAfter);
 	else
 		m_events.prepend(pEvent);
+
+	// NOTEON: Keep note stats and make it pending on a NOTEOFF...
+	if (pEvent->type() == qtractorMidiEvent::NOTEON) {
+		unsigned char note = pEvent->note();
+		if (m_noteMin > note || m_noteMin == 0)
+			m_noteMin = note;
+		if (m_noteMax < note || m_noteMax == 0)
+			m_noteMax = note;
+	}
+
+	// Update maximum duration...
+	unsigned long iDuration = pEvent->time() + pEvent->duration();
+	if (m_duration < iDuration)
+		m_duration = iDuration;
 }
 
 

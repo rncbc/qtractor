@@ -38,8 +38,7 @@ class qtractorClipCommand : public qtractorCommand
 public:
 
 	// Constructor.
-	qtractorClipCommand(qtractorMainForm *pMainForm,
-		const QString& sName);
+	qtractorClipCommand(const QString& sName);
 	// Destructor.
 	virtual ~qtractorClipCommand();
 

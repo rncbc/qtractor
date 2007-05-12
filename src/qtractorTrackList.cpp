@@ -925,8 +925,7 @@ void qtractorTrackList::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 					&& pTrackDrag != pTrackDrop
 					&& pTrackDrag != pTrackDrop->prev()) {
 					pMainForm->commands()->exec(
-						new qtractorMoveTrackCommand(pMainForm,
-							pTrackDrag, pTrackDrop));
+						new qtractorMoveTrackCommand(pTrackDrag, pTrackDrop));
 				}
 			}
 		}
@@ -941,8 +940,7 @@ void qtractorTrackList::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 			qtractorTrack *pTrack = track(m_iDragTrack);
 			if (pTrack) {
 				pMainForm->commands()->exec(
-					new qtractorResizeTrackCommand(pMainForm,
-						pTrack, iZoomHeight));
+					new qtractorResizeTrackCommand(pTrack, iZoomHeight));
 			}
 		}
 		// Fall thru...

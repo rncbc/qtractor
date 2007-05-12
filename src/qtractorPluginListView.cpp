@@ -305,7 +305,7 @@ void qtractorPluginListView::moveItem (
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm)
 		pMainForm->commands()->exec(
-			new qtractorMovePluginCommand(pMainForm, pPlugin, pPrevPlugin));
+			new qtractorMovePluginCommand(pPlugin, pPrevPlugin));
 }
 
 
@@ -326,7 +326,7 @@ void qtractorPluginListView::addPlugin (void)
 
 	// Make it a undoable command...
 	qtractorAddPluginCommand *pAddPluginCommand
-		= new qtractorAddPluginCommand(pMainForm);
+		= new qtractorAddPluginCommand();
 
 	for (int i = 0; i < selectForm.pluginCount(); i++) {
 		// Add an actual plugin item...
@@ -365,7 +365,7 @@ void qtractorPluginListView::removePlugin (void)
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm)
 		pMainForm->commands()->exec(
-			new qtractorRemovePluginCommand(pMainForm, pPlugin));
+			new qtractorRemovePluginCommand(pPlugin));
 }
 
 
@@ -385,8 +385,8 @@ void qtractorPluginListView::activatePlugin (void)
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm)
 		pMainForm->commands()->exec(
-			new qtractorActivatePluginCommand(pMainForm,
-				pPlugin, !pPlugin->isActivated()));
+			new qtractorActivatePluginCommand(pPlugin,
+				!pPlugin->isActivated()));
 }
 
 
@@ -406,7 +406,7 @@ void qtractorPluginListView::activateAllPlugins (void)
 		return;
 
 	qtractorActivatePluginCommand *pActivateAllCommand
-		= new qtractorActivatePluginCommand(pMainForm, NULL, true);
+		= new qtractorActivatePluginCommand(NULL, true);
 	pActivateAllCommand->setName(tr("activate all plugins"));
 
 	for (qtractorPlugin *pPlugin = m_pPluginList->first();
@@ -435,7 +435,7 @@ void qtractorPluginListView::deactivateAllPlugins (void)
 		return;
 
 	qtractorActivatePluginCommand *pDeactivateAllCommand
-		= new qtractorActivatePluginCommand(pMainForm, NULL, false);
+		= new qtractorActivatePluginCommand(NULL, false);
 	pDeactivateAllCommand->setName(tr("deactivate all plugins"));
 
 	for (qtractorPlugin *pPlugin = m_pPluginList->first();
@@ -464,7 +464,7 @@ void qtractorPluginListView::removeAllPlugins (void)
 		return;
 
 	qtractorRemovePluginCommand *pRemoveAllCommand
-		= new qtractorRemovePluginCommand(pMainForm);
+		= new qtractorRemovePluginCommand();
 	pRemoveAllCommand->setName(tr("remove all plugins"));
 
 	for (qtractorPlugin *pPlugin = m_pPluginList->first();
@@ -630,8 +630,8 @@ void qtractorPluginListView::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 				qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 				if (pMainForm) {
 					pMainForm->commands()->exec(
-						new qtractorActivatePluginCommand(pMainForm,
-							pPlugin, !pPlugin->isActivated()));
+						new qtractorActivatePluginCommand(pPlugin,
+							!pPlugin->isActivated()));
 				}
 			}
 		}

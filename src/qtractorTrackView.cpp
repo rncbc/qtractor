@@ -1019,7 +1019,7 @@ void qtractorTrackView::dropEvent (	QDropEvent *pDropEvent )
 
 	// We'll build a composite command...
 	qtractorClipCommand *pClipCommand
-		= new qtractorClipCommand(pMainForm, tr("add clip"));
+		= new qtractorClipCommand(tr("add clip"));
 
 	// Nows time to create the clip(s)...
 	QListIterator<DropItem *> iter(m_dropItems);
@@ -1683,7 +1683,7 @@ void qtractorTrackView::dragFadeDrop ( const QPoint& pos )
 
 	// We'll build a command...
 	qtractorClipCommand *pClipCommand
-		= new qtractorClipCommand(pMainForm, tr("clip %1").arg(
+		= new qtractorClipCommand(tr("clip %1").arg(
 			m_dragState == DragFadeIn ? tr("fade-in") : tr("fade-out")));
 
 	if (m_dragState == DragFadeIn) {
@@ -2032,7 +2032,7 @@ void qtractorTrackView::executeClipSelect ( qtractorTrackView::Command cmd )
 	// We'll build a composite command...
 	qtractorClipCommand *pClipCommand = NULL;
 	if (cmd == Cut || cmd == Delete) {
-		pClipCommand = new qtractorClipCommand(pMainForm,
+		pClipCommand = new qtractorClipCommand(
 			tr("%1 clip").arg(cmd == Cut ? tr("cut") : tr("delete")));
 	}
 
@@ -2157,7 +2157,7 @@ void qtractorTrackView::pasteClipSelect (void)
 
 	// We'll build a composite command...
 	qtractorClipCommand *pClipCommand
-		= new qtractorClipCommand(pMainForm, tr("paste clip"));
+		= new qtractorClipCommand(tr("paste clip"));
 
 	long delta = pSession->editHead()
 		- pSession->frameFromPixel(m_clipboard.rect.x());
@@ -2233,7 +2233,7 @@ void qtractorTrackView::moveClipSelect ( qtractorTrack *pTrack, int dx )
 
 	// We'll build a composite command...
 	qtractorClipCommand *pClipCommand
-		= new qtractorClipCommand(pMainForm, tr("move clip"));
+		= new qtractorClipCommand(tr("move clip"));
 
 	QListIterator<qtractorClipSelect::Item *> iter(m_pClipSelect->items());
 	while (iter.hasNext()) {

@@ -42,8 +42,9 @@ class qtractorPluginCommand : public qtractorCommand
 public:
 
 	// Constructor.
-	qtractorPluginCommand(qtractorMainForm *pMainForm,
-		const QString& sName, qtractorPlugin *pPlugin = NULL);
+	qtractorPluginCommand(const QString& sName,
+		qtractorPlugin *pPlugin = NULL);
+
 	// Destructor.
 	virtual ~qtractorPluginCommand();
 
@@ -77,8 +78,7 @@ class qtractorAddPluginCommand : public qtractorPluginCommand
 public:
 
 	// Constructor.
-	qtractorAddPluginCommand(qtractorMainForm *pMainForm,
-		qtractorPlugin *pPlugin = NULL);
+	qtractorAddPluginCommand(qtractorPlugin *pPlugin = NULL);
 
 	// Plugin insertion command methods.
 	bool redo();
@@ -95,8 +95,7 @@ class qtractorRemovePluginCommand : public qtractorPluginCommand
 public:
 
 	// Constructor.
-	qtractorRemovePluginCommand(qtractorMainForm *pMainForm,
-		qtractorPlugin *pPlugin = NULL);
+	qtractorRemovePluginCommand(qtractorPlugin *pPlugin = NULL);
 
 	// Plugin-removal command methods.
 	bool redo();
@@ -113,8 +112,8 @@ class qtractorMovePluginCommand : public qtractorPluginCommand
 public:
 
 	// Constructor.
-	qtractorMovePluginCommand(qtractorMainForm *pMainForm,
-		qtractorPlugin *pPlugin, qtractorPlugin *pPrevPlugin);
+	qtractorMovePluginCommand(qtractorPlugin *pPlugin,
+		qtractorPlugin *pPrevPlugin);
 
 	// Plugin-move command methods.
 	bool redo();
@@ -136,8 +135,7 @@ class qtractorActivatePluginCommand : public qtractorPluginCommand
 public:
 
 	// Constructor.
-	qtractorActivatePluginCommand(qtractorMainForm *pMainForm,
-		qtractorPlugin *pPlugin, bool bActivated);
+	qtractorActivatePluginCommand(qtractorPlugin *pPlugin, bool bActivated);
 
 	// Plugin-activate command methods.
 	bool redo();
@@ -159,8 +157,7 @@ class qtractorResetPluginCommand : public qtractorPluginCommand
 public:
 
 	// Constructor.
-	qtractorResetPluginCommand(qtractorMainForm *pMainForm,
-		qtractorPlugin *pPlugin);
+	qtractorResetPluginCommand(qtractorPlugin *pPlugin);
 
 	// Plugin-reset command methods.
 	bool redo();
@@ -183,8 +180,8 @@ class qtractorPresetPluginCommand : public qtractorPluginCommand
 public:
 
 	// Constructor.
-	qtractorPresetPluginCommand(qtractorMainForm *pMainForm,
-		qtractorPlugin *pPlugin, const QStringList& vlist);
+	qtractorPresetPluginCommand(qtractorPlugin *pPlugin,
+		const QStringList& vlist);
 
 	// Plugin-preset command methods.
 	bool redo();
@@ -206,8 +203,7 @@ class qtractorPluginPortCommand : public qtractorCommand
 public:
 
 	// Constructor.
-	qtractorPluginPortCommand(qtractorMainForm *pMainForm,
-		qtractorPluginPort *pPort, float fValue);
+	qtractorPluginPortCommand(qtractorPluginPort *pPort, float fValue);
 
 	// Plugin-port command methods.
 	bool redo();

@@ -156,6 +156,7 @@ public slots:
 	void activateMidiFile(const QString& sFilename);
 	void trackSelectionChanged();
 	void mixerSelectionChanged();
+	void updateNotifySlot(bool bRefresh);
 	void contentsChanged();
 	void tempoChanged();
 	void snapPerBeatChanged(int iSnap);
@@ -197,7 +198,6 @@ protected:
 	void updateSession();
 	void updateRecentFiles(const QString& sFilename);
 	void updatePeakAutoRemove();
-	void updateActionCommand(QAction *pAction, qtractorCommand *pCommand);
 	void updateMessagesFont();
 	void updateMessagesLimit();
 	void updateMessagesCapture();

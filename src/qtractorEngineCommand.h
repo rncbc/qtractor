@@ -35,8 +35,7 @@ class qtractorBusCommand : public qtractorCommand
 public:
 
 	// Constructor.
-	qtractorBusCommand(qtractorMainForm *pMainForm,
-		const QString& sName, qtractorBus *pBus = NULL,
+	qtractorBusCommand(const QString& sName, qtractorBus *pBus = NULL,
 		qtractorBus::BusMode busMode = qtractorBus::None);
 
 	// Bus accessors.
@@ -88,7 +87,7 @@ class qtractorCreateBusCommand : public qtractorBusCommand
 public:
 
 	// Constructor.
-	qtractorCreateBusCommand(qtractorMainForm *pMainForm);
+	qtractorCreateBusCommand();
 
 	// Bus creation command methods.
 	bool redo();
@@ -105,7 +104,7 @@ class qtractorUpdateBusCommand : public qtractorBusCommand
 public:
 
 	// Constructor.
-	qtractorUpdateBusCommand(qtractorMainForm *pMainForm, qtractorBus *pBus);
+	qtractorUpdateBusCommand(qtractorBus *pBus);
 
 	// Bus update command methods.
 	bool redo();
@@ -122,7 +121,7 @@ class qtractorDeleteBusCommand : public qtractorBusCommand
 public:
 
 	// Constructor.
-	qtractorDeleteBusCommand(qtractorMainForm *pMainForm, qtractorBus *pBus);
+	qtractorDeleteBusCommand(qtractorBus *pBus);
 
 	// Bus deletion command methods.
 	bool redo();
@@ -139,8 +138,8 @@ class qtractorBusGainCommand : public qtractorBusCommand
 public:
 
 	// Constructor.
-	qtractorBusGainCommand(qtractorMainForm *pMainForm,
-		qtractorBus *pBus, qtractorBus::BusMode busMode, float fGain);
+	qtractorBusGainCommand(qtractorBus *pBus,
+		qtractorBus::BusMode busMode, float fGain);
 
 	// Bus-gain command methods.
 	bool redo();
@@ -170,8 +169,8 @@ class qtractorBusPanningCommand : public qtractorBusCommand
 public:
 
 	// Constructor.
-	qtractorBusPanningCommand(qtractorMainForm *pMainForm,
-		qtractorBus *pBus, qtractorBus::BusMode busMode, float fPanning);
+	qtractorBusPanningCommand(qtractorBus *pBus,
+		qtractorBus::BusMode busMode, float fPanning);
 
 	// Bus-panning command methods.
 	bool redo();

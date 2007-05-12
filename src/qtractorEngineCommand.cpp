@@ -38,9 +38,9 @@
 //
 
 // Constructor.
-qtractorBusCommand::qtractorBusCommand ( qtractorMainForm *pMainForm,
-	const QString& sName, qtractorBus *pBus, qtractorBus::BusMode busMode )
-	: qtractorCommand(pMainForm, sName), m_pBus(pBus), m_busMode(busMode),
+qtractorBusCommand::qtractorBusCommand ( const QString& sName,
+	qtractorBus *pBus, qtractorBus::BusMode busMode )
+	: qtractorCommand(sName), m_pBus(pBus), m_busMode(busMode),
 		m_busType(qtractorTrack::None), m_iChannels(0), m_bAutoConnect(false)
 {
 	setRefresh(false);
@@ -53,7 +53,7 @@ bool qtractorBusCommand::createBus (void)
 	if (m_pBus || m_sBusName.isEmpty())
 		return false;
 		
-	qtractorMainForm *pMainForm = mainForm();
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm == NULL)
 		return false;
 
@@ -113,7 +113,7 @@ bool qtractorBusCommand::updateBus (void)
 	if (m_pBus == NULL || m_sBusName.isEmpty())
 		return false;
 
-	qtractorMainForm *pMainForm = mainForm();
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm == NULL)
 		return false;
 
@@ -221,7 +221,7 @@ bool qtractorBusCommand::deleteBus (void)
 	if (m_pBus == NULL)
 		return false;
 
-	qtractorMainForm *pMainForm = mainForm();
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm == NULL)
 		return false;
 
@@ -289,9 +289,8 @@ bool qtractorBusCommand::deleteBus (void)
 //
 
 // Constructor.
-qtractorCreateBusCommand::qtractorCreateBusCommand (
-	qtractorMainForm *pMainForm )
-	: qtractorBusCommand(pMainForm, QObject::tr("create bus"))
+qtractorCreateBusCommand::qtractorCreateBusCommand (void)
+	: qtractorBusCommand(QObject::tr("create bus"))
 {
 }
 
@@ -312,9 +311,8 @@ bool qtractorCreateBusCommand::undo (void)
 //
 
 // Constructor.
-qtractorUpdateBusCommand::qtractorUpdateBusCommand (
-	qtractorMainForm *pMainForm, qtractorBus *pBus )
-	: qtractorBusCommand(pMainForm, QObject::tr("update bus"), pBus)
+qtractorUpdateBusCommand::qtractorUpdateBusCommand ( qtractorBus *pBus )
+	: qtractorBusCommand(QObject::tr("update bus"), pBus)
 {
 }
 
@@ -330,9 +328,8 @@ bool qtractorUpdateBusCommand::redo (void)
 //
 
 // Constructor.
-qtractorDeleteBusCommand::qtractorDeleteBusCommand (
-	qtractorMainForm *pMainForm, qtractorBus *pBus )
-	: qtractorBusCommand(pMainForm, QObject::tr("delete bus"), pBus)
+qtractorDeleteBusCommand::qtractorDeleteBusCommand ( qtractorBus *pBus )
+	: qtractorBusCommand(QObject::tr("delete bus"), pBus)
 {
 	// Save bus properties for creation (undo)...
 	setBusType(pBus->busType());
@@ -366,10 +363,9 @@ bool qtractorDeleteBusCommand::undo (void)
 //
 
 // Constructor.
-qtractorBusGainCommand::qtractorBusGainCommand (
-	qtractorMainForm *pMainForm, qtractorBus *pBus,
+qtractorBusGainCommand::qtractorBusGainCommand ( qtractorBus *pBus,
 	qtractorBus::BusMode busMode, float fGain )
-	: qtractorBusCommand(pMainForm, "bus gain", pBus, busMode)
+	: qtractorBusCommand(QObject::tr("bus gain"), pBus, busMode)
 {
 	m_fGain     = fGain;
 	m_fPrevGain = 1.0f;
@@ -377,9 +373,10 @@ qtractorBusGainCommand::qtractorBusGainCommand (
 
 	// Try replacing an previously equivalent command...
 	static qtractorBusGainCommand *s_pPrevGainCommand = NULL;
-	if (s_pPrevGainCommand) {
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm && s_pPrevGainCommand) {
 		qtractorCommand *pLastCommand
-			= mainForm()->commands()->lastCommand();
+			= pMainForm->commands()->lastCommand();
 		qtractorCommand *pPrevCommand
 			= static_cast<qtractorCommand *> (s_pPrevGainCommand);
 		if (pPrevCommand == pLastCommand
@@ -396,7 +393,7 @@ qtractorBusGainCommand::qtractorBusGainCommand (
 				if (iPrevSign == iCurrSign) {
 					m_fPrevGain = fLastGain;
 					m_bPrevGain = true;
-					mainForm()->commands()->removeLastCommand();
+					pMainForm->commands()->removeLastCommand();
 				}
 			}
 		}
@@ -410,6 +407,10 @@ bool qtractorBusGainCommand::redo (void)
 {
 	qtractorBus *pBus = bus();
 	if (pBus == NULL)
+		return false;
+
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm == NULL)
 		return false;
 
 	// Set Bus gain (repective monitor gets set too...)
@@ -439,7 +440,7 @@ bool qtractorBusGainCommand::redo (void)
 	m_fGain     = fGain;
 
 	// Mixer/Meter turn...
-	qtractorMixer *pMixer = mainForm()->mixer();
+	qtractorMixer *pMixer = pMainForm->mixer();
 	if (pMixer) {
 		qtractorMixerStrip *pStrip;
 		if ((busMode() & qtractorBus::Input) && pBus->monitor_in()) {
@@ -463,10 +464,9 @@ bool qtractorBusGainCommand::redo (void)
 //
 
 // Constructor.
-qtractorBusPanningCommand::qtractorBusPanningCommand (
-	qtractorMainForm *pMainForm, qtractorBus *pBus,
+qtractorBusPanningCommand::qtractorBusPanningCommand ( qtractorBus *pBus,
 	qtractorBus::BusMode busMode, float fPanning )
-	: qtractorBusCommand(pMainForm, "bus pan", pBus, busMode)
+	: qtractorBusCommand(QObject::tr("bus pan"), pBus, busMode)
 {
 	m_fPanning = fPanning;
 	m_fPrevPanning = 0.0f;
@@ -474,9 +474,10 @@ qtractorBusPanningCommand::qtractorBusPanningCommand (
 
 	// Try replacing an previously equivalent command...
 	static qtractorBusPanningCommand *s_pPrevPanningCommand = NULL;
-	if (s_pPrevPanningCommand) {
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm && s_pPrevPanningCommand) {
 		qtractorCommand *pLastCommand
-			= mainForm()->commands()->lastCommand();
+			= pMainForm->commands()->lastCommand();
 		qtractorCommand *pPrevCommand
 			= static_cast<qtractorCommand *> (s_pPrevPanningCommand);
 		if (pPrevCommand == pLastCommand
@@ -493,7 +494,7 @@ qtractorBusPanningCommand::qtractorBusPanningCommand (
 				if (iPrevSign == iCurrSign) {
 					m_fPrevPanning = fLastPanning;
 					m_bPrevPanning = true;
-					mainForm()->commands()->removeLastCommand();
+					pMainForm->commands()->removeLastCommand();
 				}
 			}
 		}
@@ -507,6 +508,10 @@ bool qtractorBusPanningCommand::redo (void)
 {
 	qtractorBus *pBus = bus();
 	if (pBus == NULL)
+		return false;
+
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm == NULL)
 		return false;
 
 	// Set bus panning (repective monitor gets set too...)
@@ -528,7 +533,7 @@ bool qtractorBusPanningCommand::redo (void)
 	m_fPanning     = fPanning;
 
 	// Mixer/Meter turn...
-	qtractorMixer *pMixer = mainForm()->mixer();
+	qtractorMixer *pMixer = pMainForm->mixer();
 	if (pMixer) {
 		qtractorMixerStrip *pStrip;
 		if ((busMode() & qtractorBus::Input) && pBus->monitor_in()) {

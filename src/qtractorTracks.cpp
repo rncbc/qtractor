@@ -416,7 +416,7 @@ bool qtractorTracks::addTrack (void)
 
 	// Put it in the form of an undoable command...
 	return pMainForm->commands()->exec(
-		new qtractorAddTrackCommand(pMainForm, pTrack));
+		new qtractorAddTrackCommand(pTrack));
 }
 
 
@@ -452,7 +452,7 @@ bool qtractorTracks::removeTrack ( qtractorTrack *pTrack )
 
 	// Put it in the form of an undoable command...
 	return pMainForm->commands()->exec(
-		new qtractorRemoveTrackCommand(pMainForm, pTrack));
+		new qtractorRemoveTrackCommand(pTrack));
 }
 
 
@@ -481,8 +481,7 @@ bool qtractorTracks::editTrack ( qtractorTrack *pTrack )
 
 	// Put it in the form of an undoable command...
 	return pMainForm->commands()->exec(
-		new qtractorEditTrackCommand(pMainForm, pTrack,
-			trackForm.properties()));
+		new qtractorEditTrackCommand(pTrack, trackForm.properties()));
 }
 
 
@@ -502,7 +501,7 @@ bool qtractorTracks::addAudioTracks ( QStringList files,
 
 	// We'll build a composite command...
 	qtractorImportTrackCommand *pImportTrackCommand
-		= new qtractorImportTrackCommand(pMainForm);
+		= new qtractorImportTrackCommand();
 
 	// Increment this for suggestive track coloring...
 	int iTrackCount = pSession->tracks().count();
@@ -575,7 +574,7 @@ bool qtractorTracks::addMidiTracks ( QStringList files,
 
 	// We'll build a composite command...
 	qtractorImportTrackCommand *pImportTrackCommand
-		= new qtractorImportTrackCommand(pMainForm);
+		= new qtractorImportTrackCommand();
 
 	// Increment this for suggestive track coloring...
 	int iTrackCount = pSession->tracks().count();
@@ -681,7 +680,7 @@ bool qtractorTracks::addMidiTrackChannel ( const QString& sPath,
 
 	// We'll build a composite command...
 	qtractorImportTrackCommand *pImportTrackCommand
-		= new qtractorImportTrackCommand(pMainForm);
+		= new qtractorImportTrackCommand();
 
 	// Increment this for suggestive track coloring...
 	int iTrackCount = pSession->tracks().count();
@@ -797,7 +796,7 @@ void qtractorTracks::trackButtonToggledSlot (
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm)
 		pMainForm->commands()->exec(
-			new qtractorTrackButtonCommand(pMainForm, pTrackButton, bOn));
+			new qtractorTrackButtonCommand(pTrackButton, bOn));
 }
 
 

@@ -262,7 +262,7 @@ void qtractorPluginForm::loadPresetSlot ( const QString& sPreset )
 	if (sPreset == g_sDefPreset) {
 		// Reset to default...
 		pMainForm->commands()->exec(
-			new qtractorResetPluginCommand(pMainForm, m_pPlugin));
+			new qtractorResetPluginCommand(m_pPlugin));
 	} else {
 		// An existing preset is about to be loaded...
 		qtractorOptions *pOptions = pMainForm->options();
@@ -275,8 +275,7 @@ void qtractorPluginForm::loadPresetSlot ( const QString& sPreset )
 			// Is it there?
 			if (!vlist.isEmpty()) {
 				pMainForm->commands()->exec(
-					new qtractorPresetPluginCommand(pMainForm,
-						m_pPlugin, vlist));
+					new qtractorPresetPluginCommand(m_pPlugin, vlist));
 			}
 		}
 	}
@@ -369,7 +368,7 @@ void qtractorPluginForm::activateSlot ( bool bOn )
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm)
 		pMainForm->commands()->exec(
-			new qtractorActivatePluginCommand(pMainForm, m_pPlugin, bOn));
+			new qtractorActivatePluginCommand(m_pPlugin, bOn));
 
 	m_iUpdate--;
 }
@@ -388,7 +387,7 @@ void qtractorPluginForm::valueChangeSlot (
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm)
 		pMainForm->commands()->exec(
-			new qtractorPluginPortCommand(pMainForm, pPort, fValue));
+			new qtractorPluginPortCommand(pPort, fValue));
 
 	m_iUpdate--;
 

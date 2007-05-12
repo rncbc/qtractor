@@ -34,9 +34,8 @@
 //
 
 // Constructor.
-qtractorPluginCommand::qtractorPluginCommand ( qtractorMainForm *pMainForm,
-	const QString& sName, qtractorPlugin *pPlugin )
-	: qtractorCommand(pMainForm, sName)
+qtractorPluginCommand::qtractorPluginCommand ( const QString& sName,
+	qtractorPlugin *pPlugin ) : qtractorCommand(sName)
 {
 	if (pPlugin)
 		m_plugins.append(pPlugin);	
@@ -57,7 +56,11 @@ qtractorPluginCommand::~qtractorPluginCommand (void)
 // Add new plugin(s) command methods.
 bool qtractorPluginCommand::addPlugins (void)
 {
-	qtractorSession *pSession = mainForm()->session();
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm == NULL)
+		return false;
+
+	qtractorSession *pSession = pMainForm->session();
 	if (pSession == NULL)
 		return false;
 
@@ -83,7 +86,11 @@ bool qtractorPluginCommand::addPlugins (void)
 // Remove existing plugin(s) command methods.
 bool qtractorPluginCommand::removePlugins (void)
 {
-	qtractorSession *pSession = mainForm()->session();
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm == NULL)
+		return false;
+
+	qtractorSession *pSession = pMainForm->session();
 	if (pSession == NULL)
 		return false;
 
@@ -112,9 +119,8 @@ bool qtractorPluginCommand::removePlugins (void)
 //
 
 // Constructor.
-qtractorAddPluginCommand::qtractorAddPluginCommand (
-	qtractorMainForm *pMainForm, qtractorPlugin *pPlugin )
-	: qtractorPluginCommand(pMainForm, QObject::tr("add plugin"), pPlugin)
+qtractorAddPluginCommand::qtractorAddPluginCommand ( qtractorPlugin *pPlugin )
+	: qtractorPluginCommand(QObject::tr("add plugin"), pPlugin)
 {
 }
 
@@ -137,8 +143,8 @@ bool qtractorAddPluginCommand::undo (void)
 
 // Constructor.
 qtractorRemovePluginCommand::qtractorRemovePluginCommand (
-	qtractorMainForm *pMainForm, qtractorPlugin *pPlugin )
-	: qtractorPluginCommand(pMainForm, QObject::tr("remove plugin"), pPlugin)
+	qtractorPlugin *pPlugin )
+	: qtractorPluginCommand(QObject::tr("remove plugin"), pPlugin)
 {
 }
 
@@ -161,9 +167,8 @@ bool qtractorRemovePluginCommand::undo (void)
 
 // Constructor.
 qtractorMovePluginCommand::qtractorMovePluginCommand (
-	qtractorMainForm *pMainForm, qtractorPlugin *pPlugin,
-		qtractorPlugin *pPrevPlugin )
-	: qtractorPluginCommand(pMainForm, QObject::tr("move plugin"), pPlugin)
+	qtractorPlugin *pPlugin, qtractorPlugin *pPrevPlugin )
+	: qtractorPluginCommand(QObject::tr("move plugin"), pPlugin)
 {
 	m_pPrevPlugin = pPrevPlugin;
 }
@@ -180,7 +185,11 @@ bool qtractorMovePluginCommand::redo (void)
 	if (pPluginList == NULL)
 		return false;
 
-	qtractorSession *pSession = mainForm()->session();
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm == NULL)
+		return false;
+
+	qtractorSession *pSession = pMainForm->session();
 	if (pSession == NULL)
 		return false;
 
@@ -211,8 +220,8 @@ bool qtractorMovePluginCommand::undo (void)
 
 // Constructor.
 qtractorActivatePluginCommand::qtractorActivatePluginCommand (
-	qtractorMainForm *pMainForm, qtractorPlugin *pPlugin, bool bActivated )
-	: qtractorPluginCommand(pMainForm, QObject::tr("activate plugin"), pPlugin)
+	qtractorPlugin *pPlugin, bool bActivated )
+	: qtractorPluginCommand(QObject::tr("activate plugin"), pPlugin)
 {
 	m_bActivated = bActivated;
 }
@@ -247,9 +256,8 @@ bool qtractorActivatePluginCommand::undo (void)
 
 // Constructor.
 qtractorPresetPluginCommand::qtractorPresetPluginCommand (
-	qtractorMainForm *pMainForm, qtractorPlugin *pPlugin,
-	const QStringList& vlist )
-	: qtractorPluginCommand(pMainForm, QObject::tr("preset plugin"), pPlugin)
+	qtractorPlugin *pPlugin, const QStringList& vlist )
+	: qtractorPluginCommand(QObject::tr("preset plugin"), pPlugin)
 {
 	m_vlist = vlist;
 }
@@ -287,8 +295,8 @@ bool qtractorPresetPluginCommand::undo (void)
 
 // Constructor.
 qtractorResetPluginCommand::qtractorResetPluginCommand (
-	qtractorMainForm *pMainForm, qtractorPlugin *pPlugin )
-	: qtractorPluginCommand(pMainForm, QObject::tr("reset plugin"), pPlugin)
+	qtractorPlugin *pPlugin )
+	: qtractorPluginCommand(QObject::tr("reset plugin"), pPlugin)
 {
 	m_bReset = false;
 }
@@ -330,9 +338,8 @@ bool qtractorResetPluginCommand::undo (void)
 
 // Constructor.
 qtractorPluginPortCommand::qtractorPluginPortCommand (
-	qtractorMainForm *pMainForm, qtractorPluginPort *pPort, float fValue )
-	: qtractorCommand(pMainForm, QString(pPort->name()).toLower()),
-		m_pPort(pPort)
+	qtractorPluginPort *pPort, float fValue )
+	: qtractorCommand(QString(pPort->name()).toLower()), m_pPort(pPort)
 {
 	m_fValue = fValue;
 	m_fPrevValue = 0.0f;
@@ -342,9 +349,10 @@ qtractorPluginPortCommand::qtractorPluginPortCommand (
 
 	// Try replacing an previously equivalent command...
 	static qtractorPluginPortCommand *s_pPrevPortCommand = NULL;
-	if (s_pPrevPortCommand) {
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (s_pPrevPortCommand && pMainForm) {
 		qtractorCommand *pLastCommand
-			= mainForm()->commands()->lastCommand();
+			= pMainForm->commands()->lastCommand();
 		qtractorCommand *pPrevCommand
 			= static_cast<qtractorCommand *> (s_pPrevPortCommand);
 		if (pPrevCommand == pLastCommand
@@ -360,7 +368,7 @@ qtractorPluginPortCommand::qtractorPluginPortCommand (
 				if (iPrevSign == iCurrSign) {
 					m_fPrevValue = fLastValue;
 					m_bPrevValue = true;
-					mainForm()->commands()->removeLastCommand();
+					pMainForm->commands()->removeLastCommand();
 				}
 			}
 		}

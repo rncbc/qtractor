@@ -1,7 +1,7 @@
 // qtractorPropertyCommand.h
 //
 /****************************************************************************
-   Copyright (C) 2005, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -35,9 +35,8 @@ class qtractorPropertyCommand : public qtractorCommand
 public:
 
 	// Constructor.
-	qtractorPropertyCommand(qtractorMainForm *pMainForm,
-	    const QString& sName, T& ref, const T& val)
-	    : qtractorCommand(pMainForm, sName), m_ref(ref), m_val(val) {}
+	qtractorPropertyCommand(const QString& sName, T& ref, const T& val)
+	    : qtractorCommand(sName), m_ref(ref), m_val(val) {}
 
 	// Cannonical command methods.
 	bool redo()

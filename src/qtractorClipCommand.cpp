@@ -35,8 +35,8 @@
 //
 
 // Constructor.
-qtractorClipCommand::qtractorClipCommand ( qtractorMainForm *pMainForm,
-	const QString& sName ) : qtractorCommand(pMainForm, sName)
+qtractorClipCommand::qtractorClipCommand ( const QString& sName )
+	: qtractorCommand(sName)
 {
 }
 
@@ -133,8 +133,12 @@ bool qtractorClipCommand::addClipRecord ( qtractorTrack *pTrack )
 	if (pClip->clipLength() == 0)
 		return false;
 
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm == NULL)
+		return false;
+
 	// Reference for immediate file addition...
-	qtractorFiles *pFiles = mainForm()->files();
+	qtractorFiles *pFiles = pMainForm->files();
 
 	// Now, its imperative to make a proper copy of those clips...
 	unsigned long iClipStart = pClip->clipStart();
@@ -177,7 +181,11 @@ bool qtractorClipCommand::addClipRecord ( qtractorTrack *pTrack )
 // Common executive method.
 bool qtractorClipCommand::execute ( bool bRedo )
 {
-	qtractorSession *pSession = mainForm()->session();
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm == NULL)
+		return false;
+
+	qtractorSession *pSession = pMainForm->session();
 	if (pSession == NULL)
 		return false;
 
