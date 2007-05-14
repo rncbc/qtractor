@@ -42,7 +42,6 @@
 #include <QToolButton>
 #include <QScrollBar>
 
-#include <QContextMenuEvent>
 #include <QDragEnterEvent>
 #include <QDragLeaveEvent>
 #include <QDragMoveEvent>
@@ -2321,16 +2320,6 @@ qtractorClip *qtractorTrackView::cloneClip ( qtractorClip *pClip )
 	}
 
 	return pNewClip;
-}
-
-
-// Context menu request slot.
-void qtractorTrackView::contentsContextMenuEvent (
-	QContextMenuEvent *pContextMenuEvent )
-{
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm)
-		pMainForm->editMenu()->exec(pContextMenuEvent->globalPos());
 }
 
 

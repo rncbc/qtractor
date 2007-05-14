@@ -39,7 +39,6 @@ class qtractorTrackListItem;
 
 class QToolButton;
 
-class QContextMenuEvent;
 class QDragEnterEvent;
 class QDragLeaveEvent;
 class QDragMoveEvent;
@@ -215,9 +214,6 @@ protected slots:
 
 	// To have track view in v-sync with track list.
 	void contentsYMovingSlot(int cx, int cy);
-
-	// Context menu request slot.
-	void contentsContextMenuEvent(QContextMenuEvent *pContextMenuEvent);
 
 	// (Re)create the complete track view pixmap.
 	void updatePixmap(int cx, int cy);
