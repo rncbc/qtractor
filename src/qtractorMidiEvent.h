@@ -73,13 +73,13 @@ public:
 	qtractorMidiEvent(unsigned long time, EventType type,
 		unsigned char data1 = 0, unsigned char data2 = 0,
 		unsigned long duration = 0)
-		: m_time(time), m_type(type), m_flags(0)
+		: m_time(time), m_type(type)
 		{ m_data[0] = data1; m_data[1] = data2; m_u.duration = duration; }
 
 	// Copy constructor.
 	qtractorMidiEvent(const qtractorMidiEvent& e)
 		: qtractorList<qtractorMidiEvent>::Link(),
-		m_time(e.m_time), m_type(e.m_type), m_flags(0)
+		m_time(e.m_time), m_type(e.m_type)
 	{
 		m_data[0] = e.m_data[0]; m_data[1] = e.m_data[1]; 
 		if (m_type == SYSEX) {
@@ -146,10 +146,6 @@ public:
 		m_data[1] = (val & 0x3f80) >> 7;
 	}
 
-	// Flags accessors.
-	void setFlags(unsigned int flags) { m_flags = flags; }
-	unsigned int flags() const { return m_flags; }
-
 private:
 
 	// Event instance members.
@@ -161,8 +157,6 @@ private:
 		unsigned long  duration;	// type == NOTEON
 		unsigned char *pSysex;		// type == SYSEX
 	} m_u;
-	// Extra event flags.
-	unsigned int m_flags;
 };
 
 
