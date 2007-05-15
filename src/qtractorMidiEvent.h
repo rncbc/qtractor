@@ -79,7 +79,7 @@ public:
 	// Copy constructor.
 	qtractorMidiEvent(const qtractorMidiEvent& e)
 		: qtractorList<qtractorMidiEvent>::Link(),
-		m_time(e.m_time), m_type(e.m_type), m_flags(e.m_flags)
+		m_time(e.m_time), m_type(e.m_type), m_flags(0)
 	{
 		m_data[0] = e.m_data[0]; m_data[1] = e.m_data[1]; 
 		if (m_type == SYSEX) {

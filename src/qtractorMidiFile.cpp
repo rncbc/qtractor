@@ -22,7 +22,6 @@
 #include "qtractorMidiFile.h"
 
 #include <QFileInfo>
-#include <QMap>
 
 // Symbolic header markers.
 #define SMF_MTHD 0x4d546864

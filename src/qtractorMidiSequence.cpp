@@ -122,9 +122,9 @@ void qtractorMidiSequence::insertEvent ( qtractorMidiEvent *pEvent )
 	}
 
 	// Update maximum duration...
-	unsigned long iDuration = pEvent->time() + pEvent->duration();
-	if (m_duration < iDuration)
-		m_duration = iDuration;
+	unsigned long iTimeEnd = pEvent->time() + pEvent->duration();
+	if (m_duration < iTimeEnd)
+		m_duration = iTimeEnd;
 }
 
 

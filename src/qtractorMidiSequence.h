@@ -25,7 +25,7 @@
 #include "qtractorMidiEvent.h"
 
 #include <QString>
-#include <QMap>
+#include <QHash>
 
 
 //----------------------------------------------------------------------
@@ -91,8 +91,11 @@ public:
 	void unlinkEvent (qtractorMidiEvent *pEvent);
 	void removeEvent (qtractorMidiEvent *pEvent);
 
-	// Sequencer closure method.
+	// Sequence closure method.
 	void close();
+
+	// Typed hash table to track note-ons.
+	typedef QHash<unsigned char, qtractorMidiEvent *> NoteMap;
 
 private:
 
@@ -117,8 +120,7 @@ private:
 	// Sequence instance event list (all same MIDI channel).
 	qtractorList<qtractorMidiEvent> m_events;
 
-	// To track note-ons.
-	typedef QMap<unsigned char, qtractorMidiEvent *> NoteMap;
+	// Local hash table to track note-ons.
 	NoteMap m_notes;
 };
 
