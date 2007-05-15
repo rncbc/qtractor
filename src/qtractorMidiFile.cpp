@@ -457,7 +457,7 @@ bool qtractorMidiFile::writeTrack ( qtractorMidiSequence *pSeq )
 				/ pSeq->ticksPerBeat();
 			// Check for pending note-offs...
 			while ((pNoteOff = notesOff.first()) != NULL
-					&& pNoteOff->time() < iTime) {
+					&& iTime >= pNoteOff->time()) {
 				// - Delta time...
 				iTimeOff = pNoteOff->time();
 				writeInt(iTimeOff > iLastTime ? iTimeOff - iLastTime : 0);
