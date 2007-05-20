@@ -63,6 +63,7 @@ HEADERS += src/qtractorAbout.h \
            src/qtractorTrackView.h \
            src/qtractorTracks.h \
            src/qtractorBusForm.h \
+           src/qtractorClipForm.h \
            src/qtractorConnectForm.h \
            src/qtractorInstrumentForm.h \
            src/qtractorMainForm.h \
@@ -128,6 +129,7 @@ SOURCES += src/main.cpp \
            src/qtractorTrackView.cpp \
            src/qtractorTracks.cpp \
            src/qtractorBusForm.cpp \
+           src/qtractorClipForm.cpp \
            src/qtractorConnectForm.cpp \
            src/qtractorInstrumentForm.cpp \
            src/qtractorMainForm.cpp \
@@ -138,6 +140,7 @@ SOURCES += src/main.cpp \
            src/qtractorTrackForm.cpp
 
 FORMS    = src/qtractorBusForm.ui \
+           src/qtractorClipForm.ui \
            src/qtractorConnectForm.ui \
            src/qtractorInstrumentForm.ui \
            src/qtractorMainForm.ui \

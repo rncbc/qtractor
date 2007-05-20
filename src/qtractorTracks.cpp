@@ -39,6 +39,7 @@
 
 #include "qtractorMainForm.h"
 #include "qtractorTrackForm.h"
+#include "qtractorClipForm.h"
 
 #include <QVBoxLayout>
 #include <QToolButton>
@@ -315,12 +316,14 @@ bool qtractorTracks::editClip ( qtractorClip *pClip )
 	if (pClip == NULL)
 		return false;
 
-#ifdef CONFIG_DEBUG
-	fprintf(stderr, "atrctorTracks::editClip(%p)\n", pClip);
-#endif
+	// Open dialog for settings...
+	qtractorClipForm clipForm(this);
+	clipForm.setClip(pClip);
+	if (!clipForm.exec())
+		return false;
 
-	// TODO: Edit the clip properties...
-	return false;
+	// TODO: Edit the clip properties as an udoable command...
+	return true;
 }
 
 
