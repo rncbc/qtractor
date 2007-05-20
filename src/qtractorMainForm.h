@@ -112,6 +112,7 @@ public slots:
 	void editSelectRange();
 	void editSelectTrack();
 	void editSelectAll();
+	void editClip();
 	void trackAdd();
 	void trackRemove();
 	void trackProperties();

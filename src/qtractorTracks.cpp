@@ -300,6 +300,30 @@ qtractorTrack *qtractorTracks::currentTrack (void) const
 }
 
 
+// Retrieves current selected clip reference.
+qtractorClip *qtractorTracks::currentClip (void) const
+{
+	return m_pTrackView->currentClip();
+}
+
+
+// Edit given(current) track properties.
+bool qtractorTracks::editClip ( qtractorClip *pClip )
+{
+	if (pClip == NULL)
+		pClip = m_pTrackView->currentClip();
+	if (pClip == NULL)
+		return false;
+
+#ifdef CONFIG_DEBUG
+	fprintf(stderr, "atrctorTracks::editClip(%p)\n", pClip);
+#endif
+
+	// TODO: Edit the clip properties...
+	return false;
+}
+
+
 // Whether there's any clip currently selected.
 bool qtractorTracks::isClipSelected (void) const
 {

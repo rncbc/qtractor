@@ -71,6 +71,12 @@
    <addaction name="editPasteAction" />
    <addaction name="separator" />
    <addaction name="editDeleteAction" />
+   <addaction name="separator" />
+   <addaction name="editSelectModeClipAction" />
+   <addaction name="editSelectModeRangeAction" />
+   <addaction name="editSelectModeRectAction" />
+   <addaction name="separator" />
+   <addaction name="editClipAction" />
   </widget>
   <widget class="QToolBar" name="trackToolbar" >
    <property name="orientation" >
@@ -244,6 +250,8 @@
     <addaction name="separator" />
     <addaction name="editSelectModeMenu" />
     <addaction name="editSelectMenu" />
+    <addaction name="separator" />
+    <addaction name="editClipAction" />
    </widget>
    <widget class="QMenu" name="fileMenu" >
     <property name="title" >
@@ -626,6 +634,26 @@
    <property name="shortcut" >
     <string>Ctrl+A</string>
    </property>
+  </action>
+  <action name="editClipAction" >
+	  <property name="icon" >
+		  <iconset resource="../icons/qtractor.qrc" >:/icons/editClip.png</iconset>
+	  </property>
+	  <property name="text" >
+		  <string>&amp;Edit Clip...</string>
+	  </property>
+	  <property name="iconText" >
+		  <string>Edit Clip</string>
+	  </property>
+	  <property name="toolTip" >
+		  <string>Edit clip</string>
+	  </property>
+	  <property name="statusTip" >
+		  <string>Edit current clip</string>
+	  </property>
+	  <property name="shortcut" >
+		  <string>F4</string>
+	  </property>
   </action>
   <action name="trackAddAction" >
    <property name="icon" >
@@ -1185,10 +1213,10 @@
     <iconset resource="../icons/qtractor.qrc" >:/icons/transportFollow.png</iconset>
    </property>
    <property name="text" >
-    <string>F&amp;ollow playhead</string>
+    <string>F&amp;ollow Playhead</string>
    </property>
    <property name="iconText" >
-    <string>Follow playhead</string>
+    <string>Follow Playhead</string>
    </property>
    <property name="statusTip" >
     <string>Follow playhead</string>

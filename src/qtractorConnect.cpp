@@ -976,7 +976,7 @@ int qtractorConnectorView::itemY ( QTreeWidgetItem *pItem ) const
 	qtractorClientListItem *pClientItem = NULL;
 	if (pParent && pParent->type() == qtractorConnect::ClientItem)
 		pClientItem = static_cast<qtractorClientListItem *> (pParent);
-	if (pClientItem) {
+	if (pClientItem && !pClientItem->isOpen()) {
 		rect = pList->visualItemRect(pClientItem);
 	} else {
 		rect = pList->visualItemRect(pItem);

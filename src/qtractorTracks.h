@@ -32,6 +32,7 @@ class qtractorTrackTime;
 class qtractorTrackView;
 class qtractorTrack;
 class qtractorSession;
+class qtractorClip;
 
 
 //----------------------------------------------------------------------------
@@ -76,6 +77,10 @@ public:
 
 	// MIDI track/bus/channel alias active maintenance method.
 	void updateMidiTrack(qtractorTrack *pMidiTrack);
+
+	// Primordial clip management methods.
+	qtractorClip *currentClip() const;
+	bool editClip(qtractorClip *pClip = NULL);
 
 	// Whether there's any clip currently selected.
 	bool isClipSelected() const;

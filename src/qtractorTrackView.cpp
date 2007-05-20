@@ -1115,7 +1115,8 @@ void qtractorTrackView::mousePressEvent ( QMouseEvent *pMouseEvent )
 			break;
 		case Qt::RightButton:
 			// Have no sense if pointer falls over a clip...
-			if (!clipAt(pos)) {
+			m_pClipDrag = clipAt(pos);
+			if (m_pClipDrag == NULL) {
 				// Right-button edit-tail positioning...
 				setEditTail(iFrame);
 				// Not quite a selection, but some visual feedback...
@@ -1263,6 +1264,17 @@ void qtractorTrackView::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 
 	// Make sure we've get focus back...
 	qtractorScrollView::setFocus();
+}
+
+
+// Handle item/clip editing from mouse.
+void qtractorTrackView::mouseDoubleClickEvent ( QMouseEvent *pMouseEvent )
+{
+	qtractorScrollView::mouseDoubleClickEvent(pMouseEvent);
+
+	// By this time we should have something under...
+	m_pTracks->editClip(clipAt(
+		qtractorScrollView::viewportToContents(pMouseEvent->pos())));
 }
 
 
@@ -1501,6 +1513,18 @@ void qtractorTrackView::selectAll ( bool bSelect )
 			updateContents(rectUpdate);
 		m_pTracks->selectionChangeNotify();
 	}
+}
+
+
+// Whether there's any clip currently editable.
+qtractorClip *qtractorTrackView::currentClip (void) const
+{
+	qtractorClip *pClip = m_pClipDrag;
+
+	if (pClip == NULL && isClipSelected())
+		pClip = m_pClipSelect->items().first()->clip;
+
+	return pClip;
 }
 
 

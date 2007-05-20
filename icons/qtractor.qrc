@@ -2,6 +2,7 @@
 	<qresource prefix="/icons/">
 		<file>qtractor.png</file>
 		<file>qtractorTracks.png</file>
+		<file>editClip.png</file>
 		<file>editCopy.png</file>
 		<file>editCut.png</file>
 		<file>editDelete.png</file>

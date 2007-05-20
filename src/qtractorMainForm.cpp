@@ -182,14 +182,14 @@ qtractorMainForm::qtractorMainForm (
 #endif
 
 	// Get edit selection mode action group up...
-	m_ui.editToolbar->addSeparator();
+//	m_ui.editToolbar->addSeparator();
 	m_pSelectModeActionGroup = new QActionGroup(this);
 	m_pSelectModeActionGroup->setExclusive(true);
 //	m_pSelectModeActionGroup->setUsesDropDown(true);
 	m_pSelectModeActionGroup->addAction(m_ui.editSelectModeClipAction);
 	m_pSelectModeActionGroup->addAction(m_ui.editSelectModeRangeAction);
 	m_pSelectModeActionGroup->addAction(m_ui.editSelectModeRectAction);
-	m_ui.editToolbar->addActions(m_pSelectModeActionGroup->actions());
+//	m_ui.editToolbar->addActions(m_pSelectModeActionGroup->actions());
 
 	// Additional time-toolbar controls...
 //	m_ui.timeToolbar->addSeparator();
@@ -406,6 +406,9 @@ qtractorMainForm::qtractorMainForm (
 	QObject::connect(m_ui.editSelectAllAction,
 		SIGNAL(triggered(bool)),
 		SLOT(editSelectAll()));
+	QObject::connect(m_ui.editClipAction,
+		SIGNAL(triggered(bool)),
+		SLOT(editClip()));
 	QObject::connect(m_ui.trackAddAction,
 		SIGNAL(triggered(bool)),
 		SLOT(trackAdd()));
@@ -1583,6 +1586,19 @@ void qtractorMainForm::editSelectAll (void)
 }
 
 
+// Enter in clip edit mode.
+void qtractorMainForm::editClip (void)
+{
+#ifdef CONFIG_DEBUG
+	appendMessages("qtractorMainForm::editClip()");
+#endif
+
+	// Start editing the current clip, if any...
+	if (m_pTracks)
+		m_pTracks->editClip();
+}
+
+
 //-------------------------------------------------------------------------
 // qtractorMainForm -- Track Action slots.
 
@@ -2375,6 +2391,7 @@ void qtractorMainForm::stabilizeForm (void)
 	bool bEnabled = (m_pTracks && m_pTracks->currentTrack() != NULL);
 	bool bSelected = (m_pTracks && m_pTracks->isClipSelected());
 	bool bSelectable = (iSessionLength > 0);
+	bool bEditable = (m_pTracks && m_pTracks->currentClip() != NULL);
 
 	m_ui.editCutAction->setEnabled(bSelected);
 	m_ui.editCopyAction->setEnabled(bSelected);
@@ -2387,6 +2404,8 @@ void qtractorMainForm::stabilizeForm (void)
 		bSelectable  = (m_pSession->editHead() < m_pSession->editTail());
 	m_ui.editSelectRangeAction->setEnabled(bSelectable);
 	m_ui.editSelectNoneAction->setEnabled(bSelected);
+
+	m_ui.editClipAction->setEnabled(bEditable);
 
 	// Update track menu state...
 	m_ui.trackRemoveAction->setEnabled(bEnabled);

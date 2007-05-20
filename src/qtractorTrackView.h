@@ -105,6 +105,9 @@ public:
 	// Select all contents.
 	void selectAll(bool bSelect = true);
 
+	// Whether there's any clip currently editable.
+	qtractorClip *currentClip() const;
+
 	// Whether there's any clip currently selected.
 	bool isClipSelected() const;
 
@@ -178,6 +181,9 @@ protected:
 	void mousePressEvent(QMouseEvent *pMouseEvent);
 	void mouseMoveEvent(QMouseEvent *pMouseEvent);
 	void mouseReleaseEvent(QMouseEvent *pMouseEvent);
+
+	// Handle item/clip editing from mouse.
+	void mouseDoubleClickEvent(QMouseEvent *pMouseEvent);
 
 	// Clip file(item) selection convenience method.
 	void selectClipFile(bool bReset);
