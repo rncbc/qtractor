@@ -281,8 +281,8 @@ bool qtractorClipCommand::execute ( bool bRedo )
 		case FadeInClip: {
 			unsigned long iOldFadeInLength = pClip->fadeInLength();
 			qtractorClip::FadeType oldFadeInType = pClip->fadeInType();
-			pClip->setFadeInLength(pItem->fadeInLength);
 			pClip->setFadeInType(pItem->fadeInType);
+			pClip->setFadeInLength(pItem->fadeInLength);
 			pItem->fadeInLength = iOldFadeInLength;
 			pItem->fadeInType = oldFadeInType;
 			break;
@@ -290,8 +290,8 @@ bool qtractorClipCommand::execute ( bool bRedo )
 		case FadeOutClip: {
 			unsigned long iOldFadeOutLength = pClip->fadeOutLength();
 			qtractorClip::FadeType oldFadeOutType = pClip->fadeOutType();
-			pClip->setFadeOutLength(pItem->fadeOutLength);
 			pClip->setFadeOutType(pItem->fadeOutType);
+			pClip->setFadeOutLength(pItem->fadeOutLength);
 			pItem->fadeOutLength = iOldFadeOutLength;
 			pItem->fadeOutType = oldFadeOutType;
 			break;

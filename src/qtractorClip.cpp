@@ -229,8 +229,8 @@ unsigned long qtractorClip::clipLoopEnd (void) const
 }
 
 
-// Clip fade-in type accessors
-void qtractorClip::setFadeInType( qtractorClip::FadeType fadeType )
+// Clip fade-in accessors
+void qtractorClip::setFadeInType ( qtractorClip::FadeType fadeType )
 {
 	m_fadeIn.fadeType = fadeType;
 }
@@ -240,12 +240,6 @@ qtractorClip::FadeType qtractorClip::fadeInType (void) const
 	return m_fadeIn.fadeType;
 }
 
-
-// Clip fade-in length accessors
-unsigned long qtractorClip::fadeInLength (void) const
-{
-	return m_iFadeInLength;
-}
 
 void qtractorClip::setFadeInLength ( unsigned long iFadeInLength )
 {
@@ -261,9 +255,14 @@ void qtractorClip::setFadeInLength ( unsigned long iFadeInLength )
 	m_iFadeInLength = iFadeInLength;
 }
 
+unsigned long qtractorClip::fadeInLength (void) const
+{
+	return m_iFadeInLength;
+}
 
-// Clip fade-out type accessors
-void qtractorClip::setFadeOutType( qtractorClip::FadeType fadeType )
+
+// Clip fade-out accessors
+void qtractorClip::setFadeOutType ( qtractorClip::FadeType fadeType )
 {
 	m_fadeOut.fadeType = fadeType;
 }
@@ -273,12 +272,6 @@ qtractorClip::FadeType qtractorClip::fadeOutType (void) const
 	return m_fadeOut.fadeType;
 }
 
-
-// Clip fade-out length accessors
-unsigned long qtractorClip::fadeOutLength (void) const
-{
-	return m_iFadeOutLength;
-}
 
 void qtractorClip::setFadeOutLength ( unsigned long iFadeOutLength )
 {
@@ -292,6 +285,11 @@ void qtractorClip::setFadeOutLength ( unsigned long iFadeOutLength )
 	}
 
 	m_iFadeOutLength = iFadeOutLength;
+}
+
+unsigned long qtractorClip::fadeOutLength (void) const
+{
+	return m_iFadeOutLength;
 }
 
 

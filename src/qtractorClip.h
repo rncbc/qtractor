@@ -80,19 +80,17 @@ public:
 	// Fade types.
 	enum FadeType { Linear, Quadratic, Cubic };
 
-	// Clip fade-in type accessors
+	// Clip fade-in accessors
 	void setFadeInType(FadeType fadeType);
 	FadeType fadeInType() const;
 
-	// Clip fade-in length accessors
 	void setFadeInLength(unsigned long iFadeInLength);
 	unsigned long fadeInLength() const;
 	
-	// Clip fade-out type accessors
+	// Clip fade-out accessors
 	void setFadeOutType(FadeType fadeType);
 	FadeType fadeOutType() const;
 
-	// Clip fade-out length accessors
 	void setFadeOutLength(unsigned long iFadeOutLength);
 	unsigned long fadeOutLength() const;
 
