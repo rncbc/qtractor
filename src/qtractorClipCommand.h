@@ -45,6 +45,7 @@ public:
 	// Primitive command methods.
 	void addClip(qtractorClip *pClip, qtractorTrack *pTrack);
 	void removeClip(qtractorClip *pClip);
+	void renameClip(qtractorClip *pClip, const QString& sClipName);
 	void moveClip(qtractorClip *pClip, qtractorTrack *pTrack,
 		unsigned long iClipStart, unsigned long iClipOffset,
 		unsigned long iClipLength);
@@ -69,8 +70,11 @@ private:
 
 	// Primitive command types.
 	enum CommandType {
-		AddClip, RemoveClip, MoveClip, ResizeClip, FadeInClip, FadeOutClip };
-	
+		AddClip, RemoveClip, RenameClip,
+		MoveClip, ResizeClip,
+		FadeInClip, FadeOutClip
+	};
+
 	// Clip item struct.
 	struct Item
 	{
@@ -83,6 +87,7 @@ private:
 		CommandType    command;
 		qtractorClip  *clip;
 		qtractorTrack *track;
+		QString        clipName;
 		unsigned long  clipStart;
 		unsigned long  clipOffset;
 		unsigned long  clipLength;

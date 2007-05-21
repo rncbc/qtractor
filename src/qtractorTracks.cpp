@@ -316,14 +316,10 @@ bool qtractorTracks::editClip ( qtractorClip *pClip )
 	if (pClip == NULL)
 		return false;
 
-	// Open dialog for settings...
+	// Open dialog for settings and immediate command execution...
 	qtractorClipForm clipForm(this);
 	clipForm.setClip(pClip);
-	if (!clipForm.exec())
-		return false;
-
-	// TODO: Edit the clip properties as an udoable command...
-	return true;
+	return clipForm.exec();
 }
 
 

@@ -136,7 +136,8 @@ bool qtractorMidiClip::openMidiFile ( qtractorMidiFile *pFile,
 	}
 
 	// Clip name should be clear about it all.
-	setClipName(m_pSeq->name());
+	if (clipName().isEmpty())
+		setClipName(m_pSeq->name());
 	// Set local properties...
 	setFilename(pFile->filename());
 	setTrackChannel(iTrackChannel);

@@ -463,7 +463,9 @@ bool qtractorClip::loadElement ( qtractorSessionDocument *pDocument,
 				QDomElement eProp = nProp.toElement();
 				if (eProp.isNull())
 					continue;
-				if (eProp.tagName() == "start")
+				if (eProp.tagName() == "name")
+					qtractorClip::setClipName(eProp.text());
+				else if (eProp.tagName() == "start")
 					qtractorClip::setClipStart(eProp.text().toULong());
 				else if (eProp.tagName() == "offset")
 					qtractorClip::setClipOffset(eProp.text().toULong());
@@ -495,6 +497,7 @@ bool qtractorClip::saveElement ( qtractorSessionDocument *pDocument,
 
 	// Save clip properties...
 	QDomElement eProps = pDocument->document()->createElement("properties");
+	pDocument->saveTextElement("name", qtractorClip::clipName(), &eProps);
 	pDocument->saveTextElement("start",
 		QString::number(qtractorClip::clipStart()), &eProps);
 	pDocument->saveTextElement("offset",

@@ -23,6 +23,9 @@
 
 #include "qtractorAbout.h"
 #include "qtractorClip.h"
+#include "qtractorClipCommand.h"
+
+#include "qtractorMainForm.h"
 
 #include <QMessageBox>
 #include <QLineEdit>
@@ -92,9 +95,14 @@ qtractorClip *qtractorClipForm::clip (void) const
 void qtractorClipForm::accept (void)
 {
 	// Save options...
-	if (m_iDirtyCount > 0) {
-		// Make changes permanent...
-		m_pClip->setClipName(m_ui.ClipNameLineEdit->text());
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (m_iDirtyCount > 0 && m_pClip && pMainForm) {
+		// Make changes undoable...
+		qtractorClipCommand *pClipCommand
+			= new qtractorClipCommand(tr("edit clip"));
+		pClipCommand->renameClip(m_pClip, m_ui.ClipNameLineEdit->text());
+		// Do it (but make it undoable)...
+		pMainForm->commands()->exec(pClipCommand);
 		// Reset dirty flag.
 		m_iDirtyCount = 0;
 	}

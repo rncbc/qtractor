@@ -1068,6 +1068,7 @@ void qtractorTrackView::dropEvent (	QDropEvent *pDropEvent )
 void qtractorTrackView::mousePressEvent ( QMouseEvent *pMouseEvent )
 {
 	// Force null state.
+	m_pClipDrag = NULL;
 	resetDragState();
 
 	// Which mouse state?
@@ -1520,7 +1521,7 @@ void qtractorTrackView::selectAll ( bool bSelect )
 qtractorClip *qtractorTrackView::currentClip (void) const
 {
 	qtractorClip *pClip = m_pClipDrag;
-
+fprintf(stderr, "DEBUG> clipDrag=%p\n", pClip);
 	if (pClip == NULL && isClipSelected())
 		pClip = m_pClipSelect->items().first()->clip;
 
@@ -1739,7 +1740,7 @@ void qtractorTrackView::resetDragState (void)
 	// Force null state, now.
 	m_dragState  = DragNone;
 	m_iDraggingX = 0;
-	m_pClipDrag  = NULL;
+//	m_pClipDrag  = NULL;
 
 	// If we were moving clips around,
 	// just hide selection, of course.

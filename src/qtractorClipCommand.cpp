@@ -69,6 +69,15 @@ void qtractorClipCommand::removeClip ( qtractorClip *pClip )
 }
 
 
+void qtractorClipCommand::renameClip ( qtractorClip *pClip,
+	const QString& sClipName )
+{
+	Item *pItem = new Item(RenameClip, pClip, pClip->track());
+	pItem->clipName = sClipName;
+	m_items.append(pItem);
+}
+
+
 void qtractorClipCommand::moveClip ( qtractorClip *pClip,
 	qtractorTrack *pTrack, unsigned long iClipStart,
 	unsigned long iClipOffset, unsigned long iClipLength )
@@ -214,6 +223,12 @@ bool qtractorClipCommand::execute ( bool bRedo )
 				pTrack->addClip(pClip);
 			pItem->autoDelete = bRedo;
 			pSession->updateTrack(pTrack);
+			break;
+		}
+		case RenameClip: {
+			QString sOldName = pClip->clipName();
+			pClip->setClipName(pItem->clipName);
+			pItem->clipName = sOldName;
 			break;
 		}
 		case MoveClip: {
