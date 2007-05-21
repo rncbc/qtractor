@@ -61,6 +61,18 @@ qtractorClipForm::qtractorClipForm (
 	QObject::connect(m_ui.ClipLengthSpinBox,
 		SIGNAL(valueChanged(int)),
 		SLOT(changed()));
+	QObject::connect(m_ui.FadeInLengthSpinBox,
+		SIGNAL(valueChanged(int)),
+		SLOT(changed()));
+	QObject::connect(m_ui.FadeInTypeComboBox,
+		SIGNAL(activated(int)),
+		SLOT(changed()));
+	QObject::connect(m_ui.FadeOutLengthSpinBox,
+		SIGNAL(valueChanged(int)),
+		SLOT(changed()));
+	QObject::connect(m_ui.FadeOutTypeComboBox,
+		SIGNAL(activated(int)),
+		SLOT(changed()));
 	QObject::connect(m_ui.OkPushButton,
 		SIGNAL(clicked()),
 		SLOT(accept()));
@@ -84,9 +96,17 @@ void qtractorClipForm::setClip ( qtractorClip *pClip )
 
 	// Initialize dialog widgets...
 	m_ui.ClipNameLineEdit->setText(m_pClip->clipName());
+	// Parameters...
 	m_ui.ClipStartSpinBox->setValue(m_pClip->clipStart());
 	m_ui.ClipOffsetSpinBox->setValue(m_pClip->clipOffset());
 	m_ui.ClipLengthSpinBox->setValue(m_pClip->clipLength());
+	// dae In/Out...
+	m_ui.FadeInLengthSpinBox->setValue(m_pClip->fadeInLength());
+	m_ui.FadeInTypeComboBox->setCurrentIndex(
+		indexFromFadeType(m_pClip->fadeInType()));
+	m_ui.FadeOutLengthSpinBox->setValue(m_pClip->fadeOutLength());
+	m_ui.FadeOutTypeComboBox->setCurrentIndex(
+		indexFromFadeType(m_pClip->fadeOutType()));
 
 	// Backup clean.
 	m_iDirtyCount = 0;
@@ -113,6 +133,7 @@ void qtractorClipForm::accept (void)
 		qtractorClipCommand *pClipCommand
 			= new qtractorClipCommand(tr("edit clip"));
 		pClipCommand->renameClip(m_pClip, m_ui.ClipNameLineEdit->text());
+		// Parameters...
 		unsigned long iClipStart  = m_ui.ClipStartSpinBox->value();
 		unsigned long iClipOffset = m_ui.ClipOffsetSpinBox->value();
 		unsigned long iClipLength = m_ui.ClipLengthSpinBox->value();
@@ -122,6 +143,20 @@ void qtractorClipForm::accept (void)
 			pClipCommand->resizeClip(m_pClip,
 				iClipStart, iClipOffset, iClipLength);
 		}
+		// Fade in...
+		unsigned long iFadeInLength  = m_ui.FadeInLengthSpinBox->value();
+		qtractorClip::FadeType fadeInType = fadeTypeFromIndex(
+			m_ui.FadeInTypeComboBox->currentIndex());
+		if (iFadeInLength  != m_pClip->fadeInLength()
+			|| fadeInType != m_pClip->fadeInType())
+			pClipCommand->fadeInClip(m_pClip, iFadeInLength, fadeInType);
+		// Fade out...
+		unsigned long iFadeOutLength  = m_ui.FadeOutLengthSpinBox->value();
+		qtractorClip::FadeType fadeOutType = fadeTypeFromIndex(
+			m_ui.FadeOutTypeComboBox->currentIndex());
+		if (iFadeOutLength  != m_pClip->fadeOutLength()
+			|| fadeOutType != m_pClip->fadeOutType())
+			pClipCommand->fadeOutClip(m_pClip, iFadeOutLength, fadeOutType);
 		// Do it (but make it undoable)...
 		pMainForm->commands()->exec(pClipCommand);
 		// Reset dirty flag.
@@ -174,6 +209,44 @@ void qtractorClipForm::stabilizeForm (void)
 	bool bValid = (m_iDirtyCount > 0);
 	bValid = bValid && !m_ui.ClipNameLineEdit->text().isEmpty();
 	m_ui.OkPushButton->setEnabled(bValid);
+}
+
+
+// Fade type index converters.
+qtractorClip::FadeType qtractorClipForm::fadeTypeFromIndex ( int iIndex ) const
+{
+	qtractorClip::FadeType fadeType = qtractorClip::Linear;
+
+	switch (iIndex) {
+	case 1:
+		fadeType = qtractorClip::Quadratic;
+		break;
+	case 2:
+		fadeType = qtractorClip::Cubic;
+		break;
+	default:
+		break;
+	}
+
+	return fadeType;
+}
+
+int qtractorClipForm::indexFromFadeType ( qtractorClip::FadeType fadeType ) const
+{
+	int iIndex = 0;	// qtractorClip::Linear
+
+	switch (fadeType) {
+	case qtractorClip::Quadratic:
+		iIndex = 1;
+		break;
+	case qtractorClip::Cubic:
+		iIndex = 2;
+		break;
+	default:
+		break;
+	}
+
+	return iIndex;
 }
 
 

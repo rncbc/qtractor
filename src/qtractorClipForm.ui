@@ -26,7 +26,7 @@
     <x>0</x>
     <y>0</y>
     <width>338</width>
-    <height>204</height>
+    <height>290</height>
    </rect>
   </property>
   <property name="focusPolicy" >
@@ -98,6 +98,12 @@
       </item>
       <item row="0" column="0" >
        <widget class="QLabel" name="ClipStartTextLLabel" >
+        <property name="minimumSize" >
+         <size>
+          <width>60</width>
+          <height>0</height>
+         </size>
+        </property>
         <property name="text" >
          <string>&amp;Start:</string>
         </property>
@@ -108,6 +114,12 @@
       </item>
       <item row="2" column="0" >
        <widget class="QLabel" name="ClipLengthTextLLabel" >
+        <property name="minimumSize" >
+         <size>
+          <width>60</width>
+          <height>0</height>
+         </size>
+        </property>
         <property name="text" >
          <string>&amp;Length:</string>
         </property>
@@ -118,8 +130,14 @@
       </item>
       <item row="1" column="0" >
        <widget class="QLabel" name="ClipOffsetTextLLabel" >
+        <property name="minimumSize" >
+         <size>
+          <width>60</width>
+          <height>0</height>
+         </size>
+        </property>
         <property name="text" >
-         <string>&amp;Offset:</string>
+         <string>Offse&amp;t:</string>
         </property>
         <property name="buddy" >
          <cstring>ClipOffsetSpinBox</cstring>
@@ -135,6 +153,15 @@
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
+        </property>
+        <property name="maximumSize" >
+         <size>
+          <width>100</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="toolTip" >
+         <string>Clip offset</string>
         </property>
         <property name="alignment" >
          <set>Qt::AlignRight</set>
@@ -160,6 +187,15 @@
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
+        <property name="maximumSize" >
+         <size>
+          <width>100</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="toolTip" >
+         <string>Clip offset</string>
+        </property>
         <property name="alignment" >
          <set>Qt::AlignRight</set>
         </property>
@@ -184,6 +220,15 @@
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
+        <property name="maximumSize" >
+         <size>
+          <width>100</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="toolTip" >
+         <string>Clip start</string>
+        </property>
         <property name="alignment" >
          <set>Qt::AlignRight</set>
         </property>
@@ -196,6 +241,179 @@
         <property name="value" >
          <number>0</number>
         </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="FadeInOutGroupBox" >
+     <property name="title" >
+      <string>Fade In/Out</string>
+     </property>
+     <layout class="QGridLayout" >
+      <property name="margin" >
+       <number>9</number>
+      </property>
+      <property name="spacing" >
+       <number>6</number>
+      </property>
+      <item rowspan="2" row="0" column="3" >
+       <spacer>
+        <property name="orientation" >
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeType" >
+         <enum>QSizePolicy::Minimum</enum>
+        </property>
+        <property name="sizeHint" >
+         <size>
+          <width>51</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="0" column="2" >
+       <widget class="QComboBox" name="FadeInTypeComboBox" >
+        <property name="toolTip" >
+         <string>Clip fade-in type</string>
+        </property>
+        <item>
+         <property name="text" >
+          <string>Linear</string>
+         </property>
+        </item>
+        <item>
+         <property name="text" >
+          <string>Quadratic</string>
+         </property>
+        </item>
+        <item>
+         <property name="text" >
+          <string>Cubic</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item row="1" column="0" >
+       <widget class="QLabel" name="ClipOffsetTextLLabel_2" >
+        <property name="minimumSize" >
+         <size>
+          <width>60</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="text" >
+         <string>Fade &amp;Out:</string>
+        </property>
+        <property name="buddy" >
+         <cstring>FadeOutLengthSpinBox</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0" >
+       <widget class="QLabel" name="FadeinTextLLabel" >
+        <property name="minimumSize" >
+         <size>
+          <width>60</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="text" >
+         <string>Fade &amp;In:</string>
+        </property>
+        <property name="buddy" >
+         <cstring>FadeInLengthSpinBox</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1" >
+       <widget class="QSpinBox" name="FadeOutLengthSpinBox" >
+        <property name="sizePolicy" >
+         <sizepolicy>
+          <hsizetype>7</hsizetype>
+          <vsizetype>0</vsizetype>
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="maximumSize" >
+         <size>
+          <width>100</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="toolTip" >
+         <string>Clip fade-out length</string>
+        </property>
+        <property name="alignment" >
+         <set>Qt::AlignRight</set>
+        </property>
+        <property name="maximum" >
+         <number>999999999</number>
+        </property>
+        <property name="minimum" >
+         <number>0</number>
+        </property>
+        <property name="value" >
+         <number>0</number>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1" >
+       <widget class="QSpinBox" name="FadeInLengthSpinBox" >
+        <property name="sizePolicy" >
+         <sizepolicy>
+          <hsizetype>7</hsizetype>
+          <vsizetype>0</vsizetype>
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="maximumSize" >
+         <size>
+          <width>100</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="toolTip" >
+         <string>Clip fade-in length</string>
+        </property>
+        <property name="alignment" >
+         <set>Qt::AlignRight</set>
+        </property>
+        <property name="maximum" >
+         <number>999999999</number>
+        </property>
+        <property name="minimum" >
+         <number>0</number>
+        </property>
+        <property name="value" >
+         <number>0</number>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="2" >
+       <widget class="QComboBox" name="FadeOutTypeComboBox" >
+        <property name="toolTip" >
+         <string>Clip fade-out type</string>
+        </property>
+        <item>
+         <property name="text" >
+          <string>Linear</string>
+         </property>
+        </item>
+        <item>
+         <property name="text" >
+          <string>Quadratic</string>
+         </property>
+        </item>
+        <item>
+         <property name="text" >
+          <string>Cubic</string>
+         </property>
+        </item>
        </widget>
       </item>
      </layout>
@@ -255,6 +473,10 @@
   <tabstop>ClipStartSpinBox</tabstop>
   <tabstop>ClipOffsetSpinBox</tabstop>
   <tabstop>ClipLengthSpinBox</tabstop>
+  <tabstop>FadeInLengthSpinBox</tabstop>
+  <tabstop>FadeInTypeComboBox</tabstop>
+  <tabstop>FadeOutLengthSpinBox</tabstop>
+  <tabstop>FadeOutTypeComboBox</tabstop>
   <tabstop>OkPushButton</tabstop>
   <tabstop>CancelPushButton</tabstop>
  </tabstops>

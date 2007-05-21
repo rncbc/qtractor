@@ -471,10 +471,16 @@ bool qtractorClip::loadElement ( qtractorSessionDocument *pDocument,
 					qtractorClip::setClipOffset(eProp.text().toULong());
 				else if (eProp.tagName() == "length")
 					qtractorClip::setClipLength(eProp.text().toULong());
-				else if (eProp.tagName() == "fade-in")
+				else if (eProp.tagName() == "fade-in") {
+					qtractorClip::setFadeInType(
+						pDocument->loadFadeType(eProp.attribute("type")));
 					qtractorClip::setFadeInLength(eProp.text().toULong());
-				else if (eProp.tagName() == "fade-out")
+				}
+				else if (eProp.tagName() == "fade-out") {
+					qtractorClip::setFadeOutType(
+						pDocument->loadFadeType(eProp.attribute("type")));
 					qtractorClip::setFadeOutLength(eProp.text().toULong());
+				}
 			}
 		}
 		else
@@ -504,10 +510,21 @@ bool qtractorClip::saveElement ( qtractorSessionDocument *pDocument,
 		QString::number(qtractorClip::clipOffset()), &eProps);
 	pDocument->saveTextElement("length",
 		QString::number(qtractorClip::clipLength()), &eProps);
-	pDocument->saveTextElement("fade-in",
-		QString::number(qtractorClip::fadeInLength()), &eProps);
-	pDocument->saveTextElement("fade-out",
-		QString::number(qtractorClip::fadeOutLength()), &eProps);
+
+    QDomElement eFadeIn = pDocument->document()->createElement("fade-in");
+	eFadeIn.setAttribute("type",
+		pDocument->saveFadeType(qtractorClip::fadeInType()));
+    eFadeIn.appendChild(pDocument->document()->createTextNode(
+		QString::number(qtractorClip::fadeInLength())));
+	eProps.appendChild(eFadeIn);
+
+    QDomElement eFadeOut = pDocument->document()->createElement("fade-out");
+	eFadeOut.setAttribute("type",
+		pDocument->saveFadeType(qtractorClip::fadeOutType()));
+    eFadeOut.appendChild(pDocument->document()->createTextNode(
+		QString::number(qtractorClip::fadeOutLength())));
+	eProps.appendChild(eFadeOut);
+
 	pElement->appendChild(eProps);
 
 	// Save clip derivative properties...

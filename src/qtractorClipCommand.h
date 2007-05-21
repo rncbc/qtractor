@@ -51,8 +51,10 @@ public:
 		unsigned long iClipLength);
 	void resizeClip(qtractorClip *pClip, unsigned long iClipStart,
 		unsigned long iClipOffset, unsigned long iClipLength);
-	void fadeInClip(qtractorClip *pClip, unsigned long iFadeInLength);
-	void fadeOutClip(qtractorClip *pClip, unsigned long iFadeOutLength);
+	void fadeInClip(qtractorClip *pClip, unsigned long iFadeInLength,
+		qtractorClip::FadeType fadeInType);
+	void fadeOutClip(qtractorClip *pClip, unsigned long iFadeOutLength,
+		qtractorClip::FadeType fadeOutType);
 
 	// Special clip record method.
 	bool addClipRecord(qtractorTrack *pTrack);
@@ -80,20 +82,23 @@ private:
 	{
 		// Item constructor.
 		Item(CommandType cmd, qtractorClip *pClip, qtractorTrack *pTrack)
-			: command(cmd), clip(pClip), track(pTrack),
+			: command(cmd), clip(pClip), track(pTrack), autoDelete(false),
 				clipStart(0), clipOffset(0), clipLength(0),
-				fadeInLength(0), fadeOutLength(0), autoDelete(false) {}
+				fadeInLength(0), fadeInType(qtractorClip::Quadratic), 
+				fadeOutLength(0), fadeOutType(qtractorClip::Quadratic) {}
 		// Item members.
 		CommandType    command;
 		qtractorClip  *clip;
 		qtractorTrack *track;
+		bool           autoDelete;
 		QString        clipName;
 		unsigned long  clipStart;
 		unsigned long  clipOffset;
 		unsigned long  clipLength;
 		unsigned long  fadeInLength;
+		qtractorClip::FadeType fadeInType;
 		unsigned long  fadeOutLength;
-		bool           autoDelete;
+		qtractorClip::FadeType fadeOutType;
 	};
 
 	// Instance variables.

@@ -1,7 +1,7 @@
 // qtractorSessionDocument.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -61,7 +61,7 @@ qtractorFiles *qtractorSessionDocument::files (void)
 
 // Track type helpers.
 qtractorTrack::TrackType qtractorSessionDocument::loadTrackType (
-	const QString& sTrackType )
+	const QString& sTrackType ) const
 {
 	qtractorTrack::TrackType trackType = qtractorTrack::None;
 	if (sTrackType == "audio")
@@ -73,7 +73,7 @@ qtractorTrack::TrackType qtractorSessionDocument::loadTrackType (
 
 
 QString qtractorSessionDocument::saveTrackType (
-	qtractorTrack::TrackType trackType )
+	qtractorTrack::TrackType trackType ) const
 {
 	QString sTrackType;
 	switch (trackType) {
@@ -94,7 +94,7 @@ QString qtractorSessionDocument::saveTrackType (
 
 // Device bus mode helpers.
 qtractorBus::BusMode qtractorSessionDocument::loadBusMode (
-	const QString& sBusMode )
+	const QString& sBusMode ) const
 {
 	qtractorBus::BusMode busMode = qtractorBus::None;
 	if (sBusMode == "input")
@@ -108,7 +108,7 @@ qtractorBus::BusMode qtractorSessionDocument::loadBusMode (
 
 
 QString qtractorSessionDocument::saveBusMode (
-	qtractorBus::BusMode busMode )
+	qtractorBus::BusMode busMode ) const
 {
 	QString sBusMode;
 	switch (busMode) {
@@ -127,6 +127,37 @@ QString qtractorSessionDocument::saveBusMode (
 		break;
 	}
 	return sBusMode;
+}
+
+
+// Clip fade type helper methods.
+qtractorClip::FadeType qtractorSessionDocument::loadFadeType (
+	const QString& sFadeType ) const
+{
+	qtractorClip::FadeType fadeType = qtractorClip::Quadratic;
+	if (sFadeType == "cubic")
+		fadeType = qtractorClip::Cubic;
+	else if (sFadeType == "linear")
+		fadeType = qtractorClip::Linear;
+	return fadeType;
+}
+
+QString qtractorSessionDocument::saveFadeType (
+	qtractorClip::FadeType fadeType ) const
+{
+	QString sFadeType;
+	switch (fadeType) {
+	case qtractorClip::Cubic:
+		sFadeType = "cubic";
+		break;
+	case qtractorClip::Linear:
+		sFadeType = "linear";
+		break;
+	default:
+		sFadeType = "quadratic";
+		break;
+	}
+	return sFadeType;
 }
 
 

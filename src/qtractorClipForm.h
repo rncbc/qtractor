@@ -52,6 +52,11 @@ public slots:
 	void changed();
 	void stabilizeForm();
 
+protected:
+
+	qtractorClip::FadeType fadeTypeFromIndex(int iIndex) const;
+	int indexFromFadeType(qtractorClip::FadeType fadeType) const;
+
 private:
 
 	// The Qt-designer UI struct...

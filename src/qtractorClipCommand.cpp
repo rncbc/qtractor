@@ -111,19 +111,21 @@ void qtractorClipCommand::resizeClip ( qtractorClip *pClip,
 
 
 void qtractorClipCommand::fadeInClip ( qtractorClip *pClip,
-	unsigned long iFadeInLength )
+	unsigned long iFadeInLength, qtractorClip::FadeType fadeInType )
 {
 	Item *pItem = new Item(FadeInClip, pClip, pClip->track());
 	pItem->fadeInLength = iFadeInLength;
+	pItem->fadeInType = fadeInType;
 	m_items.append(pItem);
 }
 
 
 void qtractorClipCommand::fadeOutClip ( qtractorClip *pClip,
-	unsigned long iFadeOutLength )
+	unsigned long iFadeOutLength, qtractorClip::FadeType fadeOutType )
 {
 	Item *pItem = new Item(FadeOutClip, pClip, pClip->track());
 	pItem->fadeOutLength = iFadeOutLength;
+	pItem->fadeOutType = fadeOutType;
 	m_items.append(pItem);
 }
 
@@ -277,15 +279,21 @@ bool qtractorClipCommand::execute ( bool bRedo )
 			break;
 		}
 		case FadeInClip: {
-			unsigned long iOldFadeIn = pClip->fadeInLength();
+			unsigned long iOldFadeInLength = pClip->fadeInLength();
+			qtractorClip::FadeType oldFadeInType = pClip->fadeInType();
 			pClip->setFadeInLength(pItem->fadeInLength);
-			pItem->fadeInLength = iOldFadeIn;
+			pClip->setFadeInType(pItem->fadeInType);
+			pItem->fadeInLength = iOldFadeInLength;
+			pItem->fadeInType = oldFadeInType;
 			break;
 		}
 		case FadeOutClip: {
-			unsigned long iOldFadeOut = pClip->fadeOutLength();
+			unsigned long iOldFadeOutLength = pClip->fadeOutLength();
+			qtractorClip::FadeType oldFadeOutType = pClip->fadeOutType();
 			pClip->setFadeOutLength(pItem->fadeOutLength);
-			pItem->fadeOutLength = iOldFadeOut;
+			pClip->setFadeOutType(pItem->fadeOutType);
+			pItem->fadeOutLength = iOldFadeOutLength;
+			pItem->fadeOutType = oldFadeOutType;
 			break;
 		}
 		default:

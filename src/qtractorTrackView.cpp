@@ -1712,14 +1712,16 @@ void qtractorTrackView::dragFadeDrop ( const QPoint& pos )
 
 	if (m_dragState == DragFadeIn) {
 		pClipCommand->fadeInClip(m_pClipDrag,
-				pSession->frameFromPixel(m_rectHandle.left()
-					+ m_iDraggingX - m_rectDrag.left()));
+			pSession->frameFromPixel(
+				m_rectHandle.left() + m_iDraggingX - m_rectDrag.left()),
+				m_pClipDrag->fadeInType());
 	} 
 	else
 	if (m_dragState == DragFadeOut) {
 		pClipCommand->fadeOutClip(m_pClipDrag,
-				pSession->frameFromPixel(m_rectDrag.right()
-					- m_iDraggingX - m_rectHandle.right()));
+			pSession->frameFromPixel(
+				m_rectDrag.right() - m_iDraggingX - m_rectHandle.right()),
+				m_pClipDrag->fadeOutType());
 	}
 
 	// Reset state for proper redrawing...
