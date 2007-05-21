@@ -1521,7 +1521,7 @@ void qtractorTrackView::selectAll ( bool bSelect )
 qtractorClip *qtractorTrackView::currentClip (void) const
 {
 	qtractorClip *pClip = m_pClipDrag;
-fprintf(stderr, "DEBUG> clipDrag=%p\n", pClip);
+
 	if (pClip == NULL && isClipSelected())
 		pClip = m_pClipSelect->items().first()->clip;
 

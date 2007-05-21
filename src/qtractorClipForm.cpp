@@ -52,6 +52,15 @@ qtractorClipForm::qtractorClipForm (
 	QObject::connect(m_ui.ClipNameLineEdit,
 		SIGNAL(textChanged(const QString&)),
 		SLOT(changed()));
+	QObject::connect(m_ui.ClipStartSpinBox,
+		SIGNAL(valueChanged(int)),
+		SLOT(changed()));
+	QObject::connect(m_ui.ClipOffsetSpinBox,
+		SIGNAL(valueChanged(int)),
+		SLOT(changed()));
+	QObject::connect(m_ui.ClipLengthSpinBox,
+		SIGNAL(valueChanged(int)),
+		SLOT(changed()));
 	QObject::connect(m_ui.OkPushButton,
 		SIGNAL(clicked()),
 		SLOT(accept()));
@@ -75,6 +84,9 @@ void qtractorClipForm::setClip ( qtractorClip *pClip )
 
 	// Initialize dialog widgets...
 	m_ui.ClipNameLineEdit->setText(m_pClip->clipName());
+	m_ui.ClipStartSpinBox->setValue(m_pClip->clipStart());
+	m_ui.ClipOffsetSpinBox->setValue(m_pClip->clipOffset());
+	m_ui.ClipLengthSpinBox->setValue(m_pClip->clipLength());
 
 	// Backup clean.
 	m_iDirtyCount = 0;
@@ -101,6 +113,15 @@ void qtractorClipForm::accept (void)
 		qtractorClipCommand *pClipCommand
 			= new qtractorClipCommand(tr("edit clip"));
 		pClipCommand->renameClip(m_pClip, m_ui.ClipNameLineEdit->text());
+		unsigned long iClipStart  = m_ui.ClipStartSpinBox->value();
+		unsigned long iClipOffset = m_ui.ClipOffsetSpinBox->value();
+		unsigned long iClipLength = m_ui.ClipLengthSpinBox->value();
+		if (iClipStart  != m_pClip->clipStart()  ||
+			iClipOffset != m_pClip->clipOffset() ||
+			iClipLength != m_pClip->clipLength()) {
+			pClipCommand->resizeClip(m_pClip,
+				iClipStart, iClipOffset, iClipLength);
+		}
 		// Do it (but make it undoable)...
 		pMainForm->commands()->exec(pClipCommand);
 		// Reset dirty flag.

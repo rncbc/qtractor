@@ -25,8 +25,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>104</height>
+    <width>338</width>
+    <height>204</height>
    </rect>
   </property>
   <property name="focusPolicy" >
@@ -66,6 +66,139 @@
      <property name="toolTip" >
       <string>Clip name</string>
      </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="ParamGroupBox" >
+     <property name="title" >
+      <string>Parameters</string>
+     </property>
+     <layout class="QGridLayout" >
+      <property name="margin" >
+       <number>9</number>
+      </property>
+      <property name="spacing" >
+       <number>6</number>
+      </property>
+      <item row="1" column="2" >
+       <spacer>
+        <property name="orientation" >
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeType" >
+         <enum>QSizePolicy::Expanding</enum>
+        </property>
+        <property name="sizeHint" >
+         <size>
+          <width>121</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="0" column="0" >
+       <widget class="QLabel" name="ClipStartTextLLabel" >
+        <property name="text" >
+         <string>&amp;Start:</string>
+        </property>
+        <property name="buddy" >
+         <cstring>ClipStartSpinBox</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0" >
+       <widget class="QLabel" name="ClipLengthTextLLabel" >
+        <property name="text" >
+         <string>&amp;Length:</string>
+        </property>
+        <property name="buddy" >
+         <cstring>ClipLengthSpinBox</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0" >
+       <widget class="QLabel" name="ClipOffsetTextLLabel" >
+        <property name="text" >
+         <string>&amp;Offset:</string>
+        </property>
+        <property name="buddy" >
+         <cstring>ClipOffsetSpinBox</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1" >
+       <widget class="QSpinBox" name="ClipLengthSpinBox" >
+        <property name="sizePolicy" >
+         <sizepolicy>
+          <hsizetype>7</hsizetype>
+          <vsizetype>0</vsizetype>
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="alignment" >
+         <set>Qt::AlignRight</set>
+        </property>
+        <property name="maximum" >
+         <number>999999999</number>
+        </property>
+        <property name="minimum" >
+         <number>0</number>
+        </property>
+        <property name="value" >
+         <number>0</number>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1" >
+       <widget class="QSpinBox" name="ClipOffsetSpinBox" >
+        <property name="sizePolicy" >
+         <sizepolicy>
+          <hsizetype>7</hsizetype>
+          <vsizetype>0</vsizetype>
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="alignment" >
+         <set>Qt::AlignRight</set>
+        </property>
+        <property name="maximum" >
+         <number>999999999</number>
+        </property>
+        <property name="minimum" >
+         <number>0</number>
+        </property>
+        <property name="value" >
+         <number>0</number>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1" >
+       <widget class="QSpinBox" name="ClipStartSpinBox" >
+        <property name="sizePolicy" >
+         <sizepolicy>
+          <hsizetype>7</hsizetype>
+          <vsizetype>0</vsizetype>
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="alignment" >
+         <set>Qt::AlignRight</set>
+        </property>
+        <property name="maximum" >
+         <number>999999999</number>
+        </property>
+        <property name="minimum" >
+         <number>0</number>
+        </property>
+        <property name="value" >
+         <number>0</number>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </widget>
    </item>
    <item>
@@ -119,6 +252,9 @@
  <layoutdefault spacing="4" margin="8" />
  <tabstops>
   <tabstop>ClipNameLineEdit</tabstop>
+  <tabstop>ClipStartSpinBox</tabstop>
+  <tabstop>ClipOffsetSpinBox</tabstop>
+  <tabstop>ClipLengthSpinBox</tabstop>
   <tabstop>OkPushButton</tabstop>
   <tabstop>CancelPushButton</tabstop>
  </tabstops>
