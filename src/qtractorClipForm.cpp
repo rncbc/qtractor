@@ -100,7 +100,7 @@ void qtractorClipForm::setClip ( qtractorClip *pClip )
 	m_ui.ClipStartSpinBox->setValue(m_pClip->clipStart());
 	m_ui.ClipOffsetSpinBox->setValue(m_pClip->clipOffset());
 	m_ui.ClipLengthSpinBox->setValue(m_pClip->clipLength());
-	// dae In/Out...
+	// Fade In/Out...
 	m_ui.FadeInLengthSpinBox->setValue(m_pClip->fadeInLength());
 	m_ui.FadeInTypeComboBox->setCurrentIndex(
 		indexFromFadeType(m_pClip->fadeInType()));
@@ -206,6 +206,11 @@ void qtractorClipForm::changed (void)
 // Stabilize current form state.
 void qtractorClipForm::stabilizeForm (void)
 {
+	m_ui.FadeInTypeComboBox->setEnabled(
+		m_ui.FadeInLengthSpinBox->value() > 0);
+	m_ui.FadeOutTypeComboBox->setEnabled(
+		m_ui.FadeOutLengthSpinBox->value() > 0);
+
 	bool bValid = (m_iDirtyCount > 0);
 	bValid = bValid && !m_ui.ClipNameLineEdit->text().isEmpty();
 	m_ui.OkPushButton->setEnabled(bValid);
