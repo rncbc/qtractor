@@ -773,7 +773,7 @@ qtractorMixer::qtractorMixer ( QWidget *pParent )
 
 	// Some specialties to this kind of dock window...
 	QWidget::setMinimumWidth(440);
-	QWidget::setMinimumHeight(120);
+	QWidget::setMinimumHeight(240);
 
 	// Finally set the default caption and tooltip.
 	const QString& sCaption = tr("Mixer") + " - " QTRACTOR_TITLE;
