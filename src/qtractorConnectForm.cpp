@@ -1,7 +1,7 @@
 // qtractorConnectForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2006, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -39,9 +39,6 @@ qtractorConnectForm::qtractorConnectForm (
 {
 	// Setup UI struct...
 	m_ui.setupUi(this);
-
-	m_pSession = NULL;
-	m_pOptions = NULL;
 
 	m_pAudioConnect = new qtractorAudioConnect(
 		m_ui.AudioOListView, m_ui.AudioIListView, m_ui.AudioConnectorView);
@@ -120,45 +117,6 @@ qtractorConnectForm::~qtractorConnectForm (void)
 }
 
 
-// Session accessors.
-void qtractorConnectForm::setSession (
-	qtractorSession *pSession )
-{
-	m_pSession = pSession;
-
-	if (m_pSession) {
-		m_pAudioConnect->setJackClient(m_pSession->audioEngine()->jackClient());
-		m_pMidiConnect->setAlsaSeq(m_pSession->midiEngine()->alsaSeq());
-	} else {
-		m_pAudioConnect->setJackClient(NULL);
-		m_pMidiConnect->setAlsaSeq(NULL);
-	}
-
-	audioRefresh();
-	midiRefresh();
-}
-
-
-qtractorSession *qtractorConnectForm::session (void)
-{
-	return m_pSession;
-}
-
-
-// General options accessors.
-void qtractorConnectForm::setOptions (
-	qtractorOptions *pOptions )
-{
-	m_pOptions = pOptions;
-}
-
-
-qtractorOptions *qtractorConnectForm::options (void)
-{
-	return m_pOptions;
-}
-
-
 // Audio client name change slots.
 void qtractorConnectForm::audioIClientChanged (void)
 {
@@ -233,7 +191,28 @@ void qtractorConnectForm::audioRefresh (void)
 		m_ui.AudioIClientsComboBox->currentIndex() > 0 ?
 			m_ui.AudioIClientsComboBox->currentText() : QString::null);
 
-	m_pAudioConnect->refresh();
+	m_pAudioConnect->updateContents(false);
+
+	updateClientsComboBox(m_ui.AudioOClientsComboBox, m_ui.AudioOListView,
+		m_pAudioConnect->icon(qtractorAudioConnect::ClientOut));
+	updateClientsComboBox(m_ui.AudioIClientsComboBox, m_ui.AudioIListView,
+		m_pAudioConnect->icon(qtractorAudioConnect::ClientIn));
+
+	audioStabilize();
+}
+
+
+// Clear complete form by notifying the parent form.
+void qtractorConnectForm::audioClear (void)
+{
+#ifdef CONFIG_DEBUG_0
+	fprintf(stderr, "qtractorConnectForm::audioClear()\n");
+#endif
+
+	m_ui.AudioOListView->setClientName(QString::null);
+	m_ui.AudioIListView->setClientName(QString::null);
+
+	m_pAudioConnect->updateContents(true);
 
 	updateClientsComboBox(m_ui.AudioOClientsComboBox, m_ui.AudioOListView,
 		m_pAudioConnect->icon(qtractorAudioConnect::ClientOut));
@@ -334,7 +313,28 @@ void qtractorConnectForm::midiRefresh (void)
 		m_ui.MidiIClientsComboBox->currentIndex() > 0 ?
 			m_ui.MidiIClientsComboBox->currentText() : QString::null);
 
-	m_pMidiConnect->refresh();
+	m_pMidiConnect->updateContents(false);
+	
+	updateClientsComboBox(m_ui.MidiOClientsComboBox, m_ui.MidiOListView,
+		m_pMidiConnect->icon(qtractorMidiConnect::ClientOut));
+	updateClientsComboBox(m_ui.MidiIClientsComboBox, m_ui.MidiIListView,
+		m_pMidiConnect->icon(qtractorMidiConnect::ClientIn));
+
+	midiStabilize();
+}
+
+
+// Clear complete form by notifying the parent form.
+void qtractorConnectForm::midiClear (void)
+{
+#ifdef CONFIG_DEBUG_0
+	fprintf(stderr, "qtractorConnectForm::midiClear()\n");
+#endif
+
+	m_ui.MidiOListView->setClientName(QString::null);
+	m_ui.MidiIListView->setClientName(QString::null);
+
+	m_pMidiConnect->updateContents(true);
 	
 	updateClientsComboBox(m_ui.MidiOClientsComboBox, m_ui.MidiOListView,
 		m_pMidiConnect->icon(qtractorMidiConnect::ClientOut));

@@ -1,7 +1,7 @@
 // qtractorAudioConnect.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2006, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -115,8 +115,7 @@ public:
 	// Default destructor.
 	~qtractorAudioConnect();
 
-	// Jack client accessors.
-	void setJackClient(jack_client_t *pJackClient);
+	// JACK client accessors.
 	jack_client_t *jackClient() const;
 
 	// Icon-set array indexes.
@@ -149,9 +148,6 @@ private:
 	// Local pixmap-set janitor methods.
 	void createIcons();
 	void deleteIcons();
-
-	// Instance variables.
-	jack_client_t *m_pJackClient;
 
 	// Local pixmap-set array.
 	static QIcon *g_apIcons[IconCount];

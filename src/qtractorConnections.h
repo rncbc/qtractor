@@ -1,7 +1,7 @@
 // qtractorConnections.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2006, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -58,7 +58,7 @@ public:
 	// Complete connections refreshment.
 	void refresh();
 
-	// Complete connections reset.
+	// Complete connections recycle.
 	void clear();
 
 protected:

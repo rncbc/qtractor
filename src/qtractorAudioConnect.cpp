@@ -1,7 +1,7 @@
 // qtractorAudioConnect.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2006, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -20,6 +20,9 @@
 *****************************************************************************/
 
 #include "qtractorAudioConnect.h"
+#include "qtractorAudioEngine.h"
+
+#include "qtractorMainForm.h"
 
 #include <QIcon>
 
@@ -58,7 +61,7 @@ jack_client_t *qtractorAudioPortItem::jackClient (void) const
 {
 	qtractorAudioClientItem *pClientItem
 		= static_cast<qtractorAudioClientItem *> (clientItem());
-	return (pClientItem ? pClientItem->jackClient() : 0);
+	return (pClientItem ? pClientItem->jackClient() : NULL);
 }
 
 jack_port_t *qtractorAudioPortItem::jackPort (void) const
@@ -96,7 +99,7 @@ jack_client_t *qtractorAudioClientItem::jackClient (void) const
 {
 	qtractorAudioClientListView *pClientListView
 		= static_cast<qtractorAudioClientListView *> (QTreeWidgetItem::treeWidget());
-	return (pClientListView ? pClientListView->jackClient() : 0);
+	return (pClientListView ? pClientListView->jackClient() : NULL);
 }
 
 
@@ -121,7 +124,7 @@ jack_client_t *qtractorAudioClientListView::jackClient (void) const
 {
 	qtractorAudioConnect *pAudioConnect
 		= static_cast<qtractorAudioConnect *> (binding());
-	return (pAudioConnect ? pAudioConnect->jackClient() : 0);
+	return (pAudioConnect ? pAudioConnect->jackClient() : NULL);
 }
 
 
@@ -201,8 +204,6 @@ qtractorAudioConnect::qtractorAudioConnect (
 	qtractorConnectorView *pConnectorView )
 	: qtractorConnect(pOListView, pIListView, pConnectorView)
 {
-	m_pJackClient = NULL;
-
 	createIcons();
 }
 
@@ -255,17 +256,19 @@ const QIcon& qtractorAudioConnect::icon ( int iIcon )
 }
 
 
-// Jack client accessors.
-void qtractorAudioConnect::setJackClient( jack_client_t *pJackClient )
-{
-	m_pJackClient = pJackClient;
-
-	updateContents(true);
-}
-
+// JACK client accessor.
 jack_client_t *qtractorAudioConnect::jackClient (void) const
 {
-	return m_pJackClient;
+	jack_client_t *pJackClient = NULL;
+
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm) {
+		qtractorSession *pSession = pMainForm->session();
+		if (pSession && pSession->audioEngine())
+			pJackClient = (pSession->audioEngine())->jackClient();
+	}
+
+	return pJackClient;
 }
 
 
@@ -281,7 +284,11 @@ bool qtractorAudioConnect::connectPorts ( qtractorPortListItem *pOPort,
 	if (pOAudioPort == NULL || pIAudioPort == NULL)
 		return false;
 
-	return (jack_connect(pOAudioPort->jackClient(),
+	jack_client_t *pJackClient = jackClient();
+	if (pJackClient == NULL)
+		return false;
+
+	return (jack_connect(pJackClient,
 		pOAudioPort->clientPortName().toUtf8().constData(),
 		pIAudioPort->clientPortName().toUtf8().constData()) == 0);
 }
@@ -299,7 +306,11 @@ bool qtractorAudioConnect::disconnectPorts ( qtractorPortListItem *pOPort,
 	if (pOAudioPort == NULL || pIAudioPort == NULL)
 		return false;
 
-	return (jack_disconnect(pOAudioPort->jackClient(),
+	jack_client_t *pJackClient = jackClient();
+	if (pJackClient == NULL)
+		return false;
+
+	return (jack_disconnect(pJackClient,
 		pOAudioPort->clientPortName().toUtf8().constData(),
 		pIAudioPort->clientPortName().toUtf8().constData()) == 0);
 }
@@ -308,7 +319,8 @@ bool qtractorAudioConnect::disconnectPorts ( qtractorPortListItem *pOPort,
 // Update port connection references.
 void qtractorAudioConnect::updateConnections (void)
 {
-	if (m_pJackClient == NULL)
+	jack_client_t *pJackClient = jackClient();
+	if (pJackClient == NULL)
 		return;
 
 	// For each client item...
@@ -336,7 +348,7 @@ void qtractorAudioConnect::updateConnections (void)
 				continue;
 			// Get port connections...
 			const char **ppszClientPorts = jack_port_get_all_connections(
-				pOPort->jackClient(), pOPort->jackPort());
+				pJackClient, pOPort->jackPort());
 			if (ppszClientPorts) {
 				// Now, for each input client port...
 				int iClientPort = 0;

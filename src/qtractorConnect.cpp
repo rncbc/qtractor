@@ -232,7 +232,7 @@ qtractorPortListItem *qtractorPortListItem::findConnect (
 			return pPortItem;
 	}
 
-	return 0;
+	return NULL;
 }
 
 
@@ -301,7 +301,7 @@ qtractorPortListItem *qtractorClientListItem::findPortItem (
 			return pPortItem;
 	}
 
-	return 0;
+	return NULL;
 }
 
 
@@ -490,7 +490,7 @@ qtractorClientListItem *qtractorClientListView::findClientItem (
 			return pClientItem;
 	}
 
-	return 0;
+	return NULL;
 }
 
 // Client:port finder.

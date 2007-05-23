@@ -1,7 +1,7 @@
 // qtractorConnectForm.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2006, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -48,11 +48,6 @@ public:
 	// Destructor.
 	~qtractorConnectForm();
 
-    void setSession(qtractorSession *pSession);
-    qtractorSession *session();
-    void setOptions(qtractorOptions *pOptions);
-    qtractorOptions *options();
-
 	QTabWidget *connectTabWidget() const
 		{ return m_ui.ConnectTabWidget; }
 
@@ -87,6 +82,7 @@ public slots:
     void audioDisconnectSelected();
     void audioDisconnectAll();
     void audioRefresh();
+    void audioClear();
     void audioStabilize();
 	void midiIClientChanged();
 	void midiOClientChanged();
@@ -94,6 +90,7 @@ public slots:
     void midiDisconnectSelected();
     void midiDisconnectAll();
     void midiRefresh();
+    void midiClear();
     void midiStabilize();
 
 protected:
@@ -107,10 +104,8 @@ private:
 	Ui::qtractorConnectForm m_ui;
 
 	// Instance variables...
-	qtractorSession *m_pSession;
-	qtractorOptions *m_pOptions;
 	qtractorAudioConnect *m_pAudioConnect;
-	qtractorMidiConnect *m_pMidiConnect;
+	qtractorMidiConnect  *m_pMidiConnect;
 };
 
 

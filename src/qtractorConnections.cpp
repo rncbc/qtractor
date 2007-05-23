@@ -1,7 +1,7 @@
 // qtractorConnections.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2006, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -248,16 +248,16 @@ void qtractorConnections::showBus ( qtractorBus *pBus,
 // Complete connections refreshment.
 void qtractorConnections::refresh (void)
 {
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm)
-		m_pConnectForm->setSession(pMainForm->session());
+	m_pConnectForm->audioRefresh();
+	m_pConnectForm->midiRefresh();
 }
 
 
 // Complete connections recycle.
 void qtractorConnections::clear (void)
 {
-	m_pConnectForm->setSession(NULL);
+	m_pConnectForm->audioClear();
+	m_pConnectForm->midiClear();
 }
 
 

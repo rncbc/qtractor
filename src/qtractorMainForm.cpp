@@ -1221,13 +1221,13 @@ bool qtractorMainForm::closeSession (void)
 		}
 		// Reset all dependables to default.
 		m_pCommands->clear();
-		m_pConnections->clear();
 		m_pMixer->clear();
 		m_pFiles->clear();
 		// Close session engines.
 		m_pSession->close();
 		m_pSession->clear();
 		// And last but not least.
+		m_pConnections->clear();
 		m_pTracks->clear();
 		// Reset playhead.
 		m_iPlayHead = 0;

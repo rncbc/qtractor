@@ -1,7 +1,7 @@
 // qtractorMidiConnect.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2006, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -20,6 +20,9 @@
 *****************************************************************************/
 
 #include "qtractorMidiConnect.h"
+#include "qtractorMidiEngine.h"
+
+#include "qtractorMainForm.h"
 
 #include <QIcon>
 
@@ -111,7 +114,7 @@ qtractorMidiPortItem *qtractorMidiClientItem::findPortItem ( int iAlsaPort )
 			return pPortItem;
 	}
 
-	return 0;
+	return NULL;
 }
 
 
@@ -136,7 +139,7 @@ snd_seq_t *qtractorMidiClientListView::alsaSeq (void) const
 {
 	qtractorMidiConnect *pMidiConnect
 		= static_cast<qtractorMidiConnect *> (binding());
-	return (pMidiConnect ? pMidiConnect->alsaSeq() : 0);
+	return (pMidiConnect ? pMidiConnect->alsaSeq() : NULL);
 }
 
 
@@ -155,7 +158,7 @@ qtractorMidiClientItem *qtractorMidiClientListView::findClientItem (
 			return pClientItem;
 	}
 
-	return 0;
+	return NULL;
 }
 
 
@@ -165,7 +168,7 @@ qtractorMidiPortItem *qtractorMidiClientListView::findClientPortItem (
 {
 	qtractorMidiClientItem *pClientItem = findClientItem(iAlsaClient);
 	if (pClientItem == NULL)
-		return 0;
+		return NULL;
 
 	return pClientItem->findPortItem(iAlsaPort);
 }
@@ -263,8 +266,6 @@ qtractorMidiConnect::qtractorMidiConnect (
 	qtractorConnectorView *pConnectorView )
 	: qtractorConnect(pOListView, pIListView, pConnectorView)
 {
-	m_pAlsaSeq = NULL;
-
 	createIcons();
 }
 
@@ -312,17 +313,19 @@ const QIcon& qtractorMidiConnect::icon ( int iIcon )
 }
 
 
-// Alsa sequencer accessors.
-void qtractorMidiConnect::setAlsaSeq ( snd_seq_t *pAlsaSeq )
-{
-	m_pAlsaSeq = pAlsaSeq;
-
-	updateContents(true);
-}
-
+// ALSA sequencer accessor.
 snd_seq_t *qtractorMidiConnect::alsaSeq (void) const
 {
-	return m_pAlsaSeq;
+	snd_seq_t *pAlsaSeq = NULL;
+
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm) {
+		qtractorSession *pSession = pMainForm->session();
+		if (pSession && pSession->midiEngine())
+			pAlsaSeq = (pSession->midiEngine())->alsaSeq();
+	}
+
+	return pAlsaSeq;
 }
 
 
@@ -338,33 +341,8 @@ bool qtractorMidiConnect::connectPorts ( qtractorPortListItem *pOPort,
 	if (pOMidiPort == NULL || pIMidiPort == NULL)
 		return false;
 
-    snd_seq_port_subscribe_t *pAlsaSubs;
-    snd_seq_addr_t seq_addr;
-
-    snd_seq_port_subscribe_alloca(&pAlsaSubs);
-
-    seq_addr.client = pOMidiPort->alsaClient();
-    seq_addr.port   = pOMidiPort->alsaPort();
-    snd_seq_port_subscribe_set_sender(pAlsaSubs, &seq_addr);
-
-    seq_addr.client = pIMidiPort->alsaClient();
-    seq_addr.port   = pIMidiPort->alsaPort();
-    snd_seq_port_subscribe_set_dest(pAlsaSubs, &seq_addr);
-
-    return (snd_seq_subscribe_port(m_pAlsaSeq, pAlsaSubs) >= 0);
-}
-
-
-// Disconnection primitive.
-bool qtractorMidiConnect::disconnectPorts ( qtractorPortListItem *pOPort,
-	qtractorPortListItem *pIPort )
-{
-	qtractorMidiPortItem *pOMidiPort
-		= static_cast<qtractorMidiPortItem *> (pOPort);
-	qtractorMidiPortItem *pIMidiPort
-		= static_cast<qtractorMidiPortItem *> (pIPort);
-
-	if (pOMidiPort == NULL || pIMidiPort == NULL)
+	snd_seq_t *pAlsaSeq = alsaSeq();
+	if (pAlsaSeq == NULL)
 		return false;
 
     snd_seq_port_subscribe_t *pAlsaSubs;
@@ -380,14 +358,48 @@ bool qtractorMidiConnect::disconnectPorts ( qtractorPortListItem *pOPort,
     seq_addr.port   = pIMidiPort->alsaPort();
     snd_seq_port_subscribe_set_dest(pAlsaSubs, &seq_addr);
 
-    return (snd_seq_unsubscribe_port(m_pAlsaSeq, pAlsaSubs) >= 0);
+    return (snd_seq_subscribe_port(pAlsaSeq, pAlsaSubs) >= 0);
+}
+
+
+// Disconnection primitive.
+bool qtractorMidiConnect::disconnectPorts ( qtractorPortListItem *pOPort,
+	qtractorPortListItem *pIPort )
+{
+	qtractorMidiPortItem *pOMidiPort
+		= static_cast<qtractorMidiPortItem *> (pOPort);
+	qtractorMidiPortItem *pIMidiPort
+		= static_cast<qtractorMidiPortItem *> (pIPort);
+
+	if (pOMidiPort == NULL || pIMidiPort == NULL)
+		return false;
+
+	snd_seq_t *pAlsaSeq = alsaSeq();
+	if (pAlsaSeq == NULL)
+		return false;
+
+    snd_seq_port_subscribe_t *pAlsaSubs;
+    snd_seq_addr_t seq_addr;
+
+    snd_seq_port_subscribe_alloca(&pAlsaSubs);
+
+    seq_addr.client = pOMidiPort->alsaClient();
+    seq_addr.port   = pOMidiPort->alsaPort();
+    snd_seq_port_subscribe_set_sender(pAlsaSubs, &seq_addr);
+
+    seq_addr.client = pIMidiPort->alsaClient();
+    seq_addr.port   = pIMidiPort->alsaPort();
+    snd_seq_port_subscribe_set_dest(pAlsaSubs, &seq_addr);
+
+    return (snd_seq_unsubscribe_port(pAlsaSeq, pAlsaSubs) >= 0);
 }
 
 
 // Update port connection references.
 void qtractorMidiConnect::updateConnections (void)
 {
-	if (m_pAlsaSeq == NULL)
+	snd_seq_t *pAlsaSeq = alsaSeq();
+	if (pAlsaSeq == NULL)
 		return;
 
 	snd_seq_query_subscribe_t *pAlsaSubs;
@@ -430,7 +442,7 @@ void qtractorMidiConnect::updateConnections (void)
 			seq_addr.client = pOPort->alsaClient();
 			seq_addr.port   = pOPort->alsaPort();
 			snd_seq_query_subscribe_set_root(pAlsaSubs, &seq_addr);
-			while (snd_seq_query_port_subscribers(m_pAlsaSeq, pAlsaSubs) >= 0) {
+			while (snd_seq_query_port_subscribers(pAlsaSeq, pAlsaSubs) >= 0) {
 				seq_addr = *snd_seq_query_subscribe_get_addr(pAlsaSubs);
 				qtractorMidiPortItem *pIPort
 					= pIListView->findClientPortItem(
