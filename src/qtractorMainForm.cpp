@@ -845,6 +845,7 @@ void qtractorMainForm::customEvent ( QEvent *pEvent )
 		}
 		// Engine shutdown is on demand...
 		m_pSession->close();
+		m_pConnections->clear();
 		// Send an informative message box...
 		appendMessagesError(
 			tr("The audio engine has been shutdown.\n\n"
@@ -2818,32 +2819,35 @@ void qtractorMainForm::timerSlot (void)
 		// Done with transport tricks.
 	} else if (m_pSession->isActivated()) {
 		// Read transport state and react if out-of-sync..
-		jack_position_t pos;
-		jack_transport_state_t state = jack_transport_query(
-			m_pSession->audioEngine()->jackClient(), &pos);
-		// Check on external transport state request changes...
-		if ((state == JackTransportStopped &&  bPlaying) ||
-			(state == JackTransportRolling && !bPlaying)) {
-			if (!bPlaying)
-				m_pSession->seek(pos.frame, true);
-			m_ui.transportPlayAction->setChecked(!bPlaying);
-			transportPlay();	// Toggle playing!
-			if (bPlaying)
-				m_pSession->seek(pos.frame, true);
-		} else {
-			// Check on external transport location changes;
-			// note that we'll have a doubled buffer-size guard...
-			long iDeltaFrame = (long) pos.frame - iPlayHead;
-			int iBufferSize2 = m_pSession->audioEngine()->bufferSize() << 1;
-			if (labs(iDeltaFrame) > iBufferSize2) {
-				if (++m_iTransportDelta > 1) {
-					m_iTransportDelta = 0;
-					iPlayHead = pos.frame;
-					m_pSession->setPlayHead(iPlayHead);
-					m_iTransportUpdate++;
-				}
-			}	// All quiet...
-			else m_iTransportDelta = 0;
+		jack_client_t *pJackClient = m_pSession->audioEngine()->jackClient();
+		if (pJackClient) {
+			jack_position_t pos;
+			jack_transport_state_t state
+				= jack_transport_query(pJackClient, &pos);
+			// Check on external transport state request changes...
+			if ((state == JackTransportStopped &&  bPlaying) ||
+				(state == JackTransportRolling && !bPlaying)) {
+				if (!bPlaying)
+					m_pSession->seek(pos.frame, true);
+				m_ui.transportPlayAction->setChecked(!bPlaying);
+				transportPlay();	// Toggle playing!
+				if (bPlaying)
+					m_pSession->seek(pos.frame, true);
+			} else {
+				// Check on external transport location changes;
+				// note that we'll have a doubled buffer-size guard...
+				long iDeltaFrame = (long) pos.frame - iPlayHead;
+				int iBufferSize2 = m_pSession->audioEngine()->bufferSize() << 1;
+				if (labs(iDeltaFrame) > iBufferSize2) {
+					if (++m_iTransportDelta > 1) {
+						m_iTransportDelta = 0;
+						iPlayHead = pos.frame;
+						m_pSession->setPlayHead(iPlayHead);
+						m_iTransportUpdate++;
+					}
+				}	// All quiet...
+				else m_iTransportDelta = 0;
+			}
 		}
 		// Check if its time to refresh playhead timer...
 		if (bPlaying && m_iPlayTimer < QTRACTOR_TIMER_DELAY) {
