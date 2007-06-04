@@ -26,6 +26,7 @@
 #include "qtractorClipCommand.h"
 
 #include "qtractorMainForm.h"
+#include "qtractorSession.h"
 
 #include <QMessageBox>
 #include <QLineEdit>
@@ -42,8 +43,27 @@ qtractorClipForm::qtractorClipForm (
 	m_ui.setupUi(this);
 
 	// Initialize dirty control state.
+	m_pTimeScale = new qtractorTimeScale();
 	m_pClip = NULL;
 	m_iDirtyCount = 0;
+
+	// Set proper spin-box time scales...
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm) {
+		qtractorSession *pSession = pMainForm->session();
+		if (pSession) {
+			m_pTimeScale->setSampleRate(pSession->sampleRate());
+			m_pTimeScale->setTempo(pSession->tempo());
+			m_pTimeScale->setTicksPerBeat(pSession->ticksPerBeat());
+			m_pTimeScale->setBeatsPerBar(pSession->beatsPerBar());
+			m_pTimeScale->updateScale();
+		}
+	}
+	m_ui.ClipStartSpinBox->setTimeScale(m_pTimeScale);
+	m_ui.ClipOffsetSpinBox->setTimeScale(m_pTimeScale);
+	m_ui.ClipLengthSpinBox->setTimeScale(m_pTimeScale);
+	m_ui.FadeInLengthSpinBox->setTimeScale(m_pTimeScale);
+	m_ui.FadeOutLengthSpinBox->setTimeScale(m_pTimeScale);
 
 	// Try to restore old window positioning.
 	adjustSize();
@@ -53,22 +73,22 @@ qtractorClipForm::qtractorClipForm (
 		SIGNAL(textChanged(const QString&)),
 		SLOT(changed()));
 	QObject::connect(m_ui.ClipStartSpinBox,
-		SIGNAL(valueChanged(int)),
+		SIGNAL(valueChanged(unsigned long)),
 		SLOT(changed()));
 	QObject::connect(m_ui.ClipOffsetSpinBox,
-		SIGNAL(valueChanged(int)),
+		SIGNAL(valueChanged(unsigned long)),
 		SLOT(changed()));
 	QObject::connect(m_ui.ClipLengthSpinBox,
-		SIGNAL(valueChanged(int)),
+		SIGNAL(valueChanged(unsigned long)),
 		SLOT(changed()));
 	QObject::connect(m_ui.FadeInLengthSpinBox,
-		SIGNAL(valueChanged(int)),
+		SIGNAL(valueChanged(unsigned long)),
 		SLOT(changed()));
 	QObject::connect(m_ui.FadeInTypeComboBox,
 		SIGNAL(activated(int)),
 		SLOT(changed()));
 	QObject::connect(m_ui.FadeOutLengthSpinBox,
-		SIGNAL(valueChanged(int)),
+		SIGNAL(valueChanged(unsigned long)),
 		SLOT(changed()));
 	QObject::connect(m_ui.FadeOutTypeComboBox,
 		SIGNAL(activated(int)),
@@ -85,6 +105,7 @@ qtractorClipForm::qtractorClipForm (
 // Destructor.
 qtractorClipForm::~qtractorClipForm (void)
 {
+	delete m_pTimeScale;
 }
 
 
@@ -93,6 +114,10 @@ void qtractorClipForm::setClip ( qtractorClip *pClip )
 {
 	// Clip properties cloning...
 	m_pClip = pClip;
+
+	// FIXME: Somehow, for the spin-box take, one has
+	// to make the dialog visible before hand...
+	QDialog::show();
 
 	// Initialize dialog widgets...
 	m_ui.ClipNameLineEdit->setText(m_pClip->clipName());

@@ -54,7 +54,9 @@ HEADERS += ../src/qtractorAbout.h \
            ../src/qtractorSessionCursor.h \
            ../src/qtractorSessionDocument.h \
            ../src/qtractorSlider.h \
+           ../src/qtractorSpinBox.h \
            ../src/qtractorThumbView.h \
+           ../src/qtractorTimeScale.h \
            ../src/qtractorTrack.h \
            ../src/qtractorTrackButton.h \
            ../src/qtractorTrackCommand.h \
@@ -120,6 +122,7 @@ SOURCES += ../src/main.cpp \
            ../src/qtractorSession.cpp \
            ../src/qtractorSessionCursor.cpp \
            ../src/qtractorSessionDocument.cpp \
+           ../src/qtractorSpinBox.cpp \
            ../src/qtractorThumbView.cpp \
            ../src/qtractorTrack.cpp \
            ../src/qtractorTrackButton.cpp \

@@ -145,7 +145,7 @@
        </widget>
       </item>
       <item row="2" column="1" >
-       <widget class="QSpinBox" name="ClipLengthSpinBox" >
+       <widget class="qtractorSpinBox" name="ClipLengthSpinBox" >
         <property name="sizePolicy" >
          <sizepolicy>
           <hsizetype>7</hsizetype>
@@ -154,10 +154,10 @@
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
-        <property name="maximumSize" >
+        <property name="minimumSize" >
          <size>
-          <width>100</width>
-          <height>16777215</height>
+          <width>120</width>
+          <height>0</height>
          </size>
         </property>
         <property name="toolTip" >
@@ -165,20 +165,11 @@
         </property>
         <property name="alignment" >
          <set>Qt::AlignRight</set>
-        </property>
-        <property name="maximum" >
-         <number>999999999</number>
-        </property>
-        <property name="minimum" >
-         <number>0</number>
-        </property>
-        <property name="value" >
-         <number>0</number>
         </property>
        </widget>
       </item>
       <item row="1" column="1" >
-       <widget class="QSpinBox" name="ClipOffsetSpinBox" >
+       <widget class="qtractorSpinBox" name="ClipOffsetSpinBox" >
         <property name="sizePolicy" >
          <sizepolicy>
           <hsizetype>7</hsizetype>
@@ -187,10 +178,10 @@
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
-        <property name="maximumSize" >
+        <property name="minimumSize" >
          <size>
-          <width>100</width>
-          <height>16777215</height>
+          <width>120</width>
+          <height>0</height>
          </size>
         </property>
         <property name="toolTip" >
@@ -199,19 +190,10 @@
         <property name="alignment" >
          <set>Qt::AlignRight</set>
         </property>
-        <property name="maximum" >
-         <number>999999999</number>
-        </property>
-        <property name="minimum" >
-         <number>0</number>
-        </property>
-        <property name="value" >
-         <number>0</number>
-        </property>
        </widget>
       </item>
       <item row="0" column="1" >
-       <widget class="QSpinBox" name="ClipStartSpinBox" >
+       <widget class="qtractorSpinBox" name="ClipStartSpinBox" >
         <property name="sizePolicy" >
          <sizepolicy>
           <hsizetype>7</hsizetype>
@@ -220,10 +202,10 @@
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
-        <property name="maximumSize" >
+        <property name="minimumSize" >
          <size>
-          <width>100</width>
-          <height>16777215</height>
+          <width>120</width>
+          <height>0</height>
          </size>
         </property>
         <property name="toolTip" >
@@ -231,15 +213,6 @@
         </property>
         <property name="alignment" >
          <set>Qt::AlignRight</set>
-        </property>
-        <property name="maximum" >
-         <number>999999999</number>
-        </property>
-        <property name="minimum" >
-         <number>0</number>
-        </property>
-        <property name="value" >
-         <number>0</number>
         </property>
        </widget>
       </item>
@@ -329,7 +302,7 @@
        </widget>
       </item>
       <item row="1" column="1" >
-       <widget class="QSpinBox" name="FadeOutLengthSpinBox" >
+       <widget class="qtractorSpinBox" name="FadeOutLengthSpinBox" >
         <property name="sizePolicy" >
          <sizepolicy>
           <hsizetype>7</hsizetype>
@@ -338,10 +311,10 @@
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
-        <property name="maximumSize" >
+        <property name="minimumSize" >
          <size>
-          <width>100</width>
-          <height>16777215</height>
+          <width>120</width>
+          <height>0</height>
          </size>
         </property>
         <property name="toolTip" >
@@ -350,19 +323,10 @@
         <property name="alignment" >
          <set>Qt::AlignRight</set>
         </property>
-        <property name="maximum" >
-         <number>999999999</number>
-        </property>
-        <property name="minimum" >
-         <number>0</number>
-        </property>
-        <property name="value" >
-         <number>0</number>
-        </property>
        </widget>
       </item>
       <item row="0" column="1" >
-       <widget class="QSpinBox" name="FadeInLengthSpinBox" >
+       <widget class="qtractorSpinBox" name="FadeInLengthSpinBox" >
         <property name="sizePolicy" >
          <sizepolicy>
           <hsizetype>7</hsizetype>
@@ -371,10 +335,10 @@
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
-        <property name="maximumSize" >
+        <property name="minimumSize" >
          <size>
-          <width>100</width>
-          <height>16777215</height>
+          <width>120</width>
+          <height>0</height>
          </size>
         </property>
         <property name="toolTip" >
@@ -382,15 +346,6 @@
         </property>
         <property name="alignment" >
          <set>Qt::AlignRight</set>
-        </property>
-        <property name="maximum" >
-         <number>999999999</number>
-        </property>
-        <property name="minimum" >
-         <number>0</number>
-        </property>
-        <property name="value" >
-         <number>0</number>
         </property>
        </widget>
       </item>
@@ -468,6 +423,13 @@
   </layout>
  </widget>
  <layoutdefault spacing="4" margin="8" />
+ <customwidgets>
+  <customwidget>
+   <class>qtractorSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qtractorSpinBox.h</header>
+  </customwidget>
+ </customwidgets>
  <tabstops>
   <tabstop>ClipNameLineEdit</tabstop>
   <tabstop>ClipStartSpinBox</tabstop>

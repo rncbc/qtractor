@@ -28,6 +28,10 @@
 #include "qtractorClip.h"
 
 
+// Forward declarations.
+class qtractorTimeScale;
+
+
 //----------------------------------------------------------------------------
 // qtractorClipForm -- UI wrapper form.
 
@@ -63,6 +67,7 @@ private:
 	Ui::qtractorClipForm m_ui;
 
 	// Instance variables...
+	qtractorTimeScale *m_pTimeScale;
 	qtractorClip *m_pClip;
 	int m_iDirtyCount;
 };
