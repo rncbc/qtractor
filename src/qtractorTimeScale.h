@@ -49,6 +49,21 @@ public:
 		updateScale();
 	}
 
+	// Copy constructor.
+	qtractorTimeScale(const qtractorTimeScale& ts)
+	{
+		m_iSampleRate     = ts.m_iSampleRate;
+		m_fTempo          = ts.m_fTempo;
+		m_iTicksPerBeat   = ts.m_iTicksPerBeat;
+		m_iBeatsPerBar    = ts.m_iBeatsPerBar;
+		m_iPixelsPerBeat  = ts.m_iPixelsPerBeat;
+		m_iSnapPerBeat    = ts.m_iSnapPerBeat;
+		m_iHorizontalZoom = ts.m_iHorizontalZoom;
+		m_iVerticalZoom   = ts.m_iVerticalZoom;
+
+		updateScale();
+	}
+
 	// Sample rate (frames per second)
 	void setSampleRate(unsigned int iSampleRate)
 		{ m_iSampleRate = iSampleRate; }

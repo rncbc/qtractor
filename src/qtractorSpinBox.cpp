@@ -72,6 +72,22 @@ void qtractorSpinBox::setDisplayFormat (
 {
 	m_displayFormat = displayFormat;
 
+	QLineEdit *pLineEdit = QAbstractSpinBox::lineEdit();
+	if (pLineEdit) {
+		switch (m_displayFormat) {
+		case BBT:
+			pLineEdit->setInputMask("D.9D.999");
+			break;
+		case Time:
+			pLineEdit->setInputMask("09:99:99.999");
+			break;
+		case Frames:
+		default:
+			pLineEdit->setInputMask(QString::null);
+			break;
+		}
+	}
+
 	setValue(m_iDefaultValue);
 }
 
