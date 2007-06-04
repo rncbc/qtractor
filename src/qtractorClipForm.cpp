@@ -27,6 +27,7 @@
 
 #include "qtractorMainForm.h"
 #include "qtractorSession.h"
+#include "qtractorOptions.h"
 
 #include <QMessageBox>
 #include <QLineEdit>
@@ -47,7 +48,8 @@ qtractorClipForm::qtractorClipForm (
 	m_pClip = NULL;
 	m_iDirtyCount = 0;
 
-	// Set proper spin-box time scales...
+	// Set proper spin-box time scales and display format...
+	qtractorSpinBox::DisplayFormat displayFormat = qtractorSpinBox::Frames;
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm) {
 		qtractorSession *pSession = pMainForm->session();
@@ -58,12 +60,38 @@ qtractorClipForm::qtractorClipForm (
 			m_pTimeScale->setBeatsPerBar(pSession->beatsPerBar());
 			m_pTimeScale->updateScale();
 		}
+		qtractorOptions *pOptions = pMainForm->options();
+		if (pOptions) {
+			displayFormat = (pOptions->bTransportTime
+				? qtractorSpinBox::BBT
+				: qtractorSpinBox::Time);
+		}
 	}
+
 	m_ui.ClipStartSpinBox->setTimeScale(m_pTimeScale);
 	m_ui.ClipOffsetSpinBox->setTimeScale(m_pTimeScale);
 	m_ui.ClipLengthSpinBox->setTimeScale(m_pTimeScale);
 	m_ui.FadeInLengthSpinBox->setTimeScale(m_pTimeScale);
 	m_ui.FadeOutLengthSpinBox->setTimeScale(m_pTimeScale);
+
+	m_ui.ClipStartSpinBox->setDisplayFormat(displayFormat);
+	m_ui.ClipOffsetSpinBox->setDisplayFormat(displayFormat);
+	m_ui.ClipLengthSpinBox->setDisplayFormat(displayFormat);
+	m_ui.FadeInLengthSpinBox->setDisplayFormat(displayFormat);
+	m_ui.FadeOutLengthSpinBox->setDisplayFormat(displayFormat);
+
+	switch (displayFormat) {
+	case qtractorSpinBox::BBT:
+		m_ui.BbtRadioButton->setChecked(true);
+		break;
+	case qtractorSpinBox::Time:
+		m_ui.TimeRadioButton->setChecked(true);
+		break;
+	case qtractorSpinBox::Frames:
+	default:
+		m_ui.FramesRadioButton->setChecked(true);
+		break;
+	}
 
 	// Try to restore old window positioning.
 	adjustSize();
@@ -72,6 +100,15 @@ qtractorClipForm::qtractorClipForm (
 	QObject::connect(m_ui.ClipNameLineEdit,
 		SIGNAL(textChanged(const QString&)),
 		SLOT(changed()));
+	QObject::connect(m_ui.FramesRadioButton,
+		SIGNAL(toggled(bool)),
+		SLOT(formatChanged()));
+	QObject::connect(m_ui.TimeRadioButton,
+		SIGNAL(toggled(bool)),
+		SLOT(formatChanged()));
+	QObject::connect(m_ui.BbtRadioButton,
+		SIGNAL(toggled(bool)),
+		SLOT(formatChanged()));
 	QObject::connect(m_ui.ClipStartSpinBox,
 		SIGNAL(valueChanged(unsigned long)),
 		SLOT(changed()));
@@ -224,6 +261,28 @@ void qtractorClipForm::reject (void)
 void qtractorClipForm::changed (void)
 {
 	m_iDirtyCount++;
+	stabilizeForm();
+}
+
+
+// Display format has changed.
+void qtractorClipForm::formatChanged (void)
+{
+	qtractorSpinBox::DisplayFormat displayFormat = qtractorSpinBox::Frames;
+
+	if (m_ui.TimeRadioButton->isChecked())
+		displayFormat = qtractorSpinBox::Time;
+	else
+	if (m_ui.BbtRadioButton->isChecked())
+		displayFormat= qtractorSpinBox::BBT;
+
+	m_ui.ClipStartSpinBox->setDisplayFormat(displayFormat);
+	m_ui.ClipOffsetSpinBox->setDisplayFormat(displayFormat);
+	m_ui.ClipLengthSpinBox->setDisplayFormat(displayFormat);
+
+	m_ui.FadeInLengthSpinBox->setDisplayFormat(displayFormat);
+	m_ui.FadeOutLengthSpinBox->setDisplayFormat(displayFormat);
+
 	stabilizeForm();
 }
 

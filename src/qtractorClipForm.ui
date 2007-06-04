@@ -25,8 +25,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>338</width>
-    <height>290</height>
+    <width>400</width>
+    <height>337</height>
    </rect>
   </property>
   <property name="focusPolicy" >
@@ -38,37 +38,69 @@
   <property name="windowIcon" >
    <iconset resource="../icons/qtractor.qrc" >:/icons/editClip.png</iconset>
   </property>
-  <layout class="QVBoxLayout" >
+  <layout class="QGridLayout" >
    <property name="margin" >
     <number>9</number>
    </property>
    <property name="spacing" >
     <number>6</number>
    </property>
-   <item>
-    <widget class="QLabel" name="ClipNameTextLabel" >
-     <property name="text" >
-      <string>&amp;Name:</string>
+   <item row="2" column="1" >
+    <widget class="QGroupBox" name="FormatGroupBox" >
+     <property name="title" >
+      <string>Format</string>
      </property>
-     <property name="buddy" >
-      <cstring>ClipNameLineEdit</cstring>
-     </property>
+     <layout class="QVBoxLayout" >
+      <property name="margin" >
+       <number>9</number>
+      </property>
+      <property name="spacing" >
+       <number>6</number>
+      </property>
+      <item>
+       <widget class="QRadioButton" name="FramesRadioButton" >
+        <property name="toolTip" >
+         <string>Frames</string>
+        </property>
+        <property name="text" >
+         <string>&amp;Frames</string>
+        </property>
+        <property name="checked" >
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QRadioButton" name="TimeRadioButton" >
+        <property name="toolTip" >
+         <string>Time (hh::mm:ss.zzz)</string>
+        </property>
+        <property name="text" >
+         <string>&amp;Time</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QRadioButton" name="BbtRadioButton" >
+        <property name="toolTip" >
+         <string>BBT (bars.bests.ticks)</string>
+        </property>
+        <property name="text" >
+         <string>&amp;BBT</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer>
+        <property name="orientation" >
+         <enum>Qt::Vertical</enum>
+        </property>
+       </spacer>
+      </item>
+     </layout>
     </widget>
    </item>
-   <item>
-    <widget class="QLineEdit" name="ClipNameLineEdit" >
-     <property name="minimumSize" >
-      <size>
-       <width>320</width>
-       <height>0</height>
-      </size>
-     </property>
-     <property name="toolTip" >
-      <string>Clip name</string>
-     </property>
-    </widget>
-   </item>
-   <item>
+   <item row="2" column="0" >
     <widget class="QGroupBox" name="ParamGroupBox" >
      <property name="title" >
       <string>Parameters</string>
@@ -80,7 +112,7 @@
       <property name="spacing" >
        <number>6</number>
       </property>
-      <item row="1" column="2" >
+      <item rowspan="3" row="0" column="2" >
        <spacer>
         <property name="orientation" >
          <enum>Qt::Horizontal</enum>
@@ -88,16 +120,73 @@
         <property name="sizeType" >
          <enum>QSizePolicy::Expanding</enum>
         </property>
-        <property name="sizeHint" >
-         <size>
-          <width>121</width>
-          <height>20</height>
-         </size>
-        </property>
        </spacer>
       </item>
-      <item row="0" column="0" >
-       <widget class="QLabel" name="ClipStartTextLLabel" >
+      <item row="0" column="1" >
+       <widget class="qtractorSpinBox" name="ClipStartSpinBox" >
+        <property name="sizePolicy" >
+         <sizepolicy>
+          <hsizetype>7</hsizetype>
+          <vsizetype>0</vsizetype>
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize" >
+         <size>
+          <width>100</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="toolTip" >
+         <string>Clip start</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1" >
+       <widget class="qtractorSpinBox" name="ClipOffsetSpinBox" >
+        <property name="sizePolicy" >
+         <sizepolicy>
+          <hsizetype>7</hsizetype>
+          <vsizetype>0</vsizetype>
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize" >
+         <size>
+          <width>100</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="toolTip" >
+         <string>Clip offset</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1" >
+       <widget class="qtractorSpinBox" name="ClipLengthSpinBox" >
+        <property name="sizePolicy" >
+         <sizepolicy>
+          <hsizetype>7</hsizetype>
+          <vsizetype>0</vsizetype>
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize" >
+         <size>
+          <width>100</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="toolTip" >
+         <string>Clip length</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0" >
+       <widget class="QLabel" name="ClipOffsetTextLLabel" >
         <property name="minimumSize" >
          <size>
           <width>60</width>
@@ -105,10 +194,10 @@
          </size>
         </property>
         <property name="text" >
-         <string>&amp;Start:</string>
+         <string>Offs&amp;et:</string>
         </property>
         <property name="buddy" >
-         <cstring>ClipStartSpinBox</cstring>
+         <cstring>ClipOffsetSpinBox</cstring>
         </property>
        </widget>
       </item>
@@ -128,8 +217,8 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="0" >
-       <widget class="QLabel" name="ClipOffsetTextLLabel" >
+      <item row="0" column="0" >
+       <widget class="QLabel" name="ClipStartTextLLabel" >
         <property name="minimumSize" >
          <size>
           <width>60</width>
@@ -137,89 +226,17 @@
          </size>
         </property>
         <property name="text" >
-         <string>Offse&amp;t:</string>
+         <string>&amp;Start:</string>
         </property>
         <property name="buddy" >
-         <cstring>ClipOffsetSpinBox</cstring>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="1" >
-       <widget class="qtractorSpinBox" name="ClipLengthSpinBox" >
-        <property name="sizePolicy" >
-         <sizepolicy>
-          <hsizetype>7</hsizetype>
-          <vsizetype>0</vsizetype>
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="minimumSize" >
-         <size>
-          <width>120</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="toolTip" >
-         <string>Clip offset</string>
-        </property>
-        <property name="alignment" >
-         <set>Qt::AlignRight</set>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1" >
-       <widget class="qtractorSpinBox" name="ClipOffsetSpinBox" >
-        <property name="sizePolicy" >
-         <sizepolicy>
-          <hsizetype>7</hsizetype>
-          <vsizetype>0</vsizetype>
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="minimumSize" >
-         <size>
-          <width>120</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="toolTip" >
-         <string>Clip offset</string>
-        </property>
-        <property name="alignment" >
-         <set>Qt::AlignRight</set>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1" >
-       <widget class="qtractorSpinBox" name="ClipStartSpinBox" >
-        <property name="sizePolicy" >
-         <sizepolicy>
-          <hsizetype>7</hsizetype>
-          <vsizetype>0</vsizetype>
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="minimumSize" >
-         <size>
-          <width>120</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="toolTip" >
-         <string>Clip start</string>
-        </property>
-        <property name="alignment" >
-         <set>Qt::AlignRight</set>
+         <cstring>ClipStartSpinBox</cstring>
         </property>
        </widget>
       </item>
      </layout>
     </widget>
    </item>
-   <item>
+   <item row="3" column="0" colspan="2" >
     <widget class="QGroupBox" name="FadeInOutGroupBox" >
      <property name="title" >
       <string>Fade In/Out</string>
@@ -237,13 +254,7 @@
          <enum>Qt::Horizontal</enum>
         </property>
         <property name="sizeType" >
-         <enum>QSizePolicy::Minimum</enum>
-        </property>
-        <property name="sizeHint" >
-         <size>
-          <width>51</width>
-          <height>20</height>
-         </size>
+         <enum>QSizePolicy::Expanding</enum>
         </property>
        </spacer>
       </item>
@@ -313,15 +324,12 @@
         </property>
         <property name="minimumSize" >
          <size>
-          <width>120</width>
+          <width>100</width>
           <height>0</height>
          </size>
         </property>
         <property name="toolTip" >
          <string>Clip fade-out length</string>
-        </property>
-        <property name="alignment" >
-         <set>Qt::AlignRight</set>
         </property>
        </widget>
       </item>
@@ -337,15 +345,12 @@
         </property>
         <property name="minimumSize" >
          <size>
-          <width>120</width>
+          <width>100</width>
           <height>0</height>
          </size>
         </property>
         <property name="toolTip" >
          <string>Clip fade-in length</string>
-        </property>
-        <property name="alignment" >
-         <set>Qt::AlignRight</set>
         </property>
        </widget>
       </item>
@@ -374,7 +379,7 @@
      </layout>
     </widget>
    </item>
-   <item>
+   <item row="4" column="0" colspan="2" >
     <layout class="QHBoxLayout" >
      <property name="margin" >
       <number>0</number>
@@ -420,6 +425,29 @@
      </item>
     </layout>
    </item>
+   <item row="1" column="0" colspan="2" >
+    <widget class="QLineEdit" name="ClipNameLineEdit" >
+     <property name="minimumSize" >
+      <size>
+       <width>320</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="toolTip" >
+      <string>Clip name</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0" colspan="2" >
+    <widget class="QLabel" name="ClipNameTextLabel" >
+     <property name="text" >
+      <string>&amp;Name:</string>
+     </property>
+     <property name="buddy" >
+      <cstring>ClipNameLineEdit</cstring>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
  <layoutdefault spacing="4" margin="8" />
@@ -439,6 +467,9 @@
   <tabstop>FadeInTypeComboBox</tabstop>
   <tabstop>FadeOutLengthSpinBox</tabstop>
   <tabstop>FadeOutTypeComboBox</tabstop>
+  <tabstop>FramesRadioButton</tabstop>
+  <tabstop>TimeRadioButton</tabstop>
+  <tabstop>BbtRadioButton</tabstop>
   <tabstop>OkPushButton</tabstop>
   <tabstop>CancelPushButton</tabstop>
  </tabstops>

@@ -54,6 +54,7 @@ public slots:
 	void accept();
 	void reject();
 	void changed();
+	void formatChanged();
 	void stabilizeForm();
 
 protected:
