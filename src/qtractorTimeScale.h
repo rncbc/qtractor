@@ -139,8 +139,6 @@ public:
 	unsigned int pixelSnap(unsigned int x) const
 		{ return pixelFromTick(tickSnap(tickFromPixel(x))); }
 
-protected:
-
 	// Update scale divisor factors.
 	void updateScale()
 	{
