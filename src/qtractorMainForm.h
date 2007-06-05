@@ -230,7 +230,7 @@ private:
 	int m_iUntitled;
 	int m_iDirtyCount;
 	QActionGroup *m_pSelectModeActionGroup;
-	qtractorSpinBox *m_pTransportTime;
+	qtractorSpinBox *m_pTransportTimeSpinBox;
 	QDoubleSpinBox *m_pTempoSpinBox;
 	QComboBox *m_pSnapPerBeatComboBox;
 	qtractorThumbView *m_pThumbView;

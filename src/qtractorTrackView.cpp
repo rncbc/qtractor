@@ -286,6 +286,11 @@ void qtractorTrackView::updateContentsRecord (void)
 		qtractorScrollView::viewport()->update();
 
 	m_iLastRecordX = iCurrRecordX;
+
+	// HACK: Update session length, anyway...
+	qtractorSession *pSession = m_pTracks->session();
+	if (pSession)
+		pSession->updateSessionLength(pSession->frameFromPixel(iCurrRecordX));
 }
 
 

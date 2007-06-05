@@ -292,13 +292,17 @@ void qtractorClipForm::formatChanged (void)
 // Stabilize current form state.
 void qtractorClipForm::stabilizeForm (void)
 {
+	unsigned long iClipLength = m_ui.ClipLengthSpinBox->value();
 	m_ui.FadeInTypeComboBox->setEnabled(
 		m_ui.FadeInLengthSpinBox->value() > 0);
+	m_ui.FadeInLengthSpinBox->setMaximum(iClipLength);
 	m_ui.FadeOutTypeComboBox->setEnabled(
 		m_ui.FadeOutLengthSpinBox->value() > 0);
+	m_ui.FadeOutLengthSpinBox->setMaximum(iClipLength);
 
 	bool bValid = (m_iDirtyCount > 0);
 	bValid = bValid && !m_ui.ClipNameLineEdit->text().isEmpty();
+	bValid = bValid && (iClipLength > 0);
 	m_ui.OkPushButton->setEnabled(bValid);
 }
 

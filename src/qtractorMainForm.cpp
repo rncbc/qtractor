@@ -203,17 +203,15 @@ qtractorMainForm::qtractorMainForm (
 
 	// Transport time.
 	const QFont& font = qtractorMainForm::font();
-	m_pTransportTime = new qtractorSpinBox();
-	m_pTransportTime->setTimeScale(m_pTimeScale);
-	m_pTransportTime->setFont(QFont(font.family(), font.pointSize() + 2));
-//	m_pTransportTime->setFrameShape(QFrame::Panel);
-//	m_pTransportTime->setFrameShadow(QFrame::Sunken);
-	m_pTransportTime->setPalette(pal);
-//	m_pTransportTime->setAutoFillBackground(true);
-	m_pTransportTime->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-	m_pTransportTime->setFixedSize(QSize(124, 26));
-	m_pTransportTime->setToolTip(tr("Current transport time (playhead)"));
-	m_ui.timeToolbar->addWidget(m_pTransportTime);
+	m_pTransportTimeSpinBox = new qtractorSpinBox();
+	m_pTransportTimeSpinBox->setTimeScale(m_pTimeScale);
+	m_pTransportTimeSpinBox->setFont(QFont(font.family(), font.pointSize() + 2));
+	m_pTransportTimeSpinBox->setPalette(pal);
+//	m_pTransportTimeSpinBox->setAutoFillBackground(true);
+	m_pTransportTimeSpinBox->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+	m_pTransportTimeSpinBox->setFixedSize(QSize(124, 26));
+	m_pTransportTimeSpinBox->setToolTip(tr("Current transport time (playhead)"));
+	m_ui.timeToolbar->addWidget(m_pTransportTimeSpinBox);
 	m_ui.timeToolbar->addSeparator();
 
 	// Tempo spin-box.
@@ -520,7 +518,7 @@ qtractorMainForm::qtractorMainForm (
 		SIGNAL(updateNotifySignal(bool)),
 		SLOT(updateNotifySlot(bool)));
 
-	QObject::connect(m_pTransportTime,
+	QObject::connect(m_pTransportTimeSpinBox,
 		SIGNAL(valueChanged(unsigned long)),
 		SLOT(transportTimeChanged(unsigned long)));
 }
@@ -2385,7 +2383,7 @@ void qtractorMainForm::setTrack ( int scmd, int iTrack, bool bOn )
 
 void qtractorMainForm::updateTransportTime ( unsigned long iPlayHead )
 {
-	m_pTransportTime->setValue(iPlayHead, false);
+	m_pTransportTimeSpinBox->setValue(iPlayHead, false);
 }
 
 
@@ -2502,9 +2500,11 @@ void qtractorMainForm::stabilizeForm (void)
 	m_statusItems[StatusRate]->setText(
 		tr("%1 Hz").arg(m_pSession->sampleRate()));
 
+	bool bRecording = (m_pSession->isRecording()
+		&& m_pSession->isPlaying()
+		&& m_pSession->recordTracks() > 0);
 	m_statusItems[StatusRec]->setPalette(*m_paletteItems[
-		m_pSession->isRecording() && m_pSession->isPlaying() &&
-		m_pSession->recordTracks() > 0 ? PaletteRed : PaletteNone]);
+		bRecording ? PaletteRed : PaletteNone]);
 	m_statusItems[StatusMute]->setPalette(*m_paletteItems[
 		m_pSession->muteTracks() > 0 ? PaletteYellow : PaletteNone]);
 	m_statusItems[StatusSolo]->setPalette(*m_paletteItems[
@@ -2524,6 +2524,10 @@ void qtractorMainForm::stabilizeForm (void)
 	m_ui.transportLoopAction->setEnabled(bEnabled
 		&& (m_pSession->isLooping() || bSelectable));
 	m_ui.transportRecordAction->setEnabled(m_pSession->recordTracks() > 0);
+
+	// Special record mode settlement.
+	m_pTransportTimeSpinBox->setReadOnly(bRecording);
+	m_pTempoSpinBox->setReadOnly(bRecording);
 
 	m_pThumbView->update();
 	m_pThumbView->updateThumb();
@@ -2724,7 +2728,7 @@ void qtractorMainForm::updateDisplayFormat (void)
 		break;
 	}
 
-	m_pTransportTime->setDisplayFormat(displayFormat);
+	m_pTransportTimeSpinBox->setDisplayFormat(displayFormat);
 }
 
 
@@ -2877,7 +2881,7 @@ void qtractorMainForm::timerSlot (void)
 		}
 		// Done with transport tricks.
 	} else if (m_pSession->isActivated()) {
-		// Read transport state and react if out-of-sync..
+		// Read JACK transport state and react if out-of-sync..
 		jack_client_t *pJackClient = m_pSession->audioEngine()->jackClient();
 		if (pJackClient) {
 			jack_position_t pos;
@@ -2914,8 +2918,11 @@ void qtractorMainForm::timerSlot (void)
 			if (m_iPlayTimer >= QTRACTOR_TIMER_DELAY) {
 				m_iPlayTimer = 0;
 				updateTransportTime(iPlayHead);
-				if (m_pTracks && m_pSession->isRecording())
+				if (m_pTracks && m_pSession->isRecording()) {
 					m_pTracks->trackView()->updateContentsRecord();
+					m_statusItems[StatusTime]->setText(
+						m_pSession->timeFromFrame(m_pSession->sessionLength()));
+				}
 			}
 		}
 	}

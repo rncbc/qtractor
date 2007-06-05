@@ -70,8 +70,8 @@ public:
 	void setDescription(const QString& sDescription);
 	const QString& description() const;
 
-	// Session length accessors.
-	bool updateSessionLength();
+	// Session length mod-accessors.
+	bool updateSessionLength(unsigned long iSessionLength = 0);
 	unsigned long sessionLength() const;
 
 	// Sample rate accessors.
