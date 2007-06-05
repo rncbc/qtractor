@@ -34,6 +34,7 @@
 #include "qtractorTrackTime.h"
 #include "qtractorTrackView.h"
 #include "qtractorThumbView.h"
+#include "qtractorSpinBox.h"
 
 #include "qtractorAudioPeak.h"
 #include "qtractorAudioBuffer.h"
@@ -117,6 +118,7 @@ qtractorMainForm::qtractorMainForm (
 
 	// Initialize some pointer references.
 	m_pOptions     = NULL;
+	m_pTimeScale   = new qtractorTimeScale();
 	m_pSession     = new qtractorSession();
 	m_pCommands    = new qtractorCommandList();
 	m_pInstruments = new qtractorInstrumentList();
@@ -194,20 +196,22 @@ qtractorMainForm::qtractorMainForm (
 	// Additional time-toolbar controls...
 //	m_ui.timeToolbar->addSeparator();
 
-	// Transport time.
-	const QString sTime("00:00:00.000");
-	const QFont& font = qtractorMainForm::font();
-	m_pTransportTime = new QLabel(sTime);
-	m_pTransportTime->setFont(QFont(font.family(), font.pointSize() + 2));
-	m_pTransportTime->setFrameShape(QFrame::Panel);
-	m_pTransportTime->setFrameShadow(QFrame::Sunken);
+	// Editable toolbar widgets special palette.
 	QPalette pal;
-	pal.setColor(QPalette::Window, Qt::black);
-	pal.setColor(QPalette::WindowText, Qt::green);
+	pal.setColor(QPalette::Base, Qt::black);
+	pal.setColor(QPalette::Text, Qt::green);
+
+	// Transport time.
+	const QFont& font = qtractorMainForm::font();
+	m_pTransportTime = new qtractorSpinBox();
+	m_pTransportTime->setTimeScale(m_pTimeScale);
+	m_pTransportTime->setFont(QFont(font.family(), font.pointSize() + 2));
+//	m_pTransportTime->setFrameShape(QFrame::Panel);
+//	m_pTransportTime->setFrameShadow(QFrame::Sunken);
 	m_pTransportTime->setPalette(pal);
-	m_pTransportTime->setAutoFillBackground(true);
-	m_pTransportTime->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
-	m_pTransportTime->setFixedSize(m_pTransportTime->sizeHint() + QSize(2, 2));
+//	m_pTransportTime->setAutoFillBackground(true);
+	m_pTransportTime->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+	m_pTransportTime->setFixedSize(QSize(124, 26));
 	m_pTransportTime->setToolTip(tr("Current transport time (playhead)"));
 	m_ui.timeToolbar->addWidget(m_pTransportTime);
 	m_ui.timeToolbar->addSeparator();
@@ -217,7 +221,8 @@ qtractorMainForm::qtractorMainForm (
 	m_pTempoSpinBox->setDecimals(1);
 	m_pTempoSpinBox->setMinimum(1.0f);
 	m_pTempoSpinBox->setMaximum(1000.0f);
-	m_pTempoSpinBox->setAlignment(Qt::AlignHCenter);
+	m_pTempoSpinBox->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+	m_pTempoSpinBox->setPalette(pal);
 	m_pTempoSpinBox->setToolTip(tr("Tempo (BPM)"));
 	m_ui.timeToolbar->addWidget(m_pTempoSpinBox);
 	m_ui.timeToolbar->addSeparator();
@@ -323,6 +328,7 @@ qtractorMainForm::qtractorMainForm (
 	statusBar()->addWidget(pLabel);
 
 	// Session length time.
+	const QString sTime("00:00:00.000");
 	pLabel = new QLabel(sTime);
 	pLabel->setAlignment(Qt::AlignRight);
 	pLabel->setMinimumSize(pLabel->sizeHint() + pad);
@@ -513,6 +519,10 @@ qtractorMainForm::qtractorMainForm (
 	QObject::connect(m_pCommands,
 		SIGNAL(updateNotifySignal(bool)),
 		SLOT(updateNotifySlot(bool)));
+
+	QObject::connect(m_pTransportTime,
+		SIGNAL(valueChanged(unsigned long)),
+		SLOT(transportTimeChanged(unsigned long)));
 }
 
 
@@ -538,6 +548,8 @@ qtractorMainForm::~qtractorMainForm (void)
 		delete m_pCommands;
 	if (m_pSession)
 		delete m_pSession;
+	if (m_pTimeScale)
+		delete m_pTimeScale;
 
 	// Get select mode action group down.
 	if (m_pSelectModeActionGroup)
@@ -655,6 +667,7 @@ void qtractorMainForm::setOptions ( qtractorOptions *pOptions )
 	// Primary startup stabilization...
 	updateRecentFilesMenu();
 	updatePeakAutoRemove();
+	updateDisplayFormat();
 
 	// FIXME: This is what it should ever be,
 	// make it right from this very moment...
@@ -1021,6 +1034,13 @@ qtractorInstrumentList *qtractorMainForm::instruments (void) const
 qtractorThumbView *qtractorMainForm::thumbView (void) const
 {
 	return m_pThumbView;
+}
+
+
+// The global time-scale reference.
+qtractorTimeScale *qtractorMainForm::timeScale (void) const
+{
+	return m_pTimeScale;
 }
 
 
@@ -1837,8 +1857,8 @@ void qtractorMainForm::viewRefresh (void)
 	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
 	// Update the whole session view dependables...
-	m_pSession->updateTimeScale();
-	m_pSession->updateSessionLength();
+	updateTimeScale();
+
 	if (m_pTracks)
 		m_pTracks->updateContents(true);
 	if (m_pConnections)
@@ -1891,6 +1911,7 @@ void qtractorMainForm::viewOptions (void)
 	bool    bOldPeakAutoRemove  = m_pOptions->bPeakAutoRemove;
 	int     iOldMaxRecentFiles  = m_pOptions->iMaxRecentFiles;
 	int     iOldResampleType    = m_pOptions->iResampleType;
+	int     iOldTransportTime   = m_pOptions->iTransportTime;
 	// Load the current setup settings.
 	qtractorOptionsForm optionsForm(this);
 	optionsForm.setOptions(m_pOptions);
@@ -1922,6 +1943,8 @@ void qtractorMainForm::viewOptions (void)
 			(!bOldMessagesLimit &&  m_pOptions->bMessagesLimit) ||
 			(iOldMessagesLimitLines !=  m_pOptions->iMessagesLimitLines))
 			updateMessagesLimit();
+		if (iOldTransportTime != m_pOptions->iTransportTime)
+			updateDisplayFormat();
 		// FIXME: This is what it should ever be,
 		// make it right from this very moment...
 		qtractorAudioFileFactory::setDefaultType(
@@ -2362,11 +2385,22 @@ void qtractorMainForm::setTrack ( int scmd, int iTrack, bool bOn )
 
 void qtractorMainForm::updateTransportTime ( unsigned long iPlayHead )
 {
-	m_pTransportTime->setText(
-		m_pSession->timeFromFrame(iPlayHead,
-			m_pOptions && m_pOptions->bTransportTime)
-	);
+	m_pTransportTime->setValue(iPlayHead, false);
 }
+
+
+void qtractorMainForm::updateTimeScale (void)
+{
+	m_pSession->updateTimeScale();
+	m_pSession->updateSessionLength();
+
+	m_pTimeScale->setSampleRate(m_pSession->sampleRate());
+	m_pTimeScale->setTempo(m_pSession->tempo());
+	m_pTimeScale->setTicksPerBeat(m_pSession->ticksPerBeat());
+	m_pTimeScale->setBeatsPerBar(m_pSession->beatsPerBar());
+	m_pTimeScale->updateScale();
+}
+
 
 
 void qtractorMainForm::stabilizeForm (void)
@@ -2666,6 +2700,31 @@ void qtractorMainForm::updatePeakAutoRemove (void)
 		= m_pSession->audioPeakFactory();
 	if (pAudioPeakFactory)
 		pAudioPeakFactory->setAutoRemove(m_pOptions->bPeakAutoRemove);	
+}
+
+
+// Update main transport-time display format.
+void qtractorMainForm::updateDisplayFormat (void)
+{
+	if (m_pOptions == NULL)
+		return;
+
+	// Main transport display format is due...
+	qtractorSpinBox::DisplayFormat displayFormat;
+	switch (m_pOptions->iTransportTime) {
+	case 2:
+		displayFormat = qtractorSpinBox::BBT;
+		break;
+	case 1:
+		displayFormat = qtractorSpinBox::Time;
+		break;
+	case 0:
+	default:
+		displayFormat = qtractorSpinBox::Frames;
+		break;
+	}
+
+	m_pTransportTime->setDisplayFormat(displayFormat);
 }
 
 
@@ -3060,8 +3119,7 @@ void qtractorMainForm::mixerSelectionChanged (void)
 void qtractorMainForm::updateNotifySlot ( bool bRefresh )
 {
 	// Maybe, just maybe, we've made things larger...
-	m_pSession->updateTimeScale();
-	m_pSession->updateSessionLength();
+	updateTimeScale();
 
 	// Refresh track-view?
 	if (m_pTracks)
@@ -3080,6 +3138,8 @@ void qtractorMainForm::contentsChanged (void)
 #endif
 
 	// Stabilize session toolbar widgets...
+	updateTransportTime(m_iPlayHead);
+
 	m_pTempoSpinBox->setValue(m_pSession->tempo());
 	m_pSnapPerBeatComboBox->setCurrentIndex(
 		qtractorSession::indexFromSnap(m_pSession->snapPerBeat()));
@@ -3120,8 +3180,9 @@ void qtractorMainForm::tempoChanged (void)
 		if (m_pSession->midiEngine())
 			m_pSession->midiEngine()->resetTempo();
 		m_pSession->unlock();
-		m_iTransportUpdate++;
 	}
+
+	m_iTransportUpdate++;
 }
 
 
@@ -3142,6 +3203,21 @@ void qtractorMainForm::snapPerBeatChanged ( int iSnap )
 		new qtractorPropertyCommand<unsigned short> (
 			tr("session snap/beat"),
 			m_pSession->properties().snapPerBeat, iSnapPerBeat));
+}
+
+
+// Real thing: the playhead has been changed manually!
+void qtractorMainForm::transportTimeChanged ( unsigned long iPlayHead )
+{
+	if (m_iTransportUpdate > 0)
+		return;
+
+	appendMessages("qtractorMainForm::transportTimeChanged(" + QString::number(iPlayHead) + ")");
+
+	m_pSession->setPlayHead(iPlayHead);
+	m_iTransportUpdate++;
+
+	stabilizeForm();
 }
 
 

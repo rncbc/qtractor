@@ -98,7 +98,7 @@ qtractorSpinBox::DisplayFormat qtractorSpinBox::displayFormat (void) const
 
 
 // Nominal value (in frames) accessors.
-void qtractorSpinBox::setValue ( unsigned long iValue )
+void qtractorSpinBox::setValue ( unsigned long iValue, bool bNotifyChange )
 {
 	if (iValue < m_iMinimumValue)
 		iValue = m_iMinimumValue;
@@ -108,10 +108,11 @@ void qtractorSpinBox::setValue ( unsigned long iValue )
 	bool bValueChanged = (iValue != m_iDefaultValue);
 
 	m_iDefaultValue = iValue;
+
 	QAbstractSpinBox::lineEdit()->setText(textFromValue(iValue));
 	QAbstractSpinBox::interpretText();
 
-	if (bValueChanged)
+	if (bNotifyChange && bValueChanged)
 		emit valueChanged(iValue);
 }
 

@@ -26,6 +26,9 @@
 
 #include <QAbstractSpinBox>
 
+// Forward declartions.
+class QLineEdit;
+
 
 //----------------------------------------------------------------------------
 // qtractorSpinBox -- A time-scale formatted spin-box widget.
@@ -53,7 +56,7 @@ public:
 	DisplayFormat displayFormat() const;
 
 	// Nominal value (in frames) accessors.
-	void setValue(unsigned long iValue);
+	void setValue(unsigned long iValue, bool bNotifyChange = true);
 	unsigned long value() const;
 
 	// Minimum value (in frames) accessors.

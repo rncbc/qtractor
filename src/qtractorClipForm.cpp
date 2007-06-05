@@ -44,35 +44,38 @@ qtractorClipForm::qtractorClipForm (
 	m_ui.setupUi(this);
 
 	// Initialize dirty control state.
-	m_pTimeScale = new qtractorTimeScale();
 	m_pClip = NULL;
 	m_iDirtyCount = 0;
 
 	// Set proper spin-box time scales and display format...
 	qtractorSpinBox::DisplayFormat displayFormat = qtractorSpinBox::Frames;
+
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm) {
-		qtractorSession *pSession = pMainForm->session();
-		if (pSession) {
-			m_pTimeScale->setSampleRate(pSession->sampleRate());
-			m_pTimeScale->setTempo(pSession->tempo());
-			m_pTimeScale->setTicksPerBeat(pSession->ticksPerBeat());
-			m_pTimeScale->setBeatsPerBar(pSession->beatsPerBar());
-			m_pTimeScale->updateScale();
-		}
+		// Set from global time-scale instance...
+		qtractorTimeScale *pTimeScale = pMainForm->timeScale();
+		m_ui.ClipStartSpinBox->setTimeScale(pTimeScale);
+		m_ui.ClipOffsetSpinBox->setTimeScale(pTimeScale);
+		m_ui.ClipLengthSpinBox->setTimeScale(pTimeScale);
+		m_ui.FadeInLengthSpinBox->setTimeScale(pTimeScale);
+		m_ui.FadeOutLengthSpinBox->setTimeScale(pTimeScale);
+		// Default display-format from global options...
 		qtractorOptions *pOptions = pMainForm->options();
 		if (pOptions) {
-			displayFormat = (pOptions->bTransportTime
-				? qtractorSpinBox::BBT
-				: qtractorSpinBox::Time);
+			switch (pOptions->iTransportTime) {
+			case 2:
+				displayFormat = qtractorSpinBox::BBT;
+				break;
+			case 1:
+				displayFormat = qtractorSpinBox::Time;
+				break;
+			case 0:
+			default:
+				displayFormat = qtractorSpinBox::Frames;
+				break;
+			}
 		}
 	}
-
-	m_ui.ClipStartSpinBox->setTimeScale(m_pTimeScale);
-	m_ui.ClipOffsetSpinBox->setTimeScale(m_pTimeScale);
-	m_ui.ClipLengthSpinBox->setTimeScale(m_pTimeScale);
-	m_ui.FadeInLengthSpinBox->setTimeScale(m_pTimeScale);
-	m_ui.FadeOutLengthSpinBox->setTimeScale(m_pTimeScale);
 
 	m_ui.ClipStartSpinBox->setDisplayFormat(displayFormat);
 	m_ui.ClipOffsetSpinBox->setDisplayFormat(displayFormat);
@@ -142,7 +145,6 @@ qtractorClipForm::qtractorClipForm (
 // Destructor.
 qtractorClipForm::~qtractorClipForm (void)
 {
-	delete m_pTimeScale;
 }
 
 

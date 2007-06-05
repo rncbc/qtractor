@@ -520,6 +520,8 @@ unsigned long qtractorSession::locateFromFrame ( unsigned long iFrame ) const
 // Convert frame to time string.
 QString qtractorSession::timeFromFrame ( unsigned long iFrame, bool bBBT ) const
 {
+	QString sTime;
+
 	if (bBBT) {
 		// Time frame code in bars.beats.ticks ...
 		unsigned int bars, beats;
@@ -533,10 +535,10 @@ QString qtractorSession::timeFromFrame ( unsigned long iFrame, bool bBBT ) const
 			bars   = (unsigned int) (beats / m_props.beatsPerBar);
 			beats -= (unsigned int) (bars  * m_props.beatsPerBar);
 		}
-		return QString().sprintf("%4u.%02u.%03lu", bars + 1, beats + 1, ticks);
+		sTime.sprintf("%u.%02u.%03lu", bars + 1, beats + 1, ticks);
 	} else {
-		// Time frame code in hh:mm:ss.ddd ...
-		unsigned int hh, mm, ss, ddd;
+		// Time frame code in hh:mm:ss.zzz ...
+		unsigned int hh, mm, ss, zzz;
 		float secs = (float) iFrame / (float) m_props.sampleRate;
 		hh = mm = ss = 0;
 		if (secs >= 3600.0f) {
@@ -551,9 +553,11 @@ QString qtractorSession::timeFromFrame ( unsigned long iFrame, bool bBBT ) const
 			ss = (unsigned int) secs;
 			secs -= (float) ss;
 		}
-		ddd = (unsigned int) (secs * 1000.0f);
-		return QString().sprintf("%02u:%02u:%02u.%03u", hh, mm, ss, ddd);
+		zzz = (unsigned int) (secs * 1000.0f);
+		sTime.sprintf("%02u:%02u:%02u.%03u", hh, mm, ss, zzz);
 	}
+
+	return sTime;
 }
 
 

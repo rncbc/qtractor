@@ -56,7 +56,7 @@ qtractorOptions::qtractorOptions (void)
 	bStdoutCapture  = m_settings.value("/StdoutCapture", true).toBool();
 	bCompletePath   = m_settings.value("/CompletePath", true).toBool();
 	bPeakAutoRemove = m_settings.value("/PeakAutoRemove", true).toBool();
-	bTransportTime  = m_settings.value("/TransportTime", true).toBool();
+	iTransportTime  = m_settings.value("/TransportTime", 1).toInt();
 	iMaxRecentFiles = m_settings.value("/MaxRecentFiles", 5).toInt();
 	m_settings.endGroup();
 
@@ -151,7 +151,7 @@ qtractorOptions::~qtractorOptions (void)
 	m_settings.setValue("/StdoutCapture", bStdoutCapture);
 	m_settings.setValue("/CompletePath", bCompletePath);
 	m_settings.setValue("/PeakAutoRemove", bPeakAutoRemove);
-	m_settings.setValue("/TransportTime", bTransportTime);
+	m_settings.setValue("/TransportTime", iTransportTime);
 	m_settings.setValue("/MaxRecentFiles", iMaxRecentFiles);
 	m_settings.endGroup();
 

@@ -27,6 +27,7 @@
 
 // Forward declarations...
 class qtractorOptions;
+class qtractorTimeScale;
 class qtractorSession;
 class qtractorTracks;
 class qtractorThumbView;
@@ -38,6 +39,7 @@ class qtractorMessages;
 class qtractorConnections;
 class qtractorMixer;
 class qtractorMmcEvent;
+class qtractorSpinBox;
 
 class QLabel;
 class QComboBox;
@@ -73,10 +75,13 @@ public:
 	qtractorCommandList *commands() const;
 	qtractorInstrumentList *instruments() const;
 	qtractorThumbView *thumbView() const;
+	qtractorTimeScale *timeScale() const;
 
 	QString sessionName(const QString& sFilename);
 
 	void updateTransportTime(unsigned long iPlayHead);
+
+	void updateTimeScale();
 
 	void appendMessages(const QString& s);
 	void appendMessagesColor(const QString& s, const QString& c);
@@ -161,6 +166,7 @@ public slots:
 	void contentsChanged();
 	void tempoChanged();
 	void snapPerBeatChanged(int iSnap);
+	void transportTimeChanged(unsigned long iPlayHead);
 
 protected:
 
@@ -202,6 +208,7 @@ protected:
 	void updateMessagesFont();
 	void updateMessagesLimit();
 	void updateMessagesCapture();
+	void updateDisplayFormat();
 
 private:
 
@@ -210,6 +217,7 @@ private:
 
 	// Instance variables...
 	qtractorOptions *m_pOptions;
+	qtractorTimeScale *m_pTimeScale;
 	qtractorSession *m_pSession;
 	qtractorCommandList *m_pCommands;
 	qtractorInstrumentList *m_pInstruments;
@@ -222,7 +230,7 @@ private:
 	int m_iUntitled;
 	int m_iDirtyCount;
 	QActionGroup *m_pSelectModeActionGroup;
-	QLabel *m_pTransportTime;
+	qtractorSpinBox *m_pTransportTime;
 	QDoubleSpinBox *m_pTempoSpinBox;
 	QComboBox *m_pSnapPerBeatComboBox;
 	qtractorThumbView *m_pThumbView;

@@ -99,8 +99,8 @@ qtractorOptionsForm::qtractorOptionsForm (
 	QObject::connect(m_ui.PeakAutoRemoveCheckBox,
 		SIGNAL(stateChanged(int)),
 		SLOT(changed()));
-	QObject::connect(m_ui.TransportTimeCheckBox,
-		SIGNAL(stateChanged(int)),
+	QObject::connect(m_ui.TransportTimeComboBox,
+		SIGNAL(activated(int)),
 		SLOT(changed()));
 	QObject::connect(m_ui.MaxRecentFilesSpinBox,
 		SIGNAL(valueChanged(int)),
@@ -154,8 +154,8 @@ void qtractorOptionsForm::setOptions ( qtractorOptions *pOptions )
 	m_ui.StdoutCaptureCheckBox->setChecked(m_pOptions->bStdoutCapture);
 	m_ui.CompletePathCheckBox->setChecked(m_pOptions->bCompletePath);
 	m_ui.PeakAutoRemoveCheckBox->setChecked(m_pOptions->bPeakAutoRemove);
-	m_ui.TransportTimeCheckBox->setChecked(m_pOptions->bTransportTime);
 	m_ui.MaxRecentFilesSpinBox->setValue(m_pOptions->iMaxRecentFiles);
+	m_ui.TransportTimeComboBox->setCurrentIndex(m_pOptions->iTransportTime);
 
 	// Audio options.
 	int iIndex  = 0;
@@ -209,8 +209,8 @@ void qtractorOptionsForm::accept (void)
 		m_pOptions->bStdoutCapture  = m_ui.StdoutCaptureCheckBox->isChecked();
 		m_pOptions->bCompletePath   = m_ui.CompletePathCheckBox->isChecked();
 		m_pOptions->bPeakAutoRemove = m_ui.PeakAutoRemoveCheckBox->isChecked();
-		m_pOptions->bTransportTime  = m_ui.TransportTimeCheckBox->isChecked();
 		m_pOptions->iMaxRecentFiles = m_ui.MaxRecentFilesSpinBox->value();
+		m_pOptions->iTransportTime  = m_ui.TransportTimeComboBox->currentIndex();
 		// Audio options...
 		int iFormat	= m_ui.CaptureTypeComboBox->itemData(
 			m_ui.CaptureTypeComboBox->currentIndex()).toInt();

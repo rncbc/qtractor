@@ -19,15 +19,14 @@
    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
   </comment>
- <exportmacro></exportmacro>
  <class>qtractorOptionsForm</class>
  <widget class="QDialog" name="qtractorOptionsForm" >
   <property name="geometry" >
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>506</width>
-    <height>320</height>
+    <width>534</width>
+    <height>319</height>
    </rect>
   </property>
   <property name="sizePolicy" >
@@ -278,39 +277,7 @@
           <property name="spacing" >
            <number>6</number>
           </property>
-          <item row="0" column="1" >
-           <spacer>
-            <property name="orientation" >
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeType" >
-             <enum>QSizePolicy::Expanding</enum>
-            </property>
-            <property name="sizeHint" >
-             <size>
-              <width>50</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item rowspan="4" row="1" column="3" >
-           <spacer>
-            <property name="orientation" >
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeType" >
-             <enum>QSizePolicy::Expanding</enum>
-            </property>
-            <property name="sizeHint" >
-             <size>
-              <width>20</width>
-              <height>50</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item row="0" column="2" >
+          <item row="0" column="2" colspan="2" >
            <widget class="QLabel" name="MaxRecentFilesTextLabel" >
             <property name="font" >
              <font>
@@ -334,8 +301,8 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="0" >
-           <widget class="QCheckBox" name="CompletePathCheckBox" >
+          <item row="3" column="2" >
+           <widget class="QLabel" name="TimeFormatTextLabel" >
             <property name="font" >
              <font>
               <family>Sans Serif</family>
@@ -347,19 +314,51 @@
               <strikeout>false</strikeout>
              </font>
             </property>
-            <property name="toolTip" >
-             <string>Whether to show the complete directory path of loaded session files</string>
-            </property>
             <property name="text" >
-             <string>Show complete &amp;path of session files</string>
+             <string>&amp;Transport time format:</string>
             </property>
-            <property name="shortcut" >
-             <string>Alt+P</string>
+            <property name="alignment" >
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+            <property name="buddy" >
+             <cstring>TransportTimeComboBox</cstring>
             </property>
            </widget>
           </item>
-          <item row="4" column="0" >
-           <widget class="QCheckBox" name="TransportTimeCheckBox" >
+          <item rowspan="4" row="0" column="1" >
+           <spacer>
+            <property name="orientation" >
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeType" >
+             <enum>QSizePolicy::Expanding</enum>
+            </property>
+            <property name="sizeHint" >
+             <size>
+              <width>50</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item rowspan="2" row="1" column="4" >
+           <spacer>
+            <property name="orientation" >
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeType" >
+             <enum>QSizePolicy::Expanding</enum>
+            </property>
+            <property name="sizeHint" >
+             <size>
+              <width>20</width>
+              <height>50</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="3" column="3" colspan="2" >
+           <widget class="QComboBox" name="TransportTimeComboBox" >
             <property name="font" >
              <font>
               <family>Sans Serif</family>
@@ -372,18 +371,27 @@
              </font>
             </property>
             <property name="toolTip" >
-             <string>Whether to show transport time in BBT format (bar:beat.tick)</string>
+             <string>Transport time display format</string>
             </property>
-            <property name="text" >
-             <string>&amp;Transport time in BBT format</string>
-            </property>
-            <property name="shortcut" >
-             <string>Alt+T</string>
-            </property>
+            <item>
+             <property name="text" >
+              <string>Frames</string>
+             </property>
+            </item>
+            <item>
+             <property name="text" >
+              <string>Time</string>
+             </property>
+            </item>
+            <item>
+             <property name="text" >
+              <string>BBT</string>
+             </property>
+            </item>
            </widget>
           </item>
-          <item row="3" column="0" >
-           <widget class="QCheckBox" name="PeakAutoRemoveCheckBox" >
+          <item row="0" column="4" >
+           <widget class="QSpinBox" name="MaxRecentFilesSpinBox" >
             <property name="font" >
              <font>
               <family>Sans Serif</family>
@@ -396,37 +404,16 @@
              </font>
             </property>
             <property name="toolTip" >
-             <string>Whether to remove audio peak files on session close</string>
+             <string>The maximum number of recent files to keep in menu</string>
             </property>
-            <property name="text" >
-             <string>&amp;Auto-remove peak files</string>
+            <property name="maximum" >
+             <number>20</number>
             </property>
-            <property name="shortcut" >
-             <string>Alt+A</string>
+            <property name="minimum" >
+             <number>0</number>
             </property>
-           </widget>
-          </item>
-          <item row="1" column="0" >
-           <widget class="QCheckBox" name="StdoutCaptureCheckBox" >
-            <property name="font" >
-             <font>
-              <family>Sans Serif</family>
-              <pointsize>8</pointsize>
-              <weight>50</weight>
-              <italic>false</italic>
-              <bold>false</bold>
-              <underline>false</underline>
-              <strikeout>false</strikeout>
-             </font>
-            </property>
-            <property name="toolTip" >
-             <string>Whether to capture standard output (stdout/stderr) into messages window</string>
-            </property>
-            <property name="text" >
-             <string>Capture standard &amp;output</string>
-            </property>
-            <property name="shortcut" >
-             <string>Alt+O</string>
+            <property name="value" >
+             <number>5</number>
             </property>
            </widget>
           </item>
@@ -454,8 +441,8 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="3" >
-           <widget class="QSpinBox" name="MaxRecentFilesSpinBox" >
+          <item row="1" column="0" >
+           <widget class="QCheckBox" name="StdoutCaptureCheckBox" >
             <property name="font" >
              <font>
               <family>Sans Serif</family>
@@ -468,16 +455,61 @@
              </font>
             </property>
             <property name="toolTip" >
-             <string>The maximum number of recent files to keep in menu</string>
+             <string>Whether to capture standard output (stdout/stderr) into messages window</string>
             </property>
-            <property name="maximum" >
-             <number>20</number>
+            <property name="text" >
+             <string>Capture standard &amp;output</string>
             </property>
-            <property name="minimum" >
-             <number>0</number>
+            <property name="shortcut" >
+             <string>Alt+O</string>
             </property>
-            <property name="value" >
-             <number>5</number>
+           </widget>
+          </item>
+          <item row="3" column="0" >
+           <widget class="QCheckBox" name="PeakAutoRemoveCheckBox" >
+            <property name="font" >
+             <font>
+              <family>Sans Serif</family>
+              <pointsize>8</pointsize>
+              <weight>50</weight>
+              <italic>false</italic>
+              <bold>false</bold>
+              <underline>false</underline>
+              <strikeout>false</strikeout>
+             </font>
+            </property>
+            <property name="toolTip" >
+             <string>Whether to remove audio peak files on session close</string>
+            </property>
+            <property name="text" >
+             <string>&amp;Auto-remove peak files</string>
+            </property>
+            <property name="shortcut" >
+             <string>Alt+A</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0" >
+           <widget class="QCheckBox" name="CompletePathCheckBox" >
+            <property name="font" >
+             <font>
+              <family>Sans Serif</family>
+              <pointsize>8</pointsize>
+              <weight>50</weight>
+              <italic>false</italic>
+              <bold>false</bold>
+              <underline>false</underline>
+              <strikeout>false</strikeout>
+             </font>
+            </property>
+            <property name="toolTip" >
+             <string>Whether to show the complete directory path of loaded session files</string>
+            </property>
+            <property name="text" >
+             <string>Show complete &amp;path of session files</string>
+            </property>
+            <property name="shortcut" >
+             <string>Alt+P</string>
             </property>
            </widget>
           </item>
@@ -869,7 +901,6 @@
   </layout>
  </widget>
  <layoutdefault spacing="4" margin="8" />
- <pixmapfunction></pixmapfunction>
  <tabstops>
   <tabstop>OptionsTabWidget</tabstop>
   <tabstop>MessagesFontPushButton</tabstop>
@@ -879,8 +910,8 @@
   <tabstop>StdoutCaptureCheckBox</tabstop>
   <tabstop>CompletePathCheckBox</tabstop>
   <tabstop>PeakAutoRemoveCheckBox</tabstop>
-  <tabstop>TransportTimeCheckBox</tabstop>
   <tabstop>MaxRecentFilesSpinBox</tabstop>
+  <tabstop>TransportTimeComboBox</tabstop>
   <tabstop>CaptureTypeComboBox</tabstop>
   <tabstop>CaptureFormatComboBox</tabstop>
   <tabstop>CaptureQualitySpinBox</tabstop>
