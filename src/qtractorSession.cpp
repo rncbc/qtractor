@@ -257,7 +257,7 @@ bool qtractorSession::updateSessionLength ( unsigned long iSessionLength )
 			iSessionLength = pClip->clipStart() + pClip->clipLength();
 	}
 	// Just return if we've not changed.
-	if (iSessionLength < m_iSessionLength)
+	if (iSessionLength == m_iSessionLength)
 		return false;
 	// Set new one.
 	m_iSessionLength = iSessionLength;
