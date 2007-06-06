@@ -154,6 +154,25 @@ public:
 	unsigned int pixelSnap(unsigned int x) const
 		{ return pixelFromTick(tickSnap(tickFromPixel(x))); }
 
+	// Beat divisor (snap index) accessors.
+	unsigned short snapFromIndex(int iSnap) const
+	{
+		unsigned short iSnapPerBeat = 0;
+		if (iSnap > 0)
+			iSnapPerBeat++;
+		for (int i = 1; i < iSnap; i++)
+			iSnapPerBeat <<= 1;
+		return iSnapPerBeat;
+	}
+
+	int indexFromSnap(unsigned short iSnapPerBeat) const
+	{
+		int iSnap = 0;
+		for (unsigned short n = 1; n <= iSnapPerBeat; n <<= 1)
+			++iSnap;
+		return iSnap;
+	}
+
 	// Update scale divisor factors.
 	void updateScale()
 	{

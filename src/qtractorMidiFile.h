@@ -64,8 +64,10 @@ public:
 		{ m_iBeatsPerBar = iBeatsPerBar; }
 	unsigned short beatsPerBar() const { return m_iBeatsPerBar; }
 
-	// Sequence/track reader.
-	bool readTrack (qtractorMidiSequence *pSeq,
+	// Sequence/track readers.
+	bool readTracks(qtractorMidiSequence **ppSeqs, unsigned short iSeqs,
+		unsigned short iTrackChannel = 0);
+	bool readTrack(qtractorMidiSequence *pSeq,
 		unsigned short iTrackChannel);		
 
 	// Header writer.
@@ -73,6 +75,7 @@ public:
 		unsigned short iTracks, unsigned short iTicksPerBeat);
 
 	// Sequence/track writers.
+	bool writeTracks(qtractorMidiSequence **ppSeqs, unsigned short iSeqs);
 	bool writeTrack (qtractorMidiSequence *pSeq);
 
 protected:

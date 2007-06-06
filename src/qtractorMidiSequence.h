@@ -91,6 +91,10 @@ public:
 	void unlinkEvent (qtractorMidiEvent *pEvent);
 	void removeEvent (qtractorMidiEvent *pEvent);
 
+	// Replace events from another sequence in given range.
+	void replaceEvents(qtractorMidiSequence *pSeq,
+		unsigned long iTimeOffset = 0, unsigned long iTimeLength = 0);
+
 	// Sequence closure method.
 	void close();
 

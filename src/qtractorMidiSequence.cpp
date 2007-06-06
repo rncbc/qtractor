@@ -119,12 +119,10 @@ void qtractorMidiSequence::insertEvent ( qtractorMidiEvent *pEvent )
 			m_noteMin = note;
 		if (m_noteMax < note || m_noteMax == 0)
 			m_noteMax = note;
+		unsigned long iTimeEnd = pEvent->time() + pEvent->duration();
+		if (m_duration < iTimeEnd)
+			m_duration = iTimeEnd;
 	}
-
-	// Update maximum duration...
-	unsigned long iTimeEnd = pEvent->time() + pEvent->duration();
-	if (m_duration < iTimeEnd)
-		m_duration = iTimeEnd;
 }
 
 
@@ -159,6 +157,48 @@ void qtractorMidiSequence::close (void)
 
 	// Reset all pending notes.
 	m_notes.clear();
+}
+
+
+// Replace events from another sequence in given range.
+void qtractorMidiSequence::replaceEvents ( qtractorMidiSequence *pSeq,
+	unsigned long iTimeOffset, unsigned long iTimeLength )
+{
+	// Sanitize range as default...
+	if (iTimeOffset < 1 && iTimeLength < 1) {
+		iTimeOffset = pSeq->timeOffset();
+		iTimeLength = pSeq->timeLength();
+	}
+
+	// Set the given replacement range...
+	unsigned short iTicksPerBeat = pSeq->ticksPerBeat();
+
+	unsigned long iTimeStart = (iTimeOffset * m_iTicksPerBeat)
+		/ iTicksPerBeat;
+	unsigned long iTimeEnd = ((iTimeOffset + iTimeLength) * m_iTicksPerBeat)
+		/ iTicksPerBeat;
+
+	// Remove existing events in the given range...
+	qtractorMidiEvent *pEvent = m_events.first();
+	while (pEvent) {
+		qtractorMidiEvent *pNextEvent = pEvent->next();
+		if (pEvent->time() >= iTimeStart &&	pEvent->time() < iTimeEnd)
+			removeEvent(pEvent);
+		pEvent = pNextEvent;
+	}
+
+	// Insert new (cloned and adjusted) ones...
+	for (pEvent = pSeq->events().first(); pEvent; pEvent = pEvent->next()) {
+		qtractorMidiEvent *pNewEvent = new qtractorMidiEvent(*pEvent);
+		pNewEvent->setTime((pEvent->time() * m_iTicksPerBeat) / iTicksPerBeat);
+		if (pEvent->type() == qtractorMidiEvent::NOTEON) {
+			pNewEvent->setDuration(
+				(pEvent->duration() * m_iTicksPerBeat) / iTicksPerBeat);
+		}
+		insertEvent(pNewEvent);
+	}
+	
+	// Done.
 }
 
 
