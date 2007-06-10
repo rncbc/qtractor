@@ -26,6 +26,9 @@
 #include "qtractorMidiCursor.h"
 #include "qtractorMidiFile.h"
 
+// Forward declartiuons.
+class qtractorMidiEditorForm;
+
 
 //----------------------------------------------------------------------
 // class qtractorMidiClip -- MIDI file/sequence clip.
@@ -85,6 +88,9 @@ public:
 	void drawClip(QPainter *pPainter, const QRect& rect,
 		unsigned long iClipOffset);
 
+	// Clip editor method.
+	bool startEditor(QWidget *pParent = NULL);
+
 protected:
 
 	// Virtual document element methods.
@@ -106,6 +112,9 @@ private:
 	// position, mostly like an sequence cursor/iterator.
 	qtractorMidiCursor m_playCursor;
 	qtractorMidiCursor m_drawCursor;
+
+	// This clip editor form widget.
+	qtractorMidiEditorForm *m_pMidiEditorForm;
 };
 
 

@@ -25,6 +25,10 @@
 #include "qtractorTrack.h"
 
 
+// Forward declarations.
+class QWidget;
+
+
 //-------------------------------------------------------------------------
 // qtractorClip -- Track clip capsule.
 
@@ -118,6 +122,9 @@ public:
 	// Clip paint method.
 	virtual void drawClip(QPainter *pPainter, const QRect& clipRect,
 		unsigned long iClipOffset);
+
+	// Clip editor method.
+	virtual bool startEditor(QWidget *pParent = NULL) = 0;
 
 	// Document element methods.
 	bool loadElement(qtractorSessionDocument *pDocument,

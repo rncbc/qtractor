@@ -25,6 +25,8 @@
 
 #include "qtractorSessionDocument.h"
 
+#include "qtractorMidiEditorForm.h"
+
 #include <QFileInfo>
 #include <QPainter>
 
@@ -42,6 +44,8 @@ qtractorMidiClip::qtractorMidiClip ( qtractorTrack *pTrack )
 
 	m_iTrackChannel = 0;
 	m_bSessionFlag  = false;
+
+	m_pMidiEditorForm = NULL;
 }
 
 // Copy constructor.
@@ -53,12 +57,17 @@ qtractorMidiClip::qtractorMidiClip ( const qtractorMidiClip& clip )
 
 	setFilename(clip.filename());
 	setTrackChannel(clip.trackChannel());
+
+	m_pMidiEditorForm = NULL;
 }
 
 
 // Destructor.
 qtractorMidiClip::~qtractorMidiClip (void)
 {
+	if (m_pMidiEditorForm)
+		delete m_pMidiEditorForm;
+
 	if (m_pSeq)
 		delete m_pSeq;
 	if (m_pFile)
@@ -283,6 +292,11 @@ void qtractorMidiClip::close ( bool bForce )
 	// If proven empty, remove the file.
 	if (bForce && bNewFile && clipLength() < 1)
 		QFile::remove(filename());
+
+	// Get rid of editor form, if any.
+	if (m_pMidiEditorForm)
+		delete m_pMidiEditorForm;
+	m_pMidiEditorForm = NULL;
 }
 
 
@@ -387,6 +401,29 @@ void qtractorMidiClip::drawClip ( QPainter *pPainter, const QRect& clipRect,
 		pEvent = pEvent->next();
 	}
 }
+
+
+// Clip editor method.
+bool qtractorMidiClip::startEditor ( QWidget *pParent )
+{
+	qtractorTrack *pTrack = track();
+	if (pTrack == NULL)
+		return false;
+
+	if (m_pMidiEditorForm == NULL) {
+		m_pMidiEditorForm = new qtractorMidiEditorForm(pParent);
+		m_pMidiEditorForm->setMidiClip(this);
+		m_pMidiEditorForm->setForeground(pTrack->foreground());
+		m_pMidiEditorForm->setBackground(pTrack->background());
+	}
+
+	m_pMidiEditorForm->show();
+	m_pMidiEditorForm->raise();
+	m_pMidiEditorForm->activateWindow();
+
+	return true;
+}
+
 
 
 // Virtual document element methods.

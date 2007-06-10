@@ -27,6 +27,8 @@
 
 #include "qtractorSessionDocument.h"
 
+#include "qtractorClipForm.h"
+
 #include <QPainter>
 #include <QPolygon>
 
@@ -41,6 +43,8 @@ qtractorAudioClip::qtractorAudioClip ( qtractorTrack *pTrack )
 {
 	m_pPeak = NULL;
 	m_pBuff = NULL;
+
+	m_pAudioEditorForm = NULL;
 }
 
 // Copy constructor.
@@ -51,12 +55,17 @@ qtractorAudioClip::qtractorAudioClip ( const qtractorAudioClip& clip )
 	m_pBuff = NULL;
 
 	setFilename(clip.filename());
+
+	m_pAudioEditorForm = NULL;
 }
 
 
 // Destructor.
 qtractorAudioClip::~qtractorAudioClip (void)
 {
+	if (m_pAudioEditorForm)
+		delete m_pAudioEditorForm;
+
 	if (m_pPeak)
 		delete m_pPeak;
 	if (m_pBuff)
@@ -194,6 +203,11 @@ void qtractorAudioClip::close ( bool bForce )
 	// If proven empty, remove the file.
 	if (bForce && clipLength() < 1)
 		QFile::remove(filename());
+
+	// Get rid of editor form, if any.
+	if (m_pAudioEditorForm)
+		delete m_pAudioEditorForm;
+	m_pAudioEditorForm = NULL;
 }
 
 
@@ -352,6 +366,30 @@ void qtractorAudioClip::drawClip ( QPainter *pPainter, const QRect& clipRect,
 
 	// Our peak buffer at large.
 	delete [] pframes;
+}
+
+
+// Clip editor method.
+bool qtractorAudioClip::startEditor ( QWidget *pParent )
+{
+	qtractorTrack *pTrack = track();
+	if (pTrack == NULL)
+		return false;
+
+	if (m_pAudioEditorForm) {
+		m_pAudioEditorForm->show();
+		m_pAudioEditorForm->raise();
+		m_pAudioEditorForm->activateWindow();
+		return true;
+	}
+
+	m_pAudioEditorForm = new qtractorClipForm(pParent);
+	m_pAudioEditorForm->setClip(this);
+	bool bResult = m_pAudioEditorForm->exec();
+	delete m_pAudioEditorForm;
+	m_pAudioEditorForm = NULL;
+
+	return bResult;
 }
 
 
