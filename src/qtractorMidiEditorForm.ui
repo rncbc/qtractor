@@ -1,0 +1,472 @@
+<ui version="4.0" >
+ <author>rncbc aka Rui Nuno Capela</author>
+ <comment>qtractor - A MIDI/Audio multi-track sequencer.
+
+   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
+
+   This program is free software; you can redistribute it and/or
+   modify it under the terms of the GNU General Public License
+   as published by the Free Software Foundation; either version 2
+   of the License, or (at your option) any later version.
+
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+
+   You should have received a copy of the GNU General Public License along
+   with this program; if not, write to the Free Software Foundation, Inc.,
+   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
+ </comment>
+ <class>qtractorMidiEditorForm</class>
+ <widget class="QMainWindow" name="qtractorMidiEditorForm" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>803</width>
+    <height>498</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>MIDI Editor</string>
+  </property>
+  <property name="windowIcon" >
+   <iconset/>
+  </property>
+  <widget class="QWidget" name="centralwidget" />
+  <widget class="QMenuBar" name="MenuBar" >
+   <property name="geometry" >
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>803</width>
+     <height>30</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="fileMenu" >
+    <property name="title" >
+     <string>&amp;File</string>
+    </property>
+    <addaction name="fileSaveAction" />
+    <addaction name="fileSaveAsAction" />
+    <addaction name="separator" />
+    <addaction name="filePropertiesAction" />
+    <addaction name="separator" />
+    <addaction name="fileCloseAction" />
+   </widget>
+   <widget class="QMenu" name="editMenu" >
+    <property name="title" >
+     <string>&amp;Edit</string>
+    </property>
+    <widget class="QMenu" name="editModeMenu" >
+     <property name="title" >
+      <string>&amp;Mode</string>
+     </property>
+     <addaction name="editModeOffAction" />
+     <addaction name="editModeOnAction" />
+    </widget>
+    <widget class="QMenu" name="editSelectMenu" >
+     <property name="title" >
+      <string>&amp;Select</string>
+     </property>
+     <addaction name="editSelectNoneAction" />
+     <addaction name="editSelectInvertAction" />
+     <addaction name="editSelectAllAction" />
+    </widget>
+    <addaction name="editUndoAction" />
+    <addaction name="editRedoAction" />
+    <addaction name="separator" />
+    <addaction name="editCutAction" />
+    <addaction name="editCopyAction" />
+    <addaction name="editPasteAction" />
+    <addaction name="editDeleteAction" />
+    <addaction name="separator" />
+    <addaction name="editSelectMenu" />
+    <addaction name="separator" />
+    <addaction name="editModeMenu" />
+   </widget>
+   <widget class="QMenu" name="viewMenu" >
+    <property name="title" >
+     <string>&amp;View</string>
+    </property>
+    <widget class="QMenu" name="viewToolbarsMenu" >
+     <property name="title" >
+      <string>&amp;Toolbars</string>
+     </property>
+     <addaction name="viewToolbarFileAction" />
+     <addaction name="viewToolbarEditAction" />
+     <addaction name="viewToolbarViewAction" />
+    </widget>
+    <addaction name="viewMenubarAction" />
+    <addaction name="viewStatusbarAction" />
+    <addaction name="viewToolbarsMenu" />
+    <addaction name="separator" />
+    <addaction name="viewRefreshAction" />
+   </widget>
+   <addaction name="fileMenu" />
+   <addaction name="editMenu" />
+   <addaction name="viewMenu" />
+  </widget>
+  <widget class="QStatusBar" name="statusBar" />
+  <widget class="QToolBar" name="fileToolbar" >
+   <property name="orientation" >
+    <enum>Qt::Horizontal</enum>
+   </property>
+   <attribute name="toolBarArea" >
+    <number>4</number>
+   </attribute>
+   <addaction name="filePropertiesAction" />
+   <addaction name="fileSaveAction" />
+  </widget>
+  <widget class="QToolBar" name="editModeToolbar" >
+   <property name="orientation" >
+    <enum>Qt::Horizontal</enum>
+   </property>
+   <attribute name="toolBarArea" >
+    <number>4</number>
+   </attribute>
+   <addaction name="editModeOffAction" />
+   <addaction name="editModeOnAction" />
+  </widget>
+  <widget class="QToolBar" name="editToolbar" >
+   <property name="orientation" >
+    <enum>Qt::Horizontal</enum>
+   </property>
+   <attribute name="toolBarArea" >
+    <number>4</number>
+   </attribute>
+   <addaction name="editUndoAction" />
+   <addaction name="editRedoAction" />
+   <addaction name="separator" />
+   <addaction name="editCutAction" />
+   <addaction name="editCopyAction" />
+   <addaction name="editPasteAction" />
+   <addaction name="separator" />
+   <addaction name="editDeleteAction" />
+  </widget>
+  <widget class="QToolBar" name="viewToolbar" >
+   <property name="orientation" >
+    <enum>Qt::Horizontal</enum>
+   </property>
+   <attribute name="toolBarArea" >
+    <number>4</number>
+   </attribute>
+  </widget>
+  <widget class="QToolBar" name="editViewToolbar" >
+   <property name="orientation" >
+    <enum>Qt::Horizontal</enum>
+   </property>
+   <attribute name="toolBarArea" >
+    <number>4</number>
+   </attribute>
+  </widget>
+  <widget class="QToolBar" name="editEventToolbar" >
+   <property name="orientation" >
+    <enum>Qt::Horizontal</enum>
+   </property>
+   <attribute name="toolBarArea" >
+    <number>4</number>
+   </attribute>
+  </widget>
+  <action name="fileSaveAction" >
+   <property name="icon" >
+    <iconset resource="../icons/qtractor.qrc" >:/icons/fileSave.png</iconset>
+   </property>
+   <property name="text" >
+    <string>&amp;Save</string>
+   </property>
+   <property name="statusTip" >
+    <string>Save current MIDI clip to existing file name</string>
+   </property>
+  </action>
+  <action name="fileSaveAsAction" >
+   <property name="text" >
+    <string>Save &amp;As...</string>
+   </property>
+   <property name="statusTip" >
+    <string>Save current MIDI clip with another file name</string>
+   </property>
+  </action>
+  <action name="filePropertiesAction" >
+   <property name="icon" >
+    <iconset resource="../icons/qtractor.qrc" >:/icons/editClip.png</iconset>
+   </property>
+   <property name="text" >
+    <string>&amp;Properties...</string>
+   </property>
+   <property name="statusTip" >
+    <string>Change current MIDI clip properties</string>
+   </property>
+   <property name="shortcut" >
+    <string>F4</string>
+   </property>
+  </action>
+  <action name="fileCloseAction" >
+   <property name="text" >
+    <string>&amp;Close</string>
+   </property>
+   <property name="statusTip" >
+    <string>Close this MIDI clip editor</string>
+   </property>
+  </action>
+  <action name="editModeOffAction" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="icon" >
+    <iconset resource="../icons/qtractor.qrc" >:/icons/editModeOff.png</iconset>
+   </property>
+   <property name="text" >
+    <string>Edit Off</string>
+   </property>
+   <property name="statusTip" >
+    <string>Set edit mode off</string>
+   </property>
+  </action>
+  <action name="editModeOnAction" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="icon" >
+    <iconset resource="../icons/qtractor.qrc" >:/icons/editModeOn.png</iconset>
+   </property>
+   <property name="text" >
+    <string>Edit On</string>
+   </property>
+   <property name="statusTip" >
+    <string>Set edit mode on</string>
+   </property>
+  </action>
+  <action name="editUndoAction" >
+   <property name="icon" >
+    <iconset resource="../icons/qtractor.qrc" >:/icons/editUndo.png</iconset>
+   </property>
+   <property name="text" >
+    <string>&amp;Undo</string>
+   </property>
+   <property name="statusTip" >
+    <string>Undo last edit operation</string>
+   </property>
+   <property name="shortcut" >
+    <string>Ctrl+Z</string>
+   </property>
+  </action>
+  <action name="editRedoAction" >
+   <property name="icon" >
+    <iconset resource="../icons/qtractor.qrc" >:/icons/editRedo.png</iconset>
+   </property>
+   <property name="text" >
+    <string>&amp;Redo</string>
+   </property>
+   <property name="statusTip" >
+    <string>Redo last edit operation</string>
+   </property>
+   <property name="shortcut" >
+    <string>Ctrl+Shift+Z</string>
+   </property>
+  </action>
+  <action name="editCutAction" >
+   <property name="icon" >
+    <iconset resource="../icons/qtractor.qrc" >:/icons/editCut.png</iconset>
+   </property>
+   <property name="text" >
+    <string>Cu&amp;t</string>
+   </property>
+   <property name="statusTip" >
+    <string>Cut current selection into the local clipboard</string>
+   </property>
+   <property name="shortcut" >
+    <string>Ctrl+X</string>
+   </property>
+  </action>
+  <action name="editCopyAction" >
+   <property name="icon" >
+    <iconset resource="../icons/qtractor.qrc" >:/icons/editCopy.png</iconset>
+   </property>
+   <property name="text" >
+    <string>&amp;Copy</string>
+   </property>
+   <property name="statusTip" >
+    <string>Copy current selection to the local clipboard</string>
+   </property>
+   <property name="shortcut" >
+    <string>Ctrl+C</string>
+   </property>
+  </action>
+  <action name="editPasteAction" >
+   <property name="icon" >
+    <iconset resource="../icons/qtractor.qrc" >:/icons/editPaste.png</iconset>
+   </property>
+   <property name="text" >
+    <string>&amp;Paste</string>
+   </property>
+   <property name="statusTip" >
+    <string>Paste local clipboard contents into the current MIDI clip</string>
+   </property>
+   <property name="shortcut" >
+    <string>Ctrl+V</string>
+   </property>
+  </action>
+  <action name="editDeleteAction" >
+   <property name="icon" >
+    <iconset resource="../icons/qtractor.qrc" >:/icons/editDelete.png</iconset>
+   </property>
+   <property name="text" >
+    <string>&amp;Delete</string>
+   </property>
+   <property name="statusTip" >
+    <string>Delete current selection</string>
+   </property>
+   <property name="shortcut" >
+    <string>Del</string>
+   </property>
+  </action>
+  <action name="editSelectNoneAction" >
+   <property name="text" >
+    <string>Select &amp;None</string>
+   </property>
+   <property name="statusTip" >
+    <string>Select none</string>
+   </property>
+   <property name="shortcut" >
+    <string>Ctrl+Shift+A</string>
+   </property>
+  </action>
+  <action name="editSelectInvertAction" >
+   <property name="text" >
+    <string>Select &amp;Invert</string>
+   </property>
+   <property name="statusTip" >
+    <string>Select invert</string>
+   </property>
+   <property name="shortcut" >
+    <string>Ctrl+I</string>
+   </property>
+  </action>
+  <action name="editSelectAllAction" >
+   <property name="text" >
+    <string>Select &amp;All</string>
+   </property>
+   <property name="statusTip" >
+    <string>Select all</string>
+   </property>
+   <property name="shortcut" >
+    <string>Ctrl+A</string>
+   </property>
+  </action>
+  <action name="viewMenubarAction" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="text" >
+    <string>&amp;Menubar</string>
+   </property>
+   <property name="iconText" >
+    <string>Menubar</string>
+   </property>
+   <property name="toolTip" >
+    <string>Menubar</string>
+   </property>
+   <property name="statusTip" >
+    <string>Show/hide the menubar</string>
+   </property>
+   <property name="shortcut" >
+    <string>Ctrl+M</string>
+   </property>
+  </action>
+  <action name="viewStatusbarAction" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="text" >
+    <string>&amp;Statusbar</string>
+   </property>
+   <property name="iconText" >
+    <string>Statusbar</string>
+   </property>
+   <property name="toolTip" >
+    <string>Statusbar</string>
+   </property>
+   <property name="statusTip" >
+    <string>Show/hide the statusbar</string>
+   </property>
+   <property name="shortcut" >
+    <string/>
+   </property>
+  </action>
+  <action name="viewToolbarFileAction" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="text" >
+    <string>&amp;File</string>
+   </property>
+   <property name="iconText" >
+    <string>File toolbar</string>
+   </property>
+   <property name="toolTip" >
+    <string>File toolbar</string>
+   </property>
+   <property name="statusTip" >
+    <string>Show/hide the file toolbar</string>
+   </property>
+  </action>
+  <action name="viewToolbarEditAction" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="text" >
+    <string>&amp;Edit</string>
+   </property>
+   <property name="iconText" >
+    <string>Edit toolbar</string>
+   </property>
+   <property name="toolTip" >
+    <string>Edit toolbar</string>
+   </property>
+   <property name="statusTip" >
+    <string>Show/hide the edit toolbar</string>
+   </property>
+  </action>
+  <action name="viewToolbarViewAction" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="text" >
+    <string>&amp;View</string>
+   </property>
+   <property name="iconText" >
+    <string>View toolbar</string>
+   </property>
+   <property name="toolTip" >
+    <string>View toolbar</string>
+   </property>
+   <property name="statusTip" >
+    <string>Show/hide the view toolbar</string>
+   </property>
+  </action>
+  <action name="viewRefreshAction" >
+   <property name="text" >
+    <string>&amp;Refresh</string>
+   </property>
+   <property name="iconText" >
+    <string>Refresh</string>
+   </property>
+   <property name="toolTip" >
+    <string>Refresh view</string>
+   </property>
+   <property name="statusTip" >
+    <string>Refresh view</string>
+   </property>
+   <property name="shortcut" >
+    <string>F5</string>
+   </property>
+  </action>
+ </widget>
+ <resources>
+  <include location="../icons/qtractor.qrc" />
+ </resources>
+ <connections/>
+</ui>

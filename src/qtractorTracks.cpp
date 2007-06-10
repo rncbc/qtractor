@@ -41,6 +41,8 @@
 #include "qtractorTrackForm.h"
 #include "qtractorClipForm.h"
 
+#include "qtractorMidiEditorForm.h"
+
 #include <QVBoxLayout>
 #include <QToolButton>
 #include <QMessageBox>
@@ -316,10 +318,34 @@ bool qtractorTracks::editClip ( qtractorClip *pClip )
 	if (pClip == NULL)
 		return false;
 
+	// It must be assigned to some track...
+	qtractorTrack *pTrack = pClip->track();
+	if (pTrack == NULL)
+		return false;
+
 	// Open dialog for settings and immediate command execution...
-	qtractorClipForm clipForm(this);
-	clipForm.setClip(pClip);
-	return clipForm.exec();
+	if (pTrack->trackType() == qtractorTrack::Midi) {
+		qtractorMidiClip *pMidiClip
+			= static_cast<qtractorMidiClip *> (pClip);
+		if (pMidiClip) {
+			// FIXME: The new form will need cleanup...
+			qtractorMidiEditorForm *pMidiEditorForm
+				= new qtractorMidiEditorForm(this);
+			pMidiEditorForm->setMidiClip(pMidiClip);
+			pMidiEditorForm->setForeground(pTrack->foreground());
+			pMidiEditorForm->setBackground(pTrack->background());
+			pMidiEditorForm->show();
+			return true;
+		}
+	} else {
+		// This is the generic clip properties form...
+		qtractorClipForm clipForm(this);
+		clipForm.setClip(pClip);
+		return clipForm.exec();
+	}
+
+	// All else has failed.
+	return false;
 }
 
 

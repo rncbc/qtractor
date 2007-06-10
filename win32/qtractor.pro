@@ -32,6 +32,13 @@ HEADERS += ../src/qtractorAbout.h \
            ../src/qtractorMidiClip.h \
            ../src/qtractorMidiConnect.h \
            ../src/qtractorMidiCursor.h \
+           ../src/qtractorMidiEditor.h \
+           ../src/qtractorMidiEditCommand.h \
+           ../src/qtractorMidiEditEvent.h \
+           ../src/qtractorMidiEditList.h \
+           ../src/qtractorMidiEditSelect.h \
+           ../src/qtractorMidiEditTime.h \
+           ../src/qtractorMidiEditView.h \
            ../src/qtractorMidiEngine.h \
            ../src/qtractorMidiEvent.h \
            ../src/qtractorMidiFile.h \
@@ -69,6 +76,7 @@ HEADERS += ../src/qtractorAbout.h \
            ../src/qtractorConnectForm.h \
            ../src/qtractorInstrumentForm.h \
            ../src/qtractorMainForm.h \
+           ../src/qtractorMidiEditorForm.h \
            ../src/qtractorOptionsForm.h \
            ../src/qtractorPluginForm.h \
            ../src/qtractorPluginSelectForm.h \
@@ -105,6 +113,13 @@ SOURCES += ../src/main.cpp \
            ../src/qtractorMidiClip.cpp \
            ../src/qtractorMidiConnect.cpp \
            ../src/qtractorMidiCursor.cpp \
+           ../src/qtractorMidiEditor.cpp \
+           ../src/qtractorMidiEditCommand.cpp \
+           ../src/qtractorMidiEditEvent.cpp \
+           ../src/qtractorMidiEditList.cpp \
+           ../src/qtractorMidiEditSelect.cpp \
+           ../src/qtractorMidiEditTime.cpp \
+           ../src/qtractorMidiEditView.cpp \
            ../src/qtractorMidiEngine.cpp \
            ../src/qtractorMidiFile.cpp \
            ../src/qtractorMidiListView.cpp \
@@ -136,6 +151,7 @@ SOURCES += ../src/main.cpp \
            ../src/qtractorConnectForm.cpp \
            ../src/qtractorInstrumentForm.cpp \
            ../src/qtractorMainForm.cpp \
+           ../src/qtractorMidiEditorForm.cpp \
            ../src/qtractorOptionsForm.cpp \
            ../src/qtractorPluginForm.cpp \
            ../src/qtractorPluginSelectForm.cpp \
@@ -147,6 +163,7 @@ FORMS    = ../src/qtractorBusForm.ui \
            ../src/qtractorConnectForm.ui \
            ../src/qtractorInstrumentForm.ui \
            ../src/qtractorMainForm.ui \
+           ../src/qtractorMidiEditorForm.ui \
            ../src/qtractorOptionsForm.ui \
            ../src/qtractorPluginForm.ui \
            ../src/qtractorPluginSelectForm.ui \

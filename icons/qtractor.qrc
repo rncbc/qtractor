@@ -1,11 +1,14 @@
 <RCC version="1.0">
 	<qresource prefix="/icons/">
 		<file>qtractor.png</file>
+		<file>qtractorMidiEditor.png</file>
 		<file>qtractorTracks.png</file>
 		<file>editClip.png</file>
 		<file>editCopy.png</file>
 		<file>editCut.png</file>
 		<file>editDelete.png</file>
+		<file>editModeOff.png</file>
+		<file>editModeOn.png</file>
 		<file>editPaste.png</file>
 		<file>editRedo.png</file>
 		<file>editSelectClip.png</file>
