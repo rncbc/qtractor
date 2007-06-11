@@ -52,13 +52,6 @@ qtractorClipForm::qtractorClipForm (
 
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm) {
-		// Set from global time-scale instance...
-		qtractorTimeScale *pTimeScale = pMainForm->timeScale();
-		m_ui.ClipStartSpinBox->setTimeScale(pTimeScale);
-		m_ui.ClipOffsetSpinBox->setTimeScale(pTimeScale);
-		m_ui.ClipLengthSpinBox->setTimeScale(pTimeScale);
-		m_ui.FadeInLengthSpinBox->setTimeScale(pTimeScale);
-		m_ui.FadeOutLengthSpinBox->setTimeScale(pTimeScale);
 		// Default display-format from global options...
 		qtractorOptions *pOptions = pMainForm->options();
 		if (pOptions) {
@@ -159,19 +152,34 @@ void qtractorClipForm::setClip ( qtractorClip *pClip )
 	// problem is that it makes the widget modeless :(
 //	QDialog::show();
 
-	// Initialize dialog widgets...
-	m_ui.ClipNameLineEdit->setText(m_pClip->clipName());
-	// Parameters...
-	m_ui.ClipStartSpinBox->setValue(m_pClip->clipStart());
-	m_ui.ClipOffsetSpinBox->setValue(m_pClip->clipOffset());
-	m_ui.ClipLengthSpinBox->setValue(m_pClip->clipLength());
-	// Fade In/Out...
-	m_ui.FadeInLengthSpinBox->setValue(m_pClip->fadeInLength());
-	m_ui.FadeInTypeComboBox->setCurrentIndex(
-		indexFromFadeType(m_pClip->fadeInType()));
-	m_ui.FadeOutLengthSpinBox->setValue(m_pClip->fadeOutLength());
-	m_ui.FadeOutTypeComboBox->setCurrentIndex(
-		indexFromFadeType(m_pClip->fadeOutType()));
+	qtractorTrack *pTrack = NULL;
+	qtractorSession *pSession = NULL;
+	if (m_pClip)
+		pTrack = m_pClip->track();
+	if (pTrack)
+		pSession = pTrack->session();
+	if (pSession) {
+		// Set from global time-scale instance...
+		qtractorTimeScale *pTimeScale = pSession->timeScale();
+		m_ui.ClipStartSpinBox->setTimeScale(pTimeScale);
+		m_ui.ClipOffsetSpinBox->setTimeScale(pTimeScale);
+		m_ui.ClipLengthSpinBox->setTimeScale(pTimeScale);
+		m_ui.FadeInLengthSpinBox->setTimeScale(pTimeScale);
+		m_ui.FadeOutLengthSpinBox->setTimeScale(pTimeScale);
+		// Initialize dialog widgets...
+		m_ui.ClipNameLineEdit->setText(m_pClip->clipName());
+		// Parameters...
+		m_ui.ClipStartSpinBox->setValue(m_pClip->clipStart());
+		m_ui.ClipOffsetSpinBox->setValue(m_pClip->clipOffset());
+		m_ui.ClipLengthSpinBox->setValue(m_pClip->clipLength());
+		// Fade In/Out...
+		m_ui.FadeInLengthSpinBox->setValue(m_pClip->fadeInLength());
+		m_ui.FadeInTypeComboBox->setCurrentIndex(
+			indexFromFadeType(m_pClip->fadeInType()));
+		m_ui.FadeOutLengthSpinBox->setValue(m_pClip->fadeOutLength());
+		m_ui.FadeOutTypeComboBox->setCurrentIndex(
+			indexFromFadeType(m_pClip->fadeOutType()));
+	}
 
 	// Backup clean.
 	m_iDirtyCount = 0;

@@ -118,7 +118,6 @@ qtractorMainForm::qtractorMainForm (
 
 	// Initialize some pointer references.
 	m_pOptions     = NULL;
-	m_pTimeScale   = new qtractorTimeScale();
 	m_pSession     = new qtractorSession();
 	m_pCommands    = new qtractorCommandList();
 	m_pInstruments = new qtractorInstrumentList();
@@ -204,7 +203,7 @@ qtractorMainForm::qtractorMainForm (
 	// Transport time.
 	const QFont& font = qtractorMainForm::font();
 	m_pTransportTimeSpinBox = new qtractorSpinBox();
-	m_pTransportTimeSpinBox->setTimeScale(m_pTimeScale);
+	m_pTransportTimeSpinBox->setTimeScale(m_pSession->timeScale());
 	m_pTransportTimeSpinBox->setFont(QFont(font.family(), font.pointSize() + 2));
 	m_pTransportTimeSpinBox->setPalette(pal);
 //	m_pTransportTimeSpinBox->setAutoFillBackground(true);
@@ -546,8 +545,6 @@ qtractorMainForm::~qtractorMainForm (void)
 		delete m_pCommands;
 	if (m_pSession)
 		delete m_pSession;
-	if (m_pTimeScale)
-		delete m_pTimeScale;
 
 	// Get select mode action group down.
 	if (m_pSelectModeActionGroup)
@@ -1032,13 +1029,6 @@ qtractorInstrumentList *qtractorMainForm::instruments (void) const
 qtractorThumbView *qtractorMainForm::thumbView (void) const
 {
 	return m_pThumbView;
-}
-
-
-// The global time-scale reference.
-qtractorTimeScale *qtractorMainForm::timeScale (void) const
-{
-	return m_pTimeScale;
 }
 
 
@@ -1855,7 +1845,8 @@ void qtractorMainForm::viewRefresh (void)
 	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
 	// Update the whole session view dependables...
-	updateTimeScale();
+	m_pSession->updateTimeScale();
+	m_pSession->updateSessionLength();
 
 	if (m_pTracks)
 		m_pTracks->updateContents(true);
@@ -2385,20 +2376,6 @@ void qtractorMainForm::updateTransportTime ( unsigned long iPlayHead )
 {
 	m_pTransportTimeSpinBox->setValue(iPlayHead, false);
 }
-
-
-void qtractorMainForm::updateTimeScale (void)
-{
-	m_pSession->updateTimeScale();
-	m_pSession->updateSessionLength();
-
-	m_pTimeScale->setSampleRate(m_pSession->sampleRate());
-	m_pTimeScale->setTempo(m_pSession->tempo());
-	m_pTimeScale->setTicksPerBeat(m_pSession->ticksPerBeat());
-	m_pTimeScale->setBeatsPerBar(m_pSession->beatsPerBar());
-	m_pTimeScale->updateScale();
-}
-
 
 
 void qtractorMainForm::stabilizeForm (void)
@@ -3126,7 +3103,8 @@ void qtractorMainForm::mixerSelectionChanged (void)
 void qtractorMainForm::updateNotifySlot ( bool bRefresh )
 {
 	// Maybe, just maybe, we've made things larger...
-	updateTimeScale();
+	m_pSession->updateTimeScale();
+	m_pSession->updateSessionLength();
 
 	// Refresh track-view?
 	if (m_pTracks)

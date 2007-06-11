@@ -27,7 +27,6 @@
 
 // Forward declarations...
 class qtractorOptions;
-class qtractorTimeScale;
 class qtractorSession;
 class qtractorTracks;
 class qtractorThumbView;
@@ -75,13 +74,10 @@ public:
 	qtractorCommandList *commands() const;
 	qtractorInstrumentList *instruments() const;
 	qtractorThumbView *thumbView() const;
-	qtractorTimeScale *timeScale() const;
 
 	QString sessionName(const QString& sFilename);
 
 	void updateTransportTime(unsigned long iPlayHead);
-
-	void updateTimeScale();
 
 	void appendMessages(const QString& s);
 	void appendMessagesColor(const QString& s, const QString& c);
@@ -217,7 +213,6 @@ private:
 
 	// Instance variables...
 	qtractorOptions *m_pOptions;
-	qtractorTimeScale *m_pTimeScale;
 	qtractorSession *m_pSession;
 	qtractorCommandList *m_pCommands;
 	qtractorInstrumentList *m_pInstruments;

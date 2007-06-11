@@ -261,7 +261,7 @@ unsigned long qtractorSession::sessionLength (void) const
 
 
 // Time-scale helper accessors.
-const qtractorTimeScale *qtractorSession::timeScale (void) const
+qtractorTimeScale *qtractorSession::timeScale (void)
 {
 	return &(m_props.timeScale);
 }

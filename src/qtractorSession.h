@@ -76,7 +76,7 @@ public:
 	unsigned long sessionLength() const;
 
 	// Time-scale helper accessors.
-	const qtractorTimeScale *timeScale() const;
+	qtractorTimeScale *timeScale();
 
 	// Sample rate accessors.
 	void setSampleRate(unsigned int iSampleRate);
