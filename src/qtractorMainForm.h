@@ -158,6 +158,7 @@ public slots:
 	void activateMidiFile(const QString& sFilename);
 	void trackSelectionChanged();
 	void mixerSelectionChanged();
+	void changeNotifySlot();
 	void updateNotifySlot(bool bRefresh);
 	void contentsChanged();
 	void tempoChanged();

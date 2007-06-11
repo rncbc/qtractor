@@ -582,6 +582,7 @@ bool qtractorMidiEditorForm::saveClipFile ( const QString& sOldFilename,
 	setFilename(sNewFilename);
 #else
 	m_pMidiClip->setFilename(sNewFilename);
+	emit changeNotifySignal();
 #endif
 
 	m_iDirtyCount = 0;

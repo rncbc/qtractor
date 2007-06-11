@@ -3099,6 +3099,13 @@ void qtractorMainForm::mixerSelectionChanged (void)
 }
 
 
+// Clip editors update helper.
+void qtractorMainForm::changeNotifySlot (void)
+{
+	updateNotifySlot(true);
+}
+
+
 // Command update helper.
 void qtractorMainForm::updateNotifySlot ( bool bRefresh )
 {

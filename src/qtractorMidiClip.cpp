@@ -25,7 +25,10 @@
 
 #include "qtractorSessionDocument.h"
 
+#include "qtractorMidiEditor.h"
 #include "qtractorMidiEditorForm.h"
+
+#include "qtractorMainForm.h"
 
 #include <QFileInfo>
 #include <QPainter>
@@ -218,7 +221,10 @@ void qtractorMidiClip::seek ( unsigned long iFrame )
 	fprintf(stderr, "qtractorMidiClip::seek(%p, %lu)\n", this, iFrame);
 #endif
 
-	qtractorSession *pSession = track()->session();
+	qtractorTrack *pTrack = track();
+	if (pTrack == NULL)
+		return;
+	qtractorSession *pSession = pTrack->session();
 	if (pSession == NULL)
 		return;
 
@@ -411,12 +417,21 @@ bool qtractorMidiClip::startEditor ( QWidget *pParent )
 		return false;
 
 	if (m_pMidiEditorForm == NULL) {
+		// Build up the editor form...
 		m_pMidiEditorForm = new qtractorMidiEditorForm(pParent);
 		m_pMidiEditorForm->setMidiClip(this);
 		m_pMidiEditorForm->setForeground(pTrack->foreground());
 		m_pMidiEditorForm->setBackground(pTrack->background());
+		// Setup connections to main widget...
+		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+		if (pMainForm) {
+			QObject::connect(m_pMidiEditorForm->editor(),
+				SIGNAL(changeNotifySignal()),
+				pMainForm, SLOT(changeNotifySlot()));
+		}
 	}
 
+	// Show up the editor form...
 	m_pMidiEditorForm->show();
 	m_pMidiEditorForm->raise();
 	m_pMidiEditorForm->activateWindow();
