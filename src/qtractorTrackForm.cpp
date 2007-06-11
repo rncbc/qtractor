@@ -122,8 +122,8 @@ qtractorTrackForm::qtractorTrackForm (
 	// To save and keep bus/channel patching consistency.
 	m_pOldMidiBus = NULL;
 	m_iOldChannel = -1;
-	m_sOldInstrumentName = QString::null;
-	m_iOldBankSelMethod  = -1;
+	m_sOldInstrumentName.clear();
+	m_iOldBankSelMethod = -1;
 	m_iOldBank = -1;
 	m_iOldProg = -1;
 
@@ -764,7 +764,7 @@ void qtractorTrackForm::trackTypeChanged (void)
 		// Reset restorable patch reference...
 		m_pOldMidiBus = NULL;
 		m_iOldChannel = -1;
-		m_sOldInstrumentName = QString::null;
+		m_sOldInstrumentName.clear();
 		m_iOldBankSelMethod = -1;
 		m_iOldBank = -1;
 		m_iOldProg = -1;

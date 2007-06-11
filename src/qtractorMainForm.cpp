@@ -687,7 +687,7 @@ void qtractorMainForm::setOptions ( qtractorOptions *pOptions )
 	if (!m_pOptions->sSessionFile.isEmpty()) {
 		// Just load the prabably startup session...
 		if (loadSessionFile(m_pOptions->sSessionFile))
-			m_pOptions->sSessionFile = QString::null;
+			m_pOptions->sSessionFile.clear();
 	} else {
 		// Open up with a new empty session...
 		newSession();
@@ -1059,7 +1059,7 @@ bool qtractorMainForm::newSession (void)
 	m_iUntitled++;
 
 	// Stabilize form.
-	m_sFilename = QString::null;
+	m_sFilename.clear();
 	m_iDirtyCount = 0;
 	appendMessages(tr("New session: \"%1\".").arg(sessionName(m_sFilename)));
 
@@ -1179,7 +1179,7 @@ bool qtractorMainForm::editSession (void)
 	// If session name has changed, we'll prompt
 	// for correct filename when save is triggered...
 	if (m_pSession->sessionName() != sOldSessionName)
-		m_sFilename = QString::null;
+		m_sFilename.clear();
 
 	// Restore playback state, if needed...
 	if (bPlaying) {

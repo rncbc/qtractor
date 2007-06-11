@@ -262,8 +262,8 @@ bool qtractorOptions::parse_args ( int argc, char **argv )
 			continue;
 		}
 
+		QString sVal;
 		QString sArg = argv[i];
-		QString sVal = QString::null;
 		int iEqual = sArg.indexOf('=');
 		if (iEqual >= 0) {
 			sVal = sArg.right(sArg.length() - iEqual - 1);

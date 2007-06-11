@@ -50,7 +50,7 @@ qtractorClip::~qtractorClip (void)
 // Reset clip.
 void qtractorClip::clear (void)
 {
-	m_sClipName       = QString::null;
+	m_sClipName.clear();
 	
 	m_iClipStart      = 0;
 	m_iClipLength     = 0;

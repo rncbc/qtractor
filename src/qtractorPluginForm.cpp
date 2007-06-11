@@ -172,7 +172,7 @@ QString qtractorPluginForm::preset (void)
 	QString sPreset = m_ui.PresetComboBox->currentText();
 
 	if (sPreset == g_sDefPreset || m_iDirtyCount > 0)
-		sPreset = QString::null;
+		sPreset.clear();
 
 	return sPreset;
 }
