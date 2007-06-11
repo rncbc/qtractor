@@ -42,18 +42,18 @@
 //-------------------------------------------------------------------------
 // qtractorTrack::Properties -- Track properties structure.
 
-// Default constructor.
-qtractorTrack::Properties::Properties (void)
+// Helper clear/reset method.
+void qtractorTrack::Properties::clear (void)
 {
-	trackName   = QString::null;
+	trackName.clear();
 	trackType   = None;
 	record      = false;
 	mute        = false;
 	solo        = false;
 	gain        = 1.0f;
 	panning     = 0.0f;
-	inputBusName  = QString::null;
-	outputBusName = QString::null;
+	inputBusName.clear();
+	outputBusName.clear();
 	midiChannel = 0;
 	midiBankSelMethod = -1;
 	midiBank    = -1;
@@ -66,22 +66,23 @@ qtractorTrack::Properties::Properties (void)
 qtractorTrack::Properties& qtractorTrack::Properties::copy (
 	const Properties& props )
 {
-	trackName   = props.trackName;
-	trackType   = props.trackType;
-	record      = props.record;
-	mute        = props.mute;
-	solo        = props.solo;
-	gain        = props.gain;
-	panning     = props.panning;
-	inputBusName  = props.inputBusName;
-	outputBusName = props.outputBusName;
-	midiChannel = props.midiChannel;
-	midiBankSelMethod = props.midiBankSelMethod;
-	midiBank    = props.midiBank;
-	midiProgram = props.midiProgram;
-	foreground  = props.foreground;
-	background  = props.background;
-
+	if (&props != this) {
+		trackName   = props.trackName;
+		trackType   = props.trackType;
+		record      = props.record;
+		mute        = props.mute;
+		solo        = props.solo;
+		gain        = props.gain;
+		panning     = props.panning;
+		inputBusName  = props.inputBusName;
+		outputBusName = props.outputBusName;
+		midiChannel = props.midiChannel;
+		midiBankSelMethod = props.midiBankSelMethod;
+		midiBank    = props.midiBank;
+		midiProgram = props.midiProgram;
+		foreground  = props.foreground;
+		background  = props.background;
+	}
 	return *this;
 }
 

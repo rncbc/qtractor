@@ -44,7 +44,7 @@
 #include "qtractorSessionDocument.h"
 #include "qtractorSessionCursor.h"
 
-#include "qtractorPropertyCommand.h"
+#include "qtractorSessionCommand.h"
 #include "qtractorClipCommand.h"
 
 #include "qtractorAudioClip.h"
@@ -2624,7 +2624,7 @@ void qtractorMainForm::updateSession (void)
 	// Initialize toolbar widgets...
 	m_pTempoSpinBox->setValue(m_pSession->tempo());
 	m_pSnapPerBeatComboBox->setCurrentIndex(
-		qtractorSession::indexFromSnap(m_pSession->snapPerBeat()));
+		qtractorTimeScale::indexFromSnap(m_pSession->snapPerBeat()));
 
 	// Remake loop state...
 	m_ui.transportLoopAction->setChecked(m_pSession->isLooping());
@@ -3149,7 +3149,7 @@ void qtractorMainForm::contentsChanged (void)
 
 	m_pTempoSpinBox->setValue(m_pSession->tempo());
 	m_pSnapPerBeatComboBox->setCurrentIndex(
-		qtractorSession::indexFromSnap(m_pSession->snapPerBeat()));
+		qtractorTimeScale::indexFromSnap(m_pSession->snapPerBeat()));
 
 	m_pThumbView->update();
 
@@ -3170,25 +3170,8 @@ void qtractorMainForm::tempoChanged (void)
 	appendMessages("qtractorMainForm::tempoChanged()");
 #endif
 
-	// If currently playing, we need to do a stop and go...
-	bool bPlaying = m_pSession->isPlaying();
-	if (bPlaying)
-		m_pSession->lock();
-
 	// Now, express the change as a undoable command...
-	m_pCommands->exec(
-		new qtractorPropertyCommand<float> (
-			tr("session tempo"),
-			m_pSession->properties().tempo, fTempo));
-
-	// Restore playback state, if needed...
-	if (bPlaying) {
-		// The MIDI engine queue needs a reset...
-		if (m_pSession->midiEngine())
-			m_pSession->midiEngine()->resetTempo();
-		m_pSession->unlock();
-	}
-
+	m_pCommands->exec(new qtractorSessionTempoCommand(m_pSession, fTempo));
 	m_iTransportUpdate++;
 }
 
@@ -3197,7 +3180,7 @@ void qtractorMainForm::tempoChanged (void)
 void qtractorMainForm::snapPerBeatChanged ( int iSnap )
 {
 	// Avoid bogus changes...
-	unsigned short iSnapPerBeat = qtractorSession::snapFromIndex(iSnap);
+	unsigned short iSnapPerBeat = qtractorTimeScale::snapFromIndex(iSnap);
 	if (iSnapPerBeat == m_pSession->snapPerBeat())
 		return;
 
@@ -3205,11 +3188,8 @@ void qtractorMainForm::snapPerBeatChanged ( int iSnap )
 	appendMessages("qtractorMainForm::snapPerBeatChanged()");
 #endif
 
-	// Now, express the change as a undoable command...
-	m_pCommands->exec(
-		new qtractorPropertyCommand<unsigned short> (
-			tr("session snap/beat"),
-			m_pSession->properties().snapPerBeat, iSnapPerBeat));
+	// No need to express this change as a undoable command...
+	m_pSession->setSnapPerBeat(iSnapPerBeat);
 }
 
 

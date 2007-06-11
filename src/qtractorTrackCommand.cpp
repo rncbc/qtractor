@@ -25,7 +25,6 @@
 
 #include "qtractorMainForm.h"
 
-#include "qtractorSession.h"
 #include "qtractorTracks.h"
 #include "qtractorTrackList.h"
 #include "qtractorTrackView.h"

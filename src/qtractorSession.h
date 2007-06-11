@@ -24,6 +24,7 @@
 
 #include "qtractorAtomic.h"
 #include "qtractorTrack.h"
+#include "qtractorTimeScale.h"
 
 
 // Forward declarations.
@@ -74,6 +75,9 @@ public:
 	bool updateSessionLength(unsigned long iSessionLength = 0);
 	unsigned long sessionLength() const;
 
+	// Time-scale helper accessors.
+	const qtractorTimeScale *timeScale() const;
+
 	// Sample rate accessors.
 	void setSampleRate(unsigned int iSampleRate);
 	unsigned int sampleRate() const;
@@ -106,10 +110,6 @@ public:
 	// Beat divisor (snap) accessors.
 	void setSnapPerBeat(unsigned short iSnapPerBeat);
 	unsigned short snapPerBeat(void) const;
-
-	// Beat divisor index helpers.
-	static unsigned short snapFromIndex(int iSnap);
-	static int indexFromSnap(unsigned short iSnapPerBeat);
 
 	// Pixel/Beat number conversion.
 	unsigned int beatFromPixel(unsigned int x) const;
@@ -272,28 +272,23 @@ public:
 			{ copy(props); }
 		// Assignment operator,
 		Properties& operator=(const Properties& props)
-			{ if (&props != this) copy(props); return *this; }
+			{ return copy(props); }
 		// Helper copy method.
 		Properties& copy(const Properties& props);
 		// Helper clear/reset method.
 		void clear();
 		// Members.
-		QString        sessionDir;
-		QString        sessionName;
-		QString        description;
-		unsigned int   sampleRate;
-		float          tempo;
-		unsigned short ticksPerBeat;
-		unsigned short beatsPerBar;
-		unsigned short pixelsPerBeat;
-		unsigned short horizontalZoom;
-		unsigned short verticalZoom;
-		unsigned short snapPerBeat;
-		unsigned long  editHead;
-		unsigned long  editTail;
+		QString           sessionDir;
+		QString           sessionName;
+		QString           description;
+		// Intrinsic time scale.
+		qtractorTimeScale timeScale;
+		// Base edit members.
+		unsigned long     editHead;
+		unsigned long     editTail;
 		// Derived members.
-		unsigned long  editHeadTime;
-		unsigned long  editTailTime;
+		unsigned long     editHeadTime;
+		unsigned long     editTailTime;
 	};
 
 	// Alternate properties accessor.
@@ -304,12 +299,6 @@ private:
 	Properties     m_props;             // Session properties.
 
 	unsigned long  m_iSessionLength;    // Session length in frames.
-
-	// Internal time scaling factors.
-	unsigned long  m_iScale_a;
-	float          m_fScale_b;
-	float          m_fScale_c;
-	float          m_fScale_d;
 
 	unsigned int   m_iRecordTracks;     // Current number of record-armed tracks.
 	unsigned int   m_iMuteTracks;       // Current number of muted tracks.

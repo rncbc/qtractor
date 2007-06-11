@@ -28,8 +28,9 @@
 #ifdef CONFIG_TEST
 #include "qtractorMidiFile.h"
 #else
-#include "qtractorMidiClip.h"
+#include "qtractorSession.h"
 #include "qtractorClipForm.h"
+#include "qtractorMidiClip.h"
 #endif
 
 #include "qtractorTimeScale.h"
@@ -389,7 +390,22 @@ void qtractorMidiEditorForm::setMidiClip ( qtractorMidiClip *pMidiClip  )
 	if (queryClose()) {
 		m_iDirtyCount = 0;
 		m_pMidiClip = pMidiClip;
-		if (m_pMidiClip) {
+		qtractorTrack *pTrack = NULL;
+		qtractorSession *pSession = NULL;
+		if (m_pMidiClip)
+			pTrack = m_pMidiClip->track();
+		if (pTrack)
+			pSession = pTrack->session();
+		if (pSession) {
+			// Adjust MIDI editor time-scale fundamentals...
+			qtractorTimeScale *pTimeScale = m_pMidiEditor->timeScale();
+			pTimeScale->setSampleRate(pSession->sampleRate());
+			pTimeScale->setTempo(pSession->tempo());
+			pTimeScale->setTicksPerBeat(pSession->ticksPerBeat());
+			pTimeScale->setBeatsPerBar(pSession->beatsPerBar());
+			pTimeScale->setSnapPerBeat(pSession->snapPerBeat());
+			pTimeScale->updateScale();
+			// Now set the editing MIDI sequence alright...
 			m_pMidiEditor->setSequence(m_pMidiClip->sequence());
 			m_sFilename = m_pMidiClip->filename();
 			m_iTrackChannel = m_pMidiClip->trackChannel();

@@ -190,15 +190,18 @@ public:
 	struct Properties
 	{
 		// Default constructor.
-		Properties();
+		Properties()
+			{ clear(); }
 		// Copy constructor.
 		Properties(const Properties& props)
 			{ copy(props); }
 		// Assignment operator,
 		Properties& operator=(const Properties& props)
-			{ if (&props != this) copy(props); return *this; }
+			{ return copy(props); }
 		// Helper copy method.
 		Properties& copy(const Properties& props);
+		// Helper clear/reset method.
+		void clear();
 		// Members.
 		QString        trackName;
 		TrackType      trackType;

@@ -29,8 +29,6 @@
 class qtractorAudioBuffer;
 class qtractorAudioPeak;
 
-class qtractorClipForm;
-
 
 //----------------------------------------------------------------------
 // class qtractorAudioClip -- Audio file/buffer clip.
@@ -93,9 +91,6 @@ private:
 	// Instance variables.
 	qtractorAudioBuffer *m_pBuff;
 	qtractorAudioPeak   *m_pPeak;
-
-	// This clip editor form widget.
-	qtractorClipForm *m_pAudioEditorForm;
 };
 
 

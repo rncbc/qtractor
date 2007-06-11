@@ -154,9 +154,10 @@ void qtractorClipForm::setClip ( qtractorClip *pClip )
 	// Clip properties cloning...
 	m_pClip = pClip;
 
-	// FIXME: Somehow, for the spin-box take, one has
-	// to make the dialog visible before hand...
-	QDialog::show();
+	// FIXME: Somehow, for the spin-box take, do one 
+	// has to make the dialog visible before hand?
+	// problem is that it makes the widget modeless :(
+//	QDialog::show();
 
 	// Initialize dialog widgets...
 	m_ui.ClipNameLineEdit->setText(m_pClip->clipName());

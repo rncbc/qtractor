@@ -128,18 +128,18 @@ void qtractorSessionForm::setSession ( qtractorSession *pSession )
 	m_ui.DescriptionTextEdit->setPlainText(m_props.description);
 	// Time properties...
 	m_ui.SampleRateComboBox->lineEdit()->setText(
-		QString::number(m_props.sampleRate));
+		QString::number(m_props.timeScale.sampleRate()));
 	m_ui.SampleRateTextLabel->setEnabled(!pSession->isActivated());
 	m_ui.SampleRateComboBox->setEnabled(!pSession->isActivated());
-	m_ui.TempoSpinBox->setValue(m_props.tempo);
-	m_ui.BeatsPerBarSpinBox->setValue(int(m_props.beatsPerBar));
-	m_ui.TicksPerBeatSpinBox->setValue(int(m_props.ticksPerBeat));
+	m_ui.TempoSpinBox->setValue(m_props.timeScale.tempo());
+	m_ui.BeatsPerBarSpinBox->setValue(int(m_props.timeScale.beatsPerBar()));
+	m_ui.TicksPerBeatSpinBox->setValue(int(m_props.timeScale.ticksPerBeat()));
 	// View properties...
 	m_ui.SnapPerBeatComboBox->setCurrentIndex(
-		qtractorSession::indexFromSnap(m_props.snapPerBeat));
-	m_ui.PixelsPerBeatSpinBox->setValue(int(m_props.pixelsPerBeat));
-	m_ui.HorizontalZoomSpinBox->setValue(int(m_props.horizontalZoom));
-	m_ui.VerticalZoomSpinBox->setValue(int(m_props.verticalZoom));
+		qtractorTimeScale::indexFromSnap(m_props.timeScale.snapPerBeat()));
+	m_ui.PixelsPerBeatSpinBox->setValue(int(m_props.timeScale.pixelsPerBeat()));
+	m_ui.HorizontalZoomSpinBox->setValue(int(m_props.timeScale.horizontalZoom()));
+	m_ui.VerticalZoomSpinBox->setValue(int(m_props.timeScale.verticalZoom()));
 
 	// Start editing session name, if empty...
 	if (m_props.sessionName.isEmpty())
@@ -166,20 +166,21 @@ void qtractorSessionForm::accept (void)
 	// Save options...
 	if (m_iDirtyCount > 0) {
 		// Make changes permanent...
-		m_props.sessionName    = m_ui.SessionNameLineEdit->text();
-		m_props.sessionDir     = m_ui.SessionDirComboBox->currentText();
-		m_props.description    = m_ui.DescriptionTextEdit->toPlainText();
+		m_props.sessionName = m_ui.SessionNameLineEdit->text();
+		m_props.sessionDir  = m_ui.SessionDirComboBox->currentText();
+		m_props.description = m_ui.DescriptionTextEdit->toPlainText();
 		// Time properties...
-		m_props.sampleRate     = m_ui.SampleRateComboBox->currentText().toUInt();
-		m_props.tempo          = m_ui.TempoSpinBox->value();
-		m_props.beatsPerBar    = m_ui.BeatsPerBarSpinBox->value();
-		m_props.ticksPerBeat   = m_ui.TicksPerBeatSpinBox->value();
+		m_props.timeScale.setSampleRate(
+			m_ui.SampleRateComboBox->currentText().toUInt());
+		m_props.timeScale.setTempo(m_ui.TempoSpinBox->value());
+		m_props.timeScale.setBeatsPerBar(m_ui.BeatsPerBarSpinBox->value());
+		m_props.timeScale.setTicksPerBeat(m_ui.TicksPerBeatSpinBox->value());
 		// View properties...
-		m_props.snapPerBeat    = qtractorSession::snapFromIndex(
-			m_ui.SnapPerBeatComboBox->currentIndex());
-		m_props.pixelsPerBeat  = m_ui.PixelsPerBeatSpinBox->value();
-		m_props.horizontalZoom = m_ui.HorizontalZoomSpinBox->value();
-		m_props.verticalZoom   = m_ui.VerticalZoomSpinBox->value();
+		m_props.timeScale.setSnapPerBeat(qtractorTimeScale::snapFromIndex(
+			m_ui.SnapPerBeatComboBox->currentIndex()));
+		m_props.timeScale.setPixelsPerBeat(m_ui.PixelsPerBeatSpinBox->value());
+		m_props.timeScale.setHorizontalZoom(m_ui.HorizontalZoomSpinBox->value());
+		m_props.timeScale.setVerticalZoom(m_ui.VerticalZoomSpinBox->value());
 		// Reset dirty flag.
 		m_iDirtyCount = 0;
 	}

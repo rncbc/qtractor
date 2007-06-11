@@ -36,33 +36,15 @@ public:
 
 	// Default constructor.
 	qtractorTimeScale()
-	{
-		m_iSampleRate     = 44100;
-		m_fTempo          = 120.0f;
-		m_iTicksPerBeat   = 96;
-		m_iBeatsPerBar    = 4;
-		m_iPixelsPerBeat  = 32;
-		m_iSnapPerBeat    = 4;
-		m_iHorizontalZoom = 100;
-		m_iVerticalZoom   = 100;
-
-		updateScale();
-	}
+		{ clear(); }
 
 	// Copy constructor.
 	qtractorTimeScale(const qtractorTimeScale& ts)
-	{
-		m_iSampleRate     = ts.m_iSampleRate;
-		m_fTempo          = ts.m_fTempo;
-		m_iTicksPerBeat   = ts.m_iTicksPerBeat;
-		m_iBeatsPerBar    = ts.m_iBeatsPerBar;
-		m_iPixelsPerBeat  = ts.m_iPixelsPerBeat;
-		m_iSnapPerBeat    = ts.m_iSnapPerBeat;
-		m_iHorizontalZoom = ts.m_iHorizontalZoom;
-		m_iVerticalZoom   = ts.m_iVerticalZoom;
+		{ copy(ts); }
 
-		updateScale();
-	}
+	// Assignment operator,
+	qtractorTimeScale& operator=(const qtractorTimeScale& ts)
+		{ return copy(ts); }
 
 	// Sample rate (frames per second)
 	void setSampleRate(unsigned int iSampleRate)
@@ -155,7 +137,7 @@ public:
 		{ return pixelFromTick(tickSnap(tickFromPixel(x))); }
 
 	// Beat divisor (snap index) accessors.
-	unsigned short snapFromIndex(int iSnap) const
+	static unsigned short snapFromIndex(int iSnap)
 	{
 		unsigned short iSnapPerBeat = 0;
 		if (iSnap > 0)
@@ -165,7 +147,7 @@ public:
 		return iSnapPerBeat;
 	}
 
-	int indexFromSnap(unsigned short iSnapPerBeat) const
+	static int indexFromSnap(unsigned short iSnapPerBeat)
 	{
 		int iSnap = 0;
 		for (unsigned short n = 1; n <= iSnapPerBeat; n <<= 1)
@@ -181,6 +163,37 @@ public:
 		m_fScale_c = (float) (60.0f * m_iSampleRate);
 		m_fScale_d = (float) (m_fTempo * m_iTicksPerBeat);
 	}
+
+	// (Re)nitializer method. 
+	void clear()
+	{
+		m_iSampleRate     = 44100;
+		m_fTempo          = 120.0f;
+		m_iTicksPerBeat   = 96;
+		m_iBeatsPerBar    = 4;
+		m_iPixelsPerBeat  = 32;
+		m_iSnapPerBeat    = 4;
+		m_iHorizontalZoom = 100;
+		m_iVerticalZoom   = 100;
+		updateScale();
+	}
+
+	// Copy method.
+	qtractorTimeScale& copy(const qtractorTimeScale& ts)
+	{
+		if (&ts != this) {
+			m_iSampleRate     = ts.m_iSampleRate;
+			m_fTempo          = ts.m_fTempo;
+			m_iTicksPerBeat   = ts.m_iTicksPerBeat;
+			m_iBeatsPerBar    = ts.m_iBeatsPerBar;
+			m_iPixelsPerBeat  = ts.m_iPixelsPerBeat;
+			m_iSnapPerBeat    = ts.m_iSnapPerBeat;
+			m_iHorizontalZoom = ts.m_iHorizontalZoom;
+			m_iVerticalZoom   = ts.m_iVerticalZoom;
+			updateScale();
+		}
+		return *this;
+	}
 	
 private:
 
@@ -193,6 +206,7 @@ private:
 	unsigned short m_iHorizontalZoom;   // Horizontal zoom factor.
 	unsigned short m_iVerticalZoom;     // Vertical zoom factor.
 
+	// Internal time scaling factors.
 	unsigned long  m_iScale_a;
 	float          m_fScale_b;
 	float          m_fScale_c;
