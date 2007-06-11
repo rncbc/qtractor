@@ -356,12 +356,14 @@ qtractorMidiEditor *qtractorMidiEditorForm::editor (void) const
 }
 
 
-#ifdef CONFIG_TEST
-
 // MIDI filename accessors.
 void qtractorMidiEditorForm::setFilename ( const QString& sFilename )
 {
 	m_sFilename = sFilename;
+#ifndef CONFIG_TEST
+	if (m_pMidiClip)
+		m_pMidiClip->setFilename(m_sFilename);
+#endif
 }
 
 
@@ -369,8 +371,14 @@ void qtractorMidiEditorForm::setFilename ( const QString& sFilename )
 void qtractorMidiEditorForm::setTrackChannel ( unsigned short iTrackChannel )
 {
 	m_iTrackChannel = iTrackChannel;
+#ifndef CONFIG_TEST
+	if (m_pMidiClip)
+		m_pMidiClip->setTrackChannel(m_iTrackChannel);
+#endif
 }
 
+
+#ifdef CONFIG_TEST
 
 // Editing MIDI event sequence accessors.
 void qtractorMidiEditorForm::setSequence ( qtractorMidiSequence *pSeq  )
@@ -578,11 +586,9 @@ bool qtractorMidiEditorForm::saveClipFile ( const QString& sOldFilename,
 		delete [] ppSeqs;
 	}
 
-#ifdef CONFIG_TEST
 	setFilename(sNewFilename);
-#else
-	m_pMidiClip->setFilename(sNewFilename);
-	emit changeNotifySignal();
+#ifndef CONFIG_TEST
+	m_pMidiEditor->contentsChangeNotify();
 #endif
 
 	m_iDirtyCount = 0;

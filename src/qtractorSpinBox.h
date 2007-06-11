@@ -28,6 +28,7 @@
 
 // Forward declartions.
 class QLineEdit;
+class QShowEvent;
 
 
 //----------------------------------------------------------------------------
@@ -74,6 +75,9 @@ signals:
 	void valueChanged(const QString&);
 
 protected:
+
+	// Mark that we got actual value.
+	void showEvent(QShowEvent *);
 
 	// Inherited/override methods.
 	QValidator::State validate(QString& sText,int& iPos) const;

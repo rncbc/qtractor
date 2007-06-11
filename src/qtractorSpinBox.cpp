@@ -54,6 +54,14 @@ qtractorSpinBox::~qtractorSpinBox (void)
 }
 
 
+// Mark that we got actual value.
+void qtractorSpinBox::showEvent ( QShowEvent */*pShowEvent*/ )
+{
+	QAbstractSpinBox::lineEdit()->setText(textFromValue(m_iDefaultValue));
+	QAbstractSpinBox::interpretText();
+}
+
+
 // Time-scale accessors.
 void qtractorSpinBox::setTimeScale ( qtractorTimeScale *pTimeScale )
 {
@@ -93,16 +101,21 @@ void qtractorSpinBox::setValue ( unsigned long iValue, bool bNotifyChange )
 
 	m_iDefaultValue = iValue;
 
-	QAbstractSpinBox::lineEdit()->setText(textFromValue(iValue));
-	QAbstractSpinBox::interpretText();
-
-	if (bNotifyChange && bValueChanged)
-		emit valueChanged(iValue);
+	if (QAbstractSpinBox::isVisible()) {
+		QAbstractSpinBox::lineEdit()->setText(textFromValue(iValue));
+		QAbstractSpinBox::interpretText();
+		if (bNotifyChange && bValueChanged)
+			emit valueChanged(iValue);
+	}
 }
 
 unsigned long qtractorSpinBox::value (void) const
 {
-	return valueFromText(QAbstractSpinBox::text());
+	if (QAbstractSpinBox::isVisible()) {
+		return valueFromText(QAbstractSpinBox::text());
+	} else {
+		return m_iDefaultValue;
+	}
 }
 
 

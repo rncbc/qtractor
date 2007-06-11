@@ -56,19 +56,15 @@ public:
 	// MIDI editor widget accessor.
 	qtractorMidiEditor *editor() const;
 
-#ifdef CONFIG_TEST
-
 	// MIDI clip properties accessors.
 	void setFilename(const QString& sFilename);
 	void setTrackChannel(unsigned short iTrackChannel);
+#ifdef CONFIG_TEST
 	void setSequence(qtractorMidiSequence *pSeq);
-
 #else
-
 	// MIDI clip accessors.
 	void setMidiClip(qtractorMidiClip *pMidiClip);
 	qtractorMidiClip *midiClip() const;
-
 #endif
 
 	// MIDI clip properties accessors.
