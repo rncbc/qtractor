@@ -32,9 +32,11 @@
 #include "qtractorMidiEditEvent.h"
 
 #ifndef CONFIG_TEST
-#include "qtractorSession.h"
-#include "qtractorClipForm.h"
 #include "qtractorMidiClip.h"
+#include "qtractorOptions.h"
+#include "qtractorSession.h"
+#include "qtractorMainForm.h"
+#include "qtractorClipForm.h"
 #endif
 
 #include "qtractorTimeScale.h"
@@ -129,8 +131,6 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	m_ui.editEventToolbar->addWidget(m_pEventTypeComboBox);
 	m_ui.editEventToolbar->addSeparator();
 	m_ui.editEventToolbar->addWidget(m_pControllerComboBox);
-
-  	insertToolBarBreak(m_ui.editViewToolbar);
 
 	const QSize pad(4, 0);
 	const QString spc(4, ' ');
@@ -262,6 +262,8 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 		SIGNAL(changeNotifySignal()),
 		SLOT(contentsChanged()));
 
+#ifdef CONFIG_TEST
+
 	// This is the initial state and selection.
 	m_ui.editModeOffAction->setChecked(true);
 
@@ -271,6 +273,43 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	m_ui.viewToolbarFileAction->setChecked(true);
 	m_ui.viewToolbarEditAction->setChecked(true);
 	m_ui.viewToolbarViewAction->setChecked(true);
+
+#else
+
+	// Try to restore old editor state...
+	qtractorOptions *pOptions = NULL;
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm)
+		pOptions = pMainForm->options();
+	if (pOptions) {
+		// Initial decorations toggle state.
+		m_ui.viewMenubarAction->setChecked(pOptions->bMidiMenubar);
+		m_ui.viewStatusbarAction->setChecked(pOptions->bMidiStatusbar);
+		m_ui.viewToolbarFileAction->setChecked(pOptions->bMidiFileToolbar);
+		m_ui.viewToolbarEditAction->setChecked(pOptions->bMidiEditToolbar);
+		m_ui.viewToolbarViewAction->setChecked(pOptions->bMidiViewToolbar);
+		m_ui.editModeOnAction->setChecked(pOptions->bMidiEditMode);
+		// Initial decorations visibility state.
+		viewMenubar(pOptions->bMidiMenubar);
+		viewStatusbar(pOptions->bMidiStatusbar);
+		viewToolbarFile(pOptions->bMidiFileToolbar);
+		viewToolbarEdit(pOptions->bMidiEditToolbar);
+		viewToolbarView(pOptions->bMidiViewToolbar);
+		// Restore whole dock windows state.
+		QByteArray aDockables = pOptions->settings().value(
+			"/MidiEditor/Layout/DockWindows").toByteArray();
+		if (aDockables.isEmpty()) {
+			// Some windows are forced initially as is...
+			insertToolBarBreak(m_ui.editViewToolbar);
+		} else {
+			// Make it as the last time.
+			restoreState(aDockables);
+		}
+		// Try to restore old window positioning.
+	//	pOptions->loadWidgetGeometry(this);
+	}
+
+#endif
 
 	qtractorTimeScale *pTimeScale = m_pMidiEditor->timeScale();
 	if (pTimeScale) {
@@ -322,6 +361,30 @@ bool qtractorMidiEditorForm::queryClose (void)
 			break;
 		}
 	}
+
+#ifndef CONFIG_TEST
+	// Try to save current editor state...
+	if (bQueryClose) {
+		qtractorOptions *pOptions = NULL;
+		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+		if (pMainForm)
+			pOptions = pMainForm->options();
+		if (pOptions) {
+			// Save decorations state.
+			pOptions->bMidiMenubar = m_ui.MenuBar->isVisible();
+			pOptions->bMidiStatusbar = statusBar()->isVisible();
+			pOptions->bMidiFileToolbar = m_ui.fileToolbar->isVisible();
+			pOptions->bMidiEditToolbar = m_ui.editToolbar->isVisible();
+			pOptions->bMidiViewToolbar = m_ui.viewToolbar->isVisible();
+			pOptions->bMidiEditMode = m_ui.editModeOnAction->isChecked();
+			// Save the dock windows state.
+			pOptions->settings().setValue(
+				"/MidiEditor/Layout/DockWindows", saveState());
+			// And the main windows state.
+		//	pOptions->saveWidgetGeometry(this);
+		}
+	}
+#endif
 
 	return bQueryClose;
 }

@@ -530,7 +530,7 @@
         <number>6</number>
        </property>
        <item>
-        <widget class="QGroupBox" name="CaptureGroupBox" >
+        <widget class="QGroupBox" name="AudioCaptureGroupBox" >
          <property name="font" >
           <font>
            <family>Sans Serif</family>
@@ -556,7 +556,7 @@
            <number>6</number>
           </property>
           <item row="2" column="1" >
-           <widget class="QSpinBox" name="CaptureQualitySpinBox" >
+           <widget class="QSpinBox" name="AudioCaptureQualitySpinBox" >
             <property name="font" >
              <font>
               <family>Sans Serif</family>
@@ -586,7 +586,7 @@
            </widget>
           </item>
           <item row="1" column="1" colspan="2" >
-           <widget class="QComboBox" name="CaptureFormatComboBox" >
+           <widget class="QComboBox" name="AudioCaptureFormatComboBox" >
             <property name="sizePolicy" >
              <sizepolicy>
               <hsizetype>7</hsizetype>
@@ -612,7 +612,7 @@
            </widget>
           </item>
           <item row="0" column="1" colspan="2" >
-           <widget class="QComboBox" name="CaptureTypeComboBox" >
+           <widget class="QComboBox" name="AudioCaptureTypeComboBox" >
             <property name="sizePolicy" >
              <sizepolicy>
               <hsizetype>7</hsizetype>
@@ -651,7 +651,7 @@
            </spacer>
           </item>
           <item row="0" column="0" >
-           <widget class="QLabel" name="CaptureTypeTextLabel" >
+           <widget class="QLabel" name="AudioCaptureTypeTextLabel" >
             <property name="font" >
              <font>
               <family>Sans Serif</family>
@@ -667,12 +667,12 @@
              <string>File &amp;type:</string>
             </property>
             <property name="buddy" >
-             <cstring>CaptureTypeComboBox</cstring>
+             <cstring>AudioCaptureTypeComboBox</cstring>
             </property>
            </widget>
           </item>
           <item row="1" column="0" >
-           <widget class="QLabel" name="CaptureFormatTextLabel" >
+           <widget class="QLabel" name="AudioCaptureFormatTextLabel" >
             <property name="font" >
              <font>
               <family>Sans Serif</family>
@@ -688,12 +688,12 @@
              <string>Sample &amp;format:</string>
             </property>
             <property name="buddy" >
-             <cstring>CaptureFormatComboBox</cstring>
+             <cstring>AudioCaptureFormatComboBox</cstring>
             </property>
            </widget>
           </item>
           <item row="2" column="0" >
-           <widget class="QLabel" name="CaptureQualityTextLabel" >
+           <widget class="QLabel" name="AudioCaptureQualityTextLabel" >
             <property name="font" >
              <font>
               <family>Sans Serif</family>
@@ -709,7 +709,7 @@
              <string>&amp;Quality:</string>
             </property>
             <property name="buddy" >
-             <cstring>CaptureFormatComboBox</cstring>
+             <cstring>AudioCaptureFormatComboBox</cstring>
             </property>
            </widget>
           </item>
@@ -769,7 +769,7 @@
            <number>6</number>
           </property>
           <item row="0" column="0" >
-           <widget class="QLabel" name="ResampleTypeTextLabel" >
+           <widget class="QLabel" name="AudioResampleTypeTextLabel" >
             <property name="font" >
              <font>
               <family>Sans Serif</family>
@@ -785,7 +785,7 @@
              <string>Sample-&amp;rate converter type:</string>
             </property>
             <property name="buddy" >
-             <cstring>ResampleTypeComboBox</cstring>
+             <cstring>AudioResampleTypeComboBox</cstring>
             </property>
            </widget>
           </item>
@@ -803,7 +803,7 @@
            </spacer>
           </item>
           <item row="0" column="1" >
-           <widget class="QComboBox" name="ResampleTypeComboBox" >
+           <widget class="QComboBox" name="AudioResampleTypeComboBox" >
             <property name="font" >
              <font>
               <family>Sans Serif</family>
@@ -912,10 +912,10 @@
   <tabstop>PeakAutoRemoveCheckBox</tabstop>
   <tabstop>MaxRecentFilesSpinBox</tabstop>
   <tabstop>TransportTimeComboBox</tabstop>
-  <tabstop>CaptureTypeComboBox</tabstop>
-  <tabstop>CaptureFormatComboBox</tabstop>
-  <tabstop>CaptureQualitySpinBox</tabstop>
-  <tabstop>ResampleTypeComboBox</tabstop>
+  <tabstop>AudioCaptureTypeComboBox</tabstop>
+  <tabstop>AudioCaptureFormatComboBox</tabstop>
+  <tabstop>AudioCaptureQualitySpinBox</tabstop>
+  <tabstop>AudioResampleTypeComboBox</tabstop>
   <tabstop>OkPushButton</tabstop>
   <tabstop>CancelPushButton</tabstop>
  </tabstops>

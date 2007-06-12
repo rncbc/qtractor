@@ -78,6 +78,13 @@ public:
 	// Transport options...
 	bool    bFollowPlayhead;
 
+	// Audio options...
+	QString sAudioCaptureExt;
+	int iAudioCaptureType;
+	int iAudioCaptureFormat;
+	int iAudioCaptureQuality;
+	int iAudioResampleType;
+
 	// Default options...
 	QString sSessionDir;
 	QString sAudioDir;
@@ -95,14 +102,15 @@ public:
 	QStringList recentFiles;
 
 	// Tracks view options...
-	int iTrackViewSelectMode;
+	int  iTrackViewSelectMode;
 
-	// Audio options...
-	QString sCaptureExt;
-	int iCaptureType;
-	int iCaptureFormat;
-	int iCaptureQuality;
-	int iResampleType;
+	// MIDI Editor options...
+	bool bMidiMenubar;
+	bool bMidiStatusbar;
+	bool bMidiFileToolbar;
+	bool bMidiEditToolbar;
+	bool bMidiViewToolbar;
+	bool bMidiEditMode;
 
 	// Widget geometry persistence helper prototypes.
 	void saveWidgetGeometry(QWidget *pWidget);

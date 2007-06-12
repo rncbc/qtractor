@@ -80,11 +80,11 @@ qtractorOptions::qtractorOptions (void)
 
 	// Audio redndering options group.
 	m_settings.beginGroup("/Audio");
-	sCaptureExt     = m_settings.value("/CaptureExt", AUDIO_DEFAULT_EXT).toString();
-	iCaptureType    = m_settings.value("/CaptureType", 0).toInt();
-	iCaptureFormat  = m_settings.value("/CaptureFormat", 0).toInt();
-	iCaptureQuality = m_settings.value("/CaptureQuality", 4).toInt();
-	iResampleType   = m_settings.value("/ResampleType", 2).toInt();
+	sAudioCaptureExt     = m_settings.value("/CaptureExt", AUDIO_DEFAULT_EXT).toString();
+	iAudioCaptureType    = m_settings.value("/CaptureType", 0).toInt();
+	iAudioCaptureFormat  = m_settings.value("/CaptureFormat", 0).toInt();
+	iAudioCaptureQuality = m_settings.value("/CaptureQuality", 4).toInt();
+	iAudioResampleType   = m_settings.value("/ResampleType", 2).toInt();
 	m_settings.endGroup();
 
 	m_settings.endGroup(); // Options group.
@@ -127,6 +127,20 @@ qtractorOptions::qtractorOptions (void)
 	// Tracks widget settings.
 	m_settings.beginGroup("/Tracks");
 	iTrackViewSelectMode = m_settings.value("/TrackViewSelectMode", 0).toInt();
+	m_settings.endGroup();
+
+	// MIDI options group.
+	m_settings.beginGroup("/MidiEditor");
+
+	m_settings.beginGroup("/View");
+	bMidiMenubar     = m_settings.value("/Menubar", true).toBool();
+	bMidiStatusbar   = m_settings.value("/Statusbar", true).toBool();
+	bMidiFileToolbar = m_settings.value("/FileToolbar", true).toBool();
+	bMidiEditToolbar = m_settings.value("/EditToolbar", true).toBool();
+	bMidiViewToolbar = m_settings.value("/ViewToolbar", true).toBool();
+	bMidiEditMode    = m_settings.value("/EditMode", false).toBool();
+	m_settings.endGroup();
+
 	m_settings.endGroup();
 }
 
@@ -175,11 +189,11 @@ qtractorOptions::~qtractorOptions (void)
 
 	// Audio redndering options group.
 	m_settings.beginGroup("/Audio");
-	m_settings.setValue("/CaptureExt", sCaptureExt);
-	m_settings.setValue("/CaptureType", iCaptureType);
-	m_settings.setValue("/CaptureFormat", iCaptureFormat);
-	m_settings.setValue("/CaptureQuality", iCaptureQuality);
-	m_settings.setValue("/ResampleType", iResampleType);
+	m_settings.setValue("/CaptureExt", sAudioCaptureExt);
+	m_settings.setValue("/CaptureType", iAudioCaptureType);
+	m_settings.setValue("/CaptureFormat", iAudioCaptureFormat);
+	m_settings.setValue("/CaptureQuality", iAudioCaptureQuality);
+	m_settings.setValue("/ResampleType", iAudioResampleType);
 	m_settings.endGroup();
 
 	m_settings.endGroup(); // Options group.
@@ -216,6 +230,20 @@ qtractorOptions::~qtractorOptions (void)
 	// Tracks widget settings.
 	m_settings.beginGroup("/Tracks");
 	m_settings.setValue("/TrackViewSelectMode", iTrackViewSelectMode);
+	m_settings.endGroup();
+
+	// MIDI Editor options group.
+	m_settings.beginGroup("/MidiEditor");
+
+	m_settings.beginGroup("/View");
+	m_settings.setValue("/Menubar", bMidiMenubar);
+	m_settings.setValue("/Statusbar", bMidiStatusbar);
+	m_settings.setValue("/FileToolbar", bMidiFileToolbar);
+	m_settings.setValue("/EditToolbar", bMidiEditToolbar);
+	m_settings.setValue("/ViewToolbar", bMidiViewToolbar);
+	m_settings.setValue("/EditMode", bMidiEditMode);
+	m_settings.endGroup();
+
 	m_settings.endGroup();
 }
 

@@ -45,7 +45,7 @@ qtractorOptionsForm::qtractorOptionsForm (
 	m_pOptions = NULL;
 
 	// Populate the capture file type combo-box.
-	m_ui.CaptureTypeComboBox->clear();
+	m_ui.AudioCaptureTypeComboBox->clear();
 	int iFormat = 0;
 	const qtractorAudioFileFactory::FileFormats& list
 		= qtractorAudioFileFactory::formats();
@@ -53,17 +53,17 @@ qtractorOptionsForm::qtractorOptionsForm (
 	while (iter.hasNext()) {
 		qtractorAudioFileFactory::FileFormat *pFormat = iter.next();
 		if (pFormat->type != qtractorAudioFileFactory::MadFile)
-			m_ui.CaptureTypeComboBox->addItem(pFormat->name, iFormat);
+			m_ui.AudioCaptureTypeComboBox->addItem(pFormat->name, iFormat);
 		++iFormat;
 	}
 
 	// Populate the capture sample format combo-box.
-	m_ui.CaptureFormatComboBox->clear();
-	m_ui.CaptureFormatComboBox->addItem(tr("Signed 16-Bit"));
-	m_ui.CaptureFormatComboBox->addItem(tr("Signed 24-Bit"));
-	m_ui.CaptureFormatComboBox->addItem(tr("Signed 32-Bit"));
-	m_ui.CaptureFormatComboBox->addItem(tr("Float  32-Bit"));
-	m_ui.CaptureFormatComboBox->addItem(tr("Float  64-Bit"));
+	m_ui.AudioCaptureFormatComboBox->clear();
+	m_ui.AudioCaptureFormatComboBox->addItem(tr("Signed 16-Bit"));
+	m_ui.AudioCaptureFormatComboBox->addItem(tr("Signed 24-Bit"));
+	m_ui.AudioCaptureFormatComboBox->addItem(tr("Signed 32-Bit"));
+	m_ui.AudioCaptureFormatComboBox->addItem(tr("Float  32-Bit"));
+	m_ui.AudioCaptureFormatComboBox->addItem(tr("Float  64-Bit"));
 
 	// Initialize dirty control state.
 	m_iDirtyCount = 0;
@@ -105,16 +105,16 @@ qtractorOptionsForm::qtractorOptionsForm (
 	QObject::connect(m_ui.MaxRecentFilesSpinBox,
 		SIGNAL(valueChanged(int)),
 		SLOT(changed()));
-	QObject::connect(m_ui.CaptureTypeComboBox,
+	QObject::connect(m_ui.AudioCaptureTypeComboBox,
 		SIGNAL(activated(int)),
 		SLOT(changed()));
-	QObject::connect(m_ui.CaptureFormatComboBox,
+	QObject::connect(m_ui.AudioCaptureFormatComboBox,
 		SIGNAL(activated(int)),
 		SLOT(changed()));
-	QObject::connect(m_ui.CaptureQualitySpinBox,
+	QObject::connect(m_ui.AudioCaptureQualitySpinBox,
 		SIGNAL(valueChanged(int)),
 		SLOT(changed()));
-	QObject::connect(m_ui.ResampleTypeComboBox,
+	QObject::connect(m_ui.AudioResampleTypeComboBox,
 		SIGNAL(activated(int)),
 		SLOT(changed()));
 }
@@ -165,21 +165,21 @@ void qtractorOptionsForm::setOptions ( qtractorOptions *pOptions )
 	QListIterator<qtractorAudioFileFactory::FileFormat *> iter(list);
 	while (iter.hasNext()) {
 		qtractorAudioFileFactory::FileFormat *pFormat = iter.next();
-		if (m_pOptions->sCaptureExt == pFormat->ext
-			&& m_pOptions->iCaptureType == pFormat->data) {
-			iIndex = m_ui.CaptureTypeComboBox->findData(iFormat);
+		if (m_pOptions->sAudioCaptureExt == pFormat->ext
+			&& m_pOptions->iAudioCaptureType == pFormat->data) {
+			iIndex = m_ui.AudioCaptureTypeComboBox->findData(iFormat);
 			break;
 		}
 		++iFormat;
 	}
-	m_ui.CaptureTypeComboBox->setCurrentIndex(iIndex);
-	m_ui.CaptureFormatComboBox->setCurrentIndex(m_pOptions->iCaptureFormat);
-	m_ui.CaptureQualitySpinBox->setValue(m_pOptions->iCaptureQuality);
-	m_ui.ResampleTypeComboBox->setCurrentIndex(m_pOptions->iResampleType);
+	m_ui.AudioCaptureTypeComboBox->setCurrentIndex(iIndex);
+	m_ui.AudioCaptureFormatComboBox->setCurrentIndex(m_pOptions->iAudioCaptureFormat);
+	m_ui.AudioCaptureQualitySpinBox->setValue(m_pOptions->iAudioCaptureQuality);
+	m_ui.AudioResampleTypeComboBox->setCurrentIndex(m_pOptions->iAudioResampleType);
 
 #ifndef CONFIG_LIBSAMPLERATE
-	m_ui.ResampleTypeTextLabel->setEnabled(false);
-	m_ui.ResampleTypeComboBox->setEnabled(false);
+	m_ui.AudioResampleTypeTextLabel->setEnabled(false);
+	m_ui.AudioResampleTypeComboBox->setEnabled(false);
 #endif
 
 	// Done. Restart clean.
@@ -212,15 +212,15 @@ void qtractorOptionsForm::accept (void)
 		m_pOptions->iMaxRecentFiles = m_ui.MaxRecentFilesSpinBox->value();
 		m_pOptions->iTransportTime  = m_ui.TransportTimeComboBox->currentIndex();
 		// Audio options...
-		int iFormat	= m_ui.CaptureTypeComboBox->itemData(
-			m_ui.CaptureTypeComboBox->currentIndex()).toInt();
+		int iFormat	= m_ui.AudioCaptureTypeComboBox->itemData(
+			m_ui.AudioCaptureTypeComboBox->currentIndex()).toInt();
 		const qtractorAudioFileFactory::FileFormat *pFormat
 			= qtractorAudioFileFactory::formats().at(iFormat);
-		m_pOptions->sCaptureExt     = pFormat->ext;
-		m_pOptions->iCaptureType    = pFormat->data;
-		m_pOptions->iCaptureFormat  = m_ui.CaptureFormatComboBox->currentIndex();
-		m_pOptions->iCaptureQuality = m_ui.CaptureQualitySpinBox->value();
-		m_pOptions->iResampleType   = m_ui.ResampleTypeComboBox->currentIndex();
+		m_pOptions->sAudioCaptureExt     = pFormat->ext;
+		m_pOptions->iAudioCaptureType    = pFormat->data;
+		m_pOptions->iAudioCaptureFormat  = m_ui.AudioCaptureFormatComboBox->currentIndex();
+		m_pOptions->iAudioCaptureQuality = m_ui.AudioCaptureQualitySpinBox->value();
+		m_pOptions->iAudioResampleType   = m_ui.AudioResampleTypeComboBox->currentIndex();
 		// Reset dirty flag.
 		m_iDirtyCount = 0;
 	}
@@ -286,24 +286,24 @@ void qtractorOptionsForm::stabilizeForm (void)
 	m_ui.MessagesLimitLinesSpinBox->setEnabled(
 		m_ui.MessagesLimitCheckBox->isChecked());
 
-	int iIndex  = m_ui.CaptureTypeComboBox->currentIndex();
-	int iFormat	= m_ui.CaptureTypeComboBox->itemData(iIndex).toInt();
+	int iIndex  = m_ui.AudioCaptureTypeComboBox->currentIndex();
+	int iFormat	= m_ui.AudioCaptureTypeComboBox->itemData(iIndex).toInt();
 	const qtractorAudioFileFactory::FileFormat *pFormat
 		= qtractorAudioFileFactory::formats().at(iFormat);
 
 	bool bSndFile
 		= (pFormat && pFormat->type == qtractorAudioFileFactory::SndFile);
-	m_ui.CaptureFormatTextLabel->setEnabled(bSndFile);
-	m_ui.CaptureFormatComboBox->setEnabled(bSndFile);
+	m_ui.AudioCaptureFormatTextLabel->setEnabled(bSndFile);
+	m_ui.AudioCaptureFormatComboBox->setEnabled(bSndFile);
 
 	bool bVorbisFile
 		= (pFormat && pFormat->type == qtractorAudioFileFactory::VorbisFile);
-	m_ui.CaptureQualityTextLabel->setEnabled(bVorbisFile);
-	m_ui.CaptureQualitySpinBox->setEnabled(bVorbisFile);
+	m_ui.AudioCaptureQualityTextLabel->setEnabled(bVorbisFile);
+	m_ui.AudioCaptureQualitySpinBox->setEnabled(bVorbisFile);
 
 	bool bValid = (m_iDirtyCount > 0);
 	if (bValid) {
-		iFormat = m_ui.CaptureFormatComboBox->currentIndex();
+		iFormat = m_ui.AudioCaptureFormatComboBox->currentIndex();
 		bValid  = qtractorAudioFileFactory::isValidFormat(pFormat, iFormat);
 	}
 

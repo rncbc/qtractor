@@ -642,7 +642,6 @@ void qtractorMainForm::setOptions ( qtractorOptions *pOptions )
 		"/Layout/DockWindows").toByteArray();
 	if (aDockables.isEmpty()) {
 		// Some windows are forced initially as is...
-		insertToolBarBreak(m_ui.timeToolbar);
 		insertToolBarBreak(m_ui.transportToolbar);
 	} else {
 		// Make it as the last time.
@@ -667,12 +666,12 @@ void qtractorMainForm::setOptions ( qtractorOptions *pOptions )
 	// FIXME: This is what it should ever be,
 	// make it right from this very moment...
 	qtractorAudioFileFactory::setDefaultType(
-		m_pOptions->sCaptureExt,
-		m_pOptions->iCaptureType,
-		m_pOptions->iCaptureFormat,
-		m_pOptions->iCaptureQuality);
+		m_pOptions->sAudioCaptureExt,
+		m_pOptions->iAudioCaptureType,
+		m_pOptions->iAudioCaptureFormat,
+		m_pOptions->iAudioCaptureQuality);
 	// Set default sample-rate converter quality...
-	qtractorAudioBuffer::setResampleType(m_pOptions->iResampleType);
+	qtractorAudioBuffer::setResampleType(m_pOptions->iAudioResampleType);
 
 	// Change to last known session dir...
 	if (!m_pOptions->sSessionDir.isEmpty()) {
@@ -1899,7 +1898,7 @@ void qtractorMainForm::viewOptions (void)
 	bool    bOldCompletePath    = m_pOptions->bCompletePath;
 	bool    bOldPeakAutoRemove  = m_pOptions->bPeakAutoRemove;
 	int     iOldMaxRecentFiles  = m_pOptions->iMaxRecentFiles;
-	int     iOldResampleType    = m_pOptions->iResampleType;
+	int     iOldResampleType    = m_pOptions->iAudioResampleType;
 	int     iOldTransportTime   = m_pOptions->iTransportTime;
 	// Load the current setup settings.
 	qtractorOptionsForm optionsForm(this);
@@ -1908,8 +1907,8 @@ void qtractorMainForm::viewOptions (void)
 	if (optionsForm.exec()) {
 		// Check wheather something immediate has changed.
 		QString sNeedRestart;
-		if (iOldResampleType != m_pOptions->iResampleType) {
-			qtractorAudioBuffer::setResampleType(m_pOptions->iResampleType);
+		if (iOldResampleType != m_pOptions->iAudioResampleType) {
+			qtractorAudioBuffer::setResampleType(m_pOptions->iAudioResampleType);
 			sNeedRestart += tr("session");
 		}
 		if (( bOldStdoutCapture && !m_pOptions->bStdoutCapture) ||
@@ -1937,10 +1936,10 @@ void qtractorMainForm::viewOptions (void)
 		// FIXME: This is what it should ever be,
 		// make it right from this very moment...
 		qtractorAudioFileFactory::setDefaultType(
-			m_pOptions->sCaptureExt,
-			m_pOptions->iCaptureType,
-			m_pOptions->iCaptureFormat,
-			m_pOptions->iCaptureQuality);
+			m_pOptions->sAudioCaptureExt,
+			m_pOptions->iAudioCaptureType,
+			m_pOptions->iAudioCaptureFormat,
+			m_pOptions->iAudioCaptureQuality);
 		// Warn if something will be only effective on next time.
 		if (!sNeedRestart.isEmpty()) {
 			QMessageBox::information(this,
