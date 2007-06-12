@@ -28,6 +28,7 @@
 // Forward declarations...
 class qtractorMidiEditor;
 class qtractorMidiSequence;
+class qtractorTimeScale;
 
 #ifndef CONFIG_TEST
 class qtractorMidiClip;
@@ -68,9 +69,10 @@ public:
 #endif
 
 	// MIDI clip properties accessors.
+	qtractorTimeScale *timeScale() const;
+	qtractorMidiSequence *sequence() const;
 	const QString& filename() const;
 	unsigned short trackChannel() const;
-	qtractorMidiSequence *sequence() const;
 
 	// MIDI event foreground (outline) color.
 	void setForeground(const QColor& fore);
@@ -137,16 +139,8 @@ protected:
 	void contextMenuEvent(QContextMenuEvent *pContextMenuEvent);
 
 	// Save current clip track-channel sequence.
-	bool saveClip(bool bPrompt);
+	bool saveFile(bool bPrompt);
 	
-	// Save current clip track-channel sequence stand-alone method.
-	bool saveClipFile(const QString& sOldFilename, const QString& sNewFilename,
-		unsigned short iTrackChannel, qtractorMidiSequence *pSeq);
-	
-	// Create filename revision.
-	static QString createFilenameRevision(
-		const QString& sFilename, int iRevision = 0);
-
 private:
 
 	// The Qt-designer UI struct...

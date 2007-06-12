@@ -19,15 +19,19 @@
 
 *****************************************************************************/
 
+#ifdef CONFIG_TEST
+#define QTRACTOR_TITLE "qtractorMidiEditorTest"
+#else
+#include "qtractorAbout.h"
+#endif
+
 #include "qtractorMidiEditorForm.h"
 
 #include "qtractorMidiEditor.h"
 #include "qtractorMidiEditView.h"
 #include "qtractorMidiEditEvent.h"
 
-#ifdef CONFIG_TEST
-#include "qtractorMidiFile.h"
-#else
+#ifndef CONFIG_TEST
 #include "qtractorSession.h"
 #include "qtractorClipForm.h"
 #include "qtractorMidiClip.h"
@@ -35,8 +39,8 @@
 
 #include "qtractorTimeScale.h"
 
-#include <QMessageBox>
 #include <QFileDialog>
+#include <QMessageBox>
 #include <QActionGroup>
 #include <QCloseEvent>
 #include <QComboBox>
@@ -302,14 +306,14 @@ bool qtractorMidiEditorForm::queryClose (void)
 	// Are we dirty enough to prompt it?
 	if (m_iDirtyCount > 0) {
 		switch (QMessageBox::warning(this,
-			tr("Warning"), // + " - " QTRACTOR_TITLE,
+			tr("Warning") + " - " QTRACTOR_TITLE,
 			tr("The current MIDI clip has been changed:\n\n"
 			"\"%1\"\n\n"
 			"Do you want to save the changes?")
 			.arg(filename()),
 			tr("Save"), tr("Discard"), tr("Cancel"))) {
 		case 0:     // Save...
-			bQueryClose = saveClip(false);
+			bQueryClose = saveFile(false);
 			// Fall thru....
 		case 1:     // Discard
 			break;
@@ -434,6 +438,11 @@ qtractorMidiClip *qtractorMidiEditorForm::midiClip (void) const
 #endif
 
 
+qtractorTimeScale *qtractorMidiEditorForm::timeScale (void) const
+{
+	return m_pMidiEditor->timeScale();
+}
+
 qtractorMidiSequence *qtractorMidiEditorForm::sequence (void) const
 {
 	return m_pMidiEditor->sequence();
@@ -487,10 +496,10 @@ void qtractorMidiEditorForm::updateContents (void)
 // qtractorMidiEditorForm -- Clip Action methods.
 
 // Save current clip.
-bool qtractorMidiEditorForm::saveClip ( bool bPrompt )
+bool qtractorMidiEditorForm::saveFile ( bool bPrompt )
 {
 	// Suggest a filename, if there's none...
-	QString sFilename = createFilenameRevision(filename());
+	QString sFilename = qtractorMidiEditor::createFilenameRevision(filename());
 
 	if (sFilename.isEmpty())
 		bPrompt = true;
@@ -500,10 +509,10 @@ bool qtractorMidiEditorForm::saveClip ( bool bPrompt )
 		// If none is given, assume default directory.
 		// Prompt the guy...
 		sFilename = QFileDialog::getSaveFileName(
-			this,                                       // Parent.
-			tr("Save MIDI Clip"), // + " - " QTRACTOR_TITLE, // Caption.
-			sFilename,                                  // Start here.
-			tr("MIDI files") + " (*.mid)"               // Filter files.
+			this,                                        // Parent.
+			tr("Save MIDI Clip") + " - " QTRACTOR_TITLE, // Caption.
+			sFilename,                                   // Start here.
+			tr("MIDI files") + " (*.mid)"                // Filter files.
 		);
 		// Have we cancelled it?
 		if (sFilename.isEmpty())
@@ -514,183 +523,21 @@ bool qtractorMidiEditorForm::saveClip ( bool bPrompt )
 			sFilename += '.' + sExt;
 	}
 
-	// Save it right away.
-	return saveClipFile(filename(), sFilename, trackChannel(), sequence());
-}
-
-
-
-// Save current clip track-channel sequence stand-alone method.
-bool qtractorMidiEditorForm::saveClipFile ( const QString& sOldFilename,
-	const QString& sNewFilename, unsigned short iTrackChannel,
-	qtractorMidiSequence *pSeq)
-{
-	qtractorMidiFile file;
-	unsigned short iFormat = 0;
-	unsigned short iTicksPerBeat = 96;
-	float fTempo = 120.0f;
-	unsigned short iBeatsPerBar = 4;
-	unsigned short iSeq, iSeqs = 0;
-	unsigned short iTracks = 0;
-	qtractorMidiSequence **ppSeqs = NULL;
-	const QString sTrackName = QObject::tr("Track %1");
-	
-	if (pSeq == NULL)
-		return false;
-
-	if (file.open(sOldFilename)) {
-		iTicksPerBeat = file.ticksPerBeat();
-		iFormat = file.format();
-		iSeqs = (iFormat == 1 ? file.tracks() : 16);	
-		ppSeqs = new qtractorMidiSequence * [iSeqs];
-		for (iSeq = 0; iSeq < iSeqs; ++iSeq) {	
-			ppSeqs[iSeq] = new qtractorMidiSequence(
-				sTrackName.arg(iTracks + 1), iSeq, iTicksPerBeat);
-		}
-		if (file.readTracks(ppSeqs, iSeqs)) {
-			fTempo = file.tempo();
-			iBeatsPerBar = file.beatsPerBar();
-		}
-		file.close();
-	}
-	
-	if (!file.open(sNewFilename, qtractorMidiFile::Write))
-		return false;
-
-	file.setTempo(fTempo);
-	file.setBeatsPerBar(iBeatsPerBar);
-
-	if (ppSeqs == NULL) {
-		iFormat = 1;
-		iSeqs   = 2;
-	}
-
-	file.writeHeader(iFormat, (iFormat == 0 ? 1 : iSeqs), iTicksPerBeat);
-
-	if (ppSeqs) {
-		// Replace the target track-channel events... 
-		ppSeqs[iTrackChannel]->replaceEvents(pSeq);
-		// Write the whole new tracks...
-		file.writeTracks(ppSeqs, iSeqs);
-	} else {
-		//
-		file.writeTrack(NULL);
-		file.writeTrack(pSeq);
-	}
-
-	file.close();
-
-	if (ppSeqs) { 
-		for (iSeq = 0; iSeq < iSeq; ++iSeq)
-			delete ppSeqs[iSeq];
-		delete [] ppSeqs;
-	}
-
-	setFilename(sNewFilename);
+	// Save it right away...
+	bool bResult = qtractorMidiEditor::saveCopyFile(sFilename,
+		filename(), trackChannel(), sequence(), timeScale());
+	// Have we done it right?
+	if (bResult) {
+		setFilename(sFilename);
+		m_iDirtyCount = 0;
 #ifndef CONFIG_TEST
-	m_pMidiEditor->contentsChangeNotify();
+		m_pMidiEditor->contentsChangeNotify();
 #endif
+	}
 
-	m_iDirtyCount = 0;
+	// Done.
 	stabilizeForm();
-
-//---BEGIN-TEST---
-#if 0
-	if (file.open("Test1-1.mid", qtractorMidiFile::Write)) {
-		qtractorMidiSequence seq(pSeq->name(), pSeq->channel(), pSeq->ticksPerBeat()); 
-		qtractorMidiEvent *pEvent = pSeq->events().first();
-		for (int i = 0; i < 16 && pEvent; i++) {
-			seq.insertEvent(new qtractorMidiEvent(
-				pEvent->time(),
-				pEvent->type(),
-				pEvent->note(),
-				pEvent->velocity(),
-				pEvent->duration())); 
-			pEvent = pEvent->next();
-		}
-		for (int t = 0; t < 4; t++) {
-			pEvent = new qtractorMidiEvent(
-				(t + 1) * seq.ticksPerBeat(),
-				qtractorMidiEvent::PITCHBEND);
-			pEvent->setPitchBend((t + 1) * 2000);
-			seq.insertEvent(pEvent);
-		}
-		file.setTempo(fTempo);
-		file.setBeatsPerBar(iBeatsPerBar);
-		file.writeHeader(1, 2, iTicksPerBeat);
-		file.writeTrack(NULL);
-		file.writeTrack(&seq);
-		file.close();
-	}
-#endif
-#if 0
-	if (file.open("Test0-1.mid", qtractorMidiFile::Write)) {
-		qtractorMidiSequence *seqs[2];
-		seqs[0] = new qtractorMidiSequence(pSeq->name(), 0, pSeq->ticksPerBeat()); 
-		seqs[1] = new qtractorMidiSequence(pSeq->name(), 1, pSeq->ticksPerBeat()); 
-		seqs[2] = new qtractorMidiSequence(pSeq->name(), 2, pSeq->ticksPerBeat()); 
-		qtractorMidiEvent *pEvent = pSeq->events().first();
-		for (int i = 0; i < 20 && pEvent; i++) {
-			seqs[0]->insertEvent(new qtractorMidiEvent(
-				pEvent->time(),
-				pEvent->type(),
-				pEvent->note(),
-				pEvent->velocity(),
-				pEvent->duration())); 
-			seqs[1]->insertEvent(new qtractorMidiEvent(
-				pEvent->time(),
-				pEvent->type(),
-				pEvent->note(),
-				pEvent->velocity(),
-				pEvent->duration())); 
-			seqs[2]->insertEvent(new qtractorMidiEvent(
-				pEvent->time(),
-				pEvent->type(),
-				pEvent->note(),
-				pEvent->velocity(),
-				pEvent->duration())); 
-			pEvent = pEvent->next();
-		}
-		file.setTempo(fTempo);
-		file.setBeatsPerBar(iBeatsPerBar);
-		file.writeHeader(0, 1, iTicksPerBeat);
-		file.writeTracks(seqs, 3);
-		file.close();
-		delete seqs[2];
-		delete seqs[1];
-		delete seqs[0];
-	}
-#endif
-//---END-TEST---
-
-	return true;
-}
-
-
-// Create filename revision (name says it all).
-QString qtractorMidiEditorForm::createFilenameRevision (
-	const QString& sFilename, int iRevision )
-{
-	QFileInfo fi(sFilename);
-	QDir adir(fi.absoluteDir());
-
-	QRegExp rxRevision("(.+)\\-(\\d+)$");
-	QString sBasename = fi.baseName();
-	if (rxRevision.exactMatch(sBasename)) {
-		sBasename = rxRevision.cap(1);
-		iRevision = rxRevision.cap(2).toInt();
-	}
-	
-	sBasename += "-%1." + fi.completeSuffix();
-	do { fi.setFile(adir, sBasename.arg(++iRevision)); }
-	while (fi.exists());
-
-#ifdef CONFIG_DEBUG
-	fprintf(stderr, "createFilePathRevision(\"%s\")\n",
-		fi.absoluteFilePath().toUtf8().constData());
-#endif
-
-	return fi.absoluteFilePath();
+	return bResult;
 }
 
 
@@ -700,20 +547,26 @@ QString qtractorMidiEditorForm::createFilenameRevision (
 // Save current clip.
 void qtractorMidiEditorForm::fileSave (void)
 {
-	saveClip(false);
+	saveFile(false);
 }
 
 
 // Save current clip with another name.
 void qtractorMidiEditorForm::fileSaveAs (void)
 {
-	saveClip(true);
+	saveFile(true);
 }
 
 
 // File properties dialog.
 void qtractorMidiEditorForm::fileProperties (void)
 {
+	// We need an official stance whether current changes
+	// are to be committed, otherwise the clip-properties
+	// dialog will override the track/sequence changes...
+	if (!queryClose())
+		return;
+
 #ifndef CONFIG_TEST
 	if (m_pMidiClip) {
 		qtractorClipForm clipForm(this);
@@ -890,7 +743,7 @@ void qtractorMidiEditorForm::stabilizeForm (void)
 	sTitle += ':' + QString::number(trackChannel());
 	if (m_iDirtyCount > 0)
 		sTitle += ' ' + tr("[modified]");
-	setWindowTitle(sTitle + " - " + tr("MIDI Editor")); // QTRACTOR_TITLE
+	setWindowTitle(sTitle + " - " QTRACTOR_TITLE);
 
 	// Update the main menu state...
 	bool bSelected = m_pMidiEditor->isSelected();
@@ -973,6 +826,11 @@ void qtractorMidiEditorForm::controllerChanged ( int iIndex )
 
 void qtractorMidiEditorForm::contentsChanged (void)
 {
+#ifndef CONFIG_TEST
+	if (m_pMidiClip)
+		m_pMidiClip->setDirty(true);
+#endif
+
 	m_iDirtyCount++;
 	stabilizeForm();
 }

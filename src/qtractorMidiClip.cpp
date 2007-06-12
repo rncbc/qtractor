@@ -49,6 +49,8 @@ qtractorMidiClip::qtractorMidiClip ( qtractorTrack *pTrack )
 	m_bSessionFlag  = false;
 
 	m_pMidiEditorForm = NULL;
+
+	m_bDirty = false;
 }
 
 // Copy constructor.
@@ -62,6 +64,8 @@ qtractorMidiClip::qtractorMidiClip ( const qtractorMidiClip& clip )
 	setTrackChannel(clip.trackChannel());
 
 	m_pMidiEditorForm = NULL;
+
+	m_bDirty = false;
 }
 
 
@@ -163,6 +167,7 @@ bool qtractorMidiClip::openMidiFile ( qtractorMidiFile *pFile,
 	// Uh oh...
 	m_playCursor.reset(m_pSeq);
 	m_drawCursor.reset(m_pSeq);
+	m_bDirty = false;
 
 	return true;
 }
@@ -440,6 +445,17 @@ bool qtractorMidiClip::startEditor ( QWidget *pParent )
 }
 
 
+// Local dirty flag.
+void qtractorMidiClip::setDirty ( bool bDirty )
+{
+	m_bDirty = bDirty;
+}
+
+bool qtractorMidiClip::isDirty (void) const
+{
+	return m_bDirty;
+}
+
 
 // Virtual document element methods.
 bool qtractorMidiClip::loadClipElement (
@@ -467,11 +483,34 @@ bool qtractorMidiClip::loadClipElement (
 bool qtractorMidiClip::saveClipElement (
 	qtractorSessionDocument *pDocument, QDomElement *pElement )
 {
+	// Trap dirty clips...
+	if (qtractorMidiClip::isDirty()) {
+		// We'll need the correct time-scale...
+		qtractorSession *pSession = NULL;
+		qtractorTrack *pTrack = qtractorMidiClip::track();
+		if (pTrack)
+			pSession = pTrack->session();
+		if (pSession) {
+			// Have a new filename revision...
+			const QString& sFilename
+				= qtractorMidiEditor::createFilenameRevision(
+					qtractorMidiClip::filename());
+			// Save/replace the clip track...
+			qtractorMidiEditor::saveCopyFile(sFilename,
+				qtractorMidiClip::filename(), 
+				qtractorMidiClip::trackChannel(),
+				qtractorMidiClip::sequence(),
+				pSession->timeScale());
+			// Pre-commit dirty changes...
+			qtractorMidiClip::setFilename(sFilename);
+			qtractorMidiClip::setDirty(false);
+		}
+	}
+
 	QDomElement eMidiClip = pDocument->document()->createElement("midi-clip");
-	pDocument->saveTextElement("filename",
-		qtractorMidiClip::filename(), &eMidiClip);
+	pDocument->saveTextElement("filename", qtractorMidiClip::filename(), &eMidiClip);
 	pDocument->saveTextElement("track-channel",
-		QString::number(m_iTrackChannel), &eMidiClip);
+		QString::number(qtractorMidiClip::trackChannel()), &eMidiClip);
 	pElement->appendChild(eMidiClip);
 
 	return true;

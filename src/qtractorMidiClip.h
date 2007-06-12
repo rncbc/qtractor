@@ -91,6 +91,10 @@ public:
 	// Clip editor method.
 	bool startEditor(QWidget *pParent = NULL);
 
+	// Local dirty flag.
+	void setDirty(bool bDirty);
+	bool isDirty() const;
+
 protected:
 
 	// Virtual document element methods.
@@ -115,6 +119,9 @@ private:
 
 	// This clip editor form widget.
 	qtractorMidiEditorForm *m_pMidiEditorForm;
+
+	// Local dirty flag.
+	bool m_bDirty;
 };
 
 

@@ -27,6 +27,7 @@
 
 #include <QSplitter>
 
+
 // Forward declarations.
 class qtractorScrollView;
 class qtractorRubberBand;
@@ -165,6 +166,15 @@ public:
 
 	// Controller hash map accessor.
 	static const QString& controllerName(unsigned char controller);
+
+	// All-in-one SMF file writer/creator method.
+	static bool saveCopyFile(const QString& sNewFilename,
+		const QString& sOldFilename, unsigned short iTrackChannel,
+		qtractorMidiSequence *pSeq, qtractorTimeScale *pTimeScale = NULL);
+
+	// Create filename revision.
+	static QString createFilenameRevision(
+		const QString& sFilename, int iRevision = 0);
 
 public slots:
 

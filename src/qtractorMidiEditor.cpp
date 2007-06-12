@@ -30,6 +30,7 @@
 #include "qtractorMidiEditCommand.h"
 
 #include "qtractorMidiSequence.h"
+#include "qtractorMidiFile.h"
 
 #include "qtractorRubberBand.h"
 #include "qtractorTimeScale.h"
@@ -42,6 +43,9 @@
 #include <QFrame>
 #include <QIcon>
 #include <QPainter>
+
+#include <QFileInfo>
+#include <QDir>
 
 #include <QComboBox>
 
@@ -143,6 +147,108 @@ const QString& qtractorMidiEditor::controllerName ( unsigned char controller )
 	}
 
 	return g_controllerNames[controller];
+}
+
+
+//----------------------------------------------------------------------------
+// qtractorMidiEditor -- All-in-one SMF file writer/creator method.
+
+bool qtractorMidiEditor::saveCopyFile ( const QString& sNewFilename,
+	const QString& sOldFilename, unsigned short iTrackChannel,
+	qtractorMidiSequence *pSeq, qtractorTimeScale *pTimeScale )
+{
+	qtractorMidiFile file;
+	float fTempo = (pTimeScale ? pTimeScale->tempo() : 120.0f);
+	unsigned short iTicksPerBeat = (pTimeScale ? pTimeScale->ticksPerBeat() : 96);
+	unsigned short iBeatsPerBar  = (pTimeScale ? pTimeScale->beatsPerBar()  : 4);
+	unsigned short iFormat = 0;
+	unsigned short iSeq, iSeqs = 0;
+	unsigned short iTracks = 0;
+	qtractorMidiSequence **ppSeqs = NULL;
+	const QString sTrackName = QObject::tr("Track %1");
+	
+	if (pSeq == NULL)
+		return false;
+
+	// Open and load the whole source file...
+	if (file.open(sOldFilename)) {
+		iTicksPerBeat = file.ticksPerBeat();
+		iFormat = file.format();
+		iSeqs = (iFormat == 1 ? file.tracks() : 16);	
+		ppSeqs = new qtractorMidiSequence * [iSeqs];
+		for (iSeq = 0; iSeq < iSeqs; ++iSeq) {	
+			ppSeqs[iSeq] = new qtractorMidiSequence(
+				sTrackName.arg(iTracks + 1), iSeq, iTicksPerBeat);
+		}
+		if (file.readTracks(ppSeqs, iSeqs)) {
+			fTempo = file.tempo();
+			iBeatsPerBar = file.beatsPerBar();
+		}
+		file.close();
+	}
+	
+	// Open and save the whole target file...
+	if (!file.open(sNewFilename, qtractorMidiFile::Write))
+		return false;
+
+	file.setTempo(fTempo);
+	file.setBeatsPerBar(iBeatsPerBar);
+
+	if (ppSeqs == NULL) {
+		iFormat = 1;
+		iSeqs   = 2;
+	}
+
+	file.writeHeader(iFormat, (iFormat == 0 ? 1 : iSeqs), iTicksPerBeat);
+
+	if (ppSeqs) {
+		// Replace the target track-channel events... 
+		ppSeqs[iTrackChannel]->replaceEvents(pSeq);
+		// Write the whole new tracks...
+		file.writeTracks(ppSeqs, iSeqs);
+	} else {
+		//
+		file.writeTrack(NULL);
+		file.writeTrack(pSeq);
+	}
+
+	file.close();
+
+	// Free locally allocated track/sequence array.
+	if (ppSeqs) { 
+		for (iSeq = 0; iSeq < iSeq; ++iSeq)
+			delete ppSeqs[iSeq];
+		delete [] ppSeqs;
+	}
+
+	return true;
+}
+
+
+// Create filename revision (name says it all).
+QString qtractorMidiEditor::createFilenameRevision (
+	const QString& sFilename, int iRevision )
+{
+	QFileInfo fi(sFilename);
+	QDir adir(fi.absoluteDir());
+
+	QRegExp rxRevision("(.+)\\-(\\d+)$");
+	QString sBasename = fi.baseName();
+	if (rxRevision.exactMatch(sBasename)) {
+		sBasename = rxRevision.cap(1);
+		iRevision = rxRevision.cap(2).toInt();
+	}
+	
+	sBasename += "-%1." + fi.completeSuffix();
+	do { fi.setFile(adir, sBasename.arg(++iRevision)); }
+	while (fi.exists());
+
+#ifdef CONFIG_DEBUG
+	fprintf(stderr, "createFilePathRevision(\"%s\")\n",
+		fi.absoluteFilePath().toUtf8().constData());
+#endif
+
+	return fi.absoluteFilePath();
 }
 
 
