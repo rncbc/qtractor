@@ -423,10 +423,16 @@ bool qtractorMidiClip::startEditor ( QWidget *pParent )
 
 	if (m_pMidiEditorForm == NULL) {
 		// Build up the editor form...
-		m_pMidiEditorForm = new qtractorMidiEditorForm(pParent);
-		m_pMidiEditorForm->setMidiClip(this);
+		m_pMidiEditorForm = new qtractorMidiEditorForm(0,
+			Qt::Tool
+			| Qt::WindowTitleHint
+			| Qt::WindowSystemMenuHint
+			| Qt::WindowMinMaxButtonsHint);
+		// Set its most standing properties...
 		m_pMidiEditorForm->setForeground(pTrack->foreground());
 		m_pMidiEditorForm->setBackground(pTrack->background());
+		m_pMidiEditorForm->show();
+		m_pMidiEditorForm->setMidiClip(this);
 		// Setup connections to main widget...
 		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 		if (pMainForm) {
@@ -434,12 +440,12 @@ bool qtractorMidiClip::startEditor ( QWidget *pParent )
 				SIGNAL(changeNotifySignal()),
 				pMainForm, SLOT(changeNotifySlot()));
 		}
+	} else {
+		// Just show up the editor form...
+		m_pMidiEditorForm->show();
+		m_pMidiEditorForm->raise();
+		m_pMidiEditorForm->activateWindow();
 	}
-
-	// Show up the editor form...
-	m_pMidiEditorForm->show();
-	m_pMidiEditorForm->raise();
-	m_pMidiEditorForm->activateWindow();
 
 	return true;
 }

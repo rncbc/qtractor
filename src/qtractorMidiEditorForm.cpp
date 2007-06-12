@@ -288,7 +288,11 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 		m_ui.viewToolbarFileAction->setChecked(pOptions->bMidiFileToolbar);
 		m_ui.viewToolbarEditAction->setChecked(pOptions->bMidiEditToolbar);
 		m_ui.viewToolbarViewAction->setChecked(pOptions->bMidiViewToolbar);
-		m_ui.editModeOnAction->setChecked(pOptions->bMidiEditMode);
+		if (pOptions->bMidiEditMode) {
+			m_ui.editModeOnAction->setChecked(true);
+		} else {
+			m_ui.editModeOffAction->setChecked(true);
+		}
 		// Initial decorations visibility state.
 		viewMenubar(pOptions->bMidiMenubar);
 		viewStatusbar(pOptions->bMidiStatusbar);
