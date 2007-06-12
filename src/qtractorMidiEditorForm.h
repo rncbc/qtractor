@@ -127,6 +127,11 @@ protected slots:
 
 	void snapPerBeatChanged(int iSnap);
 
+signals:
+
+	// Sent out every time a MIDI file is saved.
+	void saveFileSignal(const QString&);
+
 protected:
 
 	// Pre-close event handler.
@@ -139,7 +144,7 @@ protected:
 	void contextMenuEvent(QContextMenuEvent *pContextMenuEvent);
 
 	// Save current clip track-channel sequence.
-	bool saveFile(bool bPrompt);
+	bool saveClipFile(bool bPrompt);
 	
 private:
 

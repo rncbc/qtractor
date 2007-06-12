@@ -266,6 +266,7 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 
 	// This is the initial state and selection.
 	m_ui.editModeOffAction->setChecked(true);
+	m_pMidiEditor->setEditMode(false);
 
 	// Initial decorations toggle state.
 	m_ui.viewMenubarAction->setChecked(true);
@@ -288,17 +289,17 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 		m_ui.viewToolbarFileAction->setChecked(pOptions->bMidiFileToolbar);
 		m_ui.viewToolbarEditAction->setChecked(pOptions->bMidiEditToolbar);
 		m_ui.viewToolbarViewAction->setChecked(pOptions->bMidiViewToolbar);
-		if (pOptions->bMidiEditMode) {
+		if (pOptions->bMidiEditMode)
 			m_ui.editModeOnAction->setChecked(true);
-		} else {
+		else
 			m_ui.editModeOffAction->setChecked(true);
-		}
 		// Initial decorations visibility state.
 		viewMenubar(pOptions->bMidiMenubar);
 		viewStatusbar(pOptions->bMidiStatusbar);
 		viewToolbarFile(pOptions->bMidiFileToolbar);
 		viewToolbarEdit(pOptions->bMidiEditToolbar);
 		viewToolbarView(pOptions->bMidiViewToolbar);
+		m_pMidiEditor->setEditMode(pOptions->bMidiEditMode);
 		// Restore whole dock windows state.
 		QByteArray aDockables = pOptions->settings().value(
 			"/MidiEditor/Layout/DockWindows").toByteArray();
@@ -309,8 +310,8 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 			// Make it as the last time.
 			restoreState(aDockables);
 		}
-		// Try to restore old window positioning.
-	//	pOptions->loadWidgetGeometry(this);
+		// Try to restore old window positioning?
+		// pOptions->loadWidgetGeometry(this);
 	}
 
 #endif
@@ -356,7 +357,7 @@ bool qtractorMidiEditorForm::queryClose (void)
 			.arg(filename()),
 			tr("Save"), tr("Discard"), tr("Cancel"))) {
 		case 0:     // Save...
-			bQueryClose = saveFile(false);
+			bQueryClose = saveClipFile(false);
 			// Fall thru....
 		case 1:     // Discard
 			break;
@@ -384,8 +385,8 @@ bool qtractorMidiEditorForm::queryClose (void)
 			// Save the dock windows state.
 			pOptions->settings().setValue(
 				"/MidiEditor/Layout/DockWindows", saveState());
-			// And the main windows state.
-		//	pOptions->saveWidgetGeometry(this);
+			// And the main windows state?
+			// pOptions->saveWidgetGeometry(this);
 		}
 	}
 #endif
@@ -563,7 +564,7 @@ void qtractorMidiEditorForm::updateContents (void)
 // qtractorMidiEditorForm -- Clip Action methods.
 
 // Save current clip.
-bool qtractorMidiEditorForm::saveFile ( bool bPrompt )
+bool qtractorMidiEditorForm::saveClipFile ( bool bPrompt )
 {
 	// Suggest a filename, if there's none...
 	QString sFilename = qtractorMidiEditor::createFilenameRevision(filename());
@@ -593,13 +594,15 @@ bool qtractorMidiEditorForm::saveFile ( bool bPrompt )
 	// Save it right away...
 	bool bResult = qtractorMidiEditor::saveCopyFile(sFilename,
 		filename(), trackChannel(), sequence(), timeScale());
+
 	// Have we done it right?
 	if (bResult) {
+		// First, set our resulting filename.
 		setFilename(sFilename);
+		// Aha, but we're no dirty no more.
 		m_iDirtyCount = 0;
-#ifndef CONFIG_TEST
-		m_pMidiEditor->contentsChangeNotify();
-#endif
+		// And send our blessed signal...
+		emit saveFileSignal(sFilename);
 	}
 
 	// Done.
@@ -614,14 +617,14 @@ bool qtractorMidiEditorForm::saveFile ( bool bPrompt )
 // Save current clip.
 void qtractorMidiEditorForm::fileSave (void)
 {
-	saveFile(false);
+	saveClipFile(false);
 }
 
 
 // Save current clip with another name.
 void qtractorMidiEditorForm::fileSaveAs (void)
 {
-	saveFile(true);
+	saveClipFile(true);
 }
 
 
@@ -659,16 +662,12 @@ void qtractorMidiEditorForm::fileClose (void)
 void qtractorMidiEditorForm::editModeOn (void)
 {
 	m_pMidiEditor->setEditMode(true);
-
-	stabilizeForm();
 }
 
 // Set edit-mode off.
 void qtractorMidiEditorForm::editModeOff (void)
 {
 	m_pMidiEditor->setEditMode(false);
-
-	stabilizeForm();
 }
 
 

@@ -415,7 +415,7 @@ void qtractorMidiClip::drawClip ( QPainter *pPainter, const QRect& clipRect,
 
 
 // Clip editor method.
-bool qtractorMidiClip::startEditor ( QWidget *pParent )
+bool qtractorMidiClip::startEditor ( QWidget */*pParent*/ )
 {
 	qtractorTrack *pTrack = track();
 	if (pTrack == NULL)
@@ -436,9 +436,14 @@ bool qtractorMidiClip::startEditor ( QWidget *pParent )
 		// Setup connections to main widget...
 		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 		if (pMainForm) {
+			// For every change that is issued...
 			QObject::connect(m_pMidiEditorForm->editor(),
 				SIGNAL(changeNotifySignal()),
 				pMainForm, SLOT(changeNotifySlot()));
+			// On any new file comes to town...
+			QObject::connect(m_pMidiEditorForm,
+				SIGNAL(saveFileSignal(const QString&)),
+				pMainForm, SLOT(addMidiFile(const QString&)));
 		}
 	} else {
 		// Just show up the editor form...
