@@ -31,7 +31,9 @@
 #include "qtractorMidiEditView.h"
 #include "qtractorMidiEditEvent.h"
 
-#ifndef CONFIG_TEST
+#ifdef CONFIG_TEST
+#include "qtractorMidiSequence.h"
+#else
 #include "qtractorMidiClip.h"
 #include "qtractorOptions.h"
 #include "qtractorSession.h"
@@ -64,6 +66,7 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 #endif
 
 	m_iTrackChannel = 0;
+	m_iFormat = 0;
 
 	m_iDirtyCount = 0;
 
@@ -135,6 +138,13 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	const QSize pad(4, 0);
 	const QString spc(4, ' ');
 
+	// Status clip/sequence name...
+	m_pTrackNameLabel = new QLabel(spc);
+	m_pTrackNameLabel->setAlignment(Qt::AlignLeft);
+	m_pTrackNameLabel->setToolTip(tr("MIDI clip name"));
+	m_pTrackNameLabel->setAutoFillBackground(true);
+	statusBar()->addWidget(m_pTrackNameLabel, 1);
+
 	// Status filename...
 	m_pFileNameLabel = new QLabel(spc);
 	m_pFileNameLabel->setAlignment(Qt::AlignLeft);
@@ -142,17 +152,9 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	m_pFileNameLabel->setAutoFillBackground(true);
 	statusBar()->addWidget(m_pFileNameLabel, 2);
 
-	// Status clip/sequence name...
-	m_pTrackNameLabel = new QLabel(spc);
-	m_pTrackNameLabel->setAlignment(Qt::AlignLeft);
-	m_pTrackNameLabel->setToolTip(tr("MIDI sequence name"));
-	m_pTrackNameLabel->setAutoFillBackground(true);
-	statusBar()->addWidget(m_pTrackNameLabel, 1);
-
 	// Status track/channel number...
 	m_pTrackChannelLabel = new QLabel(spc);
 	m_pTrackChannelLabel->setAlignment(Qt::AlignHCenter);
-	m_pTrackChannelLabel->setMinimumSize(m_pTrackChannelLabel->sizeHint() + pad);
 	m_pTrackChannelLabel->setToolTip(tr("MIDI track/channel"));
 	m_pTrackChannelLabel->setAutoFillBackground(true);
 	statusBar()->addWidget(m_pTrackChannelLabel);
@@ -164,6 +166,14 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	m_pStatusModLabel->setToolTip(tr("MIDI modification state"));
 	m_pStatusModLabel->setAutoFillBackground(true);
 	statusBar()->addWidget(m_pStatusModLabel);
+
+	// Sequence duration status.
+	m_pDurationLabel = new QLabel(tr("00:00:00.000"));
+	m_pDurationLabel->setAlignment(Qt::AlignHCenter);
+	m_pDurationLabel->setMinimumSize(m_pDurationLabel->sizeHint() + pad);
+	m_pDurationLabel->setToolTip(tr("MIDI clip duration"));
+	m_pDurationLabel->setAutoFillBackground(true);
+	statusBar()->addWidget(m_pDurationLabel);
 
 	// Some actions surely need those
 	// shortcuts firmly attached...
@@ -274,6 +284,11 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	m_ui.viewToolbarFileAction->setChecked(true);
 	m_ui.viewToolbarEditAction->setChecked(true);
 	m_ui.viewToolbarViewAction->setChecked(true);
+
+	// Some windows are forced initially as is...
+	insertToolBarBreak(m_ui.editViewToolbar);
+
+	m_ui.filePropertiesAction->setEnabled(false);
 
 #else
 
@@ -428,6 +443,13 @@ qtractorMidiEditor *qtractorMidiEditorForm::editor (void) const
 }
 
 
+// Local time-scale accessor.
+qtractorTimeScale *qtractorMidiEditorForm::timeScale (void) const
+{
+	return m_pMidiEditor->timeScale();
+}
+
+
 // MIDI filename accessors.
 void qtractorMidiEditorForm::setFilename ( const QString& sFilename )
 {
@@ -436,6 +458,11 @@ void qtractorMidiEditorForm::setFilename ( const QString& sFilename )
 	if (m_pMidiClip)
 		m_pMidiClip->setFilename(m_sFilename);
 #endif
+}
+
+const QString& qtractorMidiEditorForm::filename (void) const
+{
+	return m_sFilename;
 }
 
 
@@ -447,6 +474,27 @@ void qtractorMidiEditorForm::setTrackChannel ( unsigned short iTrackChannel )
 	if (m_pMidiClip)
 		m_pMidiClip->setTrackChannel(m_iTrackChannel);
 #endif
+}
+
+unsigned short qtractorMidiEditorForm::trackChannel (void) const
+{
+	return m_iTrackChannel;
+}
+
+
+// MIDI file format accessors.
+void qtractorMidiEditorForm::setFormat ( unsigned short iFormat )
+{
+	m_iFormat = iFormat;
+#ifndef CONFIG_TEST
+	if (m_pMidiClip)
+		m_pMidiClip->setFormat(m_iFormat);
+#endif
+}
+
+unsigned short qtractorMidiEditorForm::format (void) const
+{
+	return m_iFormat;
 }
 
 
@@ -463,6 +511,7 @@ void qtractorMidiEditorForm::setSequence ( qtractorMidiSequence *pSeq  )
 }
 
 #else
+
 
 // Editing MIDI clip accessors.
 void qtractorMidiEditorForm::setMidiClip ( qtractorMidiClip *pMidiClip  )
@@ -489,10 +538,12 @@ void qtractorMidiEditorForm::setMidiClip ( qtractorMidiClip *pMidiClip  )
 			m_pMidiEditor->setSequence(m_pMidiClip->sequence());
 			m_sFilename = m_pMidiClip->filename();
 			m_iTrackChannel = m_pMidiClip->trackChannel();
+			m_iFormat = m_pMidiClip->format();
 		} else {
 			m_pMidiEditor->setSequence(NULL);
 			m_sFilename.clear();
 			m_iTrackChannel = 0;
+			m_iFormat = 0;
 		}
 		stabilizeForm();
 	}
@@ -506,24 +557,9 @@ qtractorMidiClip *qtractorMidiEditorForm::midiClip (void) const
 #endif
 
 
-qtractorTimeScale *qtractorMidiEditorForm::timeScale (void) const
-{
-	return m_pMidiEditor->timeScale();
-}
-
 qtractorMidiSequence *qtractorMidiEditorForm::sequence (void) const
 {
 	return m_pMidiEditor->sequence();
-}
-
-const QString& qtractorMidiEditorForm::filename (void) const
-{
-	return m_sFilename;
-}
-
-unsigned short qtractorMidiEditorForm::trackChannel (void) const
-{
-	return m_iTrackChannel;
 }
 
 
@@ -804,9 +840,19 @@ void qtractorMidiEditorForm::viewRefresh (void)
 
 void qtractorMidiEditorForm::stabilizeForm (void)
 {
+	// Special display formatting...
+	QString sTrackChannel;
+	int k = 0;
+	if (format() == 0) {
+		sTrackChannel = tr("Channel %1");
+		k++;
+	} else {
+		sTrackChannel = tr("Track %1");
+	}
+
 	// Update the main window caption...
-	QString sTitle = QFileInfo(filename()).fileName();
-	sTitle += ':' + QString::number(trackChannel());
+	QString sTitle = QFileInfo(filename()).fileName() + ' ';
+	sTitle += '(' + sTrackChannel.arg(trackChannel() + k) + ')';
 	if (m_iDirtyCount > 0)
 		sTitle += ' ' + tr("[modified]");
 	setWindowTitle(sTitle + " - " QTRACTOR_TITLE);
@@ -823,7 +869,7 @@ void qtractorMidiEditorForm::stabilizeForm (void)
 	m_ui.editSelectNoneAction->setEnabled(bSelected);
 
 	m_pFileNameLabel->setText(filename());
-	m_pTrackChannelLabel->setText(QString::number(trackChannel()));
+	m_pTrackChannelLabel->setText(sTrackChannel.arg(trackChannel() + k));
 
 	if (sequence())
 		m_pTrackNameLabel->setText(sequence()->name());
@@ -834,6 +880,11 @@ void qtractorMidiEditorForm::stabilizeForm (void)
 		m_pStatusModLabel->setText(tr("MOD"));
 	else
 		m_pStatusModLabel->clear();
+
+	if (sequence())
+		m_pDurationLabel->setText(QString::number(sequence()->duration()));
+	else
+		m_pDurationLabel->clear();
 }
 
 

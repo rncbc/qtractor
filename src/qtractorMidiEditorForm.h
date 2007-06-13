@@ -57,9 +57,19 @@ public:
 	// MIDI editor widget accessor.
 	qtractorMidiEditor *editor() const;
 
+	// Local time-scale accessor.
+	qtractorTimeScale *timeScale() const;
+
 	// MIDI clip properties accessors.
 	void setFilename(const QString& sFilename);
+	const QString& filename() const;
+
 	void setTrackChannel(unsigned short iTrackChannel);
+	unsigned short trackChannel() const;
+
+	void setFormat(unsigned short iFormat);
+	unsigned short format() const;
+
 #ifdef CONFIG_TEST
 	void setSequence(qtractorMidiSequence *pSeq);
 #else
@@ -68,11 +78,8 @@ public:
 	qtractorMidiClip *midiClip() const;
 #endif
 
-	// MIDI clip properties accessors.
-	qtractorTimeScale *timeScale() const;
+	// MIDI clip sequence accessors.
 	qtractorMidiSequence *sequence() const;
-	const QString& filename() const;
-	unsigned short trackChannel() const;
 
 	// MIDI event foreground (outline) color.
 	void setForeground(const QColor& fore);
@@ -160,6 +167,7 @@ private:
 
 	QString        m_sFilename;
 	unsigned short m_iTrackChannel;
+	unsigned short m_iFormat;
 
 	int m_iDirtyCount;
 
@@ -175,10 +183,11 @@ private:
 	QComboBox *m_pControllerComboBox;
 
 	// Status items.
-	QLabel *m_pFileNameLabel;
 	QLabel *m_pTrackNameLabel;
+	QLabel *m_pFileNameLabel;
 	QLabel *m_pTrackChannelLabel;
 	QLabel *m_pStatusModLabel;
+	QLabel *m_pDurationLabel;
 };
 
 

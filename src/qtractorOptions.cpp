@@ -78,13 +78,18 @@ qtractorOptions::qtractorOptions (void)
 	bFollowPlayhead = m_settings.value("/FollowPlayhead", true).toBool();
 	m_settings.endGroup();
 
-	// Audio redndering options group.
+	// Audio rendering options group.
 	m_settings.beginGroup("/Audio");
 	sAudioCaptureExt     = m_settings.value("/CaptureExt", AUDIO_DEFAULT_EXT).toString();
 	iAudioCaptureType    = m_settings.value("/CaptureType", 0).toInt();
 	iAudioCaptureFormat  = m_settings.value("/CaptureFormat", 0).toInt();
 	iAudioCaptureQuality = m_settings.value("/CaptureQuality", 4).toInt();
 	iAudioResampleType   = m_settings.value("/ResampleType", 2).toInt();
+	m_settings.endGroup();
+
+	// MIDI rendering options group.
+	m_settings.beginGroup("/Midi");
+	iMidiCaptureFormat = m_settings.value("/CaptureFormat", 1).toInt();
 	m_settings.endGroup();
 
 	m_settings.endGroup(); // Options group.

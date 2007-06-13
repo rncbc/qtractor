@@ -59,6 +59,9 @@ public:
 	void setTrackChannel(unsigned short iTrackChannel);
 	unsigned short trackChannel() const;
 
+	void setFormat(unsigned short iFormat);
+	unsigned short format() const;
+
 	// (Meta)Session flag accessors.
 	void setSessionFlag(bool bSessionFlag);
 	bool isSessionFlag() const;
@@ -95,6 +98,11 @@ public:
 	void setDirty(bool bDirty);
 	bool isDirty() const;
 
+	// Default MIDI file format accessors
+	// (specific to capture/recording)
+	static void setDefaultFormat(unsigned short iFormat);
+	static unsigned short defaultFormat();
+
 protected:
 
 	// Virtual document element methods.
@@ -110,6 +118,7 @@ private:
 	qtractorMidiSequence *m_pSeq;
 
 	unsigned short m_iTrackChannel;
+	unsigned short m_iFormat;
 	bool           m_bSessionFlag;
 
 	// To optimize and keep track of current playback
@@ -122,6 +131,9 @@ private:
 
 	// Local dirty flag.
 	bool m_bDirty;
+
+	// Default MIDI file format (for capture/record)
+	static unsigned short g_iDefaultFormat;
 };
 
 

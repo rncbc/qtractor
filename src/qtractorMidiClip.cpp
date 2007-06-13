@@ -46,6 +46,7 @@ qtractorMidiClip::qtractorMidiClip ( qtractorTrack *pTrack )
 	m_pSeq  = new qtractorMidiSequence();
 
 	m_iTrackChannel = 0;
+	m_iFormat       = 0;
 	m_bSessionFlag  = false;
 
 	m_pMidiEditorForm = NULL;
@@ -127,6 +128,15 @@ bool qtractorMidiClip::openMidiFile ( qtractorMidiFile *pFile,
 
 	// Are we on a pre-writing status?
 	if (pFile->mode() == qtractorMidiFile::Write) {
+		// On write mode, iTrackChannel holds the SMF format,
+		// so we'll convert it here as properly.
+		if (iTrackChannel == 0) {
+			setFormat(0); // SMF format 0 (1 track, 1 channel)
+			iTrackChannel = pTrack->midiChannel();
+		} else {
+			setFormat(1); // SMF format 1 (2 tracks, 1 channel)
+			iTrackChannel = 1;
+		}
 		// Set initial local properties...
 		pFile->setTempo(pSession->tempo());
 		pFile->setBeatsPerBar(pSession->beatsPerBar());
@@ -135,6 +145,8 @@ bool qtractorMidiClip::openMidiFile ( qtractorMidiFile *pFile,
 		m_pSeq->setChannel(pTrack->midiChannel());
 		// Nothing more as for writing...
 	} else {
+		// On read mode, SMF format is properly given by open file.
+		setFormat(pFile->format());
 		// Read the event sequence in...
 		if (!pFile->readTrack(m_pSeq, iTrackChannel))
 			return false;
@@ -154,6 +166,7 @@ bool qtractorMidiClip::openMidiFile ( qtractorMidiFile *pFile,
 	// Clip name should be clear about it all.
 	if (clipName().isEmpty())
 		setClipName(m_pSeq->name());
+
 	// Set local properties...
 	setFilename(pFile->filename());
 	setTrackChannel(iTrackChannel);
@@ -182,6 +195,17 @@ void qtractorMidiClip::setTrackChannel ( unsigned short iTrackChannel )
 unsigned short qtractorMidiClip::trackChannel (void) const
 {
 	return m_iTrackChannel;
+}
+
+
+void qtractorMidiClip::setFormat ( unsigned short iFormat )
+{
+	m_iFormat = iFormat;
+}
+
+unsigned short qtractorMidiClip::format (void) const
+{
+	return m_iFormat;
 }
 
 
@@ -283,12 +307,18 @@ void qtractorMidiClip::close ( bool bForce )
 	if (clipLength() < 1)
 		setClipLength(pSession->frameFromTick(m_pSeq->duration()));
 	
-	// Now's time to write the whole thing, maybe as a SMF format 1...
+	// Now's time to write the whole thing...
 	bool bNewFile = (m_pFile && m_pFile->mode() == qtractorMidiFile::Write);
 	if (bNewFile && clipLength() > 0) {
-		m_pFile->writeHeader(1, 2, m_pSeq->ticksPerBeat());
-		m_pFile->writeTrack(NULL);   // Setup track.
-		m_pFile->writeTrack(m_pSeq); // Channel track.
+		// Write SMF header...
+		unsigned short iTracks = 1;
+		if (m_iFormat == 1)
+			iTracks++;
+		m_pFile->writeHeader(m_iFormat, iTracks, m_pSeq->ticksPerBeat());
+		// Write channel tracks...
+		if (m_iFormat == 1)
+			m_pFile->writeTrack(NULL);  // Setup track (SMF format 1).
+		m_pFile->writeTrack(m_pSeq);    // Channel track.
 		m_pFile->close();
 	}
 
@@ -525,6 +555,20 @@ bool qtractorMidiClip::saveClipElement (
 	pElement->appendChild(eMidiClip);
 
 	return true;
+}
+
+
+// Default MIDI file format (for capture/record) accessors.
+unsigned short qtractorMidiClip::g_iDefaultFormat = 0;
+
+void qtractorMidiClip::setDefaultFormat ( unsigned short iFormat )
+{
+	g_iDefaultFormat = iFormat;
+}
+
+unsigned short qtractorMidiClip::defaultFormat (void)
+{
+	return g_iDefaultFormat;
 }
 
 

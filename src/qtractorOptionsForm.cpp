@@ -1,7 +1,7 @@
 // qtractorOptionsForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2006, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -57,13 +57,18 @@ qtractorOptionsForm::qtractorOptionsForm (
 		++iFormat;
 	}
 
-	// Populate the capture sample format combo-box.
+	// Populate the audio capture sample format combo-box.
 	m_ui.AudioCaptureFormatComboBox->clear();
 	m_ui.AudioCaptureFormatComboBox->addItem(tr("Signed 16-Bit"));
 	m_ui.AudioCaptureFormatComboBox->addItem(tr("Signed 24-Bit"));
 	m_ui.AudioCaptureFormatComboBox->addItem(tr("Signed 32-Bit"));
 	m_ui.AudioCaptureFormatComboBox->addItem(tr("Float  32-Bit"));
 	m_ui.AudioCaptureFormatComboBox->addItem(tr("Float  64-Bit"));
+
+	// Populate the MIDI capture file format combo-box.
+	m_ui.MidiCaptureFormatComboBox->clear();
+	m_ui.MidiCaptureFormatComboBox->addItem(tr("SMF Format 0"));
+	m_ui.MidiCaptureFormatComboBox->addItem(tr("SMF Format 1"));
 
 	// Initialize dirty control state.
 	m_iDirtyCount = 0;
@@ -115,6 +120,9 @@ qtractorOptionsForm::qtractorOptionsForm (
 		SIGNAL(valueChanged(int)),
 		SLOT(changed()));
 	QObject::connect(m_ui.AudioResampleTypeComboBox,
+		SIGNAL(activated(int)),
+		SLOT(changed()));
+	QObject::connect(m_ui.MidiCaptureFormatComboBox,
 		SIGNAL(activated(int)),
 		SLOT(changed()));
 }
@@ -182,6 +190,9 @@ void qtractorOptionsForm::setOptions ( qtractorOptions *pOptions )
 	m_ui.AudioResampleTypeComboBox->setEnabled(false);
 #endif
 
+	// MIDI options.
+	m_ui.MidiCaptureFormatComboBox->setCurrentIndex(m_pOptions->iMidiCaptureFormat);
+
 	// Done. Restart clean.
 	m_iDirtyCount = 0;
 	stabilizeForm();
@@ -221,6 +232,8 @@ void qtractorOptionsForm::accept (void)
 		m_pOptions->iAudioCaptureFormat  = m_ui.AudioCaptureFormatComboBox->currentIndex();
 		m_pOptions->iAudioCaptureQuality = m_ui.AudioCaptureQualitySpinBox->value();
 		m_pOptions->iAudioResampleType   = m_ui.AudioResampleTypeComboBox->currentIndex();
+		// MIDI options...
+		m_pOptions->iMidiCaptureFormat = m_ui.MidiCaptureFormatComboBox->currentIndex();
 		// Reset dirty flag.
 		m_iDirtyCount = 0;
 	}
@@ -286,6 +299,7 @@ void qtractorOptionsForm::stabilizeForm (void)
 	m_ui.MessagesLimitLinesSpinBox->setEnabled(
 		m_ui.MessagesLimitCheckBox->isChecked());
 
+	// Audio options validy check...
 	int iIndex  = m_ui.AudioCaptureTypeComboBox->currentIndex();
 	int iFormat	= m_ui.AudioCaptureTypeComboBox->itemData(iIndex).toInt();
 	const qtractorAudioFileFactory::FileFormat *pFormat

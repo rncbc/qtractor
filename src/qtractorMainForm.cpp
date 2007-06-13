@@ -670,6 +670,8 @@ void qtractorMainForm::setOptions ( qtractorOptions *pOptions )
 		m_pOptions->iAudioCaptureType,
 		m_pOptions->iAudioCaptureFormat,
 		m_pOptions->iAudioCaptureQuality);
+	qtractorMidiClip::setDefaultFormat(
+		m_pOptions->iMidiCaptureFormat);
 	// Set default sample-rate converter quality...
 	qtractorAudioBuffer::setResampleType(m_pOptions->iAudioResampleType);
 
@@ -1898,8 +1900,8 @@ void qtractorMainForm::viewOptions (void)
 	bool    bOldCompletePath    = m_pOptions->bCompletePath;
 	bool    bOldPeakAutoRemove  = m_pOptions->bPeakAutoRemove;
 	int     iOldMaxRecentFiles  = m_pOptions->iMaxRecentFiles;
-	int     iOldResampleType    = m_pOptions->iAudioResampleType;
 	int     iOldTransportTime   = m_pOptions->iTransportTime;
+	int     iOldResampleType    = m_pOptions->iAudioResampleType;
 	// Load the current setup settings.
 	qtractorOptionsForm optionsForm(this);
 	optionsForm.setOptions(m_pOptions);
@@ -1940,6 +1942,8 @@ void qtractorMainForm::viewOptions (void)
 			m_pOptions->iAudioCaptureType,
 			m_pOptions->iAudioCaptureFormat,
 			m_pOptions->iAudioCaptureQuality);
+		qtractorMidiClip::setDefaultFormat(
+			m_pOptions->iMidiCaptureFormat);
 		// Warn if something will be only effective on next time.
 		if (!sNeedRestart.isEmpty()) {
 			QMessageBox::information(this,

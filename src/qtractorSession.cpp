@@ -479,7 +479,7 @@ unsigned long qtractorSession::frameFromLocate ( unsigned long iLocate ) const
 }
 
 unsigned long qtractorSession::locateFromFrame ( unsigned long iFrame ) const
-{ 
+{
 	return (30 * iFrame) / m_props.timeScale.sampleRate();
 }
 
@@ -1104,7 +1104,7 @@ void qtractorSession::trackRecord ( qtractorTrack *pTrack, bool bRecord )
 		pMidiClip->setClipStart(playHead());
 		pMidiClip->openMidiFile(
 			createFilePath(pTrack->trackName(), 0, "mid"),
-			1, // iTrackChannel: Single-track SMF format 1 (2 tracks)
+			qtractorMidiClip::defaultFormat(),
 			qtractorMidiFile::Write);
 		pTrack->setClipRecord(pMidiClip);
 		break;

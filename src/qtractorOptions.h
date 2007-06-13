@@ -85,6 +85,9 @@ public:
 	int iAudioCaptureQuality;
 	int iAudioResampleType;
 
+	// Midi options...
+	int iMidiCaptureFormat;
+
 	// Default options...
 	QString sSessionDir;
 	QString sAudioDir;
