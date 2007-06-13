@@ -140,9 +140,6 @@ public:
 	unsigned long frameFromLocate(unsigned long iLocate) const;
 	unsigned long locateFromFrame(unsigned long iFrame) const;
 
-	// Convert frame to time string.
-	QString timeFromFrame(unsigned long iFrame, bool bBBT = false) const;
-
 	// Update time scale divisor factors.
 	void updateTimeScale();
 

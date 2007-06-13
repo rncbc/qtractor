@@ -64,7 +64,9 @@ private:
 	Ui::qtractorClipForm m_ui;
 
 	// Instance variables...
-	qtractorClip *m_pClip;
+	qtractorClip      *m_pClip;
+	qtractorTimeScale *m_pTimeScale;
+
 	int m_iDirtyCount;
 };
 

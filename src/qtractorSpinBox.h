@@ -49,12 +49,9 @@ public:
 	void setTimeScale(qtractorTimeScale *pTimeScale);
 	qtractorTimeScale *timeScale() const;
 
-	// Available display-formats.
-	enum DisplayFormat { Frames, Time, BBT };
-
 	// Display-format accessors.
-	void setDisplayFormat(DisplayFormat format);
-	DisplayFormat displayFormat() const;
+	qtractorTimeScale::DisplayFormat displayFormat (void) const;
+	void updateDisplayFormat();
 
 	// Nominal value (in frames) accessors.
 	void setValue(unsigned long iValue, bool bNotifyChange = true);
@@ -99,7 +96,6 @@ private:
 
 	// Instance variables.
 	qtractorTimeScale *m_pTimeScale;
-	DisplayFormat      m_displayFormat;
 	unsigned long      m_iDefaultValue;
 	unsigned long      m_iMinimumValue;
 	unsigned long      m_iMaximumValue;

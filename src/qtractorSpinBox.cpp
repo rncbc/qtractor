@@ -32,7 +32,6 @@ qtractorSpinBox::qtractorSpinBox ( QWidget *pParent )
 	: QAbstractSpinBox(pParent)
 {
 	m_pTimeScale    = NULL;
-	m_displayFormat = Frames;
 	m_iDefaultValue = 0;
 	m_iMinimumValue = 0;
 	m_iMaximumValue = 0;
@@ -75,17 +74,16 @@ qtractorTimeScale *qtractorSpinBox::timeScale (void) const
 
 
 // Display-format accessors.
-void qtractorSpinBox::setDisplayFormat (
-	qtractorSpinBox::DisplayFormat displayFormat )
+qtractorTimeScale::DisplayFormat qtractorSpinBox::displayFormat (void) const
 {
-	m_displayFormat = displayFormat;
-
-	setValue(m_iDefaultValue);
+	return (m_pTimeScale
+		? m_pTimeScale->displayFormat()
+		: qtractorTimeScale::Frames);
 }
 
-qtractorSpinBox::DisplayFormat qtractorSpinBox::displayFormat (void) const
+void qtractorSpinBox::updateDisplayFormat (void)
 {
-	return m_displayFormat;
+	setValue(m_iDefaultValue);
 }
 
 
@@ -155,20 +153,22 @@ QValidator::State qtractorSpinBox::validate ( QString& sText, int& iPos ) const
 		return QValidator::Acceptable;
 
 	const QChar& ch = sText[iPos - 1];
-	switch (m_displayFormat) {
-	case Time:
-		if (ch == ':')
-			return QValidator::Acceptable;
-		// Fall thru.
-	case BBT:
-		if (ch == '.')
-			return QValidator::Acceptable;
-		// Fall thru.
-	case Frames:
-	default:
-		if (ch.isDigit())
-			return QValidator::Acceptable;
-		break;
+	if (m_pTimeScale) {
+		switch (m_pTimeScale->displayFormat()) {
+		case qtractorTimeScale::Time:
+			if (ch == ':')
+				return QValidator::Acceptable;
+			// Fall thru.
+		case qtractorTimeScale::BBT:
+			if (ch == '.')
+				return QValidator::Acceptable;
+			// Fall thru.
+		case qtractorTimeScale::Frames:
+		default:
+			if (ch.isDigit())
+				return QValidator::Acceptable;
+			break;
+		}
 	}
 
 	return QValidator::Invalid;
@@ -194,18 +194,18 @@ void qtractorSpinBox::stepBy ( int iSteps )
 
 	long iValue = long(value());
 
-	switch (m_displayFormat) {
-	case BBT:
-		if (m_pTimeScale)
+	if (m_pTimeScale) {
+		switch (m_pTimeScale->displayFormat()) {
+		case qtractorTimeScale::BBT:
 			iSteps *= int(m_pTimeScale->frameFromTick(1));
-		break;
-	case Time:
-		if (m_pTimeScale)
+			break;
+		case qtractorTimeScale::Time:
 			iSteps *= int(m_pTimeScale->sampleRate());
- 		break;
-	case Frames:
-	default:
-		break;
+			break;
+		case qtractorTimeScale::Frames:
+		default:
+			break;
+		}
 	}
 
 	iValue += iSteps;
@@ -227,101 +227,16 @@ QAbstractSpinBox::StepEnabled qtractorSpinBox::stepEnabled (void) const
 // Value/text format converters.
 unsigned long qtractorSpinBox::valueFromText ( const QString& sText ) const
 {
-	unsigned long iValue;
-
-	switch (m_displayFormat) {
-	case BBT:
-		if (m_pTimeScale) {
-			// Time frame code in bars.beats.ticks ...
-			unsigned int  bars  = sText.section('.', 0, 0).toUInt();
-			unsigned int  beats = sText.section('.', 1, 1).toUInt();
-			unsigned long ticks = sText.section('.', 2).toULong();
-			if (bars > 0)
-				bars--;
-			if (beats > 0)
-				beats--;
-			beats += bars  * m_pTimeScale->beatsPerBar();
-			ticks += beats * m_pTimeScale->ticksPerBeat();
-			iValue = m_pTimeScale->frameFromTick(ticks);
-			break;
-		}
-		// Fall thru...
-	case Time:
-		if (m_pTimeScale) {
-			// Time frame code in hh:mm:ss.zzz ...
-			unsigned int hh = sText.section(':', 0, 0).toUInt();
-			unsigned int mm = sText.section(':', 1, 1).toUInt();
-			float secs = sText.section(':', 2).toFloat();
-			mm   += 60 * hh;
-			secs += 60.f * (float) mm;
-			iValue = (unsigned long) ::lroundf(
-				secs * (float) m_pTimeScale->sampleRate());
-			break;
-		}
-		// Fall thru...
-	case Frames:
-	default:
-		iValue = sText.toULong();
-		break;
-	}
-
-	return iValue;
+	return (m_pTimeScale
+		? m_pTimeScale->frameFromText(sText)
+		: sText.toULong());
 }
-
 
 QString qtractorSpinBox::textFromValue ( unsigned long iValue ) const
 {
-	QString sText;
-
-	switch (m_displayFormat) {
-	case BBT:
-		if (m_pTimeScale) {
-			// Time frame code in bars.beats.ticks ...
-			unsigned int bars, beats;
-			unsigned long ticks = m_pTimeScale->tickFromFrame(iValue);
-			bars = beats = 0;
-			if (ticks >= (unsigned long) m_pTimeScale->ticksPerBeat()) {
-				beats  = (unsigned int)  (ticks / m_pTimeScale->ticksPerBeat());
-				ticks -= (unsigned long) (beats * m_pTimeScale->ticksPerBeat());
-			}
-			if (beats >= (unsigned int) m_pTimeScale->beatsPerBar()) {
-				bars   = (unsigned int) (beats / m_pTimeScale->beatsPerBar());
-				beats -= (unsigned int) (bars  * m_pTimeScale->beatsPerBar());
-			}
-			sText.sprintf("%u.%02u.%03lu", bars + 1, beats + 1, ticks);
-			break;
-		}
-		// Fall thru...
-	case Time:
-		if (m_pTimeScale) {
-			// Time frame code in hh:mm:ss.zzz ...
-			unsigned int hh, mm, ss, zzz;
-			float secs = (float) iValue / (float) m_pTimeScale->sampleRate();
-			hh = mm = ss = 0;
-			if (secs >= 3600.0f) {
-				hh = (unsigned int) (secs / 3600.0f);
-				secs -= (float) hh * 3600.0f;
-			}
-			if (secs >= 60.0f) {
-				mm = (unsigned int) (secs / 60.0f);
-				secs -= (float) mm * 60.0f;
-			}
-			if (secs >= 0.0f) {
-				ss = (unsigned int) secs;
-				secs -= (float) ss;
-			}
-			zzz = (unsigned int) (secs * 1000.0f);
-			sText.sprintf("%02u:%02u:%02u.%03u", hh, mm, ss, zzz);
-			break;
-		}
-		// Fall thru...
-	case Frames:
-	default:
-		sText = QString::number(iValue);
-		break;
-	}
-
-	return sText;
+	return (m_pTimeScale
+		? m_pTimeScale->textFromFrame(iValue)
+		: QString::number(iValue));
 }
 
 

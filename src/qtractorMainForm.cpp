@@ -2475,7 +2475,7 @@ void qtractorMainForm::stabilizeForm (void)
 		m_statusItems[StatusLoop]->clear();
 
 	m_statusItems[StatusTime]->setText(
-		m_pSession->timeFromFrame(iSessionLength));
+		m_pSession->timeScale()->textFromFrame(iSessionLength));
 
 	m_statusItems[StatusRate]->setText(
 		tr("%1 Hz").arg(m_pSession->sampleRate()));
@@ -2694,21 +2694,22 @@ void qtractorMainForm::updateDisplayFormat (void)
 		return;
 
 	// Main transport display format is due...
-	qtractorSpinBox::DisplayFormat displayFormat;
+	qtractorTimeScale::DisplayFormat displayFormat;
 	switch (m_pOptions->iTransportTime) {
 	case 2:
-		displayFormat = qtractorSpinBox::BBT;
+		displayFormat = qtractorTimeScale::BBT;
 		break;
 	case 1:
-		displayFormat = qtractorSpinBox::Time;
+		displayFormat = qtractorTimeScale::Time;
 		break;
 	case 0:
 	default:
-		displayFormat = qtractorSpinBox::Frames;
+		displayFormat = qtractorTimeScale::Frames;
 		break;
 	}
 
-	m_pTransportTimeSpinBox->setDisplayFormat(displayFormat);
+	m_pSession->timeScale()->setDisplayFormat(displayFormat);
+	m_pTransportTimeSpinBox->updateDisplayFormat();
 }
 
 
@@ -2901,7 +2902,8 @@ void qtractorMainForm::timerSlot (void)
 				if (m_pTracks && m_pSession->isRecording()) {
 					m_pTracks->trackView()->updateContentsRecord();
 					m_statusItems[StatusTime]->setText(
-						m_pSession->timeFromFrame(m_pSession->sessionLength()));
+						m_pSession->timeScale()->textFromFrame(
+							m_pSession->sessionLength()));
 				}
 			}
 		}

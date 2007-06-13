@@ -484,52 +484,6 @@ unsigned long qtractorSession::locateFromFrame ( unsigned long iFrame ) const
 }
 
 
-// Convert frame to time string.
-QString qtractorSession::timeFromFrame ( unsigned long iFrame, bool bBBT ) const
-{
-	QString sTime;
-
-	if (bBBT) {
-		// Time frame code in bars.beats.ticks ...
-		unsigned int bars, beats;
-		unsigned long ticks = tickFromFrame(iFrame);
-		bars = beats = 0;
-		unsigned short iTicksPerBeat = m_props.timeScale.ticksPerBeat();
-		if (ticks >= (unsigned long) iTicksPerBeat) {
-			beats  = (unsigned int)  (ticks / iTicksPerBeat);
-			ticks -= (unsigned long) (beats * iTicksPerBeat);
-		}
-		unsigned short iBeatsPerBar = m_props.timeScale.beatsPerBar();
-		if (beats >= (unsigned int) iBeatsPerBar) {
-			bars   = (unsigned int) (beats / iBeatsPerBar);
-			beats -= (unsigned int) (bars  * iBeatsPerBar);
-		}
-		sTime.sprintf("%u.%02u.%03lu", bars + 1, beats + 1, ticks);
-	} else {
-		// Time frame code in hh:mm:ss.zzz ...
-		unsigned int hh, mm, ss, zzz;
-		float secs = (float) iFrame / (float) m_props.timeScale.sampleRate();
-		hh = mm = ss = 0;
-		if (secs >= 3600.0f) {
-			hh = (unsigned int) (secs / 3600.0f);
-			secs -= (float) hh * 3600.0f;
-		}
-		if (secs >= 60.0f) {
-			mm = (unsigned int) (secs / 60.0f);
-			secs -= (float) mm * 60.0f;
-		}
-		if (secs >= 0.0f) {
-			ss = (unsigned int) secs;
-			secs -= (float) ss;
-		}
-		zzz = (unsigned int) (secs * 1000.0f);
-		sTime.sprintf("%02u:%02u:%02u.%03u", hh, mm, ss, zzz);
-	}
-
-	return sTime;
-}
-
-
 // Update scale divisor factors.
 void qtractorSession::updateTimeScale (void) 
 {

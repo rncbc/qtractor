@@ -141,6 +141,7 @@ SOURCES += ../src/main.cpp \
            ../src/qtractorSessionDocument.cpp \
            ../src/qtractorSpinBox.cpp \
            ../src/qtractorThumbView.cpp \
+           ../src/qtractorTimeScale.cpp \
            ../src/qtractorTrack.cpp \
            ../src/qtractorTrackButton.cpp \
            ../src/qtractorTrackCommand.cpp \

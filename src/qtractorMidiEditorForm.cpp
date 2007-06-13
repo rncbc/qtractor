@@ -527,13 +527,7 @@ void qtractorMidiEditorForm::setMidiClip ( qtractorMidiClip *pMidiClip  )
 			pSession = pTrack->session();
 		if (pSession) {
 			// Adjust MIDI editor time-scale fundamentals...
-			qtractorTimeScale *pTimeScale = m_pMidiEditor->timeScale();
-			pTimeScale->setSampleRate(pSession->sampleRate());
-			pTimeScale->setTempo(pSession->tempo());
-			pTimeScale->setTicksPerBeat(pSession->ticksPerBeat());
-			pTimeScale->setBeatsPerBar(pSession->beatsPerBar());
-			pTimeScale->setSnapPerBeat(pSession->snapPerBeat());
-			pTimeScale->updateScale();
+			m_pMidiEditor->timeScale()->copy(*pSession->timeScale());
 			// Now set the editing MIDI sequence alright...
 			m_pMidiEditor->setSequence(m_pMidiClip->sequence());
 			m_sFilename = m_pMidiClip->filename();
@@ -881,10 +875,13 @@ void qtractorMidiEditorForm::stabilizeForm (void)
 	else
 		m_pStatusModLabel->clear();
 
-	if (sequence())
-		m_pDurationLabel->setText(QString::number(sequence()->duration()));
-	else
+	if (sequence()) {
+		qtractorTimeScale *pTimeScale = m_pMidiEditor->timeScale();
+		m_pDurationLabel->setText(pTimeScale->textFromFrame(
+			pTimeScale->frameFromTick(sequence()->duration())));
+	} else {
 		m_pDurationLabel->clear();
+	}
 }
 
 

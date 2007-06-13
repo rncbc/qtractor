@@ -44,50 +44,9 @@ qtractorClipForm::qtractorClipForm (
 	m_ui.setupUi(this);
 
 	// Initialize dirty control state.
-	m_pClip = NULL;
+	m_pClip       = NULL;
+	m_pTimeScale  = NULL;
 	m_iDirtyCount = 0;
-
-	// Set proper spin-box time scales and display format...
-	qtractorSpinBox::DisplayFormat displayFormat = qtractorSpinBox::Frames;
-
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm) {
-		// Default display-format from global options...
-		qtractorOptions *pOptions = pMainForm->options();
-		if (pOptions) {
-			switch (pOptions->iTransportTime) {
-			case 2:
-				displayFormat = qtractorSpinBox::BBT;
-				break;
-			case 1:
-				displayFormat = qtractorSpinBox::Time;
-				break;
-			case 0:
-			default:
-				displayFormat = qtractorSpinBox::Frames;
-				break;
-			}
-		}
-	}
-
-	m_ui.ClipStartSpinBox->setDisplayFormat(displayFormat);
-	m_ui.ClipOffsetSpinBox->setDisplayFormat(displayFormat);
-	m_ui.ClipLengthSpinBox->setDisplayFormat(displayFormat);
-	m_ui.FadeInLengthSpinBox->setDisplayFormat(displayFormat);
-	m_ui.FadeOutLengthSpinBox->setDisplayFormat(displayFormat);
-
-	switch (displayFormat) {
-	case qtractorSpinBox::BBT:
-		m_ui.BbtRadioButton->setChecked(true);
-		break;
-	case qtractorSpinBox::Time:
-		m_ui.TimeRadioButton->setChecked(true);
-		break;
-	case qtractorSpinBox::Frames:
-	default:
-		m_ui.FramesRadioButton->setChecked(true);
-		break;
-	}
 
 	// Try to restore old window positioning.
 	adjustSize();
@@ -138,6 +97,9 @@ qtractorClipForm::qtractorClipForm (
 // Destructor.
 qtractorClipForm::~qtractorClipForm (void)
 {
+	// Don't forget to get rid of local time-scale instance...
+	if (m_pTimeScale)
+		delete m_pTimeScale;
 }
 
 
@@ -147,11 +109,6 @@ void qtractorClipForm::setClip ( qtractorClip *pClip )
 	// Clip properties cloning...
 	m_pClip = pClip;
 
-	// FIXME: Somehow, for the spin-box take, do one 
-	// has to make the dialog visible before hand?
-	// problem is that it makes the widget modeless :(
-//	QDialog::show();
-
 	qtractorTrack *pTrack = NULL;
 	qtractorSession *pSession = NULL;
 	if (m_pClip)
@@ -159,13 +116,15 @@ void qtractorClipForm::setClip ( qtractorClip *pClip )
 	if (pTrack)
 		pSession = pTrack->session();
 	if (pSession) {
-		// Set from global time-scale instance...
-		qtractorTimeScale *pTimeScale = pSession->timeScale();
-		m_ui.ClipStartSpinBox->setTimeScale(pTimeScale);
-		m_ui.ClipOffsetSpinBox->setTimeScale(pTimeScale);
-		m_ui.ClipLengthSpinBox->setTimeScale(pTimeScale);
-		m_ui.FadeInLengthSpinBox->setTimeScale(pTimeScale);
-		m_ui.FadeOutLengthSpinBox->setTimeScale(pTimeScale);
+		// Copy from global time-scale instance...
+		if (m_pTimeScale)
+			delete m_pTimeScale;
+		m_pTimeScale = new qtractorTimeScale(*pSession->timeScale());
+		m_ui.ClipStartSpinBox->setTimeScale(m_pTimeScale);
+		m_ui.ClipOffsetSpinBox->setTimeScale(m_pTimeScale);
+		m_ui.ClipLengthSpinBox->setTimeScale(m_pTimeScale);
+		m_ui.FadeInLengthSpinBox->setTimeScale(m_pTimeScale);
+		m_ui.FadeOutLengthSpinBox->setTimeScale(m_pTimeScale);
 		// Initialize dialog widgets...
 		m_ui.ClipNameLineEdit->setText(m_pClip->clipName());
 		// Parameters...
@@ -179,6 +138,22 @@ void qtractorClipForm::setClip ( qtractorClip *pClip )
 		m_ui.FadeOutLengthSpinBox->setValue(m_pClip->fadeOutLength());
 		m_ui.FadeOutTypeComboBox->setCurrentIndex(
 			indexFromFadeType(m_pClip->fadeOutType()));
+	}
+
+	// Set proper time scales display format...
+	if (m_pTimeScale) {
+		switch (m_pTimeScale->displayFormat()) {
+		case qtractorTimeScale::BBT:
+			m_ui.BbtRadioButton->setChecked(true);
+			break;
+		case qtractorTimeScale::Time:
+			m_ui.TimeRadioButton->setChecked(true);
+			break;
+		case qtractorTimeScale::Frames:
+		default:
+			m_ui.FramesRadioButton->setChecked(true);
+			break;
+		}
 	}
 
 	// Backup clean.
@@ -279,20 +254,23 @@ void qtractorClipForm::changed (void)
 // Display format has changed.
 void qtractorClipForm::formatChanged (void)
 {
-	qtractorSpinBox::DisplayFormat displayFormat = qtractorSpinBox::Frames;
+	qtractorTimeScale::DisplayFormat displayFormat = qtractorTimeScale::Frames;
 
 	if (m_ui.TimeRadioButton->isChecked())
-		displayFormat = qtractorSpinBox::Time;
+		displayFormat = qtractorTimeScale::Time;
 	else
 	if (m_ui.BbtRadioButton->isChecked())
-		displayFormat= qtractorSpinBox::BBT;
+		displayFormat= qtractorTimeScale::BBT;
 
-	m_ui.ClipStartSpinBox->setDisplayFormat(displayFormat);
-	m_ui.ClipOffsetSpinBox->setDisplayFormat(displayFormat);
-	m_ui.ClipLengthSpinBox->setDisplayFormat(displayFormat);
-
-	m_ui.FadeInLengthSpinBox->setDisplayFormat(displayFormat);
-	m_ui.FadeOutLengthSpinBox->setDisplayFormat(displayFormat);
+	if (m_pTimeScale) {
+		// Set from local time-scale instance...
+		m_pTimeScale->setDisplayFormat(displayFormat);
+		m_ui.ClipStartSpinBox->updateDisplayFormat();
+		m_ui.ClipOffsetSpinBox->updateDisplayFormat();
+		m_ui.ClipLengthSpinBox->updateDisplayFormat();
+		m_ui.FadeInLengthSpinBox->updateDisplayFormat();
+		m_ui.FadeOutLengthSpinBox->updateDisplayFormat();
+	}
 
 	stabilizeForm();
 }

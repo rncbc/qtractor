@@ -22,6 +22,8 @@
 #ifndef __qtractorTimeScale_h
 #define __qtractorTimeScale_h
 
+#include <QString>
+
 // Need this for lroundf.
 #include <math.h>
 
@@ -45,6 +47,12 @@ public:
 	// Assignment operator,
 	qtractorTimeScale& operator=(const qtractorTimeScale& ts)
 		{ return copy(ts); }
+
+	// (Re)nitializer method.
+	void clear();
+
+	// Copy method.
+	qtractorTimeScale& copy(const qtractorTimeScale& ts);
 
 	// Sample rate (frames per second)
 	void setSampleRate(unsigned int iSampleRate)
@@ -121,80 +129,33 @@ public:
 		{ return (unsigned int) ::lroundf((m_fScale_d * iFrame) / m_fScale_c); }
 
 	// Beat/frame snap filters.
-	unsigned long tickSnap(unsigned long iTick) const
-	{
-		unsigned long iTickSnap = iTick;
-		if (m_iSnapPerBeat > 0) {
-			unsigned long q = m_iTicksPerBeat / m_iSnapPerBeat;
-			iTickSnap = q * ((iTickSnap + (q >> 1)) / q);
-		}
-		return iTickSnap;
-	}
+	unsigned long tickSnap(unsigned long iTick) const;
 
 	unsigned long frameSnap(unsigned long iFrame) const
 		{ return frameFromTick(tickSnap(tickFromFrame(iFrame))); }
 	unsigned int pixelSnap(unsigned int x) const
 		{ return pixelFromTick(tickSnap(tickFromPixel(x))); }
 
-	// Beat divisor (snap index) accessors.
-	static unsigned short snapFromIndex(int iSnap)
-	{
-		unsigned short iSnapPerBeat = 0;
-		if (iSnap > 0)
-			iSnapPerBeat++;
-		for (int i = 1; i < iSnap; i++)
-			iSnapPerBeat <<= 1;
-		return iSnapPerBeat;
-	}
+	// Available display-formats.
+	enum DisplayFormat { Frames, Time, BBT };
 
-	static int indexFromSnap(unsigned short iSnapPerBeat)
-	{
-		int iSnap = 0;
-		for (unsigned short n = 1; n <= iSnapPerBeat; n <<= 1)
-			++iSnap;
-		return iSnap;
-	}
+	// Display-format accessors.
+	void setDisplayFormat(DisplayFormat displayFormat)
+		{ m_displayFormat = displayFormat; }
+	DisplayFormat displayFormat() const
+		{ return m_displayFormat; }
+
+	// Convert frame to time string and vice-versa.
+	QString textFromFrame(unsigned long iFrame) const;
+	unsigned long frameFromText(const QString& sText) const;
 
 	// Update scale divisor factors.
-	void updateScale()
-	{
-		m_iScale_a = (unsigned int) (m_iHorizontalZoom * m_iPixelsPerBeat);
-		m_fScale_b = (float) (0.01f * m_fTempo * m_iScale_a);
-		m_fScale_c = (float) (60.0f * m_iSampleRate);
-		m_fScale_d = (float) (m_fTempo * m_iTicksPerBeat);
-	}
+	void updateScale();
 
-	// (Re)nitializer method. 
-	void clear()
-	{
-		m_iSampleRate     = 44100;
-		m_fTempo          = 120.0f;
-		m_iTicksPerBeat   = 96;
-		m_iBeatsPerBar    = 4;
-		m_iPixelsPerBeat  = 32;
-		m_iSnapPerBeat    = 4;
-		m_iHorizontalZoom = 100;
-		m_iVerticalZoom   = 100;
-		updateScale();
-	}
+	// Beat divisor (snap index) accessors.
+	static unsigned short snapFromIndex(int iSnap);
+	static int indexFromSnap(unsigned short iSnapPerBeat);
 
-	// Copy method.
-	qtractorTimeScale& copy(const qtractorTimeScale& ts)
-	{
-		if (&ts != this) {
-			m_iSampleRate     = ts.m_iSampleRate;
-			m_fTempo          = ts.m_fTempo;
-			m_iTicksPerBeat   = ts.m_iTicksPerBeat;
-			m_iBeatsPerBar    = ts.m_iBeatsPerBar;
-			m_iPixelsPerBeat  = ts.m_iPixelsPerBeat;
-			m_iSnapPerBeat    = ts.m_iSnapPerBeat;
-			m_iHorizontalZoom = ts.m_iHorizontalZoom;
-			m_iVerticalZoom   = ts.m_iVerticalZoom;
-			updateScale();
-		}
-		return *this;
-	}
-	
 private:
 
 	unsigned int   m_iSampleRate;       // Sample rate (frames per second)
@@ -205,6 +166,8 @@ private:
 	unsigned short m_iSnapPerBeat;      // Snap per beat (divisor).
 	unsigned short m_iHorizontalZoom;   // Horizontal zoom factor.
 	unsigned short m_iVerticalZoom;     // Vertical zoom factor.
+
+	DisplayFormat  m_displayFormat;     // Textual display format.
 
 	// Internal time scaling factors.
 	unsigned long  m_iScale_a;
