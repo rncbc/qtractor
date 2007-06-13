@@ -41,6 +41,7 @@
 
 #include <QToolButton>
 #include <QScrollBar>
+#include <QToolTip>
 
 #include <QDragEnterEvent>
 #include <QDragLeaveEvent>
@@ -139,6 +140,9 @@ qtractorTrackView::qtractorTrackView ( qtractorTracks *pTracks,
 
 //	QObject::connect(this, SIGNAL(contentsMoving(int,int)),
 //		this, SLOT(updatePixmap(int,int)));
+
+	// Trap for help/tool-tips events.
+	qtractorScrollView::viewport()->installEventFilter(this);
 }
 
 
@@ -572,7 +576,7 @@ void qtractorTrackView::contentsYMovingSlot ( int /*cx*/, int cy )
 
 // Get track from given contents vertical position.
 qtractorTrack *qtractorTrackView::trackAt ( const QPoint& pos,
-	qtractorTrackViewInfo *pTrackViewInfo ) const
+	bool bSelectTrack, qtractorTrackViewInfo *pTrackViewInfo ) const
 {
 	qtractorSession *pSession = m_pTracks->session();
 	if (pSession == NULL || m_pSessionCursor == NULL)
@@ -585,13 +589,14 @@ qtractorTrack *qtractorTrackView::trackAt ( const QPoint& pos,
 	while (pTrack) {
 		y1  = y2;
 		y2 += pTrack->zoomHeight();
-		if (y2 > pos.y()) {
-			m_pTracks->trackList()->selectTrack(iTrack);
+		if (y2 > pos.y())
 			break;
-		}
 		pTrack = pTrack->next();
 		iTrack++;
 	}
+
+	if (bSelectTrack)
+		m_pTracks->trackList()->selectTrack(iTrack);
 
 	if (pTrackViewInfo) {
 		int x = qtractorScrollView::contentsX();
@@ -613,10 +618,10 @@ qtractorTrack *qtractorTrackView::trackAt ( const QPoint& pos,
 
 // Get clip from given contents position.
 qtractorClip *qtractorTrackView::clipAt ( const QPoint& pos,
-	QRect *pClipRect ) const
+	bool bSelectTrack, QRect *pClipRect ) const
 {
 	qtractorTrackViewInfo tvi;
-	qtractorTrack *pTrack = trackAt(pos, &tvi);
+	qtractorTrack *pTrack = trackAt(pos, bSelectTrack, &tvi);
 	if (pTrack == NULL)
 		return NULL;
 
@@ -645,6 +650,7 @@ qtractorClip *qtractorTrackView::clipAt ( const QPoint& pos,
 		}
 		pClip = pClip->next();
 	}
+
 	return pClipAt;
 }
 
@@ -702,7 +708,7 @@ qtractorTrack *qtractorTrackView::dragMoveTrack ( const QPoint& pos )
 {
 	// Which track we're pointing at?
 	qtractorTrackViewInfo tvi;
-	qtractorTrack *pTrack = trackAt(pos, &tvi);
+	qtractorTrack *pTrack = trackAt(pos, true, &tvi);
 	if (pTrack == NULL)
 	    return NULL;
 
@@ -738,7 +744,7 @@ qtractorTrack *qtractorTrackView::dragDropTrack ( QDropEvent *pDropEvent )
 	// find the current pointer track...
 	const QPoint& pos = viewportToContents(pDropEvent->pos());
 	qtractorTrackViewInfo tvi;
-	qtractorTrack *pTrack = trackAt(pos, &tvi);
+	qtractorTrack *pTrack = trackAt(pos, true, &tvi);
 	if (!m_dropItems.isEmpty()) {
 		// Adjust vertically to target track...
 		updateDropRects(tvi.trackRect.y() + 1, tvi.trackRect.height() - 2);
@@ -1093,7 +1099,7 @@ void qtractorTrackView::mousePressEvent ( QMouseEvent *pMouseEvent )
 			// Remember what and where we'll be dragging/selecting...
 			m_dragState = DragStart;
 			m_posDrag   = pos;
-			m_pClipDrag = clipAt(m_posDrag, &m_rectDrag);
+			m_pClipDrag = clipAt(m_posDrag, true, &m_rectDrag);
 			// Should it be selected(toggled)?
 			if (m_pClipDrag) {
 				// Show that we're about to something...
@@ -1281,6 +1287,29 @@ void qtractorTrackView::mouseDoubleClickEvent ( QMouseEvent *pMouseEvent )
 	// By this time we should have something under...
 	m_pTracks->editClip(clipAt(
 		qtractorScrollView::viewportToContents(pMouseEvent->pos())));
+}
+
+
+// Trap for help/tool-tip events.
+bool qtractorTrackView::eventFilter ( QObject *pObject, QEvent *pEvent )
+{
+	if (static_cast<QWidget *> (pObject) == qtractorScrollView::viewport()
+		&& pEvent->type() == QEvent::ToolTip) {
+		QHelpEvent *pHelpEvent = static_cast<QHelpEvent *> (pEvent);
+		if (pHelpEvent) {
+			const QPoint& pos
+				= qtractorScrollView::viewportToContents(pHelpEvent->pos());
+			qtractorClip *pClip = clipAt(pos, false);
+			if (pClip) {
+				QToolTip::showText(
+					pHelpEvent->globalPos(), pClip->clipName());
+				return true;
+			}
+		}
+	}
+
+	// Not handled here.
+	return qtractorScrollView::eventFilter(pObject, pEvent);
 }
 
 
