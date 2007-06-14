@@ -250,7 +250,13 @@ void qtractorMidiEditEvent::resizeEvent ( QResizeEvent *pResizeEvent )
 	}
 #endif
 
-	updateContents();
+	// FIXME: Prevent any overlay selection during resizing this,
+	// as the overlay rectangles will certainly be wrong...
+	if (m_pEditor->isSelected()) {
+		m_pEditor->updateContents();
+	} else {
+		updateContents();
+	}
 }
 
 

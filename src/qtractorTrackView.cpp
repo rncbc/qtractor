@@ -1302,7 +1302,7 @@ bool qtractorTrackView::eventFilter ( QObject *pObject, QEvent *pEvent )
 			qtractorClip *pClip = clipAt(pos, false);
 			if (pClip) {
 				QToolTip::showText(
-					pHelpEvent->globalPos(), pClip->clipName());
+					pHelpEvent->globalPos(), pClip->toolTip());
 				return true;
 			}
 		}

@@ -92,7 +92,7 @@ public:
 		unsigned long iClipOffset);
 
 	// Clip editor method.
-	bool startEditor(QWidget *pParent = NULL);
+	bool startEditor(QWidget *pParent);
 
 	// Local dirty flag.
 	void setDirty(bool bDirty);

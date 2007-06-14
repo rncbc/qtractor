@@ -124,7 +124,10 @@ public:
 		unsigned long iClipOffset);
 
 	// Clip editor method.
-	virtual bool startEditor(QWidget *pParent = NULL) = 0;
+	virtual bool startEditor(QWidget *pParent);
+
+	// Clip tool-tip.
+	virtual QString toolTip() const;
 
 	// Document element methods.
 	bool loadElement(qtractorSessionDocument *pDocument,

@@ -24,6 +24,8 @@
 
 #include "qtractorSessionDocument.h"
 
+#include "qtractorClipForm.h"
+
 #include <QFileInfo>
 #include <QPainter>
 #include <QPolygon>
@@ -94,8 +96,8 @@ void qtractorClip::setFilename ( const QString& sFilename )
 {
 	m_sFilename = sFilename;
 	
-	if (clipName().isEmpty())
-		setClipName(QFileInfo(m_sFilename).baseName());
+	if (m_sClipName.isEmpty())
+		m_sClipName = QFileInfo(m_sFilename).baseName();
 }
 
 const QString& qtractorClip::filename (void) const
@@ -433,6 +435,23 @@ void qtractorClip::drawClip ( QPainter *pPainter, const QRect& clipRect,
 		pPainter->fillRect(rectFadeIn, rgbFade.dark(120));
 	if (rectFadeOut.intersects(clipRect))
 		pPainter->fillRect(rectFadeOut, rgbFade.dark(120));
+}
+
+
+// Clip editor method.
+bool qtractorClip::startEditor ( QWidget *pParent )
+{
+	// Make sure the regular clip-form is started modal...
+	qtractorClipForm clipForm(pParent);
+	clipForm.setClip(this);
+	return clipForm.exec();
+}
+
+
+// Clip tool-tip.
+QString qtractorClip::toolTip (void) const
+{
+	return m_sClipName;
 }
 
 

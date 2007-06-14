@@ -75,9 +75,6 @@ public:
 	void drawClip(QPainter *pPainter, const QRect& rect,
 	    unsigned long iClipOffset);
 
-	// Clip editor method.
-	bool startEditor(QWidget *pParent = NULL);
-
 protected:
 
 	// Virtual document element methods.

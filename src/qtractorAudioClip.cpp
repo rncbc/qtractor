@@ -27,8 +27,6 @@
 
 #include "qtractorSessionDocument.h"
 
-#include "qtractorClipForm.h"
-
 #include <QPainter>
 #include <QPolygon>
 
@@ -354,16 +352,6 @@ void qtractorAudioClip::drawClip ( QPainter *pPainter, const QRect& clipRect,
 
 	// Our peak buffer at large.
 	delete [] pframes;
-}
-
-
-// Clip editor method.
-bool qtractorAudioClip::startEditor ( QWidget *pParent )
-{
-	// Make sure the regular clip-form is started modal...
-	qtractorClipForm clipForm(pParent);
-	clipForm.setClip(this);
-	return clipForm.exec();
 }
 
 
