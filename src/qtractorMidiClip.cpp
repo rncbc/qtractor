@@ -342,6 +342,12 @@ void qtractorMidiClip::close ( bool bForce )
 // MIDI clip (re)open method.
 void qtractorMidiClip::open (void)
 {
+	// WTF? is there an editor outstanding still there?
+	if (m_pMidiEditorForm)
+		delete m_pMidiEditorForm;
+	m_pMidiEditorForm = NULL;
+
+	// Go open the proper file...
 	openMidiFile(filename(), m_iTrackChannel);
 }
 

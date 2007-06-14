@@ -769,7 +769,9 @@ void qtractorMidiEditor::pasteClipboard (void)
 	m_dragState = DragPaste;
 	m_posDrag = m_rectDrag.topLeft();
 
-	pScrollView->setCursor(*g_pCursorEditPaste);
+	// It doesn't matter which one, both pasteable views are due...
+	m_pEditView->setCursor(*g_pCursorEditPaste);
+	m_pEditEvent->setCursor(*g_pCursorEditPaste);
 
 	// Make sure the mouse pointer is properly located...
 	const QPoint& pos = pScrollView->viewportToContents(
