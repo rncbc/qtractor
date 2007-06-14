@@ -1,0 +1,21 @@
+Source: qtractor
+Section: sound
+Priority: extra
+Maintainer: Rui Nuno Capela <rncbc@rncbc.org>
+Build-Depends: debhelper (>= 5), libjack-dev, libasound-dev,
+  libsndfile-dev, ladspa-sdk, libvorbis-dev, libsamplerate-dev, libmad0-dev
+Standards-Version: 3.7.2
+
+Package: qtractor
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, libjack, libasound,
+  libsndfile, libvorbis, libsamplerate, libmad0
+Description: An Audio/MIDI multi-track sequencer.
+  Qtractor is an Audio/MIDI multi-track sequencer application
+  written in C++ around the Qt4 toolkit using Qt Designer.
+  The initial target platform will be Linux, where the Jack Audio
+  Connection Kit (JACK) for audio, and the Advanced Linux Sound
+  Architecture (ALSA) for MIDI, are the main infrastructures to
+  evolve as a fairly-featured Linux Desktop Audio Workstation GUI,
+  specially dedicated to the personal home-studio.
+
