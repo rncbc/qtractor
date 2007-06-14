@@ -35,6 +35,8 @@
 #include "qtractorRubberBand.h"
 #include "qtractorTimeScale.h"
 
+#include "qtractorMainForm.h"
+
 #include <QApplication>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -221,12 +223,22 @@ bool qtractorMidiEditor::saveCopyFile ( const QString& sNewFilename,
 		delete [] ppSeqs;
 	}
 
+	// HACK: This invasive operation is so important that
+	// it surely deserves being in the front page...
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm) {
+		pMainForm->appendMessages(
+			tr("MIDI file save: \"%1\", track-channel: %2.")
+			.arg(sNewFilename).arg(iTrackChannel));
+		pMainForm->addMidiFile(sNewFilename);
+	}
+
 	return true;
 }
 
 
 // Create filename revision (name says it all).
-QString qtractorMidiEditor::createFilenameRevision (
+QString qtractorMidiEditor::createFilePathRevision (
 	const QString& sFilename, int iRevision )
 {
 	QFileInfo fi(sFilename);
@@ -244,7 +256,7 @@ QString qtractorMidiEditor::createFilenameRevision (
 	while (fi.exists());
 
 #ifdef CONFIG_DEBUG
-	fprintf(stderr, "createFilePathRevision(\"%s\")\n",
+	fprintf(stderr, "qtractorMidiEditor::createFilePathRevision(\"%s\")\n",
 		fi.absoluteFilePath().toUtf8().constData());
 #endif
 
@@ -301,8 +313,9 @@ qtractorMidiEditor::qtractorMidiEditor ( QWidget *pParent )
 	// The local mighty command pattern instance.
 	m_pCommands = new qtractorCommandList();
 
-	// Initial zooming.
+	// Local time-scale.
 	m_pTimeScale = new qtractorTimeScale();
+	m_iOffset = 0;
 
 	// Create child frame widgets...
 	QSplitter *pSplitter = new QSplitter(Qt::Horizontal, this);
@@ -484,6 +497,18 @@ bool qtractorMidiEditor::isEditMode() const
 qtractorTimeScale *qtractorMidiEditor::timeScale (void) const
 {
 	return m_pTimeScale;
+}
+
+
+// Time-scale offset (in frames) accessors.
+void qtractorMidiEditor::setOffset ( unsigned long iOffset )
+{
+	m_iOffset = iOffset;
+}
+
+unsigned long qtractorMidiEditor::offset (void) const
+{
+	return m_iOffset;
 }
 
 

@@ -76,18 +76,12 @@ public:
 	// MIDI clip accessors.
 	void setMidiClip(qtractorMidiClip *pMidiClip);
 	qtractorMidiClip *midiClip() const;
+	// Special executive setup method.
+	void setup(qtractorMidiClip *pMidiClip = NULL);
 #endif
 
 	// MIDI clip sequence accessors.
 	qtractorMidiSequence *sequence() const;
-
-	// MIDI event foreground (outline) color.
-	void setForeground(const QColor& fore);
-	const QColor& foreground() const;
-
-	// MIDI event background (fill) color.
-	void setBackground(const QColor& back);
-	const QColor& background() const;
 
 	// General update method.
 	void updateContents();
@@ -133,11 +127,6 @@ protected slots:
 	void controllerChanged(int);
 
 	void snapPerBeatChanged(int iSnap);
-
-signals:
-
-	// Sent out every time a MIDI file is saved.
-	void saveFileSignal(const QString&);
 
 protected:
 

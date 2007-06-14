@@ -28,8 +28,6 @@
 #include "qtractorMidiEditor.h"
 #include "qtractorMidiEditorForm.h"
 
-#include "qtractorMainForm.h"
-
 #include <QFileInfo>
 #include <QPainter>
 
@@ -459,24 +457,11 @@ bool qtractorMidiClip::startEditor ( QWidget */*pParent*/ )
 			| Qt::WindowSystemMenuHint
 			| Qt::WindowMinMaxButtonsHint);
 		// Set its most standing properties...
-		m_pMidiEditorForm->setForeground(pTrack->foreground());
-		m_pMidiEditorForm->setBackground(pTrack->background());
 		m_pMidiEditorForm->show();
-		m_pMidiEditorForm->setMidiClip(this);
-		// Setup connections to main widget...
-		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-		if (pMainForm) {
-			// For every change that is issued...
-			QObject::connect(m_pMidiEditorForm->editor(),
-				SIGNAL(changeNotifySignal()),
-				pMainForm, SLOT(changeNotifySlot()));
-			// On any new file comes to town...
-			QObject::connect(m_pMidiEditorForm,
-				SIGNAL(saveFileSignal(const QString&)),
-				pMainForm, SLOT(addMidiFile(const QString&)));
-		}
+		m_pMidiEditorForm->setup(this);
 	} else {
 		// Just show up the editor form...
+		m_pMidiEditorForm->setup();
 		m_pMidiEditorForm->show();
 		m_pMidiEditorForm->raise();
 		m_pMidiEditorForm->activateWindow();
@@ -534,7 +519,7 @@ bool qtractorMidiClip::saveClipElement (
 		if (pSession) {
 			// Have a new filename revision...
 			const QString& sFilename
-				= qtractorMidiEditor::createFilenameRevision(
+				= qtractorMidiEditor::createFilePathRevision(
 					qtractorMidiClip::filename());
 			// Save/replace the clip track...
 			qtractorMidiEditor::saveCopyFile(sFilename,

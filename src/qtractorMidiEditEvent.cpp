@@ -296,12 +296,15 @@ void qtractorMidiEditEvent::updatePixmap ( int cx, int /*cy*/ )
 		y += dy;
 	}
 
+	// Account for the editing offset:
+	int dx = cx + pTimeScale->pixelFromFrame(m_pEditor->offset());
+
 	// Draw vertical grid lines...
-	unsigned short iBeat = pTimeScale->beatFromPixel(cx);
+	unsigned short iBeat = pTimeScale->beatFromPixel(dx);
 	unsigned short iTicksPerBeat  = pTimeScale->ticksPerBeat();
 	unsigned short iPixelsPerBeat = pTimeScale->pixelsPerBeat();
 	unsigned long  iTickFromBeat  = iBeat * iTicksPerBeat;
-	int x = pTimeScale->pixelFromTick(iTickFromBeat) - cx;
+	int x = pTimeScale->pixelFromTick(iTickFromBeat) - dx;
 	while (x < w) {
 		if (x >= 0) {
 			bool bBeatIsBar = pTimeScale->beatIsBar(iBeat);
@@ -315,7 +318,7 @@ void qtractorMidiEditEvent::updatePixmap ( int cx, int /*cy*/ )
 			}
 		}
 		iTickFromBeat += iTicksPerBeat;
-		x = pTimeScale->pixelFromTick(iTickFromBeat) - cx;
+		x = pTimeScale->pixelFromTick(iTickFromBeat) - dx;
 		iBeat++;
 	}
 

@@ -89,16 +89,21 @@ void qtractorMidiEditTime::updatePixmap ( int cx, int /*cy*/)
 	QPainter p(&m_pixmap);
 	p.initFrom(this);
 
+	//
 	// Draw the time scale...
 	//
+
 	const QFontMetrics& fm = p.fontMetrics();
 	int x, y1, y2 = h - 1;
 
-	unsigned short iBeat = pTimeScale->beatFromPixel(cx);
+	// Account for the editing offset:
+	int dx = cx + pTimeScale->pixelFromFrame(m_pEditor->offset());
+
+	unsigned short iBeat = pTimeScale->beatFromPixel(dx);
 	unsigned long iFrameFromBeat = pTimeScale->frameFromBeat(iBeat);
 	unsigned long iFramesPerBeat = pTimeScale->frameFromBeat(1);
 	unsigned int  iPixelsPerBeat = pTimeScale->pixelFromBeat(1);
-	x = pTimeScale->pixelFromFrame(iFrameFromBeat) - cx;
+	x = pTimeScale->pixelFromFrame(iFrameFromBeat) - (dx);
 	while (x < w) {
 		bool bBeatIsBar = pTimeScale->beatIsBar(iBeat);
 		if (bBeatIsBar) {
@@ -116,7 +121,7 @@ void qtractorMidiEditTime::updatePixmap ( int cx, int /*cy*/)
 			p.drawLine(x + 1, y1, x + 1, y2);
 		}
 		iFrameFromBeat += iFramesPerBeat;
-		x = pTimeScale->pixelFromFrame(iFrameFromBeat) - cx;
+		x = pTimeScale->pixelFromFrame(iFrameFromBeat) - dx;
 		iBeat++;
 	}
 }

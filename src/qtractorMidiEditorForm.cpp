@@ -37,6 +37,8 @@
 #include "qtractorMidiClip.h"
 #include "qtractorOptions.h"
 #include "qtractorSession.h"
+#include "qtractorTracks.h"
+#include "qtractorTrackView.h"
 #include "qtractorMainForm.h"
 #include "qtractorClipForm.h"
 #endif
@@ -455,8 +457,10 @@ void qtractorMidiEditorForm::setFilename ( const QString& sFilename )
 {
 	m_sFilename = sFilename;
 #ifndef CONFIG_TEST
-	if (m_pMidiClip)
+	if (m_pMidiClip) {
 		m_pMidiClip->setFilename(m_sFilename);
+		m_pMidiClip->setDirty(false);
+	}
 #endif
 }
 
@@ -516,36 +520,86 @@ void qtractorMidiEditorForm::setSequence ( qtractorMidiSequence *pSeq  )
 // Editing MIDI clip accessors.
 void qtractorMidiEditorForm::setMidiClip ( qtractorMidiClip *pMidiClip  )
 {
-	if (queryClose()) {
-		m_iDirtyCount = 0;
+	if (!queryClose())
+		return;
+
+	m_iDirtyCount = 0;
+
+	qtractorTrack *pTrack = NULL;
+	qtractorSession *pSession = NULL;
+	if (pMidiClip)
+		pTrack = pMidiClip->track();
+	if (pTrack)
+		pSession = pTrack->session();
+	if (pSession) {
+		// Adjust MIDI editor time-scale fundamentals...
 		m_pMidiClip = pMidiClip;
-		qtractorTrack *pTrack = NULL;
-		qtractorSession *pSession = NULL;
-		if (m_pMidiClip)
-			pTrack = m_pMidiClip->track();
-		if (pTrack)
-			pSession = pTrack->session();
-		if (pSession) {
-			// Adjust MIDI editor time-scale fundamentals...
-			m_pMidiEditor->timeScale()->copy(*pSession->timeScale());
-			// Now set the editing MIDI sequence alright...
-			m_pMidiEditor->setSequence(m_pMidiClip->sequence());
-			m_sFilename = m_pMidiClip->filename();
-			m_iTrackChannel = m_pMidiClip->trackChannel();
-			m_iFormat = m_pMidiClip->format();
-		} else {
-			m_pMidiEditor->setSequence(NULL);
-			m_sFilename.clear();
-			m_iTrackChannel = 0;
-			m_iFormat = 0;
-		}
-		stabilizeForm();
+		// Set its most outstanding properties...
+		m_pMidiEditor->timeScale()->copy(*pSession->timeScale());
+		m_pMidiEditor->setForeground(pTrack->foreground());
+		m_pMidiEditor->setBackground(pTrack->background());
+		// Now set the editing MIDI sequence alright...
+		m_pMidiEditor->setOffset(m_pMidiClip->clipStart());
+		m_pMidiEditor->setSequence(m_pMidiClip->sequence());
+		m_sFilename = m_pMidiClip->filename();
+		m_iTrackChannel = m_pMidiClip->trackChannel();
+		m_iFormat = m_pMidiClip->format();
+	} else {
+		// No clip, no chips.
+		m_pMidiClip = NULL;
+		m_pMidiEditor->setOffset(0);
+		m_pMidiEditor->setSequence(NULL);
+		m_sFilename.clear();
+		m_iTrackChannel = 0;
+		m_iFormat = 0;
 	}
+
+	stabilizeForm();
 }
 
 qtractorMidiClip *qtractorMidiEditorForm::midiClip (void) const
 {
 	return m_pMidiClip;
+}
+
+
+// Special executive setup method.
+void qtractorMidiEditorForm::setup ( qtractorMidiClip *pMidiClip )
+{
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm == NULL)
+		return;
+
+	// Set the MIDI clip properties has seen fit...
+	if (pMidiClip) {
+		// Do the real thing...
+		setMidiClip(pMidiClip);
+		// HACK: Setup connections to main widget...
+		QObject::connect(m_pMidiEditor,
+			SIGNAL(changeNotifySignal()),
+			pMainForm, SLOT(changeNotifySlot()));
+	}
+
+	// Try to position the editor in same of track view...
+	qtractorSession *pSession = pMainForm->session();
+	if (pSession == NULL)
+		return;
+
+	qtractorTracks *pTracks = pMainForm->tracks();
+	if (pTracks == NULL)
+		return;
+
+	unsigned long iFrame = (pSession->timeScale())->frameFromPixel(
+		(pTracks->trackView())->contentsX());
+	if (iFrame  > m_pMidiEditor->offset()) {
+		iFrame -= m_pMidiEditor->offset();
+	} else {
+		iFrame = 0;
+	}
+
+	int cx = (m_pMidiEditor->timeScale())->pixelFromFrame(iFrame);
+	int cy = (m_pMidiEditor->editView())->contentsY();
+	(m_pMidiEditor->editView())->setContentsPos(cx, cy);
 }
 
 #endif
@@ -554,30 +608,6 @@ qtractorMidiClip *qtractorMidiEditorForm::midiClip (void) const
 qtractorMidiSequence *qtractorMidiEditorForm::sequence (void) const
 {
 	return m_pMidiEditor->sequence();
-}
-
-
-// MIDI event foreground (outline) color.
-void qtractorMidiEditorForm::setForeground ( const QColor& fore )
-{
-	m_pMidiEditor->setForeground(fore);
-}
-
-const QColor& qtractorMidiEditorForm::foreground (void) const
-{
-	return m_pMidiEditor->foreground();
-}
-
-
-// MIDI event background (fill) color.
-void qtractorMidiEditorForm::setBackground ( const QColor& back )
-{
-	m_pMidiEditor->setBackground(back);
-}
-
-const QColor& qtractorMidiEditorForm::background (void) const
-{
-	return m_pMidiEditor->background();
 }
 
 
@@ -597,7 +627,7 @@ void qtractorMidiEditorForm::updateContents (void)
 bool qtractorMidiEditorForm::saveClipFile ( bool bPrompt )
 {
 	// Suggest a filename, if there's none...
-	QString sFilename = qtractorMidiEditor::createFilenameRevision(filename());
+	QString sFilename = qtractorMidiEditor::createFilePathRevision(filename());
 
 	if (sFilename.isEmpty())
 		bPrompt = true;
@@ -631,8 +661,6 @@ bool qtractorMidiEditorForm::saveClipFile ( bool bPrompt )
 		setFilename(sFilename);
 		// Aha, but we're no dirty no more.
 		m_iDirtyCount = 0;
-		// And send our blessed signal...
-		emit saveFileSignal(sFilename);
 	}
 
 	// Done.

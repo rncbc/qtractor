@@ -80,8 +80,12 @@ public:
 	void setEditMode(bool bEditMode);
 	bool isEditMode() const;
 
-	// Local time scale accessor.
+	// Local time scale accessors.
 	qtractorTimeScale *timeScale() const;
+
+	// Time-scale offset (in frames) accessors.
+	void setOffset(unsigned long iOffset);
+	unsigned long offset() const;
 
 	// Child widgets accessors.
 	QFrame *editListHeader() const;
@@ -173,7 +177,7 @@ public:
 		qtractorMidiSequence *pSeq, qtractorTimeScale *pTimeScale = NULL);
 
 	// Create filename revision.
-	static QString createFilenameRevision(
+	static QString createFilePathRevision(
 		const QString& sFilename, int iRevision = 0);
 
 public slots:
@@ -268,10 +272,11 @@ private:
 	qtractorMidiEditEvent *m_pEditEvent;
 	QFrame *m_pEditEventFrame;
 
-	// The  local time scale.
+	// The local time scale.
 	qtractorTimeScale *m_pTimeScale;
-	// The local vertical zoom factor.
-	unsigned short m_iVerticalZoom;
+
+	// The local time-scale offset.
+	unsigned long m_iOffset;
 
 	// Event cursors (main time-line).
 	qtractorMidiCursor m_cursor;
