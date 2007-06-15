@@ -192,6 +192,9 @@ protected:
 	// Clip file(item) selection convenience method.
 	void selectClipFile(bool bReset);
 
+	// Clip selection sanity check method.
+	bool queryClipSelect();
+
 	// Draw/hide the whole current clip selection.
 	void updateClipSelect(int y, int h) const;
 	void showClipSelect() const;

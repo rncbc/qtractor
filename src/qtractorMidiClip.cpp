@@ -477,6 +477,13 @@ bool qtractorMidiClip::startEditor ( QWidget */*pParent*/ )
 }
 
 
+// Clip query-close method (return true if editing is done).
+bool qtractorMidiClip::queryEditor (void)
+{
+	return (m_pMidiEditorForm && m_pMidiEditorForm->queryClose());
+}
+
+
 // Local dirty flag.
 void qtractorMidiClip::setDirty ( bool bDirty )
 {

@@ -91,8 +91,9 @@ public:
 	void drawClip(QPainter *pPainter, const QRect& rect,
 		unsigned long iClipOffset);
 
-	// Clip editor method.
+	// Clip editor methods.
 	bool startEditor(QWidget *pParent);
+	bool queryEditor();
 
 	// Local dirty flag.
 	void setDirty(bool bDirty);

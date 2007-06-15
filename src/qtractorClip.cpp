@@ -448,6 +448,13 @@ bool qtractorClip::startEditor ( QWidget *pParent )
 }
 
 
+// Clip query-close method (return true if editing is done).
+bool qtractorClip::queryEditor (void)
+{
+	return true; // !isDirty();
+}
+
+
 // Clip tool-tip.
 QString qtractorClip::toolTip (void) const
 {

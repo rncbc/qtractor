@@ -86,6 +86,9 @@ public:
 	// General update method.
 	void updateContents();
 
+	// Pre-close event handler.
+	bool queryClose();
+
 public slots:
 
 	void fileSave();
@@ -129,9 +132,6 @@ protected slots:
 	void snapPerBeatChanged(int iSnap);
 
 protected:
-
-	// Pre-close event handler.
-	bool queryClose();
 
 	// On-close event handlers.
 	void closeEvent(QCloseEvent *pCloseEvent);

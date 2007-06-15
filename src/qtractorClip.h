@@ -125,6 +125,7 @@ public:
 
 	// Clip editor method.
 	virtual bool startEditor(QWidget *pParent);
+	virtual bool queryEditor();
 
 	// Clip tool-tip.
 	virtual QString toolTip() const;

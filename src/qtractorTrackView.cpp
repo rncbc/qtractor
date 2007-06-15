@@ -2067,18 +2067,37 @@ void qtractorTrackView::ClipBoard::clear (void)
 }
 
 
+// Clip selection sanity check method.
+bool qtractorTrackView::queryClipSelect (void)
+{
+	// Check if anything is really selected...
+	if (m_pClipSelect->items().count() < 1)
+		return false;
+
+	// Just ask whether any target clips have pending editors...
+	QListIterator<qtractorClipSelect::Item *> iter(m_pClipSelect->items());
+	while (iter.hasNext()) {
+		if (!(iter.next()->clip)->queryEditor())
+			return false;
+	}
+
+	// If it reaches here, we can do what we will to...
+	return true;
+}
+
+
 // Clip selection executive method.
 void qtractorTrackView::executeClipSelect ( qtractorTrackView::Command cmd )
 {
+	// Check if anything is really selected and sane...
+	if (!queryClipSelect())
+		return;
+
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm == NULL)
 		return;
 	qtractorSession *pSession = m_pTracks->session();
 	if (pSession == NULL)
-		return;
-
-	// Check if anything is really selected...
-	if (m_pClipSelect->items().count() < 1)
 		return;
 
 	// Reset clipboard...
@@ -2275,15 +2294,15 @@ void qtractorTrackView::moveClipSelect ( qtractorTrack *pTrack, int dx )
 	if (pTrack == NULL)
 		return;
 
+	// Check if anything is really selected and sane...
+	if (!queryClipSelect())
+		return;
+
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm == NULL)
 		return;
 	qtractorSession *pSession = m_pTracks->session();
 	if (pSession == NULL)
-		return;
-
-	// Check if anything is really selected...
-	if (m_pClipSelect->items().count() < 1)
 		return;
 
 	// We can only move clips between tracks of the same type...
