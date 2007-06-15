@@ -611,6 +611,30 @@ qtractorMidiSequence *qtractorMidiEditorForm::sequence (void) const
 }
 
 
+// MIDI event foreground (outline) color.
+void qtractorMidiEditorForm::setForeground ( const QColor& fore )
+{
+	m_pMidiEditor->setForeground(fore);
+}
+
+const QColor& qtractorMidiEditorForm::foreground (void) const
+{
+	return m_pMidiEditor->foreground();
+}
+
+
+// MIDI event background (fill) color.
+void qtractorMidiEditorForm::setBackground ( const QColor& back )
+{
+	m_pMidiEditor->setBackground(back);
+}
+
+const QColor& qtractorMidiEditorForm::background (void) const
+{
+	return m_pMidiEditor->background();
+}
+
+
 // Editing contents updater.
 void qtractorMidiEditorForm::updateContents (void)
 {

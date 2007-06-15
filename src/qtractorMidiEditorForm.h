@@ -71,6 +71,7 @@ public:
 	unsigned short format() const;
 
 #ifdef CONFIG_TEST
+	// MIDI clip sequence accessor.
 	void setSequence(qtractorMidiSequence *pSeq);
 #else
 	// MIDI clip accessors.
@@ -82,6 +83,14 @@ public:
 
 	// MIDI clip sequence accessors.
 	qtractorMidiSequence *sequence() const;
+
+	// MIDI event foreground (outline) color.
+	void setForeground(const QColor& fore);
+	const QColor& foreground() const;
+
+	// MIDI event background (fill) color.
+	void setBackground(const QColor& back);
+	const QColor& background() const;
 
 	// General update method.
 	void updateContents();

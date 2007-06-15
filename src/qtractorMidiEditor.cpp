@@ -35,7 +35,9 @@
 #include "qtractorRubberBand.h"
 #include "qtractorTimeScale.h"
 
+#ifndef CONFIG_TEST
 #include "qtractorMainForm.h"
+#endif
 
 #include <QApplication>
 #include <QVBoxLayout>
@@ -223,6 +225,7 @@ bool qtractorMidiEditor::saveCopyFile ( const QString& sNewFilename,
 		delete [] ppSeqs;
 	}
 
+#ifndef CONFIG_TEST
 	// HACK: This invasive operation is so important that
 	// it surely deserves being in the front page...
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
@@ -232,6 +235,7 @@ bool qtractorMidiEditor::saveCopyFile ( const QString& sNewFilename,
 			.arg(sNewFilename).arg(iTrackChannel));
 		pMainForm->addMidiFile(sNewFilename);
 	}
+#endif
 
 	return true;
 }
