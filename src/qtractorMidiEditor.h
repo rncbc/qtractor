@@ -107,6 +107,10 @@ public:
 	void setSyncView(bool bSyncView);
 	bool isSyncView() const;
 
+	// Note autition while editing.
+	void setSendNotes(bool bSendNotes);
+	bool isSendNotes() const;
+
 	// Alterrnate command action update helper...
 	void updateUndoAction(QAction *pAction) const;
 	void updateRedoAction(QAction *pAction) const;
@@ -360,8 +364,9 @@ private:
 	int           m_iPlayHeadX;
 	bool          m_bSyncView;
 
-	// On-the-fly note pending.
-	int m_iNoteOn;
+	// Note autition while editing.
+	bool m_bSendNotes;
+	int  m_iNoteOn;
 };
 
 

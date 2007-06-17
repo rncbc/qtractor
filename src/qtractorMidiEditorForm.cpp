@@ -251,6 +251,9 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	QObject::connect(m_ui.viewToolbarViewAction,
 		SIGNAL(triggered(bool)),
 		SLOT(viewToolbarView(bool)));
+	QObject::connect(m_ui.viewPreviewAction,
+		SIGNAL(triggered(bool)),
+		SLOT(viewPreview(bool)));
 	QObject::connect(m_ui.viewFollowAction,
 		SIGNAL(triggered(bool)),
 		SLOT(viewFollow(bool)));
@@ -312,7 +315,8 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 		m_ui.viewToolbarFileAction->setChecked(pOptions->bMidiFileToolbar);
 		m_ui.viewToolbarEditAction->setChecked(pOptions->bMidiEditToolbar);
 		m_ui.viewToolbarViewAction->setChecked(pOptions->bMidiViewToolbar);
-		m_ui.viewFollowAction->setChecked(pOptions->bMidiFollowPlayhead);
+		m_ui.viewPreviewAction->setChecked(pOptions->bMidiPreview);
+		m_ui.viewFollowAction->setChecked(pOptions->bMidiFollow);
 		if (pOptions->bMidiEditMode)
 			m_ui.editModeOnAction->setChecked(true);
 		else
@@ -324,7 +328,8 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 		viewToolbarEdit(pOptions->bMidiEditToolbar);
 		viewToolbarView(pOptions->bMidiViewToolbar);
 		m_pMidiEditor->setEditMode(pOptions->bMidiEditMode);
-		m_pMidiEditor->setSyncView(pOptions->bMidiFollowPlayhead);
+		m_pMidiEditor->setSendNotes(pOptions->bMidiPreview);
+		m_pMidiEditor->setSyncView(pOptions->bMidiFollow);
 		// Restore whole dock windows state.
 		QByteArray aDockables = pOptions->settings().value(
 			"/MidiEditor/Layout/DockWindows").toByteArray();
@@ -407,7 +412,8 @@ bool qtractorMidiEditorForm::queryClose (void)
 			pOptions->bMidiEditToolbar = m_ui.editToolbar->isVisible();
 			pOptions->bMidiViewToolbar = m_ui.viewToolbar->isVisible();
 			pOptions->bMidiEditMode = m_ui.editModeOnAction->isChecked();
-			pOptions->bMidiFollowPlayhead = m_ui.viewFollowAction->isChecked();
+			pOptions->bMidiPreview = m_ui.viewPreviewAction->isChecked();
+			pOptions->bMidiFollow  = m_ui.viewFollowAction->isChecked();
 			// Save the dock windows state.
 			pOptions->settings().setValue(
 				"/MidiEditor/Layout/DockWindows", saveState());
@@ -903,6 +909,13 @@ void qtractorMidiEditorForm::viewToolbarView ( bool bOn )
 	} else {
 		m_ui.viewToolbar->hide();
 	}
+}
+
+
+// View preview notes
+void qtractorMidiEditorForm::viewPreview ( bool bOn )
+{
+	m_pMidiEditor->setSendNotes(bOn);
 }
 
 

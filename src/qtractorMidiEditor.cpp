@@ -326,7 +326,8 @@ qtractorMidiEditor::qtractorMidiEditor ( QWidget *pParent )
 	m_iPlayHeadX = 0;
 	m_bSyncView  = false;
 
-	// On-the-fly note pending.
+	// Note autition while editing.
+	m_bSendNotes = false;
 	m_iNoteOn = -1;
 
 	// Create child frame widgets...
@@ -553,6 +554,18 @@ void qtractorMidiEditor::setSyncView ( bool bSyncView )
 bool qtractorMidiEditor::isSyncView (void) const
 {
 	return m_bSyncView;
+}
+
+
+// Note autition while editing.
+void qtractorMidiEditor::setSendNotes ( bool bSendNotes )
+{
+	m_bSendNotes = bSendNotes;
+}
+
+bool qtractorMidiEditor::isSendNotes (void) const
+{
+	return m_bSendNotes;
 }
 
 
@@ -1109,8 +1122,10 @@ qtractorMidiEvent *qtractorMidiEditor::dragEditEvent (
 				iDuration /= m_pTimeScale->snapPerBeat();
 			pEvent->setDuration(iDuration);
 			// Mark that we've a note pending...
-			m_iNoteOn = int(pEvent->note());
-			sendNote(m_iNoteOn, int(pEvent->velocity()));
+			if (m_bSendNotes) {
+				m_iNoteOn = int(pEvent->note());
+				sendNote(m_iNoteOn, int(pEvent->velocity()));
+			}
 		}
 		break;
 	case qtractorMidiEvent::PITCHBEND:
@@ -1265,16 +1280,18 @@ void qtractorMidiEditor::dragMoveStart ( qtractorScrollView *pScrollView,
 			pScrollView->setCursor(QCursor(
 				static_cast<qtractorScrollView *> (m_pEditView)	== pScrollView
 				? Qt::SizeAllCursor : Qt::SizeHorCursor));
-			// Maybe we'll have a note pending...
-			if (m_pEventDrag->type() == qtractorMidiEvent::NOTEON) {
-				if (m_iNoteOn > 0)
-					sendNote(m_iNoteOn, 0);
-				m_iNoteOn = int(m_pEventDrag->note());
-				sendNote(m_iNoteOn, int(m_pEventDrag->velocity()));
-			}
 		} else {
 			pScrollView->setCursor(QCursor(Qt::CrossCursor));
 		}
+	}
+
+	// Maybe we'll have a note pending...
+	if (m_bSendNotes && m_pEventDrag
+		&& m_pEventDrag->type() == qtractorMidiEvent::NOTEON) {
+		if (m_iNoteOn > 0)
+			sendNote(m_iNoteOn, 0);
+		m_iNoteOn = int(m_pEventDrag->note());
+		sendNote(m_iNoteOn, int(m_pEventDrag->velocity()));
 	}
 }
 
@@ -1545,8 +1562,8 @@ void qtractorMidiEditor::updateDragMove ( qtractorScrollView *pScrollView,
 		dx = cw - rect.right();
 	m_posDelta.setX(m_pTimeScale->pixelSnap(x0 + dx) - x0);
 
-	if (bEditView) {
-		int h1 = m_pEditList->itemHeight();
+	int h1 = m_pEditList->itemHeight();
+	if (bEditView && h1 > 0) {
 		int ch = m_pEditView->contentsHeight();
 		int y0 = rect.y();
 		int y1 = y0 + delta.y();
@@ -1555,18 +1572,6 @@ void qtractorMidiEditor::updateDragMove ( qtractorScrollView *pScrollView,
 		if (y1 + rect.height() > ch)
 			y1 = ch - rect.height();
 		m_posDelta.setY(h1 * (y1 / h1) - y0); 
-		// Maybe we'll have a note pending...
-		if (m_pEventDrag && m_pEventDrag->type() == qtractorMidiEvent::NOTEON) {
-			int iNoteOn = int(m_pEventDrag->note());
-			if (h1 > 0)
-				iNoteOn -= (m_posDelta.y() / h1);
-			if (iNoteOn != m_iNoteOn) {
-				if (m_iNoteOn > 0)
-					sendNote(m_iNoteOn, 0);
-				m_iNoteOn = iNoteOn;
-				sendNote(m_iNoteOn, int(m_pEventDrag->velocity()));
-			}
-		}
 	} else {
 		m_posDelta.setY(0);
 	}
@@ -1582,6 +1587,20 @@ void qtractorMidiEditor::updateDragMove ( qtractorScrollView *pScrollView,
 	m_pEditEvent->viewport()->update(QRect(
 		m_pEditEvent->contentsToViewport(rectUpdateEvent.topLeft()),
 		rectUpdateEvent.size()));
+
+	// Maybe we've change some note pending...
+	if (m_bSendNotes && m_pEventDrag
+		&& m_pEventDrag->type() == qtractorMidiEvent::NOTEON) {
+		int iNoteOn = int(m_pEventDrag->note());
+		if (h1 > 0)
+			iNoteOn -= (m_posDelta.y() / h1);
+		if (iNoteOn != m_iNoteOn) {
+			if (m_iNoteOn > 0)
+				sendNote(m_iNoteOn, 0);
+			m_iNoteOn = iNoteOn;
+			sendNote(m_iNoteOn, int(m_pEventDrag->velocity()));
+		}
+	}
 }
 
 

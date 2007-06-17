@@ -103,6 +103,7 @@
     <addaction name="viewStatusbarAction" />
     <addaction name="viewToolbarsMenu" />
     <addaction name="separator" />
+	<addaction name="viewPreviewAction" />
 	<addaction name="viewFollowAction" />
 	<addaction name="separator" />
     <addaction name="viewRefreshAction" />
@@ -155,6 +156,7 @@
    <attribute name="toolBarArea" >
     <number>4</number>
    </attribute>
+   <addaction name="viewPreviewAction" />
    <addaction name="viewFollowAction" />
   </widget>
   <widget class="QToolBar" name="editViewToolbar" >
@@ -449,6 +451,26 @@
    <property name="statusTip" >
     <string>Show/hide the view toolbar</string>
    </property>
+  </action>
+  <action name="viewPreviewAction" >
+	  <property name="checkable" >
+		  <bool>true</bool>
+	  </property>
+	  <property name="icon" >
+		  <iconset resource="../icons/qtractor.qrc" >:/icons/itemAudioPortPhysIn.png</iconset>
+	  </property>
+	  <property name="text" >
+		  <string>&amp;Preview Notes</string>
+	  </property>
+	  <property name="iconText" >
+		  <string>Preview Notes</string>
+	  </property>
+	  <property name="statusTip" >
+		  <string>Preview notes while editing (scrub)</string>
+	  </property>
+	  <property name="shortcut" >
+		  <string/>
+	  </property>
   </action>
   <action name="viewFollowAction" >
 	  <property name="checkable" >
