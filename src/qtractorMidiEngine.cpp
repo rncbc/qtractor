@@ -1666,8 +1666,50 @@ void qtractorMidiBus::setController ( unsigned short iChannel,
 }
 
 
+// Direct MIDI note on/off helper.
+void qtractorMidiBus::sendNote ( unsigned short iChannel,
+	int iNote, int iVelocity ) const
+{
+	// We always need our MIDI engine reference...
+	qtractorMidiEngine *pMidiEngine
+		= static_cast<qtractorMidiEngine *> (engine());
+	if (pMidiEngine == NULL)
+		return;
+
+	// Don't do anything else if engine
+	// has not been activated...
+	if (pMidiEngine->alsaSeq() == NULL)
+		return;
+
+#ifdef CONFIG_DEBUG
+	fprintf(stderr, "qtractorMidiBus::sendNote(%d, %d, %d)\n",
+		iChannel, iNote, iVelocity);
+#endif
+
+	// Initialize sequencer event...
+	snd_seq_event_t ev;
+	snd_seq_ev_clear(&ev);
+
+	// Addressing...
+	snd_seq_ev_set_source(&ev, m_iAlsaPort);
+	snd_seq_ev_set_subs(&ev);
+
+	// The event will be direct...
+	snd_seq_ev_set_direct(&ev);
+
+	// Set controller parameters...
+	ev.type = (iVelocity > 0 ? SND_SEQ_EVENT_NOTEON : SND_SEQ_EVENT_NOTEOFF);
+	ev.data.note.channel  = iChannel;
+	ev.data.note.note     = iNote;
+	ev.data.note.velocity = iVelocity;
+	snd_seq_event_output(pMidiEngine->alsaSeq(), &ev);
+
+	pMidiEngine->flush();
+}
+
+
 // Direct SysEx helper.
-void qtractorMidiBus::sendSysex ( unsigned char *pSysex, unsigned int iSysex )
+void qtractorMidiBus::sendSysex ( unsigned char *pSysex, unsigned int iSysex ) const
 {
 	// Yet again, we need our MIDI engine reference...
 	qtractorMidiEngine *pMidiEngine

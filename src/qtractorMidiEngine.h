@@ -204,8 +204,12 @@ public:
 	void setController(unsigned short iChannel,
 		int iController, int iValue = 0) const;
 
+	// Direct MIDI note helper.
+	void sendNote(unsigned short iChannel,
+		int iNote, int iVelocity = 0) const;
+
 	// Direct SysEx helper.
-	void sendSysex(unsigned char *pSysex, unsigned int iSysex);
+	void sendSysex(unsigned char *pSysex, unsigned int iSysex) const;
 
 	// Virtual I/O bus-monitor accessors.
 	qtractorMonitor *monitor_in()  const;

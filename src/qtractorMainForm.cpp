@@ -50,6 +50,8 @@
 #include "qtractorAudioClip.h"
 #include "qtractorMidiClip.h"
 
+#include "qtractorMidiEditor.h"
+
 #include "qtractorSessionForm.h"
 #include "qtractorOptionsForm.h"
 #include "qtractorConnectForm.h"
@@ -2792,6 +2794,23 @@ void qtractorMainForm::updateMessagesCapture (void)
 
 
 //-------------------------------------------------------------------------
+// qtractorMainForm -- Editors stuff.
+
+void qtractorMainForm::addEditor ( qtractorMidiEditor *pEditor )
+{
+	if (m_editors.indexOf(pEditor) < 0)
+		m_editors.append(pEditor);
+}
+
+void qtractorMainForm::removeEditor ( qtractorMidiEditor *pEditor )
+{
+	int iEditor = m_editors.indexOf(pEditor);
+	if (iEditor >= 0)
+		m_editors.removeAt(iEditor);
+}
+
+
+//-------------------------------------------------------------------------
 // qtractorMainForm -- Timer stuff.
 
 // Timer slot funtion.
@@ -2805,8 +2824,13 @@ void qtractorMainForm::timerSlot (void)
 	if (iPlayHead != (long) m_iPlayHead) {
 		m_iPlayHead = iPlayHead;
 		if (m_pTracks) {
+			// Update tracks-view play-head...
 			m_pTracks->trackView()->setPlayHead(iPlayHead,
 				m_ui.transportFollowAction->isChecked());
+			// Update editors play-head...
+			QListIterator<qtractorMidiEditor *> iter(m_editors);
+			while (iter.hasNext())
+				(iter.next())->setPlayHead(iPlayHead);
 		}
 		if (!bPlaying && m_iTransportRolling == 0 && m_iTransportStep == 0) {
 			// Send MMC LOCATE command...

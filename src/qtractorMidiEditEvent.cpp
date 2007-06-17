@@ -382,6 +382,14 @@ void qtractorMidiEditEvent::drawContents ( QPainter *pPainter, const QRect& rect
 	pPainter->drawPixmap(rect, m_pixmap, rect);
 
 	m_pEditor->paintDragState(this, pPainter);
+
+	// Draw special play-head header...
+	int cx = qtractorScrollView::contentsX();
+	int x = m_pEditor->playHeadX() - cx;
+	if (x >= rect.left() && x <= rect.right()) {
+		pPainter->setPen(Qt::red);
+		pPainter->drawLine(x, rect.top(), x, rect.bottom());
+	}
 }
 
 

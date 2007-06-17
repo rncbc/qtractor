@@ -24,6 +24,8 @@
 #include "qtractorMidiEditor.h"
 #include "qtractorMidiEditView.h"
 
+#include <QApplication>
+
 #include <QResizeEvent>
 #include <QMouseEvent>
 #include <QKeyEvent>
@@ -38,8 +40,10 @@ qtractorMidiEditList::qtractorMidiEditList (
 	qtractorMidiEditor *pEditor, QWidget *pParent )
 	: qtractorScrollView(pParent)
 {
-	m_pEditor     = pEditor;
+	m_pEditor = pEditor;
 	m_iItemHeight = ItemHeightBase;
+	m_dragState = DragNone;
+	m_iNoteOn = -1;
 
 	qtractorScrollView::setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 	qtractorScrollView::setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -129,16 +133,6 @@ void qtractorMidiEditList::resizeEvent ( QResizeEvent *pResizeEvent )
 }
 
 
-// Keyboard event handler.
-void qtractorMidiEditList::keyPressEvent ( QKeyEvent *pKeyEvent )
-{
-	if (pKeyEvent->key() == Qt::Key_Escape)
-		resetDragState();
-
-	m_pEditor->editView()->keyPressEvent(pKeyEvent);
-}
-
-
 // (Re)create the complete view pixmap.
 void qtractorMidiEditList::updatePixmap ( int /*cx*/, int cy )
 {
@@ -194,6 +188,13 @@ void qtractorMidiEditList::updatePixmap ( int /*cx*/, int cy )
 void qtractorMidiEditList::drawContents ( QPainter *pPainter, const QRect& rect )
 {
 	pPainter->drawPixmap(rect, m_pixmap, rect);
+
+	// Are we sticking in some note?
+	if (m_iNoteOn > 0) {
+		pPainter->fillRect(QRect(
+			contentsToViewport(m_rectNote.topLeft()),
+			m_rectNote.size()), QColor(255, 0, 120, 120));
+	}
 }
 
 
@@ -205,15 +206,74 @@ void qtractorMidiEditList::contentsYMovingSlot ( int /*cx*/, int cy )
 }
 
 
+// Piano keyboard note event handler.
+void qtractorMidiEditList::dragNoteOn ( const QPoint& pos )
+{
+	// This stands for the keyboard area...
+	QWidget *pViewport = qtractorScrollView::viewport();
+	int w = pViewport->width();
+	int x = ((w << 1) / 3);
+
+	// Are we on it?	 
+	if (pos.x() < x || pos.x() >= w)
+		return;
+
+	// Compute new key cordinates...
+	int q = ((pos.y() - 1) / m_iItemHeight);
+	int y = (q * m_iItemHeight) + 1;
+	int n = 127 - q;
+
+	// Were we pending on some sounding note?
+	if (m_iNoteOn > 0) {
+		// It must be different...
+		if (m_iNoteOn != n) {
+			m_pEditor->sendNote(m_iNoteOn, 0);
+			m_iNoteOn = -1;
+			qtractorScrollView::viewport()->update(
+				QRect(contentsToViewport(m_rectNote.topLeft()),
+				m_rectNote.size()));
+		}
+		// Give some time for screen update.
+		return;
+	}
+
+	// This is the new note on...
+	m_iNoteOn = n;
+	m_rectNote.setRect(x, y, w - x, m_iItemHeight);
+	m_pEditor->sendNote(m_iNoteOn, 1);
+	qtractorScrollView::viewport()->update(
+		QRect(contentsToViewport(m_rectNote.topLeft()),
+		m_rectNote.size()));
+}
+
+
 // Handle item selection/dragging -- mouse button press.
 void qtractorMidiEditList::mousePressEvent ( QMouseEvent *pMouseEvent )
 {
 	// Force null state.
-	resetDragState();
+	m_dragState = DragNone;
 
-	//
-	//	TODO: Process mouse press...
-	//
+	// Which mouse state?
+	const bool bModifier = (pMouseEvent->modifiers()
+		& (Qt::ShiftModifier | Qt::ControlModifier));
+	// Make sure we'll reset selection...
+	if (!bModifier)
+		m_pEditor->selectAll(false);
+
+	// Direct snap positioning...
+	const QPoint& pos = viewportToContents(pMouseEvent->pos());
+	switch (pMouseEvent->button()) {
+	case Qt::LeftButton:
+		// Remember what and where we'll be dragging/selecting...
+		m_dragState = DragStart;
+		m_posDrag   = pos;
+		// Are we keying in some keyboard?
+		dragNoteOn(pos);
+		break;
+	default:
+		break;
+	}
+
 	qtractorScrollView::mousePressEvent(pMouseEvent);
 
 	// Make sure we've get focus back...
@@ -224,9 +284,38 @@ void qtractorMidiEditList::mousePressEvent ( QMouseEvent *pMouseEvent )
 // Handle item selection/dragging -- mouse pointer move.
 void qtractorMidiEditList::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 {
-	//
-	//	TODO: Process mouse move...
-	//
+	// Are we already moving/dragging something?
+	const QPoint& pos = viewportToContents(pMouseEvent->pos());
+	int x = m_pEditor->editView()->contentsX();
+	switch (m_dragState) {
+	case DragSelect:
+		// Rubber-band selection...
+		m_rectDrag.setBottom(pos.y());
+		m_pEditor->editView()->ensureVisible(x, pos.y(), 0, 16);
+		m_pEditor->selectRect(m_rectDrag,
+			pMouseEvent->modifiers() & Qt::ControlModifier, false);
+		// Are we keying in some keyboard?
+		dragNoteOn(pos);
+		break;
+	case DragStart:
+		// Rubber-band starting...
+		if ((m_posDrag - pos).manhattanLength()
+			> QApplication::startDragDistance()) {
+			// We'll start dragging alright...
+			int w = m_pEditor->editView()->contentsWidth();
+			m_rectDrag.setTop(m_posDrag.y());
+			m_rectDrag.setLeft(0);
+			m_rectDrag.setRight(w);
+			m_rectDrag.setBottom(pos.y());
+			m_dragState = DragSelect;
+			qtractorScrollView::setCursor(QCursor(Qt::SizeVerCursor));
+		}
+		// Fall thru...
+	case DragNone:
+	default:
+		break;
+	}
+
 	qtractorScrollView::mouseMoveEvent(pMouseEvent);
 }
 
@@ -234,25 +323,69 @@ void qtractorMidiEditList::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 // Handle item selection/dragging -- mouse button release.
 void qtractorMidiEditList::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 {
-	//
-	//	TODO: Process mouse release...
-	//
 	qtractorScrollView::mouseReleaseEvent(pMouseEvent);
 
-	// Force null state.
-	resetDragState();
+	// Direct snap positioning...
+	switch (m_dragState) {
+	case DragSelect:
+		// Do the final range selection...
+		m_pEditor->selectRect(m_rectDrag,
+			pMouseEvent->modifiers() & Qt::ControlModifier, true);
+		// Keyboard notes are reset later anyway...
+		break;
+	case DragStart:
+	case DragNone:
+	default:
+		break;
+	}
 
-	// Make sure we've get focus back...
-	qtractorScrollView::setFocus();
+	// Clean up.
+	resetDragState();
+}
+
+
+// Keyboard event handler.
+void qtractorMidiEditList::keyPressEvent ( QKeyEvent *pKeyEvent )
+{
+	if (pKeyEvent->key() == Qt::Key_Escape)
+		resetDragState();
+
+	m_pEditor->editView()->keyPressEvent(pKeyEvent);
 }
 
 
 // Reset drag/select/move state.
 void qtractorMidiEditList::resetDragState (void)
 {
-	//
-	//	TODO: Reset mouse drag-state...
-	//
+	// Were we stuck on some keyboard note?
+	if (m_iNoteOn > 0) {
+		m_pEditor->sendNote(m_iNoteOn, 0);
+		m_iNoteOn = -1;
+		qtractorScrollView::viewport()->update(
+			QRect(contentsToViewport(m_rectNote.topLeft()),
+			m_rectNote.size()));
+	}
+
+	// Cancel any dragging out there...
+	switch (m_dragState) {
+	case DragSelect:
+		qtractorScrollView::updateContents();
+		// Fall thru...
+		qtractorScrollView::unsetCursor();
+		// Fall thru again...
+	case DragNone:
+	default:
+		break;
+	}
+
+	// Also get rid of any meta-breadcrumbs...
+	m_pEditor->resetDragState(this);
+
+	// Force null state.
+	m_dragState = DragNone;
+	
+	// HACK: give focus to track-view... 
+	m_pEditor->editView()->setFocus();
 }
 
 

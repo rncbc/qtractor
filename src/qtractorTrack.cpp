@@ -830,6 +830,17 @@ void qtractorTrack::setMidiPatch ( qtractorInstrumentList *pInstruments )
 }
 
 
+// Update all clips editors.
+void qtractorTrack::updateClipEditors (void)
+{
+	qtractorClip *pClip = m_clips.first();
+	while (pClip) {
+		pClip->updateEditor();
+		pClip = pClip->next();
+	}
+}
+
+
 // Document element methods.
 bool qtractorTrack::loadElement ( qtractorSessionDocument *pDocument,
 	QDomElement *pElement )

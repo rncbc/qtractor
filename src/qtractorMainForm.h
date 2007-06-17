@@ -40,6 +40,8 @@ class qtractorMixer;
 class qtractorMmcEvent;
 class qtractorSpinBox;
 
+class qtractorMidiEditor;
+
 class QLabel;
 class QComboBox;
 class QActionGroup;
@@ -83,6 +85,9 @@ public:
 	void appendMessagesColor(const QString& s, const QString& c);
 	void appendMessagesText(const QString& s);
 	void appendMessagesError(const QString& s);
+
+	void addEditor(qtractorMidiEditor *pEditor);
+	void removeEditor(qtractorMidiEditor *pEditor);
 
 	QMenu *editMenu() const
 		{ return m_ui.editMenu; }
@@ -270,6 +275,9 @@ private:
 	};
 
 	QPalette *m_paletteItems[PaletteItems];
+
+	// Name says it all...
+	QList<qtractorMidiEditor *> m_editors;
 
 	// Kind-of singleton reference.
 	static qtractorMainForm *g_pMainForm;

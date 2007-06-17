@@ -72,16 +72,19 @@ protected:
 	// Resize event handler.
 	void resizeEvent(QResizeEvent *pResizeEvent);
 
-	// Keyboard event handler.
-	void keyPressEvent(QKeyEvent *pKeyEvent);
-
 	// Draw the time scale.
 	void drawContents(QPainter *pPainter, const QRect& rect);
+
+	// Piano keyboard note event handler.
+	void dragNoteOn(const QPoint& pos);
 
 	// Handle item selection with mouse.
 	void mousePressEvent(QMouseEvent *pMouseEvent);
 	void mouseMoveEvent(QMouseEvent *pMouseEvent);
 	void mouseReleaseEvent(QMouseEvent *pMouseEvent);
+
+	// Keyboard event handler.
+	void keyPressEvent(QKeyEvent *pKeyEvent);
 
 	// Reset drag/select/move state.
 	void resetDragState();
@@ -104,6 +107,18 @@ private:
 
 	// Current item height.
 	unsigned short m_iItemHeight;
+
+	// The current selecting/dragging list stuff.
+	enum DragState {
+		DragNone = 0, DragStart, DragSelect
+	} m_dragState;
+
+	QRect  m_rectDrag;
+	QPoint m_posDrag;
+
+	// THe current note being keyed on.
+	int   m_iNoteOn;
+	QRect m_rectNote;
 };
 
 

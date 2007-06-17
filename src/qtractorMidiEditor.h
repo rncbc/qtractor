@@ -25,6 +25,8 @@
 #include "qtractorMidiCursor.h"
 #include "qtractorMidiEditSelect.h"
 
+#include "qtractorMidiEvent.h"
+
 #include <QSplitter>
 
 
@@ -96,6 +98,15 @@ public:
 	qtractorMidiEditEvent *editEvent() const;
 	QFrame *editEventFrame() const;
 
+	// Playhead positioning.
+	void setPlayHead(unsigned long iPlayHead);
+	unsigned long playHead() const;
+	int playHeadX() const;
+
+	// Playhead followness.
+	void setSyncView(bool bSyncView);
+	bool isSyncView() const;
+
 	// Alterrnate command action update helper...
 	void updateUndoAction(QAction *pAction) const;
 	void updateRedoAction(QAction *pAction) const;
@@ -124,7 +135,11 @@ public:
 
 	// Select all/none contents.
 	void selectAll(bool bSelect = true, bool bToggle = false);
-	
+
+	// Select everything between a given view rectangle.
+	void selectRect(const QRect& rect, bool bToggle = false,
+		bool bCommit = false);
+
 	// Update/sync integral contents.
 	void updateContents();
 	
@@ -185,7 +200,10 @@ public slots:
 	// Redirect selection/change notification.
 	void selectionChangeNotify();
 	void contentsChangeNotify();
-	
+
+	// Redirect note on/off;
+	void sendNote(int iNote, int iVelocity = 0);
+
 protected:
 
 	// Zoom factor constants.
@@ -230,6 +248,9 @@ protected:
 	// Special clipboard cleaner.
 	void clearClipboard();
 
+	// Vertical line position drawing.
+	void drawPositionX(int& iPositionX, int x, bool bSyncView);
+
 protected slots:
 
 	// Horizontal zoom view slots.
@@ -253,6 +274,9 @@ signals:
 	// Emitted on selection/changes.
 	void selectNotifySignal();
 	void changeNotifySignal();
+
+	// Send note event signale.
+	void sendNoteSignal(int, int);
 
 private:
 
@@ -330,6 +354,14 @@ private:
 
 	// The local clipboard.
 	qtractorMidiEditSelect m_clipboard;
+
+	// Local playhead positioning.
+	unsigned long m_iPlayHead;
+	int           m_iPlayHeadX;
+	bool          m_bSyncView;
+
+	// On-the-fly note pending.
+	int m_iNoteOn;
 };
 
 

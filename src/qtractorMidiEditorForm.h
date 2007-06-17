@@ -125,7 +125,10 @@ public slots:
 	void viewToolbarFile(bool bOn);
 	void viewToolbarEdit(bool bOn);
 	void viewToolbarView(bool bOn);
+	void viewFollow(bool bOn);
 	void viewRefresh();
+
+	void sendNote(int iNote, int iVelocity);
 
 	void contentsChanged();
 
@@ -142,7 +145,8 @@ protected slots:
 
 protected:
 
-	// On-close event handlers.
+	// On-open/close event handlers.
+	void showEvent(QShowEvent *pShowEvent);
 	void closeEvent(QCloseEvent *pCloseEvent);
 
 	// Context menu request.

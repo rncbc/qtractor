@@ -59,18 +59,21 @@ protected:
 	// Resize event handler.
 	void resizeEvent(QResizeEvent *pResizeEvent);
 
-	// Keyboard event handler.
-	void keyPressEvent(QKeyEvent *pKeyEvent);
-
 	// Draw the time scale.
 	void drawContents(QPainter *pPainter, const QRect& rect);
+
+	// Check if some position header is to be dragged...
+	bool dragHeadStart(const QPoint& pos);
 
 	// Handle item selection with mouse.
 	void mousePressEvent(QMouseEvent *pMouseEvent);
 	void mouseMoveEvent(QMouseEvent *pMouseEvent);
 	void mouseReleaseEvent(QMouseEvent *pMouseEvent);
 
-	// Reset drag/select/move state.
+	// Keyboard event handler.
+	void keyPressEvent(QKeyEvent *pKeyEvent);
+
+	// Reset drag/select state.
 	void resetDragState();
 
 protected slots:
@@ -88,6 +91,14 @@ private:
 
 	// Local double-buffering pixmap.
 	QPixmap m_pixmap;
+
+	// The current selecting/dragging head stuff.
+	enum DragState {
+		DragNone = 0, DragStart, DragSelect, DragPlayHead
+	} m_dragState;
+
+	QRect  m_rectDrag;
+	QPoint m_posDrag;
 };
 
 

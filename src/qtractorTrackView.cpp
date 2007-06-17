@@ -1992,6 +1992,11 @@ unsigned long qtractorTrackView::playHead (void) const
 	return m_iPlayHead;
 }
 
+int qtractorTrackView::playHeadX (void) const
+{
+	return m_iPlayHeadX;
+}
+
 
 // Edit-head positioning
 void qtractorTrackView::setEditHead ( unsigned long iEditHead )
@@ -2006,6 +2011,11 @@ void qtractorTrackView::setEditHead ( unsigned long iEditHead )
 	}
 }
 
+int qtractorTrackView::editHeadX (void) const
+{
+	return m_iEditHeadX;
+}
+
 
 // Edit-tail positioning
 void qtractorTrackView::setEditTail ( unsigned long iEditTail )
@@ -2018,6 +2028,11 @@ void qtractorTrackView::setEditTail ( unsigned long iEditTail )
 		int iEditTailX = pSession->pixelFromFrame(iEditTail);
 		drawPositionX(m_iEditTailX, iEditTailX);
 	}
+}
+
+int qtractorTrackView::editTailX (void) const
+{
+	return m_iEditTailX;
 }
 
 

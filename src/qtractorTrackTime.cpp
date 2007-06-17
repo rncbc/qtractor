@@ -187,17 +187,13 @@ void qtractorTrackTime::drawContents ( QPainter *pPainter, const QRect& rect )
 	pPainter->drawPixmap(rect, m_pixmap, rect);
 
 	// Headers a-head...
-	qtractorSession *pSession = m_pTracks->session();
-	if (pSession == NULL)
-		return;
-
 	int cx = qtractorScrollView::contentsX();
 	int h = qtractorScrollView::height() - 4;
 	int d = (h >> 2);
 	int x;
 	
 	// Draw edit-head line...
-	x = pSession->pixelFromFrame(pSession->editHead()) - cx;
+	x = (m_pTracks->trackView())->editHeadX() - cx;
 	if (x >= rect.left() - d && x <= rect.right() + d) {
 		QPolygon polyg(3);
 		polyg.putPoints(0, 3,
@@ -210,7 +206,7 @@ void qtractorTrackTime::drawContents ( QPainter *pPainter, const QRect& rect )
 	}
 
 	// Draw edit-tail line...
-	x = pSession->pixelFromFrame(pSession->editTail()) - cx;
+	x = (m_pTracks->trackView())->editTailX() - cx;
 	if (x >= rect.left() - d && x <= rect.right() + d) {
 		QPolygon polyg(3);
 		polyg.putPoints(0, 3,
@@ -223,7 +219,7 @@ void qtractorTrackTime::drawContents ( QPainter *pPainter, const QRect& rect )
 	}
 
 	// Draw special play-head header...
-	x = pSession->pixelFromFrame(m_pTracks->trackView()->playHead()) - cx;
+	x = (m_pTracks->trackView())->playHeadX() - cx;
 	if (x >= rect.left() - d && x <= rect.right() + d) {
 		QPolygon polyg(3);
 		polyg.putPoints(0, 3,
@@ -259,8 +255,7 @@ bool qtractorTrackTime::dragHeadStart ( const QPoint& pos )
 	QRect rect(0, h - d, d << 1, d);
 
 	// Check play-head header...
-	rect.moveLeft(pSession->pixelFromFrame(
-		m_pTracks->trackView()->playHead()) - d);
+	rect.moveLeft(m_pTracks->trackView()->playHeadX() - d);
 	if (rect.contains(pos)) {
 		m_dragState = DragPlayHead;
 		return true;
@@ -283,14 +278,14 @@ bool qtractorTrackTime::dragHeadStart ( const QPoint& pos )
 	}
 
 	// Check edit-head header...
-	rect.moveLeft(pSession->pixelFromFrame(pSession->editHead()) - d);
+	rect.moveLeft(m_pTracks->trackView()->playHeadX() - d);
 	if (rect.contains(pos)) {
 		m_dragState = DragEditHead;
 		return true;
 	}
 
 	// Check edit-tail header...
-	rect.moveLeft(pSession->pixelFromFrame(pSession->editTail()) - d);
+	rect.moveLeft(m_pTracks->trackView()->editTailX() - d);
 	if (rect.contains(pos)) {
 		m_dragState = DragEditTail;
 		return true;
@@ -493,6 +488,28 @@ void qtractorTrackTime::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 }
 
 
+// Keyboard event handler.
+void qtractorTrackTime::keyPressEvent ( QKeyEvent *pKeyEvent )
+{
+#ifdef CONFIG_DEBUG
+	fprintf(stderr, "qtractorTrackTime::keyPressEvent(key=%d)\n", pKeyEvent->key());
+#endif
+	switch (pKeyEvent->key()) {
+	case Qt::Key_Escape:
+		// Restore uncommitted play-head position?...
+		if (m_dragState == DragPlayHead && m_pTracks->session()) {
+			m_pTracks->trackView()->setPlayHead(
+				m_pTracks->session()->playHead());
+		}
+		resetDragState();
+		break;
+	default:
+		qtractorScrollView::keyPressEvent(pKeyEvent);
+		break;
+	}
+}
+
+
 // Reset drag/select state.
 void qtractorTrackTime::resetDragState (void)
 {
@@ -518,28 +535,6 @@ void qtractorTrackTime::resetDragState (void)
 	
 	// HACK: give focus to track-view... 
 	m_pTracks->trackView()->setFocus();
-}
-
-
-// Keyboard event handler.
-void qtractorTrackTime::keyPressEvent ( QKeyEvent *pKeyEvent )
-{
-#ifdef CONFIG_DEBUG
-	fprintf(stderr, "qtractorTrackTime::keyPressEvent(key=%d)\n", pKeyEvent->key());
-#endif
-	switch (pKeyEvent->key()) {
-	case Qt::Key_Escape:
-		// Restore uncommitted play-head position?...
-		if (m_dragState == DragPlayHead && m_pTracks->session()) {
-			m_pTracks->trackView()->setPlayHead(
-				m_pTracks->session()->playHead());
-		}
-		resetDragState();
-		break;
-	default:
-		qtractorScrollView::keyPressEvent(pKeyEvent);
-		break;
-	}
 }
 
 

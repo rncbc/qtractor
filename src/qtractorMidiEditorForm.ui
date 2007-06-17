@@ -103,6 +103,8 @@
     <addaction name="viewStatusbarAction" />
     <addaction name="viewToolbarsMenu" />
     <addaction name="separator" />
+	<addaction name="viewFollowAction" />
+	<addaction name="separator" />
     <addaction name="viewRefreshAction" />
    </widget>
    <addaction name="fileMenu" />
@@ -153,6 +155,7 @@
    <attribute name="toolBarArea" >
     <number>4</number>
    </attribute>
+   <addaction name="viewFollowAction" />
   </widget>
   <widget class="QToolBar" name="editViewToolbar" >
    <property name="orientation" >
@@ -446,6 +449,26 @@
    <property name="statusTip" >
     <string>Show/hide the view toolbar</string>
    </property>
+  </action>
+  <action name="viewFollowAction" >
+	  <property name="checkable" >
+		  <bool>true</bool>
+	  </property>
+	  <property name="icon" >
+		  <iconset resource="../icons/qtractor.qrc" >:/icons/transportFollow.png</iconset>
+	  </property>
+	  <property name="text" >
+		  <string>F&amp;ollow Playhead</string>
+	  </property>
+	  <property name="iconText" >
+		  <string>Follow Playhead</string>
+	  </property>
+	  <property name="statusTip" >
+		  <string>Follow playhead</string>
+	  </property>
+	  <property name="shortcut" >
+		  <string/>
+	  </property>
   </action>
   <action name="viewRefreshAction" >
    <property name="text" >

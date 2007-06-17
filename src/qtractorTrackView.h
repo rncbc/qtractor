@@ -132,10 +132,14 @@ public:
 	// Play-head positioning.
 	void setPlayHead(unsigned long iPlayHead, bool bSyncView = false);
 	unsigned long playHead() const;
+	int playHeadX() const;
 
 	// Edit-head/tail positioning.
 	void setEditHead(unsigned long iEditHead);
+	int editHeadX() const;
+
 	void setEditTail(unsigned long iEditTail);
+	int editTailX() const;
 
 	// Make given frame position visible in view.
 	void ensureVisibleFrame(unsigned long iFrame);

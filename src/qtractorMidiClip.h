@@ -94,6 +94,7 @@ public:
 	// Clip editor methods.
 	bool startEditor(QWidget *pParent);
 	bool queryEditor();
+	void updateEditor();
 
 	// Local dirty flag.
 	void setDirty(bool bDirty);

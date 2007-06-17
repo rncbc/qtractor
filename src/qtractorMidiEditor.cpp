@@ -321,6 +321,14 @@ qtractorMidiEditor::qtractorMidiEditor ( QWidget *pParent )
 	m_pTimeScale = new qtractorTimeScale();
 	m_iOffset = 0;
 
+	// Local playhead positioning.
+	m_iPlayHead  = 0;
+	m_iPlayHeadX = 0;
+	m_bSyncView  = false;
+
+	// On-the-fly note pending.
+	m_iNoteOn = -1;
+
 	// Create child frame widgets...
 	QSplitter *pSplitter = new QSplitter(Qt::Horizontal, this);
 	QWidget *pVBoxLeft   = new QWidget(pSplitter);
@@ -516,6 +524,80 @@ unsigned long qtractorMidiEditor::offset (void) const
 }
 
 
+// Playhead positioning.
+void qtractorMidiEditor::setPlayHead ( unsigned long iPlayHead )
+{
+	m_iPlayHead = iPlayHead;
+	int iPlayHeadX
+		= m_pTimeScale->pixelFromFrame(iPlayHead)
+		- m_pTimeScale->pixelFromFrame(m_iOffset);
+	drawPositionX(m_iPlayHeadX, iPlayHeadX, m_bSyncView);
+}
+
+unsigned long qtractorMidiEditor::playHead (void) const
+{
+	return m_iPlayHead;
+}
+
+int qtractorMidiEditor::playHeadX (void) const
+{
+	return m_iPlayHeadX;
+}
+
+// Playhead followness.
+void qtractorMidiEditor::setSyncView ( bool bSyncView )
+{
+	m_bSyncView = bSyncView;
+}
+
+bool qtractorMidiEditor::isSyncView (void) const
+{
+	return m_bSyncView;
+}
+
+
+// Vertical line position drawing.
+void qtractorMidiEditor::drawPositionX ( int& iPositionX, int x, bool bSyncView )
+{
+	// Update track-view position...
+	int cx = m_pEditView->contentsX();
+	int x1 = iPositionX - cx;
+	int w  = m_pEditView->width();
+	int h1 = m_pEditView->height();
+	int h2 = m_pEditEvent->height();
+	int wm = (w >> 3);
+
+	// Time-line header extents...
+	int h0 = m_pEditTime->height();
+	int d0 = (h0 >> 1);
+
+	// Restore old position...
+	if (iPositionX != x && x1 >= 0 && x1 < w) {
+		// Override old view line...
+		(m_pEditEvent->viewport())->update(QRect(x1, 0, 1, h2));
+		(m_pEditView->viewport())->update(QRect(x1, 0, 1, h1));
+		(m_pEditTime->viewport())->update(QRect(x1 - d0, d0, h0, d0));
+	}
+
+	// New position is in...
+	iPositionX = x;
+
+	// Force position to be in view?
+	if (bSyncView && (x < cx || x > cx + w - wm)) {
+		// Move it...
+		m_pEditView->setContentsPos(x - wm, m_pEditView->contentsY());
+	} else {
+		// Draw the line, by updating the new region...
+		x1 = x - cx;
+		if (x1 >= 0 && x1 < w) {
+			(m_pEditEvent->viewport())->update(QRect(x1, 0, 1, h2));
+			(m_pEditView->viewport())->update(QRect(x1, 0, 1, h1));
+			(m_pEditTime->viewport())->update(QRect(x1 - d0, d0, h0, d0));
+		}
+	}
+}
+
+
 // Child widgets accessors.
 QFrame *qtractorMidiEditor::editListHeader (void) const
 {
@@ -566,6 +648,7 @@ void qtractorMidiEditor::horizontalZoomStep ( int iZoomStep )
 
 	// Fix the local time scale zoom determinant.
 	m_pTimeScale->setHorizontalZoom(iHorizontalZoom);
+	m_pTimeScale->updateScale();
 }
 
 
@@ -586,8 +669,8 @@ void qtractorMidiEditor::verticalZoomStep ( int iZoomStep )
 	if (iItemHeight < qtractorMidiEditList::ItemHeightMax && iZoomStep > 0)
 		iItemHeight++;
 	else
-		if (iItemHeight > qtractorMidiEditList::ItemHeightMin && iZoomStep < 0)
-			iItemHeight--;
+	if (iItemHeight > qtractorMidiEditList::ItemHeightMin && iZoomStep < 0)
+		iItemHeight--;
 	m_pEditList->setItemHeight(iItemHeight);
 
 	// Fix the local vertical view zoom.
@@ -608,6 +691,7 @@ void qtractorMidiEditor::horizontalZoomOutSlot (void)
 	centerContents();
 }
 
+
 void qtractorMidiEditor::verticalZoomInSlot (void)
 {
 	verticalZoomStep(+ ZoomStep);
@@ -620,12 +704,12 @@ void qtractorMidiEditor::verticalZoomOutSlot (void)
 	centerContents();
 }
 
+
 void qtractorMidiEditor::horizontalZoomResetSlot (void)
 {
 	horizontalZoomStep(ZoomBase - m_pTimeScale->horizontalZoom());
 	centerContents();
 }
-
 
 void qtractorMidiEditor::verticalZoomResetSlot (void)
 {
@@ -825,17 +909,27 @@ void qtractorMidiEditor::selectAll ( bool bSelect, bool bToggle )
 {
 	// Select all/none view contents.
 	if (bSelect) {
-		int flags = SelectCommit;
-		if (bToggle)
-			flags |= SelectToggle;
 		const QRect rect(0, 0,
 			m_pEditView->contentsWidth(),
 			m_pEditView->contentsHeight());
-		updateDragSelect(m_pEditView, rect, flags);
-		selectionChangeNotify();
+		selectRect(rect, bToggle, true);
 	} else {
 		updateContents();
 	}
+}
+
+
+// Select everything between a given view rectangle.
+void qtractorMidiEditor::selectRect ( const QRect& rect, bool bToggle,
+	bool bCommit )
+{
+	int flags = SelectNone;
+	if (bToggle)
+		flags |= SelectToggle;
+	if (bCommit)
+		flags |= SelectCommit;
+	updateDragSelect(m_pEditView, rect.normalized(), flags);
+	selectionChangeNotify();
 }
 
 
@@ -1014,6 +1108,9 @@ qtractorMidiEvent *qtractorMidiEditor::dragEditEvent (
 			if (m_pTimeScale->snapPerBeat() > 0)
 				iDuration /= m_pTimeScale->snapPerBeat();
 			pEvent->setDuration(iDuration);
+			// Mark that we've a note pending...
+			m_iNoteOn = int(pEvent->note());
+			sendNote(m_iNoteOn, int(pEvent->velocity()));
 		}
 		break;
 	case qtractorMidiEvent::PITCHBEND:
@@ -1168,6 +1265,13 @@ void qtractorMidiEditor::dragMoveStart ( qtractorScrollView *pScrollView,
 			pScrollView->setCursor(QCursor(
 				static_cast<qtractorScrollView *> (m_pEditView)	== pScrollView
 				? Qt::SizeAllCursor : Qt::SizeHorCursor));
+			// Maybe we'll have a note pending...
+			if (m_pEventDrag->type() == qtractorMidiEvent::NOTEON) {
+				if (m_iNoteOn > 0)
+					sendNote(m_iNoteOn, 0);
+				m_iNoteOn = int(m_pEventDrag->note());
+				sendNote(m_iNoteOn, int(m_pEventDrag->velocity()));
+			}
 		} else {
 			pScrollView->setCursor(QCursor(Qt::CrossCursor));
 		}
@@ -1451,6 +1555,18 @@ void qtractorMidiEditor::updateDragMove ( qtractorScrollView *pScrollView,
 		if (y1 + rect.height() > ch)
 			y1 = ch - rect.height();
 		m_posDelta.setY(h1 * (y1 / h1) - y0); 
+		// Maybe we'll have a note pending...
+		if (m_pEventDrag && m_pEventDrag->type() == qtractorMidiEvent::NOTEON) {
+			int iNoteOn = int(m_pEventDrag->note());
+			if (h1 > 0)
+				iNoteOn -= (m_posDelta.y() / h1);
+			if (iNoteOn != m_iNoteOn) {
+				if (m_iNoteOn > 0)
+					sendNote(m_iNoteOn, 0);
+				m_iNoteOn = iNoteOn;
+				sendNote(m_iNoteOn, int(m_pEventDrag->velocity()));
+			}
+		}
 	} else {
 		m_posDelta.setY(0);
 	}
@@ -1622,19 +1738,21 @@ void qtractorMidiEditor::executeDragResize ( qtractorScrollView *pScrollView,
 			} else {
 				pEditCommand->resizeEventTime(pEvent, iTime, iDuration);
 			}
+			m_last.note = pEvent->note();
+		//	m_last.duration = iDuration;
 			break;
 		case ResizeNoteRight:
-			iTime = long(pEvent->duration()) + iTimeDelta;
-			if (iTime < 0)
-				iTime = 0;
+			iDuration = long(pEvent->duration()) + iTimeDelta;
+			if (iDuration < 0)
+				iDuration = 0;
 			if (m_bEventDragEdit) {
-				pEvent->setDuration(iTime);
+				pEvent->setDuration(iDuration);
 				pEditCommand->insertEvent(pEvent);
-				m_last.note = pEvent->note();
-			//	m_last.duration = pEvent->duration();
 			} else {
-				pEditCommand->resizeEventDuration(pEvent, iTime);
+				pEditCommand->resizeEventDuration(pEvent, iDuration);
 			}
+			m_last.note = pEvent->note();
+		//	m_last.duration = iDuration;
 			break;
 		case ResizeValueTop:
 			iValue = int(pEvent->value()) + iValueDelta;
@@ -1646,10 +1764,10 @@ void qtractorMidiEditor::executeDragResize ( qtractorScrollView *pScrollView,
 			if (m_bEventDragEdit) {
 				pEvent->setValue(iValue);
 				pEditCommand->insertEvent(pEvent);
-				m_last.value = pEvent->value();
 			} else {
 				pEditCommand->resizeEventValue(pEvent, iValue);
 			}
+			m_last.value = iValue;
 			break;
 		case ResizePitchBendTop:
 		case ResizePitchBendBottom:
@@ -1662,10 +1780,10 @@ void qtractorMidiEditor::executeDragResize ( qtractorScrollView *pScrollView,
 			if (m_bEventDragEdit) {
 				pEvent->setPitchBend(iValue);
 				pEditCommand->insertEvent(pEvent);
-				m_last.pitchBend = pEvent->pitchBend();
 			} else {
 				pEditCommand->resizeEventValue(pEvent, iValue);
 			}
+			m_last.pitchBend = iValue;
 			break;
 		default:
 			break;
@@ -1848,6 +1966,11 @@ void qtractorMidiEditor::resetDragState ( qtractorScrollView *pScrollView )
 			updateContents();
 	}
 
+	if (m_iNoteOn > 0) {
+		sendNote(m_iNoteOn, 0);
+		m_iNoteOn = -1;
+	}
+
 	m_dragState  = DragNone;
 	m_resizeMode = ResizeNone;
 }
@@ -1934,6 +2057,16 @@ void qtractorMidiEditor::selectionChangeNotify (void)
 void qtractorMidiEditor::contentsChangeNotify (void)
 {
 	emit changeNotifySignal();
+}
+
+
+// Emit note on/off.
+void qtractorMidiEditor::sendNote ( int iNote, int iVelocity )
+{
+	if (iVelocity == 1)
+		iVelocity = m_last.value;
+
+	emit sendNoteSignal(iNote, iVelocity);
 }
 
 

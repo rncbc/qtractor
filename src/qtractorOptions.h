@@ -113,6 +113,7 @@ public:
 	bool bMidiFileToolbar;
 	bool bMidiEditToolbar;
 	bool bMidiViewToolbar;
+	bool bMidiFollowPlayhead;
 	bool bMidiEditMode;
 
 	// Widget geometry persistence helper prototypes.

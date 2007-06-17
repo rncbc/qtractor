@@ -180,6 +180,9 @@ public:
 	// Track loop point setler.
 	void setLoop(unsigned long iLoopStart, unsigned long iLoopEnd);
 
+	// Update all clips editors.
+	void updateClipEditors();
+
 	// Document element methods.
 	bool loadElement(qtractorSessionDocument *pDocument,
 		QDomElement *pElement);

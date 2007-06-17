@@ -35,6 +35,8 @@
 #include "qtractorMidiSequence.h"
 #else
 #include "qtractorMidiClip.h"
+#include "qtractorMidiEngine.h"
+#include "qtractorMidiMonitor.h"
 #include "qtractorOptions.h"
 #include "qtractorSession.h"
 #include "qtractorTracks.h"
@@ -92,6 +94,7 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	for (unsigned short iSnapPerBeat = 2; iSnapPerBeat < 64; iSnapPerBeat <<= 1)
 		m_pSnapPerBeatComboBox->addItem(sPrefix.arg(iSnapPerBeat));
 	m_pSnapPerBeatComboBox->setToolTip(tr("Snap/beat"));
+	m_ui.viewToolbar->addSeparator();
 	m_ui.viewToolbar->addWidget(m_pSnapPerBeatComboBox);
 
 	// Event type selection widgets...
@@ -248,6 +251,9 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	QObject::connect(m_ui.viewToolbarViewAction,
 		SIGNAL(triggered(bool)),
 		SLOT(viewToolbarView(bool)));
+	QObject::connect(m_ui.viewFollowAction,
+		SIGNAL(triggered(bool)),
+		SLOT(viewFollow(bool)));
 	QObject::connect(m_ui.viewRefreshAction,
 		SIGNAL(triggered(bool)),
 		SLOT(viewRefresh()));
@@ -306,6 +312,7 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 		m_ui.viewToolbarFileAction->setChecked(pOptions->bMidiFileToolbar);
 		m_ui.viewToolbarEditAction->setChecked(pOptions->bMidiEditToolbar);
 		m_ui.viewToolbarViewAction->setChecked(pOptions->bMidiViewToolbar);
+		m_ui.viewFollowAction->setChecked(pOptions->bMidiFollowPlayhead);
 		if (pOptions->bMidiEditMode)
 			m_ui.editModeOnAction->setChecked(true);
 		else
@@ -317,6 +324,7 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 		viewToolbarEdit(pOptions->bMidiEditToolbar);
 		viewToolbarView(pOptions->bMidiViewToolbar);
 		m_pMidiEditor->setEditMode(pOptions->bMidiEditMode);
+		m_pMidiEditor->setSyncView(pOptions->bMidiFollowPlayhead);
 		// Restore whole dock windows state.
 		QByteArray aDockables = pOptions->settings().value(
 			"/MidiEditor/Layout/DockWindows").toByteArray();
@@ -399,6 +407,7 @@ bool qtractorMidiEditorForm::queryClose (void)
 			pOptions->bMidiEditToolbar = m_ui.editToolbar->isVisible();
 			pOptions->bMidiViewToolbar = m_ui.viewToolbar->isVisible();
 			pOptions->bMidiEditMode = m_ui.editModeOnAction->isChecked();
+			pOptions->bMidiFollowPlayhead = m_ui.viewFollowAction->isChecked();
 			// Save the dock windows state.
 			pOptions->settings().setValue(
 				"/MidiEditor/Layout/DockWindows", saveState());
@@ -412,11 +421,30 @@ bool qtractorMidiEditorForm::queryClose (void)
 }
 
 
-// On-close event handlers.
+// On-show event handler.
+void qtractorMidiEditorForm::showEvent ( QShowEvent *pShowEvent )
+{
+#ifndef CONFIG_TEST
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm)
+		pMainForm->addEditor(m_pMidiEditor);
+#endif
+
+	QMainWindow::showEvent(pShowEvent);
+}
+
+
+// On-close event handler.
 void qtractorMidiEditorForm::closeEvent ( QCloseEvent *pCloseEvent )
 {
 	if (queryClose()) {
 		m_iDirtyCount = 0;
+#ifndef CONFIG_TEST
+		// Remove this one from main-form list...
+		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+		if (pMainForm)
+			pMainForm->removeEditor(m_pMidiEditor);
+#endif
 		pCloseEvent->accept();
 	} else {
 		pCloseEvent->ignore();
@@ -578,6 +606,10 @@ void qtractorMidiEditorForm::setup ( qtractorMidiClip *pMidiClip )
 		QObject::connect(m_pMidiEditor,
 			SIGNAL(changeNotifySignal()),
 			pMainForm, SLOT(changeNotifySlot()));
+		// This one's local but helps...
+		QObject::connect(m_pMidiEditor,
+			SIGNAL(sendNoteSignal(int,int)),
+			SLOT(sendNote(int,int)));
 	}
 
 	// Try to position the editor in same of track view...
@@ -600,6 +632,8 @@ void qtractorMidiEditorForm::setup ( qtractorMidiClip *pMidiClip )
 	int cx = (m_pMidiEditor->timeScale())->pixelFromFrame(iFrame);
 	int cy = (m_pMidiEditor->editView())->contentsY();
 	(m_pMidiEditor->editView())->setContentsPos(cx, cy);
+
+	m_pMidiEditor->setPlayHead(pSession->playHead());
 }
 
 #endif
@@ -872,12 +906,57 @@ void qtractorMidiEditorForm::viewToolbarView ( bool bOn )
 }
 
 
+// View follow playhead
+void qtractorMidiEditorForm::viewFollow ( bool bOn )
+{
+	m_pMidiEditor->setSyncView(bOn);
+}
+
+
 // Refresh view display.
 void qtractorMidiEditorForm::viewRefresh (void)
 {
 	m_pMidiEditor->refresh();
 
 	stabilizeForm();
+}
+
+
+// Send note on/off to respective output bus.
+void qtractorMidiEditorForm::sendNote ( int iNote, int iVelocity )
+{
+#ifdef CONFIG_TEST
+
+	fprintf(stderr, "qtractorMidiEditorForm::sendNote(%d, %d)\n", iNote, iVelocity);
+
+#else
+
+	if (m_pMidiClip == NULL)
+		return;
+
+	qtractorTrack *pTrack = m_pMidiClip->track();
+	if (pTrack == NULL)
+		return;
+
+	qtractorMidiBus *pMidiBus
+		= static_cast<qtractorMidiBus *> (pTrack->outputBus());
+	if (pMidiBus == NULL)
+		return;
+
+	pMidiBus->sendNote(pTrack->midiChannel(), iNote, iVelocity);
+
+	// Track input monitoring...
+	if (iVelocity > 0) {
+		qtractorMidiMonitor *pMidiMonitor
+			= static_cast<qtractorMidiMonitor *> (pTrack->monitor());
+		if (pMidiMonitor)
+			pMidiMonitor->enqueue(qtractorMidiEvent::NOTEON, iVelocity);
+		pMidiMonitor = pMidiBus->midiMonitor_out();
+		if (pMidiMonitor)
+			pMidiMonitor->enqueue(qtractorMidiEvent::NOTEON, iVelocity);
+	}
+
+#endif
 }
 
 

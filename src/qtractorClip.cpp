@@ -447,11 +447,16 @@ bool qtractorClip::startEditor ( QWidget *pParent )
 	return clipForm.exec();
 }
 
-
 // Clip query-close method (return true if editing is done).
 bool qtractorClip::queryEditor (void)
 {
 	return true; // !isDirty();
+}
+
+// Clip editor update.
+void qtractorClip::updateEditor (void)
+{
+	// Do nothing here.
 }
 
 

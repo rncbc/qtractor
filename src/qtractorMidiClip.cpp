@@ -484,6 +484,22 @@ bool qtractorMidiClip::queryEditor (void)
 }
 
 
+// Clip editor update.
+void qtractorMidiClip::updateEditor (void)
+{
+	if (m_pMidiEditorForm == NULL)
+		return;
+
+	qtractorTrack *pTrack = track();
+	if (pTrack == NULL)
+		return;
+
+	m_pMidiEditorForm->setForeground(pTrack->foreground());
+	m_pMidiEditorForm->setBackground(pTrack->background());
+	m_pMidiEditorForm->updateContents();
+}
+
+
 // Local dirty flag.
 void qtractorMidiClip::setDirty ( bool bDirty )
 {

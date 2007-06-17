@@ -410,6 +410,9 @@ bool qtractorEditTrackCommand::redo (void)
 	if (m_pTrack->trackType() == qtractorTrack::Midi)
 	    pTracks->updateMidiTrack(m_pTrack);
 
+	// Finally update any outstanding clip editors...
+	m_pTrack->updateClipEditors();
+
 	return bResult;
 }
 
