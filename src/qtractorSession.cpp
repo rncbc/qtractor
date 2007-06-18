@@ -544,16 +544,16 @@ void qtractorSession::updateSampleRate ( unsigned int iOldSampleRate )
 			pTrack; pTrack = pTrack->next()) {
 		for (qtractorClip *pClip = pTrack->clips().first();
 				pClip; pClip = pClip->next()) {
-		//	pClip->setClipStart(
-		//		_ulroundf(fRatio * float(pClip->clipStart())));
-			pClip->setClipOffset(
-				_ulroundf(fRatio * float(pClip->clipOffset())));
-		//	pClip->setClipLength(
-		//		_ulroundf(fRatio * float(pClip->clipLength())));
-			pClip->setFadeInLength(
-				_ulroundf(fRatio * float(pClip->fadeInLength())));
-			pClip->setFadeOutLength(
-				_ulroundf(fRatio * float(pClip->fadeOutLength())));
+		//	pClip->setClipStart(qtractorTimeScale::uroundf(
+		//		fRatio * float(pClip->clipStart())));
+			pClip->setClipOffset(qtractorTimeScale::uroundf(
+				fRatio * float(pClip->clipOffset())));
+		//	pClip->setClipLength(qtractorTimeScale::uroundf(
+		//		fRatio * float(pClip->clipLength())));
+			pClip->setFadeInLength(qtractorTimeScale::uroundf(
+				fRatio * float(pClip->fadeInLength())));
+			pClip->setFadeOutLength(qtractorTimeScale::uroundf(
+				fRatio * float(pClip->fadeOutLength())));
 			pClip->open();
 		}
 	}

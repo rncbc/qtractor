@@ -119,7 +119,7 @@ unsigned long qtractorTimeScale::frameFromText ( const QString& sText ) const
 			float secs = sText.section(':', 2).toFloat();
 			mm   += 60 * hh;
 			secs += 60.f * (float) mm;
-			iFrame = _ulroundf(secs * (float) m_iSampleRate);
+			iFrame = uroundf(secs * (float) m_iSampleRate);
 			break;
 		}
 

@@ -398,8 +398,8 @@ bool qtractorMidiEditorForm::queryClose (void)
 	}
 
 #ifndef CONFIG_TEST
-	// Try to save current editor state...
-	if (bQueryClose) {
+	// Try to save current editor view state...
+	if (bQueryClose && isVisible()) {
 		qtractorOptions *pOptions = NULL;
 		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 		if (pMainForm)

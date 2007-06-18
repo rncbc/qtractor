@@ -480,7 +480,10 @@ bool qtractorMidiClip::startEditor ( QWidget */*pParent*/ )
 // Clip query-close method (return true if editing is done).
 bool qtractorMidiClip::queryEditor (void)
 {
-	return (m_pMidiEditorForm && m_pMidiEditorForm->queryClose());
+	if (m_pMidiEditorForm)
+		return m_pMidiEditorForm->queryClose();
+	else
+		return qtractorClip::queryEditor();
 }
 
 
