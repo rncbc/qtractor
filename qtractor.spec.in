@@ -1,6 +1,6 @@
 %define name    @PACKAGE_TARNAME@
 %define version @PACKAGE_VERSION@
-%define release 3
+%define release 4
 %define prefix  /usr/local
 
 Summary:	An Audio/MIDI multi-track sequencer.
@@ -13,7 +13,8 @@ Group:		Applications/Multimedia
 Source0:	%{name}-%{version}.tar.gz
 URL:		http://qtractor.sourceforge.net/
 BuildRoot:	/var/tmp/%{name}-%{version}-buildroot
-Requires:	libsndfile >= 1.0.11
+Requires:	jack, alsa, libsndfile
+BuildRequires: jack-devel, alsa-devel, libsndfile-devel, ladspa 
 
 %description
 Qtractor is an Audio/MIDI multi-track sequencer application
@@ -49,6 +50,8 @@ if [ -d $RPM_BUILD_ROOT ]; then rm -rf $RPM_BUILD_ROOT; fi
 %{prefix}/share/icons/qtractor.png
 
 %changelog
+* Mon Jun 18 2007 Rui Nuno Capela <rncbc@users.sourceforge.net>
+- Declared fundamental build and run-time requirements.
 * Mon Apr 16 2007 Rui Nuno Capela <rncbc@users.sourceforge.net>
 - Minor descriptive corrections.
 * Fri Jan 05 2007 Rui Nuno Capela <rncbc@users.sourceforge.net>

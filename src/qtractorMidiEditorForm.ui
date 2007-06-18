@@ -457,7 +457,7 @@
 		  <bool>true</bool>
 	  </property>
 	  <property name="icon" >
-		  <iconset resource="../icons/qtractor.qrc" >:/icons/itemAudioPortPhysIn.png</iconset>
+		  <iconset resource="../icons/qtractor.qrc" >:/icons/viewPreview.png</iconset>
 	  </property>
 	  <property name="text" >
 		  <string>&amp;Preview Notes</string>

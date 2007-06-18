@@ -210,7 +210,7 @@ qtractorMainForm::qtractorMainForm (
 	m_pTransportTimeSpinBox->setPalette(pal);
 //	m_pTransportTimeSpinBox->setAutoFillBackground(true);
 	m_pTransportTimeSpinBox->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-	m_pTransportTimeSpinBox->setFixedSize(QSize(124, 26));
+	m_pTransportTimeSpinBox->setFixedSize(QSize(128, 26));
 	m_pTransportTimeSpinBox->setToolTip(tr("Current transport time (playhead)"));
 	m_ui.timeToolbar->addWidget(m_pTransportTimeSpinBox);
 	m_ui.timeToolbar->addSeparator();
