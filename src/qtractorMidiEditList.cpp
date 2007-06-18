@@ -190,7 +190,7 @@ void qtractorMidiEditList::drawContents ( QPainter *pPainter, const QRect& rect 
 	pPainter->drawPixmap(rect, m_pixmap, rect);
 
 	// Are we sticking in some note?
-	if (m_iNoteOn > 0) {
+	if (m_iNoteOn >= 0) {
 		pPainter->fillRect(QRect(
 			contentsToViewport(m_rectNote.topLeft()),
 			m_rectNote.size()), QColor(255, 0, 120, 120));
@@ -206,23 +206,42 @@ void qtractorMidiEditList::contentsYMovingSlot ( int /*cx*/, int cy )
 }
 
 
-// Piano keyboard note handler.
-void qtractorMidiEditList::dragNoteOn ( int y )
+// Piano keyboard handlers.
+void qtractorMidiEditList::dragNoteOn ( int iNote, int iVelocity )
 {
-	if (y >= 0) {
-		// Simulate we're clicking on the right side...
-		dragNoteOn(QPoint(qtractorScrollView::viewport()->width() - 2, y));
-	} else if (m_iNoteOn > 0) {
-		// Otherwise, reset any pending note...
+	// If it ain't changed we won't change it ;)
+	if (iNote == m_iNoteOn)
+		return;
+
+	// Were we pending on some sounding note?
+	if (m_iNoteOn >= 0) {
+		// Turn off old note...
 		m_pEditor->sendNote(m_iNoteOn, 0);
 		m_iNoteOn = -1;
 		qtractorScrollView::viewport()->update(
 			QRect(contentsToViewport(m_rectNote.topLeft()),
 			m_rectNote.size()));
 	}
+
+	// Now for the sounding new one...
+	if (iNote >= 0) {
+		// This stands for the keyboard area...
+		QWidget *pViewport = qtractorScrollView::viewport();
+		int w = pViewport->width();
+		int x = ((w << 1) / 3);
+		int y = ((127 - iNote) * m_iItemHeight) + 1;
+		// This is the new note on...
+		m_iNoteOn = iNote;
+		m_rectNote.setRect(x, y, w - x, m_iItemHeight);
+		m_pEditor->sendNote(m_iNoteOn, iVelocity);
+		qtractorScrollView::viewport()->update(
+			QRect(contentsToViewport(m_rectNote.topLeft()),
+			m_rectNote.size()));
+		// Otherwise, reset any pending note...
+	}
 }
 
-void qtractorMidiEditList::dragNoteOn ( const QPoint& pos )
+void qtractorMidiEditList::dragNoteOn ( const QPoint& pos, int iVelocity )
 {
 	// This stands for the keyboard area...
 	QWidget *pViewport = qtractorScrollView::viewport();
@@ -234,30 +253,7 @@ void qtractorMidiEditList::dragNoteOn ( const QPoint& pos )
 		return;
 
 	// Compute new key cordinates...
-	int q = ((pos.y() - 1) / m_iItemHeight);
-	int y = (q * m_iItemHeight) + 1;
-	int n = 127 - q;
-
-	// If it ain't changed we won't change it ;)
-	if (m_iNoteOn == n)
-		return;
-
-	// Were we pending on some sounding note?
-	if (m_iNoteOn > 0) {
-		// Turn off old note...
-		m_pEditor->sendNote(m_iNoteOn, 0);
-		qtractorScrollView::viewport()->update(
-			QRect(contentsToViewport(m_rectNote.topLeft()),
-			m_rectNote.size()));
-	}
-
-	// This is the new note on...
-	m_iNoteOn = n;
-	m_rectNote.setRect(x, y, w - x, m_iItemHeight);
-	m_pEditor->sendNote(m_iNoteOn, 1);
-	qtractorScrollView::viewport()->update(
-		QRect(contentsToViewport(m_rectNote.topLeft()),
-		m_rectNote.size()));
+	dragNoteOn(127 - ((pos.y() - 1) / m_iItemHeight), iVelocity);
 }
 
 

@@ -544,6 +544,7 @@ int qtractorMidiEditor::playHeadX (void) const
 	return m_iPlayHeadX;
 }
 
+
 // Playhead followness.
 void qtractorMidiEditor::setSyncView ( bool bSyncView )
 {
@@ -1122,7 +1123,7 @@ qtractorMidiEvent *qtractorMidiEditor::dragEditEvent (
 			pEvent->setDuration(iDuration);
 			// Mark that we've a note pending...
 			if (m_bSendNotes)
-				m_pEditList->dragNoteOn(pos.y());
+				m_pEditList->dragNoteOn(pEvent->note(), pEvent->velocity());
 		}
 		break;
 	case qtractorMidiEvent::PITCHBEND:
@@ -1285,7 +1286,7 @@ void qtractorMidiEditor::dragMoveStart ( qtractorScrollView *pScrollView,
 	// Maybe we'll have a note pending...
 	if (m_bSendNotes && m_pEventDrag
 		&& m_pEventDrag->type() == qtractorMidiEvent::NOTEON)
-		m_pEditList->dragNoteOn(pos.y());
+		m_pEditList->dragNoteOn(m_pEventDrag->note(), m_pEventDrag->velocity());
 }
 
 
@@ -1583,8 +1584,12 @@ void qtractorMidiEditor::updateDragMove ( qtractorScrollView *pScrollView,
 
 	// Maybe we've change some note pending...
 	if (m_bSendNotes && m_pEventDrag
-		&& m_pEventDrag->type() == qtractorMidiEvent::NOTEON)
-		m_pEditList->dragNoteOn(m_posDrag.y() + m_posDelta.y());
+		&& m_pEventDrag->type() == qtractorMidiEvent::NOTEON) {
+		int iNote = int(m_pEventDrag->note());
+		if (h1 > 0)
+			iNote -= (m_posDelta.y() / h1);
+		m_pEditList->dragNoteOn(iNote, m_pEventDrag->velocity());
+	}
 }
 
 

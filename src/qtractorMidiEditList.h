@@ -65,7 +65,7 @@ public:
 	void updateContents();
 
 	// Piano keyboard note handler.
-	void dragNoteOn(int y);
+	void dragNoteOn(int iNote, int iVelocity = 1);
 
 protected:
 
@@ -78,8 +78,8 @@ protected:
 	// Draw the time scale.
 	void drawContents(QPainter *pPainter, const QRect& rect);
 
-	// Piano keyboard note event handler.
-	void dragNoteOn(const QPoint& pos);
+	// Piano keyboard position handler.
+	void dragNoteOn(const QPoint& pos, int iVelocity = 1);
 
 	// Handle item selection with mouse.
 	void mousePressEvent(QMouseEvent *pMouseEvent);
