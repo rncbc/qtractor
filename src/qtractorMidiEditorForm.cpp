@@ -490,12 +490,6 @@ qtractorTimeScale *qtractorMidiEditorForm::timeScale (void) const
 void qtractorMidiEditorForm::setFilename ( const QString& sFilename )
 {
 	m_sFilename = sFilename;
-#ifndef CONFIG_TEST
-	if (m_pMidiClip) {
-		m_pMidiClip->setFilename(m_sFilename);
-		m_pMidiClip->setDirty(false);
-	}
-#endif
 }
 
 const QString& qtractorMidiEditorForm::filename (void) const
@@ -508,10 +502,6 @@ const QString& qtractorMidiEditorForm::filename (void) const
 void qtractorMidiEditorForm::setTrackChannel ( unsigned short iTrackChannel )
 {
 	m_iTrackChannel = iTrackChannel;
-#ifndef CONFIG_TEST
-	if (m_pMidiClip)
-		m_pMidiClip->setTrackChannel(m_iTrackChannel);
-#endif
 }
 
 unsigned short qtractorMidiEditorForm::trackChannel (void) const
@@ -524,10 +514,6 @@ unsigned short qtractorMidiEditorForm::trackChannel (void) const
 void qtractorMidiEditorForm::setFormat ( unsigned short iFormat )
 {
 	m_iFormat = iFormat;
-#ifndef CONFIG_TEST
-	if (m_pMidiClip)
-		m_pMidiClip->setFormat(m_iFormat);
-#endif
 }
 
 unsigned short qtractorMidiEditorForm::format (void) const
@@ -723,8 +709,14 @@ bool qtractorMidiEditorForm::saveClipFile ( bool bPrompt )
 	if (bResult) {
 		// First, set our resulting filename.
 		setFilename(sFilename);
-		// Aha, but we're no dirty no more.
+		// Aha, but we're not dirty no more.
 		m_iDirtyCount = 0;
+#ifndef CONFIG_TEST
+		if (m_pMidiClip) {
+			m_pMidiClip->setFilename(sFilename);
+			m_pMidiClip->setDirty(false);
+		}
+#endif
 	}
 
 	// Done.
