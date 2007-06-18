@@ -13,8 +13,10 @@ Group:		Applications/Multimedia
 Source0:	%{name}-%{version}.tar.gz
 URL:		http://qtractor.sourceforge.net/
 BuildRoot:	/var/tmp/%{name}-%{version}-buildroot
-Requires:	jack, alsa, libsndfile
-BuildRequires: jack-devel, alsa-devel, libsndfile-devel, ladspa 
+Requires:	jack, alsa, libsndfile, libvorbis, libsamplerate, mad
+
+BuildRequires: jack-devel, alsa-devel, libsndfile-devel, ladspa,
+BuildRequires: libvorbis-devel, libsamplerate-devel, mad-devel
 
 %description
 Qtractor is an Audio/MIDI multi-track sequencer application
