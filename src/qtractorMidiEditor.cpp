@@ -328,7 +328,6 @@ qtractorMidiEditor::qtractorMidiEditor ( QWidget *pParent )
 
 	// Note autition while editing.
 	m_bSendNotes = false;
-	m_iNoteOn = -1;
 
 	// Create child frame widgets...
 	QSplitter *pSplitter = new QSplitter(Qt::Horizontal, this);
@@ -1122,10 +1121,8 @@ qtractorMidiEvent *qtractorMidiEditor::dragEditEvent (
 				iDuration /= m_pTimeScale->snapPerBeat();
 			pEvent->setDuration(iDuration);
 			// Mark that we've a note pending...
-			if (m_bSendNotes) {
-				m_iNoteOn = int(pEvent->note());
-				sendNote(m_iNoteOn, int(pEvent->velocity()));
-			}
+			if (m_bSendNotes)
+				m_pEditList->dragNoteOn(pos.y());
 		}
 		break;
 	case qtractorMidiEvent::PITCHBEND:
@@ -1287,12 +1284,8 @@ void qtractorMidiEditor::dragMoveStart ( qtractorScrollView *pScrollView,
 
 	// Maybe we'll have a note pending...
 	if (m_bSendNotes && m_pEventDrag
-		&& m_pEventDrag->type() == qtractorMidiEvent::NOTEON) {
-		if (m_iNoteOn > 0)
-			sendNote(m_iNoteOn, 0);
-		m_iNoteOn = int(m_pEventDrag->note());
-		sendNote(m_iNoteOn, int(m_pEventDrag->velocity()));
-	}
+		&& m_pEventDrag->type() == qtractorMidiEvent::NOTEON)
+		m_pEditList->dragNoteOn(pos.y());
 }
 
 
@@ -1590,17 +1583,8 @@ void qtractorMidiEditor::updateDragMove ( qtractorScrollView *pScrollView,
 
 	// Maybe we've change some note pending...
 	if (m_bSendNotes && m_pEventDrag
-		&& m_pEventDrag->type() == qtractorMidiEvent::NOTEON) {
-		int iNoteOn = int(m_pEventDrag->note());
-		if (h1 > 0)
-			iNoteOn -= (m_posDelta.y() / h1);
-		if (iNoteOn != m_iNoteOn) {
-			if (m_iNoteOn > 0)
-				sendNote(m_iNoteOn, 0);
-			m_iNoteOn = iNoteOn;
-			sendNote(m_iNoteOn, int(m_pEventDrag->velocity()));
-		}
-	}
+		&& m_pEventDrag->type() == qtractorMidiEvent::NOTEON)
+		m_pEditList->dragNoteOn(m_posDrag.y() + m_posDelta.y());
 }
 
 
@@ -1985,10 +1969,8 @@ void qtractorMidiEditor::resetDragState ( qtractorScrollView *pScrollView )
 			updateContents();
 	}
 
-	if (m_iNoteOn > 0) {
-		sendNote(m_iNoteOn, 0);
-		m_iNoteOn = -1;
-	}
+	if (m_pEditList)
+		m_pEditList->dragNoteOn(-1);
 
 	m_dragState  = DragNone;
 	m_resizeMode = ResizeNone;

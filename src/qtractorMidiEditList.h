@@ -64,6 +64,9 @@ public:
 	// Overall contents update.
 	void updateContents();
 
+	// Piano keyboard note handler.
+	void dragNoteOn(int y);
+
 protected:
 
 	// Virtual size hint.

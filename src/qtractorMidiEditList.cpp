@@ -206,7 +206,22 @@ void qtractorMidiEditList::contentsYMovingSlot ( int /*cx*/, int cy )
 }
 
 
-// Piano keyboard note event handler.
+// Piano keyboard note handler.
+void qtractorMidiEditList::dragNoteOn ( int y )
+{
+	if (y >= 0) {
+		// Simulate we're clicking on the right side...
+		dragNoteOn(QPoint(qtractorScrollView::viewport()->width() - 2, y));
+	} else if (m_iNoteOn > 0) {
+		// Otherwise, reset any pending note...
+		m_pEditor->sendNote(m_iNoteOn, 0);
+		m_iNoteOn = -1;
+		qtractorScrollView::viewport()->update(
+			QRect(contentsToViewport(m_rectNote.topLeft()),
+			m_rectNote.size()));
+	}
+}
+
 void qtractorMidiEditList::dragNoteOn ( const QPoint& pos )
 {
 	// This stands for the keyboard area...
@@ -214,8 +229,8 @@ void qtractorMidiEditList::dragNoteOn ( const QPoint& pos )
 	int w = pViewport->width();
 	int x = ((w << 1) / 3);
 
-	// Are we on it?	 
-	if (pos.x() < x || pos.x() >= w)
+	// Are we on it?
+	if (pos.x() < x || pos.x() > w)
 		return;
 
 	// Compute new key cordinates...
@@ -223,18 +238,17 @@ void qtractorMidiEditList::dragNoteOn ( const QPoint& pos )
 	int y = (q * m_iItemHeight) + 1;
 	int n = 127 - q;
 
+	// If it ain't changed we won't change it ;)
+	if (m_iNoteOn == n)
+		return;
+
 	// Were we pending on some sounding note?
 	if (m_iNoteOn > 0) {
-		// It must be different...
-		if (m_iNoteOn != n) {
-			m_pEditor->sendNote(m_iNoteOn, 0);
-			m_iNoteOn = -1;
-			qtractorScrollView::viewport()->update(
-				QRect(contentsToViewport(m_rectNote.topLeft()),
-				m_rectNote.size()));
-		}
-		// Give some time for screen update.
-		return;
+		// Turn off old note...
+		m_pEditor->sendNote(m_iNoteOn, 0);
+		qtractorScrollView::viewport()->update(
+			QRect(contentsToViewport(m_rectNote.topLeft()),
+			m_rectNote.size()));
 	}
 
 	// This is the new note on...
@@ -358,13 +372,7 @@ void qtractorMidiEditList::keyPressEvent ( QKeyEvent *pKeyEvent )
 void qtractorMidiEditList::resetDragState (void)
 {
 	// Were we stuck on some keyboard note?
-	if (m_iNoteOn > 0) {
-		m_pEditor->sendNote(m_iNoteOn, 0);
-		m_iNoteOn = -1;
-		qtractorScrollView::viewport()->update(
-			QRect(contentsToViewport(m_rectNote.topLeft()),
-			m_rectNote.size()));
-	}
+	dragNoteOn(-1);
 
 	// Cancel any dragging out there...
 	switch (m_dragState) {

@@ -366,7 +366,6 @@ private:
 
 	// Note autition while editing.
 	bool m_bSendNotes;
-	int  m_iNoteOn;
 };
 
 
