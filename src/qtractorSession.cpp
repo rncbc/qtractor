@@ -40,8 +40,6 @@
 #include <QRegExp>
 #include <QDir>
 
-#include <math.h>
-
 
 //-------------------------------------------------------------------------
 // qtractorSession::Properties -- Session properties structure.
@@ -547,15 +545,15 @@ void qtractorSession::updateSampleRate ( unsigned int iOldSampleRate )
 		for (qtractorClip *pClip = pTrack->clips().first();
 				pClip; pClip = pClip->next()) {
 		//	pClip->setClipStart(
-		//		::lroundf(fRatio * float(pClip->clipStart())));
+		//		_ulroundf(fRatio * float(pClip->clipStart())));
 			pClip->setClipOffset(
-				::lroundf(fRatio * float(pClip->clipOffset())));
+				_ulroundf(fRatio * float(pClip->clipOffset())));
 		//	pClip->setClipLength(
-		//		::lroundf(fRatio * float(pClip->clipLength())));
+		//		_ulroundf(fRatio * float(pClip->clipLength())));
 			pClip->setFadeInLength(
-				::lroundf(fRatio * float(pClip->fadeInLength())));
+				_ulroundf(fRatio * float(pClip->fadeInLength())));
 			pClip->setFadeOutLength(
-				::lroundf(fRatio * float(pClip->fadeOutLength())));
+				_ulroundf(fRatio * float(pClip->fadeOutLength())));
 			pClip->open();
 		}
 	}

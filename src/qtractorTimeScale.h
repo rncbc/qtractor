@@ -24,8 +24,10 @@
 
 #include <QString>
 
-// Need this for lroundf.
-#include <math.h>
+
+// Fastest rounding-from-float helper.
+inline unsigned long _ulroundf(float x)
+	{ return (unsigned long) (x >= 0.0f ? x + 0.5f : x - 0.5f); }
 
 
 //----------------------------------------------------------------------
@@ -106,27 +108,27 @@ public:
 
 	// Pixel/Tick number conversion.
 	unsigned int tickFromPixel(unsigned int x) const
-		{ return (unsigned int) ::lroundf((m_fScale_d * x) / m_fScale_b); }
+		{ return _ulroundf((m_fScale_d * x) / m_fScale_b); }
 	unsigned int pixelFromTick(unsigned int iTick) const
-		{ return (unsigned int) ::lroundf((m_fScale_b * iTick) / m_fScale_d); }
+		{ return _ulroundf((m_fScale_b * iTick) / m_fScale_d); }
 
 	// Pixel/Frame number conversion.
 	unsigned long frameFromPixel(unsigned int x) const
-		{ return (unsigned long) ::lroundf((m_fScale_c * x) / m_fScale_b); }
+		{ return _ulroundf((m_fScale_c * x) / m_fScale_b); }
 	unsigned int pixelFromFrame(unsigned long iFrame) const
-		{ return (unsigned int) ::lroundf((m_fScale_b * iFrame) / m_fScale_c); }
+		{ return _ulroundf((m_fScale_b * iFrame) / m_fScale_c); }
 
 	// Beat/frame conversion.
 	unsigned long frameFromBeat(unsigned int iBeat) const
-		{ return (unsigned long) ::lroundf((m_fScale_c * iBeat) / m_fTempo); }
+		{ return _ulroundf((m_fScale_c * iBeat) / m_fTempo); }
 	unsigned int beatFromFrame(unsigned long iFrame) const
-		{ return (unsigned int) ::lroundf((m_fTempo * iFrame) / m_fScale_c); }
+		{ return _ulroundf((m_fTempo * iFrame) / m_fScale_c); }
 
 	// Tick/Frame number conversion.
 	unsigned long frameFromTick(unsigned int iTick) const
-		{ return (unsigned long) ::lroundf((m_fScale_c * iTick) / m_fScale_d); }
+		{ return _ulroundf((m_fScale_c * iTick) / m_fScale_d); }
 	unsigned int tickFromFrame(unsigned long iFrame) const
-		{ return (unsigned int) ::lroundf((m_fScale_d * iFrame) / m_fScale_c); }
+		{ return _ulroundf((m_fScale_d * iFrame) / m_fScale_c); }
 
 	// Beat/frame snap filters.
 	unsigned long tickSnap(unsigned long iTick) const;

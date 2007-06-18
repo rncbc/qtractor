@@ -173,10 +173,8 @@ void qtractorMidiSequence::replaceEvents ( qtractorMidiSequence *pSeq,
 	// Set the given replacement range...
 	unsigned short iTicksPerBeat = pSeq->ticksPerBeat();
 
-	unsigned long iTimeStart = (iTimeOffset * m_iTicksPerBeat)
-		/ iTicksPerBeat;
-	unsigned long iTimeEnd = ((iTimeOffset + iTimeLength) * m_iTicksPerBeat)
-		/ iTicksPerBeat;
+	unsigned long iTimeStart = timeq(iTimeOffset, iTicksPerBeat);
+	unsigned long iTimeEnd   = timeq(iTimeOffset + iTimeLength, iTicksPerBeat);
 
 	// Remove existing events in the given range...
 	qtractorMidiEvent *pEvent = m_events.first();
@@ -190,10 +188,9 @@ void qtractorMidiSequence::replaceEvents ( qtractorMidiSequence *pSeq,
 	// Insert new (cloned and adjusted) ones...
 	for (pEvent = pSeq->events().first(); pEvent; pEvent = pEvent->next()) {
 		qtractorMidiEvent *pNewEvent = new qtractorMidiEvent(*pEvent);
-		pNewEvent->setTime((pEvent->time() * m_iTicksPerBeat) / iTicksPerBeat);
+		pNewEvent->setTime(timeq(pEvent->time(), iTicksPerBeat));
 		if (pEvent->type() == qtractorMidiEvent::NOTEON) {
-			pNewEvent->setDuration(
-				(pEvent->duration() * m_iTicksPerBeat) / iTicksPerBeat);
+			pNewEvent->setDuration(timeq(pEvent->duration(),iTicksPerBeat));
 		}
 		insertEvent(pNewEvent);
 	}

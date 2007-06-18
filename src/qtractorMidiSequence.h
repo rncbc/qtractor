@@ -91,6 +91,19 @@ public:
 	void unlinkEvent (qtractorMidiEvent *pEvent);
 	void removeEvent (qtractorMidiEvent *pEvent);
 
+	// Adjust time resolutions (inline for speed).
+	unsigned long timep(unsigned long iTime, unsigned short p) const
+	{
+		float x = float(iTime * p) / float(m_iTicksPerBeat);
+		return (unsigned long) (x >= 0.0f ? x + 0.5f : x - 0.5f);
+	}
+
+	unsigned long timeq(unsigned long iTime, unsigned short q) const
+	{
+		float x = float(iTime * m_iTicksPerBeat) / float(q);
+		return (unsigned long) (x >= 0.0f ? x + 0.5f : x - 0.5f);
+	}
+
 	// Replace events from another sequence in given range.
 	void replaceEvents(qtractorMidiSequence *pSeq,
 		unsigned long iTimeOffset = 0, unsigned long iTimeLength = 0);
