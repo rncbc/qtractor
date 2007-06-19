@@ -560,6 +560,7 @@ void qtractorMidiEditorForm::setMidiClip ( qtractorMidiClip *pMidiClip  )
 		m_pMidiEditor->setBackground(pTrack->background());
 		// Now set the editing MIDI sequence alright...
 		m_pMidiEditor->setOffset(m_pMidiClip->clipStart());
+		m_pMidiEditor->setLength(m_pMidiClip->clipLength());
 		m_pMidiEditor->setSequence(m_pMidiClip->sequence());
 		m_sFilename = m_pMidiClip->filename();
 		m_iTrackChannel = m_pMidiClip->trackChannel();
@@ -568,6 +569,7 @@ void qtractorMidiEditorForm::setMidiClip ( qtractorMidiClip *pMidiClip  )
 		// No clip, no chips.
 		m_pMidiClip = NULL;
 		m_pMidiEditor->setOffset(0);
+		m_pMidiEditor->setLength(0);
 		m_pMidiEditor->setSequence(NULL);
 		m_sFilename.clear();
 		m_iTrackChannel = 0;

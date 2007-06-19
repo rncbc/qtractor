@@ -89,6 +89,10 @@ public:
 	void setOffset(unsigned long iOffset);
 	unsigned long offset() const;
 
+	// Time-scale length (in frames) accessors.
+	void setLength(unsigned long iLength);
+	unsigned long length() const;
+
 	// Child widgets accessors.
 	QFrame *editListHeader() const;
 	qtractorMidiEditList *editList() const;
@@ -303,8 +307,9 @@ private:
 	// The local time scale.
 	qtractorTimeScale *m_pTimeScale;
 
-	// The local time-scale offset.
+	// The local time-scale offset/length.
 	unsigned long m_iOffset;
+	unsigned long m_iLength;
 
 	// Event cursors (main time-line).
 	qtractorMidiCursor m_cursor;

@@ -287,6 +287,15 @@ void qtractorMidiEditEvent::updatePixmap ( int cx, int /*cy*/ )
 	const QColor& rgbDark  = pal.dark().color();
 	const QColor& rgbLight = pal.mid().color();
 
+	// Show that we may have clip limits...
+	if (m_pEditor->length() > 0) {
+		int x1 = pTimeScale->pixelFromFrame(m_pEditor->length()) - cx;
+		if (x1 < 0)
+			x1 = 0;
+		if (x1 < w)
+			p.fillRect(x1, 0, w - x1, h, rgbLight.light(155));
+	}
+
 	// Draw horizontal lines...
 	p.setPen(rgbLight);
 	int dy = (h >> 3);

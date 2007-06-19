@@ -320,6 +320,7 @@ qtractorMidiEditor::qtractorMidiEditor ( QWidget *pParent )
 	// Local time-scale.
 	m_pTimeScale = new qtractorTimeScale();
 	m_iOffset = 0;
+	m_iLength = 0;
 
 	// Local playhead positioning.
 	m_iPlayHead  = 0;
@@ -521,6 +522,18 @@ void qtractorMidiEditor::setOffset ( unsigned long iOffset )
 unsigned long qtractorMidiEditor::offset (void) const
 {
 	return m_iOffset;
+}
+
+
+// Time-scale length (in frames) accessors.
+void qtractorMidiEditor::setLength ( unsigned long iLength )
+{
+	m_iLength = iLength;
+}
+
+unsigned long qtractorMidiEditor::length (void) const
+{
+	return m_iLength;
 }
 
 
