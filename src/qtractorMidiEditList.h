@@ -92,6 +92,9 @@ protected:
 	// Reset drag/select/move state.
 	void resetDragState();
 
+	// Trap for help/tool-tip events.
+	bool eventFilter(QObject *pObject, QEvent *pEvent);
+
 protected slots:
 
 	// To have timeline in h-sync with main track view.

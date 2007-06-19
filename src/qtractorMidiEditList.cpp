@@ -31,6 +31,8 @@
 #include <QKeyEvent>
 #include <QPainter>
 
+#include <QToolTip>
+
 
 //----------------------------------------------------------------------------
 // qtractorMidiEditList -- MIDI sequence key scale widget.
@@ -58,6 +60,9 @@ qtractorMidiEditList::qtractorMidiEditList (
 
 //	QObject::connect(this, SIGNAL(contentsMoving(int,int)),
 //		this, SLOT(updatePixmap(int,int)));
+
+	// Trap for help/tool-tips and leave events.
+	qtractorScrollView::viewport()->installEventFilter(this);
 }
 
 
@@ -390,6 +395,32 @@ void qtractorMidiEditList::resetDragState (void)
 	
 	// HACK: give focus to track-view... 
 	m_pEditor->editView()->setFocus();
+}
+
+
+// Trap for help/tool-tip events.
+bool qtractorMidiEditList::eventFilter ( QObject *pObject, QEvent *pEvent )
+{
+	QWidget *pViewport = qtractorScrollView::viewport();
+	if (static_cast<QWidget *> (pObject) == pViewport
+		&& pEvent->type() == QEvent::ToolTip) {
+		QHelpEvent *pHelpEvent = static_cast<QHelpEvent *> (pEvent);
+		if (pHelpEvent) {
+			const QPoint& pos = viewportToContents(pHelpEvent->pos());
+			int w = pViewport->width();
+			int x = ((w << 1) / 3);
+			if (pos.x() >= x && pos.x() < w && m_iItemHeight > 0) {
+				const QString sToolTip("%1 (%2)");
+				int note = 127 - ((pos.y() - 1) / m_iItemHeight);
+				QToolTip::showText(pHelpEvent->globalPos(), sToolTip
+					.arg(qtractorMidiEditor::noteName(note)).arg(note));
+				return true;
+			}
+		}
+	}
+
+	// Not handled here.
+	return qtractorScrollView::eventFilter(pObject, pEvent);
 }
 
 

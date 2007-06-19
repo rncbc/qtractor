@@ -56,6 +56,33 @@
 
 
 //----------------------------------------------------------------------------
+// MIDI Note Names - Default note names base map.
+
+static const char *g_noteNames[] = {
+
+	QT_TR_NOOP("C"),
+	QT_TR_NOOP("C#"),
+	QT_TR_NOOP("D"),
+	QT_TR_NOOP("D#"),
+	QT_TR_NOOP("E"),
+	QT_TR_NOOP("F"),
+	QT_TR_NOOP("F#"),
+	QT_TR_NOOP("G"),
+	QT_TR_NOOP("G#"),
+	QT_TR_NOOP("A"),
+	QT_TR_NOOP("A#"),
+	QT_TR_NOOP("B")
+};
+
+
+// Note name map accessor.
+const QString qtractorMidiEditor::noteName ( unsigned char note )
+{
+	return g_noteNames[note % 12] + QString::number((note / 12) - 2);
+}
+
+
+//----------------------------------------------------------------------------
 // MIDI Controller Names - Default controller names hash map.
 
 #include <QHash>
@@ -456,9 +483,6 @@ void qtractorMidiEditor::setSequence ( qtractorMidiSequence *pSeq )
 	m_last.note = (m_pSeq->noteMin() + m_pSeq->noteMax()) >> 1;
 	if (m_last.note == 0)
 		m_last.note = 0x3c; // Default to middle-C.
-
-	// Try to center vertically the edit-view...
-	centerContents();
 }
 
 qtractorMidiSequence *qtractorMidiEditor::sequence (void) const
@@ -539,13 +563,17 @@ unsigned long qtractorMidiEditor::length (void) const
 
 
 // Playhead positioning.
-void qtractorMidiEditor::setPlayHead ( unsigned long iPlayHead )
+void qtractorMidiEditor::setPlayHead ( unsigned long iPlayHead, bool bSyncView )
 {
+	if (bSyncView)
+		bSyncView = m_bSyncView;
+
 	m_iPlayHead = iPlayHead;
 	int iPlayHeadX
 		= m_pTimeScale->pixelFromFrame(iPlayHead)
 		- m_pTimeScale->pixelFromFrame(m_iOffset);
-	drawPositionX(m_iPlayHeadX, iPlayHeadX, m_bSyncView);
+
+	drawPositionX(m_iPlayHeadX, iPlayHeadX, bSyncView);
 }
 
 unsigned long qtractorMidiEditor::playHead (void) const
@@ -2123,14 +2151,16 @@ QString qtractorMidiEditor::eventToolTip ( qtractorMidiEvent *pEvent ) const
 //		sToolTip += tr("Note Off (%1)").arg(int(pEvent->note()));
 //		break;
 	case qtractorMidiEvent::NOTEON:
-		sToolTip += tr("Note On (%1)\nVelocity:\t%2\nDuration:\t%3")
+		sToolTip += tr("Note On (%1) %2\nVelocity:\t%3\nDuration:\t%4")
 			.arg(int(pEvent->note()))
+			.arg(noteName(pEvent->note()))
 			.arg(int(pEvent->velocity()))
 			.arg(m_pTimeScale->textFromTick(pEvent->duration()));
 		break;
 	case qtractorMidiEvent::KEYPRESS:
-		sToolTip += tr("Key Press (%1)\nValue:\t%2")
+		sToolTip += tr("Key Press (%1) %2\nValue:\t%3")
 			.arg(int(pEvent->note()))
+			.arg(noteName(pEvent->note()))
 			.arg(int(pEvent->value()));
 		break;
 	case qtractorMidiEvent::CONTROLLER:

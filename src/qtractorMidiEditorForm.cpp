@@ -575,8 +575,6 @@ void qtractorMidiEditorForm::setMidiClip ( qtractorMidiClip *pMidiClip  )
 		m_iTrackChannel = 0;
 		m_iFormat = 0;
 	}
-
-	stabilizeForm();
 }
 
 qtractorMidiClip *qtractorMidiEditorForm::midiClip (void) const
@@ -592,11 +590,19 @@ void qtractorMidiEditorForm::setup ( qtractorMidiClip *pMidiClip )
 	if (pMainForm == NULL)
 		return;
 
+	qtractorSession *pSession = pMainForm->session();
+	if (pSession == NULL)
+		return;
+
+	// Get those time-scales in sync...
+	qtractorTimeScale *pTimeScale = m_pMidiEditor->timeScale();
+	pTimeScale->copy(*pSession->timeScale());
+
 	// Set the MIDI clip properties has seen fit...
 	if (pMidiClip) {
 		// Do the real thing...
 		setMidiClip(pMidiClip);
-		// HACK: Setup connections to main widget...
+		// Setup connections to main widget...
 		QObject::connect(m_pMidiEditor,
 			SIGNAL(changeNotifySignal()),
 			pMainForm, SLOT(changeNotifySlot()));
@@ -606,31 +612,29 @@ void qtractorMidiEditorForm::setup ( qtractorMidiClip *pMidiClip )
 			SLOT(sendNote(int,int)));
 	}
 
-	// Try to position the editor in same of track view...
-	qtractorSession *pSession = pMainForm->session();
-	if (pSession == NULL)
-		return;
+	// Refresh and try to center (vertically) the edit-view...
+	m_pMidiEditor->centerContents();
 
+	// (Re)try to position the editor in same of track view...
 	qtractorTracks *pTracks = pMainForm->tracks();
-	if (pTracks == NULL)
-		return;
-
-	qtractorTimeScale *pTimeScale = m_pMidiEditor->timeScale();
-	pTimeScale->copy(*pSession->timeScale());
-
-	unsigned long iFrame = pTimeScale->frameFromPixel(
-		(pTracks->trackView())->contentsX());
-	if (iFrame  > m_pMidiEditor->offset()) {
-		iFrame -= m_pMidiEditor->offset();
-	} else {
-		iFrame = 0;
+	if (pTracks) {
+		unsigned long iFrame = pTimeScale->frameFromPixel(
+			(pTracks->trackView())->contentsX());
+		if (iFrame  > m_pMidiEditor->offset()) {
+			iFrame -= m_pMidiEditor->offset();
+		} else {
+			iFrame = 0;
+		}
+		int cx = pTimeScale->pixelFromFrame(iFrame);
+		int cy = (m_pMidiEditor->editView())->contentsY();
+		(m_pMidiEditor->editView())->setContentsPos(cx, cy);
 	}
 
-	int cx = pTimeScale->pixelFromFrame(iFrame);
-	int cy = (m_pMidiEditor->editView())->contentsY();
-	(m_pMidiEditor->editView())->setContentsPos(cx, cy);
+	// (Re)sync local play-head (avoid follow playhead)...
+	m_pMidiEditor->setPlayHead(pSession->playHead(), false);
 
-	m_pMidiEditor->setPlayHead(pSession->playHead());
+	// Done.
+	stabilizeForm();
 }
 
 #endif

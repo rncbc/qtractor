@@ -103,7 +103,7 @@ public:
 	QFrame *editEventFrame() const;
 
 	// Playhead positioning.
-	void setPlayHead(unsigned long iPlayHead);
+	void setPlayHead(unsigned long iPlayHead, bool bSyncView = true);
 	unsigned long playHead() const;
 	int playHeadX() const;
 
@@ -198,6 +198,9 @@ public:
 
 	// Adjust edit-command result to prevent event overlapping.
 	bool adjustEditCommand(qtractorMidiEditCommand *pEditCommand);
+
+	// Note map accessor.
+	static const QString noteName(unsigned char note);
 
 	// Controller hash map accessor.
 	static const QString& controllerName(unsigned char controller);

@@ -465,9 +465,11 @@ bool qtractorMidiClip::startEditor ( QWidget */*pParent*/ )
 		// Just show up the editor form...
 		m_pMidiEditorForm->setup();
 		m_pMidiEditorForm->show();
-		m_pMidiEditorForm->raise();
-		m_pMidiEditorForm->activateWindow();
 	}
+
+	// Get it up any way...
+	m_pMidiEditorForm->raise();
+	m_pMidiEditorForm->activateWindow();
 
 	return true;
 }
