@@ -103,6 +103,9 @@ qtractorMidiEditView::qtractorMidiEditView (
 
 //	QObject::connect(this, SIGNAL(contentsMoving(int,int)),
 //		this, SLOT(updatePixmap(int,int)));
+
+	// Trap for help/tool-tips and leave events.
+	qtractorScrollView::viewport()->installEventFilter(this);
 }
 
 
@@ -539,10 +542,13 @@ void qtractorMidiEditView::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 }
 
 
-// Mouse leave event.
-void qtractorMidiEditView::leaveEvent ( QEvent */*pEvent */ )
+// Trap for help/tool-tip and leave events.
+bool qtractorMidiEditView::eventFilter ( QObject *pObject, QEvent *pEvent )
 {
-	m_pEditor->dragMoveLeave(this);
+	if (m_pEditor->dragMoveFilter(this, pObject, pEvent))
+		return true;
+
+	return qtractorScrollView::eventFilter(pObject, pEvent);
 }
 
 

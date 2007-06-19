@@ -89,8 +89,8 @@ protected:
 	void mouseMoveEvent(QMouseEvent *pMouseEvent);
 	void mouseReleaseEvent(QMouseEvent *pMouseEvent);
 
-	// Mouse leave event.
-	void leaveEvent(QEvent *pEvent);
+	// Trap for help/tool-tip and leave events.
+	bool eventFilter(QObject *pObject, QEvent *pEvent);
 
 protected slots:
 

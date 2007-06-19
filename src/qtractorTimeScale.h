@@ -146,6 +146,12 @@ public:
 	QString textFromFrame(unsigned long iFrame) const;
 	unsigned long frameFromText(const QString& sText) const;
 
+	// Convert to time string and vice-versa.
+	QString textFromTick(unsigned long iTick) const
+		{ return textFromFrame(frameFromTick(iTick)); }
+	unsigned long tickFromText(const QString& sText) const
+		{ return tickFromFrame(frameFromText(sText)); }
+
 	// Update scale divisor factors.
 	void updateScale();
 

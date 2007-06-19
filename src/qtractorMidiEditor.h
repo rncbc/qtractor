@@ -158,6 +158,10 @@ public:
 	// position, mostly like an sequence cursor/iterator.
 	qtractorMidiEvent *seekEvent(unsigned long iTime);
 
+	// Get event from given contents position.
+	qtractorMidiEvent *eventAt(qtractorScrollView *pScrollView,
+		const QPoint& pos, QRect *pRect = NULL);
+
 	// Start immediate some drag-edit mode...
 	qtractorMidiEvent *dragEditEvent(qtractorScrollView *pScrollView,
 		const QPoint& pos, Qt::KeyboardModifiers modifiers);
@@ -178,8 +182,12 @@ public:
 	void dragMoveCommit(qtractorScrollView *pScrollView,
 		const QPoint& pos, Qt::KeyboardModifiers modifiers);
 
-	// Leave drag-move-selection...
-	void dragMoveLeave(qtractorScrollView *pScrollView);
+	// Trap for help/tool-tip and leave events.
+	bool dragMoveFilter(qtractorScrollView *pScrollView,
+		QObject *pObject, QEvent *pEvent);
+
+	// MIDI event tool tip helper.
+	QString eventToolTip(qtractorMidiEvent *pEvent) const;
 
 	// Visualize the event selection drag-move.
 	void paintDragState(qtractorScrollView *pScrollView,
@@ -223,10 +231,6 @@ protected:
 
 	// Close event override to save some geometry settings.
 	virtual void closeEvent(QCloseEvent *pCloseEvent);
-
-	// Get event from given contents position.
-	qtractorMidiEvent *eventAt(qtractorScrollView *pScrollView,
-		const QPoint& pos, QRect *pRect);
 
 	// Selection flags
 	enum { 
