@@ -615,7 +615,10 @@ void qtractorMidiEditorForm::setup ( qtractorMidiClip *pMidiClip )
 	if (pTracks == NULL)
 		return;
 
-	unsigned long iFrame = (pSession->timeScale())->frameFromPixel(
+	qtractorTimeScale *pTimeScale = m_pMidiEditor->timeScale();
+	pTimeScale->copy(*pSession->timeScale());
+
+	unsigned long iFrame = pTimeScale->frameFromPixel(
 		(pTracks->trackView())->contentsX());
 	if (iFrame  > m_pMidiEditor->offset()) {
 		iFrame -= m_pMidiEditor->offset();
@@ -623,7 +626,7 @@ void qtractorMidiEditorForm::setup ( qtractorMidiClip *pMidiClip )
 		iFrame = 0;
 	}
 
-	int cx = (m_pMidiEditor->timeScale())->pixelFromFrame(iFrame);
+	int cx = pTimeScale->pixelFromFrame(iFrame);
 	int cy = (m_pMidiEditor->editView())->contentsY();
 	(m_pMidiEditor->editView())->setContentsPos(cx, cy);
 
@@ -755,7 +758,7 @@ void qtractorMidiEditorForm::fileProperties (void)
 
 #ifndef CONFIG_TEST
 	if (m_pMidiClip) {
-		qtractorClipForm clipForm(this);
+		qtractorClipForm clipForm(parentWidget());
 		clipForm.setClip(m_pMidiClip);
 		clipForm.exec();
 	}
