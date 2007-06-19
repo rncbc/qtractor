@@ -2113,63 +2113,63 @@ void qtractorMidiEditor::sendNote ( int iNote, int iVelocity )
 
 
 // MIDI event tool tip helper.
-QString qtractorMidiEditor::toolTip ( qtractorMidiEvent *pEvent ) const
+QString qtractorMidiEditor::eventToolTip ( qtractorMidiEvent *pEvent ) const
 {
-	QString sText;
+	QString sToolTip = tr("Time:\t%1\nType:\t")
+		.arg(m_pTimeScale->textFromTick(pEvent->time()));
 
-	sText += tr("Time: %1\n").arg(m_pTimeScale->textFromTick(pEvent->time()));
-
-	sText += tr("Type: ");
 	switch (pEvent->type()) {
 //	case qtractorMidiEvent::NOTEOFF:
-//		sText += tr("Note Off (%1)").arg(int(pEvent->note()));
+//		sToolTip += tr("Note Off (%1)").arg(int(pEvent->note()));
 //		break;
 	case qtractorMidiEvent::NOTEON:
-		sText += tr("Note On (%1)\n").arg(int(pEvent->note()));
-		sText += tr("Velocity: %1\n").arg(int(pEvent->velocity()));
-		sText += tr("Duration: %1").arg(
-			m_pTimeScale->textFromTick(pEvent->duration()));
+		sToolTip += tr("Note On (%1)\nVelocity:\t%2\nDuration:\t%3")
+			.arg(int(pEvent->note()))
+			.arg(int(pEvent->velocity()))
+			.arg(m_pTimeScale->textFromTick(pEvent->duration()));
 		break;
 	case qtractorMidiEvent::KEYPRESS:
-		sText += tr("Key Press (%1)\n").arg(int(pEvent->note()));
-		sText += tr("Value: %1").arg(int(pEvent->value()));
+		sToolTip += tr("Key Press (%1)\nValue:\t%2")
+			.arg(int(pEvent->note()))
+			.arg(int(pEvent->value()));
 		break;
 	case qtractorMidiEvent::CONTROLLER:
-		sText += tr("Controller (%1)\n").arg(int(pEvent->controller()));
-		sText += tr("Name: %1\n").arg(
-			qtractorMidiEditor::controllerName(int(pEvent->controller())));
-		sText += tr("Value: %1").arg(int(pEvent->value()));
+		sToolTip += tr("Controller (%1)\nName:\t%2\nValue:\t%3")
+			.arg(int(pEvent->controller()))
+			.arg(controllerName(int(pEvent->controller())))
+			.arg(int(pEvent->value()));
 		break;
 	case qtractorMidiEvent::PGMCHANGE:
-		sText += tr("Pgm Change (%1)").arg(int(pEvent->value()));
+		sToolTip += tr("Pgm Change (%1)").arg(int(pEvent->value()));
 		break;
 	case qtractorMidiEvent::CHANPRESS:
-		sText += tr("Chan Press (%1)").arg(int(pEvent->value()));
+		sToolTip += tr("Chan Press (%1)").arg(int(pEvent->value()));
 		break;
 	case qtractorMidiEvent::PITCHBEND:
-		sText = tr("Pich Bend (%d)").arg(int(pEvent->pitchBend()));
+		sToolTip = tr("Pich Bend (%d)").arg(int(pEvent->pitchBend()));
 		break;
 	case qtractorMidiEvent::SYSEX:
 	{
 		unsigned char *data = pEvent->sysex();
 		unsigned short len  = pEvent->sysex_len();
-		sText += tr("SysEx (%1 bytes)\n").arg(int(len));
-		sText += tr("Data: { ");
+		sToolTip += tr("SysEx (%1 bytes)\nData: ").arg(int(len));
+		sToolTip += '{';
+		sToolTip += ' ';
 		for (unsigned short i = 0; i < len; ++i)
-			sText += QString().sprintf("%02x ", data[i]);
-		sText += '}';
+			sToolTip += QString().sprintf("%02x ", data[i]);
+		sToolTip += '}';
 		break;
 	}
 //	case qtractorMidiEvent::META:
-//		sText += tr("Meta");
+//		sToolTip += tr("Meta");
 //		break;
 	default:
-		sText += tr("Unknown");
+		sToolTip += tr("Unknown (%1)").arg(int(pEvent->type()));
 		break;
 	}
 	
 	// That's it
-	return sText;
+	return sToolTip;
 }
 
 

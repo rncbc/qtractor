@@ -76,6 +76,8 @@ void qtractorClip::clear (void)
 		m_fadeOut.fadeType = Quadratic;
 	}
 #endif
+
+	m_bDirty = false;
 }
 
 
@@ -450,7 +452,7 @@ bool qtractorClip::startEditor ( QWidget *pParent )
 // Clip query-close method (return true if editing is done).
 bool qtractorClip::queryEditor (void)
 {
-	return true; // !isDirty();
+	return !isDirty();
 }
 
 // Clip editor update.
@@ -463,7 +465,37 @@ void qtractorClip::updateEditor (void)
 // Clip tool-tip.
 QString qtractorClip::toolTip (void) const
 {
-	return m_sClipName;
+	QString sToolTip = QObject::tr("Name:\t%1").arg(m_sClipName);
+
+	qtractorSession *pSession = NULL;
+	qtractorTrack *pTrack = track();
+	if (pTrack)
+		pSession = pTrack->session();
+	if (pSession) {
+		sToolTip += '\n';
+		qtractorTimeScale *pTimeScale = pSession->timeScale();
+		sToolTip += QObject::tr("Start:\t%1\nOffset:\t%2\nLength:\t%3")
+			.arg(pTimeScale->textFromFrame(m_iClipStart))
+			.arg(pTimeScale->textFromFrame(m_iClipOffset))
+			.arg(pTimeScale->textFromFrame(m_iClipLength));
+	}
+
+	sToolTip += '\n';
+	sToolTip += QObject::tr("File:\t%1").arg(QFileInfo(m_sFilename).fileName());
+
+	return sToolTip;
+}
+
+
+// Local dirty flag.
+void qtractorClip::setDirty ( bool bDirty )
+{
+	m_bDirty = bDirty;
+}
+
+bool qtractorClip::isDirty (void) const
+{
+	return m_bDirty;
 }
 
 

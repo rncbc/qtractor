@@ -48,8 +48,6 @@ qtractorMidiClip::qtractorMidiClip ( qtractorTrack *pTrack )
 	m_bSessionFlag  = false;
 
 	m_pMidiEditorForm = NULL;
-
-	m_bDirty = false;
 }
 
 // Copy constructor.
@@ -63,8 +61,6 @@ qtractorMidiClip::qtractorMidiClip ( const qtractorMidiClip& clip )
 	setTrackChannel(clip.trackChannel());
 
 	m_pMidiEditorForm = NULL;
-
-	m_bDirty = false;
 }
 
 
@@ -168,6 +164,7 @@ bool qtractorMidiClip::openMidiFile ( qtractorMidiFile *pFile,
 	// Set local properties...
 	setFilename(pFile->filename());
 	setTrackChannel(iTrackChannel);
+	setDirty(false);
 
 	// Default clip length will be whole sequence duration.
 	if (clipLength() == 0 && m_pSeq->timeLength() > m_pSeq->timeOffset()) {
@@ -178,7 +175,6 @@ bool qtractorMidiClip::openMidiFile ( qtractorMidiFile *pFile,
 	// Uh oh...
 	m_playCursor.reset(m_pSeq);
 	m_drawCursor.reset(m_pSeq);
-	m_bDirty = false;
 
 	return true;
 }
@@ -505,15 +501,24 @@ void qtractorMidiClip::updateEditor (void)
 }
 
 
-// Local dirty flag.
-void qtractorMidiClip::setDirty ( bool bDirty )
+// MIDI clip tool-tip.
+QString qtractorMidiClip::toolTip (void) const
 {
-	m_bDirty = bDirty;
-}
+	QString sToolTip = qtractorClip::toolTip() + ' ';
 
-bool qtractorMidiClip::isDirty (void) const
-{
-	return m_bDirty;
+	sToolTip += QObject::tr("(format %1)\nMIDI:\t").arg(m_iFormat);
+	if (m_iFormat == 0)
+		sToolTip += QObject::tr("Channel %1").arg(m_iTrackChannel + 1);
+	else
+		sToolTip += QObject::tr("Track %1").arg(m_iTrackChannel);
+
+	if (m_pFile) {
+		sToolTip += QObject::tr(", %1 tracks, %2 tpb")
+			.arg(m_pFile->tracks())
+			.arg(m_pFile->ticksPerBeat());
+	}
+
+	return sToolTip;
 }
 
 

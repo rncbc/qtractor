@@ -90,7 +90,7 @@ void qtractorMidiFileItem::initMidiFileItem ( const QString& sPath,
 // Tooltip renderer.
 QString qtractorMidiFileItem::toolTip (void) const
 {
-	return QObject::tr("%1 (format %2)\n%3 tracks  %4 tpqn\n%5")
+	return QObject::tr("%1 (format %2)\n%3 tracks, %4 tpb\n%5")
 		.arg(QTreeWidgetItem::text(qtractorMidiListView::Name))
 		.arg(QTreeWidgetItem::text(qtractorMidiListView::Format))
 		.arg(QTreeWidgetItem::text(qtractorMidiListView::Tracks))

@@ -131,6 +131,10 @@ public:
 	// Clip tool-tip.
 	virtual QString toolTip() const;
 
+	// Local dirty flag.
+	void setDirty(bool bDirty);
+	bool isDirty() const;
+
 	// Document element methods.
 	bool loadElement(qtractorSessionDocument *pDocument,
 		QDomElement *pElement);
@@ -188,6 +192,9 @@ private:
 
 	FadeMode m_fadeIn;
 	FadeMode m_fadeOut;
+
+	// Local dirty flag.
+	bool m_bDirty;
 };
 
 #endif  // __qtractorClip_h

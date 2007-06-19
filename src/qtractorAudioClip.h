@@ -75,6 +75,9 @@ public:
 	void drawClip(QPainter *pPainter, const QRect& rect,
 	    unsigned long iClipOffset);
 
+	// Audio clip tool-tip.
+	QString toolTip() const;
+
 protected:
 
 	// Virtual document element methods.

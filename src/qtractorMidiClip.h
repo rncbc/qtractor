@@ -96,9 +96,8 @@ public:
 	bool queryEditor();
 	void updateEditor();
 
-	// Local dirty flag.
-	void setDirty(bool bDirty);
-	bool isDirty() const;
+	// MIDI clip tool-tip.
+	QString toolTip() const;
 
 	// Default MIDI file format accessors
 	// (specific to capture/recording)
@@ -130,9 +129,6 @@ private:
 
 	// This clip editor form widget.
 	qtractorMidiEditorForm *m_pMidiEditorForm;
-
-	// Local dirty flag.
-	bool m_bDirty;
 
 	// Default MIDI file format (for capture/record)
 	static unsigned short g_iDefaultFormat;

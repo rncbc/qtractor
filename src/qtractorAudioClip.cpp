@@ -122,6 +122,7 @@ bool qtractorAudioClip::openAudioFile ( const QString& sFilename, int iMode )
 
 	// Set local properties...
 	setFilename(sFilename);
+	setDirty(false);
 
 	// Default clip length will be the whole file length.
 	if (clipLength() == 0)
@@ -352,6 +353,22 @@ void qtractorAudioClip::drawClip ( QPainter *pPainter, const QRect& clipRect,
 
 	// Our peak buffer at large.
 	delete [] pframes;
+}
+
+
+// Audio clip tool-tip.
+QString qtractorAudioClip::toolTip (void) const
+{
+	QString sToolTip = qtractorClip::toolTip() + '\n';
+
+	if (m_pBuff) {
+		sToolTip + '\t';
+		sToolTip += QObject::tr("Audio:\t%1 channels, %2 Hz")
+			.arg(m_pBuff->channels())
+			.arg(m_pBuff->sampleRate());
+	}
+
+	return sToolTip;
 }
 
 

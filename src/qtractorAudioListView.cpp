@@ -70,7 +70,7 @@ void qtractorAudioFileItem::initAudioFileItem ( const QString& sPath,
 		QString::number(pFile->sampleRate()));
 
 	QString sTime;
-	unsigned int hh, mm, ss, ddd;
+	unsigned int hh, mm, ss, zzz;
 	float secs = (float) pFile->frames() / (float) pFile->sampleRate();
 	hh = mm = ss = 0;
 	if (secs >= 3600.0f) {
@@ -85,8 +85,8 @@ void qtractorAudioFileItem::initAudioFileItem ( const QString& sPath,
 		ss = (unsigned int) secs;
 		secs -= (float) ss;
 	}
-	ddd = (unsigned int) (secs * 1000.0f);
-	sTime.sprintf("%02u:%02u:%02u.%03u", hh, mm, ss, ddd);
+	zzz = (unsigned int) (secs * 1000.0f);
+	sTime.sprintf("%02u:%02u:%02u.%03u", hh, mm, ss, zzz);
 	QTreeWidgetItem::setText(qtractorAudioListView::Time, sTime);
 
 	QTreeWidgetItem::setText(qtractorAudioListView::Path, sPath);
@@ -97,12 +97,12 @@ void qtractorAudioFileItem::initAudioFileItem ( const QString& sPath,
 QString qtractorAudioFileItem::toolTip (void) const
 {
 	return QObject::tr(
-		"%1 (%5)\n%2 channels  %3 frames  %4 Hz\n%6")
+		"%1 (%2)\n%3 channels, %4 frames, %5 Hz\n%6")
 		.arg(QTreeWidgetItem::text(qtractorAudioListView::Name))
+		.arg(QTreeWidgetItem::text(qtractorAudioListView::Time))
 		.arg(QTreeWidgetItem::text(qtractorAudioListView::Channels))
 		.arg(QTreeWidgetItem::text(qtractorAudioListView::Frames))
 		.arg(QTreeWidgetItem::text(qtractorAudioListView::Rate))
-		.arg(QTreeWidgetItem::text(qtractorAudioListView::Time))
 		.arg(QTreeWidgetItem::text(qtractorAudioListView::Path));
 }
 
