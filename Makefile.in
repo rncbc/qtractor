@@ -187,12 +187,15 @@ $(name):	$(name).mak ${forms} $(sources) $(headers)
 install:	$(name) icons/$(name).png
 	@install -d -v -m 0755 $(DESTDIR)$(prefix)/bin
 	@install -d -v -m 0755 $(DESTDIR)$(prefix)/share/icons
+	@install -d -v -m 0755 $(DESTDIR)$(prefix)/share/applications
 	@install -v -m 0755 $(name) $(DESTDIR)$(prefix)/bin/$(name)
 	@install -v -m 0644 icons/$(name).png $(DESTDIR)$(prefix)/share/icons/$(name).png
+	@install -v -m 0644 $(name).desktop $(DESTDIR)$(prefix)/share/applications/$(name).desktop
 
 uninstall:	$(DESTDIR)$(prefix)/bin/$(name)
 	@rm -vf $(DESTDIR)$(prefix)/bin/$(name)
 	@rm -vf $(DESTDIR)$(prefix)/share/icons/$(name).png
+	@rm -vf $(DESTDIR)$(prefix)/share/applications/$(name).desktop
 
 clean:	$(name).mak
 	@make -f $(name).mak clean

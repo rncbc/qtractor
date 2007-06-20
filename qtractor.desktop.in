@@ -1,0 +1,8 @@
+[Desktop Entry]
+Categories=Applications;Multimedia;Audio;MIDI;JACK;ALSA;Qt;
+Comment=Qtractor is an Audio/MIDI multi-track sequencer application
+Exec=@ac_prefix@/bin/qtractor
+Icon=@ac_prefix@/share/icons/qtractor.png
+Name=Qtractor
+Terminal=false
+Type=Application

@@ -1,7 +1,7 @@
 %define name    @PACKAGE_TARNAME@
 %define version @PACKAGE_VERSION@
-%define release 4
-%define prefix  /usr/local
+%define release 5
+%define prefix  @ac_prefix@
 
 Summary:	An Audio/MIDI multi-track sequencer.
 Name:		%{name}
@@ -15,7 +15,7 @@ URL:		http://qtractor.sourceforge.net/
 BuildRoot:	/var/tmp/%{name}-%{version}-buildroot
 Requires:	jack, alsa, libsndfile, libvorbis, libsamplerate, mad
 
-BuildRequires: jack-devel, alsa-devel, libsndfile-devel, ladspa,
+BuildRequires: jack-devel, alsa-devel, libsndfile-devel, ladspa
 BuildRequires: libvorbis-devel, libsamplerate-devel, mad-devel
 
 %description
@@ -52,8 +52,9 @@ if [ -d $RPM_BUILD_ROOT ]; then rm -rf $RPM_BUILD_ROOT; fi
 %{prefix}/share/icons/qtractor.png
 
 %changelog
-* Mon Jun 18 2007 Rui Nuno Capela <rncbc@users.sourceforge.net>
+* Wed Jun 20 2007 Rui Nuno Capela <rncbc@users.sourceforge.net>
 - Declared fundamental build and run-time requirements.
+- Destination install directory prefix is now in spec.
 * Mon Apr 16 2007 Rui Nuno Capela <rncbc@users.sourceforge.net>
 - Minor descriptive corrections.
 * Fri Jan 05 2007 Rui Nuno Capela <rncbc@users.sourceforge.net>

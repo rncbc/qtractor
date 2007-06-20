@@ -1,9 +1,9 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(Qtractor, 0.0.3.648, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.0.3.649, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractorMainForm.ui)
 AC_CONFIG_HEADERS(config.h)
-AC_CONFIG_FILES(Makefile qtractor.pro qtractor.spec)
+AC_CONFIG_FILES(Makefile qtractor.pro qtractor.spec qtractor.desktop)
 
 # Set default installation prefix.
 AC_PREFIX_DEFAULT(/usr/local)
