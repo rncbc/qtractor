@@ -1902,7 +1902,7 @@ void qtractorMainForm::viewOptions (void)
 	bool    bOldCompletePath    = m_pOptions->bCompletePath;
 	bool    bOldPeakAutoRemove  = m_pOptions->bPeakAutoRemove;
 	int     iOldMaxRecentFiles  = m_pOptions->iMaxRecentFiles;
-	int     iOldTransportTime   = m_pOptions->iTransportTime;
+	int     iOldDisplayFormat   = m_pOptions->iDisplayFormat;
 	int     iOldResampleType    = m_pOptions->iAudioResampleType;
 	// Load the current setup settings.
 	qtractorOptionsForm optionsForm(this);
@@ -1935,7 +1935,7 @@ void qtractorMainForm::viewOptions (void)
 			(!bOldMessagesLimit &&  m_pOptions->bMessagesLimit) ||
 			(iOldMessagesLimitLines !=  m_pOptions->iMessagesLimitLines))
 			updateMessagesLimit();
-		if (iOldTransportTime != m_pOptions->iTransportTime)
+		if (iOldDisplayFormat != m_pOptions->iDisplayFormat)
 			updateDisplayFormat();
 		// FIXME: This is what it should ever be,
 		// make it right from this very moment...
@@ -2697,7 +2697,7 @@ void qtractorMainForm::updateDisplayFormat (void)
 
 	// Main transport display format is due...
 	qtractorTimeScale::DisplayFormat displayFormat;
-	switch (m_pOptions->iTransportTime) {
+	switch (m_pOptions->iDisplayFormat) {
 	case 2:
 		displayFormat = qtractorTimeScale::BBT;
 		break;

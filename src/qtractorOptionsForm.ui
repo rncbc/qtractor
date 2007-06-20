@@ -25,8 +25,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>534</width>
-    <height>319</height>
+    <width>591</width>
+    <height>327</height>
    </rect>
   </property>
   <property name="sizePolicy" >
@@ -302,7 +302,7 @@
            </widget>
           </item>
           <item row="3" column="2" >
-           <widget class="QLabel" name="TimeFormatTextLabel" >
+           <widget class="QLabel" name="DisplayFormatTextLabel" >
             <property name="font" >
              <font>
               <family>Sans Serif</family>
@@ -315,13 +315,13 @@
              </font>
             </property>
             <property name="text" >
-             <string>&amp;Transport time format:</string>
+             <string>&amp;Time display format:</string>
             </property>
             <property name="alignment" >
              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
             </property>
             <property name="buddy" >
-             <cstring>TransportTimeComboBox</cstring>
+             <cstring>DisplayFormatComboBox</cstring>
             </property>
            </widget>
           </item>
@@ -358,7 +358,7 @@
            </spacer>
           </item>
           <item row="3" column="3" colspan="2" >
-           <widget class="QComboBox" name="TransportTimeComboBox" >
+           <widget class="QComboBox" name="DisplayFormatComboBox" >
             <property name="font" >
              <font>
               <family>Sans Serif</family>
@@ -371,7 +371,7 @@
              </font>
             </property>
             <property name="toolTip" >
-             <string>Transport time display format</string>
+             <string>Time display format</string>
             </property>
             <item>
              <property name="text" >
@@ -380,12 +380,12 @@
             </item>
             <item>
              <property name="text" >
-              <string>Time (hh:mm:ss.zzz)</string>
+              <string>Time</string>
              </property>
             </item>
             <item>
              <property name="text" >
-              <string>BBT (bars.beats.ticks)</string>
+              <string>BBT</string>
              </property>
             </item>
            </widget>
@@ -1026,7 +1026,7 @@
   <tabstop>CompletePathCheckBox</tabstop>
   <tabstop>PeakAutoRemoveCheckBox</tabstop>
   <tabstop>MaxRecentFilesSpinBox</tabstop>
-  <tabstop>TransportTimeComboBox</tabstop>
+  <tabstop>DisplayFormatComboBox</tabstop>
   <tabstop>AudioCaptureTypeComboBox</tabstop>
   <tabstop>AudioCaptureFormatComboBox</tabstop>
   <tabstop>AudioCaptureQualitySpinBox</tabstop>

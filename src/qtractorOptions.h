@@ -62,7 +62,7 @@ public:
 	bool    bStdoutCapture;
 	bool    bCompletePath;
 	bool    bPeakAutoRemove;
-	int     iTransportTime;
+	int     iDisplayFormat;
 
 	// View options...
 	bool    bMenubar;
