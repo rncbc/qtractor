@@ -183,6 +183,8 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	// Some actions surely need those
 	// shortcuts firmly attached...
 	addAction(m_ui.viewMenubarAction);
+	// Special integration one (Space -> main transportPlay.
+	addAction(m_ui.transportPlayAction);
 
 	// Ah, make it stand right.
 	setFocus();
@@ -260,6 +262,10 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	QObject::connect(m_ui.viewRefreshAction,
 		SIGNAL(triggered(bool)),
 		SLOT(viewRefresh()));
+
+	QObject::connect(m_ui.transportPlayAction,
+		SIGNAL(triggered(bool)),
+		SLOT(transportPlay()));
 
 	QObject::connect(m_pSnapPerBeatComboBox,
 		SIGNAL(activated(int)),
@@ -930,6 +936,25 @@ void qtractorMidiEditorForm::viewFollow ( bool bOn )
 void qtractorMidiEditorForm::viewRefresh (void)
 {
 	m_pMidiEditor->refresh();
+
+	stabilizeForm();
+}
+
+
+// Redirect play/stop shortcut to main widget.
+void qtractorMidiEditorForm::transportPlay (void)
+{
+#ifdef CONFIG_TEST
+
+	fprintf(stderr, "qtractorMidiEditorForm::transportPlay()\n");
+
+#else
+
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm)
+		pMainForm->transportPlay();
+
+#endif
 
 	stabilizeForm();
 }

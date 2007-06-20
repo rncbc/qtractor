@@ -849,11 +849,6 @@ void qtractorMainForm::customEvent ( QEvent *pEvent )
 		break;
 	case QTRACTOR_SHUT_EVENT:
 	case QTRACTOR_BUFF_EVENT:
-		// Just in case we were in the middle of something...
-		if (m_pSession->isPlaying()) {
-			m_ui.transportPlayAction->setChecked(false);
-		//	transportPlay(); // Toggle playing!
-		}
 		// Engine shutdown is on demand...
 		m_pSession->close();
 		m_pConnections->clear();
@@ -883,14 +878,12 @@ void qtractorMainForm::mmcEvent ( qtractorMmcEvent *pMmcEvent )
 	case qtractorMmcEvent::STOP:
 	case qtractorMmcEvent::PAUSE:
 		sMmcText = tr("STOP");
-		if (setPlaying(false))
-			m_ui.transportPlayAction->setChecked(false);
+		setPlaying(false);
 		break;
 	case qtractorMmcEvent::PLAY:
 	case qtractorMmcEvent::DEFERRED_PLAY:
 		sMmcText = tr("PLAY");
-		if (setPlaying(true))
-			m_ui.transportPlayAction->setChecked(true);
+		setPlaying(true);
 		break;
 	case qtractorMmcEvent::FAST_FORWARD:
 		sMmcText = tr("FFWD");
@@ -1227,10 +1220,7 @@ bool qtractorMainForm::closeSession (void)
 	// If we may close it, dot it.
 	if (bClose) {
 		// Just in case we were in the middle of something...
-		if (m_pSession->isPlaying()) {
-			m_ui.transportPlayAction->setChecked(false);
-			transportPlay(); // Toggle playing!
-		}
+		setPlaying(false);
 		// Reset all dependables to default.
 		m_pCommands->clear();
 		m_pMixer->clear();
@@ -2482,8 +2472,9 @@ void qtractorMainForm::stabilizeForm (void)
 	m_statusItems[StatusRate]->setText(
 		tr("%1 Hz").arg(m_pSession->sampleRate()));
 
-	bool bRecording = (m_pSession->isRecording()
-		&& m_pSession->isPlaying()
+	bool bPlaying = m_pSession->isPlaying();
+	bool bRecording = (bPlaying
+		&& m_pSession->isRecording()
 		&& m_pSession->recordTracks() > 0);
 	m_statusItems[StatusRec]->setPalette(*m_paletteItems[
 		bRecording ? PaletteRed : PaletteNone]);
@@ -2495,7 +2486,7 @@ void qtractorMainForm::stabilizeForm (void)
 		m_pSession->isLooping() ? PaletteGreen : PaletteNone]);
 
 	// Transport stuff...
-	bEnabled = (!m_pSession->isPlaying() || !m_pSession->isRecording());
+	bEnabled = (!bPlaying || !m_pSession->isRecording());
 	m_ui.transportBackwardAction->setEnabled(bEnabled && m_iPlayHead > 0);
 	m_ui.transportRewindAction->setEnabled(bEnabled && m_iPlayHead > 0);
 	m_ui.transportFastForwardAction->setEnabled(bEnabled);
@@ -2505,6 +2496,7 @@ void qtractorMainForm::stabilizeForm (void)
 			|| m_iPlayHead < m_pSession->editTail()));
 	m_ui.transportLoopAction->setEnabled(bEnabled
 		&& (m_pSession->isLooping() || bSelectable));
+	m_ui.transportPlayAction->setChecked(bPlaying);
 	m_ui.transportRecordAction->setEnabled(m_pSession->recordTracks() > 0);
 
 	// Special record mode settlement.
@@ -2584,7 +2576,6 @@ bool qtractorMainForm::checkRestartSession (void)
 			m_ui.transportRewindAction->setChecked(false);
 			m_ui.transportFastForwardAction->setChecked(false);
 			m_ui.transportRecordAction->setChecked(false);
-			m_ui.transportPlayAction->setChecked(false);
 			stabilizeForm();
 			return false;
 		}
@@ -2865,7 +2856,6 @@ void qtractorMainForm::timerSlot (void)
 				m_iTransportUpdate = 0;
 				// Stop playback for sure...
 				if (setPlaying(false)) {
-					m_ui.transportPlayAction->setChecked(false);
 					// Send MMC STOP command...
 					m_pSession->midiEngine()->sendMmcCommand(
 						qtractorMmcEvent::STOP);
@@ -2897,7 +2887,6 @@ void qtractorMainForm::timerSlot (void)
 				(state == JackTransportRolling && !bPlaying)) {
 				if (!bPlaying)
 					m_pSession->seek(pos.frame, true);
-				m_ui.transportPlayAction->setChecked(!bPlaying);
 				transportPlay();	// Toggle playing!
 				if (bPlaying)
 					m_pSession->seek(pos.frame, true);

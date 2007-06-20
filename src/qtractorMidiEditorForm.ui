@@ -42,7 +42,7 @@
      <x>0</x>
      <y>0</y>
      <width>803</width>
-     <height>30</height>
+     <height>29</height>
     </rect>
    </property>
    <widget class="QMenu" name="fileMenu" >
@@ -103,9 +103,9 @@
     <addaction name="viewStatusbarAction" />
     <addaction name="viewToolbarsMenu" />
     <addaction name="separator" />
-	<addaction name="viewPreviewAction" />
-	<addaction name="viewFollowAction" />
-	<addaction name="separator" />
+    <addaction name="viewPreviewAction" />
+    <addaction name="viewFollowAction" />
+    <addaction name="separator" />
     <addaction name="viewRefreshAction" />
    </widget>
    <addaction name="fileMenu" />
@@ -453,44 +453,44 @@
    </property>
   </action>
   <action name="viewPreviewAction" >
-	  <property name="checkable" >
-		  <bool>true</bool>
-	  </property>
-	  <property name="icon" >
-		  <iconset resource="../icons/qtractor.qrc" >:/icons/viewPreview.png</iconset>
-	  </property>
-	  <property name="text" >
-		  <string>&amp;Preview Notes</string>
-	  </property>
-	  <property name="iconText" >
-		  <string>Preview Notes</string>
-	  </property>
-	  <property name="statusTip" >
-		  <string>Preview notes while editing (scrub)</string>
-	  </property>
-	  <property name="shortcut" >
-		  <string/>
-	  </property>
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="icon" >
+    <iconset resource="../icons/qtractor.qrc" >:/icons/viewPreview.png</iconset>
+   </property>
+   <property name="text" >
+    <string>&amp;Preview Notes</string>
+   </property>
+   <property name="iconText" >
+    <string>Preview Notes</string>
+   </property>
+   <property name="statusTip" >
+    <string>Preview notes while editing (scrub)</string>
+   </property>
+   <property name="shortcut" >
+    <string/>
+   </property>
   </action>
   <action name="viewFollowAction" >
-	  <property name="checkable" >
-		  <bool>true</bool>
-	  </property>
-	  <property name="icon" >
-		  <iconset resource="../icons/qtractor.qrc" >:/icons/transportFollow.png</iconset>
-	  </property>
-	  <property name="text" >
-		  <string>F&amp;ollow Playhead</string>
-	  </property>
-	  <property name="iconText" >
-		  <string>Follow Playhead</string>
-	  </property>
-	  <property name="statusTip" >
-		  <string>Follow playhead</string>
-	  </property>
-	  <property name="shortcut" >
-		  <string/>
-	  </property>
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="icon" >
+    <iconset resource="../icons/qtractor.qrc" >:/icons/transportFollow.png</iconset>
+   </property>
+   <property name="text" >
+    <string>F&amp;ollow Playhead</string>
+   </property>
+   <property name="iconText" >
+    <string>Follow Playhead</string>
+   </property>
+   <property name="statusTip" >
+    <string>Follow playhead</string>
+   </property>
+   <property name="shortcut" >
+    <string/>
+   </property>
   </action>
   <action name="viewRefreshAction" >
    <property name="text" >
@@ -507,6 +507,26 @@
    </property>
    <property name="shortcut" >
     <string>F5</string>
+   </property>
+  </action>
+  <action name="transportPlayAction" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="icon" >
+    <iconset resource="../icons/qtractor.qrc" >:/icons/transportPlay.png</iconset>
+   </property>
+   <property name="text" >
+    <string>&amp;Play</string>
+   </property>
+   <property name="iconText" >
+    <string>Play</string>
+   </property>
+   <property name="statusTip" >
+    <string>Transport play/pause</string>
+   </property>
+   <property name="shortcut" >
+    <string>Space</string>
    </property>
   </action>
  </widget>
