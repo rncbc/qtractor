@@ -1,8 +1,8 @@
 [Desktop Entry]
-Categories=Applications;Multimedia;Audio;MIDI;JACK;ALSA;Qt;
+Name=Qtractor
 Comment=Qtractor is an Audio/MIDI multi-track sequencer application
 Exec=@ac_prefix@/bin/qtractor
-Icon=@ac_prefix@/share/icons/qtractor.png
-Name=Qtractor
+Icon=@ac_prefix@/share/pixmaps/qtractor.png
+Categories=Applications;Multimedia;Audio;MIDI;JACK;ALSA;Qt;
 Terminal=false
 Type=Application

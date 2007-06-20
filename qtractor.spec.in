@@ -9,14 +9,28 @@ Version:	%{version}
 Release:	%{release}
 Prefix:		%{prefix}
 License:	GPL
-Group:		Applications/Multimedia
+Group:		Productivity/Multimedia/Sound/Midi
 Source0:	%{name}-%{version}.tar.gz
 URL:		http://qtractor.sourceforge.net/
-BuildRoot:	/var/tmp/%{name}-%{version}-buildroot
-Requires:	jack, alsa, libsndfile, libvorbis, libsamplerate, mad
 
-BuildRequires: jack-devel, alsa-devel, libsndfile-devel, ladspa
-BuildRequires: libvorbis-devel, libsamplerate-devel, mad-devel
+BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
+
+Requires:	qt >= 4.1
+Requires:	jack >= 0.100.0
+Requires:	alsa
+Requires:	libsndfile >= 1.0.11
+Requires:	libvorbis
+Requires:	libsamplerate
+Requires:	mad
+
+BuildRequires:	qt-devel >= 4.1
+BuildRequires:	jack-devel >= 0.100.0
+BuildRequires:	alsa-devel
+BuildRequires:	libsndfile-devel >= 1.0.11
+BuildRequires:	libvorbis-devel
+BuildRequires:	libsamplerate-devel
+BuildRequires:	mad-devel
+BuildRequires:	ladspa
 
 %description
 Qtractor is an Audio/MIDI multi-track sequencer application
@@ -29,32 +43,32 @@ evolve as a fairly-featured Linux Desktop Audio Workstation GUI,
 specially dedicated to the personal home-studio.
 
 %prep
-
 %setup
-[ -f Makefile.cvs ] && make -f Makefile.cvs
+[ -f Makefile.cvs ] && %__make -f Makefile.cvs
 
 %build
-./configure --prefix=%{prefix}
-make
+%configure
+%__make
 
 %install
-if [ -d $RPM_BUILD_ROOT ]; then rm -rf $RPM_BUILD_ROOT; fi
-mkdir -p $RPM_BUILD_ROOT
-make prefix=$RPM_BUILD_ROOT%{prefix} install
+%makeinstall
 
 %clean
-if [ -d $RPM_BUILD_ROOT ]; then rm -rf $RPM_BUILD_ROOT; fi
+[ -d %{buildroot} -a "%{buildroot}" != "" ] && %__rm -rf  %{buildroot}
 
 %files
 %defattr(-,root,root)
 %doc AUTHORS COPYING ChangeLog README TODO
-%{prefix}/bin/qtractor
-%{prefix}/share/icons/qtractor.png
+%{_bindir}/%{name}
+%{_datadir}/applications/%{name}.desktop
+%{_datadir}/pixmaps/%{name}.png
 
 %changelog
 * Wed Jun 20 2007 Rui Nuno Capela <rncbc@users.sourceforge.net>
+- Application icon is now installed to (prefix)/share/pixmaps.
 - Declared fundamental build and run-time requirements.
 - Destination install directory prefix is now in spec.
+- Spec is now a bit more openSUSE compliant.
 * Mon Apr 16 2007 Rui Nuno Capela <rncbc@users.sourceforge.net>
 - Minor descriptive corrections.
 * Fri Jan 05 2007 Rui Nuno Capela <rncbc@users.sourceforge.net>
