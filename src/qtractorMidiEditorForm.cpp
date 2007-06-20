@@ -444,7 +444,6 @@ void qtractorMidiEditorForm::showEvent ( QShowEvent *pShowEvent )
 void qtractorMidiEditorForm::closeEvent ( QCloseEvent *pCloseEvent )
 {
 	if (queryClose()) {
-		m_iDirtyCount = 0;
 #ifndef CONFIG_TEST
 		// Remove this one from main-form list...
 		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();

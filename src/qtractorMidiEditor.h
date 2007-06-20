@@ -131,7 +131,7 @@ public:
 	bool isSelected() const;
 
 	// Whether there's any items on the clipboard.
-	bool isClipboard() const;
+	static bool isClipboard();
 
 	// Clipboard commands.
 	void cutClipboard();
@@ -260,9 +260,6 @@ protected:
 	// Finalize the event drag-paste.
 	void executeDragPaste(qtractorScrollView *pScrollView, const QPoint& pos);
 
-	// Special clipboard cleaner.
-	void clearClipboard();
-
 	// Vertical line position drawing.
 	void drawPositionX(int& iPositionX, int x, bool bSyncView);
 
@@ -360,16 +357,8 @@ private:
 		unsigned short pitchBend;
 	} m_last;
 
-	// Old-fashion singleton edit-mode cursors. 
-	static int      g_iCursorRefCount;
-	static QCursor *g_pCursorEditModeOn;
-	static QCursor *g_pCursorEditPaste;
-
 	// The local edit command list/queue.
 	qtractorCommandList *m_pCommands;
-
-	// The local clipboard.
-	qtractorMidiEditSelect m_clipboard;
 
 	// Local playhead positioning.
 	unsigned long m_iPlayHead;
@@ -378,6 +367,26 @@ private:
 
 	// Note autition while editing.
 	bool m_bSendNotes;
+
+	// Old-fashion singleton edit-mode cursors. 
+	static int      g_iCursorRefCount;
+	static QCursor *g_pCursorEditModeOn;
+	static QCursor *g_pCursorEditPaste;
+
+	// The local clipboard stuff (singleton).
+	static struct ClipBoard
+	{
+		// Constructor.
+		ClipBoard() {}
+		// Destructor.
+		~ClipBoard() { clear(); }
+		// Clipboard clear.
+		void clear() { qDeleteAll(items); items.clear(); }
+		// Clipboard members.
+		QList<qtractorMidiEvent *> items;
+
+		// Singleton declaration.
+	}	g_clipboard;
 };
 
 

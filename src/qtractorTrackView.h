@@ -321,7 +321,7 @@ private:
 	// The local clipboard stuff.
 	struct ClipBoard
 	{
-		// Clipbaord constructor.
+		// Clipboard constructor.
 		ClipBoard() : singleTrack(NULL) {}
 		// Clipboard stuffer method.
 		void addItem(qtractorClip *pClip, unsigned long iClipStart,

@@ -36,6 +36,7 @@
 #include "qtractorTimeScale.h"
 
 #ifndef CONFIG_TEST
+#include "qtractorSession.h"
 #include "qtractorMainForm.h"
 #endif
 
@@ -180,6 +181,13 @@ const QString& qtractorMidiEditor::controllerName ( unsigned char controller )
 
 	return g_controllerNames[controller];
 }
+
+
+//----------------------------------------------------------------------------
+// qtractorMidiEdit::ClipBoard - MIDI editor clipaboard singleton.
+
+// Singleton declaration.
+qtractorMidiEditor::ClipBoard qtractorMidiEditor::g_clipboard;
 
 
 //----------------------------------------------------------------------------
@@ -441,7 +449,6 @@ qtractorMidiEditor::qtractorMidiEditor ( QWidget *pParent )
 qtractorMidiEditor::~qtractorMidiEditor (void)
 {
 	resetDragState(NULL);
-	clearClipboard();
 
 	// Release local instances.
 	delete m_pTimeScale;
@@ -477,7 +484,6 @@ void qtractorMidiEditor::setSequence ( qtractorMidiSequence *pSeq )
 	m_cursorAt.reset(m_pSeq);
 
 	m_pCommands->clear();
-	clearClipboard();
 
 	// Reset as last on middle note and snap duration...
 	m_last.note = (m_pSeq->noteMin() + m_pSeq->noteMax()) >> 1;
@@ -820,10 +826,10 @@ bool qtractorMidiEditor::isSelected (void) const
 
 
 // Whether there's any item on the clipboard.
-bool qtractorMidiEditor::isClipboard (void) const
+bool qtractorMidiEditor::isClipboard (void)
 {
 	// Tell whether there's any item on the clipboard.
-	return (m_clipboard.items().count() > 0);
+	return (g_clipboard.items.count() > 0);
 }
 
 
@@ -836,7 +842,7 @@ void qtractorMidiEditor::cutClipboard (void)
 	if (!isSelected())
 		return;
 
-	clearClipboard();
+	g_clipboard.clear();
 
 	qtractorMidiEditCommand *pEditCommand
 		= new qtractorMidiEditCommand(m_pSeq, tr("cut"));
@@ -845,9 +851,8 @@ void qtractorMidiEditor::cutClipboard (void)
 	while (iter.hasNext()) {
 		qtractorMidiEditSelect::Item *pItem = iter.next();
 		qtractorMidiEvent *pEvent = pItem->event;
+		g_clipboard.items.append(new qtractorMidiEvent(*pEvent));
 		pEditCommand->removeEvent(pEvent);
-		m_clipboard.addItem(
-			new qtractorMidiEvent(*pEvent), pItem->rectEvent, pItem->rectView);
 	}
 
 	// Make it as an undoable command...
@@ -864,14 +869,12 @@ void qtractorMidiEditor::copyClipboard (void)
 	if (!isSelected())
 		return;
 
-	clearClipboard();
+	g_clipboard.clear();
 
 	QListIterator<qtractorMidiEditSelect::Item *> iter(m_select.items());
 	while (iter.hasNext()) {
-		qtractorMidiEditSelect::Item *pItem = iter.next();
-		qtractorMidiEvent *pEvent = pItem->event;
-		m_clipboard.addItem(
-			new qtractorMidiEvent(*pEvent), pItem->rectEvent, pItem->rectView);
+		qtractorMidiEvent *pEvent = iter.next()->event;
+		g_clipboard.items.append(new qtractorMidiEvent(*pEvent));
 	}
 
 	selectionChangeNotify();
@@ -897,14 +900,50 @@ void qtractorMidiEditor::pasteClipboard (void)
 	m_select.clear();
 	resetDragState(pScrollView);
 
-	QListIterator<qtractorMidiEditSelect::Item *> iter(m_clipboard.items());
+	// This is the edit-view spacifics...
+	int h1 = m_pEditList->itemHeight();
+	int ch = m_pEditView->contentsHeight(); // + 1;
+
+	// This is the edit-event zero-line...
+	int y0 = (m_pEditEvent->viewport())->height();
+	if (m_pEditEvent->eventType() == qtractorMidiEvent::PITCHBEND)
+		y0 = ((y0 >> 3) << 2);
+
+	QListIterator<qtractorMidiEvent *> iter(g_clipboard.items);
 	while (iter.hasNext()) {
-		qtractorMidiEditSelect::Item *pItem = iter.next();
-		qtractorMidiEvent *pEvent = pItem->event;
-		m_select.addItem(pEvent, pItem->rectEvent, pItem->rectView);
+		qtractorMidiEvent *pEvent = iter.next();
+		// Common event coords...
+		int y;
+		int x  = m_pTimeScale->pixelFromTick(pEvent->time());
+		int w1 = m_pTimeScale->pixelFromTick(pEvent->duration()) + 1;
+		// View item...
+		QRect rectView;
+		if (pEvent->type() == m_pEditView->eventType()) {
+			y = ch - h1 * (pEvent->note() + 1);
+			if (w1 < 5)
+				w1 = 5;
+			rectView.setRect(x, y, w1, h1);
+		}
+		// Event item...
+		QRect rectEvent;
+		if (pEvent->type() == m_pEditEvent->eventType()) {
+			if (pEvent->type() == qtractorMidiEvent::PITCHBEND)
+				y = y0 - (y0 * pEvent->pitchBend()) / 8192;
+			else
+				y = y0 - (y0 * pEvent->value()) / 128;
+			if (w1 < 5)
+				w1 = 5;
+			if (y < y0)
+				rectEvent.setRect(x, y, w1, y0 - y);
+			else if (y > y0)
+				rectEvent.setRect(x, y0, w1, y - y0);
+			else
+				rectEvent.setRect(x, y0 - 2, w1, 4);
+		}
+		m_select.addItem(pEvent, rectEvent, rectView);
 		if (m_pEventDrag == NULL) {
 			m_pEventDrag = pEvent;
-			m_rectDrag = (bEditView ? pItem->rectView : pItem->rectEvent);
+			m_rectDrag = (bEditView ? rectView : rectEvent);
 		}
 	}
 
@@ -923,19 +962,6 @@ void qtractorMidiEditor::pasteClipboard (void)
 	// Let's-a go...
 	pScrollView->ensureVisible(pos.x(), pos.y(), 16, 16);
 	updateDragMove(pScrollView, pos);
-}
-
-
-// Special clipboard cleaner.
-void qtractorMidiEditor::clearClipboard (void)
-{
-	QListIterator<qtractorMidiEditSelect::Item *> iter(m_clipboard.items());
-	while (iter.hasNext()) {
-		qtractorMidiEditSelect::Item *pItem = iter.next();
-		delete pItem->event;
-	}
-
-	m_clipboard.clear();
 }
 
 
@@ -1417,8 +1443,24 @@ void qtractorMidiEditor::dragMoveCommit ( qtractorScrollView *pScrollView,
 			break;
 		}
 		// Or else, we're doing some selection around...
-		if ((modifiers & (Qt::ShiftModifier | Qt::ControlModifier)) == 0)
+		if (modifiers & (Qt::ShiftModifier | Qt::ControlModifier)) {
+			// Direct snap positioning...
+			unsigned long iFrame = m_pTimeScale->frameSnap(m_iOffset
+				+ m_pTimeScale->frameFromPixel(pos.x() > 0 ? pos.x() : 0));
+			// Playhead positioning...
+			setPlayHead(iFrame);
+#ifndef CONFIG_TEST
+			// Immediately commited...
+			qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+			if (pMainForm) {
+				qtractorSession *pSession = pMainForm->session();
+				if (pSession)
+					pSession->setPlayHead(iFrame);
+			}
+#endif
+		} else {
 			flags |= SelectClear;
+		}
 		// Fall thru...
 	case DragSelect:
 		// Terminate selection...
