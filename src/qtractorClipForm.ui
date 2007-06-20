@@ -73,7 +73,7 @@
       <item>
        <widget class="QRadioButton" name="TimeRadioButton" >
         <property name="toolTip" >
-         <string>Time (hh::mm:ss.zzz)</string>
+         <string>Time (hh:mm:ss.zzz)</string>
         </property>
         <property name="text" >
          <string>&amp;Time</string>
@@ -83,7 +83,7 @@
       <item>
        <widget class="QRadioButton" name="BbtRadioButton" >
         <property name="toolTip" >
-         <string>BBT (bars.bests.ticks)</string>
+         <string>BBT (bars.beats.ticks)</string>
         </property>
         <property name="text" >
          <string>&amp;BBT</string>

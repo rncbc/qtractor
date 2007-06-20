@@ -380,12 +380,12 @@
             </item>
             <item>
              <property name="text" >
-              <string>Time</string>
+              <string>Time (hh:mm:ss.zzz)</string>
              </property>
             </item>
             <item>
              <property name="text" >
-              <string>BBT</string>
+              <string>BBT (bars.beats.ticks)</string>
              </property>
             </item>
            </widget>
