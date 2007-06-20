@@ -1510,7 +1510,7 @@ bool qtractorMidiEditor::dragMoveFilter ( qtractorScrollView *pScrollView,
 			}
 		}
 		else
-		if (pEvent->type() == QEvent::Leave) {
+		if (pEvent->type() == QEvent::Leave	&& m_dragState != DragPaste) {
 			pScrollView->unsetCursor();
 			return true;
 		}
