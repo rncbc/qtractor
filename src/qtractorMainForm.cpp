@@ -887,20 +887,16 @@ void qtractorMainForm::mmcEvent ( qtractorMmcEvent *pMmcEvent )
 		break;
 	case qtractorMmcEvent::FAST_FORWARD:
 		sMmcText = tr("FFWD");
-		if (0 >= setRolling(+1))
-			m_ui.transportFastForwardAction->setChecked(true);
+		setRolling(+1);
 		break;
 	case qtractorMmcEvent::REWIND:
 		sMmcText = tr("REW");
-		if (setRolling(-1) >= 0)
-			m_ui.transportRewindAction->setChecked(true);
+		setRolling(-1);
 		break;
 	case qtractorMmcEvent::RECORD_STROBE:
 	case qtractorMmcEvent::RECORD_PAUSE:
 		sMmcText = tr("REC ON");
-		if (setRecording(true)) {
-			m_ui.transportRecordAction->setChecked(true);
-		} else {
+		if (!setRecording(true)) {
 			// Send MMC RECORD_EXIT command immediate reply...
 			m_pSession->midiEngine()->sendMmcCommand(
 				qtractorMmcEvent::RECORD_EXIT);
@@ -908,8 +904,7 @@ void qtractorMainForm::mmcEvent ( qtractorMmcEvent *pMmcEvent )
 		break;
 	case qtractorMmcEvent::RECORD_EXIT:
 		sMmcText = tr("REC OFF");
-		if (setRecording(false))
-			m_ui.transportRecordAction->setChecked(false);
+		setRecording(false);
 		break;
 	case qtractorMmcEvent::MMC_RESET:
 		sMmcText = tr("RESET");
@@ -2215,8 +2210,8 @@ bool qtractorMainForm::setPlaying ( bool bPlaying )
 	// We must stop certain things...
 	if (!bPlaying) {
 		// And shutdown recording anyway...
-		if (m_pSession->isRecording() && setRecording(false))
-			m_ui.transportRecordAction->setChecked(false);
+		if (m_pSession->isRecording())
+			setRecording(false);
 		// Stop transport rolling, immediately...
 		setRolling(0);
 	}
@@ -2234,10 +2229,8 @@ bool qtractorMainForm::setRecording ( bool bRecording )
 
 	if (bRecording) {
 		// Starting recording: we must have a session name...
-		if (m_pSession->sessionName().isEmpty() && !editSession()) {
-			m_ui.transportRecordAction->setChecked(false);
+		if (m_pSession->sessionName().isEmpty() && !editSession())
 			return false;
-		}
 		// Will start recording...
 	} else {
 		// Stopping recording: fetch and commit
@@ -2279,13 +2272,6 @@ int qtractorMainForm::setRolling ( int iRolling )
 	if (m_pSession->isRecording() || iOldRolling == iRolling)
 		iRolling = 0;
 
-	// Where were we?
-	if (iOldRolling < 0 && iOldRolling < iRolling)
-		m_ui.transportRewindAction->setChecked(false);
-	else
-	if (iOldRolling > 0 && iOldRolling > iRolling)
-		m_ui.transportFastForwardAction->setChecked(false);
-
 	// Set the rolling flag.
 	m_iTransportRolling = iRolling;
 	m_fTransportShuttle = float(iRolling);
@@ -2311,11 +2297,11 @@ void qtractorMainForm::setShuttle ( float fShuttle )
 {
 	float fOldShuttle = m_fTransportShuttle;
 
-	if (fShuttle < 0.0f && fOldShuttle >= 0.0f && setRolling(-1) >= 0)
-		m_ui.transportRewindAction->setChecked(true);
+	if (fShuttle < 0.0f && fOldShuttle >= 0.0f)
+		setRolling(-1);
 	else
-	if (fShuttle > 0.0f && 0.0f >= fOldShuttle && 0 >= setRolling(+1))
-		m_ui.transportFastForwardAction->setChecked(true);
+	if (fShuttle > 0.0f && 0.0f >= fOldShuttle)
+		setRolling(+1);
 
 	m_fTransportShuttle = fShuttle;
 	m_iTransportUpdate++;
@@ -2472,12 +2458,10 @@ void qtractorMainForm::stabilizeForm (void)
 	m_statusItems[StatusRate]->setText(
 		tr("%1 Hz").arg(m_pSession->sampleRate()));
 
-	bool bPlaying = m_pSession->isPlaying();
-	bool bRecording = (bPlaying
-		&& m_pSession->isRecording()
-		&& m_pSession->recordTracks() > 0);
+	bool bPlaying   = m_pSession->isPlaying();
+	bool bRecording = m_pSession->isRecording();
 	m_statusItems[StatusRec]->setPalette(*m_paletteItems[
-		bRecording ? PaletteRed : PaletteNone]);
+		bPlaying && bRecording ? PaletteRed : PaletteNone]);
 	m_statusItems[StatusMute]->setPalette(*m_paletteItems[
 		m_pSession->muteTracks() > 0 ? PaletteYellow : PaletteNone]);
 	m_statusItems[StatusSolo]->setPalette(*m_paletteItems[
@@ -2486,7 +2470,7 @@ void qtractorMainForm::stabilizeForm (void)
 		m_pSession->isLooping() ? PaletteGreen : PaletteNone]);
 
 	// Transport stuff...
-	bEnabled = (!bPlaying || !m_pSession->isRecording());
+	bEnabled = (!bPlaying || !bRecording);
 	m_ui.transportBackwardAction->setEnabled(bEnabled && m_iPlayHead > 0);
 	m_ui.transportRewindAction->setEnabled(bEnabled && m_iPlayHead > 0);
 	m_ui.transportFastForwardAction->setEnabled(bEnabled);
@@ -2496,8 +2480,12 @@ void qtractorMainForm::stabilizeForm (void)
 			|| m_iPlayHead < m_pSession->editTail()));
 	m_ui.transportLoopAction->setEnabled(bEnabled
 		&& (m_pSession->isLooping() || bSelectable));
-	m_ui.transportPlayAction->setChecked(bPlaying);
 	m_ui.transportRecordAction->setEnabled(m_pSession->recordTracks() > 0);
+
+	m_ui.transportRewindAction->setChecked(m_iTransportRolling < 0);
+	m_ui.transportFastForwardAction->setChecked(m_iTransportRolling > 0);
+	m_ui.transportPlayAction->setChecked(bPlaying);
+	m_ui.transportRecordAction->setChecked(bRecording);
 
 	// Special record mode settlement.
 	m_pTransportTimeSpinBox->setReadOnly(bRecording);
@@ -2573,9 +2561,6 @@ bool qtractorMainForm::checkRestartSession (void)
 		// Bail out if can't start it...
 		if (!startSession()) {
 			// Can go on with no-business...
-			m_ui.transportRewindAction->setChecked(false);
-			m_ui.transportFastForwardAction->setChecked(false);
-			m_ui.transportRecordAction->setChecked(false);
 			stabilizeForm();
 			return false;
 		}
