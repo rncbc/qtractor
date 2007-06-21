@@ -509,6 +509,23 @@
     <string>F5</string>
    </property>
   </action>
+  <action name="transportBackwardAction" >
+   <property name="icon" >
+    <iconset resource="../icons/qtractor.qrc" >:/icons/transportBackward.png</iconset>
+   </property>
+   <property name="text" >
+    <string>&amp;Backward</string>
+   </property>
+   <property name="iconText" >
+    <string>Backward</string>
+   </property>
+   <property name="statusTip" >
+    <string>Transport backward</string>
+   </property>
+   <property name="shortcut" >
+    <string>Backspace</string>
+   </property>
+  </action>
   <action name="transportPlayAction" >
    <property name="checkable" >
     <bool>true</bool>

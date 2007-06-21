@@ -129,8 +129,6 @@ public slots:
 	void viewFollow(bool bOn);
 	void viewRefresh();
 
-	void transportPlay();
-
 	void sendNote(int iNote, int iVelocity);
 
 	void contentsChanged();

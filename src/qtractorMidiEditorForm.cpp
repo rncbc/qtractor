@@ -183,7 +183,8 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	// Some actions surely need those
 	// shortcuts firmly attached...
 	addAction(m_ui.viewMenubarAction);
-	// Special integration one (Space -> main transportPlay.
+	// Special integration one.
+	addAction(m_ui.transportBackwardAction);
 	addAction(m_ui.transportPlayAction);
 
 	// Ah, make it stand right.
@@ -262,10 +263,6 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	QObject::connect(m_ui.viewRefreshAction,
 		SIGNAL(triggered(bool)),
 		SLOT(viewRefresh()));
-
-	QObject::connect(m_ui.transportPlayAction,
-		SIGNAL(triggered(bool)),
-		SLOT(transportPlay()));
 
 	QObject::connect(m_pSnapPerBeatComboBox,
 		SIGNAL(activated(int)),
@@ -348,6 +345,16 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 		}
 		// Try to restore old window positioning?
 		// pOptions->loadWidgetGeometry(this);
+	}
+
+	// Make last-but-not-least conections....
+	if (pMainForm) {
+		QObject::connect(m_ui.transportBackwardAction,
+			SIGNAL(triggered(bool)),
+			pMainForm, SLOT(transportBackward()));
+		QObject::connect(m_ui.transportPlayAction,
+			SIGNAL(triggered(bool)),
+			pMainForm, SLOT(transportPlay()));
 	}
 
 #endif
@@ -560,7 +567,6 @@ void qtractorMidiEditorForm::setMidiClip ( qtractorMidiClip *pMidiClip  )
 		// Adjust MIDI editor time-scale fundamentals...
 		m_pMidiClip = pMidiClip;
 		// Set its most outstanding properties...
-		m_pMidiEditor->timeScale()->copy(*pSession->timeScale());
 		m_pMidiEditor->setForeground(pTrack->foreground());
 		m_pMidiEditor->setBackground(pTrack->background());
 		// Now set the editing MIDI sequence alright...
@@ -936,25 +942,6 @@ void qtractorMidiEditorForm::viewFollow ( bool bOn )
 void qtractorMidiEditorForm::viewRefresh (void)
 {
 	m_pMidiEditor->refresh();
-
-	stabilizeForm();
-}
-
-
-// Redirect play/stop shortcut to main widget.
-void qtractorMidiEditorForm::transportPlay (void)
-{
-#ifdef CONFIG_TEST
-
-	fprintf(stderr, "qtractorMidiEditorForm::transportPlay()\n");
-
-#else
-
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm)
-		pMainForm->transportPlay();
-
-#endif
 
 	stabilizeForm();
 }

@@ -1085,7 +1085,7 @@
     <string>Transport backward</string>
    </property>
    <property name="shortcut" >
-    <string/>
+    <string>Backspace</string>
    </property>
   </action>
   <action name="transportRewindAction" >
@@ -1105,7 +1105,7 @@
     <string>Transport rewind</string>
    </property>
    <property name="shortcut" >
-    <string>Backspace</string>
+    <string/>
    </property>
   </action>
   <action name="transportFastForwardAction" >
