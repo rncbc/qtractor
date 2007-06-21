@@ -138,7 +138,7 @@ protected:
 	virtual float gainFromScale(float fScale) const { return fScale; }
 	virtual float scaleFromGain(float fGain)  const { return fGain;  }
 	virtual float gainFromValue(float fValue) const { return fValue; }
-	virtual float valueFromGain(float fGain)  const { return fGain; }
+	virtual float valueFromGain(float fGain)  const { return fGain;  }
 
 protected slots:
 

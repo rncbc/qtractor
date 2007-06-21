@@ -290,8 +290,7 @@ qtractorAudioMeter::qtractorAudioMeter ( qtractorAudioMonitor *pAudioMonitor,
 
 	topLabel()->hide();
 
-	gainSlider()->setMaximum(10000
-		+ int(10000.0f * 0.025f * QTRACTOR_AUDIO_METER_MAXDB));
+	gainSlider()->setMaximum(11500);
 
 	gainSpinBox()->setMinimum(QTRACTOR_AUDIO_METER_MINDB);
 	gainSpinBox()->setMaximum(QTRACTOR_AUDIO_METER_MAXDB);
@@ -420,8 +419,7 @@ void qtractorAudioMeter::refresh (void)
 // Resize event handler.
 void qtractorAudioMeter::resizeEvent ( QResizeEvent * )
 {
-	m_fScale = (1.0f - 0.025f * QTRACTOR_AUDIO_METER_MAXDB)
-		* float(hbox()->height());
+	m_fScale = 0.85f * float(hbox()->height());
 
 	m_levels[Color0dB]  = iec_scale(  0.0f);
 	m_levels[Color3dB]  = iec_scale( -3.0f);
