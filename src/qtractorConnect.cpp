@@ -171,6 +171,7 @@ qtractorClientListItem *qtractorPortListItem::clientItem (void) const
 void qtractorPortListItem::markPort ( int iMark )
 {
 	setHilite(false);
+
 	m_iPortMark = iMark;
 	if (iMark > 0)
 		m_connects.clear();
@@ -332,6 +333,7 @@ bool qtractorClientListItem::isReadable (void)
 void qtractorClientListItem::markClient ( int iMark )
 {
 	setHilite(false);
+
 	m_iClientMark = iMark;
 }
 
@@ -387,7 +389,7 @@ void qtractorClientListItem::setHilite ( bool bHilite )
 
 	// Set the new color.
 	QTreeWidgetItem::setTextColor(0, m_iHilite > 0 ? Qt::darkBlue
-		: QTreeWidgetItem::treeWidget()->palette().text().color());		
+		: QTreeWidgetItem::treeWidget()->palette().text().color());
 }
 
 bool qtractorClientListItem::isHilite (void) const

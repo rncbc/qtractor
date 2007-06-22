@@ -178,41 +178,20 @@ void qtractorConnectForm::audioDisconnectAll (void)
 
 
 // Refresh complete form by notifying the parent form.
-void qtractorConnectForm::audioRefresh (void)
+void qtractorConnectForm::audioUpdate ( bool bClear )
 {
 #ifdef CONFIG_DEBUG_0
-	fprintf(stderr, "qtractorConnectForm::audioRefresh()\n");
+	fprintf(stderr, "qtractorConnectForm::audioUpdate(%d)\n", int(bClear));
 #endif
 
 	m_ui.AudioOListView->setClientName(
-		m_ui.AudioOClientsComboBox->currentIndex() > 0 ?
-			m_ui.AudioOClientsComboBox->currentText() : QString::null);
+		m_ui.AudioOClientsComboBox->currentIndex() > 0 && !bClear
+			? m_ui.AudioOClientsComboBox->currentText() : QString::null);
 	m_ui.AudioIListView->setClientName(
-		m_ui.AudioIClientsComboBox->currentIndex() > 0 ?
-			m_ui.AudioIClientsComboBox->currentText() : QString::null);
+		m_ui.AudioIClientsComboBox->currentIndex() > 0 && !bClear
+			? m_ui.AudioIClientsComboBox->currentText() : QString::null);
 
-	m_pAudioConnect->updateContents(false);
-
-	updateClientsComboBox(m_ui.AudioOClientsComboBox, m_ui.AudioOListView,
-		m_pAudioConnect->icon(qtractorAudioConnect::ClientOut));
-	updateClientsComboBox(m_ui.AudioIClientsComboBox, m_ui.AudioIListView,
-		m_pAudioConnect->icon(qtractorAudioConnect::ClientIn));
-
-	audioStabilize();
-}
-
-
-// Clear complete form by notifying the parent form.
-void qtractorConnectForm::audioClear (void)
-{
-#ifdef CONFIG_DEBUG_0
-	fprintf(stderr, "qtractorConnectForm::audioClear()\n");
-#endif
-
-	m_ui.AudioOListView->setClientName(QString::null);
-	m_ui.AudioIListView->setClientName(QString::null);
-
-	m_pAudioConnect->updateContents(true);
+	m_pAudioConnect->updateContents(bClear);
 
 	updateClientsComboBox(m_ui.AudioOClientsComboBox, m_ui.AudioOListView,
 		m_pAudioConnect->icon(qtractorAudioConnect::ClientOut));
@@ -300,41 +279,20 @@ void qtractorConnectForm::midiDisconnectAll (void)
 
 
 // Refresh complete form by notifying the parent form.
-void qtractorConnectForm::midiRefresh (void)
+void qtractorConnectForm::midiUpdate ( bool bClear )
 {
 #ifdef CONFIG_DEBUG_0
-	fprintf(stderr, "qtractorConnectForm::midiRefresh()\n");
+	fprintf(stderr, "qtractorConnectForm::midiUpdate(%d)\n", int(bClear));
 #endif
 
 	m_ui.MidiOListView->setClientName(
-		m_ui.MidiOClientsComboBox->currentIndex() > 0 ?
-			m_ui.MidiOClientsComboBox->currentText() : QString::null);
+		m_ui.MidiOClientsComboBox->currentIndex() > 0 && !bClear
+			? m_ui.MidiOClientsComboBox->currentText() : QString::null);
 	m_ui.MidiIListView->setClientName(
-		m_ui.MidiIClientsComboBox->currentIndex() > 0 ?
-			m_ui.MidiIClientsComboBox->currentText() : QString::null);
+		m_ui.MidiIClientsComboBox->currentIndex() > 0 && !bClear
+			? m_ui.MidiIClientsComboBox->currentText() : QString::null);
 
-	m_pMidiConnect->updateContents(false);
-	
-	updateClientsComboBox(m_ui.MidiOClientsComboBox, m_ui.MidiOListView,
-		m_pMidiConnect->icon(qtractorMidiConnect::ClientOut));
-	updateClientsComboBox(m_ui.MidiIClientsComboBox, m_ui.MidiIListView,
-		m_pMidiConnect->icon(qtractorMidiConnect::ClientIn));
-
-	midiStabilize();
-}
-
-
-// Clear complete form by notifying the parent form.
-void qtractorConnectForm::midiClear (void)
-{
-#ifdef CONFIG_DEBUG_0
-	fprintf(stderr, "qtractorConnectForm::midiClear()\n");
-#endif
-
-	m_ui.MidiOListView->setClientName(QString::null);
-	m_ui.MidiIListView->setClientName(QString::null);
-
-	m_pMidiConnect->updateContents(true);
+	m_pMidiConnect->updateContents(bClear);
 	
 	updateClientsComboBox(m_ui.MidiOClientsComboBox, m_ui.MidiOListView,
 		m_pMidiConnect->icon(qtractorMidiConnect::ClientOut));

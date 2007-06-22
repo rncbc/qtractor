@@ -185,6 +185,7 @@ void qtractorConnections::showBus ( qtractorBus *pBus,
 		qtractorAudioBus *pAudioBus
 			= static_cast<qtractorAudioBus *> (pBus);
 		if (pAudioBus) {
+			m_pConnectForm->audioClear();
 			m_pConnectForm->connectTabWidget()->setCurrentIndex(0);
 			if (busMode & qtractorBus::Input) {
 				m_pConnectForm->audioOClientsComboBox()->setCurrentIndex(0);
@@ -194,12 +195,12 @@ void qtractorConnections::showBus ( qtractorBus *pBus,
 				m_pConnectForm->audioIListView()->setPortName(
 					pAudioBus->busName() + sSuffix);
 			} else {
+				m_pConnectForm->audioIClientsComboBox()->setCurrentIndex(0);
 				m_pConnectForm->audioOClientsComboBox()->setCurrentIndex(
 					m_pConnectForm->audioOClientsComboBox()->findText(
 						pSession->audioEngine()->clientName()));
 				m_pConnectForm->audioOListView()->setPortName(
 					pAudioBus->busName() + sSuffix);
-				m_pConnectForm->audioIClientsComboBox()->setCurrentIndex(0);
 			}
 			m_pConnectForm->audioRefresh();
 		}
@@ -210,6 +211,7 @@ void qtractorConnections::showBus ( qtractorBus *pBus,
 		qtractorMidiBus *pMidiBus
 			= static_cast<qtractorMidiBus *> (pBus);
 		if (pMidiBus) {
+			m_pConnectForm->midiClear();
 			m_pConnectForm->connectTabWidget()->setCurrentIndex(1);
 			if (busMode & qtractorBus::Input) {
 				m_pConnectForm->midiOClientsComboBox()->setCurrentIndex(0);
@@ -221,6 +223,7 @@ void qtractorConnections::showBus ( qtractorBus *pBus,
 					QString::number(pMidiBus->alsaPort())
 					+ ':' + pMidiBus->busName() + sSuffix);
 			} else {
+				m_pConnectForm->midiIClientsComboBox()->setCurrentIndex(0);
 				m_pConnectForm->midiOClientsComboBox()->setCurrentIndex(
 					m_pConnectForm->midiOClientsComboBox()->findText(
 						QString::number(pSession->midiEngine()->alsaClient())
@@ -228,7 +231,6 @@ void qtractorConnections::showBus ( qtractorBus *pBus,
 				m_pConnectForm->midiOListView()->setPortName(
 					QString::number(pMidiBus->alsaPort())
 					+ ':' + pMidiBus->busName() + sSuffix);
-				m_pConnectForm->midiIClientsComboBox()->setCurrentIndex(0);
 			}
 			m_pConnectForm->midiRefresh();
 		}

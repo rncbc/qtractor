@@ -81,22 +81,28 @@ public slots:
     void audioConnectSelected();
     void audioDisconnectSelected();
     void audioDisconnectAll();
-    void audioRefresh();
-    void audioClear();
     void audioStabilize();
+
+    void audioRefresh() { audioUpdate(false); }
+    void audioClear()   { audioUpdate(true);  }
+
 	void midiIClientChanged();
 	void midiOClientChanged();
     void midiConnectSelected();
     void midiDisconnectSelected();
     void midiDisconnectAll();
-    void midiRefresh();
-    void midiClear();
     void midiStabilize();
+
+    void midiRefresh()  { midiUpdate(false); }
+    void midiClear()    { midiUpdate(true);  }
 
 protected:
 
     void updateClientsComboBox(QComboBox *pComboBox,
 		qtractorClientListView *pClientListView, const QIcon& icon);
+
+	void audioUpdate(bool bClear);
+	void midiUpdate(bool bClear);
 
 private:
 
