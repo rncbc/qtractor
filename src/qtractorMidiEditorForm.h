@@ -30,7 +30,7 @@ class qtractorMidiEditor;
 class qtractorMidiSequence;
 class qtractorTimeScale;
 
-#ifndef CONFIG_TEST
+#ifndef QTRACTOR_TEST
 class qtractorMidiClip;
 #endif
 
@@ -70,7 +70,7 @@ public:
 	void setFormat(unsigned short iFormat);
 	unsigned short format() const;
 
-#ifdef CONFIG_TEST
+#ifdef QTRACTOR_TEST
 	// MIDI clip sequence accessor.
 	void setSequence(qtractorMidiSequence *pSeq);
 #else
@@ -129,6 +129,9 @@ public slots:
 	void viewFollow(bool bOn);
 	void viewRefresh();
 
+	void helpAbout();
+	void helpAboutQt();
+
 	void sendNote(int iNote, int iVelocity);
 
 	void contentsChanged();
@@ -164,7 +167,7 @@ private:
 	// Instance variables...
 	qtractorMidiEditor *m_pMidiEditor;
 
-#ifndef CONFIG_TEST
+#ifndef QTRACTOR_TEST
 	qtractorMidiClip *m_pMidiClip;
 #endif
 

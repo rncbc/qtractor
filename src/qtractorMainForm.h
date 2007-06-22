@@ -105,6 +105,7 @@ public slots:
 	void fileSaveAs();
 	void fileProperties();
 	void fileExit();
+
 	void editUndo();
 	void editRedo();
 	void editCut();
@@ -119,11 +120,13 @@ public slots:
 	void editSelectTrack();
 	void editSelectAll();
 	void editClip();
+
 	void trackAdd();
 	void trackRemove();
 	void trackProperties();
 	void trackImportAudio();
 	void trackImportMidi();
+
 	void viewMenubar(bool bOn);
 	void viewStatusbar(bool bOn);
 	void viewToolbarFile(bool bOn);
@@ -141,6 +144,7 @@ public slots:
 	void viewInstruments();
 	void viewBuses();
 	void viewOptions();
+
 	void transportBackward();
 	void transportRewind();
 	void transportFastForward();
@@ -149,11 +153,14 @@ public slots:
 	void transportPlay();
 	void transportRecord();
 	void transportFollow();
+
 	void helpAboutQt();
 	void helpAbout();
 
 	void stabilizeForm();
+
 	void timerSlot();
+
 	void alsaNotify();
 	void tracksClosed();
 	void updateRecentFilesMenu();

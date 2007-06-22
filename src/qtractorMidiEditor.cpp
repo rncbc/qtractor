@@ -35,7 +35,7 @@
 #include "qtractorRubberBand.h"
 #include "qtractorTimeScale.h"
 
-#ifndef CONFIG_TEST
+#ifndef QTRACTOR_TEST
 #include "qtractorSession.h"
 #include "qtractorMainForm.h"
 #endif
@@ -261,7 +261,7 @@ bool qtractorMidiEditor::saveCopyFile ( const QString& sNewFilename,
 		delete [] ppSeqs;
 	}
 
-#ifndef CONFIG_TEST
+#ifndef QTRACTOR_TEST
 	// HACK: This invasive operation is so important that
 	// it surely deserves being in the front page...
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
@@ -1449,7 +1449,7 @@ void qtractorMidiEditor::dragMoveCommit ( qtractorScrollView *pScrollView,
 				+ m_pTimeScale->frameFromPixel(pos.x() > 0 ? pos.x() : 0));
 			// Playhead positioning...
 			setPlayHead(iFrame);
-#ifndef CONFIG_TEST
+#ifndef QTRACTOR_TEST
 			// Immediately commited...
 			qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 			if (pMainForm) {

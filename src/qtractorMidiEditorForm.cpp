@@ -19,7 +19,7 @@
 
 *****************************************************************************/
 
-#ifdef CONFIG_TEST
+#ifdef  QTRACTOR_TEST
 #define QTRACTOR_TITLE "qtractorMidiEditorTest"
 #else
 #include "qtractorAbout.h"
@@ -31,7 +31,7 @@
 #include "qtractorMidiEditView.h"
 #include "qtractorMidiEditEvent.h"
 
-#ifdef CONFIG_TEST
+#ifdef QTRACTOR_TEST
 #include "qtractorMidiSequence.h"
 #else
 #include "qtractorMidiClip.h"
@@ -65,7 +65,7 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	// Setup UI struct...
 	m_ui.setupUi(this);
 
-#ifndef CONFIG_TEST
+#ifndef QTRACTOR_TEST
 	m_pMidiClip = NULL;
 #endif
 
@@ -264,6 +264,13 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 		SIGNAL(triggered(bool)),
 		SLOT(viewRefresh()));
 
+	QObject::connect(m_ui.helpAboutAction,
+		SIGNAL(triggered(bool)),
+		SLOT(helpAbout()));
+	QObject::connect(m_ui.helpAboutQtAction,
+		SIGNAL(triggered(bool)),
+		SLOT(helpAboutQt()));
+
 	QObject::connect(m_pSnapPerBeatComboBox,
 		SIGNAL(activated(int)),
 		SLOT(snapPerBeatChanged(int)));
@@ -286,7 +293,7 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 		SIGNAL(changeNotifySignal()),
 		SLOT(contentsChanged()));
 
-#ifdef CONFIG_TEST
+#ifdef QTRACTOR_TEST
 
 	// This is the initial state and selection.
 	m_ui.editModeOffAction->setChecked(true);
@@ -410,7 +417,7 @@ bool qtractorMidiEditorForm::queryClose (void)
 		}
 	}
 
-#ifndef CONFIG_TEST
+#ifndef QTRACTOR_TEST
 	// Try to save current editor view state...
 	if (bQueryClose && isVisible()) {
 		qtractorOptions *pOptions = NULL;
@@ -443,7 +450,7 @@ bool qtractorMidiEditorForm::queryClose (void)
 // On-show event handler.
 void qtractorMidiEditorForm::showEvent ( QShowEvent *pShowEvent )
 {
-#ifndef CONFIG_TEST
+#ifndef QTRACTOR_TEST
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm)
 		pMainForm->addEditor(m_pMidiEditor);
@@ -457,7 +464,7 @@ void qtractorMidiEditorForm::showEvent ( QShowEvent *pShowEvent )
 void qtractorMidiEditorForm::closeEvent ( QCloseEvent *pCloseEvent )
 {
 	if (queryClose()) {
-#ifndef CONFIG_TEST
+#ifndef QTRACTOR_TEST
 		// Remove this one from main-form list...
 		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 		if (pMainForm)
@@ -534,7 +541,7 @@ unsigned short qtractorMidiEditorForm::format (void) const
 }
 
 
-#ifdef CONFIG_TEST
+#ifdef QTRACTOR_TEST
 
 // Editing MIDI event sequence accessors.
 void qtractorMidiEditorForm::setSequence ( qtractorMidiSequence *pSeq  )
@@ -731,7 +738,7 @@ bool qtractorMidiEditorForm::saveClipFile ( bool bPrompt )
 		setFilename(sFilename);
 		// Aha, but we're not dirty no more.
 		m_iDirtyCount = 0;
-#ifndef CONFIG_TEST
+#ifndef QTRACTOR_TEST
 		if (m_pMidiClip) {
 			m_pMidiClip->setFilename(sFilename);
 			m_pMidiClip->setDirty(false);
@@ -765,7 +772,7 @@ void qtractorMidiEditorForm::fileSaveAs (void)
 // File properties dialog.
 void qtractorMidiEditorForm::fileProperties (void)
 {
-#ifndef CONFIG_TEST
+#ifndef QTRACTOR_TEST
 	if (m_pMidiClip) {
 		qtractorClipForm clipForm(parentWidget());
 		clipForm.setClip(m_pMidiClip);
@@ -941,10 +948,46 @@ void qtractorMidiEditorForm::viewRefresh (void)
 }
 
 
+//-------------------------------------------------------------------------
+// qtractorMidiEditorForm -- Help Action slots.
+
+// Show information about application program.
+void qtractorMidiEditorForm::helpAbout (void)
+{
+#ifdef QTRACTOR_TEST
+
+	// Stuff the about box text...
+	QString sText = "<p>\n";
+	sText += "<b>" QTRACTOR_TITLE "</b><br />\n";
+	sText += "<br />\n";
+	sText += "<small>" + tr("Build") + ": " __DATE__ " " __TIME__ "</small><br />\n";
+	sText += "</p>\n";
+
+	QMessageBox::about(this, tr("About") + " " QTRACTOR_TITLE, sText);
+
+#else
+
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm)
+		pMainForm->helpAbout();
+
+#endif
+}
+
+// Show information about the Qt toolkit.
+void qtractorMidiEditorForm::helpAboutQt (void)
+{
+	QMessageBox::aboutQt(this);
+}
+
+
+//-------------------------------------------------------------------------
+// qtractorMidiEditorForm -- Utility methods.
+
 // Send note on/off to respective output bus.
 void qtractorMidiEditorForm::sendNote ( int iNote, int iVelocity )
 {
-#ifdef CONFIG_TEST
+#ifdef QTRACTOR_TEST
 
 	fprintf(stderr, "qtractorMidiEditorForm::sendNote(%d, %d)\n", iNote, iVelocity);
 
@@ -1089,7 +1132,7 @@ void qtractorMidiEditorForm::controllerChanged ( int iIndex )
 
 void qtractorMidiEditorForm::contentsChanged (void)
 {
-#ifndef CONFIG_TEST
+#ifndef QTRACTOR_TEST
 	if (m_pMidiClip)
 		m_pMidiClip->setDirty(true);
 #endif

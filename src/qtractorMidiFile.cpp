@@ -223,8 +223,7 @@ bool qtractorMidiFile::readTracks ( qtractorMidiSequence **ppSeqs,
 			qtractorMidiSequence *pSeq = ppSeqs[iSeq];
 
 			// Event time converted to sequence resolution...
-			unsigned long iTime = (iTrackTime * pSeq->ticksPerBeat())
-				/ m_iTicksPerBeat;
+			unsigned long iTime = pSeq->timeq(iTrackTime, m_iTicksPerBeat);
 
 			// Check for sequence time length, if any...
 			if (pSeq->timeLength() > 0
@@ -582,8 +581,7 @@ bool qtractorMidiFile::writeTracks ( qtractorMidiSequence **ppSeqs,
 					break;
 
 				// Event (absolute) time converted to file resolution...
-				iTime = (pEvent->time() * m_iTicksPerBeat)
-					/ pSeq->ticksPerBeat();
+				iTime = pSeq->timep(pEvent->time(), m_iTicksPerBeat);
 
 				// Check for pending note-offs...
 				for (;;) {
@@ -647,7 +645,7 @@ bool qtractorMidiFile::writeTracks ( qtractorMidiSequence **ppSeqs,
 					writeInt(pEvent->velocity(), 1);
 					iTimeOff = (pEvent->time() + pEvent->duration());
 					pNoteOff = new qtractorMidiEvent(
-						(iTimeOff * m_iTicksPerBeat) / pSeq->ticksPerBeat(),
+						pSeq->timep(iTimeOff, m_iTicksPerBeat),
 						qtractorMidiEvent::NOTEOFF,
 						pEvent->note());
 					// Find the proper position in notes-off list ...

@@ -24,7 +24,7 @@
 #include "qtractorMidiEditor.h"
 #include "qtractorMidiEditView.h"
 
-#ifdef CONFIG_TEST
+#ifdef QTRACTOR_TEST
 #include "qtractorTimeScale.h"
 #else
 #include "qtractorSession.h"
@@ -256,7 +256,7 @@ void qtractorMidiEditTime::mousePressEvent ( QMouseEvent *pMouseEvent )
 // Handle item selection/dragging -- mouse pointer move.
 void qtractorMidiEditTime::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 {
-#ifndef CONFIG_TEST
+#ifndef QTRACTOR_TEST
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm == NULL)
 		return;
@@ -280,7 +280,7 @@ void qtractorMidiEditTime::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 		// Play-head positioning...
 		m_pEditor->editView()->ensureVisible(pos.x(), y, 16, 0);
 		m_pEditor->setPlayHead(iFrame);
-#ifndef CONFIG_TEST
+#ifndef QTRACTOR_TEST
 		// Let the change get some immediate visual feedback...
 		pMainForm->updateTransportTime(iFrame);
 #endif
@@ -313,7 +313,7 @@ void qtractorMidiEditTime::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 {
 	qtractorScrollView::mouseReleaseEvent(pMouseEvent);
 
-#ifndef CONFIG_TEST
+#ifndef QTRACTOR_TEST
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm == NULL)
 		return;
@@ -337,7 +337,7 @@ void qtractorMidiEditTime::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 			pMouseEvent->modifiers() & Qt::ControlModifier, true);
 		break;
 	case DragPlayHead:
-#ifndef CONFIG_TEST
+#ifndef QTRACTOR_TEST
 		// Play-head positioning commit...
 		pSession->setPlayHead(m_pEditor->playHead());
 #endif
@@ -350,7 +350,7 @@ void qtractorMidiEditTime::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 		if (bModifier) {
 			// Playhead positioning...
 			m_pEditor->setPlayHead(iFrame);
-#ifndef CONFIG_TEST
+#ifndef QTRACTOR_TEST
 			// Immediately commited...
 			pSession->setPlayHead(iFrame);
 #endif
@@ -377,7 +377,7 @@ void qtractorMidiEditTime::keyPressEvent ( QKeyEvent *pKeyEvent )
 #endif
 	switch (pKeyEvent->key()) {
 	case Qt::Key_Escape:
-#ifndef CONFIG_TEST
+#ifndef QTRACTOR_TEST
 		// Restore uncommitted play-head position?...
 		if (m_dragState == DragPlayHead) {
 			qtractorSession  *pSession  = NULL;
