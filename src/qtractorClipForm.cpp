@@ -174,9 +174,18 @@ qtractorClip *qtractorClipForm::clip (void) const
 // Accept settings (OK button slot).
 void qtractorClipForm::accept (void)
 {
-	// Save options...
+	// Sanity check...
+	if (m_pClip == NULL)
+		return;
+	if (!m_pClip->queryEditor())
+		return;
+
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (m_iDirtyCount > 0 && m_pClip && pMainForm) {
+	if (pMainForm == NULL)
+		return;
+
+	// Save settings...
+	if (m_iDirtyCount > 0) {
 		// Make changes undoable...
 		qtractorClipCommand *pClipCommand
 			= new qtractorClipCommand(tr("edit clip"));

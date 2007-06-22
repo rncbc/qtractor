@@ -765,12 +765,6 @@ void qtractorMidiEditorForm::fileSaveAs (void)
 // File properties dialog.
 void qtractorMidiEditorForm::fileProperties (void)
 {
-	// We need an official stance whether current changes
-	// are to be committed, otherwise the clip-properties
-	// dialog will override the track/sequence changes...
-	if (!queryClose())
-		return;
-
 #ifndef CONFIG_TEST
 	if (m_pMidiClip) {
 		qtractorClipForm clipForm(parentWidget());
