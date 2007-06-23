@@ -97,9 +97,6 @@ qtractorTrack *qtractorClip::track (void) const
 void qtractorClip::setFilename ( const QString& sFilename )
 {
 	m_sFilename = sFilename;
-	
-	if (m_sClipName.isEmpty())
-		m_sClipName = QFileInfo(m_sFilename).baseName();
 }
 
 const QString& qtractorClip::filename (void) const

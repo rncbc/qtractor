@@ -27,6 +27,7 @@
 
 #include "qtractorSessionDocument.h"
 
+#include <QFileInfo>
 #include <QPainter>
 #include <QPolygon>
 
@@ -123,6 +124,10 @@ bool qtractorAudioClip::openAudioFile ( const QString& sFilename, int iMode )
 	// Set local properties...
 	setFilename(sFilename);
 	setDirty(false);
+
+	// Clip name should be clear about it all.
+	if (clipName().isEmpty())
+		setClipName(QFileInfo(filename()).baseName());
 
 	// Default clip length will be the whole file length.
 	if (clipLength() == 0)

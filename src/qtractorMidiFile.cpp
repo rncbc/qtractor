@@ -382,8 +382,11 @@ bool qtractorMidiFile::readTracks ( qtractorMidiSequence **ppSeqs,
 #ifdef CONFIG_DEBUG_0
 	for (unsigned short iSeq = 0; iSeq < iSeqs; ++iSeq) {
 		qtractorMidiSequence *pSeq = ppSeqs[iSeq];
-		fprintf(stderr, "qtractorMidiFile::readTrack([%u]%p,%u,%u) events=%d duration=%lu\n",
-			iSeq, pSeq, iSeqs, iTrackChannel, pSeq->events().count(), pSeq->duration());
+		fprintf(stderr, "qtractorMidiFile::readTrack([%u]%p,%u,%u)"
+			" name=\"%s\" events=%d duration=%lu\n",
+			iSeq, pSeq, iSeqs, iTrackChannel,
+			pSeq->name().toUtf8().constData(),
+			pSeq->events().count(), pSeq->duration());
 	}
 #endif
 
@@ -447,8 +450,11 @@ bool qtractorMidiFile::writeTracks ( qtractorMidiSequence **ppSeqs,
 		fprintf(stderr, "qtractorMidiFile::writeTrack(NULL,%u)\n", iSeqs);
 	for (unsigned short iSeq = 0; ppSeqs && iSeq < iSeqs; ++iSeq) {
 		qtractorMidiSequence *pSeq = ppSeqs[iSeq];
-		fprintf(stderr, "qtractorMidiFile::writeTrack([%u]%p,%u) events=%d duration=%lu\n",
-			iSeq, pSeq, iSeqs, pSeq->events().count(), pSeq->duration());
+		fprintf(stderr, "qtractorMidiFile::writeTrack([%u]%p,%u)"
+			" name=\"%s\" events=%d duration=%lu\n",
+			iSeq, pSeq, iSeqs,
+			pSeq->name().toUtf8().constData(),
+			pSeq->events().count(), pSeq->duration());
 	}
 #endif
 

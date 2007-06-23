@@ -548,10 +548,11 @@ bool qtractorTracks::addAudioTracks ( QStringList files,
 		qtractorAudioClip *pAudioClip = new qtractorAudioClip(pTrack);
 		pAudioClip->setFilename(sPath);
 		pAudioClip->setClipStart(iClipStart);
-		// Time to add the new track/clip into session...
-		pTrack->setTrackName(pAudioClip->clipName());
+		// Time to add the new track/clip into session;
+		// actuallly, this is wheen the given audio file gets open...
 		pTrack->addClip(pAudioClip);
 		// Add the new track to composite command...
+		pTrack->setTrackName(pAudioClip->clipName());
 		pImportTrackCommand->addTrack(pTrack);
 		// Don't forget to add this one to local repository.
 		pMainForm->addAudioFile(sPath);

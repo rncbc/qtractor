@@ -83,7 +83,7 @@ bool qtractorMidiClip::openMidiFile ( const QString& sFilename,
 {
 	if (m_pFile)
 		delete m_pFile;
-	
+
 	// Create and open up the MIDI file...
 	m_pFile = new qtractorMidiFile();
 	if (!m_pFile->open(sFilename, iMode)) {
@@ -153,18 +153,20 @@ bool qtractorMidiClip::openMidiFile ( qtractorMidiFile *pFile,
 			m_bSessionFlag = false;
 		}
 		// We should have events, otherwise this clip is of no use...
-		//if (m_pSeq->events().count() < 1)
-		//	return false;
+		//	if (m_pSeq->events().count() < 1)
+		//		return false;
 	}
-
-	// Clip name should be clear about it all.
-	if (clipName().isEmpty())
-		setClipName(m_pSeq->name());
 
 	// Set local properties...
 	setFilename(pFile->filename());
 	setTrackChannel(iTrackChannel);
 	setDirty(false);
+
+	// Clip name should be clear about it all.
+	if (clipName().isEmpty())
+		setClipName(m_pSeq->name());
+	if (clipName().isEmpty())
+		setClipName(QFileInfo(filename()).baseName());
 
 	// Default clip length will be whole sequence duration.
 	if (clipLength() == 0 && m_pSeq->timeLength() > m_pSeq->timeOffset()) {
