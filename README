@@ -68,7 +68,8 @@ and optionally as root:
 This procedure will end installing the following couple of files:
 
     ${prefix}/bin/qtractor
-    ${prefix}/share/icons/qtractor.png
+    ${prefix}/share/pixmaps/qtractor.png
+    ${prefix}/share/applications/qtractor.desktop
 
 Just launch ${prefix}/bin/qtractor and you're off (hopefully).
 
