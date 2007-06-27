@@ -44,15 +44,15 @@ public:
 	~qtractorMessages();
 
 	// Stdout/stderr capture accessors.
-	bool isCaptureEnabled();
+	bool isCaptureEnabled() const;
 	void setCaptureEnabled(bool bCapture);
 
 	// Message font accessors.
-	QFont messagesFont();
+	QFont messagesFont() const;
 	void setMessagesFont(const QFont & font);
 
 	// Maximum number of message lines accessors.
-	int messagesLimit();
+	int messagesLimit() const;
 	void setMessagesLimit(int iMessagesLimit);
 
 	// The main utility methods.

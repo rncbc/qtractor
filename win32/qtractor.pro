@@ -1,4 +1,4 @@
-INCLUDEPATH += ../src
+INCPATH += ../src
 
 HEADERS += ../src/qtractorAbout.h \
            ../src/qtractorAtomic.h \

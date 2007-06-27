@@ -159,7 +159,7 @@ void qtractorMessages::flushStdoutBuffer (void)
 
 
 // Stdout capture accessors.
-bool qtractorMessages::isCaptureEnabled (void)
+bool qtractorMessages::isCaptureEnabled (void) const
 {
 	return (bool) (m_pStdoutNotifier != NULL);
 }
@@ -199,7 +199,7 @@ void qtractorMessages::setCaptureEnabled ( bool bCapture )
 
 
 // Message font accessors.
-QFont qtractorMessages::messagesFont (void)
+QFont qtractorMessages::messagesFont (void) const
 {
 	return m_pTextView->font();
 }
@@ -211,7 +211,7 @@ void qtractorMessages::setMessagesFont( const QFont& font )
 
 
 // Maximum number of message lines accessors.
-int qtractorMessages::messagesLimit (void)
+int qtractorMessages::messagesLimit (void) const
 {
 	return m_iMessagesLimit;
 }
