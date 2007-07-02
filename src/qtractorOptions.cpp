@@ -27,6 +27,9 @@
 #include <QSplitter>
 #include <QList>
 
+#include <QTextStream>
+
+
 // Supposed to be determinant as default audio file type
 // (effective only for capture/record)
 #ifdef CONFIG_LIBVORBIS
@@ -274,26 +277,28 @@ QSettings& qtractorOptions::settings (void)
 // Help about command line options.
 void qtractorOptions::print_usage ( const char *arg0 )
 {
-	fprintf(stderr,	QObject::tr(
+	QTextStream out(stderr);
+	out << QObject::tr(
 		"Usage: %1 [options] [session-file]\n\n"
 		QTRACTOR_TITLE " - " QTRACTOR_SUBTITLE "\n\n"
 		"Options:\n\n"
 		"  -?, --help\n\tShow help about command line options\n\n"
 		"  -v, --version\n\tShow version information\n\n")
-		.arg(arg0).toUtf8().constData());
+		.arg(arg0);
 }
 
 
 // Parse command line arguments into m_settings.
 bool qtractorOptions::parse_args ( int argc, char **argv )
 {
+	QTextStream out(stderr);
 	const QString sEol = "\n\n";
 	int iCmdArgs = 0;
 
 	for (int i = 1; i < argc; i++) {
 
 		if (iCmdArgs > 0) {
-			sSessionFile += " ";
+			sSessionFile += ' ';
 			sSessionFile += argv[i];
 			iCmdArgs++;
 			continue;
@@ -314,8 +319,8 @@ bool qtractorOptions::parse_args ( int argc, char **argv )
 			return false;
 		}
 		else if (sArg == "-v" || sArg == "--version") {
-			fprintf(stderr, "Qt: %s\n", qVersion());
-			fprintf(stderr, "qtractor: %s\n", QTRACTOR_VERSION);
+			out << QObject::tr("Qt: %1\n").arg(qVersion());
+			out << QObject::tr(QTRACTOR_TITLE ": %1\n").arg(QTRACTOR_VERSION);
 			return false;
 		}
 		else {

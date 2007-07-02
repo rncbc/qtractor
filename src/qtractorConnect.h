@@ -35,8 +35,6 @@ class qtractorClientListView;
 class qtractorConnectorView;
 class qtractorConnect;
 
-class qtractorClientListProxyModel;
-
 class QPainter;
 class QTimer;
 
@@ -97,6 +95,10 @@ public:
     // Connectiopn highlight methods.
     void setHilite (bool bHilite);
     bool isHilite() const;
+
+	// Proxy sort override method.
+	// - Natural decimal sorting comparator.
+	bool operator< (const QTreeWidgetItem& other) const;
 
 private:
 
@@ -254,9 +256,6 @@ protected:
 	void contextMenuEvent(QContextMenuEvent *);
 
 private:
-
-	// Custom sort proxy model.
-	qtractorClientListProxyModel *m_pProxyModel;
 
 	// Local instance variables.
 	qtractorConnect *m_pConnect;
