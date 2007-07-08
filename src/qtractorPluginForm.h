@@ -43,7 +43,7 @@ class qtractorPluginForm : public QWidget
 public:
 
 	// Constructor.
-	qtractorPluginForm(QWidget *pParent = 0, Qt::WFlags wflags = 0);
+	qtractorPluginForm(QWidget *pParent = 0, Qt::WindowFlags wflags = 0);
 	// Destructor.
 	~qtractorPluginForm();
 

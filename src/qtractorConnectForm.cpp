@@ -35,7 +35,7 @@
 
 // Constructor.
 qtractorConnectForm::qtractorConnectForm (
-	QWidget *pParent, Qt::WFlags wflags ) : QWidget(pParent, wflags)
+	QWidget *pParent, Qt::WindowFlags wflags ) : QWidget(pParent, wflags)
 {
 	// Setup UI struct...
 	m_ui.setupUi(this);

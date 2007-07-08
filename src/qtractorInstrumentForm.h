@@ -42,7 +42,7 @@ class qtractorInstrumentForm : public QDialog
 public:
 
 	// Constructor.
-	qtractorInstrumentForm(QWidget *pParent = 0, Qt::WFlags wflags = 0);
+	qtractorInstrumentForm(QWidget *pParent = 0, Qt::WindowFlags wflags = 0);
 	// Destructor.
 	~qtractorInstrumentForm();
 

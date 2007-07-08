@@ -203,9 +203,6 @@ bool qtractorPortListItem::operator< ( const QTreeWidgetItem& other ) const
 	const QString& s1 = text(0);
 	const QString& s2 = other.text(0);
 
-fprintf(stderr, "DEBUG> operator<[%p]: s1=[%s] s2=[%s]\n", this,
-	s1.toUtf8().data(), s2.toUtf8().data());
-	
 	int ich1, ich2;
 
 	int cch1 = s1.length();
@@ -226,16 +223,19 @@ fprintf(stderr, "DEBUG> operator<[%p]: s1=[%s] s2=[%s]\n", this,
 		if (ch1.isDigit() && ch2.isDigit()) {
 			// Find the whole length numbers...
 			int iDigits1 = ich1++;
-			while (s1.at(ich1).isDigit())
+			while (ich1 < cch1 && s1.at(ich1).isDigit())
 				ich1++;
 			int iDigits2 = ich2++;
-			while (s2.at(ich2).isDigit())
+			while (ich2 < cch2 && s2.at(ich2).isDigit())
 				ich2++;
 			// Compare as natural decimal-numbers...
 			int n1 = s1.mid(iDigits1, ich1 - iDigits1).toInt();
 			int n2 = s2.mid(iDigits2, ich2 - iDigits2).toInt();
 			if (n1 != n2)
 				return (n1 < n2);
+			// Never go out of bounds...
+			if (ich1 >= cch1 || ich1 >= cch2)
+				break;
 			// Go on with this next char...
 			ch1 = s1.at(ich1).toUpper();
 			ch2 = s2.at(ich2).toUpper();
@@ -517,10 +517,9 @@ void qtractorClientListView::setReadable ( bool bReadable )
 
 	QString sText;
 	if (m_bReadable)
-		sText = tr("Readable Clients") + " / " + tr("Output Ports");
+		sText = tr("Readable Clients / Output Ports");
 	else
-		sText = tr("Writable Clients") + " / " + tr("Input Ports");
-
+		sText = tr("Writable Clients / Input Ports");
 	QTreeWidget::headerItem()->setText(0, sText);
 	QTreeWidget::setToolTip(sText);
 }
@@ -798,7 +797,7 @@ bool qtractorClientListView::eventFilter ( QObject *pObject, QEvent *pEvent )
 						pHelpEvent->globalPos(), pPortItem->portName());
 					return true;
 				}
-			}			
+			}
 		}
 	}
 

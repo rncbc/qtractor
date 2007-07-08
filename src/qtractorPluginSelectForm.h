@@ -38,7 +38,7 @@ class qtractorPluginSelectForm : public QDialog
 public:
 
 	// Constructor.
-	qtractorPluginSelectForm(QWidget *pParent = 0, Qt::WFlags wflags = 0);
+	qtractorPluginSelectForm(QWidget *pParent = 0, Qt::WindowFlags wflags = 0);
 	// Destructor.
 	~qtractorPluginSelectForm();
 

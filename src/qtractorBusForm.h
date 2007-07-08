@@ -38,7 +38,7 @@ class qtractorBusForm : public QDialog
 public:
 
 	// Constructor.
-	qtractorBusForm(QWidget *pParent = 0, Qt::WFlags wflags = 0);
+	qtractorBusForm(QWidget *pParent = 0, Qt::WindowFlags wflags = 0);
 	// Destructor.
 	~qtractorBusForm();
 

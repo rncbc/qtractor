@@ -38,7 +38,7 @@ class qtractorClipForm : public QDialog
 public:
 
 	// Constructor.
-	qtractorClipForm(QWidget *pParent = 0, Qt::WFlags wflags = 0);
+	qtractorClipForm(QWidget *pParent = 0, Qt::WindowFlags wflags = 0);
 	// Destructor.
 	~qtractorClipForm();
 

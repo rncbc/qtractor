@@ -43,7 +43,7 @@ class qtractorTrackForm : public QDialog
 public:
 
 	// Constructor.
-	qtractorTrackForm(QWidget *pParent = 0, Qt::WFlags wflags = 0);
+	qtractorTrackForm(QWidget *pParent = 0, Qt::WindowFlags wflags = 0);
 	// Destructor.
 	~qtractorTrackForm();
 

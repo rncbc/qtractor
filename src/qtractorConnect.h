@@ -92,9 +92,9 @@ public:
 	// To virtually distinguish between list view items.
 	int rtti() const;
 
-    // Connectiopn highlight methods.
-    void setHilite (bool bHilite);
-    bool isHilite() const;
+	// Connectiopn highlight methods.
+	void setHilite (bool bHilite);
+	bool isHilite() const;
 
 	// Proxy sort override method.
 	// - Natural decimal sorting comparator.
@@ -107,7 +107,7 @@ private:
 	
 	QString m_sPortName;
 	int     m_iPortMark;
-    bool    m_bHilite;
+	bool    m_bHilite;
 
 	// Connection cache list.
 	QList<qtractorPortListItem *> m_connects;
@@ -145,9 +145,9 @@ public:
 
 	int clientMark() const;
 
-    // Connection highlight methods.
-    void setHilite (bool bHilite);
-    bool isHilite() const;
+	// Connection highlight methods.
+	void setHilite (bool bHilite);
+	bool isHilite() const;
 
 	// Client item openness status.
 	void setOpen(bool bOpen);
@@ -158,7 +158,7 @@ private:
 	// Instance variables.
 	QString m_sClientName;
 	int     m_iClientMark;
-    int     m_iHilite;
+	int     m_iHilite;
 };
 
 
@@ -214,8 +214,8 @@ public:
 	// Client:port refreshner (return newest item count).
 	virtual int updateClientPorts() = 0;
 
-    // Client:port hilite update stabilization.
-    void hiliteClientPorts();
+	// Client:port hilite update stabilization.
+	void hiliteClientPorts();
 
 	// Redirect this one as public.
 	QTreeWidgetItem *itemFromIndex(const QModelIndex& index) const
@@ -249,8 +249,8 @@ protected:
 	void dropEvent(QDropEvent *pDropEvent);
 
 	// Handle mouse events for drag-and-drop stuff.
-	void mousePressEvent( QMouseEvent *pMouseEvent);
-	void mouseMoveEvent( QMouseEvent *pMouseEvent);
+	void mousePressEvent(QMouseEvent *pMouseEvent);
+	void mouseMoveEvent(QMouseEvent *pMouseEvent);
 
 	// Context menu request event handler.
 	void contextMenuEvent(QContextMenuEvent *);
@@ -271,7 +271,7 @@ private:
 	QPoint m_posDrag;
 
 	// The current highlighted item.
-    QTreeWidgetItem *m_pHiliteItem;
+	QTreeWidgetItem *m_pHiliteItem;
 
 	// Client:port regular expression filters.
 	QRegExp m_rxClientName;

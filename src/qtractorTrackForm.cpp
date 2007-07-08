@@ -85,7 +85,8 @@ private:
 
 // Constructor.
 qtractorTrackForm::qtractorTrackForm (
-	QWidget *pParent, Qt::WFlags wflags ) : QDialog(pParent, wflags)
+	QWidget *pParent, Qt::WindowFlags wflags )
+	: QDialog(pParent, wflags)
 {
 	// Setup UI struct...
 	m_ui.setupUi(this);
@@ -587,7 +588,7 @@ void qtractorTrackForm::updateBanks ( const QString& sInstrumentName,
 		if (iBankIndex >= 0) {
 			m_ui.BankComboBox->setCurrentIndex(iBankIndex);
 		} else {
-			m_ui.BankComboBox->lineEdit()->setText(QString::number(iBank));
+			m_ui.BankComboBox->setEditText(QString::number(iBank));
 		}
 	} else {
 		m_ui.BankComboBox->setCurrentIndex(0);
@@ -668,7 +669,7 @@ void qtractorTrackForm::updatePrograms (  const QString& sInstrumentName,
 		if (iProgIndex >= 0) {
 			m_ui.ProgComboBox->setCurrentIndex(iProgIndex);
 		} else {
-			m_ui.ProgComboBox->lineEdit()->setText(QString::number(iProg));
+			m_ui.ProgComboBox->setEditText(QString::number(iProg));
 		}
 	} else {
 		m_ui.ProgComboBox->setCurrentIndex(0);

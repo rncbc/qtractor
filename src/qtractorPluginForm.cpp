@@ -43,7 +43,8 @@ static QString g_sDefPreset;
 
 // Constructor.
 qtractorPluginForm::qtractorPluginForm (
-	QWidget *pParent, Qt::WFlags wflags ) : QWidget(pParent, wflags)
+	QWidget *pParent, Qt::WindowFlags wflags )
+	: QWidget(pParent, wflags)
 {
 	// Setup UI struct...
 	m_ui.setupUi(this);
@@ -162,7 +163,7 @@ void qtractorPluginForm::setPreset ( const QString& sPreset )
 {
 	if (!sPreset.isEmpty()) {
 		m_iUpdate++;
-		m_ui.PresetComboBox->lineEdit()->setText(sPreset);
+		m_ui.PresetComboBox->setEditText(sPreset);
 		m_iUpdate--;
 	}
 }
@@ -417,7 +418,7 @@ void qtractorPluginForm::refresh (void)
 		}
 	}
 	m_ui.PresetComboBox->addItem(g_sDefPreset);
-	m_ui.PresetComboBox->lineEdit()->setText(sOldPreset);
+	m_ui.PresetComboBox->setEditText(sOldPreset);
 
 	QListIterator<qtractorPluginPortWidget *> iter(m_portWidgets);
 	while (iter.hasNext())

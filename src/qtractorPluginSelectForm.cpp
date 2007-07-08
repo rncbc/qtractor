@@ -39,7 +39,8 @@
 
 // Constructor.
 qtractorPluginSelectForm::qtractorPluginSelectForm (
-	QWidget *pParent, Qt::WFlags wflags ) : QDialog(pParent, wflags)
+	QWidget *pParent, Qt::WindowFlags wflags )
+	: QDialog(pParent, wflags)
 {
 	// Setup UI struct...
 	m_ui.setupUi(this);
@@ -73,7 +74,7 @@ qtractorPluginSelectForm::qtractorPluginSelectForm (
 		qtractorOptions *pOptions = pMainForm->options();
 		if (pOptions) {
 			pOptions->loadComboBoxHistory(m_ui.PluginSearchComboBox);
-			m_ui.PluginSearchComboBox->lineEdit()->setText(
+			m_ui.PluginSearchComboBox->setEditText(
 				pOptions->sPluginSearch);
 		}
 	}

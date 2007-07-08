@@ -38,7 +38,7 @@ class qtractorSessionForm : public QDialog
 public:
 
 	// Constructor.
-	qtractorSessionForm(QWidget *pParent = 0, Qt::WFlags wflags = 0);
+	qtractorSessionForm(QWidget *pParent = 0, Qt::WindowFlags wflags = 0);
 	// Destructor.
 	~qtractorSessionForm();
 

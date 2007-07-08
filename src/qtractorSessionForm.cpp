@@ -41,7 +41,8 @@
 
 // Constructor.
 qtractorSessionForm::qtractorSessionForm (
-	QWidget *pParent, Qt::WFlags wflags ) : QDialog(pParent, wflags)
+	QWidget *pParent, Qt::WindowFlags wflags )
+	: QDialog(pParent, wflags)
 {
 	// Setup UI struct...
 	m_ui.setupUi(this);
@@ -124,10 +125,10 @@ void qtractorSessionForm::setSession ( qtractorSession *pSession )
 
 	// Initialize dialog widgets...
 	m_ui.SessionNameLineEdit->setText(m_props.sessionName);
-	m_ui.SessionDirComboBox->lineEdit()->setText(m_props.sessionDir);
+	m_ui.SessionDirComboBox->setEditText(m_props.sessionDir);
 	m_ui.DescriptionTextEdit->setPlainText(m_props.description);
 	// Time properties...
-	m_ui.SampleRateComboBox->lineEdit()->setText(
+	m_ui.SampleRateComboBox->setEditText(
 		QString::number(m_props.timeScale.sampleRate()));
 	m_ui.SampleRateTextLabel->setEnabled(!pSession->isActivated());
 	m_ui.SampleRateComboBox->setEnabled(!pSession->isActivated());
@@ -254,7 +255,7 @@ void qtractorSessionForm::browseSessionDir (void)
     );
 
     if (!sSessionDir.isEmpty()) {
-        m_ui.SessionDirComboBox->lineEdit()->setText(sSessionDir);
+        m_ui.SessionDirComboBox->setEditText(sSessionDir);
         m_ui.SessionDirComboBox->setFocus();
         changed();
     }

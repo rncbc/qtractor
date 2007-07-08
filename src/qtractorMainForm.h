@@ -59,7 +59,7 @@ class qtractorMainForm : public QMainWindow
 public:
 
 	// Constructor.
-	qtractorMainForm(QWidget *pParent = 0, Qt::WFlags wflags = 0);
+	qtractorMainForm(QWidget *pParent = 0, Qt::WindowFlags wflags = 0);
 	// Destructor.
 	~qtractorMainForm();
 

@@ -44,7 +44,7 @@ class qtractorConnectForm : public QWidget
 public:
 
 	// Constructor.
-	qtractorConnectForm(QWidget *pParent = 0, Qt::WFlags wflags = 0);
+	qtractorConnectForm(QWidget *pParent = 0, Qt::WindowFlags wflags = 0);
 	// Destructor.
 	~qtractorConnectForm();
 
