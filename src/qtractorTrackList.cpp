@@ -313,7 +313,7 @@ void qtractorTrackList::Item::update ( qtractorTrackList *pTrackList )
 					sInstrument = patch.instrumentName;
 					qtractorInstrument& instr
 						= (*pMainForm->instruments())[patch.instrumentName];
-					qtractorInstrumentData& bank
+					const qtractorInstrumentData& bank
 						= instr.patch(track->midiBank());
 					if (bank.contains(track->midiProgram())) {
 						sProgram = bank[track->midiProgram()];

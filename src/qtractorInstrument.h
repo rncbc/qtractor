@@ -1,7 +1,7 @@
 // qtractorInstrument.h
 //
 /****************************************************************************
-   Copyright (C) 2005, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -61,7 +61,8 @@ public:
 	}
 
 	// Accessor operator.
-	QString& operator[] (int iIndex) { return m_pData->map[iIndex]; }
+	QString& operator[] (int iIndex) const
+		{ return m_pData->map[iIndex]; }
 
 	// Property accessors.
 	void setName(const QString& sName)
@@ -75,7 +76,11 @@ public:
 	// Indirect iterator stuff.
 	typedef DataMap::Iterator Iterator;
 	Iterator begin() { return m_pData->map.begin(); }
-	Iterator end()   { return m_pData->map.end();}
+	Iterator end()   { return m_pData->map.end(); }
+
+	typedef DataMap::ConstIterator ConstIterator;
+	ConstIterator begin() const { return m_pData->map.constBegin(); }
+	ConstIterator end()   const { return m_pData->map.constEnd(); }
 
 	unsigned int count() const { return m_pData->map.count(); }
 
@@ -157,7 +162,8 @@ public:
 	// Instrument title property accessors.
 	void setInstrumentName(const QString& sInstrumentName)
 		{ m_pData->instrumentName = sInstrumentName; }
-	const QString& instrumentName() const { return m_pData->instrumentName; }
+	const QString& instrumentName() const
+		{ return m_pData->instrumentName; }
 
 	// BankSelMethod accessors.
 	void setBankSelMethod(int iBankSelMethod)
@@ -170,46 +176,55 @@ public:
 		{ return m_pData->usesNotesAsControllers; }
 
 	// Patch banks accessors.
-	qtractorInstrumentPatches& patches() { return m_pData->patches; }
-	qtractorInstrumentData& patch(int iBank) const;
+	const qtractorInstrumentPatches& patches() const
+		{ return m_pData->patches; }
+	const qtractorInstrumentData& patch(int iBank) const;
 	void setPatch(int iBank, const qtractorInstrumentData& patch)
 		{ m_pData->patches[iBank] = patch; }
 
 	// Control names accessors.
 	void setControlName(const QString& sControlName)
 		{ m_pData->control.setName(sControlName); }
-	const QString& controlName() const { return m_pData->control.name(); }
-	qtractorInstrumentData& control() const { return m_pData->control; }
+	const QString& controlName() const
+		{ return m_pData->control.name(); }
 	void setControl(const qtractorInstrumentData& control)
 		{ m_pData->control = control; }
+	const qtractorInstrumentData& control() const
+		{ return m_pData->control; }
 
 	// RPN names accessors.
 	void setRpnName(const QString& sRpnName)
 		{ m_pData->rpn.setName(sRpnName); }
-	const QString& rpnName() const { return m_pData->rpn.name(); }
-	qtractorInstrumentData& rpn() const { return m_pData->rpn; }
+	const QString& rpnName() const
+		{ return m_pData->rpn.name(); }
 	void setRpn(const qtractorInstrumentData& rpn)
 		{ m_pData->rpn = rpn; }
+	const qtractorInstrumentData& rpn() const
+		{ return m_pData->rpn; }
 
 	// NRPN names accessors.
 	void setNrpnName(const QString& sNrpnName)
 		{ m_pData->nrpn.setName(sNrpnName); }
-	const QString& nrpnName() const { return m_pData->nrpn.name(); }
-	qtractorInstrumentData& nrpn() const { return m_pData->nrpn; }
+	const QString& nrpnName() const
+		{ return m_pData->nrpn.name(); }
 	void setNrpn(const qtractorInstrumentData& nrpn)
 		{ m_pData->nrpn = nrpn; }
+	const qtractorInstrumentData& nrpn() const
+		{ return m_pData->nrpn; }
 
 	// Keys banks accessors.
-	qtractorInstrumentKeys& keys() { return m_pData->keys; }
-	qtractorInstrumentData& notes(int iBank, int iProg) const;
+	const qtractorInstrumentData& notes(int iBank, int iProg) const;
 	void setNotes(int iBank, int iProg, const qtractorInstrumentData& notes)
 		{ m_pData->keys[iBank][iProg] = notes; }
+	const qtractorInstrumentKeys& keys() const
+		{ return m_pData->keys; }
 
 	// Drumflags banks accessors.
-	qtractorInstrumentDrums& drums() { return m_pData->drums; }
 	bool isDrum(int iBank, int iProg) const;
 	void setDrum(int iBank, int iProg, bool bDrum)
 		{ m_pData->drums[iBank][iProg] = (int) bDrum; }
+	const qtractorInstrumentDrums& drums() const
+		{ return m_pData->drums; }
 
 protected:
 
@@ -270,31 +285,31 @@ public:
 	}
 
 	// Patch Names definition accessors.
-	qtractorInstrumentDataList& patches()
+	const qtractorInstrumentDataList& patches() const
 		{ return m_patches; }
-	qtractorInstrumentData& patch(const QString& sName)
+	const qtractorInstrumentData& patch(const QString& sName)
 		{ return m_patches[sName]; }
 
 	// Note Names definition accessors.
-	qtractorInstrumentDataList& notes()
+	const qtractorInstrumentDataList& notes() const
 		{ return m_notes; }
 	qtractorInstrumentData& note(const QString& sName)
 		{ return m_notes[sName]; }
 
 	// Controller Names definition accessors.
-	qtractorInstrumentDataList& controllers()
+	const qtractorInstrumentDataList& controllers() const
 		{ return m_controllers; }
 	qtractorInstrumentData& controller(const QString& sName)
 		{ return m_controllers[sName]; }
 
 	// RPN Names definition accessors.
-	qtractorInstrumentDataList& rpns()
+	const qtractorInstrumentDataList& rpns() const
 		{ return m_rpns; }
 	qtractorInstrumentData& rpn(const QString& sName)
 		{ return m_rpns[sName]; }
 
 	// NRPN Names definition accessors.
-	qtractorInstrumentDataList& nrpns()
+	const qtractorInstrumentDataList& nrpns() const
 		{ return m_nrpns; }
 	qtractorInstrumentData& nrpn(const QString& sName)
 		{ return m_nrpns[sName]; }
@@ -303,17 +318,17 @@ public:
 	void clearAll();
 
 	// Special instrument list merge method.
-	void merge(qtractorInstrumentList& instruments);
+	void merge(const qtractorInstrumentList& instruments);
 
 protected:
 
 	// Internal instrument data list save method helpers.
-	void saveDataList(QTextStream& ts, qtractorInstrumentDataList& list);
-	void saveData(QTextStream& ts, qtractorInstrumentData& data);
+	void saveDataList(QTextStream& ts, const qtractorInstrumentDataList& list);
+	void saveData(QTextStream& ts, const qtractorInstrumentData& data);
 
 	// Special instrument data list merge method.
 	void mergeDataList(qtractorInstrumentDataList& dst,
-		qtractorInstrumentDataList& src);
+		const qtractorInstrumentDataList& src);
 
 private:
 

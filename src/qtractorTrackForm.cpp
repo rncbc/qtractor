@@ -532,8 +532,8 @@ void qtractorTrackForm::updateBanks ( const QString& sInstrumentName,
 
 	if (m_pTrack == NULL)
 		return;
-	if (sInstrumentName.isEmpty())
-		return;
+//	if (sInstrumentName.isEmpty())
+//		return;
 
 #ifdef CONFIG_DEBUG
 	fprintf(stderr, "qtractorTrackForm::updateBanks(\"%s\", %d, %d, %d)\n",
@@ -547,51 +547,59 @@ void qtractorTrackForm::updateBanks ( const QString& sInstrumentName,
 	// Avoid superfluos change notifications...
 	m_iDirtySetup++;
 
-	// Instrument reference...
-	qtractorInstrument& instr = (*pInstruments)[sInstrumentName];
-
-	// Bank selection method...
-	if (iBankSelMethod < 0)
-		iBankSelMethod = instr.bankSelMethod();
-	m_ui.BankSelMethodComboBox->setCurrentIndex(iBankSelMethod);
-
-	// Refresh patch bank mapping...
+	// Default (none) patch bank list...
 	int iBankIndex = 0;
 	const QIcon& icon = QIcon(":/icons/itemPatches.png");
 	m_banks.clear();
 	m_ui.BankComboBox->clear();
 	m_ui.BankComboBox->addItem(icon, tr("(None)"));
 	m_banks[iBankIndex++] = -1;
-	qtractorInstrumentPatches::Iterator it;
-	for (it = instr.patches().begin(); it != instr.patches().end(); ++it) {
-		if (it.key() >= 0) {
-			m_ui.BankComboBox->addItem(icon, it.value().name());
-			m_banks[iBankIndex++] = it.key();
-		}
-	}
 
-#if 0
-	// In case bank address is generic...
-	if (m_ui.BankComboBox->count() < 1) {
-		qtractorInstrumentData& patch = instr.patch(iBank);
-		if (!patch.name().isEmpty()) {
-			m_ui.BankComboBox->insertItem(pixmap, patch.name());
-			m_banks[iBankIndex] = iBank;
+	// Get instrument set alright...
+	if ((*pInstruments).contains(sInstrumentName)) {
+		// Instrument reference...
+		const qtractorInstrument& instr = (*pInstruments)[sInstrumentName];
+		// Bank selection method...
+		if (iBankSelMethod < 0)
+			iBankSelMethod = instr.bankSelMethod();
+		// Refresh patch bank mapping...
+		qtractorInstrumentPatches::ConstIterator it;
+		for (it = instr.patches().begin(); it != instr.patches().end(); ++it) {
+			if (it.key() >= 0) {
+				m_ui.BankComboBox->addItem(icon, it.value().name());
+				m_banks[iBankIndex++] = it.key();
+			}
+		}
+#if 1
+		// In case bank address is generic...
+		if (m_ui.BankComboBox->count() < 2) {
+			const qtractorInstrumentData& patch = instr.patch(iBank);
+			if (!patch.name().isEmpty()) {
+				m_ui.BankComboBox->addItem(icon, patch.name());
+				m_banks[iBankIndex] = iBank;
+			}
+		}
+#endif
+		// For proper bank selection...
+		if (iBank >= 0) {
+			const qtractorInstrumentData& bank = instr.patch(iBank);
+			iBankIndex = m_ui.BankComboBox->findText(bank.name());
 		}
 	}
-#endif
+	else iBankIndex = -1;
+
+	// Bank selection method...
+	if (iBankSelMethod < 0)
+		iBankSelMethod = 0;
+	m_ui.BankSelMethodComboBox->setCurrentIndex(iBankSelMethod);
 
 	// Do the proper bank selection...
-	if (iBank >= 0) {
-		qtractorInstrumentData& bank = instr.patch(iBank);
-		iBankIndex = m_ui.BankComboBox->findText(bank.name());
-		if (iBankIndex >= 0) {
-			m_ui.BankComboBox->setCurrentIndex(iBankIndex);
-		} else {
-			m_ui.BankComboBox->setEditText(QString::number(iBank));
-		}
-	} else {
+	if (iBank < 0) {
 		m_ui.BankComboBox->setCurrentIndex(0);
+	} else if (iBankIndex < 0) {
+		m_ui.BankComboBox->setEditText(QString::number(iBank));
+	} else {
+		m_ui.BankComboBox->setCurrentIndex(iBankIndex);
 	}
 
 	// And update the bank and program listing...
@@ -612,8 +620,8 @@ void qtractorTrackForm::updatePrograms (  const QString& sInstrumentName,
 
 	if (m_pTrack == NULL)
 		return;
-	if (sInstrumentName.isEmpty())
-		return;
+//	if (sInstrumentName.isEmpty())
+//		return;
 
 #ifdef CONFIG_DEBUG
 	fprintf(stderr, "qtractorTrackForm::updatePrograms(\"%s\", %d, %d)\n",
@@ -627,12 +635,7 @@ void qtractorTrackForm::updatePrograms (  const QString& sInstrumentName,
 	// Avoid superfluos change notifications...
 	m_iDirtySetup++;
 
-// Instrument reference...
-	qtractorInstrument& instr = (*pInstruments)[sInstrumentName];
-
-	// Bank reference...
-	qtractorInstrumentData& bank = instr.patch(iBank);
-
+	// Default (none) patch program list...
 	// Refresh patch program mapping...
 	int iProgIndex = 0;
 	const QIcon& icon = QIcon(":/icons/itemChannel.png");
@@ -640,39 +643,46 @@ void qtractorTrackForm::updatePrograms (  const QString& sInstrumentName,
 	m_ui.ProgComboBox->clear();
 	m_ui.ProgComboBox->addItem(icon, tr("(None)"));
 	m_progs[iProgIndex++] = -1;
-	// Enumerate the explicit given program list...
-	qtractorInstrumentData::Iterator it;
-	for (it = bank.begin(); it != bank.end(); ++it) {
-		if (it.key() >= 0 && !it.value().isEmpty()) {
-			m_ui.ProgComboBox->addItem(icon, it.value());
-			m_progs[iProgIndex++] = it.key();
-		}
-	}
 
-#if 0
-	// In case program address is generic...
-	if (m_ui.ProgComboBox->count() < 1) {
-		// Just make a generic program list...
-		for (iProgIndex = 0; iProgIndex < 128; iProgIndex++) {
-			m_ui.ProgComboBox->insertItem(pixmap,
-				QString::number(iProgIndex + 1) + "  - -");
-			m_progs[iProgIndex] = iProgIndex;
+	// Get instrument set alright...
+	if ((*pInstruments).contains(sInstrumentName)) {
+		// Instrument reference...
+		const qtractorInstrument& instr = (*pInstruments)[sInstrumentName];
+		// Bank reference...
+		const qtractorInstrumentData& bank = instr.patch(iBank);
+		// Enumerate the explicit given program list...
+		qtractorInstrumentData::ConstIterator it;
+		for (it = bank.begin(); it != bank.end(); ++it) {
+			if (it.key() >= 0 && !it.value().isEmpty()) {
+				m_ui.ProgComboBox->addItem(icon, it.value());
+				m_progs[iProgIndex++] = it.key();
+			}
 		}
-	}
-#endif
-
-	// Select proper program...
-	if (iProg >= 0) {
+		// For proper program selection...
 		iProgIndex = -1;
-		if (bank.contains(iProg))
+		if (iProg >= 0 && bank.contains(iProg))
 			iProgIndex = m_ui.ProgComboBox->findText(bank[iProg]);
-		if (iProgIndex >= 0) {
-			m_ui.ProgComboBox->setCurrentIndex(iProgIndex);
-		} else {
-			m_ui.ProgComboBox->setEditText(QString::number(iProg));
+	}
+	else iProgIndex = -1;
+
+	// In case program address is generic...
+	if (m_ui.ProgComboBox->count() < 2) {
+		// Just make a generic program list...
+		for (int i = 0; i < 128; ++i) {
+			m_ui.ProgComboBox->addItem(icon, QString("%1  - -").arg(i + 1));
+			m_progs[i] = i;
 		}
-	} else {
+		if (iProg >= 0)
+			iProgIndex = iProg;
+	}
+
+	// Do the proper program selection...
+	if (iProg < 0) {
 		m_ui.ProgComboBox->setCurrentIndex(0);
+	} else if (iProgIndex < 0) {
+		m_ui.ProgComboBox->setEditText(QString::number(iProg));
+	} else {
+		m_ui.ProgComboBox->setCurrentIndex(iProgIndex);
 	}
 
 	// Done.
