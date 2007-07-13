@@ -394,22 +394,24 @@ void qtractorOptions::saveWidgetGeometry ( QWidget *pWidget )
 
 void qtractorOptions::loadComboBoxHistory ( QComboBox *pComboBox, int iLimit )
 {
-	pComboBox->setUpdatesEnabled(false);
-	pComboBox->setDuplicatesEnabled(false);
-	pComboBox->clear();
-
 	// Load combobox list from configuration settings file...
 	m_settings.beginGroup("/History/" + pComboBox->objectName());
-	for (int i = 0; i < iLimit; i++) {
-		const QString& sText = m_settings.value(
-			"/Item" + QString::number(i + 1)).toString();
-		if (sText.isEmpty())
-			break;
-		pComboBox->addItem(sText);
-	}
-	m_settings.endGroup();
 
-	pComboBox->setUpdatesEnabled(true);
+	if (m_settings.childKeys().count() > 0) {
+		pComboBox->setUpdatesEnabled(false);
+		pComboBox->setDuplicatesEnabled(false);
+		pComboBox->clear();
+		for (int i = 0; i < iLimit; i++) {
+			const QString& sText = m_settings.value(
+				"/Item" + QString::number(i + 1)).toString();
+			if (sText.isEmpty())
+				break;
+			pComboBox->addItem(sText);
+		}
+		pComboBox->setUpdatesEnabled(true);
+	}
+
+	m_settings.endGroup();
 }
 
 
