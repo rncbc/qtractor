@@ -1293,7 +1293,8 @@ void qtractorTrackView::mouseDoubleClickEvent ( QMouseEvent *pMouseEvent )
 // Trap for help/tool-tip events.
 bool qtractorTrackView::eventFilter ( QObject *pObject, QEvent *pEvent )
 {
-	if (static_cast<QWidget *> (pObject) == qtractorScrollView::viewport()
+	QWidget *pViewport = qtractorScrollView::viewport();
+	if (static_cast<QWidget *> (pObject) == pViewport
 		&& pEvent->type() == QEvent::ToolTip) {
 		QHelpEvent *pHelpEvent = static_cast<QHelpEvent *> (pEvent);
 		if (pHelpEvent) {
@@ -1302,7 +1303,7 @@ bool qtractorTrackView::eventFilter ( QObject *pObject, QEvent *pEvent )
 			qtractorClip *pClip = clipAt(pos, false);
 			if (pClip) {
 				QToolTip::showText(
-					pHelpEvent->globalPos(), pClip->toolTip());
+					pHelpEvent->globalPos(), pClip->toolTip(), pViewport);
 				return true;
 			}
 		}

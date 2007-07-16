@@ -167,10 +167,10 @@ qtractorTrackForm::qtractorTrackForm (
 		SIGNAL(activated(int)),
 		SLOT(bankSelMethodChanged(int)));
 	QObject::connect(m_ui.BankComboBox,
-		SIGNAL(textChanged(const QString &)),
+		SIGNAL(editTextChanged(const QString&)),
 		SLOT(bankChanged()));
 	QObject::connect(m_ui.ProgComboBox,
-		SIGNAL(textChanged(const QString &)),
+		SIGNAL(editTextChanged(const QString&)),
 		SLOT(progChanged()));
 	QObject::connect(m_ui.ForegroundColorComboBox,
 		SIGNAL(editTextChanged(const QString&)),

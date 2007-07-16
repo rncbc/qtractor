@@ -70,7 +70,7 @@ qtractorSessionForm::qtractorSessionForm (
 		SIGNAL(textChanged(const QString&)),
 		SLOT(changed()));
 	QObject::connect(m_ui.SessionDirComboBox,
-		SIGNAL(textChanged(const QString&)),
+		SIGNAL(editTextChanged(const QString&)),
 		SLOT(changed()));
 	QObject::connect(m_ui.SessionDirToolButton,
 		SIGNAL(clicked()),
@@ -79,7 +79,7 @@ qtractorSessionForm::qtractorSessionForm (
 		SIGNAL(textChanged()),
 		SLOT(changed()));
 	QObject::connect(m_ui.SampleRateComboBox,
-		SIGNAL(textChanged(const QString&)),
+		SIGNAL(editTextChanged(const QString&)),
 		SLOT(changed()));
 	QObject::connect(m_ui.TempoSpinBox,
 		SIGNAL(valueChanged(double)),

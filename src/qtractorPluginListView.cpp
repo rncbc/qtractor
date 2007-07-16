@@ -579,7 +579,8 @@ void qtractorPluginListView::itemActivatedSlot ( QListWidgetItem *item )
 // Trap for help/tool-tip events.
 bool qtractorPluginListView::eventFilter ( QObject *pObject, QEvent *pEvent )
 {
-	if (static_cast<QWidget *> (pObject) == QListWidget::viewport()
+	QWidget *pViewport = QListWidget::viewport();
+	if (static_cast<QWidget *> (pObject) == pViewport
 		&& pEvent->type() == QEvent::ToolTip) {
 		QHelpEvent *pHelpEvent = static_cast<QHelpEvent *> (pEvent);
 		if (pHelpEvent) {
@@ -591,7 +592,7 @@ bool qtractorPluginListView::eventFilter ( QObject *pObject, QEvent *pEvent )
 				pPlugin = pPluginItem->plugin();
 			if (pPlugin) {
 				QToolTip::showText(
-					pHelpEvent->globalPos(), pPlugin->name());
+					pHelpEvent->globalPos(), pPlugin->name(), pViewport);
 				return true;
 			}
 		}

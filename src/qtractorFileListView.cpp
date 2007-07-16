@@ -696,7 +696,8 @@ const QString& qtractorFileListView::recentDir (void) const
 // Trap for help/tool-tip events.
 bool qtractorFileListView::eventFilter ( QObject *pObject, QEvent *pEvent )
 {
-	if (static_cast<QWidget *> (pObject) == QTreeWidget::viewport()
+	QWidget *pViewport = QTreeWidget::viewport();
+	if (static_cast<QWidget *> (pObject) == pViewport
 		&& pEvent->type() == QEvent::ToolTip) {
 		QHelpEvent *pHelpEvent = static_cast<QHelpEvent *> (pEvent);
 		if (pHelpEvent) {
@@ -704,8 +705,8 @@ bool qtractorFileListView::eventFilter ( QObject *pObject, QEvent *pEvent )
 			qtractorFileGroupItem *pFileItem
 				= static_cast<qtractorFileGroupItem *> (pItem);
 			if (pFileItem) {
-				QToolTip::showText(
-					pHelpEvent->globalPos(), pFileItem->toolTip());
+				QToolTip::showText(pHelpEvent->globalPos(),
+					pFileItem->toolTip(), pViewport);
 				return true;
 			}
 		}

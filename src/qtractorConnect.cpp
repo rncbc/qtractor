@@ -774,7 +774,8 @@ void qtractorClientListView::timeoutSlot (void)
 // Trap for help/tool-tip events.
 bool qtractorClientListView::eventFilter ( QObject *pObject, QEvent *pEvent )
 {
-	if (static_cast<QWidget *> (pObject) == QTreeWidget::viewport()
+	QWidget *pViewport = QTreeWidget::viewport();
+	if (static_cast<QWidget *> (pObject) == pViewport
 		&& pEvent->type() == QEvent::ToolTip) {
 		QHelpEvent *pHelpEvent = static_cast<QHelpEvent *> (pEvent);
 		if (pHelpEvent) {
@@ -783,8 +784,8 @@ bool qtractorClientListView::eventFilter ( QObject *pObject, QEvent *pEvent )
 				qtractorClientListItem *pClientItem
 					= static_cast<qtractorClientListItem *> (pItem);
 				if (pClientItem) {
-					QToolTip::showText(
-						pHelpEvent->globalPos(), pClientItem->clientName());
+					QToolTip::showText(pHelpEvent->globalPos(),
+						pClientItem->clientName(), pViewport);
 					return true;
 				}
 			}
@@ -793,8 +794,8 @@ bool qtractorClientListView::eventFilter ( QObject *pObject, QEvent *pEvent )
 				qtractorPortListItem *pPortItem
 					= static_cast<qtractorPortListItem *> (pItem);
 				if (pPortItem) {
-					QToolTip::showText(
-						pHelpEvent->globalPos(), pPortItem->portName());
+					QToolTip::showText(pHelpEvent->globalPos(),
+						pPortItem->portName(), pViewport);
 					return true;
 				}
 			}

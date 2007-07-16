@@ -91,7 +91,7 @@ qtractorPluginSelectForm::qtractorPluginSelectForm (
 		SIGNAL(clicked()),
 		SLOT(reset()));
 	QObject::connect(m_ui.PluginSearchComboBox,
-		SIGNAL(textChanged(const QString&)),
+		SIGNAL(editTextChanged(const QString&)),
 		SLOT(refresh()));
 	QObject::connect(m_ui.PluginListView,
 		SIGNAL(itemSelectionChanged()),

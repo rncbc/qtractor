@@ -114,7 +114,7 @@ qtractorBusForm::qtractorBusForm (
 		SIGNAL(customContextMenuRequested(const QPoint&)),
 		SLOT(contextMenu(const QPoint&)));
 	QObject::connect(m_ui.BusNameLineEdit,
-		SIGNAL(textChanged(const QString &)),
+		SIGNAL(textChanged(const QString&)),
 		SLOT(changed()));
 	QObject::connect(m_ui.BusModeComboBox,
 		SIGNAL(activated(int)),

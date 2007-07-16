@@ -71,7 +71,7 @@ qtractorPluginForm::qtractorPluginForm (
 
 	// UI signal/slot connections...
 	QObject::connect(m_ui.PresetComboBox,
-		SIGNAL(textChanged(const QString &)),
+		SIGNAL(editTextChanged(const QString&)),
 		SLOT(changePresetSlot(const QString&)));
 	QObject::connect(m_ui.PresetComboBox,
 		SIGNAL(activated(const QString &)),
