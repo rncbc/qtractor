@@ -80,6 +80,9 @@
 #include <QCloseEvent>
 #include <QDropEvent>
 
+#if defined(WIN32)
+#undef HAVE_SIGNAL_H
+#endif
 
 #ifdef HAVE_SIGNAL_H
 #include <signal.h>

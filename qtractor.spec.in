@@ -1,6 +1,6 @@
 %define name    @PACKAGE_TARNAME@
 %define version @PACKAGE_VERSION@
-%define release 5
+%define release 6
 %define prefix  @ac_prefix@
 
 Summary:	An Audio/MIDI multi-track sequencer.
@@ -64,6 +64,8 @@ specially dedicated to the personal home-studio.
 %{_datadir}/pixmaps/%{name}.png
 
 %changelog
+* Wed Jul 18 2007 Rui Nuno Capela <rncbc@users.sourceforge.net>
+- Eight Wanderer pre-release.
 * Wed Jun 20 2007 Rui Nuno Capela <rncbc@users.sourceforge.net>
 - Application icon is now installed to (prefix)/share/pixmaps.
 - Declared fundamental build and run-time requirements.

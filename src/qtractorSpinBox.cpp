@@ -36,7 +36,9 @@ qtractorSpinBox::qtractorSpinBox ( QWidget *pParent )
 	m_iMinimumValue = 0;
 	m_iMaximumValue = 0;
 
+#if QT_VERSION >= 0x040200
 	QAbstractSpinBox::setAccelerated(true);
+#endif
 
 	QObject::connect(this,
 		SIGNAL(editingFinished()),

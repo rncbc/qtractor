@@ -185,7 +185,7 @@ win32 {
 	LIBS    += -LC:\usr\local\lib
 }
 
-LIBS += -ljack -lasound -lsndfile -lsamplerate -logg -lvorbis -lvorbisenc -lvorbisfile -lmad
+LIBS += -ljackmp -lasound -lsndfile -lsamplerate -logg -lvorbis -lvorbisenc -lvorbisfile -lmad
 
 # XML/DOM support
 QT += xml
