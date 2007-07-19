@@ -173,7 +173,7 @@ public slots:
 	void changeNotifySlot();
 	void updateNotifySlot(bool bRefresh);
 	void contentsChanged();
-	void tempoChanged();
+	void tempoChanged(double fTempo);
 	void snapPerBeatChanged(int iSnap);
 	void transportTimeChanged(unsigned long iPlayHead);
 

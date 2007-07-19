@@ -214,17 +214,22 @@ qtractorMainForm::qtractorMainForm (
 	m_pTransportTimeSpinBox->setPalette(pal);
 //	m_pTransportTimeSpinBox->setAutoFillBackground(true);
 	m_pTransportTimeSpinBox->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-	m_pTransportTimeSpinBox->setFixedSize(QSize(128, 26));
+	m_pTransportTimeSpinBox->setMinimumSize(QSize(128, 26));
 	m_pTransportTimeSpinBox->setToolTip(tr("Current transport time (playhead)"));
 	m_ui.timeToolbar->addWidget(m_pTransportTimeSpinBox);
 	m_ui.timeToolbar->addSeparator();
 
 	// Tempo spin-box.
+	const QSize pad(4, 0);
 	m_pTempoSpinBox = new QDoubleSpinBox();
 	m_pTempoSpinBox->setDecimals(1);
 	m_pTempoSpinBox->setMinimum(1.0f);
 	m_pTempoSpinBox->setMaximum(1000.0f);
 	m_pTempoSpinBox->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+	m_pTempoSpinBox->setMinimumSize(m_pTempoSpinBox->sizeHint() + pad);
+#if QT_VERSION >= 0x040300
+	m_pTempoSpinBox->setKeyboardTracking(false);
+#endif
 	m_pTempoSpinBox->setPalette(pal);
 	m_pTempoSpinBox->setToolTip(tr("Tempo (BPM)"));
 	m_ui.timeToolbar->addWidget(m_pTempoSpinBox);
@@ -248,16 +253,18 @@ qtractorMainForm::qtractorMainForm (
 	m_ui.thumbToolbar->setAllowedAreas(
 		Qt::TopToolBarArea | Qt::BottomToolBarArea);
 
+	QObject::connect(m_pTransportTimeSpinBox,
+		SIGNAL(valueChanged(unsigned long)),
+		SLOT(transportTimeChanged(unsigned long)));
 	QObject::connect(m_pTempoSpinBox,
 		SIGNAL(valueChanged(double)),
-		SLOT(tempoChanged()));
+		SLOT(tempoChanged(double)));
 	QObject::connect(m_pSnapPerBeatComboBox,
 		SIGNAL(activated(int)),
 		SLOT(snapPerBeatChanged(int)));
 
 	// Create some statusbar labels...
 	QLabel *pLabel;
-	const QSize pad(4, 0);
 	QPalette *pPalette = new QPalette(statusBar()->palette());
 	m_paletteItems[PaletteNone] = pPalette;
 
@@ -522,10 +529,6 @@ qtractorMainForm::qtractorMainForm (
 	QObject::connect(m_pCommands,
 		SIGNAL(updateNotifySignal(bool)),
 		SLOT(updateNotifySlot(bool)));
-
-	QObject::connect(m_pTransportTimeSpinBox,
-		SIGNAL(valueChanged(unsigned long)),
-		SLOT(transportTimeChanged(unsigned long)));
 }
 
 
@@ -3151,19 +3154,16 @@ void qtractorMainForm::contentsChanged (void)
 
 
 // Tempo spin-box change slot.
-void qtractorMainForm::tempoChanged (void)
+void qtractorMainForm::tempoChanged ( double fTempo )
 {
-	// Avoid bogus changes...
-	float fTempo = m_pTempoSpinBox->value();
-	if (::fabsf(m_pSession->tempo() - fTempo) < 0.01f)
-		return;
-
 #ifdef CONFIG_DEBUG
-	appendMessages("qtractorMainForm::tempoChanged()");
+	appendMessages("qtractorMainForm::tempoChanged(" + QString::number(fTempo) + ")");
 #endif
 
 	// Now, express the change as a undoable command...
-	m_pCommands->exec(new qtractorSessionTempoCommand(m_pSession, fTempo));
+	m_pCommands->exec(
+		new qtractorSessionTempoCommand(m_pSession, float(fTempo)));
+
 	m_iTransportUpdate++;
 }
 
