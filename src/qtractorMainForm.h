@@ -170,7 +170,8 @@ public slots:
 	void activateMidiFile(const QString& sFilename);
 	void trackSelectionChanged();
 	void mixerSelectionChanged();
-	void changeNotifySlot();
+	void selectionNotifySlot(qtractorMidiEditor *pMidiEditor);
+	void changeNotifySlot(qtractorMidiEditor *pMidiEditor);
 	void updateNotifySlot(bool bRefresh);
 	void contentsChanged();
 	void tempoChanged(double fTempo);
@@ -218,6 +219,8 @@ protected:
 	void updateMessagesLimit();
 	void updateMessagesCapture();
 	void updateDisplayFormat();
+
+	void updateContents(qtractorMidiEditor *pMidiEditor, bool bRefresh);
 
 private:
 

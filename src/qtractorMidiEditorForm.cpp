@@ -288,11 +288,11 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 		SLOT(controllerChanged(int)));
 
 	QObject::connect(m_pMidiEditor,
-		SIGNAL(selectNotifySignal()),
-		SLOT(stabilizeForm()));
+		SIGNAL(selectNotifySignal(qtractorMidiEditor *)),
+		SLOT(selectionChanged(qtractorMidiEditor *)));
 	QObject::connect(m_pMidiEditor,
-		SIGNAL(changeNotifySignal()),
-		SLOT(contentsChanged()));
+		SIGNAL(changeNotifySignal(qtractorMidiEditor *)),
+		SLOT(contentsChanged(qtractorMidiEditor *)));
 
 #ifdef QTRACTOR_TEST
 
@@ -623,8 +623,8 @@ void qtractorMidiEditorForm::setup ( qtractorMidiClip *pMidiClip )
 		setMidiClip(pMidiClip);
 		// Setup connections to main widget...
 		QObject::connect(m_pMidiEditor,
-			SIGNAL(changeNotifySignal()),
-			pMainForm, SLOT(changeNotifySlot()));
+			SIGNAL(changeNotifySignal(qtractorMidiEditor *)),
+			pMainForm, SLOT(changeNotifySlot(qtractorMidiEditor *)));
 		// This one's local but helps...
 		QObject::connect(m_pMidiEditor,
 			SIGNAL(sendNoteSignal(int,int)),
@@ -649,8 +649,10 @@ void qtractorMidiEditorForm::setup ( qtractorMidiClip *pMidiClip )
 		(m_pMidiEditor->editView())->setContentsPos(cx, cy);
 	}
 
-	// (Re)sync local play-head (avoid follow playhead)...
+	// (Re)sync local play/edit-head/tail (avoid follow playhead)...
 	m_pMidiEditor->setPlayHead(pSession->playHead(), false);
+	m_pMidiEditor->setEditHead(pSession->editHead(), false);
+	m_pMidiEditor->setEditTail(pSession->editTail(), false);
 
 	// Done.
 	stabilizeForm();
@@ -1131,7 +1133,19 @@ void qtractorMidiEditorForm::controllerChanged ( int iIndex )
 }
 
 
-void qtractorMidiEditorForm::contentsChanged (void)
+void qtractorMidiEditorForm::selectionChanged ( qtractorMidiEditor *pMidiEditor )
+{
+#ifndef QTRACTOR_TEST
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm)
+		pMainForm->selectionNotifySlot(pMidiEditor);
+#endif
+
+	stabilizeForm();
+}
+
+
+void qtractorMidiEditorForm::contentsChanged ( qtractorMidiEditor *pMidiEditor )
 {
 #ifndef QTRACTOR_TEST
 	if (m_pMidiClip)
@@ -1139,7 +1153,7 @@ void qtractorMidiEditorForm::contentsChanged (void)
 #endif
 
 	m_iDirtyCount++;
-	stabilizeForm();
+	selectionChanged(pMidiEditor);
 }
 
 

@@ -134,7 +134,8 @@ public slots:
 
 	void sendNote(int iNote, int iVelocity);
 
-	void contentsChanged();
+	void selectionChanged(qtractorMidiEditor *);
+	void contentsChanged(qtractorMidiEditor *);
 
 	void stabilizeForm();
 

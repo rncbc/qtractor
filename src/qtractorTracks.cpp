@@ -789,7 +789,7 @@ void qtractorTracks::selectionChangeNotify (void)
 {
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm)
-		pMainForm->stabilizeForm();
+		pMainForm->selectionNotifySlot(NULL);
 }
 
 
@@ -798,7 +798,7 @@ void qtractorTracks::contentsChangeNotify (void)
 {
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm)
-		pMainForm->contentsChanged();
+		pMainForm->changeNotifySlot(NULL);
 }
 
 

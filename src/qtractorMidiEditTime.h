@@ -94,7 +94,9 @@ private:
 
 	// The current selecting/dragging head stuff.
 	enum DragState {
-		DragNone = 0, DragStart, DragSelect, DragPlayHead
+		DragNone = 0, DragStart, DragSelect,
+		DragPlayHead, DragEditHead, DragEditTail,
+		DragLoopStart, DragLoopEnd
 	} m_dragState;
 
 	QRect  m_rectDrag;

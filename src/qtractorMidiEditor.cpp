@@ -358,7 +358,13 @@ qtractorMidiEditor::qtractorMidiEditor ( QWidget *pParent )
 	m_iOffset = 0;
 	m_iLength = 0;
 
-	// Local playhead positioning.
+	// Local edit-head/tail positioning.
+	m_iEditHead  = 0;
+	m_iEditHeadX = 0;
+	m_iEditTail  = 0;
+	m_iEditTailX = 0;
+
+	// Local play-head positioning.
 	m_iPlayHead  = 0;
 	m_iPlayHeadX = 0;
 	m_bSyncView  = false;
@@ -568,7 +574,78 @@ unsigned long qtractorMidiEditor::length (void) const
 }
 
 
-// Playhead positioning.
+// Edit-head/tail positioning.
+void qtractorMidiEditor::setEditHead ( unsigned long iEditHead, bool bSync )
+{
+	if (iEditHead > m_iEditTail)
+		setEditTail(iEditHead, bSync);
+
+#ifndef QTRACTOR_TEST
+	if (bSync) {
+		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+		if (pMainForm) {
+			qtractorSession *pSession = pMainForm->session();
+			if (pSession)
+				pSession->setEditHead(iEditHead);
+		}
+	}
+#endif
+
+	m_iEditHead = iEditHead;
+	int iEditHeadX
+		= m_pTimeScale->pixelFromFrame(iEditHead)
+		- m_pTimeScale->pixelFromFrame(m_iOffset);
+
+	drawPositionX(m_iEditHeadX, iEditHeadX, false);
+}
+
+unsigned long qtractorMidiEditor::editHead (void) const
+{
+	return m_iEditHead;
+}
+
+int qtractorMidiEditor::editHeadX (void) const
+{
+	return m_iEditHeadX;
+}
+
+
+void qtractorMidiEditor::setEditTail ( unsigned long iEditTail, bool bSync )
+{
+	if (iEditTail < m_iEditHead)
+		setEditHead(iEditTail, bSync);
+
+#ifndef QTRACTOR_TEST
+	if (bSync) {
+		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+		if (pMainForm) {
+			qtractorSession *pSession = pMainForm->session();
+			if (pSession)
+				pSession->setEditTail(iEditTail);
+		}
+	}
+#endif
+
+	m_iEditTail = iEditTail;
+	int iEditTailX
+		= m_pTimeScale->pixelFromFrame(iEditTail)
+		- m_pTimeScale->pixelFromFrame(m_iOffset);
+
+	drawPositionX(m_iEditTailX, iEditTailX, false);
+}
+
+unsigned long qtractorMidiEditor::editTail (void) const
+{
+	return m_iEditTail;
+}
+
+int qtractorMidiEditor::editTailX (void) const
+{
+	return m_iEditTailX;
+}
+
+
+// Play-head positioning.
 void qtractorMidiEditor::setPlayHead ( unsigned long iPlayHead, bool bSyncView )
 {
 	if (bSyncView)
@@ -593,7 +670,7 @@ int qtractorMidiEditor::playHeadX (void) const
 }
 
 
-// Playhead followness.
+// Play-head follow-ness.
 void qtractorMidiEditor::setSyncView ( bool bSyncView )
 {
 	m_bSyncView = bSyncView;
@@ -1625,7 +1702,8 @@ void qtractorMidiEditor::updateDragSelect ( qtractorScrollView *pScrollView,
 		pEvent = pEvent->next();
 	}
 
-	m_select.update(flags & SelectCommit);
+	bool bCommit = (flags & SelectCommit);
+	m_select.update(bCommit);
 
 	rectUpdateView = rectUpdateView.unite(m_select.rectView());
 	m_pEditView->viewport()->update(QRect(
@@ -1636,6 +1714,13 @@ void qtractorMidiEditor::updateDragSelect ( qtractorScrollView *pScrollView,
 	m_pEditEvent->viewport()->update(QRect(
 		m_pEditEvent->contentsToViewport(rectUpdateEvent.topLeft()),
 		rectUpdateEvent.size()));
+
+	if (bEditView) {
+		setEditHead(m_pTimeScale->frameSnap(m_iOffset
+			+ m_pTimeScale->frameFromPixel(rectSelect.left())), bCommit);
+		setEditTail(m_pTimeScale->frameSnap(m_iOffset
+			+ m_pTimeScale->frameFromPixel(rectSelect.right())), bCommit);
+	}
 }
 
 
@@ -2163,12 +2248,12 @@ void qtractorMidiEditor::updateNotifySlot ( bool bRefresh )
 // Emit selection/changes.
 void qtractorMidiEditor::selectionChangeNotify (void)
 {
-	emit selectNotifySignal();
+	emit selectNotifySignal(this);
 }
 
 void qtractorMidiEditor::contentsChangeNotify (void)
 {
-	emit changeNotifySignal();
+	emit changeNotifySignal(this);
 }
 
 

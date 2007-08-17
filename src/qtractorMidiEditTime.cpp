@@ -111,7 +111,7 @@ void qtractorMidiEditTime::updatePixmap ( int cx, int /*cy*/)
 	unsigned long iFrameFromBeat = pTimeScale->frameFromBeat(iBeat);
 	unsigned long iFramesPerBeat = pTimeScale->frameFromBeat(1);
 	unsigned int  iPixelsPerBeat = pTimeScale->pixelFromBeat(1);
-	x = pTimeScale->pixelFromFrame(iFrameFromBeat) - (dx);
+	x = pTimeScale->pixelFromFrame(iFrameFromBeat) - dx;
 	while (x < w) {
 		bool bBeatIsBar = pTimeScale->beatIsBar(iBeat);
 		if (bBeatIsBar) {
@@ -132,6 +132,37 @@ void qtractorMidiEditTime::updatePixmap ( int cx, int /*cy*/)
 		x = pTimeScale->pixelFromFrame(iFrameFromBeat) - dx;
 		iBeat++;
 	}
+
+#ifndef QTRACTOR_TEST
+	qtractorSession  *pSession  = NULL;
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm)
+		pSession = pMainForm->session();
+	// Draw loop boundaries, if applicable...
+	if (pSession && pSession->isLooping()) {
+		QPolygon polyg(3);
+	//	h -= 4;
+		int d = (h >> 2) + 1;
+		p.setPen(Qt::darkCyan);
+		p.setBrush(Qt::cyan);
+		x = pTimeScale->pixelFromFrame(pSession->loopStart()) - dx;
+		if (x >= 0 && x < w) {
+			polyg.putPoints(0, 3,
+				x + d, h - d,
+				x, h,
+				x, h - d);
+			p.drawPolygon(polyg);
+		}
+		x = pTimeScale->pixelFromFrame(pSession->loopEnd()) - dx;
+		if (x >= 0 && x < w) {
+			polyg.putPoints(0, 3,
+				x, h - d,
+				x, h,
+				x - d, h - d);
+			p.drawPolygon(polyg);
+		}
+	}
+#endif
 }
 
 
@@ -168,11 +199,35 @@ void qtractorMidiEditTime::drawContents ( QPainter *pPainter, const QRect& rect 
 {
 	pPainter->drawPixmap(rect, m_pixmap, rect);
 
-	// Draw special play-head header...
+	// Draw special play/edit-head/tail headers...
 	int cx = qtractorScrollView::contentsX();
 	int h = qtractorScrollView::height() - 4;
 	int d = (h >> 2);
-	int x = m_pEditor->playHeadX() - cx;
+	int x = m_pEditor->editHeadX() - cx;
+	if (x >= rect.left() - d && x <= rect.right() + d) {
+		QPolygon polyg(3);
+		polyg.putPoints(0, 3,
+			x, h - d,
+			x, h,
+			x + d, h - d);
+		pPainter->setPen(Qt::blue);
+		pPainter->setBrush(Qt::blue);
+		pPainter->drawPolygon(polyg);
+	}
+
+	x = m_pEditor->editTailX() - cx;
+	if (x >= rect.left() - d && x <= rect.right() + d) {
+		QPolygon polyg(3);
+		polyg.putPoints(0, 3,
+			x - d, h - d,
+			x, h,
+			x, h - d);
+		pPainter->setPen(Qt::blue);
+		pPainter->setBrush(Qt::blue);
+		pPainter->drawPolygon(polyg);
+	}
+
+	x = m_pEditor->playHeadX() - cx;
 	if (x >= rect.left() - d && x <= rect.right() + d) {
 		QPolygon polyg(3);
 		polyg.putPoints(0, 3,
@@ -210,6 +265,43 @@ bool qtractorMidiEditTime::dragHeadStart ( const QPoint& pos )
 		return true;
 	}
 
+#ifndef QTRACTOR_TEST
+	qtractorSession  *pSession  = NULL;
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm)
+		pSession = pMainForm->session();
+	// Check loop-points, translating to edit-head/tail headers...
+	if (pSession && pSession->isLooping()) {
+		qtractorTimeScale *pTimeScale = m_pEditor->timeScale();
+		// Check loop-start header...
+		rect.moveLeft(pTimeScale->pixelFromFrame(pSession->loopStart()) - d);
+		if (rect.contains(pos)) {
+			m_dragState = DragLoopStart;
+			return true;
+		}
+		// Check loop-end header...
+		rect.moveLeft(pTimeScale->pixelFromFrame(pSession->loopEnd()) - d);
+		if (rect.contains(pos)) {
+			m_dragState = DragLoopEnd;
+			return true;
+		}
+	}
+#endif
+
+	// Check edit-head header...
+	rect.moveLeft(m_pEditor->editHeadX() - d);
+	if (rect.contains(pos)) {
+		m_dragState = DragEditHead;
+		return true;
+	}
+
+	// Check edit-tail header...
+	rect.moveLeft(m_pEditor->editTailX() - d);
+	if (rect.contains(pos)) {
+		m_dragState = DragEditTail;
+		return true;
+	}
+
 	// Nothing.
 	return false;
 }
@@ -221,6 +313,15 @@ void qtractorMidiEditTime::mousePressEvent ( QMouseEvent *pMouseEvent )
 	// Force null state.
 	m_dragState = DragNone;
 
+#ifndef QTRACTOR_TEST
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm == NULL)
+		return;
+	qtractorSession *pSession = pMainForm->session();
+	if (pSession == NULL)
+		return;
+#endif
+
 	// Which mouse state?
 	const bool bModifier = (pMouseEvent->modifiers()
 		& (Qt::ShiftModifier | Qt::ControlModifier));
@@ -230,9 +331,9 @@ void qtractorMidiEditTime::mousePressEvent ( QMouseEvent *pMouseEvent )
 
 	// Direct snap positioning...
 	const QPoint& pos = viewportToContents(pMouseEvent->pos());
-//	qtractorTimeScale *pTimeScale = m_pEditor->timeScale();
-//	unsigned long iFrame = pTimeScale->frameSnap(m_pEditor->offset()
-//		+ pTimeScale->frameFromPixel(pos.x() > 0 ? pos.x() : 0));
+	qtractorTimeScale *pTimeScale = m_pEditor->timeScale();
+	unsigned long iFrame = pTimeScale->frameSnap(m_pEditor->offset()
+		+ pTimeScale->frameFromPixel(pos.x() > 0 ? pos.x() : 0));
 	switch (pMouseEvent->button()) {
 	case Qt::LeftButton:
 		// Remember what and where we'll be dragging/selecting...
@@ -242,6 +343,19 @@ void qtractorMidiEditTime::mousePressEvent ( QMouseEvent *pMouseEvent )
 		if (dragHeadStart(m_posDrag))
 			qtractorScrollView::setCursor(QCursor(Qt::SizeHorCursor));
 		break;
+	case Qt::MidButton:
+		// Edit-tail positioning...
+		m_pEditor->setEditHead(iFrame);
+		m_pEditor->setEditTail(iFrame);
+		// Logical contents changed, just for visual feedback...
+		m_pEditor->selectionChangeNotify();
+		break;
+	case Qt::RightButton:
+		// Edit-tail positioning...
+		m_pEditor->setEditTail(iFrame);
+		// Logical contents changed, just for visual feedback...
+		m_pEditor->selectionChangeNotify();
+		// Fall thru...
 	default:
 		break;
 	}
@@ -284,6 +398,18 @@ void qtractorMidiEditTime::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 		// Let the change get some immediate visual feedback...
 		pMainForm->updateTransportTime(iFrame);
 #endif
+		break;
+	case DragEditHead:
+	case DragLoopStart:
+		// Edit-head positioning...
+		m_pEditor->editView()->ensureVisible(pos.x(), y, 16, 0);
+		m_pEditor->setEditHead(iFrame);
+		break;
+	case DragEditTail:
+	case DragLoopEnd:
+		// Edit-head positioning...
+		m_pEditor->editView()->ensureVisible(pos.x(), y, 16, 0);
+		m_pEditor->setEditTail(iFrame);
 		break;
 	case DragStart:
 		// Rubber-band starting...
@@ -341,19 +467,54 @@ void qtractorMidiEditTime::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 		// Play-head positioning commit...
 		pSession->setPlayHead(m_pEditor->playHead());
 #endif
-		// Not quite a selection, rather just
-		// for immediate visual feedback...
+		// Not quite a selection change,
+		// but for visual feedback...
 		m_pEditor->selectionChangeNotify();
+		break;
+	case DragEditHead:
+		// Not quite a selection change,
+		// but for visual feedback...
+		m_pEditor->selectionChangeNotify();
+		break;
+	case DragEditTail:
+		// Not quite a selection change,
+		// but for visual feedback...
+		m_pEditor->selectionChangeNotify();
+		break;
+	case DragLoopStart:
+#ifndef QTRACTOR_TEST
+		// New loop-start boundary...
+		if (pSession->editHead() < pSession->loopEnd()) {
+			// Yep, new loop-start point...
+			pSession->setLoop(pSession->editHead(), pSession->loopEnd());
+			m_pEditor->updateContents();
+			m_pEditor->contentsChangeNotify();
+		}
+#endif
+		break;
+	case DragLoopEnd:
+#ifndef QTRACTOR_TEST
+		// New loop-end boundary...
+		if (pSession->loopStart() < pSession->editTail()) {
+			// Yep, new loop-end point...
+			pSession->setLoop(pSession->loopStart(), pSession->editTail());
+			m_pEditor->updateContents();
+			m_pEditor->contentsChangeNotify();
+		}
+#endif
 		break;
 	case DragStart:
 		// Left-button indirect positioning...
 		if (bModifier) {
-			// Playhead positioning...
+			// Play-head positioning...
 			m_pEditor->setPlayHead(iFrame);
 #ifndef QTRACTOR_TEST
 			// Immediately commited...
 			pSession->setPlayHead(iFrame);
 #endif
+		} else {
+			// Deferred left-button edit-head positioning...
+			m_pEditor->setEditHead(iFrame);
 		}
 		// Not quite a selection, rather just
 		// for immediate visual feedback...
@@ -406,6 +567,10 @@ void qtractorMidiEditTime::resetDragState (void)
 		qtractorScrollView::updateContents();
 		// Fall thru...
 	case DragPlayHead:
+	case DragEditHead:
+	case DragEditTail:
+	case DragLoopStart:
+	case DragLoopEnd:
 		qtractorScrollView::unsetCursor();
 		// Fall thru again...
 	case DragNone:

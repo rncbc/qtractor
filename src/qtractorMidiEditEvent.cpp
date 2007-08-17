@@ -26,7 +26,12 @@
 
 #include "qtractorMidiSequence.h"
 
+#ifdef QTRACTOR_TEST
 #include "qtractorTimeScale.h"
+#else
+#include "qtractorSession.h"
+#include "qtractorMainForm.h"
+#endif
 
 #include <QResizeEvent>
 #include <QMouseEvent>
@@ -385,6 +390,23 @@ void qtractorMidiEditEvent::updatePixmap ( int cx, int /*cy*/ )
 		}
 		pEvent = pEvent->next();
 	}
+
+#ifndef QTRACTOR_TEST
+	qtractorSession  *pSession  = NULL;
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm)
+		pSession = pMainForm->session();
+	// Draw loop boundaries, if applicable...
+	if (pSession && pSession->isLooping()) {
+		p.setPen(Qt::darkCyan);
+		x = pTimeScale->pixelFromFrame(pSession->loopStart()) - dx;
+		if (x >= 0 && x < w)
+			p.drawLine(x, 0, x, h);
+		x = pTimeScale->pixelFromFrame(pSession->loopEnd()) - dx;
+		if (x >= 0 && x < w)
+			p.drawLine(x, 0, x, h);
+	}
+#endif
 }
 
 
@@ -397,7 +419,7 @@ void qtractorMidiEditEvent::drawContents ( QPainter *pPainter, const QRect& rect
 
 	// Draw special play-head header...
 	int cx = qtractorScrollView::contentsX();
-	int x = m_pEditor->playHeadX() - cx;
+	int x  = m_pEditor->playHeadX() - cx;
 	if (x >= rect.left() && x <= rect.right()) {
 		pPainter->setPen(Qt::red);
 		pPainter->drawLine(x, rect.top(), x, rect.bottom());

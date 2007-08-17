@@ -129,7 +129,7 @@ void qtractorTrackTime::updatePixmap ( int cx, int /* cy */)
 	// Draw loop boundaries, if applicable...
 	if (pSession->isLooping()) {
 		QPolygon polyg(3);
-		h -= 4;
+	//	h -= 4;
 		int d = (h >> 2);
 		painter.setPen(Qt::darkCyan);
 		painter.setBrush(Qt::cyan);
@@ -278,7 +278,7 @@ bool qtractorTrackTime::dragHeadStart ( const QPoint& pos )
 	}
 
 	// Check edit-head header...
-	rect.moveLeft(m_pTracks->trackView()->playHeadX() - d);
+	rect.moveLeft(m_pTracks->trackView()->editHeadX() - d);
 	if (rect.contains(pos)) {
 		m_dragState = DragEditHead;
 		return true;

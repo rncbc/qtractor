@@ -2082,9 +2082,8 @@ void qtractorMainForm::transportLoop (void)
 		m_pTracks->trackView()->updateContents();
 	}
 
-	// Done with loop switch...
-	m_iDirtyCount++;
-	stabilizeForm();
+	// Refresh editors...
+	updateContents(NULL, false);
 }
 
 
@@ -3109,15 +3108,63 @@ void qtractorMainForm::mixerSelectionChanged (void)
 }
 
 
-// Clip editors update helper.
-void qtractorMainForm::changeNotifySlot (void)
+// Tracks view selection change slot.
+void qtractorMainForm::selectionNotifySlot ( qtractorMidiEditor *pMidiEditor )
 {
-	updateNotifySlot(true);
+#ifdef CONFIG_DEBUG_0
+	appendMessages("qtractorMainForm::selectionNotifySlot()");
+#endif
+
+	// Read session edit-head/tails...
+	unsigned long iEditHead = m_pSession->editHead();
+	unsigned long iEditTail = m_pSession->editTail();
+
+	// Track-view is due...
+	if (m_pTracks && pMidiEditor) {
+		m_pTracks->trackView()->setEditHead(iEditHead);
+		m_pTracks->trackView()->setEditTail(iEditTail);
+	}
+
+	// Update editors edit-head/tails...
+	QListIterator<qtractorMidiEditor *> iter(m_editors);
+	while (iter.hasNext()) {
+		qtractorMidiEditor *pEditor = iter.next();
+		if (pEditor != pMidiEditor) {
+			pEditor->setEditHead(iEditHead);
+			pEditor->setEditTail(iEditTail);
+		}
+	}
+
+	// Normal status ahead...
+	stabilizeForm();
+}
+
+
+// Clip editors update helper.
+void qtractorMainForm::changeNotifySlot ( qtractorMidiEditor *pMidiEditor )
+{
+#ifdef CONFIG_DEBUG_0
+	appendMessages("qtractorMainForm::changeNotifySlot()");
+#endif
+
+	updateContents(pMidiEditor, true);
 }
 
 
 // Command update helper.
 void qtractorMainForm::updateNotifySlot ( bool bRefresh )
+{
+#ifdef CONFIG_DEBUG_0
+	appendMessages("qtractorMainForm::updateNotifySlot()");
+#endif
+
+	updateContents(NULL, bRefresh);
+}
+
+
+// Common update helper.
+void qtractorMainForm::updateContents (
+	qtractorMidiEditor *pMidiEditor, bool bRefresh )
 {
 	// Maybe, just maybe, we've made things larger...
 	m_pSession->updateTimeScale();
@@ -3126,6 +3173,14 @@ void qtractorMainForm::updateNotifySlot ( bool bRefresh )
 	// Refresh track-view?
 	if (m_pTracks)
 		m_pTracks->updateContents(bRefresh);
+
+	// Update other editors contents...
+	QListIterator<qtractorMidiEditor *> iter(m_editors);
+	while (iter.hasNext()) {
+		qtractorMidiEditor *pEditor = iter.next();
+		if (pEditor != pMidiEditor)
+			pEditor->updateContents();
+	}
 
 	// Notify who's watching...
 	contentsChanged();
@@ -3149,7 +3204,7 @@ void qtractorMainForm::contentsChanged (void)
 	m_pThumbView->update();
 
 	m_iDirtyCount++;
-	stabilizeForm();
+	selectionNotifySlot(NULL);
 }
 
 
