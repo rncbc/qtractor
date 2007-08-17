@@ -369,6 +369,23 @@
     <string>Ctrl+A</string>
    </property>
   </action>
+  <action name="editSelectRangeAction" >
+	  <property name="text" >
+		  <string>&amp;Range</string>
+	  </property>
+	  <property name="iconText" >
+		  <string>Select Range</string>
+	  </property>
+	  <property name="toolTip" >
+		  <string>Select range</string>
+	  </property>
+	  <property name="statusTip" >
+		  <string>Mark range as selected</string>
+	  </property>
+	  <property name="shortcut" >
+		  <string>Ctrl+R</string>
+	  </property>
+  </action>
   <action name="viewMenubarAction" >
    <property name="checkable" >
     <bool>true</bool>

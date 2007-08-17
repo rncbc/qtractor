@@ -184,7 +184,8 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	// Some actions surely need those
 	// shortcuts firmly attached...
 	addAction(m_ui.viewMenubarAction);
-	// Special integration one.
+	// Special integration ones.
+	addAction(m_ui.editSelectRangeAction);
 	addAction(m_ui.transportBackwardAction);
 	addAction(m_ui.transportPlayAction);
 
@@ -357,6 +358,9 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 
 	// Make last-but-not-least conections....
 	if (pMainForm) {
+		QObject::connect(m_ui.editSelectRangeAction,
+			SIGNAL(triggered(bool)),
+			pMainForm, SLOT(editSelectRange()));
 		QObject::connect(m_ui.transportBackwardAction,
 			SIGNAL(triggered(bool)),
 			pMainForm, SLOT(transportBackward()));

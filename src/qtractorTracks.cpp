@@ -384,9 +384,8 @@ void qtractorTracks::selectEditRange (void)
 		qtractorTrackView::SelectRange,
 		qtractorTrackView::EditNone);
 
-	// Nothing has really changed,
-	// but we'll mark the session dirty anyway...
-	contentsChangeNotify();
+	// Make its due...
+	selectionChangeNotify();
 }
 
 
