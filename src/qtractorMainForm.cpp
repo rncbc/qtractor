@@ -1058,7 +1058,7 @@ bool qtractorMainForm::newSession (void)
 
 	// Stabilize form.
 	m_sFilename.clear();
-	m_iDirtyCount = 0;
+//	m_iDirtyCount = 0;
 	appendMessages(tr("New session: \"%1\".").arg(sessionName(m_sFilename)));
 
 	// Give us what we got, right now...
@@ -1265,7 +1265,7 @@ bool qtractorMainForm::loadSessionFile ( const QString& sFilename )
 	if (bResult) {
 		// We're not dirty anymore.
 		updateRecentFiles(sFilename);
-		m_iDirtyCount = 0;
+	//	m_iDirtyCount = 0;
 	} else {
 		// Something went wrong...
 		appendMessagesError(
@@ -1283,6 +1283,7 @@ bool qtractorMainForm::loadSessionFile ( const QString& sFilename )
 
 	// Now we'll try to create (update) the whole GUI session.
 	updateSession();
+
 	return bResult;
 }
 
@@ -2606,6 +2607,9 @@ void qtractorMainForm::updateSession (void)
 				SLOT(alsaNotify()));			
 		}
 	}
+
+	// We're supposedly clean...
+	m_iDirtyCount = 0;
 
 	// Update the session views...
 	viewRefresh();
