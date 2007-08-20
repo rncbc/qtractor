@@ -59,6 +59,7 @@ qtractorOptions::qtractorOptions (void)
 	bStdoutCapture  = m_settings.value("/StdoutCapture", true).toBool();
 	bCompletePath   = m_settings.value("/CompletePath", true).toBool();
 	bPeakAutoRemove = m_settings.value("/PeakAutoRemove", true).toBool();
+	bKeepToolsOnTop = m_settings.value("/KeepToolsOnTop", true).toBool();
 	iDisplayFormat  = m_settings.value("/DisplayFormat", 1).toInt();
 	iMaxRecentFiles = m_settings.value("/MaxRecentFiles", 5).toInt();
 	m_settings.endGroup();
@@ -175,6 +176,7 @@ qtractorOptions::~qtractorOptions (void)
 	m_settings.setValue("/StdoutCapture", bStdoutCapture);
 	m_settings.setValue("/CompletePath", bCompletePath);
 	m_settings.setValue("/PeakAutoRemove", bPeakAutoRemove);
+	m_settings.setValue("/KeepToolsOnTop", bKeepToolsOnTop);
 	m_settings.setValue("/DisplayFormat", iDisplayFormat);
 	m_settings.setValue("/MaxRecentFiles", iMaxRecentFiles);
 	m_settings.endGroup();

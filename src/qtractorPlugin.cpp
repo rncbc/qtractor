@@ -25,6 +25,9 @@
 
 #include "qtractorSessionDocument.h"
 
+#include "qtractorMainForm.h"
+#include "qtractorOptions.h"
+
 #include <QDir>
 
 
@@ -600,11 +603,23 @@ qtractorPluginForm *qtractorPlugin::form (void)
 {
 	// Take the change and create the form if it doesn't current exist.
 	if (m_pForm == NULL) {
-		m_pForm = new qtractorPluginForm(0,
-			Qt::Tool
+		// Build up the plugin form...
+		qtractorOptions  *pOptions  = NULL;
+		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+		if (pMainForm)
+			pOptions = pMainForm->options();
+		// What style do we create tool childs?
+		Qt::WindowFlags wflags = Qt::Window
+		#if QT_VERSION >= 0x040200
+			| Qt::CustomizeWindowHint
+		#endif
 			| Qt::WindowTitleHint
 			| Qt::WindowSystemMenuHint
-			| Qt::WindowMinMaxButtonsHint);
+			| Qt::WindowMinMaxButtonsHint;
+		if (pOptions && pOptions->bKeepToolsOnTop)
+			wflags |= Qt::Tool;
+		// Do it...
+		m_pForm = new qtractorPluginForm(pMainForm, wflags);
 		m_pForm->setPreset(m_sPreset);
 		m_pForm->setPlugin(this);
 	}

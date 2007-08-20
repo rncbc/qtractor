@@ -636,24 +636,24 @@
    </property>
   </action>
   <action name="editClipAction" >
-	  <property name="icon" >
-		  <iconset resource="../icons/qtractor.qrc" >:/icons/editClip.png</iconset>
-	  </property>
-	  <property name="text" >
-		  <string>&amp;Edit Clip...</string>
-	  </property>
-	  <property name="iconText" >
-		  <string>Edit Clip</string>
-	  </property>
-	  <property name="toolTip" >
-		  <string>Edit clip</string>
-	  </property>
-	  <property name="statusTip" >
-		  <string>Edit current clip</string>
-	  </property>
-	  <property name="shortcut" >
-		  <string>F4</string>
-	  </property>
+   <property name="icon" >
+    <iconset resource="../icons/qtractor.qrc" >:/icons/editClip.png</iconset>
+   </property>
+   <property name="text" >
+    <string>&amp;Edit Clip...</string>
+   </property>
+   <property name="iconText" >
+    <string>Edit Clip</string>
+   </property>
+   <property name="toolTip" >
+    <string>Edit clip</string>
+   </property>
+   <property name="statusTip" >
+    <string>Edit current clip</string>
+   </property>
+   <property name="shortcut" >
+    <string>F4</string>
+   </property>
   </action>
   <action name="trackAddAction" >
    <property name="icon" >

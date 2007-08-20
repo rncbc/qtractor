@@ -741,11 +741,8 @@ void qtractorMixerRack::contextMenuEvent ( QContextMenuEvent *pContextMenuEvent 
 // qtractorMixer -- Mixer widget.
 
 // Constructor.
-qtractorMixer::qtractorMixer ( QWidget *pParent )
-	: QWidget(pParent, Qt::Tool
-		| Qt::WindowTitleHint
-		| Qt::WindowSystemMenuHint
-		| Qt::WindowMinMaxButtonsHint)
+qtractorMixer::qtractorMixer ( QWidget *pParent, Qt::WindowFlags wflags )
+	: QWidget(pParent, wflags)
 {
 	// Surely a name is crucial (e.g. for storing geometry settings)
 	QWidget::setObjectName("qtractorMixer");

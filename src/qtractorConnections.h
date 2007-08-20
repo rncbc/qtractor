@@ -42,7 +42,7 @@ class qtractorConnections : public QWidget
 public:
 
 	// Constructor.
-	qtractorConnections(QWidget *pParent);
+	qtractorConnections(QWidget *pParent, Qt::WindowFlags wflags = 0);
 	// Destructor.
 	~qtractorConnections();
 

@@ -28,6 +28,9 @@
 #include "qtractorMidiEditor.h"
 #include "qtractorMidiEditorForm.h"
 
+#include "qtractorMainForm.h"
+#include "qtractorOptions.h"
+
 #include <QFileInfo>
 #include <QPainter>
 
@@ -455,11 +458,22 @@ bool qtractorMidiClip::startEditor ( QWidget */*pParent*/ )
 
 	if (m_pMidiEditorForm == NULL) {
 		// Build up the editor form...
-		m_pMidiEditorForm = new qtractorMidiEditorForm(0,
-			Qt::Tool
+		qtractorOptions  *pOptions  = NULL;
+		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+		if (pMainForm)
+			pOptions = pMainForm->options();
+		// What style do we create tool childs?
+		Qt::WindowFlags wflags = Qt::Window
+		#if QT_VERSION >= 0x040200
+			| Qt::CustomizeWindowHint
+		#endif
 			| Qt::WindowTitleHint
 			| Qt::WindowSystemMenuHint
-			| Qt::WindowMinMaxButtonsHint);
+			| Qt::WindowMinMaxButtonsHint;
+		if (pOptions && pOptions->bKeepToolsOnTop)
+			wflags |= Qt::Tool;
+		// Do it...
+		m_pMidiEditorForm = new qtractorMidiEditorForm(pMainForm, wflags);
 		// Set its most standing properties...
 		m_pMidiEditorForm->show();
 		m_pMidiEditorForm->setup(this);

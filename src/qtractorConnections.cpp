@@ -38,11 +38,9 @@
 //
 
 // Constructor.
-qtractorConnections::qtractorConnections ( QWidget *pParent )
-	: QWidget(pParent, Qt::Tool
-		| Qt::WindowTitleHint
-		| Qt::WindowSystemMenuHint
-		| Qt::WindowMinMaxButtonsHint)
+qtractorConnections::qtractorConnections (
+	QWidget *pParent, Qt::WindowFlags wflags )
+	: QWidget(pParent, wflags)
 {
 	// Surely a name is crucial (e.g.for storing geometry settings)
 	QWidget::setObjectName("qtractorConnections");

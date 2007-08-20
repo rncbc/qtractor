@@ -238,7 +238,7 @@ class qtractorMixer : public QWidget
 public:
 
 	// Constructor.
-	qtractorMixer(QWidget *pParent);
+	qtractorMixer(QWidget *pParent, Qt::WindowFlags wflags = 0);
 	// Default destructor.
 	~qtractorMixer();
 

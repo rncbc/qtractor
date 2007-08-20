@@ -581,13 +581,24 @@ void qtractorMainForm::setOptions ( qtractorOptions *pOptions )
 	// We got options?
 	m_pOptions = pOptions;
 
-	// Some child forms are to be created right now.
+	// Some child/dockable forms are to be created right now.
 	m_pFiles = new qtractorFiles(this);
 	m_pFiles->audioListView()->setRecentDir(m_pOptions->sAudioDir);
 	m_pFiles->midiListView()->setRecentDir(m_pOptions->sMidiDir);
 	m_pMessages = new qtractorMessages(this);
-	m_pConnections = new qtractorConnections(this);
-	m_pMixer = new qtractorMixer(this);
+	// What style do we create tool childs?
+	Qt::WindowFlags wflags = Qt::Window
+#if QT_VERSION >= 0x040200
+		| Qt::CustomizeWindowHint
+#endif
+		| Qt::WindowTitleHint
+		| Qt::WindowSystemMenuHint
+		| Qt::WindowMinMaxButtonsHint;
+	if (m_pOptions->bKeepToolsOnTop)
+		wflags |= Qt::Tool;
+	// Other child/tools forms are also created right away...
+	m_pConnections = new qtractorConnections(this, wflags);
+	m_pMixer = new qtractorMixer(this, wflags);
 
 	// Make those primordially docked...
 	addDockWidget(Qt::RightDockWidgetArea, m_pFiles, Qt::Vertical);
@@ -595,6 +606,7 @@ void qtractorMainForm::setOptions ( qtractorOptions *pOptions )
 
 	// Time to create the main session track list view...
 	m_pTracks = new qtractorTracks(this);
+
 	// Make it shine :-)
 	setCentralWidget(m_pTracks);
 
@@ -787,10 +799,13 @@ bool qtractorMainForm::queryClose (void)
 
 void qtractorMainForm::closeEvent ( QCloseEvent *pCloseEvent )
 {
-	if (queryClose())
+	// Let's be sure about that...
+	if (queryClose()) {
 		pCloseEvent->accept();
-	else
+		QApplication::quit();
+	} else {
 		pCloseEvent->ignore();
+	}
 }
 
 
@@ -1894,6 +1909,7 @@ void qtractorMainForm::viewOptions (void)
 	int     iOldMessagesLimitLines = m_pOptions->iMessagesLimitLines;
 	bool    bOldCompletePath    = m_pOptions->bCompletePath;
 	bool    bOldPeakAutoRemove  = m_pOptions->bPeakAutoRemove;
+	bool    bOldKeepToolsOnTop  = m_pOptions->bKeepToolsOnTop;
 	int     iOldMaxRecentFiles  = m_pOptions->iMaxRecentFiles;
 	int     iOldDisplayFormat   = m_pOptions->iDisplayFormat;
 	int     iOldResampleType    = m_pOptions->iAudioResampleType;
@@ -1902,18 +1918,17 @@ void qtractorMainForm::viewOptions (void)
 	optionsForm.setOptions(m_pOptions);
 	// Show the setup dialog...
 	if (optionsForm.exec()) {
+		enum { RestartSession = 1, RestartProgram = 2, RestartAny = 3 };
+		int iNeedRestart = 0;
 		// Check wheather something immediate has changed.
-		QString sNeedRestart;
 		if (iOldResampleType != m_pOptions->iAudioResampleType) {
 			qtractorAudioBuffer::setResampleType(m_pOptions->iAudioResampleType);
-			sNeedRestart += tr("session");
+			iNeedRestart |= RestartSession;
 		}
 		if (( bOldStdoutCapture && !m_pOptions->bStdoutCapture) ||
 			(!bOldStdoutCapture &&  m_pOptions->bStdoutCapture)) {
 			updateMessagesCapture();
-			if (!sNeedRestart.isEmpty())
-				sNeedRestart += tr(" or ");
-			sNeedRestart += tr("program");
+			iNeedRestart |= RestartProgram;
 		}
 		if (( bOldCompletePath && !m_pOptions->bCompletePath) ||
 			(!bOldCompletePath &&  m_pOptions->bCompletePath) ||
@@ -1922,6 +1937,9 @@ void qtractorMainForm::viewOptions (void)
 		if (( bOldPeakAutoRemove && !m_pOptions->bPeakAutoRemove) ||
 			(!bOldPeakAutoRemove &&  m_pOptions->bPeakAutoRemove))
 			updatePeakAutoRemove();
+		if (( bOldKeepToolsOnTop && !m_pOptions->bKeepToolsOnTop) ||
+			(!bOldKeepToolsOnTop &&  m_pOptions->bKeepToolsOnTop))
+			iNeedRestart |= RestartProgram;
 		if (sOldMessagesFont != m_pOptions->sMessagesFont)
 			updateMessagesFont();
 		if (( bOldMessagesLimit && !m_pOptions->bMessagesLimit) ||
@@ -1940,7 +1958,15 @@ void qtractorMainForm::viewOptions (void)
 		qtractorMidiClip::setDefaultFormat(
 			m_pOptions->iMidiCaptureFormat);
 		// Warn if something will be only effective on next time.
-		if (!sNeedRestart.isEmpty()) {
+		if (iNeedRestart & RestartAny) {
+			QString sNeedRestart;
+			if (iNeedRestart & RestartSession)
+				sNeedRestart += tr("session");
+			if (iNeedRestart & RestartProgram) {
+				if (!sNeedRestart.isEmpty())
+					sNeedRestart += tr(" or ");
+				sNeedRestart += tr("program");
+			}
 			QMessageBox::information(this,
 				tr("Information") + " - " QTRACTOR_TITLE,
 				tr("Some settings may be only effective\n"

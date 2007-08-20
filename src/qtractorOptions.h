@@ -62,6 +62,7 @@ public:
 	bool    bStdoutCapture;
 	bool    bCompletePath;
 	bool    bPeakAutoRemove;
+	bool    bKeepToolsOnTop;
 	int     iDisplayFormat;
 
 	// View options...
