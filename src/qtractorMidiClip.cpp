@@ -463,6 +463,7 @@ bool qtractorMidiClip::startEditor ( QWidget */*pParent*/ )
 		if (pMainForm)
 			pOptions = pMainForm->options();
 		// What style do we create tool childs?
+		QWidget *pParent = NULL;
 		Qt::WindowFlags wflags = Qt::Window
 		#if QT_VERSION >= 0x040200
 			| Qt::CustomizeWindowHint
@@ -470,10 +471,12 @@ bool qtractorMidiClip::startEditor ( QWidget */*pParent*/ )
 			| Qt::WindowTitleHint
 			| Qt::WindowSystemMenuHint
 			| Qt::WindowMinMaxButtonsHint;
-		if (pOptions && pOptions->bKeepToolsOnTop)
+		if (pOptions && pOptions->bKeepToolsOnTop) {
+			pParent = pMainForm;
 			wflags |= Qt::Tool;
+		}
 		// Do it...
-		m_pMidiEditorForm = new qtractorMidiEditorForm(pMainForm, wflags);
+		m_pMidiEditorForm = new qtractorMidiEditorForm(pParent, wflags);
 		// Set its most standing properties...
 		m_pMidiEditorForm->show();
 		m_pMidiEditorForm->setup(this);

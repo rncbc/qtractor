@@ -587,6 +587,7 @@ void qtractorMainForm::setOptions ( qtractorOptions *pOptions )
 	m_pFiles->midiListView()->setRecentDir(m_pOptions->sMidiDir);
 	m_pMessages = new qtractorMessages(this);
 	// What style do we create tool childs?
+	QWidget *pParent = NULL;
 	Qt::WindowFlags wflags = Qt::Window
 #if QT_VERSION >= 0x040200
 		| Qt::CustomizeWindowHint
@@ -594,11 +595,13 @@ void qtractorMainForm::setOptions ( qtractorOptions *pOptions )
 		| Qt::WindowTitleHint
 		| Qt::WindowSystemMenuHint
 		| Qt::WindowMinMaxButtonsHint;
-	if (m_pOptions->bKeepToolsOnTop)
+	if (m_pOptions->bKeepToolsOnTop) {
+		pParent = this;
 		wflags |= Qt::Tool;
+	}
 	// Other child/tools forms are also created right away...
-	m_pConnections = new qtractorConnections(this, wflags);
-	m_pMixer = new qtractorMixer(this, wflags);
+	m_pConnections = new qtractorConnections(pParent, wflags);
+	m_pMixer = new qtractorMixer(pParent, wflags);
 
 	// Make those primordially docked...
 	addDockWidget(Qt::RightDockWidgetArea, m_pFiles, Qt::Vertical);
