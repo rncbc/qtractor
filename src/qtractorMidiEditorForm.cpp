@@ -316,7 +316,7 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 #else
 
 	// Try to restore old editor state...
-	qtractorOptions *pOptions = NULL;
+	qtractorOptions  *pOptions  = NULL;
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm)
 		pOptions = pMainForm->options();
