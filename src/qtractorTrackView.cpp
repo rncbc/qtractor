@@ -290,11 +290,6 @@ void qtractorTrackView::updateContentsRecord (void)
 		qtractorScrollView::viewport()->update();
 
 	m_iLastRecordX = iCurrRecordX;
-
-	// HACK: Update session length, anyway...
-	qtractorSession *pSession = m_pTracks->session();
-	if (pSession)
-		pSession->updateSessionLength(pSession->frameFromPixel(iCurrRecordX));
 }
 
 
@@ -358,7 +353,7 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 	}
 
 	// Draw edit-head line...
-	m_iEditHeadX = pSession->pixelFromFrame(pSession->editHead());
+//	m_iEditHeadX = pSession->pixelFromFrame(pSession->editHead());
 	x = m_iEditHeadX - cx;
 	if (x >= rect.left() && x <= rect.right()) {
 		pPainter->setPen(Qt::blue);
@@ -366,7 +361,7 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 	}
 
 	// Draw edit-tail line...
-	m_iEditTailX = pSession->pixelFromFrame(pSession->editTail());
+//	m_iEditTailX = pSession->pixelFromFrame(pSession->editTail());
 	x = m_iEditTailX - cx;
 	if (x >= rect.left() && x <= rect.right()) {
 		pPainter->setPen(Qt::blue);
@@ -374,7 +369,7 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 	}
 
 	// Draw play-head line...
-	m_iPlayHeadX = pSession->pixelFromFrame(playHead());
+//	m_iPlayHeadX = pSession->pixelFromFrame(pSession->playHead());
 	x = m_iPlayHeadX - cx;
 	if (x >= rect.left() && x <= rect.right()) {
 		pPainter->setPen(Qt::red);
@@ -603,7 +598,8 @@ qtractorTrack *qtractorTrackView::trackAt ( const QPoint& pos,
 		int w = qtractorScrollView::width();// View width, not contents.
 		if (pTrack == NULL) {				// Below all tracks.
 			y1 = y2;
-			y2 = y1 + (48 * pSession->verticalZoom()) / 100;
+			y2 = y1 + (qtractorTrackList::ItemHeightBase
+				* pSession->verticalZoom()) / 100;
 		}
 		pTrackViewInfo->trackIndex = iTrack;
 		pTrackViewInfo->trackStart = m_pSessionCursor->frame();

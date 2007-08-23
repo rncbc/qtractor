@@ -2936,8 +2936,10 @@ void qtractorMainForm::timerSlot (void)
 			if (m_iPlayTimer >= QTRACTOR_TIMER_DELAY) {
 				m_iPlayTimer = 0;
 				updateTransportTime(iPlayHead);
+				// If recording update track view and session length, anyway...
 				if (m_pTracks && m_pSession->isRecording()) {
 					m_pTracks->trackView()->updateContentsRecord();
+					m_pSession->updateSessionLength(m_iPlayHead);
 					m_statusItems[StatusTime]->setText(
 						m_pSession->timeScale()->textFromFrame(
 							m_pSession->sessionLength()));

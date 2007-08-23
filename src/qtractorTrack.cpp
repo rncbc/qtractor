@@ -108,7 +108,7 @@ qtractorTrack::qtractorTrack ( qtractorSession *pSession, TrackType trackType )
 
 	m_pPluginList = new qtractorPluginList(0, 0, 0);
 
-	setHeight(48);	// Default track height.
+	setHeight(48);	// Default track height (qtractorTrackList::ItemHeightBase).
 	clear();
 }
 
