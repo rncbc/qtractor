@@ -195,7 +195,7 @@ qtractorClip *qtractorSessionCursor::seekClipBackward ( qtractorTrack *pTrack,
 
 	while (pClip && iFrame < pClip->clipStart() + pClip->clipLength()) {
 		if (pTrack->trackType() == m_syncType)
-			pClip->seek(0);
+			pClip->reset(m_pSession->isLooping());
 		pClip = pClip->prev();
 	}
 
