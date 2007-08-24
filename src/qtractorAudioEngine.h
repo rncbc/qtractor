@@ -140,7 +140,7 @@ public:
 
 	// Bus-buffering methods.
 	void buffer_prepare(unsigned int nframes);
-	void buffer_commit(unsigned int nframes, float fGain = 1.0f);
+	void buffer_commit(unsigned int nframes);
 
 	float **buffer() const;
 
@@ -190,6 +190,10 @@ private:
 	float          **m_ppIBuffer;
 	float          **m_ppOBuffer;
 	float          **m_ppXBuffer;
+
+	// Partial buffer offset state;
+	// careful for proper loop concatenation.
+	unsigned int m_iXOffset;
 
 	// Special under-work flag...
 	// (r/w access should be atomic)

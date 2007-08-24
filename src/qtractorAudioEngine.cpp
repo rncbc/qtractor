@@ -672,6 +672,8 @@ qtractorAudioBus::qtractorAudioBus ( qtractorAudioEngine *pAudioEngine,
 
 	m_ppXBuffer = NULL;
 
+	m_iXOffset  = 0;
+
 	m_bEnabled  = false;
 }
 
@@ -984,6 +986,8 @@ void qtractorAudioBus::process_prepare ( unsigned int nframes )
 		m_pIAudioMonitor->process(m_ppIBuffer, nframes);
 	if (m_pIPluginList && m_pIPluginList->activated())
 		m_pIPluginList->process(m_ppIBuffer, nframes);
+
+	m_iXOffset = 0;
 }
 
 
@@ -1010,15 +1014,17 @@ void qtractorAudioBus::buffer_prepare ( unsigned int nframes )
 		::memset(m_ppXBuffer[i], 0, nframes * sizeof(float));
 }
 
-void qtractorAudioBus::buffer_commit ( unsigned int nframes, float fGain )
+void qtractorAudioBus::buffer_commit ( unsigned int nframes )
 {
 	if (!m_bEnabled || (busMode() & qtractorBus::Output) == 0)
 		return;
 
 	for (unsigned short i = 0; i < m_iChannels; i++) {
 		for (unsigned int n = 0; n < nframes; n++)
-			m_ppOBuffer[i][n] += fGain * m_ppXBuffer[i][n];
+			m_ppOBuffer[i][m_iXOffset + n] += m_ppXBuffer[i][n];
 	}
+
+	m_iXOffset += nframes;
 }
 
 float **qtractorAudioBus::buffer (void) const
