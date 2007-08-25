@@ -74,6 +74,30 @@ private:
 };
 
 
+//----------------------------------------------------------------------
+// class qtractorSessionLoopCommand - declaration.
+//
+
+class qtractorSessionLoopCommand : public qtractorSessionCommand
+{
+public:
+
+	// Constructor.
+	qtractorSessionLoopCommand(qtractorSession *pSession,
+		unsigned long iLoopStart, unsigned long iLoopEnd);
+
+	// Session-tempo command methods.
+	bool redo();
+	bool undo();
+
+private:
+
+	// Instance variables.
+	unsigned long m_iLoopStart;
+	unsigned long m_iLoopEnd;
+};
+
+
 #endif	// __qtractorSessionCommand_h
 
 // end of qtractorSessionCommand.h

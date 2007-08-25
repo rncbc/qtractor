@@ -2099,21 +2099,18 @@ void qtractorMainForm::transportLoop (void)
 	// Make sure session is activated...
 	checkRestartSession();
 
-	// Do the loop switch...
+	// Do the loop toggle switch...
+	unsigned long iLoopStart = 0;
+	unsigned long iLoopEnd   = 0;
+
 	if (!m_pSession->isLooping()) {
-		m_pSession->setLoop(m_pSession->editHead(), m_pSession->editTail());
-	} else {
-		m_pSession->setLoop(0, 0);
+		iLoopStart = m_pSession->editHead();
+		iLoopEnd   = m_pSession->editTail();
 	}
 
-	// Refresh track views...
-	if (m_pTracks) {
-		m_pTracks->trackTime()->updateContents();
-		m_pTracks->trackView()->updateContents();
-	}
-
-	// Refresh editors...
-	updateContents(NULL, false);
+	// Now, express the change as an undoable command...
+	m_pCommands->exec(
+		new qtractorSessionLoopCommand(m_pSession, iLoopStart, iLoopEnd));
 }
 
 
@@ -2496,6 +2493,7 @@ void qtractorMainForm::stabilizeForm (void)
 
 	bool bPlaying   = m_pSession->isPlaying();
 	bool bRecording = m_pSession->isRecording();
+	bool bLooping   = m_pSession->isLooping();
 	m_statusItems[StatusRec]->setPalette(*m_paletteItems[
 		bPlaying && bRecording ? PaletteRed : PaletteNone]);
 	m_statusItems[StatusMute]->setPalette(*m_paletteItems[
@@ -2503,7 +2501,7 @@ void qtractorMainForm::stabilizeForm (void)
 	m_statusItems[StatusSolo]->setPalette(*m_paletteItems[
 		m_pSession->soloTracks() > 0 ? PaletteCyan : PaletteNone]);
 	m_statusItems[StatusLoop]->setPalette(*m_paletteItems[
-		m_pSession->isLooping() ? PaletteGreen : PaletteNone]);
+		bLooping ? PaletteGreen : PaletteNone]);
 
 	// Transport stuff...
 	bEnabled = (!bPlaying || !bRecording);
@@ -2521,6 +2519,7 @@ void qtractorMainForm::stabilizeForm (void)
 	m_ui.transportRewindAction->setChecked(m_iTransportRolling < 0);
 	m_ui.transportFastForwardAction->setChecked(m_iTransportRolling > 0);
 	m_ui.transportPlayAction->setChecked(bPlaying);
+	m_ui.transportLoopAction->setChecked(bLooping);
 	m_ui.transportRecordAction->setChecked(bRecording);
 
 	// Special record mode settlement.
@@ -3249,6 +3248,10 @@ void qtractorMainForm::tempoChanged ( double fTempo )
 #ifdef CONFIG_DEBUG
 	appendMessages("qtractorMainForm::tempoChanged(" + QString::number(fTempo) + ")");
 #endif
+
+	// Are we really changing the tempo?
+	if (::fabsf(m_pSession->tempo() - fTempo) < 0.001f)
+		return;
 
 	// Now, express the change as a undoable command...
 	m_pCommands->exec(

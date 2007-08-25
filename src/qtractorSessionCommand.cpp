@@ -94,4 +94,52 @@ bool qtractorSessionTempoCommand::undo (void)
 }
 
 
+//----------------------------------------------------------------------
+// class qtractorSessionLoopCommand - implementation
+//
+
+// Constructor.
+qtractorSessionLoopCommand::qtractorSessionLoopCommand (
+	qtractorSession *pSession, unsigned long iLoopStart, unsigned long iLoopEnd )
+	: qtractorSessionCommand(QObject::tr("session loop"), pSession)
+{
+	m_iLoopStart = iLoopStart;
+	m_iLoopEnd   = iLoopEnd;
+}
+
+
+// Session-loop command methods.
+bool qtractorSessionLoopCommand::redo (void)
+{
+	qtractorSession *pSession = session();
+	if (pSession == NULL)
+		return false;
+
+	// Save the previous session loop state alright...
+	unsigned long iLoopStart = pSession->loopStart();
+	unsigned long iLoopEnd   = pSession->loopEnd();
+
+	// Just set new bounds...
+	pSession->setLoop(m_iLoopStart, m_iLoopEnd);
+
+	// Restore edit cursors too...
+	if (m_iLoopStart < m_iLoopEnd) {
+		pSession->setEditHead(m_iLoopStart);
+		pSession->setEditTail(m_iLoopEnd);
+	}
+
+	// Swap it nice, finally.
+	m_iLoopStart = iLoopStart;
+	m_iLoopEnd   = iLoopEnd;
+
+	return true;
+}
+
+bool qtractorSessionLoopCommand::undo (void)
+{
+	// As we swap the prev/tempo this is non-idempotent.
+	return redo();
+}
+
+
 // end of qtractorSessionCommand.cpp
