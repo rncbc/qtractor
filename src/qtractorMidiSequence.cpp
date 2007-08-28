@@ -188,9 +188,9 @@ void qtractorMidiSequence::replaceEvents ( qtractorMidiSequence *pSeq,
 	// Insert new (cloned and adjusted) ones...
 	for (pEvent = pSeq->events().first(); pEvent; pEvent = pEvent->next()) {
 		qtractorMidiEvent *pNewEvent = new qtractorMidiEvent(*pEvent);
-		pNewEvent->setTime(timeq(pEvent->time(), iTicksPerBeat));
+		pNewEvent->setTime(timeq(iTimeOffset + pEvent->time(), iTicksPerBeat));
 		if (pEvent->type() == qtractorMidiEvent::NOTEON) {
-			pNewEvent->setDuration(timeq(pEvent->duration(),iTicksPerBeat));
+			pNewEvent->setDuration(timeq(pEvent->duration(), iTicksPerBeat));
 		}
 		insertEvent(pNewEvent);
 	}
