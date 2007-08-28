@@ -374,6 +374,7 @@ void qtractorPlugin::setChannels ( unsigned short iChannels )
 	if (m_iInstances < 1) {
 		// We're sorry but dialogs must also go now...
 		if (m_pForm) {
+			m_pForm->close();
 			delete m_pForm;
 			m_pForm = NULL;
 		}

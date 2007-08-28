@@ -70,8 +70,10 @@ qtractorMidiClip::qtractorMidiClip ( const qtractorMidiClip& clip )
 // Destructor.
 qtractorMidiClip::~qtractorMidiClip (void)
 {
-	if (m_pMidiEditorForm)
+	if (m_pMidiEditorForm) {
+		m_pMidiEditorForm->close();
 		delete m_pMidiEditorForm;
+	}
 
 	if (m_pSeq)
 		delete m_pSeq;
@@ -334,9 +336,11 @@ void qtractorMidiClip::close ( bool bForce )
 		QFile::remove(filename());
 
 	// Get rid of editor form, if any.
-	if (m_pMidiEditorForm)
+	if (m_pMidiEditorForm) {
+		m_pMidiEditorForm->close();
 		delete m_pMidiEditorForm;
-	m_pMidiEditorForm = NULL;
+		m_pMidiEditorForm = NULL;
+	}
 }
 
 
@@ -344,9 +348,11 @@ void qtractorMidiClip::close ( bool bForce )
 void qtractorMidiClip::open (void)
 {
 	// WTF? is there an editor outstanding still there?
-	if (m_pMidiEditorForm)
+	if (m_pMidiEditorForm) {
+		m_pMidiEditorForm->close();
 		delete m_pMidiEditorForm;
-	m_pMidiEditorForm = NULL;
+		m_pMidiEditorForm = NULL;
+	}
 
 	// Go open the proper file...
 	openMidiFile(filename(), m_iTrackChannel);

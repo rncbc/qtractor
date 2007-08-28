@@ -474,6 +474,16 @@ void qtractorMidiEditorForm::closeEvent ( QCloseEvent *pCloseEvent )
 		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 		if (pMainForm)
 			pMainForm->removeEditor(m_pMidiEditor);
+		// Should always (re)open the clip...
+		if (m_pMidiClip) {
+			m_pMidiClip->openMidiFile(
+				m_pMidiClip->filename(),
+				m_pMidiClip->trackChannel());
+			if (pMainForm)
+				pMainForm->updateNotifySlot(true);
+		}
+		// Not dirty anymore...
+		m_iDirtyCount = 0;
 #endif
 		pCloseEvent->accept();
 	} else {

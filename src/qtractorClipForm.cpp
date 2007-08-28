@@ -202,17 +202,17 @@ void qtractorClipForm::accept (void)
 				iClipStart, iClipOffset, iClipLength);
 		}
 		// Fade in...
-		unsigned long iFadeInLength  = m_ui.FadeInLengthSpinBox->value();
+		unsigned long iFadeInLength = m_ui.FadeInLengthSpinBox->value();
 		qtractorClip::FadeType fadeInType = fadeTypeFromIndex(
 			m_ui.FadeInTypeComboBox->currentIndex());
-		if (iFadeInLength  != m_pClip->fadeInLength()
+		if (iFadeInLength != m_pClip->fadeInLength()
 			|| fadeInType != m_pClip->fadeInType())
 			pClipCommand->fadeInClip(m_pClip, iFadeInLength, fadeInType);
 		// Fade out...
-		unsigned long iFadeOutLength  = m_ui.FadeOutLengthSpinBox->value();
+		unsigned long iFadeOutLength = m_ui.FadeOutLengthSpinBox->value();
 		qtractorClip::FadeType fadeOutType = fadeTypeFromIndex(
 			m_ui.FadeOutTypeComboBox->currentIndex());
-		if (iFadeOutLength  != m_pClip->fadeOutLength()
+		if (iFadeOutLength != m_pClip->fadeOutLength()
 			|| fadeOutType != m_pClip->fadeOutType())
 			pClipCommand->fadeOutClip(m_pClip, iFadeOutLength, fadeOutType);
 		// Do it (but make it undoable)...
