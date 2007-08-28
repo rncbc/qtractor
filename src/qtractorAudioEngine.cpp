@@ -190,6 +190,8 @@ qtractorAudioEngine::qtractorAudioEngine ( qtractorSession *pSession )
 	m_eNotifyXrunType     = QEvent::None;
 	m_eNotifyPortType     = QEvent::None;
 	m_eNotifyBufferType   = QEvent::None;
+
+	m_iBufferOffset = 0;
 }
 
 
@@ -263,6 +265,13 @@ unsigned int qtractorAudioEngine::sampleRate (void) const
 unsigned int qtractorAudioEngine::bufferSize (void) const
 {
 	return (m_pJackClient ? jack_get_buffer_size(m_pJackClient) : 0);
+}
+
+
+// Buffer offset accessor.
+unsigned int qtractorAudioEngine::bufferOffset (void) const
+{
+	return m_iBufferOffset;
 }
 
 
@@ -434,23 +443,31 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 	unsigned long iFrameStart = pAudioCursor->frame();
 	unsigned long iFrameEnd   = iFrameStart + nframes;
 
+	// Reset buffer offset.
+    m_iBufferOffset = 0;
+
 	// Split processing, in case we're looping...
-	if (pSession->isLooping() && iFrameStart < pSession->loopEnd()) {
-		// Loop-length might be shorter than the buffer-period...
-		while (iFrameEnd > pSession->loopEnd()) {
-			// Process the remaining until end-of-loop...
-			pSession->process(pAudioCursor, iFrameStart, pSession->loopEnd());
-			// Reset to start-of-loop...
-			iFrameStart = pSession->loopStart();
-			iFrameEnd   = iFrameStart + (iFrameEnd - pSession->loopEnd());
-			// Set to new transport location...
-			jack_transport_locate(m_pJackClient, iFrameStart);
-			pAudioCursor->seek(iFrameStart);
+	if (pSession->isLooping()) {
+		unsigned long iLoopEnd = pSession->loopEnd();
+		 if (iFrameStart < iLoopEnd) {
+			// Loop-length might be shorter than the buffer-period...
+			while (iFrameEnd > iLoopEnd) {
+				// Process the remaining until end-of-loop...
+				pSession->process(pAudioCursor, iFrameStart, iLoopEnd);
+				m_iBufferOffset += (iLoopEnd - iFrameStart);
+				// Reset to start-of-loop...
+				iFrameStart = pSession->loopStart();
+				iFrameEnd   = iFrameStart + (iFrameEnd - iLoopEnd);
+				// Set to new transport location...
+				jack_transport_locate(m_pJackClient, iFrameStart);
+				pAudioCursor->seek(iFrameStart);
+			}
 		}
 	}
 
 	// Regular range...
 	pSession->process(pAudioCursor, iFrameStart, iFrameEnd);
+	m_iBufferOffset += (iFrameEnd - iFrameStart);
 
 	// Commit current audio buses...
 	for (qtractorBus *pBus = buses().first();
@@ -669,10 +686,7 @@ qtractorAudioBus::qtractorAudioBus ( qtractorAudioEngine *pAudioEngine,
 
 	m_ppIBuffer = NULL;
 	m_ppOBuffer = NULL;
-
 	m_ppXBuffer = NULL;
-
-	m_iXOffset  = 0;
 
 	m_bEnabled  = false;
 }
@@ -986,8 +1000,6 @@ void qtractorAudioBus::process_prepare ( unsigned int nframes )
 		m_pIAudioMonitor->process(m_ppIBuffer, nframes);
 	if (m_pIPluginList && m_pIPluginList->activated())
 		m_pIPluginList->process(m_ppIBuffer, nframes);
-
-	m_iXOffset = 0;
 }
 
 
@@ -1019,12 +1031,17 @@ void qtractorAudioBus::buffer_commit ( unsigned int nframes )
 	if (!m_bEnabled || (busMode() & qtractorBus::Output) == 0)
 		return;
 
+	qtractorAudioEngine *pAudioEngine
+		= static_cast<qtractorAudioEngine *> (engine());
+	if (pAudioEngine == NULL)
+		return;
+
+	unsigned int offset = pAudioEngine->bufferOffset();
+
 	for (unsigned short i = 0; i < m_iChannels; i++) {
 		for (unsigned int n = 0; n < nframes; n++)
-			m_ppOBuffer[i][m_iXOffset + n] += m_ppXBuffer[i][n];
+			m_ppOBuffer[i][n + offset] += m_ppXBuffer[i][n];
 	}
-
-	m_iXOffset += nframes;
 }
 
 float **qtractorAudioBus::buffer (void) const

@@ -75,6 +75,8 @@ public:
 	unsigned int sampleRate() const;
 	// Buffer size accessor.
 	unsigned int bufferSize() const;
+	// Buffer offset accessor.
+	unsigned int bufferOffset() const;
 
 	// Special disaster recovery method.
 	void shutdown();
@@ -100,6 +102,10 @@ private:
 	QEvent::Type  m_eNotifyXrunType;
 	QEvent::Type  m_eNotifyPortType;
 	QEvent::Type  m_eNotifyBufferType;
+
+	// Partial buffer offset state;
+	// careful for proper loop concatenation.
+	unsigned int m_iBufferOffset;
 };
 
 
@@ -185,15 +191,11 @@ private:
 	qtractorPluginList *m_pOPluginList;
 
 	// Specific JACK ports stuff.
-	jack_port_t    **m_ppIPorts;
-	jack_port_t    **m_ppOPorts;
-	float          **m_ppIBuffer;
-	float          **m_ppOBuffer;
-	float          **m_ppXBuffer;
-
-	// Partial buffer offset state;
-	// careful for proper loop concatenation.
-	unsigned int m_iXOffset;
+	jack_port_t **m_ppIPorts;
+	jack_port_t **m_ppOPorts;
+	float       **m_ppIBuffer;
+	float       **m_ppOBuffer;
+	float       **m_ppXBuffer;
 
 	// Special under-work flag...
 	// (r/w access should be atomic)
