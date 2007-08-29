@@ -652,6 +652,7 @@ bool qtractorTracks::addMidiTracks ( QStringList files,
 			if (pMidiClip->clipLength() > 0) {
 				// Add the new track to composite command...
 				pTrack->setTrackName(pMidiClip->clipName());
+				pTrack->setMidiChannel(pMidiClip->channel());
 				pImportTrackCommand->addTrack(pTrack);
 				// Don't forget to add this one to local repository.
 				pMainForm->addMidiFile(sPath);
@@ -723,6 +724,7 @@ bool qtractorTracks::addMidiTrackChannel ( const QString& sPath,
 	// Time to add the new track/clip into session...
 	pTrack->addClip(pMidiClip);
 	pTrack->setTrackName(pMidiClip->clipName());
+	pTrack->setMidiChannel(pMidiClip->channel());
 	// Add the new track to composite command...
 	pImportTrackCommand->addTrack(pTrack);
 	// Don't forget to add this one to local repository.

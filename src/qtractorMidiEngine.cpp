@@ -1566,11 +1566,6 @@ void qtractorMidiBus::setPatch ( unsigned short iChannel,
 	if (pMidiEngine == NULL)
 		return;
 
-	// Don't do anything else if engine
-	// has not been activated...
-	if (pMidiEngine->alsaSeq() == NULL)
-		return;
-
 #ifdef CONFIG_DEBUG
 	fprintf(stderr, "qtractorMidiBus::setPatch(%d, \"%s\", %d, %d, %d)\n",
 		iChannel, sInstrumentName.toUtf8().constData(), iBankSelMethod, iBank, iProg);
@@ -1584,6 +1579,11 @@ void qtractorMidiBus::setPatch ( unsigned short iChannel,
 		patch.bank = iBank;
 		patch.prog = iProg;
 	}
+
+	// Don't do anything else if engine
+	// has not been activated...
+	if (pMidiEngine->alsaSeq() == NULL)
+		return;
 
 	// Initialize sequencer event...
 	snd_seq_event_t ev;
@@ -1998,7 +1998,7 @@ bool qtractorMidiBus::saveMidiMap ( qtractorSessionDocument *pDocument,
 				QString::number(patch.bank), &ePatch);
 		}
 		if (patch.prog >= 0) {
-			pDocument->saveTextElement("midi-prog",
+			pDocument->saveTextElement("midi-program",
 				QString::number(patch.prog), &ePatch);
 		}
 		pElement->appendChild(ePatch);

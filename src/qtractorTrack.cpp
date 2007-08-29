@@ -583,8 +583,6 @@ void qtractorTrack::addClip ( qtractorClip *pClip )
 		qtractorMidiClip *pMidiClip
 			= static_cast<qtractorMidiClip *> (pClip);
 		if (pMidiClip) {
-			if (m_clips.count() < 1)
-				setMidiChannel(pMidiClip->channel());
 			if (midiBank() < 0)
 				setMidiBank(pMidiClip->bank());
 			if (midiProgram() < 0)

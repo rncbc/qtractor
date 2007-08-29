@@ -303,6 +303,7 @@ void qtractorTrackForm::accept (void)
 		// View colors...
 		m_props.foreground = colorItem(m_ui.ForegroundColorComboBox);
 		m_props.background = colorItem(m_ui.BackgroundColorComboBox);
+		m_props.background.setAlpha(192);
 		// Reset dirty flag.
 		m_iDirtyCount = 0;
 	}
