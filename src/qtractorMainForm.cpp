@@ -1970,10 +1970,12 @@ void qtractorMainForm::viewOptions (void)
 					sNeedRestart += tr(" or ");
 				sNeedRestart += tr("program");
 			}
+			// Show restart needed message...
 			QMessageBox::information(this,
 				tr("Information") + " - " QTRACTOR_TITLE,
 				tr("Some settings may be only effective\n"
-				"next time you start this %1.").arg(sNeedRestart), tr("OK"));
+				"next time you start this %1.")
+				.arg(sNeedRestart), tr("OK"));
 		}
 	}
 

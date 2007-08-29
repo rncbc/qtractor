@@ -32,6 +32,7 @@
 // Forward declarations.
 class qtractorAudioBus;
 class qtractorAudioMonitor;
+class qtractorAudioFile;
 class qtractorPluginList;
 
 
@@ -81,6 +82,15 @@ public:
 	// Special disaster recovery method.
 	void shutdown();
 
+	// Audio-export (freewheeling) state.
+	void setExporting(bool bExporting);
+	bool isExporting() const;
+
+	// Audio-export method.
+	bool fileExport(const QString& sExportPath,
+		unsigned long iExportStart = 0, unsigned long iExportEnd = 0,
+		qtractorAudioBus *pExportBus = NULL);
+
 protected:
 
 	// Concrete device (de)activation methods.
@@ -106,6 +116,18 @@ private:
 	// Partial buffer offset state;
 	// careful for proper loop concatenation.
 	unsigned int m_iBufferOffset;
+
+	// Audio-export (freewheeling) state.
+	bool m_bExporting;
+
+	// Dedicated cursor for audio-export.
+	qtractorSessionCursor *m_pExportCursor;
+
+	// Audio-export state parameters.
+	qtractorAudioBus  *m_pExportBus;
+	qtractorAudioFile *m_pExportFile;
+	unsigned long      m_iExportStart;
+	unsigned long      m_iExportEnd;
 };
 
 

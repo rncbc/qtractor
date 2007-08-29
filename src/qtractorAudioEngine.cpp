@@ -176,6 +176,19 @@ static int qtractorAudioEngine_buffer_size ( jack_nframes_t, void *pvArg )
 
 
 //----------------------------------------------------------------------
+// qtractorAudioEngine_freewheel -- Audio export process callback.
+//
+
+static void qtractorAudioEngine_freewheel ( int iStarting, void *pvArg )
+{
+	qtractorAudioEngine *pAudioEngine
+		= static_cast<qtractorAudioEngine *> (pvArg);
+
+	pAudioEngine->setExporting(bool(iStarting));
+}
+
+
+//----------------------------------------------------------------------
 // class qtractorAudioEngine -- JACK client instance (singleton).
 //
 
@@ -192,6 +205,18 @@ qtractorAudioEngine::qtractorAudioEngine ( qtractorSession *pSession )
 	m_eNotifyBufferType   = QEvent::None;
 
 	m_iBufferOffset = 0;
+
+	// Audio-export (freewheeling) state.
+	m_bExporting = false;
+
+	// Dedicated cursor for audio-export.
+	m_pExportCursor = NULL;
+
+	// Audio-export state parameters.
+	m_pExportBus    = NULL;
+	m_pExportFile   = NULL;
+	m_iExportStart  = 0;
+	m_iExportEnd    = 0;
 }
 
 
@@ -320,6 +345,10 @@ bool qtractorAudioEngine::activate (void)
     jack_set_buffer_size_callback(m_pJackClient,
 		qtractorAudioEngine_buffer_size, this);
 
+	// Set audio export processor callback.
+	jack_set_freewheel_callback(m_pJackClient,
+		qtractorAudioEngine_freewheel, this);
+
 	// Time to activate ourselves...
 	jack_activate(m_pJackClient);
 
@@ -376,6 +405,17 @@ void qtractorAudioEngine::deactivate (void)
 // Device engine cleanup method.
 void qtractorAudioEngine::clean (void)
 {
+	// Audio-export stilll around? weird...
+	if (m_pExportCursor) {
+		delete m_pExportCursor;
+		m_pExportCursor = NULL;
+	}
+
+	if (m_pExportFile) {
+		delete m_pExportFile;
+		m_pExportFile = NULL;
+	}
+
 	// Close the JACK client, finally.
 	if (m_pJackClient) {
 		jack_client_close(m_pJackClient);
@@ -391,16 +431,12 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 	if (!isActivated())
 		return 0;
 
-	// Make sure we have an actual session cursor...
+	// Must have a valid session...
 	qtractorSession *pSession = session();
 	if (pSession == NULL)
 		return 0;
 
-	qtractorSessionCursor *pAudioCursor = sessionCursor();
-	if (pAudioCursor == NULL)
-		return 0;
-
-	// Prepare current audio buses...
+	// Prepare all current audio buses...
 	for (qtractorBus *pBus = buses().first();
 		pBus; pBus = pBus->next()) {
 		qtractorAudioBus *pAudioBus
@@ -408,6 +444,34 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 		if (pAudioBus)
 			pAudioBus->process_prepare(nframes);
 	}
+
+	// Are we actually freewheeling for export?...
+	// noteice that freewheeling has no RT requirements.
+	if (m_bExporting && m_pExportFile && m_pExportBus && m_pExportCursor) {
+		// This the legal process cycle frame range...
+		unsigned long iFrameStart = m_pExportCursor->frame();
+		unsigned long iFrameEnd   = iFrameStart + nframes;
+		// Write output bus buffer to export audio file...
+		if (iFrameStart < m_iExportEnd && iFrameEnd > m_iExportStart) {
+			// Export cycle...
+			pSession->process(m_pExportCursor, iFrameStart, iFrameEnd);
+			// Commit the output bus only...
+			m_pExportBus->process_commit(nframes);
+			// Write to export file...
+			if (iFrameEnd > m_iExportEnd)
+				nframes -= (iFrameEnd - m_iExportEnd);
+			m_pExportFile->write(m_pExportBus->out(), nframes);
+		}
+		// Prepare advance for next cycle...
+		m_pExportCursor->seek(iFrameEnd);
+		// Done with this export cycle...
+		return 0;
+	}
+
+	// Make sure we have an actual session cursor...
+	qtractorSessionCursor *pAudioCursor = sessionCursor();
+	if (pAudioCursor == NULL)
+		return 0;
 
 	// Session RT-safeness lock...
 	if (!pSession->acquire())
@@ -651,6 +715,101 @@ bool qtractorAudioEngine::saveElement ( qtractorSessionDocument *pDocument,
 }
 
 
+// Audio-exporting (freewheeling) state accessors.
+void qtractorAudioEngine::setExporting ( bool bExporting )
+{
+	m_bExporting = bExporting;
+}
+
+bool qtractorAudioEngine::isExporting (void) const
+{
+	return m_bExporting;
+}
+
+
+// Audio-export method.
+bool qtractorAudioEngine::fileExport ( const QString& sExportPath,
+	unsigned long iExportStart, unsigned long iExportEnd,
+	qtractorAudioBus *pExportBus )
+{
+	// No similtaneous or foul exports...
+	if (!isActivated() || isPlaying() || isExporting())
+		return false;
+
+	// Make sure we have an actual session cursor...
+	qtractorSession *pSession = session();
+	if (pSession == NULL)
+		return false;
+
+	// Cannot have exports longer than current session.
+	if (iExportStart >= iExportEnd)
+		iExportEnd = pSession->sessionLength();
+	if (iExportStart >= iExportEnd)
+		return false;
+
+	// We'll grab the first bus around, if none is given...
+	if (pExportBus == NULL)
+		pExportBus = static_cast<qtractorAudioBus *> (buses().first());
+	if (pExportBus == NULL)
+		return false;
+
+	// Get proper file type class...
+	qtractorAudioFile *pExportFile
+		= qtractorAudioFileFactory::createAudioFile(
+			sExportPath, pExportBus->channels(), sampleRate());
+	// No file ready for export?
+	if (pExportFile == NULL)
+		return false;
+
+	// Go open it, for writeing of course...
+	if (!pExportFile->open(sExportPath, qtractorAudioFile::Write)) {
+		delete pExportFile;
+		return false;
+	}
+
+	// Start with fixing the export range...
+	m_pExportBus   = pExportBus;
+	m_pExportFile  = pExportFile;
+	m_iExportStart = iExportStart;
+	m_iExportEnd   = iExportEnd;
+
+	// Special initialization
+	pSession->resetAllPlugins();
+    m_iBufferOffset = 0;
+
+	// We'll need some special session cursor...
+	m_pExportCursor = new qtractorSessionCursor(pSession,
+		m_iExportStart, qtractorTrack::Audio);
+
+	// Start export (freewheeling)...
+	jack_set_freewheel(m_pJackClient, 1);
+
+	// Wait for the export to end.
+	do { qtractorSession::stabilize(200); }
+	while (m_pExportCursor->frame() < m_iExportEnd);
+
+	// Stop export (freewheeling)...
+	jack_set_freewheel(m_pJackClient, 0);
+
+	// May close the file...
+	m_pExportFile->close();
+
+	// We'll have no need for special cursor anymore...
+	delete m_pExportCursor;
+	m_pExportCursor = NULL;
+
+	// Free up things here.
+	delete m_pExportFile;
+	m_pExportBus   = NULL;
+	m_pExportFile  = NULL;
+	m_iExportStart = 0;
+	m_iExportEnd   = 0;
+
+	// Done successfulle.
+	return true;
+}
+
+
 //----------------------------------------------------------------------
 // class qtractorAudioBus -- Managed JACK port set
 //
@@ -690,6 +849,7 @@ qtractorAudioBus::qtractorAudioBus ( qtractorAudioEngine *pAudioEngine,
 
 	m_bEnabled  = false;
 }
+
 
 // Destructor.
 qtractorAudioBus::~qtractorAudioBus (void)

@@ -265,8 +265,8 @@ void qtractorBusForm::refreshBuses (void)
 		m_pAudioRoot->setText(0, ' ' + tr("Audio"));
 		m_pAudioRoot->setFlags(	// Audio root item is not selectable...
 			m_pAudioRoot->flags() & ~Qt::ItemIsSelectable);
-		for (qtractorBus *pBus = pAudioEngine->buses().last();
-				pBus; pBus = pBus->prev())
+		for (qtractorBus *pBus = pAudioEngine->buses().first();
+				pBus; pBus = pBus->next())
 			new qtractorBusListItem(m_pAudioRoot, pBus);
 #if QT_VERSION >= 0x040201
 		m_pAudioRoot->setExpanded(true);
@@ -282,8 +282,8 @@ void qtractorBusForm::refreshBuses (void)
 		m_pMidiRoot->setText(0, ' ' + tr("MIDI"));
 		m_pMidiRoot->setFlags(	// MIDI root item is not selectable...
 			m_pMidiRoot->flags() & ~Qt::ItemIsSelectable);
-		for (qtractorBus *pBus = pMidiEngine->buses().last();
-				pBus; pBus = pBus->prev())
+		for (qtractorBus *pBus = pMidiEngine->buses().first();
+				pBus; pBus = pBus->next())
 			new qtractorBusListItem(m_pMidiRoot, pBus);
 #if QT_VERSION >= 0x040201
 		m_pMidiRoot->setExpanded(true);
