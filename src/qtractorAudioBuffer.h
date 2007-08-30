@@ -110,6 +110,9 @@ public:
 	// Audio frame process synchronization predicate method.
 	bool inSync(unsigned long iFrameStart, unsigned long iFrameEnd);
 
+	// Export-mode sync executive.
+	void syncExport();
+
 	// Sample-rate converter type accessor (global option).
 	static void setResampleType(int iResampleType);
 	static int resampleType();

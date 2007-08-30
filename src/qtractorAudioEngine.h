@@ -91,6 +91,9 @@ public:
 		unsigned long iExportStart = 0, unsigned long iExportEnd = 0,
 		qtractorAudioBus *pExportBus = NULL);
 
+	// Direct sync method (needed for export)
+	void syncExport();
+
 protected:
 
 	// Concrete device (de)activation methods.
@@ -120,14 +123,12 @@ private:
 	// Audio-export (freewheeling) state.
 	bool m_bExporting;
 
-	// Dedicated cursor for audio-export.
-	qtractorSessionCursor *m_pExportCursor;
-
 	// Audio-export state parameters.
 	qtractorAudioBus  *m_pExportBus;
 	qtractorAudioFile *m_pExportFile;
 	unsigned long      m_iExportStart;
 	unsigned long      m_iExportEnd;
+	unsigned int       m_iExportSync;
 };
 
 

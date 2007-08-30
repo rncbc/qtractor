@@ -38,8 +38,11 @@ public:
 	void setRunState(bool bRunState);
 	bool runState() const;
 
-	// Wake from executive wait condition.
+	// Wake from executive wait condition (RT-safe).
 	void sync();
+
+	// Bypass executive wait condition (non RT-safe).
+	void syncExport();
 
 protected:
 
@@ -644,6 +647,13 @@ bool qtractorAudioBuffer::inSync (
 }
 
 
+// Export-mode sync executive.
+void qtractorAudioBuffer::syncExport (void)
+{
+	if (m_pSyncThread) m_pSyncThread->syncExport();
+}
+
+
 // Read-mode sync executive.
 void qtractorAudioBuffer::readSync (void)
 {
@@ -1152,7 +1162,7 @@ bool qtractorAudioBufferThread::runState (void) const
 }
 
 
-// Wake from executive wait condition.
+// Wake from executive wait condition (RT-safe).
 void qtractorAudioBufferThread::sync (void)
 {
 	if (m_mutex.tryLock()) {
@@ -1161,6 +1171,19 @@ void qtractorAudioBufferThread::sync (void)
 	}
 #ifdef CONFIG_DEBUG_0
 	else fprintf(stderr, "qtractorAudioBufferThread::sync(%p): tryLock() failed.\n", this);
+#endif
+}
+
+
+// Bypass executive wait condition (non RT-safe).
+void qtractorAudioBufferThread::syncExport (void)
+{
+	if (m_mutex.tryLock()) {
+		m_pAudioBuffer->sync();
+		m_mutex.unlock();
+	}
+#ifdef CONFIG_DEBUG_0
+	else fprintf(stderr, "qtractorAudioBufferThread::syncExport(%p): tryLock() failed.\n", this);
 #endif
 }
 

@@ -22,7 +22,7 @@
 #include "qtractorAbout.h"
 #include "qtractorAudioEngine.h"
 #include "qtractorAudioMonitor.h"
-#include "qtractorAudioBuffer.h"
+#include "qtractorAudioClip.h"
 
 #include "qtractorMonitor.h"
 #include "qtractorSessionCursor.h"
@@ -209,14 +209,12 @@ qtractorAudioEngine::qtractorAudioEngine ( qtractorSession *pSession )
 	// Audio-export (freewheeling) state.
 	m_bExporting = false;
 
-	// Dedicated cursor for audio-export.
-	m_pExportCursor = NULL;
-
 	// Audio-export state parameters.
 	m_pExportBus    = NULL;
 	m_pExportFile   = NULL;
 	m_iExportStart  = 0;
 	m_iExportEnd    = 0;
+	m_iExportSync   = 0;
 }
 
 
@@ -406,11 +404,6 @@ void qtractorAudioEngine::deactivate (void)
 void qtractorAudioEngine::clean (void)
 {
 	// Audio-export stilll around? weird...
-	if (m_pExportCursor) {
-		delete m_pExportCursor;
-		m_pExportCursor = NULL;
-	}
-
 	if (m_pExportFile) {
 		delete m_pExportFile;
 		m_pExportFile = NULL;
@@ -445,16 +438,28 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 			pAudioBus->process_prepare(nframes);
 	}
 
+	// Make sure we have an actual session cursor...
+	qtractorSessionCursor *pAudioCursor = sessionCursor();
+	if (pAudioCursor == NULL)
+		return 0;
+
 	// Are we actually freewheeling for export?...
 	// noteice that freewheeling has no RT requirements.
-	if (m_bExporting && m_pExportFile && m_pExportBus && m_pExportCursor) {
+	if (m_bExporting && m_pExportFile && m_pExportBus) {
+		// Force/sync every audio track clips,
+		// on every couple of seconds... 
+		m_iExportSync += nframes;
+		if (m_iExportSync > (sampleRate() << 1)) {
+			m_iExportSync = 0;
+			syncExport();
+		}
 		// This the legal process cycle frame range...
-		unsigned long iFrameStart = m_pExportCursor->frame();
+		unsigned long iFrameStart = pAudioCursor->frame();
 		unsigned long iFrameEnd   = iFrameStart + nframes;
 		// Write output bus buffer to export audio file...
 		if (iFrameStart < m_iExportEnd && iFrameEnd > m_iExportStart) {
 			// Export cycle...
-			pSession->process(m_pExportCursor, iFrameStart, iFrameEnd);
+			pSession->process(pAudioCursor, iFrameStart, iFrameEnd);
 			// Commit the output bus only...
 			m_pExportBus->process_commit(nframes);
 			// Write to export file...
@@ -463,15 +468,10 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 			m_pExportFile->write(m_pExportBus->out(), nframes);
 		}
 		// Prepare advance for next cycle...
-		m_pExportCursor->seek(iFrameEnd);
-		// Done with this export cycle...
+		pAudioCursor->seek(iFrameEnd);
+		// Done with this one export cycle...
 		return 0;
 	}
-
-	// Make sure we have an actual session cursor...
-	qtractorSessionCursor *pAudioCursor = sessionCursor();
-	if (pAudioCursor == NULL)
-		return 0;
 
 	// Session RT-safeness lock...
 	if (!pSession->acquire())
@@ -772,21 +772,30 @@ bool qtractorAudioEngine::fileExport ( const QString& sExportPath,
 	m_pExportFile  = pExportFile;
 	m_iExportStart = iExportStart;
 	m_iExportEnd   = iExportEnd;
+	m_iExportSync  = 0;
+
+	// We'll have to save some session parameters...
+	unsigned long iPlayHead  = pSession->playHead();
+	unsigned long iLoopStart = pSession->loopStart();
+	unsigned long iLoopEnd   = pSession->loopEnd();
+
+	// Because we'll have to set the export conditions...
+	pSession->setLoop(0, 0);
+	pSession->setPlayHead(m_iExportStart);
+
+	// Force sync...
+	syncExport();
 
 	// Special initialization
 	pSession->resetAllPlugins();
     m_iBufferOffset = 0;
-
-	// We'll need some special session cursor...
-	m_pExportCursor = new qtractorSessionCursor(pSession,
-		m_iExportStart, qtractorTrack::Audio);
 
 	// Start export (freewheeling)...
 	jack_set_freewheel(m_pJackClient, 1);
 
 	// Wait for the export to end.
 	do { qtractorSession::stabilize(200); }
-	while (m_pExportCursor->frame() < m_iExportEnd);
+	while (pSession->playHead() < m_iExportEnd);
 
 	// Stop export (freewheeling)...
 	jack_set_freewheel(m_pJackClient, 0);
@@ -794,9 +803,9 @@ bool qtractorAudioEngine::fileExport ( const QString& sExportPath,
 	// May close the file...
 	m_pExportFile->close();
 
-	// We'll have no need for special cursor anymore...
-	delete m_pExportCursor;
-	m_pExportCursor = NULL;
+	// Restore session at ease...
+	pSession->setLoop(iLoopStart, iLoopEnd);
+	pSession->setPlayHead(iPlayHead);
 
 	// Free up things here.
 	delete m_pExportFile;
@@ -804,9 +813,36 @@ bool qtractorAudioEngine::fileExport ( const QString& sExportPath,
 	m_pExportFile  = NULL;
 	m_iExportStart = 0;
 	m_iExportEnd   = 0;
+	m_iExportSync  = 0;
 
 	// Done successfulle.
 	return true;
+}
+
+
+// Direct sync method (needed for export)
+void qtractorAudioEngine::syncExport (void)
+{
+	qtractorSession *pSession = session();
+	if (pSession == NULL)
+		return;
+
+	qtractorSessionCursor *pAudioCursor = sessionCursor();
+	if (pAudioCursor == NULL)
+		return;
+
+	int iTrack = 0;
+	for (qtractorTrack *pTrack = pSession->tracks().first();
+			pTrack; pTrack = pTrack->next()) {
+		if (pTrack->trackType() == qtractorTrack::Audio) {
+			qtractorAudioClip *pAudioClip
+				= static_cast<qtractorAudioClip *> (
+					pAudioCursor->clip(iTrack));
+			if (pAudioClip)
+				pAudioClip->syncExport();
+		}
+		iTrack++;
+	}
 }
 
 
