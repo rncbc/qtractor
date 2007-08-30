@@ -143,6 +143,15 @@ void qtractorExportForm::setExportType ( qtractorTrack::TrackType exportType )
 		}
 	}
 
+	// Grab export file history, one that might me useful...
+	m_ui.ExportPathComboBox->setObjectName(
+		sExportType + m_ui.ExportPathComboBox->objectName());
+	if (pMainForm) {
+		qtractorOptions *pOptions = pMainForm->options();
+		if (pOptions)
+			pOptions->loadComboBoxHistory(m_ui.ExportPathComboBox);
+	}
+
 	// Fill in the output bus names list...
 	m_ui.ExportBusNameComboBox->clear();
 	if (pEngine) {
@@ -199,31 +208,49 @@ void qtractorExportForm::accept (void)
 	if (pSession == NULL)
 		return;
 
-	switch (m_exportType) {
+	const QString& sExportPath = m_ui.ExportPathComboBox->currentText();
 
+	switch (m_exportType) {
 	case qtractorTrack::Audio:
-	{
+	{	// Audio file export...
 		qtractorAudioEngine *pAudioEngine = pSession->audioEngine();
 		if (pAudioEngine) {
 			// Get the export bus by name...
 			qtractorAudioBus *pExportBus
 				= static_cast<qtractorAudioBus *> (pAudioEngine->findBus(
 					m_ui.ExportBusNameComboBox->currentText()));
+			// Log this event...
+			pMainForm->appendMessages(
+				tr("Audio file export: \"%1\" started...")
+				.arg(sExportPath));
 			// Do the export as commanded...
-			pAudioEngine->fileExport(
-				m_ui.ExportPathComboBox->currentText(),
+			if (pAudioEngine->fileExport(
+				sExportPath,
 				m_ui.ExportStartSpinBox->value(),
 				m_ui.ExportEndSpinBox->value(),
-				pExportBus
-			);
+				pExportBus)) {
+				// Log the success...
+				pMainForm->appendMessages(
+					tr("Audio file export: \"%1\" complete.")
+					.arg(sExportPath));
+			} else {
+				// Log the failure...
+				pMainForm->appendMessagesError(
+					tr("Audio file export:\n\n\"%1\"\n\nfailed.")
+					.arg(sExportPath));
+			}
 		}
 		break;
 	}
-
 	case qtractorTrack::Midi:
 	default:
 		break;
 	}
+
+	// Save other conveniency options...
+	qtractorOptions *pOptions = pMainForm->options();
+	if (pOptions)
+		pOptions->saveComboBoxHistory(m_ui.ExportPathComboBox);
 
 	// Just go with dialog acceptance.
 	QDialog::accept();
@@ -278,21 +305,22 @@ void qtractorExportForm::browseExportPath (void)
 		return;
 
 	// Enforce default file extension...
-	if (QFileInfo(sExportPath).suffix() != sExportExt)
+	if (QFileInfo(sExportPath).suffix() != sExportExt) {
 		sExportPath += '.' + sExportExt;
-
-	// Check wether the file already exists...
-	if (QFileInfo(sExportPath).exists()) {
-		if (QMessageBox::warning(this,
-			tr("Warning") + " - " QTRACTOR_TITLE,
-			tr("The file already exists:\n\n"
-			"\"%1\"\n\n"
-			"Do you want to replace it?")
-			.arg(sExportPath),
-			tr("Replace"), tr("Cancel")) > 0)
-			return;
+		// Check wether the file already exists...
+		if (QFileInfo(sExportPath).exists()) {
+			if (QMessageBox::warning(this,
+				tr("Warning") + " - " QTRACTOR_TITLE,
+				tr("The file already exists:\n\n"
+				"\"%1\"\n\n"
+				"Do you want to replace it?")
+				.arg(sExportPath),
+				tr("Replace"), tr("Cancel")) > 0)
+				return;
+		}
 	}
 
+	// Finallly set as wanted...
 	m_ui.ExportPathComboBox->setEditText(sExportPath);
 	m_ui.ExportPathComboBox->setFocus();
 
@@ -312,18 +340,18 @@ void qtractorExportForm::rangeChanged (void)
 		return;
 
 	if (m_ui.SessionRangeRadioButton->isChecked()) {
-		m_ui.ExportStartSpinBox->setValue(0);
-		m_ui.ExportEndSpinBox->setValue(pSession->sessionLength());
+		m_ui.ExportStartSpinBox->setValue(0, false);
+		m_ui.ExportEndSpinBox->setValue(pSession->sessionLength(), false);
 	}
 	else
 	if (m_ui.LoopRangeRadioButton->isChecked()) {
-		m_ui.ExportStartSpinBox->setValue(pSession->loopStart());
-		m_ui.ExportEndSpinBox->setValue(pSession->loopEnd());
+		m_ui.ExportStartSpinBox->setValue(pSession->loopStart(), false);
+		m_ui.ExportEndSpinBox->setValue(pSession->loopEnd(), false);
 	}
 	else
 	if (m_ui.EditRangeRadioButton->isChecked()) {
-		m_ui.ExportStartSpinBox->setValue(pSession->editHead());
-		m_ui.ExportEndSpinBox->setValue(pSession->editTail());
+		m_ui.ExportStartSpinBox->setValue(pSession->editHead(), false);
+		m_ui.ExportEndSpinBox->setValue(pSession->editTail(), false);
 	}
 
 	stabilizeForm();

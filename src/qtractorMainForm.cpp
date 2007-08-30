@@ -2543,6 +2543,10 @@ void qtractorMainForm::stabilizeForm (void)
 	m_statusItems[StatusLoop]->setPalette(*m_paletteItems[
 		bLooping ? PaletteGreen : PaletteNone]);
 
+	// Special export enablement...
+	m_ui.fileExportAudioAction->setEnabled(!bPlaying);
+	m_ui.fileExportMidiAction->setEnabled(!bPlaying);
+
 	// Transport stuff...
 	bEnabled = (!bPlaying || !bRecording);
 	m_ui.transportBackwardAction->setEnabled(bEnabled && m_iPlayHead > 0);
