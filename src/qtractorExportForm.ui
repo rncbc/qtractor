@@ -1,0 +1,403 @@
+<ui version="4.0" >
+ <author>rncbc aka Rui Nuno Capela</author>
+ <comment>qtractor - An Audio/MIDI multi-track sequencer.
+
+   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
+
+   This program is free software; you can redistribute it and/or
+   modify it under the terms of the GNU General Public License
+   as published by the Free Software Foundation; either version 2
+   of the License, or (at your option) any later version.
+
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+
+   You should have received a copy of the GNU General Public License along
+   with this program; if not, write to the Free Software Foundation, Inc.,
+   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
+  </comment>
+ <class>qtractorExportForm</class>
+ <widget class="QDialog" name="qtractorExportForm" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>368</width>
+    <height>306</height>
+   </rect>
+  </property>
+  <property name="focusPolicy" >
+   <enum>Qt::StrongFocus</enum>
+  </property>
+  <property name="windowTitle" >
+   <string>Export - Qtractor</string>
+  </property>
+  <property name="windowIcon" >
+   <iconset resource="../icons/qtractor.qrc" >:/icons/qtractor.png</iconset>
+  </property>
+  <layout class="QGridLayout" >
+   <item row="0" column="0" colspan="2" >
+    <widget class="QLabel" name="ExportPathTextLabel" >
+     <property name="text" >
+      <string>&amp;File:</string>
+     </property>
+     <property name="buddy" >
+      <cstring>ExportPathComboBox</cstring>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0" colspan="2" >
+    <layout class="QHBoxLayout" >
+     <property name="spacing" >
+      <number>4</number>
+     </property>
+     <property name="margin" >
+      <number>0</number>
+     </property>
+     <item>
+      <widget class="QComboBox" name="ExportPathComboBox" >
+       <property name="minimumSize" >
+        <size>
+         <width>320</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="toolTip" >
+        <string>Export file name</string>
+       </property>
+       <property name="editable" >
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="ExportPathToolButton" >
+       <property name="minimumSize" >
+        <size>
+         <width>22</width>
+         <height>22</height>
+        </size>
+       </property>
+       <property name="maximumSize" >
+        <size>
+         <width>24</width>
+         <height>24</height>
+        </size>
+       </property>
+       <property name="focusPolicy" >
+        <enum>Qt::TabFocus</enum>
+       </property>
+       <property name="toolTip" >
+        <string>Browse export file name</string>
+       </property>
+       <property name="text" >
+        <string>...</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item rowspan="2" row="2" column="0" >
+    <widget class="QGroupBox" name="ExportRangeGroupBox" >
+     <property name="title" >
+      <string>Range</string>
+     </property>
+     <layout class="QGridLayout" >
+      <item row="0" column="0" colspan="3" >
+       <widget class="QRadioButton" name="SessionRangeRadioButton" >
+        <property name="toolTip" >
+         <string>Session range</string>
+        </property>
+        <property name="text" >
+         <string>&amp;Session</string>
+        </property>
+        <property name="checked" >
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0" colspan="3" >
+       <widget class="QRadioButton" name="LoopRangeRadioButton" >
+        <property name="toolTip" >
+         <string>Loop range</string>
+        </property>
+        <property name="text" >
+         <string>&amp;Loop</string>
+        </property>
+        <property name="checked" >
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0" colspan="3" >
+       <widget class="QRadioButton" name="EditRangeRadioButton" >
+        <property name="toolTip" >
+         <string>Edit range</string>
+        </property>
+        <property name="text" >
+         <string>&amp;Edit</string>
+        </property>
+        <property name="checked" >
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0" colspan="3" >
+       <widget class="QRadioButton" name="CustomRangeRadioButton" >
+        <property name="toolTip" >
+         <string>Custom range</string>
+        </property>
+        <property name="text" >
+         <string>&amp;Custom</string>
+        </property>
+        <property name="checked" >
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item rowspan="2" row="4" column="0" >
+       <spacer>
+        <property name="orientation" >
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeType" >
+         <enum>QSizePolicy::Minimum</enum>
+        </property>
+        <property name="sizeHint" >
+         <size>
+          <width>16</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="4" column="1" >
+       <widget class="QLabel" name="ExportStartTextLLabel" >
+        <property name="text" >
+         <string>St&amp;art:</string>
+        </property>
+        <property name="buddy" >
+         <cstring>ExportStartSpinBox</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="2" >
+       <widget class="qtractorSpinBox" name="ExportStartSpinBox" >
+        <property name="sizePolicy" >
+         <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize" >
+         <size>
+          <width>100</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="toolTip" >
+         <string>Clip start</string>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="1" >
+       <widget class="QLabel" name="ExportEndTextLLabel" >
+        <property name="text" >
+         <string>En&amp;d:</string>
+        </property>
+        <property name="buddy" >
+         <cstring>ExportEndSpinBox</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="2" >
+       <widget class="qtractorSpinBox" name="ExportEndSpinBox" >
+        <property name="sizePolicy" >
+         <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize" >
+         <size>
+          <width>100</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="toolTip" >
+         <string>Clip offset</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="2" column="1" >
+    <widget class="QGroupBox" name="ExportBusGroup" >
+     <property name="title" >
+      <string>Output</string>
+     </property>
+     <layout class="QHBoxLayout" >
+      <property name="spacing" >
+       <number>4</number>
+      </property>
+      <property name="margin" >
+       <number>8</number>
+      </property>
+      <item>
+       <widget class="QComboBox" name="ExportBusNameComboBox" >
+        <property name="sizePolicy" >
+         <sizepolicy vsizetype="Fixed" hsizetype="MinimumExpanding" >
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="toolTip" >
+         <string>Ouput bus name</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="3" column="1" >
+    <widget class="QGroupBox" name="FormatGroupBox" >
+     <property name="title" >
+      <string>Format</string>
+     </property>
+     <layout class="QVBoxLayout" >
+      <property name="spacing" >
+       <number>6</number>
+      </property>
+      <property name="margin" >
+       <number>9</number>
+      </property>
+      <item>
+       <widget class="QRadioButton" name="FramesRadioButton" >
+        <property name="toolTip" >
+         <string>Frames</string>
+        </property>
+        <property name="text" >
+         <string>&amp;Frames</string>
+        </property>
+        <property name="checked" >
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QRadioButton" name="TimeRadioButton" >
+        <property name="toolTip" >
+         <string>Time (hh:mm:ss.zzz)</string>
+        </property>
+        <property name="text" >
+         <string>&amp;Time</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QRadioButton" name="BbtRadioButton" >
+        <property name="toolTip" >
+         <string>BBT (bars.beats.ticks)</string>
+        </property>
+        <property name="text" >
+         <string>&amp;BBT</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer>
+        <property name="orientation" >
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeHint" >
+         <size>
+          <width>20</width>
+          <height>40</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="4" column="0" colspan="2" >
+    <layout class="QHBoxLayout" >
+     <property name="spacing" >
+      <number>4</number>
+     </property>
+     <property name="margin" >
+      <number>0</number>
+     </property>
+     <item>
+      <spacer>
+       <property name="orientation" >
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeType" >
+        <enum>QSizePolicy::Expanding</enum>
+       </property>
+       <property name="sizeHint" >
+        <size>
+         <width>20</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="OkPushButton" >
+       <property name="text" >
+        <string>OK</string>
+       </property>
+       <property name="icon" >
+        <iconset resource="../icons/qtractor.qrc" >:/icons/formAccept.png</iconset>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="CancelPushButton" >
+       <property name="text" >
+        <string>Cancel</string>
+       </property>
+       <property name="icon" >
+        <iconset resource="../icons/qtractor.qrc" >:/icons/formReject.png</iconset>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <layoutdefault spacing="4" margin="8" />
+ <customwidgets>
+  <customwidget>
+   <class>qtractorSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qtractorSpinBox.h</header>
+  </customwidget>
+ </customwidgets>
+ <tabstops>
+  <tabstop>ExportPathComboBox</tabstop>
+  <tabstop>ExportPathToolButton</tabstop>
+  <tabstop>SessionRangeRadioButton</tabstop>
+  <tabstop>LoopRangeRadioButton</tabstop>
+  <tabstop>EditRangeRadioButton</tabstop>
+  <tabstop>CustomRangeRadioButton</tabstop>
+  <tabstop>ExportStartSpinBox</tabstop>
+  <tabstop>ExportEndSpinBox</tabstop>
+  <tabstop>ExportBusNameComboBox</tabstop>
+  <tabstop>FramesRadioButton</tabstop>
+  <tabstop>TimeRadioButton</tabstop>
+  <tabstop>BbtRadioButton</tabstop>
+  <tabstop>OkPushButton</tabstop>
+  <tabstop>CancelPushButton</tabstop>
+ </tabstops>
+ <resources>
+  <include location="../icons/qtractor.qrc" />
+ </resources>
+ <connections/>
+</ui>

@@ -104,6 +104,8 @@ public slots:
 	void fileSave();
 	void fileSaveAs();
 	void fileProperties();
+	void fileExportAudio();
+	void fileExportMidi();
 	void fileExit();
 
 	void editUndo();

@@ -1,4 +1,4 @@
-// qtractorClipForm.h
+// qtractorExportForm.h
 //
 // ui.h extension file, included from the uic-generated form implementation.
 /****************************************************************************
@@ -20,58 +20,53 @@
 
 *****************************************************************************/
 
-#ifndef __qtractorClipForm_h
-#define __qtractorClipForm_h
+#ifndef __qtractorExportForm_h
+#define __qtractorExportForm_h
 
-#include "ui_qtractorClipForm.h"
+#include "ui_qtractorExportForm.h"
 
-#include "qtractorClip.h"
+#include "qtractorTrack.h"
 
 
 //----------------------------------------------------------------------------
-// qtractorClipForm -- UI wrapper form.
+// qtractorExportForm -- UI wrapper form.
 
-class qtractorClipForm : public QDialog
+class qtractorExportForm : public QDialog
 {
 	Q_OBJECT
 
 public:
 
 	// Constructor.
-	qtractorClipForm(QWidget *pParent = 0, Qt::WindowFlags wflags = 0);
+	qtractorExportForm(QWidget *pParent = 0, Qt::WindowFlags wflags = 0);
 	// Destructor.
-	~qtractorClipForm();
+	~qtractorExportForm();
 
-	void setClip(qtractorClip *pClip);
-	qtractorClip *clip() const;
+	void setExportType(qtractorTrack::TrackType exportType);
+	qtractorTrack::TrackType exportType() const;
 
 public slots:
 
 	void accept();
 	void reject();
-	void changed();
+	void browseExportPath();
+	void rangeChanged();
 	void formatChanged();
+	void valueChanged();
 	void stabilizeForm();
-
-protected:
-
-	qtractorClip::FadeType fadeTypeFromIndex(int iIndex) const;
-	int indexFromFadeType(qtractorClip::FadeType fadeType) const;
 
 private:
 
 	// The Qt-designer UI struct...
-	Ui::qtractorClipForm m_ui;
+	Ui::qtractorExportForm m_ui;
 
 	// Instance variables...
-	qtractorClip      *m_pClip;
+	qtractorTrack::TrackType m_exportType;
 	qtractorTimeScale *m_pTimeScale;
-
-	int m_iDirtyCount;
 };
 
 
-#endif	// __qtractorClipForm_h
+#endif	// __qtractorExportForm_h
 
 
-// end of qtractorClipForm.h
+// end of qtractorExportForm.h

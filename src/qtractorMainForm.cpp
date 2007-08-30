@@ -52,6 +52,7 @@
 
 #include "qtractorMidiEditor.h"
 
+#include "qtractorExportForm.h"
 #include "qtractorSessionForm.h"
 #include "qtractorOptionsForm.h"
 #include "qtractorConnectForm.h"
@@ -380,9 +381,16 @@ qtractorMainForm::qtractorMainForm (
 	QObject::connect(m_ui.filePropertiesAction,
 		SIGNAL(triggered(bool)),
 		SLOT(fileProperties()));
+	QObject::connect(m_ui.fileExportAudioAction,
+		SIGNAL(triggered(bool)),
+		SLOT(fileExportAudio()));
+	QObject::connect(m_ui.fileExportMidiAction,
+		SIGNAL(triggered(bool)),
+		SLOT(fileExportMidi()));
 	QObject::connect(m_ui.fileExitAction,
 		SIGNAL(triggered(bool)),
 		SLOT(fileExit()));
+
 	QObject::connect(m_ui.editUndoAction,
 		SIGNAL(triggered(bool)),
 		SLOT(editUndo()));
@@ -425,6 +433,7 @@ qtractorMainForm::qtractorMainForm (
 	QObject::connect(m_ui.editClipAction,
 		SIGNAL(triggered(bool)),
 		SLOT(editClip()));
+
 	QObject::connect(m_ui.trackAddAction,
 		SIGNAL(triggered(bool)),
 		SLOT(trackAdd()));
@@ -440,6 +449,7 @@ qtractorMainForm::qtractorMainForm (
 	QObject::connect(m_ui.trackImportMidiAction,
 		SIGNAL(triggered(bool)),
 		SLOT(trackImportMidi()));
+
 	QObject::connect(m_ui.viewMenubarAction,
 		SIGNAL(triggered(bool)),
 		SLOT(viewMenubar(bool)));
@@ -491,6 +501,7 @@ qtractorMainForm::qtractorMainForm (
 	QObject::connect(m_ui.viewOptionsAction,
 		SIGNAL(triggered(bool)),
 		SLOT(viewOptions()));
+
 	QObject::connect(m_ui.transportBackwardAction,
 		SIGNAL(triggered(bool)),
 		SLOT(transportBackward()));
@@ -515,6 +526,7 @@ qtractorMainForm::qtractorMainForm (
 	QObject::connect(m_ui.transportFollowAction,
 		SIGNAL(triggered(bool)),
 		SLOT(transportFollow()));
+
 	QObject::connect(m_ui.helpAboutAction,
 		SIGNAL(triggered(bool)),
 		SLOT(helpAbout()));
@@ -1408,6 +1420,32 @@ void qtractorMainForm::fileProperties (void)
 
 	// Session Properties...
 	editSession();
+}
+
+
+// Export session to audio file.
+void qtractorMainForm::fileExportAudio (void)
+{
+#ifdef CONFIG_DEBUG
+	appendMessages("qtractorMainForm::fileExportAudio()");
+#endif
+
+	qtractorExportForm exportForm(this);
+	exportForm.setExportType(qtractorTrack::Audio);
+	exportForm.exec();
+}
+
+
+// Export session to MIDI file.
+void qtractorMainForm::fileExportMidi (void)
+{
+#ifdef CONFIG_DEBUG
+	appendMessages("qtractorMainForm::fileExportMidi()");
+#endif
+
+	qtractorExportForm exportForm(this);
+	exportForm.setExportType(qtractorTrack::Midi);
+	exportForm.exec();
 }
 
 
