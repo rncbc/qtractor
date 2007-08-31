@@ -82,7 +82,11 @@ public:
 	// Special disaster recovery method.
 	void shutdown();
 
-	// Audio-export (freewheeling) state.
+	// Audio-export freewheeling (internal) state.
+	void setFreewheel(bool bFreewheel);
+	bool isFreewheel() const;
+
+	// Audio-export active state.
 	void setExporting(bool bExporting);
 	bool isExporting() const;
 
@@ -120,15 +124,17 @@ private:
 	// careful for proper loop concatenation.
 	unsigned int m_iBufferOffset;
 
-	// Audio-export (freewheeling) state.
-	bool m_bExporting;
+	// Audio-export freewheeling (internal) state.
+	bool m_bFreewheel;
 
-	// Audio-export state parameters.
+	// Audio-export (in)active state.
+	bool               m_bExporting;
 	qtractorAudioBus  *m_pExportBus;
 	qtractorAudioFile *m_pExportFile;
 	unsigned long      m_iExportStart;
 	unsigned long      m_iExportEnd;
 	unsigned int       m_iExportSync;
+	bool               m_bExportDone;
 };
 
 

@@ -165,6 +165,7 @@ public slots:
 
 	void alsaNotify();
 	void tracksClosed();
+	void updateExportMenu();
 	void updateRecentFilesMenu();
 	void addAudioFile(const QString& sFilename);
 	void activateAudioFile(const QString& sFilename);

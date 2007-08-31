@@ -200,57 +200,62 @@ qtractorTrack::TrackType qtractorExportForm::exportType (void) const
 // Accept settings (OK button slot).
 void qtractorExportForm::accept (void)
 {
+	qtractorSession  *pSession  = NULL;
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
-		return;
-
-	qtractorSession *pSession = pMainForm->session();
-	if (pSession == NULL)
-		return;
-
-	const QString& sExportPath = m_ui.ExportPathComboBox->currentText();
-
-	switch (m_exportType) {
-	case qtractorTrack::Audio:
-	{	// Audio file export...
-		qtractorAudioEngine *pAudioEngine = pSession->audioEngine();
-		if (pAudioEngine) {
-			// Get the export bus by name...
-			qtractorAudioBus *pExportBus
-				= static_cast<qtractorAudioBus *> (pAudioEngine->findBus(
-					m_ui.ExportBusNameComboBox->currentText()));
-			// Log this event...
-			pMainForm->appendMessages(
-				tr("Audio file export: \"%1\" started...")
-				.arg(sExportPath));
-			// Do the export as commanded...
-			if (pAudioEngine->fileExport(
-				sExportPath,
-				m_ui.ExportStartSpinBox->value(),
-				m_ui.ExportEndSpinBox->value(),
-				pExportBus)) {
-				// Log the success...
+	if (pMainForm)
+		pSession = pMainForm->session();
+	if (pSession) {
+		// It can take a minute...
+		m_ui.ExportPathTextLabel->setEnabled(false);
+		m_ui.ExportPathComboBox->setEnabled(false);
+		m_ui.ExportPathToolButton->setEnabled(false);
+		m_ui.ExportBusGroupBox->setEnabled(false);
+		m_ui.ExportRangeGroupBox->setEnabled(false);
+		m_ui.FormatGroupBox->setEnabled(false);
+		m_ui.OkPushButton->setEnabled(false);
+		// Carry on...
+		const QString& sExportPath = m_ui.ExportPathComboBox->currentText();
+		switch (m_exportType) {
+		case qtractorTrack::Audio: {
+			// Audio file export...
+			qtractorAudioEngine *pAudioEngine = pSession->audioEngine();
+			if (pAudioEngine) {
+				// Get the export bus by name...
+				qtractorAudioBus *pExportBus
+					= static_cast<qtractorAudioBus *> (pAudioEngine->findBus(
+						m_ui.ExportBusNameComboBox->currentText()));
+				// Log this event...
 				pMainForm->appendMessages(
-					tr("Audio file export: \"%1\" complete.")
+					tr("Audio file export: \"%1\" started...")
 					.arg(sExportPath));
-			} else {
-				// Log the failure...
-				pMainForm->appendMessagesError(
-					tr("Audio file export:\n\n\"%1\"\n\nfailed.")
-					.arg(sExportPath));
+				// Do the export as commanded...
+				if (pAudioEngine->fileExport(
+					sExportPath,
+					m_ui.ExportStartSpinBox->value(),
+					m_ui.ExportEndSpinBox->value(),
+					pExportBus)) {
+					// Log the success...
+					pMainForm->appendMessages(
+						tr("Audio file export: \"%1\" complete.")
+						.arg(sExportPath));
+				} else {
+					// Log the failure...
+					pMainForm->appendMessagesError(
+						tr("Audio file export:\n\n\"%1\"\n\nfailed.")
+						.arg(sExportPath));
+				}
 			}
+			break;
 		}
-		break;
+		case qtractorTrack::Midi:
+		default:
+			break;
+		}
+		// Save other conveniency options...
+		qtractorOptions *pOptions = pMainForm->options();
+		if (pOptions)
+			pOptions->saveComboBoxHistory(m_ui.ExportPathComboBox);
 	}
-	case qtractorTrack::Midi:
-	default:
-		break;
-	}
-
-	// Save other conveniency options...
-	qtractorOptions *pOptions = pMainForm->options();
-	if (pOptions)
-		pOptions->saveComboBoxHistory(m_ui.ExportPathComboBox);
 
 	// Just go with dialog acceptance.
 	QDialog::accept();
@@ -260,6 +265,28 @@ void qtractorExportForm::accept (void)
 // Reject settings (Cancel button slot).
 void qtractorExportForm::reject (void)
 {
+	qtractorSession  *pSession  = NULL;
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm)
+		pSession = pMainForm->session();
+	if (pSession) {
+		// It can take a minute...
+		m_ui.CancelPushButton->setEnabled(false);
+		switch (m_exportType) {
+		case qtractorTrack::Audio: {
+			// Audio file export...
+			qtractorAudioEngine *pAudioEngine = pSession->audioEngine();
+			if (pAudioEngine)
+				pAudioEngine->setExporting(false);
+			break;
+		}
+		case qtractorTrack::Midi:
+		default:
+			break;
+		}
+	}
+
+	// Bail out...
 	QDialog::reject();
 }
 
@@ -363,7 +390,7 @@ void qtractorExportForm::valueChanged (void)
 {
 	m_ui.CustomRangeRadioButton->setChecked(true);
 
-//	stabilizeForm();
+	stabilizeForm();
 }
 
 

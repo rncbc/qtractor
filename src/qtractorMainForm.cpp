@@ -537,6 +537,9 @@ qtractorMainForm::qtractorMainForm (
 	QObject::connect(m_ui.fileMenu,
 		SIGNAL(aboutToShow()),
 		SLOT(updateRecentFilesMenu()));
+	QObject::connect(m_ui.fileExportMenu,
+		SIGNAL(aboutToShow()),
+		SLOT(updateExportMenu()));
 
 	QObject::connect(m_pCommands,
 		SIGNAL(updateNotifySignal(bool)),
@@ -2543,10 +2546,6 @@ void qtractorMainForm::stabilizeForm (void)
 	m_statusItems[StatusLoop]->setPalette(*m_paletteItems[
 		bLooping ? PaletteGreen : PaletteNone]);
 
-	// Special export enablement...
-	m_ui.fileExportAudioAction->setEnabled(!bPlaying);
-	m_ui.fileExportMidiAction->setEnabled(!bPlaying);
-
 	// Transport stuff...
 	bEnabled = (!bPlaying || !bRecording);
 	m_ui.transportBackwardAction->setEnabled(bEnabled && m_iPlayHead > 0);
@@ -2689,6 +2688,34 @@ void qtractorMainForm::updateSession (void)
 	// Ah, make it stand right.
 	if (m_pTracks)
 		m_pTracks->trackView()->setFocus();
+}
+
+
+// Update the file export menu.
+void qtractorMainForm::updateExportMenu (void)
+{
+	// Special export enablement...
+	int iAudioClips = 0;
+	int iMidiClips = 0;
+	
+	if (!m_pSession->isPlaying()) {
+		for (qtractorTrack *pTrack = m_pSession->tracks().first();
+				pTrack; pTrack = pTrack->next()) {
+			switch (pTrack->trackType()) {
+			case qtractorTrack::Audio:
+				iAudioClips += pTrack->clips().count();
+				break;
+			case qtractorTrack::Midi:
+				iMidiClips += pTrack->clips().count();
+				break;
+			default:
+				break;
+			}
+		}
+	}
+
+	m_ui.fileExportAudioAction->setEnabled(iAudioClips > 0);
+	m_ui.fileExportMidiAction->setEnabled(false /* TODO: iMidiClips > 0 */);
 }
 
 

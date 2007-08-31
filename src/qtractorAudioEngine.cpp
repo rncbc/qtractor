@@ -184,7 +184,7 @@ static void qtractorAudioEngine_freewheel ( int iStarting, void *pvArg )
 	qtractorAudioEngine *pAudioEngine
 		= static_cast<qtractorAudioEngine *> (pvArg);
 
-	pAudioEngine->setExporting(bool(iStarting));
+	pAudioEngine->setFreewheel(bool(iStarting));
 }
 
 
@@ -206,15 +206,17 @@ qtractorAudioEngine::qtractorAudioEngine ( qtractorSession *pSession )
 
 	m_iBufferOffset = 0;
 
-	// Audio-export (freewheeling) state.
-	m_bExporting = false;
-
-	// Audio-export state parameters.
-	m_pExportBus    = NULL;
-	m_pExportFile   = NULL;
-	m_iExportStart  = 0;
-	m_iExportEnd    = 0;
-	m_iExportSync   = 0;
+	// Audio-export freewheeling (internal) state.
+	m_bFreewheel = false;
+	
+	// Audio-export (in)active state.
+	m_bExporting   = false;
+	m_pExportBus   = NULL;
+	m_pExportFile  = NULL;
+	m_iExportStart = 0;
+	m_iExportEnd   = 0;
+	m_iExportSync  = 0;
+	m_bExportDone  = true;
 }
 
 
@@ -445,7 +447,7 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 
 	// Are we actually freewheeling for export?...
 	// noteice that freewheeling has no RT requirements.
-	if (m_bExporting && m_pExportFile && m_pExportBus) {
+	if (m_bFreewheel && m_pExportFile && m_pExportBus) {
 		// Force/sync every audio track clips,
 		// on every couple of seconds... 
 		m_iExportSync += nframes;
@@ -466,7 +468,9 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 			if (iFrameEnd > m_iExportEnd)
 				nframes -= (iFrameEnd - m_iExportEnd);
 			m_pExportFile->write(m_pExportBus->out(), nframes);
-		}
+		}	// Are we trough?
+		else if (!m_bExportDone)
+			m_bExportDone = true;
 		// Prepare advance for next cycle...
 		pAudioCursor->seek(iFrameEnd);
 		// Done with this one export cycle...
@@ -715,6 +719,18 @@ bool qtractorAudioEngine::saveElement ( qtractorSessionDocument *pDocument,
 }
 
 
+// Audio-exporting freewheel (internal) state accessors.
+void qtractorAudioEngine::setFreewheel ( bool bFreewheel )
+{
+	m_bFreewheel = bFreewheel;
+}
+
+bool qtractorAudioEngine::isFreewheel (void) const
+{
+	return m_bFreewheel;
+}
+
+
 // Audio-exporting (freewheeling) state accessors.
 void qtractorAudioEngine::setExporting ( bool bExporting )
 {
@@ -768,11 +784,13 @@ bool qtractorAudioEngine::fileExport ( const QString& sExportPath,
 	}
 
 	// Start with fixing the export range...
+	m_bExporting   = true;
 	m_pExportBus   = pExportBus;
 	m_pExportFile  = pExportFile;
 	m_iExportStart = iExportStart;
 	m_iExportEnd   = iExportEnd;
 	m_iExportSync  = 0;
+	m_bExportDone  = false;
 
 	// We'll have to save some session parameters...
 	unsigned long iPlayHead  = pSession->playHead();
@@ -786,7 +804,7 @@ bool qtractorAudioEngine::fileExport ( const QString& sExportPath,
 	// Force sync...
 	syncExport();
 
-	// Special initialization
+	// Special initialization.
 	pSession->resetAllPlugins();
     m_iBufferOffset = 0;
 
@@ -794,8 +812,8 @@ bool qtractorAudioEngine::fileExport ( const QString& sExportPath,
 	jack_set_freewheel(m_pJackClient, 1);
 
 	// Wait for the export to end.
-	do { qtractorSession::stabilize(200); }
-	while (pSession->playHead() < m_iExportEnd);
+	while (m_bExporting && !m_bExportDone)
+		qtractorSession::stabilize(200);
 
 	// Stop export (freewheeling)...
 	jack_set_freewheel(m_pJackClient, 0);
@@ -807,16 +825,21 @@ bool qtractorAudioEngine::fileExport ( const QString& sExportPath,
 	pSession->setLoop(iLoopStart, iLoopEnd);
 	pSession->setPlayHead(iPlayHead);
 
+	// Check user cancellation...
+	bool bResult = m_bExporting;
+
 	// Free up things here.
 	delete m_pExportFile;
+	m_bExporting   = false;
 	m_pExportBus   = NULL;
 	m_pExportFile  = NULL;
 	m_iExportStart = 0;
 	m_iExportEnd   = 0;
 	m_iExportSync  = 0;
+	m_bExportDone  = true;
 
-	// Done successfulle.
-	return true;
+	// Done whether successfully.
+	return bResult;
 }
 
 

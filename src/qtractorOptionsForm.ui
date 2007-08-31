@@ -567,7 +567,7 @@
           </font>
          </property>
          <property name="title" >
-          <string>Capture</string>
+          <string>Capture / Export</string>
          </property>
          <property name="flat" >
           <bool>true</bool>
@@ -607,6 +607,9 @@
             <property name="value" >
              <number>4</number>
             </property>
+            <property name="toolTip" >
+             <string>Audio compression quality to use on capture (record) and export</string>
+            </property>
            </widget>
           </item>
           <item row="1" column="1" colspan="2" >
@@ -631,7 +634,7 @@
              </font>
             </property>
             <property name="toolTip" >
-             <string>Audio sample format to use on capture (record)</string>
+             <string>Audio sample format to use on capture (record) and export</string>
             </property>
            </widget>
           </item>
@@ -657,7 +660,7 @@
              </font>
             </property>
             <property name="toolTip" >
-             <string>Audio file type to use on capture (record)</string>
+             <string>Audio file type to use on capture (record) and export</string>
             </property>
            </widget>
           </item>
@@ -733,7 +736,7 @@
              <string>&amp;Quality:</string>
             </property>
             <property name="buddy" >
-             <cstring>AudioCaptureFormatComboBox</cstring>
+             <cstring>AudioCaptureQualitySpinBox</cstring>
             </property>
            </widget>
           </item>
@@ -899,7 +902,7 @@
           </font>
          </property>
          <property name="title" >
-          <string>Capture</string>
+          <string>Capture / Export</string>
          </property>
          <property name="flat" >
           <bool>true</bool>
@@ -967,7 +970,7 @@
              </font>
             </property>
             <property name="toolTip" >
-             <string>MIDI file format to use on capture (record)</string>
+             <string>MIDI file format to use on capture (record) and export</string>
             </property>
            </widget>
           </item>
