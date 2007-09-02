@@ -200,6 +200,21 @@ qtractorTrack::TrackType qtractorExportForm::exportType (void) const
 // Accept settings (OK button slot).
 void qtractorExportForm::accept (void)
 {
+	// Check (again) wether the file already exists...
+	const QString& sExportPath = m_ui.ExportPathComboBox->currentText();
+	if (QFileInfo(sExportPath).exists()) {
+		if (QMessageBox::warning(this,
+			tr("Warning") + " - " QTRACTOR_TITLE,
+			tr("The file already exists:\n\n"
+			"\"%1\"\n\n"
+			"Do you want to replace it?")
+			.arg(sExportPath),
+			tr("Replace"), tr("Cancel")) > 0) {
+			m_ui.ExportPathComboBox->setFocus();
+			return;
+		}
+	}
+
 	qtractorSession  *pSession  = NULL;
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm)
@@ -214,7 +229,6 @@ void qtractorExportForm::accept (void)
 		m_ui.FormatGroupBox->setEnabled(false);
 		m_ui.OkPushButton->setEnabled(false);
 		// Carry on...
-		const QString& sExportPath = m_ui.ExportPathComboBox->currentText();
 		switch (m_exportType) {
 		case qtractorTrack::Audio: {
 			// Audio file export...
@@ -247,7 +261,37 @@ void qtractorExportForm::accept (void)
 			}
 			break;
 		}
-		case qtractorTrack::Midi:
+		case qtractorTrack::Midi: {
+			// MIDI file export...
+			qtractorMidiEngine *pMidiEngine = pSession->midiEngine();
+			if (pMidiEngine) {
+				// Get the export bus by name...
+				qtractorMidiBus *pExportBus
+					= static_cast<qtractorMidiBus *> (pMidiEngine->findBus(
+						m_ui.ExportBusNameComboBox->currentText()));
+				// Log this event...
+				pMainForm->appendMessages(
+					tr("MIDI file export: \"%1\" started...")
+					.arg(sExportPath));
+				// Do the export as commanded...
+				if (pMidiEngine->fileExport(
+					sExportPath,
+					m_ui.ExportStartSpinBox->value(),
+					m_ui.ExportEndSpinBox->value(),
+					pExportBus)) {
+					// Log the success...
+					pMainForm->appendMessages(
+						tr("MIDI file export: \"%1\" complete.")
+						.arg(sExportPath));
+				} else {
+					// Log the failure...
+					pMainForm->appendMessagesError(
+						tr("MIDI file export:\n\n\"%1\"\n\nfailed.")
+						.arg(sExportPath));
+				}
+			}
+			break;
+		}
 		default:
 			break;
 		}
@@ -332,20 +376,8 @@ void qtractorExportForm::browseExportPath (void)
 		return;
 
 	// Enforce default file extension...
-	if (QFileInfo(sExportPath).suffix() != sExportExt) {
+	if (QFileInfo(sExportPath).suffix() != sExportExt)
 		sExportPath += '.' + sExportExt;
-		// Check wether the file already exists...
-		if (QFileInfo(sExportPath).exists()) {
-			if (QMessageBox::warning(this,
-				tr("Warning") + " - " QTRACTOR_TITLE,
-				tr("The file already exists:\n\n"
-				"\"%1\"\n\n"
-				"Do you want to replace it?")
-				.arg(sExportPath),
-				tr("Replace"), tr("Cancel")) > 0)
-				return;
-		}
-	}
 
 	// Finallly set as wanted...
 	m_ui.ExportPathComboBox->setEditText(sExportPath);

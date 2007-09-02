@@ -446,33 +446,34 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 		return 0;
 
 	// Are we actually freewheeling for export?...
-	// noteice that freewheeling has no RT requirements.
-	if (m_bFreewheel && m_pExportFile && m_pExportBus) {
-		// Force/sync every audio track clips,
-		// on every couple of seconds... 
-		m_iExportSync += nframes;
-		if (m_iExportSync > (sampleRate() << 1)) {
-			m_iExportSync = 0;
-			syncExport();
+	// notice that freewheeling has no RT requirements.
+	if (m_bFreewheel) {
+		// Make sure we're in a valid state...
+		if (m_pExportFile && m_pExportBus && !m_bExportDone) {
+			// Force/sync every audio clip approaching...
+			m_iExportSync += nframes;
+			if (m_iExportSync > (sampleRate() >> 3)) {
+				m_iExportSync = 0;
+				syncExport();
+			}
+			// This the legal process cycle frame range...
+			unsigned long iFrameStart = pAudioCursor->frame();
+			unsigned long iFrameEnd   = iFrameStart + nframes;
+			// Write output bus buffer to export audio file...
+			if (iFrameStart < m_iExportEnd && iFrameEnd > m_iExportStart) {
+				// Export cycle...
+				pSession->process(pAudioCursor, iFrameStart, iFrameEnd);
+				// Commit the output bus only...
+				m_pExportBus->process_commit(nframes);
+				// Write to export file...
+				if (iFrameEnd > m_iExportEnd)
+					nframes -= (iFrameEnd - m_iExportEnd);
+				m_pExportFile->write(m_pExportBus->out(), nframes);
+				// Prepare advance for next cycle...
+				pAudioCursor->seek(iFrameEnd);
+			}	// Are we trough?
+			else m_bExportDone = true;
 		}
-		// This the legal process cycle frame range...
-		unsigned long iFrameStart = pAudioCursor->frame();
-		unsigned long iFrameEnd   = iFrameStart + nframes;
-		// Write output bus buffer to export audio file...
-		if (iFrameStart < m_iExportEnd && iFrameEnd > m_iExportStart) {
-			// Export cycle...
-			pSession->process(pAudioCursor, iFrameStart, iFrameEnd);
-			// Commit the output bus only...
-			m_pExportBus->process_commit(nframes);
-			// Write to export file...
-			if (iFrameEnd > m_iExportEnd)
-				nframes -= (iFrameEnd - m_iExportEnd);
-			m_pExportFile->write(m_pExportBus->out(), nframes);
-		}	// Are we trough?
-		else if (!m_bExportDone)
-			m_bExportDone = true;
-		// Prepare advance for next cycle...
-		pAudioCursor->seek(iFrameEnd);
 		// Done with this one export cycle...
 		return 0;
 	}
@@ -854,6 +855,8 @@ void qtractorAudioEngine::syncExport (void)
 	if (pAudioCursor == NULL)
 		return;
 
+	unsigned long iFrameSync = pAudioCursor->frame() + sampleRate();
+
 	int iTrack = 0;
 	for (qtractorTrack *pTrack = pSession->tracks().first();
 			pTrack; pTrack = pTrack->next()) {
@@ -861,8 +864,11 @@ void qtractorAudioEngine::syncExport (void)
 			qtractorAudioClip *pAudioClip
 				= static_cast<qtractorAudioClip *> (
 					pAudioCursor->clip(iTrack));
-			if (pAudioClip)
+			while (pAudioClip && pAudioClip->clipStart() < iFrameSync) {
 				pAudioClip->syncExport();
+				pAudioClip = static_cast<qtractorAudioClip *> (
+					pAudioClip->next());
+			}
 		}
 		iTrack++;
 	}

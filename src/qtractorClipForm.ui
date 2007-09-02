@@ -134,7 +134,7 @@
         </property>
         <property name="minimumSize" >
          <size>
-          <width>100</width>
+          <width>120</width>
           <height>0</height>
          </size>
         </property>
@@ -155,7 +155,7 @@
         </property>
         <property name="minimumSize" >
          <size>
-          <width>100</width>
+          <width>120</width>
           <height>0</height>
          </size>
         </property>
@@ -176,7 +176,7 @@
         </property>
         <property name="minimumSize" >
          <size>
-          <width>100</width>
+          <width>120</width>
           <height>0</height>
          </size>
         </property>
@@ -281,7 +281,7 @@
        </widget>
       </item>
       <item row="1" column="0" >
-       <widget class="QLabel" name="ClipOffsetTextLLabel_2" >
+       <widget class="QLabel" name="FadeOutTextLabel" >
         <property name="minimumSize" >
          <size>
           <width>60</width>
@@ -297,7 +297,7 @@
        </widget>
       </item>
       <item row="0" column="0" >
-       <widget class="QLabel" name="FadeinTextLLabel" >
+       <widget class="QLabel" name="FadeInTextLabel" >
         <property name="minimumSize" >
          <size>
           <width>60</width>
@@ -324,7 +324,7 @@
         </property>
         <property name="minimumSize" >
          <size>
-          <width>100</width>
+          <width>120</width>
           <height>0</height>
          </size>
         </property>
@@ -345,7 +345,7 @@
         </property>
         <property name="minimumSize" >
          <size>
-          <width>100</width>
+          <width>120</width>
           <height>0</height>
          </size>
         </property>

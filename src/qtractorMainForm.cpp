@@ -2715,7 +2715,7 @@ void qtractorMainForm::updateExportMenu (void)
 	}
 
 	m_ui.fileExportAudioAction->setEnabled(iAudioClips > 0);
-	m_ui.fileExportMidiAction->setEnabled(false /* TODO: iMidiClips > 0 */);
+	m_ui.fileExportMidiAction->setEnabled(iMidiClips > 0);
 }
 
 
@@ -2904,7 +2904,9 @@ void qtractorMainForm::timerSlot (void)
 	// Currrent state...
 	bool bPlaying  = m_pSession->isPlaying();
 	long iPlayHead = (long) m_pSession->playHead();
-	
+
+	qtractorAudioEngine *pAudioEngine = m_pSession->audioEngine();
+
 	// Playhead status...
 	if (iPlayHead != (long) m_iPlayHead) {
 		m_iPlayHead = iPlayHead;
@@ -2918,11 +2920,13 @@ void qtractorMainForm::timerSlot (void)
 				(iter.next())->setPlayHead(iPlayHead);
 		}
 		if (!bPlaying && m_iTransportRolling == 0 && m_iTransportStep == 0) {
-			// Send MMC LOCATE command...
-			m_pSession->midiEngine()->sendMmcLocate(
-				m_pSession->locateFromFrame(iPlayHead));
 			// Update transport status anyway...
 			m_iTransportUpdate++;
+			// Send MMC LOCATE command...
+			if (!pAudioEngine->isFreewheel()) {
+				m_pSession->midiEngine()->sendMmcLocate(
+					m_pSession->locateFromFrame(iPlayHead));
+			}
 		}
 	}
 
@@ -2971,8 +2975,8 @@ void qtractorMainForm::timerSlot (void)
 		// Done with transport tricks.
 	} else if (m_pSession->isActivated()) {
 		// Read JACK transport state and react if out-of-sync..
-		jack_client_t *pJackClient = m_pSession->audioEngine()->jackClient();
-		if (pJackClient) {
+		jack_client_t *pJackClient = pAudioEngine->jackClient();
+		if (pJackClient && !pAudioEngine->isFreewheel()) {
 			jack_position_t pos;
 			jack_transport_state_t state
 				= jack_transport_query(pJackClient, &pos);
@@ -2988,7 +2992,7 @@ void qtractorMainForm::timerSlot (void)
 				// Check on external transport location changes;
 				// note that we'll have a doubled buffer-size guard...
 				long iDeltaFrame = (long) pos.frame - iPlayHead;
-				int iBufferSize2 = m_pSession->audioEngine()->bufferSize() << 1;
+				int iBufferSize2 = pAudioEngine->bufferSize() << 1;
 				if (labs(iDeltaFrame) > iBufferSize2) {
 					if (++m_iTransportDelta > 1) {
 						m_iTransportDelta = 0;

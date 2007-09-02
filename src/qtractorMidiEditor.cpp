@@ -203,7 +203,6 @@ bool qtractorMidiEditor::saveCopyFile ( const QString& sNewFilename,
 	unsigned short iBeatsPerBar  = (pTimeScale ? pTimeScale->beatsPerBar()  : 4);
 	unsigned short iFormat = 0;
 	unsigned short iSeq, iSeqs = 0;
-	unsigned short iTracks = 0;
 	qtractorMidiSequence **ppSeqs = NULL;
 	const QString sTrackName = QObject::tr("Track %1");
 	
@@ -218,7 +217,7 @@ bool qtractorMidiEditor::saveCopyFile ( const QString& sNewFilename,
 		ppSeqs = new qtractorMidiSequence * [iSeqs];
 		for (iSeq = 0; iSeq < iSeqs; ++iSeq) {	
 			ppSeqs[iSeq] = new qtractorMidiSequence(
-				sTrackName.arg(iTracks + 1), iSeq, iTicksPerBeat);
+				sTrackName.arg(iSeq + 1), iSeq, iTicksPerBeat);
 		}
 		if (file.readTracks(ppSeqs, iSeqs)) {
 			fTempo = file.tempo();

@@ -1178,13 +1178,9 @@ void qtractorAudioBufferThread::sync (void)
 // Bypass executive wait condition (non RT-safe).
 void qtractorAudioBufferThread::syncExport (void)
 {
-	if (m_mutex.tryLock()) {
-		m_pAudioBuffer->sync();
-		m_mutex.unlock();
-	}
-#ifdef CONFIG_DEBUG_0
-	else fprintf(stderr, "qtractorAudioBufferThread::syncExport(%p): tryLock() failed.\n", this);
-#endif
+	m_mutex.lock();
+	m_pAudioBuffer->sync();
+	m_mutex.unlock();
 }
 
 

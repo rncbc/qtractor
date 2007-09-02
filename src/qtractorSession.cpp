@@ -809,7 +809,7 @@ void qtractorSession::stabilize ( int msecs )
 	QTime t;
 	t.start();
 	while (t.elapsed() < msecs)
-		QApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
+		QApplication::processEvents(/* QEventLoop::ExcludeUserInputEvents */);
 }
 
 

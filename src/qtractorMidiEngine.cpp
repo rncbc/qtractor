@@ -1403,6 +1403,155 @@ bool qtractorMidiEngine::saveElement ( qtractorSessionDocument *pDocument,
 }
 
 
+// MIDI-export method.
+bool qtractorMidiEngine::fileExport ( const QString& sExportPath,
+	unsigned long iExportStart, unsigned long iExportEnd,
+	qtractorMidiBus *pExportBus )
+{
+	// Make sure we have an actual session cursor...
+	qtractorSession *pSession = session();
+	if (pSession == NULL)
+		return false;
+
+	// Cannot have exports longer than current session.
+	if (iExportStart >= iExportEnd)
+		iExportEnd = pSession->sessionLength();
+	if (iExportStart >= iExportEnd)
+		return false;
+
+	// We'll grab the first bus around, if none is given...
+	if (pExportBus == NULL)
+		pExportBus = static_cast<qtractorMidiBus *> (buses().first());
+	if (pExportBus == NULL)
+		return false;
+
+	unsigned short iTicksPerBeat = pSession->ticksPerBeat();
+
+	unsigned long iTimeStart = pSession->tickFromFrame(iExportStart);
+	unsigned long iTimeEnd   = pSession->tickFromFrame(iExportEnd);
+
+	unsigned short iFormat = qtractorMidiClip::defaultFormat();
+
+	unsigned short iSeq;
+	unsigned short iSeqs = 0;
+	QList<qtractorMidiSequence *> seqs;
+	qtractorMidiSequence **ppSeqs = NULL;
+	if (iFormat == 0) {
+		iSeqs  = 16;
+		ppSeqs = new qtractorMidiSequence * [iSeqs];
+		for (iSeq = 0; iSeq < iSeqs; ++iSeq) {
+			ppSeqs[iSeq] = new qtractorMidiSequence(
+				QString(), iSeq, iTicksPerBeat);
+		}
+	}
+
+	// Do the real grunt work, get eaach elligigle track
+	// and copy the events in range to be written out...
+	unsigned short iTracks = 0;
+	for (qtractorTrack *pTrack = pSession->tracks().first();
+			pTrack; pTrack = pTrack->next()) {
+		if (pTrack->trackType() != qtractorTrack::Midi)
+			continue;
+		if (pTrack->isMute() || (pSession->soloTracks() && !pTrack->isSolo()))
+			continue;
+		qtractorMidiBus *pMidiBus
+			= static_cast<qtractorMidiBus *> (pTrack->outputBus());
+		if (pMidiBus == NULL)
+			continue;
+		if (pMidiBus->alsaPort() != pExportBus->alsaPort())
+			continue;
+		// We have a target sequence, maybe reused...
+		qtractorMidiSequence *pSeq;
+		if (ppSeqs) {
+			// SMF Format 0
+			pSeq = ppSeqs[pTrack->midiChannel() & 0x0f];
+			QString sName = pSeq->name();
+			if (!sName.isEmpty())
+				sName += "; ";
+			pSeq->setName(sName + pTrack->trackName());
+		} else {
+			// SMF Format 1
+			iTracks++;
+			pSeq = new qtractorMidiSequence(
+				pTrack->trackName(), iTracks, iTicksPerBeat);
+			pSeq->setChannel(pTrack->midiChannel());
+			seqs.append(pSeq);
+		}
+		// Make this track setup...
+		if (pSeq->bank() < 0)
+			pSeq->setBank(pTrack->midiBank());
+		if (pSeq->program() < 0)
+			pSeq->setProgram(pTrack->midiProgram());
+		// Now, for every clip...
+		qtractorClip *pClip = pTrack->clips().first();
+		while (pClip && pClip->clipStart()
+			+ pClip->clipLength() < iExportStart)
+			pClip = pClip->next();
+		while (pClip && pClip->clipStart() < iExportEnd) {
+			qtractorMidiClip *pMidiClip
+				= static_cast<qtractorMidiClip *> (pClip);
+			if (pMidiClip) {
+				unsigned long iTimeClip
+					= pSession->tickFromFrame(pClip->clipStart());
+				// For each event...
+				qtractorMidiEvent *pEvent
+					= pMidiClip->sequence()->events().first();
+				while (pEvent && iTimeClip
+					+ pEvent->time() < iTimeStart)
+					pEvent = pEvent->next();
+				while (pEvent && iTimeClip
+					+ pEvent->time() + pEvent->duration() < iTimeEnd) {
+					pSeq->insertEvent(new qtractorMidiEvent(*pEvent));
+					pEvent = pEvent->next();
+				}
+			}
+			pClip = pClip->next();
+		}
+		// Have a break...
+		qtractorSession::stabilize();
+	}
+
+	// Account for the only or META info track...
+	iTracks++;
+
+	// Special on SMF Format 1...
+	if (ppSeqs == NULL) {
+		// Sanity check...
+		if (iTracks < 1)
+			return false;
+		// Number of actual track sequences...
+		iSeqs  = iTracks;
+		ppSeqs = new qtractorMidiSequence * [iSeqs];
+		QListIterator<qtractorMidiSequence *> iter(seqs);
+		ppSeqs[0] = NULL;	// META info track...
+		for (iSeq = 1; iSeq < iSeqs && iter.hasNext(); ++iSeq)
+			ppSeqs[iSeq] = iter.next();
+		// May clear it now.
+		seqs.clear();
+	}
+
+	// Prepare file for writing...
+	qtractorMidiFile file;
+	// File ready for export?
+	bool bResult = file.open(sExportPath, qtractorMidiFile::Write);
+	if (bResult) {
+		file.setTempo(pSession->tempo());
+		file.setBeatsPerBar(pSession->beatsPerBar());
+		file.writeHeader(iFormat, iTracks, iTicksPerBeat);
+		file.writeTracks(ppSeqs, iSeqs);
+		file.close();
+	}
+
+	// Free locally allocated track/sequence array.
+	for (iSeq = 0; iSeq < iSeqs; ++iSeq)
+		delete ppSeqs[iSeq];
+	delete [] ppSeqs;
+
+	// Done successfully.
+	return bResult;
+}
+
+
 //----------------------------------------------------------------------
 // class qtractorMidiBus -- Managed ALSA sequencer port set
 //

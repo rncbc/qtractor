@@ -115,6 +115,11 @@ public:
 	bool saveElement(qtractorSessionDocument *pDocument,
 		QDomElement *pElement);
 
+	// MIDI-export method.
+	bool fileExport(const QString& sExportPath,
+		unsigned long iExportStart = 0, unsigned long iExportEnd = 0,
+		qtractorMidiBus *pExportBus = NULL);
+
 protected:
 
 	// Concrete device (de)activation methods.
