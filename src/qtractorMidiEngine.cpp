@@ -1408,6 +1408,10 @@ bool qtractorMidiEngine::fileExport ( const QString& sExportPath,
 	unsigned long iExportStart, unsigned long iExportEnd,
 	qtractorMidiBus *pExportBus )
 {
+	// No similtaneous or foul exports...
+	if (!isActivated() || isPlaying())
+		return false;
+
 	// Make sure we have an actual session cursor...
 	qtractorSession *pSession = session();
 	if (pSession == NULL)
@@ -1493,6 +1497,7 @@ bool qtractorMidiEngine::fileExport ( const QString& sExportPath,
 			if (pMidiClip) {
 				unsigned long iTimeClip
 					= pSession->tickFromFrame(pClip->clipStart());
+				unsigned long iTimeOffset = iTimeClip - iTimeStart; 
 				// For each event...
 				qtractorMidiEvent *pEvent
 					= pMidiClip->sequence()->events().first();
@@ -1501,7 +1506,16 @@ bool qtractorMidiEngine::fileExport ( const QString& sExportPath,
 					pEvent = pEvent->next();
 				while (pEvent && iTimeClip
 					+ pEvent->time() + pEvent->duration() < iTimeEnd) {
-					pSeq->insertEvent(new qtractorMidiEvent(*pEvent));
+					qtractorMidiEvent *pNewEvent
+						= new qtractorMidiEvent(*pEvent);
+					pNewEvent->setTime(iTimeOffset + pEvent->time());
+					if (pNewEvent->type() == qtractorMidiEvent::NOTEON) {
+						float fGain = pMidiClip->gain(
+							pSession->frameFromTick(pEvent->time()));
+						pNewEvent->setVelocity((unsigned char)
+							(fGain * float(pEvent->velocity())) & 0x7f);
+					}
+					pSeq->insertEvent(pNewEvent);
 					pEvent = pEvent->next();
 				}
 			}

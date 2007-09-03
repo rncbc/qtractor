@@ -135,6 +135,9 @@ public:
 	void setDirty(bool bDirty);
 	bool isDirty() const;
 
+	// Compute clip gain, given current fade-in/out slopes.
+	float gain(unsigned long iOffset) const;
+
 	// Document element methods.
 	bool loadElement(qtractorSessionDocument *pDocument,
 		QDomElement *pElement);
@@ -142,9 +145,6 @@ public:
 		QDomElement *pElement);
 
 protected:
-
-	// Compute clip gain, given current fade-in/out slopes.
-	float gain(unsigned long iOffset) const;
 
 	// Virtual document element methods.
 	virtual bool loadClipElement(qtractorSessionDocument *pDocument,
