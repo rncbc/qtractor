@@ -157,12 +157,20 @@
      <addaction name="trackImportAudioAction" />
      <addaction name="trackImportMidiAction" />
     </widget>
+    <widget class="QMenu" name="trackExportMenu" >
+     <property name="title" >
+      <string>&amp;Export Tracks</string>
+     </property>
+     <addaction name="trackExportAudioAction" />
+     <addaction name="trackExportMidiAction" />
+    </widget>
     <addaction name="trackAddAction" />
     <addaction name="trackRemoveAction" />
     <addaction name="separator" />
     <addaction name="trackPropertiesAction" />
     <addaction name="separator" />
     <addaction name="trackImportMenu" />
+    <addaction name="trackExportMenu" />
    </widget>
    <widget class="QMenu" name="viewMenu" >
     <property name="title" >
@@ -262,13 +270,6 @@
       <string>Open &amp;Recent</string>
      </property>
     </widget>
-    <widget class="QMenu" name="fileExportMenu" >
-     <property name="title" >
-      <string>&amp;Export</string>
-     </property>
-     <addaction name="fileExportAudioAction" />
-     <addaction name="fileExportMidiAction" />
-    </widget>
     <addaction name="fileNewAction" />
     <addaction name="separator" />
     <addaction name="fileOpenAction" />
@@ -278,8 +279,6 @@
     <addaction name="fileSaveAsAction" />
     <addaction name="separator" />
     <addaction name="filePropertiesAction" />
-    <addaction name="separator" />
-    <addaction name="fileExportMenu" />
     <addaction name="separator" />
     <addaction name="fileExitAction" />
    </widget>
@@ -380,40 +379,6 @@
    </property>
    <property name="shortcut" >
     <string>F2</string>
-   </property>
-  </action>
-  <action name="fileExportAudioAction" >
-   <property name="icon" >
-    <iconset resource="../icons/qtractor.qrc" >:/icons/trackAudio.png</iconset>
-   </property>
-   <property name="text" >
-    <string>&amp;Audio...</string>
-   </property>
-   <property name="iconText" >
-    <string>Audio</string>
-   </property>
-   <property name="toolTip" >
-    <string>Export Audio file</string>
-   </property>
-   <property name="statusTip" >
-    <string>Export session to Audio file</string>
-   </property>
-  </action>
-  <action name="fileExportMidiAction" >
-   <property name="icon" >
-    <iconset resource="../icons/qtractor.qrc" >:/icons/trackMidi.png</iconset>
-   </property>
-   <property name="text" >
-    <string>&amp;MIDI...</string>
-   </property>
-   <property name="iconText" >
-    <string>Midi</string>
-   </property>
-   <property name="toolTip" >
-    <string>Export MIDI file</string>
-   </property>
-   <property name="statusTip" >
-    <string>Export session range to MIDI file</string>
    </property>
   </action>
   <action name="fileExitAction" >
@@ -790,6 +755,40 @@
    </property>
    <property name="statusTip" >
     <string>Import tracks from MIDI file</string>
+   </property>
+  </action>
+  <action name="trackExportAudioAction" >
+   <property name="icon" >
+    <iconset resource="../icons/qtractor.qrc" >:/icons/trackAudio.png</iconset>
+   </property>
+   <property name="text" >
+    <string>&amp;Audio...</string>
+   </property>
+   <property name="iconText" >
+    <string>Audio</string>
+   </property>
+   <property name="toolTip" >
+    <string>Export Audio file</string>
+   </property>
+   <property name="statusTip" >
+    <string>Export tracks to Audio file</string>
+   </property>
+  </action>
+  <action name="trackExportMidiAction" >
+   <property name="icon" >
+    <iconset resource="../icons/qtractor.qrc" >:/icons/trackMidi.png</iconset>
+   </property>
+   <property name="text" >
+    <string>&amp;MIDI...</string>
+   </property>
+   <property name="iconText" >
+    <string>Midi</string>
+   </property>
+   <property name="toolTip" >
+    <string>Export MIDI file</string>
+   </property>
+   <property name="statusTip" >
+    <string>Export tracks to MIDI file</string>
    </property>
   </action>
   <action name="viewMenubarAction" >

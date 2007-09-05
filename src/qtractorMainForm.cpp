@@ -381,12 +381,6 @@ qtractorMainForm::qtractorMainForm (
 	QObject::connect(m_ui.filePropertiesAction,
 		SIGNAL(triggered(bool)),
 		SLOT(fileProperties()));
-	QObject::connect(m_ui.fileExportAudioAction,
-		SIGNAL(triggered(bool)),
-		SLOT(fileExportAudio()));
-	QObject::connect(m_ui.fileExportMidiAction,
-		SIGNAL(triggered(bool)),
-		SLOT(fileExportMidi()));
 	QObject::connect(m_ui.fileExitAction,
 		SIGNAL(triggered(bool)),
 		SLOT(fileExit()));
@@ -449,6 +443,12 @@ qtractorMainForm::qtractorMainForm (
 	QObject::connect(m_ui.trackImportMidiAction,
 		SIGNAL(triggered(bool)),
 		SLOT(trackImportMidi()));
+	QObject::connect(m_ui.trackExportAudioAction,
+		SIGNAL(triggered(bool)),
+		SLOT(trackExportAudio()));
+	QObject::connect(m_ui.trackExportMidiAction,
+		SIGNAL(triggered(bool)),
+		SLOT(trackExportMidi()));
 
 	QObject::connect(m_ui.viewMenubarAction,
 		SIGNAL(triggered(bool)),
@@ -537,7 +537,7 @@ qtractorMainForm::qtractorMainForm (
 	QObject::connect(m_ui.fileMenu,
 		SIGNAL(aboutToShow()),
 		SLOT(updateRecentFilesMenu()));
-	QObject::connect(m_ui.fileExportMenu,
+	QObject::connect(m_ui.trackExportMenu,
 		SIGNAL(aboutToShow()),
 		SLOT(updateExportMenu()));
 
@@ -1426,32 +1426,6 @@ void qtractorMainForm::fileProperties (void)
 }
 
 
-// Export session to audio file.
-void qtractorMainForm::fileExportAudio (void)
-{
-#ifdef CONFIG_DEBUG
-	appendMessages("qtractorMainForm::fileExportAudio()");
-#endif
-
-	qtractorExportForm exportForm(this);
-	exportForm.setExportType(qtractorTrack::Audio);
-	exportForm.exec();
-}
-
-
-// Export session to MIDI file.
-void qtractorMainForm::fileExportMidi (void)
-{
-#ifdef CONFIG_DEBUG
-	appendMessages("qtractorMainForm::fileExportMidi()");
-#endif
-
-	qtractorExportForm exportForm(this);
-	exportForm.setExportType(qtractorTrack::Midi);
-	exportForm.exec();
-}
-
-
 // Exit application program.
 void qtractorMainForm::fileExit (void)
 {
@@ -1736,6 +1710,32 @@ void qtractorMainForm::trackImportMidi (void)
 			iClipStart);
 		m_pTracks->trackView()->ensureVisibleFrame(iClipStart);
 	}
+}
+
+
+// Export tracks to audio file.
+void qtractorMainForm::trackExportAudio (void)
+{
+#ifdef CONFIG_DEBUG
+	appendMessages("qtractorMainForm::trackExportAudio()");
+#endif
+
+	qtractorExportForm exportForm(this);
+	exportForm.setExportType(qtractorTrack::Audio);
+	exportForm.exec();
+}
+
+
+// Export tracks to MIDI file.
+void qtractorMainForm::trackExportMidi (void)
+{
+#ifdef CONFIG_DEBUG
+	appendMessages("qtractorMainForm::trackExportMidi()");
+#endif
+
+	qtractorExportForm exportForm(this);
+	exportForm.setExportType(qtractorTrack::Midi);
+	exportForm.exec();
 }
 
 
@@ -2691,7 +2691,7 @@ void qtractorMainForm::updateSession (void)
 }
 
 
-// Update the file export menu.
+// Update the track export menu.
 void qtractorMainForm::updateExportMenu (void)
 {
 	// Special export enablement...
@@ -2714,8 +2714,8 @@ void qtractorMainForm::updateExportMenu (void)
 		}
 	}
 
-	m_ui.fileExportAudioAction->setEnabled(iAudioClips > 0);
-	m_ui.fileExportMidiAction->setEnabled(iMidiClips > 0);
+	m_ui.trackExportAudioAction->setEnabled(iAudioClips > 0);
+	m_ui.trackExportMidiAction->setEnabled(iMidiClips > 0);
 }
 
 

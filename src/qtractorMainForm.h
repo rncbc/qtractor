@@ -104,8 +104,6 @@ public slots:
 	void fileSave();
 	void fileSaveAs();
 	void fileProperties();
-	void fileExportAudio();
-	void fileExportMidi();
 	void fileExit();
 
 	void editUndo();
@@ -128,6 +126,8 @@ public slots:
 	void trackProperties();
 	void trackImportAudio();
 	void trackImportMidi();
+	void trackExportAudio();
+	void trackExportMidi();
 
 	void viewMenubar(bool bOn);
 	void viewStatusbar(bool bOn);
