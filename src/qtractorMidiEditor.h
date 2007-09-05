@@ -208,6 +208,18 @@ public:
 	// Adjust edit-command result to prevent event overlapping.
 	bool adjustEditCommand(qtractorMidiEditCommand *pEditCommand);
 
+	// Tool indexes.
+	enum {
+		Quantize  = 0,
+		Transpose = 1,
+		Normalize = 2,
+		Randomize = 3,
+		Resize    = 4
+	};
+
+	// Edit tools form page selector.
+	void executeTool(int iToolIndex);
+
 	// Note map accessor.
 	static const QString noteName(unsigned char note);
 

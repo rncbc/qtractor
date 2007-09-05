@@ -32,6 +32,8 @@
 #include "qtractorMidiSequence.h"
 #include "qtractorMidiFile.h"
 
+#include "qtractorMidiToolsForm.h"
+
 #include "qtractorRubberBand.h"
 #include "qtractorTimeScale.h"
 
@@ -2229,6 +2231,16 @@ bool qtractorMidiEditor::adjustEditCommand (
 	}
 
 	return true;
+}
+
+
+
+// Edit tools form page selector.
+void qtractorMidiEditor::executeTool (int iToolIndex )
+{
+	qtractorMidiToolsForm toolsForm(this);
+	toolsForm.setToolIndex(iToolIndex);
+	toolsForm.exec();
 }
 
 

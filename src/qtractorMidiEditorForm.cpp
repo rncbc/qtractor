@@ -241,6 +241,22 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 		SIGNAL(triggered(bool)),
 		SLOT(editSelectAll()));
 
+	QObject::connect(m_ui.editToolsQuantizeAction,
+		SIGNAL(triggered(bool)),
+		SLOT(editToolsQuantize()));
+	QObject::connect(m_ui.editToolsTransposeAction,
+		SIGNAL(triggered(bool)),
+		SLOT(editToolsTranspose()));
+	QObject::connect(m_ui.editToolsNormalizeAction,
+		SIGNAL(triggered(bool)),
+		SLOT(editToolsNormalize()));
+	QObject::connect(m_ui.editToolsRandomizeAction,
+		SIGNAL(triggered(bool)),
+		SLOT(editToolsRandomize()));
+	QObject::connect(m_ui.editToolsResizeAction,
+		SIGNAL(triggered(bool)),
+		SLOT(editToolsResize()));
+
 	QObject::connect(m_ui.viewMenubarAction,
 		SIGNAL(triggered(bool)),
 		SLOT(viewMenubar(bool)));
@@ -886,6 +902,41 @@ void qtractorMidiEditorForm::editSelectAll (void)
 }
 
 
+// Quantize tool.
+void qtractorMidiEditorForm::editToolsQuantize (void)
+{
+	m_pMidiEditor->executeTool(qtractorMidiEditor::Quantize);
+}
+
+
+// Transpose tool.
+void qtractorMidiEditorForm::editToolsTranspose (void)
+{
+	m_pMidiEditor->executeTool(qtractorMidiEditor::Transpose);
+}
+
+
+// Normalize tool.
+void qtractorMidiEditorForm::editToolsNormalize (void)
+{
+	m_pMidiEditor->executeTool(qtractorMidiEditor::Normalize);
+}
+
+
+// Randomize tool.
+void qtractorMidiEditorForm::editToolsRandomize (void)
+{
+	m_pMidiEditor->executeTool(qtractorMidiEditor::Randomize);
+}
+
+
+// Rezize tool.
+void qtractorMidiEditorForm::editToolsResize (void)
+{
+	m_pMidiEditor->executeTool(qtractorMidiEditor::Resize);
+}
+
+
 //-------------------------------------------------------------------------
 // qtractorMidiEditorForm -- View Action slots.
 
@@ -1071,6 +1122,7 @@ void qtractorMidiEditorForm::stabilizeForm (void)
 	m_ui.editPasteAction->setEnabled(m_pMidiEditor->isClipboard());
 	m_ui.editDeleteAction->setEnabled(bSelected);
 	m_ui.editSelectNoneAction->setEnabled(bSelected);
+	m_ui.editToolsMenu->setEnabled(bSelected);
 
 	m_pFileNameLabel->setText(filename());
 	m_pTrackChannelLabel->setText(sTrackChannel.arg(trackChannel() + k));

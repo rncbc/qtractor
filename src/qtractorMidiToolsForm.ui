@@ -1,0 +1,875 @@
+<ui version="4.0" >
+ <author>rncbc aka Rui Nuno Capela</author>
+ <comment>qtractor - An Audio/MIDI multi-track sequencer.
+
+   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
+
+   This program is free software; you can redistribute it and/or
+   modify it under the terms of the GNU General Public License
+   as published by the Free Software Foundation; either version 2
+   of the License, or (at your option) any later version.
+
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+
+   You should have received a copy of the GNU General Public License along
+   with this program; if not, write to the Free Software Foundation, Inc.,
+   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
+  </comment>
+ <class>qtractorMidiToolsForm</class>
+ <widget class="QDialog" name="qtractorMidiToolsForm" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>400</width>
+    <height>300</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>MIDI Tools</string>
+  </property>
+  <property name="windowIcon" >
+   <iconset resource="../icons/qtractor.qrc" >:/icons/qtractorMidiEditor.png</iconset>
+  </property>
+  <layout class="QVBoxLayout" >
+   <property name="margin" >
+    <number>4</number>
+   </property>
+   <property name="spacing" >
+    <number>4</number>
+   </property>
+   <item>
+    <widget class="QTabWidget" name="ToolTabWidget" >
+     <property name="currentIndex" >
+      <number>3</number>
+     </property>
+     <widget class="QWidget" name="Quantize" >
+      <attribute name="title" >
+       <string>&amp;Quantize</string>
+      </attribute>
+      <layout class="QGridLayout" >
+       <property name="margin" >
+        <number>4</number>
+       </property>
+       <property name="spacing" >
+        <number>4</number>
+       </property>
+       <item row="0" column="0" colspan="4" >
+        <widget class="QCheckBox" name="QuantizeCheckBox" >
+         <property name="font" >
+          <font>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="toolTip" >
+          <string>Quantize selected events</string>
+         </property>
+         <property name="text" >
+          <string>&amp;Quantize</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0" >
+        <spacer>
+         <property name="orientation" >
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeType" >
+          <enum>QSizePolicy::Minimum</enum>
+         </property>
+         <property name="sizeHint" >
+          <size>
+           <width>16</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="1" column="1" >
+        <widget class="QCheckBox" name="QuantizeTimeCheckBox" >
+         <property name="text" >
+          <string>&amp;Time:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="2" >
+        <widget class="QComboBox" name="QuantizeTimeComboBox" >
+         <property name="toolTip" >
+          <string>Quantize time</string>
+         </property>
+         <item>
+          <property name="text" >
+           <string>Beat</string>
+          </property>
+         </item>
+         <item>
+          <property name="text" >
+           <string>Beat/2</string>
+          </property>
+         </item>
+         <item>
+          <property name="text" >
+           <string>Beat/4</string>
+          </property>
+         </item>
+         <item>
+          <property name="text" >
+           <string>Beat/8</string>
+          </property>
+         </item>
+         <item>
+          <property name="text" >
+           <string>Beat/16</string>
+          </property>
+         </item>
+         <item>
+          <property name="text" >
+           <string>Beat/32</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="1" column="3" >
+        <spacer>
+         <property name="orientation" >
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" >
+          <size>
+           <width>16</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="2" column="1" >
+        <widget class="QCheckBox" name="QuantizeDurationCheckBox" >
+         <property name="text" >
+          <string>&amp;Duration:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="2" >
+        <widget class="QComboBox" name="QuantizeDurationComboBox" >
+         <property name="toolTip" >
+          <string>Quantize duration</string>
+         </property>
+         <item>
+          <property name="text" >
+           <string>Beat</string>
+          </property>
+         </item>
+         <item>
+          <property name="text" >
+           <string>Beat/2</string>
+          </property>
+         </item>
+         <item>
+          <property name="text" >
+           <string>Beat/4</string>
+          </property>
+         </item>
+         <item>
+          <property name="text" >
+           <string>Beat/8</string>
+          </property>
+         </item>
+         <item>
+          <property name="text" >
+           <string>Beat/16</string>
+          </property>
+         </item>
+         <item>
+          <property name="text" >
+           <string>Beat/32</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="3" column="1" >
+        <spacer>
+         <property name="orientation" >
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" >
+          <size>
+           <width>20</width>
+           <height>16</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="Transpose" >
+      <attribute name="title" >
+       <string>&amp;Transpose</string>
+      </attribute>
+      <layout class="QGridLayout" >
+       <property name="margin" >
+        <number>4</number>
+       </property>
+       <property name="spacing" >
+        <number>4</number>
+       </property>
+       <item row="0" column="0" colspan="6" >
+        <widget class="QCheckBox" name="TransposeCheckBox" >
+         <property name="font" >
+          <font>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="toolTip" >
+          <string>Transpose selected events</string>
+         </property>
+         <property name="text" >
+          <string>&amp;Transpose</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0" >
+        <spacer>
+         <property name="orientation" >
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeType" >
+          <enum>QSizePolicy::Minimum</enum>
+         </property>
+         <property name="sizeHint" >
+          <size>
+           <width>16</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="1" column="1" >
+        <widget class="QCheckBox" name="TransposeNoteCheckBox" >
+         <property name="text" >
+          <string>&amp;Note:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="2" >
+        <widget class="QSpinBox" name="TransposeNoteSpinBox" >
+         <property name="minimumSize" >
+          <size>
+           <width>60</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="toolTip" >
+          <string>Transpose note</string>
+         </property>
+         <property name="maximum" >
+          <number>64</number>
+         </property>
+         <property name="minimum" >
+          <number>-64</number>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="3" colspan="3" >
+        <spacer>
+         <property name="orientation" >
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" >
+          <size>
+           <width>16</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="2" column="1" >
+        <widget class="QCheckBox" name="TransposeTimeCheckBox" >
+         <property name="text" >
+          <string>&amp;Time:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="2" colspan="2" >
+        <widget class="qtractorSpinBox" name="TransposeTimeSpinBox" >
+         <property name="minimumSize" >
+          <size>
+           <width>120</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="toolTip" >
+          <string>Transpose time</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="4" >
+        <widget class="QComboBox" name="TransposeFormatComboBox" >
+         <property name="toolTip" >
+          <string>Transpose time format</string>
+         </property>
+         <item>
+          <property name="text" >
+           <string>Frames</string>
+          </property>
+         </item>
+         <item>
+          <property name="text" >
+           <string>Time</string>
+          </property>
+         </item>
+         <item>
+          <property name="text" >
+           <string>BBT</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="2" column="5" >
+        <spacer>
+         <property name="orientation" >
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" >
+          <size>
+           <width>16</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="3" column="1" >
+        <spacer>
+         <property name="orientation" >
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" >
+          <size>
+           <width>20</width>
+           <height>16</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="Normalize" >
+      <attribute name="title" >
+       <string>&amp;Normalize</string>
+      </attribute>
+      <layout class="QGridLayout" >
+       <property name="margin" >
+        <number>4</number>
+       </property>
+       <property name="spacing" >
+        <number>4</number>
+       </property>
+       <item row="0" column="0" colspan="4" >
+        <widget class="QCheckBox" name="NormalizeCheckBox" >
+         <property name="font" >
+          <font>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="toolTip" >
+          <string>Normalize selected events</string>
+         </property>
+         <property name="text" >
+          <string>&amp;Normalize</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0" >
+        <spacer>
+         <property name="orientation" >
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeType" >
+          <enum>QSizePolicy::Minimum</enum>
+         </property>
+         <property name="sizeHint" >
+          <size>
+           <width>16</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="1" column="1" >
+        <widget class="QRadioButton" name="NormalizePercentRadioButton" >
+         <property name="text" >
+          <string>&amp;Percent:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="2" >
+        <widget class="QSpinBox" name="NormalizePercentSpinBox" >
+         <property name="minimumSize" >
+          <size>
+           <width>60</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="toolTip" >
+          <string>Normalize percent</string>
+         </property>
+         <property name="suffix" >
+          <string> %</string>
+         </property>
+         <property name="maximum" >
+          <number>100</number>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="3" >
+        <spacer>
+         <property name="orientation" >
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" >
+          <size>
+           <width>16</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="2" column="1" >
+        <widget class="QRadioButton" name="NormalizeValueRadioButton" >
+         <property name="text" >
+          <string>&amp;Value:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="2" >
+        <widget class="QSpinBox" name="NormalizeValueSpinBox" >
+         <property name="minimumSize" >
+          <size>
+           <width>60</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="toolTip" >
+          <string>Normalize value</string>
+         </property>
+         <property name="maximum" >
+          <number>127</number>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="1" >
+        <spacer>
+         <property name="orientation" >
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" >
+          <size>
+           <width>20</width>
+           <height>16</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="Randomize" >
+      <attribute name="title" >
+       <string>&amp;Randomize</string>
+      </attribute>
+      <layout class="QGridLayout" >
+       <property name="margin" >
+        <number>4</number>
+       </property>
+       <property name="spacing" >
+        <number>4</number>
+       </property>
+       <item row="0" column="0" colspan="4" >
+        <widget class="QCheckBox" name="RandomizeCheckBox" >
+         <property name="font" >
+          <font>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="toolTip" >
+          <string>Randomize selected events</string>
+         </property>
+         <property name="text" >
+          <string>&amp;Randomize</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0" >
+        <spacer>
+         <property name="orientation" >
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeType" >
+          <enum>QSizePolicy::Minimum</enum>
+         </property>
+         <property name="sizeHint" >
+          <size>
+           <width>16</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="1" column="1" >
+        <widget class="QCheckBox" name="RandomizeTimeCheckBox" >
+         <property name="text" >
+          <string>&amp;Time:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="2" >
+        <widget class="QSpinBox" name="RandomizeTimeSpinBox" >
+         <property name="minimumSize" >
+          <size>
+           <width>60</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="toolTip" >
+          <string>Randomize time</string>
+         </property>
+         <property name="suffix" >
+          <string> %</string>
+         </property>
+         <property name="maximum" >
+          <number>100</number>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="3" >
+        <spacer>
+         <property name="orientation" >
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" >
+          <size>
+           <width>16</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="2" column="1" >
+        <widget class="QCheckBox" name="RandomizeDurationCheckBox" >
+         <property name="text" >
+          <string>&amp;Duration:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="2" >
+        <widget class="QSpinBox" name="RandomizeDurationSpinBox" >
+         <property name="minimumSize" >
+          <size>
+           <width>60</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="toolTip" >
+          <string>Randomize duration</string>
+         </property>
+         <property name="suffix" >
+          <string> %</string>
+         </property>
+         <property name="maximum" >
+          <number>100</number>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="1" >
+        <widget class="QCheckBox" name="RandomizeValueCheckBox" >
+         <property name="text" >
+          <string>&amp;Value:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="2" >
+        <widget class="QSpinBox" name="RandomizeValueSpinBox" >
+         <property name="minimumSize" >
+          <size>
+           <width>60</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="toolTip" >
+          <string>Randomize value</string>
+         </property>
+         <property name="suffix" >
+          <string> %</string>
+         </property>
+         <property name="maximum" >
+          <number>100</number>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="1" >
+        <spacer>
+         <property name="orientation" >
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" >
+          <size>
+           <width>20</width>
+           <height>16</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="Resize" >
+      <attribute name="title" >
+       <string>Re&amp;size</string>
+      </attribute>
+      <layout class="QGridLayout" >
+       <property name="margin" >
+        <number>4</number>
+       </property>
+       <property name="spacing" >
+        <number>4</number>
+       </property>
+       <item row="0" column="0" colspan="6" >
+        <widget class="QCheckBox" name="ResizeCheckBox" >
+         <property name="font" >
+          <font>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="toolTip" >
+          <string>Resize selected events</string>
+         </property>
+         <property name="text" >
+          <string>Re&amp;size</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0" >
+        <spacer>
+         <property name="orientation" >
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeType" >
+          <enum>QSizePolicy::Minimum</enum>
+         </property>
+         <property name="sizeHint" >
+          <size>
+           <width>16</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="1" column="1" >
+        <widget class="QCheckBox" name="ResizeDurationCheckBox" >
+         <property name="text" >
+          <string>&amp;Duration:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="2" colspan="2" >
+        <widget class="qtractorSpinBox" name="ResizeDurationSpinBox" >
+         <property name="minimumSize" >
+          <size>
+           <width>120</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="toolTip" >
+          <string>Resize duration</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="4" >
+        <widget class="QComboBox" name="ResizeFormatComboBox" >
+         <property name="toolTip" >
+          <string>Resize duration format</string>
+         </property>
+         <item>
+          <property name="text" >
+           <string>Frames</string>
+          </property>
+         </item>
+         <item>
+          <property name="text" >
+           <string>Time</string>
+          </property>
+         </item>
+         <item>
+          <property name="text" >
+           <string>BBT</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="1" column="5" >
+        <spacer>
+         <property name="orientation" >
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" >
+          <size>
+           <width>16</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="2" column="1" >
+        <widget class="QCheckBox" name="ResizeValueCheckBox" >
+         <property name="text" >
+          <string>&amp;Value:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="2" >
+        <widget class="QSpinBox" name="ResizeValueSpinBox" >
+         <property name="minimumSize" >
+          <size>
+           <width>60</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="toolTip" >
+          <string>Resize value</string>
+         </property>
+         <property name="maximum" >
+          <number>127</number>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="3" colspan="3" >
+        <spacer>
+         <property name="orientation" >
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" >
+          <size>
+           <width>16</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="3" column="1" >
+        <spacer>
+         <property name="orientation" >
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" >
+          <size>
+           <width>20</width>
+           <height>16</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" >
+     <property name="margin" >
+      <number>0</number>
+     </property>
+     <property name="spacing" >
+      <number>4</number>
+     </property>
+     <item>
+      <spacer>
+       <property name="orientation" >
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeType" >
+        <enum>QSizePolicy::MinimumExpanding</enum>
+       </property>
+       <property name="sizeHint" >
+        <size>
+         <width>16</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="OkPushButton" >
+       <property name="text" >
+        <string>OK</string>
+       </property>
+       <property name="icon" >
+        <iconset resource="../icons/qtractor.qrc" >:/icons/formAccept.png</iconset>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="CancelPushButton" >
+       <property name="text" >
+        <string>Cancel</string>
+       </property>
+       <property name="icon" >
+        <iconset resource="../icons/qtractor.qrc" >:/icons/formReject.png</iconset>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <layoutdefault spacing="4" margin="4" />
+ <customwidgets>
+  <customwidget>
+   <class>qtractorSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qtractorSpinBox.h</header>
+  </customwidget>
+ </customwidgets>
+ <tabstops>
+  <tabstop>ToolTabWidget</tabstop>
+  <tabstop>QuantizeCheckBox</tabstop>
+  <tabstop>QuantizeTimeCheckBox</tabstop>
+  <tabstop>QuantizeTimeComboBox</tabstop>
+  <tabstop>QuantizeDurationCheckBox</tabstop>
+  <tabstop>QuantizeDurationComboBox</tabstop>
+  <tabstop>TransposeCheckBox</tabstop>
+  <tabstop>TransposeNoteCheckBox</tabstop>
+  <tabstop>TransposeNoteSpinBox</tabstop>
+  <tabstop>TransposeTimeCheckBox</tabstop>
+  <tabstop>TransposeTimeSpinBox</tabstop>
+  <tabstop>TransposeFormatComboBox</tabstop>
+  <tabstop>NormalizeCheckBox</tabstop>
+  <tabstop>NormalizePercentRadioButton</tabstop>
+  <tabstop>NormalizePercentSpinBox</tabstop>
+  <tabstop>NormalizeValueRadioButton</tabstop>
+  <tabstop>NormalizeValueSpinBox</tabstop>
+  <tabstop>RandomizeCheckBox</tabstop>
+  <tabstop>RandomizeTimeCheckBox</tabstop>
+  <tabstop>RandomizeTimeSpinBox</tabstop>
+  <tabstop>RandomizeDurationCheckBox</tabstop>
+  <tabstop>RandomizeDurationSpinBox</tabstop>
+  <tabstop>RandomizeValueCheckBox</tabstop>
+  <tabstop>RandomizeValueSpinBox</tabstop>
+  <tabstop>ResizeCheckBox</tabstop>
+  <tabstop>ResizeDurationCheckBox</tabstop>
+  <tabstop>ResizeDurationSpinBox</tabstop>
+  <tabstop>ResizeFormatComboBox</tabstop>
+  <tabstop>ResizeValueCheckBox</tabstop>
+  <tabstop>ResizeValueSpinBox</tabstop>
+  <tabstop>OkPushButton</tabstop>
+  <tabstop>CancelPushButton</tabstop>
+ </tabstops>
+ <resources>
+  <include location="../icons/qtractor.qrc" />
+ </resources>
+ <connections/>
+</ui>

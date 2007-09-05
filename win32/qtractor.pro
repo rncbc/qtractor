@@ -79,6 +79,7 @@ HEADERS += ../src/qtractorAbout.h \
            ../src/qtractorInstrumentForm.h \
            ../src/qtractorMainForm.h \
            ../src/qtractorMidiEditorForm.h \
+           ../src/qtractorMidiToolsForm.h \
            ../src/qtractorOptionsForm.h \
            ../src/qtractorPluginForm.h \
            ../src/qtractorPluginSelectForm.h \
@@ -157,6 +158,7 @@ SOURCES += ../src/main.cpp \
            ../src/qtractorInstrumentForm.cpp \
            ../src/qtractorMainForm.cpp \
            ../src/qtractorMidiEditorForm.cpp \
+           ../src/qtractorMidiToolsForm.cpp \
            ../src/qtractorOptionsForm.cpp \
            ../src/qtractorPluginForm.cpp \
            ../src/qtractorPluginSelectForm.cpp \
@@ -170,6 +172,7 @@ FORMS    = ../src/qtractorBusForm.ui \
            ../src/qtractorInstrumentForm.ui \
            ../src/qtractorMainForm.ui \
            ../src/qtractorMidiEditorForm.ui \
+           ../src/qtractorMidiToolsForm.ui \
            ../src/qtractorOptionsForm.ui \
            ../src/qtractorPluginForm.ui \
            ../src/qtractorPluginSelectForm.ui \

@@ -62,7 +62,7 @@
     </property>
     <widget class="QMenu" name="editModeMenu" >
      <property name="title" >
-      <string>&amp;Mode</string>
+      <string>Edit &amp;Mode</string>
      </property>
      <addaction name="editModeOffAction" />
      <addaction name="editModeOnAction" />
@@ -75,17 +75,29 @@
      <addaction name="editSelectInvertAction" />
      <addaction name="editSelectAllAction" />
     </widget>
+    <widget class="QMenu" name="editToolsMenu" >
+     <property name="title" >
+      <string>&amp;Tools</string>
+     </property>
+     <addaction name="editToolsQuantizeAction" />
+     <addaction name="editToolsTransposeAction" />
+     <addaction name="editToolsNormalizeAction" />
+     <addaction name="editToolsRandomizeAction" />
+     <addaction name="editToolsResizeAction" />
+    </widget>
     <addaction name="editUndoAction" />
     <addaction name="editRedoAction" />
     <addaction name="separator" />
     <addaction name="editCutAction" />
     <addaction name="editCopyAction" />
     <addaction name="editPasteAction" />
+    <addaction name="separator" />
     <addaction name="editDeleteAction" />
     <addaction name="separator" />
+    <addaction name="editModeMenu" />
     <addaction name="editSelectMenu" />
     <addaction name="separator" />
-    <addaction name="editModeMenu" />
+    <addaction name="editToolsMenu" />
    </widget>
    <widget class="QMenu" name="viewMenu" >
     <property name="title" >
@@ -385,6 +397,61 @@
 	  <property name="shortcut" >
 		  <string>Ctrl+R</string>
 	  </property>
+  </action>
+  <action name="editToolsQuantizeAction" >
+   <property name="text" >
+    <string>&amp;Quantize...</string>
+   </property>
+   <property name="toolTip" >
+    <string>Quantize</string>
+   </property>
+   <property name="statusTip" >
+    <string>Quantize selection</string>
+   </property>
+  </action>
+  <action name="editToolsTransposeAction" >
+   <property name="text" >
+    <string>&amp;Transpose...</string>
+   </property>
+   <property name="toolTip" >
+    <string>Transpose</string>
+   </property>
+   <property name="statusTip" >
+    <string>Transpose selection</string>
+   </property>
+  </action>
+  <action name="editToolsNormalizeAction" >
+   <property name="text" >
+    <string>&amp;Normalize...</string>
+   </property>
+   <property name="toolTip" >
+    <string>Normalize</string>
+   </property>
+   <property name="statusTip" >
+    <string>Normalize selection</string>
+   </property>
+  </action>
+  <action name="editToolsRandomizeAction" >
+   <property name="text" >
+    <string>&amp;Randomize...</string>
+   </property>
+   <property name="toolTip" >
+    <string>Randomize</string>
+   </property>
+   <property name="statusTip" >
+    <string>Randomize selection</string>
+   </property>
+  </action>
+  <action name="editToolsResizeAction" >
+   <property name="text" >
+    <string>Re&amp;size...</string>
+   </property>
+   <property name="toolTip" >
+    <string>Resize</string>
+   </property>
+   <property name="statusTip" >
+    <string>Resize selection</string>
+   </property>
   </action>
   <action name="viewMenubarAction" >
    <property name="checkable" >

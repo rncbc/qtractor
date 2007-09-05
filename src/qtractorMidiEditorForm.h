@@ -120,6 +120,12 @@ public slots:
 	void editSelectAll();
 	void editSelectInvert();
 
+	void editToolsQuantize();
+	void editToolsTranspose();
+	void editToolsNormalize();
+	void editToolsRandomize();
+	void editToolsResize();
+
 	void viewMenubar(bool bOn);
 	void viewStatusbar(bool bOn);
 	void viewToolbarFile(bool bOn);
@@ -159,7 +165,7 @@ protected:
 
 	// Save current clip track-channel sequence.
 	bool saveClipFile(bool bPrompt);
-	
+
 private:
 
 	// The Qt-designer UI struct...
