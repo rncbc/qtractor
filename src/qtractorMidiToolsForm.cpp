@@ -24,6 +24,8 @@
 #include "qtractorAbout.h"
 #include "qtractorMidiEditor.h"
 
+#include "qtractorMidiEditCommand.h"
+
 #include "qtractorMainForm.h"
 #include "qtractorSession.h"
 
@@ -43,6 +45,9 @@ qtractorMidiToolsForm::qtractorMidiToolsForm (
 	m_ui.setupUi(this);
 
 	m_pTimeScale = NULL;
+
+	// Reinitialize random seed.
+	::srand(::time(NULL));
 
 	qtractorSession  *pSession  = NULL;
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
@@ -180,6 +185,176 @@ void qtractorMidiToolsForm::setToolIndex ( int iToolIndex )
 int qtractorMidiToolsForm::toolIndex (void) const
 {
 	return m_ui.ToolTabWidget->currentIndex();
+}
+
+
+// Quantize method.
+unsigned long qtractorMidiToolsForm::quantize (
+	unsigned long iTicks, int iIndex ) const
+{
+	unsigned short p = qtractorTimeScale::snapFromIndex(iIndex + 1);
+	unsigned long  q = m_pTimeScale->ticksPerBeat() / p;
+	return q * ((iTicks + (q >> 1)) / q);
+}
+
+
+// Create edit command based on given selection.
+qtractorMidiEditCommand *qtractorMidiToolsForm::editCommand (
+	qtractorMidiSequence *pSeq, qtractorMidiEditSelect *pSelect	)
+{
+	// Create command, it will be handed over...
+	qtractorMidiEditCommand *pEditCommand
+		= new qtractorMidiEditCommand(pSeq, tr("none"));
+
+	// Set composite command title.
+	QStringList tools;
+	if (m_ui.QuantizeCheckBox->isChecked())
+		tools.append(tr("quantize"));
+	if (m_ui.TransposeCheckBox->isChecked())
+		tools.append(tr("transpose"));
+	if (m_ui.NormalizeCheckBox->isChecked())
+		tools.append(tr("normalize"));
+	if (m_ui.RandomizeCheckBox->isChecked())
+		tools.append(tr("randomize"));
+	if (m_ui.ResizeCheckBox->isChecked())
+		tools.append(tr("resize"));
+	pEditCommand->setName(tools.join(", "));
+
+	QListIterator<qtractorMidiEditSelect::Item *> iter(pSelect->items());
+	while (iter.hasNext()) {
+		qtractorMidiEvent *pEvent = iter.next()->event;
+		long iTime = pEvent->time();
+		long iDuration = pEvent->duration();
+		bool bPitchBend = (pEvent->type() == qtractorMidiEvent::PITCHBEND);
+		int iValue = (bPitchBend ? pEvent->pitchBend() : pEvent->value());
+		// Quantize tool...
+		if (m_ui.QuantizeCheckBox->isChecked()) {
+			tools.append(tr("quantize"));
+			if (m_ui.QuantizeTimeCheckBox->isChecked()) {
+				iTime = quantize(iTime,
+					m_ui.QuantizeTimeComboBox->currentIndex());
+			}
+			if (m_ui.QuantizeDurationCheckBox->isChecked()
+				&& pEvent->type() == qtractorMidiEvent::NOTEON) {
+				iDuration = quantize(iDuration,
+					m_ui.QuantizeDurationComboBox->currentIndex());
+			}
+			pEditCommand->resizeEventTime2(pEvent, iTime, iDuration);
+		}
+		// Transpose tool...
+		if (m_ui.TransposeCheckBox->isChecked()) {
+			tools.append(tr("transpose"));
+			int iNote = int(pEvent->note());
+			if (m_ui.TransposeNoteCheckBox->isChecked()
+				&& pEvent->type() == qtractorMidiEvent::NOTEON) {
+				iNote += m_ui.TransposeNoteSpinBox->value();
+				if (iNote < 0)
+					iNote = 0;
+				else
+				if (iNote > 127)
+					iNote = 127;
+			}
+			if (m_ui.TransposeTimeCheckBox->isChecked()) {
+				iTime += m_pTimeScale->tickFromFrame(
+					m_ui.TransposeTimeSpinBox->value());
+				if (iTime < 0)
+					iTime = 0;
+			}
+			pEditCommand->moveEvent(pEvent, iNote, iTime);
+		}
+		// Normalize tool...
+		if (m_ui.NormalizeCheckBox->isChecked()) {
+			tools.append(tr("normalize"));
+			int p = 0, q = 0;
+			if (m_ui.NormalizePercentRadioButton->isChecked()) {
+				p = m_ui.NormalizePercentSpinBox->value();
+				q = 100;
+			}
+			else
+			if (m_ui.NormalizeValueRadioButton->isChecked()) {
+				p = m_ui.NormalizeValueSpinBox->value();
+				q = (bPitchBend ? 8192 : 128);
+			}
+			if (q > 0) {
+				iValue = (iValue * p) / q;
+				if (bPitchBend) {
+					if (iValue > +8191)
+						iValue = +8191;
+					else
+					if (iValue < -8191)
+						iValue = -8191;
+				} else {
+					if (iValue > 127)
+						iValue = 127;
+					else
+					if (iValue < 0)
+						iValue = 0;
+				}
+			}
+			pEditCommand->resizeEventValue(pEvent, iValue);
+		}
+		// Randomize tool...
+		if (m_ui.RandomizeCheckBox->isChecked()) {
+			tools.append(tr("randomize"));
+			int p, q = m_pTimeScale->ticksPerBeat();
+			if (m_ui.RandomizeTimeCheckBox->isChecked()) {
+				p = m_ui.RandomizeTimeSpinBox->value();
+				if (p > 0) {
+					iTime += (p * (q - (::rand() % (q << 1)))) / 100;
+					if (iTime < 0)
+						iTime = 0;
+					pEditCommand->resizeEventTime(pEvent, iTime);
+				}
+			}
+			if (m_ui.RandomizeDurationCheckBox->isChecked()) {
+				p = m_ui.RandomizeDurationSpinBox->value();
+				if (p > 0) {
+					iDuration += (p * (q - (::rand() % (q << 1)))) / 100;
+					if (iDuration < 0)
+						iDuration = 0;
+					pEditCommand->resizeEventDuration(pEvent, iDuration);
+				}
+			}
+			if (m_ui.RandomizeValueCheckBox->isChecked()) {
+				p = m_ui.RandomizeValueSpinBox->value();
+				q = (bPitchBend ? 8192 : 128);
+				if (p > 0) {
+					iValue += (p * (q - (::rand() % (q << 1)))) / 100;
+					if (bPitchBend) {
+						if (iValue > +8191)
+							iValue = +8191;
+						else
+						if (iValue < -8191)
+							iValue = -8191;
+					} else {
+						if (iValue > 127)
+							iValue = 127;
+						else
+						if (iValue < 0)
+							iValue = 0;
+					}
+					pEditCommand->resizeEventValue(pEvent, iValue);
+				}
+			}
+		}
+		// Resize tool...
+		if (m_ui.ResizeCheckBox->isChecked()) {
+			tools.append(tr("resize"));
+			if (m_ui.ResizeDurationCheckBox->isChecked()) {
+				iDuration = m_pTimeScale->tickFromFrame(
+					m_ui.ResizeDurationSpinBox->value());
+				pEditCommand->resizeEventDuration(pEvent, iDuration);
+			}
+			if (m_ui.ResizeValueCheckBox->isChecked()) {
+				iValue = m_ui.ResizeValueSpinBox->value();
+				if (bPitchBend) iValue <<= 6; // WTF?
+				pEditCommand->resizeEventValue(pEvent, iValue);
+			}
+		}
+	}
+
+	// Done.
+	return pEditCommand;
 }
 
 

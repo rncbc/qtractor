@@ -220,6 +220,9 @@ public:
 	// Edit tools form page selector.
 	void executeTool(int iToolIndex);
 
+	// Command list accessor.
+	qtractorCommandList *commands() const;
+
 	// Note map accessor.
 	static const QString noteName(unsigned char note);
 

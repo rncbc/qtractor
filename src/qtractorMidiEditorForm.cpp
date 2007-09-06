@@ -441,7 +441,7 @@ bool qtractorMidiEditorForm::queryClose (void)
 #ifndef QTRACTOR_TEST
 	// Try to save current editor view state...
 	if (bQueryClose && isVisible()) {
-		qtractorOptions *pOptions = NULL;
+		qtractorOptions  *pOptions  = NULL;
 		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 		if (pMainForm)
 			pOptions = pMainForm->options();
@@ -491,7 +491,7 @@ void qtractorMidiEditorForm::closeEvent ( QCloseEvent *pCloseEvent )
 		if (pMainForm)
 			pMainForm->removeEditor(m_pMidiEditor);
 		// Should always (re)open the clip...
-		if (m_pMidiClip) {
+		if (m_pMidiClip && m_pMidiClip->isDirty()) {
 			m_pMidiClip->openMidiFile(
 				m_pMidiClip->filename(),
 				m_pMidiClip->trackChannel());

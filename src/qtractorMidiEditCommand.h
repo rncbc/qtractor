@@ -55,6 +55,7 @@ public:
 		InsertEvent,
 		MoveEvent,
 		ResizeEventTime,
+		ResizeEventTime2,
 		ResizeEventDuration,
 		ResizeEventValue,
 		RemoveEvent
@@ -65,7 +66,9 @@ public:
 	void moveEvent(qtractorMidiEvent *pEvent,
 		int iNote, unsigned long iTime);
 	void resizeEventTime(qtractorMidiEvent *pEvent,
-		unsigned long iTime, unsigned long iDuration = 0);
+		unsigned long iTime);
+	void resizeEventTime2(qtractorMidiEvent *pEvent,
+		unsigned long iTime, unsigned long iDuration);
 	void resizeEventDuration(qtractorMidiEvent *pEvent,
 		unsigned long iDuration);
 	void resizeEventValue(qtractorMidiEvent *pEvent, int iValue);

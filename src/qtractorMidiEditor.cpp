@@ -1936,7 +1936,7 @@ void qtractorMidiEditor::executeDragResize ( qtractorScrollView *pScrollView,
 				pEvent->setDuration(iDuration);
 				pEditCommand->insertEvent(pEvent);
 			} else {
-				pEditCommand->resizeEventTime(pEvent, iTime, iDuration);
+				pEditCommand->resizeEventTime2(pEvent, iTime, iDuration);
 			}
 			m_last.note = pEvent->note();
 		//	m_last.duration = iDuration;
@@ -2236,12 +2236,25 @@ bool qtractorMidiEditor::adjustEditCommand (
 
 
 // Edit tools form page selector.
-void qtractorMidiEditor::executeTool (int iToolIndex )
+void qtractorMidiEditor::executeTool ( int iToolIndex )
 {
 	qtractorMidiToolsForm toolsForm(this);
 	toolsForm.setToolIndex(iToolIndex);
-	toolsForm.exec();
+	if (toolsForm.exec()) {
+		qtractorMidiEditCommand *pEditCommand
+			= toolsForm.editCommand(m_pSeq, &m_select);
+		if (m_pCommands->exec(pEditCommand))
+			adjustEditCommand(pEditCommand);
+	}		
 }
+
+
+// Command list accessor.
+qtractorCommandList *qtractorMidiEditor::commands (void) const
+{
+	return m_pCommands;
+}
+
 
 
 // Command execution notification slot.

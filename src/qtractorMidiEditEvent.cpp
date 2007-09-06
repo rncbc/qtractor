@@ -451,6 +451,10 @@ void qtractorMidiEditEvent::mousePressEvent ( QMouseEvent *pMouseEvent )
 	// Process mouse press...
 	qtractorScrollView::mousePressEvent(pMouseEvent);
 
+	// Only the left-mouse-button is meaningful atm...
+	if (pMouseEvent->button() != Qt::LeftButton)
+		return;
+
 	// Maybe start the drag-move-selection dance?
 	const QPoint& pos
 		= qtractorScrollView::viewportToContents(pMouseEvent->pos());

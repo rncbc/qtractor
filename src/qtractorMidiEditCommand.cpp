@@ -66,9 +66,16 @@ void qtractorMidiEditCommand::moveEvent ( qtractorMidiEvent *pEvent,
 
 
 void qtractorMidiEditCommand::resizeEventTime ( qtractorMidiEvent *pEvent,
+	unsigned long iTime )
+{
+	m_items.append(new Item(ResizeEventTime, pEvent, 0, iTime));
+}
+
+
+void qtractorMidiEditCommand::resizeEventTime2 ( qtractorMidiEvent *pEvent,
 	unsigned long iTime, unsigned long iDuration )
 {
-	m_items.append(new Item(ResizeEventTime, pEvent, 0, iTime, iDuration));
+	m_items.append(new Item(ResizeEventTime2, pEvent, 0, iTime, iDuration));
 }
 
 
@@ -138,6 +145,14 @@ bool qtractorMidiEditCommand::execute ( bool bRedo )
 			break;
 		}
 		case ResizeEventTime: {
+			unsigned long iOldTime = pEvent->time();
+			m_pSeq->unlinkEvent(pEvent);
+			pEvent->setTime(pItem->time);
+			m_pSeq->insertEvent(pEvent);
+			pItem->time = iOldTime;
+			break;
+		}
+		case ResizeEventTime2: {
 			unsigned long iOldTime = pEvent->time();
 			unsigned long iOldDuration = pEvent->duration();
 			m_pSeq->unlinkEvent(pEvent);

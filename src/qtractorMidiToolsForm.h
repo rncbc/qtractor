@@ -27,6 +27,9 @@
 
 
 // Forward declarations.
+class qtractorMidiSequence;
+class qtractorMidiEditSelect;
+class qtractorMidiEditCommand;
 class qtractorTimeScale;
 
 
@@ -48,12 +51,21 @@ public:
 	void setToolIndex(int iToolIndex);
 	int toolIndex() const;
 
-public slots:
+	// Create edit command based on given selection.
+	qtractorMidiEditCommand *editCommand(
+		qtractorMidiSequence *pSeq, qtractorMidiEditSelect *pSelect);
+
+protected slots:
 
 	void accept();
 	void reject();
 	void formatChanged(int);
 	void stabilizeForm();
+
+protected:
+
+	// Quantize method.
+	unsigned long quantize(unsigned long iTicks, int iIndex ) const;
 
 private:
 
