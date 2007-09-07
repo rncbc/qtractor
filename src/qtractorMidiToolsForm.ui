@@ -43,6 +43,77 @@
     <number>4</number>
    </property>
    <item>
+    <layout class="QHBoxLayout" >
+     <property name="margin" >
+      <number>2</number>
+     </property>
+     <property name="spacing" >
+      <number>2</number>
+     </property>
+     <item>
+      <widget class="QComboBox" name="PresetNameComboBox" >
+       <property name="minimumSize" >
+        <size>
+         <width>160</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="toolTip" >
+        <string>Preset name</string>
+       </property>
+       <property name="editable" >
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="PresetSaveToolButton" >
+       <property name="focusPolicy" >
+        <enum>Qt::TabFocus</enum>
+       </property>
+       <property name="toolTip" >
+        <string>Save preset</string>
+       </property>
+       <property name="text" >
+        <string/>
+       </property>
+       <property name="icon" >
+        <iconset resource="../icons/qtractor.qrc" >:/icons/formSave.png</iconset>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="PresetDeleteToolButton" >
+       <property name="focusPolicy" >
+        <enum>Qt::TabFocus</enum>
+       </property>
+       <property name="toolTip" >
+        <string>Delete preset</string>
+       </property>
+       <property name="text" >
+        <string/>
+       </property>
+       <property name="icon" >
+        <iconset resource="../icons/qtractor.qrc" >:/icons/formRemove.png</iconset>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer>
+       <property name="orientation" >
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" >
+        <size>
+         <width>160</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </item>
+   <item>
     <widget class="QTabWidget" name="ToolTabWidget" >
      <property name="currentIndex" >
       <number>3</number>
@@ -80,7 +151,7 @@
           <enum>Qt::Horizontal</enum>
          </property>
          <property name="sizeType" >
-          <enum>QSizePolicy::Minimum</enum>
+          <enum>QSizePolicy::Fixed</enum>
          </property>
          <property name="sizeHint" >
           <size>
@@ -239,7 +310,7 @@
           <enum>Qt::Horizontal</enum>
          </property>
          <property name="sizeType" >
-          <enum>QSizePolicy::Minimum</enum>
+          <enum>QSizePolicy::Fixed</enum>
          </property>
          <property name="sizeHint" >
           <size>
@@ -391,7 +462,7 @@
           <enum>Qt::Horizontal</enum>
          </property>
          <property name="sizeType" >
-          <enum>QSizePolicy::Minimum</enum>
+          <enum>QSizePolicy::Fixed</enum>
          </property>
          <property name="sizeHint" >
           <size>
@@ -511,7 +582,7 @@
           <enum>Qt::Horizontal</enum>
          </property>
          <property name="sizeType" >
-          <enum>QSizePolicy::Minimum</enum>
+          <enum>QSizePolicy::Fixed</enum>
          </property>
          <property name="sizeHint" >
           <size>
@@ -660,7 +731,7 @@
           <enum>Qt::Horizontal</enum>
          </property>
          <property name="sizeType" >
-          <enum>QSizePolicy::Minimum</enum>
+          <enum>QSizePolicy::Fixed</enum>
          </property>
          <property name="sizeHint" >
           <size>
@@ -791,9 +862,6 @@
        <property name="orientation" >
         <enum>Qt::Horizontal</enum>
        </property>
-       <property name="sizeType" >
-        <enum>QSizePolicy::MinimumExpanding</enum>
-       </property>
        <property name="sizeHint" >
         <size>
          <width>16</width>
@@ -835,6 +903,9 @@
   </customwidget>
  </customwidgets>
  <tabstops>
+  <tabstop>PresetNameComboBox</tabstop>
+  <tabstop>PresetSaveToolButton</tabstop>
+  <tabstop>PresetDeleteToolButton</tabstop>
   <tabstop>ToolTabWidget</tabstop>
   <tabstop>QuantizeCheckBox</tabstop>
   <tabstop>QuantizeTimeCheckBox</tabstop>

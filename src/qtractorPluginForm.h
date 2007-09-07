@@ -48,12 +48,15 @@ public:
 	~qtractorPluginForm();
 
     void setPlugin(qtractorPlugin *pPlugin);
-    qtractorPlugin *plugin();
+    qtractorPlugin *plugin() const;
+
 	void setPreset(const QString& sPreset);
-	QString preset();
+	QString preset() const;
+
 	void updateCaption();
     void updateActivated();
 	void updatePort(qtractorPluginPort *pPort);
+
     void refresh();
 
 public slots:

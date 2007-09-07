@@ -27,10 +27,14 @@
 #include "qtractorMidiEditCommand.h"
 
 #include "qtractorMainForm.h"
+#include "qtractorOptions.h"
 #include "qtractorSession.h"
 
 
 #include <QMessageBox>
+
+// This shall hold the default preset name.
+static QString g_sDefPreset;
 
 
 //----------------------------------------------------------------------------
@@ -45,6 +49,16 @@ qtractorMidiToolsForm::qtractorMidiToolsForm (
 	m_ui.setupUi(this);
 
 	m_pTimeScale = NULL;
+
+	m_iDirtyCount = 0;
+	m_iUpdate = 0;
+
+    m_ui.PresetNameComboBox->setValidator(
+		new QRegExpValidator(QRegExp("[\\w-]+"), m_ui.PresetNameComboBox));
+	m_ui.PresetNameComboBox->setInsertPolicy(QComboBox::NoInsert);
+
+	if (g_sDefPreset.isEmpty())
+		g_sDefPreset = tr("(default)");
 
 	// Reinitialize random seed.
 	::srand(::time(NULL));
@@ -72,66 +86,118 @@ qtractorMidiToolsForm::qtractorMidiToolsForm (
 	// Choose BBT to be default format here.
 	formatChanged(qtractorTimeScale::BBT);
 
+	// Load initial preset names;
+	loadPreset(g_sDefPreset);
+	refreshPresets();
+	
 	// Try to restore old window positioning.
 	adjustSize();
 
 	// UI signal/slot connections...
+	QObject::connect(m_ui.PresetNameComboBox,
+		SIGNAL(editTextChanged(const QString&)),
+		SLOT(presetChanged(const QString&)));
+	QObject::connect(m_ui.PresetNameComboBox,
+		SIGNAL(activated(const QString &)),
+		SLOT(presetActivated(const QString&)));
+	QObject::connect(m_ui.PresetSaveToolButton,
+		SIGNAL(clicked()),
+		SLOT(presetSave()));
+	QObject::connect(m_ui.PresetDeleteToolButton,
+		SIGNAL(clicked()),
+		SLOT(presetDelete()));
+
 	QObject::connect(m_ui.QuantizeCheckBox,
 		SIGNAL(toggled(bool)),
-		SLOT(stabilizeForm()));
-	QObject::connect(m_ui.TransposeCheckBox,
-		SIGNAL(toggled(bool)),
-		SLOT(stabilizeForm()));
-	QObject::connect(m_ui.NormalizeCheckBox,
-		SIGNAL(toggled(bool)),
-		SLOT(stabilizeForm()));
-	QObject::connect(m_ui.RandomizeCheckBox,
-		SIGNAL(toggled(bool)),
-		SLOT(stabilizeForm()));
-	QObject::connect(m_ui.ResizeCheckBox,
-		SIGNAL(toggled(bool)),
-		SLOT(stabilizeForm()));
-
+		SLOT(changed()));
 	QObject::connect(m_ui.QuantizeTimeCheckBox,
 		SIGNAL(toggled(bool)),
-		SLOT(stabilizeForm()));
+		SLOT(changed()));
+	QObject::connect(m_ui.QuantizeTimeComboBox,
+		SIGNAL(activated(int)),
+		SLOT(changed()));
 	QObject::connect(m_ui.QuantizeDurationCheckBox,
 		SIGNAL(toggled(bool)),
-		SLOT(stabilizeForm()));
+		SLOT(changed()));
+	QObject::connect(m_ui.QuantizeDurationComboBox,
+		SIGNAL(activated(int)),
+		SLOT(changed()));
+
+	QObject::connect(m_ui.TransposeCheckBox,
+		SIGNAL(toggled(bool)),
+		SLOT(changed()));
 	QObject::connect(m_ui.TransposeNoteCheckBox,
 		SIGNAL(toggled(bool)),
-		SLOT(stabilizeForm()));
+		SLOT(changed()));
+	QObject::connect(m_ui.TransposeNoteSpinBox,
+		SIGNAL(valueChanged(int)),
+		SLOT(changed()));
 	QObject::connect(m_ui.TransposeTimeCheckBox,
 		SIGNAL(toggled(bool)),
-		SLOT(stabilizeForm()));
-	QObject::connect(m_ui.NormalizePercentRadioButton,
-		SIGNAL(toggled(bool)),
-		SLOT(stabilizeForm()));
-	QObject::connect(m_ui.NormalizeValueRadioButton,
-		SIGNAL(toggled(bool)),
-		SLOT(stabilizeForm()));
-	QObject::connect(m_ui.RandomizeTimeCheckBox,
-		SIGNAL(toggled(bool)),
-		SLOT(stabilizeForm()));
-	QObject::connect(m_ui.RandomizeDurationCheckBox,
-		SIGNAL(toggled(bool)),
-		SLOT(stabilizeForm()));
-	QObject::connect(m_ui.RandomizeValueCheckBox,
-		SIGNAL(toggled(bool)),
-		SLOT(stabilizeForm()));
-	QObject::connect(m_ui.ResizeDurationCheckBox,
-		SIGNAL(toggled(bool)),
-		SLOT(stabilizeForm()));
-	QObject::connect(m_ui.ResizeValueCheckBox,
-		SIGNAL(toggled(bool)),
-		SLOT(stabilizeForm()));
-
+		SLOT(changed()));
+	QObject::connect(m_ui.TransposeTimeSpinBox,
+		SIGNAL(valueChanged(unsigned long)),
+		SLOT(changed()));
 	QObject::connect(m_ui.TransposeFormatComboBox,
 		SIGNAL(activated(int)),
 		SLOT(formatChanged(int)));
+
+	QObject::connect(m_ui.NormalizeCheckBox,
+		SIGNAL(toggled(bool)),
+		SLOT(changed()));
+	QObject::connect(m_ui.NormalizePercentRadioButton,
+		SIGNAL(toggled(bool)),
+		SLOT(changed()));
+	QObject::connect(m_ui.NormalizePercentSpinBox,
+		SIGNAL(valueChanged(int)),
+		SLOT(changed()));
+	QObject::connect(m_ui.NormalizeValueRadioButton,
+		SIGNAL(toggled(bool)),
+		SLOT(changed()));
+	QObject::connect(m_ui.NormalizeValueSpinBox,
+		SIGNAL(valueChanged(int)),
+		SLOT(changed()));
+
+	QObject::connect(m_ui.RandomizeCheckBox,
+		SIGNAL(toggled(bool)),
+		SLOT(changed()));
+	QObject::connect(m_ui.RandomizeTimeCheckBox,
+		SIGNAL(toggled(bool)),
+		SLOT(changed()));
+	QObject::connect(m_ui.RandomizeTimeSpinBox,
+		SIGNAL(valueChanged(int)),
+		SLOT(changed()));
+	QObject::connect(m_ui.RandomizeDurationCheckBox,
+		SIGNAL(toggled(bool)),
+		SLOT(changed()));
+	QObject::connect(m_ui.RandomizeDurationSpinBox,
+		SIGNAL(valueChanged(int)),
+		SLOT(changed()));
+	QObject::connect(m_ui.RandomizeValueCheckBox,
+		SIGNAL(toggled(bool)),
+		SLOT(changed()));
+	QObject::connect(m_ui.RandomizeValueSpinBox,
+		SIGNAL(valueChanged(int)),
+		SLOT(changed()));
+
+	QObject::connect(m_ui.ResizeCheckBox,
+		SIGNAL(toggled(bool)),
+		SLOT(changed()));
+	QObject::connect(m_ui.ResizeDurationCheckBox,
+		SIGNAL(toggled(bool)),
+		SLOT(changed()));
+	QObject::connect(m_ui.ResizeDurationSpinBox,
+		SIGNAL(valueChanged(unsigned long)),
+		SLOT(changed()));
 	QObject::connect(m_ui.ResizeFormatComboBox,
 		SIGNAL(activated(int)),
 		SLOT(formatChanged(int)));
+	QObject::connect(m_ui.ResizeValueCheckBox,
+		SIGNAL(toggled(bool)),
+		SLOT(changed()));
+	QObject::connect(m_ui.ResizeValueSpinBox,
+		SIGNAL(valueChanged(int)),
+		SLOT(changed()));
 
 	QObject::connect(m_ui.OkPushButton,
 		SIGNAL(clicked()),
@@ -185,6 +251,239 @@ void qtractorMidiToolsForm::setToolIndex ( int iToolIndex )
 int qtractorMidiToolsForm::toolIndex (void) const
 {
 	return m_ui.ToolTabWidget->currentIndex();
+}
+
+
+// Preset management methods...
+void qtractorMidiToolsForm::loadPreset ( const QString& sPreset )
+{
+	// An existing preset is about to be loaded...
+	qtractorOptions  *pOptions  = NULL;
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm)
+		pOptions = pMainForm->options();
+	if (pOptions) {
+		QList<QVariant> vlist;
+		QSettings& settings = pOptions->settings();
+		// Get the preset entry...
+		settings.beginGroup("/Midi/Tools");
+		if (!sPreset.isEmpty() && sPreset != g_sDefPreset)
+			settings.beginGroup('/' + sPreset);
+		// Quantize tool...
+		vlist = settings.value("/Quantize").toList();
+		if (vlist.count() > 4) {
+		//	m_ui.QuantizeCheckBox->setChecked(vlist[0].toBool());
+			m_ui.QuantizeTimeCheckBox->setChecked(vlist[1].toBool());
+			m_ui.QuantizeTimeComboBox->setCurrentIndex(vlist[2].toInt());
+			m_ui.QuantizeDurationCheckBox->setChecked(vlist[3].toBool());
+			m_ui.QuantizeDurationComboBox->setCurrentIndex(vlist[4].toInt());
+		}
+		// Transpose tool...
+		vlist = settings.value("/Transpose").toList();
+		if (vlist.count() > 4) {
+		//	m_ui.TransposeCheckBox->setChecked(vlist[0].toBool());
+			m_ui.TransposeNoteCheckBox->setChecked(vlist[1].toBool());
+			m_ui.TransposeNoteSpinBox->setValue(vlist[2].toInt());
+			m_ui.TransposeTimeCheckBox->setChecked(vlist[3].toBool());
+			m_ui.TransposeTimeSpinBox->setValue(vlist[4].toUInt());
+		}
+		// Normalize tool...
+		vlist = settings.value("/Normalize").toList();
+		if (vlist.count() > 4) {
+		//	m_ui.NormalizeCheckBox->setChecked(vlist[0].toBool());
+			m_ui.NormalizePercentRadioButton->setChecked(vlist[1].toBool());
+			m_ui.NormalizePercentSpinBox->setValue(vlist[2].toInt());
+			m_ui.NormalizeValueRadioButton->setChecked(vlist[3].toBool());
+			m_ui.NormalizeValueSpinBox->setValue(vlist[4].toInt());
+		}
+		// Randomize tool...
+		vlist = settings.value("/Randomize").toList();
+		if (vlist.count() > 6) {
+		//	m_ui.RandomizeCheckBox->setChecked(vlist[0].toBool());
+			m_ui.RandomizeTimeCheckBox->setChecked(vlist[1].toBool());
+			m_ui.RandomizeTimeSpinBox->setValue(vlist[2].toInt());
+			m_ui.RandomizeDurationCheckBox->setChecked(vlist[3].toBool());
+			m_ui.RandomizeDurationSpinBox->setValue(vlist[4].toInt());
+			m_ui.RandomizeValueCheckBox->setChecked(vlist[5].toBool());
+			m_ui.RandomizeValueSpinBox->setValue(vlist[6].toInt());
+		}
+		// Resize tool...
+		vlist = settings.value("/Resize").toList();
+		if (vlist.count() > 4) {
+		//	m_ui.ResizeCheckBox->setChecked(vlist[0].toBool());
+			m_ui.ResizeValueCheckBox->setChecked(vlist[1].toBool());
+			m_ui.ResizeValueSpinBox->setValue(vlist[2].toInt());
+			m_ui.ResizeDurationCheckBox->setChecked(vlist[3].toBool());
+			m_ui.ResizeDurationSpinBox->setValue(vlist[4].toUInt());
+		}
+		// All loaded.
+		if (!sPreset.isEmpty() && sPreset != g_sDefPreset)
+			settings.endGroup();
+		settings.endGroup();
+	}
+}
+
+
+void qtractorMidiToolsForm::savePreset ( const QString& sPreset )
+{
+	// The current state preset is about to be saved...
+	qtractorOptions  *pOptions  = NULL;
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm)
+		pOptions = pMainForm->options();
+	if (pOptions) {
+		QList<QVariant> vlist;
+		QSettings& settings = pOptions->settings();
+		// Set preset entry...
+		settings.beginGroup("/Midi/Tools");
+		if (!sPreset.isEmpty() && sPreset != g_sDefPreset)
+			settings.beginGroup('/' + sPreset);
+		// Quantize tool...
+		vlist.clear();
+		vlist.append(m_ui.QuantizeCheckBox->isChecked());
+		vlist.append(m_ui.QuantizeTimeCheckBox->isChecked());
+		vlist.append(m_ui.QuantizeTimeComboBox->currentIndex());
+		vlist.append(m_ui.QuantizeDurationCheckBox->isChecked());
+		vlist.append(m_ui.QuantizeDurationComboBox->currentIndex());
+		settings.setValue("/Quantize", vlist);
+		// Transpose tool...
+		vlist.clear();
+		vlist.append(m_ui.TransposeCheckBox->isChecked());
+		vlist.append(m_ui.TransposeNoteCheckBox->isChecked());
+		vlist.append(m_ui.TransposeNoteSpinBox->value());
+		vlist.append(m_ui.TransposeTimeCheckBox->isChecked());
+		vlist.append((unsigned int) m_ui.TransposeTimeSpinBox->value());
+		settings.setValue("/Transpose", vlist);
+		// Normalize tool...
+		vlist.clear();
+		vlist.append(m_ui.NormalizeCheckBox->isChecked());
+		vlist.append(m_ui.NormalizePercentRadioButton->isChecked());
+		vlist.append(m_ui.NormalizePercentSpinBox->value());
+		vlist.append(m_ui.NormalizeValueRadioButton->isChecked());
+		vlist.append(m_ui.NormalizeValueSpinBox->value());
+		settings.setValue("/Normalize", vlist);
+		// Randomize tool...
+		vlist.clear();
+		vlist.append(m_ui.RandomizeCheckBox->isChecked());
+		vlist.append(m_ui.RandomizeTimeCheckBox->isChecked());
+		vlist.append(m_ui.RandomizeTimeSpinBox->value());
+		vlist.append(m_ui.RandomizeDurationCheckBox->isChecked());
+		vlist.append(m_ui.RandomizeDurationSpinBox->value());
+		vlist.append(m_ui.RandomizeValueCheckBox->isChecked());
+		vlist.append(m_ui.RandomizeValueSpinBox->value());
+		settings.setValue("/Randomize", vlist);
+		// Resize tool...
+		vlist.clear();
+		vlist.append(m_ui.ResizeCheckBox->isChecked());
+		vlist.append(m_ui.ResizeValueCheckBox->isChecked());
+		vlist.append(m_ui.ResizeValueSpinBox->value());
+		vlist.append(m_ui.ResizeDurationCheckBox->isChecked());
+		vlist.append((unsigned int) m_ui.ResizeDurationSpinBox->value());
+		settings.setValue("/Resize", vlist);
+		// All saved.
+		if (!sPreset.isEmpty() && sPreset != g_sDefPreset)
+			settings.endGroup();
+		settings.endGroup();
+	}
+}
+
+
+// Preset list loader.
+void qtractorMidiToolsForm::refreshPresets (void)
+{
+	m_iUpdate++;
+
+	const QString sOldPreset = m_ui.PresetNameComboBox->currentText();
+	m_ui.PresetNameComboBox->clear();
+	
+	qtractorOptions  *pOptions  = NULL;
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm)
+		pOptions = pMainForm->options();
+	if (pOptions) {
+		QSettings& settings = pOptions->settings();
+		settings.beginGroup("/Midi/Tools");
+		m_ui.PresetNameComboBox->insertItems(0, settings.childGroups());
+		settings.endGroup();
+	}
+	m_ui.PresetNameComboBox->addItem(g_sDefPreset);
+	m_ui.PresetNameComboBox->setEditText(sOldPreset);
+
+	m_iDirtyCount = 0;
+	m_iUpdate--;
+
+	stabilizeForm();
+}
+
+
+// Preset management slots...
+void qtractorMidiToolsForm::presetChanged ( const QString& sPreset )
+{
+	if (m_iUpdate > 0)
+		return;
+
+	if (!sPreset.isEmpty()
+		&& m_ui.PresetNameComboBox->findText(sPreset) >= 0)
+		m_iDirtyCount++;
+
+	stabilizeForm();
+}
+
+
+void qtractorMidiToolsForm::presetActivated ( const QString& sPreset )
+{
+	m_iUpdate++;
+
+	loadPreset(sPreset);
+
+	m_iDirtyCount = 0;
+	m_iUpdate--;
+	
+	stabilizeForm();
+}
+
+
+void qtractorMidiToolsForm::presetSave (void)
+{
+	savePreset(m_ui.PresetNameComboBox->currentText());
+
+	refreshPresets();
+}
+
+
+void qtractorMidiToolsForm::presetDelete (void)
+{
+	if (m_iUpdate > 0)
+		return;
+
+	const QString& sPreset = m_ui.PresetNameComboBox->currentText();
+	if (sPreset.isEmpty() || sPreset == g_sDefPreset)
+		return;
+
+	// A preset entry is about to be deleted...
+	qtractorOptions  *pOptions  = NULL;
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm)
+		pOptions = pMainForm->options();
+	if (pOptions) {
+		// Prompt user if he/she's sure about this...
+		if (pOptions->bConfirmRemove) {
+			if (QMessageBox::warning(this,
+				tr("Warning") + " - " QTRACTOR_TITLE,
+				tr("About to delete preset:\n\n"
+				"%1\n\n"
+				"Are you sure?")
+				.arg(sPreset),
+				tr("OK"), tr("Cancel")) > 0)
+				return;
+		}
+		// Go ahead...
+		QSettings& settings = pOptions->settings();
+		settings.beginGroup("/Midi/Tools");
+		settings.remove(sPreset);
+		settings.endGroup();
+		refreshPresets();
+	}
 }
 
 
@@ -358,9 +657,23 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::editCommand (
 }
 
 
+// Common change slot.
+void qtractorMidiToolsForm::changed (void)
+{
+	if (m_iUpdate > 0)
+		return;
+
+	m_iDirtyCount++;
+	stabilizeForm();
+}
+
+
 // Accept settings (OK button slot).
 void qtractorMidiToolsForm::accept (void)
 {
+	// Save as default preset...
+	savePreset(g_sDefPreset);
+
 	// Just go with dialog acceptance.
 	QDialog::accept();
 }
@@ -400,6 +713,14 @@ void qtractorMidiToolsForm::stabilizeForm (void)
 	int  iEnabled = 0;
 	bool bEnabled;
 	bool bEnabled2;
+
+	// Preset status...
+	const QString& sPreset = m_ui.PresetNameComboBox->currentText();
+	bool bExists = (m_ui.PresetNameComboBox->findText(sPreset) >= 0);
+	bEnabled = (!sPreset.isEmpty() && sPreset != g_sDefPreset);
+	m_ui.PresetSaveToolButton->setEnabled(bEnabled
+		&& (!bExists || m_iDirtyCount > 0));
+	m_ui.PresetDeleteToolButton->setEnabled(bEnabled && bExists);
 
 	// Quantize tool...
 

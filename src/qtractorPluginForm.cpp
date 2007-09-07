@@ -153,7 +153,7 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 }
 
 
-qtractorPlugin *qtractorPluginForm::plugin (void)
+qtractorPlugin *qtractorPluginForm::plugin (void) const
 {
 	return m_pPlugin;
 }
@@ -168,7 +168,7 @@ void qtractorPluginForm::setPreset ( const QString& sPreset )
 	}
 }
 
-QString qtractorPluginForm::preset (void)
+QString qtractorPluginForm::preset (void) const
 {
 	QString sPreset = m_ui.PresetComboBox->currentText();
 

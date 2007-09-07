@@ -57,12 +57,26 @@ public:
 
 protected slots:
 
+	// Preset management slots...
+    void presetChanged(const QString& sPreset);
+    void presetActivated(const QString& sPreset);
+    void presetSave();
+    void presetDelete();
+
+	void formatChanged(int);
+	void changed();
 	void accept();
 	void reject();
-	void formatChanged(int);
+
 	void stabilizeForm();
 
 protected:
+
+	// Preset management methods...
+    void loadPreset(const QString& sPreset);
+    void savePreset(const QString& sPreset);
+
+	void refreshPresets();
 
 	// Quantize method.
 	unsigned long quantize(unsigned long iTicks, int iIndex, int i) const;
@@ -74,6 +88,9 @@ private:
 
 	// Instance variables...
 	qtractorTimeScale *m_pTimeScale;
+
+	int m_iDirtyCount;
+	int m_iUpdate;
 };
 
 
