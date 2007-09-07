@@ -573,7 +573,7 @@ void qtractorFileListView::deleteItemSlot (void)
 			if (QMessageBox::warning(this,
 				tr("Warning") + " - " QTRACTOR_TITLE,
 				tr("About to remove %1 item:\n\n"
-				"%2\n\n"
+				"\"%2\"\n\n"
 				"Are you sure?")
 				.arg(pItem->type() == GroupItem ? tr("group") : tr("file"))
 				.arg(pItem->text(0)),

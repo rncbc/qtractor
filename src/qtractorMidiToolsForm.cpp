@@ -109,7 +109,7 @@ qtractorMidiToolsForm::qtractorMidiToolsForm (
 
 	QObject::connect(m_ui.QuantizeCheckBox,
 		SIGNAL(toggled(bool)),
-		SLOT(changed()));
+		SLOT(stabilizeForm()));
 	QObject::connect(m_ui.QuantizeTimeCheckBox,
 		SIGNAL(toggled(bool)),
 		SLOT(changed()));
@@ -125,7 +125,7 @@ qtractorMidiToolsForm::qtractorMidiToolsForm (
 
 	QObject::connect(m_ui.TransposeCheckBox,
 		SIGNAL(toggled(bool)),
-		SLOT(changed()));
+		SLOT(stabilizeForm()));
 	QObject::connect(m_ui.TransposeNoteCheckBox,
 		SIGNAL(toggled(bool)),
 		SLOT(changed()));
@@ -144,7 +144,7 @@ qtractorMidiToolsForm::qtractorMidiToolsForm (
 
 	QObject::connect(m_ui.NormalizeCheckBox,
 		SIGNAL(toggled(bool)),
-		SLOT(changed()));
+		SLOT(stabilizeForm()));
 	QObject::connect(m_ui.NormalizePercentRadioButton,
 		SIGNAL(toggled(bool)),
 		SLOT(changed()));
@@ -160,7 +160,7 @@ qtractorMidiToolsForm::qtractorMidiToolsForm (
 
 	QObject::connect(m_ui.RandomizeCheckBox,
 		SIGNAL(toggled(bool)),
-		SLOT(changed()));
+		SLOT(stabilizeForm()));
 	QObject::connect(m_ui.RandomizeTimeCheckBox,
 		SIGNAL(toggled(bool)),
 		SLOT(changed()));
@@ -182,7 +182,7 @@ qtractorMidiToolsForm::qtractorMidiToolsForm (
 
 	QObject::connect(m_ui.ResizeCheckBox,
 		SIGNAL(toggled(bool)),
-		SLOT(changed()));
+		SLOT(stabilizeForm()));
 	QObject::connect(m_ui.ResizeDurationCheckBox,
 		SIGNAL(toggled(bool)),
 		SLOT(changed()));
@@ -266,7 +266,7 @@ void qtractorMidiToolsForm::loadPreset ( const QString& sPreset )
 		QList<QVariant> vlist;
 		QSettings& settings = pOptions->settings();
 		// Get the preset entry...
-		settings.beginGroup("/Midi/Tools");
+		settings.beginGroup("/MidiTools");
 		if (!sPreset.isEmpty() && sPreset != g_sDefPreset)
 			settings.beginGroup('/' + sPreset);
 		// Quantize tool...
@@ -335,7 +335,7 @@ void qtractorMidiToolsForm::savePreset ( const QString& sPreset )
 		QList<QVariant> vlist;
 		QSettings& settings = pOptions->settings();
 		// Set preset entry...
-		settings.beginGroup("/Midi/Tools");
+		settings.beginGroup("/MidiTools");
 		if (!sPreset.isEmpty() && sPreset != g_sDefPreset)
 			settings.beginGroup('/' + sPreset);
 		// Quantize tool...
@@ -402,7 +402,7 @@ void qtractorMidiToolsForm::refreshPresets (void)
 		pOptions = pMainForm->options();
 	if (pOptions) {
 		QSettings& settings = pOptions->settings();
-		settings.beginGroup("/Midi/Tools");
+		settings.beginGroup("/MidiTools");
 		m_ui.PresetNameComboBox->insertItems(0, settings.childGroups());
 		settings.endGroup();
 	}
@@ -471,7 +471,7 @@ void qtractorMidiToolsForm::presetDelete (void)
 			if (QMessageBox::warning(this,
 				tr("Warning") + " - " QTRACTOR_TITLE,
 				tr("About to delete preset:\n\n"
-				"%1\n\n"
+				"\"%1\"\n\n"
 				"Are you sure?")
 				.arg(sPreset),
 				tr("OK"), tr("Cancel")) > 0)
@@ -479,7 +479,7 @@ void qtractorMidiToolsForm::presetDelete (void)
 		}
 		// Go ahead...
 		QSettings& settings = pOptions->settings();
-		settings.beginGroup("/Midi/Tools");
+		settings.beginGroup("/MidiTools");
 		settings.remove(sPreset);
 		settings.endGroup();
 		refreshPresets();

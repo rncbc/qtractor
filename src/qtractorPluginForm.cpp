@@ -334,7 +334,7 @@ void qtractorPluginForm::deletePresetSlot (void)
 				if (QMessageBox::warning(this,
 					tr("Warning") + " - " QTRACTOR_TITLE,
 					tr("About to delete preset:\n\n"
-					"%1 (%2)\n\n"
+					"\"%1\" (%2)\n\n"
 					"Are you sure?")
 					.arg(sPreset)
 					.arg(m_pPlugin->name()),

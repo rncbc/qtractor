@@ -547,7 +547,7 @@ void qtractorBusForm::deleteBus (void)
 		if (QMessageBox::warning(this,
 			tr("Warning") + " - " QTRACTOR_TITLE,
 			tr("About to remove bus:\n\n"
-			"%1 (%2)\n\n"
+			"\"%1\" (%2)\n\n"
 			"Are you sure?")
 			.arg(m_pBus->busName())
 			.arg(sBusType),

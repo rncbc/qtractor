@@ -465,7 +465,7 @@ bool qtractorTracks::removeTrack ( qtractorTrack *pTrack )
 		if (QMessageBox::warning(this,
 			tr("Warning") + " - " QTRACTOR_TITLE,
 			tr("About to remove track:\n\n"
-			"%1\n\n"
+			"\"%1\"\n\n"
 			"Are you sure?")
 			.arg(pTrack->trackName()),
 			tr("OK"), tr("Cancel")) > 0)
