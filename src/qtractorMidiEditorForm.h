@@ -120,11 +120,11 @@ public slots:
 	void editSelectAll();
 	void editSelectInvert();
 
-	void editToolsQuantize();
-	void editToolsTranspose();
-	void editToolsNormalize();
-	void editToolsRandomize();
-	void editToolsResize();
+	void toolsQuantize();
+	void toolsTranspose();
+	void toolsNormalize();
+	void toolsRandomize();
+	void toolsResize();
 
 	void viewMenubar(bool bOn);
 	void viewStatusbar(bool bOn);

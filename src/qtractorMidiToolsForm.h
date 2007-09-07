@@ -65,7 +65,7 @@ protected slots:
 protected:
 
 	// Quantize method.
-	unsigned long quantize(unsigned long iTicks, int iIndex ) const;
+	unsigned long quantize(unsigned long iTicks, int iIndex, int i) const;
 
 private:
 

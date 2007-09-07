@@ -190,11 +190,11 @@ int qtractorMidiToolsForm::toolIndex (void) const
 
 // Quantize method.
 unsigned long qtractorMidiToolsForm::quantize (
-	unsigned long iTicks, int iIndex ) const
+	unsigned long iTicks, int iIndex, int i ) const
 {
 	unsigned short p = qtractorTimeScale::snapFromIndex(iIndex + 1);
 	unsigned long  q = m_pTimeScale->ticksPerBeat() / p;
-	return q * ((iTicks + (q >> 1)) / q);
+	return q * ((iTicks + (q >> i)) / q);
 }
 
 
@@ -232,12 +232,12 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::editCommand (
 			tools.append(tr("quantize"));
 			if (m_ui.QuantizeTimeCheckBox->isChecked()) {
 				iTime = quantize(iTime,
-					m_ui.QuantizeTimeComboBox->currentIndex());
+					m_ui.QuantizeTimeComboBox->currentIndex(), 1);
 			}
 			if (m_ui.QuantizeDurationCheckBox->isChecked()
 				&& pEvent->type() == qtractorMidiEvent::NOTEON) {
 				iDuration = quantize(iDuration,
-					m_ui.QuantizeDurationComboBox->currentIndex());
+					m_ui.QuantizeDurationComboBox->currentIndex(), 0);
 			}
 			pEditCommand->resizeEventTime2(pEvent, iTime, iDuration);
 		}

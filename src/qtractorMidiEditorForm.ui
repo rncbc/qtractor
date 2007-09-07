@@ -56,35 +56,35 @@
     <addaction name="separator" />
     <addaction name="fileCloseAction" />
    </widget>
+   <widget class="QMenu" name="editModeMenu" >
+    <property name="title" >
+     <string>Select &amp;Mode</string>
+    </property>
+    <addaction name="editModeOffAction" />
+    <addaction name="editModeOnAction" />
+   </widget>
+   <widget class="QMenu" name="editSelectMenu" >
+    <property name="title" >
+     <string>&amp;Select</string>
+    </property>
+    <addaction name="editSelectNoneAction" />
+    <addaction name="editSelectInvertAction" />
+    <addaction name="editSelectAllAction" />
+   </widget>
+   <widget class="QMenu" name="toolsMenu" >
+    <property name="title" >
+     <string>&amp;Tools</string>
+    </property>
+    <addaction name="toolsQuantizeAction" />
+    <addaction name="toolsTransposeAction" />
+    <addaction name="toolsNormalizeAction" />
+    <addaction name="toolsRandomizeAction" />
+    <addaction name="toolsResizeAction" />
+   </widget>
    <widget class="QMenu" name="editMenu" >
     <property name="title" >
      <string>&amp;Edit</string>
     </property>
-    <widget class="QMenu" name="editModeMenu" >
-     <property name="title" >
-      <string>Edit &amp;Mode</string>
-     </property>
-     <addaction name="editModeOffAction" />
-     <addaction name="editModeOnAction" />
-    </widget>
-    <widget class="QMenu" name="editSelectMenu" >
-     <property name="title" >
-      <string>&amp;Select</string>
-     </property>
-     <addaction name="editSelectNoneAction" />
-     <addaction name="editSelectInvertAction" />
-     <addaction name="editSelectAllAction" />
-    </widget>
-    <widget class="QMenu" name="editToolsMenu" >
-     <property name="title" >
-      <string>&amp;Tools</string>
-     </property>
-     <addaction name="editToolsQuantizeAction" />
-     <addaction name="editToolsTransposeAction" />
-     <addaction name="editToolsNormalizeAction" />
-     <addaction name="editToolsRandomizeAction" />
-     <addaction name="editToolsResizeAction" />
-    </widget>
     <addaction name="editUndoAction" />
     <addaction name="editRedoAction" />
     <addaction name="separator" />
@@ -96,8 +96,6 @@
     <addaction name="separator" />
     <addaction name="editModeMenu" />
     <addaction name="editSelectMenu" />
-    <addaction name="separator" />
-    <addaction name="editToolsMenu" />
    </widget>
    <widget class="QMenu" name="viewMenu" >
     <property name="title" >
@@ -130,7 +128,26 @@
    <addaction name="fileMenu" />
    <addaction name="editMenu" />
    <addaction name="viewMenu" />
+   <addaction name="toolsMenu" />
    <addaction name="helpMenu" />
+  </widget>
+  <widget class="QMenu" name="contextMenu" >
+   <property name="title" >
+    <string>&amp;Context</string>
+   </property>
+   <addaction name="editUndoAction" />
+   <addaction name="editRedoAction" />
+   <addaction name="separator" />
+   <addaction name="editCutAction" />
+   <addaction name="editCopyAction" />
+   <addaction name="editPasteAction" />
+   <addaction name="separator" />
+   <addaction name="editDeleteAction" />
+   <addaction name="separator" />
+   <addaction name="editModeMenu" />
+   <addaction name="editSelectMenu" />
+   <addaction name="separator" />
+   <addaction name="toolsMenu" />
   </widget>
   <widget class="QStatusBar" name="statusBar" />
   <widget class="QToolBar" name="fileToolbar" >
@@ -398,7 +415,7 @@
 		  <string>Ctrl+R</string>
 	  </property>
   </action>
-  <action name="editToolsQuantizeAction" >
+  <action name="toolsQuantizeAction" >
    <property name="text" >
     <string>&amp;Quantize...</string>
    </property>
@@ -409,7 +426,7 @@
     <string>Quantize selection</string>
    </property>
   </action>
-  <action name="editToolsTransposeAction" >
+  <action name="toolsTransposeAction" >
    <property name="text" >
     <string>&amp;Transpose...</string>
    </property>
@@ -420,7 +437,7 @@
     <string>Transpose selection</string>
    </property>
   </action>
-  <action name="editToolsNormalizeAction" >
+  <action name="toolsNormalizeAction" >
    <property name="text" >
     <string>&amp;Normalize...</string>
    </property>
@@ -431,7 +448,7 @@
     <string>Normalize selection</string>
    </property>
   </action>
-  <action name="editToolsRandomizeAction" >
+  <action name="toolsRandomizeAction" >
    <property name="text" >
     <string>&amp;Randomize...</string>
    </property>
@@ -442,7 +459,7 @@
     <string>Randomize selection</string>
    </property>
   </action>
-  <action name="editToolsResizeAction" >
+  <action name="toolsResizeAction" >
    <property name="text" >
     <string>Re&amp;size...</string>
    </property>

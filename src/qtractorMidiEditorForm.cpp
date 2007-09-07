@@ -241,21 +241,21 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 		SIGNAL(triggered(bool)),
 		SLOT(editSelectAll()));
 
-	QObject::connect(m_ui.editToolsQuantizeAction,
+	QObject::connect(m_ui.toolsQuantizeAction,
 		SIGNAL(triggered(bool)),
-		SLOT(editToolsQuantize()));
-	QObject::connect(m_ui.editToolsTransposeAction,
+		SLOT(toolsQuantize()));
+	QObject::connect(m_ui.toolsTransposeAction,
 		SIGNAL(triggered(bool)),
-		SLOT(editToolsTranspose()));
-	QObject::connect(m_ui.editToolsNormalizeAction,
+		SLOT(toolsTranspose()));
+	QObject::connect(m_ui.toolsNormalizeAction,
 		SIGNAL(triggered(bool)),
-		SLOT(editToolsNormalize()));
-	QObject::connect(m_ui.editToolsRandomizeAction,
+		SLOT(toolsNormalize()));
+	QObject::connect(m_ui.toolsRandomizeAction,
 		SIGNAL(triggered(bool)),
-		SLOT(editToolsRandomize()));
-	QObject::connect(m_ui.editToolsResizeAction,
+		SLOT(toolsRandomize()));
+	QObject::connect(m_ui.toolsResizeAction,
 		SIGNAL(triggered(bool)),
-		SLOT(editToolsResize()));
+		SLOT(toolsResize()));
 
 	QObject::connect(m_ui.viewMenubarAction,
 		SIGNAL(triggered(bool)),
@@ -515,7 +515,7 @@ void qtractorMidiEditorForm::closeEvent ( QCloseEvent *pCloseEvent )
 void qtractorMidiEditorForm::contextMenuEvent (
 	QContextMenuEvent *pContextMenuEvent )
 {
-	m_ui.editMenu->exec(pContextMenuEvent->globalPos());
+	m_ui.contextMenu->exec(pContextMenuEvent->globalPos());
 }
 
 
@@ -903,35 +903,35 @@ void qtractorMidiEditorForm::editSelectAll (void)
 
 
 // Quantize tool.
-void qtractorMidiEditorForm::editToolsQuantize (void)
+void qtractorMidiEditorForm::toolsQuantize (void)
 {
 	m_pMidiEditor->executeTool(qtractorMidiEditor::Quantize);
 }
 
 
 // Transpose tool.
-void qtractorMidiEditorForm::editToolsTranspose (void)
+void qtractorMidiEditorForm::toolsTranspose (void)
 {
 	m_pMidiEditor->executeTool(qtractorMidiEditor::Transpose);
 }
 
 
 // Normalize tool.
-void qtractorMidiEditorForm::editToolsNormalize (void)
+void qtractorMidiEditorForm::toolsNormalize (void)
 {
 	m_pMidiEditor->executeTool(qtractorMidiEditor::Normalize);
 }
 
 
 // Randomize tool.
-void qtractorMidiEditorForm::editToolsRandomize (void)
+void qtractorMidiEditorForm::toolsRandomize (void)
 {
 	m_pMidiEditor->executeTool(qtractorMidiEditor::Randomize);
 }
 
 
 // Rezize tool.
-void qtractorMidiEditorForm::editToolsResize (void)
+void qtractorMidiEditorForm::toolsResize (void)
 {
 	m_pMidiEditor->executeTool(qtractorMidiEditor::Resize);
 }
@@ -1122,7 +1122,7 @@ void qtractorMidiEditorForm::stabilizeForm (void)
 	m_ui.editPasteAction->setEnabled(m_pMidiEditor->isClipboard());
 	m_ui.editDeleteAction->setEnabled(bSelected);
 	m_ui.editSelectNoneAction->setEnabled(bSelected);
-	m_ui.editToolsMenu->setEnabled(bSelected);
+	m_ui.toolsMenu->setEnabled(bSelected);
 
 	m_pFileNameLabel->setText(filename());
 	m_pTrackChannelLabel->setText(sTrackChannel.arg(trackChannel() + k));

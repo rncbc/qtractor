@@ -2548,8 +2548,9 @@ void qtractorMainForm::stabilizeForm (void)
 
 	// Transport stuff...
 	bEnabled = (!bPlaying || !bRecording);
-	m_ui.transportBackwardAction->setEnabled(bEnabled && m_iPlayHead > 0);
-	m_ui.transportRewindAction->setEnabled(bEnabled && m_iPlayHead > 0);
+	bool bBumped = (bEnabled && (m_iPlayHead > 0 || bPlaying));
+	m_ui.transportBackwardAction->setEnabled(bBumped);
+	m_ui.transportRewindAction->setEnabled(bBumped);
 	m_ui.transportFastForwardAction->setEnabled(bEnabled);
 	m_ui.transportForwardAction->setEnabled(bEnabled
 		&& (m_iPlayHead < iSessionLength
