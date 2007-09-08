@@ -1,6 +1,6 @@
 %define name    @PACKAGE_TARNAME@
 %define version @PACKAGE_VERSION@
-%define release 6
+%define release 9
 %define prefix  @ac_prefix@
 
 Summary:	An Audio/MIDI multi-track sequencer.
@@ -64,6 +64,8 @@ specially dedicated to the personal home-studio.
 %{_datadir}/pixmaps/%{name}.png
 
 %changelog
+* Sat Sep 08 2007 Rui Nuno Capela <rncbc@users.sourceforge.net>
+- Ninth Hitch Nail pre-release.
 * Thu Jul 19 2007 Rui Nuno Capela <rncbc@users.sourceforge.net>
 - Eight Wanderer pre-release.
 * Wed Jun 20 2007 Rui Nuno Capela <rncbc@users.sourceforge.net>
