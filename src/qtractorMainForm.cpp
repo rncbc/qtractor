@@ -239,12 +239,7 @@ qtractorMainForm::qtractorMainForm (
 	// Snap-per-beat combo-box.
 	m_pSnapPerBeatComboBox = new QComboBox();
 	m_pSnapPerBeatComboBox->setEditable(false);
-	m_pSnapPerBeatComboBox->addItem(tr("None"));
-	QString sPrefix = tr("Beat");
-	m_pSnapPerBeatComboBox->addItem(sPrefix);
-	sPrefix += "/%1";
-	for (unsigned short iSnapPerBeat = 2; iSnapPerBeat < 64; iSnapPerBeat <<= 1)
-		m_pSnapPerBeatComboBox->addItem(sPrefix.arg(iSnapPerBeat));
+	m_pSnapPerBeatComboBox->insertItems(0, qtractorTimeScale::snapItems());
 	m_pSnapPerBeatComboBox->setToolTip(tr("Snap/beat"));
 	m_ui.timeToolbar->addWidget(m_pSnapPerBeatComboBox);
 

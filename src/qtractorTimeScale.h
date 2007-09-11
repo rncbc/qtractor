@@ -163,6 +163,9 @@ public:
 	static unsigned short snapFromIndex(int iSnap);
 	static int indexFromSnap(unsigned short iSnapPerBeat);
 
+	// Beat divisor (snap index) text item list.
+	static QStringList snapItems(int iSnap = 0);
+
 private:
 
 	unsigned int   m_iSampleRate;       // Sample rate (frames per second)

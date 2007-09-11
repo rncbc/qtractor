@@ -348,41 +348,6 @@
           <property name="editable" >
            <bool>false</bool>
           </property>
-          <item>
-           <property name="text" >
-            <string>None</string>
-           </property>
-          </item>
-          <item>
-           <property name="text" >
-            <string>Beat</string>
-           </property>
-          </item>
-          <item>
-           <property name="text" >
-            <string>Beat/2</string>
-           </property>
-          </item>
-          <item>
-           <property name="text" >
-            <string>Beat/4</string>
-           </property>
-          </item>
-          <item>
-           <property name="text" >
-            <string>Beat/8</string>
-           </property>
-          </item>
-          <item>
-           <property name="text" >
-            <string>Beat/16</string>
-           </property>
-          </item>
-          <item>
-           <property name="text" >
-            <string>Beat/32</string>
-           </property>
-          </item>
          </widget>
         </item>
         <item row="1" column="1" >

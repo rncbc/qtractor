@@ -21,6 +21,8 @@
 
 #include "qtractorTimeScale.h"
 
+#include <QStringList>
+
 
 //----------------------------------------------------------------------
 // class qtractorTimeScale -- Time scale conversion helper class.
@@ -194,23 +196,49 @@ QString qtractorTimeScale::textFromFrame ( unsigned long iFrame ) const
 }
 
 
+// Beat divisor (snap index) map.
+static int s_aiSnapPerBeat[] = { 0, 1, 2, 3, 4, 6, 8, 12, 16, 24, 32, 48 };
+
 // Beat divisor (snap index) accessors.
 unsigned short qtractorTimeScale::snapFromIndex ( int iSnap )
 {
-	unsigned short iSnapPerBeat = 0;
-	if (iSnap > 0)
-		iSnapPerBeat++;
-	for (int i = 1; i < iSnap; i++)
-		iSnapPerBeat <<= 1;
-	return iSnapPerBeat;
+	return s_aiSnapPerBeat[iSnap];
 }
 
+
+// Beat divisor (snap index) accessors.
 int qtractorTimeScale::indexFromSnap ( unsigned short iSnapPerBeat )
 {
-	int iSnap = 0;
-	for (unsigned short n = 1; n <= iSnapPerBeat; n <<= 1)
-		++iSnap;
-	return iSnap;
+	for (int iSnap = 0; iSnap < 12; iSnap++) {
+		if (s_aiSnapPerBeat[iSnap] == iSnapPerBeat)
+			return iSnap;
+	}
+
+	return 0;
+}
+
+
+// Beat divisor (snap index) text item list.
+QStringList qtractorTimeScale::snapItems ( int iSnap )
+{
+	QStringList items;
+
+	if (iSnap == 0) {
+		items.append(QObject::tr("None"));
+		iSnap++;
+	}
+
+	QString sPrefix = QObject::tr("Beat");
+	if (iSnap == 1) {
+		items.append(sPrefix);
+		iSnap++;
+	}
+
+	sPrefix += "/%1";
+	while (iSnap < 12)
+		items.append(sPrefix.arg(s_aiSnapPerBeat[iSnap++]));
+
+	return items;
 }
 
 

@@ -74,6 +74,12 @@ qtractorMidiToolsForm::qtractorMidiToolsForm (
 		m_pTimeScale = new qtractorTimeScale(*pSession->timeScale());
 		m_ui.TransposeTimeSpinBox->setTimeScale(m_pTimeScale);
 		m_ui.ResizeDurationSpinBox->setTimeScale(m_pTimeScale);
+		// Fill-up snap-per-beat items...
+		QStringList items = qtractorTimeScale::snapItems(1);
+		m_ui.QuantizeTimeComboBox->clear();
+		m_ui.QuantizeTimeComboBox->insertItems(0, items);
+		m_ui.QuantizeDurationComboBox->clear();
+		m_ui.QuantizeDurationComboBox->insertItems(0, items);
 		// Default quantization value...
 		unsigned short iSnapPerBeat = m_pTimeScale->snapPerBeat();
 		if (iSnapPerBeat > 0)

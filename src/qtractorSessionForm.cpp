@@ -59,6 +59,10 @@ qtractorSessionForm::qtractorSessionForm (
 	m_ui.SampleRateComboBox->setValidator(
 		new QIntValidator(m_ui.SampleRateComboBox));
 
+	// Fill-up snap-per-beat items...
+	m_ui.SnapPerBeatComboBox->clear();
+	m_ui.SnapPerBeatComboBox->insertItems(0, qtractorTimeScale::snapItems());
+
 	// Initialize dirty control state.
 	m_iDirtyCount = 0;
 
