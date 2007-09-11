@@ -114,6 +114,7 @@
     <addaction name="viewToolbarsMenu" />
     <addaction name="separator" />
     <addaction name="viewDurationAction" />
+    <addaction name="separator" />
     <addaction name="viewPreviewAction" />
     <addaction name="viewFollowAction" />
     <addaction name="separator" />
@@ -400,21 +401,21 @@
    </property>
   </action>
   <action name="editSelectRangeAction" >
-	  <property name="text" >
-		  <string>&amp;Range</string>
-	  </property>
-	  <property name="iconText" >
-		  <string>Select Range</string>
-	  </property>
-	  <property name="toolTip" >
-		  <string>Select range</string>
-	  </property>
-	  <property name="statusTip" >
-		  <string>Mark range as selected</string>
-	  </property>
-	  <property name="shortcut" >
-		  <string>Ctrl+R</string>
-	  </property>
+   <property name="text" >
+    <string>&amp;Range</string>
+   </property>
+   <property name="iconText" >
+    <string>Select Range</string>
+   </property>
+   <property name="toolTip" >
+    <string>Select range</string>
+   </property>
+   <property name="statusTip" >
+    <string>Mark range as selected</string>
+   </property>
+   <property name="shortcut" >
+    <string>Ctrl+R</string>
+   </property>
   </action>
   <action name="toolsQuantizeAction" >
    <property name="text" >
@@ -567,13 +568,13 @@
     <bool>true</bool>
    </property>
    <property name="text" >
-    <string>Value &amp;Duration</string>
+    <string>Event &amp;Duration</string>
    </property>
    <property name="iconText" >
-    <string>Value duration</string>
+    <string>Event duration</string>
    </property>
    <property name="statusTip" >
-    <string>Whether value bars are shown proportional to duration</string>
+    <string>Whether events are shown proportional to their durations</string>
    </property>
    <property name="shortcut" >
     <string/>
