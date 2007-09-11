@@ -113,6 +113,7 @@
     <addaction name="viewStatusbarAction" />
     <addaction name="viewToolbarsMenu" />
     <addaction name="separator" />
+    <addaction name="viewDurationAction" />
     <addaction name="viewPreviewAction" />
     <addaction name="viewFollowAction" />
     <addaction name="separator" />
@@ -559,6 +560,23 @@
    </property>
    <property name="statusTip" >
     <string>Show/hide the view toolbar</string>
+   </property>
+  </action>
+  <action name="viewDurationAction" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="text" >
+    <string>Value &amp;Duration</string>
+   </property>
+   <property name="iconText" >
+    <string>Value duration</string>
+   </property>
+   <property name="statusTip" >
+    <string>Whether value bars are shown proportional to duration</string>
+   </property>
+   <property name="shortcut" >
+    <string/>
    </property>
   </action>
   <action name="viewPreviewAction" >

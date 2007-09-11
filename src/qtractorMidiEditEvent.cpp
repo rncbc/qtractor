@@ -360,8 +360,8 @@ void qtractorMidiEditEvent::updatePixmap ( int cx, int /*cy*/ )
 	p.setPen(rgbDark);
 	p.drawLine(0, y0, w, y0);
 
-	p.setPen(rgbFore);
-	p.setBrush(rgbBack);
+//	p.setPen(rgbFore);
+//	p.setBrush(rgbBack);
 
 	bool bController = (m_eventType == qtractorMidiEvent::CONTROLLER);
 	qtractorMidiEvent *pEvent = m_pEditor->seekEvent(iTickStart);
@@ -375,7 +375,7 @@ void qtractorMidiEditEvent::updatePixmap ( int cx, int /*cy*/ )
 				y = y0 - (y0 * pEvent->value()) / 128;
 			x = pTimeScale->pixelFromTick(pEvent->time()) - cx;
 			int w1 = pTimeScale->pixelFromTick(pEvent->duration()) + 1;
-			if (w1 < 5)
+			if (w1 < 5 || !m_pEditor->isDrawDuration())
 				w1 = 5;
 			if (y < y0) {
 				p.fillRect(x, y, w1, y0 - y, rgbFore);

@@ -131,6 +131,7 @@ public slots:
 	void viewToolbarFile(bool bOn);
 	void viewToolbarEdit(bool bOn);
 	void viewToolbarView(bool bOn);
+	void viewDuration(bool bOn);
 	void viewPreview(bool bOn);
 	void viewFollow(bool bOn);
 	void viewRefresh();

@@ -124,6 +124,10 @@ public:
 	void setSendNotes(bool bSendNotes);
 	bool isSendNotes() const;
 
+	// Note event value vs. duration display.
+	void setDrawDuration(bool bDrawDuration);
+	bool isDrawDuration() const;
+
 	// Alterrnate command action update helper...
 	void updateUndoAction(QAction *pAction) const;
 	void updateRedoAction(QAction *pAction) const;
@@ -397,6 +401,9 @@ private:
 
 	// Note autition while editing.
 	bool m_bSendNotes;
+	
+	// Event value stick vs. duration rectangle.
+	bool m_bDrawDuration;
 
 	// Old-fashion singleton edit-mode cursors. 
 	static int      g_iCursorRefCount;

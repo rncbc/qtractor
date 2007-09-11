@@ -272,6 +272,9 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	QObject::connect(m_ui.viewToolbarViewAction,
 		SIGNAL(triggered(bool)),
 		SLOT(viewToolbarView(bool)));
+	QObject::connect(m_ui.viewDurationAction,
+		SIGNAL(triggered(bool)),
+		SLOT(viewDuration(bool)));
 	QObject::connect(m_ui.viewPreviewAction,
 		SIGNAL(triggered(bool)),
 		SLOT(viewPreview(bool)));
@@ -343,6 +346,7 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 		m_ui.viewToolbarFileAction->setChecked(pOptions->bMidiFileToolbar);
 		m_ui.viewToolbarEditAction->setChecked(pOptions->bMidiEditToolbar);
 		m_ui.viewToolbarViewAction->setChecked(pOptions->bMidiViewToolbar);
+		m_ui.viewDurationAction->setChecked(pOptions->bMidiDuration);
 		m_ui.viewPreviewAction->setChecked(pOptions->bMidiPreview);
 		m_ui.viewFollowAction->setChecked(pOptions->bMidiFollow);
 		if (pOptions->bMidiEditMode)
@@ -356,6 +360,7 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 		viewToolbarEdit(pOptions->bMidiEditToolbar);
 		viewToolbarView(pOptions->bMidiViewToolbar);
 		m_pMidiEditor->setEditMode(pOptions->bMidiEditMode);
+		m_pMidiEditor->setDrawDuration(pOptions->bMidiDuration);
 		m_pMidiEditor->setSendNotes(pOptions->bMidiPreview);
 		m_pMidiEditor->setSyncView(pOptions->bMidiFollow);
 		// Restore whole dock windows state.
@@ -453,6 +458,7 @@ bool qtractorMidiEditorForm::queryClose (void)
 			pOptions->bMidiEditToolbar = m_ui.editToolbar->isVisible();
 			pOptions->bMidiViewToolbar = m_ui.viewToolbar->isVisible();
 			pOptions->bMidiEditMode = m_ui.editModeOnAction->isChecked();
+			pOptions->bMidiDuration = m_ui.viewDurationAction->isChecked();
 			pOptions->bMidiPreview = m_ui.viewPreviewAction->isChecked();
 			pOptions->bMidiFollow  = m_ui.viewFollowAction->isChecked();
 			// Save the dock windows state.
@@ -993,6 +999,13 @@ void qtractorMidiEditorForm::viewToolbarView ( bool bOn )
 }
 
 
+// View duration as widths of notes
+void qtractorMidiEditorForm::viewDuration ( bool bOn )
+{
+	m_pMidiEditor->setDrawDuration(bOn);
+}
+
+
 // View preview notes
 void qtractorMidiEditorForm::viewPreview ( bool bOn )
 {
@@ -1010,7 +1023,7 @@ void qtractorMidiEditorForm::viewFollow ( bool bOn )
 // Refresh view display.
 void qtractorMidiEditorForm::viewRefresh (void)
 {
-	m_pMidiEditor->refresh();
+	m_pMidiEditor->updateContents();
 
 	stabilizeForm();
 }

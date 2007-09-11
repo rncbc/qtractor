@@ -147,6 +147,7 @@ qtractorOptions::qtractorOptions (void)
 	bMidiFileToolbar = m_settings.value("/FileToolbar", true).toBool();
 	bMidiEditToolbar = m_settings.value("/EditToolbar", true).toBool();
 	bMidiViewToolbar = m_settings.value("/ViewToolbar", true).toBool();
+	bMidiDuration    = m_settings.value("/Duration", true).toBool();
 	bMidiPreview     = m_settings.value("/Preview", true).toBool();
 	bMidiFollow      = m_settings.value("/Follow", false).toBool();
 	bMidiEditMode    = m_settings.value("/EditMode", false).toBool();
@@ -253,6 +254,7 @@ qtractorOptions::~qtractorOptions (void)
 	m_settings.setValue("/FileToolbar", bMidiFileToolbar);
 	m_settings.setValue("/EditToolbar", bMidiEditToolbar);
 	m_settings.setValue("/ViewToolbar", bMidiViewToolbar);
+	m_settings.setValue("/Duration", bMidiDuration);
 	m_settings.setValue("/Preview", bMidiPreview);
 	m_settings.setValue("/Follow", bMidiFollow);
 	m_settings.setValue("/EditMode", bMidiEditMode);

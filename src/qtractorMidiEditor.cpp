@@ -373,6 +373,9 @@ qtractorMidiEditor::qtractorMidiEditor ( QWidget *pParent )
 	// Note autition while editing.
 	m_bSendNotes = false;
 
+	// Event value stick vs. duration rectangle.
+	m_bDrawDuration = false;
+
 	// Create child frame widgets...
 	QSplitter *pSplitter = new QSplitter(Qt::Horizontal, this);
 	QWidget *pVBoxLeft   = new QWidget(pSplitter);
@@ -695,6 +698,22 @@ bool qtractorMidiEditor::isSendNotes (void) const
 }
 
 
+// Event value stick vs. duration rectangle.
+void qtractorMidiEditor::setDrawDuration ( bool bDrawDuration )
+{
+	resetDragState(NULL);
+
+	m_bDrawDuration = bDrawDuration;
+
+	updateContents();
+}
+
+bool qtractorMidiEditor::isDrawDuration (void) const
+{
+	return m_bDrawDuration;
+}
+
+
 // Vertical line position drawing.
 void qtractorMidiEditor::drawPositionX ( int& iPositionX, int x, bool bSyncView )
 {
@@ -994,12 +1013,12 @@ void qtractorMidiEditor::pasteClipboard (void)
 		int y;
 		int x  = m_pTimeScale->pixelFromTick(pEvent->time());
 		int w1 = m_pTimeScale->pixelFromTick(pEvent->duration()) + 1;
+		if (w1 < 5)
+			w1 = 5;
 		// View item...
 		QRect rectView;
 		if (pEvent->type() == m_pEditView->eventType()) {
 			y = ch - h1 * (pEvent->note() + 1);
-			if (w1 < 5)
-				w1 = 5;
 			rectView.setRect(x, y, w1, h1);
 		}
 		// Event item...
@@ -1009,7 +1028,7 @@ void qtractorMidiEditor::pasteClipboard (void)
 				y = y0 - (y0 * pEvent->pitchBend()) / 8192;
 			else
 				y = y0 - (y0 * pEvent->value()) / 128;
-			if (w1 < 5)
+			if (!m_bDrawDuration)
 				w1 = 5;
 			if (y < y0)
 				rectEvent.setRect(x, y, w1, y0 - y);
@@ -1191,12 +1210,12 @@ qtractorMidiEvent *qtractorMidiEditor::eventAt (
 			int y;
 			int x  = m_pTimeScale->pixelFromTick(pEvent->time());
 			int w1 = m_pTimeScale->pixelFromTick(pEvent->duration()) + 1;
+			if (w1 < 5)
+				w1 = 5;
 			QRect rect;
 			if (bEditView) {
 				// View item...
 				y = ch - h1 * (pEvent->note() + 1);
-				if (w1 < 5)
-					w1 = 5;
 				rect.setRect(x, y, w1, h1);
 			} else {
 				// Event item...
@@ -1204,7 +1223,7 @@ qtractorMidiEvent *qtractorMidiEditor::eventAt (
 					y = y0 - (y0 * pEvent->pitchBend()) / 8192;
 				else
 					y = y0 - (y0 * pEvent->value()) / 128;
-				if (w1 < 5)
+				if (!m_bDrawDuration)
 					w1 = 5;
 				if (y < y0)
 					rect.setRect(x, y, w1, y0 - y);
@@ -1323,6 +1342,8 @@ qtractorMidiEvent *qtractorMidiEditor::dragEditEvent (
 			h1 = y0 - y1;
 			m_resizeMode = ResizeValueTop;
 		}
+		if (!m_bDrawDuration)
+			w1 = 5;
 		if (h1 < 3)
 			h1 = 3;
 		rectEvent.setRect(x1, y1, w1, h1);
@@ -1366,12 +1387,14 @@ qtractorMidiEvent *qtractorMidiEditor::dragMoveEvent (
 			if (!bEditView && pos.y() < m_rectDrag.top() + 4) {
 				m_resizeMode = ResizeValueTop;
 				shape = Qt::SplitVCursor;
-			} else if (pos.x() > m_rectDrag.right() - 4) {
-				m_resizeMode = ResizeNoteRight;
-				shape = Qt::SplitHCursor;
-			} else if (pos.x() < m_rectDrag.left() + 4) {
-				m_resizeMode = ResizeNoteLeft;
-				shape = Qt::SplitHCursor;
+			} else if (m_bDrawDuration) {
+				if (pos.x() > m_rectDrag.right() - 4) {
+					m_resizeMode = ResizeNoteRight;
+					shape = Qt::SplitHCursor;
+				} else if (pos.x() < m_rectDrag.left() + 4) {
+					m_resizeMode = ResizeNoteLeft;
+					shape = Qt::SplitHCursor;
+				}
 			}
 		} else if (!bEditView) {
 			if (pEvent->type() == qtractorMidiEvent::PITCHBEND) {
@@ -1668,12 +1691,12 @@ void qtractorMidiEditor::updateDragSelect ( qtractorScrollView *pScrollView,
 			int y;
 			int x  = m_pTimeScale->pixelFromTick(pEvent->time());
 			int w1 = m_pTimeScale->pixelFromTick(pEvent->duration()) + 1;
+			if (w1 < 5)
+				w1 = 5;
 			// View item...
 			QRect rectView;
 			if (pEvent->type() == m_pEditView->eventType()) {
 				y = ch - h1 * (pEvent->note() + 1);
-				if (w1 < 5)
-					w1 = 5;
 				rectView.setRect(x, y, w1, h1);
 				if (bEditView)
 					bSelect = rectSelect.intersects(rectView);
@@ -1685,7 +1708,7 @@ void qtractorMidiEditor::updateDragSelect ( qtractorScrollView *pScrollView,
 					y = y0 - (y0 * pEvent->pitchBend()) / 8192;
 				else
 					y = y0 - (y0 * pEvent->value()) / 128;
-				if (w1 < 5)
+				if (!m_bDrawDuration)
 					w1 = 5;
 				if (y < y0)
 					rectEvent.setRect(x, y, w1, y0 - y);
