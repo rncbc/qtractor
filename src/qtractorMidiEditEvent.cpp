@@ -365,7 +365,7 @@ void qtractorMidiEditEvent::updatePixmap ( int cx, int /*cy*/ )
 
 	QColor rgbValue(rgbBack);
 	int hue, sat, val;
-	rgbValue.getHsv(&hue, &sat, &val);
+	rgbValue.getHsv(&hue, &sat, &val); sat = 86;
 
 	bool bController = (m_eventType == qtractorMidiEvent::CONTROLLER);
 	qtractorMidiEvent *pEvent = m_pEditor->seekEvent(iTickStart);
@@ -381,14 +381,15 @@ void qtractorMidiEditEvent::updatePixmap ( int cx, int /*cy*/ )
 			int w1 = pTimeScale->pixelFromTick(pEvent->duration()) + 1;
 			if (w1 < 5 || !m_pEditor->isNoteDuration())
 				w1 = 5;
-			if (m_eventType == qtractorMidiEvent::NOTEON) {
+			if (m_eventType == qtractorMidiEvent::NOTEON ||
+				m_eventType == qtractorMidiEvent::KEYPRESS) {
 				if (m_pEditor->isNoteColor()) {
-					hue = ((128 - int(pEvent->note())) << 4) % 360;
+					hue = (128 - int(pEvent->note())) << 4;
 					if (m_pEditor->isValueColor())
-						sat = ((64 + int(pEvent->value()) >> 1)) % 256;
+						sat = 64 + (int(pEvent->value()) >> 1);
 					rgbValue.setHsv(hue, sat, val);
 				} else if (m_pEditor->isValueColor()) {
-					hue = ((128 - int(pEvent->value())) << 1) % 360;
+					hue = (128 - int(pEvent->value())) << 1;
 					rgbValue.setHsv(hue, sat, val);
 				}
 			}

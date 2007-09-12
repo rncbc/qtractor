@@ -8,8 +8,7 @@ Standards-Version: 3.7.2
 
 Package: qtractor
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, libjack, libasound,
-  libsndfile, libvorbis, libsamplerate, libmad0
+Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: An Audio/MIDI multi-track sequencer.
   Qtractor is an Audio/MIDI multi-track sequencer application
   written in C++ around the Qt4 toolkit using Qt Designer.

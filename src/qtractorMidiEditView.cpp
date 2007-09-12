@@ -339,7 +339,7 @@ void qtractorMidiEditView::updatePixmap ( int cx, int cy )
 
 	QColor rgbNote(rgbBack);
 	int hue, sat, val;
-	rgbNote.getHsv(&hue, &sat, &val);
+	rgbNote.getHsv(&hue, &sat, &val); sat = 86;
 
 	qtractorMidiEvent *pEvent = m_pEditor->seekEvent(iTickStart);
 	while (pEvent && pEvent->time() < iTickEnd) {
@@ -352,12 +352,12 @@ void qtractorMidiEditView::updatePixmap ( int cx, int cy )
 				if (w1 < 5)
 					w1 = 5;
 				if (m_pEditor->isNoteColor()) {
-					hue = ((128 - int(pEvent->note())) << 4) % 360;
+					hue = (128 - int(pEvent->note())) << 4;
 					if (m_pEditor->isValueColor())
-						sat = ((64 + int(pEvent->value()) >> 1)) % 256;
+						sat = 64 + (int(pEvent->value()) >> 1);
 					rgbNote.setHsv(hue, sat, val);
 				} else if (m_pEditor->isValueColor()) {
-					hue = ((128 - int(pEvent->value())) << 1) % 360;
+					hue = (128 - int(pEvent->value())) << 1;
 					rgbNote.setHsv(hue, sat, val);
 				}
 				p.fillRect(x, y, w1, h1, rgbFore);
