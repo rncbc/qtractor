@@ -125,8 +125,16 @@ public:
 	bool isSendNotes() const;
 
 	// Note event value vs. duration display.
-	void setDrawDuration(bool bDrawDuration);
-	bool isDrawDuration() const;
+	void setNoteDuration(bool bNoteDuration);
+	bool isNoteDuration() const;
+
+	// Note event coloring.
+	void setNoteColor(bool bNoteColor);
+	bool isNoteColor() const;
+
+	// Note event coloring.
+	void setValueColor(bool bValueColor);
+	bool isValueColor() const;
 
 	// Alterrnate command action update helper...
 	void updateUndoAction(QAction *pAction) const;
@@ -403,7 +411,11 @@ private:
 	bool m_bSendNotes;
 	
 	// Event value stick vs. duration rectangle.
-	bool m_bDrawDuration;
+	bool m_bNoteDuration;
+
+	// Event (note, velocity) coloring.
+	bool m_bNoteColor;
+	bool m_bValueColor;
 
 	// Old-fashion singleton edit-mode cursors. 
 	static int      g_iCursorRefCount;

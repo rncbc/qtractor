@@ -113,7 +113,9 @@
     <addaction name="viewStatusbarAction" />
     <addaction name="viewToolbarsMenu" />
     <addaction name="separator" />
-    <addaction name="viewDurationAction" />
+    <addaction name="viewNoteDurationAction" />
+    <addaction name="viewNoteColorAction" />
+    <addaction name="viewValueColorAction" />
     <addaction name="separator" />
     <addaction name="viewPreviewAction" />
     <addaction name="viewFollowAction" />
@@ -563,18 +565,52 @@
     <string>Show/hide the view toolbar</string>
    </property>
   </action>
-  <action name="viewDurationAction" >
+  <action name="viewNoteDurationAction" >
    <property name="checkable" >
     <bool>true</bool>
    </property>
    <property name="text" >
-    <string>Event &amp;Duration</string>
+    <string>Note &amp;Duration</string>
    </property>
    <property name="iconText" >
-    <string>Event duration</string>
+    <string>Note duration</string>
    </property>
    <property name="statusTip" >
-    <string>Whether events are shown proportional to their durations</string>
+    <string>Whether note events are shown proportional to duration</string>
+   </property>
+   <property name="shortcut" >
+    <string/>
+   </property>
+  </action>
+  <action name="viewNoteColorAction" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="text" >
+    <string>&amp;Note Color</string>
+   </property>
+   <property name="iconText" >
+    <string>Note color</string>
+   </property>
+   <property name="statusTip" >
+    <string>Whether note events are colored according to pitch</string>
+   </property>
+   <property name="shortcut" >
+    <string/>
+   </property>
+  </action>
+  <action name="viewValueColorAction" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="text" >
+    <string>&amp;Value Color</string>
+   </property>
+   <property name="iconText" >
+    <string>Value color</string>
+   </property>
+   <property name="statusTip" >
+    <string>Whether note events are colored according to value (velocity)</string>
    </property>
    <property name="shortcut" >
     <string/>

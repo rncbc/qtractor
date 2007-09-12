@@ -334,8 +334,12 @@ void qtractorMidiEditView::updatePixmap ( int cx, int cy )
 	unsigned long iTickStart = pTimeScale->tickFromPixel(cx);
 	unsigned long iTickEnd   = iTickStart + pTimeScale->tickFromPixel(w);
 
-	p.setPen(rgbFore);
-	p.setBrush(rgbBack);
+//	p.setPen(rgbFore);
+//	p.setBrush(rgbBack);
+
+	QColor rgbNote(rgbBack);
+	int hue, sat, val;
+	rgbNote.getHsv(&hue, &sat, &val);
 
 	qtractorMidiEvent *pEvent = m_pEditor->seekEvent(iTickStart);
 	while (pEvent && pEvent->time() < iTickEnd) {
@@ -347,12 +351,18 @@ void qtractorMidiEditView::updatePixmap ( int cx, int cy )
 				int w1 = pTimeScale->pixelFromTick(pEvent->duration()) + 1;
 				if (w1 < 5)
 					w1 = 5;
-				if (h1 > 3) {
-					p.fillRect(x, y, w1, h1, rgbFore);
-					p.fillRect(x + 1, y + 1, w1 - 4, h1 - 3, rgbBack);
-				} else {
-					p.drawRect(x, y, w1, h1);
+				if (m_pEditor->isNoteColor()) {
+					hue = ((128 - int(pEvent->note())) << 4) % 360;
+					if (m_pEditor->isValueColor())
+						sat = ((64 + int(pEvent->value()) >> 1)) % 256;
+					rgbNote.setHsv(hue, sat, val);
+				} else if (m_pEditor->isValueColor()) {
+					hue = ((128 - int(pEvent->value())) << 1) % 360;
+					rgbNote.setHsv(hue, sat, val);
 				}
+				p.fillRect(x, y, w1, h1, rgbFore);
+				if (h1 > 3)
+					p.fillRect(x + 1, y + 1, w1 - 4, h1 - 3, rgbNote);
 			}
 		}
 		pEvent = pEvent->next();

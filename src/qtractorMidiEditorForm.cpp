@@ -267,9 +267,15 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	QObject::connect(m_ui.viewToolbarViewAction,
 		SIGNAL(triggered(bool)),
 		SLOT(viewToolbarView(bool)));
-	QObject::connect(m_ui.viewDurationAction,
+	QObject::connect(m_ui.viewNoteDurationAction,
 		SIGNAL(triggered(bool)),
-		SLOT(viewDuration(bool)));
+		SLOT(viewNoteDuration(bool)));
+	QObject::connect(m_ui.viewNoteColorAction,
+		SIGNAL(triggered(bool)),
+		SLOT(viewNoteColor(bool)));
+	QObject::connect(m_ui.viewValueColorAction,
+		SIGNAL(triggered(bool)),
+		SLOT(viewValueColor(bool)));
 	QObject::connect(m_ui.viewPreviewAction,
 		SIGNAL(triggered(bool)),
 		SLOT(viewPreview(bool)));
@@ -341,7 +347,9 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 		m_ui.viewToolbarFileAction->setChecked(pOptions->bMidiFileToolbar);
 		m_ui.viewToolbarEditAction->setChecked(pOptions->bMidiEditToolbar);
 		m_ui.viewToolbarViewAction->setChecked(pOptions->bMidiViewToolbar);
-		m_ui.viewDurationAction->setChecked(pOptions->bMidiDuration);
+		m_ui.viewNoteDurationAction->setChecked(pOptions->bMidiNoteDuration);
+		m_ui.viewNoteColorAction->setChecked(pOptions->bMidiNoteColor);
+		m_ui.viewValueColorAction->setChecked(pOptions->bMidiValueColor);
 		m_ui.viewPreviewAction->setChecked(pOptions->bMidiPreview);
 		m_ui.viewFollowAction->setChecked(pOptions->bMidiFollow);
 		if (pOptions->bMidiEditMode)
@@ -355,7 +363,9 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 		viewToolbarEdit(pOptions->bMidiEditToolbar);
 		viewToolbarView(pOptions->bMidiViewToolbar);
 		m_pMidiEditor->setEditMode(pOptions->bMidiEditMode);
-		m_pMidiEditor->setDrawDuration(pOptions->bMidiDuration);
+		m_pMidiEditor->setNoteColor(pOptions->bMidiNoteColor);
+		m_pMidiEditor->setValueColor(pOptions->bMidiValueColor);
+		m_pMidiEditor->setNoteDuration(pOptions->bMidiNoteDuration);
 		m_pMidiEditor->setSendNotes(pOptions->bMidiPreview);
 		m_pMidiEditor->setSyncView(pOptions->bMidiFollow);
 		// Restore whole dock windows state.
@@ -453,7 +463,9 @@ bool qtractorMidiEditorForm::queryClose (void)
 			pOptions->bMidiEditToolbar = m_ui.editToolbar->isVisible();
 			pOptions->bMidiViewToolbar = m_ui.viewToolbar->isVisible();
 			pOptions->bMidiEditMode = m_ui.editModeOnAction->isChecked();
-			pOptions->bMidiDuration = m_ui.viewDurationAction->isChecked();
+			pOptions->bMidiNoteDuration = m_ui.viewNoteDurationAction->isChecked();
+			pOptions->bMidiNoteColor = m_ui.viewNoteColorAction->isChecked();
+			pOptions->bMidiValueColor = m_ui.viewValueColorAction->isChecked();
 			pOptions->bMidiPreview = m_ui.viewPreviewAction->isChecked();
 			pOptions->bMidiFollow  = m_ui.viewFollowAction->isChecked();
 			// Save the dock windows state.
@@ -831,12 +843,14 @@ void qtractorMidiEditorForm::fileClose (void)
 void qtractorMidiEditorForm::editModeOn (void)
 {
 	m_pMidiEditor->setEditMode(true);
+	m_pMidiEditor->updateContents();
 }
 
 // Set edit-mode off.
 void qtractorMidiEditorForm::editModeOff (void)
 {
 	m_pMidiEditor->setEditMode(false);
+	m_pMidiEditor->updateContents();
 }
 
 
@@ -994,10 +1008,27 @@ void qtractorMidiEditorForm::viewToolbarView ( bool bOn )
 }
 
 
-// View duration as widths of notes
-void qtractorMidiEditorForm::viewDuration ( bool bOn )
+// View note (pitch) coloring.
+void qtractorMidiEditorForm::viewNoteColor ( bool bOn )
 {
-	m_pMidiEditor->setDrawDuration(bOn);
+	m_pMidiEditor->setNoteColor(bOn);
+	m_pMidiEditor->updateContents();
+}
+
+
+// View note (velocity) coloring.
+void qtractorMidiEditorForm::viewValueColor ( bool bOn )
+{
+	m_pMidiEditor->setValueColor(bOn);
+	m_pMidiEditor->updateContents();
+}
+
+
+// View duration as widths of notes
+void qtractorMidiEditorForm::viewNoteDuration ( bool bOn )
+{
+	m_pMidiEditor->setNoteDuration(bOn);
+	m_pMidiEditor->updateContents();
 }
 
 

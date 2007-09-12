@@ -114,7 +114,9 @@ public:
 	bool bMidiFileToolbar;
 	bool bMidiEditToolbar;
 	bool bMidiViewToolbar;
-	bool bMidiDuration;
+	bool bMidiNoteDuration;
+	bool bMidiNoteColor;
+	bool bMidiValueColor;
 	bool bMidiPreview;
 	bool bMidiFollow;
 	bool bMidiEditMode;

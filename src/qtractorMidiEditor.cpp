@@ -373,8 +373,12 @@ qtractorMidiEditor::qtractorMidiEditor ( QWidget *pParent )
 	// Note autition while editing.
 	m_bSendNotes = false;
 
-	// Event value stick vs. duration rectangle.
-	m_bDrawDuration = false;
+	// Event (note) duration rectangle vs. stick.
+	m_bNoteDuration = false;
+
+	// Event (note, velocity) coloring.
+	m_bNoteColor  = false;
+	m_bValueColor = false;
 
 	// Create child frame widgets...
 	QSplitter *pSplitter = new QSplitter(Qt::Horizontal, this);
@@ -538,7 +542,7 @@ void qtractorMidiEditor::setEditMode ( bool bEditMode )
 
 	m_bEditMode = bEditMode;
 
-	updateContents();
+//	updateContents();
 }
 
 bool qtractorMidiEditor::isEditMode() const
@@ -699,18 +703,37 @@ bool qtractorMidiEditor::isSendNotes (void) const
 
 
 // Event value stick vs. duration rectangle.
-void qtractorMidiEditor::setDrawDuration ( bool bDrawDuration )
+void qtractorMidiEditor::setNoteDuration ( bool bNoteDuration )
 {
-	resetDragState(NULL);
-
-	m_bDrawDuration = bDrawDuration;
-
-	updateContents();
+	m_bNoteDuration = bNoteDuration;
 }
 
-bool qtractorMidiEditor::isDrawDuration (void) const
+bool qtractorMidiEditor::isNoteDuration (void) const
 {
-	return m_bDrawDuration;
+	return m_bNoteDuration;
+}
+
+
+// Event (note, velocity) coloring.
+void qtractorMidiEditor::setNoteColor ( bool bNoteColor )
+{
+	m_bNoteColor = bNoteColor;
+}
+
+bool qtractorMidiEditor::isNoteColor (void) const
+{
+	return m_bNoteColor;
+}
+
+
+void qtractorMidiEditor::setValueColor ( bool bValueColor )
+{
+	m_bValueColor = bValueColor;
+}
+
+bool qtractorMidiEditor::isValueColor (void) const
+{
+	return m_bValueColor;
 }
 
 
@@ -1028,7 +1051,7 @@ void qtractorMidiEditor::pasteClipboard (void)
 				y = y0 - (y0 * pEvent->pitchBend()) / 8192;
 			else
 				y = y0 - (y0 * pEvent->value()) / 128;
-			if (!m_bDrawDuration)
+			if (!m_bNoteDuration)
 				w1 = 5;
 			if (y < y0)
 				rectEvent.setRect(x, y, w1, y0 - y);
@@ -1223,7 +1246,7 @@ qtractorMidiEvent *qtractorMidiEditor::eventAt (
 					y = y0 - (y0 * pEvent->pitchBend()) / 8192;
 				else
 					y = y0 - (y0 * pEvent->value()) / 128;
-				if (!m_bDrawDuration)
+				if (!m_bNoteDuration)
 					w1 = 5;
 				if (y < y0)
 					rect.setRect(x, y, w1, y0 - y);
@@ -1342,7 +1365,7 @@ qtractorMidiEvent *qtractorMidiEditor::dragEditEvent (
 			h1 = y0 - y1;
 			m_resizeMode = ResizeValueTop;
 		}
-		if (!m_bDrawDuration)
+		if (!m_bNoteDuration)
 			w1 = 5;
 		if (h1 < 3)
 			h1 = 3;
@@ -1387,7 +1410,7 @@ qtractorMidiEvent *qtractorMidiEditor::dragMoveEvent (
 			if (!bEditView && pos.y() < m_rectDrag.top() + 4) {
 				m_resizeMode = ResizeValueTop;
 				shape = Qt::SplitVCursor;
-			} else if (m_bDrawDuration) {
+			} else if (m_bNoteDuration) {
 				if (pos.x() > m_rectDrag.right() - 4) {
 					m_resizeMode = ResizeNoteRight;
 					shape = Qt::SplitHCursor;
@@ -1708,7 +1731,7 @@ void qtractorMidiEditor::updateDragSelect ( qtractorScrollView *pScrollView,
 					y = y0 - (y0 * pEvent->pitchBend()) / 8192;
 				else
 					y = y0 - (y0 * pEvent->value()) / 128;
-				if (!m_bDrawDuration)
+				if (!m_bNoteDuration)
 					w1 = 5;
 				if (y < y0)
 					rectEvent.setRect(x, y, w1, y0 - y);
