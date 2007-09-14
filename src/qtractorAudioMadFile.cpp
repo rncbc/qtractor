@@ -79,7 +79,14 @@ bool qtractorAudioMadFile::open ( const QString& sFilename, int iMode )
 	m_pFile = ::fopen(aFilename.constData(), "rb");
 	if (m_pFile == NULL)
 		return false;
-		
+
+	// Create the decoded frame list.
+	m_pFrameList = createFrameList(sFilename);
+	if (m_pFrameList == NULL) {
+		close();
+		return false;
+	}
+
 #ifdef CONFIG_LIBMAD
 	mad_stream_init(&m_madStream);
 	mad_frame_init(&m_madFrame);
@@ -171,10 +178,10 @@ bool qtractorAudioMadFile::input (void)
 		// Update the input offset, as for next time...
 		m_curr.iInputOffset += iRead;
 		// Time to add some frame mapping, on each 3rd iteration...
-		if ((++m_curr.iDecodeCount % 3) == 0 && (m_frames.count() < 1
-			|| m_frames.last().iOutputOffset < m_curr.iOutputOffset)) {
+		if ((++m_curr.iDecodeCount % 3) == 0 && (m_pFrameList->count() < 1
+			|| m_pFrameList->last().iOutputOffset < m_curr.iOutputOffset)) {
 			unsigned long iInputOffset = m_curr.iInputOffset - iRemaining;
-			m_frames.append(FrameNode(iInputOffset,
+			m_pFrameList->append(FrameNode(iInputOffset,
 				m_curr.iOutputOffset, m_curr.iDecodeCount));
 		}
 		// Add some decode buffer guard...
@@ -245,7 +252,6 @@ bool qtractorAudioMadFile::decode (void)
 		m_iRingBufferRead  = 0;
 		m_iRingBufferWrite = 0;
 		// Decoder mapping initialization.
-		m_frames.clear();
 		m_curr.iInputOffset  = 0;
 		m_curr.iOutputOffset = 0;
 		m_curr.iDecodeCount  = 0;
@@ -353,13 +359,14 @@ bool qtractorAudioMadFile::seek ( unsigned long iOffset )
 
 	// Are qe seeking backward or forward 
 	// from last known decoded position?
-	if (m_frames.count() > 0 && m_frames.last().iOutputOffset > iOffset) {
+	if (m_pFrameList->count() > 0
+		&& m_pFrameList->last().iOutputOffset > iOffset) {
 		// Assume the worst case (seek to very beggining...)
 		m_curr.iInputOffset  = 0;
 		m_curr.iOutputOffset = 0;
 		m_curr.iDecodeCount  = 0;
 		// Find the previous mapped 3rd frame that fits location...
-		QListIterator<FrameNode> iter(m_frames);
+		QListIterator<FrameNode> iter(*m_pFrameList);
 		iter.toBack();
 		while (iter.hasPrevious()) {
 			if (iter.previous().iOutputOffset < iOffset) {
@@ -436,6 +443,10 @@ void qtractorAudioMadFile::close (void)
 		m_pFile = NULL;
 	}
 
+	// Frame lists are never destroyed here
+	// (they're cached for whole life-time of the program).
+	m_pFrameList = NULL;
+
 	// Reset all other state relevant variables.
 	m_bEndOfStream = false;
 	m_iFramesEst   = 0;
@@ -498,6 +509,39 @@ unsigned int qtractorAudioMadFile::writable (void) const
 	} else {
 		return m_iRingBufferSize - 1;
 	}
+}
+
+
+// Frame list factory method.
+qtractorAudioMadFile::FrameList *qtractorAudioMadFile::createFrameList (
+	const QString& sFilename )
+{
+	// Frame list hash repository
+	// (declared here for proper cleanup).
+	class FrameListFactory : public QHash<QString, FrameList *>
+	{
+	public:
+		// Destructor.
+		~FrameListFactory()	{
+			QMutableHashIterator<QString, FrameList *> iter(*this);
+			while (iter.hasNext()) {
+				FrameList *pFrameList = iter.next().value();
+				iter.remove();
+				delete pFrameList;
+			}
+		}
+	};
+
+	// Do the factory thing here...
+	static FrameListFactory s_lists;
+
+	FrameList *pFrameList = s_lists.value(sFilename, NULL);
+	if (pFrameList == NULL) {
+		pFrameList = new FrameList();
+		s_lists.insert(sFilename, pFrameList);
+	}
+
+	return pFrameList;
 }
 
 

@@ -1,7 +1,7 @@
 // qtractorAudioMadFile.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2006, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -99,9 +99,10 @@ private:
 	unsigned int      m_iRingBufferWrite;
 	float           **m_ppRingBuffer;
 
-	// Decoding frame maping for sample-accurate seeking.
+	// Decoding frame mapping for sample-accurate seeking.
 	unsigned long     m_iSeekOffset;
-	
+
+	// Decoded frame node.
 	struct FrameNode {
 		// Member constructor.
 		FrameNode(unsigned long i = 0, unsigned long o = 0, unsigned int c = 0)
@@ -112,9 +113,15 @@ private:
 		unsigned int  iDecodeCount;     // Decoder iteration count.
 	};
 
+	// Decoded frame list type.
 	typedef QList<FrameNode> FrameList;
 
-	FrameList m_frames;
+	// Frame list factory method.
+	static FrameList *createFrameList(const QString& sFilename);
+
+	// Frame list instance; 
+	FrameList *m_pFrameList;
+	// Current decoded frame node.
 	FrameNode m_curr;
 };
 

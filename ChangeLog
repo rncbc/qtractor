@@ -3,11 +3,255 @@ Qtractor - An Audio/MIDI multi-track sequencer
 
 ChangeLog
 
-0.0.6   2007-09-12  Work in progress...
+0.0.6   2007-09-14  Work in progress...
 
-0.0.5   2007-09-08  Ninth Hitch Nail.
-0.0.4   2007-07-19  Eighth Wanderer.
-0.0.3   2007-06-23  Seventh Draught.
-0.0.2   2007-05-26  Sixth Lord.
-0.0.1   2007-05-07  Filthy Fifth.
-0.0.0   2006-10-31  Halloween Files.
+-
+
+
+0.0.5   2007-09-08  The Ninth Hitch Nail
+
+- MIDI edit tools (quantize, transpose, normalize, randomize,
+  resize) are all functional and ready for experimentalism;
+  gets in its own top-level menu and form with named preset
+  store and recall functionality (EXPERIMENTAL).
+
+- Main form backward and rewind transport actions are now being
+  immediately enabled when playing from the session (zero-time)
+  start position.
+ 
+- Audio and MIDI export sneaks in and in form and accessible
+  from the main Track menu (EXPERIMENTAL).
+
+- MIDI track channel is now properly set on session (re)load;
+  track background color changes was missing the alpha setting.
+
+- The mix-down buffering was fixed again, now taking multi-track
+  overlapping clips into consideration (was a lot more broken
+  since the recent glitch-looping fix).
+
+- Dirty MIDI clip editing control has been fixed but still
+  somewhat hacky nevertheless.
+
+- First attempt on solving a nasty MIDI editor bug, which was
+  quietly and severely crippling MIDI files while saving offset
+  edited clips.
+
+- Session loop (re)setting is finally now an undoable command.
+
+- Yet another insidious bug has been swept away from under the
+  carpet: once again on audio looping, some astonishing old and
+  crappy session cursor seek-backward statement was lurking to
+  be laid off. Gone now, simply as it is, growing old on this :)
+
+- A tremendous bug has been fixed: audio looping is now a little
+  more glitch-free as the mix-down buffering was badly broken
+  even since its primordial implementation. Rejoice.
+
+- Minor improvements on track-view cursor updates and visual
+  tracking while recording.
+
+- MIDI editor windows get their keyboard accelerator/shortcuts
+  back in business, whether opted as tools always on top or not.
+
+- The infamous "Keep tool windows always on top" global option
+  is now infecting the Connections, Mixer, Plugin and MIDI Editor
+  window instances with no probable regrets. To be used with
+  discretion, of course.
+
+- Session update/initialization gets it clean on startup.
+
+- Range selection action (Ctrl+R) is now back in business with
+  the added bonus of being accessible from all MIDI editor
+  instances too.
+
+- Common edit-head and tail cursor positions are now under common
+  control and display from all MIDI editor instances; the session
+  loop-start/end points are now also shown on every time-line and
+  share the same control behavior across all MIDI editor instances.
+
+
+0.0.4   2007-07-19  The Eighth Wanderer
+
+- Main toolbar tempo spin-box gets loose from keyboard change
+  tracking (Qt >= 4.3); custom spin-box compilation fix for
+  Qt 4.1.
+
+- Illusive but nasty Connections/Patchbay item tooltip crash bug
+  has been hopefully fixed (Qt >= 4.3); QComboBox::editTextChanged()
+  signal replaces old QComboBox::textChanged().
+
+- Combo-box setup history has been corrected on restore, which
+  was discarding the very initial default (factory) contents.
+
+- Make debian package build depend on libqt4-dev; win32 console
+  flag is back to qmake project file.
+
+- MIDI instrument selection (e.g. on track form) gets fixed and
+  improved.
+
+- Sorting method for the connections port list has been refactored;
+  potential crash bug fix on connections sorting method.
+
+- Messages class accessor methods constness fix.
+
+- Got rid of some autoconf redundand thingies on configure;
+  late debian changelog update.
+
+- Desktop categories update: AudioVideo.
+
+- README correction.
+
+
+0.0.3   2007-06-23  The Seventh Draught
+
+- Crash fix on the connections widget, was a matter of refactoring
+  the refresh/clear slots.
+
+- Help menu added to MIDI editor form (redirected and same to main
+  form anyway).
+
+- Clip properties form gets its proper sanity check, querying any
+  existing clip editor whether its safe to apply the new settings.
+
+- Mixer sliders get their long due valued correction, hopefully.
+
+- Transport backward and play/stop are now made accessible from
+  the MIDI editor widget, through their keyboard accelerator
+  shortcuts (backspace and space, respectively).
+
+- Transport actions (play, rec, rew and ffwd) are now kept stable
+  on a single point, instead of being scattered all over the main
+  form code; transport visual feedback might get affected,
+  specially regarding the MMC processing.
+
+- Application icon is now officially installed
+  into ${prefix}/share/pixmaps.
+
+- Spec file is now a bit more openSUSE compliant; just made RPM
+  requirements as exigent as the new debian ones.
+
+- Paste cursor is now properly preserved after leaving MIDI editor
+  views.
+
+- Amazingly why this was not spotted before, the main application
+  logo-icon has been downscaled to the 32x32 pixel standard icon
+  size.
+
+- MIDI clip editor clipboard gets singleton status and is now
+  shared on all MIDI editor instances. Similarly to the main
+  track-view, shift/ctrl-left-clicking on the MIDI editor views
+  sets the current session play-head position.
+
+- A desktop entry file has been included on install, at last.
+
+- Clips in main track-view get more info in the form of tooltips.
+
+- Major rounding fix to time-scaling and most specially on all
+  those internal MIDI I/O methods.
+
+- Extended range selection from the time-ruler and key-list
+  headers is now possible by click-and-drag the mouse pointer.
+
+- Play-head cursor is now also displayed and/or set position
+  on all open MIDI clip editors time line view. As in the main
+  application form, a new local follow play-head option is also
+  featured on the MIDI editor view menu and toolbar.
+
+- All MIDI file save operations are now logged to main messages
+  and files are added to the main files list view.
+
+- Initial debianization.
+
+- MIDI capture/record file format (SMF Format 0 or 1) is now
+  an user option, introducing the new MIDI tab on the global
+  View/Options dialog.
+
+- A bad old-time session cursor glitch has been apparently fixed.
+
+- Make sure the generic clip properties form is modal.
+
+- Major rewrite and adaptation to the session time-scale properties,
+  making its way for a brand new command instance: the session-tempo
+  command.
+
+- Changing the snap-per-beat combobox value on the main window
+  toolbar does not make it as an undoable command anymore.
+
+- Long due MIDI clip editor integration has come to reality.
+
+- Major rewrite on the MIDI sequence file read/write methods,
+  in preparation to the coming MIDI clip editor.
+
+- Status-bar session length label now gets rightly updated,
+  while extended recording, of course.
+
+- Clip properties fade-in/out lengths, gets their old due
+  constraints.
+
+- Main transport time display is now an editable custom spin-box;
+  the Tempo (BPM) spin-box has seen new colors (green on black).
+
+- Transport time display format option adds the new choice of
+  absolute frame number, alternative to previous time and BBT.
+
+- The frame-time based spin-boxes, on the clip properties form,
+  were replaced with a new custom one, allowing for alternate
+  frame, time and bbt input/display formats.
+
+- Time-scale helper class has been introduced.
+
+
+0.0.2   2007-05-26  The Sixth Lord
+
+- Audio/MIDI connections gets slightly refactored, contributing
+  for whole robustness, specially in case of incidental engine
+  shutdown.
+
+- Mixer window gets a minimum default height bump.
+
+- Clip fade-in/out type changes have been properly fixed.
+
+- Complete refactoring of the command class pattern, making it
+  now derived from QObject and not having a reference to the
+  main form anymore.
+
+- Inoperative context menu event handler has been removed from
+  the track-view.
+
+- MIDI sequence note-on event tracking now uses faster QHash
+  class, instead of original QMap.
+
+- Off-by-one bug fix on MIDI track write method, while parsing
+  co-incident note-on/off events in the wrong order and thus
+  leaving note events with an invalid (zero) duration; obviously
+  affecting MIDI recording in very special circumstances.
+
+- Minor and rather innocuous drop at this time in the MIDI event
+  class structure: the flags member field.
+
+- Port connections now get their lines correctly drawn; strangely
+  enough, the connection lines were being painted only for the
+  parent client items, probably since the Qt4 migration (aka.
+  Halloween files).
+
+- Early clip editing is in place (clip name, start, offset and
+  length parameters, fade in/out length and type).
+
+- Some menu item text capitalizations.
+
+
+0.0.1   2007-05-07  The Filthy Fifth
+
+- Newer JACK 0.105.0 seems to bitch, probably correctly, about the
+  return value of the process callback. Make it to bitch no more by
+  ensuring the JACK client is always issuing the innocuous 0 (zero)
+  return value.
+
+- Important fixes have been issued, affecting MIDI recording: MIDI
+  sequence zero-time event insertion; MIDI file pending note-off
+  processing on write-track method.
+
+- Qt4 migration complete.
+
+
+0.0.0   2006-10-31  The Halloween Files
