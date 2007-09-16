@@ -469,7 +469,9 @@ qtractorMidiEngine::qtractorMidiEngine ( qtractorSession *pSession )
 	m_pOutputThread  = NULL;
 
 	m_iTimeStart     = 0;
+#ifdef QTRACTOR_SNAFU_DRIFT
 	m_iTimeDelta     = 0;
+#endif
 
 	m_pNotifyWidget  = NULL;
 	m_eNotifyMmcType = QEvent::None;
@@ -894,6 +896,7 @@ void qtractorMidiEngine::flush (void)
 	// Really flush MIDI output...
 	snd_seq_drain_output(m_pAlsaSeq);
 
+#ifdef QTRACTOR_SNAFU_DRIFT
 	// Time to have some corrective approach...?
 	snd_seq_queue_status_t *pQueueStatus;
 	snd_seq_queue_status_alloca(&pQueueStatus);
@@ -914,6 +917,7 @@ void qtractorMidiEngine::flush (void)
 #endif
 		}
 	}
+#endif	// QTRACTOR_SNAFU_DRIFT
 }
 
 
@@ -977,7 +981,9 @@ bool qtractorMidiEngine::activate (void)
 	m_pOutputThread->start(QThread::HighPriority);
 
 	m_iTimeStart = 0;
+#ifdef QTRACTOR_SNAFU_DRIFT
 	m_iTimeDelta = 0;
+#endif
 
 	// Reset control buses...
 	resetControlBus(qtractorBus::Duplex);
@@ -1016,7 +1022,9 @@ bool qtractorMidiEngine::start (void)
 
 	// Start queue timer...
 	m_iTimeStart = (long) pSession->tickFromFrame(pMidiCursor->frame());
+#ifdef QTRACTOR_SNAFU_DRIFT
 	m_iTimeDelta = 0;
+#endif
 
 	// Effectively start sequencer queue timer...
 	snd_seq_start_queue(m_pAlsaSeq, m_iAlsaQueue, NULL);
@@ -1081,7 +1089,9 @@ void qtractorMidiEngine::clean (void)
 		delete m_pOutputThread;
 		m_pOutputThread = NULL;
 		m_iTimeStart = 0;
+#ifdef QTRACTOR_SNAFU_DRIFT
 		m_iTimeDelta = 0;
+#endif
 	}
 
 	// Last but not least, delete input thread...

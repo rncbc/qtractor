@@ -27,7 +27,7 @@
 
 
 // Forward declarations.
-class qtractorMidiSequence;
+class qtractorMidiClip;
 class qtractorMidiEditSelect;
 class qtractorMidiEditCommand;
 class qtractorTimeScale;
@@ -53,7 +53,7 @@ public:
 
 	// Create edit command based on given selection.
 	qtractorMidiEditCommand *editCommand(
-		qtractorMidiSequence *pSeq, qtractorMidiEditSelect *pSelect);
+		qtractorMidiClip *pMidiClip, qtractorMidiEditSelect *pSelect);
 
 protected slots:
 

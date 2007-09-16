@@ -21,7 +21,8 @@
 
 #include "qtractorMidiEditCommand.h"
 
-#include "qtractorMidiSequence.h"
+#include "qtractorMidiClip.h"
+#include "qtractorMidiEngine.h"
 
 
 //----------------------------------------------------------------------
@@ -30,8 +31,8 @@
 
 // Constructor.
 qtractorMidiEditCommand::qtractorMidiEditCommand (
-	qtractorMidiSequence *pSeq, const QString& sName )
-	: qtractorCommand(sName), m_pSeq(pSeq)
+	qtractorMidiClip *pMidiClip, const QString& sName )
+	: qtractorCommand(sName), m_pMidiClip(pMidiClip)
 {
 }
 
@@ -116,9 +117,22 @@ bool qtractorMidiEditCommand::findEvent ( qtractorMidiEvent *pEvent,
 // Common executive method.
 bool qtractorMidiEditCommand::execute ( bool bRedo )
 {
-	if (m_pSeq == NULL)
+	if (m_pMidiClip == NULL)
 		return false;
 
+	qtractorMidiSequence *pSeq = m_pMidiClip->sequence();
+	if (pSeq == NULL)
+		return false;
+
+	// Dropped enqueued events...
+	qtractorSession *pSession = NULL;
+	qtractorTrack *pTrack = m_pMidiClip->track();
+	if (pTrack)
+		pSession = pTrack->session();
+	if (pSession && pSession->isPlaying())
+		pSession->midiEngine()->trackMute(pTrack, true);
+
+	// Change
 	QListIterator<Item *> iter(m_items);
 	while (iter.hasNext()) {
 		Item *pItem = iter.next();
@@ -127,38 +141,38 @@ bool qtractorMidiEditCommand::execute ( bool bRedo )
 		switch (pItem->command) {
 		case InsertEvent: {
 			if (bRedo)
-				m_pSeq->insertEvent(pEvent);
+				pSeq->insertEvent(pEvent);
 			else
-				m_pSeq->unlinkEvent(pEvent);
+				pSeq->unlinkEvent(pEvent);
 			pItem->autoDelete = !bRedo;
 			break;
 		}
 		case MoveEvent: {
 			int iOldNote = int(pEvent->note());
 			unsigned long iOldTime = pEvent->time();
-			m_pSeq->unlinkEvent(pEvent);
+			pSeq->unlinkEvent(pEvent);
 			pEvent->setNote(pItem->note);
 			pEvent->setTime(pItem->time);
-			m_pSeq->insertEvent(pEvent);
+			pSeq->insertEvent(pEvent);
 			pItem->note = iOldNote;
 			pItem->time = iOldTime;
 			break;
 		}
 		case ResizeEventTime: {
 			unsigned long iOldTime = pEvent->time();
-			m_pSeq->unlinkEvent(pEvent);
+			pSeq->unlinkEvent(pEvent);
 			pEvent->setTime(pItem->time);
-			m_pSeq->insertEvent(pEvent);
+			pSeq->insertEvent(pEvent);
 			pItem->time = iOldTime;
 			break;
 		}
 		case ResizeEventTime2: {
 			unsigned long iOldTime = pEvent->time();
 			unsigned long iOldDuration = pEvent->duration();
-			m_pSeq->unlinkEvent(pEvent);
+			pSeq->unlinkEvent(pEvent);
 			pEvent->setTime(pItem->time);
 			pEvent->setDuration(pItem->duration);
-			m_pSeq->insertEvent(pEvent);
+			pSeq->insertEvent(pEvent);
 			pItem->time = iOldTime;
 			pItem->duration = iOldDuration;
 			break;
@@ -183,9 +197,9 @@ bool qtractorMidiEditCommand::execute ( bool bRedo )
 		}
 		case RemoveEvent: {
 			if (bRedo)
-				m_pSeq->unlinkEvent(pEvent);
+				pSeq->unlinkEvent(pEvent);
 			else
-				m_pSeq->insertEvent(pEvent);
+				pSeq->insertEvent(pEvent);
 			pItem->autoDelete = bRedo;
 			break;
 		}
@@ -193,6 +207,10 @@ bool qtractorMidiEditCommand::execute ( bool bRedo )
 			break;
 		}
 	}
+
+	// Renqueue dropped events...
+	if (pSession && pSession->isPlaying())
+		pSession->midiEngine()->trackMute(pTrack, false);
 
 	return true;
 }

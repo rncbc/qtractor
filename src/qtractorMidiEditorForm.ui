@@ -690,6 +690,26 @@
     <string>Backspace</string>
    </property>
   </action>
+  <action name="transportLoopAction" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="icon" >
+    <iconset resource="../icons/qtractor.qrc" >:/icons/transportLoop.png</iconset>
+   </property>
+   <property name="text" >
+    <string>&amp;Loop</string>
+   </property>
+   <property name="iconText" >
+    <string>Loop</string>
+   </property>
+   <property name="statusTip" >
+    <string>Transport loop</string>
+   </property>
+   <property name="shortcut" >
+    <string>Ctrl+L</string>
+   </property>
+  </action>
   <action name="transportPlayAction" >
    <property name="checkable" >
     <bool>true</bool>

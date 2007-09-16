@@ -24,12 +24,8 @@
 #include "qtractorMidiEditor.h"
 #include "qtractorMidiEditView.h"
 
-#ifdef QTRACTOR_TEST
-#include "qtractorTimeScale.h"
-#else
 #include "qtractorSession.h"
 #include "qtractorMainForm.h"
-#endif
 
 #include <QApplication>
 
@@ -133,7 +129,6 @@ void qtractorMidiEditTime::updatePixmap ( int cx, int /*cy*/)
 		iBeat++;
 	}
 
-#ifndef QTRACTOR_TEST
 	qtractorSession  *pSession  = NULL;
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm)
@@ -162,7 +157,6 @@ void qtractorMidiEditTime::updatePixmap ( int cx, int /*cy*/)
 			p.drawPolygon(polyg);
 		}
 	}
-#endif
 }
 
 
@@ -265,7 +259,6 @@ bool qtractorMidiEditTime::dragHeadStart ( const QPoint& pos )
 		return true;
 	}
 
-#ifndef QTRACTOR_TEST
 	qtractorSession  *pSession  = NULL;
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm)
@@ -286,7 +279,6 @@ bool qtractorMidiEditTime::dragHeadStart ( const QPoint& pos )
 			return true;
 		}
 	}
-#endif
 
 	// Check edit-head header...
 	rect.moveLeft(m_pEditor->editHeadX() - d);
@@ -313,14 +305,12 @@ void qtractorMidiEditTime::mousePressEvent ( QMouseEvent *pMouseEvent )
 	// Force null state.
 	m_dragState = DragNone;
 
-#ifndef QTRACTOR_TEST
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm == NULL)
 		return;
 	qtractorSession *pSession = pMainForm->session();
 	if (pSession == NULL)
 		return;
-#endif
 
 	// Which mouse state?
 	const bool bModifier = (pMouseEvent->modifiers()
@@ -370,11 +360,9 @@ void qtractorMidiEditTime::mousePressEvent ( QMouseEvent *pMouseEvent )
 // Handle item selection/dragging -- mouse pointer move.
 void qtractorMidiEditTime::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 {
-#ifndef QTRACTOR_TEST
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm == NULL)
 		return;
-#endif
 
 	// Are we already moving/dragging something?
 	const QPoint& pos = viewportToContents(pMouseEvent->pos());
@@ -394,10 +382,8 @@ void qtractorMidiEditTime::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 		// Play-head positioning...
 		m_pEditor->editView()->ensureVisible(pos.x(), y, 16, 0);
 		m_pEditor->setPlayHead(iFrame);
-#ifndef QTRACTOR_TEST
 		// Let the change get some immediate visual feedback...
 		pMainForm->updateTransportTime(iFrame);
-#endif
 		break;
 	case DragEditHead:
 	case DragLoopStart:
@@ -439,14 +425,12 @@ void qtractorMidiEditTime::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 {
 	qtractorScrollView::mouseReleaseEvent(pMouseEvent);
 
-#ifndef QTRACTOR_TEST
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm == NULL)
 		return;
 	qtractorSession *pSession = pMainForm->session();
 	if (pSession == NULL)
 		return;
-#endif
 
 	// Which mouse state?
 	const bool bModifier = (pMouseEvent->modifiers()
@@ -463,10 +447,8 @@ void qtractorMidiEditTime::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 			pMouseEvent->modifiers() & Qt::ControlModifier, true);
 		break;
 	case DragPlayHead:
-#ifndef QTRACTOR_TEST
 		// Play-head positioning commit...
 		pSession->setPlayHead(m_pEditor->playHead());
-#endif
 		// Not quite a selection change,
 		// but for visual feedback...
 		m_pEditor->selectionChangeNotify();
@@ -482,7 +464,6 @@ void qtractorMidiEditTime::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 		m_pEditor->selectionChangeNotify();
 		break;
 	case DragLoopStart:
-#ifndef QTRACTOR_TEST
 		// New loop-start boundary...
 		if (pSession->editHead() < pSession->loopEnd()) {
 			// Yep, new loop-start point...
@@ -490,10 +471,8 @@ void qtractorMidiEditTime::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 			m_pEditor->updateContents();
 			m_pEditor->contentsChangeNotify();
 		}
-#endif
 		break;
 	case DragLoopEnd:
-#ifndef QTRACTOR_TEST
 		// New loop-end boundary...
 		if (pSession->loopStart() < pSession->editTail()) {
 			// Yep, new loop-end point...
@@ -501,17 +480,14 @@ void qtractorMidiEditTime::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 			m_pEditor->updateContents();
 			m_pEditor->contentsChangeNotify();
 		}
-#endif
 		break;
 	case DragStart:
 		// Left-button indirect positioning...
 		if (bModifier) {
 			// Play-head positioning...
 			m_pEditor->setPlayHead(iFrame);
-#ifndef QTRACTOR_TEST
 			// Immediately commited...
 			pSession->setPlayHead(iFrame);
-#endif
 		} else {
 			// Deferred left-button edit-head positioning...
 			m_pEditor->setEditHead(iFrame);
@@ -538,7 +514,6 @@ void qtractorMidiEditTime::keyPressEvent ( QKeyEvent *pKeyEvent )
 #endif
 	switch (pKeyEvent->key()) {
 	case Qt::Key_Escape:
-#ifndef QTRACTOR_TEST
 		// Restore uncommitted play-head position?...
 		if (m_dragState == DragPlayHead) {
 			qtractorSession  *pSession  = NULL;
@@ -548,7 +523,6 @@ void qtractorMidiEditTime::keyPressEvent ( QKeyEvent *pKeyEvent )
 			if (pSession)
 				m_pEditor->setPlayHead(pSession->playHead());
 		}
-#endif
 		resetDragState();
 		break;
 	default:

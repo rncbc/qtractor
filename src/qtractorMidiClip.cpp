@@ -517,8 +517,6 @@ void qtractorMidiClip::updateEditor (void)
 	if (pTrack == NULL)
 		return;
 
-	m_pMidiEditorForm->setFilename(filename());
-
 	m_pMidiEditorForm->setForeground(pTrack->foreground());
 	m_pMidiEditorForm->setBackground(pTrack->background());
 	m_pMidiEditorForm->updateContents();

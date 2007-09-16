@@ -505,11 +505,11 @@ unsigned long qtractorMidiToolsForm::quantize (
 
 // Create edit command based on given selection.
 qtractorMidiEditCommand *qtractorMidiToolsForm::editCommand (
-	qtractorMidiSequence *pSeq, qtractorMidiEditSelect *pSelect	)
+	qtractorMidiClip *pMidiClip, qtractorMidiEditSelect *pSelect )
 {
 	// Create command, it will be handed over...
 	qtractorMidiEditCommand *pEditCommand
-		= new qtractorMidiEditCommand(pSeq, tr("none"));
+		= new qtractorMidiEditCommand(pMidiClip, tr("none"));
 
 	// Set composite command title.
 	QStringList tools;

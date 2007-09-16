@@ -19,31 +19,23 @@
 
 *****************************************************************************/
 
-#ifdef  QTRACTOR_TEST
-#define QTRACTOR_TITLE "qtractorMidiEditorTest"
-#else
 #include "qtractorAbout.h"
-#endif
-
 #include "qtractorMidiEditorForm.h"
-
 #include "qtractorMidiEditor.h"
 #include "qtractorMidiEditView.h"
 #include "qtractorMidiEditEvent.h"
 
-#ifdef QTRACTOR_TEST
-#include "qtractorMidiSequence.h"
-#else
 #include "qtractorMidiClip.h"
 #include "qtractorMidiEngine.h"
 #include "qtractorMidiMonitor.h"
+
 #include "qtractorOptions.h"
 #include "qtractorSession.h"
 #include "qtractorTracks.h"
 #include "qtractorTrackView.h"
+
 #include "qtractorMainForm.h"
 #include "qtractorClipForm.h"
-#endif
 
 #include "qtractorTimeScale.h"
 
@@ -65,13 +57,6 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 {
 	// Setup UI struct...
 	m_ui.setupUi(this);
-
-#ifndef QTRACTOR_TEST
-	m_pMidiClip = NULL;
-#endif
-
-	m_iTrackChannel = 0;
-	m_iFormat = 0;
 
 	m_iDirtyCount = 0;
 
@@ -182,6 +167,7 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	// Special integration ones.
 	addAction(m_ui.editSelectRangeAction);
 	addAction(m_ui.transportBackwardAction);
+	addAction(m_ui.transportLoopAction);
 	addAction(m_ui.transportPlayAction);
 
 	// Ah, make it stand right.
@@ -315,26 +301,6 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 		SIGNAL(changeNotifySignal(qtractorMidiEditor *)),
 		SLOT(contentsChanged(qtractorMidiEditor *)));
 
-#ifdef QTRACTOR_TEST
-
-	// This is the initial state and selection.
-	m_ui.editModeOffAction->setChecked(true);
-	m_pMidiEditor->setEditMode(false);
-
-	// Initial decorations toggle state.
-	m_ui.viewMenubarAction->setChecked(true);
-	m_ui.viewStatusbarAction->setChecked(true);
-	m_ui.viewToolbarFileAction->setChecked(true);
-	m_ui.viewToolbarEditAction->setChecked(true);
-	m_ui.viewToolbarViewAction->setChecked(true);
-
-	// Some windows are forced initially as is...
-	insertToolBarBreak(m_ui.editViewToolbar);
-
-	m_ui.filePropertiesAction->setEnabled(false);
-
-#else
-
 	// Try to restore old editor state...
 	qtractorOptions  *pOptions  = NULL;
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
@@ -390,13 +356,15 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 		QObject::connect(m_ui.transportBackwardAction,
 			SIGNAL(triggered(bool)),
 			pMainForm, SLOT(transportBackward()));
+		QObject::connect(m_ui.transportLoopAction,
+			SIGNAL(triggered(bool)),
+			pMainForm, SLOT(transportLoop()));
 		QObject::connect(m_ui.transportPlayAction,
 			SIGNAL(triggered(bool)),
 			pMainForm, SLOT(transportPlay()));
 	}
 
-#endif
-
+	// Default snap-per-beat setting...
 	qtractorTimeScale *pTimeScale = m_pMidiEditor->timeScale();
 	if (pTimeScale) {
 		m_pSnapPerBeatComboBox->setCurrentIndex(
@@ -448,7 +416,6 @@ bool qtractorMidiEditorForm::queryClose (void)
 		}
 	}
 
-#ifndef QTRACTOR_TEST
 	// Try to save current editor view state...
 	if (bQueryClose && isVisible()) {
 		qtractorOptions  *pOptions  = NULL;
@@ -475,7 +442,6 @@ bool qtractorMidiEditorForm::queryClose (void)
 			// pOptions->saveWidgetGeometry(this);
 		}
 	}
-#endif
 
 	return bQueryClose;
 }
@@ -484,11 +450,9 @@ bool qtractorMidiEditorForm::queryClose (void)
 // On-show event handler.
 void qtractorMidiEditorForm::showEvent ( QShowEvent *pShowEvent )
 {
-#ifndef QTRACTOR_TEST
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm)
 		pMainForm->addEditor(m_pMidiEditor);
-#endif
 
 	QMainWindow::showEvent(pShowEvent);
 }
@@ -498,22 +462,21 @@ void qtractorMidiEditorForm::showEvent ( QShowEvent *pShowEvent )
 void qtractorMidiEditorForm::closeEvent ( QCloseEvent *pCloseEvent )
 {
 	if (queryClose()) {
-#ifndef QTRACTOR_TEST
 		// Remove this one from main-form list...
 		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 		if (pMainForm)
 			pMainForm->removeEditor(m_pMidiEditor);
 		// Should always (re)open the clip...
-		if (m_pMidiClip && m_pMidiClip->isDirty()) {
-			m_pMidiClip->openMidiFile(
-				m_pMidiClip->filename(),
-				m_pMidiClip->trackChannel());
+		qtractorMidiClip *pMidiClip = m_pMidiEditor->midiClip();
+		if (pMidiClip && pMidiClip->isDirty()) {
+			pMidiClip->openMidiFile(
+				pMidiClip->filename(),
+				pMidiClip->trackChannel());
 			if (pMainForm)
 				pMainForm->updateNotifySlot(true);
 		}
 		// Not dirty anymore...
 		m_iDirtyCount = 0;
-#endif
 		pCloseEvent->accept();
 	} else {
 		pCloseEvent->ignore();
@@ -549,99 +512,43 @@ qtractorTimeScale *qtractorMidiEditorForm::timeScale (void) const
 }
 
 
-// MIDI filename accessors.
-void qtractorMidiEditorForm::setFilename ( const QString& sFilename )
-{
-	m_sFilename = sFilename;
-}
-
-const QString& qtractorMidiEditorForm::filename (void) const
-{
-	return m_sFilename;
-}
-
-
-// MIDI track-channel accessors.
-void qtractorMidiEditorForm::setTrackChannel ( unsigned short iTrackChannel )
-{
-	m_iTrackChannel = iTrackChannel;
-}
-
-unsigned short qtractorMidiEditorForm::trackChannel (void) const
-{
-	return m_iTrackChannel;
-}
-
-
-// MIDI file format accessors.
-void qtractorMidiEditorForm::setFormat ( unsigned short iFormat )
-{
-	m_iFormat = iFormat;
-}
-
-unsigned short qtractorMidiEditorForm::format (void) const
-{
-	return m_iFormat;
-}
-
-
-#ifdef QTRACTOR_TEST
-
-// Editing MIDI event sequence accessors.
-void qtractorMidiEditorForm::setSequence ( qtractorMidiSequence *pSeq  )
-{
-	if (queryClose()) {
-		m_iDirtyCount = 0;
-		m_pMidiEditor->setSequence(pSeq);
-		stabilizeForm();
-	}
-}
-
-#else
-
-
 // Editing MIDI clip accessors.
 void qtractorMidiEditorForm::setMidiClip ( qtractorMidiClip *pMidiClip  )
 {
-	if (!queryClose())
-		return;
-
-	m_iDirtyCount = 0;
-
-	qtractorTrack *pTrack = NULL;
-	qtractorSession *pSession = NULL;
-	if (pMidiClip)
-		pTrack = pMidiClip->track();
-	if (pTrack)
-		pSession = pTrack->session();
-	if (pSession) {
-		// Adjust MIDI editor time-scale fundamentals...
-		m_pMidiClip = pMidiClip;
-		// Set its most outstanding properties...
-		m_pMidiEditor->setForeground(pTrack->foreground());
-		m_pMidiEditor->setBackground(pTrack->background());
-		// Now set the editing MIDI sequence alright...
-		m_pMidiEditor->setOffset(m_pMidiClip->clipStart());
-		m_pMidiEditor->setLength(m_pMidiClip->clipLength());
-		m_pMidiEditor->setSequence(m_pMidiClip->sequence());
-		m_sFilename = m_pMidiClip->filename();
-		m_iTrackChannel = m_pMidiClip->trackChannel();
-		m_iFormat = m_pMidiClip->format();
-	} else {
-		// No clip, no chips.
-		m_pMidiClip = NULL;
-		m_pMidiEditor->setOffset(0);
-		m_pMidiEditor->setLength(0);
-		m_pMidiEditor->setSequence(NULL);
-		m_sFilename.clear();
-		m_iTrackChannel = 0;
-		m_iFormat = 0;
+	if (queryClose()) {
+		m_pMidiEditor->setMidiClip(pMidiClip);
+		m_iDirtyCount = 0;
 	}
 }
 
 qtractorMidiClip *qtractorMidiEditorForm::midiClip (void) const
 {
-	return m_pMidiClip;
+	return m_pMidiEditor->midiClip();
+}
+
+
+// MIDI clip property accessors.
+const QString& qtractorMidiEditorForm::filename (void) const
+{
+	return m_pMidiEditor->filename();
+}
+
+
+unsigned short qtractorMidiEditorForm::trackChannel (void) const
+{
+	return m_pMidiEditor->trackChannel();
+}
+
+
+unsigned short qtractorMidiEditorForm::format (void) const
+{
+	return m_pMidiEditor->format();
+}
+
+
+qtractorMidiSequence *qtractorMidiEditorForm::sequence (void) const
+{
+	return m_pMidiEditor->sequence();
 }
 
 
@@ -660,9 +567,11 @@ void qtractorMidiEditorForm::setup ( qtractorMidiClip *pMidiClip )
 	qtractorTimeScale *pTimeScale = m_pMidiEditor->timeScale();
 	pTimeScale->copy(*pSession->timeScale());
 
-	// Set the MIDI clip properties has seen fit...
+	// Note that there's two modes for this method:
+	// wether pMidiClip is given non-null wich means
+	// form initialization and first setup or else... 
 	if (pMidiClip) {
-		// Do the real thing...
+		// Set initial MIDI clip properties has seen fit...
 		setMidiClip(pMidiClip);
 		// Setup connections to main widget...
 		QObject::connect(m_pMidiEditor,
@@ -699,14 +608,6 @@ void qtractorMidiEditorForm::setup ( qtractorMidiClip *pMidiClip )
 
 	// Done.
 	stabilizeForm();
-}
-
-#endif
-
-
-qtractorMidiSequence *qtractorMidiEditorForm::sequence (void) const
-{
-	return m_pMidiEditor->sequence();
 }
 
 
@@ -780,16 +681,13 @@ bool qtractorMidiEditorForm::saveClipFile ( bool bPrompt )
 
 	// Have we done it right?
 	if (bResult) {
-		// First, set our resulting filename.
-		setFilename(sFilename);
 		// Aha, but we're not dirty no more.
 		m_iDirtyCount = 0;
-#ifndef QTRACTOR_TEST
-		if (m_pMidiClip) {
-			m_pMidiClip->setFilename(sFilename);
-			m_pMidiClip->setDirty(false);
+		qtractorMidiClip *pMidiClip = m_pMidiEditor->midiClip();
+		if (pMidiClip) {
+			pMidiClip->setFilename(sFilename);
+			pMidiClip->setDirty(false);
 		}
-#endif
 	}
 
 	// Done.
@@ -818,13 +716,12 @@ void qtractorMidiEditorForm::fileSaveAs (void)
 // File properties dialog.
 void qtractorMidiEditorForm::fileProperties (void)
 {
-#ifndef QTRACTOR_TEST
-	if (m_pMidiClip) {
+	qtractorMidiClip *pMidiClip = m_pMidiEditor->midiClip();
+	if (pMidiClip) {
 		qtractorClipForm clipForm(parentWidget());
-		clipForm.setClip(m_pMidiClip);
+		clipForm.setClip(pMidiClip);
 		clipForm.exec();
 	}
-#endif
 }
 
 
@@ -1061,24 +958,9 @@ void qtractorMidiEditorForm::viewRefresh (void)
 // Show information about application program.
 void qtractorMidiEditorForm::helpAbout (void)
 {
-#ifdef QTRACTOR_TEST
-
-	// Stuff the about box text...
-	QString sText = "<p>\n";
-	sText += "<b>" QTRACTOR_TITLE "</b><br />\n";
-	sText += "<br />\n";
-	sText += "<small>" + tr("Build") + ": " __DATE__ " " __TIME__ "</small><br />\n";
-	sText += "</p>\n";
-
-	QMessageBox::about(this, tr("About") + " " QTRACTOR_TITLE, sText);
-
-#else
-
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm)
 		pMainForm->helpAbout();
-
-#endif
 }
 
 // Show information about the Qt toolkit.
@@ -1094,16 +976,11 @@ void qtractorMidiEditorForm::helpAboutQt (void)
 // Send note on/off to respective output bus.
 void qtractorMidiEditorForm::sendNote ( int iNote, int iVelocity )
 {
-#ifdef QTRACTOR_TEST
-
-	fprintf(stderr, "qtractorMidiEditorForm::sendNote(%d, %d)\n", iNote, iVelocity);
-
-#else
-
-	if (m_pMidiClip == NULL)
+	qtractorMidiClip *pMidiClip = m_pMidiEditor->midiClip();
+	if (pMidiClip == NULL)
 		return;
 
-	qtractorTrack *pTrack = m_pMidiClip->track();
+	qtractorTrack *pTrack = pMidiClip->track();
 	if (pTrack == NULL)
 		return;
 
@@ -1124,8 +1001,6 @@ void qtractorMidiEditorForm::sendNote ( int iNote, int iVelocity )
 		if (pMidiMonitor)
 			pMidiMonitor->enqueue(qtractorMidiEvent::NOTEON, iVelocity);
 	}
-
-#endif
 }
 
 
@@ -1134,6 +1009,31 @@ void qtractorMidiEditorForm::sendNote ( int iNote, int iVelocity )
 
 void qtractorMidiEditorForm::stabilizeForm (void)
 {
+	// Update the main menu state...
+	bool bSelected = m_pMidiEditor->isSelected();
+	m_ui.fileSaveAction->setEnabled(m_iDirtyCount > 0);
+	m_pMidiEditor->updateUndoAction(m_ui.editUndoAction);
+	m_pMidiEditor->updateRedoAction(m_ui.editRedoAction);
+	m_ui.editCutAction->setEnabled(bSelected);
+	m_ui.editCopyAction->setEnabled(bSelected);
+	m_ui.editPasteAction->setEnabled(m_pMidiEditor->isClipboard());
+	m_ui.editDeleteAction->setEnabled(bSelected);
+	m_ui.editSelectNoneAction->setEnabled(bSelected);
+	m_ui.toolsMenu->setEnabled(bSelected);
+
+	// Just having a non-null sequence will indicate
+	// that we're editing a legal MIDI clip...
+	qtractorMidiSequence *pSeq = sequence();
+	if (pSeq == NULL) {
+		setWindowTitle(tr("MIDI Editor") + " - " QTRACTOR_TITLE);
+		m_pFileNameLabel->clear();
+		m_pTrackChannelLabel->clear();
+		m_pTrackNameLabel->clear();
+		m_pStatusModLabel->clear();
+		m_pDurationLabel->clear();
+		return;
+	}
+
 	// Special display formatting...
 	QString sTrackChannel;
 	int k = 0;
@@ -1151,37 +1051,16 @@ void qtractorMidiEditorForm::stabilizeForm (void)
 		sTitle += ' ' + tr("[modified]");
 	setWindowTitle(sTitle + " - " QTRACTOR_TITLE);
 
-	// Update the main menu state...
-	bool bSelected = m_pMidiEditor->isSelected();
-	m_ui.fileSaveAction->setEnabled(m_iDirtyCount > 0);
-	m_pMidiEditor->updateUndoAction(m_ui.editUndoAction);
-	m_pMidiEditor->updateRedoAction(m_ui.editRedoAction);
-	m_ui.editCutAction->setEnabled(bSelected);
-	m_ui.editCopyAction->setEnabled(bSelected);
-	m_ui.editPasteAction->setEnabled(m_pMidiEditor->isClipboard());
-	m_ui.editDeleteAction->setEnabled(bSelected);
-	m_ui.editSelectNoneAction->setEnabled(bSelected);
-	m_ui.toolsMenu->setEnabled(bSelected);
-
 	m_pFileNameLabel->setText(filename());
 	m_pTrackChannelLabel->setText(sTrackChannel.arg(trackChannel() + k));
-
-	if (sequence())
-		m_pTrackNameLabel->setText(sequence()->name());
-	else
-		m_pTrackNameLabel->clear();
-
+	m_pTrackNameLabel->setText(pSeq->name());
 	if (m_iDirtyCount > 0)
 		m_pStatusModLabel->setText(tr("MOD"));
 	else
 		m_pStatusModLabel->clear();
 
-	if (sequence()) {
-		m_pDurationLabel->setText(
-			(m_pMidiEditor->timeScale())->textFromTick(sequence()->duration()));
-	} else {
-		m_pDurationLabel->clear();
-	}
+	m_pDurationLabel->setText(
+		(m_pMidiEditor->timeScale())->textFromTick(pSeq->duration()));
 }
 
 
@@ -1240,11 +1119,9 @@ void qtractorMidiEditorForm::controllerChanged ( int iIndex )
 
 void qtractorMidiEditorForm::selectionChanged ( qtractorMidiEditor *pMidiEditor )
 {
-#ifndef QTRACTOR_TEST
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm)
 		pMainForm->selectionNotifySlot(pMidiEditor);
-#endif
 
 	stabilizeForm();
 }
@@ -1252,10 +1129,9 @@ void qtractorMidiEditorForm::selectionChanged ( qtractorMidiEditor *pMidiEditor 
 
 void qtractorMidiEditorForm::contentsChanged ( qtractorMidiEditor *pMidiEditor )
 {
-#ifndef QTRACTOR_TEST
-	if (m_pMidiClip)
-		m_pMidiClip->setDirty(true);
-#endif
+	qtractorMidiClip *pMidiClip = m_pMidiEditor->midiClip();
+	if (pMidiClip)
+		pMidiClip->setDirty(true);
 
 	m_iDirtyCount++;
 	selectionChanged(pMidiEditor);

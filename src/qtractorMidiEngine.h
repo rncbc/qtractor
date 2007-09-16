@@ -148,7 +148,9 @@ private:
 
 	// The delta-time when playback started .
 	long m_iTimeStart;
+#ifdef QTRACTOR_SNAFU_DRIFT
 	long m_iTimeDelta;
+#endif
 
 	// The event notifier widget.
 	QWidget      *m_pNotifyWidget;

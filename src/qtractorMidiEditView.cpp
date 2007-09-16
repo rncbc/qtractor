@@ -28,12 +28,8 @@
 
 #include "qtractorMidiSequence.h"
 
-#ifdef QTRACTOR_TEST
-#include "qtractorTimeScale.h"
-#else
 #include "qtractorSession.h"
 #include "qtractorMainForm.h"
-#endif
 
 #include <QResizeEvent>
 #include <QMouseEvent>
@@ -368,7 +364,6 @@ void qtractorMidiEditView::updatePixmap ( int cx, int cy )
 		pEvent = pEvent->next();
 	}
 
-#ifndef QTRACTOR_TEST
 	qtractorSession  *pSession  = NULL;
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm)
@@ -383,7 +378,6 @@ void qtractorMidiEditView::updatePixmap ( int cx, int cy )
 		if (x >= 0 && x < w)
 			p.drawLine(x, 0, x, h);
 	}
-#endif
 }
 
 

@@ -30,7 +30,7 @@
 
 
 // Forward declarations.
-class qtractorMidiSequence;
+class qtractorMidiClip;
 
 
 //----------------------------------------------------------------------
@@ -42,13 +42,13 @@ class qtractorMidiEditCommand : public qtractorCommand
 public:
 
 	// Constructor.
-	qtractorMidiEditCommand(qtractorMidiSequence *pSeq, const QString& sName);
+	qtractorMidiEditCommand(qtractorMidiClip *pMidiClip, const QString& sName);
 
 	// Destructor.
 	~qtractorMidiEditCommand();
 
 	// Sequence accessor.
-	qtractorMidiSequence *sequence() const { return m_pSeq; }
+	qtractorMidiClip *midiClip() const { return m_pMidiClip; }
 
 	// Primitive command types.
 	enum CommandType {
@@ -109,7 +109,7 @@ private:
 	};
 
 	// Instance variables.
-	qtractorMidiSequence *m_pSeq;
+	qtractorMidiClip *m_pMidiClip;
 
 	QList<Item *> m_items;
 };

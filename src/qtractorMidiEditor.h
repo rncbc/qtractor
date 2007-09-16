@@ -43,6 +43,7 @@ class qtractorMidiEditEventScale;
 class qtractorMidiEditEvent;
 
 class qtractorMidiEditCommand;
+class qtractorMidiClip;
 
 class qtractorTimeScale;
 
@@ -66,8 +67,15 @@ public:
 	// Destructor.
 	~qtractorMidiEditor();
 
-	// MIDI sequence accessors.
-	void setSequence(qtractorMidiSequence *pSeq);
+	// MIDI clip sequence accessors.
+	void setMidiClip(qtractorMidiClip *pMidiClip);
+	qtractorMidiClip *midiClip() const;
+
+	// MIDI clip properties accessors.
+	const QString& filename() const;
+	unsigned short trackChannel() const;
+	unsigned short format() const;
+
 	qtractorMidiSequence *sequence() const;
 
 	// Event foreground (outline) color.
@@ -329,7 +337,7 @@ signals:
 private:
 
 	// The editing sequence.
-	qtractorMidiSequence *m_pSeq;
+	qtractorMidiClip *m_pMidiClip;
 
 	// Event fore/background colors.
 	QColor m_foreground;

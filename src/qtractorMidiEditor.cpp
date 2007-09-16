@@ -28,19 +28,15 @@
 #include "qtractorMidiEditEvent.h"
 
 #include "qtractorMidiEditCommand.h"
-
-#include "qtractorMidiSequence.h"
-#include "qtractorMidiFile.h"
+#include "qtractorMidiClip.h"
 
 #include "qtractorMidiToolsForm.h"
 
 #include "qtractorRubberBand.h"
 #include "qtractorTimeScale.h"
 
-#ifndef QTRACTOR_TEST
 #include "qtractorSession.h"
 #include "qtractorMainForm.h"
-#endif
 
 #include <QApplication>
 #include <QVBoxLayout>
@@ -262,7 +258,6 @@ bool qtractorMidiEditor::saveCopyFile ( const QString& sNewFilename,
 		delete [] ppSeqs;
 	}
 
-#ifndef QTRACTOR_TEST
 	// HACK: This invasive operation is so important that
 	// it surely deserves being in the front page...
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
@@ -272,7 +267,6 @@ bool qtractorMidiEditor::saveCopyFile ( const QString& sNewFilename,
 			.arg(sNewFilename).arg(iTrackChannel));
 		pMainForm->addMidiFile(sNewFilename);
 	}
-#endif
 
 	return true;
 }
@@ -327,7 +321,7 @@ qtractorMidiEditor::qtractorMidiEditor ( QWidget *pParent )
 	}
 
 	// Initialize instance variables...
-	m_pSeq = NULL;
+	m_pMidiClip = NULL;
 
 	// Event fore/background colors.
 	m_foreground = Qt::darkBlue;
@@ -488,26 +482,69 @@ void qtractorMidiEditor::closeEvent ( QCloseEvent *pCloseEvent )
 
 
 // Editing sequence accessor.
-void qtractorMidiEditor::setSequence ( qtractorMidiSequence *pSeq )
+void qtractorMidiEditor::setMidiClip ( qtractorMidiClip *pMidiClip )
 {
 	// So, this is the brand new object to edit...
-	m_pSeq = pSeq;
+	m_pMidiClip = pMidiClip;
 
-	// Reset some internal state...
-	m_cursor.reset(m_pSeq);
-	m_cursorAt.reset(m_pSeq);
+	if (m_pMidiClip) {
+		// Now set the editing MIDI sequence alright...
+		setOffset(m_pMidiClip->clipStart());
+		setLength(m_pMidiClip->clipLength());
+		// Set its most outstanding properties...
+		qtractorTrack *pTrack = m_pMidiClip->track();
+		if (pTrack) {
+			setForeground(pTrack->foreground());
+			setBackground(pTrack->background());
+		}
+		// And the last but not least...
+		qtractorMidiSequence *pSeq = m_pMidiClip->sequence();
+		if (pSeq) {
+			// Reset some internal state...
+			m_cursor.reset(pSeq);
+			m_cursorAt.reset(pSeq);
+			// Reset as last on middle note and snap duration...
+			m_last.note = (pSeq->noteMin() + pSeq->noteMax()) >> 1;
+			if (m_last.note == 0)
+				m_last.note = 0x3c; // Default to middle-C.
+		}
+	}
+	else {
+		// Reset those little things too..
+		setOffset(0);
+		setLength(0);
+	}
 
+	// All commands reset.
 	m_pCommands->clear();
-
-	// Reset as last on middle note and snap duration...
-	m_last.note = (m_pSeq->noteMin() + m_pSeq->noteMax()) >> 1;
-	if (m_last.note == 0)
-		m_last.note = 0x3c; // Default to middle-C.
 }
+
+qtractorMidiClip *qtractorMidiEditor::midiClip (void) const
+{
+	return m_pMidiClip;
+}
+
+
+// MIDI clip property accessors.
+const QString& qtractorMidiEditor::filename (void) const
+{
+	return m_pMidiClip->filename();
+}
+
+unsigned short qtractorMidiEditor::trackChannel (void) const
+{
+	return (m_pMidiClip ? m_pMidiClip->trackChannel() : 0);
+}
+
+unsigned short qtractorMidiEditor::format (void) const
+{
+	return (m_pMidiClip ? m_pMidiClip->format() : 0);
+}
+
 
 qtractorMidiSequence *qtractorMidiEditor::sequence (void) const
 {
-	return m_pSeq;
+	return (m_pMidiClip ? m_pMidiClip->sequence() : NULL);
 }
 
 
@@ -588,7 +625,6 @@ void qtractorMidiEditor::setEditHead ( unsigned long iEditHead, bool bSync )
 	if (iEditHead > m_iEditTail)
 		setEditTail(iEditHead, bSync);
 
-#ifndef QTRACTOR_TEST
 	if (bSync) {
 		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 		if (pMainForm) {
@@ -597,7 +633,6 @@ void qtractorMidiEditor::setEditHead ( unsigned long iEditHead, bool bSync )
 				pSession->setEditHead(iEditHead);
 		}
 	}
-#endif
 
 	m_iEditHead = iEditHead;
 	int iEditHeadX
@@ -623,7 +658,6 @@ void qtractorMidiEditor::setEditTail ( unsigned long iEditTail, bool bSync )
 	if (iEditTail < m_iEditHead)
 		setEditHead(iEditTail, bSync);
 
-#ifndef QTRACTOR_TEST
 	if (bSync) {
 		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 		if (pMainForm) {
@@ -632,7 +666,6 @@ void qtractorMidiEditor::setEditTail ( unsigned long iEditTail, bool bSync )
 				pSession->setEditTail(iEditTail);
 		}
 	}
-#endif
 
 	m_iEditTail = iEditTail;
 	int iEditTailX
@@ -956,7 +989,7 @@ bool qtractorMidiEditor::isClipboard (void)
 // Cut current selection to clipboard.
 void qtractorMidiEditor::cutClipboard (void)
 {
-	if (m_pSeq == NULL)
+	if (m_pMidiClip == NULL)
 		return;
 
 	if (!isSelected())
@@ -965,7 +998,7 @@ void qtractorMidiEditor::cutClipboard (void)
 	g_clipboard.clear();
 
 	qtractorMidiEditCommand *pEditCommand
-		= new qtractorMidiEditCommand(m_pSeq, tr("cut"));
+		= new qtractorMidiEditCommand(m_pMidiClip, tr("cut"));
 
 	QListIterator<qtractorMidiEditSelect::Item *> iter(m_select.items());
 	while (iter.hasNext()) {
@@ -983,7 +1016,7 @@ void qtractorMidiEditor::cutClipboard (void)
 // Copy current selection to clipboard.
 void qtractorMidiEditor::copyClipboard (void)
 {
-	if (m_pSeq == NULL)
+	if (m_pMidiClip == NULL)
 		return;
 
 	if (!isSelected())
@@ -1004,7 +1037,7 @@ void qtractorMidiEditor::copyClipboard (void)
 // Paste from clipboard.
 void qtractorMidiEditor::pasteClipboard (void)
 {
-	if (m_pSeq == NULL)
+	if (m_pMidiClip == NULL)
 		return;
 
 	if (!isClipboard())
@@ -1088,14 +1121,14 @@ void qtractorMidiEditor::pasteClipboard (void)
 // Execute event removal.
 void qtractorMidiEditor::deleteSelect (void)
 {
-	if (m_pSeq == NULL)
+	if (m_pMidiClip == NULL)
 		return;
 
 	if (!isSelected())
 		return;
 
 	qtractorMidiEditCommand *pEditCommand
-		= new qtractorMidiEditCommand(m_pSeq, tr("delete"));
+		= new qtractorMidiEditCommand(m_pMidiClip, tr("delete"));
 
 	QListIterator<qtractorMidiEditSelect::Item *> iter(m_select.items());
 	while (iter.hasNext())
@@ -1161,10 +1194,13 @@ void qtractorMidiEditor::centerContents (void)
 	m_pEditView->updateContentsWidth();
 
 	// Do the centering...
-	if (m_pSeq)	{
+	qtractorMidiSequence *pSeq = NULL;
+	if (m_pMidiClip)
+		pSeq = m_pMidiClip->sequence();
+	if (pSeq)	{
 		int cy = m_pEditView->contentsHeight();
 		int h2 = m_pEditList->itemHeight()
-			* (m_pSeq->noteMin() + m_pSeq->noteMax());
+			* (pSeq->noteMin() + pSeq->noteMax());
 		if (h2 > 0)
 			cy -= ((h2 + (m_pEditView->viewport())->height()) >> 1);
 		else
@@ -1186,7 +1222,7 @@ void qtractorMidiEditor::centerContents (void)
 qtractorMidiEvent *qtractorMidiEditor::seekEvent ( unsigned long iTime )
 {
 	// Reset seek-forward...
-	return m_cursor.reset(m_pSeq, iTime);
+	return m_cursor.reset(m_pMidiClip->sequence(), iTime);
 }
 
 
@@ -1194,7 +1230,11 @@ qtractorMidiEvent *qtractorMidiEditor::seekEvent ( unsigned long iTime )
 qtractorMidiEvent *qtractorMidiEditor::eventAt (
 	qtractorScrollView *pScrollView, const QPoint& pos, QRect *pRect )
 {
-	if (m_pSeq == NULL)
+	if (m_pMidiClip == NULL)
+		return NULL;
+
+	qtractorMidiSequence *pSeq = m_pMidiClip->sequence();
+	if (pSeq == NULL)
 		return NULL;
 
 	bool bEditView
@@ -1215,14 +1255,14 @@ qtractorMidiEvent *qtractorMidiEditor::eventAt (
 		= (m_pEditEvent->eventType() == qtractorMidiEvent::CONTROLLER);
 	unsigned char controller = m_pEditEvent->controller();
 
-	qtractorMidiEvent *pEvent = m_cursorAt.reset(m_pSeq, iTime);
+	qtractorMidiEvent *pEvent = m_cursorAt.reset(pSeq, iTime);
 
 	if (pEvent && pEvent->prev()) {
 		unsigned long iPrevTime = (pEvent->prev())->time();
 		while (pEvent && pEvent->time() >= iPrevTime)
 			pEvent = pEvent->prev();
 		if (pEvent == NULL)
-			pEvent = m_pSeq->events().first();
+			pEvent = pSeq->events().first();
 	}
 
 	while (pEvent && iTime >= pEvent->time()) {
@@ -1274,6 +1314,13 @@ qtractorMidiEvent *qtractorMidiEditor::dragEditEvent (
 	qtractorScrollView *pScrollView, const QPoint& pos,
 	Qt::KeyboardModifiers /*modifiers*/ )
 {
+	if (m_pMidiClip == NULL)
+		return NULL;
+
+	qtractorMidiSequence *pSeq = m_pMidiClip->sequence();
+	if (pSeq == NULL)
+		return NULL;
+
 	bool bEditView
 		= (static_cast<qtractorScrollView *> (m_pEditView) == pScrollView);
 
@@ -1305,7 +1352,7 @@ qtractorMidiEvent *qtractorMidiEditor::dragEditEvent (
 		}
 		// Default duration...
 		if (pEvent->type() == qtractorMidiEvent::NOTEON) {
-			unsigned long iDuration = m_pSeq->ticksPerBeat();
+			unsigned long iDuration = pSeq->ticksPerBeat();
 			if (m_pTimeScale->snapPerBeat() > 0)
 				iDuration /= m_pTimeScale->snapPerBeat();
 			pEvent->setDuration(iDuration);
@@ -1573,7 +1620,6 @@ void qtractorMidiEditor::dragMoveCommit ( qtractorScrollView *pScrollView,
 				+ m_pTimeScale->frameFromPixel(pos.x() > 0 ? pos.x() : 0));
 			// Playhead positioning...
 			setPlayHead(iFrame);
-#ifndef QTRACTOR_TEST
 			// Immediately commited...
 			qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 			if (pMainForm) {
@@ -1581,7 +1627,6 @@ void qtractorMidiEditor::dragMoveCommit ( qtractorScrollView *pScrollView,
 				if (pSession)
 					pSession->setPlayHead(iFrame);
 			}
-#endif
 		} else {
 			flags |= SelectClear;
 		}
@@ -1649,7 +1694,11 @@ bool qtractorMidiEditor::dragMoveFilter ( qtractorScrollView *pScrollView,
 void qtractorMidiEditor::updateDragSelect ( qtractorScrollView *pScrollView,
 	const QRect& rectSelect, int flags )
 {
-	if (m_pSeq == NULL)
+	if (m_pMidiClip == NULL)
+		return;
+
+	qtractorMidiSequence *pSeq = m_pMidiClip->sequence();
+	if (pSeq == NULL)
 		return;
 
 	// Rubber-banding only applicable whenever
@@ -1701,7 +1750,7 @@ void qtractorMidiEditor::updateDragSelect ( qtractorScrollView *pScrollView,
 		= (m_pEditEvent->eventType() == qtractorMidiEvent::CONTROLLER);
 	unsigned char controller = m_pEditEvent->controller();
 
-	qtractorMidiEvent *pEvent = m_cursorAt.reset(m_pSeq, iTickStart);
+	qtractorMidiEvent *pEvent = m_cursorAt.reset(pSeq, iTickStart);
 
 	while (pEvent && iTickEnd >= pEvent->time()) {
 		if (((bEditView && pEvent->type() == m_pEditView->eventType() &&
@@ -1896,7 +1945,7 @@ void qtractorMidiEditor::updateDragResize ( qtractorScrollView */*pScrollView*/,
 void qtractorMidiEditor::executeDragMove ( qtractorScrollView *pScrollView,
 	const QPoint& pos )
 {
-	if (m_pSeq == NULL)
+	if (m_pMidiClip == NULL)
 		return;
 
 	updateDragMove(pScrollView, pos);
@@ -1913,7 +1962,7 @@ void qtractorMidiEditor::executeDragMove ( qtractorScrollView *pScrollView,
 		iNoteDelta = -(m_posDelta.y() / h1);
 
 	qtractorMidiEditCommand *pEditCommand
-		= new qtractorMidiEditCommand(m_pSeq, tr("move"));
+		= new qtractorMidiEditCommand(m_pMidiClip, tr("move"));
 
 	QListIterator<qtractorMidiEditSelect::Item *> iter(m_select.items());
 	while (iter.hasNext()) {
@@ -1939,7 +1988,7 @@ void qtractorMidiEditor::executeDragMove ( qtractorScrollView *pScrollView,
 void qtractorMidiEditor::executeDragResize ( qtractorScrollView *pScrollView,
 	const QPoint& pos )
 {
-	if (m_pSeq == NULL)
+	if (m_pMidiClip == NULL)
 		return;
 
 	updateDragResize(pScrollView, pos);
@@ -1961,7 +2010,7 @@ void qtractorMidiEditor::executeDragResize ( qtractorScrollView *pScrollView,
 	}
 
 	qtractorMidiEditCommand *pEditCommand
-		= new qtractorMidiEditCommand(m_pSeq,
+		= new qtractorMidiEditCommand(m_pMidiClip,
 			m_bEventDragEdit ? tr("edit") : tr("resize"));
 
 	long iTime, iDuration;
@@ -2050,7 +2099,7 @@ void qtractorMidiEditor::executeDragResize ( qtractorScrollView *pScrollView,
 void qtractorMidiEditor::executeDragPaste ( qtractorScrollView *pScrollView,
 	const QPoint& pos )
 {
-	if (m_pSeq == NULL)
+	if (m_pMidiClip == NULL)
 		return;
 
 	updateDragMove(pScrollView, pos);
@@ -2067,7 +2116,7 @@ void qtractorMidiEditor::executeDragPaste ( qtractorScrollView *pScrollView,
 		iNoteDelta = -(m_posDelta.y() / h1);
 
 	qtractorMidiEditCommand *pEditCommand
-		= new qtractorMidiEditCommand(m_pSeq, tr("paste"));
+		= new qtractorMidiEditCommand(m_pMidiClip, tr("paste"));
 
 	QListIterator<qtractorMidiEditSelect::Item *> iter(m_select.items());
 	while (iter.hasNext()) {
@@ -2224,13 +2273,20 @@ void qtractorMidiEditor::resetDragState ( qtractorScrollView *pScrollView )
 bool qtractorMidiEditor::adjustEditCommand (
 	qtractorMidiEditCommand *pEditCommand )
 {
+	if (m_pMidiClip == NULL)
+		return false;
+
+	qtractorMidiSequence *pSeq = m_pMidiClip->sequence();
+	if (pSeq == NULL)
+		return false;
+
 	// HACK: What we're going to do here is about checking the
 	// whole sequence, fixing any overlapping note events and
 	// adjusting the issued command for proper undo/redo...
 	qtractorMidiSequence::NoteMap notes;
 
 	// For each event, do rescan...
-	qtractorMidiEvent *pEvent = m_pSeq->events().first();
+	qtractorMidiEvent *pEvent = pSeq->events().first();
 	while (pEvent) {
 		unsigned long iTime = pEvent->time();
 		unsigned long iTimeEnd = iTime + pEvent->duration();
@@ -2257,13 +2313,13 @@ bool qtractorMidiEditor::adjustEditCommand (
 						pNewEvent->setTime(iTimeEnd);
 						pNewEvent->setDuration(iPrevTimeEnd - iTimeEnd);
 						pEditCommand->insertEvent(pNewEvent);
-						m_pSeq->insertEvent(pNewEvent);
+						pSeq->insertEvent(pNewEvent);
 					}
 				}
 				else
 				// Loose overlap?...
 				if (iTime == iPrevTime || iTimeEnd == iPrevTimeEnd) {
-					m_pSeq->unlinkEvent(pPrevEvent);
+					pSeq->unlinkEvent(pPrevEvent);
 					if (!pEditCommand->findEvent(pPrevEvent,
 							qtractorMidiEditCommand::RemoveEvent))
 						pEditCommand->removeEvent(pPrevEvent);
@@ -2284,11 +2340,14 @@ bool qtractorMidiEditor::adjustEditCommand (
 // Edit tools form page selector.
 void qtractorMidiEditor::executeTool ( int iToolIndex )
 {
+	if (m_pMidiClip == NULL)
+		return;
+
 	qtractorMidiToolsForm toolsForm(this);
 	toolsForm.setToolIndex(iToolIndex);
 	if (toolsForm.exec()) {
 		qtractorMidiEditCommand *pEditCommand
-			= toolsForm.editCommand(m_pSeq, &m_select);
+			= toolsForm.editCommand(m_pMidiClip, &m_select);
 		if (m_pCommands->exec(pEditCommand))
 			adjustEditCommand(pEditCommand);
 	}		
@@ -2306,8 +2365,6 @@ qtractorCommandList *qtractorMidiEditor::commands (void) const
 // Command execution notification slot.
 void qtractorMidiEditor::updateNotifySlot ( bool bRefresh )
 {
-//	m_pSeq->adjust();
-
 	if (bRefresh)
 		updateContents();
 

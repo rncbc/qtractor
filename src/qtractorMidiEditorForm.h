@@ -27,12 +27,9 @@
 
 // Forward declarations...
 class qtractorMidiEditor;
+class qtractorMidiClip;
 class qtractorMidiSequence;
 class qtractorTimeScale;
-
-#ifndef QTRACTOR_TEST
-class qtractorMidiClip;
-#endif
 
 class QContextMenuEvent;
 class QActionGroup;
@@ -60,29 +57,19 @@ public:
 	// Local time-scale accessor.
 	qtractorTimeScale *timeScale() const;
 
-	// MIDI clip properties accessors.
-	void setFilename(const QString& sFilename);
-	const QString& filename() const;
-
-	void setTrackChannel(unsigned short iTrackChannel);
-	unsigned short trackChannel() const;
-
-	void setFormat(unsigned short iFormat);
-	unsigned short format() const;
-
-#ifdef QTRACTOR_TEST
-	// MIDI clip sequence accessor.
-	void setSequence(qtractorMidiSequence *pSeq);
-#else
-	// MIDI clip accessors.
+	// MIDI clip sequence accessors.
 	void setMidiClip(qtractorMidiClip *pMidiClip);
 	qtractorMidiClip *midiClip() const;
+
+	// MIDI clip properties accessors.
+	const QString& filename() const;
+	unsigned short trackChannel() const;
+	unsigned short format() const;
+
+	qtractorMidiSequence *sequence() const;
+
 	// Special executive setup method.
 	void setup(qtractorMidiClip *pMidiClip = NULL);
-#endif
-
-	// MIDI clip sequence accessors.
-	qtractorMidiSequence *sequence() const;
 
 	// MIDI event foreground (outline) color.
 	void setForeground(const QColor& fore);
@@ -176,14 +163,6 @@ private:
 
 	// Instance variables...
 	qtractorMidiEditor *m_pMidiEditor;
-
-#ifndef QTRACTOR_TEST
-	qtractorMidiClip *m_pMidiClip;
-#endif
-
-	QString        m_sFilename;
-	unsigned short m_iTrackChannel;
-	unsigned short m_iFormat;
 
 	int m_iDirtyCount;
 
