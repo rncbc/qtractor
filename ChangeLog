@@ -3,9 +3,47 @@ Qtractor - An Audio/MIDI multi-track sequencer
 
 ChangeLog
 
-0.0.6   2007-09-21  Work in progress...
+0.0.6   2007-09-22  Work in progress...
 
--
+- Get configure to try and detect the correct qmake location and
+  insert it the search order, so let the qt4 tools take precedence
+  when --with-qt option is given and older qt3 ones coexist and
+  are found located ahead in the PATH.
+
+- Drifting correction on audio and MIDI engines was seriously
+  infected in some kind of snafu conception, as evidence lead
+  to even worse drifting being detected to much of great despair,
+  specially after recording and/or bouncing audio tracks from
+  MIDI sequenced material. Credit must certainly go to Christian
+  Schoenebeck on splatting this sloppy one on the face.
+
+- MIDI editing actions while playing now get immediate feedback;
+  this was possible to some internal interface redesign of all
+  MIDI editor accessory classes, making the MIDI clip now being
+  the main editing target object instead of just the MIDI event
+  sequence as it was previously.
+
+- Simple as it could ever be, the build executive summary report
+  is now given on configure.
+
+- The internal decoded frame list for MPEG 1Audio Layer III (mp3)
+  audio files (ie. via libmad) has been made one-time cached as
+  global shared objects, benefitting from the fact that the list
+  is always completely (re)built during the peak file computation,
+  and thus speeding up all frame accurate access operations (seek)
+  over this specific audio file format.
+
+- More eye-candy is sneaking in the MIDI editor: there's new view
+  options on the View menu: Note Color and Value Color, affecting
+  note event colors according to pitch and/or velocity.
+
+- New view option on the MIDI editor: on menu View/Note Duration
+  switches whether events are shown proportional to their durations
+  or as simple vertical candlesticks.
+
+- New snap-per-beat divisors are now available (Beat/3, 6, 12, 24
+  and 48), giving support for triplets for the very first time
+  (after a heads-up suggested  patch from Marko, thanks).
 
 
 0.0.5   2007-09-08  The Ninth Hitch Nail
