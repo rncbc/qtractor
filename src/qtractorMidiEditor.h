@@ -218,6 +218,9 @@ public:
 	// Keyboard event handler (common).
 	bool keyPress(int iKey, Qt::KeyboardModifiers modifiers);
 
+	// Keyboard step handler.
+	bool keyStep(int iKey);
+
 	// MIDI event tool tip helper.
 	QString eventToolTip(qtractorMidiEvent *pEvent) const;
 

@@ -2499,21 +2499,10 @@ bool qtractorMidiEditor::keyPress ( int iKey, Qt::KeyboardModifiers modifiers )
 			pScrollView->setContentsPos(
 				pScrollView->contentsX() - pScrollView->width(),
 				pScrollView->contentsY());
-		} else if (m_select.items().isEmpty()) {
+		} else if (!keyStep(iKey)) {
 			pScrollView->setContentsPos(
 				pScrollView->contentsX() - 16,
 				pScrollView->contentsY());
-		} else {
-			if (m_dragState == DragNone) {
-				m_dragState = DragStep;
-				m_posStep = m_posDrag;
-			}
-			if (m_dragState == DragStep) {
-				QPoint& pos = m_posStep;
-				pos.setX(pos.x() - m_pTimeScale->pixelsPerBeat());
-				pScrollView->ensureVisible(pos.x(), pos.y(), 16, 16);
-				updateDragMove(pScrollView, pos);
-			}
 		}
 		break;
 	case Qt::Key_Right:
@@ -2521,21 +2510,10 @@ bool qtractorMidiEditor::keyPress ( int iKey, Qt::KeyboardModifiers modifiers )
 			pScrollView->setContentsPos(
 				pScrollView->contentsX() + pScrollView->width(),
 				pScrollView->contentsY());
-		} else if (m_select.items().isEmpty()) {
+		} else if (!keyStep(iKey)) {
 			pScrollView->setContentsPos(
 				pScrollView->contentsX() + 16,
 				pScrollView->contentsY());
-		} else {
-			if (m_dragState == DragNone) {
-				m_dragState = DragStep;
-				m_posStep = m_posDrag;
-			}
-			if (m_dragState == DragStep) {
-				QPoint& pos = m_posStep;
-				pos.setX(pos.x() + m_pTimeScale->pixelsPerBeat());
-				pScrollView->ensureVisible(pos.x(), pos.y(), 16, 16);
-				updateDragMove(pScrollView, pos);
-			}
 		}
 		break;
 	case Qt::Key_Up:
@@ -2543,21 +2521,10 @@ bool qtractorMidiEditor::keyPress ( int iKey, Qt::KeyboardModifiers modifiers )
 			pScrollView->setContentsPos(
 				pScrollView->contentsX(),
 				pScrollView->contentsY() - pScrollView->height());
-		} else if (m_select.items().isEmpty()) {
+		} else if (!keyStep(iKey)) {
 			pScrollView->setContentsPos(
 				pScrollView->contentsX(),
 				pScrollView->contentsY() - 16);
-		} else {
-			if (m_dragState == DragNone) {
-				m_dragState = DragStep;
-				m_posStep = m_posDrag;
-			}
-			if (m_dragState == DragStep) {
-				QPoint& pos = m_posStep;
-				pos.setY(pos.y() - m_pEditList->itemHeight());
-				pScrollView->ensureVisible(pos.x(), pos.y(), 16, 16);
-				updateDragMove(pScrollView, pos);
-			}
 		}
 		break;
 	case Qt::Key_Down:
@@ -2565,21 +2532,10 @@ bool qtractorMidiEditor::keyPress ( int iKey, Qt::KeyboardModifiers modifiers )
 			pScrollView->setContentsPos(
 				pScrollView->contentsX(),
 				pScrollView->contentsY() + pScrollView->height());
-		} else if (m_select.items().isEmpty()) {
+		} else if (!keyStep(iKey)) {
 			pScrollView->setContentsPos(
 				pScrollView->contentsX(),
 				pScrollView->contentsY() + 16);
-		} else {
-			if (m_dragState == DragNone) {
-				m_dragState = DragStep;
-				m_posStep = m_posDrag;
-			}
-			if (m_dragState == DragStep) {
-				QPoint& pos = m_posStep;
-				pos.setY(pos.y() + m_pEditList->itemHeight());
-				pScrollView->ensureVisible(pos.x(), pos.y(), 16, 16);
-				updateDragMove(pScrollView, pos);
-			}
 		}
 		break;
 	case Qt::Key_PageUp:
@@ -2610,6 +2566,54 @@ bool qtractorMidiEditor::keyPress ( int iKey, Qt::KeyboardModifiers modifiers )
 
 	// Make sure we've get focus back...
 	pScrollView->setFocus();
+	return true;
+}
+
+
+// Keyboard step handler.
+bool qtractorMidiEditor::keyStep ( int iKey )
+{
+	// Only applicable if something is selected...
+	if (m_select.items().isEmpty())
+		return false;
+
+	// Set initial bound conditions...
+	if (m_dragState == DragNone) {
+		m_dragState = DragStep;
+		m_rectDrag  = m_select.rectView();
+		m_posDrag   = m_rectDrag.center();
+		m_posStep   = m_posDrag;
+	}
+
+	// Now to say the truth...
+	if (m_dragState != DragStep)
+		return false;
+
+	unsigned short q = m_pTimeScale->snapPerBeat();
+	if (q < 1)
+		q = 1;
+
+	// Now determine which step...
+	switch (iKey) {
+	case Qt::Key_Left:
+		m_posStep.setX(m_posStep.x() - m_pTimeScale->pixelsPerBeat() / q);
+		break;
+	case Qt::Key_Right:
+		m_posStep.setX(m_posStep.x() + m_pTimeScale->pixelsPerBeat() / q);
+		break;
+	case Qt::Key_Up:
+		m_posStep.setY(m_posStep.y() - m_pEditList->itemHeight());
+		break;
+	case Qt::Key_Down:
+		m_posStep.setY(m_posStep.y() + m_pEditList->itemHeight());
+		break;
+	default:
+		return false;
+	}
+
+	m_pEditView->ensureVisible(m_posStep.x(), m_posStep.y(), 16, 16);
+	updateDragMove(m_pEditView, m_posStep);
+
 	return true;
 }
 
