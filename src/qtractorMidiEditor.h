@@ -215,6 +215,9 @@ public:
 	bool dragMoveFilter(qtractorScrollView *pScrollView,
 		QObject *pObject, QEvent *pEvent);
 
+	// Keyboard event handler (common).
+	bool keyPress(int iKey, Qt::KeyboardModifiers modifiers);
+
 	// MIDI event tool tip helper.
 	QString eventToolTip(qtractorMidiEvent *pEvent) const;
 
@@ -369,7 +372,7 @@ private:
 	// Common drag state.
 	enum DragState { 
 		DragNone = 0, DragStart, DragSelect,
-		DragMove, DragResize, DragPaste
+		DragMove, DragResize, DragPaste, DragStep
 	} m_dragState;
 
 	// Common drag-resize mode.
@@ -385,6 +388,9 @@ private:
 
 	// Differential drag-move position.
 	QPoint m_posDelta;
+
+	// Step (keyboard) drag-move position
+	QPoint m_posStep;
 
 	// Viewport rubber-banding stuff.
 	qtractorRubberBand *m_pRubberBand;

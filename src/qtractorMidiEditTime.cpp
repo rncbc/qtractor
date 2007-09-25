@@ -509,11 +509,7 @@ void qtractorMidiEditTime::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 // Keyboard event handler.
 void qtractorMidiEditTime::keyPressEvent ( QKeyEvent *pKeyEvent )
 {
-#ifdef CONFIG_DEBUG
-	fprintf(stderr, "qtractorMidiEditTime::keyPressEvent(key=%d)\n", pKeyEvent->key());
-#endif
-	switch (pKeyEvent->key()) {
-	case Qt::Key_Escape:
+	if (pKeyEvent->key() == Qt::Key_Escape) {
 		// Restore uncommitted play-head position?...
 		if (m_dragState == DragPlayHead) {
 			qtractorSession  *pSession  = NULL;
@@ -524,11 +520,10 @@ void qtractorMidiEditTime::keyPressEvent ( QKeyEvent *pKeyEvent )
 				m_pEditor->setPlayHead(pSession->playHead());
 		}
 		resetDragState();
-		break;
-	default:
-		m_pEditor->editView()->keyPressEvent(pKeyEvent);
-		break;
 	}
+
+	if (!m_pEditor->keyPress(pKeyEvent->key(), pKeyEvent->modifiers()))
+		qtractorScrollView::keyPressEvent(pKeyEvent);
 }
 
 

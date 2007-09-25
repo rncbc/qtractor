@@ -2246,6 +2246,9 @@ void qtractorMidiEditor::resetDragState ( qtractorScrollView *pScrollView )
 	m_posDelta.setX(0);
 	m_posDelta.setY(0);
 
+	m_posStep.setX(0);
+	m_posStep.setY(0);
+
 	if (m_pRubberBand) {
 		m_pRubberBand->hide();
 		delete m_pRubberBand;
@@ -2257,7 +2260,8 @@ void qtractorMidiEditor::resetDragState ( qtractorScrollView *pScrollView )
 			pScrollView->unsetCursor();
 		if (m_dragState == DragMove   ||
 			m_dragState == DragResize ||
-			m_dragState == DragPaste)
+			m_dragState == DragPaste  ||
+			m_dragState == DragStep)
 			updateContents();
 	}
 
@@ -2454,6 +2458,159 @@ QString qtractorMidiEditor::eventToolTip ( qtractorMidiEvent *pEvent ) const
 	
 	// That's it
 	return sToolTip;
+}
+
+
+// Keyboard event handler (common).
+bool qtractorMidiEditor::keyPress ( int iKey, Qt::KeyboardModifiers modifiers )
+{
+	qtractorScrollView *pScrollView = m_pEditView;
+
+	switch (iKey) {
+	case Qt::Key_Escape:
+		resetDragState(pScrollView);
+		break;
+	case Qt::Key_Return:
+		if (m_dragState == DragStep) {
+			executeDragMove(pScrollView, m_posStep);
+			m_dragState = DragNone;
+		}
+		break;
+	case Qt::Key_Home:
+		if (modifiers & Qt::ControlModifier) {
+			pScrollView->setContentsPos(0, 0);
+		} else {
+			pScrollView->setContentsPos(0, pScrollView->contentsY());
+		}
+		break;
+	case Qt::Key_End:
+		if (modifiers & Qt::ControlModifier) {
+			pScrollView->setContentsPos(
+				pScrollView->contentsWidth()  - pScrollView->width(),
+				pScrollView->contentsHeight() - pScrollView->height());
+		} else {
+			pScrollView->setContentsPos(
+				pScrollView->contentsWidth()  - pScrollView->width(),
+				pScrollView->contentsY());
+		}
+		break;
+	case Qt::Key_Left:
+		if (modifiers & Qt::ControlModifier) {
+			pScrollView->setContentsPos(
+				pScrollView->contentsX() - pScrollView->width(),
+				pScrollView->contentsY());
+		} else if (m_select.items().isEmpty()) {
+			pScrollView->setContentsPos(
+				pScrollView->contentsX() - 16,
+				pScrollView->contentsY());
+		} else {
+			if (m_dragState == DragNone) {
+				m_dragState = DragStep;
+				m_posStep = m_posDrag;
+			}
+			if (m_dragState == DragStep) {
+				QPoint& pos = m_posStep;
+				pos.setX(pos.x() - m_pTimeScale->pixelsPerBeat());
+				pScrollView->ensureVisible(pos.x(), pos.y(), 16, 16);
+				updateDragMove(pScrollView, pos);
+			}
+		}
+		break;
+	case Qt::Key_Right:
+		if (modifiers & Qt::ControlModifier) {
+			pScrollView->setContentsPos(
+				pScrollView->contentsX() + pScrollView->width(),
+				pScrollView->contentsY());
+		} else if (m_select.items().isEmpty()) {
+			pScrollView->setContentsPos(
+				pScrollView->contentsX() + 16,
+				pScrollView->contentsY());
+		} else {
+			if (m_dragState == DragNone) {
+				m_dragState = DragStep;
+				m_posStep = m_posDrag;
+			}
+			if (m_dragState == DragStep) {
+				QPoint& pos = m_posStep;
+				pos.setX(pos.x() + m_pTimeScale->pixelsPerBeat());
+				pScrollView->ensureVisible(pos.x(), pos.y(), 16, 16);
+				updateDragMove(pScrollView, pos);
+			}
+		}
+		break;
+	case Qt::Key_Up:
+		if (modifiers & Qt::ControlModifier) {
+			pScrollView->setContentsPos(
+				pScrollView->contentsX(),
+				pScrollView->contentsY() - pScrollView->height());
+		} else if (m_select.items().isEmpty()) {
+			pScrollView->setContentsPos(
+				pScrollView->contentsX(),
+				pScrollView->contentsY() - 16);
+		} else {
+			if (m_dragState == DragNone) {
+				m_dragState = DragStep;
+				m_posStep = m_posDrag;
+			}
+			if (m_dragState == DragStep) {
+				QPoint& pos = m_posStep;
+				pos.setY(pos.y() - m_pEditList->itemHeight());
+				pScrollView->ensureVisible(pos.x(), pos.y(), 16, 16);
+				updateDragMove(pScrollView, pos);
+			}
+		}
+		break;
+	case Qt::Key_Down:
+		if (modifiers & Qt::ControlModifier) {
+			pScrollView->setContentsPos(
+				pScrollView->contentsX(),
+				pScrollView->contentsY() + pScrollView->height());
+		} else if (m_select.items().isEmpty()) {
+			pScrollView->setContentsPos(
+				pScrollView->contentsX(),
+				pScrollView->contentsY() + 16);
+		} else {
+			if (m_dragState == DragNone) {
+				m_dragState = DragStep;
+				m_posStep = m_posDrag;
+			}
+			if (m_dragState == DragStep) {
+				QPoint& pos = m_posStep;
+				pos.setY(pos.y() + m_pEditList->itemHeight());
+				pScrollView->ensureVisible(pos.x(), pos.y(), 16, 16);
+				updateDragMove(pScrollView, pos);
+			}
+		}
+		break;
+	case Qt::Key_PageUp:
+		if (modifiers & Qt::ControlModifier) {
+			pScrollView->setContentsPos(
+				pScrollView->contentsX(), 16);
+		} else {
+			pScrollView->setContentsPos(
+				pScrollView->contentsX(),
+				pScrollView->contentsY() - pScrollView->height());
+		}
+		break;
+	case Qt::Key_PageDown:
+		if (modifiers & Qt::ControlModifier) {
+			pScrollView->setContentsPos(
+				pScrollView->contentsX(),
+				pScrollView->contentsHeight() - pScrollView->height());
+		} else {
+			pScrollView->setContentsPos(
+				pScrollView->contentsX(),
+				pScrollView->contentsY() + pScrollView->height());
+		}
+		break;
+	default:
+		// Not handled here.
+		return false;
+	}
+
+	// Make sure we've get focus back...
+	pScrollView->setFocus();
+	return true;
 }
 
 

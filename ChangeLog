@@ -3,7 +3,10 @@ Qtractor - An Audio/MIDI multi-track sequencer
 
 ChangeLog
 
-0.0.6   2007-09-22  Work in progress...
+0.0.6   2007-09-25  Work in progress...
+
+- MIDI editor current selection can now be moved in steps by using
+  the keyboard arrow keys and the enter key for finalization.
 
 - Get configure to try and detect the correct qmake location and
   insert it the search order, so let the qt4 tools take precedence

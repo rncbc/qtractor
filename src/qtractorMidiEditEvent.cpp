@@ -448,10 +448,8 @@ void qtractorMidiEditEvent::contentsXMovingSlot ( int cx, int /*cy*/ )
 // Keyboard event handler.
 void qtractorMidiEditEvent::keyPressEvent ( QKeyEvent *pKeyEvent )
 {
-	if (pKeyEvent->key() == Qt::Key_Escape)
-		m_pEditor->resetDragState(this);
-
-	m_pEditor->editView()->keyPressEvent(pKeyEvent);
+	if (!m_pEditor->keyPress(pKeyEvent->key(), pKeyEvent->modifiers()))
+		qtractorScrollView::keyPressEvent(pKeyEvent);
 }
 
 

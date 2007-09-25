@@ -365,7 +365,8 @@ void qtractorMidiEditList::keyPressEvent ( QKeyEvent *pKeyEvent )
 	if (pKeyEvent->key() == Qt::Key_Escape)
 		resetDragState();
 
-	m_pEditor->editView()->keyPressEvent(pKeyEvent);
+	if (!m_pEditor->keyPress(pKeyEvent->key(), pKeyEvent->modifiers()))
+		qtractorScrollView::keyPressEvent(pKeyEvent);
 }
 
 
