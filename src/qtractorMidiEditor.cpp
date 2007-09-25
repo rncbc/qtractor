@@ -2470,6 +2470,7 @@ bool qtractorMidiEditor::keyPress ( int iKey, Qt::KeyboardModifiers modifiers )
 	case Qt::Key_Escape:
 		resetDragState(pScrollView);
 		break;
+	case Qt::Key_Insert: // Aha, joking :)
 	case Qt::Key_Return:
 		if (m_dragState == DragStep) {
 			executeDragMove(pScrollView, m_posStep);
@@ -2611,6 +2612,15 @@ bool qtractorMidiEditor::keyStep ( int iKey )
 		return false;
 	}
 
+	// Early sanity check...
+	int x0 = (m_rectDrag.width() >> 1);
+	if (m_posStep.x() < x0)
+		m_posStep.setX (x0);
+	int y0 = (m_rectDrag.height() >> 1);
+	if (m_posStep.y() < y0)
+		m_posStep.setY (y0);
+
+	// Do our deeds...
 	m_pEditView->ensureVisible(m_posStep.x(), m_posStep.y(), 16, 16);
 	updateDragMove(m_pEditView, m_posStep);
 
