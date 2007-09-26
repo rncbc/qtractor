@@ -6,9 +6,10 @@ ChangeLog
 0.0.6   2007-09-25  Work in progress...
 
 - MIDI editor current selection can now be step-wise moved using
-  the keyboard arrow keys and the enter/insert keys for final
-  placement; horizontal stepping are subordinated to current snap
-  per beat setting, no less than unity; vertical step is obvious.
+  the keyboard arrow keys and the enter/insert keys as for final
+  placement; horizontal stepp movement is subordinated to current
+  snap per beat setting, no less than unity; vertical step moves
+  are obviously quantized to the next semitone.
 
 - Get configure to try and detect the correct qmake location and
   insert it the search order, so let the qt4 tools take precedence

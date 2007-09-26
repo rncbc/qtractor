@@ -1679,7 +1679,9 @@ bool qtractorMidiEditor::dragMoveFilter ( qtractorScrollView *pScrollView,
 			}
 		}
 		else
-		if (pEvent->type() == QEvent::Leave	&& m_dragState != DragPaste) {
+		if (pEvent->type() == QEvent::Leave	&&
+			m_dragState != DragPaste &&
+			m_dragState != DragStep) {
 			pScrollView->unsetCursor();
 			return true;
 		}
@@ -2584,6 +2586,8 @@ bool qtractorMidiEditor::keyStep ( int iKey )
 		m_rectDrag  = m_select.rectView();
 		m_posDrag   = m_rectDrag.center();
 		m_posStep   = m_posDrag;
+		m_pEditView->setCursor(Qt::SizeAllCursor);
+		m_pEditEvent->setCursor(Qt::SizeAllCursor);
 	}
 
 	// Now to say the truth...
