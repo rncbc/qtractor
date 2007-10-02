@@ -58,6 +58,7 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	// Setup UI struct...
 	m_ui.setupUi(this);
 
+	m_iClipLength = 0;
 	m_iDirtyCount = 0;
 
 	// Set our central widget.
@@ -469,6 +470,8 @@ void qtractorMidiEditorForm::closeEvent ( QCloseEvent *pCloseEvent )
 		// Should always (re)open the clip...
 		qtractorMidiClip *pMidiClip = m_pMidiEditor->midiClip();
 		if (pMidiClip && pMidiClip->isDirty()) {
+			 // Revert to original clip length...
+			pMidiClip->setClipLength(m_iClipLength);
 			pMidiClip->openMidiFile(
 				pMidiClip->filename(),
 				pMidiClip->trackChannel());
@@ -517,6 +520,7 @@ void qtractorMidiEditorForm::setMidiClip ( qtractorMidiClip *pMidiClip  )
 {
 	if (queryClose()) {
 		m_pMidiEditor->setMidiClip(pMidiClip);
+		m_iClipLength = pMidiClip->clipLength();
 		m_iDirtyCount = 0;
 	}
 }
@@ -607,39 +611,6 @@ void qtractorMidiEditorForm::setup ( qtractorMidiClip *pMidiClip )
 	m_pMidiEditor->setEditTail(pSession->editTail(), false);
 
 	// Done.
-	stabilizeForm();
-}
-
-
-// MIDI event foreground (outline) color.
-void qtractorMidiEditorForm::setForeground ( const QColor& fore )
-{
-	m_pMidiEditor->setForeground(fore);
-}
-
-const QColor& qtractorMidiEditorForm::foreground (void) const
-{
-	return m_pMidiEditor->foreground();
-}
-
-
-// MIDI event background (fill) color.
-void qtractorMidiEditorForm::setBackground ( const QColor& back )
-{
-	m_pMidiEditor->setBackground(back);
-}
-
-const QColor& qtractorMidiEditorForm::background (void) const
-{
-	return m_pMidiEditor->background();
-}
-
-
-// Editing contents updater.
-void qtractorMidiEditorForm::updateContents (void)
-{
-	m_pMidiEditor->updateContents();
-
 	stabilizeForm();
 }
 
@@ -1091,7 +1062,9 @@ void qtractorMidiEditorForm::viewTypeChanged ( int iIndex )
 		m_pViewTypeComboBox->itemData(iIndex).toInt());
 
 	m_pMidiEditor->editView()->setEventType(eventType);
-	updateContents();
+	m_pMidiEditor->updateContents();
+
+	stabilizeForm();
 }
 
 
@@ -1103,7 +1076,9 @@ void qtractorMidiEditorForm::eventTypeChanged ( int iIndex )
 		eventType == qtractorMidiEvent::CONTROLLER);
 
 	m_pMidiEditor->editEvent()->setEventType(eventType);
-	updateContents();
+	m_pMidiEditor->updateContents();
+
+	stabilizeForm();
 }
 
 
@@ -1113,7 +1088,9 @@ void qtractorMidiEditorForm::controllerChanged ( int iIndex )
 		m_pControllerComboBox->itemData(iIndex).toInt() & 0x7f);
 
 	m_pMidiEditor->editEvent()->setController(controller);
-	updateContents();
+	m_pMidiEditor->updateContents();
+
+	stabilizeForm();
 }
 
 

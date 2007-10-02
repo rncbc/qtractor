@@ -3,7 +3,10 @@ Qtractor - An Audio/MIDI multi-track sequencer
 
 ChangeLog
 
-0.0.6   2007-09-25  Work in progress...
+0.0.6   2007-09-30  Work in progress...
+
+- MIDI clips are now auto-extendable when adding or moving events
+  beyond the clip length and while in the MIDI Editor, of course.
 
 - MIDI editor current selection can now be step-wise moved using
   the keyboard arrow keys and the enter/insert keys as for final

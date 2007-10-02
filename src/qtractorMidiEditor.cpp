@@ -508,8 +508,8 @@ void qtractorMidiEditor::setMidiClip ( qtractorMidiClip *pMidiClip )
 			if (m_last.note == 0)
 				m_last.note = 0x3c; // Default to middle-C.
 		}
-	}
-	else {
+		// Got clip!
+	} else {
 		// Reset those little things too..
 		setOffset(0);
 		setLength(0);

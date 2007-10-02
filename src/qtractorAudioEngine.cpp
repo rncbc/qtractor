@@ -431,15 +431,6 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 	if (pSession == NULL)
 		return 0;
 
-	// Prepare all current audio buses...
-	for (qtractorBus *pBus = buses().first();
-		pBus; pBus = pBus->next()) {
-		qtractorAudioBus *pAudioBus
-			= static_cast<qtractorAudioBus *> (pBus);
-		if (pAudioBus)
-			pAudioBus->process_prepare(nframes);
-	}
-
 	// Make sure we have an actual session cursor...
 	qtractorSessionCursor *pAudioCursor = sessionCursor();
 	if (pAudioCursor == NULL)
@@ -461,6 +452,8 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 			unsigned long iFrameEnd   = iFrameStart + nframes;
 			// Write output bus buffer to export audio file...
 			if (iFrameStart < m_iExportEnd && iFrameEnd > m_iExportStart) {
+				// Prepare the output bus only...
+				m_pExportBus->process_prepare(nframes);
 				// Export cycle...
 				pSession->process(pAudioCursor, iFrameStart, iFrameEnd);
 				// Commit the output bus only...
@@ -476,6 +469,15 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 		}
 		// Done with this one export cycle...
 		return 0;
+	}
+
+	// Prepare all current audio buses...
+	for (qtractorBus *pBus = buses().first();
+			pBus; pBus = pBus->next()) {
+		qtractorAudioBus *pAudioBus
+			= static_cast<qtractorAudioBus *> (pBus);
+		if (pAudioBus)
+			pAudioBus->process_prepare(nframes);
 	}
 
 	// Session RT-safeness lock...

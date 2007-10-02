@@ -517,9 +517,16 @@ void qtractorMidiClip::updateEditor (void)
 	if (pTrack == NULL)
 		return;
 
-	m_pMidiEditorForm->setForeground(pTrack->foreground());
-	m_pMidiEditorForm->setBackground(pTrack->background());
-	m_pMidiEditorForm->updateContents();
+	qtractorMidiEditor *pMidiEditor = m_pMidiEditorForm->editor();
+	if (pMidiEditor) {
+		pMidiEditor->setOffset(clipStart());
+		pMidiEditor->setLength(clipLength());
+		pMidiEditor->setForeground(pTrack->foreground());
+		pMidiEditor->setBackground(pTrack->background());
+		pMidiEditor->updateContents();
+	}
+
+	m_pMidiEditorForm->stabilizeForm();
 }
 
 

@@ -77,10 +77,13 @@ public:
 		{ m_iTimeLength = iTimeLength; }
 	unsigned long timeLength() const { return m_iTimeLength; }
 
-	// Statiscal helper accessors.
-	unsigned char noteMin()  const { return m_noteMin;  }
-	unsigned char noteMax()  const { return m_noteMax;  }
+	void setDuration(unsigned long iDuration)
+		{ m_duration = iDuration; }
 	unsigned long duration() const { return m_duration; }
+
+	// Statiscal helper accessors.
+	unsigned char noteMin() const { return m_noteMin;  }
+	unsigned char noteMax() const { return m_noteMax;  }
 
 	// Event list accessor.
 	const qtractorList<qtractorMidiEvent>& events() const { return m_events; }

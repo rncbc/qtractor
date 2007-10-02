@@ -34,6 +34,7 @@ qtractorMidiEditCommand::qtractorMidiEditCommand (
 	qtractorMidiClip *pMidiClip, const QString& sName )
 	: qtractorCommand(sName), m_pMidiClip(pMidiClip)
 {
+	m_iDuration = (pMidiClip->sequence())->duration();
 }
 
 
@@ -132,7 +133,10 @@ bool qtractorMidiEditCommand::execute ( bool bRedo )
 	if (pSession && pSession->isPlaying())
 		pSession->midiEngine()->trackMute(pTrack, true);
 
-	// Change
+	// Track sequence duration changes...
+	unsigned long iOldDuration = pSeq->duration();
+
+	// Changes are due...
 	QListIterator<Item *> iter(m_items);
 	while (iter.hasNext()) {
 		Item *pItem = iter.next();
@@ -206,6 +210,17 @@ bool qtractorMidiEditCommand::execute ( bool bRedo )
 		default:
 			break;
 		}
+	}
+
+	// Have we changed on something less durable?
+	if (m_iDuration != iOldDuration) {
+		pSeq->setDuration(m_iDuration);
+		m_iDuration = iOldDuration;
+	}
+	// Or are we changing something more durable?
+	if (pSeq->duration() != iOldDuration) {
+		m_pMidiClip->setClipLength(pSession->frameFromTick(pSeq->duration()));
+		m_pMidiClip->updateEditor();
 	}
 
 	// Renqueue dropped events...

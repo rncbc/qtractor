@@ -112,6 +112,8 @@ private:
 	qtractorMidiClip *m_pMidiClip;
 
 	QList<Item *> m_items;
+
+	unsigned long m_iDuration;
 };
 
 

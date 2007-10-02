@@ -71,17 +71,6 @@ public:
 	// Special executive setup method.
 	void setup(qtractorMidiClip *pMidiClip = NULL);
 
-	// MIDI event foreground (outline) color.
-	void setForeground(const QColor& fore);
-	const QColor& foreground() const;
-
-	// MIDI event background (fill) color.
-	void setBackground(const QColor& back);
-	const QColor& background() const;
-
-	// General update method.
-	void updateContents();
-
 	// Pre-close event handler.
 	bool queryClose();
 
@@ -163,6 +152,8 @@ private:
 
 	// Instance variables...
 	qtractorMidiEditor *m_pMidiEditor;
+
+	unsigned long m_iClipLength;
 
 	int m_iDirtyCount;
 
