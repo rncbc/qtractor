@@ -7,7 +7,7 @@ ChangeLog
 
 - Track properties dialog now gets tightly auto-sized, depending
   whether its an audio or a MIDI track.
- 
+
 - MIDI clips are now auto-extendable when adding or moving events
   beyond the clip length and while in the MIDI Editor, of course.
 
@@ -68,7 +68,7 @@ ChangeLog
 - Main form backward and rewind transport actions are now being
   immediately enabled when playing from the session (zero-time)
   start position.
- 
+
 - Audio and MIDI export sneaks in and in form and accessible
   from the main Track menu (EXPERIMENTAL).
 
