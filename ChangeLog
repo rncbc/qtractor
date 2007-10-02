@@ -3,8 +3,11 @@ Qtractor - An Audio/MIDI multi-track sequencer
 
 ChangeLog
 
-0.0.6   2007-09-30  Work in progress...
+0.0.6   2007-10-02  Work in progress...
 
+- Track properties dialog now gets tightly auto-sized, depending
+  whether its an audio or a MIDI track.
+ 
 - MIDI clips are now auto-extendable when adding or moving events
   beyond the clip length and while in the MIDI Editor, of course.
 

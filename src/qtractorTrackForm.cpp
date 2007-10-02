@@ -135,9 +135,6 @@ qtractorTrackForm::qtractorTrackForm (
 	// Already time for instrument cacheing...
 	updateInstruments();
 
-	// Try to restore old window positioning.
-	adjustSize();
-
 	// UI signal/slot connections...
 	QObject::connect(m_ui.TrackNameTextEdit,
 		SIGNAL(textChanged()),
@@ -442,6 +439,7 @@ void qtractorTrackForm::updateTrackType ( qtractorTrack::TrackType trackType )
 	case qtractorTrack::Audio:
 		pEngine = m_pTrack->session()->audioEngine();
 		icon = QIcon(":/icons/trackAudio.png");
+		m_ui.MidiGroupBox->hide();
 		m_ui.MidiGroupBox->setEnabled(false);
 		m_ui.InputBusNameComboBox->setEnabled(true);
 		m_ui.OutputBusNameComboBox->setEnabled(true);
@@ -449,12 +447,14 @@ void qtractorTrackForm::updateTrackType ( qtractorTrack::TrackType trackType )
 	case qtractorTrack::Midi:
 		pEngine = m_pTrack->session()->midiEngine();
 		icon = QIcon(":/icons/trackMidi.png");
+		m_ui.MidiGroupBox->show();
 		m_ui.MidiGroupBox->setEnabled(true);
 		m_ui.InputBusNameComboBox->setEnabled(true);
 		m_ui.OutputBusNameComboBox->setEnabled(true);
 		break;
 	case qtractorTrack::None:
 	default:
+		m_ui.MidiGroupBox->hide();
 		m_ui.MidiGroupBox->setEnabled(false);
 		m_ui.InputBusNameComboBox->setEnabled(false);
 		m_ui.OutputBusNameComboBox->setEnabled(false);
@@ -472,6 +472,11 @@ void qtractorTrackForm::updateTrackType ( qtractorTrack::TrackType trackType )
 				m_ui.OutputBusNameComboBox->addItem(icon, pBus->busName());
 		}
 	}
+
+	// Shake it a little bit first, but
+	// make it as tightly as possible...
+	resize(QSize(0, 0));
+	adjustSize();
 
 	// Done.
 	m_iDirtySetup--;

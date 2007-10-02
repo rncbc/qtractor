@@ -19,15 +19,14 @@
    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
   </comment>
- <exportmacro></exportmacro>
  <class>qtractorTrackForm</class>
  <widget class="QDialog" name="qtractorTrackForm" >
   <property name="geometry" >
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>382</width>
-    <height>400</height>
+    <width>352</width>
+    <height>372</height>
    </rect>
   </property>
   <property name="sizePolicy" >
@@ -48,12 +47,6 @@
    <iconset resource="../icons/qtractor.qrc" >:/icons/trackProperties.png</iconset>
   </property>
   <layout class="QVBoxLayout" >
-   <property name="margin" >
-    <number>9</number>
-   </property>
-   <property name="spacing" >
-    <number>6</number>
-   </property>
    <item>
     <widget class="QLabel" name="TrackNameTextLabel" >
      <property name="text" >
@@ -66,14 +59,6 @@
    </item>
    <item>
     <widget class="QTextEdit" name="TrackNameTextEdit" >
-     <property name="sizePolicy" >
-      <sizepolicy>
-       <hsizetype>7</hsizetype>
-       <vsizetype>5</vsizetype>
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
      <property name="minimumSize" >
       <size>
        <width>320</width>
@@ -93,11 +78,11 @@
    </item>
    <item>
     <layout class="QHBoxLayout" >
-     <property name="margin" >
-      <number>0</number>
-     </property>
      <property name="spacing" >
       <number>4</number>
+     </property>
+     <property name="margin" >
+      <number>0</number>
      </property>
      <item>
       <widget class="QGroupBox" name="TrackTypeGroup" >
@@ -105,11 +90,11 @@
         <string>Type</string>
        </property>
        <layout class="QHBoxLayout" >
-        <property name="margin" >
-         <number>8</number>
-        </property>
         <property name="spacing" >
          <number>4</number>
+        </property>
+        <property name="margin" >
+         <number>8</number>
         </property>
         <item>
          <widget class="QRadioButton" name="AudioRadioButton" >
@@ -146,11 +131,11 @@
         <string>Input / Output</string>
        </property>
        <layout class="QHBoxLayout" >
-        <property name="margin" >
-         <number>8</number>
-        </property>
         <property name="spacing" >
          <number>4</number>
+        </property>
+        <property name="margin" >
+         <number>8</number>
         </property>
         <item>
          <widget class="QComboBox" name="InputBusNameComboBox" >
@@ -221,7 +206,10 @@
       <property name="margin" >
        <number>8</number>
       </property>
-      <property name="spacing" >
+      <property name="horizontalSpacing" >
+       <number>4</number>
+      </property>
+      <property name="verticalSpacing" >
        <number>4</number>
       </property>
       <item row="3" column="0" >
@@ -269,11 +257,11 @@
         <property name="toolTip" >
          <string>MIDI Channel (1-15)</string>
         </property>
-        <property name="maximum" >
-         <number>16</number>
-        </property>
         <property name="minimum" >
          <number>1</number>
+        </property>
+        <property name="maximum" >
+         <number>16</number>
         </property>
        </widget>
       </item>
@@ -352,11 +340,11 @@
       <string>View / Colors</string>
      </property>
      <layout class="QHBoxLayout" >
-      <property name="margin" >
-       <number>8</number>
-      </property>
       <property name="spacing" >
        <number>4</number>
+      </property>
+      <property name="margin" >
+       <number>8</number>
       </property>
       <item>
        <widget class="QLabel" name="ForegroundColorTextLabel" >
@@ -522,11 +510,11 @@
    </item>
    <item>
     <layout class="QHBoxLayout" >
-     <property name="margin" >
-      <number>0</number>
-     </property>
      <property name="spacing" >
       <number>4</number>
+     </property>
+     <property name="margin" >
+      <number>0</number>
      </property>
      <item>
       <spacer>
@@ -569,7 +557,6 @@
   </layout>
  </widget>
  <layoutdefault spacing="4" margin="8" />
- <pixmapfunction></pixmapfunction>
  <tabstops>
   <tabstop>TrackNameTextEdit</tabstop>
   <tabstop>AudioRadioButton</tabstop>
