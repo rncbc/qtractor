@@ -454,7 +454,7 @@ void qtractorTrackForm::updateTrackType ( qtractorTrack::TrackType trackType )
 		break;
 	case qtractorTrack::None:
 	default:
-		m_ui.MidiGroupBox->hide();
+	//	m_ui.MidiGroupBox->hide();
 		m_ui.MidiGroupBox->setEnabled(false);
 		m_ui.InputBusNameComboBox->setEnabled(false);
 		m_ui.OutputBusNameComboBox->setEnabled(false);
@@ -475,7 +475,7 @@ void qtractorTrackForm::updateTrackType ( qtractorTrack::TrackType trackType )
 
 	// Shake it a little bit first, but
 	// make it as tightly as possible...
-	resize(0, 0);                                            
+	resize(0, 0);
 	adjustSize();
 
 	// Done.
