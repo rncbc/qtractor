@@ -475,7 +475,7 @@ void qtractorTrackForm::updateTrackType ( qtractorTrack::TrackType trackType )
 
 	// Shake it a little bit first, but
 	// make it as tightly as possible...
-	setMaximumSize(0, 0);
+	resize(0, 0);                                            
 	adjustSize();
 
 	// Done.

@@ -25,14 +25,14 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>352</width>
+    <width>374</width>
     <height>372</height>
    </rect>
   </property>
   <property name="sizePolicy" >
    <sizepolicy>
-    <hsizetype>7</hsizetype>
-    <vsizetype>1</vsizetype>
+    <hsizetype>5</hsizetype>
+    <vsizetype>7</vsizetype>
     <horstretch>0</horstretch>
     <verstretch>0</verstretch>
    </sizepolicy>
@@ -86,6 +86,14 @@
      </property>
      <item>
       <widget class="QGroupBox" name="TrackTypeGroup" >
+       <property name="sizePolicy" >
+        <sizepolicy>
+         <hsizetype>5</hsizetype>
+         <vsizetype>3</vsizetype>
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
        <property name="title" >
         <string>Type</string>
        </property>
@@ -127,6 +135,14 @@
      </item>
      <item>
       <widget class="QGroupBox" name="TrackBusGroup" >
+       <property name="sizePolicy" >
+        <sizepolicy>
+         <hsizetype>5</hsizetype>
+         <vsizetype>3</vsizetype>
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
        <property name="title" >
         <string>Input / Output</string>
        </property>
@@ -199,6 +215,14 @@
    </item>
    <item>
     <widget class="QGroupBox" name="MidiGroupBox" >
+     <property name="sizePolicy" >
+      <sizepolicy>
+       <hsizetype>5</hsizetype>
+       <vsizetype>3</vsizetype>
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
      <property name="title" >
       <string>MIDI / Instrument</string>
      </property>
@@ -333,6 +357,14 @@
    </item>
    <item>
     <widget class="QGroupBox" name="TrackViewGroup" >
+     <property name="sizePolicy" >
+      <sizepolicy>
+       <hsizetype>5</hsizetype>
+       <vsizetype>3</vsizetype>
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
      <property name="title" >
       <string>View / Colors</string>
      </property>
@@ -517,9 +549,6 @@
       <spacer>
        <property name="orientation" >
         <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeType" >
-        <enum>QSizePolicy::Expanding</enum>
        </property>
        <property name="sizeHint" >
         <size>
