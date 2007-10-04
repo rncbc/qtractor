@@ -1052,6 +1052,7 @@ void qtractorMidiEditorForm::snapPerBeatChanged ( int iSnap )
 
 	// No need to express the change as a undoable command?
 	pTimeScale->setSnapPerBeat(iSnapPerBeat);
+	m_pMidiEditor->editView()->setFocus();
 }
 
 

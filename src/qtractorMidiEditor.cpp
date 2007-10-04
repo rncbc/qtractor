@@ -2594,35 +2594,46 @@ bool qtractorMidiEditor::keyStep ( int iKey )
 	if (m_dragState != DragStep)
 		return false;
 
-	unsigned short q = m_pTimeScale->snapPerBeat();
-	if (q < 1)
-		q = 1;
+	int iVerticalStep = m_pEditList->itemHeight();
+	unsigned short iSnapPerBeat = m_pTimeScale->snapPerBeat();
+	if (iSnapPerBeat < 1)
+		iSnapPerBeat = 1;
+	int iHorizontalStep
+		= (m_pTimeScale->horizontalZoom() * m_pTimeScale->pixelsPerBeat())
+			/ (iSnapPerBeat * 100);
 
 	// Now determine which step...
 	switch (iKey) {
 	case Qt::Key_Left:
-		m_posStep.setX(m_posStep.x() - m_pTimeScale->pixelsPerBeat() / q);
+		m_posStep.setX(m_posStep.x() - iHorizontalStep);
 		break;
 	case Qt::Key_Right:
-		m_posStep.setX(m_posStep.x() + m_pTimeScale->pixelsPerBeat() / q);
+		m_posStep.setX(m_posStep.x() + iHorizontalStep);
 		break;
 	case Qt::Key_Up:
-		m_posStep.setY(m_posStep.y() - m_pEditList->itemHeight());
+		m_posStep.setY(m_posStep.y() - iVerticalStep);
 		break;
 	case Qt::Key_Down:
-		m_posStep.setY(m_posStep.y() + m_pEditList->itemHeight());
+		m_posStep.setY(m_posStep.y() + iVerticalStep);
 		break;
 	default:
 		return false;
 	}
 
 	// Early sanity check...
-	int x0 = (m_rectDrag.width() >> 1);
-	if (m_posStep.x() < x0)
-		m_posStep.setX (x0);
-	int y0 = (m_rectDrag.height() >> 1);
-	if (m_posStep.y() < y0)
-		m_posStep.setY (y0);
+	int w2 = (m_rectDrag.width() >> 1);
+	if (m_posStep.x() < w2)
+		m_posStep.setX (w2);
+	else
+	if (m_posStep.x() > m_pEditView->contentsWidth() - w2)
+		m_posStep.setX (m_pEditView->contentsWidth() - w2);
+
+	int h2 = (m_rectDrag.height() >> 1);
+	if (m_posStep.y() < h2)
+		m_posStep.setY (h2);
+	else
+	if (m_posStep.y() > m_pEditView->contentsHeight() - h2)
+		m_posStep.setY (m_pEditView->contentsHeight() - h2);
 
 	// Do our deeds...
 	m_pEditView->ensureVisible(m_posStep.x(), m_posStep.y(), 16, 16);
