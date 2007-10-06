@@ -142,17 +142,17 @@ void qtractorMidiMeterValue::paintEvent ( QPaintEvent * )
 	}
 
 	int y = int(m_fValue * float(h));
-	if (m_iValueHold < y) {
-		m_iValueHold = y;
-		m_fValueDecay = QTRACTOR_MIDI_METER_DECAY_RATE1;
-	} else {
-		m_iValueHold = int(float(m_iValueHold * m_fValueDecay));
-		if (m_iValueHold < y) {
-			m_iValueHold = y;
+	if (m_iValueHold > y) {
+		if (y > 0) {
+			m_fValueDecay = QTRACTOR_MIDI_METER_DECAY_RATE1;
 		} else {
+			m_iValueHold = int(float(m_iValueHold * m_fValueDecay));
 			m_fValueDecay *= m_fValueDecay;
 			y = m_iValueHold;
 		}
+	} else {
+		m_iValueHold = y;
+		m_fValueDecay = QTRACTOR_MIDI_METER_DECAY_RATE1;
 	}
 
 	painter.fillRect(0, h - y, w, y,

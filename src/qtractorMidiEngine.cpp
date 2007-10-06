@@ -1396,11 +1396,11 @@ void qtractorMidiEngine::processMetro (
 		return;
 
 	// Register the next metronome slot.
-	unsigned long iTimeStart = pSession->tickFromFrame(iFrameStart);
-	unsigned long iTimeEnd   = pSession->tickFromFrame(iFrameEnd);
+	unsigned long  iTimeStart = pSession->tickFromFrame(iFrameStart);
+	unsigned long  iTimeEnd   = pSession->tickFromFrame(iFrameEnd);
 
 	unsigned short iTicksPerBeat = pSession->ticksPerBeat();
-	unsigned int   iBeat = iTimeStart / iTicksPerBeat;
+	unsigned int   iBeat = (iTimeStart + (iTicksPerBeat >> 1)) / iTicksPerBeat;
 	unsigned long  iTime = iBeat * iTicksPerBeat;
 
 	// Intialize outbound event...

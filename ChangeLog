@@ -3,7 +3,10 @@ Qtractor - An Audio/MIDI multi-track sequencer
 
 ChangeLog
 
-0.0.6   2007-10-06  Work in progress...
+0.0.6   2007-10-07  Work in progress...
+
+- A bit more of precision is achieved over the metronome regular
+  ticking and both the audio and MIDI monitor meters.
 
 - A rudimentary MIDI metronome is now in place; parameters, like
   MIDI channel, bar and beat accent note, velocity and duration,
