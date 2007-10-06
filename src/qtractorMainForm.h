@@ -135,6 +135,7 @@ public slots:
 	void viewToolbarEdit(bool bOn);
 	void viewToolbarTrack(bool bOn);
 	void viewToolbarView(bool bOn);
+	void viewToolbarOptions(bool bOn);
 	void viewToolbarTransport(bool bOn);
 	void viewToolbarTime(bool bOn);
 	void viewToolbarThumb(bool bOn);
@@ -154,6 +155,7 @@ public slots:
 	void transportLoop();
 	void transportPlay();
 	void transportRecord();
+	void transportMetro();
 	void transportFollow();
 
 	void helpAboutQt();
@@ -222,6 +224,7 @@ protected:
 	void updateMessagesLimit();
 	void updateMessagesCapture();
 	void updateDisplayFormat();
+	void updateMetronome();
 
 	void updateContents(qtractorMidiEditor *pMidiEditor, bool bRefresh);
 

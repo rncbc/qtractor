@@ -102,6 +102,16 @@
    <addaction name="viewConnectionsAction" />
    <addaction name="viewMixerAction" />
   </widget>
+  <widget class="QToolBar" name="optionsToolbar" >
+   <property name="orientation" >
+    <enum>Qt::Horizontal</enum>
+   </property>
+   <attribute name="toolBarArea" >
+    <number>4</number>
+   </attribute>
+   <addaction name="transportMetroAction" />
+   <addaction name="transportFollowAction" />
+  </widget>
   <widget class="QToolBar" name="transportToolbar" >
    <property name="orientation" >
     <enum>Qt::Horizontal</enum>
@@ -118,8 +128,6 @@
    <addaction name="separator" />
    <addaction name="transportPlayAction" />
    <addaction name="transportRecordAction" />
-   <addaction name="separator" />
-   <addaction name="transportFollowAction" />
   </widget>
   <widget class="QToolBar" name="timeToolbar" >
    <property name="orientation" >
@@ -184,6 +192,7 @@
      <addaction name="viewToolbarEditAction" />
      <addaction name="viewToolbarTrackAction" />
      <addaction name="viewToolbarViewAction" />
+     <addaction name="viewToolbarOptionsAction" />
      <addaction name="viewToolbarTransportAction" />
      <addaction name="viewToolbarTimeAction" />
      <addaction name="viewToolbarThumbAction" />
@@ -217,6 +226,7 @@
     <addaction name="transportPlayAction" />
     <addaction name="transportRecordAction" />
     <addaction name="separator" />
+    <addaction name="transportMetroAction" />
     <addaction name="transportFollowAction" />
    </widget>
    <widget class="QMenu" name="helpMenu" >
@@ -899,6 +909,23 @@
     <string>Show/hide main program window view toolbar</string>
    </property>
   </action>
+  <action name="viewToolbarOptionsAction" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="text" >
+    <string>&amp;Options</string>
+   </property>
+   <property name="iconText" >
+    <string>Options toolbar</string>
+   </property>
+   <property name="toolTip" >
+    <string>Options toolbar</string>
+   </property>
+   <property name="statusTip" >
+    <string>Show/hide main program window options toolbar</string>
+   </property>
+  </action>
   <action name="viewToolbarTransportAction" >
    <property name="checkable" >
     <bool>true</bool>
@@ -1262,6 +1289,26 @@
    </property>
    <property name="statusTip" >
     <string>Follow playhead</string>
+   </property>
+   <property name="shortcut" >
+    <string/>
+   </property>
+  </action>
+  <action name="transportMetroAction" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="icon" >
+    <iconset resource="../icons/qtractor.qrc" >:/icons/transportMetro.png</iconset>
+   </property>
+   <property name="text" >
+    <string>&amp;Metronome</string>
+   </property>
+   <property name="iconText" >
+    <string>Metronome</string>
+   </property>
+   <property name="statusTip" >
+    <string>Metronome</string>
    </property>
    <property name="shortcut" >
     <string/>

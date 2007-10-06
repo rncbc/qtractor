@@ -1,7 +1,7 @@
 // qtractorMidiMonitor.h
 //
 /****************************************************************************
-   Copyright (C) 2006, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -39,7 +39,7 @@ public:
 	// Constructor.
 	qtractorMidiMonitor(qtractorSession *pSession,
 		float fGain = 1.0f, float fPanning = 0.0f,
-		unsigned int iQueueSize = 32);
+		unsigned int iQueueSize = 16);
 	// Destructor.
 	~qtractorMidiMonitor();
 

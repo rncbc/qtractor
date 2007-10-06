@@ -72,6 +72,7 @@ qtractorOptions::qtractorOptions (void)
 	bEditToolbar    = m_settings.value("/EditToolbar", true).toBool();
 	bTrackToolbar   = m_settings.value("/TrackToolbar", true).toBool();
 	bViewToolbar    = m_settings.value("/ViewToolbar", true).toBool();
+	bOptionsToolbar = m_settings.value("/OptionsToolbar", true).toBool();
 	bTransportToolbar = m_settings.value("/TransportToolbar", true).toBool();
 	bTimeToolbar    = m_settings.value("/TimeToolbar", true).toBool();
 	bThumbToolbar   = m_settings.value("/ThumbToolbar", true).toBool();
@@ -79,6 +80,7 @@ qtractorOptions::qtractorOptions (void)
 
 	// Transport options group.
 	m_settings.beginGroup("/Transport");
+	bMetronome      = m_settings.value("/Metronome", false).toBool();
 	bFollowPlayhead = m_settings.value("/FollowPlayhead", true).toBool();
 	m_settings.endGroup();
 
@@ -94,6 +96,17 @@ qtractorOptions::qtractorOptions (void)
 	// MIDI rendering options group.
 	m_settings.beginGroup("/Midi");
 	iMidiCaptureFormat = m_settings.value("/CaptureFormat", 1).toInt();
+	m_settings.endGroup();
+
+	// Metronome options group.
+	m_settings.beginGroup("/Metronome");
+	iMetroChannel      = m_settings.value("/Channel", 9).toInt();
+	iMetroBarNote      = m_settings.value("/BarNote", 76).toInt();
+	iMetroBarVelocity  = m_settings.value("/BarVelocity", 96).toInt();
+	iMetroBarDuration  = m_settings.value("/BarDuration", 24).toInt();
+	iMetroBeatNote     = m_settings.value("/BeatNote", 77).toInt();
+	iMetroBeatVelocity = m_settings.value("/BeatVelocity", 64).toInt();
+	iMetroBeatDuration = m_settings.value("/BeatDuration", 16).toInt();
 	m_settings.endGroup();
 
 	m_settings.endGroup(); // Options group.
@@ -192,6 +205,7 @@ qtractorOptions::~qtractorOptions (void)
 	m_settings.setValue("/EditToolbar", bEditToolbar);
 	m_settings.setValue("/TrackToolbar", bTrackToolbar);
 	m_settings.setValue("/ViewToolbar", bViewToolbar);
+	m_settings.setValue("/OptionsToolbar", bOptionsToolbar);
 	m_settings.setValue("/TransportToolbar", bTransportToolbar);
 	m_settings.setValue("/TimeToolbar", bTimeToolbar);
 	m_settings.setValue("/ThumbToolbar", bThumbToolbar);
@@ -199,6 +213,7 @@ qtractorOptions::~qtractorOptions (void)
 
 	// Transport options group.
 	m_settings.beginGroup("/Transport");
+	m_settings.setValue("/Metronome", bMetronome);
 	m_settings.setValue("/FollowPlayhead", bFollowPlayhead);
 	m_settings.endGroup();
 
@@ -209,6 +224,22 @@ qtractorOptions::~qtractorOptions (void)
 	m_settings.setValue("/CaptureFormat", iAudioCaptureFormat);
 	m_settings.setValue("/CaptureQuality", iAudioCaptureQuality);
 	m_settings.setValue("/ResampleType", iAudioResampleType);
+	m_settings.endGroup();
+
+	// MIDI rendering options group.
+	m_settings.beginGroup("/Midi");
+	m_settings.setValue("/CaptureFormat", iMidiCaptureFormat);
+	m_settings.endGroup();
+
+	// Metronome options group.
+	m_settings.beginGroup("/Metronome");
+	m_settings.setValue("/Channel", iMetroChannel);
+	m_settings.setValue("/BarNote", iMetroBarNote);
+	m_settings.setValue("/BarVelocity", iMetroBarVelocity);
+	m_settings.setValue("/BarDuration", iMetroBarDuration);
+	m_settings.setValue("/BeatNote", iMetroBeatNote);
+	m_settings.setValue("/BeatVelocity", iMetroBeatVelocity);
+	m_settings.setValue("/BeatDuration", iMetroBeatDuration);
 	m_settings.endGroup();
 
 	m_settings.endGroup(); // Options group.

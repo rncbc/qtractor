@@ -25,6 +25,7 @@
 #include "qtractorOptions.h"
 
 #include "qtractorAudioFile.h"
+#include "qtractorMidiEditor.h"
 
 #include <QFontDialog>
 #include <QMessageBox>
@@ -70,6 +71,16 @@ qtractorOptionsForm::qtractorOptionsForm (
 	m_ui.MidiCaptureFormatComboBox->clear();
 	m_ui.MidiCaptureFormatComboBox->addItem(tr("SMF Format 0"));
 	m_ui.MidiCaptureFormatComboBox->addItem(tr("SMF Format 1"));
+
+	// Populate the Metronome notes.
+	m_ui.MetroBarNoteComboBox->clear();
+	m_ui.MetroBeatNoteComboBox->clear();
+	QStringList items;
+	const QString sItem("%1 (%2)");
+	for (int iNote = 0; iNote < 128; ++iNote)
+		items.append(sItem.arg(qtractorMidiEditor::noteName(iNote)).arg(iNote));
+	m_ui.MetroBarNoteComboBox->insertItems(0, items);
+	m_ui.MetroBeatNoteComboBox->insertItems(0, items);
 
 	// Initialize dirty control state.
 	m_iDirtyCount = 0;
@@ -128,6 +139,27 @@ qtractorOptionsForm::qtractorOptionsForm (
 		SLOT(changed()));
 	QObject::connect(m_ui.MidiCaptureFormatComboBox,
 		SIGNAL(activated(int)),
+		SLOT(changed()));
+	QObject::connect(m_ui.MetroChannelSpinBox,
+		SIGNAL(valueChanged(int)),
+		SLOT(changed()));
+	QObject::connect(m_ui.MetroBarNoteComboBox,
+		SIGNAL(activated(int)),
+		SLOT(changed()));
+	QObject::connect(m_ui.MetroBarVelocitySpinBox,
+		SIGNAL(valueChanged(int)),
+		SLOT(changed()));
+	QObject::connect(m_ui.MetroBarDurationSpinBox,
+		SIGNAL(valueChanged(int)),
+		SLOT(changed()));
+	QObject::connect(m_ui.MetroBeatNoteComboBox,
+		SIGNAL(activated(int)),
+		SLOT(changed()));
+	QObject::connect(m_ui.MetroBeatVelocitySpinBox,
+		SIGNAL(valueChanged(int)),
+		SLOT(changed()));
+	QObject::connect(m_ui.MetroBeatDurationSpinBox,
+		SIGNAL(valueChanged(int)),
 		SLOT(changed()));
 }
 
@@ -198,6 +230,15 @@ void qtractorOptionsForm::setOptions ( qtractorOptions *pOptions )
 	// MIDI options.
 	m_ui.MidiCaptureFormatComboBox->setCurrentIndex(m_pOptions->iMidiCaptureFormat);
 
+	// Metronome options.
+	m_ui.MetroChannelSpinBox->setValue(m_pOptions->iMetroChannel + 1);
+	m_ui.MetroBarNoteComboBox->setCurrentIndex(m_pOptions->iMetroBarNote);
+	m_ui.MetroBarVelocitySpinBox->setValue(m_pOptions->iMetroBarVelocity);
+	m_ui.MetroBarDurationSpinBox->setValue(m_pOptions->iMetroBarDuration);
+	m_ui.MetroBeatNoteComboBox->setCurrentIndex(m_pOptions->iMetroBeatNote);
+	m_ui.MetroBeatVelocitySpinBox->setValue(m_pOptions->iMetroBeatVelocity);
+	m_ui.MetroBeatDurationSpinBox->setValue(m_pOptions->iMetroBeatDuration);
+
 	// Done. Restart clean.
 	m_iDirtyCount = 0;
 	stabilizeForm();
@@ -239,12 +280,20 @@ void qtractorOptionsForm::accept (void)
 		m_pOptions->iAudioCaptureQuality = m_ui.AudioCaptureQualitySpinBox->value();
 		m_pOptions->iAudioResampleType   = m_ui.AudioResampleTypeComboBox->currentIndex();
 		// MIDI options...
-		m_pOptions->iMidiCaptureFormat = m_ui.MidiCaptureFormatComboBox->currentIndex();
+		m_pOptions->iMidiCaptureFormat   = m_ui.MidiCaptureFormatComboBox->currentIndex();
+		// Metronome options.
+		m_pOptions->iMetroChannel        = m_ui.MetroChannelSpinBox->value() - 1;
+		m_pOptions->iMetroBarNote        = m_ui.MetroBarNoteComboBox->currentIndex();
+		m_pOptions->iMetroBarVelocity    = m_ui.MetroBarVelocitySpinBox->value();
+		m_pOptions->iMetroBarDuration    = m_ui.MetroBarDurationSpinBox->value();
+		m_pOptions->iMetroBeatNote       = m_ui.MetroBeatNoteComboBox->currentIndex();
+		m_pOptions->iMetroBeatVelocity   = m_ui.MetroBeatVelocitySpinBox->value();
+		m_pOptions->iMetroBeatDuration   = m_ui.MetroBeatDurationSpinBox->value();
 		// Reset dirty flag.
 		m_iDirtyCount = 0;
 	}
 
-	// Just go with dialog acceptance.
+	// Just go with dialog acceptance
 	QDialog::accept();
 }
 

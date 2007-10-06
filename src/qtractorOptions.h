@@ -72,11 +72,13 @@ public:
 	bool    bEditToolbar;
 	bool    bTrackToolbar;
 	bool    bViewToolbar;
+	bool    bOptionsToolbar;
 	bool    bTransportToolbar;
 	bool    bTimeToolbar;
 	bool    bThumbToolbar;
 
 	// Transport options...
+	bool    bMetronome;
 	bool    bFollowPlayhead;
 
 	// Audio options...
@@ -88,6 +90,15 @@ public:
 
 	// Midi options...
 	int iMidiCaptureFormat;
+
+	// Metronome parameters.
+	int iMetroChannel;
+	int iMetroBarNote;
+	int iMetroBarVelocity;
+	int iMetroBarDuration;
+	int iMetroBeatNote;
+	int iMetroBeatVelocity;
+	int iMetroBeatDuration;
 
 	// Default options...
 	QString sSessionDir;

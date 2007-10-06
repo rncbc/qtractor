@@ -357,6 +357,9 @@ void qtractorMidiOutputThread::process (void)
 		this, iFrameStart, iFrameEnd);
 #endif
 
+	// Process metronome clicks...
+	m_pSession->midiEngine()->processMetro(iFrameStart, iFrameEnd);
+
 	// Split processing, in case we're looping...
 	if (m_pSession->isLooping() && iFrameStart < m_pSession->loopEnd()) {
 		// Loop-length might be shorter than the read-ahead...
@@ -467,6 +470,18 @@ qtractorMidiEngine::qtractorMidiEngine ( qtractorSession *pSession )
 
 	m_pInputThread   = NULL;
 	m_pOutputThread  = NULL;
+
+	m_bMetronome     = false;
+
+	m_iMetroChannel  = 9;
+
+	m_iMetroBarNote      = 76;
+	m_iMetroBarVelocity  = 96;
+	m_iMetroBarDuration  = 24;
+
+	m_iMetroBeatNote     = 77;
+	m_iMetroBeatVelocity = 64;
+	m_iMetroBeatDuration = 16;
 
 	m_iTimeStart     = 0;
 #ifdef QTRACTOR_SNAFU_DRIFT
@@ -1290,6 +1305,143 @@ void qtractorMidiEngine::sendMmcCommand ( qtractorMmcEvent::Command cmd,
 }
 
 
+// Metronome switching.
+void qtractorMidiEngine::setMetronome ( bool bMetronome )
+{
+	m_bMetronome = bMetronome;
+}
+
+bool qtractorMidiEngine::isMetronome (void) const
+{
+	return m_bMetronome;
+}
+
+
+// Metronome channel accessors.
+void qtractorMidiEngine::setMetroChannel ( unsigned short iChannel )
+{
+	m_iMetroChannel  = iChannel;
+}
+
+unsigned short qtractorMidiEngine::metroChannel (void) const
+{
+	return m_iMetroChannel;
+}
+
+// Metronome bar parameters.
+void qtractorMidiEngine::setMetroBar (
+	int iNote, int iVelocity, unsigned long iDuration )
+{
+	m_iMetroBarNote     = iNote;
+	m_iMetroBarVelocity = iVelocity;
+	m_iMetroBarDuration = iDuration;
+}
+
+int qtractorMidiEngine::metroBarNote (void) const
+{
+	return m_iMetroBarNote;
+}
+
+int qtractorMidiEngine::metroBarVelocity (void) const
+{
+	return m_iMetroBarVelocity;
+}
+
+unsigned long qtractorMidiEngine::metroBarDuration (void) const
+{
+	return m_iMetroBarDuration;
+}
+
+
+// Metronome bar parameters.
+void qtractorMidiEngine::setMetroBeat (
+	int iNote, int iVelocity, unsigned long iDuration )
+{
+	m_iMetroBeatNote     = iNote;
+	m_iMetroBeatVelocity = iVelocity;
+	m_iMetroBeatDuration = iDuration;
+}
+
+int qtractorMidiEngine::metroBeatNote (void) const
+{
+	return m_iMetroBarNote;
+}
+
+int qtractorMidiEngine::metroBeatVelocity (void) const
+{
+	return m_iMetroBarVelocity;
+}
+
+unsigned long qtractorMidiEngine::metroBeatDuration (void) const
+{
+	return m_iMetroBeatDuration;
+}
+
+
+// Process metronome clicks.
+void qtractorMidiEngine::processMetro (
+	unsigned long iFrameStart, unsigned long iFrameEnd )
+{
+	if (!m_bMetronome)
+		return;
+
+	qtractorSession *pSession = session();
+	if (pSession == NULL)
+		return;
+
+	// Metronome renderer...
+	qtractorMidiBus *pMidiBus
+		= static_cast<qtractorMidiBus *> (buses().first());
+	if (pMidiBus == NULL)
+		return;
+
+	// Register the next metronome slot.
+	unsigned long iTimeStart = pSession->tickFromFrame(iFrameStart);
+	unsigned long iTimeEnd   = pSession->tickFromFrame(iFrameEnd);
+
+	unsigned short iTicksPerBeat = pSession->ticksPerBeat();
+	unsigned int   iBeat = iTimeStart / iTicksPerBeat;
+	unsigned long  iTime = iBeat * iTicksPerBeat;
+
+	// Intialize outbound event...
+	snd_seq_event_t ev;
+	snd_seq_ev_clear(&ev);
+	// Addressing...
+	snd_seq_ev_set_source(&ev, pMidiBus->alsaPort());
+	snd_seq_ev_set_subs(&ev);
+	// Set common event data...
+	ev.type = SND_SEQ_EVENT_NOTE;
+	ev.data.note.channel  = m_iMetroChannel;
+
+	while (iTime < iTimeEnd) {
+		// Scheduled delivery: take into account
+		// the time playback/queue started...
+		unsigned long tick = iTime - m_iTimeStart;
+		snd_seq_ev_schedule_tick(&ev, m_iAlsaQueue, 0, tick);
+		// Set proper event data...
+		if (pSession->beatIsBar(iBeat)) {
+			ev.data.note.note     = m_iMetroBarNote;
+			ev.data.note.velocity = m_iMetroBarVelocity;
+			ev.data.note.duration = m_iMetroBarDuration;
+		} else {
+			ev.data.note.note     = m_iMetroBeatNote;
+			ev.data.note.velocity = m_iMetroBeatVelocity;
+			ev.data.note.duration = m_iMetroBeatDuration;
+		}
+		// Pump it into the queue.
+		snd_seq_event_output(m_pAlsaSeq, &ev);
+		// MIDI track monitoring...
+		if (pMidiBus->midiMonitor_out()) {
+			pMidiBus->midiMonitor_out()->enqueue(
+				qtractorMidiEvent::NOTEON, ev.data.note.velocity, tick);
+		}
+		// Go for next beat...
+		iTime += iTicksPerBeat;
+		iBeat++;
+	}
+}
+
+
 // Document element methods.
 bool qtractorMidiEngine::loadElement ( qtractorSessionDocument *pDocument,
 	QDomElement *pElement )
@@ -1878,6 +2030,10 @@ void qtractorMidiBus::sendNote ( unsigned short iChannel,
 	snd_seq_event_output(pMidiEngine->alsaSeq(), &ev);
 
 	pMidiEngine->flush();
+
+	// Bus output monitoring...
+	if (iVelocity > 0 && m_pOMidiMonitor)
+		m_pOMidiMonitor->enqueue(qtractorMidiEvent::NOTEON, iVelocity);
 }
 
 

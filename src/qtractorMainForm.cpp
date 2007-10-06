@@ -463,6 +463,9 @@ qtractorMainForm::qtractorMainForm (
 	QObject::connect(m_ui.viewToolbarViewAction,
 		SIGNAL(triggered(bool)),
 		SLOT(viewToolbarView(bool)));
+	QObject::connect(m_ui.viewToolbarOptionsAction,
+		SIGNAL(triggered(bool)),
+		SLOT(viewToolbarOptions(bool)));
 	QObject::connect(m_ui.viewToolbarTransportAction,
 		SIGNAL(triggered(bool)),
 		SLOT(viewToolbarTransport(bool)));
@@ -518,6 +521,9 @@ qtractorMainForm::qtractorMainForm (
 	QObject::connect(m_ui.transportRecordAction,
 		SIGNAL(triggered(bool)),
 		SLOT(transportRecord()));
+	QObject::connect(m_ui.transportMetroAction,
+		SIGNAL(triggered(bool)),
+		SLOT(transportMetro()));
 	QObject::connect(m_ui.transportFollowAction,
 		SIGNAL(triggered(bool)),
 		SLOT(transportFollow()));
@@ -654,10 +660,12 @@ void qtractorMainForm::setOptions ( qtractorOptions *pOptions )
 	m_ui.viewToolbarEditAction->setChecked(m_pOptions->bEditToolbar);
 	m_ui.viewToolbarTrackAction->setChecked(m_pOptions->bTrackToolbar);
 	m_ui.viewToolbarViewAction->setChecked(m_pOptions->bViewToolbar);
+	m_ui.viewToolbarOptionsAction->setChecked(m_pOptions->bOptionsToolbar);
 	m_ui.viewToolbarTransportAction->setChecked(m_pOptions->bTransportToolbar);
 	m_ui.viewToolbarTimeAction->setChecked(m_pOptions->bTimeToolbar);
 	m_ui.viewToolbarThumbAction->setChecked(m_pOptions->bThumbToolbar);
 
+	m_ui.transportMetroAction->setChecked(m_pOptions->bMetronome);
 	m_ui.transportFollowAction->setChecked(m_pOptions->bFollowPlayhead);
 
 	// Initial decorations visibility state.
@@ -667,6 +675,7 @@ void qtractorMainForm::setOptions ( qtractorOptions *pOptions )
 	viewToolbarEdit(m_pOptions->bEditToolbar);
 	viewToolbarTrack(m_pOptions->bTrackToolbar);
 	viewToolbarView(m_pOptions->bViewToolbar);
+	viewToolbarOptions(m_pOptions->bOptionsToolbar);
 	viewToolbarTransport(m_pOptions->bTransportToolbar);
 	viewToolbarTime(m_pOptions->bTimeToolbar);
 	viewToolbarThumb(m_pOptions->bThumbToolbar);
@@ -696,6 +705,7 @@ void qtractorMainForm::setOptions ( qtractorOptions *pOptions )
 	updateRecentFilesMenu();
 	updatePeakAutoRemove();
 	updateDisplayFormat();
+	updateMetronome();
 
 	// FIXME: This is what it should ever be,
 	// make it right from this very moment...
@@ -791,9 +801,11 @@ bool qtractorMainForm::queryClose (void)
 			m_pOptions->bEditToolbar = m_ui.editToolbar->isVisible();
 			m_pOptions->bTrackToolbar = m_ui.trackToolbar->isVisible();
 			m_pOptions->bViewToolbar = m_ui.viewToolbar->isVisible();
+			m_pOptions->bOptionsToolbar = m_ui.optionsToolbar->isVisible();
 			m_pOptions->bTransportToolbar = m_ui.transportToolbar->isVisible();
 			m_pOptions->bTimeToolbar = m_ui.timeToolbar->isVisible();
 			m_pOptions->bThumbToolbar = m_ui.thumbToolbar->isVisible();
+			m_pOptions->bMetronome = m_ui.transportMetroAction->isChecked();
 			m_pOptions->bFollowPlayhead = m_ui.transportFollowAction->isChecked();
 			// Save instrument definition file list...
 			m_pOptions->instrumentFiles = m_pInstruments->files();
@@ -1801,6 +1813,17 @@ void qtractorMainForm::viewToolbarView ( bool bOn )
 }
 
 
+// Show/hide the options toolbar.
+void qtractorMainForm::viewToolbarOptions ( bool bOn )
+{
+	if (bOn) {
+		m_ui.optionsToolbar->show();
+	} else {
+		m_ui.optionsToolbar->hide();
+	}
+}
+
+
 // Show/hide the transport toolbar.
 void qtractorMainForm::viewToolbarTransport ( bool bOn )
 {
@@ -1942,16 +1965,23 @@ void qtractorMainForm::viewOptions (void)
 	if (m_pOptions->sMessagesFont.isEmpty() && m_pMessages)
 		m_pOptions->sMessagesFont = m_pMessages->messagesFont().toString();
 	// To track down deferred or immediate changes.
-	QString sOldMessagesFont    = m_pOptions->sMessagesFont;
-	bool    bOldStdoutCapture   = m_pOptions->bStdoutCapture;
-	int     bOldMessagesLimit   = m_pOptions->bMessagesLimit;
+	QString sOldMessagesFont       = m_pOptions->sMessagesFont;
+	bool    bOldStdoutCapture      = m_pOptions->bStdoutCapture;
+	int     bOldMessagesLimit      = m_pOptions->bMessagesLimit;
 	int     iOldMessagesLimitLines = m_pOptions->iMessagesLimitLines;
-	bool    bOldCompletePath    = m_pOptions->bCompletePath;
-	bool    bOldPeakAutoRemove  = m_pOptions->bPeakAutoRemove;
-	bool    bOldKeepToolsOnTop  = m_pOptions->bKeepToolsOnTop;
-	int     iOldMaxRecentFiles  = m_pOptions->iMaxRecentFiles;
-	int     iOldDisplayFormat   = m_pOptions->iDisplayFormat;
-	int     iOldResampleType    = m_pOptions->iAudioResampleType;
+	bool    bOldCompletePath       = m_pOptions->bCompletePath;
+	bool    bOldPeakAutoRemove     = m_pOptions->bPeakAutoRemove;
+	bool    bOldKeepToolsOnTop     = m_pOptions->bKeepToolsOnTop;
+	int     iOldMaxRecentFiles     = m_pOptions->iMaxRecentFiles;
+	int     iOldDisplayFormat      = m_pOptions->iDisplayFormat;
+	int     iOldResampleType       = m_pOptions->iAudioResampleType;
+	int     iOldMetroChannel       = m_pOptions->iMetroChannel;
+	int     iOldMetroBarNote       = m_pOptions->iMetroBarNote;
+	int     iOldMetroBarVelocity   = m_pOptions->iMetroBarVelocity;
+	int     iOldMetroBarDuration   = m_pOptions->iMetroBarDuration;
+	int     iOldMetroBeatNote      = m_pOptions->iMetroBeatNote;
+	int     iOldMetroBeatVelocity  = m_pOptions->iMetroBeatVelocity;
+	int     iOldMetroBeatDuration  = m_pOptions->iMetroBeatDuration;
 	// Load the current setup settings.
 	qtractorOptionsForm optionsForm(this);
 	optionsForm.setOptions(m_pOptions);
@@ -1996,6 +2026,15 @@ void qtractorMainForm::viewOptions (void)
 			m_pOptions->iAudioCaptureQuality);
 		qtractorMidiClip::setDefaultFormat(
 			m_pOptions->iMidiCaptureFormat);
+		// MIDI Engine metronome options...
+		if ((iOldMetroChannel      != m_pOptions->iMetroChannel)      ||
+			(iOldMetroBarNote      != m_pOptions->iMetroBarNote)      ||
+			(iOldMetroBarVelocity  != m_pOptions->iMetroBarVelocity)  ||
+			(iOldMetroBarDuration  != m_pOptions->iMetroBarDuration)  ||
+			(iOldMetroBeatNote     != m_pOptions->iMetroBeatNote)     ||
+			(iOldMetroBeatVelocity != m_pOptions->iMetroBeatVelocity) ||
+			(iOldMetroBeatDuration != m_pOptions->iMetroBeatDuration))
+			updateMetronome();
 		// Warn if something will be only effective on next time.
 		if (iNeedRestart & RestartAny) {
 			QString sNeedRestart;
@@ -2198,7 +2237,23 @@ void qtractorMainForm::transportRecord (void)
 }
 
 
-// Transport follow playhead
+// Metronome transport option.
+void qtractorMainForm::transportMetro (void)
+{
+#ifdef CONFIG_DEBUG
+	appendMessages("qtractorMainForm::transportMetro()");
+#endif
+
+	// Toggle metronome...
+	qtractorMidiEngine *pMidiEngine = m_pSession->midiEngine();
+	if (pMidiEngine)
+		pMidiEngine->setMetronome(!pMidiEngine->isMetronome());
+
+	stabilizeForm();
+}
+
+
+// Follow playhead transport option.
 void qtractorMainForm::transportFollow (void)
 {
 #ifdef CONFIG_DEBUG
@@ -2278,7 +2333,7 @@ bool qtractorMainForm::setPlaying ( bool bPlaying )
 	m_pSession->setPlaying(bPlaying);
 	m_iTransportUpdate++;
 
-	// We must stop certain things...
+	// We must start/stop certain things...
 	if (!bPlaying) {
 		// And shutdown recording anyway...
 		if (m_pSession->isRecording())
@@ -2793,6 +2848,32 @@ void qtractorMainForm::updateDisplayFormat (void)
 
 	m_pSession->timeScale()->setDisplayFormat(displayFormat);
 	m_pTransportTimeSpinBox->updateDisplayFormat();
+}
+
+
+// Update transport-metronome parameters.
+void qtractorMainForm::updateMetronome (void)
+{
+	if (m_pOptions == NULL)
+		return;
+
+	qtractorMidiEngine *pMidiEngine = m_pSession->midiEngine();
+	if (pMidiEngine == NULL)
+		return;
+
+	// Configure the MIDI engine metronome handling...
+	pMidiEngine->setMetronome(m_pOptions->bMetronome);
+
+	// And respective parameters too...
+	pMidiEngine->setMetroChannel(m_pOptions->iMetroChannel);
+	pMidiEngine->setMetroBar(
+		m_pOptions->iMetroBarNote,
+		m_pOptions->iMetroBarVelocity,
+		m_pOptions->iMetroBarDuration);
+	pMidiEngine->setMetroBeat(
+		m_pOptions->iMetroBeatNote,
+		m_pOptions->iMetroBeatVelocity,
+		m_pOptions->iMetroBeatDuration);
 }
 
 

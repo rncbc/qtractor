@@ -91,6 +91,27 @@ public:
 	// Special track-immediate methods.
 	void trackMute(qtractorTrack *pTrack, bool bMute);
 
+	// Metronome switching.
+	void setMetronome(bool bMetronome);
+	bool isMetronome() const;
+
+	// Metronome parameters.
+	void setMetroChannel (unsigned short iChannel);
+	unsigned short metroChannel() const;
+
+	void setMetroBar(int iNote, int iVelocity, unsigned long iDuration);
+	int metroBarNote() const;
+	int metroBarVelocity() const;
+	unsigned long metroBarDuration() const;
+
+	void setMetroBeat(int iNote, int iVelocity, unsigned long iDuration);
+	int metroBeatNote() const;
+	int metroBeatVelocity() const;
+	unsigned long metroBeatDuration() const;
+
+	// Process metronome clicks.
+	void processMetro(unsigned long iFrameStart, unsigned long iFrameEnd);
+
 	// Event notifier widget settings.
 	void setNotifyWidget  (QWidget *pNotifyWidget);
 	void setNotifyMmcType (QEvent::Type eNotifyMmcType);
@@ -145,6 +166,17 @@ private:
 	// Name says it all.
 	qtractorMidiInputThread  *m_pInputThread;
 	qtractorMidiOutputThread *m_pOutputThread;
+
+	// Metronome enablement.
+	bool m_bMetronome;
+
+	unsigned short m_iMetroChannel;
+	int            m_iMetroBarNote;
+	int            m_iMetroBarVelocity;
+	unsigned long  m_iMetroBarDuration;
+	int            m_iMetroBeatNote;
+	int            m_iMetroBeatVelocity;
+	unsigned long  m_iMetroBeatDuration;
 
 	// The delta-time when playback started .
 	long m_iTimeStart;

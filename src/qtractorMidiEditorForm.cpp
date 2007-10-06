@@ -962,13 +962,10 @@ void qtractorMidiEditorForm::sendNote ( int iNote, int iVelocity )
 
 	pMidiBus->sendNote(pTrack->midiChannel(), iNote, iVelocity);
 
-	// Track input monitoring...
+	// Track output monitoring...
 	if (iVelocity > 0) {
 		qtractorMidiMonitor *pMidiMonitor
 			= static_cast<qtractorMidiMonitor *> (pTrack->monitor());
-		if (pMidiMonitor)
-			pMidiMonitor->enqueue(qtractorMidiEvent::NOTEON, iVelocity);
-		pMidiMonitor = pMidiBus->midiMonitor_out();
 		if (pMidiMonitor)
 			pMidiMonitor->enqueue(qtractorMidiEvent::NOTEON, iVelocity);
 	}

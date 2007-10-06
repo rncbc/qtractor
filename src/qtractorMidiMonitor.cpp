@@ -1,7 +1,7 @@
 // qtractorMidiMonitor.cpp
 //
 /****************************************************************************
-   Copyright (C) 2006, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -59,8 +59,8 @@ void qtractorMidiMonitor::setQueueSize ( unsigned int iQueueSize)
 	m_iQueueSize = iQueueSize;
 	if (m_iQueueSize > 0) {
 		// Queue size range.
-		const unsigned int iMinQueueSize = 32;
-		const unsigned int iMaxQueueSize = 32 * 32; // 1024
+		const unsigned int iMinQueueSize = 8;
+		const unsigned int iMaxQueueSize = 256;
 		// Adjust size to nearest power-of-two, if necessary.
 		if (iQueueSize < iMaxQueueSize) {
 			m_iQueueSize = iMinQueueSize;
@@ -168,8 +168,8 @@ void qtractorMidiMonitor::reset (void)
 		// Reset time references...
 		// time slot: the amount of time (in ticks)
 		// each queue slot will hold scheduled events;
-		m_iTimeSlot  = 2 + m_pSession->tickFromFrame(2 *
-			m_pSession->midiEngine()->readAhead()) / m_iQueueSize;
+		m_iTimeSlot = 1 + m_pSession->tickFromFrame(
+			m_pSession->midiEngine()->readAhead() << 1) / m_iQueueSize;
 		// time start: the time (in ticks) of the
 		// current queue head slot;
 		m_iTimeStart = m_pSession->tickFromFrame(
