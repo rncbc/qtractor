@@ -91,6 +91,9 @@ public:
 	// Special track-immediate methods.
 	void trackMute(qtractorTrack *pTrack, bool bMute);
 
+	// Special metronome-immediate methods.
+	void metroMute(bool bMute);
+
 	// Metronome switching.
 	void setMetronome(bool bMetronome);
 	bool isMetronome() const;

@@ -11,10 +11,7 @@ ChangeLog
 - A rudimentary MIDI metronome is now in place; parameters, like
   MIDI channel, bar and beat accent note, velocity and duration,
   are readily configurable from the main menu, View/Options...
-  /MIDI/Metronome dialog. Beware, although it's barely working
-  as advertised, it is also not perfect nor reliable, in fact it
-  might be a bit far from that, probably due to some conceptual
-  mistake(s) :(. Still trying to do my best.
+  /MIDI/Metronome dialog.
 
 - Track properties dialog now gets tightly auto-sized, depending
   whether its an audio or a MIDI track.

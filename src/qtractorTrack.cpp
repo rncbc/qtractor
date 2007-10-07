@@ -417,7 +417,7 @@ float qtractorTrack::panning (void) const
 // MIDI specific: track-tag accessors.
 void qtractorTrack::setMidiTag ( unsigned short iMidiTag )
 {
-	m_iMidiTag = iMidiTag;
+	m_iMidiTag = (iMidiTag % 0xff);
 }
 
 unsigned short qtractorTrack::midiTag (void) const

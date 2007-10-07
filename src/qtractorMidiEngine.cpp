@@ -114,6 +114,9 @@ public:
 	// MIDI track output process resync.
 	void trackSync(qtractorTrack *pTrack, unsigned long iFrameStart);
 
+	// MIDI metronome output process resync.
+	void metroSync(unsigned long iFrameStart);
+
 	// MIDI output process cycle iteration (locked).
 	void processSync();
 
@@ -411,9 +414,12 @@ void qtractorMidiOutputThread::trackSync ( qtractorTrack *pTrack,
 {
 	QMutexLocker locker(&m_mutex);
 
+	qtractorMidiEngine *pMidiEngine = m_pSession->midiEngine();
+	if (pMidiEngine == NULL)
+		return;
+
 	// Pick our actual MIDI sequencer cursor...
-	qtractorSessionCursor *pMidiCursor
-		= m_pSession->midiEngine()->sessionCursor();
+	qtractorSessionCursor *pMidiCursor = pMidiEngine->sessionCursor();
 	if (pMidiCursor == NULL)
 		return;
 
@@ -435,7 +441,37 @@ void qtractorMidiOutputThread::trackSync ( qtractorTrack *pTrack,
 	}
 
 	// Surely must realize the output queue...
-	m_pSession->midiEngine()->flush();
+	pMidiEngine->flush();
+}
+
+
+// MIDI metronome output process resync.
+void qtractorMidiOutputThread::metroSync ( unsigned long iFrameStart )
+{
+	QMutexLocker locker(&m_mutex);
+
+	qtractorMidiEngine *pMidiEngine = m_pSession->midiEngine();
+	if (pMidiEngine == NULL)
+		return;
+
+	// Pick our actual MIDI sequencer cursor...
+	qtractorSessionCursor *pMidiCursor = pMidiEngine->sessionCursor();
+	if (pMidiCursor == NULL)
+		return;
+
+	// This is the last framestamp to be trown out...
+	unsigned long iFrameEnd = pMidiCursor->frame();
+
+#ifdef CONFIG_DEBUG_0
+	fprintf(stderr, "qtractorMidiOutputThread::metroSync(%p, %lu, %lu)\n",
+		this, iFrameStart, iFrameEnd);
+#endif
+
+	// (Re)process the metronome stuff...
+	pMidiEngine->processMetro(iFrameStart, iFrameEnd);
+
+	// Surely must realize the output queue...
+	pMidiEngine->flush();
 }
 
 
@@ -1165,7 +1201,11 @@ void qtractorMidiEngine::trackMute ( qtractorTrack *pTrack, bool bMute )
 	fprintf(stderr, "qtractorMidiEngine::trackMute(%p, %d)\n", pTrack, bMute);
 #endif
 
-	unsigned long iFrame = session()->playHead();
+	qtractorSession *pSession = session();
+	if (pSession == NULL)
+		return;
+
+	unsigned long iFrame = pSession->playHead();
 
 	if (bMute) {
 		// Remove all already enqueued events
@@ -1173,7 +1213,7 @@ void qtractorMidiEngine::trackMute ( qtractorTrack *pTrack, bool bMute )
 		snd_seq_remove_events_t *pre;
 		snd_seq_remove_events_alloca(&pre);
 		snd_seq_timestamp_t ts;
-		long iTime = (long) session()->tickFromFrame(iFrame);
+		long iTime = (long) pSession->tickFromFrame(iFrame);
 		ts.tick = (iTime > m_iTimeStart ? iTime - m_iTimeStart : 0);
 		snd_seq_remove_events_set_time(pre, &ts);
 		snd_seq_remove_events_set_tag(pre, pTrack->midiTag());
@@ -1194,12 +1234,52 @@ void qtractorMidiEngine::trackMute ( qtractorTrack *pTrack, bool bMute )
 			= static_cast<qtractorMidiMonitor *> (pTrack->monitor());
 		if (pMidiMonitor)
 			pMidiMonitor->reset();
-		// Done mute.
+		// Done track mute.
 	} else {
 		// Must redirect to MIDI ouput thread:
 		// the immediate re-enqueueing of MIDI events.
 		m_pOutputThread->trackSync(pTrack, iFrame);
-		// Done unmute.
+		// Done track unmute.
+	}
+}
+
+
+// Immediate metronome mute.
+void qtractorMidiEngine::metroMute ( bool bMute )
+{
+#ifdef CONFIG_DEBUG
+	fprintf(stderr, "qtractorMidiEngine::metroMute(%d)\n", bMute);
+#endif
+
+	qtractorSession *pSession = session();
+	if (pSession == NULL)
+		return;
+
+	unsigned long iFrame = pSession->playHead();
+
+	if (bMute) {
+		// Remove all already enqueued events
+		// for the given track and channel...
+		snd_seq_remove_events_t *pre;
+ 		snd_seq_remove_events_alloca(&pre);
+		snd_seq_timestamp_t ts;
+		long iTime = (long) pSession->tickFromFrame(iFrame);
+		ts.tick = (iTime > m_iTimeStart ? iTime - m_iTimeStart : 0);
+		snd_seq_remove_events_set_time(pre, &ts);
+		snd_seq_remove_events_set_tag(pre, 0xff);
+		snd_seq_remove_events_set_channel(pre, m_iMetroChannel);
+		snd_seq_remove_events_set_queue(pre, m_iAlsaQueue);
+		snd_seq_remove_events_set_condition(pre, SND_SEQ_REMOVE_OUTPUT
+			| SND_SEQ_REMOVE_TIME_AFTER | SND_SEQ_REMOVE_TIME_TICK
+			| SND_SEQ_REMOVE_DEST_CHANNEL | SND_SEQ_REMOVE_IGNORE_OFF
+			| SND_SEQ_REMOVE_TAG_MATCH);
+		snd_seq_remove_events(m_pAlsaSeq, pre);
+		// Done metronome mute.
+	} else {
+		// Must redirect to MIDI ouput thread:
+		// the immediate re-enqueueing of MIDI events.
+		m_pOutputThread->metroSync(iFrame);
+		// Done metronome unmute.
 	}
 }
 
@@ -1309,6 +1389,9 @@ void qtractorMidiEngine::sendMmcCommand ( qtractorMmcEvent::Command cmd,
 void qtractorMidiEngine::setMetronome ( bool bMetronome )
 {
 	m_bMetronome = bMetronome;
+
+	if (isPlaying())
+		metroMute(!m_bMetronome);
 }
 
 bool qtractorMidiEngine::isMetronome (void) const
@@ -1389,7 +1472,6 @@ void qtractorMidiEngine::processMetro (
 	if (pSession == NULL)
 		return;
 
-	// Metronome renderer...
 	qtractorMidiBus *pMidiBus
 		= static_cast<qtractorMidiBus *> (buses().first());
 	if (pMidiBus == NULL)
@@ -1410,6 +1492,7 @@ void qtractorMidiEngine::processMetro (
 	snd_seq_ev_set_source(&ev, pMidiBus->alsaPort());
 	snd_seq_ev_set_subs(&ev);
 	// Set common event data...
+	ev.tag = (unsigned char) 0xff;
 	ev.type = SND_SEQ_EVENT_NOTE;
 	ev.data.note.channel  = m_iMetroChannel;
 
