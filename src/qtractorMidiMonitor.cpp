@@ -95,16 +95,16 @@ void qtractorMidiMonitor::enqueue ( qtractorMidiEvent::EventType type,
 		unsigned int iOffset = (tick - m_iTimeStart) / m_iTimeSlot;
 		// FIXME: Ignore outsiders (which would manifest as
 		// out-of-time phantom monitor peak values...)
-		if (iOffset < m_iQueueSize) {
-			unsigned int iIndex  = (m_iReadIndex + iOffset) & m_iQueueMask;
-			// Set the value in buffer...
-			if (type == qtractorMidiEvent::NOTEON) {
-				if (m_pQueue[iIndex].value < val)
-					m_pQueue[iIndex].value = val;
-			}
-			// Increment enqueued count.
-			m_pQueue[iIndex].count++;
+		if (iOffset > m_iQueueMask)
+			iOffset = m_iQueueMask;
+		unsigned int iIndex  = (m_iReadIndex + iOffset) & m_iQueueMask;
+		// Set the value in buffer...
+		if (type == qtractorMidiEvent::NOTEON) {
+			if (m_pQueue[iIndex].value < val)
+				m_pQueue[iIndex].value = val;
 		}
+		// Increment enqueued count.
+		m_pQueue[iIndex].count++;
 		// Done with enqueueing.
 	} else {
 		// Alternative is sending it directly
@@ -169,7 +169,7 @@ void qtractorMidiMonitor::reset (void)
 		// time slot: the amount of time (in ticks)
 		// each queue slot will hold scheduled events;
 		m_iTimeSlot = 1 + m_pSession->tickFromFrame(
-			m_pSession->midiEngine()->readAhead() << 1) / m_iQueueSize;
+			m_pSession->midiEngine()->readAhead() << 2) / m_iQueueSize;
 		// time start: the time (in ticks) of the
 		// current queue head slot;
 		m_iTimeStart = m_pSession->tickFromFrame(
