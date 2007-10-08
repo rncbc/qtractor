@@ -173,11 +173,10 @@ void qtractorAudioMeterValue::refresh (void)
 	if (m_pAudioMeter->audioMonitor()) {
 		float fValue = m_pAudioMeter->audioMonitor()->value(m_iChannel);
 		// If value pending of change, proceed for update...
-		if (m_fValue < fValue) {
+		if (m_fValue < fValue)
 			m_fValue = fValue;
-			if (m_iPeak > 0)
-				update();
-		}
+		if (m_fValue > 0.001f || m_iPeak > 0)
+			update();
 	}
 }
 
