@@ -171,10 +171,13 @@ void qtractorAudioMeterValue::refresh (void)
 {
 	// Grab the value...
 	if (m_pAudioMeter->audioMonitor()) {
-		m_fValue = m_pAudioMeter->audioMonitor()->value(m_iChannel);
+		float fValue = m_pAudioMeter->audioMonitor()->value(m_iChannel);
 		// If value pending of change, proceed for update...
-		if (m_fValue > 0.001f || m_iPeak > 0)
-			update();
+		if (m_fValue < fValue) {
+			m_fValue = fValue;
+			if (m_iPeak > 0)
+				update();
+		}
 	}
 }
 
@@ -199,8 +202,10 @@ void qtractorAudioMeterValue::paintEvent ( QPaintEvent * )
 	}
 
 	float dB = QTRACTOR_AUDIO_METER_MINDB;
-	if (m_fValue > 0.0f)
+	if (m_fValue > 0.0f) {
 		dB = 20.0f * ::log10f(m_fValue);
+		m_fValue = 0.0f;
+	}
 
 	if (dB < QTRACTOR_AUDIO_METER_MINDB)
 		dB = QTRACTOR_AUDIO_METER_MINDB;

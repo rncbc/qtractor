@@ -118,10 +118,13 @@ void qtractorMidiMeterValue::refresh (void)
 {
 	// Grab the value...
 	if (m_pMidiMeter->midiMonitor()) {
-		m_fValue = m_pMidiMeter->midiMonitor()->value();
+		float fValue = m_pMidiMeter->midiMonitor()->value();
 		// If value pending of change, proceed for update...
-		if (m_fValue > 0.001f || m_iPeak > 0)
-			update();
+		if (m_fValue < fValue) {
+			m_fValue = fValue;
+			if (m_iPeak > 0)
+				update();
+		}
 	}
 }
 
@@ -141,7 +144,7 @@ void qtractorMidiMeterValue::paintEvent ( QPaintEvent * )
 		painter.fillRect(0, 0, w, h, Qt::gray);
 	}
 
-	int y = int(m_fValue * float(h));
+	int y = int(m_fValue * float(h)); m_fValue = 0.0f;
 	if (m_iValueHold > y) {
 		if (y > 0) {
 			m_fValueDecay = QTRACTOR_MIDI_METER_DECAY_RATE1;
