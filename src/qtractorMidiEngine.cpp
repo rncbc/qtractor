@@ -345,6 +345,10 @@ void qtractorMidiOutputThread::run (void)
 // MIDI output process cycle iteration.
 void qtractorMidiOutputThread::process (void)
 {
+	qtractorMidiEngine *pMidiEngine = m_pSession->midiEngine();
+	if (pMidiEngine == NULL)
+		return;
+
 	// Get a handle on our slave MIDI engine...
 	qtractorSessionCursor *pMidiCursor = midiCursorSync();
 	// Isn't MIDI slightly behind audio?
@@ -360,26 +364,27 @@ void qtractorMidiOutputThread::process (void)
 		this, iFrameStart, iFrameEnd);
 #endif
 
-	// Process metronome clicks...
-	m_pSession->midiEngine()->processMetro(iFrameStart, iFrameEnd);
-
 	// Split processing, in case we're looping...
 	if (m_pSession->isLooping() && iFrameStart < m_pSession->loopEnd()) {
 		// Loop-length might be shorter than the read-ahead...
 		while (iFrameEnd >= m_pSession->loopEnd()) {
 			// Process the remaining until end-of-loop...
 			m_pSession->process(pMidiCursor, iFrameStart, m_pSession->loopEnd());
+			// Process metronome clicks...
+			pMidiEngine->processMetro(iFrameStart, m_pSession->loopEnd());
 			// Reset to start-of-loop...
 			iFrameStart = m_pSession->loopStart();
 			iFrameEnd   = iFrameStart + (iFrameEnd - m_pSession->loopEnd());
 			pMidiCursor->seek(iFrameStart);
 			// This is really a must...
-			m_pSession->midiEngine()->restartLoop();
+			pMidiEngine->restartLoop();
 		}
 	}
 
 	// Regular range...
 	m_pSession->process(pMidiCursor, iFrameStart, iFrameEnd);
+	// Process metronome clicks...
+	pMidiEngine->processMetro(iFrameStart, iFrameEnd);
 
 	// Sync with loop boundaries (unlikely?)...
 	if (m_pSession->isLooping() && iFrameStart < m_pSession->loopEnd()
@@ -393,7 +398,7 @@ void qtractorMidiOutputThread::process (void)
 	pMidiCursor->process(m_iReadAhead);
 
 	// Flush the MIDI engine output queue...
-	m_pSession->midiEngine()->flush();
+	pMidiEngine->flush();
 }
 
 
