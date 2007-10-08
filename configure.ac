@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(Qtractor, 0.0.5.724, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.0.5.725, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractorMainForm.ui)
 AC_CONFIG_HEADERS(config.h)
@@ -348,7 +348,7 @@ AC_OUTPUT
 # Output summary message
 
 echo
-echo "  $PACKAGE_TARNAME $PACKAGE_VERSION"
+echo "  $PACKAGE_NAME $PACKAGE_VERSION"
 echo
 echo "  Build target . . . . . . . . . . . . . . . . . . .: $ac_debug"
 echo
@@ -362,6 +362,6 @@ echo "  Sample-rate conversion support (libsamplerate) . .: $ac_libsamplerate"
 echo
 echo "  Install prefix . . . . . . . . . . . . . . . . . .: $ac_prefix"
 echo
-echo "  Now type 'make', followed by 'make install' as root."
+echo "Now type 'make', followed by 'make install' as root."
 echo
 
