@@ -3,7 +3,7 @@ Qtractor - An Audio/MIDI multi-track sequencer
 
 ChangeLog
 
-0.0.6   2007-10-08  Work in progress...
+0.0.6   2007-10-09  The Tenth Commencement
 
 - A bit more of precision is achieved over the metronome regular
   ticking and both the audio and MIDI monitor meters.
@@ -21,7 +21,7 @@ ChangeLog
 
 - MIDI editor current selection can now be step-wise moved using
   the keyboard arrow keys and the enter/insert keys as for final
-  placement; horizontal stepp movement is subordinated to current
+  placement; horizontal step movement is subordinated to current
   snap per beat setting, no less than unity; vertical step moves
   are obviously quantized to the next semitone.
 
