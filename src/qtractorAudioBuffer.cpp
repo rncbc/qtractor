@@ -561,7 +561,6 @@ bool qtractorAudioBuffer::seek ( unsigned long iFrame )
 	//		return false;
 	m_bReadSync   = false;
 	m_iReadOffset = 0;	// Force out-of-sync...
-
 	m_iSeekOffset = iFrame;
 	m_iSeekPending++;
 	// readSync();
@@ -1012,8 +1011,8 @@ void qtractorAudioBuffer::reset ( bool bLooping )
 		m_pRingBuffer->setReadIndex(offset);
 	//	m_pRingBuffer->setWriteIndex(m_iLength);
 	} else {
-	//	m_bReadSync   = false;
-	//	m_iReadOffset = 0;	// Force out-of-sync...
+		m_bReadSync   = false;
+		m_iReadOffset = 0;	// Force out-of-sync...
 		m_iSeekOffset = m_iOffset + offset;
 		m_iSeekPending++;
 		if (m_pSyncThread)
