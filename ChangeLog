@@ -5,7 +5,9 @@ ChangeLog
 
 CVS HEAD
 
-0.0.7   2007-10-19  Work in progress...
+0.0.7   2007-10-20  Work in progress...
+
+- Track properties dialog gets fixed again in its auto-size treat.
 
 - Another audio-buffer thread bug was scrubbed off, which was
   causing spurious and audible garbage on certain loop workloads.
