@@ -7,6 +7,8 @@ CVS HEAD
 
 0.0.7   2007-10-20  Work in progress...
 
+- Immediate session loop settting, accessible from the main menu.
+
 - Track properties dialog gets fixed again in its auto-size treat.
 
 - Another audio-buffer thread bug was scrubbed off, which was

@@ -153,6 +153,7 @@ public slots:
 	void transportFastForward();
 	void transportForward();
 	void transportLoop();
+	void transportLoopSet();
 	void transportPlay();
 	void transportRecord();
 	void transportMetro();

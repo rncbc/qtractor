@@ -515,6 +515,9 @@ qtractorMainForm::qtractorMainForm (
 	QObject::connect(m_ui.transportLoopAction,
 		SIGNAL(triggered(bool)),
 		SLOT(transportLoop()));
+	QObject::connect(m_ui.transportLoopSetAction,
+		SIGNAL(triggered(bool)),
+		SLOT(transportLoopSet()));
 	QObject::connect(m_ui.transportPlayAction,
 		SIGNAL(triggered(bool)),
 		SLOT(transportPlay()));
@@ -2191,6 +2194,23 @@ void qtractorMainForm::transportLoop (void)
 }
 
 
+// Transport loop setting.
+void qtractorMainForm::transportLoopSet (void)
+{
+#ifdef CONFIG_DEBUG
+	appendMessages("qtractorMainForm::transportLoopSet()");
+#endif
+
+	// Make sure session is activated...
+	checkRestartSession();
+
+	// Now, express the change as an undoable command...
+	m_pCommands->exec(
+		new qtractorSessionLoopCommand(m_pSession,
+			m_pSession->editHead(), m_pSession->editTail()));
+}
+
+
 // Transport play.
 void qtractorMainForm::transportPlay (void)
 {
@@ -2598,6 +2618,7 @@ void qtractorMainForm::stabilizeForm (void)
 
 	// Transport stuff...
 	bEnabled = (!bPlaying || !bRecording);
+	bSelectable = (m_pSession->editHead() < m_pSession->editTail());
 	bool bBumped = (bEnabled && (m_iPlayHead > 0 || bPlaying));
 	m_ui.transportBackwardAction->setEnabled(bBumped);
 	m_ui.transportRewindAction->setEnabled(bBumped);
@@ -2608,6 +2629,7 @@ void qtractorMainForm::stabilizeForm (void)
 			|| m_iPlayHead < m_pSession->editTail()));
 	m_ui.transportLoopAction->setEnabled(bEnabled
 		&& (m_pSession->isLooping() || bSelectable));
+	m_ui.transportLoopSetAction->setEnabled(bEnabled && bSelectable);
 	m_ui.transportRecordAction->setEnabled(m_pSession->recordTracks() > 0);
 
 	m_ui.transportRewindAction->setChecked(m_iTransportRolling < 0);

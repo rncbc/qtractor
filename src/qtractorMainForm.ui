@@ -222,6 +222,7 @@
     <addaction name="transportForwardAction" />
     <addaction name="separator" />
     <addaction name="transportLoopAction" />
+	<addaction name="transportLoopSetAction" />
     <addaction name="separator" />
     <addaction name="transportPlayAction" />
     <addaction name="transportRecordAction" />
@@ -1232,6 +1233,20 @@
    </property>
    <property name="shortcut" >
     <string>Ctrl+L</string>
+   </property>
+  </action>
+  <action name="transportLoopSetAction" >
+   <property name="text" >
+    <string>Loop &amp;Set</string>
+   </property>
+   <property name="iconText" >
+    <string>Loop set</string>
+   </property>
+   <property name="statusTip" >
+    <string>Transport loop set</string>
+   </property>
+   <property name="shortcut" >
+    <string>Shift+Ctrl+L</string>
    </property>
   </action>
   <action name="transportPlayAction" >

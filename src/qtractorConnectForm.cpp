@@ -148,8 +148,7 @@ void qtractorConnectForm::audioConnectSelected (void)
 	fprintf(stderr, "qtractorConnectForm::audioConnectSelected()\n");
 #endif
 
-	if (m_pAudioConnect->connectSelected())
-	/*	audioRefresh()	*/;
+	m_pAudioConnect->connectSelected();
 }
 
 
@@ -160,8 +159,7 @@ void qtractorConnectForm::audioDisconnectSelected (void)
 	fprintf(stderr, "qtractorConnectForm::audioDisconnectSelected()\n");
 #endif
 
-	if (m_pAudioConnect->disconnectSelected())
-	/*	audioRefresh()	*/;
+	m_pAudioConnect->disconnectSelected();
 }
 
 
@@ -172,8 +170,7 @@ void qtractorConnectForm::audioDisconnectAll (void)
 	fprintf(stderr, "qtractorConnectForm::audioDisconnectAll()\n");
 #endif
 
-	if (m_pAudioConnect->disconnectAll())
-	/*	audioRefresh()	*/;
+	m_pAudioConnect->disconnectAll();
 }
 
 
@@ -249,8 +246,7 @@ void qtractorConnectForm::midiConnectSelected (void)
 	fprintf(stderr, "qtractorConnectForm::midiConnectSelected()\n");
 #endif
 
-	if (m_pMidiConnect->connectSelected())
-	/*	midiRefresh()	*/;
+	m_pMidiConnect->connectSelected();
 }
 
 
@@ -261,8 +257,7 @@ void qtractorConnectForm::midiDisconnectSelected (void)
 	fprintf(stderr, "qtractorConnectForm::midiDisconnectSelected()\n");
 #endif
 
-	if (m_pMidiConnect->disconnectSelected())
-	/*	midiRefresh()	*/;
+	m_pMidiConnect->disconnectSelected();
 }
 
 
@@ -273,8 +268,7 @@ void qtractorConnectForm::midiDisconnectAll (void)
 	fprintf(stderr, "qtractorConnectForm::midiDisconnectAll()\n");
 #endif
 
-	if (m_pMidiConnect->disconnectAll())
-	/*	midiRefresh()	*/;
+	m_pMidiConnect->disconnectAll();
 }
 
 
