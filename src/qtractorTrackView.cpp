@@ -919,7 +919,7 @@ void qtractorTrackView::dragEnterEvent ( QDragEnterEvent *pDragEnterEvent )
 
 
 // Drag move event handler.
-void qtractorTrackView::dragMoveEvent (	QDragMoveEvent *pDragMoveEvent )
+void qtractorTrackView::dragMoveEvent ( QDragMoveEvent *pDragMoveEvent )
 {
 	if (canDropTrack(pDragMoveEvent)) {
 		showDropRects();
@@ -1775,6 +1775,9 @@ void qtractorTrackView::resetDragState (void)
 	m_iDraggingX = 0;
 //	m_pClipDrag  = NULL;
 
+	m_posStep.setX(0);
+	m_posStep.setY(0);
+
 	// If we were moving clips around,
 	// just hide selection, of course.
 	hideClipSelect();
@@ -1806,9 +1809,17 @@ void qtractorTrackView::keyPressEvent ( QKeyEvent *pKeyEvent )
 #ifdef CONFIG_DEBUG
 	fprintf(stderr, "qtractorTrackView::keyPressEvent(key=%d)\n", pKeyEvent->key());
 #endif
-	switch (pKeyEvent->key()) {
+	int iKey = pKeyEvent->key();
+	switch (iKey) {
 	case Qt::Key_Escape:
 		resetDragState();
+		break;
+	case Qt::Key_Insert: // Aha, joking :)
+	case Qt::Key_Return:
+		if (m_dragState == DragStep) {
+			moveClipSelect(dragMoveTrack(m_posStep), m_iDraggingX);
+			m_dragState = DragNone;
+		}
 		break;
 	case Qt::Key_Home:
 		if (pKeyEvent->modifiers() & Qt::ControlModifier) {
@@ -1834,7 +1845,7 @@ void qtractorTrackView::keyPressEvent ( QKeyEvent *pKeyEvent )
 			qtractorScrollView::setContentsPos(
 				qtractorScrollView::contentsX() - qtractorScrollView::width(),
 				qtractorScrollView::contentsY());
-		} else {
+		} else if (!keyStep(iKey)) {
 			qtractorScrollView::setContentsPos(
 				qtractorScrollView::contentsX() - 16,
 				qtractorScrollView::contentsY());
@@ -1845,7 +1856,7 @@ void qtractorTrackView::keyPressEvent ( QKeyEvent *pKeyEvent )
 			qtractorScrollView::setContentsPos(
 				qtractorScrollView::contentsX() + qtractorScrollView::width(),
 				qtractorScrollView::contentsY());
-		} else {
+		} else if (!keyStep(iKey)) {
 			qtractorScrollView::setContentsPos(
 				qtractorScrollView::contentsX() + 16,
 				qtractorScrollView::contentsY());
@@ -1856,7 +1867,7 @@ void qtractorTrackView::keyPressEvent ( QKeyEvent *pKeyEvent )
 			qtractorScrollView::setContentsPos(
 				qtractorScrollView::contentsX(),
 				qtractorScrollView::contentsY() - qtractorScrollView::height());
-		} else {
+		} else if (!keyStep(iKey)) {
 			qtractorScrollView::setContentsPos(
 				qtractorScrollView::contentsX(),
 				qtractorScrollView::contentsY() - 16);
@@ -1867,7 +1878,7 @@ void qtractorTrackView::keyPressEvent ( QKeyEvent *pKeyEvent )
 			qtractorScrollView::setContentsPos(
 				qtractorScrollView::contentsX(),
 				qtractorScrollView::contentsY() + qtractorScrollView::height());
-		} else {
+		} else if (!keyStep(iKey)) {
 			qtractorScrollView::setContentsPos(
 				qtractorScrollView::contentsX(),
 				qtractorScrollView::contentsY() + 16);
@@ -1901,6 +1912,81 @@ void qtractorTrackView::keyPressEvent ( QKeyEvent *pKeyEvent )
 
 	// Make sure we've get focus back...
 	qtractorScrollView::setFocus();
+}
+
+
+// Keyboard step handler.
+bool qtractorTrackView::keyStep ( int iKey )
+{
+	// Only applicable if something is selected...
+	if (!isClipSelected())
+		return false;
+
+	qtractorSession *pSession = m_pTracks->session();
+	if (pSession == NULL)
+		return false;
+
+	// Set initial bound conditions...
+	if (m_dragState == DragNone) {
+		m_dragState = DragStep;
+		m_rectDrag  = m_pClipSelect->rect();
+		m_posDrag   = m_rectDrag.center();
+		m_posStep   = m_posDrag;
+		int x = pSession->pixelSnap(m_rectDrag.x());
+		m_iDraggingX = (x - m_rectDrag.x());
+		qtractorScrollView::setCursor(QCursor(Qt::SizeAllCursor));
+	//	showClipSelect();
+	}
+
+	// Now to say the truth...
+	if (m_dragState != DragStep)
+		return false;
+
+	int iVerticalStep = qtractorTrackList::ItemHeightBase;
+	unsigned short iSnapPerBeat = pSession->snapPerBeat();
+	if (iSnapPerBeat < 1)
+		iSnapPerBeat = 1;
+	int iHorizontalStep
+		= (pSession->horizontalZoom() * pSession->pixelsPerBeat())
+			/ (iSnapPerBeat * 100);
+
+	// Now determine which step...
+	switch (iKey) {
+	case Qt::Key_Left:
+		m_posStep.setX(m_posStep.x() - iHorizontalStep);
+		break;
+	case Qt::Key_Right:
+		m_posStep.setX(m_posStep.x() + iHorizontalStep);
+		break;
+	case Qt::Key_Up:
+		m_posStep.setY(m_posStep.y() - iVerticalStep);
+		break;
+	case Qt::Key_Down:
+		m_posStep.setY(m_posStep.y() + iVerticalStep);
+		break;
+	default:
+		return false;
+	}
+
+	// Early sanity check...
+	int w2 = (m_rectDrag.width() >> 1);
+	if (m_posStep.x() < w2)
+		m_posStep.setX (w2);
+	else
+	if (m_posStep.x() > qtractorScrollView::contentsWidth() - w2)
+		m_posStep.setX (qtractorScrollView::contentsWidth() - w2);
+
+	int h2 = (m_rectDrag.height() >> 1);
+	if (m_posStep.y() < h2)
+		m_posStep.setY (h2);
+	else
+	if (m_posStep.y() > qtractorScrollView::contentsHeight() - h2)
+		m_posStep.setY (qtractorScrollView::contentsHeight() - h2);
+
+	// Do our deeds...
+	dragMoveTrack(m_posStep);
+
+	return true;
 }
 
 

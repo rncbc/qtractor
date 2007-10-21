@@ -224,6 +224,9 @@ protected:
 	// Keyboard event handler.
 	void keyPressEvent(QKeyEvent *pKeyEvent);
 
+	// Keyboard step handler.
+	bool keyStep(int iKey);
+
 	// Vertical line positioning.
 	void drawPositionX(int& iPositionX, int x, bool bSyncView = false);
 
@@ -283,7 +286,7 @@ private:
 	enum DragState {
 		DragNone = 0, DragStart,
 		DragSelect, DragMove, DragDrop,
-		DragFadeIn, DragFadeOut
+		DragStep, DragFadeIn, DragFadeOut
 	} m_dragState;
 
 	qtractorClip *m_pClipDrag;
@@ -292,6 +295,7 @@ private:
 	QRect         m_rectHandle;
 	int           m_iDraggingX;
 	bool          m_bDragTimer;
+	QPoint        m_posStep;
 
 	qtractorRubberBand *m_pRubberBand;
 

@@ -5,7 +5,14 @@ ChangeLog
 
 CVS HEAD
 
-0.0.7   2007-10-20  Work in progress...
+0.0.7   2007-10-21  Work in progress...
+
+- As done before on the MIDI editor, the main track-view current
+  selection may be step-wise moved using the keyboard arrow keys
+  and the enter/insert keys for final placement; horizontal step
+  movement is quantized according to current snap setting; vertical
+  key-step movement is only allowed to selected clips belonging to
+  one single and the same track.
 
 - Immediate session loop settting, accessible from the main menu.
 
