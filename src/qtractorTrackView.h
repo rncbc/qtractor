@@ -159,10 +159,10 @@ protected:
 	void drawContents(QPainter *pPainter, const QRect& rect);
 
 	// Get track from given contents vertical position.
-	qtractorTrack *trackAt(const QPoint& pos, bool bSelectTrack = true,
+	qtractorTrack *trackAt(const QPoint& pos, bool bSelectTrack = false,
 		qtractorTrackViewInfo *pTrackViewInfo = NULL) const;
 	// Get clip from given contents position.
-	qtractorClip *clipAt(const QPoint& pos, bool bSelectTrack = true,
+	qtractorClip *clipAt(const QPoint& pos, bool bSelectTrack = false,
 		QRect *pClipRect = NULL) const;
 
 	// Get contents visible rectangle from given track.
@@ -189,6 +189,9 @@ protected:
 
 	// Handle item/clip editing from mouse.
 	void mouseDoubleClickEvent(QMouseEvent *pMouseEvent);
+
+	// Focus lost event.
+	void focusOutEvent(QFocusEvent *pFocusEvent);
 
 	// Trap for help/tool-tip events.
 	bool eventFilter(QObject *pObject, QEvent *pEvent);

@@ -216,10 +216,14 @@ public:
 		QObject *pObject, QEvent *pEvent);
 
 	// Keyboard event handler (common).
-	bool keyPress(int iKey, Qt::KeyboardModifiers modifiers);
+	bool keyPress(qtractorScrollView *pScrollView,
+		int iKey, Qt::KeyboardModifiers modifiers);
 
 	// Keyboard step handler.
 	bool keyStep(int iKey);
+
+	// Lost focus handler.
+	void focusOut(qtractorScrollView *pScrollView);
 
 	// MIDI event tool tip helper.
 	QString eventToolTip(qtractorMidiEvent *pEvent) const;

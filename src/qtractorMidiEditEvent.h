@@ -107,11 +107,14 @@ protected:
 	// Resize event handler.
 	void resizeEvent(QResizeEvent *pResizeEvent);
 
-	// Keyboard event handler.
-	void keyPressEvent(QKeyEvent *pKeyEvent);
-
 	// Draw the time scale.
 	void drawContents(QPainter *pPainter, const QRect& rect);
+
+	// Focus lost event.
+	void focusOutEvent(QFocusEvent *pFocusEvent);
+
+	// Keyboard event handler.
+	void keyPressEvent(QKeyEvent *pKeyEvent);
 
 	// Handle item selection with mouse.
 	void mousePressEvent(QMouseEvent *pMouseEvent);

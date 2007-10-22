@@ -415,10 +415,19 @@ void qtractorMidiEditView::contentsYMovingSlot ( int /*cx*/, int cy )
 }
 
 
+// Focus lost event.
+void qtractorMidiEditView::focusOutEvent ( QFocusEvent *pFocusEvent )
+{
+	m_pEditor->focusOut(this);
+
+	qtractorScrollView::focusOutEvent(pFocusEvent);
+}
+
+
 // Keyboard event handler.
 void qtractorMidiEditView::keyPressEvent ( QKeyEvent *pKeyEvent )
 {
-	if (!m_pEditor->keyPress(pKeyEvent->key(), pKeyEvent->modifiers()))
+	if (!m_pEditor->keyPress(this, pKeyEvent->key(), pKeyEvent->modifiers()))
 		qtractorScrollView::keyPressEvent(pKeyEvent);
 }
 

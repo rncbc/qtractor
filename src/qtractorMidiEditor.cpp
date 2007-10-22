@@ -2464,10 +2464,9 @@ QString qtractorMidiEditor::eventToolTip ( qtractorMidiEvent *pEvent ) const
 
 
 // Keyboard event handler (common).
-bool qtractorMidiEditor::keyPress ( int iKey, Qt::KeyboardModifiers modifiers )
+bool qtractorMidiEditor::keyPress ( qtractorScrollView *pScrollView,
+	int iKey, Qt::KeyboardModifiers modifiers )
 {
-	qtractorScrollView *pScrollView = m_pEditView;
-
 	switch (iKey) {
 	case Qt::Key_Escape:
 		resetDragState(pScrollView);
@@ -2640,6 +2639,14 @@ bool qtractorMidiEditor::keyStep ( int iKey )
 	updateDragMove(m_pEditView, m_posStep);
 
 	return true;
+}
+
+
+// Focus lost event.
+void qtractorMidiEditor::focusOut ( qtractorScrollView *pScrollView )
+{
+	if (m_dragState == DragStep)
+		resetDragState(pScrollView);
 }
 
 

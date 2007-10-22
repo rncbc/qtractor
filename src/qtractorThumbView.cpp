@@ -323,9 +323,9 @@ void qtractorThumbView::resetDragState (void)
 // Keyboard event handler.
 void qtractorThumbView::keyPressEvent ( QKeyEvent *pKeyEvent )
 {
-//#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	fprintf(stderr, "qtractorThumbView::keyPressEvent(key=%d)\n", pKeyEvent->key());
-//#endif
+#endif
 	switch (pKeyEvent->key()) {
 	case Qt::Key_Escape:
 		resetDragState();

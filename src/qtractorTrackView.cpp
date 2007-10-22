@@ -713,6 +713,9 @@ qtractorTrack *qtractorTrackView::dragMoveTrack ( const QPoint& pos )
 	qtractorTrack *pSingleTrack = m_pClipSelect->singleTrack();
 	if (pSingleTrack && pSingleTrack->trackType() == pTrack->trackType())
 		updateClipSelect(tvi.trackRect.y() + 1, tvi.trackRect.height() - 2);
+	// Special update on keyboard vertical drag-stepping...
+	if (m_dragState == DragStep)
+		m_posStep.setY(tvi.trackRect.y() + (tvi.trackRect.height() >> 1));
 
 	// Always change horizontally wise...
 	int  x = m_pClipSelect->rect().x();
@@ -1282,7 +1285,17 @@ void qtractorTrackView::mouseDoubleClickEvent ( QMouseEvent *pMouseEvent )
 
 	// By this time we should have something under...
 	m_pTracks->editClip(clipAt(
-		qtractorScrollView::viewportToContents(pMouseEvent->pos())));
+		qtractorScrollView::viewportToContents(pMouseEvent->pos()), true));
+}
+
+
+// Focus lost event.
+void qtractorTrackView::focusOutEvent ( QFocusEvent *pFocusEvent )
+{
+	if (m_dragState == DragStep)
+		resetDragState();
+
+	qtractorScrollView::focusOutEvent(pFocusEvent);
 }
 
 
@@ -1290,17 +1303,18 @@ void qtractorTrackView::mouseDoubleClickEvent ( QMouseEvent *pMouseEvent )
 bool qtractorTrackView::eventFilter ( QObject *pObject, QEvent *pEvent )
 {
 	QWidget *pViewport = qtractorScrollView::viewport();
-	if (static_cast<QWidget *> (pObject) == pViewport
-		&& pEvent->type() == QEvent::ToolTip) {
-		QHelpEvent *pHelpEvent = static_cast<QHelpEvent *> (pEvent);
-		if (pHelpEvent) {
-			const QPoint& pos
-				= qtractorScrollView::viewportToContents(pHelpEvent->pos());
-			qtractorClip *pClip = clipAt(pos, false);
-			if (pClip) {
-				QToolTip::showText(
-					pHelpEvent->globalPos(), pClip->toolTip(), pViewport);
-				return true;
+	if (static_cast<QWidget *> (pObject) == pViewport) {
+		if (pEvent->type() == QEvent::ToolTip) {
+			QHelpEvent *pHelpEvent = static_cast<QHelpEvent *> (pEvent);
+			if (pHelpEvent) {
+				const QPoint& pos
+					= qtractorScrollView::viewportToContents(pHelpEvent->pos());
+				qtractorClip *pClip = clipAt(pos);
+				if (pClip) {
+					QToolTip::showText(
+						pHelpEvent->globalPos(), pClip->toolTip(), pViewport);
+					return true;
+				}
 			}
 		}
 	}
@@ -1806,7 +1820,7 @@ void qtractorTrackView::resetDragState (void)
 // Keyboard event handler.
 void qtractorTrackView::keyPressEvent ( QKeyEvent *pKeyEvent )
 {
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	fprintf(stderr, "qtractorTrackView::keyPressEvent(key=%d)\n", pKeyEvent->key());
 #endif
 	int iKey = pKeyEvent->key();
@@ -1942,7 +1956,10 @@ bool qtractorTrackView::keyStep ( int iKey )
 	if (m_dragState != DragStep)
 		return false;
 
-	int iVerticalStep = qtractorTrackList::ItemHeightBase;
+	int iVerticalStep = qtractorTrackList::ItemHeightMin;
+	qtractorTrack *pTrack = m_pTracks->currentTrack();
+	if (pTrack)
+		iVerticalStep += (pTrack->zoomHeight() >> 1);
 	unsigned short iSnapPerBeat = pSession->snapPerBeat();
 	if (iSnapPerBeat < 1)
 		iSnapPerBeat = 1;

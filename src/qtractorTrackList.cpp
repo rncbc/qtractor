@@ -1004,7 +1004,7 @@ void qtractorTrackList::resetDragState (void)
 // Keyboard event handler.
 void qtractorTrackList::keyPressEvent ( QKeyEvent *pKeyEvent )
 {
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	fprintf(stderr, "qtractorTrackList::keyPressEvent(key=%d)\n", pKeyEvent->key());
 #endif
 	switch (pKeyEvent->key()) {

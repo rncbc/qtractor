@@ -5,8 +5,11 @@ ChangeLog
 
 CVS HEAD
 
-0.0.7   2007-10-21  Work in progress...
+0.0.7   2007-10-22  Work in progress...
 
+- Losing focus resets all current keyboard step-moves in progress,
+  affecting the main track-view and all MIDI editor as well.
+ 
 - As done before on the MIDI editor, the main track-view current
   selection may be step-wise moved using the keyboard arrow keys
   and the enter/insert keys for final placement; horizontal step

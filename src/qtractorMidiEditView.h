@@ -66,9 +66,6 @@ public:
 	void setEventType(qtractorMidiEvent::EventType eventType);
 	qtractorMidiEvent::EventType eventType() const;
 
-	// Keyboard event handler (made public explicitly).
-	void keyPressEvent(QKeyEvent *pKeyEvent);
-
 protected:
 
 	// Virtual size hint.
@@ -83,6 +80,12 @@ protected:
 
 	// Draw the track view
 	void drawContents(QPainter *pPainter, const QRect& rect);
+
+	// Focus lost event.
+	void focusOutEvent(QFocusEvent *pFocusEvent);
+
+	// Keyboard event handler (made public explicitly).
+	void keyPressEvent(QKeyEvent *pKeyEvent);
 
 	// Handle item selection with mouse.
 	void mousePressEvent(QMouseEvent *pMouseEvent);

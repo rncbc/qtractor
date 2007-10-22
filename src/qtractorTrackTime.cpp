@@ -491,7 +491,7 @@ void qtractorTrackTime::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 // Keyboard event handler.
 void qtractorTrackTime::keyPressEvent ( QKeyEvent *pKeyEvent )
 {
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	fprintf(stderr, "qtractorTrackTime::keyPressEvent(key=%d)\n", pKeyEvent->key());
 #endif
 	switch (pKeyEvent->key()) {
