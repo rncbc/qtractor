@@ -1833,7 +1833,7 @@ void qtractorTrackView::keyPressEvent ( QKeyEvent *pKeyEvent )
 	case Qt::Key_Return:
 		if (m_dragState == DragStep) {
 			moveClipSelect(dragMoveTrack(m_posStep), m_iDraggingX);
-			m_dragState = DragNone;
+			resetDragState();
 		}
 		break;
 	case Qt::Key_Home:
