@@ -28,6 +28,9 @@
 
 #include <QList>
 
+// Forward declarations.
+class qtractorAddTrackCommand;
+
 
 //----------------------------------------------------------------------
 // class qtractorClipCommand - declaration.
@@ -58,6 +61,9 @@ public:
 
 	// Special clip record method.
 	bool addClipRecord(qtractorTrack *pTrack);
+
+	// When new tracks are needed.
+	void addTrack(qtractorTrack *pTrack);
 
 	// Virtual command methods.
 	bool redo();
@@ -103,6 +109,9 @@ private:
 
 	// Instance variables.
 	QList<Item *> m_items;
+
+	// When new tracks are needed.
+	QList<qtractorAddTrackCommand *> m_trackCommands;
 };
 
 

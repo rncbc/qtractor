@@ -21,6 +21,7 @@
 
 #include "qtractorAbout.h"
 #include "qtractorClipCommand.h"
+#include "qtractorTrackCommand.h"
 
 #include "qtractorMainForm.h"
 
@@ -52,6 +53,9 @@ qtractorClipCommand::~qtractorClipCommand (void)
 
 	qDeleteAll(m_items);
 	m_items.clear();
+
+	qDeleteAll(m_trackCommands);
+	m_trackCommands.clear();
 }
 
 
@@ -189,6 +193,14 @@ bool qtractorClipCommand::addClipRecord ( qtractorTrack *pTrack )
 }
 
 
+// When new tracks are needed.
+void qtractorClipCommand::addTrack ( qtractorTrack *pTrack )
+{
+	m_trackCommands.append(
+		new qtractorAddTrackCommand(pTrack));
+}
+
+
 // Common executive method.
 bool qtractorClipCommand::execute ( bool bRedo )
 {
@@ -201,6 +213,15 @@ bool qtractorClipCommand::execute ( bool bRedo )
 		return false;
 
 //	pSession->lock();
+
+	QListIterator<qtractorAddTrackCommand *> track(m_trackCommands);
+	while (track.hasNext()) {
+	    qtractorAddTrackCommand *pTrackCommand = track.next();
+		if (bRedo)
+			pTrackCommand->redo();
+		else
+			pTrackCommand->undo();
+	}
 
 	QListIterator<Item *> iter(m_items);
 	while (iter.hasNext()) {

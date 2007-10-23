@@ -705,17 +705,18 @@ qtractorTrack *qtractorTrackView::dragMoveTrack ( const QPoint& pos )
 	// Which track we're pointing at?
 	qtractorTrackViewInfo tvi;
 	qtractorTrack *pTrack = trackAt(pos, true, &tvi);
-	if (pTrack == NULL)
-	    return NULL;
 
 	// May change vertically, if we've only one track selected,
 	// and only between same track type...
 	qtractorTrack *pSingleTrack = m_pClipSelect->singleTrack();
-	if (pSingleTrack && pSingleTrack->trackType() == pTrack->trackType())
+	if (pSingleTrack &&
+		(pTrack == NULL || pSingleTrack->trackType() == pTrack->trackType()))
 		updateClipSelect(tvi.trackRect.y() + 1, tvi.trackRect.height() - 2);
 	// Special update on keyboard vertical drag-stepping...
-	if (m_dragState == DragStep)
-		m_posStep.setY(tvi.trackRect.y() + (tvi.trackRect.height() >> 1));
+	if (m_dragState == DragStep) {
+		m_posStep.setY(tvi.trackRect.y()
+			+ (pTrack ? (tvi.trackRect.height() >> 1) : 0));
+	}
 
 	// Always change horizontally wise...
 	int  x = m_pClipSelect->rect().x();
@@ -2406,9 +2407,6 @@ void qtractorTrackView::pasteClipSelect (void)
 // Intra-drag-n-drop clip move method.
 void qtractorTrackView::moveClipSelect ( qtractorTrack *pTrack, int dx )
 {
-	if (pTrack == NULL)
-		return;
-
 	// Check if anything is really selected and sane...
 	if (!queryClipSelect())
 		return;
@@ -2420,14 +2418,28 @@ void qtractorTrackView::moveClipSelect ( qtractorTrack *pTrack, int dx )
 	if (pSession == NULL)
 		return;
 
-	// We can only move clips between tracks of the same type...
-	qtractorTrack *pSingleTrack = m_pClipSelect->singleTrack();
-	if (pSingleTrack && pSingleTrack->trackType() != pTrack->trackType())
-		return;
-
-	// We'll build a composite command...
+	// We'll need this...
 	qtractorClipCommand *pClipCommand
 		= new qtractorClipCommand(tr("move clip"));
+
+	// We can only move clips between tracks of the same type...
+	qtractorTrack *pSingleTrack = m_pClipSelect->singleTrack();
+	if (pSingleTrack) {
+		if (pTrack == NULL) {
+			int iTrack = pSession->tracks().count() + 1;
+			const QColor color = qtractorTrack::trackColor(iTrack);
+			pTrack = new qtractorTrack(pSession, pSingleTrack->trackType());
+			pTrack->setTrackName(tr("Track %1").arg(iTrack));
+			pTrack->setBackground(color);
+			pTrack->setForeground(color.dark());
+			pClipCommand->addTrack(pTrack);
+		}
+		else
+		if (pSingleTrack->trackType() != pTrack->trackType())
+			return;
+	}
+
+	// We'll build a composite command...
 
 	QListIterator<qtractorClipSelect::Item *> iter(m_pClipSelect->items());
 	while (iter.hasNext()) {
@@ -2455,7 +2467,7 @@ void qtractorTrackView::moveClipSelect ( qtractorTrack *pTrack, int dx )
 			pClipLeft->setClipLength(iSelectOffset);
 			pClipLeft->setFadeInLength(pClip->fadeInLength());
 			pClipCommand->addClip(pClipLeft, pClipLeft->track());
-			// Done, leftt clip.
+			// Done, left clip.
 		}
 		if (iSelectEnd < iClipEnd) {
 			// -- Right clip...
