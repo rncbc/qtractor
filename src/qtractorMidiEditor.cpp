@@ -1110,7 +1110,7 @@ void qtractorMidiEditor::pasteClipboard (void)
 
 	// Make sure the mouse pointer is properly located...
 	const QPoint& pos = pScrollView->viewportToContents(
-			pScrollView->mapFromGlobal(QCursor::pos()));
+		pScrollView->viewport()->mapFromGlobal(QCursor::pos()));
 
 	// Let's-a go...
 	pScrollView->ensureVisible(pos.x(), pos.y(), 16, 16);

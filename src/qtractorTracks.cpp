@@ -338,19 +338,19 @@ bool qtractorTracks::isClipboardEmpty (void) const
 
 
 // Clipboard methods.
-void qtractorTracks::cutClipSelect (void)
+void qtractorTracks::cutClipboard (void)
 {
 	m_pTrackView->executeClipSelect(qtractorTrackView::Cut);
 }
 
-void qtractorTracks::copyClipSelect (void)
+void qtractorTracks::copyClipboard (void)
 {
 	m_pTrackView->executeClipSelect(qtractorTrackView::Copy);
 }
 
-void qtractorTracks::pasteClipSelect (void)
+void qtractorTracks::pasteClipboard (void)
 {
-	m_pTrackView->pasteClipSelect();
+	m_pTrackView->pasteClipboard();
 }
 
 

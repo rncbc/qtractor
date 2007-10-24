@@ -1478,7 +1478,7 @@ void qtractorMainForm::editCut (void)
 
 	// Cut selection...
 	if (m_pTracks)
-		m_pTracks->cutClipSelect();
+		m_pTracks->cutClipboard();
 }
 
 
@@ -1491,7 +1491,7 @@ void qtractorMainForm::editCopy (void)
 
 	// Copy selection...
 	if (m_pTracks)
-		m_pTracks->copyClipSelect();
+		m_pTracks->copyClipboard();
 
 	stabilizeForm();
 }
@@ -1506,7 +1506,7 @@ void qtractorMainForm::editPaste (void)
 
 	// Paste selection...
 	if (m_pTracks)
-		m_pTracks->pasteClipSelect();
+		m_pTracks->pasteClipboard();
 }
 
 

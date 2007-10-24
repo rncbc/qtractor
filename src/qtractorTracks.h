@@ -89,9 +89,9 @@ public:
 	bool isClipboardEmpty() const;
 
 	// Clipboard methods.
-	void cutClipSelect();
-	void copyClipSelect();
-	void pasteClipSelect();
+	void cutClipboard();
+	void copyClipboard();
+	void pasteClipboard();
 
 	// Delete selection method.
 	void deleteClipSelect();

@@ -47,6 +47,8 @@ class QMouseEvent;
 class QResizeEvent;
 class QKeyEvent;
 
+class QCursor;
+
 
 //----------------------------------------------------------------------------
 // qtractorTrackViewInfo -- Track view state info.
@@ -117,17 +119,20 @@ public:
 	// Clipboard cleaner.
 	void clearClipboard();
 
+	// Paste from clipboard (start).
+	void pasteClipboard();
+
 	// Clip selection command types.
 	enum Command { Cut, Copy, Delete };
 	
 	// Clip selection executive method.
 	void executeClipSelect(qtractorTrackView::Command cmd);
 
-	// Clipboard paste method.
-	void pasteClipSelect();
-
 	// Intra-drag-n-drop clip move method.
 	void moveClipSelect(qtractorTrack *pTrack);
+
+	// Paste from clipboard (execute).
+	void pasteClipSelect(qtractorTrack *pTrack);
 
 	// Play-head positioning.
 	void setPlayHead(unsigned long iPlayHead, bool bSyncView = false);
@@ -288,8 +293,8 @@ private:
 	// The current selecting/dragging clip stuff.
 	enum DragState {
 		DragNone = 0, DragStart,
-		DragSelect, DragMove, DragDrop,
-		DragStep, DragFadeIn, DragFadeOut
+		DragSelect, DragMove, DragDrop, DragStep,
+		DragPaste, DragFadeIn, DragFadeOut
 	} m_dragState;
 
 	qtractorClip *m_pClipDrag;
@@ -311,13 +316,15 @@ private:
 	struct ClipItem
 	{
 		// Clipboard item constructor.
-		ClipItem(qtractorClip *pClip, unsigned long iClipStart,
-			unsigned long iClipOffset, unsigned long iClipLength)
-			: clip(pClip), clipStart(iClipStart),
+		ClipItem(qtractorClip *pClip, const QRect& clipRect,
+			unsigned long iClipStart, unsigned long iClipOffset,
+			unsigned long iClipLength)
+			: clip(pClip), rect(clipRect), clipStart(iClipStart),
 				clipOffset(iClipOffset), clipLength(iClipLength),
 				fadeInLength(0), fadeOutLength(0) {}
 		// Clipboard item members.
 		qtractorClip *clip;
+		QRect         rect;
 		unsigned long clipStart;
 		unsigned long clipOffset;
 		unsigned long clipLength;
@@ -331,8 +338,9 @@ private:
 		// Clipboard constructor.
 		ClipBoard() : singleTrack(NULL) {}
 		// Clipboard stuffer method.
-		void addItem(qtractorClip *pClip, unsigned long iClipStart,
-			unsigned long iClipOffset, unsigned long iClipLength);
+		void addItem(qtractorClip *pClip, const QRect& rect,
+			unsigned long iClipStart, unsigned long iClipOffset,
+			unsigned long iClipLength);
 		// Clipboard reset method.
 		void clear();
 		// Clipboard members.
@@ -352,6 +360,9 @@ private:
 
 	// Recording state window.
 	int m_iLastRecordX;
+
+	// Paste-mode cursor. 
+	QCursor *m_pCursorEditPaste;
 };
 
 

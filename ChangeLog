@@ -5,7 +5,13 @@ ChangeLog
 
 CVS HEAD
 
-0.0.7   2007-10-23  Work in progress...
+0.0.7   2007-10-24  Work in progress...
+
+- Track-view clipboard paste action has been refactored, with the
+  user interface consistent with the same functionality featured on
+  the MIDI editor: the clipboard selection being pasted now floats
+  at the mouse pointer and can be moved around before placed into
+  its final position, either with the mouse or keyboard arrow keys.
 
 - A unitialized member variable bug affecting all MIDI clips has
   been discovered and squashed; this one has been lurking for quite

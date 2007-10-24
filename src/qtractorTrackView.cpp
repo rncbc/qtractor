@@ -72,6 +72,8 @@ qtractorTrackView::qtractorTrackView ( qtractorTracks *pTracks,
 	m_pRubberBand    = NULL;
 
 	m_selectMode = SelectClip;
+
+	m_pCursorEditPaste = new QCursor(QPixmap(":/icons/editPaste.png"), 20, 20);
 	
 	clear();
 
@@ -134,6 +136,7 @@ qtractorTrackView::qtractorTrackView ( qtractorTracks *pTracks,
 //	qtractorScrollView::viewport()->setFocusProxy(this);
 	qtractorScrollView::viewport()->setAcceptDrops(true);
 //	qtractorScrollView::setDragAutoScroll(false);
+	qtractorScrollView::setMouseTracking(true);
 
 	const QFont& font = qtractorScrollView::font();
 	qtractorScrollView::setFont(QFont(font.family(), font.pointSize() - 1));
@@ -151,6 +154,8 @@ qtractorTrackView::~qtractorTrackView (void)
 {
 	clear();
 	clearClipboard();
+
+	delete m_pCursorEditPaste;
 
 	delete m_pClipSelect;
 }
@@ -976,6 +981,7 @@ void qtractorTrackView::dropEvent (	QDropEvent *pDropEvent )
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm == NULL)
 		return;
+
 	qtractorSession *pSession = m_pTracks->session();
 	if (pSession == NULL)
 		return;
@@ -1078,6 +1084,12 @@ void qtractorTrackView::dropEvent (	QDropEvent *pDropEvent )
 // Handle item selection/dragging -- mouse button press.
 void qtractorTrackView::mousePressEvent ( QMouseEvent *pMouseEvent )
 {
+	// Are we pasting something?
+	if (m_dragState == DragPaste) {
+		qtractorScrollView::mousePressEvent(pMouseEvent);
+		return;
+	}
+
 	// Force null state.
 	m_pClipDrag = NULL;
 	resetDragState();
@@ -1155,6 +1167,7 @@ void qtractorTrackView::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 
 	switch (m_dragState) {
 	case DragMove:
+	case DragPaste:
 		dragMoveTrack(pos);
 		break;
 	case DragFadeIn:
@@ -1235,6 +1248,10 @@ void qtractorTrackView::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 		case DragMove:
 			// Let's move them...
 			moveClipSelect(dragMoveTrack(pos));
+			break;
+		case DragPaste:
+			// Let's paste them...
+			pasteClipSelect(dragMoveTrack(pos));
 			break;
 		case DragFadeIn:
 		case DragFadeOut:
@@ -1317,6 +1334,13 @@ bool qtractorTrackView::eventFilter ( QObject *pObject, QEvent *pEvent )
 					return true;
 				}
 			}
+		}
+		else
+		if (pEvent->type() == QEvent::Leave	&&
+			m_dragState != DragPaste &&
+			m_dragState != DragStep) {
+			qtractorScrollView::unsetCursor();
+			return true;
 		}
 	}
 
@@ -1745,6 +1769,7 @@ void qtractorTrackView::dragFadeDrop ( const QPoint& pos )
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm == NULL)
 		return;
+
 	qtractorSession *pSession = m_pTracks->session();
 	if (pSession == NULL)
 		return;
@@ -1829,6 +1854,12 @@ void qtractorTrackView::keyPressEvent ( QKeyEvent *pKeyEvent )
 	case Qt::Key_Return:
 		if (m_dragState == DragStep)
 			moveClipSelect(dragMoveTrack(m_posDrag + m_posStep));
+		else
+		if (m_dragState == DragPaste) {
+			const QPoint& pos = qtractorScrollView::viewportToContents(
+				qtractorScrollView::viewport()->mapFromGlobal(QCursor::pos()));
+			pasteClipSelect(dragMoveTrack(pos + m_posStep));
+		}
 		// Fall thru...
 	case Qt::Key_Escape:
 		resetDragState();
@@ -1950,7 +1981,7 @@ bool qtractorTrackView::keyStep ( int iKey )
 	}
 
 	// Now to say the truth...
-	if (m_dragState != DragStep)
+	if (m_dragState != DragStep && m_dragState != DragPaste)
 		return false;
 
 	int iVerticalStep = qtractorTrackList::ItemHeightMin;
@@ -1983,14 +2014,19 @@ bool qtractorTrackView::keyStep ( int iKey )
 	}
 
 	// Early sanity check...
-	int x2 = (m_rectDrag.width() >> 1) - m_posDrag.x();
+	QPoint pos = m_posDrag;
+	if (m_dragState == DragPaste) {
+		pos = qtractorScrollView::viewportToContents(
+			qtractorScrollView::viewport()->mapFromGlobal(QCursor::pos()));
+	}
+	int x2 = (m_rectDrag.width() >> 1) - pos.x();
 	if (m_posStep.x() < x2)
 		m_posStep.setX (x2);
 	else
 	if (m_posStep.x() > qtractorScrollView::contentsWidth() - x2)
 		m_posStep.setX (qtractorScrollView::contentsWidth() - x2);
 
-	int y2 = (m_rectDrag.height() >> 1) - m_posDrag.y();
+	int y2 = (m_rectDrag.height() >> 1) - pos.y();
 	if (m_posStep.y() < y2)
 		m_posStep.setY (y2);
 	else
@@ -1998,8 +2034,7 @@ bool qtractorTrackView::keyStep ( int iKey )
 		m_posStep.setY (qtractorScrollView::contentsHeight() - y2);
 
 	// Do our deeds...
-	const QPoint& pos = m_posDrag + m_posStep;
-	dragMoveTrack(pos);
+	dragMoveTrack(pos + m_posStep);
 
 	return true;
 }
@@ -2157,11 +2192,11 @@ void qtractorTrackView::clearClipboard (void)
 
 // Clipboard stuffer method.
 void qtractorTrackView::ClipBoard::addItem ( qtractorClip *pClip,
-	unsigned long iClipStart, unsigned long iClipOffset,
-	unsigned long iClipLength )
+	const QRect& clipRect, unsigned long iClipStart,
+	unsigned long iClipOffset, unsigned long iClipLength )
 {
 	ClipItem *pClipItem
-		= new ClipItem(pClip, iClipStart, iClipOffset, iClipLength);
+		= new ClipItem(pClip, clipRect, iClipStart, iClipOffset, iClipLength);
 	if (iClipOffset == pClip->clipOffset())
 		pClipItem->fadeInLength = pClip->fadeInLength();
 	if (iClipOffset + iClipLength == pClip->clipOffset() + pClip->clipLength())
@@ -2209,6 +2244,7 @@ void qtractorTrackView::executeClipSelect ( qtractorTrackView::Command cmd )
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm == NULL)
 		return;
+
 	qtractorSession *pSession = m_pTracks->session();
 	if (pSession == NULL)
 		return;
@@ -2249,6 +2285,7 @@ void qtractorTrackView::executeClipSelect ( qtractorTrackView::Command cmd )
 				// -- Middle region...
 				if (bClipboard) {
 					m_clipboard.addItem(pClip,
+						pClipItem->rectClip,
 						iSelectStart,
 						iClipOffset + iSelectOffset,
 						iSelectLength);
@@ -2275,6 +2312,7 @@ void qtractorTrackView::executeClipSelect ( qtractorTrackView::Command cmd )
 				// -- Right region...
 				if (bClipboard) {
 					m_clipboard.addItem(pClip,
+						pClipItem->rectClip,
 						iSelectStart,
 						iClipOffset + iSelectOffset,
 						iSelectLength);
@@ -2293,6 +2331,7 @@ void qtractorTrackView::executeClipSelect ( qtractorTrackView::Command cmd )
 			// -- Left region...
 			if (bClipboard) {
 				m_clipboard.addItem(pClip,
+					pClipItem->rectClip,
 					iClipStart,
 					iClipOffset,
 					iSelectLength);
@@ -2308,6 +2347,7 @@ void qtractorTrackView::executeClipSelect ( qtractorTrackView::Command cmd )
 			// -- Whole clip...
 			if (bClipboard) {
 				m_clipboard.addItem(pClip,
+					pClipItem->rectClip,
 					iClipStart,
 					iClipOffset,
 					iClipLength);
@@ -2328,12 +2368,13 @@ void qtractorTrackView::executeClipSelect ( qtractorTrackView::Command cmd )
 }
 
 
-// Paste from clipboard.
-void qtractorTrackView::pasteClipSelect (void)
+// Paste from clipboard (start).
+void qtractorTrackView::pasteClipboard (void)
 {
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm == NULL)
 		return;
+
 	qtractorSession *pSession = m_pTracks->session();
 	if (pSession == NULL)
 		return;
@@ -2342,62 +2383,30 @@ void qtractorTrackView::pasteClipSelect (void)
 	if (isClipboardEmpty())
 		return;
 
-	// Take hand on where we wish to start pasting clips...
-	qtractorTrack *pPasteTrack = m_pTracks->currentTrack();
-	bool bSingleTrack = (m_clipboard.singleTrack && pPasteTrack
-		&& m_clipboard.singleTrack->trackType() == pPasteTrack->trackType());
-
-	// We'll build a composite command...
-	qtractorClipCommand *pClipCommand
-		= new qtractorClipCommand(tr("paste clip"));
-
-	long delta = pSession->editHead()
-		- pSession->frameFromPixel(m_clipboard.rect.x());
+	// Reset any current selection, whatsoever...
+	m_pClipSelect->clear();
+	resetDragState();
 
 	QListIterator<ClipItem *> iter(m_clipboard.items);
 	while (iter.hasNext()) {
 		ClipItem *pClipItem = iter.next();
-		qtractorClip *pClip = pClipItem->clip;
-		if (!bSingleTrack)
-			pPasteTrack = pClip->track();
-		unsigned long iClipStart = pClipItem->clipStart;
-		if ((long) iClipStart + delta > 0)
-			iClipStart += delta;
-		else
-			iClipStart = 0;
-		// Now, its imperative to make a proper copy of those clips...
-		qtractorClip *pNewClip = NULL;
-		switch (pPasteTrack->trackType()) {
-		case qtractorTrack::Audio: {
-			qtractorAudioClip *pAudioClip
-				= static_cast<qtractorAudioClip *> (pClip);
-			if (pAudioClip)
-				pNewClip = new qtractorAudioClip(*pAudioClip);
-			break;
-		}
-		case qtractorTrack::Midi: {
-			qtractorMidiClip *pMidiClip
-				= static_cast<qtractorMidiClip *> (pClip);
-			if (pMidiClip)
-				pNewClip = new qtractorMidiClip(*pMidiClip);
-			break;
-		}
-		default:
-			break;
-		}
-		// Add the new pasted clip...
-		if (pNewClip) {
-			pNewClip->setClipStart(iClipStart);
-			pNewClip->setClipOffset(pClipItem->clipOffset);
-			pNewClip->setClipLength(pClipItem->clipLength);
-			pNewClip->setFadeInLength(pClipItem->fadeInLength);
-			pNewClip->setFadeOutLength(pClipItem->fadeOutLength);
-			pClipCommand->addClip(pNewClip, pPasteTrack);
-		}
+		m_pClipSelect->selectClip(pClipItem->clip, pClipItem->rect, true);
 	}
 
-	// Put it in the form of an undoable command...
-	pMainForm->commands()->exec(pClipCommand);
+	// We'll start a brand new floating state...
+	m_dragState = DragPaste;
+	m_rectDrag  = m_pClipSelect->rect();
+	m_posDrag   = m_rectDrag.topLeft();
+
+	// It doesn't matter which one, both pasteable views are due...
+	qtractorScrollView::setCursor(*m_pCursorEditPaste);
+
+	// Make sure the mouse pointer is properly located...
+	const QPoint& pos = qtractorScrollView::viewportToContents(
+		qtractorScrollView::viewport()->mapFromGlobal(QCursor::pos()));
+
+	// Let's-a go...
+	dragMoveTrack(pos);
 }
 
 
@@ -2411,6 +2420,7 @@ void qtractorTrackView::moveClipSelect ( qtractorTrack *pTrack )
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm == NULL)
 		return;
+
 	qtractorSession *pSession = m_pTracks->session();
 	if (pSession == NULL)
 		return;
@@ -2482,6 +2492,94 @@ void qtractorTrackView::moveClipSelect ( qtractorTrack *pTrack )
 			pSession->frameSnap(pSession->frameFromPixel(x > 0 ? x : 0)),
 			iClipOffset + iSelectOffset,
 			iSelectLength);
+	}
+
+	// May reset selection, yep.
+	m_pClipSelect->clear();
+
+	// Put it in the form of an undoable command...
+	pMainForm->commands()->exec(pClipCommand);
+}
+
+
+// Paste from clipboard (execute).
+void qtractorTrackView::pasteClipSelect ( qtractorTrack *pTrack )
+{
+	// Check if anything is really selected and sane...
+	if (!queryClipSelect())
+		return;
+
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm == NULL)
+		return;
+
+	qtractorSession *pSession = m_pTracks->session();
+	if (pSession == NULL)
+		return;
+
+	// Check if anythings really on clipboard...
+	if (isClipboardEmpty())
+		return;
+
+	// We'll need this...
+	qtractorClipCommand *pClipCommand
+		= new qtractorClipCommand(tr("paste clip"));
+
+	// We can only move clips between tracks of the same type...
+	qtractorTrack *pSingleTrack = m_pClipSelect->singleTrack();
+	if (pSingleTrack) {
+		if (pTrack == NULL) {
+			int iTrack = pSession->tracks().count() + 1;
+			const QColor color = qtractorTrack::trackColor(iTrack);
+			pTrack = new qtractorTrack(pSession, pSingleTrack->trackType());
+			pTrack->setTrackName(tr("Track %1").arg(iTrack));
+			pTrack->setBackground(color);
+			pTrack->setForeground(color.dark());
+			pClipCommand->addTrack(pTrack);
+		}
+		else
+		if (pSingleTrack->trackType() != pTrack->trackType())
+			return;
+	}
+
+	// We'll build a composite command...
+
+	QListIterator<ClipItem *> iter(m_clipboard.items);
+	while (iter.hasNext()) {
+		ClipItem *pClipItem = iter.next();
+		qtractorClip *pClip = pClipItem->clip;
+		if (pSingleTrack == NULL)
+			pTrack = pClip->track();
+		int x = (pClipItem->rect.x() + m_iDraggingX);
+		// Now, its imperative to make a proper copy of those clips...
+		qtractorClip *pNewClip = NULL;
+		switch (pTrack->trackType()) {
+		case qtractorTrack::Audio: {
+			qtractorAudioClip *pAudioClip
+				= static_cast<qtractorAudioClip *> (pClip);
+			if (pAudioClip)
+				pNewClip = new qtractorAudioClip(*pAudioClip);
+			break;
+		}
+		case qtractorTrack::Midi: {
+			qtractorMidiClip *pMidiClip
+				= static_cast<qtractorMidiClip *> (pClip);
+			if (pMidiClip)
+				pNewClip = new qtractorMidiClip(*pMidiClip);
+			break;
+		}
+		default:
+			break;
+		}
+		// Add the new pasted clip...
+		if (pNewClip) {
+			pNewClip->setClipStart(pSession->frameFromPixel(x > 0 ? x : 0));
+			pNewClip->setClipOffset(pClipItem->clipOffset);
+			pNewClip->setClipLength(pClipItem->clipLength);
+			pNewClip->setFadeInLength(pClipItem->fadeInLength);
+			pNewClip->setFadeOutLength(pClipItem->fadeOutLength);
+			pClipCommand->addClip(pNewClip, pTrack);
+		}
 	}
 
 	// May reset selection, yep.
