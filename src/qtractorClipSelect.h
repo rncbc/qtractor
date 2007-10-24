@@ -65,6 +65,9 @@ public:
 	void selectClip(qtractorClip *pClip,
 		const QRect& rect, bool bSelect = true);
 
+	// Clip addition (no actual selection).
+	void addClip(qtractorClip *pClip, const QRect& rect);
+
 	// The united selection rectangle.
 	const QRect& rect() const;
 

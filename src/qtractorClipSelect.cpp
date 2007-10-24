@@ -87,6 +87,14 @@ void qtractorClipSelect::selectClip ( qtractorClip *pClip,
 }
 
 
+// Clip addition (no actual selection).
+void qtractorClipSelect::addClip ( qtractorClip *pClip, const QRect& rect )
+{
+	m_items.append(new Item(pClip, rect));
+	m_rect = m_rect.unite(rect);
+}
+
+
 // The united selection rectangle.
 const QRect& qtractorClipSelect::rect (void) const
 {

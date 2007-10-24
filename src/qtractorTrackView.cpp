@@ -2390,7 +2390,7 @@ void qtractorTrackView::pasteClipboard (void)
 	QListIterator<ClipItem *> iter(m_clipboard.items);
 	while (iter.hasNext()) {
 		ClipItem *pClipItem = iter.next();
-		m_pClipSelect->selectClip(pClipItem->clip, pClipItem->rect, true);
+		m_pClipSelect->addClip(pClipItem->clip, pClipItem->rect);
 	}
 
 	// We'll start a brand new floating state...
