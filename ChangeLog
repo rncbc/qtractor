@@ -7,6 +7,13 @@ CVS HEAD
 
 0.0.7   2007-10-23  Work in progress...
 
+- A unitialized member variable bug affecting all MIDI clips has
+  been discovered and squashed; this one has been lurking for quite
+  some time and was causing wrong clip editing results, specially
+  when tempo or meter differs between session and the MIDI file.
+
+- Keyboard step-moving is now allowed while pasting in MIDI editor.
+ 
 - Track-view clip selection can now be drag-moved into the void
   (bottom) view area creating brand new tracks automagically.
 

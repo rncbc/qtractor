@@ -127,7 +127,7 @@ public:
 	void pasteClipSelect();
 
 	// Intra-drag-n-drop clip move method.
-	void moveClipSelect(qtractorTrack *pTrack, int dx);
+	void moveClipSelect(qtractorTrack *pTrack);
 
 	// Play-head positioning.
 	void setPlayHead(unsigned long iPlayHead, bool bSyncView = false);

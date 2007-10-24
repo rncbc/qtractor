@@ -714,7 +714,7 @@ qtractorTrack *qtractorTrackView::dragMoveTrack ( const QPoint& pos )
 		updateClipSelect(tvi.trackRect.y() + 1, tvi.trackRect.height() - 2);
 	// Special update on keyboard vertical drag-stepping...
 	if (m_dragState == DragStep) {
-		m_posStep.setY(tvi.trackRect.y()
+		m_posStep.setY(tvi.trackRect.y() - m_posDrag.y()
 			+ (pTrack ? (tvi.trackRect.height() >> 1) : 0));
 	}
 
@@ -1234,7 +1234,7 @@ void qtractorTrackView::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 			break;
 		case DragMove:
 			// Let's move them...
-			moveClipSelect(dragMoveTrack(pos), m_iDraggingX);
+			moveClipSelect(dragMoveTrack(pos));
 			break;
 		case DragFadeIn:
 		case DragFadeOut:
@@ -1790,8 +1790,7 @@ void qtractorTrackView::resetDragState (void)
 	m_iDraggingX = 0;
 //	m_pClipDrag  = NULL;
 
-	m_posStep.setX(0);
-	m_posStep.setY(0);
+	m_posStep = QPoint(0, 0);
 
 	// If we were moving clips around,
 	// just hide selection, of course.
@@ -1826,15 +1825,13 @@ void qtractorTrackView::keyPressEvent ( QKeyEvent *pKeyEvent )
 #endif
 	int iKey = pKeyEvent->key();
 	switch (iKey) {
-	case Qt::Key_Escape:
-		resetDragState();
-		break;
 	case Qt::Key_Insert: // Aha, joking :)
 	case Qt::Key_Return:
-		if (m_dragState == DragStep) {
-			moveClipSelect(dragMoveTrack(m_posStep), m_iDraggingX);
-			resetDragState();
-		}
+		if (m_dragState == DragStep)
+			moveClipSelect(dragMoveTrack(m_posDrag + m_posStep));
+		// Fall thru...
+	case Qt::Key_Escape:
+		resetDragState();
 		break;
 	case Qt::Key_Home:
 		if (pKeyEvent->modifiers() & Qt::ControlModifier) {
@@ -1943,12 +1940,11 @@ bool qtractorTrackView::keyStep ( int iKey )
 
 	// Set initial bound conditions...
 	if (m_dragState == DragNone) {
-		m_dragState = DragStep;
-		m_rectDrag  = m_pClipSelect->rect();
-		m_posDrag   = m_rectDrag.center();
-		m_posStep   = m_posDrag;
-		int x = pSession->pixelSnap(m_rectDrag.x());
-		m_iDraggingX = (x - m_rectDrag.x());
+		m_dragState  = DragStep;
+		m_rectDrag   = m_pClipSelect->rect();
+		m_posDrag    = m_rectDrag.center();
+		m_posStep    = QPoint(0, 0);
+		m_iDraggingX = (pSession->pixelSnap(m_rectDrag.x()) - m_rectDrag.x());
 		qtractorScrollView::setCursor(QCursor(Qt::SizeAllCursor));
 	//	showClipSelect();
 	}
@@ -1987,22 +1983,23 @@ bool qtractorTrackView::keyStep ( int iKey )
 	}
 
 	// Early sanity check...
-	int w2 = (m_rectDrag.width() >> 1);
-	if (m_posStep.x() < w2)
-		m_posStep.setX (w2);
+	int x2 = (m_rectDrag.width() >> 1) - m_posDrag.x();
+	if (m_posStep.x() < x2)
+		m_posStep.setX (x2);
 	else
-	if (m_posStep.x() > qtractorScrollView::contentsWidth() - w2)
-		m_posStep.setX (qtractorScrollView::contentsWidth() - w2);
+	if (m_posStep.x() > qtractorScrollView::contentsWidth() - x2)
+		m_posStep.setX (qtractorScrollView::contentsWidth() - x2);
 
-	int h2 = (m_rectDrag.height() >> 1);
-	if (m_posStep.y() < h2)
-		m_posStep.setY (h2);
+	int y2 = (m_rectDrag.height() >> 1) - m_posDrag.y();
+	if (m_posStep.y() < y2)
+		m_posStep.setY (y2);
 	else
-	if (m_posStep.y() > qtractorScrollView::contentsHeight() - h2)
-		m_posStep.setY (qtractorScrollView::contentsHeight() - h2);
+	if (m_posStep.y() > qtractorScrollView::contentsHeight() - y2)
+		m_posStep.setY (qtractorScrollView::contentsHeight() - y2);
 
 	// Do our deeds...
-	dragMoveTrack(m_posStep);
+	const QPoint& pos = m_posDrag + m_posStep;
+	dragMoveTrack(pos);
 
 	return true;
 }
@@ -2405,7 +2402,7 @@ void qtractorTrackView::pasteClipSelect (void)
 
 
 // Intra-drag-n-drop clip move method.
-void qtractorTrackView::moveClipSelect ( qtractorTrack *pTrack, int dx )
+void qtractorTrackView::moveClipSelect ( qtractorTrack *pTrack )
 {
 	// Check if anything is really selected and sane...
 	if (!queryClipSelect())
@@ -2447,7 +2444,7 @@ void qtractorTrackView::moveClipSelect ( qtractorTrack *pTrack, int dx )
 		qtractorClip *pClip = pClipItem->clip;
 		if (pSingleTrack == NULL)
 			pTrack = pClip->track();
-		int x = (pClipItem->rectClip.x() + dx);
+		int x = (pClipItem->rectClip.x() + m_iDraggingX);
 		// Clip parameters.
 		unsigned long iClipStart    = pClip->clipStart();
 		unsigned long iClipOffset   = pClip->clipOffset();

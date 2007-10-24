@@ -2245,11 +2245,8 @@ void qtractorMidiEditor::resetDragState ( qtractorScrollView *pScrollView )
 	m_pEventDrag = NULL;
 	m_bEventDragEdit = false;
 
-	m_posDelta.setX(0);
-	m_posDelta.setY(0);
-
-	m_posStep.setX(0);
-	m_posStep.setY(0);
+	m_posDelta = QPoint(0, 0);
+	m_posStep  = QPoint(0, 0);
 
 	if (m_pRubberBand) {
 		m_pRubberBand->hide();
@@ -2468,15 +2465,19 @@ bool qtractorMidiEditor::keyPress ( qtractorScrollView *pScrollView,
 	int iKey, Qt::KeyboardModifiers modifiers )
 {
 	switch (iKey) {
-	case Qt::Key_Escape:
-		resetDragState(pScrollView);
-		break;
 	case Qt::Key_Insert: // Aha, joking :)
 	case Qt::Key_Return:
-		if (m_dragState == DragStep) {
-			executeDragMove(pScrollView, m_posStep);
-			m_dragState = DragNone;
+		if (m_dragState == DragStep)
+			executeDragMove(pScrollView, m_posDrag + m_posStep);
+		else
+		if (m_dragState == DragPaste) {
+			const QPoint& pos = pScrollView->viewportToContents(
+				pScrollView->viewport()->mapFromGlobal(QCursor::pos()));
+			executeDragPaste(pScrollView, pos + m_posStep);
 		}
+		// Fall thru...
+	case Qt::Key_Escape:
+		resetDragState(pScrollView);
 		break;
 	case Qt::Key_Home:
 		if (modifiers & Qt::ControlModifier) {
@@ -2584,13 +2585,13 @@ bool qtractorMidiEditor::keyStep ( int iKey )
 		m_dragState = DragStep;
 		m_rectDrag  = m_select.rectView();
 		m_posDrag   = m_rectDrag.center();
-		m_posStep   = m_posDrag;
+		m_posStep   = QPoint(0, 0);
 		m_pEditView->setCursor(Qt::SizeAllCursor);
 		m_pEditEvent->setCursor(Qt::SizeAllCursor);
 	}
 
 	// Now to say the truth...
-	if (m_dragState != DragStep)
+	if (m_dragState != DragStep && m_dragState != DragPaste)
 		return false;
 
 	int iVerticalStep = m_pEditList->itemHeight();
@@ -2619,24 +2620,32 @@ bool qtractorMidiEditor::keyStep ( int iKey )
 		return false;
 	}
 
-	// Early sanity check...
-	int w2 = (m_rectDrag.width() >> 1);
-	if (m_posStep.x() < w2)
-		m_posStep.setX (w2);
-	else
-	if (m_posStep.x() > m_pEditView->contentsWidth() - w2)
-		m_posStep.setX (m_pEditView->contentsWidth() - w2);
 
-	int h2 = (m_rectDrag.height() >> 1);
-	if (m_posStep.y() < h2)
-		m_posStep.setY (h2);
+	// Early sanity check...
+	QPoint pos = m_posDrag;
+	if (m_dragState == DragPaste) {
+		pos = m_pEditView->viewportToContents(
+			m_pEditView->viewport()->mapFromGlobal(QCursor::pos()));
+	}
+
+	int x2 = (m_rectDrag.width() >> 1) - pos.x();
+	if (m_posStep.x() < x2)
+		m_posStep.setX (x2);
 	else
-	if (m_posStep.y() > m_pEditView->contentsHeight() - h2)
-		m_posStep.setY (m_pEditView->contentsHeight() - h2);
+	if (m_posStep.x() > m_pEditView->contentsWidth() - x2)
+		m_posStep.setX (m_pEditView->contentsWidth() - x2);
+
+	int y2 = (m_rectDrag.height() >> 1) - pos.y();
+	if (m_posStep.y() < y2)
+		m_posStep.setY (y2);
+	else
+	if (m_posStep.y() > m_pEditView->contentsHeight() - y2)
+		m_posStep.setY (m_pEditView->contentsHeight() - y2);
 
 	// Do our deeds...
-	m_pEditView->ensureVisible(m_posStep.x(), m_posStep.y(), 16, 16);
-	updateDragMove(m_pEditView, m_posStep);
+	pos += m_posStep;
+	m_pEditView->ensureVisible(pos.x(), pos.y(), 16, 16);
+	updateDragMove(m_pEditView, pos);
 
 	return true;
 }

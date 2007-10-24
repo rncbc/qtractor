@@ -63,6 +63,8 @@ qtractorMidiClip::qtractorMidiClip ( const qtractorMidiClip& clip )
 	setFilename(clip.filename());
 	setTrackChannel(clip.trackChannel());
 
+	m_bSessionFlag  = false;
+
 	m_pMidiEditorForm = NULL;
 }
 
@@ -254,6 +256,7 @@ void qtractorMidiClip::seek ( unsigned long iFrame )
 	qtractorTrack *pTrack = track();
 	if (pTrack == NULL)
 		return;
+
 	qtractorSession *pSession = pTrack->session();
 	if (pSession == NULL)
 		return;
@@ -297,6 +300,7 @@ void qtractorMidiClip::close ( bool bForce )
 	qtractorTrack *pTrack = track();
 	if (pTrack == NULL)
 		return;
+
 	qtractorSession *pSession = pTrack->session();
 	if (pSession == NULL)
 		return;
@@ -371,6 +375,7 @@ void qtractorMidiClip::process ( unsigned long iFrameStart,
 	qtractorTrack *pTrack = track();
 	if (pTrack == NULL)
 		return;
+
 	qtractorSession *pSession = pTrack->session();
 	if (pSession == NULL)
 		return;

@@ -412,6 +412,7 @@ bool qtractorTracks::addTrack (void)
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm == NULL)
 		return false;
+
 	qtractorSession *pSession = pMainForm->session();
 	if (pSession == NULL)
 		return false;
@@ -448,6 +449,7 @@ bool qtractorTracks::removeTrack ( qtractorTrack *pTrack )
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm == NULL)
 		return false;
+
 	qtractorSession *pSession = pMainForm->session();
 	if (pSession == NULL)
 		return false;
@@ -484,6 +486,7 @@ bool qtractorTracks::editTrack ( qtractorTrack *pTrack )
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm == NULL)
 		return false;
+
 	qtractorSession *pSession = pMainForm->session();
 	if (pSession == NULL)
 		return false;
@@ -514,6 +517,7 @@ bool qtractorTracks::addAudioTracks ( QStringList files,
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm == NULL)
 		return false;
+
 	qtractorSession *pSession = pMainForm->session();
 	if (pSession == NULL)
 		return false;
@@ -588,6 +592,7 @@ bool qtractorTracks::addMidiTracks ( QStringList files,
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm == NULL)
 		return false;
+
 	qtractorSession *pSession = pMainForm->session();
 	if (pSession == NULL)
 		return false;
@@ -698,6 +703,7 @@ bool qtractorTracks::addMidiTrackChannel ( const QString& sPath,
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm == NULL)
 		return false;
+
 	qtractorSession *pSession = pMainForm->session();
 	if (pSession == NULL)
 		return false;
