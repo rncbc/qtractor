@@ -1102,7 +1102,8 @@ void qtractorMidiEditor::pasteClipboard (void)
 
 	// We'll start a brand new floating state...
 	m_dragState = DragPaste;
-	m_posDrag = m_rectDrag.topLeft();
+	m_posDrag   = m_rectDrag.topLeft();
+	m_posStep   = QPoint(0, 0);
 
 	// It doesn't matter which one, both pasteable views are due...
 	m_pEditView->setCursor(*g_pCursorEditPaste);
@@ -1113,8 +1114,7 @@ void qtractorMidiEditor::pasteClipboard (void)
 		pScrollView->viewport()->mapFromGlobal(QCursor::pos()));
 
 	// Let's-a go...
-	pScrollView->ensureVisible(pos.x(), pos.y(), 16, 16);
-	updateDragMove(pScrollView, pos);
+	updateDragMove(pScrollView, pos + m_posStep);
 }
 
 
@@ -1546,7 +1546,6 @@ void qtractorMidiEditor::dragMoveUpdate ( qtractorScrollView *pScrollView,
 			flags |= SelectClear;
 		// Are we about to move something around?
 		if (m_pEventDrag) {
-			pScrollView->ensureVisible(pos.x(), pos.y(), 16, 16);
 			if (m_resizeMode == ResizeNone) {
 				// Start moving... take care of yet initial selection...
 				qtractorMidiEditSelect::Item *pItem
@@ -1557,7 +1556,7 @@ void qtractorMidiEditor::dragMoveUpdate ( qtractorScrollView *pScrollView,
 				}
 				// Start drag-moving...
 				m_dragState = DragMove;
-				updateDragMove(pScrollView, pos);
+				updateDragMove(pScrollView, pos + m_posStep);
 			} else {
 				// Start resizing... take care of yet initial selection...
 				if (!m_bEventDragEdit) {
@@ -1583,12 +1582,10 @@ void qtractorMidiEditor::dragMoveUpdate ( qtractorScrollView *pScrollView,
 	case DragMove:
 	case DragPaste:
 		// Drag-moving...
-		pScrollView->ensureVisible(pos.x(), pos.y(), 16, 16);
-		updateDragMove(pScrollView, pos);
+		updateDragMove(pScrollView, pos + m_posStep);
 		break;
 	case DragResize:
 		// Drag-resizeing...
-		pScrollView->ensureVisible(pos.x(), pos.y(), 16, 16);
 		updateDragResize(pScrollView, pos);
 		break;
 	default:
@@ -1643,13 +1640,13 @@ void qtractorMidiEditor::dragMoveCommit ( qtractorScrollView *pScrollView,
 		// Move it...
 		executeDragMove(pScrollView, pos);
 		break;
-	case DragResize:
-		// Resize it...
-		executeDragResize(pScrollView, pos);
-		break;
 	case DragPaste:
 		// Paste it...
 		executeDragPaste(pScrollView, pos);
+		break;
+	case DragResize:
+		// Resize it...
+		executeDragResize(pScrollView, pos);
 		break;
 	default:
 		break;
@@ -1826,6 +1823,8 @@ void qtractorMidiEditor::updateDragSelect ( qtractorScrollView *pScrollView,
 void qtractorMidiEditor::updateDragMove ( qtractorScrollView *pScrollView,
 	const QPoint& pos )
 {
+	pScrollView->ensureVisible(pos.x(), pos.y(), 16, 16);
+
 	bool bEditView
 		= (static_cast<qtractorScrollView *> (m_pEditView) == pScrollView);
 
@@ -1883,9 +1882,11 @@ void qtractorMidiEditor::updateDragMove ( qtractorScrollView *pScrollView,
 
 
 // Drag-resize current selection (also editing).
-void qtractorMidiEditor::updateDragResize ( qtractorScrollView */*pScrollView*/,
+void qtractorMidiEditor::updateDragResize ( qtractorScrollView *pScrollView,
 	const QPoint& pos )
 {
+	pScrollView->ensureVisible(pos.x(), pos.y(), 16, 16);
+
 	QRect rectUpdateView(m_select.rectView().translated(m_posDelta.x(), 0));
 	QRect rectUpdateEvent(m_select.rectEvent().translated(m_posDelta));
 
@@ -1950,7 +1951,7 @@ void qtractorMidiEditor::executeDragMove ( qtractorScrollView *pScrollView,
 	if (m_pMidiClip == NULL)
 		return;
 
-	updateDragMove(pScrollView, pos);
+	updateDragMove(pScrollView, pos + m_posStep);
 
 	long iTimeDelta = 0;
 	if (m_posDelta.x() < 0)
@@ -2104,7 +2105,7 @@ void qtractorMidiEditor::executeDragPaste ( qtractorScrollView *pScrollView,
 	if (m_pMidiClip == NULL)
 		return;
 
-	updateDragMove(pScrollView, pos);
+	updateDragMove(pScrollView, pos + m_posStep);
 
 	long iTimeDelta = 0;
 	if (m_posDelta.x() < 0)
@@ -2468,12 +2469,12 @@ bool qtractorMidiEditor::keyPress ( qtractorScrollView *pScrollView,
 	case Qt::Key_Insert: // Aha, joking :)
 	case Qt::Key_Return:
 		if (m_dragState == DragStep)
-			executeDragMove(pScrollView, m_posDrag + m_posStep);
+			executeDragMove(pScrollView, m_posDrag);
 		else
 		if (m_dragState == DragPaste) {
 			const QPoint& pos = pScrollView->viewportToContents(
 				pScrollView->viewport()->mapFromGlobal(QCursor::pos()));
-			executeDragPaste(pScrollView, pos + m_posStep);
+			executeDragPaste(pScrollView, pos);
 		}
 		// Fall thru...
 	case Qt::Key_Escape:
@@ -2643,9 +2644,7 @@ bool qtractorMidiEditor::keyStep ( int iKey )
 		m_posStep.setY (m_pEditView->contentsHeight() - y2);
 
 	// Do our deeds...
-	pos += m_posStep;
-	m_pEditView->ensureVisible(pos.x(), pos.y(), 16, 16);
-	updateDragMove(m_pEditView, pos);
+	updateDragMove(m_pEditView, pos + m_posStep);
 
 	return true;
 }

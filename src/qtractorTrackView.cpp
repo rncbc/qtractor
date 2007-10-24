@@ -1168,7 +1168,7 @@ void qtractorTrackView::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 	switch (m_dragState) {
 	case DragMove:
 	case DragPaste:
-		dragMoveTrack(pos);
+		dragMoveTrack(pos + m_posStep);
 		break;
 	case DragFadeIn:
 	case DragFadeOut:
@@ -1247,11 +1247,11 @@ void qtractorTrackView::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 			break;
 		case DragMove:
 			// Let's move them...
-			moveClipSelect(dragMoveTrack(pos));
+			moveClipSelect(dragMoveTrack(pos + m_posStep));
 			break;
 		case DragPaste:
 			// Let's paste them...
-			pasteClipSelect(dragMoveTrack(pos));
+			pasteClipSelect(dragMoveTrack(pos + m_posStep));
 			break;
 		case DragFadeIn:
 		case DragFadeOut:
@@ -2397,6 +2397,7 @@ void qtractorTrackView::pasteClipboard (void)
 	m_dragState = DragPaste;
 	m_rectDrag  = m_pClipSelect->rect();
 	m_posDrag   = m_rectDrag.topLeft();
+	m_posStep   = QPoint(0, 0);
 
 	// It doesn't matter which one, both pasteable views are due...
 	qtractorScrollView::setCursor(*m_pCursorEditPaste);
@@ -2406,7 +2407,7 @@ void qtractorTrackView::pasteClipboard (void)
 		qtractorScrollView::viewport()->mapFromGlobal(QCursor::pos()));
 
 	// Let's-a go...
-	dragMoveTrack(pos);
+	dragMoveTrack(pos + m_posStep);
 }
 
 
