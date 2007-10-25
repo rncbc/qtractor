@@ -438,11 +438,6 @@ private:
 	bool m_bNoteColor;
 	bool m_bValueColor;
 
-	// Old-fashion singleton edit-mode cursors. 
-	static int      g_iCursorRefCount;
-	static QCursor *g_pCursorEditModeOn;
-	static QCursor *g_pCursorEditPaste;
-
 	// The local clipboard stuff (singleton).
 	static struct ClipBoard
 	{

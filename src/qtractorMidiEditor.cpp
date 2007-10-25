@@ -302,24 +302,11 @@ QString qtractorMidiEditor::createFilePathRevision (
 //----------------------------------------------------------------------------
 // qtractorMidiEditor -- The main MIDI sequence editor widget.
 
-// Old-fashion singleton edit-mode cursors. 
-int      qtractorMidiEditor::g_iCursorRefCount   = 0;
-QCursor *qtractorMidiEditor::g_pCursorEditModeOn = NULL;
-QCursor *qtractorMidiEditor::g_pCursorEditPaste  = NULL;
-
 
 // Constructor.
 qtractorMidiEditor::qtractorMidiEditor ( QWidget *pParent )
 		: QSplitter(Qt::Vertical, pParent)
 {
-	// Acquire ref-counted edit-mode cursors... 
-	if (++g_iCursorRefCount == 1) {
-		g_pCursorEditModeOn
-			= new QCursor(QPixmap(":/icons/editModeOn.png"), 5, 18);
-		g_pCursorEditPaste
-			= new QCursor(QPixmap(":/icons/editPaste.png"), 20, 20);
-	}
-
 	// Initialize instance variables...
 	m_pMidiClip = NULL;
 
@@ -461,14 +448,6 @@ qtractorMidiEditor::~qtractorMidiEditor (void)
 	// Release local instances.
 	delete m_pTimeScale;
 	delete m_pCommands;
-
-	// Release ref-counted edit-mode cursors... 
-	if (--g_iCursorRefCount == 0) {
-		delete g_pCursorEditModeOn;
-		delete g_pCursorEditPaste;
-		g_pCursorEditModeOn = NULL;
-		g_pCursorEditPaste = NULL;
-	}
 }
 
 
@@ -1102,12 +1081,13 @@ void qtractorMidiEditor::pasteClipboard (void)
 
 	// We'll start a brand new floating state...
 	m_dragState = DragPaste;
-	m_posDrag   = m_rectDrag.topLeft();
+	m_posDrag   = m_rectDrag.topLeft(); //.center();
 	m_posStep   = QPoint(0, 0);
 
 	// It doesn't matter which one, both pasteable views are due...
-	m_pEditView->setCursor(*g_pCursorEditPaste);
-	m_pEditEvent->setCursor(*g_pCursorEditPaste);
+	QCursor cursor(QPixmap(":/icons/editPaste.png"), 20, 20);
+	m_pEditView->setCursor(cursor);
+	m_pEditEvent->setCursor(cursor);
 
 	// Make sure the mouse pointer is properly located...
 	const QPoint& pos = pScrollView->viewportToContents(
@@ -1511,7 +1491,7 @@ void qtractorMidiEditor::dragMoveStart ( qtractorScrollView *pScrollView,
 		&& (modifiers & (Qt::ShiftModifier | Qt::ControlModifier)) == 0) {
 		m_pEventDrag = dragEditEvent(pScrollView, m_posDrag, modifiers);
 		m_bEventDragEdit = true;
-		pScrollView->setCursor(*g_pCursorEditModeOn);
+		pScrollView->setCursor(QCursor(QPixmap(":/icons/editModeOn.png"), 5, 18));
 	} else if (m_resizeMode == ResizeNone) {
 		if (m_pEventDrag) {
 			pScrollView->setCursor(QCursor(
@@ -1588,6 +1568,8 @@ void qtractorMidiEditor::dragMoveUpdate ( qtractorScrollView *pScrollView,
 		// Drag-resizeing...
 		updateDragResize(pScrollView, pos);
 		break;
+	case DragStep:
+	case DragNone:
 	default:
 		// Just make cursor tell something...
 		dragMoveEvent(pScrollView, pos, modifiers);
@@ -1648,6 +1630,8 @@ void qtractorMidiEditor::dragMoveCommit ( qtractorScrollView *pScrollView,
 		// Resize it...
 		executeDragResize(pScrollView, pos);
 		break;
+	case DragStep:
+	case DragNone:
 	default:
 		break;
 	}
@@ -2585,7 +2569,7 @@ bool qtractorMidiEditor::keyStep ( int iKey )
 	if (m_dragState == DragNone) {
 		m_dragState = DragStep;
 		m_rectDrag  = m_select.rectView();
-		m_posDrag   = m_rectDrag.center();
+		m_posDrag   = m_rectDrag.topLeft(); //.center();
 		m_posStep   = QPoint(0, 0);
 		m_pEditView->setCursor(Qt::SizeAllCursor);
 		m_pEditEvent->setCursor(Qt::SizeAllCursor);
@@ -2629,19 +2613,23 @@ bool qtractorMidiEditor::keyStep ( int iKey )
 			m_pEditView->viewport()->mapFromGlobal(QCursor::pos()));
 	}
 
-	int x2 = (m_rectDrag.width() >> 1) - pos.x();
-	if (m_posStep.x() < x2)
+	int x2 = - pos.x();
+	if (m_posStep.x() < x2) {
 		m_posStep.setX (x2);
-	else
-	if (m_posStep.x() > m_pEditView->contentsWidth() - x2)
-		m_posStep.setX (m_pEditView->contentsWidth() - x2);
+	} else {
+		x2 += m_pEditView->contentsWidth() - m_rectDrag.width();
+		if (m_posStep.x() > x2)
+			m_posStep.setX (x2);
+	}
 
-	int y2 = (m_rectDrag.height() >> 1) - pos.y();
-	if (m_posStep.y() < y2)
+	int y2 = - pos.y();
+	if (m_posStep.y() < y2) {
 		m_posStep.setY (y2);
-	else
-	if (m_posStep.y() > m_pEditView->contentsHeight() - y2)
-		m_posStep.setY (m_pEditView->contentsHeight() - y2);
+	} else {
+		y2 += m_pEditView->contentsHeight() - m_rectDrag.height();
+		if (m_posStep.y() > y2)
+			m_posStep.setY (y2);
+	}
 
 	// Do our deeds...
 	updateDragMove(m_pEditView, pos + m_posStep);
@@ -2653,7 +2641,7 @@ bool qtractorMidiEditor::keyStep ( int iKey )
 // Focus lost event.
 void qtractorMidiEditor::focusOut ( qtractorScrollView *pScrollView )
 {
-	if (m_dragState == DragStep)
+	if (m_dragState == DragStep || m_dragState == DragPaste)
 		resetDragState(pScrollView);
 }
 

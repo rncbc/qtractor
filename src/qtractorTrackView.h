@@ -360,9 +360,6 @@ private:
 
 	// Recording state window.
 	int m_iLastRecordX;
-
-	// Paste-mode cursor. 
-	QCursor *m_pCursorEditPaste;
 };
 
 

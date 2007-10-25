@@ -73,8 +73,6 @@ qtractorTrackView::qtractorTrackView ( qtractorTracks *pTracks,
 
 	m_selectMode = SelectClip;
 
-	m_pCursorEditPaste = new QCursor(QPixmap(":/icons/editPaste.png"), 20, 20);
-	
 	clear();
 
 	// Zoom tool widgets
@@ -154,8 +152,6 @@ qtractorTrackView::~qtractorTrackView (void)
 {
 	clear();
 	clearClipboard();
-
-	delete m_pCursorEditPaste;
 
 	delete m_pClipSelect;
 }
@@ -1213,6 +1209,7 @@ void qtractorTrackView::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 			}
 		}
 		// Fall thru...
+	case DragStep:
 	case DragDrop:
 	case DragNone:
 	default:
@@ -1281,6 +1278,7 @@ void qtractorTrackView::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 				m_pTracks->selectionChangeNotify();
 			}
 			// Fall thru...
+		case DragStep:
 		case DragDrop:
 		case DragNone:
 		default:
@@ -1310,7 +1308,7 @@ void qtractorTrackView::mouseDoubleClickEvent ( QMouseEvent *pMouseEvent )
 // Focus lost event.
 void qtractorTrackView::focusOutEvent ( QFocusEvent *pFocusEvent )
 {
-	if (m_dragState == DragStep)
+	if (m_dragState == DragStep || m_dragState == DragPaste)
 		resetDragState();
 
 	qtractorScrollView::focusOutEvent(pFocusEvent);
@@ -1973,7 +1971,7 @@ bool qtractorTrackView::keyStep ( int iKey )
 	if (m_dragState == DragNone) {
 		m_dragState  = DragStep;
 		m_rectDrag   = m_pClipSelect->rect();
-		m_posDrag    = m_rectDrag.center();
+		m_posDrag    = m_rectDrag.topLeft(); //.center();
 		m_posStep    = QPoint(0, 0);
 		m_iDraggingX = (pSession->pixelSnap(m_rectDrag.x()) - m_rectDrag.x());
 		qtractorScrollView::setCursor(QCursor(Qt::SizeAllCursor));
@@ -2019,19 +2017,24 @@ bool qtractorTrackView::keyStep ( int iKey )
 		pos = qtractorScrollView::viewportToContents(
 			qtractorScrollView::viewport()->mapFromGlobal(QCursor::pos()));
 	}
-	int x2 = (m_rectDrag.width() >> 1) - pos.x();
-	if (m_posStep.x() < x2)
-		m_posStep.setX (x2);
-	else
-	if (m_posStep.x() > qtractorScrollView::contentsWidth() - x2)
-		m_posStep.setX (qtractorScrollView::contentsWidth() - x2);
 
-	int y2 = (m_rectDrag.height() >> 1) - pos.y();
-	if (m_posStep.y() < y2)
+	int x2 = - pos.x();
+	if (m_posStep.x() < x2) {
+		m_posStep.setX (x2);
+	} else {
+		x2 += qtractorScrollView::contentsWidth() - m_rectDrag.width();
+		if (m_posStep.x() > x2)
+			m_posStep.setX (x2);
+	}
+
+	int y2 = - pos.y();
+	if (m_posStep.y() < y2) {
 		m_posStep.setY (y2);
-	else
-	if (m_posStep.y() > qtractorScrollView::contentsHeight() - y2)
-		m_posStep.setY (qtractorScrollView::contentsHeight() - y2);
+	} else {
+		y2 += qtractorScrollView::contentsHeight() - m_rectDrag.height();
+		if (m_posStep.y() > y2)
+			m_posStep.setY (y2);
+	}
 
 	// Do our deeds...
 	dragMoveTrack(pos + m_posStep);
@@ -2396,11 +2399,12 @@ void qtractorTrackView::pasteClipboard (void)
 	// We'll start a brand new floating state...
 	m_dragState = DragPaste;
 	m_rectDrag  = m_pClipSelect->rect();
-	m_posDrag   = m_rectDrag.topLeft();
+	m_posDrag   = m_rectDrag.topLeft(); //.center();
 	m_posStep   = QPoint(0, 0);
 
 	// It doesn't matter which one, both pasteable views are due...
-	qtractorScrollView::setCursor(*m_pCursorEditPaste);
+	qtractorScrollView::setCursor(
+		QCursor(QPixmap(":/icons/editPaste.png"), 20, 20));
 
 	// Make sure the mouse pointer is properly located...
 	const QPoint& pos = qtractorScrollView::viewportToContents(
