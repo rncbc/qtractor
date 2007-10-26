@@ -177,7 +177,7 @@ protected:
 	bool clipInfo(qtractorClip *pClip, QRect *pClipRect) const;
 
 	// Drag-n-drop event stuffer.
-	qtractorTrack *dragMoveTrack(const QPoint& pos);
+	qtractorTrack *dragMoveTrack(const QPoint& pos, bool bKeyStep = false);
 	qtractorTrack *dragDropTrack(QDropEvent *pDropEvent);
 	bool canDropTrack(QDropEvent *pDropEvent);
 

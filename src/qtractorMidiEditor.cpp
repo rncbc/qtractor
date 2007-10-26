@@ -1081,7 +1081,7 @@ void qtractorMidiEditor::pasteClipboard (void)
 
 	// We'll start a brand new floating state...
 	m_dragState = DragPaste;
-	m_posDrag   = m_rectDrag.topLeft(); //.center();
+	m_posDrag   = m_rectDrag.topLeft();
 	m_posStep   = QPoint(0, 0);
 
 	// It doesn't matter which one, both pasteable views are due...
@@ -1462,7 +1462,7 @@ qtractorMidiEvent *qtractorMidiEditor::dragMoveEvent (
 			}
 		}
 		pScrollView->setCursor(QCursor(shape));
-	} else {
+	} else if (m_dragState == DragNone) {
 		pScrollView->unsetCursor();
 	}
 
@@ -1474,9 +1474,20 @@ qtractorMidiEvent *qtractorMidiEditor::dragMoveEvent (
 void qtractorMidiEditor::dragMoveStart ( qtractorScrollView *pScrollView,
 	const QPoint& pos, Qt::KeyboardModifiers modifiers )
 {
-	// Are we pasting something?
-	if (m_dragState == DragPaste)
+	// Are we already step-moving or pasting something?
+	switch (m_dragState) {
+	case DragStep:
+		// One-click change from drag-step to drag-move...
+		m_dragState = DragMove;
+		m_posDrag   = m_rectDrag.center();
+		m_posStep   = QPoint(0, 0);
+		updateDragMove(pScrollView, pos + m_posStep);
+		// Fall thru...
+	case DragPaste:
 		return;
+	default:
+		break;
+	}
 
 	// Force null state.
 	resetDragState(pScrollView);
@@ -2569,14 +2580,16 @@ bool qtractorMidiEditor::keyStep ( int iKey )
 	if (m_dragState == DragNone) {
 		m_dragState = DragStep;
 		m_rectDrag  = m_select.rectView();
-		m_posDrag   = m_rectDrag.topLeft(); //.center();
+		m_posDrag   = m_rectDrag.topLeft();
 		m_posStep   = QPoint(0, 0);
 		m_pEditView->setCursor(Qt::SizeAllCursor);
 		m_pEditEvent->setCursor(Qt::SizeAllCursor);
 	}
 
 	// Now to say the truth...
-	if (m_dragState != DragStep && m_dragState != DragPaste)
+	if (m_dragState != DragMove &&
+		m_dragState != DragStep &&
+		m_dragState != DragPaste)
 		return false;
 
 	int iVerticalStep = m_pEditList->itemHeight();
@@ -2608,7 +2621,7 @@ bool qtractorMidiEditor::keyStep ( int iKey )
 
 	// Early sanity check...
 	QPoint pos = m_posDrag;
-	if (m_dragState == DragPaste) {
+	if (m_dragState == DragMove || m_dragState == DragPaste) {
 		pos = m_pEditView->viewportToContents(
 			m_pEditView->viewport()->mapFromGlobal(QCursor::pos()));
 	}

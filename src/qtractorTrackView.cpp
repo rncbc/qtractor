@@ -701,7 +701,8 @@ bool qtractorTrackView::clipInfo ( qtractorClip *pClip,
 
 
 // Selection-dragging, following the current mouse position.
-qtractorTrack *qtractorTrackView::dragMoveTrack ( const QPoint& pos )
+qtractorTrack *qtractorTrackView::dragMoveTrack ( const QPoint& pos,
+	bool bKeyStep )
 {
 	// Which track we're pointing at?
 	qtractorTrackViewInfo tvi;
@@ -714,10 +715,9 @@ qtractorTrack *qtractorTrackView::dragMoveTrack ( const QPoint& pos )
 		(pTrack == NULL || pSingleTrack->trackType() == pTrack->trackType()))
 		updateClipSelect(tvi.trackRect.y() + 1, tvi.trackRect.height() - 2);
 	// Special update on keyboard vertical drag-stepping...
-	if (m_dragState == DragStep) {
-		m_posStep.setY(tvi.trackRect.y() - m_posDrag.y()
+	if (bKeyStep)
+		m_posStep.setY(m_posStep.y() - pos.y() + tvi.trackRect.y()
 			+ (pTrack ? (tvi.trackRect.height() >> 1) : 0));
-	}
 
 	// Always change horizontally wise...
 	int  x = m_pClipSelect->rect().x();
@@ -1080,20 +1080,30 @@ void qtractorTrackView::dropEvent (	QDropEvent *pDropEvent )
 // Handle item selection/dragging -- mouse button press.
 void qtractorTrackView::mousePressEvent ( QMouseEvent *pMouseEvent )
 {
-	// Are we pasting something?
-	if (m_dragState == DragPaste) {
+	// Which mouse state?
+	const bool bModifier = (pMouseEvent->modifiers()
+		& (Qt::ShiftModifier | Qt::ControlModifier));
+	const QPoint& pos = viewportToContents(pMouseEvent->pos());
+
+	// Are we already step-moving or pasting something?
+	switch (m_dragState) {
+	case DragStep:
+		// One-click change from drag-step to drag-move...
+		m_dragState = DragMove;
+		m_posDrag   = m_rectDrag.center();
+		m_posStep   = QPoint(0, 0);
+		dragMoveTrack(pos + m_posStep);
+		// Fall thru...
+	case DragPaste:
 		qtractorScrollView::mousePressEvent(pMouseEvent);
 		return;
+	default:
+		break;
 	}
 
 	// Force null state.
 	m_pClipDrag = NULL;
 	resetDragState();
-
-	// Which mouse state?
-	const bool bModifier = (pMouseEvent->modifiers()
-		& (Qt::ShiftModifier | Qt::ControlModifier));
-	const QPoint& pos = viewportToContents(pMouseEvent->pos());
 
 	// We need a session and a location...
 	qtractorSession *pSession = m_pTracks->session();
@@ -1971,7 +1981,7 @@ bool qtractorTrackView::keyStep ( int iKey )
 	if (m_dragState == DragNone) {
 		m_dragState  = DragStep;
 		m_rectDrag   = m_pClipSelect->rect();
-		m_posDrag    = m_rectDrag.topLeft(); //.center();
+		m_posDrag    = m_rectDrag.topLeft();
 		m_posStep    = QPoint(0, 0);
 		m_iDraggingX = (pSession->pixelSnap(m_rectDrag.x()) - m_rectDrag.x());
 		qtractorScrollView::setCursor(QCursor(Qt::SizeAllCursor));
@@ -1979,7 +1989,9 @@ bool qtractorTrackView::keyStep ( int iKey )
 	}
 
 	// Now to say the truth...
-	if (m_dragState != DragStep && m_dragState != DragPaste)
+	if (m_dragState != DragMove &&
+		m_dragState != DragStep &&
+		m_dragState != DragPaste)
 		return false;
 
 	int iVerticalStep = qtractorTrackList::ItemHeightMin;
@@ -2013,7 +2025,7 @@ bool qtractorTrackView::keyStep ( int iKey )
 
 	// Early sanity check...
 	QPoint pos = m_posDrag;
-	if (m_dragState == DragPaste) {
+	if (m_dragState == DragMove || m_dragState == DragPaste) {
 		pos = qtractorScrollView::viewportToContents(
 			qtractorScrollView::viewport()->mapFromGlobal(QCursor::pos()));
 	}
@@ -2031,13 +2043,13 @@ bool qtractorTrackView::keyStep ( int iKey )
 	if (m_posStep.y() < y2) {
 		m_posStep.setY (y2);
 	} else {
-		y2 += qtractorScrollView::contentsHeight() - m_rectDrag.height();
+		y2 += qtractorScrollView::contentsHeight(); // - m_rectDrag.height();
 		if (m_posStep.y() > y2)
 			m_posStep.setY (y2);
 	}
 
-	// Do our deeds...
-	dragMoveTrack(pos + m_posStep);
+	// Do our deeds (flag we're key-steppin')...
+	dragMoveTrack(pos + m_posStep, true);
 
 	return true;
 }
@@ -2399,7 +2411,7 @@ void qtractorTrackView::pasteClipboard (void)
 	// We'll start a brand new floating state...
 	m_dragState = DragPaste;
 	m_rectDrag  = m_pClipSelect->rect();
-	m_posDrag   = m_rectDrag.topLeft(); //.center();
+	m_posDrag   = m_rectDrag.topLeft();
 	m_posStep   = QPoint(0, 0);
 
 	// It doesn't matter which one, both pasteable views are due...
