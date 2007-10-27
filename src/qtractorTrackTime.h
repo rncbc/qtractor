@@ -97,7 +97,7 @@ private:
 		DragNone = 0, DragStart, DragSelect,
 		DragPlayHead, DragEditHead, DragEditTail,
 		DragLoopStart, DragLoopEnd
-	} m_dragState;
+	} m_dragState, m_dragCursor;
 
 	QRect  m_rectDrag;
 	QPoint m_posDrag;

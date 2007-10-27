@@ -1437,7 +1437,7 @@ qtractorMidiEvent *qtractorMidiEditor::dragMoveEvent (
 			if (!bEditView && pos.y() < m_rectDrag.top() + 4) {
 				m_resizeMode = ResizeValueTop;
 				shape = Qt::SplitVCursor;
-			} else if (m_bNoteDuration) {
+			} else if (bEditView || !m_bNoteDuration) {
 				if (pos.x() > m_rectDrag.right() - 4) {
 					m_resizeMode = ResizeNoteRight;
 					shape = Qt::SplitHCursor;

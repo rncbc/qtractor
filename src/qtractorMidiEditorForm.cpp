@@ -169,6 +169,7 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	addAction(m_ui.editSelectRangeAction);
 	addAction(m_ui.transportBackwardAction);
 	addAction(m_ui.transportLoopAction);
+	addAction(m_ui.transportLoopSetAction);
 	addAction(m_ui.transportPlayAction);
 
 	// Ah, make it stand right.
@@ -360,6 +361,9 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 		QObject::connect(m_ui.transportLoopAction,
 			SIGNAL(triggered(bool)),
 			pMainForm, SLOT(transportLoop()));
+		QObject::connect(m_ui.transportLoopSetAction,
+			SIGNAL(triggered(bool)),
+			pMainForm, SLOT(transportLoopSet()));
 		QObject::connect(m_ui.transportPlayAction,
 			SIGNAL(triggered(bool)),
 			pMainForm, SLOT(transportPlay()));

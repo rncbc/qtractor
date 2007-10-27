@@ -45,7 +45,9 @@ qtractorMidiEditTime::qtractorMidiEditTime (
 	: qtractorScrollView(pParent)
 {
 	m_pEditor = pEditor;
-	m_dragState = DragNone;
+
+	m_dragState  = DragNone;
+	m_dragCursor = DragNone;
 
 	qtractorScrollView::setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 	qtractorScrollView::setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -56,6 +58,7 @@ qtractorMidiEditTime::qtractorMidiEditTime (
 //	qtractorScrollView::viewport()->setFocusProxy(this);
 //	qtractorScrollView::viewport()->setAcceptDrops(true);
 //	qtractorScrollView::setDragAutoScroll(false);
+	qtractorScrollView::setMouseTracking(true);
 
 	const QFont& font = qtractorScrollView::font();
 	qtractorScrollView::setFont(QFont(font.family(), font.pointSize() - 1));
@@ -248,14 +251,15 @@ bool qtractorMidiEditTime::dragHeadStart ( const QPoint& pos )
 {
 	// Try to catch mouse clicks over the
 	// play/edit-head/tail cursors...
-	int h = qtractorScrollView::height() - 4;
+	int h = qtractorScrollView::height(); // - 4;
 	int d = (h >> 1);
 	QRect rect(0, h - d, d << 1, d);
 
 	// Check play-head header...
 	rect.moveLeft(m_pEditor->playHeadX() - d);
 	if (rect.contains(pos)) {
-		m_dragState = DragPlayHead;
+		m_dragCursor = DragPlayHead;
+		qtractorScrollView::setCursor(QCursor(Qt::SizeHorCursor));
 		return true;
 	}
 
@@ -266,16 +270,19 @@ bool qtractorMidiEditTime::dragHeadStart ( const QPoint& pos )
 	// Check loop-points, translating to edit-head/tail headers...
 	if (pSession && pSession->isLooping()) {
 		qtractorTimeScale *pTimeScale = m_pEditor->timeScale();
+		int dx = d + pTimeScale->pixelFromFrame(m_pEditor->offset());
 		// Check loop-start header...
-		rect.moveLeft(pTimeScale->pixelFromFrame(pSession->loopStart()) - d);
+		rect.moveLeft(pTimeScale->pixelFromFrame(pSession->loopStart()) - dx);
 		if (rect.contains(pos)) {
-			m_dragState = DragLoopStart;
+			m_dragCursor = DragLoopStart;
+			qtractorScrollView::setCursor(QCursor(Qt::SizeHorCursor));
 			return true;
 		}
 		// Check loop-end header...
-		rect.moveLeft(pTimeScale->pixelFromFrame(pSession->loopEnd()) - d);
+		rect.moveLeft(pTimeScale->pixelFromFrame(pSession->loopEnd()) - dx);
 		if (rect.contains(pos)) {
-			m_dragState = DragLoopEnd;
+			m_dragCursor = DragLoopEnd;
+			qtractorScrollView::setCursor(QCursor(Qt::SizeHorCursor));
 			return true;
 		}
 	}
@@ -283,15 +290,23 @@ bool qtractorMidiEditTime::dragHeadStart ( const QPoint& pos )
 	// Check edit-head header...
 	rect.moveLeft(m_pEditor->editHeadX() - d);
 	if (rect.contains(pos)) {
-		m_dragState = DragEditHead;
+		m_dragCursor = DragEditHead;
+		qtractorScrollView::setCursor(QCursor(Qt::SizeHorCursor));
 		return true;
 	}
 
 	// Check edit-tail header...
 	rect.moveLeft(m_pEditor->editTailX() - d);
 	if (rect.contains(pos)) {
-		m_dragState = DragEditTail;
+		m_dragCursor = DragEditTail;
+		qtractorScrollView::setCursor(QCursor(Qt::SizeHorCursor));
 		return true;
+	}
+
+	// Reset cursor if any persist around.
+	if (m_dragCursor != DragNone) {
+		qtractorScrollView::unsetCursor();
+		m_dragCursor  = DragNone;
 	}
 
 	// Nothing.
@@ -331,7 +346,7 @@ void qtractorMidiEditTime::mousePressEvent ( QMouseEvent *pMouseEvent )
 		m_posDrag   = pos;
 		// Try to catch mouse clicks over the cursor heads...
 		if (dragHeadStart(m_posDrag))
-			qtractorScrollView::setCursor(QCursor(Qt::SizeHorCursor));
+			m_dragState = m_dragCursor;
 		break;
 	case Qt::MidButton:
 		// Edit-tail positioning...
@@ -371,6 +386,10 @@ void qtractorMidiEditTime::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 		+ pTimeScale->frameFromPixel(pos.x() > 0 ? pos.x() : 0));
 	int y = m_pEditor->editView()->contentsY();
 	switch (m_dragState) {
+	case DragNone:
+		// Try to catch mouse over the cursor heads...
+		dragHeadStart(pos);
+		break;
 	case DragSelect:
 		// Rubber-band selection...
 		m_rectDrag.setRight(pos.x());
@@ -407,11 +426,10 @@ void qtractorMidiEditTime::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 			m_rectDrag.setLeft(m_posDrag.x());
 			m_rectDrag.setRight(pos.x());
 			m_rectDrag.setBottom(h);
-			m_dragState = DragSelect;
+			m_dragState = m_dragCursor = DragSelect;
 			qtractorScrollView::setCursor(QCursor(Qt::SizeHorCursor));
 		}
 		// Fall thru...
-	case DragNone:
 	default:
 		break;
 	}
@@ -530,29 +548,20 @@ void qtractorMidiEditTime::keyPressEvent ( QKeyEvent *pKeyEvent )
 // Reset drag/select state.
 void qtractorMidiEditTime::resetDragState (void)
 {
-	// Cancel any dragging out there...
-	switch (m_dragState) {
-	case DragSelect:
+	// Cancel any dragging/cursor out there...
+	if (m_dragState == DragSelect)
 		qtractorScrollView::updateContents();
-		// Fall thru...
-	case DragPlayHead:
-	case DragEditHead:
-	case DragEditTail:
-	case DragLoopStart:
-	case DragLoopEnd:
+
+	if (m_dragCursor != DragNone)
 		qtractorScrollView::unsetCursor();
-		// Fall thru again...
-	case DragNone:
-	default:
-		break;
-	}
 
 	// Also get rid of any meta-breadcrumbs...
 	m_pEditor->resetDragState(this);
 
 	// Force null state.
-	m_dragState = DragNone;
-	
+	m_dragState  = DragNone;
+	m_dragCursor = DragNone;
+
 	// HACK: give focus to track-view... 
 	m_pEditor->editView()->setFocus();
 }
