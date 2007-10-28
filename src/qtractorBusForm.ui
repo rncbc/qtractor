@@ -26,8 +26,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>478</width>
-    <height>298</height>
+    <width>480</width>
+    <height>300</height>
    </rect>
   </property>
   <property name="sizePolicy" >
@@ -65,7 +65,7 @@
      <widget class="QTreeWidget" name="BusListView" >
       <property name="minimumSize" >
        <size>
-        <width>160</width>
+        <width>120</width>
         <height>0</height>
        </size>
       </property>
@@ -94,6 +94,12 @@
        </property>
        <item>
         <widget class="QLabel" name="BusTitleTextLabel" >
+         <property name="minimumSize" >
+          <size>
+           <width>180</width>
+           <height>20</height>
+          </size>
+         </property>
          <property name="font" >
           <font>
            <family>Sans Serif</family>
@@ -261,6 +267,31 @@
         </widget>
        </item>
        <item>
+        <widget class="QGroupBox" name="MidiBusGroup" >
+         <property name="title" >
+          <string>MIDI</string>
+         </property>
+         <layout class="QGridLayout" >
+          <property name="margin" >
+           <number>8</number>
+          </property>
+          <property name="spacing" >
+           <number>4</number>
+          </property>
+          <item row="0" column="0" colspan="3" >
+           <widget class="QCheckBox" name="MidiPassthruCheckBox" >
+            <property name="text" >
+             <string>&amp;Pass-through</string>
+            </property>
+            <property name="shortcut" >
+             <string>Alt+P</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
         <spacer>
          <property name="orientation" >
           <enum>Qt::Vertical</enum>
@@ -393,6 +424,7 @@
   <tabstop>BusModeComboBox</tabstop>
   <tabstop>AudioChannelsSpinBox</tabstop>
   <tabstop>AudioAutoConnectCheckBox</tabstop>
+  <tabstop>MidiPassthruCheckBox</tabstop>
   <tabstop>RefreshPushButton</tabstop>
   <tabstop>CreatePushButton</tabstop>
   <tabstop>UpdatePushButton</tabstop>

@@ -41,7 +41,8 @@
 qtractorBusCommand::qtractorBusCommand ( const QString& sName,
 	qtractorBus *pBus, qtractorBus::BusMode busMode )
 	: qtractorCommand(sName), m_pBus(pBus), m_busMode(busMode),
-		m_busType(qtractorTrack::None), m_iChannels(0), m_bAutoConnect(false)
+		m_busType(qtractorTrack::None), m_iChannels(0),
+		m_bAutoConnect(false), m_bPassthru(false)
 {
 	setRefresh(false);
 }
@@ -79,7 +80,8 @@ bool qtractorBusCommand::createBus (void)
 		qtractorMidiEngine *pMidiEngine = pSession->midiEngine();
 		if (pMidiEngine) {
 			qtractorMidiBus *pMidiBus
-				= new qtractorMidiBus(pMidiEngine, m_sBusName, m_busMode);
+				= new qtractorMidiBus(pMidiEngine, m_sBusName, m_busMode,
+					m_bPassthru);
 			pMidiEngine->addBus(pMidiBus);
 			pMidiEngine->resetControlBus(qtractorBus::Duplex);
 			m_pBus = pMidiBus;
@@ -128,21 +130,35 @@ bool qtractorBusCommand::updateBus (void)
 	pSession->setPlaying(false);
 
 	// Save current bus properties...
-	qtractorBus::BusMode busMode  = m_pBus->busMode();
-	QString              sBusName = m_pBus->busName();
+	qtractorBus::BusMode busMode = m_pBus->busMode();
+	QString sBusName = m_pBus->busName();
 
-	// Special case for Audio buses...
+	// Special case typed buses...
 	qtractorAudioBus *pAudioBus = NULL;
+	qtractorMidiBus *pMidiBus = NULL;
 	unsigned short iChannels = 0;
 	bool bAutoConnect = false;
-	if (m_pBus->busType() == qtractorTrack::Audio) {
+	bool bPassthru = false;
+
+	switch (m_pBus->busType()) {
+	case qtractorTrack::Audio:
 		pAudioBus = static_cast<qtractorAudioBus *> (m_pBus);
 		if (pAudioBus) {
 			iChannels = pAudioBus->channels();
 			bAutoConnect = pAudioBus->isAutoConnect();
 		}
+		break;
+	case qtractorTrack::Midi:
+		pMidiBus = static_cast<qtractorMidiBus *> (m_pBus);
+		if (pMidiBus) {
+			bPassthru = pMidiBus->isPassthru();
+		}
+		break;
+	case qtractorTrack::None:
+	default:
+		break;
 	}
-	
+
 	// Close all applicable tracks...
 	for (qtractorTrack *pTrack = pSession->tracks().first();
 			pTrack; pTrack = pTrack->next()) {
@@ -160,10 +176,13 @@ bool qtractorBusCommand::updateBus (void)
 	// Set new properties...
 	m_pBus->setBusName(m_sBusName);
 	m_pBus->setBusMode(m_busMode);
-	// Special case for Audio buses...
+	// Special case for typed buses...
 	if (pAudioBus) {
 		pAudioBus->setChannels(m_iChannels);
 		pAudioBus->setAutoConnect(m_bAutoConnect);
+	}
+	if (pMidiBus) {
+		pMidiBus->setPassthru(m_bPassthru);
 	}
 
 	// May reopen up the bus...
@@ -205,6 +224,7 @@ bool qtractorBusCommand::updateBus (void)
 	m_sBusName     = sBusName;
 	m_iChannels    = iChannels;
 	m_bAutoConnect = bAutoConnect;
+	m_bPassthru    = bPassthru;
 	
 	// Carry on...
 	pSession->setPlaying(bPlaying);

@@ -5,7 +5,15 @@ ChangeLog
 
 CVS HEAD
 
-0.0.7   2007-10-27  Work in progress...
+0.0.7   2007-10-28  Work in progress...
+
+- MIDI (pass-)through has been finally implemented, after several
+  kind requests, it applies as a property of duplex-mode MIDI buses;
+  the new setting is configurable from View/Buses... dialog; when
+  enabled, implies all incoming MIDI events at the input bus will
+  pass-through unchanged to the corresponding output bus, as found
+  useful just for direct monitoring one's performance without the
+  help of any extra-circumvent or kludgy connections.
 
 - Mouse cursor shape changes accordingly while hovering in header
   time-scale rulers, both in main track-view and MIDI editor.

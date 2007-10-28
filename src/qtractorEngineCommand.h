@@ -59,6 +59,9 @@ public:
 	void setAutoConnect(bool bAutoConnect) { m_bAutoConnect = bAutoConnect; }
 	bool isAutoConnect() const { return m_bAutoConnect; }
 
+	void setPassthru(bool bPassthru) { m_bPassthru = bPassthru; }
+	bool isPassthru() const { return m_bPassthru; }
+
 protected:
 
 	// Bus command methods.
@@ -75,6 +78,7 @@ private:
 	QString                  m_sBusName;
 	unsigned short           m_iChannels;
 	bool                     m_bAutoConnect;
+	bool                     m_bPassthru;
 };
 
 
