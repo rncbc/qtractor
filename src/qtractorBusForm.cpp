@@ -500,9 +500,6 @@ void qtractorBusForm::updateBus (void)
 	if (m_pBus == NULL)
 		return;
 
-	if (m_pBus == NULL)
-		return;
-
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm == NULL)
 		return;
@@ -701,3 +698,4 @@ void qtractorBusForm::contextMenu ( const QPoint& /*pos*/ )
 
 
 // end of qtractorBusForm.cpp
+
