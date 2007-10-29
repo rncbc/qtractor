@@ -1490,13 +1490,11 @@ void qtractorMidiEngine::processMetro (
 	if (!m_bMetronome)
 		return;
 
-	qtractorSession *pSession = session();
-	if (pSession == NULL)
+	if (m_pOControlBus == NULL)
 		return;
 
-	qtractorMidiBus *pMidiBus
-		= static_cast<qtractorMidiBus *> (buses().first());
-	if (pMidiBus == NULL)
+	qtractorSession *pSession = session();
+	if (pSession == NULL)
 		return;
 
 	// Register the next metronome slot.
@@ -1511,7 +1509,7 @@ void qtractorMidiEngine::processMetro (
 	snd_seq_event_t ev;
 	snd_seq_ev_clear(&ev);
 	// Addressing...
-	snd_seq_ev_set_source(&ev, pMidiBus->alsaPort());
+	snd_seq_ev_set_source(&ev, m_pOControlBus->alsaPort());
 	snd_seq_ev_set_subs(&ev);
 	// Set common event data...
 	ev.tag = (unsigned char) 0xff;
@@ -1536,8 +1534,8 @@ void qtractorMidiEngine::processMetro (
 		// Pump it into the queue.
 		snd_seq_event_output(m_pAlsaSeq, &ev);
 		// MIDI track monitoring...
-		if (pMidiBus->midiMonitor_out()) {
-			pMidiBus->midiMonitor_out()->enqueue(
+		if (m_pOControlBus->midiMonitor_out()) {
+			m_pOControlBus->midiMonitor_out()->enqueue(
 				qtractorMidiEvent::NOTEON, ev.data.note.velocity, tick);
 		}
 		// Go for next beat...
