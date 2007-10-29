@@ -87,6 +87,7 @@ qtractorMixerStrip::~qtractorMixerStrip (void)
 void qtractorMixerStrip::initMixerStrip (void)
 {
 	m_iMark = 0;
+	m_iUpdate = 0;
 
 	QFont font6(QFrame::font().family(), 6);
 	QFontMetrics fm(font6);
@@ -149,8 +150,9 @@ void qtractorMixerStrip::initMixerStrip (void)
 		m_pBusButton->setText(sText);
 		m_pBusButton->setToolTip(tr("Connect %1").arg(sText));
 		m_pLayout->addWidget(m_pBusButton);
-		QObject::connect(m_pBusButton, SIGNAL(clicked()),
-			this, SLOT(busButtonSlot()));
+		QObject::connect(m_pBusButton,
+			SIGNAL(clicked()),
+			SLOT(busButtonSlot()));
 		m_pButtonLayout = NULL;
 		m_pRecordButton = NULL;
 		m_pMuteButton   = NULL;
@@ -159,6 +161,7 @@ void qtractorMixerStrip::initMixerStrip (void)
 
 	// Now, there's whether we are Audio or MIDI related...
 	m_pMeter = NULL;
+	m_pThruButton = NULL;
 	int iFixedWidth = 38;
 	switch (meterType) {
 	case qtractorTrack::Audio: {
@@ -195,12 +198,12 @@ void qtractorMixerStrip::initMixerStrip (void)
 	case qtractorTrack::Midi: {
 		// Type cast for proper MIDI monitor...
 		qtractorMidiMonitor *pMidiMonitor = NULL;
+		qtractorMidiBus *pMidiBus = NULL;
 		if (m_pTrack) {
 			pMidiMonitor
 				= static_cast<qtractorMidiMonitor *> (m_pTrack->monitor());
 		} else if (m_pBus) {
-			qtractorMidiBus *pMidiBus
-				= static_cast<qtractorMidiBus *> (m_pBus);
+			pMidiBus = static_cast<qtractorMidiBus *> (m_pBus);
 			if (pMidiBus) {
 				if (m_busMode & qtractorBus::Input)
 					pMidiMonitor = pMidiBus->midiMonitor_in();
@@ -214,13 +217,26 @@ void qtractorMixerStrip::initMixerStrip (void)
 			m_pMeter = new qtractorMidiMeter(pMidiMonitor, this);
 			// No panning on MIDI bus monitors and on duplex ones
 			// only the output gain (volume) should be enabled...
-			if (m_pBus) {
+			if (pMidiBus) {
 				m_pMeter->panSlider()->setEnabled(false);
 				m_pMeter->panSpinBox()->setEnabled(false);
 				if ((m_busMode & qtractorBus::Input) &&
 					(m_pBus->busMode() & qtractorBus::Output)) {
 					m_pMeter->gainSlider()->setEnabled(false);
 					m_pMeter->gainSpinBox()->setEnabled(false);
+					m_pThruButton = new QToolButton(m_pMeter->topWidget());
+					m_pThruButton->setFixedHeight(14);
+					m_pThruButton->setSizePolicy(buttonPolicy);
+					m_pThruButton->setToolButtonStyle(Qt::ToolButtonTextOnly);
+					m_pThruButton->setFont(font6);
+					m_pThruButton->setText(tr("thru"));
+					m_pThruButton->setToolTip(tr("MIDI Thru"));
+					m_pThruButton->setCheckable(true);
+					m_pThruButton->setChecked(pMidiBus->isPassthru());
+					m_pMeter->topLayout()->insertWidget(0, m_pThruButton);
+					QObject::connect(m_pThruButton,
+						SIGNAL(toggled(bool)),
+						SLOT(thruButtonSlot(bool)));
 				}
 			}
 		}
@@ -339,7 +355,8 @@ void qtractorMixerStrip::setBus ( qtractorBus *pBus )
 		setMonitor(m_pBus->monitor_out());
 	}
 
-	if (m_pBus->busType() == qtractorTrack::Audio) {
+	switch (m_pBus->busType()) {
+	case qtractorTrack::Audio: {
 		qtractorAudioBus *pAudioBus
 			= static_cast<qtractorAudioBus *> (m_pBus);
 		if (pAudioBus) {
@@ -350,8 +367,22 @@ void qtractorMixerStrip::setBus ( qtractorBus *pBus )
 			}
 		}
 		m_pPluginListView->setEnabled(true);
-	} else {
+		break;
+	}
+	case qtractorTrack::Midi: {
+		qtractorMidiBus *pMidiBus
+			= static_cast<qtractorMidiBus *> (m_pBus);
+		if (pMidiBus && m_pThruButton) {
+			m_iUpdate++;
+			m_pThruButton->setChecked(pMidiBus->isPassthru());
+			m_iUpdate--;
+		}
 		m_pPluginListView->setEnabled(false);
+		break;
+	}
+	case qtractorTrack::None:
+	default:
+		break;
 	}
 
 	updateName();
@@ -465,7 +496,7 @@ void qtractorMixerStrip::mouseDoubleClickEvent ( QMouseEvent * /*pMouseEvent*/ )
 }
 
 
-// Bus connection button slot
+// Bus connections button slot
 void qtractorMixerStrip::busButtonSlot (void)
 {
 	if (m_pBus == NULL)
@@ -480,6 +511,30 @@ void qtractorMixerStrip::busButtonSlot (void)
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm)
 		pMainForm->connections()->showBus(m_pBus, m_busMode);
+}
+
+
+// Bus (MIDI) passthru button slot
+void qtractorMixerStrip::thruButtonSlot ( bool bOn )
+{
+	if (m_pBus == NULL || m_iUpdate > 0)
+		return;
+
+#ifdef CONFIG_DEBUG_0
+	fprintf(stderr, "qtractorMixerStrip::thruButtonSlot(%d) name=\"%s\"\n",
+		int(bOn), m_pLabel->text().toUtf8().constData());
+#endif
+
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm == NULL)
+		return;
+
+	// Here we go (with a special bus update command)...
+	qtractorUpdateBusCommand *pBusCommand
+		= new qtractorUpdateBusCommand(m_pBus);
+	pBusCommand->setName(tr("thru"));
+	pBusCommand->setPassthru(bOn);
+	pMainForm->commands()->exec(pBusCommand);
 }
 
 

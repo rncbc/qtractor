@@ -24,6 +24,7 @@
 #include "qtractorSlider.h"
 
 #include <QDoubleSpinBox>
+
 #include <QResizeEvent>
 #include <QPaintEvent>
 #include <QPainter>
@@ -202,15 +203,18 @@ qtractorMidiMeter::qtractorMidiMeter ( qtractorMidiMonitor *pMidiMonitor,
 
 	m_iMidiCount = 0;
 
-	topLabel()->setPixmap(*m_pMidiPixmap[LedOff]);
-	topLabel()->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+	topLayout()->addStretch();
+	m_pMidiLabel = new QLabel(topWidget());
+	m_pMidiLabel->setPixmap(*m_pMidiPixmap[LedOff]);
+	m_pMidiLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+	topLayout()->addWidget(m_pMidiLabel);
 
 	gainSpinBox()->setMinimum(0.0f);
 	gainSpinBox()->setMaximum(100.0f);
 	gainSpinBox()->setToolTip(tr("Volume (%)"));
 
-	m_pMidiScale = new qtractorMidiMeterScale(this, hbox());
-	m_pMidiValue = new qtractorMidiMeterValue(this, hbox());
+	m_pMidiScale = new qtractorMidiMeterScale(this, boxWidget());
+	m_pMidiValue = new qtractorMidiMeterValue(this, boxWidget());
 
 	setPeakFalloff(QTRACTOR_MIDI_METER_PEAK_FALLOFF);
 
@@ -235,6 +239,8 @@ qtractorMidiMeter::~qtractorMidiMeter (void)
 	// No need to delete child widgets, Qt does it all for us
 	delete m_pMidiValue;
 	delete m_pMidiScale;
+
+	delete m_pMidiLabel;
 
 	delete m_pMidiPixmap[LedOff];
 	delete m_pMidiPixmap[LedOn];
@@ -276,12 +282,12 @@ void qtractorMidiMeter::refresh (void)
 	bool bMidiOn = (m_pMidiMonitor->count() > 0);
 	if (bMidiOn) {
 		if (m_iMidiCount == 0)
-			topLabel()->setPixmap(*m_pMidiPixmap[LedOn]);
+			m_pMidiLabel->setPixmap(*m_pMidiPixmap[LedOn]);
 		m_iMidiCount = QTRACTOR_MIDI_METER_HOLD_LEDON;
 	} else if (m_iMidiCount > 0) {
 		m_iMidiCount--;
 		if (m_iMidiCount == 0)
-			topLabel()->setPixmap(*m_pMidiPixmap[LedOff]);
+			m_pMidiLabel->setPixmap(*m_pMidiPixmap[LedOff]);
 	}
 }
 
@@ -291,10 +297,10 @@ void qtractorMidiMeter::resizeEvent ( QResizeEvent * )
 {
 	// HACK: make so that the MIDI gain slider (volume)
 	// aligns its top at the Audio 0 dB gain level...
-	int iFixedHeight = int(0.15f * float(hbox()->height())) - 4;
+	int iFixedHeight = int(0.15f * float(boxWidget()->height())) - 4;
 	if (iFixedHeight < 16)
 		iFixedHeight = 16;
-	topLabel()->setFixedHeight(iFixedHeight);
+	topWidget()->setFixedHeight(iFixedHeight);
 }
 
 

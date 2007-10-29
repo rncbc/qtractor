@@ -45,6 +45,36 @@ qtractorBusCommand::qtractorBusCommand ( const QString& sName,
 		m_bAutoConnect(false), m_bPassthru(false)
 {
 	setRefresh(false);
+
+	// Set initial bus properties if any...
+	if (m_pBus) {
+		m_busMode  = m_pBus->busMode();
+		m_busType  = m_pBus->busType();
+		m_sBusName = m_pBus->busName();
+		// Special case typed buses...
+		switch (m_pBus->busType()) {
+		case qtractorTrack::Audio: {
+			qtractorAudioBus *pAudioBus
+				= static_cast<qtractorAudioBus *> (m_pBus);
+			if (pAudioBus) {
+				m_iChannels = pAudioBus->channels();
+				m_bAutoConnect = pAudioBus->isAutoConnect();
+			}
+			break;
+		}
+		case qtractorTrack::Midi: {
+			qtractorMidiBus *pMidiBus
+				= static_cast<qtractorMidiBus *> (m_pBus);
+			if (pMidiBus) {
+				m_bPassthru = pMidiBus->isPassthru();
+			}
+			break;
+		}
+		case qtractorTrack::None:
+		default:
+			break;
+		}
+	}
 }
 
 
@@ -69,8 +99,8 @@ bool qtractorBusCommand::createBus (void)
 		qtractorAudioEngine *pAudioEngine = pSession->audioEngine();
 		if (pAudioEngine) {
 			qtractorAudioBus *pAudioBus
-				= new qtractorAudioBus(pAudioEngine, m_sBusName, m_busMode,
-					m_iChannels, m_bAutoConnect);
+				= new qtractorAudioBus(pAudioEngine,
+					m_sBusName, m_busMode, m_iChannels, m_bAutoConnect);
 			pAudioEngine->addBus(pAudioBus);
 			m_pBus = pAudioBus;
 		}
@@ -80,8 +110,8 @@ bool qtractorBusCommand::createBus (void)
 		qtractorMidiEngine *pMidiEngine = pSession->midiEngine();
 		if (pMidiEngine) {
 			qtractorMidiBus *pMidiBus
-				= new qtractorMidiBus(pMidiEngine, m_sBusName, m_busMode,
-					m_bPassthru);
+				= new qtractorMidiBus(pMidiEngine,
+					m_sBusName, m_busMode, m_bPassthru);
 			pMidiEngine->addBus(pMidiBus);
 			pMidiEngine->resetControlBus(qtractorBus::Duplex);
 			m_pBus = pMidiBus;
@@ -139,7 +169,6 @@ bool qtractorBusCommand::updateBus (void)
 	unsigned short iChannels = 0;
 	bool bAutoConnect = false;
 	bool bPassthru = false;
-
 	switch (m_pBus->busType()) {
 	case qtractorTrack::Audio:
 		pAudioBus = static_cast<qtractorAudioBus *> (m_pBus);
@@ -351,19 +380,6 @@ bool qtractorUpdateBusCommand::redo (void)
 qtractorDeleteBusCommand::qtractorDeleteBusCommand ( qtractorBus *pBus )
 	: qtractorBusCommand(QObject::tr("delete bus"), pBus)
 {
-	// Save bus properties for creation (undo)...
-	setBusType(pBus->busType());
-	setBusName(pBus->busName());
-	setBusMode(pBus->busMode());
-	// Special case for Audio buses...
-	if (pBus->busType() == qtractorTrack::Audio) {
-		qtractorAudioBus *pAudioBus
-			= static_cast<qtractorAudioBus *> (pBus);
-		if (pAudioBus) {
-			setChannels(pAudioBus->channels());
-			setAutoConnect(pAudioBus->isAutoConnect());
-		}
-	}
 }
 
 // Bus deletion command methods.

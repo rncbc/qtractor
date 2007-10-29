@@ -97,7 +97,7 @@ void qtractorMidiMonitor::enqueue ( qtractorMidiEvent::EventType type,
 		// out-of-time phantom monitor peak values...)
 		if (iOffset > m_iQueueMask)
 			iOffset = m_iQueueMask;
-		unsigned int iIndex  = (m_iReadIndex + iOffset) & m_iQueueMask;
+		unsigned int iIndex  = (m_iQueueIndex + iOffset) & m_iQueueMask;
 		// Set the value in buffer...
 		if (type == qtractorMidiEvent::NOTEON) {
 			if (m_pQueue[iIndex].value < val)
@@ -131,13 +131,13 @@ float qtractorMidiMonitor::value (void)
 		unsigned long iFrameTime = m_pSession->tickFromFrame(
 			m_pSession->audioEngine()->sessionCursor()->frameTime());
 		while (iFrameTime > m_iTimeStart) {
-			QueueItem& item = m_pQueue[m_iReadIndex];
+			QueueItem& item = m_pQueue[m_iQueueIndex];
 			if (val < item.value)
 				val = item.value;
 			m_item.count += item.count;
 			item.value = 0;
 			item.count = 0;
-			++m_iReadIndex &= m_iQueueMask;
+			++m_iQueueIndex &= m_iQueueMask;
 			m_iTimeStart += m_iTimeSlot;
 		}
 	}
@@ -160,9 +160,9 @@ int qtractorMidiMonitor::count (void)
 void qtractorMidiMonitor::reset (void)
 {
 	// (Re)initialize all...
-	m_item.value = 0;
-	m_item.count = 0;
-	m_iReadIndex = 0;
+	m_item.value  = 0;
+	m_item.count  = 0;
+	m_iQueueIndex = 0;
 	// have we an actual queue?...
 	if (m_pQueue && m_iQueueSize > 0) {
 		// Reset time references...

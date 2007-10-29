@@ -32,6 +32,9 @@ class qtractorMidiMeter;
 class qtractorMidiMeterValue;
 class qtractorMidiMonitor;
 
+class QToolButton;
+class QLabel;
+
 class QResizeEvent;
 class QPaintEvent;
 
@@ -167,6 +170,7 @@ private:
 	// MIDI I/O LED pixmap stuff.
 	enum { LedOff = 0, LedOn = 1, LedCount = 2 };
 
+	QLabel      *m_pMidiLabel;
 	QPixmap     *m_pMidiPixmap[LedCount];
 	unsigned int m_iMidiCount;
 };

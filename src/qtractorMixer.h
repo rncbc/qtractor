@@ -96,8 +96,11 @@ public:
 
 protected slots:
 
-	// Bus button notification.
+	// Bus connections button notification.
 	void busButtonSlot();
+
+	// Bus (MIDI) passthru button slot
+	void thruButtonSlot(bool bOn);
 
 	// Meter slider change slots.
 	void panChangedSlot(float);
@@ -135,12 +138,14 @@ private:
 	qtractorTrackButton    *m_pSoloButton;
 	qtractorMeter          *m_pMeter;
 	QToolButton            *m_pBusButton;
+	QToolButton            *m_pThruButton;
 
 	// Selection stuff.
 	bool m_bSelected;
 
 	// Hacko-list-management mark...
 	int m_iMark;
+	int m_iUpdate;
 };
 
 

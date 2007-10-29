@@ -76,7 +76,7 @@ void qtractorMeterScale::drawLineLabel ( QPainter *p,
 	if (fm.width(sLabel) < iWidth - 5)
 		p->drawLine(iWidth - 3, iCurrY, iWidth - 1, iCurrY);
 
-	if (iCurrY < iMidHeight || iCurrY > m_iLastY + iMidHeight) {
+	if (iCurrY < iMidHeight || iCurrY > (m_iLastY + iMidHeight)) {
 		p->drawText(0, iCurrY - iMidHeight, iWidth - 3, fm.height(),
 			Qt::AlignHCenter | Qt::AlignVCenter, sLabel);
 		m_iLastY = iCurrY + 1;
@@ -121,19 +121,23 @@ qtractorMeter::qtractorMeter ( QWidget *pParent )
 	m_pPanSpinBox->setFixedHeight(fm.lineSpacing() + 2);
 	m_pVBoxLayout->addWidget(m_pPanSpinBox);
 
-	m_pTopLabel = new QLabel(this);
-	m_pVBoxLayout->addWidget(m_pTopLabel);
+	m_pTopWidget = new QWidget(this);
+	m_pTopLayout = new QHBoxLayout();
+	m_pTopLayout->setMargin(2);
+	m_pTopLayout->setSpacing(2);
+	m_pTopWidget->setLayout(m_pTopLayout);
+	m_pVBoxLayout->addWidget(m_pTopWidget);
 
-	m_pHBox = new QWidget(this);
-	m_pHBoxLayout  = new QHBoxLayout();
-	m_pHBoxLayout->setMargin(2);
-	m_pHBoxLayout->setSpacing(2);
-	m_pHBox->setLayout(m_pHBoxLayout);
-	m_pVBoxLayout->addWidget(m_pHBox);
+	m_pBoxWidget = new QWidget(this);
+	m_pBoxLayout = new QHBoxLayout();
+	m_pBoxLayout->setMargin(2);
+	m_pBoxLayout->setSpacing(2);
+	m_pBoxWidget->setLayout(m_pBoxLayout);
+	m_pVBoxLayout->addWidget(m_pBoxWidget);
 
-	m_pGainSlider  = new qtractorSlider(Qt::Vertical, m_pHBox);
+	m_pGainSlider = new qtractorSlider(Qt::Vertical, m_pBoxWidget);
 	m_pGainSlider->setFixedWidth(20);
-	m_pHBoxLayout->addWidget(m_pGainSlider);
+	m_pBoxLayout->addWidget(m_pGainSlider);
 
 	m_pGainSpinBox = new QDoubleSpinBox(this);
 	m_pGainSpinBox->setFont(font8);
@@ -195,15 +199,25 @@ qtractorMeter::~qtractorMeter (void)
 
 
 // Dynamic layout accessors.
-QLabel *qtractorMeter::topLabel (void) const
+QWidget *qtractorMeter::topWidget (void) const
 {
-	return m_pTopLabel;
+	return m_pTopWidget;
+}
+
+QHBoxLayout *qtractorMeter::topLayout (void) const
+{
+	return m_pTopLayout;
 }
 
 
-QWidget *qtractorMeter::hbox (void) const
+QWidget *qtractorMeter::boxWidget (void) const
 {
-	return m_pHBox;
+	return m_pBoxWidget;
+}
+
+QHBoxLayout *qtractorMeter::boxLayout (void) const
+{
+	return m_pBoxLayout;
 }
 
 

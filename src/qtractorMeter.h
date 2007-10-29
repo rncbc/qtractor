@@ -33,7 +33,6 @@ class qtractorSlider;
 class QDoubleSpinBox;
 class QHBoxLayout;
 class QVBoxLayout;
-class QLabel;
 
 class QPaintEvent;
 class QResizeEvent;
@@ -93,8 +92,10 @@ public:
 	virtual ~qtractorMeter();
 
 	// Dynamic layout accessors.
-	QLabel  *topLabel() const;
-	QWidget *hbox() const;
+	QHBoxLayout *topLayout() const;
+	QWidget     *topWidget() const;
+	QHBoxLayout *boxLayout() const;
+	QWidget     *boxWidget() const;
 
 	// Common slider/spin-box accessors.
 	qtractorSlider *panSlider() const;
@@ -160,9 +161,10 @@ private:
 	QVBoxLayout    *m_pVBoxLayout;
 	qtractorSlider *m_pPanSlider;
 	QDoubleSpinBox *m_pPanSpinBox;
-	QLabel         *m_pTopLabel;
-	QWidget        *m_pHBox;
-	QHBoxLayout    *m_pHBoxLayout;
+	QWidget        *m_pTopWidget;
+	QHBoxLayout    *m_pTopLayout;
+	QWidget        *m_pBoxWidget;
+	QHBoxLayout    *m_pBoxLayout;
 	qtractorSlider *m_pGainSlider;
 	QDoubleSpinBox *m_pGainSpinBox;
 

@@ -284,11 +284,11 @@ qtractorAudioMeter::qtractorAudioMeter ( qtractorAudioMonitor *pAudioMonitor,
 	m_pAudioMonitor = pAudioMonitor;
 
 	m_iChannels     = 0;
-	m_pAudioScale   = new qtractorAudioMeterScale(this, hbox());
+	m_pAudioScale   = new qtractorAudioMeterScale(this, boxWidget());
 	m_fScale        = 0.0f;
 	m_ppAudioValues = NULL;
 
-	topLabel()->hide();
+	topWidget()->hide();
 
 	gainSlider()->setMaximum(11500);
 
@@ -390,7 +390,7 @@ void qtractorAudioMeter::reset (void)
 	if (m_iChannels > 0) {
 		m_ppAudioValues = new qtractorAudioMeterValue *[m_iChannels];
 		for (unsigned short i = 0; i < m_iChannels; i++) {
-			m_ppAudioValues[i] = new qtractorAudioMeterValue(this, i, hbox());
+			m_ppAudioValues[i] = new qtractorAudioMeterValue(this, i, boxWidget());
 			m_ppAudioValues[i]->show();
 		}
 	}
@@ -419,7 +419,7 @@ void qtractorAudioMeter::refresh (void)
 // Resize event handler.
 void qtractorAudioMeter::resizeEvent ( QResizeEvent * )
 {
-	m_fScale = 0.85f * float(hbox()->height());
+	m_fScale = 0.85f * float(boxWidget()->height());
 
 	m_levels[Color0dB]  = iec_scale(  0.0f);
 	m_levels[Color3dB]  = iec_scale( -3.0f);
