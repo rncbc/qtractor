@@ -1860,13 +1860,15 @@ void qtractorTrackView::keyPressEvent ( QKeyEvent *pKeyEvent )
 	switch (iKey) {
 	case Qt::Key_Insert: // Aha, joking :)
 	case Qt::Key_Return:
-		if (m_dragState == DragStep)
+		if (m_dragState == DragStep) {
 			moveClipSelect(dragMoveTrack(m_posDrag + m_posStep));
-		else
-		if (m_dragState == DragPaste) {
+		} else {
 			const QPoint& pos = qtractorScrollView::viewportToContents(
 				qtractorScrollView::viewport()->mapFromGlobal(QCursor::pos()));
-			pasteClipSelect(dragMoveTrack(pos + m_posStep));
+			if (m_dragState == DragMove)
+				moveClipSelect(dragMoveTrack(pos + m_posStep));
+			else if (m_dragState == DragPaste)
+				pasteClipSelect(dragMoveTrack(pos + m_posStep));
 		}
 		// Fall thru...
 	case Qt::Key_Escape:
@@ -2024,6 +2026,7 @@ bool qtractorTrackView::keyStep ( int iKey )
 	}
 
 	// Early sanity check...
+	const QRect& rect = m_pClipSelect->rect();
 	QPoint pos = m_posDrag;
 	if (m_dragState == DragMove || m_dragState == DragPaste) {
 		pos = qtractorScrollView::viewportToContents(
@@ -2031,19 +2034,24 @@ bool qtractorTrackView::keyStep ( int iKey )
 	}
 
 	int x2 = - pos.x();
+	int y2 = - pos.y();
+	if (m_dragState == DragMove || m_dragState == DragPaste) {
+		x2 += (m_posDrag.x() - rect.x());
+		y2 += (m_posDrag.y() - rect.y());
+	}
+
 	if (m_posStep.x() < x2) {
 		m_posStep.setX (x2);
 	} else {
-		x2 += qtractorScrollView::contentsWidth() - m_rectDrag.width();
+		x2 += qtractorScrollView::contentsWidth() - (rect.width() >> 1);
 		if (m_posStep.x() > x2)
 			m_posStep.setX (x2);
 	}
 
-	int y2 = - pos.y();
 	if (m_posStep.y() < y2) {
 		m_posStep.setY (y2);
 	} else {
-		y2 += qtractorScrollView::contentsHeight(); // - m_rectDrag.height();
+		y2 += qtractorScrollView::contentsHeight() - (rect.height() >> 1);
 		if (m_posStep.y() > y2)
 			m_posStep.setY (y2);
 	}

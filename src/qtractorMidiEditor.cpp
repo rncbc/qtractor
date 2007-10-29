@@ -2463,13 +2463,15 @@ bool qtractorMidiEditor::keyPress ( qtractorScrollView *pScrollView,
 	switch (iKey) {
 	case Qt::Key_Insert: // Aha, joking :)
 	case Qt::Key_Return:
-		if (m_dragState == DragStep)
+		if (m_dragState == DragStep) {
 			executeDragMove(pScrollView, m_posDrag);
-		else
-		if (m_dragState == DragPaste) {
+		} else {
 			const QPoint& pos = pScrollView->viewportToContents(
 				pScrollView->viewport()->mapFromGlobal(QCursor::pos()));
-			executeDragPaste(pScrollView, pos);
+			if (m_dragState == DragMove)
+				executeDragMove(pScrollView, pos);
+			else if (m_dragState == DragPaste)
+				executeDragPaste(pScrollView, pos);
 		}
 		// Fall thru...
 	case Qt::Key_Escape:
@@ -2620,6 +2622,7 @@ bool qtractorMidiEditor::keyStep ( int iKey )
 
 
 	// Early sanity check...
+	const QRect& rect = m_select.rectView();
 	QPoint pos = m_posDrag;
 	if (m_dragState == DragMove || m_dragState == DragPaste) {
 		pos = m_pEditView->viewportToContents(
@@ -2627,19 +2630,24 @@ bool qtractorMidiEditor::keyStep ( int iKey )
 	}
 
 	int x2 = - pos.x();
+	int y2 = - pos.y();
+	if (m_dragState == DragMove || m_dragState == DragPaste) {
+		x2 += (m_posDrag.x() - rect.x());
+		y2 += (m_posDrag.y() - rect.y());
+	}
+
 	if (m_posStep.x() < x2) {
 		m_posStep.setX (x2);
 	} else {
-		x2 += m_pEditView->contentsWidth() - m_rectDrag.width();
+		x2 += m_pEditView->contentsWidth() - rect.width();
 		if (m_posStep.x() > x2)
 			m_posStep.setX (x2);
 	}
 
-	int y2 = - pos.y();
 	if (m_posStep.y() < y2) {
 		m_posStep.setY (y2);
 	} else {
-		y2 += m_pEditView->contentsHeight() - m_rectDrag.height();
+		y2 += m_pEditView->contentsHeight() - rect.height();
 		if (m_posStep.y() > y2)
 			m_posStep.setY (y2);
 	}
