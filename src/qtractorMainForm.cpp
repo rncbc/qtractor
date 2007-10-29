@@ -3117,6 +3117,12 @@ void qtractorMainForm::timerSlot (void)
 						m_pSession->timeScale()->textFromFrame(
 							m_pSession->sessionLength()));
 				}
+				else
+				// If just playing and not looping, have a full-stop.
+				if (m_iPlayHead > m_pSession->sessionLength() &&
+					m_iPlayHead > m_pSession->loopEnd()) {
+					transportPlay();
+				}
 			}
 		}
 	}

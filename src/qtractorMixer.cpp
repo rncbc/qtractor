@@ -158,7 +158,13 @@ void qtractorMixerStrip::initMixerStrip (void)
 		m_pMuteButton   = NULL;
 		m_pSoloButton   = NULL;
 	}
-
+#if 0
+	QIcon icons;
+	icons.addPixmap(QPixmap(":/icons/itemLedOff.png"),
+		QIcon::Normal, QIcon::Off);
+	icons.addPixmap(QPixmap(":/icons/itemLedOn.png"),
+		QIcon::Normal, QIcon::On);
+#endif
 	// Now, there's whether we are Audio or MIDI related...
 	m_pMeter = NULL;
 	m_pThruButton = NULL;
@@ -227,10 +233,12 @@ void qtractorMixerStrip::initMixerStrip (void)
 					m_pThruButton = new QToolButton(m_pMeter->topWidget());
 					m_pThruButton->setFixedHeight(14);
 					m_pThruButton->setSizePolicy(buttonPolicy);
-					m_pThruButton->setToolButtonStyle(Qt::ToolButtonTextOnly);
 					m_pThruButton->setFont(font6);
+				//	m_pThruButton->setIcon(icons);
+				//	m_pThruButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+					m_pThruButton->setToolButtonStyle(Qt::ToolButtonTextOnly);
 					m_pThruButton->setText(tr("thru"));
-					m_pThruButton->setToolTip(tr("MIDI Thru"));
+					m_pThruButton->setToolTip(tr("Pass-through"));
 					m_pThruButton->setCheckable(true);
 					m_pThruButton->setChecked(pMidiBus->isPassthru());
 					m_pMeter->topLayout()->insertWidget(0, m_pThruButton);
@@ -532,7 +540,7 @@ void qtractorMixerStrip::thruButtonSlot ( bool bOn )
 	// Here we go (with a special bus update command)...
 	qtractorUpdateBusCommand *pBusCommand
 		= new qtractorUpdateBusCommand(m_pBus);
-	pBusCommand->setName(tr("thru"));
+	pBusCommand->setName(tr("pass-through"));
 	pBusCommand->setPassthru(bOn);
 	pMainForm->commands()->exec(pBusCommand);
 }
