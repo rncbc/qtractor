@@ -414,14 +414,12 @@ void qtractorOptions::saveWidgetGeometry ( QWidget *pWidget )
 	if (pWidget) {
 		m_settings.beginGroup("/Geometry/" + pWidget->objectName());
 		bool bVisible = pWidget->isVisible();
-		if (bVisible) {
-			QPoint fpos  = pWidget->pos();
-			QSize  fsize = pWidget->size();
-			m_settings.setValue("/x", fpos.x());
-			m_settings.setValue("/y", fpos.y());
-			m_settings.setValue("/width", fsize.width());
-			m_settings.setValue("/height", fsize.height());
-		}
+		const QPoint& fpos  = pWidget->pos();
+		const QSize&  fsize = pWidget->size();
+		m_settings.setValue("/x", fpos.x());
+		m_settings.setValue("/y", fpos.y());
+		m_settings.setValue("/width", fsize.width());
+		m_settings.setValue("/height", fsize.height());
 		m_settings.setValue("/visible", bVisible);
 		m_settings.endGroup();
 	}

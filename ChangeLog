@@ -7,6 +7,8 @@ CVS HEAD
 
 0.0.7   2007-10-29  Work in progress...
 
+- Tool/child windows position and size preservation fixed.
+
 - MIDI (pass-)through has been finally implemented, after several
   kind requests, it applies as a property of duplex-mode MIDI buses;
   this new setting is configurable from the View/Buses... dialog;
