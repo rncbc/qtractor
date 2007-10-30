@@ -3,14 +3,12 @@ Qtractor - An Audio/MIDI multi-track sequencer
 
 ChangeLog
 
-CVS HEAD
-
-0.0.7   2007-10-30  Work in progress...
+0.0.7   2007-10-31  The Eleventh Tower
 
 - Suspend auto-follow-playhead while dragging or moving content over
   the main track and midi editor views; re-touched follow-playhead
   and new continue-past-end tool icons.
-  
+
 - Playback is now forced complete full-stop whenever play-head goes
   behind the current session length and/or loop-end and the newer
   "continue past end" option is enabled from transport menu.
