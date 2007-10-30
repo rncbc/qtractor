@@ -2108,15 +2108,15 @@ void qtractorTrackView::drawPositionX ( int& iPositionX, int x, bool bSyncView )
 	if (iPositionX != x && x1 >= 0 && x1 < w) {
 		// Override old view line...
 		qtractorScrollView::viewport()->update(QRect(x1, 0, 1, h));
-		m_pTracks->trackTime()->viewport()->update(QRect(x1 - d2, d2, h2, d2));
+		((m_pTracks->trackTime())->viewport())->update(
+			QRect(x1 - d2, d2, h2, d2));
 	}
 
 	// New position is in...
 	iPositionX = x;
 
 	// Force position to be in view?
-	if (bSyncView && (x < cx || x > cx + w - wm)) {
-		// Move it...
+	if (bSyncView && (x < cx || x > cx + w - wm) && m_dragState == DragNone) {
 		qtractorScrollView::setContentsPos(x - wm, qtractorScrollView::contentsY());
 	} else if (bSyncView && cx > qtractorScrollView::contentsWidth() - w) {
 		 // Maybe we'll need some head-room...
@@ -2124,10 +2124,11 @@ void qtractorTrackView::drawPositionX ( int& iPositionX, int x, bool bSyncView )
 	} else {
 		// Draw the line, by updating the new region...
 		x1 = x - cx;
-		if (x1 >= 0 && x1 < w)
+		if (x1 >= 0 && x1 < w) {
 			qtractorScrollView::viewport()->update(QRect(x1, 0, 1, h));
-		// Update the time-line header...
-		m_pTracks->trackTime()->viewport()->update(QRect(x1 - d2, d2, h2, d2));
+			((m_pTracks->trackTime())->viewport())->update(
+				QRect(x1 - d2, d2, h2, d2));
+		}
 	}
 }
 
