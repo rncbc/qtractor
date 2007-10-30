@@ -80,6 +80,7 @@ public:
 	// Transport options...
 	bool    bMetronome;
 	bool    bFollowPlayhead;
+	bool    bContinuePastEnd;
 
 	// Audio options...
 	QString sAudioCaptureExt;

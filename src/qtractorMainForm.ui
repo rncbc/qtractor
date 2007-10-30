@@ -110,7 +110,9 @@
     <number>4</number>
    </attribute>
    <addaction name="transportMetroAction" />
+   <addaction name="separator" />
    <addaction name="transportFollowAction" />
+   <addaction name="transportContinueAction" />
   </widget>
   <widget class="QToolBar" name="transportToolbar" >
    <property name="orientation" >
@@ -222,13 +224,15 @@
     <addaction name="transportForwardAction" />
     <addaction name="separator" />
     <addaction name="transportLoopAction" />
-	<addaction name="transportLoopSetAction" />
+    <addaction name="transportLoopSetAction" />
     <addaction name="separator" />
     <addaction name="transportPlayAction" />
     <addaction name="transportRecordAction" />
     <addaction name="separator" />
     <addaction name="transportMetroAction" />
+    <addaction name="separator" />
     <addaction name="transportFollowAction" />
+    <addaction name="transportContinueAction" />
    </widget>
    <widget class="QMenu" name="helpMenu" >
     <property name="title" >
@@ -1289,6 +1293,26 @@
     <string/>
    </property>
   </action>
+  <action name="transportMetroAction" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="icon" >
+    <iconset resource="../icons/qtractor.qrc" >:/icons/transportMetro.png</iconset>
+   </property>
+   <property name="text" >
+    <string>&amp;Metronome</string>
+   </property>
+   <property name="iconText" >
+    <string>Metronome</string>
+   </property>
+   <property name="statusTip" >
+    <string>Metronome</string>
+   </property>
+   <property name="shortcut" >
+    <string/>
+   </property>
+  </action>
   <action name="transportFollowAction" >
    <property name="checkable" >
     <bool>true</bool>
@@ -1309,21 +1333,21 @@
     <string/>
    </property>
   </action>
-  <action name="transportMetroAction" >
+  <action name="transportContinueAction" >
    <property name="checkable" >
     <bool>true</bool>
    </property>
    <property name="icon" >
-    <iconset resource="../icons/qtractor.qrc" >:/icons/transportMetro.png</iconset>
+    <iconset resource="../icons/qtractor.qrc" >:/icons/transportContinue.png</iconset>
    </property>
    <property name="text" >
-    <string>&amp;Metronome</string>
+    <string>&amp;Continue Past End</string>
    </property>
    <property name="iconText" >
-    <string>Metronome</string>
+    <string>Continue Past End</string>
    </property>
    <property name="statusTip" >
-    <string>Metronome</string>
+    <string>Continue past end</string>
    </property>
    <property name="shortcut" >
     <string/>

@@ -8,7 +8,8 @@ CVS HEAD
 0.0.7   2007-10-29  Work in progress...
 
 - Playback is now forced complete full-stop whenever play-head goes
-  behind the current session length and/or loop-end (EXPERIMENTAL).
+  behind the current session length and/or loop-end and the newer
+  "continue past end" option is enabled from transport menu.
 
 - Tool/child windows position and size preservation fixed.
 

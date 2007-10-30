@@ -530,6 +530,9 @@ qtractorMainForm::qtractorMainForm (
 	QObject::connect(m_ui.transportFollowAction,
 		SIGNAL(triggered(bool)),
 		SLOT(transportFollow()));
+	QObject::connect(m_ui.transportContinueAction,
+		SIGNAL(triggered(bool)),
+		SLOT(transportContinue()));
 
 	QObject::connect(m_ui.helpAboutAction,
 		SIGNAL(triggered(bool)),
@@ -670,6 +673,7 @@ void qtractorMainForm::setOptions ( qtractorOptions *pOptions )
 
 	m_ui.transportMetroAction->setChecked(m_pOptions->bMetronome);
 	m_ui.transportFollowAction->setChecked(m_pOptions->bFollowPlayhead);
+	m_ui.transportContinueAction->setChecked(m_pOptions->bContinuePastEnd);
 
 	// Initial decorations visibility state.
 	viewMenubar(m_pOptions->bMenubar);
@@ -810,6 +814,7 @@ bool qtractorMainForm::queryClose (void)
 			m_pOptions->bThumbToolbar = m_ui.thumbToolbar->isVisible();
 			m_pOptions->bMetronome = m_ui.transportMetroAction->isChecked();
 			m_pOptions->bFollowPlayhead = m_ui.transportFollowAction->isChecked();
+			m_pOptions->bContinuePastEnd = m_ui.transportContinueAction->isChecked();
 			// Save instrument definition file list...
 			m_pOptions->instrumentFiles = m_pInstruments->files();
 			// Save the dock windows state.
@@ -2285,6 +2290,18 @@ void qtractorMainForm::transportFollow (void)
 }
 
 
+// Continue past end transport option.
+void qtractorMainForm::transportContinue (void)
+{
+#ifdef CONFIG_DEBUG
+	appendMessages("qtractorMainForm::transportContinue()");
+#endif
+
+	// Toggle continue-past-end...
+	stabilizeForm();
+}
+
+
 //-------------------------------------------------------------------------
 // qtractorMainForm -- Help Action slots.
 
@@ -3118,9 +3135,10 @@ void qtractorMainForm::timerSlot (void)
 							m_pSession->sessionLength()));
 				}
 				else
-				// If just playing and not looping, have a full-stop.
-				if (m_iPlayHead > m_pSession->sessionLength() &&
-					m_iPlayHead > m_pSession->loopEnd()) {
+				// Whether to continue past end...
+				if (!m_ui.transportContinueAction->isChecked()
+					&& m_iPlayHead > m_pSession->sessionLength()
+					&& m_iPlayHead > m_pSession->loopEnd()) {
 					transportPlay();
 				}
 			}

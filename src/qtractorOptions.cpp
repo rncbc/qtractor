@@ -80,8 +80,9 @@ qtractorOptions::qtractorOptions (void)
 
 	// Transport options group.
 	m_settings.beginGroup("/Transport");
-	bMetronome      = m_settings.value("/Metronome", false).toBool();
-	bFollowPlayhead = m_settings.value("/FollowPlayhead", true).toBool();
+	bMetronome       = m_settings.value("/Metronome", false).toBool();
+	bFollowPlayhead  = m_settings.value("/FollowPlayhead", true).toBool();
+	bContinuePastEnd = m_settings.value("/ContinuePastEnd", true).toBool();
 	m_settings.endGroup();
 
 	// Audio rendering options group.
@@ -215,6 +216,7 @@ qtractorOptions::~qtractorOptions (void)
 	m_settings.beginGroup("/Transport");
 	m_settings.setValue("/Metronome", bMetronome);
 	m_settings.setValue("/FollowPlayhead", bFollowPlayhead);
+	m_settings.setValue("/ContinuePastEnd", bContinuePastEnd);
 	m_settings.endGroup();
 
 	// Audio redndering options group.

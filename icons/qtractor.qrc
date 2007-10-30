@@ -64,6 +64,7 @@
 		<file>trackProperties.png</file>
 		<file>trackRemove.png</file>
 		<file>transportBackward.png</file>
+		<file>transportContinue.png</file>
 		<file>transportFastForward.png</file>
 		<file>transportFollow.png</file>
 		<file>transportForward.png</file>
