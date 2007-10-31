@@ -3,6 +3,14 @@ Qtractor - An Audio/MIDI multi-track sequencer
 
 ChangeLog
 
+CVS HEAD
+
+0.0.8   2007-11-01  Work in progress...
+
+- Re-touched follow-playhead and continue-past-end tool icons, again
+  to be a bit softer and not so bright as to hurt someones eyes.
+
+
 0.0.7   2007-10-31  The Eleventh Tower
 
 - Suspend auto-follow-playhead while dragging or moving content over
