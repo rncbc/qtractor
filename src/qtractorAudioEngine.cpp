@@ -505,6 +505,14 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 				}
 			}
 		}
+		// Pass-thru current audio buses...
+		for (qtractorBus *pBus = buses().first();
+			pBus; pBus = pBus->next()) {
+			qtractorAudioBus *pAudioBus
+				= static_cast<qtractorAudioBus *> (pBus);
+			if (pAudioBus && pAudioBus->isPassthru())
+				pAudioBus->process_commit(nframes);
+		}
 		// Done as idle...
 		pSession->release();
 		return 0;
@@ -603,7 +611,10 @@ bool qtractorAudioEngine::loadElement ( qtractorSessionDocument *pDocument,
 				QDomElement eProp = nProp.toElement();
 				if (eProp.isNull())
 					continue;
-				if (eProp.tagName() == "channels") {
+				if (eProp.tagName() == "pass-through") {
+					pAudioBus->setPassthru(
+						pDocument->boolFromText(eProp.text()));
+				} else if (eProp.tagName() == "channels") {
 					pAudioBus->setChannels(eProp.text().toUShort());
 				} else if (eProp.tagName() == "auto-connect") {
 					pAudioBus->setAutoConnect(
@@ -664,6 +675,8 @@ bool qtractorAudioEngine::saveElement ( qtractorSessionDocument *pDocument,
 				pAudioBus->busName());
 			eAudioBus.setAttribute("mode",
 				pDocument->saveBusMode(pAudioBus->busMode()));
+			pDocument->saveTextElement("pass-through",
+				pDocument->textFromBool(pAudioBus->isPassthru()), &eAudioBus);
 			pDocument->saveTextElement("channels",
 				QString::number(pAudioBus->channels()), &eAudioBus);
 			pDocument->saveTextElement("auto-connect",
@@ -799,10 +812,12 @@ bool qtractorAudioEngine::fileExport ( const QString& sExportPath,
 	unsigned long iPlayHead  = pSession->playHead();
 	unsigned long iLoopStart = pSession->loopStart();
 	unsigned long iLoopEnd   = pSession->loopEnd();
+	bool bPassthru = pExportBus->isPassthru();
 
 	// Because we'll have to set the export conditions...
 	pSession->setLoop(0, 0);
 	pSession->setPlayHead(m_iExportStart);
+	pExportBus->setPassthru(false);
 
 	// Force sync...
 	syncExport();
@@ -827,6 +842,7 @@ bool qtractorAudioEngine::fileExport ( const QString& sExportPath,
 	// Restore session at ease...
 	pSession->setLoop(iLoopStart, iLoopEnd);
 	pSession->setPlayHead(iPlayHead);
+	pExportBus->setPassthru(bPassthru);
 
 	// Check user cancellation...
 	bool bResult = m_bExporting;
@@ -883,9 +899,9 @@ void qtractorAudioEngine::syncExport (void)
 
 // Constructor.
 qtractorAudioBus::qtractorAudioBus ( qtractorAudioEngine *pAudioEngine,
-	const QString& sBusName, BusMode busMode,
+	const QString& sBusName, BusMode busMode, bool bPassthru,
 	unsigned short iChannels, bool bAutoConnect )
-	: qtractorBus(pAudioEngine, sBusName, busMode)
+	: qtractorBus(pAudioEngine, sBusName, busMode, bPassthru)
 {
 	m_iChannels = iChannels;
 
@@ -1211,22 +1227,30 @@ void qtractorAudioBus::process_prepare ( unsigned int nframes )
 	if (!m_bEnabled)
 		return;
 
-	for (unsigned short i = 0; i < m_iChannels; i++) {
-		if (busMode() & qtractorBus::Input) {
+	unsigned short i;
+
+	if (busMode() & qtractorBus::Input) {
+		for (i = 0; i < m_iChannels; ++i) {
 			m_ppIBuffer[i] = static_cast<float *>
 				(jack_port_get_buffer(m_ppIPorts[i], nframes));
 		}
-		if (busMode() & qtractorBus::Output) {
-			m_ppOBuffer[i] = static_cast<float *>
-				(jack_port_get_buffer(m_ppOPorts[i], nframes));
-			::memset(m_ppOBuffer[i], 0, nframes * sizeof(float));
-		}
+		if (m_pIAudioMonitor)
+			m_pIAudioMonitor->process(m_ppIBuffer, nframes);
+		if (m_pIPluginList && m_pIPluginList->activated())
+			m_pIPluginList->process(m_ppIBuffer, nframes);
 	}
 
-	if (m_pIAudioMonitor)
-		m_pIAudioMonitor->process(m_ppIBuffer, nframes);
-	if (m_pIPluginList && m_pIPluginList->activated())
-		m_pIPluginList->process(m_ppIBuffer, nframes);
+	if (busMode() & qtractorBus::Output) {
+		for (i = 0; i < m_iChannels; ++i) {
+			m_ppOBuffer[i] = static_cast<float *>
+				(jack_port_get_buffer(m_ppOPorts[i], nframes));
+			if (isPassthru() && (busMode() & qtractorBus::Input)) {
+				::memcpy(m_ppOBuffer[i], m_ppIBuffer[i], nframes * sizeof(float));
+			} else {
+				::memset(m_ppOBuffer[i], 0, nframes * sizeof(float));
+			}
+		}
+	}
 }
 
 

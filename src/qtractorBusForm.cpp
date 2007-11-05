@@ -119,13 +119,13 @@ qtractorBusForm::qtractorBusForm (
 	QObject::connect(m_ui.BusModeComboBox,
 		SIGNAL(activated(int)),
 		SLOT(changed()));
+	QObject::connect(m_ui.PassthruCheckBox,
+		SIGNAL(clicked()),
+		SLOT(changed()));
 	QObject::connect(m_ui.AudioChannelsSpinBox,
 		SIGNAL(valueChanged(int)),
 		SLOT(changed()));
 	QObject::connect(m_ui.AudioAutoConnectCheckBox,
-		SIGNAL(clicked()),
-		SLOT(changed()));
-	QObject::connect(m_ui.MidiPassthruCheckBox,
 		SIGNAL(clicked()),
 		SLOT(changed()));
 	QObject::connect(m_ui.RefreshPushButton,
@@ -233,12 +233,6 @@ void qtractorBusForm::showBus ( qtractorBus *pBus )
 		case qtractorTrack::Midi:
 		{
 			m_ui.BusTitleTextLabel->setText(tr("MIDI Bus"));
-			qtractorMidiBus *pMidiBus
-				= static_cast<qtractorMidiBus *> (pBus);
-			if (pMidiBus) {
-				m_ui.MidiPassthruCheckBox->setChecked(
-					pMidiBus->isPassthru());
-			}
 			break;
 		}
 
@@ -250,6 +244,7 @@ void qtractorBusForm::showBus ( qtractorBus *pBus )
 
 		m_ui.BusNameLineEdit->setText(pBus->busName());
 		m_ui.BusModeComboBox->setCurrentIndex(int(pBus->busMode()) - 1);
+		m_ui.PassthruCheckBox->setChecked(pBus->isPassthru());
 	}
 
 	// Reset dirty flag...
@@ -469,6 +464,10 @@ void qtractorBusForm::createBus (void)
 	pCreateBusCommand->setBusType(busType);
 	pCreateBusCommand->setBusName(sBusName);
 	pCreateBusCommand->setBusMode(busMode);	
+	pCreateBusCommand->setPassthru(
+		(busMode & qtractorBus::Duplex) == qtractorBus::Duplex
+		&& m_ui.PassthruCheckBox->isChecked());
+
 	// Specialties for bus types...
 	switch (busType) {
 	case qtractorTrack::Audio:
@@ -478,9 +477,6 @@ void qtractorBusForm::createBus (void)
 			m_ui.AudioAutoConnectCheckBox->isChecked());
 		break;
 	case qtractorTrack::Midi:
-		pCreateBusCommand->setPassthru(
-			m_ui.MidiPassthruCheckBox->isChecked());
-		break;
 	case qtractorTrack::None:
 	default:
 		break;
@@ -529,7 +525,11 @@ void qtractorBusForm::updateBus (void)
 	qtractorTrack::TrackType busType = m_pBus->busType();
 	pUpdateBusCommand->setBusType(busType);
 	pUpdateBusCommand->setBusName(sBusName);
-	pUpdateBusCommand->setBusMode(busMode);	
+	pUpdateBusCommand->setBusMode(busMode);
+	pUpdateBusCommand->setPassthru(
+		(busMode & qtractorBus::Duplex) == qtractorBus::Duplex
+		&& m_ui.PassthruCheckBox->isChecked());
+
 	// Specialties for bus types...
 	switch (busType) {
 	case qtractorTrack::Audio:
@@ -539,9 +539,6 @@ void qtractorBusForm::updateBus (void)
 			m_ui.AudioAutoConnectCheckBox->isChecked());
 		break;
 	case qtractorTrack::Midi:
-		pUpdateBusCommand->setPassthru(
-			m_ui.MidiPassthruCheckBox->isChecked());
-		break;
 	case qtractorTrack::None:
 	default:
 		break;
@@ -644,17 +641,14 @@ void qtractorBusForm::stabilizeForm (void)
 {
 	if (m_pBus) {
 		m_ui.CommonBusGroup->setEnabled(true);
-		m_ui.AudioBusGroup->setVisible(m_pBus->busType() == qtractorTrack::Audio);
-		m_ui.MidiBusGroup->setVisible(m_pBus->busType() == qtractorTrack::Midi);
+		m_ui.AudioBusGroup->setEnabled(m_pBus->busType() == qtractorTrack::Audio);
 	} else {
 		m_ui.CommonBusGroup->setEnabled(false);
-		m_ui.AudioBusGroup->setVisible(false);
-		m_ui.MidiBusGroup->setVisible(false);
+		m_ui.AudioBusGroup->setEnabled(false);
 	}
 
-	if (m_pBus && m_pBus->busType() == qtractorTrack::Midi)
-		m_ui.MidiPassthruCheckBox->setEnabled(
-			m_ui.BusModeComboBox->currentIndex() == 2);
+	m_ui.PassthruCheckBox->setEnabled(
+		m_pBus && m_ui.BusModeComboBox->currentIndex() == 2);
 
 	m_ui.RefreshPushButton->setEnabled(m_iDirtyCount > 0);
 	m_ui.CreatePushButton->setEnabled(canCreateBus());

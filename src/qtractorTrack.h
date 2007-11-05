@@ -101,6 +101,10 @@ public:
 	void setMidiTag(unsigned short iMidiTag);
 	unsigned short midiTag() const;
 
+	// MIDI specific: omni (capture) mode acessors.
+	void setMidiOmni(bool bMidiOmni);
+	bool isMidiOmni() const;
+
 	// MIDI specific: channel acessors.
 	void setMidiChannel(unsigned short iMidiChannel);
 	unsigned short midiChannel() const;
@@ -215,6 +219,7 @@ public:
 		float          panning;
 		QString        inputBusName;
 		QString        outputBusName;
+		bool           midiOmni;
 		unsigned short midiChannel;
 		int            midiBankSelMethod;
 		int            midiBank;

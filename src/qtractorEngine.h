@@ -132,7 +132,9 @@ public:
 
 	// Constructor.
 	qtractorBus(qtractorEngine *pEngine,
-		const QString& sBusName, BusMode busMode = Duplex);
+		const QString& sBusName, BusMode busMode = Duplex,
+		bool bPassthru = false);
+
 	// Destructor.
 	virtual ~qtractorBus();
 
@@ -149,6 +151,10 @@ public:
 	// Bus mode property accessor.
 	void setBusMode(BusMode busMode);
 	BusMode busMode() const;
+
+	// Pass-thru mode accessor.
+	void setPassthru(bool bPassthru);
+	bool isPassthru() const;
 
 	// Pure virtual activation methods.
 	virtual bool open() = 0;
@@ -215,7 +221,8 @@ private:
 
 	QString m_sBusName;
 	BusMode m_busMode;
-	
+	bool m_bPassthru;
+
 	// Connections stuff.
 	ConnectList m_inputs;
 	ConnectList m_outputs;

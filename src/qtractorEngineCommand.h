@@ -52,15 +52,15 @@ public:
 	void setBusName(const QString& sBusName) { m_sBusName = sBusName; }
 	const QString& busName() const { return m_sBusName; }
 
+	void setPassthru(bool bPassthru) { m_bPassthru = bPassthru; }
+	bool isPassthru() const { return m_bPassthru; }
+
 	// Special Audio bus properties accessors.
 	void setChannels(unsigned short iChannels) { m_iChannels = iChannels; }
 	unsigned short channels() const { return m_iChannels; }
 
 	void setAutoConnect(bool bAutoConnect) { m_bAutoConnect = bAutoConnect; }
 	bool isAutoConnect() const { return m_bAutoConnect; }
-
-	void setPassthru(bool bPassthru) { m_bPassthru = bPassthru; }
-	bool isPassthru() const { return m_bPassthru; }
 
 protected:
 
@@ -76,9 +76,9 @@ private:
 	qtractorBus::BusMode     m_busMode;
 	qtractorTrack::TrackType m_busType;
 	QString                  m_sBusName;
+	bool                     m_bPassthru;
 	unsigned short           m_iChannels;
 	bool                     m_bAutoConnect;
-	bool                     m_bPassthru;
 };
 
 
@@ -130,6 +130,23 @@ public:
 	// Bus deletion command methods.
 	bool redo();
 	bool undo();
+};
+
+
+//----------------------------------------------------------------------
+// class qtractorBusPassthruCommand - declaration.
+//
+
+class qtractorBusPassthruCommand : public qtractorBusCommand
+{
+public:
+
+	// Constructor.
+	qtractorBusPassthruCommand(qtractorBus *pBus, bool bPassthru);
+
+	// Bus-gain command methods.
+	bool redo();
+	bool undo() { return redo(); }
 };
 
 

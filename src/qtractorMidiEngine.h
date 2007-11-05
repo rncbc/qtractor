@@ -223,10 +223,6 @@ public:
 	// Shut-off everything out there.
 	void shutOff(bool bClose = false) const;
 
-	// MIDI-thru accessor.
-	void setPassthru(bool bPassthru);
-	bool isPassthru() const;
-
 	// Channel map payload.
 	struct Patch
 	{
@@ -293,9 +289,6 @@ private:
 
 	// Instance variables.
 	int m_iAlsaPort;
-
-	// MIDI-thru property.
-	bool m_bPassthru;
 
 	// Specific monitor instances.
 	qtractorMidiMonitor *m_pIMidiMonitor;

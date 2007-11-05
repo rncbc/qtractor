@@ -199,6 +199,16 @@
             </item>
            </widget>
           </item>
+          <item row="2" column="0" colspan="3" >
+           <widget class="QCheckBox" name="PassthruCheckBox" >
+            <property name="text" >
+             <string>&amp;Pass-through</string>
+            </property>
+            <property name="shortcut" >
+             <string>Alt+P</string>
+            </property>
+           </widget>
+          </item>
          </layout>
         </widget>
        </item>
@@ -265,47 +275,6 @@
           </item>
          </layout>
         </widget>
-       </item>
-       <item>
-        <widget class="QGroupBox" name="MidiBusGroup" >
-         <property name="title" >
-          <string>MIDI</string>
-         </property>
-         <layout class="QGridLayout" >
-          <property name="margin" >
-           <number>8</number>
-          </property>
-          <property name="spacing" >
-           <number>4</number>
-          </property>
-          <item row="0" column="0" colspan="3" >
-           <widget class="QCheckBox" name="MidiPassthruCheckBox" >
-            <property name="text" >
-             <string>&amp;Pass-through</string>
-            </property>
-            <property name="shortcut" >
-             <string>Alt+P</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item>
-        <spacer>
-         <property name="orientation" >
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeType" >
-          <enum>QSizePolicy::Expanding</enum>
-         </property>
-         <property name="sizeHint" >
-          <size>
-           <width>20</width>
-           <height>60</height>
-          </size>
-         </property>
-        </spacer>
        </item>
       </layout>
      </widget>
@@ -422,9 +391,9 @@
   <tabstop>BusListView</tabstop>
   <tabstop>BusNameLineEdit</tabstop>
   <tabstop>BusModeComboBox</tabstop>
+  <tabstop>PassthruCheckBox</tabstop>
   <tabstop>AudioChannelsSpinBox</tabstop>
   <tabstop>AudioAutoConnectCheckBox</tabstop>
-  <tabstop>MidiPassthruCheckBox</tabstop>
   <tabstop>RefreshPushButton</tabstop>
   <tabstop>CreatePushButton</tabstop>
   <tabstop>UpdatePushButton</tabstop>

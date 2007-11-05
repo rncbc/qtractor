@@ -54,6 +54,7 @@ void qtractorTrack::Properties::clear (void)
 	panning     = 0.0f;
 	inputBusName.clear();
 	outputBusName.clear();
+	midiOmni    = false;
 	midiChannel = 0;
 	midiBankSelMethod = -1;
 	midiBank    = -1;
@@ -76,6 +77,7 @@ qtractorTrack::Properties& qtractorTrack::Properties::copy (
 		panning     = props.panning;
 		inputBusName  = props.inputBusName;
 		outputBusName = props.outputBusName;
+		midiOmni    = props.midiOmni;
 		midiChannel = props.midiChannel;
 		midiBankSelMethod = props.midiBankSelMethod;
 		midiBank    = props.midiBank;
@@ -423,6 +425,18 @@ void qtractorTrack::setMidiTag ( unsigned short iMidiTag )
 unsigned short qtractorTrack::midiTag (void) const
 {
 	return m_iMidiTag;
+}
+
+
+// MIDI specific: omni (capture) mode acessors.
+void qtractorTrack::setMidiOmni ( bool bMidiOmni )
+{
+	m_props.midiOmni = bMidiOmni;
+}
+
+bool qtractorTrack::isMidiOmni (void) const
+{
+	return m_props.midiOmni;
 }
 
 
@@ -870,6 +884,8 @@ bool qtractorTrack::loadElement ( qtractorSessionDocument *pDocument,
 					qtractorTrack::setInputBusName(eProp.text());
 				else if (eProp.tagName() == "output-bus")
 					qtractorTrack::setOutputBusName(eProp.text());
+				else if (eProp.tagName() == "midi-omni")
+					qtractorTrack::setMidiOmni(pDocument->boolFromText(eProp.text()));
 				else if (eProp.tagName() == "midi-channel")
 					qtractorTrack::setMidiChannel(eProp.text().toUShort());
 				else if (eProp.tagName() == "midi-bank-sel-method")
@@ -977,6 +993,8 @@ bool qtractorTrack::saveElement ( qtractorSessionDocument *pDocument,
 	pDocument->saveTextElement("output-bus",
 		qtractorTrack::outputBusName(), &eProps);
 	if (qtractorTrack::trackType() == qtractorTrack::Midi) {
+		pDocument->saveTextElement("midi-omni",
+			pDocument->textFromBool(qtractorTrack::isMidiOmni()), &eProps);
 		pDocument->saveTextElement("midi-channel",
 			QString::number(qtractorTrack::midiChannel()), &eProps);
 		if (qtractorTrack::midiBankSelMethod() >= 0) {

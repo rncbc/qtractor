@@ -292,9 +292,12 @@ void qtractorTrackList::Item::update ( qtractorTrackList *pTrackList )
 			text << sBusText + '\n' + QObject::tr("MIDI");
 			qtractorMidiBus *pMidiBus
 				= static_cast<qtractorMidiBus *> (track->outputBus());
-			// Audio channels...
+			// MIDI channels...
+			QString sOmni;
+			if (track->isMidiOmni())
+				sOmni += '*';
 			unsigned short iChannel = track->midiChannel();
-			text << QString::number(iChannel + 1);
+			text << sOmni + QString::number(iChannel + 1);
 			// Care of MIDI instrument, program and bank numbers vs.names...
 			QString sInstrument = s;
 			QString sProgram = s;

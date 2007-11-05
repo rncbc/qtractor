@@ -41,16 +41,17 @@
 qtractorBusCommand::qtractorBusCommand ( const QString& sName,
 	qtractorBus *pBus, qtractorBus::BusMode busMode )
 	: qtractorCommand(sName), m_pBus(pBus), m_busMode(busMode),
-		m_busType(qtractorTrack::None), m_iChannels(0),
-		m_bAutoConnect(false), m_bPassthru(false)
+		m_busType(qtractorTrack::None), m_bPassthru(false),
+		m_iChannels(0), m_bAutoConnect(false)
 {
 	setRefresh(false);
 
 	// Set initial bus properties if any...
-	if (m_pBus) {
-		m_busMode  = m_pBus->busMode();
-		m_busType  = m_pBus->busType();
-		m_sBusName = m_pBus->busName();
+	if (m_pBus && m_busMode == qtractorBus::None) {
+		m_busMode   = m_pBus->busMode();
+		m_busType   = m_pBus->busType();
+		m_sBusName  = m_pBus->busName();
+		m_bPassthru = m_pBus->isPassthru();
 		// Special case typed buses...
 		switch (m_pBus->busType()) {
 		case qtractorTrack::Audio: {
@@ -62,14 +63,7 @@ qtractorBusCommand::qtractorBusCommand ( const QString& sName,
 			}
 			break;
 		}
-		case qtractorTrack::Midi: {
-			qtractorMidiBus *pMidiBus
-				= static_cast<qtractorMidiBus *> (m_pBus);
-			if (pMidiBus) {
-				m_bPassthru = pMidiBus->isPassthru();
-			}
-			break;
-		}
+		case qtractorTrack::Midi:
 		case qtractorTrack::None:
 		default:
 			break;
@@ -100,7 +94,8 @@ bool qtractorBusCommand::createBus (void)
 		if (pAudioEngine) {
 			qtractorAudioBus *pAudioBus
 				= new qtractorAudioBus(pAudioEngine,
-					m_sBusName, m_busMode, m_iChannels, m_bAutoConnect);
+					m_sBusName, m_busMode, m_bPassthru,
+					m_iChannels, m_bAutoConnect);
 			pAudioEngine->addBus(pAudioBus);
 			m_pBus = pAudioBus;
 		}
@@ -162,13 +157,12 @@ bool qtractorBusCommand::updateBus (void)
 	// Save current bus properties...
 	qtractorBus::BusMode busMode = m_pBus->busMode();
 	QString sBusName = m_pBus->busName();
+	bool bPassthru = m_pBus->isPassthru();
 
 	// Special case typed buses...
 	qtractorAudioBus *pAudioBus = NULL;
-	qtractorMidiBus *pMidiBus = NULL;
 	unsigned short iChannels = 0;
 	bool bAutoConnect = false;
-	bool bPassthru = false;
 	switch (m_pBus->busType()) {
 	case qtractorTrack::Audio:
 		pAudioBus = static_cast<qtractorAudioBus *> (m_pBus);
@@ -178,14 +172,38 @@ bool qtractorBusCommand::updateBus (void)
 		}
 		break;
 	case qtractorTrack::Midi:
-		pMidiBus = static_cast<qtractorMidiBus *> (m_pBus);
-		if (pMidiBus) {
-			bPassthru = pMidiBus->isPassthru();
-		}
-		break;
 	case qtractorTrack::None:
 	default:
 		break;
+	}
+
+	// Update (reset) all applicable mixer strips...
+	QList<qtractorMixerStrip *> strips;
+	qtractorMixerStrip *pStrip;
+	qtractorMixer *pMixer = pMainForm->mixer();
+	if (pMixer) {
+		if (m_pBus->busMode() & qtractorBus::Input) {
+			pStrip = (pMixer->inputRack())->findStrip(m_pBus->monitor_in());
+			if (pStrip) {
+				pStrip->clear();
+				if (m_busMode & qtractorBus::Input) {
+					strips.append(pStrip);
+				} else {
+					(pMixer->inputRack())->removeStrip(pStrip);
+				}
+			}
+		}
+		if (m_pBus->busMode() & qtractorBus::Output) {
+			pStrip = (pMixer->outputRack())->findStrip(m_pBus->monitor_out());
+			if (pStrip) {
+				pStrip->clear();
+				if (m_busMode & qtractorBus::Output) {
+					strips.append(pStrip);
+				} else {
+					(pMixer->outputRack())->removeStrip(pStrip);
+				}
+			}
+		}
 	}
 
 	// Close all applicable tracks...
@@ -195,8 +213,16 @@ bool qtractorBusCommand::updateBus (void)
 			pTrack->setInputBusName(m_sBusName);
 		if (pTrack->outputBus() == m_pBus)
 			pTrack->setOutputBusName(m_sBusName);
-		if (pTrack->inputBus() == m_pBus || pTrack->outputBus() == m_pBus)
+		if (pTrack->inputBus() == m_pBus || pTrack->outputBus() == m_pBus) {
+			if (pMixer) {
+				pStrip = (pMixer->trackRack())->findStrip(pTrack->monitor());
+				if (pStrip) {
+					pStrip->clear();
+					strips.append(pStrip);
+				}
+			}
 			pTrack->close();
+		}
 	}
 
 	// May close now the bus...
@@ -205,30 +231,15 @@ bool qtractorBusCommand::updateBus (void)
 	// Set new properties...
 	m_pBus->setBusName(m_sBusName);
 	m_pBus->setBusMode(m_busMode);
+	m_pBus->setPassthru(m_bPassthru);
 	// Special case for typed buses...
 	if (pAudioBus) {
 		pAudioBus->setChannels(m_iChannels);
 		pAudioBus->setAutoConnect(m_bAutoConnect);
 	}
-	if (pMidiBus) {
-		pMidiBus->setPassthru(m_bPassthru);
-	}
 
 	// May reopen up the bus...
 	m_pBus->open();
-
-	// Update (reset) all applicable mixer strips...
-	qtractorMixer *pMixer = pMainForm->mixer();
-	if (pMixer) {
-		if (m_pBus->busMode() & qtractorBus::Input) {
-			pMixer->updateBusStrip(pMixer->inputRack(),
-				m_pBus, qtractorBus::Input, true);
-		}
-		if (m_pBus->busMode() & qtractorBus::Output) {
-			pMixer->updateBusStrip(pMixer->outputRack(),
-				m_pBus, qtractorBus::Output, true);
-		}
-	}
 
 	// (Re)open all applicable tracks
 	// and (reset) respective mixer strips too ...
@@ -241,20 +252,31 @@ bool qtractorBusCommand::updateBus (void)
 			pTrack->open();
 			// Update track list item...
 			if (pTracks)
-				pTracks->trackList()->updateTrack(pTrack);
-			// Update mixer strip...
-			if (pMixer)
-				pMixer->updateTrackStrip(pTrack, true);
+				(pTracks->trackList())->updateTrack(pTrack);
 		}
+	}
+
+	// Update (reset) all applicable mixer strips...
+	if (pMixer) {
+		QListIterator<qtractorMixerStrip *> iter(strips);
+		while (iter.hasNext()) {
+			pStrip = iter.next();
+			if (pStrip->track())
+				pStrip->setTrack(pStrip->track());
+			else
+			if (pStrip->bus())
+				pStrip->setBus(pStrip->bus());
+		}
+		pMixer->updateBuses();
 	}
 
 	// Swap saved bus properties...
 	m_busMode      = busMode;
 	m_sBusName     = sBusName;
+	m_bPassthru    = bPassthru;
 	m_iChannels    = iChannels;
 	m_bAutoConnect = bAutoConnect;
-	m_bPassthru    = bPassthru;
-	
+
 	// Carry on...
 	pSession->setPlaying(bPlaying);
 	pSession->unlock();
@@ -391,6 +413,52 @@ bool qtractorDeleteBusCommand::redo (void)
 bool qtractorDeleteBusCommand::undo (void)
 {
 	return createBus();
+}
+
+
+//----------------------------------------------------------------------
+// class qtractorBusPassthruCommand - implementation.
+//
+
+// Constructor.
+qtractorBusPassthruCommand::qtractorBusPassthruCommand (
+	qtractorBus *pBus, bool bPassthru )
+	: qtractorBusCommand(QObject::tr("bus pass-through"), pBus, pBus->busMode())
+{
+	setPassthru(bPassthru);
+}
+
+
+// Bus-gain command method.
+bool qtractorBusPassthruCommand::redo (void)
+{
+	qtractorBus *pBus = bus();
+	if (pBus == NULL)
+		return false;
+
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm == NULL)
+		return false;
+
+	// Set Bus gain (repective monitor gets set too...)
+	float bPassthru = pBus->isPassthru();
+	pBus->setPassthru(qtractorBusCommand::isPassthru());
+	qtractorBusCommand::setPassthru(bPassthru);
+
+	// Update (reset) all applicable mixer strips...
+	qtractorMixer *pMixer = pMainForm->mixer();
+	if (pMixer) {
+		if (pBus->busMode() & qtractorBus::Input) {
+			pMixer->updateBusStrip(pMixer->inputRack(),
+				pBus, qtractorBus::Input, true);
+		}
+		if (pBus->busMode() & qtractorBus::Output) {
+			pMixer->updateBusStrip(pMixer->outputRack(),
+				pBus, qtractorBus::Output, true);
+		}
+	}
+
+	return true;
 }
 
 

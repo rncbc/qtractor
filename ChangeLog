@@ -5,7 +5,21 @@ ChangeLog
 
 CVS HEAD
 
-0.0.8   2007-11-01  Work in progress...
+0.0.8   2007-11-05  Work in progress...
+
+- Fixed a subtle crash-suicide issue when invoking the bus dialog
+  with a double-click over the corresponding mixer bus strip; also
+  fixed the sloppy ganguing mistake when changing mixer bus gain
+  (volume) and panning values.
+
+- MIDI Omni mode (sort of) makes its entrance as a new MIDI track
+  property, meaning that is now finally possible for the capture of
+  any unfiltered MIDI channel event, without regard to the current
+  channel assignment, which still applies for playback purposes.
+
+- Audio (pass-)through has been also implemented, now being a common
+  and consistent property of both audio and MIDI buses, provided
+  those are set in duplex mode (input and output).
 
 - Re-touched follow-playhead and continue-past-end tool icons, again
   to be a bit softer and not so bright as to hurt someones eyes.

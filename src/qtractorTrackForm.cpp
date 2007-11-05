@@ -154,6 +154,9 @@ qtractorTrackForm::qtractorTrackForm (
 	QObject::connect(m_ui.BusNameToolButton,
 		SIGNAL(clicked()),
 		SLOT(busNameClicked()));
+	QObject::connect(m_ui.OmniCheckBox,
+		SIGNAL(clicked()),
+		SLOT(changed()));
 	QObject::connect(m_ui.ChannelSpinBox,
 		SIGNAL(valueChanged(int)),
 		SLOT(channelChanged(int)));
@@ -232,6 +235,7 @@ void qtractorTrackForm::setTrack ( qtractorTrack *pTrack )
 		m_ui.OutputBusNameComboBox->setCurrentIndex(
 			m_ui.OutputBusNameComboBox->findText(m_props.outputBusName));
 
+	m_ui.OmniCheckBox->setChecked(m_props.midiOmni);
 	m_ui.ChannelSpinBox->setValue(m_props.midiChannel + 1);
 	updateChannel(m_ui.ChannelSpinBox->value(),
 		m_props.midiBankSelMethod, m_props.midiBank, m_props.midiProgram);
@@ -293,6 +297,7 @@ void qtractorTrackForm::accept (void)
 		m_props.inputBusName  = m_ui.InputBusNameComboBox->currentText();
 		m_props.outputBusName = m_ui.OutputBusNameComboBox->currentText();
 		// Special case for MIDI settings...
+		m_props.midiOmni    = m_ui.OmniCheckBox->isChecked();
 		m_props.midiChannel = (m_ui.ChannelSpinBox->value() - 1);
 		m_props.midiBankSelMethod = m_ui.BankSelMethodComboBox->currentIndex();
 		m_props.midiBank    = midiBank();

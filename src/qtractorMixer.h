@@ -64,6 +64,9 @@ public:
 	// Default destructor.
 	~qtractorMixerStrip();
 
+	// Clear/suspend delegates.
+	void clear();
+
 	// Delegated properties accessors.
 	void setMonitor(qtractorMonitor *pMonitor);
 	qtractorMonitor *monitor() const;
@@ -110,6 +113,9 @@ protected:
 
 	// Common mixer-strip initializer.
 	void initMixerStrip();
+
+	void updateThruButton();
+	void updateMidiLabel();
 	void updateName();
 
 	// Mouse selection event handlers.
@@ -139,6 +145,7 @@ private:
 	qtractorMeter          *m_pMeter;
 	QToolButton            *m_pBusButton;
 	QToolButton            *m_pThruButton;
+	QLabel                 *m_pMidiLabel;
 
 	// Selection stuff.
 	bool m_bSelected;
@@ -175,10 +182,11 @@ public:
 
 	// Strip list primitive methods.
 	void addStrip(qtractorMixerStrip *pStrip);
+	void removeStrip(qtractorMixerStrip *pStrip);
 
 	// Find a mixer strip, given its monitor handle.
 	qtractorMixerStrip *findStrip(qtractorMonitor *pMonitor);
-	
+
 	// Current Strip count.
 	int stripCount() const;
 

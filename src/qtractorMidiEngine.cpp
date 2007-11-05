@@ -795,32 +795,27 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 			pTrack; pTrack = pTrack->next()) {
 		// Must be a MIDI track in capture/passthru
 		// mode and for the intended channel...
-		if (pTrack->trackType() == qtractorTrack::Midi
-			&& pTrack->midiChannel() == iChannel) {
+		if (pTrack->trackType() == qtractorTrack::Midi && pTrack->isRecord()
+			&& (pTrack->isMidiOmni() || pTrack->midiChannel() == iChannel)) {
 			qtractorMidiBus *pMidiBus
 				= static_cast<qtractorMidiBus *> (pTrack->inputBus());
 			if (pMidiBus && pMidiBus->alsaPort() == pEv->dest.port) {
 				// Is it actually recording?...
-				if (pTrack->isRecord()) {
-					qtractorMidiClip *pMidiClip
-						= static_cast<qtractorMidiClip *> (pTrack->clipRecord());
-					if (pMidiClip) {
-						// Yep, we got a new MIDI event...
-						qtractorMidiEvent *pEvent = new qtractorMidiEvent(
-							pEv->time.tick, type, data1, data2, duration);
-						if (pSysex)
-							pEvent->setSysex(pSysex, iSysex);
-						pMidiClip->sequence()->addEvent(pEvent);
-					}
+				qtractorMidiClip *pMidiClip
+					= static_cast<qtractorMidiClip *> (pTrack->clipRecord());
+				if (pMidiClip) {
+					// Yep, we got a new MIDI event...
+					qtractorMidiEvent *pEvent = new qtractorMidiEvent(
+						pEv->time.tick, type, data1, data2, duration);
+					if (pSysex)
+						pEvent->setSysex(pSysex, iSysex);
+					pMidiClip->sequence()->addEvent(pEvent);
 				}
-				// Either recording or MIDI-thru?...
-				if (pTrack->isRecord() || pMidiBus->isPassthru()) {
-					// Track input monitoring...
-					qtractorMidiMonitor *pMidiMonitor
-						= static_cast<qtractorMidiMonitor *> (pTrack->monitor());
-					if (pMidiMonitor)
-						pMidiMonitor->enqueue(type, data2);
-				}
+				// Track input monitoring...
+				qtractorMidiMonitor *pMidiMonitor
+					= static_cast<qtractorMidiMonitor *> (pTrack->monitor());
+				if (pMidiMonitor)
+					pMidiMonitor->enqueue(type, data2);
 			}
 		}
 	}
@@ -1576,11 +1571,12 @@ bool qtractorMidiEngine::loadElement ( qtractorSessionDocument *pDocument,
 				if (eProp.isNull())
 					continue;
 				// Load map elements (non-critical)...
-				if (eProp.tagName() == "midi-map") {
-					pMidiBus->loadMidiMap(pDocument, &eProp);
-				} else if (eProp.tagName() == "midi-thru") {
+				if (eProp.tagName() == "pass-through" ||
+					eProp.tagName() == "midi-thru") { // Legacy compat.
 					pMidiBus->setPassthru(
 						pDocument->boolFromText(eProp.text()));
+				} else if (eProp.tagName() == "midi-map") {
+					pMidiBus->loadMidiMap(pDocument, &eProp);
 				} else if (eProp.tagName() == "input-gain") {
 					if (pMidiBus->monitor_in())
 						pMidiBus->monitor_in()->setGain(
@@ -1629,6 +1625,8 @@ bool qtractorMidiEngine::saveElement ( qtractorSessionDocument *pDocument,
 				pMidiBus->busName());
 			eMidiBus.setAttribute("mode",
 				pDocument->saveBusMode(pMidiBus->busMode()));
+			pDocument->saveTextElement("pass-through",
+				pDocument->textFromBool(pMidiBus->isPassthru()), &eMidiBus);
 			if (pMidiBus->busMode() & qtractorBus::Input) {
 				pDocument->saveTextElement("input-gain",
 					QString::number(pMidiBus->monitor_in()->gain()),
@@ -1662,9 +1660,6 @@ bool qtractorMidiEngine::saveElement ( qtractorSessionDocument *pDocument,
 				= pDocument->document()->createElement("midi-map");
 			pMidiBus->saveMidiMap(pDocument, &eMidiMap);
 			eMidiBus.appendChild(eMidiMap);
-			// Special passthru property...
-			pDocument->saveTextElement("midi-thru",
-				pDocument->textFromBool(pMidiBus->isPassthru()), &eMidiBus);
 			// Add this bus...
 			pElement->appendChild(eMidiBus);
 		}
@@ -1844,11 +1839,9 @@ bool qtractorMidiEngine::fileExport ( const QString& sExportPath,
 // Constructor.
 qtractorMidiBus::qtractorMidiBus ( qtractorMidiEngine *pMidiEngine,
 	const QString& sBusName, BusMode busMode, bool bPassthru )
-	: qtractorBus(pMidiEngine, sBusName, busMode)
+	: qtractorBus(pMidiEngine, sBusName, busMode, bPassthru)
 {
 	m_iAlsaPort = -1;
-
-	m_bPassthru = bPassthru;
 
 	if (busMode & qtractorBus::Input)
 		m_pIMidiMonitor = new qtractorMidiMonitor(pMidiEngine->session());
@@ -1989,18 +1982,6 @@ void qtractorMidiBus::shutOff ( bool bClose ) const
 		if (bClose)
 			setController(iChannel, ALL_CONTROLLERS_OFF);
 	}
-}
-
-
-// MIDI-thru accessor.
-void qtractorMidiBus::setPassthru ( bool bPassthru )
-{
-	m_bPassthru = bPassthru;
-}
-
-bool qtractorMidiBus::isPassthru (void) const
-{
-	return m_bPassthru;
 }
 
 

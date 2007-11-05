@@ -108,7 +108,7 @@ qtractorMeter::qtractorMeter ( QWidget *pParent )
 	QFontMetrics fm(font8);
 
 	m_pVBoxLayout = new QVBoxLayout();
-	m_pVBoxLayout->setMargin(2);
+	m_pVBoxLayout->setMargin(0);
 	m_pVBoxLayout->setSpacing(2);
 	QWidget::setLayout(m_pVBoxLayout);
 
@@ -116,21 +116,21 @@ qtractorMeter::qtractorMeter ( QWidget *pParent )
 	m_pPanSlider->setFixedHeight(20);
 	m_pVBoxLayout->addWidget(m_pPanSlider);
 
-	m_pPanSpinBox = new QDoubleSpinBox(this);
+	m_pPanSpinBox = new QDoubleSpinBox(/*this*/);
 	m_pPanSpinBox->setFont(font8);
 	m_pPanSpinBox->setFixedHeight(fm.lineSpacing() + 2);
 	m_pVBoxLayout->addWidget(m_pPanSpinBox);
 
-	m_pTopWidget = new QWidget(this);
+	m_pTopWidget = new QWidget(/*this*/);
 	m_pTopLayout = new QHBoxLayout();
-	m_pTopLayout->setMargin(2);
+	m_pTopLayout->setMargin(0);
 	m_pTopLayout->setSpacing(2);
 	m_pTopWidget->setLayout(m_pTopLayout);
 	m_pVBoxLayout->addWidget(m_pTopWidget);
 
-	m_pBoxWidget = new QWidget(this);
+	m_pBoxWidget = new QWidget(/*this*/);
 	m_pBoxLayout = new QHBoxLayout();
-	m_pBoxLayout->setMargin(2);
+	m_pBoxLayout->setMargin(0);
 	m_pBoxLayout->setSpacing(2);
 	m_pBoxWidget->setLayout(m_pBoxLayout);
 	m_pVBoxLayout->addWidget(m_pBoxWidget);
@@ -139,7 +139,7 @@ qtractorMeter::qtractorMeter ( QWidget *pParent )
 	m_pGainSlider->setFixedWidth(20);
 	m_pBoxLayout->addWidget(m_pGainSlider);
 
-	m_pGainSpinBox = new QDoubleSpinBox(this);
+	m_pGainSpinBox = new QDoubleSpinBox(/*this*/);
 	m_pGainSpinBox->setFont(font8);
 	m_pGainSpinBox->setFixedHeight(fm.lineSpacing() + 2);
 	m_pVBoxLayout->addWidget(m_pGainSpinBox);
