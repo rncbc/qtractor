@@ -105,6 +105,12 @@ protected slots:
 	// Bus (MIDI) passthru button slot
 	void thruButtonSlot(bool bOn);
 
+	// Bus context menu slots.
+	void busInputsSlot();
+	void busOutputsSlot();
+	void busPassthruSlot();
+	void busPropertiesSlot();
+
 	// Meter slider change slots.
 	void panChangedSlot(float);
 	void gainChangedSlot(float);
@@ -118,11 +124,18 @@ protected:
 	void updateMidiLabel();
 	void updateName();
 
+	// Special bus dispatchers.
+	void busConnections(qtractorBus::BusMode busMode);
+	void busPassthru(bool bPassthru);
+
 	// Mouse selection event handlers.
 	void mousePressEvent(QMouseEvent *);
 
 	// Mouse selection event handlers.
 	void mouseDoubleClickEvent(QMouseEvent *);
+
+	// Context menu request event handler.
+	void contextMenuEvent(QContextMenuEvent *);
 
 private:
 

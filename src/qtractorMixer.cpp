@@ -588,49 +588,128 @@ void qtractorMixerStrip::mouseDoubleClickEvent ( QMouseEvent */*pMouseEvent*/ )
 
 	if (m_pTrack) {
 		pMainForm->trackProperties();
-	} else if (m_pBus) {
-		qtractorBusForm busForm(pMainForm);
-		busForm.setBus(m_pBus);
-		busForm.exec();
+	} else {
+		busPropertiesSlot();
 	}
 }
 
 
-// Bus connections button slot
-void qtractorMixerStrip::busButtonSlot (void)
+// Context menu request event handler.
+void qtractorMixerStrip::contextMenuEvent ( QContextMenuEvent *pContextMenuEvent )
 {
 	if (m_pBus == NULL)
 		return;
 
-#ifdef CONFIG_DEBUG_0
-	fprintf(stderr, "qtractorMixerStrip::busButtonSlot() name=\"%s\"\n",
-		m_pLabel->text().toUtf8().constData());
-#endif
+	// Build the device context menu...
+	QMenu menu(this);
+	QAction *pAction;
+	
+	pAction = menu.addAction(
+		tr("&Inputs"), this, SLOT(busInputsSlot()));
+	pAction->setEnabled(m_pBus->busMode() & qtractorBus::Input);
 
-	// Here we go...
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm)
-		pMainForm->connections()->showBus(m_pBus, m_busMode);
+	pAction = menu.addAction(
+		tr("&Outputs"), this, SLOT(busOutputsSlot()));
+	pAction->setEnabled(m_pBus->busMode() & qtractorBus::Output);
+
+	menu.addSeparator();
+
+	pAction = menu.addAction(
+		tr("Pass-&through"), this, SLOT(busPassthruSlot()));
+	pAction->setEnabled(
+		(m_pBus->busMode() & qtractorBus::Duplex) == qtractorBus::Duplex);
+	pAction->setCheckable(true);
+	pAction->setChecked(m_pBus->isPassthru());
+
+	menu.addSeparator();
+
+	pAction = menu.addAction(
+		tr("&Properties..."), this, SLOT(busPropertiesSlot()));
+
+	menu.exec(pContextMenuEvent->globalPos());
 }
 
 
-// Bus (MIDI) passthru button slot
-void qtractorMixerStrip::thruButtonSlot ( bool bOn )
+// Bus connections dispatcher.
+void qtractorMixerStrip::busConnections ( qtractorBus::BusMode busMode )
 {
-	if (m_pBus == NULL || m_iUpdate > 0)
+	if (m_pBus == NULL)
 		return;
-
-#ifdef CONFIG_DEBUG_0
-	fprintf(stderr, "qtractorMixerStrip::thruButtonSlot(%d) name=\"%s\"\n",
-		int(bOn), m_pLabel->text().toUtf8().constData());
-#endif
 
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm == NULL)
 		return;
 
-	// Here we go (with a special bus update command)...
-	pMainForm->commands()->exec(new qtractorBusPassthruCommand(m_pBus, bOn));
+	// Here we go...
+	pMainForm->connections()->showBus(m_pBus, busMode);
+}
+
+
+// Bus pass-through dispatcher.
+void qtractorMixerStrip::busPassthru ( bool bPassthru )
+{
+	if (m_pBus == NULL)
+		return;
+
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm == NULL)
+		return;
+
+	// Here we go...
+	pMainForm->commands()->exec(
+		new qtractorBusPassthruCommand(m_pBus, bPassthru));
+}
+
+
+
+
+// Bus connections button slot
+void qtractorMixerStrip::busButtonSlot (void)
+{
+	busConnections(m_busMode);
+}
+
+
+// Bus passthru button slot
+void qtractorMixerStrip::thruButtonSlot ( bool bOn )
+{
+	if (m_iUpdate > 0)
+		return;
+
+	busPassthru(bOn);
+}
+
+
+// Show/edit bus input connections.
+void qtractorMixerStrip::busInputsSlot (void)
+{
+	busConnections(qtractorBus::Input);
+}
+
+
+// Show/edit bus output connections.
+void qtractorMixerStrip::busOutputsSlot (void)
+{
+	busConnections(qtractorBus::Output);
+}
+
+
+// Toggle bus passthru flag.
+void qtractorMixerStrip::busPassthruSlot (void)
+{
+	busPassthru(m_pBus && !m_pBus->isPassthru());
+}
+
+
+// Show/edit bus properties form.
+void qtractorMixerStrip::busPropertiesSlot (void)
+{
+	if (m_pBus == NULL)
+		return;
+
+	qtractorBusForm busForm(qtractorMainForm::getInstance());
+	busForm.setBus(m_pBus);
+	busForm.exec();
 }
 
 

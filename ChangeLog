@@ -7,6 +7,8 @@ CVS HEAD
 
 0.0.8   2007-11-05  Work in progress...
 
+- Bus context menu is now accessible from respective mixer strip.
+
 - Fixed a subtle crash-suicide issue when invoking the bus dialog
   with a double-click over the corresponding mixer bus strip; also
   fixed the sloppy ganguing mistake when changing mixer bus gain
