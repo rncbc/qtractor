@@ -179,7 +179,7 @@ void qtractorMixerStrip::initMixerStrip (void)
 		m_pBusButton->setToolButtonStyle(Qt::ToolButtonTextOnly);
 		m_pBusButton->setFont(font6);
 		m_pBusButton->setText(
-			m_busMode & qtractorBus::Input ? tr("in") : tr("out"));
+			m_busMode & qtractorBus::Input ? tr("ins") : tr("outs"));
 		m_pBusButton->setToolTip(tr("Connect %1").arg(m_pRack->name()));
 		m_pThruButton = new QToolButton(/*this*/);
 		m_pThruButton->setFixedHeight(14);
@@ -615,7 +615,7 @@ void qtractorMixerStrip::contextMenuEvent ( QContextMenuEvent *pContextMenuEvent
 	menu.addSeparator();
 
 	pAction = menu.addAction(
-		tr("Pass-&through"), this, SLOT(busPassthruSlot()));
+		tr("&Pass-through"), this, SLOT(busPassthruSlot()));
 	pAction->setEnabled(
 		(m_pBus->busMode() & qtractorBus::Duplex) == qtractorBus::Duplex);
 	pAction->setCheckable(true);
@@ -624,7 +624,7 @@ void qtractorMixerStrip::contextMenuEvent ( QContextMenuEvent *pContextMenuEvent
 	menu.addSeparator();
 
 	pAction = menu.addAction(
-		tr("&Properties..."), this, SLOT(busPropertiesSlot()));
+		tr("&Buses..."), this, SLOT(busPropertiesSlot()));
 
 	menu.exec(pContextMenuEvent->globalPos());
 }

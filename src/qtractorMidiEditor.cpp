@@ -361,6 +361,9 @@ qtractorMidiEditor::qtractorMidiEditor ( QWidget *pParent )
 	m_bNoteColor  = false;
 	m_bValueColor = false;
 
+	// Which widget holds focus on drag-paste?
+	m_pEditPaste = NULL;
+
 	// Create child frame widgets...
 	QSplitter *pSplitter = new QSplitter(Qt::Horizontal, this);
 	QWidget *pVBoxLeft   = new QWidget(pSplitter);
@@ -1083,6 +1086,9 @@ void qtractorMidiEditor::pasteClipboard (void)
 	m_dragState = DragPaste;
 	m_posDrag   = m_rectDrag.topLeft();
 	m_posStep   = QPoint(0, 0);
+
+	// This is the one which is holding focus on drag-paste.
+	m_pEditPaste = pScrollView;
 
 	// It doesn't matter which one, both pasteable views are due...
 	QCursor cursor(QPixmap(":/icons/editPaste.png"), 20, 20);
@@ -2244,6 +2250,8 @@ void qtractorMidiEditor::resetDragState ( qtractorScrollView *pScrollView )
 	m_posDelta = QPoint(0, 0);
 	m_posStep  = QPoint(0, 0);
 
+	m_pEditPaste = NULL;
+
 	if (m_pRubberBand) {
 		m_pRubberBand->hide();
 		delete m_pRubberBand;
@@ -2662,7 +2670,7 @@ bool qtractorMidiEditor::keyStep ( int iKey )
 // Focus lost event.
 void qtractorMidiEditor::focusOut ( qtractorScrollView *pScrollView )
 {
-	if (m_dragState == DragStep || m_dragState == DragPaste)
+	if (m_dragState == DragStep && m_pEditPaste == pScrollView)
 		resetDragState(pScrollView);
 }
 

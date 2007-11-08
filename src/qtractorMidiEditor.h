@@ -399,6 +399,9 @@ private:
 	// Step (keyboard) drag-move position
 	QPoint m_posStep;
 
+	// Which widget holds focus on drag-paste?
+	qtractorScrollView *m_pEditPaste;
+
 	// Viewport rubber-banding stuff.
 	qtractorRubberBand *m_pRubberBand;
 

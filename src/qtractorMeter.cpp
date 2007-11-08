@@ -112,7 +112,7 @@ qtractorMeter::qtractorMeter ( QWidget *pParent )
 	m_pVBoxLayout->setSpacing(2);
 	QWidget::setLayout(m_pVBoxLayout);
 
-	m_pPanSlider = new qtractorSlider(Qt::Horizontal, this);
+	m_pPanSlider = new qtractorSlider(Qt::Horizontal/*, this*/);
 	m_pPanSlider->setFixedHeight(20);
 	m_pVBoxLayout->addWidget(m_pPanSlider);
 
@@ -130,12 +130,12 @@ qtractorMeter::qtractorMeter ( QWidget *pParent )
 
 	m_pBoxWidget = new QWidget(/*this*/);
 	m_pBoxLayout = new QHBoxLayout();
-	m_pBoxLayout->setMargin(0);
+	m_pBoxLayout->setMargin(2);
 	m_pBoxLayout->setSpacing(2);
 	m_pBoxWidget->setLayout(m_pBoxLayout);
 	m_pVBoxLayout->addWidget(m_pBoxWidget);
 
-	m_pGainSlider = new qtractorSlider(Qt::Vertical, m_pBoxWidget);
+	m_pGainSlider = new qtractorSlider(Qt::Vertical/*, m_pBoxWidget*/);
 	m_pGainSlider->setFixedWidth(20);
 	m_pBoxLayout->addWidget(m_pGainSlider);
 
