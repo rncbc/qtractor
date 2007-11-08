@@ -47,8 +47,7 @@ qtractorMeterScale::qtractorMeterScale ( qtractorMeter *pMeter,
 	QWidget::setMinimumWidth(16);
 //	QWidget::setBackgroundRole(QPalette::Mid);
 
-	const QFont& font = QWidget::font();
-	QWidget::setFont(QFont(font.family(), font.pointSize() - 2));
+	QWidget::setFont(QFont(font().family(), 6));
 }
 
 // Default destructor.
@@ -91,7 +90,7 @@ void qtractorMeterScale::paintEvent ( QPaintEvent * )
 
 	m_iLastY = 0;
 
-//	painter.setPen(Qt::darkGray);
+	painter.setPen(Qt::darkGray);
 
 	paintScale(&painter);
 }
