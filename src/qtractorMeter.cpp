@@ -87,13 +87,13 @@ void qtractorMeterScale::drawLineLabel ( QPainter *p,
 // Paint event handler.
 void qtractorMeterScale::paintEvent ( QPaintEvent * )
 {
-	QPainter p(this);
+	QPainter painter(this);
 
 	m_iLastY = 0;
 
-	p.setPen(Qt::darkGray);
+//	painter.setPen(Qt::darkGray);
 
-	paintScale(&p);
+	paintScale(&painter);
 }
 
 

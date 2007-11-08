@@ -54,7 +54,7 @@ qtractorMidiMeterScale::qtractorMidiMeterScale (
 	qtractorMidiMeter *pMidiMeter, QWidget *pParent )
 	: qtractorMeterScale(pMidiMeter, pParent)
 {
-	pParent->layout()->addWidget(this);
+	pMidiMeter->boxLayout()->addWidget(this);
 }
 
 
@@ -98,7 +98,7 @@ qtractorMidiMeterValue::qtractorMidiMeterValue(
 	QFrame::setFrameShape(QFrame::StyledPanel);
 	QFrame::setFrameShadow(QFrame::Sunken);
 
-	pParent->layout()->addWidget(this);
+	pMidiMeter->boxLayout()->addWidget(this);
 }
 
 // Default destructor.
@@ -204,7 +204,7 @@ qtractorMidiMeter::qtractorMidiMeter ( qtractorMidiMonitor *pMidiMonitor,
 	m_iMidiCount = 0;
 
 	topLayout()->addStretch();
-	m_pMidiLabel = new QLabel(topWidget());
+	m_pMidiLabel = new QLabel(/*topWidget()*/);
 	m_pMidiLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
 	m_pMidiLabel->setPixmap(*m_pMidiPixmap[LedOff]);
 	topLayout()->addWidget(m_pMidiLabel);
@@ -213,8 +213,8 @@ qtractorMidiMeter::qtractorMidiMeter ( qtractorMidiMonitor *pMidiMonitor,
 	gainSpinBox()->setMaximum(100.0f);
 	gainSpinBox()->setToolTip(tr("Volume (%)"));
 
-	m_pMidiScale = new qtractorMidiMeterScale(this, boxWidget());
-	m_pMidiValue = new qtractorMidiMeterValue(this, boxWidget());
+	m_pMidiScale = new qtractorMidiMeterScale(this/*, boxWidget()*/);
+	m_pMidiValue = new qtractorMidiMeterValue(this/*, boxWidget()*/);
 
 	setPeakFalloff(QTRACTOR_MIDI_METER_PEAK_FALLOFF);
 

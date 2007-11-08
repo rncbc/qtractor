@@ -102,7 +102,7 @@ qtractorAudioMeterScale::qtractorAudioMeterScale (
 	qtractorAudioMeter *pAudioMeter, QWidget *pParent )
 	: qtractorMeterScale(pAudioMeter, pParent)
 {
-	pParent->layout()->addWidget(this);
+	pAudioMeter->boxLayout()->addWidget(this);
 }
 
 
@@ -150,7 +150,7 @@ qtractorAudioMeterValue::qtractorAudioMeterValue(
 	QFrame::setFrameShape(QFrame::StyledPanel);
 	QFrame::setFrameShadow(QFrame::Sunken);
 
-	pParent->layout()->addWidget(this);
+	pAudioMeter->boxLayout()->addWidget(this);
 }
 
 // Default destructor.
@@ -284,7 +284,7 @@ qtractorAudioMeter::qtractorAudioMeter ( qtractorAudioMonitor *pAudioMonitor,
 	m_pAudioMonitor = pAudioMonitor;
 
 	m_iChannels     = 0;
-	m_pAudioScale   = new qtractorAudioMeterScale(this, boxWidget());
+	m_pAudioScale   = new qtractorAudioMeterScale(this/*, boxWidget()*/);
 	m_fScale        = 0.0f;
 	m_ppAudioValues = NULL;
 
@@ -390,7 +390,7 @@ void qtractorAudioMeter::reset (void)
 	if (m_iChannels > 0) {
 		m_ppAudioValues = new qtractorAudioMeterValue *[m_iChannels];
 		for (unsigned short i = 0; i < m_iChannels; i++) {
-			m_ppAudioValues[i] = new qtractorAudioMeterValue(this, i, boxWidget());
+			m_ppAudioValues[i] = new qtractorAudioMeterValue(this, i/*, boxWidget()*/);
 			m_ppAudioValues[i]->show();
 		}
 	}
