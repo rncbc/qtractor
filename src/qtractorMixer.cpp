@@ -597,8 +597,17 @@ void qtractorMixerStrip::mouseDoubleClickEvent ( QMouseEvent */*pMouseEvent*/ )
 // Context menu request event handler.
 void qtractorMixerStrip::contextMenuEvent ( QContextMenuEvent *pContextMenuEvent )
 {
-	if (m_pBus == NULL)
+	// Always try proper selection...
+	m_pRack->setSelectedStrip(this);
+
+	// If not a bus (surely a track?), delegate...
+	if (m_pBus == NULL) {
+		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+		if (pMainForm)
+			pMainForm->trackMenu()->exec(pContextMenuEvent->globalPos());
+		// Bail out...
 		return;
+	}
 
 	// Build the device context menu...
 	QMenu menu(this);

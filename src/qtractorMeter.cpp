@@ -90,7 +90,7 @@ void qtractorMeterScale::paintEvent ( QPaintEvent * )
 
 	m_iLastY = 0;
 
-	painter.setPen(Qt::darkGray);
+//	painter.setPen(Qt::darkGray);
 
 	paintScale(&painter);
 }
