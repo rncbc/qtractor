@@ -114,7 +114,7 @@ void qtractorAudioMeterScale::paintScale ( QPainter *p )
 	if (pAudioMeter == NULL)
 		return;
 
-	p->setWindow(0, -4, QWidget::width(), QWidget::height() + 8);
+//	p->setWindow(0, -4, QWidget::width(), QWidget::height() + 8);
 
 	drawLineLabel(p, pAudioMeter->iec_level(qtractorAudioMeter::Color0dB), "0");
 	drawLineLabel(p, pAudioMeter->iec_level(qtractorAudioMeter::Color3dB), "3");

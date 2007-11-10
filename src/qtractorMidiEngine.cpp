@@ -2360,7 +2360,7 @@ void qtractorMidiBus::setPanning ( unsigned short iChannel, float fPanning )
 
 
 // Document element methods.
-bool qtractorMidiBus::loadMidiMap ( qtractorSessionDocument *pDocument,
+bool qtractorMidiBus::loadMidiMap ( qtractorSessionDocument * /*pDocument*/,
 	QDomElement *pElement )
 {
 	m_patches.clear();

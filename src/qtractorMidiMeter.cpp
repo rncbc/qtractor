@@ -67,7 +67,7 @@ void qtractorMidiMeterScale::paintScale ( QPainter *pPainter )
 		return;
 
 	int h = QWidget::height() - 4;
-	int d = (h - 4) / 5;
+	int d = (h / 5);
 	int n = 100;
 	while (h > 0) {
 		drawLineLabel(pPainter, h, QString::number(n));
