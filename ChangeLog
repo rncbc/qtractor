@@ -3,9 +3,7 @@ Qtractor - An Audio/MIDI multi-track sequencer
 
 ChangeLog
 
-CVS HEAD
-
-0.0.8   2007-11-10  Work in progress...
+0.0.8   2007-11-12  The Twelfth Tight
 
 - Bus context menu is now accessible from respective mixer strip.
 
