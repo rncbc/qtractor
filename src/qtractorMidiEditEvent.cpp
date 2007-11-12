@@ -297,7 +297,7 @@ void qtractorMidiEditEvent::updatePixmap ( int cx, int /*cy*/ )
 		if (x1 < 0)
 			x1 = 0;
 		if (x1 < w)
-			p.fillRect(x1, 0, w - x1, h, rgbLight.light(155));
+			p.fillRect(x1, 0, w - x1, h, rgbLight.light(125));
 	}
 
 	// Draw horizontal lines...

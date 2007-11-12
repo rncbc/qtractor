@@ -2035,12 +2035,13 @@ void qtractorMidiEditor::executeDragResize ( qtractorScrollView *pScrollView,
 				pEvent->setDuration(iDuration);
 				pEditCommand->insertEvent(pEvent);
 			} else {
-				pEditCommand->resizeEventTime2(pEvent, iTime, iDuration);
+				pEditCommand->resizeEventTime(pEvent, iTime, iDuration);
 			}
 			m_last.note = pEvent->note();
 		//	m_last.duration = iDuration;
 			break;
 		case ResizeNoteRight:
+			iTime = pEvent->time();
 			iDuration = long(pEvent->duration()) + iTimeDelta;
 			if (iDuration < 0)
 				iDuration = 0;
@@ -2048,7 +2049,7 @@ void qtractorMidiEditor::executeDragResize ( qtractorScrollView *pScrollView,
 				pEvent->setDuration(iDuration);
 				pEditCommand->insertEvent(pEvent);
 			} else {
-				pEditCommand->resizeEventDuration(pEvent, iDuration);
+				pEditCommand->resizeEventTime(pEvent, iTime, iDuration);
 			}
 			m_last.note = pEvent->note();
 		//	m_last.duration = iDuration;
@@ -2311,8 +2312,10 @@ bool qtractorMidiEditor::adjustEditCommand (
 					unsigned long iDuration = pPrevEvent->duration();
 					pPrevEvent->setDuration(iTime - iPrevTime);
 					if (!pEditCommand->findEvent(pPrevEvent,
-							qtractorMidiEditCommand::ResizeEventDuration))
-						pEditCommand->resizeEventDuration(pPrevEvent, iDuration);
+							qtractorMidiEditCommand::ResizeEventTime)) {
+						pEditCommand->resizeEventTime(
+							pPrevEvent, iPrevTime, iDuration);
+					}
 					// Right-side event...
 					if (iTimeEnd < iPrevTimeEnd) {
 						qtractorMidiEvent *pNewEvent

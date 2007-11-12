@@ -544,7 +544,7 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::editCommand (
 				iDuration = quantize(iDuration,
 					m_ui.QuantizeDurationComboBox->currentIndex(), 0);
 			}
-			pEditCommand->resizeEventTime2(pEvent, iTime, iDuration);
+			pEditCommand->resizeEventTime(pEvent, iTime, iDuration);
 		}
 		// Transpose tool...
 		if (m_ui.TransposeCheckBox->isChecked()) {
@@ -608,7 +608,7 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::editCommand (
 					iTime += (p * (q - (::rand() % (q << 1)))) / 100;
 					if (iTime < 0)
 						iTime = 0;
-					pEditCommand->resizeEventTime(pEvent, iTime);
+					pEditCommand->resizeEventTime(pEvent, iTime, iDuration);
 				}
 			}
 			if (m_ui.RandomizeDurationCheckBox->isChecked()) {
@@ -617,7 +617,7 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::editCommand (
 					iDuration += (p * (q - (::rand() % (q << 1)))) / 100;
 					if (iDuration < 0)
 						iDuration = 0;
-					pEditCommand->resizeEventDuration(pEvent, iDuration);
+					pEditCommand->resizeEventTime(pEvent, iTime, iDuration);
 				}
 			}
 			if (m_ui.RandomizeValueCheckBox->isChecked()) {
@@ -648,7 +648,7 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::editCommand (
 			if (m_ui.ResizeDurationCheckBox->isChecked()) {
 				iDuration = m_pTimeScale->tickFromFrame(
 					m_ui.ResizeDurationSpinBox->value());
-				pEditCommand->resizeEventDuration(pEvent, iDuration);
+				pEditCommand->resizeEventTime(pEvent, iTime, iDuration);
 			}
 			if (m_ui.ResizeValueCheckBox->isChecked()) {
 				iValue = m_ui.ResizeValueSpinBox->value();
