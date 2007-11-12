@@ -262,7 +262,7 @@ void qtractorMidiEditView::updatePixmap ( int cx, int cy )
 	const QColor& rgbBack  = m_pEditor->background();
 	const QColor& rgbDark  = pal.dark().color();
 	const QColor& rgbLight = pal.mid().color();
-	const QColor& rgbSharp = rgbLight.light(150);
+	const QColor& rgbSharp = pal.base().color().dark(105);
 
 	// Show that we may have clip limits...
 	if (m_pEditor->length() > 0) {
