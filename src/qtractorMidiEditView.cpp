@@ -248,8 +248,15 @@ void qtractorMidiEditView::updatePixmap ( int cx, int cy )
 
 	const QPalette& pal = qtractorScrollView::palette();
 
+	const QColor& rgbBase  = pal.base().color();
+	const QColor& rgbFore  = m_pEditor->foreground();
+	const QColor& rgbBack  = m_pEditor->background();
+	const QColor& rgbDark  = pal.dark().color();
+	const QColor& rgbLight = pal.mid().color();
+	const QColor& rgbSharp = rgbBase.dark(110);
+
 	m_pixmap = QPixmap(w, h);
-	m_pixmap.fill(pal.base().color());
+	m_pixmap.fill(rgbBase);
 
 	qtractorTimeScale *pTimeScale = m_pEditor->timeScale();
 	if (pTimeScale == NULL)
@@ -258,19 +265,13 @@ void qtractorMidiEditView::updatePixmap ( int cx, int cy )
 	QPainter p(&m_pixmap);
 	p.initFrom(this);
 
-	const QColor& rgbFore  = m_pEditor->foreground();
-	const QColor& rgbBack  = m_pEditor->background();
-	const QColor& rgbDark  = pal.dark().color();
-	const QColor& rgbLight = pal.mid().color();
-	const QColor& rgbSharp = pal.base().color().dark(105);
-
 	// Show that we may have clip limits...
 	if (m_pEditor->length() > 0) {
 		int x1 = pTimeScale->pixelFromFrame(m_pEditor->length()) - cx;
 		if (x1 < 0)
 			x1 = 0;
 		if (x1 < w)
-			p.fillRect(x1, 0, w - x1, h, rgbLight.light(125));
+			p.fillRect(x1, 0, w - x1, h, rgbBase.dark(105));
 	}
 
 	// Draw horizontal lines...
