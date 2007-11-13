@@ -707,7 +707,7 @@
     <string>Transport loop</string>
    </property>
    <property name="shortcut" >
-    <string>Ctrl+L</string>
+    <string>Shift+Ctrl+L</string>
    </property>
   </action>
   <action name="transportLoopSetAction" >
@@ -721,7 +721,7 @@
     <string>Transport loop set</string>
    </property>
    <property name="shortcut" >
-    <string>Shift+Ctrl+L</string>
+    <string>Ctrl+L</string>
    </property>
   </action>
   <action name="transportPlayAction" >

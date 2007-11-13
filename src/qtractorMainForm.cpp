@@ -2645,7 +2645,7 @@ void qtractorMainForm::stabilizeForm (void)
 			|| m_iPlayHead < m_pSession->editHead()
 			|| m_iPlayHead < m_pSession->editTail()));
 	m_ui.transportLoopAction->setEnabled(bEnabled
-		&& (m_pSession->isLooping() || bSelectable));
+		&& (bLooping || bSelectable));
 	m_ui.transportLoopSetAction->setEnabled(bEnabled && bSelectable);
 	m_ui.transportRecordAction->setEnabled(m_pSession->recordTracks() > 0);
 
