@@ -397,7 +397,7 @@ void qtractorMidiClip::process ( unsigned long iFrameStart,
 	qtractorMidiEvent *pEvent = m_playCursor.seek(m_pSeq, iTimeSeek);
 	while (pEvent) {
 		unsigned long iTimeEvent = iTimeClip + pEvent->time();
-		if (iTimeEvent > iTimeEnd)
+		if (iTimeEvent >= iTimeEnd)
 			break;
 		if (iTimeEvent >= iTimeStart
 			&& (!bMute || pEvent->type() != qtractorMidiEvent::NOTEON))
