@@ -126,6 +126,7 @@ public:
 	bool bMidiFileToolbar;
 	bool bMidiEditToolbar;
 	bool bMidiViewToolbar;
+	bool bMidiTransportToolbar;
 	bool bMidiNoteDuration;
 	bool bMidiNoteColor;
 	bool bMidiValueColor;

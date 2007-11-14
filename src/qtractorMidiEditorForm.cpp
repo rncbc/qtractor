@@ -255,6 +255,9 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	QObject::connect(m_ui.viewToolbarViewAction,
 		SIGNAL(triggered(bool)),
 		SLOT(viewToolbarView(bool)));
+	QObject::connect(m_ui.viewToolbarTransportAction,
+		SIGNAL(triggered(bool)),
+		SLOT(viewToolbarTransport(bool)));
 	QObject::connect(m_ui.viewNoteDurationAction,
 		SIGNAL(triggered(bool)),
 		SLOT(viewNoteDuration(bool)));
@@ -315,6 +318,7 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 		m_ui.viewToolbarFileAction->setChecked(pOptions->bMidiFileToolbar);
 		m_ui.viewToolbarEditAction->setChecked(pOptions->bMidiEditToolbar);
 		m_ui.viewToolbarViewAction->setChecked(pOptions->bMidiViewToolbar);
+		m_ui.viewToolbarTransportAction->setChecked(pOptions->bMidiTransportToolbar);
 		m_ui.viewNoteDurationAction->setChecked(pOptions->bMidiNoteDuration);
 		m_ui.viewNoteColorAction->setChecked(pOptions->bMidiNoteColor);
 		m_ui.viewValueColorAction->setChecked(pOptions->bMidiValueColor);
@@ -330,6 +334,7 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 		viewToolbarFile(pOptions->bMidiFileToolbar);
 		viewToolbarEdit(pOptions->bMidiEditToolbar);
 		viewToolbarView(pOptions->bMidiViewToolbar);
+		viewToolbarTransport(pOptions->bMidiTransportToolbar);
 		m_pMidiEditor->setEditMode(pOptions->bMidiEditMode);
 		m_pMidiEditor->setNoteColor(pOptions->bMidiNoteColor);
 		m_pMidiEditor->setValueColor(pOptions->bMidiValueColor);
@@ -358,6 +363,15 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 		QObject::connect(m_ui.transportBackwardAction,
 			SIGNAL(triggered(bool)),
 			pMainForm, SLOT(transportBackward()));
+		QObject::connect(m_ui.transportRewindAction,
+			SIGNAL(triggered(bool)),
+			pMainForm, SLOT(transportRewind()));
+		QObject::connect(m_ui.transportFastForwardAction,
+			SIGNAL(triggered(bool)),
+			pMainForm, SLOT(transportFastForward()));
+		QObject::connect(m_ui.transportForwardAction,
+			SIGNAL(triggered(bool)),
+			pMainForm, SLOT(transportForward()));
 		QObject::connect(m_ui.transportLoopAction,
 			SIGNAL(triggered(bool)),
 			pMainForm, SLOT(transportLoop()));
@@ -434,6 +448,7 @@ bool qtractorMidiEditorForm::queryClose (void)
 			pOptions->bMidiFileToolbar = m_ui.fileToolbar->isVisible();
 			pOptions->bMidiEditToolbar = m_ui.editToolbar->isVisible();
 			pOptions->bMidiViewToolbar = m_ui.viewToolbar->isVisible();
+			pOptions->bMidiTransportToolbar = m_ui.transportToolbar->isVisible();
 			pOptions->bMidiEditMode = m_ui.editModeOnAction->isChecked();
 			pOptions->bMidiNoteDuration = m_ui.viewNoteDurationAction->isChecked();
 			pOptions->bMidiNoteColor = m_ui.viewNoteColorAction->isChecked();
@@ -457,7 +472,7 @@ void qtractorMidiEditorForm::showEvent ( QShowEvent *pShowEvent )
 {
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm)
-		pMainForm->addEditor(m_pMidiEditor);
+		pMainForm->addEditorForm(this);
 
 	QMainWindow::showEvent(pShowEvent);
 }
@@ -470,7 +485,7 @@ void qtractorMidiEditorForm::closeEvent ( QCloseEvent *pCloseEvent )
 		// Remove this one from main-form list...
 		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 		if (pMainForm)
-			pMainForm->removeEditor(m_pMidiEditor);
+			pMainForm->removeEditorForm(this);
 		// Should always (re)open the clip...
 		qtractorMidiClip *pMidiClip = m_pMidiEditor->midiClip();
 		if (pMidiClip && pMidiClip->isDirty()) {
@@ -880,6 +895,17 @@ void qtractorMidiEditorForm::viewToolbarView ( bool bOn )
 }
 
 
+// Show/hide the transport-toolbar.
+void qtractorMidiEditorForm::viewToolbarTransport ( bool bOn )
+{
+	if (bOn) {
+		m_ui.transportToolbar->show();
+	} else {
+		m_ui.transportToolbar->hide();
+	}
+}
+
+
 // View note (pitch) coloring.
 void qtractorMidiEditorForm::viewNoteColor ( bool bOn )
 {
@@ -1033,6 +1059,35 @@ void qtractorMidiEditorForm::stabilizeForm (void)
 
 	m_pDurationLabel->setText(
 		(m_pMidiEditor->timeScale())->textFromTick(pSeq->duration()));
+
+	qtractorSession  *pSession  = NULL;
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm)
+		pSession = pMainForm->session();
+	if (pSession) {
+		unsigned long iPlayHead = pSession->playHead();
+		bool bPlaying    = pSession->isPlaying();
+		bool bRecording  = pSession->isRecording();
+		bool bLooping    = pSession->isLooping();
+		bool bEnabled    = (!bPlaying || !bRecording);
+		bool bSelectable = (pSession->editHead() < pSession->editTail());
+		bool bBumped = (bEnabled && (pSession->playHead() > 0 || bPlaying));
+		int iRolling = pMainForm->rolling();
+		m_ui.transportBackwardAction->setEnabled(bBumped);
+		m_ui.transportRewindAction->setEnabled(bBumped);
+		m_ui.transportFastForwardAction->setEnabled(bEnabled);
+		m_ui.transportForwardAction->setEnabled(bEnabled
+			&& (iPlayHead < pSession->sessionLength()
+				|| iPlayHead < pSession->editHead()
+				|| iPlayHead < pSession->editTail()));
+		m_ui.transportLoopAction->setEnabled(bEnabled
+			&& (bLooping || bSelectable));
+		m_ui.transportLoopSetAction->setEnabled(bEnabled && bSelectable);
+		m_ui.transportRewindAction->setChecked(iRolling < 0);
+		m_ui.transportFastForwardAction->setChecked(iRolling > 0);
+		m_ui.transportPlayAction->setChecked(bPlaying);
+		m_ui.transportLoopAction->setChecked(bLooping);
+	}
 }
 
 

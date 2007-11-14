@@ -40,6 +40,7 @@ class qtractorMixer;
 class qtractorMmcEvent;
 class qtractorSpinBox;
 
+class qtractorMidiEditorForm;
 class qtractorMidiEditor;
 
 class QLabel;
@@ -86,8 +87,8 @@ public:
 	void appendMessagesText(const QString& s);
 	void appendMessagesError(const QString& s);
 
-	void addEditor(qtractorMidiEditor *pEditor);
-	void removeEditor(qtractorMidiEditor *pEditor);
+	void addEditorForm(qtractorMidiEditorForm *pEditorForm);
+	void removeEditorForm(qtractorMidiEditorForm *pEditorForm);
 
 	QMenu *editMenu() const
 		{ return m_ui.editMenu; }
@@ -95,6 +96,8 @@ public:
 		{ return m_ui.trackMenu; }
 
 	void contextMenuEvent(QContextMenuEvent *pEvent);
+
+	int rolling() const;
 
 public slots:
 
@@ -295,7 +298,7 @@ private:
 	QPalette *m_paletteItems[PaletteItems];
 
 	// Name says it all...
-	QList<qtractorMidiEditor *> m_editors;
+	QList<qtractorMidiEditorForm *> m_editors;
 
 	// Kind-of singleton reference.
 	static qtractorMainForm *g_pMainForm;

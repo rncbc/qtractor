@@ -108,6 +108,7 @@
      <addaction name="viewToolbarFileAction" />
      <addaction name="viewToolbarEditAction" />
      <addaction name="viewToolbarViewAction" />
+     <addaction name="viewToolbarTransportAction" />
     </widget>
     <addaction name="viewMenubarAction" />
     <addaction name="viewStatusbarAction" />
@@ -122,6 +123,20 @@
     <addaction name="separator" />
     <addaction name="viewRefreshAction" />
    </widget>
+   <widget class="QMenu" name="transportMenu" >
+    <property name="title" >
+     <string>T&amp;ransport</string>
+    </property>
+    <addaction name="transportBackwardAction" />
+    <addaction name="transportRewindAction" />
+    <addaction name="transportFastForwardAction" />
+    <addaction name="transportForwardAction" />
+    <addaction name="separator" />
+    <addaction name="transportLoopAction" />
+    <addaction name="transportLoopSetAction" />
+    <addaction name="separator" />
+    <addaction name="transportPlayAction" />
+   </widget>
    <widget class="QMenu" name="helpMenu" >
     <property name="title" >
      <string>&amp;Help</string>
@@ -133,6 +148,7 @@
    <addaction name="editMenu" />
    <addaction name="viewMenu" />
    <addaction name="toolsMenu" />
+   <addaction name="transportMenu" />
    <addaction name="helpMenu" />
   </widget>
   <widget class="QMenu" name="contextMenu" >
@@ -199,6 +215,22 @@
    </attribute>
    <addaction name="viewPreviewAction" />
    <addaction name="viewFollowAction" />
+  </widget>
+  <widget class="QToolBar" name="transportToolbar" >
+   <property name="orientation" >
+    <enum>Qt::Horizontal</enum>
+   </property>
+   <attribute name="toolBarArea" >
+    <number>4</number>
+   </attribute>
+   <addaction name="transportBackwardAction" />
+   <addaction name="transportRewindAction" />
+   <addaction name="transportFastForwardAction" />
+   <addaction name="transportForwardAction" />
+   <addaction name="separator" />
+   <addaction name="transportLoopAction" />
+   <addaction name="separator" />
+   <addaction name="transportPlayAction" />
   </widget>
   <widget class="QToolBar" name="editViewToolbar" >
    <property name="orientation" >
@@ -565,6 +597,23 @@
     <string>Show/hide the view toolbar</string>
    </property>
   </action>
+  <action name="viewToolbarTransportAction" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="text" >
+    <string>T&amp;ransport</string>
+   </property>
+   <property name="iconText" >
+    <string>Transport toolbar</string>
+   </property>
+   <property name="toolTip" >
+    <string>Transport toolbar</string>
+   </property>
+   <property name="statusTip" >
+    <string>Show/hide the transport toolbar</string>
+   </property>
+  </action>
   <action name="viewNoteDurationAction" >
    <property name="checkable" >
     <bool>true</bool>
@@ -688,6 +737,63 @@
    </property>
    <property name="shortcut" >
     <string>Backspace</string>
+   </property>
+  </action>
+  <action name="transportRewindAction" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="icon" >
+    <iconset resource="../icons/qtractor.qrc" >:/icons/transportRewind.png</iconset>
+   </property>
+   <property name="text" >
+    <string>Re&amp;wind</string>
+   </property>
+   <property name="iconText" >
+    <string>Rewind</string>
+   </property>
+   <property name="statusTip" >
+    <string>Transport rewind</string>
+   </property>
+   <property name="shortcut" >
+    <string/>
+   </property>
+  </action>
+  <action name="transportFastForwardAction" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="icon" >
+    <iconset resource="../icons/qtractor.qrc" >:/icons/transportFastForward.png</iconset>
+   </property>
+   <property name="text" >
+    <string>F&amp;ast Forward</string>
+   </property>
+   <property name="iconText" >
+    <string>Fast forward</string>
+   </property>
+   <property name="statusTip" >
+    <string>Transport fast forward</string>
+   </property>
+   <property name="shortcut" >
+    <string/>
+   </property>
+  </action>
+  <action name="transportForwardAction" >
+   <property name="icon" >
+    <iconset resource="../icons/qtractor.qrc" >:/icons/transportForward.png</iconset>
+   </property>
+   <property name="text" >
+    <string>&amp;Forward</string>
+   </property>
+   <property name="iconText" >
+    <string>Forward</string>
+   </property>
+   <property name="statusTip" >
+    <string>Transport forward</string>
+   </property>
+   <property name="shortcut" >
+    <string/>
    </property>
   </action>
   <action name="transportLoopAction" >

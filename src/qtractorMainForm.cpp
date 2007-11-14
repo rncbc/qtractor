@@ -50,14 +50,15 @@
 #include "qtractorAudioClip.h"
 #include "qtractorMidiClip.h"
 
-#include "qtractorMidiEditor.h"
-
 #include "qtractorExportForm.h"
 #include "qtractorSessionForm.h"
 #include "qtractorOptionsForm.h"
 #include "qtractorConnectForm.h"
 #include "qtractorInstrumentForm.h"
 #include "qtractorBusForm.h"
+
+#include "qtractorMidiEditorForm.h"
+#include "qtractorMidiEditor.h"
 
 #include <QApplication>
 #include <QMessageBox>
@@ -1075,6 +1076,12 @@ qtractorInstrumentList *qtractorMainForm::instruments (void) const
 qtractorThumbView *qtractorMainForm::thumbView (void) const
 {
 	return m_pThumbView;
+}
+
+// The session transport fast-rolling direction accessor.
+int qtractorMainForm::rolling (void) const
+{
+	return m_iTransportRolling;
 }
 
 
@@ -2663,6 +2670,11 @@ void qtractorMainForm::stabilizeForm (void)
 
 	m_pThumbView->update();
 	m_pThumbView->updateThumb();
+
+	// Update editors too...
+	QListIterator<qtractorMidiEditorForm *> iter(m_editors);
+	while (iter.hasNext())
+		(iter.next())->stabilizeForm();
 }
 
 
@@ -2999,17 +3011,17 @@ void qtractorMainForm::updateMessagesCapture (void)
 //-------------------------------------------------------------------------
 // qtractorMainForm -- Editors stuff.
 
-void qtractorMainForm::addEditor ( qtractorMidiEditor *pEditor )
+void qtractorMainForm::addEditorForm ( qtractorMidiEditorForm *pEditorForm )
 {
-	if (m_editors.indexOf(pEditor) < 0)
-		m_editors.append(pEditor);
+	if (m_editors.indexOf(pEditorForm) < 0)
+		m_editors.append(pEditorForm);
 }
 
-void qtractorMainForm::removeEditor ( qtractorMidiEditor *pEditor )
+void qtractorMainForm::removeEditorForm ( qtractorMidiEditorForm *pEditorForm )
 {
-	int iEditor = m_editors.indexOf(pEditor);
-	if (iEditor >= 0)
-		m_editors.removeAt(iEditor);
+	int iEditorForm = m_editors.indexOf(pEditorForm);
+	if (iEditorForm >= 0)
+		m_editors.removeAt(iEditorForm);
 }
 
 
@@ -3033,9 +3045,9 @@ void qtractorMainForm::timerSlot (void)
 			m_pTracks->trackView()->setPlayHead(iPlayHead,
 				m_ui.transportFollowAction->isChecked());
 			// Update editors play-head...
-			QListIterator<qtractorMidiEditor *> iter(m_editors);
+			QListIterator<qtractorMidiEditorForm *> iter(m_editors);
 			while (iter.hasNext())
-				(iter.next())->setPlayHead(iPlayHead);
+				(iter.next()->editor())->setPlayHead(iPlayHead);
 		}
 		if (!bPlaying && m_iTransportRolling == 0 && m_iTransportStep == 0) {
 			// Update transport status anyway...
@@ -3360,9 +3372,9 @@ void qtractorMainForm::selectionNotifySlot ( qtractorMidiEditor *pMidiEditor )
 	}
 
 	// Update editors edit-head/tails...
-	QListIterator<qtractorMidiEditor *> iter(m_editors);
+	QListIterator<qtractorMidiEditorForm *> iter(m_editors);
 	while (iter.hasNext()) {
-		qtractorMidiEditor *pEditor = iter.next();
+		qtractorMidiEditor *pEditor = (iter.next())->editor();
 		if (pEditor != pMidiEditor) {
 			pEditor->setEditHead(iEditHead);
 			pEditor->setEditTail(iEditTail);
@@ -3409,9 +3421,9 @@ void qtractorMainForm::updateContents (
 		m_pTracks->updateContents(bRefresh);
 
 	// Update other editors contents...
-	QListIterator<qtractorMidiEditor *> iter(m_editors);
+	QListIterator<qtractorMidiEditorForm *> iter(m_editors);
 	while (iter.hasNext()) {
-		qtractorMidiEditor *pEditor = iter.next();
+		qtractorMidiEditor *pEditor = (iter.next())->editor();
 		if (pEditor != pMidiEditor)
 			pEditor->updateContents();
 	}

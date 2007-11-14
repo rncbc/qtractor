@@ -161,6 +161,7 @@ qtractorOptions::qtractorOptions (void)
 	bMidiFileToolbar = m_settings.value("/FileToolbar", true).toBool();
 	bMidiEditToolbar = m_settings.value("/EditToolbar", true).toBool();
 	bMidiViewToolbar = m_settings.value("/ViewToolbar", true).toBool();
+	bMidiTransportToolbar = m_settings.value("/TransportToolbar", false).toBool();
 	bMidiNoteDuration = m_settings.value("/NoteDuration", true).toBool();
 	bMidiNoteColor   = m_settings.value("/NoteColor", false).toBool();
 	bMidiValueColor  = m_settings.value("/ValueColor", false).toBool();
@@ -289,6 +290,7 @@ qtractorOptions::~qtractorOptions (void)
 	m_settings.setValue("/FileToolbar", bMidiFileToolbar);
 	m_settings.setValue("/EditToolbar", bMidiEditToolbar);
 	m_settings.setValue("/ViewToolbar", bMidiViewToolbar);
+	m_settings.setValue("/TransportToolbar", bMidiTransportToolbar);
 	m_settings.setValue("/NoteDuration", bMidiNoteDuration);
 	m_settings.setValue("/NoteColor", bMidiNoteColor);
 	m_settings.setValue("/ValueColor", bMidiValueColor);
