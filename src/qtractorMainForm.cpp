@@ -1086,6 +1086,8 @@ QString qtractorMainForm::sessionName ( const QString& sFilename )
 {
 	bool bCompletePath = (m_pOptions && m_pOptions->bCompletePath);
 	QString sSessionName = sFilename;
+	if (sSessionName.isEmpty() && m_pSession)
+		sSessionName = m_pSession->sessionName();
 	if (sSessionName.isEmpty())
 		sSessionName = tr("Untitled") + QString::number(m_iUntitled);
 	else if (!bCompletePath)
