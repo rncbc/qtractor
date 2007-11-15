@@ -136,6 +136,7 @@
     <addaction name="transportLoopSetAction" />
     <addaction name="separator" />
     <addaction name="transportPlayAction" />
+    <addaction name="transportRecordAction" />
    </widget>
    <widget class="QMenu" name="helpMenu" >
     <property name="title" >
@@ -231,6 +232,7 @@
    <addaction name="transportLoopAction" />
    <addaction name="separator" />
    <addaction name="transportPlayAction" />
+   <addaction name="transportRecordAction" />
   </widget>
   <widget class="QToolBar" name="editViewToolbar" >
    <property name="orientation" >
@@ -848,6 +850,26 @@
    </property>
    <property name="shortcut" >
     <string>Space</string>
+   </property>
+  </action>
+  <action name="transportRecordAction" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="icon" >
+    <iconset resource="../icons/qtractor.qrc" >:/icons/transportRecord.png</iconset>
+   </property>
+   <property name="text" >
+    <string>&amp;Record</string>
+   </property>
+   <property name="iconText" >
+    <string>Record</string>
+   </property>
+   <property name="statusTip" >
+    <string>Transport record</string>
+   </property>
+   <property name="shortcut" >
+    <string/>
    </property>
   </action>
   <action name="helpAboutAction" >

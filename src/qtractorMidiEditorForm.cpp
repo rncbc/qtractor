@@ -381,6 +381,9 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 		QObject::connect(m_ui.transportPlayAction,
 			SIGNAL(triggered(bool)),
 			pMainForm, SLOT(transportPlay()));
+		QObject::connect(m_ui.transportRecordAction,
+			SIGNAL(triggered(bool)),
+			pMainForm, SLOT(transportRecord()));
 	}
 
 	// Default snap-per-beat setting...
@@ -1083,10 +1086,12 @@ void qtractorMidiEditorForm::stabilizeForm (void)
 		m_ui.transportLoopAction->setEnabled(bEnabled
 			&& (bLooping || bSelectable));
 		m_ui.transportLoopSetAction->setEnabled(bEnabled && bSelectable);
+		m_ui.transportRecordAction->setEnabled(pSession->recordTracks() > 0);
 		m_ui.transportRewindAction->setChecked(iRolling < 0);
 		m_ui.transportFastForwardAction->setChecked(iRolling > 0);
-		m_ui.transportPlayAction->setChecked(bPlaying);
 		m_ui.transportLoopAction->setChecked(bLooping);
+		m_ui.transportPlayAction->setChecked(bPlaying);
+		m_ui.transportRecordAction->setChecked(bRecording);
 	}
 }
 

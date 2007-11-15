@@ -5,7 +5,7 @@ ChangeLog
 
 CVS HEAD
 
-0.0.9   2007-11-14  Work in progress...
+0.0.9   2007-11-15  Work in progress...
 
 - Fixed a off-by-one boundary issue on MIDI clip event playback,
   which were enqueuing duplicated MIDI events on every read-ahead

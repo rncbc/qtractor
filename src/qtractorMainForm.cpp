@@ -2660,8 +2660,8 @@ void qtractorMainForm::stabilizeForm (void)
 
 	m_ui.transportRewindAction->setChecked(m_iTransportRolling < 0);
 	m_ui.transportFastForwardAction->setChecked(m_iTransportRolling > 0);
-	m_ui.transportPlayAction->setChecked(bPlaying);
 	m_ui.transportLoopAction->setChecked(bLooping);
+	m_ui.transportPlayAction->setChecked(bPlaying);
 	m_ui.transportRecordAction->setChecked(bRecording);
 
 	// Special record mode settlement.
