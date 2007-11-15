@@ -7,6 +7,9 @@ CVS HEAD
 
 0.0.9   2007-11-15  Work in progress...
 
+- MIDI output buses now get the panning slider to spit out some
+  GM system master balance (sysex) messages, being now enabled.
+  
 - Mouse hovering on the clip fade-in/out handles, while in the
   main track-view, gets its long due cursor pointer feedback.
 

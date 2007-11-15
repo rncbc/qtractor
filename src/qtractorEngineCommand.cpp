@@ -630,6 +630,14 @@ bool qtractorBusPanningCommand::redo (void)
 			fPanning = pBus->monitor_out()->panning();	
 		pBus->monitor_out()->setPanning(m_fPanning);
 	}
+	// MIDI buses are special...
+	if (pBus->busType() == qtractorTrack::Midi) {
+		// Now we gotta make sure of proper MIDI bus...
+		qtractorMidiBus *pMidiBus
+			= static_cast<qtractorMidiBus *> (pBus);
+		if (pMidiBus)
+			pMidiBus->setMasterPanning(m_fPanning);
+	}
 
 	// Set undo value...
 	m_bPrevPanning = false;

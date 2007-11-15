@@ -640,12 +640,15 @@ void qtractorMidiEngine::resetAllMonitors (void)
 		if (pMidiBus) {
 			if (pMidiBus->midiMonitor_in()) {
 				pMidiBus->midiMonitor_in()->reset();
-				if (pMidiBus->midiMonitor_out() == NULL)
+				if (pMidiBus->midiMonitor_out() == NULL) {
 					pMidiBus->setMasterVolume(pMidiBus->midiMonitor_in()->gain());
+					pMidiBus->setMasterPanning(pMidiBus->midiMonitor_in()->panning());
+				}
 			}
 			if (pMidiBus->midiMonitor_out()) {
 				pMidiBus->midiMonitor_out()->reset();
 				pMidiBus->setMasterVolume(pMidiBus->midiMonitor_out()->gain());
+				pMidiBus->setMasterPanning(pMidiBus->midiMonitor_out()->panning());
 			}
 		}
 	}
@@ -2340,6 +2343,23 @@ void qtractorMidiBus::setMasterVolume ( float fVolume )
 	// Set the course value right...
 	aMasterVolSysex[6] = vol;
 	sendSysex(aMasterVolSysex, sizeof(aMasterVolSysex));
+}
+
+
+// MIDI master panning.
+void qtractorMidiBus::setMasterPanning ( float fPanning )
+{
+	unsigned char pan = (unsigned char) ((0x40 + int(63.0f * fPanning)) & 0x7f);
+	// Build Universal SysEx and let it go...
+	static unsigned char aMasterPanSysex[]
+		= { 0xf0, 0x7f, 0x7f, 0x04, 0x02, 0x00, 0x00, 0xf7 };
+	// Set the course value right...
+	// And fine special for hard right...
+	if (fPanning >= +1.0f)
+		aMasterPanSysex[5] = 0x7f;
+	else if (fPanning > -1.0f)
+		aMasterPanSysex[6] = pan;
+	sendSysex(aMasterPanSysex, sizeof(aMasterPanSysex));
 }
 
 

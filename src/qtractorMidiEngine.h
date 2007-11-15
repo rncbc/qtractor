@@ -269,6 +269,9 @@ public:
 
 	// MIDI master volume.
 	void setMasterVolume(float fVolume);
+	// MIDI master panning (balance).
+	void setMasterPanning(float fPanning);
+
 	// MIDI channel volume.
 	void setVolume(unsigned short iChannel, float fVolume);
 	// MIDI channel stereo panning.

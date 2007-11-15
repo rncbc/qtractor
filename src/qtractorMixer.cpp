@@ -278,12 +278,12 @@ void qtractorMixerStrip::initMixerStrip (void)
 				updateMidiLabel();
 			}
 			// No panning on MIDI bus monitors and on duplex ones
-			// only the output gain (volume) should be enabled...
+			// only on the output buses should be enabled...
 			if (pMidiBus) {
-				m_pMeter->panSlider()->setEnabled(false);
-				m_pMeter->panSpinBox()->setEnabled(false);
 				if ((m_busMode & qtractorBus::Input) &&
 					(m_pBus->busMode() & qtractorBus::Output)) {
+					m_pMeter->panSlider()->setEnabled(false);
+					m_pMeter->panSpinBox()->setEnabled(false);
 					m_pMeter->gainSlider()->setEnabled(false);
 					m_pMeter->gainSpinBox()->setEnabled(false);
 				}
