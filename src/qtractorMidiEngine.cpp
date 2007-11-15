@@ -2341,6 +2341,8 @@ void qtractorMidiBus::setMasterVolume ( float fVolume )
 	unsigned char aMasterVolSysex[]
 		= { 0xf0, 0x7f, 0x7f, 0x04, 0x01, 0x00, 0x00, 0xf7 };
 	// Set the course value right...
+	if (fVolume >= +1.0f)
+		aMasterVolSysex[5] = 0x7f;
 	aMasterVolSysex[6] = vol;
 	sendSysex(aMasterVolSysex, sizeof(aMasterVolSysex));
 }
@@ -2357,7 +2359,7 @@ void qtractorMidiBus::setMasterPanning ( float fPanning )
 	// And fine special for hard right...
 	if (fPanning >= +1.0f)
 		aMasterPanSysex[5] = 0x7f;
-	else if (fPanning > -1.0f)
+	if (fPanning > -1.0f)
 		aMasterPanSysex[6] = pan;
 	sendSysex(aMasterPanSysex, sizeof(aMasterPanSysex));
 }

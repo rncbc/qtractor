@@ -309,7 +309,7 @@ void qtractorMidiConnect::deleteIcons (void)
 // Common icon accessor (static).
 const QIcon& qtractorMidiConnect::icon ( int iIcon )
 {
-    return *g_apIcons[iIcon];
+	return *g_apIcons[iIcon];
 }
 
 
@@ -347,20 +347,20 @@ bool qtractorMidiConnect::connectPorts ( qtractorPortListItem *pOPort,
 
 	disconnectPortsUpdate(pOPort, pIPort);
 
-    snd_seq_port_subscribe_t *pAlsaSubs;
-    snd_seq_addr_t seq_addr;
+	snd_seq_port_subscribe_t *pAlsaSubs;
+	snd_seq_addr_t seq_addr;
 
-    snd_seq_port_subscribe_alloca(&pAlsaSubs);
+	snd_seq_port_subscribe_alloca(&pAlsaSubs);
 
-    seq_addr.client = pOMidiPort->alsaClient();
-    seq_addr.port   = pOMidiPort->alsaPort();
-    snd_seq_port_subscribe_set_sender(pAlsaSubs, &seq_addr);
+	seq_addr.client = pOMidiPort->alsaClient();
+	seq_addr.port   = pOMidiPort->alsaPort();
+	snd_seq_port_subscribe_set_sender(pAlsaSubs, &seq_addr);
 
-    seq_addr.client = pIMidiPort->alsaClient();
-    seq_addr.port   = pIMidiPort->alsaPort();
-    snd_seq_port_subscribe_set_dest(pAlsaSubs, &seq_addr);
+	seq_addr.client = pIMidiPort->alsaClient();
+	seq_addr.port   = pIMidiPort->alsaPort();
+	snd_seq_port_subscribe_set_dest(pAlsaSubs, &seq_addr);
 
-    return (snd_seq_subscribe_port(pAlsaSeq, pAlsaSubs) >= 0);
+	return (snd_seq_subscribe_port(pAlsaSeq, pAlsaSubs) >= 0);
 }
 
 
@@ -380,20 +380,22 @@ bool qtractorMidiConnect::disconnectPorts ( qtractorPortListItem *pOPort,
 	if (pAlsaSeq == NULL)
 		return false;
 
-    snd_seq_port_subscribe_t *pAlsaSubs;
-    snd_seq_addr_t seq_addr;
+	disconnectPortsUpdate(pOPort, pIPort);
 
-    snd_seq_port_subscribe_alloca(&pAlsaSubs);
+	snd_seq_port_subscribe_t *pAlsaSubs;
+	snd_seq_addr_t seq_addr;
 
-    seq_addr.client = pOMidiPort->alsaClient();
-    seq_addr.port   = pOMidiPort->alsaPort();
-    snd_seq_port_subscribe_set_sender(pAlsaSubs, &seq_addr);
+	snd_seq_port_subscribe_alloca(&pAlsaSubs);
 
-    seq_addr.client = pIMidiPort->alsaClient();
-    seq_addr.port   = pIMidiPort->alsaPort();
-    snd_seq_port_subscribe_set_dest(pAlsaSubs, &seq_addr);
+	seq_addr.client = pOMidiPort->alsaClient();
+	seq_addr.port   = pOMidiPort->alsaPort();
+	snd_seq_port_subscribe_set_sender(pAlsaSubs, &seq_addr);
 
-    return (snd_seq_unsubscribe_port(pAlsaSeq, pAlsaSubs) >= 0);
+	seq_addr.client = pIMidiPort->alsaClient();
+	seq_addr.port   = pIMidiPort->alsaPort();
+	snd_seq_port_subscribe_set_dest(pAlsaSubs, &seq_addr);
+
+	return (snd_seq_unsubscribe_port(pAlsaSeq, pAlsaSubs) >= 0);
 }
 
 
