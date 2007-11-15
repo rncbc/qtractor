@@ -166,6 +166,7 @@ void qtractorTrackView::clear (void)
 
 	m_dropType   = qtractorTrack::None;
 	m_dragState  = DragNone;
+	m_dragCursor = DragNone;
 	m_iDraggingX = 0;
 	m_pClipDrag  = NULL;
 	m_bDragTimer = false;
@@ -1121,6 +1122,7 @@ void qtractorTrackView::mousePressEvent ( QMouseEvent *pMouseEvent )
 			// Should it be selected(toggled)?
 			if (m_pClipDrag) {
 				// Show that we're about to something...
+				m_dragCursor = m_dragState;
 				qtractorScrollView::setCursor(QCursor(Qt::PointingHandCursor));
 				// Make it (un)selected, right on the file view too...
 				if (m_selectMode == SelectClip)
@@ -1172,6 +1174,10 @@ void qtractorTrackView::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 	const QPoint& pos = viewportToContents(pMouseEvent->pos());
 
 	switch (m_dragState) {
+	case DragNone:
+		// Try to catch mouse over the fade handles...
+		dragFadeStart(pos);
+		break;
 	case DragMove:
 	case DragPaste:
 		dragMoveTrack(pos + m_posStep);
@@ -1191,7 +1197,9 @@ void qtractorTrackView::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 			> QApplication::startDragDistance()) {
 			// Check if we're pointing in some fade-in/out handle...
 			if (dragFadeStart(m_posDrag)) {
+				m_dragState = m_dragCursor;
 				m_iDraggingX = (pos.x() - m_posDrag.x());
+				qtractorScrollView::setCursor(QCursor(Qt::SizeHorCursor));
 				moveRubberBand(&m_pRubberBand, m_rectHandle);
 			} else {
 				// We'll start dragging clip/regions alright...
@@ -1201,14 +1209,14 @@ void qtractorTrackView::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 				if (pClipItem && pClipItem->rectClip.contains(pos)) {
 					int x = m_pTracks->session()->pixelSnap(m_rectDrag.x());
 					m_iDraggingX = (x - m_rectDrag.x());
-					m_dragState = DragMove;
+					m_dragState = m_dragCursor = DragMove;
 					qtractorScrollView::setCursor(QCursor(Qt::SizeAllCursor));
 					showClipSelect();
 				} else {
 					// We'll start rubber banding...
 					m_rectDrag.setTopLeft(m_posDrag);
 					m_rectDrag.setBottomRight(pos);
-					m_dragState = DragSelect;
+					m_dragState = m_dragCursor = DragSelect;
 					// Set a proper cursor...
 					qtractorScrollView::setCursor(QCursor(
 						m_selectMode == SelectRange ?
@@ -1221,7 +1229,6 @@ void qtractorTrackView::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 		// Fall thru...
 	case DragStep:
 	case DragDrop:
-	case DragNone:
 	default:
 		break;
 	}
@@ -1347,6 +1354,7 @@ bool qtractorTrackView::eventFilter ( QObject *pObject, QEvent *pEvent )
 		if (pEvent->type() == QEvent::Leave	&&
 			m_dragState != DragPaste &&
 			m_dragState != DragStep) {
+			m_dragCursor = DragNone;
 			qtractorScrollView::unsetCursor();
 			return true;
 		}
@@ -1716,29 +1724,37 @@ void qtractorTrackView::moveRubberBand ( qtractorRubberBand **ppRubberBand,
 // Check whether we're up to drag a clip fade-in/out handle.
 bool qtractorTrackView::dragFadeStart ( const QPoint& pos )
 {
-	if (m_pClipDrag == NULL)
-		return false;
-
 	qtractorSession *pSession = m_pTracks->session();
 	if (pSession == NULL)
 		return false;
 
-	// Fade-in handle check...
-	m_rectHandle.setRect(m_rectDrag.left() + 1
-		+ pSession->pixelFromFrame(m_pClipDrag->fadeInLength()),
-			m_rectDrag.top() + 1, 8, 8);
-	if (m_rectHandle.contains(pos)) {
-		m_dragState = DragFadeIn;
-		return true;
+	QRect rectClip;
+	qtractorClip *pClip = clipAt(pos, false, &rectClip);
+	if (pClip) {
+		// Fade-in handle check...
+		m_rectHandle.setRect(rectClip.left() + 1
+			+ pSession->pixelFromFrame(pClip->fadeInLength()),
+				rectClip.top() + 1, 8, 8);
+		if (m_rectHandle.contains(pos)) {
+			m_dragCursor = DragFadeIn;
+			qtractorScrollView::setCursor(QCursor(Qt::PointingHandCursor));
+			return true;
+		}
+		// Fade-out handle check...
+		m_rectHandle.setRect(rectClip.right() - 8
+			- pSession->pixelFromFrame(pClip->fadeOutLength()),
+				rectClip.top() + 1, 8, 8);
+		if (m_rectHandle.contains(pos)) {
+			m_dragCursor = DragFadeOut;
+			qtractorScrollView::setCursor(QCursor(Qt::PointingHandCursor));
+			return true;
+		}
 	}
-	
-	// Fade-out handle check...
-	m_rectHandle.setRect(m_rectDrag.right() - 8
-		- pSession->pixelFromFrame(m_pClipDrag->fadeOutLength()),
-			m_rectDrag.top() + 1, 8, 8);
-	if (m_rectHandle.contains(pos)) {
-		m_dragState = DragFadeOut;
-		return true;
+
+	// Reset cursor if any persist around.
+	if (m_dragCursor != DragNone) {
+		qtractorScrollView::unsetCursor();
+		m_dragCursor  = DragNone;
 	}
 
 	return false;
@@ -1804,7 +1820,6 @@ void qtractorTrackView::dragFadeDrop ( const QPoint& pos )
 	}
 
 	// Reset state for proper redrawing...
-	qtractorScrollView::unsetCursor();
 	m_dragState = DragNone;
 
 	// Put it in the form of an undoable command...
@@ -1818,8 +1833,13 @@ void qtractorTrackView::resetDragState (void)
 	// To remember what we were doing...
 	DragState dragState = m_dragState;
 
+	// Should fallback mouse cursor...
+	if (m_dragCursor != DragNone)
+		qtractorScrollView::unsetCursor();
+
 	// Force null state, now.
 	m_dragState  = DragNone;
+	m_dragCursor = DragNone;
 	m_iDraggingX = 0;
 //	m_pClipDrag  = NULL;
 
@@ -1838,10 +1858,6 @@ void qtractorTrackView::resetDragState (void)
 		qtractorScrollView::viewport()->update(
 			QRect(contentsToViewport(m_rectDrag.topLeft()), m_rectDrag.size()));
 	}
-
-	// Should fallback mouse cursor...
-	if (dragState != DragNone)
-		qtractorScrollView::unsetCursor();
 
 	// No dropping files, whatsoever.
 	qDeleteAll(m_dropItems);
@@ -1981,7 +1997,7 @@ bool qtractorTrackView::keyStep ( int iKey )
 
 	// Set initial bound conditions...
 	if (m_dragState == DragNone) {
-		m_dragState  = DragStep;
+		m_dragState  = m_dragCursor = DragStep;
 		m_rectDrag   = m_pClipSelect->rect();
 		m_posDrag    = m_rectDrag.topLeft();
 		m_posStep    = QPoint(0, 0);
@@ -2418,7 +2434,7 @@ void qtractorTrackView::pasteClipboard (void)
 	}
 
 	// We'll start a brand new floating state...
-	m_dragState = DragPaste;
+	m_dragState = m_dragCursor = DragPaste;
 	m_rectDrag  = m_pClipSelect->rect();
 	m_posDrag   = m_rectDrag.topLeft();
 	m_posStep   = QPoint(0, 0);

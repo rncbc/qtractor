@@ -295,7 +295,7 @@ private:
 		DragNone = 0, DragStart,
 		DragSelect, DragMove, DragDrop, DragStep,
 		DragPaste, DragFadeIn, DragFadeOut
-	} m_dragState;
+	} m_dragState, m_dragCursor;
 
 	qtractorClip *m_pClipDrag;
 	QPoint        m_posDrag;
