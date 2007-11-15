@@ -345,6 +345,8 @@ bool qtractorMidiConnect::connectPorts ( qtractorPortListItem *pOPort,
 	if (pAlsaSeq == NULL)
 		return false;
 
+	disconnectPortsUpdate(pOPort, pIPort);
+
     snd_seq_port_subscribe_t *pAlsaSubs;
     snd_seq_addr_t seq_addr;
 
@@ -392,6 +394,50 @@ bool qtractorMidiConnect::disconnectPorts ( qtractorPortListItem *pOPort,
     snd_seq_port_subscribe_set_dest(pAlsaSubs, &seq_addr);
 
     return (snd_seq_unsubscribe_port(pAlsaSeq, pAlsaSubs) >= 0);
+}
+
+
+// Update (clear) MIDI-buses connect lists (non-virtual).
+void qtractorMidiConnect::disconnectPortsUpdate (
+	qtractorPortListItem *pOPort, qtractorPortListItem *pIPort )
+{
+	qtractorMidiEngine *pMidiEngine = NULL;
+	qtractorMainForm   *pMainForm   = qtractorMainForm::getInstance();
+	if (pMainForm && pMainForm->session())
+		pMidiEngine = pMainForm->session()->midiEngine();
+	if (pMidiEngine == NULL)
+		return;
+
+	QString sPortName;
+	qtractorBus::BusMode busMode = qtractorBus::None;
+	if (pOPort->clientName().section(':', 1, 1) == pMidiEngine->clientName()) {
+		busMode = qtractorBus::Output;
+		sPortName = pOPort->portName().section(':', 1, 1);
+	}
+	else 
+	if (pIPort->clientName().section(':', 1, 1) == pMidiEngine->clientName()) {
+		busMode = qtractorBus::Input;
+		sPortName = pIPort->portName().section(':', 1, 1);
+	}
+
+	if (busMode == qtractorBus::None)
+		return;
+
+	for (qtractorBus *pBus = pMidiEngine->buses().first();
+			pBus; pBus = pBus->next()) {
+		if ((pBus->busMode() & busMode) == 0)
+			continue;
+		if (sPortName == pBus->busName()) {
+			if (busMode & qtractorBus::Input) {
+				qDeleteAll(pBus->inputs());
+				pBus->inputs().clear();
+			} else {
+				qDeleteAll(pBus->outputs());
+				pBus->outputs().clear();
+			}
+			return;
+		}
+	}
 }
 
 

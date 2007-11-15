@@ -310,9 +310,56 @@ bool qtractorAudioConnect::disconnectPorts ( qtractorPortListItem *pOPort,
 	if (pJackClient == NULL)
 		return false;
 
+	disconnectPortsUpdate(pOPort, pIPort);
+
 	return (jack_disconnect(pJackClient,
 		pOAudioPort->clientPortName().toUtf8().constData(),
 		pIAudioPort->clientPortName().toUtf8().constData()) == 0);
+}
+
+
+// Update (clear) audio-buses connect lists (non-virtual).
+void qtractorAudioConnect::disconnectPortsUpdate (
+	qtractorPortListItem *pOPort, qtractorPortListItem *pIPort )
+{
+	qtractorAudioEngine *pAudioEngine = NULL;
+	qtractorMainForm    *pMainForm    = qtractorMainForm::getInstance();
+	if (pMainForm && pMainForm->session())
+		pAudioEngine = pMainForm->session()->audioEngine();
+	if (pAudioEngine == NULL)
+		return;
+
+	QString sPortName;
+	qtractorBus::BusMode busMode = qtractorBus::None;
+
+	if (pOPort->clientName() == pAudioEngine->clientName()) {
+		busMode = qtractorBus::Output;
+		sPortName = pOPort->portName().section('/', 0, 0);
+	}
+	else 
+	if (pIPort->clientName() == pAudioEngine->clientName()) {
+		busMode = qtractorBus::Input;
+		sPortName = pIPort->portName().section('/', 0, 0);
+	}
+
+	if (busMode == qtractorBus::None)
+		return;
+
+	for (qtractorBus *pBus = pAudioEngine->buses().first();
+			pBus; pBus = pBus->next()) {
+		if ((pBus->busMode() & busMode) == 0)
+			continue;
+		if (sPortName == pBus->busName()) {
+			if (busMode & qtractorBus::Input) {
+				qDeleteAll(pBus->inputs());
+				pBus->inputs().clear();
+			} else {
+				qDeleteAll(pBus->outputs());
+				pBus->outputs().clear();
+			}
+			return;
+		}
+	}
 }
 
 

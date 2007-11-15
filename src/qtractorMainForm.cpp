@@ -3036,6 +3036,7 @@ void qtractorMainForm::timerSlot (void)
 	long iPlayHead = (long) m_pSession->playHead();
 
 	qtractorAudioEngine *pAudioEngine = m_pSession->audioEngine();
+	qtractorMidiEngine  *pMidiEngine  = m_pSession->midiEngine();
 
 	// Playhead status...
 	if (iPlayHead != (long) m_iPlayHead) {
@@ -3054,7 +3055,7 @@ void qtractorMainForm::timerSlot (void)
 			m_iTransportUpdate++;
 			// Send MMC LOCATE command...
 			if (!pAudioEngine->isFreewheel()) {
-				m_pSession->midiEngine()->sendMmcLocate(
+				pMidiEngine->sendMmcLocate(
 					m_pSession->locateFromFrame(iPlayHead));
 			}
 		}
@@ -3085,8 +3086,7 @@ void qtractorMainForm::timerSlot (void)
 				// Stop playback for sure...
 				if (setPlaying(false)) {
 					// Send MMC STOP command...
-					m_pSession->midiEngine()->sendMmcCommand(
-						qtractorMmcEvent::STOP);
+					pMidiEngine->sendMmcCommand(qtractorMmcEvent::STOP);
 				}
 			}
 			// Make it thru...
@@ -3192,7 +3192,7 @@ void qtractorMainForm::timerSlot (void)
 		m_iAudioRefreshTimer -= QTRACTOR_TIMER_MSECS;
 		if (m_iAudioRefreshTimer < QTRACTOR_TIMER_MSECS) {
 			m_iAudioRefreshTimer = 0;
-			if (m_pSession->audioEngine()->updateConnects() == 0) {
+			if (pAudioEngine->updateConnects() == 0) {
 				appendMessagesColor(
 					tr("Audio connections change."), "#cc9966");
 				if (m_pConnections)
@@ -3205,7 +3205,7 @@ void qtractorMainForm::timerSlot (void)
 		m_iMidiRefreshTimer -= QTRACTOR_TIMER_MSECS;
 		if (m_iMidiRefreshTimer < QTRACTOR_TIMER_MSECS) {
 			m_iMidiRefreshTimer = 0;
-			if (m_pSession->midiEngine()->updateConnects() == 0) {
+			if (pMidiEngine->updateConnects() == 0) {
 				appendMessagesColor(
 					tr("MIDI connections change."), "#66cc99");
 				if (m_pConnections)

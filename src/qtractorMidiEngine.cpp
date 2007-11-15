@@ -2338,7 +2338,7 @@ void qtractorMidiBus::setMasterVolume ( float fVolume )
 {
 	unsigned char vol = (unsigned char) (int(127.0f * fVolume) & 0x7f);
 	// Build Universal SysEx and let it go...
-	static unsigned char aMasterVolSysex[]
+	unsigned char aMasterVolSysex[]
 		= { 0xf0, 0x7f, 0x7f, 0x04, 0x01, 0x00, 0x00, 0xf7 };
 	// Set the course value right...
 	aMasterVolSysex[6] = vol;
@@ -2351,7 +2351,7 @@ void qtractorMidiBus::setMasterPanning ( float fPanning )
 {
 	unsigned char pan = (unsigned char) ((0x40 + int(63.0f * fPanning)) & 0x7f);
 	// Build Universal SysEx and let it go...
-	static unsigned char aMasterPanSysex[]
+	unsigned char aMasterPanSysex[]
 		= { 0xf0, 0x7f, 0x7f, 0x04, 0x02, 0x00, 0x00, 0xf7 };
 	// Set the course value right...
 	// And fine special for hard right...

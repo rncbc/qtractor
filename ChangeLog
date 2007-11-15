@@ -7,6 +7,9 @@ CVS HEAD
 
 0.0.9   2007-11-15  Work in progress...
 
+- Clear connection persistance once an explicit discconnection
+  is issued on any of the (intrinsic) bus ports.
+  
 - MIDI output buses now get the panning slider to spit out some
   GM system master balance (sysex) messages, being now enabled.
   

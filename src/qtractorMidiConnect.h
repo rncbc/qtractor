@@ -155,6 +155,10 @@ protected:
 	// Update port connection references.
 	void updateConnections();
 
+	// Update (clear) MIDI-buses connect lists (non-virtual).
+	void disconnectPortsUpdate(
+		qtractorPortListItem *pOPort, qtractorPortListItem *pIPort);
+
 private:
 
 	// Local pixmap-set janitor methods.
