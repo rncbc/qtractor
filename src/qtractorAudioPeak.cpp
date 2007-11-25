@@ -359,7 +359,6 @@ qtractorAudioPeakFile::qtractorAudioPeakFile (
 	m_pPeakThread   = NULL;
 
 	m_iRefCount     = 0;
-
 }
 
 

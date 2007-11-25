@@ -5,7 +5,10 @@ ChangeLog
 
 CVS HEAD
 
-0.0.9   2007-11-15  Work in progress...
+0.0.9   2007-11-25  Work in progress...
+
+- Record actual MIDI clip length to last play-head position,
+  instead of time of last event in the recorded sequence.
 
 - Connections item lists gets properly sorted, as intended.
 

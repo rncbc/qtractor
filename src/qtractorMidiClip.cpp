@@ -311,7 +311,7 @@ void qtractorMidiClip::close ( bool bForce )
 	// Commit the final clip length...
 	if (clipLength() < 1)
 		setClipLength(pSession->frameFromTick(m_pSeq->duration()));
-	
+
 	// Now's time to write the whole thing...
 	bool bNewFile = (m_pFile && m_pFile->mode() == qtractorMidiFile::Write);
 	if (bNewFile && clipLength() > 0) {
@@ -325,6 +325,10 @@ void qtractorMidiClip::close ( bool bForce )
 			m_pFile->writeTrack(NULL);  // Setup track (SMF format 1).
 		m_pFile->writeTrack(m_pSeq);    // Channel track.
 		m_pFile->close();
+		// Nite to know that actual clip length
+		// shall be the whole recorded segment,
+		// not just until the last stored event...
+		setClipLength(pSession->playHead() - clipStart());
 	}
 
 	// Get rid of owned allocations...
@@ -333,6 +337,7 @@ void qtractorMidiClip::close ( bool bForce )
 		m_pFile = NULL;
 	}
 
+	// Reset sequence...
 	m_pSeq->clear();
 
 	// If proven empty, remove the file.

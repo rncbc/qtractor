@@ -145,7 +145,7 @@ bool qtractorClipCommand::addClipRecord ( qtractorTrack *pTrack )
 	pClip->close(true);
 
 	// Check final length...
-	if (pClip->clipLength() == 0)
+	if (pClip->clipLength() < 1)
 		return false;
 
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
@@ -156,14 +156,14 @@ bool qtractorClipCommand::addClipRecord ( qtractorTrack *pTrack )
 	qtractorFiles *pFiles = pMainForm->files();
 
 	// Now, its imperative to make a proper copy of those clips...
-	unsigned long iClipStart = pClip->clipStart();
 	switch (pTrack->trackType()) {
 	case qtractorTrack::Audio: {
 		qtractorAudioClip *pAudioClip
 			= static_cast<qtractorAudioClip *> (pClip);
 		if (pAudioClip) {
 			pAudioClip = new qtractorAudioClip(*pAudioClip);
-			pAudioClip->setClipStart(iClipStart);
+			pAudioClip->setClipStart(pClip->clipStart());
+			pAudioClip->setClipLength(pClip->clipLength());
 			addClip(pAudioClip, pTrack);
 			if (pFiles)
 				pFiles->addAudioFile(pAudioClip->filename());
@@ -175,7 +175,8 @@ bool qtractorClipCommand::addClipRecord ( qtractorTrack *pTrack )
 			= static_cast<qtractorMidiClip *> (pClip);
 		if (pMidiClip) {
 			pMidiClip = new qtractorMidiClip(*pMidiClip);
-			pMidiClip->setClipStart(iClipStart);
+			pMidiClip->setClipStart(pClip->clipStart());
+			pMidiClip->setClipLength(pClip->clipLength());
 			addClip(pMidiClip, pTrack);
 			if (pFiles)
 				pFiles->addMidiFile(pMidiClip->filename());
