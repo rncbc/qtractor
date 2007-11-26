@@ -5,15 +5,20 @@ ChangeLog
 
 CVS HEAD
 
-0.0.9   2007-11-25  Work in progress...
+0.0.9   2007-11-26  Work in progress...
+
+- Drag-and-dropping of MIDI files without specific track or channel,
+  into existing tracks, is now rejected. The drop operation is now
+  allowed on the track-view blank area only, meaning the same as the
+  complete MIDI file import into session.
 
 - Record actual MIDI clip length to last play-head position,
   instead of time of last event in the recorded sequence.
 
 - Connections item lists gets properly sorted, as intended.
 
-- Clear connection persistance once an explicit discconnection
-  is issued on any of the (intrinsic) bus ports.
+- Clear connection persistance once an explicit discconnection is
+  issued on any of the (intrinsic) bus ports.
 
 - MIDI output buses now get the panning slider to spit out some
   GM system master balance (sysex) messages, being now enabled.

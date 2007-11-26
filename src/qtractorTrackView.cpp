@@ -893,10 +893,20 @@ qtractorTrack *qtractorTrackView::dragDropTrack ( QDropEvent *pDropEvent )
 
 bool qtractorTrackView::canDropTrack ( QDropEvent *pDropEvent )
 {
+	// have one existing track on target?
 	qtractorTrack *pTrack = dragDropTrack(pDropEvent);
-	return ((pTrack	&& pTrack->trackType() == m_dropType
-		&& m_dropItems.count() == 1)
-			|| (pTrack == NULL && !m_dropItems.isEmpty()));
+
+	// Can only drop one item per track...
+	if (pTrack && m_dropType == m_dropType && m_dropItems.count() == 1) {
+		// Special MIDI track-channel cases...
+		if (m_dropType == qtractorTrack::Midi)
+			return (m_dropItems.first()->channel >= 0);
+		else
+			return true;
+	}
+
+	// Drop in the blank...
+	return (pTrack == NULL && !m_dropItems.isEmpty());
 }
 
 
