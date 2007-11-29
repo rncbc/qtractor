@@ -5,7 +5,7 @@ ChangeLog
 
 CVS HEAD
 
-0.0.9   2007-11-26  Work in progress...
+0.0.9   2007-11-30  The Adolescence Prime
 
 - Drag-and-dropping of MIDI files without specific track or channel,
   into existing tracks, is now rejected. The drop operation is now

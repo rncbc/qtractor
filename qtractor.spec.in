@@ -1,6 +1,6 @@
 %define name    @PACKAGE_TARNAME@
 %define version @PACKAGE_VERSION@
-%define release 12
+%define release 13
 %define prefix  @ac_prefix@
 
 Summary:	An Audio/MIDI multi-track sequencer.
@@ -64,6 +64,8 @@ specially dedicated to the personal home-studio.
 %{_datadir}/pixmaps/%{name}.png
 
 %changelog
+* Fri Nov 30 2007 Rui Nuno Capela <rncbc@users.sourceforge.net>
+- Adolescence Prime pre-release.
 * Mon Nov 12 2007 Rui Nuno Capela <rncbc@users.sourceforge.net>
 - Twelfth Tight pre-release.
 * Wed Oct 31 2007 Rui Nuno Capela <rncbc@users.sourceforge.net>
