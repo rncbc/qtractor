@@ -38,6 +38,7 @@
 
 // Forward declarations.
 class qtractorAudioBufferThread;
+class qtractorTimeStretch;
 
 
 //----------------------------------------------------------------------
@@ -100,6 +101,10 @@ public:
 	unsigned long loopStart() const;
 	unsigned long loopEnd() const;
 
+	// Time-stretch factor.
+	void setTimeStretch(float fTimeStretch);
+	float timeStretch() const;
+
 	// Initial thread-sync executive (if file is on read mode,
 	// check whether it can be cache-loaded integrally).
 	bool initSync();
@@ -130,12 +135,15 @@ protected:
 	// Internal-seek sync executive.
 	bool seekSync(unsigned long iFrame);
 
+	// Last-mile frame buffer-helper processor.
+	int writeFrames(float **ppFrames, unsigned int iFrames);
+
 	// Buffer process methods.
 	int readBuffer  (unsigned int iFrames);
 	int writeBuffer (unsigned int iFrames);
 
 	// Special kind of super-read/channel-mix buffer helper.
-	int readMixBuffer(float **ppFrames, unsigned int iFrames,
+	int readMixFrames(float **ppFrames, unsigned int iFrames,
 		unsigned short iChannels, unsigned int iOffset, float fGain);
 
 	// I/O buffer release.
@@ -175,6 +183,11 @@ private:
 
 	float        **m_ppFrames;
 
+	bool           m_bTimeStretch;
+	float          m_fTimeStretch;
+
+	qtractorTimeStretch *m_pTimeStretch;
+
 #ifdef CONFIG_LIBSAMPLERATE
 	bool           m_bResample;
 	float          m_fResampleRatio;
@@ -183,6 +196,7 @@ private:
 	float        **m_ppOutBuffer;
 	SRC_STATE    **m_ppSrcState;
 #endif
+
 	// Sample-rate converter type global option.
 	static int     g_iResampleType;
 };

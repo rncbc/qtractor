@@ -46,6 +46,10 @@ public:
 	// Destructor.
 	~qtractorAudioClip();
 
+	// Time-stretching.
+	void setTimeStretch(float fTimeStretch);
+	float timeStretch() const;
+
 	// Clip (re)open method.
 	void open();
 
@@ -94,6 +98,8 @@ private:
 	// Instance variables.
 	qtractorAudioBuffer *m_pBuff;
 	qtractorAudioPeak   *m_pPeak;
+
+	float m_fTimeStretch;
 };
 
 

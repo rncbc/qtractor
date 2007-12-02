@@ -178,7 +178,8 @@ void qtractorAudioPeakThread::run (void)
 			m_iPeak = 0;
 			// The resample-aware internal peak period...
 			m_iPeriod = (unsigned short) ::lroundf(
-				float(c_iPeakPeriod * m_pAudioFile->sampleRate())
+				(1.0f + m_pPeakFile->timeStretch())
+				* float(c_iPeakPeriod * m_pAudioFile->sampleRate())
 				/ float(m_pPeakFile->sampleRate()));
 			// Write peak file header.
 			qtractorAudioPeakHeader hdr;
@@ -339,7 +340,7 @@ void qtractorAudioPeakThread::closePeakFile (void)
 // Constructor.
 qtractorAudioPeakFile::qtractorAudioPeakFile (
 	qtractorAudioPeakFactory *pFactory, const QString& sFilename,
-	unsigned int iSampleRate, const QString& sSessionDir )
+	unsigned int iSampleRate, float fTimeStretch, const QString& sSessionDir )
 	: m_peakFile( // Set peak filename...
 		QFileInfo(sSessionDir, QFileInfo(sFilename).fileName()).filePath()
 		+ c_sPeakFileExt)
@@ -348,6 +349,7 @@ qtractorAudioPeakFile::qtractorAudioPeakFile (
 	m_pFactory      = pFactory;
 	m_sFilename     = sFilename;
 	m_iSampleRate   = iSampleRate;
+	m_fTimeStretch  = fTimeStretch;
 
 	m_iPeakPeriod   = 0;
 	m_iPeakChannels = 0;
@@ -485,6 +487,12 @@ unsigned int qtractorAudioPeakFile::sampleRate (void) const
 {
 	return m_iSampleRate;
 }
+
+float qtractorAudioPeakFile::timeStretch (void) const
+{
+	return m_fTimeStretch;
+}
+
 
 // Lazy-evaluated properties.
 unsigned short qtractorAudioPeakFile::period (void)
@@ -724,12 +732,12 @@ qtractorAudioPeakFactory::~qtractorAudioPeakFactory (void)
 // The peak file factory-methods.
 qtractorAudioPeak* qtractorAudioPeakFactory::createPeak (
 	const QString& sFilename, unsigned int iSampleRate,
-	const QString& sSessionDir )
+	float fTimeStretch, const QString& sSessionDir )
 {
 	qtractorAudioPeakFile* pPeakFile = m_peaks.value(sFilename, NULL);
 	if (pPeakFile == NULL) {
 		pPeakFile = new qtractorAudioPeakFile(this,
-			sFilename, iSampleRate, sSessionDir);
+			sFilename, iSampleRate, fTimeStretch, sSessionDir);
 		m_peaks.insert(sFilename, pPeakFile);
 	}
 

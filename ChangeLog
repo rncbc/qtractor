@@ -3,6 +3,11 @@ Qtractor - An Audio/MIDI multi-track sequencer
 
 ChangeLog
 
+0.1.0   2007-12-02  Work in progress...
+
+- Audio clip time-stretching makes its debut.
+
+
 0.0.9   2007-11-30  The Adolescence Prime
 
 - Drag-and-dropping of MIDI files without specific track or channel,

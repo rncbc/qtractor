@@ -42,6 +42,8 @@ qtractorAudioClip::qtractorAudioClip ( qtractorTrack *pTrack )
 {
 	m_pPeak = NULL;
 	m_pBuff = NULL;
+
+	m_fTimeStretch = 0.0f;
 }
 
 // Copy constructor.
@@ -50,6 +52,8 @@ qtractorAudioClip::qtractorAudioClip ( const qtractorAudioClip& clip )
 {
 	m_pPeak = NULL;
 	m_pBuff = NULL;
+
+	m_fTimeStretch = clip.timeStretch();
 
 	setFilename(clip.filename());
 }
@@ -62,6 +66,18 @@ qtractorAudioClip::~qtractorAudioClip (void)
 		delete m_pPeak;
 	if (m_pBuff)
 		delete m_pBuff;
+}
+
+
+// Time-stretch factor.
+void qtractorAudioClip::setTimeStretch ( float fTimeStretch )
+{
+	m_fTimeStretch = fTimeStretch;
+}
+
+float qtractorAudioClip::timeStretch (void) const
+{
+	return m_fTimeStretch;
 }
 
 
@@ -104,6 +120,7 @@ bool qtractorAudioClip::openAudioFile ( const QString& sFilename, int iMode )
 	m_pBuff = new qtractorAudioBuffer(iChannels, pSession->sampleRate());
 	m_pBuff->setOffset(clipOffset());
 	m_pBuff->setLength(clipLength());
+	m_pBuff->setTimeStretch(m_fTimeStretch);
 
 	if (!m_pBuff->open(sFilename, iMode)) {
 		delete m_pBuff;
@@ -118,7 +135,8 @@ bool qtractorAudioClip::openAudioFile ( const QString& sFilename, int iMode )
 		if (m_pPeak)
 			delete m_pPeak;
 		m_pPeak = pSession->audioPeakFactory()->createPeak(
-			sFilename, pSession->sampleRate(), pSession->sessionDir());
+			sFilename, pSession->sampleRate(), m_pBuff->timeStretch(), /*???*/
+			pSession->sessionDir());
 	}
 
 	// Set local properties...
@@ -399,9 +417,11 @@ bool qtractorAudioClip::loadClipElement (
 		QDomElement eChild = nChild.toElement();
 		if (eChild.isNull())
 			continue;
-		// Load track state..
+		// Load clip properties..
 		if (eChild.tagName() == "filename")
 			qtractorAudioClip::setFilename(eChild.text());
+		else if (eChild.tagName() == "time-stretch")
+			qtractorAudioClip::setTimeStretch(eChild.text().toFloat());
 	}
 
 	return true;
@@ -414,6 +434,8 @@ bool qtractorAudioClip::saveClipElement (
 	QDomElement eAudioClip = pDocument->document()->createElement("audio-clip");
 	pDocument->saveTextElement("filename",
 		qtractorAudioClip::filename(), &eAudioClip);
+	pDocument->saveTextElement("time-stretch",
+		QString::number(qtractorAudioClip::timeStretch()), &eAudioClip);
 	pElement->appendChild(eAudioClip);
 
 	return true;
