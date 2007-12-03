@@ -56,45 +56,45 @@ static inline bool sse_enabled (void)
 static inline double sse_cross_corr (
 	const float *pV1, const float *pV2, unsigned int iOverlapLength )
 {
-    unsigned int i;
-    __m128 vSum, *pVec2;
+	unsigned int i;
+	__m128 vSum, *pVec2;
 
-    // Note. It means a major slow-down if the routine needs to tolerate 
-    // unaligned __m128 memory accesses. It's way faster if we can skip 
-    // unaligned slots and use _mm_load_ps instruction instead of _mm_loadu_ps.
-    // This can mean up to ~ 10-fold difference (incl. part of which is
-    // due to skipping every second round for stereo sound though).
-    //
-    // Little cheating allowed, return valid correlation only for 
-    // aligned locations, meaning every second round for stereo sound.
-    if (((unsigned long) pV1) & 15) return -1e50; // Skip unaligned locations.
+	// Note. It means a major slow-down if the routine needs to tolerate 
+	// unaligned __m128 memory accesses. It's way faster if we can skip 
+	// unaligned slots and use _mm_load_ps instruction instead of _mm_loadu_ps.
+	// This can mean up to ~ 10-fold difference (incl. part of which is
+	// due to skipping every second round for stereo sound though).
+	//
+	// Little cheating allowed, return valid correlation only for 
+	// aligned locations, meaning every second round for stereo sound.
+	if (((unsigned long) pV1) & 15) return -1e50; // Skip unaligned locations.
 
-    // Ensure overlapLength is divisible by 8
-    // assert((m_iOverlapLength % 8) == 0);
+	// Ensure overlapLength is divisible by 8
+	// assert((m_iOverlapLength % 8) == 0);
 	iOverlapLength >>= 3;
 
-    // Calculates the cross-correlation value between 'pV1' and 'pV2' vectors
-    // Note: pV2 _must_ be aligned to 16-bit boundary, pV1 need not.
-    pVec2 = (__m128 *) pV2;
-    vSum = _mm_setzero_ps();
+	// Calculates the cross-correlation value between 'pV1' and 'pV2' vectors
+	// Note: pV2 _must_ be aligned to 16-bit boundary, pV1 need not.
+	pVec2 = (__m128 *) pV2;
+	vSum = _mm_setzero_ps();
 
-    // Unroll the loop by factor of 4 * 4 operations
-    for (i = 0; i < iOverlapLength; ++i) {
-        // vSum += pV1[0..3] * pV2[0..3]
-        vSum = _mm_add_ps(vSum, _mm_mul_ps(_mm_load_ps(pV1), pVec2[0]));
-        // vSum += pV1[4..7] * pV2[4..7]
-        vSum = _mm_add_ps(vSum, _mm_mul_ps(_mm_load_ps(pV1 + 4), pVec2[1]));
-        // vSum += pV1[8..11] * pV2[8..11]
-        vSum = _mm_add_ps(vSum, _mm_mul_ps(_mm_load_ps(pV1 + 8), pVec2[2]));
-        // vSum += pV1[12..15] * pV2[12..15]
-        vSum = _mm_add_ps(vSum, _mm_mul_ps(_mm_load_ps(pV1 + 12), pVec2[3]));
-        pV1 += 16;
-        pVec2 += 4;
-    }
+	// Unroll the loop by factor of 4 * 4 operations
+	for (i = 0; i < iOverlapLength; ++i) {
+		// vSum += pV1[0..3] * pV2[0..3]
+		vSum = _mm_add_ps(vSum, _mm_mul_ps(_mm_load_ps(pV1), pVec2[0]));
+		// vSum += pV1[4..7] * pV2[4..7]
+		vSum = _mm_add_ps(vSum, _mm_mul_ps(_mm_load_ps(pV1 + 4), pVec2[1]));
+		// vSum += pV1[8..11] * pV2[8..11]
+		vSum = _mm_add_ps(vSum, _mm_mul_ps(_mm_load_ps(pV1 + 8), pVec2[2]));
+		// vSum += pV1[12..15] * pV2[12..15]
+		vSum = _mm_add_ps(vSum, _mm_mul_ps(_mm_load_ps(pV1 + 12), pVec2[3]));
+		pV1 += 16;
+		pVec2 += 4;
+	}
 
-    // return value = vSum[0] + vSum[1] + vSum[2] + vSum[3]
-    float *pvSum = (float *) &vSum;
-    return (double) (pvSum[0] + pvSum[1] + pvSum[2] + pvSum[3]);
+	// return value = vSum[0] + vSum[1] + vSum[2] + vSum[3]
+	float *pvSum = (float *) &vSum;
+	return (double) (pvSum[0] + pvSum[1] + pvSum[2] + pvSum[3]);
 }
 
 #endif
@@ -318,8 +318,8 @@ void qtractorTimeStretch::setChannels ( unsigned short iChannels )
 		return;
 
 	m_iChannels = iChannels;
-    m_inputBuffer.setChannels(m_iChannels);
-    m_outputBuffer.setChannels(m_iChannels);
+	m_inputBuffer.setChannels(m_iChannels);
+	m_outputBuffer.setChannels(m_iChannels);
 }
 
 
@@ -437,23 +437,23 @@ unsigned int qtractorTimeStretch::frames() const
 // Flush any last samples that are hiding in the internal processing pipeline.
 void qtractorTimeStretch::flushInput (void)
 {
-	unsigned short i;
-
-	// Prepare a dummy empty buffer...
-	float dummy[256];
-	::memset(&dummy[0], 0, sizeof(dummy));
-	for (i = 0; i < m_iChannels; ++i)
-		m_ppFrames[i] = &dummy[0];
-
-	// Push the last active frames out from the processing pipeline by
-	// feeding blank samples into the processing pipeline until new, 
-	// processed samples appear in the output...
-	unsigned int iFrames = frames();
-	for (i = 0; i < 128; ++i) {
-		putFrames(m_ppFrames, 256);
-		// Any new samples appeared in the output?
-		if (frames() > iFrames)
-			break;
+	if (m_bMidBufferDirty) {
+		// Prepare a dummy empty buffer...
+		unsigned short i;
+		float dummy[256];
+		::memset(&dummy[0], 0, sizeof(dummy));
+		for (i = 0; i < m_iChannels; ++i)
+			m_ppFrames[i] = &dummy[0];
+		// Push the last active frames out from the processing pipeline by
+		// feeding blank samples into the processing pipeline until new, 
+		// processed samples appear in the output...
+		unsigned int iFrames = frames();
+		for (i = 0; i < 128; ++i) {
+			putFrames(m_ppFrames, 256);
+			// Any new samples appeared in the output?
+			if (frames() > iFrames)
+				break;
+		}
 	}
 
 	clearInput();
