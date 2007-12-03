@@ -302,7 +302,7 @@ void qtractorAudioClip::drawClip ( QPainter *pPainter, const QRect& clipRect,
 
 	if (kdelta < 1) {
 		// Polygon mode...
-		int ymax, ymin, yrms;
+		int ymax, yrms;
 		unsigned int iPolyPoints = (nframes << 1);
 		QPolygon **pPolyMax = new QPolygon* [iChannels];
 		QPolygon **pPolyRms = new QPolygon* [iChannels];
@@ -317,10 +317,9 @@ void qtractorAudioClip::drawClip ( QPainter *pPainter, const QRect& clipRect,
 			x = clipRect.x() + pSession->pixelFromFrame(n * iPeriod);
 			for (i = 0; i < (int) iChannels; ++i, ++j) {
 				ymax = (h2 * pframes[j].peakMax) / 255;
-				ymin = (h2 * pframes[j].peakMin) / 255;
 				yrms = (h2 * pframes[j].peakRms) / 255;
 				pPolyMax[i]->setPoint(n, x, y + ymax);
-				pPolyMax[i]->setPoint(iPolyPoints - n - 1, x, y - ymin);
+				pPolyMax[i]->setPoint(iPolyPoints - n - 1, x, y - ymax);
 				pPolyRms[i]->setPoint(n, x, y + yrms);
 				pPolyRms[i]->setPoint(iPolyPoints - n - 1, x, y - yrms);
 				y += h1;
@@ -342,10 +341,9 @@ void qtractorAudioClip::drawClip ( QPainter *pPainter, const QRect& clipRect,
 		// Bar-accumulated mode.
 		int v, k;
 		int *ymax = new int [iChannels];
-		int *ymin = new int [iChannels];
 		int *yrms = new int [iChannels];
 		for (i = 0; i < (int) iChannels; ++i)
-			ymax[i] = ymin[i] = yrms[i] = 0;
+			ymax[i] = yrms[i] = 0;
 		j = k = 0;
 		x = clipRect.x();
 		for (n = 0; n < (int) nframes; ++n) {
@@ -354,17 +352,17 @@ void qtractorAudioClip::drawClip ( QPainter *pPainter, const QRect& clipRect,
 				x = clipRect.x() + pSession->pixelFromFrame(n * iPeriod);
 			for (i = 0; i < (int) iChannels; ++i, ++j) {
 				v = (h2 * pframes[j].peakMax) / 255;
-				if (ymax[i] < v) ymax[i] = v;
-				v = (h2 * pframes[j].peakMin) / 255;
-				if (ymin[i] < v) ymin[i] = v;
+				if (ymax[i] < v)
+					ymax[i] = v;
 				v = (h2 * pframes[j].peakRms) / 255;
-				if (yrms[i] < v) yrms[i] = v;
+				if (yrms[i] < v)
+					yrms[i] = v;
 				if (kdelta < 1) {
 					pPainter->setPen(track()->foreground());
-					pPainter->drawLine(x, y - ymin[i], x, y + ymax[i]);
+					pPainter->drawLine(x, y - ymax[i], x, y + ymax[i]);
 					pPainter->setPen(track()->foreground().light());
 					pPainter->drawLine(x, y - yrms[i], x, y + yrms[i]);
-					ymax[i] = ymin[i] = yrms[i] = 0;
+					ymax[i] = yrms[i] = 0;
 					y += h1;
 				}
 			}
@@ -376,7 +374,6 @@ void qtractorAudioClip::drawClip ( QPainter *pPainter, const QRect& clipRect,
 		}
 		// Free (ab)used arrays.
 		delete [] yrms;
-		delete [] ymin;
 		delete [] ymax;
 		// Done on bar-accumulated mode.
 	}

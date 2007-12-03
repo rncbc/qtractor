@@ -105,7 +105,6 @@ private:
 	QFile   m_peakFile;
 	float **m_ppAudioBuffer;
 	float  *m_peakMax;
-	float  *m_peakMin;
 	float  *m_peakRms;
 	unsigned short m_iPeriod;
 	unsigned short m_iPeak;
@@ -124,7 +123,6 @@ qtractorAudioPeakThread::qtractorAudioPeakThread (
 
 	m_ppAudioBuffer = NULL;
 	m_peakMax = NULL;
-	m_peakMin = NULL;
 	m_peakRms = NULL;
 	m_iPeriod = 0;
 	m_iPeak   = 0;
@@ -158,21 +156,18 @@ void qtractorAudioPeakThread::run (void)
 			m_ppAudioBuffer = new float* [iChannels];
 #ifdef QTRACTOR_PEAK_SMOOTHED
 			m_peakMax = new float [2 * iChannels];
-			m_peakMin = new float [2 * iChannels];
 			m_peakRms = new float [2 * iChannels];
-			for (unsigned short i = 0; i < iChannels; i++) {
+			for (unsigned short i = 0; i < iChannels; ++i) {
 				m_ppAudioBuffer[i] = new float [c_iAudioBufSize];
 				m_peakMax[i] = m_peakMax[i + iChannels] = 0.0f;
-				m_peakMin[i] = m_peakMin[i + iChannels] = 0.0f;
 				m_peakRms[i] = m_peakRms[i + iChannels] = 0.0f;
 			}
 #else
 			m_peakMax = new float [iChannels];
-			m_peakMin = new float [iChannels];
 			m_peakRms = new float [iChannels];
-			for (unsigned short i = 0; i < iChannels; i++) {
+			for (unsigned short i = 0; i < iChannels; ++i) {
 				m_ppAudioBuffer[i] = new float [c_iAudioBufSize];
-				m_peakMax[i] = m_peakMin[i] = m_peakRms[i] = 0.0f;
+				m_peakMax[i] = m_peakRms[i] = 0.0f;
 			}
 #endif
 			m_iPeak = 0;
@@ -231,14 +226,14 @@ bool qtractorAudioPeakThread::createPeakFileChunk (void)
 	int nread = m_pAudioFile->read(m_ppAudioBuffer, c_iAudioBufSize);
 	if (nread > 0) {
 		unsigned short iChannels = m_pAudioFile->channels();
-		for (unsigned int n = 0; n < (unsigned int) nread; n++) {
-			for (unsigned short i = 0; i < iChannels; i++) {
+		for (unsigned int n = 0; n < (unsigned int) nread; ++n) {
+			for (unsigned short i = 0; i < iChannels; ++i) {
 				// Accumulate for this sample frame...
 				float fSample = m_ppAudioBuffer[i][n];
+				if (fSample < 0.0f) // Take absolute value...
+					fSample = -(fSample);
 				if (m_peakMax[i] < fSample)
 					m_peakMax[i] = fSample;
-				if (m_peakMin[i] > fSample)
-					m_peakMin[i] = fSample;
 				m_peakRms[i] += (fSample * fSample);
 			}
 			// Have we reached the peak accumulative period?
@@ -262,35 +257,27 @@ void qtractorAudioPeakThread::writePeakFileFrame (void)
 
 	// Each channel has a peak frame...
 	unsigned short iChannels = m_pAudioFile->channels();
-	for (unsigned short i = 0; i < iChannels; i++) {
+	for (unsigned short i = 0; i < iChannels; ++i) {
 #ifdef QTRACTOR_PEAK_SMOOTHED
-		// Write the smoothed peak maximum value...
+		// Write the smoothed peak maximum and RMS value...
 		unsigned short k = i + iChannels;
 		m_peakMax[k]  = (1.0f - c_fPeakExpCoef) * m_peakMax[k]
 			+ c_fPeakExpCoef * 254.0f * m_peakMax[i];
 		frame.peakMax = (unsigned char) (m_peakMax[k] > 254.0f ? 255 : m_peakMax[k]);
-		// Write the smoothed peak minimum value...
-		m_peakMin[k]  = (1.0f - c_fPeakExpCoef) * m_peakMin[k]
-			+ c_fPeakExpCoef * 254.0f * ::fabsf(m_peakMin[i]);
-		frame.peakMin = (unsigned char) (m_peakMin[k] > 254.0f ? 255 : m_peakMin[k]);
-		// Write the smoothed RMS value...
 		m_peakRms[k]  = (1.0f - c_fPeakExpCoef) * m_peakRms[k]
 			+ c_fPeakExpCoef * 254.0f * (::sqrtf(m_peakRms[i] / float(m_iPeak));
 		frame.peakRms = (unsigned char) (m_peakRms[k] > 254.0f ? 255 : m_peakRms[k]);
 #else
 		// Write the denormalized peak values...
-		m_peakMax[i]  = 254.0f * ::fabsf(m_peakMax[i]);
-		m_peakMin[i]  = 254.0f * ::fabsf(m_peakMin[i]);
+		m_peakMax[i]  = 254.0f * m_peakMax[i];
 		m_peakRms[i]  = 254.0f * ::sqrtf(m_peakRms[i] / float(m_iPeak));
 		frame.peakMax = (unsigned char) (m_peakMax[i] > 254.0f ? 255 : m_peakMax[i]);
-		frame.peakMin = (unsigned char) (m_peakMin[i] > 254.0f ? 255 : m_peakMin[i]);
 		frame.peakRms = (unsigned char) (m_peakRms[i] > 254.0f ? 255 : m_peakRms[i]);
 #endif
 		// Bail out...
 		m_peakFile.write((const char *) &frame, sizeof(frame));
 		// Reset peak period accumulators...
 		m_peakMax[i] = 0.0f;
-		m_peakMin[i] = 0.0f;
 		m_peakRms[i] = 0.0f;
 	}
 	// We'll reset.
@@ -316,10 +303,6 @@ void qtractorAudioPeakThread::closePeakFile (void)
 	if (m_peakMax)
 		delete [] m_peakMax;
 	m_peakMax = NULL;
-
-	if (m_peakMin)
-		delete [] m_peakMin;
-	m_peakMin = NULL;
 
 	if (m_peakRms)
 		delete [] m_peakRms;

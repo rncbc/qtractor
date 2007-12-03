@@ -3,9 +3,12 @@ Qtractor - An Audio/MIDI multi-track sequencer
 
 ChangeLog
 
-0.1.0   2007-12-02  Work in progress...
+0.1.0   2007-12-03  Work in progress...
 
 - Audio clip time-stretching makes its debut.
+
+- Take absolute audio peak values only, making peak files a little
+  bit shorter and hopefully faster to load and draw as waveforms.
 
 
 0.0.9   2007-11-30  The Adolescence Prime
