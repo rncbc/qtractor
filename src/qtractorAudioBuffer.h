@@ -137,6 +137,7 @@ protected:
 
 	// Last-mile frame buffer-helper processor.
 	int writeFrames(float **ppFrames, unsigned int iFrames);
+	int flushFrames(unsigned int iFrames);
 
 	// Buffer process methods.
 	int readBuffer  (unsigned int iFrames);

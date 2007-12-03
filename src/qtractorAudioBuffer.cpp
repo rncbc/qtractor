@@ -842,6 +842,26 @@ int qtractorAudioBuffer::writeFrames (
 }
 
 
+// Flush buffer-helper processor.
+int qtractorAudioBuffer::flushFrames ( unsigned int iFrames )
+{
+	unsigned int nread = 0;
+
+	// Flush time-stretch processing...
+	if (m_pTimeStretch) {
+		unsigned int nahead = iFrames;
+		m_pTimeStretch->flushInput();
+		while (nahead > 0 && iFrames > nread) {
+			nahead = m_pTimeStretch->receiveFrames(m_ppFrames, iFrames - nread);
+			if (nahead > 0)
+				nread += m_pRingBuffer->write(m_ppFrames, nahead);
+		}
+	}
+
+	return (nread > 0 ? nread : -1);
+}
+
+
 // I/O buffer read process; return -1 on end-of-file.
 int qtractorAudioBuffer::readBuffer ( unsigned int iFrames )
 {
@@ -860,9 +880,10 @@ int qtractorAudioBuffer::readBuffer ( unsigned int iFrames )
 		nread += m_iInputPending;
 
 		if (m_ppOutBuffer == NULL) {
-			if (nread < 1)
-				return -1; // EoF!
-			return writeFrames(m_ppFrames, nread);
+			if (nread > 0)
+				return writeFrames(m_ppFrames, nread);
+			else
+				return flushFrames(iFrames); // Maybe EoF!
 		}
 
 		int ngen = 0;
@@ -897,7 +918,7 @@ int qtractorAudioBuffer::readBuffer ( unsigned int iFrames )
 			nread = writeFrames(m_ppOutBuffer, ngen);
 		else
 		if (nread < 1)
-			nread = -1; // EoF!
+			nread = flushFrames(iFrames); // Maybe EoF!
 
 	} else {
 #endif   // CONFIG_LIBSAMPLERATE
@@ -906,7 +927,7 @@ int qtractorAudioBuffer::readBuffer ( unsigned int iFrames )
 		if (nread > 0)
 			nread = writeFrames(m_ppFrames, nread);
 		else
-			nread = -1; // EoF!
+			nread = flushFrames(iFrames); // Maybe EoF!
 
 #ifdef CONFIG_LIBSAMPLERATE
 	}
