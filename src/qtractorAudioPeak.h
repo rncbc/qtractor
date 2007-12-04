@@ -39,7 +39,6 @@ class qtractorAudioPeakFactory;
 struct qtractorAudioPeakFrame
 {
 	unsigned char peakMax;
-	unsigned char peakMin;
 	unsigned char peakRms;
 };
 

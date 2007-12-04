@@ -173,9 +173,9 @@ void qtractorAudioPeakThread::run (void)
 			m_iPeak = 0;
 			// The resample-aware internal peak period...
 			m_iPeriod = (unsigned short) ::lroundf(
-				(1.0f + m_pPeakFile->timeStretch())
-				* float(c_iPeakPeriod * m_pAudioFile->sampleRate())
-				/ float(m_pPeakFile->sampleRate()));
+				(m_pPeakFile->timeStretch()
+					* float(c_iPeakPeriod * m_pAudioFile->sampleRate()))
+					/ float(m_pPeakFile->sampleRate()));
 			// Write peak file header.
 			qtractorAudioPeakHeader hdr;
 			hdr.peakPeriod   = c_iPeakPeriod;
@@ -325,8 +325,9 @@ qtractorAudioPeakFile::qtractorAudioPeakFile (
 	qtractorAudioPeakFactory *pFactory, const QString& sFilename,
 	unsigned int iSampleRate, float fTimeStretch, const QString& sSessionDir )
 	: m_peakFile( // Set peak filename...
-		QFileInfo(sSessionDir, QFileInfo(sFilename).fileName()).filePath()
-		+ c_sPeakFileExt)
+		QFileInfo(sSessionDir,
+			QFileInfo(sFilename).fileName()).filePath()
+			+ '_' + QString::number(fTimeStretch) + c_sPeakFileExt)
 {
 	// Initialize instance variables.
 	m_pFactory      = pFactory;
@@ -386,7 +387,7 @@ bool qtractorAudioPeakFile::openPeakFile (void)
 	// Check if we're still on creative thread...
 	if (m_pPeakThread) {
 		// If running try waiting just 10 msec for it to finnish...
-		if (m_pPeakThread->isRunning() /*&& !m_pPeakThread->wait(10) */)
+		if (m_pPeakThread->isRunning() /* && !m_pPeakThread->wait(10) */)
 			return false;
 		// OK. We're done with our creative thread.
 		delete m_pPeakThread;
@@ -419,14 +420,15 @@ bool qtractorAudioPeakFile::openPeakFile (void)
 
 #ifdef DEBUG_0
 	fprintf(stderr, "--- openPeakFile ---\n");
-	fprintf(stderr, "name       = %s\n", m_peakFile.name().toUtf8().constData());
-	fprintf(stderr, "filename   = %s\n", m_sFilename.toUtf8().constData());
-	fprintf(stderr, "sampleRate = %u\n", m_iSampleRate);
-	fprintf(stderr, "header     = %d\n", sizeof(qtractorAudioPeakHeader));
-	fprintf(stderr, "frame      = %d\n", sizeof(qtractorAudioPeakFrame));
-	fprintf(stderr, "period     = %d\n", hdr.peakPeriod);
-	fprintf(stderr, "channels   = %d\n", hdr.peakChannels);
-	fprintf(stderr, "frames     = %lu\n", hdr.peakFrames);
+	fprintf(stderr, "name        = %s\n", m_peakFile.name().toUtf8().constData());
+	fprintf(stderr, "filename    = %s\n", m_sFilename.toUtf8().constData());
+	fprintf(stderr, "sampleRate  = %u\n", m_iSampleRate);
+	fprintf(stderr, "timeStretch = %g\n", m_fTimeStretch);
+	fprintf(stderr, "header      = %d\n", sizeof(qtractorAudioPeakHeader));
+	fprintf(stderr, "frame       = %d\n", sizeof(qtractorAudioPeakFrame));
+	fprintf(stderr, "period      = %d\n", hdr.peakPeriod);
+	fprintf(stderr, "channels    = %d\n", hdr.peakChannels);
+	fprintf(stderr, "frames      = %lu\n", hdr.peakFrames);
 	fprintf(stderr, "--------------------\n");
 #endif
 
@@ -712,16 +714,17 @@ qtractorAudioPeakFactory::~qtractorAudioPeakFactory (void)
 }
 
 
-// The peak file factory-methods.
+// The peak file factory-me + thods.
 qtractorAudioPeak* qtractorAudioPeakFactory::createPeak (
 	const QString& sFilename, unsigned int iSampleRate,
 	float fTimeStretch, const QString& sSessionDir )
 {
-	qtractorAudioPeakFile* pPeakFile = m_peaks.value(sFilename, NULL);
+	const QString sKey = sFilename + '_' + QString::number(fTimeStretch);
+	qtractorAudioPeakFile* pPeakFile = m_peaks.value(sKey, NULL);
 	if (pPeakFile == NULL) {
 		pPeakFile = new qtractorAudioPeakFile(this,
 			sFilename, iSampleRate, fTimeStretch, sSessionDir);
-		m_peaks.insert(sFilename, pPeakFile);
+		m_peaks.insert(sKey, pPeakFile);
 	}
 
 	return new qtractorAudioPeak(pPeakFile);
@@ -729,7 +732,8 @@ qtractorAudioPeak* qtractorAudioPeakFactory::createPeak (
 
 void qtractorAudioPeakFactory::removePeak ( qtractorAudioPeakFile *pPeakFile )
 {
-	m_peaks.remove(pPeakFile->filename());
+	m_peaks.remove(pPeakFile->filename()
+		+ '_' + QString::number(pPeakFile->timeStretch()));
 }
 
 

@@ -102,7 +102,7 @@ qtractorAudioBuffer::qtractorAudioBuffer ( unsigned short iChannels,
 	m_ppFrames       = NULL;
 
 	m_bTimeStretch   = false;
-	m_fTimeStretch   = 0.0f;
+	m_fTimeStretch   = 1.0f;
 	m_pTimeStretch   = NULL;
 
 #ifdef CONFIG_LIBSAMPLERATE
@@ -204,7 +204,7 @@ bool qtractorAudioBuffer::open ( const QString& sFilename, int iMode )
 	// ALlocate time-stretch engine whether needed...
 	if (m_bTimeStretch) {
 		m_pTimeStretch = new qtractorTimeStretch(iChannels, m_iSampleRate);
-		m_pTimeStretch->setTempo(1.0f + m_fTimeStretch);
+		m_pTimeStretch->setTempo(m_fTimeStretch);
 	}
 
 	// FIXME: default logical length gets it total...
@@ -825,10 +825,10 @@ int qtractorAudioBuffer::writeFrames (
 {
 	// Time-stretch processing...
 	if (m_pTimeStretch) {
-		unsigned int nread  = 0;
+		int nread = 0;
 		unsigned int nahead = iFrames;
 		m_pTimeStretch->putFrames(ppFrames, nahead);
-		while (nahead > 0 && iFrames > nread) {
+		while (nahead > 0 && nread < (int) iFrames) {
 			nahead = m_pTimeStretch->receiveFrames(ppFrames, iFrames - nread);
 			if (nahead > 0)
 				nread += m_pRingBuffer->write(ppFrames, nahead);
@@ -851,7 +851,7 @@ int qtractorAudioBuffer::flushFrames ( unsigned int iFrames )
 	if (m_pTimeStretch) {
 		unsigned int nahead = iFrames;
 		m_pTimeStretch->flushInput();
-		while (nahead > 0 && iFrames > nread) {
+		while (nahead > 0 && nread < (int) iFrames) {
 			nahead = m_pTimeStretch->receiveFrames(m_ppFrames, iFrames - nread);
 			if (nahead > 0)
 				nread += m_pRingBuffer->write(m_ppFrames, nahead);
@@ -1102,7 +1102,7 @@ unsigned long qtractorAudioBuffer::framesIn ( unsigned long iFrames ) const
 #endif
 
 	if (m_bTimeStretch)
-		iFrames = (unsigned long) ((float) iFrames / (1.0f + m_fTimeStretch));
+		iFrames = (unsigned long) ((float) iFrames / m_fTimeStretch);
 
 	return iFrames;
 }
@@ -1115,7 +1115,7 @@ unsigned long qtractorAudioBuffer::framesOut ( unsigned long iFrames ) const
 #endif
 
 	if (m_bTimeStretch)
-		iFrames = (unsigned long) ((float) iFrames * (1.0f + m_fTimeStretch));
+		iFrames = (unsigned long) ((float) iFrames * m_fTimeStretch);
 
 	return iFrames;
 }
@@ -1185,8 +1185,10 @@ unsigned long qtractorAudioBuffer::loopEnd (void) const
 // Time-stretch factor.
 void qtractorAudioBuffer::setTimeStretch ( float fTimeStretch )
 {
-	m_bTimeStretch = (fTimeStretch < -1e-6f || fTimeStretch > +1e-6f);
-	m_fTimeStretch = (m_bTimeStretch ? fTimeStretch : 0.0f);
+	m_bTimeStretch = (fTimeStretch > 0.0f && fTimeStretch < 1.0f - 1e-6f)
+		|| (fTimeStretch > 1.0f + 1e-6f && fTimeStretch < 3.0f);
+
+	m_fTimeStretch = (m_bTimeStretch ? fTimeStretch : 1.0f);
 }
 
 float qtractorAudioBuffer::timeStretch (void) const

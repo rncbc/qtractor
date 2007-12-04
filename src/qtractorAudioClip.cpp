@@ -43,7 +43,7 @@ qtractorAudioClip::qtractorAudioClip ( qtractorTrack *pTrack )
 	m_pPeak = NULL;
 	m_pBuff = NULL;
 
-	m_fTimeStretch = 0.0f;
+	m_fTimeStretch = 1.0f;
 }
 
 // Copy constructor.
