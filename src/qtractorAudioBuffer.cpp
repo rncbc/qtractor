@@ -845,7 +845,7 @@ int qtractorAudioBuffer::writeFrames (
 // Flush buffer-helper processor.
 int qtractorAudioBuffer::flushFrames ( unsigned int iFrames )
 {
-	unsigned int nread = 0;
+	int nread = 0;
 
 	// Flush time-stretch processing...
 	if (m_pTimeStretch) {
