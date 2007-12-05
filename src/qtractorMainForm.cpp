@@ -1222,14 +1222,10 @@ bool qtractorMainForm::editSession (void)
 
 	// Take care of session name changes...
 	const QString sOldSessionName = m_pSession->sessionName();
-	// And tempo changes too...
-	float fOldTempo = m_pSession->tempo();
 
 	// Now, express the change as a undoable command...
 	m_pCommands->exec(
-		new qtractorPropertyCommand<qtractorSession::Properties> (
-			tr("session properties"), m_pSession->properties(),
-				sessionForm.properties()));
+		new qtractorSessionEditCommand(m_pSession, sessionForm.properties()));
 
 	// If session name has changed, we'll prompt
 	// for correct filename when save is triggered...
@@ -1238,9 +1234,6 @@ bool qtractorMainForm::editSession (void)
 
 	// Restore playback state, if needed...
 	if (bPlaying) {
-		// On tempo change, the MIDI engine queue needs a reset...
-		if (m_pSession->midiEngine() && m_pSession->tempo() != fOldTempo)
-			m_pSession->midiEngine()->resetTempo();
 		m_pSession->unlock();
 		m_iTransportUpdate++;
 	}

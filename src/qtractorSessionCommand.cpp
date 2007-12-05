@@ -176,4 +176,55 @@ bool qtractorSessionLoopCommand::undo (void)
 }
 
 
+//----------------------------------------------------------------------
+// class qtractorSessionEditCommand - implementation
+//
+
+// Constructor.
+qtractorSessionEditCommand::qtractorSessionEditCommand (
+	qtractorSession *pSession, const qtractorSession::Properties& properties )
+	: qtractorPropertyCommand<qtractorSession::Properties> (
+		QObject::tr("session properties"), pSession->properties(), properties)
+{
+	m_pTempoCommand = NULL;
+
+	// Append tempo changes too...
+	float fTempo = properties.timeScale.tempo();
+	if (pSession->tempo() != fTempo)
+		m_pTempoCommand = new qtractorSessionTempoCommand(pSession, fTempo);
+}
+
+// Destructor.
+qtractorSessionEditCommand::~qtractorSessionEditCommand (void)
+{
+	if (m_pTempoCommand)
+		delete m_pTempoCommand;
+}
+
+
+// Session-edit command methods.
+bool qtractorSessionEditCommand::redo (void)
+{
+	bool bResult = true;
+
+	if (m_pTempoCommand)
+		bResult = m_pTempoCommand->redo();
+
+	if (bResult)
+		bResult = qtractorPropertyCommand<qtractorSession::Properties>::redo();
+
+	return bResult;
+}
+
+bool qtractorSessionEditCommand::undo (void)
+{
+	bool bResult = qtractorPropertyCommand<qtractorSession::Properties>::undo();
+
+	if (bResult && m_pTempoCommand)
+		bResult = m_pTempoCommand->undo();
+
+	return bResult;
+}
+
+
 // end of qtractorSessionCommand.cpp

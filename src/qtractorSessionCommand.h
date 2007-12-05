@@ -106,6 +106,34 @@ private:
 };
 
 
+//----------------------------------------------------------------------
+// class qtractorSessionEditCommand - declaration.
+//
+
+class qtractorSessionEditCommand
+	: public qtractorPropertyCommand<qtractorSession::Properties>
+{
+public:
+
+	// Constructor.
+	qtractorSessionEditCommand(qtractorSession *pSession,
+		const qtractorSession::Properties& properties);
+
+	// Destructor.
+	~qtractorSessionEditCommand();
+
+	// Session-tempo command methods.
+	bool redo();
+	bool undo();
+
+private:
+
+	// Instance variables.
+	qtractorPropertyCommand<qtractorSession::Properties> *m_pPropertiesCommand;
+	qtractorSessionTempoCommand *m_pTempoCommand;
+};
+
+
 #endif	// __qtractorSessionCommand_h
 
 // end of qtractorSessionCommand.h
