@@ -25,12 +25,17 @@
 #include "qtractorClip.h"
 #include "qtractorClipCommand.h"
 
+#include "qtractorAudioClip.h"
+
 #include "qtractorMainForm.h"
 #include "qtractorSession.h"
 #include "qtractorOptions.h"
 
 #include <QMessageBox>
 #include <QLineEdit>
+
+// Needed for fabs()
+#include <math.h>
 
 
 //----------------------------------------------------------------------------
@@ -49,7 +54,8 @@ qtractorClipForm::qtractorClipForm (
 	m_pTimeScale  = NULL;
 	m_iDirtyCount = 0;
 
-	// Try to restore old window positioning.
+	// Try to set minimal window positioning.
+	m_ui.AudioClipGroupBox->hide();
 	adjustSize();
 
 	// UI signal/slot connections...
@@ -85,6 +91,9 @@ qtractorClipForm::qtractorClipForm (
 		SLOT(changed()));
 	QObject::connect(m_ui.FadeOutTypeComboBox,
 		SIGNAL(activated(int)),
+		SLOT(changed()));
+	QObject::connect(m_ui.TimeStretchSpinBox,
+		SIGNAL(valueChanged(double)),
 		SLOT(changed()));
 	QObject::connect(m_ui.OkPushButton,
 		SIGNAL(clicked()),
@@ -157,6 +166,19 @@ void qtractorClipForm::setClip ( qtractorClip *pClip )
 		}
 	}
 
+	// Time-stretch issue...
+	qtractorAudioClip *pAudioClip = NULL;
+	if (pTrack && pTrack->trackType() == qtractorTrack::Audio)
+		pAudioClip = static_cast<qtractorAudioClip *> (m_pClip);
+	if (pAudioClip)
+		m_ui.TimeStretchSpinBox->setValue(100.0f * pAudioClip->timeStretch());
+	m_ui.AudioClipGroupBox->setVisible(pAudioClip != NULL);
+
+	// Shake it a little bit first, but
+	// make it as tight as possible...
+	// resize(width() - 1, height() - 1);
+	adjustSize();
+	
 	// Backup clean.
 	m_iDirtyCount = 0;
 
@@ -215,6 +237,16 @@ void qtractorClipForm::accept (void)
 		if (iFadeOutLength != m_pClip->fadeOutLength()
 			|| fadeOutType != m_pClip->fadeOutType())
 			pClipCommand->fadeOutClip(m_pClip, iFadeOutLength, fadeOutType);
+		// Time-stretch issue...
+		qtractorAudioClip *pAudioClip = NULL;
+		qtractorTrack *pTrack = m_pClip->track();
+		if (pTrack && pTrack->trackType() == qtractorTrack::Audio)
+			pAudioClip = static_cast<qtractorAudioClip *> (m_pClip);
+		if (pAudioClip) {
+			float fTimeStretch = 0.01f * m_ui.TimeStretchSpinBox->value();
+			if (::fabs(fTimeStretch - pAudioClip->timeStretch()) > 0.001f)
+				pClipCommand->timeStretchClip(m_pClip, fTimeStretch); 
+		}
 		// Do it (but make it undoable)...
 		pMainForm->commands()->exec(pClipCommand);
 		// Reset dirty flag.

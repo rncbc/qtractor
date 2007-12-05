@@ -21,14 +21,6 @@
   </comment>
  <class>qtractorClipForm</class>
  <widget class="QDialog" name="qtractorClipForm" >
-  <property name="geometry" >
-   <rect>
-    <x>0</x>
-    <y>0</y>
-    <width>400</width>
-    <height>337</height>
-   </rect>
-  </property>
   <property name="focusPolicy" >
    <enum>Qt::StrongFocus</enum>
   </property>
@@ -39,24 +31,12 @@
    <iconset resource="../icons/qtractor.qrc" >:/icons/editClip.png</iconset>
   </property>
   <layout class="QGridLayout" >
-   <property name="margin" >
-    <number>9</number>
-   </property>
-   <property name="spacing" >
-    <number>6</number>
-   </property>
    <item row="2" column="1" >
     <widget class="QGroupBox" name="FormatGroupBox" >
      <property name="title" >
       <string>Format</string>
      </property>
      <layout class="QVBoxLayout" >
-      <property name="margin" >
-       <number>9</number>
-      </property>
-      <property name="spacing" >
-       <number>6</number>
-      </property>
       <item>
        <widget class="QRadioButton" name="FramesRadioButton" >
         <property name="toolTip" >
@@ -95,6 +75,12 @@
         <property name="orientation" >
          <enum>Qt::Vertical</enum>
         </property>
+        <property name="sizeHint" >
+         <size>
+          <width>20</width>
+          <height>8</height>
+         </size>
+        </property>
        </spacer>
       </item>
      </layout>
@@ -106,12 +92,6 @@
       <string>Parameters</string>
      </property>
      <layout class="QGridLayout" >
-      <property name="margin" >
-       <number>9</number>
-      </property>
-      <property name="spacing" >
-       <number>6</number>
-      </property>
       <item rowspan="3" row="0" column="2" >
        <spacer>
         <property name="orientation" >
@@ -120,18 +100,16 @@
         <property name="sizeType" >
          <enum>QSizePolicy::Expanding</enum>
         </property>
+        <property name="sizeHint" >
+         <size>
+          <width>20</width>
+          <height>40</height>
+         </size>
+        </property>
        </spacer>
       </item>
       <item row="0" column="1" >
        <widget class="qtractorSpinBox" name="ClipStartSpinBox" >
-        <property name="sizePolicy" >
-         <sizepolicy>
-          <hsizetype>7</hsizetype>
-          <vsizetype>0</vsizetype>
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
         <property name="minimumSize" >
          <size>
           <width>120</width>
@@ -145,14 +123,6 @@
       </item>
       <item row="1" column="1" >
        <widget class="qtractorSpinBox" name="ClipOffsetSpinBox" >
-        <property name="sizePolicy" >
-         <sizepolicy>
-          <hsizetype>7</hsizetype>
-          <vsizetype>0</vsizetype>
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
         <property name="minimumSize" >
          <size>
           <width>120</width>
@@ -166,14 +136,6 @@
       </item>
       <item row="2" column="1" >
        <widget class="qtractorSpinBox" name="ClipLengthSpinBox" >
-        <property name="sizePolicy" >
-         <sizepolicy>
-          <hsizetype>7</hsizetype>
-          <vsizetype>0</vsizetype>
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
         <property name="minimumSize" >
          <size>
           <width>120</width>
@@ -242,12 +204,6 @@
       <string>Fade In/Out</string>
      </property>
      <layout class="QGridLayout" >
-      <property name="margin" >
-       <number>9</number>
-      </property>
-      <property name="spacing" >
-       <number>6</number>
-      </property>
       <item rowspan="2" row="0" column="3" >
        <spacer>
         <property name="orientation" >
@@ -255,6 +211,12 @@
         </property>
         <property name="sizeType" >
          <enum>QSizePolicy::Expanding</enum>
+        </property>
+        <property name="sizeHint" >
+         <size>
+          <width>20</width>
+          <height>40</height>
+         </size>
         </property>
        </spacer>
       </item>
@@ -314,14 +276,6 @@
       </item>
       <item row="1" column="1" >
        <widget class="qtractorSpinBox" name="FadeOutLengthSpinBox" >
-        <property name="sizePolicy" >
-         <sizepolicy>
-          <hsizetype>7</hsizetype>
-          <vsizetype>0</vsizetype>
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
         <property name="minimumSize" >
          <size>
           <width>120</width>
@@ -335,14 +289,6 @@
       </item>
       <item row="0" column="1" >
        <widget class="qtractorSpinBox" name="FadeInLengthSpinBox" >
-        <property name="sizePolicy" >
-         <sizepolicy>
-          <hsizetype>7</hsizetype>
-          <vsizetype>0</vsizetype>
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
         <property name="minimumSize" >
          <size>
           <width>120</width>
@@ -380,12 +326,72 @@
     </widget>
    </item>
    <item row="4" column="0" colspan="2" >
-    <layout class="QHBoxLayout" >
-     <property name="margin" >
-      <number>0</number>
+    <widget class="QGroupBox" name="AudioClipGroupBox" >
+     <property name="title" >
+      <string>Audio</string>
      </property>
+     <layout class="QGridLayout" >
+      <item row="0" column="2" colspan="2" >
+       <spacer>
+        <property name="orientation" >
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </spacer>
+      </item>
+      <item row="0" column="0" >
+       <widget class="QLabel" name="TimeStretchTextLabel" >
+        <property name="minimumSize" >
+         <size>
+          <width>60</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="text" >
+         <string>Time St&amp;retch:</string>
+        </property>
+        <property name="buddy" >
+         <cstring>TimeStretchSpinBox</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1" >
+       <widget class="QDoubleSpinBox" name="TimeStretchSpinBox" >
+        <property name="minimumSize" >
+         <size>
+          <width>60</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="toolTip" >
+         <string>Clip time-stretch percentage</string>
+        </property>
+        <property name="suffix" >
+         <string> %</string>
+        </property>
+        <property name="decimals" >
+         <number>1</number>
+        </property>
+        <property name="minimum" >
+         <double>1.0</double>
+        </property>
+        <property name="maximum" >
+         <double>300.0</double>
+        </property>
+        <property name="value" >
+         <double>100.0</double>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="5" column="0" colspan="2" >
+    <layout class="QHBoxLayout" >
      <property name="spacing" >
       <number>4</number>
+     </property>
+     <property name="margin" >
+      <number>0</number>
      </property>
      <item>
       <spacer>
@@ -470,6 +476,7 @@
   <tabstop>FramesRadioButton</tabstop>
   <tabstop>TimeRadioButton</tabstop>
   <tabstop>BbtRadioButton</tabstop>
+  <tabstop>TimeStretchSpinBox</tabstop>
   <tabstop>OkPushButton</tabstop>
   <tabstop>CancelPushButton</tabstop>
  </tabstops>

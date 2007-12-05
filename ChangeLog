@@ -7,7 +7,8 @@ ChangeLog
 
 - Audio clip time-stretching makes its debut. Changing the session
   tempo automatically applies the corresponding time-stretch factor
-  to all in-place audio clips.
+  to all in-place audio clips. Audio clip properties dialog also
+  includes the time-stretch setting (in percentage though).
 
 - Take absolute audio peak values only, making peak files a little
   bit shorter and hopefully faster to load and draw as waveforms.
