@@ -355,8 +355,8 @@ qtractorAudioPeakFile::~qtractorAudioPeakFile (void)
 	bool bAborted = false;
 	if (m_pPeakThread) {
 		// Try to wait for thread termination...
-		m_pPeakThread->setRunState(false);
 		if (m_pPeakThread->isRunning()) {
+			m_pPeakThread->setRunState(false);
 		//	m_pPeakThread->terminate();
 			m_pPeakThread->wait();
 			bAborted = true;
@@ -387,7 +387,7 @@ bool qtractorAudioPeakFile::openPeakFile (void)
 	// Check if we're still on creative thread...
 	if (m_pPeakThread) {
 		// If running try waiting just 10 msec for it to finnish...
-		if (m_pPeakThread->isRunning() /* && !m_pPeakThread->wait(10) */)
+		if (m_pPeakThread->isRunning())
 			return false;
 		// OK. We're done with our creative thread.
 		delete m_pPeakThread;

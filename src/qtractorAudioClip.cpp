@@ -204,7 +204,7 @@ void qtractorAudioClip::close ( bool bForce )
 	fprintf(stderr, "qtractorAudioClip::close(%p, %d)\n", this, int(bForce));
 #endif
 
-	// Enforce get rid of peak instance...
+	// Enforced to get rid of peak instance...
 	if (bForce) {
 		if (m_pPeak)
 			delete m_pPeak;
@@ -221,7 +221,7 @@ void qtractorAudioClip::close ( bool bForce )
 	// Close and ditch stuff...
 	delete m_pBuff;
 	m_pBuff = NULL;
-	
+
 	// If proven empty, remove the file.
 	if (bForce && clipLength() < 1)
 		QFile::remove(filename());

@@ -164,13 +164,12 @@ qtractorMidiInputThread::qtractorMidiInputThread (
 // Destructor.
 qtractorMidiInputThread::~qtractorMidiInputThread (void)
 {
-	// Try to wake and terminate executive thread.
-	if (runState())
+	// Try to terminate executive thread,
+	// but give it a bit of time to cleanup...
+	if (isRunning()) {
 		setRunState(false);
-
-	// Give it a bit of time to cleanup...
-	if (isRunning())
 		QThread::msleep(100);
+	}
 }
 
 
@@ -249,12 +248,10 @@ qtractorMidiOutputThread::qtractorMidiOutputThread (
 // Destructor.
 qtractorMidiOutputThread::~qtractorMidiOutputThread (void)
 {
-	// Try to wake and terminate executive thread.
-	if (runState())
-		setRunState(false);
-
-	// Give it a bit of time to cleanup...
+	// Try to wake and terminate executive thread,
+	// but give it a bit of time to cleanup...
 	if (isRunning()) {
+		setRunState(false);
 		sync();
 		QThread::msleep(100);
 	}

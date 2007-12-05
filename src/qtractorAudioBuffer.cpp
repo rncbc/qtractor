@@ -261,8 +261,8 @@ void qtractorAudioBuffer::close (void)
 
 	// Not sync-managed anymore...
 	if (m_pSyncThread) {
-		m_pSyncThread->setRunState(false);
 		if (m_pSyncThread->isRunning()) do {
+			m_pSyncThread->setRunState(false);
 		//	m_pSyncThread->terminate();
 			m_pSyncThread->sync();
 		} while (!m_pSyncThread->wait(100));
