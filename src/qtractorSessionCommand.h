@@ -27,6 +27,10 @@
 #include "qtractorSession.h"
 
 
+// Forward declarations.
+class qtractorClipCommand;
+
+
 //----------------------------------------------------------------------
 // class qtractorSessionCommand - declaration.
 //
@@ -62,7 +66,9 @@ public:
 
 	// Constructor.
 	qtractorSessionTempoCommand(qtractorSession *pSession, float fTempo);
-
+	// Desstructor.
+	~qtractorSessionTempoCommand();
+	
 	// Session-tempo command methods.
 	bool redo();
 	bool undo();
@@ -71,6 +77,8 @@ private:
 
 	// Instance variables.
 	float m_fTempo;
+	
+	qtractorClipCommand *m_pClipCommand;
 };
 
 

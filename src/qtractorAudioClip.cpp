@@ -386,16 +386,19 @@ void qtractorAudioClip::drawClip ( QPainter *pPainter, const QRect& clipRect,
 // Audio clip tool-tip.
 QString qtractorAudioClip::toolTip (void) const
 {
-	QString sToolTip = qtractorClip::toolTip() + '\n';
+	QString sToolTip = qtractorClip::toolTip();
 
 	qtractorAudioFile *pFile = NULL;
-	if (m_pBuff)
+	if (m_pBuff) {
 		pFile = m_pBuff->file();
-	if (pFile) {
-		sToolTip + '\t';
-		sToolTip += QObject::tr("Audio:\t%1 channels, %2 Hz")
-			.arg(pFile->channels())
-			.arg(pFile->sampleRate());
+		if (pFile) {
+			sToolTip += QObject::tr("\nAudio:\t%1 channels, %2 Hz")
+				.arg(pFile->channels())
+				.arg(pFile->sampleRate());
+			if (m_pBuff->isTimeStretch())
+				sToolTip += QObject::tr(" (%1% tempo)")
+					.arg(100.0f * m_pBuff->timeStretch(), 0, 'g', 3);
+		}
 	}
 
 	return sToolTip;

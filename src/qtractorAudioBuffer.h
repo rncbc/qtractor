@@ -104,6 +104,7 @@ public:
 	// Time-stretch factor.
 	void setTimeStretch(float fTimeStretch);
 	float timeStretch() const;
+	bool isTimeStretch() const;
 
 	// Initial thread-sync executive (if file is on read mode,
 	// check whether it can be cache-loaded integrally).

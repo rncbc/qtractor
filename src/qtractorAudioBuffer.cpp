@@ -1196,6 +1196,11 @@ float qtractorAudioBuffer::timeStretch (void) const
 	return m_fTimeStretch;
 }
 
+bool qtractorAudioBuffer::isTimeStretch (void) const
+{
+	return m_bTimeStretch;
+}
+
 
 // Sample-rate converter type (global option).
 int qtractorAudioBuffer::g_iResampleType = 2;	// SRC_SINC_FASTEST;

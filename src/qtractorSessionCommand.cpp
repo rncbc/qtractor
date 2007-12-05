@@ -21,8 +21,10 @@
 
 #include "qtractorAbout.h"
 #include "qtractorSessionCommand.h"
+#include "qtractorClipCommand.h"
 
 #include "qtractorMidiEngine.h"
+#include "qtractorAudioClip.h"
 
 
 //----------------------------------------------------------------------
@@ -52,6 +54,34 @@ qtractorSessionTempoCommand::qtractorSessionTempoCommand (
 	: qtractorSessionCommand(QObject::tr("session tempo"), pSession)
 {
 	m_fTempo = fTempo;
+
+	// Take care of time-stretching of all audio-clips...
+	m_pClipCommand = NULL;
+	for (qtractorTrack *pTrack = pSession->tracks().first();
+			pTrack; pTrack = pTrack->next()) {
+		if (pTrack->trackType() == qtractorTrack::Audio) {
+			for (qtractorClip *pClip = pTrack->clips().first();
+					pClip; pClip = pClip->next()) {
+				qtractorAudioClip *pAudioClip
+					= static_cast<qtractorAudioClip *> (pClip);
+				if (pAudioClip) {
+					if (m_pClipCommand == NULL)
+						m_pClipCommand = new qtractorClipCommand(name());
+					float fTimeStretch
+						= (fTempo * pAudioClip->timeStretch())
+							/ pSession->tempo();
+					m_pClipCommand->timeStretchClip(pClip, fTimeStretch);
+				}
+			}
+		}
+	}		
+}
+
+// Desstructor.
+qtractorSessionTempoCommand::~qtractorSessionTempoCommand (void)
+{
+	if (m_pClipCommand)
+		delete m_pClipCommand;
 }
 
 
@@ -72,6 +102,10 @@ bool qtractorSessionTempoCommand::redo (void)
 
 	// Just set new one...
 	pSession->setTempo(m_fTempo);
+
+	// In case we have audio clips around...
+	if (m_pClipCommand)
+		m_pClipCommand->redo();
 
 	// Restore playback state, if needed...
 	if (bPlaying) {

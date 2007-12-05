@@ -134,6 +134,15 @@ void qtractorClipCommand::fadeOutClip ( qtractorClip *pClip,
 }
 
 
+void qtractorClipCommand::timeStretchClip ( qtractorClip *pClip,
+	float fTimeStretch )
+{
+	Item *pItem = new Item(TimeStretchClip, pClip, pClip->track());
+	pItem->timeStretch = fTimeStretch;
+	m_items.append(pItem);
+}
+
+
 // Special clip record nethod.
 bool qtractorClipCommand::addClipRecord ( qtractorTrack *pTrack )
 {
@@ -316,6 +325,18 @@ bool qtractorClipCommand::execute ( bool bRedo )
 			pClip->setFadeOutLength(pItem->fadeOutLength);
 			pItem->fadeOutLength = iOldFadeOutLength;
 			pItem->fadeOutType = oldFadeOutType;
+			break;
+		}
+		case TimeStretchClip: {
+			qtractorAudioClip *pAudioClip
+				= static_cast<qtractorAudioClip *> (pClip);
+			if (pAudioClip) {
+				float fOldTimeStretch = pAudioClip->timeStretch();
+				pAudioClip->setTimeStretch(pItem->timeStretch);
+				pAudioClip->close(true);
+				pAudioClip->open();
+				pItem->timeStretch = fOldTimeStretch;
+			}
 			break;
 		}
 		default:
