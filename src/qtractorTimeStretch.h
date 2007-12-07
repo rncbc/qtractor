@@ -42,15 +42,24 @@ public:
 	// Destructor.
 	~qtractorTimeStretch();
 
-	// Sets new target tempo; smaller values represent
-	// slower tempo, larger faster tempo.
-	void setTempo(float fTempo);
-
 	// Sets the number of channels, 1=mono, 2=stereo.
 	void setChannels(unsigned short iChannels);
 
 	// Get the assigned number of channels, 1=mono, 2=stereo.
 	unsigned short channels() const;
+
+	// Sets new target tempo; smaller values represent
+	// slower tempo, larger faster tempo.
+	void setTempo(float fTempo);
+
+	// Get assigned target tempo.
+	float tempo() const;
+
+	// Set quick-seek mode (hierachical search).
+	void setQuickSeek(bool bQuickSeek);
+
+	// Get quick-seek mode.
+	bool isQuickSeek() const;
 
 	// Default values for sound processing parameters.
 	enum {
@@ -234,12 +243,13 @@ private:
 
 	unsigned short m_iChannels;
 
+	float m_fTempo;
+	bool  m_bQuickSeek;
+
 	unsigned int m_iSampleRate;
 	unsigned int m_iSequenceMs;
 	unsigned int m_iSeekWindowMs;
 	unsigned int m_iOverlapMs;
-
-	float m_fTempo;
 
 	unsigned int m_iFramesReq;
 	float **m_ppMidBuffer;

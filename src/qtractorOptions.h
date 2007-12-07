@@ -84,10 +84,11 @@ public:
 
 	// Audio options...
 	QString sAudioCaptureExt;
-	int iAudioCaptureType;
-	int iAudioCaptureFormat;
-	int iAudioCaptureQuality;
-	int iAudioResampleType;
+	int     iAudioCaptureType;
+	int     iAudioCaptureFormat;
+	int     iAudioCaptureQuality;
+	int     iAudioResampleType;
+	bool    bAudioQuickSeek;
 
 	// Midi options...
 	int iMidiCaptureFormat;

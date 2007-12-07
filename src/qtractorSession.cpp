@@ -281,6 +281,7 @@ unsigned int qtractorSession::sampleRate (void) const
 void qtractorSession::setTempo ( float fTempo )
 {
 	m_props.timeScale.setTempo(fTempo);
+	m_props.timeScale.updateScale();
 }
 
 float qtractorSession::tempo (void) const

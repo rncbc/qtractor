@@ -92,6 +92,7 @@ qtractorOptions::qtractorOptions (void)
 	iAudioCaptureFormat  = m_settings.value("/CaptureFormat", 0).toInt();
 	iAudioCaptureQuality = m_settings.value("/CaptureQuality", 4).toInt();
 	iAudioResampleType   = m_settings.value("/ResampleType", 2).toInt();
+	bAudioQuickSeek      = m_settings.value("/QuickSeek", false).toBool();
 	m_settings.endGroup();
 
 	// MIDI rendering options group.
@@ -227,6 +228,7 @@ qtractorOptions::~qtractorOptions (void)
 	m_settings.setValue("/CaptureFormat", iAudioCaptureFormat);
 	m_settings.setValue("/CaptureQuality", iAudioCaptureQuality);
 	m_settings.setValue("/ResampleType", iAudioResampleType);
+	m_settings.setValue("/QuickSeek", bAudioQuickSeek);
 	m_settings.endGroup();
 
 	// MIDI rendering options group.

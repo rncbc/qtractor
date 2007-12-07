@@ -866,6 +866,30 @@
             </item>
            </widget>
           </item>
+          <item row="1" column="0" colspan="3" >
+           <widget class="QCheckBox" name="AudioQuickSeekCheckBox" >
+            <property name="font" >
+             <font>
+              <family>Sans Serif</family>
+              <pointsize>8</pointsize>
+              <weight>50</weight>
+              <italic>false</italic>
+              <bold>false</bold>
+              <underline>false</underline>
+              <strikeout>false</strikeout>
+             </font>
+            </property>
+            <property name="toolTip" >
+             <string>Whether to apply a quick seek time-stretching</string>
+            </property>
+            <property name="text" >
+             <string>&amp;Quick seek time-stretching</string>
+            </property>
+            <property name="shortcut" >
+             <string>Alt+Q</string>
+            </property>
+           </widget>
+          </item>
          </layout>
         </widget>
        </item>
@@ -1485,6 +1509,7 @@
   <tabstop>AudioCaptureFormatComboBox</tabstop>
   <tabstop>AudioCaptureQualitySpinBox</tabstop>
   <tabstop>AudioResampleTypeComboBox</tabstop>
+  <tabstop>AudioQuickSeekCheckBox</tabstop>
   <tabstop>MidiCaptureFormatComboBox</tabstop>
   <tabstop>MetroChannelSpinBox</tabstop>
   <tabstop>MetroBarNoteComboBox</tabstop>

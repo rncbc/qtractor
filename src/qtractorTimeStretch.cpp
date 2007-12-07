@@ -124,7 +124,8 @@ qtractorTimeStretch::qtractorTimeStretch (
 	m_iChannels = iChannels;
 
 	m_fTempo = 1.0f;
-	
+	m_bQuickSeek = false;
+
 	m_bMidBufferDirty = false;
 	m_ppMidBuffer = NULL;
 	m_ppRefMidBuffer = NULL;
@@ -157,6 +158,72 @@ qtractorTimeStretch::~qtractorTimeStretch (void)
 		delete [] m_ppRefMidBuffer;
 		delete [] m_ppFrames;
 	}
+}
+
+
+
+// Sets the number of channels, 1=mono, 2=stereo.
+void qtractorTimeStretch::setChannels ( unsigned short iChannels )
+{
+	if (m_iChannels == iChannels)
+		return;
+
+	m_iChannels = iChannels;
+	m_inputBuffer.setChannels(m_iChannels);
+	m_outputBuffer.setChannels(m_iChannels);
+}
+
+
+// Get the assigne number of channels, 1=mono, 2=stereo.
+unsigned short qtractorTimeStretch::channels (void) const
+{
+	return m_iChannels;
+}
+
+
+// Sets new target tempo; less than 1.0 values represent
+// slower tempo, greater than 1.0 represents faster tempo.
+void qtractorTimeStretch::setTempo ( float fTempo )
+{
+	// Set new is tempo scaling.
+	m_fTempo = fTempo;
+
+	// Calculate ideal skip length (according to tempo value) 
+	m_fNominalSkip = m_fTempo * (m_iSeekWindowLength - m_iOverlapLength);
+	m_fSkipFract = 0;
+
+	// Calculate how many samples are needed in the input buffer 
+	// to process another batch of samples.
+	m_iFramesReq = (unsigned int) (m_fNominalSkip + 0.5f) + m_iOverlapLength;
+	if (m_iFramesReq < m_iSeekWindowLength)
+		m_iFramesReq = m_iSeekWindowLength;
+	m_iFramesReq += m_iSeekLength;
+
+	clear();
+
+	// These will be enough for most purposes, and
+	// shoudl avoid in-the-fly buffer re-allocations...
+	m_inputBuffer.ensureCapacity(m_iFramesReq << 1);
+	m_outputBuffer.ensureCapacity(m_iFramesReq);
+}
+
+// Get assigned target tempo.
+float qtractorTimeStretch::tempo (void) const
+{
+	return m_fTempo;
+}
+
+
+// Set quick-seek mode (hierachical search).
+void qtractorTimeStretch::setQuickSeek ( bool bQuickSeek )
+{
+	m_bQuickSeek = bQuickSeek;
+}
+
+// Get quick-seek mode.
+bool qtractorTimeStretch::isQuickSeek (void) const
+{
+	return m_bQuickSeek;
 }
 
 
@@ -253,80 +320,64 @@ void qtractorTimeStretch::clear (void)
 unsigned int qtractorTimeStretch::seekBestOverlapPosition (void) 
 {
 	double dBestCorr, dCorr;
-	unsigned int iOffs, iBestOffs;
-	unsigned short i;
-	const float *pCompare;
-
+	unsigned int iBestOffs, iPrevBestOffs;
+	unsigned short i, iStep;
+	int iOffs, j, k;
+	
 	// Slopes the amplitude of the 'midBuffer' samples
 	calcCrossCorrReference();
 
 	dBestCorr = -1e50; // A reasonable lower limit.
-	iBestOffs = 0;
 
 	// Scans for the best correlation value by testing each
 	// possible position over the permitted range.
-	for (iOffs = 0; iOffs < m_iSeekLength; ++iOffs) {
-		for (i = 0; i < m_iChannels; ++i) {
-			// Calculates correlation value for the mixing
-			// position corresponding to iTempOffset.
-			pCompare = m_inputBuffer.ptrBegin(i) + iOffs;
-			dCorr = (*m_pfnCrossCorr)(pCompare, m_ppRefMidBuffer[i], m_iOverlapLength);
-			// Checks for the highest correlation value.
-			if (dCorr > dBestCorr) {
-				dBestCorr = dCorr;
-				iBestOffs = iOffs;
+	if (m_bQuickSeek) {
+		// Hierachical search...
+		iPrevBestOffs = (m_iSeekLength + 1) >> 1;
+		iOffs = iBestOffs = iPrevBestOffs; 
+		for (iStep = 64; iStep > 0; iStep >>= 2) {
+			for (k = -1; k <= 1; k += 2) {
+				for (j = 1; j < 4 || iStep == 64; ++j) {
+					iOffs = iPrevBestOffs + k * j * iStep;
+					if (iOffs < 0 || iOffs >= (int) m_iSeekLength)
+						break;
+					for (i = 0; i < m_iChannels; ++i) {
+						// Calculates correlation value for the mixing
+						// position corresponding to iOffs.
+						dCorr = (*m_pfnCrossCorr)(
+							m_inputBuffer.ptrBegin(i) + iOffs,
+							m_ppRefMidBuffer[i],
+							m_iOverlapLength);
+						// Checks for the highest correlation value.
+						if (dCorr > dBestCorr) {
+							dBestCorr = dCorr;
+							iBestOffs = iOffs;
+						}
+					}
+				}
+			}
+			iPrevBestOffs = iBestOffs;
+		}
+	} else {
+		// Linear search...
+		iBestOffs = 0;
+		for (iOffs = 0; iOffs < (int) m_iSeekLength; ++iOffs) {
+			for (i = 0; i < m_iChannels; ++i) {
+				// Calculates correlation value for the mixing
+				// position corresponding to iOffs.
+				dCorr = (*m_pfnCrossCorr)(
+					m_inputBuffer.ptrBegin(i) + iOffs,
+					m_ppRefMidBuffer[i], m_iOverlapLength);
+				// Checks for the highest correlation value.
+				if (dCorr > dBestCorr) {
+					dBestCorr = dCorr;
+					iBestOffs = iOffs;
+				}
 			}
 		}
 	}
 
 	return iBestOffs;
-}
-
-
-// Sets new target tempo; less than 1.0 values represent
-// slower tempo, greater than 1.0 represents faster tempo.
-void qtractorTimeStretch::setTempo ( float fTempo )
-{
-	// Set new is tempo scaling.
-	m_fTempo = fTempo;
-
-	// Calculate ideal skip length (according to tempo value) 
-	m_fNominalSkip = m_fTempo * (m_iSeekWindowLength - m_iOverlapLength);
-	m_fSkipFract = 0;
-
-	// Calculate how many samples are needed in the input buffer 
-	// to process another batch of samples.
-	m_iFramesReq = (unsigned int) (m_fNominalSkip + 0.5f) + m_iOverlapLength;
-	if (m_iFramesReq < m_iSeekWindowLength)
-		m_iFramesReq = m_iSeekWindowLength;
-	m_iFramesReq += m_iSeekLength;
-
-	clear();
-
-	// These will be enough for most purposes, and
-	// shoudl avoid in-the-fly buffer re-allocations...
-	m_inputBuffer.ensureCapacity(m_iFramesReq << 1);
-	m_outputBuffer.ensureCapacity(m_iFramesReq);
-}
-
-
-
-// Sets the number of channels, 1=mono, 2=stereo.
-void qtractorTimeStretch::setChannels ( unsigned short iChannels )
-{
-	if (m_iChannels == iChannels)
-		return;
-
-	m_iChannels = iChannels;
-	m_inputBuffer.setChannels(m_iChannels);
-	m_outputBuffer.setChannels(m_iChannels);
-}
-
-
-// Get the assigne number of channels, 1=mono, 2=stereo.
-unsigned short qtractorTimeStretch::channels (void) const
-{
-	return m_iChannels;
 }
 
 

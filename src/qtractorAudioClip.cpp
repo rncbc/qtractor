@@ -396,7 +396,7 @@ QString qtractorAudioClip::toolTip (void) const
 				.arg(pFile->channels())
 				.arg(pFile->sampleRate());
 			if (m_pBuff->isTimeStretch())
-				sToolTip += QObject::tr(" (%1% tempo)")
+				sToolTip += QObject::tr("\n\t(%1% time stretch)")
 					.arg(100.0f * m_pBuff->timeStretch(), 0, 'g', 3);
 		}
 	}

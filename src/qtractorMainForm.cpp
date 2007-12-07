@@ -724,8 +724,9 @@ void qtractorMainForm::setOptions ( qtractorOptions *pOptions )
 		m_pOptions->iAudioCaptureQuality);
 	qtractorMidiClip::setDefaultFormat(
 		m_pOptions->iMidiCaptureFormat);
-	// Set default sample-rate converter quality...
+	// Set default audio-buffer quality...
 	qtractorAudioBuffer::setResampleType(m_pOptions->iAudioResampleType);
+	qtractorAudioBuffer::setQuickSeek(m_pOptions->bAudioQuickSeek);
 
 	// Change to last known session dir...
 	if (!m_pOptions->sSessionDir.isEmpty()) {
@@ -1985,6 +1986,7 @@ void qtractorMainForm::viewOptions (void)
 	int     iOldMaxRecentFiles     = m_pOptions->iMaxRecentFiles;
 	int     iOldDisplayFormat      = m_pOptions->iDisplayFormat;
 	int     iOldResampleType       = m_pOptions->iAudioResampleType;
+	bool    bOldQuickSeek          = m_pOptions->bAudioQuickSeek;
 	int     iOldMetroChannel       = m_pOptions->iMetroChannel;
 	int     iOldMetroBarNote       = m_pOptions->iMetroBarNote;
 	int     iOldMetroBarVelocity   = m_pOptions->iMetroBarVelocity;
@@ -2002,6 +2004,11 @@ void qtractorMainForm::viewOptions (void)
 		// Check wheather something immediate has changed.
 		if (iOldResampleType != m_pOptions->iAudioResampleType) {
 			qtractorAudioBuffer::setResampleType(m_pOptions->iAudioResampleType);
+			iNeedRestart |= RestartSession;
+		}
+		if (( bOldQuickSeek && !m_pOptions->bAudioQuickSeek) ||
+			(!bOldQuickSeek &&  m_pOptions->bAudioQuickSeek)) {
+			qtractorAudioBuffer::setQuickSeek(m_pOptions->bAudioQuickSeek);
 			iNeedRestart |= RestartSession;
 		}
 		if (( bOldStdoutCapture && !m_pOptions->bStdoutCapture) ||

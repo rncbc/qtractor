@@ -334,6 +334,7 @@ bool qtractorClipCommand::execute ( bool bRedo )
 				float fOldTimeStretch = pAudioClip->timeStretch();
 				pAudioClip->setTimeStretch(pItem->timeStretch);
 				pAudioClip->close(true);
+				pAudioClip->updateClipTime();
 				pAudioClip->open();
 				pItem->timeStretch = fOldTimeStretch;
 			}

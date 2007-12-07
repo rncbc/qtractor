@@ -3,12 +3,18 @@ Qtractor - An Audio/MIDI multi-track sequencer
 
 ChangeLog
 
-0.1.0   2007-12-05  Work in progress...
+0.1.0   2007-12-07  Work in progress...
 
-- Audio clip time-stretching makes its debut. Changing the session
-  tempo automatically applies the corresponding time-stretch factor
-  to all in-place audio clips. Audio clip properties dialog also
-  includes the time-stretch setting (in percentage though).
+- Audio clip time-stretching makes its debut, with code adapted and
+  refactored from the SoundTouch library, under the (L)GPL umbrella.
+
+- New "Options.../Audio/Playback/Quick seek time-stretching" global
+  option, providing a quick seek mode (hierarchical search) while
+  doing all audio buffer time-stretching.
+
+- Changing session tempo will automatically apply the corresponding
+  time-stretch percent factor to all in-place audio clips. Audio
+  clip dialog also includes a new time-stretch property setting.
 
 - A race-condition has been mitigated in the audio-buffer thread,
   that was exposed and lead to sudden application freezing upon

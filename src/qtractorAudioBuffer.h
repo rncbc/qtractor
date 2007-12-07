@@ -123,8 +123,12 @@ public:
 	static void setResampleType(int iResampleType);
 	static int resampleType();
 
+	// Time stretch quick-seek mode (global option).
+	static void setQuickSeek(bool bQuickSeek);
+	static bool isQuickSeek();
+
 #ifdef DEBUG
-	void dump_state(const char *pszPrefix) const;
+	void dump_state(const QString& sPrefix) const;
 #endif
 
 protected:
@@ -201,6 +205,9 @@ private:
 
 	// Sample-rate converter type global option.
 	static int     g_iResampleType;
+
+	// Time-stretch quick-seek mode global option.
+	static bool    g_bQuickSeek;
 };
 
 

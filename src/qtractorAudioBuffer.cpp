@@ -205,6 +205,7 @@ bool qtractorAudioBuffer::open ( const QString& sFilename, int iMode )
 	if (m_bTimeStretch) {
 		m_pTimeStretch = new qtractorTimeStretch(iChannels, m_iSampleRate);
 		m_pTimeStretch->setTempo(m_fTimeStretch);
+		m_pTimeStretch->setQuickSeek(g_bQuickSeek);
 	}
 
 	// FIXME: default logical length gets it total...
@@ -1185,8 +1186,8 @@ unsigned long qtractorAudioBuffer::loopEnd (void) const
 // Time-stretch factor.
 void qtractorAudioBuffer::setTimeStretch ( float fTimeStretch )
 {
-	m_bTimeStretch = (fTimeStretch > 0.0f && fTimeStretch < 1.0f - 1e-6f)
-		|| (fTimeStretch > 1.0f + 1e-6f && fTimeStretch < 3.0f);
+	m_bTimeStretch = (fTimeStretch > 0.05f && fTimeStretch < 1.0f - 1e-6f)
+		|| (fTimeStretch > 1.0f + 1e-6f && fTimeStretch < 5.0f);
 
 	m_fTimeStretch = (m_bTimeStretch ? fTimeStretch : 1.0f);
 }
@@ -1216,8 +1217,22 @@ int qtractorAudioBuffer::resampleType (void)
 }
 
 
+// Time stretch quick-seek mode (global option).
+bool qtractorAudioBuffer::g_bQuickSeek = false;
+
+void qtractorAudioBuffer::setQuickSeek ( bool bQuickSeek )
+{
+	g_bQuickSeek = bQuickSeek;
+}
+
+bool qtractorAudioBuffer::isQuickSeek (void)
+{
+	return g_bQuickSeek;
+}
+
+
 #ifdef DEBUG
-void qtractorAudioBuffer::dump_state ( const char *pszPrefix ) const
+void qtractorAudioBuffer::dump_state ( const QString& sPrefix ) const
 {
 	unsigned int  rs  = m_pRingBuffer->readable();
 	unsigned int  ws  = m_pRingBuffer->writable();
@@ -1229,7 +1244,7 @@ void qtractorAudioBuffer::dump_state ( const char *pszPrefix ) const
 	unsigned long len = m_iLength;
 
 	fprintf(stderr, "%s rs=%u ws=%u ri=%u wi=%u wo=%lu ro=%lu ofs=%lu len=%lu\n",
-		pszPrefix, rs, ws, ri, wi, wo, ro, ofs, len);
+		sPrefix.toUtf8().constData(), rs, ws, ri, wi, wo, ro, ofs, len);
 }
 #endif
 
