@@ -303,7 +303,7 @@ void qtractorAudioClip::drawClip ( QPainter *pPainter, const QRect& clipRect,
 	if (kdelta < 1) {
 		// Polygon mode...
 		int ymax, yrms;
-		unsigned int iPolyPoints = (nframes << 1);
+		unsigned int iPolyPoints = (nframes << 1) + 1;
 		QPolygon **pPolyMax = new QPolygon* [iChannels];
 		QPolygon **pPolyRms = new QPolygon* [iChannels];
 		for (i = 0; i < (int) iChannels; ++i) {
@@ -313,8 +313,8 @@ void qtractorAudioClip::drawClip ( QPainter *pPainter, const QRect& clipRect,
 		// Build polygonal vertexes...
 		j = 0;
 		for (n = 0; n < (int) nframes; ++n) {
-			y = clipRect.y() + h2;
 			x = clipRect.x() + pSession->pixelFromFrame(n * iPeriod);
+			y = clipRect.y() + h2;
 			for (i = 0; i < (int) iChannels; ++i, ++j) {
 				ymax = (h2 * pframes[j].peakMax) / 255;
 				yrms = (h2 * pframes[j].peakRms) / 255;
@@ -326,13 +326,18 @@ void qtractorAudioClip::drawClip ( QPainter *pPainter, const QRect& clipRect,
 			}
 		}
 		// Draw (and free) the polygon...
+		x = clipRect.right();
+		y = clipRect.y() + h2;
 		for (i = 0; i < (int) iChannels; ++i) {
+			pPolyMax[i]->setPoint(n, x, y);
+			pPolyRms[i]->setPoint(n, x, y);
 			pPainter->setBrush(track()->foreground());
 			pPainter->drawPolygon(*pPolyMax[i]);
 			pPainter->setBrush(track()->foreground().light());
 			pPainter->drawPolygon(*pPolyRms[i]);
 			delete pPolyMax[i];
 			delete pPolyRms[i];
+			y += h1;
 		}
 		delete [] pPolyMax;
 		delete [] pPolyRms;
