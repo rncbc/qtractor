@@ -413,7 +413,7 @@ bool qtractorAudioPeakFile::openPeakFile (void)
 
 	// Read peak file header.
 	qtractorAudioPeakHeader hdr;
-	if (m_peakFile.read((char *) &hdr, sizeof(hdr))	!= (qint64) sizeof(hdr)) {
+	if (m_peakFile.read((char *) &hdr, sizeof(hdr)) != (qint64) sizeof(hdr)) {
 		m_peakFile.close();
 		return false;
 	}
@@ -550,7 +550,7 @@ void qtractorAudioPeakFile::getPeak ( qtractorAudioPeakFrame *pframes,
 	}
 }
 
-void qtractorAudioPeakFile::readPeak ( char *pBuffer, 
+void qtractorAudioPeakFile::readPeak ( char *pBuffer,
 	unsigned long iOffset, unsigned int iLength )
 {
 #ifdef DEBUG_0
@@ -569,7 +569,7 @@ void qtractorAudioPeakFile::readPeak ( char *pBuffer,
 		if (iOffset + iLength > m_iPeakOffset) {
 			// Backward cache request...
 			ndelta = m_iPeakOffset - iOffset;
-			::memcpy(&pBuffer[ndelta], &m_pPeakBuffer[0], iLength - ndelta);	    	
+			::memcpy(&pBuffer[ndelta], &m_pPeakBuffer[0], iLength - ndelta);
 			if (m_iPeakOffset > m_iPeakBufSize)
 				m_iPeakOffset -= m_iPeakBufSize;
 			else
@@ -577,7 +577,7 @@ void qtractorAudioPeakFile::readPeak ( char *pBuffer,
 			// Get the new bunch...
 			readPeakChunk();
 			ncache = iOffset - m_iPeakOffset;
-			::memcpy(&pBuffer[0], &m_pPeakBuffer[ncache], ndelta);	    	
+			::memcpy(&pBuffer[0], &m_pPeakBuffer[ncache], ndelta);
 		} else {
 			// Far-behind cache request...
 			m_iPeakOffset = iOffset;
