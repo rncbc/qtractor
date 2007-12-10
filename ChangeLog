@@ -3,8 +3,11 @@ Qtractor - An Audio/MIDI multi-track sequencer
 
 ChangeLog
 
-0.1.0   2007-12-08  Work in progress...
+0.1.0   2007-12-10  Work in progress...
 
+- It is now possible to change the length/size of a clip by dragging
+  its left or right edges, while in the main track-view.
+ 
 - Audio clip time-stretching makes its debut, with code adapted and
   refactored from the SoundTouch library, under the (L)GPL umbrella.
 

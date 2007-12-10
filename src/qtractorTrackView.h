@@ -221,10 +221,16 @@ protected:
 	void moveRubberBand(qtractorRubberBand **ppRubberBand,
 		const QRect& rectDrag, int thick = 1) const;
 
+	// Clip fade-in/out handle and resize detection.
+	bool dragFadeResizeStart(const QPoint& pos);
+
 	// Clip fade-in/out handle drag-move methods.
-	bool dragFadeStart(const QPoint& pos);
 	void dragFadeMove(const QPoint& pos);
 	void dragFadeDrop(const QPoint& pos);
+
+	// Clip resize drag-move methods.
+	void dragResizeMove(const QPoint& pos);
+	void dragResizeDrop(const QPoint& pos);
 
 	// Reset drag/select/move state.
 	void resetDragState();
@@ -292,9 +298,10 @@ private:
 
 	// The current selecting/dragging clip stuff.
 	enum DragState {
-		DragNone = 0, DragStart,
-		DragSelect, DragMove, DragDrop, DragStep,
-		DragPaste, DragFadeIn, DragFadeOut
+		DragNone = 0, DragStart, DragSelect,
+		DragMove, DragDrop, DragStep,
+		DragPaste, DragFadeIn, DragFadeOut,
+		DragResizeLeft, DragResizeRight
 	} m_dragState, m_dragCursor;
 
 	qtractorClip *m_pClipDrag;

@@ -1130,7 +1130,7 @@ void qtractorTrackView::mousePressEvent ( QMouseEvent *pMouseEvent )
 			m_posDrag   = pos;
 			m_pClipDrag = clipAt(m_posDrag, true, &m_rectDrag);
 			// Should it be selected(toggled)?
-			if (m_pClipDrag) {
+			if (m_pClipDrag && !dragFadeResizeStart(pos)) {
 				// Show that we're about to something...
 				m_dragCursor = m_dragState;
 				qtractorScrollView::setCursor(QCursor(Qt::PointingHandCursor));
@@ -1185,8 +1185,8 @@ void qtractorTrackView::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 
 	switch (m_dragState) {
 	case DragNone:
-		// Try to catch mouse over the fade handles...
-		dragFadeStart(pos);
+		// Try to catch mouse over the fade or resize handles...
+		dragFadeResizeStart(pos);
 		break;
 	case DragMove:
 	case DragPaste:
@@ -1195,6 +1195,10 @@ void qtractorTrackView::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 	case DragFadeIn:
 	case DragFadeOut:
 		dragFadeMove(pos);
+		break;
+	case DragResizeLeft:
+	case DragResizeRight:
+		dragResizeMove(pos);
 		break;
 	case DragSelect:
 		m_rectDrag.setBottomRight(pos);
@@ -1205,12 +1209,18 @@ void qtractorTrackView::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 	case DragStart:
 		if ((m_posDrag - pos).manhattanLength()
 			> QApplication::startDragDistance()) {
-			// Check if we're pointing in some fade-in/out handle...
-			if (dragFadeStart(m_posDrag)) {
+			// Check if we're pointing in some fade-in/out or resize handle...
+			if (dragFadeResizeStart(m_posDrag)) {
 				m_dragState = m_dragCursor;
-				m_iDraggingX = (pos.x() - m_posDrag.x());
-				qtractorScrollView::setCursor(QCursor(Qt::SizeHorCursor));
-				moveRubberBand(&m_pRubberBand, m_rectHandle);
+				if (m_dragState == DragFadeIn || m_dragState == DragFadeOut) {
+					// DragFade...
+					m_iDraggingX = (pos.x() - m_posDrag.x());
+					qtractorScrollView::setCursor(QCursor(Qt::SizeHorCursor));
+					moveRubberBand(&m_pRubberBand, m_rectHandle);					
+				} else if (m_pClipDrag) {
+					// DragResize...
+					moveRubberBand(&m_pRubberBand, m_rectDrag, 3);					
+				}
 			} else {
 				// We'll start dragging clip/regions alright...
 				qtractorClipSelect::Item *pClipItem = NULL;
@@ -1280,6 +1290,10 @@ void qtractorTrackView::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 		case DragFadeIn:
 		case DragFadeOut:
 			dragFadeDrop(pos);
+			break;
+		case DragResizeLeft:
+		case DragResizeRight:
+			dragResizeDrop(pos);
 			break;
 		case DragStart:
 			// Deferred left-button positioning...
@@ -1731,8 +1745,8 @@ void qtractorTrackView::moveRubberBand ( qtractorRubberBand **ppRubberBand,
 }
 
 
-// Check whether we're up to drag a clip fade-in/out handle.
-bool qtractorTrackView::dragFadeStart ( const QPoint& pos )
+// Check whether we're up to drag a clip fade-in/out or resize handle.
+bool qtractorTrackView::dragFadeResizeStart ( const QPoint& pos )
 {
 	qtractorSession *pSession = m_pTracks->session();
 	if (pSession == NULL)
@@ -1741,6 +1755,18 @@ bool qtractorTrackView::dragFadeStart ( const QPoint& pos )
 	QRect rectClip;
 	qtractorClip *pClip = clipAt(pos, false, &rectClip);
 	if (pClip) {
+		// Resize-left check...
+		if (pos.x() < rectClip.left() + 4) {
+			m_dragCursor = DragResizeLeft;
+			qtractorScrollView::setCursor(QCursor(Qt::SizeHorCursor));
+			return true;
+		}
+		// Resize-right check...
+		if (pos.x() > rectClip.right() - 4) {
+			m_dragCursor = DragResizeRight;
+			qtractorScrollView::setCursor(QCursor(Qt::SizeHorCursor));
+			return true;
+		}
 		// Fade-in handle check...
 		m_rectHandle.setRect(rectClip.left() + 1
 			+ pSession->pixelFromFrame(pClip->fadeInLength()),
@@ -1837,6 +1863,87 @@ void qtractorTrackView::dragFadeDrop ( const QPoint& pos )
 }		
 
 
+// Clip resize handle drag-moving parts.
+void qtractorTrackView::dragResizeMove ( const QPoint& pos )
+{
+	qtractorSession *pSession = m_pTracks->session();
+	if (pSession == NULL)
+		return;
+
+	// Always change horizontally wise...
+	int dx = (pos.x() - m_posDrag.x());
+	int  x = 0;
+	QRect rect(m_rectDrag);
+	if (m_dragState == DragResizeLeft) {
+		x = pSession->pixelSnap(rect.left() + dx);
+		if (x < 0)
+			x = 0;
+		else
+		if (x > rect.right())
+			x = rect.right();
+		rect.setLeft(x);
+	}
+	else
+	if (m_dragState == DragResizeRight) {
+		x = pSession->pixelSnap(rect.right() + dx);
+		if (x < rect.left())
+			x = rect.left();
+		rect.setRight(x);
+	}
+
+	moveRubberBand(&m_pRubberBand, rect, 3);
+	qtractorScrollView::ensureVisible(pos.x(), pos.y(), 24, 24);
+}
+
+
+// Clip resize handle settler.
+void qtractorTrackView::dragResizeDrop ( const QPoint& pos )
+{
+	if (m_pClipDrag == NULL)
+		return;
+
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm == NULL)
+		return;
+
+	qtractorSession *pSession = m_pTracks->session();
+	if (pSession == NULL)
+		return;
+
+	// We'll build a command...
+	qtractorClipCommand *pClipCommand
+		= new qtractorClipCommand(tr("clip resize"));
+
+	// Always change horizontally wise...
+	int dx = (pos.x() - m_posDrag.x());
+	if (m_dragState == DragResizeLeft) {
+		int x = pSession->pixelSnap(m_rectDrag.left() + dx);
+		if (x < 0)
+			x = 0;
+		else
+		if (x > m_rectDrag.right())
+			x = m_rectDrag.right();
+		unsigned long iClipStart = pSession->frameFromPixel(x);
+		pClipCommand->resizeClip(m_pClipDrag,
+			iClipStart,	m_pClipDrag->clipOffset(),
+			m_pClipDrag->clipStart() + m_pClipDrag->clipLength() - iClipStart);
+	}
+	else
+	if (m_dragState == DragResizeRight) {
+		int x = pSession->pixelSnap(m_rectDrag.right() + dx);
+		if (x < m_rectDrag.left())
+			x = m_rectDrag.left();
+		unsigned long iClipStart = m_pClipDrag->clipStart();
+		pClipCommand->resizeClip(m_pClipDrag,
+			iClipStart,	m_pClipDrag->clipOffset(),
+			pSession->frameFromPixel(x) - iClipStart);
+	}
+
+	// Put it in the form of an undoable command...
+	pMainForm->commands()->exec(pClipCommand);
+}		
+
+
 // Reset drag/select/move state.
 void qtractorTrackView::resetDragState (void)
 {
@@ -1860,8 +1967,11 @@ void qtractorTrackView::resetDragState (void)
 	hideClipSelect();
 
 	// Just hide the rubber-band...
-	if (m_pRubberBand)
+	if (m_pRubberBand) {
 		m_pRubberBand->hide();
+		delete m_pRubberBand;
+		m_pRubberBand = NULL;
+	}
 
 	// If we were dragging fade-slope lines, refresh...
 	if (dragState == DragFadeIn || dragState == DragFadeOut) {
