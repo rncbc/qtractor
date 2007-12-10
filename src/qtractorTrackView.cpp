@@ -1871,23 +1871,25 @@ void qtractorTrackView::dragResizeMove ( const QPoint& pos )
 		return;
 
 	// Always change horizontally wise...
-	int dx = (pos.x() - m_posDrag.x());
 	int  x = 0;
+	int dx = (pos.x() - m_posDrag.x());
 	QRect rect(m_rectDrag);
 	if (m_dragState == DragResizeLeft) {
-		x = pSession->pixelSnap(rect.left() + dx);
+		if (rect.left() > -(dx))
+			x = pSession->pixelSnap(rect.left() + dx);
 		if (x < 0)
 			x = 0;
 		else
-		if (x > rect.right())
-			x = rect.right();
+		if (x > rect.right() - 8)
+			x = rect.right() - 8;
 		rect.setLeft(x);
 	}
 	else
 	if (m_dragState == DragResizeRight) {
-		x = pSession->pixelSnap(rect.right() + dx);
-		if (x < rect.left())
-			x = rect.left();
+		if (rect.right() > -(dx))
+			x = pSession->pixelSnap(rect.right() + dx);
+		if (x < rect.left() + 8)
+			x = rect.left() + 8;
 		rect.setRight(x);
 	}
 
@@ -1915,14 +1917,16 @@ void qtractorTrackView::dragResizeDrop ( const QPoint& pos )
 		= new qtractorClipCommand(tr("clip resize"));
 
 	// Always change horizontally wise...
+	int  x = 0;
 	int dx = (pos.x() - m_posDrag.x());
 	if (m_dragState == DragResizeLeft) {
-		int x = pSession->pixelSnap(m_rectDrag.left() + dx);
+		if (m_rectDrag.left() > -(dx))
+			x = pSession->pixelSnap(m_rectDrag.left() + dx);
 		if (x < 0)
 			x = 0;
 		else
-		if (x > m_rectDrag.right())
-			x = m_rectDrag.right();
+		if (x > m_rectDrag.right() - 8)
+			x = m_rectDrag.right() - 8;
 		unsigned long iClipStart = pSession->frameFromPixel(x);
 		pClipCommand->resizeClip(m_pClipDrag,
 			iClipStart,	m_pClipDrag->clipOffset(),
@@ -1930,9 +1934,10 @@ void qtractorTrackView::dragResizeDrop ( const QPoint& pos )
 	}
 	else
 	if (m_dragState == DragResizeRight) {
-		int x = pSession->pixelSnap(m_rectDrag.right() + dx);
-		if (x < m_rectDrag.left())
-			x = m_rectDrag.left();
+		if (m_rectDrag.right() > -(dx))
+			x = pSession->pixelSnap(m_rectDrag.right() + dx);
+		if (x < m_rectDrag.left() + 8)
+			x = m_rectDrag.left() + 8;
 		unsigned long iClipStart = m_pClipDrag->clipStart();
 		pClipCommand->resizeClip(m_pClipDrag,
 			iClipStart,	m_pClipDrag->clipOffset(),
