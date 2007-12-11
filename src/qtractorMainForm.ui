@@ -1048,7 +1048,7 @@
     <string>Show/hide the connections window</string>
    </property>
    <property name="shortcut" >
-    <string/>
+    <string>F8</string>
    </property>
   </action>
   <action name="viewMixerAction" >
@@ -1071,7 +1071,7 @@
     <string>Show/hide the mixer window</string>
    </property>
    <property name="shortcut" >
-    <string/>
+    <string>F9</string>
    </property>
   </action>
   <action name="viewRefreshAction" >

@@ -546,4 +546,11 @@ void qtractorTrackTime::resetDragState (void)
 }
 
 
+// Context menu event handler (dummy).
+void qtractorTrackTime::contextMenuEvent ( QContextMenuEvent * )
+{
+	// Do exactly nothing; ignore event.
+}
+
+
 // end of qtractorTrackTime.cpp

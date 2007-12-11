@@ -76,6 +76,9 @@ protected:
 	// Keyboard event handler.
 	void keyPressEvent(QKeyEvent *pKeyEvent);
 
+	// Context menu request slot (dummy).
+	void contextMenuEvent(QContextMenuEvent *);
+
 protected slots:
 
 	// To have timeline in h-sync with main track view.

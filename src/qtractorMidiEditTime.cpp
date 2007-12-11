@@ -567,4 +567,11 @@ void qtractorMidiEditTime::resetDragState (void)
 }
 
 
+// Context menu event handler (dummy).
+void qtractorMidiEditTime::contextMenuEvent ( QContextMenuEvent * )
+{
+	// Do exactly nothing; ignore event.
+}
+
+
 // end of qtractorMidiEditTime.cpp

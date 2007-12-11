@@ -3,7 +3,7 @@ Qtractor - An Audio/MIDI multi-track sequencer
 
 ChangeLog
 
-0.1.0   2007-12-10  Work in progress...
+0.1.0   2007-12-11  Work in progress...
 
 - Audio clip time-stretching makes its debut, with code adapted and
   refactored from the SoundTouch library, under the (L)GPL umbrella.
@@ -15,6 +15,11 @@ ChangeLog
 - Changing session tempo will automatically apply the corresponding
   time-stretch percent factor to all in-place audio clips. Audio
   clip dialog also includes a new time-stretch property setting.
+
+- New keyboard shortcuts for toggling the Connections tool (F8) and
+  the mighty Mixer tool (F9) windows.
+
+- Avoid showing a context menu while right-clicking on time rulers.
 
 - Audio clip waveform drawing gets one additional closing point.
 
