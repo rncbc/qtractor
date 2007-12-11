@@ -1927,10 +1927,19 @@ void qtractorTrackView::dragResizeDrop ( const QPoint& pos )
 		else
 		if (x > m_rectDrag.right() - 8)
 			x = m_rectDrag.right() - 8;
-		unsigned long iClipStart = pSession->frameFromPixel(x);
+		unsigned long iClipStart  = pSession->frameFromPixel(x);
+		unsigned long iClipOffset = m_pClipDrag->clipOffset();
+		if (m_pClipDrag->clipStart() > iClipStart) {
+			if (iClipOffset  > (m_pClipDrag->clipStart() - iClipStart))
+				iClipOffset -= (m_pClipDrag->clipStart() - iClipStart);
+			else
+				iClipOffset = 0;
+		} else {
+			iClipOffset += (iClipStart - m_pClipDrag->clipStart());
+		}
 		pClipCommand->resizeClip(m_pClipDrag,
-			iClipStart,	m_pClipDrag->clipOffset(),
-			m_pClipDrag->clipStart() + m_pClipDrag->clipLength() - iClipStart);
+			iClipStart, iClipOffset, m_pClipDrag->clipStart()
+				+ m_pClipDrag->clipLength() - iClipStart);
 	}
 	else
 	if (m_dragState == DragResizeRight) {
@@ -1940,7 +1949,7 @@ void qtractorTrackView::dragResizeDrop ( const QPoint& pos )
 			x = m_rectDrag.left() + 8;
 		unsigned long iClipStart = m_pClipDrag->clipStart();
 		pClipCommand->resizeClip(m_pClipDrag,
-			iClipStart,	m_pClipDrag->clipOffset(),
+			iClipStart, m_pClipDrag->clipOffset(),
 			pSession->frameFromPixel(x) - iClipStart);
 	}
 
