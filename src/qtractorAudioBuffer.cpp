@@ -560,18 +560,18 @@ bool qtractorAudioBuffer::seek ( unsigned long iFrame )
 	unsigned int  ri = m_pRingBuffer->readIndex();
 	unsigned long ro = m_iReadOffset;
 
-#ifdef CONFIG_DEBUG_0
-	fprintf(stderr, "qtractorAudioBuffer::seek(%p, %lu) pending(%d, %lu) wo=%lu ro=%lu\n",
-		this, iFrame, m_iSeekPending, m_iSeekOffset, m_iWriteOffset, m_iReadOffset);
-#endif
-
 	// Check if target is already cached...
-	if (m_bReadSync && iFrame >= ro && ro + rs >= iFrame) {
+	if (/* m_bReadSync && */ iFrame >= ro && ro + rs >= iFrame) {
 		m_pRingBuffer->setReadIndex(ri + iFrame - ro);
 	//	m_iWriteOffset += iFrame - ro;
 		m_iReadOffset  += iFrame - ro;
 		return true;
 	}
+
+#ifdef CONFIG_DEBUG
+	fprintf(stderr, "qtractorAudioBuffer::seek(%p, %lu) pending(%d, %lu) wo=%lu ro=%lu\n",
+		this, iFrame, m_iSeekPending, m_iSeekOffset, m_iWriteOffset, m_iReadOffset);
+#endif
 
 	// Bad luck, gotta go straight down to disk...
 	//	if (!seekSync(iFrame))
@@ -1067,25 +1067,29 @@ void qtractorAudioBuffer::reset ( bool bLooping )
 	dump_state("+reset()");
 #endif
 
-	unsigned long offset = 0;
+	unsigned long iFrame = 0;
 
 	// If looping, we'll reset to loop-start point,
 	// otherwise it's a buffer full-reset...
 	if (bLooping && m_iLoopStart < m_iLoopEnd)
-		offset = m_iLoopStart;
+		iFrame = m_iLoopStart;
 
+#if 0
 	if (m_bIntegral) {
-		m_iReadOffset = m_iOffset + offset;
-		m_pRingBuffer->setReadIndex(offset);
+		m_iReadOffset = m_iOffset + iFrame;
+		m_pRingBuffer->setReadIndex(iFrame);
 	//	m_pRingBuffer->setWriteIndex(m_iLength);
 	} else {
 		m_bReadSync   = false;
 		m_iReadOffset = 0;	// Force out-of-sync...
-		m_iSeekOffset = m_iOffset + offset;
+		m_iSeekOffset = m_iOffset + iFrame;
 		m_iSeekPending++;
 		if (m_pSyncThread)
 			m_pSyncThread->sync();
 	}
+#else
+	seek(iFrame);
+#endif
 
 #ifdef DEBUG
 	dump_state("-reset()");

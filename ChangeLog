@@ -27,7 +27,8 @@ ChangeLog
   its left or right edges, while in the main track-view.
 
 - Another off-by-one mistake was corrected, which was causing audio
-  clips to go out-of-sync on loop turnover boundary.
+  clips to go out-of-sync on loop turnover boundary; also changed
+  the loop turnaround strategy, now honoring already cached periods.
 
 - A race-condition has been mitigated in the audio-buffer thread,
   that was exposed and lead to sudden application freezing upon
