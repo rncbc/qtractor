@@ -177,7 +177,7 @@ bool qtractorTrack::open (void)
 	// Fallback to first usable one...
 	if (m_pInputBus == NULL) {
 		for (qtractorBus *pBus = pEngine->buses().first();
-				pBus; pBus->next()) {
+				pBus; pBus = pBus->next()) {
 			if (pBus->busMode() & qtractorBus::Input) {
 				m_pInputBus = pBus;
 				break;
@@ -193,7 +193,7 @@ bool qtractorTrack::open (void)
 	// Fallback to first usable one...
 	if (m_pOutputBus == NULL) {
 		for (qtractorBus *pBus = pEngine->buses().first();
-				pBus; pBus->next()) {
+				pBus; pBus = pBus->next()) {
 			if (pBus->busMode() & qtractorBus::Output) {
 				m_pOutputBus = pBus;
 				break;
@@ -204,9 +204,11 @@ bool qtractorTrack::open (void)
 			setOutputBusName(m_pOutputBus->busName());
 	}
 
+#if 0
 	// Check proper bus assignment...
 	if (m_pInputBus == NULL || m_pOutputBus == NULL)
 		return false;
+#endif
 
 	// Remember current (output) monitor, for later deletion...
 	qtractorMonitor *pMonitor = m_pMonitor;

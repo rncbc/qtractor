@@ -16,6 +16,9 @@ ChangeLog
   time-stretch percent factor to all in-place audio clips. Audio
   clip dialog also includes a new time-stretch property setting.
 
+- A stupid lockup bug (infinite loop) was spotted on the track bus
+  assignment method and squashed (thanks, lexridge).
+
 - New keyboard shortcuts for toggling the Connections tool (F8) and
   the mighty Mixer tool (F9) windows.
 
