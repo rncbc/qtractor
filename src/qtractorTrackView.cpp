@@ -1293,7 +1293,7 @@ void qtractorTrackView::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 			break;
 		case DragResizeLeft:
 		case DragResizeRight:
-			dragResizeDrop(pos);
+			dragResizeDrop(pos, bModifier);
 			break;
 		case DragStart:
 			// Deferred left-button positioning...
@@ -1899,7 +1899,7 @@ void qtractorTrackView::dragResizeMove ( const QPoint& pos )
 
 
 // Clip resize handle settler.
-void qtractorTrackView::dragResizeDrop ( const QPoint& pos )
+void qtractorTrackView::dragResizeDrop ( const QPoint& pos, bool bTimeStretch )
 {
 	if (m_pClipDrag == NULL)
 		return;
@@ -1916,10 +1916,15 @@ void qtractorTrackView::dragResizeDrop ( const QPoint& pos )
 	qtractorClipCommand *pClipCommand
 		= new qtractorClipCommand(tr("clip resize"));
 
+	unsigned long iClipStart  = m_pClipDrag->clipStart();
+	unsigned long iClipOffset = m_pClipDrag->clipOffset();
+	unsigned long iClipLength = m_pClipDrag->clipLength();
+
 	// Always change horizontally wise...
 	int  x = 0;
 	int dx = (pos.x() - m_posDrag.x());
 	if (m_dragState == DragResizeLeft) {
+		unsigned long iClipDelta;
 		if (m_rectDrag.left() > -(dx))
 			x = pSession->pixelSnap(m_rectDrag.left() + dx);
 		if (x < 0)
@@ -1927,19 +1932,19 @@ void qtractorTrackView::dragResizeDrop ( const QPoint& pos )
 		else
 		if (x > m_rectDrag.right() - 8)
 			x = m_rectDrag.right() - 8;
-		unsigned long iClipStart  = pSession->frameFromPixel(x);
-		unsigned long iClipOffset = m_pClipDrag->clipOffset();
+		iClipStart = pSession->frameFromPixel(x);
 		if (m_pClipDrag->clipStart() > iClipStart) {
-			if (iClipOffset  > (m_pClipDrag->clipStart() - iClipStart))
-				iClipOffset -= (m_pClipDrag->clipStart() - iClipStart);
+			iClipDelta = (m_pClipDrag->clipStart() - iClipStart);
+			if (iClipOffset  > iClipDelta)
+				iClipOffset -= iClipDelta;
 			else
 				iClipOffset = 0;
+			iClipLength += iClipDelta;
 		} else {
-			iClipOffset += (iClipStart - m_pClipDrag->clipStart());
+			iClipDelta = (iClipStart - m_pClipDrag->clipStart());
+			iClipOffset += iClipDelta;
+			iClipLength += iClipDelta;
 		}
-		pClipCommand->resizeClip(m_pClipDrag,
-			iClipStart, iClipOffset, m_pClipDrag->clipStart()
-				+ m_pClipDrag->clipLength() - iClipStart);
 	}
 	else
 	if (m_dragState == DragResizeRight) {
@@ -1947,10 +1952,23 @@ void qtractorTrackView::dragResizeDrop ( const QPoint& pos )
 			x = pSession->pixelSnap(m_rectDrag.right() + dx);
 		if (x < m_rectDrag.left() + 8)
 			x = m_rectDrag.left() + 8;
-		unsigned long iClipStart = m_pClipDrag->clipStart();
-		pClipCommand->resizeClip(m_pClipDrag,
-			iClipStart, m_pClipDrag->clipOffset(),
-			pSession->frameFromPixel(x) - iClipStart);
+		iClipLength = pSession->frameFromPixel(x) - iClipStart;
+	}
+
+	// Declare the clip resize parcel...
+	pClipCommand->resizeClip(m_pClipDrag,
+		iClipStart, iClipOffset, iClipLength);
+
+	// Time stretching...
+	if (bTimeStretch && m_pClipDrag->track()
+		&& (m_pClipDrag->track())->trackType() == qtractorTrack::Audio) {
+		qtractorAudioClip *pAudioClip
+			= static_cast<qtractorAudioClip *> (m_pClipDrag);
+		if (pAudioClip) {
+			float fTimeStretch = (float(m_pClipDrag->clipLength())
+				* pAudioClip->timeStretch()) / float(iClipLength);
+			pClipCommand->timeStretchClip(m_pClipDrag, fTimeStretch);		
+		}
 	}
 
 	// Put it in the form of an undoable command...

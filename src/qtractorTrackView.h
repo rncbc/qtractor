@@ -230,7 +230,7 @@ protected:
 
 	// Clip resize drag-move methods.
 	void dragResizeMove(const QPoint& pos);
-	void dragResizeDrop(const QPoint& pos);
+	void dragResizeDrop(const QPoint& pos, bool bTimeStretch = false);
 
 	// Reset drag/select/move state.
 	void resetDragState();
