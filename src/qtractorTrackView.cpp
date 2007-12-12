@@ -1913,8 +1913,8 @@ void qtractorTrackView::dragResizeDrop ( const QPoint& pos, bool bTimeStretch )
 		return;
 
 	// We'll build a command...
-	qtractorClipCommand *pClipCommand
-		= new qtractorClipCommand(tr("clip resize"));
+	qtractorClipCommand *pClipCommand = new qtractorClipCommand(
+		bTimeStretch ? tr("clip stretch") : tr("clip resize"));
 
 	unsigned long iClipStart  = m_pClipDrag->clipStart();
 	unsigned long iClipOffset = m_pClipDrag->clipOffset();

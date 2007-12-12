@@ -1189,8 +1189,8 @@ unsigned long qtractorAudioBuffer::loopEnd (void) const
 // Time-stretch factor.
 void qtractorAudioBuffer::setTimeStretch ( float fTimeStretch )
 {
-	m_bTimeStretch = (fTimeStretch > 0.05f && fTimeStretch < 1.0f - 1e-6f)
-		|| (fTimeStretch > 1.0f + 1e-6f && fTimeStretch < 5.0f);
+	m_bTimeStretch = (fTimeStretch > 0.05f && fTimeStretch < 1.0f - 1e-3f)
+		|| (fTimeStretch > 1.0f + 1e-3f && fTimeStretch < 5.0f);
 
 	m_fTimeStretch = (m_bTimeStretch ? fTimeStretch : 1.0f);
 }

@@ -406,7 +406,11 @@ bool qtractorBusForm::canUpdateBus (void)
 		return false;
 
 	const QString sBusName = m_ui.BusNameLineEdit->text().simplified();
-	return (!sBusName.isEmpty());
+	if (sBusName.isEmpty())
+		return false;
+
+	// Master (default) buses must be duplex...
+	return (m_pBus->prev() || m_ui.BusModeComboBox->currentIndex() == 2);
 }
 
 

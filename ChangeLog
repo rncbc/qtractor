@@ -16,6 +16,9 @@ ChangeLog
   time-stretch percent factor to all in-place audio clips. Audio
   clip dialog also includes a new time-stretch property setting.
 
+- Master (default) buses are always set to Duplex mode, being now
+  an enforced update policy while on the Buses dialog.
+
 - A stupid lockup bug (infinite loop) was spotted on the track bus
   assignment method and squashed (thanks, lexridge).
 
