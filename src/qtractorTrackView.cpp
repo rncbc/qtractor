@@ -1755,18 +1755,6 @@ bool qtractorTrackView::dragFadeResizeStart ( const QPoint& pos )
 	QRect rectClip;
 	qtractorClip *pClip = clipAt(pos, false, &rectClip);
 	if (pClip) {
-		// Resize-left check...
-		if (pos.x() < rectClip.left() + 4) {
-			m_dragCursor = DragResizeLeft;
-			qtractorScrollView::setCursor(QCursor(Qt::SizeHorCursor));
-			return true;
-		}
-		// Resize-right check...
-		if (pos.x() > rectClip.right() - 4) {
-			m_dragCursor = DragResizeRight;
-			qtractorScrollView::setCursor(QCursor(Qt::SizeHorCursor));
-			return true;
-		}
 		// Fade-in handle check...
 		m_rectHandle.setRect(rectClip.left() + 1
 			+ pSession->pixelFromFrame(pClip->fadeInLength()),
@@ -1783,6 +1771,18 @@ bool qtractorTrackView::dragFadeResizeStart ( const QPoint& pos )
 		if (m_rectHandle.contains(pos)) {
 			m_dragCursor = DragFadeOut;
 			qtractorScrollView::setCursor(QCursor(Qt::PointingHandCursor));
+			return true;
+		}
+		// Resize-right check...
+		if (pos.x() > rectClip.right() - 4) {
+			m_dragCursor = DragResizeRight;
+			qtractorScrollView::setCursor(QCursor(Qt::SizeHorCursor));
+			return true;
+		}
+		// Resize-left check...
+		if (pos.x() < rectClip.left() + 4) {
+			m_dragCursor = DragResizeLeft;
+			qtractorScrollView::setCursor(QCursor(Qt::SizeHorCursor));
 			return true;
 		}
 	}
