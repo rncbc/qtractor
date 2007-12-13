@@ -213,15 +213,28 @@ void qtractorClipForm::accept (void)
 		qtractorClipCommand *pClipCommand
 			= new qtractorClipCommand(tr("edit clip"));
 		pClipCommand->renameClip(m_pClip, m_ui.ClipNameLineEdit->text());
+		// Time-stretch issue...
+		float fTimeStretch = 0.0f;
+		qtractorTrack *pTrack = m_pClip->track();
+		if (pTrack && pTrack->trackType() == qtractorTrack::Audio) {
+			qtractorAudioClip *pAudioClip
+				= static_cast<qtractorAudioClip *> (m_pClip);
+			if (pAudioClip) {
+				float fValue = 0.01f * m_ui.TimeStretchSpinBox->value();
+				if (::fabs(fValue - pAudioClip->timeStretch()) > 0.001f)
+					fTimeStretch = fValue; 
+			}
+		}
 		// Parameters...
 		unsigned long iClipStart  = m_ui.ClipStartSpinBox->value();
 		unsigned long iClipOffset = m_ui.ClipOffsetSpinBox->value();
 		unsigned long iClipLength = m_ui.ClipLengthSpinBox->value();
 		if (iClipStart  != m_pClip->clipStart()  ||
 			iClipOffset != m_pClip->clipOffset() ||
-			iClipLength != m_pClip->clipLength()) {
+			iClipLength != m_pClip->clipLength() ||
+			fTimeStretch > 0.0f) {
 			pClipCommand->resizeClip(m_pClip,
-				iClipStart, iClipOffset, iClipLength);
+				iClipStart, iClipOffset, iClipLength, fTimeStretch);
 		}
 		// Fade in...
 		unsigned long iFadeInLength = m_ui.FadeInLengthSpinBox->value();
@@ -237,17 +250,7 @@ void qtractorClipForm::accept (void)
 		if (iFadeOutLength != m_pClip->fadeOutLength()
 			|| fadeOutType != m_pClip->fadeOutType())
 			pClipCommand->fadeOutClip(m_pClip, iFadeOutLength, fadeOutType);
-		// Time-stretch issue...
-		qtractorAudioClip *pAudioClip = NULL;
-		qtractorTrack *pTrack = m_pClip->track();
-		if (pTrack && pTrack->trackType() == qtractorTrack::Audio)
-			pAudioClip = static_cast<qtractorAudioClip *> (m_pClip);
-		if (pAudioClip) {
-			float fTimeStretch = 0.01f * m_ui.TimeStretchSpinBox->value();
-			if (::fabs(fTimeStretch - pAudioClip->timeStretch()) > 0.001f)
-				pClipCommand->timeStretchClip(m_pClip, fTimeStretch); 
-		}
-		// Do it (but make it undoable)...
+		// Do it (by making it undoable)...
 		pMainForm->commands()->exec(pClipCommand);
 		// Reset dirty flag.
 		m_iDirtyCount = 0;

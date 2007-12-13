@@ -53,7 +53,8 @@ public:
 		unsigned long iClipStart, unsigned long iClipOffset,
 		unsigned long iClipLength);
 	void resizeClip(qtractorClip *pClip, unsigned long iClipStart,
-		unsigned long iClipOffset, unsigned long iClipLength);
+		unsigned long iClipOffset, unsigned long iClipLength,
+		float fTimeStretch = 0.0f);
 	void fadeInClip(qtractorClip *pClip, unsigned long iFadeInLength,
 		qtractorClip::FadeType fadeInType);
 	void fadeOutClip(qtractorClip *pClip, unsigned long iFadeOutLength,
@@ -93,7 +94,7 @@ private:
 				clipStart(0), clipOffset(0), clipLength(0),
 				fadeInLength(0), fadeInType(qtractorClip::Quadratic), 
 				fadeOutLength(0), fadeOutType(qtractorClip::Quadratic),
-				timeStretch(1.0f) {}
+				timeStretch(0.0f) {}
 		// Item members.
 		CommandType    command;
 		qtractorClip  *clip;

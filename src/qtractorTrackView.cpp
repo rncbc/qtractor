@@ -1955,21 +1955,21 @@ void qtractorTrackView::dragResizeDrop ( const QPoint& pos, bool bTimeStretch )
 		iClipLength = pSession->frameFromPixel(x) - iClipStart;
 	}
 
-	// Declare the clip resize parcel...
-	pClipCommand->resizeClip(m_pClipDrag,
-		iClipStart, iClipOffset, iClipLength);
-
 	// Time stretching...
+	float fTimeStretch = 0.0f;
 	if (bTimeStretch && m_pClipDrag->track()
 		&& (m_pClipDrag->track())->trackType() == qtractorTrack::Audio) {
 		qtractorAudioClip *pAudioClip
 			= static_cast<qtractorAudioClip *> (m_pClipDrag);
 		if (pAudioClip) {
-			float fTimeStretch = (float(m_pClipDrag->clipLength())
+			fTimeStretch = (float(m_pClipDrag->clipLength())
 				* pAudioClip->timeStretch()) / float(iClipLength);
-			pClipCommand->timeStretchClip(m_pClipDrag, fTimeStretch);		
 		}
 	}
+
+	// Declare the clip resize parcel...
+	pClipCommand->resizeClip(m_pClipDrag,
+		iClipStart, iClipOffset, iClipLength, fTimeStretch);
 
 	// Put it in the form of an undoable command...
 	pMainForm->commands()->exec(pClipCommand);

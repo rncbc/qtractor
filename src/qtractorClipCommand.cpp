@@ -100,7 +100,7 @@ void qtractorClipCommand::moveClip ( qtractorClip *pClip,
 
 void qtractorClipCommand::resizeClip ( qtractorClip *pClip,
 	unsigned long iClipStart, unsigned long iClipOffset,
-	unsigned long iClipLength )
+	unsigned long iClipLength, float fTimeStretch )
 {
 	Item *pItem = new Item(ResizeClip, pClip, pClip->track());
 	pItem->clipStart  = iClipStart;
@@ -110,6 +110,8 @@ void qtractorClipCommand::resizeClip ( qtractorClip *pClip,
 		pItem->fadeInLength = pClip->fadeInLength();
 	if (iClipOffset + iClipLength == pClip->clipOffset() + pClip->clipLength())
 		pItem->fadeOutLength = pClip->fadeOutLength();
+	if (fTimeStretch > 0.0f)
+		pItem->timeStretch = fTimeStretch;
 	m_items.append(pItem);
 }
 
@@ -295,35 +297,47 @@ bool qtractorClipCommand::execute ( bool bRedo )
 			unsigned long iOldLength = pClip->clipLength();
 			unsigned long iOldFadeIn = pClip->fadeInLength();
 			unsigned long iOldFadeOut = pClip->fadeOutLength();
+			float fOldTimeStretch = 0.0f;
+			qtractorAudioClip *pAudioClip = NULL;
+			if (pItem->timeStretch > 0.0f)
+				pAudioClip = static_cast<qtractorAudioClip *> (pClip);
+			if (pAudioClip)
+				fOldTimeStretch = pAudioClip->timeStretch();
 			pClip->setClipStart(pItem->clipStart);
 			pClip->setClipOffset(pItem->clipOffset);
 			pClip->setClipLength(pItem->clipLength);
 			pClip->setFadeInLength(pItem->fadeInLength);
 			pClip->setFadeOutLength(pItem->fadeOutLength);
+			if (pAudioClip) {
+				pAudioClip->setTimeStretch(pItem->timeStretch);
+				pAudioClip->close(true);	// Scrap peak file.
+			}
 			pClip->open();
 			pItem->clipStart  = iOldStart;
 			pItem->clipOffset = iOldOffset;
 			pItem->clipLength = iOldLength;
 			pItem->fadeInLength = iOldFadeIn;
 			pItem->fadeOutLength = iOldFadeOut;
+			if (pAudioClip)
+				pItem->timeStretch = fOldTimeStretch;
 			pSession->updateTrack(pTrack);
 			break;
 		}
 		case FadeInClip: {
-			unsigned long iOldFadeInLength = pClip->fadeInLength();
+			unsigned long iOldFadeIn = pClip->fadeInLength();
 			qtractorClip::FadeType oldFadeInType = pClip->fadeInType();
 			pClip->setFadeInType(pItem->fadeInType);
 			pClip->setFadeInLength(pItem->fadeInLength);
-			pItem->fadeInLength = iOldFadeInLength;
+			pItem->fadeInLength = iOldFadeIn;
 			pItem->fadeInType = oldFadeInType;
 			break;
 		}
 		case FadeOutClip: {
-			unsigned long iOldFadeOutLength = pClip->fadeOutLength();
+			unsigned long iOldFadeOut = pClip->fadeOutLength();
 			qtractorClip::FadeType oldFadeOutType = pClip->fadeOutType();
 			pClip->setFadeOutType(pItem->fadeOutType);
 			pClip->setFadeOutLength(pItem->fadeOutLength);
-			pItem->fadeOutLength = iOldFadeOutLength;
+			pItem->fadeOutLength = iOldFadeOut;
 			pItem->fadeOutType = oldFadeOutType;
 			break;
 		}
@@ -333,8 +347,8 @@ bool qtractorClipCommand::execute ( bool bRedo )
 			if (pAudioClip) {
 				float fOldTimeStretch = pAudioClip->timeStretch();
 				pAudioClip->setTimeStretch(pItem->timeStretch);
-				pAudioClip->close(true);
-				pAudioClip->updateClipTime();
+				pAudioClip->close(true);		// Scrap peak file.
+				pAudioClip->updateClipTime();	// Care of tempo change.
 				pAudioClip->open();
 				pItem->timeStretch = fOldTimeStretch;
 			}
