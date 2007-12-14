@@ -20,6 +20,9 @@ ChangeLog
   the clip offset constant in time units (ticks), as are clip start
   and length properties already.
 
+- A suicide-crash has been fixed while invoking the bus dialog from
+  the respective mixer bus strip context menu.
+
 - Master (default) buses are always set to Duplex mode, being now
   an enforced update policy while on the Buses dialog.
 

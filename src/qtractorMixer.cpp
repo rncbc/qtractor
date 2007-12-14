@@ -589,53 +589,8 @@ void qtractorMixerStrip::mouseDoubleClickEvent ( QMouseEvent */*pMouseEvent*/ )
 	if (m_pTrack) {
 		pMainForm->trackProperties();
 	} else {
-		busPropertiesSlot();
+		m_pRack->busPropertiesSlot();
 	}
-}
-
-
-// Context menu request event handler.
-void qtractorMixerStrip::contextMenuEvent ( QContextMenuEvent *pContextMenuEvent )
-{
-	// Always try proper selection...
-	m_pRack->setSelectedStrip(this);
-
-	// If not a bus (surely a track?), delegate...
-	if (m_pBus == NULL) {
-		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-		if (pMainForm)
-			pMainForm->trackMenu()->exec(pContextMenuEvent->globalPos());
-		// Bail out...
-		return;
-	}
-
-	// Build the device context menu...
-	QMenu menu(this);
-	QAction *pAction;
-	
-	pAction = menu.addAction(
-		tr("&Inputs"), this, SLOT(busInputsSlot()));
-	pAction->setEnabled(m_pBus->busMode() & qtractorBus::Input);
-
-	pAction = menu.addAction(
-		tr("&Outputs"), this, SLOT(busOutputsSlot()));
-	pAction->setEnabled(m_pBus->busMode() & qtractorBus::Output);
-
-	menu.addSeparator();
-
-	pAction = menu.addAction(
-		tr("&Pass-through"), this, SLOT(busPassthruSlot()));
-	pAction->setEnabled(
-		(m_pBus->busMode() & qtractorBus::Duplex) == qtractorBus::Duplex);
-	pAction->setCheckable(true);
-	pAction->setChecked(m_pBus->isPassthru());
-
-	menu.addSeparator();
-
-	pAction = menu.addAction(
-		tr("&Buses..."), this, SLOT(busPropertiesSlot()));
-
-	menu.exec(pContextMenuEvent->globalPos());
 }
 
 
@@ -686,39 +641,6 @@ void qtractorMixerStrip::thruButtonSlot ( bool bOn )
 		return;
 
 	busPassthru(bOn);
-}
-
-
-// Show/edit bus input connections.
-void qtractorMixerStrip::busInputsSlot (void)
-{
-	busConnections(qtractorBus::Input);
-}
-
-
-// Show/edit bus output connections.
-void qtractorMixerStrip::busOutputsSlot (void)
-{
-	busConnections(qtractorBus::Output);
-}
-
-
-// Toggle bus passthru flag.
-void qtractorMixerStrip::busPassthruSlot (void)
-{
-	busPassthru(m_pBus && !m_pBus->isPassthru());
-}
-
-
-// Show/edit bus properties form.
-void qtractorMixerStrip::busPropertiesSlot (void)
-{
-	if (m_pBus == NULL)
-		return;
-
-	qtractorBusForm busForm(qtractorMainForm::getInstance());
-	busForm.setBus(m_pBus);
-	busForm.exec();
 }
 
 
@@ -910,8 +832,9 @@ void qtractorMixerRack::setSelectEnabled ( bool bSelectEnabled )
 {
 	m_bSelectEnabled = bSelectEnabled;
 
-	if (!m_bSelectEnabled && m_pSelectedStrip) {
-		m_pSelectedStrip->setSelected(false);
+	if (m_pSelectedStrip) {
+		if (!m_bSelectEnabled)
+			m_pSelectedStrip->setSelected(false);
 		m_pSelectedStrip = NULL;
 	}
 }
@@ -924,11 +847,11 @@ bool qtractorMixerRack::isSelectEnabled (void) const
 
 void qtractorMixerRack::setSelectedStrip ( qtractorMixerStrip *pStrip )
 {
-	if (m_bSelectEnabled && m_pSelectedStrip != pStrip) {
-		if (m_pSelectedStrip)
+	if (m_pSelectedStrip != pStrip) {
+		if (m_bSelectEnabled && m_pSelectedStrip)
 			m_pSelectedStrip->setSelected(false);
 		m_pSelectedStrip = pStrip;
-		if (m_pSelectedStrip) {
+		if (m_bSelectEnabled && m_pSelectedStrip) {
 			m_pSelectedStrip->setSelected(true);
 			emit selectionChanged();
 		}
@@ -992,10 +915,87 @@ void qtractorMixerRack::resizeEvent ( QResizeEvent *pResizeEvent )
 // Context menu request event handler.
 void qtractorMixerRack::contextMenuEvent ( QContextMenuEvent *pContextMenuEvent )
 {
-	if (m_bSelectEnabled) {
+	// Always try proper selection...
+	qtractorMixerStrip *pStrip = m_pSelectedStrip;
+	if (pStrip == NULL)
+		return;
+
+	// Maybe it's a track strip
+	qtractorBus *pBus = pStrip->bus();
+	if (pBus == NULL) {
 		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 		if (pMainForm)
 			pMainForm->trackMenu()->exec(pContextMenuEvent->globalPos());
+		// Bail out...
+		return;
+	}
+
+	// Build the device context menu...
+	QMenu menu(this);
+	QAction *pAction;
+	
+	pAction = menu.addAction(
+		tr("&Inputs"), this, SLOT(busInputsSlot()));
+	pAction->setEnabled(pBus->busMode() & qtractorBus::Input);
+
+	pAction = menu.addAction(
+		tr("&Outputs"), this, SLOT(busOutputsSlot()));
+	pAction->setEnabled(pBus->busMode() & qtractorBus::Output);
+
+	menu.addSeparator();
+
+	pAction = menu.addAction(
+		tr("&Pass-through"), this, SLOT(busPassthruSlot()));
+	pAction->setEnabled(
+		(pBus->busMode() & qtractorBus::Duplex) == qtractorBus::Duplex);
+	pAction->setCheckable(true);
+	pAction->setChecked(pBus->isPassthru());
+
+	menu.addSeparator();
+
+	pAction = menu.addAction(
+		tr("&Buses..."), this, SLOT(busPropertiesSlot()));
+
+	menu.exec(pContextMenuEvent->globalPos());
+}
+
+
+
+// Show/edit bus input connections.
+void qtractorMixerRack::busInputsSlot (void)
+{
+	qtractorMixerStrip *pStrip = m_pSelectedStrip;
+	if (pStrip)
+		pStrip->busConnections(qtractorBus::Input);
+}
+
+
+// Show/edit bus output connections.
+void qtractorMixerRack::busOutputsSlot (void)
+{
+	qtractorMixerStrip *pStrip = m_pSelectedStrip;
+	if (pStrip)
+		pStrip->busConnections(qtractorBus::Output);
+}
+
+
+// Toggle bus passthru flag.
+void qtractorMixerRack::busPassthruSlot (void)
+{
+	qtractorMixerStrip *pStrip = m_pSelectedStrip;
+	if (pStrip && pStrip->bus())
+		pStrip->busPassthru(!(pStrip->bus())->isPassthru());
+}
+
+
+// Show/edit bus properties form.
+void qtractorMixerRack::busPropertiesSlot (void)
+{
+	qtractorMixerStrip *pStrip = m_pSelectedStrip;
+	if (pStrip && pStrip->bus()) {
+		qtractorBusForm busForm(this);
+		busForm.setBus(pStrip->bus());
+		busForm.exec();
 	}
 }
 

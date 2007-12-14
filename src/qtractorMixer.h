@@ -97,6 +97,10 @@ public:
 	void setMark(int iMark);
 	int mark() const;
 
+	// Special bus dispatchers.
+	void busConnections(qtractorBus::BusMode busMode);
+	void busPassthru(bool bPassthru);
+
 protected slots:
 
 	// Bus connections button notification.
@@ -104,12 +108,6 @@ protected slots:
 
 	// Bus (MIDI) passthru button slot
 	void thruButtonSlot(bool bOn);
-
-	// Bus context menu slots.
-	void busInputsSlot();
-	void busOutputsSlot();
-	void busPassthruSlot();
-	void busPropertiesSlot();
 
 	// Meter slider change slots.
 	void panChangedSlot(float);
@@ -124,18 +122,11 @@ protected:
 	void updateMidiLabel();
 	void updateName();
 
-	// Special bus dispatchers.
-	void busConnections(qtractorBus::BusMode busMode);
-	void busPassthru(bool bPassthru);
-
 	// Mouse selection event handlers.
 	void mousePressEvent(QMouseEvent *);
 
 	// Mouse selection event handlers.
 	void mouseDoubleClickEvent(QMouseEvent *);
-
-	// Context menu request event handler.
-	void contextMenuEvent(QContextMenuEvent *);
 
 private:
 
@@ -219,6 +210,14 @@ public:
 	// Hacko-list-management marking...
 	void markStrips(int iMark);
 	void cleanStrips(int iMark);
+
+public slots:
+
+	// Bus context menu slots.
+	void busInputsSlot();
+	void busOutputsSlot();
+	void busPassthruSlot();
+	void busPropertiesSlot();
 
 signals:
 
