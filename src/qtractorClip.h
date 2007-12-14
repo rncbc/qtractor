@@ -164,6 +164,7 @@ private:
 	unsigned long m_iClipOffset;    // Clip frame offset.
 
 	unsigned long m_iClipStartTime; // Clip time (tick) start.
+	unsigned long m_iClipOffsetTime;// Clip time (tick) offset.
 	unsigned long m_iClipLengthTime;// Clip time (tick) length.
 
 	unsigned long m_iSelectStart;   // Clip loop start frame-offset.

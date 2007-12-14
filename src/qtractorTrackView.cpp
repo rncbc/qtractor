@@ -1935,15 +1935,18 @@ void qtractorTrackView::dragResizeDrop ( const QPoint& pos, bool bTimeStretch )
 		iClipStart = pSession->frameFromPixel(x);
 		if (m_pClipDrag->clipStart() > iClipStart) {
 			iClipDelta = (m_pClipDrag->clipStart() - iClipStart);
-			if (iClipOffset  > iClipDelta)
-				iClipOffset -= iClipDelta;
-			else
-				iClipOffset = 0;
+			if (!bTimeStretch) {
+				if (iClipOffset  > iClipDelta)
+					iClipOffset -= iClipDelta;
+				else
+					iClipOffset = 0;
+			}
 			iClipLength += iClipDelta;
 		} else {
 			iClipDelta = (iClipStart - m_pClipDrag->clipStart());
-			iClipOffset += iClipDelta;
-			iClipLength += iClipDelta;
+			if (!bTimeStretch)
+				iClipOffset += iClipDelta;
+			iClipLength -= iClipDelta;
 		}
 	}
 	else

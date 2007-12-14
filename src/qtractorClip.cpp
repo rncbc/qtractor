@@ -59,6 +59,7 @@ void qtractorClip::clear (void)
 	m_iClipOffset     = 0;
 
     m_iClipStartTime  = 0;
+	m_iClipOffsetTime = 0;
 	m_iClipLengthTime = 0;
 
 	m_iSelectStart    = 0;
@@ -156,6 +157,9 @@ unsigned long qtractorClip::clipOffset (void) const
 void qtractorClip::setClipOffset ( unsigned long iClipOffset )
 {
 	m_iClipOffset = iClipOffset;
+
+	if (m_pTrack && m_pTrack->session())
+		m_iClipOffsetTime = m_pTrack->session()->tickFromFrame(iClipOffset);
 }
 
 
@@ -372,6 +376,7 @@ void qtractorClip::updateClipTime (void)
 		return;
 
 	m_iClipStart  = pSession->frameFromTick(m_iClipStartTime);
+	m_iClipOffset = pSession->frameFromTick(m_iClipOffsetTime);
 	m_iClipLength = pSession->frameFromTick(m_iClipLengthTime);
 }
 

@@ -3,7 +3,7 @@ Qtractor - An Audio/MIDI multi-track sequencer
 
 ChangeLog
 
-0.1.0   2007-12-13  Work in progress...
+0.1.0   2007-12-14  Work in progress...
 
 - Audio clip time-stretching makes its debut, with code adapted and
   refactored from the SoundTouch library, under the (L)GPL umbrella.
@@ -15,6 +15,10 @@ ChangeLog
 - Changing session tempo will automatically apply the corresponding
   time-stretch percent factor to all in-place audio clips. Audio
   clip dialog also includes a new time-stretch property setting.
+
+- Tempo changes are now affecting clip offsets correctly, keeping
+  the clip offset constant in time units (ticks), as are clip start
+  and length properties already.
 
 - Master (default) buses are always set to Duplex mode, being now
   an enforced update policy while on the Buses dialog.
