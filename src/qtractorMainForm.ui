@@ -1349,7 +1349,7 @@
     <iconset resource="../icons/qtractor.qrc" >:/icons/transportAutoBackward.png</iconset>
    </property>
    <property name="text" >
-    <string>&amp;Auto backward</string>
+    <string>A&amp;uto Backward</string>
    </property>
    <property name="iconText" >
     <string>Auto Backward</string>
