@@ -112,6 +112,7 @@
    <addaction name="transportMetroAction" />
    <addaction name="separator" />
    <addaction name="transportFollowAction" />
+   <addaction name="transportAutoBackwardAction" />
    <addaction name="transportContinueAction" />
   </widget>
   <widget class="QToolBar" name="transportToolbar" >
@@ -232,6 +233,7 @@
     <addaction name="transportMetroAction" />
     <addaction name="separator" />
     <addaction name="transportFollowAction" />
+    <addaction name="transportAutoBackwardAction" />
     <addaction name="transportContinueAction" />
    </widget>
    <widget class="QMenu" name="helpMenu" >
@@ -1306,6 +1308,9 @@
    <property name="iconText" >
     <string>Metronome</string>
    </property>
+   <property name="toolTip" >
+    <string>Metronome</string>
+   </property>
    <property name="statusTip" >
     <string>Metronome</string>
    </property>
@@ -1326,8 +1331,34 @@
    <property name="iconText" >
     <string>Follow Playhead</string>
    </property>
+   <property name="toolTip" >
+    <string>Follow playhead</string>
+   </property>
    <property name="statusTip" >
     <string>Follow playhead</string>
+   </property>
+   <property name="shortcut" >
+    <string/>
+   </property>
+  </action>
+  <action name="transportAutoBackwardAction" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="icon" >
+    <iconset resource="../icons/qtractor.qrc" >:/icons/transportAutoBackward.png</iconset>
+   </property>
+   <property name="text" >
+    <string>&amp;Auto backward</string>
+   </property>
+   <property name="iconText" >
+    <string>Auto Backward</string>
+   </property>
+   <property name="toolTip" >
+    <string>Auto backward</string>
+   </property>
+   <property name="statusTip" >
+    <string>Auto backward</string>
    </property>
    <property name="shortcut" >
     <string/>
@@ -1345,6 +1376,9 @@
    </property>
    <property name="iconText" >
     <string>Continue Past End</string>
+   </property>
+   <property name="toolTip" >
+    <string>Continue past end</string>
    </property>
    <property name="statusTip" >
     <string>Continue past end</string>

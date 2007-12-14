@@ -80,6 +80,7 @@ public:
 	// Transport options...
 	bool    bMetronome;
 	bool    bFollowPlayhead;
+	bool    bAutoBackward;
 	bool    bContinuePastEnd;
 
 	// Audio options...

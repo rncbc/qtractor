@@ -531,6 +531,9 @@ qtractorMainForm::qtractorMainForm (
 	QObject::connect(m_ui.transportFollowAction,
 		SIGNAL(triggered(bool)),
 		SLOT(transportFollow()));
+	QObject::connect(m_ui.transportAutoBackwardAction,
+		SIGNAL(triggered(bool)),
+		SLOT(transportAutoBackward()));
 	QObject::connect(m_ui.transportContinueAction,
 		SIGNAL(triggered(bool)),
 		SLOT(transportContinue()));
@@ -674,6 +677,7 @@ void qtractorMainForm::setOptions ( qtractorOptions *pOptions )
 
 	m_ui.transportMetroAction->setChecked(m_pOptions->bMetronome);
 	m_ui.transportFollowAction->setChecked(m_pOptions->bFollowPlayhead);
+	m_ui.transportAutoBackwardAction->setChecked(m_pOptions->bAutoBackward);
 	m_ui.transportContinueAction->setChecked(m_pOptions->bContinuePastEnd);
 
 	// Initial decorations visibility state.
@@ -816,6 +820,7 @@ bool qtractorMainForm::queryClose (void)
 			m_pOptions->bThumbToolbar = m_ui.thumbToolbar->isVisible();
 			m_pOptions->bMetronome = m_ui.transportMetroAction->isChecked();
 			m_pOptions->bFollowPlayhead = m_ui.transportFollowAction->isChecked();
+			m_pOptions->bAutoBackward = m_ui.transportAutoBackwardAction->isChecked();
 			m_pOptions->bContinuePastEnd = m_ui.transportContinueAction->isChecked();
 			// Save instrument definition file list...
 			m_pOptions->instrumentFiles = m_pInstruments->files();
@@ -2299,6 +2304,18 @@ void qtractorMainForm::transportFollow (void)
 }
 
 
+// Auto-backward transport option.
+void qtractorMainForm::transportAutoBackward (void)
+{
+#ifdef CONFIG_DEBUG
+	appendMessages("qtractorMainForm::transportAutoBackward()");
+#endif
+
+	// Toggle auto-backward...
+	stabilizeForm();
+}
+
+
 // Continue past end transport option.
 void qtractorMainForm::transportContinue (void)
 {
@@ -2386,6 +2403,15 @@ bool qtractorMainForm::setPlaying ( bool bPlaying )
 			setRecording(false);
 		// Stop transport rolling, immediately...
 		setRolling(0);
+		// Auto-backward reset feature...
+		if (m_ui.transportAutoBackwardAction->isChecked()) {
+			unsigned long iPlayHead = m_pSession->playHead();
+			if (iPlayHead > m_pSession->editHead())
+				iPlayHead = m_pSession->editHead();
+			else
+				iPlayHead = 0;
+			m_pSession->setPlayHead(iPlayHead);
+		}
 	}
 
 	// Done with playback switch...

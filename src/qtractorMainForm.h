@@ -161,6 +161,7 @@ public slots:
 	void transportRecord();
 	void transportMetro();
 	void transportFollow();
+	void transportAutoBackward();
 	void transportContinue();
 
 	void helpAboutQt();

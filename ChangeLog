@@ -20,6 +20,9 @@ ChangeLog
   the clip offset constant in time units (ticks), as are clip start
   and length properties already.
 
+- New auto-backward transport option: when enabled the playhead will
+  be reset backward automatically whenever transport stops playing.
+
 - A suicide-crash has been fixed while invoking the bus dialog from
   the respective mixer bus strip context menu.
 

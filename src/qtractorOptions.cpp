@@ -82,6 +82,7 @@ qtractorOptions::qtractorOptions (void)
 	m_settings.beginGroup("/Transport");
 	bMetronome       = m_settings.value("/Metronome", false).toBool();
 	bFollowPlayhead  = m_settings.value("/FollowPlayhead", true).toBool();
+	bAutoBackward    = m_settings.value("/AutoBackward", false).toBool();
 	bContinuePastEnd = m_settings.value("/ContinuePastEnd", true).toBool();
 	m_settings.endGroup();
 
@@ -218,6 +219,7 @@ qtractorOptions::~qtractorOptions (void)
 	m_settings.beginGroup("/Transport");
 	m_settings.setValue("/Metronome", bMetronome);
 	m_settings.setValue("/FollowPlayhead", bFollowPlayhead);
+	m_settings.setValue("/AutoBackward", bAutoBackward);
 	m_settings.setValue("/ContinuePastEnd", bContinuePastEnd);
 	m_settings.endGroup();
 
