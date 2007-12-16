@@ -20,6 +20,9 @@ ChangeLog
   the clip offset constant in time units (ticks), as are clip start
   and length properties already.
 
+- Fixed instrument bank selection method, "Bank MSB" (2), which was
+  broken enough to never send the correct bank number.
+
 - Mouse-wheel horizontal scrolling is now accessible on every view,
   while pressing a modifier key (Shift or Ctrl).
 

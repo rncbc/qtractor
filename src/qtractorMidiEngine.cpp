@@ -2030,7 +2030,10 @@ void qtractorMidiBus::setPatch ( unsigned short iChannel,
 		ev.type = SND_SEQ_EVENT_CONTROLLER;
 		ev.data.control.channel = iChannel;
 		ev.data.control.param   = BANK_SELECT_MSB;
-		ev.data.control.value   = (iBank & 0x3f80) >> 7;
+		if (iBankSelMethod == 0)
+			ev.data.control.value = (iBank & 0x3f80) >> 7;
+		else
+			ev.data.control.value = (iBank & 0x007f);
 		snd_seq_event_output(pMidiEngine->alsaSeq(), &ev);
 	}
 
