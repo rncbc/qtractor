@@ -168,6 +168,18 @@ void qtractorScrollView::paintEvent ( QPaintEvent *pPaintEvent )
 }
 
 
+void qtractorScrollView::wheelEvent ( QWheelEvent *pWheelEvent )
+{
+	if (pWheelEvent->modifiers()
+		& (Qt::ShiftModifier | Qt::ControlModifier)) {
+		setContentsPos(
+			m_rectContents.x() + pWheelEvent->delta(),
+			m_rectContents.y());
+	}
+	else QAbstractScrollArea::wheelEvent(pWheelEvent);
+}
+
+
 // Scroll area updater.
 void qtractorScrollView::scrollContentsBy ( int dx, int dy )
 {

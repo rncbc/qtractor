@@ -20,6 +20,9 @@ ChangeLog
   the clip offset constant in time units (ticks), as are clip start
   and length properties already.
 
+- Mouse-wheel horizontal scrolling is now accessible on every view,
+  while pressing a modifier key (Shift or Ctrl).
+
 - New auto-backward transport option: when enabled the playhead will
   be reset backward automatically whenever transport stops playing.
 

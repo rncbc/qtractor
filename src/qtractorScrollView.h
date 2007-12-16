@@ -77,6 +77,7 @@ protected:
 	// Specialized event handlers.
 	void resizeEvent(QResizeEvent *pResizeEvent);
 	void paintEvent(QPaintEvent *pPaintEvent);
+	void wheelEvent(QWheelEvent *pWheelEvent);
 
 	// Draw the virtual contents.
 	virtual void drawContents(QPainter *pPainter, const QRect& rect) = 0;
