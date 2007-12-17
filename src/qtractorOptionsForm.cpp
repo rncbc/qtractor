@@ -77,8 +77,8 @@ qtractorOptionsForm::qtractorOptionsForm (
 	m_ui.MetroBeatNoteComboBox->clear();
 	QStringList items;
 	const QString sItem("%1 (%2)");
-	for (int iNote = 0; iNote < 128; ++iNote)
-		items.append(sItem.arg(qtractorMidiEditor::noteName(iNote)).arg(iNote));
+	for (int i = 0; i < 128; ++i)
+		items.append(sItem.arg(qtractorMidiEditor::defaultNoteName(i)).arg(i));
 	m_ui.MetroBarNoteComboBox->insertItems(0, items);
 	m_ui.MetroBeatNoteComboBox->insertItems(0, items);
 

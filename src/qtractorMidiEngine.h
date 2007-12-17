@@ -25,7 +25,7 @@
 #include "qtractorEngine.h"
 #include "qtractorMmcEvent.h"
 
-#include <QMap>
+#include <QHash>
 
 #include <alsa/asoundlib.h>
 
@@ -298,7 +298,7 @@ private:
 	qtractorMidiMonitor *m_pOMidiMonitor;
 
 	// Channel patch mapper.
-	QMap<unsigned short, Patch> m_patches;
+	QHash<unsigned short, Patch> m_patches;
 };
 
 

@@ -71,6 +71,9 @@ public:
 	// Special executive setup method.
 	void setup(qtractorMidiClip *pMidiClip = NULL);
 
+	// Instrument/controller names update.
+	void updateInstrumentNames();
+
 	// Pre-close event handler.
 	bool queryClose();
 

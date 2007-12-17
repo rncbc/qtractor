@@ -86,6 +86,7 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	m_pEventTypeComboBox->setEditable(false);
 	m_pControllerComboBox = new QComboBox(m_ui.editEventToolbar);
 	m_pControllerComboBox->setEditable(false);
+	m_pControllerComboBox->setMinimumWidth(220);
 
 	// Pre-fill the combo-boxes...
 	const QIcon iconViewType(":/icons/itemProperty.png");
@@ -110,11 +111,7 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	m_pEventTypeComboBox->addItem(iconEventType,
 		tr("System Exclusive"), int(qtractorMidiEvent::SYSEX));
 
-	const QIcon iconController(":/icons/itemControllers.png");
-	for (int i = 0; i < 128; ++i) {
-		m_pControllerComboBox->addItem(iconController,
-			QString::number(i) + " - " + qtractorMidiEditor::controllerName(i), i);
-	}
+//	updateInstrumentNames();
 
 	// Add combo-boxes to toolbars...
 	m_ui.editViewToolbar->addWidget(m_pViewTypeComboBox);
@@ -609,6 +606,9 @@ void qtractorMidiEditorForm::setup ( qtractorMidiClip *pMidiClip )
 			SLOT(sendNote(int,int)));
 	}
 
+	// Get all those names right...
+	updateInstrumentNames();
+
 	// Refresh and try to center (vertically) the edit-view...
 	m_pMidiEditor->centerContents();
 
@@ -1092,6 +1092,24 @@ void qtractorMidiEditorForm::stabilizeForm (void)
 		m_ui.transportLoopAction->setChecked(bLooping);
 		m_ui.transportPlayAction->setChecked(bPlaying);
 		m_ui.transportRecordAction->setChecked(bRecording);
+	}
+}
+
+
+// Update clip/track instrument names...
+void qtractorMidiEditorForm::updateInstrumentNames (void)
+{
+qDebug("DEBUG> qtractorMidiEditorForm[%p]::updateInstrumentNames()", this);
+	// Just in case...
+	m_pMidiEditor->updateInstrumentNames();
+
+	// Update the controller names...
+	const QIcon iconController(":/icons/itemControllers.png");
+	m_pControllerComboBox->clear();
+	for (int i = 0; i < 128; ++i) {
+		m_pControllerComboBox->addItem(iconController,
+			QString::number(i) + " - "
+			+ m_pMidiEditor->controllerName(i), i);
 	}
 }
 

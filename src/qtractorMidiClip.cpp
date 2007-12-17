@@ -536,6 +536,8 @@ void qtractorMidiClip::updateEditor (void)
 		pMidiEditor->updateContents();
 	}
 
+	m_pMidiEditorForm->updateInstrumentNames();
+
 	m_pMidiEditorForm->stabilizeForm();
 }
 

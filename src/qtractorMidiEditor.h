@@ -28,6 +28,7 @@
 #include "qtractorMidiEvent.h"
 
 #include <QSplitter>
+#include <QHash>
 
 
 // Forward declarations.
@@ -253,11 +254,15 @@ public:
 	// Command list accessor.
 	qtractorCommandList *commands() const;
 
-	// Note map accessor.
-	static const QString noteName(unsigned char note);
+	// Note name map accessor.
+	const QString noteName(unsigned char note) const;
+	// Controller name map accessor.
+	const QString& controllerName(unsigned char controller) const;
 
-	// Controller hash map accessor.
-	static const QString& controllerName(unsigned char controller);
+	// Default note name map accessor.
+	static const QString defaultNoteName(unsigned char note);
+	// Default controller name accessor.
+	static const QString& defaultControllerName(unsigned char controller);
 
 	// All-in-one SMF file writer/creator method.
 	static bool saveCopyFile(const QString& sNewFilename,
@@ -276,6 +281,9 @@ public slots:
 
 	// Redirect note on/off;
 	void sendNote(int iNote, int iVelocity = 0);
+
+	// Update instrument defined names for current clip/track.
+	void updateInstrumentNames();
 
 protected:
 
@@ -455,6 +463,10 @@ private:
 
 		// Singleton declaration.
 	}	g_clipboard;
+
+	// Instrument defined names for current clip/track.
+	QHash<unsigned char, QString> m_controllerNames;
+	QHash<unsigned char, QString> m_noteNames;
 };
 
 

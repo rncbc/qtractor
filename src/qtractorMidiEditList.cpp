@@ -415,7 +415,7 @@ bool qtractorMidiEditList::eventFilter ( QObject *pObject, QEvent *pEvent )
 				const QString sToolTip("%1 (%2)");
 				int note = 127 - ((pos.y() - 1) / m_iItemHeight);
 				QToolTip::showText(pHelpEvent->globalPos(),
-					sToolTip.arg(qtractorMidiEditor::noteName(note)).arg(note),
+					sToolTip.arg(m_pEditor->noteName(note)).arg(note),
 					pViewport);
 				return true;
 			}

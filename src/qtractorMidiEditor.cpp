@@ -28,10 +28,13 @@
 #include "qtractorMidiEditEvent.h"
 
 #include "qtractorMidiEditCommand.h"
+
+#include "qtractorMidiEngine.h"
 #include "qtractorMidiClip.h"
 
 #include "qtractorMidiToolsForm.h"
 
+#include "qtractorInstrument.h"
 #include "qtractorRubberBand.h"
 #include "qtractorTimeScale.h"
 
@@ -57,7 +60,7 @@
 //----------------------------------------------------------------------------
 // MIDI Note Names - Default note names base map.
 
-static const char *g_noteNames[] = {
+static const char *g_aNoteNames[] = {
 
 	QT_TR_NOOP("C"),
 	QT_TR_NOOP("C#"),
@@ -73,18 +76,15 @@ static const char *g_noteNames[] = {
 	QT_TR_NOOP("B")
 };
 
-
-// Note name map accessor.
-const QString qtractorMidiEditor::noteName ( unsigned char note )
+// Default note name map accessor.
+const QString qtractorMidiEditor::defaultNoteName ( unsigned char note )
 {
-	return g_noteNames[note % 12] + QString::number((note / 12) - 2);
+	return tr(g_aNoteNames[note % 12]) + QString::number((note / 12) - 2);
 }
 
 
 //----------------------------------------------------------------------------
 // MIDI Controller Names - Default controller names hash map.
-
-#include <QHash>
 
 static struct
 {
@@ -165,8 +165,8 @@ static struct
 
 static QHash<unsigned char, QString> g_controllerNames;
 
-// Controller hash map accessor.
-const QString& qtractorMidiEditor::controllerName ( unsigned char controller )
+// Default controller name accessor.
+const QString& qtractorMidiEditor::defaultControllerName ( unsigned char controller )
 {
 	if (g_controllerNames.isEmpty()) {
 		// Pre-load controller-names hash table...
@@ -2370,6 +2370,80 @@ qtractorCommandList *qtractorMidiEditor::commands (void) const
 	return m_pCommands;
 }
 
+
+
+// Update instrument defined names for current clip/track.
+void qtractorMidiEditor::updateInstrumentNames (void)
+{
+	m_noteNames.clear();
+	m_controllerNames.clear();
+
+	if (m_pMidiClip == NULL)
+		return;
+
+	qtractorTrack *pTrack = m_pMidiClip->track();
+	if (pTrack == NULL)
+		return;
+
+	qtractorMidiBus *pMidiBus
+		= static_cast<qtractorMidiBus *> (pTrack->outputBus());
+	if (pMidiBus == NULL)
+		return;
+
+	qtractorMainForm *pMainForm	= qtractorMainForm::getInstance();
+	if (pMainForm == NULL)
+		return;
+	if (pMainForm->instruments() == NULL)
+		return;
+
+	// Get patch descriptor...
+	const qtractorMidiBus::Patch& patch
+		= pMidiBus->patch(pTrack->midiChannel());
+	if (patch.instrumentName.isEmpty())
+		return;
+
+	// Finally, got instrument descriptor...
+	qtractorInstrument& instr
+		= (*pMainForm->instruments())[patch.instrumentName];
+
+	// Common iterator...
+	qtractorInstrumentData::ConstIterator it;
+
+	// Key note names...
+	const qtractorInstrumentData& notes
+		= instr.notes(pTrack->midiBank(), pTrack->midiProgram());
+	for (it = notes.begin(); it != notes.end(); ++it)
+		m_noteNames.insert(it.key(), it.value());
+
+	// Controller names...
+	const qtractorInstrumentData& controllers = instr.control();
+	for (it = controllers.begin(); it != controllers.end(); ++it)
+		m_controllerNames.insert(it.key(), it.value());
+}
+
+
+// Note name map accessor.
+const QString qtractorMidiEditor::noteName ( unsigned char note ) const
+{
+	QHash<unsigned char, QString>::ConstIterator iter
+		= m_noteNames.constFind(note);
+	if (iter == m_noteNames.constEnd())
+		return defaultNoteName(note);
+	else
+		return iter.value();
+}
+
+
+// Controller name map accessor.
+const QString& qtractorMidiEditor::controllerName ( unsigned char controller ) const
+{
+	QHash<unsigned char, QString>::ConstIterator iter
+		= m_controllerNames.constFind(controller);
+	if (iter == m_controllerNames.constEnd())
+		return defaultControllerName(controller);
+	else
+		return iter.value();
+}
 
 
 // Command execution notification slot.
