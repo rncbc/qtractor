@@ -46,12 +46,13 @@ public:
 	void setOptions(qtractorOptions *pOptions);
 	qtractorOptions *options() const;
 
-public slots:
+protected slots:
 
 	void accept();
 	void reject();
-	void chooseMessagesFont();
 	void changed();
+	void chooseMessagesFont();
+	void updateNoteNames();
 	void stabilizeForm();
 
 private:

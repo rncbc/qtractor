@@ -260,7 +260,7 @@ public:
 	const QString& controllerName(unsigned char controller) const;
 
 	// Default note name map accessor.
-	static const QString defaultNoteName(unsigned char note);
+	static const QString defaultNoteName(unsigned char note, bool fDrums = false);
 	// Default controller name accessor.
 	static const QString& defaultControllerName(unsigned char controller);
 

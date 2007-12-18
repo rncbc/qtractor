@@ -1099,7 +1099,6 @@ void qtractorMidiEditorForm::stabilizeForm (void)
 // Update clip/track instrument names...
 void qtractorMidiEditorForm::updateInstrumentNames (void)
 {
-qDebug("DEBUG> qtractorMidiEditorForm[%p]::updateInstrumentNames()", this);
 	// Just in case...
 	m_pMidiEditor->updateInstrumentNames();
 

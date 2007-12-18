@@ -72,15 +72,7 @@ qtractorOptionsForm::qtractorOptionsForm (
 	m_ui.MidiCaptureFormatComboBox->addItem(tr("SMF Format 0"));
 	m_ui.MidiCaptureFormatComboBox->addItem(tr("SMF Format 1"));
 
-	// Populate the Metronome notes.
-	m_ui.MetroBarNoteComboBox->clear();
-	m_ui.MetroBeatNoteComboBox->clear();
-	QStringList items;
-	const QString sItem("%1 (%2)");
-	for (int i = 0; i < 128; ++i)
-		items.append(sItem.arg(qtractorMidiEditor::defaultNoteName(i)).arg(i));
-	m_ui.MetroBarNoteComboBox->insertItems(0, items);
-	m_ui.MetroBeatNoteComboBox->insertItems(0, items);
+//	updateNoteNames();
 
 	// Initialize dirty control state.
 	m_iDirtyCount = 0;
@@ -145,7 +137,7 @@ qtractorOptionsForm::qtractorOptionsForm (
 		SLOT(changed()));
 	QObject::connect(m_ui.MetroChannelSpinBox,
 		SIGNAL(valueChanged(int)),
-		SLOT(changed()));
+		SLOT(updateNoteNames()));
 	QObject::connect(m_ui.MetroBarNoteComboBox,
 		SIGNAL(activated(int)),
 		SLOT(changed()));
@@ -236,6 +228,8 @@ void qtractorOptionsForm::setOptions ( qtractorOptions *pOptions )
 
 	// Metronome options.
 	m_ui.MetroChannelSpinBox->setValue(m_pOptions->iMetroChannel + 1);
+	updateNoteNames();
+
 	m_ui.MetroBarNoteComboBox->setCurrentIndex(m_pOptions->iMetroBarNote);
 	m_ui.MetroBarVelocitySpinBox->setValue(m_pOptions->iMetroBarVelocity);
 	m_ui.MetroBarDurationSpinBox->setValue(m_pOptions->iMetroBarDuration);
@@ -342,6 +336,34 @@ void qtractorOptionsForm::chooseMessagesFont (void)
 			font.family() + " " + QString::number(font.pointSize()));
 		changed();
 	}
+}
+
+
+// The metronome note names changer.
+void qtractorOptionsForm::updateNoteNames (void)
+{
+	// Save current selection...
+	int iOldBarNote  = m_ui.MetroBarNoteComboBox->currentIndex();
+	int iOldBeatNote = m_ui.MetroBeatNoteComboBox->currentIndex();
+
+	// Populate the Metronome notes.
+	m_ui.MetroBarNoteComboBox->clear();
+	m_ui.MetroBeatNoteComboBox->clear();
+	bool bDrums = (m_ui.MetroChannelSpinBox->value() == 10);
+	QStringList items;
+	const QString sItem("%1 (%2)");
+	for (int i = 0; i < 128; ++i) {
+		items.append(sItem
+			.arg(qtractorMidiEditor::defaultNoteName(i, bDrums)).arg(i));
+	}
+	m_ui.MetroBarNoteComboBox->insertItems(0, items);
+	m_ui.MetroBeatNoteComboBox->insertItems(0, items);
+
+	// Restore old selection...
+	m_ui.MetroBarNoteComboBox->setCurrentIndex(iOldBarNote);
+	m_ui.MetroBeatNoteComboBox->setCurrentIndex(iOldBeatNote);
+
+	changed();
 }
 
 

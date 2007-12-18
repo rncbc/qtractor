@@ -58,28 +58,104 @@
 
 
 //----------------------------------------------------------------------------
-// MIDI Note Names - Default note names base map.
+// MIDI Note Names - Default note names hash map.
 
-static const char *g_aNoteNames[] = {
+static struct
+{
+	unsigned char note;
+	const char *name;
 
-	QT_TR_NOOP("C"),
-	QT_TR_NOOP("C#"),
-	QT_TR_NOOP("D"),
-	QT_TR_NOOP("D#"),
-	QT_TR_NOOP("E"),
-	QT_TR_NOOP("F"),
-	QT_TR_NOOP("F#"),
-	QT_TR_NOOP("G"),
-	QT_TR_NOOP("G#"),
-	QT_TR_NOOP("A"),
-	QT_TR_NOOP("A#"),
-	QT_TR_NOOP("B")
+} g_aNoteNames[] = {
+
+	// Diatonic note map...
+	{  0, QT_TR_NOOP("C")  },
+	{  1, QT_TR_NOOP("C#") },
+	{  2, QT_TR_NOOP("D")  },
+	{  3, QT_TR_NOOP("D#") },
+	{  4, QT_TR_NOOP("E")  },
+	{  5, QT_TR_NOOP("F")  },
+	{  6, QT_TR_NOOP("F#") },
+	{  7, QT_TR_NOOP("G")  },
+	{  8, QT_TR_NOOP("G#") },
+	{  9, QT_TR_NOOP("A")  },
+	{ 10, QT_TR_NOOP("A#") },
+	{ 11, QT_TR_NOOP("B")  },
+
+	// GM Drum note map...
+	{ 35, QT_TR_NOOP("Acoustic Bass Drum") },
+	{ 36, QT_TR_NOOP("Bass Drum 1") },
+	{ 37, QT_TR_NOOP("Side Stick") },
+	{ 38, QT_TR_NOOP("Acoustic Snare") },
+	{ 39, QT_TR_NOOP("Hand Clap") },
+	{ 40, QT_TR_NOOP("Electric Snare") },
+	{ 41, QT_TR_NOOP("Low Floor Tom") },
+	{ 42, QT_TR_NOOP("Closed Hi-Hat") },
+	{ 43, QT_TR_NOOP("High Floor Tom") },
+	{ 44, QT_TR_NOOP("Pedal Hi-Hat") },
+	{ 45, QT_TR_NOOP("Low Tom") },
+	{ 46, QT_TR_NOOP("Open Hi-Hat") },
+	{ 47, QT_TR_NOOP("Low-Mid Tom") },
+	{ 48, QT_TR_NOOP("Hi-Mid Tom") },
+	{ 49, QT_TR_NOOP("Crash Cymbal 1") },
+	{ 50, QT_TR_NOOP("High Tom") },
+	{ 51, QT_TR_NOOP("Ride Cymbal 1") },
+	{ 52, QT_TR_NOOP("Chinese Cymbal") },
+	{ 53, QT_TR_NOOP("Ride Bell") },
+	{ 54, QT_TR_NOOP("Tambourine") },
+	{ 55, QT_TR_NOOP("Splash Cymbal") },
+	{ 56, QT_TR_NOOP("Cowbell") },
+	{ 57, QT_TR_NOOP("Crash Cymbal 2") },
+	{ 58, QT_TR_NOOP("Vibraslap") },
+	{ 59, QT_TR_NOOP("Ride Cymbal 2") },
+	{ 60, QT_TR_NOOP("Hi Bongo") },
+	{ 61, QT_TR_NOOP("Low Bongo") },
+	{ 62, QT_TR_NOOP("Mute Hi Conga") },
+	{ 63, QT_TR_NOOP("Open Hi Conga") },
+	{ 64, QT_TR_NOOP("Low Conga") },
+	{ 65, QT_TR_NOOP("High Timbale") },
+	{ 66, QT_TR_NOOP("Low Timbale") },
+	{ 67, QT_TR_NOOP("High Agogo") },
+	{ 68, QT_TR_NOOP("Low Agogo") },
+	{ 69, QT_TR_NOOP("Cabasa") },
+	{ 70, QT_TR_NOOP("Maracas") },
+	{ 71, QT_TR_NOOP("Short Whistle") },
+	{ 72, QT_TR_NOOP("Long Whistle") },
+	{ 73, QT_TR_NOOP("Short Guiro") },
+	{ 74, QT_TR_NOOP("Long Guiro") },
+	{ 75, QT_TR_NOOP("Claves") },
+	{ 76, QT_TR_NOOP("Hi Wood Block") },
+	{ 77, QT_TR_NOOP("Low Wood Block") },
+	{ 78, QT_TR_NOOP("Mute Cuica") },
+	{ 79, QT_TR_NOOP("Open Cuica") },
+	{ 80, QT_TR_NOOP("Mute Triangle") },
+	{ 81, QT_TR_NOOP("Open Triangle") },
+
+	{  0, NULL }
 };
 
+static QHash<unsigned char, QString> g_noteNames;
+
 // Default note name map accessor.
-const QString qtractorMidiEditor::defaultNoteName ( unsigned char note )
+const QString qtractorMidiEditor::defaultNoteName (
+	unsigned char note, bool fDrums )
 {
-	return tr(g_aNoteNames[note % 12]) + QString::number((note / 12) - 2);
+	if (fDrums) {
+		// Pre-load drum-names hash table...
+		if (g_noteNames.isEmpty()) {
+			for (int i = 13; g_aNoteNames[i].name; ++i) {
+				g_noteNames.insert(
+					g_aNoteNames[i].note,
+					tr(g_aNoteNames[i].name));
+			}
+		}
+		// Check whether the drum note exists...
+		QHash<unsigned char, QString>::ConstIterator iter
+			= g_noteNames.constFind(note);
+		if (iter != g_noteNames.constEnd())
+			return iter.value();
+	}
+
+	return tr(g_aNoteNames[note % 12].name) + QString::number((note / 12) - 2);
 }
 
 
@@ -2385,40 +2461,46 @@ void qtractorMidiEditor::updateInstrumentNames (void)
 	if (pTrack == NULL)
 		return;
 
-	qtractorMidiBus *pMidiBus
-		= static_cast<qtractorMidiBus *> (pTrack->outputBus());
-	if (pMidiBus == NULL)
-		return;
-
 	qtractorMainForm *pMainForm	= qtractorMainForm::getInstance();
 	if (pMainForm == NULL)
 		return;
 	if (pMainForm->instruments() == NULL)
 		return;
 
-	// Get patch descriptor...
-	const qtractorMidiBus::Patch& patch
-		= pMidiBus->patch(pTrack->midiChannel());
-	if (patch.instrumentName.isEmpty())
+	// Get instrument name from patch descriptor...
+	QString sInstrument;
+	qtractorMidiBus *pMidiBus
+		= static_cast<qtractorMidiBus *> (pTrack->outputBus());
+	if (pMidiBus)
+		sInstrument = pMidiBus->patch(pTrack->midiChannel()).instrumentName;
+	// Do we have any?...
+	if (sInstrument.isEmpty()) {
+		// At least have a GM Drums (Channel 10) help...
+		if (pTrack->midiChannel() == 9) {
+			for (int i = 13; g_aNoteNames[i].name; ++i) {
+				m_noteNames.insert(
+					g_aNoteNames[i].note,
+					tr(g_aNoteNames[i].name));
+			}
+		}
+		// No instrument definition...
 		return;
+	}
 
 	// Finally, got instrument descriptor...
-	qtractorInstrument& instr
-		= (*pMainForm->instruments())[patch.instrumentName];
-
-	// Common iterator...
-	qtractorInstrumentData::ConstIterator it;
+	qtractorInstrumentData::ConstIterator iter;
+	qtractorInstrument& instr = (*pMainForm->instruments())[sInstrument];
 
 	// Key note names...
 	const qtractorInstrumentData& notes
 		= instr.notes(pTrack->midiBank(), pTrack->midiProgram());
-	for (it = notes.begin(); it != notes.end(); ++it)
-		m_noteNames.insert(it.key(), it.value());
+	for (iter = notes.begin(); iter != notes.end(); ++iter)
+		m_noteNames.insert(iter.key(), iter.value());
 
 	// Controller names...
 	const qtractorInstrumentData& controllers = instr.control();
-	for (it = controllers.begin(); it != controllers.end(); ++it)
-		m_controllerNames.insert(it.key(), it.value());
+	for (iter = controllers.begin(); iter != controllers.end(); ++iter)
+		m_controllerNames.insert(iter.key(), iter.value());
 }
 
 
