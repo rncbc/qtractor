@@ -31,6 +31,7 @@
 
 // Forward declarations.
 class qtractorAudioBus;
+class qtractorAudioBuffer;
 class qtractorAudioMonitor;
 class qtractorAudioFile;
 class qtractorPluginList;
@@ -98,7 +99,15 @@ public:
 	// Direct sync method (needed for export)
 	void syncExport();
 
+	// Audition/pre-listening player method.
+	bool openPlayer(const QString& sFilename);
+
 protected:
+
+	// Audition/pre-listening player stuff. 
+	void closePlayer();
+	void createPlayer();
+	void deletePlayer();
 
 	// Concrete device (de)activation methods.
 	bool init(const QString& sClientName);
@@ -135,6 +144,12 @@ private:
 	unsigned long      m_iExportEnd;
 	unsigned int       m_iExportSync;
 	bool               m_bExportDone;
+
+	// Audition/pre-listening player stuff. 
+	qtractorAudioBus    *m_pPlayerBus;
+	qtractorAudioBuffer *m_pPlayerBuff;
+	bool                 m_bPlayerSync;
+	bool                 m_bPlayerOpen;
 };
 
 

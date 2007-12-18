@@ -20,6 +20,9 @@ ChangeLog
   the clip offset constant in time units (ticks), as are clip start
   and length properties already.
 
+- First steps to the long due implementation of an audition or a
+  pre-listening audio player is now in place (EXPERIMENTAL).
+
 - Actual instrument definition note (keys) and controller names are
   now in effect on the MIDI editor, whenever applicable.
 

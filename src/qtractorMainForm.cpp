@@ -3285,10 +3285,6 @@ void qtractorMainForm::tracksClosed (void)
 // Audio file addition slot funtion.
 void qtractorMainForm::addAudioFile  ( const QString& sFilename )
 {
-#ifdef CONFIG_DEBUG
-	appendMessages("qtractorMainForm::addAudioFile(\"" + sFilename + "\")");
-#endif
-
 	// Add the just dropped audio file...
 	if (m_pFiles)
 		m_pFiles->addAudioFile(sFilename);
@@ -3298,11 +3294,14 @@ void qtractorMainForm::addAudioFile  ( const QString& sFilename )
 
 
 // Audio file activation slot funtion.
-void qtractorMainForm::activateAudioFile  ( const QString& /* sFilename */ )
+void qtractorMainForm::activateAudioFile  ( const QString& sFilename )
 {
-	//
-	// TODO: Activate the just selected audio file...
-	//
+	appendMessages(tr("Playing \"%1\"...")
+		.arg(QFileInfo(sFilename).fileName()));
+
+	qtractorAudioEngine *pAudioEngine = m_pSession->audioEngine();
+	if (pAudioEngine)
+		pAudioEngine->openPlayer(sFilename);
 
 	stabilizeForm();
 }
@@ -3311,10 +3310,6 @@ void qtractorMainForm::activateAudioFile  ( const QString& /* sFilename */ )
 // MIDI file addition slot funtion.
 void qtractorMainForm::addMidiFile  ( const QString& sFilename )
 {
-#ifdef CONFIG_DEBUG
-	appendMessages("qtractorMainForm::addMidiFile(\"" + sFilename + "\")");
-#endif
-
 	// Add the just dropped MIDI file...
 	if (m_pFiles)
 		m_pFiles->addMidiFile(sFilename);

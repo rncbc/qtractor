@@ -22,6 +22,7 @@
 #include "qtractorAbout.h"
 #include "qtractorAudioEngine.h"
 #include "qtractorAudioMonitor.h"
+#include "qtractorAudioBuffer.h"
 #include "qtractorAudioClip.h"
 
 #include "qtractorMonitor.h"
@@ -217,6 +218,12 @@ qtractorAudioEngine::qtractorAudioEngine ( qtractorSession *pSession )
 	m_iExportEnd   = 0;
 	m_iExportSync  = 0;
 	m_bExportDone  = true;
+
+	// Audition/pre-listening player stuff. 
+	m_pPlayerBus  = NULL;
+	m_pPlayerBuff = NULL;
+	m_bPlayerSync = false;
+	m_bPlayerOpen = false;
 }
 
 
@@ -325,6 +332,9 @@ bool qtractorAudioEngine::init ( const QString& sClientName )
 // Device engine activation method.
 bool qtractorAudioEngine::activate (void)
 {
+	// Open and start audition/pre-listening...
+	createPlayer();
+
 	// Set our main engine processor callbacks.
 	jack_set_process_callback(m_pJackClient,
 			qtractorAudioEngine_process, this);
@@ -399,6 +409,9 @@ void qtractorAudioEngine::deactivate (void)
 	// Deactivate the JACK client first.
 	if (m_pJackClient)
 		jack_deactivate(m_pJackClient);
+
+	// Stop and close audition/pre-listening...
+	deletePlayer();
 }
 
 
@@ -484,6 +497,16 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 	if (!pSession->acquire())
 		return 0;
 
+	// Process audition/pre-listening...
+	if (m_bPlayerOpen) {
+		if (m_bPlayerSync)  {
+			m_bPlayerOpen = (m_pPlayerBuff->readMix(m_pPlayerBus->out(),
+				nframes, m_pPlayerBus->channels(), 0, 1.0f) == int(nframes));
+		} else {
+			m_bPlayerSync = m_pPlayerBuff->inSync(0, 0);
+		}
+	}
+
 	// Don't go any further, if not playing.
 	if (!isPlaying()) {
 		// Do the idle processing...
@@ -505,6 +528,9 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 				}
 			}
 		}
+		// Process audition/pre-listening bus...
+		if (m_pPlayerBus && !m_pPlayerBus->isPassthru())
+			m_pPlayerBus->process_commit(nframes);
 		// Pass-thru current audio buses...
 		for (qtractorBus *pBus = buses().first();
 			pBus; pBus = pBus->next()) {
@@ -889,6 +915,71 @@ void qtractorAudioEngine::syncExport (void)
 			}
 		}
 		iTrack++;
+	}
+}
+
+
+// Create audition/pre-listening stuff...
+void qtractorAudioEngine::createPlayer (void)
+{
+	deletePlayer();
+
+	// FIXME: Auditio/pre-listening bus gets to be
+	// the first available output bus...
+	for (qtractorBus *pBus = qtractorEngine::buses().first();
+			pBus; pBus = pBus->next()) {
+		if (pBus->busMode() & qtractorBus::Output) {
+			m_pPlayerBus = static_cast<qtractorAudioBus *> (pBus);
+			break;
+		}
+	}
+
+	// Is there any?
+	if (m_pPlayerBus == NULL)
+		return;
+
+	// Enough number of channels?...
+	unsigned short iChannels = m_pPlayerBus->channels();
+	if (iChannels < 1)
+		return;
+
+	// We got it...
+	m_pPlayerBuff = new qtractorAudioBuffer(iChannels, sampleRate());
+}
+
+
+// Destroy audition/pre-listening stuff...
+void qtractorAudioEngine::deletePlayer (void)
+{
+	closePlayer();
+
+	if (m_pPlayerBuff) {
+		delete m_pPlayerBuff;
+		m_pPlayerBuff = NULL;
+		m_pPlayerBus  = NULL;
+	}
+}
+
+
+// Open and start audition/pre-listening...
+bool qtractorAudioEngine::openPlayer ( const QString& sFilename )
+{
+	closePlayer();
+	
+	if (m_pPlayerBuff)
+		m_bPlayerOpen = m_pPlayerBuff->open(sFilename);
+
+	return m_bPlayerOpen;
+}
+
+
+// Stop and close audition/pre-listening...
+void qtractorAudioEngine::closePlayer (void)
+{
+	if (m_pPlayerBuff) {
+		m_bPlayerSync = false;
+		m_bPlayerOpen = false;
+		m_pPlayerBuff->close();
 	}
 }
 

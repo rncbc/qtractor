@@ -79,8 +79,7 @@ void qtractorFileGroupItem::initFileGroupItem (
 	QTreeWidgetItem::setIcon(0, QIcon(":/icons/itemGroup.png"));
 	QTreeWidgetItem::setText(0, sName);
 
-	if (iType == qtractorFileListView::GroupItem ||
-		iType == qtractorFileListView::FileItem) {
+	if (iType == qtractorFileListView::GroupItem) {
 		QTreeWidgetItem::setFlags(
 			QTreeWidgetItem::flags() | Qt::ItemIsEditable);
 	}
@@ -592,9 +591,8 @@ void qtractorFileListView::deleteItemSlot (void)
 void qtractorFileListView::currentItemChangedSlot (void)
 {
 	QTreeWidgetItem *pItem = QTreeWidget::currentItem();
-	bool bEnabled = (pItem && pItem->type() != ChannelItem);
-	m_pRenameItemAction->setEnabled(bEnabled);
-	m_pDeleteItemAction->setEnabled(bEnabled);
+	m_pRenameItemAction->setEnabled(pItem && pItem->type() == GroupItem);
+	m_pDeleteItemAction->setEnabled(pItem && pItem->type() != ChannelItem);
 }
 
 
