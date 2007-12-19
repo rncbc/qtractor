@@ -3,7 +3,7 @@ Qtractor - An Audio/MIDI multi-track sequencer
 
 ChangeLog
 
-0.1.0   2007-12-18  Work in progress...
+0.1.0   2007-12-19  Work in progress...
 
 - Audio clip time-stretching makes its debut, with code adapted and
   refactored from the SoundTouch library, under the (L)GPL umbrella.
@@ -21,7 +21,8 @@ ChangeLog
   and length properties already.
 
 - First steps to the long due implementation of an audition or a
-  pre-listening audio player is now in place (EXPERIMENTAL).
+  pre-listening audio player is now in place; the files window got
+  this new play/stop control button on its lower-right corner.
 
 - Actual instrument definition note (keys) and controller names are
   now in effect on the MIDI editor, whenever applicable.

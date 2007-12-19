@@ -961,6 +961,13 @@ void qtractorAudioEngine::deletePlayer (void)
 }
 
 
+// Tell whether audition/pre-listening is active...
+bool qtractorAudioEngine::isPlayerOpen (void) const
+{
+	return m_bPlayerOpen;
+}
+
+
 // Open and start audition/pre-listening...
 bool qtractorAudioEngine::openPlayer ( const QString& sFilename )
 {

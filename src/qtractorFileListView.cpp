@@ -333,9 +333,9 @@ qtractorFileListView::qtractorFileListView ( QWidget *pParent )
 	QObject::connect(this,
 		SIGNAL(itemClicked(QTreeWidgetItem*,int)),
 		SLOT(itemClickedSlot(QTreeWidgetItem*)));
-	QObject::connect(this,
-		SIGNAL(itemDoubleClicked(QTreeWidgetItem*,int)),
-		SLOT(itemActivatedSlot(QTreeWidgetItem*)));
+//	QObject::connect(this,
+//		SIGNAL(itemDoubleClicked(QTreeWidgetItem*,int)),
+//		SLOT(itemActivatedSlot(QTreeWidgetItem*)));
 	QObject::connect(this,
 		SIGNAL(itemActivated(QTreeWidgetItem*,int)),
 		SLOT(itemActivatedSlot(QTreeWidgetItem*)));
@@ -399,6 +399,17 @@ qtractorFileGroupItem *qtractorFileListView::addGroupItem (
 	QTreeWidget::setCurrentItem(pGroupItem);
 
 	return pGroupItem;
+}
+
+
+// Current item accessor...
+qtractorFileListItem *qtractorFileListView::currentFileItem (void) const
+{
+	QTreeWidgetItem *pItem = QTreeWidget::currentItem();
+	if (pItem && pItem->type() == FileItem)
+		return static_cast<qtractorFileListItem *> (pItem);
+	
+	return NULL;
 }
 
 

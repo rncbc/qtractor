@@ -99,15 +99,15 @@ public:
 	// Direct sync method (needed for export)
 	void syncExport();
 
-	// Audition/pre-listening player method.
-	bool openPlayer(const QString& sFilename);
-
-protected:
-
-	// Audition/pre-listening player stuff. 
-	void closePlayer();
+	// Audition/pre-listening player methods.
 	void createPlayer();
 	void deletePlayer();
+
+	bool isPlayerOpen() const;
+	bool openPlayer(const QString& sFilename);
+	void closePlayer();
+
+protected:
 
 	// Concrete device (de)activation methods.
 	bool init(const QString& sClientName);

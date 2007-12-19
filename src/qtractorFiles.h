@@ -30,6 +30,7 @@
 
 // Forward declarations.
 class QTabWidget;
+class QToolButton;
 
 
 //-------------------------------------------------------------------------
@@ -65,6 +66,16 @@ public:
 	void selectAudioFile (const QString& sFilename);
 	void selectMidiFile  (const QString& sFilename, int iTrackChannel);
 
+	// Audition/pre-listening player methods.
+	void setPlayButton(bool bOn);
+	bool isPlayButton() const;
+
+protected slots:
+
+	// Audition/pre-listening player slots.
+	void playSlot(bool bOn);
+	void stabilizeSlot();
+
 protected:
 
 	// Just about to notify main-window that we're closing.
@@ -77,6 +88,9 @@ private:
 	// Specific file type widgets.
 	qtractorAudioListView *m_pAudioListView;
 	qtractorMidiListView  *m_pMidiListView;
+	// Audition/pre-listening controls.
+	QToolButton *m_pPlayButton;
+	int m_iPlayUpdate;
 };
 
 

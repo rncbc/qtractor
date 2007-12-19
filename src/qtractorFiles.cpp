@@ -25,6 +25,7 @@
 #include "qtractorMainForm.h"
 
 #include <QTabWidget>
+#include <QToolButton>
 
 
 //-------------------------------------------------------------------------
@@ -52,6 +53,16 @@ qtractorFiles::qtractorFiles ( QWidget *pParent )
 	m_pTabWidget->setTabIcon(qtractorFiles::Audio, QIcon(":/icons/trackAudio.png"));
 	m_pTabWidget->setTabIcon(qtractorFiles::Midi,  QIcon(":/icons/trackMidi.png"));
 
+	// Player button (initially disabled)...
+	m_iPlayUpdate = 0;
+	m_pPlayButton = new QToolButton(/*m_pTabWidget*/);
+	m_pPlayButton->setFixedSize(QSize(18, 18));
+	m_pPlayButton->setIcon(QIcon(":/icons/transportPlay.png"));
+	m_pPlayButton->setToolTip(tr("Play file"));
+	m_pPlayButton->setCheckable(true);
+	m_pPlayButton->setEnabled(false);
+	m_pTabWidget->setCornerWidget(m_pPlayButton, Qt::BottomRightCorner);
+
 	// Prepare the dockable window stuff.
 	QDockWidget::setWidget(m_pTabWidget);
 	QDockWidget::setFeatures(QDockWidget::AllDockWidgetFeatures);
@@ -65,6 +76,20 @@ qtractorFiles::qtractorFiles ( QWidget *pParent )
 	QDockWidget::setWindowTitle(sCaption);
 	QDockWidget::setWindowIcon(QIcon(":/icons/viewFiles.png"));
 	QDockWidget::setToolTip(sCaption);
+
+	// Child widgets signal/slots... 
+	QObject::connect(m_pTabWidget,
+		SIGNAL(currentChanged(int)),
+		SLOT(stabilizeSlot()));
+	QObject::connect(m_pAudioListView,
+		SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)),
+		SLOT(stabilizeSlot()));
+	QObject::connect(m_pMidiListView,
+		SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)),
+		SLOT(stabilizeSlot()));
+	QObject::connect(m_pPlayButton,
+		SIGNAL(toggled(bool)),
+		SLOT(playSlot(bool)));
 }
 
 
@@ -104,7 +129,7 @@ qtractorMidiListView *qtractorFiles::midiListView (void) const
 }
 
 
-// Clear evrything on sight.
+// Clear everything on sight.
 void qtractorFiles::clear (void)
 {
 	m_pAudioListView->clear();
@@ -113,7 +138,7 @@ void qtractorFiles::clear (void)
 
 
 // Audio file addition convenience method.
-void qtractorFiles::addAudioFile  ( const QString& sFilename )
+void qtractorFiles::addAudioFile ( const QString& sFilename )
 {
 	m_pTabWidget->setCurrentIndex(qtractorFiles::Audio);
 	m_pAudioListView->addFileItem(sFilename);
@@ -121,7 +146,7 @@ void qtractorFiles::addAudioFile  ( const QString& sFilename )
 
 
 // MIDI file addition convenience method.
-void qtractorFiles::addMidiFile  ( const QString& sFilename )
+void qtractorFiles::addMidiFile ( const QString& sFilename )
 {
 	m_pTabWidget->setCurrentIndex(qtractorFiles::Midi);
 	m_pMidiListView->addFileItem(sFilename);
@@ -129,7 +154,7 @@ void qtractorFiles::addMidiFile  ( const QString& sFilename )
 
 
 // Audio file selection convenience method.
-void qtractorFiles::selectAudioFile  ( const QString& sFilename )
+void qtractorFiles::selectAudioFile ( const QString& sFilename )
 {
 	m_pTabWidget->setCurrentIndex(qtractorFiles::Audio);
 	m_pAudioListView->selectFileItem(sFilename);
@@ -137,11 +162,61 @@ void qtractorFiles::selectAudioFile  ( const QString& sFilename )
 
 
 // MIDI file selection convenience method.
-void qtractorFiles::selectMidiFile  ( const QString& sFilename,
+void qtractorFiles::selectMidiFile ( const QString& sFilename,
 	int iTrackChannel )
 {
 	m_pTabWidget->setCurrentIndex(qtractorFiles::Midi);
 	m_pMidiListView->selectFileItem(sFilename, iTrackChannel);
+}
+
+
+// Audition/pre-listening player methods.
+void qtractorFiles::setPlayButton ( bool bOn )
+{
+	m_iPlayUpdate++;
+	m_pPlayButton->setChecked(bOn);
+	m_iPlayUpdate--;
+}
+
+bool qtractorFiles::isPlayButton (void) const
+{
+	return m_pPlayButton->isChecked();
+}
+
+
+// Audition/pre-listening player slot.
+void qtractorFiles::playSlot ( bool bOn )
+{
+	if (m_iPlayUpdate > 0)
+		return;
+
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm == NULL)
+		return;
+
+	QString sFilename;
+	if (bOn && m_pTabWidget->currentIndex() == qtractorFiles::Audio) {
+		qtractorFileListItem *pFileItem = m_pAudioListView->currentFileItem();
+		if (pFileItem)
+			sFilename = pFileItem->path();
+	}
+
+	pMainForm->activateAudioFile(sFilename);
+}
+
+
+// Current item change slots.
+void qtractorFiles::stabilizeSlot (void)
+{
+	switch (m_pTabWidget->currentIndex()) {
+	case qtractorFiles::Audio:
+		m_pPlayButton->setEnabled(m_pAudioListView->currentFileItem() != NULL);
+		break;
+	case qtractorFiles::Midi:
+	default:
+		m_pPlayButton->setEnabled(false);
+		break;
+	}
 }
 
 

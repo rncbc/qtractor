@@ -270,6 +270,7 @@ private:
 	int m_iXrunTimer;
 	int m_iAudioRefreshTimer;
 	int m_iMidiRefreshTimer;
+	int m_iPlayerTimer;
 
 	// Status bar item indexes
 	enum {

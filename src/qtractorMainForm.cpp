@@ -160,6 +160,8 @@ qtractorMainForm::qtractorMainForm (
 	m_iAudioRefreshTimer = 0;
 	m_iMidiRefreshTimer  = 0;
 
+	m_iPlayerTimer = 0;
+
 	// Configure the audio engine event handling...
 	qtractorAudioEngine *pAudioEngine = m_pSession->audioEngine();
 	if (pAudioEngine) {
@@ -2720,6 +2722,8 @@ bool qtractorMainForm::startSession (void)
 	m_iAudioRefreshTimer = 0;
 	m_iMidiRefreshTimer  = 0;
 
+	m_iPlayerTimer = 0;
+
 	unsigned int iOldSampleRate = m_pSession->sampleRate();
 
 	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
@@ -3226,6 +3230,7 @@ void qtractorMainForm::timerSlot (void)
 			}
 		}
 	}
+
 	// MIDI connections should be checked too...
 	if (m_iMidiRefreshTimer > 0) {
 		m_iMidiRefreshTimer -= QTRACTOR_TIMER_MSECS;
@@ -3236,6 +3241,28 @@ void qtractorMainForm::timerSlot (void)
 					tr("MIDI connections change."), "#66cc99");
 				if (m_pConnections)
 					m_pConnections->connectForm()->midiRefresh();
+			}
+		}
+	}
+
+	// Check if its time to refresh autition/pre-listening status...
+	if (m_iPlayerTimer > 0) {
+		m_iPlayerTimer -= QTRACTOR_TIMER_MSECS;
+		if (m_iPlayerTimer < QTRACTOR_TIMER_MSECS) {
+			m_iPlayerTimer = 0;
+			if (m_pFiles) {
+				if (m_pFiles->isPlayButton()) {
+					if (pAudioEngine->isPlayerOpen()) {
+						m_iPlayerTimer += QTRACTOR_TIMER_DELAY << 2;
+					} else {
+						appendMessages(tr("Playing ended."));
+						m_pFiles->setPlayButton(false);
+					}
+				}
+				else if (pAudioEngine->isPlayerOpen()) {
+					m_iPlayerTimer += QTRACTOR_TIMER_DELAY << 2;
+					m_pFiles->setPlayButton(true);
+				}
 			}
 		}
 	}
@@ -3283,7 +3310,7 @@ void qtractorMainForm::tracksClosed (void)
 // qtractorMainForm -- General contents change stuff.
 
 // Audio file addition slot funtion.
-void qtractorMainForm::addAudioFile  ( const QString& sFilename )
+void qtractorMainForm::addAudioFile ( const QString& sFilename )
 {
 	// Add the just dropped audio file...
 	if (m_pFiles)
@@ -3294,21 +3321,22 @@ void qtractorMainForm::addAudioFile  ( const QString& sFilename )
 
 
 // Audio file activation slot funtion.
-void qtractorMainForm::activateAudioFile  ( const QString& sFilename )
+void qtractorMainForm::activateAudioFile ( const QString& sFilename )
 {
-	appendMessages(tr("Playing \"%1\"...")
-		.arg(QFileInfo(sFilename).fileName()));
-
 	qtractorAudioEngine *pAudioEngine = m_pSession->audioEngine();
-	if (pAudioEngine)
-		pAudioEngine->openPlayer(sFilename);
+	if (pAudioEngine && pAudioEngine->openPlayer(sFilename)) {
+		appendMessages(tr("Playing \"%1\"...")
+			.arg(QFileInfo(sFilename).fileName()));
+		if (m_iPlayerTimer  < QTRACTOR_TIMER_DELAY)
+			m_iPlayerTimer += QTRACTOR_TIMER_DELAY;
+	}
 
 	stabilizeForm();
 }
 
 
 // MIDI file addition slot funtion.
-void qtractorMainForm::addMidiFile  ( const QString& sFilename )
+void qtractorMainForm::addMidiFile ( const QString& sFilename )
 {
 	// Add the just dropped MIDI file...
 	if (m_pFiles)
@@ -3319,7 +3347,7 @@ void qtractorMainForm::addMidiFile  ( const QString& sFilename )
 
 
 // MIDI file activation slot funtion.
-void qtractorMainForm::activateMidiFile  ( const QString& /* sFilename */ )
+void qtractorMainForm::activateMidiFile ( const QString& /* sFilename */ )
 {
 	//
 	// TODO: Activate the just selected MIDI file...

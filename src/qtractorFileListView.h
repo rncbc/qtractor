@@ -62,6 +62,9 @@ public:
 	qtractorFileListItem *addFileItem(const QString& sPath,
 		qtractorFileGroupItem *pParentItem = NULL);
 
+	// Current file item accessors...
+	qtractorFileListItem *currentFileItem() const;
+
 	// Find a group/file item, given its name.
 	qtractorFileGroupItem *findGroupItem(const QString& sName) const;
 	qtractorFileListItem  *findFileItem(const QString& sPath) const;
