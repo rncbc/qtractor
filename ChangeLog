@@ -20,6 +20,9 @@ ChangeLog
   the clip offset constant in time units (ticks), as are clip start
   and length properties already.
 
+- MIDI channel volume and panning control change events, CC#7 and
+  CC#10 respectively, are now rendered unfiltered on playback .
+
 - First steps to the long due implementation of an audition or a
   pre-listening audio player is now in place; the files window got
   this new play/stop control button on its lower-right corner.
