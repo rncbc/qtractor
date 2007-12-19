@@ -25,6 +25,7 @@
 #include "qtractorMainForm.h"
 
 #include <QTabWidget>
+#include <QHBoxLayout>
 #include <QToolButton>
 
 
@@ -54,14 +55,19 @@ qtractorFiles::qtractorFiles ( QWidget *pParent )
 	m_pTabWidget->setTabIcon(qtractorFiles::Midi,  QIcon(":/icons/trackMidi.png"));
 
 	// Player button (initially disabled)...
+	m_pPlayWidget = new QWidget(/*m_pTabWidget*/);
+	m_pPlayLayout = new QHBoxLayout(/*m_pPlayWidget*/);
+	m_pPlayLayout->setMargin(4);
+	m_pPlayWidget->setLayout(m_pPlayLayout);
+
 	m_iPlayUpdate = 0;
-	m_pPlayButton = new QToolButton(/*m_pTabWidget*/);
-	m_pPlayButton->setFixedSize(QSize(18, 18));
+	m_pPlayButton = new QToolButton(/*m_pPlayWidget*/);
 	m_pPlayButton->setIcon(QIcon(":/icons/transportPlay.png"));
 	m_pPlayButton->setToolTip(tr("Play file"));
 	m_pPlayButton->setCheckable(true);
 	m_pPlayButton->setEnabled(false);
-	m_pTabWidget->setCornerWidget(m_pPlayButton, Qt::BottomRightCorner);
+	m_pPlayLayout->addWidget(m_pPlayButton);
+	m_pTabWidget->setCornerWidget(m_pPlayWidget, Qt::BottomRightCorner);
 
 	// Prepare the dockable window stuff.
 	QDockWidget::setWidget(m_pTabWidget);

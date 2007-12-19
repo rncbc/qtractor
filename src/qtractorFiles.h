@@ -30,6 +30,7 @@
 
 // Forward declarations.
 class QTabWidget;
+class QHBoxLayout;
 class QToolButton;
 
 
@@ -89,8 +90,10 @@ private:
 	qtractorAudioListView *m_pAudioListView;
 	qtractorMidiListView  *m_pMidiListView;
 	// Audition/pre-listening controls.
+	QWidget     *m_pPlayWidget;
+	QHBoxLayout *m_pPlayLayout;
 	QToolButton *m_pPlayButton;
-	int m_iPlayUpdate;
+	int          m_iPlayUpdate;
 };
 
 
