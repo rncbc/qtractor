@@ -1,6 +1,6 @@
 
 #define PACKAGE_NAME    "Qtractor"
-#define PACKAGE_VERSION "0.0.9.814"
+#define PACKAGE_VERSION "0.0.9.815"
 
 #define CONFIG_PREFIX   "."
 #define CONFIG_DEBUG    1
