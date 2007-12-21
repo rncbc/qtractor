@@ -211,8 +211,11 @@ qtractorSessionEditCommand::qtractorSessionEditCommand (
 	// Append tempo/resolution changes too...
 	float fTempo = properties.timeScale.tempo();
 	unsigned short iTicksPerBeat = properties.timeScale.ticksPerBeat();
-	if (pSession->tempo() != fTempo || pSession->ticksPerBeat() != iTicksPerBeat)
-		m_pTempoCommand = new qtractorSessionTempoCommand(pSession, fTempo, iTicksPerBeat);
+	if (pSession->tempo() != fTempo ||
+		pSession->ticksPerBeat() != iTicksPerBeat) {
+		m_pTempoCommand = new qtractorSessionTempoCommand(pSession,
+			fTempo, iTicksPerBeat);
+	}
 
 }
 

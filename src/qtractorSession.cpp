@@ -51,10 +51,6 @@ void qtractorSession::Properties::clear (void)
 	sessionName.clear();
 	description.clear();
 	timeScale.clear();
-	editHead     = 0;
-	editTail     = 0;
-	editHeadTime = 0;
-	editTailTime = 0;
 }
 
 // Helper copy method.
@@ -62,14 +58,10 @@ qtractorSession::Properties& qtractorSession::Properties::copy (
 	const Properties& props )
 {
 	if (&props != this) {
-		sessionDir   = props.sessionDir;
-		sessionName  = props.sessionName;
-		description  = props.description;
-		timeScale    = props.timeScale;
-		editHead     = props.editHead;
-		editTail     = props.editTail;
-		editHeadTime = props.editHeadTime;
-		editTailTime = props.editTailTime;
+		sessionDir  = props.sessionDir;
+		sessionName = props.sessionName;
+		description = props.description;
+		timeScale   = props.timeScale;
 	}
 	return *this;
 }
@@ -175,6 +167,11 @@ void qtractorSession::clear (void)
 	m_iSoloTracks    = 0;
 
 	m_iMidiTag       = 0;
+
+	m_iEditHead      = 0;
+	m_iEditTail      = 0;
+	m_iEditHeadTime  = 0;
+	m_iEditTailTime  = 0;
 
 	m_iLoopStart     = 0;
 	m_iLoopEnd       = 0;
@@ -372,25 +369,25 @@ unsigned short qtractorSession::snapPerBeat (void) const
 // Edit-head frame accessors.
 void qtractorSession::setEditHead ( unsigned long iEditHead )
 {
-	m_props.editHead     = iEditHead;
-	m_props.editHeadTime = tickFromFrame(iEditHead);
+	m_iEditHead     = iEditHead;
+	m_iEditHeadTime = tickFromFrame(iEditHead);
 }
 
 unsigned long qtractorSession::editHead (void) const
 {
-	return m_props.editHead;
+	return m_iEditHead;
 }
 
 
 void qtractorSession::setEditTail ( unsigned long iEditTail )
 {
-	m_props.editTail     = iEditTail;
-	m_props.editTailTime = tickFromFrame(iEditTail);
+	m_iEditTail     = iEditTail;
+	m_iEditTailTime = tickFromFrame(iEditTail);
 }
 
 unsigned long qtractorSession::editTail (void) const
 {
-	return m_props.editTail;
+	return m_iEditTail;
 }
 
 
@@ -511,8 +508,8 @@ void qtractorSession::updateTimeScale (void)
 	}
 
 	// Do not forget those edit points too...
-	m_props.editHead = frameFromTick(m_props.editHeadTime);
-	m_props.editTail = frameFromTick(m_props.editTailTime);
+	m_iEditHead = frameFromTick(m_iEditHeadTime);
+	m_iEditTail = frameFromTick(m_iEditTailTime);
 }
 
 
@@ -544,8 +541,8 @@ void qtractorSession::updateTimeResolution (void)
 	}
 
 	// Do not forget those edit points too...
-	m_props.editHeadTime = tickFromFrame(m_props.editHead);
-	m_props.editTailTime = tickFromFrame(m_props.editTail);
+	m_iEditHeadTime = tickFromFrame(m_iEditHead);
+	m_iEditTailTime = tickFromFrame(m_iEditTail);
 }
 
 

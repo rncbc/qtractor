@@ -278,17 +278,11 @@ public:
 		// Helper clear/reset method.
 		void clear();
 		// Members.
-		QString           sessionDir;
-		QString           sessionName;
-		QString           description;
+		QString sessionDir;
+		QString sessionName;
+		QString description;
 		// Intrinsic time scale.
 		qtractorTimeScale timeScale;
-		// Base edit members.
-		unsigned long     editHead;
-		unsigned long     editTail;
-		// Derived members.
-		unsigned long     editHeadTime;
-		unsigned long     editTailTime;
 	};
 
 	// Alternate properties accessor.
@@ -320,11 +314,17 @@ private:
 	// MIDI track tagging specifics.
 	unsigned short m_iMidiTag;
 	QList<unsigned short> m_midiTags;
-	
+
+	// Base edit members.
+	unsigned long m_iEditHead;
+	unsigned long m_iEditTail;
+	// Session time-normalized edit points.
+	unsigned long m_iEditHeadTime;
+	unsigned long m_iEditTailTime;
+
 	// Session loop points.
 	unsigned long m_iLoopStart;
 	unsigned long m_iLoopEnd;
-	
 	// Session time-normalized loop points.
 	unsigned long m_iLoopStartTime;
 	unsigned long m_iLoopEndTime;
