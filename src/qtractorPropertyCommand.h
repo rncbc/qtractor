@@ -47,7 +47,7 @@ public:
 		return true;
 	}
 
-	bool undo() { return redo(); }
+	bool undo() { return qtractorPropertyCommand<T>::redo(); }
 
 private:
 

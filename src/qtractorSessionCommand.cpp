@@ -1,4 +1,5 @@
 // qtractorSessionCommand.cpp
+// qtractorSessionCommand.cpp
 //
 /****************************************************************************
    Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
@@ -50,31 +51,39 @@ qtractorSessionCommand::~qtractorSessionCommand (void)
 
 // Constructor.
 qtractorSessionTempoCommand::qtractorSessionTempoCommand (
-	qtractorSession *pSession, float fTempo )
-	: qtractorSessionCommand(QObject::tr("session tempo"), pSession)
+	qtractorSession *pSession, float fTempo, unsigned short iTicksPerBeat )
+	: qtractorSessionCommand(QObject::tr("session tempo"), pSession),
+		m_fTempo(0.0f), m_iTicksPerBeat(0), m_pClipCommand(NULL)
 {
-	m_fTempo = fTempo;
+	// Tempo changes...
+	if (fTempo > 0.0f && fTempo != pSession->tempo())
+		m_fTempo = fTempo;
+
+	// Time resolution changes...
+	if (iTicksPerBeat > 0 && iTicksPerBeat != pSession->ticksPerBeat())
+		m_iTicksPerBeat = iTicksPerBeat;
 
 	// Take care of time-stretching of all audio-clips...
-	m_pClipCommand = NULL;
-	for (qtractorTrack *pTrack = pSession->tracks().first();
-			pTrack; pTrack = pTrack->next()) {
-		if (pTrack->trackType() == qtractorTrack::Audio) {
-			for (qtractorClip *pClip = pTrack->clips().first();
-					pClip; pClip = pClip->next()) {
-				qtractorAudioClip *pAudioClip
-					= static_cast<qtractorAudioClip *> (pClip);
-				if (pAudioClip) {
-					if (m_pClipCommand == NULL)
-						m_pClipCommand = new qtractorClipCommand(name());
-					float fTimeStretch
-						= (fTempo * pAudioClip->timeStretch())
-							/ pSession->tempo();
-					m_pClipCommand->timeStretchClip(pClip, fTimeStretch);
+	if (m_fTempo > 0.0f) {
+		for (qtractorTrack *pTrack = pSession->tracks().first();
+				pTrack; pTrack = pTrack->next()) {
+			if (pTrack->trackType() == qtractorTrack::Audio) {
+				for (qtractorClip *pClip = pTrack->clips().first();
+						pClip; pClip = pClip->next()) {
+					qtractorAudioClip *pAudioClip
+						= static_cast<qtractorAudioClip *> (pClip);
+					if (pAudioClip) {
+						if (m_pClipCommand == NULL)
+							m_pClipCommand = new qtractorClipCommand(name());
+						float fTimeStretch
+							= (m_fTempo * pAudioClip->timeStretch())
+								/ pSession->tempo();
+						m_pClipCommand->timeStretchClip(pClip, fTimeStretch);
+					}
 				}
 			}
 		}
-	}		
+	}
 }
 
 // Desstructor.
@@ -92,16 +101,25 @@ bool qtractorSessionTempoCommand::redo (void)
 	if (pSession == NULL)
 		return false;
 
-	// Save the previous session tempo alright...
-	float fTempo = pSession->tempo();
-
 	// If currently playing, we need to do a stop and go...
 	bool bPlaying = pSession->isPlaying();
 	if (bPlaying)
 		pSession->lock();
 
-	// Just set new one...
-	pSession->setTempo(m_fTempo);
+	// Tempo changes...
+	float fTempo = 0.0f;
+	if (m_fTempo > 0.0f) {
+		fTempo = pSession->tempo();
+		pSession->setTempo(m_fTempo);
+	}
+
+	// Time resolution changes...
+	unsigned short iTicksPerBeat = 0;
+	if (m_iTicksPerBeat > 0) {
+		iTicksPerBeat = pSession->ticksPerBeat();
+		pSession->setTicksPerBeat(m_iTicksPerBeat);
+		pSession->updateTimeResolution();
+	}
 
 	// In case we have audio clips around...
 	if (m_pClipCommand)
@@ -116,7 +134,10 @@ bool qtractorSessionTempoCommand::redo (void)
 	}
 
 	// Swap it nice, finally.
-	m_fTempo = fTempo;
+	if (fTempo > 0.0f)
+		m_fTempo = fTempo;
+	if (iTicksPerBeat > 0)
+		m_iTicksPerBeat = iTicksPerBeat;
 
 	return true;
 }
@@ -184,14 +205,15 @@ bool qtractorSessionLoopCommand::undo (void)
 qtractorSessionEditCommand::qtractorSessionEditCommand (
 	qtractorSession *pSession, const qtractorSession::Properties& properties )
 	: qtractorPropertyCommand<qtractorSession::Properties> (
-		QObject::tr("session properties"), pSession->properties(), properties)
+		QObject::tr("session properties"), pSession->properties(), properties),
+			m_pTempoCommand(NULL)
 {
-	m_pTempoCommand = NULL;
-
-	// Append tempo changes too...
+	// Append tempo/resolution changes too...
 	float fTempo = properties.timeScale.tempo();
-	if (pSession->tempo() != fTempo)
-		m_pTempoCommand = new qtractorSessionTempoCommand(pSession, fTempo);
+	unsigned short iTicksPerBeat = properties.timeScale.ticksPerBeat();
+	if (pSession->tempo() != fTempo || pSession->ticksPerBeat() != iTicksPerBeat)
+		m_pTempoCommand = new qtractorSessionTempoCommand(pSession, fTempo, iTicksPerBeat);
+
 }
 
 // Destructor.

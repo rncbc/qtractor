@@ -516,6 +516,39 @@ void qtractorSession::updateTimeScale (void)
 }
 
 
+// Update time resolution divisor factors.
+void qtractorSession::updateTimeResolution (void) 
+{
+	// Recompute scale divisor factors...
+	m_props.timeScale.updateScale();
+
+	// Gotta (re)synchronize all MIDI clips to new resolution...
+	for (qtractorTrack *pTrack = m_tracks.first();
+			pTrack; pTrack = pTrack->next()) {
+		for (qtractorClip *pClip = pTrack->clips().first();
+				pClip; pClip = pClip->next()) {
+			if (pTrack->trackType() == qtractorTrack::Midi)
+				pClip->close(false);
+			pClip->setClipStart(pClip->clipStart());
+			pClip->setClipOffset(pClip->clipOffset());
+			pClip->setClipLength(pClip->clipLength());
+			if (pTrack->trackType() == qtractorTrack::Midi)
+				pClip->open();
+		}
+	}
+
+	// Update loop points...
+	if (m_iLoopStart < m_iLoopEnd) {
+		m_iLoopStartTime = tickFromFrame(m_iLoopStart);
+		m_iLoopEndTime   = tickFromFrame(m_iLoopEnd);
+	}
+
+	// Do not forget those edit points too...
+	m_props.editHeadTime = tickFromFrame(m_props.editHead);
+	m_props.editTailTime = tickFromFrame(m_props.editTail);
+}
+
+
 // Update from disparate sample-rate.
 void qtractorSession::updateSampleRate ( unsigned int iOldSampleRate ) 
 {

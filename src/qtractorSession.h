@@ -143,6 +143,9 @@ public:
 	// Update time scale divisor factors.
 	void updateTimeScale();
 
+	// Update time resolution divisor factors.
+	void updateTimeResolution(); 
+
 	// Update from disparate sample-rate.
 	void updateSampleRate(unsigned int iOldSampleRate); 
 
