@@ -43,7 +43,6 @@ qtractorFiles::qtractorFiles ( QWidget *pParent )
 	// Create file type selection tab widget.
 	m_pTabWidget = new QTabWidget(this);
 	m_pTabWidget->setTabPosition(QTabWidget::South);
-
 	// Create local tabs.
 	m_pAudioListView = new qtractorAudioListView();
 	m_pMidiListView  = new qtractorMidiListView();
@@ -53,16 +52,19 @@ qtractorFiles::qtractorFiles ( QWidget *pParent )
 	// Icons...
 	m_pTabWidget->setTabIcon(qtractorFiles::Audio, QIcon(":/icons/trackAudio.png"));
 	m_pTabWidget->setTabIcon(qtractorFiles::Midi,  QIcon(":/icons/trackMidi.png"));
+#if QT_VERSION >= 0x040201
+	m_pTabWidget->setUsesScrollButtons(false);
+#endif
 
 	// Player button (initially disabled)...
-	m_pPlayWidget = new QWidget(/*m_pTabWidget*/);
+	m_pPlayWidget = new QWidget(m_pTabWidget);
 	m_pPlayLayout = new QHBoxLayout(/*m_pPlayWidget*/);
 	m_pPlayLayout->setMargin(2);
 	m_pPlayLayout->setSpacing(2);
 	m_pPlayWidget->setLayout(m_pPlayLayout);
 
 	m_iPlayUpdate = 0;
-	m_pPlayButton = new QToolButton(/*m_pPlayWidget*/);
+	m_pPlayButton = new QToolButton(m_pPlayWidget);
 	m_pPlayButton->setIcon(QIcon(":/icons/transportPlay.png"));
 	m_pPlayButton->setToolTip(tr("Play file"));
 	m_pPlayButton->setCheckable(true);

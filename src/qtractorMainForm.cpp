@@ -3323,6 +3323,9 @@ void qtractorMainForm::addAudioFile ( const QString& sFilename )
 // Audio file activation slot funtion.
 void qtractorMainForm::activateAudioFile ( const QString& sFilename )
 {
+	// Make sure session is activated...
+	checkRestartSession();
+
 	// We'll start playing if the file is valid, otherwise
 	// the player is stopped (eg. empty filename)...
 	qtractorAudioEngine *pAudioEngine = m_pSession->audioEngine();
