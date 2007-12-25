@@ -155,6 +155,10 @@ public:
 	// Clip cloner helper.
 	static qtractorClip *cloneClip(qtractorClip *pClip);
 
+	// Multi-item drop mode (whether to span clips horixontally).
+	void setDropSpan(bool bDropSpan);
+	bool isDropSpan() const;
+
 protected:
 
 	// Resize event handler.
@@ -313,11 +317,13 @@ private:
 	QPoint        m_posStep;
 
 	qtractorRubberBand *m_pRubberBand;
-
 	qtractorClipSelect *m_pClipSelect;
 
 	// The clip select mode.
 	SelectMode m_selectMode;
+
+	// The multi-item drop mode.
+	bool m_bDropSpan;
 
 	// The local clipboard item.
 	struct ClipItem

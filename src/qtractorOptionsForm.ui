@@ -122,7 +122,7 @@
             </property>
            </widget>
           </item>
-          <item row="4" column="2" >
+          <item row="5" column="2" >
            <widget class="QLabel" name="DisplayFormatTextLabel" >
             <property name="font" >
              <font>
@@ -159,7 +159,7 @@
             </property>
            </spacer>
           </item>
-          <item row="4" column="3" colspan="2" >
+          <item row="5" column="3" colspan="2" >
            <widget class="QComboBox" name="DisplayFormatComboBox" >
             <property name="font" >
              <font>
@@ -339,7 +339,31 @@
             </property>
            </widget>
           </item>
-          <item rowspan="3" row="1" column="4" >
+          <item row="5" column="0" >
+           <widget class="QCheckBox" name="TrackViewDropSpanCheckBox" >
+            <property name="font" >
+             <font>
+              <family>Sans Serif</family>
+              <pointsize>8</pointsize>
+              <weight>50</weight>
+              <italic>false</italic>
+              <bold>false</bold>
+              <underline>false</underline>
+              <strikeout>false</strikeout>
+             </font>
+            </property>
+            <property name="toolTip" >
+             <string>Whether to try dropping multiple files into the same track</string>
+            </property>
+            <property name="text" >
+             <string>&amp;Drop multiple files into the same track</string>
+            </property>
+            <property name="shortcut" >
+             <string>Alt+D</string>
+            </property>
+           </widget>
+          </item>
+          <item rowspan="4" row="1" column="4" >
            <spacer>
             <property name="orientation" >
              <enum>Qt::Vertical</enum>
@@ -352,7 +376,7 @@
             </property>
            </spacer>
           </item>
-          <item row="5" column="0" colspan="5" >
+          <item row="6" column="0" colspan="5" >
            <spacer>
             <property name="orientation" >
              <enum>Qt::Vertical</enum>
@@ -1765,6 +1789,7 @@
   <tabstop>CompletePathCheckBox</tabstop>
   <tabstop>PeakAutoRemoveCheckBox</tabstop>
   <tabstop>KeepToolsOnTopCheckBox</tabstop>
+  <tabstop>TrackViewDropSpanCheckBox</tabstop>
   <tabstop>MaxRecentFilesSpinBox</tabstop>
   <tabstop>DisplayFormatComboBox</tabstop>
   <tabstop>MessagesFontPushButton</tabstop>

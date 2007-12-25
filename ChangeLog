@@ -20,6 +20,11 @@ ChangeLog
   the clip offset constant in time units (ticks), as are clip start
   and length properties already.
 
+- A brand new subtle option sneaks in, affecting the drag-and-drop
+  of the main track-view: View/Options.../Drop multiple files into
+  the same track, whether to drop multiple external files into new
+  or existing track as concatenated clips.
+
 - The audio metronome makes its debut as an alternative to the MIDI
   existing one; parameters include bar and beat audio sample files,
   accessible from the View/Options.../Audio/Metronome dialog.

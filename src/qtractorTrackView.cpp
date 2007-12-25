@@ -73,6 +73,8 @@ qtractorTrackView::qtractorTrackView ( qtractorTracks *pTracks,
 
 	m_selectMode = SelectClip;
 
+	m_bDropSpan = true;
+
 	clear();
 
 	// Zoom tool widgets
@@ -160,8 +162,6 @@ qtractorTrackView::~qtractorTrackView (void)
 // Track view state reset.
 void qtractorTrackView::clear (void)
 {
-	m_bDragTimer = false;
-
 	m_pClipSelect->clear();
 
 	m_dropType   = qtractorTrack::None;
@@ -741,14 +741,14 @@ qtractorTrack *qtractorTrackView::dragDropTrack ( QDropEvent *pDropEvent )
 	qtractorSession *pSession = m_pTracks->session();
 	if (pSession == NULL)
 		return NULL;
-	
+
 	// If we're already dragging something,
 	// find the current pointer track...
 	const QPoint& pos = viewportToContents(pDropEvent->pos());
 	qtractorTrackViewInfo tvi;
 	qtractorTrack *pTrack = trackAt(pos, true, &tvi);
 	if (!m_dropItems.isEmpty()) {
-		// Adjust vertically to target track...
+		// Adjust to target track...
 		updateDropRects(tvi.trackRect.y() + 1, tvi.trackRect.height() - 2);
 		// Always change horizontally wise...
 		int  x = m_rectDrag.x();
@@ -797,7 +797,7 @@ qtractorTrack *qtractorTrackView::dragDropTrack ( QDropEvent *pDropEvent )
 	m_rectDrag.setRect(
 		m_posDrag.x(), m_posDrag.y(), 0, tvi.trackRect.height() - 2);
 
-	// Nows time to add those rectangles...
+	// Now's time to add those rectangles...
 	QMutableListIterator<DropItem *> iter(m_dropItems);
 	while (iter.hasNext()) {
 		DropItem *pDropItem = iter.next();
@@ -884,6 +884,7 @@ qtractorTrack *qtractorTrackView::dragDropTrack ( QDropEvent *pDropEvent )
 	m_iDraggingX = 0;	
 
 	// Finally, show it to the world...
+	updateDropRects(tvi.trackRect.y() + 1, tvi.trackRect.height() - 2);
 //	showDropRects();
 
 	// Done.
@@ -896,17 +897,24 @@ bool qtractorTrackView::canDropTrack ( QDropEvent *pDropEvent )
 	// have one existing track on target?
 	qtractorTrack *pTrack = dragDropTrack(pDropEvent);
 
-	// Can only drop one item per track...
-	if (pTrack && m_dropType == m_dropType && m_dropItems.count() == 1) {
-		// Special MIDI track-channel cases...
-		if (m_dropType == qtractorTrack::Midi)
-			return (m_dropItems.first()->channel >= 0);
-		else
+	// Can only drop if anything...
+	if (m_dropItems.isEmpty())
+		return false;
+
+	// Can only drop on same type tracks...
+	if (pTrack && pTrack->trackType() != m_dropType)
+		return false;
+
+	// Special MIDI track-channel cases...
+	if (m_dropType == qtractorTrack::Midi) {
+		if (m_dropItems.count() == 1 && m_dropItems.first()->channel >= 0)
 			return true;
+		else
+			return (pTrack == NULL);
 	}
 
 	// Drop in the blank...
-	return (pTrack == NULL && !m_dropItems.isEmpty());
+	return (pTrack == NULL || m_dropItems.count() == 1 || m_bDropSpan);
 }
 
 
@@ -999,7 +1007,8 @@ void qtractorTrackView::dropEvent (	QDropEvent *pDropEvent )
 
 	// Now check whether the drop is intra-track...
 	qtractorTrack *pTrack = dragDropTrack(pDropEvent);
-	if (pTrack == NULL) {
+	// And care if we're not spanning horizontally...
+	if (pTrack == NULL && !m_bDropSpan) {
 		// Do we have something to drop anyway?
 		// if yes, this is a extra-track drop...
 		if (!m_dropItems.isEmpty()) {
@@ -1035,7 +1044,7 @@ void qtractorTrackView::dropEvent (	QDropEvent *pDropEvent )
 	}
 
 	// Check whether we can really drop it.
-	if (pTrack->trackType() != m_dropType) {
+	if (pTrack && pTrack->trackType() != m_dropType) {
 		resetDragState();
 		return;
 	}
@@ -1044,7 +1053,20 @@ void qtractorTrackView::dropEvent (	QDropEvent *pDropEvent )
 	qtractorClipCommand *pClipCommand
 		= new qtractorClipCommand(tr("add clip"));
 
-	// Nows time to create the clip(s)...
+	// If dropping spanned we'll need a track, sure...
+	if (pTrack == NULL) {
+		pTrack = new qtractorTrack(pSession, m_dropType);
+		// Create a new track right away...
+		int iTrack = pSession->tracks().count() + 1;
+		const QColor color = qtractorTrack::trackColor(iTrack);
+		pTrack = new qtractorTrack(pSession, m_dropType);
+		pTrack->setBackground(color);
+		pTrack->setForeground(color.dark());
+		pTrack->setTrackName(tr("Track %1").arg(iTrack));
+		pClipCommand->addTrack(pTrack);
+	}
+
+	// Now's time to create the clip(s)...
 	QListIterator<DropItem *> iter(m_dropItems);
 	while (iter.hasNext()) {
 		DropItem *pDropItem = iter.next();
@@ -1676,12 +1698,21 @@ void qtractorTrackView::hideClipSelect (void) const
 // Draw/hide the whole drop rectagle list
 void qtractorTrackView::updateDropRects ( int y, int h ) const
 {
+	int x = 0;
 	QListIterator<DropItem *> iter(m_dropItems);
 	while (iter.hasNext()) {
 		DropItem *pDropItem = iter.next();
 		pDropItem->rect.setY(y);
 		pDropItem->rect.setHeight(h);
-		y += h + 4;
+		if (m_bDropSpan) {
+			if (x > 0)
+				pDropItem->rect.moveLeft(x);
+			else
+				x = pDropItem->rect.x();
+			x += pDropItem->rect.width();
+		} else {
+			y += h + 4;
+		}
 	}
 }
 
@@ -2819,6 +2850,18 @@ qtractorClip *qtractorTrackView::cloneClip ( qtractorClip *pClip )
 	}
 
 	return pNewClip;
+}
+
+
+// Multi-item drop mode (whether to span clips horixontally).
+void qtractorTrackView::setDropSpan ( bool bDropSpan )
+{
+	m_bDropSpan = bDropSpan;
+}
+
+bool qtractorTrackView::isDropSpan (void) const
+{
+	return m_bDropSpan;
 }
 
 

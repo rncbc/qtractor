@@ -158,6 +158,7 @@ qtractorOptions::qtractorOptions (void)
 	// Tracks widget settings.
 	m_settings.beginGroup("/Tracks");
 	iTrackViewSelectMode = m_settings.value("/TrackViewSelectMode", 0).toInt();
+	bTrackViewDropSpan   = m_settings.value("/TrackViewDropSpan", false).toBool();
 	m_settings.endGroup();
 
 	// MIDI options group.
@@ -295,6 +296,7 @@ qtractorOptions::~qtractorOptions (void)
 	// Tracks widget settings.
 	m_settings.beginGroup("/Tracks");
 	m_settings.setValue("/TrackViewSelectMode", iTrackViewSelectMode);
+	m_settings.setValue("/TrackViewDropSpan", bTrackViewDropSpan);
 	m_settings.endGroup();
 
 	// MIDI Editor options group.

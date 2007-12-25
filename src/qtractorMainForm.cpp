@@ -664,6 +664,7 @@ void qtractorMainForm::setOptions ( qtractorOptions *pOptions )
 		break;
 	}
 	m_pTracks->trackView()->setSelectMode(selectMode);
+	m_pTracks->trackView()->setDropSpan(m_pOptions->bTrackViewDropSpan);
 
 	// Initial decorations toggle state.
 	m_ui.viewMenubarAction->setChecked(m_pOptions->bMenubar);
@@ -2055,6 +2056,9 @@ void qtractorMainForm::viewOptions (void)
 			m_pOptions->iAudioCaptureQuality);
 		qtractorMidiClip::setDefaultFormat(
 			m_pOptions->iMidiCaptureFormat);
+		// Spacial track-view drop-span mode...
+		if (m_pTracks)
+			m_pTracks->trackView()->setDropSpan(m_pOptions->bTrackViewDropSpan);
 		// Audio engine metronome options...
 		if (( bOldAudioMetronome && !m_pOptions->bAudioMetronome) ||
 			(!bOldAudioMetronome &&  m_pOptions->bAudioMetronome) ||

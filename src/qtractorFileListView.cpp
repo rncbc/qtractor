@@ -295,9 +295,6 @@ qtractorFileListView::qtractorFileListView ( QWidget *pParent )
 	setAutoOpenTimeout(800);
 
 	QObject::connect(this,
-		SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)),
-		SLOT(currentItemChangedSlot()));
-	QObject::connect(this,
 		SIGNAL(itemClicked(QTreeWidgetItem*,int)),
 		SLOT(itemClickedSlot(QTreeWidgetItem*)));
 //	QObject::connect(this,
