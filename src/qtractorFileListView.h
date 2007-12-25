@@ -32,7 +32,6 @@ class qtractorFileListItem;
 class qtractorDocument;
 
 class QDomElement;
-class QAction;
 
 
 //----------------------------------------------------------------------------
@@ -62,8 +61,9 @@ public:
 	qtractorFileListItem *addFileItem(const QString& sPath,
 		qtractorFileGroupItem *pParentItem = NULL);
 
-	// Current file item accessors...
-	qtractorFileListItem *currentFileItem() const;
+	// Current group/file item accessors...
+	qtractorFileGroupItem *currentGroupItem() const;
+	qtractorFileListItem  *currentFileItem() const;
 
 	// Find a group/file item, given its name.
 	qtractorFileGroupItem *findGroupItem(const QString& sName) const;
@@ -72,6 +72,15 @@ public:
 	// Make as current selection an existing file item.
 	qtractorFileListItem *selectFileItem(const QString& sPath,
 		int iChannel = -1);
+
+	// Add a new group item below the current one.
+	void newGroup();
+	// Add a new file item below the current group one.
+	void openFile();
+	// Rename current group/file item.
+	void renameItem();
+	// Remove current group/file item.
+	void deleteItem();
 
 	// Auto-open timer methods.
 	void setAutoOpenTimeout(int iAutoOpenTimeout);
@@ -94,23 +103,8 @@ signals:
 	// Contents change signal;
 	void contentsChanged();
 
-public slots:
-
-	// Add a new file item below the current group one.
-	void openFileSlot();
-
 protected slots:
 
-	// Add a new group item below the current one.
-	void newGroupSlot();
-
-	// Rename current group/file item.
-	void renameItemSlot();
-	// Remove current group/file item.
-	void deleteItemSlot();
-
-	// In-place selection slot.
-	void currentItemChangedSlot();
 	// In-place toggle slot.
 	void itemClickedSlot(QTreeWidgetItem *pItem);
 	// In-place activate slot.
@@ -154,9 +148,6 @@ protected:
 	void dragLeaveEvent(QDragLeaveEvent *);
 	void dropEvent(QDropEvent *pDropEvent);
 
-	// Context menu request event handler.
-	void contextMenuEvent(QContextMenuEvent *pContextMenuEvent);
-
 	// Internal recursive loaders/savers...
 	bool loadListElement(qtractorDocument *pDocument,
 		QDomElement *pElement, QTreeWidgetItem *pItem);
@@ -181,12 +172,6 @@ private:
 	// Item we'll eventually drop something.
 	QTreeWidgetItem *m_pDropItem;
 
-	// List view actions.
-	QAction *m_pNewGroupAction;
-	QAction *m_pOpenFileAction;
-	QAction *m_pRenameItemAction;
-	QAction *m_pDeleteItemAction;
-	
 	// Last recently used directory.
 	QString m_sRecentDir;
 };

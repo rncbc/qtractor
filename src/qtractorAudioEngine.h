@@ -99,6 +99,23 @@ public:
 	// Direct sync method (needed for export)
 	void syncExport();
 
+	// Metronome switching.
+	void setMetronome(bool bMetronome);
+	bool isMetronome() const;
+
+	// Metronome bar audio sample.
+	void setMetroBarFilename(const QString& sFilename);
+	const QString& metroBarFilename() const;
+
+	// Metronome beat audio sample.
+	void setMetroBeatFilename(const QString& sFilename);
+	const QString& metroBeatFilename() const;
+
+	// Metronome methods.
+	void createMetro();
+	void deleteMetro();
+	void resetMetro();
+
 	// Audition/pre-listening player methods.
 	void createPlayer();
 	void deletePlayer();
@@ -137,19 +154,29 @@ private:
 	bool m_bFreewheel;
 
 	// Audio-export (in)active state.
-	bool               m_bExporting;
-	qtractorAudioBus  *m_pExportBus;
-	qtractorAudioFile *m_pExportFile;
-	unsigned long      m_iExportStart;
-	unsigned long      m_iExportEnd;
-	unsigned int       m_iExportSync;
-	bool               m_bExportDone;
+	bool                 m_bExporting;
+	qtractorAudioBus    *m_pExportBus;
+	qtractorAudioFile   *m_pExportFile;
+	unsigned long        m_iExportStart;
+	unsigned long        m_iExportEnd;
+	unsigned int         m_iExportSync;
+	bool                 m_bExportDone;
+
+	// Audio metronome stuff.
+	bool                 m_bMetronome;
+	qtractorAudioBus    *m_pMetroBus;
+	qtractorAudioBuffer *m_pMetroBarBuff;
+	qtractorAudioBuffer *m_pMetroBeatBuff;
+	QString              m_sMetroBarFilename;
+	QString              m_sMetroBeatFilename;
+	unsigned long        m_iMetroBeatFrame;
+	unsigned int         m_iMetroBeat;
 
 	// Audition/pre-listening player stuff. 
+	bool                 m_bPlayerOpen;
 	qtractorAudioBus    *m_pPlayerBus;
 	qtractorAudioBuffer *m_pPlayerBuff;
-	bool                 m_bPlayerSync;
-	bool                 m_bPlayerOpen;
+	unsigned long        m_iPlayerFrame;
 };
 
 

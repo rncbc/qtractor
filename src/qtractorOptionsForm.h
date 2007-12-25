@@ -52,8 +52,16 @@ protected slots:
 	void reject();
 	void changed();
 	void chooseMessagesFont();
-	void updateNoteNames();
+	void chooseMetroBarFilename();
+	void chooseMetroBeatFilename();
+	void updateMetroNoteNames();
 	void stabilizeForm();
+
+protected:
+
+	// Browse for an existing audio filename.
+	QString getOpenAudioFileName(
+		const QString& sTitle, const QString& sFilename);
 
 private:
 

@@ -219,11 +219,19 @@ qtractorAudioEngine::qtractorAudioEngine ( qtractorSession *pSession )
 	m_iExportSync  = 0;
 	m_bExportDone  = true;
 
+	// Audio metronome stuff.
+	m_bMetronome      = false;
+	m_pMetroBus       = NULL;
+	m_pMetroBarBuff   = NULL;
+	m_pMetroBeatBuff  = NULL;
+	m_iMetroBeatFrame = 0;
+	m_iMetroBeat      = 0;
+
 	// Audition/pre-listening player stuff. 
-	m_pPlayerBus  = NULL;
-	m_pPlayerBuff = NULL;
-	m_bPlayerSync = false;
-	m_bPlayerOpen = false;
+	m_bPlayerOpen  = false;
+	m_pPlayerBus   = NULL;
+	m_pPlayerBuff  = NULL;
+	m_iPlayerFrame = 0;
 }
 
 
@@ -332,6 +340,8 @@ bool qtractorAudioEngine::init ( const QString& sClientName )
 // Device engine activation method.
 bool qtractorAudioEngine::activate (void)
 {
+	// Create audio metronome...
+	createMetro();
 	// Open and start audition/pre-listening...
 	createPlayer();
 
@@ -382,6 +392,9 @@ bool qtractorAudioEngine::start (void)
 	if (!isActivated())
 	    return false;
 
+	// Make sure we have an actual session cursor...
+	resetMetro();
+
 	// Start trnsport rolling...
 	jack_transport_start(m_pJackClient);
 
@@ -412,6 +425,8 @@ void qtractorAudioEngine::deactivate (void)
 
 	// Stop and close audition/pre-listening...
 	deletePlayer();
+	// Close metronome...
+	deleteMetro();
 }
 
 
@@ -499,12 +514,10 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 
 	// Process audition/pre-listening...
 	if (m_bPlayerOpen) {
-		if (m_bPlayerSync)  {
-			m_bPlayerOpen = (m_pPlayerBuff->readMix(m_pPlayerBus->out(),
-				nframes, m_pPlayerBus->channels(), 0, 1.0f) == int(nframes));
-		} else {
-			m_bPlayerSync = m_pPlayerBuff->inSync(0, 0);
-		}
+		m_bPlayerOpen = (m_pPlayerBuff->readMix(m_pPlayerBus->out(),
+			nframes, m_pPlayerBus->channels(), 0, 1.0f) > 0
+			|| m_iPlayerFrame < m_pPlayerBuff->length());
+		m_iPlayerFrame += nframes;
 	}
 
 	// Don't go any further, if not playing.
@@ -551,12 +564,25 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 	// Reset buffer offset.
     m_iBufferOffset = 0;
 
+	// Metronome stuff...
+	if (m_bMetronome && m_pMetroBus && iFrameStart >= m_iMetroBeatFrame) {
+		qtractorAudioBuffer *pMetroBuff
+			= (pSession->beatIsBar(m_iMetroBeat)
+				? m_pMetroBarBuff : m_pMetroBeatBuff);
+		pMetroBuff->readMix(m_pMetroBus->out(), nframes,
+			m_pMetroBus->channels(), 0, 1.0f);
+		if (iFrameEnd > m_iMetroBeatFrame + pMetroBuff->length()) {
+			m_iMetroBeatFrame = pSession->frameFromBeat(++m_iMetroBeat);
+			pMetroBuff->reset(false);
+		}
+	}
+
 	// Split processing, in case we're looping...
 	if (pSession->isLooping()) {
 		unsigned long iLoopEnd = pSession->loopEnd();
 		 if (iFrameStart < iLoopEnd) {
 			// Loop-length might be shorter than the buffer-period...
-			while (iFrameEnd > iLoopEnd) {
+			while (iFrameEnd >= iLoopEnd) {
 				// Process the remaining until end-of-loop...
 				pSession->process(pAudioCursor, iFrameStart, iLoopEnd);
 				m_iBufferOffset += (iLoopEnd - iFrameStart);
@@ -566,6 +592,11 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 				// Set to new transport location...
 				jack_transport_locate(m_pJackClient, iFrameStart);
 				pAudioCursor->seek(iFrameStart);
+				// Take special care on metronome too...
+				if (m_bMetronome) {
+					m_iMetroBeat = pSession->beatFromFrame(iFrameStart);
+					m_iMetroBeatFrame = pSession->frameFromBeat(m_iMetroBeat);
+				}
 			}
 		}
 	}
@@ -919,13 +950,152 @@ void qtractorAudioEngine::syncExport (void)
 }
 
 
+// Metronome switching.
+void qtractorAudioEngine::setMetronome ( bool bMetronome )
+{
+	m_bMetronome = bMetronome;
+
+	if (isPlaying())
+		resetMetro();
+}
+
+bool qtractorAudioEngine::isMetronome (void) const
+{
+	return m_bMetronome;
+}
+
+
+// Metronome bar audio sample.
+void qtractorAudioEngine::setMetroBarFilename ( const QString& sFilename )
+{
+	m_sMetroBarFilename = sFilename;
+
+	if (m_pMetroBarBuff) {
+		m_pMetroBarBuff->setLength(0);
+		m_pMetroBarBuff->open(m_sMetroBarFilename);
+	}
+}
+
+const QString& qtractorAudioEngine::metroBarFilename (void) const
+{
+	return m_sMetroBarFilename;
+}
+
+
+// Metronome beat audio sample.
+void qtractorAudioEngine::setMetroBeatFilename ( const QString& sFilename )
+{
+	m_sMetroBeatFilename = sFilename;
+
+	if (m_pMetroBeatBuff) {
+		m_pMetroBeatBuff->setLength(0);
+		m_pMetroBeatBuff->open(m_sMetroBeatFilename);
+	}
+}
+
+const QString& qtractorAudioEngine::metroBeatFilename() const
+{
+	return m_sMetroBeatFilename;
+}
+
+
+// Create audio metronome stuff...
+void qtractorAudioEngine::createMetro (void)
+{
+	deleteMetro();
+
+	// FIXME: Metronome bus gets to be
+	// the first available output bus...
+	for (qtractorBus *pBus = qtractorEngine::buses().first();
+			pBus; pBus = pBus->next()) {
+		if (pBus->busMode() & qtractorBus::Output) {
+			m_pMetroBus = static_cast<qtractorAudioBus *> (pBus);
+			break;
+		}
+	}
+
+	// Is there any?
+	if (m_pMetroBus == NULL)
+		return;
+
+	// Enough number of channels?...
+	unsigned short iChannels = m_pMetroBus->channels();
+	if (iChannels < 1) {
+		m_pMetroBus = NULL;
+		return;
+	}
+
+	// We got it...
+	m_pMetroBarBuff = new qtractorAudioBuffer(iChannels, sampleRate());
+	m_pMetroBarBuff->open(m_sMetroBarFilename);
+	m_pMetroBeatBuff = new qtractorAudioBuffer(iChannels, sampleRate());
+	m_pMetroBeatBuff->open(m_sMetroBeatFilename);
+}
+
+
+// Destroy audio metronome stuff.
+void qtractorAudioEngine::deleteMetro (void)
+{
+	if (m_pMetroBarBuff) {
+		delete m_pMetroBarBuff;
+		m_pMetroBarBuff = NULL;
+	}
+
+	if (m_pMetroBeatBuff) {
+		delete m_pMetroBeatBuff;
+		m_pMetroBeatBuff = NULL;
+	}
+
+	m_iMetroBeatFrame = 0;
+	m_iMetroBeat = 0;
+	m_pMetroBus = NULL;	
+}
+
+
+// Reset Audio metronome.
+void qtractorAudioEngine::resetMetro (void)
+{
+	if (!m_bMetronome)
+		return;
+
+	qtractorSession *pSession = session();
+	if (pSession == NULL)
+		return;
+
+	qtractorSessionCursor *pAudioCursor = sessionCursor();
+	if (pAudioCursor == NULL)
+		return;
+
+	// Reset the next beat position...
+	m_iMetroBeat = pSession->beatFromFrame(pAudioCursor->frame()) + 1;
+	m_iMetroBeatFrame = pSession->frameFromBeat(m_iMetroBeat);
+
+	// Now each sample buffer must be bounded properly...
+	unsigned long iMaxLength = (m_iMetroBeatFrame / m_iMetroBeat);
+
+	if (m_pMetroBarBuff) {
+		unsigned long iMetroBarLength = m_pMetroBarBuff->frames();
+		m_pMetroBarBuff->setLength(
+			iMetroBarLength > iMaxLength ? iMaxLength : iMetroBarLength);
+		m_pMetroBarBuff->reset(false);
+	}
+
+	if (m_pMetroBeatBuff) {
+		unsigned long iMetroBeatLength = m_pMetroBeatBuff->frames();
+		m_pMetroBeatBuff->setLength(
+			iMetroBeatLength > iMaxLength ? iMaxLength : iMetroBeatLength);
+		m_pMetroBeatBuff->reset(false);
+	}
+}
+
+
 // Create audition/pre-listening stuff...
 void qtractorAudioEngine::createPlayer (void)
 {
 	deletePlayer();
 
-	// FIXME: Auditio/pre-listening bus gets to be
-	// the first available output bus...
+	// FIXME: Audition/pre-listening bus gets
+	// to be the first available output bus...
 	for (qtractorBus *pBus = qtractorEngine::buses().first();
 			pBus; pBus = pBus->next()) {
 		if (pBus->busMode() & qtractorBus::Output) {
@@ -940,8 +1110,10 @@ void qtractorAudioEngine::createPlayer (void)
 
 	// Enough number of channels?...
 	unsigned short iChannels = m_pPlayerBus->channels();
-	if (iChannels < 1)
+	if (iChannels < 1) {
+		m_pPlayerBus = NULL;
 		return;
+	}
 
 	// We got it...
 	m_pPlayerBuff = new qtractorAudioBuffer(iChannels, sampleRate());
@@ -956,8 +1128,9 @@ void qtractorAudioEngine::deletePlayer (void)
 	if (m_pPlayerBuff) {
 		delete m_pPlayerBuff;
 		m_pPlayerBuff = NULL;
-		m_pPlayerBus  = NULL;
 	}
+
+	m_pPlayerBus = NULL;
 }
 
 
@@ -973,8 +1146,10 @@ bool qtractorAudioEngine::openPlayer ( const QString& sFilename )
 {
 	closePlayer();
 	
-	if (m_pPlayerBuff)
+	if (m_pPlayerBuff) {
+		m_pPlayerBuff->setLength(0);
 		m_bPlayerOpen = m_pPlayerBuff->open(sFilename);
+	}
 
 	return m_bPlayerOpen;
 }
@@ -984,9 +1159,9 @@ bool qtractorAudioEngine::openPlayer ( const QString& sFilename )
 void qtractorAudioEngine::closePlayer (void)
 {
 	if (m_pPlayerBuff) {
-		m_bPlayerSync = false;
-		m_bPlayerOpen = false;
 		m_pPlayerBuff->close();
+		m_bPlayerOpen  = false;
+		m_iPlayerFrame = 0;
 	}
 }
 

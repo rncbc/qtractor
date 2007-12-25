@@ -719,7 +719,8 @@ void qtractorMainForm::setOptions ( qtractorOptions *pOptions )
 	updateRecentFilesMenu();
 	updatePeakAutoRemove();
 	updateDisplayFormat();
-	updateMetronome();
+	updateAudioMetronome();
+	updateMidiMetronome();
 
 	// FIXME: This is what it should ever be,
 	// make it right from this very moment...
@@ -1994,6 +1995,10 @@ void qtractorMainForm::viewOptions (void)
 	int     iOldDisplayFormat      = m_pOptions->iDisplayFormat;
 	int     iOldResampleType       = m_pOptions->iAudioResampleType;
 	bool    bOldQuickSeek          = m_pOptions->bAudioQuickSeek;
+	bool    bOldAudioMetronome     = m_pOptions->bAudioMetronome;
+	QString sOldMetroBarFilename   = m_pOptions->sMetroBarFilename;
+	QString sOldMetroBeatFilename  = m_pOptions->sMetroBeatFilename;
+	bool    bOldMidiMetronome      = m_pOptions->bMidiMetronome;
 	int     iOldMetroChannel       = m_pOptions->iMetroChannel;
 	int     iOldMetroBarNote       = m_pOptions->iMetroBarNote;
 	int     iOldMetroBarVelocity   = m_pOptions->iMetroBarVelocity;
@@ -2050,15 +2055,23 @@ void qtractorMainForm::viewOptions (void)
 			m_pOptions->iAudioCaptureQuality);
 		qtractorMidiClip::setDefaultFormat(
 			m_pOptions->iMidiCaptureFormat);
-		// MIDI Engine metronome options...
-		if ((iOldMetroChannel      != m_pOptions->iMetroChannel)      ||
+		// Audio engine metronome options...
+		if (( bOldAudioMetronome && !m_pOptions->bAudioMetronome) ||
+			(!bOldAudioMetronome &&  m_pOptions->bAudioMetronome) ||
+			(sOldMetroBarFilename  != m_pOptions->sMetroBarFilename) ||
+			(sOldMetroBeatFilename != m_pOptions->sMetroBeatFilename))
+			updateAudioMetronome();
+		// MIDI engine metronome options...
+		if (( bOldMidiMetronome && !m_pOptions->bMidiMetronome) ||
+			(!bOldMidiMetronome &&  m_pOptions->bMidiMetronome) ||
+			(iOldMetroChannel      != m_pOptions->iMetroChannel)      ||
 			(iOldMetroBarNote      != m_pOptions->iMetroBarNote)      ||
 			(iOldMetroBarVelocity  != m_pOptions->iMetroBarVelocity)  ||
 			(iOldMetroBarDuration  != m_pOptions->iMetroBarDuration)  ||
 			(iOldMetroBeatNote     != m_pOptions->iMetroBeatNote)     ||
 			(iOldMetroBeatVelocity != m_pOptions->iMetroBeatVelocity) ||
 			(iOldMetroBeatDuration != m_pOptions->iMetroBeatDuration))
-			updateMetronome();
+			updateMidiMetronome();
 		// Warn if something will be only effective on next time.
 		if (iNeedRestart & RestartAny) {
 			QString sNeedRestart;
@@ -2285,10 +2298,19 @@ void qtractorMainForm::transportMetro (void)
 	appendMessages("qtractorMainForm::transportMetro()");
 #endif
 
-	// Toggle metronome...
-	qtractorMidiEngine *pMidiEngine = m_pSession->midiEngine();
-	if (pMidiEngine)
-		pMidiEngine->setMetronome(!pMidiEngine->isMetronome());
+	// Toggle Audio metronome...
+	if (m_pOptions->bAudioMetronome) {
+		qtractorAudioEngine *pAudioEngine = m_pSession->audioEngine();
+		if (pAudioEngine)
+			pAudioEngine->setMetronome(!pAudioEngine->isMetronome());
+	}
+
+	// Toggle MIDI metronome...
+	if (m_pOptions->bMidiMetronome) {
+		qtractorMidiEngine *pMidiEngine = m_pSession->midiEngine();
+		if (pMidiEngine)
+			pMidiEngine->setMetronome(!pMidiEngine->isMetronome());
+	}
 
 	stabilizeForm();
 }
@@ -2685,6 +2707,8 @@ void qtractorMainForm::stabilizeForm (void)
 		&& (bLooping || bSelectable));
 	m_ui.transportLoopSetAction->setEnabled(bEnabled && bSelectable);
 	m_ui.transportRecordAction->setEnabled(m_pSession->recordTracks() > 0);
+	m_ui.transportMetroAction->setEnabled(
+		m_pOptions->bAudioMetronome || m_pOptions->bMidiMetronome);
 
 	m_ui.transportRewindAction->setChecked(m_iTransportRolling < 0);
 	m_ui.transportFastForwardAction->setChecked(m_iTransportRolling > 0);
@@ -2934,20 +2958,37 @@ void qtractorMainForm::updateDisplayFormat (void)
 }
 
 
-// Update transport-metronome parameters.
-void qtractorMainForm::updateMetronome (void)
+// Update audio metronome parameters.
+void qtractorMainForm::updateAudioMetronome (void)
 {
 	if (m_pOptions == NULL)
 		return;
 
+	// Configure the Audio engine metronome handling...
+	qtractorAudioEngine *pAudioEngine = m_pSession->audioEngine();
+	if (pAudioEngine == NULL)
+		return;
+
+	pAudioEngine->setMetroBarFilename(m_pOptions->sMetroBarFilename);
+	pAudioEngine->setMetroBeatFilename(m_pOptions->sMetroBeatFilename);
+
+	pAudioEngine->setMetronome(
+		m_ui.transportMetroAction->isChecked()
+		&& m_pOptions->bAudioMetronome);
+}
+
+
+// Update MIDI metronome parameters.
+void qtractorMainForm::updateMidiMetronome (void)
+{
+	if (m_pOptions == NULL)
+		return;
+
+	// Configure the MIDI engine metronome handling...
 	qtractorMidiEngine *pMidiEngine = m_pSession->midiEngine();
 	if (pMidiEngine == NULL)
 		return;
 
-	// Configure the MIDI engine metronome handling...
-	pMidiEngine->setMetronome(m_pOptions->bMetronome);
-
-	// And respective parameters too...
 	pMidiEngine->setMetroChannel(m_pOptions->iMetroChannel);
 	pMidiEngine->setMetroBar(
 		m_pOptions->iMetroBarNote,
@@ -2957,6 +2998,10 @@ void qtractorMainForm::updateMetronome (void)
 		m_pOptions->iMetroBeatNote,
 		m_pOptions->iMetroBeatVelocity,
 		m_pOptions->iMetroBeatDuration);
+
+	pMidiEngine->setMetronome(
+		m_ui.transportMetroAction->isChecked()
+		&& m_pOptions->bMidiMetronome);
 }
 
 
@@ -3251,17 +3296,17 @@ void qtractorMainForm::timerSlot (void)
 		if (m_iPlayerTimer < QTRACTOR_TIMER_MSECS) {
 			m_iPlayerTimer = 0;
 			if (m_pFiles) {
-				if (m_pFiles->isPlayButton()) {
+				if (m_pFiles->isPlayState()) {
 					if (pAudioEngine->isPlayerOpen()) {
 						m_iPlayerTimer += QTRACTOR_TIMER_DELAY << 2;
 					} else {
 						appendMessages(tr("Playing ended."));
-						m_pFiles->setPlayButton(false);
+						m_pFiles->setPlayState(false);
 					}
 				}
 				else if (pAudioEngine->isPlayerOpen()) {
 					m_iPlayerTimer += QTRACTOR_TIMER_DELAY << 2;
-					m_pFiles->setPlayButton(true);
+					m_pFiles->setPlayState(true);
 				}
 			}
 		}

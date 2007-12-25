@@ -230,7 +230,8 @@ protected:
 	void updateMessagesLimit();
 	void updateMessagesCapture();
 	void updateDisplayFormat();
-	void updateMetronome();
+	void updateAudioMetronome();
+	void updateMidiMetronome();
 
 	void updateContents(qtractorMidiEditor *pMidiEditor, bool bRefresh);
 

@@ -68,13 +68,24 @@ public:
 	void selectMidiFile  (const QString& sFilename, int iTrackChannel);
 
 	// Audition/pre-listening player methods.
-	void setPlayButton(bool bOn);
-	bool isPlayButton() const;
+	void setPlayState(bool bOn);
+	bool isPlayState() const;
 
 protected slots:
 
+	// Add a new group item below the current one.
+	void newGroupSlot();
+	// Add a new file item below the current group one.
+	void openFileSlot();
+	// Rename current group/file item.
+	void renameItemSlot();
+	// Remove current group/file item.
+	void deleteItemSlot();
+
 	// Audition/pre-listening player slots.
 	void playSlot(bool bOn);
+
+	// Usual stabilizing slot.
 	void stabilizeSlot();
 
 protected:
@@ -82,18 +93,33 @@ protected:
 	// Just about to notify main-window that we're closing.
 	void closeEvent(QCloseEvent *);
 
+	// Context menu request event handler.
+	void contextMenuEvent(QContextMenuEvent *);
+
+	// Retrieve current selected file list view.
+	qtractorFileListView *currentFileListView() const;
+
 private:
 
 	// File type selection tab widget.
 	QTabWidget *m_pTabWidget;
+
 	// Specific file type widgets.
 	qtractorAudioListView *m_pAudioListView;
 	qtractorMidiListView  *m_pMidiListView;
+
 	// Audition/pre-listening controls.
 	QWidget     *m_pPlayWidget;
 	QHBoxLayout *m_pPlayLayout;
 	QToolButton *m_pPlayButton;
 	int          m_iPlayUpdate;
+
+	// List view actions.
+	QAction *m_pNewGroupAction;
+	QAction *m_pOpenFileAction;
+	QAction *m_pRenameItemAction;
+	QAction *m_pDeleteItemAction;
+	QAction *m_pPlayItemAction;
 };
 
 

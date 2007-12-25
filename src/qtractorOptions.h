@@ -90,11 +90,17 @@ public:
 	int     iAudioCaptureQuality;
 	int     iAudioResampleType;
 	bool    bAudioQuickSeek;
+	bool    bAudioMetronome;
 
-	// Midi options...
-	int iMidiCaptureFormat;
+	// Audio metronome parameters.
+	QString sMetroBarFilename;
+	QString sMetroBeatFilename;
 
-	// Metronome parameters.
+	// MIDI options...
+	int  iMidiCaptureFormat;
+	bool bMidiMetronome;
+
+	// MIDI Metronome parameters.
 	int iMetroChannel;
 	int iMetroBarNote;
 	int iMetroBarVelocity;

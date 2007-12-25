@@ -32,12 +32,9 @@
 #include <QHeaderView>
 #include <QFileInfo>
 #include <QToolTip>
-#include <QAction>
 #include <QTimer>
-#include <QMenu>
 #include <QUrl>
 
-#include <QContextMenuEvent>
 #include <QMouseEvent>
 #include <QDragLeaveEvent>
 #include <QDragEnterEvent>
@@ -274,16 +271,6 @@ qtractorFileListView::qtractorFileListView ( QWidget *pParent )
 	m_pDragItem = NULL;
 	m_pDropItem = NULL;
 
-	m_pNewGroupAction   = new QAction(tr("New &Group"), this);
-	m_pOpenFileAction   = new QAction(tr("Add &Files..."), this);
-	m_pRenameItemAction = new QAction(tr("R&ename"), this);
-	m_pDeleteItemAction = new QAction(tr("&Delete"), this);
-
-	m_pNewGroupAction->setShortcut(tr("Ctrl+G"));
-	m_pOpenFileAction->setShortcut(tr("Ctrl+F"));
-	m_pRenameItemAction->setShortcut(tr("Ctrl+E"));
-	m_pDeleteItemAction->setShortcut(tr("Ctrl+D"));
-
 	QTreeWidget::setRootIsDecorated(false);
 	QTreeWidget::setUniformRowHeights(true);
 //	QTreeWidget::setDragEnabled(true);
@@ -305,27 +292,7 @@ qtractorFileListView::qtractorFileListView ( QWidget *pParent )
 	// Trap for help/tool-tips events.
 	QTreeWidget::viewport()->installEventFilter(this);
 
-	// Some actions surely need those
-	// shortcuts firmly attached...
-	QTreeWidget::addAction(m_pNewGroupAction);
-	QTreeWidget::addAction(m_pOpenFileAction);
-	QTreeWidget::addAction(m_pRenameItemAction);
-	QTreeWidget::addAction(m_pDeleteItemAction);
-
 	setAutoOpenTimeout(800);
-
-	QObject::connect(m_pNewGroupAction,
-		SIGNAL(triggered(bool)),
-		SLOT(newGroupSlot()));
-	QObject::connect(m_pOpenFileAction,
-		SIGNAL(triggered(bool)),
-		SLOT(openFileSlot()));
-	QObject::connect(m_pRenameItemAction,
-		SIGNAL(triggered(bool)),
-		SLOT(renameItemSlot()));
-	QObject::connect(m_pDeleteItemAction,
-		SIGNAL(triggered(bool)),
-		SLOT(deleteItemSlot()));
 
 	QObject::connect(this,
 		SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)),
@@ -348,8 +315,6 @@ qtractorFileListView::qtractorFileListView ( QWidget *pParent )
 	QObject::connect(QTreeWidget::itemDelegate(),
 		SIGNAL(commitData(QWidget*)),
 		SLOT(itemRenamedSlot()));
-
-	currentItemChangedSlot();
 }
 
 
@@ -357,11 +322,6 @@ qtractorFileListView::qtractorFileListView ( QWidget *pParent )
 qtractorFileListView::~qtractorFileListView (void)
 {
 	setAutoOpenTimeout(0);
-
-	delete m_pNewGroupAction;
-	delete m_pOpenFileAction;
-	delete m_pRenameItemAction;
-	delete m_pDeleteItemAction;
 }
 
 
@@ -402,7 +362,14 @@ qtractorFileGroupItem *qtractorFileListView::addGroupItem (
 }
 
 
-// Current item accessor...
+// Current group item accessor...
+qtractorFileGroupItem *qtractorFileListView::currentGroupItem (void) const
+{
+	return groupItem(QTreeWidget::currentItem());
+}
+
+
+// Current file item accessor...
 qtractorFileListItem *qtractorFileListView::currentFileItem (void) const
 {
 	QTreeWidgetItem *pItem = QTreeWidget::currentItem();
@@ -450,6 +417,86 @@ qtractorFileListItem *qtractorFileListView::selectFileItem (
 	QTreeWidget::setCurrentItem(pFileItem);
 
 	return pFileItem;
+}
+
+
+// Open and add a new file item below the current group one.
+void qtractorFileListView::openFile (void)
+{
+	// Ask for the filename to open...
+	QStringList files = openFileNames();
+
+	// Check if its a valid file...
+	if (files.isEmpty())
+		return;
+
+	// Find a proper group parent  group item...
+	qtractorFileGroupItem *pParentItem = currentGroupItem();
+	// Pick each one of the selected files...
+	QStringListIterator iter(files);
+	while (iter.hasNext()) {
+		const QString& sPath = iter.next();
+		// Add the new file item...
+		qtractorFileListItem *pFileItem
+			= addFileItem(sPath, pParentItem);
+		if (pFileItem) {
+			// Make all this new open and visible.
+			if (pParentItem)
+				pParentItem->setOpen(true);
+		}
+	}
+}
+
+
+// Add a new group item below the current one.
+void qtractorFileListView::newGroup (void)
+{
+	qtractorFileGroupItem *pParentItem = currentGroupItem();
+	qtractorFileGroupItem *pGroupItem
+		= addGroupItem(tr("New Group"), pParentItem);
+	if (pParentItem)
+		pParentItem->setOpen(true);
+	if (pGroupItem)
+		editItem(pGroupItem, 0);
+}
+
+
+// Rename current group/file item.
+void qtractorFileListView::renameItem (void)
+{
+	qtractorFileGroupItem *pGroupItem = currentGroupItem();
+	if (pGroupItem)
+		editItem(pGroupItem, 0);
+}
+
+
+// Remove current group/file item.
+void qtractorFileListView::deleteItem (void)
+{
+	QTreeWidgetItem *pItem = QTreeWidget::currentItem();
+	if (pItem == NULL)
+		return;
+
+	// Prompt user if he/she's sure about this...
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm) {
+		qtractorOptions *pOptions = pMainForm->options();
+		if (pOptions && pOptions->bConfirmRemove) {
+			if (QMessageBox::warning(this,
+				tr("Warning") + " - " QTRACTOR_TITLE,
+				tr("About to remove %1 item:\n\n"
+				"\"%2\"\n\n"
+				"Are you sure?")
+				.arg(pItem->type() == GroupItem ? tr("group") : tr("file"))
+				.arg(pItem->text(0)),
+				tr("OK"), tr("Cancel")) > 0)
+				return;
+		}
+	}
+
+	// Definitive delete...
+	delete pItem;
+	emit contentsChanged();
 }
 
 
@@ -513,97 +560,6 @@ QStringList qtractorFileListView::openFileNames (void)
 	    setRecentDir(QFileInfo(files.first()).absolutePath());
 
 	return files;
-}
-
-
-// Open and add a new file item below the current group one.
-void qtractorFileListView::openFileSlot (void)
-{
-	// Ask for the filename to open...
-	QStringList files = openFileNames();
-
-	// Check if its a valid file...
-	if (files.isEmpty())
-		return;
-
-	// Find a proper group parent  group item...
-	qtractorFileGroupItem *pParentItem
-		= groupItem(QTreeWidget::currentItem());
-	// Pick each one of the selected files...
-	QStringListIterator iter(files);
-	while (iter.hasNext()) {
-		const QString& sPath = iter.next();
-		// Add the new file item...
-		qtractorFileListItem *pFileItem
-			= addFileItem(sPath, pParentItem);
-		if (pFileItem) {
-			// Make all this new open and visible.
-			if (pParentItem)
-				pParentItem->setOpen(true);
-		}
-	}
-}
-
-
-// Add a new group item below the current one.
-void qtractorFileListView::newGroupSlot (void)
-{
-	qtractorFileGroupItem *pParentItem
-		= groupItem(QTreeWidget::currentItem());
-	qtractorFileGroupItem *pGroupItem
-		= addGroupItem(tr("New Group"), pParentItem);
-	if (pParentItem)
-		pParentItem->setOpen(true);
-	if (pGroupItem)
-		QTreeWidget::editItem(pGroupItem, 0);
-}
-
-
-// Rename current group/file item.
-void qtractorFileListView::renameItemSlot (void)
-{
-	QTreeWidgetItem *pItem = QTreeWidget::currentItem();
-	if (pItem)
-		QTreeWidget::editItem(pItem, 0);
-}
-
-
-// Remove current group/file item.
-void qtractorFileListView::deleteItemSlot (void)
-{
-	QTreeWidgetItem *pItem = QTreeWidget::currentItem();
-	if (pItem == NULL)
-		return;
-
-	// Prompt user if he/she's sure about this...
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm) {
-		qtractorOptions *pOptions = pMainForm->options();
-		if (pOptions && pOptions->bConfirmRemove) {
-			if (QMessageBox::warning(this,
-				tr("Warning") + " - " QTRACTOR_TITLE,
-				tr("About to remove %1 item:\n\n"
-				"\"%2\"\n\n"
-				"Are you sure?")
-				.arg(pItem->type() == GroupItem ? tr("group") : tr("file"))
-				.arg(pItem->text(0)),
-				tr("OK"), tr("Cancel")) > 0)
-				return;
-		}
-	}
-
-	// Definitive delete...
-	delete pItem;
-	emit contentsChanged();
-}
-
-
-// In-place selection slot.
-void qtractorFileListView::currentItemChangedSlot (void)
-{
-	QTreeWidgetItem *pItem = QTreeWidget::currentItem();
-	m_pRenameItemAction->setEnabled(pItem && pItem->type() == GroupItem);
-	m_pDeleteItemAction->setEnabled(pItem && pItem->type() != ChannelItem);
 }
 
 
@@ -967,23 +923,6 @@ void qtractorFileListView::dropEvent ( QDropEvent *pDropEvent )
 
 	dragLeaveEvent(NULL);
 	m_pDragItem = NULL;
-}
-
-
-// Context menu request event handler.
-void qtractorFileListView::contextMenuEvent (
-	QContextMenuEvent *pContextMenuEvent )
-{
-	QMenu menu(this);
-
-	// Construct context menu.
-	menu.addAction(m_pNewGroupAction);
-	menu.addSeparator();
-	menu.addAction(m_pOpenFileAction);
-	menu.addAction(m_pRenameItemAction);
-	menu.addAction(m_pDeleteItemAction);
-
-	menu.exec(pContextMenuEvent->globalPos());
 }
 
 

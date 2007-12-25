@@ -28,6 +28,8 @@
 #include <QHBoxLayout>
 #include <QToolButton>
 
+#include <QContextMenuEvent>
+
 
 //-------------------------------------------------------------------------
 // qtractorFiles - File/Groups dockable window.
@@ -72,6 +74,33 @@ qtractorFiles::qtractorFiles ( QWidget *pParent )
 	m_pPlayLayout->addWidget(m_pPlayButton);
 	m_pTabWidget->setCornerWidget(m_pPlayWidget, Qt::BottomRightCorner);
 
+	// Common file list-view actions...
+	m_pNewGroupAction = new QAction(
+		QIcon(":/icons/itemGroup.png"), tr("New &Group"), this);
+	m_pOpenFileAction = new QAction(
+		QIcon(":/icons/itemFile.png"), tr("Add &Files..."), this);
+	m_pRenameItemAction = new QAction(
+		QIcon(":/icons/formEdit.png"), tr("R&ename"), this);
+	m_pDeleteItemAction = new QAction(
+		QIcon(":/icons/formRemove.png"), tr("&Delete"), this);
+	m_pPlayItemAction = new QAction(
+		QIcon(":/icons/transportPlay.png"), tr("&Play"), this);
+	m_pPlayItemAction->setCheckable(true);
+
+	m_pNewGroupAction->setShortcut(tr("Ctrl+G"));
+	m_pOpenFileAction->setShortcut(tr("Ctrl+F"));
+	m_pRenameItemAction->setShortcut(tr("Ctrl+E"));
+	m_pDeleteItemAction->setShortcut(tr("Ctrl+D"));
+//	m_pPlayItemAction->setShortcut(tr("Ctrl+P"));
+
+	// Some actions surely need those
+	// shortcuts firmly attached...
+	QDockWidget::addAction(m_pNewGroupAction);
+	QDockWidget::addAction(m_pOpenFileAction);
+	QDockWidget::addAction(m_pRenameItemAction);
+	QDockWidget::addAction(m_pDeleteItemAction);
+	QDockWidget::addAction(m_pPlayItemAction);
+
 	// Prepare the dockable window stuff.
 	QDockWidget::setWidget(m_pTabWidget);
 	QDockWidget::setFeatures(QDockWidget::AllDockWidgetFeatures);
@@ -86,6 +115,9 @@ qtractorFiles::qtractorFiles ( QWidget *pParent )
 	QDockWidget::setWindowIcon(QIcon(":/icons/viewFiles.png"));
 	QDockWidget::setToolTip(sCaption);
 
+	// Make it initially stable...
+	stabilizeSlot();
+
 	// Child widgets signal/slots... 
 	QObject::connect(m_pTabWidget,
 		SIGNAL(currentChanged(int)),
@@ -96,6 +128,21 @@ qtractorFiles::qtractorFiles ( QWidget *pParent )
 	QObject::connect(m_pMidiListView,
 		SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)),
 		SLOT(stabilizeSlot()));
+	QObject::connect(m_pNewGroupAction,
+		SIGNAL(triggered(bool)),
+		SLOT(newGroupSlot()));
+	QObject::connect(m_pOpenFileAction,
+		SIGNAL(triggered(bool)),
+		SLOT(openFileSlot()));
+	QObject::connect(m_pRenameItemAction,
+		SIGNAL(triggered(bool)),
+		SLOT(renameItemSlot()));
+	QObject::connect(m_pDeleteItemAction,
+		SIGNAL(triggered(bool)),
+		SLOT(deleteItemSlot()));
+	QObject::connect(m_pPlayItemAction,
+		SIGNAL(triggered(bool)),
+		SLOT(playSlot(bool)));
 	QObject::connect(m_pPlayButton,
 		SIGNAL(toggled(bool)),
 		SLOT(playSlot(bool)));
@@ -105,6 +152,12 @@ qtractorFiles::qtractorFiles ( QWidget *pParent )
 // Destructor.
 qtractorFiles::~qtractorFiles (void)
 {
+	delete m_pNewGroupAction;
+	delete m_pOpenFileAction;
+	delete m_pRenameItemAction;
+	delete m_pDeleteItemAction;
+	delete m_pPlayItemAction;
+
 	// No need to delete child widgets, Qt does it all for us.
 }
 
@@ -180,16 +233,86 @@ void qtractorFiles::selectMidiFile ( const QString& sFilename,
 
 
 // Audition/pre-listening player methods.
-void qtractorFiles::setPlayButton ( bool bOn )
+void qtractorFiles::setPlayState ( bool bOn )
 {
 	m_iPlayUpdate++;
+	m_pPlayItemAction->setChecked(bOn);
 	m_pPlayButton->setChecked(bOn);
 	m_iPlayUpdate--;
 }
 
-bool qtractorFiles::isPlayButton (void) const
+bool qtractorFiles::isPlayState (void) const
 {
-	return m_pPlayButton->isChecked();
+	return m_pPlayItemAction->isChecked();
+}
+
+
+// Retrieve current selected file list view.
+qtractorFileListView *qtractorFiles::currentFileListView (void) const
+{
+	switch (m_pTabWidget->currentIndex()) {
+	case qtractorFiles::Audio:
+		return m_pAudioListView;
+	case qtractorFiles::Midi:
+		return m_pMidiListView;
+	default:
+		return NULL;
+	}
+}
+
+
+// Open and add a new file item below the current group one.
+void qtractorFiles::openFileSlot (void)
+{
+	qtractorFileListView *pFileListView = currentFileListView();
+	if (pFileListView)
+		pFileListView->openFile();
+}
+
+
+// Add a new group item below the current one.
+void qtractorFiles::newGroupSlot (void)
+{
+	qtractorFileListView *pFileListView = currentFileListView();
+	if (pFileListView)
+		pFileListView->newGroup();
+}
+
+
+// Rename current group/file item.
+void qtractorFiles::renameItemSlot (void)
+{
+	qtractorFileListView *pFileListView = currentFileListView();
+	if (pFileListView)
+		pFileListView->renameItem();
+}
+
+
+// Remove current group/file item.
+void qtractorFiles::deleteItemSlot (void)
+{
+	qtractorFileListView *pFileListView = currentFileListView();
+	if (pFileListView)
+		pFileListView->deleteItem();	
+}
+
+
+// Current item change slots.
+void qtractorFiles::stabilizeSlot (void)
+{
+	qtractorFileListView *pFileListView = currentFileListView();
+	if (pFileListView) {
+		QTreeWidgetItem *pItem = pFileListView->currentItem();
+		m_pRenameItemAction->setEnabled(
+			pItem && pItem->type() == qtractorFileListView::GroupItem);
+		m_pDeleteItemAction->setEnabled(
+			pItem && pItem->type() != qtractorFileListView::ChannelItem);
+		bool bPlayEnabled = (
+			pItem && pItem->type() == qtractorFileListView::FileItem
+			&& m_pTabWidget->currentIndex() == qtractorFiles::Audio);
+		m_pPlayItemAction->setEnabled(bPlayEnabled);
+		m_pPlayButton->setEnabled(bPlayEnabled);
+	}
 }
 
 
@@ -198,6 +321,8 @@ void qtractorFiles::playSlot ( bool bOn )
 {
 	if (m_iPlayUpdate > 0)
 		return;
+
+	setPlayState(bOn);
 
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm == NULL)
@@ -214,18 +339,22 @@ void qtractorFiles::playSlot ( bool bOn )
 }
 
 
-// Current item change slots.
-void qtractorFiles::stabilizeSlot (void)
+// Context menu request event handler.
+void qtractorFiles::contextMenuEvent (
+	QContextMenuEvent *pContextMenuEvent )
 {
-	switch (m_pTabWidget->currentIndex()) {
-	case qtractorFiles::Audio:
-		m_pPlayButton->setEnabled(m_pAudioListView->currentFileItem() != NULL);
-		break;
-	case qtractorFiles::Midi:
-	default:
-		m_pPlayButton->setEnabled(false);
-		break;
-	}
+	QMenu menu(this);
+
+	// Construct context menu.
+	menu.addAction(m_pNewGroupAction);
+	menu.addSeparator();
+	menu.addAction(m_pOpenFileAction);
+	menu.addAction(m_pRenameItemAction);
+	menu.addAction(m_pDeleteItemAction);
+	menu.addSeparator();
+	menu.addAction(m_pPlayItemAction);
+
+	menu.exec(pContextMenuEvent->globalPos());
 }
 
 

@@ -27,6 +27,7 @@
 #include "qtractorAudioFile.h"
 #include "qtractorMidiEditor.h"
 
+#include <QFileDialog>
 #include <QFontDialog>
 #include <QMessageBox>
 #include <QValidator>
@@ -72,7 +73,7 @@ qtractorOptionsForm::qtractorOptionsForm (
 	m_ui.MidiCaptureFormatComboBox->addItem(tr("SMF Format 0"));
 	m_ui.MidiCaptureFormatComboBox->addItem(tr("SMF Format 1"));
 
-//	updateNoteNames();
+//	updateMetroNoteNames();
 
 	// Initialize dirty control state.
 	m_iDirtyCount = 0;
@@ -81,21 +82,6 @@ qtractorOptionsForm::qtractorOptionsForm (
 	adjustSize();
 
 	// UI signal/slot connections...
-	QObject::connect(m_ui.OkPushButton,
-		SIGNAL(clicked()),
-		SLOT(accept()));
-	QObject::connect(m_ui.CancelPushButton,
-		SIGNAL(clicked()),
-		SLOT(reject()));
-	QObject::connect(m_ui.MessagesFontPushButton,
-		SIGNAL(clicked()),
-		SLOT(chooseMessagesFont()));
-	QObject::connect(m_ui.MessagesLimitCheckBox,
-		SIGNAL(stateChanged(int)),
-		SLOT(changed()));
-	QObject::connect(m_ui.MessagesLimitLinesSpinBox,
-		SIGNAL(valueChanged(int)),
-		SLOT(changed()));
 	QObject::connect(m_ui.ConfirmRemoveCheckBox,
 		SIGNAL(stateChanged(int)),
 		SLOT(changed()));
@@ -117,6 +103,15 @@ qtractorOptionsForm::qtractorOptionsForm (
 	QObject::connect(m_ui.MaxRecentFilesSpinBox,
 		SIGNAL(valueChanged(int)),
 		SLOT(changed()));
+	QObject::connect(m_ui.MessagesFontPushButton,
+		SIGNAL(clicked()),
+		SLOT(chooseMessagesFont()));
+	QObject::connect(m_ui.MessagesLimitCheckBox,
+		SIGNAL(stateChanged(int)),
+		SLOT(changed()));
+	QObject::connect(m_ui.MessagesLimitLinesSpinBox,
+		SIGNAL(valueChanged(int)),
+		SLOT(changed()));
 	QObject::connect(m_ui.AudioCaptureTypeComboBox,
 		SIGNAL(activated(int)),
 		SLOT(changed()));
@@ -132,12 +127,30 @@ qtractorOptionsForm::qtractorOptionsForm (
 	QObject::connect(m_ui.AudioQuickSeekCheckBox,
 		SIGNAL(stateChanged(int)),
 		SLOT(changed()));
+	QObject::connect(m_ui.AudioMetronomeCheckBox,
+		SIGNAL(stateChanged(int)),
+		SLOT(changed()));
+	QObject::connect(m_ui.MetroBarFilenameComboBox,
+		SIGNAL(editTextChanged(const QString&)),
+		SLOT(changed()));
+	QObject::connect(m_ui.MetroBarFilenameToolButton,
+		SIGNAL(clicked()),
+		SLOT(chooseMetroBarFilename()));
+	QObject::connect(m_ui.MetroBeatFilenameComboBox,
+		SIGNAL(editTextChanged(const QString&)),
+		SLOT(changed()));
+	QObject::connect(m_ui.MetroBeatFilenameToolButton,
+		SIGNAL(clicked()),
+		SLOT(chooseMetroBeatFilename()));
 	QObject::connect(m_ui.MidiCaptureFormatComboBox,
 		SIGNAL(activated(int)),
 		SLOT(changed()));
+	QObject::connect(m_ui.MidiMetronomeCheckBox,
+		SIGNAL(stateChanged(int)),
+		SLOT(changed()));
 	QObject::connect(m_ui.MetroChannelSpinBox,
 		SIGNAL(valueChanged(int)),
-		SLOT(updateNoteNames()));
+		SLOT(updateMetroNoteNames()));
 	QObject::connect(m_ui.MetroBarNoteComboBox,
 		SIGNAL(activated(int)),
 		SLOT(changed()));
@@ -156,6 +169,12 @@ qtractorOptionsForm::qtractorOptionsForm (
 	QObject::connect(m_ui.MetroBeatDurationSpinBox,
 		SIGNAL(valueChanged(int)),
 		SLOT(changed()));
+	QObject::connect(m_ui.OkPushButton,
+		SIGNAL(clicked()),
+		SLOT(accept()));
+	QObject::connect(m_ui.CancelPushButton,
+		SIGNAL(clicked()),
+		SLOT(reject()));
 }
 
 
@@ -170,6 +189,10 @@ void qtractorOptionsForm::setOptions ( qtractorOptions *pOptions )
 {
 	// Set reference descriptor.
 	m_pOptions = pOptions;
+
+	// Initialize conveniency options...
+	m_pOptions->loadComboBoxHistory(m_ui.MetroBarFilenameComboBox);
+	m_pOptions->loadComboBoxHistory(m_ui.MetroBeatFilenameComboBox);
 
 	// Load Display options...
 	QFont font;
@@ -223,13 +246,18 @@ void qtractorOptionsForm::setOptions ( qtractorOptions *pOptions )
 	m_ui.AudioResampleTypeComboBox->setEnabled(false);
 #endif
 
+	// Audio metronome options.
+	m_ui.AudioMetronomeCheckBox->setChecked(m_pOptions->bAudioMetronome);
+	m_ui.MetroBarFilenameComboBox->setEditText(m_pOptions->sMetroBarFilename);
+	m_ui.MetroBeatFilenameComboBox->setEditText(m_pOptions->sMetroBeatFilename);
+
 	// MIDI options.
 	m_ui.MidiCaptureFormatComboBox->setCurrentIndex(m_pOptions->iMidiCaptureFormat);
 
-	// Metronome options.
+	// MIDI metronome options.
+	m_ui.MidiMetronomeCheckBox->setChecked(m_pOptions->bMidiMetronome);
 	m_ui.MetroChannelSpinBox->setValue(m_pOptions->iMetroChannel + 1);
-	updateNoteNames();
-
+	updateMetroNoteNames();
 	m_ui.MetroBarNoteComboBox->setCurrentIndex(m_pOptions->iMetroBarNote);
 	m_ui.MetroBarVelocitySpinBox->setValue(m_pOptions->iMetroBarVelocity);
 	m_ui.MetroBarDurationSpinBox->setValue(m_pOptions->iMetroBarDuration);
@@ -278,9 +306,14 @@ void qtractorOptionsForm::accept (void)
 		m_pOptions->iAudioCaptureQuality = m_ui.AudioCaptureQualitySpinBox->value();
 		m_pOptions->iAudioResampleType   = m_ui.AudioResampleTypeComboBox->currentIndex();
 		m_pOptions->bAudioQuickSeek      = m_ui.AudioQuickSeekCheckBox->isChecked();
+		// Audio metronome options.
+		m_pOptions->bAudioMetronome      = m_ui.AudioMetronomeCheckBox->isChecked();
+		m_pOptions->sMetroBarFilename    = m_ui.MetroBarFilenameComboBox->currentText();
+		m_pOptions->sMetroBeatFilename   = m_ui.MetroBeatFilenameComboBox->currentText();
 		// MIDI options...
 		m_pOptions->iMidiCaptureFormat   = m_ui.MidiCaptureFormatComboBox->currentIndex();
-		// Metronome options.
+		// MIDI metronome options.
+		m_pOptions->bMidiMetronome       = m_ui.MidiMetronomeCheckBox->isChecked();
 		m_pOptions->iMetroChannel        = m_ui.MetroChannelSpinBox->value() - 1;
 		m_pOptions->iMetroBarNote        = m_ui.MetroBarNoteComboBox->currentIndex();
 		m_pOptions->iMetroBarVelocity    = m_ui.MetroBarVelocitySpinBox->value();
@@ -291,6 +324,10 @@ void qtractorOptionsForm::accept (void)
 		// Reset dirty flag.
 		m_iDirtyCount = 0;
 	}
+
+	// Save other conveniency options...
+	m_pOptions->saveComboBoxHistory(m_ui.MetroBarFilenameComboBox);
+	m_pOptions->saveComboBoxHistory(m_ui.MetroBeatFilenameComboBox);
 
 	// Just go with dialog acceptance
 	QDialog::accept();
@@ -338,9 +375,38 @@ void qtractorOptionsForm::chooseMessagesFont (void)
 	}
 }
 
+// Choose audio metronome filenames.
+void qtractorOptionsForm::chooseMetroBarFilename (void)
+{
+	QString sFilename = getOpenAudioFileName(
+		tr("Metronome Bar Audio File"),
+		m_ui.MetroBarFilenameComboBox->currentText());
+
+	if (sFilename.isEmpty())
+		return;
+
+	m_ui.MetroBarFilenameComboBox->setEditText(sFilename);
+
+	changed();
+}
+
+void qtractorOptionsForm::chooseMetroBeatFilename (void)
+{
+	QString sFilename = getOpenAudioFileName(
+		tr("Metronome Beat Audio File"),
+		m_ui.MetroBeatFilenameComboBox->currentText());
+
+	if (sFilename.isEmpty())
+		return;
+
+	m_ui.MetroBeatFilenameComboBox->setEditText(sFilename);
+
+	changed();
+}
+
 
 // The metronome note names changer.
-void qtractorOptionsForm::updateNoteNames (void)
+void qtractorOptionsForm::updateMetroNoteNames (void)
 {
 	// Save current selection...
 	int iOldBarNote  = m_ui.MetroBarNoteComboBox->currentIndex();
@@ -403,7 +469,42 @@ void qtractorOptionsForm::stabilizeForm (void)
 		bValid  = qtractorAudioFileFactory::isValidFormat(pFormat, iFormat);
 	}
 
+	bool bAudioMetronome = m_ui.AudioMetronomeCheckBox->isChecked();
+	m_ui.MetroBarFilenameTextLabel->setEnabled(bAudioMetronome);
+	m_ui.MetroBarFilenameComboBox->setEnabled(bAudioMetronome);
+	m_ui.MetroBarFilenameToolButton->setEnabled(bAudioMetronome);
+	m_ui.MetroBeatFilenameTextLabel->setEnabled(bAudioMetronome);
+	m_ui.MetroBeatFilenameComboBox->setEnabled(bAudioMetronome);
+	m_ui.MetroBeatFilenameToolButton->setEnabled(bAudioMetronome);
+
+	bool bMidiMetronome = m_ui.MidiMetronomeCheckBox->isChecked();
+	m_ui.MetroChannelTextLabel->setEnabled(bMidiMetronome);
+	m_ui.MetroChannelSpinBox->setEnabled(bMidiMetronome);
+	m_ui.MetroBarNoteTextLabel->setEnabled(bMidiMetronome);
+	m_ui.MetroBarNoteComboBox->setEnabled(bMidiMetronome);
+	m_ui.MetroBarVelocityTextLabel->setEnabled(bMidiMetronome);
+	m_ui.MetroBarVelocitySpinBox->setEnabled(bMidiMetronome);
+	m_ui.MetroBarDurationTextLabel->setEnabled(bMidiMetronome);
+	m_ui.MetroBarDurationSpinBox->setEnabled(bMidiMetronome);
+
+	m_ui.MetroBeatNoteTextLabel->setEnabled(bMidiMetronome);
+	m_ui.MetroBeatNoteComboBox->setEnabled(bMidiMetronome);
+	m_ui.MetroBeatVelocityTextLabel->setEnabled(bMidiMetronome);
+	m_ui.MetroBeatVelocitySpinBox->setEnabled(bMidiMetronome);
+	m_ui.MetroBeatDurationTextLabel->setEnabled(bMidiMetronome);
+	m_ui.MetroBeatDurationSpinBox->setEnabled(bMidiMetronome);
+
 	m_ui.OkPushButton->setEnabled(bValid);
+}
+
+
+// Browse for an existing audio filename.
+QString qtractorOptionsForm::getOpenAudioFileName (
+	const QString& sTitle, const QString& sFilename )
+{
+	// Ask for the filename to open...
+	return QFileDialog::getOpenFileName(
+		this, sTitle, sFilename, qtractorAudioFileFactory::filters());
 }
 
 

@@ -25,6 +25,7 @@
 #include "qtractorClipCommand.h"
 
 #include "qtractorMidiEngine.h"
+#include "qtractorAudioEngine.h"
 #include "qtractorAudioClip.h"
 
 
@@ -127,6 +128,9 @@ bool qtractorSessionTempoCommand::redo (void)
 
 	// Restore playback state, if needed...
 	if (bPlaying) {
+		// The Audio engine too...
+		if (pSession->audioEngine())
+			pSession->audioEngine()->resetMetro();
 		// The MIDI engine queue needs a reset...
 		if (pSession->midiEngine())
 			pSession->midiEngine()->resetTempo();
