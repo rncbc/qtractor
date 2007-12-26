@@ -169,7 +169,7 @@ private:
 	qtractorAudioBuffer *m_pMetroBeatBuff;
 	QString              m_sMetroBarFilename;
 	QString              m_sMetroBeatFilename;
-	unsigned long        m_iMetroBeatFrame;
+	unsigned long        m_iMetroBeatStart;
 	unsigned int         m_iMetroBeat;
 
 	// Audition/pre-listening player stuff. 
