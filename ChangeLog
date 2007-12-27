@@ -3,7 +3,7 @@ Qtractor - An Audio/MIDI multi-track sequencer
 
 ChangeLog
 
-0.1.0   2007-12-26  Work in progress...
+0.1.0   2007-12-27  Work in progress...
 
 - Audio clip time-stretching makes its debut, with code adapted and
   refactored from the SoundTouch library, under the (L)GPL umbrella.
@@ -19,6 +19,10 @@ ChangeLog
 - Tempo changes are now affecting clip offsets correctly, keeping
   the clip offset constant in time units (ticks), as are clip start
   and length properties already.
+
+- Options for having separate dedicated ports for the audition/pre-
+  listening player output, audio metronome output, MIDI control
+  input/output and MIDI metronome output, are now in place.
 
 - A brand new subtle option sneaks in, affecting the drag-and-drop
   of the main track-view: View/Options.../Drop multiple files into

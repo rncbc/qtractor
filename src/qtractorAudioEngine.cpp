@@ -677,54 +677,21 @@ bool qtractorAudioEngine::loadElement ( qtractorSessionDocument *pDocument,
 				= pDocument->loadBusMode(eChild.attribute("mode"));
 			qtractorAudioBus *pAudioBus
 				= new qtractorAudioBus(this, sBusName, busMode);
-			for (QDomNode nProp = eChild.firstChild();
-					!nProp.isNull();
-						nProp = nProp.nextSibling()) {
-				// Convert audio-bus property to element...
-				QDomElement eProp = nProp.toElement();
-				if (eProp.isNull())
-					continue;
-				if (eProp.tagName() == "pass-through") {
-					pAudioBus->setPassthru(
-						pDocument->boolFromText(eProp.text()));
-				} else if (eProp.tagName() == "channels") {
-					pAudioBus->setChannels(eProp.text().toUShort());
-				} else if (eProp.tagName() == "auto-connect") {
-					pAudioBus->setAutoConnect(
-						pDocument->boolFromText(eProp.text()));
-				} else if (eProp.tagName() == "input-gain") {
-					if (pAudioBus->monitor_in())
-						pAudioBus->monitor_in()->setGain(
-							eProp.text().toFloat());
-				} else if (eProp.tagName() == "input-panning") {
-					if (pAudioBus->monitor_in())
-						pAudioBus->monitor_in()->setPanning(
-							eProp.text().toFloat());
-				} else if (eProp.tagName() == "input-plugins") {
-					if (pAudioBus->pluginList_in())
-						pAudioBus->pluginList_in()->loadElement(
-							pDocument, &eProp);
-				} else if (eProp.tagName() == "input-connects") {
-					pAudioBus->loadConnects(
-						pAudioBus->inputs(), pDocument, &eProp);
-				} else if (eProp.tagName() == "output-gain") {
-					if (pAudioBus->monitor_out())
-						pAudioBus->monitor_out()->setGain(
-							eProp.text().toFloat());
-				} else if (eProp.tagName() == "output-panning") {
-					if (pAudioBus->monitor_out())
-						pAudioBus->monitor_out()->setPanning(
-							eProp.text().toFloat());
-				} else if (eProp.tagName() == "output-plugins") {
-					if (pAudioBus->pluginList_out())
-						pAudioBus->pluginList_out()->loadElement(
-							pDocument, &eProp);
-				} else if (eProp.tagName() == "output-connects") {
-					pAudioBus->loadConnects(
-						pAudioBus->outputs(), pDocument, &eProp);
-				}
-			}
+			if (!pAudioBus->loadElement(pDocument, &eChild))
+				return false;
 			qtractorEngine::addBus(pAudioBus);
+		}
+		else if (eChild.tagName() == "metronome-outputs") {
+			if (m_bMetroBus && m_pMetroBus) {
+				m_pMetroBus->loadConnects(
+					m_pMetroBus->outputs(), pDocument, &eChild);
+			}
+		}
+		else if (eChild.tagName() == "player-outputs") {
+			if (m_bPlayerBus && m_pPlayerBus) {
+				m_pPlayerBus->loadConnects(
+					m_pPlayerBus->outputs(), pDocument, &eChild);
+			}
 		}
 	}
 
@@ -744,64 +711,29 @@ bool qtractorAudioEngine::saveElement ( qtractorSessionDocument *pDocument,
 			// Create the new audio bus element...
 			QDomElement eAudioBus
 				= pDocument->document()->createElement("audio-bus");
-			eAudioBus.setAttribute("name",
-				pAudioBus->busName());
-			eAudioBus.setAttribute("mode",
-				pDocument->saveBusMode(pAudioBus->busMode()));
-			pDocument->saveTextElement("pass-through",
-				pDocument->textFromBool(pAudioBus->isPassthru()), &eAudioBus);
-			pDocument->saveTextElement("channels",
-				QString::number(pAudioBus->channels()), &eAudioBus);
-			pDocument->saveTextElement("auto-connect",
-				pDocument->textFromBool(pAudioBus->isAutoConnect()), &eAudioBus);
-			if (pAudioBus->busMode() & qtractorBus::Input) {
-				if (pAudioBus->monitor_in()) {
-					pDocument->saveTextElement("input-gain",
-						QString::number(pAudioBus->monitor_in()->gain()),
-							&eAudioBus);
-					pDocument->saveTextElement("input-panning",
-						QString::number(pAudioBus->monitor_in()->panning()),
-							&eAudioBus);
-				}
-				if (pAudioBus->pluginList_in()) {
-					QDomElement eInputPlugins
-						= pDocument->document()->createElement("input-plugins");
-					pAudioBus->pluginList_in()->saveElement(
-						pDocument, &eInputPlugins);
-					eAudioBus.appendChild(eInputPlugins);
-				}
-				QDomElement eAudioInputs
-					= pDocument->document()->createElement("input-connects");
-				qtractorBus::ConnectList inputs;
-				pAudioBus->updateConnects(qtractorBus::Input, inputs);
-				pAudioBus->saveConnects(inputs, pDocument, &eAudioInputs);
-				eAudioBus.appendChild(eAudioInputs);
-			}
-			if (pAudioBus->busMode() & qtractorBus::Output) {
-				if (pAudioBus->monitor_out()) {
-					pDocument->saveTextElement("output-gain",
-						QString::number(pAudioBus->monitor_out()->gain()),
-							&eAudioBus);
-					pDocument->saveTextElement("output-panning",
-						QString::number(pAudioBus->monitor_out()->panning()),
-							&eAudioBus);
-				}
-				if (pAudioBus->pluginList_out()) {
-					QDomElement eOutputPlugins
-						= pDocument->document()->createElement("output-plugins");
-					pAudioBus->pluginList_out()->saveElement(
-						pDocument, &eOutputPlugins);
-					eAudioBus.appendChild(eOutputPlugins);
-				}
-				QDomElement eAudioOutputs
-					= pDocument->document()->createElement("output-connects");
-				qtractorBus::ConnectList outputs;
-				pAudioBus->updateConnects(qtractorBus::Output, outputs);
-				pAudioBus->saveConnects(outputs, pDocument, &eAudioOutputs);
-				eAudioBus.appendChild(eAudioOutputs);
-			}
+			pAudioBus->saveElement(pDocument, &eAudioBus);
 			pElement->appendChild(eAudioBus);
 		}
+	}
+
+	// Metronome bus connects...
+	if (m_bMetroBus && m_pMetroBus) {
+		QDomElement eOutputs
+			= pDocument->document()->createElement("metronome-outputs");
+		qtractorBus::ConnectList outputs;
+		m_pMetroBus->updateConnects(qtractorBus::Output, outputs);
+		m_pMetroBus->saveConnects(outputs, pDocument, &eOutputs);
+		pElement->appendChild(eOutputs);
+	}
+
+	// Audition/pre-listening player bus connects...
+	if (m_bPlayerBus && m_pPlayerBus) {
+		QDomElement eOutputs
+			= pDocument->document()->createElement("player-outputs");
+		qtractorBus::ConnectList outputs;
+		m_pPlayerBus->updateConnects(qtractorBus::Output, outputs);
+		m_pPlayerBus->saveConnects(outputs, pDocument, &eOutputs);
+		pElement->appendChild(eOutputs);
 	}
 
 	return true;
@@ -1234,6 +1166,34 @@ void qtractorAudioEngine::closePlayer (void)
 		m_bPlayerOpen  = false;
 		m_iPlayerFrame = 0;
 	}
+}
+
+
+// Retrieve/restore all connections, on all audio buses.
+// return the total number of effective (re)connection attempts...
+int qtractorAudioEngine::updateConnects (void)
+{
+	// It must be activated, sure...
+	if (!isActivated())
+		return 0;
+
+	// Do it first on all standard owned dependable buses...
+	int iUpdate = qtractorEngine::updateConnects();
+
+	// Metronome bus outputs...
+	if (m_bMetroBus && m_pMetroBus) {
+		iUpdate += m_pMetroBus->updateConnects(
+				qtractorBus::Output, m_pMetroBus->outputs(), true);
+	}
+
+	// Player bus outputs...
+	if (m_bPlayerBus && m_pPlayerBus) {
+		iUpdate += m_pPlayerBus->updateConnects(
+				qtractorBus::Output, m_pPlayerBus->outputs(), true);
+	}
+
+	// Done.
+	return iUpdate;
 }
 
 
@@ -1694,7 +1654,7 @@ qtractorPluginList *qtractorAudioBus::pluginList_out (void) const
 
 
 
-// Retrive all current JACK connections for a given bus mode interface;
+// Retrieve all current JACK connections for a given bus mode interface;
 // return the effective number of connection attempts...
 int qtractorAudioBus::updateConnects ( qtractorBus::BusMode busMode,
 	ConnectList& connects, bool bConnect )
@@ -1795,6 +1755,129 @@ int qtractorAudioBus::updateConnects ( qtractorBus::BusMode busMode,
 	
 	// Done.
 	return iUpdate;
+}
+
+
+// Document element methods.
+bool qtractorAudioBus::loadElement ( qtractorSessionDocument *pDocument,
+	QDomElement *pElement )
+{
+	for (QDomNode nProp = pElement->firstChild();
+			!nProp.isNull();
+				nProp = nProp.nextSibling()) {
+		// Convert audio-bus property to element...
+		QDomElement eProp = nProp.toElement();
+		if (eProp.isNull())
+			continue;
+		if (eProp.tagName() == "pass-through") {
+			qtractorAudioBus::setPassthru(
+				pDocument->boolFromText(eProp.text()));
+		} else if (eProp.tagName() == "channels") {
+			qtractorAudioBus::setChannels(eProp.text().toUShort());
+		} else if (eProp.tagName() == "auto-connect") {
+			qtractorAudioBus::setAutoConnect(
+				pDocument->boolFromText(eProp.text()));
+		} else if (eProp.tagName() == "input-gain") {
+			if (qtractorAudioBus::monitor_in())
+				qtractorAudioBus::monitor_in()->setGain(
+					eProp.text().toFloat());
+		} else if (eProp.tagName() == "input-panning") {
+			if (qtractorAudioBus::monitor_in())
+				qtractorAudioBus::monitor_in()->setPanning(
+					eProp.text().toFloat());
+		} else if (eProp.tagName() == "input-plugins") {
+			if (qtractorAudioBus::pluginList_in())
+				qtractorAudioBus::pluginList_in()->loadElement(
+					pDocument, &eProp);
+		} else if (eProp.tagName() == "input-connects") {
+			qtractorAudioBus::loadConnects(
+				qtractorAudioBus::inputs(), pDocument, &eProp);
+		} else if (eProp.tagName() == "output-gain") {
+			if (qtractorAudioBus::monitor_out())
+				qtractorAudioBus::monitor_out()->setGain(
+					eProp.text().toFloat());
+		} else if (eProp.tagName() == "output-panning") {
+			if (qtractorAudioBus::monitor_out())
+				qtractorAudioBus::monitor_out()->setPanning(
+					eProp.text().toFloat());
+		} else if (eProp.tagName() == "output-plugins") {
+			if (qtractorAudioBus::pluginList_out())
+				qtractorAudioBus::pluginList_out()->loadElement(
+					pDocument, &eProp);
+		} else if (eProp.tagName() == "output-connects") {
+			qtractorAudioBus::loadConnects(
+				qtractorAudioBus::outputs(), pDocument, &eProp);
+		}
+	}
+
+	return true;
+}
+
+
+bool qtractorAudioBus::saveElement ( qtractorSessionDocument *pDocument,
+	QDomElement *pElement )
+{
+	pElement->setAttribute("name",
+		qtractorAudioBus::busName());
+	pElement->setAttribute("mode",
+		pDocument->saveBusMode(qtractorAudioBus::busMode()));
+
+	pDocument->saveTextElement("pass-through",
+		pDocument->textFromBool(qtractorAudioBus::isPassthru()), pElement);
+	pDocument->saveTextElement("channels",
+		QString::number(qtractorAudioBus::channels()), pElement);
+	pDocument->saveTextElement("auto-connect",
+		pDocument->textFromBool(qtractorAudioBus::isAutoConnect()), pElement);
+
+	if (qtractorAudioBus::busMode() & qtractorBus::Input) {
+		if (qtractorAudioBus::monitor_in()) {
+			pDocument->saveTextElement("input-gain",
+				QString::number(qtractorAudioBus::monitor_in()->gain()),
+					pElement);
+			pDocument->saveTextElement("input-panning",
+				QString::number(qtractorAudioBus::monitor_in()->panning()),
+					pElement);
+		}
+		if (qtractorAudioBus::pluginList_in()) {
+			QDomElement eInputPlugins
+				= pDocument->document()->createElement("input-plugins");
+			qtractorAudioBus::pluginList_in()->saveElement(
+				pDocument, &eInputPlugins);
+			pElement->appendChild(eInputPlugins);
+		}
+		QDomElement eAudioInputs
+			= pDocument->document()->createElement("input-connects");
+		qtractorBus::ConnectList inputs;
+		qtractorAudioBus::updateConnects(qtractorBus::Input, inputs);
+		qtractorAudioBus::saveConnects(inputs, pDocument, &eAudioInputs);
+		pElement->appendChild(eAudioInputs);
+	}
+
+	if (qtractorAudioBus::busMode() & qtractorBus::Output) {
+		if (qtractorAudioBus::monitor_out()) {
+			pDocument->saveTextElement("output-gain",
+				QString::number(qtractorAudioBus::monitor_out()->gain()),
+					pElement);
+			pDocument->saveTextElement("output-panning",
+				QString::number(qtractorAudioBus::monitor_out()->panning()),
+					pElement);
+		}
+		if (qtractorAudioBus::pluginList_out()) {
+			QDomElement eOutputPlugins
+				= pDocument->document()->createElement("output-plugins");
+			qtractorAudioBus::pluginList_out()->saveElement(
+				pDocument, &eOutputPlugins);
+			pElement->appendChild(eOutputPlugins);
+		}
+		QDomElement eAudioOutputs
+			= pDocument->document()->createElement("output-connects");
+		qtractorBus::ConnectList outputs;
+		qtractorAudioBus::updateConnects(qtractorBus::Output, outputs);
+		qtractorAudioBus::saveConnects(outputs, pDocument, &eAudioOutputs);
+		pElement->appendChild(eAudioOutputs);
+	}
+
+	return true;
 }
 
 

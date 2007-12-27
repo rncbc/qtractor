@@ -132,6 +132,10 @@ public:
 	bool openPlayer(const QString& sFilename);
 	void closePlayer();
 
+	// Retrieve/restore all connections, on all audio buses;
+	// return the effective number of connection attempts.
+	int updateConnects();
+
 protected:
 
 	// Concrete device (de)activation methods.
@@ -252,6 +256,12 @@ public:
 	// return the effective number of connection attempts...
 	int updateConnects(BusMode busMode,
 		ConnectList& connects, bool bConnect = false);
+
+	// Document element methods.
+	bool loadElement(qtractorSessionDocument *pDocument,
+		QDomElement *pElement);
+	bool saveElement(qtractorSessionDocument *pDocument,
+		QDomElement *pElement);
 
 protected:
 

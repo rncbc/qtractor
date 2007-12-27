@@ -1614,46 +1614,27 @@ bool qtractorMidiEngine::loadElement ( qtractorSessionDocument *pDocument,
 				= pDocument->loadBusMode(eChild.attribute("mode"));
 			qtractorMidiBus *pMidiBus
 				= new qtractorMidiBus(this, sBusName, busMode);
-			// Load bus properties...
-			for (QDomNode nProp = eChild.firstChild();
-					!nProp.isNull();
-						nProp = nProp.nextSibling()) {
-				// Convert node to element...
-				QDomElement eProp = nProp.toElement();
-				if (eProp.isNull())
-					continue;
-				// Load map elements (non-critical)...
-				if (eProp.tagName() == "pass-through" ||
-					eProp.tagName() == "midi-thru") { // Legacy compat.
-					pMidiBus->setPassthru(
-						pDocument->boolFromText(eProp.text()));
-				} else if (eProp.tagName() == "midi-map") {
-					pMidiBus->loadMidiMap(pDocument, &eProp);
-				} else if (eProp.tagName() == "input-gain") {
-					if (pMidiBus->monitor_in())
-						pMidiBus->monitor_in()->setGain(
-							eProp.text().toFloat());
-				} else if (eProp.tagName() == "input-panning") {
-					if (pMidiBus->monitor_in())
-						pMidiBus->monitor_in()->setPanning(
-							eProp.text().toFloat());
-				} else if (eProp.tagName() == "input-connects") {
-					pMidiBus->loadConnects(
-						pMidiBus->inputs(), pDocument, &eProp);
-				} else if (eProp.tagName() == "output-gain") {
-					if (pMidiBus->monitor_out())
-						pMidiBus->monitor_out()->setGain(
-							eProp.text().toFloat());
-				} else if (eProp.tagName() == "output-panning") {
-					if (pMidiBus->monitor_out())
-						pMidiBus->monitor_out()->setPanning(
-							eProp.text().toFloat());
-				} else if (eProp.tagName() == "output-connects") {
-					pMidiBus->loadConnects(
-						pMidiBus->outputs(), pDocument, &eProp);
-				}
-			}
+			if (!pMidiBus->loadElement(pDocument, &eChild))
+				return false;
 			qtractorMidiEngine::addBus(pMidiBus);
+		}
+		else if (eChild.tagName() == "control-inputs") {
+			if (m_bControlBus && m_pIControlBus) {
+				m_pIControlBus->loadConnects(
+					m_pIControlBus->inputs(), pDocument, &eChild);
+			}
+		}
+		else if (eChild.tagName() == "control-outputs") {
+			if (m_bControlBus && m_pOControlBus) {
+				m_pOControlBus->loadConnects(
+					m_pOControlBus->outputs(), pDocument, &eChild);
+			}
+		}
+		else if (eChild.tagName() == "metronome-outputs") {
+			if (m_bMetroBus && m_pMetroBus) {
+				m_pMetroBus->loadConnects(
+					m_pMetroBus->outputs(), pDocument, &eChild);
+			}
 		}
 	}
 
@@ -1673,48 +1654,39 @@ bool qtractorMidiEngine::saveElement ( qtractorSessionDocument *pDocument,
 			// Create the new MIDI bus element...
 			QDomElement eMidiBus
 				= pDocument->document()->createElement("midi-bus");
-			eMidiBus.setAttribute("name",
-				pMidiBus->busName());
-			eMidiBus.setAttribute("mode",
-				pDocument->saveBusMode(pMidiBus->busMode()));
-			pDocument->saveTextElement("pass-through",
-				pDocument->textFromBool(pMidiBus->isPassthru()), &eMidiBus);
-			if (pMidiBus->busMode() & qtractorBus::Input) {
-				pDocument->saveTextElement("input-gain",
-					QString::number(pMidiBus->monitor_in()->gain()),
-						&eMidiBus);
-				pDocument->saveTextElement("input-panning",
-					QString::number(pMidiBus->monitor_in()->panning()),
-						&eMidiBus);
-				QDomElement eMidiInputs
-					= pDocument->document()->createElement("input-connects");
-				qtractorBus::ConnectList inputs;
-				pMidiBus->updateConnects(qtractorBus::Input, inputs);
-				pMidiBus->saveConnects(inputs, pDocument, &eMidiInputs);
-				eMidiBus.appendChild(eMidiInputs);
-			}
-			if (pMidiBus->busMode() & qtractorBus::Output) {
-				pDocument->saveTextElement("output-gain",
-					QString::number(pMidiBus->monitor_out()->gain()),
-						&eMidiBus);
-				pDocument->saveTextElement("output-panning",
-					QString::number(pMidiBus->monitor_out()->panning()),
-						&eMidiBus);
-				QDomElement eMidiOutputs
-					= pDocument->document()->createElement("output-connects");
-				qtractorBus::ConnectList outputs;
-				pMidiBus->updateConnects(qtractorBus::Output, outputs);
-				pMidiBus->saveConnects(outputs, pDocument, &eMidiOutputs);
-				eMidiBus.appendChild(eMidiOutputs);
-			}
-			// Create the map element...
-			QDomElement eMidiMap
-				= pDocument->document()->createElement("midi-map");
-			pMidiBus->saveMidiMap(pDocument, &eMidiMap);
-			eMidiBus.appendChild(eMidiMap);
-			// Add this bus...
+			pMidiBus->saveElement(pDocument, &eMidiBus);
 			pElement->appendChild(eMidiBus);
 		}
+	}
+
+	// Contrrol bus (input) connects...
+	if (m_bControlBus && m_pIControlBus) {
+		QDomElement eInputs
+			= pDocument->document()->createElement("control-inputs");
+		qtractorBus::ConnectList inputs;
+		m_pIControlBus->updateConnects(qtractorBus::Input, inputs);
+		m_pIControlBus->saveConnects(inputs, pDocument, &eInputs);
+		pElement->appendChild(eInputs);
+	}
+
+	// Contrrol bus (output) connects...
+	if (m_bControlBus && m_pOControlBus) {
+		QDomElement eOutputs
+			= pDocument->document()->createElement("control-outputs");
+		qtractorBus::ConnectList outputs;
+		m_pOControlBus->updateConnects(qtractorBus::Output, outputs);
+		m_pOControlBus->saveConnects(outputs, pDocument, &eOutputs);
+		pElement->appendChild(eOutputs);
+	}
+
+	// Metronome bus connects...
+	if (m_bMetroBus && m_pMetroBus) {
+		QDomElement eOutputs
+			= pDocument->document()->createElement("metronome-outputs");
+		qtractorBus::ConnectList outputs;
+		m_pMetroBus->updateConnects(qtractorBus::Output, outputs);
+		m_pMetroBus->saveConnects(outputs, pDocument, &eOutputs);
+		pElement->appendChild(eOutputs);
 	}
 
 	return true;
@@ -1881,6 +1853,40 @@ bool qtractorMidiEngine::fileExport ( const QString& sExportPath,
 
 	// Done successfully.
 	return bResult;
+}
+
+
+// Retrieve/restore all connections, on all MIDI buses.
+// return the total number of effective (re)connection attempts...
+int qtractorMidiEngine::updateConnects (void)
+{
+	// It must be activated, sure...
+	if (!isActivated())
+		return 0;
+
+	// Do it first on all standard owned dependable buses...
+	int iUpdate = qtractorEngine::updateConnects();
+
+	// Control bus inputs...
+	if (m_bControlBus && m_pIControlBus) {
+		iUpdate += m_pIControlBus->updateConnects(
+				qtractorBus::Input, m_pIControlBus->inputs(), true);
+	}
+
+	// Control bus outputs...
+	if (m_bControlBus && m_pOControlBus) {
+		iUpdate += m_pOControlBus->updateConnects(
+				qtractorBus::Output, m_pOControlBus->outputs(), true);
+	}
+
+	// Metronome bus outputs...
+	if (m_bMetroBus && m_pMetroBus) {
+		iUpdate += m_pMetroBus->updateConnects(
+				qtractorBus::Output, m_pMetroBus->outputs(), true);
+	}
+
+	// Done.
+	return iUpdate;
 }
 
 
@@ -2262,7 +2268,7 @@ qtractorMidiMonitor *qtractorMidiBus::midiMonitor_out (void) const
 }
 
 
-// Retrive all current ALSA connections for a given bus mode interface;
+// Retrieve all current ALSA connections for a given bus mode interface;
 // return the effective number of connection attempts...
 int qtractorMidiBus::updateConnects ( qtractorBus::BusMode busMode,
 	ConnectList& connects, bool bConnect )
@@ -2434,6 +2440,106 @@ void qtractorMidiBus::setPanning ( unsigned short iChannel, float fPanning )
 
 
 // Document element methods.
+bool qtractorMidiBus::loadElement ( qtractorSessionDocument *pDocument,
+	QDomElement *pElement )
+{
+	for (QDomNode nProp = pElement->firstChild();
+			!nProp.isNull();
+				nProp = nProp.nextSibling()) {
+
+		// Convert node to element...
+		QDomElement eProp = nProp.toElement();
+		if (eProp.isNull())
+			continue;
+
+		// Load map elements (non-critical)...
+		if (eProp.tagName() == "pass-through" ||
+			eProp.tagName() == "midi-thru") { // Legacy compat.
+			qtractorMidiBus::setPassthru(
+				pDocument->boolFromText(eProp.text()));
+		} else if (eProp.tagName() == "midi-map") {
+			qtractorMidiBus::loadMidiMap(pDocument, &eProp);
+		} else if (eProp.tagName() == "input-gain") {
+			if (qtractorMidiBus::monitor_in())
+				qtractorMidiBus::monitor_in()->setGain(
+					eProp.text().toFloat());
+		} else if (eProp.tagName() == "input-panning") {
+			if (qtractorMidiBus::monitor_in())
+				qtractorMidiBus::monitor_in()->setPanning(
+					eProp.text().toFloat());
+		} else if (eProp.tagName() == "input-connects") {
+			qtractorMidiBus::loadConnects(
+				qtractorMidiBus::inputs(), pDocument, &eProp);
+		} else if (eProp.tagName() == "output-gain") {
+			if (qtractorMidiBus::monitor_out())
+				qtractorMidiBus::monitor_out()->setGain(
+					eProp.text().toFloat());
+		} else if (eProp.tagName() == "output-panning") {
+			if (qtractorMidiBus::monitor_out())
+				qtractorMidiBus::monitor_out()->setPanning(
+					eProp.text().toFloat());
+		} else if (eProp.tagName() == "output-connects") {
+			qtractorMidiBus::loadConnects(
+				qtractorMidiBus::outputs(), pDocument, &eProp);
+		}
+	}
+
+	return true;
+}
+
+
+bool qtractorMidiBus::saveElement ( qtractorSessionDocument *pDocument,
+	QDomElement *pElement )
+{
+	pElement->setAttribute("name",
+		qtractorMidiBus::busName());
+	pElement->setAttribute("mode",
+		pDocument->saveBusMode(qtractorMidiBus::busMode()));
+
+	pDocument->saveTextElement("pass-through",
+		pDocument->textFromBool(qtractorMidiBus::isPassthru()), pElement);
+
+	if (qtractorMidiBus::busMode() & qtractorBus::Input) {
+		pDocument->saveTextElement("input-gain",
+			QString::number(qtractorMidiBus::monitor_in()->gain()),
+				pElement);
+		pDocument->saveTextElement("input-panning",
+			QString::number(qtractorMidiBus::monitor_in()->panning()),
+				pElement);
+		QDomElement eMidiInputs
+			= pDocument->document()->createElement("input-connects");
+		qtractorBus::ConnectList inputs;
+		qtractorMidiBus::updateConnects(qtractorBus::Input, inputs);
+		qtractorMidiBus::saveConnects(inputs, pDocument, &eMidiInputs);
+		pElement->appendChild(eMidiInputs);
+	}
+
+	if (qtractorMidiBus::busMode() & qtractorBus::Output) {
+		pDocument->saveTextElement("output-gain",
+			QString::number(qtractorMidiBus::monitor_out()->gain()),
+				pElement);
+		pDocument->saveTextElement("output-panning",
+			QString::number(qtractorMidiBus::monitor_out()->panning()),
+				pElement);
+		QDomElement eMidiOutputs
+			= pDocument->document()->createElement("output-connects");
+		qtractorBus::ConnectList outputs;
+		qtractorMidiBus::updateConnects(qtractorBus::Output, outputs);
+		qtractorMidiBus::saveConnects(outputs, pDocument, &eMidiOutputs);
+		pElement->appendChild(eMidiOutputs);
+	}
+
+	// Create the map element...
+	QDomElement eMidiMap
+		= pDocument->document()->createElement("midi-map");
+	qtractorMidiBus::saveMidiMap(pDocument, &eMidiMap);
+	pElement->appendChild(eMidiMap);
+
+	return true;
+}
+
+
+// Document instrument map methods.
 bool qtractorMidiBus::loadMidiMap ( qtractorSessionDocument * /*pDocument*/,
 	QDomElement *pElement )
 {

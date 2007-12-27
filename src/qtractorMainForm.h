@@ -230,6 +230,8 @@ protected:
 	void updateMessagesLimit();
 	void updateMessagesCapture();
 	void updateDisplayFormat();
+	void updateAudioPlayer();
+	void updateMidiControl();
 	void updateAudioMetronome();
 	void updateMidiMetronome();
 

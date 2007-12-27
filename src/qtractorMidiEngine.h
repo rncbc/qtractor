@@ -152,6 +152,10 @@ public:
 		unsigned long iExportStart = 0, unsigned long iExportEnd = 0,
 		qtractorMidiBus *pExportBus = NULL);
 
+	// Retrieve/restore all connections, on all buses;
+	// return the effective number of connection attempts.
+	int updateConnects();
+
 protected:
 
 	// Concrete device (de)activation methods.
@@ -288,15 +292,21 @@ public:
 	void setPanning(unsigned short iChannel, float fPanning);
 
 	// Document element methods.
-	bool loadMidiMap(qtractorSessionDocument *pDocument,
+	bool loadElement(qtractorSessionDocument *pDocument,
 		QDomElement *pElement);
-	bool saveMidiMap(qtractorSessionDocument *pDocument,
+	bool saveElement(qtractorSessionDocument *pDocument,
 		QDomElement *pElement);
 
 protected:
 
 	// Bus mode change event.
 	void updateBusMode();
+
+	// Document instrument map methods.
+	bool loadMidiMap(qtractorSessionDocument *pDocument,
+		QDomElement *pElement);
+	bool saveMidiMap(qtractorSessionDocument *pDocument,
+		QDomElement *pElement);
 
 private:
 

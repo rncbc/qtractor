@@ -795,7 +795,7 @@
             <property name="sizeHint" >
              <size>
               <width>20</width>
-              <height>20</height>
+              <height>0</height>
              </size>
             </property>
            </spacer>
@@ -804,7 +804,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QGroupBox" name="PlaybackGroupBox" >
+        <widget class="QGroupBox" name="AudioPlaybackGroupBox" >
          <property name="font" >
           <font>
            <family>Sans Serif</family>
@@ -931,6 +931,30 @@
            </widget>
           </item>
           <item row="2" column="0" colspan="3" >
+           <widget class="QCheckBox" name="AudioPlayerBusCheckBox" >
+            <property name="font" >
+             <font>
+              <family>Sans Serif</family>
+              <pointsize>8</pointsize>
+              <weight>50</weight>
+              <italic>false</italic>
+              <bold>false</bold>
+              <underline>false</underline>
+              <strikeout>false</strikeout>
+             </font>
+            </property>
+            <property name="toolTip" >
+             <string>Whether to have separate audition/pre-listening player output ports</string>
+            </property>
+            <property name="text" >
+             <string>Dedicated au&amp;dition/pre-listening player outputs</string>
+            </property>
+            <property name="shortcut" >
+             <string>Alt+D</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0" colspan="3" >
            <spacer>
             <property name="orientation" >
              <enum>Qt::Vertical</enum>
@@ -938,7 +962,7 @@
             <property name="sizeHint" >
              <size>
               <width>20</width>
-              <height>20</height>
+              <height>0</height>
              </size>
             </property>
            </spacer>
@@ -989,10 +1013,10 @@
              <string>Whether to enable the audio metronome</string>
             </property>
             <property name="text" >
-             <string>Enable audio &amp;metronome</string>
+             <string>&amp;Enable audio metronome</string>
             </property>
             <property name="shortcut" >
-             <string>Alt+M</string>
+             <string>Alt+E</string>
             </property>
            </widget>
           </item>
@@ -1168,6 +1192,30 @@
             </property>
            </widget>
           </item>
+          <item row="3" column="0" colspan="3" >
+           <widget class="QCheckBox" name="AudioMetroBusCheckBox" >
+            <property name="font" >
+             <font>
+              <family>Sans Serif</family>
+              <pointsize>8</pointsize>
+              <weight>50</weight>
+              <italic>false</italic>
+              <bold>false</bold>
+              <underline>false</underline>
+              <strikeout>false</strikeout>
+             </font>
+            </property>
+            <property name="toolTip" >
+             <string>Whether to have separate audio metronome output ports</string>
+            </property>
+            <property name="text" >
+             <string>Dedicated a&amp;udio metronome outputs</string>
+            </property>
+            <property name="shortcut" >
+             <string>Alt+U</string>
+            </property>
+           </widget>
+          </item>
          </layout>
         </widget>
        </item>
@@ -1287,6 +1335,72 @@
         </widget>
        </item>
        <item>
+        <widget class="QGroupBox" name="MidiControlGroupBox" >
+         <property name="font" >
+          <font>
+           <family>Sans Serif</family>
+           <pointsize>8</pointsize>
+           <weight>75</weight>
+           <italic>false</italic>
+           <bold>true</bold>
+           <underline>false</underline>
+           <strikeout>false</strikeout>
+          </font>
+         </property>
+         <property name="title" >
+          <string>Control</string>
+         </property>
+         <property name="flat" >
+          <bool>true</bool>
+         </property>
+         <layout class="QGridLayout" >
+          <property name="margin" >
+           <number>9</number>
+          </property>
+          <property name="spacing" >
+           <number>6</number>
+          </property>
+          <item row="0" column="0" colspan="3" >
+           <widget class="QCheckBox" name="MidiControlBusCheckBox" >
+            <property name="font" >
+             <font>
+              <family>Sans Serif</family>
+              <pointsize>8</pointsize>
+              <weight>50</weight>
+              <italic>false</italic>
+              <bold>false</bold>
+              <underline>false</underline>
+              <strikeout>false</strikeout>
+             </font>
+            </property>
+            <property name="toolTip" >
+             <string>Whether to have separate MIDI control ports</string>
+            </property>
+            <property name="text" >
+             <string>Dedicated MIDI &amp;control input/output</string>
+            </property>
+            <property name="shortcut" >
+             <string>Alt+C</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0" colspan="3" >
+           <spacer>
+            <property name="orientation" >
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" >
+             <size>
+              <width>20</width>
+              <height>0</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
         <widget class="QGroupBox" name="MidiMetronomeGroupBox" >
          <property name="font" >
           <font>
@@ -1324,6 +1438,30 @@
              </size>
             </property>
            </spacer>
+          </item>
+          <item row="4" column="0" colspan="8" >
+           <widget class="QCheckBox" name="MidiMetroBusCheckBox" >
+            <property name="font" >
+             <font>
+              <family>Sans Serif</family>
+              <pointsize>8</pointsize>
+              <weight>50</weight>
+              <italic>false</italic>
+              <bold>false</bold>
+              <underline>false</underline>
+              <strikeout>false</strikeout>
+             </font>
+            </property>
+            <property name="toolTip" >
+             <string>Whether to have separate MIDI metronome output port</string>
+            </property>
+            <property name="text" >
+             <string>Dedicated M&amp;IDI metronome output</string>
+            </property>
+            <property name="shortcut" >
+             <string>Alt+I</string>
+            </property>
+           </widget>
           </item>
           <item row="3" column="0" >
            <widget class="QLabel" name="MetroBeatNoteTextLabel" >
@@ -1722,10 +1860,10 @@
              <string>Whether to enable the MIDI metronome</string>
             </property>
             <property name="text" >
-             <string>Enable MIDI &amp;metronome</string>
+             <string>&amp;Enable MIDI metronome</string>
             </property>
             <property name="shortcut" >
-             <string>Alt+M</string>
+             <string>Alt+E</string>
             </property>
            </widget>
           </item>
@@ -1800,12 +1938,15 @@
   <tabstop>AudioCaptureQualitySpinBox</tabstop>
   <tabstop>AudioResampleTypeComboBox</tabstop>
   <tabstop>AudioQuickSeekCheckBox</tabstop>
+  <tabstop>AudioPlayerBusCheckBox</tabstop>
   <tabstop>AudioMetronomeCheckBox</tabstop>
   <tabstop>MetroBarFilenameComboBox</tabstop>
   <tabstop>MetroBarFilenameToolButton</tabstop>
   <tabstop>MetroBeatFilenameComboBox</tabstop>
   <tabstop>MetroBeatFilenameToolButton</tabstop>
+  <tabstop>AudioMetroBusCheckBox</tabstop>
   <tabstop>MidiCaptureFormatComboBox</tabstop>
+  <tabstop>MidiControlBusCheckBox</tabstop>
   <tabstop>MidiMetronomeCheckBox</tabstop>
   <tabstop>MetroChannelSpinBox</tabstop>
   <tabstop>MetroBarNoteComboBox</tabstop>
@@ -1814,6 +1955,7 @@
   <tabstop>MetroBeatNoteComboBox</tabstop>
   <tabstop>MetroBeatVelocitySpinBox</tabstop>
   <tabstop>MetroBeatDurationSpinBox</tabstop>
+  <tabstop>MidiMetroBusCheckBox</tabstop>
   <tabstop>OkPushButton</tabstop>
   <tabstop>CancelPushButton</tabstop>
  </tabstops>

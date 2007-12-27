@@ -130,6 +130,9 @@ qtractorOptionsForm::qtractorOptionsForm (
 	QObject::connect(m_ui.AudioQuickSeekCheckBox,
 		SIGNAL(stateChanged(int)),
 		SLOT(changed()));
+	QObject::connect(m_ui.AudioPlayerBusCheckBox,
+		SIGNAL(stateChanged(int)),
+		SLOT(changed()));
 	QObject::connect(m_ui.AudioMetronomeCheckBox,
 		SIGNAL(stateChanged(int)),
 		SLOT(changed()));
@@ -145,8 +148,14 @@ qtractorOptionsForm::qtractorOptionsForm (
 	QObject::connect(m_ui.MetroBeatFilenameToolButton,
 		SIGNAL(clicked()),
 		SLOT(chooseMetroBeatFilename()));
+	QObject::connect(m_ui.AudioMetroBusCheckBox,
+		SIGNAL(stateChanged(int)),
+		SLOT(changed()));
 	QObject::connect(m_ui.MidiCaptureFormatComboBox,
 		SIGNAL(activated(int)),
+		SLOT(changed()));
+	QObject::connect(m_ui.MidiControlBusCheckBox,
+		SIGNAL(stateChanged(int)),
 		SLOT(changed()));
 	QObject::connect(m_ui.MidiMetronomeCheckBox,
 		SIGNAL(stateChanged(int)),
@@ -171,6 +180,9 @@ qtractorOptionsForm::qtractorOptionsForm (
 		SLOT(changed()));
 	QObject::connect(m_ui.MetroBeatDurationSpinBox,
 		SIGNAL(valueChanged(int)),
+		SLOT(changed()));
+	QObject::connect(m_ui.MidiMetroBusCheckBox,
+		SIGNAL(stateChanged(int)),
 		SLOT(changed()));
 	QObject::connect(m_ui.OkPushButton,
 		SIGNAL(clicked()),
@@ -244,6 +256,7 @@ void qtractorOptionsForm::setOptions ( qtractorOptions *pOptions )
 	m_ui.AudioCaptureQualitySpinBox->setValue(m_pOptions->iAudioCaptureQuality);
 	m_ui.AudioResampleTypeComboBox->setCurrentIndex(m_pOptions->iAudioResampleType);
 	m_ui.AudioQuickSeekCheckBox->setChecked(m_pOptions->bAudioQuickSeek);
+	m_ui.AudioPlayerBusCheckBox->setChecked(m_pOptions->bAudioPlayerBus);
 
 #ifndef CONFIG_LIBSAMPLERATE
 	m_ui.AudioResampleTypeTextLabel->setEnabled(false);
@@ -254,9 +267,11 @@ void qtractorOptionsForm::setOptions ( qtractorOptions *pOptions )
 	m_ui.AudioMetronomeCheckBox->setChecked(m_pOptions->bAudioMetronome);
 	m_ui.MetroBarFilenameComboBox->setEditText(m_pOptions->sMetroBarFilename);
 	m_ui.MetroBeatFilenameComboBox->setEditText(m_pOptions->sMetroBeatFilename);
+	m_ui.AudioMetroBusCheckBox->setChecked(m_pOptions->bAudioMetroBus);
 
 	// MIDI options.
 	m_ui.MidiCaptureFormatComboBox->setCurrentIndex(m_pOptions->iMidiCaptureFormat);
+	m_ui.MidiControlBusCheckBox->setChecked(m_pOptions->bMidiControlBus);
 
 	// MIDI metronome options.
 	m_ui.MidiMetronomeCheckBox->setChecked(m_pOptions->bMidiMetronome);
@@ -268,6 +283,7 @@ void qtractorOptionsForm::setOptions ( qtractorOptions *pOptions )
 	m_ui.MetroBeatNoteComboBox->setCurrentIndex(m_pOptions->iMetroBeatNote);
 	m_ui.MetroBeatVelocitySpinBox->setValue(m_pOptions->iMetroBeatVelocity);
 	m_ui.MetroBeatDurationSpinBox->setValue(m_pOptions->iMetroBeatDuration);
+	m_ui.MidiMetroBusCheckBox->setChecked(m_pOptions->bMidiMetroBus);
 
 	// Done. Restart clean.
 	m_iDirtyCount = 0;
@@ -311,12 +327,15 @@ void qtractorOptionsForm::accept (void)
 		m_pOptions->iAudioCaptureQuality = m_ui.AudioCaptureQualitySpinBox->value();
 		m_pOptions->iAudioResampleType   = m_ui.AudioResampleTypeComboBox->currentIndex();
 		m_pOptions->bAudioQuickSeek      = m_ui.AudioQuickSeekCheckBox->isChecked();
+		m_pOptions->bAudioPlayerBus      = m_ui.AudioPlayerBusCheckBox->isChecked();
 		// Audio metronome options.
 		m_pOptions->bAudioMetronome      = m_ui.AudioMetronomeCheckBox->isChecked();
 		m_pOptions->sMetroBarFilename    = m_ui.MetroBarFilenameComboBox->currentText();
 		m_pOptions->sMetroBeatFilename   = m_ui.MetroBeatFilenameComboBox->currentText();
+		m_pOptions->bAudioMetroBus       = m_ui.AudioMetroBusCheckBox->isChecked();
 		// MIDI options...
 		m_pOptions->iMidiCaptureFormat   = m_ui.MidiCaptureFormatComboBox->currentIndex();
+		m_pOptions->bMidiControlBus      = m_ui.MidiControlBusCheckBox->isChecked();
 		// MIDI metronome options.
 		m_pOptions->bMidiMetronome       = m_ui.MidiMetronomeCheckBox->isChecked();
 		m_pOptions->iMetroChannel        = m_ui.MetroChannelSpinBox->value() - 1;
@@ -326,6 +345,7 @@ void qtractorOptionsForm::accept (void)
 		m_pOptions->iMetroBeatNote       = m_ui.MetroBeatNoteComboBox->currentIndex();
 		m_pOptions->iMetroBeatVelocity   = m_ui.MetroBeatVelocitySpinBox->value();
 		m_pOptions->iMetroBeatDuration   = m_ui.MetroBeatDurationSpinBox->value();
+		m_pOptions->bMidiMetroBus        = m_ui.MidiMetroBusCheckBox->isChecked();
 		// Reset dirty flag.
 		m_iDirtyCount = 0;
 	}
@@ -481,6 +501,7 @@ void qtractorOptionsForm::stabilizeForm (void)
 	m_ui.MetroBeatFilenameTextLabel->setEnabled(bAudioMetronome);
 	m_ui.MetroBeatFilenameComboBox->setEnabled(bAudioMetronome);
 	m_ui.MetroBeatFilenameToolButton->setEnabled(bAudioMetronome);
+	m_ui.AudioMetroBusCheckBox->setEnabled(bAudioMetronome);
 
 	bool bMidiMetronome = m_ui.MidiMetronomeCheckBox->isChecked();
 	m_ui.MetroChannelTextLabel->setEnabled(bMidiMetronome);
@@ -491,13 +512,13 @@ void qtractorOptionsForm::stabilizeForm (void)
 	m_ui.MetroBarVelocitySpinBox->setEnabled(bMidiMetronome);
 	m_ui.MetroBarDurationTextLabel->setEnabled(bMidiMetronome);
 	m_ui.MetroBarDurationSpinBox->setEnabled(bMidiMetronome);
-
 	m_ui.MetroBeatNoteTextLabel->setEnabled(bMidiMetronome);
 	m_ui.MetroBeatNoteComboBox->setEnabled(bMidiMetronome);
 	m_ui.MetroBeatVelocityTextLabel->setEnabled(bMidiMetronome);
 	m_ui.MetroBeatVelocitySpinBox->setEnabled(bMidiMetronome);
 	m_ui.MetroBeatDurationTextLabel->setEnabled(bMidiMetronome);
 	m_ui.MetroBeatDurationSpinBox->setEnabled(bMidiMetronome);
+	m_ui.MidiMetroBusCheckBox->setEnabled(bMidiMetronome);
 
 	m_ui.OkPushButton->setEnabled(bValid);
 }
