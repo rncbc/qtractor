@@ -1445,7 +1445,7 @@ void qtractorAudioBus::autoConnect (void)
 
 	unsigned short i;
 
-	if (busMode() & qtractorBus::Input) {
+	if ((busMode() & qtractorBus::Input) && inputs().isEmpty()) {
 		const char **ppszOPorts
 			= jack_get_ports(pAudioEngine->jackClient(),
 				0, JACK_DEFAULT_AUDIO_TYPE,
@@ -1453,7 +1453,7 @@ void qtractorAudioBus::autoConnect (void)
 		if (ppszOPorts) {
 			const QString sIPortName = pAudioEngine->clientName()
 				+ ':' + busName() + "/in_%1";
-			for (i = 0; i < m_iChannels && ppszOPorts[i]; i++) {
+			for (i = 0; i < m_iChannels && ppszOPorts[i]; ++i) {
 				jack_connect(pAudioEngine->jackClient(),
 					ppszOPorts[i], sIPortName.arg(i + 1).toUtf8().constData());
 			}
@@ -1461,7 +1461,7 @@ void qtractorAudioBus::autoConnect (void)
 		}
 	}
 
-	if (busMode() & qtractorBus::Output) {
+	if ((busMode() & qtractorBus::Output) && outputs().isEmpty()) {
 		const char **ppszIPorts
 			= jack_get_ports(pAudioEngine->jackClient(),
 				0, JACK_DEFAULT_AUDIO_TYPE,
@@ -1469,7 +1469,7 @@ void qtractorAudioBus::autoConnect (void)
 		if (ppszIPorts) {
 			const QString sOPortName = pAudioEngine->clientName()
 				+ ':' + busName() + "/out_%1";
-			for (i = 0; i < m_iChannels && ppszIPorts[i]; i++) {
+			for (i = 0; i < m_iChannels && ppszIPorts[i]; ++i) {
 				jack_connect(pAudioEngine->jackClient(),
 					sOPortName.arg(i + 1).toUtf8().constData(), ppszIPorts[i]);
 			}

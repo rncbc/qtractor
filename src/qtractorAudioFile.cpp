@@ -132,7 +132,7 @@ qtractorAudioFileFactory::qtractorAudioFileFactory (void)
 	// Add for libmad (mp3 read-only)...
 	pFormat = new FileFormat;
 	pFormat->type = MadFile;
-	pFormat->name = "MPEG-1 Audio Layer 3";
+	pFormat->name = "MP3 MPEG-1 Audio Layer 3";
 	pFormat->ext  = "mp3";
 	pFormat->data = 0;
 	m_formats.append(pFormat);
@@ -141,7 +141,7 @@ qtractorAudioFileFactory::qtractorAudioFileFactory (void)
 		sFilterMask.arg(pFormat->name).arg(sExtMask.arg(pFormat->ext)));
 #endif
 
-	// Finally, simply build the all supported files entry.
+	// Finally, simply build the all (most commonly) supported files entry.
 	QRegExp rx("^(aif(|f)|fla(|c)|mp3|ogg|w(av|64))", Qt::CaseInsensitive);
 	QStringList exts;
 	for (FileTypes::ConstIterator iter = m_types.begin();

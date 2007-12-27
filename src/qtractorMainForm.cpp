@@ -720,7 +720,9 @@ void qtractorMainForm::setOptions ( qtractorOptions *pOptions )
 	updateRecentFilesMenu();
 	updatePeakAutoRemove();
 	updateDisplayFormat();
+	updateAudioPlayer();
 	updateAudioMetronome();
+	updateMidiControl();
 	updateMidiMetronome();
 
 	// FIXME: This is what it should ever be,
