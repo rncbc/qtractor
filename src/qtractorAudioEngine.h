@@ -115,7 +115,7 @@ public:
 	void setMetroBeatFilename(const QString& sFilename);
 	const QString& metroBeatFilename() const;
 
-	// Metronome methods.
+	// Metronome management methods.
 	void createMetro();
 	void deleteMetro();
 	void resetMetro();
@@ -124,7 +124,7 @@ public:
 	void setPlayerBus(bool bPlayerBus);
 	bool isPlayerBus() const;
 
-	// Audition/pre-listening player methods.
+	// Audition/pre-listening player management methods.
 	void createPlayer();
 	void deletePlayer();
 

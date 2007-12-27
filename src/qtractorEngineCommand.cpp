@@ -110,7 +110,10 @@ bool qtractorBusCommand::createBus (void)
 				= new qtractorMidiBus(pMidiEngine,
 					m_sBusName, m_busMode, m_bPassthru);
 			pMidiEngine->addBus(pMidiBus);
-			pMidiEngine->resetControlBuses(qtractorBus::Duplex);
+			if (!pMidiEngine->isControlBus())
+				pMidiEngine->createControlBus();
+			if (!pMidiEngine->isMetroBus())
+				pMidiEngine->createMetroBus();
 			m_pBus = pMidiBus;
 		}
 		break;
@@ -338,12 +341,30 @@ bool qtractorBusCommand::deleteBus (void)
 	pEngine->removeBus(m_pBus);
 	m_pBus = NULL;
 
-	// Better update MIDI control buses anyway...
-	if (pEngine->syncType() == qtractorTrack::Midi)
-		pSession->midiEngine()->resetControlBuses(qtractorBus::Duplex);
-	// And reset audio player and metronome too...
-	pSession->audioEngine()->createPlayer();
-	pSession->audioEngine()->createMetro();
+	// Better update special buses anyway...
+	switch (pEngine->syncType()) {
+	case qtractorTrack::Audio: {
+		qtractorAudioEngine *pAudioEngine = pSession->audioEngine();
+		if (pAudioEngine) {
+			if (!pAudioEngine->isPlayerBus())
+				pAudioEngine->createPlayer();
+			if (!pAudioEngine->isMetroBus())
+				pAudioEngine->createMetro();
+		}
+	}
+	case qtractorTrack::Midi: {
+		qtractorMidiEngine *pMidiEngine = pSession->midiEngine();
+		if (pMidiEngine) {
+			if (!pMidiEngine->isControlBus())
+				pMidiEngine->createControlBus();
+			if (!pMidiEngine->isMetroBus())
+				pMidiEngine->createMetroBus();
+		}
+		break;
+	}
+	default:
+		break;
+	}
 
 	// Update mixer (clean old strips...)
 	qtractorMixer *pMixer = pMainForm->mixer();

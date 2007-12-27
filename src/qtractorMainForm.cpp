@@ -3024,10 +3024,11 @@ void qtractorMainForm::updateAudioMetronome (void)
 	pAudioEngine->setMetroBarFilename(m_pOptions->sMetroBarFilename);
 	pAudioEngine->setMetroBeatFilename(m_pOptions->sMetroBeatFilename);
 
-	bool bAudioMetronome = m_pOptions->bAudioMetronome
-		&& m_ui.transportMetroAction->isChecked();
-	pAudioEngine->setMetroBus(bAudioMetronome && m_pOptions->bAudioMetroBus);
-	pAudioEngine->setMetronome(bAudioMetronome);
+	bool bAudioMetronome = m_pOptions->bAudioMetronome;
+	pAudioEngine->setMetroBus(
+		bAudioMetronome && m_pOptions->bAudioMetroBus);
+	pAudioEngine->setMetronome(
+		bAudioMetronome && m_ui.transportMetroAction->isChecked());
 }
 
 
@@ -3052,10 +3053,11 @@ void qtractorMainForm::updateMidiMetronome (void)
 		m_pOptions->iMetroBeatVelocity,
 		m_pOptions->iMetroBeatDuration);
 
-	bool bMidiMetronome = m_pOptions->bMidiMetronome
-		&& m_ui.transportMetroAction->isChecked();
-	pMidiEngine->setMetroBus(bMidiMetronome	&& m_pOptions->bMidiMetroBus);
-	pMidiEngine->setMetronome(bMidiMetronome);
+	bool bMidiMetronome = m_pOptions->bMidiMetronome;
+	pMidiEngine->setMetroBus(
+		bMidiMetronome && m_pOptions->bMidiMetroBus);
+	pMidiEngine->setMetronome(
+		bMidiMetronome && m_ui.transportMetroAction->isChecked());
 }
 
 

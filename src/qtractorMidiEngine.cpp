@@ -668,56 +668,6 @@ void qtractorMidiEngine::resetAllMonitors (void)
 }
 
 
-// Control bus mode selector.
-void qtractorMidiEngine::resetControlBuses ( qtractorBus::BusMode busMode )
-{
-	// When owned, both input and output
-	// bus are the one and the same...
-	if (m_pOControlBus && m_bControlBus) {
-		m_pOControlBus->close();
-		delete m_pOControlBus;
-	}
-
-	// Metro bus might be also owned...
-	if (m_pMetroBus && m_bMetroBus) {
-		m_pMetroBus->close();
-		delete m_pMetroBus;
-	}
-
-	// Reset both control buses...
-	m_pIControlBus = NULL;
-	m_pOControlBus = NULL;
-	m_pMetroBus = NULL;
-
-	if (busMode & qtractorBus::Duplex) {
-		// Whether control bus is here owned, or...
-		if (m_bControlBus) {
-			m_pOControlBus = new qtractorMidiBus(this, "Control");
-			m_pOControlBus->open();
-			m_pIControlBus = m_pOControlBus;
-		} else {
-			// Find available control buses...
-			for (qtractorBus *pBus = qtractorEngine::buses().first();
-					pBus; pBus = pBus->next()) {
-				if (m_pIControlBus == NULL
-					&& (pBus->busMode() & (busMode & qtractorBus::Input)))
-					m_pIControlBus = static_cast<qtractorMidiBus *> (pBus);
-				if (m_pOControlBus == NULL
-					&& (pBus->busMode() & (busMode & qtractorBus::Output)))
-					m_pOControlBus = static_cast<qtractorMidiBus *> (pBus);
-			}
-		}
-		// Now for the metronome bit...
-		if (m_bMetroBus) {
-			m_pMetroBus = new qtractorMidiBus(this, "Metronome", qtractorBus::Output);
-			m_pMetroBus->open();
-		} else {
-			m_pMetroBus = m_pOControlBus;
-		}
-	}
-}
-
-
 // MIDI event capture method.
 void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 {
@@ -1082,7 +1032,9 @@ bool qtractorMidiEngine::activate (void)
 #endif
 
 	// Reset control buses...
-	resetControlBuses(qtractorBus::Duplex);
+	createControlBus();
+	createMetroBus();
+
 	// Reset all dependable monitoring...
 	resetAllMonitors();
 
@@ -1168,7 +1120,8 @@ void qtractorMidiEngine::deactivate (void)
 	m_pOutputThread->sync();
 
 	// Reset existing control buses...
-	resetControlBuses(qtractorBus::None);
+	deleteControlBus();
+	deleteMetroBus();
 }
 
 
@@ -1355,12 +1308,56 @@ QEvent::Type qtractorMidiEngine::notifyMmcType (void) const
 // Control bus accessors.
 void qtractorMidiEngine::setControlBus ( bool bControlBus )
 {
+	deleteControlBus();
+
 	m_bControlBus = bControlBus;
+
+	if (isActivated())
+		createControlBus();
 }
 
 bool qtractorMidiEngine::isControlBus (void) const
 {
 	return m_bControlBus;
+}
+
+
+// Control bus simple management.
+void qtractorMidiEngine::createControlBus (void)
+{
+	deleteControlBus();
+
+	// Whether control bus is here owned, or...
+	if (m_bControlBus) {
+		m_pOControlBus = new qtractorMidiBus(this, "Control");
+		m_pOControlBus->open();
+		m_pIControlBus = m_pOControlBus;
+	} else {
+		// Find available control buses...
+		for (qtractorBus *pBus = qtractorEngine::buses().first();
+				pBus; pBus = pBus->next()) {
+			if (m_pIControlBus == NULL
+				&& (pBus->busMode() & qtractorBus::Input))
+				m_pIControlBus = static_cast<qtractorMidiBus *> (pBus);
+			if (m_pOControlBus == NULL
+				&& (pBus->busMode() & qtractorBus::Output))
+				m_pOControlBus = static_cast<qtractorMidiBus *> (pBus);
+		}
+	}
+}
+
+void qtractorMidiEngine::deleteControlBus (void)
+{
+	// When owned, both input and output
+	// bus are the one and the same...
+	if (m_pOControlBus && m_bControlBus) {
+		m_pOControlBus->close();
+		delete m_pOControlBus;
+	}
+
+	// Reset both control buses...
+	m_pIControlBus = NULL;
+	m_pOControlBus = NULL;
 }
 
 
@@ -1460,12 +1457,51 @@ bool qtractorMidiEngine::isMetronome (void) const
 // Metronome bus accessors.
 void qtractorMidiEngine::setMetroBus ( bool bMetroBus )
 {
+	deleteMetroBus();
+
 	m_bMetroBus = bMetroBus;
+
+	if (isActivated())
+		createMetroBus();
 }
 
 bool qtractorMidiEngine::isMetroBus (void) const
 {
 	return m_bMetroBus;
+}
+
+
+// Metronome bus simple management.
+void qtractorMidiEngine::createMetroBus (void)
+{
+	deleteMetroBus();
+
+	// Whether metronome bus is here owned, or...
+	if (m_bMetroBus) {
+		m_pMetroBus = new qtractorMidiBus(this, "Metronome", qtractorBus::Output);
+		m_pMetroBus->open();
+	} else {
+		// Find first available output buses...
+		for (qtractorBus *pBus = qtractorEngine::buses().first();
+				pBus; pBus = pBus->next()) {
+			if (pBus->busMode() & qtractorBus::Output) {
+				m_pMetroBus = static_cast<qtractorMidiBus *> (pBus);
+				break;
+			}
+		}
+	}
+}
+
+void qtractorMidiEngine::deleteMetroBus (void)
+{
+	// Metro bus might be also owned...
+	if (m_pMetroBus && m_bMetroBus) {
+		m_pMetroBus->close();
+		delete m_pMetroBus;
+	}
+
+	// Reset metronome bus...
+	m_pMetroBus = NULL;
 }
 
 

@@ -72,9 +72,6 @@ public:
 	// Reset all MIDI monitoring...
 	void resetAllMonitors();
 
-	// Reset control buses (including metronome ones).
-	void resetControlBuses(qtractorBus::BusMode busMode);
-
 	// MIDI event capture method.
 	void capture(snd_seq_event_t *pEv);
 
@@ -101,6 +98,10 @@ public:
 	// Metronome bus accessors.
 	void setMetroBus(bool bMetroBus);
 	bool isMetroBus() const;
+
+	// Metronome bus simple management primitives.
+	void createMetroBus();
+	void deleteMetroBus();
 
 	// Metronome parameters.
 	void setMetroChannel (unsigned short iChannel);
@@ -129,6 +130,10 @@ public:
 	// Control bus accessors.
 	void setControlBus(bool bControlBus);
 	bool isControlBus() const;
+
+	// Control bus simple management primitives.
+	void createControlBus();
+	void deleteControlBus();
 
 	// Control buses accessors.
 	qtractorMidiBus *controlBus_in() const;
