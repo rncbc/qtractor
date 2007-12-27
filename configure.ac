@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(Qtractor, 0.0.9.825, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.0.9.826, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractorMainForm.ui)
 AC_CONFIG_HEADERS(config.h)
@@ -44,6 +44,12 @@ AC_ARG_ENABLE(libsamplerate,
   AC_HELP_STRING([--enable-libsamplerate], [enable libsamplerate interface (default=yes)]),
   [ac_libsamplerate="$enableval"],
   [ac_libsamplerate="yes"])
+
+# Enable SSE optimization.
+AC_ARG_ENABLE(sse,
+  AC_HELP_STRING([--enable-sse], [enable SSE optimization (default=yes)]),
+  [ac_sse="$enableval"],
+  [ac_sse="yes"])
 
 # Standard installation base dirs.
 ac_with_paths="/usr /usr/local"
@@ -147,6 +153,25 @@ AC_CACHE_CHECK([for Qt library version >= 4.1],
       exit
     ])
 ])
+
+# Check for SSE optimization.
+if test "x$ac_sse" = "xyes"; then
+  CFLAGS="-msse $CFLAGS"
+  CPPFLAGS="-msse $CPPFLAGS"
+  AC_CACHE_CHECK([for SSE optimization],
+    ac_sse, [
+    AC_TRY_LINK([#include <xmmintrin.h>], [
+#if !defined(__SSE__)
+#error SSE optimization disabled.
+#endif
+      ], ac_sse="yes", ac_sse="no")
+    ])
+fi
+
+if test "x$ac_sse" = "xyes"; then
+  ac_cflags="-msse $ac_cflags"
+fi
+AC_SUBST(ac_cflags)
 
 # A common error message:
 ac_errmsg="not found in current PATH. Maybe QT development environment isn't available (qt-devel)."
@@ -359,6 +384,7 @@ echo "  General audio file support (libsndfile)  . . . . .: $ac_libsndfile"
 echo "  Ogg Vorbis audio file support (libvorbis)  . . . .: $ac_libvorbis"
 echo "  MPEG Layer III audio file support (libmad) . . . .: $ac_libmad"
 echo "  Sample-rate conversion support (libsamplerate) . .: $ac_libsamplerate"
+echo "  SSE optimization support (x86) . . . . . . . . . .: $ac_sse"
 echo
 echo "  Install prefix . . . . . . . . . . . . . . . . . .: $ac_prefix"
 echo

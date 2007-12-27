@@ -192,3 +192,6 @@ INCPATH += @ac_incpath@
 
 # XML/DOM support
 QT      += xml
+
+# Extra optimization flags
+QMAKE_CXXFLAGS += @ac_cflags@
