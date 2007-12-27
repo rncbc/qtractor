@@ -221,6 +221,7 @@ qtractorAudioEngine::qtractorAudioEngine ( qtractorSession *pSession )
 
 	// Audio metronome stuff.
 	m_bMetronome      = false;
+	m_bMetroBus       = false;
 	m_pMetroBus       = NULL;
 	m_pMetroBarBuff   = NULL;
 	m_pMetroBeatBuff  = NULL;
@@ -229,6 +230,7 @@ qtractorAudioEngine::qtractorAudioEngine ( qtractorSession *pSession )
 
 	// Audition/pre-listening player stuff. 
 	m_bPlayerOpen  = false;
+	m_bPlayerBus   = false;
 	m_pPlayerBus   = NULL;
 	m_pPlayerBuff  = NULL;
 	m_iPlayerFrame = 0;
@@ -340,11 +342,6 @@ bool qtractorAudioEngine::init ( const QString& sClientName )
 // Device engine activation method.
 bool qtractorAudioEngine::activate (void)
 {
-	// Create audio metronome...
-	createMetro();
-	// Open and start audition/pre-listening...
-	createPlayer();
-
 	// Set our main engine processor callbacks.
 	jack_set_process_callback(m_pJackClient,
 			qtractorAudioEngine_process, this);
@@ -371,6 +368,11 @@ bool qtractorAudioEngine::activate (void)
 
 	// Time to activate ourselves...
 	jack_activate(m_pJackClient);
+
+	// Create audio metronome...
+	createMetro();
+	// Open and start audition/pre-listening...
+	createPlayer();
 
 	// Now, do all auto-connection stuff (if applicable...)
 	for (qtractorBus *pBus = buses().first();
@@ -507,6 +509,11 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 		if (pAudioBus)
 			pAudioBus->process_prepare(nframes);
 	}
+	// The owned buses too, if any...
+	if (m_bMetroBus)
+		m_pMetroBus->process_prepare(nframes);
+	if (m_bPlayerBus)
+		m_pPlayerBus->process_prepare(nframes);
 
 	// Session RT-safeness lock...
 	if (!pSession->acquire())
@@ -518,6 +525,8 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 			m_pPlayerBus->channels(), 0, 1.0f);
 		m_bPlayerOpen = (m_iPlayerFrame < m_pPlayerBuff->length());
 		m_iPlayerFrame += nframes;
+		if (m_bPlayerBus)
+			m_pPlayerBus->process_commit(nframes);
 	}
 
 	// Don't go any further, if not playing.
@@ -542,7 +551,7 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 			}
 		}
 		// Process audition/pre-listening bus...
-		if (m_pPlayerBus && !m_pPlayerBus->isPassthru())
+		if (m_pPlayerBus && !m_bPlayerBus && !m_pPlayerBus->isPassthru())
 			m_pPlayerBus->process_commit(nframes);
 		// Pass-thru current audio buses...
 		for (qtractorBus *pBus = buses().first();
@@ -577,6 +586,8 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 			m_iMetroBeatStart = pSession->frameFromBeat(++m_iMetroBeat);
 			pMetroBuff->reset(false);
 		}
+		if (m_bMetroBus)
+			m_pMetroBus->process_commit(nframes);
 	}
 
 	// Reset buffer offset.
@@ -970,6 +981,21 @@ bool qtractorAudioEngine::isMetronome (void) const
 }
 
 
+// Metronome bus mode accessors.
+void qtractorAudioEngine::setMetroBus ( bool bMetroBus )
+{
+	m_bMetroBus = bMetroBus;
+
+	if (isActivated())
+		createMetro();
+}
+
+bool qtractorAudioEngine::isMetroBus (void) const
+{
+	return m_bMetroBus;
+}
+
+
 // Metronome bar audio sample.
 void qtractorAudioEngine::setMetroBarFilename ( const QString& sFilename )
 {
@@ -1009,13 +1035,20 @@ void qtractorAudioEngine::createMetro (void)
 {
 	deleteMetro();
 
-	// FIXME: Metronome bus gets to be
-	// the first available output bus...
-	for (qtractorBus *pBus = qtractorEngine::buses().first();
-			pBus; pBus = pBus->next()) {
-		if (pBus->busMode() & qtractorBus::Output) {
-			m_pMetroBus = static_cast<qtractorAudioBus *> (pBus);
-			break;
+	// Whether metronome bus is here owned, or...
+	if (m_bMetroBus) {
+		m_pMetroBus = new qtractorAudioBus(this,
+			"Metronome", qtractorBus::Output, 2);
+		m_pMetroBus->open();
+		m_pMetroBus->autoConnect();
+	} else {
+		// Metronome bus gets to be the first available output bus...
+		for (qtractorBus *pBus = qtractorEngine::buses().first();
+				pBus; pBus = pBus->next()) {
+			if (pBus->busMode() & qtractorBus::Output) {
+				m_pMetroBus = static_cast<qtractorAudioBus *> (pBus);
+				break;
+			}
 		}
 	}
 
@@ -1051,9 +1084,14 @@ void qtractorAudioEngine::deleteMetro (void)
 		m_pMetroBeatBuff = NULL;
 	}
 
+	if (m_pMetroBus && m_bMetroBus) {
+		m_pMetroBus->close();
+		delete m_pMetroBus;
+	}
+
 	m_iMetroBeatStart = 0;
 	m_iMetroBeat = 0;
-	m_pMetroBus = NULL;	
+	m_pMetroBus = NULL;
 }
 
 
@@ -1094,18 +1132,41 @@ void qtractorAudioEngine::resetMetro (void)
 }
 
 
+// Audition/pre-listening bus mode accessors.
+void qtractorAudioEngine::setPlayerBus ( bool bPlayerBus )
+{
+	m_bPlayerBus = bPlayerBus;
+
+	if (isActivated())
+		createPlayer();
+}
+
+bool qtractorAudioEngine::isPlayerBus (void) const
+{
+	return m_bPlayerBus;
+}
+
+
 // Create audition/pre-listening stuff...
 void qtractorAudioEngine::createPlayer (void)
 {
 	deletePlayer();
 
-	// FIXME: Audition/pre-listening bus gets
-	// to be the first available output bus...
-	for (qtractorBus *pBus = qtractorEngine::buses().first();
-			pBus; pBus = pBus->next()) {
-		if (pBus->busMode() & qtractorBus::Output) {
-			m_pPlayerBus = static_cast<qtractorAudioBus *> (pBus);
-			break;
+	// Whether audition/pre-listening bus is here owned, or...
+	if (m_bPlayerBus) {
+		m_pPlayerBus = new qtractorAudioBus(this,
+			"Player", qtractorBus::Output, 2);
+		m_pPlayerBus->open();
+		m_pPlayerBus->autoConnect();
+	} else {
+		// Audition/pre-listening bus gets to be
+		// the first available output bus...
+		for (qtractorBus *pBus = qtractorEngine::buses().first();
+				pBus; pBus = pBus->next()) {
+			if (pBus->busMode() & qtractorBus::Output) {
+				m_pPlayerBus = static_cast<qtractorAudioBus *> (pBus);
+				break;
+			}
 		}
 	}
 
@@ -1133,6 +1194,11 @@ void qtractorAudioEngine::deletePlayer (void)
 	if (m_pPlayerBuff) {
 		delete m_pPlayerBuff;
 		m_pPlayerBuff = NULL;
+	}
+
+	if (m_pPlayerBus && m_bPlayerBus) {
+		m_pPlayerBus->close();
+		delete m_pPlayerBus;
 	}
 
 	m_pPlayerBus = NULL;

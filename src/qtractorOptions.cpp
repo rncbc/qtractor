@@ -94,12 +94,16 @@ qtractorOptions::qtractorOptions (void)
 	iAudioCaptureQuality = m_settings.value("/CaptureQuality", 4).toInt();
 	iAudioResampleType   = m_settings.value("/ResampleType", 2).toInt();
 	bAudioQuickSeek      = m_settings.value("/QuickSeek", false).toBool();
+	bAudioPlayerBus      = m_settings.value("/PlayerBus", false).toBool();
+	bAudioMetroBus       = m_settings.value("/MetroBus", false).toBool();
 	bAudioMetronome      = m_settings.value("/Metronome", false).toBool();
 	m_settings.endGroup();
 
 	// MIDI rendering options group.
 	m_settings.beginGroup("/Midi");
 	iMidiCaptureFormat = m_settings.value("/CaptureFormat", 1).toInt();
+	bMidiControlBus    = m_settings.value("/ControlBus", false).toBool();
+	bMidiMetroBus      = m_settings.value("/MetroBus", false).toBool();
 	bMidiMetronome     = m_settings.value("/Metronome", true).toBool();
 	m_settings.endGroup();
 
@@ -238,12 +242,16 @@ qtractorOptions::~qtractorOptions (void)
 	m_settings.setValue("/CaptureQuality", iAudioCaptureQuality);
 	m_settings.setValue("/ResampleType", iAudioResampleType);
 	m_settings.setValue("/QuickSeek", bAudioQuickSeek);
+	m_settings.setValue("/PlayerBus", bAudioPlayerBus);
+	m_settings.setValue("/MetroBus", bAudioMetroBus);
 	m_settings.setValue("/Metronome", bAudioMetronome);
 	m_settings.endGroup();
 
 	// MIDI rendering options group.
 	m_settings.beginGroup("/Midi");
 	m_settings.setValue("/CaptureFormat", iMidiCaptureFormat);
+	m_settings.setValue("/ControlBus", bMidiControlBus);
+	m_settings.setValue("/MetroBus", bMidiMetroBus);
 	m_settings.setValue("/Metronome", bMidiMetronome);
 	m_settings.endGroup();
 

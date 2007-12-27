@@ -72,8 +72,8 @@ public:
 	// Reset all MIDI monitoring...
 	void resetAllMonitors();
 
-	// Reset control buses.
-	void resetControlBus(qtractorBus::BusMode busMode);
+	// Reset control buses (including metronome ones).
+	void resetControlBuses(qtractorBus::BusMode busMode);
 
 	// MIDI event capture method.
 	void capture(snd_seq_event_t *pEv);
@@ -98,6 +98,10 @@ public:
 	void setMetronome(bool bMetronome);
 	bool isMetronome() const;
 
+	// Metronome bus accessors.
+	void setMetroBus(bool bMetroBus);
+	bool isMetroBus() const;
+
 	// Metronome parameters.
 	void setMetroChannel (unsigned short iChannel);
 	unsigned short metroChannel() const;
@@ -121,6 +125,10 @@ public:
 
 	QWidget     *notifyWidget() const;
 	QEvent::Type notifyMmcType() const;
+
+	// Control bus accessors.
+	void setControlBus(bool bControlBus);
+	bool isControlBus() const;
 
 	// Control buses accessors.
 	qtractorMidiBus *controlBus_in() const;
@@ -170,17 +178,6 @@ private:
 	qtractorMidiInputThread  *m_pInputThread;
 	qtractorMidiOutputThread *m_pOutputThread;
 
-	// Metronome enablement.
-	bool m_bMetronome;
-
-	unsigned short m_iMetroChannel;
-	int            m_iMetroBarNote;
-	int            m_iMetroBarVelocity;
-	unsigned long  m_iMetroBarDuration;
-	int            m_iMetroBeatNote;
-	int            m_iMetroBeatVelocity;
-	unsigned long  m_iMetroBeatDuration;
-
 	// The delta-time when playback started .
 	long m_iTimeStart;
 #ifdef QTRACTOR_SNAFU_DRIFT
@@ -192,8 +189,21 @@ private:
 	QEvent::Type  m_eNotifyMmcType;
 
 	// The assigned control buses.
+	bool             m_bControlBus;
 	qtractorMidiBus *m_pIControlBus;
 	qtractorMidiBus *m_pOControlBus;
+
+	// Metronome enablement.
+	bool             m_bMetronome;
+	bool             m_bMetroBus;
+	qtractorMidiBus *m_pMetroBus;
+	unsigned short   m_iMetroChannel;
+	int              m_iMetroBarNote;
+	int              m_iMetroBarVelocity;
+	unsigned long    m_iMetroBarDuration;
+	int              m_iMetroBeatNote;
+	int              m_iMetroBeatVelocity;
+	unsigned long    m_iMetroBeatDuration;
 };
 
 

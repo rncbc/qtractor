@@ -103,6 +103,10 @@ public:
 	void setMetronome(bool bMetronome);
 	bool isMetronome() const;
 
+	// Metronome bus mode accessors.
+	void setMetroBus(bool bMetroBus);
+	bool isMetroBus() const;
+
 	// Metronome bar audio sample.
 	void setMetroBarFilename(const QString& sFilename);
 	const QString& metroBarFilename() const;
@@ -115,6 +119,10 @@ public:
 	void createMetro();
 	void deleteMetro();
 	void resetMetro();
+
+	// Audition/pre-listening bus mode accessors.
+	void setPlayerBus(bool bPlayerBus);
+	bool isPlayerBus() const;
 
 	// Audition/pre-listening player methods.
 	void createPlayer();
@@ -164,6 +172,7 @@ private:
 
 	// Audio metronome stuff.
 	bool                 m_bMetronome;
+	bool                 m_bMetroBus;
 	qtractorAudioBus    *m_pMetroBus;
 	qtractorAudioBuffer *m_pMetroBarBuff;
 	qtractorAudioBuffer *m_pMetroBeatBuff;
@@ -174,6 +183,7 @@ private:
 
 	// Audition/pre-listening player stuff. 
 	bool                 m_bPlayerOpen;
+	bool                 m_bPlayerBus;
 	qtractorAudioBus    *m_pPlayerBus;
 	qtractorAudioBuffer *m_pPlayerBuff;
 	unsigned long        m_iPlayerFrame;

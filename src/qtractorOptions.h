@@ -90,6 +90,8 @@ public:
 	int     iAudioCaptureQuality;
 	int     iAudioResampleType;
 	bool    bAudioQuickSeek;
+	bool    bAudioPlayerBus;
+	bool    bAudioMetroBus;
 	bool    bAudioMetronome;
 
 	// Audio metronome parameters.
@@ -98,6 +100,8 @@ public:
 
 	// MIDI options...
 	int  iMidiCaptureFormat;
+	bool bMidiControlBus;
+	bool bMidiMetroBus;
 	bool bMidiMetronome;
 
 	// MIDI Metronome parameters.

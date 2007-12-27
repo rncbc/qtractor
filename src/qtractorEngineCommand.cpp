@@ -110,7 +110,7 @@ bool qtractorBusCommand::createBus (void)
 				= new qtractorMidiBus(pMidiEngine,
 					m_sBusName, m_busMode, m_bPassthru);
 			pMidiEngine->addBus(pMidiBus);
-			pMidiEngine->resetControlBus(qtractorBus::Duplex);
+			pMidiEngine->resetControlBuses(qtractorBus::Duplex);
 			m_pBus = pMidiBus;
 		}
 		break;
@@ -340,7 +340,7 @@ bool qtractorBusCommand::deleteBus (void)
 
 	// Better update MIDI control buses anyway...
 	if (pEngine->syncType() == qtractorTrack::Midi)
-		pSession->midiEngine()->resetControlBus(qtractorBus::Duplex);
+		pSession->midiEngine()->resetControlBuses(qtractorBus::Duplex);
 	// And reset audio player and metronome too...
 	pSession->audioEngine()->createPlayer();
 	pSession->audioEngine()->createMetro();

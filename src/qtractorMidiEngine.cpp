@@ -509,18 +509,6 @@ qtractorMidiEngine::qtractorMidiEngine ( qtractorSession *pSession )
 	m_pInputThread   = NULL;
 	m_pOutputThread  = NULL;
 
-	m_bMetronome     = false;
-
-	m_iMetroChannel  = 9;
-
-	m_iMetroBarNote      = 76;
-	m_iMetroBarVelocity  = 96;
-	m_iMetroBarDuration  = 24;
-
-	m_iMetroBeatNote     = 77;
-	m_iMetroBeatVelocity = 64;
-	m_iMetroBeatDuration = 16;
-
 	m_iTimeStart     = 0;
 #ifdef QTRACTOR_SNAFU_DRIFT
 	m_iTimeDelta     = 0;
@@ -529,8 +517,20 @@ qtractorMidiEngine::qtractorMidiEngine ( qtractorSession *pSession )
 	m_pNotifyWidget  = NULL;
 	m_eNotifyMmcType = QEvent::None;
 
+	m_bControlBus    = false;
 	m_pIControlBus   = NULL;
 	m_pOControlBus   = NULL;
+
+	m_bMetronome         = false;
+	m_bMetroBus          = false;
+	m_pMetroBus          = NULL;
+	m_iMetroChannel      = 9;	// GM Drums channel (10)
+	m_iMetroBarNote      = 76;	// GM High-wood stick
+	m_iMetroBarVelocity  = 96;
+	m_iMetroBarDuration  = 24;
+	m_iMetroBeatNote     = 77;	// GM Low-wood stick
+	m_iMetroBeatVelocity = 64;
+	m_iMetroBeatDuration = 16;
 }
 
 
@@ -669,22 +669,50 @@ void qtractorMidiEngine::resetAllMonitors (void)
 
 
 // Control bus mode selector.
-void qtractorMidiEngine::resetControlBus ( qtractorBus::BusMode busMode )
+void qtractorMidiEngine::resetControlBuses ( qtractorBus::BusMode busMode )
 {
+	// When owned, both input and output
+	// bus are the one and the same...
+	if (m_pOControlBus && m_bControlBus) {
+		m_pOControlBus->close();
+		delete m_pOControlBus;
+	}
+
+	// Metro bus might be also owned...
+	if (m_pMetroBus && m_bMetroBus) {
+		m_pMetroBus->close();
+		delete m_pMetroBus;
+	}
+
 	// Reset both control buses...
 	m_pIControlBus = NULL;
 	m_pOControlBus = NULL;
+	m_pMetroBus = NULL;
 
-	// Find available control buses...
 	if (busMode & qtractorBus::Duplex) {
-		for (qtractorBus *pBus = qtractorEngine::buses().first();
-				pBus; pBus = pBus->next()) {
-			if (m_pIControlBus == NULL
-				&& (pBus->busMode() & (busMode & qtractorBus::Input)))
-				m_pIControlBus = static_cast<qtractorMidiBus *> (pBus);
-			if (m_pOControlBus == NULL
-				&& (pBus->busMode() & (busMode & qtractorBus::Output)))
-				m_pOControlBus = static_cast<qtractorMidiBus *> (pBus);
+		// Whether control bus is here owned, or...
+		if (m_bControlBus) {
+			m_pOControlBus = new qtractorMidiBus(this, "Control");
+			m_pOControlBus->open();
+			m_pIControlBus = m_pOControlBus;
+		} else {
+			// Find available control buses...
+			for (qtractorBus *pBus = qtractorEngine::buses().first();
+					pBus; pBus = pBus->next()) {
+				if (m_pIControlBus == NULL
+					&& (pBus->busMode() & (busMode & qtractorBus::Input)))
+					m_pIControlBus = static_cast<qtractorMidiBus *> (pBus);
+				if (m_pOControlBus == NULL
+					&& (pBus->busMode() & (busMode & qtractorBus::Output)))
+					m_pOControlBus = static_cast<qtractorMidiBus *> (pBus);
+			}
+		}
+		// Now for the metronome bit...
+		if (m_bMetroBus) {
+			m_pMetroBus = new qtractorMidiBus(this, "Metronome", qtractorBus::Output);
+			m_pMetroBus->open();
+		} else {
+			m_pMetroBus = m_pOControlBus;
 		}
 	}
 }
@@ -1054,7 +1082,7 @@ bool qtractorMidiEngine::activate (void)
 #endif
 
 	// Reset control buses...
-	resetControlBus(qtractorBus::Duplex);
+	resetControlBuses(qtractorBus::Duplex);
 	// Reset all dependable monitoring...
 	resetAllMonitors();
 
@@ -1140,7 +1168,7 @@ void qtractorMidiEngine::deactivate (void)
 	m_pOutputThread->sync();
 
 	// Reset existing control buses...
-	resetControlBus(qtractorBus::None);
+	resetControlBuses(qtractorBus::None);
 }
 
 
@@ -1324,6 +1352,18 @@ QEvent::Type qtractorMidiEngine::notifyMmcType (void) const
 }
 
 
+// Control bus accessors.
+void qtractorMidiEngine::setControlBus ( bool bControlBus )
+{
+	m_bControlBus = bControlBus;
+}
+
+bool qtractorMidiEngine::isControlBus (void) const
+{
+	return m_bControlBus;
+}
+
+
 // Control buses accessors.
 qtractorMidiBus *qtractorMidiEngine::controlBus_in() const
 {
@@ -1417,6 +1457,18 @@ bool qtractorMidiEngine::isMetronome (void) const
 }
 
 
+// Metronome bus accessors.
+void qtractorMidiEngine::setMetroBus ( bool bMetroBus )
+{
+	m_bMetroBus = bMetroBus;
+}
+
+bool qtractorMidiEngine::isMetroBus (void) const
+{
+	return m_bMetroBus;
+}
+
+
 // Metronome channel accessors.
 void qtractorMidiEngine::setMetroChannel ( unsigned short iChannel )
 {
@@ -1485,7 +1537,7 @@ void qtractorMidiEngine::processMetro (
 	if (!m_bMetronome)
 		return;
 
-	if (m_pOControlBus == NULL)
+	if (m_pMetroBus == NULL)
 		return;
 
 	qtractorSession *pSession = session();
@@ -1504,7 +1556,7 @@ void qtractorMidiEngine::processMetro (
 	snd_seq_event_t ev;
 	snd_seq_ev_clear(&ev);
 	// Addressing...
-	snd_seq_ev_set_source(&ev, m_pOControlBus->alsaPort());
+	snd_seq_ev_set_source(&ev, m_pMetroBus->alsaPort());
 	snd_seq_ev_set_subs(&ev);
 	// Set common event data...
 	ev.tag = (unsigned char) 0xff;
