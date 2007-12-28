@@ -1006,6 +1006,12 @@ bool qtractorMidiEngine::init ( const QString& sClientName )
 		}
 	}
 
+	// Open control/metronome buses, at least try...
+	if (m_bControlBus && m_pOControlBus)
+		m_pOControlBus->open();
+	if (m_bMetroBus && m_pMetroBus)
+		m_pMetroBus->open();
+
 	return true;
 }
 
@@ -1031,9 +1037,11 @@ bool qtractorMidiEngine::activate (void)
 	m_iTimeDelta = 0;
 #endif
 
-	// Reset control buses...
-	createControlBus();
-	createMetroBus();
+	// Reset control/metronome buses, at least try...
+	if (!m_bControlBus || m_pOControlBus == NULL)
+		createControlBus();
+	if (!m_bMetroBus || m_pMetroBus == NULL)
+		createMetroBus();
 
 	// Reset all dependable monitoring...
 	resetAllMonitors();
@@ -1119,15 +1127,20 @@ void qtractorMidiEngine::deactivate (void)
 	m_pOutputThread->setRunState(false);
 	m_pOutputThread->sync();
 
-	// Reset existing control buses...
-	deleteControlBus();
-	deleteMetroBus();
+	// Close control/metronome buses...
+	if (m_bControlBus && m_pOControlBus)
+		m_pOControlBus->close();
+	if (m_bMetroBus && m_pMetroBus)
+		m_pMetroBus->close();
 }
 
 
 // Device engine cleanup method.
 void qtractorMidiEngine::clean (void)
 {
+	deleteControlBus();
+	deleteMetroBus();
+
 	// Delete output thread...
 	if (m_pOutputThread) {
 		// Make it nicely...
@@ -1312,8 +1325,7 @@ void qtractorMidiEngine::setControlBus ( bool bControlBus )
 
 	m_bControlBus = bControlBus;
 
-	if (isActivated())
-		createControlBus();
+	createControlBus();
 }
 
 bool qtractorMidiEngine::isControlBus (void) const
@@ -1461,8 +1473,7 @@ void qtractorMidiEngine::setMetroBus ( bool bMetroBus )
 
 	m_bMetroBus = bMetroBus;
 
-	if (isActivated())
-		createMetroBus();
+	createMetroBus();
 }
 
 bool qtractorMidiEngine::isMetroBus (void) const
@@ -1478,7 +1489,8 @@ void qtractorMidiEngine::createMetroBus (void)
 
 	// Whether metronome bus is here owned, or...
 	if (m_bMetroBus) {
-		m_pMetroBus = new qtractorMidiBus(this, "Metronome", qtractorBus::Output);
+		m_pMetroBus = new qtractorMidiBus(this,
+			"Metronome", qtractorBus::Output);
 		m_pMetroBus->open();
 	} else {
 		// Find first available output buses...
@@ -1633,6 +1645,9 @@ bool qtractorMidiEngine::loadElement ( qtractorSessionDocument *pDocument,
 	QDomElement *pElement )
 {
 	qtractorEngine::clear();
+
+	createControlBus();
+	createMetroBus();
 
 	// Load session children...
 	for (QDomNode nChild = pElement->firstChild();

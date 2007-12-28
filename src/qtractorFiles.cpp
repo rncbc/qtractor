@@ -196,6 +196,8 @@ void qtractorFiles::clear (void)
 {
 	m_pAudioListView->clear();
 	m_pMidiListView->clear();
+
+	setPlayState(false);
 }
 
 

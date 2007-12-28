@@ -335,6 +335,12 @@ bool qtractorAudioEngine::init ( const QString& sClientName )
 	// ATTN: First thing to remember to set session sample rate.
 	session()->setSampleRate(sampleRate());
 
+	// Open player/metronome buses, at least try...
+	if (m_bPlayerBus && m_pPlayerBus)
+		m_pPlayerBus->open();
+	if (m_bMetroBus && m_pMetroBus)
+		m_pMetroBus->open();
+
 	return true;
 }
 
@@ -369,12 +375,17 @@ bool qtractorAudioEngine::activate (void)
 	// Time to activate ourselves...
 	jack_activate(m_pJackClient);
 
-	// Create audio metronome...
-	createMetro();
-	// Open and start audition/pre-listening...
-	createPlayer();
-
 	// Now, do all auto-connection stuff (if applicable...)
+	if (m_bPlayerBus && m_pPlayerBus)
+		m_pPlayerBus->autoConnect();
+	else
+		createPlayer();
+
+	if (m_bMetroBus && m_pMetroBus)
+		m_pMetroBus->autoConnect();
+	else
+		createMetro();
+
 	for (qtractorBus *pBus = buses().first();
 			pBus; pBus = pBus->next()) {
 		qtractorAudioBus *pAudioBus
@@ -425,16 +436,20 @@ void qtractorAudioEngine::deactivate (void)
 	if (m_pJackClient)
 		jack_deactivate(m_pJackClient);
 
-	// Stop and close audition/pre-listening...
-	deletePlayer();
-	// Close metronome...
-	deleteMetro();
+	// Close player/metronome buses...
+	if (m_bPlayerBus && m_pPlayerBus)
+		m_pPlayerBus->close();
+	if (m_bMetroBus && m_pMetroBus)
+		m_pMetroBus->close();
 }
 
 
 // Device engine cleanup method.
 void qtractorAudioEngine::clean (void)
 {
+	deletePlayer();
+	deleteMetro();
+
 	// Audio-export stilll around? weird...
 	if (m_pExportFile) {
 		delete m_pExportFile;
@@ -660,6 +675,9 @@ bool qtractorAudioEngine::loadElement ( qtractorSessionDocument *pDocument,
 	QDomElement *pElement )
 {
 	qtractorEngine::clear();
+
+	createPlayer();
+	createMetro();
 
 	// Load session children...
 	for (QDomNode nChild = pElement->firstChild();
@@ -920,8 +938,7 @@ void qtractorAudioEngine::setMetroBus ( bool bMetroBus )
 
 	m_bMetroBus = bMetroBus;
 
-	if (isActivated())
-		createMetro();
+	createMetro();
 }
 
 bool qtractorAudioEngine::isMetroBus (void) const
@@ -1073,8 +1090,7 @@ void qtractorAudioEngine::setPlayerBus ( bool bPlayerBus )
 
 	m_bPlayerBus = bPlayerBus;
 
-	if (isActivated())
-		createPlayer();
+	createPlayer();
 }
 
 bool qtractorAudioEngine::isPlayerBus (void) const
@@ -1105,20 +1121,6 @@ void qtractorAudioEngine::createPlayer (void)
 			}
 		}
 	}
-
-	// Is there any?
-	if (m_pPlayerBus == NULL)
-		return;
-
-	// Enough number of channels?...
-	unsigned short iChannels = m_pPlayerBus->channels();
-	if (iChannels < 1) {
-		m_pPlayerBus = NULL;
-		return;
-	}
-
-	// We got it...
-	m_pPlayerBuff = new qtractorAudioBuffer(iChannels, sampleRate());
 }
 
 
@@ -1152,11 +1154,23 @@ bool qtractorAudioEngine::isPlayerOpen (void) const
 bool qtractorAudioEngine::openPlayer ( const QString& sFilename )
 {
 	closePlayer();
-	
-	if (m_pPlayerBuff) {
-		m_pPlayerBuff->setLength(0);
-		m_bPlayerOpen = m_pPlayerBuff->open(sFilename);
+
+	// Is there any?
+	if (m_pPlayerBus == NULL)
+		return false;
+
+	// Create buffer if none already...
+	if (m_pPlayerBuff == NULL) {
+		// Enough number of channels?...
+		unsigned short iChannels = m_pPlayerBus->channels();
+		if (iChannels < 1)
+			return false;
+		// We got it...
+		m_pPlayerBuff = new qtractorAudioBuffer(iChannels, sampleRate());
 	}
+
+	m_pPlayerBuff->setLength(0);
+	m_bPlayerOpen = m_pPlayerBuff->open(sFilename);
 
 	return m_bPlayerOpen;
 }
