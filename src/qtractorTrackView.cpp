@@ -991,7 +991,7 @@ void qtractorTrackView::dragTimeout (void)
 
 
 // Drop event handler.
-void qtractorTrackView::dropEvent (	QDropEvent *pDropEvent )
+void qtractorTrackView::dropEvent ( QDropEvent *pDropEvent )
 {
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm == NULL)
@@ -1008,7 +1008,8 @@ void qtractorTrackView::dropEvent (	QDropEvent *pDropEvent )
 	// Now check whether the drop is intra-track...
 	qtractorTrack *pTrack = dragDropTrack(pDropEvent);
 	// And care if we're not spanning horizontally...
-	if (pTrack == NULL && !m_bDropSpan) {
+	if (pTrack == NULL
+		&& (!m_bDropSpan || m_dropType == qtractorTrack::Midi)) {
 		// Do we have something to drop anyway?
 		// if yes, this is a extra-track drop...
 		if (!m_dropItems.isEmpty()) {
