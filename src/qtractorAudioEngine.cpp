@@ -426,10 +426,6 @@ void qtractorAudioEngine::deactivate (void)
 	// We're stopping now...
 	// setPlaying(false);
 
-	// Close player/metronome buses...
-	closePlayerBus();
-	closeMetroBus();
-
 	// Deactivate the JACK client first.
 	if (m_pJackClient)
 		jack_deactivate(m_pJackClient);
@@ -933,9 +929,10 @@ void qtractorAudioEngine::setMetroBus ( bool bMetroBus )
 
 	createMetroBus();
 
-	if (isActivated() && m_bMetroBus && m_pMetroBus) {
+	if (isActivated()) {
 		openMetroBus();
-		m_pMetroBus->autoConnect();
+		if (m_pMetroBus && m_bMetroBus)
+			m_pMetroBus->autoConnect();
 	}
 }
 
@@ -1120,9 +1117,10 @@ void qtractorAudioEngine::setPlayerBus ( bool bPlayerBus )
 
 	createPlayerBus();
 
-	if (isActivated() && m_bPlayerBus && m_pPlayerBus) {
+	if (isActivated()) {
 		openPlayerBus();
-		m_pPlayerBus->autoConnect();
+		if (m_pPlayerBus && m_bPlayerBus)
+			m_pPlayerBus->autoConnect();
 	}
 }
 
@@ -1173,6 +1171,9 @@ bool qtractorAudioEngine::openPlayerBus (void)
 		createPlayerBus();
 	if (m_pPlayerBus == NULL)
 		return false;
+
+	if (m_bPlayerBus)
+		m_pPlayerBus->open();
 
 	// Enough number of channels?...
 	unsigned short iChannels = m_pPlayerBus->channels();
@@ -1225,8 +1226,6 @@ bool qtractorAudioEngine::openPlayer ( const QString& sFilename )
 	closePlayer();
 
 	// Is there any?
-	if (m_pPlayerBuff == NULL)
-		openPlayerBus();
 	if (m_pPlayerBuff == NULL)
 		return false;
 

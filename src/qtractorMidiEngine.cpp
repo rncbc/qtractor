@@ -1114,10 +1114,6 @@ void qtractorMidiEngine::deactivate (void)
 	// We're stopping now...
 	setPlaying(false);
 
-	// Close control/metronome buses...
-	closeControlBus();
-	closeMetroBus();
-
 	// Stop our queue threads...
 	m_pInputThread->setRunState(false);
 	m_pOutputThread->setRunState(false);
@@ -1317,7 +1313,7 @@ void qtractorMidiEngine::setControlBus ( bool bControlBus )
 
 	createControlBus();
 
-	if (isActivated() && m_bControlBus && m_pOControlBus)
+	if (isActivated())
 		openControlBus();
 }
 
@@ -1503,7 +1499,7 @@ void qtractorMidiEngine::setMetroBus ( bool bMetroBus )
 
 	createMetroBus();
 
-	if (isActivated() && m_bMetroBus && m_pMetroBus)
+	if (isActivated())
 		openMetroBus();
 }
 
