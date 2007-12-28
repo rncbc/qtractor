@@ -97,8 +97,8 @@ bool qtractorBusCommand::createBus (void)
 					m_sBusName, m_busMode, m_bPassthru,
 					m_iChannels, m_bAutoConnect);
 			pAudioEngine->addBus(pAudioBus);
-			pAudioEngine->createPlayer();
-			pAudioEngine->createMetro();
+			pAudioEngine->resetPlayerBus();
+			pAudioEngine->resetMetroBus();
 			m_pBus = pAudioBus;
 		}
 		break;
@@ -110,10 +110,8 @@ bool qtractorBusCommand::createBus (void)
 				= new qtractorMidiBus(pMidiEngine,
 					m_sBusName, m_busMode, m_bPassthru);
 			pMidiEngine->addBus(pMidiBus);
-			if (!pMidiEngine->isControlBus())
-				pMidiEngine->createControlBus();
-			if (!pMidiEngine->isMetroBus())
-				pMidiEngine->createMetroBus();
+			pMidiEngine->resetControlBus();
+			pMidiEngine->resetMetroBus();
 			m_pBus = pMidiBus;
 		}
 		break;
@@ -346,19 +344,15 @@ bool qtractorBusCommand::deleteBus (void)
 	case qtractorTrack::Audio: {
 		qtractorAudioEngine *pAudioEngine = pSession->audioEngine();
 		if (pAudioEngine) {
-			if (!pAudioEngine->isPlayerBus())
-				pAudioEngine->createPlayer();
-			if (!pAudioEngine->isMetroBus())
-				pAudioEngine->createMetro();
+			pAudioEngine->resetPlayerBus();
+			pAudioEngine->resetMetroBus();
 		}
 	}
 	case qtractorTrack::Midi: {
 		qtractorMidiEngine *pMidiEngine = pSession->midiEngine();
 		if (pMidiEngine) {
-			if (!pMidiEngine->isControlBus())
-				pMidiEngine->createControlBus();
-			if (!pMidiEngine->isMetroBus())
-				pMidiEngine->createMetroBus();
+			pMidiEngine->resetControlBus();
+			pMidiEngine->resetMetroBus();
 		}
 		break;
 	}

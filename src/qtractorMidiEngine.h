@@ -98,10 +98,7 @@ public:
 	// Metronome bus accessors.
 	void setMetroBus(bool bMetroBus);
 	bool isMetroBus() const;
-
-	// Metronome bus simple management primitives.
-	void createMetroBus();
-	void deleteMetroBus();
+	void resetMetroBus();
 
 	// Metronome parameters.
 	void setMetroChannel (unsigned short iChannel);
@@ -130,10 +127,7 @@ public:
 	// Control bus accessors.
 	void setControlBus(bool bControlBus);
 	bool isControlBus() const;
-
-	// Control bus simple management primitives.
-	void createControlBus();
-	void deleteControlBus();
+	void resetControlBus();
 
 	// Control buses accessors.
 	qtractorMidiBus *controlBus_in() const;
@@ -170,6 +164,18 @@ protected:
 	void stop();
 	void deactivate();
 	void clean();
+
+	// Metronome (de)activation methods.
+	void createMetroBus();
+	bool openMetroBus();
+	void closeMetroBus();
+	void deleteMetroBus();
+
+	// Control (de)activation methods.
+	void createControlBus();
+	bool openControlBus();
+	void closeControlBus();
+	void deleteControlBus();
 
 private:
 

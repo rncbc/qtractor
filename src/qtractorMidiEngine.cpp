@@ -1007,10 +1007,8 @@ bool qtractorMidiEngine::init ( const QString& sClientName )
 	}
 
 	// Open control/metronome buses, at least try...
-	if (m_bControlBus && m_pOControlBus)
-		m_pOControlBus->open();
-	if (m_bMetroBus && m_pMetroBus)
-		m_pMetroBus->open();
+	openControlBus();
+	openMetroBus();
 
 	return true;
 }
@@ -1036,12 +1034,6 @@ bool qtractorMidiEngine::activate (void)
 #ifdef QTRACTOR_SNAFU_DRIFT
 	m_iTimeDelta = 0;
 #endif
-
-	// Reset control/metronome buses, at least try...
-	if (!m_bControlBus || m_pOControlBus == NULL)
-		createControlBus();
-	if (!m_bMetroBus || m_pMetroBus == NULL)
-		createMetroBus();
 
 	// Reset all dependable monitoring...
 	resetAllMonitors();
@@ -1122,22 +1114,21 @@ void qtractorMidiEngine::deactivate (void)
 	// We're stopping now...
 	setPlaying(false);
 
+	// Close control/metronome buses...
+	closeControlBus();
+	closeMetroBus();
+
 	// Stop our queue threads...
 	m_pInputThread->setRunState(false);
 	m_pOutputThread->setRunState(false);
 	m_pOutputThread->sync();
-
-	// Close control/metronome buses...
-	if (m_bControlBus && m_pOControlBus)
-		m_pOControlBus->close();
-	if (m_bMetroBus && m_pMetroBus)
-		m_pMetroBus->close();
 }
 
 
 // Device engine cleanup method.
 void qtractorMidiEngine::clean (void)
 {
+	// Clean control/metronome buses...
 	deleteControlBus();
 	deleteMetroBus();
 
@@ -1167,7 +1158,6 @@ void qtractorMidiEngine::clean (void)
 		m_pInputThread = NULL;
 	}
 
-	
 	// Drop subscription stuff.
 	if (m_pAlsaSubsSeq) {
 		if (m_pAlsaNotifier) {
@@ -1326,11 +1316,22 @@ void qtractorMidiEngine::setControlBus ( bool bControlBus )
 	m_bControlBus = bControlBus;
 
 	createControlBus();
+
+	if (isActivated() && m_bControlBus && m_pOControlBus)
+		openControlBus();
 }
 
 bool qtractorMidiEngine::isControlBus (void) const
 {
 	return m_bControlBus;
+}
+
+void qtractorMidiEngine::resetControlBus (void)
+{
+	if (m_bControlBus && m_pOControlBus)
+		return;
+
+	createControlBus();
 }
 
 
@@ -1342,7 +1343,6 @@ void qtractorMidiEngine::createControlBus (void)
 	// Whether control bus is here owned, or...
 	if (m_bControlBus) {
 		m_pOControlBus = new qtractorMidiBus(this, "Control");
-		m_pOControlBus->open();
 		m_pIControlBus = m_pOControlBus;
 	} else {
 		// Find available control buses...
@@ -1358,6 +1358,34 @@ void qtractorMidiEngine::createControlBus (void)
 	}
 }
 
+// Open MIDI control stuff...
+bool qtractorMidiEngine::openControlBus (void)
+{
+	closeControlBus();
+
+	// Is there any?
+	if (m_pOControlBus == NULL)
+		createControlBus();
+	if (m_pOControlBus == NULL)
+		return false;
+
+	// This is it, when dedicated...
+	if (m_bControlBus)
+		m_pOControlBus->open();
+
+	return true;
+}
+
+
+// Close MIDI control stuff.
+void qtractorMidiEngine::closeControlBus (void)
+{
+	if (m_pOControlBus && m_bControlBus)
+		m_pOControlBus->close();
+}
+
+
+// Destroy MIDI control stuff.
 void qtractorMidiEngine::deleteControlBus (void)
 {
 	// When owned, both input and output
@@ -1474,11 +1502,22 @@ void qtractorMidiEngine::setMetroBus ( bool bMetroBus )
 	m_bMetroBus = bMetroBus;
 
 	createMetroBus();
+
+	if (isActivated() && m_bMetroBus && m_pMetroBus)
+		openMetroBus();
 }
 
 bool qtractorMidiEngine::isMetroBus (void) const
 {
 	return m_bMetroBus;
+}
+
+void qtractorMidiEngine::resetMetroBus (void)
+{
+	if (m_bMetroBus && m_pMetroBus)
+		return;
+
+	createMetroBus();
 }
 
 
@@ -1491,7 +1530,6 @@ void qtractorMidiEngine::createMetroBus (void)
 	if (m_bMetroBus) {
 		m_pMetroBus = new qtractorMidiBus(this,
 			"Metronome", qtractorBus::Output);
-		m_pMetroBus->open();
 	} else {
 		// Find first available output buses...
 		for (qtractorBus *pBus = qtractorEngine::buses().first();
@@ -1504,15 +1542,42 @@ void qtractorMidiEngine::createMetroBus (void)
 	}
 }
 
+
+// Open MIDI metronome stuff...
+bool qtractorMidiEngine::openMetroBus (void)
+{
+	closeMetroBus();
+
+	// Is there any?
+	if (m_pMetroBus == NULL)
+		createMetroBus();
+	if (m_pMetroBus == NULL)
+		return false;
+
+	// This is it, when dedicated...
+	if (m_bMetroBus)
+		m_pMetroBus->open();
+
+	return true;
+}
+
+
+// Close MIDI metronome stuff.
+void qtractorMidiEngine::closeMetroBus (void)
+{
+	if (m_pMetroBus && m_bMetroBus)
+		m_pMetroBus->close();
+}
+
+
+// Destroy MIDI metronome stuff.
 void qtractorMidiEngine::deleteMetroBus (void)
 {
-	// Metro bus might be also owned...
-	if (m_pMetroBus && m_bMetroBus) {
-		m_pMetroBus->close();
-		delete m_pMetroBus;
-	}
+	closeMetroBus();
 
-	// Reset metronome bus...
+	if (m_pMetroBus && m_bMetroBus)
+		delete m_pMetroBus;
+
 	m_pMetroBus = NULL;
 }
 
@@ -1520,7 +1585,7 @@ void qtractorMidiEngine::deleteMetroBus (void)
 // Metronome channel accessors.
 void qtractorMidiEngine::setMetroChannel ( unsigned short iChannel )
 {
-	m_iMetroChannel  = iChannel;
+	m_iMetroChannel = iChannel;
 }
 
 unsigned short qtractorMidiEngine::metroChannel (void) const

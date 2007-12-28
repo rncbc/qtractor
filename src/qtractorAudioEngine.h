@@ -106,6 +106,7 @@ public:
 	// Metronome bus mode accessors.
 	void setMetroBus(bool bMetroBus);
 	bool isMetroBus() const;
+	void resetMetroBus();
 
 	// Metronome bar audio sample.
 	void setMetroBarFilename(const QString& sFilename);
@@ -115,18 +116,12 @@ public:
 	void setMetroBeatFilename(const QString& sFilename);
 	const QString& metroBeatFilename() const;
 
-	// Metronome management methods.
-	void createMetro();
-	void deleteMetro();
 	void resetMetro();
 
 	// Audition/pre-listening bus mode accessors.
 	void setPlayerBus(bool bPlayerBus);
 	bool isPlayerBus() const;
-
-	// Audition/pre-listening player management methods.
-	void createPlayer();
-	void deletePlayer();
+	void resetPlayerBus();
 
 	bool isPlayerOpen() const;
 	bool openPlayer(const QString& sFilename);
@@ -145,6 +140,18 @@ protected:
 	void stop();
 	void deactivate();
 	void clean();
+
+	// Metronome (de)activation methods.
+	void createMetroBus();
+	bool openMetroBus();
+	void closeMetroBus();
+	void deleteMetroBus();
+
+	// Audition/pre-listening player (de)activation methods.
+	void createPlayerBus();
+	bool openPlayerBus();
+	void closePlayerBus();
+	void deletePlayerBus();
 
 private:
 
