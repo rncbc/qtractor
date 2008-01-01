@@ -1,7 +1,7 @@
 // qtractorMixer.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -306,6 +306,10 @@ protected:
 
 	// Just about to notify main-window that we're closing.
 	void closeEvent(QCloseEvent *);
+
+	// Special splitter-size persistence methods.
+	void loadSplitterSizes();
+	void saveSplitterSizes();
 
 private:
 

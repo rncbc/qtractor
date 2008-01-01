@@ -1,7 +1,7 @@
 // qtractorTimeStretch.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
 
    Adapted and refactored from the SoundTouch library (L)GPL,
    Copyright (C) 2001-2006, Olli Parviainen.
@@ -203,7 +203,7 @@ void qtractorTimeStretch::setTempo ( float fTempo )
 
 	// These will be enough for most purposes, and
 	// shoudl avoid in-the-fly buffer re-allocations...
-	m_inputBuffer.ensureCapacity(m_iFramesReq << 1);
+	m_inputBuffer.ensureCapacity(m_iFramesReq);
 	m_outputBuffer.ensureCapacity(m_iFramesReq);
 }
 
@@ -495,9 +495,9 @@ void qtractorTimeStretch::flushInput (void)
 		::memset(&dummy[0], 0, sizeof(dummy));
 		for (i = 0; i < m_iChannels; ++i)
 			m_ppFrames[i] = &dummy[0];
-		// Push the last active frames out from the processing pipeline by
-		// feeding blank samples into the processing pipeline until new, 
-		// processed samples appear in the output...
+		// Push the last active frames out from the pipeline
+		// by feeding blank samples into processing until
+		// new samples appear in the output...
 		unsigned int iFrames = frames();
 		for (i = 0; i < 128; ++i) {
 			putFrames(m_ppFrames, 256);
@@ -577,7 +577,7 @@ void qtractorTimeStretch::calcOverlapLength (void)
 qtractorTimeStretch::FifoBuffer::FifoBuffer ( unsigned short iChannels )
 {
 	m_iChannels = 0;
-	m_iSizeInBytes = 0;
+	m_iSizeInFrames = 0;
 	m_ppBuffer = NULL;
 	m_ppBufferUnaligned = NULL;
 	m_iFramesInBuffer = 0;
@@ -604,7 +604,7 @@ void qtractorTimeStretch::FifoBuffer::setChannels ( unsigned short iChannels )
 		return;
 
 	m_iChannels = iChannels;
-	m_iSizeInBytes = 0;
+	m_iSizeInFrames = 0;
 
 //	ensureCapacity(1024);
 }
@@ -711,7 +711,7 @@ float *qtractorTimeStretch::FifoBuffer::ptrBegin (
 float *qtractorTimeStretch::FifoBuffer::ptrEnd (
 	unsigned short iChannel ) const
 {
-	return m_ppBuffer[iChannel] + m_iFramesInBuffer;
+	return m_ppBuffer[iChannel] + m_iFramePos + m_iFramesInBuffer;
 }
 
 
@@ -729,19 +729,6 @@ bool qtractorTimeStretch::FifoBuffer::isEmpty (void) const
 }
 
 
-// Rewind the buffer by moving data.
-void qtractorTimeStretch::FifoBuffer::rewind (void)
-{
-	if (m_iFramePos > 0) {
-		for (unsigned short i = 0; i < m_iChannels; ++i) {
-			::memmove(m_ppBuffer[i], ptrBegin(i),
-				m_iFramesInBuffer * sizeof(float));
-		}
-		m_iFramePos = 0;
-	}
-}
-
-
 // Clears the sample frame buffer.
 void qtractorTimeStretch::FifoBuffer::clear (void)
 {
@@ -753,7 +740,7 @@ void qtractorTimeStretch::FifoBuffer::clear (void)
 // Returns the current buffer capacity in terms of frames.
 unsigned int qtractorTimeStretch::FifoBuffer::capacity (void) const
 {
-	return m_iSizeInBytes / sizeof(float);
+	return m_iSizeInFrames;
 }
 
 
@@ -761,18 +748,21 @@ unsigned int qtractorTimeStretch::FifoBuffer::capacity (void) const
 void qtractorTimeStretch::FifoBuffer::ensureCapacity (
 	const unsigned int iSlackCapacity )
 {
-	unsigned int iRequiredCapacity = m_iFramesInBuffer + iSlackCapacity;
+	unsigned int iRequiredCapacity
+		= m_iFramePos + m_iFramesInBuffer + (iSlackCapacity << 1);
 
-	if (iRequiredCapacity > capacity()) {
+	if (iRequiredCapacity > m_iSizeInFrames) {
+		// Realloc by making it a double :P
+		iRequiredCapacity <<= 1;
 		// Enlarge the buffer in 4KB steps (round up to next 4KB boundary)
-		m_iSizeInBytes = (iRequiredCapacity * sizeof(float) + 4095) & -4096;
-		// assert(m_iSizeInBytes % 2 == 0);
+		unsigned int iSizeInBytes
+			= (iRequiredCapacity * sizeof(float) + 4095) & -4096;
+		// assert(iSizeInBytes % 2 == 0);
 		float **ppTemp = new float * [m_iChannels];
 		float **ppTempUnaligned = new float * [m_iChannels];
-		unsigned int iSizeInFrames
-			= (m_iSizeInBytes / sizeof(float)) + (16 / sizeof(float));
+		m_iSizeInFrames = (iSizeInBytes / sizeof(float)) + (16 / sizeof(float));
 		for (unsigned short i = 0; i < m_iChannels; ++i) {
-			ppTempUnaligned[i] = new float [iSizeInFrames];
+			ppTempUnaligned[i] = new float [m_iSizeInFrames];
 			ppTemp[i] = (float *)
 				(((unsigned long) ppTempUnaligned[i] + 15) & -16);
 			if (m_ppBuffer) {
@@ -789,9 +779,14 @@ void qtractorTimeStretch::FifoBuffer::ensureCapacity (
 		m_ppBufferUnaligned = ppTempUnaligned;
 		m_iFramePos = 0;
 		// Done realloc.
-	} else {
-		// Simply rewind the buffer (if necessary)
-		rewind();
+	} else if (m_iFramePos > (m_iSizeInFrames >> 2)) {
+		// Rewind the buffer by moving data...
+		for (unsigned short i = 0; i < m_iChannels; ++i) {
+			::memmove(m_ppBuffer[i], ptrBegin(i),
+				m_iFramesInBuffer * sizeof(float));
+		}
+		// Done rewind.
+		m_iFramePos = 0;
 	}
 }
 

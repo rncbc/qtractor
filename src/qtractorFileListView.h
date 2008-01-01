@@ -1,7 +1,7 @@
 // qtractorFileListView.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -29,6 +29,7 @@
 class qtractorFileListView;
 class qtractorFileGroupItem;
 class qtractorFileListItem;
+class qtractorRubberBand;
 class qtractorDocument;
 
 class QDomElement;
@@ -82,6 +83,9 @@ public:
 	// Remove current group/file item.
 	void deleteItem();
 
+	// Master clean-up.
+	void clear();
+
 	// Auto-open timer methods.
 	void setAutoOpenTimeout(int iAutoOpenTimeout);
 	int autoOpenTimeout() const;
@@ -131,8 +135,7 @@ protected:
 
 	// Pure virtual file item creation;
 	// must be implemented in derived classes.
-	virtual qtractorFileListItem *createFileItem(const QString& sPath,
-		qtractorFileGroupItem *pParentItem) = 0;
+	virtual qtractorFileListItem *createFileItem(const QString& sPath) = 0;
 
 	// Prompt for proper file list open (pure virtual).
 	virtual QStringList getOpenFileNames() = 0;
@@ -148,6 +151,21 @@ protected:
 	void dragLeaveEvent(QDragLeaveEvent *);
 	void dropEvent(QDropEvent *pDropEvent);
 
+	// Drag-n-drop stuff.
+	bool canDecodeEvent(QDropEvent *pDropEvent);
+	bool canDropItem(QTreeWidgetItem *pDropItem) const;
+	QTreeWidgetItem *dragDropItem(const QPoint& pos);
+
+	// Ensure given item is brought to viewport visibility...
+	void ensureVisibleItem(QTreeWidgetItem *pItem);
+
+	// Show and move rubber-band item.
+	void moveRubberBand(QTreeWidgetItem *pDropItem, bool bOutdent = false);
+
+	// Drag-and-drop target method...
+	QTreeWidgetItem *dropItem(QTreeWidgetItem *pDropItem,
+		QTreeWidgetItem *pDragItem, bool bOutdent = false);
+
 	// Internal recursive loaders/savers...
 	bool loadListElement(qtractorDocument *pDocument,
 		QDomElement *pElement, QTreeWidgetItem *pItem);
@@ -155,11 +173,6 @@ protected:
 		QDomElement *pElement, QTreeWidgetItem *pItem);
 
 private:
-
-	// Drag-n-drop stuff.
-	bool canDecodeEvent(QDropEvent *pDropEvent);
-	bool canDropItem(QTreeWidgetItem *pDropItem) const;
-	QTreeWidgetItem *dragDropItem(const QPoint& pos);
 
 	// Auto-open timer.
 	int     m_iAutoOpenTimeout;
@@ -171,6 +184,9 @@ private:
 	QTreeWidgetItem *m_pDragItem;
 	// Item we'll eventually drop something.
 	QTreeWidgetItem *m_pDropItem;
+
+	// To show the point where drop will go.
+	qtractorRubberBand *m_pRubberBand;
 
 	// Last recently used directory.
 	QString m_sRecentDir;
@@ -186,10 +202,8 @@ class qtractorFileGroupItem : public QTreeWidgetItem
 public:
 
 	// Constructors.
-	qtractorFileGroupItem(qtractorFileListView *pListView,
-		const QString& sName, int iType = qtractorFileListView::GroupItem);
-	qtractorFileGroupItem(qtractorFileGroupItem *pGroupItem,
-		const QString& sName, int iType = qtractorFileListView::GroupItem);
+	qtractorFileGroupItem(const QString& sName,
+		int iType = qtractorFileListView::GroupItem);
 	// Default destructor.
 	virtual ~qtractorFileGroupItem();
 
@@ -206,11 +220,6 @@ public:
 
 	// Virtual tooltip renderer.
 	virtual QString toolTip() const;
-
-protected:
-
-	// Common group-item initializer.
-	void initFileGroupItem(const QString& sName, int iType);
 };
 
 
@@ -223,10 +232,7 @@ class qtractorFileListItem : public qtractorFileGroupItem
 public:
 
 	// Constructors.
-	qtractorFileListItem(qtractorFileListView *pListView,
-		const QString& sPath);
-	qtractorFileListItem(qtractorFileGroupItem *pGroupItem,
-		const QString& sPath);
+	qtractorFileListItem(const QString& sPath);
 	// Default destructor.
 	~qtractorFileListItem();
 
@@ -254,8 +260,11 @@ public:
 	// Default destructor.
 	~qtractorFileChannelItem();
 
-	// Filoe chhannel accessor.
+	// File chhannel accessor.
 	unsigned short channel() const;
+
+	// Full path accessor.
+	const QString path() const;
 
 private:
 
@@ -272,14 +281,19 @@ class qtractorFileChannelDrag
 {
 public:
 
+	struct Item {
+		QString path;
+		unsigned short channel;
+	};
+
+	typedef QList<Item> List;
+
 	// Encode method.
-	static void encode(QMimeData *pMimeData,
-		const QString& sPath, unsigned short iChannel);
+	static void encode(QMimeData *pMimeData, const List& items);
 
 	// Decode methods.
 	static bool canDecode(const QMimeData *pMimeData);
-	static bool decode(const QMimeData *pMimeData,
-		QString& sPath, unsigned short *piChannel);
+	static List decode(const QMimeData *pMimeData);
 };
 
 

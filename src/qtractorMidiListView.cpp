@@ -1,7 +1,7 @@
 // qtractorMidiListView.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -32,25 +32,8 @@
 
 // Constructors.
 qtractorMidiFileItem::qtractorMidiFileItem (
-	qtractorMidiListView *pListView, const QString& sPath,
-	qtractorMidiFile *pFile )
-	: qtractorFileListItem(pListView, sPath)
-{
-	initMidiFileItem(sPath, pFile);
-}
-
-qtractorMidiFileItem::qtractorMidiFileItem (
-	qtractorFileGroupItem *pGroupItem, const QString& sPath,
-	qtractorMidiFile *pFile )
-	: qtractorFileListItem(pGroupItem, sPath)
-{
-	initMidiFileItem(sPath, pFile);
-}
-
-
-// Common item initializer.
-void qtractorMidiFileItem::initMidiFileItem ( const QString& sPath,
-	qtractorMidiFile *pFile )
+	const QString& sPath, qtractorMidiFile *pFile )
+	: qtractorFileListItem(sPath)
 {
 	QTreeWidgetItem::setTextAlignment(
 		qtractorMidiListView::Format, Qt::AlignRight);
@@ -165,16 +148,13 @@ qtractorMidiListView::qtractorMidiListView ( QWidget *pParent )
 
 // File item factory method.
 qtractorFileListItem *qtractorMidiListView::createFileItem (
-	const QString& sPath, qtractorFileGroupItem *pParentItem )
+	const QString& sPath )
 {
 	qtractorFileListItem *pFileItem = NULL;
 
 	qtractorMidiFile file;
 	if (file.open(sPath)) {
-		if (pParentItem)
-			pFileItem = new qtractorMidiFileItem(pParentItem, sPath, &file);
-		else
-			pFileItem = new qtractorMidiFileItem(this, sPath, &file);
+		pFileItem = new qtractorMidiFileItem(sPath, &file);
 		file.close();
 	}
 

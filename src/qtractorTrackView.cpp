@@ -1,7 +1,7 @@
 // qtractorTrackView.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -768,14 +768,15 @@ qtractorTrack *qtractorTrackView::dragDropTrack ( QDropEvent *pDropEvent )
 
 	// Can it be single track channel (MIDI for sure)?
 	if (qtractorFileChannelDrag::canDecode(pDropEvent->mimeData())) {
-		// In the meantime, it can only be only one...
-		QString sPath;
-		unsigned short iChannel = 0;
-		if (qtractorFileChannelDrag::decode(
-				pDropEvent->mimeData(), sPath, &iChannel)) {
-			m_dropItems.append(new DropItem(sPath, iChannel));
-			m_dropType = qtractorTrack::Midi;
+		// Let's see how many track-channels are there...
+		const qtractorFileChannelDrag::List& items
+			= qtractorFileChannelDrag::decode(pDropEvent->mimeData());
+		QListIterator<qtractorFileChannelDrag::Item> iter(items);
+		while (iter.hasNext()) {
+			const qtractorFileChannelDrag::Item& item = iter.next();
+			m_dropItems.append(new DropItem(item.path, item.channel));
 		}
+
 	}
 	else
 	// Can we decode it as Audio/MIDI files?
@@ -1700,12 +1701,13 @@ void qtractorTrackView::hideClipSelect (void) const
 void qtractorTrackView::updateDropRects ( int y, int h ) const
 {
 	int x = 0;
+	bool bDropSpan = (m_bDropSpan && m_dropType != qtractorTrack::Midi);
 	QListIterator<DropItem *> iter(m_dropItems);
 	while (iter.hasNext()) {
 		DropItem *pDropItem = iter.next();
 		pDropItem->rect.setY(y);
 		pDropItem->rect.setHeight(h);
-		if (m_bDropSpan) {
+		if (bDropSpan) {
 			if (x > 0)
 				pDropItem->rect.moveLeft(x);
 			else

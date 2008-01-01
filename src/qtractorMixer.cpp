@@ -1,7 +1,7 @@
 // qtractorMixer.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -1041,19 +1041,8 @@ qtractorMixer::qtractorMixer ( QWidget *pParent, Qt::WindowFlags wflags )
 	QWidget::setWindowIcon(QIcon(":/icons/viewMixer.png"));
 	QWidget::setToolTip(sCaption);
 
-	// Get previously saved splitter sizes,
-	// (with some fair default...)
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm) {
-		qtractorOptions *pOptions = pMainForm->options();
-		if (pOptions) {
-			QList<int> sizes;
-			sizes.append(140);
-			sizes.append(160);
-			sizes.append(140);
-			pOptions->loadSplitterSizes(m_pSplitter, sizes);
-		}
-	}
+	// Get previously saved splitter sizes...
+	loadSplitterSizes();
 }
 
 
@@ -1061,12 +1050,8 @@ qtractorMixer::qtractorMixer ( QWidget *pParent, Qt::WindowFlags wflags )
 qtractorMixer::~qtractorMixer (void)
 {
 	// Save splitter sizes...
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm) {
-		qtractorOptions *pOptions = pMainForm->options();
-		if (pOptions)
-			pOptions->saveSplitterSizes(m_pSplitter);
-	}
+	if (m_pSplitter->isVisible())
+		saveSplitterSizes();
 
 	// No need to delete child widgets, Qt does it all for us
 }
@@ -1093,11 +1078,14 @@ void qtractorMixer::hideEvent ( QHideEvent *pHideEvent )
 	fprintf(stderr, "qtractorMixer::hideEvent()\n");
 #endif
 
-    QWidget::hideEvent(pHideEvent);
-
-    qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-    if (pMainForm)
-        pMainForm->stabilizeForm();
+	// Save splitter sizes...
+	saveSplitterSizes();
+	
+	QWidget::hideEvent(pHideEvent);
+	
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm)
+		pMainForm->stabilizeForm();
 }
 
 
@@ -1128,6 +1116,36 @@ qtractorSession *qtractorMixer::session (void) const
 QSplitter *qtractorMixer::splitter (void) const
 {
 	return m_pSplitter;
+}
+
+
+// Get previously saved splitter sizes...
+// (with some fair default...)
+void qtractorMixer::loadSplitterSizes (void)
+{
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm) {
+		qtractorOptions *pOptions = pMainForm->options();
+		if (pOptions) {
+			QList<int> sizes;
+			sizes.append(140);
+			sizes.append(160);
+			sizes.append(140);
+			pOptions->loadSplitterSizes(m_pSplitter, sizes);
+		}
+	}
+}
+
+
+// Save splitter sizes...
+void qtractorMixer::saveSplitterSizes (void)
+{
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm) {
+		qtractorOptions *pOptions = pMainForm->options();
+		if (pOptions)
+			pOptions->saveSplitterSizes(m_pSplitter);
+	}
 }
 
 

@@ -1,7 +1,7 @@
 // qtractorMidiListView.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -37,21 +37,13 @@ class qtractorMidiFileItem : public qtractorFileListItem
 {
 public:
 
-	// Constructors.
-	qtractorMidiFileItem(qtractorMidiListView *pListView,
-		const QString& sPath, qtractorMidiFile *pFile);
-	qtractorMidiFileItem(qtractorFileGroupItem *pGroupItem,
-		const QString& sPath, qtractorMidiFile *pFile);
+	// Constructor.
+	qtractorMidiFileItem(const QString& sPath, qtractorMidiFile *pFile);
 
 protected:
 
 	// Virtual tooltip renderer.
 	QString toolTip() const;
-
-private:
-
-	// Common item initializer.
-	void initMidiFileItem(const QString& sPath,	qtractorMidiFile *pFile);
 };
 
 
@@ -103,8 +95,7 @@ protected:
 	int pathColumn() const { return Path; }
 
 	// File item factory method.
-	qtractorFileListItem *createFileItem(const QString& sPath,
-		qtractorFileGroupItem *pParentItem);
+	qtractorFileListItem *createFileItem(const QString& sPath);
 
 	// Prompt for proper file list open.
 	QStringList getOpenFileNames();

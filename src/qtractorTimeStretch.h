@@ -1,7 +1,7 @@
 // qtractorTimeStretch.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
 
    Adapted and refactored from the SoundTouch library (L)GPL,
    Copyright (C) 2001-2006, Olli Parviainen.
@@ -199,9 +199,6 @@ public:
 		// Returns nonzero if there aren't any frames available.
 		bool isEmpty() const;
 
-		// Rewind the buffer by moving data.
-		void rewind();
-
 		// Clears all the buffers.
 		void clear();	
 
@@ -216,7 +213,7 @@ public:
 		unsigned short m_iChannels;
 		float **m_ppBuffer;
 		float **m_ppBufferUnaligned;
-		unsigned int m_iSizeInBytes;
+		unsigned int m_iSizeInFrames;
 		unsigned int m_iFramesInBuffer;
 		unsigned int m_iFramePos;
 	};

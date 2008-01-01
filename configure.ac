@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(Qtractor, 0.0.9.830, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.0.9.831, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractorMainForm.ui)
 AC_CONFIG_HEADERS(config.h)
@@ -169,7 +169,7 @@ if test "x$ac_sse" = "xyes"; then
 fi
 
 if test "x$ac_sse" = "xyes"; then
-  ac_cflags="-msse $ac_cflags"
+  ac_cflags="-msse -mfpmath=sse $ac_cflags"
 fi
 AC_SUBST(ac_cflags)
 
@@ -382,7 +382,7 @@ echo "  ALSA MIDI Sequencer support  . . . . . . . . . . .: $ac_libasound"
 echo "  LADSPA Plug-in support . . . . . . . . . . . . . .: $ac_ladspa_h"
 echo "  General audio file support (libsndfile)  . . . . .: $ac_libsndfile"
 echo "  Ogg Vorbis audio file support (libvorbis)  . . . .: $ac_libvorbis"
-echo "  MPEG Layer III audio file support (libmad) . . . .: $ac_libmad"
+echo "  MPEG-1 Audio Layer III file support (libmad) . . .: $ac_libmad"
 echo "  Sample-rate conversion support (libsamplerate) . .: $ac_libsamplerate"
 echo "  SSE optimization support (x86) . . . . . . . . . .: $ac_sse"
 echo

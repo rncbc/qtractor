@@ -1,7 +1,7 @@
 // qtractorFileListView.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -22,6 +22,7 @@
 #include "qtractorAbout.h"
 #include "qtractorFileListView.h"
 
+#include "qtractorRubberBand.h"
 #include "qtractorDocument.h"
 
 #include "qtractorMainForm.h"
@@ -48,38 +49,24 @@
 
 // Constructors.
 qtractorFileGroupItem::qtractorFileGroupItem (
-	qtractorFileListView *pListView, const QString& sName, int iType )
-	: QTreeWidgetItem(pListView, iType)
+	const QString& sName, int iType )
+	: QTreeWidgetItem(iType)
 {
-	initFileGroupItem(sName, iType);
-}
+	QTreeWidgetItem::setIcon(0, QIcon(":/icons/itemGroup.png"));
+	QTreeWidgetItem::setText(0, sName);
 
-
-qtractorFileGroupItem::qtractorFileGroupItem (
-	qtractorFileGroupItem *pGroupItem, const QString& sName, int iType )
-	: QTreeWidgetItem(pGroupItem, iType)
-{
-	initFileGroupItem(sName, iType);
+	Qt::ItemFlags flags = QTreeWidgetItem::flags();
+	if (iType == qtractorFileListView::GroupItem) {
+		flags |=  Qt::ItemIsEditable;
+		flags &= ~Qt::ItemIsSelectable;
+	}
+	QTreeWidgetItem::setFlags(flags);
 }
 
 
 // Default destructor.
 qtractorFileGroupItem::~qtractorFileGroupItem (void)
 {
-}
-
-
-// Common group-item initializer.
-void qtractorFileGroupItem::initFileGroupItem (
-	const QString& sName, int iType )
-{
-	QTreeWidgetItem::setIcon(0, QIcon(":/icons/itemGroup.png"));
-	QTreeWidgetItem::setText(0, sName);
-
-	if (iType == qtractorFileListView::GroupItem) {
-		QTreeWidgetItem::setFlags(
-			QTreeWidgetItem::flags() | Qt::ItemIsEditable);
-	}
 }
 
 
@@ -158,17 +145,8 @@ QString qtractorFileGroupItem::toolTip (void) const
 //
 
 // Constructors.
-qtractorFileListItem::qtractorFileListItem (
-	qtractorFileListView *pListView, const QString& sPath )
-	: qtractorFileGroupItem(pListView, QFileInfo(sPath).fileName(),
-		qtractorFileListView::FileItem)
-{
-	m_sPath = sPath;
-}
-
-qtractorFileListItem::qtractorFileListItem (
-	qtractorFileGroupItem *pGroupItem, const QString& sPath )
-	: qtractorFileGroupItem(pGroupItem, QFileInfo(sPath).fileName(),
+qtractorFileListItem::qtractorFileListItem ( const QString& sPath )
+	: qtractorFileGroupItem(QFileInfo(sPath).fileName(),
 		qtractorFileListView::FileItem)
 {
 	m_sPath = sPath;
@@ -196,10 +174,11 @@ const QString& qtractorFileListItem::path (void) const
 qtractorFileChannelItem::qtractorFileChannelItem (
 	qtractorFileListItem *pFileItem, const QString& sName,
 	unsigned short iChannel )
-	: qtractorFileGroupItem(pFileItem, sName,
-		qtractorFileListView::ChannelItem)
+	: qtractorFileGroupItem(sName, qtractorFileListView::ChannelItem)
 {
 	m_iChannel = iChannel;
+
+	pFileItem->addChild(this);
 }
 
 
@@ -216,6 +195,20 @@ unsigned short qtractorFileChannelItem::channel (void) const
 }
 
 
+// Full path accessor.
+const QString qtractorFileChannelItem::path (void) const
+{
+	QString sPath;
+
+	qtractorFileListItem *pFileItem
+		= static_cast<qtractorFileListItem *> (QTreeWidgetItem::parent());
+	if (pFileItem)
+		sPath = pFileItem->path();
+
+	return sPath;
+}
+
+
 //----------------------------------------------------------------------
 // class qtractorFileChannelDrag -- custom file channel drag object.
 //
@@ -224,13 +217,38 @@ static const char *c_pszFileChannelMimeType = "qtractor/file-channel";
 
 // Encoder method.
 void qtractorFileChannelDrag::encode ( QMimeData *pMimeData,
-	const QString& sPath, unsigned short iChannel )
+	const qtractorFileChannelDrag::List& items )
 {
-	QByteArray data(sizeof(iChannel) + sPath.length() + 1, (char) 0);
+	// First, compute total serialized data size...
+	unsigned int iSize = sizeof(unsigned short);
+	QListIterator<Item> iter(items);
+	while (iter.hasNext()) {
+		const Item& item = iter.next();
+		iSize += sizeof(unsigned short);
+		iSize += item.path.length() + 1;
+	}
+	// Allocate the data array...
+	QByteArray data(iSize, (char) 0);
 	char *pData = data.data();
-	::memcpy(pData, &iChannel, sizeof(iChannel));
-	::memcpy(pData + sizeof(iChannel),
-		sPath.toUtf8().constData(), sPath.length() + 1);
+
+	// Header says how much items there are...
+	unsigned short iCount = items.count();
+	::memcpy(pData, &iCount, sizeof(unsigned short));
+	pData += sizeof(unsigned short);
+
+	// No for actual serialization...
+	iter.toFront();
+	while (iter.hasNext()) {
+		const Item& item = iter.next();
+		::memcpy(pData, &item.channel, sizeof(unsigned short));
+		pData += sizeof(unsigned short);
+		const char  *pszPath = item.path.toUtf8().constData();
+		unsigned int cchPath = ::strlen(pszPath) + 1;
+		::memcpy(pData, pszPath, cchPath);
+		pData += cchPath;
+	}
+
+	// Ok, done.
 	pMimeData->setData(c_pszFileChannelMimeType, data);
 }
 
@@ -241,19 +259,31 @@ bool qtractorFileChannelDrag::canDecode ( const QMimeData *pMimeData )
 }
 
 // Decode method.
-bool qtractorFileChannelDrag::decode ( const QMimeData *pMimeData,
-	QString& sPath, unsigned short *piChannel )
+qtractorFileChannelDrag::List qtractorFileChannelDrag::decode (
+	const QMimeData *pMimeData )
 {
+	List items;
+
 	QByteArray data = pMimeData->data(c_pszFileChannelMimeType);
 	if (data.size() < (int) sizeof(unsigned short) + 1)
-		return false;
+		return items;
 
 	const char *pData = data.constData();
-	sPath = (pData + sizeof(unsigned short));
-	if (piChannel)
-		::memcpy(piChannel, pData, sizeof(unsigned short));
 
-	return true;
+	unsigned short iCount = 0;
+	::memcpy(&iCount, pData, sizeof(unsigned short));
+	pData += sizeof(unsigned short);
+
+	Item item;
+	for (unsigned short i = 0; i < iCount; ++i) {
+		::memcpy(&item.channel, pData, sizeof(unsigned short));
+		pData += sizeof(unsigned short);
+		item.path = pData;
+		pData += ::strlen(pData) + 1;
+		items.append(item);
+	}
+
+	return items;
 }
 
 
@@ -271,13 +301,15 @@ qtractorFileListView::qtractorFileListView ( QWidget *pParent )
 	m_pDragItem = NULL;
 	m_pDropItem = NULL;
 
+	m_pRubberBand = NULL;
+
 	QTreeWidget::setRootIsDecorated(false);
 	QTreeWidget::setUniformRowHeights(true);
 //	QTreeWidget::setDragEnabled(true);
 	QTreeWidget::setAcceptDrops(true);
 	QTreeWidget::setDropIndicatorShown(true);
 	QTreeWidget::setAutoScroll(true);
-	QTreeWidget::setSelectionMode(QAbstractItemView::SingleSelection);
+	QTreeWidget::setSelectionMode(QAbstractItemView::ExtendedSelection);
 	QTreeWidget::setSizePolicy(
 		QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding));
 	QTreeWidget::setSortingEnabled(false);
@@ -318,6 +350,8 @@ qtractorFileListView::qtractorFileListView ( QWidget *pParent )
 // Default destructor.
 qtractorFileListView::~qtractorFileListView (void)
 {
+	clear();
+
 	setAutoOpenTimeout(0);
 }
 
@@ -328,14 +362,31 @@ qtractorFileListItem *qtractorFileListView::addFileItem (
 {
 	qtractorFileListItem *pFileItem = findFileItem(sPath);
 	if (pFileItem == NULL) {
-		pFileItem = createFileItem(sPath, pParentItem);
-		if (pFileItem)
-			emit contentsChanged();
+		pFileItem = createFileItem(sPath);
+		if (pFileItem) {
+			// Insert the new file item in place...
+			if (pParentItem) {
+				if (pParentItem->type() == GroupItem) {
+					pParentItem->insertChild(0, pFileItem);
+				} else {
+					// It must be a group item...
+					QTreeWidgetItem *pItem
+						= static_cast<QTreeWidgetItem *> (pParentItem);
+					pParentItem = groupItem(pParentItem);
+					int iItem = pParentItem->indexOfChild(pItem);
+					if (iItem >= 0)
+						pParentItem->insertChild(iItem + 1, pFileItem);
+					else
+						pItem->addChild(pFileItem);
+				}
+			}
+			else QTreeWidget::addTopLevelItem(pFileItem);
+		}
 	}
-
+#if 0
 	if (pFileItem)
 		QTreeWidget::setCurrentItem(pFileItem);
-
+#endif
 	return pFileItem;
 }
 
@@ -346,15 +397,16 @@ qtractorFileGroupItem *qtractorFileListView::addGroupItem (
 {
 	qtractorFileGroupItem *pGroupItem = findGroupItem(sName);
 	if (pGroupItem == NULL) {
+		pGroupItem = new qtractorFileGroupItem(sName);
 		if (pParentItem)
-			pGroupItem = new qtractorFileGroupItem(pParentItem, sName);
+			pParentItem->addChild(pGroupItem);
 		else
-			pGroupItem = new qtractorFileGroupItem(this, sName);
+			addTopLevelItem(pGroupItem);
 		emit contentsChanged();
 	}
-
+#if 0
 	QTreeWidget::setCurrentItem(pGroupItem);
-
+#endif
 	return pGroupItem;
 }
 
@@ -398,7 +450,6 @@ qtractorFileListItem *qtractorFileListView::selectFileItem (
 					= static_cast<qtractorFileChannelItem *> (pItem);
 				if (pChannelItem && pChannelItem->channel() == iChannel) {
 					QTreeWidget::setCurrentItem(pChannelItem);
-					// Done.
 					return pFileItem;
 				}
 			}
@@ -430,18 +481,23 @@ void qtractorFileListView::openFile (void)
 	// Find a proper group parent  group item...
 	qtractorFileGroupItem *pParentItem = currentGroupItem();
 	// Pick each one of the selected files...
+	int iUpdate = 0;
 	QStringListIterator iter(files);
 	while (iter.hasNext()) {
 		const QString& sPath = iter.next();
 		// Add the new file item...
-		qtractorFileListItem *pFileItem
-			= addFileItem(sPath, pParentItem);
+		qtractorFileListItem *pFileItem	= addFileItem(sPath, pParentItem);
+		// Make all this new open and visible.
 		if (pFileItem) {
-			// Make all this new open and visible.
+			iUpdate++;
 			if (pParentItem)
 				pParentItem->setOpen(true);
 		}
 	}
+
+	// Make proper notifications...
+	if (iUpdate > 0)
+		emit contentsChanged();
 }
 
 
@@ -470,30 +526,67 @@ void qtractorFileListView::renameItem (void)
 // Remove current group/file item.
 void qtractorFileListView::deleteItem (void)
 {
-	QTreeWidgetItem *pItem = QTreeWidget::currentItem();
-	if (pItem == NULL)
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm == NULL)
 		return;
 
-	// Prompt user if he/she's sure about this...
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm) {
-		qtractorOptions *pOptions = pMainForm->options();
-		if (pOptions && pOptions->bConfirmRemove) {
+	qtractorOptions *pOptions = pMainForm->options();
+	if (pOptions == NULL)
+		return;
+
+	int iUpdate = 0;
+	QList<QTreeWidgetItem *> items = selectedItems();
+	if (items.count() > 1) {
+		// Prompt user if he/she's sure about this...
+		if (pOptions->bConfirmRemove) {
 			if (QMessageBox::warning(this,
 				tr("Warning") + " - " QTRACTOR_TITLE,
-				tr("About to remove %1 item:\n\n"
-				"\"%2\"\n\n"
+				tr("About to remove %1 file items.\n\n"
 				"Are you sure?")
-				.arg(pItem->type() == GroupItem ? tr("group") : tr("file"))
-				.arg(pItem->text(0)),
+				.arg(items.count()),
 				tr("OK"), tr("Cancel")) > 0)
 				return;
 		}
+		// Definite multi-delete...
+		QListIterator<QTreeWidgetItem *> iter(items);
+		while (iter.hasNext()) {
+			QTreeWidgetItem *pItem = iter.next();
+			delete pItem;
+			iUpdate++;
+		}
+	} else {
+		QTreeWidgetItem *pItem = QTreeWidget::currentItem();
+		if (pItem) {
+			// Prompt user if he/she's sure about this...
+			if (pOptions->bConfirmRemove) {
+				if (QMessageBox::warning(this,
+					tr("Warning") + " - " QTRACTOR_TITLE,
+					tr("About to remove %1 item:\n\n"
+					"\"%2\"\n\n"
+					"Are you sure?")
+					.arg(pItem->type() == GroupItem ? tr("group") : tr("file"))
+					.arg(pItem->text(0)),
+					tr("OK"), tr("Cancel")) > 0)
+					return;
+			}
+			// Definite single-delete...
+			delete pItem;
+			iUpdate++;
+		}
 	}
 
-	// Definitive delete...
-	delete pItem;
-	emit contentsChanged();
+	if (iUpdate > 0)
+		emit contentsChanged();
+}
+
+
+// Master clean-up.
+void qtractorFileListView::clear (void)
+{
+	dragLeaveEvent(NULL);
+	m_pDragItem = NULL;
+
+	QTreeWidget::clear();
 }
 
 
@@ -682,12 +775,21 @@ bool qtractorFileListView::eventFilter ( QObject *pObject, QEvent *pEvent )
 // Handle mouse events for drag-and-drop stuff.
 void qtractorFileListView::mousePressEvent ( QMouseEvent *pMouseEvent )
 {
-	QTreeWidget::mousePressEvent(pMouseEvent);
+	dragLeaveEvent(NULL);
+	m_pDragItem = NULL;
 
 	if (pMouseEvent->button() == Qt::LeftButton) {
 		m_posDrag   = pMouseEvent->pos();
 		m_pDragItem = QTreeWidget::itemAt(m_posDrag);
+#if 0
+		if (m_pDragItem && m_pDragItem->isSelected()
+			&& (pMouseEvent->modifiers()
+				& (Qt::ShiftModifier | Qt::ControlModifier)) == 0)
+			return;
+#endif
 	}
+
+	QTreeWidget::mousePressEvent(pMouseEvent);
 }
 
 
@@ -701,36 +803,55 @@ void qtractorFileListView::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 		// We'll start dragging something alright...
 		QMimeData *pMimeData = NULL;
 		switch (m_pDragItem->type()) {
-			case GroupItem: {
+		case GroupItem: {
+			pMimeData = new QMimeData();
+			pMimeData->setText(m_pDragItem->text(0));
+			break;
+		}
+		case FileItem: {
+			// Selected items must only be file items...
+			QList<QUrl> urls;
+			QListIterator<QTreeWidgetItem *> iter(selectedItems());
+			while (iter.hasNext()) {
+				QTreeWidgetItem *pItem = iter.next();
+				if (pItem->type() == FileItem) {
+					qtractorFileListItem *pFileItem
+						= static_cast<qtractorFileListItem *> (pItem);
+					if (pFileItem)
+						urls.append(QUrl::fromLocalFile(pFileItem->path()));
+				}
+			}
+			// Have we got something?
+			if (!urls.isEmpty()) {
 				pMimeData = new QMimeData();
-				pMimeData->setText(m_pDragItem->text(0));
-				break;
+				pMimeData->setUrls(urls);
 			}
-			case FileItem: {
-				qtractorFileListItem *pFileItem
-					= static_cast<qtractorFileListItem *> (m_pDragItem);
-				if (pFileItem) {
-					QList<QUrl> urls;
-					urls.append(QUrl::fromLocalFile(pFileItem->path()));
-					pMimeData = new QMimeData();
-					pMimeData->setUrls(urls);
+			break;
+		}
+		case ChannelItem: {
+			qtractorFileChannelDrag::List items;
+			QListIterator<QTreeWidgetItem *> iter(selectedItems());
+			while (iter.hasNext()) {
+				QTreeWidgetItem *pItem = iter.next();
+				if (pItem->type() == ChannelItem) {
+					qtractorFileChannelItem *pChannelItem
+						= static_cast<qtractorFileChannelItem *> (pItem);
+					if (pChannelItem) {
+						qtractorFileChannelDrag::Item item;
+						item.channel = pChannelItem->channel();
+						item.path = pChannelItem->path();
+						items.append(item);
+					}
 				}
-				break;
 			}
-			case ChannelItem: {
-				qtractorFileListItem *pFileItem
-					= static_cast<qtractorFileListItem *> (m_pDragItem->parent());
-				qtractorFileChannelItem *pChannelItem
-					= static_cast<qtractorFileChannelItem *> (m_pDragItem);
-				if (pFileItem && pChannelItem) {
-					pMimeData = new QMimeData();
-					qtractorFileChannelDrag::encode(pMimeData,
-						pFileItem->path(), pChannelItem->channel());
-				}
-				break;
+			if (!items.isEmpty()) {
+				pMimeData = new QMimeData();
+				qtractorFileChannelDrag::encode(pMimeData, items);
 			}
-			default:
-				break;
+			break;
+		}
+		default:
+			break;
 		}
 		// Have we got it right?
 		if (pMimeData) {
@@ -759,11 +880,13 @@ bool qtractorFileListView::canDecodeEvent ( QDropEvent *pDropEvent )
 
 bool qtractorFileListView::canDropItem ( QTreeWidgetItem *pDropItem ) const
 {
-//	if (pItem == NULL)
+//	if (pDropItem == NULL)
 //		return false;
 
 	if (m_pDragItem) {
 		while (pDropItem) {
+			if (pDropItem == m_pDragItem)
+				return false;
 			QTreeWidgetItem *pParentItem = pDropItem->parent();
 			if (pParentItem == m_pDragItem)
 				return false;
@@ -775,6 +898,38 @@ bool qtractorFileListView::canDropItem ( QTreeWidgetItem *pDropItem ) const
 }
 
 
+// Ensure given item is brought to viewport visibility...
+void qtractorFileListView::ensureVisibleItem ( QTreeWidgetItem *pItem )
+{
+	QTreeWidgetItem *pItemAbove = pItem->parent();
+	if (pItemAbove) {
+		int iItem = pItemAbove->indexOfChild(pItem);
+		if (iItem > 0)
+			pItemAbove = pItemAbove->child(iItem - 1);
+	} else {
+		int iItem = QTreeWidget::indexOfTopLevelItem(pItem);
+		if (iItem > 0) {
+			pItemAbove = QTreeWidget::topLevelItem(iItem - 1);
+			if (pItemAbove) {
+				int iItemCount = pItemAbove->childCount();
+#if QT_VERSION >= 0x040201
+				if (pItemAbove->isExpanded())
+#else
+				if (QTreeWidget::isItemExpanded(pItemAbove))
+#endif
+					pItemAbove = pItemAbove->child(iItemCount - 1);
+			}
+		}
+	}
+
+	if (pItemAbove)
+		QTreeWidget::scrollToItem(pItemAbove);
+
+	QTreeWidget::scrollToItem(pItem);
+}
+
+
+// Track on the current drop item position.
 QTreeWidgetItem *qtractorFileListView::dragDropItem ( const QPoint& pos )
 {
 	QTreeWidgetItem *pDropItem = QTreeWidget::itemAt(pos);
@@ -782,16 +937,17 @@ QTreeWidgetItem *qtractorFileListView::dragDropItem ( const QPoint& pos )
 	if (pDropItem && pDropItem->type() != ChannelItem) {
 		if (pDropItem != m_pDropItem) {
 			m_pDropItem = pDropItem;
-			QTreeWidget::setCurrentItem(m_pDropItem);
+			ensureVisibleItem(m_pDropItem);
 			if (m_pAutoOpenTimer)
 				m_pAutoOpenTimer->start(m_iAutoOpenTimeout);
 		}
 	} else {
-		QTreeWidget::setItemSelected(m_pDropItem, false);
 		m_pDropItem = NULL;
 		if (m_pAutoOpenTimer)
 			m_pAutoOpenTimer->stop();
 	}
+
+	moveRubberBand(m_pDropItem, pos.x() < QTreeWidget::indentation());
 
 	return pDropItem;
 }
@@ -843,6 +999,10 @@ void qtractorFileListView::dragMoveEvent ( QDragMoveEvent *pDragMoveEvent )
 
 void qtractorFileListView::dragLeaveEvent ( QDragLeaveEvent * )
 {
+	if (m_pRubberBand)
+		delete m_pRubberBand;
+	m_pRubberBand = NULL;
+
 	m_pDropItem = NULL;
 	if (m_pAutoOpenTimer)
 		m_pAutoOpenTimer->stop();
@@ -855,71 +1015,130 @@ void qtractorFileListView::dropEvent ( QDropEvent *pDropEvent )
 	if (!canDropItem(pDropItem)) {
 		dragLeaveEvent(NULL);
 		m_pDragItem = NULL;
+		return;
 	}
 
-	// It's one from ourselves?...
-	if (m_pDragItem) {
-		// Take the item from list...
-		int iItem;
-		QTreeWidgetItem *pDragItem = NULL;
-		QTreeWidgetItem *pParentItem = m_pDragItem->parent();
-		if (pParentItem) {
-			iItem = pParentItem->indexOfChild(m_pDragItem);
-			if (iItem >= 0)
-				pDragItem = pParentItem->takeChild(iItem);
-		} else {
-			iItem = QTreeWidget::indexOfTopLevelItem(m_pDragItem);
-			if (iItem >= 0)
-				pDragItem = QTreeWidget::takeTopLevelItem(iItem);
+	// Not quite parent, but the exact drop target...
+	qtractorFileGroupItem *pParentItem
+		=  static_cast<qtractorFileGroupItem *> (pDropItem);
+	bool bOutdent = (pDropEvent->pos().x() < QTreeWidget::indentation());
+
+	// Get access to the pertinent drop data...
+	int iUpdate = 0;
+	const QMimeData *pMimeData = pDropEvent->mimeData();
+	// Let's see how many files there are...
+	if (pMimeData->hasUrls()) {
+		QListIterator<QUrl> iter(pMimeData->urls());
+		iter.toBack();
+		while (iter.hasPrevious()) {
+			const QString& sPath = iter.previous().toLocalFile();
+			// Is it one from ourselves (file item) ?...
+			if (m_pDragItem && m_pDragItem->type() == FileItem) {
+				if (dropItem(pDropItem, findItem(sPath, FileItem), bOutdent))
+					iUpdate++;
+			} else if (addFileItem(sPath, pParentItem))
+				iUpdate++;
 		}
-		// Insert it back...
-		if (pDragItem) {
-			if (pDropItem) {
-				if (pDropItem->type() == GroupItem) {
-					pDropItem->insertChild(0, pDragItem);
-				} else {
-					pParentItem = pDropItem->parent();
-					if (pParentItem) {
-						iItem = pParentItem->indexOfChild(pDropItem);
-						pParentItem->insertChild(iItem + 1, pDragItem);
-					} else {
-						iItem = QTreeWidget::indexOfTopLevelItem(pDropItem);
-						QTreeWidget::insertTopLevelItem(iItem + 1, pDragItem);
-					}
-				}
-			} else {
-				QTreeWidget::addTopLevelItem(pDragItem);
-			}
-			// Make parent open, anyway...
-			qtractorFileGroupItem *pGroupItem = groupItem(pDropItem);
-			if (pGroupItem)
-				pGroupItem->setOpen(true);
-			// And make it new current/selected...
-			QTreeWidget::setCurrentItem(pDragItem);
-		}
+	} else if (pMimeData->hasText()) {
+		// Maybe its just a new convenience group...
+		const QString& sText = pMimeData->text();
+		// Is it one from ourselves (group item) ?...
+		if (m_pDragItem && m_pDragItem->type() == GroupItem) {
+			if (dropItem(pDropItem, findItem(sText, GroupItem), bOutdent))
+				iUpdate++;
+		} else if (addGroupItem(sText, pParentItem))
+			iUpdate++;
+	}
+
+	// Teke care of change modification...
+	if (iUpdate > 0) {
+		// Make parent open, anyway...
+		qtractorFileGroupItem *pGroupItem = groupItem(pDropItem);
+		if (pGroupItem)
+			pGroupItem->setOpen(true);
 		// Notify that we've changed something.
 		emit contentsChanged();
-	} else {
-		// Let's see how many files there are...
-		const QMimeData *pMimeData = pDropEvent->mimeData();
-		if (pMimeData->hasUrls()) {
-			QList<QUrl> list = pMimeData->urls();
-			QListIterator<QUrl> iter(list);
-			while (iter.hasNext()) {
-				const QString& sPath = iter.next().toLocalFile();
-				addFileItem(sPath,
-					static_cast<qtractorFileGroupItem *> (pDropItem));
-			}
-		} else if (pMimeData->hasText()) {
-			// Maybe its just a new convenience group...
-			const QString& sText = pMimeData->text();
-			addGroupItem(sText,
-				static_cast<qtractorFileGroupItem *> (pDropItem));
-		}
 	}
 
 	dragLeaveEvent(NULL);
 	m_pDragItem = NULL;
+}
+
+
+// Drag-and-drop target method...
+QTreeWidgetItem *qtractorFileListView::dropItem (
+	QTreeWidgetItem *pDropItem, QTreeWidgetItem *pDragItem, bool bOutdent )
+{
+	// we must be dropping something...
+	if (pDragItem == NULL)
+		return NULL;
+
+	// Take the item from list...
+	int iItem;
+	QTreeWidgetItem *pParentItem = pDragItem->parent();
+	if (pParentItem) {
+		iItem = pParentItem->indexOfChild(pDragItem);
+		if (iItem >= 0)
+			pDragItem = pParentItem->takeChild(iItem);
+	} else {
+		iItem = QTreeWidget::indexOfTopLevelItem(pDragItem);
+		if (iItem >= 0)
+			pDragItem = QTreeWidget::takeTopLevelItem(iItem);
+	}
+
+	// Insert it back...
+	if (pDropItem) {
+		if (pDropItem->type() == GroupItem && !bOutdent) {
+			pDropItem->insertChild(0, pDragItem);
+		} else {
+			pParentItem = pDropItem->parent();
+			if (pParentItem) {
+				iItem = pParentItem->indexOfChild(pDropItem);
+				pParentItem->insertChild(iItem + 1, pDragItem);
+			} else {
+				iItem = QTreeWidget::indexOfTopLevelItem(pDropItem);
+				QTreeWidget::insertTopLevelItem(iItem + 1, pDragItem);
+			}
+		}
+	} else {
+		QTreeWidget::addTopLevelItem(pDragItem);
+	}
+
+	// Return the new item...
+	return pDragItem;
+}
+
+// Draw a dragging separator line.
+void qtractorFileListView::moveRubberBand ( QTreeWidgetItem *pDropItem, bool bOutdent )
+{
+	// Is there any item upon we migh drop anything?
+	if (pDropItem == NULL) {
+		if (m_pRubberBand)
+			m_pRubberBand->hide();
+		return;
+	}
+
+	// Create the rubber-band if there's none...
+	if (m_pRubberBand == NULL) {
+		m_pRubberBand = new qtractorRubberBand(
+			QRubberBand::Line, QTreeWidget::viewport());
+	//	QPalette pal(m_pRubberBand->palette());
+	//	pal.setColor(m_pRubberBand->foregroundRole(), Qt::blue);
+	//	m_pRubberBand->setPalette(pal);
+	//	m_pRubberBand->setBackgroundRole(QPalette::NoRole);
+	}
+
+	// Just move it
+	QRect rect = QTreeWidget::visualItemRect(pDropItem);
+	if (pDropItem->type() == GroupItem && !bOutdent)
+		rect.setX(rect.x() + QTreeWidget::indentation());
+	rect.setTop(rect.bottom());
+	rect.setHeight(2);
+	m_pRubberBand->setGeometry(rect);
+
+	// Ah, and make it visible, of course...
+	if (!m_pRubberBand->isVisible())
+		m_pRubberBand->show();
 }
 
 
@@ -942,20 +1161,25 @@ bool qtractorFileListView::loadListElement ( qtractorDocument *pDocument,
 		// Now it depends on item tag/type...
 		if (eChild.tagName() == "group") {
 			qtractorFileGroupItem *pGroupItem
-				= addGroupItem(eChild.attribute("name"), pParentItem);
-			if (pGroupItem) {
-				if (!loadListElement(pDocument, &eChild, pGroupItem))
-					return false;
-				pGroupItem->setOpen(
-					pDocument->boolFromText(eChild.attribute("open")));
-			}
+				= new qtractorFileGroupItem(eChild.attribute("name"));
+			if (pParentItem)
+				pParentItem->addChild(pGroupItem);
+			else
+				addTopLevelItem(pGroupItem);
+			if (!loadListElement(pDocument, &eChild, pGroupItem))
+				return false;
+			pGroupItem->setOpen(
+				pDocument->boolFromText(eChild.attribute("open")));
 		}
 		else
 		if (eChild.tagName() == "file") {
-			qtractorFileListItem *pFileItem
-				= addFileItem(eChild.text(), pParentItem);
+			qtractorFileListItem *pFileItem = createFileItem(eChild.text());
 			if (pFileItem) {
 				pFileItem->setText(0, eChild.attribute("name"));
+				if (pParentItem)
+					pParentItem->addChild(pFileItem);
+				else
+					QTreeWidget::addTopLevelItem(pFileItem);
 			}
 		}
 	}

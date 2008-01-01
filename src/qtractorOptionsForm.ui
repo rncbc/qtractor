@@ -2,7 +2,7 @@
  <author>rncbc aka Rui Nuno Capela</author>
  <comment>qtractor - An Audio/MIDI multi-track sequencer.
 
-   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -284,7 +284,7 @@
              <string>Whether to remove audio peak files on session close</string>
             </property>
             <property name="text" >
-             <string>&amp;Auto-remove peak files</string>
+             <string>&amp;Auto-remove audio peak files</string>
             </property>
             <property name="shortcut" >
              <string>Alt+A</string>
@@ -353,10 +353,10 @@
              </font>
             </property>
             <property name="toolTip" >
-             <string>Whether to try dropping multiple files into the same track</string>
+             <string>Whether to try dropping multiple audio files into the same track</string>
             </property>
             <property name="text" >
-             <string>&amp;Drop multiple files into the same track</string>
+             <string>&amp;Drop multiple audio files into the same track</string>
             </property>
             <property name="shortcut" >
              <string>Alt+D</string>

@@ -1,7 +1,7 @@
 // qtractorAudioListView.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -32,25 +32,8 @@
 
 // Constructors.
 qtractorAudioFileItem::qtractorAudioFileItem (
-	qtractorAudioListView *pListView, const QString& sPath,
-	qtractorAudioFile *pFile )
-	: qtractorFileListItem(pListView, sPath)
-{
-	initAudioFileItem(sPath, pFile);
-}
-
-qtractorAudioFileItem::qtractorAudioFileItem (
-	qtractorFileGroupItem *pGroupItem, const QString& sPath,
-	qtractorAudioFile *pFile )
-	: qtractorFileListItem(pGroupItem, sPath)
-{
-	initAudioFileItem(sPath, pFile);
-}
-
-
-// Common item initializer.
-void qtractorAudioFileItem::initAudioFileItem ( const QString& sPath,
-	qtractorAudioFile *pFile )
+	const QString& sPath, qtractorAudioFile *pFile )
+	: qtractorFileListItem(sPath)
 {
 	QTreeWidgetItem::setTextAlignment(
 		qtractorAudioListView::Channels, Qt::AlignRight);
@@ -158,7 +141,7 @@ QStringList qtractorAudioListView::getOpenFileNames (void)
 
 // File item factory method.
 qtractorFileListItem *qtractorAudioListView::createFileItem (
-	const QString& sPath, qtractorFileGroupItem *pParentItem )
+	const QString& sPath )
 {
 	qtractorFileListItem *pFileItem = NULL;
 
@@ -168,10 +151,7 @@ qtractorFileListItem *qtractorAudioListView::createFileItem (
 		return NULL;
 
 	if (pFile->open(sPath)) {
-		if (pParentItem)
-			pFileItem = new qtractorAudioFileItem(pParentItem, sPath, pFile);
-		else
-			pFileItem = new qtractorAudioFileItem(this, sPath, pFile);
+		pFileItem = new qtractorAudioFileItem(sPath, pFile);
 		pFile->close();
 	}
 
