@@ -197,6 +197,3 @@ LIBS += -ljackmp -lasound -lsndfile -lsamplerate -logg -lvorbis -lvorbisenc -lvo
 
 # XML/DOM support
 QT += xml
-
-# Extra optimization flags
-QMAKE_CXXFLAGS += -msse

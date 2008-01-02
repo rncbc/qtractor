@@ -766,8 +766,10 @@ void qtractorTimeStretch::FifoBuffer::ensureCapacity (
 			ppTemp[i] = (float *)
 				(((unsigned long) ppTempUnaligned[i] + 15) & -16);
 			if (m_ppBuffer) {
-				::memcpy(ppTemp[i], ptrBegin(i),
-					m_iFramesInBuffer * sizeof(float));
+				if (m_iFramesInBuffer > 0) {
+					::memcpy(ppTemp[i], ptrBegin(i),
+						m_iFramesInBuffer * sizeof(float));
+				}
 				delete [] m_ppBufferUnaligned[i];
 			}
 		}
@@ -781,9 +783,11 @@ void qtractorTimeStretch::FifoBuffer::ensureCapacity (
 		// Done realloc.
 	} else if (m_iFramePos > (m_iSizeInFrames >> 2)) {
 		// Rewind the buffer by moving data...
-		for (unsigned short i = 0; i < m_iChannels; ++i) {
-			::memmove(m_ppBuffer[i], ptrBegin(i),
-				m_iFramesInBuffer * sizeof(float));
+		if (m_iFramesInBuffer > 0) {
+			for (unsigned short i = 0; i < m_iChannels; ++i) {
+				::memmove(m_ppBuffer[i], ptrBegin(i),
+					m_iFramesInBuffer * sizeof(float));
+			}
 		}
 		// Done rewind.
 		m_iFramePos = 0;
