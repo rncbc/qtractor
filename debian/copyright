@@ -7,7 +7,7 @@ Upstream Author: Rui Nuno Capela <rncbc@rncbc.org>
 
 Copyright:
 
-   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
 
 License:
 
@@ -25,6 +25,6 @@ License:
    with this program; if not, write to the Free Software Foundation, Inc.,
    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-The Debian packaging is (C) 2007, Rui Nuno Capela <rncbc@rncbc.org> and
+The Debian packaging is (C) 2008, Rui Nuno Capela <rncbc@rncbc.org> and
 is licensed under the GPL, see `/usr/share/common-licenses/GPL'.
 
