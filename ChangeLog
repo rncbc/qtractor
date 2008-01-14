@@ -3,6 +3,12 @@ Qtractor - An Audio/MIDI multi-track sequencer
 
 ChangeLog
 
+CVS HEAD
+
+- A random but instant crash upon audition/pre-listening player
+  onset was hopefully fixed.
+
+
 0.1.0   2008-01-05  The Frivolous Debutante.
 
 - Audio clip time-stretching makes its debut, with code adapted and

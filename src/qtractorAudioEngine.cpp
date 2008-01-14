@@ -1,7 +1,7 @@
 // qtractorAudioEngine.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -229,6 +229,7 @@ qtractorAudioEngine::qtractorAudioEngine ( qtractorSession *pSession )
 	m_iMetroBeat      = 0;
 
 	// Audition/pre-listening player stuff. 
+	ATOMIC_SET(&m_playerLock, 0);
 	m_bPlayerOpen  = false;
 	m_bPlayerBus   = false;
 	m_pPlayerBus   = NULL;
@@ -524,13 +525,14 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 		return 0;
 
 	// Process audition/pre-listening...
-	if (m_bPlayerOpen) {
+	if (m_bPlayerOpen && ATOMIC_TAS(&m_playerLock)) {
 		m_pPlayerBuff->readMix(m_pPlayerBus->out(), nframes,
 			m_pPlayerBus->channels(), 0, 1.0f);
 		m_bPlayerOpen = (m_iPlayerFrame < m_pPlayerBuff->length());
 		m_iPlayerFrame += nframes;
 		if (m_bPlayerBus)
 			m_pPlayerBus->process_commit(nframes);
+		ATOMIC_SET(&m_playerLock, 0);
 	}
 
 	// Don't go any further, if not playing.
@@ -1223,14 +1225,29 @@ bool qtractorAudioEngine::isPlayerOpen (void) const
 // Open and start audition/pre-listening...
 bool qtractorAudioEngine::openPlayer ( const QString& sFilename )
 {
-	closePlayer();
-
-	// Is there any?
-	if (m_pPlayerBuff == NULL)
+	// Must have a valid session...
+	qtractorSession *pSession = session();
+	if (pSession == NULL)
 		return false;
 
-	m_pPlayerBuff->setLength(0);
-	m_bPlayerOpen = m_pPlayerBuff->open(sFilename);
+	// Acquire proper locking...
+	while (!ATOMIC_TAS(&m_playerLock))
+		pSession->stabilize();
+
+	// May close it logically...
+	m_bPlayerOpen = false;
+
+	// Is there any?
+	if (m_pPlayerBuff) {
+		m_pPlayerBuff->close();
+		m_pPlayerBuff->setLength(0);
+		m_bPlayerOpen = m_pPlayerBuff->open(sFilename);
+	}
+
+	m_iPlayerFrame = 0;
+
+	// Release player lock...
+	ATOMIC_SET(&m_playerLock, 0);
 
 	return m_bPlayerOpen;
 }
@@ -1239,11 +1256,27 @@ bool qtractorAudioEngine::openPlayer ( const QString& sFilename )
 // Stop and close audition/pre-listening...
 void qtractorAudioEngine::closePlayer (void)
 {
+	// Must have a valid session...
+	qtractorSession *pSession = session();
+	if (pSession == NULL)
+		return;
+
+	// Acquire proper locking...
+	while (!ATOMIC_TAS(&m_playerLock))
+		pSession->stabilize();
+
+	// Release player logically...
+	ATOMIC_SET(&m_playerLock, 0);
+
+	m_bPlayerOpen = false;
+
 	if (m_pPlayerBuff)
 		m_pPlayerBuff->close();
 
-	m_bPlayerOpen  = false;
 	m_iPlayerFrame = 0;
+
+	// Release player lock...
+	ATOMIC_SET(&m_playerLock, 0);
 }
 
 

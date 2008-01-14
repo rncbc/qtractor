@@ -1,7 +1,7 @@
 // qtractorAudioEngine.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -193,6 +193,7 @@ private:
 	unsigned int         m_iMetroBeat;
 
 	// Audition/pre-listening player stuff. 
+	qtractorAtomic       m_playerLock;
 	bool                 m_bPlayerOpen;
 	bool                 m_bPlayerBus;
 	qtractorAudioBus    *m_pPlayerBus;
