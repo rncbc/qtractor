@@ -1,7 +1,7 @@
 // qtractorSession.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -1065,6 +1065,10 @@ void qtractorSession::trackRecord ( qtractorTrack *pTrack, bool bRecord )
 	// Just ditch the in-record clip...
 	if (!bRecord) {
 		pTrack->setClipRecord(NULL);
+		// Check whether we set recording off...
+		if (recordTracks() < 1)
+			setRecording(false);
+		// Done.
 		return;
 	}
 

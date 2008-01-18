@@ -5,6 +5,9 @@ ChangeLog
 
 CVS HEAD
 
+- Turning track record off while recording is rolling was leaving
+  the session in a inconsistent recording status, now fixed.
+
 - A random but instant crash upon audition/pre-listening player
   onset was hopefully fixed.
 
