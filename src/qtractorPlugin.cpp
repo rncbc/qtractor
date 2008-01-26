@@ -273,13 +273,22 @@ qtractorPlugin *qtractorPluginFile::createPlugin(
 
 	// Try to fill the types list at this moment...
 	qtractorPluginFile *pFile = new qtractorPluginFile(sFilename);
+	if (!pFile->open()) {
+		delete pFile;
+		return NULL;
+	}
 
 #ifdef CONFIG_DSSI
 	// Try DSSI plugin types first...
 	if (typeHint == qtractorPluginType::Any ||
 		typeHint == qtractorPluginType::Dssi) {
-		return new qtractorDssiPlugin(pList,
-			new qtractorDssiPluginType(pFile, iIndex));
+		qtractorDssiPluginType *pDssiType
+			= qtractorDssiPluginType::createType(pFile, iIndex);
+		if (pDssiType) {
+			if (pDssiType->open())
+				return new qtractorDssiPlugin(pList, pDssiType);
+			delete pDssiType;
+		}
 	}
 #endif
 
@@ -287,8 +296,13 @@ qtractorPlugin *qtractorPluginFile::createPlugin(
 	// Try LADSPA plugin types...
 	if (typeHint == qtractorPluginType::Any ||
 		typeHint == qtractorPluginType::Ladspa) {
-		return new qtractorLadspaPlugin(pList,
-			new qtractorLadspaPluginType(pFile, iIndex));
+		qtractorLadspaPluginType *pLadspaType
+			= qtractorLadspaPluginType::createType(pFile, iIndex);
+		if (pLadspaType) {
+			if (pLadspaType->open())
+				return new qtractorLadspaPlugin(pList, pLadspaType);
+			delete pLadspaType;
+		}
 	}
 #endif
 
@@ -296,8 +310,13 @@ qtractorPlugin *qtractorPluginFile::createPlugin(
 	// Try VST plugin types...
 	if (typeHint == qtractorPluginType::Any ||
 		typeHint == qtractorPluginType::Vst) {
-		return new qtractorVstPlugin(pList,
-			new qtractorVstPluginType(pFile));
+		qtractorVstPluginType *pVstType
+			= qtractorVstPluginType::createType(pFile);
+		if (pVstType) {
+			if (pVstType->open())
+				return new qtractorVstPlugin(pList, pVstType);
+			delete pVstType;
+		}
 	}
 #endif
 
@@ -383,12 +402,14 @@ qtractorPlugin::qtractorPlugin (
 		m_iAudioInsCap(0), m_iAudioOutsCap(0),
 		m_bActivated(false), m_pForm(NULL)
 {
+#if 0
 	// Open this...
 	if (m_pType) {
 		qtractorPluginFile *pFile = m_pType->file();
 		if (pFile && pFile->open())
 			m_pType->open();
 	}
+#endif
 }
 
 

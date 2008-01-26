@@ -61,7 +61,7 @@ bool qtractorLadspaPluginType::open (void)
 	m_iMidiIns     = 0;
 	m_iMidiOuts    = 0;
 
-	for (unsigned long i = 0; i < m_pLadspaDescriptor->PortCount; i++) {
+	for (unsigned long i = 0; i < m_pLadspaDescriptor->PortCount; ++i) {
 		const LADSPA_PortDescriptor portType
 			= m_pLadspaDescriptor->PortDescriptors[i];
 		if (LADSPA_IS_PORT_INPUT(portType)) {
