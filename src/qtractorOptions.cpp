@@ -1,7 +1,7 @@
 // qtractorOptions.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -131,6 +131,7 @@ qtractorOptions::qtractorOptions (void)
 	sMidiDir       = m_settings.value("/MidiDir").toString();
 	sInstrumentDir = m_settings.value("/InstrumentDir").toString();
 	sPluginSearch  = m_settings.value("/PluginSearch").toString();
+	iPluginType    = m_settings.value("/PluginType", 1).toInt();
 	m_settings.endGroup();
 
 	// Instrument file list.
@@ -279,6 +280,7 @@ qtractorOptions::~qtractorOptions (void)
 	m_settings.setValue("/MidiDir", sMidiDir);
 	m_settings.setValue("/InstrumentDir", sInstrumentDir);
 	m_settings.setValue("/PluginSearch", sPluginSearch);
+	m_settings.setValue("/PluginType", iPluginType);
 	m_settings.endGroup();
 
 	// Instrument file list.

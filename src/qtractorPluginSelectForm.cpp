@@ -1,7 +1,7 @@
 // qtractorPluginSelectForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -19,10 +19,8 @@
 
 *****************************************************************************/
 
+#include "qtractorAbout.h"
 #include "qtractorPluginSelectForm.h"
-
-
-#include "qtractorPlugin.h"
 
 #include "qtractorOptions.h"
 #include "qtractorMainForm.h"
@@ -33,6 +31,9 @@
 #include <QRegExp>
 #include <QList>
 
+
+static qtractorPluginPath     g_pluginPath;
+static qtractorPluginTypeList g_pluginTypes;
 
 //----------------------------------------------------------------------------
 // qtractorPluginSelectForm -- UI wrapper form.
@@ -45,9 +46,24 @@ qtractorPluginSelectForm::qtractorPluginSelectForm (
 	// Setup UI struct...
 	m_ui.setupUi(this);
 
-	m_pPluginPath = new qtractorPluginPath();
-
 	m_iChannels = 0;
+	m_bMidi = false;
+
+	// Populate plugin type hints...
+	m_ui.PluginTypeComboBox->addItem(
+		qtractorPluginType::textFromHint(qtractorPluginType::Any));
+#ifdef CONFIG_LADSPA
+	m_ui.PluginTypeComboBox->addItem(
+		qtractorPluginType::textFromHint(qtractorPluginType::Ladspa));
+#endif
+#ifdef CONFIG_DSSI
+	m_ui.PluginTypeComboBox->addItem(
+		qtractorPluginType::textFromHint(qtractorPluginType::Dssi));
+#endif
+#ifdef CONFIG_VST
+	m_ui.PluginTypeComboBox->addItem(
+		qtractorPluginType::textFromHint(qtractorPluginType::Vst));
+#endif
 
 	QHeaderView *pHeader = m_ui.PluginListView->header();
 //	pHeader->setResizeMode(QHeaderView::Custom);
@@ -57,16 +73,26 @@ qtractorPluginSelectForm::qtractorPluginSelectForm (
 
 	QTreeWidgetItem *pHeaderItem = m_ui.PluginListView->headerItem();
 	pHeaderItem->setTextAlignment(0, Qt::AlignLeft);	// Name.
-	pHeaderItem->setTextAlignment(4, Qt::AlignLeft);	// Filename.
-	pHeaderItem->setTextAlignment(5, Qt::AlignLeft);	// Index.
-	pHeaderItem->setTextAlignment(6, Qt::AlignLeft);	// Instances.
+	pHeaderItem->setTextAlignment(5, Qt::AlignLeft);	// Filename.
+	pHeaderItem->setTextAlignment(6, Qt::AlignLeft);	// Index.
+	pHeaderItem->setTextAlignment(7, Qt::AlignLeft);	// Instances.
+	pHeaderItem->setTextAlignment(8, Qt::AlignLeft);	// Type.
 
 	pHeader->resizeSection(0, 240);						// Name.
 	m_ui.PluginListView->resizeColumnToContents(1);		// Audio.
-	m_ui.PluginListView->resizeColumnToContents(2);		// Controls.
-	m_ui.PluginListView->resizeColumnToContents(3);		// Mode.
-//	pHeader->resizeSection(4, 240);						// Path.
-	m_ui.PluginListView->resizeColumnToContents(5);		// Index
+	m_ui.PluginListView->resizeColumnToContents(2);		// MIDI.
+	m_ui.PluginListView->resizeColumnToContents(3);		// Controls.
+	m_ui.PluginListView->resizeColumnToContents(4);		// Mode.
+	pHeader->resizeSection(5, 120);						// Path.
+	m_ui.PluginListView->resizeColumnToContents(6);		// Index
+	m_ui.PluginListView->resizeColumnToContents(7);		// Instances
+
+#if QT_VERSION >= 0x040200
+	m_ui.PluginListView->setSortingEnabled(true);
+#endif
+	m_ui.PluginListView->sortItems(0, Qt::AscendingOrder);
+
+	m_ui.PluginTypeProgressBar->hide();
 
 	// Initialize conveniency options...
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
@@ -76,13 +102,14 @@ qtractorPluginSelectForm::qtractorPluginSelectForm (
 			pOptions->loadComboBoxHistory(m_ui.PluginSearchComboBox);
 			m_ui.PluginSearchComboBox->setEditText(
 				pOptions->sPluginSearch);
+			m_ui.PluginTypeComboBox->setCurrentIndex(pOptions->iPluginType);
 		}
 	}
 
 	// Let the search begin...
 	m_ui.PluginSearchComboBox->setFocus();
 	
-	m_pPluginPath->open();
+	typeHintChanged(m_ui.PluginTypeComboBox->currentIndex());
 
 	adjustSize();
 
@@ -93,6 +120,9 @@ qtractorPluginSelectForm::qtractorPluginSelectForm (
 	QObject::connect(m_ui.PluginSearchComboBox,
 		SIGNAL(editTextChanged(const QString&)),
 		SLOT(refresh()));
+	QObject::connect(m_ui.PluginTypeComboBox,
+		SIGNAL(activated(int)),
+		SLOT(typeHintChanged(int)));
 	QObject::connect(m_ui.PluginListView,
 		SIGNAL(itemSelectionChanged()),
 		SLOT(stabilize()));
@@ -119,19 +149,20 @@ qtractorPluginSelectForm::~qtractorPluginSelectForm (void)
 	if (pMainForm) {
 		qtractorOptions *pOptions = pMainForm->options();
 		if (pOptions) {
+			pOptions->iPluginType = m_ui.PluginTypeComboBox->currentIndex();
 			pOptions->sPluginSearch = m_ui.PluginSearchComboBox->currentText();
 			pOptions->saveComboBoxHistory(m_ui.PluginSearchComboBox);
 		}
 	}
-
-	delete m_pPluginPath;
 }
 
 
 // Base number of channels accessors.
-void qtractorPluginSelectForm::setChannels ( unsigned short iChannels )
+void qtractorPluginSelectForm::setChannels ( unsigned short iChannels, bool bMidi )
 {
 	m_iChannels = iChannels;
+	m_bMidi = bMidi;
+
 	refresh();
 }
 
@@ -139,6 +170,12 @@ void qtractorPluginSelectForm::setChannels ( unsigned short iChannels )
 unsigned short qtractorPluginSelectForm::channels (void) const
 {
 	return m_iChannels;
+}
+
+
+bool qtractorPluginSelectForm::isMidi (void) const
+{
+	return m_bMidi;
 }
 
 
@@ -150,12 +187,35 @@ int qtractorPluginSelectForm::pluginCount (void) const
 
 QString qtractorPluginSelectForm::pluginFilename ( int iPlugin ) const
 {
-	return m_ui.PluginListView->selectedItems().at(iPlugin)->text(4);
+	return m_ui.PluginListView->selectedItems().at(iPlugin)->text(5);
 }
 
 unsigned long qtractorPluginSelectForm::pluginIndex ( int iPlugin ) const
 {
-	return m_ui.PluginListView->selectedItems().at(iPlugin)->text(5).toULong();
+	return m_ui.PluginListView->selectedItems().at(iPlugin)->text(6).toULong();
+}
+
+qtractorPluginType::Hint qtractorPluginSelectForm::pluginTypeHint ( int iPlugin ) const
+{
+	const QString& sText
+		= m_ui.PluginListView->selectedItems().at(iPlugin)->text(8);
+	return qtractorPluginType::hintFromText(sText);
+}
+
+
+// Plugin type hint change slot.
+void qtractorPluginSelectForm::typeHintChanged ( int iTypeHint )
+{
+	qtractorPluginType::Hint typeHint
+		= qtractorPluginType::hintFromText(
+			m_ui.PluginTypeComboBox->itemText(iTypeHint));
+	if (g_pluginPath.typeHint() != typeHint) {
+		g_pluginPath.setTypeHint(typeHint);
+		g_pluginPath.open();
+		g_pluginTypes.clear();
+	}
+
+	refresh();
 }
 
 
@@ -170,94 +230,90 @@ void qtractorPluginSelectForm::reset (void)
 // Refresh plugin listing.
 void qtractorPluginSelectForm::refresh (void)
 {
-	if (m_pPluginPath == NULL)
+	if (m_iChannels == 0)
 		return;
+
+	m_ui.PluginListView->clear();
+
+	// FIXME: Should this be a global (singleton) registry?
+	if (g_pluginTypes.isEmpty()) {
+		int iFile = 0;
+		m_ui.PluginTypeProgressBar->setMaximum(g_pluginPath.files().count());
+		m_ui.PluginTypeProgressBar->show();
+		QListIterator<qtractorPluginFile *> file_iter(g_pluginPath.files());
+		while (file_iter.hasNext()) {
+			m_ui.PluginTypeProgressBar->setValue(++iFile);
+			QApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
+			qtractorPluginFile *pFile = file_iter.next();
+			if (pFile->open()) {
+				pFile->getTypes(g_pluginTypes);
+				pFile->close();
+			}
+		}
+		m_ui.PluginTypeProgressBar->hide();
+	}
 
 	QString sSearch = m_ui.PluginSearchComboBox->currentText().simplified();
 	QRegExp rx(sSearch.replace(QRegExp("[\\s]+"), ".*"), Qt::CaseInsensitive);
 
-	m_ui.PluginListView->setUpdatesEnabled(false);
-
-	m_ui.PluginListView->clear();
 	QStringList cols;
 	QList<QTreeWidgetItem *> items;
-	QListIterator<qtractorPluginFile *> file_iter(m_pPluginPath->files());
-	while (file_iter.hasNext()) {
-		qtractorPluginFile *pFile = file_iter.next();
-		if (pFile->open()) {
-			QListIterator<qtractorPluginType *> type_iter(pFile->types());
-			while (type_iter.hasNext()) {
-				qtractorPluginType *pType = type_iter.next();
-				const LADSPA_Descriptor *pDescriptor = pType->descriptor();
-				const QString& sFilename = pType->filename();
-				if (rx.isEmpty()
-					|| rx.indexIn(pDescriptor->Name) >= 0
-					|| rx.indexIn(sFilename) >= 0) {
-					int iAudioIns    = 0;
-					int iAudioOuts   = 0;
-					int iControlIns  = 0;
-					int iControlOuts = 0;
-					for (unsigned long i = 0; i < pDescriptor->PortCount; i++) {
-						const LADSPA_PortDescriptor portType
-							= pDescriptor->PortDescriptors[i];
-						if (LADSPA_IS_PORT_INPUT(portType)) {
-							if (LADSPA_IS_PORT_AUDIO(portType))
-								iAudioIns++;
-							else
-							if (LADSPA_IS_PORT_CONTROL(portType))
-								iControlIns++;
-						}
-						else
-						if (LADSPA_IS_PORT_OUTPUT(portType)) {
-							if (LADSPA_IS_PORT_AUDIO(portType))
-								iAudioOuts++;
-							else
-							if (LADSPA_IS_PORT_CONTROL(portType))
-								iControlOuts++;
-						}
-					}
-					unsigned short iInstances = 0;
-					if (iAudioIns == m_iChannels && iAudioOuts == m_iChannels)
-						iInstances = 1;
-					else if ((iAudioIns < 2 || iAudioIns == m_iChannels)
-						&& iAudioOuts < 2)
-						iInstances = m_iChannels;
-					cols.clear();
-					cols << pDescriptor->Name;
-					cols << QString("%1:%2").arg(iAudioIns).arg(iAudioOuts);
-					cols << QString("%1:%2").arg(iControlIns).arg(iControlOuts);
-					if (LADSPA_IS_HARD_RT_CAPABLE(pDescriptor->Properties))
-						cols << tr("RT");
-					else
-						cols << "-";
-					cols << sFilename;
-					cols << QString::number(pType->index());
-					cols << QString::number(iInstances);
-					QTreeWidgetItem *pItem = new QTreeWidgetItem(cols);
-					if (iInstances < 1) {
-						pItem->setFlags(pItem->flags() & ~Qt::ItemIsSelectable);
-						int iColumnCount = m_ui.PluginListView->columnCount();
-						for (int i = 0; i < iColumnCount; ++i) {
-							pItem->setTextColor(i,
-								m_ui.PluginListView->palette().mid().color());
-						}
-					}
-					pItem->setTextAlignment(1, Qt::AlignHCenter);	// Audio
-					pItem->setTextAlignment(2, Qt::AlignHCenter);	// Controls
-					pItem->setTextAlignment(3, Qt::AlignHCenter);	// Mode
-					items.append(pItem);
+	QListIterator<qtractorPluginType *> type_iter(g_pluginTypes.list());
+	while (type_iter.hasNext()) {
+		qtractorPluginType *pType = type_iter.next();
+		const QString& sFilename = (pType->file())->filename();
+		const QString& sName = pType->name();
+		if (rx.isEmpty()
+			|| rx.indexIn(sName) >= 0
+			|| rx.indexIn(sFilename) >= 0) {
+			// Try primary instantiation...
+			int iAudioIns    = pType->audioIns();
+			int iAudioOuts   = pType->audioOuts();
+			int iMidiIns     = pType->midiIns();
+			int iMidiOuts    = pType->midiOuts();
+			int iControlIns  = pType->controlIns();
+			int iControlOuts = pType->controlOuts();
+			unsigned short iInstances = pType->instances(m_iChannels, m_bMidi);
+			cols.clear();
+			cols << sName;
+			cols << QString("%1:%2").arg(iAudioIns).arg(iAudioOuts);
+			cols << QString("%1:%2").arg(iMidiIns).arg(iMidiOuts);
+			cols << QString("%1:%2").arg(iControlIns).arg(iControlOuts);
+			if (pType->isRealtime())
+				cols << tr("RT");
+			else
+				cols << "-";
+			cols << sFilename;
+			cols << QString::number(pType->index());
+			cols << QString::number(iInstances);
+			cols << qtractorPluginType::textFromHint(pType->typeHint());
+			QTreeWidgetItem *pItem = new QTreeWidgetItem(cols);
+			if (iInstances < 1) {
+				pItem->setFlags(pItem->flags() & ~Qt::ItemIsSelectable);
+				int iColumnCount = m_ui.PluginListView->columnCount();
+				for (int i = 0; i < iColumnCount; ++i) {
+					pItem->setTextColor(i,
+						m_ui.PluginListView->palette().mid().color());
 				}
 			}
-			pFile->close();
+			pItem->setTextAlignment(1, Qt::AlignHCenter);	// Audio
+			pItem->setTextAlignment(2, Qt::AlignHCenter);	// MIDI
+			pItem->setTextAlignment(3, Qt::AlignHCenter);	// Controls
+			pItem->setTextAlignment(4, Qt::AlignHCenter);	// Mode
+			items.append(pItem);
 		}
 	}
 
-	m_ui.PluginListView->addTopLevelItems(items);
-//	m_ui.PluginListView->resizeColumnToContents(0);					// Name.
-	m_ui.PluginListView->setUpdatesEnabled(true);
-
 	m_ui.PluginResetToolButton->setEnabled(!rx.isEmpty());
 	
+	m_ui.PluginListView->addTopLevelItems(items);
+//	m_ui.PluginListView->resizeColumnToContents(0);			// Name.
+
+	QHeaderView *pHeader = m_ui.PluginListView->header();
+	m_ui.PluginListView->sortItems(
+		pHeader->sortIndicatorSection(),
+		pHeader->sortIndicatorOrder());
+
 	stabilize();
 }
 

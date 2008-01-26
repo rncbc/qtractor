@@ -21,11 +21,13 @@ HEADERS += src/qtractorAbout.h \
            src/qtractorConnect.h \
            src/qtractorConnections.h \
            src/qtractorDocument.h \
+           src/qtractorDssiPlugin.h \
            src/qtractorEngine.h \
            src/qtractorEngineCommand.h \
            src/qtractorFileListView.h \
            src/qtractorFiles.h \
            src/qtractorInstrument.h \
+           src/qtractorLadspaPlugin.h \
            src/qtractorList.h \
            src/qtractorMessages.h \
            src/qtractorMeter.h \
@@ -73,6 +75,7 @@ HEADERS += src/qtractorAbout.h \
            src/qtractorTrackTime.h \
            src/qtractorTrackView.h \
            src/qtractorTracks.h \
+           src/qtractorVstPlugin.h \
            src/qtractorBusForm.h \
            src/qtractorClipForm.h \
            src/qtractorConnectForm.h \
@@ -107,11 +110,13 @@ SOURCES += src/main.cpp \
            src/qtractorConnect.cpp \
            src/qtractorConnections.cpp \
            src/qtractorDocument.cpp \
+           src/qtractorDssiPlugin.cpp \
            src/qtractorEngine.cpp \
            src/qtractorEngineCommand.cpp \
            src/qtractorFileListView.cpp \
            src/qtractorFiles.cpp \
            src/qtractorInstrument.cpp \
+           src/qtractorLadspaPlugin.cpp \
            src/qtractorMessages.cpp \
            src/qtractorMeter.cpp \
            src/qtractorMidiClip.cpp \
@@ -153,6 +158,7 @@ SOURCES += src/main.cpp \
            src/qtractorTrackTime.cpp \
            src/qtractorTrackView.cpp \
            src/qtractorTracks.cpp \
+           src/qtractorVstPlugin.cpp \
            src/qtractorBusForm.cpp \
            src/qtractorClipForm.cpp \
            src/qtractorConnectForm.cpp \

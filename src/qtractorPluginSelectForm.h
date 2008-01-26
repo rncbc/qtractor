@@ -1,7 +1,7 @@
 // qtractorPluginSelectForm.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -24,8 +24,7 @@
 
 #include "ui_qtractorPluginSelectForm.h"
 
-// Forward declarations...
-class qtractorPluginPath;
+#include "qtractorPlugin.h"
 
 
 //----------------------------------------------------------------------------
@@ -42,27 +41,31 @@ public:
 	// Destructor.
 	~qtractorPluginSelectForm();
 
-	void setChannels( unsigned short iChannels );
+	void setChannels(unsigned short iChannels, bool bMidi = false);
 	unsigned short channels() const;
+	bool isMidi() const;
+
 	int pluginCount() const;
-    QString pluginFilename(int iPlugin) const;
-    unsigned long pluginIndex(int iPlugin) const;
+	QString pluginFilename(int iPlugin) const;
+	unsigned long pluginIndex(int iPlugin) const;
+	qtractorPluginType::Hint pluginTypeHint(int iPlugin) const;
 
-public slots:
+protected slots:
 
-    void reset();
-    void refresh();
-    void stabilize();
-    void accept();
+	void typeHintChanged(int iTypeHint);
+
+	void reset();
+	void refresh();
+	void stabilize();
+	void accept();
 
 private:
 
 	// The Qt-designer UI struct...
 	Ui::qtractorPluginSelectForm m_ui;
 
-	// Instance variables...
-	qtractorPluginPath *m_pPluginPath;
 	unsigned short m_iChannels;
+	bool m_bMidi;
 };
 
 

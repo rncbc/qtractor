@@ -1,7 +1,7 @@
 // qtractorPluginForm.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -24,13 +24,20 @@
 
 #include "ui_qtractorPluginForm.h"
 
-#include <QList>
+#include <QFrame>
 
 
 // Forward declarations...
 class qtractorPlugin;
-class qtractorPluginPort;
-class qtractorPluginPortWidget;
+class qtractorPluginParam;
+class qtractorPluginParamWidget;
+
+class qtractorSlider;
+
+class QLabel;
+class QCheckBox;
+class QGridLayout;
+class QDoubleSpinBox;
 
 
 //----------------------------------------------------------------------------
@@ -47,30 +54,44 @@ public:
 	// Destructor.
 	~qtractorPluginForm();
 
-    void setPlugin(qtractorPlugin *pPlugin);
-    qtractorPlugin *plugin() const;
+	void setPlugin(qtractorPlugin *pPlugin);
+	qtractorPlugin *plugin() const;
 
 	void setPreset(const QString& sPreset);
 	QString preset() const;
 
 	void updateCaption();
-    void updateActivated();
-	void updatePort(qtractorPluginPort *pPort);
+	void updateActivated();
+	void updateParam(unsigned long iIndex);
 
-    void refresh();
+	void activateForm();
 
-public slots:
+	void refresh();
+	void clear();
 
-    void changePresetSlot(const QString& sPreset);
-    void loadPresetSlot(const QString& sPreset);
-    void savePresetSlot();
-    void deletePresetSlot();
-    void activateSlot(bool bOn);
-	void valueChangeSlot(qtractorPluginPort *pPort, float fValue);
+	void toggleEditor(bool bOn);
+
+	QWidget *editorWidget();
+
+protected slots:
+
+	void changePresetSlot(const QString& sPreset);
+	void loadPresetSlot(const QString& sPreset);
+	void savePresetSlot();
+	void deletePresetSlot();
+	void editSlot(bool bOn);
+	void activateSlot(bool bOn);
+	void valueChangeSlot(qtractorPluginParam *pParam, float fValue);
 
 protected:
 
-    void stabilize();
+	// Visibility event handler.
+	void showEvent(QShowEvent *pShowEvent);
+
+	void stabilize();
+
+	// Editor widget forward decls.
+	class EditorWidget;
 
 private:
 
@@ -79,9 +100,72 @@ private:
 
 	// Instance variables...
 	qtractorPlugin *m_pPlugin;
+	EditorWidget *m_pEditorWidget;
 	QGridLayout *m_pGridLayout;
-	QList<qtractorPluginPortWidget *> m_portWidgets;
+	QList<qtractorPluginParamWidget *> m_paramWidgets;
 	int m_iDirtyCount;
+	int m_iUpdate;
+};
+
+
+//----------------------------------------------------------------------------
+// qtractorPluginParamWidget -- Plugin port widget.
+//
+
+class qtractorPluginParamWidget : public QFrame
+{
+	Q_OBJECT
+
+public:
+
+	// Constructor.
+	qtractorPluginParamWidget(qtractorPluginParam *pParam,
+		QWidget *pParent = NULL);
+
+	// Main properties accessors.
+	qtractorPluginParam *param() const
+		{ return m_pParam; }
+
+	// Refreshner-loader method.
+	void refresh();
+
+signals:
+
+	// Change notification.
+	void valueChanged(qtractorPluginParam *, float);
+
+protected slots:
+
+	// Change slots.
+	void checkBoxToggled(bool);
+	void spinBoxValueChanged(const QString&);
+	void sliderValueChanged(int);
+
+protected:
+
+	// Slider conversion methods.
+	int   paramToSlider(float fValue) const;
+	float sliderToParam(int iValue) const;
+
+	// Spin-box decimals helper.
+	int   paramDecs() const;
+
+private:
+
+	// Instance variables.
+	qtractorPluginParam *m_pParam;
+
+	// Some basic layout managers.
+	QGridLayout    *m_pGridLayout;
+
+	// Some possible managed widgets.
+	QLabel         *m_pLabel;
+	QCheckBox      *m_pCheckBox;
+	qtractorSlider *m_pSlider;
+	QDoubleSpinBox *m_pSpinBox;
+	QLabel         *m_pDisplay;
+
+	// Avoid cascaded intra-notifications.
 	int m_iUpdate;
 };
 

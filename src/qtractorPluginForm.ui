@@ -2,7 +2,7 @@
  <author>rncbc aka Rui Nuno Capela</author>
  <comment>qtractor - An Audio/MIDI multi-track sequencer.
 
-   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -26,17 +26,9 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>408</width>
+    <width>360</width>
     <height>48</height>
    </rect>
-  </property>
-  <property name="sizePolicy" >
-   <sizepolicy>
-    <hsizetype>1</hsizetype>
-    <vsizetype>1</vsizetype>
-    <horstretch>0</horstretch>
-    <verstretch>0</verstretch>
-   </sizepolicy>
   </property>
   <property name="font" >
    <font>
@@ -57,10 +49,10 @@
   </property>
   <layout class="QVBoxLayout" >
    <property name="margin" >
-    <number>8</number>
+    <number>4</number>
    </property>
    <property name="spacing" >
-    <number>6</number>
+    <number>4</number>
    </property>
    <item>
     <layout class="QHBoxLayout" >
@@ -135,15 +127,29 @@
       </spacer>
      </item>
      <item>
-      <widget class="QToolButton" name="ActivateToolButton" >
-       <property name="sizePolicy" >
-        <sizepolicy>
-         <hsizetype>5</hsizetype>
-         <vsizetype>1</vsizetype>
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
+      <widget class="QToolButton" name="EditToolButton" >
+       <property name="focusPolicy" >
+        <enum>Qt::TabFocus</enum>
        </property>
+       <property name="toolTip" >
+        <string>Edit plugin</string>
+       </property>
+       <property name="text" >
+        <string>Edit</string>
+       </property>
+       <property name="icon" >
+        <iconset resource="../icons/qtractor.qrc" >:/icons/formEdit.png</iconset>
+       </property>
+       <property name="checkable" >
+        <bool>true</bool>
+       </property>
+       <property name="toolButtonStyle" >
+        <enum>Qt::ToolButtonTextBesideIcon</enum>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="ActivateToolButton" >
        <property name="focusPolicy" >
         <enum>Qt::TabFocus</enum>
        </property>
@@ -168,12 +174,11 @@
    </item>
   </layout>
  </widget>
- <layoutdefault spacing="4" margin="4" />
- <pixmapfunction></pixmapfunction>
  <tabstops>
   <tabstop>PresetComboBox</tabstop>
   <tabstop>SavePresetToolButton</tabstop>
   <tabstop>DeletePresetToolButton</tabstop>
+  <tabstop>EditToolButton</tabstop>
   <tabstop>ActivateToolButton</tabstop>
  </tabstops>
  <resources>

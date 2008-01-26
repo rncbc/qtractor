@@ -1,7 +1,7 @@
 // qtractorPluginListView.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -22,22 +22,14 @@
 #ifndef __qtractorPluginListView_h
 #define __qtractorPluginListView_h
 
-#include "qtractorPlugin.h"
-
 #include <QListWidget>
-#include <QFrame>
 
 // Forward declarations.
-class qtractorPluginListView;
-class qtractorSlider;
+class qtractorPlugin;
+class qtractorPluginList;
+class qtractorPluginForm;
 
-class QIcon;
-class QLabel;
-class QCheckBox;
-class QGridLayout;
-class QDoubleSpinBox;
-
-class QContextMenuEvent;
+class qtractorRubberBand;
 
 
 //----------------------------------------------------------------------------
@@ -95,6 +87,9 @@ public:
 	// Plugin list refreshner;
 	void refresh();
 
+	// Master clean-up.
+	void clear();
+
 	// Get an item index, given the plugin reference...
 	int pluginItem(qtractorPlugin *pPlugin);
 
@@ -122,17 +117,38 @@ protected:
 
 	// Move item on list.
 	void moveItem(qtractorPluginListItem *pItem,
-		qtractorPluginListItem *pPrevItem = 0);
+		qtractorPluginListItem *pNextItem);
 
 	// Trap for help/tool-tip events.
 	bool eventFilter(QObject *pObject, QEvent *pEvent);
 
-	// To get precize clicking for in-place (de)activation.
+	// To get precize clicking for in-place (de)activation,
+	// and for drag-n-drop stuff -- reimplemented virtual methods.
 	void mousePressEvent(QMouseEvent *pMouseEvent);
+	void mouseMoveEvent(QMouseEvent *pMouseEvent);
 	void mouseReleaseEvent(QMouseEvent *pMouseEvent);
+	void dragEnterEvent(QDragEnterEvent *pDragEnterEvent);
+	void dragMoveEvent(QDragMoveEvent *pDragMoveEvent);
+	void dragLeaveEvent(QDragLeaveEvent *);
+	void dropEvent(QDropEvent *pDropEvent);
+
+	// Drag-n-drop stuff.
+	bool canDropEvent(QDropEvent *pDropEvent);
+	bool canDropItem(QDropEvent *pDropEvent);
+
+	// Ensure given item is brought to viewport visibility...
+	void ensureVisibleItem(qtractorPluginListItem *pItem);
+
+	// Show and move rubber-band item.
+	void moveRubberBand(qtractorPluginListItem *pDropItem);
 
 	// Context menu event handler.
 	void contextMenuEvent(QContextMenuEvent *pContextMenuEvent);
+
+	// MIDI codec methods (static).
+	static void encodeItem (QMimeData *pMimeData, qtractorPluginListItem *pItem);
+	static bool canDecodeItem(const QMimeData *pMimeData);
+	static qtractorPluginListItem *decodeItem(const QMimeData *pMimeData);
 
 private:
 
@@ -140,7 +156,17 @@ private:
 	qtractorPluginList *m_pPluginList;
 
 	// The mouse clicked item for in-place (de)activation.
-	QListWidgetItem *m_pClickedItem;
+	qtractorPluginListItem *m_pClickedItem;
+
+	// The point from where drag started.
+	QPoint m_posDrag;
+	// Item we'll eventually drag around.
+	qtractorPluginListItem *m_pDragItem;
+	// Item we'll eventually drop something.
+	qtractorPluginListItem *m_pDropItem;
+
+	// To show the point where drop will go.
+	qtractorRubberBand *m_pRubberBand;
 
 	// Common pixmap stuff.
 	static QIcon *g_pItemIcons[2];
@@ -148,67 +174,6 @@ private:
 };
 
 
-//----------------------------------------------------------------------------
-// qtractorPluginPortWidget -- Plugin port widget.
-//
+#endif  // __qtractorPluginListView_h
 
-class qtractorPluginPortWidget : public QFrame
-{
-	Q_OBJECT
-
-public:
-
-	// Constructor.
-	qtractorPluginPortWidget(qtractorPluginPort *pPort, QWidget *pParent = 0);
-	// Destructor.
-	~qtractorPluginPortWidget();
-
-	// Main properties accessors.
-	qtractorPluginPort *port() const;
-
-	// Refreshner-loader method.
-	void refresh();
-
-signals:
-
-	// Change notification.
-	void valueChanged(qtractorPluginPort *, float);
-
-protected slots:
-
-	// Change slots.
-	void checkBoxToggled(bool);
-	void spinBoxValueChanged(const QString&);
-	void sliderValueChanged(int);
-
-protected:
-
-	// Slider conversion methods.
-	int   portToSlider(float fValue) const;
-	float sliderToPort(int iValue) const;
-
-	// Spin-box decimals helper.
-	int   portDecs() const;
-
-private:
-
-	// Instance variables.
-	qtractorPluginPort *m_pPort;
-
-	// Some basic layout managers.
-	QGridLayout    *m_pGridLayout;
-
-	// Some possible managed widgets.
-	QLabel         *m_pLabel;
-	QCheckBox      *m_pCheckBox;
-	qtractorSlider *m_pSlider;
-	QDoubleSpinBox *m_pSpinBox;
-
-	// Avoid cascaded intra-notifications.
-	int m_iUpdate;
-};
-
-
-#endif  // __qtractorPluginList_h
-
-// end of qtractorPluginList.h
+// end of qtractorPluginListView.h

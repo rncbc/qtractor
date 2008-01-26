@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(Qtractor, 0.1.0.834, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.1.0.835, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractorMainForm.ui)
 AC_CONFIG_HEADERS(config.h)
@@ -51,6 +51,25 @@ AC_ARG_ENABLE(sse,
   [ac_sse="$enableval"],
   [ac_sse="yes"])
 
+# Enable LADSPA support.
+AC_ARG_ENABLE(ladspa,
+  AC_HELP_STRING([--enable-ladspa], [enable LADSPA plug-in support (default=yes)]),
+  [ac_ladspa="$enableval"],
+  [ac_ladspa="yes"])
+
+# Enable DSSI support.
+AC_ARG_ENABLE(dssi,
+  AC_HELP_STRING([--enable-dssi], [enable DSSI plug-in support (default=yes)]),
+  [ac_dssi="$enableval"],
+  [ac_dssi="yes"])
+
+# Enable VST support.
+AC_ARG_ENABLE(vst,
+  AC_HELP_STRING([--enable-vst], [enable VST plug-in support (default=yes)]),
+  [ac_vst="$enableval"],
+  [ac_vst="yes"])
+
+
 # Standard installation base dirs.
 ac_with_paths="/usr /usr/local"
 
@@ -98,6 +117,22 @@ AC_ARG_WITH(libsamplerate,
   AC_HELP_STRING([--with-libsamplerate=PATH], [use alternate libsamplerate path]),
   [ac_with_paths="$ac_with_paths $withval"])
 
+# Set for alternate LADSPA include dir.
+AC_ARG_WITH(ladspa,
+  AC_HELP_STRING([--with-ladspa=PATH], [use alternate LADSPA header path]),
+  [ac_with_ladspa="$withval"])
+
+# Set for alternate DSSI include dir.
+AC_ARG_WITH(dssi,
+  AC_HELP_STRING([--with-dssi=PATH], [use alternate DSSI header path]),
+  [ac_with_dssi="$withval"])
+
+# Set for alternate VST include dir.
+AC_ARG_WITH(vst,
+  AC_HELP_STRING([--with-vst=PATH], [use alternate VST header path]),
+  [ac_with_vst="$withval"])
+
+
 # Checks for programs.
 AC_PROG_CC
 AC_PROG_CPP
@@ -140,6 +175,7 @@ for X in $ac_with_paths; do
   fi
 done
 
+
 # Check for proper Qt version.
 AC_CACHE_CHECK([for Qt library version >= 4.1],
   ac_qtlib_version, [
@@ -154,24 +190,28 @@ AC_CACHE_CHECK([for Qt library version >= 4.1],
     ])
 ])
 
+
 # Check for SSE optimization.
 if test "x$ac_sse" = "xyes"; then
-  CFLAGS="-msse $CFLAGS"
-  CPPFLAGS="-msse $CPPFLAGS"
-  AC_CACHE_CHECK([for SSE optimization],
-    ac_sse, [
-    AC_TRY_LINK([#include <xmmintrin.h>], [
-#if !defined(__SSE__)
-#error SSE optimization disabled.
-#endif
+   ac_sse_cflags="-msse -mfpmath=sse"
+   CFLAGS="$ac_sse_cflags $CFLAGS"
+   CPPFLAGS="$ac_sse_cflags $CPPFLAGS"
+   AC_CACHE_CHECK([for SSE optimization],
+      ac_sse, [
+      AC_TRY_LINK([#include <xmmintrin.h>], [
+         #if !defined(__SSE__)
+         #error SSE optimization disabled.
+         #endif
       ], ac_sse="yes", ac_sse="no")
-    ])
+   ])
+   if test "x$ac_sse" = "xyes"; then
+      ac_cflags="$ac_sse_cflags $ac_cflags"
+   fi
 fi
 
-if test "x$ac_sse" = "xyes"; then
-  ac_cflags="-msse -mfpmath=sse $ac_cflags"
-fi
+
 AC_SUBST(ac_cflags)
+
 
 # A common error message:
 ac_errmsg="not found in current PATH. Maybe QT development environment isn't available (qt-devel)."
@@ -196,6 +236,7 @@ if test "x$ac_uic" = "xno"; then
    AC_MSG_ERROR([uic $ac_errmsg])
 fi
 AC_SUBST(ac_uic)
+
 
 # Checks for libraries.
 AC_CHECK_LIB(m, main)
@@ -300,7 +341,7 @@ if test "x$ac_libsamplerate" = "xyes"; then
 fi
 
 AC_SUBST(ac_libs)
-AC_SUBST(ac_incpath)
+
 
 # Checks for header files.
 AC_HEADER_STDC
@@ -353,11 +394,61 @@ if test "x$ac_libsamplerate" = "xyes"; then
    fi
 fi
 
-# Check for ladspa headers.
-AC_CHECK_HEADER(ladspa.h, [ac_ladspa_h="yes"], [ac_ladspa_h="no"])
-if test "x$ac_ladspa_h" = "xno"; then
-   AC_MSG_ERROR([ladspa.h header file not found.])
+# Check for LADSPA headers.
+if test -n "$ac_with_ladspa"; then
+   CFLAGS="-I$ac_with_ladspa $CFLAGS"
+   CPPFLAGS="-I$ac_with_ladspa $CPPFLAGS"
+   ac_ladspa="yes"
 fi
+if test "x$ac_ladspa" = "xyes"; then
+   AC_CHECK_HEADER(ladspa.h, [ac_ladspa="yes"], [ac_ladspa="no"])
+   if test "x$ac_ladspa" = "xyes"; then
+      AC_DEFINE(CONFIG_LADSPA, 1, [Define if LADSPA header is available.])
+      ac_incpath="$ac_with_ladspa $ac_incpath"
+   else
+      AC_MSG_WARN([*** ladspa.h header file not found.])
+      AC_MSG_WARN([*** LADSPA plug-in support will be disabled.])
+   fi
+fi
+
+# Check for DSSI headers.
+if test -n "$ac_with_dssi"; then
+   CFLAGS="-I$ac_with_dssi $CFLAGS"
+   CPPFLAGS="-I$ac_with_dssi $CPPFLAGS"
+   ac_dssi="yes"
+fi
+if test "x$ac_dssi" = "xyes"; then
+   AC_CHECK_HEADER(dssi.h, [ac_dssi="yes"], [ac_dssi="no"])
+   if test "x$ac_dssi" = "xyes"; then
+      AC_DEFINE(CONFIG_DSSI, 1, [Define if DSSI header is available.])
+      ac_incpath="$ac_with_dssi $ac_incpath"
+   else
+      AC_MSG_WARN([*** dssi.h header file not found.])
+      AC_MSG_WARN([*** DSSI plug-in support will be disabled.])
+   fi
+fi
+
+# Check for VST headers.
+if test -n "$ac_with_vst"; then
+   CFLAGS="-I$ac_with_vst $CFLAGS"
+   CPPFLAGS="-I$ac_with_vst $CPPFLAGS"
+   ac_vst="yes"
+fi
+if test "x$ac_vst" = "xyes"; then
+   CFLAGS="-D__cdecl= $CFLAGS"
+   CPPFLAGS="-D__cdecl= $CPPFLAGS"
+   AC_CHECK_HEADER(aeffectx.h, [ac_vst="yes"], [ac_vst="no"])
+   if test "x$ac_vst" = "xyes"; then
+      AC_DEFINE(CONFIG_VST, 1, [Define if VST header is available.])
+      ac_incpath="$ac_with_vst $ac_incpath"
+   else
+      AC_MSG_WARN([*** aeffectx.h header file not found.])
+      AC_MSG_WARN([*** VST plug-in support will be disabled.])
+   fi
+fi
+
+AC_SUBST(ac_incpath)
+
 
 # Checks for typedefs, structures, and compiler characteristics.
 # AC_C_CONST
@@ -379,12 +470,14 @@ echo "  Build target . . . . . . . . . . . . . . . . . . .: $ac_debug"
 echo
 echo "  JACK Audio Connection Kit support  . . . . . . . .: $ac_libjack"
 echo "  ALSA MIDI Sequencer support  . . . . . . . . . . .: $ac_libasound"
-echo "  LADSPA Plug-in support . . . . . . . . . . . . . .: $ac_ladspa_h"
 echo "  General audio file support (libsndfile)  . . . . .: $ac_libsndfile"
 echo "  Ogg Vorbis audio file support (libvorbis)  . . . .: $ac_libvorbis"
 echo "  MPEG-1 Audio Layer III file support (libmad) . . .: $ac_libmad"
 echo "  Sample-rate conversion support (libsamplerate) . .: $ac_libsamplerate"
 echo "  SSE optimization support (x86) . . . . . . . . . .: $ac_sse"
+echo "  LADSPA Plug-in support . . . . . . . . . . . . . .: $ac_ladspa"
+echo "  DSSI Plug-in support . . . . . . . . . . . . . . .: $ac_dssi"
+echo "  VST Plug-in support  . . . . . . . . . . . . . . .: $ac_vst"
 echo
 echo "  Install prefix . . . . . . . . . . . . . . . . . .: $ac_prefix"
 echo

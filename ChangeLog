@@ -5,6 +5,12 @@ ChangeLog
 
 CVS HEAD
 
+- Major rewrite of the plug-in infrastructure, adding primordial
+  support for DSSI and native VST plug-in flavors.
+
+- Drag-and-drop of plug-in instances are now allowed intra- and
+  inter-mixer strip chains, either on tracks or buses.
+
 - Turning track record off while recording is rolling was leaving
   the session in a inconsistent recording status, now fixed.
 

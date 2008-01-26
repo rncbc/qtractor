@@ -1,7 +1,7 @@
 // qtractorPlugin.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -19,64 +19,101 @@
 
 *****************************************************************************/
 
+#include "qtractorAbout.h"
 #include "qtractorPlugin.h"
 #include "qtractorPluginListView.h"
 #include "qtractorPluginForm.h"
 
-#include "qtractorSessionDocument.h"
-
 #include "qtractorMainForm.h"
 #include "qtractorOptions.h"
 
-#include <QDir>
+#include "qtractorSessionDocument.h"
 
-
-#if defined(__WIN32__) || defined(_WIN32) || defined(WIN32)
-#define PATH_SEPARATOR	';'
-typedef void (*LADSPA_Procedure_Function)(void);
-#else
-#define PATH_SEPARATOR	':'
-#define PATH_DEFAULT	"/usr/local/lib/ladspa:/usr/lib/ladspa"
+#ifdef CONFIG_LADSPA
+#include "qtractorLadspaPlugin.h"
+#endif
+#ifdef CONFIG_DSSI
+#include "qtractorDssiPlugin.h"
+#endif
+#ifdef CONFIG_VST
+#include "qtractorVstPlugin.h"
 #endif
 
-#include <math.h>
+#include <QDir>
+
+typedef void (*qtractorPluginFile_Function)(void);
+
+#if defined(__WIN32__) || defined(_WIN32) || defined(WIN32)
+#define PATH_SEP ";"
+#else
+#define PATH_SEP ":"
+#endif
+
+// Default plugin paths...
+#ifdef CONFIG_LADSPA
+#define LADSPA_PATH "/usr/local/lib/ladspa" PATH_SEP "/usr/lib/ladspa"
+#endif
+
+#ifdef CONFIG_DSSI
+#define DSSI_PATH "/usr/local/lib/dssi" PATH_SEP "/usr/lib/dssi"
+#endif
+
+#ifdef CONFIG_VST
+#define VST_PATH "/usr/local/lib/vst" PATH_SEP "/usr/lib/vst"
+#endif
 
 
 //----------------------------------------------------------------------------
 // qtractorPluginPath -- Plugin path helper.
 //
 
-// Constructor.
-qtractorPluginPath::qtractorPluginPath ( const QString& sPaths )
-{
-	QString sPathStr = sPaths;
-	if (sPathStr.isEmpty())
-		sPathStr = ::getenv("LADSPA_PATH");
-#if defined(PATH_DEFAULT)
-	if (sPathStr.isEmpty())
-		sPathStr = PATH_DEFAULT;
-#endif
-	m_paths = sPathStr.split(PATH_SEPARATOR);
-}
-
-// Destructor.
-qtractorPluginPath::~qtractorPluginPath (void)
-{
-	close();
-}
-
-
-// Main properties accessors.
-const QStringList& qtractorPluginPath::paths (void) const
-{
-	return m_paths;
-}
-
-
 // Executive methods.
 bool qtractorPluginPath::open (void)
 {
 	close();
+
+	// Get paths based on hints...	
+	if (m_paths.isEmpty()) {
+		QString sPaths;
+#ifdef CONFIG_LADSPA
+		// LADSPA default path...
+		if (m_typeHint == qtractorPluginType::Any ||
+			m_typeHint == qtractorPluginType::Ladspa) {
+			sPaths = ::getenv("LADSPA_PATH");
+			if (sPaths.isEmpty())
+				sPaths = LADSPA_PATH;
+			if (!sPaths.isEmpty())
+				m_paths << sPaths.split(PATH_SEP);
+		}
+#endif
+#ifdef CONFIG_DSSI
+		// DSSI default path...
+		if (m_typeHint == qtractorPluginType::Any ||
+			m_typeHint == qtractorPluginType::Dssi) {
+			sPaths = ::getenv("DSSI_PATH");
+			if (sPaths.isEmpty())
+				sPaths = DSSI_PATH;
+			if (!sPaths.isEmpty())
+				m_paths << sPaths.split(PATH_SEP);
+		}
+#endif
+#ifdef CONFIG_VST
+		// VST default path...
+		if (m_typeHint == qtractorPluginType::Any ||
+			m_typeHint == qtractorPluginType::Vst) {
+			sPaths = ::getenv("VST_PATH");
+			if (sPaths.isEmpty())
+				sPaths = VST_PATH;
+			if (!sPaths.isEmpty())
+				m_paths << sPaths.split(PATH_SEP);
+		}
+#endif
+	}
+
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorPluginPath[%p]::open() paths=\"%s\"",
+		this, m_paths.join(PATH_SEP).toUtf8().constData());
+#endif
 
 	QStringListIterator ipath(m_paths);
 	while (ipath.hasNext()) {
@@ -84,13 +121,15 @@ bool qtractorPluginPath::open (void)
 		const QStringList& list = dir.entryList(QDir::Files);
 		QStringListIterator iter(list);
 		while (iter.hasNext()) {
-			m_files.append(
-				new qtractorPluginFile(dir.absoluteFilePath(iter.next())));
+			const QString& sPath = dir.absoluteFilePath(iter.next());
+			if (QLibrary::isLibrary(sPath))
+				m_files.append(new qtractorPluginFile(sPath));
 		}
 	}
 
 	return (m_files.count() > 0);
 }
+
 
 void qtractorPluginPath::close (void)
 {
@@ -99,10 +138,10 @@ void qtractorPluginPath::close (void)
 }
 
 
-// Plugin file list.
-const QList<qtractorPluginFile *>& qtractorPluginPath::files (void) const
+// Helper methods.
+void qtractorPluginPath::setPaths ( const QString& sPaths )
 {
-	return m_files;
+	m_paths = sPaths.split(PATH_SEP);
 }
 
 
@@ -110,46 +149,25 @@ const QList<qtractorPluginFile *>& qtractorPluginPath::files (void) const
 // qtractorPluginFile -- Plugin file library instance.
 //
 
-// Constructor.
-qtractorPluginFile::qtractorPluginFile ( const QString& sFilename )
-	: QLibrary(sFilename)
-{
-	m_pfnDescriptor = NULL;
-}
-
-// Destructor.
-qtractorPluginFile::~qtractorPluginFile (void)
-{
-	close();
-}
-
-
 // Executive methods.
 bool qtractorPluginFile::open (void)
 {
-//	close();
+	close();
 
-	// ATTN: Not really need has it will be
+	// ATTN: Not really needed has it will be
 	// loaded automagically on resolve()...
-//	if (!QLibrary::load())
-//		return false;
+	if (!QLibrary::load())
+		return false;
 
 	// Do the openning dance...
 #if defined(__WIN32__) || defined(_WIN32) || defined(WIN32)
-	LADSPA_Procedure_Function pfnInit
-		= (LADSPA_Procedure_Function) QLibrary::resolve("_init");
+	qtractorPluginFile_Function pfnInit
+		= (qtractorPluginFile_Function) QLibrary::resolve("_init");
 	if (pfnInit)
 		(*pfnInit)();
 #endif
 
-	// Retrieve the descriptor function, if any...
-	m_pfnDescriptor
-		= (LADSPA_Descriptor_Function) QLibrary::resolve("ladspa_descriptor");
-	// Nothing must be left behind...
-	if (m_pfnDescriptor == NULL)
-		close();
-
-	return (m_pfnDescriptor != NULL);
+	return true;
 }
 
 
@@ -158,16 +176,10 @@ void qtractorPluginFile::close (void)
 	if (!QLibrary::isLoaded())
 		return;
 
-	// Nothing should be left behind.-..
-	m_pfnDescriptor = NULL;
-
-	qDeleteAll(m_types);
-	m_types.clear();
-
 	// Do the closing dance...
 #if 0 // defined(__WIN32__) || defined(_WIN32) || defined(WIN32)
-	LADSPA_Procedure_Function pfnFini
-		= (LADSPA_Procedure_Function) QLibrary::resolve("_fini");
+	qtractorPluginFile_Function pfnFini
+		= (qtractorPluginFile_Function) QLibrary::resolve("_fini");
 	if (pfnFini)
 		(*pfnFini)();
 #endif
@@ -176,28 +188,122 @@ void qtractorPluginFile::close (void)
 }
 
 
-// Plugin type list.
-const QList<qtractorPluginType *>& qtractorPluginFile::types (void)
+// Plugin type listing.
+bool qtractorPluginFile::getTypes ( qtractorPluginTypeList& types,
+	qtractorPluginType::Hint typeHint )
 {
 	// Try to fill the types list at this moment...
-	if (m_pfnDescriptor && m_types.isEmpty()) {
-		// Fill in the complete type list...
-		for (unsigned long iIndex = 0; descriptor(iIndex); iIndex++)
-			m_types.append(new qtractorPluginType(this, iIndex));
-	}
+	qtractorPluginType *pType;
+	unsigned long iIndex = 0;
 
-	// Give away our reference.
-	return m_types;
+#ifdef CONFIG_DSSI
+	// Try DSSI plugin types first...
+	if (typeHint == qtractorPluginType::Any ||
+		typeHint == qtractorPluginType::Dssi) {
+		while ((pType
+			= qtractorDssiPluginType::createType(this, iIndex)) != NULL) {
+			if (pType->open()) {
+				types.append(pType);
+				pType->close();
+				iIndex++;
+			} else {
+				delete pType;
+				break;
+			}
+		}
+	}
+	// Have we found some, already?
+	if (iIndex > 0)
+		return true;
+#endif
+
+#ifdef CONFIG_LADSPA
+	// Try LADSPA plugin types...
+	if (typeHint == qtractorPluginType::Any ||
+		typeHint == qtractorPluginType::Ladspa) {
+		while ((pType
+			= qtractorLadspaPluginType::createType(this, iIndex)) != NULL) {
+			if (pType->open()) {
+				types.append(pType);
+				pType->close();
+				iIndex++;
+			} else {
+				delete pType;
+				break;
+			}
+		}
+	}
+	// Have we found some, already?
+	if (iIndex > 0)
+		return true;
+#endif
+
+#ifdef CONFIG_VST
+	// Try VST plugin types...
+	if (typeHint == qtractorPluginType::Any ||
+		typeHint == qtractorPluginType::Vst) {
+		if ((pType
+			= qtractorVstPluginType::createType(this)) != NULL) {
+			if (pType->open()) {
+				types.append(pType);
+				pType->close();
+				iIndex++;
+			} else {
+				delete pType;
+			}
+		}
+	}
+#endif
+
+	// Have we something?
+	return (iIndex > 0);
 }
 
 
-// Descriptor function method.
-const LADSPA_Descriptor *qtractorPluginFile::descriptor ( unsigned long iIndex )
+// Plugin factory method (static).
+qtractorPlugin *qtractorPluginFile::createPlugin(
+	qtractorPluginList *pList,
+	const QString& sFilename, unsigned long iIndex,
+	qtractorPluginType::Hint typeHint )
 {
-	if (m_pfnDescriptor == NULL)
-		return NULL;
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorPluginFile::createPlugin(%p, \"%s\", %lu, %d)",
+		pList, sFilename.toUtf8().constData(), iIndex, int(typeHint));
+#endif
 
-	return (*m_pfnDescriptor)(iIndex);
+	// Try to fill the types list at this moment...
+	qtractorPluginFile *pFile = new qtractorPluginFile(sFilename);
+
+#ifdef CONFIG_DSSI
+	// Try DSSI plugin types first...
+	if (typeHint == qtractorPluginType::Any ||
+		typeHint == qtractorPluginType::Dssi) {
+		return new qtractorDssiPlugin(pList,
+			new qtractorDssiPluginType(pFile, iIndex));
+	}
+#endif
+
+#ifdef CONFIG_LADSPA
+	// Try LADSPA plugin types...
+	if (typeHint == qtractorPluginType::Any ||
+		typeHint == qtractorPluginType::Ladspa) {
+		return new qtractorLadspaPlugin(pList,
+			new qtractorLadspaPluginType(pFile, iIndex));
+	}
+#endif
+
+#ifdef CONFIG_VST
+	// Try VST plugin types...
+	if (typeHint == qtractorPluginType::Any ||
+		typeHint == qtractorPluginType::Vst) {
+		return new qtractorVstPlugin(pList,
+			new qtractorVstPluginType(pFile));
+	}
+#endif
+
+	// Bad luck, no valid plugin found...
+	delete pFile;
+	return NULL;
 }
 
 
@@ -205,48 +311,64 @@ const LADSPA_Descriptor *qtractorPluginFile::descriptor ( unsigned long iIndex )
 // qtractorPluginType -- Plugin type instance.
 //
 
-// Constructor.
-qtractorPluginType::qtractorPluginType ( qtractorPluginFile *pFile,
-	unsigned long iIndex )
+// Compute the number of instances needed
+// for the given input/output audio channels.
+unsigned short qtractorPluginType::instances (
+	unsigned short iChannels, bool bMidi ) const
 {
-	m_pFile  = pFile;
-	m_iIndex = iIndex;
-
-	m_pDescriptor = m_pFile->descriptor(m_iIndex);
-}
-
-// Destructor.
-qtractorPluginType::~qtractorPluginType (void)
-{
-}
-
-
-// Main properties accessors.
-qtractorPluginFile *qtractorPluginType::file (void) const
-{
-	return m_pFile;
-}
-
-unsigned long qtractorPluginType::index (void) const
-{
-	return m_iIndex;
-}
-
-const LADSPA_Descriptor *qtractorPluginType::descriptor (void) const
-{
-	return m_pDescriptor;
+	unsigned short iInstances = 0;
+	if ((bMidi || m_iMidiIns < 1) && (m_iAudioOuts > 0)) {
+		if (iChannels >= m_iAudioIns)
+			iInstances = (m_iAudioOuts >= iChannels ? 1 : iChannels);
+		else
+		if (m_iAudioOuts >= iChannels)
+			iInstances = (iChannels >= m_iAudioIns ? iChannels : 1);
+	}
+	return iInstances;
 }
 
 
-// Derived accessors.
-QString qtractorPluginType::filename (void) const
+// Plugin type(hint) textual helpers (static).
+qtractorPluginType::Hint qtractorPluginType::hintFromText (
+	const QString& sText )
 {
-	return m_pFile->fileName();
+#ifdef CONFIG_LADSPA
+	if (sText == "LADSPA")
+		return Ladspa;
+	else
+#endif
+#ifdef CONFIG_DSSI
+	if (sText == "DSSI")
+		return Dssi;
+	else
+#endif
+#ifdef CONFIG_VST
+	if (sText == "VST")
+		return Vst;
+	else
+#endif
+	return Any;
 }
 
-const char *qtractorPluginType::name (void) const
+QString qtractorPluginType::textFromHint (
+	qtractorPluginType::Hint typeHint )
 {
-	return (m_pDescriptor ? m_pDescriptor->Name : NULL);
+#ifdef CONFIG_LADSPA
+	if (typeHint == Ladspa)
+		return "LADSPA";
+	else
+#endif
+#ifdef CONFIG_DSSI
+	if (typeHint == Dssi)
+		return "DSSI";
+	else
+#endif
+#ifdef CONFIG_VST
+	if (typeHint == Vst)
+		return "VST";
+	else
+#endif
+	return QObject::tr("(Any)");
 }
 
 
@@ -255,28 +377,30 @@ const char *qtractorPluginType::name (void) const
 //
 
 // Constructors.
-qtractorPlugin::qtractorPlugin ( qtractorPluginList *pList,
-	qtractorPluginType *pType )
+qtractorPlugin::qtractorPlugin (
+	qtractorPluginList *pList, qtractorPluginType *pType )
+	: m_pList(pList), m_pType(pType), m_iInstances(0),
+		m_iAudioInsCap(0), m_iAudioOutsCap(0),
+		m_bActivated(false), m_pForm(NULL)
 {
-	initPlugin(pList, pType->filename(), pType->index());
+	// Open this...
+	if (m_pType) {
+		qtractorPluginFile *pFile = m_pType->file();
+		if (pFile && pFile->open())
+			m_pType->open();
+	}
 }
 
-qtractorPlugin::qtractorPlugin ( qtractorPluginList *pList,
-	const QString& sFilename, unsigned long iIndex )
-{
-	initPlugin(pList, sFilename, iIndex);
-}
 
 // Destructor.
 qtractorPlugin::~qtractorPlugin (void)
 {
 	// Clear out all dependables...
-	qDeleteAll(m_cports);
-	m_cports.clear();
 	clearItems();
 
-	// Cleanup all plugin instances...
-	setChannels(0);
+	// Clear out all dependables...
+	qDeleteAll(m_params);
+	m_params.clear();
 
 	// Rest of stuff goes cleaned too...
 	if (m_pType) {
@@ -288,127 +412,16 @@ qtractorPlugin::~qtractorPlugin (void)
 }
 
 
-// Plugin initializer.
-void qtractorPlugin::initPlugin ( qtractorPluginList *pList,
-	const QString& sFilename, unsigned long iIndex )
+// Chain helper ones.
+unsigned int qtractorPlugin::sampleRate (void) const
 {
-	m_pList       = pList;
-	m_pType       = NULL;
-	m_iInstances  = 0;
-	m_phInstances = NULL;
-	m_bActivated  = false;
-	m_pForm       = NULL;
-
-	qtractorPluginFile *pFile = new qtractorPluginFile(sFilename);
-	if (pFile->open()) {
-		m_pType = new qtractorPluginType(pFile, iIndex);
-		// Get some structural data first...
-		const LADSPA_Descriptor *pDescriptor = m_pType->descriptor();
-		if (pDescriptor) {
-			for (unsigned long i = 0; i < pDescriptor->PortCount; i++) {
-				const LADSPA_PortDescriptor portType
-					= pDescriptor->PortDescriptors[i];
-				if (LADSPA_IS_PORT_INPUT(portType)) {
-					if (LADSPA_IS_PORT_AUDIO(portType))
-						m_iports.append(i);
-					else
-					if (LADSPA_IS_PORT_CONTROL(portType))
-						m_cports.append(new qtractorPluginPort(this, i));
-				}
-				else
-				if (LADSPA_IS_PORT_OUTPUT(portType)) {
-					if (LADSPA_IS_PORT_AUDIO(portType))
-						m_oports.append(i);
-					else
-					if (LADSPA_IS_PORT_CONTROL(portType))
-						m_vports.append(i);
-				}
-			}
-			// Finally, instantiate each instance properly...
-			setChannels(m_pList->channels());
-		}
-	}	// Must free anyway...
-	else delete pFile;
+	return (m_pList ? m_pList->sampleRate() : 0);
 }
 
-
-// Channel/intsance number accessors.
-void qtractorPlugin::setChannels ( unsigned short iChannels )
+unsigned int qtractorPlugin::bufferSize (void) const
 {
-	// Estimate the (new) number of instances...
-	unsigned short iInstances = 0;
-	if (iChannels > 0) {
-		unsigned short iAudioIns  = m_iports.count();
-		unsigned short iAudioOuts = m_oports.count();
-		if (iAudioIns == iChannels && iAudioOuts == iChannels)
-			iInstances = 1;
-		else if ((iAudioIns < 2 || iAudioIns == iChannels) && iAudioOuts < 2)
-			iInstances = iChannels;
-	}
-
-	// Now see if instance count changed anyhow...
-	if (iInstances == m_iInstances)
-		return;
-
-	const LADSPA_Descriptor *pDescriptor = descriptor();
-	if (pDescriptor == NULL)
-		return;
-
-	// Gotta go for a while...
-	bool bActivated = isActivated();
-	setActivated(false);
-
-	if (m_phInstances) {
-		if (pDescriptor->cleanup) {
-			for (unsigned short i = 0; i < m_iInstances; i++)
-				(*pDescriptor->cleanup)(m_phInstances[i]);
-		}
-		delete [] m_phInstances;
-		m_phInstances = NULL;
-	}
-
-	// Set new instance number...
-	m_iInstances = iInstances;
-
-	// some sanity required here...
-	if (m_iInstances < 1) {
-		// We're sorry but dialogs must also go now...
-		if (m_pForm) {
-			m_pForm->close();
-			delete m_pForm;
-			m_pForm = NULL;
-		}
-		// Will stay inactive...
-		return;
-	}
-
-	// FIXME: The dummy value for output control (dummy) port indexes...
-	static float s_fDummyData = 0.0f;
-	// Allocate new instances...
-	m_phInstances = new LADSPA_Handle [m_iInstances];
-	for (unsigned short i = 0; i < m_iInstances; i++) {
-		// Instantiate them properly first...
-		m_phInstances[i] = (*pDescriptor->instantiate)(
-			pDescriptor, m_pList->sampleRate());
-		// Connect all existing input control ports...
-		QListIterator<qtractorPluginPort *> cport(m_cports);
-		while (cport.hasNext()) {
-			qtractorPluginPort *pPort = cport.next();
-			(*pDescriptor->connect_port)(m_phInstances[i],
-				pPort->index(), pPort->data());
-		}
-		// Connect all existing output control (dummy) ports...
-		QListIterator<unsigned long> vport(m_vports);
-		while (vport.hasNext()) {
-			(*pDescriptor->connect_port)(m_phInstances[i],
-				vport.next(), &s_fDummyData);
-		}
-	}
-
-	// (Re)activate instance if necessary...
-	setActivated(bActivated);
+	return (m_pList ? m_pList->bufferSize() : 0);
 }
-
 
 unsigned short qtractorPlugin::channels (void) const
 {
@@ -416,57 +429,28 @@ unsigned short qtractorPlugin::channels (void) const
 }
 
 
-// Main properties accessors.
-qtractorPluginList *qtractorPlugin::list (void) const
+// Set the internal instance count...
+void qtractorPlugin::setInstances ( unsigned short iInstances )
 {
-	return m_pList;
-}
+	m_iInstances = iInstances;
 
-qtractorPluginType *qtractorPlugin::type (void) const
-{
-	return m_pType;
-}
-
-unsigned short qtractorPlugin::instances (void) const
-{
-	return m_iInstances;
-}
-
-unsigned int qtractorPlugin::sampleRate (void) const
-{
-	return m_iSampleRate;
-}
-
-LADSPA_Handle qtractorPlugin::handle ( unsigned short iInstance ) const
-{
-	return (m_phInstances ? m_phInstances[iInstance] : NULL);
-}
-
-
-// Derived accessors.
-qtractorPluginFile *qtractorPlugin::file (void) const
-{
-	return (m_pType ? m_pType->file() : NULL);
-}
-
-unsigned long qtractorPlugin::index (void) const
-{
-	return (m_pType ? m_pType->index() : 0);
-}
-
-const LADSPA_Descriptor *qtractorPlugin::descriptor (void) const
-{
-	return (m_pType ? m_pType->descriptor() : NULL);
-}
-
-QString qtractorPlugin::filename (void) const
-{
-	return (m_pType ? m_pType->filename() : QString::null);
-}
-
-const char *qtractorPlugin::name (void) const
-{
-	return (m_pType ? m_pType->name() : NULL);
+	// Some sanity required here...
+	if (m_iInstances > 0) {
+		m_iAudioInsCap  = m_pType->audioIns();
+		m_iAudioOutsCap = m_pType->audioOuts();
+		unsigned short iAudioOutsCap = (channels() / m_iInstances);
+		if (m_iAudioOutsCap > iAudioOutsCap)
+			m_iAudioOutsCap = iAudioOutsCap;
+	} else {
+		m_iAudioInsCap  = 0;
+		m_iAudioOutsCap = 0;
+		// We're sorry but dialogs must also go now...
+		if (m_pForm) {
+			m_pForm->close();
+			delete m_pForm;
+			m_pForm = NULL;
+		}
+	}
 }
 
 
@@ -491,88 +475,40 @@ void qtractorPlugin::setActivated ( bool bActivated )
 		m_pForm->updateActivated();
 }
 
-bool qtractorPlugin::isActivated (void) const
+
+// Plugin state serialization methods.
+void qtractorPlugin::setValues ( const QStringList& vlist )
 {
-	return m_bActivated;
+	// Split it up...
+	QStringListIterator val(vlist);
+	QListIterator<qtractorPluginParam *> iter(m_params);
+	while (iter.hasNext() && val.hasNext())
+		iter.next()->setValue(val.next().toFloat());
+
+}
+
+QStringList qtractorPlugin::values (void) const
+{
+	// Join it up...
+	QStringList vlist;
+	QListIterator<qtractorPluginParam *> iter(m_params);
+	while (iter.hasNext())
+		vlist.append(QString::number(iter.next()->value()));
+
+	return vlist;
 }
 
 
-// Do the actual activation.
-void qtractorPlugin::activate (void)
+// Reset-to-default method.
+void qtractorPlugin::reset (void)
 {
-	const LADSPA_Descriptor *pDescriptor = descriptor();
-	if (pDescriptor == NULL)
-		return;
-
-	if (m_phInstances && pDescriptor->activate) {
-		for (unsigned short i = 0; i < m_iInstances; i++)
-			(*pDescriptor->activate)(m_phInstances[i]);
-	}
+	QListIterator<qtractorPluginParam *> iter(m_params);
+	while (iter.hasNext())
+		iter.next()->reset();
 }
 
 
-// Do the actual deactivation.
-void qtractorPlugin::deactivate (void)
-{
-	const LADSPA_Descriptor *pDescriptor = descriptor();
-	if (pDescriptor == NULL)
-		return;
-
-	if (m_phInstances && pDescriptor->deactivate) {
-		for (unsigned short i = 0; i < m_iInstances; i++)
-			(*pDescriptor->deactivate)(m_phInstances[i]);
-	}
-}
-
-
-// The main plugin processing procedure.
-void qtractorPlugin::process ( unsigned int nframes )
-{
-	if (!m_bActivated || m_phInstances == NULL)
-		return;
-
-	const LADSPA_Descriptor *pDescriptor = descriptor();
-	if (pDescriptor == NULL)
-		return;
-
-	for (unsigned short i = 0; i < m_iInstances; i++)
-		(*pDescriptor->run)(m_phInstances[i], nframes);
-}
-
-
-// Input control ports list accessor.
-const QList<qtractorPluginPort *>& qtractorPlugin::cports (void) const
-{
-	return m_cports;
-}
-
-
-// Output control (dummy) port index-list accessors.
-const QList<unsigned long>& qtractorPlugin::vports (void) const
-{
-	return m_vports;
-}
-
-
-// Audio port indexes list accessor.
-const QList<unsigned long>& qtractorPlugin::iports (void) const
-{
-	return m_iports;
-}
-
-const QList<unsigned long>& qtractorPlugin::oports (void) const
-{
-	return m_oports;
-}
-
-
-// An accessible list of observers.
-const QList<qtractorPluginListItem *>& qtractorPlugin::items (void) const
-{
-	return m_items;
-}
-
-
+// List of observers management.
 void qtractorPlugin::addItem ( qtractorPluginListItem *pItem )
 {
 	m_items.append(pItem);
@@ -650,52 +586,34 @@ const QString& qtractorPlugin::preset (void)
 }
 
 
-// Plugin state serialization methods.
-void qtractorPlugin::setValues ( const QStringList& vlist )
-{
-	// Split it up...
-	QStringListIterator val(vlist);
-	QListIterator<qtractorPluginPort *> iter(m_cports);
-	while (iter.hasNext() && val.hasNext())
-		iter.next()->setValue(val.next().toFloat());
-}
-
-QStringList qtractorPlugin::values (void)
-{
-	// Join it up...
-	QStringList vlist;
-	QListIterator<qtractorPluginPort *> iter(m_cports);
-	while (iter.hasNext())
-		vlist.append(QString::number(iter.next()->value()));
-
-	return vlist;
-}
-
-
 // Plugin preset group - common identification prefix.
 QString qtractorPlugin::presetGroup (void) const
 {
 	QString sGroup;
 
 	// Normalize plugin identification prefix...
-	const LADSPA_Descriptor *pDescriptor = descriptor();
-	if (pDescriptor) {
+	if (m_pType) {
 		sGroup  = "/Plugin/";
-		sGroup += pDescriptor->Label;
+		sGroup += m_pType->label();
 		sGroup += '_';
-		sGroup += QString::number(pDescriptor->UniqueID);
+		sGroup += QString::number(m_pType->uniqueID());
 	}
 
 	return sGroup;
 }
 
 
-// Reset-to-default method.
-void qtractorPlugin::reset (void)
+// Plugin parameter lookup.
+qtractorPluginParam *qtractorPlugin::findParam ( unsigned long iIndex ) const
 {
-	QListIterator<qtractorPluginPort *> iter(m_cports);
-	while (iter.hasNext())
-		iter.next()->reset();
+	QListIterator<qtractorPluginParam *> iter(m_params);
+	while (iter.hasNext()) {
+		qtractorPluginParam *pParam = iter.next();
+		if (pParam->index() == iIndex)
+			return pParam;
+	}
+
+	return NULL;
 }
 
 
@@ -705,24 +623,22 @@ void qtractorPlugin::reset (void)
 
 // Constructor.
 qtractorPluginList::qtractorPluginList ( unsigned short iChannels,
-	unsigned int iBufferSize, unsigned int iSampleRate )
+	unsigned int iBufferSize, unsigned int iSampleRate, bool bMidi )
+	: m_iChannels(0), m_iBufferSize(0), m_iSampleRate(0),
+		m_bMidi(false),	m_iActivated(0)
+		
 {
-	m_iChannels   = 0;
-	m_iBufferSize = 0;
-	m_iSampleRate = 0;
-
-	m_iActivated  = 0;
-
 	m_pppBuffers[0] = NULL;
 	m_pppBuffers[1] = NULL;
 
-	setBuffer(iChannels, iBufferSize, iSampleRate);
+	setBuffer(iChannels, iBufferSize, iSampleRate, bMidi);
 }
 
 // Destructor.
 qtractorPluginList::~qtractorPluginList (void)
 {
-	setBuffer(0, 0, 0);
+	// Reset allocated channel buffers.
+	setBuffer(0, 0, 0, false);
 
 	// Clear out all dependables...
 	m_views.clear();
@@ -740,15 +656,10 @@ void qtractorPluginList::setName ( const QString& sName )
 	}
 }
 
-const QString& qtractorPluginList::name (void) const
-{
-	return m_sName;
-}
-
 
 // Main-parameters accessor.
 void qtractorPluginList::setBuffer ( unsigned short iChannels,
-	unsigned int iBufferSize, unsigned int iSampleRate )
+	unsigned int iBufferSize, unsigned int iSampleRate, bool bMidi )
 {
 	unsigned short i;
 
@@ -768,6 +679,7 @@ void qtractorPluginList::setBuffer ( unsigned short iChannels,
 	m_iChannels   = iChannels;
 	m_iBufferSize = iBufferSize;
 	m_iSampleRate = iSampleRate;
+	m_bMidi       = bMidi;
 
 	// Allocate new interim buffer...
 	if (m_iChannels > 0 && m_iBufferSize > 0) {
@@ -810,29 +722,7 @@ void qtractorPluginList::resetBuffer (void)
 }
 
 
-// Brainless accessors.
-unsigned short qtractorPluginList::channels (void) const
-{
-	return m_iChannels;
-}
-
-unsigned int qtractorPluginList::sampleRate (void) const
-{
-	return m_iSampleRate;
-}
-
-unsigned int qtractorPluginList::bufferSize (void) const
-{
-	return m_iBufferSize;
-}
-
-
 // Special guard activation methods.
-unsigned int qtractorPluginList::activated (void) const
-{
-	return m_iActivated;
-}
-
 bool qtractorPluginList::isActivatedAll (void) const
 {
 	return (m_iActivated > 0 && m_iActivated >= (unsigned int) count());
@@ -889,44 +779,56 @@ void qtractorPluginList::removePlugin ( qtractorPlugin *pPlugin )
 
 
 // Move-guarded plugin method.
-void qtractorPluginList::movePlugin ( qtractorPlugin *pPlugin,
-	qtractorPlugin *pPrevPlugin )
+void qtractorPluginList::movePlugin (
+	qtractorPlugin *pPlugin, qtractorPlugin *pNextPlugin )
 {
+	// Source sanity...
+	if (pPlugin == NULL)
+		return;
+
+	qtractorPluginList *pPluginList = pPlugin->list();
+	if (pPluginList == NULL)
+		return;
+
 	// Remove and insert back again...
-	unlink(pPlugin);
-	if (pPrevPlugin) {
-		insertAfter(pPlugin, pPrevPlugin);
+	pPluginList->unlink(pPlugin);
+	if (pNextPlugin) {
+		insertBefore(pPlugin, pNextPlugin);
 	} else {
-		prepend(pPlugin);
+		append(pPlugin);
 	}
 
-	// Now update each observer list-view...
-	QList<qtractorPluginListItem *> items = pPlugin->items();
-	QListIterator<qtractorPluginListItem *> iter(items);
-	while (iter.hasNext()) {
-		qtractorPluginListItem *pItem = iter.next();
-		qtractorPluginListView *pListView
-			= static_cast<qtractorPluginListView *> (pItem->listWidget());
-		if (pListView) {
-			int iPrevItem = pListView->pluginItem(pPrevPlugin);
-			// Remove the old item...
-			delete pItem;
-			// Just insert under the track list position...
-			pItem = new qtractorPluginListItem(pPlugin);
-			pListView->insertItem(iPrevItem, pItem);
-			pListView->setCurrentItem(pItem);
+	// DANGER: Gasp, we might be not the same...
+	if (pPluginList != this) {
+		pPlugin->setPluginList(this);
+		pPlugin->setChannels(channels());
+		if (pPlugin->isActivated()) {
+			pPluginList->updateActivated(false);
+			updateActivated(true);
 		}
 	}
+
+	// Now update each observer list-view:
+	// - take all items...
+	QListIterator<qtractorPluginListItem *> item(pPlugin->items());
+	while (item.hasNext())
+		delete item.next();
+	// - give them back into the right position...
+	QListIterator<qtractorPluginListView *> view(m_views);
+	while (view.hasNext()) {
+		qtractorPluginListView *pListView = view.next();
+		int iNextItem = pListView->count();
+		if (pNextPlugin)
+			iNextItem = pListView->pluginItem(pNextPlugin);
+		qtractorPluginListItem *pNextItem
+			= new qtractorPluginListItem(pPlugin);
+		pListView->insertItem(iNextItem, pNextItem);
+		pListView->setCurrentItem(pNextItem);
+	}
 }
 
 
-// An accessible list of observers.
-const QList<qtractorPluginListView *>& qtractorPluginList::views (void) const
-{
-	return m_views;
-}
-
-
+// List of views management.
 void qtractorPluginList::addView ( qtractorPluginListView *pView )
 {
 	m_views.append(pView);
@@ -962,51 +864,17 @@ void qtractorPluginList::process ( float **ppBuffer, unsigned int nframes )
 		if (!pPlugin->isActivated())
 			continue;
 
-		// Must have a valid descriptor...
-		const LADSPA_Descriptor *pDescriptor = pPlugin->descriptor();
-		if (pDescriptor == NULL)
-			continue;
-
 		// Set proper buffers for this plugin...
 		float **ppIBuffer = m_pppBuffers[  iBuffer & 1];
 		float **ppOBuffer = m_pppBuffers[++iBuffer & 1];
 
-		// We'll sweep channels...
-		unsigned short iIChannel = 0;
-		unsigned short iOChannel = 0;
-
-		// For each plugin instance...
-		for (unsigned short i = 0; i < pPlugin->instances(); i++) {
-			// For each instance audio input port...
-			QListIterator<unsigned long> iport(pPlugin->iports());
-			while (iport.hasNext()) {
-				(*pDescriptor->connect_port)(pPlugin->handle(i),
-					iport.next(), ppIBuffer[iIChannel]);
-				if (++iIChannel >= m_iChannels)
-					iIChannel = 0;
-			}
-			// For each instance audio output port...
-			QListIterator<unsigned long> oport(pPlugin->oports());
-			while (oport.hasNext()) {
-				(*pDescriptor->connect_port)(pPlugin->handle(i),
-					oport.next(), ppOBuffer[iOChannel]);
-				if (++iOChannel >= m_iChannels)
-					iOChannel = 0;
-			}
-			// Wrap channels?...
-			if (iIChannel < m_iChannels - 1)
-				iIChannel++;
-			if (iOChannel < m_iChannels - 1)
-				iOChannel++;
-		}
-
 		// Time for the real thing...
-		pPlugin->process(nframes);
+		pPlugin->process(ppIBuffer, ppOBuffer, nframes);
 	}
 
 	// Now for the output buffer commitment...
 	if (iBuffer & 1) {
-		for (unsigned short i = 0; i < m_iChannels; i++) {
+		for (unsigned short i = 0; i < m_iChannels; ++i) {
 			::memcpy(ppBuffer[i], m_pppBuffers[1][i],
 				nframes * sizeof(float));
 		}
@@ -1032,6 +900,9 @@ bool qtractorPluginList::loadElement ( qtractorSessionDocument *pDocument,
 			QString sPreset;
 			QStringList vlist;
 			bool bActivated = false;
+			qtractorPluginType::Hint typeHint
+				= qtractorPluginType::hintFromText(
+					ePlugin.attribute("type"));
 			for (QDomNode nParam = ePlugin.firstChild();
 					!nParam.isNull();
 						nParam = nParam.nextSibling()) {
@@ -1057,11 +928,14 @@ bool qtractorPluginList::loadElement ( qtractorSessionDocument *pDocument,
 			if (sFilename.isEmpty())
 				continue;
 			qtractorPlugin *pPlugin
-				= new qtractorPlugin(this, sFilename, iIndex);
-			pPlugin->setPreset(sPreset);
-			pPlugin->setValues(vlist);
-			pPlugin->setActivated(bActivated);
-			append(pPlugin);
+				= qtractorPluginFile::createPlugin(this,
+					sFilename, iIndex, typeHint);
+			if (pPlugin) {
+				pPlugin->setPreset(sPreset);
+				pPlugin->setValues(vlist);
+				pPlugin->setActivated(bActivated);
+				append(pPlugin);
+			}
 		}
 	}
 
@@ -1077,10 +951,12 @@ bool qtractorPluginList::saveElement ( qtractorSessionDocument *pDocument,
 			pPlugin; pPlugin = pPlugin->next()) {
 		// Create the new plugin element...
 		QDomElement ePlugin = pDocument->document()->createElement("plugin");
+		ePlugin.setAttribute("type", qtractorPluginType::textFromHint(
+			(pPlugin->type())->typeHint()));
 		pDocument->saveTextElement("filename",
-			pPlugin->filename(), &ePlugin);
+			((pPlugin->type())->file())->filename(), &ePlugin);
 		pDocument->saveTextElement("index",
-			QString::number(pPlugin->index()), &ePlugin);
+			QString::number((pPlugin->type())->index()), &ePlugin);
 		pDocument->saveTextElement("preset",
 			pPlugin->preset(), &ePlugin);
 		pDocument->saveTextElement("values",
@@ -1096,206 +972,14 @@ bool qtractorPluginList::saveElement ( qtractorSessionDocument *pDocument,
 
 
 //----------------------------------------------------------------------------
-// qtractorPluginPort -- Plugin input-control port instance.
+// qtractorPluginParam -- Plugin parameter (control input port) instance.
 //
 
-// Constructors.
-qtractorPluginPort::qtractorPluginPort (
-	qtractorPlugin *pPlugin, unsigned long iIndex )
-{
-	m_pPlugin = pPlugin;
-	m_iIndex  = iIndex;
-
-	const LADSPA_Descriptor *pDescriptor
-		= m_pPlugin->descriptor();
-	m_portType = pDescriptor->PortDescriptors[m_iIndex];
-	const LADSPA_PortRangeHint *pPortRangeHint
-		= &(pDescriptor->PortRangeHints[m_iIndex]);
-	m_portHints = pPortRangeHint->HintDescriptor;
-
-	// Initialize range values...
-	m_fMinValue = 0.0f;
-	if (isBoundedBelow()) {
-		m_fMinValue = pPortRangeHint->LowerBound;
-		if (isSampleRate())
-			m_fMinValue *= float(m_pPlugin->sampleRate());
-	}
-
-	m_fMaxValue = 4.0f;
-	if (isBoundedAbove()) {
-		m_fMaxValue = pPortRangeHint->UpperBound;
-		if (isSampleRate())
-			m_fMaxValue *= float(m_pPlugin->sampleRate());
-	}
-
-	// Port default value...
-	m_fDefaultValue = 0.0f;
-	switch (m_portHints & LADSPA_HINT_DEFAULT_MASK) {
-	case LADSPA_HINT_DEFAULT_MINIMUM:
-		m_fDefaultValue = m_fMinValue;
-		break;
-	case LADSPA_HINT_DEFAULT_LOW:
-		if (isLogarithmic()) {
-			m_fDefaultValue = ::expf(
-				::logf(m_fMinValue) * 0.75f + ::logf(m_fMaxValue) * 0.25f);
-		} else {
-			m_fDefaultValue = (m_fMinValue * 0.75f + m_fMaxValue * 0.25f);
-		}
-		break;
-	case LADSPA_HINT_DEFAULT_MIDDLE:
-		if (isLogarithmic()) {
-			m_fDefaultValue = ::sqrt(m_fMinValue * m_fMaxValue);
-		} else {
-			m_fDefaultValue = (m_fMinValue + m_fMaxValue) * 0.5f;
-		}
-		break;
-	case LADSPA_HINT_DEFAULT_HIGH:
-		if (isLogarithmic()) {
-			m_fDefaultValue = ::expf(
-				::logf(m_fMinValue) * 0.25f + ::logf(m_fMaxValue) * 0.75f);
-		} else {
-			m_fDefaultValue = (m_fMinValue * 0.25f + m_fMaxValue * 0.75f);
-		}
-		break;
-	case LADSPA_HINT_DEFAULT_MAXIMUM:
-		m_fDefaultValue = m_fMaxValue;
-		break;
-	case LADSPA_HINT_DEFAULT_0:
-		m_fDefaultValue = 0.0f;
-		break;
-	case LADSPA_HINT_DEFAULT_1:
-		m_fDefaultValue = 1.0f;
-		break;
-	case LADSPA_HINT_DEFAULT_100:
-		m_fDefaultValue = 100.0f;
-		break;
-	case LADSPA_HINT_DEFAULT_440:
-		m_fDefaultValue = 440.0f;
-		break;
-	}
-
-	// Initialize port value...
-	reset();
-}
-
-// Destructor.
-qtractorPluginPort::~qtractorPluginPort (void)
-{
-}
-
-// Main properties accessors.
-qtractorPlugin *qtractorPluginPort::plugin (void) const
-{
-	return m_pPlugin;
-}
-
-unsigned long qtractorPluginPort::index (void) const
-{
-	return m_iIndex;
-}
-
-const char *qtractorPluginPort::name (void) const
-{
-	return (m_pPlugin->descriptor())->PortNames[m_iIndex];
-}
-
-LADSPA_PortRangeHintDescriptor qtractorPluginPort::hints (void) const
-{
-	return m_portHints;
-}
-
-
-// Port descriptor predicate methods.
-bool qtractorPluginPort::isPortControlIn (void) const
-{
-	return LADSPA_IS_PORT_CONTROL(m_portType)
-		&& LADSPA_IS_PORT_INPUT(m_portType); 
-}
-
-bool qtractorPluginPort::isPortControlOut (void) const
-{
-	return LADSPA_IS_PORT_CONTROL(m_portType)
-		&& LADSPA_IS_PORT_OUTPUT(m_portType); 
-}
-
-bool qtractorPluginPort::isPortAudioIn (void) const
-{
-	return LADSPA_IS_PORT_AUDIO(m_portType)
-		&& LADSPA_IS_PORT_INPUT(m_portType); 
-}
-
-bool qtractorPluginPort::isPortAudioOut (void) const
-{
-	return LADSPA_IS_PORT_AUDIO(m_portType)
-		&& LADSPA_IS_PORT_OUTPUT(m_portType); 
-}
-
-
-// Port range hints predicate methods.
-bool qtractorPluginPort::isBoundedBelow (void) const
-{
-	return LADSPA_IS_HINT_BOUNDED_BELOW(m_portHints);
-}
-
-bool qtractorPluginPort::isBoundedAbove (void) const
-{
-	return LADSPA_IS_HINT_BOUNDED_ABOVE(m_portHints);
-}
-
-bool qtractorPluginPort::isDefaultValue (void) const
-{
-	return LADSPA_IS_HINT_HAS_DEFAULT(m_portHints);
-}
-
-bool qtractorPluginPort::isLogarithmic (void) const
-{
-	return LADSPA_IS_HINT_LOGARITHMIC(m_portHints);
-}
-
-bool qtractorPluginPort::isSampleRate (void) const
-{
-	return LADSPA_IS_HINT_SAMPLE_RATE(m_portHints);
-}
-
-bool qtractorPluginPort::isInteger (void) const
-{
-	return LADSPA_IS_HINT_INTEGER(m_portHints);
-}
-
-bool qtractorPluginPort::isToggled (void) const
-{
-	return LADSPA_IS_HINT_TOGGLED(m_portHints);
-}
-
-
-// Bounding range values.
-void qtractorPluginPort::setMinValue ( float fMinValue )
-{
-	m_fMinValue = fMinValue;
-}
-
-float qtractorPluginPort::minValue (void) const
-{
-	return m_fMinValue;
-}
-
-
-void qtractorPluginPort::setMaxValue ( float fMaxValue )
-{
-	m_fMaxValue = fMaxValue;
-}
-
-float qtractorPluginPort::maxValue (void) const
-{
-	return m_fMaxValue;
-}
-
-
 // Default value
-void qtractorPluginPort::setDefaultValue ( float fDefaultValue )
+void qtractorPluginParam::setDefaultValue ( float fDefaultValue )
 {
-	if (!isDefaultValue())
-		return;
+//	if (!isDefaultValue())
+//		return;
 
 	if (isBoundedAbove() && fDefaultValue > m_fMaxValue)
 		fDefaultValue = m_fMaxValue;
@@ -1306,14 +990,9 @@ void qtractorPluginPort::setDefaultValue ( float fDefaultValue )
 	m_fDefaultValue = fDefaultValue;
 }
 
-float qtractorPluginPort::defaultValue (void) const
-{
-	return m_fDefaultValue;
-}
-
 
 // Current port value.
-void qtractorPluginPort::setValue ( float fValue )
+void qtractorPluginParam::setValue ( float fValue )
 {
 	if (fValue == m_fValue)
 		return;
@@ -1325,24 +1004,6 @@ void qtractorPluginPort::setValue ( float fValue )
 		fValue = m_fMinValue;
 
 	m_fValue = fValue;
-}
-
-float qtractorPluginPort::value (void) const
-{
-	return m_fValue;
-}
-
-float *qtractorPluginPort::data (void)
-{
-	return &m_fValue;
-}
-
-
-
-// Reset-to-default method.
-void qtractorPluginPort::reset (void)
-{
-	m_fValue = m_fDefaultValue;
 }
 
 

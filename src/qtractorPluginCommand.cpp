@@ -1,7 +1,7 @@
 // qtractorPluginCommand.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -337,9 +337,9 @@ bool qtractorResetPluginCommand::undo (void)
 //
 
 // Constructor.
-qtractorPluginPortCommand::qtractorPluginPortCommand (
-	qtractorPluginPort *pPort, float fValue )
-	: qtractorCommand(QString(pPort->name()).toLower()), m_pPort(pPort)
+qtractorPluginParamCommand::qtractorPluginParamCommand (
+	qtractorPluginParam *pParam, float fValue )
+	: qtractorCommand(QString(pParam->name()).toLower()), m_pParam(pParam)
 {
 	m_fValue = fValue;
 	m_fPrevValue = 0.0f;
@@ -348,21 +348,21 @@ qtractorPluginPortCommand::qtractorPluginPortCommand (
 	setRefresh(false);
 
 	// Try replacing an previously equivalent command...
-	static qtractorPluginPortCommand *s_pPrevPortCommand = NULL;
+	static qtractorPluginParamCommand *s_pPrevParamCommand = NULL;
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (s_pPrevPortCommand && pMainForm) {
+	if (s_pPrevParamCommand && pMainForm) {
 		qtractorCommand *pLastCommand
 			= pMainForm->commands()->lastCommand();
 		qtractorCommand *pPrevCommand
-			= static_cast<qtractorCommand *> (s_pPrevPortCommand);
+			= static_cast<qtractorCommand *> (s_pPrevParamCommand);
 		if (pPrevCommand == pLastCommand
-			&& s_pPrevPortCommand->port() == pPort) {
-			qtractorPluginPortCommand *pLastPortCommand
-				= static_cast<qtractorPluginPortCommand *> (pLastCommand);
-			if (pLastPortCommand) {
+			&& s_pPrevParamCommand->param() == pParam) {
+			qtractorPluginParamCommand *pLastParamCommand
+				= static_cast<qtractorPluginParamCommand *> (pLastCommand);
+			if (pLastParamCommand) {
 				// Equivalence means same (sign) direction too...
-				float fPrevValue = pLastPortCommand->prevValue();
-				float fLastValue = pLastPortCommand->value();
+				float fPrevValue = pLastParamCommand->prevValue();
+				float fLastValue = pLastParamCommand->value();
 				int   iPrevSign  = (fPrevValue > fLastValue ? +1 : -1);
 				int   iCurrSign  = (fPrevValue < m_fValue   ? +1 : -1); 
 				if (iPrevSign == iCurrSign) {
@@ -373,20 +373,20 @@ qtractorPluginPortCommand::qtractorPluginPortCommand (
 			}
 		}
 	}
-	s_pPrevPortCommand = this;
+	s_pPrevParamCommand = this;
 }
 
 
 // Plugin-reset command methods.
-bool qtractorPluginPortCommand::redo (void)
+bool qtractorPluginParamCommand::redo (void)
 {
-	qtractorPlugin *pPlugin = m_pPort->plugin();
+	qtractorPlugin *pPlugin = m_pParam->plugin();
 	if (pPlugin == NULL)
 		return false;
 
-	// Set plugin port value...
-	float fValue = (m_bPrevValue ? m_fPrevValue : m_pPort->value());
-	m_pPort->setValue(m_fValue);
+	// Set plugin parameter value...
+	float fValue = (m_bPrevValue ? m_fPrevValue : m_pParam->value());
+	m_pParam->setValue(m_fValue);
 
 	// Set undo value...
 	m_bPrevValue = false;
@@ -394,13 +394,13 @@ bool qtractorPluginPortCommand::redo (void)
 	m_fValue     = fValue;
 
 	// Update the form, showing it up as necessary...
-	pPlugin->form()->updatePort(m_pPort);
+	(pPlugin->form())->updateParam(m_pParam->index());
 
 	return true;
 }
 
 
-bool qtractorPluginPortCommand::undo (void)
+bool qtractorPluginParamCommand::undo (void)
 {
 	// As we swap the prev/value this is non-idempotent.
 	return redo();
