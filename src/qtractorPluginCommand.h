@@ -113,7 +113,7 @@ public:
 
 	// Constructor.
 	qtractorMovePluginCommand(qtractorPlugin *pPlugin,
-		qtractorPlugin *pPrevPlugin);
+		qtractorPlugin *pNextPlugin, qtractorPluginList *pPluginList);
 
 	// Plugin-move command methods.
 	bool redo();
@@ -122,7 +122,8 @@ public:
 private:
 
 	// Instance variables.
-	qtractorPlugin *m_pPrevPlugin;
+	qtractorPlugin     *m_pNextPlugin;
+	qtractorPluginList *m_pPluginList;
 };
 
 

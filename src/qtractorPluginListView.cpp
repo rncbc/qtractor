@@ -197,7 +197,7 @@ qtractorPluginListView::qtractorPluginListView ( QWidget *pParent )
 	QListWidget::setDropIndicatorShown(true);
 	QListWidget::setAutoScroll(true);
 
-	QListWidget::setFont(QFont(QListWidget::font().family(), 7));
+	QListWidget::setFont(QFont(QListWidget::font().family(), 6));
 	QListWidget::verticalScrollBar()->setStyle(&g_tinyScrollBarStyle);
 	QListWidget::horizontalScrollBar()->setStyle(&g_tinyScrollBarStyle);
 
@@ -308,6 +308,9 @@ void qtractorPluginListView::moveItem (
 	if (pItem == NULL)
 		return;
 
+	if (m_pPluginList == NULL)
+		return;
+
 	// The plugin to be moved...	
 	qtractorPlugin *pPlugin = pItem->plugin();
 	if (pPlugin == NULL)
@@ -322,7 +325,7 @@ void qtractorPluginListView::moveItem (
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm)
 		pMainForm->commands()->exec(
-			new qtractorMovePluginCommand(pPlugin, pNextPlugin));
+			new qtractorMovePluginCommand(pPlugin, pNextPlugin, m_pPluginList));
 }
 
 

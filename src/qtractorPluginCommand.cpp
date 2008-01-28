@@ -167,10 +167,12 @@ bool qtractorRemovePluginCommand::undo (void)
 
 // Constructor.
 qtractorMovePluginCommand::qtractorMovePluginCommand (
-	qtractorPlugin *pPlugin, qtractorPlugin *pPrevPlugin )
+	qtractorPlugin *pPlugin, qtractorPlugin *pNextPlugin,
+		qtractorPluginList *pPluginList )
 	: qtractorPluginCommand(QObject::tr("move plugin"), pPlugin)
 {
-	m_pPrevPlugin = pPrevPlugin;
+	m_pNextPlugin = pNextPlugin;
+	m_pPluginList = pPluginList;
 }
 
 
@@ -181,8 +183,7 @@ bool qtractorMovePluginCommand::redo (void)
 	if (pPlugin == NULL)
 		return false;
 
-	qtractorPluginList *pPluginList = pPlugin->list();
-	if (pPluginList == NULL)
+	if (m_pPluginList == NULL)
 		return false;
 
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
@@ -196,11 +197,15 @@ bool qtractorMovePluginCommand::redo (void)
 	pSession->lock();
 
 	// Save the previous track alright...
-	qtractorPlugin *pPrevPlugin = pPlugin->prev();
+	qtractorPlugin *pNextPlugin = pPlugin->next();
+	qtractorPluginList *pPluginList = pPlugin->list();
+
 	// Move it...
-	pPluginList->movePlugin(pPlugin, m_pPrevPlugin);
+	m_pPluginList->movePlugin(pPlugin, m_pNextPlugin);
+
 	// Swap it nice, finally.
-	m_pPrevPlugin = pPrevPlugin;
+	m_pNextPlugin = pNextPlugin;
+	m_pPluginList = pPluginList;
 
 	pSession->unlock();
 
