@@ -722,6 +722,7 @@ void qtractorMainForm::setOptions ( qtractorOptions *pOptions )
 	updateDisplayFormat();
 	updateAudioPlayer();
 	updateAudioMetronome();
+	updateMidiCaptureQuantize();
 	updateMidiControl();
 	updateMidiMetronome();
 
@@ -2000,6 +2001,7 @@ void qtractorMainForm::viewOptions (void)
 	bool    bOldQuickSeek          = m_pOptions->bAudioQuickSeek;
 	bool    bOldAudioPlayerBus     = m_pOptions->bAudioPlayerBus;
 	bool    bOldAudioMetronome     = m_pOptions->bAudioMetronome;
+	int     iOldMidiCaptureQuantize = m_pOptions->iMidiCaptureQuantize;
 	QString sOldMetroBarFilename   = m_pOptions->sMetroBarFilename;
 	QString sOldMetroBeatFilename  = m_pOptions->sMetroBeatFilename;
 	bool    bOldAudioMetroBus      = m_pOptions->bAudioMetroBus;
@@ -2069,6 +2071,9 @@ void qtractorMainForm::viewOptions (void)
 		if (( bOldAudioPlayerBus && !m_pOptions->bAudioPlayerBus) ||
 			(!bOldAudioPlayerBus &&  m_pOptions->bAudioPlayerBus))
 			updateAudioPlayer();
+		// MIDI capture quantize option...
+		if (iOldMidiCaptureQuantize != m_pOptions->iMidiCaptureQuantize)
+			updateMidiCaptureQuantize();
 		// MIDI engine control options...
 		if (( bOldMidiControlBus && !m_pOptions->bMidiControlBus) ||
 			(!bOldMidiControlBus &&  m_pOptions->bMidiControlBus))
@@ -2992,6 +2997,22 @@ void qtractorMainForm::updateAudioPlayer (void)
 		return;
 
 	pAudioEngine->setPlayerBus(m_pOptions->bAudioPlayerBus);
+}
+
+
+// Update MIDI capture quantize setting.
+void qtractorMainForm::updateMidiCaptureQuantize (void)
+{
+	if (m_pOptions == NULL)
+		return;
+
+	// Configure the MIDI engine player handling...
+	qtractorMidiEngine *pMidiEngine = m_pSession->midiEngine();
+	if (pMidiEngine == NULL)
+		return;
+
+	pMidiEngine->setCaptureQuantize(
+		qtractorTimeScale::snapFromIndex(m_pOptions->iMidiCaptureQuantize));
 }
 
 

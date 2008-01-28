@@ -231,6 +231,7 @@ protected:
 	void updateMessagesCapture();
 	void updateDisplayFormat();
 	void updateAudioPlayer();
+	void updateMidiCaptureQuantize();
 	void updateMidiControl();
 	void updateAudioMetronome();
 	void updateMidiMetronome();

@@ -51,10 +51,10 @@ protected slots:
 	void accept();
 	void reject();
 	void changed();
-	void chooseMessagesFont();
 	void chooseMetroBarFilename();
 	void chooseMetroBeatFilename();
 	void updateMetroNoteNames();
+	void chooseMessagesFont();
 	void stabilizeForm();
 
 protected:

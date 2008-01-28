@@ -531,6 +531,9 @@ qtractorMidiEngine::qtractorMidiEngine ( qtractorSession *pSession )
 	m_iMetroBeatNote     = 77;	// GM Low-wood stick
 	m_iMetroBeatVelocity = 64;
 	m_iMetroBeatDuration = 16;
+
+	// No input/capture quantization (default).
+	m_iCaptureQuantize = 0;
 }
 
 
@@ -680,6 +683,12 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 
 	unsigned char *pSysex   = NULL;
 	unsigned short iSysex   = 0;
+
+	// - capture quantization...
+	if (m_iCaptureQuantize > 0) {
+		unsigned long q = session()->ticksPerBeat() / m_iCaptureQuantize;
+		pEv->time.tick = q * ((pEv->time.tick + (q >> 1)) / q);
+	}
 
 #ifdef CONFIG_DEBUG
 	// - show event for debug purposes...
@@ -1999,6 +2008,19 @@ int qtractorMidiEngine::updateConnects (void)
 
 	// Done.
 	return iUpdate;
+}
+
+
+// Capture/input (record) quantization accessors.
+// (value in snap-per-beat units)
+void qtractorMidiEngine::setCaptureQuantize ( unsigned short iCaptureQuantize )
+{
+	m_iCaptureQuantize = iCaptureQuantize;
+}
+
+unsigned short qtractorMidiEngine::captureQuantize (void) const
+{
+	return m_iCaptureQuantize;
 }
 
 

@@ -26,6 +26,7 @@
 
 #include "qtractorAudioFile.h"
 #include "qtractorMidiEditor.h"
+#include "qtractorTimeScale.h"
 
 #include <QFileDialog>
 #include <QFontDialog>
@@ -73,6 +74,10 @@ qtractorOptionsForm::qtractorOptionsForm (
 	m_ui.MidiCaptureFormatComboBox->addItem(tr("SMF Format 0"));
 	m_ui.MidiCaptureFormatComboBox->addItem(tr("SMF Format 1"));
 
+	QStringList items = qtractorTimeScale::snapItems(0);
+	m_ui.MidiCaptureQuantizeComboBox->clear();
+	m_ui.MidiCaptureQuantizeComboBox->insertItems(0, items);
+
 //	updateMetroNoteNames();
 
 	// Initialize dirty control state.
@@ -82,39 +87,6 @@ qtractorOptionsForm::qtractorOptionsForm (
 	adjustSize();
 
 	// UI signal/slot connections...
-	QObject::connect(m_ui.ConfirmRemoveCheckBox,
-		SIGNAL(stateChanged(int)),
-		SLOT(changed()));
-	QObject::connect(m_ui.StdoutCaptureCheckBox,
-		SIGNAL(stateChanged(int)),
-		SLOT(changed()));
-	QObject::connect(m_ui.CompletePathCheckBox,
-		SIGNAL(stateChanged(int)),
-		SLOT(changed()));
-	QObject::connect(m_ui.PeakAutoRemoveCheckBox,
-		SIGNAL(stateChanged(int)),
-		SLOT(changed()));
-	QObject::connect(m_ui.KeepToolsOnTopCheckBox,
-		SIGNAL(stateChanged(int)),
-		SLOT(changed()));
-	QObject::connect(m_ui.TrackViewDropSpanCheckBox,
-		SIGNAL(stateChanged(int)),
-		SLOT(changed()));
-	QObject::connect(m_ui.DisplayFormatComboBox,
-		SIGNAL(activated(int)),
-		SLOT(changed()));
-	QObject::connect(m_ui.MaxRecentFilesSpinBox,
-		SIGNAL(valueChanged(int)),
-		SLOT(changed()));
-	QObject::connect(m_ui.MessagesFontPushButton,
-		SIGNAL(clicked()),
-		SLOT(chooseMessagesFont()));
-	QObject::connect(m_ui.MessagesLimitCheckBox,
-		SIGNAL(stateChanged(int)),
-		SLOT(changed()));
-	QObject::connect(m_ui.MessagesLimitLinesSpinBox,
-		SIGNAL(valueChanged(int)),
-		SLOT(changed()));
 	QObject::connect(m_ui.AudioCaptureTypeComboBox,
 		SIGNAL(activated(int)),
 		SLOT(changed()));
@@ -154,6 +126,9 @@ qtractorOptionsForm::qtractorOptionsForm (
 	QObject::connect(m_ui.MidiCaptureFormatComboBox,
 		SIGNAL(activated(int)),
 		SLOT(changed()));
+	QObject::connect(m_ui.MidiCaptureQuantizeComboBox,
+		SIGNAL(activated(int)),
+		SLOT(changed()));
 	QObject::connect(m_ui.MidiControlBusCheckBox,
 		SIGNAL(stateChanged(int)),
 		SLOT(changed()));
@@ -184,6 +159,39 @@ qtractorOptionsForm::qtractorOptionsForm (
 	QObject::connect(m_ui.MidiMetroBusCheckBox,
 		SIGNAL(stateChanged(int)),
 		SLOT(changed()));
+	QObject::connect(m_ui.ConfirmRemoveCheckBox,
+		SIGNAL(stateChanged(int)),
+		SLOT(changed()));
+	QObject::connect(m_ui.StdoutCaptureCheckBox,
+		SIGNAL(stateChanged(int)),
+		SLOT(changed()));
+	QObject::connect(m_ui.CompletePathCheckBox,
+		SIGNAL(stateChanged(int)),
+		SLOT(changed()));
+	QObject::connect(m_ui.PeakAutoRemoveCheckBox,
+		SIGNAL(stateChanged(int)),
+		SLOT(changed()));
+	QObject::connect(m_ui.KeepToolsOnTopCheckBox,
+		SIGNAL(stateChanged(int)),
+		SLOT(changed()));
+	QObject::connect(m_ui.TrackViewDropSpanCheckBox,
+		SIGNAL(stateChanged(int)),
+		SLOT(changed()));
+	QObject::connect(m_ui.DisplayFormatComboBox,
+		SIGNAL(activated(int)),
+		SLOT(changed()));
+	QObject::connect(m_ui.MaxRecentFilesSpinBox,
+		SIGNAL(valueChanged(int)),
+		SLOT(changed()));
+	QObject::connect(m_ui.MessagesFontPushButton,
+		SIGNAL(clicked()),
+		SLOT(chooseMessagesFont()));
+	QObject::connect(m_ui.MessagesLimitCheckBox,
+		SIGNAL(stateChanged(int)),
+		SLOT(changed()));
+	QObject::connect(m_ui.MessagesLimitLinesSpinBox,
+		SIGNAL(valueChanged(int)),
+		SLOT(changed()));
 	QObject::connect(m_ui.OkPushButton,
 		SIGNAL(clicked()),
 		SLOT(accept()));
@@ -208,33 +216,6 @@ void qtractorOptionsForm::setOptions ( qtractorOptions *pOptions )
 	// Initialize conveniency options...
 	m_pOptions->loadComboBoxHistory(m_ui.MetroBarFilenameComboBox);
 	m_pOptions->loadComboBoxHistory(m_ui.MetroBeatFilenameComboBox);
-
-	// Load Display options...
-	QFont font;
-	// Messages font.
-	if (m_pOptions->sMessagesFont.isEmpty()
-		|| !font.fromString(m_pOptions->sMessagesFont))
-		font = QFont("Monospace", 8);
-	QPalette pal(m_ui.MessagesFontTextLabel->palette());
-	pal.setColor(m_ui.MessagesFontTextLabel->backgroundRole(), Qt::white);
-	m_ui.MessagesFontTextLabel->setPalette(pal);
-	m_ui.MessagesFontTextLabel->setFont(font);
-	m_ui.MessagesFontTextLabel->setText(
-		font.family() + " " + QString::number(font.pointSize()));
-
-	// Messages limit option.
-	m_ui.MessagesLimitCheckBox->setChecked(m_pOptions->bMessagesLimit);
-	m_ui.MessagesLimitLinesSpinBox->setValue(m_pOptions->iMessagesLimitLines);
-
-	// Other options finally.
-	m_ui.ConfirmRemoveCheckBox->setChecked(m_pOptions->bConfirmRemove);
-	m_ui.StdoutCaptureCheckBox->setChecked(m_pOptions->bStdoutCapture);
-	m_ui.CompletePathCheckBox->setChecked(m_pOptions->bCompletePath);
-	m_ui.PeakAutoRemoveCheckBox->setChecked(m_pOptions->bPeakAutoRemove);
-	m_ui.KeepToolsOnTopCheckBox->setChecked(m_pOptions->bKeepToolsOnTop);
-	m_ui.TrackViewDropSpanCheckBox->setChecked(m_pOptions->bTrackViewDropSpan);
-	m_ui.MaxRecentFilesSpinBox->setValue(m_pOptions->iMaxRecentFiles);
-	m_ui.DisplayFormatComboBox->setCurrentIndex(m_pOptions->iDisplayFormat);
 
 	// Audio options.
 	int iIndex  = 0;
@@ -271,6 +252,7 @@ void qtractorOptionsForm::setOptions ( qtractorOptions *pOptions )
 
 	// MIDI options.
 	m_ui.MidiCaptureFormatComboBox->setCurrentIndex(m_pOptions->iMidiCaptureFormat);
+	m_ui.MidiCaptureQuantizeComboBox->setCurrentIndex(m_pOptions->iMidiCaptureQuantize);
 	m_ui.MidiControlBusCheckBox->setChecked(m_pOptions->bMidiControlBus);
 
 	// MIDI metronome options.
@@ -284,6 +266,33 @@ void qtractorOptionsForm::setOptions ( qtractorOptions *pOptions )
 	m_ui.MetroBeatVelocitySpinBox->setValue(m_pOptions->iMetroBeatVelocity);
 	m_ui.MetroBeatDurationSpinBox->setValue(m_pOptions->iMetroBeatDuration);
 	m_ui.MidiMetroBusCheckBox->setChecked(m_pOptions->bMidiMetroBus);
+
+	// Load Display options...
+	QFont font;
+	// Messages font.
+	if (m_pOptions->sMessagesFont.isEmpty()
+		|| !font.fromString(m_pOptions->sMessagesFont))
+		font = QFont("Monospace", 8);
+	QPalette pal(m_ui.MessagesFontTextLabel->palette());
+	pal.setColor(m_ui.MessagesFontTextLabel->backgroundRole(), Qt::white);
+	m_ui.MessagesFontTextLabel->setPalette(pal);
+	m_ui.MessagesFontTextLabel->setFont(font);
+	m_ui.MessagesFontTextLabel->setText(
+		font.family() + " " + QString::number(font.pointSize()));
+
+	// Messages limit option.
+	m_ui.MessagesLimitCheckBox->setChecked(m_pOptions->bMessagesLimit);
+	m_ui.MessagesLimitLinesSpinBox->setValue(m_pOptions->iMessagesLimitLines);
+
+	// Other options finally.
+	m_ui.ConfirmRemoveCheckBox->setChecked(m_pOptions->bConfirmRemove);
+	m_ui.StdoutCaptureCheckBox->setChecked(m_pOptions->bStdoutCapture);
+	m_ui.CompletePathCheckBox->setChecked(m_pOptions->bCompletePath);
+	m_ui.PeakAutoRemoveCheckBox->setChecked(m_pOptions->bPeakAutoRemove);
+	m_ui.KeepToolsOnTopCheckBox->setChecked(m_pOptions->bKeepToolsOnTop);
+	m_ui.TrackViewDropSpanCheckBox->setChecked(m_pOptions->bTrackViewDropSpan);
+	m_ui.MaxRecentFilesSpinBox->setValue(m_pOptions->iMaxRecentFiles);
+	m_ui.DisplayFormatComboBox->setCurrentIndex(m_pOptions->iDisplayFormat);
 
 	// Done. Restart clean.
 	m_iDirtyCount = 0;
@@ -303,19 +312,6 @@ void qtractorOptionsForm::accept (void)
 {
 	// Save options...
 	if (m_iDirtyCount > 0) {
-		// Messages options...
-		m_pOptions->sMessagesFont   = m_ui.MessagesFontTextLabel->font().toString();
-		m_pOptions->bMessagesLimit  = m_ui.MessagesLimitCheckBox->isChecked();
-		m_pOptions->iMessagesLimitLines = m_ui.MessagesLimitLinesSpinBox->value();
-		// Other options...
-		m_pOptions->bConfirmRemove  = m_ui.ConfirmRemoveCheckBox->isChecked();
-		m_pOptions->bStdoutCapture  = m_ui.StdoutCaptureCheckBox->isChecked();
-		m_pOptions->bCompletePath   = m_ui.CompletePathCheckBox->isChecked();
-		m_pOptions->bPeakAutoRemove = m_ui.PeakAutoRemoveCheckBox->isChecked();
-		m_pOptions->bKeepToolsOnTop = m_ui.KeepToolsOnTopCheckBox->isChecked();
-		m_pOptions->bTrackViewDropSpan = m_ui.TrackViewDropSpanCheckBox->isChecked();
-		m_pOptions->iMaxRecentFiles = m_ui.MaxRecentFilesSpinBox->value();
-		m_pOptions->iDisplayFormat  = m_ui.DisplayFormatComboBox->currentIndex();
 		// Audio options...
 		int iFormat	= m_ui.AudioCaptureTypeComboBox->itemData(
 			m_ui.AudioCaptureTypeComboBox->currentIndex()).toInt();
@@ -335,6 +331,7 @@ void qtractorOptionsForm::accept (void)
 		m_pOptions->bAudioMetroBus       = m_ui.AudioMetroBusCheckBox->isChecked();
 		// MIDI options...
 		m_pOptions->iMidiCaptureFormat   = m_ui.MidiCaptureFormatComboBox->currentIndex();
+		m_pOptions->iMidiCaptureQuantize = m_ui.MidiCaptureQuantizeComboBox->currentIndex();
 		m_pOptions->bMidiControlBus      = m_ui.MidiControlBusCheckBox->isChecked();
 		// MIDI metronome options.
 		m_pOptions->bMidiMetronome       = m_ui.MidiMetronomeCheckBox->isChecked();
@@ -346,6 +343,19 @@ void qtractorOptionsForm::accept (void)
 		m_pOptions->iMetroBeatVelocity   = m_ui.MetroBeatVelocitySpinBox->value();
 		m_pOptions->iMetroBeatDuration   = m_ui.MetroBeatDurationSpinBox->value();
 		m_pOptions->bMidiMetroBus        = m_ui.MidiMetroBusCheckBox->isChecked();
+		// Display options...
+		m_pOptions->bConfirmRemove       = m_ui.ConfirmRemoveCheckBox->isChecked();
+		m_pOptions->bStdoutCapture       = m_ui.StdoutCaptureCheckBox->isChecked();
+		m_pOptions->bCompletePath        = m_ui.CompletePathCheckBox->isChecked();
+		m_pOptions->bPeakAutoRemove      = m_ui.PeakAutoRemoveCheckBox->isChecked();
+		m_pOptions->bKeepToolsOnTop      = m_ui.KeepToolsOnTopCheckBox->isChecked();
+		m_pOptions->bTrackViewDropSpan   = m_ui.TrackViewDropSpanCheckBox->isChecked();
+		m_pOptions->iMaxRecentFiles      = m_ui.MaxRecentFilesSpinBox->value();
+		m_pOptions->iDisplayFormat       = m_ui.DisplayFormatComboBox->currentIndex();
+		// Messages options...
+		m_pOptions->sMessagesFont        = m_ui.MessagesFontTextLabel->font().toString();
+		m_pOptions->bMessagesLimit       = m_ui.MessagesLimitCheckBox->isChecked();
+		m_pOptions->iMessagesLimitLines  = m_ui.MessagesLimitLinesSpinBox->value();
 		// Reset dirty flag.
 		m_iDirtyCount = 0;
 	}
@@ -386,19 +396,13 @@ void qtractorOptionsForm::reject (void)
 }
 
 
-// The messages font selection dialog.
-void qtractorOptionsForm::chooseMessagesFont (void)
+// Dirty up settings.
+void qtractorOptionsForm::changed (void)
 {
-	bool  bOk  = false;
-	QFont font = QFontDialog::getFont(&bOk,
-		m_ui.MessagesFontTextLabel->font(), this);
-	if (bOk) {
-		m_ui.MessagesFontTextLabel->setFont(font);
-		m_ui.MessagesFontTextLabel->setText(
-			font.family() + " " + QString::number(font.pointSize()));
-		changed();
-	}
+	m_iDirtyCount++;
+	stabilizeForm();
 }
+
 
 // Choose audio metronome filenames.
 void qtractorOptionsForm::chooseMetroBarFilename (void)
@@ -458,11 +462,18 @@ void qtractorOptionsForm::updateMetroNoteNames (void)
 }
 
 
-// Dirty up settings.
-void qtractorOptionsForm::changed (void)
+// The messages font selection dialog.
+void qtractorOptionsForm::chooseMessagesFont (void)
 {
-	m_iDirtyCount++;
-	stabilizeForm();
+	bool  bOk  = false;
+	QFont font = QFontDialog::getFont(&bOk,
+		m_ui.MessagesFontTextLabel->font(), this);
+	if (bOk) {
+		m_ui.MessagesFontTextLabel->setFont(font);
+		m_ui.MessagesFontTextLabel->setText(
+			font.family() + " " + QString::number(font.pointSize()));
+		changed();
+	}
 }
 
 

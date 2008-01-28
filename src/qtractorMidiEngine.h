@@ -155,6 +155,10 @@ public:
 	// return the effective number of connection attempts.
 	int updateConnects();
 
+	// Capture (record) quantization accessors.
+	void setCaptureQuantize(unsigned short iCaptureQuantize);
+	unsigned short captureQuantize() const;
+
 protected:
 
 	// Concrete device (de)activation methods.
@@ -219,6 +223,9 @@ private:
 	int              m_iMetroBeatNote;
 	int              m_iMetroBeatVelocity;
 	unsigned long    m_iMetroBeatDuration;
+
+	// Input quantization (aka. record snap-per-beat).
+	unsigned short   m_iCaptureQuantize;
 };
 
 
