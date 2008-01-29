@@ -5,11 +5,14 @@ ChangeLog
 
 CVS HEAD
 
+
+- Double-clicking on an empty area (de)selects all clips on track.
+ 
 - MIDI capture (record) quantization is now an option, possibly
   handy for some jerky performance musicians, as the one found
   in myself ;) (see View/Options.../MIDI/Capture/Quantize).
 
-- The global options dialog (View/Option...) has seen its Display
+- The global options dialog (View/Options...) has seen its Display
   tab page being moved back and to the right.
 
 - Major rewrite of the plug-in infrastructure, adding primordial

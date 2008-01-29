@@ -35,6 +35,7 @@
 #include "qtractorFileListView.h"
 #include "qtractorClipSelect.h"
 #include "qtractorClipCommand.h"
+#include "qtractorClipCommand.h"
 
 #include "qtractorMainForm.h"
 #include "qtractorThumbView.h"
@@ -1365,8 +1366,10 @@ void qtractorTrackView::mouseDoubleClickEvent ( QMouseEvent *pMouseEvent )
 	qtractorScrollView::mouseDoubleClickEvent(pMouseEvent);
 
 	// By this time we should have something under...
-	m_pTracks->editClip(clipAt(
-		qtractorScrollView::viewportToContents(pMouseEvent->pos()), true));
+	if (m_pClipDrag)
+		m_pTracks->editClip(m_pClipDrag);
+	else
+		m_pTracks->selectCurrentTrack();
 }
 
 
