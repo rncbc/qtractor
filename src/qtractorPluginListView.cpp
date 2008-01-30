@@ -329,6 +329,39 @@ void qtractorPluginListView::moveItem (
 }
 
 
+// Copy item on list.
+void qtractorPluginListView::copyItem (
+	qtractorPluginListItem *pItem, qtractorPluginListItem *pNextItem )
+{
+	if (pItem == NULL)
+		return;
+
+	if (m_pPluginList == NULL)
+		return;
+
+	// The plugin to be moved...	
+	qtractorPlugin *pPlugin = pItem->plugin();
+	// Clone/copy the new plugin here...
+	if (pPlugin)
+		pPlugin = m_pPluginList->copyPlugin(pPlugin);
+	if (pPlugin == NULL)
+		return;
+
+	// To be after this one...
+	qtractorPlugin *pNextPlugin = NULL;
+	if (pNextItem)
+		pNextPlugin = pNextItem->plugin();
+
+	// Make it an undoable command...
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm) {
+		pMainForm->commands()->exec(
+			new qtractorInsertPluginCommand(
+				tr("copy plugin"), pPlugin, pNextPlugin));
+	}
+}
+
+
 // Add a new plugin slot.
 void qtractorPluginListView::addPlugin (void)
 {
@@ -797,11 +830,35 @@ void qtractorPluginListView::dropEvent ( QDropEvent *pDropEvent )
 		return;
 	}
 
-	// Take care whether its one from ourselves ?...
-	moveItem(m_pDragItem, m_pDropItem);
-	QListWidget::setFocus();
+	// Have drop item menu...
+	QMenu menu(this);
+	menu.addAction(tr("&Move"), this, SLOT(dropMove()));
+	menu.addAction(tr("&Copy"), this, SLOT(dropCopy()));
+	menu.addSeparator();
+	menu.addAction(QIcon(":/icons/formReject.png"),
+		tr("Cancel"), this, SLOT(dropCancel()));
+	menu.exec(QListWidget::mapToGlobal(pDropEvent->pos()));
 
 	dragLeaveEvent(NULL);
+}
+
+
+// Drop item slots.
+void qtractorPluginListView::dropMove (void)
+{
+	moveItem(m_pDragItem, m_pDropItem);
+	QListWidget::setFocus();
+}
+
+void qtractorPluginListView::dropCopy (void)
+{
+	copyItem(m_pDragItem, m_pDropItem);
+	QListWidget::setFocus();
+}
+
+void qtractorPluginListView::dropCancel (void)
+{
+	// Do nothing...
 }
 
 

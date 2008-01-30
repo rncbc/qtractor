@@ -162,6 +162,95 @@ bool qtractorRemovePluginCommand::undo (void)
 
 
 //----------------------------------------------------------------------
+// class qtractorInsertPluginCommand - implementation
+//
+
+// Constructor.
+qtractorInsertPluginCommand::qtractorInsertPluginCommand (
+	const QString& sName, qtractorPlugin *pPlugin,
+	qtractorPlugin *pNextPlugin ) : qtractorPluginCommand(sName, pPlugin)
+{
+	m_pNextPlugin = pNextPlugin;
+}
+
+
+// Plugin-insert command methods.
+bool qtractorInsertPluginCommand::redo (void)
+{
+	qtractorPlugin *pPlugin = plugins().first();
+	if (pPlugin == NULL)
+		return false;
+
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm == NULL)
+		return false;
+
+	qtractorSession *pSession = pMainForm->session();
+	if (pSession == NULL)
+		return false;
+
+	// Save the previous track alright...
+	qtractorPluginList *pPluginList = pPlugin->list();
+	if (pPluginList == NULL)
+		return false;
+
+	pSession->lock();
+
+	qtractorPlugin *pNextPlugin = pPlugin->next();
+
+	// Insert it...
+	pPluginList->insertPlugin(pPlugin, m_pNextPlugin);
+
+	// Swap it nice, finally.
+	m_pNextPlugin = pNextPlugin;
+
+	// Whether to allow the disposal of the plugin reference.
+	setAutoDelete(false);
+
+	pSession->unlock();
+
+	return true;
+}
+
+bool qtractorInsertPluginCommand::undo (void)
+{
+	qtractorPlugin *pPlugin = plugins().first();
+	if (pPlugin == NULL)
+		return false;
+
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm == NULL)
+		return false;
+
+	qtractorSession *pSession = pMainForm->session();
+	if (pSession == NULL)
+		return false;
+
+	// Save the previous track alright...
+	qtractorPluginList *pPluginList = pPlugin->list();
+	if (pPluginList == NULL)
+		return false;
+
+	pSession->lock();
+
+	qtractorPlugin *pNextPlugin = pPlugin->next();
+
+	// Insert it...
+	pPluginList->removePlugin(pPlugin);
+
+	// Swap it nice, finally.
+	m_pNextPlugin = pNextPlugin;
+
+	// Whether to allow the disposal of the plugin reference.
+	setAutoDelete(true);
+
+	pSession->unlock();
+
+	return true;
+}
+
+
+//----------------------------------------------------------------------
 // class qtractorMovePluginCommand - implementation
 //
 
@@ -169,9 +258,9 @@ bool qtractorRemovePluginCommand::undo (void)
 qtractorMovePluginCommand::qtractorMovePluginCommand (
 	qtractorPlugin *pPlugin, qtractorPlugin *pNextPlugin,
 		qtractorPluginList *pPluginList )
-	: qtractorPluginCommand(QObject::tr("move plugin"), pPlugin)
+	: qtractorInsertPluginCommand(QObject::tr("move plugin"),
+		pPlugin, pNextPlugin)
 {
-	m_pNextPlugin = pNextPlugin;
 	m_pPluginList = pPluginList;
 }
 
@@ -201,11 +290,11 @@ bool qtractorMovePluginCommand::redo (void)
 	qtractorPluginList *pPluginList = pPlugin->list();
 
 	// Move it...
-	m_pPluginList->movePlugin(pPlugin, m_pNextPlugin);
+	m_pPluginList->movePlugin(pPlugin, nextPlugin());
 
 	// Swap it nice, finally.
-	m_pNextPlugin = pNextPlugin;
 	m_pPluginList = pPluginList;
+	setNextPlugin(pNextPlugin);
 
 	pSession->unlock();
 
@@ -214,7 +303,7 @@ bool qtractorMovePluginCommand::redo (void)
 
 bool qtractorMovePluginCommand::undo (void)
 {
-	// As we swap the prev/plugin this is non-idempotent.
+	// As we swap the prev/state this is non-idempotent.
 	return redo();
 }
 

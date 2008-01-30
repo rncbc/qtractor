@@ -763,39 +763,34 @@ void qtractorPluginList::updateActivated ( bool bActivated )
 // Add-guarded plugin method.
 void qtractorPluginList::addPlugin ( qtractorPlugin *pPlugin )
 {
+	// Link the plugin into list...
+	insertPlugin(pPlugin, pPlugin->next());
+}
+
+
+// Insert-guarded plugin method.
+void qtractorPluginList::insertPlugin (	qtractorPlugin *pPlugin,
+	qtractorPlugin *pNextPlugin )
+{
 	// We'll get prepared before plugging it in...
 	pPlugin->setChannels(m_iChannels);
 
-	// Guess which item we're adding after...
-	qtractorPlugin *pPrevPlugin = pPlugin->prev();
-	if (pPrevPlugin == NULL && pPlugin->next() == NULL)
-		pPrevPlugin = last();
-
-	// Link the plugin into list...
-	insertAfter(pPlugin, pPrevPlugin);
+	if (pNextPlugin)
+		insertBefore(pPlugin, pNextPlugin);
+	else
+		append(pPlugin);
 
 	// Now update each observer list-view...
 	QListIterator<qtractorPluginListView *> iter(m_views);
 	while (iter.hasNext()) {
 		qtractorPluginListView *pListView = iter.next();
-		// Get the previous one, if any...
-		int iItem = pListView->pluginItem(pPrevPlugin) + 1;
-		// Add the list-view item...
-		qtractorPluginListItem *pItem = new qtractorPluginListItem(pPlugin);
-		pListView->insertItem(iItem, pItem);
-		pListView->setCurrentItem(pItem);
+		int iNextItem = pListView->count();
+		if (pNextPlugin)
+			iNextItem = pListView->pluginItem(pNextPlugin);
+		qtractorPluginListItem *pNextItem = new qtractorPluginListItem(pPlugin);
+		pListView->insertItem(iNextItem, pNextItem);
+		pListView->setCurrentItem(pNextItem);
 	}
-}
-
-
-// Remove-guarded plugin method.
-void qtractorPluginList::removePlugin ( qtractorPlugin *pPlugin )
-{
-	// Just unlink the plugin from the list...
-	unlink(pPlugin);
-
-	pPlugin->setChannels(0);
-	pPlugin->clearItems();
 }
 
 
@@ -846,6 +841,37 @@ void qtractorPluginList::movePlugin (
 		pListView->insertItem(iNextItem, pNextItem);
 		pListView->setCurrentItem(pNextItem);
 	}
+}
+
+
+// Remove-guarded plugin method.
+void qtractorPluginList::removePlugin ( qtractorPlugin *pPlugin )
+{
+	// Just unlink the plugin from the list...
+	unlink(pPlugin);
+
+	pPlugin->setChannels(0);
+	pPlugin->clearItems();
+}
+
+
+// Clone/copy plugin method.
+qtractorPlugin *qtractorPluginList::copyPlugin ( qtractorPlugin *pPlugin )
+{
+	qtractorPluginType *pType = pPlugin->type();
+	if (pType == NULL)
+		return NULL;
+
+	// Clone the plugin instance...
+	qtractorPlugin *pNewPlugin = qtractorPluginFile::createPlugin(this,
+		(pType->file())->filename(), pType->index(), pType->typeHint());
+	if (pNewPlugin) {
+		pNewPlugin->setPreset(pPlugin->preset());
+		pNewPlugin->setValues(pPlugin->values());
+		pNewPlugin->setActivated(pPlugin->isActivated());
+	}
+
+	return pNewPlugin;
 }
 
 

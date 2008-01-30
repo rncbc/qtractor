@@ -411,8 +411,12 @@ public:
 
 	// Guarded plugin methods.
 	void addPlugin(qtractorPlugin *pPlugin);
-	void removePlugin(qtractorPlugin *pPlugin);
+	void insertPlugin(qtractorPlugin *pPlugin, qtractorPlugin *pNextPlugin);
 	void movePlugin(qtractorPlugin *pPlugin, qtractorPlugin *pNextPlugin);
+	void removePlugin(qtractorPlugin *pPlugin);
+
+	// Clone/copy plugin method.
+	qtractorPlugin *copyPlugin(qtractorPlugin *pPlugin);
 
 	// An accessible list of views.
 	const QList<qtractorPluginListView *>& views() const { return m_views; }

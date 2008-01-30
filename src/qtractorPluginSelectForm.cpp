@@ -230,8 +230,8 @@ void qtractorPluginSelectForm::reset (void)
 // Refresh plugin listing.
 void qtractorPluginSelectForm::refresh (void)
 {
-	if (m_iChannels == 0)
-		return;
+//	if (m_iChannels == 0)
+//		return;
 
 	m_ui.PluginListView->clear();
 

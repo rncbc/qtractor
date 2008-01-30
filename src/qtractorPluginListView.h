@@ -109,6 +109,11 @@ protected slots:
 	void moveDownPlugin();
 	void editPlugin();
 
+	// Drop item slots.
+	void dropMove();
+	void dropCopy();
+	void dropCancel();
+
 	// Simple click handler.
 	void itemDoubleClickedSlot(QListWidgetItem *);
 	void itemActivatedSlot(QListWidgetItem *);
@@ -117,6 +122,10 @@ protected:
 
 	// Move item on list.
 	void moveItem(qtractorPluginListItem *pItem,
+		qtractorPluginListItem *pNextItem);
+
+	// Copy item on list.
+	void copyItem(qtractorPluginListItem *pItem,
 		qtractorPluginListItem *pNextItem);
 
 	// Trap for help/tool-tip events.

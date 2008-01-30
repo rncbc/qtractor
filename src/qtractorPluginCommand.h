@@ -104,10 +104,41 @@ public:
 
 
 //----------------------------------------------------------------------
+// class qtractorInsertPluginCommand - declaration.
+//
+
+class qtractorInsertPluginCommand : public qtractorPluginCommand
+{
+public:
+
+	// Constructor.
+	qtractorInsertPluginCommand(const QString& sName,
+		qtractorPlugin *pPlugin, qtractorPlugin *pNextPlugin);
+
+	// Plugin-move command methods.
+	bool redo();
+	bool undo();
+
+protected:
+
+	// The anchor plugin reference.
+	void setNextPlugin(qtractorPlugin *pNextPlugin)
+		{ m_pNextPlugin = pNextPlugin; }
+	qtractorPlugin *nextPlugin() const
+		{ return m_pNextPlugin; }
+
+private:
+
+	// Instance variables.
+	qtractorPlugin *m_pNextPlugin;
+};
+
+
+//----------------------------------------------------------------------
 // class qtractorMovePluginCommand - declaration.
 //
 
-class qtractorMovePluginCommand : public qtractorPluginCommand
+class qtractorMovePluginCommand : public qtractorInsertPluginCommand
 {
 public:
 
@@ -122,7 +153,6 @@ public:
 private:
 
 	// Instance variables.
-	qtractorPlugin     *m_pNextPlugin;
 	qtractorPluginList *m_pPluginList;
 };
 
