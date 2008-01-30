@@ -81,6 +81,8 @@ qtractorSession::qtractorSession (void)
 	m_pAudioEngine      = new qtractorAudioEngine(this);
 	m_pAudioPeakFactory = new qtractorAudioPeakFactory();
 
+	m_bAutoTimeStretch  = false;
+
 	clear();
 }
 
@@ -1180,6 +1182,18 @@ void qtractorSession::setMidiPatch ( qtractorInstrumentList *pInstruments )
 		if (pTrack->trackType() == qtractorTrack::Midi)
 			pTrack->setMidiPatch(pInstruments);
 	}
+}
+
+
+// Auto time-stretching global flag (when tempo changes)
+void qtractorSession::setAutoTimeStretch ( bool bAutoTimeStretch )
+{
+	m_bAutoTimeStretch = bAutoTimeStretch;
+}
+
+bool qtractorSession::isAutoTimeStretch (void) const
+{
+	return m_bAutoTimeStretch;
 }
 
 

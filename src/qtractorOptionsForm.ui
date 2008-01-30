@@ -398,6 +398,30 @@
            </widget>
           </item>
           <item row="1" column="0" colspan="3" >
+           <widget class="QCheckBox" name="AudioAutoTimeStretchCheckBox" >
+            <property name="font" >
+             <font>
+              <family>Sans Serif</family>
+              <pointsize>8</pointsize>
+              <weight>50</weight>
+              <italic>false</italic>
+              <bold>false</bold>
+              <underline>false</underline>
+              <strikeout>false</strikeout>
+             </font>
+            </property>
+            <property name="toolTip" >
+             <string>Whether to apply time-stretching when tempo changes</string>
+            </property>
+            <property name="text" >
+             <string>Aut&amp;omatic time-stretching</string>
+            </property>
+            <property name="shortcut" >
+             <string>Alt+O</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0" colspan="3" >
            <widget class="QCheckBox" name="AudioQuickSeekCheckBox" >
             <property name="font" >
              <font>
@@ -411,7 +435,7 @@
              </font>
             </property>
             <property name="toolTip" >
-             <string>Whether to apply a quick seek time-stretching</string>
+             <string>Whether to apply quick seek time-stretching</string>
             </property>
             <property name="text" >
              <string>&amp;Quick seek time-stretching</string>
@@ -421,7 +445,7 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="0" colspan="3" >
+          <item row="3" column="0" colspan="3" >
            <widget class="QCheckBox" name="AudioPlayerBusCheckBox" >
             <property name="font" >
              <font>
@@ -1971,6 +1995,7 @@
   <tabstop>AudioCaptureFormatComboBox</tabstop>
   <tabstop>AudioCaptureQualitySpinBox</tabstop>
   <tabstop>AudioResampleTypeComboBox</tabstop>
+  <tabstop>AudioAutoTimeStretchCheckBox</tabstop>
   <tabstop>AudioQuickSeekCheckBox</tabstop>
   <tabstop>AudioPlayerBusCheckBox</tabstop>
   <tabstop>AudioMetronomeCheckBox</tabstop>

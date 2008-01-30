@@ -666,6 +666,9 @@ void qtractorMainForm::setOptions ( qtractorOptions *pOptions )
 	m_pTracks->trackView()->setSelectMode(selectMode);
 	m_pTracks->trackView()->setDropSpan(m_pOptions->bTrackViewDropSpan);
 
+	// Initial auto time-stretching mode...
+	m_pSession->setAutoTimeStretch(m_pOptions->bAudioAutoTimeStretch);
+
 	// Initial decorations toggle state.
 	m_ui.viewMenubarAction->setChecked(m_pOptions->bMenubar);
 	m_ui.viewStatusbarAction->setChecked(m_pOptions->bStatusbar);
@@ -2064,7 +2067,10 @@ void qtractorMainForm::viewOptions (void)
 			m_pOptions->iAudioCaptureQuality);
 		qtractorMidiClip::setDefaultFormat(
 			m_pOptions->iMidiCaptureFormat);
-		// Spacial track-view drop-span mode...
+		// Auto time-stretching global mode...
+		if (m_pSession)
+			m_pSession->setAutoTimeStretch(m_pOptions->bAudioAutoTimeStretch);
+		// Special track-view drop-span mode...
 		if (m_pTracks)
 			m_pTracks->trackView()->setDropSpan(m_pOptions->bTrackViewDropSpan);
 		// Audio engine audition/pre-listening player options...

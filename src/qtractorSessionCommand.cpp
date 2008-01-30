@@ -1,8 +1,7 @@
 // qtractorSessionCommand.cpp
-// qtractorSessionCommand.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -65,7 +64,7 @@ qtractorSessionTempoCommand::qtractorSessionTempoCommand (
 		m_iTicksPerBeat = iTicksPerBeat;
 
 	// Take care of time-stretching of all audio-clips...
-	if (m_fTempo > 0.0f) {
+	if (m_fTempo > 0.0f && pSession->isAutoTimeStretch()) {
 		for (qtractorTrack *pTrack = pSession->tracks().first();
 				pTrack; pTrack = pTrack->next()) {
 			if (pTrack->trackType() == qtractorTrack::Audio) {

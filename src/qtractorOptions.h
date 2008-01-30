@@ -89,6 +89,7 @@ public:
 	int     iAudioCaptureFormat;
 	int     iAudioCaptureQuality;
 	int     iAudioResampleType;
+	bool    bAudioAutoTimeStretch;
 	bool    bAudioQuickSeek;
 	bool    bAudioPlayerBus;
 	bool    bAudioMetroBus;

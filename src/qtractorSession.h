@@ -251,6 +251,10 @@ public:
 	// MIDI session/tracks instrument patching.
 	void setMidiPatch(qtractorInstrumentList *pInstruments);
 
+	// Auto time-stretching global flag (when tempo changes)
+	void setAutoTimeStretch(bool bAutoTimeStretch);
+	bool isAutoTimeStretch() const;
+
 	// Session special process cycle executive.
 	void process(qtractorSessionCursor *pSessionCursor,
 		unsigned long iFrameStart, unsigned long iFrameEnd);
@@ -331,6 +335,9 @@ private:
 
 	// Consolidated record state.
 	bool m_bRecording;
+
+	// Auto time-stretching global flag (when tempo changes)
+	bool m_bAutoTimeStretch;
 
 	// RT-safeness hackish lock-mutex.
 	qtractorAtomic m_locks;
