@@ -830,14 +830,25 @@ void qtractorPluginListView::dropEvent ( QDropEvent *pDropEvent )
 		return;
 	}
 
-	// Have drop item menu...
-	QMenu menu(this);
-	menu.addAction(tr("&Move"), this, SLOT(dropMove()));
-	menu.addAction(tr("&Copy"), this, SLOT(dropCopy()));
-	menu.addSeparator();
-	menu.addAction(QIcon(":/icons/formReject.png"),
-		tr("Cancel"), this, SLOT(dropCancel()));
-	menu.exec(QListWidget::mapToGlobal(pDropEvent->pos()));
+	// If we aren't in the same list,
+	// or care for keyboard modifiers...
+	if (((m_pDragItem->plugin())->list() == m_pPluginList) ||
+		(pDropEvent->keyboardModifiers() & Qt::ShiftModifier)) {
+		dropMove();
+	}
+	else
+	if (pDropEvent->keyboardModifiers() & Qt::ControlModifier) {
+		dropCopy();
+	} else {
+		// We'll better have a drop menu...
+		QMenu menu(this);
+		menu.addAction(tr("&Move Here"), this, SLOT(dropMove()));
+		menu.addAction(tr("&Copy Here"), this, SLOT(dropCopy()));
+		menu.addSeparator();
+		menu.addAction(QIcon(":/icons/formReject.png"),
+			tr("C&ancel"), this, SLOT(dropCancel()));
+		menu.exec(QListWidget::mapToGlobal(pDropEvent->pos()));
+	}
 
 	dragLeaveEvent(NULL);
 }

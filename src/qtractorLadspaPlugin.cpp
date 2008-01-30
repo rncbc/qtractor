@@ -231,8 +231,10 @@ void qtractorLadspaPlugin::setChannels ( unsigned short iChannels )
 
 	// Set new instance number...
 	setInstances(iInstances);
-	if (iInstances < 1)
+	if (iInstances < 1) {
+		setActivated(bActivated);
 		return;
+	}
 
 	// FIXME: The dummy value for output control (dummy) port indexes...
 	unsigned short iControlOuts = pType->controlOuts();

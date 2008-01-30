@@ -780,6 +780,9 @@ void qtractorPluginList::insertPlugin (	qtractorPlugin *pPlugin,
 	else
 		append(pPlugin);
 
+	//if (pPlugin->isActivated())
+	//	updateActivated(true);
+
 	// Now update each observer list-view...
 	QListIterator<qtractorPluginListView *> iter(m_views);
 	while (iter.hasNext()) {
@@ -849,6 +852,9 @@ void qtractorPluginList::removePlugin ( qtractorPlugin *pPlugin )
 {
 	// Just unlink the plugin from the list...
 	unlink(pPlugin);
+
+	if (pPlugin->isActivated())
+		updateActivated(false);
 
 	pPlugin->setChannels(0);
 	pPlugin->clearItems();

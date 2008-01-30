@@ -369,8 +369,10 @@ void qtractorVstPlugin::setChannels ( unsigned short iChannels )
 
 	// Set new instance number...
 	setInstances(iInstances);
-	if (iInstances < 1)
+	if (iInstances < 1) {
+		setActivated(bActivated);
 		return;
+	}
 
 	// Allocate new instances...
 	m_ppEffects = new  qtractorVstPluginType::Effect * [iInstances];
