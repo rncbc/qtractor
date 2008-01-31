@@ -936,18 +936,18 @@ void qtractorPluginListView::contextMenuEvent (
 
 	pAction = menu.addAction(
 		QIcon(":/icons/formCreate.png"),
-		tr("Add Plugin..."), this, SLOT(addPlugin()));
+		tr("&Add Plugin..."), this, SLOT(addPlugin()));
 //	pAction->setEnabled(true);
 
 	pAction = menu.addAction(
 		QIcon(":/icons/formRemove.png"),
-		tr("Remove Plugin"), this, SLOT(removePlugin()));
+		tr("&Remove"), this, SLOT(removePlugin()));
 	pAction->setEnabled(pPlugin != NULL);
 
 	menu.addSeparator();
 
 	pAction = menu.addAction(
-		tr("Activate"), this, SLOT(activatePlugin()));
+		tr("Act&ivate"), this, SLOT(activatePlugin()));
 	pAction->setCheckable(true);
 	pAction->setChecked(pPlugin && pPlugin->isActivated());
 	pAction->setEnabled(pPlugin != NULL);
@@ -956,14 +956,14 @@ void qtractorPluginListView::contextMenuEvent (
 
 	bool bActivatedAll = m_pPluginList->isActivatedAll();
 	pAction = menu.addAction(
-		tr("Activate All"), this, SLOT(activateAllPlugins()));
+		tr("Acti&vate All"), this, SLOT(activateAllPlugins()));
 	pAction->setCheckable(true);
 	pAction->setChecked(bActivatedAll);
 	pAction->setEnabled(bEnabled && !bActivatedAll);
 
 	bool bDeactivatedAll = (m_pPluginList->activated() < 1);
 	pAction = menu.addAction(
-		tr("Deactivate All"), this, SLOT(deactivateAllPlugins()));
+		tr("Deactivate Al&l"), this, SLOT(deactivateAllPlugins()));
 	pAction->setCheckable(true);
 	pAction->setChecked(bDeactivatedAll);
 	pAction->setEnabled(bEnabled && !bDeactivatedAll);
@@ -971,26 +971,26 @@ void qtractorPluginListView::contextMenuEvent (
 	menu.addSeparator();
 
 	pAction = menu.addAction(
-		tr("Remove All"), this, SLOT(removeAllPlugins()));
+		tr("Rem&ove All"), this, SLOT(removeAllPlugins()));
 	pAction->setEnabled(bEnabled);
 
 	menu.addSeparator();
 
 	pAction = menu.addAction(
 		QIcon(":/icons/formMoveUp.png"),
-		tr("Move Up"), this, SLOT(moveUpPlugin()));
+		tr("Move &Up"), this, SLOT(moveUpPlugin()));
 	pAction->setEnabled(pItem && iItem > 0);
 
 	pAction = menu.addAction(
 		QIcon(":/icons/formMoveDown.png"),
-		tr("Move Down"), this, SLOT(moveDownPlugin()));
+		tr("Move &Down"), this, SLOT(moveDownPlugin()));
 	pAction->setEnabled(pItem && iItem < iItemCount - 1);
 
 	menu.addSeparator();
 
 	pAction = menu.addAction(
 		QIcon(":/icons/formEdit.png"),
-		tr("Edit Plugin..."), this, SLOT(editPlugin()));
+		tr("&Edit Plugin..."), this, SLOT(editPlugin()));
 	pAction->setCheckable(true);
 	pAction->setChecked(pPlugin && pPlugin->isVisible());
 	pAction->setEnabled(pItem != NULL);

@@ -237,6 +237,8 @@ void qtractorPluginSelectForm::refresh (void)
 
 	// FIXME: Should this be a global (singleton) registry?
 	if (g_pluginTypes.isEmpty()) {
+		// Tell the world we'll take some time...
+		QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 		int iFile = 0;
 		m_ui.PluginTypeProgressBar->setMaximum(g_pluginPath.files().count());
 		m_ui.PluginTypeProgressBar->show();
@@ -251,6 +253,8 @@ void qtractorPluginSelectForm::refresh (void)
 			}
 		}
 		m_ui.PluginTypeProgressBar->hide();
+		// We're formerly done.
+		QApplication::restoreOverrideCursor();
 	}
 
 	QString sSearch = m_ui.PluginSearchComboBox->currentText().simplified();
