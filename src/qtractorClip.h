@@ -1,7 +1,7 @@
 // qtractorClip.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2008 rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -146,6 +146,10 @@ public:
 
 protected:
 
+	// Update fade-in/out coefficients.
+	void updateFadeInCoeffs();
+	void updateFadeOutCoeffs();
+
 	// Virtual document element methods.
 	virtual bool loadClipElement(qtractorSessionDocument *pDocument,
 		QDomElement *pElement) = 0;
@@ -176,6 +180,9 @@ private:
 	// Fade-in/out stuff.
 	unsigned long m_iFadeInLength;  // Fade-in length (in frames).
 	unsigned long m_iFadeOutLength; // Fade-out length (in frames).
+
+	unsigned long m_iFadeInTime;    // Fade-in length (in ticks).
+	unsigned long m_iFadeOutTime;   // Fade-out length (in ticks).
 
 	// Aproximations to exponential fade interpolation.
 	struct FadeMode

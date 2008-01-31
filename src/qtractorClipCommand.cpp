@@ -106,10 +106,19 @@ void qtractorClipCommand::resizeClip ( qtractorClip *pClip,
 	pItem->clipStart  = iClipStart;
 	pItem->clipOffset = iClipOffset;
 	pItem->clipLength = iClipLength;
-	if (iClipOffset == pClip->clipOffset())
-		pItem->fadeInLength = pClip->fadeInLength();
-	if (iClipOffset + iClipLength == pClip->clipOffset() + pClip->clipLength())
-		pItem->fadeOutLength = pClip->fadeOutLength();
+	long iFadeInLength = long(pClip->fadeInLength());
+	if (iFadeInLength > 0) {
+		iFadeInLength += long(pClip->clipOffset()) - long(iClipOffset);
+		if (iFadeInLength > 0)
+			pItem->fadeInLength = iFadeInLength;
+	}
+	long iFadeOutLength = long(pClip->fadeOutLength());
+	if (iFadeOutLength > 0) {
+		iFadeOutLength += long(iClipOffset + iClipLength)
+			- long(pClip->clipOffset() + pClip->clipLength());
+		if (iFadeOutLength > 0)
+			pItem->fadeOutLength = iFadeOutLength;
+	}
 	if (fTimeStretch > 0.0f)
 		pItem->timeStretch = fTimeStretch;
 	m_items.append(pItem);

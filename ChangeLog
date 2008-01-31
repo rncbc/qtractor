@@ -5,6 +5,9 @@ ChangeLog
 
 CVS HEAD
 
+- Clip fade-in/out lengths are now kept relative to tempo changes
+  and also to clip offset and length changes (clip resizes).
+
 - Automatic time-stretching for all audio clips when session tempo
   changes, may now be disabled/enabled as a global session option
   (see View/Options.../Audio/Playback/Automatic time-stretching).

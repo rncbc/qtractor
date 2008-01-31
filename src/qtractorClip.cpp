@@ -1,7 +1,7 @@
 // qtractorClip.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -70,6 +70,9 @@ void qtractorClip::clear (void)
 
 	m_iFadeInLength   = 0;
 	m_iFadeOutLength  = 0;
+
+	m_iFadeInTime     = 0;
+	m_iFadeOutTime    = 0;
 #if 0
 	// This seems a need trade-off between speed and effect.
 	if (m_pTrack && m_pTrack->trackType() == qtractorTrack::Audio) {
@@ -251,18 +254,26 @@ void qtractorClip::setFadeInLength ( unsigned long iFadeInLength )
 	if (iFadeInLength > m_iClipLength)
 		iFadeInLength = m_iClipLength;
 	
-	if (iFadeInLength > 0) {
-		float a = 1.0f / float(iFadeInLength);
-		float b = 0.0f;
-		m_fadeIn.setFadeCoeffs(a, b);
-	}
-
 	m_iFadeInLength = iFadeInLength;
+
+	if (m_pTrack && m_pTrack->session())
+		m_iFadeInTime = m_pTrack->session()->tickFromFrame(iFadeInLength);
+
+	updateFadeInCoeffs();
 }
 
 unsigned long qtractorClip::fadeInLength (void) const
 {
 	return m_iFadeInLength;
+}
+
+void qtractorClip::updateFadeInCoeffs (void)
+{
+	if (m_iFadeInLength > 0) {
+		float a = 1.0f / float(m_iFadeInLength);
+		float b = 0.0f;
+		m_fadeIn.setFadeCoeffs(a, b);
+	}
 }
 
 
@@ -283,18 +294,26 @@ void qtractorClip::setFadeOutLength ( unsigned long iFadeOutLength )
 	if (iFadeOutLength > m_iClipLength)
 		iFadeOutLength = m_iClipLength;
 
-	if (iFadeOutLength > 0) {
-		float a = -1.0f / float(iFadeOutLength);
-		float b = float(m_iClipLength) / float(iFadeOutLength);
-		m_fadeOut.setFadeCoeffs(a, b);
-	}
-
 	m_iFadeOutLength = iFadeOutLength;
+
+	if (m_pTrack && m_pTrack->session())
+		m_iFadeOutTime = m_pTrack->session()->tickFromFrame(iFadeOutLength);
+
+	updateFadeOutCoeffs();
 }
 
 unsigned long qtractorClip::fadeOutLength (void) const
 {
 	return m_iFadeOutLength;
+}
+
+void qtractorClip::updateFadeOutCoeffs (void)
+{
+	if (m_iFadeOutLength > 0) {
+		float a = -1.0f / float(m_iFadeOutLength);
+		float b = float(m_iClipLength) / float(m_iFadeOutLength);
+		m_fadeOut.setFadeCoeffs(a, b);
+	}
 }
 
 
@@ -378,6 +397,12 @@ void qtractorClip::updateClipTime (void)
 	m_iClipStart  = pSession->frameFromTick(m_iClipStartTime);
 	m_iClipOffset = pSession->frameFromTick(m_iClipOffsetTime);
 	m_iClipLength = pSession->frameFromTick(m_iClipLengthTime);
+
+	m_iFadeInLength = pSession->frameFromTick(m_iFadeInTime);
+	updateFadeInCoeffs();
+
+	m_iFadeOutLength = pSession->frameFromTick(m_iFadeOutTime);
+	updateFadeOutCoeffs();
 }
 
 
