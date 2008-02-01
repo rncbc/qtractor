@@ -1,29 +1,31 @@
 Native VST plug-in support
 --------------------------
 
-Building for VST support is not that easy. To say the least, it does not
-work out of the box. First, due to its licensing issues, you'll have to
-go through the nuisance and download yourself the VST SDK from its site:
+Building for VST support is not that easy. To say the least, it does
+not work out of the box. First, due to its licensing issues, you'll
+have to go through the nuisance and download yourself the VST SDK,
+from its site:
 
   Steinberg Media Technologies GmbH
   http://www.steinberg.net
 
-specifically, dig it through the 3rd Party Developers section. It doesn't
-matter much whether you pick the VST 2.3 or VST 2.4 version, you need to
-pick one and just one only. Do not ask for the recently announced VST 3.0.
-It won't work and I won't care :)
+specifically, dig it through the 3rd Party Developers section.
+It doesn't really matter much whether you pick the VST 2.3 or VST 2.4
+version, you need to pick one and just one only. Do not ask for the
+recently announced VST 3.0. It won't work and I won't care :)
 
-Once you have downloaded the VST SDK zip-archive, for which you'll have to
-accept their license and supply some personal data, you'll have to unpack
-the pertinent header files, which are found under the respective folder:
+Once you have downloaded the VST SDK zip-archive, for which you'll
+have to accept their license and supply some personal data, you'll
+have to unpack the pertinent header files, which are found under
+the respective folder:
 
   - VST SDK 2.3:
-	vstsdk2.3/source/common/
+    vstsdk2.3/source/common/
       aeffectx.h
       AEffect.h
 
   - VST SDK 2.4:
-	vstsdk2.4/pluginterfaces/vst2.x/
+    vstsdk2.4/pluginterfaces/vst2.x/
       aeffectx.h
       aeffect.h
 
@@ -41,5 +43,8 @@ need to set the VST_PATH environment variable with the paths where the
 plug-ins will reside and can be picked up by qtractor at run-time:
 
   export VST_PATH=/path/to/vst/plugins
+
+or you can go to the View/Options... setup dialog and do something 
+quite equivalent in the Plugin Paths section.
 
 Enjoy.

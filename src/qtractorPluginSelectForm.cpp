@@ -218,6 +218,7 @@ void qtractorPluginSelectForm::typeHintChanged ( int iTypeHint )
 		= qtractorPluginType::hintFromText(
 			m_ui.PluginTypeComboBox->itemText(iTypeHint));
 	if (g_pluginPath.typeHint() != typeHint) {
+		g_pluginPath.setTypeHint(typeHint);
 		QStringList paths;
 		if (typeHint == qtractorPluginType::Any ||
 			typeHint == qtractorPluginType::Vst)
@@ -229,7 +230,6 @@ void qtractorPluginSelectForm::typeHintChanged ( int iTypeHint )
 			typeHint == qtractorPluginType::Ladspa)
 			paths += pOptions->ladspaPaths;
 		g_pluginPath.setPaths(paths);
-		g_pluginPath.setTypeHint(typeHint);
 		g_pluginPath.open();
 		g_pluginTypes.clear();
 	}
