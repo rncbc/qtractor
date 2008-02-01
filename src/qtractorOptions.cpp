@@ -136,6 +136,13 @@ qtractorOptions::qtractorOptions (void)
 	iPluginType    = m_settings.value("/PluginType", 1).toInt();
 	m_settings.endGroup();
 
+	// Plug-in paths.
+	m_settings.beginGroup("/Plugins");
+	ladspaPaths = m_settings.value("/LadspaPaths").toStringList();
+	dssiPaths   = m_settings.value("/DssiPaths").toStringList();
+	vstPaths    = m_settings.value("/VstPaths").toStringList();
+	m_settings.endGroup();
+
 	// Instrument file list.
 	const QString sFilePrefix = "/File%1";
 	int iFile = 0;
@@ -285,6 +292,13 @@ qtractorOptions::~qtractorOptions (void)
 	m_settings.setValue("/InstrumentDir", sInstrumentDir);
 	m_settings.setValue("/PluginSearch", sPluginSearch);
 	m_settings.setValue("/PluginType", iPluginType);
+	m_settings.endGroup();
+
+	// Plug-in paths.
+	m_settings.beginGroup("/Plugins");
+	m_settings.setValue("/LadspaPaths", ladspaPaths);
+	m_settings.setValue("/DssiPaths", dssiPaths);
+	m_settings.setValue("/VstPaths", vstPaths);
 	m_settings.endGroup();
 
 	// Instrument file list.

@@ -25,17 +25,9 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>630</width>
-    <height>356</height>
+    <width>540</width>
+    <height>520</height>
    </rect>
-  </property>
-  <property name="sizePolicy" >
-   <sizepolicy>
-    <hsizetype>1</hsizetype>
-    <vsizetype>1</vsizetype>
-    <horstretch>0</horstretch>
-    <verstretch>0</verstretch>
-   </sizepolicy>
   </property>
   <property name="windowTitle" >
    <string>Options - Qtractor</string>
@@ -76,13 +68,8 @@
         <widget class="QGroupBox" name="AudioCaptureGroupBox" >
          <property name="font" >
           <font>
-           <family>Sans Serif</family>
-           <pointsize>8</pointsize>
            <weight>75</weight>
-           <italic>false</italic>
            <bold>true</bold>
-           <underline>false</underline>
-           <strikeout>false</strikeout>
           </font>
          </property>
          <property name="title" >
@@ -108,13 +95,8 @@
             </property>
             <property name="font" >
              <font>
-              <family>Sans Serif</family>
-              <pointsize>8</pointsize>
               <weight>50</weight>
-              <italic>false</italic>
               <bold>false</bold>
-              <underline>false</underline>
-              <strikeout>false</strikeout>
              </font>
             </property>
             <property name="toolTip" >
@@ -139,23 +121,10 @@
           </item>
           <item row="1" column="1" colspan="2" >
            <widget class="QComboBox" name="AudioCaptureFormatComboBox" >
-            <property name="sizePolicy" >
-             <sizepolicy>
-              <hsizetype>7</hsizetype>
-              <vsizetype>0</vsizetype>
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
             <property name="font" >
              <font>
-              <family>Sans Serif</family>
-              <pointsize>8</pointsize>
               <weight>50</weight>
-              <italic>false</italic>
               <bold>false</bold>
-              <underline>false</underline>
-              <strikeout>false</strikeout>
              </font>
             </property>
             <property name="toolTip" >
@@ -165,23 +134,10 @@
           </item>
           <item row="0" column="1" colspan="2" >
            <widget class="QComboBox" name="AudioCaptureTypeComboBox" >
-            <property name="sizePolicy" >
-             <sizepolicy>
-              <hsizetype>7</hsizetype>
-              <vsizetype>0</vsizetype>
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
             <property name="font" >
              <font>
-              <family>Sans Serif</family>
-              <pointsize>8</pointsize>
               <weight>50</weight>
-              <italic>false</italic>
               <bold>false</bold>
-              <underline>false</underline>
-              <strikeout>false</strikeout>
              </font>
             </property>
             <property name="toolTip" >
@@ -206,13 +162,8 @@
            <widget class="QLabel" name="AudioCaptureTypeTextLabel" >
             <property name="font" >
              <font>
-              <family>Sans Serif</family>
-              <pointsize>8</pointsize>
               <weight>50</weight>
-              <italic>false</italic>
               <bold>false</bold>
-              <underline>false</underline>
-              <strikeout>false</strikeout>
              </font>
             </property>
             <property name="text" >
@@ -227,13 +178,8 @@
            <widget class="QLabel" name="AudioCaptureFormatTextLabel" >
             <property name="font" >
              <font>
-              <family>Sans Serif</family>
-              <pointsize>8</pointsize>
               <weight>50</weight>
-              <italic>false</italic>
               <bold>false</bold>
-              <underline>false</underline>
-              <strikeout>false</strikeout>
              </font>
             </property>
             <property name="text" >
@@ -248,13 +194,8 @@
            <widget class="QLabel" name="AudioCaptureQualityTextLabel" >
             <property name="font" >
              <font>
-              <family>Sans Serif</family>
-              <pointsize>8</pointsize>
               <weight>50</weight>
-              <italic>false</italic>
               <bold>false</bold>
-              <underline>false</underline>
-              <strikeout>false</strikeout>
              </font>
             </property>
             <property name="text" >
@@ -298,13 +239,8 @@
         <widget class="QGroupBox" name="AudioPlaybackGroupBox" >
          <property name="font" >
           <font>
-           <family>Sans Serif</family>
-           <pointsize>8</pointsize>
            <weight>75</weight>
-           <italic>false</italic>
            <bold>true</bold>
-           <underline>false</underline>
-           <strikeout>false</strikeout>
           </font>
          </property>
          <property name="title" >
@@ -324,13 +260,8 @@
            <widget class="QLabel" name="AudioResampleTypeTextLabel" >
             <property name="font" >
              <font>
-              <family>Sans Serif</family>
-              <pointsize>8</pointsize>
               <weight>50</weight>
-              <italic>false</italic>
               <bold>false</bold>
-              <underline>false</underline>
-              <strikeout>false</strikeout>
              </font>
             </property>
             <property name="text" >
@@ -358,13 +289,8 @@
            <widget class="QComboBox" name="AudioResampleTypeComboBox" >
             <property name="font" >
              <font>
-              <family>Sans Serif</family>
-              <pointsize>8</pointsize>
               <weight>50</weight>
-              <italic>false</italic>
               <bold>false</bold>
-              <underline>false</underline>
-              <strikeout>false</strikeout>
              </font>
             </property>
             <property name="toolTip" >
@@ -401,13 +327,8 @@
            <widget class="QCheckBox" name="AudioAutoTimeStretchCheckBox" >
             <property name="font" >
              <font>
-              <family>Sans Serif</family>
-              <pointsize>8</pointsize>
               <weight>50</weight>
-              <italic>false</italic>
               <bold>false</bold>
-              <underline>false</underline>
-              <strikeout>false</strikeout>
              </font>
             </property>
             <property name="toolTip" >
@@ -425,13 +346,8 @@
            <widget class="QCheckBox" name="AudioQuickSeekCheckBox" >
             <property name="font" >
              <font>
-              <family>Sans Serif</family>
-              <pointsize>8</pointsize>
               <weight>50</weight>
-              <italic>false</italic>
               <bold>false</bold>
-              <underline>false</underline>
-              <strikeout>false</strikeout>
              </font>
             </property>
             <property name="toolTip" >
@@ -449,13 +365,8 @@
            <widget class="QCheckBox" name="AudioPlayerBusCheckBox" >
             <property name="font" >
              <font>
-              <family>Sans Serif</family>
-              <pointsize>8</pointsize>
               <weight>50</weight>
-              <italic>false</italic>
               <bold>false</bold>
-              <underline>false</underline>
-              <strikeout>false</strikeout>
              </font>
             </property>
             <property name="toolTip" >
@@ -469,7 +380,7 @@
             </property>
            </widget>
           </item>
-          <item row="3" column="0" colspan="3" >
+          <item row="4" column="0" colspan="3" >
            <spacer>
             <property name="orientation" >
              <enum>Qt::Vertical</enum>
@@ -489,13 +400,8 @@
         <widget class="QGroupBox" name="AudioMetronomeGroupBox" >
          <property name="font" >
           <font>
-           <family>Sans Serif</family>
-           <pointsize>8</pointsize>
            <weight>75</weight>
-           <italic>false</italic>
            <bold>true</bold>
-           <underline>false</underline>
-           <strikeout>false</strikeout>
           </font>
          </property>
          <property name="title" >
@@ -515,13 +421,8 @@
            <widget class="QCheckBox" name="AudioMetronomeCheckBox" >
             <property name="font" >
              <font>
-              <family>Sans Serif</family>
-              <pointsize>8</pointsize>
               <weight>50</weight>
-              <italic>false</italic>
               <bold>false</bold>
-              <underline>false</underline>
-              <strikeout>false</strikeout>
              </font>
             </property>
             <property name="toolTip" >
@@ -539,13 +440,8 @@
            <widget class="QLabel" name="MetroBarFilenameTextLabel" >
             <property name="font" >
              <font>
-              <family>Sans Serif</family>
-              <pointsize>8</pointsize>
               <weight>50</weight>
-              <italic>false</italic>
               <bold>false</bold>
-              <underline>false</underline>
-              <strikeout>false</strikeout>
              </font>
             </property>
             <property name="text" >
@@ -568,13 +464,8 @@
             </property>
             <property name="font" >
              <font>
-              <family>Sans Serif</family>
-              <pointsize>8</pointsize>
               <weight>50</weight>
-              <italic>false</italic>
               <bold>false</bold>
-              <underline>false</underline>
-              <strikeout>false</strikeout>
              </font>
             </property>
             <property name="toolTip" >
@@ -589,13 +480,8 @@
            <widget class="QToolButton" name="MetroBarFilenameToolButton" >
             <property name="font" >
              <font>
-              <family>Sans Serif</family>
-              <pointsize>8</pointsize>
               <weight>50</weight>
-              <italic>false</italic>
               <bold>false</bold>
-              <underline>false</underline>
-              <strikeout>false</strikeout>
              </font>
             </property>
             <property name="minimumSize" >
@@ -625,13 +511,8 @@
            <widget class="QLabel" name="MetroBeatFilenameTextLabel" >
             <property name="font" >
              <font>
-              <family>Sans Serif</family>
-              <pointsize>8</pointsize>
               <weight>50</weight>
-              <italic>false</italic>
               <bold>false</bold>
-              <underline>false</underline>
-              <strikeout>false</strikeout>
              </font>
             </property>
             <property name="text" >
@@ -654,13 +535,8 @@
             </property>
             <property name="font" >
              <font>
-              <family>Sans Serif</family>
-              <pointsize>8</pointsize>
               <weight>50</weight>
-              <italic>false</italic>
               <bold>false</bold>
-              <underline>false</underline>
-              <strikeout>false</strikeout>
              </font>
             </property>
             <property name="toolTip" >
@@ -675,13 +551,8 @@
            <widget class="QToolButton" name="MetroBeatFilenameToolButton" >
             <property name="font" >
              <font>
-              <family>Sans Serif</family>
-              <pointsize>8</pointsize>
               <weight>50</weight>
-              <italic>false</italic>
               <bold>false</bold>
-              <underline>false</underline>
-              <strikeout>false</strikeout>
              </font>
             </property>
             <property name="minimumSize" >
@@ -711,13 +582,8 @@
            <widget class="QCheckBox" name="AudioMetroBusCheckBox" >
             <property name="font" >
              <font>
-              <family>Sans Serif</family>
-              <pointsize>8</pointsize>
               <weight>50</weight>
-              <italic>false</italic>
               <bold>false</bold>
-              <underline>false</underline>
-              <strikeout>false</strikeout>
              </font>
             </property>
             <property name="toolTip" >
@@ -751,13 +617,8 @@
         <widget class="QGroupBox" name="MidiCaptureGroupBox" >
          <property name="font" >
           <font>
-           <family>Sans Serif</family>
-           <pointsize>8</pointsize>
            <weight>75</weight>
-           <italic>false</italic>
            <bold>true</bold>
-           <underline>false</underline>
-           <strikeout>false</strikeout>
           </font>
          </property>
          <property name="title" >
@@ -796,13 +657,8 @@
             </property>
             <property name="font" >
              <font>
-              <family>Sans Serif</family>
-              <pointsize>8</pointsize>
               <weight>50</weight>
-              <italic>false</italic>
               <bold>false</bold>
-              <underline>false</underline>
-              <strikeout>false</strikeout>
              </font>
             </property>
             <property name="toolTip" >
@@ -814,13 +670,8 @@
            <widget class="QLabel" name="MidiCaptureQuantizeTextLabel" >
             <property name="font" >
              <font>
-              <family>Sans Serif</family>
-              <pointsize>8</pointsize>
               <weight>50</weight>
-              <italic>false</italic>
               <bold>false</bold>
-              <underline>false</underline>
-              <strikeout>false</strikeout>
              </font>
             </property>
             <property name="text" >
@@ -846,23 +697,10 @@
           </item>
           <item row="0" column="1" colspan="2" >
            <widget class="QComboBox" name="MidiCaptureFormatComboBox" >
-            <property name="sizePolicy" >
-             <sizepolicy>
-              <hsizetype>7</hsizetype>
-              <vsizetype>0</vsizetype>
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
             <property name="font" >
              <font>
-              <family>Sans Serif</family>
-              <pointsize>8</pointsize>
               <weight>50</weight>
-              <italic>false</italic>
               <bold>false</bold>
-              <underline>false</underline>
-              <strikeout>false</strikeout>
              </font>
             </property>
             <property name="toolTip" >
@@ -874,13 +712,8 @@
            <widget class="QLabel" name="MidiCaptureFormatTextLabel" >
             <property name="font" >
              <font>
-              <family>Sans Serif</family>
-              <pointsize>8</pointsize>
               <weight>50</weight>
-              <italic>false</italic>
               <bold>false</bold>
-              <underline>false</underline>
-              <strikeout>false</strikeout>
              </font>
             </property>
             <property name="text" >
@@ -898,13 +731,8 @@
         <widget class="QGroupBox" name="MidiControlGroupBox" >
          <property name="font" >
           <font>
-           <family>Sans Serif</family>
-           <pointsize>8</pointsize>
            <weight>75</weight>
-           <italic>false</italic>
            <bold>true</bold>
-           <underline>false</underline>
-           <strikeout>false</strikeout>
           </font>
          </property>
          <property name="title" >
@@ -924,13 +752,8 @@
            <widget class="QCheckBox" name="MidiControlBusCheckBox" >
             <property name="font" >
              <font>
-              <family>Sans Serif</family>
-              <pointsize>8</pointsize>
               <weight>50</weight>
-              <italic>false</italic>
               <bold>false</bold>
-              <underline>false</underline>
-              <strikeout>false</strikeout>
              </font>
             </property>
             <property name="toolTip" >
@@ -964,13 +787,8 @@
         <widget class="QGroupBox" name="MidiMetronomeGroupBox" >
          <property name="font" >
           <font>
-           <family>Sans Serif</family>
-           <pointsize>8</pointsize>
            <weight>75</weight>
-           <italic>false</italic>
            <bold>true</bold>
-           <underline>false</underline>
-           <strikeout>false</strikeout>
           </font>
          </property>
          <property name="title" >
@@ -1003,13 +821,8 @@
            <widget class="QCheckBox" name="MidiMetroBusCheckBox" >
             <property name="font" >
              <font>
-              <family>Sans Serif</family>
-              <pointsize>8</pointsize>
               <weight>50</weight>
-              <italic>false</italic>
               <bold>false</bold>
-              <underline>false</underline>
-              <strikeout>false</strikeout>
              </font>
             </property>
             <property name="toolTip" >
@@ -1027,13 +840,8 @@
            <widget class="QLabel" name="MetroBeatNoteTextLabel" >
             <property name="font" >
              <font>
-              <family>Sans Serif</family>
-              <pointsize>8</pointsize>
               <weight>50</weight>
-              <italic>false</italic>
               <bold>false</bold>
-              <underline>false</underline>
-              <strikeout>false</strikeout>
              </font>
             </property>
             <property name="text" >
@@ -1046,14 +854,6 @@
           </item>
           <item row="3" column="1" colspan="2" >
            <widget class="QComboBox" name="MetroBeatNoteComboBox" >
-            <property name="sizePolicy" >
-             <sizepolicy>
-              <hsizetype>7</hsizetype>
-              <vsizetype>0</vsizetype>
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
             <property name="minimumSize" >
              <size>
               <width>120</width>
@@ -1062,13 +862,8 @@
             </property>
             <property name="font" >
              <font>
-              <family>Sans Serif</family>
-              <pointsize>8</pointsize>
               <weight>50</weight>
-              <italic>false</italic>
               <bold>false</bold>
-              <underline>false</underline>
-              <strikeout>false</strikeout>
              </font>
             </property>
             <property name="toolTip" >
@@ -1080,13 +875,8 @@
            <widget class="QSpinBox" name="MetroBeatDurationSpinBox" >
             <property name="font" >
              <font>
-              <family>Sans Serif</family>
-              <pointsize>8</pointsize>
               <weight>50</weight>
-              <italic>false</italic>
               <bold>false</bold>
-              <underline>false</underline>
-              <strikeout>false</strikeout>
              </font>
             </property>
             <property name="toolTip" >
@@ -1113,13 +903,8 @@
            <widget class="QLabel" name="MetroBeatDurationTextLabel" >
             <property name="font" >
              <font>
-              <family>Sans Serif</family>
-              <pointsize>8</pointsize>
               <weight>50</weight>
-              <italic>false</italic>
               <bold>false</bold>
-              <underline>false</underline>
-              <strikeout>false</strikeout>
              </font>
             </property>
             <property name="text" >
@@ -1134,13 +919,8 @@
            <widget class="QLabel" name="MetroBeatVelocityTextLabel" >
             <property name="font" >
              <font>
-              <family>Sans Serif</family>
-              <pointsize>8</pointsize>
               <weight>50</weight>
-              <italic>false</italic>
               <bold>false</bold>
-              <underline>false</underline>
-              <strikeout>false</strikeout>
              </font>
             </property>
             <property name="text" >
@@ -1155,13 +935,8 @@
            <widget class="QSpinBox" name="MetroBeatVelocitySpinBox" >
             <property name="font" >
              <font>
-              <family>Sans Serif</family>
-              <pointsize>8</pointsize>
               <weight>50</weight>
-              <italic>false</italic>
               <bold>false</bold>
-              <underline>false</underline>
-              <strikeout>false</strikeout>
              </font>
             </property>
             <property name="toolTip" >
@@ -1185,13 +960,8 @@
            <widget class="QSpinBox" name="MetroBarDurationSpinBox" >
             <property name="font" >
              <font>
-              <family>Sans Serif</family>
-              <pointsize>8</pointsize>
               <weight>50</weight>
-              <italic>false</italic>
               <bold>false</bold>
-              <underline>false</underline>
-              <strikeout>false</strikeout>
              </font>
             </property>
             <property name="toolTip" >
@@ -1218,13 +988,8 @@
            <widget class="QLabel" name="MetroBarDurationTextLabel" >
             <property name="font" >
              <font>
-              <family>Sans Serif</family>
-              <pointsize>8</pointsize>
               <weight>50</weight>
-              <italic>false</italic>
               <bold>false</bold>
-              <underline>false</underline>
-              <strikeout>false</strikeout>
              </font>
             </property>
             <property name="text" >
@@ -1239,13 +1004,8 @@
            <widget class="QSpinBox" name="MetroBarVelocitySpinBox" >
             <property name="font" >
              <font>
-              <family>Sans Serif</family>
-              <pointsize>8</pointsize>
               <weight>50</weight>
-              <italic>false</italic>
               <bold>false</bold>
-              <underline>false</underline>
-              <strikeout>false</strikeout>
              </font>
             </property>
             <property name="toolTip" >
@@ -1269,13 +1029,8 @@
            <widget class="QLabel" name="MetroBarVelocityTextLabel" >
             <property name="font" >
              <font>
-              <family>Sans Serif</family>
-              <pointsize>8</pointsize>
               <weight>50</weight>
-              <italic>false</italic>
               <bold>false</bold>
-              <underline>false</underline>
-              <strikeout>false</strikeout>
              </font>
             </property>
             <property name="text" >
@@ -1288,14 +1043,6 @@
           </item>
           <item row="2" column="1" colspan="2" >
            <widget class="QComboBox" name="MetroBarNoteComboBox" >
-            <property name="sizePolicy" >
-             <sizepolicy>
-              <hsizetype>7</hsizetype>
-              <vsizetype>0</vsizetype>
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
             <property name="minimumSize" >
              <size>
               <width>120</width>
@@ -1304,13 +1051,8 @@
             </property>
             <property name="font" >
              <font>
-              <family>Sans Serif</family>
-              <pointsize>8</pointsize>
               <weight>50</weight>
-              <italic>false</italic>
               <bold>false</bold>
-              <underline>false</underline>
-              <strikeout>false</strikeout>
              </font>
             </property>
             <property name="toolTip" >
@@ -1322,13 +1064,8 @@
            <widget class="QLabel" name="MetroBarNoteTextLabel" >
             <property name="font" >
              <font>
-              <family>Sans Serif</family>
-              <pointsize>8</pointsize>
               <weight>50</weight>
-              <italic>false</italic>
               <bold>false</bold>
-              <underline>false</underline>
-              <strikeout>false</strikeout>
              </font>
             </property>
             <property name="text" >
@@ -1343,13 +1080,8 @@
            <widget class="QLabel" name="MetroChannelTextLabel" >
             <property name="font" >
              <font>
-              <family>Sans Serif</family>
-              <pointsize>8</pointsize>
               <weight>50</weight>
-              <italic>false</italic>
               <bold>false</bold>
-              <underline>false</underline>
-              <strikeout>false</strikeout>
              </font>
             </property>
             <property name="text" >
@@ -1364,13 +1096,8 @@
            <widget class="QSpinBox" name="MetroChannelSpinBox" >
             <property name="font" >
              <font>
-              <family>Sans Serif</family>
-              <pointsize>8</pointsize>
               <weight>50</weight>
-              <italic>false</italic>
               <bold>false</bold>
-              <underline>false</underline>
-              <strikeout>false</strikeout>
              </font>
             </property>
             <property name="toolTip" >
@@ -1407,13 +1134,8 @@
            <widget class="QCheckBox" name="MidiMetronomeCheckBox" >
             <property name="font" >
              <font>
-              <family>Sans Serif</family>
-              <pointsize>8</pointsize>
               <weight>50</weight>
-              <italic>false</italic>
               <bold>false</bold>
-              <underline>false</underline>
-              <strikeout>false</strikeout>
              </font>
             </property>
             <property name="toolTip" >
@@ -1447,13 +1169,8 @@
         <widget class="QGroupBox" name="OptionsGroupBox" >
          <property name="font" >
           <font>
-           <family>Sans Serif</family>
-           <pointsize>8</pointsize>
            <weight>75</weight>
-           <italic>false</italic>
            <bold>true</bold>
-           <underline>false</underline>
-           <strikeout>false</strikeout>
           </font>
          </property>
          <property name="title" >
@@ -1473,13 +1190,8 @@
            <widget class="QLabel" name="MaxRecentFilesTextLabel" >
             <property name="font" >
              <font>
-              <family>Sans Serif</family>
-              <pointsize>8</pointsize>
               <weight>50</weight>
-              <italic>false</italic>
               <bold>false</bold>
-              <underline>false</underline>
-              <strikeout>false</strikeout>
              </font>
             </property>
             <property name="text" >
@@ -1497,13 +1209,8 @@
            <widget class="QLabel" name="DisplayFormatTextLabel" >
             <property name="font" >
              <font>
-              <family>Sans Serif</family>
-              <pointsize>8</pointsize>
               <weight>50</weight>
-              <italic>false</italic>
               <bold>false</bold>
-              <underline>false</underline>
-              <strikeout>false</strikeout>
              </font>
             </property>
             <property name="text" >
@@ -1534,13 +1241,8 @@
            <widget class="QComboBox" name="DisplayFormatComboBox" >
             <property name="font" >
              <font>
-              <family>Sans Serif</family>
-              <pointsize>8</pointsize>
               <weight>50</weight>
-              <italic>false</italic>
               <bold>false</bold>
-              <underline>false</underline>
-              <strikeout>false</strikeout>
              </font>
             </property>
             <property name="toolTip" >
@@ -1567,13 +1269,8 @@
            <widget class="QSpinBox" name="MaxRecentFilesSpinBox" >
             <property name="font" >
              <font>
-              <family>Sans Serif</family>
-              <pointsize>8</pointsize>
               <weight>50</weight>
-              <italic>false</italic>
               <bold>false</bold>
-              <underline>false</underline>
-              <strikeout>false</strikeout>
              </font>
             </property>
             <property name="toolTip" >
@@ -1594,13 +1291,8 @@
            <widget class="QCheckBox" name="ConfirmRemoveCheckBox" >
             <property name="font" >
              <font>
-              <family>Sans Serif</family>
-              <pointsize>8</pointsize>
               <weight>50</weight>
-              <italic>false</italic>
               <bold>false</bold>
-              <underline>false</underline>
-              <strikeout>false</strikeout>
              </font>
             </property>
             <property name="toolTip" >
@@ -1618,13 +1310,8 @@
            <widget class="QCheckBox" name="StdoutCaptureCheckBox" >
             <property name="font" >
              <font>
-              <family>Sans Serif</family>
-              <pointsize>8</pointsize>
               <weight>50</weight>
-              <italic>false</italic>
               <bold>false</bold>
-              <underline>false</underline>
-              <strikeout>false</strikeout>
              </font>
             </property>
             <property name="toolTip" >
@@ -1642,13 +1329,8 @@
            <widget class="QCheckBox" name="PeakAutoRemoveCheckBox" >
             <property name="font" >
              <font>
-              <family>Sans Serif</family>
-              <pointsize>8</pointsize>
               <weight>50</weight>
-              <italic>false</italic>
               <bold>false</bold>
-              <underline>false</underline>
-              <strikeout>false</strikeout>
              </font>
             </property>
             <property name="toolTip" >
@@ -1666,13 +1348,8 @@
            <widget class="QCheckBox" name="CompletePathCheckBox" >
             <property name="font" >
              <font>
-              <family>Sans Serif</family>
-              <pointsize>8</pointsize>
               <weight>50</weight>
-              <italic>false</italic>
               <bold>false</bold>
-              <underline>false</underline>
-              <strikeout>false</strikeout>
              </font>
             </property>
             <property name="toolTip" >
@@ -1690,13 +1367,8 @@
            <widget class="QCheckBox" name="KeepToolsOnTopCheckBox" >
             <property name="font" >
              <font>
-              <family>Sans Serif</family>
-              <pointsize>8</pointsize>
               <weight>50</weight>
-              <italic>false</italic>
               <bold>false</bold>
-              <underline>false</underline>
-              <strikeout>false</strikeout>
              </font>
             </property>
             <property name="toolTip" >
@@ -1714,13 +1386,8 @@
            <widget class="QCheckBox" name="TrackViewDropSpanCheckBox" >
             <property name="font" >
              <font>
-              <family>Sans Serif</family>
-              <pointsize>8</pointsize>
               <weight>50</weight>
-              <italic>false</italic>
               <bold>false</bold>
-              <underline>false</underline>
-              <strikeout>false</strikeout>
              </font>
             </property>
             <property name="toolTip" >
@@ -1764,16 +1431,234 @@
         </widget>
        </item>
        <item>
+        <widget class="QGroupBox" name="PluginPathGroupBox" >
+         <property name="font" >
+          <font>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="title" >
+          <string>Plugin Paths</string>
+         </property>
+         <property name="flat" >
+          <bool>true</bool>
+         </property>
+         <layout class="QGridLayout" >
+          <item row="0" column="0" colspan="2" >
+           <layout class="QHBoxLayout" >
+            <item>
+             <widget class="QComboBox" name="PluginTypeComboBox" >
+              <property name="maximumSize" >
+               <size>
+                <width>80</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="font" >
+               <font>
+                <weight>50</weight>
+                <bold>false</bold>
+               </font>
+              </property>
+              <property name="toolTip" >
+               <string>Plugin type</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QComboBox" name="PluginPathComboBox" >
+              <property name="font" >
+               <font>
+                <weight>50</weight>
+                <bold>false</bold>
+               </font>
+              </property>
+              <property name="toolTip" >
+               <string>Plugin path</string>
+              </property>
+              <property name="editable" >
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QToolButton" name="PluginPathBrowseToolButton" >
+              <property name="minimumSize" >
+               <size>
+                <width>22</width>
+                <height>22</height>
+               </size>
+              </property>
+              <property name="maximumSize" >
+               <size>
+                <width>22</width>
+                <height>22</height>
+               </size>
+              </property>
+              <property name="font" >
+               <font>
+                <weight>50</weight>
+                <bold>false</bold>
+               </font>
+              </property>
+              <property name="toolTip" >
+               <string>Browse plugin path</string>
+              </property>
+              <property name="text" >
+               <string>...</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QToolButton" name="PluginPathAddToolButton" >
+              <property name="minimumSize" >
+               <size>
+                <width>60</width>
+                <height>22</height>
+               </size>
+              </property>
+              <property name="font" >
+               <font>
+                <weight>50</weight>
+                <bold>false</bold>
+               </font>
+              </property>
+              <property name="toolTip" >
+               <string>Add plugin path</string>
+              </property>
+              <property name="text" >
+               <string>&amp;Add</string>
+              </property>
+              <property name="toolButtonStyle" >
+               <enum>Qt::ToolButtonTextBesideIcon</enum>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item rowspan="4" row="1" column="0" >
+           <widget class="QListWidget" name="PluginPathListWidget" >
+            <property name="maximumSize" >
+             <size>
+              <width>32767</width>
+              <height>72</height>
+             </size>
+            </property>
+            <property name="font" >
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="statusTip" >
+             <string>Plugin paths</string>
+            </property>
+            <property name="showDropIndicator" stdset="0" >
+             <bool>false</bool>
+            </property>
+            <property name="alternatingRowColors" >
+             <bool>true</bool>
+            </property>
+            <property name="selectionBehavior" >
+             <enum>QAbstractItemView::SelectRows</enum>
+            </property>
+            <property name="uniformItemSizes" >
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1" >
+           <widget class="QToolButton" name="PluginPathRemoveToolButton" >
+            <property name="minimumSize" >
+             <size>
+              <width>60</width>
+              <height>22</height>
+             </size>
+            </property>
+            <property name="font" >
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="toolTip" >
+             <string>Remove plugin path</string>
+            </property>
+            <property name="text" >
+             <string>&amp;Remove</string>
+            </property>
+            <property name="toolButtonStyle" >
+             <enum>Qt::ToolButtonTextBesideIcon</enum>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1" >
+           <widget class="QToolButton" name="PluginPathUpToolButton" >
+            <property name="minimumSize" >
+             <size>
+              <width>60</width>
+              <height>22</height>
+             </size>
+            </property>
+            <property name="font" >
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="toolTip" >
+             <string>Move up path</string>
+            </property>
+            <property name="text" >
+             <string>&amp;Up</string>
+            </property>
+            <property name="toolButtonStyle" >
+             <enum>Qt::ToolButtonTextBesideIcon</enum>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1" >
+           <widget class="QToolButton" name="PluginPathDownToolButton" >
+            <property name="minimumSize" >
+             <size>
+              <width>60</width>
+              <height>22</height>
+             </size>
+            </property>
+            <property name="font" >
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="toolTip" >
+             <string>Move up path</string>
+            </property>
+            <property name="text" >
+             <string>&amp;Down</string>
+            </property>
+            <property name="toolButtonStyle" >
+             <enum>Qt::ToolButtonTextBesideIcon</enum>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="1" >
+           <spacer>
+            <property name="orientation" >
+             <enum>Qt::Vertical</enum>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
         <widget class="QGroupBox" name="MessagesGroupBox" >
          <property name="font" >
           <font>
-           <family>Sans Serif</family>
-           <pointsize>8</pointsize>
            <weight>75</weight>
-           <italic>false</italic>
            <bold>true</bold>
-           <underline>false</underline>
-           <strikeout>false</strikeout>
           </font>
          </property>
          <property name="title" >
@@ -1791,14 +1676,6 @@
           </property>
           <item row="0" column="0" >
            <widget class="QLabel" name="MessagesFontTextLabel" >
-            <property name="sizePolicy" >
-             <sizepolicy>
-              <hsizetype>3</hsizetype>
-              <vsizetype>1</vsizetype>
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
             <property name="minimumSize" >
              <size>
               <width>180</width>
@@ -1813,13 +1690,8 @@
             </property>
             <property name="font" >
              <font>
-              <family>Sans Serif</family>
-              <pointsize>8</pointsize>
               <weight>50</weight>
-              <italic>false</italic>
               <bold>false</bold>
-              <underline>false</underline>
-              <strikeout>false</strikeout>
              </font>
             </property>
             <property name="toolTip" >
@@ -1843,13 +1715,8 @@
            <widget class="QPushButton" name="MessagesFontPushButton" >
             <property name="font" >
              <font>
-              <family>Sans Serif</family>
-              <pointsize>8</pointsize>
               <weight>50</weight>
-              <italic>false</italic>
               <bold>false</bold>
-              <underline>false</underline>
-              <strikeout>false</strikeout>
              </font>
             </property>
             <property name="toolTip" >
@@ -1883,13 +1750,8 @@
            <widget class="QCheckBox" name="MessagesLimitCheckBox" >
             <property name="font" >
              <font>
-              <family>Sans Serif</family>
-              <pointsize>8</pointsize>
               <weight>50</weight>
-              <italic>false</italic>
               <bold>false</bold>
-              <underline>false</underline>
-              <strikeout>false</strikeout>
              </font>
             </property>
             <property name="toolTip" >
@@ -1907,13 +1769,8 @@
            <widget class="QSpinBox" name="MessagesLimitLinesSpinBox" >
             <property name="font" >
              <font>
-              <family>Sans Serif</family>
-              <pointsize>8</pointsize>
               <weight>50</weight>
-              <italic>false</italic>
               <bold>false</bold>
-              <underline>false</underline>
-              <strikeout>false</strikeout>
              </font>
             </property>
             <property name="toolTip" >
@@ -2024,6 +1881,14 @@
   <tabstop>TrackViewDropSpanCheckBox</tabstop>
   <tabstop>MaxRecentFilesSpinBox</tabstop>
   <tabstop>DisplayFormatComboBox</tabstop>
+  <tabstop>PluginTypeComboBox</tabstop>
+  <tabstop>PluginPathComboBox</tabstop>
+  <tabstop>PluginPathBrowseToolButton</tabstop>
+  <tabstop>PluginPathAddToolButton</tabstop>
+  <tabstop>PluginPathListWidget</tabstop>
+  <tabstop>PluginPathRemoveToolButton</tabstop>
+  <tabstop>PluginPathUpToolButton</tabstop>
+  <tabstop>PluginPathDownToolButton</tabstop>
   <tabstop>MessagesFontPushButton</tabstop>
   <tabstop>MessagesLimitCheckBox</tabstop>
   <tabstop>MessagesLimitLinesSpinBox</tabstop>

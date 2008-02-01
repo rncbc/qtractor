@@ -54,6 +54,14 @@ protected slots:
 	void chooseMetroBarFilename();
 	void chooseMetroBeatFilename();
 	void updateMetroNoteNames();
+	void choosePluginType(int iPluginType);
+	void changePluginPath(const QString& sPluginPath);
+	void choosePluginPath();
+	void selectPluginPath();
+	void addPluginPath();
+	void removePluginPath();
+	void moveUpPluginPath();
+	void moveDownPluginPath();
 	void chooseMessagesFont();
 	void stabilizeForm();
 
@@ -71,6 +79,11 @@ private:
 	// Instance variables...
 	qtractorOptions *m_pOptions;
 	int m_iDirtyCount;
+
+	// Plug-ins path cache.
+	QStringList m_ladspaPaths;
+	QStringList m_dssiPaths;
+	QStringList m_vstPaths;
 };
 
 

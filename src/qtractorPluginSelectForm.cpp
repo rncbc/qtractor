@@ -206,10 +206,29 @@ qtractorPluginType::Hint qtractorPluginSelectForm::pluginTypeHint ( int iPlugin 
 // Plugin type hint change slot.
 void qtractorPluginSelectForm::typeHintChanged ( int iTypeHint )
 {
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm == NULL)
+		return;
+
+	qtractorOptions *pOptions = pMainForm->options();
+	if (pOptions == NULL)
+		return;
+
 	qtractorPluginType::Hint typeHint
 		= qtractorPluginType::hintFromText(
 			m_ui.PluginTypeComboBox->itemText(iTypeHint));
 	if (g_pluginPath.typeHint() != typeHint) {
+		QStringList paths;
+		if (typeHint == qtractorPluginType::Any ||
+			typeHint == qtractorPluginType::Vst)
+			paths += pOptions->vstPaths;
+		if (typeHint == qtractorPluginType::Any ||
+			typeHint == qtractorPluginType::Dssi)
+			paths += pOptions->dssiPaths;
+		if (typeHint == qtractorPluginType::Any ||
+			typeHint == qtractorPluginType::Ladspa)
+			paths += pOptions->ladspaPaths;
+		g_pluginPath.setPaths(paths);
 		g_pluginPath.setTypeHint(typeHint);
 		g_pluginPath.open();
 		g_pluginTypes.clear();

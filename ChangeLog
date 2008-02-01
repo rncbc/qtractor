@@ -5,6 +5,11 @@ ChangeLog
 
 CVS HEAD
 
+- Plugin paths setup is now made available on the options dialog,
+  overriding each of respective default settings, as implicit from
+  the LADSPA_PATH, DSSI_PATH and VST_PATH environment variables
+  (see View/Options.../Display/Plugin Paths).
+
 - Clip fade-in/out lengths are now kept relative to tempo changes
   and also to clip offset and length changes (clip resizes).
 

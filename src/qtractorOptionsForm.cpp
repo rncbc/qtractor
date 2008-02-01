@@ -27,11 +27,13 @@
 #include "qtractorAudioFile.h"
 #include "qtractorMidiEditor.h"
 #include "qtractorTimeScale.h"
+#include "qtractorPlugin.h"
 
 #include <QFileDialog>
 #include <QFontDialog>
 #include <QMessageBox>
 #include <QValidator>
+#include <QHeaderView>
 
 
 //----------------------------------------------------------------------------
@@ -79,6 +81,20 @@ qtractorOptionsForm::qtractorOptionsForm (
 	m_ui.MidiCaptureQuantizeComboBox->insertItems(0, items);
 
 //	updateMetroNoteNames();
+
+	m_ui.PluginTypeComboBox->clear();
+#ifdef CONFIG_LADSPA
+	m_ui.PluginTypeComboBox->addItem(
+		qtractorPluginType::textFromHint(qtractorPluginType::Ladspa));
+#endif
+#ifdef CONFIG_DSSI
+	m_ui.PluginTypeComboBox->addItem(
+		qtractorPluginType::textFromHint(qtractorPluginType::Dssi));
+#endif
+#ifdef CONFIG_VST
+	m_ui.PluginTypeComboBox->addItem(
+		qtractorPluginType::textFromHint(qtractorPluginType::Vst));
+#endif
 
 	// Initialize dirty control state.
 	m_iDirtyCount = 0;
@@ -186,6 +202,30 @@ qtractorOptionsForm::qtractorOptionsForm (
 	QObject::connect(m_ui.MaxRecentFilesSpinBox,
 		SIGNAL(valueChanged(int)),
 		SLOT(changed()));
+	QObject::connect(m_ui.PluginTypeComboBox,
+		SIGNAL(activated(int)),
+		SLOT(choosePluginType(int)));
+	QObject::connect(m_ui.PluginPathComboBox,
+		SIGNAL(editTextChanged(const QString&)),
+		SLOT(changePluginPath(const QString&)));
+	QObject::connect(m_ui.PluginPathBrowseToolButton,
+		SIGNAL(clicked()),
+		SLOT(choosePluginPath()));
+	QObject::connect(m_ui.PluginPathAddToolButton,
+		SIGNAL(clicked()),
+		SLOT(addPluginPath()));
+	QObject::connect(m_ui.PluginPathListWidget,
+		SIGNAL(itemSelectionChanged()),
+		SLOT(selectPluginPath()));
+	QObject::connect(m_ui.PluginPathRemoveToolButton,
+		SIGNAL(clicked()),
+		SLOT(removePluginPath()));
+	QObject::connect(m_ui.PluginPathUpToolButton,
+		SIGNAL(clicked()),
+		SLOT(moveUpPluginPath()));
+	QObject::connect(m_ui.PluginPathDownToolButton,
+		SIGNAL(clicked()),
+		SLOT(moveDownPluginPath()));
 	QObject::connect(m_ui.MessagesFontPushButton,
 		SIGNAL(clicked()),
 		SLOT(chooseMessagesFont()));
@@ -219,6 +259,7 @@ void qtractorOptionsForm::setOptions ( qtractorOptions *pOptions )
 	// Initialize conveniency options...
 	m_pOptions->loadComboBoxHistory(m_ui.MetroBarFilenameComboBox);
 	m_pOptions->loadComboBoxHistory(m_ui.MetroBeatFilenameComboBox);
+	m_pOptions->loadComboBoxHistory(m_ui.PluginPathComboBox);
 
 	// Audio options.
 	int iIndex  = 0;
@@ -298,6 +339,13 @@ void qtractorOptionsForm::setOptions ( qtractorOptions *pOptions )
 	m_ui.MaxRecentFilesSpinBox->setValue(m_pOptions->iMaxRecentFiles);
 	m_ui.DisplayFormatComboBox->setCurrentIndex(m_pOptions->iDisplayFormat);
 
+	// Plugin path initialization...
+	m_ladspaPaths = m_pOptions->ladspaPaths;
+	m_dssiPaths   = m_pOptions->dssiPaths;
+	m_vstPaths    = m_pOptions->vstPaths;
+
+	choosePluginType(0);
+
 	// Done. Restart clean.
 	m_iDirtyCount = 0;
 	stabilizeForm();
@@ -357,6 +405,10 @@ void qtractorOptionsForm::accept (void)
 		m_pOptions->bTrackViewDropSpan   = m_ui.TrackViewDropSpanCheckBox->isChecked();
 		m_pOptions->iMaxRecentFiles      = m_ui.MaxRecentFilesSpinBox->value();
 		m_pOptions->iDisplayFormat       = m_ui.DisplayFormatComboBox->currentIndex();
+		// Plugin paths...
+		m_pOptions->ladspaPaths          = m_ladspaPaths;
+		m_pOptions->dssiPaths            = m_dssiPaths;
+		m_pOptions->vstPaths             = m_vstPaths;
 		// Messages options...
 		m_pOptions->sMessagesFont        = m_ui.MessagesFontTextLabel->font().toString();
 		m_pOptions->bMessagesLimit       = m_ui.MessagesLimitCheckBox->isChecked();
@@ -368,6 +420,7 @@ void qtractorOptionsForm::accept (void)
 	// Save other conveniency options...
 	m_pOptions->saveComboBoxHistory(m_ui.MetroBarFilenameComboBox);
 	m_pOptions->saveComboBoxHistory(m_ui.MetroBeatFilenameComboBox);
+	m_pOptions->saveComboBoxHistory(m_ui.PluginPathComboBox);
 
 	// Just go with dialog acceptance
 	QDialog::accept();
@@ -467,6 +520,247 @@ void qtractorOptionsForm::updateMetroNoteNames (void)
 }
 
 
+// Change plugin type.
+void qtractorOptionsForm::choosePluginType ( int iPluginType )
+{
+	if (m_pOptions == NULL)
+		return;
+
+	QStringList paths;
+	qtractorPluginType::Hint typeHint
+		= qtractorPluginType::hintFromText(
+			m_ui.PluginTypeComboBox->itemText(iPluginType));
+	switch (typeHint) {
+	case qtractorPluginType::Ladspa:
+		paths = m_ladspaPaths;
+		break;
+	case qtractorPluginType::Dssi:
+		paths = m_dssiPaths;
+		break;
+	case qtractorPluginType::Vst:
+		paths = m_vstPaths;
+		break;
+	default:
+		break;
+	}
+
+	m_ui.PluginPathListWidget->clear();
+	QStringListIterator iter(paths);
+	while (iter.hasNext())
+		m_ui.PluginPathListWidget->addItem(iter.next());
+
+	selectPluginPath();
+	stabilizeForm();
+}
+
+
+// Change plugin path.
+void qtractorOptionsForm::changePluginPath ( const QString& /*sPluginPath*/ )
+{
+	selectPluginPath();
+	stabilizeForm();
+}
+
+
+// Browse for plugin path.
+void qtractorOptionsForm::choosePluginPath (void)
+{
+	QString sPluginPath = QFileDialog::getExistingDirectory(
+		this,                                  // Parent.
+		tr("Plug-in Directory:"),              // Caption.
+		m_ui.PluginPathComboBox->currentText() // Start here.
+	);
+
+	if (!sPluginPath.isEmpty()) {
+		m_ui.PluginPathComboBox->setEditText(sPluginPath);
+		m_ui.PluginPathComboBox->setFocus();
+	}
+
+	selectPluginPath();
+	stabilizeForm();
+}
+
+
+// Add chosen plugin path.
+void qtractorOptionsForm::addPluginPath (void)
+{
+	const QString& sPluginPath = m_ui.PluginPathComboBox->currentText();
+	if (sPluginPath.isEmpty())
+		return;
+
+	if (!QDir(sPluginPath).exists())
+		return;
+
+	qtractorPluginType::Hint typeHint
+		= qtractorPluginType::hintFromText(
+			m_ui.PluginTypeComboBox->currentText());
+	switch (typeHint) {
+	case qtractorPluginType::Ladspa:
+		m_ladspaPaths.append(sPluginPath);
+		break;
+	case qtractorPluginType::Dssi:
+		m_dssiPaths.append(sPluginPath);
+		break;
+	case qtractorPluginType::Vst:
+		m_vstPaths.append(sPluginPath);
+		break;
+	default:
+		return;
+	}
+
+	m_ui.PluginPathListWidget->addItem(sPluginPath);
+	m_ui.PluginPathComboBox->insertItem(0, sPluginPath);
+	m_ui.PluginPathComboBox->setEditText(QString());
+	m_ui.PluginPathListWidget->setFocus();
+
+	selectPluginPath();
+	changed();
+}
+
+
+// Select current plugin path.
+void qtractorOptionsForm::selectPluginPath (void)
+{
+	int iPluginPath = m_ui.PluginPathListWidget->currentRow();
+
+	m_ui.PluginPathRemoveToolButton->setEnabled(iPluginPath >= 0);
+	m_ui.PluginPathUpToolButton->setEnabled(iPluginPath > 0);
+	m_ui.PluginPathDownToolButton->setEnabled(iPluginPath >= 0
+		&& iPluginPath < m_ui.PluginPathListWidget->count() - 1);
+}
+
+
+// Remove current plugin path.
+void qtractorOptionsForm::removePluginPath (void)
+{
+	int iPluginPath = m_ui.PluginPathListWidget->currentRow();
+	if (iPluginPath < 0)
+		return;
+
+	qtractorPluginType::Hint typeHint
+		= qtractorPluginType::hintFromText(
+			m_ui.PluginTypeComboBox->currentText());
+	switch (typeHint) {
+	case qtractorPluginType::Ladspa:
+		m_ladspaPaths.removeAt(iPluginPath);
+		break;
+	case qtractorPluginType::Dssi:
+		m_dssiPaths.removeAt(iPluginPath);
+		break;
+	case qtractorPluginType::Vst:
+		m_vstPaths.removeAt(iPluginPath);
+		break;
+	default:
+		return;
+	}
+
+	QListWidgetItem *pItem = m_ui.PluginPathListWidget->takeItem(iPluginPath);
+	if (pItem)
+		delete pItem;
+
+	selectPluginPath();
+	changed();
+}
+
+
+// Move up plugin path on search order.
+void qtractorOptionsForm::moveUpPluginPath (void)
+{
+	int iPluginPath = m_ui.PluginPathListWidget->currentRow();
+	if (iPluginPath < 1)
+		return;
+
+	QString sPluginPath;
+	qtractorPluginType::Hint typeHint
+		= qtractorPluginType::hintFromText(
+			m_ui.PluginTypeComboBox->currentText());
+	switch (typeHint) {
+	case qtractorPluginType::Ladspa:
+		sPluginPath = m_ladspaPaths.takeAt(iPluginPath);
+		m_ladspaPaths.insert(iPluginPath - 1, sPluginPath);
+		break;
+	case qtractorPluginType::Dssi:
+		sPluginPath = m_dssiPaths.takeAt(iPluginPath);
+		m_dssiPaths.insert(iPluginPath - 1, sPluginPath);
+		break;
+	case qtractorPluginType::Vst:
+		sPluginPath = m_vstPaths.takeAt(iPluginPath);
+		m_vstPaths.insert(iPluginPath - 1, sPluginPath);
+		break;
+	default:
+		return;
+	}
+
+	QListWidgetItem *pItem = m_ui.PluginPathListWidget->takeItem(iPluginPath);
+	if (pItem) {
+#if QT_VERSION >= 0x040200
+		pItem->setSelected(false);
+#else
+		m_ui.PluginPathListWidget->setItemSelected(pItem, false);
+#endif
+		m_ui.PluginPathListWidget->insertItem(iPluginPath - 1, pItem);
+#if QT_VERSION >= 0x040200
+		pItem->setSelected(true);
+#else
+		m_ui.PluginPathListWidget->setItemSelected(pItem, true);
+#endif
+		m_ui.PluginPathListWidget->setCurrentItem(pItem);
+	}
+
+	selectPluginPath();
+	changed();
+}
+
+
+// Move down plugin path on search order.
+void qtractorOptionsForm::moveDownPluginPath (void)
+{
+	int iPluginPath = m_ui.PluginPathListWidget->currentRow();
+	if (iPluginPath >= m_ui.PluginPathListWidget->count() - 1)
+		return;
+
+	QString sPluginPath;
+	qtractorPluginType::Hint typeHint
+		= qtractorPluginType::hintFromText(
+			m_ui.PluginTypeComboBox->currentText());
+	switch (typeHint) {
+	case qtractorPluginType::Ladspa:
+		sPluginPath = m_ladspaPaths.takeAt(iPluginPath);
+		m_ladspaPaths.insert(iPluginPath + 1, sPluginPath);
+		break;
+	case qtractorPluginType::Dssi:
+		sPluginPath = m_dssiPaths.takeAt(iPluginPath);
+		m_dssiPaths.insert(iPluginPath + 1, sPluginPath);
+		break;
+	case qtractorPluginType::Vst:
+		sPluginPath = m_vstPaths.takeAt(iPluginPath);
+		m_vstPaths.insert(iPluginPath + 1, sPluginPath);
+		break;
+	default:
+		return;
+	}
+
+	QListWidgetItem *pItem = m_ui.PluginPathListWidget->takeItem(iPluginPath);
+	if (pItem) {
+#if QT_VERSION >= 0x040200
+		pItem->setSelected(false);
+#else
+		m_ui.PluginPathListWidget->setItemSelected(pItem, false);
+#endif
+		m_ui.PluginPathListWidget->insertItem(iPluginPath + 1, pItem);
+#if QT_VERSION >= 0x040200
+		pItem->setSelected(true);
+#else
+		m_ui.PluginPathListWidget->setItemSelected(pItem, true);
+#endif
+		m_ui.PluginPathListWidget->setCurrentItem(pItem);
+	}
+
+	selectPluginPath();
+	changed();
+}
+
+
 // The messages font selection dialog.
 void qtractorOptionsForm::chooseMessagesFont (void)
 {
@@ -536,6 +830,12 @@ void qtractorOptionsForm::stabilizeForm (void)
 	m_ui.MetroBeatDurationSpinBox->setEnabled(bMidiMetronome);
 	m_ui.MidiMetroBusCheckBox->setEnabled(bMidiMetronome);
 
+	const QString& sPluginPath = m_ui.PluginPathComboBox->currentText();
+	m_ui.PluginPathAddToolButton->setEnabled(
+		!sPluginPath.isEmpty() && QDir(sPluginPath).exists()
+		&& m_ui.PluginPathListWidget->findItems(
+			sPluginPath, Qt::MatchExactly).isEmpty());
+		
 	m_ui.OkPushButton->setEnabled(bValid);
 }
 

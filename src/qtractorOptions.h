@@ -125,6 +125,11 @@ public:
 	QString sPluginSearch;
 	int     iPluginType;
 
+	// Plug-in paths.
+	QStringList ladspaPaths;
+	QStringList dssiPaths;
+	QStringList vstPaths;
+
 	// The instrument file list.
 	QStringList instrumentFiles;
 
