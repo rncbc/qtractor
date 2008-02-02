@@ -39,8 +39,12 @@ bool qtractorDssiPluginType::open (void)
 	if (m_pDssiDescriptor == NULL)
 		return false;
 
-	// we're also a LADSPA one...
+	// We're also a LADSPA one...
+	m_pLadspaDescriptor = m_pDssiDescriptor->LADSPA_Plugin;
+
+	// Let's get the it's own LADSPA stuff...
 	if (!qtractorLadspaPluginType::open()) {
+		m_pLadspaDescriptor = NULL;
 		m_pDssiDescriptor = NULL;
 		return false;
 	}

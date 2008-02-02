@@ -336,7 +336,8 @@ unsigned short qtractorPluginType::instances (
 	unsigned short iChannels, bool bMidi ) const
 {
 	unsigned short iInstances = 0;
-	if ((bMidi || m_iMidiIns < 1) && (iChannels > 0 && m_iAudioOuts > 0)) {
+	if (iChannels > 0 && m_iAudioOuts > 0
+		&& (bMidi || m_iMidiIns < 1 || m_iAudioIns > 0)) {
 		if (iChannels >= m_iAudioIns)
 			iInstances = (m_iAudioOuts >= iChannels ? 1 : iChannels);
 		else

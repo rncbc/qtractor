@@ -62,7 +62,7 @@ public:
 	const LADSPA_Descriptor *ladspa_descriptor() const
 		{ return m_pLadspaDescriptor; }
 
-private:
+protected:
 
 	// LADSPA descriptor itself.
 	const LADSPA_Descriptor *m_pLadspaDescriptor;
