@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(Qtractor, 0.1.0.849, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.1.0.850, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractorMainForm.ui)
 AC_CONFIG_HEADERS(config.h)
@@ -44,6 +44,12 @@ AC_ARG_ENABLE(libsamplerate,
   AC_HELP_STRING([--enable-libsamplerate], [enable libsamplerate interface (default=yes)]),
   [ac_libsamplerate="$enableval"],
   [ac_libsamplerate="yes"])
+
+# Enable liblo availability.
+AC_ARG_ENABLE(liblo,
+  AC_HELP_STRING([--enable-liblo], [enable liblo interface (default=yes)]),
+  [ac_liblo="$enableval"],
+  [ac_liblo="yes"])
 
 # Enable SSE optimization.
 AC_ARG_ENABLE(sse,
@@ -115,6 +121,11 @@ AC_ARG_WITH(libmad,
 # Set for alternate libsamplerate installation dir.
 AC_ARG_WITH(libsamplerate,
   AC_HELP_STRING([--with-libsamplerate=PATH], [use alternate libsamplerate path]),
+  [ac_with_paths="$ac_with_paths $withval"])
+
+# Set for alternate liblo installation dir.
+AC_ARG_WITH(liblo,
+  AC_HELP_STRING([--with-liblo=PATH], [use alternate liblo path]),
   [ac_with_paths="$ac_with_paths $withval"])
 
 # Set for alternate LADSPA include dir.
@@ -340,6 +351,18 @@ if test "x$ac_libsamplerate" = "xyes"; then
    fi
 fi
 
+# Check for optional liblo library.
+if test "x$ac_liblo" = "xyes"; then
+   AC_CHECK_LIB(lo, main, [ac_liblo="yes"], [ac_liblo="no"])
+   if test "x$ac_liblo" = "xyes"; then
+      AC_DEFINE(CONFIG_LIBLO, 1, [Define if liblo is available.])
+      ac_libs="$ac_libs -llo"
+   else
+      AC_MSG_WARN([*** lo library not found.])
+      AC_MSG_WARN([*** OSC service support will be disabled.])
+   fi
+fi
+
 AC_SUBST(ac_libs)
 
 
@@ -391,6 +414,14 @@ if test "x$ac_libsamplerate" = "xyes"; then
    AC_CHECK_HEADER(samplerate.h, [ac_samplerate_h="yes"], [ac_samplerate_h="no"])
    if test "x$ac_samplerate_h" = "xno"; then
       AC_MSG_ERROR([samplerate.h header file not found.])
+   fi
+fi
+
+# Check for lo headers.
+if test "x$ac_liblo" = "xyes"; then
+   AC_CHECK_HEADER(lo/lo.h, [ac_lo_h="yes"], [ac_lo_h="no"])
+   if test "x$ac_lo_h" = "xno"; then
+      AC_MSG_ERROR([lo.h header file not found.])
    fi
 fi
 
@@ -474,6 +505,7 @@ echo "  General audio file support (libsndfile)  . . . . .: $ac_libsndfile"
 echo "  Ogg Vorbis audio file support (libvorbis)  . . . .: $ac_libvorbis"
 echo "  MPEG-1 Audio Layer III file support (libmad) . . .: $ac_libmad"
 echo "  Sample-rate conversion support (libsamplerate) . .: $ac_libsamplerate"
+echo "  OSC service support (liblo)  . . . . . . . . . . .: $ac_liblo"
 echo "  SSE optimization support (x86) . . . . . . . . . .: $ac_sse"
 echo "  LADSPA Plug-in support . . . . . . . . . . . . . .: $ac_ladspa"
 echo "  DSSI Plug-in support . . . . . . . . . . . . . . .: $ac_dssi"

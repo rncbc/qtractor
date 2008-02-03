@@ -26,6 +26,9 @@
 
 #include <dssi.h>
 
+#include <QFileInfo>
+#include <QDir>
+
 
 //----------------------------------------------------------------------------
 // qtractorDssiPluginType -- LADSPA plugin type instance.
@@ -61,10 +64,16 @@ public:
 	const DSSI_Descriptor *dssi_descriptor() const
 		{ return m_pDssiDescriptor; }
 
+	const QString& dssi_editor() const
+		{ return m_sDssiEditor;  }
+
 private:
 
 	// DSSI descriptor itself.
 	const DSSI_Descriptor *m_pDssiDescriptor;
+
+	// DSSI GUI excutable filename.
+	QString m_sDssiEditor;
 };
 
 
@@ -92,6 +101,9 @@ public:
 
 	// The main plugin processing procedure.
 	void process(float **ppIBuffer, float **ppOBuffer, unsigned int nframes);
+
+	// GUI Editor stuff.
+	void openEditor(QWidget */*pParent*/);
 };
 
 

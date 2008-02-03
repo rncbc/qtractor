@@ -461,26 +461,28 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 #endif
 	const QList<qtractorPluginParam *>& params = m_pPlugin->params();
 	int iRows = params.count();
-	int iCols = 1;
-	while (iRows > 12 && iCols < 3) {
-		iRows >>= 1;
-		iCols++;
-	}
-	int iRow = 0;
-	int iCol = 0;
-	QListIterator<qtractorPluginParam *> iter(params);
-	while (iter.hasNext()) {
-		qtractorPluginParam *pParam = iter.next();
-		qtractorPluginParamWidget *pParamWidget
-			= new qtractorPluginParamWidget(pParam, this);
-		m_paramWidgets.append(pParamWidget);
-		m_pGridLayout->addWidget(pParamWidget, iRow, iCol);
-		QObject::connect(pParamWidget,
-			SIGNAL(valueChanged(qtractorPluginParam *, float)),
-			SLOT(valueChangeSlot(qtractorPluginParam *, float)));
-		if (++iRow > iRows) {
-			iRow = 0;
-			iCol++;
+	if (iRows < 101) { // FIXME: Can't stand more than hundred widgets?
+		int iCols = 1;
+		while (iRows > 12 && iCols < 3) {
+			iRows >>= 1;
+			iCols++;
+		}
+		int iRow = 0;
+		int iCol = 0;
+		QListIterator<qtractorPluginParam *> iter(params);
+		while (iter.hasNext()) {
+			qtractorPluginParam *pParam = iter.next();
+			qtractorPluginParamWidget *pParamWidget
+				= new qtractorPluginParamWidget(pParam, this);
+			m_paramWidgets.append(pParamWidget);
+			m_pGridLayout->addWidget(pParamWidget, iRow, iCol);
+			QObject::connect(pParamWidget,
+				SIGNAL(valueChanged(qtractorPluginParam *, float)),
+				SLOT(valueChangeSlot(qtractorPluginParam *, float)));
+			if (++iRow > iRows) {
+				iRow = 0;
+				iCol++;
+			}
 		}
 	}
 	layout()->addItem(m_pGridLayout);

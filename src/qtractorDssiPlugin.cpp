@@ -57,6 +57,19 @@ bool qtractorDssiPluginType::open (void)
 	// Things we have now for granted...
 	m_iMidiIns = 1;
 
+	// Check for GUI editor exacutable...
+	QFileInfo fi(file()->filename());
+	QFileInfo gi(fi.dir(), fi.baseName());
+	if (gi.isDir()) {
+		QDir dir(gi.absoluteFilePath(), fi.baseName() + "_*");
+		QStringList guis = dir.entryList(QDir::Files | QDir::Executable);
+		if (!guis.isEmpty()) {
+			gi.setFile(dir, guis.first()); // FIXME: Only the first?
+			m_sDssiEditor = gi.absoluteFilePath();
+			m_bEditor = gi.isExecutable();
+		}
+    }
+
 	return true;
 }
 
@@ -145,6 +158,48 @@ void qtractorDssiPlugin::process (
 	float **ppIBuffer, float **ppOBuffer, unsigned int nframes )
 {
 	qtractorLadspaPlugin::process(ppIBuffer, ppOBuffer, nframes);
+}
+
+
+// GUI Editor stuff.
+void qtractorDssiPlugin::openEditor ( QWidget */*pParent*/ )
+{
+	qtractorDssiPluginType *pDssiType
+		= static_cast<qtractorDssiPluginType *> (type());
+	if (pDssiType == NULL)
+		return;
+	if (!pDssiType->isEditor())
+		return;
+
+#if 0
+
+	QFileInfo fi((pDssiType->file())->filename());
+	QByteArray aDssiEditor = pDssiType->dssi_editor().toUtf8();
+	QByteArray aOscPath  = g_sOscPath.toUtf8();
+	QByteArray aFilename = fi.fileName().toUtf8();
+	QByteArray aLabel    = pDssiType->label().toUtf8();
+	QByteArray aName     = pDssiType->name().toUtf8();
+
+	const char *pszDssiEditor = aDssiEditor.constData();
+	const char *pszOscPath  = aOscPath.constData();
+	const char *pszFilename = aFilename.constData();
+	const char *pszLabel    = aLabel.constData();
+	const char *pszName     = aName.constData();
+
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorDssiPlugin::openEditor() "
+		"path=\"%s\" url=\"%s\" filename=\"%s\" label=\"%s\" name=\"%s\"",
+		pszDssiEditor, pszOscPath, pszFilename, pszLabel, pszName);
+#endif
+
+	if (::fork() == 0) {
+		::execlp(pszDssiEditor,
+			pszDssiEditor, pszOscPath, pszFilename, pszLabel, pszName, NULL);
+		::perror("exec failed");
+		::exit(1);
+	}
+
+#endif
 }
 
 
