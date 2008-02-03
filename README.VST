@@ -38,13 +38,8 @@ you'll need do supply the include path yourself, as in the following:
   ./configure --with-vst=/path/to/vstsdk2.x/include
 
 Next step, once properly built, you'll need to tell where the actual
-native VST plug-ins can be found in your file system. Currently, you'll
-need to set the VST_PATH environment variable with the paths where the
-plug-ins will reside and can be picked up by qtractor at run-time:
-
-  export VST_PATH=/path/to/vst/plugins
-
-or you can go to the View/Options... setup dialog and do something 
-quite equivalent in the Plugin Paths section.
+native VST plug-ins can be found in your file system. The directories
+where plug-ins can be picked up by qtractor at run-time are specified
+respectively in the View/Options.../Display/Plugin Paths dialog.
 
 Enjoy.

@@ -344,7 +344,13 @@ void qtractorOptionsForm::setOptions ( qtractorOptions *pOptions )
 	m_dssiPaths   = m_pOptions->dssiPaths;
 	m_vstPaths    = m_pOptions->vstPaths;
 
-	choosePluginType(0);
+	int iPluginType = m_pOptions->iPluginType - 1;
+	if (iPluginType < 0)
+		iPluginType = 0;
+	m_ui.PluginTypeComboBox->setCurrentIndex(iPluginType);
+	m_ui.PluginPathComboBox->setEditText(QString());
+
+	choosePluginType(iPluginType);
 
 	// Done. Restart clean.
 	m_iDirtyCount = 0;
@@ -406,6 +412,7 @@ void qtractorOptionsForm::accept (void)
 		m_pOptions->iMaxRecentFiles      = m_ui.MaxRecentFilesSpinBox->value();
 		m_pOptions->iDisplayFormat       = m_ui.DisplayFormatComboBox->currentIndex();
 		// Plugin paths...
+		m_pOptions->iPluginType          = m_ui.PluginTypeComboBox->currentIndex() + 1;
 		m_pOptions->ladspaPaths          = m_ladspaPaths;
 		m_pOptions->dssiPaths            = m_dssiPaths;
 		m_pOptions->vstPaths             = m_vstPaths;
@@ -609,8 +616,15 @@ void qtractorOptionsForm::addPluginPath (void)
 	}
 
 	m_ui.PluginPathListWidget->addItem(sPluginPath);
+	m_ui.PluginPathListWidget->setCurrentRow(
+		m_ui.PluginPathListWidget->count() - 1);
+
+	int i = m_ui.PluginPathComboBox->findText(sPluginPath);
+	if (i >= 0)
+		m_ui.PluginPathComboBox->removeItem(i);
 	m_ui.PluginPathComboBox->insertItem(0, sPluginPath);
 	m_ui.PluginPathComboBox->setEditText(QString());
+
 	m_ui.PluginPathListWidget->setFocus();
 
 	selectPluginPath();

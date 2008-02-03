@@ -504,28 +504,30 @@ void qtractorOptions::loadComboBoxHistory ( QComboBox *pComboBox, int iLimit )
 
 void qtractorOptions::saveComboBoxHistory ( QComboBox *pComboBox, int iLimit )
 {
+	int iCount = pComboBox->count();
+
 	// Add current text as latest item...
 	const QString& sCurrentText = pComboBox->currentText();
-	int iCount = pComboBox->count();
-	for (int i = 0; i < iCount; i++) {
-		const QString& sText = pComboBox->itemText(i);
-		if (sText == sCurrentText) {
+	if (!sCurrentText.isEmpty()) {
+		int i = pComboBox->findText(sCurrentText);
+		if (i >= 0) {
 			pComboBox->removeItem(i);
 			iCount--;
-			break;
 		}
+		pComboBox->insertItem(0, sCurrentText);
+		iCount++;
 	}
-	while (iCount >= iLimit)
+
+	// Take care of item limit...
+	while (iCount > iLimit)
 		pComboBox->removeItem(--iCount);
-	pComboBox->insertItem(0, sCurrentText);
-	iCount++;
 
 	// Save combobox list to configuration settings file...
 	m_settings.beginGroup("/History/" + pComboBox->objectName());
 	for (int i = 0; i < iCount; i++) {
 		const QString& sText = pComboBox->itemText(i);
 		if (sText.isEmpty())
-			break;
+			continue;
 		m_settings.setValue("/Item" + QString::number(i + 1), sText);
 	}
 	m_settings.endGroup();

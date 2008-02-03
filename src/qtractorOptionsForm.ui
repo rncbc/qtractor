@@ -1337,10 +1337,10 @@
              <string>Whether to remove audio peak files on session close</string>
             </property>
             <property name="text" >
-             <string>&amp;Auto-remove audio peak files</string>
+             <string>Auto-remove audio pea&amp;k files</string>
             </property>
             <property name="shortcut" >
-             <string>Alt+A</string>
+             <string>Alt+K</string>
             </property>
            </widget>
           </item>
@@ -1394,10 +1394,10 @@
              <string>Whether to try dropping multiple audio files into the same track</string>
             </property>
             <property name="text" >
-             <string>&amp;Drop multiple audio files into the same track</string>
+             <string>Drop multiple audio files into the &amp;same track</string>
             </property>
             <property name="shortcut" >
-             <string>Alt+D</string>
+             <string>Alt+S</string>
             </property>
            </widget>
           </item>
@@ -1518,6 +1518,12 @@
                 <height>22</height>
                </size>
               </property>
+              <property name="maximumSize" >
+               <size>
+                <width>60</width>
+                <height>22</height>
+               </size>
+              </property>
               <property name="font" >
                <font>
                 <weight>50</weight>
@@ -1537,7 +1543,7 @@
             </item>
            </layout>
           </item>
-          <item rowspan="4" row="1" column="0" >
+          <item rowspan="3" row="1" column="0" >
            <widget class="QListWidget" name="PluginPathListWidget" >
             <property name="maximumSize" >
              <size>
@@ -1576,6 +1582,12 @@
               <height>22</height>
              </size>
             </property>
+            <property name="maximumSize" >
+             <size>
+              <width>60</width>
+              <height>22</height>
+             </size>
+            </property>
             <property name="font" >
              <font>
               <weight>50</weight>
@@ -1596,6 +1608,12 @@
           <item row="2" column="1" >
            <widget class="QToolButton" name="PluginPathUpToolButton" >
             <property name="minimumSize" >
+             <size>
+              <width>60</width>
+              <height>22</height>
+             </size>
+            </property>
+            <property name="maximumSize" >
              <size>
               <width>60</width>
               <height>22</height>
@@ -1626,6 +1644,12 @@
               <height>22</height>
              </size>
             </property>
+            <property name="maximumSize" >
+             <size>
+              <width>60</width>
+              <height>22</height>
+             </size>
+            </property>
             <property name="font" >
              <font>
               <weight>50</weight>
@@ -1642,13 +1666,6 @@
              <enum>Qt::ToolButtonTextBesideIcon</enum>
             </property>
            </widget>
-          </item>
-          <item row="4" column="1" >
-           <spacer>
-            <property name="orientation" >
-             <enum>Qt::Vertical</enum>
-            </property>
-           </spacer>
           </item>
          </layout>
         </widget>
