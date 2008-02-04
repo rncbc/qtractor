@@ -71,8 +71,6 @@ public:
 
 	void toggleEditor(bool bOn);
 
-	QWidget *editorWidget();
-
 protected slots:
 
 	void changePresetSlot(const QString& sPreset);
@@ -85,13 +83,7 @@ protected slots:
 
 protected:
 
-	// Visibility event handler.
-	void showEvent(QShowEvent *pShowEvent);
-
 	void stabilize();
-
-	// Editor widget forward decls.
-	class EditorWidget;
 
 private:
 
@@ -100,7 +92,6 @@ private:
 
 	// Instance variables...
 	qtractorPlugin *m_pPlugin;
-	EditorWidget *m_pEditorWidget;
 	QGridLayout *m_pGridLayout;
 	QList<qtractorPluginParamWidget *> m_paramWidgets;
 	int m_iDirtyCount;

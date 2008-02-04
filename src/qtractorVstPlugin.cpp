@@ -36,7 +36,12 @@
 #include <QWidget>
 
 #if defined(Q_WS_X11)
+#include <QApplication>
 #include <QX11Info>
+#include <X11/Xlib.h>
+#include <X11/Xutil.h>
+#include <X11/Xatom.h>
+typedef void (*XEventProc)(XEvent *);
 #endif
 
 #if !defined(VST_2_3_EXTENSIONS) 
@@ -65,6 +70,327 @@ enum qtractorVstPluginFlagsEx
 	effFlagsExCanUseAsSend              = 1 << 8,
 	effFlagsExCanMixDryWet              = 1 << 9,
 	effFlagsExCanMidiProgramNames       = 1 << 10
+};
+
+
+//---------------------------------------------------------------------
+// qtractorVstPlugin::EditorWidget - Helpers for own editor widget.
+
+#if defined(Q_WS_X11)
+
+static bool g_bXError = false;
+
+static int tempXErrorHandler ( Display *, XErrorEvent * )
+{
+	g_bXError = true;
+	return 0;
+}
+
+static XEventProc getXEventProc ( Display *pDisplay, Window w )
+{
+	int iSize;
+	unsigned long iBytes, iCount;
+	unsigned char *pData;
+	XEventProc eventProc = NULL;
+	Atom atomType, atom = XInternAtom(pDisplay, "_XEventProc", false);
+
+	g_bXError = false;
+	XErrorHandler oldErrorHandler = XSetErrorHandler(tempXErrorHandler);
+	XGetWindowProperty(pDisplay, w, atom, 0, 1, false,
+		AnyPropertyType, &atomType,  &iSize, &iCount, &iBytes, &pData);
+	if (g_bXError == false && iCount == 1)
+		eventProc = (XEventProc) (*(int *) pData);
+	XSetErrorHandler(oldErrorHandler);
+
+	return eventProc;
+}
+
+static Window getXChildWindow ( Display *pDisplay, Window w )
+{
+	Window wRoot, wParent, *pwChildren;
+	unsigned int iChildren = 0;
+
+	XQueryTree(pDisplay, w, &wRoot, &wParent, &pwChildren, &iChildren);
+
+	return (iChildren > 0 ? pwChildren[0] : NULL);
+}
+
+static unsigned int getXButton ( Qt::MouseButtons buttons )
+{
+	int button = 0;
+	if (buttons & Qt::LeftButton)
+		button = Button1;
+	else
+	if (buttons & Qt::MidButton)
+		button = Button2;
+	else
+	if (buttons & Qt::RightButton)
+		button = Button3;
+	return button;
+}
+
+static unsigned int getXButtonState ( Qt::MouseButtons buttons )
+{
+	int state = 0;
+	if (buttons & Qt::LeftButton)
+		state |= Button1Mask;
+	if (buttons & Qt::MidButton)
+		state |= Button2Mask;
+	if (buttons & Qt::RightButton)
+		state |= Button3Mask;
+	return state;
+}
+
+#endif // Q_WS_X11
+
+
+//----------------------------------------------------------------------------
+// qtractorVstPlugin::EditorWidget -- Plugin editor wrapper widget.
+
+class qtractorVstPlugin::EditorWidget : public QWidget
+{
+public:
+
+	// Constructor.
+	EditorWidget(qtractorPluginForm *pPluginForm, Qt::WindowFlags wflags = 0)
+		: QWidget(NULL, wflags),
+#if defined(Q_WS_X11)
+			m_pDisplay(NULL),
+			m_wEditor(NULL),
+			m_eventProc(NULL),
+#endif
+			m_pPluginForm(pPluginForm) {}
+
+	// Specialized editor methods.
+	void setPlugin(qtractorPlugin *pPlugin)
+	{
+		QWidget::setWindowTitle((pPlugin->type())->name());
+#if defined(Q_WS_X11)
+		m_pDisplay = QX11Info::display();
+		m_wEditor  = getXChildWindow(m_pDisplay, (Window) winId());
+		if (m_wEditor) {
+			m_eventProc = getXEventProc(m_pDisplay, m_wEditor);
+			if (m_eventProc)
+				XSelectInput(m_pDisplay, m_wEditor, NoEventMask);
+		}
+#endif
+	}
+
+protected:
+
+	// Visibility event handlers.
+	void showEvent(QShowEvent *pShowEvent)
+		{ QWidget::showEvent(pShowEvent); m_pPluginForm->toggleEditor(true); }
+
+	// Visibility event handlers.
+	void closeEvent(QCloseEvent *pCloseEvent)
+		{ QWidget::closeEvent(pCloseEvent); m_pPluginForm->toggleEditor(false); }
+
+#if defined(Q_WS_X11)
+
+	// Mouse events.
+	void enterEvent(QEvent *pEnterEvent)
+	{
+	//	qDebug("DEBUG> qtractorPluginWidget::enterEvent()\n");
+		QWidget::enterEvent(pEnterEvent);
+		if (m_wEditor) {
+			XEvent ev;
+			::memset(&ev, 0, sizeof(ev));
+			const QPoint& globalPos = QCursor::pos();
+			const QPoint& pos = QWidget::mapFromGlobal(globalPos);
+			ev.xcrossing.display = m_pDisplay;
+			ev.xcrossing.type    = EnterNotify;
+			ev.xcrossing.window  = m_wEditor;
+			ev.xcrossing.root    = RootWindow(m_pDisplay, DefaultScreen(m_pDisplay));
+			ev.xcrossing.time    = CurrentTime;
+			ev.xcrossing.x       = pos.x();
+			ev.xcrossing.y       = pos.y();
+			ev.xcrossing.x_root  = globalPos.x();
+			ev.xcrossing.y_root  = globalPos.y();
+			ev.xcrossing.mode    = NotifyNormal;
+			ev.xcrossing.detail  = NotifyAncestor;
+			ev.xcrossing.state   = getXButtonState(QApplication::mouseButtons());
+			sendXEvent(&ev);
+		}
+	}
+
+	void mousePressEvent(QMouseEvent *pMouseEvent)
+	{
+	//	qDebug("DEBUG> qtractorPluginWidget::mousePressEvent()\n");
+		QWidget::mousePressEvent(pMouseEvent);
+		if (m_wEditor) {
+			XEvent ev;
+			::memset(&ev, 0, sizeof(ev));
+			const QPoint& globalPos = pMouseEvent->globalPos();
+			const QPoint& pos = pMouseEvent->pos();
+			ev.xbutton.display = m_pDisplay;
+			ev.xbutton.type    = ButtonPress;
+			ev.xbutton.window  = m_wEditor;
+			ev.xbutton.root    = RootWindow(m_pDisplay, DefaultScreen(m_pDisplay));
+			ev.xbutton.time    = CurrentTime;
+			ev.xbutton.x       = pos.x();
+			ev.xbutton.y       = pos.y();
+			ev.xbutton.x_root  = globalPos.x();
+			ev.xbutton.y_root  = globalPos.y();
+			ev.xbutton.button  = getXButton(pMouseEvent->buttons());
+			ev.xbutton.state   = getXButtonState(pMouseEvent->buttons());
+			sendXEvent(&ev);
+		}
+	}
+
+	void mouseMoveEvent(QMouseEvent *pMouseEvent)
+	{
+	//	qDebug("DEBUG> qtractorPluginWidget::mouseMoveEvent()\n");
+		QWidget::mouseMoveEvent(pMouseEvent);
+		if (m_wEditor) {
+			XEvent ev;
+			::memset(&ev, 0, sizeof(ev));
+			const QPoint& globalPos = pMouseEvent->globalPos();
+			const QPoint& pos = pMouseEvent->pos();
+			ev.xmotion.display = m_pDisplay;
+			ev.xmotion.type    = MotionNotify;
+			ev.xmotion.window  = m_wEditor;
+			ev.xmotion.root    = RootWindow(m_pDisplay, DefaultScreen(m_pDisplay));
+			ev.xmotion.time    = CurrentTime;
+			ev.xmotion.x       = pos.x();
+			ev.xmotion.y       = pos.y();
+			ev.xmotion.x_root  = globalPos.x();
+			ev.xmotion.y_root  = globalPos.y();
+			ev.xmotion.state   = getXButtonState(pMouseEvent->buttons());
+			sendXEvent(&ev);
+		}
+	}
+
+	void mouseReleaseEvent(QMouseEvent *pMouseEvent)
+	{
+	//	qDebug("DEBUG> qtractorPluginWidget::mouseReleaseEvent()\n");
+		QWidget::mouseReleaseEvent(pMouseEvent);
+		if (m_wEditor) {
+			XEvent ev;
+			::memset(&ev, 0, sizeof(ev));
+			const QPoint& globalPos = pMouseEvent->globalPos();
+			const QPoint& pos = pMouseEvent->pos();
+			ev.xbutton.display = m_pDisplay;
+			ev.xbutton.type    = ButtonRelease;
+			ev.xbutton.window  = m_wEditor;
+			ev.xbutton.root    = RootWindow(m_pDisplay, DefaultScreen(m_pDisplay));
+			ev.xbutton.time    = CurrentTime;
+			ev.xbutton.x       = pos.x();
+			ev.xbutton.y       = pos.y();
+			ev.xbutton.x_root  = globalPos.x();
+			ev.xbutton.y_root  = globalPos.y();
+			ev.xbutton.button  = getXButton(pMouseEvent->buttons());
+			ev.xbutton.state   = getXButtonState(pMouseEvent->buttons());
+			sendXEvent(&ev);
+		}
+	}
+
+	void wheelEvent(QWheelEvent *pWheelEvent)
+	{
+	//	qDebug("DEBUG> qtractorPluginWidget::wheelEvent()\n");
+		QWidget::wheelEvent(pWheelEvent);
+		if (m_wEditor) {
+			XEvent ev;
+			::memset(&ev, 0, sizeof(ev));
+			const QPoint& globalPos = pWheelEvent->globalPos();
+			const QPoint& pos = pWheelEvent->pos();
+			ev.xbutton.display = m_pDisplay;
+			ev.xbutton.type    = ButtonPress;
+			ev.xbutton.window  = m_wEditor;
+			ev.xbutton.root    = RootWindow(m_pDisplay, DefaultScreen(m_pDisplay));
+			ev.xbutton.time    = CurrentTime;
+			ev.xbutton.x       = pos.x();
+			ev.xbutton.y       = pos.y();
+			ev.xbutton.x_root  = globalPos.x();
+			ev.xbutton.y_root  = globalPos.y();
+			if (pWheelEvent->delta() > 0) {
+				ev.xbutton.button = Button4;
+				ev.xbutton.state |= Button4Mask;
+			} else {
+				ev.xbutton.button = Button5;
+				ev.xbutton.state |= Button5Mask;
+			}
+			sendXEvent(&ev);
+			// FIXME: delay here?
+			ev.xbutton.type = ButtonRelease;
+			sendXEvent(&ev);
+		}
+	}
+
+	void leaveEvent(QEvent *pLeaveEvent)
+	{
+	//	qDebug("DEBUG> qtractorPluginWidget::leaveEvent()\n");
+		QWidget::leaveEvent(pLeaveEvent);
+		if (m_wEditor) {
+			XEvent ev;
+			::memset(&ev, 0, sizeof(ev));
+			const QPoint& globalPos = QCursor::pos();
+			const QPoint& pos = QWidget::mapFromGlobal(globalPos);
+			ev.xcrossing.display = m_pDisplay;
+			ev.xcrossing.type    = LeaveNotify;
+			ev.xcrossing.window  = m_wEditor;
+			ev.xcrossing.root    = RootWindow(m_pDisplay, DefaultScreen(m_pDisplay));
+			ev.xcrossing.time    = CurrentTime;
+			ev.xcrossing.x       = pos.x();
+			ev.xcrossing.y       = pos.y();
+			ev.xcrossing.x_root  = globalPos.x();
+			ev.xcrossing.y_root  = globalPos.y();
+			ev.xcrossing.mode    = NotifyNormal;
+			ev.xcrossing.detail  = NotifyAncestor;
+    		ev.xcrossing.focus   = QWidget::hasFocus();
+			ev.xcrossing.state   = getXButtonState(QApplication::mouseButtons());
+			sendXEvent(&ev);
+		}
+	}
+
+	// Composite paint event.
+	void paintEvent(QPaintEvent *pPaintEvent)
+	{
+		QWidget::paintEvent(pPaintEvent);
+		if (m_wEditor) {
+			XEvent ev;
+			::memset(&ev, 0, sizeof(ev));
+			const QRect& rect = QWidget::geometry();
+			ev.xexpose.type    = Expose;
+			ev.xexpose.display = m_pDisplay;
+			ev.xexpose.window  = m_wEditor;
+			ev.xexpose.x       = rect.x();
+			ev.xexpose.y       = rect.y();
+			ev.xexpose.width   = rect.width();
+			ev.xexpose.height  = rect.height();
+			sendXEvent(&ev);
+		}
+	}
+
+	// Send X11 event.
+	void sendXEvent(XEvent *pEvent)
+	{
+		if (m_eventProc) {
+			// If the plugin publish a event procedure, so it doesn't
+			// have a message thread running, pass the event directly.
+			(*m_eventProc)(pEvent);
+		}
+		else
+		if (m_wEditor) {
+			// If the plugin have a message thread running, then send events
+			// to that window: it will be caught by the message thread!
+			XSendEvent(m_pDisplay, m_wEditor, false, 0L, pEvent);
+			XFlush(m_pDisplay);
+		}
+	}
+
+#endif
+
+private:
+
+	// Instance variables...
+#if defined(Q_WS_X11)
+	Display   *m_pDisplay;
+	Window     m_wEditor;
+	XEventProc m_eventProc;
+#endif
+
+	qtractorPluginForm *m_pPluginForm;
 };
 
 
@@ -292,7 +618,8 @@ QList<qtractorVstPlugin *> qtractorVstPlugin::g_vstPlugins;
 qtractorVstPlugin::qtractorVstPlugin ( qtractorPluginList *pList,
 	qtractorVstPluginType *pVstType )
 	: qtractorPlugin(pList, pVstType), m_ppEffects(NULL),
-		m_ppIBuffer(NULL), m_ppOBuffer(NULL), m_bIdleTimer(false)
+		m_ppIBuffer(NULL), m_ppOBuffer(NULL),
+		m_bIdleTimer(false), m_pEditorWidget(NULL)
 {
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorVstPlugin[%p] filename=\"%s\" index=%lu typeHint=%d",
@@ -483,17 +810,59 @@ int qtractorVstPlugin::vst_dispatch( unsigned short iInstance,
 
 
 // Open editor.
-void qtractorVstPlugin::openEditor ( QWidget *pParent )
+void qtractorVstPlugin::openEditor ( QWidget */*pParent*/ )
 {
+	// Is it already there?
+	if (m_pEditorWidget) {
+		if (!m_pEditorWidget->isVisible())
+			m_pEditorWidget->show();
+		m_pEditorWidget->raise();
+		m_pEditorWidget->activateWindow();
+		return;
+	}
+
 #ifdef CONFIG_DEBUG
-	qDebug("qtractorVstPlugin[%p]::openEditor(%p)", this, pParent);
+	qDebug("qtractorVstPlugin[%p]::openEditor()", this);
 #endif
+
+	// Create the new parent frame...
+	Qt::WindowFlags wflags = Qt::Window
+	#if QT_VERSION >= 0x040200
+		| Qt::CustomizeWindowHint
+	#endif
+		| Qt::WindowTitleHint
+		| Qt::WindowSystemMenuHint
+		| Qt::WindowMinMaxButtonsHint
+		| Qt::Tool;
+	m_pEditorWidget = new EditorWidget(form(), wflags);
+
+	// Start the proper (child) editor...
 	long  value = 0;
-	void *ptr = (void *) pParent->winId();
+	void *ptr = (void *) m_pEditorWidget->winId();
 #if defined(Q_WS_X11)
-	value = (long) QX11Info::display();
+	value = (long) m_pEditorWidget->display();
 #endif
 	vst_dispatch(0, effEditOpen, 0, value, ptr, 0.0f);
+
+	// Make it the right size
+	struct ERect {
+		short top;
+		short left;
+		short bottom;
+		short right;
+	} *erect;
+
+	if (vst_dispatch(0, effEditGetRect, 0, 0, &erect, 0.0f)) {
+		m_pEditorWidget->setFixedSize(
+			erect->right - erect->left,
+			erect->bottom - erect->top);
+	}
+
+	// Final stabilization...
+	m_pEditorWidget->setPlugin(this);
+	m_pEditorWidget->show();
+
+	idleEditor();
 }
 
 
@@ -504,6 +873,12 @@ void qtractorVstPlugin::closeEditor (void)
 	qDebug("qtractorVstPlugin[%p]::closeEditor()", this);
 #endif
 	vst_dispatch(0, effEditClose, 0, 0, NULL, 0.0f);
+
+	// Close the parent widget, if any.
+	if (m_pEditorWidget) {
+		delete m_pEditorWidget;
+		m_pEditorWidget = NULL;
+	}
 }
 
 
@@ -514,6 +889,14 @@ void qtractorVstPlugin::idleEditor (void)
 	qDebug("qtractorVstPlugin[%p]::idleEditor()", this);
 #endif
 	vst_dispatch(0, effEditIdle, 0, 0, NULL, 0.0f);
+}
+
+
+// update editor widget caption.
+void qtractorVstPlugin::setEditorTitle ( const QString& sTitle )
+{
+	if (m_pEditorWidget)
+		m_pEditorWidget->setWindowTitle(sTitle);
 }
 
 
@@ -550,24 +933,10 @@ void qtractorVstPlugin::idleTimerAll (void)
 }
 
 
-// Retrieve editor size extents.
-QSize qtractorVstPlugin::editorSize (void)
+// Our own editor widget accessor.
+QWidget *qtractorVstPlugin::editorWidget (void) const
 {
-	QSize esize;
-
-	struct ERect {
-		short top;
-		short left;
-		short bottom;
-		short right;
-	} *erect;
-
-	if (vst_dispatch(0, effEditGetRect, 0, 0, &erect, 0.0f)) {
-		esize.setWidth(erect->right - erect->left);
-		esize.setHeight(erect->bottom - erect->top);
-	}
-
-	return esize;
+	return static_cast<QWidget *> (m_pEditorWidget);
 }
 
 
@@ -793,11 +1162,11 @@ static VstIntPtr qtractorVstPlugin_openFileSelector ( AEffect *effect, VstFileSe
 			.arg(pvfs->title).arg((pVstPlugin->type())->name());
 		if (pvfs->command == kVstFileLoad) {
 			sFilename = QFileDialog::getOpenFileName(
-				(pVstPlugin->form())->editorWidget(),
+				pVstPlugin->editorWidget(),
 				sTitle, sDirectory, sFilter);
 		} else {
 			sFilename = QFileDialog::getSaveFileName(
-				(pVstPlugin->form())->editorWidget(),
+				pVstPlugin->editorWidget(),
 				sTitle, sDirectory, sFilter);
 		}
 		if (!sFilename.isEmpty()) {
@@ -815,7 +1184,7 @@ static VstIntPtr qtractorVstPlugin_openFileSelector ( AEffect *effect, VstFileSe
 		QString sTitle = QString("%1 - %2")
 			.arg(pvfs->title).arg((pVstPlugin->type())->name());
 		sDirectory = QFileDialog::getExistingDirectory(
-			(pVstPlugin->form())->editorWidget(),
+			pVstPlugin->editorWidget(),
 			sTitle, sDirectory);
 		if (!sDirectory.isEmpty()) {
 			if (pvfs->returnPath == NULL) {

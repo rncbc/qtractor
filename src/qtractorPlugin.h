@@ -305,7 +305,8 @@ public:
 	virtual void openEditor(QWidget */*pParent*/) {}
 	virtual void closeEditor() {};
 	virtual void idleEditor()  {};
-	virtual QSize editorSize() { return QSize(); }
+
+	virtual void setEditorTitle(const QString&) {}
 
 	// An accessible list of observers.
 	const QList<qtractorPluginListItem *>& items() const { return m_items; }

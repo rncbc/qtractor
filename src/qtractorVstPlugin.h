@@ -92,7 +92,7 @@ class qtractorVstPlugin : public qtractorPlugin
 {
 public:
 
-	// Constructors.
+	// Constructor.
 	qtractorVstPlugin(qtractorPluginList *pList,
 		qtractorVstPluginType *pVstType);
 
@@ -110,7 +110,8 @@ public:
 	void openEditor(QWidget *pParent);
 	void closeEditor();
 	void idleEditor();
-	QSize editorSize();
+
+	void setEditorTitle(const QString& sTitle);
 
 	// The main plugin processing procedure.
 	void process(float **ppIBuffer, float **ppOBuffer, unsigned int nframes);
@@ -128,6 +129,9 @@ public:
 	bool isIdleTimer() const
 		{ return m_bIdleTimer; }
 
+	// Our own editor widget accessor.
+	QWidget *editorWidget() const;
+
 	// Global VST plugin lookup.
 	static qtractorVstPlugin *findPlugin(AEffect *pVstEffect);
 
@@ -136,6 +140,11 @@ public:
 
 	// Idle timer (static).
 	static void idleTimerAll();
+
+protected:
+
+	// Editor widget forward decls.
+	class EditorWidget;
 
 private:
 
@@ -148,6 +157,9 @@ private:
 
 	// Idle timer flag.
 	bool m_bIdleTimer;
+
+	// Our own editor widget (parent frame).
+	EditorWidget *m_pEditorWidget;
 
 	// Singleton list of VST plugins.
 	static QList<qtractorVstPlugin *> g_vstPlugins;

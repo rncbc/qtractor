@@ -26,9 +26,6 @@
 
 #include <dssi.h>
 
-#include <QFileInfo>
-#include <QDir>
-
 
 //----------------------------------------------------------------------------
 // qtractorDssiPluginType -- LADSPA plugin type instance.
@@ -104,6 +101,7 @@ public:
 
 	// GUI Editor stuff.
 	void openEditor(QWidget */*pParent*/);
+	void closeEditor();
 };
 
 

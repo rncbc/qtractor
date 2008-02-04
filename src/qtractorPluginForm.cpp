@@ -41,336 +41,8 @@
 
 #include <math.h>
 
-#if defined(Q_WS_X11)
-#include <QApplication>
-#include <QX11Info>
-#include <X11/Xlib.h>
-#include <X11/Xutil.h>
-#include <X11/Xatom.h>
-typedef void (*XEventProc)(XEvent *);
-#endif
-
-
 // This shall hold the default preset name.
 static QString g_sDefPreset;
-
-
-//---------------------------------------------------------------------
-
-#if defined(Q_WS_X11)
-
-static bool g_bXError = false;
-
-static int tempXErrorHandler ( Display *, XErrorEvent * )
-{
-	g_bXError = true;
-	return 0;
-}
-
-static XEventProc getXEventProc ( Display *pDisplay, Window w )
-{
-	int iSize;
-	unsigned long iBytes, iCount;
-	unsigned char *pData;
-	XEventProc eventProc = NULL;
-	Atom atomType, atom = XInternAtom(pDisplay, "_XEventProc", false);
-
-	g_bXError = false;
-	XErrorHandler oldErrorHandler = XSetErrorHandler(tempXErrorHandler);
-	XGetWindowProperty(pDisplay, w, atom, 0, 1, false,
-		AnyPropertyType, &atomType,  &iSize, &iCount, &iBytes, &pData);
-	if (g_bXError == false && iCount == 1)
-		eventProc = (XEventProc) (*(int *) pData);
-	XSetErrorHandler(oldErrorHandler);
-
-	return eventProc;
-}
-
-static Window getXChildWindow ( Display *pDisplay, Window w )
-{
-	Window wRoot, wParent, *pwChildren;
-	unsigned int iChildren = 0;
-
-	XQueryTree(pDisplay, w, &wRoot, &wParent, &pwChildren, &iChildren);
-
-	return (iChildren > 0 ? pwChildren[0] : NULL);
-}
-
-static unsigned int getXButton ( Qt::MouseButtons buttons )
-{
-	int button = 0;
-	if (buttons & Qt::LeftButton)
-		button = Button1;
-	else
-	if (buttons & Qt::MidButton)
-		button = Button2;
-	else
-	if (buttons & Qt::RightButton)
-		button = Button3;
-	return button;
-}
-
-static unsigned int getXButtonState ( Qt::MouseButtons buttons )
-{
-	int state = 0;
-	if (buttons & Qt::LeftButton)
-		state |= Button1Mask;
-	if (buttons & Qt::MidButton)
-		state |= Button2Mask;
-	if (buttons & Qt::RightButton)
-		state |= Button3Mask;
-	return state;
-}
-
-#endif // Q_WS_X11
-
-
-//----------------------------------------------------------------------------
-// qtractorPluginForm::EditorWidget -- Plugin editor wrapper widget.
-
-class qtractorPluginForm::EditorWidget : public QWidget
-{
-public:
-
-	// Constructor.
-	EditorWidget(qtractorPluginForm *pPluginForm, Qt::WindowFlags wflags = 0)
-		: QWidget(NULL, wflags),
-#if defined(Q_WS_X11)
-			m_pDisplay(NULL),
-			m_wEditor(NULL),
-			m_eventProc(NULL),
-#endif
-			m_pPluginForm(pPluginForm) {}
-
-	// Specialized editor methods.
-	void setPlugin(qtractorPlugin *pPlugin)
-	{
-		QWidget::setWindowTitle((pPlugin->type())->name());
-		pPlugin->openEditor(this);
-		QWidget::setFixedSize(pPlugin->editorSize());
-#if defined(Q_WS_X11)
-		m_pDisplay = QX11Info::display();
-		m_wEditor  = getXChildWindow(m_pDisplay, (Window) winId());
-		if (m_wEditor) {
-			m_eventProc = getXEventProc(m_pDisplay, m_wEditor);
-			if (m_eventProc)
-				XSelectInput(m_pDisplay, m_wEditor, NoEventMask);
-		}
-#endif
-	}
-
-protected:
-
-	// Visibility event handlers.
-	void closeEvent(QCloseEvent *pCloseEvent)
-		{ QWidget::closeEvent(pCloseEvent); m_pPluginForm->toggleEditor(false); }
-
-#if defined(Q_WS_X11)
-
-	// Mouse events.
-	void enterEvent(QEvent *pEnterEvent)
-	{
-	//	qDebug("DEBUG> qtractorPluginWidget::enterEvent()\n");
-		QWidget::enterEvent(pEnterEvent);
-		if (m_wEditor) {
-			XEvent ev;
-			::memset(&ev, 0, sizeof(ev));
-			const QPoint& globalPos = QCursor::pos();
-			const QPoint& pos = QWidget::mapFromGlobal(globalPos);
-			ev.xcrossing.display = m_pDisplay;
-			ev.xcrossing.type    = EnterNotify;
-			ev.xcrossing.window  = m_wEditor;
-			ev.xcrossing.root    = RootWindow(m_pDisplay, DefaultScreen(m_pDisplay));
-			ev.xcrossing.time    = CurrentTime;
-			ev.xcrossing.x       = pos.x();
-			ev.xcrossing.y       = pos.y();
-			ev.xcrossing.x_root  = globalPos.x();
-			ev.xcrossing.y_root  = globalPos.y();
-			ev.xcrossing.mode    = NotifyNormal;
-			ev.xcrossing.detail  = NotifyAncestor;
-			ev.xcrossing.state   = getXButtonState(QApplication::mouseButtons());
-			sendXEvent(&ev);
-		}
-	}
-
-	void mousePressEvent(QMouseEvent *pMouseEvent)
-	{
-	//	qDebug("DEBUG> qtractorPluginWidget::mousePressEvent()\n");
-		QWidget::mousePressEvent(pMouseEvent);
-		if (m_wEditor) {
-			XEvent ev;
-			::memset(&ev, 0, sizeof(ev));
-			const QPoint& globalPos = pMouseEvent->globalPos();
-			const QPoint& pos = pMouseEvent->pos();
-			ev.xbutton.display = m_pDisplay;
-			ev.xbutton.type    = ButtonPress;
-			ev.xbutton.window  = m_wEditor;
-			ev.xbutton.root    = RootWindow(m_pDisplay, DefaultScreen(m_pDisplay));
-			ev.xbutton.time    = CurrentTime;
-			ev.xbutton.x       = pos.x();
-			ev.xbutton.y       = pos.y();
-			ev.xbutton.x_root  = globalPos.x();
-			ev.xbutton.y_root  = globalPos.y();
-			ev.xbutton.button  = getXButton(pMouseEvent->buttons());
-			ev.xbutton.state   = getXButtonState(pMouseEvent->buttons());
-			sendXEvent(&ev);
-		}
-	}
-
-	void mouseMoveEvent(QMouseEvent *pMouseEvent)
-	{
-	//	qDebug("DEBUG> qtractorPluginWidget::mouseMoveEvent()\n");
-		QWidget::mouseMoveEvent(pMouseEvent);
-		if (m_wEditor) {
-			XEvent ev;
-			::memset(&ev, 0, sizeof(ev));
-			const QPoint& globalPos = pMouseEvent->globalPos();
-			const QPoint& pos = pMouseEvent->pos();
-			ev.xmotion.display = m_pDisplay;
-			ev.xmotion.type    = MotionNotify;
-			ev.xmotion.window  = m_wEditor;
-			ev.xmotion.root    = RootWindow(m_pDisplay, DefaultScreen(m_pDisplay));
-			ev.xmotion.time    = CurrentTime;
-			ev.xmotion.x       = pos.x();
-			ev.xmotion.y       = pos.y();
-			ev.xmotion.x_root  = globalPos.x();
-			ev.xmotion.y_root  = globalPos.y();
-			ev.xmotion.state   = getXButtonState(pMouseEvent->buttons());
-			sendXEvent(&ev);
-		}
-	}
-
-	void mouseReleaseEvent(QMouseEvent *pMouseEvent)
-	{
-	//	qDebug("DEBUG> qtractorPluginWidget::mouseReleaseEvent()\n");
-		QWidget::mouseReleaseEvent(pMouseEvent);
-		if (m_wEditor) {
-			XEvent ev;
-			::memset(&ev, 0, sizeof(ev));
-			const QPoint& globalPos = pMouseEvent->globalPos();
-			const QPoint& pos = pMouseEvent->pos();
-			ev.xbutton.display = m_pDisplay;
-			ev.xbutton.type    = ButtonRelease;
-			ev.xbutton.window  = m_wEditor;
-			ev.xbutton.root    = RootWindow(m_pDisplay, DefaultScreen(m_pDisplay));
-			ev.xbutton.time    = CurrentTime;
-			ev.xbutton.x       = pos.x();
-			ev.xbutton.y       = pos.y();
-			ev.xbutton.x_root  = globalPos.x();
-			ev.xbutton.y_root  = globalPos.y();
-			ev.xbutton.button  = getXButton(pMouseEvent->buttons());
-			ev.xbutton.state   = getXButtonState(pMouseEvent->buttons());
-			sendXEvent(&ev);
-		}
-	}
-
-	void wheelEvent(QWheelEvent *pWheelEvent)
-	{
-	//	qDebug("DEBUG> qtractorPluginWidget::wheelEvent()\n");
-		QWidget::wheelEvent(pWheelEvent);
-		if (m_wEditor) {
-			XEvent ev;
-			::memset(&ev, 0, sizeof(ev));
-			const QPoint& globalPos = pWheelEvent->globalPos();
-			const QPoint& pos = pWheelEvent->pos();
-			ev.xbutton.display = m_pDisplay;
-			ev.xbutton.type    = ButtonPress;
-			ev.xbutton.window  = m_wEditor;
-			ev.xbutton.root    = RootWindow(m_pDisplay, DefaultScreen(m_pDisplay));
-			ev.xbutton.time    = CurrentTime;
-			ev.xbutton.x       = pos.x();
-			ev.xbutton.y       = pos.y();
-			ev.xbutton.x_root  = globalPos.x();
-			ev.xbutton.y_root  = globalPos.y();
-			if (pWheelEvent->delta() > 0) {
-				ev.xbutton.button = Button4;
-				ev.xbutton.state |= Button4Mask;
-			} else {
-				ev.xbutton.button = Button5;
-				ev.xbutton.state |= Button5Mask;
-			}
-			sendXEvent(&ev);
-			// FIXME: delay here?
-			ev.xbutton.type = ButtonRelease;
-			sendXEvent(&ev);
-		}
-	}
-
-	void leaveEvent(QEvent *pLeaveEvent)
-	{
-	//	qDebug("DEBUG> qtractorPluginWidget::leaveEvent()\n");
-		QWidget::leaveEvent(pLeaveEvent);
-		if (m_wEditor) {
-			XEvent ev;
-			::memset(&ev, 0, sizeof(ev));
-			const QPoint& globalPos = QCursor::pos();
-			const QPoint& pos = QWidget::mapFromGlobal(globalPos);
-			ev.xcrossing.display = m_pDisplay;
-			ev.xcrossing.type    = LeaveNotify;
-			ev.xcrossing.window  = m_wEditor;
-			ev.xcrossing.root    = RootWindow(m_pDisplay, DefaultScreen(m_pDisplay));
-			ev.xcrossing.time    = CurrentTime;
-			ev.xcrossing.x       = pos.x();
-			ev.xcrossing.y       = pos.y();
-			ev.xcrossing.x_root  = globalPos.x();
-			ev.xcrossing.y_root  = globalPos.y();
-			ev.xcrossing.mode    = NotifyNormal;
-			ev.xcrossing.detail  = NotifyAncestor;
-    		ev.xcrossing.focus   = QWidget::hasFocus();
-			ev.xcrossing.state   = getXButtonState(QApplication::mouseButtons());
-			sendXEvent(&ev);
-		}
-	}
-
-	// Composite paint event.
-	void paintEvent(QPaintEvent *pPaintEvent)
-	{
-		QWidget::paintEvent(pPaintEvent);
-		if (m_wEditor) {
-			XEvent ev;
-			::memset(&ev, 0, sizeof(ev));
-			const QRect& rect = QWidget::geometry();
-			ev.xexpose.type    = Expose;
-			ev.xexpose.display = m_pDisplay;
-			ev.xexpose.window  = m_wEditor;
-			ev.xexpose.x       = rect.x();
-			ev.xexpose.y       = rect.y();
-			ev.xexpose.width   = rect.width();
-			ev.xexpose.height  = rect.height();
-			sendXEvent(&ev);
-		}
-	}
-
-	// Send X11 event.
-	void sendXEvent(XEvent *pEvent)
-	{
-		if (m_eventProc) {
-			// If the plugin publish a event procedure, so it doesn't
-			// have a message thread running, pass the event directly.
-			(*m_eventProc)(pEvent);
-		}
-		else
-		if (m_wEditor) {
-			// If the plugin have a message thread running, then send events
-			// to that window: it will be caught by the message thread!
-			XSendEvent(m_pDisplay, m_wEditor, false, 0L, pEvent);
-			XFlush(m_pDisplay);
-		}
-	}
-
-#endif
-
-private:
-
-	// Instance variables...
-#if defined(Q_WS_X11)
-	Display   *m_pDisplay;
-	Window     m_wEditor;
-	XEventProc m_eventProc;
-#endif
-
-	qtractorPluginForm *m_pPluginForm;
-};
 
 
 //----------------------------------------------------------------------------
@@ -385,7 +57,6 @@ qtractorPluginForm::qtractorPluginForm (
 	m_ui.setupUi(this);
 
 	m_pPlugin       = NULL;
-	m_pEditorWidget = NULL;
 	m_pGridLayout   = NULL;
 	m_iDirtyCount   = 0;
 	m_iUpdate       = 0;
@@ -461,7 +132,10 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 #endif
 	const QList<qtractorPluginParam *>& params = m_pPlugin->params();
 	int iRows = params.count();
-	if (iRows < 101) { // FIXME: Can't stand more than hundred widgets?
+	 // FIXME: Can't stand more than hundred widgets?
+	 // also, down show any parameter controls if we
+	 // do have a dedicated editor GUI...
+	if (iRows < 101 && !(m_pPlugin->type())->isEditor()) {
 		int iCols = 1;
 		while (iRows > 12 && iCols < 3) {
 			iRows >>= 1;
@@ -507,13 +181,6 @@ void qtractorPluginForm::activateForm (void)
 
 	raise();
 	activateWindow();
-
-	if (m_pEditorWidget) {
-		if (!m_pEditorWidget->isVisible())
-			m_pEditorWidget->show();
-		m_pEditorWidget->raise();
-		m_pEditorWidget->activateWindow();
-	}
 }
 
 
@@ -522,50 +189,16 @@ void qtractorPluginForm::toggleEditor ( bool bOn )
 {
 	if (m_pPlugin == NULL)
 		return;
-	if (!(m_pPlugin->type())->isEditor())
-		return;
 
 	if (m_iUpdate > 0)
 		return;
 
 	m_iUpdate++;
 
-	// Plugin supplies its own editor form...
-	if (bOn && m_pEditorWidget == NULL) {
-		Qt::WindowFlags wflags = Qt::Window
-		#if QT_VERSION >= 0x040200
-			| Qt::CustomizeWindowHint
-		#endif
-			| Qt::WindowTitleHint
-			| Qt::WindowSystemMenuHint
-			| Qt::WindowMinMaxButtonsHint
-			| Qt::Tool;
-		m_pEditorWidget = new EditorWidget(this, wflags);
-		m_pEditorWidget->setPlugin(m_pPlugin);
-		m_pEditorWidget->show();
-		m_pPlugin->idleEditor();
-	} 
-	else if (!bOn && m_pEditorWidget) {
-		m_pPlugin->closeEditor();
-		m_pEditorWidget->close();
-		m_pEditorWidget->deleteLater();
-		m_pEditorWidget = NULL;
-	}
-
 	// Set the toggle button anyway...
 	m_ui.EditToolButton->setChecked(bOn);
 
 	m_iUpdate--;
-}
-
-
-// Visibility event handlers.
-void qtractorPluginForm::showEvent ( QShowEvent *pShowEvent )
-{
-	QWidget::showEvent(pShowEvent);
-
-	if (m_pEditorWidget)
-		m_pEditorWidget->show();
 }
 
 
@@ -611,8 +244,7 @@ void qtractorPluginForm::updateCaption (void)
 
 	setWindowTitle(sCaption);
 
-	if (m_pEditorWidget)
-		m_pEditorWidget->setWindowTitle(sCaption);
+	m_pPlugin->setEditorTitle(sCaption);
 }
 
 
@@ -778,7 +410,10 @@ void qtractorPluginForm::deletePresetSlot (void)
 // Editor slot.
 void qtractorPluginForm::editSlot ( bool bOn )
 {
-	toggleEditor(bOn);
+	if (bOn)
+		m_pPlugin->openEditor(this);
+	else
+		m_pPlugin->closeEditor();
 }
 
 
@@ -887,25 +522,11 @@ void qtractorPluginForm::stabilize (void)
 // Clear up plugin form...
 void qtractorPluginForm::clear()
 {
+	if (m_pPlugin)
+		m_pPlugin->closeEditor();
+
 	qDeleteAll(m_paramWidgets);
 	m_paramWidgets.clear();
-
-	if (m_pEditorWidget) {
-		if (m_pPlugin)
-			m_pPlugin->closeEditor();
-		delete m_pEditorWidget;
-		m_pEditorWidget = NULL;
-	}
-}
-
-
-// editor widget accessor.
-QWidget *qtractorPluginForm::editorWidget (void)
-{
-	if (m_pEditorWidget)
-		return static_cast<QWidget *> (m_pEditorWidget);
-	else
-		return static_cast<QWidget *> (this);
 }
 
 
@@ -1014,18 +635,24 @@ qtractorPluginParamWidget::qtractorPluginParamWidget (
 // Refreshner-loader method.
 void qtractorPluginParamWidget::refresh (void)
 {
+	if (m_iUpdate > 0)
+		return;
+
 	m_iUpdate++;
+
+	float fValue = m_pParam->value();
 	if (m_pParam->isToggled()) {
-		m_pCheckBox->setChecked(m_pParam->value() > 0.001f);
+		m_pCheckBox->setChecked(fValue > 0.001f);
 	} else if (m_pParam->isInteger()) {
-		m_pSpinBox->setValue(int(m_pParam->value()));
+		m_pSpinBox->setValue(int(fValue));
 	} else {
-		m_pSlider->setValue(paramToSlider(m_pParam->value()));
+		m_pSlider->setValue(paramToSlider(fValue));
 		if (m_pSpinBox)
-			m_pSpinBox->setValue(m_pParam->value());
+			m_pSpinBox->setValue(fValue);
 		if (m_pDisplay)
 			m_pDisplay->setText(m_pParam->display());
 	}
+
 	m_iUpdate--;
 }
 
