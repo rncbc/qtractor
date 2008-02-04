@@ -36,12 +36,12 @@
 #include <QWidget>
 
 #if defined(Q_WS_X11)
-#include <QApplication>
 #include <QX11Info>
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <X11/Xatom.h>
 typedef void (*XEventProc)(XEvent *);
+#include <QMouseEvent>
 #endif
 
 #if !defined(VST_2_3_EXTENSIONS) 
@@ -164,7 +164,7 @@ public:
 	// Specialized editor methods.
 	void setPlugin(qtractorPlugin *pPlugin)
 	{
-		QWidget::setWindowTitle((pPlugin->type())->name());
+		QWidget::setWindowTitle(pPlugin->editorTitle());
 #if defined(Q_WS_X11)
 		m_pDisplay = QX11Info::display();
 		m_wEditor  = getXChildWindow(m_pDisplay, (Window) winId());
@@ -175,6 +175,10 @@ public:
 		}
 #endif
 	}
+
+#if defined(Q_WS_X11)
+	Display *display() const { return m_pDisplay; }
+#endif
 
 protected:
 
@@ -862,6 +866,8 @@ void qtractorVstPlugin::openEditor ( QWidget */*pParent*/ )
 	m_pEditorWidget->setPlugin(this);
 	m_pEditorWidget->show();
 
+	setEditorVisible(true);
+
 	idleEditor();
 }
 
@@ -879,6 +885,8 @@ void qtractorVstPlugin::closeEditor (void)
 		delete m_pEditorWidget;
 		m_pEditorWidget = NULL;
 	}
+
+	setEditorVisible(false);
 }
 
 
@@ -892,9 +900,11 @@ void qtractorVstPlugin::idleEditor (void)
 }
 
 
-// update editor widget caption.
+// Update editor widget caption.
 void qtractorVstPlugin::setEditorTitle ( const QString& sTitle )
 {
+	qtractorPlugin::setEditorTitle(sTitle);
+
 	if (m_pEditorWidget)
 		m_pEditorWidget->setWindowTitle(sTitle);
 }

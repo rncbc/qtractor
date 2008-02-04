@@ -516,16 +516,17 @@ void qtractorDssiPlugin::openEditor ( QWidget */*pParent*/ )
 #ifdef CONFIG_LIBLO
 
 	// Are we already there?
-	DssiEidtor *pDssiEditor = os_find_editor(this);
+	DssiEditor *pDssiEditor = osc_find_editor(this);
 	if (pDssiEditor) {
 		osc_show(pDssiEditor);
+		setEditorVisible(true);
 		return;
 	}
 
 	// Open up a new one...
 	osc_open_editor(this);
 
-	const QSring& sDssiEditor = pDssiType->dssi_editor();
+	const QString& sDssiEditor = pDssiType->dssi_editor();
 
 	QStringList args;
 	args.append(g_sOscPath + '/' + pDssiType->label());
@@ -543,7 +544,9 @@ void qtractorDssiPlugin::openEditor ( QWidget */*pParent*/ )
 		args[3].toUtf8().constData());
 #endif
 
-	if (!QProcess::startDetached(sDssiEditor, args))
+	if (QProcess::startDetached(sDssiEditor, args))
+		setEditorVisible(true);
+	else
 		osc_close_editor(this);
 
 #endif
@@ -554,6 +557,7 @@ void qtractorDssiPlugin::closeEditor (void)
 {
 #ifdef CONFIG_LIBLO
 	osc_close_editor(this);
+	setEditorVisible(false);
 #endif
 }
 

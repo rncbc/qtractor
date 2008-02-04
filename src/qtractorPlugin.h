@@ -306,7 +306,13 @@ public:
 	virtual void closeEditor() {};
 	virtual void idleEditor()  {};
 
-	virtual void setEditorTitle(const QString&) {}
+	virtual void setEditorTitle(const QString& sTitle)
+		{ m_sEditorTitle = sTitle; }
+	const QString& editorTitle() const
+		{ return m_sEditorTitle; }
+
+	bool isEditorVisible() const
+		{ return m_bEditorVisible; }
 
 	// An accessible list of observers.
 	const QList<qtractorPluginListItem *>& items() const { return m_items; }
@@ -334,6 +340,10 @@ protected:
 
 	// Instance number settler.
 	void setInstances(unsigned short iInstances);
+
+	// GUI editor visibility state.
+	void setEditorVisible(bool bVisible)
+		{ m_bEditorVisible = bVisible; }
 
 	// Instance capped number of audio ports.
 	unsigned short audioInsCap() const
@@ -363,6 +373,10 @@ private:
 	// The plugin form reference.
 	qtractorPluginForm *m_pForm;
 	QString m_sPreset;
+
+	// GUI editor stuff.
+	QString m_sEditorTitle;
+	bool    m_bEditorVisible;
 };
 
 

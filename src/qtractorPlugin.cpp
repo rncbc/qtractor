@@ -401,7 +401,7 @@ qtractorPlugin::qtractorPlugin (
 	qtractorPluginList *pList, qtractorPluginType *pType )
 	: m_pList(pList), m_pType(pType), m_iInstances(0),
 		m_iAudioInsCap(0), m_iAudioOutsCap(0),
-		m_bActivated(false), m_pForm(NULL)
+		m_bActivated(false), m_pForm(NULL), m_bEditorVisible(false)
 {
 #if 0
 	// Open this...
