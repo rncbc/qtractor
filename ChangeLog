@@ -5,6 +5,10 @@ ChangeLog
 
 CVS HEAD
 
+- At least some transport actions get to be non auto-repeatable
+  when pressed for much too long, as Play and Record, avoiding
+  the tumbling imposed from the keyboard.
+
 - For the first time ever, jackd auto-start is now allowed (!).
 
 - OSC service support through liblo gets optional at configure

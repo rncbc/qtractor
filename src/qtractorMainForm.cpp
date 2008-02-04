@@ -356,6 +356,13 @@ qtractorMainForm::qtractorMainForm (
 	m_statusItems[StatusRate] = pLabel;
 	statusBar()->addWidget(pLabel);
 
+#if QT_VERSION >= 0x040200
+	m_ui.transportLoopAction->setAutoRepeat(false);
+	m_ui.transportLoopSetAction->setAutoRepeat(false);
+	m_ui.transportPlayAction->setAutoRepeat(false);
+	m_ui.transportRecordAction->setAutoRepeat(false);
+#endif
+
 	// Some actions surely need those
 	// shortcuts firmly attached...
 	addAction(m_ui.viewMenubarAction);
