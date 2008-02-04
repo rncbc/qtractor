@@ -329,7 +329,8 @@ void qtractorAudioEngine::shutdown (void)
 bool qtractorAudioEngine::init ( const QString& sClientName )
 {
 	// Try open a new client...
-	m_pJackClient = jack_client_new(sClientName.toUtf8().constData());
+	m_pJackClient = jack_client_open(
+		sClientName.toUtf8().constData(), JackNullOption, NULL);
 	if (m_pJackClient == NULL)
 		return false;
 

@@ -5,6 +5,8 @@ ChangeLog
 
 CVS HEAD
 
+- For the first time ever, jackd auto-start is now allowed (!).
+
 - OSC service support through liblo gets optional at configure
   time, now leading the way to proper DSSI plug-in hosting.
 

@@ -120,7 +120,7 @@
        </property>
        <property name="sizeHint" >
         <size>
-         <width>120</width>
+         <width>20</width>
          <height>20</height>
         </size>
        </property>

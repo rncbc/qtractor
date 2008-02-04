@@ -155,7 +155,7 @@ public:
 	EditorWidget(qtractorPluginForm *pPluginForm, Qt::WindowFlags wflags = 0)
 		: QWidget(NULL, wflags),
 #if defined(Q_WS_X11)
-			m_pDisplay(NULL),
+			m_pDisplay(QX11Info::display()),
 			m_wEditor(NULL),
 			m_eventProc(NULL),
 #endif
@@ -166,8 +166,7 @@ public:
 	{
 		QWidget::setWindowTitle(pPlugin->editorTitle());
 #if defined(Q_WS_X11)
-		m_pDisplay = QX11Info::display();
-		m_wEditor  = getXChildWindow(m_pDisplay, (Window) winId());
+		m_wEditor = getXChildWindow(m_pDisplay, (Window) winId());
 		if (m_wEditor) {
 			m_eventProc = getXEventProc(m_pDisplay, m_wEditor);
 			if (m_eventProc)
