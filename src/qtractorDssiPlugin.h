@@ -102,6 +102,15 @@ public:
 	// GUI Editor stuff.
 	void openEditor(QWidget */*pParent*/);
 	void closeEditor();
+
+	// GUI editor visibility state.
+	void setEditorVisible(bool bVisible);
+	bool isEditorVisible() const;
+
+private:
+
+	// GUI editor visiability status.
+	bool m_bEditorVisible;
 };
 
 

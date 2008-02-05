@@ -81,15 +81,22 @@ static DssiEditor *osc_find_editor ( qtractorDssiPlugin *pDssiPlugin )
 }
 
 
-static DssiEditor *osc_find_editor_by_label ( const QString& sLabel )
+static QString osc_label ( qtractorDssiPlugin *pDssiPlugin )
+{
+	return (pDssiPlugin->type())->label()
+		+ '.' + QString::number(ulong(pDssiPlugin), 16);
+}
+
+
+static DssiEditor *osc_find_editor_by_label ( const QString& sOscLabel )
 {
 #ifdef CONFIG_DEBUG
-	qDebug("osc_find_editor_by_label(\"%s\")", sLabel.toUtf8().constData());
+	qDebug("osc_find_editor_by_label(\"%s\")", sOscLabel.toUtf8().constData());
 #endif
 	QListIterator<DssiEditor *> iter(g_dssiEditors);
 	while (iter.hasNext()) {
 		DssiEditor *pDssiEditor = iter.next();
-		if (((pDssiEditor->plugin)->type())->label() == sLabel)
+		if (osc_label(pDssiEditor->plugin) == sOscLabel)
 			return pDssiEditor;
 	}
 
@@ -209,8 +216,6 @@ static int osc_control ( DssiEditor *pDssiEditor, lo_arg **argv )
 	if (pParam)
 		pParam->setValue(value);
 
-//	(pDssiPlugin->form())->updateParam(param);
-
 	return 0;
 }
 
@@ -235,8 +240,7 @@ static int osc_exiting ( DssiEditor *pDssiEditor )
 	qDebug("osc_exiting: path \"%s\"", pDssiEditor->path);
 #endif
 
-	qtractorDssiPlugin *pDssiPlugin = pDssiEditor->plugin;
-	(pDssiPlugin->form())->toggleEditor(false);
+	((pDssiEditor->plugin)->form())->toggleEditor(false);
 
 	int iDssiEditor = g_dssiEditors.indexOf(pDssiEditor);
 	if (iDssiEditor >= 0) {
@@ -284,15 +288,6 @@ static int osc_message ( const char *path, const char *types,
 	if (sMethod == "control")
 		return osc_control(pDssiEditor, argv);
 	else
-	if (sMethod == "show")
-		return osc_show(pDssiEditor);
-	else
-	if (sMethod == "hide")
-		return osc_hide(pDssiEditor);
-	else
-	if (sMethod == "quit")
-		return osc_quit(pDssiEditor);
-	else
 	if (sMethod == "exiting")
 		return osc_exiting(pDssiEditor);
 
@@ -335,13 +330,14 @@ static void osc_open_editor ( qtractorDssiPlugin *pDssiPlugin )
 {
 #ifdef CONFIG_DEBUG
 	qDebug("osc_open_editor(\"%s\")",
-		(pDssiPlugin->type())->label().toUtf8().constData());
+		osc_label(pDssiPlugin).toUtf8().constData());
 #endif
 
 	if (g_dssiEditors.count() < 1)
 		osc_start();
 
 	g_dssiEditors.append(new DssiEditor(pDssiPlugin));
+
 }
 
 
@@ -349,11 +345,12 @@ static void osc_close_editor ( qtractorDssiPlugin *pDssiPlugin )
 {
 #ifdef CONFIG_DEBUG
 	qDebug("osc_close_editor(\"%s\")",
-		(pDssiPlugin->type())->label().toUtf8().constData());
+		osc_label(pDssiPlugin).toUtf8().constData());
 #endif
 
 	DssiEditor *pDssiEditor = osc_find_editor(pDssiPlugin);
 	if (pDssiEditor) {
+		osc_hide(pDssiEditor);
 		osc_quit(pDssiEditor);
 		osc_exiting(pDssiEditor);
 	}
@@ -463,7 +460,7 @@ const DSSI_Descriptor *qtractorDssiPluginType::dssi_descriptor (
 // Constructors.
 qtractorDssiPlugin::qtractorDssiPlugin ( qtractorPluginList *pList,
 	qtractorDssiPluginType *pDssiType )
-	: qtractorLadspaPlugin(pList, pDssiType)
+	: qtractorLadspaPlugin(pList, pDssiType), m_bEditorVisible(false)
 {
 }
 
@@ -518,8 +515,11 @@ void qtractorDssiPlugin::openEditor ( QWidget */*pParent*/ )
 	// Are we already there?
 	DssiEditor *pDssiEditor = osc_find_editor(this);
 	if (pDssiEditor) {
+		if (!m_bEditorVisible) {
 		osc_show(pDssiEditor);
-		setEditorVisible(true);
+			m_bEditorVisible = true;
+		}
+		// Bail out.
 		return;
 	}
 
@@ -529,7 +529,7 @@ void qtractorDssiPlugin::openEditor ( QWidget */*pParent*/ )
 	const QString& sDssiEditor = pDssiType->dssi_editor();
 
 	QStringList args;
-	args.append(g_sOscPath + '/' + pDssiType->label());
+	args.append(g_sOscPath + '/' + osc_label(this));
 	args.append(QFileInfo((pDssiType->file())->filename()).fileName());
 	args.append(pDssiType->label());
 	args.append(pDssiType->name());
@@ -544,12 +544,15 @@ void qtractorDssiPlugin::openEditor ( QWidget */*pParent*/ )
 		args[3].toUtf8().constData());
 #endif
 
-	if (QProcess::startDetached(sDssiEditor, args))
-		setEditorVisible(true);
-	else
+	if (!QProcess::startDetached(sDssiEditor, args)) {
 		osc_close_editor(this);
+		return;
+	}
 
 #endif
+
+	m_bEditorVisible = true;
+	form()->toggleEditor(true);
 }
 
 
@@ -557,8 +560,40 @@ void qtractorDssiPlugin::closeEditor (void)
 {
 #ifdef CONFIG_LIBLO
 	osc_close_editor(this);
-	setEditorVisible(false);
 #endif
+
+	form()->toggleEditor(false);
+	m_bEditorVisible = false;
+}
+
+
+// GUI editor visibility state.
+void qtractorDssiPlugin::setEditorVisible ( bool bVisible )
+{
+#ifdef CONFIG_LIBLO
+
+	// Check if still here...
+	DssiEditor *pDssiEditor = osc_find_editor(this);
+	if (pDssiEditor == NULL) {
+		if (bVisible) openEditor(form());
+		return;
+	}
+
+	// Do our deeds...
+	if (bVisible)
+		osc_show(pDssiEditor);
+	else
+		osc_hide(pDssiEditor);
+
+#endif
+
+	form()->toggleEditor(bVisible);
+	m_bEditorVisible = bVisible;
+}
+
+bool qtractorDssiPlugin::isEditorVisible (void) const
+{
+	return m_bEditorVisible;
 }
 
 

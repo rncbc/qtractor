@@ -152,19 +152,19 @@ class qtractorVstPlugin::EditorWidget : public QWidget
 public:
 
 	// Constructor.
-	EditorWidget(qtractorPluginForm *pPluginForm, Qt::WindowFlags wflags = 0)
-		: QWidget(NULL, wflags),
+	EditorWidget(QWidget *pParent, Qt::WindowFlags wflags = 0)
+		: QWidget(pParent, wflags),
 #if defined(Q_WS_X11)
 			m_pDisplay(QX11Info::display()),
 			m_wEditor(NULL),
 			m_eventProc(NULL),
 #endif
-			m_pPluginForm(pPluginForm) {}
+			m_pPlugin(NULL) {}
 
 	// Specialized editor methods.
 	void setPlugin(qtractorPlugin *pPlugin)
 	{
-		QWidget::setWindowTitle(pPlugin->editorTitle());
+		m_pPlugin = pPlugin;
 #if defined(Q_WS_X11)
 		m_wEditor = getXChildWindow(m_pDisplay, (Window) winId());
 		if (m_wEditor) {
@@ -173,7 +173,10 @@ public:
 				XSelectInput(m_pDisplay, m_wEditor, NoEventMask);
 		}
 #endif
+		QWidget::setWindowTitle(m_pPlugin->editorTitle());
 	}
+
+	qtractorPlugin *plugin() const { return m_pPlugin; }
 
 #if defined(Q_WS_X11)
 	Display *display() const { return m_pDisplay; }
@@ -183,11 +186,18 @@ protected:
 
 	// Visibility event handlers.
 	void showEvent(QShowEvent *pShowEvent)
-		{ QWidget::showEvent(pShowEvent); m_pPluginForm->toggleEditor(true); }
+	{
+		QWidget::showEvent(pShowEvent);
+		if (m_pPlugin)
+			(m_pPlugin->form())->toggleEditor(true);
+	}
 
-	// Visibility event handlers.
 	void closeEvent(QCloseEvent *pCloseEvent)
-		{ QWidget::closeEvent(pCloseEvent); m_pPluginForm->toggleEditor(false); }
+	{
+		if (m_pPlugin)
+			(m_pPlugin->form())->toggleEditor(false);
+		QWidget::closeEvent(pCloseEvent);
+	}
 
 #if defined(Q_WS_X11)
 
@@ -393,7 +403,7 @@ private:
 	XEventProc m_eventProc;
 #endif
 
-	qtractorPluginForm *m_pPluginForm;
+	qtractorPlugin *m_pPlugin;
 };
 
 
@@ -837,7 +847,7 @@ void qtractorVstPlugin::openEditor ( QWidget */*pParent*/ )
 		| Qt::WindowSystemMenuHint
 		| Qt::WindowMinMaxButtonsHint
 		| Qt::Tool;
-	m_pEditorWidget = new EditorWidget(form(), wflags);
+	m_pEditorWidget = new EditorWidget(NULL, wflags);
 
 	// Start the proper (child) editor...
 	long  value = 0;
@@ -863,11 +873,10 @@ void qtractorVstPlugin::openEditor ( QWidget */*pParent*/ )
 
 	// Final stabilization...
 	m_pEditorWidget->setPlugin(this);
-	m_pEditorWidget->show();
-
-	setEditorVisible(true);
 
 	idleEditor();
+
+	setEditorVisible(true);
 }
 
 
@@ -877,6 +886,7 @@ void qtractorVstPlugin::closeEditor (void)
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorVstPlugin[%p]::closeEditor()", this);
 #endif
+	setEditorVisible(false);
 	vst_dispatch(0, effEditClose, 0, 0, NULL, 0.0f);
 
 	// Close the parent widget, if any.
@@ -884,8 +894,6 @@ void qtractorVstPlugin::closeEditor (void)
 		delete m_pEditorWidget;
 		m_pEditorWidget = NULL;
 	}
-
-	setEditorVisible(false);
 }
 
 
@@ -896,6 +904,18 @@ void qtractorVstPlugin::idleEditor (void)
 	qDebug("qtractorVstPlugin[%p]::idleEditor()", this);
 #endif
 	vst_dispatch(0, effEditIdle, 0, 0, NULL, 0.0f);
+}
+
+
+// GUI editor visibility state.
+void qtractorVstPlugin::setEditorVisible ( bool bVisible )
+{
+	if (m_pEditorWidget) m_pEditorWidget->setVisible(bVisible);
+}
+
+bool qtractorVstPlugin::isEditorVisible (void) const
+{
+	return (m_pEditorWidget ? m_pEditorWidget->isVisible() : false);
 }
 
 

@@ -111,6 +111,10 @@ public:
 	void closeEditor();
 	void idleEditor();
 
+	// GUI editor visibility state.
+	void setEditorVisible(bool bVisible);
+	bool isEditorVisible() const;
+
 	void setEditorTitle(const QString& sTitle);
 
 	// The main plugin processing procedure.

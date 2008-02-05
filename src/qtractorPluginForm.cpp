@@ -132,10 +132,10 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 #endif
 	const QList<qtractorPluginParam *>& params = m_pPlugin->params();
 	int iRows = params.count();
+	bool bEditor = (m_pPlugin->type())->isEditor();
 	 // FIXME: Can't stand more than hundred widgets?
-	 // also, down show any parameter controls if we
-	 // do have a dedicated editor GUI...
-	if (iRows < 101 && !(m_pPlugin->type())->isEditor()) {
+	// or do we have a dedicated editor GUI?
+	if (!bEditor && iRows < 101) {
 		int iCols = 1;
 		while (iRows > 12 && iCols < 3) {
 			iRows >>= 1;
@@ -162,7 +162,7 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 	layout()->addItem(m_pGridLayout);
 
 	// Show editor button if available?
-	m_ui.EditToolButton->setVisible((m_pPlugin->type())->isEditor());
+	m_ui.EditToolButton->setVisible(bEditor);
 
 	// Set plugin name as title...
 	updateCaption();
@@ -171,6 +171,11 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 	updateActivated();
 	refresh();
 	stabilize();
+	show();
+
+	// Do we have a dedicated editor GUI?
+	// if (bEditor)
+	//	m_pPlugin->openEditor(this);
 }
 
 
@@ -410,10 +415,20 @@ void qtractorPluginForm::deletePresetSlot (void)
 // Editor slot.
 void qtractorPluginForm::editSlot ( bool bOn )
 {
+	if (m_pPlugin == NULL)
+		return;
+
+	if (m_iUpdate > 0)
+		return;
+
+	m_iUpdate++;
+
 	if (bOn)
 		m_pPlugin->openEditor(this);
 	else
 		m_pPlugin->closeEditor();
+
+	m_iUpdate--;
 }
 
 
