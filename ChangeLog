@@ -5,6 +5,8 @@ ChangeLog
 
 CVS HEAD
 
+- Debian package gets SSE optimization disabled as default.
+
 - At least some transport actions get to be non auto-repeatable
   when pressed for much too long, as Play and Record, avoiding
   the tumbling imposed from the keyboard.

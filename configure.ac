@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(Qtractor, 0.1.0.856, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.1.0.857, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractorMainForm.ui)
 AC_CONFIG_HEADERS(config.h)
@@ -204,7 +204,7 @@ AC_CACHE_CHECK([for Qt library version >= 4.1],
 
 # Check for SSE optimization.
 if test "x$ac_sse" = "xyes"; then
-   ac_sse_cflags="-msse -mfpmath=sse"
+   ac_sse_cflags="-msse -mfpmath=sse -ffast-math"
    CFLAGS="$ac_sse_cflags $CFLAGS"
    CPPFLAGS="$ac_sse_cflags $CPPFLAGS"
    AC_CACHE_CHECK([for SSE optimization],
