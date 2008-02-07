@@ -377,6 +377,9 @@ void qtractorPluginListView::addPlugin (void)
 	if (pMainForm == NULL)
 		return;
 
+	// Tell the world we'll take some time...
+	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+
 	// Make it a undoable command...
 	qtractorAddPluginCommand *pAddPluginCommand
 		= new qtractorAddPluginCommand();
@@ -394,6 +397,9 @@ void qtractorPluginListView::addPlugin (void)
 	}
 
 	pMainForm->commands()->exec(pAddPluginCommand);
+
+	// We're formerly done.
+	QApplication::restoreOverrideCursor();
 }
 
 

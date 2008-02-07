@@ -60,6 +60,10 @@
 #include "qtractorMidiEditorForm.h"
 #include "qtractorMidiEditor.h"
 
+#ifdef CONFIG_VST
+#include "qtractorVstPlugin.h"
+#endif
+
 #include <QApplication>
 #include <QMessageBox>
 #include <QFileDialog>
@@ -2618,6 +2622,10 @@ void qtractorMainForm::setTrack ( int scmd, int iTrack, bool bOn )
 void qtractorMainForm::updateTransportTime ( unsigned long iPlayHead )
 {
 	m_pTransportTimeSpinBox->setValue(iPlayHead, false);
+
+#ifdef CONFIG_VST
+	qtractorVstPlugin::idleTimerAll();
+#endif
 }
 
 

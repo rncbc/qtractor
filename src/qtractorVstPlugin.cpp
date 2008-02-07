@@ -477,7 +477,7 @@ int qtractorVstPluginType::Effect::vst_dispatch (
 	if (m_pVstEffect == NULL)
 		return 0;
 
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	qDebug("AEffect[%p]::dispatcher(%ld, %ld, %ld, %p, %g)",
 		m_pVstEffect, opcode, index, value, ptr, opt);
 #endif
@@ -874,9 +874,8 @@ void qtractorVstPlugin::openEditor ( QWidget */*pParent*/ )
 	// Final stabilization...
 	m_pEditorWidget->setPlugin(this);
 
-	idleEditor();
-
 	setEditorVisible(true);
+	idleEditor();
 }
 
 
@@ -933,15 +932,18 @@ void qtractorVstPlugin::setEditorTitle ( const QString& sTitle )
 void qtractorVstPlugin::idleEditorAll (void)
 {
 	QListIterator<qtractorVstPlugin *> iter(g_vstPlugins);
-	while (iter.hasNext())
-		iter.next()->idleEditor();
+	while (iter.hasNext()) {
+		qtractorVstPlugin *pVstPlugin = iter.next();
+		if (pVstPlugin->editorWidget())
+			pVstPlugin->idleEditor();
+	}
 }
 
 
 // Idle editor (static).
 void qtractorVstPlugin::idleTimerAll (void)
 {
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	qDebug("qtractorVstPlugin::idleTimerAll()");
 #endif
 	QListIterator<qtractorVstPlugin *> iter(g_vstPlugins);
