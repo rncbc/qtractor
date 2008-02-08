@@ -1000,9 +1000,13 @@ qtractorVstPluginParam::qtractorVstPluginParam (
 	qDebug("qtractorVstPluginParam[%p] pVstPlugin=%p iIndex=%lu", this, pVstPlugin, iIndex);
 #endif
 
+	qtractorVstPluginType *pVstType
+		= static_cast<qtractorVstPluginType *> (pVstPlugin->type());
+	
 	char szName[64];
 	::snprintf(szName, sizeof(szName), "Param #%lu", iIndex); // Default dummy name.
-	pVstPlugin->vst_dispatch(0, effGetParamName, iIndex, 0, (void *) szName, 0.0f);
+	if (pVstType)
+		pVstType->vst_dispatch(effGetParamName, iIndex, 0, (void *) szName, 0.0f);
 	setName(szName);
 
 	setMinValue(0.0f);
@@ -1010,8 +1014,8 @@ qtractorVstPluginParam::qtractorVstPluginParam (
 
 	::memset(&m_props, 0, sizeof(m_props));
 
-	if (pVstPlugin->vst_dispatch(0, effGetParameterProperties,
-			iIndex, 0, (void *) &m_props, 0.0f)) {
+	if (pVstType &&	pVstType->vst_dispatch(
+			effGetParameterProperties, iIndex, 0, (void *) &m_props, 0.0f)) {
 #ifdef CONFIG_DEBUG
 		qDebug("  VstParamProperties(%lu) {", iIndex);
 		qDebug("    .stepFloat               = %g", m_props.stepFloat);
@@ -1102,22 +1106,23 @@ bool qtractorVstPluginParam::isDisplay (void) const
 // Current display value.
 QString qtractorVstPluginParam::display (void) const
 {
-	qtractorVstPlugin *pVstPlugin
-		= static_cast<qtractorVstPlugin *> (plugin());
-	if (pVstPlugin) {
+	qtractorVstPluginType *pVstType = NULL;
+	if (plugin())
+		pVstType = static_cast<qtractorVstPluginType *> (plugin()->type());
+	if (pVstType) {
 		QString sDisplay;
 		char szText[64];
 		// Grab parameter display value...
 		szText[0] = '\0';
-		pVstPlugin->vst_dispatch(0,
-			effGetParamDisplay, index(), 0, (void *) szText, 0.0f);
+		pVstType->vst_dispatch(effGetParamDisplay,
+			index(), 0, (void *) szText, 0.0f);
 		if (szText[0]) {
 			// Got
 			sDisplay += QString(szText).trimmed();
 			// Grab parameter name...
 			szText[0] = '\0';
-			pVstPlugin->vst_dispatch(0,
-				effGetParamLabel, index(), 0, (void *) szText, 0.0f);
+			pVstType->vst_dispatch(effGetParamLabel,
+				index(), 0, (void *) szText, 0.0f);
 			if (szText[0])
 				sDisplay += ' ' + QString(szText).trimmed();
 			// Got it.
@@ -1152,10 +1157,11 @@ float qtractorVstPluginParam::value (void) const
 {
 	float fValue = qtractorPluginParam::value();
 
-	qtractorVstPlugin *pVstPlugin
-		= static_cast<qtractorVstPlugin *> (plugin());
-	if (pVstPlugin) {
-		AEffect *pVstEffect = pVstPlugin->vst_effect(0);
+	qtractorVstPluginType *pVstType = NULL;
+	if (plugin())
+		pVstType = static_cast<qtractorVstPluginType *> (plugin()->type());
+	if (pVstType && pVstType->effect()) {
+		AEffect *pVstEffect = (pVstType->effect())->vst_effect();
 		if (pVstEffect)
 			fValue = pVstEffect->getParameter(pVstEffect, index());
 	}

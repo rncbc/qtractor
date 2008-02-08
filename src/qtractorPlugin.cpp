@@ -674,7 +674,8 @@ void qtractorPluginList::setName ( const QString& sName )
 
 	for (qtractorPlugin *pPlugin = first();
 			pPlugin; pPlugin = pPlugin->next()) {
-		pPlugin->form()->updateCaption();
+		if (pPlugin->isVisible())
+			(pPlugin->form())->updateCaption();
 	}
 }
 
