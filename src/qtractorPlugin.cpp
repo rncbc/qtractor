@@ -73,42 +73,40 @@ bool qtractorPluginPath::open (void)
 	close();
 
 	// Get paths based on hints...	
-	if (m_paths.isEmpty()) {
-		QString sPaths;
+	QString sPaths;
 #ifdef CONFIG_LADSPA
-		// LADSPA default path...
-		if (m_typeHint == qtractorPluginType::Any ||
-			m_typeHint == qtractorPluginType::Ladspa) {
-			sPaths = ::getenv("LADSPA_PATH");
-			if (sPaths.isEmpty())
-				sPaths = LADSPA_PATH;
-			if (!sPaths.isEmpty())
-				m_paths << sPaths.split(PATH_SEP);
-		}
+	// LADSPA default path...
+	if (m_typeHint == qtractorPluginType::Any ||
+		(m_typeHint == qtractorPluginType::Ladspa && m_paths.isEmpty())) {
+		sPaths = ::getenv("LADSPA_PATH");
+		if (sPaths.isEmpty())
+			sPaths = LADSPA_PATH;
+		if (!sPaths.isEmpty())
+			m_paths << sPaths.split(PATH_SEP);
+	}
 #endif
 #ifdef CONFIG_DSSI
-		// DSSI default path...
-		if (m_typeHint == qtractorPluginType::Any ||
-			m_typeHint == qtractorPluginType::Dssi) {
-			sPaths = ::getenv("DSSI_PATH");
-			if (sPaths.isEmpty())
-				sPaths = DSSI_PATH;
-			if (!sPaths.isEmpty())
-				m_paths << sPaths.split(PATH_SEP);
-		}
+	// DSSI default path...
+	if (m_typeHint == qtractorPluginType::Any ||
+		(m_typeHint == qtractorPluginType::Dssi && m_paths.isEmpty())) {
+		sPaths = ::getenv("DSSI_PATH");
+		if (sPaths.isEmpty())
+			sPaths = DSSI_PATH;
+		if (!sPaths.isEmpty())
+			m_paths << sPaths.split(PATH_SEP);
+	}
 #endif
 #ifdef CONFIG_VST
-		// VST default path...
-		if (m_typeHint == qtractorPluginType::Any ||
-			m_typeHint == qtractorPluginType::Vst) {
-			sPaths = ::getenv("VST_PATH");
-			if (sPaths.isEmpty())
-				sPaths = VST_PATH;
-			if (!sPaths.isEmpty())
-				m_paths << sPaths.split(PATH_SEP);
-		}
-#endif
+	// VST default path...
+	if (m_typeHint == qtractorPluginType::Any ||
+		(m_typeHint == qtractorPluginType::Vst && m_paths.isEmpty())) {
+		sPaths = ::getenv("VST_PATH");
+		if (sPaths.isEmpty())
+			sPaths = VST_PATH;
+		if (!sPaths.isEmpty())
+			m_paths << sPaths.split(PATH_SEP);
 	}
+#endif
 
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorPluginPath[%p]::open() paths=\"%s\"",
@@ -674,8 +672,7 @@ void qtractorPluginList::setName ( const QString& sName )
 
 	for (qtractorPlugin *pPlugin = first();
 			pPlugin; pPlugin = pPlugin->next()) {
-		if (pPlugin->isVisible())
-			(pPlugin->form())->updateCaption();
+		pPlugin->form()->updateCaption();
 	}
 }
 

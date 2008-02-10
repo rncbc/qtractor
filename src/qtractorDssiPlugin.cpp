@@ -37,6 +37,7 @@
 
 #include <QProcess>
 
+
 // DSSI GUI Editor instance.
 struct DssiEditor
 {
@@ -93,10 +94,12 @@ static DssiEditor *osc_find_editor_by_label ( const QString& sOscLabel )
 #ifdef CONFIG_DEBUG
 	qDebug("osc_find_editor_by_label(\"%s\")", sOscLabel.toUtf8().constData());
 #endif
+
 	QListIterator<DssiEditor *> iter(g_dssiEditors);
 	while (iter.hasNext()) {
 		DssiEditor *pDssiEditor = iter.next();
-		if (osc_label(pDssiEditor->plugin) == sOscLabel)
+		qtractorDssiPlugin *pDssiPlugin = pDssiEditor->plugin; 
+		if (pDssiPlugin && osc_label(pDssiPlugin) == sOscLabel)
 			return pDssiEditor;
 	}
 
@@ -182,13 +185,25 @@ static int osc_configure ( DssiEditor *pDssiEditor, lo_arg **argv )
 #endif
 
 	qtractorDssiPlugin *pDssiPlugin = pDssiEditor->plugin;
+	if (pDssiPlugin == NULL)
+		return 1;
+
 	qtractorDssiPluginType *pDssiType
 		= static_cast<qtractorDssiPluginType *> (pDssiPlugin->type());
+	if (pDssiType == NULL)
+		return 1;
+
 	const DSSI_Descriptor *pDssiDescriptor
 		= pDssiType->dssi_descriptor();
+	if (pDssiDescriptor == NULL)
+		return 1;
 
-	(*pDssiDescriptor->configure)(
-		pDssiPlugin->ladspa_handle(0), key, value);
+	LADSPA_Handle ladspaHandle
+		= pDssiPlugin->ladspa_handle(0);
+	if (ladspaHandle == NULL)
+		return 1;
+
+	(*pDssiDescriptor->configure)(ladspaHandle, key, value);
 
 	QString sPath(pDssiEditor->path);
 	sPath += "/configure";
@@ -210,6 +225,8 @@ static int osc_control ( DssiEditor *pDssiEditor, lo_arg **argv )
 #endif
 
 	qtractorDssiPlugin *pDssiPlugin = pDssiEditor->plugin;
+	if (pDssiPlugin == NULL)
+		return 1;
 
 	// Plugin parameter lookup.
 	qtractorPluginParam *pParam = pDssiPlugin->findParam(param);
@@ -240,7 +257,11 @@ static int osc_exiting ( DssiEditor *pDssiEditor )
 	qDebug("osc_exiting: path \"%s\"", pDssiEditor->path);
 #endif
 
-	((pDssiEditor->plugin)->form())->toggleEditor(false);
+	qtractorDssiPlugin *pDssiPlugin	= pDssiEditor->plugin;
+	if (pDssiPlugin && pDssiPlugin->isVisible())
+		(pDssiPlugin->form())->toggleEditor(false);
+
+	pDssiEditor->plugin = NULL;
 
 	int iDssiEditor = g_dssiEditors.indexOf(pDssiEditor);
 	if (iDssiEditor >= 0) {
@@ -516,7 +537,7 @@ void qtractorDssiPlugin::openEditor ( QWidget */*pParent*/ )
 	DssiEditor *pDssiEditor = osc_find_editor(this);
 	if (pDssiEditor) {
 		if (!m_bEditorVisible) {
-		osc_show(pDssiEditor);
+			osc_show(pDssiEditor);
 			m_bEditorVisible = true;
 		}
 		// Bail out.
@@ -558,12 +579,12 @@ void qtractorDssiPlugin::openEditor ( QWidget */*pParent*/ )
 
 void qtractorDssiPlugin::closeEditor (void)
 {
+	form()->toggleEditor(false);
+	m_bEditorVisible = false;
+
 #ifdef CONFIG_LIBLO
 	osc_close_editor(this);
 #endif
-
-	form()->toggleEditor(false);
-	m_bEditorVisible = false;
 }
 
 

@@ -46,6 +46,8 @@ qtractorPluginSelectForm::qtractorPluginSelectForm (
 	// Setup UI struct...
 	m_ui.setupUi(this);
 
+	QDialog::setFont(QFont(font().family(), 7));
+
 	m_iChannels = 0;
 	m_bMidi = false;
 
@@ -217,7 +219,8 @@ void qtractorPluginSelectForm::typeHintChanged ( int iTypeHint )
 	qtractorPluginType::Hint typeHint
 		= qtractorPluginType::hintFromText(
 			m_ui.PluginTypeComboBox->itemText(iTypeHint));
-	if (g_pluginPath.typeHint() != typeHint) {
+	if (g_pluginPath.paths().isEmpty() ||
+		g_pluginPath.typeHint() != typeHint) {
 		g_pluginPath.setTypeHint(typeHint);
 		QStringList paths;
 		if (typeHint == qtractorPluginType::Any ||

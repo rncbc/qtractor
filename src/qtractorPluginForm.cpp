@@ -56,6 +56,8 @@ qtractorPluginForm::qtractorPluginForm (
 	// Setup UI struct...
 	m_ui.setupUi(this);
 
+	QWidget::setFont(QFont(font().family(), 7));
+
 	m_pPlugin       = NULL;
 	m_pGridLayout   = NULL;
 	m_iDirtyCount   = 0;
@@ -133,7 +135,7 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 	const QList<qtractorPluginParam *>& params = m_pPlugin->params();
 	int iRows = params.count();
 	bool bEditor = (m_pPlugin->type())->isEditor();
-	 // FIXME: Can't stand more than hundred widgets?
+	// FIXME: Can't stand more than hundred widgets?
 	// or do we have a dedicated editor GUI?
 	if (!bEditor && iRows < 101) {
 		int iCols = 1;
