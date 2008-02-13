@@ -88,6 +88,7 @@ HEADERS += src/qtractorAbout.h \
            src/qtractorPluginForm.h \
            src/qtractorPluginSelectForm.h \
            src/qtractorSessionForm.h \
+           src/qtractorShortcutForm.h \
            src/qtractorTrackForm.h
 
 SOURCES += src/main.cpp \
@@ -171,6 +172,7 @@ SOURCES += src/main.cpp \
            src/qtractorPluginForm.cpp \
            src/qtractorPluginSelectForm.cpp \
            src/qtractorSessionForm.cpp \
+           src/qtractorShortcutForm.cpp \
            src/qtractorTrackForm.cpp
 
 FORMS    = src/qtractorBusForm.ui \
@@ -185,6 +187,7 @@ FORMS    = src/qtractorBusForm.ui \
            src/qtractorPluginForm.ui \
            src/qtractorPluginSelectForm.ui \
            src/qtractorSessionForm.ui \
+           src/qtractorShortcutForm.ui \
            src/qtractorTrackForm.ui
 
 RESOURCES += icons/qtractor.qrc

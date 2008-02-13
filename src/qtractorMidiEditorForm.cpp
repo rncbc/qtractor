@@ -35,6 +35,7 @@
 #include "qtractorTrackView.h"
 
 #include "qtractorMainForm.h"
+#include "qtractorShortcutForm.h"
 #include "qtractorClipForm.h"
 
 #include "qtractorTimeScale.h"
@@ -274,6 +275,9 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 		SIGNAL(triggered(bool)),
 		SLOT(viewRefresh()));
 
+	QObject::connect(m_ui.helpShortcutsAction,
+		SIGNAL(triggered(bool)),
+		SLOT(helpShortcuts()));
 	QObject::connect(m_ui.helpAboutAction,
 		SIGNAL(triggered(bool)),
 		SLOT(helpAbout()));
@@ -350,6 +354,8 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 		}
 		// Try to restore old window positioning?
 		// pOptions->loadWidgetGeometry(this);
+		// Load (action) keyboard shortcuts...
+		pOptions->loadActionShortcuts(this);
 	}
 
 	// Make last-but-not-least conections....
@@ -958,6 +964,23 @@ void qtractorMidiEditorForm::viewRefresh (void)
 
 //-------------------------------------------------------------------------
 // qtractorMidiEditorForm -- Help Action slots.
+
+// Show (and edit) keyboard shortcuts.
+void qtractorMidiEditorForm::helpShortcuts (void)
+{
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm == NULL)
+		return;
+
+	qtractorOptions *pOptions = pMainForm->options();
+	if (pOptions == NULL)
+		return;
+
+	qtractorShortcutForm shortcutForm(findChildren<QAction *> (), this);
+	if (shortcutForm.exec())
+		pOptions->saveActionShortcuts(this);
+}
+
 
 // Show information about application program.
 void qtractorMidiEditorForm::helpAbout (void)

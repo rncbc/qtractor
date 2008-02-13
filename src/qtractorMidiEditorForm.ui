@@ -142,6 +142,8 @@
     <property name="title" >
      <string>&amp;Help</string>
     </property>
+    <addaction name="helpShortcutsAction" />
+    <addaction name="separator" />
     <addaction name="helpAboutAction" />
     <addaction name="helpAboutQtAction" />
    </widget>
@@ -867,6 +869,20 @@
    </property>
    <property name="statusTip" >
     <string>Transport record</string>
+   </property>
+   <property name="shortcut" >
+    <string/>
+   </property>
+  </action>
+  <action name="helpShortcutsAction" >
+   <property name="text" >
+    <string>&amp;Shortcuts...</string>
+   </property>
+   <property name="iconText" >
+    <string>Shortcuts</string>
+   </property>
+   <property name="statusTip" >
+    <string>Keyboard shortcuts</string>
    </property>
    <property name="shortcut" >
     <string/>

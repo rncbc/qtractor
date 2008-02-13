@@ -164,8 +164,9 @@ public slots:
 	void transportAutoBackward();
 	void transportContinue();
 
-	void helpAboutQt();
+	void helpShortcuts();
 	void helpAbout();
+	void helpAboutQt();
 
 	void stabilizeForm();
 

@@ -91,6 +91,7 @@ headers = config.h \
 	src/qtractorPluginForm.h \
 	src/qtractorPluginSelectForm.h \
 	src/qtractorSessionForm.h \
+	src/qtractorShortcutForm.h \
 	src/qtractorTrackForm.h
 
 sources = src/main.cpp \
@@ -173,6 +174,7 @@ sources = src/main.cpp \
 	src/qtractorPluginForm.cpp \
 	src/qtractorPluginSelectForm.cpp \
 	src/qtractorSessionForm.cpp \
+	src/qtractorShortcutForm.cpp \
 	src/qtractorTrackForm.cpp
 
 forms = \
@@ -188,6 +190,7 @@ forms = \
 	src/qtractorPluginForm.ui \
 	src/qtractorPluginSelectForm.ui \
 	src/qtractorSessionForm.ui \
+	src/qtractorShortcutForm.ui \
 	src/qtractorTrackForm.ui
 
 all:	$(name)

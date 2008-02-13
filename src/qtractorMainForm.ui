@@ -2,7 +2,7 @@
  <author>rncbc aka Rui Nuno Capela</author>
  <comment>qtractor - An Audio/MIDI multi-track sequencer.
 
-   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -240,6 +240,8 @@
     <property name="title" >
      <string>&amp;Help</string>
     </property>
+    <addaction name="helpShortcutsAction" />
+    <addaction name="separator" />
     <addaction name="helpAboutAction" />
     <addaction name="helpAboutQtAction" />
    </widget>
@@ -1382,6 +1384,20 @@
    </property>
    <property name="statusTip" >
     <string>Continue past end</string>
+   </property>
+   <property name="shortcut" >
+    <string/>
+   </property>
+  </action>
+  <action name="helpShortcutsAction" >
+   <property name="text" >
+    <string>&amp;Shortcuts...</string>
+   </property>
+   <property name="iconText" >
+    <string>Shortcuts</string>
+   </property>
+   <property name="statusTip" >
+    <string>Keyboard shortcuts</string>
    </property>
    <property name="shortcut" >
     <string/>

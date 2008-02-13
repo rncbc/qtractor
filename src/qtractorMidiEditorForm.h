@@ -118,6 +118,7 @@ public slots:
 	void viewFollow(bool bOn);
 	void viewRefresh();
 
+	void helpShortcuts();
 	void helpAbout();
 	void helpAboutQt();
 

@@ -25,6 +25,7 @@
 #include <QWidget>
 #include <QComboBox>
 #include <QSplitter>
+#include <QAction>
 #include <QList>
 
 #include <QTextStream>
@@ -570,6 +571,52 @@ void qtractorOptions::saveSplitterSizes ( QSplitter *pSplitter )
 			m_settings.setValue("/sizes", list);
 		m_settings.endGroup();
 	}
+}
+
+
+//---------------------------------------------------------------------------
+// Action shortcut persistence helper methos.
+void qtractorOptions::loadActionShortcuts ( QObject *pObject )
+{
+	m_settings.beginGroup("/Shortcuts/" + pObject->objectName());
+
+	QList<QAction *> actions = pObject->findChildren<QAction *> ();
+	QListIterator<QAction *> iter(actions);
+	while (iter.hasNext()) {
+		QAction *pAction = iter.next();
+		if (pAction->objectName().isEmpty())
+			continue;
+		const QString& sKey = '/' + pAction->objectName();
+		const QString& sValue = m_settings.value('/' + sKey).toString();
+		if (sValue.isEmpty())
+			continue;
+		pAction->setShortcut(QKeySequence(sValue));
+	}
+
+	m_settings.endGroup();
+}
+
+
+void qtractorOptions::saveActionShortcuts ( QObject *pObject )
+{
+	m_settings.beginGroup("/Shortcuts/" + pObject->objectName());
+
+	QList<QAction *> actions = pObject->findChildren<QAction *> ();
+	QListIterator<QAction *> iter(actions);
+	while (iter.hasNext()) {
+		QAction *pAction = iter.next();
+		if (pAction->objectName().isEmpty())
+			continue;
+		const QString& sKey = '/' + pAction->objectName();
+		const QString& sValue = QString(pAction->shortcut());
+		if (!sValue.isEmpty())
+			m_settings.setValue(sKey, sValue);
+		else
+		if (m_settings.contains(sKey))
+			m_settings.remove(sKey);
+	}
+
+	m_settings.endGroup();
 }
 
 

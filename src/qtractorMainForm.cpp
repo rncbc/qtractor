@@ -54,6 +54,7 @@
 #include "qtractorSessionForm.h"
 #include "qtractorOptionsForm.h"
 #include "qtractorConnectForm.h"
+#include "qtractorShortcutForm.h"
 #include "qtractorInstrumentForm.h"
 #include "qtractorBusForm.h"
 
@@ -551,6 +552,9 @@ qtractorMainForm::qtractorMainForm (
 		SIGNAL(triggered(bool)),
 		SLOT(transportContinue()));
 
+	QObject::connect(m_ui.helpShortcutsAction,
+		SIGNAL(triggered(bool)),
+		SLOT(helpShortcuts()));
 	QObject::connect(m_ui.helpAboutAction,
 		SIGNAL(triggered(bool)),
 		SLOT(helpAbout()));
@@ -752,6 +756,9 @@ void qtractorMainForm::setOptions ( qtractorOptions *pOptions )
 	// Set default audio-buffer quality...
 	qtractorAudioBuffer::setResampleType(m_pOptions->iAudioResampleType);
 	qtractorAudioBuffer::setQuickSeek(m_pOptions->bAudioQuickSeek);
+
+	// Load (action) keyboard shortcuts...
+	m_pOptions->loadActionShortcuts(this);
 
 	// Change to last known session dir...
 	if (!m_pOptions->sSessionDir.isEmpty()) {
@@ -2399,10 +2406,15 @@ void qtractorMainForm::transportContinue (void)
 //-------------------------------------------------------------------------
 // qtractorMainForm -- Help Action slots.
 
-// Show information about the Qt toolkit.
-void qtractorMainForm::helpAboutQt (void)
+// Show (and edit) keyboard shortcuts.
+void qtractorMainForm::helpShortcuts (void)
 {
-	QMessageBox::aboutQt(this);
+	if (m_pOptions == NULL)
+		return;
+
+	qtractorShortcutForm shortcutForm(findChildren<QAction *> (), this);
+	if (shortcutForm.exec())
+		m_pOptions->saveActionShortcuts(this);
 }
 
 
@@ -2421,19 +2433,39 @@ void qtractorMainForm::helpAbout (void)
 	sText += "</font></small><br />";
 #endif
 #ifndef CONFIG_LIBVORBIS
-    sText += "<small><font color=\"red\">";
-    sText += tr("Ogg Vorbis (libvorbis) file support disabled.");
-    sText += "</font></small><br />";
+	sText += "<small><font color=\"red\">";
+	sText += tr("Ogg Vorbis (libvorbis) file support disabled.");
+	sText += "</font></small><br />";
 #endif
 #ifndef CONFIG_LIBMAD
-    sText += "<small><font color=\"red\">";
-    sText += tr("MPEG-1 Audio Layer 3 (libmad) file support disabled.");
-    sText += "</font></small><br />";
+	sText += "<small><font color=\"red\">";
+	sText += tr("MPEG-1 Audio Layer 3 (libmad) file support disabled.");
+	sText += "</font></small><br />";
 #endif
 #ifndef CONFIG_LIBSAMPLERATE
-    sText += "<small><font color=\"red\">";
-    sText += tr("Sample-rate conversion (libsamplerate) disabled.");
-    sText += "</font></small><br />";
+	sText += "<small><font color=\"red\">";
+	sText += tr("Sample-rate conversion (libsamplerate) disabled.");
+	sText += "</font></small><br />";
+#endif
+#ifndef CONFIG_LIBLO
+	sText += "<small><font color=\"red\">";
+	sText += tr("OSC service support (liblo) disabled.");
+	sText += "</font></small><br />";
+#endif
+#ifndef CONFIG_LADSPA
+	sText += "<small><font color=\"red\">";
+	sText += tr("LADSPA Plug-in support disabled.");
+	sText += "</font></small><br />";
+#endif
+#ifndef CONFIG_DSSI
+	sText += "<small><font color=\"red\">";
+	sText += tr("DSSI Plug-in support disabled.");
+	sText += "</font></small><br />";
+#endif
+#ifndef CONFIG_VST
+	sText += "<small><font color=\"red\">";
+	sText += tr("VST Plug-in support disabled.");
+	sText += "</font></small><br />";
 #endif
 	sText += "<br />\n";
 	sText += tr("Website") + ": <a href=\"" QTRACTOR_WEBSITE "\">" QTRACTOR_WEBSITE "</a><br />\n";
@@ -2447,6 +2479,13 @@ void qtractorMainForm::helpAbout (void)
 	sText += "</p>\n";
 
 	QMessageBox::about(this, tr("About") + " " QTRACTOR_TITLE, sText);
+}
+
+
+// Show information about the Qt toolkit.
+void qtractorMainForm::helpAboutQt (void)
+{
+	QMessageBox::aboutQt(this);
 }
 
 

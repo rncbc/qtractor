@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(Qtractor, 0.1.0.859, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.1.0.860, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractorMainForm.ui)
 AC_CONFIG_HEADERS(config.h)
@@ -503,7 +503,7 @@ echo "  JACK Audio Connection Kit support  . . . . . . . .: $ac_libjack"
 echo "  ALSA MIDI Sequencer support  . . . . . . . . . . .: $ac_libasound"
 echo "  General audio file support (libsndfile)  . . . . .: $ac_libsndfile"
 echo "  Ogg Vorbis audio file support (libvorbis)  . . . .: $ac_libvorbis"
-echo "  MPEG-1 Audio Layer III file support (libmad) . . .: $ac_libmad"
+echo "  MPEG-1 Audio Layer 3 file support (libmad) . . . .: $ac_libmad"
 echo "  Sample-rate conversion support (libsamplerate) . .: $ac_libsamplerate"
 echo "  OSC service support (liblo)  . . . . . . . . . . .: $ac_liblo"
 echo "  SSE optimization support (x86) . . . . . . . . . .: $ac_sse"

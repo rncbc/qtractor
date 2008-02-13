@@ -28,6 +28,7 @@
 class QWidget;
 class QComboBox;
 class QSplitter;
+class QObject;
 
 
 //-------------------------------------------------------------------------
@@ -166,6 +167,10 @@ public:
 	// Splitter widget sizes persistence helper methods.
 	void loadSplitterSizes(QSplitter *pSplitter, QList<int>& sizes);
 	void saveSplitterSizes(QSplitter *pSplitter);
+
+	// Action shortcut persistence helper methos.
+	void loadActionShortcuts(QObject *pObject);
+	void saveActionShortcuts(QObject *pObject);
 
 private:
 
