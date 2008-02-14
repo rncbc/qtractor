@@ -86,9 +86,13 @@ class qtractorShortcutTableItemDelegate : public QItemDelegate
 public:
 
 	// Constructor.
-	qtractorShortcutTableItemDelegate(QObject *pParent = NULL);
+	qtractorShortcutTableItemDelegate(QTableWidget *pTableWidget);
 
 protected:
+
+	void paint(QPainter *pPainter,
+		const QStyleOptionViewItem& option,
+		const QModelIndex& index) const;
 
 	QWidget *createEditor(QWidget *pParent, 
 		const QStyleOptionViewItem& option,
@@ -103,6 +107,10 @@ protected:
 protected slots:
 
 	void commitEditor();
+
+private:
+
+	QTableWidget *m_pTableWidget;
 };
 
 

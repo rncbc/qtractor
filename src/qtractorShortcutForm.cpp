@@ -25,6 +25,7 @@
 #include <QMessageBox>
 #include <QHeaderView>
 
+#include <QPainter>
 #include <QLineEdit>
 #include <QToolButton>
 #include <QKeyEvent>
@@ -157,8 +158,41 @@ void qtractorShortcutTableItemEditor::finish (void)
 // qtractorShortcutTableItemDelegate
 
 qtractorShortcutTableItemDelegate::qtractorShortcutTableItemDelegate (
-	QObject *pParent ) : QItemDelegate(pParent)
+	QTableWidget *pTableWidget )
+	: QItemDelegate(pTableWidget), m_pTableWidget(pTableWidget)
 {
+}
+
+
+// Overridden paint method.
+void qtractorShortcutTableItemDelegate::paint ( QPainter *pPainter,
+	const QStyleOptionViewItem& option, const QModelIndex& index ) const
+{
+	// Special treatment for action icon+text...
+	if (index.column() == 0) {
+		QTableWidgetItem *pItem = m_pTableWidget->item(index.row(), 0);
+		pPainter->save();
+		if (option.state & QStyle::State_Selected) {
+			const QPalette& pal = option.palette;
+			pPainter->fillRect(option.rect, pal.highlight().color());
+			pPainter->setPen(pal.highlightedText().color());
+		}
+		// Draw the icon...
+		QRect rect = option.rect;
+		const QSize& iconSize = m_pTableWidget->iconSize();
+		pPainter->drawPixmap(1,
+			rect.top() + ((rect.height() - iconSize.height()) >> 1),
+			pItem->icon().pixmap(iconSize));
+		// Draw the text...
+		rect.setLeft(iconSize.width() + 2);
+		pPainter->drawText(rect,
+			Qt::TextShowMnemonic | Qt::AlignLeft | Qt::AlignVCenter,
+			pItem->text());
+		pPainter->restore();
+	} else {
+		// Others do as default...
+		QItemDelegate::paint(pPainter, option, index);
+	}
 }
 
 
@@ -216,8 +250,9 @@ qtractorShortcutForm::qtractorShortcutForm ( QList<QAction *> actions,
 	m_iDirtyCount = 0;
 
 //	m_ui.qtractorShortcutTable = new QTableWidget(0, 3, this);
+	m_ui.ShortcutTable->setIconSize(QSize(16, 16));
 	m_ui.ShortcutTable->setItemDelegate(
-		new qtractorShortcutTableItemDelegate());
+		new qtractorShortcutTableItemDelegate(m_ui.ShortcutTable));
 //	m_ui.ShortcutTable->setSelectionMode(QAbstractItemView::SingleSelection);
 //	m_ui.ShortcutTable->setSelectionBehavior(QAbstractItemView::SelectRows);
 //	m_ui.ShortcutTable->setAlternatingRowColors(true);
@@ -240,10 +275,9 @@ qtractorShortcutForm::qtractorShortcutForm ( QList<QAction *> actions,
 		QAction *pAction = iter.next();
 		if (pAction->objectName().isEmpty())
 			continue;
-		QString sAction = pAction->text().replace('&', QString());
 		m_ui.ShortcutTable->insertRow(iRow);
 		m_ui.ShortcutTable->setItem(iRow, 0,
-			new qtractorShortcutTableItem(pAction->icon(), sAction));
+			new qtractorShortcutTableItem(pAction->icon(), pAction->text()));
 		m_ui.ShortcutTable->setItem(iRow, 1,
 			new qtractorShortcutTableItem(pAction->statusTip()));
 		m_ui.ShortcutTable->setItem(iRow, 2,
@@ -252,9 +286,6 @@ qtractorShortcutForm::qtractorShortcutForm ( QList<QAction *> actions,
 		++iRow;
 	}
 
-/*	QObject::connect(m_ui.ShortcutTable,
-		SIGNAL(itemDoubleClicked(QTableWidgetItem *)),
-		SLOT(actionActivated(QTableWidgetItem *))); */
 	QObject::connect(m_ui.ShortcutTable,
 		SIGNAL(itemActivated(QTableWidgetItem *)),
 		SLOT(actionActivated(QTableWidgetItem *)));

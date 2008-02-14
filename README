@@ -54,7 +54,7 @@ The software requirements for build and runtime are listed as follows:
   - DSSI, An API for soft synth plugins with custom user interfaces
         http://dssi.sourceforge.net/
 
-  - VST. Steinberg's Virtual Studio Technology
+  - VST, Steinberg's Virtual Studio Technology
         http://www.steinberg.net
 
 
