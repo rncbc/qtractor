@@ -1,6 +1,6 @@
 %define name    @PACKAGE_TARNAME@
 %define version @PACKAGE_VERSION@
-%define release 14
+%define release 15
 %define prefix  @ac_prefix@
 
 Summary:	An Audio/MIDI multi-track sequencer.
@@ -22,6 +22,7 @@ Requires:	libsndfile >= 1.0.11
 Requires:	libvorbis
 Requires:	libsamplerate
 Requires:	mad
+Requires:	liblo
 
 BuildRequires:	qt-devel >= 4.1
 BuildRequires:	jack-devel >= 0.100.0
@@ -30,7 +31,9 @@ BuildRequires:	libsndfile-devel >= 1.0.11
 BuildRequires:	libvorbis-devel
 BuildRequires:	libsamplerate-devel
 BuildRequires:	mad-devel
+BuildRequires:	liblo-devel
 BuildRequires:	ladspa
+BuildRequires:	dssi
 
 %description
 Qtractor is an Audio/MIDI multi-track sequencer application
@@ -64,6 +67,8 @@ specially dedicated to the personal home-studio.
 %{_datadir}/pixmaps/%{name}.png
 
 %changelog
+* Sat Feb 16 2008 Rui Nuno Capela <rncbc@users.sourceforge.net>
+- Futile Duchess release.
 * Sat Jan  5 2008 Rui Nuno Capela <rncbc@users.sourceforge.net>
 - Frivolous Debutante release.
 * Fri Nov 30 2007 Rui Nuno Capela <rncbc@users.sourceforge.net>

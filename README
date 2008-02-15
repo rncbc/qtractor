@@ -36,6 +36,9 @@ The software requirements for build and runtime are listed as follows:
         files containing sampled sound
         http://www.mega-nerd.com/libsndfile/
 
+  - LADSPA, Linux Audio Developer's Simple Plugin API
+        http://www.ladspa.org/
+
   Optional (opted-in at build time):
 
   - libvorbis (enc, file), Ogg Vorbis audio compression
@@ -48,8 +51,9 @@ The software requirements for build and runtime are listed as follows:
         for audio sample rate conversion
         http://www.mega-nerd.com/SRC/
 
-  - LADSPA, Linux Audio Developer's Simple Plugin API
-        http://www.ladspa.org/
+  - liblo, Lightweight OSC implementation
+        (needed for DSSI GUI support)
+        http://liblo.sourceforge.net/
 
   - DSSI, An API for soft synth plugins with custom user interfaces
         http://dssi.sourceforge.net/

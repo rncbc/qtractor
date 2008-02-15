@@ -3,7 +3,7 @@ Qtractor - An Audio/MIDI multi-track sequencer
 
 ChangeLog
 
-CVS HEAD
+0.1.1   2008-02-16  The Futile Duchess
 
 - After some great user demand, keyboard shortcuts are finally
   configurable, as found provisionally under Help/Shortcuts...,
