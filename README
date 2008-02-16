@@ -58,8 +58,8 @@ The software requirements for build and runtime are listed as follows:
   - DSSI, An API for soft synth plugins with custom user interfaces
         http://dssi.sourceforge.net/
 
-  - VST, Steinberg's Virtual Studio Technology
-        http://www.steinberg.net
+  - VST SDK, Steinberg's Virtual Studio Technology (see README.VST)
+        http://www.steinberg.net/
 
 
 Installation
@@ -120,6 +120,8 @@ web site (http://www.rncbc.org).
 
 Acknowledgments
 ---------------
+
+Qtractor user manual has been co-authored by James Laco Hines.
 
 Qtractor logo/icon is an original work of Andy Fitzsimon, borrowed from
 the public domain openclipart.org gallery.
