@@ -32,6 +32,9 @@
   <property name="windowTitle" >
    <string>Keyboard Shortcuts</string>
   </property>
+  <property name="windowIcon" >
+   <iconset resource="../icons/qtractor.qrc" >:/icons/helpShortcuts.png</iconset>
+  </property>
   <layout class="QVBoxLayout" >
    <item>
     <widget class="QTableWidget" name="ShortcutTable" >

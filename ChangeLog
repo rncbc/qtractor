@@ -3,6 +3,11 @@ Qtractor - An Audio/MIDI multi-track sequencer
 
 ChangeLog
 
+CVS HEAD
+
+- Keyboard shortcuts icon item (Help/Shortcuts...) sneaks in.
+
+
 0.1.1   2008-02-16  The Futile Duchess
 
 - After some great user demand, keyboard shortcuts are finally

@@ -1390,6 +1390,9 @@
    </property>
   </action>
   <action name="helpShortcutsAction" >
+   <property name="icon" >
+    <iconset resource="../icons/qtractor.qrc" >:/icons/helpShortcuts.png</iconset>
+   </property>
    <property name="text" >
     <string>&amp;Shortcuts...</string>
    </property>
