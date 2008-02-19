@@ -5,6 +5,8 @@ ChangeLog
 
 CVS HEAD
 
+- Plug-in forms don't auto-open on session reload anymore.
+
 - Keyboard shortcuts icon item (Help/Shortcuts...) sneaks in.
 
 
