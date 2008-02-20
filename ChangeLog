@@ -11,10 +11,14 @@ CVS HEAD
   Track/State/Record - arm current track for recording;
   Track/State/Mute - mute current track;
   Track/State/Solo - solo current track;
+  Track/Navigate/First - make current the first track;
   Track/Navigate/Previous - make current the previous track;
   Track/Navigate/Next - make current the next track;
+  Track/Navigate/Last - make current the last track;
+  Track/Move/Top - move current track to top;
   Track/Move/Up - move current track up;
   Track/Move/Down - move current track down;
+  Track/Move/Bottom - move current track to bottom;
 
 - View menus have new accessible actions:
   View/Zoom/In - horizontal and vertical zoom-in (Ctrl +)

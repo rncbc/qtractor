@@ -173,15 +173,19 @@
      <property name="title" >
       <string>&amp;Navigate</string>
      </property>
+     <addaction name="trackNavigateFirstAction" />
      <addaction name="trackNavigatePrevAction" />
      <addaction name="trackNavigateNextAction" />
+     <addaction name="trackNavigateLastAction" />
     </widget>
     <widget class="QMenu" name="trackMoveMenu" >
      <property name="title" >
       <string>&amp;Move</string>
      </property>
+     <addaction name="trackMoveTopAction" />
      <addaction name="trackMoveUpAction" />
      <addaction name="trackMoveDownAction" />
+     <addaction name="trackMoveBottomAction" />
     </widget>
     <widget class="QMenu" name="trackImportMenu" >
      <property name="title" >
@@ -863,6 +867,20 @@
     <string>Solo current track</string>
    </property>
   </action>
+  <action name="trackNavigateFirstAction" >
+   <property name="text" >
+    <string>&amp;First</string>
+   </property>
+   <property name="iconText" >
+    <string>First</string>
+   </property>
+   <property name="toolTip" >
+    <string>First track</string>
+   </property>
+   <property name="statusTip" >
+    <string>Make current the first track</string>
+   </property>
+  </action>
   <action name="trackNavigatePrevAction" >
    <property name="text" >
     <string>&amp;Previous</string>
@@ -891,6 +909,34 @@
     <string>Make current the next track</string>
    </property>
   </action>
+  <action name="trackNavigateLastAction" >
+   <property name="text" >
+    <string>&amp;Last</string>
+   </property>
+   <property name="iconText" >
+    <string>Last</string>
+   </property>
+   <property name="toolTip" >
+    <string>Last track</string>
+   </property>
+   <property name="statusTip" >
+    <string>Make current the last track</string>
+   </property>
+  </action>
+  <action name="trackMoveTopAction" >
+   <property name="text" >
+    <string>&amp;Top</string>
+   </property>
+   <property name="iconText" >
+    <string>Move Top</string>
+   </property>
+   <property name="toolTip" >
+    <string>Move top</string>
+   </property>
+   <property name="statusTip" >
+    <string>Move current track to top</string>
+   </property>
+  </action>
   <action name="trackMoveUpAction" >
    <property name="text" >
     <string>&amp;Up</string>
@@ -917,6 +963,20 @@
    </property>
    <property name="statusTip" >
     <string>Move current track down</string>
+   </property>
+  </action>
+  <action name="trackMoveBottomAction" >
+   <property name="text" >
+    <string>&amp;Bottom</string>
+   </property>
+   <property name="iconText" >
+    <string>Move Bottom</string>
+   </property>
+   <property name="toolTip" >
+    <string>Move bottom</string>
+   </property>
+   <property name="statusTip" >
+    <string>Move current track to bottom</string>
    </property>
   </action>
   <action name="trackImportAudioAction" >

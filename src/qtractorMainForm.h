@@ -132,10 +132,14 @@ public slots:
 	void trackStateRecord(bool bOn);
 	void trackStateMute(bool bOn);
 	void trackStateSolo(bool bOn);
+	void trackNavigateFirst();
 	void trackNavigatePrev();
 	void trackNavigateNext();
+	void trackNavigateLast();
+	void trackMoveTop();
 	void trackMoveUp();
 	void trackMoveDown();
+	void trackMoveBottom();
 	void trackImportAudio();
 	void trackImportMidi();
 	void trackExportAudio();

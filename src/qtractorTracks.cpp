@@ -282,6 +282,9 @@ void qtractorTracks::centerContents (void)
 	m_pTrackView->setContentsPos(
 		pSession->pixelFromFrame(iFrame), m_pTrackView->contentsY());
 	m_pTrackView->updateContents();
+
+	// Make its due...
+	selectionChangeNotify();
 }
 
 

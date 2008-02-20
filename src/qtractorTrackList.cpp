@@ -711,17 +711,18 @@ void qtractorTrackList::updatePixmap ( int cx, int cy )
 	// Account for the item dropping headroom...
 	int ch = qtractorScrollView::contentsHeight() - ItemHeightBase;
 
-	int x, y1, y2;
+	int x, y1, y2, h1;
 	y1 = y2 = 0;
 	int iTrack = 0;
 	QListIterator<Item *> iter(m_items);
 	while (iter.hasNext()) {
 		Item *pItem = iter.next();
+		h1  = (pItem->track)->zoomHeight();
 		y1  = y2;
-		y2 += (pItem->track)->zoomHeight();
+		y2 += h1;
 		if (y2 > cy && y1 < cy + h) {
 			// Dispatch to paint this track...
-			QRect rect(0, y1 - cy + hh, w, y2 - y1);
+			QRect rect(0, y1 - cy + hh, w, h1);
 			x = 0;
 			for (int iCol = 0; iCol < iColCount; ++iCol) {
 				int dx = m_pHeader->sectionSize(iCol);
@@ -734,8 +735,12 @@ void qtractorTrackList::updatePixmap ( int cx, int cy )
 						QSize sizeWidget = (pItem->widget)->sizeHint();
 						rectWidget.setTop(rect.bottom() - sizeWidget.height());
 						rectWidget.setLeft(rect.right() - sizeWidget.width());
-						(pItem->widget)->setGeometry(rectWidget);
-						(pItem->widget)->show();
+						if (rectWidget.height() < h1) {
+							(pItem->widget)->setGeometry(rectWidget);
+							(pItem->widget)->show();
+						} else {
+							(pItem->widget)->hide();
+						}
 					}
 				}
 				else if (iCol == Name && pItem->widget)
