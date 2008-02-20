@@ -1,7 +1,7 @@
 // qtractorMidiEditorForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -271,6 +271,15 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	QObject::connect(m_ui.viewFollowAction,
 		SIGNAL(triggered(bool)),
 		SLOT(viewFollow(bool)));
+	QObject::connect(m_ui.viewZoomInAction,
+		SIGNAL(triggered(bool)),
+		SLOT(viewZoomIn()));
+	QObject::connect(m_ui.viewZoomOutAction,
+		SIGNAL(triggered(bool)),
+		SLOT(viewZoomOut()));
+	QObject::connect(m_ui.viewZoomResetAction,
+		SIGNAL(triggered(bool)),
+		SLOT(viewZoomReset()));
 	QObject::connect(m_ui.viewRefreshAction,
 		SIGNAL(triggered(bool)),
 		SLOT(viewRefresh()));
@@ -950,6 +959,27 @@ void qtractorMidiEditorForm::viewPreview ( bool bOn )
 void qtractorMidiEditorForm::viewFollow ( bool bOn )
 {
 	m_pMidiEditor->setSyncView(bOn);
+}
+
+
+// Horizontal and vertical zoom-in.
+void qtractorMidiEditorForm::viewZoomIn (void)
+{
+	m_pMidiEditor->zoomIn();
+}
+
+
+// Horizontal and vertical zoom-out.
+void qtractorMidiEditorForm::viewZoomOut (void)
+{
+	m_pMidiEditor->zoomOut();
+}
+
+
+// Reset both zoom levels to default.
+void qtractorMidiEditorForm::viewZoomReset (void)
+{
+	m_pMidiEditor->zoomReset();
 }
 
 

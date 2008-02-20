@@ -1,7 +1,7 @@
 // qtractorMainForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -60,6 +60,8 @@
 
 #include "qtractorMidiEditorForm.h"
 #include "qtractorMidiEditor.h"
+
+#include "qtractorTrackCommand.h"
 
 #ifdef CONFIG_VST
 #include "qtractorVstPlugin.h"
@@ -447,6 +449,33 @@ qtractorMainForm::qtractorMainForm (
 	QObject::connect(m_ui.trackPropertiesAction,
 		SIGNAL(triggered(bool)),
 		SLOT(trackProperties()));
+	QObject::connect(m_ui.trackInputsAction,
+		SIGNAL(triggered(bool)),
+		SLOT(trackInputs()));
+	QObject::connect(m_ui.trackOutputsAction,
+		SIGNAL(triggered(bool)),
+		SLOT(trackOutputs()));
+	QObject::connect(m_ui.trackStateRecordAction,
+		SIGNAL(triggered(bool)),
+		SLOT(trackStateRecord(bool)));
+	QObject::connect(m_ui.trackStateMuteAction,
+		SIGNAL(triggered(bool)),
+		SLOT(trackStateMute(bool)));
+	QObject::connect(m_ui.trackStateSoloAction,
+		SIGNAL(triggered(bool)),
+		SLOT(trackStateSolo(bool)));
+	QObject::connect(m_ui.trackNavigatePrevAction,
+		SIGNAL(triggered(bool)),
+		SLOT(trackNavigatePrev()));
+	QObject::connect(m_ui.trackNavigateNextAction,
+		SIGNAL(triggered(bool)),
+		SLOT(trackNavigateNext()));
+	QObject::connect(m_ui.trackMoveUpAction,
+		SIGNAL(triggered(bool)),
+		SLOT(trackMoveUp()));
+	QObject::connect(m_ui.trackMoveDownAction,
+		SIGNAL(triggered(bool)),
+		SLOT(trackMoveDown()));
 	QObject::connect(m_ui.trackImportAudioAction,
 		SIGNAL(triggered(bool)),
 		SLOT(trackImportAudio()));
@@ -502,6 +531,15 @@ qtractorMainForm::qtractorMainForm (
 	QObject::connect(m_ui.viewMixerAction,
 		SIGNAL(triggered(bool)),
 		SLOT(viewMixer(bool)));
+	QObject::connect(m_ui.viewZoomInAction,
+		SIGNAL(triggered(bool)),
+		SLOT(viewZoomIn()));
+	QObject::connect(m_ui.viewZoomOutAction,
+		SIGNAL(triggered(bool)),
+		SLOT(viewZoomOut()));
+	QObject::connect(m_ui.viewZoomResetAction,
+		SIGNAL(triggered(bool)),
+		SLOT(viewZoomReset()));
 	QObject::connect(m_ui.viewRefreshAction,
 		SIGNAL(triggered(bool)),
 		SLOT(viewRefresh()));
@@ -1730,6 +1768,138 @@ void qtractorMainForm::trackProperties (void)
 }
 
 
+// Show current track input bus connections.
+void qtractorMainForm::trackInputs (void)
+{
+	qtractorTrack *pTrack = NULL;
+	if (m_pTracks)
+		pTrack = m_pTracks->currentTrack();
+	if (pTrack == NULL)
+		return;
+	if (pTrack->inputBus() == NULL)
+		return;
+
+	if (m_pConnections)
+		m_pConnections->showBus(pTrack->inputBus(), qtractorBus::Input);
+}
+
+
+// Show current track output bus connections.
+void qtractorMainForm::trackOutputs (void)
+{
+	qtractorTrack *pTrack = NULL;
+	if (m_pTracks)
+		pTrack = m_pTracks->currentTrack();
+	if (pTrack == NULL)
+		return;
+	if (pTrack->outputBus() == NULL)
+		return;
+
+	if (m_pConnections)
+		m_pConnections->showBus(pTrack->outputBus(), qtractorBus::Output);
+}
+
+
+// Arm current track for recording.
+void qtractorMainForm::trackStateRecord ( bool bOn )
+{
+	qtractorTrackItemWidget *pTrackWidget = NULL;
+	if (m_pTracks)
+		pTrackWidget = m_pTracks->currentTrackWidget();
+	if (pTrackWidget == NULL)
+		return;
+
+	m_pCommands->exec(
+		new qtractorTrackButtonCommand(pTrackWidget->recordButton(), bOn));
+}
+
+
+// Mute current track.
+void qtractorMainForm::trackStateMute ( bool bOn )
+{
+	qtractorTrackItemWidget *pTrackWidget = NULL;
+	if (m_pTracks)
+		pTrackWidget = m_pTracks->currentTrackWidget();
+	if (pTrackWidget == NULL)
+		return;
+
+	m_pCommands->exec(
+		new qtractorTrackButtonCommand(pTrackWidget->muteButton(), bOn));
+}
+
+
+// Solo current track.
+void qtractorMainForm::trackStateSolo (  bool bOn  )
+{
+	qtractorTrackItemWidget *pTrackWidget = NULL;
+	if (m_pTracks)
+		pTrackWidget = m_pTracks->currentTrackWidget();
+	if (pTrackWidget == NULL)
+		return;
+
+	m_pCommands->exec(
+		new qtractorTrackButtonCommand(pTrackWidget->soloButton(), bOn));
+}
+
+
+// Make current the previous track on list.
+void qtractorMainForm::trackNavigatePrev (void)
+{
+	if (m_pTracks && m_pTracks->trackList()) {
+		int iTrack = (m_pTracks->trackList())->currentTrackRow();
+		if (iTrack > 0)
+			(m_pTracks->trackList())->setCurrentTrackRow(iTrack - 1);
+	}
+}
+
+
+// Make current the next track on list.
+void qtractorMainForm::trackNavigateNext (void)
+{
+	if (m_pTracks && m_pTracks->trackList()) {
+		int iTrack = (m_pTracks->trackList())->currentTrackRow();
+		if (iTrack < (m_pTracks->trackList())->trackRowCount() - 1)
+			(m_pTracks->trackList())->setCurrentTrackRow(iTrack + 1);
+	}
+}
+
+
+// Move current track up towards the top of list
+void qtractorMainForm::trackMoveUp (void)
+{
+	qtractorTrack *pTrack = NULL;
+	if (m_pTracks)
+		pTrack = m_pTracks->currentTrack();
+	if (pTrack == NULL)
+		return;
+
+	qtractorTrack *pNextTrack = pTrack->prev();
+	if (pNextTrack == NULL)
+		return;
+
+	m_pCommands->exec(
+		new qtractorMoveTrackCommand(pTrack, pNextTrack));
+}
+
+
+// Move current track down towards the bottom of list
+void qtractorMainForm::trackMoveDown (void)
+{
+	qtractorTrack *pTrack = NULL;
+	if (m_pTracks)
+		pTrack = m_pTracks->currentTrack();
+	if (pTrack == NULL)
+		return;
+
+	qtractorTrack *pNextTrack = pTrack->next();
+	if (pNextTrack == NULL)
+		return;
+
+	m_pCommands->exec(
+		new qtractorMoveTrackCommand(pTrack, pNextTrack->next()));
+}
+
+
 // Import some tracks from Audio file.
 void qtractorMainForm::trackImportAudio (void)
 {
@@ -1948,6 +2118,30 @@ void qtractorMainForm::viewConnections ( bool bOn )
 	} else {
 		m_pConnections->hide();
 	}
+}
+
+
+// Horizontal and vertical zoom-in.
+void qtractorMainForm::viewZoomIn (void)
+{
+	if (m_pTracks)
+		m_pTracks->zoomIn();
+}
+
+
+// Horizontal and vertical zoom-out.
+void qtractorMainForm::viewZoomOut (void)
+{
+	if (m_pTracks)
+		m_pTracks->zoomOut();
+}
+
+
+// Reset both zoom levels to default.
+void qtractorMainForm::viewZoomReset (void)
+{
+	if (m_pTracks)
+		m_pTracks->zoomReset();
 }
 
 
@@ -2688,7 +2882,10 @@ void qtractorMainForm::stabilizeForm (void)
 	m_pCommands->updateAction(m_ui.editRedoAction, m_pCommands->nextCommand());
 
 	unsigned long iSessionLength = m_pSession->sessionLength();
-	bool bEnabled = (m_pTracks && m_pTracks->currentTrack() != NULL);
+	qtractorTrack *pCurrentTrack = NULL;
+	if (m_pTracks)
+		pCurrentTrack = m_pTracks->currentTrack();
+	bool bEnabled = (m_pTracks && pCurrentTrack != NULL);
 	bool bSelected = (m_pTracks && m_pTracks->isClipSelected());
 	bool bSelectable = (iSessionLength > 0);
 	bool bEditable = (m_pTracks && m_pTracks->currentClip() != NULL);
@@ -2710,8 +2907,24 @@ void qtractorMainForm::stabilizeForm (void)
 	// Update track menu state...
 	m_ui.trackRemoveAction->setEnabled(bEnabled);
 	m_ui.trackPropertiesAction->setEnabled(bEnabled);
+	m_ui.trackInputsAction->setEnabled(bEnabled && pCurrentTrack->inputBus() != NULL);
+	m_ui.trackOutputsAction->setEnabled(bEnabled && pCurrentTrack->outputBus() != NULL);
+	m_ui.trackStateMenu->setEnabled(bEnabled);
+	m_ui.trackNavigateMenu->setEnabled(bEnabled);
+	m_ui.trackNavigatePrevAction->setEnabled(bEnabled && pCurrentTrack->prev() != NULL);
+	m_ui.trackNavigateNextAction->setEnabled(bEnabled && pCurrentTrack->next() != NULL);
+	m_ui.trackMoveMenu->setEnabled(bEnabled);
+	m_ui.trackMoveUpAction->setEnabled(bEnabled && pCurrentTrack->prev() != NULL);
+	m_ui.trackMoveDownAction->setEnabled(bEnabled && pCurrentTrack->next() != NULL);
 	m_ui.trackImportAudioAction->setEnabled(m_pTracks != NULL);
 	m_ui.trackImportMidiAction->setEnabled(m_pTracks != NULL);
+
+	// Update track menu state...
+	if (pCurrentTrack) {
+		m_ui.trackStateRecordAction->setChecked(pCurrentTrack->isRecord());
+		m_ui.trackStateMuteAction->setChecked(pCurrentTrack->isMute());
+		m_ui.trackStateSoloAction->setChecked(pCurrentTrack->isSolo());
+	}
 
 	// Update view menu state...
 	m_ui.viewFilesAction->setChecked(m_pFiles && m_pFiles->isVisible());
@@ -3554,16 +3767,16 @@ void qtractorMainForm::trackSelectionChanged (void)
 #endif
 
 	// Select sync to mixer...
-	if (m_pTracks && m_pMixer) {
+	if (m_pTracks && m_pMixer && m_pMixer->trackRack()) {
 		qtractorMixerStrip *pStrip = NULL;
 		qtractorTrack *pTrack = m_pTracks->currentTrack();
 		if (pTrack)
-			pStrip = m_pMixer->trackRack()->findStrip(pTrack->monitor());
+			pStrip = (m_pMixer->trackRack())->findStrip(pTrack->monitor());
 		if (pStrip) {
 			int wm = (pStrip->width() >> 1);
-			m_pMixer->trackRack()->ensureVisible(
+			(m_pMixer->trackRack())->ensureVisible(
 				pStrip->pos().x() + wm, 0, wm, 0);
-			m_pMixer->trackRack()->setSelectedStrip(pStrip);
+			(m_pMixer->trackRack())->setSelectedStrip(pStrip);
 		}
 	}
 
@@ -3580,11 +3793,11 @@ void qtractorMainForm::mixerSelectionChanged (void)
 
 	// Select sync to tracks...
 	if (m_pTracks && m_pMixer) {
-		qtractorMixerStrip *pStrip = m_pMixer->trackRack()->selectedStrip();
+		qtractorMixerStrip *pStrip = (m_pMixer->trackRack())->selectedStrip();
 		if (pStrip && pStrip->track()) {
-			int iTrack = m_pTracks->trackList()->trackRow(pStrip->track());
+			int iTrack = (m_pTracks->trackList())->trackRow(pStrip->track());
 			if (iTrack >= 0)
-				m_pTracks->trackList()->selectTrack(iTrack);
+				(m_pTracks->trackList())->setCurrentTrackRow(iTrack);
 		}
 	}
 

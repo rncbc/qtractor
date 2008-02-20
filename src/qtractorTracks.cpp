@@ -1,7 +1,7 @@
 // qtractorTracks.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -172,27 +172,10 @@ void qtractorTracks::horizontalZoomStep ( int iZoomStep )
 	if (iHorizontalZoom == pSession->horizontalZoom())
 		return;
 
-#ifdef CONFIG_DEBUG
-	fprintf(stderr, "qtractorTracks::horizontalZoomStep(%d)"
-		" => iHorizontalZoom=%d\n", iZoomStep, iHorizontalZoom);
-#endif
-
-	// Save current session frame location...
-	unsigned long iFrame = m_pTrackView->sessionCursor()->frame();
-
 	// Fix the ssession time scale zoom determinant.
 	pSession->setHorizontalZoom(iHorizontalZoom);
 	pSession->updateTimeScale();
 	pSession->updateSessionLength();
-
-	// Update the dependant views...
-	m_pTrackView->updateContentsWidth();
-	m_pTrackView->setContentsPos(
-		pSession->pixelFromFrame(iFrame), m_pTrackView->contentsY());
-	m_pTrackView->updateContents();
-
-	// Notify who's watching...
-	contentsChangeNotify();
 }
 
 
@@ -212,41 +195,61 @@ void qtractorTracks::verticalZoomStep ( int iZoomStep )
 	if (iVerticalZoom == pSession->verticalZoom())
 		return;
 
-#ifdef CONFIG_DEBUG
-	fprintf(stderr, "qtractorTracks::verticalZoomStep(%d)"
-		" => iVerticalZoom=%d\n", iZoomStep, iVerticalZoom);
-#endif
-
 	// Fix the session vertical view zoom.
 	pSession->setVerticalZoom(iVerticalZoom);
-
-	// Update the dependant views...
-	m_pTrackList->updateContentsHeight();
-
-	// Notify who's watching...
-	contentsChangeNotify();
 }
 
 
 // Zoom view slots.
+void qtractorTracks::zoomIn (void)
+{
+	horizontalZoomStep(+ ZoomStep);
+	verticalZoomStep(+ ZoomStep);
+	centerContents();
+}
+
+void qtractorTracks::zoomOut (void)
+{
+	horizontalZoomStep(- ZoomStep);
+	verticalZoomStep(- ZoomStep);
+	centerContents();
+}
+
+
+void qtractorTracks::zoomReset (void)
+{
+	qtractorSession *pSession = session();
+	if (pSession == NULL)
+		return;
+
+	horizontalZoomStep(ZoomBase - pSession->horizontalZoom());
+	verticalZoomStep(ZoomBase - pSession->verticalZoom());
+	centerContents();
+}
+
+
 void qtractorTracks::horizontalZoomInSlot (void)
 {
 	horizontalZoomStep(+ ZoomStep);
+	centerContents();
 }
 
 void qtractorTracks::horizontalZoomOutSlot (void)
 {
 	horizontalZoomStep(- ZoomStep);
+	centerContents();
 }
 
 void qtractorTracks::verticalZoomInSlot (void)
 {
 	verticalZoomStep(+ ZoomStep);
+	centerContents();
 }
 
 void qtractorTracks::verticalZoomOutSlot (void)
 {
 	verticalZoomStep(- ZoomStep);
+	centerContents();
 }
 
 void qtractorTracks::viewZoomResetSlot (void)
@@ -258,6 +261,27 @@ void qtractorTracks::viewZoomResetSlot (void)
 	// All zoom base are belong to us :)
 	verticalZoomStep(ZoomBase - pSession->verticalZoom());
 	horizontalZoomStep(ZoomBase - pSession->horizontalZoom());
+	centerContents();
+}
+
+
+// Try to center horizontally/vertically
+// (usually after zoom change)
+void qtractorTracks::centerContents (void)
+{
+	qtractorSession *pSession = session();
+	if (pSession == NULL)
+		return;
+		
+	// Get current session frame location...
+	unsigned long iFrame = m_pTrackView->sessionCursor()->frame();
+
+	// Update the dependant views...
+	m_pTrackList->updateContentsHeight();
+	m_pTrackView->updateContentsWidth();
+	m_pTrackView->setContentsPos(
+		pSession->pixelFromFrame(iFrame), m_pTrackView->contentsY());
+	m_pTrackView->updateContents();
 }
 
 
@@ -300,6 +324,13 @@ void qtractorTracks::updateContents ( bool bRefresh )
 qtractorTrack *qtractorTracks::currentTrack (void) const
 {
 	return m_pTrackList->currentTrack();
+}
+
+
+// Retrieves current selected track widget reference.
+qtractorTrackItemWidget *qtractorTracks::currentTrackWidget (void) const
+{
+	return m_pTrackList->currentTrackWidget();
 }
 
 

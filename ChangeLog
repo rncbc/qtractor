@@ -5,6 +5,22 @@ ChangeLog
 
 CVS HEAD
 
+- Track menu has new accessible actions:
+  Track/Inputs - show current track input bus connections;
+  Track/Outputs - show current track output bus connections;
+  Track/State/Record - arm current track for recording;
+  Track/State/Mute - mute current track;
+  Track/State/Solo - solo current track;
+  Track/Navigate/Previous - make current the previous track;
+  Track/Navigate/Next - make current the next track;
+  Track/Move/Up - move current track up;
+  Track/Move/Down - move current track down;
+
+- View menus have new accessible actions:
+  View/Zoom/In - horizontal and vertical zoom-in (Ctrl +)
+  View/Zoom/Out - horizontal and vertical zoom-out (Ctrl -)
+  View/Zoom/Reset - reset both zoom levels to default
+
 - Plug-in forms don't auto-open on session reload anymore.
 
 - Keyboard shortcuts icon item (Help/Shortcuts...) sneaks in.

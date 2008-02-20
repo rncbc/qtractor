@@ -1,7 +1,7 @@
 // qtractorTracks.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -27,6 +27,7 @@
 // Forward declarations.
 class qtractorInstrumentList;
 class qtractorTrackButton;
+class qtractorTrackItemWidget;
 class qtractorTrackList;
 class qtractorTrackTime;
 class qtractorTrackView;
@@ -65,9 +66,12 @@ public:
 
 	// Primordial track management methods.
 	qtractorTrack *currentTrack() const;
+
 	bool addTrack();
 	bool removeTrack(qtractorTrack *pTrack = NULL);
 	bool editTrack(qtractorTrack *pTrack = NULL);
+
+	qtractorTrackItemWidget *currentTrackWidget() const;
 
 	// Import Audio/MIDI files into new tracks...
 	bool addAudioTracks(QStringList files, unsigned long iClipStart = 0);
@@ -108,6 +112,16 @@ public:
 	// Overall contents reset.
 	void clear();
 
+public slots:
+
+	// Track button notification.
+	void trackButtonToggledSlot(qtractorTrackButton *pTrackButton, bool bOn);
+
+	// Zoom view slots.
+	void zoomIn();
+	void zoomOut();
+	void zoomReset();
+
 protected:
 
 	// Zoom factor constants.
@@ -116,11 +130,10 @@ protected:
 	// Common zoom factor settlers.
 	void horizontalZoomStep(int iZoomStep);
 	void verticalZoomStep(int iZoomStep);
-					
-public slots:
 
-	// Track button notification.
-	void trackButtonToggledSlot(qtractorTrackButton *pTrackButton, bool bOn);
+	// Try to center horizontally/vertically
+	// (usually after zoom change)
+	void centerContents();
 
 protected slots:
 

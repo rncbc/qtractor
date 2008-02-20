@@ -1,7 +1,7 @@
 // qtractorMainForm.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -127,6 +127,15 @@ public slots:
 	void trackAdd();
 	void trackRemove();
 	void trackProperties();
+	void trackInputs();
+	void trackOutputs();
+	void trackStateRecord(bool bOn);
+	void trackStateMute(bool bOn);
+	void trackStateSolo(bool bOn);
+	void trackNavigatePrev();
+	void trackNavigateNext();
+	void trackMoveUp();
+	void trackMoveDown();
 	void trackImportAudio();
 	void trackImportMidi();
 	void trackExportAudio();
@@ -146,6 +155,9 @@ public slots:
 	void viewMessages(bool bOn);
 	void viewConnections(bool bOn);
 	void viewMixer(bool bOn);
+	void viewZoomIn();
+	void viewZoomOut();
+	void viewZoomReset();
 	void viewRefresh();
 	void viewInstruments();
 	void viewBuses();

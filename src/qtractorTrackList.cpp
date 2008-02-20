@@ -1,7 +1,7 @@
 // qtractorTrackList.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -103,63 +103,51 @@ private:
 //----------------------------------------------------------------------------
 // qtractorTrackItemWidget -- Track button layout widget.
 
-class qtractorTrackItemWidget : public QWidget
+// Constructor.
+qtractorTrackItemWidget::qtractorTrackItemWidget (
+	qtractorTrackList *pTrackList, qtractorTrack *pTrack )
+	: QWidget(pTrackList->viewport())
 {
-//	Q_OBJECT
+	QWidget::setBackgroundRole(QPalette::Window);
 
-public:
+	QHBoxLayout *pHBoxLayout = new QHBoxLayout();
+	pHBoxLayout->setMargin(4);
+	pHBoxLayout->setSpacing(4);
 
-	// Constructor.
-	qtractorTrackItemWidget(qtractorTrackList *pTrackList,
-		qtractorTrack *pTrack ) : QWidget(pTrackList->viewport())
-	{
-		QWidget::setBackgroundRole(QPalette::Window);
+	const QSize buttonSize(22, 16);
+	m_pRecordButton = new qtractorTrackButton(pTrack,
+		qtractorTrack::Record, buttonSize, this);
+	m_pMuteButton   = new qtractorTrackButton(pTrack,
+		qtractorTrack::Mute, buttonSize, this);
+	m_pSoloButton   = new qtractorTrackButton(pTrack,
+		qtractorTrack::Solo, buttonSize, this);
 
-		QHBoxLayout *pHBoxLayout = new QHBoxLayout();
-		pHBoxLayout->setMargin(4);
-		pHBoxLayout->setSpacing(4);
+//	pHBoxLayout->addStretch();
+	pHBoxLayout->addWidget(m_pRecordButton);
+	pHBoxLayout->addWidget(m_pMuteButton);
+	pHBoxLayout->addWidget(m_pSoloButton);
+	QWidget::setLayout(pHBoxLayout);
 
-		const QSize buttonSize(22, 16);
-		m_pRecordButton = new qtractorTrackButton(pTrack,
-			qtractorTrack::Record, buttonSize, this);
-		m_pMuteButton   = new qtractorTrackButton(pTrack,
-			qtractorTrack::Mute, buttonSize, this);
-		m_pSoloButton   = new qtractorTrackButton(pTrack,
-			qtractorTrack::Solo, buttonSize, this);
-	
-	//	pHBoxLayout->addStretch();
-		pHBoxLayout->addWidget(m_pRecordButton);
-		pHBoxLayout->addWidget(m_pMuteButton);
-		pHBoxLayout->addWidget(m_pSoloButton);
-		QWidget::setLayout(pHBoxLayout);
+	qtractorTracks *pTracks = pTrackList->tracks();
+	QObject::connect(m_pRecordButton,
+		SIGNAL(trackButtonToggled(qtractorTrackButton *, bool)),
+		pTracks, SLOT(trackButtonToggledSlot(qtractorTrackButton *, bool)));
+	QObject::connect(m_pMuteButton,
+		SIGNAL(trackButtonToggled(qtractorTrackButton *, bool)),
+		pTracks, SLOT(trackButtonToggledSlot(qtractorTrackButton *, bool)));
+	QObject::connect(m_pSoloButton,
+		SIGNAL(trackButtonToggled(qtractorTrackButton *, bool)),
+		pTracks, SLOT(trackButtonToggledSlot(qtractorTrackButton *, bool)));
+}
 
-		qtractorTracks *pTracks = pTrackList->tracks();
-		QObject::connect(m_pRecordButton,
-			SIGNAL(trackButtonToggled(qtractorTrackButton *, bool)),
-			pTracks, SLOT(trackButtonToggledSlot(qtractorTrackButton *, bool)));
-		QObject::connect(m_pMuteButton,
-			SIGNAL(trackButtonToggled(qtractorTrackButton *, bool)),
-			pTracks, SLOT(trackButtonToggledSlot(qtractorTrackButton *, bool)));
-		QObject::connect(m_pSoloButton,
-			SIGNAL(trackButtonToggled(qtractorTrackButton *, bool)),
-			pTracks, SLOT(trackButtonToggledSlot(qtractorTrackButton *, bool)));
-	}
 
-	// Public feedbacker.
-	void updateTrack()
-	{
-		m_pRecordButton->updateTrack();
-		m_pMuteButton->updateTrack();
-		m_pSoloButton->updateTrack();
-	}
-
-private:
-
-	// The local child widgets.
-	qtractorTrackButton *m_pRecordButton;
-	qtractorTrackButton *m_pMuteButton;
-	qtractorTrackButton *m_pSoloButton;
-};
+// Public feedbacker.
+void qtractorTrackItemWidget::updateTrack (void)
+{
+	m_pRecordButton->updateTrack();
+	m_pMuteButton->updateTrack();
+	m_pSoloButton->updateTrack();
+}
 
 
 //----------------------------------------------------------------------------
@@ -465,8 +453,8 @@ int qtractorTrackList::removeTrack ( int iTrack )
 }
 
 
-// Select a track item.
-void qtractorTrackList::selectTrack ( int iTrack )
+// Manage current track row by index.
+void qtractorTrackList::setCurrentTrackRow ( int iTrack )
 {
 	int iCurrentTrack = m_iCurrentTrack;
 	if (iTrack < 0 || iTrack >= m_items.count())
@@ -494,6 +482,17 @@ void qtractorTrackList::selectTrack ( int iTrack )
 	emit selectionChanged();
 }
 
+int qtractorTrackList::currentTrackRow (void) const
+{
+	return m_iCurrentTrack;
+}
+
+int qtractorTrackList::trackRowCount (void) const
+{
+	return m_items.count();
+}
+
+
 
 // Retrieves current selected track reference.
 qtractorTrack *qtractorTrackList::currentTrack (void) const
@@ -502,6 +501,16 @@ qtractorTrack *qtractorTrackList::currentTrack (void) const
 		return NULL;
 
 	return m_items.at(m_iCurrentTrack)->track;
+}
+
+
+// Give direct access to curent track button widgets.
+qtractorTrackItemWidget *qtractorTrackList::currentTrackWidget (void) const
+{
+	if (m_iCurrentTrack < 0 || m_iCurrentTrack >= m_items.count())
+		return NULL;
+
+	return m_items.at(m_iCurrentTrack)->widget;
 }
 
 
@@ -793,7 +802,7 @@ void qtractorTrackList::mousePressEvent ( QMouseEvent *pMouseEvent )
 	int iTrack = trackRowAt(pos);
 
 	// Select current track...
-	selectTrack(iTrack);
+	setCurrentTrackRow(iTrack);
 
 	// Look for the mouse hovering around some item boundary...
 	if (iTrack >= 0) {
@@ -1016,7 +1025,7 @@ void qtractorTrackList::keyPressEvent ( QKeyEvent *pKeyEvent )
 		break;
 	case Qt::Key_Home:
 		if (pKeyEvent->modifiers() & Qt::ControlModifier) {
-			selectTrack(0);
+			setCurrentTrackRow(0);
 		} else {
 			qtractorScrollView::setContentsPos(
 				0, qtractorScrollView::contentsY());
@@ -1024,7 +1033,7 @@ void qtractorTrackList::keyPressEvent ( QKeyEvent *pKeyEvent )
 		break;
 	case Qt::Key_End:
 		if (pKeyEvent->modifiers() & Qt::ControlModifier) {
-			selectTrack(m_items.count() - 1);
+			setCurrentTrackRow(m_items.count() - 1);
 		} else {
 			qtractorScrollView::setContentsPos(
 				qtractorScrollView::contentsWidth(),
@@ -1055,11 +1064,11 @@ void qtractorTrackList::keyPressEvent ( QKeyEvent *pKeyEvent )
 		break;
 	case Qt::Key_Up:
 		if (m_iCurrentTrack > 0)
-			selectTrack(m_iCurrentTrack - 1);
+			setCurrentTrackRow(m_iCurrentTrack - 1);
 		break;
 	case Qt::Key_Down:
 		if (m_iCurrentTrack < m_items.count() - 1)
-			selectTrack(m_iCurrentTrack + 1);
+			setCurrentTrackRow(m_iCurrentTrack + 1);
 		break;
 	case Qt::Key_PageUp:
 		if (pKeyEvent->modifiers() & Qt::ControlModifier) {

@@ -161,6 +161,28 @@
     <property name="title" >
      <string>&amp;Track</string>
     </property>
+    <widget class="QMenu" name="trackStateMenu" >
+     <property name="title" >
+      <string>&amp;State</string>
+     </property>
+     <addaction name="trackStateRecordAction" />
+     <addaction name="trackStateMuteAction" />
+     <addaction name="trackStateSoloAction" />
+    </widget>
+    <widget class="QMenu" name="trackNavigateMenu" >
+     <property name="title" >
+      <string>&amp;Navigate</string>
+     </property>
+     <addaction name="trackNavigatePrevAction" />
+     <addaction name="trackNavigateNextAction" />
+    </widget>
+    <widget class="QMenu" name="trackMoveMenu" >
+     <property name="title" >
+      <string>&amp;Move</string>
+     </property>
+     <addaction name="trackMoveUpAction" />
+     <addaction name="trackMoveDownAction" />
+    </widget>
     <widget class="QMenu" name="trackImportMenu" >
      <property name="title" >
       <string>&amp;Import Tracks</string>
@@ -179,6 +201,13 @@
     <addaction name="trackRemoveAction" />
     <addaction name="separator" />
     <addaction name="trackPropertiesAction" />
+    <addaction name="separator" />
+    <addaction name="trackInputsAction" />
+    <addaction name="trackOutputsAction" />
+    <addaction name="separator" />
+    <addaction name="trackStateMenu" />
+    <addaction name="trackNavigateMenu" />
+    <addaction name="trackMoveMenu" />
     <addaction name="separator" />
     <addaction name="trackImportMenu" />
     <addaction name="trackExportMenu" />
@@ -200,6 +229,18 @@
      <addaction name="viewToolbarTimeAction" />
      <addaction name="viewToolbarThumbAction" />
     </widget>
+    <widget class="QMenu" name="viewZoomMenu" >
+     <property name="icon" >
+      <iconset resource="../icons/qtractor.qrc" >:/icons/viewZoomTool.png</iconset>
+     </property>
+     <property name="title" >
+      <string>&amp;Zoom</string>
+     </property>
+     <addaction name="viewZoomInAction" />
+     <addaction name="viewZoomOutAction" />
+     <addaction name="separator" />
+     <addaction name="viewZoomResetAction" />
+    </widget>
     <addaction name="viewMenubarAction" />
     <addaction name="viewStatusbarAction" />
     <addaction name="viewToolbarsMenu" />
@@ -209,6 +250,7 @@
     <addaction name="viewConnectionsAction" />
     <addaction name="viewMixerAction" />
     <addaction name="separator" />
+    <addaction name="viewZoomMenu" />
     <addaction name="viewRefreshAction" />
     <addaction name="separator" />
     <addaction name="viewInstrumentsAction" />
@@ -707,7 +749,7 @@
     <iconset resource="../icons/qtractor.qrc" >:/icons/trackRemove.png</iconset>
    </property>
    <property name="text" >
-    <string>&amp;Remove Track</string>
+    <string>R&amp;emove Track</string>
    </property>
    <property name="iconText" >
     <string>Remove Track</string>
@@ -740,6 +782,141 @@
    </property>
    <property name="shortcut" >
     <string>Shift+F2</string>
+   </property>
+  </action>
+  <action name="trackInputsAction" >
+   <property name="text" >
+    <string>&amp;Inputs</string>
+   </property>
+   <property name="iconText" >
+    <string>Track inputs</string>
+   </property>
+   <property name="toolTip" >
+    <string>Inputs</string>
+   </property>
+   <property name="statusTip" >
+    <string>Show current track input bus connections</string>
+   </property>
+  </action>
+  <action name="trackOutputsAction" >
+   <property name="text" >
+    <string>&amp;Outputs</string>
+   </property>
+   <property name="iconText" >
+    <string>Outputs</string>
+   </property>
+   <property name="toolTip" >
+    <string>Track outputs</string>
+   </property>
+   <property name="statusTip" >
+    <string>Show current track output bus connections</string>
+   </property>
+  </action>
+  <action name="trackStateRecordAction" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="text" >
+    <string>&amp;Record</string>
+   </property>
+   <property name="iconText" >
+    <string>Record</string>
+   </property>
+   <property name="toolTip" >
+    <string>Record track</string>
+   </property>
+   <property name="statusTip" >
+    <string>Arm current track for recording</string>
+   </property>
+  </action>
+  <action name="trackStateMuteAction" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="text" >
+    <string>&amp;Mute</string>
+   </property>
+   <property name="iconText" >
+    <string>Mute</string>
+   </property>
+   <property name="toolTip" >
+    <string>Mute track</string>
+   </property>
+   <property name="statusTip" >
+    <string>Mute current track</string>
+   </property>
+  </action>
+  <action name="trackStateSoloAction" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="text" >
+    <string>&amp;Solo</string>
+   </property>
+   <property name="iconText" >
+    <string>Solo</string>
+   </property>
+   <property name="toolTip" >
+    <string>Solo track</string>
+   </property>
+   <property name="statusTip" >
+    <string>Solo current track</string>
+   </property>
+  </action>
+  <action name="trackNavigatePrevAction" >
+   <property name="text" >
+    <string>&amp;Previous</string>
+   </property>
+   <property name="iconText" >
+    <string>Previous</string>
+   </property>
+   <property name="toolTip" >
+    <string>Previous track</string>
+   </property>
+   <property name="statusTip" >
+    <string>Make current the previous track</string>
+   </property>
+  </action>
+  <action name="trackNavigateNextAction" >
+   <property name="text" >
+    <string>&amp;Next</string>
+   </property>
+   <property name="iconText" >
+    <string>Next</string>
+   </property>
+   <property name="toolTip" >
+    <string>Next track</string>
+   </property>
+   <property name="statusTip" >
+    <string>Make current the next track</string>
+   </property>
+  </action>
+  <action name="trackMoveUpAction" >
+   <property name="text" >
+    <string>&amp;Up</string>
+   </property>
+   <property name="iconText" >
+    <string>Move Up</string>
+   </property>
+   <property name="toolTip" >
+    <string>Move up</string>
+   </property>
+   <property name="statusTip" >
+    <string>Move current track up</string>
+   </property>
+  </action>
+  <action name="trackMoveDownAction" >
+   <property name="text" >
+    <string>&amp;Down</string>
+   </property>
+   <property name="iconText" >
+    <string>Move Down</string>
+   </property>
+   <property name="toolTip" >
+    <string>Move down</string>
+   </property>
+   <property name="statusTip" >
+    <string>Move current track down</string>
    </property>
   </action>
   <action name="trackImportAudioAction" >
@@ -1076,6 +1253,60 @@
    </property>
    <property name="shortcut" >
     <string>F9</string>
+   </property>
+  </action>
+  <action name="viewZoomInAction" >
+   <property name="icon" >
+    <iconset resource="../icons/qtractor.qrc" >:/icons/viewZoomIn.png</iconset>
+   </property>
+   <property name="text" >
+    <string>&amp;In</string>
+   </property>
+   <property name="iconText" >
+    <string>Zoom In</string>
+   </property>
+   <property name="toolTip" >
+    <string>Zoom in</string>
+   </property>
+   <property name="statusTip" >
+    <string>Zoom in</string>
+   </property>
+   <property name="shortcut" >
+    <string>Ctrl++</string>
+   </property>
+  </action>
+  <action name="viewZoomOutAction" >
+   <property name="icon" >
+    <iconset resource="../icons/qtractor.qrc" >:/icons/viewZoomOut.png</iconset>
+   </property>
+   <property name="text" >
+    <string>&amp;Out</string>
+   </property>
+   <property name="iconText" >
+    <string>Zoom Out</string>
+   </property>
+   <property name="toolTip" >
+    <string>Zoom out</string>
+   </property>
+   <property name="statusTip" >
+    <string>Zoom out</string>
+   </property>
+   <property name="shortcut" >
+    <string>Ctrl+-</string>
+   </property>
+  </action>
+  <action name="viewZoomResetAction" >
+   <property name="text" >
+    <string>&amp;Reset</string>
+   </property>
+   <property name="iconText" >
+    <string>Zoom Reset</string>
+   </property>
+   <property name="toolTip" >
+    <string>Zoom reset</string>
+   </property>
+   <property name="statusTip" >
+    <string>Zoom reset</string>
    </property>
   </action>
   <action name="viewRefreshAction" >

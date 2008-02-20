@@ -951,6 +951,29 @@ void qtractorMidiEditor::verticalZoomStep ( int iZoomStep )
 
 
 // Zoom view slots.
+void qtractorMidiEditor::zoomIn (void)
+{
+	horizontalZoomStep(+ ZoomStep);
+	verticalZoomStep(+ ZoomStep);
+	centerContents();
+}
+
+void qtractorMidiEditor::zoomOut (void)
+{
+	horizontalZoomStep(- ZoomStep);
+	verticalZoomStep(- ZoomStep);
+	centerContents();
+}
+
+
+void qtractorMidiEditor::zoomReset (void)
+{
+	horizontalZoomStep(ZoomBase - m_pTimeScale->horizontalZoom());
+	verticalZoomStep(ZoomBase - m_pTimeScale->verticalZoom());
+	centerContents();
+}
+
+
 void qtractorMidiEditor::horizontalZoomInSlot (void)
 {
 	horizontalZoomStep(+ ZoomStep);

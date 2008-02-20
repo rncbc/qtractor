@@ -594,7 +594,7 @@ qtractorTrack *qtractorTrackView::trackAt ( const QPoint& pos,
 	}
 
 	if (bSelectTrack)
-		m_pTracks->trackList()->selectTrack(iTrack);
+		m_pTracks->trackList()->setCurrentTrackRow(iTrack);
 
 	if (pTrackViewInfo) {
 		int x = qtractorScrollView::contentsX();

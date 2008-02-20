@@ -656,7 +656,10 @@ void qtractorSession::moveTrack ( qtractorTrack *pTrack,
 //	lock();
 
 	m_tracks.unlink(pTrack);
-	m_tracks.insertBefore(pTrack, pNextTrack);
+	if (pNextTrack)
+		m_tracks.insertBefore(pTrack, pNextTrack);
+	else
+		m_tracks.append(pTrack);
 
 	reset();
 

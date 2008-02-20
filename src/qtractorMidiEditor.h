@@ -285,6 +285,11 @@ public slots:
 	// Update instrument defined names for current clip/track.
 	void updateInstrumentNames();
 
+	// Zoom view slots.
+	void zoomIn();
+	void zoomOut();
+	void zoomReset();
+
 protected:
 
 	// Zoom factor constants.

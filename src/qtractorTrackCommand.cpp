@@ -1,7 +1,7 @@
 // qtractorTrackCommand.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -81,7 +81,7 @@ bool qtractorTrackCommand::addTrack (void)
 	// And the new track list view item too...
 	iTrack = pTracks->trackList()->insertTrack(iTrack, m_pTrack);
 	if (iTrack >= 0)
-		pTracks->trackList()->selectTrack(iTrack);
+		pTracks->trackList()->setCurrentTrackRow(iTrack);
 	// Special MIDI track cases...
 	if (m_pTrack->trackType() == qtractorTrack::Midi)
 	    pTracks->updateMidiTrack(m_pTrack);
@@ -125,7 +125,7 @@ bool qtractorTrackCommand::removeTrack (void)
 	// Third, remove track from list view...
 	iTrack = pTracks->trackList()->removeTrack(iTrack);
 	if (iTrack >= 0)
-		pTracks->trackList()->selectTrack(iTrack);
+		pTracks->trackList()->setCurrentTrackRow(iTrack);
 
 	// Mixer turn...
 	qtractorMixer *pMixer = pMainForm->mixer();
@@ -231,7 +231,7 @@ bool qtractorMoveTrackCommand::redo (void)
 	// We'll renumber all items now...
 	iNextTrack = pTracks->trackList()->insertTrack(iNextTrack, pTrack);
 	if (iNextTrack >= 0)
-		pTracks->trackList()->selectTrack(iNextTrack);
+		pTracks->trackList()->setCurrentTrackRow(iNextTrack);
 
 	// Swap it nice, finally.
 	m_pNextTrack = pNextTrack;

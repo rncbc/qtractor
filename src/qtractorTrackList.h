@@ -1,7 +1,7 @@
 // qtractorTrackList.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -30,7 +30,8 @@
 // Forward declarations.
 class qtractorTrack;
 class qtractorTracks;
-class qtractorTrackItemWidget;
+class qtractorTrackList;
+class qtractorTrackButton;
 class qtractorRubberBand;
 
 class QHeaderView;
@@ -38,6 +39,39 @@ class QHeaderView;
 class QResizeEvent;
 class QMouseEvent;
 class QKeyEvent;
+
+
+//----------------------------------------------------------------------------
+// qtractorTrackItemWidget -- Track button layout widget.
+
+class qtractorTrackItemWidget : public QWidget
+{
+//	Q_OBJECT
+
+public:
+
+	// Constructor.
+	qtractorTrackItemWidget(
+		qtractorTrackList *pTrackList, qtractorTrack *pTrack);
+
+	// Public feedbacker.
+	void updateTrack();
+
+	// Local child widgets accessors.
+	qtractorTrackButton *recordButton() const
+		{ return m_pRecordButton; }
+	qtractorTrackButton *muteButton() const
+		{ return m_pMuteButton; }
+	qtractorTrackButton *soloButton() const
+		{ return m_pSoloButton; }
+
+private:
+
+	// The local child widgets.
+	qtractorTrackButton *m_pRecordButton;
+	qtractorTrackButton *m_pMuteButton;
+	qtractorTrackButton *m_pSoloButton;
+};
 
 
 //----------------------------------------------------------------------------
@@ -84,11 +118,16 @@ public:
 	int insertTrack(int iTrack, qtractorTrack *pTrack);
 	int removeTrack(int iTrack);
 
-	// Select a track item.
-	void selectTrack(int iTrack);
+	// Manage current track row by index.
+	void setCurrentTrackRow(int iTrack);
+	int currentTrackRow() const;
+	int trackRowCount() const;
 
-	// Retrieves current selected track reference.
+	// Retrieve current selected track reference.
 	qtractorTrack *currentTrack() const;
+
+	// Give direct access to curent track button widgets.
+	qtractorTrackItemWidget *currentTrackWidget() const;
 
 	// Update the list view item from track pointer reference.
 	void updateTrack(qtractorTrack *pTrack);
