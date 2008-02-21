@@ -5,6 +5,8 @@ ChangeLog
 
 CVS HEAD
 
+- True deterministic session length update has due fixed.
+
 - Track menu has new accessible actions:
   Track/Inputs - show current track input bus connections;
   Track/Outputs - show current track output bus connections;

@@ -72,7 +72,7 @@ public:
 	const QString& description() const;
 
 	// Session length mod-accessors.
-	bool updateSessionLength(unsigned long iSessionLength = 0);
+	void updateSessionLength(unsigned long iSessionLength = 0);
 	unsigned long sessionLength() const;
 
 	// Time-scale helper accessors.

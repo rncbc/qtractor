@@ -231,22 +231,25 @@ const QString& qtractorSession::description (void) const
 
 
 // Adjust session length to the latest and/or longer clip.
-bool qtractorSession::updateSessionLength ( unsigned long iSessionLength )
+void qtractorSession::updateSessionLength ( unsigned long iSessionLength )
 {
+	// Set initial one...
+	m_iSessionLength = iSessionLength;
+
+	// Maybe we just don't need to know more...
+	// (recording ongoing?)
+	if (m_iSessionLength > 0)
+		return;
+
 	// Find the last and longest clip frame position...
 	for (qtractorTrack *pTrack = m_tracks.first();
 			pTrack; pTrack = pTrack->next()) {
-		qtractorClip *pClip = pTrack->clips().last();
-		if (pClip && pClip->clipStart() + pClip->clipLength() > iSessionLength)
-			iSessionLength = pClip->clipStart() + pClip->clipLength();
+		for (qtractorClip *pClip = pTrack->clips().first();
+				pClip; pClip = pClip->next()) {
+			if (m_iSessionLength < pClip->clipStart() + pClip->clipLength())
+				m_iSessionLength = pClip->clipStart() + pClip->clipLength();
+		}
 	}
-	// Just return if we've not changed.
-	if (iSessionLength == m_iSessionLength)
-		return false;
-	// Set new one.
-	m_iSessionLength = iSessionLength;
-	// Done.
-	return true;
 }
 
 
