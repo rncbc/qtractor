@@ -1,7 +1,7 @@
 // qtractorTrack.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -706,7 +706,8 @@ void qtractorTrack::process ( qtractorClip *pClip,
 	}
 
 	// Now, for every clip...
-	while (pClip && pClip->clipStart() < iFrameEnd) {
+	while (pClip && pClip->clipStart() < iFrameEnd
+		&& iFrameStart < pClip->clipStart() + pClip->clipLength()) {
 		pClip->process(iFrameStart, iFrameEnd);
 		pClip = pClip->next();
 	}

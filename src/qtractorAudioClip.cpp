@@ -85,8 +85,8 @@ float qtractorAudioClip::timeStretch (void) const
 bool qtractorAudioClip::openAudioFile ( const QString& sFilename, int iMode )
 {
 #ifdef CONFIG_DEBUG_0
-	fprintf(stderr, "qtractorAudioClip::openAudioFile(\"%s\", %d)\n",
-		sFilename.toUtf8().constData(), iMode);
+	qDebug("qtractorAudioClip[%p]::openAudioFile(\"%s\", %d)",
+		this, sFilename.toUtf8().constData(), iMode);
 #endif
 
 	qtractorTrack *pTrack = track();
@@ -189,7 +189,7 @@ void qtractorAudioClip::set_loop ( unsigned long iLoopStart,
 	unsigned long iLoopEnd )
 {
 #ifdef CONFIG_DEBUG_0
-	fprintf(stderr, "qtractorAudioClip::loop(%p, %lu, %lu)\n",
+	qDebug("qtractorAudioClip[%p]::loop(%lu, %lu)",
 		this, iLoopStart, iLoopEnd);
 #endif
 
@@ -201,7 +201,7 @@ void qtractorAudioClip::set_loop ( unsigned long iLoopStart,
 void qtractorAudioClip::close ( bool bForce )
 {
 #ifdef CONFIG_DEBUG_0
-	fprintf(stderr, "qtractorAudioClip::close(%p, %d)\n", this, int(bForce));
+	qDebug("qtractorAudioClip[%p]::close(%d)\n", this, int(bForce));
 #endif
 
 	// Enforced to get rid of peak instance...

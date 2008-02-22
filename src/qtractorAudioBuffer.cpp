@@ -343,7 +343,7 @@ int qtractorAudioBuffer::read ( float **ppFrames, unsigned int iFrames,
 				nframes -= nread;
 				iOffset += nread;
 				m_pRingBuffer->setReadIndex(ls);
-				m_iReadOffset = ls;
+				m_iReadOffset = m_iOffset + ls;
 			}
 			iFrames = nframes;
 		} else {
@@ -357,11 +357,12 @@ int qtractorAudioBuffer::read ( float **ppFrames, unsigned int iFrames,
 	}
 
 	// Move the (remaining) data around...	
-	m_pRingBuffer->read(ppFrames, iFrames, iOffset);
-	if (m_iReadOffset + nframes > m_iOffset + m_iLength) {
-		m_iReadOffset = (ls < le ? ls : m_iOffset);
-	} else {
-		m_iReadOffset += nframes;
+	m_pRingBuffer->read(ppFrames, nframes, iOffset);
+
+	m_iReadOffset += nframes;
+	if (m_iReadOffset >= m_iOffset + m_iLength) {
+		m_iReadOffset = 0; // Force out-of-sync...
+		m_bReadSync = false;
 	}
 
 #ifdef DEBUG_0
@@ -492,7 +493,7 @@ int qtractorAudioBuffer::readMix ( float **ppFrames, unsigned int iFrames,
 				nframes -= nread;
 				iOffset += nread;
 				m_pRingBuffer->setReadIndex(ls);
-				m_iReadOffset = ls;
+				m_iReadOffset = m_iOffset + ls;
 			}
 			iFrames = nframes;
 		} else {
@@ -506,11 +507,12 @@ int qtractorAudioBuffer::readMix ( float **ppFrames, unsigned int iFrames,
 	}
 
 	// Mix the (remaining) data around...
-	readMixFrames(ppFrames, iFrames, iChannels, iOffset, fGain);
-	if (m_iReadOffset + nframes > m_iOffset + m_iLength) {
-		m_iReadOffset = (ls < le ? ls : m_iOffset);
-	} else {
-		m_iReadOffset += nframes;
+	readMixFrames(ppFrames, nframes, iChannels, iOffset, fGain);
+
+	m_iReadOffset += nframes;
+	if (m_iReadOffset >= m_iOffset + m_iLength) {
+		m_iReadOffset = 0; // Force out-of-sync...
+		m_bReadSync = false;
 	}
 
 #ifdef DEBUG_0
@@ -542,8 +544,8 @@ bool qtractorAudioBuffer::seek ( unsigned long iFrame )
 		if (iFrame >= m_iLength)
 			return false;
 		m_pRingBuffer->setReadIndex(iFrame);
-	//	m_iWriteOffset = iFrame;
-		m_iReadOffset  = iFrame;
+	//	m_iWriteOffset = m_iOffset + iFrame;
+		m_iReadOffset  = m_iOffset + iFrame;
 		return true;
 	}
 
@@ -561,15 +563,16 @@ bool qtractorAudioBuffer::seek ( unsigned long iFrame )
 	unsigned long ro = m_iReadOffset;
 
 	// Check if target is already cached...
-	if (/* m_bReadSync && */ iFrame >= ro && ro + rs >= iFrame) {
-		m_pRingBuffer->setReadIndex(ri + iFrame - ro);
+	if (iFrame >= ro && ro + rs >= iFrame) {
+		if (m_bReadSync)
+			m_pRingBuffer->setReadIndex(ri + iFrame - ro);
 	//	m_iWriteOffset += iFrame - ro;
 		m_iReadOffset  += iFrame - ro;
 		return true;
 	}
 
 #ifdef CONFIG_DEBUG
-	fprintf(stderr, "qtractorAudioBuffer::seek(%p, %lu) pending(%d, %lu) wo=%lu ro=%lu\n",
+	qDebug("qtractorAudioBuffer[%p]::seek(%lu) pending(%d, %lu) wo=%lu ro=%lu",
 		this, iFrame, m_iSeekPending, m_iSeekOffset, m_iWriteOffset, m_iReadOffset);
 #endif
 
@@ -613,7 +616,7 @@ bool qtractorAudioBuffer::initSync (void)
 		// Initial buffer read in...
 		readSync();
 		// Check if fitted integrally...
-		if (m_iFileLength < m_pRingBuffer->bufferSize() - 1) {
+		if (m_iFileLength < m_iOffset + m_pRingBuffer->bufferSize() - 1) {
 			m_bIntegral = true;
 			deleteIOBuffers();
 		}
@@ -648,7 +651,7 @@ bool qtractorAudioBuffer::inSync (
 {
 	if (!m_bReadSync) {
 #ifdef CONFIG_DEBUG
-		fprintf(stderr, "qtractorAudioBuffer::inSync(%p, %lu, %lu) (%ld)\n",
+		qDebug("qtractorAudioBuffer[%p]::inSync(%lu, %lu) (%ld)",
 			this, iFrameStart, iFrameEnd,
 			(long) m_iReadOffset - (iFrameStart + m_iOffset));
 #endif
@@ -736,13 +739,10 @@ void qtractorAudioBuffer::readSync (void)
 			// Think of end-of-file...
 			nahead = 0;
 			// But we can re-cache, if not an integral fit...
-			if (m_iFileLength >= m_pRingBuffer->bufferSize() - 1) {
+			if (m_iFileLength >= m_iOffset + m_pRingBuffer->bufferSize() - 1) {
 				unsigned long offset = (bLooping ? ls : m_iOffset);
-				if (seekSync(offset)) {
+				if (seekSync(offset))
 					m_iWriteOffset = offset;
-					m_iReadOffset  = offset;
-					m_bReadSync    = false;
-				}
 			}
 		}
 	}
@@ -799,7 +799,7 @@ void qtractorAudioBuffer::writeSync (void)
 bool qtractorAudioBuffer::seekSync ( unsigned long iFrame )
 {
 #ifdef CONFIG_DEBUG_0
-	fprintf(stderr, "qtractorAudioBuffer::seekSync(%p, %lu) pending(%d, %lu) wo=%lu ro=%lu\n",
+	qDebug("qtractorAudioBuffer[%p]::seekSync(%lu) pending(%d, %lu) wo=%lu ro=%lu",
 		this, iFrame, m_iSeekPending, m_iSeekOffset, m_iWriteOffset, m_iReadOffset);
 #endif
 
@@ -868,7 +868,7 @@ int qtractorAudioBuffer::flushFrames ( unsigned int iFrames )
 int qtractorAudioBuffer::readBuffer ( unsigned int iFrames )
 {
 #ifdef CONFIG_DEBUG_0
-	fprintf(stderr, "+readBuffer(%u)\n", iFrames);
+	qDebug("+readBuffer(%u)", iFrames);
 #endif
 
 	int nread = 0;
@@ -936,7 +936,7 @@ int qtractorAudioBuffer::readBuffer ( unsigned int iFrames )
 #endif   // CONFIG_LIBSAMPLERATE
 
 #ifdef CONFIG_DEBUG_0
-	fprintf(stderr, "-readBuffer(%u) --> nread=%d\n", iFrames, nread);
+	qDebug("-readBuffer(%u) --> nread=%d", iFrames, nread);
 #endif
 
 	return nread;
@@ -1248,7 +1248,7 @@ void qtractorAudioBuffer::dump_state ( const QString& sPrefix ) const
 	unsigned long ofs = m_iOffset;
 	unsigned long len = m_iLength;
 
-	fprintf(stderr, "%s rs=%u ws=%u ri=%u wi=%u wo=%lu ro=%lu ofs=%lu len=%lu\n",
+	qDebug("%s rs=%u ws=%u ri=%u wi=%u wo=%lu ro=%lu ofs=%lu len=%lu",
 		sPrefix.toUtf8().constData(), rs, ws, ri, wi, wo, ro, ofs, len);
 }
 #endif
@@ -1287,7 +1287,7 @@ void qtractorAudioBufferThread::sync (void)
 		m_mutex.unlock();
 	}
 #ifdef CONFIG_DEBUG_0
-	else fprintf(stderr, "qtractorAudioBufferThread::sync(%p): tryLock() failed.\n", this);
+	else qDebug("qtractorAudioBufferThread[%p]::sync(): tryLock() failed.", this);
 #endif
 }
 
@@ -1305,7 +1305,7 @@ void qtractorAudioBufferThread::syncExport (void)
 void qtractorAudioBufferThread::run (void)
 {
 #ifdef CONFIG_DEBUG_0
-	fprintf(stderr, "qtractorAudioBufferThread::run(%p): started.\n", this);
+	qDebug("qtractorAudioBufferThread[%p]::run(): started.", this);
 #endif
 
 	m_mutex.lock();
@@ -1318,7 +1318,7 @@ void qtractorAudioBufferThread::run (void)
 	m_mutex.unlock();
 
 #ifdef CONFIG_DEBUG_0
-	fprintf(stderr, "qtractorAudioBufferThread::run(%p): stopped.\n", this);
+	qDebug("qtractorAudioBufferThread[%p]::run(): stopped.", this);
 #endif
 }
 

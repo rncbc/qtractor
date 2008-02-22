@@ -5,6 +5,10 @@ ChangeLog
 
 CVS HEAD
 
+- Some audio clip buffer-sync tweaks have sneaked in, improving
+  and fixing the rendering of full-overlapped, integrally cached
+  and/or offset clips altogether.
+
 - Stuffed one primordial shot of XInitThreads() at the main head,
   and let native VST plug-ins start behaving as they should;
   thanks to mighty kRAkEn/gORe@jucetice for this precious hint
