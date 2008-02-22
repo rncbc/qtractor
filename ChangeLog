@@ -5,6 +5,11 @@ ChangeLog
 
 CVS HEAD
 
+- Stuffed one primordial shot of XInitThreads() at the main head,
+  and let native VST plug-ins start behaving as they should;
+  thanks to mighty kRAkEn/gORe@jucetice for this precious hint
+  from who knows best.
+
 - True deterministic session length update has due fixed.
 
 - Track menu has new accessible actions:

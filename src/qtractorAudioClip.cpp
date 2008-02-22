@@ -254,7 +254,7 @@ void qtractorAudioClip::process ( unsigned long iFrameStart,
 		}
 	}
 	else
-	if (/*iFrameStart >= iClipStart && */iFrameStart < iClipEnd) {
+	if (iFrameStart >= iClipStart && iFrameStart < iClipEnd) {
 		if (m_pBuff->inSync(iFrameStart - iClipStart, iFrameEnd - iClipStart)) {
 			m_pBuff->readMix(pAudioBus->buffer(), iFrameEnd - iFrameStart,
 				pAudioBus->channels(), 0, gain(iFrameStart - iClipStart));
