@@ -27,6 +27,12 @@
 #include <QTranslator>
 #include <QLocale>
 
+#ifdef CONFIG_VST
+#if defined(Q_WS_X11)
+#include <X11/Xlib.h>
+#endif
+#endif
+
 
 //-------------------------------------------------------------------------
 // main - The main program trunk.
@@ -34,6 +40,12 @@
 
 int main ( int argc, char **argv )
 {
+#ifdef CONFIG_VST
+#if defined(Q_WS_X11)
+	XInitThreads();
+#endif
+#endif
+
 	QApplication app(argc, argv);
 
 	// Load translation support.

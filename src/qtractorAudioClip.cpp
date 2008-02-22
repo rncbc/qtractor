@@ -1,7 +1,7 @@
 // qtractorAudioClip.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -253,7 +253,8 @@ void qtractorAudioClip::process ( unsigned long iFrameStart,
 				pAudioBus->channels(), iClipStart - iFrameStart, gain(0));
 		}
 	}
-	else if (iFrameStart >= iClipStart && iFrameStart < iClipEnd) {
+	else
+	if (/*iFrameStart >= iClipStart && */iFrameStart < iClipEnd) {
 		if (m_pBuff->inSync(iFrameStart - iClipStart, iFrameEnd - iClipStart)) {
 			m_pBuff->readMix(pAudioBus->buffer(), iFrameEnd - iFrameStart,
 				pAudioBus->channels(), 0, gain(iFrameStart - iClipStart));

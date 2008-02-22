@@ -1,7 +1,7 @@
 // qtractorSessionCursor.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -173,27 +173,33 @@ void qtractorSessionCursor::seekBackward ( unsigned long iFrame )
 
 
 // Forward clip locate method.
-qtractorClip *qtractorSessionCursor::seekClipForward ( qtractorTrack *pTrack,
-	qtractorClip *pClip, unsigned long iFrame )
+qtractorClip *qtractorSessionCursor::seekClipForward (
+	qtractorTrack *pTrack, qtractorClip *pClip, unsigned long iFrame )
 {
+	if (pClip == NULL)
+		pClip = pTrack->clips().first();
+
 	while (pClip && iFrame > pClip->clipStart() + pClip->clipLength()) {
 		if (pTrack->trackType() == m_syncType)
 			pClip->reset(m_pSession->isLooping());
 		pClip = pClip->next();
 	}
 
+	if (pClip == NULL)
+		pClip = pTrack->clips().last();
+
 	return pClip;
 }
 
 
 // Backward clip locate method.
-qtractorClip *qtractorSessionCursor::seekClipBackward ( qtractorTrack *pTrack,
-	qtractorClip *pClip, unsigned long iFrame )
+qtractorClip *qtractorSessionCursor::seekClipBackward (
+	qtractorTrack *pTrack, qtractorClip *pClip, unsigned long iFrame )
 {
 	if (pClip == NULL)
 		pClip = pTrack->clips().last();
 
-	while (pClip && iFrame < pClip->clipStart() + pClip->clipLength()) {
+	while (pClip && iFrame < pClip->clipStart()) {
 		if (pTrack->trackType() == m_syncType)
 			pClip->reset(m_pSession->isLooping());
 		pClip = pClip->prev();
