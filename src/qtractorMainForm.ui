@@ -753,7 +753,7 @@
     <iconset resource="../icons/qtractor.qrc" >:/icons/trackRemove.png</iconset>
    </property>
    <property name="text" >
-    <string>R&amp;emove Track</string>
+    <string>&amp;Remove Track</string>
    </property>
    <property name="iconText" >
     <string>Remove Track</string>
@@ -790,7 +790,7 @@
   </action>
   <action name="trackInputsAction" >
    <property name="text" >
-    <string>&amp;Inputs</string>
+    <string>I&amp;nputs</string>
    </property>
    <property name="iconText" >
     <string>Track inputs</string>
