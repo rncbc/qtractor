@@ -62,7 +62,9 @@ public:
 
 	void updateCaption();
 	void updateActivated();
-	void updateParam(unsigned long iIndex);
+
+	void updateParamValue(unsigned long iIndex, float fValue);
+	void updateParamWidget(unsigned long iIndex);
 
 	void activateForm();
 

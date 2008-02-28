@@ -488,7 +488,7 @@ bool qtractorPluginParamCommand::redo (void)
 	m_fValue     = fValue;
 
 	// Update the form, showing it up as necessary...
-	(pPlugin->form())->updateParam(m_pParam->index());
+	(pPlugin->form())->updateParamWidget(m_pParam->index());
 
 	return true;
 }

@@ -112,7 +112,7 @@ static Window getXChildWindow ( Display *pDisplay, Window w )
 
 	XQueryTree(pDisplay, w, &wRoot, &wParent, &pwChildren, &iChildren);
 
-	return (iChildren > 0 ? pwChildren[0] : NULL);
+	return (iChildren > 0 ? pwChildren[0] : 0);
 }
 
 static unsigned int getXButton ( Qt::MouseButtons buttons )
@@ -1197,14 +1197,17 @@ float qtractorVstPluginParam::value (void) const
 //----------------------------------------------------------------------
 // VST host callback file selection helpers.
 
-static VstIntPtr qtractorVstPlugin_openFileSelector ( AEffect *effect, VstFileSelect *pvfs )
+static VstIntPtr qtractorVstPlugin_openFileSelector (
+	AEffect *effect, VstFileSelect *pvfs )
 {
 	qtractorVstPlugin *pVstPlugin = qtractorVstPlugin::findPlugin(effect);
 	if (pVstPlugin == NULL)
 		return 0;
 
+#ifdef CONFIG_DEBUG
 	qDebug("qtractorVstPlugin_openFileSelector(%p, %p) command=%d reserved=%d",
 		effect, pvfs, int(pvfs->command), int(pvfs->reserved));
+#endif
 
 	pvfs->reserved = 0;
 	pvfs->nbReturnPath = 0;
@@ -1261,21 +1264,24 @@ static VstIntPtr qtractorVstPlugin_openFileSelector ( AEffect *effect, VstFileSe
 }
 
 
-static VstIntPtr qtractorVstPlugin_closeFileSelector ( AEffect *effect, VstFileSelect *pvfs )
+static VstIntPtr qtractorVstPlugin_closeFileSelector (
+	AEffect *effect, VstFileSelect *pvfs )
 {
 	qtractorVstPlugin *pVstPlugin = qtractorVstPlugin::findPlugin(effect);
 	if (pVstPlugin == NULL)
 		return 0;
 
+#ifdef CONFIG_DEBUG
 	qDebug("qtractorVstPlugin_closeFileSelector(%p, %p) command=%d reserved=%d",
 		effect, pvfs, int(pvfs->command), int(pvfs->reserved));
+#endif
 
-    if (pvfs->reserved == 1 && pvfs->returnPath) {
-        delete [] pvfs->returnPath;
-        pvfs->returnPath = NULL;
-        pvfs->reserved   = 0;
-    }
-
+	if (pvfs->reserved == 1 && pvfs->returnPath) {
+		delete [] pvfs->returnPath;
+		pvfs->returnPath = NULL;
+		pvfs->reserved   = 0;
+	}
+	
 	return 1;
 }
 
@@ -1319,7 +1325,7 @@ static VstIntPtr VSTCALLBACK qtractorVstPlugin_HostCallback ( AEffect* effect,
 		if (pVstPlugin) {
 			qtractorPluginForm *pForm = pVstPlugin->form();
 			if (pForm)
-				pForm->updateParam(index);
+				pForm->updateParamValue(index, opt);
 			QApplication::processEvents();
 		}
 		break;
@@ -1522,7 +1528,7 @@ static VstIntPtr VSTCALLBACK qtractorVstPlugin_HostCallback ( AEffect* effect,
 		if (pVstPlugin) {
 			qtractorPluginForm *pForm = pVstPlugin->form();
 			if (pForm)
-				pForm->updateParam(index);
+				pForm->updateParamValue(index, opt);
 			QApplication::processEvents();
 		}
 		break;

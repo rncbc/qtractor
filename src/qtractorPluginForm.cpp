@@ -270,8 +270,25 @@ void qtractorPluginForm::updateActivated (void)
 }
 
 
+// Update parameter value state.
+void qtractorPluginForm::updateParamValue (
+	unsigned long iIndex, float fValue )
+{
+	// Update the parameter widget first, if any...
+	updateParamWidget(iIndex);
+
+	// Now do things fit for proper automation...
+	if (m_pPlugin == NULL)
+		return;
+
+	qtractorPluginParam *pParam = m_pPlugin->findParam(iIndex);
+	if (pParam)
+		valueChangeSlot(pParam, fValue);
+}
+
+
 // Update port widget state.
-void qtractorPluginForm::updateParam ( unsigned long iIndex )
+void qtractorPluginForm::updateParamWidget ( unsigned long iIndex )
 {
 	if (m_pPlugin == NULL)
 		return;
