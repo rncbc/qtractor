@@ -648,13 +648,13 @@ qtractorVstPlugin::qtractorVstPlugin ( qtractorPluginList *pList,
 	if (iAudioOuts > 0)
 		m_ppOBuffer = new float * [iAudioOuts];
 
-	// Instantiate each instance properly...
-	setChannels(channels());
-
 	// Create all existing parameters...
 	unsigned short iParamCount = pVstType->controlIns();
 	for (unsigned short i = 0; i < iParamCount; ++i)
 		addParam(new qtractorVstPluginParam(this, i));
+
+	// Instantiate each instance properly...
+	setChannels(channels());
 
 	// Add to global list, now.
 	g_vstPlugins.append(this);
@@ -720,6 +720,17 @@ void qtractorVstPlugin::setChannels ( unsigned short iChannels )
 	for (unsigned short i = 1; i < iInstances; ++i) {
 		m_ppEffects[i] = new qtractorVstPluginType::Effect();
 		m_ppEffects[i]->open(pVstType->file());
+		// Replicate the current parameter values...
+		if (pVstType && pVstType->effect()) {
+			AEffect *pVstEffect = (pVstType->effect())->vst_effect();
+			if (pVstEffect) {
+				QListIterator<qtractorPluginParam *> iter(params());
+				while (iter.hasNext()) {
+					qtractorPluginParam *pParam = iter.next();
+					pVstEffect->setParameter(pVstEffect, i, pParam->value());
+				}
+			}
+		}
 	}
 
 	// Setup all those instance alright...
@@ -1145,10 +1156,23 @@ void qtractorVstPluginParam::setValue ( float fValue )
 	if (pVstPlugin == NULL)
 		return;
 
-	for (unsigned short i = 0; i < pVstPlugin->instances(); ++i) {
-		AEffect *pVstEffect = pVstPlugin->vst_effect(i);
-		if (pVstEffect) {
-			pVstEffect->setParameter(pVstEffect, index(), fValue);
+	// Maybe we're not pretty instantiated yet...
+	unsigned short iInstances = pVstPlugin->instances();
+	if (iInstances > 0) {
+		for (unsigned short i = 0; i < iInstances; ++i) {
+			AEffect *pVstEffect = pVstPlugin->vst_effect(i);
+			if (pVstEffect) {
+				pVstEffect->setParameter(pVstEffect, index(), fValue);
+			}
+		}
+	} else {
+		qtractorVstPluginType *pVstType
+			= static_cast<qtractorVstPluginType *> (pVstPlugin->type());
+		if (pVstType && pVstType->effect()) {
+			AEffect *pVstEffect = (pVstType->effect())->vst_effect();
+			if (pVstEffect) {
+				pVstEffect->setParameter(pVstEffect, index(), fValue);
+			}
 		}
 	}
 }
