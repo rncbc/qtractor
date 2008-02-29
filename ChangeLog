@@ -5,6 +5,8 @@ ChangeLog
 
 CVS HEAD
 
+- The files widget get alternating coloured rows.
+
 - VST plug-in preset values are now being restored properly;
   individual parameter changes are now being queued for the
   also convenient undo/redo command pattern.

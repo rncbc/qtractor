@@ -551,9 +551,6 @@ bool qtractorVstPluginType::open (void)
 	m_bRealtime = true;
 	m_bEditor   = (pVstEffect->flags & effFlagsHasEditor);
 
-	// Set to program zero...
-	vst_dispatch(effSetProgram, 0, 0, NULL, 0.0f);
-
 	return true;
 }
 
@@ -736,8 +733,14 @@ void qtractorVstPlugin::setChannels ( unsigned short iChannels )
 	// Setup all those instance alright...
 	for (unsigned short i = 0; i < iInstances; ++i) {
 		qtractorVstPluginType::Effect *pEffect = m_ppEffects[i];
+		pEffect->vst_dispatch(effSetProgram, 0, 0, NULL, 0.0f);
 		pEffect->vst_dispatch(effSetSampleRate, 0, 0, NULL, float(sampleRate()));
 		pEffect->vst_dispatch(effSetBlockSize,  0, bufferSize(), NULL, 0.0f);
+		unsigned short j;
+		for (j = 0; j < pVstType->audioIns(); ++j)
+			pEffect->vst_dispatch(effConnectInput, j, 1, NULL, 0.0f);
+		for (j = 0; j < pVstType->audioOuts(); ++j)
+			pEffect->vst_dispatch(effConnectOutput, j, 1, NULL, 0.0f);
 	}
 
 	// (Re)activate instance if necessary...
@@ -748,16 +751,20 @@ void qtractorVstPlugin::setChannels ( unsigned short iChannels )
 // Do the actual activation.
 void qtractorVstPlugin::activate (void)
 {
-	for (unsigned short i = 0; i < instances(); ++i)
+	for (unsigned short i = 0; i < instances(); ++i) {
 		vst_dispatch(i, effMainsChanged, 0, 1, NULL, 0.0f);
+		vst_dispatch(i, effStartProcess, 0, 0, NULL, 0.0f);
+	}
 }
 
 
 // Do the actual deactivation.
 void qtractorVstPlugin::deactivate (void)
 {
-	for (unsigned short i = 0; i < instances(); ++i)
+	for (unsigned short i = 0; i < instances(); ++i) {
+		vst_dispatch(i, effStopProcess, 0, 0, NULL, 0.0f);
 		vst_dispatch(i, effMainsChanged, 0, 0, NULL, 0.0f);
+	}
 }
 
 

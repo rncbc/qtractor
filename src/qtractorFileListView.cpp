@@ -305,6 +305,7 @@ qtractorFileListView::qtractorFileListView ( QWidget *pParent )
 
 	QTreeWidget::setRootIsDecorated(false);
 	QTreeWidget::setUniformRowHeights(true);
+	QTreeWidget::setAlternatingRowColors(true);
 //	QTreeWidget::setDragEnabled(true);
 	QTreeWidget::setAcceptDrops(true);
 	QTreeWidget::setDropIndicatorShown(true);
