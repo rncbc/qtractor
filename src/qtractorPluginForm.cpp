@@ -274,10 +274,6 @@ void qtractorPluginForm::updateActivated (void)
 void qtractorPluginForm::updateParamValue (
 	unsigned long iIndex, float fValue )
 {
-	// Update the parameter widget first, if any...
-	updateParamWidget(iIndex);
-
-	// Now do things fit for proper automation...
 	if (m_pPlugin == NULL)
 		return;
 
@@ -306,6 +302,8 @@ void qtractorPluginForm::updateParamWidget ( unsigned long iIndex )
 			break;
 		}
 	}
+
+	m_pPlugin->idleEditor();
 
 	m_iUpdate--;
 }
@@ -476,6 +474,9 @@ void qtractorPluginForm::activateSlot ( bool bOn )
 void qtractorPluginForm::valueChangeSlot (
 	qtractorPluginParam *pParam, float fValue )
 {
+	if (m_pPlugin == NULL)
+		return;
+
 	if (m_iUpdate > 0)
 		return;
 
@@ -486,8 +487,6 @@ void qtractorPluginForm::valueChangeSlot (
 	if (pMainForm)
 		pMainForm->commands()->exec(
 			new qtractorPluginParamCommand(pParam, fValue));
-
-	m_pPlugin->idleEditor();
 
 	m_iUpdate--;
 

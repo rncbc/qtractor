@@ -1057,9 +1057,15 @@ qtractorVstPluginParam::qtractorVstPluginParam (
 			setMaxValue(float(m_props.maxInteger));
 	}
 
-
 	// ATTN: Set default value as initial one...
-	setDefaultValue(value());
+	if (pVstType && pVstType->effect()) {
+		AEffect *pVstEffect = (pVstType->effect())->vst_effect();
+		if (pVstEffect)
+			qtractorPluginParam::setValue(
+				pVstEffect->getParameter(pVstEffect, iIndex));
+	}
+
+	setDefaultValue(qtractorPluginParam::value());
 
 	// Initialize port value...
 	// reset();
@@ -1180,7 +1186,7 @@ void qtractorVstPluginParam::setValue ( float fValue )
 float qtractorVstPluginParam::value (void) const
 {
 	float fValue = qtractorPluginParam::value();
-
+#if 0
 	qtractorVstPluginType *pVstType = NULL;
 	if (plugin())
 		pVstType = static_cast<qtractorVstPluginType *> (plugin()->type());
@@ -1189,7 +1195,7 @@ float qtractorVstPluginParam::value (void) const
 		if (pVstEffect)
 			fValue = pVstEffect->getParameter(pVstEffect, index());
 	}
-
+#endif
 	return fValue;
 }
 
