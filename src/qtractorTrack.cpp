@@ -715,8 +715,9 @@ void qtractorTrack::process ( qtractorClip *pClip,
 	// Audio buffers needs monitoring and commitment...
 	if (pAudioMonitor) {
 		// Commit output if it ain't muted, of course...
-		if (pOutputBus
-			&& !isMute() && (!m_pSession->soloTracks() || isSolo())) {
+		bool bOutput = (pOutputBus
+			&& !isMute() && (!m_pSession->soloTracks() || isSolo()));
+		if (bOutput) {
 			pAudioMonitor->process(pOutputBus->buffer(), nframes);
 			// Plugin chain post-processing...
 			if (m_pPluginList->activated())
@@ -730,9 +731,9 @@ void qtractorTrack::process ( qtractorClip *pClip,
 			qtractorAudioBus *pInputBus
 				= static_cast<qtractorAudioBus *> (m_pInputBus);
 			if (pInputBus) {
+				// Effective audio-recording?
 				pAudioMonitor->process(
 					pInputBus->in(), nframes, pInputBus->channels());
-				// Effective audio-recording?
 				qtractorAudioClip *pAudioClip
 					= static_cast<qtractorAudioClip *> (m_pClipRecord);
 				if (pAudioClip) {
@@ -740,9 +741,9 @@ void qtractorTrack::process ( qtractorClip *pClip,
 						pInputBus->in(), nframes, pInputBus->channels());
 				}
 				// Post-record/passthru monitoring...
-				if (!isMute() && (!m_pSession->soloTracks() || isSolo())) {
+				if (bOutput) {
 					pOutputBus->buffer_prepare_in(pInputBus, nframes);
-					if (m_pPluginList && m_pPluginList->activated())
+					if (m_pPluginList->activated())
 						m_pPluginList->process(pOutputBus->buffer(), nframes);
 					pOutputBus->buffer_commit(nframes);
 				}

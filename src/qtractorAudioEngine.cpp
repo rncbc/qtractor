@@ -1706,41 +1706,6 @@ void qtractorAudioBus::buffer_prepare ( unsigned int nframes )
 }
 
 
-void qtractorAudioBus::buffer_prepare_in (
-	qtractorAudioBus *pInputBus, unsigned int nframes )
-{
-	if (!m_bEnabled)
-		return;
-
-	unsigned short i, j;
-	unsigned short iBuffers = pInputBus->channels();
-	float **ppBuffer = pInputBus->in();
-	if (m_iChannels == iBuffers) {
-		for (i = 0; i < iBuffers; ++i)
-			::memcpy(m_ppXBuffer[i], ppBuffer[i], nframes * sizeof(float));
-	}
-	else if (m_iChannels > iBuffers) {
-		j = 0;
-		for (i = 0; i < m_iChannels; ++i) {
-			::memcpy(m_ppXBuffer[i], ppBuffer[i], nframes * sizeof(float));
-			if (++j >= iBuffers)
-				j = 0;
-		}
-	}
-	else { // (m_iChannels < iBuffers)
-		for (i = 0; i < m_iChannels; ++i)
-			::memset(m_ppXBuffer[i], 0, nframes * sizeof(float));
-		i = 0;
-		for (j = 0; j < iBuffers; j++) {
-			for (unsigned int n = 0; n < nframes; ++n)
-				m_ppXBuffer[i][n] += ppBuffer[j][n];
-			if (++i >= m_iChannels)
-				i = 0;
-		}
-	}
-}
-
-
 void qtractorAudioBus::buffer_commit ( unsigned int nframes )
 {
 	if (!m_bEnabled || (busMode() & qtractorBus::Output) == 0)
@@ -1758,6 +1723,46 @@ void qtractorAudioBus::buffer_commit ( unsigned int nframes )
 			m_ppOBuffer[i][n + offset] += m_ppXBuffer[i][n];
 	}
 }
+
+
+// Input record/passthru bus-buffering method.
+void qtractorAudioBus::buffer_prepare_in (
+	qtractorAudioBus *pInputBus, unsigned int nframes )
+{
+	if (!m_bEnabled)
+		return;
+
+	unsigned short iBuffers = pInputBus->channels();
+	float **ppBuffer = pInputBus->in();
+
+	if (m_iChannels == iBuffers) {
+		// Exact buffer copy...
+		for (unsigned short i = 0; i < iBuffers; ++i)
+			::memcpy(m_ppXBuffer[i], ppBuffer[i], nframes * sizeof(float));
+	} else {
+		// Buffer merge/multiplex...
+		unsigned short i, j;
+		for (i = 0; i < m_iChannels; ++i)
+			::memset(m_ppXBuffer[i], 0, nframes * sizeof(float));
+		if (m_iChannels > iBuffers) {
+			j = 0;
+			for (i = 0; i < m_iChannels; ++i) {
+				::memcpy(m_ppXBuffer[i], ppBuffer[j], nframes * sizeof(float));
+				if (++j >= iBuffers)
+					j = 0;
+			}
+		} else { // (m_iChannels < iBuffers)
+			i = 0;
+			for (j = 0; j < iBuffers; j++) {
+				for (unsigned int n = 0; n < nframes; ++n)
+					m_ppXBuffer[i][n] += ppBuffer[j][n];
+				if (++i >= m_iChannels)
+					i = 0;
+			}
+		}
+	}
+}
+
 
 float **qtractorAudioBus::buffer (void) const
 {
