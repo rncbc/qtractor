@@ -42,7 +42,10 @@ int main ( int argc, char **argv )
 {
 #ifdef CONFIG_VST
 #if defined(Q_WS_X11)
-	XInitThreads();
+	if (!XInitThreads()) {
+		fprintf(stderr, "Error: XInitThreads() failed. Stop.\n");
+		return 1;
+	}
 #endif
 #endif
 

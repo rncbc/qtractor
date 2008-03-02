@@ -695,14 +695,14 @@ void qtractorTrack::process ( qtractorClip *pClip,
 {
 	// Audio-buffers needs some preparation...
 	unsigned int nframes = iFrameEnd - iFrameStart;
-	qtractorAudioBus *pAudioBus = NULL;
+	qtractorAudioBus *pOutputBus = NULL;
 	qtractorAudioMonitor *pAudioMonitor = NULL;
 	if (m_props.trackType == qtractorTrack::Audio) {
-		pAudioBus = static_cast<qtractorAudioBus *> (m_pOutputBus);
+		pOutputBus = static_cast<qtractorAudioBus *> (m_pOutputBus);
 		pAudioMonitor = static_cast<qtractorAudioMonitor *> (m_pMonitor);
-		if (pAudioBus == NULL || pAudioMonitor == NULL)
+		if (pOutputBus == NULL || pAudioMonitor == NULL)
 			return;
-		pAudioBus->buffer_prepare(nframes);
+		pOutputBus->buffer_prepare(nframes);
 	}
 
 	// Now, for every clip...
@@ -715,28 +715,36 @@ void qtractorTrack::process ( qtractorClip *pClip,
 	// Audio buffers needs monitoring and commitment...
 	if (pAudioMonitor) {
 		// Commit output if it ain't muted, of course...
-		if (pAudioBus
+		if (pOutputBus
 			&& !isMute() && (!m_pSession->soloTracks() || isSolo())) {
-			pAudioMonitor->process(pAudioBus->buffer(), nframes);
+			pAudioMonitor->process(pOutputBus->buffer(), nframes);
 			// Plugin chain post-processing...
 			if (m_pPluginList->activated())
-				m_pPluginList->process(pAudioBus->buffer(), nframes);
+				m_pPluginList->process(pOutputBus->buffer(), nframes);
 			// Done, send it out...
-			pAudioBus->buffer_commit(nframes);
+			pOutputBus->buffer_commit(nframes);
 		}
 		// Audio-recording?
 		if (isRecord()) {
 			// Input pre-monitoring...
-			pAudioBus = static_cast<qtractorAudioBus *> (m_pInputBus);
-			if (pAudioBus) {
+			qtractorAudioBus *pInputBus
+				= static_cast<qtractorAudioBus *> (m_pInputBus);
+			if (pInputBus) {
 				pAudioMonitor->process(
-					pAudioBus->in(), nframes, pAudioBus->channels());
+					pInputBus->in(), nframes, pInputBus->channels());
 				// Effective audio-recording?
 				qtractorAudioClip *pAudioClip
 					= static_cast<qtractorAudioClip *> (m_pClipRecord);
 				if (pAudioClip) {
 					pAudioClip->write(
-						pAudioBus->in(), nframes, pAudioBus->channels());
+						pInputBus->in(), nframes, pInputBus->channels());
+				}
+				// Post-record/passthru monitoring...
+				if (!isMute() && (!m_pSession->soloTracks() || isSolo())) {
+					pOutputBus->buffer_prepare_in(pInputBus, nframes);
+					if (m_pPluginList && m_pPluginList->activated())
+						m_pPluginList->process(pOutputBus->buffer(), nframes);
+					pOutputBus->buffer_commit(nframes);
 				}
 			}
 		}

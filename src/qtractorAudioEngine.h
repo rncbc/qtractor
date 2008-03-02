@@ -240,6 +240,7 @@ public:
 
 	// Bus-buffering methods.
 	void buffer_prepare(unsigned int nframes);
+	void buffer_prepare_in(qtractorAudioBus *pInputBus, unsigned int nframes);
 	void buffer_commit(unsigned int nframes);
 
 	float **buffer() const;

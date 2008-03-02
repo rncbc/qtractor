@@ -454,9 +454,9 @@ bool qtractorVstPluginType::Effect::open ( qtractorPluginFile *pFile )
 	if (m_pVstEffect->magic != kEffectMagic)
 		return false;
 
-//	vst_dispatch(effIdentify, 0, 0, NULL, 0);
+	vst_dispatch(effIdentify, 0, 0, NULL, 0);
 	vst_dispatch(effOpen,0, 0, NULL, 0.0f);
-	vst_dispatch(effMainsChanged, 0, 0, NULL, 0.0f);
+//	vst_dispatch(effMainsChanged, 0, 0, NULL, 0.0f);
 
 	return true;
 }
@@ -464,7 +464,7 @@ bool qtractorVstPluginType::Effect::open ( qtractorPluginFile *pFile )
 
 void qtractorVstPluginType::Effect::close (void)
 {
-	vst_dispatch(effClose, 0, 0, 0, 0.0f);
+	vst_dispatch(effClose, 0, 0, NULL, 0.0f);
 
 	m_pVstEffect = NULL;
 }

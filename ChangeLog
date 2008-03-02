@@ -5,6 +5,10 @@ ChangeLog
 
 CVS HEAD
 
+- Record armed tracks are now properly monitored and fed through
+  their own output audio bus on mix-down, which includes plug-in
+  effects processing (EXPERIMENTAL).
+
 - The files widget get alternating coloured rows.
 
 - VST plug-in preset values are now being restored properly;
