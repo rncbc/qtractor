@@ -525,6 +525,9 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 	if (!pSession->acquire())
 		return 0;
 
+	// Reset buffer offset.
+	m_iBufferOffset = 0;
+
 	// Process audition/pre-listening...
 	if (m_bPlayerOpen && ATOMIC_TAS(&m_playerLock)) {
 		m_pPlayerBuff->readMix(m_pPlayerBus->out(), nframes,
@@ -539,7 +542,8 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 	// Don't go any further, if not playing.
 	if (!isPlaying()) {
 		// Do the idle processing...
-		if (pSession->recordTracks() > 0) {
+		bool bRecord = (pSession->recordTracks() > 0);
+		if (bRecord) {
 			for (qtractorTrack *pTrack = pSession->tracks().first();
 					pTrack; pTrack = pTrack->next()) {
 				// Audio-buffers needs some preparation...
@@ -577,7 +581,7 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 			pBus; pBus = pBus->next()) {
 			qtractorAudioBus *pAudioBus
 				= static_cast<qtractorAudioBus *> (pBus);
-			if (pAudioBus && pAudioBus->isPassthru())
+			if (pAudioBus && (bRecord || pAudioBus->isPassthru()))
 				pAudioBus->process_commit(nframes);
 		}
 		// Done as idle...
@@ -608,9 +612,6 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 		if (m_bMetroBus)
 			m_pMetroBus->process_commit(nframes);
 	}
-
-	// Reset buffer offset.
-	m_iBufferOffset = 0;
 
 	// Split processing, in case we're looping...
 	if (pSession->isLooping()) {
@@ -1701,8 +1702,16 @@ void qtractorAudioBus::buffer_prepare ( unsigned int nframes )
 	if (!m_bEnabled)
 		return;
 
-	for (unsigned short i = 0; i < m_iChannels; i++)
-		::memset(m_ppXBuffer[i], 0, nframes * sizeof(float));
+	qtractorAudioEngine *pAudioEngine
+		= static_cast<qtractorAudioEngine *> (engine());
+	if (pAudioEngine == NULL)
+		return;
+
+	unsigned int offset = pAudioEngine->bufferOffset();
+	unsigned int nbytes = nframes * sizeof(float);
+
+	for (unsigned short i = 0; i < m_iChannels; ++i)
+		::memset(m_ppXBuffer[i] + offset, 0, nbytes);
 }
 
 
@@ -1718,8 +1727,8 @@ void qtractorAudioBus::buffer_commit ( unsigned int nframes )
 
 	unsigned int offset = pAudioEngine->bufferOffset();
 
-	for (unsigned short i = 0; i < m_iChannels; i++) {
-		for (unsigned int n = 0; n < nframes; n++)
+	for (unsigned short i = 0; i < m_iChannels; ++i) {
+		for (unsigned int n = 0; n < nframes; ++n)
 			m_ppOBuffer[i][n + offset] += m_ppXBuffer[i][n];
 	}
 }
@@ -1732,22 +1741,30 @@ void qtractorAudioBus::buffer_prepare_in (
 	if (!m_bEnabled)
 		return;
 
+	qtractorAudioEngine *pAudioEngine
+		= static_cast<qtractorAudioEngine *> (engine());
+	if (pAudioEngine == NULL)
+		return;
+
+	unsigned int offset = pAudioEngine->bufferOffset();
+	unsigned int nbytes = nframes * sizeof(float);
+
 	unsigned short iBuffers = pInputBus->channels();
 	float **ppBuffer = pInputBus->in();
 
 	if (m_iChannels == iBuffers) {
 		// Exact buffer copy...
 		for (unsigned short i = 0; i < iBuffers; ++i)
-			::memcpy(m_ppXBuffer[i], ppBuffer[i], nframes * sizeof(float));
+			::memcpy(m_ppXBuffer[i] + offset, ppBuffer[i], nbytes);
 	} else {
 		// Buffer merge/multiplex...
 		unsigned short i, j;
 		for (i = 0; i < m_iChannels; ++i)
-			::memset(m_ppXBuffer[i], 0, nframes * sizeof(float));
+			::memset(m_ppXBuffer[i] + offset, 0, nbytes);
 		if (m_iChannels > iBuffers) {
 			j = 0;
 			for (i = 0; i < m_iChannels; ++i) {
-				::memcpy(m_ppXBuffer[i], ppBuffer[j], nframes * sizeof(float));
+				::memcpy(m_ppXBuffer[i] + offset, ppBuffer[j], nbytes);
 				if (++j >= iBuffers)
 					j = 0;
 			}
@@ -1755,7 +1772,7 @@ void qtractorAudioBus::buffer_prepare_in (
 			i = 0;
 			for (j = 0; j < iBuffers; j++) {
 				for (unsigned int n = 0; n < nframes; ++n)
-					m_ppXBuffer[i][n] += ppBuffer[j][n];
+					m_ppXBuffer[i][n + offset] += ppBuffer[j][n];
 				if (++i >= m_iChannels)
 					i = 0;
 			}
