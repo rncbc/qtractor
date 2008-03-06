@@ -361,7 +361,7 @@ int qtractorAudioBuffer::read ( float **ppFrames, unsigned int iFrames,
 
 	m_iReadOffset += nframes;
 	if (m_iReadOffset >= m_iOffset + m_iLength) {
-		m_iReadOffset = 0; // Force out-of-sync...
+		// Force out-of-sync...
 		m_bReadSync = false;
 	}
 
@@ -511,7 +511,7 @@ int qtractorAudioBuffer::readMix ( float **ppFrames, unsigned int iFrames,
 
 	m_iReadOffset += nframes;
 	if (m_iReadOffset >= m_iOffset + m_iLength) {
-		m_iReadOffset = 0; // Force out-of-sync...
+		// Force out-of-sync...
 		m_bReadSync = false;
 	}
 
@@ -579,8 +579,8 @@ bool qtractorAudioBuffer::seek ( unsigned long iFrame )
 	// Bad luck, gotta go straight down to disk...
 	//	if (!seekSync(iFrame))
 	//		return false;
+	// Force out-of-sync...
 	m_bReadSync   = false;
-	m_iReadOffset = 0;	// Force out-of-sync...
 	m_iSeekOffset = iFrame;
 	m_iSeekPending++;
 	// readSync();
@@ -1082,8 +1082,8 @@ void qtractorAudioBuffer::reset ( bool bLooping )
 		m_pRingBuffer->setReadIndex(iFrame);
 	//	m_pRingBuffer->setWriteIndex(m_iLength);
 	} else {
-		m_bReadSync   = false;
-		m_iReadOffset = 0;	// Force out-of-sync...
+		// Force out-of-sync...
+		m_bReadSync = false;
 		m_iSeekOffset = m_iOffset + iFrame;
 		m_iSeekPending++;
 		if (m_pSyncThread)
@@ -1173,8 +1173,8 @@ void qtractorAudioBuffer::setLoop ( unsigned long iLoopStart,
 		m_iLoopEnd   = 0;
 	}
 
-	m_bReadSync   = false;
-	m_iReadOffset = 0;	// Force out-of-sync...
+	// Force out-of-sync...
+	m_bReadSync = false;
 }
 
 unsigned long qtractorAudioBuffer::loopStart (void) const
