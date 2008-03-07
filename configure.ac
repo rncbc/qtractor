@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(Qtractor, 0.1.1.881, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.1.1.882, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractorMainForm.ui)
 AC_CONFIG_HEADERS(config.h)
@@ -78,7 +78,8 @@ AC_ARG_ENABLE(vst,
 # Enable XInitThreads() support.
 AC_ARG_ENABLE(xinitthreads,
   AC_HELP_STRING([--enable-xinitthreads], [enable XInitThreads() support (default=no)]),
-  [ac_xinitthreads="$enableval"])
+  [ac_xinitthreads="$enableval"],
+  [ac_xinitthreads="no"])
 
 
 # Standard installation base dirs.
