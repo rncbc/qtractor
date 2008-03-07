@@ -27,7 +27,7 @@
 #include <QTranslator>
 #include <QLocale>
 
-#ifdef CONFIG_VST
+#ifdef CONFIG_XINITTHREADS
 #if defined(Q_WS_X11)
 #include <X11/Xlib.h>
 #endif
@@ -40,7 +40,7 @@
 
 int main ( int argc, char **argv )
 {
-#ifdef CONFIG_VST
+#ifdef CONFIG_XINITTHREADS
 #if defined(Q_WS_X11)
 	if (!XInitThreads()) {
 		fprintf(stderr, "Error: XInitThreads() failed. Stop.\n");
@@ -48,7 +48,6 @@ int main ( int argc, char **argv )
 	}
 #endif
 #endif
-
 	QApplication app(argc, argv);
 
 	// Load translation support.

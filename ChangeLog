@@ -19,10 +19,13 @@ CVS HEAD
   and fixing the rendering of full-overlapped, integrally cached
   and/or offset clips altogether.
 
-- Stuffed one primordial shot of XInitThreads() at the main head,
-  and let native VST plug-ins start behaving as they should;
-  thanks to mighty kRAkEn/gORe@jucetice for this precious hint
-  from who knows best.
+- Stuffed one primordial shot on XInitThreads() at the main head,
+  and let native VST plug-ins start behaving as they should, or
+  not; this might be in fact problematic and dangerous for people
+  who won't ever try the JUCE based plugins as from JUCETICE
+  (http://www.anticore.org/jucetice), due to some broken locking
+  mechanism in xcb; thanks anyway to mighty kRAkEn/gORe@JUCETICE
+  for this precious hint and from who knows best.
 
 - True deterministic session length update has due fixed.
 
