@@ -85,6 +85,7 @@ public:
 	// Primordial clip management methods.
 	qtractorClip *currentClip() const;
 	bool editClip(qtractorClip *pClip = NULL);
+	bool newClip();
 
 	// Whether there's any clip currently selected.
 	bool isClipSelected() const;

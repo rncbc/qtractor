@@ -76,7 +76,7 @@
    <addaction name="editSelectModeRangeAction" />
    <addaction name="editSelectModeRectAction" />
    <addaction name="separator" />
-   <addaction name="editClipAction" />
+   <addaction name="editClipEditAction" />
   </widget>
   <widget class="QToolBar" name="trackToolbar" >
    <property name="orientation" >
@@ -312,6 +312,13 @@
      <addaction name="editSelectTrackAction" />
      <addaction name="editSelectAllAction" />
     </widget>
+    <widget class="QMenu" name="editClipMenu" >
+     <property name="title" >
+      <string>Cl&amp;ip</string>
+     </property>
+     <addaction name="editClipNewAction" />
+     <addaction name="editClipEditAction" />
+    </widget>
     <addaction name="editUndoAction" />
     <addaction name="editRedoAction" />
     <addaction name="separator" />
@@ -324,7 +331,7 @@
     <addaction name="editSelectModeMenu" />
     <addaction name="editSelectMenu" />
     <addaction name="separator" />
-    <addaction name="editClipAction" />
+    <addaction name="editClipMenu" />
    </widget>
    <widget class="QMenu" name="fileMenu" >
     <property name="title" >
@@ -708,12 +715,26 @@
     <string>Ctrl+A</string>
    </property>
   </action>
-  <action name="editClipAction" >
+  <action name="editClipNewAction" >
+   <property name="text" >
+    <string>&amp;New...</string>
+   </property>
+   <property name="iconText" >
+    <string>New Clip</string>
+   </property>
+   <property name="toolTip" >
+    <string>New clip</string>
+   </property>
+   <property name="statusTip" >
+    <string>Create new clip</string>
+   </property>
+  </action>
+  <action name="editClipEditAction" >
    <property name="icon" >
     <iconset resource="../icons/qtractor.qrc" >:/icons/editClip.png</iconset>
    </property>
    <property name="text" >
-    <string>&amp;Edit Clip...</string>
+    <string>&amp;Edit...</string>
    </property>
    <property name="iconText" >
     <string>Edit Clip</string>

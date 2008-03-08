@@ -436,9 +436,12 @@ qtractorMainForm::qtractorMainForm (
 	QObject::connect(m_ui.editSelectAllAction,
 		SIGNAL(triggered(bool)),
 		SLOT(editSelectAll()));
-	QObject::connect(m_ui.editClipAction,
+	QObject::connect(m_ui.editClipNewAction,
 		SIGNAL(triggered(bool)),
-		SLOT(editClip()));
+		SLOT(editClipNew()));
+	QObject::connect(m_ui.editClipEditAction,
+		SIGNAL(triggered(bool)),
+		SLOT(editClipEdit()));
 
 	QObject::connect(m_ui.trackAddAction,
 		SIGNAL(triggered(bool)),
@@ -1725,11 +1728,24 @@ void qtractorMainForm::editSelectAll (void)
 }
 
 
-// Enter in clip edit mode.
-void qtractorMainForm::editClip (void)
+// Enter in clip create mode.
+void qtractorMainForm::editClipNew (void)
 {
 #ifdef CONFIG_DEBUG
-	appendMessages("qtractorMainForm::editClip()");
+	appendMessages("qtractorMainForm::editClipNew()");
+#endif
+
+	// Start editing a new clip...
+	if (m_pTracks)
+		m_pTracks->newClip();
+}
+
+
+// Enter in clip edit mode.
+void qtractorMainForm::editClipEdit (void)
+{
+#ifdef CONFIG_DEBUG
+	appendMessages("qtractorMainForm::editClipEdit()");
 #endif
 
 	// Start editing the current clip, if any...
@@ -2961,11 +2977,12 @@ void qtractorMainForm::stabilizeForm (void)
 	m_ui.editSelectAllAction->setEnabled(bSelectable);
 	m_ui.editSelectTrackAction->setEnabled(bEnabled);
 	if (bSelectable)
-		bSelectable  = (m_pSession->editHead() < m_pSession->editTail());
+		bSelectable = (m_pSession->editHead() < m_pSession->editTail());
 	m_ui.editSelectRangeAction->setEnabled(bSelectable);
 	m_ui.editSelectNoneAction->setEnabled(bSelected);
 
-	m_ui.editClipAction->setEnabled(bEditable);
+	m_ui.editClipNewAction->setEnabled(false); // TODO: Create new clip.
+	m_ui.editClipEditAction->setEnabled(bEditable);
 
 	// Update track menu state...
 	m_ui.trackRemoveAction->setEnabled(bEnabled);

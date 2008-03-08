@@ -344,7 +344,7 @@ qtractorClip *qtractorTracks::currentClip (void) const
 }
 
 
-// Edit given(current) track properties.
+// Edit given(current) clip.
 bool qtractorTracks::editClip ( qtractorClip *pClip )
 {
 	if (pClip == NULL)
@@ -354,6 +354,14 @@ bool qtractorTracks::editClip ( qtractorClip *pClip )
 
 	// All else hasn't fail.
 	return pClip->startEditor(this);
+}
+
+
+// Edit/create a brand new clip.
+bool qtractorTracks::newClip (void)
+{
+	// TODO: Edit/create a brand new clip....
+	return false;
 }
 
 
