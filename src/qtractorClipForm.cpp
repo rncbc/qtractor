@@ -26,6 +26,7 @@
 #include "qtractorClipCommand.h"
 
 #include "qtractorAudioClip.h"
+#include "qtractorMidiClip.h"
 
 #include "qtractorMainForm.h"
 #include "qtractorSession.h"
@@ -50,14 +51,6 @@ qtractorClipForm::qtractorClipForm (
 	// Setup UI struct...
 	m_ui.setupUi(this);
 
-	// Initialize conveniency options...
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm) {
-		qtractorOptions *pOptions = pMainForm->options();
-		if (pOptions)
-			pOptions->loadComboBoxHistory(m_ui.FilenameComboBox);
-	}
-
 	// Initialize dirty control state.
 	m_pClip       = NULL;
 	m_pTimeScale  = NULL;
@@ -71,12 +64,21 @@ qtractorClipForm::qtractorClipForm (
 	QObject::connect(m_ui.ClipNameLineEdit,
 		SIGNAL(textChanged(const QString&)),
 		SLOT(changed()));
-	QObject::connect(m_ui.FilenameComboBox,
+	QObject::connect(m_ui.AudioFileComboBox,
 		SIGNAL(editTextChanged(const QString&)),
 		SLOT(changed()));
-	QObject::connect(m_ui.FilenameToolButton,
+	QObject::connect(m_ui.AudioFileToolButton,
 		SIGNAL(clicked()),
-		SLOT(browseFilename()));
+		SLOT(browseAudioFile()));
+	QObject::connect(m_ui.MidiFileComboBox,
+		SIGNAL(editTextChanged(const QString&)),
+		SLOT(changed()));
+	QObject::connect(m_ui.MidiFileToolButton,
+		SIGNAL(clicked()),
+		SLOT(browseMidiFile()));
+	QObject::connect(m_ui.TrackChannelSpinBox,
+		SIGNAL(valueChanged(int)),
+		SLOT(changed()));
 	QObject::connect(m_ui.FramesRadioButton,
 		SIGNAL(toggled(bool)),
 		SLOT(formatChanged()));
@@ -134,66 +136,96 @@ void qtractorClipForm::setClip ( qtractorClip *pClip )
 	// Clip properties cloning...
 	m_pClip = pClip;
 
-	qtractorTrack *pTrack = NULL;
-	qtractorSession *pSession = NULL;
-	if (m_pClip)
-		pTrack = m_pClip->track();
-	if (pTrack)
-		pSession = pTrack->session();
-	if (pSession) {
-		// Copy from global time-scale instance...
-		if (m_pTimeScale)
-			delete m_pTimeScale;
-		m_pTimeScale = new qtractorTimeScale(*pSession->timeScale());
-		m_ui.ClipStartSpinBox->setTimeScale(m_pTimeScale);
-		m_ui.ClipOffsetSpinBox->setTimeScale(m_pTimeScale);
-		m_ui.ClipLengthSpinBox->setTimeScale(m_pTimeScale);
-		m_ui.FadeInLengthSpinBox->setTimeScale(m_pTimeScale);
-		m_ui.FadeOutLengthSpinBox->setTimeScale(m_pTimeScale);
-		// Initialize dialog widgets...
-		m_ui.ClipNameLineEdit->setText(m_pClip->clipName());
-		m_ui.FilenameComboBox->setEditText(m_pClip->filename());
-		// Parameters...
-		m_ui.ClipStartSpinBox->setValue(m_pClip->clipStart());
-		m_ui.ClipOffsetSpinBox->setValue(m_pClip->clipOffset());
-		m_ui.ClipLengthSpinBox->setValue(m_pClip->clipLength());
-		// Fade In/Out...
-		m_ui.FadeInLengthSpinBox->setValue(m_pClip->fadeInLength());
-		m_ui.FadeInTypeComboBox->setCurrentIndex(
-			indexFromFadeType(m_pClip->fadeInType()));
-		m_ui.FadeOutLengthSpinBox->setValue(m_pClip->fadeOutLength());
-		m_ui.FadeOutTypeComboBox->setCurrentIndex(
-			indexFromFadeType(m_pClip->fadeOutType()));
-	}
+	// Initialize conveniency options...
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm == NULL)
+		return;
+
+	qtractorSession *pSession = pMainForm->session();
+	if (pSession == NULL)
+		return;
+
+	// Copy from global time-scale instance...
+	if (m_pTimeScale)
+		delete m_pTimeScale;
+	m_pTimeScale = new qtractorTimeScale(*pSession->timeScale());
+
+	m_ui.ClipStartSpinBox->setTimeScale(m_pTimeScale);
+	m_ui.ClipOffsetSpinBox->setTimeScale(m_pTimeScale);
+	m_ui.ClipLengthSpinBox->setTimeScale(m_pTimeScale);
+	m_ui.FadeInLengthSpinBox->setTimeScale(m_pTimeScale);
+	m_ui.FadeOutLengthSpinBox->setTimeScale(m_pTimeScale);
+	// Initialize dialog widgets...
+	m_ui.ClipNameLineEdit->setText(m_pClip->clipName());
+	// Parameters...
+	m_ui.ClipStartSpinBox->setValue(m_pClip->clipStart());
+	m_ui.ClipOffsetSpinBox->setValue(m_pClip->clipOffset());
+	m_ui.ClipLengthSpinBox->setValue(m_pClip->clipLength());
+	// Fade In/Out...
+	m_ui.FadeInLengthSpinBox->setValue(m_pClip->fadeInLength());
+	m_ui.FadeInTypeComboBox->setCurrentIndex(
+		indexFromFadeType(m_pClip->fadeInType()));
+	m_ui.FadeOutLengthSpinBox->setValue(m_pClip->fadeOutLength());
+	m_ui.FadeOutTypeComboBox->setCurrentIndex(
+		indexFromFadeType(m_pClip->fadeOutType()));
 
 	// Set proper time scales display format...
-	if (m_pTimeScale) {
-		switch (m_pTimeScale->displayFormat()) {
-		case qtractorTimeScale::BBT:
-			m_ui.BbtRadioButton->setChecked(true);
-			break;
-		case qtractorTimeScale::Time:
-			m_ui.TimeRadioButton->setChecked(true);
-			break;
-		case qtractorTimeScale::Frames:
-		default:
-			m_ui.FramesRadioButton->setChecked(true);
-			break;
-		}
+	switch (m_pTimeScale->displayFormat()) {
+	case qtractorTimeScale::BBT:
+		m_ui.BbtRadioButton->setChecked(true);
+		break;
+	case qtractorTimeScale::Time:
+		m_ui.TimeRadioButton->setChecked(true);
+		break;
+	case qtractorTimeScale::Frames:
+	default:
+		m_ui.FramesRadioButton->setChecked(true);
+		break;
 	}
 
-	// Time-stretch issue...
-	qtractorAudioClip *pAudioClip = NULL;
-	if (pTrack && pTrack->trackType() == qtractorTrack::Audio)
-		pAudioClip = static_cast<qtractorAudioClip *> (m_pClip);
-	if (pAudioClip)
-		m_ui.TimeStretchSpinBox->setValue(100.0f * pAudioClip->timeStretch());
-	m_ui.AudioClipGroupBox->setVisible(pAudioClip != NULL);
+	// TODO: Allow to change clip file properties?
+	m_ui.AudioFileGroupBox->setEnabled(false);
+	m_ui.MidiFileGroupBox->setEnabled(false);
 
-	// TODO: Allow change of clip filename (and track-channel)
-	m_ui.FilenameTextLabel->setEnabled(false);
-	m_ui.FilenameComboBox->setEnabled(false);
-	m_ui.FilenameToolButton->setEnabled(false);
+	// Now those things specific on track type...
+	switch (trackType()) {
+	case qtractorTrack::Audio: {
+		qtractorOptions *pOptions = pMainForm->options();
+		if (pOptions)
+			pOptions->loadComboBoxHistory(m_ui.AudioFileComboBox);
+		qtractorAudioClip *pAudioClip
+			= static_cast<qtractorAudioClip *> (m_pClip);
+		if (pAudioClip) {
+			m_ui.AudioFileComboBox->setEditText(pAudioClip->filename());
+			m_ui.TimeStretchSpinBox->setValue(100.0f * pAudioClip->timeStretch());
+		}
+		m_ui.AudioFileGroupBox->setVisible(true);
+		m_ui.MidiFileGroupBox->setVisible(false);
+		m_ui.AudioClipGroupBox->setVisible(true);
+		break;
+	}
+	case qtractorTrack::Midi: {
+		qtractorOptions *pOptions = pMainForm->options();
+		if (pOptions)
+			pOptions->loadComboBoxHistory(m_ui.MidiFileComboBox);
+		qtractorMidiClip *pMidiClip
+			= static_cast<qtractorMidiClip *> (m_pClip);
+		if (pMidiClip) {
+			m_ui.MidiFileComboBox->setEditText(pMidiClip->filename());
+			m_ui.TrackChannelSpinBox->setValue(pMidiClip->trackChannel());
+		}
+		m_ui.AudioFileGroupBox->setVisible(false);
+		m_ui.MidiFileGroupBox->setVisible(true);
+		m_ui.AudioClipGroupBox->setVisible(false);
+		break;
+	}
+	case qtractorTrack::None:
+	default:
+		m_ui.AudioFileGroupBox->setVisible(false);
+		m_ui.MidiFileGroupBox->setVisible(false);
+		m_ui.AudioClipGroupBox->setVisible(false);
+		break;
+	}
 
 	// Shake it a little bit first, but
 	// make it as tight as possible...
@@ -273,12 +305,24 @@ void qtractorClipForm::accept (void)
 			pClipCommand->fadeOutClip(m_pClip, iFadeOutLength, fadeOutType);
 		// Do it (by making it undoable)...
 		pMainForm->commands()->exec(pClipCommand);
-		// Save other conveniency options...
-		qtractorOptions *pOptions = pMainForm->options();
-		if (pOptions)
-			pOptions->saveComboBoxHistory(m_ui.FilenameComboBox);
 		// Reset dirty flag.
 		m_iDirtyCount = 0;
+	}
+
+	// Save other conveniency options...
+	qtractorOptions *pOptions = pMainForm->options();
+	if (pOptions) {
+		switch (trackType()) {
+		case qtractorTrack::Audio:
+			pOptions->saveComboBoxHistory(m_ui.AudioFileComboBox);
+			break;
+		case qtractorTrack::Midi:
+			pOptions->saveComboBoxHistory(m_ui.MidiFileComboBox);
+			break;
+		case qtractorTrack::None:
+		default:
+			break;
+		}
 	}
 
 	// Just go with dialog acceptance.
@@ -413,33 +457,35 @@ qtractorTrack::TrackType qtractorClipForm::trackType (void) const
 }
 
 
-// Browse for clip filename.
-void qtractorClipForm::browseFilename (void)
+// Browse for audio clip filename.
+void qtractorClipForm::browseAudioFile (void)
 {
-	QString sTitle;
-	QString sFilter;
-	
-	switch (trackType()) {
-	case qtractorTrack::Audio:
-		sTitle  = tr("Clip Audio File");
-		sFilter = qtractorAudioFileFactory::filters();
-		break;
-	case qtractorTrack::Midi:
-		sTitle  = tr("Clip MIDI File");
-		sFilter = tr("MIDI Files (*.mid)");
-		break;
-	case qtractorTrack::None:
-	default:
-		return;
-	}
-
-	// Browse for file...
+	// Browse for audio file...
 	QString sFilename = QFileDialog::getOpenFileName(
-		this, sTitle, m_ui.FilenameComboBox->currentText(), sFilter);
+		this, tr("Audio Clip File"),
+		m_ui.AudioFileComboBox->currentText(),
+		qtractorAudioFileFactory::filters());
 
 	if (!sFilename.isEmpty()) {
-		m_ui.FilenameComboBox->setEditText(sFilename);
-		m_ui.FilenameComboBox->setFocus();
+		m_ui.AudioFileComboBox->setEditText(sFilename);
+		m_ui.AudioFileComboBox->setFocus();
+		changed();
+	}
+}
+
+
+// Browse for MIDI clip filename.
+void qtractorClipForm::browseMidiFile (void)
+{
+	// Browse for MIDI file...
+	QString sFilename = QFileDialog::getOpenFileName(
+		this, tr("MIDI Clip File"),
+		m_ui.MidiFileComboBox->currentText(),
+		tr("MIDI Files (*.mid)"));
+
+	if (!sFilename.isEmpty()) {
+		m_ui.MidiFileComboBox->setEditText(sFilename);
+		m_ui.MidiFileComboBox->setFocus();
 		changed();
 	}
 }

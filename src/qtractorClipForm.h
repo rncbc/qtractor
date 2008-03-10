@@ -52,7 +52,8 @@ public slots:
 	void changed();
 	void formatChanged();
 	void stabilizeForm();
-    void browseFilename();
+    void browseAudioFile();
+    void browseMidiFile();
 
 protected:
 
