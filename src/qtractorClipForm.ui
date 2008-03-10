@@ -2,7 +2,7 @@
  <author>rncbc aka Rui Nuno Capela</author>
  <comment>qtractor - An Audio/MIDI multi-track sequencer.
 
-   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -31,62 +31,91 @@
    <iconset resource="../icons/qtractor.qrc" >:/icons/editClip.png</iconset>
   </property>
   <layout class="QGridLayout" >
-   <item row="2" column="1" >
-    <widget class="QGroupBox" name="FormatGroupBox" >
-     <property name="title" >
-      <string>Format</string>
+   <item row="0" column="0" colspan="2" >
+    <widget class="QLabel" name="ClipNameTextLabel" >
+     <property name="text" >
+      <string>&amp;Name:</string>
      </property>
-     <layout class="QVBoxLayout" >
-      <item>
-       <widget class="QRadioButton" name="FramesRadioButton" >
-        <property name="toolTip" >
-         <string>Frames</string>
-        </property>
-        <property name="text" >
-         <string>&amp;Frames</string>
-        </property>
-        <property name="checked" >
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QRadioButton" name="TimeRadioButton" >
-        <property name="toolTip" >
-         <string>Time (hh:mm:ss.zzz)</string>
-        </property>
-        <property name="text" >
-         <string>&amp;Time</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QRadioButton" name="BbtRadioButton" >
-        <property name="toolTip" >
-         <string>BBT (bars.beats.ticks)</string>
-        </property>
-        <property name="text" >
-         <string>&amp;BBT</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <spacer>
-        <property name="orientation" >
-         <enum>Qt::Vertical</enum>
-        </property>
-        <property name="sizeHint" >
-         <size>
-          <width>20</width>
-          <height>8</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-     </layout>
+     <property name="buddy" >
+      <cstring>ClipNameLineEdit</cstring>
+     </property>
     </widget>
    </item>
-   <item row="2" column="0" >
+   <item row="1" column="0" colspan="2" >
+    <widget class="QLineEdit" name="ClipNameLineEdit" >
+     <property name="minimumSize" >
+      <size>
+       <width>240</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="toolTip" >
+      <string>Clip name</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0" colspan="2" >
+    <widget class="QLabel" name="FilenameTextLabel" >
+     <property name="text" >
+      <string>&amp;File:</string>
+     </property>
+     <property name="buddy" >
+      <cstring>FilenameComboBox</cstring>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0" colspan="2" >
+    <layout class="QHBoxLayout" >
+     <property name="margin" >
+      <number>0</number>
+     </property>
+     <property name="spacing" >
+      <number>4</number>
+     </property>
+     <item>
+      <widget class="QComboBox" name="FilenameComboBox" >
+       <property name="minimumSize" >
+        <size>
+         <width>240</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="toolTip" >
+        <string>Clip filename</string>
+       </property>
+       <property name="editable" >
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="FilenameToolButton" >
+       <property name="minimumSize" >
+        <size>
+         <width>22</width>
+         <height>22</height>
+        </size>
+       </property>
+       <property name="maximumSize" >
+        <size>
+         <width>24</width>
+         <height>24</height>
+        </size>
+       </property>
+       <property name="focusPolicy" >
+        <enum>Qt::TabFocus</enum>
+       </property>
+       <property name="toolTip" >
+        <string>Browse for clip filename</string>
+       </property>
+       <property name="text" >
+        <string>...</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="4" column="0" >
     <widget class="QGroupBox" name="ParamGroupBox" >
      <property name="title" >
       <string>Parameters</string>
@@ -198,7 +227,62 @@
      </layout>
     </widget>
    </item>
-   <item row="3" column="0" colspan="2" >
+   <item row="4" column="1" >
+    <widget class="QGroupBox" name="FormatGroupBox" >
+     <property name="title" >
+      <string>Format</string>
+     </property>
+     <layout class="QVBoxLayout" >
+      <item>
+       <widget class="QRadioButton" name="FramesRadioButton" >
+        <property name="toolTip" >
+         <string>Frames</string>
+        </property>
+        <property name="text" >
+         <string>&amp;Frames</string>
+        </property>
+        <property name="checked" >
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QRadioButton" name="TimeRadioButton" >
+        <property name="toolTip" >
+         <string>Time (hh:mm:ss.zzz)</string>
+        </property>
+        <property name="text" >
+         <string>&amp;Time</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QRadioButton" name="BbtRadioButton" >
+        <property name="toolTip" >
+         <string>BBT (bars.beats.ticks)</string>
+        </property>
+        <property name="text" >
+         <string>&amp;BBT</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer>
+        <property name="orientation" >
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeHint" >
+         <size>
+          <width>20</width>
+          <height>8</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="5" column="0" colspan="2" >
     <widget class="QGroupBox" name="FadeInOutGroupBox" >
      <property name="title" >
       <string>Fade In/Out</string>
@@ -325,7 +409,7 @@
      </layout>
     </widget>
    </item>
-   <item row="4" column="0" colspan="2" >
+   <item row="6" column="0" colspan="2" >
     <widget class="QGroupBox" name="AudioClipGroupBox" >
      <property name="title" >
       <string>Audio</string>
@@ -385,7 +469,7 @@
      </layout>
     </widget>
    </item>
-   <item row="5" column="0" colspan="2" >
+   <item row="7" column="0" colspan="2" >
     <layout class="QHBoxLayout" >
      <property name="spacing" >
       <number>4</number>
@@ -431,29 +515,6 @@
      </item>
     </layout>
    </item>
-   <item row="1" column="0" colspan="2" >
-    <widget class="QLineEdit" name="ClipNameLineEdit" >
-     <property name="minimumSize" >
-      <size>
-       <width>320</width>
-       <height>0</height>
-      </size>
-     </property>
-     <property name="toolTip" >
-      <string>Clip name</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="0" colspan="2" >
-    <widget class="QLabel" name="ClipNameTextLabel" >
-     <property name="text" >
-      <string>&amp;Name:</string>
-     </property>
-     <property name="buddy" >
-      <cstring>ClipNameLineEdit</cstring>
-     </property>
-    </widget>
-   </item>
   </layout>
  </widget>
  <layoutdefault spacing="4" margin="8" />
@@ -466,6 +527,8 @@
  </customwidgets>
  <tabstops>
   <tabstop>ClipNameLineEdit</tabstop>
+  <tabstop>FilenameComboBox</tabstop>
+  <tabstop>FilenameToolButton</tabstop>
   <tabstop>ClipStartSpinBox</tabstop>
   <tabstop>ClipOffsetSpinBox</tabstop>
   <tabstop>ClipLengthSpinBox</tabstop>

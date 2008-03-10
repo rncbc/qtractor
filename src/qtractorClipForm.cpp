@@ -32,6 +32,7 @@
 #include "qtractorOptions.h"
 
 #include <QMessageBox>
+#include <QFileDialog>
 #include <QLineEdit>
 
 // Needed for fabs()
@@ -49,6 +50,14 @@ qtractorClipForm::qtractorClipForm (
 	// Setup UI struct...
 	m_ui.setupUi(this);
 
+	// Initialize conveniency options...
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm) {
+		qtractorOptions *pOptions = pMainForm->options();
+		if (pOptions)
+			pOptions->loadComboBoxHistory(m_ui.FilenameComboBox);
+	}
+
 	// Initialize dirty control state.
 	m_pClip       = NULL;
 	m_pTimeScale  = NULL;
@@ -62,6 +71,12 @@ qtractorClipForm::qtractorClipForm (
 	QObject::connect(m_ui.ClipNameLineEdit,
 		SIGNAL(textChanged(const QString&)),
 		SLOT(changed()));
+	QObject::connect(m_ui.FilenameComboBox,
+		SIGNAL(editTextChanged(const QString&)),
+		SLOT(changed()));
+	QObject::connect(m_ui.FilenameToolButton,
+		SIGNAL(clicked()),
+		SLOT(browseFilename()));
 	QObject::connect(m_ui.FramesRadioButton,
 		SIGNAL(toggled(bool)),
 		SLOT(formatChanged()));
@@ -137,6 +152,7 @@ void qtractorClipForm::setClip ( qtractorClip *pClip )
 		m_ui.FadeOutLengthSpinBox->setTimeScale(m_pTimeScale);
 		// Initialize dialog widgets...
 		m_ui.ClipNameLineEdit->setText(m_pClip->clipName());
+		m_ui.FilenameComboBox->setEditText(m_pClip->filename());
 		// Parameters...
 		m_ui.ClipStartSpinBox->setValue(m_pClip->clipStart());
 		m_ui.ClipOffsetSpinBox->setValue(m_pClip->clipOffset());
@@ -173,6 +189,11 @@ void qtractorClipForm::setClip ( qtractorClip *pClip )
 	if (pAudioClip)
 		m_ui.TimeStretchSpinBox->setValue(100.0f * pAudioClip->timeStretch());
 	m_ui.AudioClipGroupBox->setVisible(pAudioClip != NULL);
+
+	// TODO: Allow change of clip filename (and track-channel)
+	m_ui.FilenameTextLabel->setEnabled(false);
+	m_ui.FilenameComboBox->setEnabled(false);
+	m_ui.FilenameToolButton->setEnabled(false);
 
 	// Shake it a little bit first, but
 	// make it as tight as possible...
@@ -252,6 +273,10 @@ void qtractorClipForm::accept (void)
 			pClipCommand->fadeOutClip(m_pClip, iFadeOutLength, fadeOutType);
 		// Do it (by making it undoable)...
 		pMainForm->commands()->exec(pClipCommand);
+		// Save other conveniency options...
+		qtractorOptions *pOptions = pMainForm->options();
+		if (pOptions)
+			pOptions->saveComboBoxHistory(m_ui.FilenameComboBox);
 		// Reset dirty flag.
 		m_iDirtyCount = 0;
 	}
@@ -374,6 +399,49 @@ int qtractorClipForm::indexFromFadeType ( qtractorClip::FadeType fadeType ) cons
 	}
 
 	return iIndex;
+}
+
+
+// Retrieve current clip/track type.
+qtractorTrack::TrackType qtractorClipForm::trackType (void) const
+{
+	qtractorTrack *pTrack = NULL;
+	if (m_pClip)
+		pTrack = m_pClip->track();
+
+	return (pTrack ? pTrack->trackType() : qtractorTrack::None);
+}
+
+
+// Browse for clip filename.
+void qtractorClipForm::browseFilename (void)
+{
+	QString sTitle;
+	QString sFilter;
+	
+	switch (trackType()) {
+	case qtractorTrack::Audio:
+		sTitle  = tr("Clip Audio File");
+		sFilter = qtractorAudioFileFactory::filters();
+		break;
+	case qtractorTrack::Midi:
+		sTitle  = tr("Clip MIDI File");
+		sFilter = tr("MIDI Files (*.mid)");
+		break;
+	case qtractorTrack::None:
+	default:
+		return;
+	}
+
+	// Browse for file...
+	QString sFilename = QFileDialog::getOpenFileName(
+		this, sTitle, m_ui.FilenameComboBox->currentText(), sFilter);
+
+	if (!sFilename.isEmpty()) {
+		m_ui.FilenameComboBox->setEditText(sFilename);
+		m_ui.FilenameComboBox->setFocus();
+		changed();
+	}
 }
 
 
