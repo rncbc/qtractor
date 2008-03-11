@@ -18,7 +18,7 @@
    with this program; if not, write to the Free Software Foundation, Inc.,
    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-  </comment>
+ </comment>
  <class>qtractorClipForm</class>
  <widget class="QDialog" name="qtractorClipForm" >
   <property name="geometry" >
@@ -26,7 +26,7 @@
     <x>0</x>
     <y>0</y>
     <width>320</width>
-    <height>480</height>
+    <height>360</height>
    </rect>
   </property>
   <property name="focusPolicy" >
@@ -39,7 +39,7 @@
    <iconset resource="../icons/qtractor.qrc" >:/icons/editClip.png</iconset>
   </property>
   <layout class="QGridLayout" >
-   <item row="0" column="0" colspan="2" >
+   <item row="0" column="0" colspan="4" >
     <widget class="QLabel" name="ClipNameTextLabel" >
      <property name="text" >
       <string>&amp;Name:</string>
@@ -49,176 +49,95 @@
      </property>
     </widget>
    </item>
-   <item row="1" column="0" colspan="2" >
+   <item row="1" column="0" colspan="4" >
     <widget class="QLineEdit" name="ClipNameLineEdit" >
-     <property name="minimumSize" >
-      <size>
-       <width>260</width>
-       <height>0</height>
-      </size>
-     </property>
      <property name="toolTip" >
       <string>Clip name</string>
      </property>
     </widget>
    </item>
-   <item row="2" column="0" colspan="2" >
-    <widget class="QGroupBox" name="AudioFileGroupBox" >
-     <property name="title" >
-      <string>&amp;File</string>
+   <item row="2" column="0" colspan="4" >
+    <widget class="QLabel" name="FilenameTextLabel" >
+     <property name="text" >
+      <string>&amp;File:</string>
      </property>
-     <property name="flat" >
-      <bool>true</bool>
+     <property name="buddy" >
+      <cstring>FilenameComboBox</cstring>
      </property>
-     <layout class="QGridLayout" >
-      <property name="margin" >
-       <number>0</number>
-      </property>
-      <item row="0" column="0" >
-       <layout class="QHBoxLayout" >
-        <item>
-         <widget class="QComboBox" name="AudioFileComboBox" >
-          <property name="minimumSize" >
-           <size>
-            <width>240</width>
-            <height>0</height>
-           </size>
-          </property>
-          <property name="toolTip" >
-           <string>Audio clip filename</string>
-          </property>
-          <property name="editable" >
-           <bool>true</bool>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QToolButton" name="AudioFileToolButton" >
-          <property name="minimumSize" >
-           <size>
-            <width>22</width>
-            <height>22</height>
-           </size>
-          </property>
-          <property name="maximumSize" >
-           <size>
-            <width>22</width>
-            <height>22</height>
-           </size>
-          </property>
-          <property name="focusPolicy" >
-           <enum>Qt::TabFocus</enum>
-          </property>
-          <property name="toolTip" >
-           <string>Browse for audio clip filename</string>
-          </property>
-          <property name="text" >
-           <string>...</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-     </layout>
     </widget>
    </item>
-   <item row="3" column="0" colspan="2" >
-    <widget class="QGroupBox" name="MidiFileGroupBox" >
-     <property name="title" >
-      <string>&amp;File</string>
+   <item row="3" column="0" colspan="3" >
+    <widget class="QComboBox" name="FilenameComboBox" >
+     <property name="toolTip" >
+      <string>Clip filename</string>
      </property>
-     <property name="flat" >
+     <property name="editable" >
       <bool>true</bool>
      </property>
-     <layout class="QGridLayout" >
-      <property name="margin" >
-       <number>0</number>
-      </property>
-      <item row="0" column="0" colspan="3" >
-       <layout class="QHBoxLayout" >
-        <item>
-         <widget class="QComboBox" name="MidiFileComboBox" >
-          <property name="minimumSize" >
-           <size>
-            <width>240</width>
-            <height>0</height>
-           </size>
-          </property>
-          <property name="toolTip" >
-           <string>MIDI clip filename</string>
-          </property>
-          <property name="editable" >
-           <bool>true</bool>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QToolButton" name="MidiFileToolButton" >
-          <property name="minimumSize" >
-           <size>
-            <width>22</width>
-            <height>22</height>
-           </size>
-          </property>
-          <property name="maximumSize" >
-           <size>
-            <width>22</width>
-            <height>22</height>
-           </size>
-          </property>
-          <property name="focusPolicy" >
-           <enum>Qt::TabFocus</enum>
-          </property>
-          <property name="toolTip" >
-           <string>Browse for MIDI clip filename</string>
-          </property>
-          <property name="text" >
-           <string>...</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item row="1" column="0" >
-       <spacer>
-        <property name="orientation" >
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" >
-         <size>
-          <width>120</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item row="1" column="1" >
-       <widget class="QLabel" name="TrackChannelTextLabel" >
-        <property name="text" >
-         <string>Track/&amp;Channel:</string>
-        </property>
-        <property name="buddy" >
-         <cstring>TrackChannelSpinBox</cstring>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="2" >
-       <widget class="QSpinBox" name="TrackChannelSpinBox" >
-        <property name="minimumSize" >
-         <size>
-          <width>40</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="toolTip" >
-         <string>MIDI clip track/channel</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
+    </widget>
+   </item>
+   <item row="3" column="3" >
+    <widget class="QToolButton" name="FilenameToolButton" >
+     <property name="minimumSize" >
+      <size>
+       <width>22</width>
+       <height>22</height>
+      </size>
+     </property>
+     <property name="maximumSize" >
+      <size>
+       <width>22</width>
+       <height>22</height>
+      </size>
+     </property>
+     <property name="focusPolicy" >
+      <enum>Qt::TabFocus</enum>
+     </property>
+     <property name="toolTip" >
+      <string>Browse for clip filename</string>
+     </property>
+     <property name="text" >
+      <string>...</string>
+     </property>
     </widget>
    </item>
    <item row="4" column="0" >
+    <spacer>
+     <property name="orientation" >
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="sizeHint" >
+      <size>
+       <width>20</width>
+       <height>4</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="4" column="1" >
+    <widget class="QLabel" name="TrackChannelTextLabel" >
+     <property name="text" >
+      <string>Track/&amp;Channel:</string>
+     </property>
+     <property name="buddy" >
+      <cstring>TrackChannelSpinBox</cstring>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="2" >
+    <widget class="QSpinBox" name="TrackChannelSpinBox" >
+     <property name="minimumSize" >
+      <size>
+       <width>40</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="toolTip" >
+      <string>Clip track/channel</string>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="0" colspan="2" >
     <widget class="QGroupBox" name="ParamGroupBox" >
      <property name="title" >
       <string>Parameters</string>
@@ -229,12 +148,9 @@
         <property name="orientation" >
          <enum>Qt::Horizontal</enum>
         </property>
-        <property name="sizeType" >
-         <enum>QSizePolicy::Expanding</enum>
-        </property>
         <property name="sizeHint" >
          <size>
-          <width>20</width>
+          <width>4</width>
           <height>20</height>
          </size>
         </property>
@@ -330,7 +246,7 @@
      </layout>
     </widget>
    </item>
-   <item row="4" column="1" >
+   <item row="5" column="2" colspan="2" >
     <widget class="QGroupBox" name="FormatGroupBox" >
      <property name="title" >
       <string>Format</string>
@@ -377,7 +293,7 @@
         <property name="sizeHint" >
          <size>
           <width>20</width>
-          <height>8</height>
+          <height>4</height>
          </size>
         </property>
        </spacer>
@@ -385,27 +301,40 @@
      </layout>
     </widget>
    </item>
-   <item row="5" column="0" colspan="2" >
+   <item row="6" column="0" colspan="4" >
     <widget class="QGroupBox" name="FadeInOutGroupBox" >
      <property name="title" >
       <string>Fade In/Out</string>
      </property>
      <layout class="QGridLayout" >
-      <item rowspan="2" row="0" column="3" >
-       <spacer>
-        <property name="orientation" >
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeType" >
-         <enum>QSizePolicy::Expanding</enum>
-        </property>
-        <property name="sizeHint" >
+      <item row="0" column="0" >
+       <widget class="QLabel" name="FadeInTextLabel" >
+        <property name="minimumSize" >
          <size>
-          <width>20</width>
-          <height>20</height>
+          <width>60</width>
+          <height>0</height>
          </size>
         </property>
-       </spacer>
+        <property name="text" >
+         <string>Fade &amp;In:</string>
+        </property>
+        <property name="buddy" >
+         <cstring>FadeInLengthSpinBox</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1" >
+       <widget class="qtractorSpinBox" name="FadeInLengthSpinBox" >
+        <property name="minimumSize" >
+         <size>
+          <width>120</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="toolTip" >
+         <string>Clip fade-in length</string>
+        </property>
+       </widget>
       </item>
       <item row="0" column="2" >
        <widget class="QComboBox" name="FadeInTypeComboBox" >
@@ -429,6 +358,19 @@
         </item>
        </widget>
       </item>
+      <item rowspan="2" row="0" column="3" >
+       <spacer>
+        <property name="orientation" >
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" >
+         <size>
+          <width>4</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
       <item row="1" column="0" >
        <widget class="QLabel" name="FadeOutTextLabel" >
         <property name="minimumSize" >
@@ -445,22 +387,6 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="0" >
-       <widget class="QLabel" name="FadeInTextLabel" >
-        <property name="minimumSize" >
-         <size>
-          <width>60</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="text" >
-         <string>Fade &amp;In:</string>
-        </property>
-        <property name="buddy" >
-         <cstring>FadeInLengthSpinBox</cstring>
-        </property>
-       </widget>
-      </item>
       <item row="1" column="1" >
        <widget class="qtractorSpinBox" name="FadeOutLengthSpinBox" >
         <property name="minimumSize" >
@@ -471,19 +397,6 @@
         </property>
         <property name="toolTip" >
          <string>Clip fade-out length</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1" >
-       <widget class="qtractorSpinBox" name="FadeInLengthSpinBox" >
-        <property name="minimumSize" >
-         <size>
-          <width>120</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="toolTip" >
-         <string>Clip fade-in length</string>
         </property>
        </widget>
       </item>
@@ -512,7 +425,7 @@
      </layout>
     </widget>
    </item>
-   <item row="6" column="0" colspan="2" >
+   <item row="7" column="0" colspan="4" >
     <widget class="QGroupBox" name="AudioClipGroupBox" >
      <property name="title" >
       <string>Audio</string>
@@ -578,15 +491,12 @@
      </layout>
     </widget>
    </item>
-   <item row="7" column="0" colspan="2" >
+   <item row="8" column="0" colspan="4" >
     <layout class="QHBoxLayout" >
      <item>
       <spacer>
        <property name="orientation" >
         <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeType" >
-        <enum>QSizePolicy::Expanding</enum>
        </property>
        <property name="sizeHint" >
         <size>
@@ -630,10 +540,8 @@
  </customwidgets>
  <tabstops>
   <tabstop>ClipNameLineEdit</tabstop>
-  <tabstop>AudioFileComboBox</tabstop>
-  <tabstop>AudioFileToolButton</tabstop>
-  <tabstop>MidiFileComboBox</tabstop>
-  <tabstop>MidiFileToolButton</tabstop>
+  <tabstop>FilenameComboBox</tabstop>
+  <tabstop>FilenameToolButton</tabstop>
   <tabstop>TrackChannelSpinBox</tabstop>
   <tabstop>ClipStartSpinBox</tabstop>
   <tabstop>ClipOffsetSpinBox</tabstop>

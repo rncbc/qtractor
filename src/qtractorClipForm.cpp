@@ -1,7 +1,7 @@
 // qtractorClipForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -57,6 +57,8 @@ qtractorClipForm::qtractorClipForm (
 	m_iDirtyCount = 0;
 
 	// Try to set minimal window positioning.
+	m_ui.TrackChannelTextLabel->hide();
+	m_ui.TrackChannelSpinBox->hide();
 	m_ui.AudioClipGroupBox->hide();
 	adjustSize();
 
@@ -64,18 +66,12 @@ qtractorClipForm::qtractorClipForm (
 	QObject::connect(m_ui.ClipNameLineEdit,
 		SIGNAL(textChanged(const QString&)),
 		SLOT(changed()));
-	QObject::connect(m_ui.AudioFileComboBox,
+	QObject::connect(m_ui.FilenameComboBox,
 		SIGNAL(editTextChanged(const QString&)),
 		SLOT(changed()));
-	QObject::connect(m_ui.AudioFileToolButton,
+	QObject::connect(m_ui.FilenameToolButton,
 		SIGNAL(clicked()),
-		SLOT(browseAudioFile()));
-	QObject::connect(m_ui.MidiFileComboBox,
-		SIGNAL(editTextChanged(const QString&)),
-		SLOT(changed()));
-	QObject::connect(m_ui.MidiFileToolButton,
-		SIGNAL(clicked()),
-		SLOT(browseMidiFile()));
+		SLOT(browseFilename()));
 	QObject::connect(m_ui.TrackChannelSpinBox,
 		SIGNAL(valueChanged(int)),
 		SLOT(changed()));
@@ -184,48 +180,49 @@ void qtractorClipForm::setClip ( qtractorClip *pClip )
 	}
 
 	// TODO: Allow to change clip file properties?
-	m_ui.AudioFileGroupBox->setEnabled(false);
-	m_ui.MidiFileGroupBox->setEnabled(false);
+	m_ui.FilenameComboBox->setEnabled(false);
+	m_ui.FilenameToolButton->setEnabled(false);
+	m_ui.TrackChannelSpinBox->setEnabled(false);
 
 	// Now those things specific on track type...
+	const QString sSuffix = m_ui.FilenameComboBox->objectName();
 	switch (trackType()) {
 	case qtractorTrack::Audio: {
-		qtractorOptions *pOptions = pMainForm->options();
-		if (pOptions)
-			pOptions->loadComboBoxHistory(m_ui.AudioFileComboBox);
+		m_ui.FilenameComboBox->setObjectName("Audio" + sSuffix);
 		qtractorAudioClip *pAudioClip
 			= static_cast<qtractorAudioClip *> (m_pClip);
-		if (pAudioClip) {
-			m_ui.AudioFileComboBox->setEditText(pAudioClip->filename());
+		if (pAudioClip)
 			m_ui.TimeStretchSpinBox->setValue(100.0f * pAudioClip->timeStretch());
-		}
-		m_ui.AudioFileGroupBox->setVisible(true);
-		m_ui.MidiFileGroupBox->setVisible(false);
+		m_ui.TrackChannelTextLabel->setVisible(false);
+		m_ui.TrackChannelSpinBox->setVisible(false);
 		m_ui.AudioClipGroupBox->setVisible(true);
 		break;
 	}
 	case qtractorTrack::Midi: {
-		qtractorOptions *pOptions = pMainForm->options();
-		if (pOptions)
-			pOptions->loadComboBoxHistory(m_ui.MidiFileComboBox);
+		m_ui.FilenameComboBox->setObjectName("Midi" + sSuffix);
 		qtractorMidiClip *pMidiClip
 			= static_cast<qtractorMidiClip *> (m_pClip);
-		if (pMidiClip) {
-			m_ui.MidiFileComboBox->setEditText(pMidiClip->filename());
+		if (pMidiClip)
 			m_ui.TrackChannelSpinBox->setValue(pMidiClip->trackChannel());
-		}
-		m_ui.AudioFileGroupBox->setVisible(false);
-		m_ui.MidiFileGroupBox->setVisible(true);
+		m_ui.TrackChannelTextLabel->setVisible(true);
+		m_ui.TrackChannelSpinBox->setVisible(true);
 		m_ui.AudioClipGroupBox->setVisible(false);
 		break;
 	}
 	case qtractorTrack::None:
 	default:
-		m_ui.AudioFileGroupBox->setVisible(false);
-		m_ui.MidiFileGroupBox->setVisible(false);
+		m_ui.TrackChannelTextLabel->setVisible(false);
+		m_ui.TrackChannelSpinBox->setVisible(false);
 		m_ui.AudioClipGroupBox->setVisible(false);
 		break;
 	}
+
+	qtractorOptions *pOptions = pMainForm->options();
+	if (pOptions)
+		pOptions->loadComboBoxHistory(m_ui.FilenameComboBox);
+
+	// Finally set clip filename...
+	m_ui.FilenameComboBox->setEditText(m_pClip->filename());
 
 	// Shake it a little bit first, but
 	// make it as tight as possible...
@@ -311,19 +308,8 @@ void qtractorClipForm::accept (void)
 
 	// Save other conveniency options...
 	qtractorOptions *pOptions = pMainForm->options();
-	if (pOptions) {
-		switch (trackType()) {
-		case qtractorTrack::Audio:
-			pOptions->saveComboBoxHistory(m_ui.AudioFileComboBox);
-			break;
-		case qtractorTrack::Midi:
-			pOptions->saveComboBoxHistory(m_ui.MidiFileComboBox);
-			break;
-		case qtractorTrack::None:
-		default:
-			break;
-		}
-	}
+	if (pOptions)
+		pOptions->saveComboBoxHistory(m_ui.FilenameComboBox);
 
 	// Just go with dialog acceptance.
 	QDialog::accept();
@@ -458,34 +444,33 @@ qtractorTrack::TrackType qtractorClipForm::trackType (void) const
 
 
 // Browse for audio clip filename.
-void qtractorClipForm::browseAudioFile (void)
+void qtractorClipForm::browseFilename (void)
 {
+	QString sType;
+	QString sFilter;
+
+	switch (trackType()) {
+	case qtractorTrack::Audio:
+		sType   = tr("Audio");
+		sFilter = qtractorAudioFileFactory::filters();
+		break;
+	case qtractorTrack::Midi:
+		sType   = tr("MIDI");
+		sFilter = tr("MIDI Files (*.mid)");
+		break;
+	case qtractorTrack::None:
+	default:
+		return;
+	}
+
 	// Browse for audio file...
 	QString sFilename = QFileDialog::getOpenFileName(
-		this, tr("Audio Clip File"),
-		m_ui.AudioFileComboBox->currentText(),
-		qtractorAudioFileFactory::filters());
+		this, tr("%1 Clip File").arg(sType),
+		m_ui.FilenameComboBox->currentText(), sFilter);
 
 	if (!sFilename.isEmpty()) {
-		m_ui.AudioFileComboBox->setEditText(sFilename);
-		m_ui.AudioFileComboBox->setFocus();
-		changed();
-	}
-}
-
-
-// Browse for MIDI clip filename.
-void qtractorClipForm::browseMidiFile (void)
-{
-	// Browse for MIDI file...
-	QString sFilename = QFileDialog::getOpenFileName(
-		this, tr("MIDI Clip File"),
-		m_ui.MidiFileComboBox->currentText(),
-		tr("MIDI Files (*.mid)"));
-
-	if (!sFilename.isEmpty()) {
-		m_ui.MidiFileComboBox->setEditText(sFilename);
-		m_ui.MidiFileComboBox->setFocus();
+		m_ui.FilenameComboBox->setEditText(sFilename);
+		m_ui.FilenameComboBox->setFocus();
 		changed();
 	}
 }
