@@ -5,7 +5,10 @@ ChangeLog
 
 CVS HEAD
 
-- Clip properties dialog now allows for filename changes.
+- Creating new clips from scratch is now finally permitted (see
+  Edit/Clip/New...); additionally, the clip properties dialog is
+  now allowing for changing the filename (and track/channel as
+  special for MIDI clips). (EXPERIMENTAL)
 
 - Record armed tracks are now properly monitored and fed through
   their own output audio bus on mix-down, which includes plug-in

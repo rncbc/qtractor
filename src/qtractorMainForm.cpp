@@ -2981,7 +2981,7 @@ void qtractorMainForm::stabilizeForm (void)
 	m_ui.editSelectRangeAction->setEnabled(bSelectable);
 	m_ui.editSelectNoneAction->setEnabled(bSelected);
 
-	m_ui.editClipNewAction->setEnabled(false); // TODO: Create new clip.
+	m_ui.editClipNewAction->setEnabled(bEnabled);
 	m_ui.editClipEditAction->setEnabled(bEditable);
 
 	// Update track menu state...

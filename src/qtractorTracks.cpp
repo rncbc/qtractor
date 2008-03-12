@@ -360,8 +360,50 @@ bool qtractorTracks::editClip ( qtractorClip *pClip )
 // Edit/create a brand new clip.
 bool qtractorTracks::newClip (void)
 {
-	// TODO: Edit/create a brand new clip....
-	return false;
+	qtractorSession *pSession = session();
+	if (pSession == NULL)
+		return false;
+
+	// Create on current track, or take the first...
+	qtractorTrack *pTrack = m_pTrackList->currentTrack();
+	if (pTrack == NULL)
+		pTrack = pSession->tracks().first();
+	if (pTrack == NULL)
+		return false;
+
+	// Create the clip prototype...
+	qtractorClip *pClip = NULL;
+	switch (pTrack->trackType()) {
+	case qtractorTrack::Audio:
+		pClip = new qtractorAudioClip(pTrack);
+		break;
+	case qtractorTrack::Midi:
+		pClip = new qtractorMidiClip(pTrack);
+		break;
+	case qtractorTrack::None:
+	default:
+		break;
+	}
+
+	// Correct so far?
+	if (pClip == NULL)
+		return false;
+
+	// Set initial default clip parameters...
+	pClip->setClipStart(pSession->editHead());
+	pClip->setClipLength(pSession->frameFromTick(
+		pSession->ticksPerBeat() * pSession->beatsPerBar()));
+
+	// Then ask user to refine clip properties...
+	qtractorClipForm clipForm(this);
+	clipForm.setClip(pClip, true);
+	if (!clipForm.exec()) {
+		delete pClip;
+		return false;
+	}
+
+	// Done.
+	return true;
 }
 
 

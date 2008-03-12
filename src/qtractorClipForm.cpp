@@ -53,6 +53,7 @@ qtractorClipForm::qtractorClipForm (
 
 	// Initialize dirty control state.
 	m_pClip       = NULL;
+	m_bClipNew    = false;
 	m_pTimeScale  = NULL;
 	m_iDirtyCount = 0;
 
@@ -127,11 +128,8 @@ qtractorClipForm::~qtractorClipForm (void)
 
 
 // Populate (setup) dialog controls from settings descriptors.
-void qtractorClipForm::setClip ( qtractorClip *pClip )
+void qtractorClipForm::setClip ( qtractorClip *pClip, bool bClipNew )
 {
-	// Clip properties cloning...
-	m_pClip = pClip;
-
 	// Initialize conveniency options...
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm == NULL)
@@ -140,6 +138,10 @@ void qtractorClipForm::setClip ( qtractorClip *pClip )
 	qtractorSession *pSession = pMainForm->session();
 	if (pSession == NULL)
 		return;
+
+	// Clip properties cloning...
+	m_pClip = pClip;
+	m_bClipNew = bClipNew;
 
 	// Copy from global time-scale instance...
 	if (m_pTimeScale)
@@ -254,73 +256,119 @@ void qtractorClipForm::accept (void)
 
 	// Save settings...
 	if (m_iDirtyCount > 0) {
-		// Make changes undoable...
-		qtractorClipCommand *pClipCommand
-			= new qtractorClipCommand(tr("edit clip"));
-		pClipCommand->renameClip(m_pClip, m_ui.ClipNameLineEdit->text());
-		// Filename changes...
-		QString sFilename = m_ui.FilenameComboBox->currentText();
-		int iFileChange = 0;
-		if (sFilename != m_pClip->filename())
-			iFileChange++;
-		// Track-channel and time-stretch issues...
-		unsigned short iTrackChannel = 0;
-		float fTimeStretch = 0.0f;
-		switch (trackType()) {
-		case qtractorTrack::Audio: {
-			qtractorAudioClip *pAudioClip
-				= static_cast<qtractorAudioClip *> (m_pClip);
-			if (pAudioClip) {
-				float fValue = 0.01f * m_ui.TimeStretchSpinBox->value();
-				if (::fabs(fValue - pAudioClip->timeStretch()) > 0.001f)
-					fTimeStretch = fValue; 
+		// It depends whether we're adding a new clip or not...
+		qtractorClipCommand *pClipCommand = NULL;
+		if (m_bClipNew) {
+			// Just set new clip properties...
+			pClipCommand = new qtractorClipCommand(tr("new clip"));
+			m_pClip->setClipName(m_ui.ClipNameLineEdit->text());
+			// Filename...
+			m_pClip->setFilename(m_ui.FilenameComboBox->currentText());
+			// Track-channel and time-stretching...
+			switch (trackType()) {
+			case qtractorTrack::Audio: {
+				qtractorAudioClip *pAudioClip
+					= static_cast<qtractorAudioClip *> (m_pClip);
+				if (pAudioClip)
+					pAudioClip->setTimeStretch(0.01f * m_ui.TimeStretchSpinBox->value());
+				break;
 			}
-			break;
-		}
-		case qtractorTrack::Midi: {
-			qtractorMidiClip *pMidiClip
-				= static_cast<qtractorMidiClip *> (m_pClip);
-			if (pMidiClip) {
-				iTrackChannel = m_ui.TrackChannelSpinBox->value();
-				if (iTrackChannel != pMidiClip->trackChannel())
-					iFileChange++;
+			case qtractorTrack::Midi: {
+				qtractorMidiClip *pMidiClip
+					= static_cast<qtractorMidiClip *> (m_pClip);
+				if (pMidiClip)
+					pMidiClip->setTrackChannel(m_ui.TrackChannelSpinBox->value());
+				break;
 			}
-			break;
+			case qtractorTrack::None:
+			default:
+				break;
+			}
+			// Parameters...
+			m_pClip->setClipStart(m_ui.ClipStartSpinBox->value());
+			m_pClip->setClipOffset(m_ui.ClipOffsetSpinBox->value());
+			m_pClip->setClipLength(m_ui.ClipLengthSpinBox->value());
+			// Fade in...
+			m_pClip->setFadeInLength(m_ui.FadeInLengthSpinBox->value());
+			m_pClip->setFadeInType(
+				fadeTypeFromIndex(m_ui.FadeInTypeComboBox->currentIndex()));
+			// Fade out...
+			m_pClip->setFadeOutLength(m_ui.FadeOutLengthSpinBox->value());
+			m_pClip->setFadeOutType(
+				fadeTypeFromIndex(m_ui.FadeOutTypeComboBox->currentIndex()));
+			// Ready it...
+			pClipCommand->addClip(m_pClip, m_pClip->track());
+			// Ready new.
+		} else {
+			// Make changes (incrementally) undoable...
+			pClipCommand = new qtractorClipCommand(tr("edit clip"));
+			pClipCommand->renameClip(m_pClip, m_ui.ClipNameLineEdit->text());
+			// Filename changes...
+			QString sFilename = m_ui.FilenameComboBox->currentText();
+			int iFileChange = 0;
+			if (sFilename != m_pClip->filename())
+				iFileChange++;
+			// Track-channel and time-stretch issues...
+			unsigned short iTrackChannel = 0;
+			float fTimeStretch = 0.0f;
+			switch (trackType()) {
+			case qtractorTrack::Audio: {
+				qtractorAudioClip *pAudioClip
+					= static_cast<qtractorAudioClip *> (m_pClip);
+				if (pAudioClip) {
+					float fValue = 0.01f * m_ui.TimeStretchSpinBox->value();
+					if (::fabs(fValue - pAudioClip->timeStretch()) > 0.001f)
+						fTimeStretch = fValue; 
+				}
+				break;
+			}
+			case qtractorTrack::Midi: {
+				qtractorMidiClip *pMidiClip
+					= static_cast<qtractorMidiClip *> (m_pClip);
+				if (pMidiClip) {
+					iTrackChannel = m_ui.TrackChannelSpinBox->value();
+					if (iTrackChannel != pMidiClip->trackChannel())
+						iFileChange++;
+				}
+				break;
+			}
+			case qtractorTrack::None:
+			default:
+				break;
+			}
+			// Filename...
+			if (iFileChange > 0)
+				pClipCommand->fileClip(m_pClip, sFilename, iTrackChannel);
+			// Parameters...
+			unsigned long iClipStart  = m_ui.ClipStartSpinBox->value();
+			unsigned long iClipOffset = m_ui.ClipOffsetSpinBox->value();
+			unsigned long iClipLength = m_ui.ClipLengthSpinBox->value();
+			if (iClipStart  != m_pClip->clipStart()  ||
+				iClipOffset != m_pClip->clipOffset() ||
+				iClipLength != m_pClip->clipLength() ||
+				fTimeStretch > 0.0f) {
+				pClipCommand->resizeClip(m_pClip,
+					iClipStart, iClipOffset, iClipLength, fTimeStretch);
+			}
+			// Fade in...
+			unsigned long iFadeInLength = m_ui.FadeInLengthSpinBox->value();
+			qtractorClip::FadeType fadeInType = fadeTypeFromIndex(
+				m_ui.FadeInTypeComboBox->currentIndex());
+			if (iFadeInLength != m_pClip->fadeInLength()
+				|| fadeInType != m_pClip->fadeInType())
+				pClipCommand->fadeInClip(m_pClip, iFadeInLength, fadeInType);
+			// Fade out...
+			unsigned long iFadeOutLength = m_ui.FadeOutLengthSpinBox->value();
+			qtractorClip::FadeType fadeOutType = fadeTypeFromIndex(
+				m_ui.FadeOutTypeComboBox->currentIndex());
+			if (iFadeOutLength != m_pClip->fadeOutLength()
+				|| fadeOutType != m_pClip->fadeOutType())
+				pClipCommand->fadeOutClip(m_pClip, iFadeOutLength, fadeOutType);
+			// Ready edit.
 		}
-		case qtractorTrack::None:
-		default:
-			break;
-		}
-		// Filename...
-		if (iFileChange > 0)
-			pClipCommand->fileClip(m_pClip, sFilename, iTrackChannel);
-		// Parameters...
-		unsigned long iClipStart  = m_ui.ClipStartSpinBox->value();
-		unsigned long iClipOffset = m_ui.ClipOffsetSpinBox->value();
-		unsigned long iClipLength = m_ui.ClipLengthSpinBox->value();
-		if (iClipStart  != m_pClip->clipStart()  ||
-			iClipOffset != m_pClip->clipOffset() ||
-			iClipLength != m_pClip->clipLength() ||
-			fTimeStretch > 0.0f) {
-			pClipCommand->resizeClip(m_pClip,
-				iClipStart, iClipOffset, iClipLength, fTimeStretch);
-		}
-		// Fade in...
-		unsigned long iFadeInLength = m_ui.FadeInLengthSpinBox->value();
-		qtractorClip::FadeType fadeInType = fadeTypeFromIndex(
-			m_ui.FadeInTypeComboBox->currentIndex());
-		if (iFadeInLength != m_pClip->fadeInLength()
-			|| fadeInType != m_pClip->fadeInType())
-			pClipCommand->fadeInClip(m_pClip, iFadeInLength, fadeInType);
-		// Fade out...
-		unsigned long iFadeOutLength = m_ui.FadeOutLengthSpinBox->value();
-		qtractorClip::FadeType fadeOutType = fadeTypeFromIndex(
-			m_ui.FadeOutTypeComboBox->currentIndex());
-		if (iFadeOutLength != m_pClip->fadeOutLength()
-			|| fadeOutType != m_pClip->fadeOutType())
-			pClipCommand->fadeOutClip(m_pClip, iFadeOutLength, fadeOutType);
 		// Do it (by making it undoable)...
-		pMainForm->commands()->exec(pClipCommand);
+		if (pClipCommand)
+			pMainForm->commands()->exec(pClipCommand);
 		// Reset dirty flag.
 		m_iDirtyCount = 0;
 	}

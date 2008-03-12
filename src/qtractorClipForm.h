@@ -42,7 +42,7 @@ public:
 	// Destructor.
 	~qtractorClipForm();
 
-	void setClip(qtractorClip *pClip);
+	void setClip(qtractorClip *pClip, bool bClipNew = false);
 	qtractorClip *clip() const;
 
 public slots:
@@ -68,6 +68,7 @@ private:
 
 	// Instance variables...
 	qtractorClip      *m_pClip;
+	bool               m_bClipNew;
 	qtractorTimeScale *m_pTimeScale;
 
 	int m_iDirtyCount;
