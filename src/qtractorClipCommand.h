@@ -48,6 +48,10 @@ public:
 	// Primitive command methods.
 	void addClip(qtractorClip *pClip, qtractorTrack *pTrack);
 	void removeClip(qtractorClip *pClip);
+
+	// Edit clip command methods.
+	void fileClip(qtractorClip *pClip, const QString& sFilename,
+		unsigned short iTrackChannel = 0);
 	void renameClip(qtractorClip *pClip, const QString& sClipName);
 	void moveClip(qtractorClip *pClip, qtractorTrack *pTrack,
 		unsigned long iClipStart, unsigned long iClipOffset,
@@ -81,7 +85,7 @@ private:
 	// Primitive command types.
 	enum CommandType {
 		AddClip, RemoveClip,
-		RenameClip,	MoveClip, ResizeClip,
+		FileClip, RenameClip, MoveClip, ResizeClip,
 		FadeInClip, FadeOutClip, TimeStretchClip
 	};
 
@@ -91,7 +95,7 @@ private:
 		// Item constructor.
 		Item(CommandType cmd, qtractorClip *pClip, qtractorTrack *pTrack)
 			: command(cmd), clip(pClip), track(pTrack), autoDelete(false),
-				clipStart(0), clipOffset(0), clipLength(0),
+				trackChannel(0), clipStart(0), clipOffset(0), clipLength(0),
 				fadeInLength(0), fadeInType(qtractorClip::Quadratic), 
 				fadeOutLength(0), fadeOutType(qtractorClip::Quadratic),
 				timeStretch(0.0f) {}
@@ -100,6 +104,8 @@ private:
 		qtractorClip  *clip;
 		qtractorTrack *track;
 		bool           autoDelete;
+		QString        filename;
+		unsigned short trackChannel;
 		QString        clipName;
 		unsigned long  clipStart;
 		unsigned long  clipOffset;

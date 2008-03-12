@@ -5,6 +5,8 @@ ChangeLog
 
 CVS HEAD
 
+- Clip properties dialog now allows for filename changes.
+
 - Record armed tracks are now properly monitored and fed through
   their own output audio bus on mix-down, which includes plug-in
   effects processing (EXPERIMENTAL).

@@ -179,11 +179,6 @@ void qtractorClipForm::setClip ( qtractorClip *pClip )
 		break;
 	}
 
-	// TODO: Allow to change clip file properties?
-	m_ui.FilenameComboBox->setEnabled(false);
-	m_ui.FilenameToolButton->setEnabled(false);
-	m_ui.TrackChannelSpinBox->setEnabled(false);
-
 	// Now those things specific on track type...
 	const QString sSuffix = m_ui.FilenameComboBox->objectName();
 	switch (trackType()) {
@@ -263,10 +258,16 @@ void qtractorClipForm::accept (void)
 		qtractorClipCommand *pClipCommand
 			= new qtractorClipCommand(tr("edit clip"));
 		pClipCommand->renameClip(m_pClip, m_ui.ClipNameLineEdit->text());
-		// Time-stretch issue...
+		// Filename changes...
+		QString sFilename = m_ui.FilenameComboBox->currentText();
+		int iFileChange = 0;
+		if (sFilename != m_pClip->filename())
+			iFileChange++;
+		// Track-channel and time-stretch issues...
+		unsigned short iTrackChannel = 0;
 		float fTimeStretch = 0.0f;
-		qtractorTrack *pTrack = m_pClip->track();
-		if (pTrack && pTrack->trackType() == qtractorTrack::Audio) {
+		switch (trackType()) {
+		case qtractorTrack::Audio: {
 			qtractorAudioClip *pAudioClip
 				= static_cast<qtractorAudioClip *> (m_pClip);
 			if (pAudioClip) {
@@ -274,7 +275,25 @@ void qtractorClipForm::accept (void)
 				if (::fabs(fValue - pAudioClip->timeStretch()) > 0.001f)
 					fTimeStretch = fValue; 
 			}
+			break;
 		}
+		case qtractorTrack::Midi: {
+			qtractorMidiClip *pMidiClip
+				= static_cast<qtractorMidiClip *> (m_pClip);
+			if (pMidiClip) {
+				iTrackChannel = m_ui.TrackChannelSpinBox->value();
+				if (iTrackChannel != pMidiClip->trackChannel())
+					iFileChange++;
+			}
+			break;
+		}
+		case qtractorTrack::None:
+		default:
+			break;
+		}
+		// Filename...
+		if (iFileChange > 0)
+			pClipCommand->fileClip(m_pClip, sFilename, iTrackChannel);
 		// Parameters...
 		unsigned long iClipStart  = m_ui.ClipStartSpinBox->value();
 		unsigned long iClipOffset = m_ui.ClipOffsetSpinBox->value();
@@ -379,6 +398,7 @@ void qtractorClipForm::formatChanged (void)
 // Stabilize current form state.
 void qtractorClipForm::stabilizeForm (void)
 {
+	const QString& sFilename = m_ui.FilenameComboBox->currentText();
 	unsigned long iClipLength = m_ui.ClipLengthSpinBox->value();
 	m_ui.FadeInTypeComboBox->setEnabled(
 		m_ui.FadeInLengthSpinBox->value() > 0);
@@ -389,6 +409,7 @@ void qtractorClipForm::stabilizeForm (void)
 
 	bool bValid = (m_iDirtyCount > 0);
 	bValid = bValid && !m_ui.ClipNameLineEdit->text().isEmpty();
+	bValid = bValid && !sFilename.isEmpty() && QFileInfo(sFilename).exists();
 	bValid = bValid && (iClipLength > 0);
 	m_ui.OkPushButton->setEnabled(bValid);
 }

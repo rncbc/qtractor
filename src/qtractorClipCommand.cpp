@@ -73,6 +73,17 @@ void qtractorClipCommand::removeClip ( qtractorClip *pClip )
 }
 
 
+// Edit command methods.
+void qtractorClipCommand::fileClip ( qtractorClip *pClip,
+	const QString& sFilename, unsigned short iTrackChannel )
+{
+	Item *pItem = new Item(FileClip, pClip, pClip->track());
+	pItem->filename = sFilename;
+	pItem->trackChannel = iTrackChannel;
+	m_items.append(pItem);
+}
+
+
 void qtractorClipCommand::renameClip ( qtractorClip *pClip,
 	const QString& sClipName )
 {
@@ -269,6 +280,25 @@ bool qtractorClipCommand::execute ( bool bRedo )
 			pSession->updateTrack(pTrack);
 			break;
 		}
+		case FileClip: {
+			QString sOldFilename = pClip->filename();
+			unsigned short iOldTrackChannel = 0;
+			pClip->setFilename(pItem->filename);
+			qtractorMidiClip *pMidiClip = NULL;
+			if (pTrack->trackType() == qtractorTrack::Midi)
+				pMidiClip = static_cast<qtractorMidiClip *> (pClip);
+			if (pMidiClip) {
+				iOldTrackChannel = pMidiClip->trackChannel();
+				pMidiClip->setTrackChannel(pItem->trackChannel);
+			}
+			pClip->close(true);	// Scrap peak file (audio).
+			pClip->open();
+			pItem->filename = sOldFilename;
+			if (pMidiClip)
+				pItem->trackChannel = iOldTrackChannel;
+			pSession->updateTrack(pTrack);
+			break;
+		}
 		case RenameClip: {
 			QString sOldName = pClip->clipName();
 			pClip->setClipName(pItem->clipName);
@@ -308,7 +338,8 @@ bool qtractorClipCommand::execute ( bool bRedo )
 			unsigned long iOldFadeOut = pClip->fadeOutLength();
 			float fOldTimeStretch = 0.0f;
 			qtractorAudioClip *pAudioClip = NULL;
-			if (pItem->timeStretch > 0.0f)
+			if (pTrack->trackType() == qtractorTrack::Audio
+				&& pItem->timeStretch > 0.0f)
 				pAudioClip = static_cast<qtractorAudioClip *> (pClip);
 			if (pAudioClip)
 				fOldTimeStretch = pAudioClip->timeStretch();
@@ -351,8 +382,9 @@ bool qtractorClipCommand::execute ( bool bRedo )
 			break;
 		}
 		case TimeStretchClip: {
-			qtractorAudioClip *pAudioClip
-				= static_cast<qtractorAudioClip *> (pClip);
+			qtractorAudioClip *pAudioClip = NULL;
+			if (pTrack->trackType() == qtractorTrack::Audio)
+				pAudioClip = static_cast<qtractorAudioClip *> (pClip);
 			if (pAudioClip) {
 				float fOldTimeStretch = pAudioClip->timeStretch();
 				pAudioClip->setTimeStretch(pItem->timeStretch);
