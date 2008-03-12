@@ -391,9 +391,14 @@ bool qtractorTracks::newClip (void)
 
 	// Set initial default clip parameters...
 	pClip->setClipStart(pSession->editHead());
-	pClip->setClipLength(pSession->frameFromTick(
-		pSession->ticksPerBeat() * pSession->beatsPerBar()));
-
+#if 0
+	if (pSession->editTail() > pSession->editHead()) {
+		pClip->setClipLength(pSession->editTail() - pSession->editHead());
+	} else {
+		pClip->setClipLength(pSession->frameFromTick(
+			pSession->ticksPerBeat() * pSession->beatsPerBar()));
+	}
+#endif
 	// Then ask user to refine clip properties...
 	qtractorClipForm clipForm(this);
 	clipForm.setClip(pClip, true);

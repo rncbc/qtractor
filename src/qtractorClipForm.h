@@ -54,12 +54,18 @@ public slots:
 	void stabilizeForm();
     void browseFilename();
 
+	void filenameChanged(const QString& sFilename);
+	void trackChannelChanged(int iTrackChannel);
+
 protected:
 
 	qtractorClip::FadeType fadeTypeFromIndex(int iIndex) const;
 	int indexFromFadeType(qtractorClip::FadeType fadeType) const;
 
 	qtractorTrack::TrackType trackType() const;
+
+	void fileChanged(const QString& sFilename,
+		unsigned short iTrackChannel);
 
 private:
 
@@ -72,6 +78,7 @@ private:
 	qtractorTimeScale *m_pTimeScale;
 
 	int m_iDirtyCount;
+	int m_iDirtySetup;
 };
 
 
