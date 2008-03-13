@@ -29,11 +29,11 @@
 #include "qtractorSessionCursor.h"
 
 #include "qtractorTrackCommand.h"
+#include "qtractorClipCommand.h"
 
 #include "qtractorAudioClip.h"
 #include "qtractorMidiEngine.h"
 #include "qtractorMidiClip.h"
-#include "qtractorMidiFile.h"
 
 #include "qtractorOptions.h"
 
@@ -391,14 +391,50 @@ bool qtractorTracks::newClip (void)
 
 	// Set initial default clip parameters...
 	pClip->setClipStart(pSession->editHead());
-#if 0
-	if (pSession->editTail() > pSession->editHead()) {
-		pClip->setClipLength(pSession->editTail() - pSession->editHead());
-	} else {
-		pClip->setClipLength(pSession->frameFromTick(
-			pSession->ticksPerBeat() * pSession->beatsPerBar()));
+
+	// Special for MIDI clips, which already have it's own editor,
+	// we'll add and start a blank one right-away...
+	if (pTrack->trackType() == qtractorTrack::Midi) {
+		// Set initial clip length...
+		if (pSession->editTail() > pSession->editHead()) {
+			pClip->setClipLength(pSession->editTail() - pSession->editHead());
+		} else {
+			pClip->setClipLength(pSession->frameFromTick(
+				pSession->ticksPerBeat() * pSession->beatsPerBar()));
+		}
+		// Create a clip filename from scratch...
+		const QString& sFilename = pSession->createFilePath(
+			pTrack->trackName(), pTrack->clips().count(), "mid");
+		pClip->setFilename(sFilename);
+		pClip->setClipName(QFileInfo(sFilename).baseName());
+		// Proceed to setup the MDII clip properly...
+		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+		qtractorMidiClip *pMidiClip
+			= static_cast<qtractorMidiClip *> (pClip);
+		if (pMainForm && pMidiClip) {
+			// Initialize MIDI event container...
+			qtractorMidiSequence *pSeq = pMidiClip->sequence();
+			pSeq->setName(pMidiClip->clipName());
+			pSeq->setChannel(pTrack->midiChannel());
+			pSeq->setTicksPerBeat(pSession->ticksPerBeat());
+			// Which SMF format?
+			if (pMidiClip->format() == 0) {
+				// SMF format 0 (1 track, 1 channel)
+				pMidiClip->setTrackChannel(pTrack->midiChannel());
+			} else {
+				// SMF format 1 (2 tracks, 1 channel)
+				pMidiClip->setTrackChannel(1);
+			}
+			// Insert the clip right away...
+			qtractorClipCommand *pClipCommand
+				= new qtractorClipCommand(tr("new clip"));
+			pClipCommand->addClip(pClip, pTrack);
+			pMainForm->commands()->exec(pClipCommand);
+			// Just start the MIDI editor on it...
+			return pClip->startEditor(this);
+		}
 	}
-#endif
+
 	// Then ask user to refine clip properties...
 	qtractorClipForm clipForm(this);
 	clipForm.setClip(pClip, true);

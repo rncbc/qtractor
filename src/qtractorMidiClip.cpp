@@ -1,7 +1,7 @@
 // qtractorMidiClip.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -47,7 +47,7 @@ qtractorMidiClip::qtractorMidiClip ( qtractorTrack *pTrack )
 	m_pSeq  = new qtractorMidiSequence();
 
 	m_iTrackChannel = 0;
-	m_iFormat       = 0;
+	m_iFormat       = defaultFormat();
 	m_bSessionFlag  = false;
 
 	m_pMidiEditorForm = NULL;
@@ -63,6 +63,7 @@ qtractorMidiClip::qtractorMidiClip ( const qtractorMidiClip& clip )
 	setFilename(clip.filename());
 	setTrackChannel(clip.trackChannel());
 
+	m_iFormat       = clip.format();
 	m_bSessionFlag  = false;
 
 	m_pMidiEditorForm = NULL;

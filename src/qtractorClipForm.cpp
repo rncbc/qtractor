@@ -147,6 +147,10 @@ void qtractorClipForm::setClip ( qtractorClip *pClip, bool bClipNew )
 	m_pClip = pClip;
 	m_bClipNew = bClipNew;
 
+	// Why not change the dialog icon accordingly?
+	if (m_bClipNew)
+		QDialog::setWindowIcon(QIcon(":/icons/editClipNew.png"));
+
 	// Copy from global time-scale instance...
 	if (m_pTimeScale)
 		delete m_pTimeScale;

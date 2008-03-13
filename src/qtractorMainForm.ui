@@ -76,6 +76,7 @@
    <addaction name="editSelectModeRangeAction" />
    <addaction name="editSelectModeRectAction" />
    <addaction name="separator" />
+   <addaction name="editClipNewAction" />
    <addaction name="editClipEditAction" />
   </widget>
   <widget class="QToolBar" name="trackToolbar" >
@@ -716,6 +717,9 @@
    </property>
   </action>
   <action name="editClipNewAction" >
+   <property name="icon" >
+    <iconset resource="../icons/qtractor.qrc" >:/icons/editClipNew.png</iconset>
+   </property>
    <property name="text" >
     <string>&amp;New...</string>
    </property>

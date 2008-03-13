@@ -1735,6 +1735,10 @@ void qtractorMainForm::editClipNew (void)
 	appendMessages("qtractorMainForm::editClipNew()");
 #endif
 
+	// New clip: we must have a session name...
+	if (m_pSession->sessionName().isEmpty() && !editSession())
+		return;
+
 	// Start editing a new clip...
 	if (m_pTracks)
 		m_pTracks->newClip();
