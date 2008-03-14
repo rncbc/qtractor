@@ -342,7 +342,7 @@
     <iconset resource="../icons/qtractor.qrc" >:/icons/trackProperties.png</iconset>
    </property>
    <property name="text" >
-    <string>&amp;Track Properties...</string>
+    <string>&amp;Properties...</string>
    </property>
    <property name="iconText" >
     <string>Track Properties</string>

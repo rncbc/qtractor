@@ -326,7 +326,14 @@ void qtractorTracks::updateContents ( bool bRefresh )
 // Retrieves current selected track reference.
 qtractorTrack *qtractorTracks::currentTrack (void) const
 {
-	return m_pTrackList->currentTrack();
+	qtractorTrack *pTrack = m_pTrackList->currentTrack();
+	if (pTrack == NULL) {
+		qtractorClip *pClip = m_pTrackView->currentClip();
+		if (pClip)
+			pTrack = pClip->track();
+	}
+
+	return pTrack;
 }
 
 
@@ -352,7 +359,7 @@ bool qtractorTracks::newClip (void)
 		return false;
 
 	// Create on current track, or take the first...
-	qtractorTrack *pTrack = m_pTrackList->currentTrack();
+	qtractorTrack *pTrack = currentTrack();
 	if (pTrack == NULL)
 		pTrack = pSession->tracks().first();
 	if (pTrack == NULL)
@@ -474,7 +481,7 @@ bool qtractorTracks::splitClip ( qtractorClip *pClip )
 		= new qtractorClipCommand(tr("split clip"));
 	// Shorten old right...
 	unsigned long iClipOffset = pClip->clipOffset();
-	pClipCommand->resizeClip(pClip,
+	pClipCommand->moveClip(pClip, pClip->track(),
 		iClipStart, iClipOffset, iPlayHead - iClipStart);
 	// Add left clone...
 	qtractorClip *pNewClip = m_pTrackView->cloneClip(pClip);
@@ -622,9 +629,8 @@ bool qtractorTracks::removeTrack ( qtractorTrack *pTrack )
 		return false;
 
 	// Get the list view item reference of the intended track...
-	int iTrack = m_pTrackList->trackRow(pTrack);
-	if (iTrack < 0)
-		pTrack = m_pTrackList->currentTrack();
+	if (pTrack == NULL)
+		pTrack = currentTrack();
 	if (pTrack == NULL)
 		return false;
 
@@ -659,9 +665,8 @@ bool qtractorTracks::editTrack ( qtractorTrack *pTrack, QWidget *pParent )
 		return false;
 
 	// Get the list view item reference of the intended track...
-	int iTrack = m_pTrackList->trackRow(pTrack);
-	if (iTrack < 0)
-		pTrack = m_pTrackList->currentTrack();
+	if (pTrack == NULL)
+		pTrack = currentTrack();
 	if (pTrack == NULL)
 		return false;
 
