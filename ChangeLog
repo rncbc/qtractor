@@ -5,6 +5,10 @@ ChangeLog
 
 CVS HEAD
 
+- Clip split command enters the stage (see Edit/Clip/Split) about
+  splitting the current (selected) clip at the current playhead
+  position (red cursor line). (EXPERIMENTAL)
+
 - Creating new clips from scratch is now finally permitted (see
   Edit/Clip/New...); additionally, the clip properties dialog is
   now also allowing for changing the filename (and track/channel

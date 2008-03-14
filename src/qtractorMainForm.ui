@@ -319,6 +319,8 @@
      </property>
      <addaction name="editClipNewAction" />
      <addaction name="editClipEditAction" />
+     <addaction name="separator" />
+     <addaction name="editClipSplitAction" />
     </widget>
     <addaction name="editUndoAction" />
     <addaction name="editRedoAction" />
@@ -751,6 +753,20 @@
    </property>
    <property name="shortcut" >
     <string>F4</string>
+   </property>
+  </action>
+  <action name="editClipSplitAction" >
+   <property name="text" >
+    <string>&amp;Split</string>
+   </property>
+   <property name="iconText" >
+    <string>Splt Clip</string>
+   </property>
+   <property name="toolTip" >
+    <string>Split clip</string>
+   </property>
+   <property name="statusTip" >
+    <string>Split current clip at playhead</string>
    </property>
   </action>
   <action name="trackAddAction" >

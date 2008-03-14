@@ -442,6 +442,9 @@ qtractorMainForm::qtractorMainForm (
 	QObject::connect(m_ui.editClipEditAction,
 		SIGNAL(triggered(bool)),
 		SLOT(editClipEdit()));
+	QObject::connect(m_ui.editClipSplitAction,
+		SIGNAL(triggered(bool)),
+		SLOT(editClipSplit()));
 
 	QObject::connect(m_ui.trackAddAction,
 		SIGNAL(triggered(bool)),
@@ -1758,6 +1761,19 @@ void qtractorMainForm::editClipEdit (void)
 }
 
 
+// Split current clip at playhead.
+void qtractorMainForm::editClipSplit (void)
+{
+#ifdef CONFIG_DEBUG
+	appendMessages("qtractorMainForm::editClipSplit()");
+#endif
+
+	// Split current clip, if any...
+	if (m_pTracks)
+		m_pTracks->splitClip();
+}
+
+
 //-------------------------------------------------------------------------
 // qtractorMainForm -- Track Action slots.
 
@@ -2967,11 +2983,16 @@ void qtractorMainForm::stabilizeForm (void)
 
 	unsigned long iSessionLength = m_pSession->sessionLength();
 	qtractorTrack *pTrack = NULL;
-	if (m_pTracks) pTrack = m_pTracks->currentTrack();
+	qtractorClip  *pClip  = NULL;
+	if (m_pTracks) {
+		pTrack = m_pTracks->currentTrack();
+		pClip  = m_pTracks->currentClip();
+	}
+
 	bool bEnabled = (m_pTracks && pTrack != NULL);
 	bool bSelected = (m_pTracks && m_pTracks->isClipSelected());
 	bool bSelectable = (iSessionLength > 0);
-	bool bEditable = (m_pTracks && m_pTracks->currentClip() != NULL);
+	bool bEditable = (pClip != NULL);
 
 	m_ui.editCutAction->setEnabled(bSelected);
 	m_ui.editCopyAction->setEnabled(bSelected);
@@ -2987,6 +3008,9 @@ void qtractorMainForm::stabilizeForm (void)
 
 	m_ui.editClipNewAction->setEnabled(bEnabled);
 	m_ui.editClipEditAction->setEnabled(bEditable);
+	m_ui.editClipSplitAction->setEnabled(bEditable
+		&& m_iPlayHead > pClip->clipStart()
+		&& m_iPlayHead < pClip->clipStart() + pClip->clipLength());
 
 	// Update track menu state...
 	m_ui.trackRemoveAction->setEnabled(bEnabled);
@@ -3030,9 +3054,8 @@ void qtractorMainForm::stabilizeForm (void)
 	// Session status...
 	updateTransportTime(m_pSession->playHead());
 
-	if (m_pTracks && m_pTracks->currentTrack()) {
-		m_statusItems[StatusName]->setText(
-			m_pTracks->currentTrack()->trackName().simplified());
+	if (pTrack) {
+		m_statusItems[StatusName]->setText(pTrack->trackName().simplified());
 	} else {
 		m_statusItems[StatusName]->clear();
 	}
@@ -3082,7 +3105,6 @@ void qtractorMainForm::stabilizeForm (void)
 
 	// Transport stuff...
 	bEnabled = (!bPlaying || !bRecording);
-	bSelectable = (m_pSession->editHead() < m_pSession->editTail());
 	bool bBumped = (bEnabled && (m_iPlayHead > 0 || bPlaying));
 	m_ui.transportBackwardAction->setEnabled(bBumped);
 	m_ui.transportRewindAction->setEnabled(bBumped);

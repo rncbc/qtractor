@@ -344,19 +344,6 @@ qtractorClip *qtractorTracks::currentClip (void) const
 }
 
 
-// Edit given(current) clip.
-bool qtractorTracks::editClip ( qtractorClip *pClip )
-{
-	if (pClip == NULL)
-		pClip = m_pTrackView->currentClip();
-	if (pClip == NULL)
-		return false;
-
-	// All else hasn't fail.
-	return pClip->startEditor(this);
-}
-
-
 // Edit/create a brand new clip.
 bool qtractorTracks::newClip (void)
 {
@@ -445,6 +432,61 @@ bool qtractorTracks::newClip (void)
 
 	// Done.
 	return true;
+}
+
+
+// Edit given(current) clip.
+bool qtractorTracks::editClip ( qtractorClip *pClip )
+{
+	if (pClip == NULL)
+		pClip = m_pTrackView->currentClip();
+	if (pClip == NULL)
+		return false;
+
+	// All else hasn't fail.
+	return pClip->startEditor(this);
+}
+
+
+// Split given(current) clip.
+bool qtractorTracks::splitClip ( qtractorClip *pClip )
+{
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm == NULL)
+		return false;
+
+	qtractorSession *pSession = session();
+	if (pSession == NULL)
+		return false;
+
+	if (pClip == NULL)
+		pClip = m_pTrackView->currentClip();
+	if (pClip == NULL)
+		return false;
+
+	unsigned long iPlayHead = pSession->playHead();
+	unsigned long iClipStart = pClip->clipStart();
+	unsigned long iClipEnd   = iClipStart + pClip->clipLength();
+	if (iClipStart >= iPlayHead	|| iPlayHead >= iClipEnd)
+		return false;
+
+	qtractorClipCommand *pClipCommand
+		= new qtractorClipCommand(tr("split clip"));
+	// Shorten old right...
+	unsigned long iClipOffset = pClip->clipOffset();
+	pClipCommand->resizeClip(pClip,
+		iClipStart, iClipOffset, iPlayHead - iClipStart);
+	// Add left clone...
+	qtractorClip *pNewClip = m_pTrackView->cloneClip(pClip);
+	if (pNewClip) {
+		pNewClip->setClipStart(iPlayHead);
+		pNewClip->setClipOffset(iClipOffset + iPlayHead - iClipStart);
+		pNewClip->setClipLength(iClipEnd - iPlayHead);
+		pNewClip->setFadeOutLength(pClip->fadeOutLength());
+		pClipCommand->addClip(pNewClip, pNewClip->track());
+	}
+	// That's it...
+	return pMainForm->commands()->exec(pClipCommand);
 }
 
 
