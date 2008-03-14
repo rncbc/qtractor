@@ -33,6 +33,7 @@
 #include "qtractorSession.h"
 #include "qtractorTracks.h"
 #include "qtractorTrackView.h"
+#include "qtractorConnections.h"
 
 #include "qtractorMainForm.h"
 #include "qtractorShortcutForm.h"
@@ -180,6 +181,15 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	QObject::connect(m_ui.fileSaveAsAction,
 		SIGNAL(triggered(bool)),
 		SLOT(fileSaveAs()));
+	QObject::connect(m_ui.fileTrackInputsAction,
+		SIGNAL(triggered(bool)),
+		SLOT(fileTrackInputs()));
+	QObject::connect(m_ui.fileTrackOutputsAction,
+		SIGNAL(triggered(bool)),
+		SLOT(fileTrackOutputs()));
+	QObject::connect(m_ui.fileTrackPropertiesAction,
+		SIGNAL(triggered(bool)),
+		SLOT(fileTrackProperties()));
 	QObject::connect(m_ui.filePropertiesAction,
 		SIGNAL(triggered(bool)),
 		SLOT(fileProperties()));
@@ -725,11 +735,71 @@ void qtractorMidiEditorForm::fileSaveAs (void)
 void qtractorMidiEditorForm::fileProperties (void)
 {
 	qtractorMidiClip *pMidiClip = m_pMidiEditor->midiClip();
-	if (pMidiClip) {
-		qtractorClipForm clipForm(parentWidget());
-		clipForm.setClip(pMidiClip);
-		clipForm.exec();
+	if (pMidiClip == NULL)
+		return;
+
+	qtractorClipForm clipForm(parentWidget());
+	clipForm.setClip(pMidiClip);
+	clipForm.exec();
+}
+
+
+// Show current MIDI clip/track input bus connections.
+void qtractorMidiEditorForm::fileTrackInputs (void)
+{
+	qtractorMidiClip *pMidiClip = m_pMidiEditor->midiClip();
+	if (pMidiClip == NULL)
+		return;
+
+	qtractorTrack *pTrack = pMidiClip->track();
+	if (pTrack == NULL)
+		return;
+	if (pTrack->inputBus() == NULL)
+		return;
+
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm && pMainForm->connections()) {
+		(pMainForm->connections())->showBus(
+			pTrack->inputBus(), qtractorBus::Input);
 	}
+}
+
+
+// Show current MIDI clip/track output bus connections.
+void qtractorMidiEditorForm::fileTrackOutputs (void)
+{
+	qtractorMidiClip *pMidiClip = m_pMidiEditor->midiClip();
+	if (pMidiClip == NULL)
+		return;
+
+	qtractorTrack *pTrack = pMidiClip->track();
+	if (pTrack == NULL)
+		return;
+	if (pTrack->outputBus() == NULL)
+		return;
+
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm && pMainForm->connections()) {
+		(pMainForm->connections())->showBus(
+			pTrack->outputBus(), qtractorBus::Output);
+	}
+}
+
+
+// Edit current MIDI clip/track properties.
+void qtractorMidiEditorForm::fileTrackProperties (void)
+{
+	qtractorMidiClip *pMidiClip = m_pMidiEditor->midiClip();
+	if (pMidiClip == NULL)
+		return;
+
+	qtractorTrack *pTrack = pMidiClip->track();
+	if (pTrack == NULL)
+		return;
+
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm && pMainForm->tracks())
+		(pMainForm->tracks())->editTrack(pTrack, this);
 }
 
 
@@ -1064,10 +1134,21 @@ void qtractorMidiEditorForm::sendNote ( int iNote, int iVelocity )
 void qtractorMidiEditorForm::stabilizeForm (void)
 {
 	// Update the main menu state...
-	bool bSelected = m_pMidiEditor->isSelected();
+	qtractorTrack *pTrack = NULL;
+	qtractorMidiClip *pMidiClip = m_pMidiEditor->midiClip();
+	if (pMidiClip)
+		pTrack = pMidiClip->track();
+	
 	m_ui.fileSaveAction->setEnabled(m_iDirtyCount > 0);
+
+	m_ui.fileTrackInputsAction->setEnabled(pTrack && pTrack->inputBus() != NULL);
+	m_ui.fileTrackOutputsAction->setEnabled(pTrack && pTrack->outputBus() != NULL);
+	m_ui.fileTrackPropertiesAction->setEnabled(pTrack != NULL);
+
 	m_pMidiEditor->updateUndoAction(m_ui.editUndoAction);
 	m_pMidiEditor->updateRedoAction(m_ui.editRedoAction);
+
+	bool bSelected = m_pMidiEditor->isSelected();
 	m_ui.editCutAction->setEnabled(bSelected);
 	m_ui.editCopyAction->setEnabled(bSelected);
 	m_ui.editPasteAction->setEnabled(m_pMidiEditor->isClipboard());

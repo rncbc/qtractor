@@ -45,6 +45,15 @@
      <height>29</height>
     </rect>
    </property>
+   <widget class="QMenu" name="fileTrackMenu" >
+    <property name="title" >
+     <string>&amp;Track</string>
+    </property>
+    <addaction name="fileTrackInputsAction" />
+    <addaction name="fileTrackOutputsAction" />
+    <addaction name="separator" />
+    <addaction name="fileTrackPropertiesAction" />
+   </widget>
    <widget class="QMenu" name="fileMenu" >
     <property name="title" >
      <string>&amp;File</string>
@@ -53,6 +62,8 @@
     <addaction name="fileSaveAsAction" />
     <addaction name="separator" />
     <addaction name="filePropertiesAction" />
+    <addaction name="separator" />
+    <addaction name="fileTrackMenu" />
     <addaction name="separator" />
     <addaction name="fileCloseAction" />
    </widget>
@@ -195,6 +206,8 @@
    </attribute>
    <addaction name="filePropertiesAction" />
    <addaction name="fileSaveAction" />
+   <addaction name="separator" />
+   <addaction name="fileTrackPropertiesAction" />
   </widget>
   <widget class="QToolBar" name="editModeToolbar" >
    <property name="orientation" >
@@ -272,6 +285,12 @@
    <property name="text" >
     <string>&amp;Save</string>
    </property>
+   <property name="iconText" >
+    <string>Save</string>
+   </property>
+   <property name="toolTip" >
+    <string>Save</string>
+   </property>
    <property name="statusTip" >
     <string>Save current MIDI clip to existing file name</string>
    </property>
@@ -280,8 +299,62 @@
    <property name="text" >
     <string>Save &amp;As...</string>
    </property>
+   <property name="iconText" >
+    <string>Save As</string>
+   </property>
+   <property name="toolTip" >
+    <string>Save as</string>
+   </property>
    <property name="statusTip" >
     <string>Save current MIDI clip with another file name</string>
+   </property>
+  </action>
+  <action name="fileTrackInputsAction" >
+   <property name="text" >
+    <string>&amp;Inputs</string>
+   </property>
+   <property name="iconText" >
+    <string>Track Inputs</string>
+   </property>
+   <property name="toolTip" >
+    <string>Track inputs</string>
+   </property>
+   <property name="statusTip" >
+    <string>Show current MIDI clip/track input bus connections</string>
+   </property>
+  </action>
+  <action name="fileTrackOutputsAction" >
+   <property name="text" >
+    <string>&amp;Outputs</string>
+   </property>
+   <property name="iconText" >
+    <string>Track Outputs</string>
+   </property>
+   <property name="toolTip" >
+    <string>Track outputs</string>
+   </property>
+   <property name="statusTip" >
+    <string>Show current MIDI clip/track output bus connections</string>
+   </property>
+  </action>
+  <action name="fileTrackPropertiesAction" >
+   <property name="icon" >
+    <iconset resource="../icons/qtractor.qrc" >:/icons/trackProperties.png</iconset>
+   </property>
+   <property name="text" >
+    <string>&amp;Track Properties...</string>
+   </property>
+   <property name="iconText" >
+    <string>Track Properties</string>
+   </property>
+   <property name="toolTip" >
+    <string>Track properties</string>
+   </property>
+   <property name="statusTip" >
+    <string>Edit current MIDI clip/track properties</string>
+   </property>
+   <property name="shortcut" >
+    <string>Shift+F2</string>
    </property>
   </action>
   <action name="filePropertiesAction" >
@@ -291,8 +364,14 @@
    <property name="text" >
     <string>&amp;Properties...</string>
    </property>
+   <property name="iconText" >
+    <string>Properties</string>
+   </property>
+   <property name="toolTip" >
+    <string>Properties</string>
+   </property>
    <property name="statusTip" >
-    <string>Change current MIDI clip properties</string>
+    <string>Edit current MIDI clip properties</string>
    </property>
    <property name="shortcut" >
     <string>F4</string>
@@ -301,6 +380,12 @@
   <action name="fileCloseAction" >
    <property name="text" >
     <string>&amp;Close</string>
+   </property>
+   <property name="iconText" >
+    <string>Close</string>
+   </property>
+   <property name="toolTip" >
+    <string>Close</string>
    </property>
    <property name="statusTip" >
     <string>Close this MIDI clip editor</string>
@@ -316,6 +401,12 @@
    <property name="text" >
     <string>Edit Off</string>
    </property>
+   <property name="iconText" >
+    <string>Edit Off</string>
+   </property>
+   <property name="toolTip" >
+    <string>Edit off</string>
+   </property>
    <property name="statusTip" >
     <string>Set edit mode off</string>
    </property>
@@ -330,6 +421,12 @@
    <property name="text" >
     <string>Edit On</string>
    </property>
+   <property name="iconText" >
+    <string>Edit On</string>
+   </property>
+   <property name="toolTip" >
+    <string>Edit on</string>
+   </property>
    <property name="statusTip" >
     <string>Set edit mode on</string>
    </property>
@@ -340,6 +437,12 @@
    </property>
    <property name="text" >
     <string>&amp;Undo</string>
+   </property>
+   <property name="iconText" >
+    <string>Undo</string>
+   </property>
+   <property name="toolTip" >
+    <string>Undo</string>
    </property>
    <property name="statusTip" >
     <string>Undo last edit operation</string>
@@ -355,6 +458,12 @@
    <property name="text" >
     <string>&amp;Redo</string>
    </property>
+   <property name="iconText" >
+    <string>Redo</string>
+   </property>
+   <property name="toolTip" >
+    <string>Redo</string>
+   </property>
    <property name="statusTip" >
     <string>Redo last edit operation</string>
    </property>
@@ -368,6 +477,12 @@
    </property>
    <property name="text" >
     <string>Cu&amp;t</string>
+   </property>
+   <property name="iconText" >
+    <string>Cut</string>
+   </property>
+   <property name="toolTip" >
+    <string>Cut</string>
    </property>
    <property name="statusTip" >
     <string>Cut current selection into the local clipboard</string>
@@ -383,6 +498,12 @@
    <property name="text" >
     <string>&amp;Copy</string>
    </property>
+   <property name="iconText" >
+    <string>Copy</string>
+   </property>
+   <property name="toolTip" >
+    <string>Copy</string>
+   </property>
    <property name="statusTip" >
     <string>Copy current selection to the local clipboard</string>
    </property>
@@ -396,6 +517,12 @@
    </property>
    <property name="text" >
     <string>&amp;Paste</string>
+   </property>
+   <property name="iconText" >
+    <string>Paste</string>
+   </property>
+   <property name="toolTip" >
+    <string>Paste</string>
    </property>
    <property name="statusTip" >
     <string>Paste local clipboard contents into the current MIDI clip</string>
@@ -411,6 +538,12 @@
    <property name="text" >
     <string>&amp;Delete</string>
    </property>
+   <property name="iconText" >
+    <string>Delete</string>
+   </property>
+   <property name="toolTip" >
+    <string>Delete</string>
+   </property>
    <property name="statusTip" >
     <string>Delete current selection</string>
    </property>
@@ -421,6 +554,12 @@
   <action name="editSelectNoneAction" >
    <property name="text" >
     <string>Select &amp;None</string>
+   </property>
+   <property name="iconText" >
+    <string>Select None</string>
+   </property>
+   <property name="toolTip" >
+    <string>Select none</string>
    </property>
    <property name="statusTip" >
     <string>Select none</string>
@@ -433,6 +572,12 @@
    <property name="text" >
     <string>Select &amp;Invert</string>
    </property>
+   <property name="iconText" >
+    <string>Select Invert</string>
+   </property>
+   <property name="toolTip" >
+    <string>Select invert</string>
+   </property>
    <property name="statusTip" >
     <string>Select invert</string>
    </property>
@@ -443,6 +588,12 @@
   <action name="editSelectAllAction" >
    <property name="text" >
     <string>Select &amp;All</string>
+   </property>
+   <property name="iconText" >
+    <string>Select All</string>
+   </property>
+   <property name="toolTip" >
+    <string>Select all</string>
    </property>
    <property name="statusTip" >
     <string>Select all</string>
@@ -472,6 +623,9 @@
    <property name="text" >
     <string>&amp;Quantize...</string>
    </property>
+   <property name="iconText" >
+    <string>Quantize</string>
+   </property>
    <property name="toolTip" >
     <string>Quantize</string>
    </property>
@@ -482,6 +636,9 @@
   <action name="toolsTransposeAction" >
    <property name="text" >
     <string>&amp;Transpose...</string>
+   </property>
+   <property name="iconText" >
+    <string>Transpose</string>
    </property>
    <property name="toolTip" >
     <string>Transpose</string>
@@ -494,6 +651,9 @@
    <property name="text" >
     <string>&amp;Normalize...</string>
    </property>
+   <property name="iconText" >
+    <string>Normalize</string>
+   </property>
    <property name="toolTip" >
     <string>Normalize</string>
    </property>
@@ -505,6 +665,9 @@
    <property name="text" >
     <string>&amp;Randomize...</string>
    </property>
+   <property name="iconText" >
+    <string>Randomize</string>
+   </property>
    <property name="toolTip" >
     <string>Randomize</string>
    </property>
@@ -515,6 +678,9 @@
   <action name="toolsResizeAction" >
    <property name="text" >
     <string>Re&amp;size...</string>
+   </property>
+   <property name="iconText" >
+    <string>Resize</string>
    </property>
    <property name="toolTip" >
     <string>Resize</string>
@@ -571,7 +737,7 @@
     <string>&amp;File</string>
    </property>
    <property name="iconText" >
-    <string>File toolbar</string>
+    <string>File Toolbar</string>
    </property>
    <property name="toolTip" >
     <string>File toolbar</string>
@@ -588,7 +754,7 @@
     <string>&amp;Edit</string>
    </property>
    <property name="iconText" >
-    <string>Edit toolbar</string>
+    <string>Edit Toolbar</string>
    </property>
    <property name="toolTip" >
     <string>Edit toolbar</string>
@@ -605,7 +771,7 @@
     <string>&amp;View</string>
    </property>
    <property name="iconText" >
-    <string>View toolbar</string>
+    <string>View Toolbar</string>
    </property>
    <property name="toolTip" >
     <string>View toolbar</string>
@@ -622,7 +788,7 @@
     <string>T&amp;ransport</string>
    </property>
    <property name="iconText" >
-    <string>Transport toolbar</string>
+    <string>Transport Toolbar</string>
    </property>
    <property name="toolTip" >
     <string>Transport toolbar</string>
@@ -639,6 +805,9 @@
     <string>Note &amp;Duration</string>
    </property>
    <property name="iconText" >
+    <string>Note Duration</string>
+   </property>
+   <property name="toolTip" >
     <string>Note duration</string>
    </property>
    <property name="statusTip" >
@@ -656,6 +825,9 @@
     <string>&amp;Note Color</string>
    </property>
    <property name="iconText" >
+    <string>Note Color</string>
+   </property>
+   <property name="toolTip" >
     <string>Note color</string>
    </property>
    <property name="statusTip" >
@@ -673,6 +845,9 @@
     <string>&amp;Value Color</string>
    </property>
    <property name="iconText" >
+    <string>Value Color</string>
+   </property>
+   <property name="toolTip" >
     <string>Value color</string>
    </property>
    <property name="statusTip" >
@@ -695,6 +870,9 @@
    <property name="iconText" >
     <string>Preview Notes</string>
    </property>
+   <property name="toolTip" >
+    <string>Preview notes</string>
+   </property>
    <property name="statusTip" >
     <string>Preview notes while editing (scrub)</string>
    </property>
@@ -714,6 +892,9 @@
    </property>
    <property name="iconText" >
     <string>Follow Playhead</string>
+   </property>
+   <property name="toolTip" >
+    <string>Follow playhead</string>
    </property>
    <property name="statusTip" >
     <string>Follow playhead</string>
@@ -784,7 +965,7 @@
     <string>Refresh</string>
    </property>
    <property name="toolTip" >
-    <string>Refresh view</string>
+    <string>Refresh</string>
    </property>
    <property name="statusTip" >
     <string>Refresh view</string>
@@ -801,6 +982,9 @@
     <string>&amp;Backward</string>
    </property>
    <property name="iconText" >
+    <string>Backward</string>
+   </property>
+   <property name="toolTip" >
     <string>Backward</string>
    </property>
    <property name="statusTip" >
@@ -823,6 +1007,9 @@
    <property name="iconText" >
     <string>Rewind</string>
    </property>
+   <property name="toolTip" >
+    <string>Rewind</string>
+   </property>
    <property name="statusTip" >
     <string>Transport rewind</string>
    </property>
@@ -841,6 +1028,9 @@
     <string>F&amp;ast Forward</string>
    </property>
    <property name="iconText" >
+    <string>Fast Forward</string>
+   </property>
+   <property name="toolTip" >
     <string>Fast forward</string>
    </property>
    <property name="statusTip" >
@@ -858,6 +1048,9 @@
     <string>&amp;Forward</string>
    </property>
    <property name="iconText" >
+    <string>Forward</string>
+   </property>
+   <property name="toolTip" >
     <string>Forward</string>
    </property>
    <property name="statusTip" >
@@ -880,6 +1073,9 @@
    <property name="iconText" >
     <string>Loop</string>
    </property>
+   <property name="toolTip" >
+    <string>Loop</string>
+   </property>
    <property name="statusTip" >
     <string>Transport loop</string>
    </property>
@@ -892,6 +1088,9 @@
     <string>Loop &amp;Set</string>
    </property>
    <property name="iconText" >
+    <string>Loop Set</string>
+   </property>
+   <property name="toolTip" >
     <string>Loop set</string>
    </property>
    <property name="statusTip" >
@@ -914,6 +1113,9 @@
    <property name="iconText" >
     <string>Play</string>
    </property>
+   <property name="toolTip" >
+    <string>Play</string>
+   </property>
    <property name="statusTip" >
     <string>Transport play/pause</string>
    </property>
@@ -934,6 +1136,9 @@
    <property name="iconText" >
     <string>Record</string>
    </property>
+   <property name="toolTip" >
+    <string>Record</string>
+   </property>
    <property name="statusTip" >
     <string>Transport record</string>
    </property>
@@ -942,10 +1147,16 @@
    </property>
   </action>
   <action name="helpShortcutsAction" >
+   <property name="icon" >
+    <iconset resource="../icons/qtractor.qrc" >:/icons/helpShortcuts.png</iconset>
+   </property>
    <property name="text" >
     <string>&amp;Shortcuts...</string>
    </property>
    <property name="iconText" >
+    <string>Shortcuts</string>
+   </property>
+   <property name="toolTip" >
     <string>Shortcuts</string>
    </property>
    <property name="statusTip" >
@@ -962,6 +1173,9 @@
    <property name="iconText" >
     <string>About</string>
    </property>
+   <property name="toolTip" >
+    <string>About</string>
+   </property>
    <property name="statusTip" >
     <string>Show information about this application program</string>
    </property>
@@ -974,6 +1188,9 @@
     <string>About &amp;Qt...</string>
    </property>
    <property name="iconText" >
+    <string>About Qt</string>
+   </property>
+   <property name="toolTip" >
     <string>About Qt</string>
    </property>
    <property name="statusTip" >

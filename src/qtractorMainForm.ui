@@ -432,6 +432,9 @@
    <property name="iconText" >
     <string>Save As</string>
    </property>
+   <property name="toolTip" >
+    <string>Save as</string>
+   </property>
    <property name="statusTip" >
     <string>Save current session with another file name</string>
    </property>
@@ -461,6 +464,9 @@
     <string>E&amp;xit</string>
    </property>
    <property name="iconText" >
+    <string>Exit</string>
+   </property>
+   <property name="toolTip" >
     <string>Exit</string>
    </property>
    <property name="statusTip" >
@@ -834,10 +840,10 @@
     <string>&amp;Inputs</string>
    </property>
    <property name="iconText" >
-    <string>Track inputs</string>
+    <string>Track Inputs</string>
    </property>
    <property name="toolTip" >
-    <string>Inputs</string>
+    <string>Track inputs</string>
    </property>
    <property name="statusTip" >
     <string>Show current track input bus connections</string>
@@ -848,7 +854,7 @@
     <string>&amp;Outputs</string>
    </property>
    <property name="iconText" >
-    <string>Outputs</string>
+    <string>Track Outputs</string>
    </property>
    <property name="toolTip" >
     <string>Track outputs</string>
@@ -865,7 +871,7 @@
     <string>&amp;Record</string>
    </property>
    <property name="iconText" >
-    <string>Record</string>
+    <string>Record Track</string>
    </property>
    <property name="toolTip" >
     <string>Record track</string>
@@ -882,7 +888,7 @@
     <string>&amp;Mute</string>
    </property>
    <property name="iconText" >
-    <string>Mute</string>
+    <string>Mute Track</string>
    </property>
    <property name="toolTip" >
     <string>Mute track</string>
@@ -899,7 +905,7 @@
     <string>&amp;Solo</string>
    </property>
    <property name="iconText" >
-    <string>Solo</string>
+    <string>Solo Track</string>
    </property>
    <property name="toolTip" >
     <string>Solo track</string>
@@ -913,7 +919,7 @@
     <string>&amp;First</string>
    </property>
    <property name="iconText" >
-    <string>First</string>
+    <string>First Track</string>
    </property>
    <property name="toolTip" >
     <string>First track</string>
@@ -927,7 +933,7 @@
     <string>&amp;Previous</string>
    </property>
    <property name="iconText" >
-    <string>Previous</string>
+    <string>Previous Track</string>
    </property>
    <property name="toolTip" >
     <string>Previous track</string>
@@ -941,7 +947,7 @@
     <string>&amp;Next</string>
    </property>
    <property name="iconText" >
-    <string>Next</string>
+    <string>Next Track</string>
    </property>
    <property name="toolTip" >
     <string>Next track</string>
@@ -955,7 +961,7 @@
     <string>&amp;Last</string>
    </property>
    <property name="iconText" >
-    <string>Last</string>
+    <string>Last Track</string>
    </property>
    <property name="toolTip" >
     <string>Last track</string>
@@ -1028,7 +1034,7 @@
     <string>&amp;Audio...</string>
    </property>
    <property name="iconText" >
-    <string>Audio</string>
+    <string>Inport Audio File</string>
    </property>
    <property name="toolTip" >
     <string>Import Audio file</string>
@@ -1045,7 +1051,7 @@
     <string>&amp;MIDI...</string>
    </property>
    <property name="iconText" >
-    <string>Midi</string>
+    <string>Import MIDI File</string>
    </property>
    <property name="toolTip" >
     <string>Import MIDI file</string>
@@ -1062,7 +1068,7 @@
     <string>&amp;Audio...</string>
    </property>
    <property name="iconText" >
-    <string>Audio</string>
+    <string>Export Audio File</string>
    </property>
    <property name="toolTip" >
     <string>Export Audio file</string>
@@ -1079,7 +1085,7 @@
     <string>&amp;MIDI...</string>
    </property>
    <property name="iconText" >
-    <string>Midi</string>
+    <string>Export MIDI File</string>
    </property>
    <property name="toolTip" >
     <string>Export MIDI file</string>
@@ -1136,7 +1142,7 @@
     <string>&amp;File</string>
    </property>
    <property name="iconText" >
-    <string>File toolbar</string>
+    <string>File Toolbar</string>
    </property>
    <property name="toolTip" >
     <string>File toolbar</string>
@@ -1153,7 +1159,7 @@
     <string>&amp;Edit</string>
    </property>
    <property name="iconText" >
-    <string>Edit toolbar</string>
+    <string>Edit Toolbar</string>
    </property>
    <property name="toolTip" >
     <string>Edit toolbar</string>
@@ -1170,7 +1176,7 @@
     <string>&amp;Track</string>
    </property>
    <property name="iconText" >
-    <string>Track toolbar</string>
+    <string>Track Toolbar</string>
    </property>
    <property name="toolTip" >
     <string>Track toolbar</string>
@@ -1187,7 +1193,7 @@
     <string>&amp;View</string>
    </property>
    <property name="iconText" >
-    <string>View toolbar</string>
+    <string>View Toolbar</string>
    </property>
    <property name="toolTip" >
     <string>View toolbar</string>
@@ -1204,7 +1210,7 @@
     <string>&amp;Options</string>
    </property>
    <property name="iconText" >
-    <string>Options toolbar</string>
+    <string>Options Toolbar</string>
    </property>
    <property name="toolTip" >
     <string>Options toolbar</string>
@@ -1221,7 +1227,7 @@
     <string>T&amp;ransport</string>
    </property>
    <property name="iconText" >
-    <string>Transport toolbar</string>
+    <string>Transport Toolbar</string>
    </property>
    <property name="toolTip" >
     <string>Transport toolbar</string>
@@ -1238,7 +1244,7 @@
     <string>T&amp;ime</string>
    </property>
    <property name="iconText" >
-    <string>Time toolbar</string>
+    <string>Time Toolbar</string>
    </property>
    <property name="toolTip" >
     <string>Time toolbar</string>
@@ -1255,7 +1261,7 @@
     <string>Thum&amp;b</string>
    </property>
    <property name="iconText" >
-    <string>Thumb toolbar</string>
+    <string>Thumb Toolbar</string>
    </property>
    <property name="toolTip" >
     <string>Thumb toolbar</string>
@@ -1415,7 +1421,7 @@
     <string>&amp;Refresh</string>
    </property>
    <property name="iconText" >
-    <string>Refresh</string>
+    <string>Refresh View</string>
    </property>
    <property name="toolTip" >
     <string>Refresh view</string>
@@ -1472,7 +1478,7 @@
     <string>Options</string>
    </property>
    <property name="toolTip" >
-    <string>General options</string>
+    <string>Options</string>
    </property>
    <property name="statusTip" >
     <string>Change general application program options</string>
@@ -1489,6 +1495,9 @@
     <string>&amp;Backward</string>
    </property>
    <property name="iconText" >
+    <string>Backward</string>
+   </property>
+   <property name="toolTip" >
     <string>Backward</string>
    </property>
    <property name="statusTip" >
@@ -1511,6 +1520,9 @@
    <property name="iconText" >
     <string>Rewind</string>
    </property>
+   <property name="toolTip" >
+    <string>Rewind</string>
+   </property>
    <property name="statusTip" >
     <string>Transport rewind</string>
    </property>
@@ -1529,6 +1541,9 @@
     <string>F&amp;ast Forward</string>
    </property>
    <property name="iconText" >
+    <string>Fast Forward</string>
+   </property>
+   <property name="toolTip" >
     <string>Fast forward</string>
    </property>
    <property name="statusTip" >
@@ -1546,6 +1561,9 @@
     <string>&amp;Forward</string>
    </property>
    <property name="iconText" >
+    <string>Forward</string>
+   </property>
+   <property name="toolTip" >
     <string>Forward</string>
    </property>
    <property name="statusTip" >
@@ -1568,6 +1586,9 @@
    <property name="iconText" >
     <string>Loop</string>
    </property>
+   <property name="toolTip" >
+    <string>Loop</string>
+   </property>
    <property name="statusTip" >
     <string>Transport loop</string>
    </property>
@@ -1580,6 +1601,9 @@
     <string>Loop &amp;Set</string>
    </property>
    <property name="iconText" >
+    <string>Loop Set</string>
+   </property>
+   <property name="toolTip" >
     <string>Loop set</string>
    </property>
    <property name="statusTip" >
@@ -1602,6 +1626,9 @@
    <property name="iconText" >
     <string>Play</string>
    </property>
+   <property name="toolTip" >
+    <string>Play</string>
+   </property>
    <property name="statusTip" >
     <string>Transport play/pause</string>
    </property>
@@ -1620,6 +1647,9 @@
     <string>&amp;Record</string>
    </property>
    <property name="iconText" >
+    <string>Record</string>
+   </property>
+   <property name="toolTip" >
     <string>Record</string>
    </property>
    <property name="statusTip" >
@@ -1731,6 +1761,9 @@
    <property name="iconText" >
     <string>Shortcuts</string>
    </property>
+   <property name="toolTip" >
+    <string>Shortcuts</string>
+   </property>
    <property name="statusTip" >
     <string>Keyboard shortcuts</string>
    </property>
@@ -1745,6 +1778,9 @@
    <property name="iconText" >
     <string>About</string>
    </property>
+   <property name="toolTip" >
+    <string>About</string>
+   </property>
    <property name="statusTip" >
     <string>Show information about this application program</string>
    </property>
@@ -1757,6 +1793,9 @@
     <string>About &amp;Qt...</string>
    </property>
    <property name="iconText" >
+    <string>About Qt</string>
+   </property>
+   <property name="toolTip" >
     <string>About Qt</string>
    </property>
    <property name="statusTip" >

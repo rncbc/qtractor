@@ -81,6 +81,9 @@ public slots:
 
 	void fileSave();
 	void fileSaveAs();
+	void fileTrackInputs();
+	void fileTrackOutputs();
+	void fileTrackProperties();
 	void fileProperties();
 	void fileClose();
 

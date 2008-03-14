@@ -648,7 +648,7 @@ bool qtractorTracks::removeTrack ( qtractorTrack *pTrack )
 
 
 // Edit given(current) track properties.
-bool qtractorTracks::editTrack ( qtractorTrack *pTrack )
+bool qtractorTracks::editTrack ( qtractorTrack *pTrack, QWidget *pParent )
 {
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm == NULL)
@@ -666,7 +666,9 @@ bool qtractorTracks::editTrack ( qtractorTrack *pTrack )
 		return false;
 
 	// Open dialog for settings...
-	qtractorTrackForm trackForm(this);
+	if (pParent == NULL)
+		pParent = this;
+	qtractorTrackForm trackForm(pParent);
 	trackForm.setTrack(pTrack);
 	if (!trackForm.exec())
 		return false;
