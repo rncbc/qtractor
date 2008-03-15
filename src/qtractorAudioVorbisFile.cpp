@@ -1,7 +1,7 @@
 // qtractorAudioVorbisFile.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2006, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -67,7 +67,7 @@ qtractorAudioVorbisFile::~qtractorAudioVorbisFile (void)
 bool qtractorAudioVorbisFile::open ( const QString& sFilename, int iMode )
 {
 #ifdef DEBUG_0
-	fprintf(stderr, "qtractorAudioVorbisFile::open(\"%s\", %d)\n",
+	qDebug("qtractorAudioVorbisFile::open(\"%s\", %d)",
 		sFilename.toUtf8().constData(), iMode);
 #endif
 	close();
@@ -187,7 +187,7 @@ int qtractorAudioVorbisFile::read ( float **ppFrames,
 	unsigned int iFrames )
 {
 #ifdef DEBUG_0
-	fprintf(stderr, "qtractorAudioVorbisFile::read(%p, %d)", ppFrames, iFrames);
+	qDebug("qtractorAudioVorbisFile::read(%p, %d)", ppFrames, iFrames);
 #endif
 
 	int nread = 0;
@@ -205,10 +205,6 @@ int qtractorAudioVorbisFile::read ( float **ppFrames,
 	}
 #endif	// CONFIG_LIBVORBIS
 
-#ifdef DEBUG_0
-	fprintf(stderr, " --> nread=%d\n", nread);
-#endif
-
 	return nread;
 }
 
@@ -218,7 +214,7 @@ int qtractorAudioVorbisFile::write ( float **ppFrames,
 	unsigned int iFrames )
 {
 #ifdef DEBUG_0
-	fprintf(stderr, "qtractorAudioVorbisFile::write(%p, %d)", ppFrames, iFrames);
+	qDebug("qtractorAudioVorbisFile::write(%p, %d)", ppFrames, iFrames);
 #endif
 
 	int nwrite = 0;
@@ -243,10 +239,6 @@ int qtractorAudioVorbisFile::write ( float **ppFrames,
 	nwrite = iFrames;
 
 #endif	// CONFIG_LIBVORBIS
-
-#ifdef DEBUG_0
-	fprintf(stderr, " --> nwrite=%d\n", nwrite);
-#endif
 
 	return nwrite;
 }
@@ -297,7 +289,7 @@ void qtractorAudioVorbisFile::flush ( bool fEos )
 bool qtractorAudioVorbisFile::seek ( unsigned long iOffset )
 {
 #ifdef DEBUG_0
-	fprintf(stderr, "qtractorAudioVorbisFile::seek(%d)\n", iOffset);
+	qDebug("qtractorAudioVorbisFile::seek(%d)", iOffset);
 #endif
 
 #ifdef CONFIG_LIBVORBIS
@@ -312,7 +304,7 @@ bool qtractorAudioVorbisFile::seek ( unsigned long iOffset )
 void qtractorAudioVorbisFile::close (void)
 {
 #ifdef DEBUG_0
-	fprintf(stderr, "qtractorAudioVorbisFile::close()\n");
+	qDebug("qtractorAudioVorbisFile::close()");
 #endif
 
 	if (m_pFile) {

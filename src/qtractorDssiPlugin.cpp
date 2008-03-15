@@ -109,8 +109,7 @@ static DssiEditor *osc_find_editor_by_label ( const QString& sOscLabel )
 
 static void osc_error ( int num, const char *msg, const char *path )
 {
-    fprintf(stderr, "osc_error: server error %d in path \"%s\": %s",
-		num, path, msg);
+	qWarning("osc_error: server error %d in path \"%s\": %s", num, path, msg);
 }
 
 

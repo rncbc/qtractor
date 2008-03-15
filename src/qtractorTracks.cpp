@@ -296,7 +296,7 @@ void qtractorTracks::updateContents ( bool bRefresh )
 		return;
 
 #ifdef CONFIG_DEBUG_0
-	fprintf(stderr, "qtractorTracks::updateContents(bRefresh=%d)\n", (int) bRefresh);
+	qDebug("qtractorTracks::updateContents(%d)\n", int(bRefresh));
 #endif
 
 	// Update/sync from session tracks.
@@ -384,7 +384,9 @@ bool qtractorTracks::newClip (void)
 		return false;
 
 	// Set initial default clip parameters...
-	pClip->setClipStart(pSession->editHead());
+	unsigned long iClipStart = pSession->editHead();
+	pClip->setClipStart(iClipStart);
+	m_pTrackView->ensureVisibleFrame(iClipStart);
 
 	// Special for MIDI clips, which already have it's own editor,
 	// we'll add and start a blank one right-away...
@@ -471,14 +473,17 @@ bool qtractorTracks::splitClip ( qtractorClip *pClip )
 	if (pClip == NULL)
 		return false;
 
-	unsigned long iPlayHead = pSession->playHead();
+	unsigned long iPlayHead  = pSession->playHead();
 	unsigned long iClipStart = pClip->clipStart();
 	unsigned long iClipEnd   = iClipStart + pClip->clipLength();
-	if (iClipStart >= iPlayHead	|| iPlayHead >= iClipEnd)
+	if (iClipStart >= iPlayHead || iPlayHead >= iClipEnd)
 		return false;
+
+	m_pTrackView->ensureVisibleFrame(iPlayHead);
 
 	qtractorClipCommand *pClipCommand
 		= new qtractorClipCommand(tr("split clip"));
+
 	// Shorten old right...
 	unsigned long iClipOffset = pClip->clipOffset();
 	pClipCommand->moveClip(pClip, pClip->track(),
@@ -492,6 +497,7 @@ bool qtractorTracks::splitClip ( qtractorClip *pClip )
 		pNewClip->setFadeOutLength(pClip->fadeOutLength());
 		pClipCommand->addClip(pNewClip, pNewClip->track());
 	}
+
 	// That's it...
 	return pMainForm->commands()->exec(pClipCommand);
 }

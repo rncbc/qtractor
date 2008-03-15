@@ -1,7 +1,7 @@
 // qtractorConnections.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -112,7 +112,7 @@ qtractorConnections::~qtractorConnections (void)
 void qtractorConnections::showEvent ( QShowEvent *pShowEvent )
 {
 #ifdef CONFIG_DEBUG_0
-	fprintf(stderr, "qtractorConnections::showEvent()\n");
+	qDebug("qtractorConnections::showEvent()");
 #endif
 
     qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
@@ -126,7 +126,7 @@ void qtractorConnections::showEvent ( QShowEvent *pShowEvent )
 void qtractorConnections::hideEvent ( QHideEvent *pHideEvent )
 {
 #ifdef CONFIG_DEBUG_0
-	fprintf(stderr, "qtractorConnections::hideEvent()\n");
+	qDebug("qtractorConnections::hideEvent()");
 #endif
 
     QWidget::hideEvent(pHideEvent);
@@ -141,7 +141,7 @@ void qtractorConnections::hideEvent ( QHideEvent *pHideEvent )
 void qtractorConnections::closeEvent ( QCloseEvent * /*pCloseEvent*/ )
 {
 #ifdef CONFIG_DEBUG_0
-	fprintf(stderr, "qtractorConnections::closeEvent()\n");
+	qDebug("qtractorConnections::closeEvent()");
 #endif
 
 	QWidget::hide();

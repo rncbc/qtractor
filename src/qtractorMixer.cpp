@@ -651,7 +651,7 @@ void qtractorMixerStrip::panChangedSlot ( float fPanning )
 		return;
 
 #ifdef CONFIG_DEBUG
-	fprintf(stderr, "qtractorMixerStrip::panChangedSlot(%.3g)\n", fPanning);
+	qDebug("qtractorMixerStrip[%p]::panChangedSlot(%.3g)", this, fPanning);
 #endif
 
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
@@ -676,7 +676,7 @@ void qtractorMixerStrip::gainChangedSlot ( float fGain )
 		return;
 
 #ifdef CONFIG_DEBUG
-	fprintf(stderr, "qtractorMixerStrip::gainChangedSlot(%.3g)\n", fGain);
+	qDebug("qtractorMixerStrip[%p]::gainChangedSlot(%.3g)\n", this, fGain);
 #endif
 
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
@@ -1060,10 +1060,6 @@ qtractorMixer::~qtractorMixer (void)
 // Notify the main application widget that we're emerging.
 void qtractorMixer::showEvent ( QShowEvent *pShowEvent )
 {
-#ifdef CONFIG_DEBUG_0
-	fprintf(stderr, "qtractorMixer::showEvent()\n");
-#endif
-
     qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
     if (pMainForm)
         pMainForm->stabilizeForm();
@@ -1074,10 +1070,6 @@ void qtractorMixer::showEvent ( QShowEvent *pShowEvent )
 // Notify the main application widget that we're closing.
 void qtractorMixer::hideEvent ( QHideEvent *pHideEvent )
 {
-#ifdef CONFIG_DEBUG_0
-	fprintf(stderr, "qtractorMixer::hideEvent()\n");
-#endif
-
 	// Save splitter sizes...
 	saveSplitterSizes();
 	
@@ -1092,10 +1084,6 @@ void qtractorMixer::hideEvent ( QHideEvent *pHideEvent )
 // Just about to notify main-window that we're closing.
 void qtractorMixer::closeEvent ( QCloseEvent * /*pCloseEvent*/ )
 {
-#ifdef CONFIG_DEBUG_0
-	fprintf(stderr, "qtractorMixer::closeEvent()\n");
-#endif
-
 	QWidget::hide();
 
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();

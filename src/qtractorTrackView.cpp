@@ -207,8 +207,8 @@ void qtractorTrackView::updateContentsHeight (void)
 	}
 
 #ifdef CONFIG_DEBUG_0
-	fprintf(stderr, "qtractorTrackView::updateContentsHeight()");
-		" => iContentsHeight=%d\n", iContentsHeight);
+	qDebug("qtractorTrackView::updateContentsHeight()");
+		" => iContentsHeight=%d", iContentsHeight);
 #endif
 
 	// No selection anymore (we'll update all contents anyway)...
@@ -233,8 +233,8 @@ void qtractorTrackView::updateContentsWidth ( int iContentsWidth )
 	}
 
 #ifdef CONFIG_DEBUG_0
-	fprintf(stderr, "qtractorTrackView::updateContentsWidth()");
-		" => iContentsWidth=%d\n", iContentsWidth);
+	qDebug("qtractorTrackView::updateContentsWidth()");
+		" => iContentsWidth=%d", iContentsWidth);
 #endif
 
 	// No selection anymore (we'll update all contents anyway)...
@@ -2062,7 +2062,7 @@ void qtractorTrackView::resetDragState (void)
 void qtractorTrackView::keyPressEvent ( QKeyEvent *pKeyEvent )
 {
 #ifdef CONFIG_DEBUG_0
-	fprintf(stderr, "qtractorTrackView::keyPressEvent(key=%d)\n", pKeyEvent->key());
+	qDebug("qtractorTrackView::keyPressEvent(%d)", pKeyEvent->key());
 #endif
 	int iKey = pKeyEvent->key();
 	switch (iKey) {

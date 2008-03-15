@@ -110,7 +110,7 @@ bool qtractorMidiClip::openMidiFile ( qtractorMidiFile *pFile,
 	int iTrackChannel )
 {
 #ifdef CONFIG_DEBUG_0
-	fprintf(stderr, "qtractorMidiClip::openMidiFile(\"%s\", %d, %d)\n",
+	qDebug("qtractorMidiClip[%p]::openMidiFile(\"%s\", %d, %d)", this,
 		pFile->filename().toUtf8().constData(), iTrackChannel, pFile->mode());
 #endif
 
@@ -251,7 +251,7 @@ int qtractorMidiClip::program (void) const
 void qtractorMidiClip::seek ( unsigned long iFrame )
 {
 #ifdef CONFIG_DEBUG_0
-	fprintf(stderr, "qtractorMidiClip::seek(%p, %lu)\n", this, iFrame);
+	qDebug("qtractorMidiClip[%p]::seek(%lu)", this, iFrame);
 #endif
 
 	qtractorTrack *pTrack = track();
@@ -271,7 +271,7 @@ void qtractorMidiClip::seek ( unsigned long iFrame )
 void qtractorMidiClip::reset ( bool bLooping )
 {
 #ifdef CONFIG_DEBUG_0
-	fprintf(stderr, "qtractorMidiClip::reset(%p, %d)\n", this, (int) bLooping);
+	qDebug("qtractorMidiClip[%p]::reset(%d)", this, (int) bLooping);
 #endif
 
 	// Reset to the first sequence event...
@@ -295,7 +295,7 @@ void qtractorMidiClip::set_loop ( unsigned long /* iLoopStart */,
 void qtractorMidiClip::close ( bool bForce )
 {
 #ifdef CONFIG_DEBUG_0
-	fprintf(stderr, "qtractorMidiClip::close(%p)\n", this, int(bForce));
+	qDebug("qtractorMidiClip[%p]::close(%d)\n", this, int(bForce));
 #endif
 
 	qtractorTrack *pTrack = track();
@@ -374,7 +374,7 @@ void qtractorMidiClip::process ( unsigned long iFrameStart,
 	unsigned long iFrameEnd )
 {
 #ifdef CONFIG_DEBUG_0
-	fprintf(stderr, "qtractorMidiClip::process(%p, %lu, %lu)\n",
+	qDebug("qtractorMidiClip[%p]::process(%lu, %lu)\n",
 		this, iFrameStart, iFrameEnd);
 #endif
 

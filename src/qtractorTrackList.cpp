@@ -1022,7 +1022,7 @@ void qtractorTrackList::resetDragState (void)
 void qtractorTrackList::keyPressEvent ( QKeyEvent *pKeyEvent )
 {
 #ifdef CONFIG_DEBUG_0
-	fprintf(stderr, "qtractorTrackList::keyPressEvent(key=%d)\n", pKeyEvent->key());
+	qDebug("qtractorTrackList::keyPressEvent(%d)", pKeyEvent->key());
 #endif
 	switch (pKeyEvent->key()) {
 	case Qt::Key_Escape:

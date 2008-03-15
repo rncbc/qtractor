@@ -1,7 +1,7 @@
 // qtractorTrackForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -502,7 +502,7 @@ void qtractorTrackForm::updateChannel ( int iChannel,
 		return;
 
 #ifdef CONFIG_DEBUG
-	fprintf(stderr, "qtractorTrackForm::updateChannel(%d, %d, %d, %d)\n",
+	qDebug("qtractorTrackForm::updateChannel(%d, %d, %d, %d)",
 		iChannel, iBankSelMethod, iBank, iProg);
 #endif
 
@@ -547,7 +547,7 @@ void qtractorTrackForm::updateBanks ( const QString& sInstrumentName,
 //		return;
 
 #ifdef CONFIG_DEBUG
-	fprintf(stderr, "qtractorTrackForm::updateBanks(\"%s\", %d, %d, %d)\n",
+	qDebug("qtractorTrackForm::updateBanks(\"%s\", %d, %d, %d)",
 		sInstrumentName.toUtf8().constData(), iBankSelMethod, iBank, iProg);
 #endif
 
@@ -635,7 +635,7 @@ void qtractorTrackForm::updatePrograms (  const QString& sInstrumentName,
 //		return;
 
 #ifdef CONFIG_DEBUG
-	fprintf(stderr, "qtractorTrackForm::updatePrograms(\"%s\", %d, %d)\n",
+	qDebug("qtractorTrackForm::updatePrograms(\"%s\", %d, %d)",
 		sInstrumentName.toUtf8().constData(), iBank, iProg);
 #endif
 

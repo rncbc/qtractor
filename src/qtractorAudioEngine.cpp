@@ -1917,8 +1917,8 @@ int qtractorAudioBus::updateConnects ( qtractorBus::BusMode busMode,
 			sInputPort  = pItem->clientName + ':' + pItem->portName;
 		}
 #ifdef CONFIG_DEBUG
-		fprintf(stderr, "qtractorAudioBus::updateConnects(%p, %d): "
-			"jack_connect: [%s] => [%s]\n", this, (int) busMode,
+		qDebug("qtractorAudioBus[%p]::updateConnects(%d): "
+			"jack_connect: [%s] => [%s]", this, (int) busMode,
 				sOutputPort.toUtf8().constData(),
 				sInputPort.toUtf8().constData());
 #endif

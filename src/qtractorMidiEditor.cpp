@@ -1,7 +1,7 @@
 // qtractorMidiEditor.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -1341,7 +1341,7 @@ qtractorMidiEvent *qtractorMidiEditor::eventAt (
 	unsigned char controller = m_pEditEvent->controller();
 
 	qtractorMidiEvent *pEvent = m_cursorAt.reset(pSeq, iTime);
-
+#if 0
 	if (pEvent && pEvent->prev()) {
 		unsigned long iPrevTime = (pEvent->prev())->time();
 		while (pEvent && pEvent->time() >= iPrevTime)
@@ -1349,7 +1349,8 @@ qtractorMidiEvent *qtractorMidiEditor::eventAt (
 		if (pEvent == NULL)
 			pEvent = pSeq->events().first();
 	}
-
+#endif
+	qtractorMidiEvent *pEventAt = NULL;
 	while (pEvent && iTime >= pEvent->time()) {
 		if (((bEditView && pEvent->type() == m_pEditView->eventType()) ||
 			 (!bEditView && (pEvent->type() == m_pEditEvent->eventType() &&
@@ -1384,13 +1385,15 @@ qtractorMidiEvent *qtractorMidiEditor::eventAt (
 			if (rect.contains(pos)) {
 				if (pRect)
 					*pRect = rect;
-				return pEvent;
+			//	return pEvent;
+				pEventAt = pEvent;
 			}
 		}
+		// Maybe next one...
 		pEvent = pEvent->next();
 	}
 
-	return NULL;
+	return pEventAt;
 }
 
 
@@ -1709,21 +1712,25 @@ void qtractorMidiEditor::dragMoveCommit ( qtractorScrollView *pScrollView,
 			break;
 		}
 		// Or else, we're doing some selection around...
-		if (modifiers & (Qt::ShiftModifier | Qt::ControlModifier)) {
-			// Direct snap positioning...
-			unsigned long iFrame = m_pTimeScale->frameSnap(m_iOffset
-				+ m_pTimeScale->frameFromPixel(pos.x() > 0 ? pos.x() : 0));
-			// Playhead positioning...
-			setPlayHead(iFrame);
-			// Immediately commited...
-			qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-			if (pMainForm) {
-				qtractorSession *pSession = pMainForm->session();
-				if (pSession)
-					pSession->setPlayHead(iFrame);
+		if (m_pEventDrag == NULL) {
+			// Shall we move the playhead?...
+			if (modifiers & (Qt::ShiftModifier | Qt::ControlModifier)) {
+				// Direct snap positioning...
+				unsigned long iFrame = m_pTimeScale->frameSnap(m_iOffset
+					+ m_pTimeScale->frameFromPixel(pos.x() > 0 ? pos.x() : 0));
+				// Playhead positioning...
+				setPlayHead(iFrame);
+				// Immediately commited...
+				qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+				if (pMainForm) {
+					qtractorSession *pSession = pMainForm->session();
+					if (pSession)
+						pSession->setPlayHead(iFrame);
+				}
+			} else {
+				// Or just clear selection...
+				flags |= SelectClear;
 			}
-		} else {
-			flags |= SelectClear;
 		}
 		// Fall thru...
 	case DragSelect:
@@ -1802,8 +1809,9 @@ void qtractorMidiEditor::updateDragSelect ( qtractorScrollView *pScrollView,
 
 	// Rubber-banding only applicable whenever
 	// the selection rectangle is not empty...
-	if (!rectSelect.isEmpty()) {
-	// Create rubber-band, if not already...
+	bool bRectSelect = !rectSelect.isEmpty();
+	if (bRectSelect) {
+		// Create rubber-band, if not already...
 		if (m_pRubberBand == NULL) {
 			m_pRubberBand = new qtractorRubberBand(
 				QRubberBand::Rectangle, pScrollView->viewport());
@@ -1818,7 +1826,7 @@ void qtractorMidiEditor::updateDragSelect ( qtractorScrollView *pScrollView,
 	// Do the drag-select update properly...
 
 	bool bEditView
-		= (static_cast<qtractorScrollView *> (m_pEditView)  == pScrollView);
+		= (static_cast<qtractorScrollView *> (m_pEditView) == pScrollView);
 
 	QRect rectUpdateView(m_select.rectView());
 	QRect rectUpdateEvent(m_select.rectEvent());
@@ -1828,10 +1836,17 @@ void qtractorMidiEditor::updateDragSelect ( qtractorScrollView *pScrollView,
 
 	int x1 = pScrollView->contentsX();
 	int x2 = x1 + (pScrollView->viewport())->width();
-	if (x1 > rectSelect.left())
-		x1 = rectSelect.left();
-	if (x2 < rectSelect.right())
-		x2 = rectSelect.right();
+	if (bRectSelect) {
+		if (x1 > rectSelect.left())
+			x1 = rectSelect.left();
+		if (x2 < rectSelect.right())
+			x2 = rectSelect.right();
+	} else {
+		if (x1 < rectSelect.left())
+			x1 = rectSelect.left();
+		if (x2 > rectSelect.right())
+			x2 = rectSelect.right();
+	}
 
 	unsigned long iTickStart = m_pTimeScale->tickFromPixel(x1);
 	unsigned long iTickEnd   = m_pTimeScale->tickFromPixel(x2);
@@ -1849,7 +1864,11 @@ void qtractorMidiEditor::updateDragSelect ( qtractorScrollView *pScrollView,
 		= (m_pEditEvent->eventType() == qtractorMidiEvent::CONTROLLER);
 	unsigned char controller = m_pEditEvent->controller();
 
-	qtractorMidiEvent *pEvent = m_cursorAt.reset(pSeq, iTickStart);
+	qtractorMidiEvent *pEvent = m_cursorAt.seek(pSeq, iTickStart);
+
+	qtractorMidiEvent *pEventAt = NULL;
+	QRect rectViewAt;
+	QRect rectEventAt;
 
 	while (pEvent && iTickEnd >= pEvent->time()) {
 		if (((bEditView && pEvent->type() == m_pEditView->eventType() &&
@@ -1891,12 +1910,26 @@ void qtractorMidiEditor::updateDragSelect ( qtractorScrollView *pScrollView,
 					bSelect = rectSelect.intersects(rectEvent);
 			}
 			// Select item...
-			m_select.selectItem(pEvent, rectEvent, rectView,
-				bSelect, flags & SelectToggle);
+			if (bRectSelect) {
+				m_select.selectItem(pEvent, rectEvent, rectView,
+					bSelect, flags & SelectToggle);
+			} else if (bSelect) {
+				pEventAt    = pEvent;
+				rectViewAt  = rectView;
+				rectEventAt = rectEvent;
+			}
 		}
+		// Lookup next...
 		pEvent = pEvent->next();
 	}
 
+	// Most evident single selection...
+	if (pEventAt /* && !bRectSelect*/) {
+		m_select.selectItem(pEventAt, rectEventAt, rectViewAt,
+			true, flags & SelectToggle);
+	}
+
+	// Commit selection...
 	bool bCommit = (flags & SelectCommit);
 	m_select.update(bCommit);
 

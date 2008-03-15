@@ -57,7 +57,7 @@ qtractorTrackCommand::~qtractorTrackCommand (void)
 bool qtractorTrackCommand::addTrack (void)
 {
 #ifdef CONFIG_DEBUG
-	fprintf(stderr, "qtractorTrackCommand::addTrack(%p)\n", m_pTrack);
+	qDebug("qtractorTrackCommand::addTrack(%p)", m_pTrack);
 #endif
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm == NULL)
@@ -101,7 +101,7 @@ bool qtractorTrackCommand::addTrack (void)
 bool qtractorTrackCommand::removeTrack (void)
 {
 #ifdef CONFIG_DEBUG
-	fprintf(stderr, "qtractorTrackCommand::removeTrack(%p)\n", m_pTrack);
+	qDebug("qtractorTrackCommand::removeTrack(%p)", m_pTrack);
 #endif
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm == NULL)

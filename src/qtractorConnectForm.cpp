@@ -121,7 +121,7 @@ qtractorConnectForm::~qtractorConnectForm (void)
 void qtractorConnectForm::audioIClientChanged (void)
 {
 #ifdef CONFIG_DEBUG_0
-	fprintf(stderr, "qtractorConnectForm::audioIClientChanged()\n");
+	qDebug("qtractorConnectForm::audioIClientChanged()");
 #endif
 
 	// Reset any port name pattern...
@@ -132,7 +132,7 @@ void qtractorConnectForm::audioIClientChanged (void)
 void qtractorConnectForm::audioOClientChanged (void)
 {
 #ifdef CONFIG_DEBUG_0
-	fprintf(stderr, "qtractorConnectForm::audioOClientChanged()\n");
+	qDebug("qtractorConnectForm::audioOClientChanged()");
 #endif
 
 	// Reset any port name pattern...
@@ -145,7 +145,7 @@ void qtractorConnectForm::audioOClientChanged (void)
 void qtractorConnectForm::audioConnectSelected (void)
 {
 #ifdef CONFIG_DEBUG_0
-	fprintf(stderr, "qtractorConnectForm::audioConnectSelected()\n");
+	qDebug("qtractorConnectForm::audioConnectSelected()");
 #endif
 
 	m_pAudioConnect->connectSelected();
@@ -156,7 +156,7 @@ void qtractorConnectForm::audioConnectSelected (void)
 void qtractorConnectForm::audioDisconnectSelected (void)
 {
 #ifdef CONFIG_DEBUG_0
-	fprintf(stderr, "qtractorConnectForm::audioDisconnectSelected()\n");
+	qDebug("qtractorConnectForm::audioDisconnectSelected()");
 #endif
 
 	m_pAudioConnect->disconnectSelected();
@@ -167,7 +167,7 @@ void qtractorConnectForm::audioDisconnectSelected (void)
 void qtractorConnectForm::audioDisconnectAll (void)
 {
 #ifdef CONFIG_DEBUG_0
-	fprintf(stderr, "qtractorConnectForm::audioDisconnectAll()\n");
+	qDebug("qtractorConnectForm::audioDisconnectAll()");
 #endif
 
 	m_pAudioConnect->disconnectAll();
@@ -178,7 +178,7 @@ void qtractorConnectForm::audioDisconnectAll (void)
 void qtractorConnectForm::audioUpdate ( bool bClear )
 {
 #ifdef CONFIG_DEBUG_0
-	fprintf(stderr, "qtractorConnectForm::audioUpdate(%d)\n", int(bClear));
+	qDebug("qtractorConnectForm::audioUpdate(%d)", int(bClear));
 #endif
 
 	m_ui.AudioOListView->setClientName(
@@ -203,7 +203,7 @@ void qtractorConnectForm::audioUpdate ( bool bClear )
 void qtractorConnectForm::audioStabilize (void)
 {
 #ifdef CONFIG_DEBUG_0
-	fprintf(stderr, "qtractorConnectForm::audioStabilize()\n");
+	qDebug("qtractorConnectForm::audioStabilize()");
 #endif
 
 	m_ui.AudioConnectPushButton->setEnabled(
@@ -219,7 +219,7 @@ void qtractorConnectForm::audioStabilize (void)
 void qtractorConnectForm::midiIClientChanged (void)
 {
 #ifdef CONFIG_DEBUG_0
-	fprintf(stderr, "qtractorConnectForm::midiIClientChanged()\n");
+	qDebug("qtractorConnectForm::midiIClientChanged()");
 #endif
 
 	// Reset any port name pattern...
@@ -230,7 +230,7 @@ void qtractorConnectForm::midiIClientChanged (void)
 void qtractorConnectForm::midiOClientChanged (void)
 {
 #ifdef CONFIG_DEBUG_0
-	fprintf(stderr, "qtractorConnectForm::midiOClientChanged()\n");
+	qDebug("qtractorConnectForm::midiOClientChanged()");
 #endif
 
 	// Reset any port name pattern...
@@ -243,7 +243,7 @@ void qtractorConnectForm::midiOClientChanged (void)
 void qtractorConnectForm::midiConnectSelected (void)
 {
 #ifdef CONFIG_DEBUG_0
-	fprintf(stderr, "qtractorConnectForm::midiConnectSelected()\n");
+	qDebug("qtractorConnectForm::midiConnectSelected()");
 #endif
 
 	m_pMidiConnect->connectSelected();
@@ -254,7 +254,7 @@ void qtractorConnectForm::midiConnectSelected (void)
 void qtractorConnectForm::midiDisconnectSelected (void)
 {
 #ifdef CONFIG_DEBUG_0
-	fprintf(stderr, "qtractorConnectForm::midiDisconnectSelected()\n");
+	qDebug("qtractorConnectForm::midiDisconnectSelected()");
 #endif
 
 	m_pMidiConnect->disconnectSelected();
@@ -265,7 +265,7 @@ void qtractorConnectForm::midiDisconnectSelected (void)
 void qtractorConnectForm::midiDisconnectAll (void)
 {
 #ifdef CONFIG_DEBUG_0
-	fprintf(stderr, "qtractorConnectForm::midiDisconnectAll()\n");
+	qDebug("qtractorConnectForm::midiDisconnectAll()");
 #endif
 
 	m_pMidiConnect->disconnectAll();
@@ -276,7 +276,7 @@ void qtractorConnectForm::midiDisconnectAll (void)
 void qtractorConnectForm::midiUpdate ( bool bClear )
 {
 #ifdef CONFIG_DEBUG_0
-	fprintf(stderr, "qtractorConnectForm::midiUpdate(%d)\n", int(bClear));
+	qDebug("qtractorConnectForm::midiUpdate(%d)", int(bClear));
 #endif
 
 	m_ui.MidiOListView->setClientName(
@@ -301,7 +301,7 @@ void qtractorConnectForm::midiUpdate ( bool bClear )
 void qtractorConnectForm::midiStabilize (void)
 {
 #ifdef CONFIG_DEBUG_0
-	fprintf(stderr, "qtractorConnectForm::midiStabilize()\n");
+	qDebug("qtractorConnectForm::midiStabilize()");
 #endif
 
 	m_ui.MidiConnectPushButton->setEnabled(

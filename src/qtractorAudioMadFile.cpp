@@ -1,7 +1,7 @@
 // qtractorAudioMadFile.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2006, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -66,7 +66,7 @@ qtractorAudioMadFile::~qtractorAudioMadFile (void)
 bool qtractorAudioMadFile::open ( const QString& sFilename, int iMode )
 {
 #ifdef DEBUG_0
-	fprintf(stderr, "qtractorAudioMadFile::open(\"%s\", %d)\n",
+	qDebug("qtractorAudioMadFile::open(\"%s\", %d)",
 		sFilename.toUtf8().constData(), iMode);
 #endif
 	close();
@@ -139,7 +139,7 @@ bool qtractorAudioMadFile::open ( const QString& sFilename, int iMode )
 bool qtractorAudioMadFile::input (void)
 {
 #ifdef DEBUG_0
-	fprintf(stderr, "qtractorAudioMadFile::input()\n");
+	qDebug("qtractorAudioMadFile::input()");
 #endif
 
 #ifdef CONFIG_LIBMAD
@@ -206,7 +206,7 @@ bool qtractorAudioMadFile::input (void)
 bool qtractorAudioMadFile::decode (void)
 {
 #ifdef DEBUG_0
-	fprintf(stderr, "qtractorAudioMadFile::decode()\n");
+	qDebug("qtractorAudioMadFile::decode()");
 #endif
 
 #ifdef CONFIG_LIBMAD
@@ -220,8 +220,8 @@ bool qtractorAudioMadFile::decode (void)
 
 #ifdef DEBUG_0
 	if (bError) {
-		fprintf(stderr, "MadFile::decode()"
-			" ERROR[%lu]: madStream.error=%d (0x%04x)\n",
+		qDebug("qtractorAudioMadFile::decode()"
+			" ERROR[%lu]: madStream.error=%d (0x%04x)",
 			m_curr.iOutputOffset,
 			m_madStream.error,
 			m_madStream.error);
@@ -268,7 +268,7 @@ bool qtractorAudioMadFile::decode (void)
 		}
 #ifdef DEBUG_0
 		else if (n == 0) {
-			fprintf(stderr, "qtractorAudioMadFile::decode(%lu) i=%lu o=%lu c=%u\n",
+			qDebug("qtractorAudioMadFile::decode(%lu) i=%lu o=%lu c=%u",
 				m_iSeekOffset,
 				m_curr.iInputOffset,
 				m_curr.iOutputOffset,
@@ -293,7 +293,7 @@ int qtractorAudioMadFile::read ( float **ppFrames,
 	unsigned int iFrames )
 {
 #ifdef DEBUG_0
-	fprintf(stderr, "qtractorAudioMadFile::read(%p, %d)", ppFrames, iFrames);
+	qDebug("qtractorAudioMadFile::read(%p, %d)", ppFrames, iFrames);
 #endif
 
 	unsigned int nread = 0;
@@ -327,10 +327,6 @@ int qtractorAudioMadFile::read ( float **ppFrames,
 		m_iSeekOffset += nread;
 	}
 
-#ifdef DEBUG_0
-	fprintf(stderr, " --> nread=%d\n", nread);
-#endif
-
 	return nread;
 }
 
@@ -347,7 +343,7 @@ int qtractorAudioMadFile::write ( float ** /* ppFrames */,
 bool qtractorAudioMadFile::seek ( unsigned long iOffset )
 {
 #ifdef DEBUG_0
-	fprintf(stderr, "qtractorAudioMadFile::seek(%lu)\n", iOffset);
+	qDebug("qtractorAudioMadFile::seek(%lu)", iOffset);
 #endif
 
 	// Avoid unprecise seeks...
@@ -376,7 +372,7 @@ bool qtractorAudioMadFile::seek ( unsigned long iOffset )
 			}
 		}
 #ifdef DEBUG_0
-		fprintf(stderr, "qtractorAudioMadFile::seek(%lu) i=%lu o=%lu c=%u\n",
+		qDebug(stderr, "qtractorAudioMadFile::seek(%lu) i=%lu o=%lu c=%u",
 			iOffset,
 			m_curr.iInputOffset,
 			m_curr.iOutputOffset,
@@ -417,7 +413,7 @@ bool qtractorAudioMadFile::seek ( unsigned long iOffset )
 void qtractorAudioMadFile::close (void)
 {
 #ifdef DEBUG_0
-	fprintf(stderr, "qtractorAudioMadFile::close()\n");
+	qDebug("qtractorAudioMadFile::close()");
 #endif
 
 	// Free allocated buffers, if any.

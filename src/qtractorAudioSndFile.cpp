@@ -1,7 +1,7 @@
 // qtractorAudioSndFile.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2006, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -57,7 +57,7 @@ qtractorAudioSndFile::~qtractorAudioSndFile (void)
 bool qtractorAudioSndFile::open ( const QString& sFilename, int iMode )
 {
 #ifdef DEBUG_0
-	fprintf(stderr, "qtractorAudioSndFile::open(\"%s\", %d)\n",
+	qDebug("qtractorAudioSndFile::open(\"%s\", %d)",
 		sFilename.toUtf8().constData(), iMode);
 #endif
 	close();
@@ -102,7 +102,7 @@ bool qtractorAudioSndFile::open ( const QString& sFilename, int iMode )
 int qtractorAudioSndFile::read ( float **ppFrames, unsigned int iFrames )
 {
 #ifdef DEBUG_0
-	fprintf(stderr, "qtractorAudioSndFile::read(%p, %d)", ppFrames, iFrames);
+	qDebug("qtractorAudioSndFile::read(%p, %d)", ppFrames, iFrames);
 #endif
 	allocBufferCheck(iFrames);
 	int nread = ::sf_readf_float(m_pSndFile, m_pBuffer, iFrames);
@@ -114,9 +114,6 @@ int qtractorAudioSndFile::read ( float **ppFrames, unsigned int iFrames )
 				ppFrames[i][n] = m_pBuffer[k++];
 		}
 	}
-#ifdef DEBUG_0
-	fprintf(stderr, " --> nread=%d\n", nread);
-#endif
 	return nread;
 }
 
@@ -125,7 +122,7 @@ int qtractorAudioSndFile::read ( float **ppFrames, unsigned int iFrames )
 int qtractorAudioSndFile::write ( float **ppFrames, unsigned int iFrames )
 {
 #ifdef DEBUG_0
-	fprintf(stderr, "qtractorAudioSndFile::write(%p, %d)\n", ppFrames, iFrames);
+	qDebug("qtractorAudioSndFile::write(%p, %d)", ppFrames, iFrames);
 #endif
 	allocBufferCheck(iFrames);
 	unsigned short i;
@@ -141,7 +138,7 @@ int qtractorAudioSndFile::write ( float **ppFrames, unsigned int iFrames )
 bool qtractorAudioSndFile::seek ( unsigned long iOffset )
 {
 #ifdef DEBUG_0
-	fprintf(stderr, "qtractorAudioSndFile::seek(%d)\n", iOffset);
+	qDebug("qtractorAudioSndFile::seek(%d)", iOffset);
 #endif
 	return (::sf_seek(m_pSndFile, iOffset, SEEK_SET) == iOffset);
 }
@@ -151,7 +148,7 @@ bool qtractorAudioSndFile::seek ( unsigned long iOffset )
 void qtractorAudioSndFile::close()
 {
 #ifdef DEBUG_0
-	fprintf(stderr, "qtractorAudioSndFile::close()\n");
+	qDebug("qtractorAudioSndFile::close()");
 #endif
 
 	if (m_pSndFile) {

@@ -1,7 +1,7 @@
 // qtractorInstrument.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -222,7 +222,7 @@ bool qtractorInstrumentList::load ( const QString& sFilename )
 			}
 			else {
 				// Unknown section found...
-				fprintf(stderr, "%s(%d): %s: Unknown section.\n",
+				qWarning("%s(%d): %s: Unknown section.",
 					sFilename.toUtf8().constData(), iLine, sLine.toUtf8().constData());
 			}
 			// Go on...
@@ -242,7 +242,7 @@ bool qtractorInstrumentList::load ( const QString& sFilename )
 				} else if (rxData.exactMatch(sLine)) {
 					(*pData)[rxData.cap(1).toInt()] = rxData.cap(2);
 				} else {
-					fprintf(stderr, "%s(%d): %s: Unknown .Patch Names entry.\n",
+					qWarning("%s(%d): %s: Unknown .Patch Names entry.",
 						sFilename.toUtf8().constData(), iLine, sLine.toUtf8().constData());
 				}
 				break;
@@ -258,7 +258,7 @@ bool qtractorInstrumentList::load ( const QString& sFilename )
 				} else if (rxData.exactMatch(sLine)) {
 					(*pData)[rxData.cap(1).toInt()] = rxData.cap(2);
 				} else {
-					fprintf(stderr, "%s(%d): %s: Unknown .Note Names entry.\n",
+					qWarning("%s(%d): %s: Unknown .Note Names entry.",
 						sFilename.toUtf8().constData(), iLine, sLine.toUtf8().constData());
 				}
 				break;
@@ -274,7 +274,7 @@ bool qtractorInstrumentList::load ( const QString& sFilename )
 				} else if (rxData.exactMatch(sLine)) {
 					(*pData)[rxData.cap(1).toInt()] = rxData.cap(2);
 				} else {
-					fprintf(stderr, "%s(%d): %s: Unknown .Controller Names entry.\n",
+					qWarning("%s(%d): %s: Unknown .Controller Names entry.",
 						sFilename.toUtf8().constData(), iLine, sLine.toUtf8().constData());
 				}
 				break;
@@ -290,7 +290,7 @@ bool qtractorInstrumentList::load ( const QString& sFilename )
 				} else if (rxData.exactMatch(sLine)) {
 					(*pData)[rxData.cap(1).toInt()] = rxData.cap(2);
 				} else {
-					fprintf(stderr, "%s(%d): %s: Unknown .RPN Names entry.\n",
+					qWarning("%s(%d): %s: Unknown .RPN Names entry.",
 						sFilename.toUtf8().constData(), iLine, sLine.toUtf8().constData());
 				}
 				break;
@@ -306,7 +306,7 @@ bool qtractorInstrumentList::load ( const QString& sFilename )
 				} else if (rxData.exactMatch(sLine)) {
 					(*pData)[rxData.cap(1).toInt()] = rxData.cap(2);
 				} else {
-					fprintf(stderr, "%s(%d): %s: Unknown .NRPN Names entry.\n",
+					qWarning("%s(%d): %s: Unknown .NRPN Names entry.",
 						sFilename.toUtf8().constData(), iLine, sLine.toUtf8().constData());
 				}
 				break;
@@ -347,7 +347,7 @@ bool qtractorInstrumentList::load ( const QString& sFilename )
 					pInstrument->setDrum(iBank, iProg,
 						(bool) rxDrum.cap(3).toInt());
 				} else {
-					fprintf(stderr, "%s(%d): %s: Unknown .Instrument Definitions entry.\n",
+					qWarning("%s(%d): %s: Unknown .Instrument Definitions entry.",
 						sFilename.toUtf8().constData(), iLine, sLine.toUtf8().constData());
 				}
 				break;

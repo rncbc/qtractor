@@ -140,7 +140,7 @@ qtractorClip *qtractorSessionCursor::clip ( unsigned int iTrack ) const
 void qtractorSessionCursor::seekForward ( unsigned long iFrame )
 {
 #ifdef CONFIG_DEBUG_0
-	fprintf(stderr, "qtractorSessionCursor[%p,%d]::seekForward(%lu)\n", this, (int) m_syncType, iFrame);
+	qDebug("qtractorSessionCursor[%p,%d]::seekForward(%lu)", this, (int) m_syncType, iFrame);
 #endif
 
 	unsigned int iTrack = 0; 
@@ -158,7 +158,7 @@ void qtractorSessionCursor::seekForward ( unsigned long iFrame )
 void qtractorSessionCursor::seekBackward ( unsigned long iFrame )
 {
 #ifdef CONFIG_DEBUG_0
-	fprintf(stderr, "qtractorSessionCursor[%p,%d]::seekBackward(%lu)\n", this, (int) m_syncType, iFrame);
+	qDebug("qtractorSessionCursor[%p,%d]::seekBackward(%lu)", this, (int) m_syncType, iFrame);
 #endif
 
 	unsigned int iTrack = 0; 
@@ -292,7 +292,7 @@ void qtractorSessionCursor::updateClips ( qtractorClip **ppClips,
 void qtractorSessionCursor::reset (void)
 {
 #ifdef CONFIG_DEBUG_0
-	fprintf(stderr, "qtractorSessionCursor[%p,%d]::reset()\n", this, (int) m_syncType);
+	qDebug("qtractorSessionCursor[%p,%d]::reset()", this, (int) m_syncType);
 #endif
 
 	m_iFrameTime = 0;

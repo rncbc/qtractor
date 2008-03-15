@@ -6,7 +6,9 @@ ChangeLog
 CVS HEAD
 
 - The MIDI editor gets new menu access to current MIDI clip track
-  (see File/Track/Inputs, Outputs, Properties).
+  (see File/Track/Inputs, Outputs, Properties); selection of MIDI
+  events has also been improved, specially regarding overlapped
+  ones.
 
 - Clip split command enters the stage (see Edit/Clip/Split) about
   splitting the current (selected) clip at the current playhead

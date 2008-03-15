@@ -193,7 +193,7 @@ void qtractorMidiInputThread::run (void)
 		return;
 
 #ifdef CONFIG_DEBUG_0
-	fprintf(stderr, "qtractorMidiInputThread::run(%p): started.\n", this);
+	qDebug("qtractorMidiInputThread[%p]::run(%p): started...", this);
 #endif
 
 	int nfds;
@@ -223,7 +223,7 @@ void qtractorMidiInputThread::run (void)
 	}
 
 #ifdef CONFIG_DEBUG_0
-	fprintf(stderr, "qtractorMidiInputThread::run(%p): stopped.\n", this);
+	qDebug("qtractorMidiInputThread[%p]::run(): stopped.", this);
 #endif
 }
 
@@ -315,7 +315,7 @@ qtractorSessionCursor *qtractorMidiOutputThread::midiCursorSync ( bool bStart )
 void qtractorMidiOutputThread::run (void)
 {
 #ifdef CONFIG_DEBUG_0
-	fprintf(stderr, "qtractorMidiOutputThread::run(%p): started.\n", this);
+	qDebug("qtractorMidiOutputThread[%p]::run(): started...", this);
 #endif
 
 	m_bRunState = true;
@@ -325,7 +325,7 @@ void qtractorMidiOutputThread::run (void)
 		// Wait for sync...
 		m_cond.wait(&m_mutex);
 #ifdef CONFIG_DEBUG_0
-		fprintf(stderr, "qtractorMidiOutputThread::run(%p): waked.\n", this);
+		qDebug("qtractorMidiOutputThread[%p]::run(): waked.", this);
 #endif
 		// Only if playing, the output process cycle.
 		if (m_pSession->isPlaying())
@@ -334,7 +334,7 @@ void qtractorMidiOutputThread::run (void)
 	m_mutex.unlock();
 
 #ifdef CONFIG_DEBUG_0
-	fprintf(stderr, "qtractorMidiOutputThread::run(%p): stopped.\n", this);
+	qDebug("qtractorMidiOutputThread[%p]::run(): stopped.", this);
 #endif
 }
 
@@ -357,7 +357,7 @@ void qtractorMidiOutputThread::process (void)
 	unsigned long iFrameEnd   = iFrameStart + m_iReadAhead;
 
 #ifdef CONFIG_DEBUG_0
-	fprintf(stderr, "qtractorMidiOutputThread::process(%p, %lu, %lu)\n",
+	qDebug("qtractorMidiOutputThread[%p]::process(%lu, %lu)",
 		this, iFrameStart, iFrameEnd);
 #endif
 
@@ -404,7 +404,7 @@ void qtractorMidiOutputThread::processSync (void)
 {
 	QMutexLocker locker(&m_mutex);
 #ifdef CONFIG_DEBUG_0
-	fprintf(stderr, "qtractorMidiOutputThread::processSync(%p)\n", this);
+	qDebug("qtractorMidiOutputThread[%p]::processSync()", this);
 #endif
 	process();
 }
@@ -429,7 +429,7 @@ void qtractorMidiOutputThread::trackSync ( qtractorTrack *pTrack,
 	unsigned long iFrameEnd = pMidiCursor->frame();
 
 #ifdef CONFIG_DEBUG_0
-	fprintf(stderr, "qtractorMidiOutputThread::trackSync(%p, %lu, %lu)\n",
+	qDebug("qtractorMidiOutputThread[%p]::trackSync(%lu, %lu)",
 		this, iFrameStart, iFrameEnd);
 #endif
 
@@ -465,7 +465,7 @@ void qtractorMidiOutputThread::metroSync ( unsigned long iFrameStart )
 	unsigned long iFrameEnd = pMidiCursor->frame();
 
 #ifdef CONFIG_DEBUG_0
-	fprintf(stderr, "qtractorMidiOutputThread::metroSync(%p, %lu, %lu)\n",
+	qDebug("qtractorMidiOutputThread[%p]::metroSync(%lu, %lu)",
 		this, iFrameStart, iFrameEnd);
 #endif
 
@@ -485,7 +485,7 @@ void qtractorMidiOutputThread::sync (void)
 		m_mutex.unlock();
 	}
 #ifdef CONFIG_DEBUG_0
-	else fprintf(stderr, "qtractorMidiOutputThread::sync(%p): tryLock() failed.\n", this);
+	else qDebug("qtractorMidiOutputThread[%p]::sync(): tryLock() failed.", this);
 #endif
 }
 
@@ -966,8 +966,8 @@ void qtractorMidiEngine::flush (void)
 			m_iTimeStart += iTimeDelta;
 			m_iTimeDelta += iTimeDelta;
 #ifdef CONFIG_DEBUG
-			fprintf(stderr, "qtractorMidiEngine::flush(): "
-				"iAudioTime=%lu iMidiTime=%lu iTimeDelta=%ld (%ld)\n",
+			qDebug("qtractorMidiEngine::flush(): "
+				"iAudioTime=%lu iMidiTime=%lu iTimeDelta=%ld (%ld)",
 				iAudioTime, iMidiTime, iTimeDelta, m_iTimeDelta);
 #endif
 		}
@@ -1204,7 +1204,7 @@ void qtractorMidiEngine::restartLoop (void)
 void qtractorMidiEngine::trackMute ( qtractorTrack *pTrack, bool bMute )
 {
 #ifdef CONFIG_DEBUG
-	fprintf(stderr, "qtractorMidiEngine::trackMute(%p, %d)\n", pTrack, bMute);
+	qDebug("qtractorMidiEngine::trackMute(%p, %d)", pTrack, bMute);
 #endif
 
 	qtractorSession *pSession = session();
@@ -1254,7 +1254,7 @@ void qtractorMidiEngine::trackMute ( qtractorTrack *pTrack, bool bMute )
 void qtractorMidiEngine::metroMute ( bool bMute )
 {
 #ifdef CONFIG_DEBUG
-	fprintf(stderr, "qtractorMidiEngine::metroMute(%d)\n", bMute);
+	qDebug("qtractorMidiEngine::metroMute(%d)\n", int(bMute));
 #endif
 
 	qtractorSession *pSession = session();
@@ -2163,7 +2163,7 @@ void qtractorMidiBus::shutOff ( bool bClose ) const
 		return;
 
 #ifdef CONFIG_DEBUG
-	fprintf(stderr, "qtractorMidiBus::shutOff(bClose=%d)\n", (int) bClose);
+	qDebug("qtractorMidiBus[%p]::shutOff(%d)", this, int(bClose));
 #endif
 
 	QHash<unsigned short, Patch>::ConstIterator iter;
@@ -2188,8 +2188,9 @@ void qtractorMidiBus::setPatch ( unsigned short iChannel,
 		return;
 
 #ifdef CONFIG_DEBUG
-	fprintf(stderr, "qtractorMidiBus::setPatch(%d, \"%s\", %d, %d, %d)\n",
-		iChannel, sInstrumentName.toUtf8().constData(), iBankSelMethod, iBank, iProg);
+	qDebug("qtractorMidiBus[%p]::setPatch(%d, \"%s\", %d, %d, %d)",
+		this, iChannel, sInstrumentName.toUtf8().constData(),
+		iBankSelMethod, iBank, iProg);
 #endif
 
 	// Update patch mapping...
@@ -2264,8 +2265,8 @@ void qtractorMidiBus::setController ( unsigned short iChannel,
 		return;
 
 #ifdef CONFIG_DEBUG
-	fprintf(stderr, "qtractorMidiBus::setController(%d, %d, %d)\n",
-		iChannel, iController, iValue);
+	qDebug("qtractorMidiBus[%p]::setController(%d, %d, %d)",
+		this, iChannel, iController, iValue);
 #endif
 
 	// Initialize sequencer event...
@@ -2306,8 +2307,8 @@ void qtractorMidiBus::sendNote ( unsigned short iChannel,
 		return;
 
 #ifdef CONFIG_DEBUG
-	fprintf(stderr, "qtractorMidiBus::sendNote(%d, %d, %d)\n",
-		iChannel, iNote, iVelocity);
+	qDebug("qtractorMidiBus[%p]::sendNote(%d, %d, %d)",
+		this, iChannel, iNote, iVelocity);
 #endif
 
 	// Initialize sequencer event...
@@ -2505,8 +2506,8 @@ int qtractorMidiBus::updateConnects ( qtractorBus::BusMode busMode,
 		}
 #ifdef CONFIG_DEBUG
 		const QString sPortName	= QString::number(m_iAlsaPort) + ':' + busName();
-		fprintf(stderr, "qtractorMidiBus::updateConnects(%p, %d): "
-			"snd_seq_subscribe_port: [%d:%s] => [%d:%s]\n", this, (int) busMode,
+		qDebug("qtractorMidiBus[%p]::updateConnects(%d): "
+			"snd_seq_subscribe_port: [%d:%s] => [%d:%s]\n", this, int(busMode),
 				pMidiEngine->alsaClient(), sPortName.toUtf8().constData(),
 				iAlsaClient, pItem->portName.toUtf8().constData());
 #endif

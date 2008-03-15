@@ -1,7 +1,7 @@
 // qtractorSpinBox.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -147,7 +147,7 @@ unsigned long qtractorSpinBox::maximum (void) const
 QValidator::State qtractorSpinBox::validate ( QString& sText, int& iPos ) const
 {
 #ifdef CONFIG_DEBUG_0
-	fprintf(stderr, "qtractorSpinBox[%p]::validate(\"%s\",%d)\n",
+	qDebug("qtractorSpinBox[%p]::validate(\"%s\",%d)",
 		this, sText.toUtf8().constData(), iPos);
 #endif
 
@@ -180,7 +180,7 @@ QValidator::State qtractorSpinBox::validate ( QString& sText, int& iPos ) const
 void qtractorSpinBox::fixup ( QString& sText ) const
 {
 #ifdef CONFIG_DEBUG_0
-	fprintf(stderr, "qtractorSpinBox[%p]::fixup(\"%s\")\n",
+	qDebug("qtractorSpinBox[%p]::fixup(\"%s\")",
 		this, sText.toUtf8().constData());
 #endif
 
@@ -191,7 +191,7 @@ void qtractorSpinBox::fixup ( QString& sText ) const
 void qtractorSpinBox::stepBy ( int iSteps )
 {
 #ifdef CONFIG_DEBUG_0
-	fprintf(stderr, "qtractorSpinBox[%p]::stepBy(%d)\n", this, iSteps);
+	qDebug("qtractorSpinBox[%p]::stepBy(%d)", this, iSteps);
 #endif
 
 	long iValue = long(value());
@@ -246,7 +246,7 @@ QString qtractorSpinBox::textFromValue ( unsigned long iValue ) const
 void qtractorSpinBox::editingFinishedSlot (void)
 {
 #ifdef CONFIG_DEBUG_0
-	fprintf(stderr, "qtractorSpinBox[%p]::editingFinishedSlot()\n", this);
+	qDebug("qtractorSpinBox[%p]::editingFinishedSlot()", this);
 #endif
 
 	// Kind of final fixup.
@@ -258,7 +258,7 @@ void qtractorSpinBox::editingFinishedSlot (void)
 void qtractorSpinBox::valueChangedSlot ( const QString& sText )
 {
 #ifdef CONFIG_DEBUG_0
-	fprintf(stderr, "qtractorSpinBox[%p]::valueChangedSlot(\"%s\")\n",
+	qDebug("qtractorSpinBox[%p]::valueChangedSlot(\"%s\")",
 		this, sText.toUtf8().constData());
 #endif
 

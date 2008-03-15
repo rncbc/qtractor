@@ -1,7 +1,7 @@
 // qtractorAudioPeak.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -140,7 +140,7 @@ qtractorAudioPeakThread::~qtractorAudioPeakThread (void)
 void qtractorAudioPeakThread::run (void)
 {
 #ifdef DEBUG
-	fprintf(stderr, "qtractorAudioPeakThread::run(%p): started.\n", this);
+	qDebug("qtractorAudioPeakThread[%p]::run(): started...", this);
 #endif
 
 	m_bRunState = true;
@@ -199,7 +199,7 @@ void qtractorAudioPeakThread::run (void)
 	}
 
 #ifdef DEBUG
-	fprintf(stderr, "qtractorAudioPeakThread::run(%p): stopped.\n", this);
+	qDebug("qtractorAudioPeakThread[%p]::run(): stopped.\n", this);
 #endif
 }
 
@@ -419,17 +419,17 @@ bool qtractorAudioPeakFile::openPeakFile (void)
 	}
 
 #ifdef DEBUG_0
-	fprintf(stderr, "--- openPeakFile ---\n");
-	fprintf(stderr, "name        = %s\n", m_peakFile.name().toUtf8().constData());
-	fprintf(stderr, "filename    = %s\n", m_sFilename.toUtf8().constData());
-	fprintf(stderr, "sampleRate  = %u\n", m_iSampleRate);
-	fprintf(stderr, "timeStretch = %g\n", m_fTimeStretch);
-	fprintf(stderr, "header      = %d\n", sizeof(qtractorAudioPeakHeader));
-	fprintf(stderr, "frame       = %d\n", sizeof(qtractorAudioPeakFrame));
-	fprintf(stderr, "period      = %d\n", hdr.peakPeriod);
-	fprintf(stderr, "channels    = %d\n", hdr.peakChannels);
-	fprintf(stderr, "frames      = %lu\n", hdr.peakFrames);
-	fprintf(stderr, "--------------------\n");
+	qDebug("--- openPeakFile ---");
+	qDebug("name        = %s", m_peakFile.name().toUtf8().constData());
+	qDebug("filename    = %s", m_sFilename.toUtf8().constData());
+	qDebug("sampleRate  = %u", m_iSampleRate);
+	qDebug("timeStretch = %g", m_fTimeStretch);
+	qDebug("header      = %d", sizeof(qtractorAudioPeakHeader));
+	qDebug("frame       = %d", sizeof(qtractorAudioPeakFrame));
+	qDebug("period      = %d", hdr.peakPeriod);
+	qDebug("channels    = %d", hdr.peakChannels);
+	qDebug("frames      = %lu", hdr.peakFrames);
+	qDebug("--------------------");
 #endif
 
 	//	Go ahead, it's already open.
@@ -554,7 +554,7 @@ void qtractorAudioPeakFile::readPeak ( char *pBuffer,
 	unsigned long iOffset, unsigned int iLength )
 {
 #ifdef DEBUG_0
-	fprintf(stderr, "qtractorAudioPeakFile::readPeak(%d,%d)\n", iOffset, iLength);
+	qDebug("qtractorAudioPeakFile::readPeak(%d, %d)", iOffset, iLength);
 #endif
 
 	// Excessive care to a zero buffer...
