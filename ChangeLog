@@ -5,6 +5,12 @@ ChangeLog
 
 CVS HEAD
 
+- Fixed MIDI clip move into new track, perserving the original
+  channel, bank and program whenever possible.
+
+- Fixed session cursor seeking, specially regarding overlapped
+  clips, once gain.
+
 - The MIDI editor gets new menu access to current MIDI clip track
   (see File/Track/Inputs, Outputs, Properties); selection of MIDI
   events has also been improved, specially regarding overlapped

@@ -126,7 +126,7 @@ qtractorMidiListView::qtractorMidiListView ( QWidget *pParent )
 	pHeaderItem->setText(qtractorMidiListView::Name, tr("Name"));	
 	pHeaderItem->setText(qtractorMidiListView::Format, tr("Fmt"));	
 	pHeaderItem->setText(qtractorMidiListView::Tracks, tr("Tracks"));	
-	pHeaderItem->setText(qtractorMidiListView::Resolution, tr("TPQN"));	
+	pHeaderItem->setText(qtractorMidiListView::Resolution, tr("tpb"));	
 	pHeaderItem->setText(qtractorMidiListView::Path, tr("Path"));	
 	pHeaderItem->setText(qtractorMidiListView::LastColumn, QString::null);
 

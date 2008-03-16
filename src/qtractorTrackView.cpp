@@ -2673,6 +2673,11 @@ void qtractorTrackView::moveClipSelect ( qtractorTrack *pTrack )
 			pTrack->setTrackName(tr("Track %1").arg(iTrack));
 			pTrack->setBackground(color);
 			pTrack->setForeground(color.dark());
+			if (pSingleTrack->trackType() == qtractorTrack::Midi) {
+				pTrack->setMidiChannel(pSingleTrack->midiChannel());
+				pTrack->setMidiBank(pSingleTrack->midiBank());
+				pTrack->setMidiProgram(pSingleTrack->midiProgram());
+			}
 			pClipCommand->addTrack(pTrack);
 		}
 		else

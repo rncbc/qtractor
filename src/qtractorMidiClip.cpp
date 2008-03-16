@@ -63,8 +63,8 @@ qtractorMidiClip::qtractorMidiClip ( const qtractorMidiClip& clip )
 	setFilename(clip.filename());
 	setTrackChannel(clip.trackChannel());
 
-	m_iFormat       = clip.format();
-	m_bSessionFlag  = false;
+	m_iFormat      = clip.format();
+	m_bSessionFlag = false;
 
 	m_pMidiEditorForm = NULL;
 }
