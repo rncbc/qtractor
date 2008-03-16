@@ -122,11 +122,14 @@ public slots:
 	void viewZoomIn();
 	void viewZoomOut();
 	void viewZoomReset();
+	void viewSnap();
 	void viewRefresh();
 
 	void helpShortcuts();
 	void helpAbout();
 	void helpAboutQt();
+
+	void updateSnapMenu();
 
 	void sendNote(int iNote, int iVelocity);
 

@@ -624,6 +624,9 @@ qtractorMainForm::qtractorMainForm (
 	QObject::connect(m_ui.trackExportMenu,
 		SIGNAL(aboutToShow()),
 		SLOT(updateExportMenu()));
+	QObject::connect(m_ui.viewSnapMenu,
+		SIGNAL(aboutToShow()),
+		SLOT(updateSnapMenu()));
 
 	QObject::connect(m_pCommands,
 		SIGNAL(updateNotifySignal(bool)),
@@ -2245,6 +2248,21 @@ void qtractorMainForm::viewZoomReset (void)
 }
 
 
+// Change snap-per-beat setting via menu.
+void qtractorMainForm::viewSnap (void)
+{
+	// Retrieve snap-per-beat index from from action data...
+	QAction *pAction = qobject_cast<QAction *> (sender());
+	if (pAction) {
+		// Commit the change as usual...
+		snapPerBeatChanged(pAction->data().toInt());
+		// Update the other toolbar control...
+		m_pSnapPerBeatComboBox->setCurrentIndex(
+			qtractorTimeScale::indexFromSnap(m_pSession->snapPerBeat()));
+	}
+}
+
+
 // Refresh view display.
 void qtractorMainForm::viewRefresh (void)
 {
@@ -3462,6 +3480,26 @@ void qtractorMainForm::updateMidiMetronome (void)
 		bMidiMetronome && m_pOptions->bMidiMetroBus);
 	pMidiEngine->setMetronome(
 		bMidiMetronome && m_ui.transportMetroAction->isChecked());
+}
+
+
+// Snap-per-beat view menu builder.
+void qtractorMainForm::updateSnapMenu (void)
+{
+	m_ui.viewSnapMenu->clear();
+
+	int iSnapCurrent
+		= qtractorTimeScale::indexFromSnap(m_pSession->snapPerBeat());
+
+	int iSnap = 0;
+	QStringListIterator iter(qtractorTimeScale::snapItems());
+	while (iter.hasNext()) {
+		QAction *pAction = m_ui.viewSnapMenu->addAction(
+			iter.next(), this, SLOT(viewSnap()));
+		pAction->setCheckable(true);
+		pAction->setChecked(iSnap == iSnapCurrent);
+		pAction->setData(iSnap++);
+	}
 }
 
 

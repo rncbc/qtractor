@@ -164,6 +164,7 @@ public slots:
 	void viewZoomIn();
 	void viewZoomOut();
 	void viewZoomReset();
+	void viewSnap();
 	void viewRefresh();
 	void viewInstruments();
 	void viewBuses();
@@ -192,21 +193,28 @@ public slots:
 
 	void alsaNotify();
 	void tracksClosed();
-	void updateExportMenu();
+
 	void updateRecentFilesMenu();
+	void updateExportMenu();
+	void updateSnapMenu();
+
 	void addAudioFile(const QString& sFilename);
 	void activateAudioFile(const QString& sFilename);
+
 	void addMidiFile(const QString& sFilename);
 	void activateMidiFile(const QString& sFilename);
+
 	void trackSelectionChanged();
 	void mixerSelectionChanged();
+
 	void selectionNotifySlot(qtractorMidiEditor *pMidiEditor);
 	void changeNotifySlot(qtractorMidiEditor *pMidiEditor);
 	void updateNotifySlot(bool bRefresh);
-	void contentsChanged();
+
 	void tempoChanged(double fTempo);
 	void snapPerBeatChanged(int iSnap);
 	void transportTimeChanged(unsigned long iPlayHead);
+	void contentsChanged();
 
 protected:
 

@@ -133,6 +133,11 @@
      <addaction name="separator" />
      <addaction name="viewZoomResetAction" />
     </widget>
+    <widget class="QMenu" name="viewSnapMenu" >
+     <property name="title" >
+      <string>S&amp;nap</string>
+     </property>
+    </widget>
     <addaction name="viewMenubarAction" />
     <addaction name="viewStatusbarAction" />
     <addaction name="viewToolbarsMenu" />
@@ -145,6 +150,8 @@
     <addaction name="viewFollowAction" />
     <addaction name="separator" />
     <addaction name="viewZoomMenu" />
+    <addaction name="viewSnapMenu" />
+    <addaction name="separator" />
     <addaction name="viewRefreshAction" />
    </widget>
    <widget class="QMenu" name="transportMenu" >
@@ -822,7 +829,7 @@
     <bool>true</bool>
    </property>
    <property name="text" >
-    <string>&amp;Note Color</string>
+    <string>Note &amp;Color</string>
    </property>
    <property name="iconText" >
     <string>Note Color</string>

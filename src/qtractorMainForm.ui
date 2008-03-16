@@ -246,6 +246,11 @@
      <addaction name="separator" />
      <addaction name="viewZoomResetAction" />
     </widget>
+    <widget class="QMenu" name="viewSnapMenu" >
+     <property name="title" >
+      <string>S&amp;nap</string>
+     </property>
+    </widget>
     <addaction name="viewMenubarAction" />
     <addaction name="viewStatusbarAction" />
     <addaction name="viewToolbarsMenu" />
@@ -256,6 +261,8 @@
     <addaction name="viewMixerAction" />
     <addaction name="separator" />
     <addaction name="viewZoomMenu" />
+    <addaction name="viewSnapMenu" />
+    <addaction name="separator" />
     <addaction name="viewRefreshAction" />
     <addaction name="separator" />
     <addaction name="viewInstrumentsAction" />

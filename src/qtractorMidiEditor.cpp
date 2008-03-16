@@ -1545,7 +1545,7 @@ qtractorMidiEvent *qtractorMidiEditor::dragMoveEvent (
 			if (!bEditView && pos.y() < m_rectDrag.top() + 4) {
 				m_resizeMode = ResizeValueTop;
 				shape = Qt::SplitVCursor;
-			} else if (bEditView || !m_bNoteDuration) {
+			} else if (bEditView || m_bNoteDuration) {
 				if (pos.x() > m_rectDrag.right() - 4) {
 					m_resizeMode = ResizeNoteRight;
 					shape = Qt::SplitHCursor;
@@ -1711,25 +1711,23 @@ void qtractorMidiEditor::dragMoveCommit ( qtractorScrollView *pScrollView,
 			executeDragResize(pScrollView, pos);
 			break;
 		}
-		// Or else, we're doing some selection around...
+		// Take care of selection modifier...
+		if ((modifiers & (Qt::ShiftModifier | Qt::ControlModifier)) == 0)
+			flags |= SelectClear;
+		else
+		// Shall we move the playhead?...
 		if (m_pEventDrag == NULL) {
-			// Shall we move the playhead?...
-			if (modifiers & (Qt::ShiftModifier | Qt::ControlModifier)) {
-				// Direct snap positioning...
-				unsigned long iFrame = m_pTimeScale->frameSnap(m_iOffset
-					+ m_pTimeScale->frameFromPixel(pos.x() > 0 ? pos.x() : 0));
-				// Playhead positioning...
-				setPlayHead(iFrame);
-				// Immediately commited...
-				qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-				if (pMainForm) {
-					qtractorSession *pSession = pMainForm->session();
-					if (pSession)
-						pSession->setPlayHead(iFrame);
-				}
-			} else {
-				// Or just clear selection...
-				flags |= SelectClear;
+			// Direct snap positioning...
+			unsigned long iFrame = m_pTimeScale->frameSnap(m_iOffset
+				+ m_pTimeScale->frameFromPixel(pos.x() > 0 ? pos.x() : 0));
+			// Playhead positioning...
+			setPlayHead(iFrame);
+			// Immediately commited...
+			qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+			if (pMainForm) {
+				qtractorSession *pSession = pMainForm->session();
+				if (pSession)
+					pSession->setPlayHead(iFrame);
 			}
 		}
 		// Fall thru...
@@ -1834,18 +1832,16 @@ void qtractorMidiEditor::updateDragSelect ( qtractorScrollView *pScrollView,
 	if (flags & SelectClear)
 		m_select.clear();
 
-	int x1 = pScrollView->contentsX();
-	int x2 = x1 + (pScrollView->viewport())->width();
+	int x1, x2;
 	if (bRectSelect) {
+		x1 = pScrollView->contentsX();
+		x2 = x1 + (pScrollView->viewport())->width();
 		if (x1 > rectSelect.left())
 			x1 = rectSelect.left();
 		if (x2 < rectSelect.right())
 			x2 = rectSelect.right();
 	} else {
-		if (x1 < rectSelect.left())
-			x1 = rectSelect.left();
-		if (x2 > rectSelect.right())
-			x2 = rectSelect.right();
+		x1 = x2 = rectSelect.x();
 	}
 
 	unsigned long iTickStart = m_pTimeScale->tickFromPixel(x1);

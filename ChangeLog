@@ -8,7 +8,7 @@ CVS HEAD
 - The MIDI editor gets new menu access to current MIDI clip track
   (see File/Track/Inputs, Outputs, Properties); selection of MIDI
   events has also been improved, specially regarding overlapped
-  ones.
+  note events.
 
 - Clip split command enters the stage (see Edit/Clip/Split) about
   splitting the current (selected) clip at the current playhead
@@ -59,9 +59,10 @@ CVS HEAD
   Track/Move/Bottom - move current track to bottom;
 
 - View menus have new accessible actions:
-  View/Zoom/In - horizontal and vertical zoom-in (Ctrl +)
-  View/Zoom/Out - horizontal and vertical zoom-out (Ctrl -)
-  View/Zoom/Reset - reset both zoom levels to default
+  View/Zoom/In - horizontal and vertical zoom-in (Ctrl +);
+  View/Zoom/Out - horizontal and vertical zoom-out (Ctrl -);
+  View/Zoom/Reset - reset both zoom levels to default;
+  View/Snap - select current snap-per-beat setting;
 
 - Plug-in forms don't auto-open on session reload anymore.
 

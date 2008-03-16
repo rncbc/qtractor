@@ -304,6 +304,10 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 		SIGNAL(triggered(bool)),
 		SLOT(helpAboutQt()));
 
+	QObject::connect(m_ui.viewSnapMenu,
+		SIGNAL(aboutToShow()),
+		SLOT(updateSnapMenu()));
+
 	QObject::connect(m_pSnapPerBeatComboBox,
 		SIGNAL(activated(int)),
 		SLOT(snapPerBeatChanged(int)));
@@ -1053,6 +1057,23 @@ void qtractorMidiEditorForm::viewZoomReset (void)
 }
 
 
+// Change snap-per-beat setting via menu.
+void qtractorMidiEditorForm::viewSnap (void)
+{
+	// Retrieve snap-per-beat index from from action data...
+	QAction *pAction = qobject_cast<QAction *> (sender());
+	if (pAction) {
+		// Commit the change as usual...
+		snapPerBeatChanged(pAction->data().toInt());
+		// Update the other toolbar control...
+		qtractorTimeScale *pTimeScale = m_pMidiEditor->timeScale();
+		if (pTimeScale) 
+			m_pSnapPerBeatComboBox->setCurrentIndex(
+				qtractorTimeScale::indexFromSnap(pTimeScale->snapPerBeat()));
+	}
+}
+
+
 // Refresh view display.
 void qtractorMidiEditorForm::viewRefresh (void)
 {
@@ -1249,6 +1270,30 @@ void qtractorMidiEditorForm::updateInstrumentNames (void)
 
 //-------------------------------------------------------------------------
 // qtractorMidiEditorForm -- Selection widget slots.
+
+// Snap-per-beat view menu builder.
+void qtractorMidiEditorForm::updateSnapMenu (void)
+{
+	m_ui.viewSnapMenu->clear();
+
+	qtractorTimeScale *pTimeScale = m_pMidiEditor->timeScale();
+	if (pTimeScale == NULL)
+		return;
+
+	int iSnapCurrent
+		= qtractorTimeScale::indexFromSnap(pTimeScale->snapPerBeat());
+
+	int iSnap = 0;
+	QStringListIterator iter(qtractorTimeScale::snapItems());
+	while (iter.hasNext()) {
+		QAction *pAction = m_ui.viewSnapMenu->addAction(
+			iter.next(), this, SLOT(viewSnap()));
+		pAction->setCheckable(true);
+		pAction->setChecked(iSnap == iSnapCurrent);
+		pAction->setData(iSnap++);
+	}
+}
+
 
 // Snap-per-beat spin-box change slot.
 void qtractorMidiEditorForm::snapPerBeatChanged ( int iSnap )
