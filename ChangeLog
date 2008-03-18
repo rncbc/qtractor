@@ -5,6 +5,10 @@ ChangeLog
 
 CVS HEAD
 
+- Run-time SSE optimization detection has been improved while on
+  configure; additionally, IEEE 32bit float specific optimizations
+  have also sneaked in.
+
 - SSE optimization is now featured over all audio monitoring,
   loosening the CPU burden a bit while doing track and bus gain,
   pan and metering.

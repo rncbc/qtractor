@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(Qtractor, 0.1.1.897, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.1.1.898, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractorMainForm.ui)
 AC_CONFIG_HEADERS(config.h)
@@ -195,18 +195,28 @@ done
 
 # Check for proper Qt version.
 AC_CACHE_CHECK([for Qt library version >= 4.1],
-  ac_qtlib_version, [
-  AC_TRY_LINK([#include "Qt/qglobal.h"], [
-#if QT_VERSION < 0x040100
-#error Qt library 4.1 or greater required.
-#endif
-    ],
-    ac_qtlib_version="yes", [
+   ac_qtlib_version, [
+   AC_TRY_LINK([#include "Qt/qglobal.h"], [
+      #if QT_VERSION < 0x040100
+      #error Qt library 4.1 or greater required.
+      #endif
+   ], ac_qtlib_version="yes", [
       echo "no; Qt 4.1 or greater is required"
-      exit
-    ])
+      exit 1
+   ])
 ])
 
+
+# Check for IEEE 32bit float optimizations.
+AC_CACHE_CHECK([for IEEE 32bit float optimizations],
+   ac_float32, [
+   AC_TRY_RUN([
+      int main() { return (sizeof(float) == 4 ? 0 : 1); }
+   ], ac_float32="yes", ac_float32="no")
+])
+if test "x$ac_float32" = "xyes"; then
+   AC_DEFINE(CONFIG_FLOAT32, 1, [Define if IEEE 32bit float optimizations are enabled.])
+fi
 
 # Check for SSE optimization.
 if test "x$ac_sse" = "xyes"; then
@@ -214,18 +224,25 @@ if test "x$ac_sse" = "xyes"; then
    CFLAGS="$ac_sse_cflags $CFLAGS"
    CPPFLAGS="$ac_sse_cflags $CPPFLAGS"
    AC_CACHE_CHECK([for SSE optimization],
-      ac_sse, [
-      AC_TRY_LINK([#include <xmmintrin.h>], [
+      ac_sse_check, [
+      AC_TRY_RUN([
+         #include <xmmintrin.h>
          #if !defined(__SSE__)
          #error SSE optimization disabled.
          #endif
-      ], ac_sse="yes", ac_sse="no")
+         int main() {
+             unsigned int a, b, c, d;
+             __asm__ __volatile__
+             ("cpuid": "=a" (a), "=b" (b), "=c" (c), "=d" (d) : "a" (1));
+            return ((d & (1 << 25)) ? 0 : 1);
+         }
+      ], ac_sse_check="yes", ac_sse_check="no")
    ])
+   ac_sse=$ac_sse_check
    if test "x$ac_sse" = "xyes"; then
       ac_cflags="$ac_sse_cflags $ac_cflags"
    fi
 fi
-
 
 AC_SUBST(ac_cflags)
 
@@ -517,6 +534,7 @@ echo "  Ogg Vorbis audio file support (libvorbis)  . . . .: $ac_libvorbis"
 echo "  MPEG-1 Audio Layer 3 file support (libmad) . . . .: $ac_libmad"
 echo "  Sample-rate conversion support (libsamplerate) . .: $ac_libsamplerate"
 echo "  OSC service support (liblo)  . . . . . . . . . . .: $ac_liblo"
+echo "  IEEE 32bit float optimizations . . . . . . . . . .: $ac_float32"
 echo "  SSE optimization support (x86) . . . . . . . . . .: $ac_sse"
 echo "  LADSPA Plug-in support . . . . . . . . . . . . . .: $ac_ladspa"
 echo "  DSSI Plug-in support . . . . . . . . . . . . . . .: $ac_dssi"

@@ -1,7 +1,7 @@
 // qtractorAudioMeter.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -46,6 +46,21 @@
 
 // Number of cycles the peak stays on hold before fall-off.
 #define QTRACTOR_AUDIO_METER_PEAK_FALLOFF	32
+
+
+// Possible  20 * log10(x) optimization
+// (borrowed from musicdsp.org)
+static inline float log10f2 ( float x )
+{
+#ifdef CONFIG_FLOAT32
+#	define M_LOG10F20 6.0205999132796239042f // (= 20.0f * M_LN2 / M_LN10)
+	int i = *(int *) &x;
+	return M_LOG10F20 * ((((i & 0x7f800000) >> 23) - 0x7f)
+		+ (i & 0x007fffff) / (float) 0x800000);
+#else
+	return 20.0f * ::log10f(x);
+#endif
+}
 
 
 //----------------------------------------------------------------------------
@@ -202,7 +217,7 @@ void qtractorAudioMeterValue::paintEvent ( QPaintEvent * )
 
 	float dB = QTRACTOR_AUDIO_METER_MINDB;
 	if (m_fValue > 0.0f) {
-		dB = 20.0f * ::log10f(m_fValue);
+		dB = log10f2(m_fValue);
 		m_fValue = 0.0f;
 	}
 
@@ -361,10 +376,7 @@ float qtractorAudioMeter::gainFromValue ( float fValue ) const
 
 float qtractorAudioMeter::valueFromGain ( float fGain ) const
 {
-	float fValue = QTRACTOR_AUDIO_METER_MINDB;
-	if (fGain > 0.0f)
-		fValue = 20.0f * ::log10f(fGain);
-	return fValue;
+	return (fGain > 0.0f ? log10f2(fGain) : QTRACTOR_AUDIO_METER_MINDB);
 }
 
 

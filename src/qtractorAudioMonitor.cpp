@@ -75,10 +75,9 @@ static inline void std_process (
 	float *pFrames, unsigned int iFrames, float fGain, float *pfValue )
 {
 	for (unsigned int n = 0; n < iFrames; ++n) {
-		float fValue = fGain * pFrames[n];
-		if (*pfValue < fValue)
-			*pfValue = fValue;
-		pFrames[n] = fValue;
+		pFrames[n] *= fGain;
+		if (*pfValue < pFrames[n])
+			*pfValue = pFrames[n];
 	}
 }
 
