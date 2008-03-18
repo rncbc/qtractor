@@ -5,6 +5,10 @@ ChangeLog
 
 CVS HEAD
 
+- SSE optimization is now featured over all audio monitoring,
+  loosening the CPU burden a bit while doing track and bus gain,
+  pan and metering.
+
 - Fixed MIDI clip move into new track, perserving the original
   channel, bank and program whenever possible.
 

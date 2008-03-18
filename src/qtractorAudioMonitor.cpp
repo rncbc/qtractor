@@ -1,7 +1,7 @@
 // qtractorAudioMonitor.cpp
 //
 /****************************************************************************
-   Copyright (C) 2006, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -23,12 +23,64 @@
 
 #include <math.h>
 
-#if defined(__BORLANDC__)
-// BCC32 doesn't have these float versions...
-static inline float cosf  ( float x )  { return float(::cos(x));  }
-static inline float sinf  ( float x )  { return float(::sin(x));  }
-static inline float sqrtf ( float x )  { return float(::sqrt(x)); }
+
+#if defined(__SSE__)
+
+#include <xmmintrin.h>
+
+// SSE detection.
+static inline bool sse_enabled (void)
+{
+	bool bSSE = false;
+#if defined(__GNUC__)
+#if defined(__i386__) || defined(__x86_64__)
+	unsigned int a, b, c, d;
+	__asm__ __volatile__ (
+		"cpuid": "=a" (a), "=b" (b), "=c" (c), "=d" (d) : "a" (1));
+	bSSE = (d & (1 << 25));
 #endif
+#endif
+	return bSSE;
+}
+
+// SSE enabled processor version.
+static inline void sse_process (
+	float *pFrames, unsigned int iFrames, float fGain, float *pfValue )
+{
+	__m128 v0 = _mm_load_ps1(&fGain);
+	__m128 v1 = _mm_load_ps1(pfValue);
+	__m128 v2;
+
+	for (; (long(pFrames) & 15) && (iFrames > 0); --iFrames)
+		*pFrames++ *= fGain;
+	
+	for (; iFrames >= 4; iFrames -= 4) {
+		v2 = _mm_mul_ps(_mm_loadu_ps(pFrames), v0);
+		v1 = _mm_max_ps(v2, v1);
+		_mm_store_ps(pFrames, v2);
+		pFrames += 4;
+	}
+	
+	for (; iFrames > 0; --iFrames)
+		*pFrames++ *= fGain;
+
+	*pfValue = *(float *) &v1; // CHEAT: take 1st of 4 possible values.
+}
+
+#endif
+
+
+// Standard processor version.
+static inline void std_process (
+	float *pFrames, unsigned int iFrames, float fGain, float *pfValue )
+{
+	for (unsigned int n = 0; n < iFrames; ++n) {
+		float fValue = fGain * pFrames[n];
+		if (*pfValue < fValue)
+			*pfValue = fValue;
+		pFrames[n] = fValue;
+	}
+}
 
 
 //----------------------------------------------------------------------------
@@ -39,6 +91,13 @@ qtractorAudioMonitor::qtractorAudioMonitor ( unsigned short iChannels,
 	float fGain, float fPanning ) : qtractorMonitor(fGain, fPanning),
 	m_iChannels(0), m_pfValues(0), m_pfGains(0)
 {
+#if defined(__SSE__)
+	if (sse_enabled())
+		m_pfnProcess = sse_process;
+	else
+#endif
+	m_pfnProcess = std_process;
+
 	setChannels(iChannels);
 }
 
@@ -85,13 +144,7 @@ unsigned short qtractorAudioMonitor::channels (void) const
 }
 
 
-// Value holder accessors.
-void qtractorAudioMonitor::setValue ( unsigned short iChannel, float fValue )
-{
-	if (m_pfValues[iChannel] < fValue)
-		m_pfValues[iChannel] = fValue;
-}
-
+// Value holder accessor.
 float qtractorAudioMonitor::value ( unsigned short iChannel ) const
 {
 	float fValue = m_pfValues[iChannel];
@@ -100,35 +153,28 @@ float qtractorAudioMonitor::value ( unsigned short iChannel ) const
 }
 
 
-// Batch processor.
-void qtractorAudioMonitor::process ( float **ppFrames,
-	unsigned int iFrames, unsigned short iChannels )
+void qtractorAudioMonitor::process (
+	float **ppFrames, unsigned int iFrames, unsigned short iChannels )
 {
 	if (iChannels < 1)
 		iChannels = m_iChannels;
 
-	unsigned short i, j;
-	unsigned int n;
 	if (iChannels == m_iChannels) {
-		for (i = 0; i < m_iChannels; i++) {
-			for (n = 0; n < iFrames; n++)
-				setValue(i, ppFrames[i][n] *= m_pfGains[i]);
-		}
+		for (unsigned short i = 0; i < m_iChannels; ++i)
+			(*m_pfnProcess)(ppFrames[i], iFrames, m_pfGains[i], &m_pfValues[i]);
 	}
 	else if (iChannels > m_iChannels) {
-		j = 0;
-		for (i = 0; i < iChannels; i++) {
-			for (n = 0; n < iFrames; n++)
-				setValue(j, ppFrames[i][n] *= m_pfGains[j]);
+		unsigned short j = 0;
+		for (unsigned short i = 0; i < iChannels; ++i) {
+			(*m_pfnProcess)(ppFrames[i], iFrames, m_pfGains[j], &m_pfValues[j]);
 			if (++j >= m_iChannels)
 				j = 0;
 		}
 	}
 	else { // (iChannels < m_iChannels)
-		i = 0;
-		for (j = 0; j < m_iChannels; j++) {
-			for (n = 0; n < iFrames; n++)
-				setValue(j, ppFrames[i][n] *= m_pfGains[j]);
+		unsigned short i = 0;
+		for (unsigned short j = 0; j < m_iChannels; ++j) {
+			(*m_pfnProcess)(ppFrames[i], iFrames, m_pfGains[j], &m_pfValues[j]);
 			if (++i >= iChannels)
 				i = 0;
 		}
@@ -154,7 +200,7 @@ void qtractorAudioMonitor::update (void)
 	// Apply to multi-channel gain array (paired fashion)...
 	unsigned short i;
 	unsigned short iChannels = (m_iChannels - (m_iChannels % 2));
-	for (i = 0; i < iChannels; i++)
+	for (i = 0; i < iChannels; ++i)
 		m_pfGains[i] = afGains[i % 2];
 	while (i < m_iChannels)
 		m_pfGains[i++] = gain();

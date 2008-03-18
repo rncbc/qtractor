@@ -1,7 +1,7 @@
 // qtractorAudioMonitor.h
 //
 /****************************************************************************
-   Copyright (C) 2006, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -43,8 +43,7 @@ public:
 	void setChannels(unsigned short iChannels);
 	unsigned short channels() const;
 
-	// Value holder accessors.
-	void setValue(unsigned short iChannel, float fValue);
+	// Value holder accessor.
 	float value(unsigned short iChannel) const;
 
 	// Batch processor.
@@ -62,6 +61,9 @@ private:
 	unsigned short m_iChannels;
 	float         *m_pfValues;
 	float         *m_pfGains;
+
+	// Monitoring evaluator processor.
+	void (*m_pfnProcess)(float *, unsigned int, float, float *);
 };
 
 
