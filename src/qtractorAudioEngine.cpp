@@ -66,7 +66,7 @@ static inline void sse_buffer_add (
 		float *pBuffer = ppBuffer[j] + iOffset;
 		float *pFrames = ppFrames[i];
 		unsigned int nframes = iFrames;
-		for (; ((long) pBuffer & 15) && (nframes > 0); --nframes)
+		for (; (long(pBuffer) & 15) && (nframes > 0); --nframes)
 			*pBuffer++ += *pFrames++;
 		for (; nframes >= 4; nframes -= 4) {
 			_mm_store_ps(pBuffer,
