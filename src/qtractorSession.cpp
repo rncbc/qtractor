@@ -233,13 +233,17 @@ const QString& qtractorSession::description (void) const
 // Adjust session length to the latest and/or longer clip.
 void qtractorSession::updateSessionLength ( unsigned long iSessionLength )
 {
-	// Set initial one...
-	m_iSessionLength = iSessionLength;
-
 	// Maybe we just don't need to know more...
 	// (recording ongoing?)
-	if (m_iSessionLength > 0)
+	if (iSessionLength > 0) {
+		if (m_iSessionLength < iSessionLength)
+			m_iSessionLength = iSessionLength;
+		// Enough!
 		return;
+	}
+
+	// Set initial one...
+	m_iSessionLength = iSessionLength;
 
 	// Find the last and longest clip frame position...
 	for (qtractorTrack *pTrack = m_tracks.first();
@@ -1014,7 +1018,7 @@ bool qtractorSession::isLooping (void) const
 
 
 // Sanitize a given name.
-QString qtractorSession::sanitize ( const QString& s ) 
+QString qtractorSession::sanitize ( const QString& s )
 {
 	return s.simplified().replace(QRegExp("[\\s|\\.|\\-]+"), "_");
 }

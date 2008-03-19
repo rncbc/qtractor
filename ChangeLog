@@ -5,6 +5,8 @@ ChangeLog
 
 CVS HEAD
 
+- Session length (yet again) fixed while extend recording.
+
 - Whitespace sanitization gets leaner for all recorded filenames.
 
 - Run-time SSE optimization detection has been improved while on
