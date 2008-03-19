@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(Qtractor, 0.1.1.899, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.1.1.900, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractorMainForm.ui)
 AC_CONFIG_HEADERS(config.h)

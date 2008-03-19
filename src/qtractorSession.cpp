@@ -1016,7 +1016,7 @@ bool qtractorSession::isLooping (void) const
 // Sanitize a given name.
 QString qtractorSession::sanitize ( const QString& s ) 
 {
-	return QString(s).replace(QRegExp("[\\s|\\.|\\-]+"), "_");
+	return s.simplified().replace(QRegExp("[\\s|\\.|\\-]+"), "_");
 }
 
 

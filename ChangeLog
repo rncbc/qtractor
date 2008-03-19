@@ -5,6 +5,8 @@ ChangeLog
 
 CVS HEAD
 
+- Whitespace sanitization gets leaner for all recorded filenames.
+
 - Run-time SSE optimization detection has been improved while on
   configure; additionally, IEEE 32bit float specific optimizations
   have also sneaked in.
