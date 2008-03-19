@@ -40,6 +40,21 @@
 
 #include <xmmintrin.h>
 
+// SSE detection.
+static inline bool sse_enabled (void)
+{
+	bool bSSE = false;
+#if defined(__GNUC__)
+#if defined(__i386__) || defined(__x86_64__)
+	unsigned int a, b, c, d;
+	__asm__ __volatile__ (
+		"cpuid": "=a" (a), "=b" (b), "=c" (c), "=d" (d) : "a" (1));
+	bSSE = (d & (1 << 25));
+#endif
+#endif
+	return bSSE;
+}
+
 // SSE enabled mix-down processor version.
 static inline void sse_buffer_add (
 	float **ppBuffer, float **ppFrames, unsigned int iFrames,
