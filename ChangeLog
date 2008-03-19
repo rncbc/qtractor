@@ -9,9 +9,9 @@ CVS HEAD
   configure; additionally, IEEE 32bit float specific optimizations
   have also sneaked in.
 
-- SSE optimization is now featured over all audio monitoring,
-  loosening the CPU burden a bit while doing track and bus gain,
-  pan and metering.
+- SSE optimization is now featured over all audio monitoring, and
+  most specially on audio bus buffering, lowering the CPU burden a
+  bit while doing track and bus gain, pan, metering and mix-down.
 
 - Fixed MIDI clip move into new track, perserving the original
   channel, bank and program whenever possible.

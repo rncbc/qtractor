@@ -367,7 +367,7 @@ QString qtractorMidiEditor::createFilePathRevision (
 	while (fi.exists());
 
 #ifdef CONFIG_DEBUG
-	fprintf(stderr, "qtractorMidiEditor::createFilePathRevision(\"%s\")\n",
+	qDebug("qtractorMidiEditor::createFilePathRevision(\"%s\")",
 		fi.absoluteFilePath().toUtf8().constData());
 #endif
 
