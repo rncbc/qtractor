@@ -3,9 +3,10 @@ Qtractor - An Audio/MIDI multi-track sequencer
 
 ChangeLog
 
-CVS HEAD
+0.1.2  2006-03-23  The Frantic Dame
 
-- Session length (yet again) fixed while extend recording.
+- Session length fixed (yet again) while extend recording; also
+  improved follow-playhead switching while playback/recording.
 
 - Whitespace sanitization gets leaner for all recorded filenames.
 
@@ -17,7 +18,7 @@ CVS HEAD
   most specially on audio bus buffering, lowering the CPU burden a
   bit while doing track and bus gain, pan, metering and mix-down.
 
-- Fixed MIDI clip move into new track, perserving the original
+- Fixed MIDI clip move into new track, preserving the original
   channel, bank and program whenever possible.
 
 - Fixed session cursor seeking, specially regarding overlapped
@@ -30,16 +31,16 @@ CVS HEAD
 
 - Clip split command enters the stage (see Edit/Clip/Split) about
   splitting the current (selected) clip at the current playhead
-  position (red cursor line). (EXPERIMENTAL)
+  position (red cursor line).
 
 - Creating new clips from scratch is now finally permitted (see
   Edit/Clip/New...); additionally, the clip properties dialog is
   now also allowing for changing the filename (and track/channel
-  as special to MIDI clips). (EXPERIMENTAL)
+  as special to MIDI clips).
 
 - Record armed tracks are now properly monitored and fed through
   their own output audio bus on mix-down, which includes plug-in
-  effects processing (EXPERIMENTAL).
+  effects processing.
 
 - The files widget get alternating coloured rows.
 

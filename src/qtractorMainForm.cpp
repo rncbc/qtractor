@@ -216,6 +216,8 @@ qtractorMainForm::qtractorMainForm (
 	QPalette pal;
 	pal.setColor(QPalette::Base, Qt::black);
 	pal.setColor(QPalette::Text, Qt::green);
+//	pal.setColor(QPalette::Button, Qt::darkGray);
+//	pal.setColor(QPalette::ButtonText, Qt::green);
 
 	// Transport time.
 	const QFont& font = qtractorMainForm::font();
@@ -3606,13 +3608,13 @@ void qtractorMainForm::timerSlot (void)
 {
 	// Currrent state...
 	bool bPlaying  = m_pSession->isPlaying();
-	long iPlayHead = (long) m_pSession->playHead();
+	long iPlayHead = long(m_pSession->playHead());
 
 	qtractorAudioEngine *pAudioEngine = m_pSession->audioEngine();
 	qtractorMidiEngine  *pMidiEngine  = m_pSession->midiEngine();
 
 	// Playhead status...
-	if (iPlayHead != (long) m_iPlayHead) {
+	if (iPlayHead != long(m_iPlayHead)) {
 		m_iPlayHead = iPlayHead;
 		if (m_pTracks) {
 			// Update tracks-view play-head...
@@ -3651,7 +3653,7 @@ void qtractorMainForm::timerSlot (void)
 			}
 		} else {
 			// Transport rolling over...
-			iPlayHead += (long) (m_fTransportShuttle
+			iPlayHead += long(m_fTransportShuttle
 				* float(m_pSession->sampleRate())) / 2;
 			if (iPlayHead < 0) {
 				iPlayHead = 0;
@@ -3694,7 +3696,7 @@ void qtractorMainForm::timerSlot (void)
 			} else {
 				// Check on external transport location changes;
 				// note that we'll have a doubled buffer-size guard...
-				long iDeltaFrame = (long) pos.frame - iPlayHead;
+				long iDeltaFrame = long(pos.frame) - iPlayHead;
 				int iBufferSize2 = pAudioEngine->bufferSize() << 1;
 				if (labs(iDeltaFrame) > iBufferSize2) {
 					if (++m_iTransportDelta > 1) {
@@ -3917,15 +3919,16 @@ void qtractorMainForm::trackSelectionChanged (void)
 	// Select sync to mixer...
 	if (m_pTracks && m_pMixer && m_pMixer->trackRack()) {
 		qtractorMixerStrip *pStrip = NULL;
-		qtractorTrack *pTrack = m_pTracks->currentTrack();
+		qtractorTrack *pTrack = m_pTracks->trackList()->currentTrack();
 		if (pTrack)
 			pStrip = (m_pMixer->trackRack())->findStrip(pTrack->monitor());
 		if (pStrip) {
 			int wm = (pStrip->width() >> 1);
 			(m_pMixer->trackRack())->ensureVisible(
 				pStrip->pos().x() + wm, 0, wm, 0);
-			(m_pMixer->trackRack())->setSelectedStrip(pStrip);
 		}
+		// Doesn't matter whether strip is null...
+		(m_pMixer->trackRack())->setSelectedStrip(pStrip);
 	}
 
 	stabilizeForm();

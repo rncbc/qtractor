@@ -269,13 +269,13 @@ qtractorMidiEditor::ClipBoard qtractorMidiEditor::g_clipboard;
 
 bool qtractorMidiEditor::saveCopyFile ( const QString& sNewFilename,
 	const QString& sOldFilename, unsigned short iTrackChannel,
-	qtractorMidiSequence *pSeq, qtractorTimeScale *pTimeScale )
+	qtractorMidiSequence *pSeq, qtractorTimeScale *pTimeScale,
+	unsigned short iFormat )
 {
 	qtractorMidiFile file;
 	float fTempo = (pTimeScale ? pTimeScale->tempo() : 120.0f);
 	unsigned short iTicksPerBeat = (pTimeScale ? pTimeScale->ticksPerBeat() : 96);
 	unsigned short iBeatsPerBar  = (pTimeScale ? pTimeScale->beatsPerBar()  : 4);
-	unsigned short iFormat = 0;
 	unsigned short iSeq, iSeqs = 0;
 	qtractorMidiSequence **ppSeqs = NULL;
 	const QString sTrackName = QObject::tr("Track %1");
@@ -307,28 +307,29 @@ bool qtractorMidiEditor::saveCopyFile ( const QString& sNewFilename,
 	file.setTempo(fTempo);
 	file.setBeatsPerBar(iBeatsPerBar);
 
-	if (ppSeqs == NULL) {
-		iFormat = 1;
-		iSeqs   = 2;
-	}
+	if (ppSeqs == NULL)
+		iSeqs = (iFormat == 0 ? 1 : 2);
 
+	// Write SMF header...
 	file.writeHeader(iFormat, (iFormat == 0 ? 1 : iSeqs), iTicksPerBeat);
 
+	// Write SMF tracks(s)...
 	if (ppSeqs) {
 		// Replace the target track-channel events... 
 		ppSeqs[iTrackChannel]->replaceEvents(pSeq);
 		// Write the whole new tracks...
 		file.writeTracks(ppSeqs, iSeqs);
 	} else {
-		//
-		file.writeTrack(NULL);
+		// Most probabley this is a brand new file...
+		if (iFormat == 1)
+			file.writeTrack(NULL);
 		file.writeTrack(pSeq);
 	}
 
 	file.close();
 
 	// Free locally allocated track/sequence array.
-	if (ppSeqs) { 
+	if (ppSeqs) {
 		for (iSeq = 0; iSeq < iSeq; ++iSeq)
 			delete ppSeqs[iSeq];
 		delete [] ppSeqs;
@@ -832,8 +833,8 @@ bool qtractorMidiEditor::isValueColor (void) const
 void qtractorMidiEditor::drawPositionX ( int& iPositionX, int x, bool bSyncView )
 {
 	// Update track-view position...
-	int cx = m_pEditView->contentsX();
-	int x1 = iPositionX - cx;
+	int x0 = m_pEditView->contentsX();
+	int x1 = iPositionX - x0;
 	int w  = m_pEditView->width();
 	int h1 = m_pEditView->height();
 	int h2 = m_pEditEvent->height();
@@ -844,7 +845,7 @@ void qtractorMidiEditor::drawPositionX ( int& iPositionX, int x, bool bSyncView 
 	int d0 = (h0 >> 1);
 
 	// Restore old position...
-	if (iPositionX != x && x1 >= 0 && x1 < w) {
+	if (iPositionX != x && x1 >= 0 && x1 < w + d0) {
 		// Override old view line...
 		(m_pEditEvent->viewport())->update(QRect(x1, 0, 1, h2));
 		(m_pEditView->viewport())->update(QRect(x1, 0, 1, h1));
@@ -855,13 +856,13 @@ void qtractorMidiEditor::drawPositionX ( int& iPositionX, int x, bool bSyncView 
 	iPositionX = x;
 
 	// Force position to be in view?
-	if (bSyncView && (x < cx || x > cx + w - wm) && m_dragState == DragNone) {
+	if (bSyncView && (x < x0 || x > x0 + w - wm) && m_dragState == DragNone) {
 		// Move it...
 		m_pEditView->setContentsPos(x - wm, m_pEditView->contentsY());
 	} else {
 		// Draw the line, by updating the new region...
-		x1 = x - cx;
-		if (x1 >= 0 && x1 < w) {
+		x1 = x - x0;
+		if (x1 >= 0 && x1 < w + d0) {
 			(m_pEditEvent->viewport())->update(QRect(x1, 0, 1, h2));
 			(m_pEditView->viewport())->update(QRect(x1, 0, 1, h1));
 			(m_pEditTime->viewport())->update(QRect(x1 - d0, d0, h0, d0));

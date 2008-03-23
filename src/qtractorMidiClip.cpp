@@ -604,10 +604,11 @@ bool qtractorMidiClip::saveClipElement (
 					qtractorMidiClip::filename());
 			// Save/replace the clip track...
 			qtractorMidiEditor::saveCopyFile(sFilename,
-				qtractorMidiClip::filename(), 
+				qtractorMidiClip::filename(),
 				qtractorMidiClip::trackChannel(),
 				qtractorMidiClip::sequence(),
-				pSession->timeScale());
+				pSession->timeScale(),
+				qtractorMidiClip::format());
 			// Pre-commit dirty changes...
 			qtractorMidiClip::setFilename(sFilename);
 			qtractorMidiClip::setDirty(false);

@@ -267,7 +267,8 @@ public:
 	// All-in-one SMF file writer/creator method.
 	static bool saveCopyFile(const QString& sNewFilename,
 		const QString& sOldFilename, unsigned short iTrackChannel,
-		qtractorMidiSequence *pSeq, qtractorTimeScale *pTimeScale = NULL);
+		qtractorMidiSequence *pSeq, qtractorTimeScale *pTimeScale = NULL,
+		unsigned short iFormat = 0);
 
 	// Create filename revision.
 	static QString createFilePathRevision(

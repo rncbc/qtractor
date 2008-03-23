@@ -2,7 +2,7 @@
  <author>rncbc aka Rui Nuno Capela</author>
  <comment>qtractor - An Audio/MIDI multi-track sequencer.
 
-   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -18,7 +18,7 @@
    with this program; if not, write to the Free Software Foundation, Inc.,
    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-  </comment>
+ </comment>
  <exportmacro></exportmacro>
  <class>qtractorSessionForm</class>
  <widget class="QDialog" name="qtractorSessionForm" >
@@ -26,8 +26,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>458</height>
+    <width>360</width>
+    <height>320</height>
    </rect>
   </property>
   <property name="focusPolicy" >
@@ -40,12 +40,6 @@
    <iconset resource="../icons/qtractor.qrc" >:/icons/qtractor.png</iconset>
   </property>
   <layout class="QVBoxLayout" >
-   <property name="margin" >
-    <number>9</number>
-   </property>
-   <property name="spacing" >
-    <number>6</number>
-   </property>
    <item>
     <widget class="QLabel" name="SessionNameTextLabel" >
      <property name="text" >
@@ -83,9 +77,6 @@
     <layout class="QHBoxLayout" >
      <property name="margin" >
       <number>0</number>
-     </property>
-     <property name="spacing" >
-      <number>4</number>
      </property>
      <item>
       <widget class="QComboBox" name="SessionDirComboBox" >
@@ -142,6 +133,12 @@
    </item>
    <item>
     <widget class="QTextEdit" name="DescriptionTextEdit" >
+     <property name="maximumSize" >
+      <size>
+       <width>32767</width>
+       <height>72</height>
+      </size>
+     </property>
      <property name="toolTip" >
       <string>Session description</string>
      </property>
@@ -151,9 +148,6 @@
     <layout class="QHBoxLayout" >
      <property name="margin" >
       <number>0</number>
-     </property>
-     <property name="spacing" >
-      <number>6</number>
      </property>
      <item>
       <widget class="QGroupBox" name="TimeGroupBox" >
@@ -169,12 +163,6 @@
         <string>Time</string>
        </property>
        <layout class="QGridLayout" >
-        <property name="margin" >
-         <number>9</number>
-        </property>
-        <property name="spacing" >
-         <number>6</number>
-        </property>
         <item row="3" column="0" >
          <widget class="QLabel" name="TicksPerBeatTextLabel" >
           <property name="text" >
@@ -334,12 +322,6 @@
         <string>View</string>
        </property>
        <layout class="QGridLayout" >
-        <property name="margin" >
-         <number>9</number>
-        </property>
-        <property name="spacing" >
-         <number>6</number>
-        </property>
         <item row="0" column="1" >
          <widget class="QComboBox" name="SnapPerBeatComboBox" >
           <property name="toolTip" >
@@ -474,9 +456,6 @@
     <layout class="QHBoxLayout" >
      <property name="margin" >
       <number>0</number>
-     </property>
-     <property name="spacing" >
-      <number>4</number>
      </property>
      <item>
       <spacer>

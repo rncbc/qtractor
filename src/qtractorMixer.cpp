@@ -911,17 +911,13 @@ void qtractorMixerRack::resizeEvent ( QResizeEvent *pResizeEvent )
 }
 
 
-
 // Context menu request event handler.
 void qtractorMixerRack::contextMenuEvent ( QContextMenuEvent *pContextMenuEvent )
 {
-	// Always try proper selection...
-	qtractorMixerStrip *pStrip = m_pSelectedStrip;
-	if (pStrip == NULL)
-		return;
-
 	// Maybe it's a track strip
-	qtractorBus *pBus = pStrip->bus();
+	qtractorBus *pBus = NULL;
+	if (m_pSelectedStrip)
+		pBus = m_pSelectedStrip->bus();
 	if (pBus == NULL) {
 		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 		if (pMainForm)

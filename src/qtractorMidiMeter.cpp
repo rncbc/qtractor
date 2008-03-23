@@ -1,7 +1,7 @@
 // qtractorMidiMeter.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -119,10 +119,8 @@ void qtractorMidiMeterValue::refresh (void)
 {
 	// Grab the value...
 	if (m_pMidiMeter->midiMonitor()) {
-		float fValue = m_pMidiMeter->midiMonitor()->value();
+		m_fValue = m_pMidiMeter->midiMonitor()->value();
 		// If value pending of change, proceed for update...
-		if (m_fValue < fValue)
-			m_fValue = fValue;
 		if (m_fValue > 0.001f || m_iPeak > 0)
 			update();
 	}
@@ -285,8 +283,7 @@ void qtractorMidiMeter::refresh (void)
 			m_pMidiLabel->setPixmap(*m_pMidiPixmap[LedOn]);
 		m_iMidiCount = QTRACTOR_MIDI_METER_HOLD_LEDON;
 	} else if (m_iMidiCount > 0) {
-		m_iMidiCount--;
-		if (m_iMidiCount == 0)
+		if (--m_iMidiCount == 0)
 			m_pMidiLabel->setPixmap(*m_pMidiPixmap[LedOff]);
 	}
 }

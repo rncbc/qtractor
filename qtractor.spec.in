@@ -1,6 +1,6 @@
 %define name    @PACKAGE_TARNAME@
 %define version @PACKAGE_VERSION@
-%define release 15
+%define release 16
 %define prefix  @ac_prefix@
 
 Summary:	An Audio/MIDI multi-track sequencer.
@@ -67,6 +67,8 @@ specially dedicated to the personal home-studio.
 %{_datadir}/pixmaps/%{name}.png
 
 %changelog
+* Sun Mar 23 2008 Rui Nuno Capela <rncbc@users.sourceforge.net>
+- Frantic Dame release.
 * Sat Feb 16 2008 Rui Nuno Capela <rncbc@users.sourceforge.net>
 - Futile Duchess release.
 * Sat Jan  5 2008 Rui Nuno Capela <rncbc@users.sourceforge.net>

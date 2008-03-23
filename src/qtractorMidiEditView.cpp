@@ -1,7 +1,7 @@
 // qtractorMidiEditView.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -147,8 +147,11 @@ void qtractorMidiEditView::updateContentsWidth ( int iContentsWidth )
 	qtractorTimeScale *pTimeScale = m_pEditor->timeScale();
 	if (pTimeScale) {
 		qtractorMidiSequence *pSeq = m_pEditor->sequence();
-		if (pSeq && iContentsWidth < 1) 
-			iContentsWidth = pTimeScale->pixelFromTick(pSeq->duration());
+		if (pSeq) {
+			int iSeqWidth = pTimeScale->pixelFromTick(pSeq->duration());
+			if (iContentsWidth < iSeqWidth)
+				iContentsWidth = iSeqWidth;
+		}
 		iContentsWidth += pTimeScale->pixelFromBeat(
 			2 * pTimeScale->beatsPerBar());
 	}

@@ -186,10 +186,8 @@ void qtractorAudioMeterValue::refresh (void)
 {
 	// Grab the value...
 	if (m_pAudioMeter->audioMonitor()) {
-		float fValue = m_pAudioMeter->audioMonitor()->value(m_iChannel);
+		m_fValue = m_pAudioMeter->audioMonitor()->value(m_iChannel);
 		// If value pending of change, proceed for update...
-		if (m_fValue < fValue)
-			m_fValue = fValue;
 		if (m_fValue > 0.001f || m_iPeak > 0)
 			update();
 	}
@@ -241,7 +239,7 @@ void qtractorAudioMeterValue::paintEvent ( QPaintEvent * )
 
 	int iLevel;
 	for (iLevel = qtractorAudioMeter::Color10dB;
-			iLevel > qtractorAudioMeter::ColorOver && y >= y_over; iLevel--) {
+			iLevel > qtractorAudioMeter::ColorOver && y >= y_over; --iLevel) {
 		y_curr = m_pAudioMeter->iec_level(iLevel);
 		if (y < y_curr) {
 			painter.fillRect(0, h - y, w, y - y_over,
@@ -313,7 +311,7 @@ qtractorAudioMeter::qtractorAudioMeter ( qtractorAudioMonitor *pAudioMonitor,
 
 	setPeakFalloff(QTRACTOR_AUDIO_METER_PEAK_FALLOFF);
 
-	for (int i = 0; i < LevelCount; i++)
+	for (int i = 0; i < LevelCount; ++i)
 		m_levels[i] = 0;
 
 	m_colors[ColorOver] = QColor(240,  0, 20);
@@ -335,7 +333,7 @@ qtractorAudioMeter::qtractorAudioMeter ( qtractorAudioMonitor *pAudioMonitor,
 qtractorAudioMeter::~qtractorAudioMeter (void)
 {
 	// No need to delete child widgets, Qt does it all for us
-	for (unsigned short i = 0; i < m_iChannels; i++)
+	for (unsigned short i = 0; i < m_iChannels; ++i)
 		delete m_ppAudioValues[i];
 
 	delete [] m_ppAudioValues;
@@ -392,7 +390,7 @@ void qtractorAudioMeter::reset (void)
 		return;
 
 	if (m_ppAudioValues) {
-		for (unsigned short i = 0; i < m_iChannels; i++)
+		for (unsigned short i = 0; i < m_iChannels; ++i)
 			delete m_ppAudioValues[i];
 		delete [] m_ppAudioValues;
 		m_ppAudioValues = NULL;
@@ -401,7 +399,7 @@ void qtractorAudioMeter::reset (void)
 	m_iChannels = iChannels;
 	if (m_iChannels > 0) {
 		m_ppAudioValues = new qtractorAudioMeterValue *[m_iChannels];
-		for (unsigned short i = 0; i < m_iChannels; i++) {
+		for (unsigned short i = 0; i < m_iChannels; ++i) {
 			m_ppAudioValues[i] = new qtractorAudioMeterValue(this, i/*, boxWidget()*/);
 			m_ppAudioValues[i]->show();
 		}
@@ -415,7 +413,7 @@ void qtractorAudioMeter::reset (void)
 // Reset peak holder.
 void qtractorAudioMeter::peakReset (void)
 {
-	for (unsigned short i = 0; i < m_iChannels; i++)
+	for (unsigned short i = 0; i < m_iChannels; ++i)
 		m_ppAudioValues[i]->peakReset();
 }
 
@@ -423,7 +421,7 @@ void qtractorAudioMeter::peakReset (void)
 // Slot refreshment.
 void qtractorAudioMeter::refresh (void)
 {
-	for (unsigned short i = 0; i < m_iChannels; i++)
+	for (unsigned short i = 0; i < m_iChannels; ++i)
 		m_ppAudioValues[i]->refresh();
 }
 

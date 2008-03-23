@@ -1540,8 +1540,10 @@ static VstIntPtr VSTCALLBACK qtractorVstPlugin_HostCallback ( AEffect* effect,
 		pVstPlugin = qtractorVstPlugin::findPlugin(effect);
 		if (pVstPlugin) {
 			qtractorPluginForm *pForm = pVstPlugin->form();
-			if (pForm)
-				pForm->updateParamValue(index, opt);
+			if (pForm) {
+				pForm->updateParamValue(index,
+					effect->getParameter(effect, index));
+			}
 			QApplication::processEvents();
 		}
 		break;

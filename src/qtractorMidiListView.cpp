@@ -64,7 +64,7 @@ qtractorMidiFileItem::qtractorMidiFileItem (
 		// Add channel sub-items...
 		for (int iChannel = 0; iChannel < 16; ++iChannel) {
 			new qtractorMidiChannelItem(this,
-				QObject::tr("Channel %1").arg(iChannel), iChannel);
+				QObject::tr("Channel %1").arg(iChannel + 1), iChannel);
 		}
 	}
 }

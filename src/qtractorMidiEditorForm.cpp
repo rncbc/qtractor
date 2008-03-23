@@ -699,7 +699,7 @@ bool qtractorMidiEditorForm::saveClipFile ( bool bPrompt )
 
 	// Save it right away...
 	bool bResult = qtractorMidiEditor::saveCopyFile(sFilename,
-		filename(), trackChannel(), sequence(), timeScale());
+		filename(), trackChannel(), sequence(), timeScale(), format());
 
 	// Have we done it right?
 	if (bResult) {

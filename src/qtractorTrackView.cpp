@@ -225,8 +225,9 @@ void qtractorTrackView::updateContentsWidth ( int iContentsWidth )
 {
 	qtractorSession *pSession = m_pTracks->session();
 	if (pSession) {
-		if (iContentsWidth < 1) 
-			iContentsWidth = pSession->pixelFromFrame(pSession->sessionLength());
+		int iSessionWidth = pSession->pixelFromFrame(pSession->sessionLength());
+		if (iContentsWidth < iSessionWidth)
+			iContentsWidth = iSessionWidth;
 		iContentsWidth += pSession->pixelFromBeat(2 * pSession->beatsPerBar());
 		m_iEditHeadX = pSession->pixelFromFrame(pSession->editHead());
 		m_iEditTailX = pSession->pixelFromFrame(pSession->editTail());
@@ -2302,8 +2303,8 @@ qtractorSessionCursor *qtractorTrackView::sessionCursor (void) const
 void qtractorTrackView::drawPositionX ( int& iPositionX, int x, bool bSyncView )
 {
 	// Update track-view position...
-	int cx = qtractorScrollView::contentsX();
-	int x1 = iPositionX - cx;
+	int x0 = qtractorScrollView::contentsX();
+	int x1 = iPositionX - x0;
 	int w  = qtractorScrollView::width();
 	int h  = qtractorScrollView::height();
 	int wm = (w >> 3);
@@ -2313,7 +2314,7 @@ void qtractorTrackView::drawPositionX ( int& iPositionX, int x, bool bSyncView )
 	int d2 = (h2 >> 1);
 
 	// Restore old position...
-	if (iPositionX != x && x1 >= 0 && x1 < w) {
+	if (iPositionX != x && x1 >= 0 && x1 < w + d2) {
 		// Override old view line...
 		qtractorScrollView::viewport()->update(QRect(x1, 0, 1, h));
 		((m_pTracks->trackTime())->viewport())->update(
@@ -2324,15 +2325,18 @@ void qtractorTrackView::drawPositionX ( int& iPositionX, int x, bool bSyncView )
 	iPositionX = x;
 
 	// Force position to be in view?
-	if (bSyncView && (x < cx || x > cx + w - wm) && m_dragState == DragNone) {
-		qtractorScrollView::setContentsPos(x - wm, qtractorScrollView::contentsY());
-	} else if (bSyncView && cx > qtractorScrollView::contentsWidth() - w) {
+	if (bSyncView && (x < x0 || x > x0 + w - wm) && m_dragState == DragNone) {
 		 // Maybe we'll need some head-room...
-		updateContentsWidth(cx + w);
-	} else {
+		if (x0 < qtractorScrollView::contentsWidth() - w) {
+			qtractorScrollView::setContentsPos(
+				x - wm, qtractorScrollView::contentsY());
+		}
+		else updateContentsWidth(x0 + w);
+	}
+	else {
 		// Draw the line, by updating the new region...
-		x1 = x - cx;
-		if (x1 >= 0 && x1 < w) {
+		x1 = x - x0;
+		if (x1 >= 0 && x1 < w + d2) {
 			qtractorScrollView::viewport()->update(QRect(x1, 0, 1, h));
 			((m_pTracks->trackTime())->viewport())->update(
 				QRect(x1 - d2, d2, h2, d2));
