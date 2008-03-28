@@ -236,8 +236,8 @@ void qtractorAudioClip::open (void)
 
 
 // Audio clip special process cycle executive.
-void qtractorAudioClip::process ( unsigned long iFrameStart,
-	unsigned long iFrameEnd )
+void qtractorAudioClip::process (
+	unsigned long iFrameStart, unsigned long iFrameEnd )
 {
 	qtractorAudioBus *pAudioBus
 		= static_cast<qtractorAudioBus *> (track()->outputBus());
@@ -248,16 +248,18 @@ void qtractorAudioClip::process ( unsigned long iFrameStart,
 	unsigned long iClipStart = clipStart();
 	unsigned long iClipEnd   = iClipStart + clipLength();
 	if (iFrameStart < iClipStart && iFrameEnd > iClipStart) {
-		if (m_pBuff->inSync(0, iFrameEnd - iClipStart)) {
-			m_pBuff->readMix(pAudioBus->buffer(), iFrameEnd - iClipStart,
-				pAudioBus->channels(), iClipStart - iFrameStart, gain(0));
+		unsigned long iOffset = iFrameEnd - iClipStart;
+		if (m_pBuff->inSync(0, iOffset)) {
+			m_pBuff->readMix(pAudioBus->buffer(), iOffset,
+				pAudioBus->channels(), iClipStart - iFrameStart, gain(iOffset));
 		}
 	}
 	else
 	if (iFrameStart >= iClipStart && iFrameStart < iClipEnd) {
-		if (m_pBuff->inSync(iFrameStart - iClipStart, iFrameEnd - iClipStart)) {
+		unsigned long iOffset = iFrameEnd - iClipStart;
+		if (m_pBuff->inSync(iFrameStart - iClipStart, iOffset)) {
 			m_pBuff->readMix(pAudioBus->buffer(), iFrameEnd - iFrameStart,
-				pAudioBus->channels(), 0, gain(iFrameStart - iClipStart));
+				pAudioBus->channels(), 0, gain(iOffset));
 		}
 	}
 }

@@ -3,6 +3,16 @@ Qtractor - An Audio/MIDI multi-track sequencer
 
 ChangeLog
 
+CVS HEAD
+
+- A major digital audio processing bug was tamed: audio clip
+  fade-in/outs are now linearly piece-wise applied, even at
+  the clip edges, giving a much smoother rendering and thus
+  mitigating the nasty click-and-pop artifacts that were in
+  fact due to some early design optimization with a poor and
+  sloppy implementation.
+
+
 0.1.2  2006-03-23  The Frantic Dame
 
 - Session length fixed (yet again) while extend recording; also

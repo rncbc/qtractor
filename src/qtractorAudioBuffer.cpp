@@ -105,6 +105,8 @@ qtractorAudioBuffer::qtractorAudioBuffer ( unsigned short iChannels,
 	m_fTimeStretch   = 1.0f;
 	m_pTimeStretch   = NULL;
 
+	m_fReadMixGain   = 0.0f;
+
 #ifdef CONFIG_LIBSAMPLERATE
 	m_bResample      = false;
 	m_fResampleRatio = 1.0f;
@@ -309,6 +311,8 @@ void qtractorAudioBuffer::close (void)
 
 	m_iSeekOffset  = 0;
 	m_iSeekPending = 0;
+
+	m_fReadMixGain = 0.0f;
 }
 
 
@@ -493,7 +497,8 @@ int qtractorAudioBuffer::readMix ( float **ppFrames, unsigned int iFrames,
 				nframes -= nread;
 				iOffset += nread;
 				m_pRingBuffer->setReadIndex(ls);
-				m_iReadOffset = m_iOffset + ls;
+				m_iReadOffset  = m_iOffset + ls;
+				m_fReadMixGain = 0.0f;
 			}
 			iFrames = nframes;
 		} else {
@@ -501,7 +506,8 @@ int qtractorAudioBuffer::readMix ( float **ppFrames, unsigned int iFrames,
 			le += m_iOffset;
 			while (le >= m_iReadOffset && m_iReadOffset + nframes >= le) {
 				nframes -= (le - m_iReadOffset);
-				m_iReadOffset = ls;
+				m_iReadOffset  = ls;
+				m_fReadMixGain = 0.0f;
 			}
 		}
 	}
@@ -538,6 +544,9 @@ bool qtractorAudioBuffer::seek ( unsigned long iFrame )
 	// Seek is only valid on read-only mode.
 	if (m_pFile->mode() & qtractorAudioFile::Write)
 		return false;
+
+	// Reset running gain...
+	m_fReadMixGain = 0.0f;
 
 	// Special case on integral cached files...
 	if (m_bIntegral) {
@@ -607,6 +616,9 @@ bool qtractorAudioBuffer::initSync (void)
 
 	m_iSeekOffset  = 0;
 	m_iSeekPending = 0;
+
+	// Reset running gain...
+	m_fReadMixGain = 0.0f;
 
 	// Read-ahead a whole bunch, if applicable...
 	if (m_pFile->mode() & qtractorAudioFile::Read) {
@@ -963,6 +975,9 @@ int qtractorAudioBuffer::readMixFrames (
 	if (rs == 0)
 		return 0;
 
+	// Reset running gain...
+	float fGainStep = (fGain - m_fReadMixGain) / float(iFrames);
+
 	if (iFrames > rs)
 		iFrames = rs;
 
@@ -978,24 +993,27 @@ int qtractorAudioBuffer::readMixFrames (
 		n2 = 0;
 	}
 
+	float fGainIter;
 	unsigned short i, j;
 	unsigned short iBuffers = m_pRingBuffer->channels();
 	float **ppBuffer = m_pRingBuffer->buffer();
 	if (iChannels == iBuffers) {
 		for (i = 0; i < iBuffers; i++) {
-			for (n = 0; n < n1; n++)
-				ppFrames[i][n + iOffset] += fGain * ppBuffer[i][n + r];
-			for (n = 0; n < n2; n++)
-				ppFrames[i][n + n1 + iOffset] += fGain * ppBuffer[i][n];
+			fGainIter = m_fReadMixGain;
+			for (n = 0; n < n1; ++n, fGainIter += fGainStep)
+				ppFrames[i][n + iOffset] += fGainIter * ppBuffer[i][n + r];
+			for (n = 0; n < n2; ++n, fGainIter += fGainStep)
+				ppFrames[i][n + n1 + iOffset] += fGainIter * ppBuffer[i][n];
 		}
 	}
 	else if (iChannels > iBuffers) {
 		j = 0;
 		for (i = 0; i < iChannels; i++) {
-			for (n = 0; n < n1; n++)
-				ppFrames[i][n + iOffset] += fGain * ppBuffer[j][n + r];
-			for (n = 0; n < n2; n++)
-				ppFrames[i][n + n1 + iOffset] += fGain * ppBuffer[j][n];
+			fGainIter = m_fReadMixGain;
+			for (n = 0; n < n1; ++n, fGainIter += fGainStep)
+				ppFrames[i][n + iOffset] += fGainIter * ppBuffer[j][n + r];
+			for (n = 0; n < n2; ++n, fGainIter += fGainStep)
+				ppFrames[i][n + n1 + iOffset] += fGainIter * ppBuffer[j][n];
 			if (++j >= iBuffers)
 				j = 0;
 		}
@@ -1003,16 +1021,20 @@ int qtractorAudioBuffer::readMixFrames (
 	else { // (iChannels < iBuffers)
 		i = 0;
 		for (j = 0; j < iBuffers; j++) {
-			for (n = 0; n < n1; n++)
-				ppFrames[i][n + iOffset] += fGain * ppBuffer[j][n + r];
-			for (n = 0; n < n2; n++)
-				ppFrames[i][n + n1 + iOffset] += fGain * ppBuffer[j][n];
+			fGainIter = m_fReadMixGain;
+			for (n = 0; n < n1; ++n, fGainIter += fGainStep)
+				ppFrames[i][n + iOffset] += fGainIter * ppBuffer[j][n + r];
+			for (n = 0; n < n2; ++n, fGainIter += fGainStep)
+				ppFrames[i][n + n1 + iOffset] += fGainIter * ppBuffer[j][n];
 			if (++i >= iChannels)
 				i = 0;
 		}
 	}
 
 	m_pRingBuffer->setReadIndex(r + iFrames);
+
+	// Remember last gain.
+	m_fReadMixGain = fGain;
 
 	return iFrames;
 }
@@ -1089,6 +1111,7 @@ void qtractorAudioBuffer::reset ( bool bLooping )
 		if (m_pSyncThread)
 			m_pSyncThread->sync();
 	}
+	m_fReadMixGain = 0.0f;
 #else
 	seek(iFrame);
 #endif

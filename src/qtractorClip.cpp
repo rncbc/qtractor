@@ -343,7 +343,10 @@ void qtractorClip::FadeMode::setFadeCoeffs ( float a, float b )
 
 // Compute clip gain, given current fade-in/out slopes.
 float qtractorClip::gain ( unsigned long iOffset ) const
-{ 
+{
+	if (iOffset >= m_iClipLength)
+		return 0.0f;
+
 	float fGain = 1.0f;
 
 	if (m_iFadeInLength > 0 && iOffset < m_iFadeInLength) {

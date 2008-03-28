@@ -194,6 +194,8 @@ private:
 
 	qtractorTimeStretch *m_pTimeStretch;
 
+	float          m_fReadMixGain;
+
 #ifdef CONFIG_LIBSAMPLERATE
 	bool           m_bResample;
 	float          m_fResampleRatio;
