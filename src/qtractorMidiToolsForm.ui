@@ -2,7 +2,7 @@
  <author>rncbc aka Rui Nuno Capela</author>
  <comment>qtractor - An Audio/MIDI multi-track sequencer.
 
-   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -25,8 +25,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>411</width>
-    <height>246</height>
+    <width>420</width>
+    <height>240</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -533,14 +533,14 @@
         </spacer>
        </item>
        <item row="1" column="1" >
-        <widget class="QCheckBox" name="RandomizeTimeCheckBox" >
+        <widget class="QCheckBox" name="RandomizeNoteCheckBox" >
          <property name="text" >
-          <string>&amp;Time:</string>
+          <string>&amp;Note:</string>
          </property>
         </widget>
        </item>
        <item row="1" column="2" >
-        <widget class="QSpinBox" name="RandomizeTimeSpinBox" >
+        <widget class="QSpinBox" name="RandomizeNoteSpinBox" >
          <property name="minimumSize" >
           <size>
            <width>60</width>
@@ -548,7 +548,7 @@
           </size>
          </property>
          <property name="toolTip" >
-          <string>Randomize time</string>
+          <string>Randomize note/pitch</string>
          </property>
          <property name="suffix" >
           <string> %</string>
@@ -572,13 +572,39 @@
         </spacer>
        </item>
        <item row="2" column="1" >
+        <widget class="QCheckBox" name="RandomizeTimeCheckBox" >
+         <property name="text" >
+          <string>&amp;Time:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="2" >
+        <widget class="QSpinBox" name="RandomizeTimeSpinBox" >
+         <property name="minimumSize" >
+          <size>
+           <width>60</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="toolTip" >
+          <string>Randomize time</string>
+         </property>
+         <property name="suffix" >
+          <string> %</string>
+         </property>
+         <property name="maximum" >
+          <number>150</number>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="1" >
         <widget class="QCheckBox" name="RandomizeDurationCheckBox" >
          <property name="text" >
           <string>&amp;Duration:</string>
          </property>
         </widget>
        </item>
-       <item row="2" column="2" >
+       <item row="3" column="2" >
         <widget class="QSpinBox" name="RandomizeDurationSpinBox" >
          <property name="minimumSize" >
           <size>
@@ -597,14 +623,14 @@
          </property>
         </widget>
        </item>
-       <item row="3" column="1" >
+       <item row="4" column="1" >
         <widget class="QCheckBox" name="RandomizeValueCheckBox" >
          <property name="text" >
           <string>&amp;Value:</string>
          </property>
         </widget>
        </item>
-       <item row="3" column="2" >
+       <item row="4" column="2" >
         <widget class="QSpinBox" name="RandomizeValueSpinBox" >
          <property name="minimumSize" >
           <size>
@@ -623,7 +649,7 @@
          </property>
         </widget>
        </item>
-       <item row="4" column="1" >
+       <item row="5" column="1" >
         <spacer>
          <property name="orientation" >
           <enum>Qt::Vertical</enum>
@@ -864,6 +890,8 @@
   <tabstop>NormalizeValueRadioButton</tabstop>
   <tabstop>NormalizeValueSpinBox</tabstop>
   <tabstop>RandomizeCheckBox</tabstop>
+  <tabstop>RandomizeNoteCheckBox</tabstop>
+  <tabstop>RandomizeNoteSpinBox</tabstop>
   <tabstop>RandomizeTimeCheckBox</tabstop>
   <tabstop>RandomizeTimeSpinBox</tabstop>
   <tabstop>RandomizeDurationCheckBox</tabstop>

@@ -1,7 +1,7 @@
 // qtractorMidiToolsForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -167,6 +167,12 @@ qtractorMidiToolsForm::qtractorMidiToolsForm (
 	QObject::connect(m_ui.RandomizeCheckBox,
 		SIGNAL(toggled(bool)),
 		SLOT(stabilizeForm()));
+	QObject::connect(m_ui.RandomizeNoteCheckBox,
+		SIGNAL(toggled(bool)),
+		SLOT(changed()));
+	QObject::connect(m_ui.RandomizeNoteSpinBox,
+		SIGNAL(valueChanged(int)),
+		SLOT(changed()));
 	QObject::connect(m_ui.RandomizeTimeCheckBox,
 		SIGNAL(toggled(bool)),
 		SLOT(changed()));
@@ -304,14 +310,16 @@ void qtractorMidiToolsForm::loadPreset ( const QString& sPreset )
 		}
 		// Randomize tool...
 		vlist = settings.value("/Randomize").toList();
-		if (vlist.count() > 6) {
+		if (vlist.count() > 8) {
 		//	m_ui.RandomizeCheckBox->setChecked(vlist[0].toBool());
-			m_ui.RandomizeTimeCheckBox->setChecked(vlist[1].toBool());
-			m_ui.RandomizeTimeSpinBox->setValue(vlist[2].toInt());
-			m_ui.RandomizeDurationCheckBox->setChecked(vlist[3].toBool());
-			m_ui.RandomizeDurationSpinBox->setValue(vlist[4].toInt());
-			m_ui.RandomizeValueCheckBox->setChecked(vlist[5].toBool());
-			m_ui.RandomizeValueSpinBox->setValue(vlist[6].toInt());
+			m_ui.RandomizeNoteCheckBox->setChecked(vlist[1].toBool());
+			m_ui.RandomizeNoteSpinBox->setValue(vlist[2].toInt());
+			m_ui.RandomizeTimeCheckBox->setChecked(vlist[3].toBool());
+			m_ui.RandomizeTimeSpinBox->setValue(vlist[4].toInt());
+			m_ui.RandomizeDurationCheckBox->setChecked(vlist[5].toBool());
+			m_ui.RandomizeDurationSpinBox->setValue(vlist[6].toInt());
+			m_ui.RandomizeValueCheckBox->setChecked(vlist[7].toBool());
+			m_ui.RandomizeValueSpinBox->setValue(vlist[8].toInt());
 		}
 		// Resize tool...
 		vlist = settings.value("/Resize").toList();
@@ -371,6 +379,8 @@ void qtractorMidiToolsForm::savePreset ( const QString& sPreset )
 		// Randomize tool...
 		vlist.clear();
 		vlist.append(m_ui.RandomizeCheckBox->isChecked());
+		vlist.append(m_ui.RandomizeNoteCheckBox->isChecked());
+		vlist.append(m_ui.RandomizeNoteSpinBox->value());
 		vlist.append(m_ui.RandomizeTimeCheckBox->isChecked());
 		vlist.append(m_ui.RandomizeTimeSpinBox->value());
 		vlist.append(m_ui.RandomizeDurationCheckBox->isChecked());
@@ -601,9 +611,24 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::editCommand (
 		// Randomize tool...
 		if (m_ui.RandomizeCheckBox->isChecked()) {
 			tools.append(tr("randomize"));
-			int p, q = m_pTimeScale->ticksPerBeat();
+			int p, q;
+			if (m_ui.RandomizeNoteCheckBox->isChecked()) {
+				int iNote = int(pEvent->note());
+				p = m_ui.RandomizeNoteSpinBox->value();
+				q = 127;
+				if (p > 0) {
+					iNote += (p * (q - (::rand() % (q << 1)))) / 100;
+					if (iNote > 127)
+						iNote = 127;
+					else
+					if (iNote < 0)
+						iNote = 0;
+					pEditCommand->moveEvent(pEvent, iNote, iTime);
+				}
+			}
 			if (m_ui.RandomizeTimeCheckBox->isChecked()) {
 				p = m_ui.RandomizeTimeSpinBox->value();
+				q = m_pTimeScale->ticksPerBeat();
 				if (p > 0) {
 					iTime += (p * (q - (::rand() % (q << 1)))) / 100;
 					if (iTime < 0)
@@ -613,6 +638,7 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::editCommand (
 			}
 			if (m_ui.RandomizeDurationCheckBox->isChecked()) {
 				p = m_ui.RandomizeDurationSpinBox->value();
+				q = m_pTimeScale->ticksPerBeat();
 				if (p > 0) {
 					iDuration += (p * (q - (::rand() % (q << 1)))) / 100;
 					if (iDuration < 0)
@@ -780,6 +806,12 @@ void qtractorMidiToolsForm::stabilizeForm (void)
 	// Randomize tool...
 
 	bEnabled = m_ui.RandomizeCheckBox->isChecked();
+
+	m_ui.RandomizeNoteCheckBox->setEnabled(bEnabled);
+	bEnabled2 = bEnabled && m_ui.RandomizeNoteCheckBox->isChecked();
+	if (bEnabled2)
+		iEnabled++;
+	m_ui.RandomizeNoteSpinBox->setEnabled(bEnabled2);
 
 	m_ui.RandomizeTimeCheckBox->setEnabled(bEnabled);
 	bEnabled2 = bEnabled && m_ui.RandomizeTimeCheckBox->isChecked();

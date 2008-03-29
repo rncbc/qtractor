@@ -5,6 +5,8 @@ ChangeLog
 
 CVS HEAD
 
+- A new MIDI editor tool is available: note/pitch randomize.
+
 - Avoid (re)setting the default session directory if a session
   cannot be open or loaded for some reason.
 
