@@ -360,8 +360,8 @@ int qtractorAudioBuffer::read ( float **ppFrames, unsigned int iFrames,
 		}
 	}
 
-	// Move the (remaining) data around...	
-	m_pRingBuffer->read(ppFrames, nframes, iOffset);
+	// Move the (remaining) data around...
+	m_pRingBuffer->read(ppFrames, iFrames, iOffset);
 
 	m_iReadOffset += nframes;
 	if (m_iReadOffset >= m_iOffset + m_iLength) {
@@ -513,7 +513,7 @@ int qtractorAudioBuffer::readMix ( float **ppFrames, unsigned int iFrames,
 	}
 
 	// Mix the (remaining) data around...
-	readMixFrames(ppFrames, nframes, iChannels, iOffset, fGain);
+	readMixFrames(ppFrames, iFrames, iChannels, iOffset, fGain);
 
 	m_iReadOffset += nframes;
 	if (m_iReadOffset >= m_iOffset + m_iLength) {

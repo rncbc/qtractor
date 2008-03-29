@@ -5,6 +5,9 @@ ChangeLog
 
 CVS HEAD
 
+- Another nastiness bites the dust: a subtle but progressive
+  drifting has been swept away from the audio buffer looping.
+
 - A major digital audio processing bug was tamed: audio clip
   fade-in/outs are now linearly piece-wise applied, even at
   the clip edges, giving a much smoother rendering and thus
