@@ -1408,6 +1408,9 @@ bool qtractorMainForm::loadSessionFile ( const QString& sFilename )
 	QApplication::restoreOverrideCursor();
 
 	if (bResult) {
+		// Save as default session directory.
+		if (m_pOptions)
+			m_pOptions->sSessionDir = QFileInfo(sFilename).absolutePath();
 		// We're not dirty anymore.
 		updateRecentFiles(sFilename);
 	//	m_iDirtyCount = 0;
@@ -1419,9 +1422,6 @@ bool qtractorMainForm::loadSessionFile ( const QString& sFilename )
 			"Sorry.").arg(sFilename));
 	}
 
-	// Save as default session directory.
-	if (m_pOptions)
-		m_pOptions->sSessionDir = QFileInfo(sFilename).absolutePath();
 	// Stabilize form...
 	m_sFilename = sFilename;
 	appendMessages(tr("Open session: \"%1\".").arg(sessionName(m_sFilename)));

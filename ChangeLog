@@ -5,6 +5,9 @@ ChangeLog
 
 CVS HEAD
 
+- Avoid (re)setting the default session directory if a session
+  cannot be open or loaded for some reason.
+
 - Another nastiness bites the dust: a subtle but progressive
   drifting has been swept away from the audio buffer looping.
 
