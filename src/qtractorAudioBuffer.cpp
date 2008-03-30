@@ -872,6 +872,14 @@ int qtractorAudioBuffer::flushFrames ( unsigned int iFrames )
 		}
 	}
 
+	// Zero-flush till known end-of-clip (avoid sure drifting)...
+	if (m_iWriteOffset + nread < m_iOffset + m_iLength) {
+		unsigned int nahead = iFrames - nread;
+		for (unsigned int i = 0; i < m_iChannels; ++i)
+			::memset(m_ppFrames[i], 0, nahead * sizeof(float));
+		nread += m_pRingBuffer->write(m_ppFrames, nahead);
+	}
+
 	return (nread > 0 ? nread : -1);
 }
 

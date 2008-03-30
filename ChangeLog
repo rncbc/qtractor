@@ -11,7 +11,9 @@ CVS HEAD
   cannot be open or loaded for some reason.
 
 - Another nastiness bites the dust: a subtle but progressive
-  drifting has been swept away from the audio buffer looping.
+  drifting has been swept away from the audio buffer looping;
+  zero buffer flushing is now also taken into account, which
+  was the cause for serious drifting on time-stretched clips.
 
 - A major digital audio processing bug was tamed: audio clip
   fade-in/outs are now linearly piece-wise applied, even at
