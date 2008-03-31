@@ -1,7 +1,7 @@
 // qtractorAudioFile.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2006, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -42,7 +42,7 @@ qtractorAudioFileFactory& qtractorAudioFileFactory::getInstance (void)
 	// Create the singleton instance, if not already...
 	if (g_pInstance == NULL) {
 		g_pInstance = new qtractorAudioFileFactory();
-		std::atexit(Destroy);
+		::atexit(Destroy);
 	}
 
 	return *g_pInstance;
