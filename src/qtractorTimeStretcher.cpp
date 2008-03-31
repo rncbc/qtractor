@@ -108,8 +108,7 @@ unsigned int qtractorTimeStretcher::retrieve (
 	if (m_pRubberBandStretcher)
 		return m_pRubberBandStretcher->retrieve(ppFrames, iFrames);
 #endif
-	if (m_pTimeStretch)
-		return m_pTimeStretch->receiveFrames(ppFrames, iFrames);
+	return (m_pTimeStretch ? m_pTimeStretch->receiveFrames(ppFrames, iFrames) : 0);
 }
 
 
@@ -120,8 +119,7 @@ unsigned int qtractorTimeStretcher::available (void) const
 	if (m_pRubberBandStretcher)
 		return m_pRubberBandStretcher->available();
 #endif
-	if (m_pTimeStretch)
-		return m_pTimeStretch->frames();
+	return (m_pTimeStretch ? m_pTimeStretch->frames() : 0);
 }
 
 
