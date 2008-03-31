@@ -5,6 +5,10 @@ ChangeLog
 
 CVS HEAD
 
+- Audio clip pitch-shifting makes its first appearance, with
+  the optional help from Chris Cannam's RubberBand library.
+  (EXPERIMENTAL PHASE ONE).
+
 - A new MIDI editor tool is available: note/pitch randomize.
 
 - Avoid (re)setting the default session directory if a session

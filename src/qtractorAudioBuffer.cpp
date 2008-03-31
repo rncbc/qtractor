@@ -22,7 +22,7 @@
 #include "qtractorAbout.h"
 #include "qtractorAudioBuffer.h"
 
-#include "qtractorTimeStretch.h"
+#include "qtractorTimeStretcher.h"
 
 
 //----------------------------------------------------------------------
@@ -103,7 +103,11 @@ qtractorAudioBuffer::qtractorAudioBuffer ( unsigned short iChannels,
 
 	m_bTimeStretch   = false;
 	m_fTimeStretch   = 1.0f;
-	m_pTimeStretch   = NULL;
+
+	m_bPitchShift    = false;
+	m_fPitchShift    = 1.0f;
+
+	m_pTimeStretcher = NULL;
 
 	m_fReadMixGain   = 0.0f;
 
@@ -204,10 +208,14 @@ bool qtractorAudioBuffer::open ( const QString& sFilename, int iMode )
 #endif
 
 	// ALlocate time-stretch engine whether needed...
-	if (m_bTimeStretch) {
-		m_pTimeStretch = new qtractorTimeStretch(iChannels, m_iSampleRate);
-		m_pTimeStretch->setTempo(m_fTimeStretch);
-		m_pTimeStretch->setQuickSeek(g_bQuickSeek);
+	if (m_bTimeStretch || m_bPitchShift) {
+		unsigned int iFlags = qtractorTimeStretcher::None;
+		if (g_bWsolaTimeStretch)
+			iFlags |= qtractorTimeStretcher::WsolaTimeStretch;
+		if (g_bWsolaQuickSeek)
+			iFlags |= qtractorTimeStretcher::WsolaQuickSeek;
+		m_pTimeStretcher = new qtractorTimeStretcher(iChannels, m_iSampleRate,
+			m_fTimeStretch, m_fPitchShift, iFlags);
 	}
 
 	// FIXME: default logical length gets it total...
@@ -284,9 +292,9 @@ void qtractorAudioBuffer::close (void)
 	deleteIOBuffers();
 
 	// Deallocate any buffer stuff...
-	if (m_pTimeStretch) {
-		delete m_pTimeStretch;
-		m_pTimeStretch = NULL;
+	if (m_pTimeStretcher) {
+		delete m_pTimeStretcher;
+		m_pTimeStretcher = NULL;
 	}
 
 	if (m_pRingBuffer) {
@@ -826,8 +834,8 @@ bool qtractorAudioBuffer::seekSync ( unsigned long iFrame )
 	}
 #endif
 
-	if (m_pTimeStretch)
-		m_pTimeStretch->clear();
+	if (m_pTimeStretcher)
+		m_pTimeStretcher->reset();
 
 	return m_pFile->seek(framesOut(iFrame));
 }
@@ -838,12 +846,12 @@ int qtractorAudioBuffer::writeFrames (
 	float **ppFrames, unsigned int iFrames )
 {
 	// Time-stretch processing...
-	if (m_pTimeStretch) {
+	if (m_pTimeStretcher) {
 		int nread = 0;
 		unsigned int nahead = iFrames;
-		m_pTimeStretch->putFrames(ppFrames, nahead);
+		m_pTimeStretcher->process(ppFrames, nahead);
 		while (nahead > 0 && nread < (int) iFrames) {
-			nahead = m_pTimeStretch->receiveFrames(ppFrames, iFrames - nread);
+			nahead = m_pTimeStretcher->retrieve(ppFrames, iFrames - nread);
 			if (nahead > 0)
 				nread += m_pRingBuffer->write(ppFrames, nahead);
 		}
@@ -862,18 +870,19 @@ int qtractorAudioBuffer::flushFrames ( unsigned int iFrames )
 	int nread = 0;
 
 	// Flush time-stretch processing...
-	if (m_pTimeStretch) {
+	if (m_pTimeStretcher) {
 		unsigned int nahead = iFrames;
-		m_pTimeStretch->flushInput();
-		while (nahead > 0 && nread < (int) iFrames) {
-			nahead = m_pTimeStretch->receiveFrames(m_ppFrames, iFrames - nread);
+		m_pTimeStretcher->flush();
+		while (nahead > 0 && nread < int(iFrames)) {
+			nahead = m_pTimeStretcher->retrieve(m_ppFrames, iFrames - nread);
 			if (nahead > 0)
 				nread += m_pRingBuffer->write(m_ppFrames, nahead);
 		}
 	}
 
 	// Zero-flush till known end-of-clip (avoid sure drifting)...
-	if (m_iWriteOffset + nread < m_iOffset + m_iLength) {
+	if (nread < int(iFrames)
+		&& m_iWriteOffset + nread < m_iOffset + m_iLength) {
 		unsigned int nahead = iFrames - nread;
 		for (unsigned int i = 0; i < m_iChannels; ++i)
 			::memset(m_ppFrames[i], 0, nahead * sizeof(float));
@@ -1239,6 +1248,26 @@ bool qtractorAudioBuffer::isTimeStretch (void) const
 }
 
 
+// Pitch-shift factor.
+void qtractorAudioBuffer::setPitchShift ( float fPitchShift )
+{
+	m_bPitchShift = (fPitchShift > 0.05f && fPitchShift < 1.0f - 1e-3f)
+		|| (fPitchShift > 1.0f + 1e-3f && fPitchShift < 5.0f);
+
+	m_fPitchShift = (m_bPitchShift ? fPitchShift : 1.0f);
+}
+
+float qtractorAudioBuffer::pitchShift (void) const
+{
+	return m_fPitchShift;
+}
+
+bool qtractorAudioBuffer::isPitchShift (void) const
+{
+	return m_bPitchShift;
+}
+
+
 // Sample-rate converter type (global option).
 int qtractorAudioBuffer::g_iResampleType = 2;	// SRC_SINC_FASTEST;
 
@@ -1253,17 +1282,29 @@ int qtractorAudioBuffer::resampleType (void)
 }
 
 
-// Time stretch quick-seek mode (global option).
-bool qtractorAudioBuffer::g_bQuickSeek = false;
+// WSOLA time-stretch modes (global options).
+bool qtractorAudioBuffer::g_bWsolaTimeStretch = true;
+bool qtractorAudioBuffer::g_bWsolaQuickSeek   = false;
 
-void qtractorAudioBuffer::setQuickSeek ( bool bQuickSeek )
+void qtractorAudioBuffer::setWsolaTimeStretch ( bool bWsolaTimeStretch )
 {
-	g_bQuickSeek = bQuickSeek;
+	g_bWsolaTimeStretch = bWsolaTimeStretch;
 }
 
-bool qtractorAudioBuffer::isQuickSeek (void)
+bool qtractorAudioBuffer::isWsolaTimeStretch (void)
 {
-	return g_bQuickSeek;
+	return g_bWsolaTimeStretch;
+}
+
+
+void qtractorAudioBuffer::setWsolaQuickSeek ( bool bWsolaQuickSeek )
+{
+	g_bWsolaQuickSeek = bWsolaQuickSeek;
+}
+
+bool qtractorAudioBuffer::isWsolaQuickSeek (void)
+{
+	return g_bWsolaQuickSeek;
 }
 
 

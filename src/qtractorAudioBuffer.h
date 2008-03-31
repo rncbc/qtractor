@@ -38,7 +38,7 @@
 
 // Forward declarations.
 class qtractorAudioBufferThread;
-class qtractorTimeStretch;
+class qtractorTimeStretcher;
 
 
 //----------------------------------------------------------------------
@@ -106,6 +106,11 @@ public:
 	float timeStretch() const;
 	bool isTimeStretch() const;
 
+	// Pitch-shift factor.
+	void setPitchShift(float fPitchShift);
+	float pitchShift() const;
+	bool isPitchShift() const;
+
 	// Initial thread-sync executive (if file is on read mode,
 	// check whether it can be cache-loaded integrally).
 	bool initSync();
@@ -123,9 +128,12 @@ public:
 	static void setResampleType(int iResampleType);
 	static int resampleType();
 
-	// Time stretch quick-seek mode (global option).
-	static void setQuickSeek(bool bQuickSeek);
-	static bool isQuickSeek();
+	// WSOLA time-stretch modes (global options).
+	static void setWsolaTimeStretch(bool bWsolaTimeStretch);
+	static bool isWsolaTimeStretch();
+
+	static void setWsolaQuickSeek(bool bWsolaQuickSeek);
+	static bool isWsolaQuickSeek();
 
 #ifdef DEBUG
 	void dump_state(const QString& sPrefix) const;
@@ -192,7 +200,10 @@ private:
 	bool           m_bTimeStretch;
 	float          m_fTimeStretch;
 
-	qtractorTimeStretch *m_pTimeStretch;
+	bool           m_bPitchShift;
+	float          m_fPitchShift;
+
+	qtractorTimeStretcher *m_pTimeStretcher;
 
 	float          m_fReadMixGain;
 
@@ -208,8 +219,9 @@ private:
 	// Sample-rate converter type global option.
 	static int     g_iResampleType;
 
-	// Time-stretch quick-seek mode global option.
-	static bool    g_bQuickSeek;
+	// Time-stretch mode global options.
+	static bool    g_bWsolaTimeStretch;
+	static bool    g_bWsolaQuickSeek;
 };
 
 

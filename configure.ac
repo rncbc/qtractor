@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(Qtractor, 0.1.2.908, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.1.2.909, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractorMainForm.ui)
 AC_CONFIG_HEADERS(config.h)
@@ -44,6 +44,12 @@ AC_ARG_ENABLE(libsamplerate,
   AC_HELP_STRING([--enable-libsamplerate], [enable libsamplerate interface (default=yes)]),
   [ac_libsamplerate="$enableval"],
   [ac_libsamplerate="yes"])
+
+# Enable librubberband availability.
+AC_ARG_ENABLE(liblo,
+  AC_HELP_STRING([--enable-librubberband], [enable librubberband interface (default=yes)]),
+  [ac_librubberband="$enableval"],
+  [ac_librubberband="yes"])
 
 # Enable liblo availability.
 AC_ARG_ENABLE(liblo,
@@ -127,6 +133,11 @@ AC_ARG_WITH(libmad,
 # Set for alternate libsamplerate installation dir.
 AC_ARG_WITH(libsamplerate,
   AC_HELP_STRING([--with-libsamplerate=PATH], [use alternate libsamplerate path]),
+  [ac_with_paths="$ac_with_paths $withval"])
+
+# Set for alternate librubberband installation dir.
+AC_ARG_WITH(librubberband,
+  AC_HELP_STRING([--with-librubberband=PATH], [use alternate librubberband path]),
   [ac_with_paths="$ac_with_paths $withval"])
 
 # Set for alternate liblo installation dir.
@@ -374,6 +385,18 @@ if test "x$ac_libsamplerate" = "xyes"; then
    fi
 fi
 
+# Check for optional librubberband library.
+if test "x$ac_librubberband" = "xyes"; then
+   AC_CHECK_LIB(rubberband, main, [ac_librubberband="yes"], [ac_librubberband="no"])
+   if test "x$ac_librubberband" = "xyes"; then
+      AC_DEFINE(CONFIG_LIBRUBBERBAND, 1, [Define if librubberband is available.])
+      ac_libs="$ac_libs -lrubberband"
+   else
+      AC_MSG_WARN([*** rubberband library not found.])
+      AC_MSG_WARN([*** Pitch-shifting support will be disabled.])
+   fi
+fi
+
 # Check for optional liblo library.
 if test "x$ac_liblo" = "xyes"; then
    AC_CHECK_LIB(lo, main, [ac_liblo="yes"], [ac_liblo="no"])
@@ -437,6 +460,14 @@ if test "x$ac_libsamplerate" = "xyes"; then
    AC_CHECK_HEADER(samplerate.h, [ac_samplerate_h="yes"], [ac_samplerate_h="no"])
    if test "x$ac_samplerate_h" = "xno"; then
       AC_MSG_ERROR([samplerate.h header file not found.])
+   fi
+fi
+
+# Check for rubberband headers.
+if test "x$ac_librubberband" = "xyes"; then
+   AC_CHECK_HEADER(rubberband/RubberBandStretcher.h, [ac_rubberband_h="yes"], [ac_rubberband_h="no"])
+   if test "x$ac_rubberband_h" = "xno"; then
+      AC_MSG_ERROR([RubberBandStretcher.h header file not found.])
    fi
 fi
 
@@ -533,6 +564,7 @@ echo "  General audio file support (libsndfile)  . . . . .: $ac_libsndfile"
 echo "  Ogg Vorbis audio file support (libvorbis)  . . . .: $ac_libvorbis"
 echo "  MPEG-1 Audio Layer 3 file support (libmad) . . . .: $ac_libmad"
 echo "  Sample-rate conversion support (libsamplerate) . .: $ac_libsamplerate"
+echo "  Pitch-shifting support (librubberband) . . . . . .: $ac_librubberband"
 echo "  OSC service support (liblo)  . . . . . . . . . . .: $ac_liblo"
 echo "  IEEE 32bit float optimizations . . . . . . . . . .: $ac_float32"
 echo "  SSE optimization support (x86) . . . . . . . . . .: $ac_sse"

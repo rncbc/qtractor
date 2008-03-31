@@ -816,7 +816,7 @@ void qtractorMainForm::setOptions ( qtractorOptions *pOptions )
 		m_pOptions->iMidiCaptureFormat);
 	// Set default audio-buffer quality...
 	qtractorAudioBuffer::setResampleType(m_pOptions->iAudioResampleType);
-	qtractorAudioBuffer::setQuickSeek(m_pOptions->bAudioQuickSeek);
+	qtractorAudioBuffer::setWsolaQuickSeek(m_pOptions->bAudioQuickSeek);
 
 	// Load (action) keyboard shortcuts...
 	m_pOptions->loadActionShortcuts(this);
@@ -2364,7 +2364,7 @@ void qtractorMainForm::viewOptions (void)
 		}
 		if (( bOldQuickSeek && !m_pOptions->bAudioQuickSeek) ||
 			(!bOldQuickSeek &&  m_pOptions->bAudioQuickSeek)) {
-			qtractorAudioBuffer::setQuickSeek(m_pOptions->bAudioQuickSeek);
+			qtractorAudioBuffer::setWsolaQuickSeek(m_pOptions->bAudioQuickSeek);
 			iNeedRestart |= RestartSession;
 		}
 		if (( bOldStdoutCapture && !m_pOptions->bStdoutCapture) ||

@@ -68,6 +68,7 @@ HEADERS += ../src/qtractorAbout.h \
            ../src/qtractorThumbView.h \
            ../src/qtractorTimeScale.h \
            ../src/qtractorTimeStretch.h \
+           ../src/qtractorTimeStretcher.h \
            ../src/qtractorTrack.h \
            ../src/qtractorTrackButton.h \
            ../src/qtractorTrackCommand.h \
@@ -152,6 +153,7 @@ SOURCES += ../src/main.cpp \
            ../src/qtractorThumbView.cpp \
            ../src/qtractorTimeScale.cpp \
            ../src/qtractorTimeStretch.cpp \
+           ../src/qtractorTimeStretcher.cpp \
            ../src/qtractorTrack.cpp \
            ../src/qtractorTrackButton.cpp \
            ../src/qtractorTrackCommand.cpp \
