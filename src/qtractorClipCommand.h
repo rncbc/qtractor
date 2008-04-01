@@ -64,6 +64,7 @@ public:
 	void fadeOutClip(qtractorClip *pClip, unsigned long iFadeOutLength,
 		qtractorClip::FadeType fadeOutType);
 	void timeStretchClip(qtractorClip *pClip, float fTimeStetch);
+	void pitchShiftClip(qtractorClip *pClip, float fPitchShift);
 
 	// Special clip record method.
 	bool addClipRecord(qtractorTrack *pTrack);
@@ -84,9 +85,10 @@ private:
 
 	// Primitive command types.
 	enum CommandType {
-		AddClip, RemoveClip,
-		FileClip, RenameClip, MoveClip, ResizeClip,
-		FadeInClip, FadeOutClip, TimeStretchClip
+		AddClip, RemoveClip, FileClip,
+		RenameClip, MoveClip, ResizeClip,
+		FadeInClip, FadeOutClip,
+		TimeStretchClip, PitchShiftClip
 	};
 
 	// Clip item struct.
@@ -98,7 +100,7 @@ private:
 				trackChannel(0), clipStart(0), clipOffset(0), clipLength(0),
 				fadeInLength(0), fadeInType(qtractorClip::Quadratic), 
 				fadeOutLength(0), fadeOutType(qtractorClip::Quadratic),
-				timeStretch(0.0f) {}
+				timeStretch(0.0f), pitchShift(0.0f) {}
 		// Item members.
 		CommandType    command;
 		qtractorClip  *clip;
@@ -115,6 +117,7 @@ private:
 		unsigned long  fadeOutLength;
 		qtractorClip::FadeType fadeOutType;
 		float          timeStretch;
+		float          pitchShift;
 	};
 
 	// Instance variables.

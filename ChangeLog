@@ -7,7 +7,7 @@ CVS HEAD
 
 - Audio clip pitch-shifting makes its first appearance, with
   the optional help from Chris Cannam's RubberBand library.
-  (EXPERIMENTAL PHASE ONE).
+  (EXPERIMENTAL PHASE TWO).
 
 - A new MIDI editor tool is available: note/pitch randomize.
 

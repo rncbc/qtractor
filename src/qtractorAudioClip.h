@@ -50,6 +50,10 @@ public:
 	void setTimeStretch(float fTimeStretch);
 	float timeStretch() const;
 
+	// Pitch-shifting.
+	void setPitchShift(float fPitchShift);
+	float pitchShift() const;
+
 	// Clip (re)open method.
 	void open();
 
@@ -100,6 +104,7 @@ private:
 	qtractorAudioPeak   *m_pPeak;
 
 	float m_fTimeStretch;
+	float m_fPitchShift;
 };
 
 

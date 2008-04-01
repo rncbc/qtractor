@@ -44,6 +44,7 @@ qtractorAudioClip::qtractorAudioClip ( qtractorTrack *pTrack )
 	m_pBuff = NULL;
 
 	m_fTimeStretch = 1.0f;
+	m_fPitchShift  = 1.0f;
 }
 
 // Copy constructor.
@@ -54,6 +55,7 @@ qtractorAudioClip::qtractorAudioClip ( const qtractorAudioClip& clip )
 	m_pBuff = NULL;
 
 	m_fTimeStretch = clip.timeStretch();
+	m_fPitchShift  = clip.pitchShift();
 
 	setFilename(clip.filename());
 }
@@ -78,6 +80,18 @@ void qtractorAudioClip::setTimeStretch ( float fTimeStretch )
 float qtractorAudioClip::timeStretch (void) const
 {
 	return m_fTimeStretch;
+}
+
+
+// Pitch-shift factor.
+void qtractorAudioClip::setPitchShift ( float fPitchShift )
+{
+	m_fPitchShift = fPitchShift;
+}
+
+float qtractorAudioClip::pitchShift (void) const
+{
+	return m_fPitchShift;
 }
 
 
@@ -121,6 +135,7 @@ bool qtractorAudioClip::openAudioFile ( const QString& sFilename, int iMode )
 	m_pBuff->setOffset(clipOffset());
 	m_pBuff->setLength(clipLength());
 	m_pBuff->setTimeStretch(m_fTimeStretch);
+	m_pBuff->setPitchShift(m_fPitchShift);
 
 	if (!m_pBuff->open(sFilename, iMode)) {
 		delete m_pBuff;
@@ -409,6 +424,9 @@ QString qtractorAudioClip::toolTip (void) const
 			if (m_pBuff->isTimeStretch())
 				sToolTip += QObject::tr("\n\t(%1% time stretch)")
 					.arg(100.0f * m_pBuff->timeStretch(), 0, 'g', 3);
+			if (m_pBuff->isPitchShift())
+				sToolTip += QObject::tr("\n\t(%1% pitch shift)")
+					.arg(100.0f * m_pBuff->pitchShift(), 0, 'g', 3);
 		}
 	}
 
@@ -433,6 +451,8 @@ bool qtractorAudioClip::loadClipElement (
 			qtractorAudioClip::setFilename(eChild.text());
 		else if (eChild.tagName() == "time-stretch")
 			qtractorAudioClip::setTimeStretch(eChild.text().toFloat());
+		else if (eChild.tagName() == "pitch-shift")
+			qtractorAudioClip::setPitchShift(eChild.text().toFloat());
 	}
 
 	return true;
@@ -447,6 +467,8 @@ bool qtractorAudioClip::saveClipElement (
 		qtractorAudioClip::filename(), &eAudioClip);
 	pDocument->saveTextElement("time-stretch",
 		QString::number(qtractorAudioClip::timeStretch()), &eAudioClip);
+	pDocument->saveTextElement("pitch-shift",
+		QString::number(qtractorAudioClip::pitchShift()), &eAudioClip);
 	pElement->appendChild(eAudioClip);
 
 	return true;

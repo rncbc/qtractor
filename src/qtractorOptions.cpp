@@ -95,6 +95,7 @@ qtractorOptions::qtractorOptions (void)
 	iAudioCaptureQuality = m_settings.value("/CaptureQuality", 4).toInt();
 	iAudioResampleType   = m_settings.value("/ResampleType", 2).toInt();
 	bAudioAutoTimeStretch = m_settings.value("/AutoTimeStretch", true).toBool();
+	bAudioTimeStretch    = m_settings.value("/TimeStretch", true).toBool();
 	bAudioQuickSeek      = m_settings.value("/QuickSeek", false).toBool();
 	bAudioPlayerBus      = m_settings.value("/PlayerBus", false).toBool();
 	bAudioMetroBus       = m_settings.value("/MetroBus", false).toBool();
@@ -253,6 +254,7 @@ qtractorOptions::~qtractorOptions (void)
 	m_settings.setValue("/CaptureQuality", iAudioCaptureQuality);
 	m_settings.setValue("/ResampleType", iAudioResampleType);
 	m_settings.setValue("/AutoTimeStretch", bAudioAutoTimeStretch);
+	m_settings.setValue("/TimeStretch", bAudioTimeStretch);
 	m_settings.setValue("/QuickSeek", bAudioQuickSeek);
 	m_settings.setValue("/PlayerBus", bAudioPlayerBus);
 	m_settings.setValue("/MetroBus", bAudioMetroBus);

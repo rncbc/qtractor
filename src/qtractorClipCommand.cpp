@@ -165,6 +165,15 @@ void qtractorClipCommand::timeStretchClip ( qtractorClip *pClip,
 }
 
 
+void qtractorClipCommand::pitchShiftClip ( qtractorClip *pClip,
+	float fPitchShift )
+{
+	Item *pItem = new Item(PitchShiftClip, pClip, pClip->track());
+	pItem->pitchShift = fPitchShift;
+	m_items.append(pItem);
+}
+
+
 // Special clip record nethod.
 bool qtractorClipCommand::addClipRecord ( qtractorTrack *pTrack )
 {
@@ -392,6 +401,18 @@ bool qtractorClipCommand::execute ( bool bRedo )
 				pAudioClip->updateClipTime();	// Care of tempo change.
 				pAudioClip->open();
 				pItem->timeStretch = fOldTimeStretch;
+			}
+			break;
+		}
+		case PitchShiftClip: {
+			qtractorAudioClip *pAudioClip = NULL;
+			if (pTrack->trackType() == qtractorTrack::Audio)
+				pAudioClip = static_cast<qtractorAudioClip *> (pClip);
+			if (pAudioClip) {
+				float fOldPitchShift = pAudioClip->pitchShift();
+				pAudioClip->setPitchShift(pItem->pitchShift);
+				pAudioClip->open();
+				pItem->pitchShift = fOldPitchShift;
 			}
 			break;
 		}

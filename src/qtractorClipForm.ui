@@ -431,7 +431,7 @@
       <string>Audio</string>
      </property>
      <layout class="QGridLayout" >
-      <item row="0" column="2" colspan="2" >
+      <item row="0" column="4" >
        <spacer>
         <property name="orientation" >
          <enum>Qt::Horizontal</enum>
@@ -464,7 +464,7 @@
        <widget class="QDoubleSpinBox" name="TimeStretchSpinBox" >
         <property name="minimumSize" >
          <size>
-          <width>60</width>
+          <width>66</width>
           <height>0</height>
          </size>
         </property>
@@ -478,13 +478,54 @@
          <number>1</number>
         </property>
         <property name="minimum" >
-         <double>1.000000000000000</double>
+         <double>1.0</double>
         </property>
         <property name="maximum" >
-         <double>300.000000000000000</double>
+         <double>300.0</double>
         </property>
         <property name="value" >
-         <double>100.000000000000000</double>
+         <double>100.0</double>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="2" >
+       <widget class="QLabel" name="PitchShiftTextLabel" >
+        <property name="text" >
+         <string>Pitch S&amp;hift:</string>
+        </property>
+        <property name="alignment" >
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+        <property name="buddy" >
+         <cstring>PitchShiftSpinBox</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="3" >
+       <widget class="QDoubleSpinBox" name="PitchShiftSpinBox" >
+        <property name="minimumSize" >
+         <size>
+          <width>66</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="toolTip" >
+         <string>Clip pitch-shift percentage</string>
+        </property>
+        <property name="suffix" >
+         <string> %</string>
+        </property>
+        <property name="decimals" >
+         <number>1</number>
+        </property>
+        <property name="minimum" >
+         <double>1.0</double>
+        </property>
+        <property name="maximum" >
+         <double>300.0</double>
+        </property>
+        <property name="value" >
+         <double>100.0</double>
         </property>
        </widget>
       </item>
@@ -553,6 +594,7 @@
   <tabstop>FadeInTypeComboBox</tabstop>
   <tabstop>FadeOutLengthSpinBox</tabstop>
   <tabstop>FadeOutTypeComboBox</tabstop>
+  <tabstop>PitchShiftSpinBox</tabstop>
   <tabstop>TimeStretchSpinBox</tabstop>
   <tabstop>OkPushButton</tabstop>
   <tabstop>CancelPushButton</tabstop>

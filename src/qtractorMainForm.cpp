@@ -816,6 +816,7 @@ void qtractorMainForm::setOptions ( qtractorOptions *pOptions )
 		m_pOptions->iMidiCaptureFormat);
 	// Set default audio-buffer quality...
 	qtractorAudioBuffer::setResampleType(m_pOptions->iAudioResampleType);
+	qtractorAudioBuffer::setWsolaTimeStretch(m_pOptions->bAudioTimeStretch);
 	qtractorAudioBuffer::setWsolaQuickSeek(m_pOptions->bAudioQuickSeek);
 
 	// Load (action) keyboard shortcuts...
@@ -2333,6 +2334,7 @@ void qtractorMainForm::viewOptions (void)
 	int     iOldMaxRecentFiles     = m_pOptions->iMaxRecentFiles;
 	int     iOldDisplayFormat      = m_pOptions->iDisplayFormat;
 	int     iOldResampleType       = m_pOptions->iAudioResampleType;
+	bool    bOldTimeStretch        = m_pOptions->bAudioTimeStretch;
 	bool    bOldQuickSeek          = m_pOptions->bAudioQuickSeek;
 	bool    bOldAudioPlayerBus     = m_pOptions->bAudioPlayerBus;
 	bool    bOldAudioMetronome     = m_pOptions->bAudioMetronome;
@@ -2360,6 +2362,11 @@ void qtractorMainForm::viewOptions (void)
 		// Check wheather something immediate has changed.
 		if (iOldResampleType != m_pOptions->iAudioResampleType) {
 			qtractorAudioBuffer::setResampleType(m_pOptions->iAudioResampleType);
+			iNeedRestart |= RestartSession;
+		}
+		if (( bOldTimeStretch && !m_pOptions->bAudioTimeStretch) ||
+			(!bOldTimeStretch &&  m_pOptions->bAudioTimeStretch)) {
+			qtractorAudioBuffer::setWsolaTimeStretch(m_pOptions->bAudioTimeStretch);
 			iNeedRestart |= RestartSession;
 		}
 		if (( bOldQuickSeek && !m_pOptions->bAudioQuickSeek) ||
@@ -2759,6 +2766,11 @@ void qtractorMainForm::helpAbout (void)
 #ifndef CONFIG_LIBSAMPLERATE
 	sText += "<small><font color=\"red\">";
 	sText += tr("Sample-rate conversion (libsamplerate) disabled.");
+	sText += "</font></small><br />";
+#endif
+#ifndef CONFIG_LIBRUBBERBAND
+	sText += "<small><font color=\"red\">";
+	sText += tr("Pitch-shifting support (librubberband) disabled.");
 	sText += "</font></small><br />";
 #endif
 #ifndef CONFIG_LIBLO

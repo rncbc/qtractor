@@ -110,6 +110,9 @@ qtractorClipForm::qtractorClipForm (
 	QObject::connect(m_ui.TimeStretchSpinBox,
 		SIGNAL(valueChanged(double)),
 		SLOT(changed()));
+	QObject::connect(m_ui.PitchShiftSpinBox,
+		SIGNAL(valueChanged(double)),
+		SLOT(changed()));
 	QObject::connect(m_ui.OkPushButton,
 		SIGNAL(clicked()),
 		SLOT(accept()));
@@ -196,11 +199,17 @@ void qtractorClipForm::setClip ( qtractorClip *pClip, bool bClipNew )
 		m_ui.FilenameComboBox->setObjectName("Audio" + sSuffix);
 		qtractorAudioClip *pAudioClip
 			= static_cast<qtractorAudioClip *> (m_pClip);
-		if (pAudioClip)
+		if (pAudioClip) {
 			m_ui.TimeStretchSpinBox->setValue(100.0f * pAudioClip->timeStretch());
+			m_ui.PitchShiftSpinBox->setValue(100.0f * pAudioClip->pitchShift());
+		}
 		m_ui.TrackChannelTextLabel->setVisible(false);
 		m_ui.TrackChannelSpinBox->setVisible(false);
 		m_ui.AudioClipGroupBox->setVisible(true);
+	#ifndef CONFIG_LIBRUBBERBAND
+		m_ui.PitchShiftTextLabel->setEnabled(false);
+		m_ui.PitchShiftSpinBox->setEnabled(false);	
+	#endif
 		break;
 	}
 	case qtractorTrack::Midi: {
@@ -281,6 +290,7 @@ void qtractorClipForm::accept (void)
 		qtractorClip::FadeType fadeOutType
 			= fadeTypeFromIndex(m_ui.FadeOutTypeComboBox->currentIndex());
 		float fTimeStretch = 0.01f * m_ui.TimeStretchSpinBox->value();
+		float fPitchShift  = 0.01f * m_ui.PitchShiftSpinBox->value();
 		int iFileChange = 0;
 		// It depends whether we're adding a new clip or not...
 		if (m_bClipNew) {
@@ -296,6 +306,7 @@ void qtractorClipForm::accept (void)
 					= static_cast<qtractorAudioClip *> (m_pClip);
 				if (pAudioClip) {
 					pAudioClip->setTimeStretch(fTimeStretch);
+					pAudioClip->setPitchShift(fPitchShift);
 					iFileChange++;
 				}
 				break;
@@ -341,6 +352,8 @@ void qtractorClipForm::accept (void)
 				if (pAudioClip) {
 					if (::fabs(fTimeStretch - pAudioClip->timeStretch()) < 0.001f)
 						fTimeStretch = 0.0f;
+					if (::fabs(fPitchShift - pAudioClip->pitchShift()) < 0.001f)
+						fPitchShift = 0.0f;
 				}
 				break;
 			}
@@ -368,6 +381,9 @@ void qtractorClipForm::accept (void)
 				pClipCommand->resizeClip(m_pClip,
 					iClipStart, iClipOffset, iClipLength, fTimeStretch);
 			}
+			// Pitch-shifting changes...
+			if (fPitchShift > 0.0f)
+				pClipCommand->pitchShiftClip(m_pClip, fPitchShift);
 			// Fade in changes...
 			if (iFadeInLength != m_pClip->fadeInLength()
 				|| fadeInType != m_pClip->fadeInType())
