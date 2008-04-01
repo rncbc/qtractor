@@ -1,6 +1,6 @@
 %define name    @PACKAGE_TARNAME@
 %define version @PACKAGE_VERSION@
-%define release 16
+%define release 17
 %define prefix  @ac_prefix@
 
 Summary:	An Audio/MIDI multi-track sequencer.
@@ -21,6 +21,7 @@ Requires:	alsa
 Requires:	libsndfile >= 1.0.11
 Requires:	libvorbis
 Requires:	libsamplerate
+Requires:	librubberband1 >= 1.0.1
 Requires:	mad
 Requires:	liblo
 
@@ -29,8 +30,9 @@ BuildRequires:	jack-devel >= 0.100.0
 BuildRequires:	alsa-devel
 BuildRequires:	libsndfile-devel >= 1.0.11
 BuildRequires:	libvorbis-devel
-BuildRequires:	libsamplerate-devel
 BuildRequires:	mad-devel
+BuildRequires:	libsamplerate-devel
+BuildRequires:	librubberband-devel >= 1.0.1
 BuildRequires:	liblo-devel
 BuildRequires:	ladspa
 BuildRequires:	dssi
@@ -67,6 +69,8 @@ specially dedicated to the personal home-studio.
 %{_datadir}/pixmaps/%{name}.png
 
 %changelog
+* Tue Apr 1 2008 Rui Nuno Capela <rncbc@users.sourceforge.net>
+- librubberband requirement added.
 * Sun Mar 23 2008 Rui Nuno Capela <rncbc@users.sourceforge.net>
 - Frantic Dame release.
 * Sat Feb 16 2008 Rui Nuno Capela <rncbc@users.sourceforge.net>

@@ -684,6 +684,8 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 	unsigned char *pSysex   = NULL;
 	unsigned short iSysex   = 0;
 
+	int iAlsaPort = pEv->dest.port;
+
 	// - capture quantization...
 	if (m_iCaptureQuantize > 0) {
 		unsigned long q = session()->ticksPerBeat() / m_iCaptureQuantize;
@@ -762,7 +764,7 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 		if (pSysex[1] == 0x7f && pSysex[3] == 0x06
 			// check if it was intended to our input control bus!
 			&& m_pIControlBus
-			&& m_pIControlBus->alsaPort() == pEv->dest.port) {
+			&& m_pIControlBus->alsaPort() == iAlsaPort) {
 			// Post the stuffed event...
 			if (m_pNotifyWidget) {
 				QApplication::postEvent(m_pNotifyWidget,
@@ -788,7 +790,7 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 			&& (pTrack->isMidiOmni() || pTrack->midiChannel() == iChannel)) {
 			qtractorMidiBus *pMidiBus
 				= static_cast<qtractorMidiBus *> (pTrack->inputBus());
-			if (pMidiBus && pMidiBus->alsaPort() == pEv->dest.port) {
+			if (pMidiBus && pMidiBus->alsaPort() == iAlsaPort) {
 				// Is it actually recording?...
 				qtractorMidiClip *pMidiClip
 					= static_cast<qtractorMidiClip *> (pTrack->clipRecord());
@@ -826,7 +828,7 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 	for (qtractorBus *pBus = buses().first(); pBus; pBus = pBus->next()) {
 		qtractorMidiBus *pMidiBus
 			= static_cast<qtractorMidiBus *> (pBus);
-		if (pMidiBus && pMidiBus->alsaPort() == pEv->dest.port) {
+		if (pMidiBus && pMidiBus->alsaPort() == iAlsaPort) {
 			// Input monitoring...
 			if (pMidiBus->midiMonitor_in())
 				pMidiBus->midiMonitor_in()->enqueue(type, data2);

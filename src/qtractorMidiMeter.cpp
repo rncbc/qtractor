@@ -35,7 +35,7 @@
 
 // The decay rates (magic goes here :).
 // - value decay rate (faster)
-#define QTRACTOR_MIDI_METER_DECAY_RATE1		(1.0f - 1E-4f)
+#define QTRACTOR_MIDI_METER_DECAY_RATE1		(1.0f - 1E-5f)
 // - peak decay rate (slower)
 #define QTRACTOR_MIDI_METER_DECAY_RATE2		(1.0f - 1E-6f)
 
