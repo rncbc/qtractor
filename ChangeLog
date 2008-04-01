@@ -5,9 +5,16 @@ ChangeLog
 
 CVS HEAD
 
+- When armed for recording, MIDI tracks are now monitored and
+  filtered through their own output bus, thus having the same
+  hehavior for audio tracks; this also implies that all record
+  armed tracks won't playback their current content material
+  when recording is engaged and rolling; track mute and solo
+  states are now honored on record monitoring (EXPERIMENTAL).
+
 - Audio clip pitch-shifting makes its first appearance, with
   the optional help from Chris Cannam's RubberBand library.
-  (EXPERIMENTAL PHASE TWO).
+  (EXPERIMENTAL).
 
 - A new MIDI editor tool is available: note/pitch randomize.
 

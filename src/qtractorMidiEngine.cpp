@@ -778,11 +778,13 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 	}
 
 	// Now check which bus and track we're into...
+	int iDrainOutput = 0;
 	for (qtractorTrack *pTrack = session()->tracks().first();
 			pTrack; pTrack = pTrack->next()) {
 		// Must be a MIDI track in capture/passthru
 		// mode and for the intended channel...
 		if (pTrack->trackType() == qtractorTrack::Midi && pTrack->isRecord()
+			&& !pTrack->isMute() && (!session()->soloTracks() || pTrack->isSolo())
 			&& (pTrack->isMidiOmni() || pTrack->midiChannel() == iChannel)) {
 			qtractorMidiBus *pMidiBus
 				= static_cast<qtractorMidiBus *> (pTrack->inputBus());
@@ -803,6 +805,19 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 					= static_cast<qtractorMidiMonitor *> (pTrack->monitor());
 				if (pMidiMonitor)
 					pMidiMonitor->enqueue(type, data2);
+				// Output monitoring on record...
+				pMidiBus = static_cast<qtractorMidiBus *> (pTrack->outputBus());
+				if (pMidiBus && pMidiBus->midiMonitor_out()) {
+					// MIDI-thru: same event redirected...
+					snd_seq_ev_set_source(pEv, pMidiBus->alsaPort());
+					snd_seq_ev_set_subs(pEv);
+					snd_seq_ev_set_direct(pEv);
+					snd_seq_event_output(m_pAlsaSeq, pEv);
+				//	snd_seq_drain_output(m_pAlsaSeq);
+					iDrainOutput++;
+					// Done with MIDI-thru.
+					pMidiBus->midiMonitor_out()->enqueue(type, data2);
+				}
 			}
 		}
 	}
@@ -822,12 +837,16 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 				snd_seq_ev_set_subs(pEv);
 				snd_seq_ev_set_direct(pEv);
 				snd_seq_event_output(m_pAlsaSeq, pEv);
-				snd_seq_drain_output(m_pAlsaSeq);
+			//	snd_seq_drain_output(m_pAlsaSeq);
+				iDrainOutput++;
 				// Done with MIDI-thru.
 				pMidiBus->midiMonitor_out()->enqueue(type, data2);
 			}
 		}
 	}
+
+	if (iDrainOutput > 0)
+		snd_seq_drain_output(m_pAlsaSeq);
 }
 
 
