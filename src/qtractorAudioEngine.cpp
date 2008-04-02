@@ -1347,9 +1347,6 @@ void qtractorAudioEngine::closePlayer (void)
 	while (!ATOMIC_TAS(&m_playerLock))
 		pSession->stabilize();
 
-	// Release player logically...
-	ATOMIC_SET(&m_playerLock, 0);
-
 	m_bPlayerOpen = false;
 
 	if (m_pPlayerBuff)

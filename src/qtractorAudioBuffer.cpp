@@ -850,7 +850,7 @@ int qtractorAudioBuffer::writeFrames (
 		int nread = 0;
 		unsigned int nahead = iFrames;
 		m_pTimeStretcher->process(ppFrames, nahead);
-		while (nahead > 0 && nread < (int) iFrames) {
+		while (nahead > 0 && nread < int(iFrames)) {
 			nahead = m_pTimeStretcher->retrieve(ppFrames, iFrames - nread);
 			if (nahead > 0)
 				nread += m_pRingBuffer->write(ppFrames, nahead);

@@ -373,10 +373,10 @@
              <string>Whether to apply WSOLA quick seek time-stretching</string>
             </property>
             <property name="text" >
-             <string>WSOLA &amp;quick seek</string>
+             <string>WSOLA quic&amp;k seek</string>
             </property>
             <property name="shortcut" >
-             <string>Alt+Q</string>
+             <string>Alt+K</string>
             </property>
            </widget>
           </item>
