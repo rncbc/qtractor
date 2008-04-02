@@ -97,7 +97,8 @@ qtractorAudioBuffer::qtractorAudioBuffer ( unsigned short iChannels,
 	m_iLoopEnd       = 0;
 
 	m_iSeekOffset    = 0;
-	m_iSeekPending   = 0;
+
+	ATOMIC_SET(&m_seekPending, 0);
 
 	m_ppFrames       = NULL;
 
@@ -318,7 +319,7 @@ void qtractorAudioBuffer::close (void)
 	m_bIntegral    = false;
 
 	m_iSeekOffset  = 0;
-	m_iSeekPending = 0;
+	ATOMIC_SET(&m_seekPending, 0);
 
 	m_fReadMixGain = 0.0f;
 }
@@ -590,7 +591,8 @@ bool qtractorAudioBuffer::seek ( unsigned long iFrame )
 
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorAudioBuffer[%p]::seek(%lu) pending(%d, %lu) wo=%lu ro=%lu",
-		this, iFrame, m_iSeekPending, m_iSeekOffset, m_iWriteOffset, m_iReadOffset);
+		this, iFrame, ATOMIC_GET(&m_seekPending), m_iSeekOffset,
+		m_iWriteOffset, m_iReadOffset);
 #endif
 
 	// Bad luck, gotta go straight down to disk...
@@ -599,7 +601,9 @@ bool qtractorAudioBuffer::seek ( unsigned long iFrame )
 	// Force out-of-sync...
 	m_bReadSync   = false;
 	m_iSeekOffset = iFrame;
-	m_iSeekPending++;
+
+	ATOMIC_INC(&m_seekPending);
+
 	// readSync();
 	if (m_pSyncThread)
 		m_pSyncThread->sync();
@@ -623,7 +627,8 @@ bool qtractorAudioBuffer::initSync (void)
 	m_bIntegral    = false;
 
 	m_iSeekOffset  = 0;
-	m_iSeekPending = 0;
+
+	ATOMIC_SET(&m_seekPending, 0);
 
 	// Reset running gain...
 	m_fReadMixGain = 0.0f;
@@ -632,7 +637,7 @@ bool qtractorAudioBuffer::initSync (void)
 	if (m_pFile->mode() & qtractorAudioFile::Read) {
 		// Set to initial offset...
 		m_iSeekOffset = m_iOffset;
-		m_iSeekPending++;
+		ATOMIC_INC(&m_seekPending);
 		// Initial buffer read in...
 		readSync();
 		// Check if fitted integrally...
@@ -659,7 +664,7 @@ void qtractorAudioBuffer::sync (void)
 
 	int mode = m_pFile->mode();
 	if (mode & qtractorAudioFile::Read)
-		do { readSync(); } while (m_iSeekPending > 0);
+		do { readSync(); } while (ATOMIC_GET(&m_seekPending));
 	if (mode & qtractorAudioFile::Write)
 		writeSync();
 }
@@ -701,8 +706,7 @@ void qtractorAudioBuffer::readSync (void)
 #endif
 
 	// Check whether we have some hard-seek pending...
-	if (m_iSeekPending > 0) {
-		m_iSeekPending = 0;
+	if (ATOMIC_GET(&m_seekPending)) {
 		// Do it...
 		if (!seekSync(m_iSeekOffset))
 			return;
@@ -711,6 +715,8 @@ void qtractorAudioBuffer::readSync (void)
 		// Override with new intended offset...
 		m_iWriteOffset = m_iSeekOffset;
 		m_iReadOffset  = m_iSeekOffset;
+		// Done it.
+		ATOMIC_SET(&m_seekPending, 0);
 	}
 
 	unsigned int ws = m_pRingBuffer->writable();
