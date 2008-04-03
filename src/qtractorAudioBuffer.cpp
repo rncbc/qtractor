@@ -582,8 +582,8 @@ bool qtractorAudioBuffer::seek ( unsigned long iFrame )
 
 	// Check if target is already cached...
 	if (iFrame >= ro && ro + rs >= iFrame) {
-		ATOMIC_SET(&m_seekPending, 0);
-		m_pRingBuffer->setReadIndex(ri + iFrame - ro);
+		if (m_bReadSync)
+			m_pRingBuffer->setReadIndex(ri + iFrame - ro);
 	//	m_iWriteOffset += iFrame - ro;
 		m_iReadOffset  += iFrame - ro;
 		return true;
@@ -665,6 +665,7 @@ void qtractorAudioBuffer::sync (void)
 	int mode = m_pFile->mode();
 	if (mode & qtractorAudioFile::Read)
 		do { readSync(); } while (ATOMIC_GET(&m_seekPending));
+	else
 	if (mode & qtractorAudioFile::Write)
 		writeSync();
 }
