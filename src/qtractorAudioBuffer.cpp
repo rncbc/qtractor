@@ -582,8 +582,8 @@ bool qtractorAudioBuffer::seek ( unsigned long iFrame )
 
 	// Check if target is already cached...
 	if (iFrame >= ro && ro + rs >= iFrame) {
-		if (m_bReadSync)
-			m_pRingBuffer->setReadIndex(ri + iFrame - ro);
+		ATOMIC_SET(&m_seekPending, 0);
+		m_pRingBuffer->setReadIndex(ri + iFrame - ro);
 	//	m_iWriteOffset += iFrame - ro;
 		m_iReadOffset  += iFrame - ro;
 		return true;
@@ -707,6 +707,7 @@ void qtractorAudioBuffer::readSync (void)
 
 	// Check whether we have some hard-seek pending...
 	if (ATOMIC_GET(&m_seekPending)) {
+		ATOMIC_SET(&m_seekPending, 0);
 		// Do it...
 		if (!seekSync(m_iSeekOffset))
 			return;
@@ -715,8 +716,6 @@ void qtractorAudioBuffer::readSync (void)
 		// Override with new intended offset...
 		m_iWriteOffset = m_iSeekOffset;
 		m_iReadOffset  = m_iSeekOffset;
-		// Done it.
-		ATOMIC_SET(&m_seekPending, 0);
 	}
 
 	unsigned int ws = m_pRingBuffer->writable();
