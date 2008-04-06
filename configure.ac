@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(Qtractor, 0.1.2.918, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.1.2.919, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractorMainForm.ui)
 AC_CONFIG_HEADERS(config.h)
@@ -46,7 +46,7 @@ AC_ARG_ENABLE(libsamplerate,
   [ac_libsamplerate="yes"])
 
 # Enable librubberband availability.
-AC_ARG_ENABLE(liblo,
+AC_ARG_ENABLE(librubberband,
   AC_HELP_STRING([--enable-librubberband], [enable librubberband interface (default=yes)]),
   [ac_librubberband="$enableval"],
   [ac_librubberband="yes"])

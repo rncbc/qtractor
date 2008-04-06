@@ -477,7 +477,7 @@
       <item>
        <widget class="QLabel" name="BackgroundColorTextLabel" >
         <property name="text" >
-         <string>&amp;Background:</string>
+         <string>Bac&amp;kground:</string>
         </property>
         <property name="alignment" >
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
