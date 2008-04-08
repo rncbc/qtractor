@@ -153,7 +153,7 @@ void qtractorMidiEditView::updateContentsWidth ( int iContentsWidth )
 				iContentsWidth = iSeqWidth;
 		}
 		iContentsWidth += pTimeScale->pixelFromBeat(
-			2 * pTimeScale->beatsPerBar());
+			2 * pTimeScale->beatsPerBar()) + qtractorScrollView::width();
 	}
 
 	qtractorScrollView::resizeContents(

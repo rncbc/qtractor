@@ -5,6 +5,13 @@ ChangeLog
 
 CVS HEAD
 
+- Slack space in main tracks and MIDI clip editor views are now
+  proportionial to viewport width, leaving enough room for drag
+  and moving content past the current session length, specially
+  at the lower zoom levels.
+ 
+- Clip end time is now also shown on tool-tip.
+
 - When armed for recording, MIDI tracks are now monitored and
   filtered through their own output bus, thus having the same
   behavior as audio tracks; this also implies that all record
