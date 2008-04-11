@@ -1237,8 +1237,9 @@ unsigned long qtractorAudioBuffer::loopEnd (void) const
 // Time-stretch factor.
 void qtractorAudioBuffer::setTimeStretch ( float fTimeStretch )
 {
-	m_bTimeStretch = (fTimeStretch > 0.05f && fTimeStretch < 1.0f - 1e-3f)
-		|| (fTimeStretch > 1.0f + 1e-3f && fTimeStretch < 5.0f);
+	m_bTimeStretch =
+		(fTimeStretch > 0.1f && fTimeStretch < 1.0f - 1e-3f) ||
+		(fTimeStretch > 1.0f + 1e-3f && fTimeStretch < 4.0f);
 
 	m_fTimeStretch = (m_bTimeStretch ? fTimeStretch : 1.0f);
 }
@@ -1257,8 +1258,9 @@ bool qtractorAudioBuffer::isTimeStretch (void) const
 // Pitch-shift factor.
 void qtractorAudioBuffer::setPitchShift ( float fPitchShift )
 {
-	m_bPitchShift = (fPitchShift > 0.05f && fPitchShift < 1.0f - 1e-3f)
-		|| (fPitchShift > 1.0f + 1e-3f && fPitchShift < 5.0f);
+	m_bPitchShift =
+		(fPitchShift > 0.1f && fPitchShift < 1.0f - 1e-3f) ||
+		(fPitchShift > 1.0f + 1e-3f && fPitchShift < 4.0f);
 
 	m_fPitchShift = (m_bPitchShift ? fPitchShift : 1.0f);
 }

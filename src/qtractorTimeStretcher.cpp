@@ -43,7 +43,9 @@ qtractorTimeStretcher::qtractorTimeStretcher (
 		fTimeStretch = 0.0f;
 	}
 #ifdef CONFIG_LIBRUBBERBAND
-	if (fTimeStretch > 0.0f || fPitchShift > 0.0f) {
+	if (fTimeStretch > 0.0f ||
+		(fPitchShift > 0.1f && fPitchShift < 1.0f - 1e-3f) ||
+		(fPitchShift > 1.0f + 1e-3f && fPitchShift < 4.0f)) {
 		float fTimeRatio = 1.0f;
 		if (fTimeStretch > 0.0f)
 			fTimeRatio /= fTimeStretch;
