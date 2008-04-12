@@ -46,6 +46,8 @@ qtractorTimeStretcher::qtractorTimeStretcher (
 	if (fTimeStretch > 0.0f ||
 		(fPitchShift > 0.1f && fPitchShift < 1.0f - 1e-3f) ||
 		(fPitchShift > 1.0f + 1e-3f && fPitchShift < 4.0f)) {
+		if (fTimeStretch < 0.1f)
+			fTimeStretch = 1.0f;
 		m_pRubberBandStretcher
 			= new RubberBand::RubberBandStretcher(
 				iSampleRate, iChannels,
