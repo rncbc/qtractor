@@ -173,9 +173,8 @@ void qtractorAudioPeakThread::run (void)
 			m_iPeak = 0;
 			// The resample-aware internal peak period...
 			m_iPeriod = (unsigned short) ::lroundf(
-				(m_pPeakFile->timeStretch()
-					* float(c_iPeakPeriod * m_pAudioFile->sampleRate()))
-					/ float(m_pPeakFile->sampleRate()));
+				(float(c_iPeakPeriod * m_pAudioFile->sampleRate())) /
+				(float(m_pPeakFile->sampleRate()) * m_pPeakFile->timeStretch()));
 			// Write peak file header.
 			qtractorAudioPeakHeader hdr;
 			hdr.peakPeriod   = c_iPeakPeriod;

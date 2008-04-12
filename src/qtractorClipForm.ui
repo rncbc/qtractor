@@ -431,7 +431,7 @@
       <string>Audio</string>
      </property>
      <layout class="QGridLayout" >
-      <item row="0" column="4" >
+      <item row="0" column="2" >
        <spacer>
         <property name="orientation" >
          <enum>Qt::Horizontal</enum>
@@ -481,14 +481,14 @@
          <double>1.0</double>
         </property>
         <property name="maximum" >
-         <double>300.0</double>
+         <double>400.0</double>
         </property>
         <property name="value" >
          <double>100.0</double>
         </property>
        </widget>
       </item>
-      <item row="0" column="2" >
+      <item row="0" column="3" >
        <widget class="QLabel" name="PitchShiftTextLabel" >
         <property name="text" >
          <string>Pitch S&amp;hift:</string>
@@ -501,7 +501,7 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="3" >
+      <item row="0" column="4" >
        <widget class="QDoubleSpinBox" name="PitchShiftSpinBox" >
         <property name="minimumSize" >
          <size>
@@ -510,22 +510,22 @@
          </size>
         </property>
         <property name="toolTip" >
-         <string>Clip pitch-shift percentage</string>
+         <string>Clip pitch-shift in semitones</string>
         </property>
         <property name="suffix" >
-         <string> %</string>
+         <string> semitones</string>
         </property>
         <property name="decimals" >
          <number>1</number>
         </property>
         <property name="minimum" >
-         <double>1.0</double>
+         <double>-24.0</double>
         </property>
         <property name="maximum" >
-         <double>300.0</double>
+         <double>24.0</double>
         </property>
         <property name="value" >
-         <double>100.0</double>
+         <double>0.0</double>
         </property>
        </widget>
       </item>

@@ -36,9 +36,9 @@ qtractorTimeStretcher::qtractorTimeStretcher (
 	, m_bRubberBandFlush(false)
 #endif
 {
-	if (iFlags & WsolaTimeStretch) {
+	if (fTimeStretch > 0.0f && (iFlags & WsolaTimeStretch)) {
 		m_pTimeStretch = new qtractorTimeStretch(iChannels, iSampleRate);
-		m_pTimeStretch->setTempo(fTimeStretch);
+		m_pTimeStretch->setTempo(1.0f / fTimeStretch);
 		m_pTimeStretch->setQuickSeek(iFlags & WsolaQuickSeek);
 		fTimeStretch = 0.0f;
 	}
@@ -46,14 +46,11 @@ qtractorTimeStretcher::qtractorTimeStretcher (
 	if (fTimeStretch > 0.0f ||
 		(fPitchShift > 0.1f && fPitchShift < 1.0f - 1e-3f) ||
 		(fPitchShift > 1.0f + 1e-3f && fPitchShift < 4.0f)) {
-		float fTimeRatio = 1.0f;
-		if (fTimeStretch > 0.0f)
-			fTimeRatio /= fTimeStretch;
 		m_pRubberBandStretcher
 			= new RubberBand::RubberBandStretcher(
 				iSampleRate, iChannels,
 				RubberBand::RubberBandStretcher::OptionProcessRealTime,
-				fTimeRatio, fPitchShift);
+				fTimeStretch, fPitchShift);
 		m_ppRubberBandFrames = new float * [m_iRubberBandChannels];
 	}
 #endif

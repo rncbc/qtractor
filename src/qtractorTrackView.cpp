@@ -2004,8 +2004,8 @@ void qtractorTrackView::dragResizeDrop ( const QPoint& pos, bool bTimeStretch )
 		qtractorAudioClip *pAudioClip
 			= static_cast<qtractorAudioClip *> (m_pClipDrag);
 		if (pAudioClip) {
-			fTimeStretch = (float(m_pClipDrag->clipLength())
-				* pAudioClip->timeStretch()) / float(iClipLength);
+			fTimeStretch = (float(iClipLength) * pAudioClip->timeStretch())
+				/ float(m_pClipDrag->clipLength());
 		}
 	}
 

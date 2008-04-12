@@ -5,11 +5,17 @@ ChangeLog
 
 CVS HEAD
 
+- Time-stretching percent value gets its semantics inverted,
+  as thought consistent with ones general sense for relative
+  stretching ie., lower to shrink and higher to make longer.
+  this is a major up-side-down change and should affect all
+  sessions saved with time-stretched audio clips.
+
 - Slack space in main tracks and MIDI clip editor views are now
   proportionial to viewport width, leaving enough room for drag
   and moving content past the current session length, specially
   at the lower zoom levels.
- 
+
 - Clip end time is now also shown on tool-tip.
 
 - When armed for recording, MIDI tracks are now monitored and

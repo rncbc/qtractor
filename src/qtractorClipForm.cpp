@@ -36,7 +36,7 @@
 #include <QFileDialog>
 #include <QLineEdit>
 
-// Needed for fabs()
+// Needed for fabs(), logf() and powf()
 #include <math.h>
 
 
@@ -200,8 +200,10 @@ void qtractorClipForm::setClip ( qtractorClip *pClip, bool bClipNew )
 		qtractorAudioClip *pAudioClip
 			= static_cast<qtractorAudioClip *> (m_pClip);
 		if (pAudioClip) {
-			m_ui.TimeStretchSpinBox->setValue(100.0f * pAudioClip->timeStretch());
-			m_ui.PitchShiftSpinBox->setValue(100.0f * pAudioClip->pitchShift());
+			m_ui.TimeStretchSpinBox->setValue(
+				100.0f * pAudioClip->timeStretch());
+			m_ui.PitchShiftSpinBox->setValue(
+				12.0f * ::logf(pAudioClip->pitchShift()) / M_LN2);
 		}
 		m_ui.TrackChannelTextLabel->setVisible(false);
 		m_ui.TrackChannelSpinBox->setVisible(false);
@@ -290,7 +292,7 @@ void qtractorClipForm::accept (void)
 		qtractorClip::FadeType fadeOutType
 			= fadeTypeFromIndex(m_ui.FadeOutTypeComboBox->currentIndex());
 		float fTimeStretch = 0.01f * m_ui.TimeStretchSpinBox->value();
-		float fPitchShift  = 0.01f * m_ui.PitchShiftSpinBox->value();
+		float fPitchShift = ::powf(2.0f, m_ui.PitchShiftSpinBox->value() / 12.0f);
 		int iFileChange = 0;
 		// It depends whether we're adding a new clip or not...
 		if (m_bClipNew) {

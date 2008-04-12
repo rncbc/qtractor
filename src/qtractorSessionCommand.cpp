@@ -75,9 +75,8 @@ qtractorSessionTempoCommand::qtractorSessionTempoCommand (
 					if (pAudioClip) {
 						if (m_pClipCommand == NULL)
 							m_pClipCommand = new qtractorClipCommand(name());
-						float fTimeStretch
-							= (m_fTempo * pAudioClip->timeStretch())
-								/ pSession->tempo();
+						float fTimeStretch = m_fTempo
+							/ (pSession->tempo() * pAudioClip->timeStretch());
 						m_pClipCommand->timeStretchClip(pClip, fTimeStretch);
 					}
 				}
