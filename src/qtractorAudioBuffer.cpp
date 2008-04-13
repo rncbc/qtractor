@@ -110,7 +110,8 @@ qtractorAudioBuffer::qtractorAudioBuffer ( unsigned short iChannels,
 
 	m_pTimeStretcher = NULL;
 
-	m_fReadMixGain   = 0.0f;
+	m_fPrevGain      = 0.0f;
+	m_fNextGain      = 0.0f;
 
 #ifdef CONFIG_LIBSAMPLERATE
 	m_bResample      = false;
@@ -321,7 +322,8 @@ void qtractorAudioBuffer::close (void)
 	m_iSeekOffset  = 0;
 	ATOMIC_SET(&m_seekPending, 0);
 
-	m_fReadMixGain = 0.0f;
+	m_fPrevGain = 0.0f;
+	m_fNextGain = 0.0f;
 }
 
 
@@ -506,8 +508,8 @@ int qtractorAudioBuffer::readMix ( float **ppFrames, unsigned int iFrames,
 				nframes -= nread;
 				iOffset += nread;
 				m_pRingBuffer->setReadIndex(ls);
-				m_iReadOffset  = m_iOffset + ls;
-				m_fReadMixGain = 0.0f;
+				m_iReadOffset = m_iOffset + ls;
+				m_fNextGain = 0.0f;
 			}
 			iFrames = nframes;
 		} else {
@@ -515,8 +517,8 @@ int qtractorAudioBuffer::readMix ( float **ppFrames, unsigned int iFrames,
 			le += m_iOffset;
 			while (le >= m_iReadOffset && m_iReadOffset + nframes >= le) {
 				nframes -= (le - m_iReadOffset);
-				m_iReadOffset  = ls;
-				m_fReadMixGain = 0.0f;
+				m_iReadOffset = ls;
+				m_fNextGain = 0.0f;
 			}
 		}
 	}
@@ -555,7 +557,8 @@ bool qtractorAudioBuffer::seek ( unsigned long iFrame )
 		return false;
 
 	// Reset running gain...
-	m_fReadMixGain = 0.0f;
+	m_fPrevGain = 0.0f;
+	m_fNextGain = 0.0f;
 
 	// Special case on integral cached files...
 	if (m_bIntegral) {
@@ -631,7 +634,8 @@ bool qtractorAudioBuffer::initSync (void)
 	ATOMIC_SET(&m_seekPending, 0);
 
 	// Reset running gain...
-	m_fReadMixGain = 0.0f;
+	m_fPrevGain = 0.0f;
+	m_fNextGain = 0.0f;
 
 	// Read-ahead a whole bunch, if applicable...
 	if (m_pFile->mode() & qtractorAudioFile::Read) {
@@ -994,12 +998,20 @@ int qtractorAudioBuffer::readMixFrames (
 	float **ppFrames, unsigned int iFrames, unsigned short iChannels,
 	unsigned int iOffset, float fGain )
 {
+	if (iFrames == 0)
+		return 0;
+
 	unsigned int rs = m_pRingBuffer->readable();
 	if (rs == 0)
 		return 0;
 
+	if (m_fNextGain < m_fPrevGain)
+		fGain = m_fNextGain;
+	else
+		m_fNextGain = fGain;
+
 	// Reset running gain...
-	float fGainStep = (fGain - m_fReadMixGain) / float(iFrames);
+	float fGainStep = (fGain - m_fPrevGain) / float(iFrames);
 
 	if (iFrames > rs)
 		iFrames = rs;
@@ -1022,7 +1034,7 @@ int qtractorAudioBuffer::readMixFrames (
 	float **ppBuffer = m_pRingBuffer->buffer();
 	if (iChannels == iBuffers) {
 		for (i = 0; i < iBuffers; ++i) {
-			fGainIter = m_fReadMixGain;
+			fGainIter = m_fPrevGain;
 			for (n = 0; n < n1; ++n, fGainIter += fGainStep)
 				ppFrames[i][n + iOffset] += fGainIter * ppBuffer[i][n + r];
 			for (n = 0; n < n2; ++n, fGainIter += fGainStep)
@@ -1032,7 +1044,7 @@ int qtractorAudioBuffer::readMixFrames (
 	else if (iChannels > iBuffers) {
 		j = 0;
 		for (i = 0; i < iChannels; ++i) {
-			fGainIter = m_fReadMixGain;
+			fGainIter = m_fPrevGain;
 			for (n = 0; n < n1; ++n, fGainIter += fGainStep)
 				ppFrames[i][n + iOffset] += fGainIter * ppBuffer[j][n + r];
 			for (n = 0; n < n2; ++n, fGainIter += fGainStep)
@@ -1044,7 +1056,7 @@ int qtractorAudioBuffer::readMixFrames (
 	else { // (iChannels < iBuffers)
 		i = 0;
 		for (j = 0; j < iBuffers; ++j) {
-			fGainIter = m_fReadMixGain;
+			fGainIter = m_fPrevGain;
 			for (n = 0; n < n1; ++n, fGainIter += fGainStep)
 				ppFrames[i][n + iOffset] += fGainIter * ppBuffer[j][n + r];
 			for (n = 0; n < n2; ++n, fGainIter += fGainStep)
@@ -1057,7 +1069,7 @@ int qtractorAudioBuffer::readMixFrames (
 	m_pRingBuffer->setReadIndex(r + iFrames);
 
 	// Remember last gain.
-	m_fReadMixGain = fGain;
+	m_fPrevGain = m_fNextGain;
 
 	return iFrames;
 }
@@ -1134,7 +1146,8 @@ void qtractorAudioBuffer::reset ( bool bLooping )
 		if (m_pSyncThread)
 			m_pSyncThread->sync();
 	}
-	m_fReadMixGain = 0.0f;
+	m_fPrevGain = 0.0f;
+	m_fNextGain = 0.0f;
 #else
 	seek(iFrame);
 #endif
