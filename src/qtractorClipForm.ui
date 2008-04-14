@@ -90,14 +90,14 @@
        <height>22</height>
       </size>
      </property>
+     <property name="icon" >
+      <iconset resource="../icons/qtractor.qrc" >:/icons/fileOpen.png</iconset>
+     </property>
      <property name="focusPolicy" >
       <enum>Qt::TabFocus</enum>
      </property>
      <property name="toolTip" >
-      <string>Browse for clip filename</string>
-     </property>
-     <property name="text" >
-      <string>...</string>
+      <string>Browse for clip file</string>
      </property>
     </widget>
    </item>
