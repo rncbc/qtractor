@@ -718,6 +718,8 @@ qtractorAudioPeak* qtractorAudioPeakFactory::createPeak (
 	const QString& sFilename, unsigned int iSampleRate,
 	float fTimeStretch, const QString& sSessionDir )
 {
+	QMutexLocker locker(&m_mutex);
+
 	const QString sKey = sFilename + '_' + QString::number(fTimeStretch);
 	qtractorAudioPeakFile* pPeakFile = m_peaks.value(sKey, NULL);
 	if (pPeakFile == NULL) {
@@ -731,6 +733,8 @@ qtractorAudioPeak* qtractorAudioPeakFactory::createPeak (
 
 void qtractorAudioPeakFactory::removePeak ( qtractorAudioPeakFile *pPeakFile )
 {
+	QMutexLocker locker(&m_mutex);
+
 	m_peaks.remove(pPeakFile->filename()
 		+ '_' + QString::number(pPeakFile->timeStretch()));
 }

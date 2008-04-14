@@ -27,6 +27,8 @@
 #include <QFile>
 #include <QHash>
 
+#include <QMutex>
+
 // Forward declarations.
 class qtractorAudioPeakThread;
 class qtractorAudioPeakFactory;
@@ -187,6 +189,9 @@ public:
 	bool isAutoRemove() const;
 
 private:
+
+	// Factory mutex.
+	QMutex m_mutex;
 
 	// The list of managed peak files.
 	QHash<QString, qtractorAudioPeakFile *> m_peaks;
