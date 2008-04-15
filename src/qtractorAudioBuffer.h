@@ -141,8 +141,11 @@ public:
 
 protected:
 
-	// Sync mode methods.
+	// Read-sync mode methods (playback).
 	void readSync();
+	void readSyncIn();
+
+	// Write-sync mode method (recording).
 	void writeSync();
 
 	// Internal-seek sync executive.

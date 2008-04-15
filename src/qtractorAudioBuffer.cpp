@@ -232,7 +232,7 @@ bool qtractorAudioBuffer::open ( const QString& sFilename, int iMode )
 	// Allocate ring-buffer now.
 	m_pRingBuffer = new qtractorRingBuffer<float> (iChannels, m_iLength);
 	m_iThreshold  = (m_pRingBuffer->bufferSize() >> 2);
-	m_iBufferSize = m_iThreshold;
+	m_iBufferSize = (m_iThreshold >> 2);
 #ifdef CONFIG_LIBSAMPLERATE
 	if (m_bResample && m_fResampleRatio < 1.0f) {
 		unsigned int iMinBufferSize = (unsigned int) framesOut(m_iBufferSize);
@@ -668,7 +668,7 @@ void qtractorAudioBuffer::sync (void)
 
 	int mode = m_pFile->mode();
 	if (mode & qtractorAudioFile::Read)
-		do { readSync(); } while (ATOMIC_GET(&m_seekPending));
+		readSync();
 	else
 	if (mode & qtractorAudioFile::Write)
 		writeSync();
@@ -706,22 +706,35 @@ void qtractorAudioBuffer::syncExport (void)
 // Read-mode sync executive.
 void qtractorAudioBuffer::readSync (void)
 {
-#ifdef DEBUG
-	dump_state("+readSync()");
-#endif
+	// Keep seeking...
+	do {
+	
+		// Check whether we have some hard-seek pending...
+		if (ATOMIC_GET(&m_seekPending)) {
+			ATOMIC_SET(&m_seekPending, 0);
+			// Do it...
+			if (!seekSync(m_iSeekOffset))
+				return;
+			// Refill the whole buffer....
+			m_pRingBuffer->reset();
+			// Override with new intended offset...
+			m_iWriteOffset = m_iSeekOffset;
+			m_iReadOffset  = m_iSeekOffset;
+		}
 
-	// Check whether we have some hard-seek pending...
-	if (ATOMIC_GET(&m_seekPending)) {
-		ATOMIC_SET(&m_seekPending, 0);
-		// Do it...
-		if (!seekSync(m_iSeekOffset))
-			return;
-		// Refill the whole buffer....
-		m_pRingBuffer->reset();
-		// Override with new intended offset...
-		m_iWriteOffset = m_iSeekOffset;
-		m_iReadOffset  = m_iSeekOffset;
+		// Internal block-buffering...
+		readSyncIn();
 	}
+	while (ATOMIC_GET(&m_seekPending));
+}
+
+
+// Internal read-mode sync executive
+void qtractorAudioBuffer::readSyncIn (void)
+{
+#ifdef DEBUG
+	dump_state("+readSyncIn()");
+#endif
 
 	unsigned int ws = m_pRingBuffer->writable();
 	if (ws == 0)
@@ -735,7 +748,7 @@ void qtractorAudioBuffer::readSync (void)
 
 	bool bLooping = (ls < le && m_iWriteOffset < le);
 
-	while (nahead > 0) {
+	while (nahead > 0 && !ATOMIC_GET(&m_seekPending)) {
 		// Adjust request for sane size...
 		if (nahead > m_iBufferSize)
 			nahead = m_iBufferSize;
@@ -778,7 +791,7 @@ void qtractorAudioBuffer::readSync (void)
 	}
 
 #ifdef DEBUG
-	dump_state("-readSync()");
+	dump_state("-readSyncIn()");
 #endif
 }
 
