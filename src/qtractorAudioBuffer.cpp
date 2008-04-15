@@ -1167,7 +1167,7 @@ unsigned long qtractorAudioBuffer::framesIn ( unsigned long iFrames ) const
 #endif
 
 	if (m_bTimeStretch)
-		iFrames = (unsigned long) ((float) iFrames / m_fTimeStretch);
+		iFrames = (unsigned long) ((float) iFrames * m_fTimeStretch);
 
 	return iFrames;
 }
@@ -1180,7 +1180,7 @@ unsigned long qtractorAudioBuffer::framesOut ( unsigned long iFrames ) const
 #endif
 
 	if (m_bTimeStretch)
-		iFrames = (unsigned long) ((float) iFrames * m_fTimeStretch);
+		iFrames = (unsigned long) ((float) iFrames / m_fTimeStretch);
 
 	return iFrames;
 }
