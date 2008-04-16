@@ -172,8 +172,7 @@ void qtractorMidiMonitor::reset (void)
 			m_pSession->midiEngine()->readAhead() << 2) / m_iQueueSize;
 		// time start: the time (in ticks) of the
 		// current queue head slot;
-		m_iTimeStart = m_pSession->tickFromFrame(
-			m_pSession->audioEngine()->sessionCursor()->frameTime());
+		m_iTimeStart = m_pSession->midiEngine()->timeStart();
 		// Time to reset buffer...
 		for (unsigned int i = 0; i < m_iQueueSize; i++) {
 			m_pQueue[i].value = 0;

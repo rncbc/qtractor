@@ -510,9 +510,7 @@ qtractorMidiEngine::qtractorMidiEngine ( qtractorSession *pSession )
 	m_pOutputThread  = NULL;
 
 	m_iTimeStart     = 0;
-#ifdef QTRACTOR_SNAFU_DRIFT
 	m_iTimeDelta     = 0;
-#endif
 
 	m_pNotifyWidget  = NULL;
 	m_eNotifyMmcType = QEvent::None;
@@ -582,6 +580,13 @@ void qtractorMidiEngine::sync (void)
 	// Pure conditional thread slave syncronization...
 	if (m_pOutputThread && m_pOutputThread->midiCursorSync())
 		m_pOutputThread->sync();
+}
+
+
+// Drift corrected anchor.
+unsigned long qtractorMidiEngine::timeStart (void) const
+{
+	return m_iTimeStart;
 }
 
 
@@ -972,7 +977,12 @@ void qtractorMidiEngine::flush (void)
 	// Really flush MIDI output...
 	snd_seq_drain_output(m_pAlsaSeq);
 
-#ifdef QTRACTOR_SNAFU_DRIFT
+	qtractorSession *pSession = session();
+	if (pSession == NULL)
+		return;
+	if (pSession->isRecording()) // FIXME: Shouldn't it be on looping?
+		return;
+
 	// Time to have some corrective approach...?
 	snd_seq_queue_status_t *pQueueStatus;
 	snd_seq_queue_status_alloca(&pQueueStatus);
@@ -980,8 +990,8 @@ void qtractorMidiEngine::flush (void)
 			m_pAlsaSeq, m_iAlsaQueue, pQueueStatus) >= 0) {
 		unsigned long iMidiTime
 			= snd_seq_queue_status_get_tick_time(pQueueStatus);
-		unsigned long iAudioTime = session()->tickFromFrame(
-			session()->audioEngine()->sessionCursor()->frameTime());
+		unsigned long iAudioTime = pSession->tickFromFrame(
+			pSession->audioEngine()->sessionCursor()->frameTime());
 		long iTimeDelta = (iAudioTime - iMidiTime) - m_iTimeDelta;
 		if (iTimeDelta && iAudioTime > 0 && iMidiTime > 0) {
 			m_iTimeStart += iTimeDelta;
@@ -993,7 +1003,6 @@ void qtractorMidiEngine::flush (void)
 #endif
 		}
 	}
-#endif	// QTRACTOR_SNAFU_DRIFT
 }
 
 

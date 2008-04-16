@@ -5,6 +5,10 @@ ChangeLog
 
 CVS HEAD
 
+- Drifting correction among audio and MIDI engines is now back,
+  but avoided while recording or should it be while looping?
+  (EXPERIMENTAL REGRESSION)
+
 - Time-stretching percent value gets its semantics inverted,
   as thought consistent with ones general sense for relative
   stretching ie., lower to shrink and higher to make longer.
