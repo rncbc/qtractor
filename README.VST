@@ -32,7 +32,7 @@ the respective folder:
 Just copy those couple of files to somewhere on your system. You may
 choose to copy those files into some of the system standard include
 directories (eg. /usr/local/include or /usr/include). That way, all
-will be handled automagically by the above build steps. Otherwise,
+will be handled automagically by the usual build steps. Otherwise,
 you'll need do supply the include path yourself, as in the following:
 
   ./configure --with-vst=/path/to/vstsdk2.x/include

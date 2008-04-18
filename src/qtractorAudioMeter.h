@@ -154,7 +154,8 @@ public:
 	};
 
 	// Common resource accessors.
-	const QColor& color(int iIndex) const;
+	static void setColor(int iIndex, const QColor& color);
+	static const QColor& color(int iIndex);
 
 protected:
 
@@ -178,9 +179,9 @@ private:
 	qtractorAudioMeterValue **m_ppAudioValues;
 
 	float  m_fScale;
-
 	int    m_levels[LevelCount];
-	QColor m_colors[ColorCount];
+
+	static QColor g_colors[ColorCount];
 };
 
 	

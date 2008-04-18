@@ -710,8 +710,7 @@ void qtractorAudioBuffer::readSync (void)
 	do {
 	
 		// Check whether we have some hard-seek pending...
-		if (ATOMIC_GET(&m_seekPending)) {
-			ATOMIC_SET(&m_seekPending, 0);
+		if (ATOMIC_TAZ(&m_seekPending)) {
 			// Do it...
 			if (!seekSync(m_iSeekOffset))
 				return;

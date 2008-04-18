@@ -63,6 +63,18 @@ static inline float log10f2 ( float x )
 }
 
 
+// Audio meter color array.
+QColor qtractorAudioMeter::g_colors[qtractorAudioMeter::ColorCount] = {
+	QColor(240,  0, 20),	// ColorOver
+	QColor(240,160, 20),	// Color0dB
+	QColor(220,220, 20),	// Color3dB
+	QColor(160,220, 20),	// Color6dB
+	QColor( 40,160, 40),	// Color10dB
+	QColor( 20, 40, 20),	// ColorBack
+	QColor( 80, 80, 80) 	// ColorFore
+};
+
+
 //----------------------------------------------------------------------------
 // IEC standard dB scaling -- as borrowed from meterbridge (c) Steve Harris
 
@@ -314,14 +326,6 @@ qtractorAudioMeter::qtractorAudioMeter ( qtractorAudioMonitor *pAudioMonitor,
 	for (int i = 0; i < LevelCount; ++i)
 		m_levels[i] = 0;
 
-	m_colors[ColorOver] = QColor(240,  0, 20);
-	m_colors[Color0dB]  = QColor(240,160, 20);
-	m_colors[Color3dB]  = QColor(220,220, 20);
-	m_colors[Color6dB]  = QColor(160,220, 20);
-	m_colors[Color10dB] = QColor( 40,160, 40);
-	m_colors[ColorBack] = QColor( 20, 40, 20);
-	m_colors[ColorFore] = QColor( 80, 80, 80);
-
 	updatePanning();
 	updateGain();
 
@@ -464,10 +468,15 @@ qtractorAudioMonitor *qtractorAudioMeter::audioMonitor (void) const
 }
 
 
-// Common resource accessor.
-const QColor& qtractorAudioMeter::color ( int iIndex ) const
+// Common resource accessor (static).
+void qtractorAudioMeter::setColor ( int iIndex, const QColor& color )
 {
-	return m_colors[iIndex];
+	g_colors[iIndex] = color;
+}
+
+const QColor& qtractorAudioMeter::color ( int iIndex )
+{
+	return g_colors[iIndex];
 }
 
 

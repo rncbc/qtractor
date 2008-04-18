@@ -46,6 +46,19 @@
 #define QTRACTOR_MIDI_METER_HOLD_LEDON  	4
 
 
+// MIDI On/Off LED pixmap resource.
+int      qtractorMidiMeter::g_iLedRefCount = 0;
+QPixmap *qtractorMidiMeter::g_pLedPixmap[qtractorMidiMeter::LedCount];
+
+// MIDI meter color array.
+QColor qtractorMidiMeter::g_colors[qtractorMidiMeter::ColorCount] = {
+	QColor(160,220, 20),	// ColorPeak
+	QColor( 40,160, 40),	// ColorOver
+	QColor( 20, 40, 20),	// ColorBack
+	QColor( 80, 80, 80) 	// ColorFore
+};
+
+
 //----------------------------------------------------------------------------
 // qtractorMidiMeterScale -- Meter bridge scale widget.
 
@@ -194,17 +207,19 @@ void qtractorMidiMeterValue::resizeEvent ( QResizeEvent *pResizeEvent )
 qtractorMidiMeter::qtractorMidiMeter ( qtractorMidiMonitor *pMidiMonitor,
 	QWidget *pParent ) : qtractorMeter(pParent)
 {
-	m_pMidiMonitor = pMidiMonitor;
+	if (++g_iLedRefCount == 1) {
+		g_pLedPixmap[LedOff] = new QPixmap(":/icons/trackMidiOff.png");
+		g_pLedPixmap[LedOn]  = new QPixmap(":/icons/trackMidiOn.png");
+	}
 
-	m_pMidiPixmap[LedOff] = new QPixmap(":/icons/trackMidiOff.png");
-	m_pMidiPixmap[LedOn]  = new QPixmap(":/icons/trackMidiOn.png");
+	m_pMidiMonitor = pMidiMonitor;
 
 	m_iMidiCount = 0;
 
 	topLayout()->addStretch();
 	m_pMidiLabel = new QLabel(/*topWidget()*/);
 	m_pMidiLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-	m_pMidiLabel->setPixmap(*m_pMidiPixmap[LedOff]);
+	m_pMidiLabel->setPixmap(*g_pLedPixmap[LedOff]);
 	topLayout()->addWidget(m_pMidiLabel);
 
 	gainSpinBox()->setMinimum(0.0f);
@@ -218,11 +233,6 @@ qtractorMidiMeter::qtractorMidiMeter ( qtractorMidiMonitor *pMidiMonitor,
 
 	setGain(monitor()->gain());
 	setPanning(monitor()->panning());
-
-	m_colors[ColorPeak] = QColor(160,220, 20);
-	m_colors[ColorOver] = QColor( 40,160, 40);
-	m_colors[ColorBack] = QColor( 20, 40, 20);
-	m_colors[ColorFore] = QColor( 80, 80, 80);
 
 	updatePanning();
 	updateGain();
@@ -240,8 +250,10 @@ qtractorMidiMeter::~qtractorMidiMeter (void)
 
 	delete m_pMidiLabel;
 
-	delete m_pMidiPixmap[LedOff];
-	delete m_pMidiPixmap[LedOn];
+	if (--g_iLedRefCount == 0) {
+		delete g_pLedPixmap[LedOff];
+		delete g_pLedPixmap[LedOn];
+	}
 }
 
 
@@ -280,11 +292,11 @@ void qtractorMidiMeter::refresh (void)
 	bool bMidiOn = (m_pMidiMonitor->count() > 0);
 	if (bMidiOn) {
 		if (m_iMidiCount == 0)
-			m_pMidiLabel->setPixmap(*m_pMidiPixmap[LedOn]);
+			m_pMidiLabel->setPixmap(*g_pLedPixmap[LedOn]);
 		m_iMidiCount = QTRACTOR_MIDI_METER_HOLD_LEDON;
 	} else if (m_iMidiCount > 0) {
 		if (--m_iMidiCount == 0)
-			m_pMidiLabel->setPixmap(*m_pMidiPixmap[LedOff]);
+			m_pMidiLabel->setPixmap(*g_pLedPixmap[LedOff]);
 	}
 }
 
@@ -327,9 +339,14 @@ qtractorMidiMonitor *qtractorMidiMeter::midiMonitor (void) const
 
 
 // Common resource accessor.
-const QColor& qtractorMidiMeter::color ( int iIndex ) const
+void qtractorMidiMeter::setColor ( int iIndex, const QColor& color )
 {
-	return m_colors[iIndex];
+	g_colors[iIndex] = color;
+}
+
+const QColor& qtractorMidiMeter::color ( int iIndex )
+{
+	return g_colors[iIndex];
 }
 
 

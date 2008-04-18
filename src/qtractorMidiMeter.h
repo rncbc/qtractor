@@ -147,7 +147,8 @@ public:
 	};
 
 	// Common resource accessors.
-	const QColor& color(int iIndex) const;
+	static void setColor(int iIndex, const QColor& color);
+	static const QColor& color(int iIndex);
 
 protected:
 
@@ -165,14 +166,16 @@ private:
 	qtractorMidiMeterScale *m_pMidiScale;
 	qtractorMidiMeterValue *m_pMidiValue;
 
-	QColor m_colors[ColorCount];
+	QLabel      *m_pMidiLabel;
+	unsigned int m_iMidiCount;
 
 	// MIDI I/O LED pixmap stuff.
 	enum { LedOff = 0, LedOn = 1, LedCount = 2 };
 
-	QLabel      *m_pMidiLabel;
-	QPixmap     *m_pMidiPixmap[LedCount];
-	unsigned int m_iMidiCount;
+	static int      g_iLedRefCount;
+	static QPixmap *g_pLedPixmap[LedCount];
+
+	static QColor g_colors[ColorCount];
 };
 
 	

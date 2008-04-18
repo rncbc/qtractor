@@ -1,7 +1,7 @@
 // qtractorAtomic.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -140,6 +140,17 @@ static inline int ATOMIC_ADD ( qtractorAtomic *pVal, int iAddValue )
 
 #define ATOMIC_INC(a) ATOMIC_ADD((a), (+1))
 #define ATOMIC_DEC(a) ATOMIC_ADD((a), (-1))
+
+
+// Special test-and-zero primitive (invented here:)
+static inline int ATOMIC_TAZ ( qtractorAtomic *pVal )
+{
+	volatile int iOldValue;
+	do {
+		iOldValue = pVal->value;
+	} while (iOldValue && !ATOMIC_CAS(&(pVal->value), iOldValue, 0));
+	return iOldValue;
+}
 
 
 #if defined(__cplusplus)
