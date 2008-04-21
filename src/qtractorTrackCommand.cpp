@@ -542,6 +542,45 @@ bool qtractorTrackButtonCommand::undo (void)
 
 
 //----------------------------------------------------------------------
+// class qtractorTrackMonitorCommand - implementation.
+//
+
+// Constructor.
+qtractorTrackMonitorCommand::qtractorTrackMonitorCommand (
+	qtractorTrack *pTrack, bool bMonitor )
+	: qtractorTrackCommand(QObject::tr("track monitor"), pTrack)
+{
+	m_bMonitor = bMonitor;
+
+	setRefresh(false);
+}
+
+
+// Track-monitor command method.
+bool qtractorTrackMonitorCommand::redo (void)
+{
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm == NULL)
+		return false;
+
+	qtractorTrack *pTrack = track();
+	if (pTrack == NULL)
+		return false;
+
+	// Save undo value...
+	bool bMonitor = pTrack->isMonitor();
+
+	// Set track monitoring...
+	pTrack->setMonitor(m_bMonitor);
+
+	// Set undo value...
+	m_bMonitor = bMonitor;
+
+	return true;
+}
+
+
+//----------------------------------------------------------------------
 // class qtractorTrackGainCommand - implementation.
 //
 // Constructor.

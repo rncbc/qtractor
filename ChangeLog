@@ -5,6 +5,11 @@ ChangeLog
 
 CVS HEAD
 
+- Track record monitoring is now a state option, being toggled
+  from the Track/State/Monitor menu; applies both to audio end
+  MIDI tracks: when set all input will be pass-through to the
+  current assigned output bus, including track plug-ins chain.
+
 - Session dialog gets split in its own tab components, between
   descriptive, time and view configuration ones.
 
@@ -30,11 +35,10 @@ CVS HEAD
   behavior as audio tracks; this also implies that all record
   armed tracks won't playback their current content material
   when recording is engaged and rolling; track mute and solo
-  states are now honored on record monitoring (EXPERIMENTAL).
+  states are now honored on record monitoring.
 
 - Audio clip pitch-shifting makes its first appearance, with
   the optional help from Chris Cannam's RubberBand library.
-  (EXPERIMENTAL).
 
 - A new MIDI editor tool is available: note/pitch randomize.
 

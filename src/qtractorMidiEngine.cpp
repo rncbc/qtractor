@@ -813,17 +813,19 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 				if (pMidiMonitor)
 					pMidiMonitor->enqueue(type, data2);
 				// Output monitoring on record...
-				pMidiBus = static_cast<qtractorMidiBus *> (pTrack->outputBus());
-				if (pMidiBus && pMidiBus->midiMonitor_out()) {
-					// MIDI-thru: same event redirected...
-					snd_seq_ev_set_source(pEv, pMidiBus->alsaPort());
-					snd_seq_ev_set_subs(pEv);
-					snd_seq_ev_set_direct(pEv);
-					snd_seq_event_output(m_pAlsaSeq, pEv);
-				//	snd_seq_drain_output(m_pAlsaSeq);
-					iDrainOutput++;
-					// Done with MIDI-thru.
-					pMidiBus->midiMonitor_out()->enqueue(type, data2);
+				if (pTrack->isMonitor()) {
+					pMidiBus = static_cast<qtractorMidiBus *> (pTrack->outputBus());
+					if (pMidiBus && pMidiBus->midiMonitor_out()) {
+						// MIDI-thru: same event redirected...
+						snd_seq_ev_set_source(pEv, pMidiBus->alsaPort());
+						snd_seq_ev_set_subs(pEv);
+						snd_seq_ev_set_direct(pEv);
+						snd_seq_event_output(m_pAlsaSeq, pEv);
+					//	snd_seq_drain_output(m_pAlsaSeq);
+						iDrainOutput++;
+						// Done with MIDI-thru.
+						pMidiBus->midiMonitor_out()->enqueue(type, data2);
+					}
 				}
 			}
 		}

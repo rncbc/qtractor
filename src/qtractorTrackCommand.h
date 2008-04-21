@@ -231,6 +231,31 @@ private:
 
 
 //----------------------------------------------------------------------
+// class qtractorTrackMonitorCommand - declaration.
+//
+
+class qtractorTrackMonitorCommand : public qtractorTrackCommand
+{
+public:
+
+	// Constructor.
+	qtractorTrackMonitorCommand(qtractorTrack *pTrack, bool bMonitor);
+
+	// Track-monitoring command methods.
+	bool redo();
+	bool undo() { return redo(); }
+
+	// Monitoring value retrieval.
+	bool isMonitor() const { return m_bMonitor; }
+
+private:
+
+	// Instance variables.
+	bool  m_bMonitor;
+};
+
+
+//----------------------------------------------------------------------
 // class qtractorTrackGainCommand - declaration.
 //
 

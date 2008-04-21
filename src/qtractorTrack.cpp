@@ -47,6 +47,7 @@ void qtractorTrack::Properties::clear (void)
 {
 	trackName.clear();
 	trackType   = None;
+	monitor     = false;
 	record      = false;
 	mute        = false;
 	solo        = false;
@@ -70,6 +71,7 @@ qtractorTrack::Properties& qtractorTrack::Properties::copy (
 	if (&props != this) {
 		trackName   = props.trackName;
 		trackType   = props.trackType;
+		monitor     = props.monitor;
 		record      = props.record;
 		mute        = props.mute;
 		solo        = props.solo;
@@ -139,6 +141,7 @@ void qtractorTrack::clear (void)
 	m_props.midiBank          = -1;
 	m_props.midiProgram       = -1;
 
+	m_props.monitor = false;
 	m_props.record  = false;
 	m_props.mute    = false;
 	m_props.solo    = false;
@@ -325,6 +328,18 @@ void qtractorTrack::setTrackType ( qtractorTrack::TrackType trackType )
 	// Acquire a new midi-tag...
 	if (m_props.trackType == qtractorTrack::Midi)
 		m_pSession->acquireMidiTag(this);
+}
+
+
+// Record monitoring status accessors.
+bool qtractorTrack::isMonitor (void) const
+{
+	return m_props.monitor;
+}
+
+void qtractorTrack::setMonitor ( bool bMonitor )
+{
+	m_props.monitor = bMonitor;
 }
 
 
@@ -733,16 +748,16 @@ void qtractorTrack::process ( qtractorClip *pClip,
 						pInputBus->in(), nframes, pInputBus->channels());
 				}
 				// Post-monitoring override...
-				if (bOutput) {
+				if (bOutput && isMonitor()) {
 					// Plugin chain post-processing...
 					pOutputBus->buffer_prepare_in(pInputBus, nframes);
 					if (m_pPluginList->activated())
 						m_pPluginList->process(pOutputBus->buffer(), nframes);
 					pOutputBus->buffer_commit(nframes);
+					bOutput = false;
 				}
 			}
 		}
-		else
 		// Audio-output...
 		if (bOutput) {
 			// Output pre-monitoring...
@@ -927,6 +942,8 @@ bool qtractorTrack::loadElement ( qtractorSessionDocument *pDocument,
 					qtractorTrack::setSolo(pDocument->boolFromText(eState.text()));
 				else if (eState.tagName() == "record")
 					qtractorTrack::setRecord(pDocument->boolFromText(eState.text()));
+				else if (eState.tagName() == "monitor")
+					qtractorTrack::setMonitor(pDocument->boolFromText(eState.text()));
 				else if (eState.tagName() == "gain")
 					qtractorTrack::setGain(eState.text().toFloat());
 				else if (eState.tagName() == "panning")
@@ -1035,6 +1052,8 @@ bool qtractorTrack::saveElement ( qtractorSessionDocument *pDocument,
 		pDocument->textFromBool(qtractorTrack::isSolo()), &eState);
 	pDocument->saveTextElement("record",
 		pDocument->textFromBool(qtractorTrack::isRecord()), &eState);
+	pDocument->saveTextElement("monitor",
+		pDocument->textFromBool(qtractorTrack::isMonitor()), &eState);
 	pDocument->saveTextElement("gain",
 		QString::number(qtractorTrack::gain()), &eState);
 	pDocument->saveTextElement("panning",

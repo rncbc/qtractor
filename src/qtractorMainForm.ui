@@ -169,6 +169,8 @@
      <addaction name="trackStateRecordAction" />
      <addaction name="trackStateMuteAction" />
      <addaction name="trackStateSoloAction" />
+     <addaction name="separator" />
+     <addaction name="trackStateMonitorAction" />
     </widget>
     <widget class="QMenu" name="trackNavigateMenu" >
      <property name="title" >
@@ -868,6 +870,23 @@
    </property>
    <property name="statusTip" >
     <string>Show current track output bus connections</string>
+   </property>
+  </action>
+  <action name="trackStateMonitorAction" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="text" >
+    <string>M&amp;onitor</string>
+   </property>
+   <property name="iconText" >
+    <string>Monitor Track</string>
+   </property>
+   <property name="toolTip" >
+    <string>Monitor track</string>
+   </property>
+   <property name="statusTip" >
+    <string>Monitor current track for recording</string>
    </property>
   </action>
   <action name="trackStateRecordAction" >

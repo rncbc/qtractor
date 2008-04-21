@@ -131,6 +131,7 @@ public slots:
 	void trackProperties();
 	void trackInputs();
 	void trackOutputs();
+	void trackStateMonitor(bool bOn);
 	void trackStateRecord(bool bOn);
 	void trackStateMute(bool bOn);
 	void trackStateSolo(bool bOn);

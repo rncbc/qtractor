@@ -77,6 +77,10 @@ public:
 	void setTrackType(TrackType trackType);
 	TrackType trackType() const;
 
+	// Record monitoring state accessors.
+	void setMonitor(bool bMonitor);
+	bool isMonitor() const;
+
 	// Record status accessors.
 	void setRecord(bool bRecord);
 	bool isRecord() const;
@@ -212,6 +216,7 @@ public:
 		// Members.
 		QString        trackName;
 		TrackType      trackType;
+		bool           monitor;
 		bool           record;
 		bool           mute;
 		bool           solo;

@@ -463,6 +463,9 @@ qtractorMainForm::qtractorMainForm (
 	QObject::connect(m_ui.trackOutputsAction,
 		SIGNAL(triggered(bool)),
 		SLOT(trackOutputs()));
+	QObject::connect(m_ui.trackStateMonitorAction,
+		SIGNAL(triggered(bool)),
+		SLOT(trackStateMonitor(bool)));
 	QObject::connect(m_ui.trackStateRecordAction,
 		SIGNAL(triggered(bool)),
 		SLOT(trackStateRecord(bool)));
@@ -1854,6 +1857,19 @@ void qtractorMainForm::trackOutputs (void)
 }
 
 
+// Monitor current track.
+void qtractorMainForm::trackStateMonitor ( bool bOn )
+{
+	qtractorTrack *pTrack = NULL;
+	if (m_pTracks)
+		pTrack = m_pTracks->currentTrack();
+	if (pTrack == NULL)
+		return;
+
+	m_pCommands->exec(new qtractorTrackMonitorCommand(pTrack, bOn));
+}
+
+
 // Arm current track for recording.
 void qtractorMainForm::trackStateRecord ( bool bOn )
 {
@@ -3065,6 +3081,7 @@ void qtractorMainForm::stabilizeForm (void)
 
 	// Update track menu state...
 	if (bEnabled) {
+		m_ui.trackStateMonitorAction->setChecked(pTrack->isMonitor());
 		m_ui.trackStateRecordAction->setChecked(pTrack->isRecord());
 		m_ui.trackStateMuteAction->setChecked(pTrack->isMute());
 		m_ui.trackStateSoloAction->setChecked(pTrack->isSolo());

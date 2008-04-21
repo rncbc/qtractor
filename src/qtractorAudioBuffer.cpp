@@ -585,8 +585,8 @@ bool qtractorAudioBuffer::seek ( unsigned long iFrame )
 
 	// Check if target is already cached...
 	if (iFrame >= ro && ro + rs >= iFrame) {
-		if (m_bReadSync)
-			m_pRingBuffer->setReadIndex(ri + iFrame - ro);
+	//	if (m_bReadSync) // WTF?
+		m_pRingBuffer->setReadIndex(ri + iFrame - ro);
 	//	m_iWriteOffset += iFrame - ro;
 		m_iReadOffset  += iFrame - ro;
 		return true;
@@ -742,12 +742,11 @@ void qtractorAudioBuffer::readSyncIn (void)
 	unsigned int nahead = ws;
 	unsigned int ntotal = 0;
 
-	unsigned long ls = m_iLoopStart + m_iOffset;
-	unsigned long le = m_iLoopEnd   + m_iOffset;
-
-	bool bLooping = (ls < le && m_iWriteOffset < le);
-
 	while (nahead > 0 && !ATOMIC_GET(&m_seekPending)) {
+		// Take looping into account, if any...
+		unsigned long ls = m_iOffset + m_iLoopStart;
+		unsigned long le = m_iOffset + m_iLoopEnd;
+		bool bLooping = (ls < le && m_iWriteOffset < le);
 		// Adjust request for sane size...
 		if (nahead > m_iBufferSize)
 			nahead = m_iBufferSize;

@@ -40,7 +40,7 @@
   </property>
   <layout class="QVBoxLayout" >
    <item>
-    <widget class="QTabWidget" name="SesssionTabWidget" >
+    <widget class="QTabWidget" name="SessionTabWidget" >
      <property name="currentIndex" >
       <number>0</number>
      </property>
