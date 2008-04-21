@@ -720,7 +720,9 @@ bool qtractorTracks::addAudioTracks ( QStringList files,
 	int iTrackCount = pSession->tracks().count();
 
 	// To log this import into session description.
-	QString sDescription = pSession->description() + "--\n";
+	QString sDescription = pSession->description().trimmed();
+	if (!sDescription.isEmpty())
+		sDescription += '\n';
 
 	// For each one of those files, if any...
 	QStringListIterator iter(files);
@@ -800,7 +802,9 @@ bool qtractorTracks::addMidiTracks ( QStringList files,
 	unsigned long iTimeStart = pSession->tickFromFrame(iClipStart);
 
 	// To log this import into session description.
-	QString sDescription = pSession->description() + "--\n";
+	QString sDescription = pSession->description().trimmed();
+	if (!sDescription.isEmpty())
+		sDescription += '\n';
 
 	// For each one of those files, if any...
 	QStringListIterator iter(files);

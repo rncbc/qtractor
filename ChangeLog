@@ -5,6 +5,9 @@ ChangeLog
 
 CVS HEAD
 
+- Session dialog gets split in its own tab components, between
+  descriptive, time and view configuration ones.
+
 - Drifting correction among audio and MIDI engines is now back,
   but avoided while recording or should it be while looping?
   (EXPERIMENTAL REGRESSION)

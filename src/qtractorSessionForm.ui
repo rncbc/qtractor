@@ -19,15 +19,14 @@
    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
  </comment>
- <exportmacro></exportmacro>
  <class>qtractorSessionForm</class>
  <widget class="QDialog" name="qtractorSessionForm" >
   <property name="geometry" >
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>360</width>
-    <height>320</height>
+    <width>394</width>
+    <height>300</height>
    </rect>
   </property>
   <property name="focusPolicy" >
@@ -41,416 +40,440 @@
   </property>
   <layout class="QVBoxLayout" >
    <item>
-    <widget class="QLabel" name="SessionNameTextLabel" >
-     <property name="text" >
-      <string>&amp;Name:</string>
-     </property>
-     <property name="buddy" >
-      <cstring>SessionNameLineEdit</cstring>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QLineEdit" name="SessionNameLineEdit" >
-     <property name="minimumSize" >
-      <size>
-       <width>320</width>
-       <height>0</height>
-      </size>
-     </property>
-     <property name="toolTip" >
-      <string>Session name</string>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QLabel" name="SessionDirTextLabel" >
-     <property name="text" >
-      <string>&amp;Directory:</string>
-     </property>
-     <property name="buddy" >
-      <cstring>SessionDirComboBox</cstring>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <layout class="QHBoxLayout" >
-     <property name="margin" >
+    <widget class="QTabWidget" name="SesssionTabWidget" >
+     <property name="currentIndex" >
       <number>0</number>
      </property>
-     <item>
-      <widget class="QComboBox" name="SessionDirComboBox" >
-       <property name="minimumSize" >
-        <size>
-         <width>320</width>
-         <height>0</height>
-        </size>
-       </property>
-       <property name="toolTip" >
-        <string>Session directory</string>
-       </property>
-       <property name="editable" >
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QToolButton" name="SessionDirToolButton" >
-       <property name="minimumSize" >
-        <size>
-         <width>22</width>
-         <height>22</height>
-        </size>
-       </property>
-       <property name="maximumSize" >
-        <size>
-         <width>24</width>
-         <height>24</height>
-        </size>
-       </property>
-       <property name="focusPolicy" >
-        <enum>Qt::TabFocus</enum>
-       </property>
-       <property name="toolTip" >
-        <string>Browse for session directory</string>
-       </property>
-       <property name="text" >
-        <string>...</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item>
-    <widget class="QLabel" name="DescriptionTextLabel" >
-     <property name="text" >
-      <string>&amp;Description:</string>
-     </property>
-     <property name="buddy" >
-      <cstring>DescriptionTextEdit</cstring>
-     </property>
+     <widget class="QWidget" name="SessionTab" >
+      <attribute name="title" >
+       <string>Session</string>
+      </attribute>
+      <layout class="QVBoxLayout" >
+       <item>
+        <widget class="QLabel" name="SessionNameTextLabel" >
+         <property name="text" >
+          <string>&amp;Name:</string>
+         </property>
+         <property name="buddy" >
+          <cstring>SessionNameLineEdit</cstring>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="SessionNameLineEdit" >
+         <property name="minimumSize" >
+          <size>
+           <width>320</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="toolTip" >
+          <string>Session name</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="SessionDirTextLabel" >
+         <property name="text" >
+          <string>&amp;Directory:</string>
+         </property>
+         <property name="buddy" >
+          <cstring>SessionDirComboBox</cstring>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" >
+         <property name="margin" >
+          <number>0</number>
+         </property>
+         <item>
+          <widget class="QComboBox" name="SessionDirComboBox" >
+           <property name="minimumSize" >
+            <size>
+             <width>320</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="toolTip" >
+            <string>Session directory</string>
+           </property>
+           <property name="editable" >
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QToolButton" name="SessionDirToolButton" >
+           <property name="minimumSize" >
+            <size>
+             <width>22</width>
+             <height>22</height>
+            </size>
+           </property>
+           <property name="maximumSize" >
+            <size>
+             <width>24</width>
+             <height>24</height>
+            </size>
+           </property>
+           <property name="focusPolicy" >
+            <enum>Qt::TabFocus</enum>
+           </property>
+           <property name="toolTip" >
+            <string>Browse for session directory</string>
+           </property>
+           <property name="text" >
+            <string>...</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <widget class="QLabel" name="DescriptionTextLabel" >
+         <property name="text" >
+          <string>&amp;Description:</string>
+         </property>
+         <property name="buddy" >
+          <cstring>DescriptionTextEdit</cstring>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QTextEdit" name="DescriptionTextEdit" >
+         <property name="maximumSize" >
+          <size>
+           <width>32767</width>
+           <height>72</height>
+          </size>
+         </property>
+         <property name="toolTip" >
+          <string>Session description</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="PropertiesTab" >
+      <attribute name="title" >
+       <string>Properties</string>
+      </attribute>
+      <layout class="QHBoxLayout" >
+       <item>
+        <widget class="QGroupBox" name="TimeGroupBox" >
+         <property name="title" >
+          <string>Time</string>
+         </property>
+         <layout class="QGridLayout" >
+          <item row="0" column="0" >
+           <widget class="QLabel" name="SampleRateTextLabel" >
+            <property name="text" >
+             <string>Sample &amp;Rate:</string>
+            </property>
+            <property name="alignment" >
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+            <property name="buddy" >
+             <cstring>SampleRateComboBox</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1" >
+           <widget class="QComboBox" name="SampleRateComboBox" >
+            <property name="toolTip" >
+             <string>Sample rate (Hz)</string>
+            </property>
+            <property name="editable" >
+             <bool>true</bool>
+            </property>
+            <item>
+             <property name="text" >
+              <string>44100</string>
+             </property>
+            </item>
+            <item>
+             <property name="text" >
+              <string>48000</string>
+             </property>
+            </item>
+            <item>
+             <property name="text" >
+              <string>96000</string>
+             </property>
+            </item>
+            <item>
+             <property name="text" >
+              <string>192000</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+          <item row="1" column="0" >
+           <widget class="QLabel" name="TempoTextLabel" >
+            <property name="text" >
+             <string>&amp;Tempo:</string>
+            </property>
+            <property name="alignment" >
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+            <property name="buddy" >
+             <cstring>TempoSpinBox</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1" >
+           <widget class="QDoubleSpinBox" name="TempoSpinBox" >
+            <property name="toolTip" >
+             <string>Tempo (BPM)</string>
+            </property>
+            <property name="decimals" >
+             <number>1</number>
+            </property>
+            <property name="minimum" >
+             <double>1.000000000000000</double>
+            </property>
+            <property name="maximum" >
+             <double>1000.000000000000000</double>
+            </property>
+            <property name="singleStep" >
+             <double>0.100000000000000</double>
+            </property>
+            <property name="value" >
+             <double>120.000000000000000</double>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0" >
+           <widget class="QLabel" name="BeatsPerBarTextLabel" >
+            <property name="text" >
+             <string>&amp;Beats/Bar:</string>
+            </property>
+            <property name="alignment" >
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+            <property name="buddy" >
+             <cstring>BeatsPerBarSpinBox</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1" >
+           <widget class="QSpinBox" name="BeatsPerBarSpinBox" >
+            <property name="toolTip" >
+             <string>Time signature (beats/bar)</string>
+            </property>
+            <property name="suffix" >
+             <string> / 4</string>
+            </property>
+            <property name="minimum" >
+             <number>2</number>
+            </property>
+            <property name="maximum" >
+             <number>32</number>
+            </property>
+            <property name="value" >
+             <number>4</number>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0" >
+           <widget class="QLabel" name="TicksPerBeatTextLabel" >
+            <property name="text" >
+             <string>T&amp;icks/Beat:</string>
+            </property>
+            <property name="alignment" >
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+            <property name="buddy" >
+             <cstring>TicksPerBeatSpinBox</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1" >
+           <widget class="QSpinBox" name="TicksPerBeatSpinBox" >
+            <property name="toolTip" >
+             <string>Resolution (ticks/beat; TPQN)</string>
+            </property>
+            <property name="minimum" >
+             <number>12</number>
+            </property>
+            <property name="maximum" >
+             <number>600</number>
+            </property>
+            <property name="singleStep" >
+             <number>12</number>
+            </property>
+            <property name="value" >
+             <number>96</number>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="0" colspan="2" >
+           <spacer>
+            <property name="orientation" >
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" >
+             <size>
+              <width>20</width>
+              <height>40</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="ViewGroupBox" >
+         <property name="title" >
+          <string>View</string>
+         </property>
+         <layout class="QGridLayout" >
+          <item row="0" column="0" >
+           <widget class="QLabel" name="SnapPerBeatTextLabel" >
+            <property name="text" >
+             <string>&amp;Snap/Beat:</string>
+            </property>
+            <property name="alignment" >
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+            <property name="buddy" >
+             <cstring>SnapPerBeatComboBox</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1" >
+           <widget class="QComboBox" name="SnapPerBeatComboBox" >
+            <property name="toolTip" >
+             <string>Snap/beat</string>
+            </property>
+            <property name="editable" >
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0" >
+           <widget class="QLabel" name="PixelsPerBeatTextLabel" >
+            <property name="text" >
+             <string>&amp;Pixels/Beat:</string>
+            </property>
+            <property name="alignment" >
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+            <property name="buddy" >
+             <cstring>PixelsPerBeatSpinBox</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1" >
+           <widget class="QSpinBox" name="PixelsPerBeatSpinBox" >
+            <property name="toolTip" >
+             <string>Pixels/beat</string>
+            </property>
+            <property name="minimum" >
+             <number>4</number>
+            </property>
+            <property name="maximum" >
+             <number>240</number>
+            </property>
+            <property name="singleStep" >
+             <number>4</number>
+            </property>
+            <property name="value" >
+             <number>32</number>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0" >
+           <widget class="QLabel" name="HorizontalZoomTextLabel" >
+            <property name="text" >
+             <string>&amp;Horizontal Zoom:</string>
+            </property>
+            <property name="alignment" >
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+            <property name="buddy" >
+             <cstring>HorizontalZoomSpinBox</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1" >
+           <widget class="QSpinBox" name="HorizontalZoomSpinBox" >
+            <property name="toolTip" >
+             <string>Horizontal Zoom (%)</string>
+            </property>
+            <property name="suffix" >
+             <string> %</string>
+            </property>
+            <property name="minimum" >
+             <number>10</number>
+            </property>
+            <property name="maximum" >
+             <number>1000</number>
+            </property>
+            <property name="singleStep" >
+             <number>10</number>
+            </property>
+            <property name="value" >
+             <number>100</number>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0" >
+           <widget class="QLabel" name="VerticalZoomTextLabel" >
+            <property name="text" >
+             <string>&amp;Vertical Zoom:</string>
+            </property>
+            <property name="alignment" >
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+            <property name="buddy" >
+             <cstring>VerticalZoomSpinBox</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1" >
+           <widget class="QSpinBox" name="VerticalZoomSpinBox" >
+            <property name="toolTip" >
+             <string>Vertical Zoom (%)</string>
+            </property>
+            <property name="suffix" >
+             <string> %</string>
+            </property>
+            <property name="minimum" >
+             <number>10</number>
+            </property>
+            <property name="maximum" >
+             <number>1000</number>
+            </property>
+            <property name="singleStep" >
+             <number>10</number>
+            </property>
+            <property name="value" >
+             <number>100</number>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="0" colspan="2" >
+           <spacer>
+            <property name="orientation" >
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" >
+             <size>
+              <width>20</width>
+              <height>40</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </widget>
+       </item>
+      </layout>
+     </widget>
     </widget>
-   </item>
-   <item>
-    <widget class="QTextEdit" name="DescriptionTextEdit" >
-     <property name="maximumSize" >
-      <size>
-       <width>32767</width>
-       <height>72</height>
-      </size>
-     </property>
-     <property name="toolTip" >
-      <string>Session description</string>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <layout class="QHBoxLayout" >
-     <property name="margin" >
-      <number>0</number>
-     </property>
-     <item>
-      <widget class="QGroupBox" name="TimeGroupBox" >
-       <property name="sizePolicy" >
-        <sizepolicy>
-         <hsizetype>5</hsizetype>
-         <vsizetype>1</vsizetype>
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="title" >
-        <string>Time</string>
-       </property>
-       <layout class="QGridLayout" >
-        <item row="3" column="0" >
-         <widget class="QLabel" name="TicksPerBeatTextLabel" >
-          <property name="text" >
-           <string>T&amp;icks/Beat:</string>
-          </property>
-          <property name="alignment" >
-           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-          </property>
-          <property name="buddy" >
-           <cstring>TicksPerBeatSpinBox</cstring>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="0" >
-         <widget class="QLabel" name="BeatsPerBarTextLabel" >
-          <property name="text" >
-           <string>&amp;Beats/Bar:</string>
-          </property>
-          <property name="alignment" >
-           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-          </property>
-          <property name="buddy" >
-           <cstring>BeatsPerBarSpinBox</cstring>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="0" >
-         <widget class="QLabel" name="TempoTextLabel" >
-          <property name="text" >
-           <string>&amp;Tempo:</string>
-          </property>
-          <property name="alignment" >
-           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-          </property>
-          <property name="buddy" >
-           <cstring>TempoSpinBox</cstring>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="0" >
-         <widget class="QLabel" name="SampleRateTextLabel" >
-          <property name="text" >
-           <string>Sample &amp;Rate:</string>
-          </property>
-          <property name="alignment" >
-           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-          </property>
-          <property name="buddy" >
-           <cstring>SampleRateComboBox</cstring>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="1" >
-         <widget class="QSpinBox" name="BeatsPerBarSpinBox" >
-          <property name="toolTip" >
-           <string>Time signature (beats/bar)</string>
-          </property>
-          <property name="suffix" >
-           <string> / 4</string>
-          </property>
-          <property name="maximum" >
-           <number>32</number>
-          </property>
-          <property name="minimum" >
-           <number>2</number>
-          </property>
-          <property name="value" >
-           <number>4</number>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="1" >
-         <widget class="QDoubleSpinBox" name="TempoSpinBox" >
-          <property name="toolTip" >
-           <string>Tempo (BPM)</string>
-          </property>
-          <property name="decimals" >
-           <number>1</number>
-          </property>
-          <property name="maximum" >
-           <double>1000</double>
-          </property>
-          <property name="minimum" >
-           <double>1</double>
-          </property>
-          <property name="singleStep" >
-           <double>0.1</double>
-          </property>
-          <property name="value" >
-           <double>120</double>
-          </property>
-         </widget>
-        </item>
-        <item row="3" column="1" >
-         <widget class="QSpinBox" name="TicksPerBeatSpinBox" >
-          <property name="toolTip" >
-           <string>Resolution (ticks/beat; TPQN)</string>
-          </property>
-          <property name="maximum" >
-           <number>600</number>
-          </property>
-          <property name="minimum" >
-           <number>12</number>
-          </property>
-          <property name="singleStep" >
-           <number>12</number>
-          </property>
-          <property name="value" >
-           <number>96</number>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="1" >
-         <widget class="QComboBox" name="SampleRateComboBox" >
-          <property name="toolTip" >
-           <string>Sample rate (Hz)</string>
-          </property>
-          <property name="editable" >
-           <bool>true</bool>
-          </property>
-          <item>
-           <property name="text" >
-            <string>44100</string>
-           </property>
-          </item>
-          <item>
-           <property name="text" >
-            <string>48000</string>
-           </property>
-          </item>
-          <item>
-           <property name="text" >
-            <string>96000</string>
-           </property>
-          </item>
-          <item>
-           <property name="text" >
-            <string>192000</string>
-           </property>
-          </item>
-         </widget>
-        </item>
-       </layout>
-      </widget>
-     </item>
-     <item>
-      <widget class="QGroupBox" name="ViewGroupBox" >
-       <property name="sizePolicy" >
-        <sizepolicy>
-         <hsizetype>5</hsizetype>
-         <vsizetype>1</vsizetype>
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="title" >
-        <string>View</string>
-       </property>
-       <layout class="QGridLayout" >
-        <item row="0" column="1" >
-         <widget class="QComboBox" name="SnapPerBeatComboBox" >
-          <property name="toolTip" >
-           <string>Snap/beat</string>
-          </property>
-          <property name="editable" >
-           <bool>false</bool>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="1" >
-         <widget class="QSpinBox" name="PixelsPerBeatSpinBox" >
-          <property name="toolTip" >
-           <string>Pixels/beat</string>
-          </property>
-          <property name="maximum" >
-           <number>240</number>
-          </property>
-          <property name="minimum" >
-           <number>4</number>
-          </property>
-          <property name="singleStep" >
-           <number>4</number>
-          </property>
-          <property name="value" >
-           <number>32</number>
-          </property>
-         </widget>
-        </item>
-        <item rowspan="2" row="3" column="1" >
-         <widget class="QSpinBox" name="VerticalZoomSpinBox" >
-          <property name="toolTip" >
-           <string>Vertical Zoom (%)</string>
-          </property>
-          <property name="suffix" >
-           <string> %</string>
-          </property>
-          <property name="maximum" >
-           <number>1000</number>
-          </property>
-          <property name="minimum" >
-           <number>10</number>
-          </property>
-          <property name="singleStep" >
-           <number>10</number>
-          </property>
-          <property name="value" >
-           <number>100</number>
-          </property>
-         </widget>
-        </item>
-        <item row="4" column="0" >
-         <widget class="QLabel" name="VerticalZoomTextLabel" >
-          <property name="text" >
-           <string>&amp;Vertical Zoom:</string>
-          </property>
-          <property name="alignment" >
-           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-          </property>
-          <property name="buddy" >
-           <cstring>VerticalZoomSpinBox</cstring>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="1" >
-         <widget class="QSpinBox" name="HorizontalZoomSpinBox" >
-          <property name="toolTip" >
-           <string>Horizontal Zoom (%)</string>
-          </property>
-          <property name="suffix" >
-           <string> %</string>
-          </property>
-          <property name="maximum" >
-           <number>1000</number>
-          </property>
-          <property name="minimum" >
-           <number>10</number>
-          </property>
-          <property name="singleStep" >
-           <number>10</number>
-          </property>
-          <property name="value" >
-           <number>100</number>
-          </property>
-         </widget>
-        </item>
-        <item rowspan="2" row="2" column="0" >
-         <widget class="QLabel" name="HorizontalZoomTextLabel" >
-          <property name="text" >
-           <string>&amp;Horizontal Zoom:</string>
-          </property>
-          <property name="alignment" >
-           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-          </property>
-          <property name="buddy" >
-           <cstring>HorizontalZoomSpinBox</cstring>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="0" >
-         <widget class="QLabel" name="PixelsPerBeatTextLabel" >
-          <property name="text" >
-           <string>&amp;Pixels/Beat:</string>
-          </property>
-          <property name="alignment" >
-           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-          </property>
-          <property name="buddy" >
-           <cstring>PixelsPerBeatSpinBox</cstring>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="0" >
-         <widget class="QLabel" name="SnapPerBeatTextLabel" >
-          <property name="text" >
-           <string>&amp;Snap/Beat:</string>
-          </property>
-          <property name="alignment" >
-           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-          </property>
-          <property name="buddy" >
-           <cstring>SnapPerBeatComboBox</cstring>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </widget>
-     </item>
-    </layout>
    </item>
    <item>
     <layout class="QHBoxLayout" >
@@ -498,7 +521,6 @@
   </layout>
  </widget>
  <layoutdefault spacing="4" margin="8" />
- <pixmapfunction></pixmapfunction>
  <tabstops>
   <tabstop>SessionNameLineEdit</tabstop>
   <tabstop>SessionDirComboBox</tabstop>
