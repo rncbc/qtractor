@@ -1066,9 +1066,6 @@ void qtractorMixer::showEvent ( QShowEvent *pShowEvent )
 // Notify the main application widget that we're closing.
 void qtractorMixer::hideEvent ( QHideEvent *pHideEvent )
 {
-	// Save splitter sizes...
-	saveSplitterSizes();
-	
 	QWidget::hideEvent(pHideEvent);
 	
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
@@ -1080,6 +1077,9 @@ void qtractorMixer::hideEvent ( QHideEvent *pHideEvent )
 // Just about to notify main-window that we're closing.
 void qtractorMixer::closeEvent ( QCloseEvent * /*pCloseEvent*/ )
 {
+	// Save splitter sizes...
+	saveSplitterSizes();
+
 	QWidget::hide();
 
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();

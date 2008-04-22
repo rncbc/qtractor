@@ -463,9 +463,6 @@ qtractorMainForm::qtractorMainForm (
 	QObject::connect(m_ui.trackOutputsAction,
 		SIGNAL(triggered(bool)),
 		SLOT(trackOutputs()));
-	QObject::connect(m_ui.trackStateMonitorAction,
-		SIGNAL(triggered(bool)),
-		SLOT(trackStateMonitor(bool)));
 	QObject::connect(m_ui.trackStateRecordAction,
 		SIGNAL(triggered(bool)),
 		SLOT(trackStateRecord(bool)));
@@ -475,6 +472,9 @@ qtractorMainForm::qtractorMainForm (
 	QObject::connect(m_ui.trackStateSoloAction,
 		SIGNAL(triggered(bool)),
 		SLOT(trackStateSolo(bool)));
+	QObject::connect(m_ui.trackStateMonitorAction,
+		SIGNAL(triggered(bool)),
+		SLOT(trackStateMonitor(bool)));
 	QObject::connect(m_ui.trackNavigateFirstAction,
 		SIGNAL(triggered(bool)),
 		SLOT(trackNavigateFirst()));
@@ -1857,19 +1857,6 @@ void qtractorMainForm::trackOutputs (void)
 }
 
 
-// Monitor current track.
-void qtractorMainForm::trackStateMonitor ( bool bOn )
-{
-	qtractorTrack *pTrack = NULL;
-	if (m_pTracks)
-		pTrack = m_pTracks->currentTrack();
-	if (pTrack == NULL)
-		return;
-
-	m_pCommands->exec(new qtractorTrackMonitorCommand(pTrack, bOn));
-}
-
-
 // Arm current track for recording.
 void qtractorMainForm::trackStateRecord ( bool bOn )
 {
@@ -1909,6 +1896,19 @@ void qtractorMainForm::trackStateSolo (  bool bOn  )
 
 	m_pCommands->exec(
 		new qtractorTrackButtonCommand(pTrackWidget->soloButton(), bOn));
+}
+
+
+// Monitor current track.
+void qtractorMainForm::trackStateMonitor ( bool bOn )
+{
+	qtractorTrack *pTrack = NULL;
+	if (m_pTracks)
+		pTrack = m_pTracks->currentTrack();
+	if (pTrack == NULL)
+		return;
+
+	m_pCommands->exec(new qtractorTrackMonitorCommand(pTrack, bOn));
 }
 
 
@@ -3081,10 +3081,10 @@ void qtractorMainForm::stabilizeForm (void)
 
 	// Update track menu state...
 	if (bEnabled) {
-		m_ui.trackStateMonitorAction->setChecked(pTrack->isMonitor());
 		m_ui.trackStateRecordAction->setChecked(pTrack->isRecord());
 		m_ui.trackStateMuteAction->setChecked(pTrack->isMute());
 		m_ui.trackStateSoloAction->setChecked(pTrack->isSolo());
+		m_ui.trackStateMonitorAction->setChecked(pTrack->isMonitor());
 	}
 
 	// Update view menu state...

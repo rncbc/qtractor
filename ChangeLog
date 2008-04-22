@@ -5,6 +5,8 @@ ChangeLog
 
 CVS HEAD
 
+- Mixer splitter sizes are now better saved/restored when closed.
+
 - Track record monitoring is now a state option, being toggled
   from the Track/State/Monitor menu; applies both to audio end
   MIDI tracks: when set all input will be pass-through to the
