@@ -569,12 +569,15 @@ bool qtractorTrackMonitorCommand::redo (void)
 
 	// Save undo value...
 	bool bMonitor = pTrack->isMonitor();
-
 	// Set track monitoring...
 	pTrack->setMonitor(m_bMonitor);
-
 	// Set undo value...
 	m_bMonitor = bMonitor;
+
+	// Update (reset) all applicable mixer strips...
+	qtractorMixer *pMixer = pMainForm->mixer();
+	if (pMixer)
+		pMixer->updateTrackStrip(pTrack, true);
 
 	return true;
 }

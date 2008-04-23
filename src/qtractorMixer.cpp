@@ -133,22 +133,31 @@ void qtractorMixerStrip::initMixerStrip (void)
 	m_pPluginListView->setFixedHeight(4 * fm.lineSpacing());
 	m_pLayout->addWidget(m_pPluginListView);
 
-	m_pButtonLayout = new QHBoxLayout(/*this*/);
-	m_pButtonLayout->setSpacing(2);
-#if 0
 	QIcon icons;
 	icons.addPixmap(QPixmap(":/icons/itemLedOff.png"),
 		QIcon::Normal, QIcon::Off);
 	icons.addPixmap(QPixmap(":/icons/itemLedOn.png"),
 		QIcon::Normal, QIcon::On);
-#endif
 	const QSizePolicy buttonPolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+
+	m_pThruButton = new QToolButton(/*this*/);
+	m_pThruButton->setFixedHeight(16);
+	m_pThruButton->setSizePolicy(buttonPolicy);
+	m_pThruButton->setFont(font6);
+	m_pThruButton->setIcon(icons);
+	m_pThruButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+//	m_pThruButton->setToolButtonStyle(Qt::ToolButtonTextOnly);
+	m_pThruButton->setCheckable(true);
+
+	m_pButtonLayout = new QHBoxLayout(/*this*/);
+	m_pButtonLayout->setSpacing(2);
+
 	qtractorTrack::TrackType meterType = qtractorTrack::None;
 	if (m_pTrack) {
 		meterType = m_pTrack->trackType();
-		m_pBusButton = NULL;
-		m_pThruButton = NULL;
-		const QSize buttonSize(16, 14);
+		m_pThruButton->setText(tr("monitor"));
+		m_pThruButton->setToolTip(tr("Monitor (rec)"));
+		const QSize buttonSize(16, 16);
 		m_pRecordButton = new qtractorTrackButton(m_pTrack,
 			qtractorTrack::Record, buttonSize/*, this*/);
 		m_pRecordButton->setSizePolicy(buttonPolicy);
@@ -171,44 +180,34 @@ void qtractorMixerStrip::initMixerStrip (void)
 		QObject::connect(m_pSoloButton,
 			SIGNAL(trackButtonToggled(qtractorTrackButton *, bool)),
 			pMixer, SLOT(trackButtonToggledSlot(qtractorTrackButton *, bool)));
+		m_pBusButton = NULL;
 	} else {
 		meterType = m_pBus->busType();
+		m_pThruButton->setText(tr("passthru"));
+		m_pThruButton->setToolTip(tr("Pass-through"));
 		m_pBusButton = new QToolButton(/*this*/);
-		m_pBusButton->setFixedHeight(14);
+		m_pBusButton->setFixedHeight(16);
 		m_pBusButton->setSizePolicy(buttonPolicy);
 		m_pBusButton->setToolButtonStyle(Qt::ToolButtonTextOnly);
 		m_pBusButton->setFont(font6);
 		m_pBusButton->setText(
-			m_busMode & qtractorBus::Input ? tr("ins") : tr("outs"));
-		m_pBusButton->setToolTip(tr("Connect %1").arg(m_pRack->name()));
-		m_pThruButton = new QToolButton(/*this*/);
-		m_pThruButton->setFixedHeight(14);
-		m_pThruButton->setSizePolicy(buttonPolicy);
-		m_pThruButton->setFont(font6);
-	//	m_pThruButton->setIcon(icons);
-	//	m_pThruButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
-		m_pThruButton->setToolButtonStyle(Qt::ToolButtonTextOnly);
-		m_pThruButton->setText(tr("thru"));
-		m_pThruButton->setToolTip(tr("Pass-through"));
-		m_pThruButton->setCheckable(true);
-		if (m_busMode & qtractorBus::Input) {
-			m_pButtonLayout->addWidget(m_pBusButton);
-			m_pButtonLayout->addWidget(m_pThruButton);
-		} else {
-			m_pButtonLayout->addWidget(m_pThruButton);
-			m_pButtonLayout->addWidget(m_pBusButton);
-		}
-		updateThruButton();
+			m_busMode & qtractorBus::Input ? tr("inputs") : tr("outputs"));
+		m_pBusButton->setToolTip(tr("Connect %1").arg(m_pBusButton->text()));
+		m_pButtonLayout->addWidget(m_pBusButton);
 		QObject::connect(m_pBusButton,
 			SIGNAL(clicked()),
 			SLOT(busButtonSlot()));
-		QObject::connect(m_pThruButton,
-			SIGNAL(toggled(bool)),
-			SLOT(thruButtonSlot(bool)));
 		m_pRecordButton = NULL;
 		m_pMuteButton   = NULL;
 		m_pSoloButton   = NULL;
 	}
+
+	updateThruButton();
+	QObject::connect(m_pThruButton,
+		SIGNAL(toggled(bool)),
+		SLOT(thruButtonSlot(bool)));
+
+	m_pLayout->addWidget(m_pThruButton);
 	m_pLayout->addLayout(m_pButtonLayout);
 
 	// Now, there's whether we are Audio or MIDI related...
@@ -381,7 +380,7 @@ void qtractorMixerStrip::updateName (void)
 // Pass-trough button updater.
 void qtractorMixerStrip::updateThruButton (void)
 {
-	if (m_pBus == NULL || m_iUpdate > 0)
+	if (m_iUpdate > 0)
 		return;
 
 	if (m_pThruButton == NULL)
@@ -389,7 +388,16 @@ void qtractorMixerStrip::updateThruButton (void)
 
 	m_iUpdate++;
 
-	bool bOn = m_pBus->isPassthru();
+	bool bOn = false;
+	if (m_pBus) {
+		bOn = m_pBus->isPassthru();
+		m_pThruButton->setEnabled(
+			(m_pBus->busMode() & qtractorBus::Duplex) == qtractorBus::Duplex);
+	} 
+	else
+	if (m_pTrack)
+		bOn = m_pTrack->isMonitor();
+
 #if 0
 	const QColor& rgbOff = palette().button().color();
 	QPalette pal(m_pThruButton->palette());
@@ -397,8 +405,6 @@ void qtractorMixerStrip::updateThruButton (void)
 	m_pThruButton->setPalette(pal);
 #endif
 	m_pThruButton->setChecked(bOn);
-	m_pThruButton->setEnabled(
-		(m_pBus->busMode() & qtractorBus::Duplex) == qtractorBus::Duplex);
 
 	m_iUpdate--;
 }
@@ -510,6 +516,7 @@ void qtractorMixerStrip::setTrack ( qtractorTrack *pTrack )
 
 	setMonitor(m_pTrack->monitor());
 
+	updateThruButton();
 	updateMidiLabel();
 	updateName();
 }
@@ -625,6 +632,20 @@ void qtractorMixerStrip::busPassthru ( bool bPassthru )
 }
 
 
+// Track monitor dispatcher.
+void qtractorMixerStrip::trackMonitor ( bool bMonitor )
+{
+	if (m_pTrack == NULL)
+		return;
+
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm == NULL)
+		return;
+
+	// Here we go...
+	pMainForm->commands()->exec(
+		new qtractorTrackMonitorCommand(m_pTrack, bMonitor));
+}
 
 
 // Bus connections button slot
@@ -634,13 +655,17 @@ void qtractorMixerStrip::busButtonSlot (void)
 }
 
 
-// Bus passthru button slot
+// Common passthru/monitor button slot
 void qtractorMixerStrip::thruButtonSlot ( bool bOn )
 {
 	if (m_iUpdate > 0)
 		return;
 
-	busPassthru(bOn);
+	if (m_pBus)
+		busPassthru(bOn);
+	else
+	if (m_pTrack)
+		trackMonitor(bOn);
 }
 
 

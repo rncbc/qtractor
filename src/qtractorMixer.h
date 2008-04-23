@@ -101,12 +101,15 @@ public:
 	void busConnections(qtractorBus::BusMode busMode);
 	void busPassthru(bool bPassthru);
 
+	// Track monitor dispatcher.
+	void trackMonitor(bool bMonitor);
+
 protected slots:
 
 	// Bus connections button notification.
 	void busButtonSlot();
 
-	// Bus (MIDI) passthru button slot
+	// Common passthru/monitor button slot
 	void thruButtonSlot(bool bOn);
 
 	// Meter slider change slots.

@@ -5,6 +5,8 @@ ChangeLog
 
 CVS HEAD
 
+- Record monitor switch is now accessible on track mixer strips.
+
 - Force track-view position reset to origin on session close.
 
 - Fixed segfault on inserting an external file into files widget.
