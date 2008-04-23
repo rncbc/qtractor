@@ -374,11 +374,19 @@ qtractorFileListItem *qtractorFileListView::addFileItem (
 					QTreeWidgetItem *pItem
 						= static_cast<QTreeWidgetItem *> (pParentItem);
 					pParentItem = groupItem(pParentItem);
-					int iItem = pParentItem->indexOfChild(pItem);
-					if (iItem >= 0)
-						pParentItem->insertChild(iItem + 1, pFileItem);
-					else
-						pItem->addChild(pFileItem);
+					if (pParentItem) {
+						int iItem = pParentItem->indexOfChild(pItem);
+						if (iItem >= 0)
+							pParentItem->insertChild(iItem + 1, pFileItem);
+						else
+							pItem->addChild(pFileItem);
+					} else {
+						int iItem = QTreeWidget::indexOfTopLevelItem(pItem);
+						if (iItem >= 0)
+							QTreeWidget::insertTopLevelItem(iItem + 1, pFileItem);
+						else
+							QTreeWidget::addTopLevelItem(pFileItem);
+					}
 				}
 			}
 			else QTreeWidget::addTopLevelItem(pFileItem);

@@ -5,6 +5,10 @@ ChangeLog
 
 CVS HEAD
 
+- Force track-view position reset to origin on session close.
+
+- Fixed segfault on inserting an external file into files widget.
+
 - Mixer splitter sizes are now better saved/restored when closed.
 
 - Track record monitoring is now a state option, being toggled

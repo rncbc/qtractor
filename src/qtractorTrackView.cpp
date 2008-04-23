@@ -187,6 +187,8 @@ void qtractorTrackView::clear (void)
 	if (m_pRubberBand)
 		delete m_pRubberBand;
 	m_pRubberBand = NULL;
+
+	qtractorScrollView::setContentsPos(0, 0);
 }
 
 
