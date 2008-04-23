@@ -5,7 +5,8 @@ ChangeLog
 
 CVS HEAD
 
-- Record monitor switch is now accessible on track mixer strips.
+- Record monitor switch is now accessible on track mixer strips;
+  old bus "thru" switch button is now been renamed to "monitor".
 
 - Force track-view position reset to origin on session close.
 

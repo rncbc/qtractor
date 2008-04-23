@@ -147,6 +147,7 @@ void qtractorMixerStrip::initMixerStrip (void)
 	m_pThruButton->setIcon(icons);
 	m_pThruButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
 //	m_pThruButton->setToolButtonStyle(Qt::ToolButtonTextOnly);
+	m_pThruButton->setText(tr("monitor"));
 	m_pThruButton->setCheckable(true);
 
 	m_pButtonLayout = new QHBoxLayout(/*this*/);
@@ -155,8 +156,6 @@ void qtractorMixerStrip::initMixerStrip (void)
 	qtractorTrack::TrackType meterType = qtractorTrack::None;
 	if (m_pTrack) {
 		meterType = m_pTrack->trackType();
-		m_pThruButton->setText(tr("monitor"));
-		m_pThruButton->setToolTip(tr("Monitor (rec)"));
 		const QSize buttonSize(16, 16);
 		m_pRecordButton = new qtractorTrackButton(m_pTrack,
 			qtractorTrack::Record, buttonSize/*, this*/);
@@ -180,11 +179,10 @@ void qtractorMixerStrip::initMixerStrip (void)
 		QObject::connect(m_pSoloButton,
 			SIGNAL(trackButtonToggled(qtractorTrackButton *, bool)),
 			pMixer, SLOT(trackButtonToggledSlot(qtractorTrackButton *, bool)));
+		m_pThruButton->setToolTip(tr("Monitor (rec)"));
 		m_pBusButton = NULL;
 	} else {
 		meterType = m_pBus->busType();
-		m_pThruButton->setText(tr("thru"));
-		m_pThruButton->setToolTip(tr("Pass-through"));
 		m_pBusButton = new QToolButton(/*this*/);
 		m_pBusButton->setFixedHeight(16);
 		m_pBusButton->setSizePolicy(buttonPolicy);
@@ -197,6 +195,7 @@ void qtractorMixerStrip::initMixerStrip (void)
 		QObject::connect(m_pBusButton,
 			SIGNAL(clicked()),
 			SLOT(busButtonSlot()));
+		m_pThruButton->setToolTip(tr("Monitor (thru)"));
 		m_pRecordButton = NULL;
 		m_pMuteButton   = NULL;
 		m_pSoloButton   = NULL;
