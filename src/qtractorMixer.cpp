@@ -183,7 +183,7 @@ void qtractorMixerStrip::initMixerStrip (void)
 		m_pBusButton = NULL;
 	} else {
 		meterType = m_pBus->busType();
-		m_pThruButton->setText(tr("passthru"));
+		m_pThruButton->setText(tr("thru"));
 		m_pThruButton->setToolTip(tr("Pass-through"));
 		m_pBusButton = new QToolButton(/*this*/);
 		m_pBusButton->setFixedHeight(16);
