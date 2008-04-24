@@ -5,6 +5,10 @@ ChangeLog
 
 CVS HEAD
 
+- First attempt for Qt4.4 build support, regarding the bundled
+  atomic primitives, which have changed upstream as advertised
+  (thanks to Paul Thomas, for spotting this one first time).
+
 - Record monitor switch is now accessible on track mixer strips;
   old bus "thru" switch button is now been renamed to "monitor".
 

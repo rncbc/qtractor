@@ -22,9 +22,7 @@
 #ifndef __qtractorAtomic_h
 #define __qtractorAtomic_h
 
-#ifndef HAVE_QATOMIC_H
 #define HAVE_QATOMIC_H
-#endif
 
 #if defined(HAVE_QATOMIC_H)
 #   include <qatomic.h>
@@ -41,7 +39,11 @@ extern "C" {
 static inline int ATOMIC_CAS ( volatile int *pAddr,
 	int iOldValue, int iNewValue )
 {
+#if QT_VERSION >= 0x040400
+	return QAtomicInt(*pAddr).testAndSetOrdered(iOldValue, iNewValue);
+#else
 	return q_atomic_test_and_set_int(pAddr, iOldValue, iNewValue);
+#endif
 }
 
 #elif defined(__GNUC__)
