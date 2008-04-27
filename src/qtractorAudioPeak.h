@@ -73,7 +73,6 @@ public:
 	// Lazy-evaluated properties.
 	unsigned short period();
 	unsigned short channels();
-	unsigned long  frames();
 
 	// Peak file methods.
 	void getPeak(qtractorAudioPeakFrame *pframes,
@@ -112,7 +111,6 @@ private:
 
 	unsigned short m_iPeakPeriod;
 	unsigned short m_iPeakChannels;
-	unsigned long  m_iPeakFrames;
 	unsigned long  m_iPeakOffset;
 	unsigned int   m_iPeakBufSize;
 	char          *m_pPeakBuffer;
@@ -145,7 +143,6 @@ public:
 	unsigned short period() const;
 	// Lazy-evaluated properties.
 	unsigned short channels() const;
-	unsigned long  frames() const;
 
 	// Peak file methods.
 	void getPeak(qtractorAudioPeakFrame *pframes,

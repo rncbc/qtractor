@@ -183,10 +183,12 @@ private:
 
 	unsigned int   m_iThreshold;
 	unsigned int   m_iBufferSize;
-	bool           m_bReadSync;
 
-	volatile unsigned long  m_iReadOffset;
-	volatile unsigned long  m_iWriteOffset;
+	volatile bool  m_bInitSync;
+	volatile bool  m_bReadSync;
+
+	volatile unsigned long m_iReadOffset;
+	volatile unsigned long m_iWriteOffset;
 
 	unsigned long  m_iFileLength;
 	bool           m_bIntegral;
@@ -194,8 +196,8 @@ private:
 	unsigned long  m_iOffset;
 	unsigned long  m_iLength;
 
-	unsigned long  m_iLoopStart;
-	unsigned long  m_iLoopEnd;
+	volatile unsigned long m_iLoopStart;
+	volatile unsigned long m_iLoopEnd;
 
 	unsigned long  m_iSeekOffset;
 	qtractorAtomic m_seekPending;

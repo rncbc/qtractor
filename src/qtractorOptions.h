@@ -157,6 +157,10 @@ public:
 	bool bMidiFollow;
 	bool bMidiEditMode;
 
+	// Meter colors.
+	QStringList audioMeterColors;
+	QStringList midiMeterColors;
+
 	// Widget geometry persistence helper prototypes.
 	void saveWidgetGeometry(QWidget *pWidget);
 	void loadWidgetGeometry(QWidget *pWidget);

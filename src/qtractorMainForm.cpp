@@ -50,6 +50,9 @@
 #include "qtractorAudioClip.h"
 #include "qtractorMidiClip.h"
 
+#include "qtractorAudioMeter.h"
+#include "qtractorMidiMeter.h"
+
 #include "qtractorExportForm.h"
 #include "qtractorSessionForm.h"
 #include "qtractorOptionsForm.h"
@@ -101,8 +104,8 @@
 
 
 // Timer constant stuff.
-#define QTRACTOR_TIMER_MSECS    50
-#define QTRACTOR_TIMER_DELAY    200
+#define QTRACTOR_TIMER_MSECS    60
+#define QTRACTOR_TIMER_DELAY    240
 
 
 // Specialties for thread-callback comunication.
@@ -229,6 +232,7 @@ qtractorMainForm::qtractorMainForm (
 	m_pTransportTimeSpinBox->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
 	m_pTransportTimeSpinBox->setMinimumSize(QSize(128, 26));
 	m_pTransportTimeSpinBox->setToolTip(tr("Current transport time (playhead)"));
+	m_pTransportTimeSpinBox->setContextMenuPolicy(Qt::CustomContextMenu);
 	m_ui.timeToolbar->addWidget(m_pTransportTimeSpinBox);
 	m_ui.timeToolbar->addSeparator();
 
@@ -261,6 +265,9 @@ qtractorMainForm::qtractorMainForm (
 	m_ui.thumbToolbar->setAllowedAreas(
 		Qt::TopToolBarArea | Qt::BottomToolBarArea);
 
+	QObject::connect(m_pTransportTimeSpinBox,
+		SIGNAL(customContextMenuRequested(const QPoint&)),
+		SLOT(transportTimeContextMenu(const QPoint&)));
 	QObject::connect(m_pTransportTimeSpinBox,
 		SIGNAL(valueChanged(unsigned long)),
 		SLOT(transportTimeChanged(unsigned long)));
@@ -798,6 +805,15 @@ void qtractorMainForm::setOptions ( qtractorOptions *pOptions )
 	while (iter.hasNext())
 		m_pInstruments->load(iter.next());
 
+	// Load custom meter colors, if any...
+	int iColor;
+	for (iColor = 0; iColor < m_pOptions->audioMeterColors.count(); ++iColor)
+		qtractorAudioMeter::setColor(iColor,
+			QColor(m_pOptions->audioMeterColors[iColor]));
+	for (iColor = 0; iColor < m_pOptions->midiMeterColors.count(); ++iColor)
+		qtractorMidiMeter::setColor(iColor,
+			QColor(m_pOptions->midiMeterColors[iColor]));
+
 	// Primary startup stabilization...
 	updateRecentFilesMenu();
 	updatePeakAutoRemove();
@@ -917,6 +933,16 @@ bool qtractorMainForm::queryClose (void)
 			m_pOptions->bContinuePastEnd = m_ui.transportContinueAction->isChecked();
 			// Save instrument definition file list...
 			m_pOptions->instrumentFiles = m_pInstruments->files();
+			// Save custom meter colors, if any...
+			int iColor;
+			m_pOptions->audioMeterColors.clear();
+			for (iColor = 0; iColor < qtractorAudioMeter::ColorCount - 2; ++iColor)
+				m_pOptions->audioMeterColors.append(
+					qtractorAudioMeter::color(iColor).name());
+			m_pOptions->midiMeterColors.clear();
+			for (iColor = 0; iColor < qtractorMidiMeter::ColorCount - 2; ++iColor)
+				m_pOptions->midiMeterColors.append(
+					qtractorMidiMeter::color(iColor).name());
 			// Save the dock windows state.
 			m_pOptions->settings().setValue("/Layout/DockWindows", saveState());
 			// And the main windows state.
@@ -4089,7 +4115,8 @@ void qtractorMainForm::contentsChanged (void)
 void qtractorMainForm::tempoChanged ( double fTempo )
 {
 #ifdef CONFIG_DEBUG
-	appendMessages("qtractorMainForm::tempoChanged(" + QString::number(fTempo) + ")");
+	appendMessages("qtractorMainForm::tempoChanged("
+		+ QString::number(fTempo) + ")");
 #endif
 
 	// Are we really changing the tempo?
@@ -4113,7 +4140,8 @@ void qtractorMainForm::snapPerBeatChanged ( int iSnap )
 		return;
 
 #ifdef CONFIG_DEBUG
-	appendMessages("qtractorMainForm::snapPerBeatChanged()");
+	appendMessages("qtractorMainForm::snapPerBeatChanged("
+		+ QString::number(iSnapPerBeat) + ")");
 #endif
 
 	// No need to express this change as a undoable command...
@@ -4127,10 +4155,47 @@ void qtractorMainForm::transportTimeChanged ( unsigned long iPlayHead )
 	if (m_iTransportUpdate > 0)
 		return;
 
-	appendMessages("qtractorMainForm::transportTimeChanged(" + QString::number(iPlayHead) + ")");
+#ifdef CONFIG_DEBUG
+	appendMessages("qtractorMainForm::transportTimeChanged("
+		+ QString::number(iPlayHead) + ")");
+#endif
 
 	m_pSession->setPlayHead(iPlayHead);
 	m_iTransportUpdate++;
+
+	stabilizeForm();
+}
+
+
+// Time format custom context menu.
+void qtractorMainForm::transportTimeContextMenu ( const QPoint& pos )
+{
+	if (m_pOptions == NULL)
+		return;
+
+	QMenu menu(this);
+	QAction *pAction;
+
+	pAction = menu.addAction(tr("&Frames"));
+	pAction->setCheckable(true);
+	pAction->setChecked(m_pOptions->iDisplayFormat == 0);
+	pAction->setData(0);
+	
+	pAction = menu.addAction(tr("&Time"));
+	pAction->setCheckable(true);
+	pAction->setChecked(m_pOptions->iDisplayFormat == 1);
+	pAction->setData(1);
+
+	pAction = menu.addAction(tr("&BBT"));
+	pAction->setCheckable(true);
+	pAction->setChecked(m_pOptions->iDisplayFormat == 2);
+	pAction->setData(2);
+
+	pAction = menu.exec(m_pTransportTimeSpinBox->mapToGlobal(pos));
+	if (pAction) {
+		m_pOptions->iDisplayFormat = pAction->data().toInt();
+		updateDisplayFormat();
+	}
 
 	stabilizeForm();
 }

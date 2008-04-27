@@ -63,8 +63,8 @@ static inline float log10f2 ( float x )
 }
 
 
-// Audio meter color array.
-QColor qtractorAudioMeter::g_colors[qtractorAudioMeter::ColorCount] = {
+// Audio meter default color array.
+QColor qtractorAudioMeter::g_defaultColors[qtractorAudioMeter::ColorCount] = {
 	QColor(240,  0, 20),	// ColorOver
 	QColor(240,160, 20),	// Color0dB
 	QColor(220,220, 20),	// Color3dB
@@ -72,6 +72,17 @@ QColor qtractorAudioMeter::g_colors[qtractorAudioMeter::ColorCount] = {
 	QColor( 40,160, 40),	// Color10dB
 	QColor( 20, 40, 20),	// ColorBack
 	QColor( 80, 80, 80) 	// ColorFore
+};
+
+// Audio meter color array.
+QColor qtractorAudioMeter::g_currentColors[qtractorAudioMeter::ColorCount] = {
+	g_defaultColors[ColorOver],
+	g_defaultColors[Color0dB],
+	g_defaultColors[Color3dB],
+	g_defaultColors[Color6dB],
+	g_defaultColors[Color10dB],
+	g_defaultColors[ColorBack],
+	g_defaultColors[ColorFore]
 };
 
 
@@ -471,12 +482,17 @@ qtractorAudioMonitor *qtractorAudioMeter::audioMonitor (void) const
 // Common resource accessor (static).
 void qtractorAudioMeter::setColor ( int iIndex, const QColor& color )
 {
-	g_colors[iIndex] = color;
+	g_currentColors[iIndex] = color;
 }
 
 const QColor& qtractorAudioMeter::color ( int iIndex )
 {
-	return g_colors[iIndex];
+	return g_currentColors[iIndex];
+}
+
+const QColor& qtractorAudioMeter::defaultColor ( int iIndex )
+{
+	return g_defaultColors[iIndex];
 }
 
 

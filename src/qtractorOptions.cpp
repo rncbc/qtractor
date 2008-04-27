@@ -195,6 +195,12 @@ qtractorOptions::qtractorOptions (void)
 	bMidiEditMode    = m_settings.value("/EditMode", false).toBool();
 	m_settings.endGroup();
 
+	// Meter colors.
+	m_settings.beginGroup("/Colors");
+	audioMeterColors = m_settings.value("/AudioMeter").toStringList();
+	midiMeterColors  = m_settings.value("/MidiMeter").toStringList();
+	m_settings.endGroup();
+
 	m_settings.endGroup();
 }
 
@@ -346,6 +352,12 @@ qtractorOptions::~qtractorOptions (void)
 	m_settings.setValue("/Preview", bMidiPreview);
 	m_settings.setValue("/Follow", bMidiFollow);
 	m_settings.setValue("/EditMode", bMidiEditMode);
+	m_settings.endGroup();
+
+	// Meter colors.
+	m_settings.beginGroup("/Colors");
+	m_settings.setValue("/AudioMeter", audioMeterColors);
+	m_settings.setValue("/MidiMeter", midiMeterColors);
 	m_settings.endGroup();
 
 	m_settings.endGroup();

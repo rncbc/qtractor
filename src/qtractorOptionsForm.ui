@@ -1450,7 +1450,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QGroupBox" name="PluginPathGroupBox" >
+        <widget class="QGroupBox" name="MetersGroupBox" >
          <property name="font" >
           <font>
            <weight>75</weight>
@@ -1458,7 +1458,281 @@
           </font>
          </property>
          <property name="title" >
-          <string>Plugin Paths</string>
+          <string>Meters</string>
+         </property>
+         <property name="flat" >
+          <bool>true</bool>
+         </property>
+         <layout class="QHBoxLayout" >
+          <item>
+           <widget class="QLabel" name="AudioMeterLevelTextLabel" >
+            <property name="font" >
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="text" >
+             <string>&amp;Audio:</string>
+            </property>
+            <property name="buddy" >
+             <cstring>AudioMeterLevelComboBox</cstring>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QComboBox" name="AudioMeterLevelComboBox" >
+            <property name="minimumSize" >
+             <size>
+              <width>66</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="font" >
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="toolTip" >
+             <string>Audio meter level</string>
+            </property>
+            <item>
+             <property name="text" >
+              <string>Over</string>
+             </property>
+            </item>
+            <item>
+             <property name="text" >
+              <string>0 dB</string>
+             </property>
+            </item>
+            <item>
+             <property name="text" >
+              <string>3 dB</string>
+             </property>
+            </item>
+            <item>
+             <property name="text" >
+              <string>6 dB</string>
+             </property>
+            </item>
+            <item>
+             <property name="text" >
+              <string>10 dB</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="AudioMeterColorLineEdit" >
+            <property name="maximumSize" >
+             <size>
+              <width>66</width>
+              <height>24</height>
+             </size>
+            </property>
+            <property name="font" >
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="toolTip" >
+             <string>Audio meter color</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QToolButton" name="AudioMeterColorToolButton" >
+            <property name="minimumSize" >
+             <size>
+              <width>22</width>
+              <height>22</height>
+             </size>
+            </property>
+            <property name="maximumSize" >
+             <size>
+              <width>24</width>
+              <height>24</height>
+             </size>
+            </property>
+            <property name="font" >
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="focusPolicy" >
+             <enum>Qt::TabFocus</enum>
+            </property>
+            <property name="toolTip" >
+             <string>Select custom audio meter color</string>
+            </property>
+            <property name="text" >
+             <string>...</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer>
+            <property name="orientation" >
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" >
+             <size>
+              <width>4</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QLabel" name="MidiMeterLevelTextLabel" >
+            <property name="font" >
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="text" >
+             <string>&amp;MIDI:</string>
+            </property>
+            <property name="alignment" >
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+            <property name="buddy" >
+             <cstring>MidiMeterLevelComboBox</cstring>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QComboBox" name="MidiMeterLevelComboBox" >
+            <property name="minimumSize" >
+             <size>
+              <width>66</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="font" >
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="toolTip" >
+             <string>MIDI meter level</string>
+            </property>
+            <item>
+             <property name="text" >
+              <string>Peak</string>
+             </property>
+            </item>
+            <item>
+             <property name="text" >
+              <string>Over</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="MidiMeterColorLineEdit" >
+            <property name="maximumSize" >
+             <size>
+              <width>66</width>
+              <height>24</height>
+             </size>
+            </property>
+            <property name="font" >
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="toolTip" >
+             <string>MIDI meter color</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QToolButton" name="MidiMeterColorToolButton" >
+            <property name="minimumSize" >
+             <size>
+              <width>22</width>
+              <height>22</height>
+             </size>
+            </property>
+            <property name="maximumSize" >
+             <size>
+              <width>24</width>
+              <height>24</height>
+             </size>
+            </property>
+            <property name="font" >
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="focusPolicy" >
+             <enum>Qt::TabFocus</enum>
+            </property>
+            <property name="toolTip" >
+             <string>Select custom MIDI meter color</string>
+            </property>
+            <property name="text" >
+             <string>...</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer>
+            <property name="orientation" >
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" >
+             <size>
+              <width>4</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QPushButton" name="ResetMeterColorsPushButton" >
+            <property name="font" >
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="toolTip" >
+             <string>Reset meter colors to default</string>
+            </property>
+            <property name="text" >
+             <string>&amp;Reset</string>
+            </property>
+            <property name="shortcut" >
+             <string>Alt+R</string>
+            </property>
+            <property name="autoDefault" >
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="PluginsGroupBox" >
+         <property name="font" >
+          <font>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="title" >
+          <string>Plugins</string>
          </property>
          <property name="flat" >
           <bool>true</bool>
@@ -1918,6 +2192,13 @@
   <tabstop>TrackViewDropSpanCheckBox</tabstop>
   <tabstop>MaxRecentFilesSpinBox</tabstop>
   <tabstop>DisplayFormatComboBox</tabstop>
+  <tabstop>AudioMeterLevelComboBox</tabstop>
+  <tabstop>AudioMeterColorLineEdit</tabstop>
+  <tabstop>AudioMeterColorToolButton</tabstop>
+  <tabstop>MidiMeterLevelComboBox</tabstop>
+  <tabstop>MidiMeterColorLineEdit</tabstop>
+  <tabstop>MidiMeterColorToolButton</tabstop>
+  <tabstop>ResetMeterColorsPushButton</tabstop>
   <tabstop>PluginTypeComboBox</tabstop>
   <tabstop>PluginPathComboBox</tabstop>
   <tabstop>PluginPathBrowseToolButton</tabstop>

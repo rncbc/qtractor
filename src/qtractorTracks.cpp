@@ -717,12 +717,17 @@ bool qtractorTracks::addAudioTracks ( QStringList files,
 		= new qtractorImportTrackCommand();
 
 	// Increment this for suggestive track coloring...
-	int iTrackCount = pSession->tracks().count();
+	int iTrack = pSession->tracks().count();
 
 	// To log this import into session description.
 	QString sDescription = pSession->description().trimmed();
 	if (!sDescription.isEmpty())
 		sDescription += '\n';
+
+	// Needed whether we'll span to one single track
+	// or will have each clip intto several tracks...
+	bool bDropSpan = m_pTrackView->isDropSpan();
+	qtractorTrack *pTrack = NULL;
 
 	// For each one of those files, if any...
 	QStringListIterator iter(files);
@@ -730,12 +735,15 @@ bool qtractorTracks::addAudioTracks ( QStringList files,
 		// This is one of the selected filenames....
 		const QString& sPath = iter.next();
 		// Create a new track right away...
-		const QColor color = qtractorTrack::trackColor(++iTrackCount);
-		qtractorTrack *pTrack
-			= new qtractorTrack(pSession, qtractorTrack::Audio);
-	//	pTrack->setTrackName(QFileInfo(sPath).baseName());
-		pTrack->setBackground(color);
-		pTrack->setForeground(color.dark());
+		if (pTrack == NULL || !bDropSpan) {
+			const QColor& color = qtractorTrack::trackColor(++iTrack);
+			pTrack = new qtractorTrack(pSession, qtractorTrack::Audio);
+			if (bDropSpan)
+				pTrack->setTrackName(tr("Track %1").arg(iTrack));
+			pTrack->setBackground(color);
+			pTrack->setForeground(color.dark());
+			pImportTrackCommand->addTrack(pTrack);
+		}
 		// Add the clip at once...
 		qtractorAudioClip *pAudioClip = new qtractorAudioClip(pTrack);
 		pAudioClip->setFilename(sPath);
@@ -744,8 +752,10 @@ bool qtractorTracks::addAudioTracks ( QStringList files,
 		// actuallly, this is wheen the given audio file gets open...
 		pTrack->addClip(pAudioClip);
 		// Add the new track to composite command...
-		pTrack->setTrackName(pAudioClip->clipName());
-		pImportTrackCommand->addTrack(pTrack);
+		if (bDropSpan)
+			iClipStart += pAudioClip->clipLength();
+		else
+			pTrack->setTrackName(pAudioClip->clipName());
 		// Don't forget to add this one to local repository.
 		pMainForm->addAudioFile(sPath);
 		iUpdate++;
@@ -794,11 +804,11 @@ bool qtractorTracks::addMidiTracks ( QStringList files,
 		= new qtractorImportTrackCommand();
 
 	// Increment this for suggestive track coloring...
-	int iTrackCount = pSession->tracks().count();
+	int iTrack = pSession->tracks().count();
 
 	// Needed to help on setting whole session properties
 	// from the first imported MIDI file...
-	int iImport = iTrackCount;
+	int iImport = iTrack;
 	unsigned long iTimeStart = pSession->tickFromFrame(iClipStart);
 
 	// To log this import into session description.
@@ -819,7 +829,7 @@ bool qtractorTracks::addMidiTracks ( QStringList files,
 		int iTracks = (file.format() == 1 ? file.tracks() : 16);
 		for (int iTrackChannel = 0; iTrackChannel < iTracks; iTrackChannel++) {
 			// Create a new track right away...
-			const QColor color = qtractorTrack::trackColor(++iTrackCount);
+			const QColor& color = qtractorTrack::trackColor(++iTrack);
 			qtractorTrack *pTrack
 				= new qtractorTrack(pSession, qtractorTrack::Midi);
 		//	pTrack->setTrackName(QFileInfo(sPath).baseName());
@@ -904,10 +914,10 @@ bool qtractorTracks::addMidiTrackChannel ( const QString& sPath,
 		= new qtractorImportTrackCommand();
 
 	// Increment this for suggestive track coloring...
-	int iTrackCount = pSession->tracks().count();
+	int iTrack = pSession->tracks().count();
 
 	// Create a new track right away...
-	const QColor color = qtractorTrack::trackColor(++iTrackCount);
+	const QColor& color = qtractorTrack::trackColor(++iTrack);
 	qtractorTrack *pTrack
 		= new qtractorTrack(pSession, qtractorTrack::Midi);
 //	pTrack->setTrackName(QFileInfo(sPath).baseName());

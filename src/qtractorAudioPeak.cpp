@@ -60,7 +60,6 @@ struct qtractorAudioPeakHeader
 {
 	unsigned short peakPeriod;
 	unsigned short peakChannels;
-	unsigned long  peakFrames;
 };
 
 
@@ -84,7 +83,7 @@ public:
 protected:
 
 	// The main thread executive.
-	virtual void run();
+	void run();
 
 	// Actual peak file creation methods.
 	// (this is just about to be used internally)
@@ -145,12 +144,11 @@ void qtractorAudioPeakThread::run (void)
 
 	m_bRunState = true;
 
-	// Create the peak file from the sample audio one...
-	if (m_peakFile.open(QIODevice::ReadWrite | QIODevice::Truncate)) {
-		// Open audio sample file...
-		if (m_pAudioFile->open(m_pPeakFile->filename())) {
+	// Open audio sample file...
+	if (m_pAudioFile->open(m_pPeakFile->filename())) {
+		// Create the peak file from the sample audio one...
+		if (m_peakFile.open(QIODevice::ReadWrite | QIODevice::Truncate)) {
 			unsigned short iChannels = m_pAudioFile->channels();
-			unsigned long  iFrames   = m_pAudioFile->frames();
 			// Allocate audio file frame buffer
 			// and peak period accumulators.
 			m_ppAudioBuffer = new float* [iChannels];
@@ -179,10 +177,6 @@ void qtractorAudioPeakThread::run (void)
 			qtractorAudioPeakHeader hdr;
 			hdr.peakPeriod   = c_iPeakPeriod;
 			hdr.peakChannels = iChannels;
-			hdr.peakFrames   = (iFrames / m_iPeriod);
-			// Maybe not perfectly divisible...
-			if (iFrames % m_iPeriod)
-				hdr.peakFrames++;
 			m_peakFile.write((const char *) &hdr, sizeof(hdr));
 			// Go ahead with the whole bunch...
 			while (m_bRunState && createPeakFileChunk());
@@ -336,7 +330,6 @@ qtractorAudioPeakFile::qtractorAudioPeakFile (
 
 	m_iPeakPeriod   = 0;
 	m_iPeakChannels = 0;
-	m_iPeakFrames   = 0;
 	m_iPeakOffset   = 0;
 	m_iPeakBufSize  = 0;
 	m_pPeakBuffer   = NULL;
@@ -427,17 +420,15 @@ bool qtractorAudioPeakFile::openPeakFile (void)
 	qDebug("frame       = %d", sizeof(qtractorAudioPeakFrame));
 	qDebug("period      = %d", hdr.peakPeriod);
 	qDebug("channels    = %d", hdr.peakChannels);
-	qDebug("frames      = %lu", hdr.peakFrames);
 	qDebug("--------------------");
 #endif
 
 	//	Go ahead, it's already open.
 	m_iPeakPeriod   = hdr.peakPeriod;
 	m_iPeakChannels = hdr.peakChannels;
-	m_iPeakFrames   = hdr.peakFrames;
 	m_iPeakOffset   = 0;
-	m_iPeakBufSize  = sizeof(qtractorAudioPeakFrame) * m_iPeakChannels
-		* (m_iPeakFrames < c_iPeakBufSize ? m_iPeakFrames : c_iPeakBufSize);
+	m_iPeakBufSize  = (m_iPeakChannels * c_iPeakBufSize)
+		* sizeof(qtractorAudioPeakFrame);
 	m_pPeakBuffer   = new char [m_iPeakBufSize];
 
 	// Request the first (or only) bunch into the peak buffer.
@@ -487,11 +478,6 @@ unsigned short qtractorAudioPeakFile::period (void)
 unsigned short qtractorAudioPeakFile::channels (void)
 {
 	return (openPeakFile() ? m_iPeakChannels : 0);
-}
-
-unsigned long qtractorAudioPeakFile::frames (void)
-{
-	return (openPeakFile() ? m_iPeakFrames : 0);
 }
 
 
@@ -669,11 +655,6 @@ unsigned short qtractorAudioPeak::period (void) const
 unsigned short qtractorAudioPeak::channels (void) const
 {
 	return m_pPeakFile->channels();
-}
-
-unsigned long qtractorAudioPeak::frames (void) const
-{
-	return m_pPeakFile->frames();
 }
 
 

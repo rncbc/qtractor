@@ -50,14 +50,20 @@
 int      qtractorMidiMeter::g_iLedRefCount = 0;
 QPixmap *qtractorMidiMeter::g_pLedPixmap[qtractorMidiMeter::LedCount];
 
-// MIDI meter color array.
-QColor qtractorMidiMeter::g_colors[qtractorMidiMeter::ColorCount] = {
+// MIDI meter color arrays.
+QColor qtractorMidiMeter::g_defaultColors[qtractorMidiMeter::ColorCount] = {
 	QColor(160,220, 20),	// ColorPeak
 	QColor( 40,160, 40),	// ColorOver
 	QColor( 20, 40, 20),	// ColorBack
 	QColor( 80, 80, 80) 	// ColorFore
 };
 
+QColor qtractorMidiMeter::g_currentColors[qtractorMidiMeter::ColorCount] = {
+	g_defaultColors[ColorPeak],
+	g_defaultColors[ColorOver],
+	g_defaultColors[ColorBack],
+	g_defaultColors[ColorFore]
+};
 
 //----------------------------------------------------------------------------
 // qtractorMidiMeterScale -- Meter bridge scale widget.
@@ -341,12 +347,17 @@ qtractorMidiMonitor *qtractorMidiMeter::midiMonitor (void) const
 // Common resource accessor.
 void qtractorMidiMeter::setColor ( int iIndex, const QColor& color )
 {
-	g_colors[iIndex] = color;
+	g_currentColors[iIndex] = color;
 }
 
 const QColor& qtractorMidiMeter::color ( int iIndex )
 {
-	return g_colors[iIndex];
+	return g_currentColors[iIndex];
+}
+
+const QColor& qtractorMidiMeter::defaultColor ( int iIndex )
+{
+	return g_defaultColors[iIndex];
 }
 
 

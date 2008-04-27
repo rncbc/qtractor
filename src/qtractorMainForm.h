@@ -217,6 +217,8 @@ public slots:
 	void transportTimeChanged(unsigned long iPlayHead);
 	void contentsChanged();
 
+	void transportTimeContextMenu(const QPoint& pos);
+
 protected:
 
 	void closeEvent(QCloseEvent *pCloseEvent);

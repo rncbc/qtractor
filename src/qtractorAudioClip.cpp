@@ -254,6 +254,9 @@ void qtractorAudioClip::open (void)
 void qtractorAudioClip::process (
 	unsigned long iFrameStart, unsigned long iFrameEnd )
 {
+	if (m_pBuff == NULL)
+		return;
+
 	qtractorAudioBus *pAudioBus
 		= static_cast<qtractorAudioBus *> (track()->outputBus());
 	if (pAudioBus == NULL)
@@ -294,24 +297,19 @@ void qtractorAudioClip::drawClip ( QPainter *pPainter, const QRect& clipRect,
 	// Cache some peak data...
 	if (m_pPeak == NULL)
 		return;
+
 	unsigned int iPeriod = m_pPeak->period();
 	if (iPeriod < 1)
 		return;
 	unsigned int iChannels = m_pPeak->channels();
 	if (iChannels < 1)
 		return;
-	unsigned long iFrames = m_pPeak->frames();
-	if (iFrames < 1)
-		return;
 
-	unsigned long iframe = ((iClipOffset + clipOffset()) / iPeriod);
-	if (iframe > iFrames)
-		return;
-
+	unsigned long iframe
+		= ((iClipOffset + clipOffset()) / iPeriod);
 	unsigned long nframes
 		= (pSession->frameFromPixel(clipRect.width()) / iPeriod) + 2;
-	if (nframes > iFrames - iframe)
-		nframes = iFrames - iframe;
+
 	qtractorAudioPeakFrame *pframes
 		= new qtractorAudioPeakFrame [iChannels * nframes];
 

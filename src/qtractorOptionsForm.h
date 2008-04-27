@@ -54,6 +54,13 @@ protected slots:
 	void chooseMetroBarFilename();
 	void chooseMetroBeatFilename();
 	void updateMetroNoteNames();
+	void changeAudioMeterLevel(int iColor);
+	void changeMidiMeterLevel(int iColor);
+	void changeAudioMeterColor(const QString& sColor);
+	void changeMidiMeterColor(const QString& sColor);
+	void chooseAudioMeterColor();
+	void chooseMidiMeterColor();
+	void resetMeterColors();
 	void choosePluginType(int iPluginType);
 	void changePluginPath(const QString& sPluginPath);
 	void choosePluginPath();
@@ -71,6 +78,9 @@ protected:
 	QString getOpenAudioFileName(
 		const QString& sTitle, const QString& sFilename);
 
+	// Special combo-box color item helpers.
+	void updateColorText(QLineEdit *pLineEdit, const QColor& color);
+
 private:
 
 	// The Qt-designer UI struct...
@@ -79,6 +89,11 @@ private:
 	// Instance variables...
 	qtractorOptions *m_pOptions;
 	int m_iDirtyCount;
+
+	// Meter colors.
+	enum { AudioMeterColors = 5, MidiMeterColors = 2 };
+	QColor m_audioMeterColors[AudioMeterColors];
+	QColor m_midiMeterColors[MidiMeterColors];
 
 	// Plug-ins path cache.
 	QStringList m_ladspaPaths;

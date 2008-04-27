@@ -5,12 +5,35 @@ ChangeLog
 
 CVS HEAD
 
+- As one may find convenient sometimes, the global time display
+  format (frames, time or BBT) may now be changed on the main
+  transport time spin-box context menu.
+
+- Left-clicking on the track list number column now toggles all
+  track content clip selection.
+
+- Prevent audio-buffer initialization mashups when editing short
+  audio clips while playback is rolling and within clip region.
+
+- Audio peak files gets a bit simplified, dropping the peak frame
+  count from its header; peak waveform graphics are now rendered
+  as straight lines when over the end of audio file.
+
+- The drop-span option (View/Options.../Drop multiple audio files
+  into the same track) now also applies when importing tracks (as
+  in Track/Import Tracks/Audio...) to concatenate multiple audio
+  clips into one and the same new track.
+
+- Audio and MIDI meter level colors are now user configurable (as
+  global configuration options, View/Options.../Display/Meters) 
+
 - First attempt for Qt4.4 build support, regarding the bundled
   atomic primitives, which have changed upstream as advertised
   (thanks to Paul Thomas, for spotting this one first time).
 
-- Record monitor switch is now accessible on track mixer strips;
-  old bus "thru" switch button is now been renamed to "monitor".
+- Record monitor switch is now an accessible button option on all
+  track mixer strips; for visual consistency, the old bus "thru"
+  switch button has been renamed to "monitor".
 
 - Force track-view position reset to origin on session close.
 

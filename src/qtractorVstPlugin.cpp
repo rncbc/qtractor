@@ -204,7 +204,7 @@ protected:
 	// Mouse events.
 	void enterEvent(QEvent *pEnterEvent)
 	{
-	//	qDebug("DEBUG> qtractorPluginWidget::enterEvent()\n");
+	//	qDebug("qtractorPluginWidget::enterEvent()\n");
 		QWidget::enterEvent(pEnterEvent);
 		if (m_wEditor) {
 			XEvent ev;
@@ -229,7 +229,7 @@ protected:
 
 	void mousePressEvent(QMouseEvent *pMouseEvent)
 	{
-	//	qDebug("DEBUG> qtractorPluginWidget::mousePressEvent()\n");
+	//	qDebug("qtractorPluginWidget::mousePressEvent()\n");
 		QWidget::mousePressEvent(pMouseEvent);
 		if (m_wEditor) {
 			XEvent ev;
@@ -253,7 +253,7 @@ protected:
 
 	void mouseMoveEvent(QMouseEvent *pMouseEvent)
 	{
-	//	qDebug("DEBUG> qtractorPluginWidget::mouseMoveEvent()\n");
+	//	qDebug("qtractorPluginWidget::mouseMoveEvent()\n");
 		QWidget::mouseMoveEvent(pMouseEvent);
 		if (m_wEditor) {
 			XEvent ev;
@@ -276,7 +276,7 @@ protected:
 
 	void mouseReleaseEvent(QMouseEvent *pMouseEvent)
 	{
-	//	qDebug("DEBUG> qtractorPluginWidget::mouseReleaseEvent()\n");
+	//	qDebug("qtractorPluginWidget::mouseReleaseEvent()\n");
 		QWidget::mouseReleaseEvent(pMouseEvent);
 		if (m_wEditor) {
 			XEvent ev;
@@ -300,7 +300,7 @@ protected:
 
 	void wheelEvent(QWheelEvent *pWheelEvent)
 	{
-	//	qDebug("DEBUG> qtractorPluginWidget::wheelEvent()\n");
+	//	qDebug("qtractorPluginWidget::wheelEvent()\n");
 		QWidget::wheelEvent(pWheelEvent);
 		if (m_wEditor) {
 			XEvent ev;
@@ -332,7 +332,7 @@ protected:
 
 	void leaveEvent(QEvent *pLeaveEvent)
 	{
-	//	qDebug("DEBUG> qtractorPluginWidget::leaveEvent()\n");
+	//	qDebug("qtractorPluginWidget::leaveEvent()\n");
 		QWidget::leaveEvent(pLeaveEvent);
 		if (m_wEditor) {
 			XEvent ev;

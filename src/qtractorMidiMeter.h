@@ -149,6 +149,7 @@ public:
 	// Common resource accessors.
 	static void setColor(int iIndex, const QColor& color);
 	static const QColor& color(int iIndex);
+	static const QColor& defaultColor(int iIndex);
 
 protected:
 
@@ -175,7 +176,8 @@ private:
 	static int      g_iLedRefCount;
 	static QPixmap *g_pLedPixmap[LedCount];
 
-	static QColor g_colors[ColorCount];
+	static QColor g_defaultColors[ColorCount];
+	static QColor g_currentColors[ColorCount];
 };
 
 	

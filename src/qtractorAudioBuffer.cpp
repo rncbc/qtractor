@@ -84,6 +84,7 @@ qtractorAudioBuffer::qtractorAudioBuffer ( unsigned short iChannels,
 
 	m_iThreshold     = 0;
 	m_iBufferSize    = 0;
+	m_bInitSync      = false;
 	m_bReadSync      = false;
 	m_iReadOffset    = 0;
 	m_iWriteOffset   = 0;
@@ -313,6 +314,7 @@ void qtractorAudioBuffer::close (void)
 	// Reset all relevant state variables.
 	m_iThreshold   = 0;
 	m_iBufferSize  = 0;
+	m_bInitSync    = false;
 	m_bReadSync    = false;
 	m_iReadOffset  = 0;
 	m_iWriteOffset = 0;
@@ -623,6 +625,7 @@ bool qtractorAudioBuffer::initSync (void)
 		return false;
 
 	// Reset all relevant state variables.
+	m_bInitSync    = false;
 	m_bReadSync    = false;
 	m_iReadOffset  = 0;
 	m_iWriteOffset = 0;
@@ -650,6 +653,9 @@ bool qtractorAudioBuffer::initSync (void)
 			deleteIOBuffers();
 		}
 	}
+
+	// We're done with this initialization.
+	m_bInitSync = true;
 
 	// Just carry on, if not integrally cached...
 	return !m_bIntegral;
@@ -679,6 +685,9 @@ void qtractorAudioBuffer::sync (void)
 bool qtractorAudioBuffer::inSync (
 	unsigned long iFrameStart, unsigned long iFrameEnd )
 {
+	if (!m_bInitSync)
+		return false;
+
 	if (!m_bReadSync) {
 #ifdef CONFIG_DEBUG
 		qDebug("qtractorAudioBuffer[%p]::inSync(%lu, %lu) (%ld)",

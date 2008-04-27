@@ -1574,7 +1574,7 @@ void qtractorTrackView::selectTrack ( qtractorTrack *pTrackPtr, bool bReset )
 		return;
 
 	int iUpdate = 0;
-	if (bReset) {
+	if (bReset && m_pClipSelect->singleTrack() != pTrackPtr) {
 		m_pClipSelect->clear();
 		iUpdate++;
 	}
@@ -1592,9 +1592,9 @@ void qtractorTrackView::selectTrack ( qtractorTrack *pTrackPtr, bool bReset )
 					pClip; pClip = pClip->next()) {
 				int x = pSession->pixelFromFrame(pClip->clipStart());
 				int w = pSession->pixelFromFrame(pClip->clipLength());
-				const bool bSelect = (bReset || !pClip->isClipSelected());
 				const QRect rectClip(x, y, w, h);
-				m_pClipSelect->selectClip(pClip, rectClip, bSelect);
+				m_pClipSelect->selectClip(pClip, rectClip,
+					!pClip->isClipSelected());
 				rectUpdate = rectUpdate.unite(rectClip);
 				iUpdate++;
 			}

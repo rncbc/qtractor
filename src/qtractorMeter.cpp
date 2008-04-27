@@ -102,8 +102,8 @@ void qtractorMeterScale::paintEvent ( QPaintEvent * )
 qtractorMeter::qtractorMeter ( QWidget *pParent )
 	: QWidget(pParent)
 {
-	QFont font8(font().family(), 8);
-	QFontMetrics fm(font8);
+	QFont font7(font().family(), 7);
+	QFontMetrics fm(font7);
 
 	m_pVBoxLayout = new QVBoxLayout();
 	m_pVBoxLayout->setMargin(0);
@@ -115,7 +115,7 @@ qtractorMeter::qtractorMeter ( QWidget *pParent )
 	m_pVBoxLayout->addWidget(m_pPanSlider);
 
 	m_pPanSpinBox = new QDoubleSpinBox(/*this*/);
-	m_pPanSpinBox->setFont(font8);
+	m_pPanSpinBox->setFont(font7);
 	m_pPanSpinBox->setFixedHeight(fm.lineSpacing() + 2);
 	m_pVBoxLayout->addWidget(m_pPanSpinBox);
 
@@ -138,7 +138,7 @@ qtractorMeter::qtractorMeter ( QWidget *pParent )
 	m_pBoxLayout->addWidget(m_pGainSlider);
 
 	m_pGainSpinBox = new QDoubleSpinBox(/*this*/);
-	m_pGainSpinBox->setFont(font8);
+	m_pGainSpinBox->setFont(font7);
 	m_pGainSpinBox->setFixedHeight(fm.lineSpacing() + 2);
 	m_pVBoxLayout->addWidget(m_pGainSpinBox);
 
