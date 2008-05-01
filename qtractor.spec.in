@@ -1,6 +1,6 @@
 %define name    @PACKAGE_TARNAME@
 %define version @PACKAGE_VERSION@
-%define release 17
+%define release 18
 %define prefix  @ac_prefix@
 
 Summary:	An Audio/MIDI multi-track sequencer.
@@ -69,7 +69,9 @@ specially dedicated to the personal home-studio.
 %{_datadir}/pixmaps/%{name}.png
 
 %changelog
-* Tue Apr 1 2008 Rui Nuno Capela <rncbc@users.sourceforge.net>
+* Fri May 02 2008 Rui Nuno Capela <rncbc@users.sourceforge.net>
+- Frugal Damsel release.
+* Tue Apr 01 2008 Rui Nuno Capela <rncbc@users.sourceforge.net>
 - librubberband requirement added.
 * Sun Mar 23 2008 Rui Nuno Capela <rncbc@users.sourceforge.net>
 - Frantic Dame release.

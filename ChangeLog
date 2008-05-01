@@ -3,7 +3,7 @@ Qtractor - An Audio/MIDI multi-track sequencer
 
 ChangeLog
 
-CVS HEAD
+0.1.3  2008-05-02  The Frugal Damsel
 
 - As one may find convenient sometimes, the global time display
   format (frames, time or BBT) may now be changed on the main
@@ -60,7 +60,7 @@ CVS HEAD
   sessions saved with time-stretched audio clips.
 
 - Slack space in main tracks and MIDI clip editor views are now
-  proportionial to viewport width, leaving enough room for drag
+  proportional to viewport width, leaving enough room for drag
   and moving content past the current session length, specially
   at the lower zoom levels.
 
@@ -94,7 +94,7 @@ CVS HEAD
   sloppy implementation.
 
 
-0.1.2  2006-03-23  The Frantic Dame
+0.1.2  2008-03-23  The Frantic Dame
 
 - Session length fixed (yet again) while extend recording; also
   improved follow-playhead switching while playback/recording.

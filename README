@@ -51,6 +51,10 @@ The software requirements for build and runtime are listed as follows:
         for audio sample rate conversion
         http://www.mega-nerd.com/SRC/
 
+  - librubberband, Rubber Band Audio Time Stretcher,
+        an audio time-stretching and pitch-shifting library
+        http://breakfastquay.com/rubberband/
+
   - liblo, Lightweight OSC implementation
         (needed for DSSI GUI support)
         http://liblo.sourceforge.net/
