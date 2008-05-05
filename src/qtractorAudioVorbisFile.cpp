@@ -26,6 +26,8 @@
 #include <vorbis/vorbisenc.h>
 #endif
 
+#include <stdlib.h>
+
 
 //----------------------------------------------------------------------
 // class qtractorAudioVorbisFile -- Buffered audio file implementation.

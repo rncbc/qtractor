@@ -3,6 +3,12 @@ Qtractor - An Audio/MIDI multi-track sequencer
 
 ChangeLog
 
+CVS HEAD
+
+- Include legacy header stdlib.h where necessary to build with
+  stricter gcc/g++ >= 4.3.
+
+
 0.1.3  2008-05-02  The Frugal Damsel
 
 - As one may find convenient sometimes, the global time display

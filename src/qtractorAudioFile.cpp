@@ -27,6 +27,8 @@
 #include <QFileInfo>
 #include <QRegExp>
 
+#include <stdlib.h>
+
 
 //----------------------------------------------------------------------
 // class qtractorAudioFileFactory -- Audio file factory (singleton).
