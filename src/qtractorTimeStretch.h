@@ -25,6 +25,8 @@
 #ifndef __qtractorTimeStretch_h
 #define __qtractorTimeStretch_h
 
+#include "qtractorFifoBuffer.h"
+
 
 //---------------------------------------------------------------------------
 // qtractorTimeStretch - Time-stretch (tempo change) processed sound.
@@ -152,72 +154,6 @@ public:
 	// Clears all buffers.
 	void clear();
 
-	//-----------------------------------------------------------------------
-	// FifoBuffer - Sample frame buffer (FIFO).
-	//
-	class FifoBuffer
-	{
-	public:
-	
-		// Constructor.
-		FifoBuffer(unsigned short iChannels = 2);
-
-		// Destructor.
-		~FifoBuffer();
-
-		void setChannels(unsigned short iChannels);
-		unsigned short channels() const;
-
-		// Write samples/frames to the end of sample frame buffer.
-		unsigned int writeFrames(float **ppFrames, unsigned int iFrames,
-			unsigned int iOffset = 0);
-
-		// Adjusts the book-keeping to increase number of frames
-		// in the buffer without copying any actual frames.
-		void putFrames(
-			float **ppFrames, unsigned int iFrames, unsigned iOffset = 0);
-		void putFrames(unsigned int iFrames);
-
-		// Read frames from beginning of the sample buffer.
-		unsigned int readFrames(float **ppFrames, unsigned int iFrames,
-			unsigned int iOffset = 0) const;
-
-		// Adjusts book-keeping so that given number of frames are removed
-		// from beginning of the sample buffer without copying them anywhere. 
-		unsigned int receiveFrames(
-			float **ppFrames, unsigned int iFrames,	unsigned iOffset = 0);
-		unsigned int receiveFrames(unsigned int iFrames);
-
-		// Returns number of frames currently available.
-		unsigned int frames() const;
-
-		// Returns a pointer to the beginning of the output samples. 
-		float *ptrBegin(unsigned short iChannel) const;
-		// Returns a pointer to the end of the used part of the sample buffer.
-		float *ptrEnd(unsigned short iChannel) const;
-
-		// Returns nonzero if there aren't any frames available.
-		bool isEmpty() const;
-
-		// Clears all the buffers.
-		void clear();	
-
-		// Returns current capacity in frames.
-		unsigned int capacity() const;
-
-		// Ensures that the buffer has capacity for at least this many frames.
-		void ensureCapacity(const unsigned int iSlackCapacity);
-
-	private:
-
-		unsigned short m_iChannels;
-		float **m_ppBuffer;
-		float **m_ppBufferUnaligned;
-		unsigned int m_iSizeInFrames;
-		unsigned int m_iFramesInBuffer;
-		unsigned int m_iFramePos;
-	};
-
 protected:
 
 	// Calculates overlap period length in frames.
@@ -258,8 +194,8 @@ private:
 	unsigned int m_iSeekWindowLength;
 	float m_fNominalSkip;
 	float m_fSkipFract;
-	FifoBuffer m_outputBuffer;
-	FifoBuffer m_inputBuffer;
+	qtractorFifoBuffer<float> m_outputBuffer;
+	qtractorFifoBuffer<float> m_inputBuffer;
 	bool m_bMidBufferDirty;
 
 	// Calculates the cross-correlation value over the overlap period.

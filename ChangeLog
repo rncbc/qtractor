@@ -5,6 +5,9 @@ ChangeLog
 
 CVS HEAD
 
+- Time-stretch FIFO buffer implementation is now made generic,
+  as template, fixing a destructor memory leak in the process.
+
 - Include legacy header stdlib.h where necessary to build with
   stricter gcc/g++ >= 4.3.
 

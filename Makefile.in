@@ -28,6 +28,7 @@ headers = config.h \
 	src/qtractorDssiPlugin.h \
 	src/qtractorEngine.h \
 	src/qtractorEngineCommand.h \
+	src/qtractorFifoBuffer.h \
 	src/qtractorFileListView.h \
 	src/qtractorFiles.h \
 	src/qtractorInstrument.h \
