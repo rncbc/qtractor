@@ -194,6 +194,8 @@ bool qtractorAudioBuffer::open ( const QString& sFilename, int iMode )
 	// Just one more sanity check...
 	if (iChannels < 1 || m_pFile->sampleRate() < 1) {
 		m_pFile->close();
+		delete m_pFile;
+		m_pFile = NULL;
 		return false;
 	}
 
@@ -291,16 +293,15 @@ void qtractorAudioBuffer::close (void)
 	// Time to close it good.
 	m_pFile->close();
 
-	// Release internal I/O buffers.
-	deleteIOBuffers();
-
 	// Deallocate any buffer stuff...
 	if (m_pTimeStretcher) {
 		delete m_pTimeStretcher;
 		m_pTimeStretcher = NULL;
 	}
 
+	// Release internal I/O buffers.
 	if (m_pRingBuffer) {
+		deleteIOBuffers();
 		delete m_pRingBuffer;
 		m_pRingBuffer = NULL;
 	}

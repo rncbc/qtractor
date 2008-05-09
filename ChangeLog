@@ -5,6 +5,8 @@ ChangeLog
 
 CVS HEAD
 
+- Fixed potential crash when opening bogus audio files.
+
 - Time-stretch FIFO buffer implementation is now made generic,
   as template, fixing a destructor memory leak in the process.
 
