@@ -5,6 +5,9 @@ ChangeLog
 
 CVS HEAD
 
+- Fixed session cursor backward seeking, specially when passed
+  the end of overlapped clips, yet again.
+
 - Fixed potential crash when opening bogus audio files.
 
 - Time-stretch FIFO buffer implementation is now made generic,
