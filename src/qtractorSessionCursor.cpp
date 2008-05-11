@@ -76,35 +76,38 @@ qtractorTrack::TrackType qtractorSessionCursor::syncType (void) const
 // General bi-directional locate method.
 void qtractorSessionCursor::seek ( unsigned long iFrame, bool bSync )
 {
-	if (iFrame > m_iFrame)
-		seekForward(iFrame);
-	else
-	if (iFrame < m_iFrame)
-		seekBackward(iFrame);
+	if (iFrame == m_iFrame)
+		return;
 
-	if (bSync && m_syncType != qtractorTrack::None) {
-		unsigned int iTrack = 0;
-		qtractorTrack *pTrack = m_pSession->tracks().first();
-		while (pTrack && iTrack < m_iTracks) {
-			if (pTrack->trackType() == m_syncType) {
-				qtractorClip *pClip = m_ppClips[iTrack];
-				if (pClip == NULL)
-					pClip = pTrack->clips().last();
-				if (pClip) {
-					unsigned long iClipStart = pClip->clipStart();
-					if (iFrame < iClipStart) {
-						pClip->seek(0);
-					} else if (iFrame < iClipStart + pClip->clipLength()) {
-						pClip->seek(iFrame - iClipStart);
-					} else {
-						pClip->reset(m_pSession->isLooping());
-					}
-				}
+	unsigned int iTrack = 0; 
+	qtractorTrack *pTrack = m_pSession->tracks().first();
+	while (pTrack && iTrack < m_iTracks) {
+		qtractorClip *pClip = NULL;
+		// Optimize if seeking forward...
+		if (iFrame > m_iFrame)
+			pClip = m_ppClips[iTrack];
+		// Locate first clip not past
+		// the target frame position..
+		pClip = seekClip(pTrack, pClip, iFrame);
+		// Set fine position within target clip...
+		if (pClip && bSync && pTrack->trackType() == m_syncType) {
+			unsigned long iClipStart = pClip->clipStart();
+			if (iFrame < iClipStart) {
+				pClip->seek(0);
+			} else if (iFrame < iClipStart + pClip->clipLength()) {
+				pClip->seek(iFrame - iClipStart);
+			} else {
+				pClip->reset(m_pSession->isLooping());
 			}
-			pTrack = pTrack->next();
-			iTrack++;
 		}
+		// Update cursor track clip...
+		m_ppClips[iTrack] = pClip;
+		pTrack = pTrack->next();
+		iTrack++;
 	}
+
+	// Done.
+	m_iFrame = iFrame;
 }
 
 
@@ -136,45 +139,9 @@ qtractorClip *qtractorSessionCursor::clip ( unsigned int iTrack ) const
 }
 
 
-// Forward locate method.
-void qtractorSessionCursor::seekForward ( unsigned long iFrame )
-{
-#ifdef CONFIG_DEBUG_0
-	qDebug("qtractorSessionCursor[%p,%d]::seekForward(%lu)", this, (int) m_syncType, iFrame);
-#endif
-
-	unsigned int iTrack = 0; 
-	qtractorTrack *pTrack = m_pSession->tracks().first();
-	while (pTrack && iTrack < m_iTracks) {
-		m_ppClips[iTrack] = seekClipForward(pTrack, m_ppClips[iTrack], iFrame);
-		pTrack = pTrack->next();
-		iTrack++;
-	}
-	m_iFrame = iFrame;
-}
-
-
-// Backward locate method.
-void qtractorSessionCursor::seekBackward ( unsigned long iFrame )
-{
-#ifdef CONFIG_DEBUG_0
-	qDebug("qtractorSessionCursor[%p,%d]::seekBackward(%lu)", this, (int) m_syncType, iFrame);
-#endif
-
-	unsigned int iTrack = 0; 
-	qtractorTrack *pTrack = m_pSession->tracks().first();
-	while (pTrack && iTrack < m_iTracks) {
-		m_ppClips[iTrack] = seekClipBackward(pTrack, m_ppClips[iTrack], iFrame);
-		pTrack = pTrack->next();
-		iTrack++;
-	}
-	m_iFrame = iFrame;
-}
-
-
-// Forward clip locate method.
-qtractorClip *qtractorSessionCursor::seekClipForward (
-	qtractorTrack *pTrack, qtractorClip *pClip, unsigned long iFrame )
+// Clip locate method.
+qtractorClip *qtractorSessionCursor::seekClip (
+	qtractorTrack *pTrack, qtractorClip *pClip, unsigned long iFrame ) const
 {
 	if (pClip == NULL)
 		pClip = pTrack->clips().first();
@@ -187,26 +154,6 @@ qtractorClip *qtractorSessionCursor::seekClipForward (
 
 	if (pClip == NULL)
 		pClip = pTrack->clips().last();
-
-	return pClip;
-}
-
-
-// Backward clip locate method.
-qtractorClip *qtractorSessionCursor::seekClipBackward (
-	qtractorTrack *pTrack, qtractorClip *pClip, unsigned long iFrame )
-{
-	if (pClip == NULL)
-		pClip = pTrack->clips().last();
-
-	while (pClip && iFrame > pClip->clipStart() + pClip->clipLength()) {
-		if (pTrack->trackType() == m_syncType)
-			pClip->reset(m_pSession->isLooping());
-		pClip = pClip->prev();
-	}
-
-	if (pClip == NULL)
-		pClip = pTrack->clips().first();
 
 	return pClip;
 }
@@ -239,10 +186,10 @@ void qtractorSessionCursor::updateTrack ( qtractorTrack *pTrack )
 {
 	int iTrack = m_pSession->tracks().find(pTrack);
 	if (iTrack >= 0) {
-		qtractorClip *pClip = seekClipForward(pTrack,
-			pTrack->clips().first(), m_iFrame);
-		if (pClip && m_iFrame >= pClip->clipStart()
-			&& pTrack->trackType() == m_syncType) {
+		qtractorClip *pClip = seekClip(pTrack, NULL, m_iFrame);
+		if (pClip && pTrack->trackType() == m_syncType
+			&& m_iFrame >= pClip->clipStart()
+			&& m_iFrame <  pClip->clipStart() - pClip->clipLength()) {
 			pClip->seek(m_iFrame - pClip->clipStart());
 		}
 		m_ppClips[iTrack] = pClip;
@@ -275,10 +222,10 @@ void qtractorSessionCursor::updateClips ( qtractorClip **ppClips,
 	unsigned int iTrack = 0; 
 	qtractorTrack *pTrack = m_pSession->tracks().first();
 	while (pTrack && iTrack < iTracks) {
-		qtractorClip *pClip = seekClipForward(pTrack,
-			pTrack->clips().first(), m_iFrame);
-		if (pClip && m_iFrame >= pClip->clipStart()
-			&& pTrack->trackType() == m_syncType) {
+		qtractorClip *pClip = seekClip(pTrack, NULL, m_iFrame);
+		if (pClip && pTrack->trackType() == m_syncType
+			&& m_iFrame >= pClip->clipStart()
+			&& m_iFrame <  pClip->clipStart() - pClip->clipLength()) {
 			pClip->seek(m_iFrame - pClip->clipStart());
 		}
 		ppClips[iTrack] = pClip;

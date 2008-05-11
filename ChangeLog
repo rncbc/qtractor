@@ -5,8 +5,8 @@ ChangeLog
 
 CVS HEAD
 
-- Fixed session cursor backward seeking, specially when passed
-  the end of overlapped clips, yet again.
+- Fixed session cursor backward seeking, specially applicable
+  when playback passes the end of overlapped clips.
 
 - Fixed potential crash when opening bogus audio files.
 

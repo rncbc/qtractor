@@ -77,15 +77,9 @@ public:
 
 protected:
 
-	// Frame locate method.
-	void seekForward  (unsigned long iFrame);
-	void seekBackward (unsigned long iFrame);
-
-	// Clip locate methods.
-	qtractorClip *seekClipForward  (qtractorTrack *pTrack,
-		qtractorClip *pClip, unsigned long iFrame);
-	qtractorClip *seekClipBackward (qtractorTrack *pTrack,
-		qtractorClip *pClip, unsigned long iFrame);
+	// Clip locate method.
+	qtractorClip *seekClip(qtractorTrack *pTrack,
+		qtractorClip *pClip, unsigned long iFrame) const;
 
 	// Update (stabilize) cursor.
 	void updateClips(qtractorClip **ppClips, unsigned int iTracks);
