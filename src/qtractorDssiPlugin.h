@@ -28,7 +28,7 @@
 
 
 //----------------------------------------------------------------------------
-// qtractorDssiPluginType -- LADSPA plugin type instance.
+// qtractorDssiPluginType -- DSSI plugin type instance.
 //
 
 class qtractorDssiPluginType : public qtractorLadspaPluginType

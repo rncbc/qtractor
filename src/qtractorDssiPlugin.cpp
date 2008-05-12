@@ -384,7 +384,7 @@ static void osc_close_editor ( qtractorDssiPlugin *pDssiPlugin )
 
 
 //----------------------------------------------------------------------------
-// qtractorDssiPluginType -- VST plugin type instance.
+// qtractorDssiPluginType -- DSSI plugin type instance.
 //
 
 // Derived methods.
@@ -474,7 +474,7 @@ const DSSI_Descriptor *qtractorDssiPluginType::dssi_descriptor (
 
 
 //----------------------------------------------------------------------------
-// qtractorDssiPlugin -- VST plugin instance.
+// qtractorDssiPlugin -- DSSI plugin instance.
 //
 
 // Constructors.
@@ -618,7 +618,7 @@ bool qtractorDssiPlugin::isEditorVisible (void) const
 
 
 //----------------------------------------------------------------------------
-// qtractorDssiPluginParam -- VST plugin control input port instance.
+// qtractorDssiPluginParam -- DSSI plugin control input port instance.
 //
 
 // Constructors.

@@ -36,6 +36,7 @@ headers = config.h \
 	src/qtractorList.h \
 	src/qtractorMessages.h \
 	src/qtractorMeter.h \
+	src/qtractorMidiBuffer.h \
 	src/qtractorMidiClip.h \
 	src/qtractorMidiConnect.h \
 	src/qtractorMidiCursor.h \

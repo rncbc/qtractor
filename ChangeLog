@@ -5,6 +5,9 @@ ChangeLog
 
 CVS HEAD
 
+- MIDI buffer/merger makes its first stealth appearance, making
+  the early way for full DSSI plugin host implementation soon.
+
 - Fixed session cursor backward seeking, specially applicable
   when playback passes the end of overlapped clips.
 
