@@ -5,6 +5,9 @@ ChangeLog
 
 CVS HEAD
 
+- Audio/MIDI drifting correction was missing its correct and due
+  (re)initialization whenever playback is (re)started..
+
 - MIDI buffer/merger makes its first stealth appearance, making
   the early way for full DSSI plugin host implementation soon.
 

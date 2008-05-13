@@ -878,7 +878,8 @@ void qtractorMidiEngine::enqueue ( qtractorTrack *pTrack,
 #endif
 	// Scheduled delivery: take into account
 	// the time playback/queue started...
-	unsigned long tick = iTime - m_iTimeStart;
+	unsigned long tick
+		= ((long) iTime > m_iTimeStart ? iTime - m_iTimeStart : 0);
 
 #ifdef CONFIG_DEBUG_0
 	// - show event for debug purposes...
@@ -1072,9 +1073,7 @@ bool qtractorMidiEngine::activate (void)
 	m_pOutputThread->start(QThread::HighPriority);
 
 	m_iTimeStart = 0;
-#ifdef QTRACTOR_SNAFU_DRIFT
 	m_iTimeDelta = 0;
-#endif
 
 	// Reset all dependable monitoring...
 	resetAllMonitors();
@@ -1111,9 +1110,7 @@ bool qtractorMidiEngine::start (void)
 
 	// Start queue timer...
 	m_iTimeStart = (long) pSession->tickFromFrame(pMidiCursor->frame());
-#ifdef QTRACTOR_SNAFU_DRIFT
 	m_iTimeDelta = 0;
-#endif
 
 	// Effectively start sequencer queue timer...
 	snd_seq_start_queue(m_pAlsaSeq, m_iAlsaQueue, NULL);
@@ -1179,9 +1176,7 @@ void qtractorMidiEngine::clean (void)
 		delete m_pOutputThread;
 		m_pOutputThread = NULL;
 		m_iTimeStart = 0;
-#ifdef QTRACTOR_SNAFU_DRIFT
 		m_iTimeDelta = 0;
-#endif
 	}
 
 	// Last but not least, delete input thread...
@@ -1251,8 +1246,8 @@ void qtractorMidiEngine::trackMute ( qtractorTrack *pTrack, bool bMute )
 		snd_seq_remove_events_t *pre;
 		snd_seq_remove_events_alloca(&pre);
 		snd_seq_timestamp_t ts;
-		long iTime = (long) pSession->tickFromFrame(iFrame);
-		ts.tick = (iTime > m_iTimeStart ? iTime - m_iTimeStart : 0);
+		unsigned long iTime = pSession->tickFromFrame(iFrame);
+		ts.tick = ((long) iTime > m_iTimeStart ? iTime - m_iTimeStart : 0);
 		snd_seq_remove_events_set_time(pre, &ts);
 		snd_seq_remove_events_set_tag(pre, pTrack->midiTag());
 		snd_seq_remove_events_set_channel(pre, pTrack->midiChannel());
@@ -1716,7 +1711,8 @@ void qtractorMidiEngine::processMetro (
 	while (iTime < iTimeEnd) {
 		// Scheduled delivery: take into account
 		// the time playback/queue started...
-		unsigned long tick = iTime - m_iTimeStart;
+		unsigned long tick
+			= ((long) iTime > m_iTimeStart ? iTime - m_iTimeStart : 0);
 		snd_seq_ev_schedule_tick(&ev, m_iAlsaQueue, 0, tick);
 		// Set proper event data...
 		if (pSession->beatIsBar(iBeat)) {
