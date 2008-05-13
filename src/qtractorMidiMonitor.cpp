@@ -169,12 +169,13 @@ void qtractorMidiMonitor::reset (void)
 		// time slot: the amount of time (in ticks)
 		// each queue slot will hold scheduled events;
 		m_iTimeSlot = 1 + m_pSession->tickFromFrame(
-			m_pSession->midiEngine()->readAhead() << 2) / m_iQueueSize;
+			m_pSession->midiEngine()->readAhead() << 1) / m_iQueueSize;
 		// time start: the time (in ticks) of the
-		// current queue head slot;
-		m_iTimeStart = m_pSession->midiEngine()->timeStart();
+		// current queue head slot; usually zero ;)
+		m_iTimeStart = m_pSession->tickFromFrame(
+			m_pSession->audioEngine()->sessionCursor()->frameTime());
 		// Time to reset buffer...
-		for (unsigned int i = 0; i < m_iQueueSize; i++) {
+		for (unsigned int i = 0; i < m_iQueueSize; ++i) {
 			m_pQueue[i].value = 0;
 			m_pQueue[i].count = 0;
 		}
