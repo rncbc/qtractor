@@ -1724,7 +1724,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QGroupBox" name="PluginsGroupBox" >
+        <widget class="QGroupBox" name="MessagesGroupBox" >
          <property name="font" >
           <font>
            <weight>75</weight>
@@ -1732,7 +1732,261 @@
           </font>
          </property>
          <property name="title" >
-          <string>Plugins</string>
+          <string>Messages</string>
+         </property>
+         <property name="flat" >
+          <bool>true</bool>
+         </property>
+         <layout class="QGridLayout" >
+          <property name="margin" >
+           <number>9</number>
+          </property>
+          <property name="spacing" >
+           <number>6</number>
+          </property>
+          <item row="0" column="0" >
+           <widget class="QLabel" name="MessagesFontTextLabel" >
+            <property name="minimumSize" >
+             <size>
+              <width>180</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="maximumSize" >
+             <size>
+              <width>180</width>
+              <height>32767</height>
+             </size>
+            </property>
+            <property name="font" >
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="toolTip" >
+             <string>Sample messages text font display</string>
+            </property>
+            <property name="autoFillBackground" >
+             <bool>true</bool>
+            </property>
+            <property name="frameShape" >
+             <enum>QFrame::StyledPanel</enum>
+            </property>
+            <property name="frameShadow" >
+             <enum>QFrame::Sunken</enum>
+            </property>
+            <property name="alignment" >
+             <set>Qt::AlignCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1" >
+           <widget class="QPushButton" name="MessagesFontPushButton" >
+            <property name="font" >
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="toolTip" >
+             <string>Select font for the messages text display</string>
+            </property>
+            <property name="text" >
+             <string>&amp;Font...</string>
+            </property>
+            <property name="shortcut" >
+             <string>Alt+F</string>
+            </property>
+            <property name="autoDefault" >
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="2" >
+           <spacer>
+            <property name="orientation" >
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" >
+             <size>
+              <width>20</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="0" column="3" >
+           <widget class="QCheckBox" name="MessagesLimitCheckBox" >
+            <property name="font" >
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="toolTip" >
+             <string>Whether to keep a maximum number of lines in the messages window</string>
+            </property>
+            <property name="text" >
+             <string>&amp;Messages limit:</string>
+            </property>
+            <property name="shortcut" >
+             <string>Alt+M</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="4" >
+           <widget class="QSpinBox" name="MessagesLimitLinesSpinBox" >
+            <property name="font" >
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="toolTip" >
+             <string>The maximum number of message lines to keep in view</string>
+            </property>
+            <property name="suffix" >
+             <string> lines</string>
+            </property>
+            <property name="maximum" >
+             <number>10000</number>
+            </property>
+            <property name="minimum" >
+             <number>100</number>
+            </property>
+            <property name="singleStep" >
+             <number>100</number>
+            </property>
+            <property name="value" >
+             <number>1000</number>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="LoggingGroupBox" >
+         <property name="font" >
+          <font>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="title" >
+          <string>Logging</string>
+         </property>
+         <property name="flat" >
+          <bool>true</bool>
+         </property>
+         <layout class="QGridLayout" >
+          <property name="margin" >
+           <number>8</number>
+          </property>
+          <property name="spacing" >
+           <number>4</number>
+          </property>
+          <item row="0" column="1" colspan="3" >
+           <widget class="QComboBox" name="MessagesLogPathComboBox" >
+            <property name="sizePolicy" >
+             <sizepolicy>
+              <hsizetype>7</hsizetype>
+              <vsizetype>0</vsizetype>
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="font" >
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="toolTip" >
+             <string>Messages log file</string>
+            </property>
+            <property name="editable" >
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="4" >
+           <widget class="QToolButton" name="MessagesLogPathToolButton" >
+            <property name="minimumSize" >
+             <size>
+              <width>22</width>
+              <height>22</height>
+             </size>
+            </property>
+            <property name="maximumSize" >
+             <size>
+              <width>24</width>
+              <height>24</height>
+             </size>
+            </property>
+            <property name="icon" >
+             <iconset resource="../icons/qtractor.qrc" >:/icons/fileOpen.png</iconset>
+            </property>
+            <property name="font" >
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="focusPolicy" >
+             <enum>Qt::TabFocus</enum>
+            </property>
+            <property name="toolTip" >
+             <string>Browse for the messages log file location</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0" >
+           <widget class="QCheckBox" name="MessagesLogCheckBox" >
+            <property name="font" >
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="toolTip" >
+             <string>Whether to activate a messages logging to file.</string>
+            </property>
+            <property name="text" >
+             <string>&amp;Messages log file:</string>
+            </property>
+            <property name="shortcut" >
+             <string>Alt+M</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="PluginsTabPage" >
+      <attribute name="title" >
+       <string>&amp;Plugins</string>
+      </attribute>
+      <layout class="QVBoxLayout" >
+       <property name="margin" >
+        <number>9</number>
+       </property>
+       <property name="spacing" >
+        <number>6</number>
+       </property>
+       <item>
+        <widget class="QGroupBox" name="PluginPathsGroupBox" >
+         <property name="font" >
+          <font>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="title" >
+          <string>Paths</string>
          </property>
          <property name="flat" >
           <bool>true</bool>
@@ -1788,6 +2042,9 @@
                 <width>22</width>
                 <height>22</height>
                </size>
+              </property>
+              <property name="icon" >
+               <iconset resource="../icons/qtractor.qrc" >:/icons/fileOpen.png</iconset>
               </property>
               <property name="font" >
                <font>
@@ -1964,147 +2221,17 @@
         </widget>
        </item>
        <item>
-        <widget class="QGroupBox" name="MessagesGroupBox" >
-         <property name="font" >
-          <font>
-           <weight>75</weight>
-           <bold>true</bold>
-          </font>
+        <spacer>
+         <property name="orientation" >
+          <enum>Qt::Vertical</enum>
          </property>
-         <property name="title" >
-          <string>Messages</string>
+         <property name="sizeHint" >
+          <size>
+           <width>20</width>
+           <height>20</height>
+          </size>
          </property>
-         <property name="flat" >
-          <bool>true</bool>
-         </property>
-         <layout class="QGridLayout" >
-          <property name="margin" >
-           <number>9</number>
-          </property>
-          <property name="spacing" >
-           <number>6</number>
-          </property>
-          <item row="0" column="0" >
-           <widget class="QLabel" name="MessagesFontTextLabel" >
-            <property name="minimumSize" >
-             <size>
-              <width>180</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="maximumSize" >
-             <size>
-              <width>180</width>
-              <height>32767</height>
-             </size>
-            </property>
-            <property name="font" >
-             <font>
-              <weight>50</weight>
-              <bold>false</bold>
-             </font>
-            </property>
-            <property name="toolTip" >
-             <string>Sample messages text font display</string>
-            </property>
-            <property name="autoFillBackground" >
-             <bool>true</bool>
-            </property>
-            <property name="frameShape" >
-             <enum>QFrame::StyledPanel</enum>
-            </property>
-            <property name="frameShadow" >
-             <enum>QFrame::Sunken</enum>
-            </property>
-            <property name="alignment" >
-             <set>Qt::AlignCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1" >
-           <widget class="QPushButton" name="MessagesFontPushButton" >
-            <property name="font" >
-             <font>
-              <weight>50</weight>
-              <bold>false</bold>
-             </font>
-            </property>
-            <property name="toolTip" >
-             <string>Select font for the messages text display</string>
-            </property>
-            <property name="text" >
-             <string>&amp;Font...</string>
-            </property>
-            <property name="shortcut" >
-             <string>Alt+F</string>
-            </property>
-            <property name="autoDefault" >
-             <bool>false</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="2" >
-           <spacer>
-            <property name="orientation" >
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" >
-             <size>
-              <width>20</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item row="0" column="3" >
-           <widget class="QCheckBox" name="MessagesLimitCheckBox" >
-            <property name="font" >
-             <font>
-              <weight>50</weight>
-              <bold>false</bold>
-             </font>
-            </property>
-            <property name="toolTip" >
-             <string>Whether to keep a maximum number of lines in the messages window</string>
-            </property>
-            <property name="text" >
-             <string>&amp;Messages limit:</string>
-            </property>
-            <property name="shortcut" >
-             <string>Alt+M</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="4" >
-           <widget class="QSpinBox" name="MessagesLimitLinesSpinBox" >
-            <property name="font" >
-             <font>
-              <weight>50</weight>
-              <bold>false</bold>
-             </font>
-            </property>
-            <property name="toolTip" >
-             <string>The maximum number of message lines to keep in view</string>
-            </property>
-            <property name="suffix" >
-             <string> lines</string>
-            </property>
-            <property name="maximum" >
-             <number>10000</number>
-            </property>
-            <property name="minimum" >
-             <number>100</number>
-            </property>
-            <property name="singleStep" >
-             <number>100</number>
-            </property>
-            <property name="value" >
-             <number>1000</number>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
+        </spacer>
        </item>
       </layout>
      </widget>
@@ -2199,6 +2326,12 @@
   <tabstop>MidiMeterColorLineEdit</tabstop>
   <tabstop>MidiMeterColorToolButton</tabstop>
   <tabstop>ResetMeterColorsPushButton</tabstop>
+  <tabstop>MessagesFontPushButton</tabstop>
+  <tabstop>MessagesLimitCheckBox</tabstop>
+  <tabstop>MessagesLimitLinesSpinBox</tabstop>
+  <tabstop>MessagesLogCheckBox</tabstop>
+  <tabstop>MessagesLogPathComboBox</tabstop>
+  <tabstop>MessagesLogPathToolButton</tabstop>
   <tabstop>PluginTypeComboBox</tabstop>
   <tabstop>PluginPathComboBox</tabstop>
   <tabstop>PluginPathBrowseToolButton</tabstop>
@@ -2207,9 +2340,6 @@
   <tabstop>PluginPathRemoveToolButton</tabstop>
   <tabstop>PluginPathUpToolButton</tabstop>
   <tabstop>PluginPathDownToolButton</tabstop>
-  <tabstop>MessagesFontPushButton</tabstop>
-  <tabstop>MessagesLimitCheckBox</tabstop>
-  <tabstop>MessagesLimitLinesSpinBox</tabstop>
   <tabstop>OkPushButton</tabstop>
   <tabstop>CancelPushButton</tabstop>
  </tabstops>

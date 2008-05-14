@@ -26,6 +26,7 @@
 
 class QSocketNotifier;
 class QTextEdit;
+class QFile;
 
 
 //-------------------------------------------------------------------------
@@ -55,6 +56,10 @@ public:
 	int messagesLimit() const;
 	void setMessagesLimit(int iMessagesLimit);
 
+	// Logging settings.
+	bool isLogging() const;
+	void setLogging(bool bEnabled, const QString& sFilename = QString());
+
 	// The main utility methods.
 	void appendMessages(const QString& s);
 	void appendMessagesColor(const QString& s, const QString &c);
@@ -68,6 +73,10 @@ public:
 	void clear();
 	
 protected:
+
+	// Message executives.
+	void appendMessagesLine(const QString& s);
+	void appendMessagesLog(const QString& s);
 
 	// Just about to notify main-window that we're closing.
 	void closeEvent(QCloseEvent *);
@@ -85,12 +94,15 @@ private:
 	int m_iMessagesHigh;
 
 	// The textview main widget.
-	QTextEdit *m_pTextView;
+	QTextEdit *m_pMessagesTextView;
 
 	// Stdout capture variables.
 	QSocketNotifier *m_pStdoutNotifier;
 	QString          m_sStdoutBuffer;
 	int              m_fdStdout[2];
+
+	// Logging stuff.
+	QFile *m_pMessagesLog;	
 };
 
 

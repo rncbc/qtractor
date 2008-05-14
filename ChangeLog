@@ -5,6 +5,11 @@ ChangeLog
 
 CVS HEAD
 
+- Messages file logging makes its first long overdue appearance,
+  with user configurable settings in View/Options.../Logging;
+  options dialog was slightly rearranged and moved the Plugins
+  section into a new tab page.
+
 - Audio/MIDI drifting correction was missing its own correct and
   due (re)initialization whenever playback is (re)started; also,
   MIDI metering synchronization has been fixed once again.

@@ -264,6 +264,15 @@ qtractorOptionsForm::qtractorOptionsForm (
 	QObject::connect(m_ui.MessagesLimitLinesSpinBox,
 		SIGNAL(valueChanged(int)),
 		SLOT(changed()));
+	QObject::connect(m_ui.MessagesLogCheckBox,
+		SIGNAL(stateChanged(int)),
+		SLOT(changed()));
+	QObject::connect(m_ui.MessagesLogPathComboBox,
+		SIGNAL(editTextChanged(const QString&)),
+		SLOT(changed()));
+	QObject::connect(m_ui.MessagesLogPathToolButton,
+		SIGNAL(clicked()),
+		SLOT(chooseMessagesLogPath()));
 	QObject::connect(m_ui.OkPushButton,
 		SIGNAL(clicked()),
 		SLOT(accept()));
@@ -289,6 +298,7 @@ void qtractorOptionsForm::setOptions ( qtractorOptions *pOptions )
 	m_pOptions->loadComboBoxHistory(m_ui.MetroBarFilenameComboBox);
 	m_pOptions->loadComboBoxHistory(m_ui.MetroBeatFilenameComboBox);
 	m_pOptions->loadComboBoxHistory(m_ui.PluginPathComboBox);
+	m_pOptions->loadComboBoxHistory(m_ui.MessagesLogPathComboBox);
 
 	// Audio options.
 	int iIndex  = 0;
@@ -376,6 +386,10 @@ void qtractorOptionsForm::setOptions ( qtractorOptions *pOptions )
 	// Messages limit option.
 	m_ui.MessagesLimitCheckBox->setChecked(m_pOptions->bMessagesLimit);
 	m_ui.MessagesLimitLinesSpinBox->setValue(m_pOptions->iMessagesLimitLines);
+
+	// Logging options...
+	m_ui.MessagesLogCheckBox->setChecked(m_pOptions->bMessagesLog);
+	m_ui.MessagesLogPathComboBox->setEditText(m_pOptions->sMessagesLogPath);
 
 	// Other options finally.
 	m_ui.ConfirmRemoveCheckBox->setChecked(m_pOptions->bConfirmRemove);
@@ -469,6 +483,9 @@ void qtractorOptionsForm::accept (void)
 		m_pOptions->sMessagesFont        = m_ui.MessagesFontTextLabel->font().toString();
 		m_pOptions->bMessagesLimit       = m_ui.MessagesLimitCheckBox->isChecked();
 		m_pOptions->iMessagesLimitLines  = m_ui.MessagesLimitLinesSpinBox->value();
+		// Logging options...
+		m_pOptions->bMessagesLog         = m_ui.MessagesLogCheckBox->isChecked();
+		m_pOptions->sMessagesLogPath     = m_ui.MessagesLogPathComboBox->currentText();
 		// Custom colors.
 		int iColor;
 		m_pOptions->audioMeterColors.clear();
@@ -484,6 +501,7 @@ void qtractorOptionsForm::accept (void)
 	m_pOptions->saveComboBoxHistory(m_ui.MetroBarFilenameComboBox);
 	m_pOptions->saveComboBoxHistory(m_ui.MetroBeatFilenameComboBox);
 	m_pOptions->saveComboBoxHistory(m_ui.PluginPathComboBox);
+	m_pOptions->saveComboBoxHistory(m_ui.MessagesLogPathComboBox);
 
 	// Just go with dialog acceptance
 	QDialog::accept();
@@ -932,6 +950,23 @@ void qtractorOptionsForm::chooseMessagesFont (void)
 }
 
 
+// Messages log path browse slot.
+void qtractorOptionsForm::chooseMessagesLogPath (void)
+{
+	QString sFilename = QFileDialog::getSaveFileName(
+		this, tr("Messages Log"),
+		m_ui.MessagesLogPathComboBox->currentText(),
+		tr("Log files") + " (*.log)"
+	);
+
+	if (!sFilename.isEmpty()) {
+		m_ui.MessagesLogPathComboBox->setEditText(sFilename);
+		m_ui.MessagesLogPathComboBox->setFocus();
+		changed();
+	}
+}
+
+
 // Stabilize current form state.
 void qtractorOptionsForm::stabilizeForm (void)
 {
@@ -988,6 +1023,14 @@ void qtractorOptionsForm::stabilizeForm (void)
 	m_ui.MetroBeatDurationTextLabel->setEnabled(bMidiMetronome);
 	m_ui.MetroBeatDurationSpinBox->setEnabled(bMidiMetronome);
 	m_ui.MidiMetroBusCheckBox->setEnabled(bMidiMetronome);
+
+	bool bMessagesLog = m_ui.MessagesLogCheckBox->isChecked();
+	m_ui.MessagesLogPathComboBox->setEnabled(bMessagesLog);
+	m_ui.MessagesLogPathToolButton->setEnabled(bMessagesLog);
+	if (bMessagesLog && bValid) {
+		const QString& sPath = m_ui.MessagesLogPathComboBox->currentText();
+		bValid = !sPath.isEmpty();
+	}
 
 	const QString& sPluginPath = m_ui.PluginPathComboBox->currentText();
 	m_ui.PluginPathAddToolButton->setEnabled(

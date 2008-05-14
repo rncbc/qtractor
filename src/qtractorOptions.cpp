@@ -65,6 +65,12 @@ qtractorOptions::qtractorOptions (void)
 	iMaxRecentFiles = m_settings.value("/MaxRecentFiles", 5).toInt();
 	m_settings.endGroup();
 
+	// Load logging options...
+	m_settings.beginGroup("/Logging");
+	bMessagesLog     = m_settings.value("/MessagesLog", false).toBool();
+	sMessagesLogPath = m_settings.value("/MessagesLogPath", "qtractor.log").toString();
+	m_settings.endGroup();
+
 	// And go into view options group.
 	m_settings.beginGroup("/View");
 	bMenubar        = m_settings.value("/Menubar", true).toBool();
@@ -228,6 +234,12 @@ qtractorOptions::~qtractorOptions (void)
 	m_settings.setValue("/KeepToolsOnTop", bKeepToolsOnTop);
 	m_settings.setValue("/DisplayFormat", iDisplayFormat);
 	m_settings.setValue("/MaxRecentFiles", iMaxRecentFiles);
+	m_settings.endGroup();
+
+	// Save logging options...
+	m_settings.beginGroup("/Logging");
+	m_settings.setValue("/MessagesLog", bMessagesLog);
+	m_settings.setValue("/MessagesLogPath", sMessagesLogPath);
 	m_settings.endGroup();
 
 	// View options group.

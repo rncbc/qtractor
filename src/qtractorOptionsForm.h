@@ -70,6 +70,7 @@ protected slots:
 	void moveUpPluginPath();
 	void moveDownPluginPath();
 	void chooseMessagesFont();
+	void chooseMessagesLogPath();
 	void stabilizeForm();
 
 protected:

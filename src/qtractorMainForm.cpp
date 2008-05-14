@@ -700,6 +700,12 @@ void qtractorMainForm::setOptions ( qtractorOptions *pOptions )
 	m_pFiles->audioListView()->setRecentDir(m_pOptions->sAudioDir);
 	m_pFiles->midiListView()->setRecentDir(m_pOptions->sMidiDir);
 	m_pMessages = new qtractorMessages(this);
+
+	// Setup messages logging appropriately...
+	m_pMessages->setLogging(
+		m_pOptions->bMessagesLog,
+		m_pOptions->sMessagesLogPath);
+
 	// What style do we create tool childs?
 	QWidget *pParent = NULL;
 	Qt::WindowFlags wflags = Qt::Window
@@ -2366,6 +2372,8 @@ void qtractorMainForm::viewOptions (void)
 	if (m_pOptions->sMessagesFont.isEmpty() && m_pMessages)
 		m_pOptions->sMessagesFont = m_pMessages->messagesFont().toString();
 	// To track down deferred or immediate changes.
+	bool    bOldMessagesLog        = m_pOptions->bMessagesLog; 
+	QString sOldMessagesLogPath    = m_pOptions->sMessagesLogPath;
 	QString sOldMessagesFont       = m_pOptions->sMessagesFont;
 	bool    bOldStdoutCapture      = m_pOptions->bStdoutCapture;
 	int     bOldMessagesLimit      = m_pOptions->bMessagesLimit;
@@ -2439,6 +2447,11 @@ void qtractorMainForm::viewOptions (void)
 			updateMessagesLimit();
 		if (iOldDisplayFormat != m_pOptions->iDisplayFormat)
 			updateDisplayFormat();
+		if (( bOldMessagesLog && !m_pOptions->bMessagesLog) ||
+			(!bOldMessagesLog &&  m_pOptions->bMessagesLog) ||
+			(sOldMessagesLogPath != m_pOptions->sMessagesLogPath))
+			m_pMessages->setLogging(
+				m_pOptions->bMessagesLog, m_pOptions->sMessagesLogPath);
 		// FIXME: This is what it should ever be,
 		// make it right from this very moment...
 		qtractorAudioFileFactory::setDefaultType(

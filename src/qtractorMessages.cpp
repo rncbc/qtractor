@@ -25,8 +25,11 @@
 #include "qtractorMainForm.h"
 
 #include <QSocketNotifier>
+
+#include <QFile>
 #include <QTextEdit>
 #include <QTextCursor>
+#include <QTextStream>
 #include <QTextBlock>
 #include <QScrollBar>
 #include <QDateTime>
@@ -62,21 +65,23 @@ qtractorMessages::qtractorMessages ( QWidget *pParent )
 	m_fdStdout[QTRACTOR_MESSAGES_FDWRITE] = QTRACTOR_MESSAGES_FDNIL;
 
 	// Create local text view widget.
-	m_pTextView = new QTextEdit(this);
-//  QFont font(m_pTextView->font());
+	m_pMessagesTextView = new QTextEdit(this);
+//  QFont font(m_pMessagesTextView->font());
 //  font.setFamily("Fixed");
-//  m_pTextView->setFont(font);
-	m_pTextView->setLineWrapMode(QTextEdit::NoWrap);
-	m_pTextView->setReadOnly(true);
-	m_pTextView->setUndoRedoEnabled(false);
-//	m_pTextView->setTextFormat(Qt::LogText);
+//  m_pMessagesTextView->setFont(font);
+	m_pMessagesTextView->setLineWrapMode(QTextEdit::NoWrap);
+	m_pMessagesTextView->setReadOnly(true);
+	m_pMessagesTextView->setUndoRedoEnabled(false);
+//	m_pMessagesTextView->setTextFormat(Qt::LogText);
 
 	// Initialize default message limit.
 	m_iMessagesLines = 0;
 	setMessagesLimit(QTRACTOR_MESSAGES_MAXLINES);
 
+	m_pMessagesLog = NULL;
+
 	// Prepare the dockable window stuff.
-	QDockWidget::setWidget(m_pTextView);
+	QDockWidget::setWidget(m_pMessagesTextView);
 	QDockWidget::setFeatures(QDockWidget::AllDockWidgetFeatures);
 	QDockWidget::setAllowedAreas(
 		Qt::TopDockWidgetArea | Qt::BottomDockWidgetArea);
@@ -94,6 +99,9 @@ qtractorMessages::qtractorMessages ( QWidget *pParent )
 // Destructor.
 qtractorMessages::~qtractorMessages (void)
 {
+	// Turn off and close logging.
+	setLogging(false);
+
 	// No more notifications.
 	if (m_pStdoutNotifier)
 		delete m_pStdoutNotifier;
@@ -197,12 +205,12 @@ void qtractorMessages::setCaptureEnabled ( bool bCapture )
 // Message font accessors.
 QFont qtractorMessages::messagesFont (void) const
 {
-	return m_pTextView->font();
+	return m_pMessagesTextView->font();
 }
 
 void qtractorMessages::setMessagesFont( const QFont& font )
 {
-	m_pTextView->setFont(font);
+	m_pMessagesTextView->setFont(font);
 }
 
 
@@ -219,25 +227,51 @@ void qtractorMessages::setMessagesLimit ( int iMessagesLimit )
 }
 
 
-// The main utility methods.
-void qtractorMessages::appendMessages ( const QString& s )
+// Messages logging stuff.
+bool qtractorMessages::isLogging (void) const
 {
-	appendMessagesColor(s, "#999999");
+	return (m_pMessagesLog != NULL);
 }
 
-void qtractorMessages::appendMessagesColor ( const QString& s, const QString &c )
+void qtractorMessages::setLogging ( bool bEnabled, const QString& sFilename )
 {
-	appendMessagesText("<font color=\"" + c + "\">"
-		+ QTime::currentTime().toString("hh:mm:ss.zzz")
-		+ ' ' + s + "</font>");
+	if (m_pMessagesLog) {
+		appendMessages(tr("Logging stopped --- %1 ---")
+			.arg(QDateTime::currentDateTime().toString()));
+		m_pMessagesLog->close();
+		delete m_pMessagesLog;
+		m_pMessagesLog = NULL;
+	}
+
+	if (bEnabled) {
+		m_pMessagesLog = new QFile(sFilename);
+		if (m_pMessagesLog->open(QIODevice::Text | QIODevice::Append)) {
+			appendMessages(tr("Logging started --- %1 ---")
+				.arg(QDateTime::currentDateTime().toString()));
+		} else {
+			delete m_pMessagesLog;
+			m_pMessagesLog = NULL;
+		}
+	}
 }
 
-void qtractorMessages::appendMessagesText ( const QString& s )
+
+// Messages log output method.
+void qtractorMessages::appendMessagesLog ( const QString& s )
 {
-    // Check for message line limit...
-    if (m_iMessagesLines > m_iMessagesHigh) {
-		m_pTextView->setUpdatesEnabled(false);
-		QTextCursor textCursor(m_pTextView->document()->begin());
+	if (m_pMessagesLog) {
+		QTextStream(m_pMessagesLog) << s << endl;
+		m_pMessagesLog->flush();
+	}
+}
+
+// Messages widget output method.
+void qtractorMessages::appendMessagesLine ( const QString& s )
+{
+	// Check for message line limit...
+	if (m_iMessagesLines > m_iMessagesHigh) {
+		m_pMessagesTextView->setUpdatesEnabled(false);
+		QTextCursor textCursor(m_pMessagesTextView->document()->begin());
 		while (m_iMessagesLines > m_iMessagesLimit) {
 			// Move cursor extending selection
 			// from start to next line-block...
@@ -247,12 +281,31 @@ void qtractorMessages::appendMessagesText ( const QString& s )
 		}
 		// Remove the excessive line-blocks...
 		textCursor.removeSelectedText();
-		m_pTextView->setUpdatesEnabled(true);
-    }
+		m_pMessagesTextView->setUpdatesEnabled(true);
+	}
 
-	// Count always as a new line out there...
-	m_pTextView->append(s);
+	m_pMessagesTextView->append(s);
 	m_iMessagesLines++;
+}
+
+
+// The main utility methods.
+void qtractorMessages::appendMessages ( const QString& s )
+{
+	appendMessagesColor(s, "#999999");
+}
+
+void qtractorMessages::appendMessagesColor ( const QString& s, const QString &c )
+{
+	QString sText = QTime::currentTime().toString("hh:mm:ss.zzz") + ' ' + s;
+	appendMessagesLine("<font color=\"" + c + "\">" + sText + "</font>");
+	appendMessagesLog(sText);
+}
+
+void qtractorMessages::appendMessagesText ( const QString& s )
+{
+	appendMessagesLine(s);
+	appendMessagesLog(s);
 }
 
 
@@ -260,7 +313,7 @@ void qtractorMessages::appendMessagesText ( const QString& s )
 void qtractorMessages::clear (void)
 {
 	m_iMessagesLines = 0;
-	m_pTextView->clear();
+	m_pMessagesTextView->clear();
 }
 
 

@@ -66,6 +66,10 @@ public:
 	bool    bKeepToolsOnTop;
 	int     iDisplayFormat;
 
+	// Loggin options...
+	bool    bMessagesLog;
+	QString sMessagesLogPath;
+
 	// View options...
 	bool    bMenubar;
 	bool    bStatusbar;
