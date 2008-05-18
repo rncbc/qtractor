@@ -5,6 +5,10 @@ ChangeLog
 
 CVS HEAD
 
+- Avoid loop read-ahead on initial audio clip loading.
+
+- Clip fades now with slight transparency.
+
 - Messages file logging makes its first long overdue appearance,
   with user configurable settings in View/Options.../Logging;
   options dialog was slightly rearranged and moved the Plugins

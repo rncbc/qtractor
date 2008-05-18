@@ -756,7 +756,7 @@ void qtractorAudioBuffer::readSyncIn (void)
 		// Take looping into account, if any...
 		unsigned long ls = m_iOffset + m_iLoopStart;
 		unsigned long le = m_iOffset + m_iLoopEnd;
-		bool bLooping = (ls < le && m_iWriteOffset < le);
+		bool bLooping = (ls < le && m_iWriteOffset < le && m_bInitSync);
 		// Adjust request for sane size...
 		if (nahead > m_iBufferSize)
 			nahead = m_iBufferSize;
