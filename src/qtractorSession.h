@@ -36,6 +36,7 @@ class qtractorAudioEngine;
 class qtractorAudioPeakFactory;
 class qtractorSessionCursor;
 class qtractorSessionDocument;
+class qtractorMidiManager;
 
 class QDomElement;
 
@@ -251,6 +252,13 @@ public:
 	// MIDI session/tracks instrument patching.
 	void setMidiPatch(qtractorInstrumentList *pInstruments);
 
+	// MIDI managers factory methods.
+	qtractorMidiManager *createMidiManager(qtractorPluginList *pPluginList);
+	void deleteMidiManager(qtractorMidiManager *pMidiManager);
+
+	// MIDI manager list accessors.
+	const qtractorList<qtractorMidiManager>& midiManagers() const;
+
 	// Auto time-stretching global flag (when tempo changes)
 	void setAutoTimeStretch(bool bAutoTimeStretch);
 	bool isAutoTimeStretch() const;
@@ -338,6 +346,9 @@ private:
 
 	// Auto time-stretching global flag (when tempo changes)
 	bool m_bAutoTimeStretch;
+
+	// MIDI plugin manager list.
+	qtractorList<qtractorMidiManager> m_midiManagers;
 
 	// RT-safeness hackish lock-mutex.
 	qtractorAtomic m_locks;

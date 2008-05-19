@@ -31,6 +31,7 @@
 
 #include "qtractorMidiEngine.h"
 #include "qtractorMidiClip.h"
+#include "qtractorMidiBuffer.h"
 
 #include "qtractorPlugin.h"
 
@@ -1192,6 +1193,29 @@ void qtractorSession::setMidiPatch ( qtractorInstrumentList *pInstruments )
 		if (pTrack->trackType() == qtractorTrack::Midi)
 			pTrack->setMidiPatch(pInstruments);
 	}
+}
+
+
+// MIDI manager list accessors.
+qtractorMidiManager *qtractorSession::createMidiManager (
+	qtractorPluginList *pPluginList )
+{
+	qtractorMidiManager *pMidiManager
+		= new qtractorMidiManager(this, pPluginList);
+	m_midiManagers.append(pMidiManager);
+	return pMidiManager;
+}
+
+void qtractorSession::deleteMidiManager (
+	qtractorMidiManager *pMidiManager )
+{
+	m_midiManagers.remove(pMidiManager);
+}
+
+
+const qtractorList<qtractorMidiManager>& qtractorSession::midiManagers (void) const
+{
+	return m_midiManagers;
 }
 
 

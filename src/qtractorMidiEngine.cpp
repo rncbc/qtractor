@@ -30,6 +30,9 @@
 
 #include "qtractorMidiSequence.h"
 #include "qtractorMidiClip.h"
+#include "qtractorMidiBuffer.h"
+
+#include "qtractorPlugin.h"
 
 #include <QApplication>
 
@@ -825,6 +828,12 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 						iDrainOutput++;
 						// Done with MIDI-thru.
 						pMidiBus->midiMonitor_out()->enqueue(type, data2);
+						// Do it for the MIDI plugins too...
+						if (pTrack->pluginList()
+							&& (pTrack->pluginList())->midiManager()
+							&& (pTrack->pluginList())->activated() > 0) {
+							((pTrack->pluginList())->midiManager())->direct(pEv);
+						}
 					}
 				}
 			}
@@ -968,8 +977,14 @@ void qtractorMidiEngine::enqueue ( qtractorTrack *pTrack,
 	if (pMidiMonitor)
 		pMidiMonitor->enqueue(pEvent->type(), value, tick);
 	// MIDI bus monitoring...
-	if (pMidiBus->midiMonitor_out()) {
+	if (pMidiBus->midiMonitor_out())
 		pMidiBus->midiMonitor_out()->enqueue(pEvent->type(), value, tick);
+
+	// Do it for the MIDI plugins too...
+	if (pTrack->pluginList()
+		&& (pTrack->pluginList())->midiManager()
+		&& (pTrack->pluginList())->activated() > 0) {
+		((pTrack->pluginList())->midiManager())->queued(&ev);
 	}
 }
 

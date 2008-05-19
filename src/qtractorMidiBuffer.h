@@ -22,11 +22,18 @@
 #ifndef __qtractorMidiBuffer_h
 #define __qtractorMidiBuffer_h
 
+#include "qtractorList.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 #include <alsa/asoundlib.h>
+
+
+// Forward declarations.
+class qtractorSession;
+class qtractorPluginList;
 
 
 //----------------------------------------------------------------------
@@ -38,12 +45,12 @@ class qtractorMidiBuffer
 public:
 
 	// Minimem buffer size
-	enum { MinBufferSize = 0x100 };
+	enum { MinBufferSize = 0x400 };
 
 	// Constructor.
 	qtractorMidiBuffer(unsigned int iBufferSize = MinBufferSize) :
 		m_pBuffer(NULL), m_iBufferSize(0), m_iBufferMask(0),
-		m_iReadIndex(0), m_iWriteIndex(0)
+		m_iWriteIndex(0), m_iReadIndex(0)
 	{
 		// Adjust size of nearest power-of-two, if necessary.
 		m_iBufferSize = MinBufferSize;
@@ -123,31 +130,31 @@ private:
 
 
 //----------------------------------------------------------------------
-// class qtractorMidiMerger -- MIDI event merger buffer/cache.
+// class qtractorMidiManager -- MIDI internal plugin list manager.
 //
 
-class qtractorMidiMerger
+class qtractorMidiManager : public qtractorList<qtractorMidiManager>::Link
 {
 public:
 
 	// Constructor.
-	qtractorMidiMerger(unsigned int iBufferSize = 0) :
-		m_directBuffer(iBufferSize),
-		m_queuedBuffer(iBufferSize),
-		m_pBuffer(NULL), m_iBuffer(0)
-		{ m_pBuffer = new snd_seq_event_t [bufferSize() << 1]; }
-		
+	qtractorMidiManager(qtractorSession *pSession, qtractorPluginList *pPluginList,
+		unsigned int iBufferSize = qtractorMidiBuffer::MinBufferSize);
+
 	// Destructor.
-	~qtractorMidiMerger() { if (m_pBuffer) delete [] m_pBuffer; }
+	~qtractorMidiManager();
 
 	// Implementation properties.
-	unsigned int bufferSize() const { return m_queuedBuffer.bufferSize(); }
+	qtractorSession *session() const
+		{ return m_pSession; }
+	qtractorPluginList *pluginList() const
+		{ return m_pPluginList; }
+
+	unsigned int bufferSize() const
+		{ return m_queuedBuffer.bufferSize(); }
 
 	// Clears the buffer.
-	void clear() { m_iBuffer = 0; }	
-
-	// Returns nonzero if there aren't any events available.
-	bool isEmpty() const { return (m_iBuffer == 0); }
+	void clear() { m_iBuffer = 0; }
 
 	// Event buffer accessor. 
 	snd_seq_event_t *buffer() const	{ return m_pBuffer; }
@@ -155,53 +162,33 @@ public:
 	// Returns number of events result of process.
 	unsigned int count() const { return m_iBuffer; }
 
-	// Append one event to direct buffer.
-	bool direct(snd_seq_event_t *pEvent, unsigned long iTick = 0)
-		{ return m_directBuffer.push(pEvent, iTick); }
+	// Direct buffering.
+	bool direct(snd_seq_event_t *pEvent);
 
-	// Append one event to queued buffer.
-	bool queued(snd_seq_event_t *pEvent, unsigned long iTick = 0)
-		{ return m_queuedBuffer.push(pEvent, iTick); }
+	// Queued buffering.
+	bool queued(snd_seq_event_t *pEvent);
 
-	// Process this batch.
-	unsigned int process(unsigned long iTickStart, unsigned long iTickEnd)
-	{
-		clear();
+	// Process buffers.
+	void process(unsigned long iTimeStart, unsigned long iTimeEnd);
 
-		snd_seq_event_t *pEvent1 = m_directBuffer.peek();
-		snd_seq_event_t *pEvent2 = m_queuedBuffer.peek();
+	// Resets all buffering.
+	void reset();
 
-		while ((pEvent1 && pEvent1->time.tick < iTickEnd)
-			|| (pEvent2 && pEvent2->time.tick < iTickEnd)) {
-			while ((pEvent1 &&  pEvent2 && pEvent2->time.tick >= pEvent1->time.tick)
-				|| (pEvent1 && !pEvent2 && pEvent1->time.tick < iTickEnd)) {
-				m_pBuffer[m_iBuffer] = *pEvent1;
-				m_pBuffer[m_iBuffer++].time.tick
-					= (pEvent1->time.tick > iTickStart ?
-						pEvent1->time.tick - iTickStart : 0);
-				pEvent1 = m_directBuffer.next();
-			}
-			while ((pEvent2 &&  pEvent1 && pEvent1->time.tick >= pEvent2->time.tick)
-				|| (pEvent2 && !pEvent1 && pEvent2->time.tick < iTickEnd)) {
-				m_pBuffer[m_iBuffer] = *pEvent2;
-				m_pBuffer[m_iBuffer++].time.tick
-					= (pEvent2->time.tick > iTickStart ?
-						pEvent2->time.tick - iTickStart : 0);
-				pEvent2 = m_queuedBuffer.next();
-			}
-		}
+	// Factory (proxy) methods.
+	static qtractorMidiManager *createMidiManager(
+		qtractorPluginList *pPluginList);
+	static void deleteMidiManager(
+		qtractorMidiManager *pMidiManager);
 
-		return m_iBuffer;
-	}
+protected:
 
-private:
-
-	// Instance variables.
-	qtractorMidiBuffer m_directBuffer;
-	qtractorMidiBuffer m_queuedBuffer;
-
-	snd_seq_event_t *m_pBuffer;
-	unsigned int     m_iBuffer;
+	// Instance variables
+	qtractorSession    *m_pSession;
+	qtractorPluginList *m_pPluginList;
+	qtractorMidiBuffer  m_directBuffer;
+	qtractorMidiBuffer  m_queuedBuffer;
+	snd_seq_event_t    *m_pBuffer;
+	unsigned int        m_iBuffer;
 };
 
 

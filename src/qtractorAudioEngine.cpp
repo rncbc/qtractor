@@ -29,6 +29,7 @@
 #include "qtractorSessionCursor.h"
 #include "qtractorSessionDocument.h"
 #include "qtractorMidiEngine.h"
+#include "qtractorMidiBuffer.h"
 #include "qtractorPlugin.h"
 #include "qtractorClip.h"
 
@@ -605,6 +606,18 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 		if (m_bPlayerBus)
 			m_pPlayerBus->process_commit(nframes);
 		ATOMIC_SET(&m_playerLock, 0);
+	}
+
+	// MIDI plugin manager processing...
+	qtractorMidiManager *pMidiManager
+		= pSession->midiManagers().first();
+	if (pMidiManager) {
+		unsigned long iTimeStart = pAudioCursor->frameTime();
+		unsigned long iTimeEnd   = iTimeStart + nframes;
+		while (pMidiManager) {
+			pMidiManager->process(iTimeStart, iTimeEnd);
+			pMidiManager = pMidiManager->next();
+		}
 	}
 
 	// Don't go any further, if not playing.

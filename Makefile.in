@@ -126,6 +126,7 @@ sources = src/main.cpp \
 	src/qtractorInstrument.cpp \
 	src/qtractorMessages.cpp \
 	src/qtractorMeter.cpp \
+	src/qtractorMidiBuffer.cpp \
 	src/qtractorMidiClip.cpp \
 	src/qtractorMidiConnect.cpp \
 	src/qtractorMidiCursor.cpp \

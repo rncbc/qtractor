@@ -24,6 +24,8 @@
 #include "qtractorPluginListView.h"
 #include "qtractorPluginForm.h"
 
+#include "qtractorMidiBuffer.h"
+
 #include "qtractorMainForm.h"
 #include "qtractorOptions.h"
 
@@ -645,7 +647,7 @@ qtractorPluginParam *qtractorPlugin::findParam ( unsigned long iIndex ) const
 qtractorPluginList::qtractorPluginList ( unsigned short iChannels,
 	unsigned int iBufferSize, unsigned int iSampleRate, bool bMidi )
 	: m_iChannels(0), m_iBufferSize(0), m_iSampleRate(0),
-		m_bMidi(false),	m_iActivated(0)
+		m_bMidi(false),	m_iActivated(0), m_pMidiManager(NULL)
 		
 {
 	m_pppBuffers[0] = NULL;
@@ -878,6 +880,24 @@ qtractorPlugin *qtractorPluginList::copyPlugin ( qtractorPlugin *pPlugin )
 	}
 
 	return pNewPlugin;
+}
+
+
+// Plugin management helpers.
+void qtractorPluginList::addPluginEx (void)
+{
+	if (m_bMidi && m_pMidiManager == NULL && count() == 0) {
+		m_pMidiManager = qtractorMidiManager::createMidiManager(this);
+	}
+}
+
+void qtractorPluginList::removePluginEx (void)
+{
+	if (m_bMidi && m_pMidiManager && count() == 0) {
+		qtractorMidiManager *pMidiManager = m_pMidiManager;
+		m_pMidiManager = NULL;
+		qtractorMidiManager::deleteMidiManager(pMidiManager);
+	}
 }
 
 

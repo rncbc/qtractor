@@ -39,6 +39,8 @@ class qtractorPlugin;
 class qtractorPluginListView;
 class qtractorPluginListItem;
 
+class qtractorMidiManager;
+
 class qtractorSessionDocument;
 class QDomElement;
 
@@ -416,6 +418,10 @@ public:
 	unsigned int bufferSize() const { return m_iBufferSize; }
 	bool         isMidi()     const { return m_bMidi; }
 
+	// Specific MIDI manager accessor.
+	qtractorMidiManager *midiManager() const
+		{ return m_pMidiManager; }
+
 	// Special activation methods.
 	unsigned int activated() const  { return m_iActivated;  }
 	bool isActivatedAll() const;
@@ -446,6 +452,12 @@ public:
 	bool saveElement(qtractorSessionDocument *pDocument,
 		QDomElement *pElement);
 
+protected:
+
+	// Plugin management helpers.
+	void addPluginEx();
+	void removePluginEx();
+
 private:
 
 	// Instance variables.
@@ -462,6 +474,9 @@ private:
 
 	// An accessible list of observers.
 	QList<qtractorPluginListView *> m_views;
+
+	// Specific MIDI manager.
+	qtractorMidiManager *m_pMidiManager;
 
 	// Internal running buffer chain references.
 	float **m_pppBuffers[2];
