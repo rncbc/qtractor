@@ -19,6 +19,7 @@
 
 *****************************************************************************/
 
+#include "qtractorAbout.h"
 #include "qtractorMidiBuffer.h"
 
 #include "qtractorSession.h"
@@ -97,6 +98,25 @@ void qtractorMidiManager::process (
 			pEv2 = m_queuedBuffer.next();
 		}
 	}
+
+#ifdef CONFIG_DEBUG
+	for (unsigned int i = 0; i < m_iBuffer; ++i) {
+		snd_seq_event_t *pEv = &m_pBuffer[i];
+		// - show event for debug purposes...
+		fprintf(stderr, "MIDI Seq %05d 0x%02x", pEv->time.tick, pEv->type);
+		if (pEv->type == SND_SEQ_EVENT_SYSEX) {
+			fprintf(stderr, " sysex {");
+			unsigned char *data = (unsigned char *) pEv->data.ext.ptr;
+			for (unsigned int i = 0; i < pEv->data.ext.len; i++)
+				fprintf(stderr, " %02x", data[i]);
+			fprintf(stderr, " }\n");
+		} else {
+			for (unsigned int i = 0; i < sizeof(pEv->data.raw8.d); i++)
+				fprintf(stderr, " %3d", pEv->data.raw8.d[i]);
+			fprintf(stderr, "\n");
+		}
+	}
+#endif
 
 	// FIXME: Now's time to process the plugins as usual...
 	qtractorAudioBus *pOutputAudioBus

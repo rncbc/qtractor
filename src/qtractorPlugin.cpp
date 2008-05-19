@@ -337,7 +337,7 @@ unsigned short qtractorPluginType::instances (
 {
 	unsigned short iInstances = 0;
 	if (iChannels > 0 && m_iAudioOuts > 0
-		&& (bMidi || m_iMidiIns < 1 || m_iAudioIns > 0)) {
+		&& ((bMidi && m_iMidiIns > 0) || !bMidi /* || m_iAudioIns > 0 */)) {
 		if (iChannels >= m_iAudioIns)
 			iInstances = (m_iAudioOuts >= iChannels ? 1 : iChannels);
 		else
@@ -777,6 +777,7 @@ void qtractorPluginList::insertPlugin (	qtractorPlugin *pPlugin,
 	// We'll get prepared before plugging it in...
 	pPlugin->setChannels(m_iChannels);
 
+	addPluginEx();
 	if (pNextPlugin)
 		insertBefore(pPlugin, pNextPlugin);
 	else
@@ -813,6 +814,9 @@ void qtractorPluginList::movePlugin (
 
 	// Remove and insert back again...
 	pPluginList->unlink(pPlugin);
+	pPluginList->removePluginEx();
+
+	addPluginEx();
 	if (pNextPlugin) {
 		insertBefore(pPlugin, pNextPlugin);
 	} else {
@@ -854,6 +858,7 @@ void qtractorPluginList::removePlugin ( qtractorPlugin *pPlugin )
 {
 	// Just unlink the plugin from the list...
 	unlink(pPlugin);
+	removePluginEx();
 
 	if (pPlugin->isActivated())
 		updateActivated(false);

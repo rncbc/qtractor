@@ -160,12 +160,14 @@ bool qtractorTrack::open (void)
 
 	// Depending on track type...
 	qtractorEngine *pEngine = NULL;
+	qtractorAudioEngine *pAudioEngine = m_pSession->audioEngine();
+	qtractorMidiEngine  *pMidiEngine  = m_pSession->midiEngine();
 	switch (m_props.trackType) {
 	case qtractorTrack::Audio:
-		pEngine = m_pSession->audioEngine();
+		pEngine = pAudioEngine;
 		break;
 	case qtractorTrack::Midi:
-		pEngine = m_pSession->midiEngine();
+		pEngine = pMidiEngine;
 		break;
 	default:
 		break;
@@ -220,25 +222,27 @@ bool qtractorTrack::open (void)
 	// (Re)allocate (output) monitor...
 	switch (m_props.trackType) {
 	case qtractorTrack::Audio: {
-		qtractorAudioEngine *pAudioEngine
-			= static_cast<qtractorAudioEngine *> (pEngine);
 		qtractorAudioBus *pAudioBus
 			= static_cast<qtractorAudioBus *> (m_pOutputBus);
 		if (pAudioBus) {
 			m_pMonitor = new qtractorAudioMonitor(pAudioBus->channels(),
 				m_props.gain, m_props.panning);
 			m_pPluginList->setBuffer(pAudioBus->channels(),
-				pAudioEngine->bufferSize(), pAudioEngine->sampleRate());
+				pAudioEngine->bufferSize(), pAudioEngine->sampleRate(), false);
 		}
 		break;
 	}
 	case qtractorTrack::Midi: {
 		qtractorMidiBus *pMidiBus
 			= static_cast<qtractorMidiBus *> (m_pOutputBus);
-		if (pMidiBus) {
+		// FIXME: Master audio bus as reference, still...
+		qtractorAudioBus *pAudioBus =
+			static_cast<qtractorAudioBus *> (pAudioEngine->buses().first());
+		if (pMidiBus && pAudioBus) {
 			m_pMonitor = new qtractorMidiMonitor(m_pSession,
 				m_props.gain, m_props.panning);
-			m_pPluginList->setBuffer(0, 0, 0);
+			m_pPluginList->setBuffer(pAudioBus->channels(),
+				pAudioEngine->bufferSize(), pAudioEngine->sampleRate(), true);
 		}
 		break;
 	}
