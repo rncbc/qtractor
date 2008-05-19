@@ -436,7 +436,7 @@ void qtractorMidiClip::drawClip ( QPainter *pPainter, const QRect& clipRect,
 	unsigned long iTimeEnd
 		= iTimeStart + pSession->tickFromPixel(clipRect.width());
 
-	const QColor fg = track()->foreground();
+	const QColor& fg = track()->foreground();
 	pPainter->setPen(fg);
 	pPainter->setBrush(fg.light());
 

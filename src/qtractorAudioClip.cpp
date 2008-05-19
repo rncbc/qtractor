@@ -317,6 +317,7 @@ void qtractorAudioClip::drawClip ( QPainter *pPainter, const QRect& clipRect,
 	m_pPeak->getPeak(pframes, iframe, nframes);
 
 	// Draw peak chart...
+	const QColor& fg = track()->foreground();
 	int h1 = (clipRect.height() / iChannels);
 	int h2 = (h1 / 2);
 	int n, i, j, x, y;
@@ -350,10 +351,11 @@ void qtractorAudioClip::drawClip ( QPainter *pPainter, const QRect& clipRect,
 			}
 		}
 		// Close, draw and free the polygons...
+		pPainter->setPen(fg.light());
 		for (i = 0; i < (int) iChannels; ++i) {
-			pPainter->setBrush(track()->foreground());
+			pPainter->setBrush(fg);
 			pPainter->drawPolygon(*pPolyMax[i]);
-			pPainter->setBrush(track()->foreground().light());
+			pPainter->setBrush(fg.light());
 			pPainter->drawPolygon(*pPolyRms[i]);
 			delete pPolyMax[i];
 			delete pPolyRms[i];
@@ -382,9 +384,9 @@ void qtractorAudioClip::drawClip ( QPainter *pPainter, const QRect& clipRect,
 				if (yrms[i] < v)
 					yrms[i] = v;
 				if (kdelta < 1) {
-					pPainter->setPen(track()->foreground());
+					pPainter->setPen(fg);
 					pPainter->drawLine(x, y - ymax[i], x, y + ymax[i]);
-					pPainter->setPen(track()->foreground().light());
+					pPainter->setPen(fg.light());
 					pPainter->drawLine(x, y - yrms[i], x, y + yrms[i]);
 					ymax[i] = yrms[i] = 0;
 					y += h1;
