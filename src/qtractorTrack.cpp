@@ -110,7 +110,7 @@ qtractorTrack::qtractorTrack ( qtractorSession *pSession, TrackType trackType )
 
 	m_clips.setAutoDelete(true);
 
-	m_pPluginList = new qtractorPluginList(0, 0, 0);
+	m_pPluginList = new qtractorPluginList(0, 0, 0, (trackType == Midi));
 
 	setHeight(48);	// Default track height (qtractorTrackList::ItemHeightBase).
 	clear();
@@ -332,6 +332,10 @@ void qtractorTrack::setTrackType ( qtractorTrack::TrackType trackType )
 	// Acquire a new midi-tag...
 	if (m_props.trackType == qtractorTrack::Midi)
 		m_pSession->acquireMidiTag(this);
+
+	// (Re)set plugin-list
+	m_pPluginList->setBuffer(0, 0, 0,
+		(m_props.trackType == qtractorTrack::Midi));
 }
 
 

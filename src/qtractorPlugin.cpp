@@ -261,7 +261,7 @@ bool qtractorPluginFile::getTypes ( qtractorPluginTypeList& types,
 
 
 // Plugin factory method (static).
-qtractorPlugin *qtractorPluginFile::createPlugin(
+qtractorPlugin *qtractorPluginFile::createPlugin (
 	qtractorPluginList *pList,
 	const QString& sFilename, unsigned long iIndex,
 	qtractorPluginType::Hint typeHint )
@@ -694,6 +694,9 @@ void qtractorPluginList::setBuffer ( unsigned short iChannels,
 		m_pppBuffers[1] = NULL;
 	}
 
+	// Make type special...
+	m_bMidi = bMidi;
+
 	// Some sanity is in order, at least for now...
 	if (iChannels == 0 || iBufferSize == 0 || iSampleRate == 0)
 		return;
@@ -702,7 +705,6 @@ void qtractorPluginList::setBuffer ( unsigned short iChannels,
 	m_iChannels   = iChannels;
 	m_iBufferSize = iBufferSize;
 	m_iSampleRate = iSampleRate;
-	m_bMidi       = bMidi;
 
 	// Allocate new interim buffer...
 	if (m_iChannels > 0 && m_iBufferSize > 0) {
@@ -968,6 +970,7 @@ bool qtractorPluginList::loadElement ( qtractorSessionDocument *pDocument,
 	for (QDomNode nPlugin = pElement->firstChild();
 			!nPlugin.isNull();
 				nPlugin = nPlugin.nextSibling()) {
+
 		// Convert clip node to element...
 		QDomElement ePlugin = nPlugin.toElement();
 		if (ePlugin.isNull())
@@ -1012,6 +1015,7 @@ bool qtractorPluginList::loadElement ( qtractorSessionDocument *pDocument,
 				pPlugin->setPreset(sPreset);
 				pPlugin->setValues(vlist);
 				pPlugin->setActivated(bActivated);
+				addPluginEx();
 				append(pPlugin);
 			}
 		}
@@ -1027,6 +1031,7 @@ bool qtractorPluginList::saveElement ( qtractorSessionDocument *pDocument,
 	// Save plugins...
 	for (qtractorPlugin *pPlugin = first();
 			pPlugin; pPlugin = pPlugin->next()) {
+
 		// Create the new plugin element...
 		QDomElement ePlugin = pDocument->document()->createElement("plugin");
 		ePlugin.setAttribute("type", qtractorPluginType::textFromHint(

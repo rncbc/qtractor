@@ -488,6 +488,14 @@ void qtractorAudioEngine::stop (void)
 	    return;
 
 	jack_transport_stop(m_pJackClient);
+
+	// MIDI plugin managers reset...
+	qtractorMidiManager *pMidiManager
+		= session()->midiManagers().first();
+	while (pMidiManager) {
+		pMidiManager->reset();
+		pMidiManager = pMidiManager->next();
+	}
 }
 
 

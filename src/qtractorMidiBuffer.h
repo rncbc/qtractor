@@ -100,8 +100,7 @@ public:
 		if (iWriteIndex == m_iReadIndex)
 			return false;
 		m_pBuffer[m_iWriteIndex] = *pEvent;
-		if (iTick > 0)
-			m_pBuffer[m_iWriteIndex].time.tick = iTick;
+		m_pBuffer[m_iWriteIndex].time.tick = iTick;
 		m_iWriteIndex = iWriteIndex;
 		return true;
 	}
@@ -185,8 +184,11 @@ protected:
 	// Instance variables
 	qtractorSession    *m_pSession;
 	qtractorPluginList *m_pPluginList;
+
 	qtractorMidiBuffer  m_directBuffer;
 	qtractorMidiBuffer  m_queuedBuffer;
+	qtractorMidiBuffer  m_postedBuffer;
+
 	snd_seq_event_t    *m_pBuffer;
 	unsigned int        m_iBuffer;
 };

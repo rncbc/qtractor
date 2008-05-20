@@ -281,7 +281,7 @@ public:
 		int iController, int iValue = 0) const;
 
 	// Direct MIDI note helper.
-	void sendNote(unsigned short iChannel,
+	void sendNote(qtractorTrack *pTrack,
 		int iNote, int iVelocity = 0) const;
 
 	// Direct SysEx helper.

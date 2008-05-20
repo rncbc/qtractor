@@ -2335,7 +2335,7 @@ void qtractorMidiBus::setController ( unsigned short iChannel,
 
 
 // Direct MIDI note on/off helper.
-void qtractorMidiBus::sendNote ( unsigned short iChannel,
+void qtractorMidiBus::sendNote ( qtractorTrack *pTrack,
 	int iNote, int iVelocity ) const
 {
 	// We always need our MIDI engine reference...
@@ -2349,6 +2349,7 @@ void qtractorMidiBus::sendNote ( unsigned short iChannel,
 	if (pMidiEngine->alsaSeq() == NULL)
 		return;
 
+	unsigned short iChannel = pTrack->midiChannel();
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorMidiBus[%p]::sendNote(%d, %d, %d)",
 		this, iChannel, iNote, iVelocity);
@@ -2371,6 +2372,13 @@ void qtractorMidiBus::sendNote ( unsigned short iChannel,
 	ev.data.note.note     = iNote;
 	ev.data.note.velocity = iVelocity;
 	snd_seq_event_output(pMidiEngine->alsaSeq(), &ev);
+
+	// Do it for the MIDI plugins too...
+	if (pTrack->pluginList()
+		&& (pTrack->pluginList())->midiManager()
+		&& (pTrack->pluginList())->activated() > 0) {
+		((pTrack->pluginList())->midiManager())->direct(&ev);
+	}
 
 	pMidiEngine->flush();
 

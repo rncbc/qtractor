@@ -39,8 +39,9 @@ qtractorMidiManager::qtractorMidiManager ( qtractorSession *pSession,
 	qtractorPluginList *pPluginList, unsigned int iBufferSize ) :
 	m_pSession(pSession),
 	m_pPluginList(pPluginList),
-	m_directBuffer(iBufferSize),
+	m_directBuffer(iBufferSize >> 2),
 	m_queuedBuffer(iBufferSize),
+	m_postedBuffer(iBufferSize >> 1),
 	m_pBuffer(NULL),
 	m_iBuffer(0)
 {
@@ -58,15 +59,26 @@ qtractorMidiManager::~qtractorMidiManager (void)
 // Direct buffering.
 bool qtractorMidiManager::direct ( snd_seq_event_t *pEvent )
 {
-	return m_directBuffer.push(pEvent,
-		m_pSession->frameFromTick(pEvent->time.tick)); 
+	return m_directBuffer.push(pEvent);
 }
 
 // Queued buffering.
 bool qtractorMidiManager::queued ( snd_seq_event_t *pEvent )
 {
-	return m_queuedBuffer.push(pEvent,
-		m_pSession->frameFromTick(pEvent->time.tick));
+	unsigned long iTick = m_pSession->frameFromTick(pEvent->time.tick);
+
+	if (pEvent->type == SND_SEQ_EVENT_NOTE) {
+		snd_seq_event_t ev = *pEvent;
+		ev.type = SND_SEQ_EVENT_NOTEON;
+		if (!m_queuedBuffer.push(&ev, iTick))
+			return false;
+		ev.type = SND_SEQ_EVENT_NOTEOFF;
+		ev.data.note.velocity = 0;
+		iTick += m_pSession->frameFromTick(ev.data.note.duration);
+		return m_postedBuffer.push(&ev, iTick);
+	}
+
+	return m_queuedBuffer.push(pEvent, iTick);
 }
 
 
@@ -76,26 +88,34 @@ void qtractorMidiManager::process (
 {
 	clear();
 
-	snd_seq_event_t *pEv1 = m_directBuffer.peek();
-	snd_seq_event_t *pEv2 = m_queuedBuffer.peek();
+	snd_seq_event_t *pEv0 = m_directBuffer.peek();
+	snd_seq_event_t *pEv1 = m_queuedBuffer.peek();
+	snd_seq_event_t *pEv2 = m_postedBuffer.peek();
 
+	// Direct events...
+	while (pEv0) {
+		m_pBuffer[m_iBuffer++] = *pEv0;
+		pEv0 = m_directBuffer.next();
+	}
+
+	// Queued/posted events...
 	while ((pEv1 && pEv1->time.tick < iTimeEnd)
 		|| (pEv2 && pEv2->time.tick < iTimeEnd)) {
-		while ((pEv1 &&  pEv2 && pEv2->time.tick >= pEv1->time.tick)
-			|| (pEv1 && !pEv2 && pEv1->time.tick < iTimeEnd)) {
+		while (pEv1 && pEv1->time.tick < iTimeEnd
+			&& ((pEv2 && pEv2->time.tick >= pEv1->time.tick) || !pEv2)) {
 			m_pBuffer[m_iBuffer] = *pEv1;
 			m_pBuffer[m_iBuffer++].time.tick
 				= (pEv1->time.tick > iTimeStart
 					? pEv1->time.tick - iTimeStart : 0);
-			pEv1 = m_directBuffer.next();
+			pEv1 = m_queuedBuffer.next();
 		}
-		while ((pEv2 &&  pEv1 && pEv1->time.tick >= pEv2->time.tick)
-			|| (pEv2 && !pEv1 && pEv2->time.tick < iTimeEnd)) {
+		while (pEv2 && pEv2->time.tick < iTimeEnd
+			&& ((pEv1 && pEv1->time.tick >= pEv2->time.tick) || !pEv1)) {
 			m_pBuffer[m_iBuffer] = *pEv2;
 			m_pBuffer[m_iBuffer++].time.tick
 				= (pEv2->time.tick > iTimeStart
 					? pEv2->time.tick - iTimeStart : 0);
-			pEv2 = m_queuedBuffer.next();
+			pEv2 = m_postedBuffer.next();
 		}
 	}
 
@@ -134,6 +154,7 @@ void qtractorMidiManager::reset (void)
 {
 	m_directBuffer.clear();
 	m_queuedBuffer.clear();
+	m_postedBuffer.clear();
 
 	clear();
 }

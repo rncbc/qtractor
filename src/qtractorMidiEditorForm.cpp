@@ -1137,7 +1137,7 @@ void qtractorMidiEditorForm::sendNote ( int iNote, int iVelocity )
 	if (pMidiBus == NULL)
 		return;
 
-	pMidiBus->sendNote(pTrack->midiChannel(), iNote, iVelocity);
+	pMidiBus->sendNote(pTrack, iNote, iVelocity);
 
 	// Track output monitoring...
 	if (iVelocity > 0) {
