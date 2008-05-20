@@ -107,6 +107,9 @@ public:
 	void setEditorVisible(bool bVisible);
 	bool isEditorVisible() const;
 
+	// Specific accessors.
+	const DSSI_Descriptor *dssi_descriptor() const;
+
 private:
 
 	// GUI editor visiability status.

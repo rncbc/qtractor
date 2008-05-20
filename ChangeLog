@@ -5,8 +5,8 @@ ChangeLog
 
 CVS HEAD
 
-- MIDI buffer/manager makes its stealth appearance, making the
-  way for full DSSI/VSTi plugin host implementation real soon...
+- MIDI buffer/manager makes its functional appearance, making the
+  way for full DSSI/VSTi plugin host implementation real soon now.
 
 - Clip fades have now a slight transparency.
 

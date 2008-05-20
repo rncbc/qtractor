@@ -150,12 +150,16 @@ qtractorLadspaPlugin::qtractorLadspaPlugin ( qtractorPluginList *pList,
 	const LADSPA_Descriptor *pLadspaDescriptor
 		= pLadspaType->ladspa_descriptor();
 	if (pLadspaDescriptor) {
-		m_piControlOuts = new unsigned long [pLadspaType->controlOuts()];
-		m_piAudioIns    = new unsigned long [pLadspaType->audioIns()];
-		m_piAudioOuts   = new unsigned long [pLadspaType->audioOuts()];
-		unsigned short iControlOuts = 0;
-		unsigned short iAudioIns    = 0;
-		unsigned short iAudioOuts   = 0;
+		unsigned short iControlOuts = pLadspaType->controlOuts();
+		unsigned short iAudioIns    = pLadspaType->audioIns();
+		unsigned short iAudioOuts   = pLadspaType->audioOuts();
+		if (iControlOuts > 0)
+			m_piControlOuts = new unsigned long [iControlOuts];
+		if (iAudioIns > 0)
+			m_piAudioIns = new unsigned long [iAudioIns];
+		if (iAudioOuts > 0)
+			m_piAudioOuts = new unsigned long [iAudioOuts];
+		iControlOuts = iAudioIns = iAudioOuts  = 0;
 		for (unsigned long i = 0; i < pLadspaDescriptor->PortCount; ++i) {
 			const LADSPA_PortDescriptor portType
 				= pLadspaDescriptor->PortDescriptors[i];
@@ -314,8 +318,6 @@ void qtractorLadspaPlugin::process (
 	float **ppIBuffer, float **ppOBuffer, unsigned int nframes )
 {
 	if (m_phInstances == NULL)
-		return;
-	if (m_piAudioIns == NULL || m_piAudioOuts == NULL)
 		return;
 
 	const LADSPA_Descriptor *pLadspaDescriptor = ladspa_descriptor();

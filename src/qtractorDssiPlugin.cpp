@@ -27,6 +27,8 @@
 
 #include "qtractorPluginForm.h"
 
+#include "qtractorMidiBuffer.h"
+
 #include <QFileInfo>
 #include <QDir>
 
@@ -498,6 +500,15 @@ void qtractorDssiPlugin::setChannels ( unsigned short iChannels )
 }
 
 
+// Specific accessor.
+const DSSI_Descriptor *qtractorDssiPlugin::dssi_descriptor (void) const
+{
+	qtractorDssiPluginType *pDssiType
+		= static_cast<qtractorDssiPluginType *> (type());
+	return (pDssiType ? pDssiType->dssi_descriptor() : NULL);
+}
+
+
 // Do the actual activation.
 void qtractorDssiPlugin::activate (void)
 {
@@ -516,7 +527,66 @@ void qtractorDssiPlugin::deactivate (void)
 void qtractorDssiPlugin::process (
 	float **ppIBuffer, float **ppOBuffer, unsigned int nframes )
 {
-	qtractorLadspaPlugin::process(ppIBuffer, ppOBuffer, nframes);
+	// Get MIDI manager access...
+	qtractorMidiManager *pMidiManager = list()->midiManager();
+	if (pMidiManager == NULL) {
+		qtractorLadspaPlugin::process(ppIBuffer, ppOBuffer, nframes);
+		return;
+	}
+		
+	if (m_phInstances == NULL)
+		return;
+
+	const LADSPA_Descriptor *pLadspaDescriptor = ladspa_descriptor();
+	if (pLadspaDescriptor == NULL)
+		return;
+
+	const DSSI_Descriptor *pDssiDescriptor = dssi_descriptor();
+	if (pDssiDescriptor == NULL)
+		return;
+	
+	// We'll cross channels over instances...
+	unsigned short iInstances = instances();
+	unsigned short iChannels  = channels();
+	unsigned short iAudioIns  = audioInsCap();
+	unsigned short iAudioOuts = audioOutsCap();
+	unsigned short iIChannel  = 0;
+	unsigned short iOChannel  = 0;
+	unsigned short i, j;
+
+	// For each plugin instance...
+	for (i = 0; i < iInstances; ++i) {
+		LADSPA_Handle handle = m_phInstances[i];
+		// For each instance audio input port...
+		for (j = 0; j < iAudioIns; ++j) {
+			(*pLadspaDescriptor->connect_port)(handle,
+				m_piAudioIns[j], ppIBuffer[iIChannel]);
+			if (++iIChannel >= iChannels)
+				iIChannel = 0;
+		}
+		// For each instance audio output port...
+		for (j = 0; j < iAudioOuts; ++j) {
+			(*pLadspaDescriptor->connect_port)(handle,
+				m_piAudioOuts[j], ppOBuffer[iOChannel]);
+			if (++iOChannel >= iChannels)
+				iOChannel = 0;
+		}
+		// Make it run...
+		if (pDssiDescriptor->run_synth_adding)
+			(*pDssiDescriptor->run_synth_adding)(handle, nframes,
+				pMidiManager->buffer(), pMidiManager->count());
+		else 
+		if (pDssiDescriptor->run_synth)
+			(*pDssiDescriptor->run_synth)(handle, nframes,
+				pMidiManager->buffer(), pMidiManager->count());
+		else 
+			(*pLadspaDescriptor->run)(handle, nframes);
+		// Wrap channels?...
+		if (iIChannel < iChannels - 1)
+			iIChannel++;
+		if (iOChannel < iChannels - 1)
+			iOChannel++;
+	}
 }
 
 

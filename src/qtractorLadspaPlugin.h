@@ -98,7 +98,7 @@ public:
 	const LADSPA_Descriptor *ladspa_descriptor() const;
 	LADSPA_Handle ladspa_handle(unsigned short iInstance) const;
 
-private:
+protected:
 
 	// Instance variables.
 	LADSPA_Handle *m_phInstances;
