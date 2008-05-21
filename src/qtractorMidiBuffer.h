@@ -105,6 +105,29 @@ public:
 		return true;
 	}
 
+	// Write event to buffer (ordered).
+	bool insert(snd_seq_event_t *pEvent, unsigned long iTick = 0)
+	{
+		unsigned int iWriteIndex = (m_iWriteIndex + 1) & m_iBufferMask;
+		if (iWriteIndex == m_iReadIndex)
+			return false;
+		unsigned int i = m_iWriteIndex;
+		unsigned int j = i;
+		for (;;) {
+			--i &= m_iBufferMask;
+			if (j == m_iReadIndex
+				|| pEvent->time.tick >= m_pBuffer[i].time.tick) {
+				m_pBuffer[j] = *pEvent;
+				m_pBuffer[j].time.tick = iTick;
+				break;
+			}
+			m_pBuffer[j] = m_pBuffer[i];
+			j = i;
+		}
+		m_iWriteIndex = iWriteIndex;
+		return true;
+	}
+
 	// Returns number of events currently available.
 	unsigned int count() const
 	{
