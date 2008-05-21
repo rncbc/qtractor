@@ -388,6 +388,10 @@ void qtractorMidiClip::process ( unsigned long iFrameStart,
 	if (pSession == NULL)
 		return;
 
+	qtractorMidiEngine *pMidiEngine = pSession->midiEngine();
+	if (pMidiEngine == NULL)
+		return;
+
 	// Track mute state...
 	bool bMute = (pTrack->isMute()
 		|| (pSession->soloTracks() && !pTrack->isSolo()));
@@ -409,7 +413,7 @@ void qtractorMidiClip::process ( unsigned long iFrameStart,
 			break;
 		if (iTimeEvent >= iTimeStart
 			&& (!bMute || pEvent->type() != qtractorMidiEvent::NOTEON))
-			pSession->midiEngine()->enqueue(pTrack, pEvent, iTimeEvent,
+			pMidiEngine->enqueue(pTrack, pEvent, iTimeEvent,
 				gain(pSession->frameFromTick(pEvent->time())));
 		pEvent = pEvent->next();
 	}

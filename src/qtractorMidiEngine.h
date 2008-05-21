@@ -273,11 +273,12 @@ public:
 		{ return m_patches[iChannel & 0x0f]; }
 
 	// Direct MIDI bank/program selection helper.
-	void setPatch(unsigned short iChannel, const QString& sInstrumentName,
+	void setPatch(unsigned short iChannel,
+		const QString& sInstrumentName,
 		int iBankSelMethod, int iBank, int iProg);
 
-	// Direct MIDI controller helper.
-	void setController(unsigned short iChannel,
+	// Direct MIDI controller helpers.
+	void setController(qtractorTrack *pTrack,
 		int iController, int iValue = 0) const;
 
 	// Direct MIDI note helper.
@@ -306,9 +307,9 @@ public:
 	void setMasterPanning(float fPanning);
 
 	// MIDI channel volume.
-	void setVolume(unsigned short iChannel, float fVolume);
+	void setVolume(qtractorTrack *pTrack, float fVolume);
 	// MIDI channel stereo panning.
-	void setPanning(unsigned short iChannel, float fPanning);
+	void setPanning(qtractorTrack *pTrack, float fPanning);
 
 	// Document element methods.
 	bool loadElement(qtractorSessionDocument *pDocument,
@@ -317,6 +318,10 @@ public:
 		QDomElement *pElement);
 
 protected:
+
+	// Direct MIDI controller common helper.
+	void setControllerEx(unsigned short iChannel, int iController,
+		int iValue = 0, qtractorTrack *pTrack = NULL) const;
 
 	// Bus mode change event.
 	void updateBusMode();

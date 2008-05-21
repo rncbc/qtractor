@@ -72,9 +72,10 @@ bool qtractorMidiManager::queued ( snd_seq_event_t *pEvent )
 		ev.type = SND_SEQ_EVENT_NOTEON;
 		if (!m_queuedBuffer.push(&ev, iTick))
 			return false;
+		iTick += m_pSession->frameFromTick(ev.data.note.duration);
 		ev.type = SND_SEQ_EVENT_NOTEOFF;
 		ev.data.note.velocity = 0;
-		iTick += m_pSession->frameFromTick(ev.data.note.duration);
+		ev.data.note.duration = 0;
 		return m_postedBuffer.insert(&ev, iTick);
 	}
 
@@ -157,6 +158,8 @@ void qtractorMidiManager::reset (void)
 	m_postedBuffer.clear();
 
 	clear();
+
+	m_pPluginList->resetBuffer();
 }
 
 

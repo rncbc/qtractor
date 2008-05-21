@@ -647,7 +647,7 @@ bool qtractorTrackGainCommand::redo (void)
 		qtractorMidiBus *pMidiBus
 			= static_cast<qtractorMidiBus *> (pTrack->outputBus());
 		if (pMidiBus)
-			pMidiBus->setVolume(pTrack->midiChannel(), m_fGain);
+			pMidiBus->setVolume(pTrack, m_fGain);
 	}
 
 	// Set undo value...
@@ -733,7 +733,7 @@ bool qtractorTrackPanningCommand::redo (void)
 		qtractorMidiBus *pMidiBus
 			= static_cast<qtractorMidiBus *> (pTrack->outputBus());
 		if (pMidiBus)
-			pMidiBus->setPanning(pTrack->midiChannel(), m_fPanning);
+			pMidiBus->setPanning(pTrack, m_fPanning);
 	}
 	
 	// Set undo value...

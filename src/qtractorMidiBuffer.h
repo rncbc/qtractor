@@ -116,7 +116,7 @@ public:
 		for (;;) {
 			--i &= m_iBufferMask;
 			if (j == m_iReadIndex
-				|| pEvent->time.tick >= m_pBuffer[i].time.tick) {
+				|| iTick >= m_pBuffer[i].time.tick) {
 				m_pBuffer[j] = *pEvent;
 				m_pBuffer[j].time.tick = iTick;
 				break;

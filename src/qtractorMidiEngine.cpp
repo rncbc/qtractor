@@ -671,8 +671,8 @@ void qtractorMidiEngine::resetAllMonitors (void)
 				= static_cast<qtractorMidiMonitor *> (pTrack->monitor());
 			if (pMidiBus && pMidiMonitor) {
 				pMidiMonitor->reset();
-				pMidiBus->setVolume(pTrack->midiChannel(), pMidiMonitor->gain());
-				pMidiBus->setPanning(pTrack->midiChannel(), pMidiMonitor->panning());
+				pMidiBus->setVolume(pTrack, pMidiMonitor->gain());
+				pMidiBus->setPanning(pTrack, pMidiMonitor->panning());
 			}
 		}
 	}
@@ -1276,7 +1276,7 @@ void qtractorMidiEngine::trackMute ( qtractorTrack *pTrack, bool bMute )
 		qtractorMidiBus *pMidiBus
 			= static_cast<qtractorMidiBus *> (pTrack->outputBus());
 		if (pMidiBus)
-			pMidiBus->setController(pTrack->midiChannel(), ALL_NOTES_OFF);
+			pMidiBus->setController(pTrack, ALL_NOTES_OFF);
 		// Reset track monitor...
 		qtractorMidiMonitor *pMidiMonitor
 			= static_cast<qtractorMidiMonitor *> (pTrack->monitor());
@@ -2212,10 +2212,10 @@ void qtractorMidiBus::shutOff ( bool bClose ) const
 	QHash<unsigned short, Patch>::ConstIterator iter;
 	for (iter = m_patches.constBegin(); iter != m_patches.constEnd(); ++iter) {
 		unsigned short iChannel = iter.key();
-		setController(iChannel, ALL_SOUND_OFF);
-		setController(iChannel, ALL_NOTES_OFF);
+		setControllerEx(iChannel, ALL_SOUND_OFF);
+		setControllerEx(iChannel, ALL_NOTES_OFF);
 		if (bClose)
-			setController(iChannel, ALL_CONTROLLERS_OFF);
+			setControllerEx(iChannel, ALL_CONTROLLERS_OFF);
 	}
 }
 
@@ -2293,8 +2293,16 @@ void qtractorMidiBus::setPatch ( unsigned short iChannel,
 
 
 // Direct MIDI controller helper.
-void qtractorMidiBus::setController ( unsigned short iChannel,
+void qtractorMidiBus::setController ( qtractorTrack *pTrack,
 	int iController, int iValue ) const
+{
+	setControllerEx(pTrack->midiChannel(), iController, iValue, pTrack);
+}
+
+
+// Direct MIDI controller common helper.
+void qtractorMidiBus::setControllerEx ( unsigned short iChannel,
+	int iController, int iValue, qtractorTrack *pTrack ) const
 {
 	// We always need our MIDI engine reference...
 	qtractorMidiEngine *pMidiEngine
@@ -2329,6 +2337,13 @@ void qtractorMidiBus::setController ( unsigned short iChannel,
 	ev.data.control.param   = iController;
 	ev.data.control.value   = iValue;
 	snd_seq_event_output(pMidiEngine->alsaSeq(), &ev);
+
+	// Do it for the MIDI plugins too...
+	if (pTrack && pTrack->pluginList()
+		&& (pTrack->pluginList())->midiManager()
+		&& (pTrack->pluginList())->activated() > 0) {
+		((pTrack->pluginList())->midiManager())->direct(&ev);
+	}
 
 	pMidiEngine->flush();
 }
@@ -2610,18 +2625,18 @@ void qtractorMidiBus::setMasterPanning ( float fPanning )
 
 
 // MIDI channel volume.
-void qtractorMidiBus::setVolume ( unsigned short iChannel, float fVolume )
+void qtractorMidiBus::setVolume ( qtractorTrack *pTrack, float fVolume )
 {
 	unsigned char vol = (unsigned char) (int(127.0f * fVolume) & 0x7f);
-	setController((unsigned short) iChannel, CHANNEL_VOLUME, vol);
+	setController(pTrack, CHANNEL_VOLUME, vol);
 }
 
 
 // MIDI channel stereo panning.
-void qtractorMidiBus::setPanning ( unsigned short iChannel, float fPanning )
+void qtractorMidiBus::setPanning ( qtractorTrack *pTrack, float fPanning )
 {
 	unsigned char pan = (int(63.0f * (1.0f + fPanning)) + 1) & 0x7f;
-	setController(iChannel, CHANNEL_PANNING, pan);
+	setController(pTrack, CHANNEL_PANNING, pan);
 }
 
 
