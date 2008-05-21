@@ -5,6 +5,15 @@ ChangeLog
 
 CVS HEAD
 
+- Attempt to load Qt's own translation support and get rid of
+  the ever warning startup message, unless built in debug mode.
+  (transaction by Guido Scholz, while on qsynth-devel, thanks).
+
+- Only one application instance is now allowed to be up and running,
+  with immediate but graceful termination upon startup iif an already
+  running instance is detected, which will see its main widget shown
+  up automatically (Qt/X11 platform only).
+
 - MIDI buffer/manager makes its functional appearance, making the
   way for full DSSI/VSTi plugin host implementation real soon now.
 
