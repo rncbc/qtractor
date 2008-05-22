@@ -275,7 +275,8 @@ public:
 	// Direct MIDI bank/program selection helper.
 	void setPatch(unsigned short iChannel,
 		const QString& sInstrumentName,
-		int iBankSelMethod, int iBank, int iProg);
+		int iBankSelMethod, int iBank, int iProg,
+		qtractorTrack *pTrack);
 
 	// Direct MIDI controller helpers.
 	void setController(qtractorTrack *pTrack,

@@ -341,7 +341,7 @@ void qtractorTrackForm::reject (void)
 		// Try to restore the previously saved patch...
 		if (m_pOldMidiBus) {
 			m_pOldMidiBus->setPatch(m_iOldChannel, m_sOldInstrumentName,
-				m_iOldBankSelMethod, m_iOldBank, m_iOldProg);
+				m_iOldBankSelMethod, m_iOldBank, m_iOldProg, m_pTrack);
 		}
 		QDialog::reject();
 	}
@@ -782,7 +782,7 @@ void qtractorTrackForm::trackTypeChanged (void)
 	if (m_pOldMidiBus) {
 		// Restore previously current/saved patch...
 		m_pOldMidiBus->setPatch(m_iOldChannel, m_sOldInstrumentName,
-			m_iOldBankSelMethod, m_iOldBank, m_iOldProg);
+			m_iOldBankSelMethod, m_iOldBank, m_iOldProg, m_pTrack);
 		// Reset restorable patch reference...
 		m_pOldMidiBus = NULL;
 		m_iOldChannel = -1;
@@ -936,7 +936,7 @@ void qtractorTrackForm::progChanged (void)
 			// Restore previously saved patch...
 			if (m_pOldMidiBus) {
 				m_pOldMidiBus->setPatch(m_iOldChannel, m_sOldInstrumentName,
-					m_iOldBankSelMethod, m_iOldBank, m_iOldProg);
+					m_iOldBankSelMethod, m_iOldBank, m_iOldProg, m_pTrack);
 			}
 			// Save current channel patch...
 			const qtractorMidiBus::Patch& patch = pMidiBus->patch(iChannel);
@@ -951,7 +951,7 @@ void qtractorTrackForm::progChanged (void)
 		}
 		// Patch it directly...
 		pMidiBus->setPatch(iChannel, sInstrumentName,
-			iBankSelMethod, iBank, iProg);
+			iBankSelMethod, iBank, iProg, m_pTrack);
 	}
 	
 	// Flag that it changed anyhow!

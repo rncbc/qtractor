@@ -238,6 +238,27 @@ static int osc_control ( DssiEditor *pDssiEditor, lo_arg **argv )
 }
 
 
+static int osc_program ( DssiEditor *pDssiEditor, lo_arg **argv )
+{
+    int bank = argv[0]->i;
+    int prog = argv[1]->i;
+
+#ifdef CONFIG_DEBUG
+	qDebug("osc_program: path \"%s\", bank %d, prog %d",
+		pDssiEditor->path, bank, prog);
+#endif
+
+	qtractorDssiPlugin *pDssiPlugin = pDssiEditor->plugin;
+	if (pDssiPlugin == NULL)
+		return 1;
+
+	// Bank/Program selection pending...
+	pDssiPlugin->select_program(bank, prog);
+
+	return 0;
+}
+
+
 static int osc_quit ( DssiEditor *pDssiEditor )
 {
 #ifdef CONFIG_DEBUG
@@ -309,6 +330,9 @@ static int osc_message ( const char *path, const char *types,
 	else
 	if (sMethod == "control")
 		return osc_control(pDssiEditor, argv);
+	else
+	if (sMethod == "program")
+		return osc_program(pDssiEditor, argv);
 	else
 	if (sMethod == "exiting")
 		return osc_exiting(pDssiEditor);
@@ -484,6 +508,7 @@ qtractorDssiPlugin::qtractorDssiPlugin ( qtractorPluginList *pList,
 	qtractorDssiPluginType *pDssiType )
 	: qtractorLadspaPlugin(pList, pDssiType), m_bEditorVisible(false)
 {
+	select_program(0, 0);
 }
 
 
@@ -497,15 +522,6 @@ qtractorDssiPlugin::~qtractorDssiPlugin (void)
 void qtractorDssiPlugin::setChannels ( unsigned short iChannels )
 {
 	qtractorLadspaPlugin::setChannels(iChannels);
-}
-
-
-// Specific accessor.
-const DSSI_Descriptor *qtractorDssiPlugin::dssi_descriptor (void) const
-{
-	qtractorDssiPluginType *pDssiType
-		= static_cast<qtractorDssiPluginType *> (type());
-	return (pDssiType ? pDssiType->dssi_descriptor() : NULL);
 }
 
 
@@ -686,6 +702,32 @@ bool qtractorDssiPlugin::isEditorVisible (void) const
 	return m_bEditorVisible;
 }
 
+
+// Specific accessor.
+const DSSI_Descriptor *qtractorDssiPlugin::dssi_descriptor (void) const
+{
+	qtractorDssiPluginType *pDssiType
+		= static_cast<qtractorDssiPluginType *> (type());
+	return (pDssiType ? pDssiType->dssi_descriptor() : NULL);
+}
+
+
+// Bank/program selector.
+void qtractorDssiPlugin::select_program ( int iBank, int iProg )
+{
+	if (m_phInstances == NULL)
+		return;
+
+	const DSSI_Descriptor *pDssiDescriptor = dssi_descriptor();
+	if (pDssiDescriptor == NULL)
+		return;
+
+	if (pDssiDescriptor->select_program) {
+		// For each plugin instance...
+		for (unsigned short i = 0; i < instances(); ++i)
+			(*pDssiDescriptor->select_program)(m_phInstances[i], iBank, iProg);
+	}
+}
 
 //----------------------------------------------------------------------------
 // qtractorDssiPluginParam -- DSSI plugin control input port instance.

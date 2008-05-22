@@ -110,6 +110,9 @@ public:
 	// Specific accessors.
 	const DSSI_Descriptor *dssi_descriptor() const;
 
+	// Bank/program selector.
+	void select_program(int iBank, int iProg);
+
 private:
 
 	// GUI editor visiability status.

@@ -988,7 +988,8 @@ void qtractorTracks::updateMidiTrack ( qtractorTrack *pMidiTrack )
 	pMidiBus->setPatch(iChannel, patch.instrumentName,
 		pMidiTrack->midiBankSelMethod(),
 		pMidiTrack->midiBank(),
-		pMidiTrack->midiProgram());
+		pMidiTrack->midiProgram(),
+		pMidiTrack);
 }
 
 

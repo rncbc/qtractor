@@ -724,8 +724,10 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 		data1    = pEv->data.note.note;
 		data2    = pEv->data.note.velocity;
 		duration = pEv->data.note.duration;
-		if (data2 == 0)
+		if (data2 == 0) {
+			pEv->type = SND_SEQ_EVENT_NOTEOFF;
 			type = qtractorMidiEvent::NOTEOFF;
+		}
 		break;
 	case SND_SEQ_EVENT_NOTEOFF:
 		type     = qtractorMidiEvent::NOTEOFF;
@@ -2222,7 +2224,8 @@ void qtractorMidiBus::shutOff ( bool bClose ) const
 
 // Direct MIDI bank/program selection helper.
 void qtractorMidiBus::setPatch ( unsigned short iChannel,
-	const QString& sInstrumentName, int iBankSelMethod, int iBank, int iProg )
+	const QString& sInstrumentName, int iBankSelMethod,
+	int iBank, int iProg, qtractorTrack *pTrack )
 {
 	// We always need our MIDI engine reference...
 	qtractorMidiEngine *pMidiEngine
@@ -2250,6 +2253,11 @@ void qtractorMidiBus::setPatch ( unsigned short iChannel,
 	if (pMidiEngine->alsaSeq() == NULL)
 		return;
 
+	// Do it for the MIDI plugins if applicable...
+	qtractorMidiManager *pMidiManager = NULL;
+	if (pTrack && (pTrack->pluginList())->activated() > 0)
+		pMidiManager = (pTrack->pluginList())->midiManager();
+
 	// Initialize sequencer event...
 	snd_seq_event_t ev;
 	snd_seq_ev_clear(&ev);
@@ -2271,6 +2279,7 @@ void qtractorMidiBus::setPatch ( unsigned short iChannel,
 		else
 			ev.data.control.value = (iBank & 0x007f);
 		snd_seq_event_output(pMidiEngine->alsaSeq(), &ev);
+		if (pMidiManager) pMidiManager->direct(&ev);
 	}
 
 	// Select Bank LSB.
@@ -2280,6 +2289,7 @@ void qtractorMidiBus::setPatch ( unsigned short iChannel,
 		ev.data.control.param   = BANK_SELECT_LSB;
 		ev.data.control.value   = (iBank & 0x007f);
 		snd_seq_event_output(pMidiEngine->alsaSeq(), &ev);
+		if (pMidiManager) pMidiManager->direct(&ev);
 	}
 
 	// Program change...
@@ -2287,6 +2297,7 @@ void qtractorMidiBus::setPatch ( unsigned short iChannel,
 	ev.data.control.channel = iChannel;
 	ev.data.control.value   = iProg;
 	snd_seq_event_output(pMidiEngine->alsaSeq(), &ev);
+	if (pMidiManager) pMidiManager->direct(&ev);
 
 	pMidiEngine->flush();
 }
