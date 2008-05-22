@@ -654,9 +654,9 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 							if (pOutputBus) {
 								// Plugin chain thru-processing...
 								pOutputBus->buffer_prepare_in(pInputBus, nframes);
-								qtractorPluginList *pPluginList = pTrack->pluginList();
-								if (pPluginList && pPluginList->activated())
-									pPluginList->process(pOutputBus->buffer(), nframes);
+								if ((pTrack->pluginList())->activated() > 0)
+									(pTrack->pluginList())->process(
+										pOutputBus->buffer(), nframes);
 								pOutputBus->buffer_commit(nframes);
 							}
 						}

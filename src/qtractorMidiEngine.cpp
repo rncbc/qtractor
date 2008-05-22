@@ -829,9 +829,8 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 						// Done with MIDI-thru.
 						pMidiBus->midiMonitor_out()->enqueue(type, data2);
 						// Do it for the MIDI plugins too...
-						if (pTrack->pluginList()
-							&& (pTrack->pluginList())->midiManager()
-							&& (pTrack->pluginList())->activated() > 0) {
+						if ((pTrack->pluginList())->midiManager() &&
+							(pTrack->pluginList())->activated() > 0) {
 							((pTrack->pluginList())->midiManager())->direct(pEv);
 						}
 					}
@@ -981,11 +980,9 @@ void qtractorMidiEngine::enqueue ( qtractorTrack *pTrack,
 		pMidiBus->midiMonitor_out()->enqueue(pEvent->type(), value, tick);
 
 	// Do it for the MIDI plugins too...
-	if (pTrack->pluginList()
-		&& (pTrack->pluginList())->midiManager()
-		&& (pTrack->pluginList())->activated() > 0) {
+	if ((pTrack->pluginList())->midiManager() &&
+		(pTrack->pluginList())->activated() > 0)
 		((pTrack->pluginList())->midiManager())->queued(&ev);
-	}
 }
 
 
@@ -1282,6 +1279,9 @@ void qtractorMidiEngine::trackMute ( qtractorTrack *pTrack, bool bMute )
 			= static_cast<qtractorMidiMonitor *> (pTrack->monitor());
 		if (pMidiMonitor)
 			pMidiMonitor->reset();
+		// Reset track plugin buffers...
+		if ((pTrack->pluginList())->midiManager())
+			(pTrack->pluginList())->midiManager()->reset();
 		// Done track mute.
 	} else {
 		// Must redirect to MIDI ouput thread:
@@ -2339,11 +2339,10 @@ void qtractorMidiBus::setControllerEx ( unsigned short iChannel,
 	snd_seq_event_output(pMidiEngine->alsaSeq(), &ev);
 
 	// Do it for the MIDI plugins too...
-	if (pTrack && pTrack->pluginList()
-		&& (pTrack->pluginList())->midiManager()
-		&& (pTrack->pluginList())->activated() > 0) {
-		((pTrack->pluginList())->midiManager())->direct(&ev);
-	}
+	if (pTrack &&
+		(pTrack->pluginList())->midiManager() &&
+		(pTrack->pluginList())->activated() > 0)
+		(pTrack->pluginList())->midiManager()->direct(&ev);
 
 	pMidiEngine->flush();
 }
@@ -2389,17 +2388,23 @@ void qtractorMidiBus::sendNote ( qtractorTrack *pTrack,
 	snd_seq_event_output(pMidiEngine->alsaSeq(), &ev);
 
 	// Do it for the MIDI plugins too...
-	if (pTrack->pluginList()
-		&& (pTrack->pluginList())->midiManager()
-		&& (pTrack->pluginList())->activated() > 0) {
-		((pTrack->pluginList())->midiManager())->direct(&ev);
-	}
+	if ((pTrack->pluginList())->midiManager() &&
+		(pTrack->pluginList())->activated() > 0)
+		(pTrack->pluginList())->midiManager()->direct(&ev);
 
 	pMidiEngine->flush();
 
-	// Bus output monitoring...
-	if (iVelocity > 0 && m_pOMidiMonitor)
-		m_pOMidiMonitor->enqueue(qtractorMidiEvent::NOTEON, iVelocity);
+	// Bus/track output monitoring...
+	if (iVelocity > 0) {
+		// Bus output monitoring...
+		if (m_pOMidiMonitor)
+			m_pOMidiMonitor->enqueue(qtractorMidiEvent::NOTEON, iVelocity);
+		// Track output monitoring...
+		qtractorMidiMonitor *pMidiMonitor
+			= static_cast<qtractorMidiMonitor *> (pTrack->monitor());
+		if (pMidiMonitor)
+			pMidiMonitor->enqueue(qtractorMidiEvent::NOTEON, iVelocity);
+	}
 }
 
 

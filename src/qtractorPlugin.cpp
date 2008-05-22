@@ -785,8 +785,8 @@ void qtractorPluginList::insertPlugin (	qtractorPlugin *pPlugin,
 	else
 		append(pPlugin);
 
-	//if (pPlugin->isActivated())
-	//	updateActivated(true);
+	if (pPlugin->isActivated())
+		updateActivated(true);
 
 	// Now update each observer list-view...
 	QListIterator<qtractorPluginListView *> iter(m_views);

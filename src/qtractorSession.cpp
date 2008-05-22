@@ -153,6 +153,8 @@ void qtractorSession::clear (void)
 	ATOMIC_SET(&m_locks, 0);
 	ATOMIC_SET(&m_mutex, 0);
 
+	m_midiManagers.clear();
+
 	m_tracks.clear();
 	m_cursors.clear();
 
@@ -810,8 +812,7 @@ void qtractorSession::resetAllPlugins (void)
 	// All tracks...
 	for (qtractorTrack *pTrack = m_tracks.first();
 			pTrack; pTrack = pTrack->next()) {
-		if (pTrack->pluginList())
-			pTrack->pluginList()->resetBuffer();
+		(pTrack->pluginList())->resetBuffer();
 	}
 	
 	// All audio buses...
@@ -1120,10 +1121,8 @@ void qtractorSession::trackMute ( qtractorTrack *pTrack, bool bMute )
 	// For the time being, only needed for ALSA sequencer...
 	if (pTrack->trackType() == qtractorTrack::Midi)
 		m_pMidiEngine->trackMute(pTrack, bMute);
-
-	// But not, plugins must also be muted (sort of)...
-	if (bMute && pTrack->pluginList())
-		pTrack->pluginList()->resetBuffer();
+	else if (bMute) // Audio plugins must also be muted (sort of)...
+		(pTrack->pluginList())->resetBuffer();
 }
 
 
