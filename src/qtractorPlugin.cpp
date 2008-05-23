@@ -747,6 +747,16 @@ void qtractorPluginList::resetBuffer (void)
 }
 
 
+// Specific MIDI instrument selector.
+void qtractorPluginList::selectProgram ( int iBank, int iProg )
+{
+	for (qtractorPlugin *pPlugin = first();
+			pPlugin; pPlugin = pPlugin->next()) {
+		pPlugin->selectProgram(iBank, iProg);
+	}
+}
+
+
 // Special guard activation methods.
 bool qtractorPluginList::isActivatedAll (void) const
 {

@@ -214,6 +214,10 @@ protected:
 
 	snd_seq_event_t    *m_pBuffer;
 	unsigned int        m_iBuffer;
+
+	int m_iPendingBankMSB;
+	int m_iPendingBankLSB;
+	int m_iPendingProg;
 };
 
 

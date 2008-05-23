@@ -30,6 +30,11 @@
 #include "qtractorAudioEngine.h"
 
 
+// Specific controller definitions
+#define BANK_SELECT_MSB		0x00
+#define BANK_SELECT_LSB		0x20
+
+
 //----------------------------------------------------------------------
 // class qtractorMidiManager -- MIDI internal plugin list manager.
 //
@@ -42,8 +47,10 @@ qtractorMidiManager::qtractorMidiManager ( qtractorSession *pSession,
 	m_directBuffer(iBufferSize >> 2),
 	m_queuedBuffer(iBufferSize),
 	m_postedBuffer(iBufferSize >> 1),
-	m_pBuffer(NULL),
-	m_iBuffer(0)
+	m_pBuffer(NULL), m_iBuffer(0),
+	m_iPendingBankMSB(-1),
+	m_iPendingBankLSB(-1),
+	m_iPendingProg(-1)
 {
 	m_pBuffer = new snd_seq_event_t [bufferSize() << 1];
 }
@@ -59,6 +66,19 @@ qtractorMidiManager::~qtractorMidiManager (void)
 // Direct buffering.
 bool qtractorMidiManager::direct ( snd_seq_event_t *pEvent )
 {
+	if (pEvent->type == SND_SEQ_EVENT_CONTROLLER) {
+		switch (pEvent->data.control.param) {
+		case BANK_SELECT_MSB:
+			m_iPendingBankMSB = pEvent->data.control.value;
+			break;
+		case BANK_SELECT_LSB:
+			m_iPendingBankLSB = pEvent->data.control.value;
+			break;
+		}
+	}
+	else if (pEvent->type == SND_SEQ_EVENT_PGMCHANGE)
+		m_iPendingProg = pEvent->data.control.value;
+
 	return m_directBuffer.push(pEvent);
 }
 
@@ -89,6 +109,27 @@ void qtractorMidiManager::process (
 {
 	clear();
 
+	// Check for programn change...
+	if (m_iPendingProg >= 0) {
+		int iBank = 0;
+		int iProg = m_iPendingProg;
+		if (m_iPendingBankLSB >= 0) {
+			if (m_iPendingBankMSB >= 0)
+				iBank = (m_iPendingBankMSB << 7) + m_iPendingBankLSB;
+			else
+				iBank = m_iPendingBankLSB;
+		}
+		else if (m_iPendingBankMSB >= 0)
+			iBank = m_iPendingBankMSB;
+		// Make the change (should be RT safe...)
+		m_pPluginList->selectProgram(iBank, iProg);
+		// Reset pending status.
+		m_iPendingBankMSB = -1;
+		m_iPendingBankLSB = -1;
+		m_iPendingProg    = -1;
+	}
+
+	// Maerge events in buffer for plugin processing...
 	snd_seq_event_t *pEv0 = m_directBuffer.peek();
 	snd_seq_event_t *pEv1 = m_queuedBuffer.peek();
 	snd_seq_event_t *pEv2 = m_postedBuffer.peek();
@@ -160,6 +201,10 @@ void qtractorMidiManager::reset (void)
 	clear();
 
 	m_pPluginList->resetBuffer();
+
+	m_iPendingBankMSB = -1;
+	m_iPendingBankLSB = -1;
+	m_iPendingProg    = -1;
 }
 
 

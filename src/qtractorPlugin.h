@@ -303,6 +303,9 @@ public:
 	virtual void process(
 		float **ppIBuffer, float **ppOBuffer, unsigned int nframes) = 0;
 
+	// Specific MIDI instrument selector.
+	virtual void selectProgram(int /*iBank*/, int /*iProg*/) {}
+
 	// GUI Editor stuff.
 	virtual void openEditor(QWidget */*pParent*/) {}
 	virtual void closeEditor() {};
@@ -421,6 +424,9 @@ public:
 	// Specific MIDI manager accessor.
 	qtractorMidiManager *midiManager() const
 		{ return m_pMidiManager; }
+
+	// Specific MIDI instrument selector.
+	void selectProgram(int iBank, int iProg);
 
 	// Special activation methods.
 	unsigned int activated() const  { return m_iActivated;  }

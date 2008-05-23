@@ -99,6 +99,9 @@ public:
 	// The main plugin processing procedure.
 	void process(float **ppIBuffer, float **ppOBuffer, unsigned int nframes);
 
+	// Bank/program selector override.
+	void selectProgram(int iBank, int iProg);
+
 	// GUI Editor stuff.
 	void openEditor(QWidget */*pParent*/);
 	void closeEditor();
@@ -109,9 +112,6 @@ public:
 
 	// Specific accessors.
 	const DSSI_Descriptor *dssi_descriptor() const;
-
-	// Bank/program selector.
-	void select_program(int iBank, int iProg);
 
 private:
 

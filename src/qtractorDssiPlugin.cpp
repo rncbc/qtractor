@@ -253,7 +253,7 @@ static int osc_program ( DssiEditor *pDssiEditor, lo_arg **argv )
 		return 1;
 
 	// Bank/Program selection pending...
-	pDssiPlugin->select_program(bank, prog);
+	pDssiPlugin->selectProgram(bank, prog);
 
 	return 0;
 }
@@ -508,7 +508,7 @@ qtractorDssiPlugin::qtractorDssiPlugin ( qtractorPluginList *pList,
 	qtractorDssiPluginType *pDssiType )
 	: qtractorLadspaPlugin(pList, pDssiType), m_bEditorVisible(false)
 {
-	select_program(0, 0);
+	selectProgram(0, 0);
 }
 
 
@@ -703,17 +703,8 @@ bool qtractorDssiPlugin::isEditorVisible (void) const
 }
 
 
-// Specific accessor.
-const DSSI_Descriptor *qtractorDssiPlugin::dssi_descriptor (void) const
-{
-	qtractorDssiPluginType *pDssiType
-		= static_cast<qtractorDssiPluginType *> (type());
-	return (pDssiType ? pDssiType->dssi_descriptor() : NULL);
-}
-
-
 // Bank/program selector.
-void qtractorDssiPlugin::select_program ( int iBank, int iProg )
+void qtractorDssiPlugin::selectProgram ( int iBank, int iProg )
 {
 	if (m_phInstances == NULL)
 		return;
@@ -728,6 +719,16 @@ void qtractorDssiPlugin::select_program ( int iBank, int iProg )
 			(*pDssiDescriptor->select_program)(m_phInstances[i], iBank, iProg);
 	}
 }
+
+
+// Specific accessor.
+const DSSI_Descriptor *qtractorDssiPlugin::dssi_descriptor (void) const
+{
+	qtractorDssiPluginType *pDssiType
+		= static_cast<qtractorDssiPluginType *> (type());
+	return (pDssiType ? pDssiType->dssi_descriptor() : NULL);
+}
+
 
 //----------------------------------------------------------------------------
 // qtractorDssiPluginParam -- DSSI plugin control input port instance.
