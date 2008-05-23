@@ -1,7 +1,7 @@
 // qtractorMidiCursor.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -56,7 +56,7 @@ qtractorMidiEvent *qtractorMidiCursor::seek (
 		// Seek backward...
 		if (m_pEvent == NULL)
 			m_pEvent = pSeq->events().last();
-		while (m_pEvent && m_pEvent->time() > iTime)
+		while (m_pEvent && m_pEvent->time() >= iTime)
 			m_pEvent = m_pEvent->prev();
 		m_iTime = iTime;
 	}

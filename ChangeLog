@@ -10,6 +10,10 @@ CVS HEAD
   DSSI plugins are now being finally functional, but unstable and
   still not complete.
 
+- An off-by-one bug was fixed while inside MIDI cursor backward
+  seek method, which was missing all other events that have the
+  same exact onset timing.
+
 - Attempt to load Qt's own translation support and get rid of
   the ever warning startup message, unless built in debug mode.
   (transaction by Guido Scholz, while on qsynth-devel, thanks).
