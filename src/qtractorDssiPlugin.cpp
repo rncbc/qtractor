@@ -199,12 +199,14 @@ static int osc_configure ( DssiEditor *pDssiEditor, lo_arg **argv )
 	if (pDssiDescriptor == NULL)
 		return 1;
 
-	LADSPA_Handle ladspaHandle
-		= pDssiPlugin->ladspa_handle(0);
-	if (ladspaHandle == NULL)
-		return 1;
-
-	(*pDssiDescriptor->configure)(ladspaHandle, key, value);
+	if (pDssiDescriptor->configure) {
+		for (unsigned int i = 0; i < pDssiPlugin->instances(); ++i) {
+			LADSPA_Handle ladspaHandle
+				= pDssiPlugin->ladspa_handle(i);
+			if (ladspaHandle)
+				(*pDssiDescriptor->configure)(ladspaHandle, key, value);
+		}
+	}
 
 	QString sPath(pDssiEditor->path);
 	sPath += "/configure";
@@ -280,7 +282,7 @@ static int osc_exiting ( DssiEditor *pDssiEditor )
 #endif
 
 	qtractorDssiPlugin *pDssiPlugin	= pDssiEditor->plugin;
-	if (pDssiPlugin && pDssiPlugin->isVisible())
+	if (pDssiPlugin && pDssiPlugin->isFormVisible())
 		(pDssiPlugin->form())->toggleEditor(false);
 
 	pDssiEditor->plugin = NULL;
@@ -515,6 +517,8 @@ qtractorDssiPlugin::qtractorDssiPlugin ( qtractorPluginList *pList,
 // Destructor.
 qtractorDssiPlugin::~qtractorDssiPlugin (void)
 {
+	// Cleanup all plugin instances...
+	setChannels(0);
 }
 
 
@@ -588,10 +592,6 @@ void qtractorDssiPlugin::process (
 				iOChannel = 0;
 		}
 		// Make it run...
-		if (pDssiDescriptor->run_synth_adding)
-			(*pDssiDescriptor->run_synth_adding)(handle, nframes,
-				pMidiManager->buffer(), pMidiManager->count());
-		else 
 		if (pDssiDescriptor->run_synth)
 			(*pDssiDescriptor->run_synth)(handle, nframes,
 				pMidiManager->buffer(), pMidiManager->count());
@@ -658,13 +658,15 @@ void qtractorDssiPlugin::openEditor ( QWidget */*pParent*/ )
 #endif
 
 	m_bEditorVisible = true;
-	form()->toggleEditor(true);
+	if (isFormVisible())
+		form()->toggleEditor(true);
 }
 
 
 void qtractorDssiPlugin::closeEditor (void)
 {
-	form()->toggleEditor(false);
+	if (isFormVisible())
+		form()->toggleEditor(false);
 	m_bEditorVisible = false;
 
 #ifdef CONFIG_LIBLO
@@ -693,7 +695,8 @@ void qtractorDssiPlugin::setEditorVisible ( bool bVisible )
 
 #endif
 
-	form()->toggleEditor(bVisible);
+	if (isFormVisible())
+		form()->toggleEditor(bVisible);
 	m_bEditorVisible = bVisible;
 }
 

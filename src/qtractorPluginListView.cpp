@@ -998,7 +998,7 @@ void qtractorPluginListView::contextMenuEvent (
 		QIcon(":/icons/formEdit.png"),
 		tr("&Edit Plugin..."), this, SLOT(editPlugin()));
 	pAction->setCheckable(true);
-	pAction->setChecked(pPlugin && pPlugin->isVisible());
+	pAction->setChecked(pPlugin && pPlugin->isFormVisible());
 	pAction->setEnabled(pItem != NULL);
 
 	menu.exec(pContextMenuEvent->globalPos());

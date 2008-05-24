@@ -330,7 +330,7 @@ public:
 	void clearItems();
 
 	// Special plugin form accessors.
-	bool isVisible() const;
+	bool isFormVisible() const;
 	qtractorPluginForm *form();
 
 	// Plugin default preset name accessor (informational)

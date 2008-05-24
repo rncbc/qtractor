@@ -467,6 +467,7 @@ void qtractorPlugin::setInstances ( unsigned short iInstances )
 		m_iAudioInsCap  = 0;
 		m_iAudioOutsCap = 0;
 		// We're sorry but dialogs must also go now...
+		closeEditor();
 		if (m_pForm) {
 			m_pForm->close();
 			delete m_pForm;
@@ -553,7 +554,7 @@ void qtractorPlugin::clearItems (void)
 
 
 // Special plugin form accessors.
-bool qtractorPlugin::isVisible (void) const
+bool qtractorPlugin::isFormVisible (void) const
 {
 	return (m_pForm ? m_pForm->isVisible() : false);
 }
@@ -674,8 +675,8 @@ void qtractorPluginList::setName ( const QString& sName )
 
 	for (qtractorPlugin *pPlugin = first();
 			pPlugin; pPlugin = pPlugin->next()) {
-		if (pPlugin->isVisible())
-			pPlugin->form()->updateCaption();
+		if (pPlugin->isFormVisible())
+			(pPlugin->form())->updateCaption();
 	}
 }
 

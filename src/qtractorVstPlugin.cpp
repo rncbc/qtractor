@@ -188,13 +188,13 @@ protected:
 	void showEvent(QShowEvent *pShowEvent)
 	{
 		QWidget::showEvent(pShowEvent);
-		if (m_pPlugin)
+		if (m_pPlugin && m_pPlugin->isFormVisible())
 			(m_pPlugin->form())->toggleEditor(true);
 	}
 
 	void closeEvent(QCloseEvent *pCloseEvent)
 	{
-		if (m_pPlugin)
+		if (m_pPlugin && m_pPlugin->isFormVisible())
 			(m_pPlugin->form())->toggleEditor(false);
 		QWidget::closeEvent(pCloseEvent);
 	}
@@ -1524,9 +1524,9 @@ static VstIntPtr VSTCALLBACK qtractorVstPlugin_HostCallback ( AEffect* effect,
 		VST_HC_DEBUG("audioMasterUpdateDisplay");
 		pVstPlugin = qtractorVstPlugin::findPlugin(effect);
 		if (pVstPlugin) {
-			qtractorPluginForm *pPluginForm = pVstPlugin->form();
-			if (pPluginForm)
-				pPluginForm->refresh();
+			qtractorPluginForm *pForm = pVstPlugin->form();
+			if (pForm)
+				pForm->refresh();
 			QApplication::processEvents();
 		}
 		break;

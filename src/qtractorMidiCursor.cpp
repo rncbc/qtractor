@@ -40,7 +40,6 @@ qtractorMidiEvent *qtractorMidiCursor::seek (
 	// Plain reset...
 	if (iTime == 0) {
 		m_pEvent = pSeq->events().first();
-		m_iTime  = 0;
 	}
 	else
 	if (iTime > m_iTime) {
@@ -49,7 +48,8 @@ qtractorMidiEvent *qtractorMidiCursor::seek (
 			m_pEvent = pSeq->events().first();
 		while (m_pEvent && m_pEvent->time() < iTime)
 			m_pEvent = m_pEvent->next();
-		m_iTime = iTime;
+		if (m_pEvent == NULL)
+			m_pEvent = pSeq->events().last();
 	}
 	else
 	if (iTime < m_iTime) {
@@ -58,9 +58,11 @@ qtractorMidiEvent *qtractorMidiCursor::seek (
 			m_pEvent = pSeq->events().last();
 		while (m_pEvent && m_pEvent->time() >= iTime)
 			m_pEvent = m_pEvent->prev();
-		m_iTime = iTime;
+		if (m_pEvent == NULL)
+			m_pEvent = pSeq->events().first();
 	}
-	
+	// Done.
+	m_iTime = iTime;
 	return m_pEvent;
 }
 

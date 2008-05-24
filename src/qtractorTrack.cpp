@@ -120,13 +120,12 @@ qtractorTrack::qtractorTrack ( qtractorSession *pSession, TrackType trackType )
 qtractorTrack::~qtractorTrack (void)
 {
 	close();
+	clear();
 
 	if (m_pPluginList)
 		delete m_pPluginList;
 	if (m_pMonitor)
 		delete m_pMonitor;
-
-	clear();
 }
 
 
