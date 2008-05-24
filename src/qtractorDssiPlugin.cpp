@@ -261,6 +261,42 @@ static int osc_program ( DssiEditor *pDssiEditor, lo_arg **argv )
 }
 
 
+static int osc_midi ( DssiEditor *pDssiEditor, lo_arg **argv )
+{
+	static snd_midi_event_t *s_pAlsaCoder = NULL;
+    static snd_seq_event_t   s_aAlsaEvent[8];
+
+    unsigned char *data = argv[0]->m;
+
+#ifdef CONFIG_DEBUG
+	qDebug("osc_midi: path \"%s\", midi 0x%02x 0x%02x 0x%02x 0x%02x",
+		pDssiEditor->path, data[0], data[1], data[2], data[3]);
+#endif
+
+	qtractorDssiPlugin *pDssiPlugin = pDssiEditor->plugin;
+	if (pDssiPlugin == NULL)
+		return 1;
+
+	qtractorMidiManager *pMidiManager = (pDssiPlugin->list())->midiManager();
+	if (pMidiManager == NULL)
+		return 1;
+
+	if (s_pAlsaCoder == NULL && snd_midi_event_new(8, &s_pAlsaCoder))
+		return 1;
+
+	snd_midi_event_reset_encode(s_pAlsaCoder);	
+	if (snd_midi_event_encode(s_pAlsaCoder, &data[1], 3, s_aAlsaEvent) < 1)
+		return 1;
+
+	// Send the event directly to
+	snd_seq_event_t *pEvent = &s_aAlsaEvent[0];
+	if (snd_seq_ev_is_channel_type(pEvent))
+		pMidiManager->direct(pEvent);
+
+	return 0;
+}
+
+
 static int osc_quit ( DssiEditor *pDssiEditor )
 {
 #ifdef CONFIG_DEBUG
@@ -335,6 +371,9 @@ static int osc_message ( const char *path, const char *types,
 	else
 	if (sMethod == "program")
 		return osc_program(pDssiEditor, argv);
+	else
+	if (sMethod == "midi")
+		return osc_midi(pDssiEditor, argv);
 	else
 	if (sMethod == "exiting")
 		return osc_exiting(pDssiEditor);
