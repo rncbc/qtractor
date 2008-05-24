@@ -264,9 +264,9 @@ static int osc_program ( DssiEditor *pDssiEditor, lo_arg **argv )
 static int osc_midi ( DssiEditor *pDssiEditor, lo_arg **argv )
 {
 	static snd_midi_event_t *s_pAlsaCoder = NULL;
-    static snd_seq_event_t   s_aAlsaEvent[8];
+	static snd_seq_event_t   s_aAlsaEvent[8];
 
-    unsigned char *data = argv[0]->m;
+	unsigned char *data = argv[0]->m;
 
 #ifdef CONFIG_DEBUG
 	qDebug("osc_midi: path \"%s\", midi 0x%02x 0x%02x 0x%02x 0x%02x",
