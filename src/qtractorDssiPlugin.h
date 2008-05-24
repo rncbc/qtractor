@@ -115,6 +115,10 @@ public:
 
 private:
 
+	// Care of multiple instances here.
+	snd_seq_event_t **m_ppEvents;
+	unsigned long    *m_ppCounts;
+
 	// GUI editor visiability status.
 	bool m_bEditorVisible;
 };

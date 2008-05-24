@@ -508,7 +508,9 @@ const DSSI_Descriptor *qtractorDssiPluginType::dssi_descriptor (
 // Constructors.
 qtractorDssiPlugin::qtractorDssiPlugin ( qtractorPluginList *pList,
 	qtractorDssiPluginType *pDssiType )
-	: qtractorLadspaPlugin(pList, pDssiType), m_bEditorVisible(false)
+	: qtractorLadspaPlugin(pList, pDssiType),
+		m_ppEvents(NULL), m_ppCounts(NULL),
+		m_bEditorVisible(false)
 {
 	selectProgram(0, 0);
 }
@@ -525,7 +527,26 @@ qtractorDssiPlugin::~qtractorDssiPlugin (void)
 // Channel/instance number accessors.
 void qtractorDssiPlugin::setChannels ( unsigned short iChannels )
 {
+	// Clean up...
+	if (m_ppEvents) {
+		delete [] m_ppEvents;
+		m_ppEvents = NULL;
+	}
+
+	if (m_ppCounts) {
+		delete [] m_ppCounts;
+		m_ppCounts = NULL;
+	}
+
+	// Setup new instances...
 	qtractorLadspaPlugin::setChannels(iChannels);
+
+	// Epilogue...
+	unsigned short iInstances = instances();
+	if (iInstances > 0) {
+		m_ppEvents = new snd_seq_event_t * [iInstances];
+		m_ppCounts = new unsigned long     [iInstances];
+	}
 }
 
 
@@ -555,6 +576,9 @@ void qtractorDssiPlugin::process (
 	}
 		
 	if (m_phInstances == NULL)
+		return;
+
+	if (m_ppEvents == NULL || m_ppCounts == NULL)
 		return;
 
 	const LADSPA_Descriptor *pLadspaDescriptor = ladspa_descriptor();
@@ -591,12 +615,22 @@ void qtractorDssiPlugin::process (
 			if (++iOChannel >= iChannels)
 				iOChannel = 0;
 		}
+		// Care of multiple instances here...
+		m_ppEvents[i] = pMidiManager->events();
+		m_ppCounts[i] = pMidiManager->count();
 		// Make it run...
-		if (pDssiDescriptor->run_synth)
+		if (pDssiDescriptor->run_multiple_synths) {
+			// Multiple run on last iteration only...
+			if (i == iInstances - 1) {
+				(*pDssiDescriptor->run_multiple_synths)(iInstances,
+					m_phInstances, nframes, m_ppEvents, m_ppCounts);
+			}
+		}
+		else if (pDssiDescriptor->run_synth) {
 			(*pDssiDescriptor->run_synth)(handle, nframes,
-				pMidiManager->buffer(), pMidiManager->count());
-		else 
-			(*pLadspaDescriptor->run)(handle, nframes);
+				m_ppEvents[i], m_ppCounts[i]);
+		}
+		else (*pLadspaDescriptor->run)(handle, nframes);
 		// Wrap channels?...
 		if (iIChannel < iChannels - 1)
 			iIChannel++;

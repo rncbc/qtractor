@@ -179,7 +179,7 @@ public:
 	void clear() { m_iBuffer = 0; }
 
 	// Event buffer accessor. 
-	snd_seq_event_t *buffer() const	{ return m_pBuffer; }
+	snd_seq_event_t *events() const	{ return m_pBuffer; }
 
 	// Returns number of events result of process.
 	unsigned int count() const { return m_iBuffer; }
