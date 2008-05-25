@@ -32,6 +32,9 @@
 #include "qtractorAudioEngine.h"
 #include "qtractorMidiEngine.h"
 
+#include "qtractorMidiBuffer.h"
+#include "qtractorPlugin.h"
+
 #include "qtractorRubberBand.h"
 
 #include "qtractorMainForm.h"
@@ -299,16 +302,41 @@ void qtractorTrackList::Item::update ( qtractorTrackList *pTrackList )
 					= qtractorMainForm::getInstance();
 				const qtractorMidiBus::Patch& patch
 					= pMidiBus->patch(iChannel);
-				if (!patch.instrumentName.isEmpty()
-					&& pMainForm && pMainForm->instruments()) {
+				if (!patch.instrumentName.isEmpty()) {
 					sInstrument = patch.instrumentName;
-					qtractorInstrument& instr
-						= (*pMainForm->instruments())[sInstrument];
-					const qtractorInstrumentData& bank
-						= instr.patch(track->midiBank());
-					if (bank.contains(track->midiProgram())) {
-						sProgram = bank[track->midiProgram()];
-						sBank = bank.name();
+					bool bMidiManager = false;
+					qtractorMidiManager *pMidiManager
+						= (track->pluginList())->midiManager();
+					if (pMidiManager) {
+						const qtractorMidiManager::Instruments& list
+							= pMidiManager->instruments();
+						if (list.contains(sInstrument)) {
+							const qtractorMidiManager::Banks& banks
+								= list[sInstrument];
+							int iBank = track->midiBank();
+							if (banks.contains(iBank)) {
+								const qtractorMidiManager::Bank& bank
+									= banks[iBank];
+								int iProg = track->midiProgram();
+								if (bank.progs.contains(iProg)) {
+									sProgram = QString("%1 - %2").arg(iProg)
+										.arg(bank.progs[iProg]);
+									sBank = bank.name;
+								}
+							}
+							bMidiManager = true;
+						}
+					}
+					if (!bMidiManager &&
+						pMainForm && pMainForm->instruments()) {
+						qtractorInstrument& instr
+							= (*pMainForm->instruments())[sInstrument];
+						const qtractorInstrumentData& bank
+							= instr.patch(track->midiBank());
+						if (bank.contains(track->midiProgram())) {
+							sProgram = bank[track->midiProgram()];
+							sBank = bank.name();
+						}
 					}
 				}
 			}

@@ -720,6 +720,10 @@ void qtractorPluginList::setBuffer ( unsigned short iChannels,
 	for (qtractorPlugin *pPlugin = first();
 			pPlugin; pPlugin = pPlugin->next())
 		pPlugin->setChannels(m_iChannels);
+
+	// FIXME: This should be better managed...
+	if (m_pMidiManager)
+		m_pMidiManager->updateInstruments();
 }
 
 
