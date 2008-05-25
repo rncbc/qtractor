@@ -29,6 +29,9 @@
 #include "qtractorAudioEngine.h"
 #include "qtractorMidiEngine.h"
 
+#include "qtractorMidiBuffer.h"
+#include "qtractorPlugin.h"
+
 #include "qtractorMainForm.h"
 #include "qtractorBusForm.h"
 
@@ -132,9 +135,6 @@ qtractorTrackForm::qtractorTrackForm (
 	m_iDirtySetup = 0;
 	m_iDirtyCount = 0;
 
-	// Already time for instrument cacheing...
-	updateInstruments();
-
 	// UI signal/slot connections...
 	QObject::connect(m_ui.TrackNameTextEdit,
 		SIGNAL(textChanged()),
@@ -207,6 +207,9 @@ void qtractorTrackForm::setTrack ( qtractorTrack *pTrack )
 
 	// Avoid dirty this all up.
 	m_iDirtySetup++;
+
+	// Already time for instrument cacheing...
+	updateInstruments();
 
 	// Track properties cloning...
 	m_props = m_pTrack->properties();
@@ -421,6 +424,20 @@ void qtractorTrackForm::updateInstruments (void)
 
 	m_ui.InstrumentComboBox->clear();
 	const QIcon& icon = QIcon(":/icons/itemInstrument.png");
+
+	// Take care of MIDI plugin instrument names...
+	qtractorMidiManager *pMidiManager
+		= (m_pTrack->pluginList())->midiManager();
+	if (pMidiManager) {
+		pMidiManager->updateInstruments();
+		const qtractorMidiManager::Instruments& list
+			= pMidiManager->instruments();
+		qtractorMidiManager::Instruments::ConstIterator it = list.begin();
+		for ( ; it != list.end(); ++it)
+			m_ui.InstrumentComboBox->addItem(icon, it.key());
+	}
+
+	// Regular instrument names...
 	for (qtractorInstrumentList::Iterator iter = pInstruments->begin();
 			iter != pInstruments->end(); ++iter) {
 		m_ui.InstrumentComboBox->addItem(icon, iter.value().instrumentName());
@@ -566,8 +583,34 @@ void qtractorTrackForm::updateBanks ( const QString& sInstrumentName,
 	m_ui.BankComboBox->addItem(icon, tr("(None)"));
 	m_banks[iBankIndex++] = -1;
 
+	// Care of MIDI plugin instrument banks...
+	bool bMidiManager = false;
+	qtractorMidiManager *pMidiManager
+		= (m_pTrack->pluginList())->midiManager();
+	if (pMidiManager) {
+		const qtractorMidiManager::Instruments& list
+			= pMidiManager->instruments();
+		if (list.contains(sInstrumentName)) {
+			const qtractorMidiManager::Banks& banks = list[sInstrumentName];
+			// Refresh bank mapping...
+			qtractorMidiManager::Banks::ConstIterator it = banks.begin();
+			for ( ; it != banks.end(); ++it) {
+				m_ui.BankComboBox->addItem(icon, it.value().name);
+				m_banks[iBankIndex++] = it.key();
+			}
+			// For proper bank selection...
+			iBankIndex = -1;
+			if (banks.contains(iBank)) {
+				const qtractorMidiManager::Bank& bank = banks[iBank];
+				iBankIndex = m_ui.BankComboBox->findText(bank.name);
+			}
+			// Mark that we've have something.
+			bMidiManager = true;
+		}
+	}
+
 	// Get instrument set alright...
-	if ((*pInstruments).contains(sInstrumentName)) {
+	if (!bMidiManager && (*pInstruments).contains(sInstrumentName)) {
 		// Instrument reference...
 		const qtractorInstrument& instr = (*pInstruments)[sInstrumentName];
 		// Bank selection method...
@@ -581,7 +624,6 @@ void qtractorTrackForm::updateBanks ( const QString& sInstrumentName,
 				m_banks[iBankIndex++] = it.key();
 			}
 		}
-#if 1
 		// In case bank address is generic...
 		if (m_ui.BankComboBox->count() < 2) {
 			const qtractorInstrumentData& patch = instr.patch(iBank);
@@ -590,14 +632,14 @@ void qtractorTrackForm::updateBanks ( const QString& sInstrumentName,
 				m_banks[iBankIndex] = iBank;
 			}
 		}
-#endif
 		// For proper bank selection...
 		if (iBank >= 0) {
 			const qtractorInstrumentData& bank = instr.patch(iBank);
 			iBankIndex = m_ui.BankComboBox->findText(bank.name());
 		}
 	}
-	else iBankIndex = -1;
+	else if (!bMidiManager)
+		iBankIndex = -1;
 
 	// Bank selection method...
 	if (iBankSelMethod < 0)
@@ -655,8 +697,41 @@ void qtractorTrackForm::updatePrograms (  const QString& sInstrumentName,
 	m_ui.ProgComboBox->addItem(icon, tr("(None)"));
 	m_progs[iProgIndex++] = -1;
 
+	// Take care of MIDI plugin instrument programs...
+	bool bMidiManager = false;
+	qtractorMidiManager *pMidiManager
+		= (m_pTrack->pluginList())->midiManager();
+	if (pMidiManager) {
+		const qtractorMidiManager::Instruments& list
+			= pMidiManager->instruments();
+		if (list.contains(sInstrumentName)) {
+			const qtractorMidiManager::Banks& banks = list[sInstrumentName];
+			// Bank reference...
+			if (banks.contains(iBank)) {
+				const qtractorMidiManager::Progs& progs = banks[iBank].progs;
+				// Refresh program mapping...
+				const QString sProg("%1 - %2");
+				qtractorMidiManager::Progs::ConstIterator it = progs.begin();
+				for ( ; it != progs.end(); ++it) {
+					m_ui.ProgComboBox->addItem(icon,
+						sProg.arg(it.key()).arg(it.value()));
+					m_progs[iProgIndex++] = it.key();
+				}
+				// For proper program selection...
+				iProgIndex = -1;
+				if (progs.contains(iProg)) {
+					iProgIndex = m_ui.ProgComboBox->findText(
+						sProg.arg(iProg).arg(progs[iProg]));
+				}
+			}
+			else iProgIndex = -1;
+			// Mark that we've have something.
+			bMidiManager = true;
+		}
+	}
+
 	// Get instrument set alright...
-	if ((*pInstruments).contains(sInstrumentName)) {
+	if (!bMidiManager && (*pInstruments).contains(sInstrumentName)) {
 		// Instrument reference...
 		const qtractorInstrument& instr = (*pInstruments)[sInstrumentName];
 		// Bank reference...
@@ -674,7 +749,8 @@ void qtractorTrackForm::updatePrograms (  const QString& sInstrumentName,
 		if (iProg >= 0 && bank.contains(iProg))
 			iProgIndex = m_ui.ProgComboBox->findText(bank[iProg]);
 	}
-	else iProgIndex = -1;
+	else if (!bMidiManager)
+		iProgIndex = -1;
 
 	// In case program address is generic...
 	if (m_ui.ProgComboBox->count() < 2) {

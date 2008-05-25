@@ -102,6 +102,9 @@ public:
 	// Bank/program selector override.
 	void selectProgram(int iBank, int iProg);
 
+	// Provisional program/patch accessor.
+	bool getProgram(int iIndex, Program& program) const;
+
 	// GUI Editor stuff.
 	void openEditor(QWidget */*pParent*/);
 	void closeEditor();

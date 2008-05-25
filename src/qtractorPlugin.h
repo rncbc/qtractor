@@ -306,6 +306,18 @@ public:
 	// Specific MIDI instrument selector.
 	virtual void selectProgram(int /*iBank*/, int /*iProg*/) {}
 
+	// Program (patch) descriptor.
+	struct Program
+	{
+		int     bank;
+		int     prog;
+		QString name;
+	};
+
+	// Provisional program/patch accessor.
+	virtual bool getProgram(int /*iIndex*/, Program& /*program*/) const
+		{ return false; }
+
 	// GUI Editor stuff.
 	virtual void openEditor(QWidget */*pParent*/) {}
 	virtual void closeEditor() {};

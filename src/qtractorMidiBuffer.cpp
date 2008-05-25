@@ -194,6 +194,8 @@ void qtractorMidiManager::process (
 // Resets all buffering.
 void qtractorMidiManager::reset (void)
 {
+	m_pSession->lock();
+
 	m_directBuffer.clear();
 	m_queuedBuffer.clear();
 	m_postedBuffer.clear();
@@ -205,6 +207,8 @@ void qtractorMidiManager::reset (void)
 	m_iPendingBankMSB = -1;
 	m_iPendingBankLSB = -1;
 	m_iPendingProg    = -1;
+
+	m_pSession->unlock();
 }
 
 
@@ -233,6 +237,29 @@ void qtractorMidiManager::deleteMidiManager ( qtractorMidiManager *pMidiManager 
 		pSession = pMainForm->session();
 	if (pSession)
 		pSession->deleteMidiManager(pMidiManager);
+}
+
+
+// Instrument map builder.
+void qtractorMidiManager::updateInstruments (void)
+{
+	m_instruments.clear();
+
+	for (qtractorPlugin *pPlugin = m_pPluginList->first();
+			pPlugin; pPlugin = pPlugin->next()) {
+		int iIndex = 0;
+		qtractorPlugin::Program program;
+		Banks& banks = m_instruments[(pPlugin->type())->name()];
+		while (pPlugin->getProgram(iIndex++, program)) {
+			Bank& bank = banks[program.bank];
+			if (bank.name.isEmpty()) {
+				bank.name = QObject::tr("%1 - Bank %2")
+					.arg(program.bank)
+					.arg(banks.count() - 1);
+			}
+			bank.progs[program.prog] = program.name.simplified();
+		}
+	}
 }
 
 

@@ -5,10 +5,9 @@ ChangeLog
 
 CVS HEAD
 
-- MIDI buffer/manager makes its functional appearance, making the
-  way for full DSSI/VSTi plugin host implementation real soon now;
-  DSSI plugins are now being finally functional, but unstable and
-  still not complete.
+- Long due DSSI/VSTi plugin host implementation is taking shape
+  for MIDI instruments (eg. soft-synth plugins); DSSI is nearing
+  its full host implementation.
 
 - An off-by-one bug was fixed while inside MIDI cursor backward
   seek method, which was missing all other events that have the

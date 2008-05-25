@@ -30,6 +30,9 @@
 
 #include <alsa/asoundlib.h>
 
+#include <QString>
+#include <QMap>
+
 
 // Forward declarations.
 class qtractorSession;
@@ -202,6 +205,26 @@ public:
 	static void deleteMidiManager(
 		qtractorMidiManager *pMidiManager);
 
+	// MIDI Instrument collection map-types.
+	typedef QMap<int, QString> Progs;
+
+	struct Bank
+	{
+		QString name;
+		Progs   progs;
+	};
+
+	typedef QMap<int, Bank> Banks;
+
+	typedef QMap<QString, Banks> Instruments;
+
+	// Instrument map builder.
+	void updateInstruments();
+
+	// Instrument map accessor.
+	const Instruments& instruments() const
+		{ return m_instruments; }
+
 protected:
 
 	// Instance variables
@@ -218,6 +241,8 @@ protected:
 	int m_iPendingBankMSB;
 	int m_iPendingBankLSB;
 	int m_iPendingProg;
+
+	Instruments m_instruments;
 };
 
 

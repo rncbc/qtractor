@@ -797,6 +797,34 @@ void qtractorDssiPlugin::selectProgram ( int iBank, int iProg )
 }
 
 
+// Provisional program/patch accessor.
+bool qtractorDssiPlugin::getProgram ( int iIndex, Program& program ) const
+{
+	if (m_phInstances == NULL)
+		return false;
+
+	const DSSI_Descriptor *pDssiDescriptor = dssi_descriptor();
+	if (pDssiDescriptor == NULL)
+		return false;
+
+	if (pDssiDescriptor->get_program == NULL)
+		return false;
+
+	// Only first one instance should matter...
+	const DSSI_Program_Descriptor *pDssiProgram
+		= (*pDssiDescriptor->get_program)(m_phInstances[0], iIndex);
+	if (pDssiProgram == NULL)
+		return false;
+
+	// Map this to that...
+	program.bank = pDssiProgram->Bank;
+	program.prog = pDssiProgram->Program;
+	program.name = pDssiProgram->Name;
+
+	return true;
+}
+
+
 // Specific accessor.
 const DSSI_Descriptor *qtractorDssiPlugin::dssi_descriptor (void) const
 {
