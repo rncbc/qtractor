@@ -318,6 +318,9 @@ public:
 	virtual bool getProgram(int /*iIndex*/, Program& /*program*/) const
 		{ return false; }
 
+	// MIDI continuous controller handler.
+	virtual void setController(int /*iController*/, int /*iValue*/) {}
+	
 	// GUI Editor stuff.
 	virtual void openEditor(QWidget */*pParent*/) {}
 	virtual void closeEditor() {};
@@ -436,9 +439,6 @@ public:
 	// Specific MIDI manager accessor.
 	qtractorMidiManager *midiManager() const
 		{ return m_pMidiManager; }
-
-	// Specific MIDI instrument selector.
-	void selectProgram(int iBank, int iProg);
 
 	// Special activation methods.
 	unsigned int activated() const  { return m_iActivated;  }

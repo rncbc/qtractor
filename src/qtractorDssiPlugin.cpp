@@ -201,10 +201,9 @@ static int osc_configure ( DssiEditor *pDssiEditor, lo_arg **argv )
 
 	if (pDssiDescriptor->configure) {
 		for (unsigned int i = 0; i < pDssiPlugin->instances(); ++i) {
-			LADSPA_Handle ladspaHandle
-				= pDssiPlugin->ladspa_handle(i);
-			if (ladspaHandle)
-				(*pDssiDescriptor->configure)(ladspaHandle, key, value);
+			LADSPA_Handle handle = pDssiPlugin->ladspa_handle(i);
+			if (handle)
+				(*pDssiDescriptor->configure)(handle, key, value);
 		}
 	}
 
@@ -577,6 +576,9 @@ void qtractorDssiPlugin::setChannels ( unsigned short iChannels )
 		m_ppCounts = NULL;
 	}
 
+	// (Re)initialize controller port map, anyway.
+	::memset(m_apControllerMap, 0, 128 * sizeof(qtractorPluginParam *));
+
 	// Setup new instances...
 	qtractorLadspaPlugin::setChannels(iChannels);
 
@@ -585,6 +587,22 @@ void qtractorDssiPlugin::setChannels ( unsigned short iChannels )
 	if (iInstances > 0) {
 		m_ppEvents = new snd_seq_event_t * [iInstances];
 		m_ppCounts = new unsigned long     [iInstances];
+		// Map all existing input control ports...
+		const DSSI_Descriptor *pDssiDescriptor = dssi_descriptor();
+		if (pDssiDescriptor
+			&& pDssiDescriptor->get_midi_controller_for_port) {
+			// Only the first one instance should matter...
+			LADSPA_Handle handle = m_phInstances[0];
+			QListIterator<qtractorPluginParam *> param(params());
+			while (param.hasNext()) {
+				qtractorPluginParam *pParam = param.next();
+				int iController
+					= (*pDssiDescriptor->get_midi_controller_for_port)(
+						handle, pParam->index());
+				if (DSSI_IS_CC(iController))
+					m_apControllerMap[DSSI_CC_NUMBER(iController)] = pParam;
+			}
+		}
 	}
 }
 
@@ -822,6 +840,17 @@ bool qtractorDssiPlugin::getProgram ( int iIndex, Program& program ) const
 	program.name = pDssiProgram->Name;
 
 	return true;
+}
+
+
+// MIDI continuous controller handler.
+void qtractorDssiPlugin::setController ( int iController, int iValue )
+{
+	if (DSSI_IS_CC(iController)) {
+		qtractorPluginParam *pParam
+			= m_apControllerMap[DSSI_CC_NUMBER(iController)];
+		if (pParam)	pParam->setValue(float(iValue) / 127.0f);
+	}
 }
 
 

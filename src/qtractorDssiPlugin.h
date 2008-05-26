@@ -105,6 +105,9 @@ public:
 	// Provisional program/patch accessor.
 	bool getProgram(int iIndex, Program& program) const;
 
+	// Continuous controller handler.
+	void setController(int iController, int iValue);
+
 	// GUI Editor stuff.
 	void openEditor(QWidget */*pParent*/);
 	void closeEditor();
@@ -121,6 +124,9 @@ private:
 	// Care of multiple instances here.
 	snd_seq_event_t **m_ppEvents;
 	unsigned long    *m_ppCounts;
+
+	// Controller port map.
+	qtractorPluginParam *m_apControllerMap[128];
 
 	// GUI editor visiability status.
 	bool m_bEditorVisible;

@@ -67,12 +67,22 @@ qtractorMidiManager::~qtractorMidiManager (void)
 bool qtractorMidiManager::direct ( snd_seq_event_t *pEvent )
 {
 	if (pEvent->type == SND_SEQ_EVENT_CONTROLLER) {
-		switch (pEvent->data.control.param) {
+		int iController = pEvent->data.control.param;
+		int iValue      = pEvent->data.control.value;
+		switch (iController) {
 		case BANK_SELECT_MSB:
-			m_iPendingBankMSB = pEvent->data.control.value;
+			m_iPendingBankMSB = iValue;
 			break;
 		case BANK_SELECT_LSB:
-			m_iPendingBankLSB = pEvent->data.control.value;
+			m_iPendingBankLSB = iValue;
+			break;
+		default:
+			// Handle controller mappings...
+			qtractorPlugin *pPlugin = m_pPluginList->first();
+			while (pPlugin) {
+				pPlugin->setController(iController, iValue);
+				pPlugin->next();
+			}
 			break;
 		}
 	}
@@ -122,7 +132,11 @@ void qtractorMidiManager::process (
 		else if (m_iPendingBankMSB >= 0)
 			iBank = m_iPendingBankMSB;
 		// Make the change (should be RT safe...)
-		m_pPluginList->selectProgram(iBank, iProg);
+		qtractorPlugin *pPlugin = m_pPluginList->first();
+		while (pPlugin) {
+			pPlugin->selectProgram(iBank, iProg);
+			pPlugin->next();
+		}
 		// Reset pending status.
 		m_iPendingBankMSB = -1;
 		m_iPendingBankLSB = -1;
