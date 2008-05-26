@@ -119,6 +119,11 @@ public:
 	// Specific accessors.
 	const DSSI_Descriptor *dssi_descriptor() const;
 
+protected:
+
+	// Post-(re)initializer.
+	void resetChannels();
+
 private:
 
 	// Care of multiple instances here.

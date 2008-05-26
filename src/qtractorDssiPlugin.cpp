@@ -549,8 +549,7 @@ qtractorDssiPlugin::qtractorDssiPlugin ( qtractorPluginList *pList,
 		m_ppEvents(NULL), m_ppCounts(NULL),
 		m_bEditorVisible(false)
 {
-	// Init patch selection.
-	selectProgram(0, 0);
+	resetChannels();
 }
 
 
@@ -564,6 +563,17 @@ qtractorDssiPlugin::~qtractorDssiPlugin (void)
 
 // Channel/instance number accessors.
 void qtractorDssiPlugin::setChannels ( unsigned short iChannels )
+{
+	// Setup new instances...
+	qtractorLadspaPlugin::setChannels(iChannels);
+
+	// Epilogue...
+	resetChannels();
+}
+
+
+// Post-(re)initializer.
+void qtractorDssiPlugin::resetChannels (void)
 {
 	// Clean up...
 	if (m_ppEvents) {
@@ -579,31 +589,34 @@ void qtractorDssiPlugin::setChannels ( unsigned short iChannels )
 	// (Re)initialize controller port map, anyway.
 	::memset(m_apControllerMap, 0, 128 * sizeof(qtractorPluginParam *));
 
-	// Setup new instances...
-	qtractorLadspaPlugin::setChannels(iChannels);
+	// Check how many instances are about there...
+	unsigned short iInstances = instances();
+	if (iInstances < 1)
+		return;
 
 	// (Re)set according to exiting instances...
-	unsigned short iInstances = instances();
-	if (iInstances > 0) {
-		m_ppEvents = new snd_seq_event_t * [iInstances];
-		m_ppCounts = new unsigned long     [iInstances];
-		// Map all existing input control ports...
-		const DSSI_Descriptor *pDssiDescriptor = dssi_descriptor();
-		if (pDssiDescriptor
-			&& pDssiDescriptor->get_midi_controller_for_port) {
-			// Only the first one instance should matter...
-			LADSPA_Handle handle = m_phInstances[0];
-			QListIterator<qtractorPluginParam *> param(params());
-			while (param.hasNext()) {
-				qtractorPluginParam *pParam = param.next();
-				int iController
-					= (*pDssiDescriptor->get_midi_controller_for_port)(
-						handle, pParam->index());
-				if (iController > 0 && DSSI_IS_CC(iController))
-					m_apControllerMap[DSSI_CC_NUMBER(iController)] = pParam;
-			}
+	m_ppEvents = new snd_seq_event_t * [iInstances];
+	m_ppCounts = new unsigned long     [iInstances];
+
+	// Map all existing input control ports...
+	const DSSI_Descriptor *pDssiDescriptor = dssi_descriptor();
+	if (pDssiDescriptor
+		&& pDssiDescriptor->get_midi_controller_for_port) {
+		// Only the first one instance should matter...
+		LADSPA_Handle handle = m_phInstances[0];
+		QListIterator<qtractorPluginParam *> param(params());
+		while (param.hasNext()) {
+			qtractorPluginParam *pParam = param.next();
+			int iController
+				= (*pDssiDescriptor->get_midi_controller_for_port)(
+					handle, pParam->index());
+			if (iController > 0 && DSSI_IS_CC(iController))
+				m_apControllerMap[DSSI_CC_NUMBER(iController)] = pParam;
 		}
 	}
+
+	// Init patch selection.
+	selectProgram(0, 0);
 }
 
 

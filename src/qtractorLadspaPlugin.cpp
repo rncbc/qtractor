@@ -180,7 +180,7 @@ qtractorLadspaPlugin::qtractorLadspaPlugin ( qtractorPluginList *pList,
 			}
 		}
 		// FIXME: instantiate each instance properly...
-		setChannels(channels());
+		qtractorLadspaPlugin::setChannels(channels());
 	}
 }
 
