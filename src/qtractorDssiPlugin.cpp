@@ -423,7 +423,6 @@ static void osc_open_editor ( qtractorDssiPlugin *pDssiPlugin )
 		osc_start();
 
 	g_dssiEditors.append(new DssiEditor(pDssiPlugin));
-
 }
 
 
@@ -550,6 +549,7 @@ qtractorDssiPlugin::qtractorDssiPlugin ( qtractorPluginList *pList,
 		m_ppEvents(NULL), m_ppCounts(NULL),
 		m_bEditorVisible(false)
 {
+	// Init patch selection.
 	selectProgram(0, 0);
 }
 
@@ -582,7 +582,7 @@ void qtractorDssiPlugin::setChannels ( unsigned short iChannels )
 	// Setup new instances...
 	qtractorLadspaPlugin::setChannels(iChannels);
 
-	// Epilogue...
+	// (Re)set according to exiting instances...
 	unsigned short iInstances = instances();
 	if (iInstances > 0) {
 		m_ppEvents = new snd_seq_event_t * [iInstances];
@@ -599,7 +599,7 @@ void qtractorDssiPlugin::setChannels ( unsigned short iChannels )
 				int iController
 					= (*pDssiDescriptor->get_midi_controller_for_port)(
 						handle, pParam->index());
-				if (DSSI_IS_CC(iController))
+				if (iController > 0 && DSSI_IS_CC(iController))
 					m_apControllerMap[DSSI_CC_NUMBER(iController)] = pParam;
 			}
 		}
@@ -846,11 +846,14 @@ bool qtractorDssiPlugin::getProgram ( int iIndex, Program& program ) const
 // MIDI continuous controller handler.
 void qtractorDssiPlugin::setController ( int iController, int iValue )
 {
-	if (DSSI_IS_CC(iController)) {
-		qtractorPluginParam *pParam
-			= m_apControllerMap[DSSI_CC_NUMBER(iController)];
-		if (pParam)	pParam->setValue(float(iValue) / 127.0f);
-	}
+	qtractorPluginParam *pParam
+		= m_apControllerMap[DSSI_CC_NUMBER(iController)];
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorDssiPlugin[%p]::setController(%d, %d) index=%d",
+		this, iController, iValue, int(pParam ? pParam->index() : -1));
+#endif
+	if (pParam)
+		pParam->setValue(float(iValue) / 127.0f);
 }
 
 

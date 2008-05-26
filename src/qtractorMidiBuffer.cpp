@@ -81,7 +81,7 @@ bool qtractorMidiManager::direct ( snd_seq_event_t *pEvent )
 			qtractorPlugin *pPlugin = m_pPluginList->first();
 			while (pPlugin) {
 				pPlugin->setController(iController, iValue);
-				pPlugin->next();
+				pPlugin = pPlugin->next();
 			}
 			break;
 		}
@@ -135,7 +135,7 @@ void qtractorMidiManager::process (
 		qtractorPlugin *pPlugin = m_pPluginList->first();
 		while (pPlugin) {
 			pPlugin->selectProgram(iBank, iProg);
-			pPlugin->next();
+			pPlugin = pPlugin->next();
 		}
 		// Reset pending status.
 		m_iPendingBankMSB = -1;
