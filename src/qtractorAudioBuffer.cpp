@@ -1384,6 +1384,8 @@ qtractorAudioBufferThread::qtractorAudioBufferThread (
 // Run state accessor.
 void qtractorAudioBufferThread::setRunState ( bool bRunState )
 {
+	QMutexLocker locker(&m_mutex);
+
 	m_bRunState = bRunState;
 }
 
@@ -1409,9 +1411,9 @@ void qtractorAudioBufferThread::sync (void)
 // Bypass executive wait condition (non RT-safe).
 void qtractorAudioBufferThread::syncExport (void)
 {
-	m_mutex.lock();
+	QMutexLocker locker(&m_mutex);
+
 	m_pAudioBuffer->sync();
-	m_mutex.unlock();
 }
 
 
@@ -1426,7 +1428,9 @@ void qtractorAudioBufferThread::run (void)
 	m_bRunState = m_pAudioBuffer->initSync();
 	while (m_bRunState) {
 		// Do whatever we must, then wait for more...
+		m_mutex.unlock();
 		m_pAudioBuffer->sync();
+		m_mutex.lock();
 		m_cond.wait(&m_mutex);
 	}
 	m_mutex.unlock();

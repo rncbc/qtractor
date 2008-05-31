@@ -169,10 +169,10 @@ qtractorMidiInputThread::~qtractorMidiInputThread (void)
 {
 	// Try to terminate executive thread,
 	// but give it a bit of time to cleanup...
-	if (isRunning()) {
+	if (isRunning()) do {
 		setRunState(false);
-		QThread::msleep(100);
-	}
+	//	terminate();
+	} while (wait(100));
 }
 
 
@@ -218,8 +218,6 @@ void qtractorMidiInputThread::run (void)
 			// Process input event - ...
 			// - enqueue to input track mapping;
 			m_pSession->midiEngine()->capture(pEv);
-			// - direct route to output;
-			//	 ...
 		//	snd_seq_free_event(pEv);
 			iPoll = snd_seq_event_input_pending(pAlsaSeq, 0);
 		}
@@ -253,17 +251,19 @@ qtractorMidiOutputThread::~qtractorMidiOutputThread (void)
 {
 	// Try to wake and terminate executive thread,
 	// but give it a bit of time to cleanup...
-	if (isRunning()) {
+	if (isRunning()) do {
 		setRunState(false);
+	//	terminate();
 		sync();
-		QThread::msleep(100);
-	}
+	} while (!wait(100));
 }
 
 
 // Thread run state accessors.
 void qtractorMidiOutputThread::setRunState ( bool bRunState )
 {
+	QMutexLocker locker(&m_mutex);
+
 	m_bRunState = bRunState;
 }
 
@@ -276,6 +276,8 @@ bool qtractorMidiOutputThread::runState (void) const
 // Read ahead frames configuration.
 void qtractorMidiOutputThread::setReadAhead ( unsigned int iReadAhead )
 {
+	QMutexLocker locker(&m_mutex);
+
 	m_iReadAhead = iReadAhead;
 }
 
@@ -331,8 +333,11 @@ void qtractorMidiOutputThread::run (void)
 		qDebug("qtractorMidiOutputThread[%p]::run(): waked.", this);
 #endif
 		// Only if playing, the output process cycle.
-		if (m_pSession->isPlaying())
+		if (m_pSession->isPlaying()) {
+			m_mutex.unlock();
 			process();
+			m_mutex.lock();
+		}
 	}
 	m_mutex.unlock();
 
