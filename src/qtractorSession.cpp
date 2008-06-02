@@ -1202,13 +1202,20 @@ qtractorMidiManager *qtractorSession::createMidiManager (
 	qtractorMidiManager *pMidiManager
 		= new qtractorMidiManager(this, pPluginList);
 	m_midiManagers.append(pMidiManager);
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorSession[%p]::createMidiManager(%p)", this, pMidiManager);
+#endif
 	return pMidiManager;
 }
 
 void qtractorSession::deleteMidiManager (
 	qtractorMidiManager *pMidiManager )
 {
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorSession[%p]::deleteMidiManager(%p)", this, pMidiManager);
+#endif
 	m_midiManagers.remove(pMidiManager);
+	delete pMidiManager;
 }
 
 

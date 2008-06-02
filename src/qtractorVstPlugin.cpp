@@ -27,6 +27,8 @@
 
 #include "qtractorPluginForm.h"
 
+#include "qtractorMidiBuffer.h"
+
 #include "qtractorMainForm.h"
 #include "qtractorSession.h"
 
@@ -774,8 +776,11 @@ void qtractorVstPlugin::process (
 {
 	if (m_ppEffects == NULL)
 		return;
-	if (m_ppIBuffer == NULL || m_ppOBuffer == NULL)
-		return;
+
+	// To process MIDI events, if any...
+	qtractorMidiManager *pMidiManager = NULL;
+	if (type()->midiIns() > 0)
+		pMidiManager = list()->midiManager();
 
 	// We'll cross channels over instances...
 	unsigned short iInstances = instances();
@@ -802,7 +807,12 @@ void qtractorVstPlugin::process (
 			if (++iOChannel >= iChannels)
 				iOChannel = 0;
 		}
-		// Make it run...
+		// Make it run MIDI,if applicable...
+		if (pMidiManager) {
+			pVstEffect->dispatcher(pVstEffect,
+				effProcessEvents, 0, 0, pMidiManager->vst_events(), 0.0f);
+		}
+		// Make it run audio...
 		if (pVstEffect->flags & effFlagsCanReplacing) {
 			pVstEffect->processReplacing(
 				pVstEffect, m_ppIBuffer, m_ppOBuffer, nframes);

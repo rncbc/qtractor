@@ -22,7 +22,12 @@
 #ifndef __qtractorMidiBuffer_h
 #define __qtractorMidiBuffer_h
 
+#include "qtractorAbout.h"
 #include "qtractorList.h"
+
+#ifdef CONFIG_VST
+#include "qtractorVstPlugin.h"
+#endif
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -178,11 +183,11 @@ public:
 	unsigned int bufferSize() const
 		{ return m_queuedBuffer.bufferSize(); }
 
-	// Clears the buffer.
-	void clear() { m_iBuffer = 0; }
+	// Clears buffers for processing.
+	void clear();
 
 	// Event buffer accessor. 
-	snd_seq_event_t *events() const	{ return m_pBuffer; }
+	snd_seq_event_t *events() const { return m_pBuffer; }
 
 	// Returns number of events result of process.
 	unsigned int count() const { return m_iBuffer; }
@@ -205,6 +210,14 @@ public:
 	static void deleteMidiManager(
 		qtractorMidiManager *pMidiManager);
 
+	// Plugin reference counting.
+	void addPluginRef(qtractorPlugin *pPlugin);
+	void removePluginRef(qtractorPlugin *pPlugin);
+
+#ifdef CONFIG_VST
+	VstEvents *vst_events() const { return (VstEvents *) m_pVstBuffer; }
+#endif
+
 	// MIDI Instrument collection map-types.
 	typedef QMap<int, QString> Progs;
 
@@ -225,7 +238,11 @@ public:
 	const Instruments& instruments() const
 		{ return m_instruments; }
 
-protected:
+private:
+#ifdef CONFIG_VST
+	void createVstMidiParser();
+	void deleteVstMidiParser();
+#endif
 
 	// Instance variables
 	qtractorSession    *m_pSession;
@@ -237,6 +254,13 @@ protected:
 
 	snd_seq_event_t    *m_pBuffer;
 	unsigned int        m_iBuffer;
+
+#ifdef CONFIG_VST
+	unsigned int        m_iVstRefCount;
+	snd_midi_event_t   *m_pVstMidiParser;
+	VstMidiEvent       *m_pVstMidiBuffer;
+	unsigned char      *m_pVstBuffer;
+#endif
 
 	int m_iPendingBankMSB;
 	int m_iPendingBankLSB;

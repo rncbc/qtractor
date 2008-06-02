@@ -473,8 +473,8 @@ public:
 protected:
 
 	// Plugin management helpers.
-	void addPluginEx();
-	void removePluginEx();
+	void addPluginRef(qtractorPlugin *pPlugin);
+	void removePluginRef(qtractorPlugin *pPlugin);
 
 private:
 

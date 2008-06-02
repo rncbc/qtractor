@@ -663,6 +663,10 @@ qtractorPluginList::~qtractorPluginList (void)
 	// Reset allocated channel buffers.
 	setBuffer(0, 0, 0, false);
 
+	// Now that's one manager less.
+	if (m_pMidiManager)
+		qtractorMidiManager::deleteMidiManager(m_pMidiManager);
+
 	// Clear out all dependables...
 	m_views.clear();
 }
@@ -785,13 +789,13 @@ void qtractorPluginList::addPlugin ( qtractorPlugin *pPlugin )
 
 
 // Insert-guarded plugin method.
-void qtractorPluginList::insertPlugin (	qtractorPlugin *pPlugin,
+void qtractorPluginList::insertPlugin ( qtractorPlugin *pPlugin,
 	qtractorPlugin *pNextPlugin )
 {
 	// We'll get prepared before plugging it in...
 	pPlugin->setChannels(m_iChannels);
 
-	addPluginEx();
+	addPluginRef(pPlugin);
 	if (pNextPlugin)
 		insertBefore(pPlugin, pNextPlugin);
 	else
@@ -828,9 +832,9 @@ void qtractorPluginList::movePlugin (
 
 	// Remove and insert back again...
 	pPluginList->unlink(pPlugin);
-	pPluginList->removePluginEx();
+	pPluginList->removePluginRef(pPlugin);
 
-	addPluginEx();
+	addPluginRef(pPlugin);
 	if (pNextPlugin) {
 		insertBefore(pPlugin, pNextPlugin);
 	} else {
@@ -872,7 +876,7 @@ void qtractorPluginList::removePlugin ( qtractorPlugin *pPlugin )
 {
 	// Just unlink the plugin from the list...
 	unlink(pPlugin);
-	removePluginEx();
+	removePluginRef(pPlugin);
 
 	if (pPlugin->isActivated())
 		updateActivated(false);
@@ -903,19 +907,23 @@ qtractorPlugin *qtractorPluginList::copyPlugin ( qtractorPlugin *pPlugin )
 
 
 // Plugin management helpers.
-void qtractorPluginList::addPluginEx (void)
+void qtractorPluginList::addPluginRef ( qtractorPlugin *pPlugin )
 {
-	if (m_bMidi && m_pMidiManager == NULL && count() == 0) {
+	if (m_bMidi && m_pMidiManager == NULL && count() == 0)
 		m_pMidiManager = qtractorMidiManager::createMidiManager(this);
-	}
+
+	if (m_pMidiManager)
+		m_pMidiManager->addPluginRef(pPlugin);
 }
 
-void qtractorPluginList::removePluginEx (void)
+void qtractorPluginList::removePluginRef ( qtractorPlugin *pPlugin )
 {
-	if (m_bMidi && m_pMidiManager && count() == 0) {
-		qtractorMidiManager *pMidiManager = m_pMidiManager;
-		m_pMidiManager = NULL;
-		qtractorMidiManager::deleteMidiManager(pMidiManager);
+	if (m_pMidiManager) {
+		m_pMidiManager->removePluginRef(pPlugin);
+		if (count() == 0) {
+			qtractorMidiManager::deleteMidiManager(m_pMidiManager);
+			m_pMidiManager = NULL;
+		}
 	}
 }
 
@@ -1027,7 +1035,7 @@ bool qtractorPluginList::loadElement ( qtractorSessionDocument *pDocument,
 				pPlugin->setPreset(sPreset);
 				pPlugin->setValues(vlist);
 				pPlugin->setActivated(bActivated);
-				addPluginEx();
+				addPluginRef(pPlugin);
 				append(pPlugin);
 			}
 		}

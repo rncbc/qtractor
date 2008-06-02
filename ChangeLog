@@ -7,7 +7,7 @@ CVS HEAD
 
 - Long due DSSI/VSTi plugin host implementation is taking shape
   for MIDI instruments (eg. soft-synth plugins); DSSI is nearing
-  its full host implementation.
+  its full host implementation and VSTi is already kicking.
 
 - An off-by-one bug was fixed while inside MIDI cursor backward
   seek method, which was missing all other events that have the
