@@ -233,7 +233,7 @@ int main ( int argc, char **argv )
 #ifdef CONFIG_XINITTHREADS
 #if defined(Q_WS_X11)
 	if (!XInitThreads()) {
-		qError("Error: XInitThreads() failed. Stop.");
+		qFatal("Error: XInitThreads() failed. Stop.");
 		return 1;
 	}
 #endif

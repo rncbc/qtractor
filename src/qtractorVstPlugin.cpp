@@ -156,26 +156,26 @@ public:
 	// Constructor.
 	EditorWidget(QWidget *pParent, Qt::WindowFlags wflags = 0)
 		: QWidget(pParent, wflags),
-#if defined(Q_WS_X11)
+	#if defined(Q_WS_X11)
 			m_pDisplay(QX11Info::display()),
 			m_wEditor(NULL),
 			m_eventProc(NULL),
-#endif
+	#endif
 			m_pPlugin(NULL) {}
 
 	// Specialized editor methods.
 	void setPlugin(qtractorPlugin *pPlugin)
 	{
 		m_pPlugin = pPlugin;
-#if defined(Q_WS_X11)
+	#if defined(Q_WS_X11)
 		m_wEditor = getXChildWindow(m_pDisplay, (Window) winId());
 		if (m_wEditor) {
 			m_eventProc = getXEventProc(m_pDisplay, m_wEditor);
-			if (m_eventProc)
-				XSelectInput(m_pDisplay, m_wEditor, NoEventMask);
+			XSelectInput(m_pDisplay, m_wEditor, NoEventMask);
 		}
-#endif
-		QWidget::setWindowTitle(m_pPlugin->editorTitle());
+	#endif
+		QWidget::setWindowTitle(tr("%1 - Editor")
+			.arg(m_pPlugin->editorTitle()));
 	}
 
 	qtractorPlugin *plugin() const { return m_pPlugin; }
@@ -226,6 +226,7 @@ protected:
 			ev.xcrossing.detail  = NotifyAncestor;
 			ev.xcrossing.state   = getXButtonState(QApplication::mouseButtons());
 			sendXEvent(&ev);
+		//	QWidget::update();
 		}
 	}
 
@@ -250,6 +251,7 @@ protected:
 			ev.xbutton.button  = getXButton(pMouseEvent->buttons());
 			ev.xbutton.state   = getXButtonState(pMouseEvent->buttons());
 			sendXEvent(&ev);
+		//	QWidget::update();
 		}
 	}
 
@@ -273,6 +275,7 @@ protected:
 			ev.xmotion.y_root  = globalPos.y();
 			ev.xmotion.state   = getXButtonState(pMouseEvent->buttons());
 			sendXEvent(&ev);
+			QWidget::update();
 		}
 	}
 
@@ -297,6 +300,7 @@ protected:
 			ev.xbutton.button  = getXButton(pMouseEvent->buttons());
 			ev.xbutton.state   = getXButtonState(pMouseEvent->buttons());
 			sendXEvent(&ev);
+			QWidget::update();
 		}
 	}
 
@@ -329,6 +333,7 @@ protected:
 			// FIXME: delay here?
 			ev.xbutton.type = ButtonRelease;
 			sendXEvent(&ev);
+			QWidget::update();
 		}
 	}
 
@@ -355,6 +360,24 @@ protected:
     		ev.xcrossing.focus   = QWidget::hasFocus();
 			ev.xcrossing.state   = getXButtonState(QApplication::mouseButtons());
 			sendXEvent(&ev);
+		//	QWidget::update();
+		}
+	}
+
+	void moveEvent(QMoveEvent */*pMoveEvent*/)
+	{
+		if (m_wEditor) {
+			XMoveWindow(m_pDisplay, m_wEditor, 0, 0);
+			QWidget::update();
+		}
+	}
+
+	void resizeEvent(QResizeEvent *pResizeEvent)
+	{
+		if (m_wEditor) {
+			const QSize& size = pResizeEvent->size();
+			XResizeWindow(m_pDisplay, m_wEditor, size.width(), size.height());
+		//	QWidget::update();
 		}
 	}
 
@@ -365,7 +388,7 @@ protected:
 		if (m_wEditor) {
 			XEvent ev;
 			::memset(&ev, 0, sizeof(ev));
-			const QRect& rect = QWidget::geometry();
+			const QRect& rect  = pPaintEvent->rect();
 			ev.xexpose.type    = Expose;
 			ev.xexpose.display = m_pDisplay;
 			ev.xexpose.window  = m_wEditor;
@@ -910,17 +933,19 @@ void qtractorVstPlugin::openEditor ( QWidget */*pParent*/ )
 // Close editor.
 void qtractorVstPlugin::closeEditor (void)
 {
+	if (m_pEditorWidget == NULL)
+		return;
+
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorVstPlugin[%p]::closeEditor()", this);
 #endif
-	setEditorVisible(false);
+
 	vst_dispatch(0, effEditClose, 0, 0, NULL, 0.0f);
+	setEditorVisible(false);
 
 	// Close the parent widget, if any.
-	if (m_pEditorWidget) {
-		delete m_pEditorWidget;
-		m_pEditorWidget = NULL;
-	}
+	delete m_pEditorWidget;
+	m_pEditorWidget = NULL;
 }
 
 
@@ -931,6 +956,8 @@ void qtractorVstPlugin::idleEditor (void)
 	qDebug("qtractorVstPlugin[%p]::idleEditor()", this);
 #endif
 	vst_dispatch(0, effEditIdle, 0, 0, NULL, 0.0f);
+
+	if (m_pEditorWidget) m_pEditorWidget->update();
 }
 
 
