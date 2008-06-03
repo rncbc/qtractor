@@ -42,6 +42,7 @@
 // Forward declarations.
 class qtractorSession;
 class qtractorPluginList;
+class qtractorPlugin;
 
 
 //----------------------------------------------------------------------
