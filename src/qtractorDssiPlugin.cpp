@@ -115,10 +115,27 @@ static void osc_error ( int num, const char *msg, const char *path )
 }
 
 
-static int osc_show ( DssiEditor *pDssiEditor )
+static int osc_send_configure ( DssiEditor *pDssiEditor,
+	const char *key, const char *value )
 {
 #ifdef CONFIG_DEBUG
-	qDebug("osc_show: path \"%s\"", pDssiEditor->path);
+	qDebug("osc_send_configure: path \"%s\", key \"%s\", value \"%s\"",
+		pDssiEditor->path, key, value);
+#endif
+
+	QString sPath(pDssiEditor->path);
+	sPath += "/configure";
+	lo_send(pDssiEditor->target, sPath.toUtf8().constData(),
+		"ss", key, value);
+
+	return 0;
+}
+
+
+static int osc_send_show ( DssiEditor *pDssiEditor )
+{
+#ifdef CONFIG_DEBUG
+	qDebug("osc_send_show: path \"%s\"", pDssiEditor->path);
 #endif
 
 	QString sPath(pDssiEditor->path);
@@ -129,14 +146,28 @@ static int osc_show ( DssiEditor *pDssiEditor )
 }
 
 
-static int osc_hide ( DssiEditor *pDssiEditor )
+static int osc_send_hide ( DssiEditor *pDssiEditor )
 {
 #ifdef CONFIG_DEBUG
-	qDebug("osc_hide: path \"%s\"", pDssiEditor->path);
+	qDebug("osc_send_hide: path \"%s\"", pDssiEditor->path);
 #endif
 
 	QString sPath(pDssiEditor->path);
 	sPath += "/hide";
+	lo_send(pDssiEditor->target, sPath.toUtf8().constData(), "");
+
+	return 0;
+}
+
+
+static int osc_send_quit ( DssiEditor *pDssiEditor )
+{
+#ifdef CONFIG_DEBUG
+	qDebug("osc_send_quit: path \"%s\"", pDssiEditor->path);
+#endif
+
+	QString sPath(pDssiEditor->path);
+	sPath += "/quit";
 	lo_send(pDssiEditor->target, sPath.toUtf8().constData(), "");
 
 	return 0;
@@ -152,6 +183,10 @@ static int osc_update ( DssiEditor *pDssiEditor,
 #ifdef CONFIG_DEBUG
 	qDebug("osc_update: path \"%s\"", url);
 #endif
+
+	qtractorDssiPlugin *pDssiPlugin = pDssiEditor->plugin;
+	if (pDssiPlugin == NULL)
+		return 1;
 
 	if (pDssiEditor->target)
 		lo_address_free(pDssiEditor->target);
@@ -171,7 +206,15 @@ static int osc_update ( DssiEditor *pDssiEditor,
 		::free(pDssiEditor->path);
 	pDssiEditor->path = lo_url_get_path(url);
 
-	return osc_show(pDssiEditor);
+	const qtractorPlugin::Configs& configs = pDssiPlugin->configs();
+	qtractorPlugin::Configs::ConstIterator iter = configs.constBegin();
+	for (; iter != configs.constEnd(); ++iter) {
+		osc_send_configure(pDssiEditor,
+			iter.key().toUtf8().constData(),
+			iter.value().toUtf8().constData());
+	}
+
+	return osc_send_show(pDssiEditor);
 }
 
 
@@ -190,13 +233,6 @@ static int osc_configure ( DssiEditor *pDssiEditor, lo_arg **argv )
 		return 1;
 
 	pDssiPlugin->setConfig(key, value);
-
-#if 0
-	QString sPath(pDssiEditor->path);
-	sPath += "/configure";
-	lo_send(pDssiEditor->target, sPath.toUtf8().constData(),
-		"ss", key, value);
-#endif
 
 	return 0;
 }
@@ -277,20 +313,6 @@ static int osc_midi ( DssiEditor *pDssiEditor, lo_arg **argv )
 	snd_seq_event_t *pEvent = &s_aAlsaEvent[0];
 	if (snd_seq_ev_is_channel_type(pEvent))
 		pMidiManager->direct(pEvent);
-
-	return 0;
-}
-
-
-static int osc_quit ( DssiEditor *pDssiEditor )
-{
-#ifdef CONFIG_DEBUG
-	qDebug("osc_quit: path \"%s\"", pDssiEditor->path);
-#endif
-
-	QString sPath(pDssiEditor->path);
-	sPath += "/quit";
-	lo_send(pDssiEditor->target, sPath.toUtf8().constData(), "");
 
 	return 0;
 }
@@ -421,8 +443,8 @@ static void osc_close_editor ( qtractorDssiPlugin *pDssiPlugin )
 
 	DssiEditor *pDssiEditor = osc_find_editor(pDssiPlugin);
 	if (pDssiEditor) {
-		osc_hide(pDssiEditor);
-		osc_quit(pDssiEditor);
+		osc_send_hide(pDssiEditor);
+		osc_send_quit(pDssiEditor);
 		osc_exiting(pDssiEditor);
 	}
 
@@ -717,7 +739,7 @@ void qtractorDssiPlugin::openEditor ( QWidget */*pParent*/ )
 	DssiEditor *pDssiEditor = osc_find_editor(this);
 	if (pDssiEditor) {
 		if (!m_bEditorVisible) {
-			osc_show(pDssiEditor);
+			osc_send_show(pDssiEditor);
 			m_bEditorVisible = true;
 		}
 		// Bail out.
@@ -784,9 +806,9 @@ void qtractorDssiPlugin::setEditorVisible ( bool bVisible )
 
 	// Do our deeds...
 	if (bVisible)
-		osc_show(pDssiEditor);
+		osc_send_show(pDssiEditor);
 	else
-		osc_hide(pDssiEditor);
+		osc_send_hide(pDssiEditor);
 
 #endif
 
