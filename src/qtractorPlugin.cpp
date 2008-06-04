@@ -1112,7 +1112,7 @@ void qtractorPlugin::setConfigs ( const Configs& configs )
 
 	// Send each configuration to plugin...
 	Configs::ConstIterator iter = m_configs.constBegin();
-	for ( ; iter != m_configs.end(); ++iter)
+	for ( ; iter != m_configs.constEnd(); ++iter)
 		configure(iter.key(), iter.value());
 }	
 

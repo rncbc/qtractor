@@ -602,8 +602,8 @@ void qtractorDssiPlugin::resetChannels (void)
 	}
 
 	// (Re)issue all configuration as needed...
-	Configs::ConstIterator iter = configs().begin();
-	for (; iter != configs().end(); ++iter)
+	Configs::ConstIterator iter = configs().constBegin();
+	for (; iter != configs().constEnd(); ++iter)
 		configure(iter.key(), iter.value());
 
 	// Init patch selection.
@@ -874,6 +874,11 @@ void qtractorDssiPlugin::configure ( const QString& sKey, const QString& sValue 
 
 	if (pDssiDescriptor->configure == NULL)
 		return;
+
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorDssiPlugin[%p]::configure(\"%s\", \"%s\")",
+		this, sKey.toUtf8().constData(), sValue.toUtf8().constData());
+#endif
 
 	// For each plugin instance...
 	for (unsigned short i = 0; i < instances(); ++i) {
