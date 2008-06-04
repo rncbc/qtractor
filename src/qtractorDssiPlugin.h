@@ -26,8 +26,6 @@
 
 #include <dssi.h>
 
-#include <QHash>
-
 
 //----------------------------------------------------------------------------
 // qtractorDssiPluginType -- DSSI plugin type instance.
