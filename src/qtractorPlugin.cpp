@@ -1001,6 +1001,7 @@ bool qtractorPluginList::loadElement ( qtractorSessionDocument *pDocument,
 			QString sPreset;
 			QStringList vlist;
 			bool bActivated = false;
+			qtractorPlugin::Configs configs;
 			qtractorPluginType::Hint typeHint
 				= qtractorPluginType::hintFromText(
 					ePlugin.attribute("type"));
@@ -1025,6 +1026,20 @@ bool qtractorPluginList::loadElement ( qtractorSessionDocument *pDocument,
 				else
 				if (eParam.tagName() == "activated")
 					bActivated = pDocument->boolFromText(eParam.text());
+				else
+				if (eParam.tagName() == "configure") {
+					// Load plugin configuration stuff (CLOB)...
+					for (QDomNode nConfig = eParam.firstChild();
+							!nConfig.isNull();
+								nConfig = nConfig.nextSibling()) {
+						// Convert config node to element...
+						QDomElement eConfig = nConfig.toElement();
+						if (eConfig.isNull())
+							continue;
+						if (eConfig.tagName() == "config")
+							configs[eConfig.attribute("key")] = eConfig.text();
+					}
+				}
 			}
 			if (sFilename.isEmpty())
 				continue;
@@ -1034,6 +1049,7 @@ bool qtractorPluginList::loadElement ( qtractorSessionDocument *pDocument,
 			if (pPlugin) {
 				pPlugin->setPreset(sPreset);
 				pPlugin->setValues(vlist);
+				pPlugin->setConfigs(configs);
 				pPlugin->setActivated(bActivated);
 				addPluginRef(pPlugin);
 				append(pPlugin);
@@ -1066,11 +1082,47 @@ bool qtractorPluginList::saveElement ( qtractorSessionDocument *pDocument,
 			pPlugin->values().join(","), &ePlugin);
 		pDocument->saveTextElement("activated",
 			pDocument->textFromBool(pPlugin->isActivated()), &ePlugin);
+		// Plugin configuration stuff (CLOB)...
+		QDomElement eConfigs
+			= pDocument->document()->createElement("configure");
+		const qtractorPlugin::Configs& configs = pPlugin->configs();
+		qtractorPlugin::Configs::ConstIterator iter = configs.constBegin();
+		for ( ; iter != configs.constEnd(); ++iter) {
+			QDomElement eConfig
+				= pDocument->document()->createElement("config");
+			eConfig.setAttribute("key", iter.key());
+			eConfig.appendChild(
+				pDocument->document()->createTextNode(iter.value()));
+			eConfigs.appendChild(eConfig);
+		}
+		ePlugin.appendChild(eConfigs);
 		// Add this plugin...
 		pElement->appendChild(ePlugin);
 	}
 
 	return true;
+}
+
+
+// Plugin configuration (CLOB) stuff.
+void qtractorPlugin::setConfigs ( const Configs& configs )
+{
+	// Make a deep copy of current configuration...
+	m_configs = configs;
+
+	// Send each configuration to plugin...
+	Configs::ConstIterator iter = m_configs.constBegin();
+	for ( ; iter != m_configs.end(); ++iter)
+		configure(iter.key(), iter.value());
+}	
+
+void qtractorPlugin::setConfig ( const QString& sKey, const QString& sValue )
+{
+	// Set configuration item...
+	m_configs[sKey] = sValue;
+
+	// Send configuration to plugin...
+	configure(sKey, sValue);
 }
 
 

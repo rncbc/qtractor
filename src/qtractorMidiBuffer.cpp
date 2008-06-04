@@ -128,11 +128,8 @@ void qtractorMidiManager::clear (void)
 	m_iBuffer = 0;
 
 #ifdef CONFIG_VST
-	if (m_pVstMidiParser) {
-		snd_midi_event_reset_decode(m_pVstMidiParser);
-		snd_midi_event_no_status(m_pVstMidiParser, 1);
+	if (m_pVstBuffer)
 		::memset(m_pVstBuffer, 0, sizeof(VstEvents));
-	}
 #endif
 }
 
@@ -248,7 +245,7 @@ void qtractorMidiManager::process (
 		}
 	
 		pVstEvents->numEvents = iVstMidiEvent;
-		pVstEvents->reserved = 0;
+	//	pVstEvents->reserved = 0;
 	}
 #endif
 
@@ -273,6 +270,13 @@ void qtractorMidiManager::reset (void)
 	m_postedBuffer.clear();
 
 	clear();
+
+#ifdef CONFIG_VST
+	if (m_pVstMidiParser) {
+		snd_midi_event_reset_decode(m_pVstMidiParser);
+		snd_midi_event_no_status(m_pVstMidiParser, 1);
+	}
+#endif
 
 	m_pPluginList->resetBuffer();
 

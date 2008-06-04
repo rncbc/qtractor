@@ -26,6 +26,8 @@
 
 #include <dssi.h>
 
+#include <QHash>
+
 
 //----------------------------------------------------------------------------
 // qtractorDssiPluginType -- DSSI plugin type instance.
@@ -107,6 +109,9 @@ public:
 
 	// Continuous controller handler.
 	void setController(int iController, int iValue);
+
+	// Configuration (CLOB) stuff.
+	void configure(const QString& sKey, const QString& sValue);
 
 	// GUI Editor stuff.
 	void openEditor(QWidget */*pParent*/);

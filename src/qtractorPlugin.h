@@ -28,6 +28,8 @@
 #include <QLibrary>
 #include <QSize>
 
+#include <QHash>
+
 
 // Forward declarations.
 class qtractorPluginFile;
@@ -320,7 +322,10 @@ public:
 
 	// MIDI continuous controller handler.
 	virtual void setController(int /*iController*/, int /*iValue*/) {}
-	
+
+	virtual void configure(
+		const QString& /*sKey*/, const QString& /*sValue*/) {}
+
 	// GUI Editor stuff.
 	virtual void openEditor(QWidget */*pParent*/) {}
 	virtual void closeEditor() {};
@@ -358,6 +363,17 @@ public:
 	// Plugin parameter lookup.
 	qtractorPluginParam *findParam(unsigned long iIndex) const;
 
+	// Plugin configuration (CLOB) stuff.
+	typedef QHash<QString, QString> Configs;
+
+	void setConfigs(const Configs& configs);
+	const Configs& configs() const
+		{ return m_configs; }
+
+	void setConfig(const QString& sKey, const QString& sValue);
+	QString config(const QString& sKey) const
+		{ return m_configs[sKey]; }
+
 protected:
 
 	// Instance number settler.
@@ -394,6 +410,9 @@ private:
 
 	// GUI editor stuff.
 	QString m_sEditorTitle;
+
+	// Plugin configuration (CLOB) stuff.
+	Configs m_configs;
 };
 
 

@@ -189,29 +189,15 @@ static int osc_configure ( DssiEditor *pDssiEditor, lo_arg **argv )
 	if (pDssiPlugin == NULL)
 		return 1;
 
-	qtractorDssiPluginType *pDssiType
-		= static_cast<qtractorDssiPluginType *> (pDssiPlugin->type());
-	if (pDssiType == NULL)
-		return 1;
+	pDssiPlugin->setConfig(key, value);
 
-	const DSSI_Descriptor *pDssiDescriptor
-		= pDssiType->dssi_descriptor();
-	if (pDssiDescriptor == NULL)
-		return 1;
-
-	if (pDssiDescriptor->configure) {
-		for (unsigned int i = 0; i < pDssiPlugin->instances(); ++i) {
-			LADSPA_Handle handle = pDssiPlugin->ladspa_handle(i);
-			if (handle)
-				(*pDssiDescriptor->configure)(handle, key, value);
-		}
-	}
-
+#if 0
 	QString sPath(pDssiEditor->path);
 	sPath += "/configure";
 	lo_send(pDssiEditor->target, sPath.toUtf8().constData(),
 		"ss", key, value);
-	
+#endif
+
 	return 0;
 }
 
@@ -615,6 +601,11 @@ void qtractorDssiPlugin::resetChannels (void)
 		}
 	}
 
+	// (Re)issue all configuration as needed...
+	Configs::ConstIterator iter = configs().begin();
+	for (; iter != configs().end(); ++iter)
+		configure(iter.key(), iter.value());
+
 	// Init patch selection.
 	selectProgram(0, 0);
 }
@@ -820,11 +811,12 @@ void qtractorDssiPlugin::selectProgram ( int iBank, int iProg )
 	if (pDssiDescriptor == NULL)
 		return;
 
-	if (pDssiDescriptor->select_program) {
-		// For each plugin instance...
-		for (unsigned short i = 0; i < instances(); ++i)
-			(*pDssiDescriptor->select_program)(m_phInstances[i], iBank, iProg);
-	}
+	if (pDssiDescriptor->select_program == NULL)
+		return;
+
+	// For each plugin instance...
+	for (unsigned short i = 0; i < instances(); ++i)
+		(*pDssiDescriptor->select_program)(m_phInstances[i], iBank, iProg);
 }
 
 
@@ -863,10 +855,32 @@ void qtractorDssiPlugin::setController ( int iController, int iValue )
 		= m_apControllerMap[DSSI_CC_NUMBER(iController)];
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorDssiPlugin[%p]::setController(%d, %d) index=%d",
-		this, iController, iValue, int(pParam ? pParam->index() : -1));
+		this, iController, iValue, (pParam ? int(pParam->index()) : -1));
 #endif
 	if (pParam)
 		pParam->setValue(float(iValue) / 127.0f);
+}
+
+
+// Configuration (CLOB) stuff.
+void qtractorDssiPlugin::configure ( const QString& sKey, const QString& sValue )
+{
+	if (m_phInstances == NULL)
+		return;
+
+	const DSSI_Descriptor *pDssiDescriptor = dssi_descriptor();
+	if (pDssiDescriptor == NULL)
+		return;
+
+	if (pDssiDescriptor->configure == NULL)
+		return;
+
+	// For each plugin instance...
+	for (unsigned short i = 0; i < instances(); ++i) {
+		(*pDssiDescriptor->configure)(m_phInstances[i],
+			sKey.toUtf8().constData(),
+			sValue.toUtf8().constData());
+	}
 }
 
 
