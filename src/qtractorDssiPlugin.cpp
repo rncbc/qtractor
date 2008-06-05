@@ -131,6 +131,40 @@ static int osc_send_configure ( DssiEditor *pDssiEditor,
 	return 0;
 }
 
+/*
+static int osc_send_control ( DssiEditor *pDssiEditor,
+	int param, float value )
+{
+#ifdef CONFIG_DEBUG
+	qDebug("osc_send_control: path \"%s\", param %d, value %g",
+		pDssiEditor->path, param, value);
+#endif
+
+	QString sPath(pDssiEditor->path);
+	sPath += "/control";
+	lo_send(pDssiEditor->target, sPath.toUtf8().constData(),
+		"if", param, value);
+
+	return 0;
+}
+*/
+
+static int osc_send_program ( DssiEditor *pDssiEditor,
+	int bank, int prog )
+{
+#ifdef CONFIG_DEBUG
+	qDebug("osc_send_program: path \"%s\", bank %d, prog %d",
+		pDssiEditor->path, bank, prog);
+#endif
+
+	QString sPath(pDssiEditor->path);
+	sPath += "/program";
+	lo_send(pDssiEditor->target, sPath.toUtf8().constData(),
+		"ii", bank, prog);
+
+	return 0;
+}
+
 
 static int osc_send_show ( DssiEditor *pDssiEditor )
 {
@@ -206,12 +240,21 @@ static int osc_update ( DssiEditor *pDssiEditor,
 		::free(pDssiEditor->path);
 	pDssiEditor->path = lo_url_get_path(url);
 
+	// Update plugin configuration...
 	const qtractorPlugin::Configs& configs = pDssiPlugin->configs();
 	qtractorPlugin::Configs::ConstIterator iter = configs.constBegin();
 	for (; iter != configs.constEnd(); ++iter) {
 		osc_send_configure(pDssiEditor,
 			iter.key().toUtf8().constData(),
 			iter.value().toUtf8().constData());
+	}
+
+	// Update program selection...
+	qtractorMidiManager *pMidiManager = (pDssiPlugin->list())->midiManager();
+	if (pMidiManager) {
+		osc_send_program(pDssiEditor,
+			pMidiManager->currentBank(),
+			pMidiManager->currentProg());
 	}
 
 	return osc_send_show(pDssiEditor);

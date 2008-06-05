@@ -53,6 +53,8 @@ qtractorMidiManager::qtractorMidiManager ( qtractorSession *pSession,
 	m_pVstMidiBuffer(NULL),
 	m_pVstBuffer(NULL),
 #endif
+	m_iCurrentBank(0),
+	m_iCurrentProg(0),
 	m_iPendingBankMSB(-1),
 	m_iPendingBankLSB(-1),
 	m_iPendingProg(-1)
@@ -142,20 +144,20 @@ void qtractorMidiManager::process (
 
 	// Check for programn change...
 	if (m_iPendingProg >= 0) {
-		int iBank = 0;
-		int iProg = m_iPendingProg;
+		m_iCurrentBank = 0;
+		m_iCurrentProg = m_iPendingProg;
 		if (m_iPendingBankLSB >= 0) {
 			if (m_iPendingBankMSB >= 0)
-				iBank = (m_iPendingBankMSB << 7) + m_iPendingBankLSB;
+				m_iCurrentBank = (m_iPendingBankMSB << 7) + m_iPendingBankLSB;
 			else
-				iBank = m_iPendingBankLSB;
+				m_iCurrentBank = m_iPendingBankLSB;
 		}
 		else if (m_iPendingBankMSB >= 0)
-			iBank = m_iPendingBankMSB;
+			m_iCurrentBank = m_iPendingBankMSB;
 		// Make the change (should be RT safe...)
 		qtractorPlugin *pPlugin = m_pPluginList->first();
 		while (pPlugin) {
-			pPlugin->selectProgram(iBank, iProg);
+			pPlugin->selectProgram(m_iCurrentBank, m_iCurrentProg);
 			pPlugin = pPlugin->next();
 		}
 		// Reset pending status.

@@ -219,6 +219,10 @@ public:
 	VstEvents *vst_events() const { return (VstEvents *) m_pVstBuffer; }
 #endif
 
+	// Current program selection accessors.
+	int currentBank() const { return m_iCurrentBank; }
+	int currentProg() const { return m_iCurrentProg; }
+
 	// MIDI Instrument collection map-types.
 	typedef QMap<int, QString> Progs;
 
@@ -262,6 +266,9 @@ private:
 	VstMidiEvent       *m_pVstMidiBuffer;
 	unsigned char      *m_pVstBuffer;
 #endif
+
+	int m_iCurrentBank;
+	int m_iCurrentProg;
 
 	int m_iPendingBankMSB;
 	int m_iPendingBankLSB;
