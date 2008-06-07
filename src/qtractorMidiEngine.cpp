@@ -116,6 +116,8 @@ public:
 
 	// MIDI track output process resync.
 	void trackSync(qtractorTrack *pTrack, unsigned long iFrameStart);
+	void trackClipSync(qtractorTrack *pTrack,
+		unsigned long iFrameStart, unsigned long iFrameEnd);
 
 	// MIDI metronome output process resync.
 	void metroSync(unsigned long iFrameStart);
@@ -441,6 +443,26 @@ void qtractorMidiOutputThread::trackSync ( qtractorTrack *pTrack,
 		this, iFrameStart, iFrameEnd);
 #endif
 
+	// Split processing, in case we've been caught looping...
+	if (m_pSession->isLooping()
+		&& iFrameEnd < iFrameStart
+		&& iFrameStart < m_pSession->loopEnd()) {
+		trackClipSync(pTrack, iFrameStart, m_pSession->loopEnd());
+		iFrameStart = m_pSession->loopStart();
+	}
+
+	// Do normal sequence...
+	trackClipSync(pTrack, iFrameStart, iFrameEnd);
+
+	// Surely must realize the output queue...
+	pMidiEngine->flush();
+}
+
+
+// MIDI track output process resync.
+void qtractorMidiOutputThread::trackClipSync ( qtractorTrack *pTrack,
+	unsigned long iFrameStart, unsigned long iFrameEnd )
+{
 	// Locate the immediate nearest clip in track
 	// and render them all thereafter, immediately...
 	qtractorClip *pClip = pTrack->clips().first();
@@ -449,9 +471,6 @@ void qtractorMidiOutputThread::trackSync ( qtractorTrack *pTrack,
 			pClip->process(iFrameStart, iFrameEnd);
 		pClip = pClip->next();
 	}
-
-	// Surely must realize the output queue...
-	pMidiEngine->flush();
 }
 
 
