@@ -133,9 +133,7 @@ unsigned long qtractorSessionCursor::frameTime (void) const
 // Current track clip accessor.
 qtractorClip *qtractorSessionCursor::clip ( unsigned int iTrack ) const
 {
-	if (iTrack >= m_iTracks)
-		return NULL;
-	return m_ppClips[iTrack];
+	return (iTrack < m_iTracks ? m_ppClips[iTrack] : NULL);
 }
 
 
@@ -165,19 +163,19 @@ void qtractorSessionCursor::addTrack ( qtractorTrack *pTrack )
 	if (pTrack == NULL)
 		pTrack = m_pSession->tracks().last();
 
-	unsigned int iTracks = m_iTracks;
-	if (iTracks >= m_iSize) {
+	unsigned int iTracks = m_iTracks + 1;
+	if (iTracks < m_iSize) {
+		updateClips(m_ppClips, iTracks);
+	} else {
 		m_iSize += iTracks;
 		qtractorClip **ppOldClips = m_ppClips;
 		qtractorClip **ppNewClips = new qtractorClip * [m_iSize];
-		updateClips(ppNewClips, iTracks + 1);
+		updateClips(ppNewClips, iTracks);
 		m_ppClips = ppNewClips;
-		delete [] ppOldClips;
-	} else {
-		updateClips(m_ppClips, iTracks + 1);
+		if (ppOldClips)
+			delete [] ppOldClips;
 	}
-
-	m_iTracks++;
+	m_iTracks = iTracks;
 }
 
 
@@ -253,7 +251,7 @@ void qtractorSessionCursor::reset (void)
 
 	// Rebuild the whole bunch...
 	m_iTracks = m_pSession->tracks().count();
-	m_iSize   = m_iTracks;
+	m_iSize   = (m_iTracks << 1);
 
 	if (m_iSize > 0) {
 		qtractorClip **ppNewClips = new qtractorClip * [m_iSize];

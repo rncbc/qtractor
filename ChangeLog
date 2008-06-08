@@ -5,6 +5,11 @@ ChangeLog
 
 CVS HEAD
 
+- Fixed a potential crash-exception due to freeing a null-pointer,
+  raised on some ever stringent platforms and while adding tracks
+  to empty sessions, which is the same to say this was crashing more
+  than always:).
+
 - Loop turn-around is now taken care of, as this has been found
   missing and causing noticeable gapping when un-muting or changing
   MIDI track events while in playback.
