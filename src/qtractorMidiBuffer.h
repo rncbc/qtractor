@@ -44,6 +44,8 @@ class qtractorSession;
 class qtractorPluginList;
 class qtractorPlugin;
 
+class qtractorMidiManagerThread;
+
 
 //----------------------------------------------------------------------
 // class qtractorMidiBuffer -- MIDI event FIFO buffer/cache declaration.
@@ -202,6 +204,9 @@ public:
 	// Process buffers.
 	void process(unsigned long iTimeStart, unsigned long iTimeEnd);
 
+	// Process buffers (in asynchronous controller thread).
+	void processSync();
+
 	// Resets all buffering.
 	void reset();
 
@@ -257,6 +262,8 @@ private:
 	qtractorMidiBuffer  m_queuedBuffer;
 	qtractorMidiBuffer  m_postedBuffer;
 
+	qtractorMidiBuffer  m_controllerBuffer;
+
 	snd_seq_event_t    *m_pBuffer;
 	unsigned int        m_iBuffer;
 
@@ -275,6 +282,9 @@ private:
 	int m_iPendingProg;
 
 	Instruments m_instruments;
+
+	// Aync manager thread.
+	qtractorMidiManagerThread *m_pSyncThread;
 };
 
 

@@ -5,6 +5,10 @@ ChangeLog
 
 CVS HEAD
 
+- Long due DSSI/VSTi plugin host implementation has taken shape for
+  MIDI instruments (eg. soft-synth plugins); DSSI reached its full
+  host implementation and VSTi is already kicking and goes next.
+
 - Fixed a potential crash-exception due to freeing a null-pointer,
   raised on some ever stringent platforms and while adding tracks
   to empty sessions, which is the same to say this was crashing more
@@ -13,10 +17,6 @@ CVS HEAD
 - Loop turn-around is now taken care of, as this has been found
   missing and causing noticeable gapping when un-muting or changing
   MIDI track events while in playback.
-
-- Long due DSSI/VSTi plugin host implementation is taking shape
-  for MIDI instruments (eg. soft-synth plugins); DSSI is nearing
-  its full host implementation and VSTi is already kicking.
 
 - An off-by-one bug was fixed while inside MIDI cursor backward
   seek method, which was missing all other events that have the

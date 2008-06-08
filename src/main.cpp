@@ -39,7 +39,7 @@
 #include <X11/Xatom.h>
 #include <X11/Xlib.h>
 
-#define QTRACTOR_XUNIQUE "qtractorMainForm_xunique"
+#define QTRACTOR_XUNIQUE "qtractorApplication"
 
 #endif
 

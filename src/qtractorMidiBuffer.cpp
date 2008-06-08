@@ -28,10 +28,135 @@
 
 #include "qtractorAudioEngine.h"
 
+#include <QThread>
+#include <QMutex>
+#include <QWaitCondition>
+
 
 // Specific controller definitions
 #define BANK_SELECT_MSB		0x00
 #define BANK_SELECT_LSB		0x20
+
+
+//----------------------------------------------------------------------
+// class qtractorMidiManagerThread -- MIDI controller thread.
+//
+
+class qtractorMidiManagerThread : public QThread
+{
+public:
+
+	// Constructor.
+	qtractorMidiManagerThread(qtractorMidiManager *pMidiManager);
+
+	// Destructor.
+	~qtractorMidiManagerThread();
+
+	// Thread run state accessors.
+	void setRunState(bool bRunState);
+	bool runState() const;
+
+	// Wake from executive wait condition.
+	void sync();
+
+protected:
+
+	// The main thread executive.
+	void run();
+
+private:
+
+	// The thread launcher engine.
+	qtractorMidiManager *m_pMidiManager;
+
+	// Whether the thread is logically running.
+	bool m_bRunState;
+
+	// Thread synchronization objects.
+	QMutex         m_mutex;
+	QWaitCondition m_cond;
+};
+
+
+//----------------------------------------------------------------------
+// class qtractorMidiManagerThread -- MIDI output thread (singleton).
+//
+
+// Constructor.
+qtractorMidiManagerThread::qtractorMidiManagerThread (
+	qtractorMidiManager *pMidiManager ) : QThread(),
+		m_pMidiManager(pMidiManager), m_bRunState(false)
+{
+}
+
+
+// Destructor.
+qtractorMidiManagerThread::~qtractorMidiManagerThread (void)
+{
+	// Try to wake and terminate executive thread,
+	// but give it a bit of time to cleanup...
+	if (isRunning()) do {
+		setRunState(false);
+	//	terminate();
+		sync();
+	} while (!wait(100));
+}
+
+
+// Thread run state accessors.
+void qtractorMidiManagerThread::setRunState ( bool bRunState )
+{
+	QMutexLocker locker(&m_mutex);
+
+	m_bRunState = bRunState;
+}
+
+bool qtractorMidiManagerThread::runState (void) const
+{
+	return m_bRunState;
+}
+
+
+// The main thread executive.
+void qtractorMidiManagerThread::run (void)
+{
+#ifdef CONFIG_DEBUG_0
+	qDebug("qtractorMidiManagerThread[%p]::run(): started...", this);
+#endif
+
+	m_bRunState = true;
+
+	m_mutex.lock();
+	while (m_bRunState) {
+		// Wait for sync...
+		m_cond.wait(&m_mutex);
+#ifdef CONFIG_DEBUG_0
+		qDebug("qtractorMidiManagerThread[%p]::run(): waked.", this);
+#endif
+		// Call control process cycle.
+		m_mutex.unlock();
+		m_pMidiManager->processSync();
+		m_mutex.lock();
+	}
+	m_mutex.unlock();
+
+#ifdef CONFIG_DEBUG_0
+	qDebug("qtractorMidiManagerThread[%p]::run(): stopped.", this);
+#endif
+}
+
+
+// Wake from executive wait condition.
+void qtractorMidiManagerThread::sync (void)
+{
+	if (m_mutex.tryLock()) {
+		m_cond.wakeAll();
+		m_mutex.unlock();
+	}
+#ifdef CONFIG_DEBUG_0
+	else qDebug("qtractorMidiManagerThread[%p]::sync(): tryLock() failed.", this);
+#endif
+}
 
 
 //----------------------------------------------------------------------
@@ -46,6 +171,7 @@ qtractorMidiManager::qtractorMidiManager ( qtractorSession *pSession,
 	m_directBuffer(iBufferSize >> 2),
 	m_queuedBuffer(iBufferSize),
 	m_postedBuffer(iBufferSize >> 1),
+	m_controllerBuffer(iBufferSize >> 2),
 	m_pBuffer(NULL), m_iBuffer(0),
 #ifdef CONFIG_VST
 	m_iVstRefCount(0),
@@ -60,6 +186,9 @@ qtractorMidiManager::qtractorMidiManager ( qtractorSession *pSession,
 	m_iPendingProg(-1)
 {
 	m_pBuffer = new snd_seq_event_t [bufferSize() << 1];
+
+	m_pSyncThread = new qtractorMidiManagerThread(this);
+	m_pSyncThread->start();
 }
 
 // Destructor.
@@ -68,6 +197,9 @@ qtractorMidiManager::~qtractorMidiManager (void)
 #ifdef CONFIG_VST
 	deleteVstMidiParser();
 #endif
+
+	if (m_pSyncThread)
+		delete m_pSyncThread;
 
 	if (m_pBuffer)
 		delete [] m_pBuffer;
@@ -78,22 +210,15 @@ qtractorMidiManager::~qtractorMidiManager (void)
 bool qtractorMidiManager::direct ( snd_seq_event_t *pEvent )
 {
 	if (pEvent->type == SND_SEQ_EVENT_CONTROLLER) {
-		int iController = pEvent->data.control.param;
-		int iValue      = pEvent->data.control.value;
-		switch (iController) {
+		switch (pEvent->data.control.param) {
 		case BANK_SELECT_MSB:
-			m_iPendingBankMSB = iValue;
+			m_iPendingBankMSB = pEvent->data.control.value;
 			break;
 		case BANK_SELECT_LSB:
-			m_iPendingBankLSB = iValue;
+			m_iPendingBankLSB = pEvent->data.control.value;
 			break;
 		default:
-			// Handle controller mappings...
-			qtractorPlugin *pPlugin = m_pPluginList->first();
-			while (pPlugin) {
-				pPlugin->setController(iController, iValue);
-				pPlugin = pPlugin->next();
-			}
+			m_controllerBuffer.push(pEvent);
 			break;
 		}
 	}
@@ -143,30 +268,11 @@ void qtractorMidiManager::process (
 	clear();
 
 	// Check for programn change...
-	if (m_iPendingProg >= 0) {
-		m_iCurrentBank = 0;
-		m_iCurrentProg = m_iPendingProg;
-		if (m_iPendingBankLSB >= 0) {
-			if (m_iPendingBankMSB >= 0)
-				m_iCurrentBank = (m_iPendingBankMSB << 7) + m_iPendingBankLSB;
-			else
-				m_iCurrentBank = m_iPendingBankLSB;
-		}
-		else if (m_iPendingBankMSB >= 0)
-			m_iCurrentBank = m_iPendingBankMSB;
-		// Make the change (should be RT safe...)
-		qtractorPlugin *pPlugin = m_pPluginList->first();
-		while (pPlugin) {
-			pPlugin->selectProgram(m_iCurrentBank, m_iCurrentProg);
-			pPlugin = pPlugin->next();
-		}
-		// Reset pending status.
-		m_iPendingBankMSB = -1;
-		m_iPendingBankLSB = -1;
-		m_iPendingProg    = -1;
-	}
+	if (m_pSyncThread
+		&& (m_iPendingProg >= 0 || !m_controllerBuffer.isEmpty()))
+		m_pSyncThread->sync();
 
-	// Maerge events in buffer for plugin processing...
+	// Merge events in buffer for plugin processing...
 	snd_seq_event_t *pEv0 = m_directBuffer.peek();
 	snd_seq_event_t *pEv1 = m_queuedBuffer.peek();
 	snd_seq_event_t *pEv2 = m_postedBuffer.peek();
@@ -258,6 +364,51 @@ void qtractorMidiManager::process (
 	if (pOutputAudioBus) {
 		unsigned int nframes = iTimeEnd - iTimeStart;
 		m_pPluginList->process(pOutputAudioBus->out(), nframes);
+	}
+}
+
+
+// Process buffers (in asynchronous controller thread).
+void qtractorMidiManager::processSync (void)
+{
+	// Check for programn change...
+	if (m_iPendingProg >= 0) {
+		m_iCurrentBank = 0;
+		m_iCurrentProg = m_iPendingProg;
+		if (m_iPendingBankLSB >= 0) {
+			if (m_iPendingBankMSB >= 0)
+				m_iCurrentBank = (m_iPendingBankMSB << 7) + m_iPendingBankLSB;
+			else
+				m_iCurrentBank = m_iPendingBankLSB;
+		}
+		else if (m_iPendingBankMSB >= 0)
+			m_iCurrentBank = m_iPendingBankMSB;
+		// Make the change (should be RT safe...)
+		qtractorPlugin *pPlugin = m_pPluginList->first();
+		while (pPlugin) {
+			pPlugin->selectProgram(m_iCurrentBank, m_iCurrentProg);
+			pPlugin = pPlugin->next();
+		}
+		// Reset pending status.
+		m_iPendingBankMSB = -1;
+		m_iPendingBankLSB = -1;
+		m_iPendingProg    = -1;
+	}
+
+	// Have all controller events sent to plugin(s),
+	// mostly for mere GUI update purposes...
+	snd_seq_event_t *pEv = m_controllerBuffer.peek();
+	while (pEv) {
+		if (pEv->type == SND_SEQ_EVENT_CONTROLLER) {
+			qtractorPlugin *pPlugin = m_pPluginList->first();
+			while (pPlugin) {
+				pPlugin->setController(
+					pEv->data.control.param,
+					pEv->data.control.value);
+				pPlugin = pPlugin->next();
+			}
+		}
+		pEv = m_controllerBuffer.next();
 	}
 }
 

@@ -131,7 +131,7 @@ static int osc_send_configure ( DssiEditor *pDssiEditor,
 	return 0;
 }
 
-/*
+
 static int osc_send_control ( DssiEditor *pDssiEditor,
 	int param, float value )
 {
@@ -147,7 +147,7 @@ static int osc_send_control ( DssiEditor *pDssiEditor,
 
 	return 0;
 }
-*/
+
 
 static int osc_send_program ( DssiEditor *pDssiEditor,
 	int bank, int prog )
@@ -247,6 +247,15 @@ static int osc_update ( DssiEditor *pDssiEditor,
 		osc_send_configure(pDssiEditor,
 			iter.key().toUtf8().constData(),
 			iter.value().toUtf8().constData());
+	}
+
+	// Update control params...
+	QListIterator<qtractorPluginParam *> param(pDssiPlugin->params());
+	while (param.hasNext()) {
+		qtractorPluginParam *pParam = param.next();
+		osc_send_control(pDssiEditor,
+			pParam->index(),
+			pParam->value());
 	}
 
 	// Update program selection...
@@ -882,6 +891,13 @@ void qtractorDssiPlugin::selectProgram ( int iBank, int iProg )
 	// For each plugin instance...
 	for (unsigned short i = 0; i < instances(); ++i)
 		(*pDssiDescriptor->select_program)(m_phInstances[i], iBank, iProg);
+
+#ifdef CONFIG_LIBLO
+	// And update the editor too...
+	DssiEditor *pDssiEditor = osc_find_editor(this);
+	if (pDssiEditor)
+		osc_send_program(pDssiEditor, iBank, iProg);
+#endif
 }
 
 
@@ -918,12 +934,23 @@ void qtractorDssiPlugin::setController ( int iController, int iValue )
 {
 	qtractorPluginParam *pParam
 		= m_apControllerMap[DSSI_CC_NUMBER(iController)];
+	if (pParam == NULL)
+		return;
+
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorDssiPlugin[%p]::setController(%d, %d) index=%d",
-		this, iController, iValue, (pParam ? int(pParam->index()) : -1));
+		this, iController, iValue, int(pParam->index()));
 #endif
-	if (pParam)
-		pParam->setValue(float(iValue) / 127.0f);
+
+	float fValue = float(iValue) / 127.0f;
+	pParam->setValue(fValue);
+
+#ifdef CONFIG_LIBLO
+	DssiEditor *pDssiEditor = osc_find_editor(this);
+	if (pDssiEditor)
+		osc_send_control(pDssiEditor, pParam->index(), fValue);
+#endif
+
 }
 
 
