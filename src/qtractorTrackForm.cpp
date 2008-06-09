@@ -518,7 +518,7 @@ void qtractorTrackForm::updateChannel ( int iChannel,
 	if (pMidiBus == NULL)
 		return;
 
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	qDebug("qtractorTrackForm::updateChannel(%d, %d, %d, %d)",
 		iChannel, iBankSelMethod, iBank, iProg);
 #endif
@@ -563,7 +563,7 @@ void qtractorTrackForm::updateBanks ( const QString& sInstrumentName,
 //	if (sInstrumentName.isEmpty())
 //		return;
 
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	qDebug("qtractorTrackForm::updateBanks(\"%s\", %d, %d, %d)",
 		sInstrumentName.toUtf8().constData(), iBankSelMethod, iBank, iProg);
 #endif
@@ -676,7 +676,7 @@ void qtractorTrackForm::updatePrograms (  const QString& sInstrumentName,
 //	if (sInstrumentName.isEmpty())
 //		return;
 
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	qDebug("qtractorTrackForm::updatePrograms(\"%s\", %d, %d)",
 		sInstrumentName.toUtf8().constData(), iBank, iProg);
 #endif

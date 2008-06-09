@@ -278,14 +278,16 @@ public:
 	
 	// Activation methods.
 	void setActivated(bool bActivated);
-	bool isActivated() const { return m_bActivated; }
+	bool isActivated() const
+		{ return m_bActivated; }
 
 	// Parameter list accessor.
 	void addParam(qtractorPluginParam *pParam)
 		{ m_params.append(pParam); }
 
 	// An accessible list of parameters.
-	const QList<qtractorPluginParam *>& params() const { return m_params; }
+	const QList<qtractorPluginParam *>& params() const
+		{ return m_params; }
 
 	// Plugin state serialization methods.
 	void setValues(const QStringList& vlist);
@@ -323,8 +325,12 @@ public:
 	// MIDI continuous controller handler.
 	virtual void setController(int /*iController*/, int /*iValue*/) {}
 
+	// Plugin configuration handlers.
 	virtual void configure(
 		const QString& /*sKey*/, const QString& /*sValue*/) {}
+
+	// Plugin configuration/state snapshot.
+	virtual void freeze() {}
 
 	// GUI Editor stuff.
 	virtual void openEditor(QWidget */*pParent*/) {}
@@ -342,7 +348,8 @@ public:
 		{ return m_sEditorTitle; }
 
 	// An accessible list of observers.
-	const QList<qtractorPluginListItem *>& items() const { return m_items; }
+	const QList<qtractorPluginListItem *>& items() const
+		{ return m_items; }
 
 	// List of observers management.
 	void addItem(qtractorPluginListItem *pItem);
@@ -366,11 +373,13 @@ public:
 	// Plugin configuration (CLOB) stuff.
 	typedef QHash<QString, QString> Configs;
 
-	void setConfigs(const Configs& configs);
+	void setConfigs(const Configs& configs)
+		{ m_configs = configs; }
 	const Configs& configs() const
 		{ return m_configs; }
 
-	void setConfig(const QString& sKey, const QString& sValue);
+	void setConfig(const QString& sKey, const QString& sValue)
+		{ m_configs[sKey] = sValue; }
 	QString config(const QString& sKey) const
 		{ return m_configs[sKey]; }
 
@@ -460,9 +469,11 @@ public:
 		{ return m_pMidiManager; }
 
 	// Special activation methods.
-	unsigned int activated() const  { return m_iActivated;  }
 	bool isActivatedAll() const;
 	void updateActivated(bool bActivated);
+
+	unsigned int activated() const
+		{ return m_iActivated;  }
 
 	// Guarded plugin methods.
 	void addPlugin(qtractorPlugin *pPlugin);
@@ -474,7 +485,8 @@ public:
 	qtractorPlugin *copyPlugin(qtractorPlugin *pPlugin);
 
 	// An accessible list of views.
-	const QList<qtractorPluginListView *>& views() const { return m_views; }
+	const QList<qtractorPluginListView *>& views() const
+		{ return m_views; }
 
 	// list of views management.
 	void addView(qtractorPluginListView *pView);

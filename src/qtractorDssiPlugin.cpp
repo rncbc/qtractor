@@ -284,7 +284,9 @@ static int osc_configure ( DssiEditor *pDssiEditor, lo_arg **argv )
 	if (pDssiPlugin == NULL)
 		return 1;
 
+	// Save and send configuration to plugin...
 	pDssiPlugin->setConfig(key, value);
+	pDssiPlugin->configure(key, value);
 
 	return 0;
 }

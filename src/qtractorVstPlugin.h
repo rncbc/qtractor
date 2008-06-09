@@ -106,6 +106,21 @@ public:
 	void activate();
 	void deactivate();
 
+	// The main plugin processing procedure.
+	void process(float **ppIBuffer, float **ppOBuffer, unsigned int nframes);
+
+	// Bank/program selector override.
+	void selectProgram(int iBank, int iProg);
+
+	// Provisional program/patch accessor.
+	bool getProgram(int iIndex, Program& program) const;
+
+	// Configuration (CLOB) stuff.
+	void configure(const QString& sKey, const QString& sValue);
+
+	// Plugin configuration/state snapshot.
+	void freeze();
+
 	// GUI Editor stuff.
 	void openEditor(QWidget *pParent);
 	void closeEditor();
@@ -116,9 +131,6 @@ public:
 	bool isEditorVisible() const;
 
 	void setEditorTitle(const QString& sTitle);
-
-	// The main plugin processing procedure.
-	void process(float **ppIBuffer, float **ppOBuffer, unsigned int nframes);
 
 	// Specific accessors.
 	AEffect *vst_effect(unsigned short iInstance) const;

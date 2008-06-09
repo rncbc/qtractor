@@ -539,7 +539,7 @@ bool qtractorVstPluginType::open (void)
 #endif
 
 	// Retrieve plugin type names.
-	char szName[256];
+	char szName[256]; ::memset(szName, 0, sizeof(szName));
 	if (vst_dispatch(effGetEffectName, 0, 0, (void *) szName, 0.0f))
 		m_sName = szName;
 	else
@@ -561,7 +561,7 @@ bool qtractorVstPluginType::open (void)
 //	if (vst_canDo("plugAsChannelInsert")) m_iFlagsEx |= effFlagsExCanUseAsInsert;
 //	if (vst_canDo("plugAsSend"))          m_iFlagsEx |= effFlagsExCanUseAsSend;
 //	if (vst_canDo("mixDryWet"))           m_iFlagsEx |= effFlagsExCanMixDryWet;
-	if (vst_canDo("midiProgramNames"))    m_iFlagsEx |= effFlagsExCanMidiProgramNames;
+//	if (vst_canDo("midiProgramNames"))    m_iFlagsEx |= effFlagsExCanMidiProgramNames;
 
 	// Compute and cache port counts...
 	m_iControlIns  = pVstEffect->numParams;
@@ -757,16 +757,23 @@ void qtractorVstPlugin::setChannels ( unsigned short iChannels )
 
 	// Setup all those instance alright...
 	for (unsigned short i = 0; i < iInstances; ++i) {
+		// (Re)issue all configuration as needed...
+		Configs::ConstIterator iter = configs().constBegin();
+		for (; iter != configs().constEnd(); ++iter)
+			configure(iter.key(), iter.value());
+		// And now all other things as well...
 		qtractorVstPluginType::Effect *pEffect = m_ppEffects[i];
-		pEffect->vst_dispatch(effSetProgram, 0, 0, NULL, 0.0f);
 		pEffect->vst_dispatch(effSetSampleRate, 0, 0, NULL, float(sampleRate()));
 		pEffect->vst_dispatch(effSetBlockSize,  0, bufferSize(), NULL, 0.0f);
+		pEffect->vst_dispatch(effSetProgram, 0, 0, NULL, 0.0f);
 		unsigned short j;
 		for (j = 0; j < pVstType->audioIns(); ++j)
 			pEffect->vst_dispatch(effConnectInput, j, 1, NULL, 0.0f);
 		for (j = 0; j < pVstType->audioOuts(); ++j)
 			pEffect->vst_dispatch(effConnectOutput, j, 1, NULL, 0.0f);
 	}
+
+
 
 	// (Re)activate instance if necessary...
 	setActivated(bActivated);
@@ -849,6 +856,76 @@ void qtractorVstPlugin::process (
 		if (iOChannel < iChannels - 1)
 			iOChannel++;
 	}
+}
+
+
+// Bank/program selector.
+void qtractorVstPlugin::selectProgram ( int /*iBank*/, int iProg )
+{
+	for (unsigned short i = 0; i < instances(); ++i)
+		vst_dispatch(i, effSetProgram, 0, iProg, NULL, 0.0f);
+}
+
+
+// Provisional program/patch accessor.
+bool qtractorVstPlugin::getProgram ( int iIndex, Program& program ) const
+{
+	// Iteration sanity check...
+	AEffect *pVstEffect = vst_effect(0);
+	if (pVstEffect == NULL)
+		return false;
+	if (iIndex < 0 || iIndex >= pVstEffect->numPrograms)
+		return false;
+
+	char szName[256]; ::memset(szName, 0, sizeof(szName));
+	if (vst_dispatch(0, effGetProgramNameIndexed, iIndex, 0, (void *) szName, 0.0f) == 0) {
+		int iOldIndex = vst_dispatch(0, effGetProgram, 0, 0, NULL, 0.0f);
+		vst_dispatch(0, effSetProgram, 0, iIndex, NULL, 0.0f);
+		vst_dispatch(0, effGetProgramName, 0, 0, (void *) szName, 0.0f);
+		vst_dispatch(0, effSetProgram, 0, iOldIndex, NULL, 0.0f);
+	}
+
+	// Map this to that...
+	program.bank = 0;
+	program.prog = iIndex;
+	program.name = szName;
+
+	return true;
+}
+
+
+// Configuration (CLOB) stuff.
+void qtractorVstPlugin::configure ( const QString& sKey, const QString& sValue )
+{
+	if (sKey == "chunk") {
+		QByteArray data = QByteArray::fromBase64(sValue.toAscii());
+		const char *pData = data.constData();
+		int iData = data.size();
+		for (unsigned short i = 0; i < instances(); ++i)
+			vst_dispatch(i, effSetChunk, 0, iData, (void *) pData, 0.0f);
+	}
+}
+
+
+// Plugin configuration/state snapshot.
+void qtractorVstPlugin::freeze (void)
+{
+	AEffect *pVstEffect = vst_effect(0);
+	if (pVstEffect == NULL)
+		return;
+
+	if ((pVstEffect->flags & effFlagsProgramChunks) == 0)
+		return;
+
+	// Save plugin state into chunk configuration...
+	char *pData = NULL;
+	int iData = vst_dispatch(0, effGetChunk, 0, 0, (void *) &pData, 0.0f);
+	if (iData < 1 || pData == NULL)
+		return;
+
+	// Set special plugin configuration item...
+	QByteArray data = QByteArray(pData, iData).toBase64();
+	setConfig("chunk", data.constData());
 }
 
 
@@ -1338,7 +1415,7 @@ static VstIntPtr qtractorVstPlugin_closeFileSelector (
 //----------------------------------------------------------------------
 // The magnificient host callback, which every VSTi plugin will call.
 
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 #define VST_HC_FMT "qtractorVstPlugin_HostCallback(%p, %s(%d), %d, %d, %p, %g)"
 #define VST_HC_DEBUG(s)  qDebug(VST_HC_FMT, \
 	effect, (s), int(opcode), int(index), int(value), ptr, opt)
