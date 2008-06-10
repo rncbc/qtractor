@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(Qtractor, 0.1.3.982, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.1.3.983, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractorMainForm.ui)
 AC_CONFIG_HEADERS(config.h)
@@ -83,9 +83,9 @@ AC_ARG_ENABLE(vst,
 
 # Enable XInitThreads() support.
 AC_ARG_ENABLE(xinitthreads,
-  AC_HELP_STRING([--enable-xinitthreads], [enable XInitThreads() support (default=no)]),
+  AC_HELP_STRING([--enable-xinitthreads], [enable XInitThreads() support (default=yes)]),
   [ac_xinitthreads="$enableval"],
-  [ac_xinitthreads="no"])
+  [ac_xinitthreads="yes"])
 
 
 # Standard installation base dirs.
@@ -529,6 +529,7 @@ if test "x$ac_vst" = "xyes"; then
    else
       AC_MSG_WARN([*** aeffectx.h header file not found.])
       AC_MSG_WARN([*** VST plug-in support will be disabled.])
+      ac_xinitthreads="no"
    fi
 fi
 
@@ -571,8 +572,7 @@ echo "  SSE optimization support (x86) . . . . . . . . . .: $ac_sse"
 echo "  LADSPA Plug-in support . . . . . . . . . . . . . .: $ac_ladspa"
 echo "  DSSI Plug-in support . . . . . . . . . . . . . . .: $ac_dssi"
 echo "  VST Plug-in support  . . . . . . . . . . . . . . .: $ac_vst"
-echo
-echo "  XInitThreads() support (DANGEROUS) . . . . . . . .: $ac_xinitthreads"
+echo "  XInitThreads() support . . . . . . . . . . . . . .: $ac_xinitthreads"
 echo
 echo "  Install prefix . . . . . . . . . . . . . . . . . .: $ac_prefix"
 echo

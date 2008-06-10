@@ -119,7 +119,8 @@ public:
 	void configure(const QString& sKey, const QString& sValue);
 
 	// Plugin configuration/state snapshot.
-	void freeze();
+	void freezeConfigs();
+	void releaseConfigs();
 
 	// GUI Editor stuff.
 	void openEditor(QWidget *pParent);

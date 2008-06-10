@@ -330,7 +330,8 @@ public:
 		const QString& /*sKey*/, const QString& /*sValue*/) {}
 
 	// Plugin configuration/state snapshot.
-	virtual void freeze() {}
+	virtual void freezeConfigs() {}
+	virtual void releaseConfigs() {}
 
 	// GUI Editor stuff.
 	virtual void openEditor(QWidget */*pParent*/) {}
@@ -374,14 +375,19 @@ public:
 	typedef QHash<QString, QString> Configs;
 
 	void setConfigs(const Configs& configs)
-		{ m_configs = configs; }
+		{ m_configs = configs; realizeConfigs(); }
 	const Configs& configs() const
 		{ return m_configs; }
+	void clearConfigs()
+		{ m_configs.clear(); }
 
 	void setConfig(const QString& sKey, const QString& sValue)
 		{ m_configs[sKey] = sValue; }
 	QString config(const QString& sKey) const
 		{ return m_configs[sKey]; }
+
+	// Plugin configure realization.
+	void realizeConfigs();
 
 protected:
 

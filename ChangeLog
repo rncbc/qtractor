@@ -7,8 +7,8 @@ CVS HEAD
 
 - Long due DSSI/VSTi plugin host implementation has taken shape for
   MIDI instruments (eg. soft-synth plugins); DSSI reached its full
-  host implementation and VSTi is already kicking as it should too.
-  (HIGHLY EXPERIMENTAL)
+  host implementation and VSTi is already kicking as well (HIGHLY
+  EXPERIMENTAL).
 
 - Fixed a potential crash-exception due to freeing a null-pointer,
   raised on some ever stringent platforms and while adding tracks

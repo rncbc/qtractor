@@ -230,12 +230,14 @@ private:
 
 int main ( int argc, char **argv )
 {
+#ifdef CONFIG_VST
 #ifdef CONFIG_XINITTHREADS
 #if defined(Q_WS_X11)
 	if (!XInitThreads()) {
 		qFatal("Error: XInitThreads() failed. Stop.");
 		return 1;
 	}
+#endif
 #endif
 #endif
 	qtractorApplication app(argc, argv);

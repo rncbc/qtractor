@@ -678,9 +678,7 @@ void qtractorDssiPlugin::resetChannels (void)
 	}
 
 	// (Re)issue all configuration as needed...
-	Configs::ConstIterator iter = configs().constBegin();
-	for (; iter != configs().constEnd(); ++iter)
-		configure(iter.key(), iter.value());
+	realizeConfigs();
 
 	// Init patch selection.
 	selectProgram(0, 0);

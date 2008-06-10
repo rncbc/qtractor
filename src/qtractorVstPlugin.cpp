@@ -755,12 +755,13 @@ void qtractorVstPlugin::setChannels ( unsigned short iChannels )
 		}
 	}
 
+	// (Re)issue all configuration as needed...
+	realizeConfigs();
+	// But won't need it anymore.
+	clearConfigs();
+
 	// Setup all those instance alright...
 	for (unsigned short i = 0; i < iInstances; ++i) {
-		// (Re)issue all configuration as needed...
-		Configs::ConstIterator iter = configs().constBegin();
-		for (; iter != configs().constEnd(); ++iter)
-			configure(iter.key(), iter.value());
 		// And now all other things as well...
 		qtractorVstPluginType::Effect *pEffect = m_ppEffects[i];
 		pEffect->vst_dispatch(effSetSampleRate, 0, 0, NULL, float(sampleRate()));
@@ -772,8 +773,6 @@ void qtractorVstPlugin::setChannels ( unsigned short iChannels )
 		for (j = 0; j < pVstType->audioOuts(); ++j)
 			pEffect->vst_dispatch(effConnectOutput, j, 1, NULL, 0.0f);
 	}
-
-
 
 	// (Re)activate instance if necessary...
 	setActivated(bActivated);
@@ -898,9 +897,14 @@ bool qtractorVstPlugin::getProgram ( int iIndex, Program& program ) const
 void qtractorVstPlugin::configure ( const QString& sKey, const QString& sValue )
 {
 	if (sKey == "chunk") {
-		QByteArray data = QByteArray::fromBase64(sValue.toAscii());
+		// Load the BLOB (base64 encoded)...
+		QByteArray data = qUncompress(QByteArray::fromBase64(sValue.toAscii()));
 		const char *pData = data.constData();
 		int iData = data.size();
+#ifdef CONFIG_DEBUG
+		qDebug("qtractorVstPlugin[%p]::configure() chunk.size=%d checksum=0x%04x",
+			this, iData, qChecksum(pData, iData));
+#endif
 		for (unsigned short i = 0; i < instances(); ++i)
 			vst_dispatch(i, effSetChunk, 0, iData, (void *) pData, 0.0f);
 	}
@@ -908,7 +912,7 @@ void qtractorVstPlugin::configure ( const QString& sKey, const QString& sValue )
 
 
 // Plugin configuration/state snapshot.
-void qtractorVstPlugin::freeze (void)
+void qtractorVstPlugin::freezeConfigs (void)
 {
 	AEffect *pVstEffect = vst_effect(0);
 	if (pVstEffect == NULL)
@@ -923,9 +927,25 @@ void qtractorVstPlugin::freeze (void)
 	if (iData < 1 || pData == NULL)
 		return;
 
-	// Set special plugin configuration item...
-	QByteArray data = QByteArray(pData, iData).toBase64();
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorVstPlugin[%p]::freezeConfigs() chunk.size=%d checksum=0x%04x",
+		this, iData, qChecksum(pData, iData));
+#endif
+
+	// Set special plugin configuration item (base64 encoded)...
+	QByteArray data = qCompress(QByteArray(pData, iData)).toBase64();
+	for (int i = data.size() - (data.size() % 72); i >= 0; i -= 72)
+		data.insert(i, "\n       "); // Indentation.
 	setConfig("chunk", data.constData());
+}
+
+void qtractorVstPlugin::releaseConfigs (void)
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorVstPlugin[%p]::releaseConfigs()", this);
+#endif
+
+	clearConfigs();
 }
 
 

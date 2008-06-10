@@ -640,6 +640,15 @@ qtractorPluginParam *qtractorPlugin::findParam ( unsigned long iIndex ) const
 }
 
 
+// Plugin configure realization.
+void qtractorPlugin::realizeConfigs (void)
+{
+	Configs::ConstIterator iter = m_configs.constBegin();
+	for (; iter != m_configs.constEnd(); ++iter)
+		configure(iter.key(), iter.value());
+}
+
+
 //----------------------------------------------------------------------------
 // qtractorPluginList -- Plugin chain list instance.
 //
@@ -894,13 +903,18 @@ qtractorPlugin *qtractorPluginList::copyPlugin ( qtractorPlugin *pPlugin )
 		return NULL;
 
 	// Clone the plugin instance...
+	pPlugin->freezeConfigs();
+
 	qtractorPlugin *pNewPlugin = qtractorPluginFile::createPlugin(this,
 		(pType->file())->filename(), pType->index(), pType->typeHint());
 	if (pNewPlugin) {
 		pNewPlugin->setPreset(pPlugin->preset());
 		pNewPlugin->setValues(pPlugin->values());
+		pNewPlugin->setConfigs(pPlugin->configs());
 		pNewPlugin->setActivated(pPlugin->isActivated());
 	}
+
+	pPlugin->releaseConfigs();
 
 	return pNewPlugin;
 }
@@ -1024,6 +1038,9 @@ bool qtractorPluginList::loadElement ( qtractorSessionDocument *pDocument,
 				if (eParam.tagName() == "values")
 					vlist = eParam.text().split(',');
 				else
+				if (eParam.tagName() == "activated")
+					bActivated = pDocument->boolFromText(eParam.text());
+				else
 				if (eParam.tagName() == "configure") {
 					// Load plugin configuration stuff (CLOB)...
 					for (QDomNode nConfig = eParam.firstChild();
@@ -1037,9 +1054,6 @@ bool qtractorPluginList::loadElement ( qtractorSessionDocument *pDocument,
 							configs[eConfig.attribute("key")] = eConfig.text();
 					}
 				}
-				else
-				if (eParam.tagName() == "activated")
-					bActivated = pDocument->boolFromText(eParam.text());
 			}
 			if (sFilename.isEmpty())
 				continue;
@@ -1069,7 +1083,7 @@ bool qtractorPluginList::saveElement ( qtractorSessionDocument *pDocument,
 			pPlugin; pPlugin = pPlugin->next()) {
 
 		// Do freeze plugin state...
-		pPlugin->freeze();
+		pPlugin->freezeConfigs();
 
 		// Create the new plugin element...
 		QDomElement ePlugin = pDocument->document()->createElement("plugin");
@@ -1083,6 +1097,8 @@ bool qtractorPluginList::saveElement ( qtractorSessionDocument *pDocument,
 			pPlugin->preset(), &ePlugin);
 		pDocument->saveTextElement("values",
 			pPlugin->values().join(","), &ePlugin);
+		pDocument->saveTextElement("activated",
+			pDocument->textFromBool(pPlugin->isActivated()), &ePlugin);
 		// Plugin configuration stuff (CLOB)...
 		QDomElement eConfigs
 			= pDocument->document()->createElement("configure");
@@ -1096,11 +1112,12 @@ bool qtractorPluginList::saveElement ( qtractorSessionDocument *pDocument,
 				pDocument->document()->createTextNode(iter.value()));
 			eConfigs.appendChild(eConfig);
 		}
-		pDocument->saveTextElement("activated",
-			pDocument->textFromBool(pPlugin->isActivated()), &ePlugin);
 		ePlugin.appendChild(eConfigs);
 		// Add this plugin...
 		pElement->appendChild(ePlugin);
+
+		// May release plugin state...
+		pPlugin->releaseConfigs();
 	}
 
 	return true;

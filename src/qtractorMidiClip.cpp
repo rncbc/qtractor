@@ -381,7 +381,7 @@ void qtractorMidiClip::process ( unsigned long iFrameStart,
 	qtractorTrack *pTrack = track();
 	if (pTrack == NULL)
 		return;
-	if (pTrack->isRecord())
+	if (pTrack->isRecord() && pTrack->isMonitor())
 		return;
 
 	qtractorSession *pSession = pTrack->session();
