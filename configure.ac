@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(Qtractor, 0.1.3.983, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.1.3.984, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractorMainForm.ui)
 AC_CONFIG_HEADERS(config.h)
@@ -531,6 +531,8 @@ if test "x$ac_vst" = "xyes"; then
       AC_MSG_WARN([*** VST plug-in support will be disabled.])
       ac_xinitthreads="no"
    fi
+else
+   ac_xinitthreads="no"
 fi
 
 # Check for XInitThreads() support.

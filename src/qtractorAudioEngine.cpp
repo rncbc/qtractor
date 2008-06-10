@@ -584,6 +584,13 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 		return 0;
 	}
 
+	// Session RT-safeness lock...
+	if (!pSession->acquire())
+		return 0;
+
+	// Reset buffer offset.
+	m_iBufferOffset = 0;
+
 	// Prepare all current audio buses...
 	for (qtractorBus *pBus = buses().first();
 			pBus; pBus = pBus->next()) {
@@ -597,13 +604,6 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 		m_pMetroBus->process_prepare(nframes);
 	if (m_bPlayerBus)
 		m_pPlayerBus->process_prepare(nframes);
-
-	// Session RT-safeness lock...
-	if (!pSession->acquire())
-		return 0;
-
-	// Reset buffer offset.
-	m_iBufferOffset = 0;
 
 	// Process audition/pre-listening...
 	if (m_bPlayerOpen && ATOMIC_TAS(&m_playerLock)) {

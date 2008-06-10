@@ -192,6 +192,7 @@ public:
 
 	// Overridden track-edit command methods.
 	bool redo();
+	bool undo();
 
 private:
 

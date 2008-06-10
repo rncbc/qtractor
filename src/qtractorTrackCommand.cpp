@@ -416,6 +416,11 @@ bool qtractorEditTrackCommand::redo (void)
 	return bResult;
 }
 
+bool qtractorEditTrackCommand::undo (void)
+{
+	return redo();
+}
+
 
 //----------------------------------------------------------------------
 // class qtractorTrackButtonCommand - implementation.

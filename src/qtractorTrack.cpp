@@ -1010,8 +1010,10 @@ bool qtractorTrack::loadElement ( qtractorSessionDocument *pDocument,
 		}
 		else
 		// Load plugins...
-		if (eChild.tagName() == "plugins")
+		if (eChild.tagName() == "plugins") {
+			m_pPluginList->setName(qtractorTrack::trackName());
 			m_pPluginList->loadElement(pDocument, &eChild);
+		}
 	}
 
 	return true;

@@ -43,6 +43,7 @@
 class qtractorSession;
 class qtractorPluginList;
 class qtractorPlugin;
+class qtractorAudioBus;
 
 class qtractorMidiManagerThread;
 
@@ -224,6 +225,11 @@ public:
 	VstEvents *vst_events() const { return (VstEvents *) m_pVstBuffer; }
 #endif
 
+	// Audio output bus mode accessors.
+	void setOutputBus(bool bOutputBus);
+	bool isOutputBus() const;
+	void resetOutputBus();
+
 	// Current program selection accessors.
 	int currentBank() const { return m_iCurrentBank; }
 	int currentProg() const { return m_iCurrentProg; }
@@ -247,6 +253,12 @@ public:
 	// Instrument map accessor.
 	const Instruments& instruments() const
 		{ return m_instruments; }
+
+protected:
+
+	// Audiop output (de)activation methods.
+	void createOutputBus();
+	void deleteOutputBus();
 
 private:
 #ifdef CONFIG_VST
@@ -273,6 +285,9 @@ private:
 	VstMidiEvent       *m_pVstMidiBuffer;
 	unsigned char      *m_pVstBuffer;
 #endif
+
+	bool                m_bOutputBus;
+	qtractorAudioBus   *m_pOutputBus;
 
 	int m_iCurrentBank;
 	int m_iCurrentProg;

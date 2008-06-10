@@ -691,6 +691,9 @@ void qtractorPluginList::setName ( const QString& sName )
 		if (pPlugin->isFormVisible())
 			(pPlugin->form())->updateCaption();
 	}
+
+	if (m_pMidiManager)
+		m_pMidiManager->resetOutputBus();
 }
 
 
