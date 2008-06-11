@@ -255,6 +255,9 @@ qtractorOptionsForm::qtractorOptionsForm (
 	QObject::connect(m_ui.PluginPathDownToolButton,
 		SIGNAL(clicked()),
 		SLOT(moveDownPluginPath()));
+	QObject::connect(m_ui.AudioOutputBusCheckBox,
+		SIGNAL(stateChanged(int)),
+		SLOT(changed()));
 	QObject::connect(m_ui.MessagesFontPushButton,
 		SIGNAL(clicked()),
 		SLOT(chooseMessagesFont()));
@@ -406,6 +409,9 @@ void qtractorOptionsForm::setOptions ( qtractorOptions *pOptions )
 	m_dssiPaths   = m_pOptions->dssiPaths;
 	m_vstPaths    = m_pOptions->vstPaths;
 
+	// Plugin instruments options.
+	m_ui.AudioOutputBusCheckBox->setChecked(m_pOptions->bAudioOutputBus);
+
 	int iPluginType = m_pOptions->iPluginType - 1;
 	if (iPluginType < 0)
 		iPluginType = 0;
@@ -479,6 +485,8 @@ void qtractorOptionsForm::accept (void)
 		m_pOptions->ladspaPaths          = m_ladspaPaths;
 		m_pOptions->dssiPaths            = m_dssiPaths;
 		m_pOptions->vstPaths             = m_vstPaths;
+		// Plugin instruments options.
+		m_pOptions->bAudioOutputBus      = m_ui.AudioOutputBusCheckBox->isChecked();
 		// Messages options...
 		m_pOptions->sMessagesFont        = m_ui.MessagesFontTextLabel->font().toString();
 		m_pOptions->bMessagesLimit       = m_ui.MessagesLimitCheckBox->isChecked();

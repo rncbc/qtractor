@@ -53,6 +53,8 @@
 #include "qtractorAudioMeter.h"
 #include "qtractorMidiMeter.h"
 
+#include "qtractorMidiBuffer.h"
+
 #include "qtractorExportForm.h"
 #include "qtractorSessionForm.h"
 #include "qtractorOptionsForm.h"
@@ -839,6 +841,9 @@ void qtractorMainForm::setOptions ( qtractorOptions *pOptions )
 		m_pOptions->iAudioCaptureQuality);
 	qtractorMidiClip::setDefaultFormat(
 		m_pOptions->iMidiCaptureFormat);
+	// Set default MIDI (plugin) instrument audio output mode.
+	qtractorMidiManager::setDefaultAudioOutputBus(
+		m_pOptions->bAudioOutputBus);
 	// Set default audio-buffer quality...
 	qtractorAudioBuffer::setResampleType(m_pOptions->iAudioResampleType);
 	qtractorAudioBuffer::setWsolaTimeStretch(m_pOptions->bAudioTimeStretch);
@@ -2461,6 +2466,9 @@ void qtractorMainForm::viewOptions (void)
 			m_pOptions->iAudioCaptureQuality);
 		qtractorMidiClip::setDefaultFormat(
 			m_pOptions->iMidiCaptureFormat);
+		// Set default MIDI (plugin) instrument audio output mode.
+		qtractorMidiManager::setDefaultAudioOutputBus(
+			m_pOptions->bAudioOutputBus);
 		// Auto time-stretching global mode...
 		if (m_pSession)
 			m_pSession->setAutoTimeStretch(m_pOptions->bAudioAutoTimeStretch);

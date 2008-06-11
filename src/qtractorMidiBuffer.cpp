@@ -163,6 +163,7 @@ void qtractorMidiManagerThread::sync (void)
 //----------------------------------------------------------------------
 // class qtractorMidiManager -- MIDI internal plugin list manager.
 //
+bool qtractorMidiManager::g_bAudioOutputBus = false;
 
 // Constructor.
 qtractorMidiManager::qtractorMidiManager ( qtractorSession *pSession,
@@ -180,7 +181,7 @@ qtractorMidiManager::qtractorMidiManager ( qtractorSession *pSession,
 	m_pVstMidiBuffer(NULL),
 	m_pVstBuffer(NULL),
 #endif
-	m_bAudioOutputBus(false),
+	m_bAudioOutputBus(g_bAudioOutputBus),
 	m_pAudioOutputBus(NULL),
 	m_iCurrentBank(0),
 	m_iCurrentProg(0),
@@ -474,6 +475,18 @@ void qtractorMidiManager::deleteMidiManager ( qtractorMidiManager *pMidiManager 
 		pSession = pMainForm->session();
 	if (pSession)
 		pSession->deleteMidiManager(pMidiManager);
+}
+
+
+// Some default factory options.
+void qtractorMidiManager::setDefaultAudioOutputBus ( bool bAudioOutputBus )
+{
+	g_bAudioOutputBus = bAudioOutputBus;
+}
+
+bool qtractorMidiManager::isDefaultAudioOutputBus (void)
+{
+	return g_bAudioOutputBus;
 }
 
 

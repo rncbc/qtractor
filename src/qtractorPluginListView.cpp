@@ -594,14 +594,6 @@ void qtractorPluginListView::editPlugin (void)
 
 
 // Audio specific slots.
-void qtractorPluginListView::audioOutputBus (void)
-{
-	qtractorMidiManager *pMidiManager = m_pPluginList->midiManager();
-	if (pMidiManager)
-		pMidiManager->setAudioOutputBus(!pMidiManager->isAudioOutputBus());
-}
-
-
 void qtractorPluginListView::audioOutputs (void)
 {
 	qtractorMidiManager *pMidiManager = m_pPluginList->midiManager();
@@ -612,6 +604,14 @@ void qtractorPluginListView::audioOutputs (void)
 				pMidiManager->audioOutputBus(), qtractorBus::Output);
 		}
 	}
+}
+
+
+void qtractorPluginListView::audioOutputBus (void)
+{
+	qtractorMidiManager *pMidiManager = m_pPluginList->midiManager();
+	if (pMidiManager)
+		pMidiManager->setAudioOutputBus(!pMidiManager->isAudioOutputBus());
 }
 
 
@@ -1032,12 +1032,12 @@ void qtractorPluginListView::contextMenuEvent (
 		menu.addSeparator();
 		QMenu *pAudioMenu = menu.addMenu("Audi&o");
 		pAction = pAudioMenu->addAction(
+			tr("&Outputs"), this, SLOT(audioOutputs()));
+		pAction->setEnabled(pMidiManager->audioOutputBus() != NULL);
+		pAction = pAudioMenu->addAction(
 			tr("&Dedicated"), this, SLOT(audioOutputBus()));
 		pAction->setCheckable(true);
 		pAction->setChecked(pMidiManager->isAudioOutputBus());
-		pAction = pAudioMenu->addAction(
-			tr("&Outputs"), this, SLOT(audioOutputs()));
-		pAction->setEnabled(pMidiManager->audioOutputBus() != NULL);
 	}
 
 	menu.exec(pContextMenuEvent->globalPos());

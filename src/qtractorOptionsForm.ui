@@ -2221,6 +2221,49 @@
         </widget>
        </item>
        <item>
+        <widget class="QGroupBox" name="PluginInstrumentsGroupBox" >
+         <property name="font" >
+          <font>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="title" >
+          <string>Instruments</string>
+         </property>
+         <property name="flat" >
+          <bool>true</bool>
+         </property>
+         <layout class="QGridLayout" >
+          <property name="margin" >
+           <number>9</number>
+          </property>
+          <property name="spacing" >
+           <number>6</number>
+          </property>
+          <item row="0" column="0" colspan="3" >
+           <widget class="QCheckBox" name="AudioOutputBusCheckBox" >
+            <property name="font" >
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="toolTip" >
+             <string>Whether to have separate audio output ports</string>
+            </property>
+            <property name="text" >
+             <string>Dedicated audi&amp;o outputs</string>
+            </property>
+            <property name="shortcut" >
+             <string>Alt+O</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
         <spacer>
          <property name="orientation" >
           <enum>Qt::Vertical</enum>
@@ -2340,6 +2383,7 @@
   <tabstop>PluginPathRemoveToolButton</tabstop>
   <tabstop>PluginPathUpToolButton</tabstop>
   <tabstop>PluginPathDownToolButton</tabstop>
+  <tabstop>AudioOutputBusCheckBox</tabstop>
   <tabstop>OkPushButton</tabstop>
   <tabstop>CancelPushButton</tabstop>
  </tabstops>

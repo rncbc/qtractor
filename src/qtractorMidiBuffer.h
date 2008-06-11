@@ -217,6 +217,10 @@ public:
 	static void deleteMidiManager(
 		qtractorMidiManager *pMidiManager);
 
+	// Some default factory options.
+	static void setDefaultAudioOutputBus(bool bAudioOutputBus);
+	static bool isDefaultAudioOutputBus();
+
 	// Plugin reference counting.
 	void addPluginRef(qtractorPlugin *pPlugin);
 	void removePluginRef(qtractorPlugin *pPlugin);
@@ -303,6 +307,9 @@ private:
 
 	// Aync manager thread.
 	qtractorMidiManagerThread *m_pSyncThread;
+
+	// Global factory options.
+	static bool g_bAudioOutputBus;
 };
 
 

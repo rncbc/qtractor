@@ -136,6 +136,9 @@ public:
 	QStringList dssiPaths;
 	QStringList vstPaths;
 
+	// Plug-in instrument options.
+	bool bAudioOutputBus;
+
 	// The instrument file list.
 	QStringList instrumentFiles;
 
