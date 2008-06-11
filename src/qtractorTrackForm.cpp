@@ -624,6 +624,7 @@ void qtractorTrackForm::updateBanks ( const QString& sInstrumentName,
 				m_banks[iBankIndex++] = it.key();
 			}
 		}
+	#if 0
 		// In case bank address is generic...
 		if (m_ui.BankComboBox->count() < 2) {
 			const qtractorInstrumentData& patch = instr.patch(iBank);
@@ -632,10 +633,13 @@ void qtractorTrackForm::updateBanks ( const QString& sInstrumentName,
 				m_banks[iBankIndex] = iBank;
 			}
 		}
+	#endif
 		// For proper bank selection...
+		iBankIndex = -1;
 		if (iBank >= 0) {
-			const qtractorInstrumentData& bank = instr.patch(iBank);
-			iBankIndex = m_ui.BankComboBox->findText(bank.name());
+			const qtractorInstrumentData& patch = instr.patch(iBank);
+			if (!patch.name().isEmpty())
+				iBankIndex = m_ui.BankComboBox->findText(patch.name());
 		}
 	}
 	else if (!bMidiManager)
@@ -645,6 +649,12 @@ void qtractorTrackForm::updateBanks ( const QString& sInstrumentName,
 	if (iBankSelMethod < 0)
 		iBankSelMethod = 0;
 	m_ui.BankSelMethodComboBox->setCurrentIndex(iBankSelMethod);
+
+	// If there's banks we must choose at least one...
+	if (iBank < 0 && m_banks.count() > 1) {
+		iBankIndex = 1;
+		iBank = m_banks[iBankIndex];
+	}
 
 	// Do the proper bank selection...
 	if (iBank < 0) {

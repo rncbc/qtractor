@@ -410,6 +410,16 @@ bool qtractorAudioEngine::init ( const QString& sClientName )
 	openPlayerBus();
 	openMetroBus();
 
+	// MIDI plugin managers output buses...
+	qtractorMidiManager *pMidiManager
+		= session()->midiManagers().first();
+	while (pMidiManager) {
+		qtractorAudioBus *pAudioBus = pMidiManager->audioOutputBus();
+		if (pAudioBus && pMidiManager->isAudioOutputBus())
+			pAudioBus->open();
+		pMidiManager = pMidiManager->next();
+	}
+
 	return true;
 }
 
@@ -457,6 +467,16 @@ bool qtractorAudioEngine::activate (void)
 			= static_cast<qtractorAudioBus *>(pBus);
 		if (pAudioBus)
 			pAudioBus->autoConnect();
+	}
+
+	// MIDI plugin managers output buses...
+	qtractorMidiManager *pMidiManager
+		= session()->midiManagers().first();
+	while (pMidiManager) {
+		qtractorAudioBus *pAudioBus = pMidiManager->audioOutputBus();
+		if (pAudioBus && pMidiManager->isAudioOutputBus())
+			pAudioBus->autoConnect();
+		pMidiManager = pMidiManager->next();
 	}
 
 	// We're now ready and running...
@@ -599,6 +619,7 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 		if (pAudioBus)
 			pAudioBus->process_prepare(nframes);
 	}
+
 	// The owned buses too, if any...
 	if (m_bMetroBus)
 		m_pMetroBus->process_prepare(nframes);
@@ -1494,7 +1515,7 @@ void qtractorAudioBus::setChannels ( unsigned short iChannels )
 		m_pIPluginList->setBuffer(iChannels, 0, 0);
 
 	if (m_pOPluginList)
-		m_pIPluginList->setBuffer(iChannels, 0, 0);
+		m_pOPluginList->setBuffer(iChannels, 0, 0);
 }
 
 unsigned short qtractorAudioBus::channels (void) const

@@ -109,6 +109,10 @@ protected slots:
 	void moveDownPlugin();
 	void editPlugin();
 
+	// Audio specific slots.
+	void audioOutputBus();
+	void audioOutputs();
+
 	// Drop item slots.
 	void dropMove();
 	void dropCopy();

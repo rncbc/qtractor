@@ -29,6 +29,10 @@
 
 #include "qtractorMainForm.h"
 
+#include "qtractorAudioEngine.h"
+#include "qtractorMidiBuffer.h"
+#include "qtractorConnections.h"
+
 #include <QItemDelegate>
 #include <QPainter>
 #include <QMenu>
@@ -589,6 +593,28 @@ void qtractorPluginListView::editPlugin (void)
 }
 
 
+// Audio specific slots.
+void qtractorPluginListView::audioOutputBus (void)
+{
+	qtractorMidiManager *pMidiManager = m_pPluginList->midiManager();
+	if (pMidiManager)
+		pMidiManager->setAudioOutputBus(!pMidiManager->isAudioOutputBus());
+}
+
+
+void qtractorPluginListView::audioOutputs (void)
+{
+	qtractorMidiManager *pMidiManager = m_pPluginList->midiManager();
+	if (pMidiManager && pMidiManager->audioOutputBus()) {
+		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+		if (pMainForm && pMainForm->connections()) {
+			(pMainForm->connections())->showBus(
+				pMidiManager->audioOutputBus(), qtractorBus::Output);
+		}
+	}
+}
+
+
 // Show an existing plugin form slot.
 void qtractorPluginListView::itemDoubleClickedSlot ( QListWidgetItem *item )
 {
@@ -977,7 +1003,7 @@ void qtractorPluginListView::contextMenuEvent (
 	menu.addSeparator();
 
 	pAction = menu.addAction(
-		tr("Rem&ove All"), this, SLOT(removeAllPlugins()));
+		tr("Re&move All"), this, SLOT(removeAllPlugins()));
 	pAction->setEnabled(bEnabled);
 
 	menu.addSeparator();
@@ -1000,6 +1026,19 @@ void qtractorPluginListView::contextMenuEvent (
 	pAction->setCheckable(true);
 	pAction->setChecked(pPlugin && pPlugin->isFormVisible());
 	pAction->setEnabled(pItem != NULL);
+
+	qtractorMidiManager *pMidiManager = m_pPluginList->midiManager();
+	if (pMidiManager) {
+		menu.addSeparator();
+		QMenu *pAudioMenu = menu.addMenu("Audi&o");
+		pAction = pAudioMenu->addAction(
+			tr("&Dedicated"), this, SLOT(audioOutputBus()));
+		pAction->setCheckable(true);
+		pAction->setChecked(pMidiManager->isAudioOutputBus());
+		pAction = pAudioMenu->addAction(
+			tr("&Outputs"), this, SLOT(audioOutputs()));
+		pAction->setEnabled(pMidiManager->audioOutputBus() != NULL);
+	}
 
 	menu.exec(pContextMenuEvent->globalPos());
 }

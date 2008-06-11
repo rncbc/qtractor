@@ -226,9 +226,12 @@ public:
 #endif
 
 	// Audio output bus mode accessors.
-	void setOutputBus(bool bOutputBus);
-	bool isOutputBus() const;
-	void resetOutputBus();
+	void setAudioOutputBus(bool bAudioOutputBus);
+	bool isAudioOutputBus() const
+		{ return m_bAudioOutputBus; }
+	qtractorAudioBus *audioOutputBus() const
+		{ return m_pAudioOutputBus; }
+	void resetAudioOutputBus();
 
 	// Current program selection accessors.
 	int currentBank() const { return m_iCurrentBank; }
@@ -257,8 +260,8 @@ public:
 protected:
 
 	// Audiop output (de)activation methods.
-	void createOutputBus();
-	void deleteOutputBus();
+	void createAudioOutputBus();
+	void deleteAudioOutputBus();
 
 private:
 #ifdef CONFIG_VST
@@ -286,8 +289,8 @@ private:
 	unsigned char      *m_pVstBuffer;
 #endif
 
-	bool                m_bOutputBus;
-	qtractorAudioBus   *m_pOutputBus;
+	bool                m_bAudioOutputBus;
+	qtractorAudioBus   *m_pAudioOutputBus;
 
 	int m_iCurrentBank;
 	int m_iCurrentProg;

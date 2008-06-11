@@ -24,6 +24,7 @@
 #include "qtractorPluginListView.h"
 #include "qtractorPluginForm.h"
 
+#include "qtractorAudioEngine.h"
 #include "qtractorMidiBuffer.h"
 
 #include "qtractorMainForm.h"
@@ -693,7 +694,7 @@ void qtractorPluginList::setName ( const QString& sName )
 	}
 
 	if (m_pMidiManager)
-		m_pMidiManager->resetOutputBus();
+		m_pMidiManager->resetAudioOutputBus();
 }
 
 
@@ -1072,6 +1073,25 @@ bool qtractorPluginList::loadElement ( qtractorSessionDocument *pDocument,
 				append(pPlugin);
 			}
 		}
+		else
+		// Load audio output bus flag...
+		if (ePlugin.tagName() == "audio-output-bus") {
+			if (m_pMidiManager) {
+				m_pMidiManager->setAudioOutputBus(
+					pDocument->boolFromText(ePlugin.text()));
+			}
+		}
+		else
+		// Load audio output connections...
+		if (ePlugin.tagName() == "audio-outputs") {
+			if (m_pMidiManager && m_pMidiManager->isAudioOutputBus()) {
+				qtractorAudioBus *pAudioBus = m_pMidiManager->audioOutputBus();
+				if (pAudioBus) {
+					pAudioBus->loadConnects(
+						pAudioBus->outputs(), pDocument, &ePlugin);
+				}
+			}
+		}
 	}
 
 	return true;
@@ -1121,6 +1141,23 @@ bool qtractorPluginList::saveElement ( qtractorSessionDocument *pDocument,
 
 		// May release plugin state...
 		pPlugin->releaseConfigs();
+	}
+
+	// Save audio output-bus connects...
+	if (m_pMidiManager) {
+		pDocument->saveTextElement("audio-output-bus",
+			pDocument->textFromBool(m_pMidiManager->isAudioOutputBus()), pElement);
+		if (m_pMidiManager->isAudioOutputBus()) {
+			qtractorAudioBus *pAudioBus = m_pMidiManager->audioOutputBus();
+			if (pAudioBus) {
+				QDomElement eOutputs
+					= pDocument->document()->createElement("audio-outputs");
+				qtractorBus::ConnectList outputs;
+				pAudioBus->updateConnects(qtractorBus::Output, outputs);
+				pAudioBus->saveConnects(outputs, pDocument, &eOutputs);
+				pElement->appendChild(eOutputs);
+			}
+		}
 	}
 
 	return true;

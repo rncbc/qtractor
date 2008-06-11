@@ -180,8 +180,8 @@ qtractorMidiManager::qtractorMidiManager ( qtractorSession *pSession,
 	m_pVstMidiBuffer(NULL),
 	m_pVstBuffer(NULL),
 #endif
-	m_bOutputBus(false),
-	m_pOutputBus(NULL),
+	m_bAudioOutputBus(false),
+	m_pAudioOutputBus(NULL),
 	m_iCurrentBank(0),
 	m_iCurrentProg(0),
 	m_iPendingBankMSB(-1),
@@ -193,13 +193,13 @@ qtractorMidiManager::qtractorMidiManager ( qtractorSession *pSession,
 	m_pSyncThread = new qtractorMidiManagerThread(this);
 	m_pSyncThread->start();
 
-	createOutputBus();
+	createAudioOutputBus();
 }
 
 // Destructor.
 qtractorMidiManager::~qtractorMidiManager (void)
 {
-	deleteOutputBus();
+	deleteAudioOutputBus();
 
 #ifdef CONFIG_VST
 	deleteVstMidiParser();
@@ -365,9 +365,13 @@ void qtractorMidiManager::process (
 #endif
 
 	// Now's time to process the plugins as usual...
-	if (m_pOutputBus) {
+	if (m_pAudioOutputBus) {
 		unsigned int nframes = iTimeEnd - iTimeStart;
-		m_pPluginList->process(m_pOutputBus->out(), nframes);
+		if (m_bAudioOutputBus)
+			m_pAudioOutputBus->process_prepare(nframes);
+		m_pPluginList->process(m_pAudioOutputBus->out(), nframes);
+		if (m_bAudioOutputBus)
+			m_pAudioOutputBus->process_commit(nframes);
 	}
 }
 
@@ -552,90 +556,64 @@ void qtractorMidiManager::removePluginRef ( qtractorPlugin *pPlugin )
 
 
 // Output bus mode accessors.
-void qtractorMidiManager::setOutputBus ( bool bOutputBus )
+void qtractorMidiManager::setAudioOutputBus ( bool bAudioOutputBus )
 {
-	deleteOutputBus();
+	deleteAudioOutputBus();
 
-	m_bOutputBus = bOutputBus;
+	m_bAudioOutputBus = bAudioOutputBus;
 
-	createOutputBus();
+	resetAudioOutputBus();
 }
 
-bool qtractorMidiManager::isOutputBus (void) const
+void qtractorMidiManager::resetAudioOutputBus (void)
 {
-	return m_bOutputBus;
-}
-
-void qtractorMidiManager::resetOutputBus (void)
-{
-	createOutputBus();
+	createAudioOutputBus();
 }
 
 
 // Create audio output stuff...
-void qtractorMidiManager::createOutputBus (void)
+void qtractorMidiManager::createAudioOutputBus (void)
 {
 	qtractorAudioEngine *pAudioEngine = m_pSession->audioEngine();
 	if (pAudioEngine == NULL)
 		return;
 
-	m_pSession->lock();
-
-	deleteOutputBus();
+	deleteAudioOutputBus();
 
 	// Whether audio output bus is here owned, or...
-	if (m_bOutputBus) {
-		// Owned but part of audio engine...
-		m_pOutputBus = new qtractorAudioBus(pAudioEngine,
-			m_pPluginList->name(), qtractorBus::Output, m_pPluginList->channels());
-		pAudioEngine->addBus(m_pOutputBus);
+	if (m_bAudioOutputBus) {
+		// Owned, not part of audio engine...
+		m_pAudioOutputBus = new qtractorAudioBus(pAudioEngine,
+			m_pPluginList->name(),
+			qtractorBus::Output,
+			m_pPluginList->channels());
 		if (pAudioEngine->isActivated()) {
-			if (m_pOutputBus->open())
-				m_pOutputBus->autoConnect();
+			if (m_pAudioOutputBus->open())
+				m_pAudioOutputBus->autoConnect();
 		}
-		// Refresh mixer display...
-		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-		if (pMainForm && pMainForm->mixer())
-			(pMainForm->mixer())->updateBuses();
-	} else {
+	}
+	else {
 		// Output bus gets to be the first available output bus...
 		for (qtractorBus *pBus = (pAudioEngine->buses()).first();
 				pBus; pBus = pBus->next()) {
 			if (pBus->busMode() & qtractorBus::Output) {
-				m_pOutputBus = static_cast<qtractorAudioBus *> (pBus);
+				m_pAudioOutputBus = static_cast<qtractorAudioBus *> (pBus);
 				break;
 			}
 		}
 	}
-
-	m_pSession->unlock();
 }
 
 
 // Destroy audio Outputnome stuff.
-void qtractorMidiManager::deleteOutputBus (void)
+void qtractorMidiManager::deleteAudioOutputBus (void)
 {
-	qtractorAudioEngine *pAudioEngine = m_pSession->audioEngine();
-	if (pAudioEngine == NULL)
-		return;
-
-	m_pSession->lock();
-
-	if (m_bOutputBus && m_pOutputBus) {
-		// Owned but part of audio engine...
-		if (pAudioEngine->isActivated())
-			m_pOutputBus->close();
-		pAudioEngine->removeBus(m_pOutputBus);
-		// Refresh mixer display...
-		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-		if (pMainForm && pMainForm->mixer())
-			(pMainForm->mixer())->updateBuses();
-	}
+	// Owned, not part of audio engine...
+	if (m_bAudioOutputBus && m_pAudioOutputBus)
+		delete m_pAudioOutputBus;
 
 	// Done.
-	m_pOutputBus = NULL;
-
-	m_pSession->unlock();
+	m_pAudioOutputBus = NULL;
 }
 
 
