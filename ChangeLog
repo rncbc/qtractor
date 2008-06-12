@@ -13,7 +13,7 @@ CVS HEAD
 - Dedicated audio output bus option is now also accessible for all
   MIDI instrument plugins, either set globally as a default mode in
   View/Options.../Plugins/Instruments or in the plugin context menu
-  for MIDI tracks.
+  for MIDI tracks, as an undoable command.
 
 - Fixed a potential crash-exception due to freeing a null-pointer,
   raised on some ever stringent platforms and while adding tracks

@@ -610,8 +610,16 @@ void qtractorPluginListView::audioOutputs (void)
 void qtractorPluginListView::audioOutputBus (void)
 {
 	qtractorMidiManager *pMidiManager = m_pPluginList->midiManager();
-	if (pMidiManager)
-		pMidiManager->setAudioOutputBus(!pMidiManager->isAudioOutputBus());
+	if (pMidiManager == NULL)
+		return;
+
+	// Make it an undoable command...
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm) {
+		pMainForm->commands()->exec(
+			new qtractorAudioOutputBusCommand(pMidiManager,
+				!pMidiManager->isAudioOutputBus()));
+	}
 }
 
 
@@ -1030,7 +1038,8 @@ void qtractorPluginListView::contextMenuEvent (
 	qtractorMidiManager *pMidiManager = m_pPluginList->midiManager();
 	if (pMidiManager) {
 		menu.addSeparator();
-		QMenu *pAudioMenu = menu.addMenu("Audi&o");
+		QMenu *pAudioMenu = menu.addMenu(
+			QIcon(":/icons/trackAudio.png"), "Audi&o");
 		pAction = pAudioMenu->addAction(
 			tr("&Outputs"), this, SLOT(audioOutputs()));
 		pAction->setEnabled(pMidiManager->audioOutputBus() != NULL);

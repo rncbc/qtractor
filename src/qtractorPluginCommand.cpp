@@ -28,6 +28,8 @@
 #include "qtractorMainForm.h"
 #include "qtractorSession.h"
 
+#include "qtractorMidiBuffer.h"
+
 
 //----------------------------------------------------------------------
 // class qtractorPluginCommand - implementation
@@ -497,6 +499,39 @@ bool qtractorPluginParamCommand::redo (void)
 bool qtractorPluginParamCommand::undo (void)
 {
 	// As we swap the prev/value this is non-idempotent.
+	return redo();
+}
+
+
+//----------------------------------------------------------------------
+// class qtractorAudioOutputBusCommand - declaration.
+//
+
+// Constructor.
+qtractorAudioOutputBusCommand::qtractorAudioOutputBusCommand (
+	qtractorMidiManager *pMidiManager, bool bAudioOutputBus )
+	: qtractorCommand(QObject::tr("dedicated audio outputs")),
+		m_pMidiManager(pMidiManager),
+		m_bAudioOutputBus(bAudioOutputBus)
+{
+}
+
+
+// Plugin audio ouput bus command methods.
+bool qtractorAudioOutputBusCommand::redo (void)
+{
+	if (m_pMidiManager == NULL)
+		return false;
+
+	bool bAudioOutputBus = m_pMidiManager->isAudioOutputBus();
+	m_pMidiManager->setAudioOutputBus(m_bAudioOutputBus);
+	m_bAudioOutputBus = bAudioOutputBus;
+
+	return true;
+}
+
+bool qtractorAudioOutputBusCommand::undo (void)
+{
 	return redo();
 }
 

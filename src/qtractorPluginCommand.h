@@ -31,6 +31,7 @@
 
 // Forward declarations...
 class qtractorPluginPortWidget;
+class qtractorMidiManager;
 
 
 //----------------------------------------------------------------------
@@ -256,6 +257,31 @@ private:
 	float m_fValue;
 	float m_fPrevValue;
 	bool  m_bPrevValue;
+};
+
+
+//----------------------------------------------------------------------
+// class qtractorAudioOutputBusCommand - declaration.
+//
+
+class qtractorAudioOutputBusCommand : public qtractorCommand
+{
+public:
+
+	// Constructor.
+	qtractorAudioOutputBusCommand(qtractorMidiManager *pMidiManager,
+		bool bAudioOutputBus);
+
+	// Plugin audio ouput bus command methods.
+	bool redo();
+	bool undo();
+
+private:
+
+	// Instance variables.
+	qtractorMidiManager *m_pMidiManager;
+
+	bool m_bAudioOutputBus;
 };
 
 

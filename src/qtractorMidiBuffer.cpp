@@ -571,16 +571,20 @@ void qtractorMidiManager::removePluginRef ( qtractorPlugin *pPlugin )
 // Output bus mode accessors.
 void qtractorMidiManager::setAudioOutputBus ( bool bAudioOutputBus )
 {
+	m_pSession->lock();
 	deleteAudioOutputBus();
 
 	m_bAudioOutputBus = bAudioOutputBus;
 
-	resetAudioOutputBus();
+	createAudioOutputBus();
+	m_pSession->unlock();
 }
 
 void qtractorMidiManager::resetAudioOutputBus (void)
 {
+	m_pSession->lock();
 	createAudioOutputBus();
+	m_pSession->unlock();
 }
 
 
