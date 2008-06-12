@@ -539,6 +539,7 @@ bool qtractorDssiPluginType::open (void)
 #endif
 
 	// Things we have now for granted...
+	m_bConfigure = (m_pDssiDescriptor->configure != NULL);
 	m_iMidiIns = 1;
 
 #ifdef CONFIG_LIBLO
@@ -950,7 +951,6 @@ void qtractorDssiPlugin::setController ( int iController, int iValue )
 	if (pDssiEditor)
 		osc_send_control(pDssiEditor, pParam->index(), fValue);
 #endif
-
 }
 
 
@@ -978,6 +978,15 @@ void qtractorDssiPlugin::configure ( const QString& sKey, const QString& sValue 
 			sKey.toUtf8().constData(),
 			sValue.toUtf8().constData());
 	}
+
+#ifdef CONFIG_LIBLO
+	DssiEditor *pDssiEditor = osc_find_editor(this);
+	if (pDssiEditor) {
+		osc_send_configure(pDssiEditor,
+			sKey.toUtf8().constData(),
+			sValue.toUtf8().constData());
+	}
+#endif
 }
 
 
@@ -1006,6 +1015,22 @@ qtractorDssiPluginParam::qtractorDssiPluginParam (
 qtractorDssiPluginParam::~qtractorDssiPluginParam (void)
 {
 }
+
+
+// Parameter value setter.
+void qtractorDssiPluginParam::setValue ( float fValue )
+{
+	qtractorLadspaPluginParam::setValue(fValue);
+
+#ifdef CONFIG_LIBLO
+	// And update the editor too...
+	DssiEditor *pDssiEditor
+		= osc_find_editor(static_cast<qtractorDssiPlugin *> (plugin()));
+	if (pDssiEditor)
+		osc_send_control(pDssiEditor, index(), value());
+#endif
+}
+
 
 #endif	// CONFIG_DSSI
 

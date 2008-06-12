@@ -42,6 +42,9 @@
 #include "qtractorVstPlugin.h"
 #endif
 
+#include <QDomDocument>
+#include <QTextStream>
+#include <QFileInfo>
 #include <QDir>
 
 typedef void (*qtractorPluginFile_Function)(void);
@@ -508,7 +511,6 @@ void qtractorPlugin::setValues ( const QStringList& vlist )
 	QListIterator<qtractorPluginParam *> iter(m_params);
 	while (iter.hasNext() && val.hasNext())
 		iter.next()->setValue(val.next().toFloat());
-
 }
 
 QStringList qtractorPlugin::values (void) const
@@ -610,20 +612,153 @@ const QString& qtractorPlugin::preset (void)
 }
 
 
-// Plugin preset group - common identification prefix.
+// Plugin preset group - common identification group/prefix.
 QString qtractorPlugin::presetGroup (void) const
 {
-	QString sGroup;
+	return "/Plugin/" + presetPrefix();
+}
 
-	// Normalize plugin identification prefix...
+// Normalize plugin identification prefix...
+QString qtractorPlugin::presetPrefix (void) const
+{
+	QString sPrefix;
+
 	if (m_pType) {
-		sGroup  = "/Plugin/";
-		sGroup += m_pType->label();
-		sGroup += '_';
-		sGroup += QString::number(m_pType->uniqueID());
+		sPrefix += m_pType->label();
+		sPrefix += '_';
+		sPrefix += QString::number(m_pType->uniqueID());
 	}
 
-	return sGroup;
+	return sPrefix;
+}
+
+
+// Load plugin preset from xml file.
+bool qtractorPlugin::loadPreset ( const QString& sFilename )
+{
+	// Open file...
+	QFile file(sFilename);
+	if (!file.open(QIODevice::ReadOnly))
+		return false;
+	// Parse it a-la-DOM :-)
+	QDomDocument doc("qtractorPlugin");
+	if (!doc.setContent(&file)) {
+		file.close();
+		return false;
+	}
+	file.close();
+
+	// Get root element.
+	QDomElement ePreset = doc.documentElement();
+	if (ePreset.tagName() != "preset")
+		return false;
+	// Check if it's on the correct plugin preset...
+	if (ePreset.attribute("type") != presetPrefix())
+		return false;
+
+	// Now parse for children...
+	for (QDomNode nChild = ePreset.firstChild();
+			!nChild.isNull(); nChild = nChild.nextSibling()) {
+
+		// Convert node to element, if any.
+		QDomElement eChild = nChild.toElement();
+		if (eChild.isNull())
+			continue;
+
+		// Check for preset item...
+		if (eChild.tagName() == "params") {
+			// Parse for param entries...
+			for (QDomNode nParam = eChild.firstChild();
+					!nParam.isNull(); nParam = nParam.nextSibling()) {
+				// Convert node to element, if any.
+				QDomElement eParam = nParam.toElement();
+				if (eParam.isNull())
+					continue;
+				// Check for config item...
+				if (eParam.tagName() == "param") {
+					qtractorPluginParam *pParam
+						= findParam(eParam.attribute("index").toULong());
+					if (pParam)
+					 	pParam->setValue(eParam.text().toFloat());
+				}
+			}
+		}
+		else
+		if (eChild.tagName() == "configs") {
+			// Reset any old configs.
+			m_configs.clear();
+			// Parse for config entries...
+			for (QDomNode nConfig = eChild.firstChild();
+					!nConfig.isNull(); nConfig = nConfig.nextSibling()) {
+				// Convert node to element, if any.
+				QDomElement eConfig = nConfig.toElement();
+				if (eConfig.isNull())
+					continue;
+				// Check for config item...
+				if (eConfig.tagName() == "config")
+					m_configs[eConfig.attribute("key")] = eConfig.text();
+			}
+			// Make it real.
+			realizeConfigs();
+			releaseConfigs();
+		}
+	}
+
+	return true;
+}
+
+
+// Save plugin preset to xml file.
+bool qtractorPlugin::savePreset ( const QString& sFilename )
+{
+	QFileInfo fi(sFilename);
+
+	QDomDocument doc("qtractorPlugin");
+
+	QDomElement ePreset = doc.createElement("preset");
+	ePreset.setAttribute("type", presetPrefix());
+	ePreset.setAttribute("name", fi.baseName());
+	ePreset.setAttribute("version", QTRACTOR_VERSION);
+
+	// Save plugin params...
+	QDomElement eParams = doc.createElement("params");
+	QListIterator<qtractorPluginParam *> param(m_params);
+	while (param.hasNext()) {
+		qtractorPluginParam *pParam = param.next();
+		QDomElement eParam = doc.createElement("param");
+		eParam.setAttribute("name", pParam->name());
+		eParam.setAttribute("index", QString::number(pParam->index()));
+		eParam.appendChild(
+			doc.createTextNode(QString::number(pParam->value())));
+		eParams.appendChild(eParam);
+	}
+	ePreset.appendChild(eParams);
+
+	// Save plugin configs...
+	freezeConfigs();
+	QDomElement eConfigs = doc.createElement("configs");
+	Configs::ConstIterator iter = m_configs.constBegin();
+	for (; iter != m_configs.constEnd(); ++iter) {
+		QDomElement eConfig = doc.createElement("config");
+		eConfig.setAttribute("key", iter.key());
+		eConfig.appendChild(
+			doc.createTextNode(iter.value()));
+		eConfigs.appendChild(eConfig);
+	}
+	ePreset.appendChild(eConfigs);
+	releaseConfigs();
+
+	doc.appendChild(ePreset);
+
+	// Finally, we're ready to save to external file.
+	QFile file(sFilename);
+	if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate))
+		return false;
+	QTextStream ts(&file);
+	ts << doc.toString() << endl;
+	file.close();
+
+	return true;
 }
 
 

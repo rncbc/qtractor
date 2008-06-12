@@ -155,6 +155,9 @@ public:
 
 	// Destructor.
 	~qtractorDssiPluginParam();
+
+	// Parameter value setter.
+	void setValue(float fValue);
 };
 
 

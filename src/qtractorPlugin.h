@@ -62,7 +62,7 @@ public:
 	qtractorPluginType(qtractorPluginFile *pFile, unsigned long iIndex,
 		Hint typeHint) : m_iUniqueID(0), m_iControlIns(0), m_iControlOuts(0),
 			m_iAudioIns(0), m_iAudioOuts(0), m_iMidiIns(0), m_iMidiOuts(0),
-			m_bRealtime(false), m_bEditor(false),
+			m_bRealtime(false), m_bConfigure(false), m_bEditor(false),
 			m_pFile(pFile), m_iIndex(iIndex), m_typeHint(typeHint) {}
 
 	// Destructor (virtual)
@@ -92,6 +92,7 @@ public:
 
 	// Attribute accessors.
 	bool           isRealtime()  const { return m_bRealtime;    }
+	bool           isConfigure() const { return m_bConfigure;   }
 	bool           isEditor()    const { return m_bEditor;      }
 	bool           isMidi()      const { return m_iMidiIns > 0; }
 
@@ -123,6 +124,7 @@ protected:
 
 	// Cached flags.
 	bool m_bRealtime;
+	bool m_bConfigure;
 	bool m_bEditor;
 
 private:
@@ -329,6 +331,9 @@ public:
 	virtual void configure(
 		const QString& /*sKey*/, const QString& /*sValue*/) {}
 
+	// Tall whether configuration snapshot is needed.
+	virtual bool isConfigure() { return false; }
+
 	// Plugin configuration/state snapshot.
 	virtual void freezeConfigs() {}
 	virtual void releaseConfigs() {}
@@ -367,6 +372,11 @@ public:
 
 	// Plugin preset group - common identification prefix.
 	QString presetGroup() const;
+	QString presetPrefix() const;
+
+	// Plugin configuration from/to xml file.
+	bool loadPreset(const QString& sFilename);
+	bool savePreset(const QString& sFilename);
 
 	// Plugin parameter lookup.
 	qtractorPluginParam *findParam(unsigned long iIndex) const;

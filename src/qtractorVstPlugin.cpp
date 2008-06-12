@@ -573,8 +573,9 @@ bool qtractorVstPluginType::open (void)
 	m_iMidiOuts    = ((m_iFlagsEx & effFlagsExCanSendVstMidiEvents) ? 1 : 0);
 
 	// Cache flags.
-	m_bRealtime = true;
-	m_bEditor   = (pVstEffect->flags & effFlagsHasEditor);
+	m_bRealtime  = true;
+	m_bConfigure = (pVstEffect->flags & effFlagsProgramChunks);
+	m_bEditor    = (pVstEffect->flags & effFlagsHasEditor);
 
 	return true;
 }
@@ -914,11 +915,11 @@ void qtractorVstPlugin::configure ( const QString& sKey, const QString& sValue )
 // Plugin configuration/state snapshot.
 void qtractorVstPlugin::freezeConfigs (void)
 {
-	AEffect *pVstEffect = vst_effect(0);
-	if (pVstEffect == NULL)
+	if (!type()->isConfigure())
 		return;
 
-	if ((pVstEffect->flags & effFlagsProgramChunks) == 0)
+	AEffect *pVstEffect = vst_effect(0);
+	if (pVstEffect == NULL)
 		return;
 
 	// Save plugin state into chunk configuration...

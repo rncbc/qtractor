@@ -139,6 +139,7 @@ qtractorOptions::qtractorOptions (void)
 	sSessionDir    = m_settings.value("/SessionDir").toString();
 	sAudioDir      = m_settings.value("/AudioDir").toString();
 	sMidiDir       = m_settings.value("/MidiDir").toString();
+	sPresetDir     = m_settings.value("/PresetDir").toString();
 	sInstrumentDir = m_settings.value("/InstrumentDir").toString();
 	sPluginSearch  = m_settings.value("/PluginSearch").toString();
 	iPluginType    = m_settings.value("/PluginType", 1).toInt();
@@ -311,6 +312,7 @@ qtractorOptions::~qtractorOptions (void)
 	m_settings.setValue("/SessionDir", sSessionDir);
 	m_settings.setValue("/AudioDir", sAudioDir);
 	m_settings.setValue("/MidiDir", sMidiDir);
+	m_settings.setValue("/PresetDir", sPresetDir);
 	m_settings.setValue("/InstrumentDir", sInstrumentDir);
 	m_settings.setValue("/PluginSearch", sPluginSearch);
 	m_settings.setValue("/PluginType", iPluginType);

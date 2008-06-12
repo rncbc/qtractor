@@ -39,6 +39,9 @@
 #include <QCheckBox>
 #include <QDoubleSpinBox>
 
+#include <QFileInfo>
+#include <QFileDialog>
+
 #include <math.h>
 
 // This shall hold the default preset name.
@@ -332,8 +335,12 @@ void qtractorPluginForm::loadPresetSlot ( const QString& sPreset )
 	if (m_iUpdate > 0 || sPreset.isEmpty())
 		return;
 
+	// We'll need this, sure.
+	qtractorOptions  *pOptions  = NULL;
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
+	if (pMainForm)
+		pOptions = pMainForm->options();
+	if (pOptions == NULL)
 		return;
 
 	if (sPreset == g_sDefPreset) {
@@ -342,14 +349,17 @@ void qtractorPluginForm::loadPresetSlot ( const QString& sPreset )
 			new qtractorResetPluginCommand(m_pPlugin));
 	} else {
 		// An existing preset is about to be loaded...
-		qtractorOptions *pOptions = pMainForm->options();
-		if (pOptions) {
-			QSettings& settings = pOptions->settings();
-			// Get the preset entry, if any...
+		QSettings& settings = pOptions->settings();
+		// Should it be load from know file?...
+		if ((m_pPlugin->type())->isConfigure()) {
+			settings.beginGroup(m_pPlugin->presetGroup());
+			m_pPlugin->loadPreset(settings.value(sPreset).toString());
+			settings.endGroup();
+		} else {
+			//...or make it as usual (parameter list only)...
 			settings.beginGroup(m_pPlugin->presetGroup());
 			QStringList vlist = settings.value(sPreset).toStringList();
 			settings.endGroup();
-			// Is it there?
 			if (!vlist.isEmpty()) {
 				pMainForm->commands()->exec(
 					new qtractorPresetPluginCommand(m_pPlugin, vlist));
@@ -370,23 +380,34 @@ void qtractorPluginForm::savePresetSlot (void)
 	if (sPreset.isEmpty() || sPreset == g_sDefPreset)
 		return;
 
+	// We'll need this, sure.
+	qtractorOptions  *pOptions  = NULL;
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm)
+		pOptions = pMainForm->options();
+	if (pOptions == NULL)
+		return;
+
 	// The current state preset is about to be saved...
-	QStringList vlist = m_pPlugin->values();
-	// Is there any?
-	if (!vlist.isEmpty()) {
-		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-		if (pMainForm) {
-			qtractorOptions *pOptions = pMainForm->options();
-			if (pOptions) {
-				QSettings& settings = pOptions->settings();
-				// Set the preset entry...
-				settings.beginGroup(m_pPlugin->presetGroup());
-				settings.setValue(sPreset, vlist);
-				settings.endGroup();
-				refresh();
-			}
+	// this is where we'll make it...
+	QSettings& settings = pOptions->settings();
+	settings.beginGroup(m_pPlugin->presetGroup());
+	// Which mode of preset?
+	if ((m_pPlugin->type())->isConfigure()) {
+		// Sure, we'll have something complex enough
+		// to make it save into an external file...
+		QFileInfo fi(QDir(pOptions->sPresetDir), sPreset + ".xml");
+		QString sFilename = QFileDialog::getSaveFileName(this,
+			tr("Save Preset File"), fi.absoluteFilePath());
+		if (!sFilename.isEmpty()
+			&& m_pPlugin->savePreset(sFilename)) {
+			settings.setValue(sPreset, sFilename);
+			pOptions->sPresetDir = QFileInfo(sFilename).absolutePath();
 		}
-	}
+	}	// Just leave it to simple parameter value list...
+	else settings.setValue(sPreset, m_pPlugin->values());
+	settings.endGroup();
+	refresh();
 
 	stabilize();
 }
@@ -401,31 +422,38 @@ void qtractorPluginForm::deletePresetSlot (void)
 	if (sPreset.isEmpty() || sPreset == g_sDefPreset)
 		return;
 
-	// A preset entry is about to be deleted...
+	// We'll need this, sure.
+	qtractorOptions  *pOptions  = NULL;
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm) {
-		qtractorOptions *pOptions = pMainForm->options();
-		if (pOptions) {
-			// Prompt user if he/she's sure about this...
-			if (pOptions->bConfirmRemove) {
-				if (QMessageBox::warning(this,
-					tr("Warning") + " - " QTRACTOR_TITLE,
-					tr("About to delete preset:\n\n"
-					"\"%1\" (%2)\n\n"
-					"Are you sure?")
-					.arg(sPreset)
-					.arg((m_pPlugin->type())->name()),
-					tr("OK"), tr("Cancel")) > 0)
-					return;
-			}
-			// Go ahead...
-			QSettings& settings = pOptions->settings();
-			settings.beginGroup(m_pPlugin->presetGroup());
-			settings.remove(sPreset);
-			settings.endGroup();
-			refresh();
-		}
+	if (pMainForm)
+		pOptions = pMainForm->options();
+	if (pOptions == NULL)
+		return;
+
+	// A preset entry is about to be deleted;
+	// prompt user if he/she's sure about this...
+	if (pOptions->bConfirmRemove) {
+		if (QMessageBox::warning(this,
+			tr("Warning") + " - " QTRACTOR_TITLE,
+			tr("About to delete preset:\n\n"
+			"\"%1\" (%2)\n\n"
+			"Are you sure?")
+			.arg(sPreset)
+			.arg((m_pPlugin->type())->name()),
+			tr("OK"), tr("Cancel")) > 0)
+			return;
 	}
+	// Go ahead...
+	QSettings& settings = pOptions->settings();
+	settings.beginGroup(m_pPlugin->presetGroup());
+	if ((m_pPlugin->type())->isConfigure()) {
+		const QString& sFilename = settings.value(sPreset).toString();
+		if (QFileInfo(sFilename).exists())
+			QFile(sFilename).remove();
+	}
+	settings.remove(sPreset);
+	settings.endGroup();
+	refresh();
 
 	stabilize();
 }
@@ -537,8 +565,11 @@ void qtractorPluginForm::stabilize (void)
 	bool bExists  = false;
 	bool bEnabled = (m_pPlugin != NULL);
 	m_ui.ActivateToolButton->setEnabled(bEnabled);
-	if (bEnabled)
-		bEnabled = ((m_pPlugin->type())->controlIns() > 0);
+	if (bEnabled) {
+		bEnabled = (
+			(m_pPlugin->type())->controlIns() > 0 ||
+			(m_pPlugin->type())->isConfigure());
+	}
 	m_ui.PresetComboBox->setEnabled(bEnabled);
 
 	if (bEnabled) {

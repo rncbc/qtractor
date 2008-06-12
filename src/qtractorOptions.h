@@ -125,6 +125,7 @@ public:
 	QString sSessionDir;
 	QString sAudioDir;
 	QString sMidiDir;
+	QString sPresetDir;
 	QString sInstrumentDir;
 
 	// Plugin search string.

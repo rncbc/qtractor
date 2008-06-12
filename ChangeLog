@@ -10,6 +10,10 @@ CVS HEAD
   host implementation and VSTi is already kicking as well (HIGHLY
   EXPERIMENTAL).
 
+- DSSI/VSTi plugin presets may now be stored to external XML files,
+  which should include all parameter values and configuration data
+  chunks, taken as proper state snapshot and subject for recall.
+
 - Dedicated audio output bus option is now also accessible for all
   MIDI instrument plugins, either set globally as a default mode in
   View/Options.../Plugins/Instruments or in the plugin context menu
