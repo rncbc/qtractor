@@ -544,7 +544,8 @@ bool qtractorVstPluginType::open (void)
 		m_sName = szName;
 	else
 		m_sName = QFileInfo(file()->filename()).baseName();
-	m_sLabel = m_sName;
+	// Sanitize plugin label.
+	m_sLabel = m_sName.simplified().replace(QRegExp("[\\s|\\.|\\-]+"), "_");
 
 	// Retrieve plugin unique identifier.
 	m_iUniqueID = pVstEffect->uniqueID;
@@ -1149,7 +1150,7 @@ qtractorVstPluginParam::qtractorVstPluginParam (
 	qtractorVstPlugin *pVstPlugin, unsigned long iIndex )
 	: qtractorPluginParam(pVstPlugin, iIndex)
 {
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	qDebug("qtractorVstPluginParam[%p] pVstPlugin=%p iIndex=%lu", this, pVstPlugin, iIndex);
 #endif
 
@@ -1169,7 +1170,7 @@ qtractorVstPluginParam::qtractorVstPluginParam (
 
 	if (pVstType &&	pVstType->vst_dispatch(
 			effGetParameterProperties, iIndex, 0, (void *) &m_props, 0.0f)) {
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 		qDebug("  VstParamProperties(%lu) {", iIndex);
 		qDebug("    .stepFloat               = %g", m_props.stepFloat);
 		qDebug("    .smallStepFloat          = %g", m_props.smallStepFloat);

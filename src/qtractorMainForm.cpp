@@ -1268,11 +1268,12 @@ bool qtractorMainForm::openSession (void)
 		return false;
 
 	// Ask for the filename to open...
+	const QString sExt("qtr");
 	QString sFilename = QFileDialog::getOpenFileName(
 		this,                                       // Parent.
 		tr("Open Session") + " - " QTRACTOR_TITLE,  // Caption.
 		m_pOptions->sSessionDir,                    // Start here.
-		tr("Session files") + " (*.qtr)"            // Filter files.
+		tr("Session files (*.%1)").arg(sExt)        // Filter files.
 	);
 
 	// Have we cancelled?
@@ -1311,17 +1312,16 @@ bool qtractorMainForm::saveSession ( bool bPrompt )
 	if (bPrompt) {
 		// If none is given, assume default directory.
 		// Prompt the guy...
-		sFilename = QFileDialog::getSaveFileName(
-			this,                                       // Parent.
+		const QString sExt("qtr");
+		sFilename = QFileDialog::getSaveFileName(this,                                       // Parent.
 			tr("Save Session") + " - " QTRACTOR_TITLE,  // Caption.
 			sFilename,                                  // Start here.
-			tr("Session files") + " (*.qtr)"            // Filter files.
+			tr("Session files (*.%1)").arg(sExt)        // Filter files.
 		);
 		// Have we cancelled it?
 		if (sFilename.isEmpty())
 			return false;
-		// Enforce .qtr extension...
-		const QString sExt("qtr");
+		// Enforce extension...
 		if (QFileInfo(sFilename).suffix() != sExt)
 			sFilename += '.' + sExt;
 		// Check if already exists...

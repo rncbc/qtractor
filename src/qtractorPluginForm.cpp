@@ -396,13 +396,25 @@ void qtractorPluginForm::savePresetSlot (void)
 	if ((m_pPlugin->type())->isConfigure()) {
 		// Sure, we'll have something complex enough
 		// to make it save into an external file...
-		QFileInfo fi(QDir(pOptions->sPresetDir), sPreset + ".xml");
-		QString sFilename = QFileDialog::getSaveFileName(this,
-			tr("Save Preset File"), fi.absoluteFilePath());
-		if (!sFilename.isEmpty()
-			&& m_pPlugin->savePreset(sFilename)) {
-			settings.setValue(sPreset, sFilename);
-			pOptions->sPresetDir = QFileInfo(sFilename).absolutePath();
+		const QString sExt("qtx");
+		QFileInfo fi(QDir(pOptions->sPresetDir),
+			m_pPlugin->presetPrefix() + '-' + sPreset + '.' + sExt);
+		QString sFilename = fi.absoluteFilePath();
+		// Prompt if file does not currently exist...
+		if (!fi.exists()) {
+			sFilename = QFileDialog::getSaveFileName(this,
+				tr("Save Preset") + " - " QTRACTOR_TITLE,   // Caption.
+				sFilename,                                  // Start here.
+				tr("Preset files (*.%1)").arg(sExt));       // Filter files.
+		}
+		// We've a filename to save the preset
+		if (!sFilename.isEmpty()) {
+			if (QFileInfo(sFilename).suffix() != sExt)
+				sFilename += '.' + sExt;
+			if (m_pPlugin->savePreset(sFilename)) {
+				settings.setValue(sPreset, sFilename);
+				pOptions->sPresetDir = QFileInfo(sFilename).absolutePath();
+			}
 		}
 	}	// Just leave it to simple parameter value list...
 	else settings.setValue(sPreset, m_pPlugin->values());

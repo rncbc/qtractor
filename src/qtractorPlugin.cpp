@@ -158,7 +158,7 @@ bool qtractorPluginFile::open (void)
 {
 	close();
 
-	// ATTN: Not really needed has it will be
+	// ATTN: Not really needed, as it would be
 	// loaded automagically on resolve()...
 	if (!QLibrary::load())
 		return false;
@@ -621,15 +621,7 @@ QString qtractorPlugin::presetGroup (void) const
 // Normalize plugin identification prefix...
 QString qtractorPlugin::presetPrefix (void) const
 {
-	QString sPrefix;
-
-	if (m_pType) {
-		sPrefix += m_pType->label();
-		sPrefix += '_';
-		sPrefix += QString::number(m_pType->uniqueID());
-	}
-
-	return sPrefix;
+	return m_pType->label() + '_' + QString::number(m_pType->uniqueID());
 }
 
 
