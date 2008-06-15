@@ -1324,6 +1324,9 @@ void qtractorPluginParam::setValue ( float fValue )
 		fValue = m_fMinValue;
 
 	m_fValue = fValue;
+
+	// Update specifics.
+	m_pPlugin->updateParam(this, m_fValue);
 }
 
 

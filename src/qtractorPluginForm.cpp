@@ -138,14 +138,12 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 	const QList<qtractorPluginParam *>& params = m_pPlugin->params();
 	int iRows = params.count();
 	bool bEditor = (m_pPlugin->type())->isEditor();
-	// FIXME: Can't stand more than hundred widgets?
-	// or do we have a dedicated editor GUI?
-	if (!bEditor && iRows < 101) {
+	// FIXME: Couldn't stand more than a hundred widgets?
+	// or do we have one dedicated editor GUI?
+	if (!bEditor || iRows < 101) {
 		int iCols = 1;
-		while (iRows > 12 && iCols < 3) {
-			iRows >>= 1;
-			iCols++;
-		}
+		while (iRows > 24 && iCols < 3)
+			iRows = (params.count() / ++iCols) - 1;
 		int iRow = 0;
 		int iCol = 0;
 		QListIterator<qtractorPluginParam *> iter(params);
@@ -294,11 +292,6 @@ void qtractorPluginForm::updateParamWidget ( unsigned long iIndex )
 	if (m_pPlugin == NULL)
 		return;
 
-	if (m_iUpdate > 0)
-		return;
-
-	m_iUpdate++;
-
 	QListIterator<qtractorPluginParamWidget *> iter(m_paramWidgets);
 	while (iter.hasNext()) {
 		qtractorPluginParamWidget *pParamWidget = iter.next();
@@ -307,10 +300,6 @@ void qtractorPluginForm::updateParamWidget ( unsigned long iIndex )
 			break;
 		}
 	}
-
-	m_pPlugin->idleEditor();
-
-	m_iUpdate--;
 }
 
 
@@ -656,7 +645,8 @@ qtractorPluginParamWidget::qtractorPluginParamWidget (
 		m_pLabel = new QLabel(/*this*/);
 		if (m_pParam->isDisplay()) {
 			m_pLabel->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
-			m_pLabel->setFixedWidth(72);
+		//	m_pLabel->setFixedWidth(72);
+			m_pLabel->setMinimumWidth(64);
 			m_pLabel->setText(m_pParam->name());
 			m_pGridLayout->addWidget(m_pLabel, 0, 0);
 		} else {
@@ -678,7 +668,8 @@ qtractorPluginParamWidget::qtractorPluginParamWidget (
 			m_pDisplay = new QLabel(/*this*/);
 			m_pDisplay->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
 			m_pDisplay->setText(m_pParam->display());
-			m_pDisplay->setFixedWidth(72);
+		//	m_pDisplay->setFixedWidth(72);
+			m_pDisplay->setMinimumWidth(64);
 			m_pGridLayout->addWidget(m_pDisplay, 0, 2);
 		} else {
 			m_pGridLayout->addWidget(m_pSlider, 1, 0, 1, 2);

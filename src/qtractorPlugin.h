@@ -309,6 +309,10 @@ public:
 	virtual void process(
 		float **ppIBuffer, float **ppOBuffer, unsigned int nframes) = 0;
 
+	// Parameter update method.
+	virtual void updateParam(
+		qtractorPluginParam */*pParam*/, float /*fValue*/) {}
+
 	// Specific MIDI instrument selector.
 	virtual void selectProgram(int /*iBank*/, int /*iProg*/) {}
 
@@ -606,13 +610,12 @@ public:
 		{ return m_fDefaultValue; }
 	
 	// Current parameter value.
-	virtual void setValue(float fValue);
-	virtual float value() const
+	void setValue(float fValue);
+	float value() const
 		{ return m_fValue; }
 
 	// Reset-to-default method.
-	virtual void reset()
-		{ setValue(m_fDefaultValue); }
+	void reset() { setValue(m_fDefaultValue); }
 
 	// Direct parameter value.
 	float *data() { return &m_fValue; }

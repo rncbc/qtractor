@@ -40,10 +40,8 @@
 #if defined(Q_WS_X11)
 #include <QX11Info>
 #include <X11/Xlib.h>
-#include <X11/Xutil.h>
 #include <X11/Xatom.h>
 typedef void (*XEventProc)(XEvent *);
-#include <QMouseEvent>
 #endif
 
 #if !defined(VST_2_3_EXTENSIONS) 
@@ -94,12 +92,12 @@ static XEventProc getXEventProc ( Display *pDisplay, Window w )
 	unsigned long iBytes, iCount;
 	unsigned char *pData;
 	XEventProc eventProc = NULL;
-	Atom atomType, atom = XInternAtom(pDisplay, "_XEventProc", false);
+	Atom aType, aName = XInternAtom(pDisplay, "_XEventProc", false);
 
 	g_bXError = false;
 	XErrorHandler oldErrorHandler = XSetErrorHandler(tempXErrorHandler);
-	XGetWindowProperty(pDisplay, w, atom, 0, 1, false,
-		AnyPropertyType, &atomType,  &iSize, &iCount, &iBytes, &pData);
+	XGetWindowProperty(pDisplay, w, aName, 0, 1, false,
+		AnyPropertyType, &aType,  &iSize, &iCount, &iBytes, &pData);
 	if (g_bXError == false && iCount == 1)
 		eventProc = (XEventProc) (*(int *) pData);
 	XSetErrorHandler(oldErrorHandler);
@@ -117,37 +115,15 @@ static Window getXChildWindow ( Display *pDisplay, Window w )
 	return (iChildren > 0 ? pwChildren[0] : 0);
 }
 
-static unsigned int getXButton ( Qt::MouseButtons buttons )
-{
-	int button = 0;
-	if (buttons & Qt::LeftButton)
-		button = Button1;
-	else
-	if (buttons & Qt::MidButton)
-		button = Button2;
-	else
-	if (buttons & Qt::RightButton)
-		button = Button3;
-	return button;
-}
-
-static unsigned int getXButtonState ( Qt::MouseButtons buttons )
-{
-	int state = 0;
-	if (buttons & Qt::LeftButton)
-		state |= Button1Mask;
-	if (buttons & Qt::MidButton)
-		state |= Button2Mask;
-	if (buttons & Qt::RightButton)
-		state |= Button3Mask;
-	return state;
-}
-
 #endif // Q_WS_X11
 
 
 //----------------------------------------------------------------------------
 // qtractorVstPlugin::EditorWidget -- Plugin editor wrapper widget.
+//
+
+// Dynamic singleton list of VST editors.
+static QList<qtractorVstPlugin::EditorWidget *> g_vstEditors;
 
 class qtractorVstPlugin::EditorWidget : public QWidget
 {
@@ -157,31 +133,102 @@ public:
 	EditorWidget(QWidget *pParent, Qt::WindowFlags wflags = 0)
 		: QWidget(pParent, wflags),
 	#if defined(Q_WS_X11)
-			m_pDisplay(QX11Info::display()),
-			m_wEditor(NULL),
-			m_eventProc(NULL),
+		m_pDisplay(QX11Info::display()),
+		m_wVstEditor(NULL),
+		m_pVstEventProc(NULL),
+		m_bButtonPress(false),
 	#endif
-			m_pPlugin(NULL) {}
+		m_pVstPlugin(NULL) {}
+
+	// Destructor.
+	~EditorWidget() { close(); }
 
 	// Specialized editor methods.
-	void setPlugin(qtractorPlugin *pPlugin)
+	void open(qtractorVstPlugin *pVstPlugin)
 	{
-		m_pPlugin = pPlugin;
+		m_pVstPlugin = pVstPlugin;
+
+		// Start the proper (child) editor...
+		long  value = 0;
+		void *ptr = (void *) winId();
 	#if defined(Q_WS_X11)
-		m_wEditor = getXChildWindow(m_pDisplay, (Window) winId());
-		if (m_wEditor) {
-			m_eventProc = getXEventProc(m_pDisplay, m_wEditor);
-			XSelectInput(m_pDisplay, m_wEditor, NoEventMask);
+		value = (long) m_pDisplay;
+	#endif
+		m_pVstPlugin->vst_dispatch(0, effEditOpen, 0, value, ptr, 0.0f);
+	
+		// Make it the right size
+		struct ERect {
+			short top;
+			short left;
+			short bottom;
+			short right;
+		} *pRect;
+	
+		if (m_pVstPlugin->vst_dispatch(0, effEditGetRect, 0, 0, &pRect, 0.0f)) {
+			QWidget::setFixedSize(
+				pRect->right - pRect->left,
+				pRect->bottom - pRect->top);
+		}
+
+	#if defined(Q_WS_X11)
+		m_wVstEditor = getXChildWindow(m_pDisplay, (Window) winId());
+		if (m_wVstEditor) {
+			m_pVstEventProc = getXEventProc(m_pDisplay, m_wVstEditor);
+			if (m_pVstEventProc)
+				g_vstEditors.append(this);
 		}
 	#endif
+
 		QWidget::setWindowTitle(tr("%1 - Editor")
-			.arg(m_pPlugin->editorTitle()));
+			.arg(m_pVstPlugin->editorTitle()));
+
+		// Final stabilization...
+		m_pVstPlugin->setEditorVisible(true);
+		m_pVstPlugin->idleEditor();
 	}
 
-	qtractorPlugin *plugin() const { return m_pPlugin; }
+	// Close the editor widget.
+	void close()
+	{
+		if (m_pVstPlugin) {
+			m_pVstPlugin->vst_dispatch(0, effEditClose, 0, 0, NULL, 0.0f);
+			m_pVstPlugin->setEditorVisible(false);
+		}
+
+		int iIndex = g_vstEditors.indexOf(this);
+		if (iIndex >= 0)
+			g_vstEditors.removeAt(iIndex);
+	}
 
 #if defined(Q_WS_X11)
-	Display *display() const { return m_pDisplay; }
+
+	// Local X11 event filter.
+	bool x11EventFilter(XEvent *pEvent)
+	{
+		if (m_pVstEventProc && pEvent->xany.window == m_wVstEditor) {
+			// Avoid mouse tracking events...
+			switch (pEvent->xany.type) {
+			case ButtonPress:
+				m_bButtonPress = true;
+				break;
+			case ButtonRelease:
+				m_bButtonPress = false;
+				break;
+			case MotionNotify:
+				if (!m_bButtonPress)
+					return false;
+				// Fall thru...
+			default:
+				break;
+			}
+			// Process as intended...
+			(*m_pVstEventProc)(pEvent);
+			return true;
+		} else {
+			return false;
+		}
+	}
+
 #endif
 
 protected:
@@ -190,245 +237,41 @@ protected:
 	void showEvent(QShowEvent *pShowEvent)
 	{
 		QWidget::showEvent(pShowEvent);
-		if (m_pPlugin && m_pPlugin->isFormVisible())
-			(m_pPlugin->form())->toggleEditor(true);
+
+		if (m_pVstPlugin && m_pVstPlugin->isFormVisible())
+			(m_pVstPlugin->form())->toggleEditor(true);
 	}
 
 	void closeEvent(QCloseEvent *pCloseEvent)
 	{
-		if (m_pPlugin && m_pPlugin->isFormVisible())
-			(m_pPlugin->form())->toggleEditor(false);
+		if (m_pVstPlugin && m_pVstPlugin->isFormVisible())
+			(m_pVstPlugin->form())->toggleEditor(false);
+
 		QWidget::closeEvent(pCloseEvent);
 	}
 
-#if defined(Q_WS_X11)
-
-	// Mouse events.
-	void enterEvent(QEvent *pEnterEvent)
+	void moveEvent(QMoveEvent *pMoveEvent)
 	{
-	//	qDebug("qtractorPluginWidget::enterEvent()\n");
-		QWidget::enterEvent(pEnterEvent);
-		if (m_wEditor) {
-			XEvent ev;
-			::memset(&ev, 0, sizeof(ev));
-			const QPoint& globalPos = QCursor::pos();
-			const QPoint& pos = QWidget::mapFromGlobal(globalPos);
-			ev.xcrossing.display = m_pDisplay;
-			ev.xcrossing.type    = EnterNotify;
-			ev.xcrossing.window  = m_wEditor;
-			ev.xcrossing.root    = RootWindow(m_pDisplay, DefaultScreen(m_pDisplay));
-			ev.xcrossing.time    = CurrentTime;
-			ev.xcrossing.x       = pos.x();
-			ev.xcrossing.y       = pos.y();
-			ev.xcrossing.x_root  = globalPos.x();
-			ev.xcrossing.y_root  = globalPos.y();
-			ev.xcrossing.mode    = NotifyNormal;
-			ev.xcrossing.detail  = NotifyAncestor;
-			ev.xcrossing.state   = getXButtonState(QApplication::mouseButtons());
-			sendXEvent(&ev);
+		QWidget::moveEvent(pMoveEvent);
+	#if defined(Q_WS_X11)
+		if (m_wVstEditor) {
+			XMoveWindow(m_pDisplay, m_wVstEditor, 0, 0);
 		//	QWidget::update();
 		}
+	#endif
 	}
-
-	void mousePressEvent(QMouseEvent *pMouseEvent)
-	{
-	//	qDebug("qtractorPluginWidget::mousePressEvent()\n");
-		QWidget::mousePressEvent(pMouseEvent);
-		if (m_wEditor) {
-			XEvent ev;
-			::memset(&ev, 0, sizeof(ev));
-			const QPoint& globalPos = pMouseEvent->globalPos();
-			const QPoint& pos = pMouseEvent->pos();
-			ev.xbutton.display = m_pDisplay;
-			ev.xbutton.type    = ButtonPress;
-			ev.xbutton.window  = m_wEditor;
-			ev.xbutton.root    = RootWindow(m_pDisplay, DefaultScreen(m_pDisplay));
-			ev.xbutton.time    = CurrentTime;
-			ev.xbutton.x       = pos.x();
-			ev.xbutton.y       = pos.y();
-			ev.xbutton.x_root  = globalPos.x();
-			ev.xbutton.y_root  = globalPos.y();
-			ev.xbutton.button  = getXButton(pMouseEvent->buttons());
-			ev.xbutton.state   = getXButtonState(pMouseEvent->buttons());
-			sendXEvent(&ev);
-		//	QWidget::update();
-		}
-	}
-
-	void mouseMoveEvent(QMouseEvent *pMouseEvent)
-	{
-	//	qDebug("qtractorPluginWidget::mouseMoveEvent()\n");
-		QWidget::mouseMoveEvent(pMouseEvent);
-		if (m_wEditor) {
-			XEvent ev;
-			::memset(&ev, 0, sizeof(ev));
-			const QPoint& globalPos = pMouseEvent->globalPos();
-			const QPoint& pos = pMouseEvent->pos();
-			ev.xmotion.display = m_pDisplay;
-			ev.xmotion.type    = MotionNotify;
-			ev.xmotion.window  = m_wEditor;
-			ev.xmotion.root    = RootWindow(m_pDisplay, DefaultScreen(m_pDisplay));
-			ev.xmotion.time    = CurrentTime;
-			ev.xmotion.x       = pos.x();
-			ev.xmotion.y       = pos.y();
-			ev.xmotion.x_root  = globalPos.x();
-			ev.xmotion.y_root  = globalPos.y();
-			ev.xmotion.state   = getXButtonState(pMouseEvent->buttons());
-			sendXEvent(&ev);
-			QWidget::update();
-		}
-	}
-
-	void mouseReleaseEvent(QMouseEvent *pMouseEvent)
-	{
-	//	qDebug("qtractorPluginWidget::mouseReleaseEvent()\n");
-		QWidget::mouseReleaseEvent(pMouseEvent);
-		if (m_wEditor) {
-			XEvent ev;
-			::memset(&ev, 0, sizeof(ev));
-			const QPoint& globalPos = pMouseEvent->globalPos();
-			const QPoint& pos = pMouseEvent->pos();
-			ev.xbutton.display = m_pDisplay;
-			ev.xbutton.type    = ButtonRelease;
-			ev.xbutton.window  = m_wEditor;
-			ev.xbutton.root    = RootWindow(m_pDisplay, DefaultScreen(m_pDisplay));
-			ev.xbutton.time    = CurrentTime;
-			ev.xbutton.x       = pos.x();
-			ev.xbutton.y       = pos.y();
-			ev.xbutton.x_root  = globalPos.x();
-			ev.xbutton.y_root  = globalPos.y();
-			ev.xbutton.button  = getXButton(pMouseEvent->buttons());
-			ev.xbutton.state   = getXButtonState(pMouseEvent->buttons());
-			sendXEvent(&ev);
-			QWidget::update();
-		}
-	}
-
-	void wheelEvent(QWheelEvent *pWheelEvent)
-	{
-	//	qDebug("qtractorPluginWidget::wheelEvent()\n");
-		QWidget::wheelEvent(pWheelEvent);
-		if (m_wEditor) {
-			XEvent ev;
-			::memset(&ev, 0, sizeof(ev));
-			const QPoint& globalPos = pWheelEvent->globalPos();
-			const QPoint& pos = pWheelEvent->pos();
-			ev.xbutton.display = m_pDisplay;
-			ev.xbutton.type    = ButtonPress;
-			ev.xbutton.window  = m_wEditor;
-			ev.xbutton.root    = RootWindow(m_pDisplay, DefaultScreen(m_pDisplay));
-			ev.xbutton.time    = CurrentTime;
-			ev.xbutton.x       = pos.x();
-			ev.xbutton.y       = pos.y();
-			ev.xbutton.x_root  = globalPos.x();
-			ev.xbutton.y_root  = globalPos.y();
-			if (pWheelEvent->delta() > 0) {
-				ev.xbutton.button = Button4;
-				ev.xbutton.state |= Button4Mask;
-			} else {
-				ev.xbutton.button = Button5;
-				ev.xbutton.state |= Button5Mask;
-			}
-			sendXEvent(&ev);
-			// FIXME: delay here?
-			ev.xbutton.type = ButtonRelease;
-			sendXEvent(&ev);
-			QWidget::update();
-		}
-	}
-
-	void leaveEvent(QEvent *pLeaveEvent)
-	{
-	//	qDebug("qtractorPluginWidget::leaveEvent()\n");
-		QWidget::leaveEvent(pLeaveEvent);
-		if (m_wEditor) {
-			XEvent ev;
-			::memset(&ev, 0, sizeof(ev));
-			const QPoint& globalPos = QCursor::pos();
-			const QPoint& pos = QWidget::mapFromGlobal(globalPos);
-			ev.xcrossing.display = m_pDisplay;
-			ev.xcrossing.type    = LeaveNotify;
-			ev.xcrossing.window  = m_wEditor;
-			ev.xcrossing.root    = RootWindow(m_pDisplay, DefaultScreen(m_pDisplay));
-			ev.xcrossing.time    = CurrentTime;
-			ev.xcrossing.x       = pos.x();
-			ev.xcrossing.y       = pos.y();
-			ev.xcrossing.x_root  = globalPos.x();
-			ev.xcrossing.y_root  = globalPos.y();
-			ev.xcrossing.mode    = NotifyNormal;
-			ev.xcrossing.detail  = NotifyAncestor;
-    		ev.xcrossing.focus   = QWidget::hasFocus();
-			ev.xcrossing.state   = getXButtonState(QApplication::mouseButtons());
-			sendXEvent(&ev);
-		//	QWidget::update();
-		}
-	}
-
-	void moveEvent(QMoveEvent */*pMoveEvent*/)
-	{
-		if (m_wEditor) {
-			XMoveWindow(m_pDisplay, m_wEditor, 0, 0);
-			QWidget::update();
-		}
-	}
-
-	void resizeEvent(QResizeEvent *pResizeEvent)
-	{
-		if (m_wEditor) {
-			const QSize& size = pResizeEvent->size();
-			XResizeWindow(m_pDisplay, m_wEditor, size.width(), size.height());
-		//	QWidget::update();
-		}
-	}
-
-	// Composite paint event.
-	void paintEvent(QPaintEvent *pPaintEvent)
-	{
-		QWidget::paintEvent(pPaintEvent);
-		if (m_wEditor) {
-			XEvent ev;
-			::memset(&ev, 0, sizeof(ev));
-			const QRect& rect  = pPaintEvent->rect();
-			ev.xexpose.type    = Expose;
-			ev.xexpose.display = m_pDisplay;
-			ev.xexpose.window  = m_wEditor;
-			ev.xexpose.x       = rect.x();
-			ev.xexpose.y       = rect.y();
-			ev.xexpose.width   = rect.width();
-			ev.xexpose.height  = rect.height();
-			sendXEvent(&ev);
-		}
-	}
-
-	// Send X11 event.
-	void sendXEvent(XEvent *pEvent)
-	{
-		if (m_eventProc) {
-			// If the plugin publish a event procedure, so it doesn't
-			// have a message thread running, pass the event directly.
-			(*m_eventProc)(pEvent);
-		}
-		else
-		if (m_wEditor) {
-			// If the plugin have a message thread running, then send events
-			// to that window: it will be caught by the message thread!
-			XSendEvent(m_pDisplay, m_wEditor, false, 0L, pEvent);
-			XFlush(m_pDisplay);
-		}
-	}
-
-#endif
 
 private:
 
 	// Instance variables...
 #if defined(Q_WS_X11)
 	Display   *m_pDisplay;
-	Window     m_wEditor;
-	XEventProc m_eventProc;
+	Window     m_wVstEditor;
+	XEventProc m_pVstEventProc;
+	bool       m_bButtonPress;
 #endif
 
-	qtractorPlugin *m_pPlugin;
+	qtractorVstPlugin *m_pVstPlugin;
 };
 
 
@@ -442,9 +285,6 @@ public:
 
 	// Constructor.
 	Effect(AEffect *pVstEffect = NULL) : m_pVstEffect(pVstEffect) {}
-
-	// Destructor.
-	~Effect() { close(); }
 
 	// Specific methods.
 	bool open(qtractorPluginFile *pFile);
@@ -468,20 +308,17 @@ private:
 bool qtractorVstPluginType::Effect::open ( qtractorPluginFile *pFile )
 {
 	// Do we have an effect descriptor already?
-	if (m_pVstEffect)
-		return true;
-
-	m_pVstEffect = qtractorVstPluginType::vst_effect(pFile);
 	if (m_pVstEffect == NULL)
-		return false;
-
-	// Did VST plugin instantiated OK?
-	if (m_pVstEffect->magic != kEffectMagic)
+		m_pVstEffect = qtractorVstPluginType::vst_effect(pFile);
+	if (m_pVstEffect == NULL)
 		return false;
 
 	vst_dispatch(effIdentify, 0, 0, NULL, 0);
 	vst_dispatch(effOpen,0, 0, NULL, 0.0f);
 //	vst_dispatch(effMainsChanged, 0, 0, NULL, 0.0f);
+#ifdef CONFIG_DEBUG_0
+	qDebug("AEffect[%p]::open(%p)", m_pVstEffect, pFile);
+#endif
 
 	return true;
 }
@@ -489,6 +326,13 @@ bool qtractorVstPluginType::Effect::open ( qtractorPluginFile *pFile )
 
 void qtractorVstPluginType::Effect::close (void)
 {
+	if (m_pVstEffect == NULL)
+		return;
+
+#ifdef CONFIG_DEBUG_0
+	qDebug("AEffect[%p]::close()", m_pVstEffect);
+#endif
+//	vst_dispatch(effMainsChanged, 0, 0, NULL, 0.0f);
 	vst_dispatch(effClose, 0, 0, NULL, 0.0f);
 
 	m_pVstEffect = NULL;
@@ -519,16 +363,11 @@ int qtractorVstPluginType::Effect::vst_dispatch (
 bool qtractorVstPluginType::open (void)
 {
 	// Do we have an effect descriptor already?
-	if (m_pEffect == NULL) {
+	if (m_pEffect == NULL)
 		m_pEffect = new Effect();
-		if (!m_pEffect->open(file())) {
-			delete m_pEffect;
-			m_pEffect = NULL;
-			return false;
-		}
-	}
+	if (!m_pEffect->open(file()))
+		return false;
 
-	// We need the internal descriptor here...
 	AEffect *pVstEffect = m_pEffect->vst_effect();
 	if (pVstEffect == NULL)
 		return false;
@@ -585,6 +424,7 @@ bool qtractorVstPluginType::open (void)
 void qtractorVstPluginType::close (void)
 {
 	if (m_pEffect) {
+		m_pEffect->close();
 		delete m_pEffect;
 		m_pEffect = NULL;
 	}
@@ -619,7 +459,15 @@ AEffect *qtractorVstPluginType::vst_effect ( qtractorPluginFile *pFile )
 	if (pfnGetPluginInstance == NULL)
 		return NULL;
 
-	return (*pfnGetPluginInstance)(qtractorVstPlugin_HostCallback);
+	// Does the VST plugin instantiate OK?
+	AEffect *pVstEffect
+		= (*pfnGetPluginInstance)(qtractorVstPlugin_HostCallback);
+	if (pVstEffect == NULL)
+		return NULL;
+	if (pVstEffect->magic != kEffectMagic)
+		return NULL;
+
+	return pVstEffect;
 }
 
 
@@ -649,7 +497,7 @@ bool qtractorVstPluginType::vst_canDo ( const char *pszCanDo ) const
 //
 
 // Dynamic singleton list of VST plugins.
-QList<qtractorVstPlugin *> qtractorVstPlugin::g_vstPlugins;
+static QList<qtractorVstPlugin *> g_vstPlugins;
 
 // Constructors.
 qtractorVstPlugin::qtractorVstPlugin ( qtractorPluginList *pList,
@@ -724,9 +572,12 @@ void qtractorVstPlugin::setChannels ( unsigned short iChannels )
 	bool bActivated = isActivated();
 	setActivated(false);
 
+	// Close instances, all the way...
 	if (m_ppEffects) {
-		for (unsigned short i = 1; i < instances(); ++i)
+		for (unsigned short i = 1; i < instances(); ++i) {
+			m_ppEffects[i]->close();
 			delete m_ppEffects[i];
+		}
 		delete [] m_ppEffects;
 		m_ppEffects = NULL;
 	}
@@ -745,14 +596,12 @@ void qtractorVstPlugin::setChannels ( unsigned short iChannels )
 		m_ppEffects[i] = new qtractorVstPluginType::Effect();
 		m_ppEffects[i]->open(pVstType->file());
 		// Replicate the current parameter values...
-		if (pVstType && pVstType->effect()) {
-			AEffect *pVstEffect = (pVstType->effect())->vst_effect();
-			if (pVstEffect) {
-				QListIterator<qtractorPluginParam *> iter(params());
-				while (iter.hasNext()) {
-					qtractorPluginParam *pParam = iter.next();
-					pVstEffect->setParameter(pVstEffect, i, pParam->value());
-				}
+		AEffect *pVstEffect = m_ppEffects[i]->vst_effect();
+		if (pVstEffect) {
+			QListIterator<qtractorPluginParam *> iter(params());
+			while (iter.hasNext()) {
+				qtractorPluginParam *pParam = iter.next();
+				pVstEffect->setParameter(pVstEffect, i, pParam->value());
 			}
 		}
 	}
@@ -856,6 +705,30 @@ void qtractorVstPlugin::process (
 			iIChannel++;
 		if (iOChannel < iChannels - 1)
 			iOChannel++;
+	}
+}
+
+
+// Parameter update method.
+void qtractorVstPlugin::updateParam (
+	qtractorPluginParam *pParam, float fValue )
+{
+	// Maybe we're not pretty instantiated yet...
+	unsigned short iInstances = instances();
+	if (iInstances > 0) {
+		for (unsigned short i = 0; i < iInstances; ++i) {
+			AEffect *pVstEffect = vst_effect(i);
+			if (pVstEffect)
+				pVstEffect->setParameter(pVstEffect, pParam->index(), fValue);
+		}
+	} else {
+		qtractorVstPluginType *pVstType
+			= static_cast<qtractorVstPluginType *> (type());
+		if (pVstType && pVstType->effect()) {
+			AEffect *pVstEffect = (pVstType->effect())->vst_effect();
+			if (pVstEffect)
+				pVstEffect->setParameter(pVstEffect, pParam->index(), fValue);
+		}
 	}
 }
 
@@ -997,35 +870,9 @@ void qtractorVstPlugin::openEditor ( QWidget */*pParent*/ )
 		| Qt::WindowSystemMenuHint
 		| Qt::WindowMinMaxButtonsHint
 		| Qt::Tool;
+
 	m_pEditorWidget = new EditorWidget(NULL, wflags);
-
-	// Start the proper (child) editor...
-	long  value = 0;
-	void *ptr = (void *) m_pEditorWidget->winId();
-#if defined(Q_WS_X11)
-	value = (long) m_pEditorWidget->display();
-#endif
-	vst_dispatch(0, effEditOpen, 0, value, ptr, 0.0f);
-
-	// Make it the right size
-	struct ERect {
-		short top;
-		short left;
-		short bottom;
-		short right;
-	} *erect;
-
-	if (vst_dispatch(0, effEditGetRect, 0, 0, &erect, 0.0f)) {
-		m_pEditorWidget->setFixedSize(
-			erect->right - erect->left,
-			erect->bottom - erect->top);
-	}
-
-	// Final stabilization...
-	m_pEditorWidget->setPlugin(this);
-
-	setEditorVisible(true);
-	idleEditor();
+	m_pEditorWidget->open(this);
 }
 
 
@@ -1038,9 +885,6 @@ void qtractorVstPlugin::closeEditor (void)
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorVstPlugin[%p]::closeEditor()", this);
 #endif
-
-	vst_dispatch(0, effEditClose, 0, 0, NULL, 0.0f);
-	setEditorVisible(false);
 
 	// Close the parent widget, if any.
 	delete m_pEditorWidget;
@@ -1140,6 +984,24 @@ qtractorVstPlugin *qtractorVstPlugin::findPlugin ( AEffect *pVstEffect )
 	return NULL;
 }
 
+
+#if defined(Q_WS_X11)
+
+// Global X11 event filter.
+bool qtractorVstPlugin::x11EventFilter ( void *pvEvent )
+{
+	XEvent *pEvent = (XEvent *) pvEvent;
+
+	QListIterator<EditorWidget *> iter(g_vstEditors);
+	while (iter.hasNext()) {
+		if (iter.next()->x11EventFilter(pEvent))
+			return true;
+	}
+
+	return false;
+}
+
+#endif
 
 //----------------------------------------------------------------------------
 // qtractorVstPluginParam -- VST plugin control input port instance.
@@ -1295,54 +1157,6 @@ QString qtractorVstPluginParam::display (void) const
 }
 
 
-// Current parameter value.
-void qtractorVstPluginParam::setValue ( float fValue )
-{
-	qtractorPluginParam::setValue(fValue);
-
-	qtractorVstPlugin *pVstPlugin
-		= static_cast<qtractorVstPlugin *> (plugin());
-	if (pVstPlugin == NULL)
-		return;
-
-	// Maybe we're not pretty instantiated yet...
-	unsigned short iInstances = pVstPlugin->instances();
-	if (iInstances > 0) {
-		for (unsigned short i = 0; i < iInstances; ++i) {
-			AEffect *pVstEffect = pVstPlugin->vst_effect(i);
-			if (pVstEffect) {
-				pVstEffect->setParameter(pVstEffect, index(), fValue);
-			}
-		}
-	} else {
-		qtractorVstPluginType *pVstType
-			= static_cast<qtractorVstPluginType *> (pVstPlugin->type());
-		if (pVstType && pVstType->effect()) {
-			AEffect *pVstEffect = (pVstType->effect())->vst_effect();
-			if (pVstEffect) {
-				pVstEffect->setParameter(pVstEffect, index(), fValue);
-			}
-		}
-	}
-}
-
-float qtractorVstPluginParam::value (void) const
-{
-	float fValue = qtractorPluginParam::value();
-#if 0
-	qtractorVstPluginType *pVstType = NULL;
-	if (plugin())
-		pVstType = static_cast<qtractorVstPluginType *> (plugin()->type());
-	if (pVstType && pVstType->effect()) {
-		AEffect *pVstEffect = (pVstType->effect())->vst_effect();
-		if (pVstEffect)
-			fValue = pVstEffect->getParameter(pVstEffect, index());
-	}
-#endif
-	return fValue;
-}
-
-
 //----------------------------------------------------------------------
 // VST host callback file selection helpers.
 
@@ -1475,7 +1289,7 @@ static VstIntPtr VSTCALLBACK qtractorVstPlugin_HostCallback ( AEffect* effect,
 			qtractorPluginForm *pForm = pVstPlugin->form();
 			if (pForm)
 				pForm->updateParamValue(index, opt);
-			QApplication::processEvents();
+		//	QApplication::processEvents();
 		}
 		break;
 
@@ -1630,9 +1444,9 @@ static VstIntPtr VSTCALLBACK qtractorVstPlugin_HostCallback ( AEffect* effect,
 
 	case audioMasterCanDo:
 		VST_HC_DEBUGX("audioMasterCanDo");
-		if (::strcmp("sendVstMidiEvent",    (char *) ptr) == 0 ||
-			::strcmp("receiveVstMidiEvent", (char *) ptr) == 0 ||
-			::strcmp("midiProgramNames",    (char *) ptr) == 0 ||
+		if (::strcmp("receiveVstMidiEvent", (char *) ptr) == 0 ||
+		//	::strcmp("sendVstMidiEvent",    (char *) ptr) == 0 ||
+		//	::strcmp("midiProgramNames",    (char *) ptr) == 0 ||
 			::strcmp("openFileSelector",    (char *) ptr) == 0 ||
 			::strcmp("closeFileSelector",   (char *) ptr) == 0) {
 			ret = 1;
@@ -1663,7 +1477,7 @@ static VstIntPtr VSTCALLBACK qtractorVstPlugin_HostCallback ( AEffect* effect,
 			qtractorPluginForm *pForm = pVstPlugin->form();
 			if (pForm)
 				pForm->refresh();
-			QApplication::processEvents();
+		//	QApplication::processEvents();
 		}
 		break;
 
@@ -1680,7 +1494,7 @@ static VstIntPtr VSTCALLBACK qtractorVstPlugin_HostCallback ( AEffect* effect,
 				pForm->updateParamValue(index,
 					effect->getParameter(effect, index));
 			}
-			QApplication::processEvents();
+		//	QApplication::processEvents();
 		}
 		break;
 

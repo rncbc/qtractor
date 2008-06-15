@@ -109,6 +109,9 @@ public:
 	// The main plugin processing procedure.
 	void process(float **ppIBuffer, float **ppOBuffer, unsigned int nframes);
 
+	// Parameter update method.
+	void updateParam(qtractorPluginParam *pParam, float fValue);
+
 	// Bank/program selector override.
 	void selectProgram(int iBank, int iProg);
 
@@ -158,10 +161,13 @@ public:
 	// Idle timer (static).
 	static void idleTimerAll();
 
-protected:
-
 	// Editor widget forward decls.
 	class EditorWidget;
+
+#if defined(Q_WS_X11)
+	// Global X11 event filter.
+	static bool x11EventFilter(void *pvEvent);
+#endif
 
 private:
 
@@ -177,9 +183,6 @@ private:
 
 	// Our own editor widget (parent frame).
 	EditorWidget *m_pEditorWidget;
-
-	// Singleton list of VST plugins.
-	static QList<qtractorVstPlugin *> g_vstPlugins;
 };
 
 
@@ -210,10 +213,6 @@ public:
 
 	// Current display value.
 	QString display() const;
-
-	// Current parameter value.
-	void setValue(float fValue);
-	float value() const;
 
 private:
 

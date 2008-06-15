@@ -99,6 +99,9 @@ public:
 	// The main plugin processing procedure.
 	void process(float **ppIBuffer, float **ppOBuffer, unsigned int nframes);
 
+	// Parameter update method.
+	void updateParam(qtractorPluginParam *pParam, float fValue);
+
 	// Bank/program selector override.
 	void selectProgram(int iBank, int iProg);
 
@@ -138,26 +141,6 @@ private:
 
 	// GUI editor visiability status.
 	bool m_bEditorVisible;
-};
-
-
-//----------------------------------------------------------------------------
-// qtractorDssiPluginParam -- DSSI plugin control input port instance.
-//
-
-class qtractorDssiPluginParam : public qtractorLadspaPluginParam
-{
-public:
-
-	// Constructors.
-	qtractorDssiPluginParam(qtractorDssiPlugin *pDssiPlugin,
-		unsigned long iIndex);
-
-	// Destructor.
-	~qtractorDssiPluginParam();
-
-	// Parameter value setter.
-	void setValue(float fValue);
 };
 
 

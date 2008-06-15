@@ -491,6 +491,8 @@ bool qtractorPluginParamCommand::redo (void)
 
 	// Update the form, showing it up as necessary...
 	(pPlugin->form())->updateParamWidget(m_pParam->index());
+	// Update any GUI editor...
+	pPlugin->idleEditor();
 
 	return true;
 }

@@ -855,10 +855,8 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 						// Done with MIDI-thru.
 						pMidiBus->midiMonitor_out()->enqueue(type, data2);
 						// Do it for the MIDI plugins too...
-						if ((pTrack->pluginList())->midiManager() &&
-							(pTrack->pluginList())->activated() > 0) {
-							((pTrack->pluginList())->midiManager())->direct(pEv);
-						}
+						if ((pTrack->pluginList())->midiManager())
+							(pTrack->pluginList())->midiManager()->direct(pEv);
 					}
 				}
 			}
@@ -1006,9 +1004,8 @@ void qtractorMidiEngine::enqueue ( qtractorTrack *pTrack,
 		pMidiBus->midiMonitor_out()->enqueue(pEvent->type(), value, tick);
 
 	// Do it for the MIDI plugins too...
-	if ((pTrack->pluginList())->midiManager() &&
-		(pTrack->pluginList())->activated() > 0)
-		((pTrack->pluginList())->midiManager())->queued(&ev);
+	if ((pTrack->pluginList())->midiManager())
+		(pTrack->pluginList())->midiManager()->queued(&ev);
 }
 
 
@@ -2279,7 +2276,7 @@ void qtractorMidiBus::setPatch ( unsigned short iChannel,
 
 	// Do it for the MIDI plugins if applicable...
 	qtractorMidiManager *pMidiManager = NULL;
-	if (pTrack && (pTrack->pluginList())->activated() > 0)
+	if (pTrack)
 		pMidiManager = (pTrack->pluginList())->midiManager();
 
 	// Initialize sequencer event...
@@ -2374,9 +2371,7 @@ void qtractorMidiBus::setControllerEx ( unsigned short iChannel,
 	snd_seq_event_output(pMidiEngine->alsaSeq(), &ev);
 
 	// Do it for the MIDI plugins too...
-	if (pTrack &&
-		(pTrack->pluginList())->midiManager() &&
-		(pTrack->pluginList())->activated() > 0)
+	if (pTrack && (pTrack->pluginList())->midiManager())
 		(pTrack->pluginList())->midiManager()->direct(&ev);
 
 	pMidiEngine->flush();
@@ -2423,8 +2418,7 @@ void qtractorMidiBus::sendNote ( qtractorTrack *pTrack,
 	snd_seq_event_output(pMidiEngine->alsaSeq(), &ev);
 
 	// Do it for the MIDI plugins too...
-	if ((pTrack->pluginList())->midiManager() &&
-		(pTrack->pluginList())->activated() > 0)
+	if ((pTrack->pluginList())->midiManager())
 		(pTrack->pluginList())->midiManager()->direct(&ev);
 
 	pMidiEngine->flush();

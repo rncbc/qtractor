@@ -307,9 +307,15 @@ static int osc_control ( DssiEditor *pDssiEditor, lo_arg **argv )
 		return 1;
 
 	// Plugin parameter lookup.
+#if 0
 	qtractorPluginParam *pParam = pDssiPlugin->findParam(param);
 	if (pParam)
 		pParam->setValue(value);
+#else
+	qtractorPluginForm *pForm = pDssiPlugin->form();
+	if (pForm)
+		pForm->updateParamValue(param, value);
+#endif
 
 	return 0;
 }
@@ -776,6 +782,19 @@ void qtractorDssiPlugin::process (
 }
 
 
+// Parameter update method.
+void qtractorDssiPlugin::updateParam (
+	qtractorPluginParam *pParam, float fValue )
+{
+#ifdef CONFIG_LIBLO
+	// And update the editor too...
+	DssiEditor *pDssiEditor = osc_find_editor(this);
+	if (pDssiEditor)
+		osc_send_control(pDssiEditor, pParam->index(), fValue);
+#endif
+}
+
+
 // GUI Editor stuff.
 void qtractorDssiPlugin::openEditor ( QWidget */*pParent*/ )
 {
@@ -996,39 +1015,6 @@ const DSSI_Descriptor *qtractorDssiPlugin::dssi_descriptor (void) const
 	qtractorDssiPluginType *pDssiType
 		= static_cast<qtractorDssiPluginType *> (type());
 	return (pDssiType ? pDssiType->dssi_descriptor() : NULL);
-}
-
-
-//----------------------------------------------------------------------------
-// qtractorDssiPluginParam -- DSSI plugin control input port instance.
-//
-
-// Constructors.
-qtractorDssiPluginParam::qtractorDssiPluginParam (
-	qtractorDssiPlugin *pDssiPlugin, unsigned long iIndex )
-	: qtractorLadspaPluginParam(pDssiPlugin, iIndex)
-{
-}
-
-
-// Destructor.
-qtractorDssiPluginParam::~qtractorDssiPluginParam (void)
-{
-}
-
-
-// Parameter value setter.
-void qtractorDssiPluginParam::setValue ( float fValue )
-{
-	qtractorLadspaPluginParam::setValue(fValue);
-
-#ifdef CONFIG_LIBLO
-	// And update the editor too...
-	DssiEditor *pDssiEditor
-		= osc_find_editor(static_cast<qtractorDssiPlugin *> (plugin()));
-	if (pDssiEditor)
-		osc_send_control(pDssiEditor, index(), value());
-#endif
 }
 
 

@@ -41,6 +41,10 @@
 
 #define QTRACTOR_XUNIQUE "qtractorApplication"
 
+#ifdef CONFIG_VST
+#include "qtractorVstPlugin.h"
+#endif
+
 #endif
 
 class qtractorApplication : public QApplication
@@ -203,6 +207,11 @@ public:
 			if (iItems > 0 && pData)
 				XFree(pData);
 		}
+#ifdef CONFIG_VST
+		// Let xevents be processed by VST plugin editors...
+		if (qtractorVstPlugin::x11EventFilter(pEv))
+			return true;
+#endif
 		return QApplication::x11EventFilter(pEv);
 	}
 #endif
