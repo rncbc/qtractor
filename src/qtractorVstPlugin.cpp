@@ -1251,7 +1251,7 @@ static VstIntPtr qtractorVstPlugin_closeFileSelector (
 //----------------------------------------------------------------------
 // The magnificient host callback, which every VSTi plugin will call.
 
-#ifdef CONFIG_DEBUG_0
+#ifdef CONFIG_DEBUG
 #define VST_HC_FMT "qtractorVstPlugin_HostCallback(%p, %s(%d), %d, %d, %p, %g)"
 #define VST_HC_DEBUG(s)  qDebug(VST_HC_FMT, \
 	effect, (s), int(opcode), int(index), int(value), ptr, opt)

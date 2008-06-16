@@ -312,7 +312,7 @@ void qtractorMidiManager::process (
 		}
 	}
 
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	for (unsigned int i = 0; i < m_iBuffer; ++i) {
 		snd_seq_event_t *pEv = &m_pBuffer[i];
 		// - show event for debug purposes...
@@ -351,9 +351,11 @@ void qtractorMidiManager::process (
 			pVstMidiEvent->deltaFrames = pEv->time.tick;
 	
 			if (snd_midi_event_decode(m_pVstMidiParser,
-				(unsigned char *) &pVstMidiEvent->midiData[0], 3, pEv) < 0)
+				(unsigned char *) &pVstMidiEvent->midiData[0], 3, pEv) < 0) {
+				qDebug("ERROR");
 				break;
-	
+			}
+
 			pVstEvents->events[iVstMidiEvent] = (VstEvent *) pVstMidiEvent;
 	
 			if (++iVstMidiEvent >= MaxVstMidiEvents)
@@ -434,10 +436,8 @@ void qtractorMidiManager::reset (void)
 	clear();
 
 #ifdef CONFIG_VST
-	if (m_pVstMidiParser) {
+	if (m_pVstMidiParser)
 		snd_midi_event_reset_decode(m_pVstMidiParser);
-		snd_midi_event_no_status(m_pVstMidiParser, 1);
-	}
 #endif
 
 	m_pPluginList->resetBuffer();
@@ -498,6 +498,7 @@ void qtractorMidiManager::createVstMidiParser (void)
 		return;
 
 	if (snd_midi_event_new(3, &m_pVstMidiParser) == 0) {
+		snd_midi_event_no_status(m_pVstMidiParser, 1);
 		const unsigned int MaxVstMidiEvents = (bufferSize() << 1);
 		const unsigned int VstBufferSize = sizeof(VstEvents)
 			+ MaxVstMidiEvents * sizeof(VstMidiEvent *);
