@@ -895,12 +895,16 @@ void qtractorVstPlugin::closeEditor (void)
 // Idle editor.
 void qtractorVstPlugin::idleEditor (void)
 {
+	if (m_pEditorWidget == NULL)
+		return;
+
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorVstPlugin[%p]::idleEditor()", this);
 #endif
+
 	vst_dispatch(0, effEditIdle, 0, 0, NULL, 0.0f);
 
-	if (m_pEditorWidget) m_pEditorWidget->update();
+	m_pEditorWidget->update();
 }
 
 
@@ -930,11 +934,8 @@ void qtractorVstPlugin::setEditorTitle ( const QString& sTitle )
 void qtractorVstPlugin::idleEditorAll (void)
 {
 	QListIterator<qtractorVstPlugin *> iter(g_vstPlugins);
-	while (iter.hasNext()) {
-		qtractorVstPlugin *pVstPlugin = iter.next();
-		if (pVstPlugin->editorWidget())
-			pVstPlugin->idleEditor();
-	}
+	while (iter.hasNext())
+		iter.next()->idleEditor();
 }
 
 

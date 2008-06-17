@@ -351,10 +351,8 @@ void qtractorMidiManager::process (
 			pVstMidiEvent->deltaFrames = pEv->time.tick;
 	
 			if (snd_midi_event_decode(m_pVstMidiParser,
-				(unsigned char *) &pVstMidiEvent->midiData[0], 3, pEv) < 0) {
-				qDebug("ERROR");
+				(unsigned char *) &pVstMidiEvent->midiData[0], 3, pEv) < 0)
 				break;
-			}
 
 			pVstEvents->events[iVstMidiEvent] = (VstEvent *) pVstMidiEvent;
 	
