@@ -313,12 +313,13 @@ bool qtractorVstPluginType::Effect::open ( qtractorPluginFile *pFile )
 	if (m_pVstEffect == NULL)
 		return false;
 
-	vst_dispatch(effIdentify, 0, 0, NULL, 0);
-	vst_dispatch(effOpen,0, 0, NULL, 0.0f);
-//	vst_dispatch(effMainsChanged, 0, 0, NULL, 0.0f);
 #ifdef CONFIG_DEBUG_0
 	qDebug("AEffect[%p]::open(%p)", m_pVstEffect, pFile);
 #endif
+
+	vst_dispatch(effIdentify, 0, 0, NULL, 0);
+	vst_dispatch(effOpen,0, 0, NULL, 0.0f);
+//	vst_dispatch(effMainsChanged, 0, 0, NULL, 0.0f);
 
 	return true;
 }
@@ -332,6 +333,7 @@ void qtractorVstPluginType::Effect::close (void)
 #ifdef CONFIG_DEBUG_0
 	qDebug("AEffect[%p]::close()", m_pVstEffect);
 #endif
+
 //	vst_dispatch(effMainsChanged, 0, 0, NULL, 0.0f);
 	vst_dispatch(effClose, 0, 0, NULL, 0.0f);
 
@@ -423,11 +425,17 @@ bool qtractorVstPluginType::open (void)
 
 void qtractorVstPluginType::close (void)
 {
-	if (m_pEffect) {
-		m_pEffect->close();
-		delete m_pEffect;
-		m_pEffect = NULL;
-	}
+	if (m_pEffect == NULL)
+		return;
+
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorVstPluginType[%p]::close()", this);
+#endif
+
+	m_pEffect->close();
+
+	delete m_pEffect;
+	m_pEffect = NULL;
 }
 
 
@@ -714,21 +722,10 @@ void qtractorVstPlugin::updateParam (
 	qtractorPluginParam *pParam, float fValue )
 {
 	// Maybe we're not pretty instantiated yet...
-	unsigned short iInstances = instances();
-	if (iInstances > 0) {
-		for (unsigned short i = 0; i < iInstances; ++i) {
-			AEffect *pVstEffect = vst_effect(i);
-			if (pVstEffect)
-				pVstEffect->setParameter(pVstEffect, pParam->index(), fValue);
-		}
-	} else {
-		qtractorVstPluginType *pVstType
-			= static_cast<qtractorVstPluginType *> (type());
-		if (pVstType && pVstType->effect()) {
-			AEffect *pVstEffect = (pVstType->effect())->vst_effect();
-			if (pVstEffect)
-				pVstEffect->setParameter(pVstEffect, pParam->index(), fValue);
-		}
+	for (unsigned short i = 0; i < instances(); ++i) {
+		AEffect *pVstEffect = vst_effect(i);
+		if (pVstEffect)
+			pVstEffect->setParameter(pVstEffect, pParam->index(), fValue);
 	}
 }
 

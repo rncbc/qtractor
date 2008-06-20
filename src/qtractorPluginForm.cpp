@@ -142,8 +142,9 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 	// or do we have one dedicated editor GUI?
 	if (!bEditor || iRows < 101) {
 		int iCols = 1;
-		while (iRows > 24 && iCols < 3)
-			iRows = (params.count() / ++iCols) - 1;
+		while (iRows > 16 && iCols < 4)
+			iRows = (params.count() / ++iCols);
+		iRows += (params.count() % iCols);	// Adjust to balance.
 		int iRow = 0;
 		int iCol = 0;
 		QListIterator<qtractorPluginParam *> iter(params);
