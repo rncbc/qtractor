@@ -882,6 +882,15 @@ void qtractorSession::setPlaying ( bool bPlaying )
 	// Do it.
 	m_pAudioEngine->setPlaying(bPlaying);
 	m_pMidiEngine->setPlaying(bPlaying);
+
+	// Have all MIDI instrument plugins be shut...
+	if (!bPlaying) {
+		qtractorMidiManager *pMidiManager = m_midiManagers.first();
+		while (pMidiManager) {
+			pMidiManager->reset();
+			pMidiManager = pMidiManager->next();
+		}
+	}
 }
 
 bool qtractorSession::isPlaying() const
