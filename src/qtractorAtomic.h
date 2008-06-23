@@ -33,29 +33,28 @@
 extern "C" {
 #endif
 
-
 #if defined(HAVE_QATOMIC_H)
 
-static inline int ATOMIC_CAS ( volatile int *pAddr,
-	int iOldValue, int iNewValue )
+#if QT_VERSION < 0x040400
+
+static inline int ATOMIC_CAS1 (
+	volatile int *pAddr, int iOldValue, int iNewValue )
 {
-#if QT_VERSION >= 0x040400
-	return QAtomicInt(*pAddr).testAndSetOrdered(iOldValue, iNewValue);
-#else
 	return q_atomic_test_and_set_int(pAddr, iOldValue, iNewValue);
-#endif
 }
+
+#endif
 
 #elif defined(__GNUC__)
 
 #if defined(powerpc) || defined(__ppc__)
 
-static inline int ATOMIC_CAS ( volatile int *pAddr,
-	int iOldValue, int iNewValue )
+static inline int ATOMIC_CAS1 (
+	volatile int *pAddr, int iOldValue, int iNewValue )
 {
 	register int result;
 	asm volatile (
-		"# ATOMIC_CAS			\n"
+		"# ATOMIC_CAS1			\n"
 		"	lwarx	r0, 0, %1	\n"
 		"	cmpw	r0, %2		\n"
 		"	bne-	1f			\n"
@@ -76,12 +75,12 @@ static inline int ATOMIC_CAS ( volatile int *pAddr,
 
 #elif defined(__i386__) || defined(__x86_64__)
 
-static inline int ATOMIC_CAS ( volatile int *pValue,
-	int iOldValue, int iNewValue )
+static inline int ATOMIC_CAS1 (
+	volatile int *pValue, int iOldValue, int iNewValue )
 {
 	register char result;
 	asm volatile (
-		"# ATOMIC_CAS			\n"
+		"# ATOMIC_CAS1			\n"
 		"lock ; cmpxchgl %2, %3	\n"
 		"sete %1				\n"
 		: "=a" (iNewValue), "=qm" (result)
@@ -97,8 +96,8 @@ static inline int ATOMIC_CAS ( volatile int *pValue,
 
 #elif defined(WIN32) || defined(__WIN32__) || defined(_WIN32)
 
-static inline int ATOMIC_CAS ( volatile int *pValue,
-	int iOldValue, int iNewValue )
+static inline int ATOMIC_CAS1 (
+	volatile int *pValue, int iOldValue, int iNewValue )
 {
 	register char result;
 	__asm {
@@ -120,37 +119,62 @@ static inline int ATOMIC_CAS ( volatile int *pValue,
 #endif
 
 
+#if defined(HAVE_QATOMIC_H) && QT_VERSION >= 0x040400
+
+typedef QAtomicInt qtractorAtomic;
+
+#define ATOMIC_GET(a)	((int) *(a))
+#define ATOMIC_SET(a,v)	(*(a) = (v))
+
+static inline int ATOMIC_CAS ( qtractorAtomic *pVal,
+	int iOldValue, int iNewValue )
+{
+	return pVal->testAndSetOrdered(iOldValue, iNewValue);
+}
+
+#else
+
 typedef struct { volatile int value; } qtractorAtomic;
 
 #define ATOMIC_GET(a)	((a)->value)
 #define ATOMIC_SET(a,v)	((a)->value = (v))
 
-static inline int ATOMIC_TAS ( qtractorAtomic *pVal )
+static inline int ATOMIC_CAS ( qtractorAtomic *pVal,
+	int iOldValue, int iNewValue )
 {
-	return ATOMIC_CAS(&(pVal->value), 0, 1);
+	return ATOMIC_CAS1(&(pVal->value), iOldValue, iNewValue);
 }
 
+#endif
+
+
+// Strict test-and-set primite.
+static inline int ATOMIC_TAS ( qtractorAtomic *pVal )
+{
+	return ATOMIC_CAS(pVal, 0, 1);
+}
+
+// Strict test-and-add primitive.
 static inline int ATOMIC_ADD ( qtractorAtomic *pVal, int iAddValue )
 {
 	volatile int iOldValue, iNewValue;
 	do {
-		iOldValue = pVal->value;
+		iOldValue = ATOMIC_GET(pVal);
 		iNewValue = iOldValue + iAddValue;
-	} while (!ATOMIC_CAS(&(pVal->value), iOldValue, iNewValue));
+	} while (!ATOMIC_CAS(pVal, iOldValue, iNewValue));
 	return iNewValue;
 }
 
 #define ATOMIC_INC(a) ATOMIC_ADD((a), (+1))
 #define ATOMIC_DEC(a) ATOMIC_ADD((a), (-1))
 
-
 // Special test-and-zero primitive (invented here:)
 static inline int ATOMIC_TAZ ( qtractorAtomic *pVal )
 {
 	volatile int iOldValue;
 	do {
-		iOldValue = pVal->value;
-	} while (iOldValue && !ATOMIC_CAS(&(pVal->value), iOldValue, 0));
+		iOldValue = ATOMIC_GET(pVal);
+	} while (iOldValue && !ATOMIC_CAS(pVal, iOldValue, 0));
 	return iOldValue;
 }
 

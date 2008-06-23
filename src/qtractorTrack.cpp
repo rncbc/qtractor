@@ -728,8 +728,8 @@ void qtractorTrack::process ( qtractorClip *pClip,
 	}
 
 	// Now, for every clip...
-	while (pClip && pClip->clipStart() < iFrameEnd
-		&& iFrameStart < pClip->clipStart() + pClip->clipLength()) {
+	while (pClip && pClip->clipStart() < iFrameEnd) {
+	//	&& iFrameStart < pClip->clipStart() + pClip->clipLength()) {
 		pClip->process(iFrameStart, iFrameEnd);
 		pClip = pClip->next();
 	}

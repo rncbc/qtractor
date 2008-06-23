@@ -5,6 +5,9 @@ ChangeLog
 
 CVS HEAD
 
+- Second attempt for Qt4.4 build support, regarding the bundled
+  atomic primitives, now correct and way more serious :)
+
 - Long due DSSI/VSTi plugin host implementation has taken shape for
   MIDI instruments (eg. soft-synth plugins); DSSI reached its full
   host implementation and VSTi is already kicking as well (HIGHLY
