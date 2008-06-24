@@ -6,7 +6,7 @@ ChangeLog
 CVS HEAD
 
 - Second attempt for Qt4.4 build support, regarding the bundled
-  atomic primitives, now correct and way more serious :)
+  atomic primitives, now corrected and way more seriously :).
 
 - Long due DSSI/VSTi plugin host implementation has taken shape for
   MIDI instruments (eg. soft-synth plugins); DSSI reached its full
@@ -65,8 +65,8 @@ CVS HEAD
 - Time-stretch FIFO buffer implementation is now made generic,
   as template, fixing a destructor memory leak in the process.
 
-- Include legacy header stdlib.h where necessary to build with
-  stricter gcc/g++ >= 4.3.
+- Include legacy headers, stdlib.h and string.h, where necessary
+  to build with stricter gcc/g++ >= 4.3.
 
 
 0.1.3  2008-05-02  The Frugal Damsel
