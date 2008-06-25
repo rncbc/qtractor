@@ -32,9 +32,6 @@
   <property name="windowTitle" >
    <string>MIDI Editor</string>
   </property>
-  <property name="windowIcon" >
-   <iconset/>
-  </property>
   <widget class="QWidget" name="centralwidget" />
   <widget class="QMenuBar" name="MenuBar" >
    <property name="geometry" >

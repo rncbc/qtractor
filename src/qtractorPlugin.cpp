@@ -1314,14 +1314,14 @@ void qtractorPluginParam::setDefaultValue ( float fDefaultValue )
 // Current port value.
 void qtractorPluginParam::setValue ( float fValue )
 {
-	if (fValue == m_fValue)
-		return;
-
 	if (isBoundedAbove() && fValue > m_fMaxValue)
 		fValue = m_fMaxValue;
 	else
 	if (isBoundedBelow() && fValue < m_fMinValue)
 		fValue = m_fMinValue;
+
+	if (fValue == m_fValue)
+		return;
 
 	m_fValue = fValue;
 

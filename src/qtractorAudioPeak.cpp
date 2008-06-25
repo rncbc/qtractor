@@ -179,7 +179,8 @@ void qtractorAudioPeakThread::run (void)
 			hdr.peakChannels = iChannels;
 			m_peakFile.write((const char *) &hdr, sizeof(hdr));
 			// Go ahead with the whole bunch...
-			while (m_bRunState && createPeakFileChunk());
+			while (m_bRunState && createPeakFileChunk())
+				/* empty loop */;
 		}
 		// We're done.
 		closePeakFile();

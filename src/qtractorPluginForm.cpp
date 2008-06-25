@@ -100,6 +100,10 @@ qtractorPluginForm::qtractorPluginForm (
 	QObject::connect(m_ui.ActivateToolButton,
 		SIGNAL(toggled(bool)),
 		SLOT(activateSlot(bool)));
+
+	QObject::connect(this,
+		SIGNAL(valueChanged(qtractorPluginParam *, float)),
+		SLOT(valueChangeSlot(qtractorPluginParam *, float)));
 }
 
 
@@ -281,9 +285,13 @@ void qtractorPluginForm::updateParamValue (
 	if (m_pPlugin == NULL)
 		return;
 
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorPluginForm[%p]::updateParamValue(%lu)", this, iIndex);
+#endif
+
 	qtractorPluginParam *pParam = m_pPlugin->findParam(iIndex);
 	if (pParam)
-		valueChangeSlot(pParam, fValue);
+		emit valueChanged(pParam, fValue);
 }
 
 
@@ -292,6 +300,10 @@ void qtractorPluginForm::updateParamWidget ( unsigned long iIndex )
 {
 	if (m_pPlugin == NULL)
 		return;
+
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorPluginForm[%p]::updateParamWidget(%lu)", this, iIndex);
+#endif
 
 	QListIterator<qtractorPluginParamWidget *> iter(m_paramWidgets);
 	while (iter.hasNext()) {
@@ -512,6 +524,9 @@ void qtractorPluginForm::valueChangeSlot (
 	if (m_iUpdate > 0)
 		return;
 
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorPluginForm[%p]::valueChangeSlot(%p, %g)", this, pParam, fValue);
+#endif
 	m_iUpdate++;
 
 	// Make it a undoable command...
@@ -533,6 +548,12 @@ void qtractorPluginForm::refresh (void)
 	if (m_pPlugin == NULL)
 		return;
 
+	if (m_iUpdate > 0)
+		return;
+
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorPluginForm[%p]::refresh()", this);
+#endif
 	m_iUpdate++;
 
 	const QString sOldPreset = m_ui.PresetComboBox->currentText();
@@ -708,6 +729,9 @@ void qtractorPluginParamWidget::refresh (void)
 	if (m_iUpdate > 0)
 		return;
 
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorPluginParamWidget[%p]::refresh()", this);
+#endif
 	m_iUpdate++;
 
 	float fValue = m_pParam->value();
@@ -775,6 +799,9 @@ void qtractorPluginParamWidget::spinBoxValueChanged ( const QString& sText )
 	if (m_iUpdate > 0)
 		return;
 
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorPluginParamWidget[%p]::spinBoxValueChanged()", this);
+#endif
 	m_iUpdate++;
 
 	float fValue = 0.0f;
@@ -800,6 +827,9 @@ void qtractorPluginParamWidget::sliderValueChanged ( int iValue )
 	if (m_iUpdate > 0)
 		return;
 
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorPluginParamWidget[%p]::sliderValueValueChanged()", this);
+#endif
 	m_iUpdate++;
 
 	float fValue = sliderToParam(iValue);

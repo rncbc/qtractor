@@ -73,6 +73,11 @@ public:
 
 	void toggleEditor(bool bOn);
 
+signals:
+
+	// Change notification.
+	void valueChanged(qtractorPluginParam *, float);
+
 protected slots:
 
 	void changePresetSlot(const QString& sPreset);

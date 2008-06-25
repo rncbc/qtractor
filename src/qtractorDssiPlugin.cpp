@@ -45,7 +45,7 @@ struct DssiEditor
 {
 	// Constructor.
 	DssiEditor(qtractorDssiPlugin *pPlugin)
-		: plugin(pPlugin), target(NULL), source(NULL), path(NULL) {}
+		: plugin(pPlugin), target(NULL), source(NULL), path(NULL), busy(0) {}
 
 	// Destructor.
 	~DssiEditor() {
@@ -60,9 +60,10 @@ struct DssiEditor
 	// Member variables.
 	qtractorDssiPlugin *plugin;
 
-    lo_address target;
-    lo_address source;
-    char      *path;
+	lo_address target;
+	lo_address source;
+	char      *path;
+	int        busy;
 };
 
 
@@ -118,6 +119,9 @@ static void osc_error ( int num, const char *msg, const char *path )
 static int osc_send_configure ( DssiEditor *pDssiEditor,
 	const char *key, const char *value )
 {
+	if (pDssiEditor->busy > 0)
+		return 1;
+
 #ifdef CONFIG_DEBUG
 	qDebug("osc_send_configure: path \"%s\", key \"%s\", value \"%s\"",
 		pDssiEditor->path, key, value);
@@ -135,6 +139,9 @@ static int osc_send_configure ( DssiEditor *pDssiEditor,
 static int osc_send_control ( DssiEditor *pDssiEditor,
 	int param, float value )
 {
+	if (pDssiEditor->busy > 0)
+		return 1;
+
 #ifdef CONFIG_DEBUG
 	qDebug("osc_send_control: path \"%s\", param %d, value %g",
 		pDssiEditor->path, param, value);
@@ -152,6 +159,9 @@ static int osc_send_control ( DssiEditor *pDssiEditor,
 static int osc_send_program ( DssiEditor *pDssiEditor,
 	int bank, int prog )
 {
+	if (pDssiEditor->busy > 0)
+		return 1;
+
 #ifdef CONFIG_DEBUG
 	qDebug("osc_send_program: path \"%s\", bank %d, prog %d",
 		pDssiEditor->path, bank, prog);
@@ -168,6 +178,9 @@ static int osc_send_program ( DssiEditor *pDssiEditor,
 
 static int osc_send_show ( DssiEditor *pDssiEditor )
 {
+	if (pDssiEditor->busy > 0)
+		return 1;
+
 #ifdef CONFIG_DEBUG
 	qDebug("osc_send_show: path \"%s\"", pDssiEditor->path);
 #endif
@@ -182,6 +195,9 @@ static int osc_send_show ( DssiEditor *pDssiEditor )
 
 static int osc_send_hide ( DssiEditor *pDssiEditor )
 {
+	if (pDssiEditor->busy > 0)
+		return 1;
+
 #ifdef CONFIG_DEBUG
 	qDebug("osc_send_hide: path \"%s\"", pDssiEditor->path);
 #endif
@@ -196,6 +212,9 @@ static int osc_send_hide ( DssiEditor *pDssiEditor )
 
 static int osc_send_quit ( DssiEditor *pDssiEditor )
 {
+	if (pDssiEditor->busy > 0)
+		return 1;
+
 #ifdef CONFIG_DEBUG
 	qDebug("osc_send_quit: path \"%s\"", pDssiEditor->path);
 #endif
@@ -285,8 +304,10 @@ static int osc_configure ( DssiEditor *pDssiEditor, lo_arg **argv )
 		return 1;
 
 	// Save and send configuration to plugin...
+	pDssiEditor->busy++;
 	pDssiPlugin->setConfig(key, value);
 	pDssiPlugin->configure(key, value);
+	pDssiEditor->busy--;
 
 	return 0;
 }
@@ -307,6 +328,7 @@ static int osc_control ( DssiEditor *pDssiEditor, lo_arg **argv )
 		return 1;
 
 	// Plugin parameter lookup.
+	pDssiEditor->busy++;
 #if 0
 	qtractorPluginParam *pParam = pDssiPlugin->findParam(param);
 	if (pParam)
@@ -316,6 +338,7 @@ static int osc_control ( DssiEditor *pDssiEditor, lo_arg **argv )
 	if (pForm)
 		pForm->updateParamValue(param, value);
 #endif
+	pDssiEditor->busy--;
 
 	return 0;
 }
@@ -336,7 +359,9 @@ static int osc_program ( DssiEditor *pDssiEditor, lo_arg **argv )
 		return 1;
 
 	// Bank/Program selection pending...
+	pDssiEditor->busy++;
 	pDssiPlugin->selectProgram(bank, prog);
+	pDssiEditor->busy--;
 
 	return 0;
 }
@@ -416,10 +441,12 @@ static int osc_message ( const char *path, const char *types,
 		return 1;
 
 	const QString sPath = path;
-
 	const QString& sLabel = sPath.section('/', 2, 2);
 	DssiEditor *pDssiEditor = osc_find_editor_by_label(sLabel);
 	if (pDssiEditor == NULL)
+		return 1;
+
+	if (pDssiEditor->busy > 0)
 		return 1;
 
 	lo_message message = lo_message(data);
