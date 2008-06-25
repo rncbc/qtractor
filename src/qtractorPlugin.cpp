@@ -247,7 +247,12 @@ bool qtractorPluginFile::getTypes ( qtractorPluginTypeList& types,
 	if (typeHint == qtractorPluginType::Any ||
 		typeHint == qtractorPluginType::Vst) {
 		if ((pType
+		#if 0 // FIXME: As long the JUCETICE plugins don't cope...
 			= qtractorVstPluginType::createType(this)) != NULL) {
+		#else
+			= qtractorDummyPluginType::createType(this,
+				0, qtractorPluginType::Vst)) != NULL) {
+		#endif
 			if (pType->open()) {
 				types.append(pType);
 				pType->close();
@@ -393,6 +398,54 @@ QString qtractorPluginType::textFromHint (
 	else
 #endif
 	return QObject::tr("(Any)");
+}
+
+
+//----------------------------------------------------------------------------
+// qtractorDummyPluginType -- Dummy plugin type instance.
+//
+
+// Constructor.
+qtractorDummyPluginType::qtractorDummyPluginType (
+	qtractorPluginFile *pFile, unsigned long iIndex, Hint typeHint)
+	: qtractorPluginType(pFile, iIndex, typeHint)
+{
+}
+
+// Must be overriden methods.
+bool qtractorDummyPluginType::open (void)
+{
+	m_sName  = QFileInfo(file()->filename()).baseName();
+	m_sLabel = m_sName.simplified().replace(QRegExp("[\\s|\\.|\\-]+"), "_");
+
+	m_iUniqueID = 0;
+	for (int i = 0; i < m_sLabel.length(); ++i)
+		m_iUniqueID += int(m_sLabel[i].toAscii());
+
+	// Fake the rest...
+	m_iAudioIns  = 2;
+	m_iAudioOuts = 2;
+	m_iMidiIns   = 1;
+
+	return true;
+}
+
+
+void qtractorDummyPluginType::close (void)
+{
+}
+
+
+// Factory method (static)
+qtractorDummyPluginType *qtractorDummyPluginType::createType (
+	qtractorPluginFile *pFile, unsigned long iIndex, Hint typeHint )
+{
+	// Sanity check...
+	if (pFile == NULL)
+		return NULL;
+
+	// Yep, most probably its a dummy plugin effect...
+	return new qtractorDummyPluginType(pFile, iIndex, typeHint);
 }
 
 

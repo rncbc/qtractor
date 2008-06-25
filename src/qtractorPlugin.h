@@ -137,6 +137,28 @@ private:
 
 
 //----------------------------------------------------------------------------
+// qtractorDummyPluginType -- Dummy plugin type instance.
+//
+
+class qtractorDummyPluginType : public qtractorPluginType
+{
+public:
+
+	// Constructor.
+	qtractorDummyPluginType(
+		qtractorPluginFile *pFile, unsigned long iIndex, Hint typeHint);
+
+	// Must be overriden methods.
+	bool open();
+	void close();
+
+	// Factory method (static)
+	static qtractorDummyPluginType *createType(
+		qtractorPluginFile *pFile, unsigned long iIndex, Hint typeHint);
+};
+
+
+//----------------------------------------------------------------------------
 // qtractorPluginTypeList -- Plugin type list instance.
 //
 
