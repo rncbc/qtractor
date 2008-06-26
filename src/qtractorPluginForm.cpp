@@ -146,7 +146,7 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 	// or do we have one dedicated editor GUI?
 	if (!bEditor || iRows < 101) {
 		int iCols = 1;
-		while (iRows > 16 && iCols < 4)
+		while (iRows > 12 && iCols < 4)
 			iRows = (params.count() / ++iCols);
 		if (params.count() % iCols)	// Adjust to balance.
 			iRows++;
@@ -162,7 +162,7 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 			QObject::connect(pParamWidget,
 				SIGNAL(valueChanged(qtractorPluginParam *, float)),
 				SLOT(valueChangeSlot(qtractorPluginParam *, float)));
-			if (++iRow > iRows) {
+			if (++iRow >= iRows) {
 				iRow = 0;
 				iCol++;
 			}
