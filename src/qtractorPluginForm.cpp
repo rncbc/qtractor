@@ -829,7 +829,7 @@ void qtractorPluginParamWidget::sliderValueChanged ( int iValue )
 		return;
 
 #ifdef CONFIG_DEBUG
-	qDebug("qtractorPluginParamWidget[%p]::sliderValueValueChanged()", this);
+	qDebug("qtractorPluginParamWidget[%p]::sliderValueChanged()", this);
 #endif
 	m_iUpdate++;
 

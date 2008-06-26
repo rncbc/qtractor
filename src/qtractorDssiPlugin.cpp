@@ -267,7 +267,15 @@ static int osc_update ( DssiEditor *pDssiEditor,
 			iter.key().toUtf8().constData(),
 			iter.value().toUtf8().constData());
 	}
-#if 0
+
+	// Update program selection...
+	qtractorMidiManager *pMidiManager = (pDssiPlugin->list())->midiManager();
+	if (pMidiManager) {
+		osc_send_program(pDssiEditor,
+			pMidiManager->currentBank(),
+			pMidiManager->currentProg());
+	}
+
 	// Update control params...
 	QListIterator<qtractorPluginParam *> param(pDssiPlugin->params());
 	while (param.hasNext()) {
@@ -275,14 +283,6 @@ static int osc_update ( DssiEditor *pDssiEditor,
 		osc_send_control(pDssiEditor,
 			pParam->index(),
 			pParam->value());
-	}
-#endif
-	// Update program selection...
-	qtractorMidiManager *pMidiManager = (pDssiPlugin->list())->midiManager();
-	if (pMidiManager) {
-		osc_send_program(pDssiEditor,
-			pMidiManager->currentBank(),
-			pMidiManager->currentProg());
 	}
 
 	return osc_send_show(pDssiEditor);
