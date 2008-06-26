@@ -317,7 +317,7 @@ bool qtractorVstPluginType::Effect::open ( qtractorPluginFile *pFile )
 	qDebug("AEffect[%p]::open(%p)", m_pVstEffect, pFile);
 #endif
 
-	vst_dispatch(effIdentify, 0, 0, NULL, 0);
+//	vst_dispatch(effIdentify, 0, 0, NULL, 0);
 	vst_dispatch(effOpen,0, 0, NULL, 0.0f);
 //	vst_dispatch(effMainsChanged, 0, 0, NULL, 0.0f);
 

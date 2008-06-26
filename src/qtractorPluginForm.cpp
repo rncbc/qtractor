@@ -148,7 +148,8 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 		int iCols = 1;
 		while (iRows > 16 && iCols < 4)
 			iRows = (params.count() / ++iCols);
-		iRows += (params.count() % iCols);	// Adjust to balance.
+		if (params.count() % iCols)	// Adjust to balance.
+			iRows++;
 		int iRow = 0;
 		int iCol = 0;
 		QListIterator<qtractorPluginParam *> iter(params);

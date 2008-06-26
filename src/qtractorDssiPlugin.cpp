@@ -329,15 +329,9 @@ static int osc_control ( DssiEditor *pDssiEditor, lo_arg **argv )
 
 	// Plugin parameter lookup.
 	pDssiEditor->busy++;
-#if 0
-	qtractorPluginParam *pParam = pDssiPlugin->findParam(param);
-	if (pParam)
-		pParam->setValue(value);
-#else
 	qtractorPluginForm *pForm = pDssiPlugin->form();
 	if (pForm)
 		pForm->updateParamValue(param, value);
-#endif
 	pDssiEditor->busy--;
 
 	return 0;
