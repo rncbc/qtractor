@@ -619,13 +619,19 @@ void qtractorVstPlugin::setChannels ( unsigned short iChannels )
 	// But won't need it anymore.
 	clearConfigs();
 
+	// Prepare the bank/program stuff... 
+	int iIndex = 0;
+	qtractorMidiManager *pMidiManager = list()->midiManager();
+	if (pMidiManager && pMidiManager->currentBank() >= 0 && pMidiManager->currentProg() >= 0)
+		iIndex = (pMidiManager->currentBank() << 7) + pMidiManager->currentProg();
+
 	// Setup all those instance alright...
 	for (unsigned short i = 0; i < iInstances; ++i) {
 		// And now all other things as well...
 		qtractorVstPluginType::Effect *pEffect = m_ppEffects[i];
 		pEffect->vst_dispatch(effSetSampleRate, 0, 0, NULL, float(sampleRate()));
 		pEffect->vst_dispatch(effSetBlockSize,  0, bufferSize(), NULL, 0.0f);
-		pEffect->vst_dispatch(effSetProgram, 0, 0, NULL, 0.0f);
+		pEffect->vst_dispatch(effSetProgram, 0, iIndex, NULL, 0.0f);
 		unsigned short j;
 		for (j = 0; j < pVstType->audioIns(); ++j)
 			pEffect->vst_dispatch(effConnectInput, j, 1, NULL, 0.0f);
@@ -731,10 +737,14 @@ void qtractorVstPlugin::updateParam (
 
 
 // Bank/program selector.
-void qtractorVstPlugin::selectProgram ( int /*iBank*/, int iProg )
+void qtractorVstPlugin::selectProgram ( int iBank, int iProg )
 {
+	int iIndex = 0;
+	if (iBank >= 0 && iProg >= 0)
+		iIndex = (iBank << 7) + iProg;
+
 	for (unsigned short i = 0; i < instances(); ++i)
-		vst_dispatch(i, effSetProgram, 0, iProg, NULL, 0.0f);
+		vst_dispatch(i, effSetProgram, 0, iIndex, NULL, 0.0f);
 }
 
 

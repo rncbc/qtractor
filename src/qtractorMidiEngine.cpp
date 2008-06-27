@@ -2248,6 +2248,10 @@ void qtractorMidiBus::setPatch ( unsigned short iChannel,
 	const QString& sInstrumentName, int iBankSelMethod,
 	int iBank, int iProg, qtractorTrack *pTrack )
 {
+	// Sanity check.
+	if (iProg < 0)
+		return;
+
 	// We always need our MIDI engine reference...
 	qtractorMidiEngine *pMidiEngine
 		= static_cast<qtractorMidiEngine *> (engine());

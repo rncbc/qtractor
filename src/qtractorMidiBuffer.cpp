@@ -183,8 +183,8 @@ qtractorMidiManager::qtractorMidiManager ( qtractorSession *pSession,
 #endif
 	m_bAudioOutputBus(g_bAudioOutputBus),
 	m_pAudioOutputBus(NULL),
-	m_iCurrentBank(0),
-	m_iCurrentProg(0),
+	m_iCurrentBank(-1),
+	m_iCurrentProg(-1),
 	m_iPendingBankMSB(-1),
 	m_iPendingBankLSB(-1),
 	m_iPendingProg(-1)

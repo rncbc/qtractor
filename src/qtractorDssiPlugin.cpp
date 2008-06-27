@@ -270,7 +270,7 @@ static int osc_update ( DssiEditor *pDssiEditor,
 
 	// Update program selection...
 	qtractorMidiManager *pMidiManager = (pDssiPlugin->list())->midiManager();
-	if (pMidiManager) {
+	if (pMidiManager && pMidiManager->currentBank() >= 0 && pMidiManager->currentProg() >= 0) {
 		osc_send_program(pDssiEditor,
 			pMidiManager->currentBank(),
 			pMidiManager->currentProg());

@@ -5,6 +5,8 @@ ChangeLog
 
 CVS HEAD
 
+- MIDI track bank/program does not default to zero (PC#0) anymore.
+
 - A dummy plugin type has been devised, just to bear with troublesome
   behavior of the lovely JUCETICE plugins. Bad news are now that all,
   yes, all as in every native VST plugins are indistinguishable from

@@ -518,7 +518,7 @@ void qtractorTrackForm::updateChannel ( int iChannel,
 	if (pMidiBus == NULL)
 		return;
 
-#ifdef CONFIG_DEBUG_0
+#ifdef CONFIG_DEBUG
 	qDebug("qtractorTrackForm::updateChannel(%d, %d, %d, %d)",
 		iChannel, iBankSelMethod, iBank, iProg);
 #endif
@@ -563,7 +563,7 @@ void qtractorTrackForm::updateBanks ( const QString& sInstrumentName,
 //	if (sInstrumentName.isEmpty())
 //		return;
 
-#ifdef CONFIG_DEBUG_0
+#ifdef CONFIG_DEBUG
 	qDebug("qtractorTrackForm::updateBanks(\"%s\", %d, %d, %d)",
 		sInstrumentName.toUtf8().constData(), iBankSelMethod, iBank, iProg);
 #endif
@@ -686,7 +686,7 @@ void qtractorTrackForm::updatePrograms (  const QString& sInstrumentName,
 //	if (sInstrumentName.isEmpty())
 //		return;
 
-#ifdef CONFIG_DEBUG_0
+#ifdef CONFIG_DEBUG
 	qDebug("qtractorTrackForm::updatePrograms(\"%s\", %d, %d)",
 		sInstrumentName.toUtf8().constData(), iBank, iProg);
 #endif
@@ -767,7 +767,7 @@ void qtractorTrackForm::updatePrograms (  const QString& sInstrumentName,
 		// Just make a generic program list...
 		for (int i = 0; i < 128; ++i) {
 			m_ui.ProgComboBox->addItem(icon, QString("%1  - -").arg(i + 1));
-			m_progs[i] = i;
+			m_progs[i + 1] = i;
 		}
 		if (iProg >= 0)
 			iProgIndex = iProg;
