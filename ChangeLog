@@ -5,6 +5,10 @@ ChangeLog
 
 CVS HEAD
 
+- Logarithmic scale is now taken into effect by control parameter
+  sliders, in the generic plugin editor dialog as provided by LADSPA
+  and DSSI plugin types.
+
 - MIDI track bank/program does not default to zero (PC#0) anymore.
 
 - A dummy plugin type has been devised, just to bear with troublesome

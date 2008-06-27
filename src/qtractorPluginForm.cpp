@@ -755,18 +755,38 @@ void qtractorPluginParamWidget::refresh (void)
 // Slider conversion methods.
 int qtractorPluginParamWidget::paramToSlider ( float fValue ) const
 {
-	int   iValue = 0;
-	float fScale = m_pParam->maxValue() - m_pParam->minValue();
-	if (fScale > 1E-6f)
-		iValue = int((10000.0f * (fValue - m_pParam->minValue())) / fScale);
+	int iValue = 0;
+
+	if (m_pParam->isLogarithmic() && m_pParam->minValue() > 1E-6f) {
+		if (fValue > 1E-6f) {
+			float fLogMaxValue = ::logf(m_pParam->maxValue());
+			float fLogMinValue = ::logf(m_pParam->minValue());
+			iValue = ::lroundf(10000.0f
+				* (::logf(fValue) - fLogMinValue)
+				/ (fLogMaxValue - fLogMinValue));
+		}
+	} else {
+		float fScale = m_pParam->maxValue() - m_pParam->minValue();
+		if (fScale > 1E-6f)
+			iValue = int((10000.0f * (fValue - m_pParam->minValue())) / fScale);
+	}
 
 	return iValue;
 }
 
 float qtractorPluginParamWidget::sliderToParam ( int iValue ) const
 {
-	float fDelta = m_pParam->maxValue() - m_pParam->minValue();
-	return m_pParam->minValue() + (float(iValue) * fDelta) / 10000.0f;
+	float fValue = 0.0f;
+
+	if (m_pParam->isLogarithmic() && m_pParam->minValue() > 1E-6f) {
+		float fRatio = m_pParam->maxValue() / m_pParam->minValue();
+		fValue = m_pParam->minValue() * ::powf(fRatio, (float(iValue) / 10000.0f));
+	} else {
+		float fDelta = m_pParam->maxValue() - m_pParam->minValue();
+		fValue = m_pParam->minValue() + (float(iValue) * fDelta) / 10000.0f;
+	}
+
+	return fValue;
 }
 
 
