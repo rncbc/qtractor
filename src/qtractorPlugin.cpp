@@ -55,17 +55,26 @@ typedef void (*qtractorPluginFile_Function)(void);
 #define PATH_SEP ":"
 #endif
 
+#if defined(__x86_64__)
+#define PATH_LIB "/lib64"
+#else
+#define PATH_LIB "/lib"
+#endif
+
+#define PATH_PRE1 "/usr/local" PATH_LIB
+#define PATH_PRE2 "/usr" PATH_LIB
+
 // Default plugin paths...
 #ifdef CONFIG_LADSPA
-#define LADSPA_PATH "/usr/local/lib/ladspa" PATH_SEP "/usr/lib/ladspa"
+#define LADSPA_PATH PATH_PRE1 "/ladspa" PATH_SEP PATH_PRE2 "/ladspa"
 #endif
 
 #ifdef CONFIG_DSSI
-#define DSSI_PATH "/usr/local/lib/dssi" PATH_SEP "/usr/lib/dssi"
+#define DSSI_PATH PATH_PRE1 "/dssi" PATH_SEP PATH_PRE2 "/dssi"
 #endif
 
 #ifdef CONFIG_VST
-#define VST_PATH "/usr/local/lib/vst" PATH_SEP "/usr/lib/vst"
+#define VST_PATH PATH_PRE1 "/vst" PATH_SEP PATH_PRE2 "/vst"
 #endif
 
 

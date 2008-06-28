@@ -526,7 +526,7 @@ static void osc_close_editor ( qtractorDssiPlugin *pDssiPlugin )
 	if (pDssiEditor) {
 		osc_send_hide(pDssiEditor);
 		osc_send_quit(pDssiEditor);
-		osc_exiting(pDssiEditor);
+	//	osc_exiting(pDssiEditor);
 	}
 
 	if (g_dssiEditors.count() < 1)
