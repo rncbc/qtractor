@@ -264,6 +264,10 @@ int main ( int argc, char **argv )
 		return 2;
 	}
 
+#if QT_VERSION >= 0x040400
+	app.setFont(QFont(app.font().family(), 8));
+#endif
+
 	// Construct, setup and show the main form (a pseudo-singleton).
 	qtractorMainForm w;
 //	app.setMainWidget(&w);
