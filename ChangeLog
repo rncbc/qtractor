@@ -5,6 +5,10 @@ ChangeLog
 
 CVS HEAD
 
+- DSSI/VSTi plugin presets can now be explicitly recalled from file
+  (ie. Open/load preset) through this new tool button, whether enabled
+  while in the generic plugin form.
+
 - Due to some trouble with newer Qt >= 4.4 applications regarding font
   size configuration, a new global user option is now available to the
   rescue: View/Options... /Display/Base font size (default is no-op).

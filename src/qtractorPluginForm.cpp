@@ -82,6 +82,9 @@ qtractorPluginForm::qtractorPluginForm (
 		g_sDefPreset = tr("(default)");
 
 	// UI signal/slot connections...
+	QObject::connect(m_ui.OpenPresetToolButton,
+		SIGNAL(clicked()),
+		SLOT(openPresetSlot()));
 	QObject::connect(m_ui.PresetComboBox,
 		SIGNAL(editTextChanged(const QString&)),
 		SLOT(changePresetSlot(const QString&)));
@@ -374,6 +377,44 @@ void qtractorPluginForm::loadPresetSlot ( const QString& sPreset )
 }
 
 
+void qtractorPluginForm::openPresetSlot (void)
+{
+	if (m_pPlugin == NULL)
+		return;
+	if (!(m_pPlugin->type())->isConfigure())
+		return;
+
+	if (m_iUpdate > 0)
+		return;
+
+	// We'll need this, sure.
+	qtractorOptions  *pOptions  = NULL;
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm)
+		pOptions = pMainForm->options();
+	if (pOptions == NULL)
+		return;
+
+	// We'll assume that there's an external file...
+	const QString sExt("qtx");
+	// Prompt if file does not currently exist...
+	QString sFilename = QFileDialog::getOpenFileName(this,
+		tr("Open Preset") + " - " QTRACTOR_TITLE,   // Caption.
+		pOptions->sPresetDir,                       // Start here.
+		tr("Preset files (*.%1)").arg(sExt));       // Filter files.
+	// We've a filename to load a preset...
+	if (!sFilename.isEmpty() && m_pPlugin->loadPreset(sFilename)) {
+		QFileInfo fi(sFilename);
+		setPreset(fi.baseName()
+			.replace(m_pPlugin->presetPrefix() + '-', QString()));
+		pOptions->sPresetDir = fi.absolutePath();
+	}
+	refresh();
+
+	stabilize();
+}
+
+
 void qtractorPluginForm::savePresetSlot (void)
 {
 	if (m_pPlugin == NULL)
@@ -594,6 +635,9 @@ void qtractorPluginForm::stabilize (void)
 			(m_pPlugin->type())->controlIns() > 0 ||
 			(m_pPlugin->type())->isConfigure());
 	}
+
+	m_ui.OpenPresetToolButton->setEnabled(
+		bEnabled && (m_pPlugin->type())->isConfigure());
 	m_ui.PresetComboBox->setEnabled(bEnabled);
 
 	if (bEnabled) {

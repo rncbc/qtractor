@@ -82,6 +82,7 @@ protected slots:
 
 	void changePresetSlot(const QString& sPreset);
 	void loadPresetSlot(const QString& sPreset);
+	void openPresetSlot();
 	void savePresetSlot();
 	void deletePresetSlot();
 	void editSlot(bool bOn);
