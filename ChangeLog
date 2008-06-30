@@ -5,6 +5,10 @@ ChangeLog
 
 CVS HEAD
 
+- Due to some trouble with newer Qt >= 4.4 applications regarding font
+  size configuration, a new global user option is now available to the
+  rescue: View/Options... /Display/Base font size (default is no-op).
+
 - Logarithmic scale is now taken into effect by control parameter
   sliders, in the generic plugin editor dialog as provided by LADSPA
   and DSSI plugin types.

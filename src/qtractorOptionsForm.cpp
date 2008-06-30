@@ -210,6 +210,9 @@ qtractorOptionsForm::qtractorOptionsForm (
 	QObject::connect(m_ui.MaxRecentFilesSpinBox,
 		SIGNAL(valueChanged(int)),
 		SLOT(changed()));
+	QObject::connect(m_ui.BaseFontSizeComboBox,
+		SIGNAL(editTextChanged(const QString&)),
+		SLOT(changed()));
 	QObject::connect(m_ui.AudioMeterLevelComboBox,
 		SIGNAL(activated(int)),
 		SLOT(changeAudioMeterLevel(int)));
@@ -403,6 +406,10 @@ void qtractorOptionsForm::setOptions ( qtractorOptions *pOptions )
 	m_ui.TrackViewDropSpanCheckBox->setChecked(m_pOptions->bTrackViewDropSpan);
 	m_ui.MaxRecentFilesSpinBox->setValue(m_pOptions->iMaxRecentFiles);
 	m_ui.DisplayFormatComboBox->setCurrentIndex(m_pOptions->iDisplayFormat);
+	if (m_pOptions->iBaseFontSize > 0)
+		m_ui.BaseFontSizeComboBox->setEditText(QString::number(m_pOptions->iBaseFontSize));
+	else
+		m_ui.BaseFontSizeComboBox->setCurrentIndex(0);
 
 	// Plugin path initialization...
 	m_ladspaPaths = m_pOptions->ladspaPaths;
@@ -480,6 +487,7 @@ void qtractorOptionsForm::accept (void)
 		m_pOptions->bTrackViewDropSpan   = m_ui.TrackViewDropSpanCheckBox->isChecked();
 		m_pOptions->iMaxRecentFiles      = m_ui.MaxRecentFilesSpinBox->value();
 		m_pOptions->iDisplayFormat       = m_ui.DisplayFormatComboBox->currentIndex();
+		m_pOptions->iBaseFontSize        = m_ui.BaseFontSizeComboBox->currentText().toInt();
 		// Plugin paths...
 		m_pOptions->iPluginType          = m_ui.PluginTypeComboBox->currentIndex() + 1;
 		m_pOptions->ladspaPaths          = m_ladspaPaths;

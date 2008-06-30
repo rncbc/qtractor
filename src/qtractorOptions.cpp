@@ -63,6 +63,7 @@ qtractorOptions::qtractorOptions (void)
 	bKeepToolsOnTop = m_settings.value("/KeepToolsOnTop", true).toBool();
 	iDisplayFormat  = m_settings.value("/DisplayFormat", 1).toInt();
 	iMaxRecentFiles = m_settings.value("/MaxRecentFiles", 5).toInt();
+	iBaseFontSize   = m_settings.value("/BaseFontSize", 0).toInt();
 	m_settings.endGroup();
 
 	// Load logging options...
@@ -236,6 +237,7 @@ qtractorOptions::~qtractorOptions (void)
 	m_settings.setValue("/KeepToolsOnTop", bKeepToolsOnTop);
 	m_settings.setValue("/DisplayFormat", iDisplayFormat);
 	m_settings.setValue("/MaxRecentFiles", iMaxRecentFiles);
+	m_settings.setValue("/BaseFontSize", iBaseFontSize);
 	m_settings.endGroup();
 
 	// Save logging options...

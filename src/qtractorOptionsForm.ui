@@ -1224,7 +1224,7 @@
             </property>
            </widget>
           </item>
-          <item row="5" column="2" >
+          <item row="4" column="2" >
            <widget class="QLabel" name="DisplayFormatTextLabel" >
             <property name="font" >
              <font>
@@ -1243,7 +1243,26 @@
             </property>
            </widget>
           </item>
-          <item rowspan="5" row="0" column="1" >
+          <item row="5" column="2" >
+           <widget class="QLabel" name="BaseFontSizeTextLabel" >
+            <property name="font" >
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="text" >
+             <string>&amp;Base font size:</string>
+            </property>
+            <property name="alignment" >
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+            <property name="buddy" >
+             <cstring>BaseFontSizeComboBox</cstring>
+            </property>
+           </widget>
+          </item>
+          <item rowspan="4" row="0" column="1" >
            <spacer>
             <property name="orientation" >
              <enum>Qt::Horizontal</enum>
@@ -1257,6 +1276,52 @@
            </spacer>
           </item>
           <item row="5" column="3" colspan="2" >
+           <widget class="QComboBox" name="BaseFontSizeComboBox" >
+            <property name="font" >
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="toolTip" >
+             <string>Base application font size (pt.)</string>
+            </property>
+            <property name="editable" >
+             <bool>true</bool>
+            </property>
+            <item>
+             <property name="text" >
+              <string>(default)</string>
+             </property>
+            </item>
+            <item>
+             <property name="text" >
+              <string>8</string>
+             </property>
+            </item>
+            <item>
+             <property name="text" >
+              <string>9</string>
+             </property>
+            </item>
+            <item>
+             <property name="text" >
+              <string>10</string>
+             </property>
+            </item>
+            <item>
+             <property name="text" >
+              <string>11</string>
+             </property>
+            </item>
+            <item>
+             <property name="text" >
+              <string>12</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+          <item row="4" column="3" colspan="2" >
            <widget class="QComboBox" name="DisplayFormatComboBox" >
             <property name="font" >
              <font>
@@ -2362,6 +2427,7 @@
   <tabstop>TrackViewDropSpanCheckBox</tabstop>
   <tabstop>MaxRecentFilesSpinBox</tabstop>
   <tabstop>DisplayFormatComboBox</tabstop>
+  <tabstop>BaseFontSizeComboBox</tabstop>
   <tabstop>AudioMeterLevelComboBox</tabstop>
   <tabstop>AudioMeterColorLineEdit</tabstop>
   <tabstop>AudioMeterColorToolButton</tabstop>

@@ -2388,6 +2388,7 @@ void qtractorMainForm::viewOptions (void)
 	bool    bOldKeepToolsOnTop     = m_pOptions->bKeepToolsOnTop;
 	int     iOldMaxRecentFiles     = m_pOptions->iMaxRecentFiles;
 	int     iOldDisplayFormat      = m_pOptions->iDisplayFormat;
+	int     iOldBaseFontSize       = m_pOptions->iBaseFontSize;
 	int     iOldResampleType       = m_pOptions->iAudioResampleType;
 	bool    bOldTimeStretch        = m_pOptions->bAudioTimeStretch;
 	bool    bOldQuickSeek          = m_pOptions->bAudioQuickSeek;
@@ -2434,6 +2435,8 @@ void qtractorMainForm::viewOptions (void)
 			updateMessagesCapture();
 			iNeedRestart |= RestartProgram;
 		}
+		if (iOldBaseFontSize != m_pOptions->iBaseFontSize)
+			iNeedRestart |= RestartProgram;
 		if (( bOldCompletePath && !m_pOptions->bCompletePath) ||
 			(!bOldCompletePath &&  m_pOptions->bCompletePath) ||
 			(iOldMaxRecentFiles != m_pOptions->iMaxRecentFiles))

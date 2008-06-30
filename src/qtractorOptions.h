@@ -65,6 +65,7 @@ public:
 	bool    bPeakAutoRemove;
 	bool    bKeepToolsOnTop;
 	int     iDisplayFormat;
+	int     iBaseFontSize;
 
 	// Loggin options...
 	bool    bMessagesLog;
