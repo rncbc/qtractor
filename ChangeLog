@@ -6,7 +6,7 @@ ChangeLog
 CVS HEAD
 
 - DSSI/VSTi plugin presets can now be explicitly recalled from file
-  (ie. Open/load preset) through this new tool button, whether enabled
+  (ie. Open/load preset) through this new tool button whether visible
   while in the generic plugin form.
 
 - Due to some trouble with newer Qt >= 4.4 applications regarding font

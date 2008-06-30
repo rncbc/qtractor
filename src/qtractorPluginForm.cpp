@@ -402,12 +402,23 @@ void qtractorPluginForm::openPresetSlot (void)
 		tr("Open Preset") + " - " QTRACTOR_TITLE,   // Caption.
 		pOptions->sPresetDir,                       // Start here.
 		tr("Preset files (*.%1)").arg(sExt));       // Filter files.
-	// We've a filename to load a preset...
-	if (!sFilename.isEmpty() && m_pPlugin->loadPreset(sFilename)) {
-		QFileInfo fi(sFilename);
-		setPreset(fi.baseName()
-			.replace(m_pPlugin->presetPrefix() + '-', QString()));
-		pOptions->sPresetDir = fi.absolutePath();
+	// Have we a filename to load a preset from?
+	if (!sFilename.isEmpty()) {
+		if (m_pPlugin->loadPreset(sFilename)) {
+			// Got it loaded alright...
+			QFileInfo fi(sFilename);
+			setPreset(fi.baseName()
+				.replace(m_pPlugin->presetPrefix() + '-', QString()));
+			pOptions->sPresetDir = fi.absolutePath();
+		} else {
+			// Failure (maybe wrong plugin)...
+			QMessageBox::critical(this,
+				tr("Error") + " - " QTRACTOR_TITLE,
+				tr("Preset could not be loaded\n"
+				"from \"%1\".\n\n"
+				"Sorry.").arg(sFilename),
+				tr("Cancel"));
+		}
 	}
 	refresh();
 
