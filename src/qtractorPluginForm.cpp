@@ -82,15 +82,15 @@ qtractorPluginForm::qtractorPluginForm (
 		g_sDefPreset = tr("(default)");
 
 	// UI signal/slot connections...
-	QObject::connect(m_ui.OpenPresetToolButton,
-		SIGNAL(clicked()),
-		SLOT(openPresetSlot()));
 	QObject::connect(m_ui.PresetComboBox,
 		SIGNAL(editTextChanged(const QString&)),
 		SLOT(changePresetSlot(const QString&)));
 	QObject::connect(m_ui.PresetComboBox,
 		SIGNAL(activated(const QString &)),
 		SLOT(loadPresetSlot(const QString&)));
+	QObject::connect(m_ui.OpenPresetToolButton,
+		SIGNAL(clicked()),
+		SLOT(openPresetSlot()));
 	QObject::connect(m_ui.SavePresetToolButton,
 		SIGNAL(clicked()),
 		SLOT(savePresetSlot()));
@@ -636,9 +636,9 @@ void qtractorPluginForm::stabilize (void)
 			(m_pPlugin->type())->isConfigure());
 	}
 
-	m_ui.OpenPresetToolButton->setEnabled(
-		bEnabled && (m_pPlugin->type())->isConfigure());
 	m_ui.PresetComboBox->setEnabled(bEnabled);
+	m_ui.OpenPresetToolButton->setVisible(
+		bEnabled && (m_pPlugin->type())->isConfigure());
 
 	if (bEnabled) {
 		const QString& sPreset = m_ui.PresetComboBox->currentText();
