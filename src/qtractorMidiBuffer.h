@@ -203,7 +203,7 @@ public:
 	bool queued(snd_seq_event_t *pEvent);
 
 	// Process buffers.
-	void process(unsigned long iTimeStart, unsigned long iTimeEnd);
+	void process(unsigned long iFrameStart, unsigned long iFrameEnd);
 
 	// Process buffers (in asynchronous controller thread).
 	void processSync();
