@@ -271,7 +271,7 @@ void qtractorMidiManager::clear (void)
 
 // Process buffers (merge).
 void qtractorMidiManager::process (
-	unsigned long iFrameStart, unsigned long iFrameEnd )
+	unsigned long iTimeStart, unsigned long iTimeEnd )
 {
 	clear();
 
@@ -292,22 +292,22 @@ void qtractorMidiManager::process (
 	}
 
 	// Queued/posted events...
-	while ((pEv1 && pEv1->time.tick < iFrameEnd)
-		|| (pEv2 && pEv2->time.tick < iFrameEnd)) {
-		while (pEv1 && pEv1->time.tick < iFrameEnd
+	while ((pEv1 && pEv1->time.tick < iTimeEnd)
+		|| (pEv2 && pEv2->time.tick < iTimeEnd)) {
+		while (pEv1 && pEv1->time.tick < iTimeEnd
 			&& ((pEv2 && pEv2->time.tick >= pEv1->time.tick) || !pEv2)) {
 			m_pBuffer[m_iBuffer] = *pEv1;
 			m_pBuffer[m_iBuffer++].time.tick
-				= (pEv1->time.tick > iFrameStart
-					? pEv1->time.tick - iFrameStart : 0);
+				= (pEv1->time.tick > iTimeStart
+					? pEv1->time.tick - iTimeStart : 0);
 			pEv1 = m_queuedBuffer.next();
 		}
-		while (pEv2 && pEv2->time.tick < iFrameEnd
+		while (pEv2 && pEv2->time.tick < iTimeEnd
 			&& ((pEv1 && pEv1->time.tick >= pEv2->time.tick) || !pEv1)) {
 			m_pBuffer[m_iBuffer] = *pEv2;
 			m_pBuffer[m_iBuffer++].time.tick
-				= (pEv2->time.tick > iFrameStart
-					? pEv2->time.tick - iFrameStart : 0);
+				= (pEv2->time.tick > iTimeStart
+					? pEv2->time.tick - iTimeStart : 0);
 			pEv2 = m_postedBuffer.next();
 		}
 	}
@@ -367,7 +367,7 @@ void qtractorMidiManager::process (
 
 	// Now's time to process the plugins as usual...
 	if (m_pAudioOutputBus) {
-		unsigned int nframes = iFrameEnd - iFrameStart;
+		unsigned int nframes = iTimeEnd - iTimeStart;
 		if (m_bAudioOutputBus)
 			m_pAudioOutputBus->process_prepare(nframes);
 		m_pPluginList->process(m_pAudioOutputBus->out(), nframes);

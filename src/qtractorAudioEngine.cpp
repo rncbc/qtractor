@@ -637,16 +637,16 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 		ATOMIC_SET(&m_playerLock, 0);
 	}
 
-	// This the legal process cycle frame range...
-	unsigned long iFrameStart = pAudioCursor->frame();
-	unsigned long iFrameEnd   = iFrameStart + nframes;
-
 	// MIDI plugin manager processing...
 	qtractorMidiManager *pMidiManager
 		= pSession->midiManagers().first();
-	while (pMidiManager) {
-		pMidiManager->process(iFrameStart, iFrameEnd);
-		pMidiManager = pMidiManager->next();
+	if (pMidiManager) {
+		unsigned long iTimeStart = pAudioCursor->frameTime();
+		unsigned long iTimeEnd   = iTimeStart + nframes;
+		while (pMidiManager) {
+			pMidiManager->process(iTimeStart, iTimeEnd);
+			pMidiManager = pMidiManager->next();
+		}
 	}
 
 	// Don't go any further, if not playing.
@@ -700,6 +700,10 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 		pSession->release();
 		return 0;
 	}
+
+	// This the legal process cycle frame range...
+	unsigned long iFrameStart = pAudioCursor->frame();
+	unsigned long iFrameEnd   = iFrameStart + nframes;
 
 	// Metronome stuff...
 	if (m_bMetronome && m_pMetroBus && iFrameEnd > m_iMetroBeatStart) {
