@@ -408,7 +408,7 @@ void qtractorPluginForm::openPresetSlot (void)
 			// Got it loaded alright...
 			QFileInfo fi(sFilename);
 			setPreset(fi.baseName()
-				.replace(m_pPlugin->presetPrefix() + '-', QString()));
+				.replace((m_pPlugin->type())->label() + '-', QString()));
 			pOptions->sPresetDir = fi.absolutePath();
 		} else {
 			// Failure (maybe wrong plugin)...
@@ -453,7 +453,7 @@ void qtractorPluginForm::savePresetSlot (void)
 		// to make it save into an external file...
 		const QString sExt("qtx");
 		QFileInfo fi(QDir(pOptions->sPresetDir),
-			m_pPlugin->presetPrefix() + '-' + sPreset + '.' + sExt);
+			(m_pPlugin->type())->label() + '-' + sPreset + '.' + sExt);
 		QString sFilename = fi.absoluteFilePath();
 		// Prompt if file does not currently exist...
 		if (!fi.exists()) {

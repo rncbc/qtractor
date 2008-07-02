@@ -63,22 +63,6 @@
       <number>2</number>
      </property>
      <item>
-      <widget class="QComboBox" name="PresetComboBox" >
-       <property name="minimumSize" >
-        <size>
-         <width>160</width>
-         <height>0</height>
-        </size>
-       </property>
-       <property name="toolTip" >
-        <string>Preset name</string>
-       </property>
-       <property name="editable" >
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
       <widget class="QToolButton" name="OpenPresetToolButton" >
        <property name="focusPolicy" >
         <enum>Qt::TabFocus</enum>
@@ -91,6 +75,22 @@
        </property>
        <property name="icon" >
         <iconset resource="../icons/qtractor.qrc" >:/icons/formOpen.png</iconset>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="PresetComboBox" >
+       <property name="minimumSize" >
+        <size>
+         <width>160</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="toolTip" >
+        <string>Preset name</string>
+       </property>
+       <property name="editable" >
+        <bool>true</bool>
        </property>
       </widget>
      </item>
