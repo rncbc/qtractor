@@ -365,6 +365,11 @@ void qtractorTrack::setRecord ( bool bRecord )
 
 	if (m_pSession->isRecording())
 		m_pSession->trackRecord(this, bRecord);
+
+	if (!bRecord && m_props.monitor
+		&& m_pSession->isPlaying()
+		&& m_props.trackType == qtractorTrack::Midi)
+		m_pSession->trackMute(this, false);
 }
 
 

@@ -62,9 +62,6 @@ public:
 	// Special slave sync method.
 	void sync();
 
-	// Drift corrected anchor.
-	unsigned long timeStart() const;
-
 	// Read ahead frames configuration.
 	void setReadAhead(unsigned int iReadAhead);
 	unsigned int readAhead() const;
@@ -203,6 +200,7 @@ private:
 	// The delta-time when playback started .
 	long m_iTimeStart;
 	long m_iTimeDelta;
+	long m_iTimeDrift;
 
 	// The event notifier widget.
 	QWidget      *m_pNotifyWidget;

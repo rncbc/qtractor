@@ -282,8 +282,8 @@ void qtractorMidiManager::process (
 
 	// Merge events in buffer for plugin processing...
 	snd_seq_event_t *pEv0 = m_directBuffer.peek();
-	snd_seq_event_t *pEv1 = m_queuedBuffer.peek();
-	snd_seq_event_t *pEv2 = m_postedBuffer.peek();
+	snd_seq_event_t *pEv1 = m_postedBuffer.peek();
+	snd_seq_event_t *pEv2 = m_queuedBuffer.peek();
 
 	// Direct events...
 	while (pEv0) {
@@ -300,7 +300,7 @@ void qtractorMidiManager::process (
 			m_pBuffer[m_iBuffer++].time.tick
 				= (pEv1->time.tick > iTimeStart
 					? pEv1->time.tick - iTimeStart : 0);
-			pEv1 = m_queuedBuffer.next();
+			pEv1 = m_postedBuffer.next();
 		}
 		while (pEv2 && pEv2->time.tick < iTimeEnd
 			&& ((pEv1 && pEv1->time.tick >= pEv2->time.tick) || !pEv1)) {
@@ -308,7 +308,7 @@ void qtractorMidiManager::process (
 			m_pBuffer[m_iBuffer++].time.tick
 				= (pEv2->time.tick > iTimeStart
 					? pEv2->time.tick - iTimeStart : 0);
-			pEv2 = m_postedBuffer.next();
+			pEv2 = m_queuedBuffer.next();
 		}
 	}
 

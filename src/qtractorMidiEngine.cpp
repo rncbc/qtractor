@@ -538,6 +538,7 @@ qtractorMidiEngine::qtractorMidiEngine ( qtractorSession *pSession )
 
 	m_iTimeStart     = 0;
 	m_iTimeDelta     = 0;
+	m_iTimeDrift     = 0;
 
 	m_pNotifyWidget  = NULL;
 	m_eNotifyMmcType = QEvent::None;
@@ -607,13 +608,6 @@ void qtractorMidiEngine::sync (void)
 	// Pure conditional thread slave syncronization...
 	if (m_pOutputThread && m_pOutputThread->midiCursorSync())
 		m_pOutputThread->sync();
-}
-
-
-// Drift corrected anchor.
-unsigned long qtractorMidiEngine::timeStart (void) const
-{
-	return m_iTimeStart;
 }
 
 
@@ -1018,8 +1012,8 @@ void qtractorMidiEngine::flush (void)
 	qtractorSession *pSession = session();
 	if (pSession == NULL)
 		return;
-	if (pSession->isRecording()) // FIXME: Shouldn't it be on looping?
-		return;
+//	if (pSession->isRecording())
+//		return;
 
 	// Time to have some corrective approach...?
 	snd_seq_queue_status_t *pQueueStatus;
@@ -1030,14 +1024,14 @@ void qtractorMidiEngine::flush (void)
 			= snd_seq_queue_status_get_tick_time(pQueueStatus);
 		unsigned long iAudioTime = pSession->tickFromFrame(
 			pSession->audioEngine()->sessionCursor()->frameTime());
-		long iTimeDelta = (iAudioTime - iMidiTime) - m_iTimeDelta;
-		if (iTimeDelta && iAudioTime > 0 && iMidiTime > 0) {
-			m_iTimeStart += iTimeDelta;
-			m_iTimeDelta += iTimeDelta;
+		m_iTimeDelta = (iAudioTime - iMidiTime) - m_iTimeDrift;
+		if (m_iTimeDelta) {
+		//	m_iTimeStart += m_iTimeDelta;
+			m_iTimeDrift += m_iTimeDelta;
 #ifdef CONFIG_DEBUG
 			qDebug("qtractorMidiEngine::flush(): "
 				"iAudioTime=%lu iMidiTime=%lu iTimeDelta=%ld (%ld)",
-				iAudioTime, iMidiTime, iTimeDelta, m_iTimeDelta);
+				iAudioTime, iMidiTime, m_iTimeDelta, m_iTimeDrift);
 #endif
 		}
 	}
@@ -1109,6 +1103,7 @@ bool qtractorMidiEngine::activate (void)
 
 	m_iTimeStart = 0;
 	m_iTimeDelta = 0;
+	m_iTimeDrift = 0;
 
 	// Reset all dependable monitoring...
 	resetAllMonitors();
@@ -1146,6 +1141,7 @@ bool qtractorMidiEngine::start (void)
 	// Start queue timer...
 	m_iTimeStart = (long) pSession->tickFromFrame(pMidiCursor->frame());
 	m_iTimeDelta = 0;
+	m_iTimeDrift = 0;
 
 	// Effectively start sequencer queue timer...
 	snd_seq_start_queue(m_pAlsaSeq, m_iAlsaQueue, NULL);
@@ -1212,6 +1208,7 @@ void qtractorMidiEngine::clean (void)
 		m_pOutputThread = NULL;
 		m_iTimeStart = 0;
 		m_iTimeDelta = 0;
+		m_iTimeDrift = 0;
 	}
 
 	// Last but not least, delete input thread...
@@ -1258,6 +1255,8 @@ void qtractorMidiEngine::restartLoop (void)
 	if (pSession && pSession->isLooping()) {
 		m_iTimeStart -= (long) pSession->tickFromFrame(
 			pSession->loopEnd() - pSession->loopStart());
+		m_iTimeStart += m_iTimeDelta; // Drift correction...
+		m_iTimeDelta  = 0;
 	}
 }
 
@@ -1334,8 +1333,8 @@ void qtractorMidiEngine::metroMute ( bool bMute )
 		snd_seq_remove_events_t *pre;
  		snd_seq_remove_events_alloca(&pre);
 		snd_seq_timestamp_t ts;
-		long iTime = (long) pSession->tickFromFrame(iFrame);
-		ts.tick = (iTime > m_iTimeStart ? iTime - m_iTimeStart : 0);
+		unsigned long iTime = pSession->tickFromFrame(iFrame);
+		ts.tick = ((long) iTime > m_iTimeStart ? iTime - m_iTimeStart : 0);
 		snd_seq_remove_events_set_time(pre, &ts);
 		snd_seq_remove_events_set_tag(pre, 0xff);
 		snd_seq_remove_events_set_channel(pre, m_iMetroChannel);
