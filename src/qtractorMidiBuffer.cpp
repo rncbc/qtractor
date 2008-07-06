@@ -368,11 +368,15 @@ void qtractorMidiManager::process (
 	// Now's time to process the plugins as usual...
 	if (m_pAudioOutputBus) {
 		unsigned int nframes = iTimeEnd - iTimeStart;
-		if (m_bAudioOutputBus)
+		if (m_bAudioOutputBus) {
 			m_pAudioOutputBus->process_prepare(nframes);
-		m_pPluginList->process(m_pAudioOutputBus->out(), nframes);
-		if (m_bAudioOutputBus)
+			m_pPluginList->process(m_pAudioOutputBus->out(), nframes);
 			m_pAudioOutputBus->process_commit(nframes);
+		} else {
+			m_pAudioOutputBus->buffer_prepare(nframes);
+			m_pPluginList->process(m_pAudioOutputBus->buffer(), nframes);
+			m_pAudioOutputBus->buffer_commit(nframes);
+		}
 	}
 }
 
@@ -461,12 +465,20 @@ qtractorMidiManager *qtractorMidiManager::createMidiManager (
 	if (pSession)
 		pMidiManager = pSession->createMidiManager(pPluginList);
 
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMidiManager::createMidiManager(%p)", pMidiManager);
+#endif
+
 	return pMidiManager;
 }
 
 
 void qtractorMidiManager::deleteMidiManager ( qtractorMidiManager *pMidiManager )
 {
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMidiManager::deleteMidiManager(%p)", pMidiManager);
+#endif
+
 	qtractorSession  *pSession  = NULL;
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm)

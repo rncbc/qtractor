@@ -464,7 +464,7 @@ bool qtractorAudioClip::saveClipElement (
 {
 	QDomElement eAudioClip = pDocument->document()->createElement("audio-clip");
 	pDocument->saveTextElement("filename",
-		qtractorAudioClip::filename(), &eAudioClip);
+		qtractorAudioClip::relativeFilename(), &eAudioClip);
 	pDocument->saveTextElement("time-stretch",
 		QString::number(qtractorAudioClip::timeStretch()), &eAudioClip);
 	pDocument->saveTextElement("pitch-shift",

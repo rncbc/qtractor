@@ -77,6 +77,8 @@ qtractorSession::qtractorSession (void)
 	m_tracks.setAutoDelete(true);
 	m_cursors.setAutoDelete(false);
 
+	m_midiManagers.setAutoDelete(false);
+
 	// The dubious permanency of the crucial device engines.
 	m_pMidiEngine       = new qtractorMidiEngine(this);
 	m_pAudioEngine      = new qtractorAudioEngine(this);
@@ -153,14 +155,13 @@ void qtractorSession::clear (void)
 	ATOMIC_SET(&m_locks, 0);
 	ATOMIC_SET(&m_mutex, 0);
 
-	m_midiManagers.clear();
-
 	m_tracks.clear();
 	m_cursors.clear();
 
 	m_props.clear();
 
 	m_midiTags.clear();
+	m_midiManagers.clear();
 
 	m_pAudioEngine->clear();
 	m_pMidiEngine->clear();

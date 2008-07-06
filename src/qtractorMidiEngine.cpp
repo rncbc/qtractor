@@ -439,16 +439,22 @@ void qtractorMidiOutputThread::trackSync ( qtractorTrack *pTrack,
 	unsigned long iFrameEnd = pMidiCursor->frame();
 
 #ifdef CONFIG_DEBUG_0
-	qDebug("qtractorMidiOutputThread[%p]::trackSync(%lu, %lu)",
-		this, iFrameStart, iFrameEnd);
+	qDebug("qtractorMidiOutputThread[%p]::trackSync(%p, %lu, %lu)",
+		this, pTrack, iFrameStart, iFrameEnd);
 #endif
 
 	// Split processing, in case we've been caught looping...
-	if (m_pSession->isLooping()
-		&& iFrameEnd < iFrameStart
-		&& iFrameStart < m_pSession->loopEnd()) {
-		trackClipSync(pTrack, iFrameStart, m_pSession->loopEnd());
-		iFrameStart = m_pSession->loopStart();
+	if (m_pSession->isLooping() && iFrameEnd < iFrameStart) {
+		unsigned long ls = m_pSession->loopStart();
+		unsigned long le = m_pSession->loopEnd();
+		if (iFrameStart < le) {
+			long iTimeStart = pMidiEngine->timeStart();
+			pMidiEngine->setTimeStart(
+				iTimeStart + m_pSession->tickFromFrame(le - ls));
+			trackClipSync(pTrack, iFrameStart, le);
+			pMidiEngine->setTimeStart(iTimeStart);
+			iFrameStart = ls;
+		}
 	}
 
 	// Do normal sequence...
@@ -1025,7 +1031,7 @@ void qtractorMidiEngine::flush (void)
 		unsigned long iAudioTime = pSession->tickFromFrame(
 			pSession->audioEngine()->sessionCursor()->frameTime());
 		m_iTimeDelta = (iAudioTime - iMidiTime) - m_iTimeDrift;
-		if (m_iTimeDelta) {
+		if (m_iTimeDelta && iAudioTime > 0 && iMidiTime > 0) {
 		//	m_iTimeStart += m_iTimeDelta;
 			m_iTimeDrift += m_iTimeDelta;
 #ifdef CONFIG_DEBUG
@@ -1258,6 +1264,18 @@ void qtractorMidiEngine::restartLoop (void)
 		m_iTimeStart += m_iTimeDelta; // Drift correction...
 		m_iTimeDelta  = 0;
 	}
+}
+
+
+// The delta-time accessors.
+void qtractorMidiEngine::setTimeStart ( long iTimeStart )
+{
+	m_iTimeStart = iTimeStart;
+}
+
+long qtractorMidiEngine::timeStart (void) const
+{
+	return m_iTimeStart;
 }
 
 

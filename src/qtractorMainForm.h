@@ -292,6 +292,7 @@ private:
 	QComboBox *m_pSnapPerBeatComboBox;
 	qtractorThumbView *m_pThumbView;
 	unsigned long m_iPlayHead;
+	long m_iDeltaTimer;
 	int m_iPeakTimer;
 	int m_iPlayTimer;
 	int m_iTransportUpdate;

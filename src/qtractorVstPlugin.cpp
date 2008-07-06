@@ -639,6 +639,18 @@ void qtractorVstPlugin::setChannels ( unsigned short iChannels )
 			pEffect->vst_dispatch(effConnectOutput, j, 1, NULL, 0.0f);
 	}
 
+	// Reset parameters direct and default value...
+	AEffect *pVstEffect = m_ppEffects[0]->vst_effect();
+	if (pVstEffect) {
+		QListIterator<qtractorPluginParam *> param(params());
+		while (param.hasNext()) {
+			qtractorPluginParam *pParam = param.next();
+			float *pfValue = pParam->data();
+			*pfValue = pVstEffect->getParameter(pVstEffect, pParam->index());
+			pParam->setDefaultValue(*pfValue);
+		}
+	}
+
 	// (Re)activate instance if necessary...
 	setActivated(bActivated);
 }

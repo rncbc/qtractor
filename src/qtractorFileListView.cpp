@@ -27,6 +27,7 @@
 
 #include "qtractorMainForm.h"
 #include "qtractorOptions.h"
+#include "qtractorSession.h"
 
 #include <QMessageBox>
 #include <QApplication>
@@ -35,6 +36,7 @@
 #include <QToolTip>
 #include <QTimer>
 #include <QUrl>
+#include <QDir>
 
 #include <QMouseEvent>
 #include <QDragLeaveEvent>
@@ -1160,6 +1162,12 @@ bool qtractorFileListView::loadListElement ( qtractorDocument *pDocument,
 	qtractorFileGroupItem *pParentItem
 		= static_cast<qtractorFileGroupItem *> (pItem);
 
+	// Make it all relative to session directory...
+	QDir dir;
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm && pMainForm->session())
+		dir.setPath(pMainForm->session()->sessionDir());
+
 	// Load children...
 	for (QDomNode nChild = pElement->firstChild();
 			!nChild.isNull(); nChild = nChild.nextSibling()) {
@@ -1182,7 +1190,8 @@ bool qtractorFileListView::loadListElement ( qtractorDocument *pDocument,
 		}
 		else
 		if (eChild.tagName() == "file") {
-			qtractorFileListItem *pFileItem = createFileItem(eChild.text());
+			qtractorFileListItem *pFileItem = createFileItem(
+				QDir::cleanPath(dir.absoluteFilePath(eChild.text())));
 			if (pFileItem) {
 				pFileItem->setText(0, eChild.attribute("name"));
 				if (pParentItem)
@@ -1230,8 +1239,13 @@ bool qtractorFileListView::saveListElement ( qtractorDocument *pDocument,
 			= static_cast<qtractorFileListItem *> (pItem);
 		QDomElement eFile = pDocument->document()->createElement("file");
 		eFile.setAttribute("name", pFileItem->text(0));
+		// Make it all relative to session directory...
+		QDir dir;
+		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+		if (pMainForm && pMainForm->session())
+			dir.setPath(pMainForm->session()->sessionDir());
 		eFile.appendChild(pDocument->document()->createTextNode(
-			pFileItem->path()));
+			dir.relativeFilePath(pFileItem->path())));
 		pElement->appendChild(eFile);
 		break;
 	}

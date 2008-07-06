@@ -624,7 +624,8 @@ bool qtractorMidiClip::saveClipElement (
 	}
 
 	QDomElement eMidiClip = pDocument->document()->createElement("midi-clip");
-	pDocument->saveTextElement("filename", qtractorMidiClip::filename(), &eMidiClip);
+	pDocument->saveTextElement("filename",
+		qtractorMidiClip::relativeFilename(), &eMidiClip);
 	pDocument->saveTextElement("track-channel",
 		QString::number(qtractorMidiClip::trackChannel()), &eMidiClip);
 	pElement->appendChild(eMidiClip);

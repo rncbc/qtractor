@@ -1116,6 +1116,9 @@ qtractorPlugin *qtractorPluginList::copyPlugin ( qtractorPlugin *pPlugin )
 // Plugin management helpers.
 void qtractorPluginList::addPluginRef ( qtractorPlugin *pPlugin )
 {
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorPluginList[%p]::addPluginRef(%p)", this, pPlugin);
+#endif
 	if (m_bMidi && m_pMidiManager == NULL && count() == 0)
 		m_pMidiManager = qtractorMidiManager::createMidiManager(this);
 
@@ -1125,6 +1128,9 @@ void qtractorPluginList::addPluginRef ( qtractorPlugin *pPlugin )
 
 void qtractorPluginList::removePluginRef ( qtractorPlugin *pPlugin )
 {
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorPluginList[%p]::removePluginRef(%p)", this, pPlugin);
+#endif
 	if (m_pMidiManager) {
 		m_pMidiManager->removePluginRef(pPlugin);
 		if (count() == 0) {

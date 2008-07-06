@@ -85,6 +85,10 @@ public:
 	// Special rewind method, on queue loop.
 	void restartLoop();
 
+	// The delta-time accessors.
+	void setTimeStart(long iTimeStart);
+	long timeStart() const;
+	
 	// Special track-immediate methods.
 	void trackMute(qtractorTrack *pTrack, bool bMute);
 

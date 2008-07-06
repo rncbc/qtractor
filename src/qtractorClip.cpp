@@ -29,6 +29,7 @@
 #include <QFileInfo>
 #include <QPainter>
 #include <QPolygon>
+#include <QDir>
 
 
 //-------------------------------------------------------------------------
@@ -100,12 +101,27 @@ qtractorTrack *qtractorClip::track (void) const
 // Clip filename properties accessors.
 void qtractorClip::setFilename ( const QString& sFilename )
 {
-	m_sFilename = sFilename;
+	QDir dir;
+
+	if (m_pTrack && m_pTrack->session())
+		dir.setPath(m_pTrack->session()->sessionDir());
+
+	m_sFilename = QDir::cleanPath(dir.absoluteFilePath(sFilename));
 }
 
 const QString& qtractorClip::filename (void) const
 {
 	return m_sFilename;
+}
+
+QString qtractorClip::relativeFilename (void) const
+{
+	QDir dir;
+
+	if (m_pTrack && m_pTrack->session())
+		dir.setPath(m_pTrack->session()->sessionDir());
+
+	return dir.relativeFilePath(m_sFilename);
 }
 
 

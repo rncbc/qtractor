@@ -159,6 +159,8 @@ qtractorMainForm::qtractorMainForm (
 	m_iPeakTimer = 0;
 	m_iPlayTimer = 0;
 
+	m_iDeltaTimer = 0;
+
 	m_iTransportUpdate  = 0; 
 	m_iTransportDelta   = 0;
 	m_iTransportRolling = 0;
@@ -3291,6 +3293,9 @@ bool qtractorMainForm::startSession (void)
 			"are up and running and then restart the session."));
 	}
 
+	// The maximum delta frames the time slot spans...
+	m_iDeltaTimer = (m_pSession->sampleRate() * QTRACTOR_TIMER_MSECS) / 1000;
+
 	return bResult;
 }
 
@@ -3774,17 +3779,16 @@ void qtractorMainForm::timerSlot (void)
 					m_pSession->seek(pos.frame, true);
 			} else {
 				// Check on external transport location changes;
-				// note that we'll have a doubled buffer-size guard...
+				// note that we'll have a safe delta-timer guard...
 				long iDeltaFrame = long(pos.frame) - iPlayHead;
-				int iBufferSize2 = pAudioEngine->bufferSize() << 1;
-				if (labs(iDeltaFrame) > iBufferSize2) {
+				if (labs(iDeltaFrame) > m_iDeltaTimer) {
 					if (++m_iTransportDelta > 1) {
 						m_iTransportDelta = 0;
 						iPlayHead = pos.frame;
 						m_pSession->setPlayHead(iPlayHead);
 						m_iTransportUpdate++;
 					}
-				}	// All quiet...
+				}	// All is quiet...
 				else m_iTransportDelta = 0;
 			}
 		}

@@ -5,6 +5,12 @@ ChangeLog
 
 CVS HEAD
 
+- Main form timer slot gets corrected and now independent of current
+  process buffer-size in regard to JACK transport synchronization.
+
+- All file references in session state file are now stored as relative
+  paths to main session directory.
+
 - DSSI/VSTi plugin presets can now be explicitly recalled from file
   (ie. Open/load preset) through this new tool button whether visible
   while in the generic plugin form.
@@ -24,7 +30,7 @@ CVS HEAD
   yes, all as in every native VST plugins are indistinguishable from
   being just pure audio effects, either mono or stereo, whatever, and
   thus all being considered full-blown stereo VSTi instruments (which
-  are the vast mainstream and rather interesting majority, nevertheless:).
+  are the vast mainstream and rather interesting majority,nevertheless:).
 
 - Second attempt for Qt4.4 build support, regarding the bundled
   atomic primitives, now corrected and way more seriously :).

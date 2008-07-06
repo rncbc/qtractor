@@ -582,17 +582,17 @@ bool qtractorAudioBuffer::seek ( unsigned long iFrame )
 	dump_state(QString(">seek(%1)").arg(iFrame));
 #endif
 
-	unsigned int  rs = m_pRingBuffer->readable();
-	unsigned int  ri = m_pRingBuffer->readIndex();
-	unsigned long ro = m_iReadOffset;
-
 	// Check if target is already cached...
-	if (iFrame >= ro && ro + rs >= iFrame) {
-	//	if (m_bReadSync) // WTF?
-		m_pRingBuffer->setReadIndex(ri + iFrame - ro);
-	//	m_iWriteOffset += iFrame - ro;
-		m_iReadOffset  += iFrame - ro;
-		return true;
+	if (m_bReadSync) {
+		unsigned int  rs = m_pRingBuffer->readable();
+		unsigned int  ri = m_pRingBuffer->readIndex();
+		unsigned long ro = m_iReadOffset;
+		if (iFrame >= ro && ro + rs >= iFrame) {
+			m_pRingBuffer->setReadIndex(ri + iFrame - ro);
+		//	m_iWriteOffset += iFrame - ro;
+			m_iReadOffset  += iFrame - ro;
+			return true;
+		}
 	}
 
 #ifdef CONFIG_DEBUG
@@ -606,6 +606,7 @@ bool qtractorAudioBuffer::seek ( unsigned long iFrame )
 	//		return false;
 	// Force out-of-sync...
 	m_bReadSync   = false;
+	m_iReadOffset = m_iOffset + m_iLength + 1; // An unlikely offset!
 	m_iSeekOffset = iFrame;
 
 	ATOMIC_INC(&m_seekPending);
@@ -653,9 +654,17 @@ bool qtractorAudioBuffer::initSync (void)
 			m_bIntegral = true;
 			deleteIOBuffers();
 		}
+		else // Re-sync if loop falls short in initial area... 
+		if (m_iLoopStart < m_iLoopEnd
+			&& m_iWriteOffset >= m_iOffset + m_iLoopEnd) {
+			// Will do it again, but now we're
+			// sure we aren't fit integral...
+			m_iSeekOffset = m_iOffset;
+			ATOMIC_INC(&m_seekPending);
+		}
 	}
 
-	// We're done with this initialization.
+	// We're mostly done with initialization...
 	m_bInitSync = true;
 
 	// Just carry on, if not integrally cached...
@@ -1154,24 +1163,7 @@ void qtractorAudioBuffer::reset ( bool bLooping )
 	if (bLooping && m_iLoopStart < m_iLoopEnd)
 		iFrame = m_iLoopStart;
 
-#if 0
-	if (m_bIntegral) {
-		m_iReadOffset = m_iOffset + iFrame;
-		m_pRingBuffer->setReadIndex(iFrame);
-	//	m_pRingBuffer->setWriteIndex(m_iLength);
-	} else {
-		// Force out-of-sync...
-		m_bReadSync = false;
-		m_iSeekOffset = m_iOffset + iFrame;
-		m_iSeekPending++;
-		if (m_pSyncThread)
-			m_pSyncThread->sync();
-	}
-	m_fPrevGain = 0.0f;
-	m_fNextGain = 0.0f;
-#else
 	seek(iFrame);
-#endif
 
 #ifdef DEBUG
 	dump_state("-reset()");
@@ -1255,6 +1247,7 @@ void qtractorAudioBuffer::setLoop ( unsigned long iLoopStart,
 
 	// Force out-of-sync...
 	m_bReadSync = false;
+	m_iReadOffset = m_iOffset + m_iLength + 1; // An unlikely offset!
 }
 
 unsigned long qtractorAudioBuffer::loopStart (void) const

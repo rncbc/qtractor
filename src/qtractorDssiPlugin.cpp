@@ -526,7 +526,7 @@ static void osc_close_editor ( qtractorDssiPlugin *pDssiPlugin )
 	if (pDssiEditor) {
 		osc_send_hide(pDssiEditor);
 		osc_send_quit(pDssiEditor);
-	//	osc_exiting(pDssiEditor);
+		osc_exiting(pDssiEditor);
 	}
 
 	if (g_dssiEditors.count() < 1)
@@ -710,6 +710,13 @@ void qtractorDssiPlugin::resetChannels (void)
 
 	// Init patch selection.
 	selectProgram(0, 0);
+
+	// Reset parameters default value...
+	QListIterator<qtractorPluginParam *> param(params());
+	while (param.hasNext()) {
+		qtractorPluginParam *pParam = param.next();
+		pParam->setDefaultValue(pParam->value());
+	}
 }
 
 
