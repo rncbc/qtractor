@@ -819,22 +819,25 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 			pTrack; pTrack = pTrack->next()) {
 		// Must be a MIDI track in capture/passthru
 		// mode and for the intended channel...
-		if (pTrack->trackType() == qtractorTrack::Midi && pTrack->isRecord()
-			&& !pTrack->isMute() && (!session()->soloTracks() || pTrack->isSolo())
+		if (pTrack->trackType() == qtractorTrack::Midi
+			&& (pTrack->isRecord() || pTrack->isMonitor())
+		//	&& !pTrack->isMute() && (!session()->soloTracks() || pTrack->isSolo())
 			&& (pTrack->isMidiOmni() || pTrack->midiChannel() == iChannel)) {
 			qtractorMidiBus *pMidiBus
 				= static_cast<qtractorMidiBus *> (pTrack->inputBus());
 			if (pMidiBus && pMidiBus->alsaPort() == iAlsaPort) {
 				// Is it actually recording?...
-				qtractorMidiClip *pMidiClip
-					= static_cast<qtractorMidiClip *> (pTrack->clipRecord());
-				if (pMidiClip) {
-					// Yep, we got a new MIDI event...
-					qtractorMidiEvent *pEvent = new qtractorMidiEvent(
-						pEv->time.tick, type, data1, data2, duration);
-					if (pSysex)
-						pEvent->setSysex(pSysex, iSysex);
-					pMidiClip->sequence()->addEvent(pEvent);
+				if (pTrack->isRecord()) {
+					qtractorMidiClip *pMidiClip
+						= static_cast<qtractorMidiClip *> (pTrack->clipRecord());
+					if (pMidiClip) {
+						// Yep, we got a new MIDI event...
+						qtractorMidiEvent *pEvent = new qtractorMidiEvent(
+							pEv->time.tick, type, data1, data2, duration);
+						if (pSysex)
+							pEvent->setSysex(pSysex, iSysex);
+						pMidiClip->sequence()->addEvent(pEvent);
+					}
 				}
 				// Track input monitoring...
 				qtractorMidiMonitor *pMidiMonitor

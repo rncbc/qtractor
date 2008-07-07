@@ -668,13 +668,12 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 						pAudioMonitor->process(
 							pInputBus->in(), nframes, pInputBus->channels());
 						// Post-passthru monitoring...
-						if (pTrack->isMonitor() && !pTrack->isMute()
-							&& (!pSession->soloTracks() || pTrack->isSolo())) {
+						if (pTrack->isMonitor()) {
 							qtractorAudioBus *pOutputBus
 								= static_cast<qtractorAudioBus *> (pTrack->outputBus());
 							if (pOutputBus) {
 								// Plugin chain thru-processing...
-								pOutputBus->buffer_prepare_in(pInputBus, nframes);
+								pOutputBus->buffer_prepare(nframes, pInputBus);
 								if ((pTrack->pluginList())->activated() > 0)
 									(pTrack->pluginList())->process(
 										pOutputBus->buffer(), nframes);
@@ -1813,7 +1812,8 @@ void qtractorAudioBus::process_commit ( unsigned int nframes )
 
 
 // Bus-buffering methods.
-void qtractorAudioBus::buffer_prepare ( unsigned int nframes )
+void qtractorAudioBus::buffer_prepare ( unsigned int nframes,
+	qtractorAudioBus *pInputBus )
 {
 	if (!m_bEnabled)
 		return;
@@ -1826,40 +1826,11 @@ void qtractorAudioBus::buffer_prepare ( unsigned int nframes )
 	unsigned int offset = pAudioEngine->bufferOffset();
 	unsigned int nbytes = nframes * sizeof(float);
 
-	for (unsigned short i = 0; i < m_iChannels; ++i)
-		::memset(m_ppXBuffer[i] + offset, 0, nbytes);
-}
-
-
-void qtractorAudioBus::buffer_commit ( unsigned int nframes )
-{
-	if (!m_bEnabled || (busMode() & qtractorBus::Output) == 0)
+	if (pInputBus == NULL) {
+		for (unsigned short i = 0; i < m_iChannels; ++i)
+			::memset(m_ppXBuffer[i] + offset, 0, nbytes);
 		return;
-
-	qtractorAudioEngine *pAudioEngine
-		= static_cast<qtractorAudioEngine *> (engine());
-	if (pAudioEngine == NULL)
-		return;
-
-	(*m_pfnBufferAdd)(m_ppOBuffer, m_ppXBuffer, nframes,
-		m_iChannels, m_iChannels, pAudioEngine->bufferOffset());
-}
-
-
-// Input record/passthru bus-buffering method.
-void qtractorAudioBus::buffer_prepare_in (
-	qtractorAudioBus *pInputBus, unsigned int nframes )
-{
-	if (!m_bEnabled)
-		return;
-
-	qtractorAudioEngine *pAudioEngine
-		= static_cast<qtractorAudioEngine *> (engine());
-	if (pAudioEngine == NULL)
-		return;
-
-	unsigned int offset = pAudioEngine->bufferOffset();
-	unsigned int nbytes = nframes * sizeof(float);
+	}
 
 	unsigned short iBuffers = pInputBus->channels();
 	float **ppBuffer = pInputBus->in();
@@ -1885,6 +1856,20 @@ void qtractorAudioBus::buffer_prepare_in (
 				m_iChannels, iBuffers, offset);
 		}
 	}
+}
+
+void qtractorAudioBus::buffer_commit ( unsigned int nframes )
+{
+	if (!m_bEnabled || (busMode() & qtractorBus::Output) == 0)
+		return;
+
+	qtractorAudioEngine *pAudioEngine
+		= static_cast<qtractorAudioEngine *> (engine());
+	if (pAudioEngine == NULL)
+		return;
+
+	(*m_pfnBufferAdd)(m_ppOBuffer, m_ppXBuffer, nframes,
+		m_iChannels, m_iChannels, pAudioEngine->bufferOffset());
 }
 
 

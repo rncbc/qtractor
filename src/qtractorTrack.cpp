@@ -722,14 +722,20 @@ void qtractorTrack::process ( qtractorClip *pClip,
 {
 	// Audio-buffers needs some preparation...
 	unsigned int nframes = iFrameEnd - iFrameStart;
+	qtractorAudioBus *pInputBus = NULL;
 	qtractorAudioBus *pOutputBus = NULL;
 	qtractorAudioMonitor *pAudioMonitor = NULL;
 	if (m_props.trackType == qtractorTrack::Audio) {
 		pAudioMonitor = static_cast<qtractorAudioMonitor *> (m_pMonitor);
+		// Input monitoring...
+		if (isRecord() || isMonitor())
+			pInputBus = static_cast<qtractorAudioBus *> (m_pInputBus);
+		// Output stuff...
 		pOutputBus = static_cast<qtractorAudioBus *> (m_pOutputBus);
 		if (pOutputBus == NULL)
 			return;
-		pOutputBus->buffer_prepare(nframes);
+		// Prepare this track buffer...
+		pOutputBus->buffer_prepare(nframes, pInputBus);
 	}
 
 	// Now, for every clip...
@@ -740,45 +746,23 @@ void qtractorTrack::process ( qtractorClip *pClip,
 	}
 
 	// Audio buffers needs monitoring and commitment...
-	if (pAudioMonitor) {
-		// Check whether it ain't muted, of course...
-		bool bOutput = (pOutputBus
-			&& !isMute() && (!m_pSession->soloTracks() || isSolo()));
+	if (pAudioMonitor && pOutputBus) {
 		// Audio-recording?
 		if (isRecord()) {
-			qtractorAudioBus *pInputBus
-				= static_cast<qtractorAudioBus *> (m_pInputBus);
-			if (pInputBus) {
-				// Input pre-monitoring...
-				pAudioMonitor->process(
+			// Effective audio-recording?
+			qtractorAudioClip *pAudioClip
+				= static_cast<qtractorAudioClip *> (m_pClipRecord);
+			if (pAudioClip && pInputBus) {
+				pAudioClip->write(
 					pInputBus->in(), nframes, pInputBus->channels());
-				// Effective audio-recording?
-				qtractorAudioClip *pAudioClip
-					= static_cast<qtractorAudioClip *> (m_pClipRecord);
-				if (pAudioClip) {
-					pAudioClip->write(
-						pInputBus->in(), nframes, pInputBus->channels());
-				}
-				// Post-monitoring override...
-				if (bOutput && isMonitor()) {
-					// Plugin chain post-processing...
-					pOutputBus->buffer_prepare_in(pInputBus, nframes);
-					if (m_pPluginList->activated())
-						m_pPluginList->process(pOutputBus->buffer(), nframes);
-					pOutputBus->buffer_commit(nframes);
-					bOutput = false;
-				}
 			}
 		}
-		// Audio-output...
-		if (bOutput) {
-			// Output pre-monitoring...
-			pAudioMonitor->process(pOutputBus->buffer(), nframes);
-			// Plugin chain post-processing...
-			if (m_pPluginList->activated())
-				m_pPluginList->process(pOutputBus->buffer(), nframes);
-			pOutputBus->buffer_commit(nframes);
-		}
+		// Output monitoring...
+		pAudioMonitor->process(pOutputBus->buffer(), nframes);
+		// Plugin chain post-processing...
+		if (m_pPluginList->activated())
+			m_pPluginList->process(pOutputBus->buffer(), nframes);
+		pOutputBus->buffer_commit(nframes);
 	}
 }
 
