@@ -708,6 +708,7 @@ void qtractorDssiPlugin::resetChannels (void)
 	// (Re)issue all configuration as needed...
 	realizeConfigs();
 
+#if 0
 	// Init patch selection.
 	selectProgram(0, 0);
 
@@ -717,6 +718,7 @@ void qtractorDssiPlugin::resetChannels (void)
 		qtractorPluginParam *pParam = param.next();
 		pParam->setDefaultValue(pParam->value());
 	}
+#endif
 }
 
 

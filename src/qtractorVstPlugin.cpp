@@ -619,11 +619,13 @@ void qtractorVstPlugin::setChannels ( unsigned short iChannels )
 	// But won't need it anymore.
 	clearConfigs();
 
+#if 0
 	// Prepare the bank/program stuff... 
 	int iIndex = 0;
 	qtractorMidiManager *pMidiManager = list()->midiManager();
 	if (pMidiManager && pMidiManager->currentBank() >= 0 && pMidiManager->currentProg() >= 0)
 		iIndex = (pMidiManager->currentBank() << 7) + pMidiManager->currentProg();
+#endif
 
 	// Setup all those instance alright...
 	for (unsigned short i = 0; i < iInstances; ++i) {
@@ -631,7 +633,7 @@ void qtractorVstPlugin::setChannels ( unsigned short iChannels )
 		qtractorVstPluginType::Effect *pEffect = m_ppEffects[i];
 		pEffect->vst_dispatch(effSetSampleRate, 0, 0, NULL, float(sampleRate()));
 		pEffect->vst_dispatch(effSetBlockSize,  0, bufferSize(), NULL, 0.0f);
-		pEffect->vst_dispatch(effSetProgram, 0, iIndex, NULL, 0.0f);
+	//	pEffect->vst_dispatch(effSetProgram, 0, iIndex, NULL, 0.0f);
 		unsigned short j;
 		for (j = 0; j < pVstType->audioIns(); ++j)
 			pEffect->vst_dispatch(effConnectInput, j, 1, NULL, 0.0f);

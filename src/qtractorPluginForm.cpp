@@ -361,6 +361,7 @@ void qtractorPluginForm::loadPresetSlot ( const QString& sPreset )
 			settings.beginGroup(m_pPlugin->presetGroup());
 			m_pPlugin->loadPreset(settings.value(sPreset).toString());
 			settings.endGroup();
+			refresh();
 		} else {
 			//...or make it as usual (parameter list only)...
 			settings.beginGroup(m_pPlugin->presetGroup());
