@@ -652,33 +652,32 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 	// Don't go any further, if not playing.
 	if (!isPlaying()) {
 		// Do the idle processing...
-		bool bRecord = (pSession->recordTracks() > 0);
-		if (bRecord) {
-			for (qtractorTrack *pTrack = pSession->tracks().first();
-					pTrack; pTrack = pTrack->next()) {
-				// Audio-buffers needs some preparation...
-				if (pTrack->isRecord()
-					&& pTrack->trackType() == qtractorTrack::Audio) {
-					qtractorAudioBus *pInputBus
-						= static_cast<qtractorAudioBus *> (pTrack->inputBus());
-					qtractorAudioMonitor *pAudioMonitor
-						= static_cast<qtractorAudioMonitor *> (pTrack->monitor());
-					// Pre-monitoring...
-					if (pInputBus && pAudioMonitor) {
-						pAudioMonitor->process(
-							pInputBus->in(), nframes, pInputBus->channels());
-						// Post-passthru monitoring...
-						if (pTrack->isMonitor()) {
-							qtractorAudioBus *pOutputBus
-								= static_cast<qtractorAudioBus *> (pTrack->outputBus());
-							if (pOutputBus) {
-								// Plugin chain thru-processing...
-								pOutputBus->buffer_prepare(nframes, pInputBus);
-								if ((pTrack->pluginList())->activated() > 0)
-									(pTrack->pluginList())->process(
-										pOutputBus->buffer(), nframes);
-								pOutputBus->buffer_commit(nframes);
-							}
+		int iOutput = 0;
+		for (qtractorTrack *pTrack = pSession->tracks().first();
+				pTrack; pTrack = pTrack->next()) {
+			// Audio-buffers needs some preparation...
+			if (pTrack->trackType() == qtractorTrack::Audio
+				&& (pTrack->isRecord() || pTrack->isMonitor())) {
+				qtractorAudioBus *pInputBus
+					= static_cast<qtractorAudioBus *> (pTrack->inputBus());
+				qtractorAudioMonitor *pAudioMonitor
+					= static_cast<qtractorAudioMonitor *> (pTrack->monitor());
+				// Pre-monitoring...
+				if (pAudioMonitor && pInputBus) {
+					pAudioMonitor->process(
+						pInputBus->in(), nframes, pInputBus->channels());
+					// Post-passthru monitoring...
+					if (pTrack->isMonitor()) {
+						qtractorAudioBus *pOutputBus
+							= static_cast<qtractorAudioBus *> (pTrack->outputBus());
+						if (pOutputBus) {
+							// Plugin chain thru-processing...
+							pOutputBus->buffer_prepare(nframes, pInputBus);
+							if ((pTrack->pluginList())->activated() > 0)
+								(pTrack->pluginList())->process(
+									pOutputBus->buffer(), nframes);
+							pOutputBus->buffer_commit(nframes);
+							iOutput++;
 						}
 					}
 				}
@@ -692,7 +691,7 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 			pBus; pBus = pBus->next()) {
 			qtractorAudioBus *pAudioBus
 				= static_cast<qtractorAudioBus *> (pBus);
-			if (pAudioBus && (bRecord || pAudioBus->isPassthru()))
+			if (pAudioBus && (iOutput > 0 || pAudioBus->isPassthru()))
 				pAudioBus->process_commit(nframes);
 		}
 		// Done as idle...

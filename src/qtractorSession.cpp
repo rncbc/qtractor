@@ -1133,6 +1133,8 @@ void qtractorSession::trackMute ( qtractorTrack *pTrack, bool bMute )
 		m_pMidiEngine->trackMute(pTrack, bMute);
 	else if (bMute) // Audio plugins must also be muted (sort of)...
 		(pTrack->pluginList())->resetBuffer();
+	else // Muted audio tracks must re-synchronize...
+		m_pAudioEngine->sessionCursor()->updateTrack(pTrack);
 }
 
 

@@ -365,11 +365,6 @@ void qtractorTrack::setRecord ( bool bRecord )
 
 	if (m_pSession->isRecording())
 		m_pSession->trackRecord(this, bRecord);
-
-	if (!bRecord && m_props.monitor
-		&& m_pSession->isPlaying()
-		&& m_props.trackType == qtractorTrack::Midi)
-		m_pSession->trackMute(this, false);
 }
 
 
@@ -738,11 +733,14 @@ void qtractorTrack::process ( qtractorClip *pClip,
 		pOutputBus->buffer_prepare(nframes, pInputBus);
 	}
 
-	// Now, for every clip...
-	while (pClip && pClip->clipStart() < iFrameEnd) {
-	//	&& iFrameStart < pClip->clipStart() + pClip->clipLength()) {
-		pClip->process(iFrameStart, iFrameEnd);
-		pClip = pClip->next();
+	// Playback...
+	if (!isMute() && (!m_pSession->soloTracks() || isSolo())) {
+		// Now, for every clip...
+		while (pClip && pClip->clipStart() < iFrameEnd) {
+			if (iFrameStart < pClip->clipStart() + pClip->clipLength())
+				pClip->process(iFrameStart, iFrameEnd);
+			pClip = pClip->next();
+		}
 	}
 
 	// Audio buffers needs monitoring and commitment...
@@ -760,8 +758,9 @@ void qtractorTrack::process ( qtractorClip *pClip,
 		// Output monitoring...
 		pAudioMonitor->process(pOutputBus->buffer(), nframes);
 		// Plugin chain post-processing...
-		if (m_pPluginList->activated())
+		if (m_pPluginList->activated() > 0)
 			m_pPluginList->process(pOutputBus->buffer(), nframes);
+		// Actually render it...
 		pOutputBus->buffer_commit(nframes);
 	}
 }

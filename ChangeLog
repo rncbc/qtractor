@@ -5,12 +5,17 @@ ChangeLog
 
 CVS HEAD
 
+- Major optimization breakthrough: muted audio tracks aren't streamed
+  any longer, saving precious CPU cycles from decoding, resampling,
+  pitch-shifting, time-stretching, plugin effects, whatever (HIGHLY
+  EXPERIMENTAL).
+
 - Incredible as it might be, audio/MIDI track record monitoring is
   now mixed (or merged) with rolling playback content, thus not as
   mutually  exclusive between record and playback states anymore;
   also, track mute/solo states doesn't apply to recording material
   anymore (HIGHLY EXPERIMENTAL).
-  
+
 - Main form timer slot gets corrected and now independent of current
   process buffer-size in regard to JACK transport synchronization.
 
