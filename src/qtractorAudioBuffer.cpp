@@ -583,16 +583,14 @@ bool qtractorAudioBuffer::seek ( unsigned long iFrame )
 #endif
 
 	// Check if target is already cached...
-	if (m_bReadSync) {
-		unsigned int  rs = m_pRingBuffer->readable();
-		unsigned int  ri = m_pRingBuffer->readIndex();
-		unsigned long ro = m_iReadOffset;
-		if (iFrame >= ro && ro + rs >= iFrame) {
-			m_pRingBuffer->setReadIndex(ri + iFrame - ro);
-		//	m_iWriteOffset += iFrame - ro;
-			m_iReadOffset  += iFrame - ro;
-			return true;
-		}
+	unsigned int  rs = m_pRingBuffer->readable();
+	unsigned int  ri = m_pRingBuffer->readIndex();
+	unsigned long ro = m_iReadOffset;
+	if (iFrame >= ro && ro + rs >= iFrame) {
+		m_pRingBuffer->setReadIndex(ri + iFrame - ro);
+	//	m_iWriteOffset += iFrame - ro;
+		m_iReadOffset  += iFrame - ro;
+		return true;
 	}
 
 #ifdef CONFIG_DEBUG
