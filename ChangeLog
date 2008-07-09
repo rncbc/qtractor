@@ -5,6 +5,9 @@ ChangeLog
 
 CVS HEAD
 
+- Mixer strip titles now have distinguishable type icons, either for
+  audio or MIDI, and shown on all buses and track strips.
+  
 - Major optimization breakthrough: muted audio tracks aren't streamed
   any longer, saving precious CPU cycles from decoding, resampling,
   pitch-shifting, time-stretching, plugin effects, whatever (HIGHLY

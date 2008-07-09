@@ -54,7 +54,42 @@
 #include <QResizeEvent>
 #include <QMouseEvent>
 
+#include <QPainter>
 
+
+//----------------------------------------------------------------------------
+// qtractorMixerStrip::IconLabel -- Custom mixer strip title widget.
+
+class qtractorMixerStrip::IconLabel : public QLabel
+{
+public:
+
+	// Constructor.
+	IconLabel(QWidget *pParent = NULL) : QLabel(pParent) {}
+
+	// Icon accessors.
+	void setIcon(const QIcon& icon)
+		{ m_icon = icon; }
+	const QIcon& icon() const
+		{ return m_icon; }
+
+protected:
+
+	void paintEvent(QPaintEvent *pPaintEvent)
+	{
+		QPainter painter(this);
+		QRect rect(QLabel::rect());
+		painter.drawPixmap(rect.x(), rect.y(), m_icon.pixmap(16));
+		rect.setX(rect.x() + 16);
+		painter.drawText(rect, QLabel::alignment(), QLabel::text());
+	}
+
+private:
+
+	QIcon m_icon;
+};
+
+	
 //----------------------------------------------------------------------------
 // qtractorMixerStrip -- Mixer strip widget.
 
@@ -121,9 +156,9 @@ void qtractorMixerStrip::initMixerStrip (void)
 	m_pLayout->setMargin(4);
 	m_pLayout->setSpacing(4);
 
-	m_pLabel = new QLabel(/*this*/);
+	m_pLabel = new IconLabel(/*this*/);
 	m_pLabel->setFont(font6);
-	m_pLabel->setFixedHeight(fm.lineSpacing());
+	m_pLabel->setFixedHeight(16);
 	m_pLabel->setBackgroundRole(QPalette::Button);
 	m_pLabel->setForegroundRole(QPalette::ButtonText);
 	m_pLabel->setAutoFillBackground(true);
@@ -348,7 +383,7 @@ void qtractorMixerStrip::updateName (void)
 		pal.setColor(QPalette::Button, m_pTrack->foreground().light());
 		pal.setColor(QPalette::ButtonText, m_pTrack->background().light());
 		m_pLabel->setPalette(pal);
-		m_pLabel->setAlignment(Qt::AlignLeft);
+		m_pLabel->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
 	} else if (m_pBus) {
 		meterType = m_pBus->busType();
 		if (m_busMode & qtractorBus::Input) {
@@ -356,16 +391,17 @@ void qtractorMixerStrip::updateName (void)
 		} else {
 			sName = tr("%1 Out").arg(m_pBus->busName());
 		}
-		m_pLabel->setAlignment(Qt::AlignHCenter);
+		m_pLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
 	}
-	m_pLabel->setText(sName);
-
+	
 	QString sSuffix;
 	switch (meterType) {
 	case qtractorTrack::Audio:
+		m_pLabel->setIcon(QIcon(":/icons/trackAudio.png"));
 		sSuffix = tr("(Audio)");
 		break;
 	case qtractorTrack::Midi:
+		m_pLabel->setIcon(QIcon(":/icons/trackMidi.png"));
 		sSuffix = tr("(MIDI)");
 		break;
 	case qtractorTrack::None:
@@ -374,6 +410,7 @@ void qtractorMixerStrip::updateName (void)
 		break;
 	}
 
+	m_pLabel->setText(sName);
 	QFrame::setToolTip(sName + ' ' + sSuffix);
 }
 

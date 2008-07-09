@@ -142,8 +142,10 @@ private:
 	qtractorTrack *m_pTrack;
 
 	// Local widgets.
+	class IconLabel;
+
 	QVBoxLayout            *m_pLayout;
-	QLabel                 *m_pLabel;
+	IconLabel              *m_pLabel;
 	qtractorPluginListView *m_pPluginListView;
 	QHBoxLayout            *m_pButtonLayout;
 	qtractorTrackButton    *m_pRecordButton;
