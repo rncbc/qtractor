@@ -75,17 +75,19 @@ public:
 
 protected:
 
-	void paintEvent(QPaintEvent *pPaintEvent)
+	// Custom paint event.
+	void paintEvent(QPaintEvent *)
 	{
 		QPainter painter(this);
 		QRect rect(QLabel::rect());
-		painter.drawPixmap(rect.x(), rect.y(), m_icon.pixmap(16));
-		rect.setX(rect.x() + 16);
+		painter.drawPixmap(rect.x(), rect.y(), m_icon.pixmap(rect.height()));
+		rect.setX(rect.x() + rect.height() + 1);
 		painter.drawText(rect, QLabel::alignment(), QLabel::text());
 	}
 
 private:
 
+	// Instance variables.
 	QIcon m_icon;
 };
 
@@ -158,14 +160,14 @@ void qtractorMixerStrip::initMixerStrip (void)
 
 	m_pLabel = new IconLabel(/*this*/);
 	m_pLabel->setFont(font6);
-	m_pLabel->setFixedHeight(16);
+	m_pLabel->setFixedHeight(fm.lineSpacing() + 2);
 	m_pLabel->setBackgroundRole(QPalette::Button);
 	m_pLabel->setForegroundRole(QPalette::ButtonText);
 	m_pLabel->setAutoFillBackground(true);
 	m_pLayout->addWidget(m_pLabel);
 
 	m_pPluginListView = new qtractorPluginListView(/*this*/);
-	m_pPluginListView->setFixedHeight(4 * fm.lineSpacing());
+	m_pPluginListView->setFixedHeight(fm.lineSpacing() << 2);
 	m_pLayout->addWidget(m_pPluginListView);
 
 	QIcon icons;
