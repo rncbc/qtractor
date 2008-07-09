@@ -5,6 +5,9 @@ ChangeLog
 
 CVS HEAD
 
+- The plugin selection dialog (Add Plugin...) now features the option
+  whether the selected plugins should be activated on insert.
+
 - Mixer strip titles now have distinguishable type icons, either for
   audio or MIDI, and shown on all buses and track strips.
   

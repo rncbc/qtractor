@@ -132,6 +132,7 @@ public:
 	// Plugin search string.
 	QString sPluginSearch;
 	int     iPluginType;
+	bool	bPluginActivate;
 
 	// Plug-in paths.
 	QStringList ladspaPaths;

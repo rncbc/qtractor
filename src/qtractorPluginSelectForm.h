@@ -49,6 +49,7 @@ public:
 	QString pluginFilename(int iPlugin) const;
 	unsigned long pluginIndex(int iPlugin) const;
 	qtractorPluginType::Hint pluginTypeHint(int iPlugin) const;
+	bool isPluginActivated() const;
 
 protected slots:
 

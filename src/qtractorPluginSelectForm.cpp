@@ -46,8 +46,6 @@ qtractorPluginSelectForm::qtractorPluginSelectForm (
 	// Setup UI struct...
 	m_ui.setupUi(this);
 
-	QDialog::setFont(QFont(font().family(), 7));
-
 	m_iChannels = 0;
 	m_bMidi = false;
 
@@ -105,6 +103,7 @@ qtractorPluginSelectForm::qtractorPluginSelectForm (
 			m_ui.PluginSearchComboBox->setEditText(
 				pOptions->sPluginSearch);
 			m_ui.PluginTypeComboBox->setCurrentIndex(pOptions->iPluginType);
+			m_ui.PluginActivateCheckBox->setChecked(pOptions->bPluginActivate);
 		}
 	}
 
@@ -134,6 +133,9 @@ qtractorPluginSelectForm::qtractorPluginSelectForm (
 	QObject::connect(m_ui.PluginListView,
 		SIGNAL(itemDoubleClicked(QTreeWidgetItem *, int)),
 		SLOT(accept()));
+	QObject::connect(m_ui.PluginActivateCheckBox,
+		SIGNAL(clicked()),
+		SLOT(stabilize()));
 	QObject::connect(m_ui.OkPushButton,
 		SIGNAL(clicked()),
 		SLOT(accept()));
@@ -154,6 +156,7 @@ qtractorPluginSelectForm::~qtractorPluginSelectForm (void)
 			pOptions->iPluginType = m_ui.PluginTypeComboBox->currentIndex();
 			pOptions->sPluginSearch = m_ui.PluginSearchComboBox->currentText();
 			pOptions->saveComboBoxHistory(m_ui.PluginSearchComboBox);
+			pOptions->bPluginActivate= m_ui.PluginActivateCheckBox->isChecked();
 		}
 	}
 }
@@ -202,6 +205,11 @@ qtractorPluginType::Hint qtractorPluginSelectForm::pluginTypeHint ( int iPlugin 
 	const QString& sText
 		= m_ui.PluginListView->selectedItems().at(iPlugin)->text(8);
 	return qtractorPluginType::hintFromText(sText);
+}
+
+bool qtractorPluginSelectForm::isPluginActivated (void) const
+{
+	return m_ui.PluginActivateCheckBox->isChecked();
 }
 
 

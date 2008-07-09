@@ -144,6 +144,7 @@ qtractorOptions::qtractorOptions (void)
 	sInstrumentDir = m_settings.value("/InstrumentDir").toString();
 	sPluginSearch  = m_settings.value("/PluginSearch").toString();
 	iPluginType    = m_settings.value("/PluginType", 1).toInt();
+	bPluginActivate = m_settings.value("/PluginActivate", false).toBool();
 	m_settings.endGroup();
 
 	// Plug-in paths.
@@ -318,6 +319,7 @@ qtractorOptions::~qtractorOptions (void)
 	m_settings.setValue("/InstrumentDir", sInstrumentDir);
 	m_settings.setValue("/PluginSearch", sPluginSearch);
 	m_settings.setValue("/PluginType", iPluginType);
+	m_settings.setValue("/PluginActivate", bPluginActivate);
 	m_settings.endGroup();
 
 	// Plug-in paths.
