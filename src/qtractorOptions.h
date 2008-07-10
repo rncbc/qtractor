@@ -142,6 +142,9 @@ public:
 	// Plug-in instrument options.
 	bool bAudioOutputBus;
 
+	// VST dummy plugin scan option.
+	bool bDummyVstScan;
+
 	// The instrument file list.
 	QStringList instrumentFiles;
 

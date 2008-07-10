@@ -153,6 +153,7 @@ qtractorOptions::qtractorOptions (void)
 	dssiPaths   = m_settings.value("/DssiPaths").toStringList();
 	vstPaths    = m_settings.value("/VstPaths").toStringList();
 	bAudioOutputBus = m_settings.value("/AudioOutputBus", false).toBool();
+	bDummyVstScan = m_settings.value("/DummyVstScan", true).toBool();
 	m_settings.endGroup();
 
 	// Instrument file list.
@@ -328,6 +329,7 @@ qtractorOptions::~qtractorOptions (void)
 	m_settings.setValue("/DssiPaths", dssiPaths);
 	m_settings.setValue("/VstPaths", vstPaths);
 	m_settings.setValue("/AudioOutputBus", bAudioOutputBus);
+	m_settings.setValue("/DummyVstScan", bDummyVstScan);
 	m_settings.endGroup();
 
 	// Instrument file list.

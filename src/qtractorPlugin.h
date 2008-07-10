@@ -154,7 +154,7 @@ public:
 
 	// Factory method (static)
 	static qtractorDummyPluginType *createType(
-		qtractorPluginFile *pFile, unsigned long iIndex, Hint typeHint);
+		qtractorPluginFile *pFile, unsigned long iIndex = 0, Hint typeHint = Vst);
 };
 
 

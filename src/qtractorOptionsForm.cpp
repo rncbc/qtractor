@@ -99,6 +99,8 @@ qtractorOptionsForm::qtractorOptionsForm (
 #ifdef CONFIG_VST
 	m_ui.PluginTypeComboBox->addItem(
 		qtractorPluginType::textFromHint(qtractorPluginType::Vst));
+#else
+	m_ui.PluginExperimentalGroupBox->hide();
 #endif
 
 	// Initialize dirty control state.
@@ -261,6 +263,9 @@ qtractorOptionsForm::qtractorOptionsForm (
 	QObject::connect(m_ui.AudioOutputBusCheckBox,
 		SIGNAL(stateChanged(int)),
 		SLOT(changed()));
+	QObject::connect(m_ui.DummyVstScanCheckBox,
+		SIGNAL(stateChanged(int)),
+		SLOT(changed()));
 	QObject::connect(m_ui.MessagesFontPushButton,
 		SIGNAL(clicked()),
 		SLOT(chooseMessagesFont()));
@@ -418,6 +423,7 @@ void qtractorOptionsForm::setOptions ( qtractorOptions *pOptions )
 
 	// Plugin instruments options.
 	m_ui.AudioOutputBusCheckBox->setChecked(m_pOptions->bAudioOutputBus);
+	m_ui.DummyVstScanCheckBox->setChecked(m_pOptions->bDummyVstScan);
 
 	int iPluginType = m_pOptions->iPluginType - 1;
 	if (iPluginType < 0)
@@ -495,6 +501,7 @@ void qtractorOptionsForm::accept (void)
 		m_pOptions->vstPaths             = m_vstPaths;
 		// Plugin instruments options.
 		m_pOptions->bAudioOutputBus      = m_ui.AudioOutputBusCheckBox->isChecked();
+		m_pOptions->bDummyVstScan        = m_ui.DummyVstScanCheckBox->isChecked();
 		// Messages options...
 		m_pOptions->sMessagesFont        = m_ui.MessagesFontTextLabel->font().toString();
 		m_pOptions->bMessagesLimit       = m_ui.MessagesLimitCheckBox->isChecked();

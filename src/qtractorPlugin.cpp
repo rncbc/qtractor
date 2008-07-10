@@ -255,13 +255,16 @@ bool qtractorPluginFile::getTypes ( qtractorPluginTypeList& types,
 	// Try VST plugin types...
 	if (typeHint == qtractorPluginType::Any ||
 		typeHint == qtractorPluginType::Vst) {
-		if ((pType
-		#if 0 // FIXME: As long the JUCETICE plugins don't cope...
-			= qtractorVstPluginType::createType(this)) != NULL) {
-		#else
-			= qtractorDummyPluginType::createType(this,
-				0, qtractorPluginType::Vst)) != NULL) {
-		#endif
+		// Need to look at the options...
+		qtractorOptions  *pOptions  = NULL;
+		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+		if (pMainForm)
+			pOptions = pMainForm->options();
+		if (pOptions && pOptions->bDummyVstScan)
+			pType = qtractorDummyPluginType::createType(this);
+		else
+			pType = qtractorVstPluginType::createType(this);
+		if (pType) {
 			if (pType->open()) {
 				types.append(pType);
 				pType->close();

@@ -5,6 +5,14 @@ ChangeLog
 
 CVS HEAD
 
+- A dummy plugin type option has been devised, just to bear with some
+  troubled behavior of the lovely JUCETICE plugins (View/Options.../
+  Plugins/Experimental/Dummy VST plugin scan). Bad news are that all,
+  yes all as in every native VST plugins, are indistinguishable from
+  being just pure audio effects, either mono or stereo, whatever, and
+  thus all being considered full-blown stereo VSTi instruments (which
+  are the vast mainstream and rather interesting majority, nevertheless:).
+
 - The plugin selection dialog (Add Plugin...) now features the option
   whether the selected plugins should be activated on insert.
 
@@ -41,13 +49,6 @@ CVS HEAD
   and DSSI plugin types.
 
 - MIDI track bank/program does not default to zero (PC#0) anymore.
-
-- A dummy plugin type has been devised, just to bear with troublesome
-  behavior of the lovely JUCETICE plugins. Bad news are now that all,
-  yes, all as in every native VST plugins are indistinguishable from
-  being just pure audio effects, either mono or stereo, whatever, and
-  thus all being considered full-blown stereo VSTi instruments (which
-  are the vast mainstream and rather interesting majority,nevertheless:).
 
 - Second attempt for Qt4.4 build support, regarding the bundled
   atomic primitives, now corrected and way more seriously :).
