@@ -253,8 +253,15 @@ void qtractorLadspaPlugin::setChannels ( unsigned short iChannels )
 		QListIterator<qtractorPluginParam *> param(params());
 		while (param.hasNext()) {
 			qtractorPluginParam *pParam = param.next();
+			// Just in case the plugin decides
+			// to set the port value at this time...
+			float *pfValue = pParam->data();
+			float   fValue = *pfValue;
 			(*pLadspaDescriptor->connect_port)(handle,
-				pParam->index(), pParam->data());
+				pParam->index(), pfValue);
+			// Make new one the default and restore port value...
+			pParam->setDefaultValue(*pfValue);
+			*pfValue = fValue;
 		}
 		// Connect all existing output control (dummy) ports...
 		for (unsigned short j = 0; j < iControlOuts; ++j) {
