@@ -5,6 +5,9 @@ ChangeLog
 
 CVS HEAD
 
+- Fixed a mouse release event glitch while in drag-and-drop items in
+  the Files tree list widget.
+
 - A dummy plugin type option has been devised, just to bear with some
   troubled behavior of the lovely JUCETICE plugins (View/Options.../
   Plugins/Experimental/Dummy VST plugin scan). Bad news are that all,

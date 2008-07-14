@@ -146,6 +146,8 @@ protected:
 	// Drag-n-drop stuff -- reimplemented virtual methods.
 	void mousePressEvent(QMouseEvent *pMouseEvent);
 	void mouseMoveEvent(QMouseEvent *pMouseEvent);
+	void mouseReleaseEvent(QMouseEvent *pMouseEvent);
+
 	void dragEnterEvent(QDragEnterEvent *pDragEnterEvent);
 	void dragMoveEvent(QDragMoveEvent *pDragMoveEvent);
 	void dragLeaveEvent(QDragLeaveEvent *);

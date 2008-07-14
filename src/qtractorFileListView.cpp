@@ -872,9 +872,18 @@ void qtractorFileListView::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 			pDrag->setHotSpot(QPoint(-4, -12));
 			pDrag->start(Qt::CopyAction | Qt:: MoveAction);
 			// We've dragged and maybe dropped it by now...
-			m_pDragItem = NULL;
+			mouseReleaseEvent(pMouseEvent);
 		}
 	}
+}
+
+
+void qtractorFileListView::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
+{
+	QTreeWidget::mouseReleaseEvent(pMouseEvent);
+
+	dragLeaveEvent(NULL);
+	m_pDragItem = NULL;
 }
 
 
