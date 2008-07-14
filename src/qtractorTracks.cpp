@@ -428,6 +428,8 @@ bool qtractorTracks::newClip (void)
 				// SMF format 1 (2 tracks, 1 channel)
 				pMidiClip->setTrackChannel(1);
 			}
+			// Make it a brand new revision...
+			pMidiClip->setRevision(1);
 			// Insert the clip right away...
 			qtractorClipCommand *pClipCommand
 				= new qtractorClipCommand(tr("new clip"));

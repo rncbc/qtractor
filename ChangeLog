@@ -5,6 +5,8 @@ ChangeLog
 
 CVS HEAD
 
+- MIDI clip filename revision logic is now introduced (EXPERIMENTAL).
+
 - Fixed a mouse release event glitch while in drag-and-drop items in
   the Files tree list widget.
 

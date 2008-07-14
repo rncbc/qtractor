@@ -672,8 +672,12 @@ void qtractorMidiEditorForm::setup ( qtractorMidiClip *pMidiClip )
 // Save current clip.
 bool qtractorMidiEditorForm::saveClipFile ( bool bPrompt )
 {
+	qtractorMidiClip *pMidiClip = m_pMidiEditor->midiClip();
+	if (pMidiClip == NULL)
+		return false;
+
 	// Suggest a filename, if there's none...
-	QString sFilename = qtractorMidiEditor::createFilePathRevision(filename());
+	QString sFilename = pMidiClip->createFilePathRevision(bPrompt);
 
 	if (sFilename.isEmpty())
 		bPrompt = true;
@@ -705,11 +709,8 @@ bool qtractorMidiEditorForm::saveClipFile ( bool bPrompt )
 	if (bResult) {
 		// Aha, but we're not dirty no more.
 		m_iDirtyCount = 0;
-		qtractorMidiClip *pMidiClip = m_pMidiEditor->midiClip();
-		if (pMidiClip) {
-			pMidiClip->setFilename(sFilename);
-			pMidiClip->setDirty(false);
-		}
+		pMidiClip->setFilename(sFilename);
+		pMidiClip->setDirty(false);
 	}
 
 	// Done.

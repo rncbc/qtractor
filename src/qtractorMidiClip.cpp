@@ -47,8 +47,9 @@ qtractorMidiClip::qtractorMidiClip ( qtractorTrack *pTrack )
 	m_pSeq  = new qtractorMidiSequence();
 
 	m_iTrackChannel = 0;
-	m_iFormat       = defaultFormat();
-	m_bSessionFlag  = false;
+	m_iFormat = defaultFormat();
+	m_bSessionFlag = false;
+	m_iRevision = 0;
 
 	m_pMidiEditorForm = NULL;
 }
@@ -63,8 +64,9 @@ qtractorMidiClip::qtractorMidiClip ( const qtractorMidiClip& clip )
 	setFilename(clip.filename());
 	setTrackChannel(clip.trackChannel());
 
-	m_iFormat      = clip.format();
+	m_iFormat = clip.format();
 	m_bSessionFlag = false;
+	m_iRevision = 0;
 
 	m_pMidiEditorForm = NULL;
 }
@@ -222,6 +224,32 @@ void qtractorMidiClip::setSessionFlag ( bool bSessionFlag )
 bool qtractorMidiClip::isSessionFlag (void) const
 {
 	return m_bSessionFlag;
+}
+
+
+// Revisionist methods.
+void qtractorMidiClip::setRevision ( unsigned short iRevision )
+{
+	m_iRevision = iRevision;
+}
+
+unsigned short qtractorMidiClip::revision (void) const
+{
+	return m_iRevision;
+}
+
+
+QString qtractorMidiClip::createFilePathRevision ( bool bForce )
+{
+	QString sFilename = filename();
+
+	if (m_iRevision == 0 || bForce)
+		sFilename = qtractorMidiEditor::createFilePathRevision(sFilename);
+
+	if (!bForce)
+		m_iRevision++;
+
+	return sFilename;
 }
 
 
@@ -585,6 +613,8 @@ bool qtractorMidiClip::loadClipElement (
 			qtractorMidiClip::setFilename(eChild.text());
 		else if (eChild.tagName() == "track-channel")
 			qtractorMidiClip::setTrackChannel(eChild.text().toUShort());
+		else if (eChild.tagName() == "revision")
+			qtractorMidiClip::setRevision(eChild.text().toUShort());
 	}
 
 	return true;
@@ -604,8 +634,7 @@ bool qtractorMidiClip::saveClipElement (
 		if (pSession) {
 			// Have a new filename revision...
 			const QString& sFilename
-				= qtractorMidiEditor::createFilePathRevision(
-					qtractorMidiClip::filename());
+				= qtractorMidiClip::createFilePathRevision();
 			// Save/replace the clip track...
 			qtractorMidiEditor::saveCopyFile(sFilename,
 				qtractorMidiClip::filename(),
@@ -626,6 +655,9 @@ bool qtractorMidiClip::saveClipElement (
 		qtractorMidiClip::relativeFilename(), &eMidiClip);
 	pDocument->saveTextElement("track-channel",
 		QString::number(qtractorMidiClip::trackChannel()), &eMidiClip);
+	pDocument->saveTextElement("revision",
+		QString::number(qtractorMidiClip::revision()), &eMidiClip);
+
 	pElement->appendChild(eMidiClip);
 
 	return true;

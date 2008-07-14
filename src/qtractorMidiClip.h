@@ -66,6 +66,12 @@ public:
 	void setSessionFlag(bool bSessionFlag);
 	bool isSessionFlag() const;
 
+	// Revisionist methods.
+	void setRevision(unsigned short iRevision);
+	unsigned short revision() const;
+
+	QString createFilePathRevision(bool bForce = false);
+
 	// Sequence properties accessors.
 	qtractorMidiSequence *sequence() const;
 	unsigned short channel() const;
@@ -121,6 +127,9 @@ private:
 	unsigned short m_iTrackChannel;
 	unsigned short m_iFormat;
 	bool           m_bSessionFlag;
+
+	// Revisionist count.
+	unsigned short m_iRevision;
 
 	// To optimize and keep track of current playback
 	// position, mostly like an sequence cursor/iterator.
