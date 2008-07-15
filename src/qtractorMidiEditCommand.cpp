@@ -191,6 +191,7 @@ bool qtractorMidiEditCommand::execute ( bool bRedo )
 	}
 	// Or are we changing something more durable?
 	if (pSeq->duration() != iOldDuration) {
+		pSeq->setTimeLength(pSeq->duration());
 		m_pMidiClip->setClipLength(pSession->frameFromTick(pSeq->duration()));
 		m_pMidiClip->updateEditor();
 	}

@@ -730,6 +730,7 @@ bool qtractorTracks::addAudioTracks ( QStringList files,
 	// or will have each clip intto several tracks...
 	bool bDropSpan = m_pTrackView->isDropSpan();
 	qtractorTrack *pTrack = NULL;
+	int iTrackClip = 0;
 
 	// For each one of those files, if any...
 	QStringListIterator iter(files);
@@ -740,11 +741,10 @@ bool qtractorTracks::addAudioTracks ( QStringList files,
 		if (pTrack == NULL || !bDropSpan) {
 			const QColor& color = qtractorTrack::trackColor(++iTrack);
 			pTrack = new qtractorTrack(pSession, qtractorTrack::Audio);
-			if (bDropSpan)
-				pTrack->setTrackName(tr("Track %1").arg(iTrack));
 			pTrack->setBackground(color);
 			pTrack->setForeground(color.dark());
 			pImportTrackCommand->addTrack(pTrack);
+			iTrackClip = 0;
 		}
 		// Add the clip at once...
 		qtractorAudioClip *pAudioClip = new qtractorAudioClip(pTrack);
@@ -753,11 +753,12 @@ bool qtractorTracks::addAudioTracks ( QStringList files,
 		// Time to add the new track/clip into session;
 		// actuallly, this is wheen the given audio file gets open...
 		pTrack->addClip(pAudioClip);
+		if (iTrackClip == 0)
+			pTrack->setTrackName(pAudioClip->clipName());
+		iTrackClip++;
 		// Add the new track to composite command...
 		if (bDropSpan)
 			iClipStart += pAudioClip->clipLength();
-		else
-			pTrack->setTrackName(pAudioClip->clipName());
 		// Don't forget to add this one to local repository.
 		pMainForm->addAudioFile(sPath);
 		iUpdate++;

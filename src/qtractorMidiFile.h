@@ -24,7 +24,6 @@
 
 #include "qtractorMidiSequence.h"
 
-
 //----------------------------------------------------------------------
 // class qtractorMidiFile -- A SMF (Standard MIDI File) class.
 //

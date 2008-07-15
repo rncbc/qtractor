@@ -57,6 +57,7 @@
 #include <QCursor>
 #include <QTimer>
 #include <QUrl>
+#include <QFileInfo>
 
 
 //----------------------------------------------------------------------------
@@ -1061,7 +1062,9 @@ void qtractorTrackView::dropEvent ( QDropEvent *pDropEvent )
 		= new qtractorClipCommand(tr("add clip"));
 
 	// If dropping spanned we'll need a track, sure...
-	if (pTrack == NULL) {
+	int iTrackClip = 0;
+	bool bAddTrack = (pTrack == NULL);
+	if (bAddTrack) {
 		pTrack = new qtractorTrack(pSession, m_dropType);
 		// Create a new track right away...
 		int iTrack = pSession->tracks().count() + 1;
@@ -1069,7 +1072,7 @@ void qtractorTrackView::dropEvent ( QDropEvent *pDropEvent )
 		pTrack = new qtractorTrack(pSession, m_dropType);
 		pTrack->setBackground(color);
 		pTrack->setForeground(color.dark());
-		pTrack->setTrackName(tr("Track %1").arg(iTrack));
+	//	pTrack->setTrackName(tr("Track %1").arg(iTrack));
 		pClipCommand->addTrack(pTrack);
 	}
 
@@ -1105,8 +1108,12 @@ void qtractorTrackView::dropEvent ( QDropEvent *pDropEvent )
 		default:
 			break;
 		}
+		// If track's new it will need a name...
+		if (bAddTrack && iTrackClip == 0)
+			pTrack->setTrackName(QFileInfo(pDropItem->path).baseName());
 		// If multiple items, just concatenate them...
 		iClipStart += pSession->frameFromPixel(pDropItem->rect.width());
+		iTrackClip++;
 	}
 
 	// Clean up.

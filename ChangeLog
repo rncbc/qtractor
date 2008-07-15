@@ -5,7 +5,10 @@ ChangeLog
 
 CVS HEAD
 
-- MIDI clip filename revision logic is now introduced (EXPERIMENTAL).
+- MIDI clip filename revision logic is now introduced, thus avoiding
+  the proliferation of several numbered SMF's on each edit/save; some
+  lurking bugs were exposed in the MIDI clip externalization method
+  but promptly squashed (EXPERIMENTAL).
 
 - Fixed a mouse release event glitch while in drag-and-drop items in
   the Files tree list widget.
