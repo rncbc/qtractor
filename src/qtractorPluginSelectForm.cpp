@@ -307,7 +307,8 @@ void qtractorPluginSelectForm::refresh (void)
 			int iMidiOuts    = pType->midiOuts();
 			int iControlIns  = pType->controlIns();
 			int iControlOuts = pType->controlOuts();
-			unsigned short iInstances = pType->instances(m_iChannels, m_bMidi);
+			// FIXME: We don't care whether it's a MIDI chain at this time...
+			unsigned short iInstances = pType->instances(m_iChannels, false);
 			cols.clear();
 			cols << sName;
 			cols << QString("%1:%2").arg(iAudioIns).arg(iAudioOuts);

@@ -637,6 +637,10 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 		ATOMIC_SET(&m_playerLock, 0);
 	}
 
+	// Track whether audio output buses
+	// buses needs monitoring while idle...
+	int iOutputBus = 0;
+
 	// MIDI plugin manager processing...
 	qtractorMidiManager *pMidiManager
 		= pSession->midiManagers().first();
@@ -645,6 +649,8 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 		unsigned long iTimeEnd   = iTimeStart + nframes;
 		while (pMidiManager) {
 			pMidiManager->process(iTimeStart, iTimeEnd);
+			if (!pMidiManager->isAudioOutputBus())
+				iOutputBus++;
 			pMidiManager = pMidiManager->next();
 		}
 	}
@@ -652,7 +658,6 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 	// Don't go any further, if not playing.
 	if (!isPlaying()) {
 		// Do the idle processing...
-		int iOutput = 0;
 		for (qtractorTrack *pTrack = pSession->tracks().first();
 				pTrack; pTrack = pTrack->next()) {
 			// Audio-buffers needs some preparation...
@@ -677,7 +682,7 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 								(pTrack->pluginList())->process(
 									pOutputBus->buffer(), nframes);
 							pOutputBus->buffer_commit(nframes);
-							iOutput++;
+							iOutputBus++;
 						}
 					}
 				}
@@ -691,7 +696,7 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 			pBus; pBus = pBus->next()) {
 			qtractorAudioBus *pAudioBus
 				= static_cast<qtractorAudioBus *> (pBus);
-			if (pAudioBus && (iOutput > 0 || pAudioBus->isPassthru()))
+			if (pAudioBus && (iOutputBus > 0 || pAudioBus->isPassthru()))
 				pAudioBus->process_commit(nframes);
 		}
 		// Done as idle...
