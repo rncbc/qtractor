@@ -611,6 +611,10 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 	// Reset buffer offset.
 	m_iBufferOffset = 0;
 
+	// Track whether audio output buses
+	// buses needs monitoring while idle...
+	int iOutputBus = 0;
+
 	// Prepare all current audio buses...
 	for (qtractorBus *pBus = buses().first();
 			pBus; pBus = pBus->next()) {
@@ -634,12 +638,10 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 		m_iPlayerFrame += nframes;
 		if (m_bPlayerBus)
 			m_pPlayerBus->process_commit(nframes);
+		else
+			iOutputBus++;
 		ATOMIC_SET(&m_playerLock, 0);
 	}
-
-	// Track whether audio output buses
-	// buses needs monitoring while idle...
-	int iOutputBus = 0;
 
 	// MIDI plugin manager processing...
 	qtractorMidiManager *pMidiManager
@@ -689,7 +691,7 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 			}
 		}
 		// Process audition/pre-listening bus...
-		if (m_pPlayerBus && (m_bPlayerBus || !m_pPlayerBus->isPassthru()))
+		if (m_pPlayerBus && m_bPlayerBus)
 			m_pPlayerBus->process_commit(nframes);
 		// Pass-thru current audio buses...
 		for (qtractorBus *pBus = buses().first();

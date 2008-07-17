@@ -260,8 +260,10 @@ void qtractorLadspaPlugin::setChannels ( unsigned short iChannels )
 			(*pLadspaDescriptor->connect_port)(handle,
 				pParam->index(), pfValue);
 			// Make new one the default and restore port value...
-			pParam->setDefaultValue(*pfValue);
-			*pfValue = fValue;
+			if (pParam->defaultValue() != *pfValue) {
+				pParam->setDefaultValue(*pfValue);
+				*pfValue = fValue;
+			}
 		}
 		// Connect all existing output control (dummy) ports...
 		for (unsigned short j = 0; j < iControlOuts; ++j) {

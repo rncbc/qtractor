@@ -2678,13 +2678,15 @@ void qtractorTrackView::moveClipSelect ( qtractorTrack *pTrack )
 		= new qtractorClipCommand(tr("move clip"));
 
 	// We can only move clips between tracks of the same type...
+	int iTrackClip = 0;
+	bool bAddTrack = (pTrack == NULL);
 	qtractorTrack *pSingleTrack = m_pClipSelect->singleTrack();
 	if (pSingleTrack) {
-		if (pTrack == NULL) {
+		if (bAddTrack) {
 			int iTrack = pSession->tracks().count() + 1;
 			const QColor color = qtractorTrack::trackColor(iTrack);
 			pTrack = new qtractorTrack(pSession, pSingleTrack->trackType());
-			pTrack->setTrackName(tr("Track %1").arg(iTrack));
+		//	pTrack->setTrackName(tr("Track %1").arg(iTrack));
 			pTrack->setBackground(color);
 			pTrack->setForeground(color.dark());
 			if (pSingleTrack->trackType() == qtractorTrack::Midi) {
@@ -2745,6 +2747,10 @@ void qtractorTrackView::moveClipSelect ( qtractorTrack *pTrack )
 			pSession->frameSnap(pSession->frameFromPixel(x > 0 ? x : 0)),
 			iClipOffset + iSelectOffset,
 			iSelectLength);
+		// If track's new it will need a name...
+		if (bAddTrack && iTrackClip == 0)
+			pTrack->setTrackName(pClip->clipName());
+		iTrackClip++;
 	}
 
 	// May reset selection, yep.
@@ -2779,13 +2785,15 @@ void qtractorTrackView::pasteClipSelect ( qtractorTrack *pTrack )
 		= new qtractorClipCommand(tr("paste clip"));
 
 	// We can only move clips between tracks of the same type...
+	int iTrackClip = 0;
+	bool bAddTrack = (pTrack == NULL);
 	qtractorTrack *pSingleTrack = m_pClipSelect->singleTrack();
 	if (pSingleTrack) {
-		if (pTrack == NULL) {
+		if (bAddTrack) {
 			int iTrack = pSession->tracks().count() + 1;
 			const QColor color = qtractorTrack::trackColor(iTrack);
 			pTrack = new qtractorTrack(pSession, pSingleTrack->trackType());
-			pTrack->setTrackName(tr("Track %1").arg(iTrack));
+		//	pTrack->setTrackName(tr("Track %1").arg(iTrack));
 			pTrack->setBackground(color);
 			pTrack->setForeground(color.dark());
 			pClipCommand->addTrack(pTrack);
@@ -2832,6 +2840,10 @@ void qtractorTrackView::pasteClipSelect ( qtractorTrack *pTrack )
 			pNewClip->setFadeInLength(pClipItem->fadeInLength);
 			pNewClip->setFadeOutLength(pClipItem->fadeOutLength);
 			pClipCommand->addClip(pNewClip, pTrack);
+			// If track's new it will need a name...
+			if (bAddTrack && iTrackClip == 0)
+				pTrack->setTrackName(pClip->clipName());
+			iTrackClip++;
 		}
 	}
 
