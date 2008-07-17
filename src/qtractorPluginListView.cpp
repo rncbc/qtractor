@@ -776,9 +776,9 @@ bool qtractorPluginListView::canDropEvent ( QDropEvent *pDropEvent )
 	} else if (m_pPluginList->last() == pPlugin)
 		return false;
 
-	// All that to check whether it will get properly instantiated...
-	if ((pPlugin->type())->instances(
-		m_pPluginList->channels(), m_pPluginList->isMidi()) < 1)
+	// All that to check whether it will get properly instantiated.
+	// FIXME: We don't care whether it's a MIDI chain at this time...
+	if ((pPlugin->type())->instances(m_pPluginList->channels(), false) < 1)
 		return false;
 
 	// This is the place we'll drop something

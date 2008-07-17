@@ -3,12 +3,12 @@ Qtractor - An Audio/MIDI multi-track sequencer
 
 ChangeLog
 
-CVS HEAD
+0.2.0  2008-07-18  The Frolic Demoiselle
 
 - MIDI clip filename revision logic is now introduced, thus avoiding
   the proliferation of several numbered SMF's on each edit/save; some
   lurking bugs were exposed in the MIDI clip externalization method
-  but promptly squashed (EXPERIMENTAL).
+  but promptly squashed.
 
 - Fixed a mouse release event glitch while in drag-and-drop items in
   the Files tree list widget.
@@ -26,17 +26,16 @@ CVS HEAD
 
 - Mixer strip titles now have distinguishable type icons, either for
   audio or MIDI, and shown on all buses and track strips.
-  
+
 - Major optimization breakthrough: muted audio tracks aren't streamed
   any longer, saving precious CPU cycles from decoding, resampling,
-  pitch-shifting, time-stretching, plugin effects, whatever (HIGHLY
-  EXPERIMENTAL).
+  pitch-shifting, time-stretching, plugin effects, whatever.
 
 - Incredible as it might be, audio/MIDI track record monitoring is
   now mixed (or merged) with rolling playback content, thus not as
   mutually  exclusive between record and playback states anymore;
   also, track mute/solo states doesn't apply to recording material
-  anymore (HIGHLY EXPERIMENTAL).
+  anymore.
 
 - Main form timer slot gets corrected and now independent of current
   process buffer-size in regard to JACK transport synchronization.
@@ -63,8 +62,7 @@ CVS HEAD
 
 - Long due DSSI/VSTi plugin host implementation has taken shape for
   MIDI instruments (eg. soft-synth plugins); DSSI reached its full
-  host implementation and VSTi is already kicking as well (HIGHLY
-  EXPERIMENTAL).
+  host implementation and VSTi is already kicking as well.
 
 - DSSI/VSTi plugin presets may now be stored to external XML files,
   which should include all parameter values and configuration data
