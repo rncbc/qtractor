@@ -17,7 +17,7 @@ Packager:	rncbc.org
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
 BuildRequires:	qt-devel >= 4.1
-BuildRequires:	jack-devel >= 0.100.0
+BuildRequires:	libjack-devel >= 0.100.0
 BuildRequires:	alsa-devel
 BuildRequires:	libsndfile-devel >= 1.0.11
 BuildRequires:	libvorbis-devel
