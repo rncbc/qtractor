@@ -21,6 +21,7 @@
 
 #include "qtractorAbout.h"
 #include "qtractorAudioBuffer.h"
+#include "qtractorAudioPeak.h"
 
 #include "qtractorTimeStretcher.h"
 
@@ -63,7 +64,6 @@ private:
 	QMutex m_mutex;
 	QWaitCondition m_cond;
 };
-
 
 
 //----------------------------------------------------------------------
@@ -122,6 +122,8 @@ qtractorAudioBuffer::qtractorAudioBuffer ( unsigned short iChannels,
 	m_ppOutBuffer    = NULL;
 	m_ppSrcState     = NULL;
 #endif
+
+	m_pPeak          = NULL;
 }
 
 // Default destructor.
@@ -287,8 +289,13 @@ void qtractorAudioBuffer::close (void)
 	}
 
 	// Write-behind any remains, if applicable...
-	if (m_pFile->mode() & qtractorAudioFile::Write)
+	if (m_pFile->mode() & qtractorAudioFile::Write) {
 		writeSync();
+		if (m_pPeak) {
+			m_pPeak->closeWrite();
+			m_pPeak = NULL;
+		}
+	}
 
 	// Time to close it good.
 	m_pFile->close();
@@ -327,6 +334,8 @@ void qtractorAudioBuffer::close (void)
 
 	m_fPrevGain = 0.0f;
 	m_fNextGain = 0.0f;
+
+	m_pPeak = NULL;
 }
 
 
@@ -1014,8 +1023,11 @@ int qtractorAudioBuffer::readBuffer ( unsigned int iFrames )
 int qtractorAudioBuffer::writeBuffer ( unsigned int iFrames )
 {
 	int nwrite = m_pRingBuffer->read(m_ppFrames, iFrames, 0);
-	if (nwrite > 0)
+	if (nwrite > 0) {
 		nwrite = m_pFile->write(m_ppFrames, nwrite);
+		if (m_pPeak)
+			m_pPeak->write(m_ppFrames, nwrite);
+	}
 
 	return nwrite;
 }
@@ -1298,6 +1310,22 @@ float qtractorAudioBuffer::pitchShift (void) const
 bool qtractorAudioBuffer::isPitchShift (void) const
 {
 	return m_bPitchShift;
+}
+
+
+// Internal peak descriptor accessors.
+void qtractorAudioBuffer::setPeak ( qtractorAudioPeak *pPeak )
+{
+	m_pPeak = pPeak;
+
+ 	// Reset for building the peak file on-the-fly...
+	if (!m_pPeak->openWrite(m_iChannels, m_iSampleRate))
+		m_pPeak = NULL;
+}
+
+qtractorAudioPeak *qtractorAudioBuffer::peak (void) const
+{
+	return m_pPeak;
 }
 
 

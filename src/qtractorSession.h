@@ -249,6 +249,9 @@ public:
 	void acquireMidiTag(qtractorTrack *pTrack);
 	void releaseMidiTag(qtractorTrack *pTrack);
 
+	// MIDI track recording specifics.
+	unsigned short midiRecord() const;
+
 	// MIDI session/tracks instrument patching.
 	void setMidiPatch(qtractorInstrumentList *pInstruments);
 
@@ -326,6 +329,9 @@ private:
 	// MIDI track tagging specifics.
 	unsigned short m_iMidiTag;
 	QList<unsigned short> m_midiTags;
+
+	// MIDI track recording count.
+	unsigned short m_iMidiRecord;
 
 	// Base edit members.
 	unsigned long m_iEditHead;

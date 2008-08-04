@@ -35,17 +35,6 @@ class qtractorAudioPeakFactory;
 
 
 //----------------------------------------------------------------------
-// struct qtractorAudioPeakFrame -- Audio Peak frame record.
-//
-
-struct qtractorAudioPeakFrame
-{
-	unsigned char peakMax;
-	unsigned char peakRms;
-};
-
-
-//----------------------------------------------------------------------
 // class qtractorAudioPeakFile -- Audio peak file (ref'counted)
 //
 
@@ -55,28 +44,44 @@ public:
 
 	// Constructor.
 	qtractorAudioPeakFile(qtractorAudioPeakFactory *pFactory,
-		const QString& sFilename, unsigned int iSampleRate,
-		float fTimeStretch, const QString& sSessionDir);
+		const QString& sFilename, float fTimeStretch);
 
 	// Default destructor.
 	~qtractorAudioPeakFile();
 
-	// Audio file accessors.
+	// Audio properties accessors.
 	const QString& filename() const;
-	unsigned int   sampleRate() const;
-
 	float timeStretch() const;
 
-	// Peak file accessors.
-	QString name() const { return m_peakFile.fileName(); }
-
-	// Lazy-evaluated properties.
+	// Peak cache properties accessors.
+	QString name() const;
 	unsigned short period();
 	unsigned short channels();
 
-	// Peak file methods.
-	void getPeak(qtractorAudioPeakFrame *pframes,
-		unsigned long iframe, unsigned int nframes);
+	// Audio peak file header.
+	struct Header
+	{
+		unsigned short period;
+		unsigned short channels;
+	};
+
+	// Audio peak file frame record.
+	struct Frame
+	{
+		unsigned char max;
+		unsigned char rms;
+	};
+
+	// Peak cache file methods.
+	bool openRead();
+	void read(Frame *pPeakFrames,
+		unsigned long iPeakOffset, unsigned int iPeakFrames);
+	void closeRead();
+
+	// Write peak from audio frame methods.
+	bool openWrite(unsigned short iChannels, unsigned int iSampleRate);
+	void write(float **ppAudioFrames, unsigned int iAudioFrames);
+	void closeWrite();
 
 	// Event notifier widget settings.
 	QWidget     *notifyWidget() const;
@@ -91,12 +96,9 @@ public:
 
 protected:
 
-	// Internal pseudo-cache methods.
-	bool openPeakFile();
-	void readPeak(char *pBuffer, unsigned long iOffset, unsigned int iLength);
-	void readPeakChunk();
-	void closePeakFile();
-	
+	// Internal creational methods.
+	void writeFrame();
+
 private:
 
 	// Reference to master peak manager.
@@ -104,22 +106,27 @@ private:
 
 	// Instance variables.
 	QString        m_sFilename;
-	unsigned int   m_iSampleRate;
 	float          m_fTimeStretch;
 
 	QFile          m_peakFile;
 
+	enum { None = 0, Read = 1, Write = 2 } m_openMode;
+
+	Header         m_peakHeader;
+
+	unsigned long  m_iReadOffset;
+	unsigned long  m_iWriteOffset;
+
+	float         *m_peakMax;
+	float         *m_peakRms;
 	unsigned short m_iPeakPeriod;
-	unsigned short m_iPeakChannels;
-	unsigned long  m_iPeakOffset;
-	unsigned int   m_iPeakBufSize;
-	char          *m_pPeakBuffer;
+	unsigned short m_iPeak;
 
 	// The peak file creation detached thread.
 	qtractorAudioPeakThread *m_pPeakThread;
-	
+
 	// Current reference count.
-	unsigned int  m_iRefCount;
+	unsigned int m_iRefCount;
 };
 
 
@@ -140,13 +147,21 @@ public:
 
 	// Peak file accessors.
 	const QString& filename() const;
+
+	// Peak cache properties.
 	unsigned short period() const;
-	// Lazy-evaluated properties.
 	unsigned short channels() const;
 
-	// Peak file methods.
-	void getPeak(qtractorAudioPeakFrame *pframes,
-		unsigned long iframe, unsigned int nframes);
+	// Peak cache file methods.
+	bool openRead();
+	void read(qtractorAudioPeakFile::Frame *pPeakFrames,
+		unsigned long iPeakOffset, unsigned int iPeakFrames);
+	void closeRead();
+
+	// Write peak from audio frame methods.
+	bool openWrite(unsigned short iChannels, unsigned int iSampleRate);
+	void write(float **ppAudioFrames, unsigned int iAudioFrames);
+	void closeWrite();
 
 private:
 
@@ -169,9 +184,7 @@ public:
 	~qtractorAudioPeakFactory();
 
 	// The peak file factory-method.
-	qtractorAudioPeak* createPeak(const QString& sFilename,
-		unsigned int iSampleRate, float fTimeStretch,
-		const QString& sSessionDir);
+	qtractorAudioPeak *createPeak(const QString& sFilename, float fTimeStretch);
 	void removePeak(qtractorAudioPeakFile *pPeakFile);
 
 	// Event notifier widget settings.

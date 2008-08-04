@@ -442,11 +442,15 @@ void qtractorClip::drawClip ( QPainter *pPainter, const QRect& clipRect,
 	QRect rect(clipRect);
 	if (iClipOffset > 0)
 		rect.setLeft(rect.left() - pSession->pixelFromFrame(iClipOffset) + 1);
-	rect.setRight(rect.left() + pSession->pixelFromFrame(m_iClipLength));
 
 	// Draw clip name label...
 	pPainter->drawText(rect,
-		Qt::AlignLeft | Qt::AlignBottom | Qt::TextSingleLine, clipName());
+		Qt::AlignLeft | Qt::AlignBottom | Qt::TextSingleLine, m_sClipName);
+
+	// Avoid drawing fade in/out handles
+	// on still empty clips (eg. while recording)
+	if (m_iClipLength < 1)
+		return;
 
 	// Fade in/out handle color...
 	QColor rgbFade(m_pTrack->foreground());
@@ -468,7 +472,7 @@ void qtractorClip::drawClip ( QPainter *pPainter, const QRect& clipRect,
 	}
 
 	// Fade-out slope...
-	x = rect.right() - 1;
+	x = rect.left() + pSession->pixelFromFrame(m_iClipLength) - 1;
 	w = pSession->pixelFromFrame(m_iFadeOutLength);
 	QRect rectFadeOut(x - w - 8, y, 8, 8);
 	if (w > 0 && x - w < clipRect.right()) {

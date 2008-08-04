@@ -245,7 +245,6 @@ bool qtractorMidiFile::readTracks ( qtractorMidiSequence **ppSeqs,
 				data2 = readInt(1);
 				// Check if its channel filtered...
 				if (bChannelEvent) {
-					iTime -= pSeq->timeOffset();
 					if (data2 == 0 && type == qtractorMidiEvent::NOTEON)
 						type = qtractorMidiEvent::NOTEOFF;
 					pEvent = new qtractorMidiEvent(iTime, type, data1, data2);
@@ -258,7 +257,6 @@ bool qtractorMidiFile::readTracks ( qtractorMidiSequence **ppSeqs,
 				data2 = readInt(1);
 				// Check if its channel filtered...
 				if (bChannelEvent) {
-					iTime -= pSeq->timeOffset();
 					// We don't sequence bank select events here,
 					// just set the primordial bank patch...
 					switch (data1) {
@@ -287,7 +285,6 @@ bool qtractorMidiFile::readTracks ( qtractorMidiSequence **ppSeqs,
 				data2 = readInt(1);
 				// Check if its channel filtered...
 				if (bChannelEvent) {
-					iTime -= pSeq->timeOffset();
 					// Create the new event...
 					pEvent = new qtractorMidiEvent(iTime, type, data1, data2);
 					pSeq->addEvent(pEvent);
@@ -299,7 +296,6 @@ bool qtractorMidiFile::readTracks ( qtractorMidiSequence **ppSeqs,
 				data2 = readInt(1);
 				// Check if its channel filtered...
 				if (bChannelEvent) {
-					iTime -= pSeq->timeOffset();
 					// We don't sequence prog change events here,
 					// just set the primordial program patch...
 					if (pSeq->program() < 0)
@@ -312,7 +308,6 @@ bool qtractorMidiFile::readTracks ( qtractorMidiSequence **ppSeqs,
 				data2 = readInt(1);
 				// Check if its channel filtered...
 				if (bChannelEvent) {
-					iTime -= pSeq->timeOffset();
 					// Create the new event...
 					pEvent = new qtractorMidiEvent(iTime, type, data1, data2);
 					pSeq->addEvent(pEvent);
@@ -329,7 +324,6 @@ bool qtractorMidiFile::readTracks ( qtractorMidiSequence **ppSeqs,
 				}
 				// Check if its channel filtered...
 				if (bChannelEvent) {
-					iTime -= pSeq->timeOffset();
 					pEvent = new qtractorMidiEvent(iTime, type);
 					pEvent->setSysex(data, 1 + len);
 					pSeq->addEvent(pEvent);

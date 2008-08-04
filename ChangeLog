@@ -3,6 +3,23 @@ Qtractor - An Audio/MIDI multi-track sequencer
 
 ChangeLog
 
+CVS HEAD
+
+- Fixed a pretty old and shameless bug regarding MIDI clip recording,
+  in which cases the queue start time offset was not taken into account,
+  with captured events being recorded with erratic long delays.
+
+- Almost complete refactoring of the clumsy audio peak file classes,
+  possibly making it even clumsier but straight neverthless, with the
+  noble and final aim to build it in-flight and draw the waveforms
+  while recording is rolling.
+
+- Recording clips get their initial name labels drawn while fade-in/out
+  handles are dropped as found pretty useless while recording.
+
+- Escape key now closes connections and mixer widgets as found usual.
+
+
 0.2.0  2008-07-18  The Frolic Demoiselle
 
 - MIDI clip filename revision logic is now introduced, thus avoiding

@@ -1,7 +1,7 @@
 // qtractorMidiEvent.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -108,6 +108,10 @@ public:
 	// Event properties accessors (setters).
 	void setTime(unsigned long time) { m_time = time; }
 	void setType(EventType type)     { m_type = type; }
+
+	// Special event time offset adjust.
+	void adjustTime(unsigned long iOffset)
+		{ if (m_time > iOffset) m_time -= iOffset; }
 
 	// Underloaded accessors (setters).
 	void setNote(unsigned char note)             { m_data[0] = note; }

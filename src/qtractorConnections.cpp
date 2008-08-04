@@ -32,6 +32,8 @@
 #include <QTabWidget>
 #include <QComboBox>
 
+#include <QKeyEvent>
+
 
 //-------------------------------------------------------------------------
 // qtractorConnections - Connections dockable window.
@@ -258,6 +260,27 @@ void qtractorConnections::clear (void)
 {
 	m_pConnectForm->audioClear();
 	m_pConnectForm->midiClear();
+}
+
+
+// Keyboard event handler.
+void qtractorConnections::keyPressEvent ( QKeyEvent *pKeyEvent )
+{
+#ifdef CONFIG_DEBUG_0
+	qDebug("qtractorConnections::keyPressEvent(%d)", pKeyEvent->key());
+#endif
+	int iKey = pKeyEvent->key();
+	switch (iKey) {
+	case Qt::Key_Escape:
+		close();
+		break;
+	default:
+		QWidget::keyPressEvent(pKeyEvent);
+		break;
+	}
+
+	// Make sure we've get focus back...
+	QWidget::setFocus();
 }
 
 

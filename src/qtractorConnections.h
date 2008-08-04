@@ -70,6 +70,9 @@ protected:
 	// Just about to notify main-window that we're closing.
 	void closeEvent(QCloseEvent *);
 
+	// Keyboard event handler.
+	void keyPressEvent(QKeyEvent *);
+
 private:
 
 	// Instance variables.

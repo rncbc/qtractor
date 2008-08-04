@@ -1327,4 +1327,25 @@ void qtractorMixer::trackButtonToggledSlot (
 }
 
 
+// Keyboard event handler.
+void qtractorMixer::keyPressEvent ( QKeyEvent *pKeyEvent )
+{
+#ifdef CONFIG_DEBUG_0
+	qDebug("qtractorMixer::keyPressEvent(%d)", pKeyEvent->key());
+#endif
+	int iKey = pKeyEvent->key();
+	switch (iKey) {
+	case Qt::Key_Escape:
+		close();
+		break;
+	default:
+		QWidget::keyPressEvent(pKeyEvent);
+		break;
+	}
+
+	// Make sure we've get focus back...
+	QWidget::setFocus();
+}
+
+
 // end of qtractorMixer.cpp

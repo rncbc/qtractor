@@ -69,6 +69,9 @@ void qtractorMidiSequence::clear (void)
 // Add event to a channel sequence, in time sort order.
 void qtractorMidiSequence::addEvent ( qtractorMidiEvent *pEvent )
 {
+	// Adjust to sequence offset...
+	pEvent->adjustTime(m_iTimeOffset);
+
 	// NOTE: Find previous note event and compute duration...
 	if (pEvent->type() == qtractorMidiEvent::NOTEOFF ||
 		pEvent->type() == qtractorMidiEvent::NOTEON) {

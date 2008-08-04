@@ -1,7 +1,7 @@
 // qtractorConnectForm.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -78,27 +78,27 @@ public slots:
 
 	void audioIClientChanged();
 	void audioOClientChanged();
-    void audioConnectSelected();
-    void audioDisconnectSelected();
-    void audioDisconnectAll();
-    void audioStabilize();
+	void audioConnectSelected();
+	void audioDisconnectSelected();
+	void audioDisconnectAll();
+	void audioStabilize();
 
-    void audioRefresh() { audioUpdate(false); }
-    void audioClear()   { audioUpdate(true);  }
+	void audioRefresh() { audioUpdate(false); }
+	void audioClear()   { audioUpdate(true);  }
 
 	void midiIClientChanged();
 	void midiOClientChanged();
-    void midiConnectSelected();
-    void midiDisconnectSelected();
-    void midiDisconnectAll();
-    void midiStabilize();
+	void midiConnectSelected();
+	void midiDisconnectSelected();
+	void midiDisconnectAll();
+	void midiStabilize();
 
-    void midiRefresh()  { midiUpdate(false); }
-    void midiClear()    { midiUpdate(true);  }
+	void midiRefresh()  { midiUpdate(false); }
+	void midiClear()    { midiUpdate(true);  }
 
 protected:
 
-    void updateClientsComboBox(QComboBox *pComboBox,
+	void updateClientsComboBox(QComboBox *pComboBox,
 		qtractorClientListView *pClientListView, const QIcon& icon);
 
 	void audioUpdate(bool bClear);

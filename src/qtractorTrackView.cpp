@@ -279,6 +279,10 @@ void qtractorTrackView::updateContents (void)
 // Special recording visual feedback.
 void qtractorTrackView::updateContentsRecord (void)
 {
+	qtractorSession *pSession = m_pTracks->session();
+	if (pSession == NULL)
+		return;
+
 	int cx = qtractorScrollView::contentsX();
 	int x  = cx;
 	int w  = qtractorScrollView::width();
@@ -288,7 +292,8 @@ void qtractorTrackView::updateContentsRecord (void)
 		iCurrRecordX = x + w;
 
 	if (m_iLastRecordX < iCurrRecordX) {
-		if (x < m_iLastRecordX && m_iLastRecordX < x + w)
+		if (pSession->midiRecord() < 1 &&
+			x < m_iLastRecordX && m_iLastRecordX < x + w)
 			x = m_iLastRecordX - 2;
 		w = iCurrRecordX - x + 2;
 		qtractorScrollView::viewport()->update(
@@ -345,6 +350,7 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 					const QRect& clipRect
 						= QRect(x, y1 - cy + 1, w, h).intersect(trackRect);
 					if (!clipRect.isEmpty()) {
+					#if 0
 						// Just draw a semi-transparent rectangle...
 						QColor rgbPen   = pTrack->background().dark();
 						QColor rgbBrush = pTrack->background();
@@ -353,6 +359,9 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 						pPainter->setPen(rgbPen);
 						pPainter->setBrush(rgbBrush);
 						pPainter->drawRect(clipRect);
+					#else
+						pClipRecord->drawClip(pPainter, clipRect, iClipOffset);
+					#endif
 					}
 				}
 				pTrack = pTrack->next();

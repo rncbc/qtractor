@@ -173,6 +173,7 @@ void qtractorSession::clear (void)
 	m_iSoloTracks    = 0;
 
 	m_iMidiTag       = 0;
+	m_iMidiRecord    = 0;
 
 	m_iEditHead      = 0;
 	m_iEditTail      = 0;
@@ -1092,16 +1093,21 @@ void qtractorSession::trackRecord ( qtractorTrack *pTrack, bool bRecord )
 		// Check whether we set recording off...
 		if (recordTracks() < 1)
 			setRecording(false);
+		// One-down current MIDI tracks in record mode.
+		if (pTrack->trackType() == qtractorTrack::Midi)
+			m_iMidiRecord--;
 		// Done.
 		return;
 	}
 
 	// Here's the place to create and set the capture clip...
+	unsigned long iPlayHead = playHead();
+
 	switch (pTrack->trackType()) {
 	case qtractorTrack::Audio:
 	{
 		qtractorAudioClip *pAudioClip = new qtractorAudioClip(pTrack);
-		pAudioClip->setClipStart(playHead());
+		pAudioClip->setClipStart(iPlayHead);
 		pAudioClip->openAudioFile(
 			createFilePath(pTrack->trackName(), 0,
 				qtractorAudioFileFactory::defaultExt()),
@@ -1112,12 +1118,22 @@ void qtractorSession::trackRecord ( qtractorTrack *pTrack, bool bRecord )
 	case qtractorTrack::Midi:
 	{
 		qtractorMidiClip *pMidiClip = new qtractorMidiClip(pTrack);
-		pMidiClip->setClipStart(playHead());
+		pMidiClip->setClipStart(iPlayHead);
 		pMidiClip->openMidiFile(
 			createFilePath(pTrack->trackName(), 0, "mid"),
 			qtractorMidiClip::defaultFormat(),
 			qtractorMidiFile::Write);
 		pTrack->setClipRecord(pMidiClip);
+		// MIDI adjust to playing queue start
+		// iif armed while already playing ...
+		if (isPlaying()) {
+			unsigned long iTime = tickFromFrame(iPlayHead);
+			unsigned long iTimeStart = m_pMidiEngine->timeStart();
+			if (iTime > iTimeStart)
+				pMidiClip->sequence()->setTimeOffset(iTime - iTimeStart);
+		}
+		// One-up MIDI tracks in record mode.
+		m_iMidiRecord++;
 		break;
 	}
 	default:
@@ -1193,6 +1209,13 @@ void qtractorSession::releaseMidiTag ( qtractorTrack *pTrack )
 		m_midiTags.push_back(iMidiTag);
 		pTrack->setMidiTag(0);
 	}
+}
+
+
+// MIDI track recording specifics.
+unsigned short qtractorSession::midiRecord (void) const
+{
+	return m_iMidiRecord;
 }
 
 

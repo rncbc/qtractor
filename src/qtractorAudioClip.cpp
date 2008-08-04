@@ -58,6 +58,10 @@ qtractorAudioClip::qtractorAudioClip ( const qtractorAudioClip& clip )
 	m_fPitchShift  = clip.pitchShift();
 
 	setFilename(clip.filename());
+
+	// Clone the audio peak, if any...
+	if (clip.m_pPeak)
+		m_pPeak = new qtractorAudioPeak(*clip.m_pPeak);
 }
 
 
@@ -143,15 +147,15 @@ bool qtractorAudioClip::openAudioFile ( const QString& sFilename, int iMode )
 		return false;
 	}
 
-	// FIXME: Peak files shouldn't be created on-the-fly?
-	if (!bWrite
-		&& (m_pPeak == NULL || sFilename != filename())
+	// Peak files should also be created on-the-fly?
+	if ((m_pPeak == NULL || sFilename != filename())
 		&& pSession->audioPeakFactory()) {
 		if (m_pPeak)
 			delete m_pPeak;
 		m_pPeak = pSession->audioPeakFactory()->createPeak(
-			sFilename, pSession->sampleRate(), m_pBuff->timeStretch(), /*???*/
-			pSession->sessionDir());
+			sFilename, m_pBuff->timeStretch());
+		if (bWrite)
+			m_pBuff->setPeak(m_pPeak);
 	}
 
 	// Set local properties...
@@ -204,7 +208,7 @@ void qtractorAudioClip::set_loop ( unsigned long iLoopStart,
 	unsigned long iLoopEnd )
 {
 #ifdef CONFIG_DEBUG_0
-	qDebug("qtractorAudioClip[%p]::loop(%lu, %lu)",
+	qDebug("qtractorAudioClip[%p]::set_loop(%lu, %lu)",
 		this, iLoopStart, iLoopEnd);
 #endif
 
@@ -218,13 +222,6 @@ void qtractorAudioClip::close ( bool bForce )
 #ifdef CONFIG_DEBUG_0
 	qDebug("qtractorAudioClip[%p]::close(%d)\n", this, int(bForce));
 #endif
-
-	// Enforced to get rid of peak instance...
-	if (bForce) {
-		if (m_pPeak)
-			delete m_pPeak;
-		m_pPeak = NULL;
-	}
 
 	if (m_pBuff == NULL)
 		return;
@@ -298,6 +295,9 @@ void qtractorAudioClip::drawClip ( QPainter *pPainter, const QRect& clipRect,
 	if (m_pPeak == NULL)
 		return;
 
+	if (!m_pPeak->openRead())
+		return;
+
 	unsigned int iPeriod = m_pPeak->period();
 	if (iPeriod < 1)
 		return;
@@ -310,11 +310,11 @@ void qtractorAudioClip::drawClip ( QPainter *pPainter, const QRect& clipRect,
 	unsigned long nframes
 		= (pSession->frameFromPixel(clipRect.width()) / iPeriod) + 2;
 
-	qtractorAudioPeakFrame *pframes
-		= new qtractorAudioPeakFrame [iChannels * nframes];
+	qtractorAudioPeakFile::Frame *pframes
+		= new qtractorAudioPeakFile::Frame [iChannels * nframes];
 
 	// Grab them in...
-	m_pPeak->getPeak(pframes, iframe, nframes);
+	m_pPeak->read(pframes, iframe, nframes);
 
 	// Draw peak chart...
 	const QColor& fg = track()->foreground();
@@ -341,8 +341,8 @@ void qtractorAudioClip::drawClip ( QPainter *pPainter, const QRect& clipRect,
 				x = clipRect.right();
 			y = clipRect.y() + h2;
 			for (i = 0; i < (int) iChannels; ++i, ++j) {
-				ymax = (h2 * pframes[j].peakMax) / 255;
-				yrms = (h2 * pframes[j].peakRms) / 255;
+				ymax = (h2 * pframes[j].max) / 255;
+				yrms = (h2 * pframes[j].rms) / 255;
 				pPolyMax[i]->setPoint(n, x, y + ymax);
 				pPolyMax[i]->setPoint(iPolyPoints - n - 1, x, y - ymax);
 				pPolyRms[i]->setPoint(n, x, y + yrms);
@@ -377,10 +377,10 @@ void qtractorAudioClip::drawClip ( QPainter *pPainter, const QRect& clipRect,
 			if (kdelta < 1)
 				x = clipRect.x() + pSession->pixelFromFrame(n * iPeriod);
 			for (i = 0; i < (int) iChannels; ++i, ++j) {
-				v = (h2 * pframes[j].peakMax) / 255;
+				v = (h2 * pframes[j].max) / 255;
 				if (ymax[i] < v)
 					ymax[i] = v;
-				v = (h2 * pframes[j].peakRms) / 255;
+				v = (h2 * pframes[j].rms) / 255;
 				if (yrms[i] < v)
 					yrms[i] = v;
 				if (kdelta < 1) {
