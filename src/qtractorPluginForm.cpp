@@ -59,7 +59,8 @@ qtractorPluginForm::qtractorPluginForm (
 	// Setup UI struct...
 	m_ui.setupUi(this);
 
-	QWidget::setFont(QFont(font().family(), 7));
+	const QFont& font = QWidget::font();
+	QWidget::setFont(QFont(font.family(), font.pointSize() - 1));
 
 	m_pPlugin       = NULL;
 	m_pGridLayout   = NULL;

@@ -1,7 +1,7 @@
 // qtractorTrackTime.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -24,6 +24,8 @@
 #include "qtractorTrackView.h"
 #include "qtractorSession.h"
 #include "qtractorTracks.h"
+
+#include "qtractorSessionCommand.h"
 
 #include "qtractorMainForm.h"
 
@@ -426,6 +428,10 @@ void qtractorTrackTime::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 // Handle selection/dragging -- mouse button release.
 void qtractorTrackTime::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 {
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm == NULL)
+		return;
+
 	qtractorScrollView::mouseReleaseEvent(pMouseEvent);
 
 	qtractorSession *pSession = m_pTracks->session();
@@ -455,10 +461,9 @@ void qtractorTrackTime::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 			// New loop-start boundary...
 			if (pSession->editHead() < pSession->loopEnd()) {
 				// Yep, new loop-start point...
-				pSession->setLoop(pSession->editHead(), pSession->loopEnd());
-				m_pTracks->trackView()->updateContents();
-				updateContents();
-				m_pTracks->contentsChangeNotify();
+				pMainForm->commands()->exec(
+					new qtractorSessionLoopCommand(pSession,
+						pSession->editHead(), pSession->loopEnd()));
 			}
 			break;
 		case DragEditHead:
@@ -469,10 +474,9 @@ void qtractorTrackTime::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 			// New loop-end boundary...
 			if (pSession->loopStart() < pSession->editTail()) {
 				// Yep, new loop-end point...
-				pSession->setLoop(pSession->loopStart(), pSession->editTail());
-				m_pTracks->trackView()->updateContents();
-				updateContents();
-				m_pTracks->contentsChangeNotify();
+				pMainForm->commands()->exec(
+					new qtractorSessionLoopCommand(pSession,
+						pSession->loopStart(), pSession->editTail()));
 			}
 			break;
 		case DragEditTail:

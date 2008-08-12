@@ -1,7 +1,7 @@
 // qtractorBusForm.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -42,28 +42,28 @@ public:
 	// Destructor.
 	~qtractorBusForm();
 
-    void setBus(qtractorBus *pBus);
-    qtractorBus *bus();
-    bool isDirty();
+	void setBus(qtractorBus *pBus);
+	qtractorBus *bus();
+	bool isDirty();
 
 public slots:
 
-    void reject();
-    void refreshBuses();
-    void selectBus();
-    void createBus();
-    void updateBus();
-    void deleteBus();
-    void changed();
-    void stabilizeForm();
-    void contextMenu(const QPoint&);
+	void reject();
+	void refreshBuses();
+	void selectBus();
+	void createBus();
+	void updateBus();
+	void deleteBus();
+	void changed();
+	void stabilizeForm();
+	void contextMenu(const QPoint&);
 
 protected:
 
-    void showBus(qtractorBus *pBus);
-    bool canCreateBus();
-    bool canUpdateBus();
-    bool canDeleteBus();
+	void showBus(qtractorBus *pBus);
+	bool canCreateBus();
+	bool canUpdateBus();
+	bool canDeleteBus();
 
 private:
 
@@ -78,7 +78,6 @@ private:
 	int m_iDirtyCount;
 	int m_iDirtyTotal;
 };
-
 
 #endif	// __qtractorBusForm_h
 

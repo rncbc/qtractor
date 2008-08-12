@@ -1842,7 +1842,7 @@ void qtractorMainForm::trackAdd (void)
 void qtractorMainForm::trackRemove (void)
 {
 #ifdef CONFIG_DEBUG
-	appendMessages("qtractorMainForm::trackAdd()");
+	appendMessages("qtractorMainForm::trackRemove()");
 #endif
 
 	// Remove Track...

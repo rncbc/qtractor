@@ -236,6 +236,10 @@ public:
 	void setRecording(bool bRecording);
 	bool isRecording() const;
 
+	// Track recording specifics.
+	unsigned short audioRecord() const;
+	unsigned short midiRecord() const;
+
 	// Special track-immediate methods.
 	void trackRecord(qtractorTrack *pTrack, bool bRecord);
 	void trackMute(qtractorTrack *pTrack, bool bMute);
@@ -248,9 +252,6 @@ public:
 	unsigned short midiTag() const;
 	void acquireMidiTag(qtractorTrack *pTrack);
 	void releaseMidiTag(qtractorTrack *pTrack);
-
-	// MIDI track recording specifics.
-	unsigned short midiRecord() const;
 
 	// MIDI session/tracks instrument patching.
 	void setMidiPatch(qtractorInstrumentList *pInstruments);
@@ -326,12 +327,13 @@ private:
 	// Audio peak factory (singleton) instance.
 	qtractorAudioPeakFactory *m_pAudioPeakFactory;
 
+	// Track recording counts.
+	unsigned short m_iAudioRecord;
+	unsigned short m_iMidiRecord;
+
 	// MIDI track tagging specifics.
 	unsigned short m_iMidiTag;
 	QList<unsigned short> m_midiTags;
-
-	// MIDI track recording count.
-	unsigned short m_iMidiRecord;
 
 	// Base edit members.
 	unsigned long m_iEditHead;

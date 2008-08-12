@@ -430,7 +430,7 @@ void qtractorClip::drawClip ( QPainter *pPainter, const QRect& clipRect,
 	unsigned long iClipOffset )
 {
 	// Fill clip background...
-	pPainter->setPen(m_pTrack->background().dark());
+	pPainter->setPen(m_pTrack->background().darker());
 	pPainter->setBrush(m_pTrack->background());
 	pPainter->drawRect(clipRect);
 
@@ -485,9 +485,9 @@ void qtractorClip::drawClip ( QPainter *pPainter, const QRect& clipRect,
 
 	// Fade in/out handles...
 	if (rectFadeIn.intersects(clipRect))
-		pPainter->fillRect(rectFadeIn, rgbFade.dark(120));
+		pPainter->fillRect(rectFadeIn, rgbFade.darker(120));
 	if (rectFadeOut.intersects(clipRect))
-		pPainter->fillRect(rectFadeOut, rgbFade.dark(120));
+		pPainter->fillRect(rectFadeOut, rgbFade.darker(120));
 }
 
 

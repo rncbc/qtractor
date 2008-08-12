@@ -361,6 +361,10 @@ qtractorClip *qtractorTracks::currentClip (void) const
 // Edit/create a brand new clip.
 bool qtractorTracks::newClip (void)
 {
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm == NULL)
+		return false;
+
 	qtractorSession *pSession = session();
 	if (pSession == NULL)
 		return false;
@@ -411,10 +415,9 @@ bool qtractorTracks::newClip (void)
 		pClip->setFilename(sFilename);
 		pClip->setClipName(QFileInfo(sFilename).baseName());
 		// Proceed to setup the MDII clip properly...
-		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 		qtractorMidiClip *pMidiClip
 			= static_cast<qtractorMidiClip *> (pClip);
-		if (pMainForm && pMidiClip) {
+		if (pMidiClip) {
 			// Initialize MIDI event container...
 			qtractorMidiSequence *pSeq = pMidiClip->sequence();
 			pSeq->setName(pMidiClip->clipName());
@@ -602,7 +605,7 @@ bool qtractorTracks::addTrack (void)
 	if (pMainForm == NULL)
 		return false;
 
-	qtractorSession *pSession = pMainForm->session();
+	qtractorSession *pSession = session();
 	if (pSession == NULL)
 		return false;
 
@@ -613,7 +616,7 @@ bool qtractorTracks::addTrack (void)
 	pTrack->setTrackName(QString("Track %1").arg(iTrack));
 	pTrack->setMidiChannel(pSession->midiTag() % 16);
 	pTrack->setBackground(color);
-	pTrack->setForeground(color.dark());
+	pTrack->setForeground(color.darker());
 
 	// Open dialog for settings...
 	qtractorTrackForm trackForm(this);
@@ -669,14 +672,10 @@ bool qtractorTracks::removeTrack ( qtractorTrack *pTrack )
 
 
 // Edit given(current) track properties.
-bool qtractorTracks::editTrack ( qtractorTrack *pTrack, QWidget *pParent )
+bool qtractorTracks::editTrack ( qtractorTrack *pTrack )
 {
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm == NULL)
-		return false;
-
-	qtractorSession *pSession = pMainForm->session();
-	if (pSession == NULL)
 		return false;
 
 	// Get the list view item reference of the intended track...
@@ -686,9 +685,7 @@ bool qtractorTracks::editTrack ( qtractorTrack *pTrack, QWidget *pParent )
 		return false;
 
 	// Open dialog for settings...
-	if (pParent == NULL)
-		pParent = this;
-	qtractorTrackForm trackForm(pParent);
+	qtractorTrackForm trackForm(this);
 	trackForm.setTrack(pTrack);
 	if (!trackForm.exec())
 		return false;
@@ -742,7 +739,7 @@ bool qtractorTracks::addAudioTracks ( QStringList files,
 			const QColor& color = qtractorTrack::trackColor(++iTrack);
 			pTrack = new qtractorTrack(pSession, qtractorTrack::Audio);
 			pTrack->setBackground(color);
-			pTrack->setForeground(color.dark());
+			pTrack->setForeground(color.darker());
 			pImportTrackCommand->addTrack(pTrack);
 			iTrackClip = 0;
 		}
@@ -837,7 +834,7 @@ bool qtractorTracks::addMidiTracks ( QStringList files,
 				= new qtractorTrack(pSession, qtractorTrack::Midi);
 		//	pTrack->setTrackName(QFileInfo(sPath).baseName());
 			pTrack->setBackground(color);
-			pTrack->setForeground(color.dark());
+			pTrack->setForeground(color.darker());
 			// Add the clip at once...
 			qtractorMidiClip *pMidiClip = new qtractorMidiClip(pTrack);
 			pMidiClip->setFilename(sPath);
@@ -925,7 +922,7 @@ bool qtractorTracks::addMidiTrackChannel ( const QString& sPath,
 		= new qtractorTrack(pSession, qtractorTrack::Midi);
 //	pTrack->setTrackName(QFileInfo(sPath).baseName());
 	pTrack->setBackground(color);
-	pTrack->setForeground(color.dark());
+	pTrack->setForeground(color.darker());
 	// Add the clip at once...
 	qtractorMidiClip *pMidiClip = new qtractorMidiClip(pTrack);
 	pMidiClip->setFilename(sPath);

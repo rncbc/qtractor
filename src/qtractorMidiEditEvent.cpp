@@ -1,7 +1,7 @@
 // qtractorMidiEditEvent.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -298,7 +298,7 @@ void qtractorMidiEditEvent::updatePixmap ( int cx, int /*cy*/ )
 		if (x1 < 0)
 			x1 = 0;
 		if (x1 < w)
-			p.fillRect(x1, 0, w - x1, h, rgbBase.dark(105));
+			p.fillRect(x1, 0, w - x1, h, rgbBase.darker(105));
 	}
 
 	// Draw horizontal lines...

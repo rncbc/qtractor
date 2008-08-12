@@ -151,7 +151,8 @@ void qtractorMixerStrip::initMixerStrip (void)
 	m_iMark = 0;
 	m_iUpdate = 0;
 
-	QFont font6(QFrame::font().family(), 6);
+	const QFont& font = QFrame::font();
+	QFont font6(font.family(), font.pointSize() - 2);
 	QFontMetrics fm(font6);
 
 	m_pLayout = new QVBoxLayout(this);
@@ -167,7 +168,9 @@ void qtractorMixerStrip::initMixerStrip (void)
 	m_pLayout->addWidget(m_pLabel);
 
 	m_pPluginListView = new qtractorPluginListView(/*this*/);
+	m_pPluginListView->setFont(font6);
 	m_pPluginListView->setFixedHeight(fm.lineSpacing() << 2);
+	m_pPluginListView->setTinyScrollBar(true);
 	m_pLayout->addWidget(m_pPluginListView);
 
 	QIcon icons;
@@ -382,8 +385,8 @@ void qtractorMixerStrip::updateName (void)
 		meterType = m_pTrack->trackType();
 		sName = m_pTrack->trackName();
 		QPalette pal(m_pLabel->palette());
-		pal.setColor(QPalette::Button, m_pTrack->foreground().light());
-		pal.setColor(QPalette::ButtonText, m_pTrack->background().light());
+		pal.setColor(QPalette::Button, m_pTrack->foreground().lighter());
+		pal.setColor(QPalette::ButtonText, m_pTrack->background().lighter());
 		m_pLabel->setPalette(pal);
 		m_pLabel->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
 	} else if (m_pBus) {
@@ -573,8 +576,8 @@ void qtractorMixerStrip::setSelected ( bool bSelected )
 
 	QPalette pal;
 	if (m_bSelected) {
-		pal.setColor(QPalette::Window, pal.midlight().color().dark(150));
-		pal.setColor(QPalette::WindowText, pal.midlight().color().light(150));
+		pal.setColor(QPalette::Window, pal.midlight().color().darker(150));
+		pal.setColor(QPalette::WindowText, pal.midlight().color().lighter(150));
 	}
 	QFrame::setPalette(pal);
 }

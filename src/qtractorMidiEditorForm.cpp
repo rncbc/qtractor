@@ -804,7 +804,7 @@ void qtractorMidiEditorForm::fileTrackProperties (void)
 
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm && pMainForm->tracks())
-		(pMainForm->tracks())->editTrack(pTrack, this);
+		(pMainForm->tracks())->editTrack(pTrack);
 }
 
 

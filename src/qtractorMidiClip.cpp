@@ -468,7 +468,7 @@ void qtractorMidiClip::drawClip ( QPainter *pPainter, const QRect& clipRect,
 
 	const QColor& fg = track()->foreground();
 	pPainter->setPen(fg);
-	pPainter->setBrush(fg.light());
+	pPainter->setBrush(fg.lighter());
 
 	int cx = pSession->pixelFromTick(iTimeStart);
 	int h1 = clipRect.height() - 4;
@@ -487,7 +487,7 @@ void qtractorMidiClip::drawClip ( QPainter *pPainter, const QRect& clipRect,
 			if (h > 4) {
 				if (w < 5) w = 5;
 				pPainter->fillRect(x, y, w, h - 1, fg);
-				pPainter->fillRect(x + 1, y + 1, w - 4, h - 4, fg.light());
+				pPainter->fillRect(x + 1, y + 1, w - 4, h - 4, fg.lighter());
 			} else {
 				if (w < 3) w = 3;
 				pPainter->drawRect(x, y, w, h - 1);
@@ -499,7 +499,7 @@ void qtractorMidiClip::drawClip ( QPainter *pPainter, const QRect& clipRect,
 
 
 // Clip editor method.
-bool qtractorMidiClip::startEditor ( QWidget */*pParent*/ )
+bool qtractorMidiClip::startEditor ( QWidget *pParent )
 {
 	qtractorTrack *pTrack = track();
 	if (pTrack == NULL)
@@ -522,7 +522,7 @@ bool qtractorMidiClip::startEditor ( QWidget */*pParent*/ )
 		if (pOptions && pOptions->bKeepToolsOnTop)
 			wflags |= Qt::Tool;
 		// Do it...
-		m_pMidiEditorForm = new qtractorMidiEditorForm(NULL, wflags);
+		m_pMidiEditorForm = new qtractorMidiEditorForm(pParent, wflags);
 		// Set its most standing properties...
 		m_pMidiEditorForm->show();
 		m_pMidiEditorForm->setup(this);

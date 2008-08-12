@@ -43,7 +43,9 @@ qtractorFiles::qtractorFiles ( QWidget *pParent )
 	QDockWidget::setObjectName("qtractorFiles");
 
 	// Create file type selection tab widget.
+	const QFont& font = QDockWidget::font();
 	m_pTabWidget = new QTabWidget(this);
+	m_pTabWidget->setFont(QFont(font.family(), font.pointSize() - 1));
 	m_pTabWidget->setTabPosition(QTabWidget::South);
 	// Create local tabs.
 	m_pAudioListView = new qtractorAudioListView();

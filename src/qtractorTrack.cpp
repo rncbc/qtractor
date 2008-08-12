@@ -734,7 +734,7 @@ void qtractorTrack::process ( qtractorClip *pClip,
 	}
 
 	// Playback...
-	if (!isMute() && (!m_pSession->soloTracks() || isSolo())) {
+	if (!isRecord() && !isMute() && (!m_pSession->soloTracks() || isSolo())) {
 		// Now, for every clip...
 		while (pClip && pClip->clipStart() < iFrameEnd) {
 			if (iFrameStart < pClip->clipStart() + pClip->clipLength())
@@ -757,11 +757,13 @@ void qtractorTrack::process ( qtractorClip *pClip,
 		}
 		// Output monitoring...
 		pAudioMonitor->process(pOutputBus->buffer(), nframes);
-		// Plugin chain post-processing...
-		if (m_pPluginList->activated() > 0)
-			m_pPluginList->process(pOutputBus->buffer(), nframes);
-		// Actually render it...
-		pOutputBus->buffer_commit(nframes);
+		if (!isRecord() || isMonitor()) {
+			// Plugin chain post-processing...
+			if (m_pPluginList->activated() > 0)
+				m_pPluginList->process(pOutputBus->buffer(), nframes);
+			// Actually render it...
+			pOutputBus->buffer_commit(nframes);
+		}
 	}
 }
 

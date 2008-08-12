@@ -256,7 +256,7 @@ void qtractorMidiEditView::updatePixmap ( int cx, int cy )
 	const QColor& rgbBack  = m_pEditor->background();
 	const QColor& rgbDark  = pal.dark().color();
 	const QColor& rgbLight = pal.mid().color();
-	const QColor& rgbSharp = rgbBase.dark(110);
+	const QColor& rgbSharp = rgbBase.darker(110);
 
 	m_pixmap = QPixmap(w, h);
 	m_pixmap.fill(rgbBase);
@@ -274,7 +274,7 @@ void qtractorMidiEditView::updatePixmap ( int cx, int cy )
 		if (x1 < 0)
 			x1 = 0;
 		if (x1 < w)
-			p.fillRect(x1, 0, w - x1, h, rgbBase.dark(105));
+			p.fillRect(x1, 0, w - x1, h, rgbBase.darker(105));
 	}
 
 	// Draw horizontal lines...

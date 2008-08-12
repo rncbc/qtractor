@@ -5,6 +5,21 @@ ChangeLog
 
 CVS HEAD
 
+- All custom font sizes are now set relative to default global font.
+
+- Changing loop points by dragging on the time rulers is now mapped
+  as undoable/redoable commands as it ought to be ever since.
+
+- Drop-span option (View/Options.../Drop multiple audio files
+  into the same track) now takes into effect the current session
+  snap-per-beat setting when concatenating multiple audio clips.
+
+- All plugins get their default bank/program selected on insertion.
+
+- Make record armed tracks muted for playback, a needed regression
+  to let both audio and MIDI tracks behave consistently regarding
+  input monitor switching through output.
+
 - Fixed a pretty old and shameless bug regarding MIDI clip recording,
   in which cases the queue start time offset was not taken into account,
   with captured events being recorded with erratic long delays.

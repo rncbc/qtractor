@@ -193,9 +193,8 @@ qtractorTrackList::qtractorTrackList ( qtractorTracks *pTracks, QWidget *pParent
 //	qtractorScrollView::setDragAutoScroll(false);
 	qtractorScrollView::setMouseTracking(true);
 
-
-//	const QFont& font = qtractorScrollView::font();
-//	qtractorScrollView::setFont(QFont(font.family(), font.pointSize() - 1));
+	const QFont& font = qtractorScrollView::font();
+	qtractorScrollView::setFont(QFont(font.family(), font.pointSize() - 1));
 
 	QObject::connect(m_pHeader,
 		SIGNAL(sectionResized(int,int,int)),
@@ -656,11 +655,11 @@ void qtractorTrackList::drawCell ( QPainter *pPainter, int iRow, int iCol,
 	const Item *pItem = m_items.at(iRow);
 	QColor bg, fg;
 	if (iCol == Number) {
-		bg = (pItem->track)->foreground().light();
-		fg = (pItem->track)->background().light();
+		bg = (pItem->track)->foreground().lighter();
+		fg = (pItem->track)->background().lighter();
 	} else if (m_iCurrentTrack == iRow) {
-		bg = pal.midlight().color().dark(150);
-		fg = pal.midlight().color().light(150);
+		bg = pal.midlight().color().darker(150);
+		fg = pal.midlight().color().lighter(150);
 	} else {
 		bg = pal.window().color();
 		fg = pal.windowText().color();
@@ -703,10 +702,10 @@ void qtractorTrackList::drawCell ( QPainter *pPainter, int iRow, int iCol,
 	}
 
 	// Do some simple embossing...
-	pPainter->setPen(bg.light(150));
+	pPainter->setPen(bg.lighter(150));
 	pPainter->drawLine(rect.left(), rect.top(), rect.left(), rect.bottom());
 	pPainter->drawLine(rect.left(), rect.top(), rect.right(), rect.top());
-	pPainter->setPen(bg.dark(150));
+	pPainter->setPen(bg.darker(150));
 	pPainter->drawLine(rect.right(), rect.top(), rect.right(), rect.bottom());
 	pPainter->drawLine(rect.left(), rect.bottom(), rect.right(), rect.bottom());
 }

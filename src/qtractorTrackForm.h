@@ -31,6 +31,7 @@
 
 // Forward declarations...
 class qtractorMidiBus;
+class qtractorCommand;
 
 
 //----------------------------------------------------------------------------
@@ -72,6 +73,10 @@ public slots:
 	void backgroundColorChanged(const QString& sText);
 	void selectForegroundColor();
 	void selectBackgroundColor();
+	void addPlugin();
+	void removePlugin();
+	void moveUpPlugin();
+	void moveDownPlugin();
 
 protected:
 
@@ -105,6 +110,9 @@ private:
 	int m_iOldBankSelMethod;
 	int m_iOldBank;
 	int m_iOldProg;
+
+	// Keep last acceptable command.
+	qtractorCommand *m_pLastCommand;
 };
 
 

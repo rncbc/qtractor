@@ -69,8 +69,7 @@ public:
 
 	bool addTrack();
 	bool removeTrack(qtractorTrack *pTrack = NULL);
-	bool editTrack(qtractorTrack *pTrack = NULL,
-		QWidget *pParent = NULL);
+	bool editTrack(qtractorTrack *pTrack = NULL);
 
 	qtractorTrackItemWidget *currentTrackWidget() const;
 

@@ -172,8 +172,10 @@ void qtractorSession::clear (void)
 	m_iMuteTracks    = 0;
 	m_iSoloTracks    = 0;
 
-	m_iMidiTag       = 0;
+	m_iAudioRecord   = 0;
 	m_iMidiRecord    = 0;
+
+	m_iMidiTag       = 0;
 
 	m_iEditHead      = 0;
 	m_iEditTail      = 0;
@@ -1093,9 +1095,20 @@ void qtractorSession::trackRecord ( qtractorTrack *pTrack, bool bRecord )
 		// Check whether we set recording off...
 		if (recordTracks() < 1)
 			setRecording(false);
-		// One-down current MIDI tracks in record mode.
-		if (pTrack->trackType() == qtractorTrack::Midi)
+		// One-down current tracks in record mode.
+		switch (pTrack->trackType()) {
+		case qtractorTrack::Audio:
+			m_iAudioRecord--;
+			break;
+		case qtractorTrack::Midi:
 			m_iMidiRecord--;
+			break;
+		default:
+			break;
+		}
+		// Re-sync as appropriate...
+		if (isPlaying())
+			trackMute(pTrack, false);
 		// Done.
 		return;
 	}
@@ -1113,6 +1126,8 @@ void qtractorSession::trackRecord ( qtractorTrack *pTrack, bool bRecord )
 				qtractorAudioFileFactory::defaultExt()),
 			qtractorAudioFile::Write);
 		pTrack->setClipRecord(pAudioClip);
+		// One-up audio tracks in record mode.
+		m_iAudioRecord++;
 		break;
 	}
 	case qtractorTrack::Midi:
@@ -1139,6 +1154,10 @@ void qtractorSession::trackRecord ( qtractorTrack *pTrack, bool bRecord )
 	default:
 		break;
 	}
+
+	// Mute track as appropriate...
+	if (isPlaying())
+		trackMute(pTrack, true);
 }
 
 // Immediate track mute (engine indirection).
@@ -1176,6 +1195,18 @@ void qtractorSession::trackSolo ( qtractorTrack *pTrack, bool bSolo )
 }
 
 
+// Track recording specifics.
+unsigned short qtractorSession::audioRecord (void) const
+{
+	return m_iAudioRecord;
+}
+
+unsigned short qtractorSession::midiRecord (void) const
+{
+	return m_iMidiRecord;
+}
+
+
 // Audio peak factory accessor.
 qtractorAudioPeakFactory *qtractorSession::audioPeakFactory (void) const
 {
@@ -1209,13 +1240,6 @@ void qtractorSession::releaseMidiTag ( qtractorTrack *pTrack )
 		m_midiTags.push_back(iMidiTag);
 		pTrack->setMidiTag(0);
 	}
-}
-
-
-// MIDI track recording specifics.
-unsigned short qtractorSession::midiRecord (void) const
-{
-	return m_iMidiRecord;
 }
 
 

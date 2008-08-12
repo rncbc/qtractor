@@ -352,7 +352,7 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 					if (!clipRect.isEmpty()) {
 					#if 0
 						// Just draw a semi-transparent rectangle...
-						QColor rgbPen   = pTrack->background().dark();
+						QColor rgbPen   = pTrack->background().darker();
 						QColor rgbBrush = pTrack->background();
 						rgbPen.setAlpha(120);
 						rgbBrush.setAlpha(120);
@@ -504,9 +504,9 @@ void qtractorTrackView::updatePixmap ( int cx, int cy )
 		m_pSessionCursor->seek(iTrackStart);
 	}
 
-	const QColor& rgbLight = pal.midlight().color().dark(120);
+	const QColor& rgbLight = pal.midlight().color().darker(120);
 	const QColor& rgbMid   = pal.mid().color();
-	const QColor& rgbDark  = rgbMid.dark(120);
+	const QColor& rgbDark  = rgbMid.darker(120);
 	
 	// Draw track and horizontal lines...
 	int x, y1, y2;
@@ -1080,7 +1080,7 @@ void qtractorTrackView::dropEvent ( QDropEvent *pDropEvent )
 		const QColor color = qtractorTrack::trackColor(iTrack);
 		pTrack = new qtractorTrack(pSession, m_dropType);
 		pTrack->setBackground(color);
-		pTrack->setForeground(color.dark());
+		pTrack->setForeground(color.darker());
 	//	pTrack->setTrackName(tr("Track %1").arg(iTrack));
 		pClipCommand->addTrack(pTrack);
 	}
@@ -1120,8 +1120,9 @@ void qtractorTrackView::dropEvent ( QDropEvent *pDropEvent )
 		// If track's new it will need a name...
 		if (bAddTrack && iTrackClip == 0)
 			pTrack->setTrackName(QFileInfo(pDropItem->path).baseName());
-		// If multiple items, just concatenate them...
-		iClipStart += pSession->frameFromPixel(pDropItem->rect.width());
+		// If multiple items, just snap/concatenate them...
+		iClipStart = pSession->frameSnap(iClipStart
+			+ pSession->frameFromPixel(pDropItem->rect.width()));
 		iTrackClip++;
 	}
 
@@ -1723,6 +1724,10 @@ void qtractorTrackView::hideClipSelect (void) const
 // Draw/hide the whole drop rectagle list
 void qtractorTrackView::updateDropRects ( int y, int h ) const
 {
+	qtractorSession *pSession = m_pTracks->session();
+	if (pSession == NULL)
+		return;
+
 	int x = 0;
 	bool bDropSpan = (m_bDropSpan && m_dropType != qtractorTrack::Midi);
 	QListIterator<DropItem *> iter(m_dropItems);
@@ -1735,7 +1740,7 @@ void qtractorTrackView::updateDropRects ( int y, int h ) const
 				pDropItem->rect.moveLeft(x);
 			else
 				x = pDropItem->rect.x();
-			x += pDropItem->rect.width();
+			x = pSession->pixelSnap(x + pDropItem->rect.width());
 		} else {
 			y += h + 4;
 		}
@@ -2697,7 +2702,7 @@ void qtractorTrackView::moveClipSelect ( qtractorTrack *pTrack )
 			pTrack = new qtractorTrack(pSession, pSingleTrack->trackType());
 		//	pTrack->setTrackName(tr("Track %1").arg(iTrack));
 			pTrack->setBackground(color);
-			pTrack->setForeground(color.dark());
+			pTrack->setForeground(color.darker());
 			if (pSingleTrack->trackType() == qtractorTrack::Midi) {
 				pTrack->setMidiChannel(pSingleTrack->midiChannel());
 				pTrack->setMidiBank(pSingleTrack->midiBank());
@@ -2804,7 +2809,7 @@ void qtractorTrackView::pasteClipSelect ( qtractorTrack *pTrack )
 			pTrack = new qtractorTrack(pSession, pSingleTrack->trackType());
 		//	pTrack->setTrackName(tr("Track %1").arg(iTrack));
 			pTrack->setBackground(color);
-			pTrack->setForeground(color.dark());
+			pTrack->setForeground(color.darker());
 			pClipCommand->addTrack(pTrack);
 		}
 		else

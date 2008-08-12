@@ -114,11 +114,11 @@ public:
 			pPainter->drawText(rect,
 				Qt::AlignLeft | Qt::AlignVCenter, pItem->text());
 			// Draw frame lines...
-			pPainter->setPen(rgbBack.light(150));
+			pPainter->setPen(rgbBack.lighter(150));
 			pPainter->drawLine(
 				option.rect.left(),  option.rect.top(),
 				option.rect.right(), option.rect.top());
-			pPainter->setPen(rgbBack.dark(150));
+			pPainter->setPen(rgbBack.darker(150));
 			pPainter->drawLine(
 				option.rect.left(),  option.rect.bottom(),
 				option.rect.right(), option.rect.bottom());
@@ -201,10 +201,6 @@ qtractorPluginListView::qtractorPluginListView ( QWidget *pParent )
 	QListWidget::setDropIndicatorShown(true);
 	QListWidget::setAutoScroll(true);
 
-	QListWidget::setFont(QFont(QListWidget::font().family(), 6));
-	QListWidget::verticalScrollBar()->setStyle(&g_tinyScrollBarStyle);
-	QListWidget::horizontalScrollBar()->setStyle(&g_tinyScrollBarStyle);
-
 	QListWidget::setIconSize(QSize(10, 10));
 	QListWidget::setItemDelegate(new qtractorPluginListItemDelegate(this));
 	QListWidget::setSelectionMode(QAbstractItemView::SingleSelection);
@@ -264,6 +260,26 @@ qtractorPluginList *qtractorPluginListView::pluginList (void) const
 {
 	return m_pPluginList;
 }
+
+
+// Special scrollbar style accessors.
+void qtractorPluginListView::setTinyScrollBar ( bool bTinyScrollBar )
+{
+	if (bTinyScrollBar) {
+		QListWidget::verticalScrollBar()->setStyle(&g_tinyScrollBarStyle);
+		QListWidget::horizontalScrollBar()->setStyle(&g_tinyScrollBarStyle);
+	} else {
+		QListWidget::verticalScrollBar()->setStyle(NULL);
+		QListWidget::horizontalScrollBar()->setStyle(NULL);
+	}
+}
+
+bool qtractorPluginListView::isTinyScrollBar (void) const
+{
+	return QListWidget::verticalScrollBar()->style() == &g_tinyScrollBarStyle
+		&& QListWidget::horizontalScrollBar()->style() == &g_tinyScrollBarStyle;
+}
+
 
 // Plugin list refreshner
 void qtractorPluginListView::refresh (void)
@@ -395,6 +411,7 @@ void qtractorPluginListView::addPlugin (void)
 				selectForm.pluginFilename(i),
 				selectForm.pluginIndex(i),
 				selectForm.pluginTypeHint(i));
+		pPlugin->selectProgram(0, 0);
 		pPlugin->setActivated(selectForm.isPluginActivated());
 		pAddPluginCommand->addPlugin(pPlugin);
 		// Show the plugin form right away...

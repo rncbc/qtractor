@@ -1,7 +1,7 @@
 // qtractorBusForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -97,9 +97,16 @@ qtractorBusForm::qtractorBusForm (
 
 	m_ui.BusListView->setContextMenuPolicy(Qt::CustomContextMenu);
 
-	m_ui.BusTitleTextLabel->setPalette(QPalette(Qt::darkGray));
+	const QColor& rgbDark = palette().dark().color().darker(150);
+	m_ui.BusTitleTextLabel->setPalette(QPalette(rgbDark));
 	m_ui.BusTitleTextLabel->setAutoFillBackground(true);
-	
+
+	// FIXME: Initial horizontal splitter sizes.
+	QList<int> sizes;
+	sizes.append(140);
+	sizes.append(200);
+	m_ui.BusSplitter->setSizes(sizes);
+
 	// (Re)initial contents.
 	refreshBuses();
 
@@ -250,7 +257,7 @@ void qtractorBusForm::showBus ( qtractorBus *pBus )
 	// Reset dirty flag...
 	m_iDirtyCount = 0;	
 	m_iDirtySetup--;
-	
+
 	// Done.
 	stabilizeForm();
 }
@@ -696,4 +703,3 @@ void qtractorBusForm::contextMenu ( const QPoint& /*pos*/ )
 
 
 // end of qtractorBusForm.cpp
-

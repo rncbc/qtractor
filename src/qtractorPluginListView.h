@@ -84,6 +84,10 @@ public:
 	void setPluginList(qtractorPluginList *pPluginList);
 	qtractorPluginList *pluginList() const;
 
+	// Special scrollbar style accessors.
+	void setTinyScrollBar(bool bTinyScrollBar);
+	bool isTinyScrollBar() const;
+
 	// Plugin list refreshner;
 	void refresh();
 
@@ -96,18 +100,22 @@ public:
 	// Common pixmap accessors.
 	static QIcon *itemIcon(int iIndex);
 
-protected slots:
+public slots:
 
 	// User interaction slots.
 	void addPlugin();
 	void removePlugin();
+	void moveUpPlugin();
+	void moveDownPlugin();
+	void editPlugin();
+
+protected slots:
+
+	// User interaction slots.
 	void activatePlugin();
 	void activateAllPlugins();
 	void deactivateAllPlugins();
 	void removeAllPlugins();
-	void moveUpPlugin();
-	void moveDownPlugin();
-	void editPlugin();
 
 	// Audio specific slots.
 	void audioOutputs();

@@ -32,6 +32,8 @@
 #include "qtractorMidiBuffer.h"
 #include "qtractorPlugin.h"
 
+#include "qtractorCommand.h"
+
 #include "qtractorMainForm.h"
 #include "qtractorBusForm.h"
 
@@ -118,7 +120,7 @@ qtractorTrackForm::qtractorTrackForm (
 	m_ui.BackgroundColorComboBox->clear();
 	for (int i = 1; i < 28; i++) {
 		const QColor rgbBack = qtractorTrack::trackColor(i);
-		const QColor rgbFore = rgbBack.dark();
+		const QColor rgbFore = rgbBack.darker();
 		m_ui.ForegroundColorComboBox->addItem(rgbFore.name());
 		m_ui.BackgroundColorComboBox->addItem(rgbBack.name());
 	}
@@ -130,6 +132,9 @@ qtractorTrackForm::qtractorTrackForm (
 	m_iOldBankSelMethod = -1;
 	m_iOldBank = -1;
 	m_iOldProg = -1;
+
+	// No last acceptable command yet.
+	m_pLastCommand = NULL;
 
 	// Initialize dirty control state.
 	m_iDirtySetup = 0;
@@ -184,6 +189,23 @@ qtractorTrackForm::qtractorTrackForm (
 	QObject::connect(m_ui.BackgroundColorToolButton,
 		SIGNAL(clicked()),
 		SLOT(selectBackgroundColor()));
+
+	QObject::connect(m_ui.PluginListView,
+		SIGNAL(currentRowChanged(int)),
+		SLOT(stabilizeForm()));
+	QObject::connect(m_ui.AddPluginToolButton,
+		SIGNAL(clicked()),
+		SLOT(addPlugin()));
+	QObject::connect(m_ui.RemovePluginToolButton,
+		SIGNAL(clicked()),
+		SLOT(removePlugin()));
+	QObject::connect(m_ui.MoveUpPluginToolButton,
+		SIGNAL(clicked()),
+		SLOT(moveUpPlugin()));
+	QObject::connect(m_ui.MoveDownPluginToolButton,
+		SIGNAL(clicked()),
+		SLOT(moveDownPlugin()));
+
 	QObject::connect(m_ui.OkPushButton,
 		SIGNAL(clicked()),
 		SLOT(accept()));
@@ -202,11 +224,21 @@ qtractorTrackForm::~qtractorTrackForm (void)
 // Populate (setup) dialog controls from settings descriptors.
 void qtractorTrackForm::setTrack ( qtractorTrack *pTrack )
 {
-	// Set reference descriptor.
+	// Get reference of the last acceptable command...
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm == NULL)
+		return;
+	// This is it...
+	m_pLastCommand = pMainForm->commands()->lastCommand();
+
+	// Set target track reference descriptor.
 	m_pTrack = pTrack;
 
 	// Avoid dirty this all up.
 	m_iDirtySetup++;
+
+	// Set plugin list...
+	m_ui.PluginListView->setPluginList(m_pTrack->pluginList());
 
 	// Already time for instrument cacheing...
 	updateInstruments();
@@ -341,6 +373,13 @@ void qtractorTrackForm::reject (void)
 	}
 
 	if (bReject) {
+		// Backout all commands made this far...
+		qtractorCommandList *pCommands = NULL;
+		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+		if (pMainForm)
+			pCommands = pMainForm->commands();
+		if (pCommands)
+			pCommands->backout(m_pLastCommand);
 		// Try to restore the previously saved patch...
 		if (m_pOldMidiBus) {
 			m_pOldMidiBus->setPatch(m_iOldChannel, m_sOldInstrumentName,
@@ -358,6 +397,25 @@ void qtractorTrackForm::stabilizeForm (void)
 	bValid = bValid && !m_ui.TrackNameTextEdit->toPlainText().isEmpty();
 	bValid = bValid && trackType() != qtractorTrack::None;
 	m_ui.OkPushButton->setEnabled(bValid);
+
+	// Stabilize current plugin list state.
+	int iItem = -1;
+	int iItemCount = m_ui.PluginListView->count();
+
+	qtractorPlugin *pPlugin = NULL;
+	qtractorPluginListItem *pItem
+		= static_cast<qtractorPluginListItem *> (
+			m_ui.PluginListView->currentItem());
+	if (pItem) {
+		iItem = m_ui.PluginListView->row(pItem);
+		pPlugin = pItem->plugin();
+	}
+
+//	m_ui.AddPluginToolButton->setEnabled(true);
+	m_ui.RemovePluginToolButton->setEnabled(pPlugin != NULL);
+
+	m_ui.MoveUpPluginToolButton->setEnabled(pItem && iItem > 0);
+	m_ui.MoveDownPluginToolButton->setEnabled(pItem && iItem < iItemCount - 1);
 }
 
 
@@ -898,10 +956,39 @@ void qtractorTrackForm::inputBusNameChanged ( const QString& /* sBusName */ )
 
 
 // Make changes due to output-bus name.
-void qtractorTrackForm::outputBusNameChanged ( const QString& /* sBusName */ )
+void qtractorTrackForm::outputBusNameChanged ( const QString& sBusName )
 {
 	if (m_iDirtySetup > 0)
 		return;
+
+	if (m_pTrack == NULL)
+		return;
+
+	qtractorAudioEngine *pAudioEngine = m_pTrack->session()->audioEngine();
+	if (pAudioEngine == NULL)
+		return;
+
+	// Get the audio bus applicable for the plugin list...
+	qtractorAudioBus *pAudioBus = NULL;
+	qtractorTrack::TrackType trackType = qtractorTrackForm::trackType();
+	if (trackType == qtractorTrack::Audio) {
+		pAudioBus = static_cast<qtractorAudioBus *> (
+			pAudioEngine->findBus(sBusName));
+	}
+
+	// FIXME: Master audio bus as reference, still...
+	if (pAudioBus == NULL) {
+		pAudioBus = static_cast<qtractorAudioBus *> (
+			pAudioEngine->buses().first());
+	}
+
+	// If an audio bus has been found applicable,
+	// must set plugin-list channel buffers...
+	if (pAudioBus) {
+		m_pTrack->pluginList()->setBuffer(pAudioBus->channels(),
+			pAudioEngine->bufferSize(), pAudioEngine->sampleRate(),
+			trackType == qtractorTrack::Midi);
+	}
 
 	channelChanged(m_ui.ChannelSpinBox->value());
 }
@@ -1072,6 +1159,36 @@ void qtractorTrackForm::selectBackgroundColor (void)
 		updateColorItem(m_ui.BackgroundColorComboBox, color);
 		changed();
 	}
+}
+
+
+// Plugin list slots.
+void qtractorTrackForm::addPlugin (void)
+{
+	m_ui.PluginListView->addPlugin();
+	if (m_pTrack && (m_pTrack->pluginList())->midiManager())
+		updateInstruments();
+	changed();
+}
+
+void qtractorTrackForm::removePlugin (void)
+{
+	m_ui.PluginListView->removePlugin();
+	if (m_pTrack && (m_pTrack->pluginList())->midiManager())
+		updateInstruments();
+	changed();
+}
+
+void qtractorTrackForm::moveUpPlugin (void)
+{
+	m_ui.PluginListView->moveUpPlugin();
+	changed();
+}
+
+void qtractorTrackForm::moveDownPlugin (void)
+{
+	m_ui.PluginListView->moveDownPlugin();
+	changed();
 }
 
 

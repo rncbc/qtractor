@@ -47,7 +47,8 @@ qtractorMeterScale::qtractorMeterScale ( qtractorMeter *pMeter,
 	QWidget::setMinimumWidth(16);
 //	QWidget::setBackgroundRole(QPalette::Mid);
 
-	QWidget::setFont(QFont(font().family(), 6));
+	const QFont& font = QWidget::font();
+	QWidget::setFont(QFont(font.family(), font.pointSize() - 2));
 }
 
 // Default destructor.
@@ -102,7 +103,8 @@ void qtractorMeterScale::paintEvent ( QPaintEvent * )
 qtractorMeter::qtractorMeter ( QWidget *pParent )
 	: QWidget(pParent)
 {
-	QFont font7(font().family(), 7);
+	const QFont& font = QWidget::font();
+	QFont font7(font.family(), font.pointSize() - 1);
 	QFontMetrics fm(font7);
 
 	m_pVBoxLayout = new QVBoxLayout();

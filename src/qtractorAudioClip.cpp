@@ -351,11 +351,11 @@ void qtractorAudioClip::drawClip ( QPainter *pPainter, const QRect& clipRect,
 			}
 		}
 		// Close, draw and free the polygons...
-		pPainter->setPen(fg.light());
+		pPainter->setPen(fg.lighter());
 		for (i = 0; i < (int) iChannels; ++i) {
 			pPainter->setBrush(fg);
 			pPainter->drawPolygon(*pPolyMax[i]);
-			pPainter->setBrush(fg.light());
+			pPainter->setBrush(fg.lighter());
 			pPainter->drawPolygon(*pPolyRms[i]);
 			delete pPolyMax[i];
 			delete pPolyRms[i];
@@ -386,7 +386,7 @@ void qtractorAudioClip::drawClip ( QPainter *pPainter, const QRect& clipRect,
 				if (kdelta < 1) {
 					pPainter->setPen(fg);
 					pPainter->drawLine(x, y - ymax[i], x, y + ymax[i]);
-					pPainter->setPen(fg.light());
+					pPainter->setPen(fg.lighter());
 					pPainter->drawLine(x, y - yrms[i], x, y + yrms[i]);
 					ymax[i] = yrms[i] = 0;
 					y += h1;
