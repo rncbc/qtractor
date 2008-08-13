@@ -529,9 +529,11 @@ void qtractorPlugin::setInstances ( unsigned short iInstances )
 	if (m_iInstances > 0) {
 		m_iAudioInsCap  = m_pType->audioIns();
 		m_iAudioOutsCap = m_pType->audioOuts();
+	#if 0
 		unsigned short iAudioOutsCap = (channels() / m_iInstances);
 		if (m_iAudioOutsCap > iAudioOutsCap)
 			m_iAudioOutsCap = iAudioOutsCap;
+	#endif
 	} else {
 		m_iAudioInsCap  = 0;
 		m_iAudioOutsCap = 0;

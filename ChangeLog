@@ -5,6 +5,10 @@ ChangeLog
 
 CVS HEAD
 
+- Audio plugin outputs now overrides each other when the number
+  of output ports does not match the number of mix-down audio
+  channels and thus fixing a nasty crash bug in the process.
+
 - All custom font sizes are now set relative to default global font.
 
 - Changing loop points by dragging on the time rulers is now mapped
