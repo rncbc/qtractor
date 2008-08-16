@@ -551,7 +551,7 @@ public:
 	DssiMulti() : m_iSize(0), m_ppPlugins(NULL),
 		m_iInstances(0), m_phInstances(NULL),
 		m_ppEvents(NULL), m_piEvents(NULL),
-		m_iProcess(0), m_iRefCount(0) {}
+		m_iProcess(0), m_iActivated(0), m_iRefCount(0) {}
 
 	// Destructor.
 	~DssiMulti()
@@ -637,7 +637,8 @@ public:
 	// Process registry pool.
 	void process(const DSSI_Descriptor *pDssiDescriptor, unsigned int nframes)
 	{
-		if (++m_iProcess < m_iInstances)
+		// Caount in only the active instances...
+		if (++m_iProcess < m_iActivated)
 			return;
 
 		for (unsigned long i = 0; i < m_iInstances; ++i) {
@@ -671,6 +672,12 @@ public:
 		m_iProcess = 0;
 	}
 
+	// Activation count methods.
+	void activate(qtractorDssiPlugin *pDssiPlugin)
+		{ m_iActivated += pDssiPlugin->instances(); }
+	void deactivate(qtractorDssiPlugin *pDssiPlugin)
+		{ m_iActivated -= pDssiPlugin->instances(); }
+
 	// Reference count methods.
 	void addRef()
 		{ m_iRefCount++; }
@@ -687,7 +694,7 @@ private:
 	snd_seq_event_t    **m_ppEvents;
 	unsigned long       *m_piEvents;
 	unsigned long        m_iProcess;
-
+	unsigned long        m_iActivated;
 	unsigned int         m_iRefCount;
 };
 
@@ -938,6 +945,9 @@ void qtractorDssiPlugin::resetChannels (void)
 void qtractorDssiPlugin::activate (void)
 {
 	// Activate as usual...
+	if (m_pDssiMulti)
+		m_pDssiMulti->activate(this);
+
 	qtractorLadspaPlugin::activate();
 }
 
@@ -947,6 +957,9 @@ void qtractorDssiPlugin::deactivate (void)
 {
 	// Deactivate as usual...
 	qtractorLadspaPlugin::deactivate();
+
+	if (m_pDssiMulti)
+		m_pDssiMulti->deactivate(this);
 }
 
 
@@ -960,7 +973,7 @@ void qtractorDssiPlugin::process (
 		qtractorLadspaPlugin::process(ppIBuffer, ppOBuffer, nframes);
 		return;
 	}
-		
+
 	if (m_phInstances == NULL)
 		return;
 
