@@ -71,7 +71,7 @@ public:
 		m_iBufferMask = (m_iBufferSize - 1);
 		m_pBuffer = new snd_seq_event_t [m_iBufferSize];
 	}
-		
+
 	// Destructor.
 	~qtractorMidiBuffer() { if (m_pBuffer) delete [] m_pBuffer; }
 

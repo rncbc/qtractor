@@ -5,6 +5,12 @@ ChangeLog
 
 CVS HEAD
 
+- DSSI plugins implementing run_multiple_synths (eg. fluidsynth-dssi)
+  are now formally supported according to the DSSI spec (hopefully);
+  note that previously one could only have one DSSI plugin instance
+  loaded in session in any given time, otherwise a sudden crash was
+  in sure demand when either plugin got activated (fixes bug #2048198).
+
 - Audio plugin outputs now overrides each other when the number
   of output ports does not match the number of mix-down audio
   channels and thus fixing a nasty crash bug in the process.

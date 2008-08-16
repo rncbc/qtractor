@@ -133,8 +133,7 @@ protected:
 private:
 
 	// Care of multiple instances here.
-	snd_seq_event_t **m_ppEvents;
-	unsigned long    *m_ppCounts;
+	class DssiMulti *m_pDssiMulti;
 
 	// Controller port map.
 	qtractorPluginParam *m_apControllerMap[128];

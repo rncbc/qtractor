@@ -536,6 +536,181 @@ static void osc_close_editor ( qtractorDssiPlugin *pDssiPlugin )
 
 #endif
 
+//----------------------------------------------------------------------------
+// qtractorDssiPlugin::DssiMulti -- DSSI multiple instance pool entry.
+//
+
+class DssiMulti
+{
+public:
+
+	// Constructor.
+	DssiMulti() : m_iSize(0), m_ppPlugins(NULL),
+		m_iInstances(0), m_phInstances(NULL),
+		m_ppEvents(NULL), m_piEvents(NULL),	m_iProcess(0) {}
+
+	// Destructor.
+	~DssiMulti()
+	{
+		if (m_piEvents)
+			delete [] m_piEvents;
+		if (m_ppEvents)
+			delete [] m_ppEvents;
+		if (m_phInstances)
+			delete [] m_phInstances;
+		if (m_ppPlugins)
+			delete [] m_ppPlugins;
+	}
+
+	// Add plugin instances to registry pool.
+	void addPlugin(qtractorDssiPlugin *pDssiPlugin)
+	{
+		unsigned long iNewInstances = m_iInstances + pDssiPlugin->instances();
+
+		if (iNewInstances >= m_iSize) {
+			m_iSize += iNewInstances;
+			qtractorDssiPlugin **ppNewPlugins
+				= new qtractorDssiPlugin * [m_iSize];
+			LADSPA_Handle *phNewInstances
+				= new LADSPA_Handle [m_iSize];
+			qtractorDssiPlugin **ppOldPlugins = m_ppPlugins;
+			LADSPA_Handle *phOldInstances = m_phInstances;
+			if (ppOldPlugins && phOldInstances) {
+				m_ppPlugins = NULL;
+				m_phInstances = NULL;
+				for (unsigned long i = 0; i < m_iInstances; ++i) {
+					ppNewPlugins[i] = ppOldPlugins[i];
+					phNewInstances[i] = phOldInstances[i];
+				}
+				delete [] phOldInstances;
+				delete [] ppOldPlugins;
+			}
+			m_ppPlugins = ppNewPlugins;
+			m_phInstances = phNewInstances;
+			if (m_ppEvents)
+				delete [] m_ppEvents;
+			if (m_piEvents)
+				delete [] m_piEvents;
+			m_ppEvents = new snd_seq_event_t * [m_iSize];
+			m_piEvents = new unsigned long     [m_iSize];
+		}
+
+		for (unsigned long i = 0; i < pDssiPlugin->instances(); ++i) {
+			unsigned long iInstance = m_iInstances + i;
+			m_ppPlugins[iInstance] = pDssiPlugin;
+			m_phInstances[iInstance] = pDssiPlugin->ladspa_handle(i);
+		}
+
+		m_iInstances = iNewInstances;
+	}
+
+	// Remove plugin instances from registry pool.
+	void removePlugin(qtractorDssiPlugin *pDssiPlugin)
+	{
+		for (unsigned long i = 0; i < m_iInstances; ++i) {
+			unsigned long j = i;
+			while (j < m_iInstances && m_ppPlugins[j] == pDssiPlugin)
+				++j;
+			if (j > i) {
+				unsigned long k = (j - i);
+				for (; j < m_iInstances; ++j, ++i) {
+					m_ppPlugins[i] = m_ppPlugins[j];
+					m_phInstances[i] = m_phInstances[j];
+				}
+				m_iInstances -= k;
+				break;
+			}
+		}
+	}
+
+	// Process registry pool.
+	void process(const DSSI_Descriptor *pDssiDescriptor, unsigned int nframes)
+	{
+		if (++m_iProcess < m_iInstances)
+			return;
+
+		for (unsigned long i = 0; i < m_iInstances; ++i) {
+			qtractorMidiManager *pMidiManager
+				= m_ppPlugins[i]->list()->midiManager();
+			m_ppEvents[i] = pMidiManager->events();
+			m_piEvents[i] = pMidiManager->count();
+		}
+
+		(*pDssiDescriptor->run_multiple_synths)(m_iInstances,
+			m_phInstances, nframes, m_ppEvents, m_piEvents);
+
+		m_iProcess = 0;
+	}
+
+	// Reference count methods.
+	void addRef()
+		{ m_iRefCount++; }
+	void removeRef()
+		{ if (--m_iRefCount == 0) delete this; }
+
+private:
+
+	// Member variables.
+	unsigned long        m_iSize;
+	qtractorDssiPlugin **m_ppPlugins;
+	unsigned long        m_iInstances;
+	LADSPA_Handle       *m_phInstances;
+	snd_seq_event_t    **m_ppEvents;
+	unsigned long       *m_piEvents;
+	unsigned long        m_iProcess;
+
+	unsigned int         m_iRefCount;
+};
+
+// DSSI multiple instance pool
+// for each DSSI plugin implementing run_multiple_synths
+// one must keep a global registry of all instances here.
+static QHash<QString, DssiMulti *> g_dssiHash;
+
+
+// DSSI multiple instance key helper.
+static QString dssi_multi_key ( qtractorDssiPluginType *pDssiType )
+{
+	return (pDssiType->file())->filename() + '_' + pDssiType->label();
+}
+
+
+// DSSI multiple instance entry constructor.
+static DssiMulti *dssi_multi_create ( qtractorDssiPluginType *pDssiType )
+{
+	const DSSI_Descriptor *pDssiDescriptor = pDssiType->dssi_descriptor();
+	if (pDssiDescriptor == NULL)
+		return NULL;
+	if (pDssiDescriptor->run_multiple_synths == NULL)
+		return NULL;
+
+	DssiMulti *pDssiMulti = NULL;
+	const QString& sKey = dssi_multi_key(pDssiType);
+	QHash<QString, DssiMulti *>::const_iterator iter
+		= g_dssiHash.constFind(sKey);
+	if (iter == g_dssiHash.constEnd()) {
+		pDssiMulti = new DssiMulti();
+		g_dssiHash.insert(sKey, pDssiMulti);
+	} else {
+		pDssiMulti = iter.value();
+	}
+	pDssiMulti->addRef();
+
+	return pDssiMulti;
+}
+
+
+// DSSI multiple instance entry destructor.
+void dssi_multi_destroy ( qtractorDssiPluginType *pDssiType )
+{
+	const QString& sKey = dssi_multi_key(pDssiType);
+	QHash<QString, DssiMulti *>::iterator iter = g_dssiHash.find(sKey);
+	if (iter == g_dssiHash.end())
+		return;
+	iter.value()->removeRef();
+	g_dssiHash.erase(iter);
+}
+
 
 //----------------------------------------------------------------------------
 // qtractorDssiPluginType -- DSSI plugin type instance.
@@ -636,9 +811,12 @@ const DSSI_Descriptor *qtractorDssiPluginType::dssi_descriptor (
 qtractorDssiPlugin::qtractorDssiPlugin ( qtractorPluginList *pList,
 	qtractorDssiPluginType *pDssiType )
 	: qtractorLadspaPlugin(pList, pDssiType),
-		m_ppEvents(NULL), m_ppCounts(NULL),
-		m_bEditorVisible(false)
+		m_pDssiMulti(NULL), m_bEditorVisible(false)
 {
+	// Check whether we're go into a multiple instance pool.
+	m_pDssiMulti = dssi_multi_create(pDssiType);
+
+	// Extended first instantiantion.
 	resetChannels();
 }
 
@@ -648,6 +826,10 @@ qtractorDssiPlugin::~qtractorDssiPlugin (void)
 {
 	// Cleanup all plugin instances...
 	setChannels(0);
+
+	// Remove refernce from multiple instance pool.
+	if (m_pDssiMulti)
+		dssi_multi_destroy(static_cast<qtractorDssiPluginType *> (type()));
 }
 
 
@@ -665,17 +847,6 @@ void qtractorDssiPlugin::setChannels ( unsigned short iChannels )
 // Post-(re)initializer.
 void qtractorDssiPlugin::resetChannels (void)
 {
-	// Clean up...
-	if (m_ppEvents) {
-		delete [] m_ppEvents;
-		m_ppEvents = NULL;
-	}
-
-	if (m_ppCounts) {
-		delete [] m_ppCounts;
-		m_ppCounts = NULL;
-	}
-
 	// (Re)initialize controller port map, anyway.
 	::memset(m_apControllerMap, 0, 128 * sizeof(qtractorPluginParam *));
 
@@ -683,10 +854,6 @@ void qtractorDssiPlugin::resetChannels (void)
 	unsigned short iInstances = instances();
 	if (iInstances < 1)
 		return;
-
-	// (Re)set according to exiting instances...
-	m_ppEvents = new snd_seq_event_t * [iInstances];
-	m_ppCounts = new unsigned long     [iInstances];
 
 	// Map all existing input control ports...
 	const DSSI_Descriptor *pDssiDescriptor = dssi_descriptor();
@@ -725,6 +892,11 @@ void qtractorDssiPlugin::resetChannels (void)
 // Do the actual activation.
 void qtractorDssiPlugin::activate (void)
 {
+	// (Re)set according to existing instances...
+	if (m_pDssiMulti)
+		m_pDssiMulti->addPlugin(this);
+
+	// Activate as usual...
 	qtractorLadspaPlugin::activate();
 }
 
@@ -732,7 +904,12 @@ void qtractorDssiPlugin::activate (void)
 // Do the actual deactivation.
 void qtractorDssiPlugin::deactivate (void)
 {
+	// Deactivate as usual...
 	qtractorLadspaPlugin::deactivate();
+
+	// (Re)set according to existing instances...
+	if (m_pDssiMulti)
+		m_pDssiMulti->removePlugin(this);
 }
 
 
@@ -748,9 +925,6 @@ void qtractorDssiPlugin::process (
 	}
 		
 	if (m_phInstances == NULL)
-		return;
-
-	if (m_ppEvents == NULL || m_ppCounts == NULL)
 		return;
 
 	const LADSPA_Descriptor *pLadspaDescriptor = ladspa_descriptor();
@@ -788,19 +962,12 @@ void qtractorDssiPlugin::process (
 				iOChannel = 0;
 		}
 		// Care of multiple instances here...
-		m_ppEvents[i] = pMidiManager->events();
-		m_ppCounts[i] = pMidiManager->count();
+		if (m_pDssiMulti)
+			m_pDssiMulti->process(pDssiDescriptor, nframes);
 		// Make it run...
-		if (pDssiDescriptor->run_multiple_synths) {
-			// Multiple run on last iteration only...
-			if (i == iInstances - 1) {
-				(*pDssiDescriptor->run_multiple_synths)(iInstances,
-					m_phInstances, nframes, m_ppEvents, m_ppCounts);
-			}
-		}
 		else if (pDssiDescriptor->run_synth) {
 			(*pDssiDescriptor->run_synth)(handle, nframes,
-				m_ppEvents[i], m_ppCounts[i]);
+				pMidiManager->events(), pMidiManager->count());
 		}
 		else (*pLadspaDescriptor->run)(handle, nframes);
 		// Wrap channels?...
