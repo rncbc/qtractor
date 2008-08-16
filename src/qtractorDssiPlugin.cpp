@@ -540,6 +540,9 @@ static void osc_close_editor ( qtractorDssiPlugin *pDssiPlugin )
 // qtractorDssiPlugin::DssiMulti -- DSSI multiple instance pool entry.
 //
 
+static float       *g_pDummyBuffer     = NULL;
+static unsigned int g_iDummyBufferSize = 0;
+
 class DssiMulti
 {
 public:
@@ -547,7 +550,8 @@ public:
 	// Constructor.
 	DssiMulti() : m_iSize(0), m_ppPlugins(NULL),
 		m_iInstances(0), m_phInstances(NULL),
-		m_ppEvents(NULL), m_piEvents(NULL),	m_iProcess(0) {}
+		m_ppEvents(NULL), m_piEvents(NULL),
+		m_iProcess(0), m_iRefCount(0) {}
 
 	// Destructor.
 	~DssiMulti()
@@ -602,6 +606,13 @@ public:
 		}
 
 		m_iInstances = iNewInstances;
+
+		if (g_iDummyBufferSize < pDssiPlugin->list()->bufferSize()) {
+			g_iDummyBufferSize = pDssiPlugin->list()->bufferSize();
+			if (g_pDummyBuffer)
+				delete [] g_pDummyBuffer;
+			g_pDummyBuffer = new float [g_iDummyBufferSize];
+		}
 	}
 
 	// Remove plugin instances from registry pool.
@@ -630,8 +641,26 @@ public:
 			return;
 
 		for (unsigned long i = 0; i < m_iInstances; ++i) {
+			qtractorDssiPlugin *pDssiPlugin = m_ppPlugins[i];
+			// One must connect the ports of all inactive
+			// instances somewhere, otherwise it will crash...
+			if (!pDssiPlugin->isActivated()) {
+				const LADSPA_Descriptor *pLadspaDescriptor
+					= pDssiPlugin->ladspa_descriptor();
+				unsigned short iAudioIns  = pDssiPlugin->audioIns();
+				unsigned short iAudioOuts = pDssiPlugin->audioOuts();
+				for (unsigned short j = 0; j < iAudioIns; ++j) {
+					(*pLadspaDescriptor->connect_port)(m_phInstances[i],
+						pDssiPlugin->audioIn(j), g_pDummyBuffer);
+				}
+				for (unsigned short j = 0; j < iAudioOuts; ++j) {
+					(*pLadspaDescriptor->connect_port)(m_phInstances[i],
+						pDssiPlugin->audioOut(j), g_pDummyBuffer);
+				}
+			}
+			// Set MIDI event lists...
 			qtractorMidiManager *pMidiManager
-				= m_ppPlugins[i]->list()->midiManager();
+				= pDssiPlugin->list()->midiManager();
 			m_ppEvents[i] = pMidiManager->events();
 			m_piEvents[i] = pMidiManager->count();
 		}
@@ -703,12 +732,20 @@ static DssiMulti *dssi_multi_create ( qtractorDssiPluginType *pDssiType )
 // DSSI multiple instance entry destructor.
 void dssi_multi_destroy ( qtractorDssiPluginType *pDssiType )
 {
+	// Remove hash table entry...
 	const QString& sKey = dssi_multi_key(pDssiType);
 	QHash<QString, DssiMulti *>::iterator iter = g_dssiHash.find(sKey);
 	if (iter == g_dssiHash.end())
 		return;
 	iter.value()->removeRef();
 	g_dssiHash.erase(iter);
+
+	// On last entry deallocate dummy buffer as well...
+	if (g_dssiHash.isEmpty() && g_pDummyBuffer) {
+		delete [] g_pDummyBuffer;
+		g_pDummyBuffer = NULL;
+		g_iDummyBufferSize = 0;
+	}
 }
 
 
@@ -836,6 +873,10 @@ qtractorDssiPlugin::~qtractorDssiPlugin (void)
 // Channel/instance number accessors.
 void qtractorDssiPlugin::setChannels ( unsigned short iChannels )
 {
+	// (Re)set according to existing instances...
+	if (m_pDssiMulti)
+		m_pDssiMulti->removePlugin(this);
+
 	// Setup new instances...
 	qtractorLadspaPlugin::setChannels(iChannels);
 
@@ -854,6 +895,10 @@ void qtractorDssiPlugin::resetChannels (void)
 	unsigned short iInstances = instances();
 	if (iInstances < 1)
 		return;
+
+	// (Re)set according to existing instances...
+	if (m_pDssiMulti)
+		m_pDssiMulti->addPlugin(this);
 
 	// Map all existing input control ports...
 	const DSSI_Descriptor *pDssiDescriptor = dssi_descriptor();
@@ -892,10 +937,6 @@ void qtractorDssiPlugin::resetChannels (void)
 // Do the actual activation.
 void qtractorDssiPlugin::activate (void)
 {
-	// (Re)set according to existing instances...
-	if (m_pDssiMulti)
-		m_pDssiMulti->addPlugin(this);
-
 	// Activate as usual...
 	qtractorLadspaPlugin::activate();
 }
@@ -906,10 +947,6 @@ void qtractorDssiPlugin::deactivate (void)
 {
 	// Deactivate as usual...
 	qtractorLadspaPlugin::deactivate();
-
-	// (Re)set according to existing instances...
-	if (m_pDssiMulti)
-		m_pDssiMulti->removePlugin(this);
 }
 
 
@@ -938,8 +975,8 @@ void qtractorDssiPlugin::process (
 	// We'll cross channels over instances...
 	unsigned short iInstances = instances();
 	unsigned short iChannels  = channels();
-	unsigned short iAudioIns  = audioInsCap();
-	unsigned short iAudioOuts = audioOutsCap();
+	unsigned short iAudioIns  = audioIns();
+	unsigned short iAudioOuts = audioOuts();
 	unsigned short iIChannel  = 0;
 	unsigned short iOChannel  = 0;
 	unsigned short i, j;

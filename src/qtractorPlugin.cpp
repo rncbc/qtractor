@@ -469,7 +469,6 @@ qtractorDummyPluginType *qtractorDummyPluginType::createType (
 qtractorPlugin::qtractorPlugin (
 	qtractorPluginList *pList, qtractorPluginType *pType )
 	: m_pList(pList), m_pType(pType), m_iInstances(0),
-		m_iAudioInsCap(0), m_iAudioOutsCap(0),
 		m_bActivated(false), m_pForm(NULL)
 {
 #if 0
@@ -526,17 +525,7 @@ void qtractorPlugin::setInstances ( unsigned short iInstances )
 	m_iInstances = iInstances;
 
 	// Some sanity required here...
-	if (m_iInstances > 0) {
-		m_iAudioInsCap  = m_pType->audioIns();
-		m_iAudioOutsCap = m_pType->audioOuts();
-	#if 0
-		unsigned short iAudioOutsCap = (channels() / m_iInstances);
-		if (m_iAudioOutsCap > iAudioOutsCap)
-			m_iAudioOutsCap = iAudioOutsCap;
-	#endif
-	} else {
-		m_iAudioInsCap  = 0;
-		m_iAudioOutsCap = 0;
+	if (m_iInstances < 1) {
 		// We're sorry but dialogs must also go now...
 		closeEditor();
 		if (m_pForm) {

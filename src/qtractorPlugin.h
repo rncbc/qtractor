@@ -313,6 +313,12 @@ public:
 	const QList<qtractorPluginParam *>& params() const
 		{ return m_params; }
 
+	// Instance capped number of audio ports.
+	unsigned short audioIns() const
+		{ return m_pType->audioIns(); }
+	unsigned short audioOuts() const
+		{ return m_pType->audioOuts(); }
+
 	// Plugin state serialization methods.
 	void setValues(const QStringList& vlist);
 	QStringList values() const;
@@ -430,12 +436,6 @@ protected:
 	// Instance number settler.
 	void setInstances(unsigned short iInstances);
 
-	// Instance capped number of audio ports.
-	unsigned short audioInsCap() const
-		{ return m_iAudioInsCap; }
-	unsigned short audioOutsCap() const
-		{ return m_iAudioOutsCap; }
-	
 private:
 
 	// Instance variables.
@@ -443,9 +443,6 @@ private:
 	qtractorPluginType *m_pType;
 
 	unsigned short m_iInstances;
-
-	unsigned short m_iAudioInsCap;
-	unsigned short m_iAudioOutsCap;
 
 	bool m_bActivated;
 

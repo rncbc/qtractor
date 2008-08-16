@@ -98,6 +98,12 @@ public:
 	const LADSPA_Descriptor *ladspa_descriptor() const;
 	LADSPA_Handle ladspa_handle(unsigned short iInstance) const;
 
+	// Audio port numbers.
+	unsigned long audioIn(unsigned short i)
+		{ return m_piAudioIns[i]; }
+	unsigned long audioOut(unsigned short i)
+		{ return m_piAudioOuts[i]; }
+
 protected:
 
 	// Instance variables.
