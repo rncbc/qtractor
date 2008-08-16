@@ -662,8 +662,13 @@ public:
 			// Set MIDI event lists...
 			qtractorMidiManager *pMidiManager
 				= pDssiPlugin->list()->midiManager();
-			m_ppEvents[i] = pMidiManager->events();
-			m_piEvents[i] = pMidiManager->count();
+			if (pMidiManager) {
+				m_ppEvents[i] = pMidiManager->events();
+				m_piEvents[i] = pMidiManager->count();
+			} else {
+				m_ppEvents[i] = NULL;
+				m_piEvents[i] = 0;
+			}
 		}
 
 		(*pDssiDescriptor->run_multiple_synths)(m_iInstances,
