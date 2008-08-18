@@ -637,31 +637,14 @@ public:
 	// Process registry pool.
 	void process(const DSSI_Descriptor *pDssiDescriptor, unsigned int nframes)
 	{
-		// Caount in only the active instances...
+		// Count in only the active instances...
 		if (++m_iProcess < m_iActivated)
 			return;
 
 		for (unsigned long i = 0; i < m_iInstances; ++i) {
-			qtractorDssiPlugin *pDssiPlugin = m_ppPlugins[i];
-			// One must connect the ports of all inactive
-			// instances somewhere, otherwise it will crash...
-			if (!pDssiPlugin->isActivated()) {
-				const LADSPA_Descriptor *pLadspaDescriptor
-					= pDssiPlugin->ladspa_descriptor();
-				unsigned short iAudioIns  = pDssiPlugin->audioIns();
-				unsigned short iAudioOuts = pDssiPlugin->audioOuts();
-				for (unsigned short j = 0; j < iAudioIns; ++j) {
-					(*pLadspaDescriptor->connect_port)(m_phInstances[i],
-						pDssiPlugin->audioIn(j), g_pDummyBuffer);
-				}
-				for (unsigned short j = 0; j < iAudioOuts; ++j) {
-					(*pLadspaDescriptor->connect_port)(m_phInstances[i],
-						pDssiPlugin->audioOut(j), g_pDummyBuffer);
-				}
-			}
 			// Set MIDI event lists...
 			qtractorMidiManager *pMidiManager
-				= pDssiPlugin->list()->midiManager();
+				= m_ppPlugins[i]->list()->midiManager();
 			if (pMidiManager) {
 				m_ppEvents[i] = pMidiManager->events();
 				m_piEvents[i] = pMidiManager->count();
@@ -679,15 +662,37 @@ public:
 
 	// Activation count methods.
 	void activate(qtractorDssiPlugin *pDssiPlugin)
-		{ m_iActivated += pDssiPlugin->instances(); }
+		{ reset(pDssiPlugin); m_iActivated += pDssiPlugin->instances(); }
 	void deactivate(qtractorDssiPlugin *pDssiPlugin)
-		{ m_iActivated -= pDssiPlugin->instances(); }
+		{ reset(pDssiPlugin); m_iActivated -= pDssiPlugin->instances(); }
 
 	// Reference count methods.
 	void addRef()
 		{ m_iRefCount++; }
 	void removeRef()
 		{ if (--m_iRefCount == 0) delete this; }
+
+	// Reset connections.
+	void reset(qtractorDssiPlugin *pDssiPlugin)
+	{
+		// One must connect the ports of all inactive
+		// instances somewhere, otherwise it will crash...
+		const LADSPA_Descriptor *pLadspaDescriptor
+			= pDssiPlugin->ladspa_descriptor();
+		unsigned short iAudioIns  = pDssiPlugin->audioIns();
+		unsigned short iAudioOuts = pDssiPlugin->audioOuts();
+		for (unsigned short i = 0; i < pDssiPlugin->instances(); ++i) {
+			LADSPA_Handle handle = pDssiPlugin->ladspa_handle(i);
+			for (unsigned short j = 0; j < iAudioIns; ++j) {
+				(*pLadspaDescriptor->connect_port)(handle,
+					pDssiPlugin->audioIn(j), g_pDummyBuffer);
+			}
+			for (unsigned short j = 0; j < iAudioOuts; ++j) {
+				(*pLadspaDescriptor->connect_port)(handle,
+					pDssiPlugin->audioOut(j), g_pDummyBuffer);
+			}
+		}
+	}
 
 private:
 
