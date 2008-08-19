@@ -129,6 +129,9 @@ public:
 	QString sPresetDir;
 	QString sInstrumentDir;
 
+	int     iSnapPerBeat;
+	float   fTempo;
+
 	// Plugin search string.
 	QString sPluginSearch;
 	int     iPluginType;

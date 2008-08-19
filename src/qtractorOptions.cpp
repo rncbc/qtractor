@@ -142,6 +142,8 @@ qtractorOptions::qtractorOptions (void)
 	sMidiDir       = m_settings.value("/MidiDir").toString();
 	sPresetDir     = m_settings.value("/PresetDir").toString();
 	sInstrumentDir = m_settings.value("/InstrumentDir").toString();
+	iSnapPerBeat   = m_settings.value("/SnapPerBeat", 4).toInt();
+	fTempo   = float(m_settings.value("/Tempo", 120.0).toDouble());
 	sPluginSearch  = m_settings.value("/PluginSearch").toString();
 	iPluginType    = m_settings.value("/PluginType", 1).toInt();
 	bPluginActivate = m_settings.value("/PluginActivate", false).toBool();
@@ -318,6 +320,8 @@ qtractorOptions::~qtractorOptions (void)
 	m_settings.setValue("/MidiDir", sMidiDir);
 	m_settings.setValue("/PresetDir", sPresetDir);
 	m_settings.setValue("/InstrumentDir", sInstrumentDir);
+	m_settings.setValue("/SnapPerBeat", iSnapPerBeat);
+	m_settings.setValue("/Tempo", double(fTempo));
 	m_settings.setValue("/PluginSearch", sPluginSearch);
 	m_settings.setValue("/PluginType", iPluginType);
 	m_settings.setValue("/PluginActivate", bPluginActivate);

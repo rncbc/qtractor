@@ -956,6 +956,9 @@ bool qtractorMainForm::queryClose (void)
 			for (iColor = 0; iColor < qtractorMidiMeter::ColorCount - 2; ++iColor)
 				m_pOptions->midiMeterColors.append(
 					qtractorMidiMeter::color(iColor).name());
+			// Make sure there will be defaults...
+			m_pOptions->iSnapPerBeat = m_pSnapPerBeatComboBox->currentIndex();
+			m_pOptions->fTempo = float(m_pTempoSpinBox->value());
 			// Save the dock windows state.
 			m_pOptions->settings().setValue("/Layout/DockWindows", saveState());
 			// And the main windows state.
@@ -1423,6 +1426,12 @@ bool qtractorMainForm::closeSession (void)
 		m_pTracks->clear();
 		// Reset playhead.
 		m_iPlayHead = 0;
+		// Some defaults are due...
+		if (m_pOptions) {
+			m_pSession->setSnapPerBeat(
+				qtractorTimeScale::snapFromIndex(m_pOptions->iSnapPerBeat));
+			m_pSession->setTempo(m_pOptions->fTempo);
+		}
 		// We're now clean, for sure.
 		m_iDirtyCount = 0;
 		appendMessages(tr("Session closed."));

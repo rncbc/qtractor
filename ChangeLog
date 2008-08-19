@@ -5,6 +5,8 @@ ChangeLog
 
 CVS HEAD
 
+- Current tempo and snap-per-beat setting now survive session cycling.
+
 - DSSI plugins implementing run_multiple_synths (eg. fluidsynth-dssi)
   are now formally supported according to the DSSI spec (hopefully);
   note that previously one could only have one DSSI plugin instance

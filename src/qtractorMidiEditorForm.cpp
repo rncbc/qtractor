@@ -411,14 +411,14 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 			SIGNAL(triggered(bool)),
 			pMainForm, SLOT(transportRecord()));
 	}
-
+#if 0
 	// Default snap-per-beat setting...
 	qtractorTimeScale *pTimeScale = m_pMidiEditor->timeScale();
 	if (pTimeScale) {
 		m_pSnapPerBeatComboBox->setCurrentIndex(
 			pTimeScale->indexFromSnap(pTimeScale->snapPerBeat()));
 	}
-
+#endif
 	eventTypeChanged(0);
 }
 
@@ -618,6 +618,10 @@ void qtractorMidiEditorForm::setup ( qtractorMidiClip *pMidiClip )
 	// Get those time-scales in sync...
 	qtractorTimeScale *pTimeScale = m_pMidiEditor->timeScale();
 	pTimeScale->copy(*pSession->timeScale());
+
+	// Default snap-per-beat setting...
+	m_pSnapPerBeatComboBox->setCurrentIndex(
+		pTimeScale->indexFromSnap(pTimeScale->snapPerBeat()));
 
 	// Note that there's two modes for this method:
 	// wether pMidiClip is given non-null wich means
