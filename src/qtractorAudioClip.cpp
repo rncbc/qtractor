@@ -229,6 +229,13 @@ void qtractorAudioClip::close ( bool bForce )
 	// Commit the final clip length (record specific)...
 	if (clipLength() < 1)
 		setClipLength(m_pBuff->fileLength());
+	else
+	// Shall we ditch the current peak file?
+	// (don't if closing from recording)
+	if (bForce && m_pPeak && m_pBuff->peak() == NULL) {
+		delete m_pPeak;
+		m_pPeak = NULL;
+	}
 
 	// Close and ditch stuff...
 	delete m_pBuff;
