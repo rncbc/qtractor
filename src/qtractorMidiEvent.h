@@ -111,7 +111,7 @@ public:
 
 	// Special event time offset adjust.
 	void adjustTime(unsigned long iOffset)
-		{ if (m_time > iOffset) m_time -= iOffset; }
+		{ m_time = (m_time > iOffset ? m_time - iOffset : 0); }
 
 	// Underloaded accessors (setters).
 	void setNote(unsigned char note)             { m_data[0] = note; }

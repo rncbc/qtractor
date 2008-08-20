@@ -2647,9 +2647,14 @@ void qtractorTrackView::pasteClipboard (void)
 	m_pClipSelect->clear();
 	resetDragState();
 
+	// Copy clipboard items to floating selection;
+	// adjust clip widths/lengths just in case time
+	// scale (horizontal zoom) has been changed... 
+	//
 	QListIterator<ClipItem *> iter(m_clipboard.items);
 	while (iter.hasNext()) {
 		ClipItem *pClipItem = iter.next();
+		pClipItem->rect.setWidth(pSession->pixelFromFrame(pClipItem->clipLength));
 		m_pClipSelect->addClip(pClipItem->clip, pClipItem->rect);
 	}
 

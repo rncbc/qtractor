@@ -5,6 +5,10 @@ ChangeLog
 
 CVS HEAD
 
+- The floating selection, as show for a clipboard pasting operation,
+  has been corrected regarding time scale (horizontal zoom) changes,
+  in the main track-view.
+
 - Current tempo and snap-per-beat setting now survive session cycling.
 
 - DSSI plugins implementing run_multiple_synths (eg. fluidsynth-dssi)

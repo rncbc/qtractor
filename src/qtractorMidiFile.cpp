@@ -191,7 +191,7 @@ bool qtractorMidiFile::readTracks ( qtractorMidiSequence **ppSeqs,
 		unsigned long iTrackTime  = 0;
 		unsigned long iTrackEnd   = m_iOffset + m_pTrackInfo[iTrack].length;
 		unsigned int  iLastStatus = 0;
-		
+
 		// While this track lasts...
 		while (m_iOffset < iTrackEnd) {
 
