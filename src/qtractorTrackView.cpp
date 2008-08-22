@@ -2823,7 +2823,7 @@ void qtractorTrackView::pasteClipSelect ( qtractorTrack *pTrack )
 	}
 
 	// We'll build a composite command...
-
+	long iClipDelta = 0;
 	QListIterator<ClipItem *> iter(m_clipboard.items);
 	while (iter.hasNext()) {
 		ClipItem *pClipItem = iter.next();
@@ -2831,6 +2831,15 @@ void qtractorTrackView::pasteClipSelect ( qtractorTrack *pTrack )
 		if (pSingleTrack == NULL)
 			pTrack = pClip->track();
 		int x = (pClipItem->rect.x() + m_iDraggingX);
+		// Convert to precise frame positioning,
+		// but only the first clip gets snapped...
+		unsigned long iClipStart = pSession->frameFromPixel(x > 0 ? x : 0);
+		if (iTrackClip == 0) {
+			unsigned long iFrameStart = pSession->frameSnap(iClipStart);
+			iClipDelta = long(iFrameStart) - long(iClipStart);
+			iClipStart = iFrameStart;
+		} else if (long(iClipStart) + iClipDelta > 0)
+			iClipStart += iClipDelta;
 		// Now, its imperative to make a proper copy of those clips...
 		qtractorClip *pNewClip = NULL;
 		switch (pTrack->trackType()) {
@@ -2853,7 +2862,7 @@ void qtractorTrackView::pasteClipSelect ( qtractorTrack *pTrack )
 		}
 		// Add the new pasted clip...
 		if (pNewClip) {
-			pNewClip->setClipStart(pSession->frameFromPixel(x > 0 ? x : 0));
+			pNewClip->setClipStart(iClipStart);
 			pNewClip->setClipOffset(pClipItem->clipOffset);
 			pNewClip->setClipLength(pClipItem->clipLength);
 			pNewClip->setFadeInLength(pClipItem->fadeInLength);

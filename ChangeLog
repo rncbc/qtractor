@@ -7,7 +7,8 @@ CVS HEAD
 
 - The floating selection, as show for a clipboard pasting operation,
   has been corrected regarding time scale (horizontal zoom) changes,
-  in the main track-view.
+  while in the main track-view. Also fixed final position snapping 
+  precision (spotted in bug #2055846).
 
 - Current tempo and snap-per-beat setting now survive session cycling.
 
