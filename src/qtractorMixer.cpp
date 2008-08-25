@@ -585,15 +585,27 @@ void qtractorMixerStrip::setSelected ( bool bSelected )
 	if (m_bSelected) {
 		const QColor& rgbBase = pal.midlight().color();
 		pal.setColor(QPalette::WindowText, rgbBase.lighter(150));
+		pal.setColor(QPalette::Window, rgbBase.darker(150));
 		grad.setColorAt(0.6, rgbBase.darker(150));
 		grad.setColorAt(1.0, rgbBase.darker());
 	} else {
 		const QColor& rgbBase = pal.button().color();
+		pal.setColor(QPalette::WindowText, rgbBase.darker());
+		pal.setColor(QPalette::Window, rgbBase);
 		grad.setColorAt(0.6, rgbBase);
 		grad.setColorAt(1.0, rgbBase.darker(120));
 	}
+	m_pPluginListView->setPalette(pal);
+	m_pThruButton->setPalette(pal);
+	if (m_pBusButton)
+		m_pBusButton->setPalette(pal);
+	if (m_pRecordButton)
+		m_pRecordButton->setPalette(pal);
+	if (m_pMuteButton)
+		m_pMuteButton->setPalette(pal);
+	if (m_pSoloButton)
+		m_pSoloButton->setPalette(pal);
 	pal.setBrush(QPalette::Window, grad);
-	m_pMeter->setPalette(pal);
 #else
 	if (m_bSelected) {
 		const QColor& rgbBase = pal.midlight().color();
