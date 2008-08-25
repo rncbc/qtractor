@@ -49,6 +49,10 @@
 #include <QKeyEvent>
 #include <QPainter>
 
+#ifdef CONFIG_GRADIENT
+#include <QLinearGradient>
+#endif
+
 
 //----------------------------------------------------------------------------
 // qtractorTrackListHeaderModel -- Track-list header model.
@@ -667,7 +671,14 @@ void qtractorTrackList::drawCell ( QPainter *pPainter, int iRow, int iCol,
 
 	// Draw text and decorations if any...
 	QRect rectText(rect.topLeft() + QPoint(4, 4), rect.size() - QSize(8, 8));
+#ifdef CONFIG_GRADIENT
+	QLinearGradient grad(0, rect.top(), 0, rect.bottom());
+	grad.setColorAt(0.2, bg);
+	grad.setColorAt(1.0, bg.darker(110));
+	pPainter->fillRect(rect, grad);
+#else
 	pPainter->fillRect(rect, bg);
+#endif
 	pPainter->setPen(fg);
 	if (iCol == Number) {
 		pPainter->drawText(rectText,

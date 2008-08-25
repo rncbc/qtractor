@@ -31,6 +31,10 @@
 #include <QPolygon>
 #include <QDir>
 
+#ifdef CONFIG_GRADIENT
+#include <QLinearGradient>
+#endif
+
 
 //-------------------------------------------------------------------------
 // qtractorClip -- Track clip capsule.
@@ -431,7 +435,14 @@ void qtractorClip::drawClip ( QPainter *pPainter, const QRect& clipRect,
 {
 	// Fill clip background...
 	pPainter->setPen(m_pTrack->background().darker());
+#ifdef CONFIG_GRADIENT
+	QLinearGradient grad(0, clipRect.top(), 0, clipRect.bottom());
+	grad.setColorAt(0.2, m_pTrack->background());
+	grad.setColorAt(1.0, m_pTrack->background().darker(120));
+	pPainter->setBrush(grad);
+#else
 	pPainter->setBrush(m_pTrack->background());
+#endif
 	pPainter->drawRect(clipRect);
 
 	qtractorSession *pSession = m_pTrack->session();

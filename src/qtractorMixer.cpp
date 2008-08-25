@@ -56,6 +56,10 @@
 
 #include <QPainter>
 
+#ifdef CONFIG_GRADIENT
+#include <QLinearGradient>
+#endif
+
 
 //----------------------------------------------------------------------------
 // qtractorMixerStrip::IconLabel -- Custom mixer strip title widget.
@@ -575,10 +579,28 @@ void qtractorMixerStrip::setSelected ( bool bSelected )
 	m_bSelected = bSelected;
 
 	QPalette pal;
+#ifdef CONFIG_GRADIENT
+	const QSize& hint = QFrame::sizeHint();
+	QLinearGradient grad(0, 0, hint.width() >> 1, hint.height());
 	if (m_bSelected) {
-		pal.setColor(QPalette::Window, pal.midlight().color().darker(150));
-		pal.setColor(QPalette::WindowText, pal.midlight().color().lighter(150));
+		const QColor& rgbBase = pal.midlight().color();
+		pal.setColor(QPalette::WindowText, rgbBase.lighter(150));
+		grad.setColorAt(0.6, rgbBase.darker(150));
+		grad.setColorAt(1.0, rgbBase.darker());
+	} else {
+		const QColor& rgbBase = pal.button().color();
+		grad.setColorAt(0.6, rgbBase);
+		grad.setColorAt(1.0, rgbBase.darker(120));
 	}
+	pal.setBrush(QPalette::Window, grad);
+	m_pMeter->setPalette(pal);
+#else
+	if (m_bSelected) {
+		const QColor& rgbBase = pal.midlight().color();
+		pal.setColor(QPalette::WindowText, rgbBase.lighter(150));
+		pal.setColor(QPalette::Window, rgbBase.darker(150));
+	}
+#endif
 	QFrame::setPalette(pal);
 }
 
