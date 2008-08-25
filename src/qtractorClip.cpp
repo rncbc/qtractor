@@ -437,8 +437,8 @@ void qtractorClip::drawClip ( QPainter *pPainter, const QRect& clipRect,
 	pPainter->setPen(m_pTrack->background().darker());
 #ifdef CONFIG_GRADIENT
 	QLinearGradient grad(0, clipRect.top(), 0, clipRect.bottom());
-	grad.setColorAt(0.2, m_pTrack->background());
-	grad.setColorAt(1.0, m_pTrack->background().darker(120));
+	grad.setColorAt(0.4, m_pTrack->background());
+	grad.setColorAt(1.0, m_pTrack->background().darker(130));
 	pPainter->setBrush(grad);
 #else
 	pPainter->setBrush(m_pTrack->background());

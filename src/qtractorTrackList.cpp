@@ -663,7 +663,7 @@ void qtractorTrackList::drawCell ( QPainter *pPainter, int iRow, int iCol,
 		fg = (pItem->track)->background().lighter();
 	} else if (m_iCurrentTrack == iRow) {
 		bg = pal.midlight().color().darker(150);
-		fg = pal.midlight().color().lighter(150);
+		fg = pal.midlight().color().lighter();
 	} else {
 		bg = pal.window().color();
 		fg = pal.windowText().color();
@@ -673,8 +673,8 @@ void qtractorTrackList::drawCell ( QPainter *pPainter, int iRow, int iCol,
 	QRect rectText(rect.topLeft() + QPoint(4, 4), rect.size() - QSize(8, 8));
 #ifdef CONFIG_GRADIENT
 	QLinearGradient grad(0, rect.top(), 0, rect.bottom());
-	grad.setColorAt(0.2, bg);
-	grad.setColorAt(1.0, bg.darker(110));
+	grad.setColorAt(0.4, bg);
+	grad.setColorAt(1.0, bg.darker(120));
 	pPainter->fillRect(rect, grad);
 #else
 	pPainter->fillRect(rect, bg);

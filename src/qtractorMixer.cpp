@@ -584,16 +584,16 @@ void qtractorMixerStrip::setSelected ( bool bSelected )
 	QLinearGradient grad(0, 0, hint.width() >> 1, hint.height());
 	if (m_bSelected) {
 		const QColor& rgbBase = pal.midlight().color();
-		pal.setColor(QPalette::WindowText, rgbBase.lighter(150));
+		pal.setColor(QPalette::WindowText, rgbBase.lighter());
 		pal.setColor(QPalette::Window, rgbBase.darker(150));
 		grad.setColorAt(0.6, rgbBase.darker(150));
 		grad.setColorAt(1.0, rgbBase.darker());
 	} else {
 		const QColor& rgbBase = pal.button().color();
-		pal.setColor(QPalette::WindowText, rgbBase.darker());
+	//	pal.setColor(QPalette::WindowText, rgbBase.darker());
 		pal.setColor(QPalette::Window, rgbBase);
 		grad.setColorAt(0.6, rgbBase);
-		grad.setColorAt(1.0, rgbBase.darker(120));
+		grad.setColorAt(1.0, rgbBase.darker(130));
 	}
 	m_pPluginListView->setPalette(pal);
 	m_pThruButton->setPalette(pal);
@@ -609,7 +609,7 @@ void qtractorMixerStrip::setSelected ( bool bSelected )
 #else
 	if (m_bSelected) {
 		const QColor& rgbBase = pal.midlight().color();
-		pal.setColor(QPalette::WindowText, rgbBase.lighter(150));
+		pal.setColor(QPalette::WindowText, rgbBase);
 		pal.setColor(QPalette::Window, rgbBase.darker(150));
 	}
 #endif
