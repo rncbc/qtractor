@@ -5,7 +5,8 @@ ChangeLog
 
 CVS HEAD
 
-- Playhead position is now shown and updated on session thumb-view.
+- Playhead position is now shown, updated and can be also set on the
+  main toolbar session thumb-view (shift-click to set the playhead).
 
 - Gradient eye-candy now optional for clips, tracks and mixer strips
   widget backgrounds, enabled on configure time (--enable-gradient).

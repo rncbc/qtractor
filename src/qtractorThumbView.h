@@ -46,21 +46,24 @@ public:
 	// Constructor.
 	qtractorThumbView(QWidget *pParent = 0);
 
-public slots:
-
 	// (Re)create the complete view pixmap.
 	void updateContents();
 
-	// Update thumb-position.
-	void updateThumb(int dx = 0);
-
 	// Update playhead-position.
 	void updatePlayHead();
+
+public slots:
+
+	// Update thumb-position.
+	void updateThumb(int dx = 0);
 
 protected:
 
 	// Update view-position.
 	void updateView(int dx);
+
+	// Set playhead-position (indirect).
+	void setPlayHeadX(int iPlayHeadX);
 
 	// Session track-line paint method.
 	void paintEvent(QPaintEvent *pPaintEvent);
