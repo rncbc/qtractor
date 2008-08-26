@@ -5,6 +5,8 @@ ChangeLog
 
 CVS HEAD
 
+- MIDI open files dialog gets a few more file filter types now.
+
 - Playhead position is now shown, updated and can be also set on the
   main toolbar session thumb-view (shift-click to set the playhead).
 
