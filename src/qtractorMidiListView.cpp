@@ -174,7 +174,7 @@ QStringList qtractorMidiListView::getOpenFileNames (void)
 		this,                       // Parent and name (none)
 		tr("Open MIDI Files"),		// Caption.
 		recentDir(),                // Start here.
-		filters                     // Filter files.
+		filters.join(";;")          // Filter files.
 	);
 }
 
