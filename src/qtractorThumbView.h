@@ -48,6 +48,9 @@ public:
 
 public slots:
 
+	// (Re)create the complete view pixmap.
+	void updateContents();
+
 	// Update thumb-position.
 	void updateThumb(int dx = 0);
 
@@ -74,6 +77,12 @@ protected:
 	void keyPressEvent(QKeyEvent *pKeyEvent);
 
 private:
+
+	// Local double-buffering pixmap.
+	QPixmap m_pixmap;
+
+	// Local playhead positioning.
+	int m_iPlayHeadX;
 
 	// The thumb rubber-band widget.
 	qtractorRubberBand *m_pRubberBand;

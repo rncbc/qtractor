@@ -854,6 +854,9 @@ void qtractorMainForm::setOptions ( qtractorOptions *pOptions )
 	// Load (action) keyboard shortcuts...
 	m_pOptions->loadActionShortcuts(this);
 
+	// Initial thumb-view background (empty)
+	m_pThumbView->updateContents();
+
 	// Change to last known session dir...
 	if (!m_pOptions->sSessionDir.isEmpty()) {
 		if (!QDir::setCurrent(m_pOptions->sSessionDir)) {
@@ -2407,7 +2410,7 @@ void qtractorMainForm::viewRefresh (void)
 		m_pMixer->updateTracks();
 	}
 
-	m_pThumbView->update();
+	m_pThumbView->updateContents();
 
 	// We're formerly done.
 	QApplication::restoreOverrideCursor();
@@ -4195,7 +4198,7 @@ void qtractorMainForm::contentsChanged (void)
 	m_pSnapPerBeatComboBox->setCurrentIndex(
 		qtractorTimeScale::indexFromSnap(m_pSession->snapPerBeat()));
 
-	m_pThumbView->update();
+	m_pThumbView->updateContents();
 
 	m_iDirtyCount++;
 	selectionNotifySlot(NULL);
