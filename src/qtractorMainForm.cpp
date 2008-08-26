@@ -3774,6 +3774,8 @@ void qtractorMainForm::timerSlot (void)
 			QListIterator<qtractorMidiEditorForm *> iter(m_editors);
 			while (iter.hasNext())
 				(iter.next()->editor())->setPlayHead(iPlayHead);
+			// And thumb-view as well...
+			m_pThumbView->updatePlayHead();
 		}
 		if (!bPlaying && m_iTransportRolling == 0 && m_iTransportStep == 0) {
 			// Update transport status anyway...

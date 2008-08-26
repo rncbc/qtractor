@@ -54,6 +54,9 @@ public slots:
 	// Update thumb-position.
 	void updateThumb(int dx = 0);
 
+	// Update playhead-position.
+	void updatePlayHead();
+
 protected:
 
 	// Update view-position.

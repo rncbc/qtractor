@@ -100,28 +100,21 @@ void qtractorThumbView::updateContents (void)
 	if (pTracks == NULL)
 		return;
 
+	int cw = pTracks->trackView()->contentsWidth() + 1;
+	int ch = pTracks->trackView()->contentsHeight();
 	int x2, w2;
-	int f2 = pSession->sessionLength();
-	if (f2 > 0)
-		f2 += pSession->frameFromBeat(2 * pSession->beatsPerBar());
-	else
-		f2 += pSession->frameFromPixel(pTracks->trackView()->viewport()->width());
-	f2 /= w;
-	f2++;
 
-	int c2 = pTracks->trackView()->contentsHeight();
-
-	if (c2 > 0) {
+	if (ch > 0) {
 		int y2 = 1;
 		qtractorTrack *pTrack = pSession->tracks().first();
 		while (pTrack && y2 < h) {
-			int h2 = ((h * pTrack->zoomHeight()) / c2);
+			int h2 = ((h * pTrack->zoomHeight()) / ch);
 			if (h2 < 3)
 				h2 = 3;
 			qtractorClip *pClip = pTrack->clips().first();
 			while (pClip) {
-				x2 = (pClip->clipStart()  / f2);
-				w2 = (pClip->clipLength() / f2);
+				x2 = (w * pSession->pixelFromFrame(pClip->clipStart()))  / cw;
+				w2 = (w * pSession->pixelFromFrame(pClip->clipLength())) / cw;
 				painter.fillRect(x2, y2, w2 - 1, h2 - 1, pTrack->background());
 				pClip = pClip->next();
 			}
@@ -133,10 +126,10 @@ void qtractorThumbView::updateContents (void)
 	// Draw the loop-bound lines, if any...
 	if (pSession->isLooping()) {
 		painter.setPen(Qt::darkCyan);
-		x2 = int(pSession->loopStart()) / f2;
+		x2 = (w * pSession->pixelFromFrame(pSession->loopStart())) / cw;
 		if (x2 < w)
 			painter.drawLine(x2, 0, x2, h);
-		x2 = int(pSession->loopEnd()) / f2;
+		x2 = (w * pSession->pixelFromFrame(pSession->loopEnd())) / cw;
 		if (x2 < w)
 			painter.drawLine(x2, 0, x2, h);
 	}
@@ -166,19 +159,9 @@ void qtractorThumbView::updateThumb ( int dx )
 	if (pTracks == NULL)
 		return;
 
-	int w2 = 0;
-	int x2 = dx;
-	int f2 = pSession->sessionLength();
-	if (f2 > 0) {
-		f2 += pSession->frameFromBeat(2 * pSession->beatsPerBar());
-		w2 += (w * pTracks->trackView()->viewport()->width()) / f2;
-		x2 += (w * pTracks->trackView()->contentsX()) / f2;
-	} else {
-		f2 += pSession->frameFromPixel(pTracks->trackView()->viewport()->width());
-		w2 += w;
-	}
-	f2 /= w;
-	f2++;
+	int cw = pTracks->trackView()->contentsWidth() + 1;
+	int x2 = dx + (w * pTracks->trackView()->contentsX()) / cw;
+	int w2 = (w * pTracks->trackView()->viewport()->width()) / cw;
 
 	if (w2 < 8)
 		w2 = 8;
@@ -195,7 +178,35 @@ void qtractorThumbView::updateThumb ( int dx )
 	m_pRubberBand->setGeometry(x2, 0, w2, h);
 
 	// Extra: update current playhead position...
-	x2 = int(pSession->playHead()) / f2;
+	updatePlayHead();
+}
+
+
+// Update playhead-position.
+void qtractorThumbView::updatePlayHead (void)
+{
+	int w = QFrame::width();
+	int h = QFrame::height();
+	if (w < 1 || h < 1)
+		return;
+
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm == NULL)
+		return;
+
+	qtractorSession *pSession = pMainForm->session();
+	if (pSession == NULL)
+		return;
+
+	qtractorTracks *pTracks = pMainForm->tracks();
+	if (pTracks == NULL)
+		return;
+
+	int cw = pTracks->trackView()->contentsWidth() + 1;
+	int x2;
+
+	// Extra: update current playhead position...
+	x2 = (w * pSession->pixelFromFrame(pSession->playHead())) / cw;
 	if (m_iPlayHeadX != x2) {
 		// Override old playhead line...
 		update(QRect(m_iPlayHeadX, 0, 1, h));
@@ -227,15 +238,8 @@ void qtractorThumbView::updateView ( int dx )
 	if (pTracks == NULL)
 		return;
 
-	int f2 = pSession->sessionLength();
-	if (f2 > 0)
-		f2 += pSession->frameFromBeat(2 * pSession->beatsPerBar());
-	else
-		f2 += pSession->frameFromPixel(pTracks->trackView()->viewport()->width());
-	f2 /= w;
-	f2++;
-
-	int cx = pTracks->trackView()->contentsX() + (dx * f2) / w;
+	int cw = pTracks->trackView()->contentsWidth() + 1;
+	int cx = pTracks->trackView()->contentsX() + (dx * cw) / w;
 	int cy = pTracks->trackView()->contentsY();
 
 	if (cx < 0)
@@ -271,27 +275,21 @@ void qtractorThumbView::paintEvent ( QPaintEvent *pPaintEvent )
 	if (pTracks == NULL)
 		return;
 
+	int cw = pTracks->trackView()->contentsWidth() + 1;
 	int x2;
-	int f2 = pSession->sessionLength();
-	if (f2 > 0)
-		f2 += pSession->frameFromBeat(2 * pSession->beatsPerBar());
-	else
-		f2 += pSession->frameFromPixel(pTracks->trackView()->viewport()->width());
-	f2 /= w;
-	f2++;
 
 	// Draw current edit-bound lines...
 	painter.setPen(Qt::blue);
-	x2 = int(pSession->editHead()) / f2;
+	x2 = (w * pSession->pixelFromFrame(pSession->editHead())) / cw;
 	if (x2 >= rect.left() && x2 <= rect.right())
 		painter.drawLine(x2, 0, x2, h);
-	x2 = int(pSession->editTail()) / f2;
+	x2 = (w * pSession->pixelFromFrame(pSession->editTail())) / cw;
 	if (x2 >= rect.left() && x2 <= rect.right())
 		painter.drawLine(x2, 0, x2, h);
 
 	// Draw current play-head as well...
 	painter.setPen(Qt::red);
-	x2 = int(pSession->playHead()) / f2;
+	x2 = (w * pSession->pixelFromFrame(pSession->playHead())) / cw;
 	if (x2 >= rect.left() && x2 <= rect.right())
 		painter.drawLine(x2, 0, x2, h);
 }
