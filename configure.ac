@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(Qtractor, 0.2.0.1046, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.2.0.1047, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractorMainForm.ui)
 AC_CONFIG_HEADERS(config.h)
@@ -86,6 +86,12 @@ AC_ARG_ENABLE(xinitthreads,
   AC_HELP_STRING([--enable-xinitthreads], [enable XInitThreads() support (default=no)]),
   [ac_xinitthreads="$enableval"],
   [ac_xinitthreads="no"])
+
+# Enable gradient eye-candy.
+AC_ARG_ENABLE(gradient,
+  AC_HELP_STRING([--enable-gradient], [enable gradient eye-candy (default=no)]),
+  [ac_gradient="$enableval"],
+  [ac_gradient="no"])
 
 
 # Standard installation base dirs.
@@ -540,6 +546,11 @@ if test "x$ac_xinitthreads" = "xyes"; then
    AC_DEFINE(CONFIG_XINITTHREADS, 1, [Define if XInitThreads() is supported.])
 fi
 
+# Check for gradient eye-candy.
+if test "x$ac_gradient" = "xyes"; then
+   AC_DEFINE(CONFIG_GRADIENT, 1, [Define if gradient eye-candy is enabled.])
+fi
+
 AC_SUBST(ac_incpath)
 
 
@@ -576,6 +587,7 @@ echo "  DSSI Plug-in support . . . . . . . . . . . . . . .: $ac_dssi"
 echo "  VST Plug-in support  . . . . . . . . . . . . . . .: $ac_vst"
 echo
 echo "  XInitThreads() support (DANGEROUS) . . . . . . . .: $ac_xinitthreads"
+echo "  Gradient eye-candy (EXPERIMENTAL)  . . . . . . . .: $ac_gradient"
 echo
 echo "  Install prefix . . . . . . . . . . . . . . . . . .: $ac_prefix"
 echo

@@ -5,7 +5,10 @@ ChangeLog
 
 CVS HEAD
 
-- The floating selection, as show for a clipboard pasting operation,
+- Gradient eye-candy now optional for clips, tracks and mixer strips
+  widget backgrounds, enabled on configure time (--enable-gradient).
+
+- The floating selection, as shown for a clipboard pasting operation,
   has been corrected regarding time scale (horizontal zoom) changes,
   while in the main track-view. Also fixed final position snapping 
   precision (spotted in bug #2055846).

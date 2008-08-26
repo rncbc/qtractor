@@ -448,7 +448,7 @@ void qtractorMixerStrip::updateThruButton (void)
 #if 0
 	const QColor& rgbOff = palette().button().color();
 	QPalette pal(m_pThruButton->palette());
-	pal.setColor(QPalette::Button, bOn ? Qt::gree : rgbOff);
+	pal.setColor(QPalette::Button, bOn ? Qt::green : rgbOff);
 	m_pThruButton->setPalette(pal);
 #endif
 	m_pThruButton->setChecked(bOn);
@@ -609,8 +609,12 @@ void qtractorMixerStrip::setSelected ( bool bSelected )
 #else
 	if (m_bSelected) {
 		const QColor& rgbBase = pal.midlight().color();
-		pal.setColor(QPalette::WindowText, rgbBase);
+		pal.setColor(QPalette::WindowText, rgbBase.lighter());
 		pal.setColor(QPalette::Window, rgbBase.darker(150));
+	} else {
+		const QColor& rgbBase = pal.button().color();
+	//	pal.setColor(QPalette::WindowText, rgbBase.darker());
+		pal.setColor(QPalette::Window, rgbBase);
 	}
 #endif
 	QFrame::setPalette(pal);
