@@ -5,10 +5,13 @@ ChangeLog
 
 CVS HEAD
 
+- MIDI pitch-bend/wheel events are now captured/recorded properly;
+  in fact, there was this ancient bug, now squashed, as all MIDI
+  clips weren't being stored at all if there weren't a single note
+  event captured.
+
 - MIDI channel translation is finally in effect on monitored tracks,
   specially the ones set in omni-channel input mode.
-
-- MIDI pitch-bend/wheel events are now captured/recorded correctly.
 
 - MIDI open files dialog gets a few more file filter types now.
 

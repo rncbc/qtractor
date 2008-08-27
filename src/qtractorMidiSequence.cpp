@@ -115,6 +115,7 @@ void qtractorMidiSequence::insertEvent ( qtractorMidiEvent *pEvent )
 	else
 		m_events.prepend(pEvent);
 
+	unsigned long iTime = pEvent->time();
 	// NOTEON: Keep note stats and make it pending on a NOTEOFF...
 	if (pEvent->type() == qtractorMidiEvent::NOTEON) {
 		unsigned char note = pEvent->note();
@@ -122,10 +123,10 @@ void qtractorMidiSequence::insertEvent ( qtractorMidiEvent *pEvent )
 			m_noteMin = note;
 		if (m_noteMax < note || m_noteMax == 0)
 			m_noteMax = note;
-		unsigned long iTimeEnd = pEvent->time() + pEvent->duration();
-		if (m_duration < iTimeEnd)
-			m_duration = iTimeEnd;
+		iTime += pEvent->duration();
 	}
+	if (m_duration < iTime)
+		m_duration = iTime;
 }
 
 
