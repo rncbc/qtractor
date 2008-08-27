@@ -787,8 +787,9 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 	case SND_SEQ_EVENT_PITCHBEND:
 		type     = qtractorMidiEvent::PITCHBEND;
 		iChannel = pEv->data.control.channel;
-		data1    = 0;
-		data2    = pEv->data.control.value;
+		iSysex   = (unsigned short) (0x2000 + pEv->data.control.value); // aux.
+		data1    = (iSysex & 0x007f);
+		data2    = (iSysex & 0x3f80) >> 7;
 		break;
 	case SND_SEQ_EVENT_SYSEX:
 		type     = qtractorMidiEvent::SYSEX;
@@ -848,6 +849,9 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 				if (pTrack->isMonitor()) {
 					pMidiBus = static_cast<qtractorMidiBus *> (pTrack->outputBus());
 					if (pMidiBus && pMidiBus->midiMonitor_out()) {
+						// FIXME: MIDI-thru channel filtering prolog... 
+						unsigned short iOldChannel = pEv->data.note.channel;
+						pEv->data.note.channel = pTrack->midiChannel();
 						// MIDI-thru: same event redirected...
 						snd_seq_ev_set_source(pEv, pMidiBus->alsaPort());
 						snd_seq_ev_set_subs(pEv);
@@ -860,6 +864,8 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 						// Do it for the MIDI plugins too...
 						if ((pTrack->pluginList())->midiManager())
 							(pTrack->pluginList())->midiManager()->direct(pEv);
+						// FIXME: MIDI-thru channel filtering epilog... 
+						pEv->data.note.channel = iOldChannel;
 					}
 				}
 			}

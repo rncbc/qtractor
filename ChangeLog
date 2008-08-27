@@ -5,6 +5,11 @@ ChangeLog
 
 CVS HEAD
 
+- MIDI channel translation is finally in effect on monitored tracks,
+  specially the ones set in omni-channel input mode.
+
+- MIDI pitch-bend/wheel events are now captured/recorded correctly.
+
 - MIDI open files dialog gets a few more file filter types now.
 
 - Playhead position is now shown, updated and can be also set on the
