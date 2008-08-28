@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(Qtractor, 0.2.0.1056, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.2.0.1058, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractorMainForm.ui)
 AC_CONFIG_HEADERS(config.h)
@@ -89,9 +89,9 @@ AC_ARG_ENABLE(xinitthreads,
 
 # Enable gradient eye-candy.
 AC_ARG_ENABLE(gradient,
-  AC_HELP_STRING([--enable-gradient], [enable gradient eye-candy (default=no)]),
+  AC_HELP_STRING([--enable-gradient], [enable gradient eye-candy (default=yes)]),
   [ac_gradient="$enableval"],
-  [ac_gradient="no"])
+  [ac_gradient="yes"])
 
 
 # Standard installation base dirs.

@@ -5,6 +5,9 @@ ChangeLog
 
 CVS HEAD
 
+- Gradient eye-candy now featured for clips, tracks and mixer strips
+  widget backgrounds, disabled on configure time (--disable-gradient).
+
 - MIDI pitch-bend/wheel events are now captured/recorded properly;
   in fact, there was this ancient bug, now squashed, as all MIDI
   clips weren't being stored at all if there weren't a single note
@@ -17,9 +20,6 @@ CVS HEAD
 
 - Playhead position is now shown, updated and can be also set on the
   main toolbar session thumb-view (shift-click to set the playhead).
-
-- Gradient eye-candy now optional for clips, tracks and mixer strips
-  widget backgrounds, enabled on configure time (--enable-gradient).
 
 - The floating selection, as shown for a clipboard pasting operation,
   has been corrected regarding time scale (horizontal zoom) changes,

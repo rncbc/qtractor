@@ -621,6 +621,9 @@ void qtractorMixerStrip::setSelected ( bool bSelected )
 	}
 #endif
 	QFrame::setPalette(pal);
+#ifdef CONFIG_GRADIENT
+	updateTrackButtons();
+#endif
 }
 
 bool qtractorMixerStrip::isSelected (void) const
