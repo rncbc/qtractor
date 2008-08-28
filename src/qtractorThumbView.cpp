@@ -177,7 +177,7 @@ void qtractorThumbView::updateThumb ( int dx )
 
 
 // Update playhead-position.
-void qtractorThumbView::updatePlayHead (void)
+void qtractorThumbView::updatePlayHead ( unsigned long iPlayHead )
 {
 	int w = QFrame::width();
 	int h = QFrame::height();
@@ -200,7 +200,7 @@ void qtractorThumbView::updatePlayHead (void)
 	int f2 = 1 + (pSession->frameFromPixel(cw) / w);
 
 	// Extra: update current playhead position...
-	int x2 = int(pSession->playHead() / f2);
+	int x2 = int(iPlayHead / f2);
 	if (m_iPlayHeadX != x2) {
 		// Override old playhead line...
 		update(QRect(m_iPlayHeadX, 0, 1, h));
@@ -305,7 +305,7 @@ void qtractorThumbView::paintEvent ( QPaintEvent *pPaintEvent )
 
 	// Draw current play-head as well...
 	painter.setPen(Qt::red);
-	x2 = int(pSession->playHead() / f2);
+	x2 = m_iPlayHeadX;
 	if (x2 >= rect.left() && x2 <= rect.right())
 		painter.drawLine(x2, 0, x2, h);
 }

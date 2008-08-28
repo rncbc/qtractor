@@ -46,11 +46,11 @@ public:
 	// Constructor.
 	qtractorThumbView(QWidget *pParent = 0);
 
+	// Update playhead-position.
+	void updatePlayHead(unsigned long iPlayHead);
+
 	// (Re)create the complete view pixmap.
 	void updateContents();
-
-	// Update playhead-position.
-	void updatePlayHead();
 
 public slots:
 

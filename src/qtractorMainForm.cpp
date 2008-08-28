@@ -3121,6 +3121,7 @@ void qtractorMainForm::setTrack ( int scmd, int iTrack, bool bOn )
 void qtractorMainForm::updateTransportTime ( unsigned long iPlayHead )
 {
 	m_pTransportTimeSpinBox->setValue(iPlayHead, false);
+	m_pThumbView->updatePlayHead(iPlayHead);
 
 #ifdef CONFIG_VST
 	qtractorVstPlugin::idleTimerAll();
@@ -3774,8 +3775,6 @@ void qtractorMainForm::timerSlot (void)
 			QListIterator<qtractorMidiEditorForm *> iter(m_editors);
 			while (iter.hasNext())
 				(iter.next()->editor())->setPlayHead(iPlayHead);
-			// And thumb-view as well...
-			m_pThumbView->updatePlayHead();
 		}
 		if (!bPlaying && m_iTransportRolling == 0 && m_iTransportStep == 0) {
 			// Update transport status anyway...
