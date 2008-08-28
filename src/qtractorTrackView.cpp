@@ -1987,14 +1987,13 @@ void qtractorTrackView::dragResizeDrop ( const QPoint& pos, bool bTimeStretch )
 	int dx = (pos.x() - m_posDrag.x());
 	if (m_dragState == DragResizeLeft) {
 		unsigned long iClipDelta;
-		if (m_rectDrag.left() > -(dx))
-			x = pSession->pixelSnap(m_rectDrag.left() + dx);
+		x = m_rectDrag.left() + dx;
 		if (x < 0)
 			x = 0;
 		else
 		if (x > m_rectDrag.right() - 8)
 			x = m_rectDrag.right() - 8;
-		iClipStart = pSession->frameFromPixel(x);
+		iClipStart = pSession->frameSnap(pSession->frameFromPixel(x));
 		if (m_pClipDrag->clipStart() > iClipStart) {
 			iClipDelta = (m_pClipDrag->clipStart() - iClipStart);
 			if (!bTimeStretch) {
@@ -2013,11 +2012,11 @@ void qtractorTrackView::dragResizeDrop ( const QPoint& pos, bool bTimeStretch )
 	}
 	else
 	if (m_dragState == DragResizeRight) {
-		if (m_rectDrag.right() > -(dx))
-			x = pSession->pixelSnap(m_rectDrag.right() + dx);
+		x = m_rectDrag.right() + dx;
 		if (x < m_rectDrag.left() + 8)
 			x = m_rectDrag.left() + 8;
-		iClipLength = pSession->frameFromPixel(x) - iClipStart;
+		iClipLength = pSession->frameSnap(pSession->frameFromPixel(x))
+			- iClipStart;
 	}
 
 	// Time stretching...
