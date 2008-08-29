@@ -3,7 +3,7 @@ Qtractor - An Audio/MIDI multi-track sequencer
 
 ChangeLog
 
-CVS HEAD
+0.2.1  2008-08-30  The Fainty Diva
 
 - Gradient eye-candy now featured for clips, tracks and mixer strips
   widget backgrounds, disabled on configure time (--disable-gradient).

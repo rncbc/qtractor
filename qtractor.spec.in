@@ -60,6 +60,8 @@ specially dedicated to the personal home-studio.
 %{_datadir}/pixmaps/%{name}.png
 
 %changelog
+* Sat Aug 30 2008 Rui Nuno Capela <rncbc@users.sourceforge.net>
+- Fainty Diva release.
 * Fri Jul 18 2008 Rui Nuno Capela <rncbc@users.sourceforge.net>
 - Frolic Demoiselle release.
 * Fri May 02 2008 Rui Nuno Capela <rncbc@users.sourceforge.net>

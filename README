@@ -1,18 +1,66 @@
 Qtractor - An Audio/MIDI multi-track sequencer
 ----------------------------------------------
 
-Qtractor is an Audio/MIDI multi-track sequencer application written
-in C++ around the Qt4 toolkit using Qt Designer.
-
-The initial target platform will be Linux, where the Jack Audio
-Connection Kit (JACK) for audio, and the Advanced Linux Sound
-Architecture (ALSA) for MIDI, are the main infrastructures to
-evolve as a fairly-featured Linux Desktop Audio Workstation GUI,
+Qtractor is an audio/MIDI multi-track sequencer application written
+in C++ with the Qt4 framework [1]. Target platform is Linux, where the
+Jack Audio Connection Kit (JACK) for audio [2] and the Advanced Linux
+Sound Architecture (ALSA) for MIDI [3] are the main infrastructures
+to evolve as a fairly-featured Linux desktop audio workstation GUI,
 specially dedicated to the personal home-studio.
 
-Homepage: http://qtractor.sourceforge.net
+Website:
 
-License: GNU General Public License (GPL)
+  http://qtractor.sourceforge.net
+
+Project page:
+
+  http://sourceforge.net/projects/qtractor 
+
+Weblog:
+
+  http://www.rncbc.org
+
+Qtractor is free, open-source software, distributed under the terms of
+the GNU General Public License (GPL) [15] version 2 or later.
+
+
+Features
+--------
+
+- Multi-track audio and MIDI sequencing and recording.
+- Developed on pure Qt4 C++ application framework [1]
+  (no Qt3 nor KDE dependencies).
+- Uses JACK [2] for audio and ALSA [3] sequencer for MIDI
+  as multimedia infrastructures.
+- Traditional multi-track tape recorder control paradigm.
+- Audio file formats support: OGG (via libvorbis [6]),
+  MP3 (via libmad [7], playback only), WAV, FLAC, AIFF
+  and many, many more (via linsndfile [4]).
+- Standard MIDI files support (format 0 and 1).
+- Non-destructive, non-linear editing.
+- Unlimited number of tracks per session/project.
+- Unlimited number of overlapping clips per track.
+- XML encoded session/project description files (SDI).
+- Point-and-click, multi-select, drag-and-drop interaction
+  (drag, move, drop, cut, copy, paste, delete, split)
+- Unlimited undo/redo.
+- Built-in mixer and monitor controls.
+- Built-in connection patchbay control and persistence
+  (a-la QjackCtl [13]).
+- LADSPA [5], DSSI [11] and native VSTi [12] plug-ins support.
+- Unlimited number of plug-ins per track or bus.
+- Plug-in presets, programs and chunk/configurations support.
+- Audio/MIDI clip fade-in/out (linear, quadratic, cubic).
+- Audio clip time-stretching (WSOLA-like or via librubberband [9]),
+  pitch-shifting (via librubberband [9]) and seemless sample-rate
+  conversion (via libsamplerate [8]).
+- Audio/MIDI track export (mix-down, merge).
+- Audio/MIDI metronome bar/beat clicks.
+- MIDI clip editor (piano roll).
+- MIDI instrument definitions (a-la Cakewalk(tm) [15])
+- JACK transport sync master.
+- MMC control surface enabled.
+- Configurable keyboard shortcuts.
 
 
 Requirements
@@ -22,47 +70,47 @@ The software requirements for build and runtime are listed as follows:
 
   Mandatory:
 
-  - Qt4 (core, gui, xml), C++ class library and tools for
+  [1] Qt4 (core, gui, xml), C++ class library and tools for
         crossplatform development and internationalization
         http://www.trolltech.org/products/qt/
 
-  - JACK Audio Connection Kit
+  [2] JACK Audio Connection Kit
         http://jackaudio.org/
 
-  - ALSA, Advanced Linux Sound Architecture
+  [3] ALSA, Advanced Linux Sound Architecture
         http://www.alsa-project.org/
 
-  - libsndfile, C library for reading and writing
+  [4] libsndfile, C library for reading and writing
         files containing sampled sound
         http://www.mega-nerd.com/libsndfile/
 
-  - LADSPA, Linux Audio Developer's Simple Plugin API
+  [5] LADSPA, Linux Audio Developer's Simple Plugin API
         http://www.ladspa.org/
 
   Optional (opted-in at build time):
 
-  - libvorbis (enc, file), Ogg Vorbis audio compression
+  [6] libvorbis (enc, file), Ogg Vorbis audio compression
         http://xiph.org/vorbis/
 
-  - libmad, High-quality MPEG audio decoder
+  [7] libmad, High-quality MPEG audio decoder
         http://www.underbit.com/products/mad/
 
-  - libsamplerate, The secret rabbit code, C library
+  [8] libsamplerate, The secret rabbit code, C library
         for audio sample rate conversion
         http://www.mega-nerd.com/SRC/
 
-  - librubberband, Rubber Band Audio Time Stretcher,
+  [9] librubberband, Rubber Band Audio Time Stretcher,
         an audio time-stretching and pitch-shifting library
         http://breakfastquay.com/rubberband/
 
-  - liblo, Lightweight OSC implementation
+  [10] liblo, Lightweight OSC implementation
         (needed for DSSI GUI support)
         http://liblo.sourceforge.net/
 
-  - DSSI, An API for soft synth plugins with custom user interfaces
+  [11] DSSI, An API for soft synth plugins with custom user interfaces
         http://dssi.sourceforge.net/
 
-  - VST SDK, Steinberg's Virtual Studio Technology (see README.VST)
+  [12] VST SDK, Steinberg's Virtual Studio Technology (see README.VST)
         http://www.steinberg.net/
 
 
@@ -129,6 +177,62 @@ Qtractor user manual has been co-authored by James Laco Hines.
 
 Qtractor logo/icon is an original work of Andy Fitzsimon, borrowed from
 the public domain openclipart.org gallery.
+
+
+References
+----------
+
+[1] Qt4 (core, gui, xml), C++ class library and tools
+     for crossplatform development and internationalization
+     http://www.trolltech.org/products/qt/
+
+[2] JACK Audio Connection Kit
+     http://jackaudio.org/
+
+[3] ALSA, Advanced Linux Sound Architecture
+     http://www.alsa-project.org/
+
+[4] libsndfile, C library for reading and writing
+     files containing sampled sound
+     http://www.mega-nerd.com/libsndfile/
+
+[5] LADSPA, Linux Audio Developer's Simple Plugin API
+     http://www.ladspa.org/
+
+[6] libvorbis (enc, file), Ogg Vorbis audio compression
+     http://xiph.org/vorbis/
+
+[7] libmad, High-quality MPEG audio decoder
+     http://www.underbit.com/products/mad/
+
+[8] libsamplerate, The secret rabbit code, C library
+     for audio sample rate conversion
+     http://www.mega-nerd.com/SRC/
+
+[9] librubberband, Rubber Band Audio Time Stretcher,
+     an audio time-stretching and pitch-shifting library
+     http://breakfastquay.com/rubberband/
+
+[10] liblo, Lightweight OSC implementation
+     (needed for DSSI GUI support)
+     http://liblo.sourceforge.net/
+
+[11] DSSI, an API for soft synth plugins with custom user interfaces
+     http://dssi.sourceforge.net/
+
+[12] VST SDK, Steinberg's Virtual Studio Technology (see README.VST)
+     http://www.steinberg.net/
+
+[13] QjackCtl - JACK Qt GUI Interface
+     http://qjackctl.sourceforge.net
+
+[14] GNU General Public License
+     http://www.gnu.org/copyleft/gpl.html
+
+[15] Cakewalk (by Roland), powerful and easy-to-use tools
+     for Windows-based music and sound production
+     http://www.cakewalk.com/
+
 
 Enjoy.
 

@@ -1,6 +1,27 @@
 Qtractor - An Audio/MIDI multi-track sequencer
 ----------------------------------------------
 
-TODOs
+Qtractor is still in some alpha stage of development, although already functional.
+It surely has a plenty of lurking bugs. It also lacks some features that some might
+find critical in the application field. All is not lost, as the following are among
+the ones planned to be worked on in the times to come (not in any particular order):
 
-- Any feature one can think of ;)
+- Automation and MIDI controller mapping.
+- Session/project templates.
+- Punch-in/out and loop recording (takes).
+- Audio clip cross-fading.
+- Audio effect send/return aux. inserts.
+- Clip locking, muting, normalize (gain).
+- LV2 plug-in support.
+- JACK MIDI support.
+- Tempo and key signature map.
+- Paste-repeat command.
+- MIDI SysEx manager.
+- MIDI event list editor.
+- MIDI editor (piano roll) draw mode.
+- MIDI groove/swing quantize.
+- OSC interface.
+- Scripting.
+- Etc. etc.
+
+- Any other feature one can think of ;)
