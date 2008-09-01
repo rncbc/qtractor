@@ -327,88 +327,48 @@ void qtractorAudioClip::drawClip ( QPainter *pPainter, const QRect& clipRect,
 	int h1 = (clipRect.height() / iChannels);
 	int h2 = (h1 / 2);
 	int n, i, j, x, y;
-	int kdelta = (pSession->frameFromPixel(1) / iPeriod);
 
-	if (kdelta < 1) {
-		// Polygon mode...
-		int ymax, yrms;
-		unsigned int iPolyPoints = (nframes << 1);
-		QPolygon **pPolyMax = new QPolygon* [iChannels];
-		QPolygon **pPolyRms = new QPolygon* [iChannels];
-		for (i = 0; i < (int) iChannels; ++i) {
-			pPolyMax[i] = new QPolygon(iPolyPoints);
-			pPolyRms[i] = new QPolygon(iPolyPoints);
-		}
-		// Build polygonal vertexes...
-		j = 0;
-		for (n = 0; n < (int) nframes; ++n) {
-			x = clipRect.x() + pSession->pixelFromFrame(n * iPeriod);
-			if (x > clipRect.right())
-				x = clipRect.right();
-			y = clipRect.y() + h2;
-			for (i = 0; i < (int) iChannels; ++i, ++j) {
-				ymax = (h2 * pframes[j].max) / 255;
-				yrms = (h2 * pframes[j].rms) / 255;
-				pPolyMax[i]->setPoint(n, x, y + ymax);
-				pPolyMax[i]->setPoint(iPolyPoints - n - 1, x, y - ymax);
-				pPolyRms[i]->setPoint(n, x, y + yrms);
-				pPolyRms[i]->setPoint(iPolyPoints - n - 1, x, y - yrms);
-				y += h1;
-			}
-		}
-		// Close, draw and free the polygons...
-		pPainter->setPen(fg.lighter());
-		for (i = 0; i < (int) iChannels; ++i) {
-			pPainter->setBrush(fg);
-			pPainter->drawPolygon(*pPolyMax[i]);
-			pPainter->setBrush(fg.lighter(130));
-			pPainter->drawPolygon(*pPolyRms[i]);
-			delete pPolyMax[i];
-			delete pPolyRms[i];
-		}
-		delete [] pPolyMax;
-		delete [] pPolyRms;
-		// Done on polygon mode.
-	} else {
-		// Bar-accumulated mode.
-		int v, k;
-		int *ymax = new int [iChannels];
-		int *yrms = new int [iChannels];
-		for (i = 0; i < (int) iChannels; ++i)
-			ymax[i] = yrms[i] = 0;
-		j = k = 0;
-		x = clipRect.x();
-		for (n = 0; n < (int) nframes; ++n) {
-			y = clipRect.y() + h2;
-			if (kdelta < 1)
-				x = clipRect.x() + pSession->pixelFromFrame(n * iPeriod);
-			for (i = 0; i < (int) iChannels; ++i, ++j) {
-				v = (h2 * pframes[j].max) / 255;
-				if (ymax[i] < v)
-					ymax[i] = v;
-				v = (h2 * pframes[j].rms) / 255;
-				if (yrms[i] < v)
-					yrms[i] = v;
-				if (kdelta < 1) {
-					pPainter->setPen(fg);
-					pPainter->drawLine(x, y - ymax[i], x, y + ymax[i]);
-					pPainter->setPen(fg.lighter(130));
-					pPainter->drawLine(x, y - yrms[i], x, y + yrms[i]);
-					ymax[i] = yrms[i] = 0;
-					y += h1;
-				}
-			}
-			if (kdelta < 1) {
-				kdelta = pSession->frameFromPixel(x - clipRect.x())
-					/ (++k * iPeriod);
-			}
-			kdelta--;
-		}
-		// Free (ab)used arrays.
-		delete [] yrms;
-		delete [] ymax;
-		// Done on bar-accumulated mode.
+	// Polygon mode...
+	int ymax, yrms;
+	unsigned int iPolyPoints = (nframes << 1);
+	QPolygon **pPolyMax = new QPolygon* [iChannels];
+	QPolygon **pPolyRms = new QPolygon* [iChannels];
+	for (i = 0; i < (int) iChannels; ++i) {
+		pPolyMax[i] = new QPolygon(iPolyPoints);
+		pPolyRms[i] = new QPolygon(iPolyPoints);
 	}
+
+	// Build polygonal vertexes...
+	j = 0;
+	for (n = 0; n < (int) nframes; ++n) {
+		x = clipRect.x() + pSession->pixelFromFrame(n * iPeriod);
+		if (x > clipRect.right())
+			x = clipRect.right();
+		y = clipRect.y() + h2;
+		for (i = 0; i < (int) iChannels; ++i, ++j) {
+			ymax = (h2 * pframes[j].max) >> 8;
+			yrms = (h2 * pframes[j].rms) >> 8;
+			pPolyMax[i]->setPoint(n, x, y + ymax);
+			pPolyMax[i]->setPoint(iPolyPoints - n - 1, x, y - ymax);
+			pPolyRms[i]->setPoint(n, x, y + yrms);
+			pPolyRms[i]->setPoint(iPolyPoints - n - 1, x, y - yrms);
+			y += h1;
+		}
+	}
+
+	// Close, draw and free the polygons...
+	pPainter->setPen(fg.lighter(140));
+	for (i = 0; i < (int) iChannels; ++i) {
+		pPainter->setBrush(fg);
+		pPainter->drawPolygon(*pPolyMax[i]);
+		pPainter->setBrush(fg.lighter(120));
+		pPainter->drawPolygon(*pPolyRms[i]);
+		delete pPolyMax[i];
+		delete pPolyRms[i];
+	}
+	// Done on polygon mode.
+	delete [] pPolyMax;
+	delete [] pPolyRms;
 }
 
 

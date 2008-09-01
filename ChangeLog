@@ -5,6 +5,8 @@ ChangeLog
 
 CVS HEAD
 
+- Optimize audio clip drawing, most specially on zoomed-out levels.
+
 - Bring the audio peak frames into some sort of cache, preventing
   recurrent peak frame buffer reallocation and trashing.
 
