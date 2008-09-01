@@ -74,8 +74,7 @@ public:
 
 	// Peak cache file methods.
 	bool openRead();
-	void read(Frame *pPeakFrames,
-		unsigned long iPeakOffset, unsigned int iPeakFrames);
+	Frame *read(unsigned long iPeakOffset, unsigned int iPeakFrames);
 	void closeRead();
 
 	// Write peak from audio frame methods.
@@ -99,6 +98,10 @@ protected:
 	// Internal creational methods.
 	void writeFrame();
 
+	// Read frames from peak file into local buffer offset.
+	void readBuffer(unsigned int iBuffOffset,
+		unsigned long iPeakOffset, unsigned int iPeakFrames);
+
 private:
 
 	// Reference to master peak manager.
@@ -114,7 +117,11 @@ private:
 
 	Header         m_peakHeader;
 
-	unsigned long  m_iReadOffset;
+	Frame         *m_pBuffer;
+	unsigned int   m_iBuffSize;
+	unsigned int   m_iBuffLength;
+	unsigned long  m_iBuffOffset;
+
 	unsigned long  m_iWriteOffset;
 
 	float         *m_peakMax;
@@ -154,7 +161,7 @@ public:
 
 	// Peak cache file methods.
 	bool openRead();
-	void read(qtractorAudioPeakFile::Frame *pPeakFrames,
+	qtractorAudioPeakFile::Frame *read(
 		unsigned long iPeakOffset, unsigned int iPeakFrames);
 	void closeRead();
 

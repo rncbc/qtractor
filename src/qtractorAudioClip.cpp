@@ -317,11 +317,10 @@ void qtractorAudioClip::drawClip ( QPainter *pPainter, const QRect& clipRect,
 	unsigned long nframes
 		= (pSession->frameFromPixel(clipRect.width()) / iPeriod) + 2;
 
-	qtractorAudioPeakFile::Frame *pframes
-		= new qtractorAudioPeakFile::Frame [iChannels * nframes];
-
 	// Grab them in...
-	m_pPeak->read(pframes, iframe, nframes);
+	qtractorAudioPeakFile::Frame *pframes = m_pPeak->read(iframe, nframes);
+	if (pframes == NULL)
+		return;
 
 	// Draw peak chart...
 	const QColor& fg = track()->foreground();
@@ -410,9 +409,6 @@ void qtractorAudioClip::drawClip ( QPainter *pPainter, const QRect& clipRect,
 		delete [] ymax;
 		// Done on bar-accumulated mode.
 	}
-
-	// Our peak buffer at large.
-	delete [] pframes;
 }
 
 

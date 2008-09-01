@@ -3,6 +3,12 @@ Qtractor - An Audio/MIDI multi-track sequencer
 
 ChangeLog
 
+CVS HEAD
+
+- Bring the audio peak frames into some sort of cache, preventing
+  recurrent peak frame buffer reallocation and trashing.
+
+
 0.2.1  2008-08-30  The Fainty Diva
 
 - Gradient eye-candy now featured for clips, tracks and mixer strips
