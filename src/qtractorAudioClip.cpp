@@ -315,7 +315,7 @@ void qtractorAudioClip::drawClip ( QPainter *pPainter, const QRect& clipRect,
 	unsigned long iframe
 		= ((iClipOffset + clipOffset()) / iPeriod);
 	unsigned long nframes
-		= (pSession->frameFromPixel(clipRect.width()) / iPeriod) + 2;
+		= (pSession->frameFromPixel(clipRect.width()) / iPeriod) + 1;
 
 	// Grab them in...
 	qtractorAudioPeakFile::Frame *pframes = m_pPeak->read(iframe, nframes);
@@ -326,39 +326,74 @@ void qtractorAudioClip::drawClip ( QPainter *pPainter, const QRect& clipRect,
 	const QColor& fg = track()->foreground();
 	int h1 = (clipRect.height() / iChannels);
 	int h2 = (h1 / 2);
-	int n, i, j, x, y;
+	unsigned int n, i;
+	int x, y;
 
 	// Polygon mode...
 	int ymax, yrms;
-	unsigned int iPolyPoints = (nframes << 1);
+	bool bZoomedIn = (clipRect.width() > int(nframes));
+	unsigned int iPolyPoints
+		= (bZoomedIn ? nframes : (clipRect.width() >> 1)) << 1;
 	QPolygon **pPolyMax = new QPolygon* [iChannels];
 	QPolygon **pPolyRms = new QPolygon* [iChannels];
-	for (i = 0; i < (int) iChannels; ++i) {
+	for (i = 0; i < iChannels; ++i) {
 		pPolyMax[i] = new QPolygon(iPolyPoints);
 		pPolyRms[i] = new QPolygon(iPolyPoints);
 	}
 
 	// Build polygonal vertexes...
-	j = 0;
-	for (n = 0; n < (int) nframes; ++n) {
-		x = clipRect.x() + pSession->pixelFromFrame(n * iPeriod);
-		if (x > clipRect.right())
-			x = clipRect.right();
-		y = clipRect.y() + h2;
-		for (i = 0; i < (int) iChannels; ++i, ++j) {
-			ymax = (h2 * pframes[j].max) >> 8;
-			yrms = (h2 * pframes[j].rms) >> 8;
-			pPolyMax[i]->setPoint(n, x, y + ymax);
-			pPolyMax[i]->setPoint(iPolyPoints - n - 1, x, y - ymax);
-			pPolyRms[i]->setPoint(n, x, y + yrms);
-			pPolyRms[i]->setPoint(iPolyPoints - n - 1, x, y - yrms);
-			y += h1;
+	if (bZoomedIn) {
+		// Zoomed in...
+		// - rade peak-frames for pixels.
+		for (n = 0; n < nframes; ++n) {
+			x = clipRect.x() + (n * clipRect.width()) / nframes;
+			y = clipRect.y() + h2;
+			for (i = 0; i < iChannels; ++i, ++pframes) {
+				ymax = (h2 * pframes->max) >> 8;
+				yrms = (h2 * pframes->rms) >> 8;
+				pPolyMax[i]->setPoint(n, x, y + ymax);
+				pPolyMax[i]->setPoint(iPolyPoints - n - 1, x, y - ymax);
+				pPolyRms[i]->setPoint(n, x, y + yrms);
+				pPolyRms[i]->setPoint(iPolyPoints - n - 1, x, y - yrms);
+				y += h1;
+			}
+		}
+	} else {
+		// Zoomed out...
+		// - trade (2) pixels for peak-frames (expensiver).
+		int x2, k = 0;
+		unsigned int n2, n0 = 0;
+		unsigned char v, vmax, vrms;
+		for (x2 = 0; x2 < clipRect.width(); x2 += 2, ++k) {
+			x = clipRect.x() + x2;
+			y = clipRect.y() + h2;
+			n = (iChannels * x2 * nframes) / clipRect.width();
+			for (i = 0; i < iChannels; ++i) {
+				vmax = pframes[n + i].max;
+				vrms = pframes[n + i].rms;;
+				for (n2 = n0 + i; n2 < n + i; n2 += iChannels) {
+					v = pframes[n2].max;
+					if (vmax < v)
+						vmax = v;
+					v = pframes[n2].rms;
+					if (vrms < v)
+						vrms = v;
+				}
+				ymax = (h2 * vmax) >> 8;
+				yrms = (h2 * vrms) >> 8;
+				pPolyMax[i]->setPoint(k, x, y + ymax);
+				pPolyMax[i]->setPoint(iPolyPoints - k - 1, x, y - ymax);
+				pPolyRms[i]->setPoint(k, x, y + yrms);
+				pPolyRms[i]->setPoint(iPolyPoints - k - 1, x, y - yrms);
+				y += h1;
+			}
+			n0 = n + iChannels;
 		}
 	}
 
 	// Close, draw and free the polygons...
 	pPainter->setPen(fg.lighter(140));
-	for (i = 0; i < (int) iChannels; ++i) {
+	for (i = 0; i < iChannels; ++i) {
 		pPainter->setBrush(fg);
 		pPainter->drawPolygon(*pPolyMax[i]);
 		pPainter->setBrush(fg.lighter(120));

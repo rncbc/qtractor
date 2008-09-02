@@ -330,6 +330,7 @@ void qtractorThumbView::resizeEvent ( QResizeEvent *pResizeEvent )
 {
 	QFrame::resizeEvent(pResizeEvent);
 
+	updateContents();
 	updateThumb();
 }
 
