@@ -58,8 +58,12 @@ qtractorThumbView::qtractorThumbView( QWidget *pParent )
 
 	QFrame::setFocusPolicy(Qt::ClickFocus);
 
+	// Local contents length (in frames).
+	m_iContentsLength = 0;
+
 	// Local play-head positioning.
 	m_iPlayHeadX  = 0;
+
 	m_dragState   = DragNone;
 	m_pRubberBand = new qtractorRubberBand(QRubberBand::Rectangle, this, 2);
 //	QPalette pal(m_pRubberBand->palette());
@@ -100,9 +104,15 @@ void qtractorThumbView::updateContents (void)
 	if (pTracks == NULL)
 		return;
 
-	int cw = pTracks->trackView()->contentsWidth();
+	// Local contents length (in frames).
+	m_iContentsLength = pSession->sessionLength();
+	if (m_iContentsLength > 0)
+		m_iContentsLength += pSession->frameFromBeat(2 * pSession->beatsPerBar());
+	else
+		m_iContentsLength += pSession->frameFromPixel(pTracks->trackView()->width());
+
 	int ch = pTracks->trackView()->contentsHeight();
-	int f2 = 1 + (pSession->frameFromPixel(cw) / w);
+	int f2 = 1 + (m_iContentsLength / w);
 	int x2, w2;
 
 	if (ch > 0) {
@@ -152,11 +162,15 @@ void qtractorThumbView::updateThumb ( int dx )
 	if (pMainForm == NULL)
 		return;
 
+	qtractorSession *pSession = pMainForm->session();
+	if (pSession == NULL)
+		return;
+
 	qtractorTracks *pTracks = pMainForm->tracks();
 	if (pTracks == NULL)
 		return;
 
-	int cw = pTracks->trackView()->contentsWidth() + 1;
+	int cw = pSession->pixelFromFrame(m_iContentsLength) + 1;
 	int x2 = dx + (w * pTracks->trackView()->contentsX()) / cw;
 	int w2 = (w * pTracks->trackView()->viewport()->width()) / cw;
 
@@ -196,8 +210,7 @@ void qtractorThumbView::updatePlayHead ( unsigned long iPlayHead )
 	if (pTracks == NULL)
 		return;
 
-	int cw = pTracks->trackView()->contentsWidth();
-	int f2 = 1 + (pSession->frameFromPixel(cw) / w);
+	int f2 = 1 + (m_iContentsLength / w);
 
 	// Extra: update current playhead position...
 	int x2 = int(iPlayHead / f2);
@@ -223,11 +236,15 @@ void qtractorThumbView::updateView ( int dx )
 	if (pMainForm == NULL)
 		return;
 
+	qtractorSession *pSession = pMainForm->session();
+	if (pSession == NULL)
+		return;
+
 	qtractorTracks *pTracks = pMainForm->tracks();
 	if (pTracks == NULL)
 		return;
 
-	int cw = pTracks->trackView()->contentsWidth();
+	int cw = pSession->pixelFromFrame(m_iContentsLength) + 1;
 	int cx = pTracks->trackView()->contentsX() + (dx * cw) / w;
 	int cy = pTracks->trackView()->contentsY();
 
@@ -257,9 +274,7 @@ void qtractorThumbView::setPlayHeadX ( int iPlayHeadX )
 	if (pTracks == NULL)
 		return;
 
-	int cw = pTracks->trackView()->contentsWidth();
-	int f2 = 1 + (pSession->frameFromPixel(cw) / w);
-
+	int f2 = 1 + (m_iContentsLength / w);
 	pSession->setPlayHead(f2 * iPlayHeadX);
 }
 
@@ -290,8 +305,7 @@ void qtractorThumbView::paintEvent ( QPaintEvent *pPaintEvent )
 	if (pTracks == NULL)
 		return;
 
-	int cw = pTracks->trackView()->contentsWidth();
-	int f2 = 1 + (pSession->frameFromPixel(cw) / w);
+	int f2 = 1 + (m_iContentsLength / w);
 	int x2;
 
 	// Draw current edit-bound lines...

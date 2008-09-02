@@ -5,6 +5,9 @@ ChangeLog
 
 CVS HEAD
 
+- Thumb-view width proportions now based on minimal slack session
+  length instead of the auto-extending track-view contents width.
+
 - Optimize audio clip drawing, most specially on zoomed-out levels.
 
 - Bring the audio peak frames into some sort of cache, preventing

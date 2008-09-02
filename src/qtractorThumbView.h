@@ -87,6 +87,9 @@ private:
 	// Local double-buffering pixmap.
 	QPixmap m_pixmap;
 
+	// Local contents length (in frames).
+	unsigned long m_iContentsLength;
+	
 	// Local playhead positioning.
 	int m_iPlayHeadX;
 
