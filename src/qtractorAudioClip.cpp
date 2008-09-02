@@ -305,10 +305,10 @@ void qtractorAudioClip::drawClip ( QPainter *pPainter, const QRect& clipRect,
 	if (!m_pPeak->openRead())
 		return;
 
-	unsigned int iPeriod = m_pPeak->period();
+	unsigned short iPeriod = m_pPeak->period();
 	if (iPeriod < 1)
 		return;
-	unsigned int iChannels = m_pPeak->channels();
+	unsigned short iChannels = m_pPeak->channels();
 	if (iChannels < 1)
 		return;
 
@@ -324,13 +324,9 @@ void qtractorAudioClip::drawClip ( QPainter *pPainter, const QRect& clipRect,
 
 	// Draw peak chart...
 	const QColor& fg = track()->foreground();
-	int h1 = (clipRect.height() / iChannels);
-	int h2 = (h1 / 2);
-	unsigned int n, i;
-	int x, y;
 
-	// Polygon mode...
-	int ymax, yrms;
+	// Polygon init...
+	unsigned short i;
 	bool bZoomedIn = (clipRect.width() > int(nframes));
 	unsigned int iPolyPoints
 		= (bZoomedIn ? nframes : (clipRect.width() >> 1)) << 1;
@@ -340,6 +336,12 @@ void qtractorAudioClip::drawClip ( QPainter *pPainter, const QRect& clipRect,
 		pPolyMax[i] = new QPolygon(iPolyPoints);
 		pPolyRms[i] = new QPolygon(iPolyPoints);
 	}
+
+	int h1 = (clipRect.height() / iChannels);
+	int h2 = (h1 / 2);
+	int ymax, yrms;
+	unsigned int n;
+	int x, y;
 
 	// Build polygonal vertexes...
 	if (bZoomedIn) {
@@ -401,7 +403,8 @@ void qtractorAudioClip::drawClip ( QPainter *pPainter, const QRect& clipRect,
 		delete pPolyMax[i];
 		delete pPolyRms[i];
 	}
-	// Done on polygon mode.
+
+	// Done on polygons.
 	delete [] pPolyMax;
 	delete [] pPolyRms;
 }

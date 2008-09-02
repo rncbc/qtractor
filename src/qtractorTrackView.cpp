@@ -295,7 +295,7 @@ void qtractorTrackView::updateContentsRecord (void)
 	if (m_iLastRecordX < iCurrRecordX) {
 		if (pSession->midiRecord() < 1 &&
 			x < m_iLastRecordX && m_iLastRecordX < x + w)
-			x = m_iLastRecordX - 4;
+			x = m_iLastRecordX - 8;
 		w = iCurrRecordX - x + 8;
 		qtractorScrollView::viewport()->update(
 			QRect(x - cx, 0, w, qtractorScrollView::height()));
