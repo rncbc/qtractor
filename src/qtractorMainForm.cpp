@@ -3794,8 +3794,8 @@ void qtractorMainForm::timerSlot (void)
 			m_iTransportUpdate = 0;
 			if (m_iTransportStep) {
 				// Transport stepping over...
-				iPlayHead += (long) (m_iTransportStep
-					* m_pSession->sampleRate()) / 20;
+				iPlayHead += (m_iTransportStep
+					* long(m_pSession->sampleRate())) / 20;
 				if (iPlayHead < 0)
 					iPlayHead = 0;
 				m_iTransportStep = 0;
