@@ -38,6 +38,7 @@ class qtractorMessages;
 class qtractorConnections;
 class qtractorMixer;
 class qtractorMmcEvent;
+class qtractorMidiControlEvent;
 class qtractorSpinBox;
 
 class qtractorMidiEditorForm;
@@ -227,6 +228,7 @@ protected:
 	void customEvent(QEvent *pEvent);
 
 	void mmcEvent(qtractorMmcEvent *pMmcEvent);
+	void midiControlEvent(qtractorMidiControlEvent *pCtlEvent);
 
 	bool queryClose();
 

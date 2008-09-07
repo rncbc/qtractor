@@ -43,7 +43,7 @@ static inline bool sse_enabled (void)
 	return bSSE;
 }
 
-// SSE enabled processor version.
+// SSE enabled processor versions.
 static inline void sse_process (
 	float *pFrames, unsigned int iFrames, float fGain, float *pfValue )
 {
@@ -67,15 +67,40 @@ static inline void sse_process (
 	*pfValue = *(float *) &v1; // CHEAT: take 1st of 4 possible values.
 }
 
+static inline void sse_process_meter (
+	float *pFrames, unsigned int iFrames, float *pfValue )
+{
+	__m128 v1 = _mm_load_ps1(pfValue);
+
+	for (; (long(pFrames) & 15) && (iFrames > 0); --iFrames)
+		*pFrames++;
+	
+	for (; iFrames >= 4; iFrames -= 4) {
+		v1 = _mm_max_ps(_mm_loadu_ps(pFrames), v1);
+		pFrames += 4;
+	}
+	
+	*pfValue = *(float *) &v1; // CHEAT: take 1st of 4 possible values.
+}
+
 #endif
 
 
-// Standard processor version.
+// Standard processor versions.
 static inline void std_process (
 	float *pFrames, unsigned int iFrames, float fGain, float *pfValue )
 {
 	for (unsigned int n = 0; n < iFrames; ++n) {
 		pFrames[n] *= fGain;
+		if (*pfValue < pFrames[n])
+			*pfValue = pFrames[n];
+	}
+}
+
+static inline void std_process_meter (
+	float *pFrames, unsigned int iFrames, float *pfValue )
+{
+	for (unsigned int n = 0; n < iFrames; ++n) {
 		if (*pfValue < pFrames[n])
 			*pfValue = pFrames[n];
 	}
@@ -91,11 +116,16 @@ qtractorAudioMonitor::qtractorAudioMonitor ( unsigned short iChannels,
 	m_iChannels(0), m_pfValues(0), m_pfGains(0)
 {
 #if defined(__SSE__)
-	if (sse_enabled())
+	if (sse_enabled()) {
 		m_pfnProcess = sse_process;
-	else
+		m_pfnProcessMeter = sse_process_meter;
+	} else {
 #endif
 	m_pfnProcess = std_process;
+	m_pfnProcessMeter = std_process_meter;
+#if defined(__SSE__)
+	}
+#endif
 
 	setChannels(iChannels);
 }
@@ -174,6 +204,34 @@ void qtractorAudioMonitor::process (
 		unsigned short i = 0;
 		for (unsigned short j = 0; j < m_iChannels; ++j) {
 			(*m_pfnProcess)(ppFrames[i], iFrames, m_pfGains[j], &m_pfValues[j]);
+			if (++i >= iChannels)
+				i = 0;
+		}
+	}
+}
+
+void qtractorAudioMonitor::process_meter (
+	float **ppFrames, unsigned int iFrames, unsigned short iChannels )
+{
+	if (iChannels < 1)
+		iChannels = m_iChannels;
+
+	if (iChannels == m_iChannels) {
+		for (unsigned short i = 0; i < m_iChannels; ++i)
+			(*m_pfnProcessMeter)(ppFrames[i], iFrames, &m_pfValues[i]);
+	}
+	else if (iChannels > m_iChannels) {
+		unsigned short j = 0;
+		for (unsigned short i = 0; i < iChannels; ++i) {
+			(*m_pfnProcessMeter)(ppFrames[i], iFrames, &m_pfValues[j]);
+			if (++j >= m_iChannels)
+				j = 0;
+		}
+	}
+	else { // (iChannels < m_iChannels)
+		unsigned short i = 0;
+		for (unsigned short j = 0; j < m_iChannels; ++j) {
+			(*m_pfnProcessMeter)(ppFrames[i], iFrames, &m_pfValues[j]);
 			if (++i >= iChannels)
 				i = 0;
 		}

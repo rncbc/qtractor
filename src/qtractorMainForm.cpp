@@ -117,6 +117,7 @@
 #define QTRACTOR_PORT_EVENT     QEvent::Type(QEvent::User + 4)
 #define QTRACTOR_BUFF_EVENT     QEvent::Type(QEvent::User + 5)
 #define QTRACTOR_MMC_EVENT      QEvent::Type(QEvent::User + 6)
+#define QTRACTOR_CTL_EVENT      QEvent::Type(QEvent::User + 7)
 
 
 //-------------------------------------------------------------------------
@@ -199,6 +200,7 @@ qtractorMainForm::qtractorMainForm (
 	if (pMidiEngine) {
 		pMidiEngine->setNotifyWidget(this);
 		pMidiEngine->setNotifyMmcType(QTRACTOR_MMC_EVENT);
+		pMidiEngine->setNotifyCtlType(QTRACTOR_CTL_EVENT);
 	}
 
 #ifdef HAVE_SIGNAL_H
@@ -1063,6 +1065,10 @@ void qtractorMainForm::customEvent ( QEvent *pEvent )
 	case QTRACTOR_MMC_EVENT:
 		// MMC event handling...
 		mmcEvent(static_cast<qtractorMmcEvent *> (pEvent));
+		break;
+	case QTRACTOR_CTL_EVENT:
+		// Contrller event handling...
+		midiControlEvent(static_cast<qtractorMidiControlEvent *> (pEvent));
 		// Fall thru.
 	default:
 		break;
@@ -1152,6 +1158,33 @@ void qtractorMainForm::mmcEvent ( qtractorMmcEvent *pMmcEvent )
 
 	appendMessages("MMC: " + sMmcText);
 	stabilizeForm();
+}
+
+
+// Custom controller event handler.
+void qtractorMainForm::midiControlEvent ( qtractorMidiControlEvent *pCtlEvent )
+{
+	QString sCtlText = tr("MIDI channel %1, Controller %2, Value %3")
+		.arg(pCtlEvent->channel())
+		.arg(pCtlEvent->controller())
+		.arg(pCtlEvent->value());
+
+	// FIXME: JCooper faders (as from US-224)...
+	if (pCtlEvent->channel() == 15) {
+		// Event translation...
+		int   iTrack = int(pCtlEvent->controller()) & 0x3f;
+		float fGain  = float(pCtlEvent->value()) / 127.0f;
+		if (m_pTracks) {
+			// Find the track by number...
+			qtractorTrack *pTrack = m_pTracks->trackList()->track(iTrack);
+			if (pTrack) {
+				m_pCommands->exec(new qtractorTrackGainCommand(pTrack, fGain));
+				sCtlText += tr("(track %1, gain %2)").arg(iTrack).arg(fGain);
+			}
+		}
+	}
+
+	appendMessages("CTL: " + sCtlText);
 }
 
 

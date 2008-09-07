@@ -46,8 +46,10 @@ public:
 	// Value holder accessor.
 	float value(unsigned short iChannel) const;
 
-	// Batch processor.
+	// Batch processors.
 	void process(float **ppFrames,
+		unsigned int iFrames, unsigned short iChannels = 0);
+	void process_meter(float **ppFrames,
 		unsigned int iFrames, unsigned short iChannels = 0);
 
 protected:
@@ -64,6 +66,7 @@ private:
 
 	// Monitoring evaluator processor.
 	void (*m_pfnProcess)(float *, unsigned int, float, float *);
+	void (*m_pfnProcessMeter)(float *, unsigned int, float *);
 };
 
 

@@ -722,19 +722,16 @@ void qtractorTrack::process ( qtractorClip *pClip,
 	qtractorAudioMonitor *pAudioMonitor = NULL;
 	if (m_props.trackType == qtractorTrack::Audio) {
 		pAudioMonitor = static_cast<qtractorAudioMonitor *> (m_pMonitor);
-		// Input monitoring...
-		if (isRecord() || isMonitor())
-			pInputBus = static_cast<qtractorAudioBus *> (m_pInputBus);
-		// Output stuff...
+		// Input/Output stuff...
+		pInputBus  = static_cast<qtractorAudioBus *> (m_pInputBus);
 		pOutputBus = static_cast<qtractorAudioBus *> (m_pOutputBus);
-		if (pOutputBus == NULL)
-			return;
 		// Prepare this track buffer...
-		pOutputBus->buffer_prepare(nframes, pInputBus);
+		if (pOutputBus)
+			pOutputBus->buffer_prepare(nframes, isMonitor() ? pInputBus : NULL);
 	}
 
 	// Playback...
-	if (!isRecord() && !isMute() && (!m_pSession->soloTracks() || isSolo())) {
+	if (!isMute() && (!m_pSession->soloTracks() || isSolo())) {
 		// Now, for every clip...
 		while (pClip && pClip->clipStart() < iFrameEnd) {
 			if (iFrameStart < pClip->clipStart() + pClip->clipLength())
@@ -744,25 +741,32 @@ void qtractorTrack::process ( qtractorClip *pClip,
 	}
 
 	// Audio buffers needs monitoring and commitment...
-	if (pAudioMonitor && pOutputBus) {
+	if (pAudioMonitor) {
 		// Audio-recording?
-		if (isRecord()) {
+		if (isRecord() && pInputBus) {
 			// Effective audio-recording?
 			qtractorAudioClip *pAudioClip
 				= static_cast<qtractorAudioClip *> (m_pClipRecord);
-			if (pAudioClip && pInputBus) {
+			if (pAudioClip) {
 				pAudioClip->write(
 					pInputBus->in(), nframes, pInputBus->channels());
 			}
+			// Record non-passthru metering...
+			pAudioMonitor->process_meter(
+				pInputBus->in(), nframes, pInputBus->channels());
 		}
-		// Output monitoring...
-		pAudioMonitor->process(pOutputBus->buffer(), nframes);
-		if (!isRecord() || isMonitor()) {
-			// Plugin chain post-processing...
-			if (m_pPluginList->activated() > 0)
-				m_pPluginList->process(pOutputBus->buffer(), nframes);
-			// Actually render it...
-			pOutputBus->buffer_commit(nframes);
+		// Output monitor processing...
+		if (pOutputBus) {
+			// Monitor passthru...
+			pAudioMonitor->process(pOutputBus->buffer(), nframes);
+			// Output monitoring...
+			if (isMonitor()) {
+				// Plugin chain post-processing...
+				if (m_pPluginList->activated() > 0)
+					m_pPluginList->process(pOutputBus->buffer(), nframes);
+				// Actually render it...
+				pOutputBus->buffer_commit(nframes);
+			}
 		}
 	}
 }

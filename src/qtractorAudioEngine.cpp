@@ -663,22 +663,26 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 		for (qtractorTrack *pTrack = pSession->tracks().first();
 				pTrack; pTrack = pTrack->next()) {
 			// Audio-buffers needs some preparation...
-			if (pTrack->trackType() == qtractorTrack::Audio
-				&& (pTrack->isRecord() || pTrack->isMonitor())) {
+			if (pTrack->trackType() == qtractorTrack::Audio) {
 				qtractorAudioBus *pInputBus
 					= static_cast<qtractorAudioBus *> (pTrack->inputBus());
 				qtractorAudioMonitor *pAudioMonitor
 					= static_cast<qtractorAudioMonitor *> (pTrack->monitor());
 				// Pre-monitoring...
 				if (pAudioMonitor && pInputBus) {
-					pAudioMonitor->process(
-						pInputBus->in(), nframes, pInputBus->channels());
-					// Post-passthru monitoring...
+					// Record non-passthru metering...
+					if (pTrack->isRecord()) {
+						pAudioMonitor->process_meter(
+							pInputBus->in(), nframes, pInputBus->channels());
+					}
+					// Monitor passthru processing...
 					if (pTrack->isMonitor()) {
+						pAudioMonitor->process(
+							pInputBus->in(), nframes, pInputBus->channels());
+						// Plugin-chain processing...
 						qtractorAudioBus *pOutputBus
 							= static_cast<qtractorAudioBus *> (pTrack->outputBus());
 						if (pOutputBus) {
-							// Plugin chain thru-processing...
 							pOutputBus->buffer_prepare(nframes, pInputBus);
 							if ((pTrack->pluginList())->activated() > 0)
 								(pTrack->pluginList())->process(

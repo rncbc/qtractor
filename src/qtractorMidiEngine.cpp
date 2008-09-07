@@ -548,6 +548,7 @@ qtractorMidiEngine::qtractorMidiEngine ( qtractorSession *pSession )
 
 	m_pNotifyWidget  = NULL;
 	m_eNotifyMmcType = QEvent::None;
+	m_eNotifyCtlType = QEvent::None;
 
 	m_bControlBus    = false;
 	m_pIControlBus   = NULL;
@@ -771,6 +772,18 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 		iChannel = pEv->data.control.channel;
 		data1    = pEv->data.control.param;
 		data2    = pEv->data.control.value;
+		// Trap controller commands...
+		if (m_pIControlBus && m_pIControlBus->alsaPort() == iAlsaPort) {
+			// FIXME: Avoid some estraneous events...
+			if (data1 > 0x7f || data2 > 0x7f)
+				return;
+			// Post the stuffed event...
+			if (m_pNotifyWidget) {
+				QApplication::postEvent(m_pNotifyWidget,
+					new qtractorMidiControlEvent(m_eNotifyCtlType,
+						iChannel, data1, data2));
+			}
+		}
 		break;
 	case SND_SEQ_EVENT_PGMCHANGE:
 		type     = qtractorMidiEvent::PGMCHANGE;
@@ -798,8 +811,7 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 		// Trap MMC commands...
 		if (pSysex[1] == 0x7f && pSysex[3] == 0x06
 			// check if it was intended to our input control bus!
-			&& m_pIControlBus
-			&& m_pIControlBus->alsaPort() == iAlsaPort) {
+			&& m_pIControlBus && m_pIControlBus->alsaPort() == iAlsaPort) {
 			// Post the stuffed event...
 			if (m_pNotifyWidget) {
 				QApplication::postEvent(m_pNotifyWidget,
@@ -1390,6 +1402,11 @@ void qtractorMidiEngine::setNotifyMmcType ( QEvent::Type eNotifyMmcType )
 	m_eNotifyMmcType = eNotifyMmcType;
 }
 
+void qtractorMidiEngine::setNotifyCtlType ( QEvent::Type eNotifyCtlType )
+{
+	m_eNotifyCtlType = eNotifyCtlType;
+}
+
 
 QWidget *qtractorMidiEngine::notifyWidget (void) const
 {
@@ -1399,6 +1416,11 @@ QWidget *qtractorMidiEngine::notifyWidget (void) const
 QEvent::Type qtractorMidiEngine::notifyMmcType (void) const
 {
 	return m_eNotifyMmcType;
+}
+
+QEvent::Type qtractorMidiEngine::notifyCtlType (void) const
+{
+	return m_eNotifyCtlType;
 }
 
 

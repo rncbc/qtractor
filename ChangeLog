@@ -5,7 +5,14 @@ ChangeLog
 
 CVS HEAD
 
-- Playhead position overflow fixed on negative MMC STEP command.
+- Record armed tracks aren't muted for playback anymore, as this
+  was a severe crippling nuisance regarding input monitoring and
+  all mighty user experience after recording a simple take; for
+  instance, as the bottom line goes, there's no need to un-arm a
+  track from its record-enabled state anymore, for just recorded
+  material get heard on immediate playback; kick on the jam!
+
+- Playhead position overflow fixed on negative MMC STEP commands.
 
 - Thumb-view width proportions now based on minimal slack session
   length instead of the auto-extending track-view contents width.

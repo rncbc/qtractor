@@ -1106,9 +1106,11 @@ void qtractorSession::trackRecord ( qtractorTrack *pTrack, bool bRecord )
 		default:
 			break;
 		}
+	#if 0
 		// Re-sync as appropriate...
 		if (isPlaying())
 			trackMute(pTrack, false);
+	#endif
 		// Done.
 		return;
 	}
@@ -1155,9 +1157,11 @@ void qtractorSession::trackRecord ( qtractorTrack *pTrack, bool bRecord )
 		break;
 	}
 
+#if 0
 	// Mute track as appropriate...
 	if (isPlaying())
 		trackMute(pTrack, true);
+#endif
 }
 
 // Immediate track mute (engine indirection).
