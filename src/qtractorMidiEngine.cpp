@@ -2588,7 +2588,6 @@ int qtractorMidiBus::updateConnects ( qtractorBus::BusMode busMode,
 	snd_seq_port_info_alloca(&pPortInfo);
 
 	ConnectItem item;
-	item.index = 0;
 
 	// Get port connections...
 	snd_seq_query_subscribe_set_type(pAlsaSubs, subs_type);
@@ -2601,14 +2600,12 @@ int qtractorMidiBus::updateConnects ( qtractorBus::BusMode busMode,
 		seq_addr = *snd_seq_query_subscribe_get_addr(pAlsaSubs);
 		snd_seq_get_any_client_info(
 			pMidiEngine->alsaSeq(), seq_addr.client, pClientInfo);
-		item.clientName  = QString::number(seq_addr.client);
-		item.clientName += ':';
-		item.clientName += snd_seq_client_info_get_name(pClientInfo);
+		item.client = seq_addr.client;
+		item.clientName = snd_seq_client_info_get_name(pClientInfo);
 		snd_seq_get_any_port_info(
 			pMidiEngine->alsaSeq(), seq_addr.client, seq_addr.port, pPortInfo);
-		item.portName  = QString::number(seq_addr.port);
-		item.portName += ':';
-		item.portName += snd_seq_port_info_get_name(pPortInfo);
+		item.port = seq_addr.port;
+		item.portName = snd_seq_port_info_get_name(pPortInfo);
 		// Check if already in list/connected...
 		ConnectItem *pItem = connects.findItem(item);
 		if (pItem && bConnect) {
@@ -2636,12 +2633,10 @@ int qtractorMidiBus::updateConnects ( qtractorBus::BusMode busMode,
 	QListIterator<ConnectItem *> iter(connects);
 	while (iter.hasNext()) {
 		ConnectItem *pItem = iter.next();
-		int iAlsaClient = pItem->clientName.section(':', 0, 0).toInt();
-		int iAlsaPort   = pItem->portName.section(':', 0, 0).toInt();
 		// Mangle which is output and input...
 		if (busMode == qtractorBus::Input) {
-			seq_addr.client = iAlsaClient;
-			seq_addr.port   = iAlsaPort;
+			seq_addr.client = pItem->client;
+			seq_addr.port   = pItem->port;
 			snd_seq_port_subscribe_set_sender(pPortSubs, &seq_addr);
 			seq_addr.client = pMidiEngine->alsaClient();
 			seq_addr.port   = m_iAlsaPort;
@@ -2650,8 +2645,8 @@ int qtractorMidiBus::updateConnects ( qtractorBus::BusMode busMode,
 			seq_addr.client = pMidiEngine->alsaClient();
 			seq_addr.port   = m_iAlsaPort;
 			snd_seq_port_subscribe_set_sender(pPortSubs, &seq_addr);
-			seq_addr.client = iAlsaClient;
-			seq_addr.port   = iAlsaPort;
+			seq_addr.client = pItem->client;
+			seq_addr.port   = pItem->port;
 			snd_seq_port_subscribe_set_dest(pPortSubs, &seq_addr);
 		}
 #ifdef CONFIG_DEBUG
@@ -2659,7 +2654,7 @@ int qtractorMidiBus::updateConnects ( qtractorBus::BusMode busMode,
 		qDebug("qtractorMidiBus[%p]::updateConnects(%d): "
 			"snd_seq_subscribe_port: [%d:%s] => [%d:%s]\n", this, int(busMode),
 				pMidiEngine->alsaClient(), sPortName.toUtf8().constData(),
-				iAlsaClient, pItem->portName.toUtf8().constData());
+				pItem->client, pItem->portName.toUtf8().constData());
 #endif
 		if (snd_seq_subscribe_port(pMidiEngine->alsaSeq(), pPortSubs) == 0) {
 			int iItem = connects.indexOf(pItem);

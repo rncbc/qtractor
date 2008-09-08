@@ -5,6 +5,10 @@ ChangeLog
 
 CVS HEAD
 
+- All connections are now based exclusively on the textual client
+  and port names, effective in particular to match MIDI bus ports
+  with disregard to their volatile numerical identification.
+
 - MIDI file (SMF) header endianess fix (PPC users rejoyce:))
 
 - Record armed tracks aren't muted for playback anymore, as this

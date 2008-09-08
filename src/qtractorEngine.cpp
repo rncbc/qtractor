@@ -341,11 +341,27 @@ bool qtractorBus::loadConnects ( ConnectList& connects,
 				if (eConnect.isNull())
 					continue;
 				// Add this one to map...
-				if (eConnect.tagName() == "client")
-					pItem->clientName = eConnect.text();
+				if (eConnect.tagName() == "client") {
+					const QString& sClient = eConnect.text();
+					const QString& sClientName = sClient.section(':', 1, 1);
+					if (sClientName.isEmpty()) {
+						pItem->clientName = sClient;
+					} else {
+						pItem->client = sClient.section(':', 0, 0).toInt();
+						pItem->clientName = sClientName;
+					}
+				}
 				else
-				if (eConnect.tagName() == "port")
-					pItem->portName = eConnect.text();
+				if (eConnect.tagName() == "port") {
+					const QString& sPort = eConnect.text();
+					const QString& sPortName = sPort.section(':', 1, 1);
+					if (sPortName.isEmpty()) {
+						pItem->portName = sPort;
+					} else {
+						pItem->port = sPort.section(':', 0, 0).toInt();
+						pItem->portName = sPortName;
+					}
+				}
 			}
 			connects.append(pItem);
 		}
@@ -363,8 +379,16 @@ bool qtractorBus::saveConnects ( ConnectList& connects,
 		ConnectItem *pItem = iter.next();
 		QDomElement eItem = pDocument->document()->createElement("connect");
 		eItem.setAttribute("index", QString::number(pItem->index));
-		pDocument->saveTextElement("client", pItem->clientName, &eItem);
-		pDocument->saveTextElement("port", pItem->portName, &eItem);
+		QString sClient;
+		if (pItem->client >= 0)
+			sClient += QString::number(pItem->client) + ':';
+		sClient += pItem->clientName;
+		pDocument->saveTextElement("client", sClient, &eItem);
+		QString sPort;
+		if (pItem->port >= 0)
+			sPort += QString::number(pItem->port) + ':';
+		sPort += pItem->portName;
+		pDocument->saveTextElement("port", sPort, &eItem);
 		pElement->appendChild(eItem);
 	}
 

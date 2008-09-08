@@ -167,7 +167,11 @@ public:
 	// Connection list stuff.
 	struct ConnectItem
 	{
+		// Default contructor
+		ConnectItem() : index(0), client(-1), port (-1) {}
+		// Item members.
 		unsigned short index;
+		int client, port;
 		QString clientName;
 		QString portName;
 	};
