@@ -24,8 +24,8 @@
 #include <QFileInfo>
 
 // Symbolic header markers.
-#define SMF_MTHD 0x4d546864
-#define SMF_MTRK 0x4d54726b
+#define SMF_MTHD "MThd"
+#define SMF_MTRK "MTrk"
 
 
 //----------------------------------------------------------------------
@@ -82,7 +82,9 @@ bool qtractorMidiFile::open ( const QString& sFilename, int iMode )
 
 	// First word must identify the file as a SMF;
 	// must be literal "MThd"
-	if (readInt(4) != SMF_MTHD) {
+	char header[5];
+	readData((unsigned char *) &header[0], 4); header[4] = (char) 0;
+	if (::strcmp(header, SMF_MTHD)) {
 		close();
 		return false;
 	}
@@ -112,7 +114,8 @@ bool qtractorMidiFile::open ( const QString& sFilename, int iMode )
 	m_pTrackInfo = new TrackInfo [m_iTracks];
 	for (int iTrack = 0; iTrack < m_iTracks; iTrack++) {
 		// Must be a track header "MTrk"...
-		if (readInt(4) != SMF_MTRK) {
+		readData((unsigned char *) &header[0], 4); header[4] = (char) 0;
+		if (::strcmp(header, SMF_MTRK)) {
 			close();
 			return false;
 		}
@@ -415,7 +418,7 @@ bool qtractorMidiFile::writeHeader ( unsigned short iFormat,
 
 	// First word must identify the file as a SMF;
 	// must be literal "MThd"
-	writeInt(SMF_MTHD, 4);
+	writeData((unsigned char *) SMF_MTHD, 4);
 
 	// Second word should be the total header chunk length...
 	writeInt(6, 4);
@@ -468,7 +471,7 @@ bool qtractorMidiFile::writeTracks ( qtractorMidiSequence **ppSeqs,
 			pSeq = ppSeqs[iSeq];
 
 		// Must be a track header "MTrk"...
-		writeInt(SMF_MTRK, 4);
+		writeData((unsigned char *) SMF_MTRK, 4);
 
 		// Write a dummy track length (we'll overwrite it later)...
 		unsigned long iMTrkOffset = m_iOffset;

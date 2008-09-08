@@ -5,6 +5,8 @@ ChangeLog
 
 CVS HEAD
 
+- MIDI file (SMF) header endianess fix (PPC users rejoyce:))
+
 - Record armed tracks aren't muted for playback anymore, as this
   was a severe crippling nuisance regarding input monitoring and
   all mighty user experience after recording a simple take; for
