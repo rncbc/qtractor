@@ -191,8 +191,9 @@ public:
 				ConnectItem *pItem = iter.next();
 				if (pItem->index      == item.index &&
 					pItem->clientName == item.clientName &&
-					pItem->portName   == item.portName) 
+					pItem->portName   == item.portName) {
 					return pItem;
+				}
 			}
 			return NULL;
 		}

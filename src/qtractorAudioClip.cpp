@@ -315,21 +315,22 @@ void qtractorAudioClip::drawClip ( QPainter *pPainter, const QRect& clipRect,
 	unsigned long iframe
 		= ((iClipOffset + clipOffset()) / iPeriod);
 	unsigned long nframes
-		= (pSession->frameFromPixel(clipRect.width()) / iPeriod) + 1;
+		= (pSession->frameFromPixel(clipRect.width()) / iPeriod) + 2;
+
+	// Needed an even number of polygon points...
+	bool bZoomedIn = (clipRect.width() > int(nframes));
+	unsigned int iPolyPoints
+		= (bZoomedIn ? nframes : (clipRect.width() >> 1)) << 1;
+	if (iPolyPoints < 2)
+		return;
 
 	// Grab them in...
 	qtractorAudioPeakFile::Frame *pframes = m_pPeak->read(iframe, nframes);
 	if (pframes == NULL)
 		return;
 
-	// Draw peak chart...
-	const QColor& fg = track()->foreground();
-
 	// Polygon init...
 	unsigned short i;
-	bool bZoomedIn = (clipRect.width() > int(nframes));
-	unsigned int iPolyPoints
-		= (bZoomedIn ? nframes : (clipRect.width() >> 1)) << 1;
 	QPolygon **pPolyMax = new QPolygon* [iChannels];
 	QPolygon **pPolyRms = new QPolygon* [iChannels];
 	for (i = 0; i < iChannels; ++i) {
@@ -337,6 +338,8 @@ void qtractorAudioClip::drawClip ( QPainter *pPainter, const QRect& clipRect,
 		pPolyRms[i] = new QPolygon(iPolyPoints);
 	}
 
+	// Draw peak chart...
+	const QColor& fg = track()->foreground();
 	int h1 = (clipRect.height() / iChannels);
 	int h2 = (h1 / 2);
 	int ymax, yrms;
