@@ -5,6 +5,10 @@ ChangeLog
 
 CVS HEAD
 
+- Make MIDI instrument patch management a little more sane, as for
+  preventing the accidental insertion of blank instrument names and
+  automatic default bank/program selection in track properties.
+
 - All connections are now based exclusively on the textual client
   and port names, effective in particular to match MIDI bus ports
   with disregard to their volatile numerical identification.

@@ -820,13 +820,13 @@ void qtractorTrackForm::updatePrograms (  const QString& sInstrumentName,
 	}
 	else if (!bMidiManager)
 		iProgIndex = -1;
-
+#if 0
 	// If there's programs we must choose at least one...
 	if (iProg < 0 && m_progs.count() > 1) {
 		iProgIndex = 1;
 		iProg = m_progs[iProgIndex];
 	}
-
+#endif
 	// In case program address is generic...
 	if (m_ui.ProgComboBox->count() < 2) {
 		// Just make a generic program list...

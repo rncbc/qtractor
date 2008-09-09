@@ -764,9 +764,9 @@ void qtractorTrack::process ( qtractorClip *pClip,
 				// Plugin chain post-processing...
 				if (m_pPluginList->activated() > 0)
 					m_pPluginList->process(pOutputBus->buffer(), nframes);
-				// Actually render it...
-				pOutputBus->buffer_commit(nframes);
 			}
+			// Actually render it...
+			pOutputBus->buffer_commit(nframes);
 		}
 	}
 }
