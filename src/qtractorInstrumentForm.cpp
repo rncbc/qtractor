@@ -463,7 +463,7 @@ void qtractorInstrumentForm::refreshForm (void)
 					QString("Based On = %1").arg(patch.basedOn()));
 			}
 			qtractorInstrumentData::ConstIterator it;
-			for (it = patch.begin(); it != patch.end(); ++it) {
+			for (it = patch.constBegin(); it != patch.constEnd(); ++it) {
 				int iProg = it.key();
 				pProgItem = new QTreeWidgetItem(pBankItem, pProgItem);
 				pProgItem->setText(0,
@@ -590,7 +590,7 @@ void qtractorInstrumentForm::listInstrumentData (
 			tr("Based On = %1").arg(data.basedOn()));
 	}
 	qtractorInstrumentData::ConstIterator it;
-	for (it = data.begin(); it != data.end(); ++it) {
+	for (it = data.constBegin(); it != data.constEnd(); ++it) {
 		pItem = new QTreeWidgetItem(pParentItem, pItem);
 		pItem->setText(0,
 			QString("%1 = %2").arg(it.key()).arg(it.value()));

@@ -46,6 +46,7 @@ public:
 	// Copy constructor.
 	qtractorInstrumentData(const qtractorInstrumentData& data)
 		{ attach(data); }
+
 	// Destructor.
 	~qtractorInstrumentData()
 		{ detach(); }
@@ -79,8 +80,8 @@ public:
 	Iterator end()   { return m_pData->map.end(); }
 
 	typedef DataMap::ConstIterator ConstIterator;
-	ConstIterator begin() const { return m_pData->map.constBegin(); }
-	ConstIterator end()   const { return m_pData->map.constEnd(); }
+	ConstIterator constBegin() const { return m_pData->map.constBegin(); }
+	ConstIterator constEnd()   const { return m_pData->map.constEnd(); }
 
 	unsigned int count() const { return m_pData->map.count(); }
 
@@ -92,6 +93,7 @@ protected:
 	// Copy/clone method.
 	void attach(const qtractorInstrumentData& data)
 		{  m_pData = data.m_pData; m_pData->refCount++; }
+
 	// Destroy method.
 	void detach()
 		{ if (--(m_pData->refCount) == 0) delete m_pData; }
@@ -145,6 +147,7 @@ public:
 	// Copy constructor.
 	qtractorInstrument(const qtractorInstrument& instr)
 		{ attach(instr); }
+
 	// Destructor.
 	~qtractorInstrument()
 		{ detach(); }
@@ -231,6 +234,7 @@ protected:
 	// Copy/clone method.
 	void attach(const qtractorInstrument& instr)
 		{  m_pData = instr.m_pData; m_pData->refCount++; }
+
 	// Destroy method.
 	void detach()
 		{ if (--(m_pData->refCount) == 0) delete m_pData; }
@@ -269,7 +273,7 @@ public:
 
 	// Open file methods.
 	bool load(const QString& sFilename);
-	bool save(const QString& sFilename);
+	bool save(const QString& sFilename) const;
 
 	// The official loaded file list.
 	const QStringList& files() const;
@@ -277,6 +281,7 @@ public:
 	// Manage a file list (out of sync)
 	void appendFile(const QString& sFilename)
 	    { m_files.append(sFilename); }
+
 	void removeFile(const QString& sFilename)
 	{
 		int iFile = m_files.indexOf(sFilename);
@@ -293,25 +298,25 @@ public:
 	// Note Names definition accessors.
 	const qtractorInstrumentDataList& notes() const
 		{ return m_notes; }
-	qtractorInstrumentData& note(const QString& sName)
+	const qtractorInstrumentData& note(const QString& sName)
 		{ return m_notes[sName]; }
 
 	// Controller Names definition accessors.
 	const qtractorInstrumentDataList& controllers() const
 		{ return m_controllers; }
-	qtractorInstrumentData& controller(const QString& sName)
+	const qtractorInstrumentData& controller(const QString& sName)
 		{ return m_controllers[sName]; }
 
 	// RPN Names definition accessors.
 	const qtractorInstrumentDataList& rpns() const
 		{ return m_rpns; }
-	qtractorInstrumentData& rpn(const QString& sName)
+	const qtractorInstrumentData& rpn(const QString& sName)
 		{ return m_rpns[sName]; }
 
 	// NRPN Names definition accessors.
 	const qtractorInstrumentDataList& nrpns() const
 		{ return m_nrpns; }
-	qtractorInstrumentData& nrpn(const QString& sName)
+	const qtractorInstrumentData& nrpn(const QString& sName)
 		{ return m_nrpns[sName]; }
 
 	// Clear all contents.
@@ -323,8 +328,8 @@ public:
 protected:
 
 	// Internal instrument data list save method helpers.
-	void saveDataList(QTextStream& ts, const qtractorInstrumentDataList& list);
-	void saveData(QTextStream& ts, const qtractorInstrumentData& data);
+	void saveDataList(QTextStream& ts, const qtractorInstrumentDataList& list) const;
+	void saveData(QTextStream& ts, const qtractorInstrumentData& data) const;
 
 	// Special instrument data list merge method.
 	void mergeDataList(qtractorInstrumentDataList& dst,

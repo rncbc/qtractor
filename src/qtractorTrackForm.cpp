@@ -490,14 +490,14 @@ void qtractorTrackForm::updateInstruments (void)
 		pMidiManager->updateInstruments();
 		const qtractorMidiManager::Instruments& list
 			= pMidiManager->instruments();
-		qtractorMidiManager::Instruments::ConstIterator it = list.begin();
-		for ( ; it != list.end(); ++it)
+		qtractorMidiManager::Instruments::ConstIterator it = list.constBegin();
+		for ( ; it != list.constEnd(); ++it)
 			m_ui.InstrumentComboBox->addItem(icon, it.key());
 	}
 
 	// Regular instrument names...
-	for (qtractorInstrumentList::Iterator iter = pInstruments->begin();
-			iter != pInstruments->end(); ++iter) {
+	for (qtractorInstrumentList::ConstIterator iter = pInstruments->constBegin();
+			iter != pInstruments->constEnd(); ++iter) {
 		m_ui.InstrumentComboBox->addItem(icon, iter.value().instrumentName());
 	}
 
@@ -651,8 +651,8 @@ void qtractorTrackForm::updateBanks ( const QString& sInstrumentName,
 		if (list.contains(sInstrumentName)) {
 			const qtractorMidiManager::Banks& banks = list[sInstrumentName];
 			// Refresh bank mapping...
-			qtractorMidiManager::Banks::ConstIterator it = banks.begin();
-			for ( ; it != banks.end(); ++it) {
+			qtractorMidiManager::Banks::ConstIterator it = banks.constBegin();
+			for ( ; it != banks.constEnd(); ++it) {
 				m_ui.BankComboBox->addItem(icon, it.value().name);
 				m_banks[iBankIndex++] = it.key();
 			}
@@ -668,15 +668,16 @@ void qtractorTrackForm::updateBanks ( const QString& sInstrumentName,
 	}
 
 	// Get instrument set alright...
-	if (!bMidiManager && (*pInstruments).contains(sInstrumentName)) {
+	if (!bMidiManager && pInstruments->contains(sInstrumentName)) {
 		// Instrument reference...
 		const qtractorInstrument& instr = (*pInstruments)[sInstrumentName];
 		// Bank selection method...
 		if (iBankSelMethod < 0)
 			iBankSelMethod = instr.bankSelMethod();
 		// Refresh patch bank mapping...
-		qtractorInstrumentPatches::ConstIterator it;
-		for (it = instr.patches().begin(); it != instr.patches().end(); ++it) {
+		qtractorInstrumentPatches::ConstIterator it
+			= instr.patches().constBegin();
+		for (; it != instr.patches().constEnd(); ++it) {
 			if (it.key() >= 0) {
 				m_ui.BankComboBox->addItem(icon, it.value().name());
 				m_banks[iBankIndex++] = it.key();
@@ -779,8 +780,8 @@ void qtractorTrackForm::updatePrograms (  const QString& sInstrumentName,
 				const qtractorMidiManager::Progs& progs = banks[iBank].progs;
 				// Refresh program mapping...
 				const QString sProg("%1 - %2");
-				qtractorMidiManager::Progs::ConstIterator it = progs.begin();
-				for ( ; it != progs.end(); ++it) {
+				qtractorMidiManager::Progs::ConstIterator it = progs.constBegin();
+				for ( ; it != progs.constEnd(); ++it) {
 					m_ui.ProgComboBox->addItem(icon,
 						sProg.arg(it.key()).arg(it.value()));
 					m_progs[iProgIndex++] = it.key();
@@ -799,14 +800,14 @@ void qtractorTrackForm::updatePrograms (  const QString& sInstrumentName,
 	}
 
 	// Get instrument set alright...
-	if (!bMidiManager && (*pInstruments).contains(sInstrumentName)) {
+	if (!bMidiManager && pInstruments->contains(sInstrumentName)) {
 		// Instrument reference...
 		const qtractorInstrument& instr = (*pInstruments)[sInstrumentName];
 		// Bank reference...
 		const qtractorInstrumentData& bank = instr.patch(iBank);
 		// Enumerate the explicit given program list...
-		qtractorInstrumentData::ConstIterator it;
-		for (it = bank.begin(); it != bank.end(); ++it) {
+		qtractorInstrumentData::ConstIterator it = bank.constBegin();
+		for (; it != bank.constEnd(); ++it) {
 			if (it.key() >= 0 && !it.value().isEmpty()) {
 				m_ui.ProgComboBox->addItem(icon, it.value());
 				m_progs[iProgIndex++] = it.key();

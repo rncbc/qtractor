@@ -301,8 +301,6 @@ void qtractorTrackList::Item::update ( qtractorTrackList *pTrackList )
 			if (track->midiBank() >= 0)
 				sBank = QString::number(track->midiBank());
 			if (pMidiBus) {
-				qtractorMainForm *pMainForm
-					= qtractorMainForm::getInstance();
 				const qtractorMidiBus::Patch& patch
 					= pMidiBus->patch(iChannel);
 				if (!patch.instrumentName.isEmpty()) {
@@ -330,15 +328,22 @@ void qtractorTrackList::Item::update ( qtractorTrackList *pTrackList )
 							bMidiManager = true;
 						}
 					}
-					if (!bMidiManager &&
-						pMainForm && pMainForm->instruments()) {
-						qtractorInstrument& instr
-							= (*pMainForm->instruments())[sInstrument];
-						const qtractorInstrumentData& bank
-							= instr.patch(track->midiBank());
-						if (bank.contains(track->midiProgram())) {
-							sProgram = bank[track->midiProgram()];
-							sBank = bank.name();
+					if (!bMidiManager) {
+						qtractorInstrumentList *pInstruments = NULL;
+						qtractorMainForm *pMainForm
+							= qtractorMainForm::getInstance();
+						if (pMainForm)
+							pInstruments = pMainForm->instruments();
+						if (pInstruments
+							&& pInstruments->contains(sInstrument)) {
+							qtractorInstrument& instr
+								= (*pInstruments)[sInstrument];
+							const qtractorInstrumentData& bank
+								= instr.patch(track->midiBank());
+							if (bank.contains(track->midiProgram())) {
+								sProgram = bank[track->midiProgram()];
+								sBank = bank.name();
+							}
 						}
 					}
 				}

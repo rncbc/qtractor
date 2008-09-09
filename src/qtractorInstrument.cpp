@@ -113,7 +113,7 @@ void qtractorInstrumentList::merge ( const qtractorInstrumentList& instruments )
 
 	// Instrument merge...
 	qtractorInstrumentList::ConstIterator it;
-	for (it = instruments.begin(); it != instruments.end(); ++it) {
+	for (it = instruments.constBegin(); it != instruments.constEnd(); ++it) {
 		qtractorInstrument& instr = (*this)[it.key()];
 		instr = it.value();
 	}
@@ -368,7 +368,7 @@ bool qtractorInstrumentList::load ( const QString& sFilename )
 
 
 // File save method.
-bool qtractorInstrumentList::save ( const QString& sFilename )
+bool qtractorInstrumentList::save ( const QString& sFilename ) const
 {
     // Open and write into real file.
     QFile file(sFilename);
@@ -429,9 +429,9 @@ bool qtractorInstrumentList::save ( const QString& sFilename )
     ts << sepl << endl << endl;
 	ts << ".Instrument Definitions" << endl;
     ts << endl;
-	qtractorInstrumentList::Iterator iter;
-	for (iter = begin(); iter != end(); ++iter) {
-		qtractorInstrument& instr = *iter;
+	qtractorInstrumentList::ConstIterator iter;
+	for (iter = constBegin(); iter != constEnd(); ++iter) {
+		const qtractorInstrument& instr = *iter;
 		ts << "[" << instr.instrumentName() << "]" << endl;
 		if (instr.bankSelMethod() > 0)
 		    ts << "BankSelMethod=" << instr.bankSelMethod() << endl;
@@ -493,7 +493,7 @@ bool qtractorInstrumentList::save ( const QString& sFilename )
 
 
 void qtractorInstrumentList::saveDataList ( QTextStream& ts,
-	const qtractorInstrumentDataList& list )
+	const qtractorInstrumentDataList& list ) const
 {
     ts << endl;
 	qtractorInstrumentDataList::ConstIterator it;
@@ -505,12 +505,12 @@ void qtractorInstrumentList::saveDataList ( QTextStream& ts,
 
 
 void qtractorInstrumentList::saveData ( QTextStream& ts,
-	const qtractorInstrumentData& data )
+	const qtractorInstrumentData& data ) const
 {
 	if (!data.basedOn().isEmpty())
 	    ts << "BasedOn=" << data.basedOn() << endl;
 	qtractorInstrumentData::ConstIterator it;
-	for (it = data.begin(); it != data.end(); ++it)
+	for (it = data.constBegin(); it != data.constEnd(); ++it)
 		ts << it.key() << "=" << it.value() << endl;
 	ts << endl;
 }

@@ -2517,7 +2517,9 @@ void qtractorMidiEditor::updateInstrumentNames (void)
 	qtractorMainForm *pMainForm	= qtractorMainForm::getInstance();
 	if (pMainForm == NULL)
 		return;
-	if (pMainForm->instruments() == NULL)
+
+	qtractorInstrumentList *pInstruments = pMainForm->instruments();
+	if (pInstruments == NULL)
 		return;
 
 	// Get instrument name from patch descriptor...
@@ -2527,7 +2529,7 @@ void qtractorMidiEditor::updateInstrumentNames (void)
 	if (pMidiBus)
 		sInstrument = pMidiBus->patch(pTrack->midiChannel()).instrumentName;
 	// Do we have any?...
-	if (sInstrument.isEmpty()) {
+	if (sInstrument.isEmpty() || !pInstruments->contains(sInstrument)) {
 		// At least have a GM Drums (Channel 10) help...
 		if (pTrack->midiChannel() == 9) {
 			for (int i = 13; g_aNoteNames[i].name; ++i) {
@@ -2542,17 +2544,17 @@ void qtractorMidiEditor::updateInstrumentNames (void)
 
 	// Finally, got instrument descriptor...
 	qtractorInstrumentData::ConstIterator iter;
-	qtractorInstrument& instr = (*pMainForm->instruments())[sInstrument];
+	const qtractorInstrument& instr = (*pInstruments)[sInstrument];
 
 	// Key note names...
 	const qtractorInstrumentData& notes
 		= instr.notes(pTrack->midiBank(), pTrack->midiProgram());
-	for (iter = notes.begin(); iter != notes.end(); ++iter)
+	for (iter = notes.constBegin(); iter != notes.constEnd(); ++iter)
 		m_noteNames.insert(iter.key(), iter.value());
 
 	// Controller names...
 	const qtractorInstrumentData& controllers = instr.control();
-	for (iter = controllers.begin(); iter != controllers.end(); ++iter)
+	for (iter = controllers.constBegin(); iter != controllers.constEnd(); ++iter)
 		m_controllerNames.insert(iter.key(), iter.value());
 }
 
