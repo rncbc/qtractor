@@ -61,9 +61,12 @@ public slots:
 protected:
 
 	void showBus(qtractorBus *pBus);
-	bool canCreateBus();
-	bool canUpdateBus();
-	bool canDeleteBus();
+
+	bool canCreateBus() const;
+	bool canUpdateBus() const;
+	bool canDeleteBus() const;
+
+	bool updateBusEx(qtractorBus *pBus) const;
 
 private:
 

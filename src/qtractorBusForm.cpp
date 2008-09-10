@@ -313,9 +313,6 @@ void qtractorBusForm::refreshBuses (void)
 		m_ui.BusListView->setItemExpanded(m_pMidiRoot, true);
 #endif
 	}
-
-	// Reselect current bus, if any.
-	setBus(m_pBus);
 }
 
 
@@ -336,15 +333,19 @@ void qtractorBusForm::selectBus (void)
 		return;
 
 	// Check if we need an update?...
-	if (m_pBus && pBusItem->bus() != m_pBus && m_iDirtyCount > 0) {
+	qtractorBus *pBus = pBusItem->bus();
+	if (m_pBus && m_pBus != pBus && m_iDirtyCount > 0) {
 		switch (QMessageBox::warning(this,
 			tr("Warning") + " - " QTRACTOR_TITLE,
 			tr("Some settings have been changed.\n\n"
 			"Do you want to apply the changes?"),
 			tr("Apply"), tr("Discard"), tr("Cancel"))) {
 		case 0:     // Apply
-			updateBus();
-			break;
+			if (updateBusEx(m_pBus)) {
+				m_iDirtyTotal++;
+				refreshBuses();
+			}
+			// Fall thru...
 		case 1:     // Discard
 			break;;
 		default:    // Cancel.
@@ -353,12 +354,12 @@ void qtractorBusForm::selectBus (void)
 	}
 
 	// Get new one into view...
-	showBus(pBusItem->bus());
+	showBus(pBus);
 }
 
 
 // Check whether the current view is elligible as a new bus.
-bool qtractorBusForm::canCreateBus (void)
+bool qtractorBusForm::canCreateBus (void) const
 {
 	if (m_iDirtyCount == 0)
 		return false;
@@ -398,7 +399,7 @@ bool qtractorBusForm::canCreateBus (void)
 
 
 // Check whether the current view is elligible for update.
-bool qtractorBusForm::canUpdateBus (void)
+bool qtractorBusForm::canUpdateBus (void) const
 {
 	if (m_iDirtyCount == 0)
 		return false;
@@ -422,7 +423,7 @@ bool qtractorBusForm::canUpdateBus (void)
 
 
 // Check whether the current view is elligible for deletion.
-bool qtractorBusForm::canDeleteBus (void)
+bool qtractorBusForm::canDeleteBus (void) const
 {
 	if (m_pBus == NULL)
 		return false;
@@ -436,6 +437,65 @@ bool qtractorBusForm::canDeleteBus (void)
 
 	// The very first bus is never deletable...
 	return (m_pBus->prev() != NULL);
+}
+
+
+// Update bus method.
+bool qtractorBusForm::updateBusEx ( qtractorBus *pBus ) const
+{
+	if (pBus == NULL)
+		return false;
+
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm == NULL)
+		return false;
+	
+	const QString sBusName = m_ui.BusNameLineEdit->text().simplified();
+	if (sBusName.isEmpty())
+		return false;
+
+	qtractorBus::BusMode busMode = qtractorBus::None;
+	switch (m_ui.BusModeComboBox->currentIndex()) {
+	case 0:
+		busMode = qtractorBus::Input;
+		break;
+	case 1:
+		busMode = qtractorBus::Output;
+		break;
+	case 2:
+		busMode = qtractorBus::Duplex;
+		break;
+	}
+
+	// Make it as an unduable command...
+	qtractorUpdateBusCommand *pUpdateBusCommand
+		= new qtractorUpdateBusCommand(pBus);
+
+	// Set all updated properties...
+	qtractorTrack::TrackType busType = pBus->busType();
+	pUpdateBusCommand->setBusType(busType);
+	pUpdateBusCommand->setBusName(sBusName);
+	pUpdateBusCommand->setBusMode(busMode);
+	pUpdateBusCommand->setPassthru(
+		(busMode & qtractorBus::Duplex) == qtractorBus::Duplex
+		&& m_ui.PassthruCheckBox->isChecked());
+
+	// Specialties for bus types...
+	switch (busType) {
+	case qtractorTrack::Audio:
+		pUpdateBusCommand->setChannels(
+			m_ui.AudioChannelsSpinBox->value());
+		pUpdateBusCommand->setAutoConnect(
+			m_ui.AudioAutoConnectCheckBox->isChecked());
+		break;
+	case qtractorTrack::Midi:
+	case qtractorTrack::None:
+	default:
+		break;
+	}
+
+	// Execute and refresh form...
+	return pMainForm->commands()->exec(pUpdateBusCommand);
 }
 
 
@@ -498,68 +558,23 @@ void qtractorBusForm::createBus (void)
 		m_iDirtyTotal++;
 		refreshBuses();
 	}
+
+	// Reselect current bus...
+	setBus(m_pBus);
 }
 
 
 // Update current bus in view.
 void qtractorBusForm::updateBus (void)
 {
-	if (m_pBus == NULL)
-		return;
-
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
-		return;
-	
-	const QString sBusName = m_ui.BusNameLineEdit->text().simplified();
-	if (sBusName.isEmpty())
-		return;
-
-	qtractorBus::BusMode busMode = qtractorBus::None;
-	switch (m_ui.BusModeComboBox->currentIndex()) {
-	case 0:
-		busMode = qtractorBus::Input;
-		break;
-	case 1:
-		busMode = qtractorBus::Output;
-		break;
-	case 2:
-		busMode = qtractorBus::Duplex;
-		break;
-	}
-
-	// Make it as an unduable command...
-	qtractorUpdateBusCommand *pUpdateBusCommand
-		= new qtractorUpdateBusCommand(m_pBus);
-
-	// Set all updated properties...
-	qtractorTrack::TrackType busType = m_pBus->busType();
-	pUpdateBusCommand->setBusType(busType);
-	pUpdateBusCommand->setBusName(sBusName);
-	pUpdateBusCommand->setBusMode(busMode);
-	pUpdateBusCommand->setPassthru(
-		(busMode & qtractorBus::Duplex) == qtractorBus::Duplex
-		&& m_ui.PassthruCheckBox->isChecked());
-
-	// Specialties for bus types...
-	switch (busType) {
-	case qtractorTrack::Audio:
-		pUpdateBusCommand->setChannels(
-			m_ui.AudioChannelsSpinBox->value());
-		pUpdateBusCommand->setAutoConnect(
-			m_ui.AudioAutoConnectCheckBox->isChecked());
-		break;
-	case qtractorTrack::Midi:
-	case qtractorTrack::None:
-	default:
-		break;
-	}
-
-	// Execute and refresh form...
-	if (pMainForm->commands()->exec(pUpdateBusCommand)) {
+	// That's it...
+	if (updateBusEx(m_pBus)) {
 		m_iDirtyTotal++;
-		refreshBuses();
+	//	refreshBuses();
 	}
+
+	// Reselect current bus...
+	setBus(m_pBus);
 }
 
 
@@ -604,11 +619,17 @@ void qtractorBusForm::deleteBus (void)
 	qtractorDeleteBusCommand *pDeleteBusCommand
 		= new qtractorDeleteBusCommand(m_pBus);
 
+	// Invalidade current bus...
+	m_pBus = NULL;
+
 	// Execute and refresh form...
 	if (pMainForm->commands()->exec(pDeleteBusCommand)) {
 		m_iDirtyTotal++;
 		refreshBuses();
 	}
+
+	// Done.
+	stabilizeForm();
 }
 
 
