@@ -570,7 +570,7 @@ void qtractorBusForm::updateBus (void)
 	// That's it...
 	if (updateBusEx(m_pBus)) {
 		m_iDirtyTotal++;
-	//	refreshBuses();
+		refreshBuses();
 	}
 
 	// Reselect current bus...
@@ -660,6 +660,7 @@ void qtractorBusForm::reject (void)
 			break;
 		default:    // Cancel.
 			bReject = false;
+			break;
 		}
 	}
 
