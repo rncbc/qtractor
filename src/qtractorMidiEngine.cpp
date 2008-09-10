@@ -2592,9 +2592,9 @@ int qtractorMidiBus::updateConnects ( qtractorBus::BusMode busMode,
 	// Update current client/ports ids.
 	unsigned int iPortFlags;
 	if (busMode == qtractorBus::Input)
-		iPortFlags = SND_SEQ_PORT_CAP_WRITE | SND_SEQ_PORT_CAP_SUBS_WRITE;
-	else
 		iPortFlags = SND_SEQ_PORT_CAP_READ  | SND_SEQ_PORT_CAP_SUBS_READ;
+	else
+		iPortFlags = SND_SEQ_PORT_CAP_WRITE | SND_SEQ_PORT_CAP_SUBS_WRITE;
 
 	while (snd_seq_query_next_client(
 			pMidiEngine->alsaSeq(), pClientInfo) >= 0) {
