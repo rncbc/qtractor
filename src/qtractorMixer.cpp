@@ -1119,7 +1119,7 @@ qtractorMixer::qtractorMixer ( QWidget *pParent, Qt::WindowFlags wflags )
 
 	m_pSplitter = new QSplitter(Qt::Horizontal, this);
 	m_pSplitter->setObjectName("MixerSplitter");
-	m_pSplitter->setChildrenCollapsible(false);
+//	m_pSplitter->setChildrenCollapsible(false);
 //	m_pSplitter->setOpaqueResize(false);
 	m_pSplitter->setHandleWidth(2);
 

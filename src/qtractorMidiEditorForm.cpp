@@ -54,8 +54,8 @@
 
 // Constructor.
 qtractorMidiEditorForm::qtractorMidiEditorForm (
-	QWidget *pParent, Qt::WindowFlags wflags )
-	: QMainWindow(pParent, wflags)
+	QWidget */*pParent*/, Qt::WindowFlags wflags )
+	: QMainWindow(NULL/*pParent*/, wflags)
 {
 	// Setup UI struct...
 	m_ui.setupUi(this);

@@ -5,6 +5,11 @@ ChangeLog
 
 CVS HEAD
 
+- MIDI clip editor is now a genuine top-level window, fixing all
+  keyboard shortcut ambiguities with main application window.
+
+- Mixer splitter panes are now collapsible and optionally hidden.
+
 - Make MIDI instrument patch management a little more sane, as for
   preventing the accidental insertion of blank instrument names and
   automatic default bank/program selection in track properties.

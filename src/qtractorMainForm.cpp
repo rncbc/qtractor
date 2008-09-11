@@ -1174,13 +1174,11 @@ void qtractorMainForm::midiControlEvent ( qtractorMidiControlEvent *pCtlEvent )
 		// Event translation...
 		int   iTrack = int(pCtlEvent->controller()) & 0x3f;
 		float fGain  = float(pCtlEvent->value()) / 127.0f;
-		if (m_pTracks) {
-			// Find the track by number...
-			qtractorTrack *pTrack = m_pTracks->trackList()->track(iTrack);
-			if (pTrack) {
-				m_pCommands->exec(new qtractorTrackGainCommand(pTrack, fGain));
-				sCtlText += tr("(track %1, gain %2)").arg(iTrack).arg(fGain);
-			}
+		// Find the track by number...
+		qtractorTrack *pTrack = m_pSession->tracks().at(iTrack);
+		if (pTrack) {
+			m_pCommands->exec(new qtractorTrackGainCommand(pTrack, fGain));
+			sCtlText += tr("(track %1, gain %2)").arg(iTrack).arg(fGain);
 		}
 	}
 
