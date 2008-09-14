@@ -39,11 +39,10 @@ public:
 
 	// Constructor.
 	qtractorBusForm(QWidget *pParent = 0, Qt::WindowFlags wflags = 0);
-	// Destructor.
-	~qtractorBusForm();
 
 	void setBus(qtractorBus *pBus);
 	qtractorBus *bus();
+
 	bool isDirty();
 
 public slots:
@@ -56,7 +55,18 @@ public slots:
 	void deleteBus();
 	void changed();
 	void stabilizeForm();
+
 	void contextMenu(const QPoint&);
+
+	void addInputPlugin();
+	void removeInputPlugin();
+	void moveUpInputPlugin();
+	void moveDownInputPlugin();
+
+	void addOutputPlugin();
+	void removeOutputPlugin();
+	void moveUpOutputPlugin();
+	void moveDownOutputPlugin();
 
 protected:
 

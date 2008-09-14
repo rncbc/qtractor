@@ -52,7 +52,9 @@ public:
 
 	// Create edit command based on given selection.
 	qtractorMidiEditCommand *editCommand(
-		qtractorMidiClip *pMidiClip, qtractorMidiEditSelect *pSelect);
+		qtractorMidiClip *pMidiClip,
+		qtractorMidiEditSelect *pSelect,
+		unsigned long iTimeOffset);
 
 protected slots:
 

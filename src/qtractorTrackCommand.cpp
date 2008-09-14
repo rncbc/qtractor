@@ -449,6 +449,25 @@ qtractorTrackButtonCommand::qtractorTrackButtonCommand (
 		break;
 	}
 
+	// Toggle/update all other?
+	Qt::KeyboardModifiers modifiers = QApplication::keyboardModifiers();
+	if (m_toolType != qtractorTrack::Record
+		&& (modifiers & (Qt::ShiftModifier | Qt::ControlModifier))) {
+		qtractorSession  *pSession  = NULL;
+		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+		if (pMainForm)
+			pSession = pMainForm->session();
+		if (pSession) {
+			if (modifiers & Qt::ControlModifier)
+				bOn = !bOn;
+			for (qtractorTrack *pTrackEx = pSession->tracks().first();
+					pTrackEx; pTrackEx = pTrackEx->next()) {
+				if (pTrackEx != track())
+					m_tracks.append(new TrackItem(pTrackEx, bOn));
+			}
+		}
+	}
+
 	setRefresh(false);
 }
 
@@ -457,6 +476,8 @@ qtractorTrackButtonCommand::~qtractorTrackButtonCommand (void)
 {
 	if (m_pClipCommand)
 		delete m_pClipCommand;
+
+	qDeleteAll(m_tracks);
 }
 
 
@@ -467,11 +488,15 @@ bool qtractorTrackButtonCommand::redo (void)
 	if (pMainForm == NULL)
 		return false;
 
+	qtractorSession *pSession = pMainForm->session();
+	if (pSession == NULL)
+		return false;
+
 	qtractorTrack *pTrack = track();
 	if (pTrack == NULL)
 		return false;
-	
-	bool bOn = false;	
+
+	bool bOn = false;
 	qtractorMmcEvent::SubCommand scmd = qtractorMmcEvent::TRACK_NONE;
 
 	switch (m_toolType) {
@@ -510,29 +535,57 @@ bool qtractorTrackButtonCommand::redo (void)
 		pTrack->setSolo(m_bOn);
 		break;
 	}
-	
-	// Track-list update...
-	qtractorSession *pSession = pMainForm->session();
-	qtractorTracks  *pTracks  = pMainForm->tracks();
-	if (pSession && pTracks) {
-		// Send MMC MASKED_WRITE command...
-		pSession->midiEngine()->sendMmcMaskedWrite(scmd,
-			pTracks->trackList()->trackRow(pTrack), m_bOn);
-		// Update track list item...
-		pTracks->trackList()->updateTrack(pTrack);
-	}
 
-	// Mixer turn...
-	qtractorMixer *pMixer = pMainForm->mixer();
-	if (pMixer) {
-		qtractorMixerStrip *pStrip
-			= pMixer->trackRack()->findStrip(pTrack->monitor());
-		if (pStrip)
-			pStrip->updateTrackButtons();
-	}
+	// Track-list and mixer update...
+	qtractorMidiEngine *pMidiEngine = pSession->midiEngine();
+	qtractorTrackList  *pTrackList  = pMainForm->tracks()->trackList();
+
+	// Send MMC MASKED_WRITE command...
+	pMidiEngine->sendMmcMaskedWrite(scmd,
+		pTrackList->trackRow(pTrack), m_bOn);
+	// Update track list item...
+	pTrackList->updateTrack(pTrack);
 
 	// Reset for undo.
 	m_bOn = bOn;
+
+	// Toggle/update all other?
+	qtractorMixerRack *pTrackRack = pMainForm->mixer()->trackRack();
+	if (m_tracks.isEmpty()) {
+		// Update one track mixer strip...
+		qtractorMixerStrip *pStrip
+			= pTrackRack->findStrip(pTrack->monitor());
+		if (pStrip)
+			pStrip->updateTrackButtons();
+		// Done with single mode.
+	} else {
+		// Exclusive mode.
+		QListIterator<TrackItem *> iter(m_tracks);
+		while (iter.hasNext()) {
+			TrackItem *pTrackItem = iter.next();
+			pTrack = pTrackItem->track;
+			bOn = false;
+			if (m_toolType == qtractorTrack::Mute) {
+				bOn = pTrack->isMute();
+				pTrack->setMute(pTrackItem->on);
+			}
+			else
+			if (m_toolType == qtractorTrack::Solo) {
+				bOn = pTrack->isSolo();
+				pTrack->setSolo(pTrackItem->on);
+			}
+			// Send MMC MASKED_WRITE command...
+			pMidiEngine->sendMmcMaskedWrite(scmd,
+				pTrackList->trackRow(pTrack), pTrackItem->on);
+			// Update track list item...
+			pTrackList->updateTrack(pTrack);
+			// Swap for undo...
+			pTrackItem->on = bOn;
+		}
+		// Update all track mixer strips...
+		pTrackRack->updateTrackButtons();
+		// Done with exclusive mode.
+	}
 
 	return true;
 }
@@ -557,7 +610,32 @@ qtractorTrackMonitorCommand::qtractorTrackMonitorCommand (
 {
 	m_bMonitor = bMonitor;
 
+	// Toggle/update all other?
+	Qt::KeyboardModifiers modifiers = QApplication::keyboardModifiers();
+	if (modifiers & (Qt::ShiftModifier | Qt::ControlModifier)) {
+		qtractorSession  *pSession  = NULL;
+		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+		if (pMainForm)
+			pSession = pMainForm->session();
+		if (pSession) {
+			if (modifiers & Qt::ControlModifier)
+				bMonitor = !bMonitor;
+			for (qtractorTrack *pTrackEx = pSession->tracks().first();
+					pTrackEx; pTrackEx = pTrackEx->next()) {
+				if (pTrackEx != pTrack)
+					m_tracks.append(new TrackItem(pTrackEx, bMonitor));
+			}
+		}
+	}
+
 	setRefresh(false);
+}
+
+
+// Destructor.
+qtractorTrackMonitorCommand::~qtractorTrackMonitorCommand (void)
+{
+	qDeleteAll(m_tracks);
 }
 
 
@@ -566,6 +644,10 @@ bool qtractorTrackMonitorCommand::redo (void)
 {
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm == NULL)
+		return false;
+
+	qtractorSession *pSession = pMainForm->session();
+	if (pSession == NULL)
 		return false;
 
 	qtractorTrack *pTrack = track();
@@ -579,10 +661,30 @@ bool qtractorTrackMonitorCommand::redo (void)
 	// Set undo value...
 	m_bMonitor = bMonitor;
 
-	// Update (reset) all applicable mixer strips...
-	qtractorMixer *pMixer = pMainForm->mixer();
-	if (pMixer)
-		pMixer->updateTrackStrip(pTrack, true);
+	// Toggle/update all other?
+	qtractorMixerRack *pTrackRack = pMainForm->mixer()->trackRack();
+	if (m_tracks.isEmpty()) {
+		// Update one track mixer strip...
+		qtractorMixerStrip *pStrip
+			= pTrackRack->findStrip(pTrack->monitor());
+		if (pStrip)
+			pStrip->updateMonitorButton();
+		// Done with single mode.
+	} else {
+		// Exclusive mode.
+		QListIterator<TrackItem *> iter(m_tracks);
+		while (iter.hasNext()) {
+			TrackItem *pTrackItem = iter.next();
+			pTrack = pTrackItem->track;
+			bMonitor = pTrack->isMonitor();
+			pTrack->setMonitor(pTrackItem->on);
+			// Swap for undo...
+			pTrackItem->on = bMonitor;
+		}
+		// Update all track mixer strips...
+		pTrackRack->updateMonitorButtons();
+		// Done with exclusive mode.
+	}
 
 	return true;
 }

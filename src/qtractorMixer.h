@@ -87,7 +87,8 @@ public:
 	void setSelected(bool bSelected);
 	bool isSelected() const;
 
-	// Update track buttons state.
+	// Update monitor/track buttons state.
+	void updateMonitorButton();
 	void updateTrackButtons();
 
 	// Strip refreshment.
@@ -110,7 +111,7 @@ protected slots:
 	void busButtonSlot();
 
 	// Common passthru/monitor button slot
-	void thruButtonSlot(bool bOn);
+	void monitorButtonSlot(bool bOn);
 
 	// Meter slider change slots.
 	void panChangedSlot(float);
@@ -121,7 +122,6 @@ protected:
 	// Common mixer-strip initializer.
 	void initMixerStrip();
 
-	void updateThruButton();
 	void updateMidiLabel();
 	void updateName();
 
@@ -153,7 +153,7 @@ private:
 	qtractorTrackButton    *m_pSoloButton;
 	qtractorMeter          *m_pMeter;
 	QToolButton            *m_pBusButton;
-	QToolButton            *m_pThruButton;
+	QToolButton            *m_pMonitorButton;
 	QLabel                 *m_pMidiLabel;
 
 	// Selection stuff.
@@ -215,6 +215,12 @@ public:
 	// Hacko-list-management marking...
 	void markStrips(int iMark);
 	void cleanStrips(int iMark);
+
+	// Update all strips track buttons.
+	void updateTrackButtons();
+
+	// Update all strips monitor buttons.
+	void updateMonitorButtons();
 
 public slots:
 

@@ -5,6 +5,21 @@ ChangeLog
 
 CVS HEAD
 
+- Several major fixes have been applied to the MIDI clip editor,
+  regarding snap precision and correctness, most specially due
+  on clips which weren't located on exact bar boundaries.
+
+- Brand new usability feature introduced: mute, solo and monitor
+  toggling may now be applied to all tracks in session at once,
+  when issued with either the Shift or Ctrl keyboard modifiers,
+  which will set or reverse respectively all other tracks state.
+
+- Audio buses plugin chain may be also accessed and edited from
+  the extended bus management dialog (View/Buses...).
+
+- MIDI meter level default color is now set distinct from the old
+  lime-green one as in audio level meters.
+
 - MIDI clip editor is now a genuine top-level window, fixing all
   keyboard shortcut ambiguities with main application window.
 
@@ -133,7 +148,7 @@ CVS HEAD
 
 - Incredible as it might be, audio/MIDI track record monitoring is
   now mixed (or merged) with rolling playback content, thus not as
-  mutually  exclusive between record and playback states anymore;
+  mutually exclusive between record and playback states anymore;
   also, track mute/solo states doesn't apply to recording material
   anymore.
 

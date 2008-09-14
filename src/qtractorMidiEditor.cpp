@@ -1417,7 +1417,8 @@ qtractorMidiEvent *qtractorMidiEditor::dragEditEvent (
 	int y0 = (m_pEditEvent->viewport())->height();
 	int h1 = m_pEditList->itemHeight();
 
-	int x1 = m_pTimeScale->pixelSnap(pos.x());
+	int x0 = m_pTimeScale->pixelFromFrame(m_iOffset);
+	int x1 = m_pTimeScale->pixelSnap(pos.x() + x0) - x0;
 	int y1 = 0;
 
 	// This will be the new editing event...
@@ -1966,7 +1967,7 @@ void qtractorMidiEditor::updateDragMove ( qtractorScrollView *pScrollView,
 
 	int cw = pScrollView->contentsWidth();
 	int dx = delta.x();
-	int x0 = m_rectDrag.x();
+	int x0 = m_rectDrag.x() + m_pTimeScale->pixelFromFrame(m_iOffset);
 	int x1 = rect.x() + dx;
 	if (x1 < 0)
 		dx = -(rect.x());
@@ -2029,20 +2030,22 @@ void qtractorMidiEditor::updateDragResize ( qtractorScrollView *pScrollView,
 	// TODO: Plenty of...
 	switch (m_resizeMode) {
 	case ResizeNoteLeft:
-		x0 = m_rectDrag.left();
-		x1 = x0 + delta.x();
+		dx = delta.x();
+		x0 = m_rectDrag.left() + m_pTimeScale->pixelFromFrame(m_iOffset);
+		x1 = m_rectDrag.left() + dx;
 		if (x1 < 0)
-			x1 = 0;
+			dx = -(m_rectDrag.left());
 		if (x1 > m_rectDrag.right())
-			x1 = m_rectDrag.right();
-		dx = m_pTimeScale->pixelSnap(x1) - x0;
+			dx = m_rectDrag.width();
+		dx = m_pTimeScale->pixelSnap(x0 + dx) - x0;
 		break;
 	case ResizeNoteRight:
-		x0 = m_rectDrag.right();
-		x1 = x0 + delta.x();
+		dx = delta.x();
+		x0 = m_rectDrag.right() + m_pTimeScale->pixelFromFrame(m_iOffset);
+		x1 = m_rectDrag.right() + dx;
 		if (x1 < m_rectDrag.left())
-			x1 = m_rectDrag.left();
-		dx = m_pTimeScale->pixelSnap(x1) - x0;
+			dx = -(m_rectDrag.width());
+		dx = m_pTimeScale->pixelSnap(x0 + dx) - x0;
 		break;
 	case ResizeValueTop:
 	case ResizePitchBendTop:
@@ -2486,7 +2489,8 @@ void qtractorMidiEditor::executeTool ( int iToolIndex )
 	toolsForm.setToolIndex(iToolIndex);
 	if (toolsForm.exec()) {
 		qtractorMidiEditCommand *pEditCommand
-			= toolsForm.editCommand(m_pMidiClip, &m_select);
+			= toolsForm.editCommand(m_pMidiClip, &m_select,
+				m_pTimeScale->tickFromFrame(m_iOffset));
 		if (m_pCommands->exec(pEditCommand))
 			adjustEditCommand(pEditCommand);
 	}		
@@ -2619,7 +2623,8 @@ void qtractorMidiEditor::sendNote ( int iNote, int iVelocity )
 QString qtractorMidiEditor::eventToolTip ( qtractorMidiEvent *pEvent ) const
 {
 	QString sToolTip = tr("Time:\t%1\nType:\t")
-		.arg(m_pTimeScale->textFromTick(pEvent->time()));
+		.arg(m_pTimeScale->textFromTick(
+			m_pTimeScale->tickFromFrame(m_iOffset) + pEvent->time()));
 
 	switch (pEvent->type()) {
 //	case qtractorMidiEvent::NOTEOFF:

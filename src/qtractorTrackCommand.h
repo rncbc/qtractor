@@ -54,6 +54,16 @@ public:
 
 protected:
 
+	// Extra track list item.
+	struct TrackItem
+	{	// Constructor.
+		TrackItem(qtractorTrack *pTrack, bool bOn)
+			: track(pTrack), on(bOn) {};
+		// Item members.
+		qtractorTrack *track;
+		bool on;
+	};
+
 	// Track command methods.
 	bool addTrack();
 	bool removeTrack();
@@ -225,6 +235,9 @@ private:
 	qtractorTrack::ToolType m_toolType;
 	bool m_bOn;
 
+	// Extra track list.
+	QList<TrackItem *> m_tracks;
+
 	// Special sub-command needed to track recording clips.
 	qtractorClipCommand *m_pClipCommand;
 	int m_iRecordCount;
@@ -242,17 +255,20 @@ public:
 	// Constructor.
 	qtractorTrackMonitorCommand(qtractorTrack *pTrack, bool bMonitor);
 
+	// Destructor.
+	~qtractorTrackMonitorCommand();
+
 	// Track-monitoring command methods.
 	bool redo();
 	bool undo() { return redo(); }
-
-	// Monitoring value retrieval.
-	bool isMonitor() const { return m_bMonitor; }
 
 private:
 
 	// Instance variables.
 	bool  m_bMonitor;
+
+	// Extra track list.
+	QList<TrackItem *> m_tracks;
 };
 
 

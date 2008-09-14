@@ -515,7 +515,8 @@ unsigned long qtractorMidiToolsForm::quantize (
 
 // Create edit command based on given selection.
 qtractorMidiEditCommand *qtractorMidiToolsForm::editCommand (
-	qtractorMidiClip *pMidiClip, qtractorMidiEditSelect *pSelect )
+	qtractorMidiClip *pMidiClip, qtractorMidiEditSelect *pSelect,
+	unsigned long iTimeOffset )
 {
 	// Create command, it will be handed over...
 	qtractorMidiEditCommand *pEditCommand
@@ -546,8 +547,9 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::editCommand (
 		if (m_ui.QuantizeCheckBox->isChecked()) {
 			tools.append(tr("quantize"));
 			if (m_ui.QuantizeTimeCheckBox->isChecked()) {
-				iTime = quantize(iTime,
-					m_ui.QuantizeTimeComboBox->currentIndex(), 1);
+				iTime = quantize(iTime + iTimeOffset,
+					m_ui.QuantizeTimeComboBox->currentIndex(), 1)
+						- iTimeOffset;
 			}
 			if (m_ui.QuantizeDurationCheckBox->isChecked()
 				&& pEvent->type() == qtractorMidiEvent::NOTEON) {

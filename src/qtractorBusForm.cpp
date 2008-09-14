@@ -27,6 +27,8 @@
 #include "qtractorAudioEngine.h"
 #include "qtractorMidiEngine.h"
 
+#include "qtractorPlugin.h"
+
 #include "qtractorMainForm.h"
 
 #include <QHeaderView>
@@ -68,7 +70,6 @@ private:
 	// Instance variables.
 	qtractorBus *m_pBus;
 };
-
 
 
 //----------------------------------------------------------------------------
@@ -135,6 +136,39 @@ qtractorBusForm::qtractorBusForm (
 	QObject::connect(m_ui.AudioAutoConnectCheckBox,
 		SIGNAL(clicked()),
 		SLOT(changed()));
+
+	QObject::connect(m_ui.InputPluginListView,
+		SIGNAL(currentRowChanged(int)),
+		SLOT(stabilizeForm()));
+	QObject::connect(m_ui.AddInputPluginToolButton,
+		SIGNAL(clicked()),
+		SLOT(addInputPlugin()));
+	QObject::connect(m_ui.RemoveInputPluginToolButton,
+		SIGNAL(clicked()),
+		SLOT(removeInputPlugin()));
+	QObject::connect(m_ui.MoveUpInputPluginToolButton,
+		SIGNAL(clicked()),
+		SLOT(moveUpInputPlugin()));
+	QObject::connect(m_ui.MoveDownInputPluginToolButton,
+		SIGNAL(clicked()),
+		SLOT(moveDownInputPlugin()));
+
+	QObject::connect(m_ui.OutputPluginListView,
+		SIGNAL(currentRowChanged(int)),
+		SLOT(stabilizeForm()));
+	QObject::connect(m_ui.AddOutputPluginToolButton,
+		SIGNAL(clicked()),
+		SLOT(addOutputPlugin()));
+	QObject::connect(m_ui.RemoveOutputPluginToolButton,
+		SIGNAL(clicked()),
+		SLOT(removeOutputPlugin()));
+	QObject::connect(m_ui.MoveUpOutputPluginToolButton,
+		SIGNAL(clicked()),
+		SLOT(moveUpOutputPlugin()));
+	QObject::connect(m_ui.MoveDownOutputPluginToolButton,
+		SIGNAL(clicked()),
+		SLOT(moveDownOutputPlugin()));
+
 	QObject::connect(m_ui.RefreshPushButton,
 		SIGNAL(clicked()),
 		SLOT(refreshBuses()));
@@ -150,12 +184,8 @@ qtractorBusForm::qtractorBusForm (
 	QObject::connect(m_ui.ClosePushButton,
 		SIGNAL(clicked()),
 		SLOT(reject()));
-}
 
-
-// Destructor.
-qtractorBusForm::~qtractorBusForm (void)
-{
+	stabilizeForm();
 }
 
 
@@ -216,16 +246,22 @@ void qtractorBusForm::showBus ( qtractorBus *pBus )
 {
 	m_iDirtySetup++;
 
+	// Reset plugin lists...
+	m_ui.InputPluginListView->setPluginList(NULL);
+	m_ui.OutputPluginListView->setPluginList(NULL);
+
 	// Settle current bus reference...
 	m_pBus = pBus;
 
 	// Show bus properties into view pane...
 	if (pBus) {
+		QString sBusTitle = pBus->busName();
+		if (!sBusTitle.isEmpty())
+			sBusTitle += " - ";
 		switch (pBus->busType()) {
-
 		case qtractorTrack::Audio:
 		{
-			m_ui.BusTitleTextLabel->setText(tr("Audio Bus"));
+			sBusTitle += tr("Audio");
 			qtractorAudioBus *pAudioBus
 				= static_cast<qtractorAudioBus *> (pBus);
 			if (pAudioBus) {
@@ -233,22 +269,28 @@ void qtractorBusForm::showBus ( qtractorBus *pBus )
 					pAudioBus->channels());
 				m_ui.AudioAutoConnectCheckBox->setChecked(
 					pAudioBus->isAutoConnect());
+				// Set plugin lists...
+				if (pAudioBus->busMode() & qtractorBus::Input)
+					m_ui.InputPluginListView->setPluginList(
+						pAudioBus->pluginList_in());
+				if (pAudioBus->busMode() & qtractorBus::Output)
+					m_ui.OutputPluginListView->setPluginList(
+						pAudioBus->pluginList_out());
 			}
 			break;
 		}
-
 		case qtractorTrack::Midi:
 		{
-			m_ui.BusTitleTextLabel->setText(tr("MIDI Bus"));
+			sBusTitle += tr("MIDI");
 			break;
 		}
-
 		case qtractorTrack::None:
 		default:
-			m_ui.BusTitleTextLabel->setText(tr("Bus"));
 			break;
 		}
-
+		if (!sBusTitle.isEmpty())
+			sBusTitle += ' ';
+		m_ui.BusTitleTextLabel->setText(sBusTitle + tr("Bus"));
 		m_ui.BusNameLineEdit->setText(pBus->busName());
 		m_ui.BusModeComboBox->setCurrentIndex(int(pBus->busMode()) - 1);
 		m_ui.PassthruCheckBox->setChecked(pBus->isPassthru());
@@ -276,6 +318,7 @@ void qtractorBusForm::refreshBuses (void)
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm == NULL)
 		return;
+
 	qtractorSession *pSession = pMainForm->session();
 	if (pSession == NULL)
 		return;
@@ -369,6 +412,7 @@ bool qtractorBusForm::canCreateBus (void) const
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm == NULL)
 		return false;
+
 	qtractorSession *pSession = pMainForm->session();
 	if (pSession == NULL)
 		return false;
@@ -409,6 +453,7 @@ bool qtractorBusForm::canUpdateBus (void) const
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm == NULL)
 		return false;
+
 	qtractorSession *pSession = pMainForm->session();
 	if (pSession == NULL)
 		return false;
@@ -431,6 +476,7 @@ bool qtractorBusForm::canDeleteBus (void) const
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm == NULL)
 		return false;
+
 	qtractorSession *pSession = pMainForm->session();
 	if (pSession == NULL)
 		return false;
@@ -687,6 +733,52 @@ void qtractorBusForm::stabilizeForm (void)
 	m_ui.CreatePushButton->setEnabled(canCreateBus());
 	m_ui.UpdatePushButton->setEnabled(canUpdateBus());
 	m_ui.DeletePushButton->setEnabled(canDeleteBus());
+
+	// Stabilize current plugin lists state.
+	bool bEnabled;
+	int iItem, iItemCount;
+	qtractorPlugin *pPlugin = NULL;
+	qtractorPluginListItem *pItem = NULL;
+
+	// Input plugin list...
+	bEnabled = (m_ui.InputPluginListView->pluginList() != NULL);
+	m_ui.BusTabWidget->setTabEnabled(1, bEnabled);
+	if (bEnabled) {
+		iItemCount = m_ui.InputPluginListView->count();
+		iItem = -1;
+		pPlugin = NULL;
+		pItem = static_cast<qtractorPluginListItem *> (
+			m_ui.InputPluginListView->currentItem());
+		if (pItem) {
+			iItem = m_ui.InputPluginListView->row(pItem);
+			pPlugin = pItem->plugin();
+		}
+	//	m_ui.AddInputPluginToolButton->setEnabled(true);
+		m_ui.RemoveInputPluginToolButton->setEnabled(pPlugin != NULL);
+		m_ui.MoveUpInputPluginToolButton->setEnabled(pItem && iItem > 0);
+		m_ui.MoveDownInputPluginToolButton->setEnabled(
+			pItem && iItem < iItemCount - 1);
+	}
+
+	// Output plugin list...
+	bEnabled = (m_ui.OutputPluginListView->pluginList() != NULL);
+	m_ui.BusTabWidget->setTabEnabled(2, bEnabled);
+	if (bEnabled) {
+		iItemCount = m_ui.OutputPluginListView->count();
+		iItem = -1;
+		pPlugin = NULL;
+		pItem = static_cast<qtractorPluginListItem *> (
+			m_ui.OutputPluginListView->currentItem());
+		if (pItem) {
+			iItem = m_ui.OutputPluginListView->row(pItem);
+			pPlugin = pItem->plugin();
+		}
+	//	m_ui.AddOutputPluginToolButton->setEnabled(true);
+		m_ui.RemoveOutputPluginToolButton->setEnabled(pPlugin != NULL);
+		m_ui.MoveUpOutputPluginToolButton->setEnabled(pItem && iItem > 0);
+		m_ui.MoveDownOutputPluginToolButton->setEnabled(
+			pItem && iItem < iItemCount - 1);
+	}
 }
 
 
@@ -721,6 +813,58 @@ void qtractorBusForm::contextMenu ( const QPoint& /*pos*/ )
 
 //	menu.exec(m_ui.BusListView->mapToGlobal(pos));
 	menu.exec(QCursor::pos());
+}
+
+
+// Input plugin list slots.
+void qtractorBusForm::addInputPlugin (void)
+{
+	m_ui.InputPluginListView->addPlugin();
+	stabilizeForm();
+}
+
+void qtractorBusForm::removeInputPlugin (void)
+{
+	m_ui.InputPluginListView->removePlugin();
+	stabilizeForm();
+}
+
+void qtractorBusForm::moveUpInputPlugin (void)
+{
+	m_ui.InputPluginListView->moveUpPlugin();
+	stabilizeForm();
+}
+
+void qtractorBusForm::moveDownInputPlugin (void)
+{
+	m_ui.InputPluginListView->moveDownPlugin();
+	stabilizeForm();
+}
+
+
+// Output plugin list slots.
+void qtractorBusForm::addOutputPlugin (void)
+{
+	m_ui.OutputPluginListView->addPlugin();
+	stabilizeForm();
+}
+
+void qtractorBusForm::removeOutputPlugin (void)
+{
+	m_ui.OutputPluginListView->removePlugin();
+	stabilizeForm();
+}
+
+void qtractorBusForm::moveUpOutputPlugin (void)
+{
+	m_ui.OutputPluginListView->moveUpPlugin();
+	stabilizeForm();
+}
+
+void qtractorBusForm::moveDownOutputPlugin (void)
+{
+	m_ui.OutputPluginListView->moveDownPlugin();
+	stabilizeForm();
 }
 
 
