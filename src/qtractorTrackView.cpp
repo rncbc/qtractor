@@ -1218,9 +1218,6 @@ void qtractorTrackView::mousePressEvent ( QMouseEvent *pMouseEvent )
 	}
 
 	qtractorScrollView::mousePressEvent(pMouseEvent);
-
-	// Make sure we've get focus back...
-	qtractorScrollView::setFocus();
 }
 
 
@@ -1376,9 +1373,6 @@ void qtractorTrackView::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 
 	// Force null state.
 	resetDragState();
-
-	// Make sure we've get focus back...
-	qtractorScrollView::setFocus();
 }
 
 
@@ -2050,6 +2044,14 @@ void qtractorTrackView::resetDragState (void)
 	// Should fallback mouse cursor...
 	if (m_dragCursor != DragNone)
 		qtractorScrollView::unsetCursor();
+	if (m_dragState == DragMove        ||
+		m_dragState == DragResizeLeft  ||
+		m_dragState == DragResizeRight ||
+		m_dragState == DragPaste       ||
+		m_dragState == DragStep) {
+		m_pClipSelect->clear();
+		updateContents();
+	}
 
 	// Force null state, now.
 	m_dragState  = DragNone;
@@ -2105,6 +2107,7 @@ void qtractorTrackView::keyPressEvent ( QKeyEvent *pKeyEvent )
 		}
 		// Fall thru...
 	case Qt::Key_Escape:
+		m_dragState = DragStep; // HACK: Force selection clearance!
 		resetDragState();
 		break;
 	case Qt::Key_Home:
@@ -2195,9 +2198,6 @@ void qtractorTrackView::keyPressEvent ( QKeyEvent *pKeyEvent )
 		qtractorScrollView::keyPressEvent(pKeyEvent);
 		break;
 	}
-
-	// Make sure we've get focus back...
-	qtractorScrollView::setFocus();
 }
 
 
@@ -2311,7 +2311,7 @@ void qtractorTrackView::ensureVisibleFrame ( unsigned long iFrame )
 		else if (x > x0 + w3)
 			x += w3;
 		qtractorScrollView::ensureVisible(x, y, 0, 0);
-		qtractorScrollView::setFocus();
+	//	qtractorScrollView::setFocus();
 	}
 }
 
@@ -2666,7 +2666,7 @@ void qtractorTrackView::pasteClipboard (void)
 
 	// It doesn't matter which one, both pasteable views are due...
 	qtractorScrollView::setCursor(
-		QCursor(QPixmap(":/icons/editPaste.png"), 20, 20));
+		QCursor(QPixmap(":/icons/editPaste.png"), 12, 12));
 
 	// Make sure the mouse pointer is properly located...
 	const QPoint& pos = qtractorScrollView::viewportToContents(

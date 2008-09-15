@@ -368,9 +368,6 @@ void qtractorMidiEditTime::mousePressEvent ( QMouseEvent *pMouseEvent )
 	}
 
 	qtractorScrollView::mousePressEvent(pMouseEvent);
-
-	// Make sure we've get focus back...
-	qtractorScrollView::setFocus();
 }
 
 

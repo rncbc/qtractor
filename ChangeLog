@@ -5,6 +5,10 @@ ChangeLog
 
 CVS HEAD
 
+- Pressing the Escape key also clears current selection in the
+  main track-view and MIDI clip editor; resizing multiple events
+  at once doesn't need help from Shift or Ctrl modifiers anymore.
+
 - DSSI and VSTi plugins get all their default parameters values
   reset on MIDI program change.
 

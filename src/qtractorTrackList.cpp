@@ -876,9 +876,6 @@ void qtractorTrackList::mousePressEvent ( QMouseEvent *pMouseEvent )
 	// just 'coz we're using ruberbands, which are
 	// in fact based on real widgets (WM entities)...
 	qtractorScrollView::mousePressEvent(pMouseEvent);
-
-	// Make sure we've get focus back...
-	qtractorScrollView::setFocus();
 }
 
 
@@ -1012,9 +1009,6 @@ void qtractorTrackList::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 
 	// Force null state.
 	resetDragState();
-
-	// Make sure we've get focus back...
-	qtractorScrollView::setFocus();
 }
 
 
@@ -1145,9 +1139,6 @@ void qtractorTrackList::keyPressEvent ( QKeyEvent *pKeyEvent )
 		qtractorScrollView::keyPressEvent(pKeyEvent);
 		break;
 	}
-
-	// Make sure we've get focus back...
-	qtractorScrollView::setFocus();
 }
 
 

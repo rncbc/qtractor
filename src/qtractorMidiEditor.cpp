@@ -1642,9 +1642,11 @@ void qtractorMidiEditor::dragMoveUpdate ( qtractorScrollView *pScrollView,
 		if ((pos - m_posDrag).manhattanLength()
 			< QApplication::startDragDistance())
 			break;
+	#if 0
 		// Take care of selection modifier...
 		if ((modifiers & (Qt::ShiftModifier | Qt::ControlModifier)) == 0)
 			flags |= SelectClear;
+	#endif
 		// Are we about to move something around?
 		if (m_pEventDrag) {
 			if (m_resizeMode == ResizeNone) {
@@ -2623,8 +2625,8 @@ void qtractorMidiEditor::sendNote ( int iNote, int iVelocity )
 QString qtractorMidiEditor::eventToolTip ( qtractorMidiEvent *pEvent ) const
 {
 	QString sToolTip = tr("Time:\t%1\nType:\t")
-		.arg(m_pTimeScale->textFromTick(
-			m_pTimeScale->tickFromFrame(m_iOffset) + pEvent->time()));
+		.arg(m_pTimeScale->textFromTick(pEvent->time()
+			+ m_pTimeScale->tickFromFrame(m_iOffset)));
 
 	switch (pEvent->type()) {
 //	case qtractorMidiEvent::NOTEOFF:
@@ -2702,6 +2704,7 @@ bool qtractorMidiEditor::keyPress ( qtractorScrollView *pScrollView,
 		}
 		// Fall thru...
 	case Qt::Key_Escape:
+		m_dragState = DragStep; // HACK: Force selection clearance!
 		resetDragState(pScrollView);
 		break;
 	case Qt::Key_Home:

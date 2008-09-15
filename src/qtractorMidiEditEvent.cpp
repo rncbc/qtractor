@@ -479,9 +479,6 @@ void qtractorMidiEditEvent::mousePressEvent ( QMouseEvent *pMouseEvent )
 
 	// Remember what and where we'll be dragging/selecting...
 	m_pEditor->dragMoveStart(this, pos, pMouseEvent->modifiers());
-
-	// Make sure we've get focus back...
-	qtractorScrollView::setFocus();
 }
 
 
@@ -507,9 +504,6 @@ void qtractorMidiEditEvent::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 		= qtractorScrollView::viewportToContents(pMouseEvent->pos());
 
 	m_pEditor->dragMoveCommit(this, pos, pMouseEvent->modifiers());
-
-	// Make sure we've get focus back...
-	qtractorScrollView::setFocus();
 }
 
 
