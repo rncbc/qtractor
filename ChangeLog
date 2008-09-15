@@ -5,6 +5,9 @@ ChangeLog
 
 CVS HEAD
 
+- DSSI and VSTi plugins get all their default parameters values
+  reset on MIDI program change.
+
 - Several major fixes have been applied to the MIDI clip editor,
   regarding snap precision and correctness, most specially due
   on clips which weren't located on exact bar boundaries.

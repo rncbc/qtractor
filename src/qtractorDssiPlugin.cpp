@@ -936,18 +936,6 @@ void qtractorDssiPlugin::resetChannels (void)
 
 	// (Re)issue all configuration as needed...
 	realizeConfigs();
-
-#if 0
-	// Init patch selection.
-	selectProgram(0, 0);
-
-	// Reset parameters default value...
-	QListIterator<qtractorPluginParam *> param(params());
-	while (param.hasNext()) {
-		qtractorPluginParam *pParam = param.next();
-		pParam->setDefaultValue(pParam->value());
-	}
-#endif
 }
 
 
@@ -1175,6 +1163,13 @@ void qtractorDssiPlugin::selectProgram ( int iBank, int iProg )
 	if (pDssiEditor)
 		osc_send_program(pDssiEditor, iBank, iProg);
 #endif
+
+	// Reset parameters default value...
+	QListIterator<qtractorPluginParam *> param(params());
+	while (param.hasNext()) {
+		qtractorPluginParam *pParam = param.next();
+		pParam->setDefaultValue(pParam->value());
+	}
 }
 
 

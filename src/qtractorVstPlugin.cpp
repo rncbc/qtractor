@@ -759,6 +759,17 @@ void qtractorVstPlugin::selectProgram ( int iBank, int iProg )
 
 	for (unsigned short i = 0; i < instances(); ++i)
 		vst_dispatch(i, effSetProgram, 0, iIndex, NULL, 0.0f);
+
+	// Reset parameters default value...
+	AEffect *pVstEffect = vst_effect(0);
+	if (pVstEffect) {
+		QListIterator<qtractorPluginParam *> param(params());
+		while (param.hasNext()) {
+			qtractorPluginParam *pParam = param.next();
+			pParam->setDefaultValue(
+				pVstEffect->getParameter(pVstEffect, pParam->index()));
+		}
+	}
 }
 
 
