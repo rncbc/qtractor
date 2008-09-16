@@ -954,7 +954,7 @@ void qtractorMidiEngine::enqueue ( qtractorTrack *pTrack,
 		= static_cast<qtractorMidiBus *> (pTrack->outputBus());
 	if (pMidiBus == NULL)
 		return;
-#if 0
+#if 1
 	// HACK: Ignore our own mixer-monitor supplied controllers...
 	if (pEvent->type() == qtractorMidiEvent::CONTROLLER) {
 		if (pEvent->controller() == CHANNEL_VOLUME ||

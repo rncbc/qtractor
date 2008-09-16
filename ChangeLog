@@ -8,7 +8,7 @@ CVS HEAD
 - Send/reset all MIDI buses and track controllers (ie. volume
   and panning) only when main transport playback is started,
   avoiding the pouring on eg. loop, playhead or tempo changes.
- 
+
 - Pressing the Escape key also clears current selection in the
   main track-view and MIDI clip editor; resizing multiple events
   at once doesn't need help from Shift or Ctrl modifiers anymore.

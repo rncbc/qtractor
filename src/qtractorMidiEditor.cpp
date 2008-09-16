@@ -2088,11 +2088,20 @@ void qtractorMidiEditor::executeDragMove ( qtractorScrollView *pScrollView,
 
 	updateDragMove(pScrollView, pos + m_posStep);
 
+#if 0
 	long iTimeDelta = 0;
 	if (m_posDelta.x() < 0)
 		iTimeDelta = -long(m_pTimeScale->tickFromPixel(-m_posDelta.x()));
 	else
 		iTimeDelta = +long(m_pTimeScale->tickFromPixel(+m_posDelta.x()));
+#else
+	int x1 = (static_cast<qtractorScrollView *> (m_pEditView) == pScrollView
+		? m_select.rectView().x() : m_select.rectEvent().x());
+	unsigned long t0 = m_pTimeScale->tickFromFrame(m_iOffset);
+	unsigned long t1 = m_pTimeScale->tickFromPixel(x1);
+	unsigned long t2 = m_pTimeScale->tickFromPixel(x1 + m_posDelta.x());
+	long iTimeDelta = long(m_pTimeScale->tickSnap(t2 + t0) - t0) - long(t1);
+#endif
 
 	int h1 = m_pEditList->itemHeight();
 	int iNoteDelta = 0;
@@ -2131,11 +2140,20 @@ void qtractorMidiEditor::executeDragResize ( qtractorScrollView *pScrollView,
 
 	updateDragResize(pScrollView, pos);
 
+#if 0
 	long iTimeDelta = 0;
 	if (m_posDelta.x() < 0)
 		iTimeDelta = -long(m_pTimeScale->tickFromPixel(-m_posDelta.x()));
 	else
 		iTimeDelta = +long(m_pTimeScale->tickFromPixel(+m_posDelta.x()));
+#else
+	int x1 = (m_resizeMode == ResizeNoteRight
+		? m_rectDrag.right() : m_rectDrag.left());
+	unsigned long t0 = m_pTimeScale->tickFromFrame(m_iOffset);
+	unsigned long t1 = m_pTimeScale->tickFromPixel(x1);
+	unsigned long t2 = m_pTimeScale->tickFromPixel(x1 + m_posDelta.x());
+	long iTimeDelta = long(m_pTimeScale->tickSnap(t2 + t0) - t0) - long(t1);
+#endif
 
 	int h = (m_pEditEvent->viewport())->height();
 	int iValueDelta = 0;
@@ -2243,11 +2261,22 @@ void qtractorMidiEditor::executeDragPaste ( qtractorScrollView *pScrollView,
 
 	updateDragMove(pScrollView, pos + m_posStep);
 
+#if 0
 	long iTimeDelta = 0;
 	if (m_posDelta.x() < 0)
 		iTimeDelta = -long(m_pTimeScale->tickFromPixel(-m_posDelta.x()));
 	else
 		iTimeDelta = +long(m_pTimeScale->tickFromPixel(+m_posDelta.x()));
+#else
+	const QRect& rect
+		= (static_cast<qtractorScrollView *> (m_pEditView) == pScrollView
+			? m_select.rectView() : m_select.rectEvent());
+	unsigned long t0 = m_pTimeScale->tickFromFrame(m_iOffset);
+	unsigned long t1 = m_pTimeScale->tickFromPixel(rect.x());
+	unsigned long t2 = m_pTimeScale->tickFromPixel(rect.x() + m_posDelta.x());
+	t2 = m_pTimeScale->tickSnap(t2 + t0) - t0;
+	long iTimeDelta = long(t2) - long(t1);
+#endif
 
 	int h1 = m_pEditList->itemHeight();
 	int iNoteDelta = 0;
