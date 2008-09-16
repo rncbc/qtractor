@@ -1255,6 +1255,8 @@ void qtractorSession::setMidiPatch ( qtractorInstrumentList *pInstruments )
 		if (pTrack->trackType() == qtractorTrack::Midi)
 			pTrack->setMidiPatch(pInstruments);
 	}
+
+	m_pMidiEngine->resetAllControllers();
 }
 
 

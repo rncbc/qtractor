@@ -72,6 +72,9 @@ public:
 	// Reset all MIDI monitoring...
 	void resetAllMonitors();
 
+	// Reset all MIDI controllers...
+	void resetAllControllers();
+
 	// MIDI event capture method.
 	void capture(snd_seq_event_t *pEv);
 

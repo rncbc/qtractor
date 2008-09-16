@@ -665,28 +665,62 @@ void qtractorMidiEngine::resetAllMonitors (void)
 	if (pSession == NULL)
 		return;
 
-	// Reset all MIDI buses monitors...
+	// Reset all MIDI bus monitors...
 	for (qtractorBus *pBus = buses().first();
 			pBus; pBus = pBus->next()) {
 		qtractorMidiBus *pMidiBus
 			= static_cast<qtractorMidiBus *> (pBus);
 		if (pMidiBus) {
-			if (pMidiBus->midiMonitor_in()) {
+			if (pMidiBus->midiMonitor_in())
 				pMidiBus->midiMonitor_in()->reset();
-				if (pMidiBus->midiMonitor_out() == NULL) {
-					pMidiBus->setMasterVolume(pMidiBus->midiMonitor_in()->gain());
-					pMidiBus->setMasterPanning(pMidiBus->midiMonitor_in()->panning());
+			if (pMidiBus->midiMonitor_out())
+				pMidiBus->midiMonitor_out()->reset();
+		}
+	}
+
+	// Reset all MIDI track channel monitors...
+	for (qtractorTrack *pTrack = pSession->tracks().first();
+			pTrack; pTrack = pTrack->next()) {
+		if (pTrack->trackType() == qtractorTrack::Midi) {
+			qtractorMidiMonitor *pMidiMonitor
+				= static_cast<qtractorMidiMonitor *> (pTrack->monitor());
+			if (pMidiMonitor)
+				pMidiMonitor->reset();
+		}
+	}
+}
+
+
+// Reset all MIDI controllers...
+void qtractorMidiEngine::resetAllControllers (void)
+{
+	// There must a session reference...
+	qtractorSession *pSession = session();
+	if (pSession == NULL)
+		return;
+
+	// Reset all MIDI bus controllers...
+	for (qtractorBus *pBus = buses().first();
+			pBus; pBus = pBus->next()) {
+		qtractorMidiBus *pMidiBus
+			= static_cast<qtractorMidiBus *> (pBus);
+		if (pMidiBus) {
+			qtractorMidiMonitor *pInputMonitor  = pMidiBus->midiMonitor_in();
+			qtractorMidiMonitor *pOutputMonitor = pMidiBus->midiMonitor_out();
+			if (pInputMonitor) {
+				if (pOutputMonitor == NULL) {
+					pMidiBus->setMasterVolume(pInputMonitor->gain());
+					pMidiBus->setMasterPanning(pInputMonitor->panning());
 				}
 			}
-			if (pMidiBus->midiMonitor_out()) {
-				pMidiBus->midiMonitor_out()->reset();
-				pMidiBus->setMasterVolume(pMidiBus->midiMonitor_out()->gain());
-				pMidiBus->setMasterPanning(pMidiBus->midiMonitor_out()->panning());
+			if (pOutputMonitor) {
+				pMidiBus->setMasterVolume(pOutputMonitor->gain());
+				pMidiBus->setMasterPanning(pOutputMonitor->panning());
 			}
 		}
 	}
 
-	// Reset all MIDI monitors...
+	// Reset all MIDI track channel controllers...
 	for (qtractorTrack *pTrack = pSession->tracks().first();
 			pTrack; pTrack = pTrack->next()) {
 		if (pTrack->trackType() == qtractorTrack::Midi) {
@@ -695,7 +729,6 @@ void qtractorMidiEngine::resetAllMonitors (void)
 			qtractorMidiMonitor *pMidiMonitor
 				= static_cast<qtractorMidiMonitor *> (pTrack->monitor());
 			if (pMidiBus && pMidiMonitor) {
-				pMidiMonitor->reset();
 				pMidiBus->setVolume(pTrack, pMidiMonitor->gain());
 				pMidiBus->setPanning(pTrack, pMidiMonitor->panning());
 			}
