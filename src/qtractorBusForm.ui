@@ -26,7 +26,7 @@
     <x>0</x>
     <y>0</y>
     <width>480</width>
-    <height>300</height>
+    <height>320</height>
    </rect>
   </property>
   <property name="focusPolicy" >
@@ -79,12 +79,6 @@
        </property>
        <item>
         <widget class="QLabel" name="BusTitleTextLabel" >
-         <property name="minimumSize" >
-          <size>
-           <width>180</width>
-           <height>20</height>
-          </size>
-         </property>
          <property name="font" >
           <font>
            <family>Sans Serif</family>
@@ -120,7 +114,7 @@
            <item>
             <widget class="QGroupBox" name="CommonBusGroup" >
              <property name="title" >
-              <string>Common</string>
+              <string>Bus</string>
              </property>
              <layout class="QGridLayout" >
               <property name="margin" >

@@ -5,6 +5,8 @@ ChangeLog
 
 CVS HEAD
 
+- Several icons refined with slight transparent shadowing.
+
 - Send/reset all MIDI buses and track controllers (ie. volume
   and panning) only when main transport playback is started,
   avoiding the pouring on eg. loop, playhead or tempo changes.

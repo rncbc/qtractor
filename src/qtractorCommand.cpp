@@ -119,10 +119,8 @@ void qtractorCommandList::backout ( qtractorCommand *pCommand )
 
 
 // Cannonical command methods.
-bool qtractorCommandList::exec ( qtractorCommand *pCommand )
+bool qtractorCommandList::push ( qtractorCommand *pCommand )
 {
-	bool bResult = false;
-
 	// Trim the command list from current last command...
 	qtractorCommand *pNextCommand = nextCommand();
 	while (pNextCommand) {
@@ -131,15 +129,26 @@ bool qtractorCommandList::exec ( qtractorCommand *pCommand )
 		pNextCommand = pLateCommand;
 	}
 
-	if (pCommand) {
-		m_commands.append(pCommand);
-		m_pLastCommand = m_commands.last();
-		if (m_pLastCommand) {
-			// Execute operation...
-			bResult = m_pLastCommand->redo();
-			// Notify commanders...
-			emit updateNotifySignal(m_pLastCommand->isRefresh());
-		}
+	if (pCommand == NULL)
+		return false;
+
+	// It must be this last one...
+	m_commands.append(pCommand);
+	m_pLastCommand = m_commands.last();
+
+	return (m_pLastCommand != NULL);
+}
+
+bool qtractorCommandList::exec ( qtractorCommand *pCommand )
+{
+	bool bResult = false;
+
+	// Append command...
+	if (push(pCommand)) {
+		// Execute operation...
+		bResult = m_pLastCommand->redo();
+		// Notify commanders...
+		emit updateNotifySignal(m_pLastCommand->isRefresh());
 	}
 
 	return bResult;

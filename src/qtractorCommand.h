@@ -101,6 +101,7 @@ public:
 	void backout(qtractorCommand *pCommand);
 
 	// Cannonical command methods.
+	bool push(qtractorCommand *pCommand);
 	bool exec(qtractorCommand *pCommand);
 
 	bool undo();
