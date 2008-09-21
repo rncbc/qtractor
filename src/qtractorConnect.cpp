@@ -1,7 +1,7 @@
 // qtractorConnect.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -184,10 +184,12 @@ void qtractorPortListItem::setHilite ( bool bHilite )
 		// Propagate this to the parent...
 		m_pClientItem->setHilite(bHilite);
 	}
-
+	
 	// Set the new color.
-	QTreeWidgetItem::setTextColor(0, m_bHilite ? Qt::blue
-		: QTreeWidgetItem::treeWidget()->palette().text().color());
+	const QPalette& pal = QTreeWidgetItem::treeWidget()->palette();
+	QTreeWidgetItem::setTextColor(0, m_bHilite
+		? (pal.window().color().value() < 0x7f ? Qt::cyan : Qt::blue)
+		: pal.text().color());
 }
 
 bool qtractorPortListItem::isHilite (void) const
@@ -377,8 +379,10 @@ void qtractorClientListItem::setHilite ( bool bHilite )
 		m_iHilite--;
 
 	// Set the new color.
-	QTreeWidgetItem::setTextColor(0, m_iHilite > 0 ? Qt::darkBlue
-		: QTreeWidgetItem::treeWidget()->palette().text().color());
+	const QPalette& pal = QTreeWidgetItem::treeWidget()->palette();
+	QTreeWidgetItem::setTextColor(0, m_iHilite > 0
+		? (pal.window().color().value() < 0x7f ? Qt::darkCyan : Qt::darkBlue)
+		: pal.text().color());
 }
 
 bool qtractorClientListItem::isHilite (void) const
@@ -1100,6 +1104,10 @@ void qtractorConnectorView::paintEvent ( QPaintEvent * )
 	int x1, y1, h1;
 	int x2, y2, h2;
 	int i, rgb[3] = { 0x33, 0x66, 0x99 };
+
+	// Inline adaptive to darker background themes...
+	if (QWidget::palette().window().color().value() < 0x7f)
+		for (i = 0; i < 3; ++i) rgb[i] += 0x33;
 
 	// Initialize color changer.
 	i = 0;

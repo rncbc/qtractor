@@ -5,6 +5,9 @@ ChangeLog
 
 CVS HEAD
 
+- Lighten up the connections line and highlight colors, as seen
+  to fit best on some darker background themes.
+
 - Several icons refined with slight transparent shadowing.
 
 - Send/reset all MIDI buses and track controllers (ie. volume
