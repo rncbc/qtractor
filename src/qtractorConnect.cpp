@@ -188,7 +188,7 @@ void qtractorPortListItem::setHilite ( bool bHilite )
 	// Set the new color.
 	const QPalette& pal = QTreeWidgetItem::treeWidget()->palette();
 	QTreeWidgetItem::setTextColor(0, m_bHilite
-		? (pal.window().color().value() < 0x7f ? Qt::cyan : Qt::blue)
+		? (pal.base().color().value() < 0x7f ? Qt::cyan : Qt::blue)
 		: pal.text().color());
 }
 
@@ -381,7 +381,7 @@ void qtractorClientListItem::setHilite ( bool bHilite )
 	// Set the new color.
 	const QPalette& pal = QTreeWidgetItem::treeWidget()->palette();
 	QTreeWidgetItem::setTextColor(0, m_iHilite > 0
-		? (pal.window().color().value() < 0x7f ? Qt::darkCyan : Qt::darkBlue)
+		? (pal.base().color().value() < 0x7f ? Qt::darkCyan : Qt::darkBlue)
 		: pal.text().color());
 }
 
