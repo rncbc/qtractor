@@ -75,6 +75,8 @@ qtractorMidiClip::qtractorMidiClip ( const qtractorMidiClip& clip )
 // Destructor.
 qtractorMidiClip::~qtractorMidiClip (void)
 {
+	close(true);
+
 	if (m_pMidiEditorForm) {
 		m_pMidiEditorForm->close();
 		delete m_pMidiEditorForm;

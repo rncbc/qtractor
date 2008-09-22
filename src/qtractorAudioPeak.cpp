@@ -318,6 +318,9 @@ bool qtractorAudioPeakFile::openRead (void)
 		}
 	}
 
+	// Make things critical...
+	QMutexLocker locker(&m_mutex);
+
 	// Just open and go ahead with first bunch...
 	if (!m_peakFile.open(QIODevice::ReadOnly))
 		return false;
@@ -351,6 +354,9 @@ bool qtractorAudioPeakFile::openRead (void)
 // Free all attended resources for this peak file.
 void qtractorAudioPeakFile::closeRead (void)
 {
+	// Make things critical...
+	QMutexLocker locker(&m_mutex);
+
 	// Close file.
 	if (m_openMode == Read) {
 		m_peakFile.close();
@@ -422,6 +428,9 @@ qtractorAudioPeakFile::Frame *qtractorAudioPeakFile::read (
 	// Must be open for something...
 	if (m_openMode == None)
 		return NULL;
+
+	// Make things critical...
+	QMutexLocker locker(&m_mutex);
 
 #ifdef CONFIG_DEBUG_0
 	qDebug("qtractorAudioPeakFile[%p]::read(%lu, %u) [%lu, %u, %u]", this,
@@ -513,6 +522,9 @@ bool qtractorAudioPeakFile::openWrite (
 	if (m_openMode == Write)
 		return true;
 
+	// Make things critical...
+	QMutexLocker locker(&m_mutex);
+
 	// We'll force (re)open if already reading (duh?)
 	if (m_openMode == Read) {
 		m_peakFile.close();
@@ -589,6 +601,9 @@ bool qtractorAudioPeakFile::openWrite (
 // Close the (hopefully) created peak file.
 void qtractorAudioPeakFile::closeWrite (void)
 {
+	// Make things critical...
+	QMutexLocker locker(&m_mutex);
+
 	// Flush and close...
 	if (m_openMode == Write) {
 		if (m_iPeak > 0)
@@ -616,6 +631,9 @@ void qtractorAudioPeakFile::write (
 {
 	if (m_openMode != Write)
 		return;
+
+	// Make things critical...
+	QMutexLocker locker(&m_mutex);
 
 	for (unsigned int n = 0; n < iAudioFrames; ++n) {
 		// Accumulate for this sample frame...
@@ -645,17 +663,17 @@ void qtractorAudioPeakFile::writeFrame (void)
 		// Write the smoothed peak maximum and RMS value...
 		unsigned short k = i + m_peakHeader.channels;
 		m_peakMax[k] = (1.0f - c_fPeakExpCoef) * m_peakMax[k]
-			+ c_fPeakExpCoef * 254.0f * m_peakMax[i];
-		frame.max = (unsigned char) (m_peakMax[k] > 254.0f ? 255 : m_peakMax[k]);
+			+ c_fPeakExpCoef * 255.0f * m_peakMax[i];
+		frame.max = (unsigned char) (m_peakMax[k] > 255.0f ? 255 : m_peakMax[k]);
 		m_peakRms[k] = (1.0f - c_fPeakExpCoef) * m_peakRms[k]
-			+ c_fPeakExpCoef * 254.0f * (::sqrtf(m_peakRms[i] / float(m_iPeak)));
-		frame.rms = (unsigned char) (m_peakRms[k] > 254.0f ? 255 : m_peakRms[k]);
+			+ c_fPeakExpCoef * 255.0f * (::sqrtf(m_peakRms[i] / float(m_iPeak)));
+		frame.rms = (unsigned char) (m_peakRms[k] > 255.0f ? 255 : m_peakRms[k]);
 #else
 		// Write the denormalized peak values...
-		m_peakMax[i] = 254.0f * m_peakMax[i];
-		m_peakRms[i] = 254.0f * ::sqrtf(m_peakRms[i] / float(m_iPeak));
-		frame.max = (unsigned char) (m_peakMax[i] > 254.0f ? 255 : m_peakMax[i]);
-		frame.rms = (unsigned char) (m_peakRms[i] > 254.0f ? 255 : m_peakRms[i]);
+		m_peakMax[i] = 255.0f * m_peakMax[i];
+		m_peakRms[i] = 255.0f * ::sqrtf(m_peakRms[i] / float(m_iPeak));
+		frame.max = (unsigned char) (m_peakMax[i] > 255.0f ? 255 : m_peakMax[i]);
+		frame.rms = (unsigned char) (m_peakRms[i] > 255.0f ? 255 : m_peakRms[i]);
 #endif
 		// Reset peak period accumulators...
 		m_peakMax[i] = 0.0f;

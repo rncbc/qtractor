@@ -68,10 +68,12 @@ qtractorAudioClip::qtractorAudioClip ( const qtractorAudioClip& clip )
 // Destructor.
 qtractorAudioClip::~qtractorAudioClip (void)
 {
-	if (m_pPeak)
-		delete m_pPeak;
+	close(true);
+
 	if (m_pBuff)
 		delete m_pBuff;
+	if (m_pPeak)
+		delete m_pPeak;
 }
 
 

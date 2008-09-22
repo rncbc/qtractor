@@ -661,6 +661,7 @@ void qtractorTrack::setClipRecord ( qtractorClip *pClipRecord )
 {
 	if (m_pClipRecord)
 		delete m_pClipRecord;
+
 	m_pClipRecord = pClipRecord;
 }
 

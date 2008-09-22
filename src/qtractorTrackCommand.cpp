@@ -384,9 +384,18 @@ bool qtractorEditTrackCommand::redo (void)
 	if (pMainForm == NULL)
 		return false;
 
+	qtractorSession *pSession = pMainForm->session();
+	if (pSession == NULL)
+		return false;
+
 	qtractorTracks *pTracks = pMainForm->tracks();
 	if (pTracks == NULL)
 		return false;
+
+	// Howdy, maybe we're already have a name on recording...
+	bool bRecord = m_pTrack->isRecord();
+	if (bRecord)
+		pSession->trackRecord(m_pTrack, false);
 
 	// Make the track property change...
 	bool bResult = qtractorPropertyCommand<qtractorTrack::Properties>::redo();
@@ -402,6 +411,9 @@ bool qtractorEditTrackCommand::redo (void)
 				.arg(m_pTrack->inputBusName())
 				.arg(m_pTrack->outputBusName()));
 	}
+	else // Reassign recording...
+	if (bRecord)
+		pSession->trackRecord(m_pTrack, true);
 
 	// Refresh track item, at least the names...
 	pTracks->trackList()->updateTrack(m_pTrack);

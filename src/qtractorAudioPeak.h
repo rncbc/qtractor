@@ -129,6 +129,8 @@ private:
 	unsigned short m_iPeakPeriod;
 	unsigned short m_iPeak;
 
+	QMutex         m_mutex;
+
 	// The peak file creation detached thread.
 	qtractorAudioPeakThread *m_pPeakThread;
 
