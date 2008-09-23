@@ -74,7 +74,7 @@ public:
 	int read(float **ppFrames, unsigned int iFrames,
 		unsigned int iOffset = 0);
 	int write(float **ppFrames, unsigned int iFrames,
-		unsigned short iChannels = 0);
+		unsigned short iChannels = 0, unsigned int iOffset = 0);
 
 	// Special kind of super-read/channel-mix.
 	int readMix(float **ppFrames, unsigned int iFrames,

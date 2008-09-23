@@ -62,7 +62,7 @@ public:
 
 	// Direct write method.
 	void write(float **ppBuffer, unsigned int iFrames,
-		unsigned short iChannels = 0);
+		unsigned short iChannels = 0, unsigned int iOffset = 0);
 
 	// Export-mode sync method.
 	void syncExport();

@@ -178,9 +178,9 @@ bool qtractorAudioClip::openAudioFile ( const QString& sFilename, int iMode )
 
 // Direct write method.
 void qtractorAudioClip::write ( float **ppBuffer,
-	unsigned int iFrames, unsigned short iChannels )
+	unsigned int iFrames, unsigned short iChannels, unsigned int iOffset )
 {
-	if (m_pBuff) m_pBuff->write(ppBuffer, iFrames, iChannels);
+	if (m_pBuff) m_pBuff->write(ppBuffer, iFrames, iChannels, iOffset);
 }
 
 

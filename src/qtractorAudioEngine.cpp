@@ -59,12 +59,12 @@ static inline bool sse_enabled (void)
 // SSE enabled mix-down processor version.
 static inline void sse_buffer_add (
 	float **ppBuffer, float **ppFrames, unsigned int iFrames,
-	unsigned short iBuffers, unsigned short iChannels, unsigned int iOffset )
+	unsigned short iBuffers, unsigned short iChannels )
 {
 	unsigned short j = 0;
 
 	for (unsigned short i = 0; i < iChannels; ++i) {
-		float *pBuffer = ppBuffer[j] + iOffset;
+		float *pBuffer = ppBuffer[j];
 		float *pFrames = ppFrames[i];
 		unsigned int nframes = iFrames;
 		for (; (long(pBuffer) & 15) && (nframes > 0); --nframes)
@@ -90,12 +90,12 @@ static inline void sse_buffer_add (
 // Standard mix-down processor version.
 static inline void std_buffer_add (
 	float **ppBuffer, float **ppFrames, unsigned int iFrames,
-	unsigned short iBuffers, unsigned short iChannels, unsigned int iOffset )
+	unsigned short iBuffers, unsigned short iChannels )
 {
 	unsigned short j = 0;
 
 	for (unsigned short i = 0; i < iChannels; ++i) {
-		float *pBuffer = ppBuffer[j] + iOffset;
+		float *pBuffer = ppBuffer[j];
 		float *pFrames = ppFrames[i];
 		for (unsigned int n = 0; n < iFrames; ++n)
 			*pBuffer++ += *pFrames++;
@@ -1475,7 +1475,9 @@ qtractorAudioBus::qtractorAudioBus ( qtractorAudioEngine *pAudioEngine,
 
 	m_ppIBuffer = NULL;
 	m_ppOBuffer = NULL;
+
 	m_ppXBuffer = NULL;
+	m_ppYBuffer = NULL;
 
 	m_bEnabled  = false;
 
@@ -1564,7 +1566,7 @@ bool qtractorAudioBus::open (void)
 		m_ppIPorts  = new jack_port_t * [m_iChannels];
 		m_ppIBuffer = new float * [m_iChannels];
 		const QString sIPortName(busName() + "/in_%1");
-		for (i = 0; i < m_iChannels; i++) {
+		for (i = 0; i < m_iChannels; ++i) {
 			m_ppIPorts[i] = jack_port_register(
 				pAudioEngine->jackClient(),
 				sIPortName.arg(i + 1).toUtf8().constData(),
@@ -1579,7 +1581,7 @@ bool qtractorAudioBus::open (void)
 		m_ppOPorts  = new jack_port_t * [m_iChannels];
 		m_ppOBuffer = new float * [m_iChannels];
 		const QString sOPortName(busName() + "/out_%1");
-		for (i = 0; i < m_iChannels; i++) {
+		for (i = 0; i < m_iChannels; ++i) {
 			m_ppOPorts[i] = jack_port_register(
 				pAudioEngine->jackClient(),
 				sOPortName.arg(i + 1).toUtf8().constData(),
@@ -1592,8 +1594,11 @@ bool qtractorAudioBus::open (void)
 	// Allocate internal working bus buffers...
 	unsigned int iBufferSize = pAudioEngine->bufferSize();
 	m_ppXBuffer = new float * [m_iChannels];
-	for (i = 0; i < m_iChannels; i++)
+	m_ppYBuffer = new float * [m_iChannels];
+	for (i = 0; i < m_iChannels; ++i) {
 		m_ppXBuffer[i] = new float [iBufferSize];
+		m_ppYBuffer[i] = NULL;
+	}
 
 	// Plugin lists need some buffer (re)allocation too...
 	unsigned int iSampleRate = pAudioEngine->sampleRate(); 
@@ -1631,7 +1636,7 @@ void qtractorAudioBus::close (void)
 		if (m_ppIPorts) {
 			// Unregister, if we're not shutdown...
 			if (pAudioEngine->jackClient()) {
-				for (i = 0; i < m_iChannels; i++) {
+				for (i = 0; i < m_iChannels; ++i) {
 					if (m_ppIPorts[i]) {
 						jack_port_unregister(
 							pAudioEngine->jackClient(), m_ppIPorts[i]);
@@ -1653,7 +1658,7 @@ void qtractorAudioBus::close (void)
 		if (m_ppOPorts) {
 			// Unregister, if we're not shutdown...
 			if (pAudioEngine->jackClient()) {
-				for (i = 0; i < m_iChannels; i++) {
+				for (i = 0; i < m_iChannels; ++i) {
 					if (m_ppOPorts[i]) {
 						jack_port_unregister(
 							pAudioEngine->jackClient(), m_ppOPorts[i]);
@@ -1672,10 +1677,15 @@ void qtractorAudioBus::close (void)
 
 	// Free internal buffers.
 	if (m_ppXBuffer) {
-		for (i = 0; i < m_iChannels; i++)
+		for (i = 0; i < m_iChannels; ++i)
 			delete [] m_ppXBuffer[i];
 		delete [] m_ppXBuffer;
 		m_ppXBuffer = NULL;
+	}
+
+	if (m_ppYBuffer) {
+		delete [] m_ppYBuffer;
+		m_ppYBuffer = NULL;
 	}
 }
 
@@ -1837,8 +1847,10 @@ void qtractorAudioBus::buffer_prepare ( unsigned int nframes,
 	unsigned int nbytes = nframes * sizeof(float);
 
 	if (pInputBus == NULL) {
-		for (unsigned short i = 0; i < m_iChannels; ++i)
-			::memset(m_ppXBuffer[i] + offset, 0, nbytes);
+		for (unsigned short i = 0; i < m_iChannels; ++i) {
+			m_ppYBuffer[i] = m_ppXBuffer[i] + offset;
+			::memset(m_ppYBuffer[i], 0, nbytes);
+		}
 		return;
 	}
 
@@ -1847,23 +1859,27 @@ void qtractorAudioBus::buffer_prepare ( unsigned int nframes,
 
 	if (m_iChannels == iBuffers) {
 		// Exact buffer copy...
-		for (unsigned short i = 0; i < iBuffers; ++i)
-			::memcpy(m_ppXBuffer[i] + offset, ppBuffer[i], nbytes);
+		for (unsigned short i = 0; i < iBuffers; ++i) {
+			m_ppYBuffer[i] = m_ppXBuffer[i] + offset;
+			::memcpy(m_ppYBuffer[i], ppBuffer[i], nbytes);
+		}
 	} else {
 		// Buffer merge/multiplex...
 		unsigned short i;
-		for (i = 0; i < m_iChannels; ++i)
-			::memset(m_ppXBuffer[i] + offset, 0, nbytes);
+		for (i = 0; i < m_iChannels; ++i) {
+			m_ppYBuffer[i] = m_ppXBuffer[i] + offset;
+			::memset(m_ppYBuffer[i], 0, nbytes);
+		}
 		if (m_iChannels > iBuffers) {
 			unsigned short j = 0;
 			for (i = 0; i < m_iChannels; ++i) {
-				::memcpy(m_ppXBuffer[i] + offset, ppBuffer[j], nbytes);
+				::memcpy(m_ppYBuffer[i], ppBuffer[j], nbytes);
 				if (++j >= iBuffers)
 					j = 0;
 			}
 		} else { // (m_iChannels < iBuffers)
-			(*m_pfnBufferAdd)(m_ppXBuffer, ppBuffer, nframes,
-				m_iChannels, iBuffers, offset);
+			(*m_pfnBufferAdd)(m_ppYBuffer, ppBuffer,
+				nframes, m_iChannels, iBuffers);
 		}
 	}
 }
@@ -1878,14 +1894,14 @@ void qtractorAudioBus::buffer_commit ( unsigned int nframes )
 	if (pAudioEngine == NULL)
 		return;
 
-	(*m_pfnBufferAdd)(m_ppOBuffer, m_ppXBuffer, nframes,
-		m_iChannels, m_iChannels, pAudioEngine->bufferOffset());
+	(*m_pfnBufferAdd)(m_ppOBuffer, m_ppYBuffer,
+		nframes, m_iChannels, m_iChannels);
 }
 
 
 float **qtractorAudioBus::buffer (void) const
 {
-	return m_ppXBuffer;
+	return m_ppYBuffer;
 }
 
 

@@ -745,16 +745,18 @@ void qtractorTrack::process ( qtractorClip *pClip,
 	if (pAudioMonitor) {
 		// Audio-recording?
 		if (isRecord() && pInputBus) {
+			// Need the audio buffer offset on this...
+			unsigned int offset = m_pSession->audioEngine()->bufferOffset();
 			// Effective audio-recording?
 			qtractorAudioClip *pAudioClip
 				= static_cast<qtractorAudioClip *> (m_pClipRecord);
 			if (pAudioClip) {
 				pAudioClip->write(
-					pInputBus->in(), nframes, pInputBus->channels());
+					pInputBus->in(), nframes, pInputBus->channels(), offset);
 			}
 			// Record non-passthru metering...
 			pAudioMonitor->process_meter(
-				pInputBus->in(), nframes, pInputBus->channels());
+				pInputBus->in(), nframes, pInputBus->channels(), offset);
 		}
 		// Output monitor processing...
 		if (pOutputBus) {

@@ -5,6 +5,10 @@ ChangeLog
 
 CVS HEAD
 
+- Major fix applied to audio track monitor meterring, and most
+  importantly to plugin processing, correcting tentatively all
+  audio buffer offsetting and slicing due on loop turnarounds.
+
 - Fixed a potential crash and/or simple record dismissal when
   changing properties of a track already armed for recording;
   prevent record engaged tracks from editing or removal.

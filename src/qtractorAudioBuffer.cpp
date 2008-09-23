@@ -406,7 +406,7 @@ int qtractorAudioBuffer::read ( float **ppFrames, unsigned int iFrames,
 
 // Buffer data write.
 int qtractorAudioBuffer::write ( float **ppFrames, unsigned int iFrames,
-	unsigned short iChannels )
+	unsigned short iChannels, unsigned int iOffset )
 {
 	if (m_pRingBuffer == NULL)
 		return -1;
@@ -425,7 +425,7 @@ int qtractorAudioBuffer::write ( float **ppFrames, unsigned int iFrames,
 
 	if (iChannels == iBuffers) {
 		// Direct write...
-		nwrite = m_pRingBuffer->write(ppFrames, nwrite);
+		nwrite = m_pRingBuffer->write(ppFrames, nwrite, iOffset);
 	} else {
 		// Multiplexed write...
 		unsigned int ws = m_pRingBuffer->writable();
@@ -447,15 +447,15 @@ int qtractorAudioBuffer::write ( float **ppFrames, unsigned int iFrames,
 			if (iChannels > iBuffers) {
 				for (i = 0, j = 0; i < iBuffers; ++i, ++j) {
 					for (n = 0; n < n1; ++n)
-						ppBuffer[j][n + w] = ppFrames[i][n];
+						ppBuffer[j][n + w] = ppFrames[i][n] + iOffset;
 					for (n = 0; n < n2; ++n)
-						ppBuffer[j][n] = ppFrames[i][n + n1];
+						ppBuffer[j][n] = ppFrames[i][n + n1] + iOffset;
 				}
 				for (j = 0; i < iChannels; ++i) {
 					for (n = 0; n < n1; ++n)
-						ppBuffer[j][n + w] += ppFrames[i][n];
+						ppBuffer[j][n + w] += ppFrames[i][n] + iOffset;
 					for (n = 0; n < n2; ++n)
-						ppBuffer[j][n] += ppFrames[i][n + n1];
+						ppBuffer[j][n] += ppFrames[i][n + n1] + iOffset;
 					if (++j >= iBuffers)
 						j = 0;
 				}
@@ -463,9 +463,9 @@ int qtractorAudioBuffer::write ( float **ppFrames, unsigned int iFrames,
 				i = 0;
 				for (j = 0; j < iBuffers; ++j) {
 					for (n = 0; n < n1; ++n)
-						ppBuffer[j][n + w] = ppFrames[i][n];
+						ppBuffer[j][n + w] = ppFrames[i][n] + iOffset;
 					for (n = 0; n < n2; ++n)
-						ppBuffer[j][n] = ppFrames[i][n + n1];
+						ppBuffer[j][n] = ppFrames[i][n + n1] + iOffset;
 					if (++i >= iChannels)
 						i = 0;
 				}

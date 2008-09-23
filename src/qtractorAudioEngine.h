@@ -297,14 +297,15 @@ private:
 	float       **m_ppIBuffer;
 	float       **m_ppOBuffer;
 	float       **m_ppXBuffer;
+	float       **m_ppYBuffer;
 
 	// Special under-work flag...
 	// (r/w access should be atomic)
 	bool m_bEnabled;
 
 	// Buffer mix-down processor.
-	void (*m_pfnBufferAdd)(float **, float **, unsigned int,
-		unsigned short, unsigned short, unsigned int);
+	void (*m_pfnBufferAdd)(float **, float **,
+		unsigned int, unsigned short, unsigned short);
 };
 
 
