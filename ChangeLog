@@ -6,7 +6,8 @@ ChangeLog
 CVS HEAD
 
 - Fixed a potential crash and/or simple record dismissal when
-  changing properties of a track already armed for recording.
+  changing properties of a track already armed for recording;
+  prevent record engaged tracks from editing or removal.
 
 - Lighten up the connections line and highlight colors, as seen
   to fit best on some darker background themes.

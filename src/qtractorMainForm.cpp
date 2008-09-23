@@ -3187,10 +3187,14 @@ void qtractorMainForm::stabilizeForm (void)
 		pClip  = m_pTracks->currentClip();
 	}
 
-	bool bEnabled = (m_pTracks && pTrack != NULL);
-	bool bSelected = (m_pTracks && m_pTracks->isClipSelected());
+	bool bEnabled    = (m_pTracks && pTrack != NULL);
+	bool bSelected   = (m_pTracks && m_pTracks->isClipSelected());
 	bool bSelectable = (iSessionLength > 0);
-	bool bEditable = (pClip != NULL);
+	bool bPlaying    = m_pSession->isPlaying();
+	bool bRecording  = m_pSession->isRecording();
+	bool bLooping    = m_pSession->isLooping();
+	bool bRolling    = (bPlaying && bRecording);
+	bool bBumped     = (!bRolling && (m_iPlayHead > 0 || bPlaying));
 
 	m_ui.editCutAction->setEnabled(bSelected);
 	m_ui.editCopyAction->setEnabled(bSelected);
@@ -3205,16 +3209,20 @@ void qtractorMainForm::stabilizeForm (void)
 	m_ui.editSelectNoneAction->setEnabled(bSelected);
 
 	m_ui.editClipNewAction->setEnabled(bEnabled);
-	m_ui.editClipEditAction->setEnabled(bEditable);
-	m_ui.editClipSplitAction->setEnabled(bEditable
+	m_ui.editClipEditAction->setEnabled(pClip != NULL);
+	m_ui.editClipSplitAction->setEnabled(pClip != NULL
 		&& m_iPlayHead > pClip->clipStart()
 		&& m_iPlayHead < pClip->clipStart() + pClip->clipLength());
 
 	// Update track menu state...
-	m_ui.trackRemoveAction->setEnabled(bEnabled);
-	m_ui.trackPropertiesAction->setEnabled(bEnabled);
-	m_ui.trackInputsAction->setEnabled(bEnabled && pTrack->inputBus() != NULL);
-	m_ui.trackOutputsAction->setEnabled(bEnabled && pTrack->outputBus() != NULL);
+	m_ui.trackRemoveAction->setEnabled(
+		bEnabled && (!bRolling || !pTrack->isRecord()));
+	m_ui.trackPropertiesAction->setEnabled(
+		bEnabled && (!bRolling || !pTrack->isRecord()));
+	m_ui.trackInputsAction->setEnabled(
+		bEnabled && pTrack->inputBus() != NULL);
+	m_ui.trackOutputsAction->setEnabled(
+		bEnabled && pTrack->outputBus() != NULL);
 	m_ui.trackStateMenu->setEnabled(bEnabled);
 	m_ui.trackNavigateMenu->setEnabled(m_pSession->tracks().count() > 0);
 //	m_ui.trackNavigateFirstAction->setEnabled(bEnabled);
@@ -3238,10 +3246,14 @@ void qtractorMainForm::stabilizeForm (void)
 	}
 
 	// Update view menu state...
-	m_ui.viewFilesAction->setChecked(m_pFiles && m_pFiles->isVisible());
-	m_ui.viewMessagesAction->setChecked(m_pMessages && m_pMessages->isVisible());
-	m_ui.viewConnectionsAction->setChecked(m_pConnections && m_pConnections->isVisible());
-	m_ui.viewMixerAction->setChecked(m_pMixer && m_pMixer->isVisible());
+	m_ui.viewFilesAction->setChecked(
+		m_pFiles && m_pFiles->isVisible());
+	m_ui.viewMessagesAction->setChecked(
+		m_pMessages && m_pMessages->isVisible());
+	m_ui.viewConnectionsAction->setChecked(
+		m_pConnections && m_pConnections->isVisible());
+	m_ui.viewMixerAction->setChecked(
+		m_pMixer && m_pMixer->isVisible());
 
 	// Recent files menu.
 	m_ui.fileOpenRecentMenu->setEnabled(m_pOptions->recentFiles.count() > 0);
@@ -3253,11 +3265,10 @@ void qtractorMainForm::stabilizeForm (void)
 	// Session status...
 	updateTransportTime(m_pSession->playHead());
 
-	if (pTrack) {
+	if (pTrack)
 		m_statusItems[StatusName]->setText(pTrack->trackName().simplified());
-	} else {
+	else
 		m_statusItems[StatusName]->clear();
-	}
 
 	if (m_iDirtyCount > 0)
 		m_statusItems[StatusMod]->setText(tr("MOD"));
@@ -3290,11 +3301,8 @@ void qtractorMainForm::stabilizeForm (void)
 	m_statusItems[StatusRate]->setText(
 		tr("%1 Hz").arg(m_pSession->sampleRate()));
 
-	bool bPlaying   = m_pSession->isPlaying();
-	bool bRecording = m_pSession->isRecording();
-	bool bLooping   = m_pSession->isLooping();
 	m_statusItems[StatusRec]->setPalette(*m_paletteItems[
-		bPlaying && bRecording ? PaletteRed : PaletteNone]);
+		bRolling ? PaletteRed : PaletteNone]);
 	m_statusItems[StatusMute]->setPalette(*m_paletteItems[
 		m_pSession->muteTracks() > 0 ? PaletteYellow : PaletteNone]);
 	m_statusItems[StatusSolo]->setPalette(*m_paletteItems[
@@ -3303,18 +3311,16 @@ void qtractorMainForm::stabilizeForm (void)
 		bLooping ? PaletteGreen : PaletteNone]);
 
 	// Transport stuff...
-	bEnabled = (!bPlaying || !bRecording);
-	bool bBumped = (bEnabled && (m_iPlayHead > 0 || bPlaying));
 	m_ui.transportBackwardAction->setEnabled(bBumped);
 	m_ui.transportRewindAction->setEnabled(bBumped);
-	m_ui.transportFastForwardAction->setEnabled(bEnabled);
-	m_ui.transportForwardAction->setEnabled(bEnabled
-		&& (m_iPlayHead < iSessionLength
+	m_ui.transportFastForwardAction->setEnabled(!bRolling);
+	m_ui.transportForwardAction->setEnabled(
+		!bRolling && (m_iPlayHead < iSessionLength
 			|| m_iPlayHead < m_pSession->editHead()
 			|| m_iPlayHead < m_pSession->editTail()));
-	m_ui.transportLoopAction->setEnabled(bEnabled
-		&& (bLooping || bSelectable));
-	m_ui.transportLoopSetAction->setEnabled(bEnabled && bSelectable);
+	m_ui.transportLoopAction->setEnabled(
+		!bRolling && (bLooping || bSelectable));
+	m_ui.transportLoopSetAction->setEnabled(!bRolling && bSelectable);
 	m_ui.transportRecordAction->setEnabled(m_pSession->recordTracks() > 0);
 	m_ui.transportMetroAction->setEnabled(
 		m_pOptions->bAudioMetronome || m_pOptions->bMidiMetronome);

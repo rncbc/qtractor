@@ -652,6 +652,10 @@ bool qtractorTracks::removeTrack ( qtractorTrack *pTrack )
 	if (pTrack == NULL)
 		return false;
 
+	// Don't remove tracks engaged in recording...
+	if (pTrack->isRecord() && pSession->isRecording() && pSession->isPlaying())
+		return false;
+
 	// Prompt user if he/she's sure about this...
 	qtractorOptions *pOptions = pMainForm->options();
 	if (pOptions && pOptions->bConfirmRemove) {
@@ -678,10 +682,18 @@ bool qtractorTracks::editTrack ( qtractorTrack *pTrack )
 	if (pMainForm == NULL)
 		return false;
 
+	qtractorSession *pSession = pMainForm->session();
+	if (pSession == NULL)
+		return false;
+
 	// Get the list view item reference of the intended track...
 	if (pTrack == NULL)
 		pTrack = currentTrack();
 	if (pTrack == NULL)
+		return false;
+
+	// Don't edit tracks engaged in recording...
+	if (pTrack->isRecord() && pSession->isRecording() && pSession->isPlaying())
 		return false;
 
 	// Open dialog for settings...
