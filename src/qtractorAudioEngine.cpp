@@ -59,13 +59,13 @@ static inline bool sse_enabled (void)
 // SSE enabled mix-down processor version.
 static inline void sse_buffer_add (
 	float **ppBuffer, float **ppFrames, unsigned int iFrames,
-	unsigned short iBuffers, unsigned short iChannels )
+	unsigned short iBuffers, unsigned short iChannels, unsigned int iOffset )
 {
 	unsigned short j = 0;
 
 	for (unsigned short i = 0; i < iChannels; ++i) {
-		float *pBuffer = ppBuffer[j];
-		float *pFrames = ppFrames[i];
+		float *pBuffer = ppBuffer[j] + iOffset;
+		float *pFrames = ppFrames[i] + iOffset;
 		unsigned int nframes = iFrames;
 		for (; (long(pBuffer) & 15) && (nframes > 0); --nframes)
 			*pBuffer++ += *pFrames++;
@@ -90,13 +90,13 @@ static inline void sse_buffer_add (
 // Standard mix-down processor version.
 static inline void std_buffer_add (
 	float **ppBuffer, float **ppFrames, unsigned int iFrames,
-	unsigned short iBuffers, unsigned short iChannels )
+	unsigned short iBuffers, unsigned short iChannels, unsigned int iOffset )
 {
 	unsigned short j = 0;
 
 	for (unsigned short i = 0; i < iChannels; ++i) {
-		float *pBuffer = ppBuffer[j];
-		float *pFrames = ppFrames[i];
+		float *pBuffer = ppBuffer[j] + iOffset;
+		float *pFrames = ppFrames[i] + iOffset;
 		for (unsigned int n = 0; n < iFrames; ++n)
 			*pBuffer++ += *pFrames++;
 		if (++j >= iBuffers)
@@ -1861,7 +1861,7 @@ void qtractorAudioBus::buffer_prepare ( unsigned int nframes,
 		// Exact buffer copy...
 		for (unsigned short i = 0; i < iBuffers; ++i) {
 			m_ppYBuffer[i] = m_ppXBuffer[i] + offset;
-			::memcpy(m_ppYBuffer[i], ppBuffer[i], nbytes);
+			::memcpy(m_ppYBuffer[i], ppBuffer[i] + offset, nbytes);
 		}
 	} else {
 		// Buffer merge/multiplex...
@@ -1873,13 +1873,13 @@ void qtractorAudioBus::buffer_prepare ( unsigned int nframes,
 		if (m_iChannels > iBuffers) {
 			unsigned short j = 0;
 			for (i = 0; i < m_iChannels; ++i) {
-				::memcpy(m_ppYBuffer[i], ppBuffer[j], nbytes);
+				::memcpy(m_ppYBuffer[i], ppBuffer[j] + offset, nbytes);
 				if (++j >= iBuffers)
 					j = 0;
 			}
 		} else { // (m_iChannels < iBuffers)
-			(*m_pfnBufferAdd)(m_ppYBuffer, ppBuffer,
-				nframes, m_iChannels, iBuffers);
+			(*m_pfnBufferAdd)(m_ppXBuffer, ppBuffer,
+				nframes, m_iChannels, iBuffers, offset);
 		}
 	}
 }
@@ -1894,8 +1894,8 @@ void qtractorAudioBus::buffer_commit ( unsigned int nframes )
 	if (pAudioEngine == NULL)
 		return;
 
-	(*m_pfnBufferAdd)(m_ppOBuffer, m_ppYBuffer,
-		nframes, m_iChannels, m_iChannels);
+	(*m_pfnBufferAdd)(m_ppOBuffer, m_ppXBuffer,
+		nframes, m_iChannels, m_iChannels, pAudioEngine->bufferOffset());
 }
 
 

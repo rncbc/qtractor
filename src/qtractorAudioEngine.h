@@ -304,8 +304,8 @@ private:
 	bool m_bEnabled;
 
 	// Buffer mix-down processor.
-	void (*m_pfnBufferAdd)(float **, float **,
-		unsigned int, unsigned short, unsigned short);
+	void (*m_pfnBufferAdd)(float **, float **, unsigned int,
+		unsigned short, unsigned short, unsigned int);
 };
 
 
