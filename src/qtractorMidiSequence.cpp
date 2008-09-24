@@ -1,7 +1,7 @@
 // qtractorMidiSequence.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -77,14 +77,15 @@ void qtractorMidiSequence::addEvent ( qtractorMidiEvent *pEvent )
 		pEvent->type() == qtractorMidiEvent::NOTEON) {
 		unsigned char note = pEvent->note();
 		NoteMap::Iterator iter = m_notes.find(note);
-		if (iter != m_notes.end()) {
-			unsigned long iTime = (*iter)->time();
+		while (iter != m_notes.end() && iter.key() == note) {
+			qtractorMidiEvent *pNoteEvent = *iter;
+			unsigned long iTime = pNoteEvent->time();
 			unsigned long iDuration = pEvent->time() - iTime;
-			(*iter)->setDuration(iDuration);
+			pNoteEvent->setDuration(iDuration);
 			iDuration += iTime;
 			if (m_duration < iDuration)
 				m_duration = iDuration;
-			m_notes.erase(iter);
+			iter = m_notes.erase(iter);
 		}
 		if (pEvent->type() == qtractorMidiEvent::NOTEON) {
 			// NOTEON: Add to lingering notes...
@@ -156,7 +157,8 @@ void qtractorMidiSequence::close (void)
 	// Finish all pending notes...
 	for (NoteMap::Iterator iter = m_notes.begin();
 			iter != m_notes.end(); ++iter) {
-		(*iter)->setDuration(m_duration - (*iter)->time());
+		qtractorMidiEvent *pEvent = *iter;
+		pEvent->setDuration(m_duration - pEvent->time());
 	}
 
 	// Reset all pending notes.

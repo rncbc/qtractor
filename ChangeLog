@@ -5,6 +5,10 @@ ChangeLog
 
 CVS HEAD
 
+- Another ancient bug has been squashed: MIDI events were being
+  recorded even though recording wasn't rolling; spurious event
+  times were being recorded due to an absent started queue.
+
 - Major fix applied to audio track monitor meterring, and most
   importantly to plugin processing, correcting tentatively all
   audio buffer offsetting and slicing due on loop turnarounds.

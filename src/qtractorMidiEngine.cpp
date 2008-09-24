@@ -752,9 +752,13 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 
 	int iAlsaPort = pEv->dest.port;
 
+	qtractorSession *pSession = session();
+	if (pSession == NULL)
+		return;
+
 	// - capture quantization...
 	if (m_iCaptureQuantize > 0) {
-		unsigned long q = session()->ticksPerBeat() / m_iCaptureQuantize;
+		unsigned long q = pSession->ticksPerBeat() / m_iCaptureQuantize;
 		pEv->time.tick = q * ((pEv->time.tick + (q >> 1)) / q);
 	}
 
@@ -861,19 +865,20 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 
 	// Now check which bus and track we're into...
 	int iDrainOutput = 0;
-	for (qtractorTrack *pTrack = session()->tracks().first();
+	bool bRecording = (pSession->isRecording() && isPlaying());
+	for (qtractorTrack *pTrack = pSession->tracks().first();
 			pTrack; pTrack = pTrack->next()) {
 		// Must be a MIDI track in capture/passthru
 		// mode and for the intended channel...
 		if (pTrack->trackType() == qtractorTrack::Midi
 			&& (pTrack->isRecord() || pTrack->isMonitor())
-		//	&& !pTrack->isMute() && (!session()->soloTracks() || pTrack->isSolo())
+		//	&& !pTrack->isMute() && (!pSession->soloTracks() || pTrack->isSolo())
 			&& (pTrack->isMidiOmni() || pTrack->midiChannel() == iChannel)) {
 			qtractorMidiBus *pMidiBus
 				= static_cast<qtractorMidiBus *> (pTrack->inputBus());
 			if (pMidiBus && pMidiBus->alsaPort() == iAlsaPort) {
 				// Is it actually recording?...
-				if (pTrack->isRecord()) {
+				if (pTrack->isRecord() && bRecording) {
 					qtractorMidiClip *pMidiClip
 						= static_cast<qtractorMidiClip *> (pTrack->clipRecord());
 					if (pMidiClip) {
