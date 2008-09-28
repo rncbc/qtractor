@@ -914,7 +914,7 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 						// Do it for the MIDI plugins too...
 						if ((pTrack->pluginList())->midiManager())
 							(pTrack->pluginList())->midiManager()->direct(pEv);
-						// FIXME: MIDI-thru channel filtering epilog... 
+						// FIXME: MIDI-thru channel filtering epilog...
 						pEv->data.note.channel = iOldChannel;
 					}
 				}
@@ -1121,7 +1121,7 @@ bool qtractorMidiEngine::init ( const QString& sClientName )
 		m_iAlsaSubsPort = snd_seq_create_simple_port(
 			m_pAlsaSubsSeq, clientName().toUtf8().constData(),
 			SND_SEQ_PORT_CAP_WRITE | SND_SEQ_PORT_CAP_SUBS_WRITE |
-			SND_SEQ_PORT_CAP_NO_EXPORT, SND_SEQ_PORT_TYPE_APPLICATION);		
+			SND_SEQ_PORT_CAP_NO_EXPORT, SND_SEQ_PORT_TYPE_APPLICATION);
 		if (m_iAlsaSubsPort >= 0) {
 			struct pollfd pfd[1];
 			snd_seq_addr_t seq_addr;
@@ -2058,7 +2058,7 @@ bool qtractorMidiEngine::fileExport ( const QString& sExportPath,
 			if (pMidiClip) {
 				unsigned long iTimeClip
 					= pSession->tickFromFrame(pClip->clipStart());
-				unsigned long iTimeOffset = iTimeClip - iTimeStart; 
+				unsigned long iTimeOffset = iTimeClip - iTimeStart;
 				// For each event...
 				qtractorMidiEvent *pEvent
 					= pMidiClip->sequence()->events().first();

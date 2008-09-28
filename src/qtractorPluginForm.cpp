@@ -62,10 +62,10 @@ qtractorPluginForm::qtractorPluginForm (
 	const QFont& font = QWidget::font();
 	QWidget::setFont(QFont(font.family(), font.pointSize() - 1));
 
-	m_pPlugin       = NULL;
-	m_pGridLayout   = NULL;
-	m_iDirtyCount   = 0;
-	m_iUpdate       = 0;
+	m_pPlugin     = NULL;
+	m_pGridLayout = NULL;
+	m_iDirtyCount = 0;
+	m_iUpdate     = 0;
 
     m_ui.PresetComboBox->setValidator(
 		new QRegExpValidator(QRegExp("[\\w-]+"), m_ui.PresetComboBox));

@@ -91,7 +91,7 @@ public:
 	// The delta-time accessors.
 	void setTimeStart(long iTimeStart);
 	long timeStart() const;
-	
+
 	// Special track-immediate methods.
 	void trackMute(qtractorTrack *pTrack, bool bMute);
 
@@ -356,7 +356,7 @@ private:
 
 
 //----------------------------------------------------------------------
-// qtractorCtlEvent - MIDI Control custom event.
+// qtractorMidiControlEvent - MIDI Control custom event.
 //
 
 class qtractorMidiControlEvent : public QEvent

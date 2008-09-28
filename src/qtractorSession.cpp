@@ -334,21 +334,21 @@ bool qtractorSession::beatIsBar ( unsigned int iBeat ) const
 }
 
 
-// Pixels per beat (width).	
+// Pixels per beat (width).
 void qtractorSession::setPixelsPerBeat ( unsigned short iPixelsPerBeat )
 {
 	m_props.timeScale.setPixelsPerBeat(iPixelsPerBeat);
 }
 
 unsigned short qtractorSession::pixelsPerBeat (void) const
-{ 
+{
 	return m_props.timeScale.pixelsPerBeat();
 }
 
 
 // Horizontal zoom factor.
 void qtractorSession::setHorizontalZoom ( unsigned short iHorizontalZoom )
-{ 
+{
 	m_props.timeScale.setHorizontalZoom(iHorizontalZoom);
 }
 
@@ -360,12 +360,12 @@ unsigned short qtractorSession::horizontalZoom (void) const
 
 // Vertical zoom factor.
 void qtractorSession::setVerticalZoom ( unsigned short iVerticalZoom )
-{ 
+{
 	m_props.timeScale.setVerticalZoom(iVerticalZoom);
 }
 
 unsigned short qtractorSession::verticalZoom (void) const
-{ 
+{
 	return m_props.timeScale.verticalZoom();
 }
 
@@ -497,7 +497,7 @@ unsigned long qtractorSession::locateFromFrame ( unsigned long iFrame ) const
 
 
 // Update scale divisor factors.
-void qtractorSession::updateTimeScale (void) 
+void qtractorSession::updateTimeScale (void)
 {
 	// Recompute scale divisor factors...
 	m_props.timeScale.updateScale();
@@ -852,7 +852,7 @@ qtractorAudioEngine *qtractorSession::audioEngine (void) const
 void qtractorSession::stabilize ( int msecs )
 {
 #ifdef CONFIG_DEBUG
-	fprintf(stderr, "qtractorSession::stabilize(%d)\n", msecs);
+	qDebug("qtractorSession::stabilize(%d)", msecs);
 #endif
 	// Wait a litle bit before continue...
 	QTime t;
@@ -1041,7 +1041,7 @@ QString qtractorSession::sanitize ( const QString& s )
 
 // Create a brand new filename (absolute file path).
 QString qtractorSession::createFilePath ( const QString& sTrackName,
-	int iClipNo, const QString& sExt ) 
+	int iClipNo, const QString& sExt )
 {
 	QString sFilename = qtractorSession::sanitize(m_props.sessionName)
 		+ '-' + qtractorSession::sanitize(sTrackName) + "-%1." + sExt;
@@ -1054,7 +1054,7 @@ QString qtractorSession::createFilePath ( const QString& sTrackName,
 		fi.setFile(m_props.sessionDir, sFilename.arg(++iClipNo));
 
 #ifdef CONFIG_DEBUG
-	fprintf(stderr, "qtractorSession::createFilePath(\"%s\")\n",
+	qDebug("qtractorSession::createFilePath(\"%s\")",
 		fi.absoluteFilePath().toUtf8().constData());
 #endif
 
@@ -1085,7 +1085,7 @@ bool qtractorSession::isRecording() const
 void qtractorSession::trackRecord ( qtractorTrack *pTrack, bool bRecord )
 {
 #ifdef CONFIG_DEBUG
-	fprintf(stderr, "qtractorSession::trackRecord(\"%s\", %d)\n",
+	qDebug("qtractorSession::trackRecord(\"%s\", %d)",
 		pTrack->trackName().toUtf8().constData(), (int) bRecord);
 #endif
 

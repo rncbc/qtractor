@@ -222,7 +222,7 @@ void qtractorAudioClip::set_loop ( unsigned long iLoopStart,
 void qtractorAudioClip::close ( bool bForce )
 {
 #ifdef CONFIG_DEBUG_0
-	qDebug("qtractorAudioClip[%p]::close(%d)\n", this, int(bForce));
+	qDebug("qtractorAudioClip[%p]::close(%d)", this, int(bForce));
 #endif
 
 	if (m_pBuff == NULL)

@@ -202,7 +202,7 @@ public:
 	// Connection lists accessors.
 	ConnectList& inputs()  { return m_inputs;  }
 	ConnectList& outputs() { return m_outputs; }
-	
+
 	// Retrieve/restore client:port connections;
 	// return the effective number of connection attempts.
 	virtual int updateConnects(BusMode busMode,

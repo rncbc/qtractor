@@ -297,7 +297,7 @@ qtractorAudioEngine::qtractorAudioEngine ( qtractorSession *pSession )
 	m_iMetroBeatStart = 0;
 	m_iMetroBeat      = 0;
 
-	// Audition/pre-listening player stuff. 
+	// Audition/pre-listening player stuff.
 	ATOMIC_SET(&m_playerLock, 0);
 	m_bPlayerOpen  = false;
 	m_bPlayerBus   = false;
@@ -1426,13 +1426,13 @@ int qtractorAudioEngine::updateConnects (void)
 	// Metronome bus outputs...
 	if (m_bMetroBus && m_pMetroBus) {
 		iUpdate += m_pMetroBus->updateConnects(
-				qtractorBus::Output, m_pMetroBus->outputs(), true);
+			qtractorBus::Output, m_pMetroBus->outputs(), true);
 	}
 
 	// Player bus outputs...
 	if (m_bPlayerBus && m_pPlayerBus) {
 		iUpdate += m_pPlayerBus->updateConnects(
-				qtractorBus::Output, m_pPlayerBus->outputs(), true);
+			qtractorBus::Output, m_pPlayerBus->outputs(), true);
 	}
 
 	// Done.
@@ -1601,7 +1601,7 @@ bool qtractorAudioBus::open (void)
 	}
 
 	// Plugin lists need some buffer (re)allocation too...
-	unsigned int iSampleRate = pAudioEngine->sampleRate(); 
+	unsigned int iSampleRate = pAudioEngine->sampleRate();
 	if (m_pIPluginList) {
 		m_pIPluginList->setBuffer(m_iChannels, iBufferSize, iSampleRate);
 		m_pIPluginList->setName(QObject::tr("%1 In").arg(busName()));
@@ -1999,7 +1999,7 @@ int qtractorAudioBus::updateConnects ( qtractorBus::BusMode busMode,
 						connects.removeAt(iItem);
 						delete pItem;
 					}
-				} 
+				}
 				else if (!bConnect)
 					connects.append(new ConnectItem(item));
 				iClientPort++;
@@ -2052,7 +2052,7 @@ int qtractorAudioBus::updateConnects ( qtractorBus::BusMode busMode,
 			}
 		}
 	}
-	
+
 	// Done.
 	return iUpdate;
 }

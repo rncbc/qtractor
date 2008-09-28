@@ -58,12 +58,12 @@ qtractorClip::~qtractorClip (void)
 void qtractorClip::clear (void)
 {
 	m_sClipName.clear();
-	
+
 	m_iClipStart      = 0;
 	m_iClipLength     = 0;
 	m_iClipOffset     = 0;
 
-    m_iClipStartTime  = 0;
+	m_iClipStartTime  = 0;
 	m_iClipOffsetTime = 0;
 	m_iClipLengthTime = 0;
 

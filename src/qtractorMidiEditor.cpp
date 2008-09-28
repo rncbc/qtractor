@@ -299,7 +299,7 @@ bool qtractorMidiEditor::saveCopyFile ( const QString& sNewFilename,
 		}
 		file.close();
 	}
-	
+
 	// Open and save the whole target file...
 	if (!file.open(sNewFilename, qtractorMidiFile::Write))
 		return false;
@@ -362,7 +362,7 @@ QString qtractorMidiEditor::createFilePathRevision (
 		sBasename = rxRevision.cap(1);
 		iRevision = rxRevision.cap(2).toInt();
 	}
-	
+
 	sBasename += "-%1." + fi.completeSuffix();
 	do { fi.setFile(adir, sBasename.arg(++iRevision)); }
 	while (fi.exists());
