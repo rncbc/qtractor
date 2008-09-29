@@ -38,10 +38,13 @@ static inline bool sse_enabled (void)
 	bool bSSE = false;
 #if defined(__GNUC__)
 #if defined(__i386__) || defined(__x86_64__)
-	unsigned int a, b, c, d;
+	unsigned int edx = 0;
 	__asm__ __volatile__ (
-		"cpuid": "=a" (a), "=b" (b), "=c" (c), "=d" (d) : "a" (1));
-	bSSE = (d & (1 << 25));
+		"movl %%ebx, %%esi\n\t" \
+		"cpuid\n\t"             \
+		"xchgl %%ebx, %%esi"    \
+		: "=d" (edx) : "0" (1));
+	bSSE = (edx & (1 << 25));
 #endif
 #endif
 	return bSSE;
