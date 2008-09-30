@@ -41,6 +41,11 @@
 #include <QStyle>
 #endif
 
+#if QT_VERSION < 0x040300
+#define lighter(x)	light(x)
+#define darker(x)	dark(x)
+#endif
+
 
 //----------------------------------------------------------------------------
 // qtractorMidiEditEventScale -- MIDI event scale widget.

@@ -59,6 +59,11 @@
 #include <QUrl>
 #include <QFileInfo>
 
+#if QT_VERSION < 0x040300
+#define lighter(x)	light(x)
+#define darker(x)	dark(x)
+#endif
+
 
 //----------------------------------------------------------------------------
 // qtractorTrackView -- Track view widget.

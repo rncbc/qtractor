@@ -35,6 +35,11 @@
 #include <QMessageBox>
 #include <QMenu>
 
+#if QT_VERSION < 0x040300
+#define lighter(x)	light(x)
+#define darker(x)	dark(x)
+#endif
+
 
 //----------------------------------------------------------------------
 // class qtractorBusListItem -- Custom bus listview item.

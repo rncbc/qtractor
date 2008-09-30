@@ -34,6 +34,10 @@
 #include <QFileInfo>
 #include <QPainter>
 
+#if QT_VERSION < 0x040300
+#define lighter light
+#endif
+
 
 //----------------------------------------------------------------------
 // class qtractorMidiClip -- Audio file/buffer clip.

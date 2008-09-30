@@ -31,6 +31,11 @@
 #include <QPainter>
 #include <QPolygon>
 
+#if QT_VERSION < 0x040300
+#define lighter(x)	light(x)
+#define darker(x)	dark(x)
+#endif
+
 
 //----------------------------------------------------------------------
 // class qtractorAudioClip -- Audio file/buffer clip.
