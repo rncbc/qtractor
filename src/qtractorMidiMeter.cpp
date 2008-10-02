@@ -101,12 +101,11 @@ void qtractorMidiMeterScale::paintScale ( QPainter *pPainter )
 // Constructor.
 qtractorMidiMeterValue::qtractorMidiMeterValue(
 	qtractorMidiMeter *pMidiMeter, QWidget *pParent )
-	: QFrame(pParent)
+	: QFrame(pParent), m_pMidiMeter(pMidiMeter)
 {
-	m_pMidiMeter  = pMidiMeter;
-	m_fValue      = 0.0f;
-	m_iValueHold  = 0;
+	m_iValue      = 0;
 	m_fValueDecay = QTRACTOR_MIDI_METER_DECAY_RATE1;
+
 	m_iPeak       = 0;
 	m_iPeakHold   = 0;
 	m_fPeakDecay  = QTRACTOR_MIDI_METER_DECAY_RATE2;
@@ -136,13 +135,43 @@ void qtractorMidiMeterValue::peakReset (void)
 // Value refreshment.
 void qtractorMidiMeterValue::refresh (void)
 {
-	// Grab the value...
-	if (m_pMidiMeter->midiMonitor()) {
-		m_fValue = m_pMidiMeter->midiMonitor()->value();
-		// If value pending of change, proceed for update...
-		if (m_fValue > 0.001f || m_iPeak > 0)
-			update();
+	qtractorMidiMonitor *pMidiMonitor = m_pMidiMeter->midiMonitor();
+	if (pMidiMonitor == NULL)
+		return;
+
+	float fValue = pMidiMonitor->value();
+	if (fValue < 0.001f && m_iPeak < 1)
+		return;
+
+	int iValue = int(fValue * float(QWidget::height()));
+	if (iValue < m_iValue) {
+		iValue = int(m_fValueDecay * float(m_iValue));
+		m_fValueDecay *= m_fValueDecay;
+	} else {
+		m_fValueDecay = QTRACTOR_MIDI_METER_DECAY_RATE1;
 	}
+
+	int iPeak = m_iPeak;
+	if (iPeak < iValue) {
+		iPeak = iValue;
+		m_iPeakHold = 0;
+		m_fPeakDecay = QTRACTOR_MIDI_METER_DECAY_RATE2;
+	} else if (++m_iPeakHold > m_pMidiMeter->peakFalloff()) {
+		iPeak = int(m_fPeakDecay * float(iPeak));
+		if (iPeak < iValue) {
+			iPeak = iValue;
+		} else {
+			m_fPeakDecay *= m_fPeakDecay;
+		}
+	}
+
+	if (iValue == m_iValue && iPeak == m_iPeak)
+		return;
+
+	m_iValue = iValue;
+	m_iPeak  = iPeak;
+
+	update();
 }
 
 
@@ -161,35 +190,8 @@ void qtractorMidiMeterValue::paintEvent ( QPaintEvent * )
 		painter.fillRect(0, 0, w, h, Qt::gray);
 	}
 
-	int y = int(m_fValue * float(h)); m_fValue = 0.0f;
-	if (m_iValueHold > y) {
-		if (y > 0) {
-			m_fValueDecay = QTRACTOR_MIDI_METER_DECAY_RATE1;
-		} else {
-			m_iValueHold = int(float(m_iValueHold * m_fValueDecay));
-			m_fValueDecay *= m_fValueDecay;
-			y = m_iValueHold;
-		}
-	} else {
-		m_iValueHold = y;
-		m_fValueDecay = QTRACTOR_MIDI_METER_DECAY_RATE1;
-	}
-
-	painter.fillRect(0, h - y, w, y,
+	painter.fillRect(0, h - m_iValue, w, m_iValue,
 		m_pMidiMeter->color(qtractorMidiMeter::ColorOver));
-
-	if (m_iPeak < y) {
-		m_iPeak = y;
-		m_iPeakHold = 0;
-		m_fPeakDecay = QTRACTOR_MIDI_METER_DECAY_RATE2;
-	} else if (++m_iPeakHold > m_pMidiMeter->peakFalloff()) {
-		m_iPeak = int(float(m_iPeak * m_fPeakDecay));
-		if (m_iPeak < y) {
-			m_iPeak = y;
-		} else {
-			m_fPeakDecay *= m_fPeakDecay;
-		}
-	}
 
 	painter.setPen(m_pMidiMeter->color(qtractorMidiMeter::ColorPeak));
 	painter.drawLine(0, h - m_iPeak, w, h - m_iPeak);

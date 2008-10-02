@@ -169,14 +169,12 @@ void qtractorAudioMeterScale::paintScale ( QPainter *p )
 
 // Constructor.
 qtractorAudioMeterValue::qtractorAudioMeterValue(
-	qtractorAudioMeter *pAudioMeter, unsigned short iChannel,
-	QWidget *pParent ): QFrame(pParent)
+	qtractorAudioMeter *pAudioMeter, unsigned short iChannel, QWidget *pParent )
+	: QFrame(pParent), m_pAudioMeter(pAudioMeter), m_iChannel(iChannel)
 {
-	m_pAudioMeter = pAudioMeter;
-	m_iChannel    = iChannel;
-	m_fValue      = 0.0f;
-	m_iValueHold  = 0;
+	m_iValue      = 0;
 	m_fValueDecay = QTRACTOR_AUDIO_METER_DECAY_RATE1;
+
 	m_iPeak       = 0;
 	m_iPeakHold   = 0;
 	m_fPeakDecay  = QTRACTOR_AUDIO_METER_DECAY_RATE2;
@@ -207,13 +205,58 @@ void qtractorAudioMeterValue::peakReset (void)
 // Value refreshment.
 void qtractorAudioMeterValue::refresh (void)
 {
-	// Grab the value...
-	if (m_pAudioMeter->audioMonitor()) {
-		m_fValue = m_pAudioMeter->audioMonitor()->value(m_iChannel);
-		// If value pending of change, proceed for update...
-		if (m_fValue > 0.001f || m_iPeak > 0)
-			update();
+	qtractorAudioMonitor *pAudioMonitor = m_pAudioMeter->audioMonitor();
+	if (pAudioMonitor == NULL)
+		return;
+
+	float fValue = pAudioMonitor->value(m_iChannel);
+	if (fValue < 0.001f && m_iPeak < 1)
+		return;
+
+	float dB = QTRACTOR_AUDIO_METER_MINDB;
+	if (fValue > 0.0f)
+		dB = log10f2(fValue);
+
+	if (dB < QTRACTOR_AUDIO_METER_MINDB)
+		dB = QTRACTOR_AUDIO_METER_MINDB;
+	else if (dB > QTRACTOR_AUDIO_METER_MAXDB)
+		dB = QTRACTOR_AUDIO_METER_MAXDB;
+
+	int iValue = m_pAudioMeter->iec_scale(dB);
+	if (iValue < m_iValue) {
+		iValue = int(m_fValueDecay * float(m_iValue));
+		m_fValueDecay *= m_fValueDecay;
+	} else {
+		m_fValueDecay = QTRACTOR_AUDIO_METER_DECAY_RATE1;
 	}
+
+	int iPeak = m_iPeak;
+	if (iPeak < iValue) {
+		iPeak = iValue;
+		m_iPeakHold = 0;
+		m_fPeakDecay = QTRACTOR_AUDIO_METER_DECAY_RATE2;
+		m_iPeakColor = qtractorAudioMeter::Color10dB;
+		for (; m_iPeakColor > qtractorAudioMeter::ColorOver
+			&& iPeak >= m_pAudioMeter->iec_level(m_iPeakColor); --m_iPeakColor)
+			/* empty body loop */;
+	} else if (++m_iPeakHold > m_pAudioMeter->peakFalloff()) {
+		iPeak = int(m_fPeakDecay * float(iPeak));
+		if (iPeak < iValue) {
+			iPeak = iValue;
+		} else {
+			if (iPeak < m_pAudioMeter->iec_level(qtractorAudioMeter::Color10dB))
+				m_iPeakColor = qtractorAudioMeter::Color6dB;
+			m_fPeakDecay *= m_fPeakDecay;
+		}
+	}
+
+	if (iValue == m_iValue && iPeak == m_iPeak)
+		return;
+
+	m_iValue = iValue;
+	m_iPeak  = iPeak;
+
+	update();
 }
 
 
@@ -236,40 +279,20 @@ void qtractorAudioMeterValue::paintEvent ( QPaintEvent * )
 		painter.fillRect(0, 0, w, h, Qt::gray);
 	}
 
-	float dB = QTRACTOR_AUDIO_METER_MINDB;
-	if (m_fValue > 0.0f) {
-		dB = log10f2(m_fValue);
-		m_fValue = 0.0f;
-	}
-
-	if (dB < QTRACTOR_AUDIO_METER_MINDB)
-		dB = QTRACTOR_AUDIO_METER_MINDB;
-	else if (dB > QTRACTOR_AUDIO_METER_MAXDB)
-		dB = QTRACTOR_AUDIO_METER_MAXDB;
-
+	y = m_iValue;
+	
 	int y_over = 0;
 	int y_curr = 0;
 
-	y = m_pAudioMeter->iec_scale(dB);
-	if (m_iValueHold > y) {
-		m_iValueHold = int(float(m_iValueHold * m_fValueDecay));
-		m_fValueDecay *= m_fValueDecay;
-		y = m_iValueHold;
-	} else {
-		m_iValueHold = y;
-		m_fValueDecay = QTRACTOR_AUDIO_METER_DECAY_RATE1;
-	}
-
-	int iLevel;
-	for (iLevel = qtractorAudioMeter::Color10dB;
-			iLevel > qtractorAudioMeter::ColorOver && y >= y_over; --iLevel) {
-		y_curr = m_pAudioMeter->iec_level(iLevel);
+	for (int i = qtractorAudioMeter::Color10dB;
+			i > qtractorAudioMeter::ColorOver && y >= y_over; --i) {
+		y_curr = m_pAudioMeter->iec_level(i);
 		if (y < y_curr) {
 			painter.fillRect(0, h - y, w, y - y_over,
-				m_pAudioMeter->color(iLevel));
+				m_pAudioMeter->color(i));
 		} else {
 			painter.fillRect(0, h - y_curr, w, y_curr - y_over,
-				m_pAudioMeter->color(iLevel));
+				m_pAudioMeter->color(i));
 		}
 		y_over = y_curr;
 	}
@@ -277,22 +300,6 @@ void qtractorAudioMeterValue::paintEvent ( QPaintEvent * )
 	if (y > y_over) {
 		painter.fillRect(0, h - y, w, y - y_over,
 			m_pAudioMeter->color(qtractorAudioMeter::ColorOver));
-	}
-
-	if (m_iPeak < y) {
-		m_iPeak = y;
-		m_iPeakHold = 0;
-		m_fPeakDecay = QTRACTOR_AUDIO_METER_DECAY_RATE2;
-		m_iPeakColor = iLevel;
-	} else if (++m_iPeakHold > m_pAudioMeter->peakFalloff()) {
-		m_iPeak = int(float(m_iPeak * m_fPeakDecay));
-		if (m_iPeak < y) {
-			m_iPeak = y;
-		} else {
-			if (m_iPeak < m_pAudioMeter->iec_level(qtractorAudioMeter::Color10dB))
-				m_iPeakColor = qtractorAudioMeter::Color6dB;
-			m_fPeakDecay *= m_fPeakDecay;
-		}
 	}
 
 	painter.setPen(m_pAudioMeter->color(m_iPeakColor));

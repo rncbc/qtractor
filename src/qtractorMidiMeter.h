@@ -92,9 +92,9 @@ private:
 	qtractorMidiMeter *m_pMidiMeter;
 
 	// Running variables.
-	float m_fValue;
-	int   m_iValueHold;
+	int   m_iValue;
 	float m_fValueDecay;
+
 	int   m_iPeak;
 	int   m_iPeakHold;
 	float m_fPeakDecay;

@@ -90,8 +90,7 @@ private:
 	unsigned short      m_iChannel;
 
 	// Running variables.
-	float m_fValue;
-	int   m_iValueHold;
+	int   m_iValue;
 	float m_fValueDecay;
 	int   m_iPeak;
 	int   m_iPeakHold;
