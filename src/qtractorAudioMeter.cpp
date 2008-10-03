@@ -244,8 +244,6 @@ void qtractorAudioMeterValue::refresh (void)
 		if (iPeak < iValue) {
 			iPeak = iValue;
 		} else {
-			if (iPeak < m_pAudioMeter->iec_level(qtractorAudioMeter::Color10dB))
-				m_iPeakColor = qtractorAudioMeter::Color6dB;
 			m_fPeakDecay *= m_fPeakDecay;
 		}
 	}

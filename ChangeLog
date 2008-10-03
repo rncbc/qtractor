@@ -5,6 +5,8 @@ ChangeLog
 
 CVS HEAD
 
+- Slight optimization in audio and MIDI meters refresh rate.
+
 - Another ancient bug has been squashed: MIDI events were being
   recorded even though recording wasn't rolling; spurious event
   times were being recorded due to an absent started queue.
