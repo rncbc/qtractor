@@ -25,7 +25,7 @@ configure-stamp:
 	# Add here commands to configure the package.
 	-$(MAKE) -f Makefile.cvs
 
-	./configure --prefix=/usr --disable-sse
+	./configure --prefix=/usr
 	touch configure-stamp
 
 

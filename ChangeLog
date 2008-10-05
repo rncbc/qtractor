@@ -3,7 +3,7 @@ Qtractor - An Audio/MIDI multi-track sequencer
 
 ChangeLog
 
-CVS HEAD
+0.2.2  2008-10-05  The Flirty Ditz
 
 - Slight optimization in audio and MIDI meters refresh rate.
 
@@ -11,7 +11,7 @@ CVS HEAD
   recorded even though recording wasn't rolling; spurious event
   times were being recorded due to an absent started queue.
 
-- Major fix applied to audio track monitor meterring, and most
+- Major fix applied to audio track monitor metering, and most
   importantly to plugin processing, correcting tentatively all
   audio buffer offsetting and slicing due on loop turnarounds.
 
