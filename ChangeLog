@@ -3,6 +3,12 @@ Qtractor - An Audio/MIDI multi-track sequencer
 
 ChangeLog
 
+CVS HEAD
+
+- Reset and continue looping even still when continue past end
+  transport option is not set and playback is rolling.
+
+
 0.2.2  2008-10-05  The Flirty Ditz
 
 - Slight optimization in audio and MIDI meters refresh rate.

@@ -105,9 +105,9 @@
 #include <math.h>
 
 
-// Timer constant stuff.
-#define QTRACTOR_TIMER_MSECS    60
-#define QTRACTOR_TIMER_DELAY    240
+// Timer constant (magic) stuff.
+#define QTRACTOR_TIMER_MSECS    66
+#define QTRACTOR_TIMER_DELAY    233
 
 
 // Specialties for thread-callback comunication.
@@ -3915,7 +3915,14 @@ void qtractorMainForm::timerSlot (void)
 				if (!m_ui.transportContinueAction->isChecked()
 					&& m_iPlayHead > m_pSession->sessionLength()
 					&& m_iPlayHead > m_pSession->loopEnd()) {
-					transportPlay();
+					if (m_pSession->isLooping()) {
+						// Maybe it's better go on with looping, eh?
+						m_pSession->setPlayHead(m_pSession->loopStart());
+						m_iTransportUpdate++;
+					} else {
+						// Stop at once!
+						transportPlay();
+					}
 				}
 			}
 		}
