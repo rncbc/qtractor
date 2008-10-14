@@ -83,7 +83,7 @@ public:
 	void process(unsigned long iFrameStart, unsigned long iFrameEnd);
 
 	// Clip paint method.
-	void drawClip(QPainter *pPainter, const QRect& rect,
+	void draw(QPainter *pPainter, const QRect& clipRect,
 	    unsigned long iClipOffset);
 
 	// Audio clip tool-tip.

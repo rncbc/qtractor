@@ -453,12 +453,9 @@ void qtractorMidiClip::process ( unsigned long iFrameStart,
 
 
 // Audio clip paint method.
-void qtractorMidiClip::drawClip ( QPainter *pPainter, const QRect& clipRect,
+void qtractorMidiClip::draw ( QPainter *pPainter, const QRect& clipRect,
 	unsigned long iClipOffset )
 {
-	// Fill clip background...
-	qtractorClip::drawClip(pPainter, clipRect, iClipOffset);
-
 	qtractorSession *pSession = track()->session();
 	if (pSession == NULL)
 		return;

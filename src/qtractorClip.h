@@ -102,6 +102,10 @@ public:
 	// Clip time reference settler method.
 	void updateClipTime();
 
+	// Clip paint method.
+	void drawClip(QPainter *pPainter, const QRect& clipRect,
+		unsigned long iClipOffset);
+
 	// Clip (re)open method.
 	virtual void open() = 0;
 
@@ -121,8 +125,8 @@ public:
 	virtual void process(unsigned long iFrameStart, unsigned long iFrameEnd) = 0;
 
 	// Clip paint method.
-	virtual void drawClip(QPainter *pPainter, const QRect& clipRect,
-		unsigned long iClipOffset);
+	virtual void draw(QPainter *pPainter, const QRect& clipRect,
+		unsigned long iClipOffset) = 0;
 
 	// Clip editor method.
 	virtual bool startEditor(QWidget *pParent);

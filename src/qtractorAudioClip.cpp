@@ -295,12 +295,9 @@ void qtractorAudioClip::process (
 
 
 // Audio clip paint method.
-void qtractorAudioClip::drawClip ( QPainter *pPainter, const QRect& clipRect,
+void qtractorAudioClip::draw ( QPainter *pPainter, const QRect& clipRect,
 	unsigned long iClipOffset )
 {
-	// Fill clip background...
-	qtractorClip::drawClip(pPainter, clipRect, iClipOffset);
-
 	qtractorSession *pSession = track()->session();
 	if (pSession == NULL)
 		return;

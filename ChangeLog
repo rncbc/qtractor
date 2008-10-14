@@ -5,6 +5,9 @@ ChangeLog
 
 CVS HEAD
 
+- Clip drawing methods refactored so let the fade-in/out handles
+  get seen with transparency over the clip graphics content.
+
 - Reset and continue looping even still when continue past end
   transport option is not set and playback is rolling.
 

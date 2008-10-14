@@ -468,9 +468,12 @@ void qtractorClip::drawClip ( QPainter *pPainter, const QRect& clipRect,
 	if (m_iClipLength < 1)
 		return;
 
+	// Draw clip contents (virtual)
+	draw(pPainter, clipRect, iClipOffset);
+
 	// Fade in/out handle color...
 	QColor rgbFade(m_pTrack->foreground());
-	rgbFade.setAlpha(80);
+	rgbFade.setAlpha(120);
 	pPainter->setPen(rgbFade);
 	pPainter->setBrush(rgbFade);
 
