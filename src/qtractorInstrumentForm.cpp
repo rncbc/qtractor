@@ -23,9 +23,8 @@
 
 #include "qtractorAbout.h"
 #include "qtractorInstrument.h"
+#include "qtractorSession.h"
 #include "qtractorOptions.h"
-
-#include "qtractorMainForm.h"
 
 #include <QHeaderView>
 #include <QFileDialog>
@@ -138,15 +137,15 @@ qtractorInstrumentForm::~qtractorInstrumentForm (void)
 // Import new intrument file(s) into listing.
 void qtractorInstrumentForm::importSlot (void)
 {
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
 		return;
 
-	qtractorOptions *pOptions = pMainForm->options();
+	qtractorOptions *pOptions = qtractorOptions::getInstance();
 	if (pOptions == NULL)
 		return;
 
-	qtractorInstrumentList *pInstruments = pMainForm->instruments();
+	qtractorInstrumentList *pInstruments = pSession->instruments();
 	if (pInstruments == NULL)
 		return;
 
@@ -200,11 +199,11 @@ void qtractorInstrumentForm::importSlot (void)
 // Remove a file from instrument list.
 void qtractorInstrumentForm::removeSlot (void)
 {
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
 		return;
 
-	qtractorInstrumentList *pInstruments = pMainForm->instruments();
+	qtractorInstrumentList *pInstruments = pSession->instruments();
 	if (pInstruments == NULL)
 		return;
 
@@ -258,11 +257,11 @@ void qtractorInstrumentForm::moveDownSlot (void)
 // Reload the complete instrument definitions, from list.
 void qtractorInstrumentForm::reloadSlot (void)
 {
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
 		return;
 
-	qtractorInstrumentList *pInstruments = pMainForm->instruments();
+	qtractorInstrumentList *pInstruments = pSession->instruments();
 	if (pInstruments == NULL)
 		return;
 
@@ -288,15 +287,15 @@ void qtractorInstrumentForm::reloadSlot (void)
 // Export the whole state into a single instrument file.
 void qtractorInstrumentForm::exportSlot (void)
 {
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
 		return;
 
-	qtractorOptions *pOptions = pMainForm->options();
+	qtractorOptions *pOptions = qtractorOptions::getInstance();
 	if (pOptions == NULL)
 		return;
 
-	qtractorInstrumentList *pInstruments = pMainForm->instruments();
+	qtractorInstrumentList *pInstruments = pSession->instruments();
 	if (pInstruments == NULL)
 		return;
 
@@ -389,9 +388,9 @@ void qtractorInstrumentForm::stabilizeForm (void)
 
 	m_ui.ReloadPushButton->setEnabled(m_iDirtyCount > 0);
 
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm && pMainForm->instruments())
-		m_ui.ExportPushButton->setEnabled(pMainForm->instruments()->count() > 0);
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession && pSession->instruments())
+		m_ui.ExportPushButton->setEnabled((pSession->instruments())->count() > 0);
 	else
 		m_ui.ExportPushButton->setEnabled(false);
 }
@@ -400,11 +399,11 @@ void qtractorInstrumentForm::stabilizeForm (void)
 // Refresh all instrument definition views.
 void qtractorInstrumentForm::refreshForm (void)
 {
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
 		return;
 
-	qtractorInstrumentList *pInstruments = pMainForm->instruments();
+	qtractorInstrumentList *pInstruments = pSession->instruments();
 	if (pInstruments == NULL)
 		return;
 

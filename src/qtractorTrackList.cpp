@@ -335,10 +335,10 @@ void qtractorTrackList::Item::update ( qtractorTrackList *pTrackList )
 					}
 					if (!bMidiManager) {
 						qtractorInstrumentList *pInstruments = NULL;
-						qtractorMainForm *pMainForm
-							= qtractorMainForm::getInstance();
-						if (pMainForm)
-							pInstruments = pMainForm->instruments();
+						qtractorSession *pSession
+							= qtractorSession::getInstance();
+						if (pSession)
+							pInstruments = pSession->instruments();
 						if (pInstruments
 							&& pInstruments->contains(sInstrument)) {
 							qtractorInstrument& instr

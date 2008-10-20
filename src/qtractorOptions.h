@@ -32,7 +32,7 @@ class QObject;
 
 
 //-------------------------------------------------------------------------
-// qtractorOptions - Prototype settings class.
+// qtractorOptions - Prototype settings class (singleton).
 //
 
 class qtractorOptions
@@ -193,10 +193,16 @@ public:
 	void loadActionShortcuts(QObject *pObject);
 	void saveActionShortcuts(QObject *pObject);
 
+	// Singleton instance accessor.
+	static qtractorOptions *getInstance();
+
 private:
 
 	// Settings member variables.
 	QSettings m_settings;
+
+	// The singleton instance.
+	static qtractorOptions *g_pOptions;
 };
 
 

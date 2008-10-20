@@ -138,10 +138,11 @@ qtractorMainForm::qtractorMainForm (
 	g_pMainForm = this;
 
 	// Initialize some pointer references.
-	m_pOptions     = NULL;
-	m_pSession     = new qtractorSession();
-	m_pCommands    = new qtractorCommandList();
-	m_pInstruments = new qtractorInstrumentList();
+	m_pOptions = NULL;
+
+	// FIXME: This gotta go, somwhere in time...
+	m_pSession     = qtractorSession::getInstance();
+	m_pCommands    = m_pSession->commands();
 
 	// All child forms are to be created later, not earlier than setup.
 	m_pMessages    = NULL;
@@ -667,14 +668,6 @@ qtractorMainForm::~qtractorMainForm (void)
 	if (m_pTracks)
 		delete m_pTracks;
 
-	//  Free some more still around...
-	if (m_pInstruments)
-		delete m_pInstruments;
-	if (m_pCommands)
-		delete m_pCommands;
-	if (m_pSession)
-		delete m_pSession;
-
 	// Get select mode action group down.
 	if (m_pSelectModeActionGroup)
 		delete m_pSelectModeActionGroup;
@@ -815,7 +808,7 @@ void qtractorMainForm::setOptions ( qtractorOptions *pOptions )
 	// Load instrument definition files...
 	QStringListIterator iter(m_pOptions->instrumentFiles);
 	while (iter.hasNext())
-		m_pInstruments->load(iter.next());
+		(m_pSession->instruments())->load(iter.next());
 
 	// Load custom meter colors, if any...
 	int iColor;
@@ -950,7 +943,7 @@ bool qtractorMainForm::queryClose (void)
 			m_pOptions->bAutoBackward = m_ui.transportAutoBackwardAction->isChecked();
 			m_pOptions->bContinuePastEnd = m_ui.transportContinueAction->isChecked();
 			// Save instrument definition file list...
-			m_pOptions->instrumentFiles = m_pInstruments->files();
+			m_pOptions->instrumentFiles = (m_pSession->instruments())->files();
 			// Save custom meter colors, if any...
 			int iColor;
 			m_pOptions->audioMeterColors.clear();
@@ -1239,12 +1232,6 @@ qtractorMixer *qtractorMainForm::mixer (void) const
 qtractorCommandList *qtractorMainForm::commands (void) const
 {
 	return m_pCommands;
-}
-
-// The global instruments repository.
-qtractorInstrumentList *qtractorMainForm::instruments (void) const
-{
-	return m_pInstruments;
 }
 
 // The session thumb-view widget accessor.
@@ -2988,7 +2975,7 @@ bool qtractorMainForm::setPlaying ( bool bPlaying )
 	// In case of (re)starting playback, send now
 	// all tracks MIDI bank select/program changes...
 	if (bPlaying)
-		m_pSession->setMidiPatch(m_pInstruments);
+		m_pSession->setMidiPatch();
 
 	// Toggle engine play status...
 	m_pSession->setPlaying(bPlaying);
@@ -3446,7 +3433,7 @@ void qtractorMainForm::updateSession (void)
 		// (Re)set playhead...
 		m_pSession->setPlayHead(0);
 		// (Re)initialize MIDI instrument patching...
-		m_pSession->setMidiPatch(m_pInstruments);
+		m_pSession->setMidiPatch();
 		// Get on with the special ALSA sequencer notifier...
 		if (m_pSession->midiEngine()->alsaNotifier()) {
 			QObject::connect(m_pSession->midiEngine()->alsaNotifier(),

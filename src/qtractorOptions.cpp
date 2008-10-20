@@ -41,13 +41,26 @@
 
 
 //-------------------------------------------------------------------------
-// qtractorOptions - Prototype settings structure.
+// qtractorOptions - Prototype settings structure (pseudo-singleton).
 //
+
+// Singleton instance pointer.
+qtractorOptions *qtractorOptions::g_pOptions = NULL;
+
+// Singleton instance accessor (static).
+qtractorOptions *qtractorOptions::getInstance (void)
+{
+	return g_pOptions;
+}
+
 
 // Constructor.
 qtractorOptions::qtractorOptions (void)
 	: m_settings(QTRACTOR_DOMAIN, QTRACTOR_TITLE)
 {
+	// Pseudo-singleton reference setup.
+	g_pOptions = this;
+
 	// And go into general options group.
 	m_settings.beginGroup("/Options");
 
@@ -387,6 +400,9 @@ qtractorOptions::~qtractorOptions (void)
 	m_settings.endGroup();
 
 	m_settings.endGroup();
+
+	// Pseudo-singleton reference shut-down.
+	g_pOptions = NULL;
 }
 
 

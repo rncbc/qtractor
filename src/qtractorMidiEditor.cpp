@@ -2557,11 +2557,11 @@ void qtractorMidiEditor::updateInstrumentNames (void)
 	if (pTrack == NULL)
 		return;
 
-	qtractorMainForm *pMainForm	= qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
 		return;
 
-	qtractorInstrumentList *pInstruments = pMainForm->instruments();
+	qtractorInstrumentList *pInstruments = pSession->instruments();
 	if (pInstruments == NULL)
 		return;
 

@@ -5,6 +5,10 @@ ChangeLog
 
 CVS HEAD
 
+- Internal refactoring alert: Session and Options instances are
+  now being redesigned as singletons, preparing to get out of the
+  way from the master GUI/MainForm instance (EXPERIMENTAL). 
+
 - Clip drawing methods refactored so let the fade-in/out handles
   get seen with transparency over the clip graphics content.
 

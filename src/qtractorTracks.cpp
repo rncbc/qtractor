@@ -136,14 +136,6 @@ qtractorSession *qtractorTracks::session (void) const
 }
 
 
-// Instrument list accessor.
-qtractorInstrumentList *qtractorTracks::instruments (void) const
-{
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	return (pMainForm ? pMainForm->instruments() : NULL);
-}
-
-
 // Child widgets accessors.
 qtractorTrackList *qtractorTracks::trackList (void) const
 {

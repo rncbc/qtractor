@@ -76,7 +76,6 @@ public:
 	qtractorConnections *connections() const;
 	qtractorMixer *mixer() const;
 	qtractorCommandList *commands() const;
-	qtractorInstrumentList *instruments() const;
 	qtractorThumbView *thumbView() const;
 
 	QString sessionName(const QString& sFilename);
@@ -279,7 +278,6 @@ private:
 	qtractorOptions *m_pOptions;
 	qtractorSession *m_pSession;
 	qtractorCommandList *m_pCommands;
-	qtractorInstrumentList *m_pInstruments;
 	qtractorFiles *m_pFiles;
 	qtractorMessages *m_pMessages;
 	qtractorConnections *m_pConnections;

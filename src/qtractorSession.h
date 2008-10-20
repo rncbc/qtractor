@@ -37,19 +37,19 @@ class qtractorAudioPeakFactory;
 class qtractorSessionCursor;
 class qtractorSessionDocument;
 class qtractorMidiManager;
+class qtractorInstrumentList;
+class qtractorCommandList;
 
 class QDomElement;
 
 
 //-------------------------------------------------------------------------
-// qtractorSession -- Session container.
+// qtractorSession -- Session container (singleton).
 
 class qtractorSession
 {
 public:
 
-	// Constructor.
-	qtractorSession();
 	// Default destructor.
 	~qtractorSession();
 
@@ -254,7 +254,7 @@ public:
 	void releaseMidiTag(qtractorTrack *pTrack);
 
 	// MIDI session/tracks instrument patching.
-	void setMidiPatch(qtractorInstrumentList *pInstruments);
+	void setMidiPatch();
 
 	// MIDI managers factory methods.
 	qtractorMidiManager *createMidiManager(qtractorPluginList *pPluginList);
@@ -303,6 +303,23 @@ public:
 
 	// Alternate properties accessor.
 	Properties& properties();
+
+	// Session command executive (undo/redo)
+	qtractorCommandList *commands() const;
+
+	// Instrument names mapping.
+	qtractorInstrumentList *instruments() const;
+
+	// Singleton instance accessor.
+	static qtractorSession *getInstance();
+
+	// Singleton destroyer.
+	static void Destroy();
+
+protected:
+
+	// Constructor.
+	qtractorSession();
 
 private:
 
@@ -361,6 +378,15 @@ private:
 	// RT-safeness hackish lock-mutex.
 	qtractorAtomic m_locks;
 	qtractorAtomic m_mutex;
+
+	// Instrument names mapping.
+	qtractorInstrumentList *m_pInstruments;
+
+	// Session command executive (undo/redo)
+	qtractorCommandList *m_pCommands;
+
+	// The singleton instance.
+	static qtractorSession *g_pSession;
 };
 
 

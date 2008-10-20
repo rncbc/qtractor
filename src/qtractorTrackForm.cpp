@@ -474,11 +474,11 @@ int qtractorTrackForm::midiProgram (void)
 // Refresh instrument list.
 void qtractorTrackForm::updateInstruments (void)
 {
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
 		return;
 
-	qtractorInstrumentList *pInstruments = pMainForm->instruments();
+	qtractorInstrumentList *pInstruments = pSession->instruments();
 	if (pInstruments == NULL)
 		return;
 
@@ -617,8 +617,8 @@ void qtractorTrackForm::updateChannel ( int iChannel,
 void qtractorTrackForm::updateBanks ( const QString& sInstrumentName,
 	int iBankSelMethod, int iBank, int iProg )
 {
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
 		return;
 
 	if (m_pTrack == NULL)
@@ -631,7 +631,7 @@ void qtractorTrackForm::updateBanks ( const QString& sInstrumentName,
 		sInstrumentName.toUtf8().constData(), iBankSelMethod, iBank, iProg);
 #endif
 
-	qtractorInstrumentList *pInstruments = pMainForm->instruments();
+	qtractorInstrumentList *pInstruments = pSession->instruments();
 	if (pInstruments == NULL)
 		return;
 
@@ -741,8 +741,8 @@ void qtractorTrackForm::updateBanks ( const QString& sInstrumentName,
 void qtractorTrackForm::updatePrograms (  const QString& sInstrumentName,
 	int iBank, int iProg )
 {
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
 		return;
 
 	if (m_pTrack == NULL)
@@ -755,7 +755,7 @@ void qtractorTrackForm::updatePrograms (  const QString& sInstrumentName,
 		sInstrumentName.toUtf8().constData(), iBank, iProg);
 #endif
 
-	qtractorInstrumentList *pInstruments = pMainForm->instruments();
+	qtractorInstrumentList *pInstruments = pSession->instruments();
 	if (pInstruments == NULL)
 		return;
 

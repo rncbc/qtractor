@@ -35,11 +35,16 @@
 
 #include "qtractorPlugin.h"
 
+#include "qtractorInstrument.h"
+#include "qtractorCommand.h"
+
 #include <QApplication>
 #include <QDateTime>
 #include <QFileInfo>
 #include <QRegExp>
 #include <QDir>
+
+#include <stdlib.h>
 
 
 //-------------------------------------------------------------------------
@@ -71,6 +76,34 @@ qtractorSession::Properties& qtractorSession::Properties::copy (
 //-------------------------------------------------------------------------
 // qtractorSession -- Session container.
 
+// Singleton instance pointer.
+qtractorSession *qtractorSession::g_pSession = NULL;
+
+
+// Singleton instance accessor (static).
+qtractorSession *qtractorSession::getInstance (void)
+{
+	// Create the singleton instance, if not already...
+	if (g_pSession == NULL) {
+		g_pSession = new qtractorSession();
+		::atexit(Destroy);
+	}
+
+	return g_pSession;
+}
+
+
+// Singleton instance destroyer.
+void qtractorSession::Destroy (void)
+{
+	// OK. We're done with ourselves.
+	if (g_pSession) {
+		delete g_pSession;
+		g_pSession = NULL;
+	}
+}
+
+
 // Constructor.
 qtractorSession::qtractorSession (void)
 {
@@ -78,6 +111,10 @@ qtractorSession::qtractorSession (void)
 	m_cursors.setAutoDelete(false);
 
 	m_midiManagers.setAutoDelete(false);
+
+	// Singleton ownings.
+	m_pCommands    = new qtractorCommandList();
+	m_pInstruments = new qtractorInstrumentList();
 
 	// The dubious permanency of the crucial device engines.
 	m_pMidiEngine       = new qtractorMidiEngine(this);
@@ -89,6 +126,7 @@ qtractorSession::qtractorSession (void)
 	clear();
 }
 
+
 // Default destructor.
 qtractorSession::~qtractorSession (void)
 {
@@ -98,6 +136,9 @@ qtractorSession::~qtractorSession (void)
 	delete m_pAudioPeakFactory;
 	delete m_pAudioEngine;
 	delete m_pMidiEngine;
+
+	delete m_pInstruments;
+	delete m_pCommands;
 }
 
 
@@ -198,6 +239,20 @@ void qtractorSession::clear (void)
 	m_pMidiEngine->sessionCursor()->reset();
 	m_pMidiEngine->sessionCursor()->seek(0);
 	m_cursors.append(m_pMidiEngine->sessionCursor());
+}
+
+
+// The global undoable command list reference.
+qtractorCommandList *qtractorSession::commands (void) const
+{
+	return m_pCommands;
+}
+
+
+// Session instruments repository.
+qtractorInstrumentList *qtractorSession::instruments (void) const
+{
+	return m_pInstruments;
 }
 
 
@@ -1248,12 +1303,12 @@ void qtractorSession::releaseMidiTag ( qtractorTrack *pTrack )
 
 
 // MIDI session/tracks instrument patching.
-void qtractorSession::setMidiPatch ( qtractorInstrumentList *pInstruments )
+void qtractorSession::setMidiPatch (void)
 {
 	for (qtractorTrack *pTrack = m_tracks.first();
 			pTrack; pTrack = pTrack->next()) {
 		if (pTrack->trackType() == qtractorTrack::Midi)
-			pTrack->setMidiPatch(pInstruments);
+			pTrack->setMidiPatch(m_pInstruments);
 	}
 
 	m_pMidiEngine->resetAllControllers();
