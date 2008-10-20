@@ -23,7 +23,6 @@
 #include "qtractorAudioPeak.h"
 #include "qtractorAudioFile.h"
 
-#include "qtractorMainForm.h"
 #include "qtractorSession.h"
 
 #include <QApplication>
@@ -246,10 +245,7 @@ qtractorAudioPeakFile::qtractorAudioPeakFile (
 
 	// Set peak filename...
 	QDir dir;
-	qtractorSession  *pSession  = NULL;
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm)
-		pSession = pMainForm->session();
+	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession)
 		dir.setPath(pSession->sessionDir());
 	m_peakFile.setFileName(
@@ -582,10 +578,7 @@ bool qtractorAudioPeakFile::openWrite (
 	m_iPeak = 0;
 
 	// Get running sample-rate...
-	qtractorSession  *pSession  = NULL;
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm)
-		pSession = pMainForm->session();
+	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession) {
 		// The resample/timestretch-aware internal peak period...
 		m_iPeakPeriod = (unsigned short) ::lroundf(

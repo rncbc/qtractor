@@ -331,10 +331,7 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 		SLOT(contentsChanged(qtractorMidiEditor *)));
 
 	// Try to restore old editor state...
-	qtractorOptions  *pOptions  = NULL;
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm)
-		pOptions = pMainForm->options();
+	qtractorOptions *pOptions = qtractorOptions::getInstance();
 	if (pOptions) {
 		// Initial decorations toggle state.
 		m_ui.viewMenubarAction->setChecked(pOptions->bMidiMenubar);
@@ -382,6 +379,7 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	}
 
 	// Make last-but-not-least conections....
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm) {
 		QObject::connect(m_ui.editSelectRangeAction,
 			SIGNAL(triggered(bool)),
@@ -466,10 +464,7 @@ bool qtractorMidiEditorForm::queryClose (void)
 
 	// Try to save current editor view state...
 	if (bQueryClose && isVisible()) {
-		qtractorOptions  *pOptions  = NULL;
-		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-		if (pMainForm)
-			pOptions = pMainForm->options();
+		qtractorOptions *pOptions = qtractorOptions::getInstance();
 		if (pOptions) {
 			// Save decorations state.
 			pOptions->bMidiMenubar = m_ui.MenuBar->isVisible();
@@ -607,12 +602,12 @@ qtractorMidiSequence *qtractorMidiEditorForm::sequence (void) const
 // Special executive setup method.
 void qtractorMidiEditorForm::setup ( qtractorMidiClip *pMidiClip )
 {
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
 		return;
 
-	qtractorSession *pSession = pMainForm->session();
-	if (pSession == NULL)
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm == NULL)
 		return;
 
 	// Get those time-scales in sync...
@@ -1094,11 +1089,7 @@ void qtractorMidiEditorForm::viewRefresh (void)
 // Show (and edit) keyboard shortcuts.
 void qtractorMidiEditorForm::helpShortcuts (void)
 {
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
-		return;
-
-	qtractorOptions *pOptions = pMainForm->options();
+	qtractorOptions *pOptions = qtractorOptions::getInstance();
 	if (pOptions == NULL)
 		return;
 
@@ -1215,11 +1206,9 @@ void qtractorMidiEditorForm::stabilizeForm (void)
 	m_pDurationLabel->setText(
 		(m_pMidiEditor->timeScale())->textFromTick(pSeq->duration()));
 
-	qtractorSession  *pSession  = NULL;
+	qtractorSession  *pSession  = qtractorSession::getInstance();
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm)
-		pSession = pMainForm->session();
-	if (pSession) {
+	if (pSession && pMainForm) {
 		unsigned long iPlayHead = pSession->playHead();
 		bool bPlaying    = pSession->isPlaying();
 		bool bRecording  = pSession->isRecording();

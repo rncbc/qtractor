@@ -25,7 +25,6 @@
 #include "qtractorRubberBand.h"
 #include "qtractorDocument.h"
 
-#include "qtractorMainForm.h"
 #include "qtractorOptions.h"
 #include "qtractorSession.h"
 
@@ -537,11 +536,7 @@ void qtractorFileListView::renameItem (void)
 // Remove current group/file item.
 void qtractorFileListView::deleteItem (void)
 {
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
-		return;
-
-	qtractorOptions *pOptions = pMainForm->options();
+	qtractorOptions *pOptions = qtractorOptions::getInstance();
 	if (pOptions == NULL)
 		return;
 
@@ -1173,9 +1168,9 @@ bool qtractorFileListView::loadListElement ( qtractorDocument *pDocument,
 
 	// Make it all relative to session directory...
 	QDir dir;
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm && pMainForm->session())
-		dir.setPath(pMainForm->session()->sessionDir());
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession)
+		dir.setPath(pSession->sessionDir());
 
 	// Load children...
 	for (QDomNode nChild = pElement->firstChild();
@@ -1250,9 +1245,9 @@ bool qtractorFileListView::saveListElement ( qtractorDocument *pDocument,
 		eFile.setAttribute("name", pFileItem->text(0));
 		// Make it all relative to session directory...
 		QDir dir;
-		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-		if (pMainForm && pMainForm->session())
-			dir.setPath(pMainForm->session()->sessionDir());
+		qtractorSession *pSession = qtractorSession::getInstance();
+		if (pSession)
+			dir.setPath(pSession->sessionDir());
 		eFile.appendChild(pDocument->document()->createTextNode(
 			dir.relativeFilePath(pFileItem->path())));
 		pElement->appendChild(eFile);

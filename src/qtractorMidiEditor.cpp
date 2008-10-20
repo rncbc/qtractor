@@ -685,12 +685,9 @@ void qtractorMidiEditor::setEditHead ( unsigned long iEditHead, bool bSync )
 		setEditTail(iEditHead, bSync);
 
 	if (bSync) {
-		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-		if (pMainForm) {
-			qtractorSession *pSession = pMainForm->session();
-			if (pSession)
-				pSession->setEditHead(iEditHead);
-		}
+		qtractorSession *pSession = qtractorSession::getInstance();
+		if (pSession)
+			pSession->setEditHead(iEditHead);
 	}
 
 	m_iEditHead = iEditHead;
@@ -718,12 +715,9 @@ void qtractorMidiEditor::setEditTail ( unsigned long iEditTail, bool bSync )
 		setEditHead(iEditTail, bSync);
 
 	if (bSync) {
-		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-		if (pMainForm) {
-			qtractorSession *pSession = pMainForm->session();
-			if (pSession)
-				pSession->setEditTail(iEditTail);
-		}
+		qtractorSession *pSession = qtractorSession::getInstance();
+		if (pSession)
+			pSession->setEditTail(iEditTail);
 	}
 
 	m_iEditTail = iEditTail;
@@ -1727,12 +1721,9 @@ void qtractorMidiEditor::dragMoveCommit ( qtractorScrollView *pScrollView,
 			// Playhead positioning...
 			setPlayHead(iFrame);
 			// Immediately commited...
-			qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-			if (pMainForm) {
-				qtractorSession *pSession = pMainForm->session();
-				if (pSession)
-					pSession->setPlayHead(iFrame);
-			}
+			qtractorSession *pSession = qtractorSession::getInstance();
+			if (pSession)
+				pSession->setPlayHead(iFrame);
 		}
 		// Fall thru...
 	case DragSelect:

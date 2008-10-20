@@ -713,12 +713,12 @@ void qtractorMixerStrip::busPassthru ( bool bPassthru )
 	if (m_pBus == NULL)
 		return;
 
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
 		return;
 
 	// Here we go...
-	pMainForm->commands()->exec(
+	(pSession->commands())->exec(
 		new qtractorBusPassthruCommand(m_pBus, bPassthru));
 }
 
@@ -729,12 +729,12 @@ void qtractorMixerStrip::trackMonitor ( bool bMonitor )
 	if (m_pTrack == NULL)
 		return;
 
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
 		return;
 
 	// Here we go...
-	pMainForm->commands()->exec(
+	(pSession->commands())->exec(
 		new qtractorTrackMonitorCommand(m_pTrack, bMonitor));
 }
 
@@ -770,16 +770,16 @@ void qtractorMixerStrip::panChangedSlot ( float fPanning )
 	qDebug("qtractorMixerStrip[%p]::panChangedSlot(%.3g)", this, fPanning);
 #endif
 
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
 		return;
 
 	// Put it in the form of an undoable command...
 	if (m_pTrack) {
-		pMainForm->commands()->exec(
+		(pSession->commands())->exec(
 			new qtractorTrackPanningCommand(m_pTrack, fPanning));
 	} else if (m_pBus) {
-		pMainForm->commands()->exec(
+		(pSession->commands())->exec(
 			new qtractorBusPanningCommand(m_pBus, m_busMode, fPanning));
 	}
 }
@@ -795,16 +795,16 @@ void qtractorMixerStrip::gainChangedSlot ( float fGain )
 	qDebug("qtractorMixerStrip[%p]::gainChangedSlot(%.3g)\n", this, fGain);
 #endif
 
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
 		return;
 
 	// Put it in the form of an undoable command...
 	if (m_pTrack) {
-		pMainForm->commands()->exec(
+		(pSession->commands())->exec(
 			new qtractorTrackGainCommand(m_pTrack, fGain));
 	} else if (m_pBus) {
-		pMainForm->commands()->exec(
+		(pSession->commands())->exec(
 			new qtractorBusGainCommand(m_pBus, m_busMode, fGain));
 	}
 }
@@ -1190,11 +1190,11 @@ qtractorMixer::~qtractorMixer (void)
 // Notify the main application widget that we're emerging.
 void qtractorMixer::showEvent ( QShowEvent *pShowEvent )
 {
-    qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-    if (pMainForm)
-        pMainForm->stabilizeForm();
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm)
+		pMainForm->stabilizeForm();
 
-    QWidget::showEvent(pShowEvent);
+	QWidget::showEvent(pShowEvent);
 }
 
 // Notify the main application widget that we're closing.
@@ -1222,14 +1222,6 @@ void qtractorMixer::closeEvent ( QCloseEvent * /*pCloseEvent*/ )
 }
 
 
-// Session accessor.
-qtractorSession *qtractorMixer::session (void) const
-{
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	return (pMainForm ? pMainForm->session() : NULL);
-}
-
-
 // The splitter layout widget accessor.
 QSplitter *qtractorMixer::splitter (void) const
 {
@@ -1241,16 +1233,13 @@ QSplitter *qtractorMixer::splitter (void) const
 // (with some fair default...)
 void qtractorMixer::loadSplitterSizes (void)
 {
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm) {
-		qtractorOptions *pOptions = pMainForm->options();
-		if (pOptions) {
-			QList<int> sizes;
-			sizes.append(140);
-			sizes.append(160);
-			sizes.append(140);
-			pOptions->loadSplitterSizes(m_pSplitter, sizes);
-		}
+	qtractorOptions *pOptions = qtractorOptions::getInstance();
+	if (pOptions) {
+		QList<int> sizes;
+		sizes.append(140);
+		sizes.append(160);
+		sizes.append(140);
+		pOptions->loadSplitterSizes(m_pSplitter, sizes);
 	}
 }
 
@@ -1258,12 +1247,9 @@ void qtractorMixer::loadSplitterSizes (void)
 // Save splitter sizes...
 void qtractorMixer::saveSplitterSizes (void)
 {
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm) {
-		qtractorOptions *pOptions = pMainForm->options();
-		if (pOptions)
-			pOptions->saveSplitterSizes(m_pSplitter);
-	}
+	qtractorOptions *pOptions = qtractorOptions::getInstance();
+	if (pOptions)
+		pOptions->saveSplitterSizes(m_pSplitter);
 }
 
 
@@ -1319,7 +1305,7 @@ void qtractorMixer::updateTrackStrip ( qtractorTrack *pTrack, bool bReset )
 // Update buses'racks.
 void qtractorMixer::updateBuses (void)
 {
-	qtractorSession *pSession = session();
+	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
 		return;
 
@@ -1352,7 +1338,7 @@ void qtractorMixer::updateBuses (void)
 // Update tracks'rack.
 void qtractorMixer::updateTracks (void)
 {
-	qtractorSession *pSession = session();
+	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
 		return;
 
@@ -1390,10 +1376,12 @@ void qtractorMixer::trackButtonToggledSlot (
 	qtractorTrackButton *pTrackButton, bool bOn )
 {
 	// Put it in the form of an undoable command...
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm)
-		pMainForm->commands()->exec(
-			new qtractorTrackButtonCommand(pTrackButton, bOn));
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return;
+
+	(pSession->commands())->exec(
+		new qtractorTrackButtonCommand(pTrackButton, bOn));
 }
 
 

@@ -1,7 +1,7 @@
 // qtractorSessionForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2006, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -26,7 +26,6 @@
 #include "qtractorSession.h"
 
 #include "qtractorOptions.h"
-#include "qtractorMainForm.h"
 
 #include <QFileDialog>
 #include <QMessageBox>
@@ -48,12 +47,9 @@ qtractorSessionForm::qtractorSessionForm (
 	m_ui.setupUi(this);
 
 	// Initialize conveniency options...
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm) {
-		qtractorOptions *pOptions = pMainForm->options();
-		if (pOptions)
-			pOptions->loadComboBoxHistory(m_ui.SessionDirComboBox);
-	}
+	qtractorOptions *pOptions = qtractorOptions::getInstance();
+	if (pOptions)
+		pOptions->loadComboBoxHistory(m_ui.SessionDirComboBox);
 
 	// Setup some specific validators.
 	m_ui.SampleRateComboBox->setValidator(
@@ -191,12 +187,9 @@ void qtractorSessionForm::accept (void)
 	}
 
 	// Save other conveniency options...
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm) {
-		qtractorOptions *pOptions = pMainForm->options();
-		if (pOptions)
-			pOptions->saveComboBoxHistory(m_ui.SessionDirComboBox);
-	}
+	qtractorOptions *pOptions = qtractorOptions::getInstance();
+	if (pOptions)
+		pOptions->saveComboBoxHistory(m_ui.SessionDirComboBox);
 
 	// Just go with dialog acceptance.
 	QDialog::accept();

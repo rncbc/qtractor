@@ -93,7 +93,7 @@ void qtractorTrackTime::updatePixmap ( int cx, int /* cy */)
 	m_pixmap = QPixmap(w, h);
 	m_pixmap.fill(pal.window().color());
 
-	qtractorSession *pSession = m_pTracks->session();
+	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
 		return;
 
@@ -249,7 +249,7 @@ void qtractorTrackTime::contentsXMovingSlot ( int cx, int /*cy*/ )
 // Check if some position header is to be dragged...
 bool qtractorTrackTime::dragHeadStart ( const QPoint& pos )
 {
-	qtractorSession *pSession = m_pTracks->session();
+	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
 		return false;
 
@@ -318,7 +318,7 @@ void qtractorTrackTime::mousePressEvent ( QMouseEvent *pMouseEvent )
 	// Force null state.
 	m_dragState = DragNone;
 
-	qtractorSession *pSession = m_pTracks->session();
+	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession) {
 		// Direct snap positioning...
 		const QPoint& pos = viewportToContents(pMouseEvent->pos());
@@ -360,12 +360,9 @@ void qtractorTrackTime::mousePressEvent ( QMouseEvent *pMouseEvent )
 // Handle selection/dragging -- mouse pointer move.
 void qtractorTrackTime::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 {
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
-		return;
-
-	qtractorSession *pSession = m_pTracks->session();
+	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession) {
+		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 		// Are we already moving/dragging something?
 		const QPoint& pos = viewportToContents(pMouseEvent->pos());
 		unsigned long iFrame = pSession->frameSnap(
@@ -388,7 +385,8 @@ void qtractorTrackTime::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 			m_pTracks->trackView()->ensureVisible(pos.x(), y, 16, 0);
 			m_pTracks->trackView()->setPlayHead(iFrame);
 			// Let the change get some immediate visual feedback...
-			pMainForm->updateTransportTime(iFrame);
+			if (pMainForm)
+				pMainForm->updateTransportTime(iFrame);
 			break;
 		case DragLoopStart:
 		case DragEditHead:
@@ -428,13 +426,9 @@ void qtractorTrackTime::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 // Handle selection/dragging -- mouse button release.
 void qtractorTrackTime::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 {
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
-		return;
-
 	qtractorScrollView::mouseReleaseEvent(pMouseEvent);
 
-	qtractorSession *pSession = m_pTracks->session();
+	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession) {
 		// Which mouse state?
 		const bool bModifier = (pMouseEvent->modifiers()
@@ -461,7 +455,7 @@ void qtractorTrackTime::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 			// New loop-start boundary...
 			if (pSession->editHead() < pSession->loopEnd()) {
 				// Yep, new loop-start point...
-				pMainForm->commands()->exec(
+				(pSession->commands())->exec(
 					new qtractorSessionLoopCommand(pSession,
 						pSession->editHead(), pSession->loopEnd()));
 			}
@@ -474,7 +468,7 @@ void qtractorTrackTime::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 			// New loop-end boundary...
 			if (pSession->loopStart() < pSession->editTail()) {
 				// Yep, new loop-end point...
-				pMainForm->commands()->exec(
+				(pSession->commands())->exec(
 					new qtractorSessionLoopCommand(pSession,
 						pSession->loopStart(), pSession->editTail()));
 			}
@@ -517,13 +511,14 @@ void qtractorTrackTime::keyPressEvent ( QKeyEvent *pKeyEvent )
 #endif
 	switch (pKeyEvent->key()) {
 	case Qt::Key_Escape:
+	{
 		// Restore uncommitted play-head position?...
-		if (m_dragState == DragPlayHead && m_pTracks->session()) {
-			m_pTracks->trackView()->setPlayHead(
-				m_pTracks->session()->playHead());
-		}
+		qtractorSession *pSession = qtractorSession::getInstance();
+		if (pSession && m_dragState == DragPlayHead)
+			m_pTracks->trackView()->setPlayHead(pSession->playHead());
 		resetDragState();
 		break;
+	}
 	default:
 		qtractorScrollView::keyPressEvent(pKeyEvent);
 		break;

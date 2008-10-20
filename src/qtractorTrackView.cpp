@@ -201,7 +201,7 @@ void qtractorTrackView::clear (void)
 // Update track view content height.
 void qtractorTrackView::updateContentsHeight (void)
 {
-	qtractorSession *pSession = m_pTracks->session();
+	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
 		return;
 
@@ -231,7 +231,7 @@ void qtractorTrackView::updateContentsHeight (void)
 // Update track view content width.
 void qtractorTrackView::updateContentsWidth ( int iContentsWidth )
 {
-	qtractorSession *pSession = m_pTracks->session();
+	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession) {
 		int iSessionWidth = pSession->pixelFromFrame(pSession->sessionLength());
 		if (iContentsWidth < iSessionWidth)
@@ -285,7 +285,7 @@ void qtractorTrackView::updateContents (void)
 // Special recording visual feedback.
 void qtractorTrackView::updateContentsRecord (void)
 {
-	qtractorSession *pSession = m_pTracks->session();
+	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
 		return;
 
@@ -319,7 +319,7 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 	pPainter->drawPixmap(rect, m_pixmap, rect);
 
 	// Lines a-head...
-	qtractorSession *pSession = m_pTracks->session();
+	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
 		return;
 
@@ -492,7 +492,7 @@ void qtractorTrackView::updatePixmap ( int cx, int cy )
 	m_pixmap = QPixmap(w, h);
 	m_pixmap.fill(pal.dark().color());
 
-	qtractorSession *pSession = m_pTracks->session();
+	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
 		return;
 
@@ -596,7 +596,7 @@ void qtractorTrackView::contentsYMovingSlot ( int /*cx*/, int cy )
 qtractorTrack *qtractorTrackView::trackAt ( const QPoint& pos,
 	bool bSelectTrack, qtractorTrackViewInfo *pTrackViewInfo ) const
 {
-	qtractorSession *pSession = m_pTracks->session();
+	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL || m_pSessionCursor == NULL)
 		return NULL;
 
@@ -644,7 +644,7 @@ qtractorClip *qtractorTrackView::clipAt ( const QPoint& pos,
 	if (pTrack == NULL)
 		return NULL;
 
-	qtractorSession *pSession = m_pTracks->session();
+	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
 		return NULL;
 
@@ -678,7 +678,7 @@ qtractorClip *qtractorTrackView::clipAt ( const QPoint& pos,
 bool qtractorTrackView::trackInfo ( qtractorTrack *pTrackPtr,
 	qtractorTrackViewInfo *pTrackViewInfo ) const
 {
-	qtractorSession *pSession = m_pTracks->session();
+	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL || m_pSessionCursor == NULL)
 		return false;
 
@@ -694,7 +694,7 @@ bool qtractorTrackView::trackInfo ( qtractorTrack *pTrackPtr,
 			pTrackViewInfo->trackIndex = iTrack;
 			pTrackViewInfo->trackStart = m_pSessionCursor->frame();
 			pTrackViewInfo->trackEnd   = pTrackViewInfo->trackStart
-				+ m_pTracks->session()->frameFromPixel(w);
+				+ pSession->frameFromPixel(w);
 			pTrackViewInfo->trackRect.setRect(x, y1 + 1, w, y2 - y1 - 2);
 			return true;
 		}
@@ -714,9 +714,12 @@ bool qtractorTrackView::clipInfo ( qtractorClip *pClip,
 	if (!trackInfo(pClip->track(), &tvi))
 		return false;
 
-	int x = m_pTracks->session()->pixelFromFrame(pClip->clipStart());
-	int w = m_pTracks->session()->pixelFromFrame(pClip->clipLength());
-	pClipRect->setRect(x, tvi.trackRect.y(), w, tvi.trackRect.height());
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession) {
+		int x = pSession->pixelFromFrame(pClip->clipStart());
+		int w = pSession->pixelFromFrame(pClip->clipLength());
+		pClipRect->setRect(x, tvi.trackRect.y(), w, tvi.trackRect.height());
+	}
 
 	return true;
 }
@@ -726,6 +729,10 @@ bool qtractorTrackView::clipInfo ( qtractorClip *pClip,
 qtractorTrack *qtractorTrackView::dragMoveTrack ( const QPoint& pos,
 	bool bKeyStep )
 {
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return NULL;
+
 	// Which track we're pointing at?
 	qtractorTrackViewInfo tvi;
 	qtractorTrack *pTrack = trackAt(pos, true, &tvi);
@@ -746,7 +753,7 @@ qtractorTrack *qtractorTrackView::dragMoveTrack ( const QPoint& pos,
 	int dx = (pos.x() - m_posDrag.x());
 	if (x + dx < 0)
 		dx = -(x);	// Force to origin (x=0).
-	m_iDraggingX = (m_pTracks->session()->pixelSnap(x + dx) - x);
+	m_iDraggingX = (pSession->pixelSnap(x + dx) - x);
 	qtractorScrollView::ensureVisible(pos.x(), pos.y(), 24, 24);
 
 	showClipSelect();
@@ -759,7 +766,7 @@ qtractorTrack *qtractorTrackView::dragMoveTrack ( const QPoint& pos,
 qtractorTrack *qtractorTrackView::dragDropTrack ( QDropEvent *pDropEvent )
 {
 	// It must be a valid session...
-	qtractorSession *pSession = m_pTracks->session();
+	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
 		return NULL;
 
@@ -1015,11 +1022,7 @@ void qtractorTrackView::dragTimeout (void)
 // Drop event handler.
 void qtractorTrackView::dropEvent ( QDropEvent *pDropEvent )
 {
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
-		return;
-
-	qtractorSession *pSession = m_pTracks->session();
+	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
 		return;
 
@@ -1092,6 +1095,7 @@ void qtractorTrackView::dropEvent ( QDropEvent *pDropEvent )
 	}
 
 	// Now's time to create the clip(s)...
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	QListIterator<DropItem *> iter(m_dropItems);
 	while (iter.hasNext()) {
 		DropItem *pDropItem = iter.next();
@@ -1103,7 +1107,8 @@ void qtractorTrackView::dropEvent ( QDropEvent *pDropEvent )
 				pAudioClip->setClipStart(iClipStart);
 				pClipCommand->addClip(pAudioClip, pTrack);
 				// Don't forget to add this one to local repository.
-				pMainForm->addAudioFile(pDropItem->path);
+				if (pMainForm)
+					pMainForm->addAudioFile(pDropItem->path);
 			}
 			break;
 		}
@@ -1115,7 +1120,8 @@ void qtractorTrackView::dropEvent ( QDropEvent *pDropEvent )
 				pMidiClip->setClipStart(iClipStart);
 				pClipCommand->addClip(pMidiClip, pTrack);
 				// Don't forget to add this one to local repository.
-				pMainForm->addMidiFile(pDropItem->path);
+				if (pMainForm)
+					pMainForm->addMidiFile(pDropItem->path);
 			}
 			break;
 		}
@@ -1136,7 +1142,7 @@ void qtractorTrackView::dropEvent ( QDropEvent *pDropEvent )
 	resetDragState();
 
 	// Put it in the form of an undoable command...
-	pMainForm->commands()->exec(pClipCommand);
+	(pSession->commands())->exec(pClipCommand);
 }
 
 
@@ -1169,7 +1175,7 @@ void qtractorTrackView::mousePressEvent ( QMouseEvent *pMouseEvent )
 	resetDragState();
 
 	// We need a session and a location...
-	qtractorSession *pSession = m_pTracks->session();
+	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession) {
 		// Direct snap positioning...
 		unsigned long iFrame = pSession->frameSnap(
@@ -1272,11 +1278,12 @@ void qtractorTrackView::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 				}
 			} else {
 				// We'll start dragging clip/regions alright...
+				qtractorSession *pSession = qtractorSession::getInstance();
 				qtractorClipSelect::Item *pClipItem = NULL;
-				if (m_pClipDrag)
+				if (m_pClipDrag && pSession)
 					pClipItem = m_pClipSelect->findClipItem(m_pClipDrag);
 				if (pClipItem && pClipItem->rectClip.contains(pos)) {
-					int x = m_pTracks->session()->pixelSnap(m_rectDrag.x());
+					int x = pSession->pixelSnap(m_rectDrag.x());
 					m_iDraggingX = (x - m_rectDrag.x());
 					m_dragState = m_dragCursor = DragMove;
 					qtractorScrollView::setCursor(QCursor(Qt::SizeAllCursor));
@@ -1311,7 +1318,7 @@ void qtractorTrackView::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 {
 	qtractorScrollView::mouseReleaseEvent(pMouseEvent);
 
-	qtractorSession *pSession = m_pTracks->session();
+	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession) {
 		// Direct snap positioning...
 		const QPoint& pos = viewportToContents(pMouseEvent->pos());
@@ -1498,7 +1505,7 @@ void qtractorTrackView::selectRect ( const QRect& rectDrag,
 	qtractorTrackView::SelectMode selectMode,
 	qtractorTrackView::SelectEdit selectEdit )
 {
-	qtractorSession *pSession = m_pTracks->session();
+	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
 		return;
 
@@ -1586,7 +1593,7 @@ qtractorTrackView::SelectMode qtractorTrackView::selectMode (void) const
 // Select every clip of a given track.
 void qtractorTrackView::selectTrack ( qtractorTrack *pTrackPtr, bool bReset )
 {
-	qtractorSession *pSession = m_pTracks->session();
+	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
 		return;
 
@@ -1633,7 +1640,7 @@ void qtractorTrackView::selectTrack ( qtractorTrack *pTrackPtr, bool bReset )
 // Select all contents (or not).
 void qtractorTrackView::selectAll ( bool bSelect )
 {
-	qtractorSession *pSession = m_pTracks->session();
+	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
 		return;
 
@@ -1724,7 +1731,7 @@ void qtractorTrackView::hideClipSelect (void) const
 // Draw/hide the whole drop rectagle list
 void qtractorTrackView::updateDropRects ( int y, int h ) const
 {
-	qtractorSession *pSession = m_pTracks->session();
+	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
 		return;
 
@@ -1810,7 +1817,7 @@ void qtractorTrackView::moveRubberBand ( qtractorRubberBand **ppRubberBand,
 // Check whether we're up to drag a clip fade-in/out or resize handle.
 bool qtractorTrackView::dragFadeResizeStart ( const QPoint& pos )
 {
-	qtractorSession *pSession = m_pTracks->session();
+	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
 		return false;
 
@@ -1862,7 +1869,7 @@ bool qtractorTrackView::dragFadeResizeStart ( const QPoint& pos )
 // Clip fade-in/out handle drag-moving parts.
 void qtractorTrackView::dragFadeMove ( const QPoint& pos )
 {
-	qtractorSession *pSession = m_pTracks->session();
+	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
 		return;
 
@@ -1888,11 +1895,7 @@ void qtractorTrackView::dragFadeDrop ( const QPoint& pos )
 	if (m_pClipDrag == NULL)
 		return;
 
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
-		return;
-
-	qtractorSession *pSession = m_pTracks->session();
+	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
 		return;
 
@@ -1921,14 +1924,14 @@ void qtractorTrackView::dragFadeDrop ( const QPoint& pos )
 	m_dragState = DragNone;
 
 	// Put it in the form of an undoable command...
-	pMainForm->commands()->exec(pClipCommand);
-}		
+	(pSession->commands())->exec(pClipCommand);
+}
 
 
 // Clip resize handle drag-moving parts.
 void qtractorTrackView::dragResizeMove ( const QPoint& pos )
 {
-	qtractorSession *pSession = m_pTracks->session();
+	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
 		return;
 
@@ -1966,11 +1969,7 @@ void qtractorTrackView::dragResizeDrop ( const QPoint& pos, bool bTimeStretch )
 	if (m_pClipDrag == NULL)
 		return;
 
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
-		return;
-
-	qtractorSession *pSession = m_pTracks->session();
+	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
 		return;
 
@@ -2036,8 +2035,8 @@ void qtractorTrackView::dragResizeDrop ( const QPoint& pos, bool bTimeStretch )
 		iClipStart, iClipOffset, iClipLength, fTimeStretch);
 
 	// Put it in the form of an undoable command...
-	pMainForm->commands()->exec(pClipCommand);
-}		
+	(pSession->commands())->exec(pClipCommand);
+}
 
 
 // Reset drag/select/move state.
@@ -2213,7 +2212,7 @@ bool qtractorTrackView::keyStep ( int iKey )
 	if (!isClipSelected())
 		return false;
 
-	qtractorSession *pSession = m_pTracks->session();
+	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
 		return false;
 
@@ -2304,7 +2303,7 @@ bool qtractorTrackView::keyStep ( int iKey )
 // Make given frame position visible in view.
 void qtractorTrackView::ensureVisibleFrame ( unsigned long iFrame )
 {
-	qtractorSession *pSession = m_pTracks->session();
+	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession) {
 		int x0 = qtractorScrollView::contentsX();
 		int y  = qtractorScrollView::contentsY();
@@ -2377,7 +2376,7 @@ void qtractorTrackView::drawPositionX ( int& iPositionX, int x, bool bSyncView )
 // Playhead positioning.
 void qtractorTrackView::setPlayHead ( unsigned long iPlayHead, bool bSyncView )
 {
-	qtractorSession *pSession = m_pTracks->session();
+	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession) {
 		m_iPlayHead = iPlayHead;
 		int iPlayHeadX = pSession->pixelFromFrame(iPlayHead);
@@ -2399,7 +2398,7 @@ int qtractorTrackView::playHeadX (void) const
 // Edit-head positioning
 void qtractorTrackView::setEditHead ( unsigned long iEditHead )
 {
-	qtractorSession *pSession = m_pTracks->session();
+	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession) {
 		if (iEditHead > pSession->editTail())
 			setEditTail(iEditHead);
@@ -2418,7 +2417,7 @@ int qtractorTrackView::editHeadX (void) const
 // Edit-tail positioning
 void qtractorTrackView::setEditTail ( unsigned long iEditTail )
 {
-	qtractorSession *pSession = m_pTracks->session();
+	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession) {
 		if (iEditTail < pSession->editHead())
 			setEditHead(iEditTail);
@@ -2506,11 +2505,7 @@ void qtractorTrackView::executeClipSelect ( qtractorTrackView::Command cmd )
 	if (!queryClipSelect())
 		return;
 
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
-		return;
-
-	qtractorSession *pSession = m_pTracks->session();
+	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
 		return;
 
@@ -2628,7 +2623,7 @@ void qtractorTrackView::executeClipSelect ( qtractorTrackView::Command cmd )
 	// put it in the form of an undoable command...
 	if (pClipCommand) {
 		m_pClipSelect->clear();
-		pMainForm->commands()->exec(pClipCommand);
+		(pSession->commands())->exec(pClipCommand);
 	}
 }
 
@@ -2636,11 +2631,7 @@ void qtractorTrackView::executeClipSelect ( qtractorTrackView::Command cmd )
 // Paste from clipboard (start).
 void qtractorTrackView::pasteClipboard (void)
 {
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
-		return;
-
-	qtractorSession *pSession = m_pTracks->session();
+	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
 		return;
 
@@ -2689,11 +2680,7 @@ void qtractorTrackView::moveClipSelect ( qtractorTrack *pTrack )
 	if (!queryClipSelect())
 		return;
 
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
-		return;
-
-	qtractorSession *pSession = m_pTracks->session();
+	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
 		return;
 
@@ -2781,7 +2768,7 @@ void qtractorTrackView::moveClipSelect ( qtractorTrack *pTrack )
 	m_pClipSelect->clear();
 
 	// Put it in the form of an undoable command...
-	pMainForm->commands()->exec(pClipCommand);
+	(pSession->commands())->exec(pClipCommand);
 }
 
 
@@ -2792,11 +2779,7 @@ void qtractorTrackView::pasteClipSelect ( qtractorTrack *pTrack )
 	if (!queryClipSelect())
 		return;
 
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
-		return;
-
-	qtractorSession *pSession = m_pTracks->session();
+	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
 		return;
 
@@ -2884,7 +2867,7 @@ void qtractorTrackView::pasteClipSelect ( qtractorTrack *pTrack )
 	m_pClipSelect->clear();
 
 	// Put it in the form of an undoable command...
-	pMainForm->commands()->exec(pClipCommand);
+	(pSession->commands())->exec(pClipCommand);
 }
 
 

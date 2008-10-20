@@ -27,7 +27,6 @@
 #include "qtractorAudioEngine.h"
 #include "qtractorMidiBuffer.h"
 
-#include "qtractorMainForm.h"
 #include "qtractorOptions.h"
 
 #include "qtractorSessionDocument.h"
@@ -256,10 +255,7 @@ bool qtractorPluginFile::getTypes ( qtractorPluginTypeList& types,
 	if (typeHint == qtractorPluginType::Any ||
 		typeHint == qtractorPluginType::Vst) {
 		// Need to look at the options...
-		qtractorOptions  *pOptions  = NULL;
-		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-		if (pMainForm)
-			pOptions = pMainForm->options();
+		qtractorOptions *pOptions = qtractorOptions::getInstance();
 		if (pOptions && pOptions->bDummyVstScan)
 			pType = qtractorDummyPluginType::createType(this);
 		else
@@ -623,10 +619,6 @@ qtractorPluginForm *qtractorPlugin::form (void)
 	// Take the change and create the form if it doesn't current exist.
 	if (m_pForm == NULL) {
 		// Build up the plugin form...
-		qtractorOptions  *pOptions  = NULL;
-		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-		if (pMainForm)
-			pOptions = pMainForm->options();
 		// What style do we create tool childs?
 		QWidget *pParent = NULL;
 		Qt::WindowFlags wflags = Qt::Window
@@ -636,8 +628,9 @@ qtractorPluginForm *qtractorPlugin::form (void)
 			| Qt::WindowTitleHint
 			| Qt::WindowSystemMenuHint
 			| Qt::WindowMinMaxButtonsHint;
+		qtractorOptions *pOptions = qtractorOptions::getInstance();
 		if (pOptions && pOptions->bKeepToolsOnTop) {
-			pParent = pMainForm;
+		//	pParent = qtractorMainForm::getInstance();
 			wflags |= Qt::Tool;
 		}
 		// Do it...

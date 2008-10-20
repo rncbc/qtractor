@@ -347,10 +347,12 @@ void qtractorPluginListView::moveItem (
 		pNextPlugin = pNextItem->plugin();
 
 	// Make it an undoable command...
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm)
-		pMainForm->commands()->exec(
-			new qtractorMovePluginCommand(pPlugin, pNextPlugin, m_pPluginList));
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return;
+
+	(pSession->commands())->exec(
+		new qtractorMovePluginCommand(pPlugin, pNextPlugin, m_pPluginList));
 }
 
 
@@ -378,12 +380,13 @@ void qtractorPluginListView::copyItem (
 		pNextPlugin = pNextItem->plugin();
 
 	// Make it an undoable command...
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm) {
-		pMainForm->commands()->exec(
-			new qtractorInsertPluginCommand(
-				tr("copy plugin"), pPlugin, pNextPlugin));
-	}
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return;
+
+	(pSession->commands())->exec(
+		new qtractorInsertPluginCommand(
+			tr("copy plugin"), pPlugin, pNextPlugin));
 }
 
 
@@ -398,8 +401,8 @@ void qtractorPluginListView::addPlugin (void)
 	if (!selectForm.exec())
 		return;
 
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
 		return;
 
 	// Tell the world we'll take some time...
@@ -423,7 +426,7 @@ void qtractorPluginListView::addPlugin (void)
 		(pPlugin->form())->activateForm();
 	}
 
-	pMainForm->commands()->exec(pAddPluginCommand);
+	(pSession->commands())->exec(pAddPluginCommand);
 
 	// We're formerly done.
 	QApplication::restoreOverrideCursor();
@@ -446,10 +449,12 @@ void qtractorPluginListView::removePlugin (void)
 		return;
 
 	// Make it a undoable command...
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm)
-		pMainForm->commands()->exec(
-			new qtractorRemovePluginCommand(pPlugin));
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return;
+
+	(pSession->commands())->exec(
+		new qtractorRemovePluginCommand(pPlugin));
 }
 
 
@@ -466,12 +471,12 @@ void qtractorPluginListView::activatePlugin (void)
 		return;
 
 	// Make it a undoable command...
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm) {
-		pMainForm->commands()->exec(
-			new qtractorActivatePluginCommand(pPlugin,
-				!pPlugin->isActivated()));
-	}
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return;
+
+	(pSession->commands())->exec(
+		new qtractorActivatePluginCommand(pPlugin, !pPlugin->isActivated()));
 }
 
 
@@ -486,8 +491,8 @@ void qtractorPluginListView::activateAllPlugins (void)
 		return;
 
 	// Make it an undoable command...
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
 		return;
 
 	qtractorActivatePluginCommand *pActivateAllCommand
@@ -500,7 +505,7 @@ void qtractorPluginListView::activateAllPlugins (void)
 			pActivateAllCommand->addPlugin(pPlugin);
 	}
 
-	pMainForm->commands()->exec(pActivateAllCommand);
+	(pSession->commands())->exec(pActivateAllCommand);
 }
 
 
@@ -515,8 +520,8 @@ void qtractorPluginListView::deactivateAllPlugins (void)
 		return;
 
 	// Make it an undoable command...
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
 		return;
 
 	qtractorActivatePluginCommand *pDeactivateAllCommand
@@ -529,7 +534,7 @@ void qtractorPluginListView::deactivateAllPlugins (void)
 			pDeactivateAllCommand->addPlugin(pPlugin);
 	}
 
-	pMainForm->commands()->exec(pDeactivateAllCommand);
+	(pSession->commands())->exec(pDeactivateAllCommand);
 }
 
 
@@ -544,8 +549,8 @@ void qtractorPluginListView::removeAllPlugins (void)
 		return;
 
 	// Make it an undoable command...
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
 		return;
 
 	qtractorRemovePluginCommand *pRemoveAllCommand
@@ -557,7 +562,7 @@ void qtractorPluginListView::removeAllPlugins (void)
 		pRemoveAllCommand->addPlugin(pPlugin);
 	}
 
-	pMainForm->commands()->exec(pRemoveAllCommand);
+	(pSession->commands())->exec(pRemoveAllCommand);
 }
 
 
@@ -637,12 +642,13 @@ void qtractorPluginListView::audioOutputBus (void)
 		return;
 
 	// Make it an undoable command...
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm) {
-		pMainForm->commands()->exec(
-			new qtractorAudioOutputBusCommand(pMidiManager,
-				!pMidiManager->isAudioOutputBus()));
-	}
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return;
+
+	(pSession->commands())->exec(
+		new qtractorAudioOutputBusCommand(pMidiManager,
+			!pMidiManager->isAudioOutputBus()));
 }
 
 
@@ -753,9 +759,9 @@ void qtractorPluginListView::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 		qtractorPlugin *pPlugin = pItem->plugin();
 		if (pPlugin) {
 			// Make it a undoable command...
-			qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-			if (pMainForm) {
-				pMainForm->commands()->exec(
+			qtractorSession *pSession = qtractorSession::getInstance();
+			if (pSession) {
+				(pSession->commands())->exec(
 					new qtractorActivatePluginCommand(pPlugin,
 						!pPlugin->isActivated()));
 			}

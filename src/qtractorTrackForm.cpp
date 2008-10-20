@@ -34,7 +34,6 @@
 
 #include "qtractorCommand.h"
 
-#include "qtractorMainForm.h"
 #include "qtractorBusForm.h"
 
 #include <QColorDialog>
@@ -230,11 +229,12 @@ qtractorTrackForm::~qtractorTrackForm (void)
 void qtractorTrackForm::setTrack ( qtractorTrack *pTrack )
 {
 	// Get reference of the last acceptable command...
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
 		return;
+
 	// This is it...
-	m_pLastCommand = pMainForm->commands()->lastCommand();
+	m_pLastCommand = (pSession->commands())->lastCommand();
 
 	// Set target track reference descriptor.
 	m_pTrack = pTrack;
@@ -379,12 +379,9 @@ void qtractorTrackForm::reject (void)
 
 	if (bReject) {
 		// Backout all commands made this far...
-		qtractorCommandList *pCommands = NULL;
-		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-		if (pMainForm)
-			pCommands = pMainForm->commands();
-		if (pCommands)
-			pCommands->backout(m_pLastCommand);
+		qtractorSession *pSession = qtractorSession::getInstance();
+		if (pSession)
+			(pSession->commands())->backout(m_pLastCommand);
 		// Try to restore the previously saved patch...
 		if (m_pOldMidiBus) {
 			m_pOldMidiBus->setPatch(m_iOldChannel, m_sOldInstrumentName,

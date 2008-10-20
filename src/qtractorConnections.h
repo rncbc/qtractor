@@ -49,9 +49,6 @@ public:
 	// Connect form accessor.
 	qtractorConnectForm *connectForm() const;
 
-	// Session accessors.
-	qtractorSession *session() const;
-
 	// Main bus mode switching.
 	void showBus(qtractorBus *pBus, qtractorBus::BusMode busMode);
 

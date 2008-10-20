@@ -92,12 +92,12 @@ void qtractorThumbView::updateContents (void)
 	QPainter painter(&m_pixmap);
 	painter.initFrom(this);
 
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
 		return;
 
-	qtractorSession *pSession = pMainForm->session();
-	if (pSession == NULL)
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm == NULL)
 		return;
 
 	qtractorTracks *pTracks = pMainForm->tracks();
@@ -158,12 +158,12 @@ void qtractorThumbView::updateThumb ( int dx )
 	if (w < 1 || h < 1)
 		return;
 
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
 		return;
 
-	qtractorSession *pSession = pMainForm->session();
-	if (pSession == NULL)
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm == NULL)
 		return;
 
 	qtractorTracks *pTracks = pMainForm->tracks();
@@ -198,12 +198,12 @@ void qtractorThumbView::updatePlayHead ( unsigned long iPlayHead )
 	if (w < 1 || h < 1)
 		return;
 
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
 		return;
 
-	qtractorSession *pSession = pMainForm->session();
-	if (pSession == NULL)
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm == NULL)
 		return;
 
 	qtractorTracks *pTracks = pMainForm->tracks();
@@ -232,12 +232,12 @@ void qtractorThumbView::updateView ( int dx )
 	if (w < 1)
 		return;
 
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
 		return;
 
-	qtractorSession *pSession = pMainForm->session();
-	if (pSession == NULL)
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm == NULL)
 		return;
 
 	qtractorTracks *pTracks = pMainForm->tracks();
@@ -262,12 +262,12 @@ void qtractorThumbView::setPlayHeadX ( int iPlayHeadX )
 	if (w < 1)
 		return;
 
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
 		return;
 
-	qtractorSession *pSession = pMainForm->session();
-	if (pSession == NULL)
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm == NULL)
 		return;
 
 	qtractorTracks *pTracks = pMainForm->tracks();
@@ -293,12 +293,12 @@ void qtractorThumbView::paintEvent ( QPaintEvent *pPaintEvent )
 	if (w < 1 || h < 1)
 		return;
 	
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
 		return;
 
-	qtractorSession *pSession = pMainForm->session();
-	if (pSession == NULL)
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm == NULL)
 		return;
 
 	qtractorTracks *pTracks = pMainForm->tracks();

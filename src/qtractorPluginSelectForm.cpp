@@ -23,7 +23,6 @@
 #include "qtractorPluginSelectForm.h"
 
 #include "qtractorOptions.h"
-#include "qtractorMainForm.h"
 
 #include <QHeaderView>
 #include <QLineEdit>
@@ -95,16 +94,13 @@ qtractorPluginSelectForm::qtractorPluginSelectForm (
 	m_ui.PluginTypeProgressBar->hide();
 
 	// Initialize conveniency options...
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm) {
-		qtractorOptions *pOptions = pMainForm->options();
-		if (pOptions) {
-			pOptions->loadComboBoxHistory(m_ui.PluginSearchComboBox);
-			m_ui.PluginSearchComboBox->setEditText(
-				pOptions->sPluginSearch);
-			m_ui.PluginTypeComboBox->setCurrentIndex(pOptions->iPluginType);
-			m_ui.PluginActivateCheckBox->setChecked(pOptions->bPluginActivate);
-		}
+	qtractorOptions *pOptions = qtractorOptions::getInstance();
+	if (pOptions) {
+		pOptions->loadComboBoxHistory(m_ui.PluginSearchComboBox);
+		m_ui.PluginSearchComboBox->setEditText(
+			pOptions->sPluginSearch);
+		m_ui.PluginTypeComboBox->setCurrentIndex(pOptions->iPluginType);
+		m_ui.PluginActivateCheckBox->setChecked(pOptions->bPluginActivate);
 	}
 
 	// Let the search begin...
@@ -149,15 +145,12 @@ qtractorPluginSelectForm::qtractorPluginSelectForm (
 qtractorPluginSelectForm::~qtractorPluginSelectForm (void)
 {
 	// Save other conveniency options, if convenient thought...
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm) {
-		qtractorOptions *pOptions = pMainForm->options();
-		if (pOptions) {
-			pOptions->iPluginType = m_ui.PluginTypeComboBox->currentIndex();
-			pOptions->sPluginSearch = m_ui.PluginSearchComboBox->currentText();
-			pOptions->saveComboBoxHistory(m_ui.PluginSearchComboBox);
-			pOptions->bPluginActivate= m_ui.PluginActivateCheckBox->isChecked();
-		}
+	qtractorOptions *pOptions = qtractorOptions::getInstance();
+	if (pOptions) {
+		pOptions->iPluginType = m_ui.PluginTypeComboBox->currentIndex();
+		pOptions->sPluginSearch = m_ui.PluginSearchComboBox->currentText();
+		pOptions->saveComboBoxHistory(m_ui.PluginSearchComboBox);
+		pOptions->bPluginActivate= m_ui.PluginActivateCheckBox->isChecked();
 	}
 }
 
@@ -216,11 +209,7 @@ bool qtractorPluginSelectForm::isPluginActivated (void) const
 // Plugin type hint change slot.
 void qtractorPluginSelectForm::typeHintChanged ( int iTypeHint )
 {
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
-		return;
-
-	qtractorOptions *pOptions = pMainForm->options();
+	qtractorOptions *pOptions = qtractorOptions::getInstance();
 	if (pOptions == NULL)
 		return;
 

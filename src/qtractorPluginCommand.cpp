@@ -25,7 +25,6 @@
 
 #include "qtractorPluginListView.h"
 
-#include "qtractorMainForm.h"
 #include "qtractorSession.h"
 
 #include "qtractorMidiBuffer.h"
@@ -58,11 +57,7 @@ qtractorPluginCommand::~qtractorPluginCommand (void)
 // Add new plugin(s) command methods.
 bool qtractorPluginCommand::addPlugins (void)
 {
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
-		return false;
-
-	qtractorSession *pSession = pMainForm->session();
+	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
 		return false;
 
@@ -88,11 +83,7 @@ bool qtractorPluginCommand::addPlugins (void)
 // Remove existing plugin(s) command methods.
 bool qtractorPluginCommand::removePlugins (void)
 {
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
-		return false;
-
-	qtractorSession *pSession = pMainForm->session();
+	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
 		return false;
 
@@ -183,11 +174,7 @@ bool qtractorInsertPluginCommand::redo (void)
 	if (pPlugin == NULL)
 		return false;
 
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
-		return false;
-
-	qtractorSession *pSession = pMainForm->session();
+	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
 		return false;
 
@@ -220,11 +207,7 @@ bool qtractorInsertPluginCommand::undo (void)
 	if (pPlugin == NULL)
 		return false;
 
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
-		return false;
-
-	qtractorSession *pSession = pMainForm->session();
+	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
 		return false;
 
@@ -277,11 +260,7 @@ bool qtractorMovePluginCommand::redo (void)
 	if (m_pPluginList == NULL)
 		return false;
 
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
-		return false;
-
-	qtractorSession *pSession = pMainForm->session();
+	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
 		return false;
 
@@ -445,10 +424,10 @@ qtractorPluginParamCommand::qtractorPluginParamCommand (
 
 	// Try replacing an previously equivalent command...
 	static qtractorPluginParamCommand *s_pPrevParamCommand = NULL;
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (s_pPrevParamCommand && pMainForm) {
+	if (s_pPrevParamCommand) {
+		qtractorSession *pSession = qtractorSession::getInstance();
 		qtractorCommand *pLastCommand
-			= pMainForm->commands()->lastCommand();
+			= (pSession->commands())->lastCommand();
 		qtractorCommand *pPrevCommand
 			= static_cast<qtractorCommand *> (s_pPrevParamCommand);
 		if (pPrevCommand == pLastCommand
@@ -464,7 +443,7 @@ qtractorPluginParamCommand::qtractorPluginParamCommand (
 				if (iPrevSign == iCurrSign) {
 					m_fPrevValue = fLastValue;
 					m_bPrevValue = true;
-					pMainForm->commands()->removeLastCommand();
+					(pSession->commands())->removeLastCommand();
 				}
 			}
 		}

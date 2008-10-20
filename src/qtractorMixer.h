@@ -278,9 +278,6 @@ public:
 	// Default destructor.
 	~qtractorMixer();
 
-	// Session accessors.
-	qtractorSession *session() const;
-
 	// The splitter layout widget accessor.
 	QSplitter *splitter() const;
 

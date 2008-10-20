@@ -29,8 +29,6 @@
 
 #include "qtractorPlugin.h"
 
-#include "qtractorMainForm.h"
-
 #include <QHeaderView>
 #include <QMessageBox>
 #include <QMenu>
@@ -320,11 +318,7 @@ void qtractorBusForm::refreshBuses (void)
 	m_pMidiRoot  = NULL;
 	m_ui.BusListView->clear();
 
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
-		return;
-
-	qtractorSession *pSession = pMainForm->session();
+	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
 		return;
 
@@ -414,11 +408,7 @@ bool qtractorBusForm::canCreateBus (void) const
 	if (m_pBus == NULL)
 		return false;
 
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
-		return false;
-
-	qtractorSession *pSession = pMainForm->session();
+	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
 		return false;
 
@@ -455,11 +445,7 @@ bool qtractorBusForm::canUpdateBus (void) const
 	if (m_pBus == NULL)
 		return false;
 
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
-		return false;
-
-	qtractorSession *pSession = pMainForm->session();
+	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
 		return false;
 
@@ -478,11 +464,7 @@ bool qtractorBusForm::canDeleteBus (void) const
 	if (m_pBus == NULL)
 		return false;
 
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
-		return false;
-
-	qtractorSession *pSession = pMainForm->session();
+	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
 		return false;
 
@@ -497,10 +479,10 @@ bool qtractorBusForm::updateBusEx ( qtractorBus *pBus ) const
 	if (pBus == NULL)
 		return false;
 
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
 		return false;
-	
+
 	const QString sBusName = m_ui.BusNameLineEdit->text().simplified();
 	if (sBusName.isEmpty())
 		return false;
@@ -546,7 +528,7 @@ bool qtractorBusForm::updateBusEx ( qtractorBus *pBus ) const
 	}
 
 	// Execute and refresh form...
-	return pMainForm->commands()->exec(pUpdateBusCommand);
+	return (pSession->commands())->exec(pUpdateBusCommand);
 }
 
 
@@ -556,8 +538,8 @@ void qtractorBusForm::createBus (void)
 	if (m_pBus == NULL)
 		return;
 
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
 		return;
 	
 	const QString sBusName = m_ui.BusNameLineEdit->text().simplified();
@@ -605,7 +587,7 @@ void qtractorBusForm::createBus (void)
 	}
 
 	// Execute and refresh form...
-	if (pMainForm->commands()->exec(pCreateBusCommand)) {
+	if ((pSession->commands())->exec(pCreateBusCommand)) {
 		m_iDirtyTotal++;
 		refreshBuses();
 	}
@@ -635,12 +617,12 @@ void qtractorBusForm::deleteBus (void)
 	if (m_pBus == NULL)
 		return;
 
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
 		return;
 
 	// Prompt user if he/she's sure about this...
-	qtractorOptions *pOptions = pMainForm->options();
+	qtractorOptions *pOptions = qtractorOptions::getInstance();
 	if (pOptions && pOptions->bConfirmRemove) {
 		// Get some textual type...
 		QString sBusType;
@@ -674,7 +656,7 @@ void qtractorBusForm::deleteBus (void)
 	m_pBus = NULL;
 
 	// Execute and refresh form...
-	if (pMainForm->commands()->exec(pDeleteBusCommand)) {
+	if ((pSession->commands())->exec(pDeleteBusCommand)) {
 		m_iDirtyTotal++;
 		refreshBuses();
 	}

@@ -26,7 +26,6 @@
 
 #include "qtractorAudioEngine.h"
 
-#include "qtractorMainForm.h"
 #include "qtractorMixer.h"
 
 #include <QThread>
@@ -458,10 +457,7 @@ qtractorMidiManager *qtractorMidiManager::createMidiManager (
 {
 	qtractorMidiManager *pMidiManager = NULL;
 
-	qtractorSession  *pSession  = NULL;
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm)
-		pSession = pMainForm->session();
+	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession)
 		pMidiManager = pSession->createMidiManager(pPluginList);
 
@@ -479,10 +475,7 @@ void qtractorMidiManager::deleteMidiManager ( qtractorMidiManager *pMidiManager 
 	qDebug("qtractorMidiManager::deleteMidiManager(%p)", pMidiManager);
 #endif
 
-	qtractorSession  *pSession  = NULL;
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm)
-		pSession = pMainForm->session();
+	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession)
 		pSession->deleteMidiManager(pMidiManager);
 }

@@ -141,8 +141,7 @@ qtractorMainForm::qtractorMainForm (
 	m_pOptions = NULL;
 
 	// FIXME: This gotta go, somwhere in time...
-	m_pSession     = qtractorSession::getInstance();
-	m_pCommands    = m_pSession->commands();
+	m_pSession = qtractorSession::getInstance();
 
 	// All child forms are to be created later, not earlier than setup.
 	m_pMessages    = NULL;
@@ -647,7 +646,7 @@ qtractorMainForm::qtractorMainForm (
 		SIGNAL(aboutToShow()),
 		SLOT(updateSnapMenu()));
 
-	QObject::connect(m_pCommands,
+	QObject::connect(m_pSession->commands(),
 		SIGNAL(updateNotifySignal(bool)),
 		SLOT(updateNotifySlot(bool)));
 }
@@ -689,7 +688,7 @@ qtractorMainForm *qtractorMainForm::getInstance (void)
 
 
 // Make and set a proper setup options step.
-void qtractorMainForm::setOptions ( qtractorOptions *pOptions )
+void qtractorMainForm::setup ( qtractorOptions *pOptions )
 {
 	// We got options?
 	m_pOptions = pOptions;
@@ -1170,7 +1169,8 @@ void qtractorMainForm::midiControlEvent ( qtractorMidiControlEvent *pCtlEvent )
 		// Find the track by number...
 		qtractorTrack *pTrack = m_pSession->tracks().at(iTrack);
 		if (pTrack) {
-			m_pCommands->exec(new qtractorTrackGainCommand(pTrack, fGain));
+			(m_pSession->commands())->exec(
+				new qtractorTrackGainCommand(pTrack, fGain));
 			sCtlText += tr("(track %1, gain %2)").arg(iTrack).arg(fGain);
 		}
 	}
@@ -1191,18 +1191,6 @@ void qtractorMainForm::contextMenuEvent( QContextMenuEvent *pEvent )
 
 //-------------------------------------------------------------------------
 // qtractorMainForm -- Brainless public property accessors.
-
-// The global options settings property.
-qtractorOptions *qtractorMainForm::options (void) const
-{
-	return m_pOptions;
-}
-
-// The global session reference.
-qtractorSession *qtractorMainForm::session (void) const
-{
-	return m_pSession;
-}
 
 // The global session tracks reference.
 qtractorTracks *qtractorMainForm::tracks (void) const
@@ -1226,12 +1214,6 @@ qtractorConnections *qtractorMainForm::connections (void) const
 qtractorMixer *qtractorMainForm::mixer (void) const
 {
 	return m_pMixer;
-}
-
-// The global undoable command list reference.
-qtractorCommandList *qtractorMainForm::commands (void) const
-{
-	return m_pCommands;
 }
 
 // The session thumb-view widget accessor.
@@ -1386,7 +1368,7 @@ bool qtractorMainForm::editSession (void)
 	const QString sOldSessionName = m_pSession->sessionName();
 
 	// Now, express the change as a undoable command...
-	m_pCommands->exec(
+	(m_pSession->commands())->exec(
 		new qtractorSessionEditCommand(m_pSession, sessionForm.properties()));
 
 	// If session name has changed, we'll prompt
@@ -1436,7 +1418,6 @@ bool qtractorMainForm::closeSession (void)
 		// Just in case we were in the middle of something...
 		setPlaying(false);
 		// Reset all dependables to default.
-		m_pCommands->clear();
 		m_pMixer->clear();
 		m_pFiles->clear();
 		// Close session engines.
@@ -1629,7 +1610,7 @@ void qtractorMainForm::editUndo (void)
 	appendMessages("qtractorMainForm::editUndo()");
 #endif
 
-	m_pCommands->undo();
+	(m_pSession->commands())->undo();
 }
 
 
@@ -1640,7 +1621,7 @@ void qtractorMainForm::editRedo (void)
 	appendMessages("qtractorMainForm::editRedo()");
 #endif
 
-	m_pCommands->redo();
+	(m_pSession->commands())->redo();
 }
 
 
@@ -1935,7 +1916,7 @@ void qtractorMainForm::trackStateRecord ( bool bOn )
 	if (pTrackWidget == NULL)
 		return;
 
-	m_pCommands->exec(
+	(m_pSession->commands())->exec(
 		new qtractorTrackButtonCommand(pTrackWidget->recordButton(), bOn));
 }
 
@@ -1949,7 +1930,7 @@ void qtractorMainForm::trackStateMute ( bool bOn )
 	if (pTrackWidget == NULL)
 		return;
 
-	m_pCommands->exec(
+	(m_pSession->commands())->exec(
 		new qtractorTrackButtonCommand(pTrackWidget->muteButton(), bOn));
 }
 
@@ -1963,7 +1944,7 @@ void qtractorMainForm::trackStateSolo (  bool bOn  )
 	if (pTrackWidget == NULL)
 		return;
 
-	m_pCommands->exec(
+	(m_pSession->commands())->exec(
 		new qtractorTrackButtonCommand(pTrackWidget->soloButton(), bOn));
 }
 
@@ -1977,7 +1958,8 @@ void qtractorMainForm::trackStateMonitor ( bool bOn )
 	if (pTrack == NULL)
 		return;
 
-	m_pCommands->exec(new qtractorTrackMonitorCommand(pTrack, bOn));
+	(m_pSession->commands())->exec(
+		new qtractorTrackMonitorCommand(pTrack, bOn));
 }
 
 
@@ -2036,7 +2018,7 @@ void qtractorMainForm::trackMoveTop (void)
 	if (pTrack == NULL)
 		return;
 
-	m_pCommands->exec(
+	(m_pSession->commands())->exec(
 		new qtractorMoveTrackCommand(pTrack, m_pSession->tracks().first()));
 }
 
@@ -2054,7 +2036,7 @@ void qtractorMainForm::trackMoveUp (void)
 	if (pNextTrack == NULL)
 		return;
 
-	m_pCommands->exec(
+	(m_pSession->commands())->exec(
 		new qtractorMoveTrackCommand(pTrack, pNextTrack));
 }
 
@@ -2072,7 +2054,7 @@ void qtractorMainForm::trackMoveDown (void)
 	if (pNextTrack == NULL)
 		return;
 
-	m_pCommands->exec(
+	(m_pSession->commands())->exec(
 		new qtractorMoveTrackCommand(pTrack, pNextTrack->next()));
 }
 
@@ -2086,7 +2068,7 @@ void qtractorMainForm::trackMoveBottom (void)
 	if (pTrack == NULL)
 		return;
 
-	m_pCommands->exec(
+	(m_pSession->commands())->exec(
 		new qtractorMoveTrackCommand(pTrack, NULL));
 }
 
@@ -2747,7 +2729,7 @@ void qtractorMainForm::transportLoop (void)
 	}
 
 	// Now, express the change as an undoable command...
-	m_pCommands->exec(
+	(m_pSession->commands())->exec(
 		new qtractorSessionLoopCommand(m_pSession, iLoopStart, iLoopEnd));
 }
 
@@ -2763,7 +2745,7 @@ void qtractorMainForm::transportLoopSet (void)
 	checkRestartSession();
 
 	// Now, express the change as an undoable command...
-	m_pCommands->exec(
+	(m_pSession->commands())->exec(
 		new qtractorSessionLoopCommand(m_pSession,
 			m_pSession->editHead(), m_pSession->editTail()));
 }
@@ -3029,7 +3011,7 @@ bool qtractorMainForm::setRecording ( bool bRecording )
 		}
 		// Put it in the form of an undoable command...
 		if (iUpdate > 0) {
-			m_pCommands->exec(pClipCommand);
+			(m_pSession->commands())->exec(pClipCommand);
 		} else {
 			// The allocated command is unhelpful...
 			delete pClipCommand;
@@ -3163,8 +3145,9 @@ void qtractorMainForm::stabilizeForm (void)
 	m_ui.fileSaveAction->setEnabled(m_iDirtyCount > 0);
 
 	// Update edit menu state...
-	m_pCommands->updateAction(m_ui.editUndoAction, m_pCommands->lastCommand());
-	m_pCommands->updateAction(m_ui.editRedoAction, m_pCommands->nextCommand());
+	qtractorCommandList *pCommands = m_pSession->commands();
+	pCommands->updateAction(m_ui.editUndoAction, pCommands->lastCommand());
+	pCommands->updateAction(m_ui.editRedoAction, pCommands->nextCommand());
 
 	unsigned long iSessionLength = m_pSession->sessionLength();
 	qtractorTrack *pTrack = NULL;
@@ -4250,7 +4233,7 @@ void qtractorMainForm::tempoChanged ( double fTempo )
 		return;
 
 	// Now, express the change as a undoable command...
-	m_pCommands->exec(
+	(m_pSession->commands())->exec(
 		new qtractorSessionTempoCommand(m_pSession, float(fTempo)));
 
 	m_iTransportUpdate++;

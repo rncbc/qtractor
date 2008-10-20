@@ -207,6 +207,8 @@ void qtractorSession::clear (void)
 	m_pAudioEngine->clear();
 	m_pMidiEngine->clear();
 
+	m_pCommands->clear();
+
 	m_iSessionLength = 0;
 
 	m_iRecordTracks  = 0;

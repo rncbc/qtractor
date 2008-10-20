@@ -1,7 +1,7 @@
 // qtractorAudioConnect.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -21,8 +21,6 @@
 
 #include "qtractorAudioConnect.h"
 #include "qtractorAudioEngine.h"
-
-#include "qtractorMainForm.h"
 
 #include <QIcon>
 
@@ -261,12 +259,9 @@ jack_client_t *qtractorAudioConnect::jackClient (void) const
 {
 	jack_client_t *pJackClient = NULL;
 
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm) {
-		qtractorSession *pSession = pMainForm->session();
-		if (pSession && pSession->audioEngine())
-			pJackClient = (pSession->audioEngine())->jackClient();
-	}
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession && pSession->audioEngine())
+		pJackClient = (pSession->audioEngine())->jackClient();
 
 	return pJackClient;
 }
@@ -323,9 +318,9 @@ void qtractorAudioConnect::disconnectPortsUpdate (
 	qtractorPortListItem *pOPort, qtractorPortListItem *pIPort )
 {
 	qtractorAudioEngine *pAudioEngine = NULL;
-	qtractorMainForm    *pMainForm    = qtractorMainForm::getInstance();
-	if (pMainForm && pMainForm->session())
-		pAudioEngine = pMainForm->session()->audioEngine();
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession)
+		pAudioEngine = pSession->audioEngine();
 	if (pAudioEngine == NULL)
 		return;
 

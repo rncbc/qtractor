@@ -29,7 +29,6 @@
 
 #include "qtractorMidiBuffer.h"
 
-#include "qtractorMainForm.h"
 #include "qtractorSession.h"
 
 #include <QApplication>
@@ -1301,10 +1300,7 @@ static VstIntPtr VSTCALLBACK qtractorVstPlugin_HostCallback ( AEffect* effect,
 	VstIntPtr ret = 0;
 	qtractorVstPlugin *pVstPlugin = NULL;
 	static VstTimeInfo s_vstTimeInfo;
-	qtractorSession  *pSession  = NULL;
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm)
-		pSession = pMainForm->session();
+	qtractorSession *pSession = qtractorSession::getInstance();
 
 	switch (opcode) {
 

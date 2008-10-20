@@ -967,10 +967,7 @@ void qtractorTrackList::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 	qtractorScrollView::mouseReleaseEvent(pMouseEvent);
 
 	// We'll need a reference for issuing commands...
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
-		return;
-	qtractorSession *pSession = pMainForm->session();
+	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
 		return;
 
@@ -986,7 +983,7 @@ void qtractorTrackList::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 				if (pTrackDrag && pTrackDrop
 					&& pTrackDrag != pTrackDrop
 					&& pTrackDrag != pTrackDrop->prev()) {
-					pMainForm->commands()->exec(
+					(pSession->commands())->exec(
 						new qtractorMoveTrackCommand(pTrackDrag, pTrackDrop));
 				}
 			}
@@ -1001,7 +998,7 @@ void qtractorTrackList::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 			// Go for it...
 			qtractorTrack *pTrack = track(m_iDragTrack);
 			if (pTrack) {
-				pMainForm->commands()->exec(
+				(pSession->commands())->exec(
 					new qtractorResizeTrackCommand(pTrack, iZoomHeight));
 			}
 		}

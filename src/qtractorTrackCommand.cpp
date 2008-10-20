@@ -59,12 +59,13 @@ bool qtractorTrackCommand::addTrack (void)
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorTrackCommand::addTrack(%p)", m_pTrack);
 #endif
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
+
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
 		return false;
 
-	qtractorSession *pSession = pMainForm->session();
-	if (pSession == NULL)
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm == NULL)
 		return false;
 
 	qtractorTracks *pTracks = pMainForm->tracks();
@@ -103,12 +104,13 @@ bool qtractorTrackCommand::removeTrack (void)
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorTrackCommand::removeTrack(%p)", m_pTrack);
 #endif
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
+
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
 		return false;
 
-	qtractorSession *pSession = pMainForm->session();
-	if (pSession == NULL)
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm == NULL)
 		return false;
 
 	qtractorTracks *pTracks = pMainForm->tracks();
@@ -201,12 +203,12 @@ qtractorMoveTrackCommand::qtractorMoveTrackCommand (
 // Track-move command methods.
 bool qtractorMoveTrackCommand::redo (void)
 {
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
 		return false;
 
-	qtractorSession *pSession = pMainForm->session();
-	if (pSession == NULL)
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm == NULL)
 		return false;
 
 	qtractorTracks *pTracks = pMainForm->tracks();
@@ -293,15 +295,12 @@ qtractorImportTrackCommand::qtractorImportTrackCommand (void)
 	m_iSaveCount   = 0;
 	m_pSaveCommand = NULL;
 
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm) {
-		qtractorSession *pSession = pMainForm->session();
-		if (pSession) {
-			m_sessionProps = pSession->properties();
-			m_pSaveCommand
-				= new qtractorPropertyCommand<qtractorSession::Properties>
-					(name(), pSession->properties(), m_sessionProps);
-		}
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession) {
+		m_sessionProps = pSession->properties();
+		m_pSaveCommand
+			= new qtractorPropertyCommand<qtractorSession::Properties>
+				(name(), pSession->properties(), m_sessionProps);
 	}
 }
 
@@ -380,12 +379,12 @@ qtractorEditTrackCommand::qtractorEditTrackCommand (
 // Overridden track-edit command methods.
 bool qtractorEditTrackCommand::redo (void)
 {
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
 		return false;
 
-	qtractorSession *pSession = pMainForm->session();
-	if (pSession == NULL)
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm == NULL)
 		return false;
 
 	qtractorTracks *pTracks = pMainForm->tracks();
@@ -465,10 +464,7 @@ qtractorTrackButtonCommand::qtractorTrackButtonCommand (
 	Qt::KeyboardModifiers modifiers = QApplication::keyboardModifiers();
 	if (m_toolType != qtractorTrack::Record
 		&& (modifiers & (Qt::ShiftModifier | Qt::ControlModifier))) {
-		qtractorSession  *pSession  = NULL;
-		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-		if (pMainForm)
-			pSession = pMainForm->session();
+		qtractorSession *pSession = qtractorSession::getInstance();
 		if (pSession) {
 			if (modifiers & Qt::ControlModifier)
 				bOn = !bOn;
@@ -496,12 +492,12 @@ qtractorTrackButtonCommand::~qtractorTrackButtonCommand (void)
 // Track-button command method.
 bool qtractorTrackButtonCommand::redo (void)
 {
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
 		return false;
 
-	qtractorSession *pSession = pMainForm->session();
-	if (pSession == NULL)
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm == NULL)
 		return false;
 
 	qtractorTrack *pTrack = track();
@@ -625,10 +621,7 @@ qtractorTrackMonitorCommand::qtractorTrackMonitorCommand (
 	// Toggle/update all other?
 	Qt::KeyboardModifiers modifiers = QApplication::keyboardModifiers();
 	if (modifiers & (Qt::ShiftModifier | Qt::ControlModifier)) {
-		qtractorSession  *pSession  = NULL;
-		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-		if (pMainForm)
-			pSession = pMainForm->session();
+		qtractorSession *pSession = qtractorSession::getInstance();
 		if (pSession) {
 			if (modifiers & Qt::ControlModifier)
 				bMonitor = !bMonitor;
@@ -654,12 +647,12 @@ qtractorTrackMonitorCommand::~qtractorTrackMonitorCommand (void)
 // Track-monitor command method.
 bool qtractorTrackMonitorCommand::redo (void)
 {
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
 		return false;
 
-	qtractorSession *pSession = pMainForm->session();
-	if (pSession == NULL)
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm == NULL)
 		return false;
 
 	qtractorTrack *pTrack = track();
@@ -718,10 +711,10 @@ qtractorTrackGainCommand::qtractorTrackGainCommand (
 
 	// Try replacing an previously equivalent command...
 	static qtractorTrackGainCommand *s_pPrevGainCommand = NULL;
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (s_pPrevGainCommand && pMainForm) {
+	if (s_pPrevGainCommand) {
+		qtractorSession *pSession = qtractorSession::getInstance();
 		qtractorCommand *pLastCommand
-			= pMainForm->commands()->lastCommand();
+			= (pSession->commands())->lastCommand();
 		qtractorCommand *pPrevCommand
 			= static_cast<qtractorCommand *> (s_pPrevGainCommand);
 		if (pPrevCommand == pLastCommand
@@ -737,7 +730,7 @@ qtractorTrackGainCommand::qtractorTrackGainCommand (
 				if (iPrevSign == iCurrSign) {
 					m_fPrevGain = fLastGain;
 					m_bPrevGain = true;
-					pMainForm->commands()->removeLastCommand();
+					(pSession->commands())->removeLastCommand();
 				}
 			}
 		}
@@ -749,10 +742,6 @@ qtractorTrackGainCommand::qtractorTrackGainCommand (
 // Track-gain command method.
 bool qtractorTrackGainCommand::redo (void)
 {
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
-		return false;
-
 	qtractorTrack *pTrack = track();
 	if (pTrack == NULL)
 		return false;
@@ -775,12 +764,15 @@ bool qtractorTrackGainCommand::redo (void)
 	m_fGain     = fGain;
 
 	// Mixer/Meter turn...
-	qtractorMixer *pMixer = pMainForm->mixer();
-	if (pMixer) {
-		qtractorMixerStrip *pStrip
-			= pMixer->trackRack()->findStrip(pTrack->monitor());
-		if (pStrip && pStrip->meter())
-			pStrip->meter()->updateGain();
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm) {
+		qtractorMixer *pMixer = pMainForm->mixer();
+		if (pMixer) {
+			qtractorMixerStrip *pStrip
+				= pMixer->trackRack()->findStrip(pTrack->monitor());
+			if (pStrip && pStrip->meter())
+				pStrip->meter()->updateGain();
+		}
 	}
 
 	return true;
@@ -804,10 +796,10 @@ qtractorTrackPanningCommand::qtractorTrackPanningCommand (
 
 	// Try replacing an previously equivalent command...
 	static qtractorTrackPanningCommand *s_pPrevPanningCommand = NULL;
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (s_pPrevPanningCommand && pMainForm) {
+	if (s_pPrevPanningCommand) {
+		qtractorSession *pSession = qtractorSession::getInstance();
 		qtractorCommand *pLastCommand
-			= pMainForm->commands()->lastCommand();
+			= (pSession->commands())->lastCommand();
 		qtractorCommand *pPrevCommand
 			= static_cast<qtractorCommand *> (s_pPrevPanningCommand);
 		if (pPrevCommand == pLastCommand
@@ -823,7 +815,7 @@ qtractorTrackPanningCommand::qtractorTrackPanningCommand (
 				if (iPrevSign == iCurrSign) {
 					m_fPrevPanning = fLastPanning;
 					m_bPrevPanning = true;
-					pMainForm->commands()->removeLastCommand();
+					(pSession->commands())->removeLastCommand();
 				}
 			}
 		}
@@ -835,10 +827,6 @@ qtractorTrackPanningCommand::qtractorTrackPanningCommand (
 // Track-panning command method.
 bool qtractorTrackPanningCommand::redo (void)
 {
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
-		return false;
-
 	qtractorTrack *pTrack = track();
 	if (pTrack == NULL)
 		return false;
@@ -861,12 +849,15 @@ bool qtractorTrackPanningCommand::redo (void)
 	m_fPanning     = fPanning;
 
 	// Mixer/Meter turn...
-	qtractorMixer *pMixer = pMainForm->mixer();
-	if (pMixer) {
-		qtractorMixerStrip *pStrip
-			= pMixer->trackRack()->findStrip(pTrack->monitor());
-		if (pStrip && pStrip->meter())
-			pStrip->meter()->updatePanning();
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm) {
+		qtractorMixer *pMixer = pMainForm->mixer();
+		if (pMixer) {
+			qtractorMixerStrip *pStrip
+				= pMixer->trackRack()->findStrip(pTrack->monitor());
+			if (pStrip && pStrip->meter())
+				pStrip->meter()->updatePanning();
+		}
 	}
 
 	return true;

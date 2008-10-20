@@ -26,7 +26,6 @@
 
 #include "qtractorMidiEditCommand.h"
 
-#include "qtractorMainForm.h"
 #include "qtractorOptions.h"
 #include "qtractorSession.h"
 
@@ -63,10 +62,7 @@ qtractorMidiToolsForm::qtractorMidiToolsForm (
 	// Reinitialize random seed.
 	::srand(::time(NULL));
 
-	qtractorSession  *pSession  = NULL;
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm)
-		pSession = pMainForm->session();
+	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession) {
 		// Copy from global time-scale instance...
 		if (m_pTimeScale)
@@ -270,10 +266,7 @@ int qtractorMidiToolsForm::toolIndex (void) const
 void qtractorMidiToolsForm::loadPreset ( const QString& sPreset )
 {
 	// An existing preset is about to be loaded...
-	qtractorOptions  *pOptions  = NULL;
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm)
-		pOptions = pMainForm->options();
+	qtractorOptions *pOptions = qtractorOptions::getInstance();
 	if (pOptions) {
 		QList<QVariant> vlist;
 		QSettings& settings = pOptions->settings();
@@ -341,10 +334,7 @@ void qtractorMidiToolsForm::loadPreset ( const QString& sPreset )
 void qtractorMidiToolsForm::savePreset ( const QString& sPreset )
 {
 	// The current state preset is about to be saved...
-	qtractorOptions  *pOptions  = NULL;
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm)
-		pOptions = pMainForm->options();
+	qtractorOptions *pOptions = qtractorOptions::getInstance();
 	if (pOptions) {
 		QList<QVariant> vlist;
 		QSettings& settings = pOptions->settings();
@@ -412,10 +402,7 @@ void qtractorMidiToolsForm::refreshPresets (void)
 	const QString sOldPreset = m_ui.PresetNameComboBox->currentText();
 	m_ui.PresetNameComboBox->clear();
 	
-	qtractorOptions  *pOptions  = NULL;
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm)
-		pOptions = pMainForm->options();
+	qtractorOptions *pOptions = qtractorOptions::getInstance();
 	if (pOptions) {
 		QSettings& settings = pOptions->settings();
 		settings.beginGroup("/MidiTools");
@@ -477,10 +464,7 @@ void qtractorMidiToolsForm::presetDelete (void)
 		return;
 
 	// A preset entry is about to be deleted...
-	qtractorOptions  *pOptions  = NULL;
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm)
-		pOptions = pMainForm->options();
+	qtractorOptions *pOptions = qtractorOptions::getInstance();
 	if (pOptions) {
 		// Prompt user if he/she's sure about this...
 		if (pOptions->bConfirmRemove) {

@@ -1,7 +1,7 @@
 // qtractorExportForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -28,6 +28,7 @@
 #include "qtractorAudioFile.h"
 
 #include "qtractorMainForm.h"
+
 #include "qtractorSession.h"
 #include "qtractorOptions.h"
 
@@ -114,11 +115,8 @@ void qtractorExportForm::setExportType ( qtractorTrack::TrackType exportType )
 
 	QIcon icon;
 	QString sExportType;
-	qtractorEngine   *pEngine   = NULL;
-	qtractorSession  *pSession  = NULL;
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm)
-		pSession = pMainForm->session();
+	qtractorEngine  *pEngine  = NULL;
+	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession) {
 		// Copy from global time-scale instance...
 		if (m_pTimeScale)
@@ -146,11 +144,9 @@ void qtractorExportForm::setExportType ( qtractorTrack::TrackType exportType )
 	// Grab export file history, one that might me useful...
 	m_ui.ExportPathComboBox->setObjectName(
 		sExportType + m_ui.ExportPathComboBox->objectName());
-	if (pMainForm) {
-		qtractorOptions *pOptions = pMainForm->options();
-		if (pOptions)
-			pOptions->loadComboBoxHistory(m_ui.ExportPathComboBox);
-	}
+	qtractorOptions *pOptions = qtractorOptions::getInstance();
+	if (pOptions)
+		pOptions->loadComboBoxHistory(m_ui.ExportPathComboBox);
 
 	// Fill in the output bus names list...
 	m_ui.ExportBusNameComboBox->clear();
@@ -215,11 +211,9 @@ void qtractorExportForm::accept (void)
 		}
 	}
 
-	qtractorSession  *pSession  = NULL;
+	qtractorSession  *pSession  = qtractorSession::getInstance();
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm)
-		pSession = pMainForm->session();
-	if (pSession) {
+	if (pSession && pMainForm) {
 		// It can take a minute...
 		m_ui.ExportPathTextLabel->setEnabled(false);
 		m_ui.ExportPathComboBox->setEnabled(false);
@@ -296,7 +290,7 @@ void qtractorExportForm::accept (void)
 			break;
 		}
 		// Save other conveniency options...
-		qtractorOptions *pOptions = pMainForm->options();
+		qtractorOptions *pOptions = qtractorOptions::getInstance();
 		if (pOptions)
 			pOptions->saveComboBoxHistory(m_ui.ExportPathComboBox);
 	}
@@ -309,10 +303,7 @@ void qtractorExportForm::accept (void)
 // Reject settings (Cancel button slot).
 void qtractorExportForm::reject (void)
 {
-	qtractorSession  *pSession  = NULL;
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm)
-		pSession = pMainForm->session();
+	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession) {
 		// It can take a minute...
 		m_ui.CancelPushButton->setEnabled(false);
@@ -338,11 +329,7 @@ void qtractorExportForm::reject (void)
 // Choose the target filename of export.
 void qtractorExportForm::browseExportPath (void)
 {
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
-		return;
-
-	qtractorSession *pSession = pMainForm->session();
+	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
 		return;
 
@@ -390,11 +377,7 @@ void qtractorExportForm::browseExportPath (void)
 // Display format has changed.
 void qtractorExportForm::rangeChanged (void)
 {
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
-		return;
-
-	qtractorSession *pSession = pMainForm->session();
+	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
 		return;
 
@@ -451,11 +434,7 @@ void qtractorExportForm::formatChanged (void)
 // Stabilize current form state.
 void qtractorExportForm::stabilizeForm (void)
 {
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
-		return;
-
-	qtractorSession *pSession = pMainForm->session();
+	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
 		return;
 

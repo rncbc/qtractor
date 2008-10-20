@@ -28,9 +28,10 @@
 #include "qtractorAudioClip.h"
 #include "qtractorMidiClip.h"
 
-#include "qtractorMainForm.h"
 #include "qtractorSession.h"
 #include "qtractorOptions.h"
+
+#include "qtractorMainForm.h"
 
 #include <QMessageBox>
 #include <QFileDialog>
@@ -135,11 +136,7 @@ qtractorClipForm::~qtractorClipForm (void)
 void qtractorClipForm::setClip ( qtractorClip *pClip, bool bClipNew )
 {
 	// Initialize conveniency options...
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
-		return;
-
-	qtractorSession *pSession = pMainForm->session();
+	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
 		return;
 
@@ -233,7 +230,7 @@ void qtractorClipForm::setClip ( qtractorClip *pClip, bool bClipNew )
 		break;
 	}
 
-	qtractorOptions *pOptions = pMainForm->options();
+	qtractorOptions *pOptions = qtractorOptions::getInstance();
 	if (pOptions)
 		pOptions->loadComboBoxHistory(m_ui.FilenameComboBox);
 
@@ -270,8 +267,8 @@ void qtractorClipForm::accept (void)
 	if (!m_pClip->queryEditor())
 		return;
 
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
 		return;
 
 	// Save settings...
@@ -398,9 +395,10 @@ void qtractorClipForm::accept (void)
 		}
 		// Do it (by making it undoable)...
 		if (pClipCommand)
-			pMainForm->commands()->exec(pClipCommand);
+			(pSession->commands())->exec(pClipCommand);
 		// Account for a new file in game...
-		if (iFileChange > 0) {
+		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+		if (iFileChange > 0 && pMainForm) {
 			switch (clipType) {
 			case qtractorTrack::Audio:
 				pMainForm->addAudioFile(sFilename);
@@ -413,7 +411,7 @@ void qtractorClipForm::accept (void)
 				break;
 			}
 			// Save history conveniency options...
-			qtractorOptions *pOptions = pMainForm->options();
+			qtractorOptions *pOptions = qtractorOptions::getInstance();
 			if (pOptions)
 				pOptions->saveComboBoxHistory(m_ui.FilenameComboBox);
 		}
@@ -595,11 +593,7 @@ void qtractorClipForm::fileChanged (
 	if (m_iDirtySetup > 0)
 		return;
 
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
-		return;
-
-	qtractorSession *pSession = pMainForm->session();
+	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
 		return;
 

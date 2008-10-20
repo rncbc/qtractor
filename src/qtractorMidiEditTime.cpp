@@ -134,11 +134,8 @@ void qtractorMidiEditTime::updatePixmap ( int cx, int /*cy*/)
 		iBeat++;
 	}
 
-	qtractorSession  *pSession  = NULL;
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm)
-		pSession = pMainForm->session();
 	// Draw loop boundaries, if applicable...
+	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession && pSession->isLooping()) {
 		QPolygon polyg(3);
 	//	h -= 4;
@@ -265,11 +262,8 @@ bool qtractorMidiEditTime::dragHeadStart ( const QPoint& pos )
 		return true;
 	}
 
-	qtractorSession  *pSession  = NULL;
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm)
-		pSession = pMainForm->session();
 	// Check loop-points, translating to edit-head/tail headers...
+	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession && pSession->isLooping()) {
 		qtractorTimeScale *pTimeScale = m_pEditor->timeScale();
 		int dx = d + pTimeScale->pixelFromFrame(m_pEditor->offset());
@@ -322,10 +316,7 @@ void qtractorMidiEditTime::mousePressEvent ( QMouseEvent *pMouseEvent )
 	// Force null state.
 	m_dragState = DragNone;
 
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
-		return;
-	qtractorSession *pSession = pMainForm->session();
+	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
 		return;
 
@@ -442,10 +433,7 @@ void qtractorMidiEditTime::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 {
 	qtractorScrollView::mouseReleaseEvent(pMouseEvent);
 
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
-		return;
-	qtractorSession *pSession = pMainForm->session();
+	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
 		return;
 
@@ -533,10 +521,7 @@ void qtractorMidiEditTime::keyPressEvent ( QKeyEvent *pKeyEvent )
 	if (pKeyEvent->key() == Qt::Key_Escape) {
 		// Restore uncommitted play-head position?...
 		if (m_dragState == DragPlayHead) {
-			qtractorSession  *pSession  = NULL;
-			qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-			if (pMainForm)
-				pSession = pMainForm->session();
+			qtractorSession *pSession = qtractorSession::getInstance();
 			if (pSession)
 				m_pEditor->setPlayHead(pSession->playHead());
 		}

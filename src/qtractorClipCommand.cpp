@@ -245,11 +245,7 @@ void qtractorClipCommand::addTrack ( qtractorTrack *pTrack )
 // Common executive method.
 bool qtractorClipCommand::execute ( bool bRedo )
 {
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
-		return false;
-
-	qtractorSession *pSession = pMainForm->session();
+	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
 		return false;
 

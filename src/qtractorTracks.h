@@ -50,12 +50,6 @@ public:
 	// Destructor.
 	~qtractorTracks();
 
-	// Session helper accessor.
-	qtractorSession *session() const;
-
-	// Instrument list accessor.
-	qtractorInstrumentList *instruments() const;
-
 	// Child widgets accessors.
 	qtractorTrackList *trackList() const;
 	qtractorTrackTime *trackTime() const;

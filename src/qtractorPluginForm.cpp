@@ -29,7 +29,7 @@
 #include "qtractorSlider.h"
 
 #include "qtractorOptions.h"
-#include "qtractorMainForm.h"
+#include "qtractorSession.h"
 
 #include <QMessageBox>
 #include <QGridLayout>
@@ -343,16 +343,17 @@ void qtractorPluginForm::loadPresetSlot ( const QString& sPreset )
 		return;
 
 	// We'll need this, sure.
-	qtractorOptions  *pOptions  = NULL;
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm)
-		pOptions = pMainForm->options();
+	qtractorOptions *pOptions = qtractorOptions::getInstance();
 	if (pOptions == NULL)
+		return;
+
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
 		return;
 
 	if (sPreset == g_sDefPreset) {
 		// Reset to default...
-		pMainForm->commands()->exec(
+		(pSession->commands())->exec(
 			new qtractorResetPluginCommand(m_pPlugin));
 	} else {
 		// An existing preset is about to be loaded...
@@ -369,7 +370,7 @@ void qtractorPluginForm::loadPresetSlot ( const QString& sPreset )
 			QStringList vlist = settings.value(sPreset).toStringList();
 			settings.endGroup();
 			if (!vlist.isEmpty()) {
-				pMainForm->commands()->exec(
+				(pSession->commands())->exec(
 					new qtractorPresetPluginCommand(m_pPlugin, vlist));
 			}
 		}
@@ -390,10 +391,7 @@ void qtractorPluginForm::openPresetSlot (void)
 		return;
 
 	// We'll need this, sure.
-	qtractorOptions  *pOptions  = NULL;
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm)
-		pOptions = pMainForm->options();
+	qtractorOptions *pOptions = qtractorOptions::getInstance();
 	if (pOptions == NULL)
 		return;
 
@@ -438,10 +436,7 @@ void qtractorPluginForm::savePresetSlot (void)
 		return;
 
 	// We'll need this, sure.
-	qtractorOptions  *pOptions  = NULL;
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm)
-		pOptions = pMainForm->options();
+	qtractorOptions *pOptions = qtractorOptions::getInstance();
 	if (pOptions == NULL)
 		return;
 
@@ -492,10 +487,7 @@ void qtractorPluginForm::deletePresetSlot (void)
 		return;
 
 	// We'll need this, sure.
-	qtractorOptions  *pOptions  = NULL;
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm)
-		pOptions = pMainForm->options();
+	qtractorOptions *pOptions = qtractorOptions::getInstance();
 	if (pOptions == NULL)
 		return;
 
@@ -560,9 +552,9 @@ void qtractorPluginForm::activateSlot ( bool bOn )
 	m_iUpdate++;
 
 	// Make it a undoable command...
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm)
-		pMainForm->commands()->exec(
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession)
+		(pSession->commands())->exec(
 			new qtractorActivatePluginCommand(m_pPlugin, bOn));
 
 	m_iUpdate--;
@@ -585,9 +577,9 @@ void qtractorPluginForm::valueChangeSlot (
 	m_iUpdate++;
 
 	// Make it a undoable command...
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm)
-		pMainForm->commands()->exec(
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession)
+		(pSession->commands())->exec(
 			new qtractorPluginParamCommand(pParam, fValue));
 
 	m_iUpdate--;
@@ -613,15 +605,12 @@ void qtractorPluginForm::refresh (void)
 
 	const QString sOldPreset = m_ui.PresetComboBox->currentText();
 	m_ui.PresetComboBox->clear();
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm) {
-		qtractorOptions *pOptions = pMainForm->options();
-		if (pOptions) {
-			pOptions->settings().beginGroup(m_pPlugin->presetGroup());
-			m_ui.PresetComboBox->insertItems(0,
-				pOptions->settings().childKeys());
-			pOptions->settings().endGroup();
-		}
+	qtractorOptions *pOptions = qtractorOptions::getInstance();
+	if (pOptions) {
+		pOptions->settings().beginGroup(m_pPlugin->presetGroup());
+		m_ui.PresetComboBox->insertItems(0,
+			pOptions->settings().childKeys());
+		pOptions->settings().endGroup();
 	}
 	m_ui.PresetComboBox->addItem(g_sDefPreset);
 	m_ui.PresetComboBox->setEditText(sOldPreset);

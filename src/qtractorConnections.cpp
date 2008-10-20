@@ -73,19 +73,16 @@ qtractorConnections::qtractorConnections (
 
 	// Get previously saved splitter sizes,
 	// (with fair default...)
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm) {
-		qtractorOptions *pOptions = pMainForm->options();
-		if (pOptions) {
-			QList<int> sizes;
-			sizes.append(180);
-			sizes.append(60);
-			sizes.append(180);
-			pOptions->loadSplitterSizes(
-				m_pConnectForm->audioConnectSplitter(), sizes);
-			pOptions->loadSplitterSizes(
-				m_pConnectForm->midiConnectSplitter(), sizes);
-		}
+	qtractorOptions *pOptions = qtractorOptions::getInstance();
+	if (pOptions) {
+		QList<int> sizes;
+		sizes.append(180);
+		sizes.append(60);
+		sizes.append(180);
+		pOptions->loadSplitterSizes(
+			m_pConnectForm->audioConnectSplitter(), sizes);
+		pOptions->loadSplitterSizes(
+			m_pConnectForm->midiConnectSplitter(), sizes);
 	}
 }
 
@@ -93,16 +90,13 @@ qtractorConnections::qtractorConnections (
 // Destructor.
 qtractorConnections::~qtractorConnections (void)
 {
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm) {
-		qtractorOptions *pOptions = pMainForm->options();
-		if (pOptions) {
-			// Get previously saved splitter sizes...
-			pOptions->saveSplitterSizes(
-				m_pConnectForm->audioConnectSplitter());
-			pOptions->saveSplitterSizes(
-				m_pConnectForm->midiConnectSplitter());
-		}
+	qtractorOptions *pOptions = qtractorOptions::getInstance();
+	if (pOptions) {
+		// Get previously saved splitter sizes...
+		pOptions->saveSplitterSizes(
+			m_pConnectForm->audioConnectSplitter());
+		pOptions->saveSplitterSizes(
+			m_pConnectForm->midiConnectSplitter());
 	}
 
 	// No need to delete child widgets, Qt does it all for us.
@@ -161,19 +155,11 @@ qtractorConnectForm *qtractorConnections::connectForm (void) const
 }
 
 
-// Session accessor.
-qtractorSession *qtractorConnections::session (void) const
-{
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	return (pMainForm ? pMainForm->session() : NULL);
-}
-
-
 // Main bus mode switching.
 void qtractorConnections::showBus ( qtractorBus *pBus,
 	qtractorBus::BusMode busMode )
 {
-	qtractorSession *pSession = session();
+	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
 		return;
 

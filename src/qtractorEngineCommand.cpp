@@ -1,7 +1,7 @@
 // qtractorEngineCommand.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -77,12 +77,8 @@ bool qtractorBusCommand::createBus (void)
 {
 	if (m_pBus || m_sBusName.isEmpty())
 		return false;
-		
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
-		return false;
 
-	qtractorSession *pSession = pMainForm->session();
+	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
 		return false;
 
@@ -128,9 +124,12 @@ bool qtractorBusCommand::createBus (void)
 	m_pBus->open();
 
 	// Update mixer (look for new strips...)
-	qtractorMixer *pMixer = pMainForm->mixer();
-	if (pMixer)
-		pMixer->updateBuses();
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm) {
+		qtractorMixer *pMixer = pMainForm->mixer();
+		if (pMixer)
+			pMixer->updateBuses();
+	}
 
 	// Done.
 	return true;
@@ -143,12 +142,12 @@ bool qtractorBusCommand::updateBus (void)
 	if (m_pBus == NULL || m_sBusName.isEmpty())
 		return false;
 
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
 		return false;
 
-	qtractorSession *pSession = pMainForm->session();
-	if (pSession == NULL)
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm == NULL)
 		return false;
 
 	// We need to hold things for a while...
@@ -295,11 +294,7 @@ bool qtractorBusCommand::deleteBus (void)
 	if (m_pBus == NULL)
 		return false;
 
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
-		return false;
-
-	qtractorSession *pSession = pMainForm->session();
+	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
 		return false;
 
@@ -361,9 +356,12 @@ bool qtractorBusCommand::deleteBus (void)
 	}
 
 	// Update mixer (clean old strips...)
-	qtractorMixer *pMixer = pMainForm->mixer();
-	if (pMixer)
-		pMixer->updateBuses();
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm) {
+		qtractorMixer *pMixer = pMainForm->mixer();
+		if (pMixer)
+			pMixer->updateBuses();
+	}
 
 	// Carry on...
 	pSession->setPlaying(bPlaying);
@@ -497,10 +495,10 @@ qtractorBusGainCommand::qtractorBusGainCommand ( qtractorBus *pBus,
 
 	// Try replacing an previously equivalent command...
 	static qtractorBusGainCommand *s_pPrevGainCommand = NULL;
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm && s_pPrevGainCommand) {
+	if (s_pPrevGainCommand) {
+		qtractorSession *pSession = qtractorSession::getInstance();
 		qtractorCommand *pLastCommand
-			= pMainForm->commands()->lastCommand();
+			= (pSession->commands())->lastCommand();
 		qtractorCommand *pPrevCommand
 			= static_cast<qtractorCommand *> (s_pPrevGainCommand);
 		if (pPrevCommand == pLastCommand
@@ -517,7 +515,7 @@ qtractorBusGainCommand::qtractorBusGainCommand ( qtractorBus *pBus,
 				if (iPrevSign == iCurrSign) {
 					m_fPrevGain = fLastGain;
 					m_bPrevGain = true;
-					pMainForm->commands()->removeLastCommand();
+					(pSession->commands())->removeLastCommand();
 				}
 			}
 		}
@@ -598,10 +596,10 @@ qtractorBusPanningCommand::qtractorBusPanningCommand ( qtractorBus *pBus,
 
 	// Try replacing an previously equivalent command...
 	static qtractorBusPanningCommand *s_pPrevPanningCommand = NULL;
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm && s_pPrevPanningCommand) {
+	if (s_pPrevPanningCommand) {
+		qtractorSession *pSession = qtractorSession::getInstance();
 		qtractorCommand *pLastCommand
-			= pMainForm->commands()->lastCommand();
+			= (pSession->commands())->lastCommand();
 		qtractorCommand *pPrevCommand
 			= static_cast<qtractorCommand *> (s_pPrevPanningCommand);
 		if (pPrevCommand == pLastCommand
@@ -618,7 +616,7 @@ qtractorBusPanningCommand::qtractorBusPanningCommand ( qtractorBus *pBus,
 				if (iPrevSign == iCurrSign) {
 					m_fPrevPanning = fLastPanning;
 					m_bPrevPanning = true;
-					pMainForm->commands()->removeLastCommand();
+					(pSession->commands())->removeLastCommand();
 				}
 			}
 		}

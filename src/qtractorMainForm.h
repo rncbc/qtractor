@@ -67,15 +67,12 @@ public:
 
 	static qtractorMainForm *getInstance();
 
-	void setOptions(qtractorOptions *pOptions);
-	qtractorOptions *options() const;
+	void setup(qtractorOptions *pOptions);
 
-	qtractorSession *session() const;
 	qtractorTracks *tracks() const;
 	qtractorFiles *files() const;
 	qtractorConnections *connections() const;
 	qtractorMixer *mixer() const;
-	qtractorCommandList *commands() const;
 	qtractorThumbView *thumbView() const;
 
 	QString sessionName(const QString& sFilename);
@@ -277,7 +274,6 @@ private:
 	// Instance variables...
 	qtractorOptions *m_pOptions;
 	qtractorSession *m_pSession;
-	qtractorCommandList *m_pCommands;
 	qtractorFiles *m_pFiles;
 	qtractorMessages *m_pMessages;
 	qtractorConnections *m_pConnections;

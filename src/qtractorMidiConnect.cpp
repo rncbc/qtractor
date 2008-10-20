@@ -1,7 +1,7 @@
 // qtractorMidiConnect.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -21,8 +21,6 @@
 
 #include "qtractorMidiConnect.h"
 #include "qtractorMidiEngine.h"
-
-#include "qtractorMainForm.h"
 
 #include <QIcon>
 
@@ -318,12 +316,9 @@ snd_seq_t *qtractorMidiConnect::alsaSeq (void) const
 {
 	snd_seq_t *pAlsaSeq = NULL;
 
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm) {
-		qtractorSession *pSession = pMainForm->session();
-		if (pSession && pSession->midiEngine())
-			pAlsaSeq = (pSession->midiEngine())->alsaSeq();
-	}
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession && pSession->midiEngine())
+		pAlsaSeq = (pSession->midiEngine())->alsaSeq();
 
 	return pAlsaSeq;
 }
@@ -404,9 +399,9 @@ void qtractorMidiConnect::disconnectPortsUpdate (
 	qtractorPortListItem *pOPort, qtractorPortListItem *pIPort )
 {
 	qtractorMidiEngine *pMidiEngine = NULL;
-	qtractorMainForm   *pMainForm   = qtractorMainForm::getInstance();
-	if (pMainForm && pMainForm->session())
-		pMidiEngine = pMainForm->session()->midiEngine();
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession)
+		pMidiEngine = pSession->midiEngine();
 	if (pMidiEngine == NULL)
 		return;
 

@@ -29,7 +29,6 @@
 #include "qtractorMidiSequence.h"
 
 #include "qtractorSession.h"
-#include "qtractorMainForm.h"
 
 #include <QResizeEvent>
 #include <QMouseEvent>
@@ -373,11 +372,8 @@ void qtractorMidiEditView::updatePixmap ( int cx, int cy )
 		pEvent = pEvent->next();
 	}
 
-	qtractorSession  *pSession  = NULL;
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm)
-		pSession = pMainForm->session();
 	// Draw loop boundaries, if applicable...
+	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession && pSession->isLooping()) {
 		p.setPen(Qt::darkCyan);
 		x = pTimeScale->pixelFromFrame(pSession->loopStart()) - dx;
