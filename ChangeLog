@@ -5,6 +5,8 @@ ChangeLog
 
 CVS HEAD
 
+- Fait-divers: desktop menu file touched to openSUSE conventions.
+
 - Internal refactoring alert: Session and Options instances are
   now being redesigned as singletons, preparing to get out of the
   way from the master GUI/MainForm instance (EXPERIMENTAL). 
