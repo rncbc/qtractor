@@ -546,7 +546,7 @@ qtractorMidiEngine::qtractorMidiEngine ( qtractorSession *pSession )
 	m_iTimeDelta     = 0;
 	m_iTimeDrift     = 0;
 
-	m_pNotifyWidget  = NULL;
+	m_pNotifyObject  = NULL;
 	m_eNotifyMmcType = QEvent::None;
 	m_eNotifyCtlType = QEvent::None;
 
@@ -815,8 +815,8 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 			if (data1 > 0x7f || data2 > 0x7f)
 				return;
 			// Post the stuffed event...
-			if (m_pNotifyWidget) {
-				QApplication::postEvent(m_pNotifyWidget,
+			if (m_pNotifyObject) {
+				QApplication::postEvent(m_pNotifyObject,
 					new qtractorMidiControlEvent(m_eNotifyCtlType,
 						iChannel, data1, data2));
 			}
@@ -850,8 +850,8 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 			// check if it was intended to our input control bus!
 			&& m_pIControlBus && m_pIControlBus->alsaPort() == iAlsaPort) {
 			// Post the stuffed event...
-			if (m_pNotifyWidget) {
-				QApplication::postEvent(m_pNotifyWidget,
+			if (m_pNotifyObject) {
+				QApplication::postEvent(m_pNotifyObject,
 					new qtractorMmcEvent(m_eNotifyMmcType, pSysex));
 			}
 			// Bail out, right now!
@@ -1430,9 +1430,9 @@ void qtractorMidiEngine::metroMute ( bool bMute )
 
 
 // Event notifier widget settings.
-void qtractorMidiEngine::setNotifyWidget ( QWidget *pNotifyWidget )
+void qtractorMidiEngine::setNotifyObject ( QObject *pNotifyObject )
 {
-	m_pNotifyWidget = pNotifyWidget;
+	m_pNotifyObject = pNotifyObject;
 }
 
 void qtractorMidiEngine::setNotifyMmcType ( QEvent::Type eNotifyMmcType )
@@ -1446,9 +1446,9 @@ void qtractorMidiEngine::setNotifyCtlType ( QEvent::Type eNotifyCtlType )
 }
 
 
-QWidget *qtractorMidiEngine::notifyWidget (void) const
+QObject *qtractorMidiEngine::notifyObject (void) const
 {
-	return m_pNotifyWidget;
+	return m_pNotifyObject;
 }
 
 QEvent::Type qtractorMidiEngine::notifyMmcType (void) const

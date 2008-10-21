@@ -125,11 +125,11 @@ public:
 	void processMetro(unsigned long iFrameStart, unsigned long iFrameEnd);
 
 	// Event notifier widget settings.
-	void setNotifyWidget  (QWidget *pNotifyWidget);
+	void setNotifyObject  (QObject *pNotifyObject);
 	void setNotifyMmcType (QEvent::Type eNotifyMmcType);
 	void setNotifyCtlType (QEvent::Type eNotifyCtlType);
 
-	QWidget     *notifyWidget() const;
+	QObject     *notifyObject() const;
 	QEvent::Type notifyMmcType() const;
 	QEvent::Type notifyCtlType() const;
 
@@ -212,7 +212,7 @@ private:
 	long m_iTimeDrift;
 
 	// The event notifier widget.
-	QWidget      *m_pNotifyWidget;
+	QObject      *m_pNotifyObject;
 	QEvent::Type  m_eNotifyMmcType;
 	QEvent::Type  m_eNotifyCtlType;
 

@@ -61,13 +61,13 @@ public:
 		QDomElement *pElement);
 
 	// Event notifier widget settings.
-	void setNotifyWidget       (QWidget *pNotifyWidget);
+	void setNotifyObject       (QObject *pNotifyObject);
 	void setNotifyShutdownType (QEvent::Type eNotifyShutdownType);
 	void setNotifyXrunType     (QEvent::Type eNotifyXrunType);
 	void setNotifyPortType     (QEvent::Type eNotifyPortType);
 	void setNotifyBufferType   (QEvent::Type eNotifyBufferType);
 
-	QWidget     *notifyWidget() const;
+	QObject     *notifyObject() const;
 	QEvent::Type notifyShutdownType() const;
 	QEvent::Type notifyXrunType() const;
 	QEvent::Type notifyPortType() const;
@@ -159,7 +159,7 @@ private:
 	jack_client_t *m_pJackClient;
 
 	// The event notifier widget.
-	QWidget      *m_pNotifyWidget;
+	QObject      *m_pNotifyObject;
 	QEvent::Type  m_eNotifyShutdownType;
 	QEvent::Type  m_eNotifyXrunType;
 	QEvent::Type  m_eNotifyPortType;

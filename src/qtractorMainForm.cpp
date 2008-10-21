@@ -180,7 +180,7 @@ qtractorMainForm::qtractorMainForm (
 	// Configure the audio engine event handling...
 	qtractorAudioEngine *pAudioEngine = m_pSession->audioEngine();
 	if (pAudioEngine) {
-		pAudioEngine->setNotifyWidget(this);
+		pAudioEngine->setNotifyObject(this);
 		pAudioEngine->setNotifyShutdownType(QTRACTOR_SHUT_EVENT);
 		pAudioEngine->setNotifyXrunType(QTRACTOR_XRUN_EVENT);
 		pAudioEngine->setNotifyPortType(QTRACTOR_PORT_EVENT);
@@ -191,14 +191,14 @@ qtractorMainForm::qtractorMainForm (
 	qtractorAudioPeakFactory *pAudioPeakFactory
 		= m_pSession->audioPeakFactory();
 	if (pAudioPeakFactory) {
-		pAudioPeakFactory->setNotifyWidget(this);
+		pAudioPeakFactory->setNotifyObject(this);
 		pAudioPeakFactory->setNotifyPeakType(QTRACTOR_PEAK_EVENT);
 	}
 
 	// Configure the MIDI engine event handling...
 	qtractorMidiEngine *pMidiEngine = m_pSession->midiEngine();
 	if (pMidiEngine) {
-		pMidiEngine->setNotifyWidget(this);
+		pMidiEngine->setNotifyObject(this);
 		pMidiEngine->setNotifyMmcType(QTRACTOR_MMC_EVENT);
 		pMidiEngine->setNotifyCtlType(QTRACTOR_CTL_EVENT);
 	}

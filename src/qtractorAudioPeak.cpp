@@ -148,8 +148,8 @@ void qtractorAudioPeakThread::run (void)
 	}
 
 	// May send notification event, anyway...
-	if (m_pPeakFile->notifyWidget()) {
-		QApplication::postEvent(m_pPeakFile->notifyWidget(),
+	if (m_pPeakFile->notifyObject()) {
+		QApplication::postEvent(m_pPeakFile->notifyObject(),
 			new QEvent(m_pPeakFile->notifyPeakType()));
 	}
 
@@ -399,9 +399,9 @@ unsigned short qtractorAudioPeakFile::channels (void)
 
 
 // Event notifier widget settings.
-QWidget *qtractorAudioPeakFile::notifyWidget (void) const
+QObject *qtractorAudioPeakFile::notifyObject (void) const
 {
-	return m_pFactory->notifyWidget();
+	return m_pFactory->notifyObject();
 }
 
 QEvent::Type qtractorAudioPeakFile::notifyPeakType (void) const
@@ -779,7 +779,7 @@ void qtractorAudioPeak::closeWrite (void)
 // Constructor.
 qtractorAudioPeakFactory::qtractorAudioPeakFactory (void)
 {
-	m_pNotifyWidget   = NULL;
+	m_pNotifyObject   = NULL;
 	m_eNotifyPeakType = QEvent::None;
 	
 	m_bAutoRemove = false;
@@ -826,9 +826,9 @@ void qtractorAudioPeakFactory::removePeak ( qtractorAudioPeakFile *pPeakFile )
 
 
 // Event notifier widget settings.
-void qtractorAudioPeakFactory::setNotifyWidget ( QWidget *pNotifyWidget )
+void qtractorAudioPeakFactory::setNotifyObject ( QObject *pNotifyObject )
 {
-	m_pNotifyWidget = pNotifyWidget;
+	m_pNotifyObject = pNotifyObject;
 }
 
 void qtractorAudioPeakFactory::setNotifyPeakType ( QEvent::Type eNotifyPeakType )
@@ -837,9 +837,9 @@ void qtractorAudioPeakFactory::setNotifyPeakType ( QEvent::Type eNotifyPeakType 
 }
 
 
-QWidget *qtractorAudioPeakFactory::notifyWidget (void) const
+QObject *qtractorAudioPeakFactory::notifyObject (void) const
 {
-	return m_pNotifyWidget;
+	return m_pNotifyObject;
 }
 
 QEvent::Type qtractorAudioPeakFactory::notifyPeakType (void) const
