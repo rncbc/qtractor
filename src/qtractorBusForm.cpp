@@ -528,7 +528,7 @@ bool qtractorBusForm::updateBusEx ( qtractorBus *pBus ) const
 	}
 
 	// Execute and refresh form...
-	return (pSession->commands())->exec(pUpdateBusCommand);
+	return pSession->execute(pUpdateBusCommand);
 }
 
 
@@ -587,7 +587,7 @@ void qtractorBusForm::createBus (void)
 	}
 
 	// Execute and refresh form...
-	if ((pSession->commands())->exec(pCreateBusCommand)) {
+	if (pSession->execute(pCreateBusCommand)) {
 		m_iDirtyTotal++;
 		refreshBuses();
 	}
@@ -656,7 +656,7 @@ void qtractorBusForm::deleteBus (void)
 	m_pBus = NULL;
 
 	// Execute and refresh form...
-	if ((pSession->commands())->exec(pDeleteBusCommand)) {
+	if (pSession->execute(pDeleteBusCommand)) {
 		m_iDirtyTotal++;
 		refreshBuses();
 	}

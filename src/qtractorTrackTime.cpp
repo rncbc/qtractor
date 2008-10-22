@@ -455,7 +455,7 @@ void qtractorTrackTime::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 			// New loop-start boundary...
 			if (pSession->editHead() < pSession->loopEnd()) {
 				// Yep, new loop-start point...
-				(pSession->commands())->exec(
+				pSession->execute(
 					new qtractorSessionLoopCommand(pSession,
 						pSession->editHead(), pSession->loopEnd()));
 			}
@@ -468,7 +468,7 @@ void qtractorTrackTime::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 			// New loop-end boundary...
 			if (pSession->loopStart() < pSession->editTail()) {
 				// Yep, new loop-end point...
-				(pSession->commands())->exec(
+				pSession->execute(
 					new qtractorSessionLoopCommand(pSession,
 						pSession->loopStart(), pSession->editTail()));
 			}

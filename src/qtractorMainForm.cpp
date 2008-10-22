@@ -1169,7 +1169,7 @@ void qtractorMainForm::midiControlEvent ( qtractorMidiControlEvent *pCtlEvent )
 		// Find the track by number...
 		qtractorTrack *pTrack = m_pSession->tracks().at(iTrack);
 		if (pTrack) {
-			(m_pSession->commands())->exec(
+			m_pSession->execute(
 				new qtractorTrackGainCommand(pTrack, fGain));
 			sCtlText += tr("(track %1, gain %2)").arg(iTrack).arg(fGain);
 		}
@@ -1368,7 +1368,7 @@ bool qtractorMainForm::editSession (void)
 	const QString sOldSessionName = m_pSession->sessionName();
 
 	// Now, express the change as a undoable command...
-	(m_pSession->commands())->exec(
+	m_pSession->execute(
 		new qtractorSessionEditCommand(m_pSession, sessionForm.properties()));
 
 	// If session name has changed, we'll prompt
@@ -1916,7 +1916,7 @@ void qtractorMainForm::trackStateRecord ( bool bOn )
 	if (pTrackWidget == NULL)
 		return;
 
-	(m_pSession->commands())->exec(
+	m_pSession->execute(
 		new qtractorTrackButtonCommand(pTrackWidget->recordButton(), bOn));
 }
 
@@ -1930,7 +1930,7 @@ void qtractorMainForm::trackStateMute ( bool bOn )
 	if (pTrackWidget == NULL)
 		return;
 
-	(m_pSession->commands())->exec(
+	m_pSession->execute(
 		new qtractorTrackButtonCommand(pTrackWidget->muteButton(), bOn));
 }
 
@@ -1944,7 +1944,7 @@ void qtractorMainForm::trackStateSolo (  bool bOn  )
 	if (pTrackWidget == NULL)
 		return;
 
-	(m_pSession->commands())->exec(
+	m_pSession->execute(
 		new qtractorTrackButtonCommand(pTrackWidget->soloButton(), bOn));
 }
 
@@ -1958,7 +1958,7 @@ void qtractorMainForm::trackStateMonitor ( bool bOn )
 	if (pTrack == NULL)
 		return;
 
-	(m_pSession->commands())->exec(
+	m_pSession->execute(
 		new qtractorTrackMonitorCommand(pTrack, bOn));
 }
 
@@ -2018,7 +2018,7 @@ void qtractorMainForm::trackMoveTop (void)
 	if (pTrack == NULL)
 		return;
 
-	(m_pSession->commands())->exec(
+	m_pSession->execute(
 		new qtractorMoveTrackCommand(pTrack, m_pSession->tracks().first()));
 }
 
@@ -2036,7 +2036,7 @@ void qtractorMainForm::trackMoveUp (void)
 	if (pNextTrack == NULL)
 		return;
 
-	(m_pSession->commands())->exec(
+	m_pSession->execute(
 		new qtractorMoveTrackCommand(pTrack, pNextTrack));
 }
 
@@ -2054,7 +2054,7 @@ void qtractorMainForm::trackMoveDown (void)
 	if (pNextTrack == NULL)
 		return;
 
-	(m_pSession->commands())->exec(
+	m_pSession->execute(
 		new qtractorMoveTrackCommand(pTrack, pNextTrack->next()));
 }
 
@@ -2068,7 +2068,7 @@ void qtractorMainForm::trackMoveBottom (void)
 	if (pTrack == NULL)
 		return;
 
-	(m_pSession->commands())->exec(
+	m_pSession->execute(
 		new qtractorMoveTrackCommand(pTrack, NULL));
 }
 
@@ -2729,7 +2729,7 @@ void qtractorMainForm::transportLoop (void)
 	}
 
 	// Now, express the change as an undoable command...
-	(m_pSession->commands())->exec(
+	m_pSession->execute(
 		new qtractorSessionLoopCommand(m_pSession, iLoopStart, iLoopEnd));
 }
 
@@ -2745,7 +2745,7 @@ void qtractorMainForm::transportLoopSet (void)
 	checkRestartSession();
 
 	// Now, express the change as an undoable command...
-	(m_pSession->commands())->exec(
+	m_pSession->execute(
 		new qtractorSessionLoopCommand(m_pSession,
 			m_pSession->editHead(), m_pSession->editTail()));
 }
@@ -3011,7 +3011,7 @@ bool qtractorMainForm::setRecording ( bool bRecording )
 		}
 		// Put it in the form of an undoable command...
 		if (iUpdate > 0) {
-			(m_pSession->commands())->exec(pClipCommand);
+			m_pSession->execute(pClipCommand);
 		} else {
 			// The allocated command is unhelpful...
 			delete pClipCommand;
@@ -4233,7 +4233,7 @@ void qtractorMainForm::tempoChanged ( double fTempo )
 		return;
 
 	// Now, express the change as a undoable command...
-	(m_pSession->commands())->exec(
+	m_pSession->execute(
 		new qtractorSessionTempoCommand(m_pSession, float(fTempo)));
 
 	m_iTransportUpdate++;

@@ -351,7 +351,7 @@ void qtractorPluginListView::moveItem (
 	if (pSession == NULL)
 		return;
 
-	(pSession->commands())->exec(
+	pSession->execute(
 		new qtractorMovePluginCommand(pPlugin, pNextPlugin, m_pPluginList));
 }
 
@@ -384,7 +384,7 @@ void qtractorPluginListView::copyItem (
 	if (pSession == NULL)
 		return;
 
-	(pSession->commands())->exec(
+	pSession->execute(
 		new qtractorInsertPluginCommand(
 			tr("copy plugin"), pPlugin, pNextPlugin));
 }
@@ -426,7 +426,7 @@ void qtractorPluginListView::addPlugin (void)
 		(pPlugin->form())->activateForm();
 	}
 
-	(pSession->commands())->exec(pAddPluginCommand);
+	pSession->execute(pAddPluginCommand);
 
 	// We're formerly done.
 	QApplication::restoreOverrideCursor();
@@ -453,7 +453,7 @@ void qtractorPluginListView::removePlugin (void)
 	if (pSession == NULL)
 		return;
 
-	(pSession->commands())->exec(
+	pSession->execute(
 		new qtractorRemovePluginCommand(pPlugin));
 }
 
@@ -475,7 +475,7 @@ void qtractorPluginListView::activatePlugin (void)
 	if (pSession == NULL)
 		return;
 
-	(pSession->commands())->exec(
+	pSession->execute(
 		new qtractorActivatePluginCommand(pPlugin, !pPlugin->isActivated()));
 }
 
@@ -505,7 +505,7 @@ void qtractorPluginListView::activateAllPlugins (void)
 			pActivateAllCommand->addPlugin(pPlugin);
 	}
 
-	(pSession->commands())->exec(pActivateAllCommand);
+	pSession->execute(pActivateAllCommand);
 }
 
 
@@ -534,7 +534,7 @@ void qtractorPluginListView::deactivateAllPlugins (void)
 			pDeactivateAllCommand->addPlugin(pPlugin);
 	}
 
-	(pSession->commands())->exec(pDeactivateAllCommand);
+	pSession->execute(pDeactivateAllCommand);
 }
 
 
@@ -562,7 +562,7 @@ void qtractorPluginListView::removeAllPlugins (void)
 		pRemoveAllCommand->addPlugin(pPlugin);
 	}
 
-	(pSession->commands())->exec(pRemoveAllCommand);
+	pSession->execute(pRemoveAllCommand);
 }
 
 
@@ -646,7 +646,7 @@ void qtractorPluginListView::audioOutputBus (void)
 	if (pSession == NULL)
 		return;
 
-	(pSession->commands())->exec(
+	pSession->execute(
 		new qtractorAudioOutputBusCommand(pMidiManager,
 			!pMidiManager->isAudioOutputBus()));
 }
@@ -761,7 +761,7 @@ void qtractorPluginListView::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 			// Make it a undoable command...
 			qtractorSession *pSession = qtractorSession::getInstance();
 			if (pSession) {
-				(pSession->commands())->exec(
+				pSession->execute(
 					new qtractorActivatePluginCommand(pPlugin,
 						!pPlugin->isActivated()));
 			}

@@ -1142,7 +1142,7 @@ void qtractorTrackView::dropEvent ( QDropEvent *pDropEvent )
 	resetDragState();
 
 	// Put it in the form of an undoable command...
-	(pSession->commands())->exec(pClipCommand);
+	pSession->execute(pClipCommand);
 }
 
 
@@ -1924,7 +1924,7 @@ void qtractorTrackView::dragFadeDrop ( const QPoint& pos )
 	m_dragState = DragNone;
 
 	// Put it in the form of an undoable command...
-	(pSession->commands())->exec(pClipCommand);
+	pSession->execute(pClipCommand);
 }
 
 
@@ -2035,7 +2035,7 @@ void qtractorTrackView::dragResizeDrop ( const QPoint& pos, bool bTimeStretch )
 		iClipStart, iClipOffset, iClipLength, fTimeStretch);
 
 	// Put it in the form of an undoable command...
-	(pSession->commands())->exec(pClipCommand);
+	pSession->execute(pClipCommand);
 }
 
 
@@ -2623,7 +2623,7 @@ void qtractorTrackView::executeClipSelect ( qtractorTrackView::Command cmd )
 	// put it in the form of an undoable command...
 	if (pClipCommand) {
 		m_pClipSelect->clear();
-		(pSession->commands())->exec(pClipCommand);
+		pSession->execute(pClipCommand);
 	}
 }
 
@@ -2768,7 +2768,7 @@ void qtractorTrackView::moveClipSelect ( qtractorTrack *pTrack )
 	m_pClipSelect->clear();
 
 	// Put it in the form of an undoable command...
-	(pSession->commands())->exec(pClipCommand);
+	pSession->execute(pClipCommand);
 }
 
 
@@ -2867,7 +2867,7 @@ void qtractorTrackView::pasteClipSelect ( qtractorTrack *pTrack )
 	m_pClipSelect->clear();
 
 	// Put it in the form of an undoable command...
-	(pSession->commands())->exec(pClipCommand);
+	pSession->execute(pClipCommand);
 }
 
 

@@ -395,7 +395,7 @@ void qtractorClipForm::accept (void)
 		}
 		// Do it (by making it undoable)...
 		if (pClipCommand)
-			(pSession->commands())->exec(pClipCommand);
+			pSession->execute(pClipCommand);
 		// Account for a new file in game...
 		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 		if (iFileChange > 0 && pMainForm) {

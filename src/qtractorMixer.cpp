@@ -718,7 +718,7 @@ void qtractorMixerStrip::busPassthru ( bool bPassthru )
 		return;
 
 	// Here we go...
-	(pSession->commands())->exec(
+	pSession->execute(
 		new qtractorBusPassthruCommand(m_pBus, bPassthru));
 }
 
@@ -734,7 +734,7 @@ void qtractorMixerStrip::trackMonitor ( bool bMonitor )
 		return;
 
 	// Here we go...
-	(pSession->commands())->exec(
+	pSession->execute(
 		new qtractorTrackMonitorCommand(m_pTrack, bMonitor));
 }
 
@@ -776,10 +776,10 @@ void qtractorMixerStrip::panChangedSlot ( float fPanning )
 
 	// Put it in the form of an undoable command...
 	if (m_pTrack) {
-		(pSession->commands())->exec(
+		pSession->execute(
 			new qtractorTrackPanningCommand(m_pTrack, fPanning));
 	} else if (m_pBus) {
-		(pSession->commands())->exec(
+		pSession->execute(
 			new qtractorBusPanningCommand(m_pBus, m_busMode, fPanning));
 	}
 }
@@ -801,10 +801,10 @@ void qtractorMixerStrip::gainChangedSlot ( float fGain )
 
 	// Put it in the form of an undoable command...
 	if (m_pTrack) {
-		(pSession->commands())->exec(
+		pSession->execute(
 			new qtractorTrackGainCommand(m_pTrack, fGain));
 	} else if (m_pBus) {
-		(pSession->commands())->exec(
+		pSession->execute(
 			new qtractorBusGainCommand(m_pBus, m_busMode, fGain));
 	}
 }
@@ -1380,7 +1380,7 @@ void qtractorMixer::trackButtonToggledSlot (
 	if (pSession == NULL)
 		return;
 
-	(pSession->commands())->exec(
+	pSession->execute(
 		new qtractorTrackButtonCommand(pTrackButton, bOn));
 }
 

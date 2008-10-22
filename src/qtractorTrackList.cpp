@@ -983,7 +983,7 @@ void qtractorTrackList::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 				if (pTrackDrag && pTrackDrop
 					&& pTrackDrag != pTrackDrop
 					&& pTrackDrag != pTrackDrop->prev()) {
-					(pSession->commands())->exec(
+					pSession->execute(
 						new qtractorMoveTrackCommand(pTrackDrag, pTrackDrop));
 				}
 			}
@@ -998,7 +998,7 @@ void qtractorTrackList::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 			// Go for it...
 			qtractorTrack *pTrack = track(m_iDragTrack);
 			if (pTrack) {
-				(pSession->commands())->exec(
+				pSession->execute(
 					new qtractorResizeTrackCommand(pTrack, iZoomHeight));
 			}
 		}

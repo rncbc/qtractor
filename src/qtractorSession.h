@@ -39,6 +39,7 @@ class qtractorSessionDocument;
 class qtractorMidiManager;
 class qtractorInstrumentList;
 class qtractorCommandList;
+class qtractorCommand;
 
 class QDomElement;
 
@@ -305,6 +306,9 @@ public:
 	Properties& properties();
 
 	// Session command executive (undo/redo)
+	bool execute(qtractorCommand *pCommand);
+
+	// Session command list reference (undo/redo)
 	qtractorCommandList *commands() const;
 
 	// Instrument names mapping.

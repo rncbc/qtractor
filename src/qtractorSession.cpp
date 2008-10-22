@@ -244,6 +244,13 @@ void qtractorSession::clear (void)
 }
 
 
+// The global undoable command execuive.
+bool qtractorSession::execute ( qtractorCommand *pCommand )
+{
+	return m_pCommands->exec(pCommand);
+}
+
+
 // The global undoable command list reference.
 qtractorCommandList *qtractorSession::commands (void) const
 {

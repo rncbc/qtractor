@@ -353,7 +353,7 @@ void qtractorPluginForm::loadPresetSlot ( const QString& sPreset )
 
 	if (sPreset == g_sDefPreset) {
 		// Reset to default...
-		(pSession->commands())->exec(
+		pSession->execute(
 			new qtractorResetPluginCommand(m_pPlugin));
 	} else {
 		// An existing preset is about to be loaded...
@@ -370,7 +370,7 @@ void qtractorPluginForm::loadPresetSlot ( const QString& sPreset )
 			QStringList vlist = settings.value(sPreset).toStringList();
 			settings.endGroup();
 			if (!vlist.isEmpty()) {
-				(pSession->commands())->exec(
+				pSession->execute(
 					new qtractorPresetPluginCommand(m_pPlugin, vlist));
 			}
 		}
@@ -554,7 +554,7 @@ void qtractorPluginForm::activateSlot ( bool bOn )
 	// Make it a undoable command...
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession)
-		(pSession->commands())->exec(
+		pSession->execute(
 			new qtractorActivatePluginCommand(m_pPlugin, bOn));
 
 	m_iUpdate--;
@@ -579,7 +579,7 @@ void qtractorPluginForm::valueChangeSlot (
 	// Make it a undoable command...
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession)
-		(pSession->commands())->exec(
+		pSession->execute(
 			new qtractorPluginParamCommand(pParam, fValue));
 
 	m_iUpdate--;

@@ -416,7 +416,7 @@ bool qtractorTracks::newClip (void)
 			qtractorClipCommand *pClipCommand
 				= new qtractorClipCommand(tr("new clip"));
 			pClipCommand->addClip(pClip, pTrack);
-			(pSession->commands())->exec(pClipCommand);
+			pSession->execute(pClipCommand);
 			// Just start the MIDI editor on it...
 			return pClip->startEditor(this);
 		}
@@ -486,7 +486,7 @@ bool qtractorTracks::splitClip ( qtractorClip *pClip )
 	}
 
 	// That's it...
-	return (pSession->commands())->exec(pClipCommand);
+	return pSession->execute(pClipCommand);
 }
 
 
@@ -601,7 +601,7 @@ bool qtractorTracks::addTrack (void)
 	pTrack->properties() = trackForm.properties();
 
 	// Put it in the form of an undoable command...
-	return (pSession->commands())->exec(
+	return pSession->execute(
 		new qtractorAddTrackCommand(pTrack));
 }
 
@@ -637,7 +637,7 @@ bool qtractorTracks::removeTrack ( qtractorTrack *pTrack )
 	}
 
 	// Put it in the form of an undoable command...
-	return (pSession->commands())->exec(
+	return pSession->execute(
 		new qtractorRemoveTrackCommand(pTrack));
 }
 
@@ -666,7 +666,7 @@ bool qtractorTracks::editTrack ( qtractorTrack *pTrack )
 		return false;
 
 	// Put it in the form of an undoable command...
-	return (pSession->commands())->exec(
+	return pSession->execute(
 		new qtractorEditTrackCommand(pTrack, trackForm.properties()));
 }
 
@@ -754,7 +754,7 @@ bool qtractorTracks::addAudioTracks ( QStringList files,
 	pSession->setDescription(sDescription);
 
 	// Put it in the form of an undoable command...
-	return (pSession->commands())->exec(pImportTrackCommand);
+	return pSession->execute(pImportTrackCommand);
 }
 
 
@@ -865,7 +865,7 @@ bool qtractorTracks::addMidiTracks ( QStringList files,
 	pSession->setDescription(sDescription);
 
 	// Put it in the form of an undoable command...
-	return (pSession->commands())->exec(pImportTrackCommand);
+	return pSession->execute(pImportTrackCommand);
 }
 
 
@@ -916,7 +916,7 @@ bool qtractorTracks::addMidiTrackChannel ( const QString& sPath,
 	qtractorSession::stabilize();
 
 	// Put it in the form of an undoable command...
-	return (pSession->commands())->exec(pImportTrackCommand);
+	return pSession->execute(pImportTrackCommand);
 }
 
 
@@ -1002,7 +1002,7 @@ void qtractorTracks::trackButtonToggledSlot (
 	if (pSession == NULL)
 		return;
 
-	(pSession->commands())->exec(
+	pSession->execute(
 		new qtractorTrackButtonCommand(pTrackButton, bOn));
 }
 
