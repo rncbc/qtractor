@@ -24,6 +24,8 @@
 
 #include "qtractorMidiSequence.h"
 
+class qtractorTimeScale;
+
 //----------------------------------------------------------------------
 // class qtractorMidiFile -- A SMF (Standard MIDI File) class.
 //
@@ -76,6 +78,16 @@ public:
 	// Sequence/track writers.
 	bool writeTracks(qtractorMidiSequence **ppSeqs, unsigned short iSeqs);
 	bool writeTrack (qtractorMidiSequence *pSeq);
+
+	// All-in-one SMF file writer/creator method.
+	static bool saveCopyFile(const QString& sNewFilename,
+		const QString& sOldFilename, unsigned short iTrackChannel,
+		qtractorMidiSequence *pSeq, qtractorTimeScale *pTimeScale = NULL,
+		unsigned short iFormat = 0);
+
+	// Create filename revision.
+	static QString createFilePathRevision(
+		const QString& sFilename, int iRevision = 0);
 
 protected:
 

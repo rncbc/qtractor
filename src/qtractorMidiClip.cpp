@@ -249,7 +249,7 @@ QString qtractorMidiClip::createFilePathRevision ( bool bForce )
 	QString sFilename = filename();
 
 	if (m_iRevision == 0 || bForce)
-		sFilename = qtractorMidiEditor::createFilePathRevision(sFilename);
+		sFilename = qtractorMidiFile::createFilePathRevision(sFilename);
 
 	if (!bForce)
 		m_iRevision++;
@@ -635,7 +635,7 @@ bool qtractorMidiClip::saveClipElement (
 			const QString& sFilename
 				= qtractorMidiClip::createFilePathRevision();
 			// Save/replace the clip track...
-			qtractorMidiEditor::saveCopyFile(sFilename,
+			qtractorMidiFile::saveCopyFile(sFilename,
 				qtractorMidiClip::filename(),
 				qtractorMidiClip::trackChannel(),
 				qtractorMidiClip::sequence(),
