@@ -463,13 +463,13 @@ void qtractorClip::drawClip ( QPainter *pPainter, const QRect& clipRect,
 	pPainter->drawText(rect,
 		Qt::AlignLeft | Qt::AlignBottom | Qt::TextSingleLine, m_sClipName);
 
+	// Draw clip contents (virtual)
+	draw(pPainter, clipRect, iClipOffset);
+
 	// Avoid drawing fade in/out handles
 	// on still empty clips (eg. while recording)
 	if (m_iClipLength < 1)
 		return;
-
-	// Draw clip contents (virtual)
-	draw(pPainter, clipRect, iClipOffset);
 
 	// Fade in/out handle color...
 	QColor rgbFade(m_pTrack->foreground());
