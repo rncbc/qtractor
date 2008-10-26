@@ -5,6 +5,9 @@ ChangeLog
 
 CVS HEAD
 
+- External MIDI control events for channel volume (7) and channel
+  panning (10) are now handled properly through session tracks.
+
 - Session file templates make its debut; session templates are
   just regular session files but with no clip file content.
 

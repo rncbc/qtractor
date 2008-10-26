@@ -1178,6 +1178,68 @@ void qtractorMainForm::midiControlEvent ( qtractorMidiControlEvent *pCtlEvent )
 			sCtlText += tr("(track %1, gain %2)").arg(iTrack).arg(fGain);
 		}
 	}
+	else
+	// Handle volume controls...                                                                                                                                         
+	if (pCtlEvent->controller() == 7) {                                                                                                                         
+		int iTrack = 0;
+		for (qtractorTrack *pTrack = m_pSession->tracks().first();
+				pTrack; pTrack = pTrack->next()) {
+			if (pTrack->trackType() == qtractorTrack::Midi &&
+				pTrack->midiChannel() == pCtlEvent->channel()) {
+				float fGain = float(pCtlEvent->value()) / 127.0f;
+				// Set track gain/volume directly,
+				// bypassing the undo/redo system
+				// to avoid feedback issues with
+				// motorized external controllers...
+				pTrack->setGain(fGain);
+				qtractorMidiBus *pMidiBus
+					= static_cast<qtractorMidiBus *> (pTrack->outputBus());
+				if (pMidiBus)                                              
+					pMidiBus->setVolume(pTrack, fGain);
+				qtractorMixer *pMixer = mixer();
+				if (pMixer) {
+					qtractorMixerStrip *pStrip
+						= pMixer->trackRack()->findStrip(pTrack->monitor());
+					if (pStrip && pStrip->meter())
+						pStrip->meter()->updateGain();
+				}
+				sCtlText += tr("(track %1, gain %2)")
+					.arg(iTrack).arg(fGain);
+			}
+			++iTrack;
+		}
+	}
+	else
+	// Handle pan controls...
+	if (pCtlEvent->controller() == 10) {
+		int iTrack = 0;
+		for (qtractorTrack *pTrack = m_pSession->tracks().first();
+				pTrack; pTrack = pTrack->next()) {
+			if (pTrack->trackType() == qtractorTrack::Midi &&
+				pTrack->midiChannel() == pCtlEvent->channel()) {
+				// Set track panning directly,
+				// bypassing the undo/redo system
+				// to avoid feedback issues with
+				// motorized external controllers...
+				float fPanning = (float(pCtlEvent->value()) - 63.0f) / 64.0f;
+				pTrack->setPanning(fPanning);
+				qtractorMidiBus *pMidiBus
+					= static_cast<qtractorMidiBus *> (pTrack->outputBus());
+				if (pMidiBus)
+					pMidiBus->setPanning(pTrack, fPanning);
+				qtractorMixer *pMixer = mixer();
+				if (pMixer) {
+					qtractorMixerStrip *pStrip
+						= pMixer->trackRack()->findStrip(pTrack->monitor());
+					if (pStrip && pStrip->meter())
+						pStrip->meter()->updatePanning();
+				}
+				sCtlText += tr("(track %1, panning %2)")
+					.arg(iTrack).arg(fPanning);
+			}
+			iTrack++;
+		}
+	}
 
 	appendMessages("CTL: " + sCtlText);
 }
