@@ -1,7 +1,7 @@
 // qtractorDocument.h
 //
 /****************************************************************************
-   Copyright (C) 2005, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -35,12 +35,16 @@ public:
 
 	// Constructor.
 	qtractorDocument(QDomDocument *pDocument,
-		const QString& sTagName = QString::null);
+		const QString& sTagName = QString(), bool bTemplate = false);
 	// Default destructor.
 	virtual ~qtractorDocument();
 
 	// Accessors.
 	QDomDocument *document() const;
+
+	// Template mode property.
+	void setTemplate(bool bTemplate);
+	bool isTemplate() const;
 
 	// Helper methods.
 	bool    boolFromText (const QString& s) const;
@@ -50,8 +54,8 @@ public:
 		QDomElement *pElement);
 
 	// External storage simple methods.
-	bool load (const QString& sFilename);
-	bool save (const QString& sFilename);
+	bool load (const QString& sFilename, bool bTemplate = false);
+	bool save (const QString& sFilename, bool bTemplate = false);
 
 	// External storage element pure virtual methods.
 	virtual bool loadElement (QDomElement *pElement) = 0;
@@ -62,6 +66,7 @@ private:
 	// Instance variables.
 	QDomDocument *m_pDocument;
 	QString m_sTagName;
+	bool m_bTemplate;
 };
 
 

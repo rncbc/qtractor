@@ -28,11 +28,17 @@
 #include <QTranslator>
 #include <QLocale>
 
-#if defined(Q_WS_X11)
+#if QT_VERSION < 0x040300
+#define lighter(x)	light(x)
+#define darker(x)	dark(x)
+#endif
+
 
 //-------------------------------------------------------------------------
-// Single application instance stuff (Qt/X11 only atm.)
+// Singleton application instance stuff (Qt/X11 only atm.)
 //
+
+#if defined(Q_WS_X11)
 
 #include <QX11Info>
 
@@ -264,9 +270,27 @@ int main ( int argc, char **argv )
 		return 2;
 	}
 
+	// Dark themes grayed/disabled color group fix...
+	QPalette pal(app.palette());
+	if (pal.base().color().value() < 0x7f) {
+		pal.setColorGroup(QPalette::Disabled,
+			pal.windowText().color().darker(),
+			pal.button(),
+			pal.light(),
+			pal.dark(),
+			pal.mid(),
+			pal.text().color().darker(),
+			pal.text().color().lighter(),
+			pal.base(),
+			pal.window());
+		app.setPalette(pal);
+	}
+
 	// Set default base font...
+	int iBaseFontSize = app.font().pointSize();
 	if (options.iBaseFontSize > 0)
-		app.setFont(QFont(app.font().family(), options.iBaseFontSize));
+		iBaseFontSize = options.iBaseFontSize;
+	app.setFont(QFont(app.font().family(), iBaseFontSize));
 
 	// Construct, setup and show the main form (a pseudo-singleton).
 	qtractorMainForm w;

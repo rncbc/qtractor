@@ -5,6 +5,14 @@ ChangeLog
 
 CVS HEAD
 
+- Session file templates make its debut; session templates are
+  just regular session files but with no clip file content.
+
+- Grayed/disabled palette color group fix for dark color themes.
+
+- Implicit attempt to flush all pending notes for some, if not
+  most plugin instruments (eg. VSTi), on playback stop.
+
 - Fait-divers: desktop menu file touched to openSUSE conventions.
 
 - Internal refactoring alert: Session and Options instances are

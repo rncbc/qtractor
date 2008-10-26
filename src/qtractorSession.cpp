@@ -1389,7 +1389,10 @@ bool qtractorSession::loadElement ( qtractorSessionDocument *pDocument,
 	QDomElement *pElement )
 {
 	qtractorSession::clear();
-	qtractorSession::setSessionName(pElement->attribute("name"));
+
+	// Templates have no session name...
+	if (!pDocument->isTemplate())
+		qtractorSession::setSessionName(pElement->attribute("name"));
 
 	// Session state should be postponed...
 	unsigned long iLoopStart = 0;
@@ -1447,7 +1450,7 @@ bool qtractorSession::loadElement ( qtractorSessionDocument *pDocument,
 		}
 		else
 		// Load file lists...
-		if (eChild.tagName() == "files") {
+		if (eChild.tagName() == "files" && !pDocument->isTemplate()) {
 			for (QDomNode nList = eChild.firstChild();
 					!nList.isNull();
 						nList = nList.nextSibling()) {
@@ -1568,6 +1571,7 @@ bool qtractorSession::loadElement ( qtractorSessionDocument *pDocument,
 bool qtractorSession::saveElement ( qtractorSessionDocument *pDocument,
 	QDomElement *pElement )
 {
+	// Templates should have no session name...
 	pElement->setAttribute("name", qtractorSession::sessionName());
 	pElement->setAttribute("version", QTRACTOR_VERSION);
 
@@ -1595,29 +1599,34 @@ bool qtractorSession::saveElement ( qtractorSessionDocument *pDocument,
 		QString::number(qtractorSession::loopEnd()), &eState);
 	pElement->appendChild(eState);
 
-	// Save file lists...
-	QDomElement eFiles = pDocument->document()->createElement("files");
-	// Audio files...
-	QDomElement eAudioList = pDocument->document()->createElement("audio-list");
-	qtractorAudioListView *pAudioList = NULL;
-	if (pDocument->files())
-		pAudioList = pDocument->files()->audioListView();
-	if (pAudioList == NULL)
-		return false;
-	if (!pAudioList->saveElement(pDocument, &eAudioList))
-		return false;
-	eFiles.appendChild(eAudioList);
-	// MIDI files...
-	QDomElement eMidiList = pDocument->document()->createElement("midi-list");
-	qtractorMidiListView *pMidiList = NULL;
-	if (pDocument->files())
-		pMidiList = pDocument->files()->midiListView();
-	if (pMidiList == NULL)
-		return false;
-	if (!pMidiList->saveElement(pDocument, &eMidiList))
-		return false;
-	eFiles.appendChild(eMidiList);
-	pElement->appendChild(eFiles);
+	// Files are not saved when in template mode...
+	if (!pDocument->isTemplate()) {
+		// Save file lists...
+		QDomElement eFiles = pDocument->document()->createElement("files");
+		// Audio files...
+		QDomElement eAudioList
+			= pDocument->document()->createElement("audio-list");
+		qtractorAudioListView *pAudioList = NULL;
+		if (pDocument->files())
+			pAudioList = pDocument->files()->audioListView();
+		if (pAudioList == NULL)
+			return false;
+		if (!pAudioList->saveElement(pDocument, &eAudioList))
+			return false;
+		eFiles.appendChild(eAudioList);
+		// MIDI files...
+		QDomElement eMidiList
+			= pDocument->document()->createElement("midi-list");
+		qtractorMidiListView *pMidiList = NULL;
+		if (pDocument->files())
+			pMidiList = pDocument->files()->midiListView();
+		if (pMidiList == NULL)
+			return false;
+		if (!pMidiList->saveElement(pDocument, &eMidiList))
+			return false;
+		eFiles.appendChild(eMidiList);
+		pElement->appendChild(eFiles);
+	}
 
 	// Save device lists...
 	QDomElement eDevices = pDocument->document()->createElement("devices");

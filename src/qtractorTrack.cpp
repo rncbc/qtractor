@@ -973,7 +973,7 @@ bool qtractorTrack::loadElement ( qtractorSessionDocument *pDocument,
 		}
 		else
 		// Load clips...
-		if (eChild.tagName() == "clips") {
+		if (eChild.tagName() == "clips" && !pDocument->isTemplate()) {
 			for (QDomNode nClip = eChild.firstChild();
 					!nClip.isNull();
 						nClip = nClip.nextSibling()) {
@@ -1071,18 +1071,21 @@ bool qtractorTrack::saveElement ( qtractorSessionDocument *pDocument,
 		qtractorTrack::foreground().name(), &eView);
 	pElement->appendChild(eView);
 
-	// Save track clips...
-	QDomElement eClips = pDocument->document()->createElement("clips");
-	for (qtractorClip *pClip = qtractorTrack::clips().first();
-			pClip; pClip = pClip->next()) {
-		// Create the new clip element...
-		QDomElement eClip = pDocument->document()->createElement("clip");
-		if (!pClip->saveElement(pDocument, &eClip))
-			return false;
-		// Add this clip...
-		eClips.appendChild(eClip);
+	// Clips are not saved when in template mode...
+	if (!pDocument->isTemplate()) {
+		// Save track clips...
+		QDomElement eClips = pDocument->document()->createElement("clips");
+		for (qtractorClip *pClip = qtractorTrack::clips().first();
+				pClip; pClip = pClip->next()) {
+			// Create the new clip element...
+			QDomElement eClip = pDocument->document()->createElement("clip");
+			if (!pClip->saveElement(pDocument, &eClip))
+				return false;
+			// Add this clip...
+			eClips.appendChild(eClip);
+		}
+		pElement->appendChild(eClips);
 	}
-	pElement->appendChild(eClips);
 
 	// Save track plugins...
 	QDomElement ePlugins = pDocument->document()->createElement("plugins");

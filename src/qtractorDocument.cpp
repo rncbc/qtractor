@@ -1,7 +1,7 @@
 // qtractorDocument.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -31,10 +31,11 @@
 
 // Constructor.
 qtractorDocument::qtractorDocument ( QDomDocument *pDocument,
-	const QString& sTagName )
+	const QString& sTagName, bool bTemplate )
 {
 	m_pDocument = pDocument;
 	m_sTagName  = sTagName;
+	m_bTemplate = bTemplate;
 }
 
 // Default destructor.
@@ -50,6 +51,18 @@ qtractorDocument::~qtractorDocument (void)
 QDomDocument *qtractorDocument::document (void) const
 {
 	return m_pDocument;
+}
+
+
+// Template mode property.
+void qtractorDocument::setTemplate ( bool bTemplate )
+{
+	m_bTemplate = bTemplate;
+}
+
+bool qtractorDocument::isTemplate (void) const
+{
+	return m_bTemplate;
 }
 
 
@@ -82,8 +95,11 @@ void qtractorDocument::saveTextElement ( const QString& sTagName,
 //
 
 // External storage simple load method.
-bool qtractorDocument::load ( const QString& sFilename )
+bool qtractorDocument::load ( const QString& sFilename, bool bTemplate )
 {
+	// Hold template mode.
+	setTemplate(bTemplate);
+
 	// Open file...
 	QFile file(sFilename);
 	if (!file.open(QIODevice::ReadOnly))
@@ -108,8 +124,11 @@ bool qtractorDocument::load ( const QString& sFilename )
 // qtractorDocument -- savers.
 //
 
-bool qtractorDocument::save ( const QString& sFilename )
+bool qtractorDocument::save ( const QString& sFilename, bool bTemplate )
 {
+	// Hold template mode.
+	setTemplate(bTemplate);
+
 	// We must have a valid tag name...
 	if (m_sTagName.isEmpty())
 		return false;

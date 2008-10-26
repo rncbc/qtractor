@@ -56,7 +56,7 @@ class qtractorMidiBuffer
 {
 public:
 
-	// Minimem buffer size
+	// Minimum buffer size
 	enum { MinBufferSize = 0x400 };
 
 	// Constructor.
@@ -64,7 +64,7 @@ public:
 		m_pBuffer(NULL), m_iBufferSize(0), m_iBufferMask(0),
 		m_iWriteIndex(0), m_iReadIndex(0)
 	{
-		// Adjust size of nearest power-of-two, if necessary.
+		// Adjust size to nearest power-of-two, if necessary.
 		m_iBufferSize = MinBufferSize;
 		while (m_iBufferSize < iBufferSize)
 			m_iBufferSize <<= 1;
@@ -149,6 +149,16 @@ public:
 			return (iWriteIndex - iReadIndex);
 		} else {
 			return (iWriteIndex - iReadIndex + m_iBufferSize) & m_iBufferMask;
+		}
+	}
+
+	// Reset events in buffer.
+	void reset(unsigned long iTick = 0)
+	{
+		unsigned int i = m_iReadIndex;
+		while (i != m_iWriteIndex) {
+			m_pBuffer[i].time.tick = iTick;
+			++i &= m_iBufferMask;
 		}
 	}
 

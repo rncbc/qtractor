@@ -358,7 +358,7 @@ void qtractorMidiManager::process (
 			if (++iVstMidiEvent >= MaxVstMidiEvents)
 				break;
 		}
-	
+
 		pVstEvents->numEvents = iVstMidiEvent;
 	//	pVstEvents->reserved = 0;
 	}
@@ -432,7 +432,7 @@ void qtractorMidiManager::reset (void)
 
 	m_directBuffer.clear();
 	m_queuedBuffer.clear();
-	m_postedBuffer.clear();
+	m_postedBuffer.reset(); // formerly .clear();
 
 	clear();
 

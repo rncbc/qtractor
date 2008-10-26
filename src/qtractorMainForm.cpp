@@ -105,6 +105,10 @@
 #include <math.h>
 
 
+// New default session/template file extensions...
+static const char *s_pszSessionExt   = "qts";
+static const char *s_pszTemplateExt  = "qtt";
+
 // Timer constant (magic) stuff.
 #define QTRACTOR_TIMER_MSECS    66
 #define QTRACTOR_TIMER_DELAY    233
@@ -1242,7 +1246,7 @@ QString qtractorMainForm::sessionName ( const QString& sFilename )
 	if (sSessionName.isEmpty())
 		sSessionName = tr("Untitled") + QString::number(m_iUntitled);
 	else if (!bCompletePath)
-		sSessionName = QFileInfo(sSessionName).fileName();
+		sSessionName = QFileInfo(sSessionName).baseName();
 	return sSessionName;
 }
 
@@ -1276,13 +1280,41 @@ bool qtractorMainForm::openSession (void)
 		return false;
 
 	// Ask for the filename to open...
-	const QString sExt("qtr");
+	QString sExt("qtr");
+	QStringList filters;
+	filters.append(tr("Session files (*.%1 *.%2)").arg(sExt)
+		.arg(s_pszSessionExt));
+	filters.append(tr("Template files (*.%1)")
+		.arg(s_pszTemplateExt));
+#if QT_VERSION < 0x040400
 	QString sFilename = QFileDialog::getOpenFileName(
 		this,                                       // Parent.
 		tr("Open Session") + " - " QTRACTOR_TITLE,  // Caption.
 		m_pOptions->sSessionDir,                    // Start here.
-		tr("Session files (*.%1)").arg(sExt)        // Filter files.
+		filters.join(";;")                          // Filter files.
 	);
+#else
+	// Construct open-file session/template dialog...
+	QFileDialog fileDialog(
+		this,                                       // Parent.
+		tr("Open Session") + " - " QTRACTOR_TITLE,  // Caption.
+		m_pOptions->sSessionDir,                    // Start here.
+		filters.join(";;")                          // Filter files.
+	);
+	// Set proper open-file modes...
+	fileDialog.setAcceptMode(QFileDialog::AcceptOpen);
+	fileDialog.setFileMode(QFileDialog::ExistingFile);
+	fileDialog.setHistory(m_pOptions->recentFiles);
+	fileDialog.setDefaultSuffix(sExt);
+	// Show dialog...
+	if (!fileDialog.exec())
+		return false;
+	// Have the open-file name...
+	QString sFilename = fileDialog.selectedFiles().first();
+	// Check whether we're on the template filter...
+	if (filters.indexOf(fileDialog.selectedNameFilter()) > 0)
+		sExt = s_pszTemplateExt;;
+#endif
 
 	// Have we cancelled?
 	if (sFilename.isEmpty())
@@ -1318,14 +1350,41 @@ bool qtractorMainForm::saveSession ( bool bPrompt )
 
 	// Ask for the file to save...
 	if (bPrompt) {
-		// If none is given, assume default directory.
 		// Prompt the guy...
-		const QString sExt("qtr");
+		QString sExt("qtr");
+		QStringList filters;
+		filters.append(tr("Session files (*.%1 *.%2)").arg(sExt)
+			.arg(s_pszSessionExt));
+		filters.append(tr("Template files (*.%1)")
+			.arg(s_pszTemplateExt));
+	#if QT_VERSION < 0x040400
 		sFilename = QFileDialog::getSaveFileName(this,                                       // Parent.
 			tr("Save Session") + " - " QTRACTOR_TITLE,  // Caption.
 			sFilename,                                  // Start here.
-			tr("Session files (*.%1)").arg(sExt)        // Filter files.
+			filters.join(";;")                          // Filter files.
 		);
+	#else
+		// Construct save-file session/template dialog...
+		QFileDialog fileDialog(
+			this,                                       // Parent.
+			tr("Save Session") + " - " QTRACTOR_TITLE,  // Caption.
+			sFilename,                                  // Start here.
+			filters.join(";;")                          // Filter files.
+		);
+		// Set proper save-file modes...
+		fileDialog.setAcceptMode(QFileDialog::AcceptSave);
+		fileDialog.setFileMode(QFileDialog::AnyFile);
+		fileDialog.setHistory(m_pOptions->recentFiles);
+		fileDialog.setDefaultSuffix(sExt);
+		// Show save-file dialog...
+		if (!fileDialog.exec())
+			return false;
+		// Have the save-file name...
+		sFilename = fileDialog.selectedFiles().first();
+		// Check whether we're on the template filter...
+		if (filters.indexOf(fileDialog.selectedNameFilter()) > 0)
+			sExt = s_pszTemplateExt;;
+	#endif
 		// Have we cancelled it?
 		if (sFilename.isEmpty())
 			return false;
@@ -1454,9 +1513,10 @@ bool qtractorMainForm::loadSessionFile ( const QString& sFilename )
 	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
 	// Read the file.
+	bool bTemplate = (QFileInfo(sFilename).suffix() == s_pszTemplateExt);
 	QDomDocument doc("qtractorSession");
 	bool bResult = qtractorSessionDocument(
-		&doc, m_pSession, m_pFiles).load(sFilename);
+		&doc, m_pSession, m_pFiles).load(sFilename, bTemplate);
 
 	// We're formerly done.
 	QApplication::restoreOverrideCursor();
@@ -1466,8 +1526,11 @@ bool qtractorMainForm::loadSessionFile ( const QString& sFilename )
 		if (m_pOptions)
 			m_pOptions->sSessionDir = QFileInfo(sFilename).absolutePath();
 		// We're not dirty anymore.
-		updateRecentFiles(sFilename);
-	//	m_iDirtyCount = 0;
+		if (!bTemplate) {
+			updateRecentFiles(sFilename);
+		//	m_iDirtyCount = 0;
+		}
+		// Got something loaded...
 	} else {
 		// Something went wrong...
 		appendMessagesError(
@@ -1477,12 +1540,16 @@ bool qtractorMainForm::loadSessionFile ( const QString& sFilename )
 	}
 
 	// Stabilize form...
-	m_sFilename = sFilename;
+	if (bTemplate) {
+		m_iUntitled++;
+		m_sFilename.clear();
+	} else {
+		m_sFilename = sFilename;
+	}
 	appendMessages(tr("Open session: \"%1\".").arg(sessionName(m_sFilename)));
 
 	// Now we'll try to create (update) the whole GUI session.
 	updateSession();
-
 	return bResult;
 }
 
@@ -1498,17 +1565,21 @@ bool qtractorMainForm::saveSessionFile ( const QString& sFilename )
 	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
 	// Have we any errors?
+	bool bTemplate = (QFileInfo(sFilename).suffix() == s_pszTemplateExt);
 	QDomDocument doc("qtractorSession");
 	bool bResult = qtractorSessionDocument(
-		&doc, m_pSession, m_pFiles).save(sFilename);
+		&doc, m_pSession, m_pFiles).save(sFilename, bTemplate);
 
 	// We're formerly done.
 	QApplication::restoreOverrideCursor();
 
 	if (bResult) {
 		// We're not dirty anymore.
-		updateRecentFiles(sFilename);
-		m_iDirtyCount = 0;
+		if (!bTemplate) {
+			updateRecentFiles(sFilename);
+			m_iDirtyCount = 0;
+		}
+		// Got something saved...
 	} else {
 		// Something went wrong...
 		appendMessagesError(
@@ -1521,8 +1592,10 @@ bool qtractorMainForm::saveSessionFile ( const QString& sFilename )
 	if (m_pOptions)
 		m_pOptions->sSessionDir = QFileInfo(sFilename).absolutePath();
 	// Stabilize form...
-	m_sFilename = sFilename;
+	if (!bTemplate)
+		m_sFilename = sFilename;
 	appendMessages(tr("Save session: \"%1\".").arg(sessionName(m_sFilename)));
+
 	stabilizeForm();
 	return bResult;
 }
