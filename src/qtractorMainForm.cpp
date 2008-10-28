@@ -1192,10 +1192,6 @@ void qtractorMainForm::midiControlEvent ( qtractorMidiControlEvent *pCtlEvent )
 				// to avoid feedback issues with
 				// motorized external controllers...
 				pTrack->setGain(fGain);
-				qtractorMidiBus *pMidiBus
-					= static_cast<qtractorMidiBus *> (pTrack->outputBus());
-				if (pMidiBus)                                              
-					pMidiBus->setVolume(pTrack, fGain);
 				qtractorMixer *pMixer = mixer();
 				if (pMixer) {
 					qtractorMixerStrip *pStrip
@@ -1222,11 +1218,6 @@ void qtractorMainForm::midiControlEvent ( qtractorMidiControlEvent *pCtlEvent )
 				// to avoid feedback issues with
 				// motorized external controllers...
 				float fPanning = (float(pCtlEvent->value()) - 63.0f) / 64.0f;
-				pTrack->setPanning(fPanning);
-				qtractorMidiBus *pMidiBus
-					= static_cast<qtractorMidiBus *> (pTrack->outputBus());
-				if (pMidiBus)
-					pMidiBus->setPanning(pTrack, fPanning);
 				qtractorMixer *pMixer = mixer();
 				if (pMixer) {
 					qtractorMixerStrip *pStrip
