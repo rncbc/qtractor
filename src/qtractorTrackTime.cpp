@@ -156,7 +156,7 @@ void qtractorTrackTime::updatePixmap ( int cx, int /* cy */)
 		}
 	}
 
-	// Draw punch boundaries, if applicable...
+	// Draw punch in/out boundaries, if applicable...
 	if (pSession->isPunching()) {
 		QPolygon polyg(3);
 	//	h -= 4;

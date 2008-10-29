@@ -134,9 +134,12 @@ void qtractorMidiEditTime::updatePixmap ( int cx, int /*cy*/)
 		iBeat++;
 	}
 
-	// Draw loop boundaries, if applicable...
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession && pSession->isLooping()) {
+	if (pSession == NULL)
+		return;
+	
+	// Draw loop boundaries, if applicable...
+	if (pSession->isLooping()) {
 		QPolygon polyg(3);
 	//	h -= 4;
 		int d = (h >> 2) + 1;
@@ -151,6 +154,31 @@ void qtractorMidiEditTime::updatePixmap ( int cx, int /*cy*/)
 			p.drawPolygon(polyg);
 		}
 		x = pTimeScale->pixelFromFrame(pSession->loopEnd()) - dx;
+		if (x >= 0 && x < w) {
+			polyg.putPoints(0, 3,
+				x, h - d,
+				x, h,
+				x - d, h - d);
+			p.drawPolygon(polyg);
+		}
+	}
+
+	// Draw punch in/out boundaries, if applicable...
+	if (pSession->isPunching()) {
+		QPolygon polyg(3);
+	//	h -= 4;
+		int d = (h >> 2) + 1;
+		p.setPen(Qt::darkMagenta);
+		p.setBrush(Qt::magenta);
+		x = pTimeScale->pixelFromFrame(pSession->punchIn()) - dx;
+		if (x >= 0 && x < w) {
+			polyg.putPoints(0, 3,
+				x + d, h - d,
+				x, h,
+				x, h - d);
+			p.drawPolygon(polyg);
+		}
+		x = pTimeScale->pixelFromFrame(pSession->punchOut()) - dx;
 		if (x >= 0 && x < w) {
 			polyg.putPoints(0, 3,
 				x, h - d,
@@ -262,24 +290,46 @@ bool qtractorMidiEditTime::dragHeadStart ( const QPoint& pos )
 		return true;
 	}
 
-	// Check loop-points, translating to edit-head/tail headers...
+	// Check loop and punch points...
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession && pSession->isLooping()) {
-		qtractorTimeScale *pTimeScale = m_pEditor->timeScale();
-		int dx = d + pTimeScale->pixelFromFrame(m_pEditor->offset());
-		// Check loop-start header...
-		rect.moveLeft(pTimeScale->pixelFromFrame(pSession->loopStart()) - dx);
-		if (rect.contains(pos)) {
-			m_dragCursor = DragLoopStart;
-			qtractorScrollView::setCursor(QCursor(Qt::SizeHorCursor));
-			return true;
+	if (pSession) {
+		// Loop points...
+		if (pSession->isLooping()) {
+			qtractorTimeScale *pTimeScale = m_pEditor->timeScale();
+			int dx = d + pTimeScale->pixelFromFrame(m_pEditor->offset());
+			// Check loop-start header...
+			rect.moveLeft(pTimeScale->pixelFromFrame(pSession->loopStart()) - dx);
+			if (rect.contains(pos)) {
+				m_dragCursor = DragLoopStart;
+				qtractorScrollView::setCursor(QCursor(Qt::SizeHorCursor));
+				return true;
+			}
+			// Check loop-end header...
+			rect.moveLeft(pTimeScale->pixelFromFrame(pSession->loopEnd()) - dx);
+			if (rect.contains(pos)) {
+				m_dragCursor = DragLoopEnd;
+				qtractorScrollView::setCursor(QCursor(Qt::SizeHorCursor));
+				return true;
+			}
 		}
-		// Check loop-end header...
-		rect.moveLeft(pTimeScale->pixelFromFrame(pSession->loopEnd()) - dx);
-		if (rect.contains(pos)) {
-			m_dragCursor = DragLoopEnd;
-			qtractorScrollView::setCursor(QCursor(Qt::SizeHorCursor));
-			return true;
+		// Punch in/out points...
+		if (pSession->isPunching()) {
+			qtractorTimeScale *pTimeScale = m_pEditor->timeScale();
+			int dx = d + pTimeScale->pixelFromFrame(m_pEditor->offset());
+			// Check punch-in header...
+			rect.moveLeft(pTimeScale->pixelFromFrame(pSession->punchIn()) - dx);
+			if (rect.contains(pos)) {
+				m_dragCursor = DragPunchIn;
+				qtractorScrollView::setCursor(QCursor(Qt::SizeHorCursor));
+				return true;
+			}
+			// Check punch-out header...
+			rect.moveLeft(pTimeScale->pixelFromFrame(pSession->punchOut()) - dx);
+			if (rect.contains(pos)) {
+				m_dragCursor = DragPunchOut;
+				qtractorScrollView::setCursor(QCursor(Qt::SizeHorCursor));
+				return true;
+			}
 		}
 	}
 
@@ -395,12 +445,14 @@ void qtractorMidiEditTime::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 		pMainForm->updateTransportTime(iFrame);
 		break;
 	case DragEditHead:
+	case DragPunchIn:
 	case DragLoopStart:
 		// Edit-head positioning...
 		m_pEditor->editView()->ensureVisible(pos.x(), y, 16, 0);
 		m_pEditor->setEditHead(iFrame);
 		break;
 	case DragEditTail:
+	case DragPunchOut:
 	case DragLoopEnd:
 		// Edit-head positioning...
 		m_pEditor->editView()->ensureVisible(pos.x(), y, 16, 0);
@@ -488,6 +540,26 @@ void qtractorMidiEditTime::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 					pSession->loopStart(), pSession->editTail()));
 		/*	m_pEditor->updateContents();
 			m_pEditor->contentsChangeNotify(); */
+		}
+		break;
+	case DragPunchIn:
+		// New punch-in boundary...
+		if (pSession->editHead() < pSession->punchOut()) {
+			// Yep, new punch-in point...
+			pSession->setPunch(pSession->editHead(), pSession->punchOut());
+			// For visual feedback...
+			m_pEditor->updateContents();
+			m_pEditor->contentsChangeNotify();
+		}
+		break;
+	case DragPunchOut:
+		// New punch-out boundary...
+		if (pSession->punchIn() < pSession->editTail()) {
+			// Yep, new punch-out point...
+			pSession->setPunch(pSession->punchIn(), pSession->editTail());
+			// For visual feedback...
+			m_pEditor->updateContents();
+			m_pEditor->contentsChangeNotify();
 		}
 		break;
 	case DragStart:

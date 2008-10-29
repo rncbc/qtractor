@@ -170,6 +170,8 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	addAction(m_ui.transportLoopAction);
 	addAction(m_ui.transportLoopSetAction);
 	addAction(m_ui.transportPlayAction);
+	addAction(m_ui.transportPunchAction);
+	addAction(m_ui.transportPunchSetAction);
 
 	// Ah, make it stand right.
 	setFocus();
@@ -408,6 +410,12 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 		QObject::connect(m_ui.transportRecordAction,
 			SIGNAL(triggered(bool)),
 			pMainForm, SLOT(transportRecord()));
+		QObject::connect(m_ui.transportPunchAction,
+			SIGNAL(triggered(bool)),
+			pMainForm, SLOT(transportPunch()));
+		QObject::connect(m_ui.transportPunchSetAction,
+			SIGNAL(triggered(bool)),
+			pMainForm, SLOT(transportPunchSet()));
 	}
 #if 0
 	// Default snap-per-beat setting...
@@ -1221,6 +1229,7 @@ void qtractorMidiEditorForm::stabilizeForm (void)
 		unsigned long iPlayHead = pSession->playHead();
 		bool bPlaying    = pSession->isPlaying();
 		bool bRecording  = pSession->isRecording();
+		bool bPunching   = pSession->isPunching();
 		bool bLooping    = pSession->isLooping();
 		bool bEnabled    = (!bPlaying || !bRecording);
 		bool bSelectable = (pSession->editHead() < pSession->editTail());
@@ -1237,11 +1246,15 @@ void qtractorMidiEditorForm::stabilizeForm (void)
 			&& (bLooping || bSelectable));
 		m_ui.transportLoopSetAction->setEnabled(bEnabled && bSelectable);
 		m_ui.transportRecordAction->setEnabled(pSession->recordTracks() > 0);
+		m_ui.transportPunchAction->setEnabled(bEnabled
+			&& (bPunching || bSelectable));
+		m_ui.transportPunchSetAction->setEnabled(bEnabled && bSelectable);
 		m_ui.transportRewindAction->setChecked(iRolling < 0);
 		m_ui.transportFastForwardAction->setChecked(iRolling > 0);
 		m_ui.transportLoopAction->setChecked(bLooping);
 		m_ui.transportPlayAction->setChecked(bPlaying);
 		m_ui.transportRecordAction->setChecked(bRecording);
+		m_ui.transportPunchAction->setChecked(bPunching);
 	}
 }
 

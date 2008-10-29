@@ -1698,10 +1698,10 @@
     <iconset resource="../icons/qtractor.qrc" >:/icons/transportPunch.png</iconset>
    </property>
    <property name="text" >
-    <string>&amp;Punch In/Out</string>
+    <string>&amp;Punch</string>
    </property>
    <property name="iconText" >
-    <string>Punch in/out</string>
+    <string>Punch</string>
    </property>
    <property name="toolTip" >
     <string>Punch in/out</string>
@@ -1721,10 +1721,10 @@
     <string>Punch set</string>
    </property>
    <property name="toolTip" >
-    <string>Punch set</string>
+    <string>Punch in/out set</string>
    </property>
    <property name="statusTip" >
-    <string>Transport punch set</string>
+    <string>Transport punch in/out set</string>
    </property>
    <property name="shortcut" >
     <string>Ctrl+P</string>

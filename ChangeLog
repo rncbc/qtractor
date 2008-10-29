@@ -6,8 +6,8 @@ ChangeLog
 CVS HEAD
 
 - Punch in/out (range) recording is taking experimental shape,
-  with setttings already accessible via main menu and transport
-  toolbar and promptly visible on main track view.
+  with setttings already accessible on main menus and transport
+  toolbars and promptly visible on main view and MIDI editors.
 
 - External MIDI control events for channel volume (7) and channel
   panning (10) are now handled properly through session tracks.
