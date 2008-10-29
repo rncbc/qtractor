@@ -226,6 +226,12 @@ public:
 	unsigned long loopEnd() const;
 	bool isLooping() const;
 
+	// Session punch points accessors.
+	void setPunch(unsigned long iPunchIn, unsigned long iPunchOut);
+	unsigned long punchIn() const;
+	unsigned long punchOut() const;
+	bool isPunching() const;
+
 	// Sanitize a given name.
 	static QString sanitize(const QString& s); 
 
@@ -369,6 +375,13 @@ private:
 	// Session time-normalized loop points.
 	unsigned long m_iLoopStartTime;
 	unsigned long m_iLoopEndTime;
+
+	// Session punch points.
+	unsigned long m_iPunchIn;
+	unsigned long m_iPunchOut;
+	// Session time-normalized punch points.
+	unsigned long m_iPunchInTime;
+	unsigned long m_iPunchOutTime;
 
 	// Consolidated record state.
 	bool m_bRecording;

@@ -581,6 +581,17 @@ void qtractorTrackView::updatePixmap ( int cx, int cy )
 		if (x >= 0 && x < w)
 			painter.drawLine(x, 0, x, h);
 	}
+
+	// Draw punch boundaries, if applicable...
+	if (pSession->isPunching()) {
+		painter.setPen(Qt::darkMagenta);
+		x = pSession->pixelFromFrame(pSession->punchIn()) - cx;
+		if (x >= 0 && x < w)
+			painter.drawLine(x, 0, x, h);
+		x = pSession->pixelFromFrame(pSession->punchOut()) - cx;
+		if (x >= 0 && x < w)
+			painter.drawLine(x, 0, x, h);
+	}
 }
 
 

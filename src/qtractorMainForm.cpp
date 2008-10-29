@@ -387,6 +387,8 @@ qtractorMainForm::qtractorMainForm (
 	m_ui.transportLoopSetAction->setAutoRepeat(false);
 	m_ui.transportPlayAction->setAutoRepeat(false);
 	m_ui.transportRecordAction->setAutoRepeat(false);
+	m_ui.transportPunchAction->setAutoRepeat(false);
+	m_ui.transportPunchSetAction->setAutoRepeat(false);
 #endif
 
 	// Some actions surely need those
@@ -617,9 +619,15 @@ qtractorMainForm::qtractorMainForm (
 	QObject::connect(m_ui.transportRecordAction,
 		SIGNAL(triggered(bool)),
 		SLOT(transportRecord()));
-	QObject::connect(m_ui.transportMetroAction,
+	QObject::connect(m_ui.transportLoopAction,
 		SIGNAL(triggered(bool)),
-		SLOT(transportMetro()));
+		SLOT(transportLoop()));
+	QObject::connect(m_ui.transportPunchAction,
+		SIGNAL(triggered(bool)),
+		SLOT(transportPunch()));
+	QObject::connect(m_ui.transportPunchSetAction,
+		SIGNAL(triggered(bool)),
+		SLOT(transportPunchSet()));
 	QObject::connect(m_ui.transportFollowAction,
 		SIGNAL(triggered(bool)),
 		SLOT(transportFollow()));
@@ -2923,6 +2931,51 @@ void qtractorMainForm::transportRecord (void)
 }
 
 
+// Transport punch in/out.
+void qtractorMainForm::transportPunch (void)
+{
+#ifdef CONFIG_DEBUG
+	appendMessages("qtractorMainForm::transportPunch()");
+#endif
+
+	// Make sure session is activated...
+	checkRestartSession();
+
+	// Do the punch in/out toggle switch...
+	unsigned long iPunchIn  = 0;
+	unsigned long iPunchOut = 0;
+
+	if (!m_pSession->isPunching()) {
+		iPunchIn  = m_pSession->editHead();
+		iPunchOut = m_pSession->editTail();
+	}
+
+	// Now, express the change as command...
+	m_pSession->setPunch(iPunchIn, iPunchOut);
+
+	// No need for turn-around notification...
+	updateContents(NULL, true);
+}
+
+
+// Transport punch set.
+void qtractorMainForm::transportPunchSet (void)
+{
+#ifdef CONFIG_DEBUG
+	appendMessages("qtractorMainForm::transportPunchSet()");
+#endif
+
+	// Make sure session is activated...
+	checkRestartSession();
+
+	// Do the punch in/out setting...
+	m_pSession->setPunch(m_pSession->editHead(), m_pSession->editTail());
+
+	// No need for turn-around notification...
+	updateContents(NULL, true);
+}
+
+
 // Metronome transport option.
 void qtractorMainForm::transportMetro (void)
 {
@@ -3288,6 +3341,7 @@ void qtractorMainForm::stabilizeForm (void)
 	bool bSelectable = (iSessionLength > 0);
 	bool bPlaying    = m_pSession->isPlaying();
 	bool bRecording  = m_pSession->isRecording();
+	bool bPunching   = m_pSession->isPunching();
 	bool bLooping    = m_pSession->isLooping();
 	bool bRolling    = (bPlaying && bRecording);
 	bool bBumped     = (!bRolling && (m_iPlayHead > 0 || bPlaying));
@@ -3418,6 +3472,9 @@ void qtractorMainForm::stabilizeForm (void)
 		!bRolling && (bLooping || bSelectable));
 	m_ui.transportLoopSetAction->setEnabled(!bRolling && bSelectable);
 	m_ui.transportRecordAction->setEnabled(m_pSession->recordTracks() > 0);
+	m_ui.transportPunchAction->setEnabled(
+		!bRolling && (bPunching || bSelectable));
+	m_ui.transportPunchSetAction->setEnabled(!bRolling && bSelectable);
 	m_ui.transportMetroAction->setEnabled(
 		m_pOptions->bAudioMetronome || m_pOptions->bMidiMetronome);
 
@@ -3426,6 +3483,7 @@ void qtractorMainForm::stabilizeForm (void)
 	m_ui.transportLoopAction->setChecked(bLooping);
 	m_ui.transportPlayAction->setChecked(bPlaying);
 	m_ui.transportRecordAction->setChecked(bRecording);
+	m_ui.transportPunchAction->setChecked(bPunching);
 
 	// Special record mode settlement.
 	m_pTransportTimeSpinBox->setReadOnly(bRecording);

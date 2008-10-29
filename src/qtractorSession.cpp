@@ -230,6 +230,11 @@ void qtractorSession::clear (void)
 	m_iLoopStartTime = 0;
 	m_iLoopEndTime   = 0;
 
+	m_iPunchIn       = 0;
+	m_iPunchOut      = 0;
+	m_iPunchInTime   = 0;
+	m_iPunchOutTime  = 0;
+
 	m_bRecording     = false;
 
 	updateTimeScale();
@@ -587,6 +592,12 @@ void qtractorSession::updateTimeScale (void)
 		}
 	}
 
+	// Update punch points...
+	if (m_iPunchIn < m_iPunchOut) {
+		m_iPunchIn  = frameFromTick(m_iPunchInTime);
+		m_iPunchOut = frameFromTick(m_iPunchOutTime);
+	}
+
 	// Do not forget those edit points too...
 	m_iEditHead = frameFromTick(m_iEditHeadTime);
 	m_iEditTail = frameFromTick(m_iEditTailTime);
@@ -618,6 +629,12 @@ void qtractorSession::updateTimeResolution (void)
 	if (m_iLoopStart < m_iLoopEnd) {
 		m_iLoopStartTime = tickFromFrame(m_iLoopStart);
 		m_iLoopEndTime   = tickFromFrame(m_iLoopEnd);
+	}
+
+	// Update punch points...
+	if (m_iPunchIn < m_iPunchOut) {
+		m_iPunchInTime  = tickFromFrame(m_iPunchIn);
+		m_iPunchOutTime = tickFromFrame(m_iPunchOut);
 	}
 
 	// Do not forget those edit points too...
@@ -1096,6 +1113,41 @@ bool qtractorSession::isLooping (void) const
 }
 
 
+// Session punch points accessors.
+void qtractorSession::setPunch (
+	unsigned long iPunchIn, unsigned long iPunchOut )
+{
+	// Local prepare...
+	if (iPunchIn >= iPunchOut) {
+		iPunchIn  = 0;
+		iPunchOut = 0;
+	}
+
+	// Local commit...
+	m_iPunchIn  = iPunchIn;
+	m_iPunchOut = iPunchOut;
+
+	// Time-normalized references too...
+	m_iPunchInTime  = tickFromFrame(iPunchIn);
+	m_iPunchOutTime = tickFromFrame(iPunchOut);
+}
+
+unsigned long qtractorSession::punchIn (void) const
+{
+	return m_iPunchIn;
+}
+
+unsigned long qtractorSession::punchOut (void) const
+{
+	return m_iPunchOut;
+}
+
+bool qtractorSession::isPunching (void) const
+{
+	return (m_iPunchIn < m_iPunchOut);
+}
+
+
 // Sanitize a given name.
 QString qtractorSession::sanitize ( const QString& s )
 {
@@ -1398,6 +1450,9 @@ bool qtractorSession::loadElement ( qtractorSessionDocument *pDocument,
 	unsigned long iLoopStart = 0;
 	unsigned long iLoopEnd   = 0;
 
+	unsigned long iPunchIn   = 0;
+	unsigned long iPunchOut  = 0;
+
 	// Load session children...
 	for (QDomNode nChild = pElement->firstChild();
 			!nChild.isNull();
@@ -1446,6 +1501,10 @@ bool qtractorSession::loadElement ( qtractorSessionDocument *pDocument,
 					iLoopStart = eState.text().toULong();
 				else if (eState.tagName() == "loop-end")
 					iLoopEnd = eState.text().toULong();
+				else if (eState.tagName() == "punch-in")
+					iPunchIn = eState.text().toULong();
+				else if (eState.tagName() == "punch-out")
+					iPunchOut = eState.text().toULong();
 			}
 		}
 		else
@@ -1563,6 +1622,8 @@ bool qtractorSession::loadElement ( qtractorSessionDocument *pDocument,
 	// Check whether some deferred state needs to be set...
 	if (iLoopStart < iLoopEnd)
 		qtractorSession::setLoop(iLoopStart, iLoopEnd);
+	if (iPunchIn < iPunchOut)
+		qtractorSession::setPunch(iPunchIn, iPunchOut);
 
 	return true;
 }
@@ -1573,7 +1634,7 @@ bool qtractorSession::saveElement ( qtractorSessionDocument *pDocument,
 {
 	// Templates should have no session name...
 	pElement->setAttribute("name", qtractorSession::sessionName());
-	pElement->setAttribute("version", QTRACTOR_VERSION);
+	pElement->setAttribute("version", PACKAGE_STRING);
 
 	// Save session properties...
 	QDomElement eProps = pDocument->document()->createElement("properties");
@@ -1597,6 +1658,10 @@ bool qtractorSession::saveElement ( qtractorSessionDocument *pDocument,
 		QString::number(qtractorSession::loopStart()), &eState);
 	pDocument->saveTextElement("loop-end",
 		QString::number(qtractorSession::loopEnd()), &eState);
+	pDocument->saveTextElement("punch-in",
+		QString::number(qtractorSession::punchIn()), &eState);
+	pDocument->saveTextElement("punch-out",
+		QString::number(qtractorSession::punchOut()), &eState);
 	pElement->appendChild(eState);
 
 	// Files are not saved when in template mode...

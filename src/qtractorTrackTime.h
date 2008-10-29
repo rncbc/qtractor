@@ -99,7 +99,8 @@ private:
 	enum DragState {
 		DragNone = 0, DragStart, DragSelect,
 		DragPlayHead, DragEditHead, DragEditTail,
-		DragLoopStart, DragLoopEnd
+		DragLoopStart, DragLoopEnd,
+		DragPunchIn, DragPunchOut
 	} m_dragState, m_dragCursor;
 
 	QRect  m_rectDrag;

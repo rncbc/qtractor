@@ -132,6 +132,8 @@
    <addaction name="separator" />
    <addaction name="transportPlayAction" />
    <addaction name="transportRecordAction" />
+   <addaction name="separator" />
+   <addaction name="transportPunchAction" />
   </widget>
   <widget class="QToolBar" name="timeToolbar" >
    <property name="orientation" >
@@ -285,6 +287,9 @@
     <addaction name="separator" />
     <addaction name="transportPlayAction" />
     <addaction name="transportRecordAction" />
+    <addaction name="separator" />
+    <addaction name="transportPunchAction" />
+    <addaction name="transportPunchSetAction" />
     <addaction name="separator" />
     <addaction name="transportMetroAction" />
     <addaction name="separator" />
@@ -1683,6 +1688,46 @@
    </property>
    <property name="shortcut" >
     <string/>
+   </property>
+  </action>
+  <action name="transportPunchAction" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="icon" >
+    <iconset resource="../icons/qtractor.qrc" >:/icons/transportPunch.png</iconset>
+   </property>
+   <property name="text" >
+    <string>&amp;Punch In/Out</string>
+   </property>
+   <property name="iconText" >
+    <string>Punch in/out</string>
+   </property>
+   <property name="toolTip" >
+    <string>Punch in/out</string>
+   </property>
+   <property name="statusTip" >
+    <string>Transport punch in/out</string>
+   </property>
+   <property name="shortcut" >
+    <string>Shift+Ctrl+P</string>
+   </property>
+  </action>
+  <action name="transportPunchSetAction" >
+   <property name="text" >
+    <string>Punch Se&amp;t</string>
+   </property>
+   <property name="iconText" >
+    <string>Punch set</string>
+   </property>
+   <property name="toolTip" >
+    <string>Punch set</string>
+   </property>
+   <property name="statusTip" >
+    <string>Transport punch set</string>
+   </property>
+   <property name="shortcut" >
+    <string>Ctrl+P</string>
    </property>
   </action>
   <action name="transportMetroAction" >

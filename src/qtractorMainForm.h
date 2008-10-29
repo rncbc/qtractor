@@ -176,6 +176,8 @@ public slots:
 	void transportLoopSet();
 	void transportPlay();
 	void transportRecord();
+	void transportPunch();
+	void transportPunchSet();
 	void transportMetro();
 	void transportFollow();
 	void transportAutoBackward();
