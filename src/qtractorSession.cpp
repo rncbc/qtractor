@@ -957,7 +957,8 @@ void qtractorSession::setPlaying ( bool bPlaying )
 	if (bPlaying && isRecording()) {
 		// Take a snapshot on where recording
 		// clips are about to start...
-		unsigned long iClipStart = playHead();
+		unsigned long iPlayHead  = playHead();
+		unsigned long iClipStart = iPlayHead;
 		if (isPunching()) {
 			unsigned long iPunchIn = punchIn();
 			if (iClipStart < iPunchIn)
@@ -967,8 +968,19 @@ void qtractorSession::setPlaying ( bool bPlaying )
 		for (qtractorTrack *pTrack = m_tracks.first();
 				pTrack; pTrack = pTrack->next()) {
 			qtractorClip *pClipRecord = pTrack->clipRecord();
-			if (pClipRecord)
+			if (pClipRecord) {
 				pClipRecord->setClipStart(iClipStart);
+				// MIDI adjust to playing queue start...
+				if (pTrack->trackType() == qtractorTrack::Midi
+					&& iClipStart > iPlayHead) {
+					qtractorMidiClip *pMidiClip
+						= static_cast<qtractorMidiClip *> (pClipRecord);
+					if (pMidiClip) {
+						pMidiClip->sequence()->setTimeOffset(
+							tickFromFrame(iClipStart - iPlayHead));
+					}
+				}
+			}
 		}
 	}
 
