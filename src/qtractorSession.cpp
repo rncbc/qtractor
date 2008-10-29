@@ -955,7 +955,15 @@ void qtractorSession::setPlaying ( bool bPlaying )
 {
 	// For all armed tracks...
 	if (bPlaying && isRecording()) {
-		unsigned long iClipStart = m_pAudioEngine->sessionCursor()->frame();
+		// Take a snapshot on where recording
+		// clips are about to start...
+		unsigned long iClipStart = playHead();
+		if (isPunching()) {
+			unsigned long iPunchIn = punchIn();
+			if (iClipStart < iPunchIn)
+				iClipStart = iPunchIn;
+		}
+		// Of course, mark thos clips alright...
 		for (qtractorTrack *pTrack = m_tracks.first();
 				pTrack; pTrack = pTrack->next()) {
 			qtractorClip *pClipRecord = pTrack->clipRecord();
@@ -1148,6 +1156,18 @@ bool qtractorSession::isPunching (void) const
 }
 
 
+unsigned long qtractorSession::punchInTime (void) const
+{
+	return m_iPunchInTime;
+}
+
+unsigned long qtractorSession::punchOutTime (void) const
+{
+	return m_iPunchOutTime;
+}
+
+
+
 // Sanitize a given name.
 QString qtractorSession::sanitize ( const QString& s )
 {
@@ -1232,13 +1252,19 @@ void qtractorSession::trackRecord ( qtractorTrack *pTrack, bool bRecord )
 	}
 
 	// Here's the place to create and set the capture clip...
-	unsigned long iPlayHead = playHead();
+	unsigned long iClipStart = playHead();
+
+	if (isPunching()) {
+		unsigned long iPunchIn = punchIn();
+		if (iClipStart < iPunchIn)
+			iClipStart = iPunchIn;
+	}
 
 	switch (pTrack->trackType()) {
 	case qtractorTrack::Audio:
 	{
 		qtractorAudioClip *pAudioClip = new qtractorAudioClip(pTrack);
-		pAudioClip->setClipStart(iPlayHead);
+		pAudioClip->setClipStart(iClipStart);
 		pAudioClip->openAudioFile(
 			createFilePath(pTrack->trackName(), 0,
 				qtractorAudioFileFactory::defaultExt()),
@@ -1251,7 +1277,7 @@ void qtractorSession::trackRecord ( qtractorTrack *pTrack, bool bRecord )
 	case qtractorTrack::Midi:
 	{
 		qtractorMidiClip *pMidiClip = new qtractorMidiClip(pTrack);
-		pMidiClip->setClipStart(iPlayHead);
+		pMidiClip->setClipStart(iClipStart);
 		pMidiClip->openMidiFile(
 			createFilePath(pTrack->trackName(), 0, "mid"),
 			qtractorMidiClip::defaultFormat(),
@@ -1260,7 +1286,7 @@ void qtractorSession::trackRecord ( qtractorTrack *pTrack, bool bRecord )
 		// MIDI adjust to playing queue start
 		// iif armed while already playing ...
 		if (isPlaying()) {
-			unsigned long iTime = tickFromFrame(iPlayHead);
+			unsigned long iTime = tickFromFrame(iClipStart);
 			unsigned long iTimeStart = m_pMidiEngine->timeStart();
 			if (iTime > iTimeStart)
 				pMidiClip->sequence()->setTimeOffset(iTime - iTimeStart);

@@ -232,6 +232,9 @@ public:
 	unsigned long punchOut() const;
 	bool isPunching() const;
 
+	unsigned long punchInTime() const;
+	unsigned long punchOutTime() const;
+
 	// Sanitize a given name.
 	static QString sanitize(const QString& s); 
 

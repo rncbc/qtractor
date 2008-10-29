@@ -514,7 +514,7 @@ bool qtractorTrackButtonCommand::redo (void)
 		bOn = pTrack->isRecord();
 		if (bOn && !m_bOn
 			&& m_pClipCommand == NULL && m_iRecordCount == 0) {
-			m_pClipCommand = new qtractorClipCommand(QString::null);
+			m_pClipCommand = new qtractorClipCommand(QString());
 			// Do all the record stuffing here...
 			if (m_pClipCommand->addClipRecord(pTrack)) {
 				// Yes, we've recorded something...

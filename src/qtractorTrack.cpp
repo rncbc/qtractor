@@ -751,8 +751,33 @@ void qtractorTrack::process ( qtractorClip *pClip,
 			qtractorAudioClip *pAudioClip
 				= static_cast<qtractorAudioClip *> (m_pClipRecord);
 			if (pAudioClip) {
-				pAudioClip->write(
-					pInputBus->in(), nframes, pInputBus->channels(), offset);
+				// Clip recording...
+				if (m_pSession->isPunching()) {
+					// Punch-in/out recording...
+					unsigned long iPunchIn  = m_pSession->punchIn();
+					unsigned long iPunchOut = m_pSession->punchOut();
+					if (iPunchIn < iFrameEnd && iPunchOut > iFrameStart) {
+						unsigned int offs = offset;
+						unsigned int nfrs = nframes;
+						if (iPunchIn >= iFrameStart) {
+							// Punch-in...
+							offs += (iPunchIn - iFrameStart);
+							if (iPunchOut < iFrameEnd)	// Punch-out (unlikely...)
+								nfrs = (iPunchOut - iPunchIn);
+							else
+								nfrs = (iFrameEnd - iPunchIn);
+						}
+						else
+						if (iPunchOut < iFrameEnd)	// Punch-out (likely...)
+							nfrs = (iPunchOut - iFrameStart);
+						pAudioClip->write(
+							pInputBus->in(), nfrs, pInputBus->channels(), offs);
+					}
+				} else {
+					// Regular full-length recording...
+					pAudioClip->write(
+						pInputBus->in(), nframes, pInputBus->channels(), offset);
+				}
 			}
 			// Record non-passthru metering...
 			pAudioMonitor->process_meter(

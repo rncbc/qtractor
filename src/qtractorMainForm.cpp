@@ -3338,7 +3338,7 @@ void qtractorMainForm::stabilizeForm (void)
 
 	bool bEnabled    = (m_pTracks && pTrack != NULL);
 	bool bSelected   = (m_pTracks && m_pTracks->isClipSelected());
-	bool bSelectable = (iSessionLength > 0);
+	bool bSelectable = (m_pSession->editHead() < m_pSession->editTail());
 	bool bPlaying    = m_pSession->isPlaying();
 	bool bRecording  = m_pSession->isRecording();
 	bool bPunching   = m_pSession->isPunching();
@@ -3351,11 +3351,9 @@ void qtractorMainForm::stabilizeForm (void)
 	m_ui.editPasteAction->setEnabled(m_pTracks && !m_pTracks->isClipboardEmpty());
 	m_ui.editDeleteAction->setEnabled(bSelected);
 
-	m_ui.editSelectAllAction->setEnabled(bSelectable);
+	m_ui.editSelectAllAction->setEnabled(iSessionLength > 0);
 	m_ui.editSelectTrackAction->setEnabled(bEnabled);
-	if (bSelectable)
-		bSelectable = (m_pSession->editHead() < m_pSession->editTail());
-	m_ui.editSelectRangeAction->setEnabled(bSelectable);
+	m_ui.editSelectRangeAction->setEnabled(iSessionLength > 0 && bSelectable);
 	m_ui.editSelectNoneAction->setEnabled(bSelected);
 
 	m_ui.editClipNewAction->setEnabled(bEnabled);
@@ -4058,11 +4056,22 @@ void qtractorMainForm::timerSlot (void)
 				updateTransportTime(iPlayHead);
 				// If recording update track view and session length, anyway...
 				if (m_pTracks && m_pSession->isRecording()) {
-					m_pTracks->trackView()->updateContentsRecord();
-					m_pSession->updateSessionLength(m_iPlayHead);
-					m_statusItems[StatusTime]->setText(
-						m_pSession->timeScale()->textFromFrame(
-							m_pSession->sessionLength()));
+					// HACK: Care of punch-out...
+					if (m_pSession->isPunching()
+						&& iPlayHead > long(m_pSession->punchOut())) {
+						if (setRecording(false)) {
+							// Send MMC RECORD_EXIT command...
+							pMidiEngine->sendMmcCommand(
+								qtractorMmcEvent::RECORD_EXIT);
+							m_iTransportUpdate++;
+						}
+					} else {
+						m_pTracks->trackView()->updateContentsRecord();
+						m_pSession->updateSessionLength(m_iPlayHead);
+						m_statusItems[StatusTime]->setText(
+							m_pSession->timeScale()->textFromFrame(
+								m_pSession->sessionLength()));
+					}
 				}
 				else
 				// Whether to continue past end...

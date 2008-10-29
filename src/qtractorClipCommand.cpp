@@ -185,15 +185,29 @@ bool qtractorClipCommand::addClipRecord ( qtractorTrack *pTrack )
 	pClip->close(true);
 
 	// Check final length...
-	if (pClip->clipLength() < 1)
+	unsigned long iClipStart  = pClip->clipStart();
+	unsigned long iClipLength = pClip->clipLength();
+
+	if (iClipLength < 1)
 		return false;
 
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
 		return false;
+
+	if (pSession->isPunching()) {
+		unsigned long iPunchOut = pSession->punchOut();
+		if (iClipStart >= iPunchOut)
+			return false;
+		if (iClipStart + iClipLength > iPunchOut)
+			iClipLength = iPunchOut - iClipStart;
+	}
 
 	// Reference for immediate file addition...
-	qtractorFiles *pFiles = pMainForm->files();
+	qtractorFiles    *pFiles    = NULL;
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm)
+		pFiles = pMainForm->files();
 
 	// Now, its imperative to make a proper copy of those clips...
 	switch (pTrack->trackType()) {
@@ -202,8 +216,8 @@ bool qtractorClipCommand::addClipRecord ( qtractorTrack *pTrack )
 			= static_cast<qtractorAudioClip *> (pClip);
 		if (pAudioClip) {
 			pAudioClip = new qtractorAudioClip(*pAudioClip);
-			pAudioClip->setClipStart(pClip->clipStart());
-			pAudioClip->setClipLength(pClip->clipLength());
+			pAudioClip->setClipStart(iClipStart);
+			pAudioClip->setClipLength(iClipLength);
 			addClip(pAudioClip, pTrack);
 			if (pFiles)
 				pFiles->addAudioFile(pAudioClip->filename());
@@ -215,8 +229,8 @@ bool qtractorClipCommand::addClipRecord ( qtractorTrack *pTrack )
 			= static_cast<qtractorMidiClip *> (pClip);
 		if (pMidiClip) {
 			pMidiClip = new qtractorMidiClip(*pMidiClip);
-			pMidiClip->setClipStart(pClip->clipStart());
-			pMidiClip->setClipLength(pClip->clipLength());
+			pMidiClip->setClipStart(iClipStart);
+			pMidiClip->setClipLength(iClipLength);
 			addClip(pMidiClip, pTrack);
 			if (pFiles)
 				pFiles->addMidiFile(pMidiClip->filename());
@@ -229,6 +243,7 @@ bool qtractorClipCommand::addClipRecord ( qtractorTrack *pTrack )
 
 	// Can get rid of the recorded clip.
 	pTrack->setClipRecord(NULL);
+
 	// Done.
 	return true;
 }
