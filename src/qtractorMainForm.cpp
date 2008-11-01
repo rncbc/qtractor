@@ -1319,7 +1319,12 @@ bool qtractorMainForm::newSession (void)
 	if (!closeSession())
 		return false;
 
-	// Ok increment untitled count.
+	// Check whether we start new session
+	// based on existing template...
+	if (m_pOptions && m_pOptions->bSessionTemplate)
+		return loadSessionFile(m_pOptions->sSessionTemplatePath, true);
+
+	// Ok, increment untitled count.
 	m_iUntitled++;
 
 	// Stabilize form.
@@ -1465,8 +1470,11 @@ bool qtractorMainForm::saveSession ( bool bPrompt )
 		}
 	}
 
+	// Flag whether we're about to save as template...
+	bool bTemplate = (QFileInfo(sFilename).suffix() == s_pszTemplateExt);
+
 	// Save it right away.
-	return saveSessionFile(sFilename);
+	return saveSessionFile(sFilename, bTemplate);
 }
 
 
@@ -1564,17 +1572,19 @@ bool qtractorMainForm::closeSession (void)
 
 
 // Load a session from specific file path.
-bool qtractorMainForm::loadSessionFile ( const QString& sFilename )
+bool qtractorMainForm::loadSessionFile (
+	const QString& sFilename, bool bTemplate )
 {
 #ifdef CONFIG_DEBUG
-	appendMessages("qtractorMainForm::loadSessionFile(\"" + sFilename + "\")");
+	appendMessages(
+		QString("qtractorMainForm::loadSessionFile(\"%1\", %2)")
+		.arg(sFilename).arg(int(bTemplate)));
 #endif
 
 	// Tell the world we'll take some time...
 	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
 	// Read the file.
-	bool bTemplate = (QFileInfo(sFilename).suffix() == s_pszTemplateExt);
 	QDomDocument doc("qtractorSession");
 	bool bResult = qtractorSessionDocument(
 		&doc, m_pSession, m_pFiles).load(sFilename, bTemplate);
@@ -1607,26 +1617,30 @@ bool qtractorMainForm::loadSessionFile ( const QString& sFilename )
 	} else {
 		m_sFilename = sFilename;
 	}
+
 	appendMessages(tr("Open session: \"%1\".").arg(sessionName(m_sFilename)));
 
 	// Now we'll try to create (update) the whole GUI session.
 	updateSession();
+
 	return bResult;
 }
 
 
 // Save current session to specific file path.
-bool qtractorMainForm::saveSessionFile ( const QString& sFilename )
+bool qtractorMainForm::saveSessionFile (
+	const QString& sFilename, bool bTemplate )
 {
 #ifdef CONFIG_DEBUG
-	appendMessages("qtractorMainForm::saveSessionFile(\"" + sFilename + "\")");
+	appendMessages(
+		QString("qtractorMainForm::saveSessionFile(\"%1\", %2)")
+		.arg(sFilename).arg(int(bTemplate)));
 #endif
 
 	// Tell the world we'll take some time...
 	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
 	// Have we any errors?
-	bool bTemplate = (QFileInfo(sFilename).suffix() == s_pszTemplateExt);
 	QDomDocument doc("qtractorSession");
 	bool bResult = qtractorSessionDocument(
 		&doc, m_pSession, m_pFiles).save(sFilename, bTemplate);
@@ -1652,12 +1666,14 @@ bool qtractorMainForm::saveSessionFile ( const QString& sFilename )
 	// Save as default session directory.
 	if (m_pOptions)
 		m_pOptions->sSessionDir = QFileInfo(sFilename).absolutePath();
+
 	// Stabilize form...
 	if (!bTemplate)
 		m_sFilename = sFilename;
-	appendMessages(tr("Save session: \"%1\".").arg(sessionName(m_sFilename)));
 
+	appendMessages(tr("Save session: \"%1\".").arg(sessionName(m_sFilename)));
 	stabilizeForm();
+
 	return bResult;
 }
 

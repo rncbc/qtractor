@@ -483,4 +483,72 @@ bool qtractorAudioClip::saveClipElement (
 }
 
 
+// Audio clip export method.
+bool qtractorAudioClip::clipExport ( ClipExport pfnClipExport, void *pvArg,
+	unsigned long iOffset, unsigned long iLength )
+{
+	qtractorTrack *pTrack = track();
+	if (pTrack == NULL)
+		return false;
+
+	qtractorSession *pSession = pTrack->session();
+	if (pSession == NULL)
+		return false;
+
+	unsigned short iChannels = 0;
+	qtractorAudioBus *pAudioBus
+		= static_cast<qtractorAudioBus *> (pTrack->outputBus());
+	if (pAudioBus)
+		iChannels = pAudioBus->channels();
+	if (iChannels < 1)
+		return false;
+
+	iOffset += clipOffset();
+	if (iLength < 1)
+		iLength = clipLength();
+
+	qtractorAudioBuffer *pBuff
+		= new qtractorAudioBuffer(iChannels, pSession->sampleRate());
+	pBuff->setOffset(iOffset);
+	pBuff->setLength(iLength);
+	pBuff->setTimeStretch(timeStretch());
+	pBuff->setPitchShift(pitchShift());
+
+	if (!pBuff->open(filename())) {
+		delete pBuff;
+		return false;
+	}
+
+	pBuff->syncExport();
+
+	unsigned short i;
+	unsigned int iFrames = (pBuff->bufferSize() >> 1);
+	float **ppFrames = new float * [iChannels];
+	for (i = 0; i < iChannels; ++i) {
+		ppFrames[i] = new float[iFrames];
+		::memset(ppFrames[i], 0, iFrames * sizeof(float));
+	}
+
+	unsigned long iFrameStart = 0;
+	while (iFrameStart < iLength) {
+		if (pBuff->inSync(iFrameStart, iFrameStart + iFrames)) {
+			int nread = pBuff->read(ppFrames, iFrames);
+			if (nread < 1)
+				break;
+			(*pfnClipExport)(ppFrames, nread, pvArg);
+			iFrameStart += nread;
+		}
+		qtractorSession::stabilize();
+		pBuff->syncExport();
+	}
+
+	for (unsigned short i = 0; i < iChannels; ++i)
+		delete ppFrames[i];
+	delete [] ppFrames;
+	delete pBuff;
+
+	return true;
+}
+
+
 // end of qtractorAudioClip.cpp

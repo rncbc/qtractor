@@ -161,6 +161,13 @@ unsigned int qtractorAudioBuffer::sampleRate (void) const
 }
 
 
+// Operational properties.
+unsigned int qtractorAudioBuffer::bufferSize (void) const
+{
+	return m_iBufferSize;
+}
+
+
 // Working resample ratio.
 float qtractorAudioBuffer::resampleRatio (void) const
 {

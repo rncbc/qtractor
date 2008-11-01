@@ -215,6 +215,15 @@ qtractorOptionsForm::qtractorOptionsForm (
 	QObject::connect(m_ui.BaseFontSizeComboBox,
 		SIGNAL(editTextChanged(const QString&)),
 		SLOT(changed()));
+	QObject::connect(m_ui.SessionTemplateCheckBox,
+		SIGNAL(stateChanged(int)),
+		SLOT(changed()));
+	QObject::connect(m_ui.SessionTemplatePathComboBox,
+		SIGNAL(editTextChanged(const QString&)),
+		SLOT(changed()));
+	QObject::connect(m_ui.SessionTemplatePathToolButton,
+		SIGNAL(clicked()),
+		SLOT(chooseSessionTemplatePath()));
 	QObject::connect(m_ui.AudioMeterLevelComboBox,
 		SIGNAL(activated(int)),
 		SLOT(changeAudioMeterLevel(int)));
@@ -310,6 +319,7 @@ void qtractorOptionsForm::setOptions ( qtractorOptions *pOptions )
 	m_pOptions->loadComboBoxHistory(m_ui.MetroBeatFilenameComboBox);
 	m_pOptions->loadComboBoxHistory(m_ui.PluginPathComboBox);
 	m_pOptions->loadComboBoxHistory(m_ui.MessagesLogPathComboBox);
+	m_pOptions->loadComboBoxHistory(m_ui.SessionTemplatePathComboBox);
 
 	// Audio options.
 	int iIndex  = 0;
@@ -416,6 +426,10 @@ void qtractorOptionsForm::setOptions ( qtractorOptions *pOptions )
 	else
 		m_ui.BaseFontSizeComboBox->setCurrentIndex(0);
 
+	// Session options...
+	m_ui.SessionTemplateCheckBox->setChecked(m_pOptions->bSessionTemplate);
+	m_ui.SessionTemplatePathComboBox->setEditText(m_pOptions->sSessionTemplatePath);
+
 	// Plugin path initialization...
 	m_ladspaPaths = m_pOptions->ladspaPaths;
 	m_dssiPaths   = m_pOptions->dssiPaths;
@@ -509,6 +523,9 @@ void qtractorOptionsForm::accept (void)
 		// Logging options...
 		m_pOptions->bMessagesLog         = m_ui.MessagesLogCheckBox->isChecked();
 		m_pOptions->sMessagesLogPath     = m_ui.MessagesLogPathComboBox->currentText();
+		// Session options...
+		m_pOptions->bSessionTemplate     = m_ui.SessionTemplateCheckBox->isChecked();
+		m_pOptions->sSessionTemplatePath = m_ui.SessionTemplatePathComboBox->currentText();
 		// Custom colors.
 		int iColor;
 		m_pOptions->audioMeterColors.clear();
@@ -525,6 +542,7 @@ void qtractorOptionsForm::accept (void)
 	m_pOptions->saveComboBoxHistory(m_ui.MetroBeatFilenameComboBox);
 	m_pOptions->saveComboBoxHistory(m_ui.PluginPathComboBox);
 	m_pOptions->saveComboBoxHistory(m_ui.MessagesLogPathComboBox);
+	m_pOptions->saveComboBoxHistory(m_ui.SessionTemplatePathComboBox);
 
 	// Just go with dialog acceptance
 	QDialog::accept();
@@ -990,6 +1008,23 @@ void qtractorOptionsForm::chooseMessagesLogPath (void)
 }
 
 
+// Session template path browse slot.
+void qtractorOptionsForm::chooseSessionTemplatePath (void)
+{
+	QString sFilename = QFileDialog::getOpenFileName(
+		this, tr("Session Template"),
+		m_ui.SessionTemplatePathComboBox->currentText(),
+		tr("Session template files") + " (*.qtr *.qts *.qtt)"
+	);
+
+	if (!sFilename.isEmpty()) {
+		m_ui.SessionTemplatePathComboBox->setEditText(sFilename);
+		m_ui.SessionTemplatePathComboBox->setFocus();
+		changed();
+	}
+}
+
+
 // Stabilize current form state.
 void qtractorOptionsForm::stabilizeForm (void)
 {
@@ -1053,6 +1088,14 @@ void qtractorOptionsForm::stabilizeForm (void)
 	if (bMessagesLog && bValid) {
 		const QString& sPath = m_ui.MessagesLogPathComboBox->currentText();
 		bValid = !sPath.isEmpty();
+	}
+
+	bool bSessionTemplate = m_ui.SessionTemplateCheckBox->isChecked();
+	m_ui.SessionTemplatePathComboBox->setEnabled(bSessionTemplate);
+	m_ui.SessionTemplatePathToolButton->setEnabled(bSessionTemplate);
+	if (bSessionTemplate && bValid) {
+		const QString& sPath = m_ui.SessionTemplatePathComboBox->currentText();
+		bValid = !sPath.isEmpty() && QFileInfo(sPath).exists();
 	}
 
 	const QString& sPluginPath = m_ui.PluginPathComboBox->currentText();

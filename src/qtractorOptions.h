@@ -129,6 +129,10 @@ public:
 	QString sPresetDir;
 	QString sInstrumentDir;
 
+	// Session options.
+	bool    bSessionTemplate;
+	QString sSessionTemplatePath;
+
 	int     iSnapPerBeat;
 	float   fTempo;
 

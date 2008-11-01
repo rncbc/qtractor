@@ -697,7 +697,7 @@ bool qtractorMidiEditorForm::saveClipFile ( bool bPrompt )
 			this,                                        // Parent.
 			tr("Save MIDI Clip") + " - " QTRACTOR_TITLE, // Caption.
 			sFilename,                                   // Start here.
-			tr("MIDI files") + " (*.mid)"                // Filter files.
+			tr("MIDI files") + " (*.mid *.smf *.midi)"   // Filter files.
 		);
 		// Have we cancelled it?
 		if (sFilename.isEmpty())

@@ -71,6 +71,7 @@ protected slots:
 	void moveDownPluginPath();
 	void chooseMessagesFont();
 	void chooseMessagesLogPath();
+	void chooseSessionTemplatePath();
 	void stabilizeForm();
 
 protected:
@@ -107,4 +108,3 @@ private:
 
 
 // end of qtractorOptionsForm.h
-

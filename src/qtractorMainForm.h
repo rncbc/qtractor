@@ -236,8 +236,8 @@ protected:
 	bool editSession();
 	bool closeSession();
 
-	bool loadSessionFile(const QString& sFilename);
-	bool saveSessionFile(const QString& sFilename);
+	bool loadSessionFile(const QString& sFilename, bool bTemplate = false);
+	bool saveSessionFile(const QString& sFilename, bool bTemplate = false);
 
 	bool startSession();
 	bool checkRestartSession();

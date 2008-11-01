@@ -89,6 +89,12 @@ public:
 	// Audio clip tool-tip.
 	QString toolTip() const;
 
+	// Audio clip export method.
+	typedef void (*ClipExport)(float **, unsigned int, void *);
+
+	bool clipExport(ClipExport pfnClipExport, void *pvArg,
+		unsigned long iOffset = 0, unsigned long iLength = 0);
+
 protected:
 
 	// Virtual document element methods.

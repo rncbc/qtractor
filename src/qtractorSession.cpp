@@ -1191,8 +1191,10 @@ QString qtractorSession::sanitize ( const QString& s )
 QString qtractorSession::createFilePath ( const QString& sTrackName,
 	int iClipNo, const QString& sExt )
 {
-	QString sFilename = qtractorSession::sanitize(m_props.sessionName)
-		+ '-' + qtractorSession::sanitize(sTrackName) + "-%1." + sExt;
+	QString sFilename = qtractorSession::sanitize(m_props.sessionName);
+	if (!sFilename.isEmpty())
+		sFilename += '-';
+	sFilename += qtractorSession::sanitize(sTrackName) + "-%1." + sExt;
 
 	if (iClipNo < 1)
 		iClipNo++;
@@ -1671,7 +1673,9 @@ bool qtractorSession::saveElement ( qtractorSessionDocument *pDocument,
 	QDomElement *pElement )
 {
 	// Templates should have no session name...
-	pElement->setAttribute("name", qtractorSession::sessionName());
+	if (!pDocument->isTemplate())
+		pElement->setAttribute("name", qtractorSession::sessionName());
+
 	pElement->setAttribute("version", PACKAGE_STRING);
 
 	// Save session properties...

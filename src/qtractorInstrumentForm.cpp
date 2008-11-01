@@ -153,7 +153,7 @@ void qtractorInstrumentForm::importSlot (void)
 			this,                               // Parent.
 			tr("Import Instrument Files"),      // Caption.
 			pOptions->sInstrumentDir,           // Start here.
-			tr("Instrument Files (*.ins)")      // Filter files.
+			tr("Instrument files (*.ins)")      // Filter files.
 	);
 
 	if (files.isEmpty())
@@ -303,7 +303,7 @@ void qtractorInstrumentForm::exportSlot (void)
 			this,                               // Parent.
 			tr("Export Instrument File"),       // Caption.
 			pOptions->sInstrumentDir,           // Start here.
-			tr("Instrument Files (*.ins)")      // Filter files.
+			tr("Instrument files (*.ins)")      // Filter files.
 	);
 
 	if (sPath.isEmpty())

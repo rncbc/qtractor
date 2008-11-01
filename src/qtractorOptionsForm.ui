@@ -661,7 +661,7 @@
             <property name="sizeHint" >
              <size>
               <width>20</width>
-              <height>20</height>
+              <height>0</height>
              </size>
             </property>
            </spacer>
@@ -1199,13 +1199,39 @@
           <bool>true</bool>
          </property>
          <layout class="QGridLayout" >
-          <property name="margin" >
-           <number>9</number>
-          </property>
-          <property name="spacing" >
-           <number>6</number>
-          </property>
-          <item row="0" column="2" colspan="2" >
+          <item row="0" column="0" colspan="2" >
+           <widget class="QCheckBox" name="ConfirmRemoveCheckBox" >
+            <property name="font" >
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="toolTip" >
+             <string>Whether to ask for confirmation on removal</string>
+            </property>
+            <property name="text" >
+             <string>&amp;Confirm removals</string>
+            </property>
+            <property name="shortcut" >
+             <string>Alt+C</string>
+            </property>
+           </widget>
+          </item>
+          <item rowspan="6" row="0" column="2" >
+           <spacer>
+            <property name="orientation" >
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0" >
+             <size>
+              <width>20</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="0" column="3" colspan="2" >
            <widget class="QLabel" name="MaxRecentFilesTextLabel" >
             <property name="font" >
              <font>
@@ -1224,7 +1250,118 @@
             </property>
            </widget>
           </item>
-          <item row="4" column="2" >
+          <item row="0" column="5" colspan="2" >
+           <widget class="QSpinBox" name="MaxRecentFilesSpinBox" >
+            <property name="font" >
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="toolTip" >
+             <string>The maximum number of recent files to keep in menu</string>
+            </property>
+            <property name="minimum" >
+             <number>0</number>
+            </property>
+            <property name="maximum" >
+             <number>20</number>
+            </property>
+            <property name="value" >
+             <number>5</number>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0" colspan="2" >
+           <widget class="QCheckBox" name="StdoutCaptureCheckBox" >
+            <property name="font" >
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="toolTip" >
+             <string>Whether to capture standard output (stdout/stderr) into messages window</string>
+            </property>
+            <property name="text" >
+             <string>Capture standard &amp;output</string>
+            </property>
+            <property name="shortcut" >
+             <string>Alt+O</string>
+            </property>
+           </widget>
+          </item>
+          <item rowspan="3" row="1" column="3" >
+           <spacer>
+            <property name="orientation" >
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0" >
+             <size>
+              <width>20</width>
+              <height>0</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="2" column="0" colspan="2" >
+           <widget class="QCheckBox" name="CompletePathCheckBox" >
+            <property name="font" >
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="toolTip" >
+             <string>Whether to show the complete directory path of loaded session files</string>
+            </property>
+            <property name="text" >
+             <string>Show complete &amp;path of session files</string>
+            </property>
+            <property name="shortcut" >
+             <string>Alt+P</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0" colspan="2" >
+           <widget class="QCheckBox" name="PeakAutoRemoveCheckBox" >
+            <property name="font" >
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="toolTip" >
+             <string>Whether to remove audio peak files on session close</string>
+            </property>
+            <property name="text" >
+             <string>Auto-remove audio pea&amp;k files</string>
+            </property>
+            <property name="shortcut" >
+             <string>Alt+K</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="0" colspan="2" >
+           <widget class="QCheckBox" name="KeepToolsOnTopCheckBox" >
+            <property name="font" >
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="toolTip" >
+             <string>Whether to keep all tool windows on top of the main window</string>
+            </property>
+            <property name="text" >
+             <string>&amp;Keep tool windows always on top</string>
+            </property>
+            <property name="shortcut" >
+             <string>Alt+K</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="3" >
            <widget class="QLabel" name="DisplayFormatTextLabel" >
             <property name="font" >
              <font>
@@ -1233,7 +1370,7 @@
              </font>
             </property>
             <property name="text" >
-             <string>&amp;Time display format:</string>
+             <string>Time display &amp;format:</string>
             </property>
             <property name="alignment" >
              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -1243,7 +1380,54 @@
             </property>
            </widget>
           </item>
-          <item row="5" column="2" >
+          <item row="4" column="4" colspan="3" >
+           <widget class="QComboBox" name="DisplayFormatComboBox" >
+            <property name="font" >
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="toolTip" >
+             <string>Time display format</string>
+            </property>
+            <item>
+             <property name="text" >
+              <string>Frames</string>
+             </property>
+            </item>
+            <item>
+             <property name="text" >
+              <string>Time</string>
+             </property>
+            </item>
+            <item>
+             <property name="text" >
+              <string>BBT</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+          <item row="5" column="0" colspan="2" >
+           <widget class="QCheckBox" name="TrackViewDropSpanCheckBox" >
+            <property name="font" >
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="toolTip" >
+             <string>Whether to try dropping multiple audio files into the same track</string>
+            </property>
+            <property name="text" >
+             <string>Drop multiple audio files into the &amp;same track</string>
+            </property>
+            <property name="shortcut" >
+             <string>Alt+S</string>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="3" >
            <widget class="QLabel" name="BaseFontSizeTextLabel" >
             <property name="font" >
              <font>
@@ -1262,20 +1446,7 @@
             </property>
            </widget>
           </item>
-          <item rowspan="4" row="0" column="1" >
-           <spacer>
-            <property name="orientation" >
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" >
-             <size>
-              <width>20</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item row="5" column="3" colspan="2" >
+          <item row="5" column="4" colspan="3" >
            <widget class="QComboBox" name="BaseFontSizeComboBox" >
             <property name="font" >
              <font>
@@ -1331,195 +1502,102 @@
             </item>
            </widget>
           </item>
-          <item row="4" column="3" colspan="2" >
-           <widget class="QComboBox" name="DisplayFormatComboBox" >
-            <property name="font" >
-             <font>
-              <weight>50</weight>
-              <bold>false</bold>
-             </font>
-            </property>
-            <property name="toolTip" >
-             <string>Time display format</string>
-            </property>
-            <item>
-             <property name="text" >
-              <string>Frames</string>
-             </property>
-            </item>
-            <item>
-             <property name="text" >
-              <string>Time</string>
-             </property>
-            </item>
-            <item>
-             <property name="text" >
-              <string>BBT</string>
-             </property>
-            </item>
-           </widget>
-          </item>
-          <item row="0" column="4" >
-           <widget class="QSpinBox" name="MaxRecentFilesSpinBox" >
-            <property name="font" >
-             <font>
-              <weight>50</weight>
-              <bold>false</bold>
-             </font>
-            </property>
-            <property name="toolTip" >
-             <string>The maximum number of recent files to keep in menu</string>
-            </property>
-            <property name="maximum" >
-             <number>20</number>
-            </property>
-            <property name="minimum" >
-             <number>0</number>
-            </property>
-            <property name="value" >
-             <number>5</number>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="0" >
-           <widget class="QCheckBox" name="ConfirmRemoveCheckBox" >
-            <property name="font" >
-             <font>
-              <weight>50</weight>
-              <bold>false</bold>
-             </font>
-            </property>
-            <property name="toolTip" >
-             <string>Whether to ask for confirmation on removal</string>
-            </property>
-            <property name="text" >
-             <string>&amp;Confirm removals</string>
-            </property>
-            <property name="shortcut" >
-             <string>Alt+C</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0" >
-           <widget class="QCheckBox" name="StdoutCaptureCheckBox" >
-            <property name="font" >
-             <font>
-              <weight>50</weight>
-              <bold>false</bold>
-             </font>
-            </property>
-            <property name="toolTip" >
-             <string>Whether to capture standard output (stdout/stderr) into messages window</string>
-            </property>
-            <property name="text" >
-             <string>Capture standard &amp;output</string>
-            </property>
-            <property name="shortcut" >
-             <string>Alt+O</string>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="0" >
-           <widget class="QCheckBox" name="PeakAutoRemoveCheckBox" >
-            <property name="font" >
-             <font>
-              <weight>50</weight>
-              <bold>false</bold>
-             </font>
-            </property>
-            <property name="toolTip" >
-             <string>Whether to remove audio peak files on session close</string>
-            </property>
-            <property name="text" >
-             <string>Auto-remove audio pea&amp;k files</string>
-            </property>
-            <property name="shortcut" >
-             <string>Alt+K</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="0" >
-           <widget class="QCheckBox" name="CompletePathCheckBox" >
-            <property name="font" >
-             <font>
-              <weight>50</weight>
-              <bold>false</bold>
-             </font>
-            </property>
-            <property name="toolTip" >
-             <string>Whether to show the complete directory path of loaded session files</string>
-            </property>
-            <property name="text" >
-             <string>Show complete &amp;path of session files</string>
-            </property>
-            <property name="shortcut" >
-             <string>Alt+P</string>
-            </property>
-           </widget>
-          </item>
-          <item row="4" column="0" >
-           <widget class="QCheckBox" name="KeepToolsOnTopCheckBox" >
-            <property name="font" >
-             <font>
-              <weight>50</weight>
-              <bold>false</bold>
-             </font>
-            </property>
-            <property name="toolTip" >
-             <string>Whether to keep all tool windows on top of the main window</string>
-            </property>
-            <property name="text" >
-             <string>&amp;Keep tool windows always on top</string>
-            </property>
-            <property name="shortcut" >
-             <string>Alt+K</string>
-            </property>
-           </widget>
-          </item>
-          <item row="5" column="0" >
-           <widget class="QCheckBox" name="TrackViewDropSpanCheckBox" >
-            <property name="font" >
-             <font>
-              <weight>50</weight>
-              <bold>false</bold>
-             </font>
-            </property>
-            <property name="toolTip" >
-             <string>Whether to try dropping multiple audio files into the same track</string>
-            </property>
-            <property name="text" >
-             <string>Drop multiple audio files into the &amp;same track</string>
-            </property>
-            <property name="shortcut" >
-             <string>Alt+S</string>
-            </property>
-           </widget>
-          </item>
-          <item rowspan="4" row="1" column="4" >
+          <item row="6" column="0" colspan="7" >
            <spacer>
             <property name="orientation" >
              <enum>Qt::Vertical</enum>
             </property>
-            <property name="sizeHint" >
+            <property name="sizeHint" stdset="0" >
              <size>
               <width>20</width>
-              <height>20</height>
+              <height>0</height>
              </size>
             </property>
            </spacer>
           </item>
-          <item row="6" column="0" colspan="5" >
-           <spacer>
-            <property name="orientation" >
-             <enum>Qt::Vertical</enum>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="SessionGroupBox" >
+         <property name="font" >
+          <font>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="title" >
+          <string>Session</string>
+         </property>
+         <property name="flat" >
+          <bool>true</bool>
+         </property>
+         <layout class="QHBoxLayout" >
+          <item>
+           <widget class="QCheckBox" name="SessionTemplateCheckBox" >
+            <property name="font" >
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
             </property>
-            <property name="sizeHint" >
+            <property name="toolTip" >
+             <string>Whether to create new sessions based on template</string>
+            </property>
+            <property name="text" >
+             <string>New session &amp;template:</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QComboBox" name="SessionTemplatePathComboBox" >
+            <property name="minimumSize" >
              <size>
-              <width>20</width>
-              <height>20</height>
+              <width>320</width>
+              <height>0</height>
              </size>
             </property>
-           </spacer>
+            <property name="font" >
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="toolTip" >
+             <string>New session template</string>
+            </property>
+            <property name="editable" >
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QToolButton" name="SessionTemplatePathToolButton" >
+            <property name="minimumSize" >
+             <size>
+              <width>22</width>
+              <height>22</height>
+             </size>
+            </property>
+            <property name="maximumSize" >
+             <size>
+              <width>24</width>
+              <height>24</height>
+             </size>
+            </property>
+            <property name="icon" >
+             <iconset resource="../icons/qtractor.qrc" >:/icons/fileOpen.png</iconset>
+            </property>
+            <property name="font" >
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="toolTip" >
+             <string>Browse for new session template</string>
+            </property>
+           </widget>
           </item>
          </layout>
         </widget>
@@ -2029,7 +2107,7 @@
              <string>Whether to activate a messages logging to file.</string>
             </property>
             <property name="text" >
-             <string>&amp;Messages log file:</string>
+             <string>Messages &amp;log file:</string>
             </property>
             <property name="shortcut" >
              <string>Alt+M</string>
@@ -2346,7 +2424,7 @@
          <property name="sizeHint" >
           <size>
            <width>20</width>
-           <height>20</height>
+           <height>0</height>
           </size>
          </property>
         </spacer>
@@ -2481,6 +2559,9 @@
   <tabstop>MaxRecentFilesSpinBox</tabstop>
   <tabstop>DisplayFormatComboBox</tabstop>
   <tabstop>BaseFontSizeComboBox</tabstop>
+  <tabstop>SessionTemplateCheckBox</tabstop>
+  <tabstop>SessionTemplatePathComboBox</tabstop>
+  <tabstop>SessionTemplatePathToolButton</tabstop>
   <tabstop>AudioMeterLevelComboBox</tabstop>
   <tabstop>AudioMeterColorLineEdit</tabstop>
   <tabstop>AudioMeterColorToolButton</tabstop>

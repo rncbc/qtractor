@@ -63,6 +63,9 @@ public:
 	unsigned long frames() const;
 	unsigned int sampleRate() const;
 
+	// Operational properties.
+	unsigned int bufferSize() const;
+
 	// Resample ratio accessor.
 	float resampleRatio() const;
 

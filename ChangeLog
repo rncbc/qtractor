@@ -5,6 +5,8 @@ ChangeLog
 
 CVS HEAD
 
+- Audio clip export/callback stub infrastructure is in place.
+
 - Punch in/out (range) recording is now in experimental shape,
   with minimal settings and functionality, already accessible
   through the main menus, transport toolbars and visible on main
@@ -13,8 +15,11 @@ CVS HEAD
 - External MIDI control events for channel volume (7) and channel
   panning (10) are now handled properly through session tracks.
 
-- Session file templates make its debut; session templates are
-  just regular session files but with no clip file content.
+- Session file templates make its debut with new usability option,
+  on whether new sessions are created based on existing template
+  file (see View/Options.../Display/Session/New session template;
+  nb. session templates are just regular session files but loaded
+  and saved with no media content (no clips nor files).
 
 - Grayed/disabled palette color group fix for dark color themes.
 
@@ -25,7 +30,7 @@ CVS HEAD
 
 - Internal refactoring alert: Session and Options instances are
   now being redesigned as singletons, preparing to get out of the
-  way from the master GUI/MainForm instance (EXPERIMENTAL). 
+  way from the master GUI/MainForm instance (EXPERIMENTAL).
 
 - Clip drawing methods refactored so let the fade-in/out handles
   get seen with transparency over the clip graphics content.

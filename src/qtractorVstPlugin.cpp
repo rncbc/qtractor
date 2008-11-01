@@ -1209,12 +1209,12 @@ static VstIntPtr qtractorVstPlugin_openFileSelector (
 
     if (pvfs->command == kVstFileLoad || pvfs->command == kVstFileSave) {
 		QString sFilename;
-        QStringList filters;
-        for (int i = 0; i < pvfs->nbFileTypes; ++i) {
-            filters.append(QObject::tr("%1 (*.%2)")
+		QStringList filters;
+		for (int i = 0; i < pvfs->nbFileTypes; ++i) {
+			filters.append(QObject::tr("%1 (*.%2)")
 				.arg(pvfs->fileTypes[i].name).arg(pvfs->fileTypes[i].dosType));
 		}
-        filters.append(QObject::tr("All Files (*.*)"));
+        filters.append(QObject::tr("All files (*.*)"));
 		QString sFilter = filters.join(";;");
 		QString sDirectory = pvfs->initialPath;
 		QString sTitle = QString("%1 - %2")

@@ -166,8 +166,8 @@ qtractorFileListItem *qtractorMidiListView::createFileItem (
 QStringList qtractorMidiListView::getOpenFileNames (void)
 {
 	QStringList filters;
-	filters.append(tr("MIDI Files (*.mid *.smf *.midi)"));
-	filters.append(tr("All Files (*.*)"));
+	filters.append(tr("MIDI files (*.mid *.smf *.midi)"));
+	filters.append(tr("All files (*.*)"));
 
 	// Ask for the filename to open...
 	return QFileDialog::getOpenFileNames(

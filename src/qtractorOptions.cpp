@@ -150,6 +150,8 @@ qtractorOptions::qtractorOptions (void)
 
 	// Last but not least, get the default directories.
 	m_settings.beginGroup("/Default");
+	bSessionTemplate = m_settings.value("/SessionTemplate", false).toBool();
+	sSessionTemplatePath = m_settings.value("/SessionTemplatePath").toString();
 	sSessionDir    = m_settings.value("/SessionDir").toString();
 	sAudioDir      = m_settings.value("/AudioDir").toString();
 	sMidiDir       = m_settings.value("/MidiDir").toString();
@@ -328,6 +330,8 @@ qtractorOptions::~qtractorOptions (void)
 
 	// Default directories.
 	m_settings.beginGroup("/Default");
+	m_settings.setValue("/SessionTemplate", bSessionTemplate);
+	m_settings.setValue("/SessionTemplatePath", sSessionTemplatePath);
 	m_settings.setValue("/SessionDir", sSessionDir);
 	m_settings.setValue("/AudioDir", sAudioDir);
 	m_settings.setValue("/MidiDir", sMidiDir);

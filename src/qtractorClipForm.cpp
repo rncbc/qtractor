@@ -566,7 +566,7 @@ void qtractorClipForm::browseFilename (void)
 		break;
 	case qtractorTrack::Midi:
 		sType   = tr("MIDI");
-		sFilter = tr("MIDI Files (*.mid)");
+		sFilter = tr("MIDI files (*.mid *.smf *.midi)");
 		break;
 	case qtractorTrack::None:
 	default:
