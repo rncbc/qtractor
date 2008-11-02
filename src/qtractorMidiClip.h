@@ -105,6 +105,12 @@ public:
 	// MIDI clip tool-tip.
 	QString toolTip() const;
 
+	// MIDI clip export method.
+	typedef void (*ClipExport)(qtractorMidiSequence *, void *);
+
+	bool clipExport(ClipExport pfnClipExport, void *pvArg,
+		unsigned long iOffset = 0, unsigned long iLength = 0) const;
+
 	// Default MIDI file format accessors
 	// (specific to capture/recording)
 	static void setDefaultFormat(unsigned short iFormat);

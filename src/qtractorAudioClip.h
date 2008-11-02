@@ -93,7 +93,7 @@ public:
 	typedef void (*ClipExport)(float **, unsigned int, void *);
 
 	bool clipExport(ClipExport pfnClipExport, void *pvArg,
-		unsigned long iOffset = 0, unsigned long iLength = 0);
+		unsigned long iOffset = 0, unsigned long iLength = 0) const;
 
 protected:
 

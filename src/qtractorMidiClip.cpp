@@ -663,6 +663,47 @@ bool qtractorMidiClip::saveClipElement (
 }
 
 
+// MIDI clip export method.
+bool qtractorMidiClip::clipExport ( ClipExport pfnClipExport, void *pvArg,
+	unsigned long iOffset, unsigned long iLength ) const
+{
+	qtractorTrack *pTrack = track();
+	if (pTrack == NULL)
+		return false;
+
+	qtractorSession *pSession = pTrack->session();
+	if (pSession == NULL)
+		return false;
+
+	iOffset += clipOffset();
+	if (iLength < 1)
+		iLength = clipLength();
+
+	qtractorMidiSequence *pSeq = sequence();
+	unsigned short iTicksPerBeat = pSession->ticksPerBeat();
+	unsigned long iTimeOffset = pSeq->timep(pSeq->timeOffset(), iTicksPerBeat);
+	unsigned long iTimeStart = pSession->tickFromFrame(iOffset);
+	iTimeStart = (iTimeStart > iTimeOffset ? iTimeStart - iTimeOffset : 0);
+	unsigned long iTimeEnd = iTimeStart + pSession->tickFromFrame(iLength);
+
+	qtractorMidiSequence seq(pSeq->name(), pSeq->channel(), iTicksPerBeat);
+
+	for (qtractorMidiEvent *pEvent = pSeq->events().first();
+			pEvent; pEvent = pEvent->next()) {
+		unsigned long iTime = seq.timeq(pEvent->time(), pSeq->ticksPerBeat());
+		if (iTime >= iTimeStart &&	iTime < iTimeEnd) {
+			qtractorMidiEvent *pNewEvent = new qtractorMidiEvent(*pEvent);
+			pNewEvent->setTime(iTime - iTimeStart);
+			seq.insertEvent(pNewEvent);
+		}
+	}
+
+	(*pfnClipExport)(&seq, pvArg);
+
+	return true;
+}
+
+
 // Default MIDI file format (for capture/record) accessors.
 unsigned short qtractorMidiClip::g_iDefaultFormat = 0;
 

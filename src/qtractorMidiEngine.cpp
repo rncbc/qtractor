@@ -1971,7 +1971,7 @@ bool qtractorMidiEngine::fileExport ( const QString& sExportPath,
 	unsigned long iExportStart, unsigned long iExportEnd,
 	qtractorMidiBus *pExportBus )
 {
-	// No similtaneous or foul exports...
+	// No simultaneous or foul exports...
 	if (!isActivated() || isPlaying())
 		return false;
 

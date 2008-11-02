@@ -916,7 +916,7 @@ bool qtractorAudioEngine::fileExport ( const QString& sExportPath,
 	unsigned long iExportStart, unsigned long iExportEnd,
 	qtractorAudioBus *pExportBus )
 {
-	// No similtaneous or foul exports...
+	// No simultaneous or foul exports...
 	if (!isActivated() || isPlaying() || isExporting())
 		return false;
 

@@ -485,7 +485,7 @@ bool qtractorAudioClip::saveClipElement (
 
 // Audio clip export method.
 bool qtractorAudioClip::clipExport ( ClipExport pfnClipExport, void *pvArg,
-	unsigned long iOffset, unsigned long iLength )
+	unsigned long iOffset, unsigned long iLength ) const
 {
 	qtractorTrack *pTrack = track();
 	if (pTrack == NULL)
