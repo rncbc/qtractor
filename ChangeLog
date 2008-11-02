@@ -5,7 +5,8 @@ ChangeLog
 
 CVS HEAD
 
-- Audio and MIDI clip export/callback stubs are in place.
+- Audio and MIDI clip file export is now available as a tool
+  (see Edit/Clip/Export...) (EXPERIMENTAL)
 
 - Punch in/out (range) recording is now in experimental shape,
   with minimal settings and functionality, already accessible

@@ -977,7 +977,7 @@
     <string>Refresh</string>
    </property>
    <property name="statusTip" >
-    <string>Refresh view</string>
+    <string>Refresh views</string>
    </property>
    <property name="shortcut" >
     <string>F5</string>
@@ -1183,7 +1183,7 @@
     <string>Punch Se&amp;t</string>
    </property>
    <property name="iconText" >
-    <string>Punch set</string>
+    <string>Punch Set</string>
    </property>
    <property name="toolTip" >
     <string>Punch in/out set</string>

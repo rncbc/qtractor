@@ -31,7 +31,9 @@
 #include "qtractorTrackCommand.h"
 #include "qtractorClipCommand.h"
 
+#include "qtractorAudioEngine.h"
 #include "qtractorAudioClip.h"
+
 #include "qtractorMidiEngine.h"
 #include "qtractorMidiClip.h"
 
@@ -46,6 +48,7 @@
 #include <QVBoxLayout>
 #include <QToolButton>
 #include <QMessageBox>
+#include <QFileDialog>
 #include <QFileInfo>
 #include <QDate>
 
@@ -487,6 +490,141 @@ bool qtractorTracks::splitClip ( qtractorClip *pClip )
 
 	// That's it...
 	return pSession->execute(pClipCommand);
+}
+
+
+// Audio clip export calback.
+static void audioClipExport (
+	float **ppFrames, unsigned int iFrames, void *pvArg )
+{
+	qtractorAudioFile *pAudioFile
+		= static_cast<qtractorAudioFile *> (pvArg);
+	pAudioFile->write(ppFrames, iFrames);
+}
+
+
+// MIDI clip export calback.
+static void midiClipExport (
+	qtractorMidiSequence *pSeq, void *pvArg )
+{
+	qtractorMidiFile *pMidiFile
+		= static_cast<qtractorMidiFile *> (pvArg);
+	pMidiFile->writeTrack(pSeq);
+}
+
+
+// Export given(current) clip.
+bool qtractorTracks::exportClip ( qtractorClip *pClip )
+{
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return false;
+
+	if (pClip == NULL)
+		pClip = m_pTrackView->currentClip();
+	if (pClip == NULL)
+		return false;
+
+	qtractorTrack *pTrack = pClip->track();
+	if (pTrack == NULL)
+		return false;
+
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+
+	unsigned long iOffset = 0;
+	unsigned long iLength = 0;
+
+	if (pClip->isClipSelected()) {
+		iOffset = pClip->clipSelectStart() - pClip->clipStart();
+		iLength = pClip->clipSelectEnd() - pClip->clipSelectStart();
+	}
+
+	if (pTrack->trackType() == qtractorTrack::Audio) {
+		// Export audio clip...
+		qtractorAudioClip *pAudioClip
+			= static_cast<qtractorAudioClip *> (pClip);
+		if (pAudioClip == NULL)
+			return false;
+		qtractorAudioBus *pAudioBus
+			= static_cast<qtractorAudioBus *> (pTrack->outputBus());
+		if (pAudioBus == NULL)
+			return false;
+		const QString& sExt = qtractorAudioFileFactory::defaultExt();
+		QString sFilename = QFileDialog::getSaveFileName(this,
+			tr("Export Audio Clip") + " - " QTRACTOR_TITLE,
+			pSession->createFilePath(pTrack->trackName(), 0, sExt),
+			tr("Audio files (*.%1)").arg(sExt));
+		if (sFilename.isEmpty())
+			return false;
+		if (QFileInfo(sFilename).suffix() != sExt)
+			sFilename += '.' + sExt;
+		if (pMainForm) {
+			pMainForm->appendMessages(
+				tr("Audio clip export: \"%1\" ...").arg(sFilename));
+		}
+		QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+		qtractorAudioFile *pAudioFile
+			= qtractorAudioFileFactory::createAudioFile(sFilename,
+				pAudioBus->channels(), pSession->sampleRate());
+		if (pAudioFile) {
+			if (pAudioFile->open(sFilename, qtractorAudioFile::Write)) {
+				pAudioClip->clipExport(
+					audioClipExport, pAudioFile, iOffset, iLength);
+				pAudioFile->close();
+			}
+			delete pAudioFile;
+		}
+		QApplication::restoreOverrideCursor();
+		if (pMainForm) {
+			pMainForm->appendMessages(
+				tr("Audio clip export: \"%1\" done.").arg(sFilename));
+		}
+	}
+	else
+	if (pTrack->trackType() == qtractorTrack::Midi) {
+		// Export MIDI clip...
+		qtractorMidiClip *pMidiClip
+			= static_cast<qtractorMidiClip *> (pClip);
+		if (pMidiClip == NULL)
+			return false;
+		const QString sExt("mid");
+		QString sFilename = QFileDialog::getSaveFileName(this,
+			tr("Export MIDI Clip") + " - " QTRACTOR_TITLE,
+			pSession->createFilePath(pTrack->trackName(), 0, sExt),
+			tr("MIDI files (*.%1 *.smf *.midi)").arg(sExt));
+		if (sFilename.isEmpty())
+			return false;
+		if (QFileInfo(sFilename).suffix() != sExt)
+			sFilename += '.' + sExt;
+		if (pMainForm) {
+			pMainForm->appendMessages(
+				tr("MIDI clip export: \"%1\" ...").arg(sFilename));
+		}
+		QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+		qtractorMidiFile *pMidiFile = new qtractorMidiFile();
+		if (pMidiFile->open(sFilename, qtractorMidiFile::Write)) {
+			pMidiFile->setTempo(pSession->tempo());
+			pMidiFile->setBeatsPerBar(pSession->beatsPerBar());
+			unsigned short iFormat = qtractorMidiClip::defaultFormat();
+			unsigned short iTracks = (iFormat == 0 ? 1 : 2);
+			pMidiFile->writeHeader(iFormat, iTracks, pSession->ticksPerBeat());
+			if (iFormat == 1)
+				pMidiFile->writeTrack(NULL);  // Setup track (SMF format 1).
+			pMidiClip->clipExport(
+				midiClipExport, pMidiFile, iOffset, iLength);
+			pMidiFile->close();
+		}
+		delete pMidiFile;
+		QApplication::restoreOverrideCursor();
+		if (pMainForm) {
+			pMainForm->appendMessages(
+				tr("MIDI clip export: \"%1\" done.").arg(sFilename));
+		}
+	}
+	else return false; // WTF?
+
+	// Done.
+	return true;
 }
 
 

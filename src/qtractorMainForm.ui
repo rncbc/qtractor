@@ -335,6 +335,8 @@
      <addaction name="editClipEditAction" />
      <addaction name="separator" />
      <addaction name="editClipSplitAction" />
+	 <addaction name="separator" />
+	 <addaction name="editClipExportAction" />
     </widget>
     <addaction name="editUndoAction" />
     <addaction name="editRedoAction" />
@@ -780,13 +782,27 @@
     <string>&amp;Split</string>
    </property>
    <property name="iconText" >
-    <string>Splt Clip</string>
+    <string>Split Clip</string>
    </property>
    <property name="toolTip" >
     <string>Split clip</string>
    </property>
    <property name="statusTip" >
     <string>Split current clip at playhead</string>
+   </property>
+  </action>
+  <action name="editClipExportAction" >
+   <property name="text" >
+    <string>E&amp;xport...</string>
+   </property>
+   <property name="iconText" >
+    <string>Export Clip</string>
+   </property>
+   <property name="toolTip" >
+    <string>Export clip</string>
+   </property>
+   <property name="statusTip" >
+    <string>Export current clip to file</string>
    </property>
   </action>
   <action name="trackAddAction" >
@@ -1452,13 +1468,13 @@
     <string>&amp;Refresh</string>
    </property>
    <property name="iconText" >
-    <string>Refresh View</string>
+    <string>Refresh</string>
    </property>
    <property name="toolTip" >
-    <string>Refresh view</string>
+    <string>Refresh</string>
    </property>
    <property name="statusTip" >
-    <string>Refresh view</string>
+    <string>Refresh views</string>
    </property>
    <property name="shortcut" >
     <string>F5</string>
@@ -1718,7 +1734,7 @@
     <string>Punch Se&amp;t</string>
    </property>
    <property name="iconText" >
-    <string>Punch set</string>
+    <string>Punch Set</string>
    </property>
    <property name="toolTip" >
     <string>Punch in/out set</string>

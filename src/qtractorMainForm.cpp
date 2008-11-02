@@ -466,6 +466,9 @@ qtractorMainForm::qtractorMainForm (
 	QObject::connect(m_ui.editClipSplitAction,
 		SIGNAL(triggered(bool)),
 		SLOT(editClipSplit()));
+	QObject::connect(m_ui.editClipExportAction,
+		SIGNAL(triggered(bool)),
+		SLOT(editClipExport()));
 
 	QObject::connect(m_ui.trackAddAction,
 		SIGNAL(triggered(bool)),
@@ -1983,6 +1986,19 @@ void qtractorMainForm::editClipSplit (void)
 }
 
 
+// Export current clip.
+void qtractorMainForm::editClipExport (void)
+{
+#ifdef CONFIG_DEBUG
+	appendMessages("qtractorMainForm::editClipExport()");
+#endif
+
+	// Export current clip, if any...
+	if (m_pTracks)
+		m_pTracks->exportClip();
+}
+
+
 //-------------------------------------------------------------------------
 // qtractorMainForm -- Track Action slots.
 
@@ -3377,6 +3393,7 @@ void qtractorMainForm::stabilizeForm (void)
 	m_ui.editClipSplitAction->setEnabled(pClip != NULL
 		&& m_iPlayHead > pClip->clipStart()
 		&& m_iPlayHead < pClip->clipStart() + pClip->clipLength());
+	m_ui.editClipExportAction->setEnabled(pClip != NULL);
 
 	// Update track menu state...
 	m_ui.trackRemoveAction->setEnabled(
