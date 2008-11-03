@@ -794,7 +794,7 @@
   </action>
   <action name="editClipNormalizeAction" >
    <property name="text" >
-    <string>&amp;Normalize</string>
+    <string>Nor&amp;malize</string>
    </property>
    <property name="iconText" >
     <string>Normalize Clip</string>

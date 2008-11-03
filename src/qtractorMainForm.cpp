@@ -633,9 +633,6 @@ qtractorMainForm::qtractorMainForm (
 	QObject::connect(m_ui.transportRecordAction,
 		SIGNAL(triggered(bool)),
 		SLOT(transportRecord()));
-	QObject::connect(m_ui.transportLoopAction,
-		SIGNAL(triggered(bool)),
-		SLOT(transportLoop()));
 	QObject::connect(m_ui.transportPunchAction,
 		SIGNAL(triggered(bool)),
 		SLOT(transportPunch()));
@@ -3647,9 +3644,6 @@ void qtractorMainForm::updateSession (void)
 	m_pTempoSpinBox->setValue(m_pSession->tempo());
 	m_pSnapPerBeatComboBox->setCurrentIndex(
 		qtractorTimeScale::indexFromSnap(m_pSession->snapPerBeat()));
-
-	// Remake loop state...
-	m_ui.transportLoopAction->setChecked(m_pSession->isLooping());
 
 	//  Actually (re)start session engines...
 	if (startSession()) {
