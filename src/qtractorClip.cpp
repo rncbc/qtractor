@@ -78,6 +78,8 @@ void qtractorClip::clear (void)
 	m_iLoopStart      = 0;
 	m_iLoopEnd        = 0;
 
+	m_fGain           = 1.0f;
+
 	m_iFadeInLength   = 0;
 	m_iFadeOutLength  = 0;
 
@@ -262,6 +264,18 @@ unsigned long qtractorClip::clipLoopEnd (void) const
 }
 
 
+// Clip-loop points accessors.
+void qtractorClip::setClipGain ( float fGain )
+{
+	m_fGain = fGain;
+}
+
+float qtractorClip::clipGain (void) const
+{
+	return m_fGain;
+}
+
+
 // Clip fade-in accessors
 void qtractorClip::setFadeInType ( qtractorClip::FadeType fadeType )
 {
@@ -372,7 +386,7 @@ float qtractorClip::gain ( unsigned long iOffset ) const
 	if (iOffset >= m_iClipLength)
 		return 0.0f;
 
-	float fGain = 1.0f;
+	float fGain = m_fGain;
 
 	if (m_iFadeInLength > 0 && iOffset < m_iFadeInLength) {
 		float f  = float(iOffset);
@@ -537,6 +551,9 @@ QString qtractorClip::toolTip (void) const
 {
 	QString sToolTip = QObject::tr("Name:\t%1").arg(m_sClipName);
 
+	if (m_fGain > 1.0f)
+		sToolTip += QObject::tr(" (%1% gain)").arg(100.0f * m_fGain, 0, 'g', 3);
+
 	qtractorSession *pSession = NULL;
 	qtractorTrack *pTrack = track();
 	if (pTrack)
@@ -603,6 +620,8 @@ bool qtractorClip::loadElement ( qtractorSessionDocument *pDocument,
 					qtractorClip::setClipOffset(eProp.text().toULong());
 				else if (eProp.tagName() == "length")
 					qtractorClip::setClipLength(eProp.text().toULong());
+				else if (eProp.tagName() == "gain")
+					qtractorClip::setClipGain(eProp.text().toFloat());
 				else if (eProp.tagName() == "fade-in") {
 					qtractorClip::setFadeInType(
 						pDocument->loadFadeType(eProp.attribute("type")));
@@ -642,6 +661,8 @@ bool qtractorClip::saveElement ( qtractorSessionDocument *pDocument,
 		QString::number(qtractorClip::clipOffset()), &eProps);
 	pDocument->saveTextElement("length",
 		QString::number(qtractorClip::clipLength()), &eProps);
+	pDocument->saveTextElement("gain",
+		QString::number(qtractorClip::clipGain()), &eProps);
 
     QDomElement eFadeIn = pDocument->document()->createElement("fade-in");
 	eFadeIn.setAttribute("type",

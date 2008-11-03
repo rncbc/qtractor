@@ -122,6 +122,7 @@ public slots:
 	void editClipNew();
 	void editClipEdit();
 	void editClipSplit();
+	void editClipNormalize();
 	void editClipExport();
 
 	void trackAdd();

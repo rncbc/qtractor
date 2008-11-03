@@ -136,6 +136,14 @@ void qtractorClipCommand::resizeClip ( qtractorClip *pClip,
 }
 
 
+void qtractorClipCommand::gainClip ( qtractorClip *pClip, float fGain )
+{
+	Item *pItem = new Item(GainClip, pClip, pClip->track());
+	pItem->clipGain = fGain;
+	m_items.append(pItem);
+}
+
+
 void qtractorClipCommand::fadeInClip ( qtractorClip *pClip,
 	unsigned long iFadeInLength, qtractorClip::FadeType fadeInType )
 {
@@ -379,6 +387,12 @@ bool qtractorClipCommand::execute ( bool bRedo )
 			if (pAudioClip)
 				pItem->timeStretch = fOldTimeStretch;
 			pSession->updateTrack(pTrack);
+			break;
+		}
+		case GainClip: {
+			float fOldGain = pClip->clipGain();
+			pClip->setClipGain(pItem->clipGain);
+			pItem->clipGain = fOldGain;
 			break;
 		}
 		case FadeInClip: {

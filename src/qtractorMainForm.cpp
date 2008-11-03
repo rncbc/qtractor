@@ -466,6 +466,9 @@ qtractorMainForm::qtractorMainForm (
 	QObject::connect(m_ui.editClipSplitAction,
 		SIGNAL(triggered(bool)),
 		SLOT(editClipSplit()));
+	QObject::connect(m_ui.editClipNormalizeAction,
+		SIGNAL(triggered(bool)),
+		SLOT(editClipNormalize()));
 	QObject::connect(m_ui.editClipExportAction,
 		SIGNAL(triggered(bool)),
 		SLOT(editClipExport()));
@@ -1986,6 +1989,19 @@ void qtractorMainForm::editClipSplit (void)
 }
 
 
+// Normalize current clip.
+void qtractorMainForm::editClipNormalize (void)
+{
+#ifdef CONFIG_DEBUG
+	appendMessages("qtractorMainForm::editClipNormalize()");
+#endif
+
+	// Export current clip, if any...
+	if (m_pTracks)
+		m_pTracks->normalizeClip();
+}
+
+
 // Export current clip.
 void qtractorMainForm::editClipExport (void)
 {
@@ -3393,6 +3409,7 @@ void qtractorMainForm::stabilizeForm (void)
 	m_ui.editClipSplitAction->setEnabled(pClip != NULL
 		&& m_iPlayHead > pClip->clipStart()
 		&& m_iPlayHead < pClip->clipStart() + pClip->clipLength());
+	m_ui.editClipNormalizeAction->setEnabled(pClip != NULL);
 	m_ui.editClipExportAction->setEnabled(pClip != NULL);
 
 	// Update track menu state...

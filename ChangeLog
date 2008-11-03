@@ -5,6 +5,8 @@ ChangeLog
 
 CVS HEAD
 
+- Clip gain/volume normalize tool is getting in place.
+
 - Audio and MIDI clip file export is now available as a tool
   (see Edit/Clip/Export...) (EXPERIMENTAL)
 

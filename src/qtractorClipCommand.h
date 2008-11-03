@@ -59,6 +59,7 @@ public:
 	void resizeClip(qtractorClip *pClip, unsigned long iClipStart,
 		unsigned long iClipOffset, unsigned long iClipLength,
 		float fTimeStretch = 0.0f);
+	void gainClip(qtractorClip *pClip, float fGain);
 	void fadeInClip(qtractorClip *pClip, unsigned long iFadeInLength,
 		qtractorClip::FadeType fadeInType);
 	void fadeOutClip(qtractorClip *pClip, unsigned long iFadeOutLength,
@@ -87,7 +88,7 @@ private:
 	enum CommandType {
 		AddClip, RemoveClip, FileClip,
 		RenameClip, MoveClip, ResizeClip,
-		FadeInClip, FadeOutClip,
+		GainClip, FadeInClip, FadeOutClip,
 		TimeStretchClip, PitchShiftClip
 	};
 
@@ -96,8 +97,9 @@ private:
 	{
 		// Item constructor.
 		Item(CommandType cmd, qtractorClip *pClip, qtractorTrack *pTrack)
-			: command(cmd), clip(pClip), track(pTrack), autoDelete(false),
-				trackChannel(0), clipStart(0), clipOffset(0), clipLength(0),
+			: command(cmd), clip(pClip), track(pTrack),
+				autoDelete(false), trackChannel(0),
+				clipStart(0), clipOffset(0), clipLength(0), clipGain(0.0f),
 				fadeInLength(0), fadeInType(qtractorClip::Quadratic), 
 				fadeOutLength(0), fadeOutType(qtractorClip::Quadratic),
 				timeStretch(0.0f), pitchShift(0.0f) {}
@@ -112,6 +114,7 @@ private:
 		unsigned long  clipStart;
 		unsigned long  clipOffset;
 		unsigned long  clipLength;
+		float          clipGain;
 		unsigned long  fadeInLength;
 		qtractorClip::FadeType fadeInType;
 		unsigned long  fadeOutLength;

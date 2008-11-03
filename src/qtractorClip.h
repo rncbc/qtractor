@@ -82,6 +82,10 @@ public:
 	unsigned long clipLoopStart() const;
 	unsigned long clipLoopEnd() const;
 
+	// Clip gain/volume accessors.
+	void setClipGain(float fGain);
+	float clipGain() const;
+
 	// Fade types.
 	enum FadeType { Linear, Quadratic, Cubic };
 
@@ -181,6 +185,9 @@ private:
 
 	unsigned long m_iLoopStart;     // Clip loop start frame-offset.
 	unsigned long m_iLoopEnd;       // Clip loop end frame-offset.
+
+	// Clip gain/volume.
+	float m_fGain;
 
 	// Fade-in/out stuff.
 	unsigned long m_iFadeInLength;  // Fade-in length (in frames).

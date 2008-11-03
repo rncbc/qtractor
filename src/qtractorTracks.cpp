@@ -493,6 +493,113 @@ bool qtractorTracks::splitClip ( qtractorClip *pClip )
 }
 
 
+// Audio clip normalize callback.
+struct audioClipNormalizeData { unsigned short channels; float max; };
+
+static void audioClipNormalize (
+	float **ppFrames, unsigned int iFrames, void *pvArg )
+{
+	audioClipNormalizeData *pData
+		= static_cast<audioClipNormalizeData *> (pvArg);
+	for (unsigned short i = 0; i < pData->channels; ++i) {
+		float *pFrames = ppFrames[i];
+		for (unsigned int n = 0; n < iFrames; ++n) {
+			float fSample = *pFrames++;
+			if (fSample < 0.0f) // Take absolute value...
+				fSample = -(fSample);
+			if (pData->max < fSample)
+				pData->max = fSample;
+		}
+	}
+}
+
+
+// MIDI clip normalize callback.
+static void midiClipNormalize (
+	qtractorMidiSequence *pSeq, void *pvArg )
+{
+	unsigned char *pMax = (unsigned char *) (pvArg);
+	for (qtractorMidiEvent *pEvent = pSeq->events().first();
+			pEvent; pEvent = pEvent->next()) {
+		if (pEvent->type() == qtractorMidiEvent::NOTEON &&
+			*pMax < pEvent->velocity()) {
+			*pMax = pEvent->velocity();
+		}
+	}
+}
+
+
+// Normalize given(current) clip.
+bool qtractorTracks::normalizeClip ( qtractorClip *pClip )
+{
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return false;
+
+	if (pClip == NULL)
+		pClip = m_pTrackView->currentClip();
+	if (pClip == NULL)
+		return false;
+
+	qtractorTrack *pTrack = pClip->track();
+	if (pTrack == NULL)
+		return false;
+
+	unsigned long iOffset = 0;
+	unsigned long iLength = 0;
+
+	if (pClip->isClipSelected()) {
+		iOffset = pClip->clipSelectStart() - pClip->clipStart();
+		iLength = pClip->clipSelectEnd() - pClip->clipSelectStart();
+	}
+
+	// Default non-normalized setting...
+	float fGain = 1.0f;
+
+	if (pTrack->trackType() == qtractorTrack::Audio) {
+		// Normalize audio clip...
+		qtractorAudioClip *pAudioClip
+			= static_cast<qtractorAudioClip *> (pClip);
+		if (pAudioClip == NULL)
+			return false;
+		qtractorAudioBus *pAudioBus
+			= static_cast<qtractorAudioBus *> (pTrack->outputBus());
+		if (pAudioBus == NULL)
+			return false;
+		QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+		audioClipNormalizeData data;
+		data.channels = pAudioBus->channels();
+		data.max = 0.0f;
+		pAudioClip->clipExport(audioClipNormalize, &data, iOffset, iLength);
+		if (data.max > 0.0f && data.max < 1.0f)
+			fGain = 1.0f / data.max;
+		QApplication::restoreOverrideCursor();
+	}
+	else
+	if (pTrack->trackType() == qtractorTrack::Midi) {
+		// Normalize MIDI clip...
+		qtractorMidiClip *pMidiClip
+			= static_cast<qtractorMidiClip *> (pClip);
+		if (pMidiClip == NULL)
+			return false;
+		QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+		unsigned char max = 0;
+		pMidiClip->clipExport(midiClipNormalize, &max, iOffset, iLength);
+		if (max > 0 && max < 0x7f)
+			fGain = 127.0f / float(max);
+		QApplication::restoreOverrideCursor();
+	}
+
+	// make it as an undoable command...
+	qtractorClipCommand *pClipCommand
+		= new qtractorClipCommand(tr("clip normalize"));
+	pClipCommand->gainClip(pClip, fGain);
+
+	// That's it...
+	return pSession->execute(pClipCommand);
+}
+
+
 // Audio clip export calback.
 static void audioClipExport (
 	float **ppFrames, unsigned int iFrames, void *pvArg )

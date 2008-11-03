@@ -335,6 +335,7 @@
      <addaction name="editClipEditAction" />
      <addaction name="separator" />
      <addaction name="editClipSplitAction" />
+     <addaction name="editClipNormalizeAction" />
 	 <addaction name="separator" />
 	 <addaction name="editClipExportAction" />
     </widget>
@@ -789,6 +790,20 @@
    </property>
    <property name="statusTip" >
     <string>Split current clip at playhead</string>
+   </property>
+  </action>
+  <action name="editClipNormalizeAction" >
+   <property name="text" >
+    <string>&amp;Normalize</string>
+   </property>
+   <property name="iconText" >
+    <string>Normalize Clip</string>
+   </property>
+   <property name="toolTip" >
+    <string>Normalize clip</string>
+   </property>
+   <property name="statusTip" >
+    <string>Normalize current clip (gain/volume)</string>
    </property>
   </action>
   <action name="editClipExportAction" >
