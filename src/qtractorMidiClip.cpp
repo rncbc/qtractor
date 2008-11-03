@@ -591,6 +591,10 @@ QString qtractorMidiClip::toolTip (void) const
 			.arg(m_pFile->ticksPerBeat());
 	}
 
+	if (clipGain() > 1.0f)
+		sToolTip += QObject::tr(" (%1% vol)")
+			.arg(100.0f * clipGain(), 0, 'g', 3);
+
 	return sToolTip;
 }
 

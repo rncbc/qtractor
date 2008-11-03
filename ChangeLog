@@ -5,7 +5,8 @@ ChangeLog
 
 CVS HEAD
 
-- Clip gain/volume normalize tool is getting in place.
+- Clip gain/volume normalize tool is now in place as is one and
+  hideous progress bar on the main status line. (EXPERIMENTAL)
 
 - Audio and MIDI clip file export is now available as a tool
   (see Edit/Clip/Export...) (EXPERIMENTAL)

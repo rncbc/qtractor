@@ -46,6 +46,7 @@ class qtractorMidiEditor;
 
 class QLabel;
 class QComboBox;
+class QProgressBar;
 class QActionGroup;
 class QDoubleSpinBox;
 class QPalette;
@@ -91,6 +92,9 @@ public:
 		{ return m_ui.editMenu; }
 	QMenu *trackMenu() const
 		{ return m_ui.trackMenu; }
+
+	QProgressBar *progressBar() const
+		{ return m_pProgressBar; }
 
 	void contextMenuEvent(QContextMenuEvent *pEvent);
 
@@ -290,6 +294,7 @@ private:
 	qtractorSpinBox *m_pTransportTimeSpinBox;
 	QDoubleSpinBox *m_pTempoSpinBox;
 	QComboBox *m_pSnapPerBeatComboBox;
+	QProgressBar *m_pProgressBar;
 	qtractorThumbView *m_pThumbView;
 	unsigned long m_iPlayHead;
 	long m_iDeltaTimer;

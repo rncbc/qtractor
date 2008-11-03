@@ -47,6 +47,7 @@
 
 #include <QVBoxLayout>
 #include <QToolButton>
+#include <QProgressBar>
 #include <QMessageBox>
 #include <QFileDialog>
 #include <QFileInfo>
@@ -494,13 +495,22 @@ bool qtractorTracks::splitClip ( qtractorClip *pClip )
 
 
 // Audio clip normalize callback.
-struct audioClipNormalizeData { unsigned short channels; float max; };
+struct audioClipNormalizeData
+{	// Ctor.
+	audioClipNormalizeData(unsigned short iChannels)
+		: count(0), channels(iChannels), max(0.0f) {};
+	// Field members.
+	unsigned int count;
+	unsigned short channels;
+	float max;
+};
 
 static void audioClipNormalize (
 	float **ppFrames, unsigned int iFrames, void *pvArg )
 {
 	audioClipNormalizeData *pData
 		= static_cast<audioClipNormalizeData *> (pvArg);
+
 	for (unsigned short i = 0; i < pData->channels; ++i) {
 		float *pFrames = ppFrames[i];
 		for (unsigned int n = 0; n < iFrames; ++n) {
@@ -510,6 +520,16 @@ static void audioClipNormalize (
 			if (pData->max < fSample)
 				pData->max = fSample;
 		}
+	}
+
+	if (++(pData->count) > 100) {
+		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+		if (pMainForm) {
+			QProgressBar *pProgressBar = pMainForm->progressBar();
+			pProgressBar->setValue(pProgressBar->value() + iFrames);
+		}
+		qtractorSession::stabilize();
+		pData->count = 0;
 	}
 }
 
@@ -545,8 +565,10 @@ bool qtractorTracks::normalizeClip ( qtractorClip *pClip )
 	if (pTrack == NULL)
 		return false;
 
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+
 	unsigned long iOffset = 0;
-	unsigned long iLength = 0;
+	unsigned long iLength = pClip->clipLength();
 
 	if (pClip->isClipSelected()) {
 		iOffset = pClip->clipSelectStart() - pClip->clipStart();
@@ -567,12 +589,20 @@ bool qtractorTracks::normalizeClip ( qtractorClip *pClip )
 		if (pAudioBus == NULL)
 			return false;
 		QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-		audioClipNormalizeData data;
-		data.channels = pAudioBus->channels();
-		data.max = 0.0f;
+		QProgressBar *pProgressBar = NULL;
+		if (pMainForm)
+			pProgressBar = pMainForm->progressBar();
+		if (pProgressBar) {
+			pProgressBar->setRange(0, iLength / 100);
+			pProgressBar->reset();
+			pProgressBar->show();
+		}
+		audioClipNormalizeData data(pAudioBus->channels());
 		pAudioClip->clipExport(audioClipNormalize, &data, iOffset, iLength);
-		if (data.max > 0.0f && data.max < 1.0f)
+		if (data.max > 0.1f && data.max < 1.0f)
 			fGain = 1.0f / data.max;
+		if (pProgressBar)
+			pProgressBar->hide();
 		QApplication::restoreOverrideCursor();
 	}
 	else
@@ -585,7 +615,7 @@ bool qtractorTracks::normalizeClip ( qtractorClip *pClip )
 		QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 		unsigned char max = 0;
 		pMidiClip->clipExport(midiClipNormalize, &max, iOffset, iLength);
-		if (max > 0 && max < 0x7f)
+		if (max > 0x0c && max < 0x7f)
 			fGain = 127.0f / float(max);
 		QApplication::restoreOverrideCursor();
 	}
@@ -601,12 +631,32 @@ bool qtractorTracks::normalizeClip ( qtractorClip *pClip )
 
 
 // Audio clip export calback.
+struct audioClipExportData
+{	// Ctor.
+	audioClipExportData(qtractorAudioFile *pFile)
+		: count(0), file(pFile) {};
+	// Members.
+	unsigned int count;
+	qtractorAudioFile *file;
+};
+
 static void audioClipExport (
 	float **ppFrames, unsigned int iFrames, void *pvArg )
 {
-	qtractorAudioFile *pAudioFile
-		= static_cast<qtractorAudioFile *> (pvArg);
-	pAudioFile->write(ppFrames, iFrames);
+	audioClipExportData *pData
+		= static_cast<audioClipExportData *> (pvArg);
+
+	(pData->file)->write(ppFrames, iFrames);
+
+	if (++(pData->count) > 100) {
+		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+		if (pMainForm) {
+			QProgressBar *pProgressBar = pMainForm->progressBar();
+			pProgressBar->setValue(pProgressBar->value() + iFrames);
+		}
+		qtractorSession::stabilize();
+		pData->count = 0;
+	}
 }
 
 
@@ -639,7 +689,7 @@ bool qtractorTracks::exportClip ( qtractorClip *pClip )
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 
 	unsigned long iOffset = 0;
-	unsigned long iLength = 0;
+	unsigned long iLength = pClip->clipLength();
 
 	if (pClip->isClipSelected()) {
 		iOffset = pClip->clipSelectStart() - pClip->clipStart();
@@ -665,6 +715,11 @@ bool qtractorTracks::exportClip ( qtractorClip *pClip )
 			return false;
 		if (QFileInfo(sFilename).suffix() != sExt)
 			sFilename += '.' + sExt;
+		qtractorAudioFile *pAudioFile
+			= qtractorAudioFileFactory::createAudioFile(sFilename,
+				pAudioBus->channels(), pSession->sampleRate());
+		if (pAudioFile == NULL)
+			return false;
 		if (pMainForm) {
 			pMainForm->appendMessages(
 				tr("Audio clip export: \"%1\" started...")
@@ -672,18 +727,24 @@ bool qtractorTracks::exportClip ( qtractorClip *pClip )
 		}
 		bool bResult = false;
 		QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-		qtractorAudioFile *pAudioFile
-			= qtractorAudioFileFactory::createAudioFile(sFilename,
-				pAudioBus->channels(), pSession->sampleRate());
-		if (pAudioFile) {
-			if (pAudioFile->open(sFilename, qtractorAudioFile::Write)) {
-				pAudioClip->clipExport(
-					audioClipExport, pAudioFile, iOffset, iLength);
-				pAudioFile->close();
-				bResult = true;
-			}
-			delete pAudioFile;
+		QProgressBar *pProgressBar = NULL;
+		if (pMainForm)
+			pProgressBar = pMainForm->progressBar();
+		if (pProgressBar) {
+			pProgressBar->setRange(0, iLength / 100);
+			pProgressBar->reset();
+			pProgressBar->show();
 		}
+		if (pAudioFile->open(sFilename, qtractorAudioFile::Write)) {
+			audioClipExportData data(pAudioFile);
+			pAudioClip->clipExport(
+				audioClipExport, &data, iOffset, iLength);
+			pAudioFile->close();
+			bResult = true;
+		}
+		delete pAudioFile;
+		if (pProgressBar)
+			pProgressBar->hide();
 		QApplication::restoreOverrideCursor();
 		if (pMainForm) {
 			if (bResult) {

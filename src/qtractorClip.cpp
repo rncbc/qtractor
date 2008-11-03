@@ -551,13 +551,9 @@ QString qtractorClip::toolTip (void) const
 {
 	QString sToolTip = QObject::tr("Name:\t%1").arg(m_sClipName);
 
-	if (m_fGain > 1.0f)
-		sToolTip += QObject::tr(" (%1% gain)").arg(100.0f * m_fGain, 0, 'g', 3);
-
 	qtractorSession *pSession = NULL;
-	qtractorTrack *pTrack = track();
-	if (pTrack)
-		pSession = pTrack->session();
+	if (m_pTrack)
+		pSession = m_pTrack->session();
 	if (pSession) {
 		sToolTip += '\n';
 		qtractorTimeScale *pTimeScale = pSession->timeScale();

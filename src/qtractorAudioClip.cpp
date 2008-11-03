@@ -36,6 +36,8 @@
 #define darker(x)	dark(x)
 #endif
 
+#include <math.h>
+
 
 //----------------------------------------------------------------------
 // class qtractorAudioClip -- Audio file/buffer clip.
@@ -353,7 +355,7 @@ void qtractorAudioClip::draw ( QPainter *pPainter, const QRect& clipRect,
 	// Build polygonal vertexes...
 	if (bZoomedIn) {
 		// Zoomed in...
-		// - rade peak-frames for pixels.
+		// - trade peak-frames for pixels.
 		for (n = 0; n < nframes; ++n) {
 			x = clipRect.x() + (n * clipRect.width()) / nframes;
 			y = clipRect.y() + h2;
@@ -429,6 +431,9 @@ QString qtractorAudioClip::toolTip (void) const
 			sToolTip += QObject::tr("\nAudio:\t%1 channels, %2 Hz")
 				.arg(pFile->channels())
 				.arg(pFile->sampleRate());
+			if (clipGain() > 1.0f)
+				sToolTip += QObject::tr(" (%1 dB)")
+					.arg(20.0f * ::log10f(clipGain()), 0, 'g', 2);
 			if (m_pBuff->isTimeStretch())
 				sToolTip += QObject::tr("\n\t(%1% time stretch)")
 					.arg(100.0f * m_pBuff->timeStretch(), 0, 'g', 3);
@@ -519,10 +524,8 @@ bool qtractorAudioClip::clipExport ( ClipExport pfnClipExport, void *pvArg,
 		return false;
 	}
 
-	pBuff->syncExport();
-
 	unsigned short i;
-	unsigned int iFrames = (pBuff->bufferSize() >> 1);
+	unsigned int iFrames = pBuff->bufferSize();
 	float **ppFrames = new float * [iChannels];
 	for (i = 0; i < iChannels; ++i) {
 		ppFrames[i] = new float[iFrames];
@@ -531,6 +534,7 @@ bool qtractorAudioClip::clipExport ( ClipExport pfnClipExport, void *pvArg,
 
 	unsigned long iFrameStart = 0;
 	while (iFrameStart < iLength) {
+		pBuff->syncExport();
 		if (pBuff->inSync(iFrameStart, iFrameStart + iFrames)) {
 			int nread = pBuff->read(ppFrames, iFrames);
 			if (nread < 1)
@@ -538,11 +542,9 @@ bool qtractorAudioClip::clipExport ( ClipExport pfnClipExport, void *pvArg,
 			(*pfnClipExport)(ppFrames, nread, pvArg);
 			iFrameStart += nread;
 		}
-		qtractorSession::stabilize();
-		pBuff->syncExport();
 	}
 
-	for (unsigned short i = 0; i < iChannels; ++i)
+	for (i = 0; i < iChannels; ++i)
 		delete ppFrames[i];
 	delete [] ppFrames;
 	delete pBuff;

@@ -88,6 +88,7 @@
 #include <QLabel>
 #include <QTimer>
 #include <QDateTime>
+#include <QProgressBar>
 
 #include <QContextMenuEvent>
 #include <QDragEnterEvent>
@@ -316,6 +317,13 @@ qtractorMainForm::qtractorMainForm (
 	pLabel->setAutoFillBackground(true);
 	m_statusItems[StatusName] = pLabel;
 	statusBar()->addWidget(pLabel, 2);
+
+	// Hideous progress bar...
+	m_pProgressBar = new QProgressBar();
+	m_pProgressBar->setFixedHeight(pLabel->sizeHint().height());
+	m_pProgressBar->setMinimumWidth(120);
+	statusBar()->addWidget(m_pProgressBar);
+	m_pProgressBar->hide();
 
 	// Session modification status.
 	pLabel = new QLabel(tr("MOD"));
