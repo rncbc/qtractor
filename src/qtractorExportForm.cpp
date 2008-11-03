@@ -223,8 +223,7 @@ void qtractorExportForm::accept (void)
 		m_ui.FormatGroupBox->setEnabled(false);
 		m_ui.OkPushButton->setEnabled(false);
 		// Carry on...
-		switch (m_exportType) {
-		case qtractorTrack::Audio: {
+		if (m_exportType == qtractorTrack::Audio) {
 			// Audio file export...
 			qtractorAudioEngine *pAudioEngine = pSession->audioEngine();
 			if (pAudioEngine) {
@@ -237,12 +236,15 @@ void qtractorExportForm::accept (void)
 					tr("Audio file export: \"%1\" started...")
 					.arg(sExportPath));
 				// Do the export as commanded...
-				if (pAudioEngine->fileExport(
-					sExportPath,
+				QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+				bool bResult = pAudioEngine->fileExport(sExportPath,
 					m_ui.ExportStartSpinBox->value(),
 					m_ui.ExportEndSpinBox->value(),
-					pExportBus)) {
+					pExportBus);
+				QApplication::restoreOverrideCursor();
+				if (bResult) {
 					// Log the success...
+					pMainForm->addMidiFile(sExportPath);
 					pMainForm->appendMessages(
 						tr("Audio file export: \"%1\" complete.")
 						.arg(sExportPath));
@@ -253,9 +255,9 @@ void qtractorExportForm::accept (void)
 						.arg(sExportPath));
 				}
 			}
-			break;
 		}
-		case qtractorTrack::Midi: {
+		else
+		if (m_exportType == qtractorTrack::Midi) {
 			// MIDI file export...
 			qtractorMidiEngine *pMidiEngine = pSession->midiEngine();
 			if (pMidiEngine) {
@@ -268,12 +270,14 @@ void qtractorExportForm::accept (void)
 					tr("MIDI file export: \"%1\" started...")
 					.arg(sExportPath));
 				// Do the export as commanded...
-				if (pMidiEngine->fileExport(
-					sExportPath,
+				QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+				bool bResult = pMidiEngine->fileExport(sExportPath,
 					m_ui.ExportStartSpinBox->value(),
-					m_ui.ExportEndSpinBox->value(),
-					pExportBus)) {
+					m_ui.ExportEndSpinBox->value(),	pExportBus);
+				QApplication::restoreOverrideCursor();
+				if (bResult) {
 					// Log the success...
+					pMainForm->addMidiFile(sExportPath);
 					pMainForm->appendMessages(
 						tr("MIDI file export: \"%1\" complete.")
 						.arg(sExportPath));
@@ -284,10 +288,6 @@ void qtractorExportForm::accept (void)
 						.arg(sExportPath));
 				}
 			}
-			break;
-		}
-		default:
-			break;
 		}
 		// Save other conveniency options...
 		qtractorOptions *pOptions = qtractorOptions::getInstance();

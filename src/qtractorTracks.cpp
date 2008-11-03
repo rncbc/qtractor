@@ -560,8 +560,10 @@ bool qtractorTracks::exportClip ( qtractorClip *pClip )
 			sFilename += '.' + sExt;
 		if (pMainForm) {
 			pMainForm->appendMessages(
-				tr("Audio clip export: \"%1\" ...").arg(sFilename));
+				tr("Audio clip export: \"%1\" started...")
+				.arg(sFilename));
 		}
+		bool bResult = false;
 		QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 		qtractorAudioFile *pAudioFile
 			= qtractorAudioFileFactory::createAudioFile(sFilename,
@@ -571,13 +573,22 @@ bool qtractorTracks::exportClip ( qtractorClip *pClip )
 				pAudioClip->clipExport(
 					audioClipExport, pAudioFile, iOffset, iLength);
 				pAudioFile->close();
+				bResult = true;
 			}
 			delete pAudioFile;
 		}
 		QApplication::restoreOverrideCursor();
 		if (pMainForm) {
-			pMainForm->appendMessages(
-				tr("Audio clip export: \"%1\" done.").arg(sFilename));
+			if (bResult) {
+				pMainForm->addAudioFile(sFilename);
+				pMainForm->appendMessages(
+					tr("Audio clip export: \"%1\" complete.")
+					.arg(sFilename));
+			} else {
+				pMainForm->appendMessagesError(
+					tr("Audio clip export:\n\n\"%1\"\n\nfailed.")
+					.arg(sFilename));
+			}
 		}
 	}
 	else
@@ -598,8 +609,10 @@ bool qtractorTracks::exportClip ( qtractorClip *pClip )
 			sFilename += '.' + sExt;
 		if (pMainForm) {
 			pMainForm->appendMessages(
-				tr("MIDI clip export: \"%1\" ...").arg(sFilename));
+				tr("MIDI clip export: \"%1\" started...")
+				.arg(sFilename));
 		}
+		bool bResult = true;
 		QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 		qtractorMidiFile *pMidiFile = new qtractorMidiFile();
 		if (pMidiFile->open(sFilename, qtractorMidiFile::Write)) {
@@ -613,12 +626,21 @@ bool qtractorTracks::exportClip ( qtractorClip *pClip )
 			pMidiClip->clipExport(
 				midiClipExport, pMidiFile, iOffset, iLength);
 			pMidiFile->close();
+			bResult = true;
 		}
 		delete pMidiFile;
 		QApplication::restoreOverrideCursor();
 		if (pMainForm) {
-			pMainForm->appendMessages(
-				tr("MIDI clip export: \"%1\" done.").arg(sFilename));
+			if (bResult) {
+				pMainForm->addMidiFile(sFilename);
+				pMainForm->appendMessages(
+					tr("MIDI clip export: \"%1\" complete.")
+					.arg(sFilename));
+			} else {
+				pMainForm->appendMessagesError(
+					tr("MIDI clip export:\n\n\"%1\"\n\nfailed.")
+					.arg(sFilename));
+			}
 		}
 	}
 	else return false; // WTF?
