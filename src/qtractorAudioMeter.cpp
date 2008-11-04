@@ -336,6 +336,7 @@ qtractorAudioMeter::qtractorAudioMeter ( qtractorAudioMonitor *pAudioMonitor,
 	gainSpinBox()->setMinimum(QTRACTOR_AUDIO_METER_MINDB);
 	gainSpinBox()->setMaximum(QTRACTOR_AUDIO_METER_MAXDB);
 	gainSpinBox()->setToolTip(tr("Gain (dB)"));
+	gainSpinBox()->setSuffix(tr(" dB"));
 
 	setPeakFalloff(QTRACTOR_AUDIO_METER_PEAK_FALLOFF);
 

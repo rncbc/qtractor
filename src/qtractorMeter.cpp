@@ -123,6 +123,9 @@ qtractorMeter::qtractorMeter ( QWidget *pParent )
 	m_pPanSpinBox = new QDoubleSpinBox(/*this*/);
 	m_pPanSpinBox->setFont(font7);
 	m_pPanSpinBox->setFixedHeight(fm.lineSpacing() + 2);
+#if QT_VERSION >= 0x040300
+	m_pPanSpinBox->setKeyboardTracking(false);
+#endif
 	m_pVBoxLayout->addWidget(m_pPanSpinBox);
 
 	m_pTopWidget = new QWidget(/*this*/);
@@ -146,6 +149,9 @@ qtractorMeter::qtractorMeter ( QWidget *pParent )
 	m_pGainSpinBox = new QDoubleSpinBox(/*this*/);
 	m_pGainSpinBox->setFont(font7);
 	m_pGainSpinBox->setFixedHeight(fm.lineSpacing() + 2);
+#if QT_VERSION >= 0x040300
+	m_pGainSpinBox->setKeyboardTracking(false);
+#endif
 	m_pVBoxLayout->addWidget(m_pGainSpinBox);
 
 	m_iUpdate      = 0;
@@ -184,14 +190,14 @@ qtractorMeter::qtractorMeter ( QWidget *pParent )
 		SIGNAL(valueChanged(int)),
 		SLOT(panSliderChangedSlot(int)));
 	QObject::connect(m_pPanSpinBox,
-		SIGNAL(valueChanged(const QString&)),
-		SLOT(panSpinBoxChangedSlot(const QString&)));
+		SIGNAL(valueChanged(double)),
+		SLOT(panSpinBoxChangedSlot(double)));
 	QObject::connect(m_pGainSlider,
 		SIGNAL(valueChanged(int)),
 		SLOT(gainSliderChangedSlot(int)));
 	QObject::connect(m_pGainSpinBox,
-		SIGNAL(valueChanged(const QString&)),
-		SLOT(gainSpinBoxChangedSlot(const QString&)));
+		SIGNAL(valueChanged(double)),
+		SLOT(gainSpinBoxChangedSlot(double)));
 }
 
 
@@ -309,13 +315,13 @@ void qtractorMeter::panSliderChangedSlot ( int iValue )
 
 
 // Panning-meter spin-box value change slot.
-void qtractorMeter::panSpinBoxChangedSlot ( const QString& sValue )
+void qtractorMeter::panSpinBoxChangedSlot ( double dValue )
 {
 	if (m_iUpdate > 0)
 		return;
 
 	m_iUpdate++;
-	float fPanning = sValue.toFloat();
+	float fPanning = float(dValue);
 	m_pPanSlider->setValue(::lroundf(100.0f * fPanning));
 	emit panChangedSignal(fPanning);
 	m_iUpdate--;
@@ -337,13 +343,13 @@ void qtractorMeter::gainSliderChangedSlot ( int iValue )
 
 
 // Gain-meter spin-box value change slot.
-void qtractorMeter::gainSpinBoxChangedSlot ( const QString& sValue )
+void qtractorMeter::gainSpinBoxChangedSlot ( double dValue )
 {
 	if (m_iUpdate > 0)
 		return;
 		
 	m_iUpdate++;
-	float fGain = gainFromValue(sValue.toFloat());
+	float fGain = gainFromValue(float(dValue));
 	m_pGainSlider->setValue(::lroundf(10000.0f * scaleFromGain(fGain)));
 	emit gainChangedSignal(fGain);
 	m_iUpdate--;

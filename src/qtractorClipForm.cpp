@@ -75,6 +75,9 @@ qtractorClipForm::qtractorClipForm (
 	QObject::connect(m_ui.FilenameToolButton,
 		SIGNAL(clicked()),
 		SLOT(browseFilename()));
+	QObject::connect(m_ui.ClipGainSpinBox,
+		SIGNAL(valueChanged(double)),
+		SLOT(changed()));
 	QObject::connect(m_ui.TrackChannelSpinBox,
 		SIGNAL(valueChanged(int)),
 		SLOT(trackChannelChanged(int)));
@@ -194,6 +197,13 @@ void qtractorClipForm::setClip ( qtractorClip *pClip, bool bClipNew )
 	switch (trackType()) {
 	case qtractorTrack::Audio: {
 		m_ui.FilenameComboBox->setObjectName("Audio" + sSuffix);
+		m_ui.ClipGainTextLabel->setText(tr("&Gain:"));
+		m_ui.ClipGainSpinBox->setSuffix(tr(" dB"));
+		m_ui.ClipGainSpinBox->setRange(-60.0f, +12.0f);
+		float fClipGain = m_pClip->clipGain();
+		if (fClipGain < 1.0f)
+			fClipGain = 1.0f;
+		m_ui.ClipGainSpinBox->setValue(20.0f * ::log10f(fClipGain));
 		qtractorAudioClip *pAudioClip
 			= static_cast<qtractorAudioClip *> (m_pClip);
 		if (pAudioClip) {
@@ -213,6 +223,13 @@ void qtractorClipForm::setClip ( qtractorClip *pClip, bool bClipNew )
 	}
 	case qtractorTrack::Midi: {
 		m_ui.FilenameComboBox->setObjectName("Midi" + sSuffix);
+		m_ui.ClipGainTextLabel->setText(tr("&Volume:"));
+		m_ui.ClipGainSpinBox->setSuffix(tr(" %"));
+		m_ui.ClipGainSpinBox->setRange(0.0f, 1200.0f);
+		float fClipGain = m_pClip->clipGain();
+		if (fClipGain < 1.0f)
+			fClipGain = 1.0f;
+		m_ui.ClipGainSpinBox->setValue(100.0f * fClipGain);
 		qtractorMidiClip *pMidiClip
 			= static_cast<qtractorMidiClip *> (m_pClip);
 		if (pMidiClip)
@@ -279,6 +296,17 @@ void qtractorClipForm::accept (void)
 		const QString& sFilename  = m_ui.FilenameComboBox->currentText();
 		unsigned short iTrackChannel = m_ui.TrackChannelSpinBox->value();
 		const QString& sClipName  = m_ui.ClipNameLineEdit->text();
+		float fClipGain = 1.0f;
+		switch (clipType) {
+		case qtractorTrack::Audio:
+			fClipGain = ::powf(10.f, 0.05f * m_ui.ClipGainSpinBox->value());
+			break;
+		case qtractorTrack::Midi:
+			fClipGain = 0.01f * m_ui.ClipGainSpinBox->value();
+			break;
+		default:
+			break;
+		}
 		unsigned long iClipStart  = m_ui.ClipStartSpinBox->value();
 		unsigned long iClipOffset = m_ui.ClipOffsetSpinBox->value();
 		unsigned long iClipLength = m_ui.ClipLengthSpinBox->value();
@@ -323,6 +351,8 @@ void qtractorClipForm::accept (void)
 			default:
 				break;
 			}
+			// Gain/volume...
+			m_pClip->setClipGain(fClipGain);
 			// Parameters...
 			m_pClip->setClipStart(iClipStart);
 			m_pClip->setClipOffset(iClipOffset);
@@ -372,6 +402,9 @@ void qtractorClipForm::accept (void)
 			// Filename and/or track-channel changes...
 			if (iFileChange > 0)
 				pClipCommand->fileClip(m_pClip, sFilename, iTrackChannel);
+			// Gain/volume...
+			if (::fabs(fClipGain - m_pClip->clipGain()) > 0.001f)
+				pClipCommand->gainClip(m_pClip, fClipGain);
 			// Parameters and/or time-stretching changes...
 			if (iClipStart  != m_pClip->clipStart()  ||
 				iClipOffset != m_pClip->clipOffset() ||

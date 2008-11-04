@@ -233,6 +233,7 @@ qtractorMidiMeter::qtractorMidiMeter ( qtractorMidiMonitor *pMidiMonitor,
 	gainSpinBox()->setMinimum(0.0f);
 	gainSpinBox()->setMaximum(100.0f);
 	gainSpinBox()->setToolTip(tr("Volume (%)"));
+	gainSpinBox()->setSuffix(tr(" %"));
 
 	m_pMidiScale = new qtractorMidiMeterScale(this/*, boxWidget()*/);
 	m_pMidiValue = new qtractorMidiMeterValue(this/*, boxWidget()*/);

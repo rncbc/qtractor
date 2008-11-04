@@ -145,9 +145,9 @@ protected slots:
 
 	// Slider value-changed slots.
 	void panSliderChangedSlot(int);
-	void panSpinBoxChangedSlot(const QString&);
+	void panSpinBoxChangedSlot(double);
 	void gainSliderChangedSlot(int);
-	void gainSpinBoxChangedSlot(const QString&);
+	void gainSpinBoxChangedSlot(double);
 
 signals:
 

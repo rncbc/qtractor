@@ -5,11 +5,16 @@ ChangeLog
 
 CVS HEAD
 
-- Clip gain/volume normalize tool is now in place as is one and
-  hideous progress bar on the main status line. (EXPERIMENTAL)
+- Clip gain/volume propriety in now in place. (EXPERIMENTAL)
+
+- A new hideous progress bar is now lurking in the main status
+  line, as found convenient to display progress of the also new
+  clip tools (normalize, export, etc.).
+
+- Clip normalize tool is now available (Edit/Clip/Normalise).
 
 - Audio and MIDI clip file export is now available as a tool
-  (see Edit/Clip/Export...) (EXPERIMENTAL)
+  (see Edit/Clip/Export...).
 
 - Punch in/out (range) recording is now in experimental shape,
   with minimal settings and functionality, already accessible
