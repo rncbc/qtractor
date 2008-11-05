@@ -53,6 +53,7 @@
 #include <QKeyEvent>
 
 #include <QApplication>
+#include <QClipboard>
 #include <QPainter>
 #include <QCursor>
 #include <QTimer>
@@ -774,7 +775,8 @@ qtractorTrack *qtractorTrackView::dragMoveTrack ( const QPoint& pos,
 }
 
 
-qtractorTrack *qtractorTrackView::dragDropTrack ( QDropEvent *pDropEvent )
+qtractorTrack *qtractorTrackView::dragDropTrack (
+	const QPoint& pos, const QMimeData *pMimeData )
 {
 	// It must be a valid session...
 	qtractorSession *pSession = qtractorSession::getInstance();
@@ -783,7 +785,6 @@ qtractorTrack *qtractorTrackView::dragDropTrack ( QDropEvent *pDropEvent )
 
 	// If we're already dragging something,
 	// find the current pointer track...
-	const QPoint& pos = viewportToContents(pDropEvent->pos());
 	qtractorTrackViewInfo tvi;
 	qtractorTrack *pTrack = trackAt(pos, true, &tvi);
 	if (!m_dropItems.isEmpty()) {
@@ -806,22 +807,21 @@ qtractorTrack *qtractorTrackView::dragDropTrack ( QDropEvent *pDropEvent )
 	m_dropType = qtractorTrack::None;
 
 	// Can it be single track channel (MIDI for sure)?
-	if (qtractorFileChannelDrag::canDecode(pDropEvent->mimeData())) {
+	if (qtractorFileChannelDrag::canDecode(pMimeData)) {
 		// Let's see how many track-channels are there...
 		const qtractorFileChannelDrag::List& items
-			= qtractorFileChannelDrag::decode(pDropEvent->mimeData());
+			= qtractorFileChannelDrag::decode(pMimeData);
 		QListIterator<qtractorFileChannelDrag::Item> iter(items);
 		while (iter.hasNext()) {
 			const qtractorFileChannelDrag::Item& item = iter.next();
 			m_dropItems.append(new DropItem(item.path, item.channel));
 		}
-
 	}
 	else
 	// Can we decode it as Audio/MIDI files?
-	if (pDropEvent->mimeData()->hasUrls()) {
+	if (pMimeData->hasUrls()) {
 		// Let's see how many files there are...
-		QList<QUrl> list = pDropEvent->mimeData()->urls();
+		QList<QUrl> list = pMimeData->urls();
 		QListIterator<QUrl> iter(list);
 		while (iter.hasNext()) {
 			const QString& sPath = iter.next().toLocalFile();
@@ -932,10 +932,18 @@ qtractorTrack *qtractorTrackView::dragDropTrack ( QDropEvent *pDropEvent )
 }
 
 
-bool qtractorTrackView::canDropTrack ( QDropEvent *pDropEvent )
+qtractorTrack *qtractorTrackView::dragDropEvent ( QDropEvent *pDropEvent )
+{
+	return dragDropTrack(
+		viewportToContents(pDropEvent->pos()),
+		pDropEvent->mimeData());
+}
+
+
+bool qtractorTrackView::canDropEvent ( QDropEvent *pDropEvent )
 {
 	// have one existing track on target?
-	qtractorTrack *pTrack = dragDropTrack(pDropEvent);
+	qtractorTrack *pTrack = dragDropEvent(pDropEvent);
 
 	// Can only drop if anything...
 	if (m_dropItems.isEmpty())
@@ -962,7 +970,7 @@ bool qtractorTrackView::canDropTrack ( QDropEvent *pDropEvent )
 void qtractorTrackView::dragEnterEvent ( QDragEnterEvent *pDragEnterEvent )
 {
 #if 0
-	if (canDropTrack(pDragEnterEvent)) {
+	if (canDropEvent(pDragEnterEvent)) {
 		showDropRects();
 		if (!pDragEnterEvent->isAccepted()) {
 			pDragEnterEvent->setDropAction(Qt::CopyAction);
@@ -985,7 +993,7 @@ void qtractorTrackView::dragEnterEvent ( QDragEnterEvent *pDragEnterEvent )
 // Drag move event handler.
 void qtractorTrackView::dragMoveEvent ( QDragMoveEvent *pDragMoveEvent )
 {
-	if (canDropTrack(pDragMoveEvent)) {
+	if (canDropEvent(pDragMoveEvent)) {
 		showDropRects();
 		if (!pDragMoveEvent->isAccepted()) {
 			pDragMoveEvent->setDropAction(Qt::CopyAction);
@@ -1042,7 +1050,7 @@ void qtractorTrackView::dropEvent ( QDropEvent *pDropEvent )
 		pSession->frameFromPixel(m_rectDrag.x() + m_iDraggingX));
 
 	// Now check whether the drop is intra-track...
-	qtractorTrack *pTrack = dragDropTrack(pDropEvent);
+	qtractorTrack *pTrack = dragDropEvent(pDropEvent);
 	// And care if we're not spanning horizontally...
 	if (pTrack == NULL
 		&& (!m_bDropSpan || m_dropType == qtractorTrack::Midi)) {
@@ -2454,6 +2462,12 @@ bool qtractorTrackView::isClipSelected (void) const
 // Whether there's any clip on clipboard.
 bool qtractorTrackView::isClipboardEmpty (void) const
 {
+	// System clipboard?
+	QClipboard *pClipboard = QApplication::clipboard();
+	if (pClipboard && (pClipboard->mimeData())->hasUrls())
+		return false;
+
+	// Local clipboard...
 	return (m_clipboard.items.count() < 1);
 }
 
@@ -2646,9 +2660,22 @@ void qtractorTrackView::pasteClipboard (void)
 	if (pSession == NULL)
 		return;
 
+	// Make sure the mouse pointer is properly located...
+	const QPoint& pos = qtractorScrollView::viewportToContents(
+		qtractorScrollView::viewport()->mapFromGlobal(QCursor::pos()));
+
 	// Check if anythings really on clipboard...
-	if (isClipboardEmpty())
+	if (m_clipboard.items.count() < 1) {
+		// System clipboard?
+		QClipboard *pClipboard = QApplication::clipboard();
+		if (pClipboard && (pClipboard->mimeData())->hasUrls()) {
+			dragDropTrack(pos, pClipboard->mimeData());
+			// TODO: Make a proper out of this (new) state?
+			showDropRects();
+		}
+		// Woot!
 		return;
+	}
 
 	// Reset any current selection, whatsoever...
 	m_pClipSelect->clear();
@@ -2674,10 +2701,6 @@ void qtractorTrackView::pasteClipboard (void)
 	// It doesn't matter which one, both pasteable views are due...
 	qtractorScrollView::setCursor(
 		QCursor(QPixmap(":/icons/editPaste.png"), 12, 12));
-
-	// Make sure the mouse pointer is properly located...
-	const QPoint& pos = qtractorScrollView::viewportToContents(
-		qtractorScrollView::viewport()->mapFromGlobal(QCursor::pos()));
 
 	// Let's-a go...
 	dragMoveTrack(pos + m_posStep);
@@ -2795,7 +2818,7 @@ void qtractorTrackView::pasteClipSelect ( qtractorTrack *pTrack )
 		return;
 
 	// Check if anythings really on clipboard...
-	if (isClipboardEmpty())
+	if (m_clipboard.items.count() < 1)
 		return;
 
 	// We'll need this...

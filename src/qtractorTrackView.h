@@ -47,6 +47,7 @@ class QMouseEvent;
 class QResizeEvent;
 class QKeyEvent;
 
+class QMimeData;
 class QCursor;
 
 
@@ -182,8 +183,9 @@ protected:
 
 	// Drag-n-drop event stuffer.
 	qtractorTrack *dragMoveTrack(const QPoint& pos, bool bKeyStep = false);
-	qtractorTrack *dragDropTrack(QDropEvent *pDropEvent);
-	bool canDropTrack(QDropEvent *pDropEvent);
+	qtractorTrack *dragDropTrack(const QPoint& pos, const QMimeData *pMimeData);
+	qtractorTrack *dragDropEvent(QDropEvent *pDropEvent);
+	bool canDropEvent(QDropEvent *pDropEvent);
 
 	// Drag-n-drop event handlers.
 	void dragEnterEvent(QDragEnterEvent *pDragEnterEvent);
