@@ -80,6 +80,10 @@ void qtractorClip::clear (void)
 
 	m_fGain           = 1.0f;
 
+	// Gain fractionalizer(tm)...
+	m_fractGain.num   = 1;
+	m_fractGain.den   = 8;
+
 	m_iFadeInLength   = 0;
 	m_iFadeOutLength  = 0;
 
@@ -268,6 +272,14 @@ unsigned long qtractorClip::clipLoopEnd (void) const
 void qtractorClip::setClipGain ( float fGain )
 {
 	m_fGain = fGain;
+
+	// Gain fractionalizer(tm)...
+	m_fractGain.den = 8;
+    while(fGain != int(fGain) && m_fractGain.den < 20) {
+		m_fractGain.den += 2;
+        fGain *= 4.0f;
+    }
+	m_fractGain.num = int(fGain);
 }
 
 float qtractorClip::clipGain (void) const

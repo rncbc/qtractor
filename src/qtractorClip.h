@@ -165,6 +165,9 @@ protected:
 	virtual bool saveClipElement(qtractorSessionDocument *pDocument,
 		QDomElement *pElement) = 0;
 
+	// Gain fractionalizer(tm)...
+	struct { int num, den; } m_fractGain;
+
 private:
 
 	qtractorTrack *m_pTrack;        // Track reference.

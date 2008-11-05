@@ -347,7 +347,8 @@ void qtractorAudioClip::draw ( QPainter *pPainter, const QRect& clipRect,
 	// Draw peak chart...
 	const QColor& fg = track()->foreground();
 	int h1 = (clipRect.height() / iChannels);
-	int h2 = (h1 / 2);
+	int h2 = (h1 >> 1);
+	int h2gain = (h2 * m_fractGain.num); 
 	int ymax, yrms;
 	unsigned int n;
 	int x, y;
@@ -360,8 +361,8 @@ void qtractorAudioClip::draw ( QPainter *pPainter, const QRect& clipRect,
 			x = clipRect.x() + (n * clipRect.width()) / nframes;
 			y = clipRect.y() + h2;
 			for (i = 0; i < iChannels; ++i, ++pframes) {
-				ymax = (h2 * pframes->max) >> 8;
-				yrms = (h2 * pframes->rms) >> 8;
+				ymax = (h2gain * pframes->max) >> m_fractGain.den;
+				yrms = (h2gain * pframes->rms) >> m_fractGain.den;
 				pPolyMax[i]->setPoint(n, x, y + ymax);
 				pPolyMax[i]->setPoint(iPolyPoints - n - 1, x, y - ymax);
 				pPolyRms[i]->setPoint(n, x, y + yrms);
@@ -390,8 +391,8 @@ void qtractorAudioClip::draw ( QPainter *pPainter, const QRect& clipRect,
 					if (vrms < v)
 						vrms = v;
 				}
-				ymax = (h2 * vmax) >> 8;
-				yrms = (h2 * vrms) >> 8;
+				ymax = (h2gain * vmax) >> m_fractGain.den;
+				yrms = (h2gain * vrms) >> m_fractGain.den;
 				pPolyMax[i]->setPoint(k, x, y + ymax);
 				pPolyMax[i]->setPoint(iPolyPoints - k - 1, x, y - ymax);
 				pPolyRms[i]->setPoint(k, x, y + yrms);
