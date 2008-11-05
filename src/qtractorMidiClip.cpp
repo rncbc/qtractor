@@ -66,6 +66,7 @@ qtractorMidiClip::qtractorMidiClip ( const qtractorMidiClip& clip )
 
 	setFilename(clip.filename());
 	setTrackChannel(clip.trackChannel());
+	setClipGain(clip.clipGain());
 
 	m_iFormat = clip.format();
 	m_bSessionFlag = false;

@@ -65,6 +65,7 @@ qtractorAudioClip::qtractorAudioClip ( const qtractorAudioClip& clip )
 	m_fPitchShift  = clip.pitchShift();
 
 	setFilename(clip.filename());
+	setClipGain(clip.clipGain());
 
 	// Clone the audio peak, if any...
 	if (clip.m_pPeak)
