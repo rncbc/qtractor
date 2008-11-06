@@ -183,7 +183,8 @@ protected:
 
 	// Drag-n-drop event stuffer.
 	qtractorTrack *dragMoveTrack(const QPoint& pos, bool bKeyStep = false);
-	qtractorTrack *dragDropTrack(const QPoint& pos, const QMimeData *pMimeData);
+	qtractorTrack *dragDropTrack(const QPoint& pos, bool bKeyStep = false,
+		const QMimeData *pMimeData = NULL);
 	qtractorTrack *dragDropEvent(QDropEvent *pDropEvent);
 	bool canDropEvent(QDropEvent *pDropEvent);
 
@@ -191,6 +192,7 @@ protected:
 	void dragEnterEvent(QDragEnterEvent *pDragEnterEvent);
 	void dragMoveEvent(QDragMoveEvent *pDragMoveEvent);
 	void dragLeaveEvent(QDragLeaveEvent *pDragLeaveEvent);
+	void dropTrack(const QPoint& pos, const QMimeData *pMimeData = NULL);
 	void dropEvent(QDropEvent *pDropEvent);
 
 	// Handle item selection with mouse.
@@ -305,7 +307,7 @@ private:
 	// The current selecting/dragging clip stuff.
 	enum DragState {
 		DragNone = 0, DragStart, DragSelect,
-		DragMove, DragDrop, DragStep,
+		DragMove, DragDrop, DragDropPaste, DragStep,
 		DragPaste, DragFadeIn, DragFadeOut,
 		DragResizeLeft, DragResizeRight
 	} m_dragState, m_dragCursor;

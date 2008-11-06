@@ -776,17 +776,23 @@ qtractorTrack *qtractorTrackView::dragMoveTrack ( const QPoint& pos,
 
 
 qtractorTrack *qtractorTrackView::dragDropTrack (
-	const QPoint& pos, const QMimeData *pMimeData )
+	const QPoint& pos, bool bKeyStep, const QMimeData *pMimeData )
 {
 	// It must be a valid session...
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
 		return NULL;
 
-	// If we're already dragging something,
-	// find the current pointer track...
+	// Find the current pointer track...
 	qtractorTrackViewInfo tvi;
 	qtractorTrack *pTrack = trackAt(pos, true, &tvi);
+
+	// Special update on keyboard vertical drag-stepping...
+	if (bKeyStep)
+		m_posStep.setY(m_posStep.y() - pos.y() + tvi.trackRect.y()
+			+ (pTrack ? (tvi.trackRect.height() >> 1) : 0));
+
+	// If we're already dragging something,
 	if (!m_dropItems.isEmpty()) {
 		// Adjust to target track...
 		updateDropRects(tvi.trackRect.y() + 1, tvi.trackRect.height() - 2);
@@ -806,6 +812,10 @@ qtractorTrack *qtractorTrackView::dragDropTrack (
 	m_dropItems.clear();
 	m_dropType = qtractorTrack::None;
 
+	// Nothing more?
+	if (pMimeData == NULL)
+		return NULL;
+		
 	// Can it be single track channel (MIDI for sure)?
 	if (qtractorFileChannelDrag::canDecode(pMimeData)) {
 		// Let's see how many track-channels are there...
@@ -936,7 +946,7 @@ qtractorTrack *qtractorTrackView::dragDropEvent ( QDropEvent *pDropEvent )
 {
 	return dragDropTrack(
 		viewportToContents(pDropEvent->pos()),
-		pDropEvent->mimeData());
+		false, pDropEvent->mimeData());
 }
 
 
@@ -1039,7 +1049,7 @@ void qtractorTrackView::dragTimeout (void)
 
 
 // Drop event handler.
-void qtractorTrackView::dropEvent ( QDropEvent *pDropEvent )
+void qtractorTrackView::dropTrack ( const QPoint& pos, const QMimeData *pMimeData )
 {
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
@@ -1050,7 +1060,7 @@ void qtractorTrackView::dropEvent ( QDropEvent *pDropEvent )
 		pSession->frameFromPixel(m_rectDrag.x() + m_iDraggingX));
 
 	// Now check whether the drop is intra-track...
-	qtractorTrack *pTrack = dragDropEvent(pDropEvent);
+	qtractorTrack *pTrack = dragDropTrack(pos, false, pMimeData);
 	// And care if we're not spanning horizontally...
 	if (pTrack == NULL
 		&& (!m_bDropSpan || m_dropType == qtractorTrack::Midi)) {
@@ -1164,6 +1174,11 @@ void qtractorTrackView::dropEvent ( QDropEvent *pDropEvent )
 	pSession->execute(pClipCommand);
 }
 
+void qtractorTrackView::dropEvent ( QDropEvent *pDropEvent )
+{
+	dropTrack(pDropEvent->pos(), pDropEvent->mimeData());
+}
+
 
 // Handle item selection/dragging -- mouse button press.
 void qtractorTrackView::mousePressEvent ( QMouseEvent *pMouseEvent )
@@ -1183,6 +1198,7 @@ void qtractorTrackView::mousePressEvent ( QMouseEvent *pMouseEvent )
 		dragMoveTrack(pos + m_posStep);
 		// Fall thru...
 	case DragPaste:
+	case DragDropPaste:
 		qtractorScrollView::mousePressEvent(pMouseEvent);
 		return;
 	default:
@@ -1265,6 +1281,10 @@ void qtractorTrackView::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 	case DragMove:
 	case DragPaste:
 		dragMoveTrack(pos + m_posStep);
+		break;
+	case DragDropPaste:
+		dragDropTrack(pos + m_posStep);
+		showDropRects();
 		break;
 	case DragFadeIn:
 	case DragFadeOut:
@@ -1362,6 +1382,10 @@ void qtractorTrackView::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 			// Let's paste them...
 			pasteClipSelect(dragMoveTrack(pos + m_posStep));
 			break;
+		case DragDropPaste:
+			// Let's drop-paste them...
+			dropTrack(pos + m_posStep);
+			break;
 		case DragFadeIn:
 		case DragFadeOut:
 			dragFadeDrop(pos);
@@ -1423,7 +1447,7 @@ void qtractorTrackView::mouseDoubleClickEvent ( QMouseEvent *pMouseEvent )
 // Focus lost event.
 void qtractorTrackView::focusOutEvent ( QFocusEvent *pFocusEvent )
 {
-	if (m_dragState == DragStep || m_dragState == DragPaste)
+	if (m_dragState == DragStep || m_dragState == DragPaste || m_dragState == DragDropPaste)
 		resetDragState();
 
 	qtractorScrollView::focusOutEvent(pFocusEvent);
@@ -1450,6 +1474,7 @@ bool qtractorTrackView::eventFilter ( QObject *pObject, QEvent *pEvent )
 		}
 		else
 		if (pEvent->type() == QEvent::Leave	&&
+			m_dragState != DragDropPaste &&
 			m_dragState != DragPaste &&
 			m_dragState != DragStep) {
 			m_dragCursor = DragNone;
@@ -2070,6 +2095,7 @@ void qtractorTrackView::resetDragState (void)
 	if (m_dragState == DragMove        ||
 		m_dragState == DragResizeLeft  ||
 		m_dragState == DragResizeRight ||
+		m_dragState == DragDropPaste   ||
 		m_dragState == DragPaste       ||
 		m_dragState == DragStep) {
 		m_pClipSelect->clear();
@@ -2127,6 +2153,8 @@ void qtractorTrackView::keyPressEvent ( QKeyEvent *pKeyEvent )
 				moveClipSelect(dragMoveTrack(pos + m_posStep));
 			else if (m_dragState == DragPaste)
 				pasteClipSelect(dragMoveTrack(pos + m_posStep));
+			else if (m_dragState == DragDropPaste)
+				dropTrack(pos + m_posStep);
 		}
 		// Fall thru...
 	case Qt::Key_Escape:
@@ -2228,7 +2256,7 @@ void qtractorTrackView::keyPressEvent ( QKeyEvent *pKeyEvent )
 bool qtractorTrackView::keyStep ( int iKey )
 {
 	// Only applicable if something is selected...
-	if (!isClipSelected())
+	if (!isClipSelected() && m_dropItems.isEmpty())
 		return false;
 
 	qtractorSession *pSession = qtractorSession::getInstance();
@@ -2249,7 +2277,8 @@ bool qtractorTrackView::keyStep ( int iKey )
 	// Now to say the truth...
 	if (m_dragState != DragMove &&
 		m_dragState != DragStep &&
-		m_dragState != DragPaste)
+		m_dragState != DragPaste &&
+		m_dragState != DragDropPaste)
 		return false;
 
 	int iVerticalStep = qtractorTrackList::ItemHeightMin;
@@ -2282,16 +2311,17 @@ bool qtractorTrackView::keyStep ( int iKey )
 	}
 
 	// Early sanity check...
-	const QRect& rect = m_pClipSelect->rect();
+	const QRect& rect
+		= (m_dragState == DragDropPaste ? m_rectDrag : m_pClipSelect->rect());
 	QPoint pos = m_posDrag;
-	if (m_dragState == DragMove || m_dragState == DragPaste) {
+	if (m_dragState != DragStep) {
 		pos = qtractorScrollView::viewportToContents(
 			qtractorScrollView::viewport()->mapFromGlobal(QCursor::pos()));
 	}
 
 	int x2 = - pos.x();
 	int y2 = - pos.y();
-	if (m_dragState == DragMove || m_dragState == DragPaste) {
+	if (m_dragState != DragStep) {
 		x2 += (m_posDrag.x() - rect.x());
 		y2 += (m_posDrag.y() - rect.y());
 	}
@@ -2313,7 +2343,12 @@ bool qtractorTrackView::keyStep ( int iKey )
 	}
 
 	// Do our deeds (flag we're key-steppin')...
-	dragMoveTrack(pos + m_posStep, true);
+	if (m_dragState == DragDropPaste) {
+		dragDropTrack(pos + m_posStep, true);
+		showDropRects();
+	} else {
+		dragMoveTrack(pos + m_posStep, true);
+	}
 
 	return true;
 }
@@ -2669,9 +2704,17 @@ void qtractorTrackView::pasteClipboard (void)
 		// System clipboard?
 		QClipboard *pClipboard = QApplication::clipboard();
 		if (pClipboard && (pClipboard->mimeData())->hasUrls()) {
-			dragDropTrack(pos, pClipboard->mimeData());
-			// TODO: Make a proper out of this (new) state?
-			showDropRects();
+			dragDropTrack(pos, false, pClipboard->mimeData());
+			// Make a proper out of this (new) state?
+			if (!m_dropItems.isEmpty()) {
+				m_dragState = m_dragCursor = DragDropPaste;
+				// It doesn't matter which one, both pasteable views are due...
+				qtractorScrollView::setFocus();
+				qtractorScrollView::setCursor(
+					QCursor(QPixmap(":/icons/editPaste.png"), 12, 12));
+				// Update the pasted stuff
+				showDropRects();
+			}
 		}
 		// Woot!
 		return;
@@ -2699,6 +2742,7 @@ void qtractorTrackView::pasteClipboard (void)
 	m_posStep   = QPoint(0, 0);
 
 	// It doesn't matter which one, both pasteable views are due...
+	qtractorScrollView::setFocus();
 	qtractorScrollView::setCursor(
 		QCursor(QPixmap(":/icons/editPaste.png"), 12, 12));
 

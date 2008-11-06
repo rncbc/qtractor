@@ -88,6 +88,7 @@
 #include <QLabel>
 #include <QTimer>
 #include <QDateTime>
+#include <QClipboard>
 #include <QProgressBar>
 
 #include <QContextMenuEvent>
@@ -672,6 +673,10 @@ qtractorMainForm::qtractorMainForm (
 	QObject::connect(m_pSession->commands(),
 		SIGNAL(updateNotifySignal(bool)),
 		SLOT(updateNotifySlot(bool)));
+
+	QObject::connect(QApplication::clipboard(),
+		SIGNAL(dataChanged()),
+		SLOT(stabilizeForm()));
 }
 
 

@@ -9,11 +9,10 @@ as the following are among the ones planned to be worked
 on in the times to come (not in any particular order):
 
 - Automation and MIDI controller mapping.
-- Session/project templates.
-- Punch-in/out and loop recording (takes).
+- Loop recording (takes).
 - Audio clip cross-fading.
 - Audio effect send/return aux. inserts.
-- Clip locking, muting, normalize (gain).
+- Clip locking, muting and plug-ins.
 - LV2 plug-in support.
 - JACK MIDI support.
 - Tempo and key signature map.
@@ -24,6 +23,6 @@ on in the times to come (not in any particular order):
 - MIDI groove/swing quantize.
 - OSC interface.
 - Scripting.
-- Etc. etc.
+- etc. etc.
 
 - Any other feature one can think of ;)
