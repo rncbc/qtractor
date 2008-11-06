@@ -28,6 +28,9 @@
 #include <QHBoxLayout>
 #include <QToolButton>
 
+#include <QApplication>
+#include <QClipboard>
+
 #include <QContextMenuEvent>
 
 
@@ -81,16 +84,25 @@ qtractorFiles::qtractorFiles ( QWidget *pParent )
 		QIcon(":/icons/itemGroup.png"), tr("New &Group"), this);
 	m_pOpenFileAction = new QAction(
 		QIcon(":/icons/itemFile.png"), tr("Add &Files..."), this);
+	m_pCutItemAction = new QAction(
+		QIcon(":/icons/editCut.png"), tr("Cu&t"), this);
+	m_pCopyItemAction = new QAction(
+		QIcon(":/icons/editCopy.png"), tr("&Copy"), this);
+	m_pPasteItemAction = new QAction(
+		QIcon(":/icons/editPaste.png"), tr("P&aste"), this);
 	m_pRenameItemAction = new QAction(
 		QIcon(":/icons/formEdit.png"), tr("R&ename"), this);
 	m_pDeleteItemAction = new QAction(
 		QIcon(":/icons/formRemove.png"), tr("&Delete"), this);
 	m_pPlayItemAction = new QAction(
-		QIcon(":/icons/transportPlay.png"), tr("&Play"), this);
+		QIcon(":/icons/transportPlay.png"), tr("Play"), this);
 	m_pPlayItemAction->setCheckable(true);
 
 	m_pNewGroupAction->setShortcut(tr("Ctrl+G"));
 	m_pOpenFileAction->setShortcut(tr("Ctrl+F"));
+//	m_pCutItemAction->setShortcut(tr("Ctrl+X"));
+//	m_pCopyItemAction->setShortcut(tr("Ctrl+C"));
+//	m_pPasteItemAction->setShortcut(tr("Ctrl+V"));
 	m_pRenameItemAction->setShortcut(tr("Ctrl+E"));
 	m_pDeleteItemAction->setShortcut(tr("Ctrl+D"));
 //	m_pPlayItemAction->setShortcut(tr("Ctrl+P"));
@@ -99,6 +111,9 @@ qtractorFiles::qtractorFiles ( QWidget *pParent )
 	// shortcuts firmly attached...
 	QDockWidget::addAction(m_pNewGroupAction);
 	QDockWidget::addAction(m_pOpenFileAction);
+	QDockWidget::addAction(m_pCutItemAction);
+	QDockWidget::addAction(m_pCopyItemAction);
+	QDockWidget::addAction(m_pPasteItemAction);
 	QDockWidget::addAction(m_pRenameItemAction);
 	QDockWidget::addAction(m_pDeleteItemAction);
 	QDockWidget::addAction(m_pPlayItemAction);
@@ -136,6 +151,15 @@ qtractorFiles::qtractorFiles ( QWidget *pParent )
 	QObject::connect(m_pOpenFileAction,
 		SIGNAL(triggered(bool)),
 		SLOT(openFileSlot()));
+	QObject::connect(m_pCutItemAction,
+		SIGNAL(triggered(bool)),
+		SLOT(cutItemSlot()));
+	QObject::connect(m_pCopyItemAction,
+		SIGNAL(triggered(bool)),
+		SLOT(copyItemSlot()));
+	QObject::connect(m_pPasteItemAction,
+		SIGNAL(triggered(bool)),
+		SLOT(pasteItemSlot()));
 	QObject::connect(m_pRenameItemAction,
 		SIGNAL(triggered(bool)),
 		SLOT(renameItemSlot()));
@@ -148,6 +172,10 @@ qtractorFiles::qtractorFiles ( QWidget *pParent )
 	QObject::connect(m_pPlayButton,
 		SIGNAL(toggled(bool)),
 		SLOT(playSlot(bool)));
+
+	QObject::connect(QApplication::clipboard(),
+		SIGNAL(dataChanged()),
+		SLOT(stabilizeSlot()));
 }
 
 
@@ -156,6 +184,9 @@ qtractorFiles::~qtractorFiles (void)
 {
 	delete m_pNewGroupAction;
 	delete m_pOpenFileAction;
+	delete m_pCutItemAction;
+	delete m_pCopyItemAction;
+	delete m_pPasteItemAction;
 	delete m_pRenameItemAction;
 	delete m_pDeleteItemAction;
 	delete m_pPlayItemAction;
@@ -279,6 +310,33 @@ void qtractorFiles::newGroupSlot (void)
 }
 
 
+// Cut current file item(s) to clipboard.
+void qtractorFiles::cutItemSlot (void)
+{
+	qtractorFileListView *pFileListView = currentFileListView();
+	if (pFileListView)
+		pFileListView->copyItem(true);
+}
+
+
+// Copy current file item(s) to clipboard.
+void qtractorFiles::copyItemSlot (void)
+{
+	qtractorFileListView *pFileListView = currentFileListView();
+	if (pFileListView)
+		pFileListView->copyItem(false);
+}
+
+
+// Paste file item(s) from clipboard.
+void qtractorFiles::pasteItemSlot (void)
+{
+	qtractorFileListView *pFileListView = currentFileListView();
+	if (pFileListView)
+		pFileListView->pasteItem();
+}
+
+
 // Rename current group/file item.
 void qtractorFiles::renameItemSlot (void)
 {
@@ -303,6 +361,12 @@ void qtractorFiles::stabilizeSlot (void)
 	qtractorFileListView *pFileListView = currentFileListView();
 	if (pFileListView) {
 		QTreeWidgetItem *pItem = pFileListView->currentItem();
+		m_pCutItemAction->setEnabled(
+			pItem && pItem->type() == qtractorFileListView::FileItem);
+		m_pCopyItemAction->setEnabled(
+			pItem && pItem->type() == qtractorFileListView::FileItem);
+		m_pPasteItemAction->setEnabled(
+			(QApplication::clipboard()->mimeData())->hasUrls());
 		m_pRenameItemAction->setEnabled(
 			pItem && pItem->type() == qtractorFileListView::GroupItem);
 		m_pDeleteItemAction->setEnabled(
@@ -346,9 +410,13 @@ void qtractorFiles::contextMenuEvent (
 	QMenu menu(this);
 
 	// Construct context menu.
+	menu.addAction(m_pOpenFileAction);
 	menu.addAction(m_pNewGroupAction);
 	menu.addSeparator();
-	menu.addAction(m_pOpenFileAction);
+	menu.addAction(m_pCutItemAction);
+	menu.addAction(m_pCopyItemAction);
+	menu.addAction(m_pPasteItemAction);
+	menu.addSeparator();
 	menu.addAction(m_pRenameItemAction);
 	menu.addAction(m_pDeleteItemAction);
 	menu.addSeparator();

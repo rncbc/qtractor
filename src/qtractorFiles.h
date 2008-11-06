@@ -77,9 +77,15 @@ protected slots:
 	void newGroupSlot();
 	// Add a new file item below the current group one.
 	void openFileSlot();
+	// Cut current file item(s) to clipboard.
+	void cutItemSlot();
+	// Copy current file item(s) to clipboard.
+	void copyItemSlot();
+	// Paste file item(s) from clipboard.
+	void pasteItemSlot();
 	// Rename current group/file item.
 	void renameItemSlot();
-	// Remove current group/file item.
+	// Remove current group/file item(s).
 	void deleteItemSlot();
 
 	// Audition/pre-listening player slots.
@@ -117,6 +123,9 @@ private:
 	// List view actions.
 	QAction *m_pNewGroupAction;
 	QAction *m_pOpenFileAction;
+	QAction *m_pCutItemAction;
+	QAction *m_pCopyItemAction;
+	QAction *m_pPasteItemAction;
 	QAction *m_pRenameItemAction;
 	QAction *m_pDeleteItemAction;
 	QAction *m_pPlayItemAction;

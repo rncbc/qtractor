@@ -504,26 +504,26 @@ void qtractorClip::drawClip ( QPainter *pPainter, const QRect& clipRect,
 	pPainter->setBrush(rgbFade);
 
 	// Fade-in slope...
-	int y = rect.top()  + 1;
-	int x = rect.left() + 1;
+	int y = rect.top();
+	int x = rect.left();
 	int w = pSession->pixelFromFrame(m_iFadeInLength);
 	QRect rectFadeIn(x + w, y, 8, 8);
 	if (w > 0 && x + w > clipRect.left()) {
 		QPolygon polyg(3);
 		polyg.setPoint(0, x, y);
-		polyg.setPoint(1, x, rect.bottom() - 1);
+		polyg.setPoint(1, x, rect.bottom());
 		polyg.setPoint(2, x + w, y);
 		pPainter->drawPolygon(polyg);
 	}
 
 	// Fade-out slope...
-	x = rect.left() + pSession->pixelFromFrame(m_iClipLength) - 1;
+	x = rect.left() + pSession->pixelFromFrame(m_iClipLength);
 	w = pSession->pixelFromFrame(m_iFadeOutLength);
 	QRect rectFadeOut(x - w - 8, y, 8, 8);
 	if (w > 0 && x - w < clipRect.right()) {
 		QPolygon polyg(3);
 		polyg.setPoint(0, x, y);
-		polyg.setPoint(1, x, rect.bottom() - 1);
+		polyg.setPoint(1, x, rect.bottom());
 		polyg.setPoint(2, x - w, y);
 		pPainter->drawPolygon(polyg);
 	}

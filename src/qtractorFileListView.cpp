@@ -31,6 +31,7 @@
 #include <QMessageBox>
 #include <QApplication>
 #include <QHeaderView>
+#include <QClipboard>
 #include <QFileInfo>
 #include <QToolTip>
 #include <QTimer>
@@ -488,7 +489,7 @@ void qtractorFileListView::openFile (void)
 	if (files.isEmpty())
 		return;
 
-	// Find a proper group parent  group item...
+	// Find a proper group parent group item...
 	qtractorFileGroupItem *pParentItem = currentGroupItem();
 	// Pick each one of the selected files...
 	int iUpdate = 0;
@@ -521,6 +522,74 @@ void qtractorFileListView::newGroup (void)
 		pParentItem->setOpen(true);
 	if (pGroupItem)
 		editItem(pGroupItem, 0);
+}
+
+
+// Copy/cut current file item(s) to clipboard.
+void qtractorFileListView::copyItem ( bool bCut )
+{
+	// Build URL list...
+	QList<QUrl> urls;
+
+	int iUpdate = 0;
+	QList<QTreeWidgetItem *> items = selectedItems();
+	QListIterator<QTreeWidgetItem *> iter(items);
+	while (iter.hasNext()) {
+		QTreeWidgetItem *pItem = iter.next();
+		if (pItem->type() == qtractorFileListView::FileItem) {
+			qtractorFileListItem *pFileItem
+				= static_cast<qtractorFileListItem *> (pItem);
+			if (pFileItem) {
+				urls.append(QUrl::fromLocalFile(pFileItem->path()));
+				if (bCut) {
+					delete pFileItem;
+					iUpdate++;
+				}
+			}
+		}
+	}
+
+	//	Copy it to system clipboard...
+	if (!urls.isEmpty()) {
+		QMimeData *pMimeData = new QMimeData();
+		pMimeData->setUrls(urls);
+		QApplication::clipboard()->setMimeData(pMimeData);
+	}
+
+	// Make proper notifications...
+	if (iUpdate > 0)
+		emit contentsChanged();
+}
+
+
+// Paste file item(s9 from clipboard.
+void qtractorFileListView::pasteItem (void)
+{
+	const QMimeData *pMimeData = QApplication::clipboard()->mimeData();
+	if (!pMimeData->hasUrls())
+		return;
+
+	// Find a proper group parent group item...
+	qtractorFileGroupItem *pParentItem = currentGroupItem();
+	int iUpdate = 0;
+
+	QListIterator<QUrl> iter(pMimeData->urls());
+	while (iter.hasNext()) {
+		const QString& sPath = iter.next().toLocalFile();
+		if (!sPath.isEmpty()) {
+			qtractorFileListItem *pFileItem	= addFileItem(sPath, pParentItem);
+			// Make all this new open and visible.
+			if (pFileItem) {
+				iUpdate++;
+				if (pParentItem)
+					pParentItem->setOpen(true);
+			}
+		}
+	}
+
+	// Make proper notifications...
+	if (iUpdate > 0)
+		emit contentsChanged();
 }
 
 

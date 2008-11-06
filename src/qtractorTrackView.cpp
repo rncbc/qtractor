@@ -2575,6 +2575,7 @@ void qtractorTrackView::executeClipSelect ( qtractorTrackView::Command cmd )
 		m_clipboard.clear();
 		m_clipboard.singleTrack = m_pClipSelect->singleTrack();
 		m_clipboard.rect = m_pClipSelect->rect();
+		QApplication::clipboard()->clear();
 	}
 
 	// We'll build a composite command...

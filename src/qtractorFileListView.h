@@ -78,9 +78,13 @@ public:
 	void newGroup();
 	// Add a new file item below the current group one.
 	void openFile();
+	// Copy/cut current file item(s) to clipboard.
+	void copyItem(bool bCut = false);
+	// Paste file item(s) from clipboard.
+	void pasteItem();
 	// Rename current group/file item.
 	void renameItem();
-	// Remove current group/file item.
+	// Remove current group/file item(s).
 	void deleteItem();
 
 	// Master clean-up.
