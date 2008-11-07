@@ -674,9 +674,10 @@ qtractorMainForm::qtractorMainForm (
 		SIGNAL(updateNotifySignal(bool)),
 		SLOT(updateNotifySlot(bool)));
 
-	QObject::connect(QApplication::clipboard(),
-		SIGNAL(dataChanged()),
-		SLOT(stabilizeForm()));
+//	Already handled in files widget...
+//	QObject::connect(QApplication::clipboard(),
+//		SIGNAL(dataChanged()),
+//		SLOT(stabilizeForm()));
 }
 
 
@@ -1798,6 +1799,10 @@ void qtractorMainForm::editCut (void)
 	appendMessages("qtractorMainForm::editCut()");
 #endif
 
+	// Cut from files...
+	if (m_pFiles && m_pFiles->hasFocus())
+		m_pFiles->cutItemSlot();
+	else
 	// Cut selection...
 	if (m_pTracks)
 		m_pTracks->cutClipboard();
@@ -1811,6 +1816,10 @@ void qtractorMainForm::editCopy (void)
 	appendMessages("qtractorMainForm::editCopy()");
 #endif
 
+	// Copy from files...
+	if (m_pFiles && m_pFiles->hasFocus())
+		m_pFiles->copyItemSlot();
+	else
 	// Copy selection...
 	if (m_pTracks)
 		m_pTracks->copyClipboard();
@@ -1826,6 +1835,10 @@ void qtractorMainForm::editPaste (void)
 	appendMessages("qtractorMainForm::editPaste()");
 #endif
 
+	// Paste to files...
+	if (m_pFiles && m_pFiles->hasFocus())
+		m_pFiles->pasteItemSlot();
+	else
 	// Paste selection...
 	if (m_pTracks)
 		m_pTracks->pasteClipboard();
@@ -1839,6 +1852,10 @@ void qtractorMainForm::editDelete (void)
 	appendMessages("qtractorMainForm::editDelete()");
 #endif
 
+	// Delete from files...
+	if (m_pFiles && m_pFiles->hasFocus())
+		m_pFiles->deleteItemSlot();
+	else
 	// Delete selection...
 	if (m_pTracks)
 		m_pTracks->deleteClipSelect();
@@ -3395,7 +3412,8 @@ void qtractorMainForm::stabilizeForm (void)
 	}
 
 	bool bEnabled    = (m_pTracks && pTrack != NULL);
-	bool bSelected   = (m_pTracks && m_pTracks->isClipSelected());
+	bool bSelected   = (m_pTracks && m_pTracks->isClipSelected())
+		|| (m_pFiles && m_pFiles->hasFocus() && m_pFiles->isFileSelected());
 	bool bSelectable = (m_pSession->editHead() < m_pSession->editTail());
 	bool bPlaying    = m_pSession->isPlaying();
 	bool bRecording  = m_pSession->isRecording();

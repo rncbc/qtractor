@@ -58,7 +58,8 @@ qtractorTrackTime::qtractorTrackTime ( qtractorTracks *pTracks,
 
 	qtractorScrollView::setFrameStyle(QFrame::Panel | QFrame::Raised);
 
-	qtractorScrollView::viewport()->setFocusPolicy(Qt::ClickFocus);
+	qtractorScrollView::setFocusPolicy(Qt::NoFocus);
+//	qtractorScrollView::viewport()->setFocusPolicy(Qt::ClickFocus);
 //	qtractorScrollView::viewport()->setFocusProxy(this);
 //	qtractorScrollView::viewport()->setAcceptDrops(true);
 //	qtractorScrollView::setDragAutoScroll(false);

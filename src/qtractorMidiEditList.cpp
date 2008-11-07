@@ -50,7 +50,8 @@ qtractorMidiEditList::qtractorMidiEditList (
 	qtractorScrollView::setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 	qtractorScrollView::setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
-	qtractorScrollView::viewport()->setFocusPolicy(Qt::ClickFocus);
+	qtractorScrollView::setFocusPolicy(Qt::NoFocus);
+//	qtractorScrollView::viewport()->setFocusPolicy(Qt::ClickFocus);
 //	qtractorScrollView::viewport()->setFocusProxy(this);
 //	qtractorScrollView::viewport()->setAcceptDrops(true);
 //	qtractorScrollView::setDragAutoScroll(false);

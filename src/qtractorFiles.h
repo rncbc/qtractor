@@ -59,6 +59,12 @@ public:
 	// Clear evrything on sight.
 	void clear();
 
+	// Check whether one of the widgets has focus (oveerride method).
+	bool hasFocus() const;
+
+	// Tell whether a file item is currently selected.
+	bool isFileSelected() const;
+
 	// File addition Convenience helper methods.
 	void addAudioFile (const QString& sFilename);
 	void addMidiFile  (const QString& sFilename);
@@ -71,7 +77,7 @@ public:
 	void setPlayState(bool bOn);
 	bool isPlayState() const;
 
-protected slots:
+public slots:
 
 	// Add a new group item below the current one.
 	void newGroupSlot();

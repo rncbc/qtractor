@@ -85,37 +85,37 @@ qtractorFiles::qtractorFiles ( QWidget *pParent )
 	m_pOpenFileAction = new QAction(
 		QIcon(":/icons/itemFile.png"), tr("Add &Files..."), this);
 	m_pCutItemAction = new QAction(
-		QIcon(":/icons/editCut.png"), tr("Cu&t"), this);
+		QIcon(":/icons/editCut.png"), tr("Cu&t"), NULL);
 	m_pCopyItemAction = new QAction(
-		QIcon(":/icons/editCopy.png"), tr("&Copy"), this);
+		QIcon(":/icons/editCopy.png"), tr("&Copy"), NULL);
 	m_pPasteItemAction = new QAction(
-		QIcon(":/icons/editPaste.png"), tr("P&aste"), this);
+		QIcon(":/icons/editPaste.png"), tr("P&aste"), NULL);
 	m_pRenameItemAction = new QAction(
 		QIcon(":/icons/formEdit.png"), tr("R&ename"), this);
 	m_pDeleteItemAction = new QAction(
-		QIcon(":/icons/formRemove.png"), tr("&Delete"), this);
+		QIcon(":/icons/formRemove.png"), tr("&Delete"), NULL);
 	m_pPlayItemAction = new QAction(
 		QIcon(":/icons/transportPlay.png"), tr("Play"), this);
 	m_pPlayItemAction->setCheckable(true);
 
 	m_pNewGroupAction->setShortcut(tr("Ctrl+G"));
 	m_pOpenFileAction->setShortcut(tr("Ctrl+F"));
-//	m_pCutItemAction->setShortcut(tr("Ctrl+X"));
-//	m_pCopyItemAction->setShortcut(tr("Ctrl+C"));
-//	m_pPasteItemAction->setShortcut(tr("Ctrl+V"));
+	m_pCutItemAction->setShortcut(tr("Ctrl+X"));
+	m_pCopyItemAction->setShortcut(tr("Ctrl+C"));
+	m_pPasteItemAction->setShortcut(tr("Ctrl+V"));
 	m_pRenameItemAction->setShortcut(tr("Ctrl+E"));
-	m_pDeleteItemAction->setShortcut(tr("Ctrl+D"));
+	m_pDeleteItemAction->setShortcut(tr("Del"));
 //	m_pPlayItemAction->setShortcut(tr("Ctrl+P"));
 
 	// Some actions surely need those
 	// shortcuts firmly attached...
 	QDockWidget::addAction(m_pNewGroupAction);
 	QDockWidget::addAction(m_pOpenFileAction);
-	QDockWidget::addAction(m_pCutItemAction);
-	QDockWidget::addAction(m_pCopyItemAction);
-	QDockWidget::addAction(m_pPasteItemAction);
+//	QDockWidget::addAction(m_pCutItemAction);
+//	QDockWidget::addAction(m_pCopyItemAction);
+//	QDockWidget::addAction(m_pPasteItemAction);
 	QDockWidget::addAction(m_pRenameItemAction);
-	QDockWidget::addAction(m_pDeleteItemAction);
+//	QDockWidget::addAction(m_pDeleteItemAction);
 	QDockWidget::addAction(m_pPlayItemAction);
 
 	// Prepare the dockable window stuff.
@@ -227,6 +227,29 @@ void qtractorFiles::clear (void)
 	m_pMidiListView->clear();
 
 	setPlayState(false);
+}
+
+
+// Check whether one of the widgets has focus (oveerride method)
+bool qtractorFiles::hasFocus (void) const
+{
+	if (m_pAudioListView->hasFocus() || m_pMidiListView->hasFocus())
+		return true;
+
+	return QDockWidget::hasFocus();
+}
+
+
+// Tell whether a file item is currently selected.
+bool qtractorFiles::isFileSelected (void) const
+{
+	qtractorFileListView *pFileListView = currentFileListView();
+	if (pFileListView) {
+		QTreeWidgetItem *pItem = pFileListView->currentItem();
+		return (pItem && pItem->type() == qtractorFileListView::FileItem);
+	}
+
+	return false;
 }
 
 
@@ -377,6 +400,11 @@ void qtractorFiles::stabilizeSlot (void)
 		m_pPlayItemAction->setEnabled(bPlayEnabled);
 		m_pPlayButton->setEnabled(bPlayEnabled);
 	}
+
+	// Stabilize main form as well...
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm)
+		pMainForm->stabilizeForm();
 }
 
 

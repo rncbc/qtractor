@@ -275,10 +275,10 @@ void qtractorClip::setClipGain ( float fGain )
 
 	// Gain fractionalizer(tm)...
 	m_fractGain.den = 8;
-    while(fGain != int(fGain) && m_fractGain.den < 20) {
+	while(fGain != int(fGain) && m_fractGain.den < 20) {
 		m_fractGain.den += 2;
-        fGain *= 4.0f;
-    }
+		fGain *= 4.0f;
+	}
 	m_fractGain.num = int(fGain);
 }
 
