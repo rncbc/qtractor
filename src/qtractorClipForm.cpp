@@ -201,7 +201,7 @@ void qtractorClipForm::setClip ( qtractorClip *pClip, bool bClipNew )
 		m_ui.ClipGainSpinBox->setSuffix(tr(" dB"));
 		m_ui.ClipGainSpinBox->setRange(-60.0f, +12.0f);
 		float fClipGain = m_pClip->clipGain();
-		if (fClipGain < 1.0f)
+		if (fClipGain < 0.001f || fClipGain > 4.0f)
 			fClipGain = 1.0f;
 		m_ui.ClipGainSpinBox->setValue(20.0f * ::log10f(fClipGain));
 		qtractorAudioClip *pAudioClip

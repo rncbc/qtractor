@@ -433,9 +433,10 @@ QString qtractorAudioClip::toolTip (void) const
 			sToolTip += QObject::tr("\nAudio:\t%1 channels, %2 Hz")
 				.arg(pFile->channels())
 				.arg(pFile->sampleRate());
-			if (clipGain() > 1.0f)
+			float fGain = clipGain();
+			if (fGain < 0.999f || fGain > 1.001f)
 				sToolTip += QObject::tr(" (%1 dB)")
-					.arg(20.0f * ::log10f(clipGain()), 0, 'g', 2);
+					.arg(20.0f * ::log10f(fGain), 0, 'g', 2);
 			if (m_pBuff->isTimeStretch())
 				sToolTip += QObject::tr("\n\t(%1% time stretch)")
 					.arg(100.0f * m_pBuff->timeStretch(), 0, 'g', 3);
@@ -534,6 +535,7 @@ bool qtractorAudioClip::clipExport ( ClipExport pfnClipExport, void *pvArg,
 		::memset(ppFrames[i], 0, iFrames * sizeof(float));
 	}
 
+	float fGain = clipGain();
 	unsigned long iFrameStart = 0;
 	while (iFrameStart < iLength) {
 		pBuff->syncExport();
@@ -541,6 +543,11 @@ bool qtractorAudioClip::clipExport ( ClipExport pfnClipExport, void *pvArg,
 			int nread = pBuff->read(ppFrames, iFrames);
 			if (nread < 1)
 				break;
+			for (i = 0; i < iChannels; ++i) {
+				float *pFrames = ppFrames[i];
+				for (int n = 0; n < nread; ++n)
+					*pFrames++ *= fGain;
+			}
 			(*pfnClipExport)(ppFrames, nread, pvArg);
 			iFrameStart += nread;
 		}

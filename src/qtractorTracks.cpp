@@ -499,7 +499,7 @@ struct audioClipNormalizeData
 {	// Ctor.
 	audioClipNormalizeData(unsigned short iChannels)
 		: count(0), channels(iChannels), max(0.0f) {};
-	// Field members.
+	// Members.
 	unsigned int count;
 	unsigned short channels;
 	float max;
@@ -576,7 +576,7 @@ bool qtractorTracks::normalizeClip ( qtractorClip *pClip )
 	}
 
 	// Default non-normalized setting...
-	float fGain = 1.0f;
+	float fGain = pClip->clipGain();
 
 	if (pTrack->trackType() == qtractorTrack::Audio) {
 		// Normalize audio clip...
@@ -600,7 +600,7 @@ bool qtractorTracks::normalizeClip ( qtractorClip *pClip )
 		audioClipNormalizeData data(pAudioBus->channels());
 		pAudioClip->clipExport(audioClipNormalize, &data, iOffset, iLength);
 		if (data.max > 0.1f && data.max < 1.0f)
-			fGain = 1.0f / data.max;
+			fGain = fGain / data.max;
 		if (pProgressBar)
 			pProgressBar->hide();
 		QApplication::restoreOverrideCursor();
@@ -616,7 +616,7 @@ bool qtractorTracks::normalizeClip ( qtractorClip *pClip )
 		unsigned char max = 0;
 		pMidiClip->clipExport(midiClipNormalize, &max, iOffset, iLength);
 		if (max > 0x0c && max < 0x7f)
-			fGain = 127.0f / float(max);
+			fGain = (127.0f * fGain) / float(max);
 		QApplication::restoreOverrideCursor();
 	}
 
