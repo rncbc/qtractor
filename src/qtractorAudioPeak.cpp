@@ -434,39 +434,37 @@ qtractorAudioPeakFile::Frame *qtractorAudioPeakFile::read (
 #endif
 
 	// Cache effect, only valid if we're really reading...
-	if (m_openMode == Read) {
-		unsigned long iPeakOffset2 = iPeakOffset + iPeakFrames;
-		if (iPeakOffset2 >= m_iBuffOffset) {
-			if (iPeakOffset >= m_iBuffOffset) {
-				unsigned long iBuffOffset2 = m_iBuffOffset + m_iBuffLength;
-				if (iBuffOffset2 >= iPeakOffset2)
-					return m_pBuffer
-						+ m_peakHeader.channels * (iPeakOffset - m_iBuffOffset);
-				if (m_iBuffOffset + m_iBuffSize >= iPeakOffset2) {
-					iPeakFrames = iPeakOffset2 - iBuffOffset2;
-					m_iBuffLength
-						+= readBuffer(m_iBuffLength, iBuffOffset2, iPeakFrames);
-					return m_pBuffer
-						+ m_peakHeader.channels * (iPeakOffset - m_iBuffOffset);
-				}
-			} else {
-				unsigned int iPeakFrames2 = m_iBuffOffset - iPeakOffset;
-				if (m_iBuffLength + iPeakFrames2 < m_iBuffSize) {
-					::memmove(
-						m_pBuffer + m_peakHeader.channels * iPeakFrames2,
-						m_pBuffer,
-						m_peakHeader.channels * m_iBuffLength * sizeof(Frame));
-					m_iBuffLength += readBuffer(0, iPeakOffset, iPeakFrames2);
-					m_iBuffOffset  = iPeakOffset;
-					return m_pBuffer;
-				}
+	unsigned long iPeakOffset2 = iPeakOffset + iPeakFrames;
+	if (iPeakOffset2 >= m_iBuffOffset) {
+		if (iPeakOffset >= m_iBuffOffset) {
+			unsigned long iBuffOffset2 = m_iBuffOffset + m_iBuffLength;
+			if (iBuffOffset2 >= iPeakOffset2)
+				return m_pBuffer
+					+ m_peakHeader.channels * (iPeakOffset - m_iBuffOffset);
+			if (m_iBuffOffset + m_iBuffSize >= iPeakOffset2) {
+				iPeakFrames = iPeakOffset2 - iBuffOffset2;
+				m_iBuffLength
+					+= readBuffer(m_iBuffLength, iBuffOffset2, iPeakFrames);
+				return m_pBuffer
+					+ m_peakHeader.channels * (iPeakOffset - m_iBuffOffset);
+			}
+		} else {
+			unsigned int iPeakFrames2 = m_iBuffOffset - iPeakOffset;
+			if (m_iBuffLength + iPeakFrames2 < m_iBuffSize) {
+				::memmove(
+					m_pBuffer + m_peakHeader.channels * iPeakFrames2,
+					m_pBuffer,
+					m_peakHeader.channels * m_iBuffLength * sizeof(Frame));
+				m_iBuffLength += readBuffer(0, iPeakOffset, iPeakFrames2);
+				m_iBuffOffset  = iPeakOffset;
+				return m_pBuffer;
 			}
 		}
 	}
 
 	// Read peak data as requested...
-	m_iBuffLength += readBuffer(0, iPeakOffset, iPeakFrames);
-	m_iBuffOffset  = iPeakOffset;
+	m_iBuffLength = readBuffer(0, iPeakOffset, iPeakFrames);
+	m_iBuffOffset = iPeakOffset;
 
 	return m_pBuffer;
 }
