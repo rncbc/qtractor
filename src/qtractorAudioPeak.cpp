@@ -444,8 +444,8 @@ qtractorAudioPeakFile::Frame *qtractorAudioPeakFile::read (
 						+ m_peakHeader.channels * (iPeakOffset - m_iBuffOffset);
 				if (m_iBuffOffset + m_iBuffSize >= iPeakOffset2) {
 					iPeakFrames = iPeakOffset2 - iBuffOffset2;
-					readBuffer(m_iBuffLength, iBuffOffset2, iPeakFrames);
-					m_iBuffLength += iPeakFrames;
+					m_iBuffLength
+						+= readBuffer(m_iBuffLength, iBuffOffset2, iPeakFrames);
 					return m_pBuffer
 						+ m_peakHeader.channels * (iPeakOffset - m_iBuffOffset);
 				}
@@ -456,9 +456,8 @@ qtractorAudioPeakFile::Frame *qtractorAudioPeakFile::read (
 						m_pBuffer + m_peakHeader.channels * iPeakFrames2,
 						m_pBuffer,
 						m_peakHeader.channels * m_iBuffLength * sizeof(Frame));
-					readBuffer(0, iPeakOffset, iPeakFrames2);
+					m_iBuffLength += readBuffer(0, iPeakOffset, iPeakFrames2);
 					m_iBuffOffset  = iPeakOffset;
-					m_iBuffLength += iPeakFrames2;
 					return m_pBuffer;
 				}
 			}
@@ -466,16 +465,15 @@ qtractorAudioPeakFile::Frame *qtractorAudioPeakFile::read (
 	}
 
 	// Read peak data as requested...
-	readBuffer(0, iPeakOffset, iPeakFrames);
-	m_iBuffOffset = iPeakOffset;
-	m_iBuffLength = iPeakFrames;
+	m_iBuffLength += readBuffer(0, iPeakOffset, iPeakFrames);
+	m_iBuffOffset  = iPeakOffset;
 
 	return m_pBuffer;
 }
 
 
-// Read frames from peak file into local buffer offset.
-void qtractorAudioPeakFile::readBuffer (
+// Read frames from peak file into local buffer cache.
+unsigned int qtractorAudioPeakFile::readBuffer (
 	unsigned int iBuffOffset, unsigned long iPeakOffset, unsigned int iPeakFrames )
 {
 	// Shall we reallocate?
@@ -505,8 +503,12 @@ void qtractorAudioPeakFile::readBuffer (
 	if (m_peakFile.seek(sizeof(Header) + iOffset))
 		nread = (int) m_peakFile.read(&pBuffer[0], iLength);
 	// Zero the remaining...
-	if (nread < (int) iLength)
+	if (nread < (int) iLength) {
 		::memset(&pBuffer[nread], 0, iLength - nread);
+		iPeakFrames = nread / (m_peakHeader.channels * sizeof(Frame));
+	}
+
+	return iPeakFrames;
 }
 
 

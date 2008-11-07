@@ -5,6 +5,8 @@ ChangeLog
 
 CVS HEAD
 
+- Incomplete audio peaks were being cached prematurely, fixed.
+
 - Make way for paste/dropping items from the system clipboard
   over the main track view. Cut/Copy/Paste/Delete of file items
   have now this workaround fixed, wrt. Files widget keyboard

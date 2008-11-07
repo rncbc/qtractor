@@ -438,8 +438,8 @@ void qtractorFiles::contextMenuEvent (
 	QMenu menu(this);
 
 	// Construct context menu.
-	menu.addAction(m_pOpenFileAction);
 	menu.addAction(m_pNewGroupAction);
+	menu.addAction(m_pOpenFileAction);
 	menu.addSeparator();
 	menu.addAction(m_pCutItemAction);
 	menu.addAction(m_pCopyItemAction);

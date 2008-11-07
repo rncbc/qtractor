@@ -98,8 +98,8 @@ protected:
 	// Internal creational methods.
 	void writeFrame();
 
-	// Read frames from peak file into local buffer offset.
-	void readBuffer(unsigned int iBuffOffset,
+	// Read frames from peak file into local buffer cache.
+	unsigned int readBuffer(unsigned int iBuffOffset,
 		unsigned long iPeakOffset, unsigned int iPeakFrames);
 
 private:
