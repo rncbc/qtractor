@@ -599,8 +599,8 @@ bool qtractorTracks::normalizeClip ( qtractorClip *pClip )
 		}
 		audioClipNormalizeData data(pAudioBus->channels());
 		pAudioClip->clipExport(audioClipNormalize, &data, iOffset, iLength);
-		if (data.max > 0.1f && data.max < 1.0f)
-			fGain = fGain / data.max;
+		if (data.max > 0.1f && data.max < 1.1f)
+			fGain /= data.max;
 		if (pProgressBar)
 			pProgressBar->hide();
 		QApplication::restoreOverrideCursor();
@@ -616,7 +616,7 @@ bool qtractorTracks::normalizeClip ( qtractorClip *pClip )
 		unsigned char max = 0;
 		pMidiClip->clipExport(midiClipNormalize, &max, iOffset, iLength);
 		if (max > 0x0c && max < 0x7f)
-			fGain = (127.0f * fGain) / float(max);
+			fGain *= (127.0f / float(max));
 		QApplication::restoreOverrideCursor();
 	}
 

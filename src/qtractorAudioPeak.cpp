@@ -503,7 +503,8 @@ unsigned int qtractorAudioPeakFile::readBuffer (
 	// Zero the remaining...
 	if (nread < (int) iLength) {
 		::memset(&pBuffer[nread], 0, iLength - nread);
-		iPeakFrames = nread / (m_peakHeader.channels * sizeof(Frame));
+		if (m_openMode != Read)
+			iPeakFrames = nread / (m_peakHeader.channels * sizeof(Frame));
 	}
 
 	return iPeakFrames;
