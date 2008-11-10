@@ -5,6 +5,9 @@ ChangeLog
 
 CVS HEAD
 
+- Fixed bug #2249291 - Crash on tempo change; affecting the
+  WSOLA based time-stretching on all non-stereo audio clips.
+
 - Incomplete audio peaks were being cached prematurely, fixed.
 
 - Make way for paste/dropping items from the system clipboard

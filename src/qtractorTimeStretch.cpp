@@ -119,8 +119,9 @@ static inline double std_cross_corr (
 // Constructor.
 qtractorTimeStretch::qtractorTimeStretch (
 	unsigned short iChannels, unsigned int iSampleRate )
+	: m_iChannels(0)
 {
-	m_iChannels = iChannels;
+	setChannels(iChannels);
 
 	m_fTempo = 1.0f;
 	m_bQuickSeek = false;
