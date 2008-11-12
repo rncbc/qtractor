@@ -35,7 +35,7 @@ Features
 - Traditional multi-track tape recorder control paradigm.
 - Audio file formats support: OGG (via libvorbis [6]),
   MP3 (via libmad [7], playback only), WAV, FLAC, AIFF
-  and many, many more (via linsndfile [4]).
+  and many, many more (via libsndfile [4]).
 - Standard MIDI files support (format 0 and 1).
 - Non-destructive, non-linear editing.
 - Unlimited number of tracks per session/project.
@@ -52,7 +52,7 @@ Features
 - Plug-in presets, programs and chunk/configurations support.
 - Audio/MIDI clip fade-in/out (linear, quadratic, cubic).
 - Audio clip time-stretching (WSOLA-like or via librubberband [9]),
-  pitch-shifting (via librubberband [9]) and seemless sample-rate
+  pitch-shifting (via librubberband [9]) and seamless sample-rate
   conversion (via libsamplerate [8]).
 - Audio/MIDI track export (mix-down, merge).
 - Audio/MIDI metronome bar/beat clicks.

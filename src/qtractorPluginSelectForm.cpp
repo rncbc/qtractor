@@ -259,6 +259,9 @@ void qtractorPluginSelectForm::refresh (void)
 		// Tell the world we'll take some time...
 		QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 		int iFile = 0;
+		qtractorPluginType::Hint typeHint
+			= qtractorPluginType::hintFromText(
+				m_ui.PluginTypeComboBox->currentText());
 		m_ui.PluginTypeProgressBar->setMaximum(g_pluginPath.files().count());
 		m_ui.PluginTypeProgressBar->show();
 		QListIterator<qtractorPluginFile *> file_iter(g_pluginPath.files());
@@ -267,7 +270,7 @@ void qtractorPluginSelectForm::refresh (void)
 			QApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
 			qtractorPluginFile *pFile = file_iter.next();
 			if (pFile->open()) {
-				pFile->getTypes(g_pluginTypes);
+				pFile->getTypes(g_pluginTypes, typeHint);
 				pFile->close();
 			}
 		}
