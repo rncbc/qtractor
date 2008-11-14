@@ -3545,12 +3545,15 @@ void qtractorMainForm::stabilizeForm (void)
 			|| m_iPlayHead < m_pSession->editHead()
 			|| m_iPlayHead < m_pSession->editTail()));
 	m_ui.transportLoopAction->setEnabled(
-		!bRolling && (bLooping || bSelectable));
-	m_ui.transportLoopSetAction->setEnabled(!bRolling && bSelectable);
-	m_ui.transportRecordAction->setEnabled(m_pSession->recordTracks() > 0);
+		!bRolling && !bRecording && (bLooping || bSelectable));
+	m_ui.transportLoopSetAction->setEnabled(
+		!bRolling && !bRecording && bSelectable);
+	m_ui.transportRecordAction->setEnabled(
+		!bLooping && m_pSession->recordTracks() > 0);
 	m_ui.transportPunchAction->setEnabled(
-		!bRolling && (bPunching || bSelectable));
-	m_ui.transportPunchSetAction->setEnabled(!bRolling && bSelectable);
+		!bRolling && !bLooping && (bPunching || bSelectable));
+	m_ui.transportPunchSetAction->setEnabled(
+		!bRolling && !bLooping && bSelectable);
 	m_ui.transportMetroAction->setEnabled(
 		m_pOptions->bAudioMetronome || m_pOptions->bMidiMetronome);
 

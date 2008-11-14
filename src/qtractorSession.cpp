@@ -1164,7 +1164,7 @@ unsigned long qtractorSession::punchOut (void) const
 
 bool qtractorSession::isPunching (void) const
 {
-	return (m_iPunchIn < m_iPunchOut);
+	return (m_iPunchIn < m_iPunchOut) && !isLooping();
 }
 
 
