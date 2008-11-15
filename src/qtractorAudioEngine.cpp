@@ -288,7 +288,6 @@ qtractorAudioEngine::qtractorAudioEngine ( qtractorSession *pSession )
 	m_pExportFile  = NULL;
 	m_iExportStart = 0;
 	m_iExportEnd   = 0;
-	m_iExportSync  = 0;
 	m_bExportDone  = true;
 
 	// Audio metronome stuff.
@@ -572,17 +571,16 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 	if (pAudioCursor == NULL)
 		return 0;
 
+	// Reset buffer offset.
+	m_iBufferOffset = 0;
+
 	// Are we actually freewheeling for export?...
 	// notice that freewheeling has no RT requirements.
 	if (m_bFreewheel) {
 		// Make sure we're in a valid state...
 		if (m_pExportFile && m_pExportBus && !m_bExportDone) {
 			// Force/sync every audio clip approaching...
-			m_iExportSync += nframes;
-			if (m_iExportSync > (sampleRate() >> 3)) {
-				m_iExportSync = 0;
-				syncExport();
-			}
+			syncExport();
 			// This the legal process cycle frame range...
 			unsigned long iFrameStart = pAudioCursor->frame();
 			unsigned long iFrameEnd   = iFrameStart + nframes;
@@ -610,9 +608,6 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 	// Session RT-safeness lock...
 	if (!pSession->acquire())
 		return 0;
-
-	// Reset buffer offset.
-	m_iBufferOffset = 0;
 
 	// Track whether audio output buses
 	// buses needs monitoring while idle...
@@ -957,7 +952,6 @@ bool qtractorAudioEngine::fileExport ( const QString& sExportPath,
 	m_pExportFile  = pExportFile;
 	m_iExportStart = iExportStart;
 	m_iExportEnd   = iExportEnd;
-	m_iExportSync  = 0;
 	m_bExportDone  = false;
 
 	// We'll have to save some session parameters...
@@ -1006,7 +1000,6 @@ bool qtractorAudioEngine::fileExport ( const QString& sExportPath,
 	m_pExportFile  = NULL;
 	m_iExportStart = 0;
 	m_iExportEnd   = 0;
-	m_iExportSync  = 0;
 	m_bExportDone  = true;
 
 	// Done whether successfully.

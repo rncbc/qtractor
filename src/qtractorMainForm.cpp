@@ -3378,7 +3378,9 @@ void qtractorMainForm::updateTransportTime ( unsigned long iPlayHead )
 	m_pThumbView->updatePlayHead(iPlayHead);
 
 #ifdef CONFIG_VST
+#if 0 // !VST_FORCE_DEPRECATED
 	qtractorVstPlugin::idleTimerAll();
+#endif
 #endif
 }
 

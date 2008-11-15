@@ -932,7 +932,7 @@ qtractorAudioEngine *qtractorSession::audioEngine (void) const
 // Wait for application stabilization.
 void qtractorSession::stabilize ( int msecs )
 {
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	qDebug("qtractorSession::stabilize(%d)", msecs);
 #endif
 	// Wait a litle bit before continue...

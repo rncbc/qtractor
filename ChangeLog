@@ -5,6 +5,8 @@ ChangeLog
 
 CVS HEAD
 
+- Exclude deprecated VST elements from compilation.
+
 - Export tracks dialog has new punch in/out range option.
 
 - Somehow realized that looping and punch-recording are two

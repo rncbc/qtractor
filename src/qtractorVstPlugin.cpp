@@ -633,11 +633,13 @@ void qtractorVstPlugin::setChannels ( unsigned short iChannels )
 		pEffect->vst_dispatch(effSetSampleRate, 0, 0, NULL, float(sampleRate()));
 		pEffect->vst_dispatch(effSetBlockSize,  0, bufferSize(), NULL, 0.0f);
 	//	pEffect->vst_dispatch(effSetProgram, 0, iIndex, NULL, 0.0f);
+	#if 0 // !VST_FORCE_DEPRECATED
 		unsigned short j;
 		for (j = 0; j < pVstType->audioIns(); ++j)
 			pEffect->vst_dispatch(effConnectInput, j, 1, NULL, 0.0f);
 		for (j = 0; j < pVstType->audioOuts(); ++j)
 			pEffect->vst_dispatch(effConnectOutput, j, 1, NULL, 0.0f);
+	#endif
 	}
 
 	// Reset parameters direct and default value...
@@ -723,10 +725,13 @@ void qtractorVstPlugin::process (
 		if (pVstEffect->flags & effFlagsCanReplacing) {
 			pVstEffect->processReplacing(
 				pVstEffect, m_ppIBuffer, m_ppOBuffer, nframes);
-		} else {
+		}
+	#if 0 // !VST_FORCE_DEPRECATED
+		else {
 			pVstEffect->process(
 				pVstEffect, m_ppIBuffer, m_ppOBuffer, nframes);
 		}
+	#endif
 		// Wrap channels?...
 		if (iIChannel < iChannels - 1)
 			iIChannel++;
@@ -970,6 +975,7 @@ void qtractorVstPlugin::idleEditorAll (void)
 }
 
 
+#if 0 // !VST_FORCE_DEPRECATED
 // Idle editor (static).
 void qtractorVstPlugin::idleTimerAll (void)
 {
@@ -992,6 +998,7 @@ void qtractorVstPlugin::idleTimerAll (void)
 		}
 	}
 }
+#endif
 
 
 // Our own editor widget accessor.
@@ -1332,15 +1339,6 @@ static VstIntPtr VSTCALLBACK qtractorVstPlugin_HostCallback ( AEffect* effect,
 		QApplication::processEvents();
 		break;
 
-	case audioMasterPinConnected:
-		VST_HC_DEBUG("audioMasterPinConnected");
-		break;
-
-	// VST 2.0 opcodes...
-	case audioMasterWantMidi:
-		VST_HC_DEBUG("audioMasterWantMidi");
-		break;
-
 	case audioMasterGetTime:
 		VST_HC_DEBUG("audioMasterGetTime");
 		if (pSession) {
@@ -1355,36 +1353,8 @@ static VstIntPtr VSTCALLBACK qtractorVstPlugin_HostCallback ( AEffect* effect,
 		VST_HC_DEBUG("audioMasterProcessEvents");
 		break;
 
-	case audioMasterSetTime:
-		VST_HC_DEBUG("audioMasterSetTime");
-		break;
-
-	case audioMasterTempoAt:
-		VST_HC_DEBUG("audioMasterTempoAt");
-		if (pSession)
-			ret = (long) (pSession->tempo() * 10000.0f);
-		break;
-
-	case audioMasterGetNumAutomatableParameters:
-		VST_HC_DEBUG("audioMasterGetNumAutomatableParameters");
-		break;
-
-	case audioMasterGetParameterQuantization:
-		VST_HC_DEBUG("audioMasterGetParameterQuantization");
-		ret = 1; // full single float precision
-		break;
-
 	case audioMasterIOChanged:
 		VST_HC_DEBUG("audioMasterIOChanged");
-		break;
-
-	case audioMasterNeedIdle:
-		VST_HC_DEBUG("audioMasterNeedIdle");
-		pVstPlugin = qtractorVstPlugin::findPlugin(effect);
-		if (pVstPlugin && !pVstPlugin->isIdleTimer()) {
-			effect->dispatcher(effect, effIdle, 0, 0, NULL, 0.0f);
-			pVstPlugin->setIdleTimer(true);
-		}
 		break;
 
 	case audioMasterSizeWindow:
@@ -1417,19 +1387,6 @@ static VstIntPtr VSTCALLBACK qtractorVstPlugin_HostCallback ( AEffect* effect,
 		VST_HC_DEBUG("audioMasterGetOutputLatency");
 		break;
 
-	case audioMasterGetPreviousPlug:
-		VST_HC_DEBUG("audioMasterGetPreviousPlug");
-		break;
-
-	case audioMasterGetNextPlug:
-		VST_HC_DEBUG("audioMasterGetNextPlug");
-		break;
-
-	case audioMasterWillReplaceOrAccumulate:
-		VST_HC_DEBUG("audioMasterWillReplaceOrAccumulate");
-		ret = 1;
-		break;
-
 	case audioMasterGetCurrentProcessLevel:
 		VST_HC_DEBUG("audioMasterGetCurrentProcessLevel");
 		break;
@@ -1437,10 +1394,6 @@ static VstIntPtr VSTCALLBACK qtractorVstPlugin_HostCallback ( AEffect* effect,
 	case audioMasterGetAutomationState:
 		VST_HC_DEBUG("audioMasterGetAutomationState");
 		ret = 1; // off
-		break;
-
-	case audioMasterSetOutputSampleRate:
-		VST_HC_DEBUG("audioMasterSetOutputSampleRate");
 		break;
 
 #if !defined(VST_2_3_EXTENSIONS) 
@@ -1467,10 +1420,6 @@ static VstIntPtr VSTCALLBACK qtractorVstPlugin_HostCallback ( AEffect* effect,
 		VST_HC_DEBUG("audioMasterVendorSpecific");
 		break;
 
-	case audioMasterSetIcon:
-		VST_HC_DEBUG("audioMasterSetIcon");
-		break;
-
 	case audioMasterCanDo:
 		VST_HC_DEBUGX("audioMasterCanDo");
 		if (::strcmp("receiveVstMidiEvent", (char *) ptr) == 0 ||
@@ -1487,6 +1436,65 @@ static VstIntPtr VSTCALLBACK qtractorVstPlugin_HostCallback ( AEffect* effect,
 		ret = kVstLangEnglish;
 		break;
 
+#if 0 // !VST_FORCE_DEPRECATED
+	case audioMasterPinConnected:
+		VST_HC_DEBUG("audioMasterPinConnected");
+		break;
+
+	// VST 2.0 opcodes...
+	case audioMasterWantMidi:
+		VST_HC_DEBUG("audioMasterWantMidi");
+		break;
+
+	case audioMasterSetTime:
+		VST_HC_DEBUG("audioMasterSetTime");
+		break;
+
+	case audioMasterTempoAt:
+		VST_HC_DEBUG("audioMasterTempoAt");
+		if (pSession)
+			ret = (long) (pSession->tempo() * 10000.0f);
+		break;
+
+	case audioMasterGetNumAutomatableParameters:
+		VST_HC_DEBUG("audioMasterGetNumAutomatableParameters");
+		break;
+
+	case audioMasterGetParameterQuantization:
+		VST_HC_DEBUG("audioMasterGetParameterQuantization");
+		ret = 1; // full single float precision
+		break;
+
+	case audioMasterNeedIdle:
+		VST_HC_DEBUG("audioMasterNeedIdle");
+		pVstPlugin = qtractorVstPlugin::findPlugin(effect);
+		if (pVstPlugin && !pVstPlugin->isIdleTimer()) {
+			effect->dispatcher(effect, effIdle, 0, 0, NULL, 0.0f);
+			pVstPlugin->setIdleTimer(true);
+		}
+		break;
+
+	case audioMasterGetPreviousPlug:
+		VST_HC_DEBUG("audioMasterGetPreviousPlug");
+		break;
+
+	case audioMasterGetNextPlug:
+		VST_HC_DEBUG("audioMasterGetNextPlug");
+		break;
+
+	case audioMasterWillReplaceOrAccumulate:
+		VST_HC_DEBUG("audioMasterWillReplaceOrAccumulate");
+		ret = 1;
+		break;
+
+	case audioMasterSetOutputSampleRate:
+		VST_HC_DEBUG("audioMasterSetOutputSampleRate");
+		break;
+
+	case audioMasterSetIcon:
+		VST_HC_DEBUG("audioMasterSetIcon");
+		break;
+
 	case audioMasterOpenWindow:
 		VST_HC_DEBUG("audioMasterOpenWindow");
 		break;
@@ -1494,6 +1502,7 @@ static VstIntPtr VSTCALLBACK qtractorVstPlugin_HostCallback ( AEffect* effect,
 	case audioMasterCloseWindow:
 		VST_HC_DEBUG("audioMasterCloseWindow");
 		break;
+#endif
 
 	case audioMasterGetDirectory:
 		VST_HC_DEBUG("audioMasterGetDirectory");

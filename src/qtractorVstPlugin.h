@@ -25,7 +25,8 @@
 #include "qtractorPlugin.h"
 
 // Allow VST 2.3 compability mode.
-#define VST_2_4_EXTENSIONS 0
+// #define VST_2_4_EXTENSIONS 0
+// #define VST_FORCE_DEPRECATED 1
 
 #if !defined(__WIN32__) && !defined(_WIN32) && !defined(WIN32)
 #define __cdecl
@@ -158,8 +159,10 @@ public:
 	// Idle editor (static).
 	static void idleEditorAll();
 
+#if 0 // !VST_FORCE_DEPRECATED
 	// Idle timer (static).
 	static void idleTimerAll();
+#endif
 
 	// Editor widget forward decls.
 	class EditorWidget;

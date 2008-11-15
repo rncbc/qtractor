@@ -762,7 +762,7 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 		pEv->time.tick = q * ((pEv->time.tick + (q >> 1)) / q);
 	}
 
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	// - show event for debug purposes...
 	fprintf(stderr, "MIDI In  %05d 0x%02x", pEv->time.tick, pEv->type);
 	if (pEv->type == SND_SEQ_EVENT_SYSEX) {
@@ -2344,7 +2344,7 @@ void qtractorMidiBus::setPatch ( unsigned short iChannel,
 	if (pMidiEngine == NULL)
 		return;
 
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	qDebug("qtractorMidiBus[%p]::setPatch(%d, \"%s\", %d, %d, %d)",
 		this, iChannel, sInstrumentName.toUtf8().constData(),
 		iBankSelMethod, iBank, iProg);
@@ -2437,7 +2437,7 @@ void qtractorMidiBus::setControllerEx ( unsigned short iChannel,
 	if (pMidiEngine->alsaSeq() == NULL)
 		return;
 
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	qDebug("qtractorMidiBus[%p]::setController(%d, %d, %d)",
 		this, iChannel, iController, iValue);
 #endif
@@ -2484,7 +2484,7 @@ void qtractorMidiBus::sendNote ( qtractorTrack *pTrack,
 		return;
 
 	unsigned short iChannel = pTrack->midiChannel();
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	qDebug("qtractorMidiBus[%p]::sendNote(%d, %d, %d)",
 		this, iChannel, iNote, iVelocity);
 #endif
@@ -2541,7 +2541,7 @@ void qtractorMidiBus::sendSysex ( unsigned char *pSysex, unsigned int iSysex ) c
 	if (pMidiEngine->alsaSeq() == NULL)
 		return;
 
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	fprintf(stderr, "qtractorMidiBus::sendSysEx(%p, %u)", pSysex, iSysex);
 	fprintf(stderr, " sysex {");
 	for (unsigned int i = 0; i < iSysex; i++)

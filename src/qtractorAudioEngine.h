@@ -178,7 +178,6 @@ private:
 	qtractorAudioFile   *m_pExportFile;
 	unsigned long        m_iExportStart;
 	unsigned long        m_iExportEnd;
-	unsigned int         m_iExportSync;
 	bool                 m_bExportDone;
 
 	// Audio metronome stuff.
