@@ -1227,31 +1227,31 @@ void qtractorMidiEditorForm::stabilizeForm (void)
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pSession && pMainForm) {
 		unsigned long iPlayHead = pSession->playHead();
+		bool bSelectable = (pSession->editHead() < pSession->editTail());
 		bool bPlaying    = pSession->isPlaying();
 		bool bRecording  = pSession->isRecording();
 		bool bPunching   = pSession->isPunching();
 		bool bLooping    = pSession->isLooping();
-		bool bEnabled    = (!bPlaying || !bRecording);
-		bool bSelectable = (pSession->editHead() < pSession->editTail());
-		bool bBumped = (bEnabled && (pSession->playHead() > 0 || bPlaying));
+		bool bRolling    = (bPlaying && bRecording);
+		bool bBumped     = (!bRolling && (iPlayHead > 0 || bPlaying));
 		int iRolling = pMainForm->rolling();
 		m_ui.transportBackwardAction->setEnabled(bBumped);
 		m_ui.transportRewindAction->setEnabled(bBumped);
-		m_ui.transportFastForwardAction->setEnabled(bEnabled);
-		m_ui.transportForwardAction->setEnabled(bEnabled
-			&& (iPlayHead < pSession->sessionLength()
+		m_ui.transportFastForwardAction->setEnabled(!bRolling);
+		m_ui.transportForwardAction->setEnabled(
+			!bRolling && (iPlayHead < pSession->sessionLength()
 				|| iPlayHead < pSession->editHead()
 				|| iPlayHead < pSession->editTail()));
-		m_ui.transportLoopAction->setEnabled(bEnabled
-			&& !bRecording && (bLooping || bSelectable));
-		m_ui.transportLoopSetAction->setEnabled(bEnabled
-			&& !bRecording && bSelectable);
+		m_ui.transportLoopAction->setEnabled(
+			!bRolling && (bLooping || bSelectable));
+		m_ui.transportLoopSetAction->setEnabled(
+			!bRolling && bSelectable);
 		m_ui.transportRecordAction->setEnabled(
-			!bLooping && pSession->recordTracks() > 0);
-		m_ui.transportPunchAction->setEnabled(bEnabled
-			&& !bLooping && (bPunching || bSelectable));
-		m_ui.transportPunchSetAction->setEnabled(bEnabled
-			&& !bLooping && bSelectable);
+			(!bLooping || !bPunching) && pSession->recordTracks() > 0);
+		m_ui.transportPunchAction->setEnabled(
+			!bRolling && !bLooping && (bPunching || bSelectable));
+		m_ui.transportPunchSetAction->setEnabled(
+			!bRolling && !bLooping && bSelectable);
 		m_ui.transportRewindAction->setChecked(iRolling < 0);
 		m_ui.transportFastForwardAction->setChecked(iRolling > 0);
 		m_ui.transportLoopAction->setChecked(bLooping);

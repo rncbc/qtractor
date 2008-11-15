@@ -61,6 +61,10 @@ private:
 
 	// Instance variables...
 	qtractorTrack::TrackType m_exportType;
+
+	QString m_sExportType;
+	QString m_sExportExt;
+
 	qtractorTimeScale *m_pTimeScale;
 };
 

@@ -68,6 +68,9 @@ qtractorExportForm::qtractorExportForm (
 	QObject::connect(m_ui.LoopRangeRadioButton,
 		SIGNAL(toggled(bool)),
 		SLOT(rangeChanged()));
+	QObject::connect(m_ui.PunchRangeRadioButton,
+		SIGNAL(toggled(bool)),
+		SLOT(rangeChanged()));
 	QObject::connect(m_ui.EditRangeRadioButton,
 		SIGNAL(toggled(bool)),
 		SLOT(rangeChanged()));
@@ -114,7 +117,6 @@ void qtractorExportForm::setExportType ( qtractorTrack::TrackType exportType )
 	m_exportType = exportType;
 
 	QIcon icon;
-	QString sExportType;
 	qtractorEngine  *pEngine  = NULL;
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession) {
@@ -128,22 +130,26 @@ void qtractorExportForm::setExportType ( qtractorTrack::TrackType exportType )
 		case qtractorTrack::Audio:
 			pEngine = pSession->audioEngine();
 			icon = QIcon(":/icons/trackAudio.png");
-			sExportType = tr("Audio");
+			m_sExportType = tr("Audio");
+			m_sExportExt  = qtractorAudioFileFactory::defaultExt();
 			break;
 		case qtractorTrack::Midi:
 			pEngine = pSession->midiEngine();
 			icon = QIcon(":/icons/trackMidi.png");
-			sExportType = tr("MIDI");
+			m_sExportType = tr("MIDI");
+			m_sExportExt  = "mid";
 			break;
 		case qtractorTrack::None:
 		default:
+			m_sExportType.clear();
+			m_sExportExt.clear();
 			break;
 		}
 	}
 
 	// Grab export file history, one that might me useful...
 	m_ui.ExportPathComboBox->setObjectName(
-		sExportType + m_ui.ExportPathComboBox->objectName());
+		m_sExportType + m_ui.ExportPathComboBox->objectName());
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
 	if (pOptions)
 		pOptions->loadComboBoxHistory(m_ui.ExportPathComboBox);
@@ -153,7 +159,7 @@ void qtractorExportForm::setExportType ( qtractorTrack::TrackType exportType )
 	if (pEngine) {
 		QDialog::setWindowIcon(icon);
 		QDialog::setWindowTitle(
-			tr("Export %1").arg(sExportType) + " - " QTRACTOR_TITLE);
+			tr("Export %1").arg(m_sExportType) + " - " QTRACTOR_TITLE);
 		for (qtractorBus *pBus = pEngine->buses().first();
 				pBus; pBus = pBus->next()) {
 			if (pBus->busMode() & qtractorBus::Output)
@@ -196,8 +202,13 @@ qtractorTrack::TrackType qtractorExportForm::exportType (void) const
 // Accept settings (OK button slot).
 void qtractorExportForm::accept (void)
 {
+	// Enforce (again) default file extension...
+	QString sExportPath = m_ui.ExportPathComboBox->currentText();
+
+	if (QFileInfo(sExportPath).suffix() != m_sExportExt)
+		sExportPath += '.' + m_sExportExt;
+
 	// Check (again) wether the file already exists...
-	const QString& sExportPath = m_ui.ExportPathComboBox->currentText();
 	if (QFileInfo(sExportPath).exists()) {
 		if (QMessageBox::warning(this,
 			tr("Warning") + " - " QTRACTOR_TITLE,
@@ -237,14 +248,15 @@ void qtractorExportForm::accept (void)
 					.arg(sExportPath));
 				// Do the export as commanded...
 				QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-				bool bResult = pAudioEngine->fileExport(sExportPath,
+				bool bResult = pAudioEngine->fileExport(
+					sExportPath,
 					m_ui.ExportStartSpinBox->value(),
 					m_ui.ExportEndSpinBox->value(),
 					pExportBus);
 				QApplication::restoreOverrideCursor();
 				if (bResult) {
 					// Log the success...
-					pMainForm->addMidiFile(sExportPath);
+					pMainForm->addAudioFile(sExportPath);
 					pMainForm->appendMessages(
 						tr("Audio file export: \"%1\" complete.")
 						.arg(sExportPath));
@@ -271,9 +283,11 @@ void qtractorExportForm::accept (void)
 					.arg(sExportPath));
 				// Do the export as commanded...
 				QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-				bool bResult = pMidiEngine->fileExport(sExportPath,
+				bool bResult = pMidiEngine->fileExport(
+					sExportPath,
 					m_ui.ExportStartSpinBox->value(),
-					m_ui.ExportEndSpinBox->value(),	pExportBus);
+					m_ui.ExportEndSpinBox->value(),
+					pExportBus);
 				QApplication::restoreOverrideCursor();
 				if (bResult) {
 					// Log the success...
@@ -337,34 +351,19 @@ void qtractorExportForm::browseExportPath (void)
 	if (sExportPath.isEmpty())
 		sExportPath = pSession->sessionDir();
 
-	QString sExportType;
-	QString sExportExt;
-	switch (m_exportType) {
-	case qtractorTrack::Audio:
-		sExportType = tr("Audio");
-		sExportExt  = qtractorAudioFileFactory::defaultExt();
-		break;
-	case qtractorTrack::Midi:
-		sExportType = tr("MIDI");
-		sExportExt  = "mid";
-		break;
-	case qtractorTrack::None:
-	default:
-		return;
-	}
-
 	// Actual browse for the file...
 	sExportPath = QFileDialog::getSaveFileName(this,
-		tr("Export %1 File").arg(sExportType) + " - " QTRACTOR_TITLE,
-		sExportPath, tr("%1 files (*.%2)").arg(sExportType).arg(sExportExt));
+		tr("Export %1 File").arg(m_sExportType) + " - " QTRACTOR_TITLE,
+		sExportPath,
+		tr("%1 files (*.%2)").arg(m_sExportType).arg(m_sExportExt));
 
 	// Have we cancelled it?
 	if (sExportPath.isEmpty())
 		return;
 
 	// Enforce default file extension...
-	if (QFileInfo(sExportPath).suffix() != sExportExt)
-		sExportPath += '.' + sExportExt;
+	if (QFileInfo(sExportPath).suffix() != m_sExportExt)
+		sExportPath += '.' + m_sExportExt;
 
 	// Finallly set as wanted...
 	m_ui.ExportPathComboBox->setEditText(sExportPath);
@@ -389,6 +388,11 @@ void qtractorExportForm::rangeChanged (void)
 	if (m_ui.LoopRangeRadioButton->isChecked()) {
 		m_ui.ExportStartSpinBox->setValue(pSession->loopStart(), false);
 		m_ui.ExportEndSpinBox->setValue(pSession->loopEnd(), false);
+	}
+	else
+	if (m_ui.PunchRangeRadioButton->isChecked()) {
+		m_ui.ExportStartSpinBox->setValue(pSession->punchIn(), false);
+		m_ui.ExportEndSpinBox->setValue(pSession->punchOut(), false);
 	}
 	else
 	if (m_ui.EditRangeRadioButton->isChecked()) {
@@ -438,8 +442,8 @@ void qtractorExportForm::stabilizeForm (void)
 	if (pSession == NULL)
 		return;
 
-	m_ui.LoopRangeRadioButton->setEnabled(
-		pSession->loopStart() < pSession->loopEnd());
+	m_ui.LoopRangeRadioButton->setEnabled(pSession->isLooping());
+	m_ui.PunchRangeRadioButton->setEnabled(pSession->isPunching());
 	m_ui.EditRangeRadioButton->setEnabled(
 		pSession->editHead() < pSession->editTail());
 

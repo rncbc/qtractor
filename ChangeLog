@@ -5,8 +5,11 @@ ChangeLog
 
 CVS HEAD
 
-- Somehow realized that looping and recording are two mutually
-  exclusive rolling states, at least until loop/takes are real.
+- Export tracks dialog has new punch in/out range option.
+
+- Somehow realized that looping and punch-recording are two
+  mutually exclusive states, at least until loop recording
+  (ie. takes) gets real.
 
 - Fixed bug #2249291 - Crash on tempo change; affecting the
   WSOLA based time-stretching on all non-stereo audio clips.
