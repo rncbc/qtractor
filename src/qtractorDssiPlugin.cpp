@@ -613,6 +613,8 @@ public:
 				delete [] g_pDummyBuffer;
 			g_pDummyBuffer = new float [g_iDummyBufferSize];
 		}
+
+		reset(pDssiPlugin);
 	}
 
 	// Remove plugin instances from registry pool.
@@ -662,9 +664,9 @@ public:
 
 	// Activation count methods.
 	void activate(qtractorDssiPlugin *pDssiPlugin)
-		{ reset(pDssiPlugin); m_iActivated += pDssiPlugin->instances(); }
+		{ m_iActivated += pDssiPlugin->instances(); }
 	void deactivate(qtractorDssiPlugin *pDssiPlugin)
-		{ reset(pDssiPlugin); m_iActivated -= pDssiPlugin->instances(); }
+		{ m_iActivated -= pDssiPlugin->instances(); reset(pDssiPlugin); }
 
 	// Reference count methods.
 	void addRef()

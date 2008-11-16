@@ -5,6 +5,10 @@ ChangeLog
 
 CVS HEAD
 
+- Fix initialization of multiple instances of DSSI plugins
+  which implement run_multiple_synths (eg. fluidsynth-dssi),
+  preventing an instant crash on activation.
+
 - Exclude deprecated VST elements from compilation.
 
 - Export tracks dialog has new punch in/out range option.

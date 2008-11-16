@@ -1347,10 +1347,10 @@ void qtractorSession::trackSolo ( qtractorTrack *pTrack, bool bSolo )
 	for (qtractorTrack *pTrackMute = m_tracks.first();
 			pTrackMute; pTrackMute = pTrackMute->next()) {
 		// For all other track, but this one.
-		if (pTrack == pTrackMute || pTrackMute->isMute())
+		if (pTrackMute->isMute())
 			continue;
 		// (Un)mute each other track...
-		trackMute(pTrackMute, bSolo);
+		trackMute(pTrackMute, pTrackMute == pTrack ? !bSolo : bSolo);
 	}
 }
 

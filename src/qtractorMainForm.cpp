@@ -1389,6 +1389,10 @@ bool qtractorMainForm::openSession (void)
 	fileDialog.setFileMode(QFileDialog::ExistingFile);
 	fileDialog.setHistory(m_pOptions->recentFiles);
 	fileDialog.setDefaultSuffix(sExt);
+	// Stuff sidebar...
+	QList<QUrl> urls(fileDialog.sidebarUrls());
+	urls.append(QUrl::fromLocalFile(m_pOptions->sSessionDir));
+	fileDialog.setSidebarUrls(urls);
 	// Show dialog...
 	if (!fileDialog.exec())
 		return false;
@@ -1459,6 +1463,10 @@ bool qtractorMainForm::saveSession ( bool bPrompt )
 		fileDialog.setFileMode(QFileDialog::AnyFile);
 		fileDialog.setHistory(m_pOptions->recentFiles);
 		fileDialog.setDefaultSuffix(sExt);
+		// Stuff sidebar...
+		QList<QUrl> urls(fileDialog.sidebarUrls());
+		urls.append(QUrl::fromLocalFile(m_pOptions->sSessionDir));
+		fileDialog.setSidebarUrls(urls);
 		// Show save-file dialog...
 		if (!fileDialog.exec())
 			return false;
