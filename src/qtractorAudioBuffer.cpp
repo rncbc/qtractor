@@ -571,6 +571,10 @@ bool qtractorAudioBuffer::seek ( unsigned long iFrame )
 	if (m_pFile == NULL)
 		return false;
 
+	// Must not break while on initial sync...
+	if (!m_bInitSync)
+		return false;
+
 	// Seek is only valid on read-only mode.
 	if (m_pFile->mode() & qtractorAudioFile::Write)
 		return false;
@@ -741,7 +745,7 @@ void qtractorAudioBuffer::readSync (void)
 {
 	// Keep seeking...
 	do {
-	
+
 		// Check whether we have some hard-seek pending...
 		if (ATOMIC_TAZ(&m_seekPending)) {
 			// Do it...

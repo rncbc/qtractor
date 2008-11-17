@@ -307,6 +307,8 @@ void qtractorTracks::updateContents ( bool bRefresh )
 	if (iRefresh > 0) {
 		m_pTrackView->updateContentsWidth();
 		m_pTrackList->updateContentsHeight();
+		// Main track view gets focus!
+		m_pTrackView->setFocus();
 	}
 }
 
