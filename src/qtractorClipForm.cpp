@@ -36,6 +36,7 @@
 #include <QMessageBox>
 #include <QFileDialog>
 #include <QLineEdit>
+#include <QUrl>
 
 // Needed for fabs(), logf() and powf()
 #include <math.h>
@@ -590,26 +591,62 @@ qtractorTrack::TrackType qtractorClipForm::trackType (void) const
 void qtractorClipForm::browseFilename (void)
 {
 	QString sType;
+	QString sExt;
 	QString sFilter;
 
-	switch (trackType()) {
+	qtractorTrack::TrackType clipType = trackType();
+	switch (clipType) {
 	case qtractorTrack::Audio:
 		sType   = tr("Audio");
+		sExt    = qtractorAudioFileFactory::defaultExt();
 		sFilter = qtractorAudioFileFactory::filters();
 		break;
 	case qtractorTrack::Midi:
 		sType   = tr("MIDI");
-		sFilter = tr("MIDI files (*.mid *.smf *.midi)");
+		sExt    = "mid";
+		sFilter = tr("MIDI files (*.%1 *.smf *.midi)").arg(sExt);
 		break;
 	case qtractorTrack::None:
 	default:
 		return;
 	}
 
-	// Browse for audio file...
-	QString sFilename = QFileDialog::getOpenFileName(
-		this, tr("%1 Clip File").arg(sType),
-		m_ui.FilenameComboBox->currentText(), sFilter);
+	// Browse for file...
+	QString sFilename;
+
+	const QString& sTitle = tr("%1 Clip File").arg(sType) + " - " QTRACTOR_TITLE;
+#if QT_VERSION < 0x040400
+	sFilename = QFileDialog::getOpenFileName(this,
+		sTitle, m_ui.FilenameComboBox->currentText(), sFilter);
+#else
+	QFileDialog fileDialog(this,
+		sTitle, m_ui.FilenameComboBox->currentText(), sFilter);
+	// Set proper open-file modes...
+	fileDialog.setAcceptMode(QFileDialog::AcceptOpen);
+	fileDialog.setFileMode(QFileDialog::ExistingFile);
+	fileDialog.setDefaultSuffix(sExt);
+	// Stuff sidebar...
+	qtractorOptions *pOptions = qtractorOptions::getInstance();
+	if (pOptions) {
+		QList<QUrl> urls(fileDialog.sidebarUrls());
+		urls.append(QUrl::fromLocalFile(pOptions->sSessionDir));
+		switch (clipType) {
+		case qtractorTrack::Audio:
+			urls.append(QUrl::fromLocalFile(pOptions->sAudioDir));
+			break;
+		case qtractorTrack::Midi:
+			urls.append(QUrl::fromLocalFile(pOptions->sMidiDir));
+			break;
+		case qtractorTrack::None:
+		default:
+			break;
+		}
+		fileDialog.setSidebarUrls(urls);
+	}
+	// Show dialog...
+	if (fileDialog.exec())
+		sFilename = fileDialog.selectedFiles().first();
+#endif
 
 	if (!sFilename.isEmpty()) {
 		m_ui.FilenameComboBox->setEditText(sFilename);

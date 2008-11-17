@@ -27,8 +27,9 @@
 #include "qtractorOptions.h"
 
 #include <QHeaderView>
-#include <QFileDialog>
 #include <QMessageBox>
+#include <QFileDialog>
+#include <QUrl>
 
 
 //----------------------------------------------------------------------
@@ -149,12 +150,32 @@ void qtractorInstrumentForm::importSlot (void)
 	if (pInstruments == NULL)
 		return;
 
-	QStringList files = QFileDialog::getOpenFileNames(
-			this,                               // Parent.
-			tr("Import Instrument Files"),      // Caption.
-			pOptions->sInstrumentDir,           // Start here.
-			tr("Instrument files (*.ins)")      // Filter files.
-	);
+	QStringList files;
+
+	const QString  sExt("ins");
+	const QString& sTitle  = tr("Import Instrument Files") + " - " QTRACTOR_TITLE;
+	const QString& sFilter = tr("Instrument files (*.%1)").arg(sExt);
+#if QT_VERSION < 0x040400
+	// Ask for the filename to open...
+	files = QFileDialog::getOpenFileNames(this,
+		sTitle, pOptions->sInstrumentDir, sFilter);
+#else
+	// Construct open-files dialog...
+	QFileDialog fileDialog(this,
+		sTitle, pOptions->sInstrumentDir, sFilter);
+	// Set proper open-file modes...
+	fileDialog.setAcceptMode(QFileDialog::AcceptOpen);
+	fileDialog.setFileMode(QFileDialog::ExistingFiles);
+	fileDialog.setDefaultSuffix(sExt);
+	// Stuff sidebar...
+	QList<QUrl> urls(fileDialog.sidebarUrls());
+	urls.append(QUrl::fromLocalFile(pOptions->sSessionDir));
+	urls.append(QUrl::fromLocalFile(pOptions->sInstrumentDir));
+	fileDialog.setSidebarUrls(urls);
+	// Show dialog...
+	if (fileDialog.exec())
+		files = fileDialog.selectedFiles();
+#endif
 
 	if (files.isEmpty())
 		return;
@@ -299,19 +320,39 @@ void qtractorInstrumentForm::exportSlot (void)
 	if (pInstruments == NULL)
 		return;
 
-	QString sPath = QFileDialog::getSaveFileName(
-			this,                               // Parent.
-			tr("Export Instrument File"),       // Caption.
-			pOptions->sInstrumentDir,           // Start here.
-			tr("Instrument files (*.ins)")      // Filter files.
-	);
+	QString sPath;
+
+	const QString  sExt("ins");
+	const QString& sTitle  = tr("Export Instrument File") + " - " QTRACTOR_TITLE;
+	const QString& sFilter = tr("Instrument files (*.%1)").arg(sExt);
+#if QT_VERSION < 0x040400
+	// Ask for the filename to open...
+	files = QFileDialog::getOpenFileNames(this,
+		sTitle, pOptions->sInstrumentDir, sFilter);
+#else
+	// Construct open-files dialog...
+	QFileDialog fileDialog(this,
+		sTitle, pOptions->sInstrumentDir, sFilter);
+	// Set proper open-file modes...
+	fileDialog.setAcceptMode(QFileDialog::AcceptSave);
+	fileDialog.setFileMode(QFileDialog::AnyFile);
+	fileDialog.setDefaultSuffix(sExt);
+	// Stuff sidebar...
+	QList<QUrl> urls(fileDialog.sidebarUrls());
+	urls.append(QUrl::fromLocalFile(pOptions->sSessionDir));
+	urls.append(QUrl::fromLocalFile(pOptions->sInstrumentDir));
+	fileDialog.setSidebarUrls(urls);
+	// Show dialog...
+	if (fileDialog.exec())
+		sPath = fileDialog.selectedFiles().first();
+#endif
 
 	if (sPath.isEmpty())
 		return;
 
 	// Enforce .ins extension...
 	if (QFileInfo(sPath).suffix().isEmpty())
-		sPath += ".ins";
+		sPath += '.' + sExt;
 
 	// Check if already exists...
 	if (QFileInfo(sPath).exists()) {

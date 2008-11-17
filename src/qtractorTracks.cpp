@@ -52,6 +52,7 @@
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QDate>
+#include <QUrl>
 
 #include <QHeaderView>
 
@@ -707,10 +708,33 @@ bool qtractorTracks::exportClip ( qtractorClip *pClip )
 		if (pAudioBus == NULL)
 			return false;
 		const QString& sExt = qtractorAudioFileFactory::defaultExt();
-		QString sFilename = QFileDialog::getSaveFileName(this,
-			tr("Export Audio Clip") + " - " QTRACTOR_TITLE,
-			pSession->createFilePath(pTrack->trackName(), 0, sExt),
-			tr("Audio files (*.%1)").arg(sExt));
+		const QString& sTitle  = tr("Export Audio Clip") + " - " QTRACTOR_TITLE;
+		const QString& sFilter = tr("Audio files (*.%1)").arg(sExt); 
+	#if QT_VERSION < 0x040400
+		// Ask for the filename to save...
+		QString sFilename = QFileDialog::getSaveFileName(this, sTitle,
+			pSession->createFilePath(pTrack->trackName(), 0, sExt), sFilter);
+	#else
+		// Construct save-file dialog...
+		QFileDialog fileDialog(this, sTitle,
+			pSession->createFilePath(pTrack->trackName(), 0, sExt), sFilter);
+		// Set proper open-file modes...
+		fileDialog.setAcceptMode(QFileDialog::AcceptSave);
+		fileDialog.setFileMode(QFileDialog::AnyFile);
+		fileDialog.setDefaultSuffix(sExt);
+		// Stuff sidebar...
+		qtractorOptions *pOptions = qtractorOptions::getInstance();
+		if (pOptions) {
+			QList<QUrl> urls(fileDialog.sidebarUrls());
+			urls.append(QUrl::fromLocalFile(pOptions->sSessionDir));
+			urls.append(QUrl::fromLocalFile(pOptions->sAudioDir));
+			fileDialog.setSidebarUrls(urls);
+		}
+		// Show dialog...
+		if (!fileDialog.exec())
+			return false;
+		QString sFilename = fileDialog.selectedFiles().first();
+	#endif
 		if (sFilename.isEmpty())
 			return false;
 		if (QFileInfo(sFilename).suffix() != sExt)
@@ -766,11 +790,34 @@ bool qtractorTracks::exportClip ( qtractorClip *pClip )
 			= static_cast<qtractorMidiClip *> (pClip);
 		if (pMidiClip == NULL)
 			return false;
-		const QString sExt("mid");
-		QString sFilename = QFileDialog::getSaveFileName(this,
-			tr("Export MIDI Clip") + " - " QTRACTOR_TITLE,
-			pSession->createFilePath(pTrack->trackName(), 0, sExt),
-			tr("MIDI files (*.%1 *.smf *.midi)").arg(sExt));
+		const QString  sExt("mid");
+		const QString& sTitle  = tr("Export MIDI Clip") + " - " QTRACTOR_TITLE;
+		const QString& sFilter = tr("MIDI files (*.%1 *.smf *.midi)").arg(sExt); 
+	#if QT_VERSION < 0x040400
+		// Ask for the filename to save...
+		QString sFilename = QFileDialog::getSaveFileName(this, sTitle,
+			pSession->createFilePath(pTrack->trackName(), 0, sExt), sFilter);
+	#else
+		// Construct save-file dialog...
+		QFileDialog fileDialog(this, sTitle,
+			pSession->createFilePath(pTrack->trackName(), 0, sExt), sFilter);
+		// Set proper open-file modes...
+		fileDialog.setAcceptMode(QFileDialog::AcceptSave);
+		fileDialog.setFileMode(QFileDialog::AnyFile);
+		fileDialog.setDefaultSuffix(sExt);
+		// Stuff sidebar...
+		qtractorOptions *pOptions = qtractorOptions::getInstance();
+		if (pOptions) {
+			QList<QUrl> urls(fileDialog.sidebarUrls());
+			urls.append(QUrl::fromLocalFile(pOptions->sSessionDir));
+			urls.append(QUrl::fromLocalFile(pOptions->sMidiDir));
+			fileDialog.setSidebarUrls(urls);
+		}
+		// Show dialog...
+		if (!fileDialog.exec())
+			return false;
+		QString sFilename = fileDialog.selectedFiles().first();
+	#endif
 		if (sFilename.isEmpty())
 			return false;
 		if (QFileInfo(sFilename).suffix() != sExt)

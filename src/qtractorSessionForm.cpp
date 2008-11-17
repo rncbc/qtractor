@@ -21,13 +21,14 @@
 
 #include "qtractorSessionForm.h"
 
-
 #include "qtractorAbout.h"
 #include "qtractorSession.h"
 
 #include "qtractorOptions.h"
 
 #include <QFileDialog>
+#include <QUrl>
+
 #include <QMessageBox>
 #include <QValidator>
 #include <QLineEdit>
@@ -245,17 +246,36 @@ void qtractorSessionForm::stabilizeForm (void)
 // Browse for session directory.
 void qtractorSessionForm::browseSessionDir (void)
 {
-    QString sSessionDir = QFileDialog::getExistingDirectory(
-		this,                                  // Parent.
-		tr("Session Directory:"),              // Caption.
-		m_ui.SessionDirComboBox->currentText() // Start here.
-    );
+	const QString& sTitle = tr("Session Directory") + " - " QTRACTOR_TITLE; 
+#if QT_VERSION < 0x040400
+    QString sSessionDir = QFileDialog::getExistingDirectory(this,                                  // Parent.
+		sTitle, m_ui.SessionDirComboBox->currentText());
+#else
+	// Construct open-directory dialog...
+	QFileDialog fileDialog(this,
+		sTitle, m_ui.SessionDirComboBox->currentText());
+	// Set proper open-file modes...
+	fileDialog.setAcceptMode(QFileDialog::AcceptOpen);
+	fileDialog.setFileMode(QFileDialog::DirectoryOnly);
+	// Stuff sidebar...
+	qtractorOptions *pOptions = qtractorOptions::getInstance();
+	if (pOptions) {
+		QList<QUrl> urls(fileDialog.sidebarUrls());
+		urls.append(QUrl::fromLocalFile(pOptions->sSessionDir));
+		fileDialog.setSidebarUrls(urls);
+	}
+	// Show dialog...
+	if (!fileDialog.exec())
+		return;
+	QString sSessionDir = fileDialog.selectedFiles().first();
+#endif
 
-    if (!sSessionDir.isEmpty()) {
-        m_ui.SessionDirComboBox->setEditText(sSessionDir);
-        m_ui.SessionDirComboBox->setFocus();
-        changed();
-    }
+    if (sSessionDir.isEmpty())
+		return;
+
+	m_ui.SessionDirComboBox->setEditText(sSessionDir);
+	m_ui.SessionDirComboBox->setFocus();
+	changed();
 }
 
 

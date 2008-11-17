@@ -41,6 +41,7 @@
 
 #include <QFileInfo>
 #include <QFileDialog>
+#include <QUrl>
 
 #include <math.h>
 
@@ -396,12 +397,33 @@ void qtractorPluginForm::openPresetSlot (void)
 		return;
 
 	// We'll assume that there's an external file...
-	const QString sExt("qtx");
+	QString sFilename;
+
 	// Prompt if file does not currently exist...
-	QString sFilename = QFileDialog::getOpenFileName(this,
-		tr("Open Preset") + " - " QTRACTOR_TITLE,   // Caption.
-		pOptions->sPresetDir,                       // Start here.
-		tr("Preset files (*.%1)").arg(sExt));       // Filter files.
+	const QString  sExt("qtx");
+	const QString& sTitle  = tr("Open Preset") + " - " QTRACTOR_TITLE;
+	const QString& sFilter = tr("Preset files (*.%1)").arg(sExt); 
+#if QT_VERSION < 0x040400
+	// Ask for the filename to save...
+	sFilename = QFileDialog::getSaveFileName(this,
+		sTitle, pOptions->sPresetDir, sFilter);
+#else
+	// Construct save-file dialog...
+	QFileDialog fileDialog(this,
+		sTitle, pOptions->sPresetDir, sFilter);
+	// Set proper open-file modes...
+	fileDialog.setAcceptMode(QFileDialog::AcceptOpen);
+	fileDialog.setFileMode(QFileDialog::ExistingFile);
+	fileDialog.setDefaultSuffix(sExt);
+	// Stuff sidebar...
+	QList<QUrl> urls(fileDialog.sidebarUrls());
+	urls.append(QUrl::fromLocalFile(pOptions->sSessionDir));
+	urls.append(QUrl::fromLocalFile(pOptions->sPresetDir));
+	fileDialog.setSidebarUrls(urls);
+	// Show dialog...
+	if (fileDialog.exec())
+		sFilename = fileDialog.selectedFiles().first();
+#endif
 	// Have we a filename to load a preset from?
 	if (!sFilename.isEmpty()) {
 		if (m_pPlugin->loadPreset(sFilename)) {
@@ -454,10 +476,29 @@ void qtractorPluginForm::savePresetSlot (void)
 		QString sFilename = fi.absoluteFilePath();
 		// Prompt if file does not currently exist...
 		if (!fi.exists()) {
+			const QString& sTitle  = tr("Save Preset") + " - " QTRACTOR_TITLE;
+			const QString& sFilter = tr("Preset files (*.%1)").arg(sExt); 
+		#if QT_VERSION < 0x040400
+			// Ask for the filename to save...
 			sFilename = QFileDialog::getSaveFileName(this,
-				tr("Save Preset") + " - " QTRACTOR_TITLE,   // Caption.
-				sFilename,                                  // Start here.
-				tr("Preset files (*.%1)").arg(sExt));       // Filter files.
+				sTitle, Filename, sFilter);
+		#else
+			// Construct save-file dialog...
+			QFileDialog fileDialog(this,
+				sTitle, sFilename, sFilter);
+			// Set proper open-file modes...
+			fileDialog.setAcceptMode(QFileDialog::AcceptSave);
+			fileDialog.setFileMode(QFileDialog::AnyFile);
+			fileDialog.setDefaultSuffix(sExt);
+			// Stuff sidebar...
+			QList<QUrl> urls(fileDialog.sidebarUrls());
+			urls.append(QUrl::fromLocalFile(pOptions->sSessionDir));
+			urls.append(QUrl::fromLocalFile(pOptions->sPresetDir));
+			fileDialog.setSidebarUrls(urls);
+			// Show dialog...
+			if (fileDialog.exec())
+				sFilename = fileDialog.selectedFiles().first();
+		#endif
 		}
 		// We've a filename to save the preset
 		if (!sFilename.isEmpty()) {

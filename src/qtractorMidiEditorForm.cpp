@@ -47,7 +47,7 @@
 #include <QCloseEvent>
 #include <QComboBox>
 #include <QLabel>
-
+#include <QUrl>
 
 //-------------------------------------------------------------------------
 // qtractorMidiEditorForm -- Main window form implementation.
@@ -692,19 +692,38 @@ bool qtractorMidiEditorForm::saveClipFile ( bool bPrompt )
 	// Ask for the file to save...
 	if (bPrompt) {
 		// If none is given, assume default directory.
-		// Prompt the guy...
-		sFilename = QFileDialog::getSaveFileName(
-			this,                                        // Parent.
-			tr("Save MIDI Clip") + " - " QTRACTOR_TITLE, // Caption.
-			sFilename,                                   // Start here.
-			tr("MIDI files") + " (*.mid *.smf *.midi)"   // Filter files.
-		);
+		const QString sExt("mid");
+		const QString& sTitle  = tr("Save MIDI Clip") + " - " QTRACTOR_TITLE;
+		const QString& sFilter = tr("MIDI files (*.%1 *.smf *.midi)").arg(sExt);
+	#if QT_VERSION < 0x040400
+		// Ask for the filenames to open...
+		sFilename= QFileDialog::getOpenFileNames(this,
+			sTitle, sFilename, sFilter);
+	#else
+		// Construct open-files dialog...
+		QFileDialog fileDialog(this,
+			sTitle, sFilename, sFilter);
+		// Set proper open-file modes...
+		fileDialog.setAcceptMode(QFileDialog::AcceptOpen);
+		fileDialog.setFileMode(QFileDialog::ExistingFile);
+		fileDialog.setDefaultSuffix(sExt);
+		// Stuff sidebar...
+		qtractorOptions *pOptions = qtractorOptions::getInstance();
+		if (pOptions) {
+			QList<QUrl> urls(fileDialog.sidebarUrls());
+			urls.append(QUrl::fromLocalFile(pOptions->sSessionDir));
+			urls.append(QUrl::fromLocalFile(pOptions->sMidiDir));
+			fileDialog.setSidebarUrls(urls);
+		}
+		// Show dialog...
+		if (fileDialog.exec())
+			sFilename = fileDialog.selectedFiles().first();
+	#endif
 		// Have we cancelled it?
 		if (sFilename.isEmpty())
 			return false;
 		// Enforce .mid extension...
-		const QString sExt("mid");
-		if (QFileInfo(sFilename).suffix() != sExt)
+		if (QFileInfo(sFilename).suffix().isEmpty())
 			sFilename += '.' + sExt;
 	}
 

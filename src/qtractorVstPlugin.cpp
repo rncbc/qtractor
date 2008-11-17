@@ -1228,12 +1228,10 @@ static VstIntPtr qtractorVstPlugin_openFileSelector (
 			.arg(pvfs->title).arg((pVstPlugin->type())->name());
 		if (pvfs->command == kVstFileLoad) {
 			sFilename = QFileDialog::getOpenFileName(
-				pVstPlugin->editorWidget(),
-				sTitle, sDirectory, sFilter);
+				pVstPlugin->editorWidget(), sTitle, sDirectory, sFilter);
 		} else {
 			sFilename = QFileDialog::getSaveFileName(
-				pVstPlugin->editorWidget(),
-				sTitle, sDirectory, sFilter);
+				pVstPlugin->editorWidget(), sTitle, sDirectory, sFilter);
 		}
 		if (!sFilename.isEmpty()) {
 			if (pvfs->returnPath == NULL) {
@@ -1250,8 +1248,7 @@ static VstIntPtr qtractorVstPlugin_openFileSelector (
 		QString sTitle = QString("%1 - %2")
 			.arg(pvfs->title).arg((pVstPlugin->type())->name());
 		sDirectory = QFileDialog::getExistingDirectory(
-			pVstPlugin->editorWidget(),
-			sTitle, sDirectory);
+			pVstPlugin->editorWidget(), sTitle, sDirectory);
 		if (!sDirectory.isEmpty()) {
 			if (pvfs->returnPath == NULL) {
 				pvfs->returnPath = new char [sDirectory.length() + 1];

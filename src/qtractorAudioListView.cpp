@@ -22,9 +22,11 @@
 #include "qtractorAudioListView.h"
 #include "qtractorAudioFile.h"
 
+#include "qtractorOptions.h"
+
 #include <QHeaderView>
 #include <QFileDialog>
-
+#include <QUrl>
 
 //----------------------------------------------------------------------
 // class qtractorAudioFileItem -- audio file list view item.
@@ -129,13 +131,35 @@ qtractorAudioListView::qtractorAudioListView ( QWidget *pParent )
 // Prompt for proper file list open.
 QStringList qtractorAudioListView::getOpenFileNames (void)
 {
+	QStringList files;
+
+	const QString& sTitle = tr("Open Audio Files") + " - " QTRACTOR_TITLE;
+#if QT_VERSION < 0x040400
 	// Ask for the filename to open...
-	return QFileDialog::getOpenFileNames(
-		this,                               // Parent and name (none)
-		tr("Open Audio Files"),             // Caption.
-		recentDir(),                        // Start here.
-		qtractorAudioFileFactory::filters() // Filter files.
-	);
+	files = QFileDialog::getOpenFileNames(this,
+		sTitle, recentDir(), qtractorAudioFileFactory::filters());
+#else
+	// Construct open-files dialog...
+	QFileDialog fileDialog(this,
+		sTitle, recentDir(), qtractorAudioFileFactory::filters());
+	// Set proper open-file modes...
+	fileDialog.setAcceptMode(QFileDialog::AcceptOpen);
+	fileDialog.setFileMode(QFileDialog::ExistingFiles);
+	fileDialog.setDefaultSuffix(qtractorAudioFileFactory::defaultExt());
+	// Stuff sidebar...
+	qtractorOptions *pOptions = qtractorOptions::getInstance();
+	if (pOptions) {
+		QList<QUrl> urls(fileDialog.sidebarUrls());
+		urls.append(QUrl::fromLocalFile(pOptions->sSessionDir));
+		urls.append(QUrl::fromLocalFile(pOptions->sAudioDir));
+		fileDialog.setSidebarUrls(urls);
+	}
+	// Show dialog...
+	if (fileDialog.exec())
+		files = fileDialog.selectedFiles();
+#endif
+
+	return files;
 }
 
 

@@ -19,12 +19,15 @@
 
 *****************************************************************************/
 
+#include "qtractorAbout.h"
 #include "qtractorMidiListView.h"
 #include "qtractorMidiFile.h"
 
+#include "qtractorOptions.h"
+
 #include <QHeaderView>
 #include <QFileDialog>
-
+#include <QUrl>
 
 //----------------------------------------------------------------------
 // class qtractorMidiFileItem -- audio file list view item.
@@ -165,17 +168,37 @@ qtractorFileListItem *qtractorMidiListView::createFileItem (
 // Prompt for proper file list open.
 QStringList qtractorMidiListView::getOpenFileNames (void)
 {
-	QStringList filters;
-	filters.append(tr("MIDI files (*.mid *.smf *.midi)"));
-	filters.append(tr("All files (*.*)"));
+	QStringList files;
 
-	// Ask for the filename to open...
-	return QFileDialog::getOpenFileNames(
-		this,                       // Parent and name (none)
-		tr("Open MIDI Files"),		// Caption.
-		recentDir(),                // Start here.
-		filters.join(";;")          // Filter files.
-	);
+	const QString  sExt("mid");
+	const QString& sTitle  = tr("Open MIDI Files") + " - " QTRACTOR_TITLE;
+	const QString& sFilter = tr("MIDI files (*.%1 *.smf *.midi)").arg(sExt);
+#if QT_VERSION < 0x040400
+	// Ask for the filenames to open...
+	files = QFileDialog::getOpenFileNames(this,
+		sTitle, recentDir(), sFilter);
+#else
+	// Construct open-files dialog...
+	QFileDialog fileDialog(this,
+		sTitle, recentDir(), sFilter);
+	// Set proper open-file modes...
+	fileDialog.setAcceptMode(QFileDialog::AcceptOpen);
+	fileDialog.setFileMode(QFileDialog::ExistingFiles);
+	fileDialog.setDefaultSuffix(sExt);
+	// Stuff sidebar...
+	qtractorOptions *pOptions = qtractorOptions::getInstance();
+	if (pOptions) {
+		QList<QUrl> urls(fileDialog.sidebarUrls());
+		urls.append(QUrl::fromLocalFile(pOptions->sSessionDir));
+		urls.append(QUrl::fromLocalFile(pOptions->sMidiDir));
+		fileDialog.setSidebarUrls(urls);
+	}
+	// Show dialog...
+	if (fileDialog.exec())
+		files = fileDialog.selectedFiles();
+#endif
+
+	return files;
 }
 
 

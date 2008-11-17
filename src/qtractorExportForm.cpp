@@ -35,6 +35,7 @@
 #include <QMessageBox>
 #include <QFileDialog>
 #include <QFileInfo>
+#include <QUrl>
 
 
 //----------------------------------------------------------------------------
@@ -352,10 +353,40 @@ void qtractorExportForm::browseExportPath (void)
 		sExportPath = pSession->sessionDir();
 
 	// Actual browse for the file...
+	const QString& sTitle  = tr("Export %1 File").arg(m_sExportType) + " - " QTRACTOR_TITLE;
+	const QString& sFilter = tr("%1 files (*.%1)").arg(m_sExportExt);
+#if QT_VERSION < 0x040400
 	sExportPath = QFileDialog::getSaveFileName(this,
-		tr("Export %1 File").arg(m_sExportType) + " - " QTRACTOR_TITLE,
-		sExportPath,
-		tr("%1 files (*.%2)").arg(m_sExportType).arg(m_sExportExt));
+		sTitle, sExportPath, sFilter);
+#else
+	QFileDialog fileDialog(this,
+		sTitle, sExportPath, sFilter);
+	// Set proper open-file modes...
+	fileDialog.setAcceptMode(QFileDialog::AcceptSave);
+	fileDialog.setFileMode(QFileDialog::AnyFile);
+	fileDialog.setDefaultSuffix(m_sExportExt);
+	// Stuff sidebar...
+	qtractorOptions *pOptions = qtractorOptions::getInstance();
+	if (pOptions) {
+		QList<QUrl> urls(fileDialog.sidebarUrls());
+		urls.append(QUrl::fromLocalFile(pOptions->sSessionDir));
+		switch (m_exportType) {
+		case qtractorTrack::Audio:
+			urls.append(QUrl::fromLocalFile(pOptions->sAudioDir));
+			break;
+		case qtractorTrack::Midi:
+			urls.append(QUrl::fromLocalFile(pOptions->sMidiDir));
+			break;
+		case qtractorTrack::None:
+		default:
+			break;
+		}
+		fileDialog.setSidebarUrls(urls);
+	}
+	// Show dialog...
+	if (fileDialog.exec())
+		sExportPath = fileDialog.selectedFiles().first();
+#endif
 
 	// Have we cancelled it?
 	if (sExportPath.isEmpty())

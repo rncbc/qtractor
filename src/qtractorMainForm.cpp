@@ -1363,27 +1363,22 @@ bool qtractorMainForm::openSession (void)
 		return false;
 
 	// Ask for the filename to open...
+	QString sFilename;
+
 	QString sExt("qtr");
 	QStringList filters;
 	filters.append(tr("Session files (*.%1 *.%2)").arg(sExt)
 		.arg(s_pszSessionExt));
-	filters.append(tr("Template files (*.%1)")
-		.arg(s_pszTemplateExt));
+	filters.append(tr("Template files (*.%1)").arg(s_pszTemplateExt));
+	const QString& sTitle  = tr("Open Session") + " - " QTRACTOR_TITLE;
+	const QString& sFilter = filters.join(";;");
 #if QT_VERSION < 0x040400
-	QString sFilename = QFileDialog::getOpenFileName(
-		this,                                       // Parent.
-		tr("Open Session") + " - " QTRACTOR_TITLE,  // Caption.
-		m_pOptions->sSessionDir,                    // Start here.
-		filters.join(";;")                          // Filter files.
-	);
+	sFilename = QFileDialog::getOpenFileName(this,
+		sTitle, m_pOptions->sSessionDir, sFilter);
 #else
 	// Construct open-file session/template dialog...
-	QFileDialog fileDialog(
-		this,                                       // Parent.
-		tr("Open Session") + " - " QTRACTOR_TITLE,  // Caption.
-		m_pOptions->sSessionDir,                    // Start here.
-		filters.join(";;")                          // Filter files.
-	);
+	QFileDialog fileDialog(this,
+		sTitle, m_pOptions->sSessionDir, sFilter);
 	// Set proper open-file modes...
 	fileDialog.setAcceptMode(QFileDialog::AcceptOpen);
 	fileDialog.setFileMode(QFileDialog::ExistingFile);
@@ -1397,7 +1392,7 @@ bool qtractorMainForm::openSession (void)
 	if (!fileDialog.exec())
 		return false;
 	// Have the open-file name...
-	QString sFilename = fileDialog.selectedFiles().first();
+	sFilename = fileDialog.selectedFiles().first();
 	// Check whether we're on the template filter...
 	if (filters.indexOf(fileDialog.selectedNameFilter()) > 0)
 		sExt = s_pszTemplateExt;;
@@ -1442,22 +1437,16 @@ bool qtractorMainForm::saveSession ( bool bPrompt )
 		QStringList filters;
 		filters.append(tr("Session files (*.%1 *.%2)").arg(sExt)
 			.arg(s_pszSessionExt));
-		filters.append(tr("Template files (*.%1)")
-			.arg(s_pszTemplateExt));
+		filters.append(tr("Template files (*.%1)").arg(s_pszTemplateExt));
+		const QString& sTitle  = tr("Save Session") + " - " QTRACTOR_TITLE;
+		const QString& sFilter = filters.join(";;");
 	#if QT_VERSION < 0x040400
-		sFilename = QFileDialog::getSaveFileName(this,                                       // Parent.
-			tr("Save Session") + " - " QTRACTOR_TITLE,  // Caption.
-			sFilename,                                  // Start here.
-			filters.join(";;")                          // Filter files.
-		);
+		sFilename = QFileDialog::getSaveFileName(this,
+			sTitle, sFilename, sFilter);
 	#else
 		// Construct save-file session/template dialog...
-		QFileDialog fileDialog(
-			this,                                       // Parent.
-			tr("Save Session") + " - " QTRACTOR_TITLE,  // Caption.
-			sFilename,                                  // Start here.
-			filters.join(";;")                          // Filter files.
-		);
+		QFileDialog fileDialog(this,
+			sTitle, sFilename, sFilter);
 		// Set proper save-file modes...
 		fileDialog.setAcceptMode(QFileDialog::AcceptSave);
 		fileDialog.setFileMode(QFileDialog::AnyFile);

@@ -38,6 +38,7 @@
 #include <QMessageBox>
 #include <QValidator>
 #include <QHeaderView>
+#include <QUrl>
 
 
 //----------------------------------------------------------------------------
@@ -588,7 +589,7 @@ void qtractorOptionsForm::changed (void)
 void qtractorOptionsForm::chooseMetroBarFilename (void)
 {
 	QString sFilename = getOpenAudioFileName(
-		tr("Metronome Bar Audio File"),
+		tr("Metronome Bar Audio File") + " - " QTRACTOR_TITLE,
 		m_ui.MetroBarFilenameComboBox->currentText());
 
 	if (sFilename.isEmpty())
@@ -602,7 +603,7 @@ void qtractorOptionsForm::chooseMetroBarFilename (void)
 void qtractorOptionsForm::chooseMetroBeatFilename (void)
 {
 	QString sFilename = getOpenAudioFileName(
-		tr("Metronome Beat Audio File"),
+		tr("Metronome Beat Audio File") + " - " QTRACTOR_TITLE,
 		m_ui.MetroBeatFilenameComboBox->currentText());
 
 	if (sFilename.isEmpty())
@@ -773,11 +774,28 @@ void qtractorOptionsForm::changePluginPath ( const QString& /*sPluginPath*/ )
 // Browse for plugin path.
 void qtractorOptionsForm::choosePluginPath (void)
 {
-	QString sPluginPath = QFileDialog::getExistingDirectory(
-		this,                                  // Parent.
-		tr("Plug-in Directory:"),              // Caption.
-		m_ui.PluginPathComboBox->currentText() // Start here.
-	);
+	QString sPluginPath;
+
+	const QString& sTitle = tr("Plug-in Directory") + " - " QTRACTOR_TITLE;
+#if QT_VERSION < 0x040400
+	// Ask for the directory...
+    sPluginPath = QFileDialog::getExistingDirectory(this,
+		sTitle, m_ui.PluginPathComboBox->currentText());
+#else
+	// Construct open-directory dialog...
+	QFileDialog fileDialog(this,
+		sTitle, m_ui.PluginPathComboBox->currentText());
+	// Set proper open-file modes...
+	fileDialog.setAcceptMode(QFileDialog::AcceptOpen);
+	fileDialog.setFileMode(QFileDialog::DirectoryOnly);
+	// Stuff sidebar...
+	QList<QUrl> urls(fileDialog.sidebarUrls());
+	urls.append(QUrl::fromLocalFile(m_pOptions->sSessionDir));
+	fileDialog.setSidebarUrls(urls);
+	// Show dialog...
+	if (fileDialog.exec())
+		sPluginPath = fileDialog.selectedFiles().first();
+#endif
 
 	if (!sPluginPath.isEmpty()) {
 		m_ui.PluginPathComboBox->setEditText(sPluginPath);
@@ -994,11 +1012,27 @@ void qtractorOptionsForm::chooseMessagesFont (void)
 // Messages log path browse slot.
 void qtractorOptionsForm::chooseMessagesLogPath (void)
 {
-	QString sFilename = QFileDialog::getSaveFileName(
-		this, tr("Messages Log"),
-		m_ui.MessagesLogPathComboBox->currentText(),
-		tr("Log files") + " (*.log)"
-	);
+	QString sFilename;
+
+	const QString  sExt("log");
+	const QString& sTitle  = tr("Messages Log") + " - " QTRACTOR_TITLE;
+	const QString& sFilter = tr("Log files (*.%1)").arg(sExt); 
+#if QT_VERSION < 0x040400
+	// Ask for the filename to open...
+	sFilename = QFileDialog::getOpenFileName(this,
+		sTitle, m_ui.MessagesLogPathComboBox->currentText(), sFilter);
+#else
+	// Construct open-file dialog...
+	QFileDialog fileDialog(this,
+		sTitle, m_ui.MessagesLogPathComboBox->currentText(), sFilter);
+	// Set proper open-file modes...
+	fileDialog.setAcceptMode(QFileDialog::AcceptSave);
+	fileDialog.setFileMode(QFileDialog::AnyFile);
+	fileDialog.setDefaultSuffix(sExt);
+	// Show dialog...
+	if (fileDialog.exec())
+		sFilename = fileDialog.selectedFiles().first();
+#endif
 
 	if (!sFilename.isEmpty()) {
 		m_ui.MessagesLogPathComboBox->setEditText(sFilename);
@@ -1011,17 +1045,38 @@ void qtractorOptionsForm::chooseMessagesLogPath (void)
 // Session template path browse slot.
 void qtractorOptionsForm::chooseSessionTemplatePath (void)
 {
-	QString sFilename = QFileDialog::getOpenFileName(
-		this, tr("Session Template"),
-		m_ui.SessionTemplatePathComboBox->currentText(),
-		tr("Session template files") + " (*.qtr *.qts *.qtt)"
-	);
+	QString sFilename;
 
-	if (!sFilename.isEmpty()) {
-		m_ui.SessionTemplatePathComboBox->setEditText(sFilename);
-		m_ui.SessionTemplatePathComboBox->setFocus();
-		changed();
-	}
+	const QString  sExt("qtt");
+	const QString& sTitle  = tr("Session Template") + " - " QTRACTOR_TITLE;
+	const QString& sFilter = tr("Session template files (*.qtr *.qts *.%1)").arg(sExt); 
+#if QT_VERSION < 0x040400
+	// Ask for the filename to open...
+	sFilename = QFileDialog::getOpenFileName(this,
+		sTitle, m_ui.SessionTemplatePathComboBox->currentText(), sFilter);
+#else
+	// Construct open-files dialog...
+	QFileDialog fileDialog(this,
+		sTitle, m_ui.SessionTemplatePathComboBox->currentText(), sFilter);
+	// Set proper open-file modes...
+	fileDialog.setAcceptMode(QFileDialog::AcceptOpen);
+	fileDialog.setFileMode(QFileDialog::ExistingFile);
+	fileDialog.setDefaultSuffix(sExt);
+	// Stuff sidebar...
+	QList<QUrl> urls(fileDialog.sidebarUrls());
+	urls.append(QUrl::fromLocalFile(m_pOptions->sSessionDir));
+	fileDialog.setSidebarUrls(urls);
+	// Show dialog...
+	if (fileDialog.exec())
+		sFilename = fileDialog.selectedFiles().first();
+#endif
+
+	if (sFilename.isEmpty())
+		return;
+
+	m_ui.SessionTemplatePathComboBox->setEditText(sFilename);
+	m_ui.SessionTemplatePathComboBox->setFocus();
+	changed();
 }
 
 
@@ -1112,9 +1167,31 @@ void qtractorOptionsForm::stabilizeForm (void)
 QString qtractorOptionsForm::getOpenAudioFileName (
 	const QString& sTitle, const QString& sFilename )
 {
+	QString sAudioFile;
+
+#if QT_VERSION < 0x040400
 	// Ask for the filename to open...
-	return QFileDialog::getOpenFileName(
-		this, sTitle, sFilename, qtractorAudioFileFactory::filters());
+	sAudioFile = QFileDialog::getOpenFileName(this,
+		sTitle, sFilename, qtractorAudioFileFactory::filters());
+#else
+	// Construct open-file dialog...
+	QFileDialog fileDialog(this,
+		sTitle, sFilename, qtractorAudioFileFactory::filters());
+	// Set proper open-file modes...
+	fileDialog.setAcceptMode(QFileDialog::AcceptOpen);
+	fileDialog.setFileMode(QFileDialog::ExistingFile);
+	fileDialog.setDefaultSuffix(qtractorAudioFileFactory::defaultExt());
+	// Stuff sidebar...
+	QList<QUrl> urls(fileDialog.sidebarUrls());
+	urls.append(QUrl::fromLocalFile(m_pOptions->sSessionDir));
+	urls.append(QUrl::fromLocalFile(m_pOptions->sAudioDir));
+	fileDialog.setSidebarUrls(urls);
+	// Show dialog...
+	if (fileDialog.exec())
+		sAudioFile = fileDialog.selectedFiles().first();
+#endif
+
+	return sAudioFile;
 }
 
 
