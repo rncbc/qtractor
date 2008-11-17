@@ -327,7 +327,7 @@ void qtractorInstrumentForm::exportSlot (void)
 	const QString& sFilter = tr("Instrument files (*.%1)").arg(sExt);
 #if QT_VERSION < 0x040400
 	// Ask for the filename to open...
-	files = QFileDialog::getOpenFileNames(this,
+	sPath = QFileDialog::getOpenFileName(this,
 		sTitle, pOptions->sInstrumentDir, sFilter);
 #else
 	// Construct open-files dialog...

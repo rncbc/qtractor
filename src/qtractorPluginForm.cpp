@@ -481,7 +481,7 @@ void qtractorPluginForm::savePresetSlot (void)
 		#if QT_VERSION < 0x040400
 			// Ask for the filename to save...
 			sFilename = QFileDialog::getSaveFileName(this,
-				sTitle, Filename, sFilter);
+				sTitle, sFilename, sFilter);
 		#else
 			// Construct save-file dialog...
 			QFileDialog fileDialog(this,
