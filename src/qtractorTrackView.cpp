@@ -58,6 +58,7 @@
 #include <QCursor>
 #include <QTimer>
 #include <QUrl>
+#include <QDir>
 #include <QFileInfo>
 
 #if QT_VERSION < 0x040300
@@ -834,7 +835,8 @@ qtractorTrack *qtractorTrackView::dragDropTrack (
 		QList<QUrl> list = pMimeData->urls();
 		QListIterator<QUrl> iter(list);
 		while (iter.hasNext()) {
-			const QString& sPath = iter.next().toLocalFile();
+			const QString& sPath
+				= QDir::toNativeSeparators(iter.next().toLocalFile());
 			// Close current session and try to load the new one...
 			if (!sPath.isEmpty())
 				m_dropItems.append(new DropItem(sPath));

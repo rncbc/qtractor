@@ -1031,7 +1031,8 @@ void qtractorMainForm::dropEvent ( QDropEvent* pDropEvent )
 
 	const QMimeData *pMimeData = pDropEvent->mimeData();
 	if (pMimeData->hasUrls()) {
-		QString sFilename = pMimeData->urls().first().toLocalFile();
+		QString sFilename
+			= QDir::toNativeSeparators(pMimeData->urls().first().toLocalFile());
 		// Close current session and try to load the new one...
 		if (!sFilename.isEmpty() && closeSession())
 			loadSessionFile(sFilename);
@@ -4061,12 +4062,12 @@ void qtractorMainForm::timerSlot (void)
 			if (m_iTransportStep) {
 				// Transport stepping over...
 				iPlayHead += (m_iTransportStep
-					* long(m_pSession->sampleRate())) / 20;
+					* long(m_pSession->frameFromTick(m_pSession->ticksPerBeat())));
 				if (iPlayHead < 0)
 					iPlayHead = 0;
 				m_iTransportStep = 0;
 				// Make it thru...
-				m_pSession->setPlayHead(iPlayHead);
+				m_pSession->setPlayHead(m_pSession->frameSnap(iPlayHead));
 			}
 		} else {
 			// Transport rolling over...

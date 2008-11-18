@@ -575,7 +575,8 @@ void qtractorFileListView::pasteItem (void)
 
 	QListIterator<QUrl> iter(pMimeData->urls());
 	while (iter.hasNext()) {
-		const QString& sPath = iter.next().toLocalFile();
+		const QString& sPath
+			= QDir::toNativeSeparators(iter.next().toLocalFile());
 		if (!sPath.isEmpty()) {
 			qtractorFileListItem *pFileItem	= addFileItem(sPath, pParentItem);
 			// Make all this new open and visible.
@@ -1115,7 +1116,8 @@ void qtractorFileListView::dropEvent ( QDropEvent *pDropEvent )
 		QListIterator<QUrl> iter(pMimeData->urls());
 		iter.toBack();
 		while (iter.hasPrevious()) {
-			const QString& sPath = iter.previous().toLocalFile();
+			const QString& sPath
+				= QDir::toNativeSeparators(iter.previous().toLocalFile());
 			// Is it one from ourselves (file item) ?...
 			if (m_pDragItem && m_pDragItem->type() == FileItem) {
 				if (dropItem(pDropItem, findItem(sPath, FileItem), bOutdent))

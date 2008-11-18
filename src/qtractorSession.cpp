@@ -964,7 +964,7 @@ void qtractorSession::setPlaying ( bool bPlaying )
 			if (iClipStart < iPunchIn)
 				iClipStart = iPunchIn;
 		}
-		// Of course, mark thos clips alright...
+		// Of course, mark those clips alright...
 		for (qtractorTrack *pTrack = m_tracks.first();
 				pTrack; pTrack = pTrack->next()) {
 			qtractorClip *pClipRecord = pTrack->clipRecord();

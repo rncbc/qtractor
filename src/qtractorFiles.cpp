@@ -142,8 +142,14 @@ qtractorFiles::qtractorFiles ( QWidget *pParent )
 	QObject::connect(m_pAudioListView,
 		SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)),
 		SLOT(stabilizeSlot()));
+	QObject::connect(m_pAudioListView,
+		SIGNAL(itemClicked(QTreeWidgetItem*,int)),
+		SLOT(stabilizeSlot()));
 	QObject::connect(m_pMidiListView,
 		SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)),
+		SLOT(stabilizeSlot()));
+	QObject::connect(m_pMidiListView,
+		SIGNAL(itemClicked(QTreeWidgetItem*,int)),
 		SLOT(stabilizeSlot()));
 	QObject::connect(m_pNewGroupAction,
 		SIGNAL(triggered(bool)),

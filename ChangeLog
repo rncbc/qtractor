@@ -5,6 +5,12 @@ ChangeLog
 
 CVS HEAD
 
+- MMC STEP gets adjusted to current snap-per-beat setting.
+
+- Fixed broken initial buffering that was randomly crippling
+  those audio clips that fit integrally in cached and while
+  on playback.
+
 - Fix initialization of multiple instances of DSSI plugins
   which implement run_multiple_synths (eg. fluidsynth-dssi),
   preventing an instant crash on activation.
