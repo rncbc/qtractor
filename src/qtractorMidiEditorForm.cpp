@@ -499,6 +499,20 @@ bool qtractorMidiEditorForm::queryClose (void)
 }
 
 
+// Unconditional-close.
+void qtractorMidiEditorForm::forceClose (void)
+{
+	// Give it a chance to save....
+	queryClose();
+
+	// Make it clean...
+	m_iDirtyCount = 0;
+
+	// Close it down!
+	close();
+}
+
+
 // On-show event handler.
 void qtractorMidiEditorForm::showEvent ( QShowEvent *pShowEvent )
 {

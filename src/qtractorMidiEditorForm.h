@@ -77,6 +77,9 @@ public:
 	// Pre-close event handler.
 	bool queryClose();
 
+	// Unconditional-close.
+	void forceClose();
+
 public slots:
 
 	void fileSave();

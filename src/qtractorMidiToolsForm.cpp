@@ -147,13 +147,13 @@ qtractorMidiToolsForm::qtractorMidiToolsForm (
 	QObject::connect(m_ui.NormalizeCheckBox,
 		SIGNAL(toggled(bool)),
 		SLOT(stabilizeForm()));
-	QObject::connect(m_ui.NormalizePercentRadioButton,
+	QObject::connect(m_ui.NormalizePercentCheckBox,
 		SIGNAL(toggled(bool)),
 		SLOT(changed()));
 	QObject::connect(m_ui.NormalizePercentSpinBox,
 		SIGNAL(valueChanged(int)),
 		SLOT(changed()));
-	QObject::connect(m_ui.NormalizeValueRadioButton,
+	QObject::connect(m_ui.NormalizeValueCheckBox,
 		SIGNAL(toggled(bool)),
 		SLOT(changed()));
 	QObject::connect(m_ui.NormalizeValueSpinBox,
@@ -296,9 +296,9 @@ void qtractorMidiToolsForm::loadPreset ( const QString& sPreset )
 		vlist = settings.value("/Normalize").toList();
 		if (vlist.count() > 4) {
 		//	m_ui.NormalizeCheckBox->setChecked(vlist[0].toBool());
-			m_ui.NormalizePercentRadioButton->setChecked(vlist[1].toBool());
+			m_ui.NormalizePercentCheckBox->setChecked(vlist[1].toBool());
 			m_ui.NormalizePercentSpinBox->setValue(vlist[2].toInt());
-			m_ui.NormalizeValueRadioButton->setChecked(vlist[3].toBool());
+			m_ui.NormalizeValueCheckBox->setChecked(vlist[3].toBool());
 			m_ui.NormalizeValueSpinBox->setValue(vlist[4].toInt());
 		}
 		// Randomize tool...
@@ -361,9 +361,9 @@ void qtractorMidiToolsForm::savePreset ( const QString& sPreset )
 		// Normalize tool...
 		vlist.clear();
 		vlist.append(m_ui.NormalizeCheckBox->isChecked());
-		vlist.append(m_ui.NormalizePercentRadioButton->isChecked());
+		vlist.append(m_ui.NormalizePercentCheckBox->isChecked());
 		vlist.append(m_ui.NormalizePercentSpinBox->value());
-		vlist.append(m_ui.NormalizeValueRadioButton->isChecked());
+		vlist.append(m_ui.NormalizeValueCheckBox->isChecked());
 		vlist.append(m_ui.NormalizeValueSpinBox->value());
 		settings.setValue("/Normalize", vlist);
 		// Randomize tool...
@@ -521,6 +521,23 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::editCommand (
 	pEditCommand->setName(tools.join(", "));
 
 	QListIterator<qtractorMidiEditSelect::Item *> iter(pSelect->items());
+
+	// First scan pass for the normalize tool:
+	// find maximum value from the selection...
+	int iMaxValue = 0;
+	if (m_ui.NormalizeCheckBox->isChecked()) {
+		// Make it through one time...
+		while (iter.hasNext()) {
+			qtractorMidiEvent *pEvent = iter.next()->event;
+			bool bPitchBend = (pEvent->type() == qtractorMidiEvent::PITCHBEND);
+			int iValue = (bPitchBend ? pEvent->pitchBend() : pEvent->value());
+			if (iMaxValue < iValue)
+				iMaxValue = iValue;
+		}
+		// Get it back to front...
+		iter.toFront();
+	}
+
 	while (iter.hasNext()) {
 		qtractorMidiEvent *pEvent = iter.next()->event;
 		long iTime = pEvent->time();
@@ -566,15 +583,14 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::editCommand (
 		// Normalize tool...
 		if (m_ui.NormalizeCheckBox->isChecked()) {
 			tools.append(tr("normalize"));
-			int p = 0, q = 0;
-			if (m_ui.NormalizePercentRadioButton->isChecked()) {
-				p = m_ui.NormalizePercentSpinBox->value();
-				q = 100;
-			}
-			else
-			if (m_ui.NormalizeValueRadioButton->isChecked()) {
+			int p, q = iMaxValue;
+			if (m_ui.NormalizeValueCheckBox->isChecked())
 				p = m_ui.NormalizeValueSpinBox->value();
-				q = (bPitchBend ? 8192 : 128);
+			else
+				p = (bPitchBend ? 8192 : 128);
+			if (m_ui.NormalizePercentCheckBox->isChecked()) {
+				p *= m_ui.NormalizePercentSpinBox->value();
+				q *= 100;
 			}
 			if (q > 0) {
 				iValue = (iValue * p) / q;
@@ -777,14 +793,14 @@ void qtractorMidiToolsForm::stabilizeForm (void)
 
 	bEnabled = m_ui.NormalizeCheckBox->isChecked();
 
-	m_ui.NormalizePercentRadioButton->setEnabled(bEnabled);
-	bEnabled2 = bEnabled && m_ui.NormalizePercentRadioButton->isChecked();
+	m_ui.NormalizePercentCheckBox->setEnabled(bEnabled);
+	bEnabled2 = bEnabled && m_ui.NormalizePercentCheckBox->isChecked();
 	if (bEnabled2)
 		iEnabled++;
 	m_ui.NormalizePercentSpinBox->setEnabled(bEnabled2);
 
-	m_ui.NormalizeValueRadioButton->setEnabled(bEnabled);
-	bEnabled2 = bEnabled && m_ui.NormalizeValueRadioButton->isChecked();
+	m_ui.NormalizeValueCheckBox->setEnabled(bEnabled);
+	bEnabled2 = bEnabled && m_ui.NormalizeValueCheckBox->isChecked();
 	if (bEnabled2)
 		iEnabled++;
 	m_ui.NormalizeValueSpinBox->setEnabled(bEnabled2);

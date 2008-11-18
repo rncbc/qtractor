@@ -413,7 +413,7 @@
         </spacer>
        </item>
        <item row="1" column="1" >
-        <widget class="QRadioButton" name="NormalizePercentRadioButton" >
+        <widget class="QCheckBox" name="NormalizePercentCheckBox" >
          <property name="text" >
           <string>&amp;Percent:</string>
          </property>
@@ -452,7 +452,7 @@
         </spacer>
        </item>
        <item row="2" column="1" >
-        <widget class="QRadioButton" name="NormalizeValueRadioButton" >
+        <widget class="QCheckBox" name="NormalizeValueCheckBox" >
          <property name="text" >
           <string>&amp;Value:</string>
          </property>
@@ -885,9 +885,9 @@
   <tabstop>TransposeTimeSpinBox</tabstop>
   <tabstop>TransposeFormatComboBox</tabstop>
   <tabstop>NormalizeCheckBox</tabstop>
-  <tabstop>NormalizePercentRadioButton</tabstop>
+  <tabstop>NormalizePercentCheckBox</tabstop>
   <tabstop>NormalizePercentSpinBox</tabstop>
-  <tabstop>NormalizeValueRadioButton</tabstop>
+  <tabstop>NormalizeValueCheckBox</tabstop>
   <tabstop>NormalizeValueSpinBox</tabstop>
   <tabstop>RandomizeCheckBox</tabstop>
   <tabstop>RandomizeNoteCheckBox</tabstop>

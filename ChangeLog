@@ -5,6 +5,9 @@ ChangeLog
 
 CVS HEAD
 
+- Normalize tool on MIDI clip editor got rewritten from its
+  previous brain dead, useless and utterly wrong operation.
+
 - All time offsets and lengths are now zero-bar/beat based
   when displayed in the BBT (bar.beat.ticks) format.
 
