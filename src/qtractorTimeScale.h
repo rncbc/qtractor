@@ -143,14 +143,16 @@ public:
 		{ return m_displayFormat; }
 
 	// Convert frame to time string and vice-versa.
-	QString textFromFrame(unsigned long iFrame) const;
-	unsigned long frameFromText(const QString& sText) const;
+	QString textFromFrame(
+		unsigned long iFrame, bool bDelta = false) const;
+	unsigned long frameFromText(
+		const QString& sText, bool bDelta = false) const;
 
 	// Convert to time string and vice-versa.
-	QString textFromTick(unsigned long iTick) const
-		{ return textFromFrame(frameFromTick(iTick)); }
-	unsigned long tickFromText(const QString& sText) const
-		{ return tickFromFrame(frameFromText(sText)); }
+	QString textFromTick(unsigned long iTick, bool bDelta = false) const
+		{ return textFromFrame(frameFromTick(iTick), bDelta); }
+	unsigned long tickFromText(const QString& sText, bool bDelta = false) const
+		{ return tickFromFrame(frameFromText(sText, bDelta)); }
 
 	// Update scale divisor factors.
 	void updateScale();

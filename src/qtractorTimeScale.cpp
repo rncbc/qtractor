@@ -91,7 +91,8 @@ unsigned long qtractorTimeScale::tickSnap ( unsigned long iTick ) const
 
 
 // Value/text format converters.
-unsigned long qtractorTimeScale::frameFromText ( const QString& sText ) const
+unsigned long qtractorTimeScale::frameFromText (
+	const QString& sText, bool bDelta ) const
 {
 	unsigned long iFrame = 0;
 
@@ -103,10 +104,12 @@ unsigned long qtractorTimeScale::frameFromText ( const QString& sText ) const
 			unsigned int  bars  = sText.section('.', 0, 0).toUInt();
 			unsigned int  beats = sText.section('.', 1, 1).toUInt();
 			unsigned long ticks = sText.section('.', 2).toULong();
-			if (bars > 0)
-				bars--;
-			if (beats > 0)
-				beats--;
+			if (!bDelta) {
+				if (bars > 0)
+					bars--;
+				if (beats > 0)
+					beats--;
+			}
 			beats += bars  * m_iBeatsPerBar;
 			ticks += beats * m_iTicksPerBeat;
 			iFrame = frameFromTick(ticks);
@@ -137,7 +140,8 @@ unsigned long qtractorTimeScale::frameFromText ( const QString& sText ) const
 }
 
 
-QString qtractorTimeScale::textFromFrame ( unsigned long iFrame ) const
+QString qtractorTimeScale::textFromFrame (
+	unsigned long iFrame, bool bDelta ) const
 {
 	QString sText;
 
@@ -157,7 +161,11 @@ QString qtractorTimeScale::textFromFrame ( unsigned long iFrame ) const
 				bars   = (unsigned int) (beats / m_iBeatsPerBar);
 				beats -= (unsigned int) (bars  * m_iBeatsPerBar);
 			}
-			sText.sprintf("%u.%02u.%03lu", bars + 1, beats + 1, ticks);
+			if (!bDelta) {
+				bars++;
+				beats++;
+			}
+			sText.sprintf("%u.%02u.%03lu", bars, beats, ticks);
 			break;
 		}
 

@@ -35,6 +35,7 @@ qtractorSpinBox::qtractorSpinBox ( QWidget *pParent )
 	m_iDefaultValue = 0;
 	m_iMinimumValue = 0;
 	m_iMaximumValue = 0;
+	m_bDeltaValue   = false;
 
 #if QT_VERSION >= 0x040200
 	QAbstractSpinBox::setAccelerated(true);
@@ -143,6 +144,18 @@ unsigned long qtractorSpinBox::maximum (void) const
 }
 
 
+// Differential value mode (BBT format only) accessor.
+void qtractorSpinBox::setDeltaValue ( bool bDeltaValue )
+{
+	m_bDeltaValue = bDeltaValue;
+}
+
+bool qtractorSpinBox::isDeltaValue (void) const
+{
+	return m_bDeltaValue;
+}
+
+
 // Inherited/override methods.
 QValidator::State qtractorSpinBox::validate ( QString& sText, int& iPos ) const
 {
@@ -230,14 +243,14 @@ QAbstractSpinBox::StepEnabled qtractorSpinBox::stepEnabled (void) const
 unsigned long qtractorSpinBox::valueFromText ( const QString& sText ) const
 {
 	return (m_pTimeScale
-		? m_pTimeScale->frameFromText(sText)
+		? m_pTimeScale->frameFromText(sText, m_bDeltaValue)
 		: sText.toULong());
 }
 
 QString qtractorSpinBox::textFromValue ( unsigned long iValue ) const
 {
 	return (m_pTimeScale
-		? m_pTimeScale->textFromFrame(iValue)
+		? m_pTimeScale->textFromFrame(iValue, m_bDeltaValue)
 		: QString::number(iValue));
 }
 

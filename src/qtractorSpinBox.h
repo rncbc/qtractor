@@ -65,6 +65,10 @@ public:
 	void setMaximum(unsigned long iMaximum);
 	unsigned long maximum() const;
 
+	// Differential value mode (BBT format only) accessor.
+	void setDeltaValue(bool bDeltaValue);
+	bool isDeltaValue() const;
+
 signals:
 
 	// Common value change notification.
@@ -99,6 +103,7 @@ private:
 	unsigned long      m_iDefaultValue;
 	unsigned long      m_iMinimumValue;
 	unsigned long      m_iMaximumValue;
+	bool               m_bDeltaValue;
 };
 
 

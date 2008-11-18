@@ -2553,7 +2553,7 @@ QString qtractorMidiEditor::eventToolTip ( qtractorMidiEvent *pEvent ) const
 			.arg(int(pEvent->note()))
 			.arg(noteName(pEvent->note()))
 			.arg(int(pEvent->velocity()))
-			.arg(m_pTimeScale->textFromTick(pEvent->duration()));
+			.arg(m_pTimeScale->textFromTick(pEvent->duration(), true));
 		break;
 	case qtractorMidiEvent::KEYPRESS:
 		sToolTip += tr("Key Press (%1) %2\nValue:\t%3")

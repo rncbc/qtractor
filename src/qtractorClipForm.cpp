@@ -165,6 +165,11 @@ void qtractorClipForm::setClip ( qtractorClip *pClip, bool bClipNew )
 	m_ui.ClipLengthSpinBox->setTimeScale(m_pTimeScale);
 	m_ui.FadeInLengthSpinBox->setTimeScale(m_pTimeScale);
 	m_ui.FadeOutLengthSpinBox->setTimeScale(m_pTimeScale);
+	// These have special delta formats...
+	m_ui.ClipOffsetSpinBox->setDeltaValue(true);
+	m_ui.ClipLengthSpinBox->setDeltaValue(true);
+	m_ui.FadeInLengthSpinBox->setDeltaValue(true);
+	m_ui.FadeOutLengthSpinBox->setDeltaValue(true);
 	// Initialize dialog widgets...
 	m_ui.ClipNameLineEdit->setText(m_pClip->clipName());
 	// Parameters...

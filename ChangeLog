@@ -5,6 +5,9 @@ ChangeLog
 
 CVS HEAD
 
+- All time offsets and lengths are now zero-bar/beat based
+  when displayed in the BBT (bar.beat.ticks) format.
+
 - MMC STEP gets adjusted to current snap-per-beat setting.
 
 - Fixed broken initial buffering that was randomly crippling

@@ -3522,7 +3522,7 @@ void qtractorMainForm::stabilizeForm (void)
 		m_statusItems[StatusLoop]->clear();
 
 	m_statusItems[StatusTime]->setText(
-		m_pSession->timeScale()->textFromFrame(iSessionLength));
+		m_pSession->timeScale()->textFromFrame(iSessionLength, true));
 
 	m_statusItems[StatusRate]->setText(
 		tr("%1 Hz").arg(m_pSession->sampleRate()));
@@ -4148,7 +4148,7 @@ void qtractorMainForm::timerSlot (void)
 						m_pSession->updateSessionLength(m_iPlayHead);
 						m_statusItems[StatusTime]->setText(
 							m_pSession->timeScale()->textFromFrame(
-								m_pSession->sessionLength()));
+								m_pSession->sessionLength(), true));
 					}
 				}
 				else
