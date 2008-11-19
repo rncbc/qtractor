@@ -171,6 +171,8 @@ qtractorTrackView::~qtractorTrackView (void)
 // Track view state reset.
 void qtractorTrackView::clear (void)
 {
+	m_clipboard.clear();
+
 	m_pClipSelect->clear();
 
 	m_dropType   = qtractorTrack::None;
@@ -2712,7 +2714,7 @@ unsigned long qtractorTrackView::pastePeriod (void) const
 void qtractorTrackView::pasteClipboard (
 	unsigned short iPasteCount, unsigned long iPastePeriod )
 {
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	qDebug("qtractorTrackView::pasteClipboard(%u, %lu)",
 		iPasteCount, iPastePeriod);
 #endif
