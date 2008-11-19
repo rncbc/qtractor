@@ -123,6 +123,10 @@ public:
 	// Paste from clipboard (start).
 	void pasteClipboard();
 
+	// Paste/repeat from clipboard (start).
+	void pasteRepeatClipboard(unsigned short iRepeatCount,
+		unsigned long iRepeatPeriod, bool bRepeatSnap);
+
 	// Clip selection command types.
 	enum Command { Cut, Copy, Delete };
 	

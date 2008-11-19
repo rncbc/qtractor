@@ -442,6 +442,9 @@ qtractorMainForm::qtractorMainForm (
 	QObject::connect(m_ui.editPasteAction,
 		SIGNAL(triggered(bool)),
 		SLOT(editPaste()));
+	QObject::connect(m_ui.editPasteRepeatAction,
+		SIGNAL(triggered(bool)),
+		SLOT(editPasteRepeat()));
 	QObject::connect(m_ui.editDeleteAction,
 		SIGNAL(triggered(bool)),
 		SLOT(editDelete()));
@@ -1840,6 +1843,19 @@ void qtractorMainForm::editPaste (void)
 	// Paste selection...
 	if (m_pTracks)
 		m_pTracks->pasteClipboard();
+}
+
+
+// Paste/repeat clipboard contents.
+void qtractorMainForm::editPasteRepeat (void)
+{
+#ifdef CONFIG_DEBUG
+	appendMessages("qtractorMainForm::editPasteRepeat()");
+#endif
+
+	// Paste/repeat selection...
+	if (m_pTracks)
+		m_pTracks->pasteRepeatClipboard();
 }
 
 
@@ -3411,7 +3427,7 @@ void qtractorMainForm::stabilizeForm (void)
 		pClip  = m_pTracks->currentClip();
 	}
 
-	bool bEnabled    = (m_pTracks && pTrack != NULL);
+	bool bEnabled    = (m_pTracks && !m_pTracks->isClipboardEmpty());
 	bool bSelected   = (m_pTracks && m_pTracks->isClipSelected())
 		|| (m_pFiles && m_pFiles->hasFocus() && m_pFiles->isFileSelected());
 	bool bSelectable = (m_pSession->editHead() < m_pSession->editTail());
@@ -3424,9 +3440,11 @@ void qtractorMainForm::stabilizeForm (void)
 
 	m_ui.editCutAction->setEnabled(bSelected);
 	m_ui.editCopyAction->setEnabled(bSelected);
-	m_ui.editPasteAction->setEnabled(m_pTracks && !m_pTracks->isClipboardEmpty());
+	m_ui.editPasteAction->setEnabled(bEnabled);
+	m_ui.editPasteRepeatAction->setEnabled(bEnabled);
 	m_ui.editDeleteAction->setEnabled(bSelected);
 
+	bEnabled = (m_pTracks && pTrack != NULL);
 	m_ui.editSelectAllAction->setEnabled(iSessionLength > 0);
 	m_ui.editSelectTrackAction->setEnabled(bEnabled);
 	m_ui.editSelectRangeAction->setEnabled(iSessionLength > 0 && bSelectable);

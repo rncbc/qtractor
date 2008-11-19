@@ -136,6 +136,11 @@ public:
 	int     iSnapPerBeat;
 	float   fTempo;
 
+	// Paste-repeat convenient defaults.
+	int     iPasteRepeatCount;
+	int     iPasteRepeatPeriod;
+	bool    bPasteRepeatSnap;
+
 	// Plugin search string.
 	QString sPluginSearch;
 	int     iPluginType;

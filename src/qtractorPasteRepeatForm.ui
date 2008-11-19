@@ -1,0 +1,218 @@
+<ui version="4.0" >
+ <author>rncbc aka Rui Nuno Capela</author>
+ <comment>qtractor - An Audio/MIDI multi-track sequencer.
+
+   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
+
+   This program is free software; you can redistribute it and/or
+   modify it under the terms of the GNU General Public License
+   as published by the Free Software Foundation; either version 2
+   of the License, or (at your option) any later version.
+
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+
+   You should have received a copy of the GNU General Public License along
+   with this program; if not, write to the Free Software Foundation, Inc.,
+   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
+ </comment>
+ <class>qtractorPasteRepeatForm</class>
+ <widget class="QDialog" name="qtractorPasteRepeatForm" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>291</width>
+    <height>164</height>
+   </rect>
+  </property>
+  <property name="focusPolicy" >
+   <enum>Qt::StrongFocus</enum>
+  </property>
+  <property name="windowTitle" >
+   <string>Paste Repeat - Qtractor</string>
+  </property>
+  <property name="windowIcon" >
+   <iconset resource="../icons/qtractor.qrc" >
+    <normaloff>:/icons/editPaste.png</normaloff>:/icons/editPaste.png</iconset>
+  </property>
+  <layout class="QVBoxLayout" >
+   <item>
+    <widget class="QGroupBox" name="RepeatGroupBox" >
+     <property name="title" >
+      <string>Repeat</string>
+     </property>
+     <layout class="QGridLayout" >
+      <item row="0" column="0" >
+       <widget class="QLabel" name="RepeatCountTextLabel" >
+        <property name="text" >
+         <string>&amp;Count:</string>
+        </property>
+        <property name="buddy" >
+         <cstring>RepeatCountSpinBox</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1" >
+       <widget class="QSpinBox" name="RepeatCountSpinBox" >
+        <property name="toolTip" >
+         <string>Repeat count</string>
+        </property>
+        <property name="minimum" >
+         <number>2</number>
+        </property>
+        <property name="maximum" >
+         <number>200</number>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="2" colspan="2" >
+       <spacer>
+        <property name="orientation" >
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0" >
+         <size>
+          <width>110</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="1" column="0" >
+       <widget class="QCheckBox" name="RepeatPeriodCheckBox" >
+        <property name="toolTip" >
+         <string>Repeat period</string>
+        </property>
+        <property name="text" >
+         <string>&amp;Period:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1" colspan="2" >
+       <widget class="qtractorSpinBox" name="RepeatPeriodSpinBox" >
+        <property name="minimumSize" >
+         <size>
+          <width>120</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="toolTip" >
+         <string>Repeat period</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="3" >
+       <widget class="QComboBox" name="RepeatFormatComboBox" >
+        <property name="toolTip" >
+         <string>Repeat period format</string>
+        </property>
+        <item>
+         <property name="text" >
+          <string>Frames</string>
+         </property>
+        </item>
+        <item>
+         <property name="text" >
+          <string>Time</string>
+         </property>
+        </item>
+        <item>
+         <property name="text" >
+          <string>BBT</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item row="2" column="0" >
+       <widget class="QCheckBox" name="RepeatSnapCheckBox" >
+        <property name="toolTip" >
+         <string>Repeat snap/beat</string>
+        </property>
+        <property name="text" >
+         <string>&amp;Snap/Beat</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="2" colspan="3" >
+       <spacer>
+        <property name="orientation" >
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0" >
+         <size>
+          <width>110</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" >
+     <item>
+      <spacer>
+       <property name="orientation" >
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0" >
+        <size>
+         <width>20</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="OkPushButton" >
+       <property name="text" >
+        <string>OK</string>
+       </property>
+       <property name="icon" >
+        <iconset resource="../icons/qtractor.qrc" >
+         <normaloff>:/icons/formAccept.png</normaloff>:/icons/formAccept.png</iconset>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="CancelPushButton" >
+       <property name="text" >
+        <string>Cancel</string>
+       </property>
+       <property name="icon" >
+        <iconset resource="../icons/qtractor.qrc" >
+         <normaloff>:/icons/formReject.png</normaloff>:/icons/formReject.png</iconset>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <layoutdefault spacing="4" margin="8" />
+ <customwidgets>
+  <customwidget>
+   <class>qtractorSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qtractorSpinBox.h</header>
+  </customwidget>
+ </customwidgets>
+ <tabstops>
+  <tabstop>RepeatCountSpinBox</tabstop>
+  <tabstop>RepeatPeriodCheckBox</tabstop>
+  <tabstop>RepeatPeriodSpinBox</tabstop>
+  <tabstop>RepeatFormatComboBox</tabstop>
+  <tabstop>RepeatSnapCheckBox</tabstop>
+  <tabstop>OkPushButton</tabstop>
+  <tabstop>CancelPushButton</tabstop>
+ </tabstops>
+ <resources>
+  <include location="../icons/qtractor.qrc" />
+ </resources>
+ <connections/>
+</ui>

@@ -5,6 +5,8 @@ ChangeLog
 
 CVS HEAD
 
+- Paste-repeat command is taking shape...
+
 - Normalize tool on MIDI clip editor got rewritten from its
   previous brain dead, useless and utterly wrong operation.
 

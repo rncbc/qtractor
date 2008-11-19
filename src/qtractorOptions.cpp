@@ -148,7 +148,7 @@ qtractorOptions::qtractorOptions (void)
 
 	m_settings.endGroup(); // Options group.
 
-	// Last but not least, get the default directories.
+	// Last but not least, get the defaults.
 	m_settings.beginGroup("/Default");
 	bSessionTemplate = m_settings.value("/SessionTemplate", false).toBool();
 	sSessionTemplatePath = m_settings.value("/SessionTemplatePath").toString();
@@ -159,6 +159,9 @@ qtractorOptions::qtractorOptions (void)
 	sInstrumentDir = m_settings.value("/InstrumentDir").toString();
 	iSnapPerBeat   = m_settings.value("/SnapPerBeat", 4).toInt();
 	fTempo   = float(m_settings.value("/Tempo", 120.0).toDouble());
+	iPasteRepeatCount  = m_settings.value("/PasteRepeatCount", 2).toInt();
+	iPasteRepeatPeriod = m_settings.value("/PasteRepeatPeriod", 0).toInt();
+	bPasteRepeatSnap   = m_settings.value("/PasteRepeatSnap", false).toBool();
 	sPluginSearch  = m_settings.value("/PluginSearch").toString();
 	iPluginType    = m_settings.value("/PluginType", 1).toInt();
 	bPluginActivate = m_settings.value("/PluginActivate", false).toBool();
@@ -339,6 +342,9 @@ qtractorOptions::~qtractorOptions (void)
 	m_settings.setValue("/InstrumentDir", sInstrumentDir);
 	m_settings.setValue("/SnapPerBeat", iSnapPerBeat);
 	m_settings.setValue("/Tempo", double(fTempo));
+	m_settings.setValue("/PasteRepeatCount", iPasteRepeatCount);
+	m_settings.setValue("/PasteRepeatPeriod", iPasteRepeatPeriod);
+	m_settings.setValue("/PasteRepeatSnap", bPasteRepeatSnap);
 	m_settings.setValue("/PluginSearch", sPluginSearch);
 	m_settings.setValue("/PluginType", iPluginType);
 	m_settings.setValue("/PluginActivate", bPluginActivate);

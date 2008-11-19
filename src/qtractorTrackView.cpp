@@ -2754,6 +2754,21 @@ void qtractorTrackView::pasteClipboard (void)
 }
 
 
+// Paste/repeat from clipboard (start).
+void qtractorTrackView::pasteRepeatClipboard ( unsigned short iRepeatCount,
+	unsigned long iRepeatPeriod, bool bRepeatSnap )
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorTrackView::pasteRepeatClipboard(%u, %lu, %d)",
+		iRepeatCount, iRepeatPeriod, int(bRepeatSnap));
+#endif
+
+	//
+	// TODO: paste repeat clipboard contents ...
+	//
+}
+
+
 // Intra-drag-n-drop clip move method.
 void qtractorTrackView::moveClipSelect ( qtractorTrack *pTrack )
 {

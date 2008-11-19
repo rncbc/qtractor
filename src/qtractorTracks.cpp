@@ -43,6 +43,8 @@
 #include "qtractorTrackForm.h"
 #include "qtractorClipForm.h"
 
+#include "qtractorPasteRepeatForm.h"
+
 #include "qtractorMidiEditorForm.h"
 
 #include <QVBoxLayout>
@@ -895,6 +897,21 @@ void qtractorTracks::pasteClipboard (void)
 {
 	m_pTrackView->pasteClipboard();
 }
+
+
+// Special paste/repeat prompt.
+void qtractorTracks::pasteRepeatClipboard (void)
+{
+	qtractorPasteRepeatForm pasteForm(this);
+	if (pasteForm.exec()) {
+		m_pTrackView->pasteRepeatClipboard(
+			pasteForm.repeatCount(),
+			pasteForm.repeatPeriod(),
+			pasteForm.repeatSnap()
+		);
+	}
+}
+
 
 
 // Delete current selection.

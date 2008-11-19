@@ -88,6 +88,7 @@ HEADERS += src/qtractorAbout.h \
            src/qtractorMidiEditorForm.h \
            src/qtractorMidiToolsForm.h \
            src/qtractorOptionsForm.h \
+           src/qtractorPasteRepeatForm.h \
            src/qtractorPluginForm.h \
            src/qtractorPluginSelectForm.h \
            src/qtractorSessionForm.h \
@@ -174,6 +175,7 @@ SOURCES += src/main.cpp \
            src/qtractorMidiEditorForm.cpp \
            src/qtractorMidiToolsForm.cpp \
            src/qtractorOptionsForm.cpp \
+           src/qtractorPasteRepeatForm.cpp \
            src/qtractorPluginForm.cpp \
            src/qtractorPluginSelectForm.cpp \
            src/qtractorSessionForm.cpp \
@@ -189,6 +191,7 @@ FORMS    = src/qtractorBusForm.ui \
            src/qtractorMidiEditorForm.ui \
            src/qtractorMidiToolsForm.ui \
            src/qtractorOptionsForm.ui \
+           src/qtractorPasteRepeatForm.ui \
            src/qtractorPluginForm.ui \
            src/qtractorPluginSelectForm.ui \
            src/qtractorSessionForm.ui \

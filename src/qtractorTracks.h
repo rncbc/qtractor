@@ -96,6 +96,9 @@ public:
 	void copyClipboard();
 	void pasteClipboard();
 
+	// Special paste/repeat prompt.
+	void pasteRepeatClipboard();
+
 	// Delete selection method.
 	void deleteClipSelect();
 

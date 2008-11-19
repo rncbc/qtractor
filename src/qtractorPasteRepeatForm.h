@@ -1,4 +1,4 @@
-// qtractorClipForm.h
+// qtractorPasteRepeatForm.h
 //
 /****************************************************************************
    Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
@@ -19,69 +19,56 @@
 
 *****************************************************************************/
 
-#ifndef __qtractorClipForm_h
-#define __qtractorClipForm_h
+#ifndef __qtractorPasteRepeatForm_h
+#define __qtractorPasteRepeatForm_h
 
-#include "ui_qtractorClipForm.h"
+#include "ui_qtractorPasteRepeatForm.h"
 
-#include "qtractorClip.h"
+
+// Forward declarations.
+class qtractorTimeScale;
 
 
 //----------------------------------------------------------------------------
-// qtractorClipForm -- UI wrapper form.
+// qtractorPasteRepeatForm -- UI wrapper form.
 
-class qtractorClipForm : public QDialog
+class qtractorPasteRepeatForm : public QDialog
 {
 	Q_OBJECT
 
 public:
 
 	// Constructor.
-	qtractorClipForm(QWidget *pParent = 0, Qt::WindowFlags wflags = 0);
+	qtractorPasteRepeatForm(QWidget *pParent = 0, Qt::WindowFlags wflags = 0);
 	// Destructor.
-	~qtractorClipForm();
+	~qtractorPasteRepeatForm();
 
-	void setClip(qtractorClip *pClip, bool bClipNew = false);
-	qtractorClip *clip() const;
+	// Accepted dialog accessors.
+	unsigned short repeatCount() const;
+	unsigned long repeatPeriod() const;
+	bool repeatSnap() const;
 
-public slots:
+protected slots:
 
 	void accept();
 	void reject();
 	void changed();
-	void formatChanged();
+	void formatChanged(int);
 	void stabilizeForm();
-    void browseFilename();
-
-	void filenameChanged(const QString& sFilename);
-	void trackChannelChanged(int iTrackChannel);
-
-protected:
-
-	qtractorClip::FadeType fadeTypeFromIndex(int iIndex) const;
-	int indexFromFadeType(qtractorClip::FadeType fadeType) const;
-
-	qtractorTrack::TrackType trackType() const;
-
-	void fileChanged(const QString& sFilename,
-		unsigned short iTrackChannel);
 
 private:
 
 	// The Qt-designer UI struct...
-	Ui::qtractorClipForm m_ui;
+	Ui::qtractorPasteRepeatForm m_ui;
 
 	// Instance variables...
-	qtractorClip      *m_pClip;
-	bool               m_bClipNew;
 	qtractorTimeScale *m_pTimeScale;
 
 	int m_iDirtyCount;
-	int m_iDirtySetup;
 };
 
 
-#endif	// __qtractorClipForm_h
+#endif	// __qtractorPasteRepeatForm_h
 
 
-// end of qtractorClipForm.h
+// end of qtractorPasteRepeatForm.h
