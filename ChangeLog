@@ -5,7 +5,8 @@ ChangeLog
 
 CVS HEAD
 
-- Paste-repeat command is taking shape...
+- Paste-repeat command has been implemented (see Edit/Paste
+  Repeat...) (EXPERIMENTAL).
 
 - Normalize tool on MIDI clip editor got rewritten from its
   previous brain dead, useless and utterly wrong operation.
@@ -39,10 +40,10 @@ CVS HEAD
 - Make way for paste/dropping items from the system clipboard
   over the main track view. Cut/Copy/Paste/Delete of file items
   have now this workaround fixed, wrt. Files widget keyboard
-  shortcuts, respectively. (EXPERIMENTAL)
+  shortcuts, respectively.
 
 - Clip gain/volume propriety in now in place and reflected in
-  audio clip waveform drawing in particular. (EXPERIMENTAL)
+  audio clip waveform drawing in particular.
 
 - A new hideous progress bar is now lurking in the main status
   line, as found convenient to display progress of the also new

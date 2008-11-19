@@ -54,12 +54,8 @@ qtractorPasteRepeatForm::qtractorPasteRepeatForm (
 
 	// Initialize conveniency options...
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
-	if (pOptions) {
+	if (pOptions)
 		m_ui.RepeatCountSpinBox->setValue(pOptions->iPasteRepeatCount);
-		m_ui.RepeatPeriodCheckBox->setChecked(pOptions->iPasteRepeatPeriod > 0);
-		m_ui.RepeatPeriodSpinBox->setValue(pOptions->iPasteRepeatPeriod);
-		m_ui.RepeatSnapCheckBox->setChecked(pOptions->bPasteRepeatSnap);
-	}
 
 	// Choose BBT to be default format here.
 	formatChanged(qtractorTimeScale::BBT);
@@ -71,18 +67,12 @@ qtractorPasteRepeatForm::qtractorPasteRepeatForm (
 	QObject::connect(m_ui.RepeatCountSpinBox,
 		SIGNAL(valueChanged(int)),
 		SLOT(changed()));
-	QObject::connect(m_ui.RepeatPeriodCheckBox,
-		SIGNAL(toggled(bool)),
-		SLOT(changed()));
 	QObject::connect(m_ui.RepeatPeriodSpinBox,
 		SIGNAL(valueChanged(unsigned long)),
 		SLOT(changed()));
 	QObject::connect(m_ui.RepeatFormatComboBox,
 		SIGNAL(activated(int)),
 		SLOT(formatChanged(int)));
-	QObject::connect(m_ui.RepeatSnapCheckBox,
-		SIGNAL(toggled(bool)),
-		SLOT(changed()));
 	QObject::connect(m_ui.OkPushButton,
 		SIGNAL(clicked()),
 		SLOT(accept()));
@@ -101,22 +91,26 @@ qtractorPasteRepeatForm::~qtractorPasteRepeatForm (void)
 }
 
 
-// Retrieve the accepted values.
+// Access accepted the accepted values.
+void qtractorPasteRepeatForm::setRepeatCount ( unsigned short iRepeatCount )
+{
+	m_ui.RepeatCountSpinBox->setValue(iRepeatCount);
+}
+
 unsigned short qtractorPasteRepeatForm::repeatCount (void) const
 {
 	return m_ui.RepeatCountSpinBox->value();
 }
 
 
-unsigned long qtractorPasteRepeatForm::repeatPeriod (void) const
+void qtractorPasteRepeatForm::setRepeatPeriod ( unsigned long iRepeatPeriod )
 {
-	return (m_ui.RepeatPeriodCheckBox->isChecked()
-		? m_ui.RepeatPeriodSpinBox->value() : 0);
+	m_ui.RepeatPeriodSpinBox->setValue(iRepeatPeriod, false);
 }
 
-bool qtractorPasteRepeatForm::repeatSnap (void) const
+unsigned long qtractorPasteRepeatForm::repeatPeriod (void) const
 {
-	return m_ui.RepeatSnapCheckBox->isChecked();
+	return m_ui.RepeatPeriodSpinBox->value();
 }
 
 
@@ -127,11 +121,8 @@ void qtractorPasteRepeatForm::accept (void)
 	if (m_iDirtyCount > 0) {
 		// Save conveniency options...
 		qtractorOptions *pOptions = qtractorOptions::getInstance();
-		if (pOptions) {
+		if (pOptions)
 			pOptions->iPasteRepeatCount  = repeatCount();
-			pOptions->iPasteRepeatPeriod = repeatPeriod();
-			pOptions->bPasteRepeatSnap   = repeatSnap();
-		}
 		// Reset dirty flag.
 		m_iDirtyCount = 0;
 	}
@@ -195,9 +186,7 @@ void qtractorPasteRepeatForm::formatChanged ( int iDisplayFormat )
 // Stabilize current form state.
 void qtractorPasteRepeatForm::stabilizeForm (void)
 {
-	bool bEnabled = m_ui.RepeatPeriodCheckBox->isChecked();
-	m_ui.RepeatPeriodSpinBox->setEnabled(bEnabled);
-	m_ui.RepeatFormatComboBox->setEnabled(bEnabled);
+	m_ui.OkPushButton->setEnabled(m_pTimeScale != NULL);
 }
 
 

@@ -121,11 +121,12 @@ public:
 	void clearClipboard();
 
 	// Paste from clipboard (start).
-	void pasteClipboard();
+	void pasteClipboard(
+		unsigned short iPasteCount = 1, unsigned long iPastePeriod = 0);
 
-	// Paste/repeat from clipboard (start).
-	void pasteRepeatClipboard(unsigned short iRepeatCount,
-		unsigned long iRepeatPeriod, bool bRepeatSnap);
+	// Retrieve current paste period.
+	// (as from current clipboard width)
+	unsigned long pastePeriod() const;
 
 	// Clip selection command types.
 	enum Command { Cut, Copy, Delete };
@@ -381,6 +382,10 @@ private:
 
 	// Recording state window.
 	int m_iLastRecordX;
+
+	// Paste interim parameters.
+	unsigned short m_iPasteCount;
+	unsigned long  m_iPastePeriod;
 };
 
 

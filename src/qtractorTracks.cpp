@@ -903,12 +903,11 @@ void qtractorTracks::pasteClipboard (void)
 void qtractorTracks::pasteRepeatClipboard (void)
 {
 	qtractorPasteRepeatForm pasteForm(this);
+	pasteForm.setRepeatPeriod(m_pTrackView->pastePeriod());
 	if (pasteForm.exec()) {
-		m_pTrackView->pasteRepeatClipboard(
+		m_pTrackView->pasteClipboard(
 			pasteForm.repeatCount(),
-			pasteForm.repeatPeriod(),
-			pasteForm.repeatSnap()
-		);
+			pasteForm.repeatPeriod());
 	}
 }
 

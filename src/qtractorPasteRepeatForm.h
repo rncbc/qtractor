@@ -44,9 +44,11 @@ public:
 	~qtractorPasteRepeatForm();
 
 	// Accepted dialog accessors.
-	unsigned short repeatCount() const;
+	void setRepeatCount(unsigned short iRepeatCount);
+	unsigned short repeatCount()  const;
+
+	void setRepeatPeriod(unsigned long iRepeatPeriod);
 	unsigned long repeatPeriod() const;
-	bool repeatSnap() const;
 
 protected slots:
 

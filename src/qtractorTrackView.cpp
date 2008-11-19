@@ -188,6 +188,9 @@ void qtractorTrackView::clear (void)
 
 	m_iLastRecordX = 0;
 
+	m_iPasteCount  = 0;
+	m_iPastePeriod = 0;
+
 	if (m_pSessionCursor)
 		delete m_pSessionCursor;
 	m_pSessionCursor = NULL;
@@ -2112,6 +2115,10 @@ void qtractorTrackView::resetDragState (void)
 
 	m_posStep = QPoint(0, 0);
 
+	// No pasting nomore.
+	m_iPasteCount  = 0;
+	m_iPastePeriod = 0;
+
 	// If we were moving clips around,
 	// just hide selection, of course.
 	hideClipSelect();
@@ -2499,12 +2506,6 @@ bool qtractorTrackView::isClipSelected (void) const
 // Whether there's any clip on clipboard.
 bool qtractorTrackView::isClipboardEmpty (void) const
 {
-	// System clipboard?
-	QClipboard *pClipboard = QApplication::clipboard();
-	if (pClipboard && (pClipboard->mimeData())->hasUrls())
-		return false;
-
-	// Local clipboard...
 	return (m_clipboard.items.count() < 1);
 }
 
@@ -2691,9 +2692,31 @@ void qtractorTrackView::executeClipSelect ( qtractorTrackView::Command cmd )
 }
 
 
-// Paste from clipboard (start).
-void qtractorTrackView::pasteClipboard (void)
+// Retrieve current paste period.
+// (as from current clipboard width)
+unsigned long qtractorTrackView::pastePeriod (void) const
 {
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return 0;
+
+	if (m_clipboard.items.count() < 1)
+		return 0;
+
+	return pSession->frameSnap(
+		pSession->frameFromPixel(m_clipboard.rect.width()));
+}
+
+
+// Paste from clipboard (start).
+void qtractorTrackView::pasteClipboard (
+	unsigned short iPasteCount, unsigned long iPastePeriod )
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorTrackView::pasteClipboard(%u, %lu)",
+		iPasteCount, iPastePeriod);
+#endif
+
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
 		return;
@@ -2727,15 +2750,30 @@ void qtractorTrackView::pasteClipboard (void)
 	m_pClipSelect->clear();
 	resetDragState();
 
+	// Set paste parameters...
+	m_iPasteCount  = iPasteCount;
+	m_iPastePeriod = iPastePeriod;
+
+	int x0 = 0;
+	int dx = pSession->pixelSnap(m_iPastePeriod > 0
+		? pSession->pixelFromFrame(m_iPastePeriod)
+		: m_clipboard.rect.width());
+
 	// Copy clipboard items to floating selection;
 	// adjust clip widths/lengths just in case time
 	// scale (horizontal zoom) has been changed... 
 	//
 	QListIterator<ClipItem *> iter(m_clipboard.items);
-	while (iter.hasNext()) {
-		ClipItem *pClipItem = iter.next();
-		pClipItem->rect.setWidth(pSession->pixelFromFrame(pClipItem->clipLength));
-		m_pClipSelect->addClip(pClipItem->clip, pClipItem->rect);
+	for (unsigned short i = 0; i < m_iPasteCount; ++i) {
+		iter.toFront();
+		while (iter.hasNext()) {
+			ClipItem *pClipItem = iter.next();
+			QRect rect(pClipItem->rect);
+			rect.setX(rect.x() + x0);
+			rect.setWidth(pSession->pixelFromFrame(pClipItem->clipLength));
+			m_pClipSelect->addClip(pClipItem->clip, rect);
+		}
+		x0 += dx;
 	}
 
 	// We'll start a brand new floating state...
@@ -2753,20 +2791,6 @@ void qtractorTrackView::pasteClipboard (void)
 	dragMoveTrack(pos + m_posStep);
 }
 
-
-// Paste/repeat from clipboard (start).
-void qtractorTrackView::pasteRepeatClipboard ( unsigned short iRepeatCount,
-	unsigned long iRepeatPeriod, bool bRepeatSnap )
-{
-#ifdef CONFIG_DEBUG
-	qDebug("qtractorTrackView::pasteRepeatClipboard(%u, %lu, %d)",
-		iRepeatCount, iRepeatPeriod, int(bRepeatSnap));
-#endif
-
-	//
-	// TODO: paste repeat clipboard contents ...
-	//
-}
 
 
 // Intra-drag-n-drop clip move method.
@@ -2879,7 +2903,7 @@ void qtractorTrackView::pasteClipSelect ( qtractorTrack *pTrack )
 	if (pSession == NULL)
 		return;
 
-	// Check if anythings really on clipboard...
+	// Check if there's anything really on clipboard...
 	if (m_clipboard.items.count() < 1)
 		return;
 
@@ -2888,7 +2912,6 @@ void qtractorTrackView::pasteClipSelect ( qtractorTrack *pTrack )
 		= new qtractorClipCommand(tr("paste clip"));
 
 	// We can only move clips between tracks of the same type...
-	int iTrackClip = 0;
 	bool bAddTrack = (pTrack == NULL);
 	qtractorTrack *pSingleTrack = m_pClipSelect->singleTrack();
 	if (pSingleTrack) {
@@ -2906,57 +2929,68 @@ void qtractorTrackView::pasteClipSelect ( qtractorTrack *pTrack )
 			return;
 	}
 
+	int dx = pSession->pixelSnap(m_iPastePeriod > 0
+		? pSession->pixelFromFrame(m_iPastePeriod)
+		: m_clipboard.rect.width());
+
 	// We'll build a composite command...
-	long iClipDelta = 0;
 	QListIterator<ClipItem *> iter(m_clipboard.items);
-	while (iter.hasNext()) {
-		ClipItem *pClipItem = iter.next();
-		qtractorClip *pClip = pClipItem->clip;
-		if (pSingleTrack == NULL)
-			pTrack = pClip->track();
-		int x = (pClipItem->rect.x() + m_iDraggingX);
-		// Convert to precise frame positioning,
-		// but only the first clip gets snapped...
-		unsigned long iClipStart = pSession->frameFromPixel(x > 0 ? x : 0);
-		if (iTrackClip == 0) {
-			unsigned long iFrameStart = pSession->frameSnap(iClipStart);
-			iClipDelta = long(iFrameStart) - long(iClipStart);
-			iClipStart = iFrameStart;
-		} else if (long(iClipStart) + iClipDelta > 0)
-			iClipStart += iClipDelta;
-		// Now, its imperative to make a proper copy of those clips...
-		qtractorClip *pNewClip = NULL;
-		switch (pTrack->trackType()) {
-		case qtractorTrack::Audio: {
-			qtractorAudioClip *pAudioClip
-				= static_cast<qtractorAudioClip *> (pClip);
-			if (pAudioClip)
-				pNewClip = new qtractorAudioClip(*pAudioClip);
-			break;
+	for (unsigned short i = 0; i < m_iPasteCount; ++i) {
+		// Paste iteration...
+		int  iTrackClip = 0;
+		long iClipDelta = 0;
+		iter.toFront();
+		while (iter.hasNext()) {
+			ClipItem *pClipItem = iter.next();
+			qtractorClip *pClip = pClipItem->clip;
+			if (pSingleTrack == NULL)
+				pTrack = pClip->track();
+			int x = (pClipItem->rect.x() + m_iDraggingX);
+			// Convert to precise frame positioning,
+			// but only the first clip gets snapped...
+			unsigned long iClipStart = pSession->frameFromPixel(x > 0 ? x : 0);
+			if (iTrackClip == 0) {
+				unsigned long iFrameStart = pSession->frameSnap(iClipStart);
+				iClipDelta = long(iFrameStart) - long(iClipStart);
+				iClipStart = iFrameStart;
+			} else if (long(iClipStart) + iClipDelta > 0)
+				iClipStart += iClipDelta;
+			// Now, its imperative to make a proper copy of those clips...
+			qtractorClip *pNewClip = NULL;
+			switch (pTrack->trackType()) {
+			case qtractorTrack::Audio: {
+				qtractorAudioClip *pAudioClip
+					= static_cast<qtractorAudioClip *> (pClip);
+				if (pAudioClip)
+					pNewClip = new qtractorAudioClip(*pAudioClip);
+				break;
+			}
+			case qtractorTrack::Midi: {
+				qtractorMidiClip *pMidiClip
+					= static_cast<qtractorMidiClip *> (pClip);
+				if (pMidiClip)
+					pNewClip = new qtractorMidiClip(*pMidiClip);
+				break;
+			}
+			default:
+				break;
+			}
+			// Add the new pasted clip...
+			if (pNewClip) {
+				pNewClip->setClipStart(iClipStart);
+				pNewClip->setClipOffset(pClipItem->clipOffset);
+				pNewClip->setClipLength(pClipItem->clipLength);
+				pNewClip->setFadeInLength(pClipItem->fadeInLength);
+				pNewClip->setFadeOutLength(pClipItem->fadeOutLength);
+				pClipCommand->addClip(pNewClip, pTrack);
+				// If track's new it will need a name...
+				if (bAddTrack && iTrackClip == 0)
+					pTrack->setTrackName(pClip->clipName());
+				iTrackClip++;
+			}
 		}
-		case qtractorTrack::Midi: {
-			qtractorMidiClip *pMidiClip
-				= static_cast<qtractorMidiClip *> (pClip);
-			if (pMidiClip)
-				pNewClip = new qtractorMidiClip(*pMidiClip);
-			break;
-		}
-		default:
-			break;
-		}
-		// Add the new pasted clip...
-		if (pNewClip) {
-			pNewClip->setClipStart(iClipStart);
-			pNewClip->setClipOffset(pClipItem->clipOffset);
-			pNewClip->setClipLength(pClipItem->clipLength);
-			pNewClip->setFadeInLength(pClipItem->fadeInLength);
-			pNewClip->setFadeOutLength(pClipItem->fadeOutLength);
-			pClipCommand->addClip(pNewClip, pTrack);
-			// If track's new it will need a name...
-			if (bAddTrack && iTrackClip == 0)
-				pTrack->setTrackName(pClip->clipName());
-			iTrackClip++;
-		}
+		// Set to repeat...
+		m_iDraggingX += dx;
 	}
 
 	// May reset selection, yep.

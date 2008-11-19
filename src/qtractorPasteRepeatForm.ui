@@ -25,8 +25,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>291</width>
-    <height>164</height>
+    <width>260</width>
+    <height>160</height>
    </rect>
   </property>
   <property name="focusPolicy" >
@@ -83,12 +83,12 @@
        </spacer>
       </item>
       <item row="1" column="0" >
-       <widget class="QCheckBox" name="RepeatPeriodCheckBox" >
-        <property name="toolTip" >
-         <string>Repeat period</string>
-        </property>
+       <widget class="QLabel" name="RepeatPeriodTextLabel" >
         <property name="text" >
          <string>&amp;Period:</string>
+        </property>
+        <property name="buddy" >
+         <cstring>RepeatPeriodSpinBox</cstring>
         </property>
        </widget>
       </item>
@@ -126,29 +126,6 @@
          </property>
         </item>
        </widget>
-      </item>
-      <item row="2" column="0" >
-       <widget class="QCheckBox" name="RepeatSnapCheckBox" >
-        <property name="toolTip" >
-         <string>Repeat snap/beat</string>
-        </property>
-        <property name="text" >
-         <string>&amp;Snap/Beat</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="2" colspan="3" >
-       <spacer>
-        <property name="orientation" >
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0" >
-         <size>
-          <width>110</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
       </item>
      </layout>
     </widget>
@@ -204,10 +181,8 @@
  </customwidgets>
  <tabstops>
   <tabstop>RepeatCountSpinBox</tabstop>
-  <tabstop>RepeatPeriodCheckBox</tabstop>
   <tabstop>RepeatPeriodSpinBox</tabstop>
   <tabstop>RepeatFormatComboBox</tabstop>
-  <tabstop>RepeatSnapCheckBox</tabstop>
   <tabstop>OkPushButton</tabstop>
   <tabstop>CancelPushButton</tabstop>
  </tabstops>
