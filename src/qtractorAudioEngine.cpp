@@ -1597,13 +1597,12 @@ bool qtractorAudioBus::open (void)
 	}
 
 	// Plugin lists need some buffer (re)allocation too...
-	unsigned int iSampleRate = pAudioEngine->sampleRate();
 	if (m_pIPluginList) {
-		m_pIPluginList->setBuffer(m_iChannels, iBufferSize, iSampleRate);
+		updatePluginList(m_pIPluginList);
 		m_pIPluginList->setName(QObject::tr("%1 In").arg(busName()));
 	}
 	if (m_pOPluginList) {
-		m_pOPluginList->setBuffer(m_iChannels, iBufferSize, iSampleRate);
+		updatePluginList(m_pOPluginList);
 		m_pOPluginList->setName(QObject::tr("%1 Out").arg(busName()));
 	}
 
@@ -1948,6 +1947,23 @@ qtractorPluginList *qtractorAudioBus::pluginList_out (void) const
 	return m_pOPluginList;
 }
 
+
+// Initialize plugin-lists properly.
+void qtractorAudioBus::updatePluginList ( qtractorPluginList *pPluginList )
+{
+	// Sanity checks...
+	if (pPluginList == NULL)
+		return;
+
+	qtractorAudioEngine *pAudioEngine
+		= static_cast<qtractorAudioEngine *> (engine());
+	if (pAudioEngine == NULL)
+		return;
+	
+	// Set plugin-list buffer alright...
+	pPluginList->setBuffer(m_iChannels,
+		pAudioEngine->bufferSize(), pAudioEngine->sampleRate(), false);
+}
 
 
 // Retrieve all current JACK connections for a given bus mode interface;

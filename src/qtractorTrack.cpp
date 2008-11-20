@@ -244,9 +244,17 @@ bool qtractorTrack::open (void)
 		qtractorMidiManager *pMidiManager = m_pPluginList->midiManager();
 		if (pMidiManager)
 			pAudioBus = pMidiManager->audioOutputBus();
-		if (pAudioBus == NULL)
-			pAudioBus = static_cast<qtractorAudioBus *> (
-				pAudioEngine->buses().first());
+		if (pAudioBus == NULL) {
+			// Output bus gets to be the first available output bus...
+			for (qtractorBus *pBus = (pAudioEngine->buses()).first();
+					pBus; pBus = pBus->next()) {
+				if (pBus->busMode() & qtractorBus::Output) {
+					pAudioBus = static_cast<qtractorAudioBus *> (pBus);
+					break;
+				}
+			}
+		}
+		// Set plugin-list buffer alright...
 		if (pAudioBus) {
 			m_pPluginList->setBuffer(pAudioBus->channels(),
 				pAudioEngine->bufferSize(), pAudioEngine->sampleRate(), true);

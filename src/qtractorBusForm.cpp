@@ -285,6 +285,17 @@ void qtractorBusForm::showBus ( qtractorBus *pBus )
 		case qtractorTrack::Midi:
 		{
 			sBusTitle += tr("MIDI");
+			qtractorMidiBus *pMidiBus
+				= static_cast<qtractorMidiBus *> (pBus);
+			if (pMidiBus) {
+				// Set plugin lists...
+				if (pMidiBus->busMode() & qtractorBus::Input)
+					m_ui.InputPluginListView->setPluginList(
+						pMidiBus->pluginList_in());
+				if (pMidiBus->busMode() & qtractorBus::Output)
+					m_ui.OutputPluginListView->setPluginList(
+						pMidiBus->pluginList_out());
+			}
 			break;
 		}
 		case qtractorTrack::None:

@@ -303,15 +303,20 @@ void qtractorMixerStrip::initMixerStrip (void)
 				= static_cast<qtractorMidiMonitor *> (m_pTrack->monitor());
 			m_pPluginListView->setPluginList(m_pTrack->pluginList());
 			m_pPluginListView->setEnabled(true);
-		} else if (m_pBus) {
+		} else {
 			pMidiBus = static_cast<qtractorMidiBus *> (m_pBus);
 			if (pMidiBus) {
-				if (m_busMode & qtractorBus::Input)
+				if (m_busMode & qtractorBus::Input) {
+					m_pPluginListView->setPluginList(
+						pMidiBus->pluginList_in());
 					pMidiMonitor = pMidiBus->midiMonitor_in();
-				else
+				} else {
+					m_pPluginListView->setPluginList(
+						pMidiBus->pluginList_out());
 					pMidiMonitor = pMidiBus->midiMonitor_out();
+				}
 			}
-			m_pPluginListView->setEnabled(false);
+			m_pPluginListView->setEnabled(true);
 		}
 		// Have we a MIDI monitor/meter?...
 		if (pMidiMonitor) {
@@ -531,7 +536,16 @@ void qtractorMixerStrip::setBus ( qtractorBus *pBus )
 		break;
 	}
 	case qtractorTrack::Midi: {
-		m_pPluginListView->setEnabled(false);
+		qtractorMidiBus *pMidiBus
+			= static_cast<qtractorMidiBus *> (m_pBus);
+		if (pMidiBus) {
+			if (m_busMode & qtractorBus::Input) {
+				m_pPluginListView->setPluginList(pMidiBus->pluginList_in());
+			} else {
+				m_pPluginListView->setPluginList(pMidiBus->pluginList_out());
+			}
+		}
+		m_pPluginListView->setEnabled(true);
 		break;
 	}
 	case qtractorTrack::None:

@@ -305,6 +305,10 @@ public:
 	qtractorMidiMonitor *midiMonitor_in()  const;
 	qtractorMidiMonitor *midiMonitor_out() const;
 
+	// Plugin-chain accessors.
+	qtractorPluginList *pluginList_in()  const;
+	qtractorPluginList *pluginList_out() const;
+
 	// Retrieve/restore client:port connections.
 	// return the effective number of connection attempts.
 	int updateConnects(BusMode busMode,
@@ -335,6 +339,9 @@ protected:
 	// Bus mode change event.
 	void updateBusMode();
 
+	// Set plugin-list buffers properly.
+	void updatePluginList(qtractorPluginList *pPluginList);
+
 	// Document instrument map methods.
 	bool loadMidiMap(qtractorSessionDocument *pDocument,
 		QDomElement *pElement);
@@ -349,6 +356,10 @@ private:
 	// Specific monitor instances.
 	qtractorMidiMonitor *m_pIMidiMonitor;
 	qtractorMidiMonitor *m_pOMidiMonitor;
+
+	// Plugin-chain instances.
+	qtractorPluginList *m_pIPluginList;
+	qtractorPluginList *m_pOPluginList;
 
 	// Channel patch mapper.
 	QHash<unsigned short, Patch> m_patches;

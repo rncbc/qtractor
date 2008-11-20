@@ -932,17 +932,27 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 			// Input monitoring...
 			if (pMidiBus->midiMonitor_in())
 				pMidiBus->midiMonitor_in()->enqueue(type, data2);
+			// Do it for the MIDI input plugins too...
+			if (pMidiBus->pluginList_in()
+				&& (pMidiBus->pluginList_in())->midiManager())
+				((pMidiBus->pluginList_in())->midiManager())->direct(pEv);
 			// Output monitoring on passthru...
-			if (pMidiBus->midiMonitor_out() && pMidiBus->isPassthru()) {
-				// MIDI-thru: same event redirected...
-				snd_seq_ev_set_source(pEv, pMidiBus->alsaPort());
-				snd_seq_ev_set_subs(pEv);
-				snd_seq_ev_set_direct(pEv);
-				snd_seq_event_output(m_pAlsaSeq, pEv);
-			//	snd_seq_drain_output(m_pAlsaSeq);
-				iDrainOutput++;
-				// Done with MIDI-thru.
-				pMidiBus->midiMonitor_out()->enqueue(type, data2);
+			if (pMidiBus->isPassthru()) {
+				// Do it for the MIDI output plugins too...
+				if (pMidiBus->pluginList_out()
+					&& (pMidiBus->pluginList_out())->midiManager())
+					((pMidiBus->pluginList_out())->midiManager())->direct(pEv);
+				if (pMidiBus->midiMonitor_out()) {
+					// MIDI-thru: same event redirected...
+					snd_seq_ev_set_source(pEv, pMidiBus->alsaPort());
+					snd_seq_ev_set_subs(pEv);
+					snd_seq_ev_set_direct(pEv);
+					snd_seq_event_output(m_pAlsaSeq, pEv);
+				//	snd_seq_drain_output(m_pAlsaSeq);
+					iDrainOutput++;
+					// Done with MIDI-thru.
+					pMidiBus->midiMonitor_out()->enqueue(type, data2);
+				}
 			}
 		}
 	}
@@ -1058,13 +1068,20 @@ void qtractorMidiEngine::enqueue ( qtractorTrack *pTrack,
 		= static_cast<qtractorMidiMonitor *> (pTrack->monitor());
 	if (pMidiMonitor)
 		pMidiMonitor->enqueue(pEvent->type(), pEvent->value(), tick);
+
 	// MIDI bus monitoring...
 	if (pMidiBus->midiMonitor_out())
 		pMidiBus->midiMonitor_out()->enqueue(pEvent->type(), pEvent->value(), tick);
 
-	// Do it for the MIDI plugins too...
+	// Do it for the MIDI track plugins too...
 	if ((pTrack->pluginList())->midiManager())
 		(pTrack->pluginList())->midiManager()->queued(&ev);
+
+	// And for the MIDI output plugins as well...
+	if (pMidiBus->pluginList_out()
+		&& (pMidiBus->pluginList_out())->midiManager())
+		((pMidiBus->pluginList_out())->midiManager())->queued(&ev);
+
 }
 
 
@@ -2187,15 +2204,21 @@ qtractorMidiBus::qtractorMidiBus ( qtractorMidiEngine *pMidiEngine,
 {
 	m_iAlsaPort = -1;
 
-	if (busMode & qtractorBus::Input)
+	if (busMode & qtractorBus::Input) {
 		m_pIMidiMonitor = new qtractorMidiMonitor(pMidiEngine->session());
-	else
+		m_pIPluginList  = new qtractorPluginList(0, 0, 0, true);
+	} else {
 		m_pIMidiMonitor = NULL;
+		m_pIPluginList  = NULL;
+	}
 
-	if (busMode & qtractorBus::Output)
+	if (busMode & qtractorBus::Output) {
 		m_pOMidiMonitor = new qtractorMidiMonitor(pMidiEngine->session());
-	else
+		m_pOPluginList  = new qtractorPluginList(0, 0, 0, true);
+	} else {
 		m_pOMidiMonitor = NULL;
+		m_pOPluginList  = NULL;
+	}
 }
 
 // Destructor.
@@ -2207,6 +2230,11 @@ qtractorMidiBus::~qtractorMidiBus (void)
 		delete m_pIMidiMonitor;
 	if (m_pOMidiMonitor)
 		delete m_pOMidiMonitor;
+
+	if (m_pIPluginList)
+		delete m_pIPluginList;
+	if (m_pOPluginList)
+		delete m_pOPluginList;
 }
 
 
@@ -2257,6 +2285,16 @@ bool qtractorMidiBus::open (void)
 
 	if (snd_seq_set_port_info(pMidiEngine->alsaSeq(), m_iAlsaPort, pinfo) < 0)
 		return false;
+
+	// Plugin lists need some buffer (re)allocation too...
+	if (m_pIPluginList) {
+		updatePluginList(m_pIPluginList);
+		m_pIPluginList->setName(QObject::tr("%1 In").arg(busName()));
+	}
+	if (m_pOPluginList) {
+		updatePluginList(m_pOPluginList);
+		m_pOPluginList->setName(QObject::tr("%1 Out").arg(busName()));
+	}
 
 	// Done.
 	return true;
@@ -2590,6 +2628,56 @@ qtractorMidiMonitor *qtractorMidiBus::midiMonitor_in (void) const
 qtractorMidiMonitor *qtractorMidiBus::midiMonitor_out (void) const
 {
 	return m_pOMidiMonitor;
+}
+
+
+// Plugin-chain accessors.
+qtractorPluginList *qtractorMidiBus::pluginList_in (void) const
+{
+	return m_pIPluginList;
+}
+
+qtractorPluginList *qtractorMidiBus::pluginList_out (void) const
+{
+	return m_pOPluginList;
+}
+
+
+// Initialize plugin-lists properly.
+void qtractorMidiBus::updatePluginList ( qtractorPluginList *pPluginList )
+{
+	// Sanity checks...
+	if (pPluginList == NULL)
+		return;
+
+	qtractorSession *pSession = engine()->session();
+	if (pSession == NULL)
+		return;
+
+	qtractorAudioEngine *pAudioEngine = pSession->audioEngine();
+	if (pAudioEngine == NULL)
+		return;
+	
+	// Get audio bus as for the plugin list...
+	qtractorAudioBus *pAudioBus = NULL;
+	qtractorMidiManager *pMidiManager = pPluginList->midiManager();
+	if (pMidiManager)
+		pAudioBus = pMidiManager->audioOutputBus();
+	if (pAudioBus == NULL) {
+		// Output bus gets to be the first available output bus...
+		for (qtractorBus *pBus = (pAudioEngine->buses()).first();
+				pBus; pBus = pBus->next()) {
+			if (pBus->busMode() & qtractorBus::Output) {
+				pAudioBus = static_cast<qtractorAudioBus *> (pBus);
+				break;
+			}
+		}
+	}
+	// Set plugin-list buffer alright...
+	if (pAudioBus) {
+		pPluginList->setBuffer(pAudioBus->channels(),
+			pAudioEngine->bufferSize(), pAudioEngine->sampleRate(), true);
+	}
 }
 
 

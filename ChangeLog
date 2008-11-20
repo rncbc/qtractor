@@ -5,9 +5,13 @@ ChangeLog
 
 CVS HEAD
 
+- All MIDI buses may now have plugins inserted, so that
+  multi-timbral synth/sampler plugins may now get properly
+  driven. (EXPERIMENTAL)
+
 - MIDI track plugin's dedicated audio output bus may now
   be effective, as it seems, good old master audio output
-  bus was being used, no matter what.
+  bus was being used, no matter what. (EXPERIMENTAL)
 
 - Paste-repeat command has been introduced, now allowing to
   replicate and concatenate the clipboard contents over the

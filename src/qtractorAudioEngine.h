@@ -276,6 +276,9 @@ protected:
 	// Bus mode change event.
 	void updateBusMode();
 
+	// Set plugin-list buffers properly.
+	void updatePluginList(qtractorPluginList *pPluginList);
+
 private:
 
 	// Instance variables.
