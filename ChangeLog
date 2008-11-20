@@ -5,6 +5,10 @@ ChangeLog
 
 CVS HEAD
 
+- MIDI track plugin's dedicated audio output bus may now
+  be effective, as it seems, good old master audio output
+  bus was being used, no matter what.
+
 - Paste-repeat command has been introduced, now allowing to
   replicate and concatenate the clipboard contents over the
   time-line, with a given repeat-count and optional period

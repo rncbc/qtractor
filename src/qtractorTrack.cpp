@@ -27,9 +27,10 @@
 
 #include "qtractorSessionDocument.h"
 #include "qtractorAudioEngine.h"
-#include "qtractorMidiEngine.h"
 #include "qtractorAudioMonitor.h"
+#include "qtractorMidiEngine.h"
 #include "qtractorMidiMonitor.h"
+#include "qtractorMidiBuffer.h"
 #include "qtractorInstrument.h"
 #include "qtractorPlugin.h"
 #include "qtractorMixer.h"
@@ -234,12 +235,19 @@ bool qtractorTrack::open (void)
 	case qtractorTrack::Midi: {
 		qtractorMidiBus *pMidiBus
 			= static_cast<qtractorMidiBus *> (m_pOutputBus);
-		// FIXME: Master audio bus as reference, still...
-		qtractorAudioBus *pAudioBus =
-			static_cast<qtractorAudioBus *> (pAudioEngine->buses().first());
-		if (pMidiBus && pAudioBus) {
+		if (pMidiBus) {
 			m_pMonitor = new qtractorMidiMonitor(m_pSession,
 				m_props.gain, m_props.panning);
+		}
+		// Get audio bus as for the plugin list...
+		qtractorAudioBus *pAudioBus = NULL;
+		qtractorMidiManager *pMidiManager = m_pPluginList->midiManager();
+		if (pMidiManager)
+			pAudioBus = pMidiManager->audioOutputBus();
+		if (pAudioBus == NULL)
+			pAudioBus = static_cast<qtractorAudioBus *> (
+				pAudioEngine->buses().first());
+		if (pAudioBus) {
 			m_pPluginList->setBuffer(pAudioBus->channels(),
 				pAudioEngine->bufferSize(), pAudioEngine->sampleRate(), true);
 		}
