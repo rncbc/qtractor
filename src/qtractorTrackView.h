@@ -115,10 +115,7 @@ public:
 	bool isClipSelected() const;
 
 	// Whether there's any clip on clipboard.
-	bool isClipboardEmpty() const;
-
-	// Clipboard cleaner.
-	void clearClipboard();
+	static bool isClipboard();
 
 	// Paste from clipboard (start).
 	void pasteClipboard(
@@ -354,11 +351,13 @@ private:
 		unsigned long fadeOutLength;
 	};
 
-	// The local clipboard stuff.
-	struct ClipBoard
+	// The local clipboard stuff (singleton).
+	static struct ClipBoard
 	{
 		// Clipboard constructor.
 		ClipBoard() : singleTrack(NULL) {}
+		// Destructor.
+		~ClipBoard() { clear(); }
 		// Clipboard stuffer method.
 		void addItem(qtractorClip *pClip, const QRect& rect,
 			unsigned long iClipStart, unsigned long iClipOffset,
@@ -370,7 +369,7 @@ private:
 		qtractorTrack    *singleTrack;
 		QRect             rect;
 
-	} m_clipboard;
+	} g_clipboard;
 
 	// Playhead and edit frame positioning.
 	unsigned long m_iPlayHead;

@@ -3440,11 +3440,9 @@ void qtractorMainForm::stabilizeForm (void)
 
 	m_ui.editCutAction->setEnabled(bSelected);
 	m_ui.editCopyAction->setEnabled(bSelected);
-	m_ui.editPasteAction->setEnabled(
-		(m_pTracks && !m_pTracks->isClipboardEmpty())
-			|| QApplication::clipboard()->mimeData()->hasUrls());
-	m_ui.editPasteRepeatAction->setEnabled(
-		m_pTracks && !m_pTracks->isClipboardEmpty());
+	m_ui.editPasteAction->setEnabled(qtractorTrackView::isClipboard()
+		|| QApplication::clipboard()->mimeData()->hasUrls());
+	m_ui.editPasteRepeatAction->setEnabled(qtractorTrackView::isClipboard());
 	m_ui.editDeleteAction->setEnabled(bSelected);
 
 	m_ui.editSelectAllAction->setEnabled(iSessionLength > 0);

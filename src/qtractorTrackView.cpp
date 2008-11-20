@@ -68,6 +68,13 @@
 
 
 //----------------------------------------------------------------------------
+// qtractorTrackView::ClipBoard - Local clipaboard singleton.
+
+// Singleton declaration.
+qtractorTrackView::ClipBoard qtractorTrackView::g_clipboard;
+
+
+//----------------------------------------------------------------------------
 // qtractorTrackView -- Track view widget.
 
 // Constructor.
@@ -162,7 +169,6 @@ qtractorTrackView::qtractorTrackView ( qtractorTracks *pTracks,
 qtractorTrackView::~qtractorTrackView (void)
 {
 	clear();
-	clearClipboard();
 
 	delete m_pClipSelect;
 }
@@ -171,7 +177,7 @@ qtractorTrackView::~qtractorTrackView (void)
 // Track view state reset.
 void qtractorTrackView::clear (void)
 {
-	m_clipboard.clear();
+	g_clipboard.clear();
 
 	m_pClipSelect->clear();
 
@@ -2505,17 +2511,10 @@ bool qtractorTrackView::isClipSelected (void) const
 }
 
 
-// Whether there's any clip on clipboard.
-bool qtractorTrackView::isClipboardEmpty (void) const
+// Whether there's any clip on clipboard. (static)
+bool qtractorTrackView::isClipboard (void)
 {
-	return (m_clipboard.items.count() < 1);
-}
-
-
-// Clear clipboard.
-void qtractorTrackView::clearClipboard (void)
-{
-	m_clipboard.clear();
+	return (g_clipboard.items.count() > 0);
 }
 
 
@@ -2577,9 +2576,9 @@ void qtractorTrackView::executeClipSelect ( qtractorTrackView::Command cmd )
 	// Reset clipboard...
 	bool bClipboard = (cmd == Cut || cmd == Copy);
 	if (bClipboard) {
-		m_clipboard.clear();
-		m_clipboard.singleTrack = m_pClipSelect->singleTrack();
-		m_clipboard.rect = m_pClipSelect->rect();
+		g_clipboard.clear();
+		g_clipboard.singleTrack = m_pClipSelect->singleTrack();
+		g_clipboard.rect = m_pClipSelect->rect();
 		QApplication::clipboard()->clear();
 	}
 
@@ -2610,7 +2609,7 @@ void qtractorTrackView::executeClipSelect ( qtractorTrackView::Command cmd )
 			if (iSelectEnd < iClipEnd) {
 				// -- Middle region...
 				if (bClipboard) {
-					m_clipboard.addItem(pClip,
+					g_clipboard.addItem(pClip,
 						pClipItem->rectClip,
 						iSelectStart,
 						iClipOffset + iSelectOffset,
@@ -2637,7 +2636,7 @@ void qtractorTrackView::executeClipSelect ( qtractorTrackView::Command cmd )
 			} else {
 				// -- Right region...
 				if (bClipboard) {
-					m_clipboard.addItem(pClip,
+					g_clipboard.addItem(pClip,
 						pClipItem->rectClip,
 						iSelectStart,
 						iClipOffset + iSelectOffset,
@@ -2656,7 +2655,7 @@ void qtractorTrackView::executeClipSelect ( qtractorTrackView::Command cmd )
 		if (iSelectEnd < iClipEnd) {
 			// -- Left region...
 			if (bClipboard) {
-				m_clipboard.addItem(pClip,
+				g_clipboard.addItem(pClip,
 					pClipItem->rectClip,
 					iClipStart,
 					iClipOffset,
@@ -2672,7 +2671,7 @@ void qtractorTrackView::executeClipSelect ( qtractorTrackView::Command cmd )
 		} else {
 			// -- Whole clip...
 			if (bClipboard) {
-				m_clipboard.addItem(pClip,
+				g_clipboard.addItem(pClip,
 					pClipItem->rectClip,
 					iClipStart,
 					iClipOffset,
@@ -2702,11 +2701,11 @@ unsigned long qtractorTrackView::pastePeriod (void) const
 	if (pSession == NULL)
 		return 0;
 
-	if (m_clipboard.items.count() < 1)
+	if (g_clipboard.items.count() < 1)
 		return 0;
 
 	return pSession->frameSnap(
-		pSession->frameFromPixel(m_clipboard.rect.width()));
+		pSession->frameFromPixel(g_clipboard.rect.width()));
 }
 
 
@@ -2728,7 +2727,7 @@ void qtractorTrackView::pasteClipboard (
 		qtractorScrollView::viewport()->mapFromGlobal(QCursor::pos()));
 
 	// Check if anythings really on clipboard...
-	if (m_clipboard.items.count() < 1) {
+	if (g_clipboard.items.count() < 1) {
 		// System clipboard?
 		QClipboard *pClipboard = QApplication::clipboard();
 		if (pClipboard && (pClipboard->mimeData())->hasUrls()) {
@@ -2759,13 +2758,13 @@ void qtractorTrackView::pasteClipboard (
 	int x0 = 0;
 	int dx = (m_iPastePeriod > 0
 		? pSession->pixelFromFrame(m_iPastePeriod)
-		: m_clipboard.rect.width());
+		: g_clipboard.rect.width());
 
 	// Copy clipboard items to floating selection;
 	// adjust clip widths/lengths just in case time
 	// scale (horizontal zoom) has been changed... 
 	//
-	QListIterator<ClipItem *> iter(m_clipboard.items);
+	QListIterator<ClipItem *> iter(g_clipboard.items);
 	for (unsigned short i = 0; i < m_iPasteCount; ++i) {
 		iter.toFront();
 		while (iter.hasNext()) {
@@ -2906,7 +2905,7 @@ void qtractorTrackView::pasteClipSelect ( qtractorTrack *pTrack )
 		return;
 
 	// Check if there's anything really on clipboard...
-	if (m_clipboard.items.count() < 1)
+	if (g_clipboard.items.count() < 1)
 		return;
 
 	// We'll need this...
@@ -2933,10 +2932,10 @@ void qtractorTrackView::pasteClipSelect ( qtractorTrack *pTrack )
 
 	int dx = (m_iPastePeriod > 0
 		? pSession->pixelFromFrame(m_iPastePeriod)
-		: m_clipboard.rect.width());
+		: g_clipboard.rect.width());
 
 	// We'll build a composite command...
-	QListIterator<ClipItem *> iter(m_clipboard.items);
+	QListIterator<ClipItem *> iter(g_clipboard.items);
 	for (unsigned short i = 0; i < m_iPasteCount; ++i) {
 		// Paste iteration...
 		int  iTrackClip = 0;

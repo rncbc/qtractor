@@ -875,13 +875,6 @@ bool qtractorTracks::isClipSelected (void) const
 }
 
 
-// Whether there's any clip on clipboard.
-bool qtractorTracks::isClipboardEmpty (void) const
-{
-	return m_pTrackView->isClipboardEmpty();
-}
-
-
 // Clipboard methods.
 void qtractorTracks::cutClipboard (void)
 {

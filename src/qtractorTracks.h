@@ -88,9 +88,6 @@ public:
 	// Whether there's any clip currently selected.
 	bool isClipSelected() const;
 
-	// Whether there's any clip on clipboard.
-	bool isClipboardEmpty() const;
-
 	// Clipboard methods.
 	void cutClipboard();
 	void copyClipboard();
