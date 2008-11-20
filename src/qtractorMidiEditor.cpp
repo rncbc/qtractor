@@ -967,9 +967,8 @@ void qtractorMidiEditor::cutClipboard (void)
 	QListIterator<qtractorMidiEditSelect::Item *> iter(m_select.items());
 	while (iter.hasNext()) {
 		qtractorMidiEditSelect::Item *pItem = iter.next();
-		qtractorMidiEvent *pEvent = pItem->event;
-		g_clipboard.items.append(new qtractorMidiEvent(*pEvent));
-		pEditCommand->removeEvent(pEvent);
+		g_clipboard.items.append(new qtractorMidiEvent(*(pItem->event)));
+		pEditCommand->removeEvent(pItem->event);
 	}
 
 	// Make it as an undoable command...
@@ -990,16 +989,39 @@ void qtractorMidiEditor::copyClipboard (void)
 
 	QListIterator<qtractorMidiEditSelect::Item *> iter(m_select.items());
 	while (iter.hasNext()) {
-		qtractorMidiEvent *pEvent = iter.next()->event;
-		g_clipboard.items.append(new qtractorMidiEvent(*pEvent));
+		qtractorMidiEditSelect::Item *pItem = iter.next();
+		g_clipboard.items.append(new qtractorMidiEvent(*(pItem->event)));
 	}
 
 	selectionChangeNotify();
 }
 
 
+// Retrieve current paste period.
+// (as from current clipboard width)
+unsigned long qtractorMidiEditor::pastePeriod (void) const
+{
+	unsigned long t0 = 0;
+	unsigned long t1 = 0;
+
+	QListIterator<qtractorMidiEvent *> iter(g_clipboard.items);
+	while (iter.hasNext()) {
+		qtractorMidiEvent *pEvent = iter.next();
+		unsigned long t2 = pEvent->time();
+		if (t0 > t2 || t0 == 0)
+			t0 = t2;
+		t2 += pEvent->duration();
+		if (t1 < t2)
+			t1 = t2;
+	}
+
+	return m_pTimeScale->frameFromTick(t1 - t0);
+}
+
+
 // Paste from clipboard.
-void qtractorMidiEditor::pasteClipboard (void)
+void qtractorMidiEditor::pasteClipboard (
+	unsigned short iPasteCount, unsigned long iPastePeriod )
 {
 	if (m_pMidiClip == NULL)
 		return;
@@ -1017,6 +1039,16 @@ void qtractorMidiEditor::pasteClipboard (void)
 	m_select.clear();
 	resetDragState(pScrollView);
 
+	// Multi-paste period...
+	if (iPastePeriod < 1)
+		iPastePeriod = pastePeriod();
+		
+	int x0 = 0;
+	int dx = m_pTimeScale->pixelFromFrame(iPastePeriod);
+
+	unsigned long t0 = 0;
+	unsigned long dt = m_pTimeScale->tickFromFrame(iPastePeriod);
+	
 	// This is the edit-view spacifics...
 	int h1 = m_pEditList->itemHeight();
 	int ch = m_pEditView->contentsHeight(); // + 1;
@@ -1027,41 +1059,46 @@ void qtractorMidiEditor::pasteClipboard (void)
 		y0 = ((y0 >> 3) << 2);
 
 	QListIterator<qtractorMidiEvent *> iter(g_clipboard.items);
-	while (iter.hasNext()) {
-		qtractorMidiEvent *pEvent = iter.next();
-		// Common event coords...
-		int y;
-		int x  = m_pTimeScale->pixelFromTick(pEvent->time());
-		int w1 = m_pTimeScale->pixelFromTick(pEvent->duration()) + 1;
-		if (w1 < 5)
-			w1 = 5;
-		// View item...
-		QRect rectView;
-		if (pEvent->type() == m_pEditView->eventType()) {
-			y = ch - h1 * (pEvent->note() + 1);
-			rectView.setRect(x, y, w1, h1);
-		}
-		// Event item...
-		QRect rectEvent;
-		if (pEvent->type() == m_pEditEvent->eventType()) {
-			if (pEvent->type() == qtractorMidiEvent::PITCHBEND)
-				y = y0 - (y0 * pEvent->pitchBend()) / 8192;
-			else
-				y = y0 - (y0 * pEvent->value()) / 128;
-			if (!m_bNoteDuration)
+	for (unsigned short i = 0; i < iPasteCount; ++i) {
+		iter.toFront();
+		while (iter.hasNext()) {
+			qtractorMidiEvent *pEvent = iter.next();
+			// Common event coords...
+			int y;
+			int x  = m_pTimeScale->pixelFromTick(pEvent->time()) + x0;
+			int w1 = m_pTimeScale->pixelFromTick(pEvent->duration()) + 1;
+			if (w1 < 5)
 				w1 = 5;
-			if (y < y0)
-				rectEvent.setRect(x, y, w1, y0 - y);
-			else if (y > y0)
-				rectEvent.setRect(x, y0, w1, y - y0);
-			else
-				rectEvent.setRect(x, y0 - 2, w1, 4);
+			// View item...
+			QRect rectView;
+			if (pEvent->type() == m_pEditView->eventType()) {
+				y = ch - h1 * (pEvent->note() + 1);
+				rectView.setRect(x, y, w1, h1);
+			}
+			// Event item...
+			QRect rectEvent;
+			if (pEvent->type() == m_pEditEvent->eventType()) {
+				if (pEvent->type() == qtractorMidiEvent::PITCHBEND)
+					y = y0 - (y0 * pEvent->pitchBend()) / 8192;
+				else
+					y = y0 - (y0 * pEvent->value()) / 128;
+				if (!m_bNoteDuration)
+					w1 = 5;
+				if (y < y0)
+					rectEvent.setRect(x, y, w1, y0 - y);
+				else if (y > y0)
+					rectEvent.setRect(x, y0, w1, y - y0);
+				else
+					rectEvent.setRect(x, y0 - 2, w1, 4);
+			}
+			m_select.addItem(pEvent, rectEvent, rectView, t0);
+			if (m_pEventDrag == NULL) {
+				m_pEventDrag = pEvent;
+				m_rectDrag = (bEditView ? rectView : rectEvent);
+			}
 		}
-		m_select.addItem(pEvent, rectEvent, rectView);
-		if (m_pEventDrag == NULL) {
-			m_pEventDrag = pEvent;
-			m_rectDrag = (bEditView ? rectView : rectEvent);
-		}
+		x0 += dx;
+		t0 += dt;
 	}
 
 	// We'll start a brand new floating state...
@@ -1099,8 +1136,10 @@ void qtractorMidiEditor::deleteSelect (void)
 		= new qtractorMidiEditCommand(m_pMidiClip, tr("delete"));
 
 	QListIterator<qtractorMidiEditSelect::Item *> iter(m_select.items());
-	while (iter.hasNext())
-		pEditCommand->removeEvent((iter.next())->event);
+	while (iter.hasNext()) {
+		qtractorMidiEditSelect::Item *pItem = iter.next();
+		pEditCommand->removeEvent(pItem->event);
+	}
 
 	m_pCommands->exec(pEditCommand);
 }
@@ -1995,7 +2034,8 @@ void qtractorMidiEditor::executeDragMove ( qtractorScrollView *pScrollView,
 
 	QListIterator<qtractorMidiEditSelect::Item *> iter(m_select.items());
 	while (iter.hasNext()) {
-		qtractorMidiEvent *pEvent = (iter.next())->event;
+		qtractorMidiEditSelect::Item *pItem = iter.next();
+		qtractorMidiEvent *pEvent = pItem->event;
 		int iNote = int(pEvent->note()) + iNoteDelta;
 		if (iNote < 0)
 			iNote = 0;
@@ -2059,7 +2099,8 @@ void qtractorMidiEditor::executeDragResize ( qtractorScrollView *pScrollView,
 	int iValue;
 	QListIterator<qtractorMidiEditSelect::Item *> iter(m_select.items());
 	while (iter.hasNext()) {
-		qtractorMidiEvent *pEvent = (iter.next())->event;
+		qtractorMidiEditSelect::Item *pItem = iter.next();
+		qtractorMidiEvent *pEvent = pItem->event;
 		switch (m_resizeMode) {
 		case ResizeNoteLeft:
 			iTime = long(pEvent->time()) + iTimeDelta;
@@ -2175,15 +2216,15 @@ void qtractorMidiEditor::executeDragPaste ( qtractorScrollView *pScrollView,
 
 	QListIterator<qtractorMidiEditSelect::Item *> iter(m_select.items());
 	while (iter.hasNext()) {
-		qtractorMidiEvent *pEvent
-			= new qtractorMidiEvent(*(iter.next())->event);
+		qtractorMidiEditSelect::Item *pItem = iter.next();
+		qtractorMidiEvent *pEvent = new qtractorMidiEvent(*(pItem->event));
 		int iNote = int(pEvent->note()) + iNoteDelta;
 		if (iNote < 0)
 			iNote = 0;
 		if (iNote > 127)
 			iNote = 127;
 		pEvent->setNote(iNote);
-		long iTime = long(pEvent->time()) + iTimeDelta;
+		long iTime = long(pEvent->time() + pItem->delta) + iTimeDelta;
 		if (iTime < 0)
 			iTime = 0;
 		pEvent->setTime(iTime);

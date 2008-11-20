@@ -166,7 +166,12 @@ public:
 	// Clipboard commands.
 	void cutClipboard();
 	void copyClipboard();
-	void pasteClipboard();
+	void pasteClipboard(
+		unsigned short iPasteCount = 1, unsigned long iPastePeriod = 0);
+
+	// Retrieve current paste period.
+	// (as from current clipboard width)
+	unsigned long pastePeriod() const;
 
 	// Execute event removal.
 	void deleteSelect();

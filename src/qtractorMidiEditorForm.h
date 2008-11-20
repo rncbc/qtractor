@@ -99,6 +99,7 @@ public slots:
 	void editCut();
 	void editCopy();
 	void editPaste();
+	void editPasteRepeat();
 	void editDelete();
 
 	void editSelectNone();

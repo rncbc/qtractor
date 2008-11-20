@@ -99,6 +99,7 @@
     <addaction name="editCutAction" />
     <addaction name="editCopyAction" />
     <addaction name="editPasteAction" />
+    <addaction name="editPasteRepeatAction" />
     <addaction name="separator" />
     <addaction name="editDeleteAction" />
     <addaction name="separator" />
@@ -195,6 +196,7 @@
    <addaction name="editCutAction" />
    <addaction name="editCopyAction" />
    <addaction name="editPasteAction" />
+   <addaction name="editPasteRepeatAction" />
    <addaction name="separator" />
    <addaction name="editDeleteAction" />
    <addaction name="separator" />
@@ -538,6 +540,23 @@
    </property>
    <property name="shortcut" >
     <string>Ctrl+V</string>
+   </property>
+  </action>
+  <action name="editPasteRepeatAction" >
+   <property name="text" >
+    <string>Past&amp;e Repeat...</string>
+   </property>
+   <property name="iconText" >
+    <string>Paste Repeat</string>
+   </property>
+   <property name="toolTip" >
+    <string>Paste repeat</string>
+   </property>
+   <property name="statusTip" >
+    <string>Paste/repeat local clipboard contents into the current MIDI clip</string>
+   </property>
+   <property name="shortcut" >
+    <string>Ctrl+Shift+V</string>
    </property>
   </action>
   <action name="editDeleteAction" >

@@ -5,8 +5,11 @@ ChangeLog
 
 CVS HEAD
 
-- Paste-repeat command has been implemented (see Edit/Paste
-  Repeat...) (EXPERIMENTAL).
+- Paste-repeat command has been introduced, now allowing to
+  replicate and concatenate the clipboard contents over the
+  time-line, with a given repeat-count and optional period
+  (see menu Edit/Paste Repeat... on the main and MIDI clip
+  editor windows) (EXPERIMENTAL).
 
 - Normalize tool on MIDI clip editor got rewritten from its
   previous brain dead, useless and utterly wrong operation.

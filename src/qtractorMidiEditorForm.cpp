@@ -37,6 +37,7 @@
 
 #include "qtractorMainForm.h"
 #include "qtractorShortcutForm.h"
+#include "qtractorPasteRepeatForm.h"
 #include "qtractorClipForm.h"
 
 #include "qtractorTimeScale.h"
@@ -218,6 +219,9 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	QObject::connect(m_ui.editCopyAction,
 		SIGNAL(triggered(bool)),
 		SLOT(editCopy()));
+	QObject::connect(m_ui.editPasteRepeatAction,
+		SIGNAL(triggered(bool)),
+		SLOT(editPasteRepeat()));
 	QObject::connect(m_ui.editPasteAction,
 		SIGNAL(triggered(bool)),
 		SLOT(editPaste()));
@@ -918,6 +922,20 @@ void qtractorMidiEditorForm::editPaste (void)
 }
 
 
+// Paste/repeat from clipboard.
+void qtractorMidiEditorForm::editPasteRepeat (void)
+{
+	qtractorPasteRepeatForm pasteForm(this);
+	pasteForm.setRepeatPeriod(m_pMidiEditor->pastePeriod());
+	if (pasteForm.exec()) {
+		m_pMidiEditor->pasteClipboard(
+			pasteForm.repeatCount(),
+			pasteForm.repeatPeriod()
+		);
+	}
+}
+
+
 // Delete current selection.
 void qtractorMidiEditorForm::editDelete (void)
 {
@@ -1208,9 +1226,11 @@ void qtractorMidiEditorForm::stabilizeForm (void)
 	m_pMidiEditor->updateRedoAction(m_ui.editRedoAction);
 
 	bool bSelected = m_pMidiEditor->isSelected();
+	bool bClipboard = m_pMidiEditor->isClipboard();
 	m_ui.editCutAction->setEnabled(bSelected);
 	m_ui.editCopyAction->setEnabled(bSelected);
-	m_ui.editPasteAction->setEnabled(m_pMidiEditor->isClipboard());
+	m_ui.editPasteAction->setEnabled(bClipboard);
+	m_ui.editPasteRepeatAction->setEnabled(bClipboard);
 	m_ui.editDeleteAction->setEnabled(bSelected);
 	m_ui.editSelectNoneAction->setEnabled(bSelected);
 	m_ui.toolsMenu->setEnabled(bSelected);

@@ -1,7 +1,7 @@
 // qtractorMidiEditSelect.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -57,9 +57,9 @@ qtractorMidiEditSelect::Item *qtractorMidiEditSelect::findItem (
 
 // Item insertion method.
 void qtractorMidiEditSelect::addItem ( qtractorMidiEvent *pEvent,
-	const QRect& rectEvent, const QRect& rectView )
+	const QRect& rectEvent, const QRect& rectView, unsigned long iDeltaTime )
 {
-	m_items.append(new Item(pEvent, rectEvent, rectView));
+	m_items.append(new Item(pEvent, rectEvent, rectView, iDeltaTime));
 
 	m_rectEvent = m_rectEvent.unite(rectEvent);
 	m_rectView = m_rectView.unite(rectView);

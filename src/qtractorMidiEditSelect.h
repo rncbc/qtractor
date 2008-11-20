@@ -1,7 +1,7 @@
 // qtractorMidiEditSelect.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -46,12 +46,15 @@ public:
 	struct Item
 	{
 		// Item constructor.
-		Item(qtractorMidiEvent *pEvent, const QRect& re, const QRect& rv)
-			: event(pEvent), rectEvent(re), rectView(rv), flags(1) {}
+		Item(qtractorMidiEvent *pEvent,
+			const QRect& re, const QRect& rv,
+			unsigned long dt = 0) : event(pEvent),
+			rectEvent(re), rectView(rv), delta(dt), flags(1) {}
 		// Item members.
 		qtractorMidiEvent *event;
 		QRect rectEvent;
 		QRect rectView;
+		unsigned long delta;
 		unsigned int flags;
 	};
 
@@ -60,7 +63,8 @@ public:
 
 	// Event insertion method.
 	void addItem(qtractorMidiEvent *pEvent,
-		const QRect& rectEvent, const QRect& rectView);
+		const QRect& rectEvent, const QRect& rectView,
+		unsigned long iDeltaTime = 0);
 
 	// Event selection method.
 	void selectItem(qtractorMidiEvent *pEvent,
