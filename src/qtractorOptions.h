@@ -138,6 +138,7 @@ public:
 
 	// Paste-repeat convenient defaults.
 	int     iPasteRepeatCount;
+	bool    bPasteRepeatPeriod;
 
 	// Plugin search string.
 	QString sPluginSearch;

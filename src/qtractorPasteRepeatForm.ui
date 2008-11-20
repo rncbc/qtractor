@@ -83,12 +83,9 @@
        </spacer>
       </item>
       <item row="1" column="0" >
-       <widget class="QLabel" name="RepeatPeriodTextLabel" >
+       <widget class="QCheckBox" name="RepeatPeriodCheckBox" >
         <property name="text" >
          <string>&amp;Period:</string>
-        </property>
-        <property name="buddy" >
-         <cstring>RepeatPeriodSpinBox</cstring>
         </property>
        </widget>
       </item>
@@ -181,6 +178,7 @@
  </customwidgets>
  <tabstops>
   <tabstop>RepeatCountSpinBox</tabstop>
+  <tabstop>RepeatPeriodCheckBox</tabstop>
   <tabstop>RepeatPeriodSpinBox</tabstop>
   <tabstop>RepeatFormatComboBox</tabstop>
   <tabstop>OkPushButton</tabstop>

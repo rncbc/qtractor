@@ -2756,8 +2756,8 @@ void qtractorTrackView::pasteClipboard (
 	m_iPasteCount  = iPasteCount;
 	m_iPastePeriod = iPastePeriod;
 
-	int x0 = 0;
-	int dx = pSession->pixelSnap(m_iPastePeriod > 0
+	int  x = 0;
+	int dx = (m_iPastePeriod > 0
 		? pSession->pixelFromFrame(m_iPastePeriod)
 		: m_clipboard.rect.width());
 
@@ -2771,11 +2771,11 @@ void qtractorTrackView::pasteClipboard (
 		while (iter.hasNext()) {
 			ClipItem *pClipItem = iter.next();
 			QRect rect(pClipItem->rect);
-			rect.setX(rect.x() + x0);
+			rect.setX(rect.x() + x);
 			rect.setWidth(pSession->pixelFromFrame(pClipItem->clipLength));
 			m_pClipSelect->addClip(pClipItem->clip, rect);
 		}
-		x0 += dx;
+		x += dx;
 	}
 
 	// We'll start a brand new floating state...
@@ -2931,7 +2931,7 @@ void qtractorTrackView::pasteClipSelect ( qtractorTrack *pTrack )
 			return;
 	}
 
-	int dx = pSession->pixelSnap(m_iPastePeriod > 0
+	int dx = (m_iPastePeriod > 0
 		? pSession->pixelFromFrame(m_iPastePeriod)
 		: m_clipboard.rect.width());
 

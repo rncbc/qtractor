@@ -54,8 +54,10 @@ qtractorPasteRepeatForm::qtractorPasteRepeatForm (
 
 	// Initialize conveniency options...
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
-	if (pOptions)
+	if (pOptions) {
 		m_ui.RepeatCountSpinBox->setValue(pOptions->iPasteRepeatCount);
+		m_ui.RepeatPeriodCheckBox->setChecked(pOptions->bPasteRepeatPeriod);
+	}
 
 	// Choose BBT to be default format here.
 	formatChanged(qtractorTimeScale::BBT);
@@ -66,6 +68,9 @@ qtractorPasteRepeatForm::qtractorPasteRepeatForm (
 	// UI signal/slot connections...
 	QObject::connect(m_ui.RepeatCountSpinBox,
 		SIGNAL(valueChanged(int)),
+		SLOT(changed()));
+	QObject::connect(m_ui.RepeatPeriodCheckBox,
+		SIGNAL(toggled(bool)),
 		SLOT(changed()));
 	QObject::connect(m_ui.RepeatPeriodSpinBox,
 		SIGNAL(valueChanged(unsigned long)),
@@ -110,7 +115,8 @@ void qtractorPasteRepeatForm::setRepeatPeriod ( unsigned long iRepeatPeriod )
 
 unsigned long qtractorPasteRepeatForm::repeatPeriod (void) const
 {
-	return m_ui.RepeatPeriodSpinBox->value();
+	return (m_ui.RepeatPeriodCheckBox->isChecked()
+		? m_ui.RepeatPeriodSpinBox->value() : 0);
 }
 
 
@@ -121,8 +127,10 @@ void qtractorPasteRepeatForm::accept (void)
 	if (m_iDirtyCount > 0) {
 		// Save conveniency options...
 		qtractorOptions *pOptions = qtractorOptions::getInstance();
-		if (pOptions)
-			pOptions->iPasteRepeatCount  = repeatCount();
+		if (pOptions) {
+			pOptions->iPasteRepeatCount   =  repeatCount();
+			pOptions->bPasteRepeatPeriod  = (repeatPeriod() > 0);
+		}
 		// Reset dirty flag.
 		m_iDirtyCount = 0;
 	}
@@ -186,6 +194,10 @@ void qtractorPasteRepeatForm::formatChanged ( int iDisplayFormat )
 // Stabilize current form state.
 void qtractorPasteRepeatForm::stabilizeForm (void)
 {
+	bool bEnabled = m_ui.RepeatPeriodCheckBox->isChecked();
+	m_ui.RepeatPeriodSpinBox->setEnabled(bEnabled);
+	m_ui.RepeatFormatComboBox->setEnabled(bEnabled);
+
 	m_ui.OkPushButton->setEnabled(m_pTimeScale != NULL);
 }
 

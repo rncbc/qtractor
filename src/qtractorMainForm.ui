@@ -596,7 +596,7 @@
   </action>
   <action name="editPasteRepeatAction" >
    <property name="text" >
-    <string>Paste &amp;Repeat...</string>
+    <string>Past&amp;e Repeat...</string>
    </property>
    <property name="iconText" >
     <string>Paste Repeat</string>
