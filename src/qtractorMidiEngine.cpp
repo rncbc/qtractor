@@ -2666,24 +2666,23 @@ qtractorPluginList *qtractorMidiBus::createPluginList (void) const
 	if (pSession == NULL)
 		return NULL;
 
-	qtractorAudioEngine *pAudioEngine = pSession->audioEngine();
-	if (pAudioEngine == NULL)
-		return NULL;
-	
 	// Get audio bus as for the plugin list...
-	qtractorAudioBus *pAudioBus = NULL;
 	// Output bus gets to be the first available output bus...
-	for (qtractorBus *pBus = (pAudioEngine->buses()).first();
-			pBus; pBus = pBus->next()) {
-		if (pBus->busMode() & qtractorBus::Output) {
-			pAudioBus = static_cast<qtractorAudioBus *> (pBus);
-			break;
+	qtractorAudioBus    *pAudioBus    = NULL;
+	qtractorAudioEngine *pAudioEngine = pSession->audioEngine();
+	if (pAudioEngine) {
+		for (qtractorBus *pBus = (pAudioEngine->buses()).first();
+				pBus; pBus = pBus->next()) {
+			if (pBus->busMode() & qtractorBus::Output) {
+				pAudioBus = static_cast<qtractorAudioBus *> (pBus);
+				break;
+			}
 		}
 	}
 
 	// Got it?
 	if (pAudioBus == NULL)
-		return NULL;
+		return new qtractorPluginList(0, 0, 0, true);
 
 	// Create plugin-list alright...
 	return new qtractorPluginList(pAudioBus->channels(),
