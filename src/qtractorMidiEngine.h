@@ -35,6 +35,7 @@ class qtractorMidiEvent;
 class qtractorMidiInputThread;
 class qtractorMidiOutputThread;
 class qtractorMidiMonitor;
+class qtractorPluginList;
 
 class QSocketNotifier;
 
@@ -338,6 +339,9 @@ protected:
 
 	// Bus mode change event.
 	void updateBusMode();
+
+	// Create plugin-list properly.
+	qtractorPluginList *createPluginList (void) const;
 
 	// Set plugin-list buffers properly.
 	void updatePluginList(qtractorPluginList *pPluginList);

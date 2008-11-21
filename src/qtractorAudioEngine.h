@@ -276,6 +276,9 @@ protected:
 	// Bus mode change event.
 	void updateBusMode();
 
+	// Create plugin-list properly.
+	qtractorPluginList *createPluginList (void) const;
+
 	// Set plugin-list buffers properly.
 	void updatePluginList(qtractorPluginList *pPluginList);
 

@@ -2206,7 +2206,7 @@ qtractorMidiBus::qtractorMidiBus ( qtractorMidiEngine *pMidiEngine,
 
 	if (busMode & qtractorBus::Input) {
 		m_pIMidiMonitor = new qtractorMidiMonitor(pMidiEngine->session());
-		m_pIPluginList  = new qtractorPluginList(0, 0, 0, true);
+		m_pIPluginList  = createPluginList();
 	} else {
 		m_pIMidiMonitor = NULL;
 		m_pIPluginList  = NULL;
@@ -2214,7 +2214,7 @@ qtractorMidiBus::qtractorMidiBus ( qtractorMidiEngine *pMidiEngine,
 
 	if (busMode & qtractorBus::Output) {
 		m_pOMidiMonitor = new qtractorMidiMonitor(pMidiEngine->session());
-		m_pOPluginList  = new qtractorPluginList(0, 0, 0, true);
+		m_pOPluginList  = createPluginList();
 	} else {
 		m_pOMidiMonitor = NULL;
 		m_pOPluginList  = NULL;
@@ -2326,18 +2326,34 @@ void qtractorMidiBus::updateBusMode (void)
 	if (busMode() & qtractorBus::Input) {
 		if (m_pIMidiMonitor == NULL)
 			m_pIMidiMonitor = new qtractorMidiMonitor(engine()->session());
-	} else if (m_pIMidiMonitor) {
-		delete m_pIMidiMonitor;
-		m_pIMidiMonitor = NULL;
+		if (m_pIPluginList == NULL)
+			m_pIPluginList = createPluginList();
+	} else {
+		if (m_pIMidiMonitor) {
+			delete m_pIMidiMonitor;
+			m_pIMidiMonitor = NULL;
+		}
+		if (m_pIPluginList) {
+			delete m_pIPluginList;
+			m_pIPluginList = NULL;
+		}
 	}
 
 	// Have a new/old output monitor?
 	if (busMode() & qtractorBus::Output) {
 		if (m_pOMidiMonitor == NULL)
 			m_pOMidiMonitor = new qtractorMidiMonitor(engine()->session());
-	} else if (m_pOMidiMonitor) {
-		delete m_pOMidiMonitor;
-		m_pOMidiMonitor = NULL;
+		if (m_pOPluginList == NULL)
+			m_pOPluginList = createPluginList();
+	} else {
+		if (m_pOMidiMonitor) {
+			delete m_pOMidiMonitor;
+			m_pOMidiMonitor = NULL;
+		}
+		if (m_pOPluginList) {
+			delete m_pOPluginList;
+			m_pOPluginList = NULL;
+		}
 	}
 }
 
@@ -2643,7 +2659,39 @@ qtractorPluginList *qtractorMidiBus::pluginList_out (void) const
 }
 
 
-// Initialize plugin-lists properly.
+// Create plugin-list properly.
+qtractorPluginList *qtractorMidiBus::createPluginList (void) const
+{
+	qtractorSession *pSession = engine()->session();
+	if (pSession == NULL)
+		return NULL;
+
+	qtractorAudioEngine *pAudioEngine = pSession->audioEngine();
+	if (pAudioEngine == NULL)
+		return NULL;
+	
+	// Get audio bus as for the plugin list...
+	qtractorAudioBus *pAudioBus = NULL;
+	// Output bus gets to be the first available output bus...
+	for (qtractorBus *pBus = (pAudioEngine->buses()).first();
+			pBus; pBus = pBus->next()) {
+		if (pBus->busMode() & qtractorBus::Output) {
+			pAudioBus = static_cast<qtractorAudioBus *> (pBus);
+			break;
+		}
+	}
+
+	// Got it?
+	if (pAudioBus == NULL)
+		return NULL;
+
+	// Create plugin-list alright...
+	return new qtractorPluginList(pAudioBus->channels(),
+		pAudioEngine->bufferSize(), pAudioEngine->sampleRate(), true);
+}
+
+
+// Update plugin-list buffers properly.
 void qtractorMidiBus::updatePluginList ( qtractorPluginList *pPluginList )
 {
 	// Sanity checks...
@@ -2660,9 +2708,8 @@ void qtractorMidiBus::updatePluginList ( qtractorPluginList *pPluginList )
 	
 	// Get audio bus as for the plugin list...
 	qtractorAudioBus *pAudioBus = NULL;
-	qtractorMidiManager *pMidiManager = pPluginList->midiManager();
-	if (pMidiManager)
-		pAudioBus = pMidiManager->audioOutputBus();
+	if (pPluginList->midiManager())
+		pAudioBus = (pPluginList->midiManager())->audioOutputBus();
 	if (pAudioBus == NULL) {
 		// Output bus gets to be the first available output bus...
 		for (qtractorBus *pBus = (pAudioEngine->buses()).first();
@@ -2673,11 +2720,14 @@ void qtractorMidiBus::updatePluginList ( qtractorPluginList *pPluginList )
 			}
 		}
 	}
+
+	// Got it?
+	if (pAudioBus == NULL)
+		return;
+
 	// Set plugin-list buffer alright...
-	if (pAudioBus) {
-		pPluginList->setBuffer(pAudioBus->channels(),
-			pAudioEngine->bufferSize(), pAudioEngine->sampleRate(), true);
-	}
+	pPluginList->setBuffer(pAudioBus->channels(),
+		pAudioEngine->bufferSize(), pAudioEngine->sampleRate(), true);
 }
 
 
