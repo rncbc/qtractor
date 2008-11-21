@@ -1081,7 +1081,6 @@ void qtractorMidiEngine::enqueue ( qtractorTrack *pTrack,
 	if (pMidiBus->pluginList_out()
 		&& (pMidiBus->pluginList_out())->midiManager())
 		((pMidiBus->pluginList_out())->midiManager())->queued(&ev);
-
 }
 
 
@@ -2419,9 +2418,13 @@ void qtractorMidiBus::setPatch ( unsigned short iChannel,
 		return;
 
 	// Do it for the MIDI plugins if applicable...
-	qtractorMidiManager *pMidiManager = NULL;
+	qtractorMidiManager *pTrackMidiManager = NULL;
 	if (pTrack)
-		pMidiManager = (pTrack->pluginList())->midiManager();
+		pTrackMidiManager = (pTrack->pluginList())->midiManager();
+
+	qtractorMidiManager *pBusMidiManager = NULL;
+	if (pluginList_out())
+		pBusMidiManager = pluginList_out()->midiManager();
 
 	// Initialize sequencer event...
 	snd_seq_event_t ev;
@@ -2444,7 +2447,10 @@ void qtractorMidiBus::setPatch ( unsigned short iChannel,
 		else
 			ev.data.control.value = (iBank & 0x007f);
 		snd_seq_event_output(pMidiEngine->alsaSeq(), &ev);
-		if (pMidiManager) pMidiManager->direct(&ev);
+		if (pTrackMidiManager)
+			pTrackMidiManager->direct(&ev);
+		if (pBusMidiManager)
+			pBusMidiManager->direct(&ev);
 	}
 
 	// Select Bank LSB.
@@ -2454,7 +2460,10 @@ void qtractorMidiBus::setPatch ( unsigned short iChannel,
 		ev.data.control.param   = BANK_SELECT_LSB;
 		ev.data.control.value   = (iBank & 0x007f);
 		snd_seq_event_output(pMidiEngine->alsaSeq(), &ev);
-		if (pMidiManager) pMidiManager->direct(&ev);
+		if (pTrackMidiManager)
+			pTrackMidiManager->direct(&ev);
+		if (pBusMidiManager)
+			pBusMidiManager->direct(&ev);
 	}
 
 	// Program change...
@@ -2462,7 +2471,10 @@ void qtractorMidiBus::setPatch ( unsigned short iChannel,
 	ev.data.control.channel = iChannel;
 	ev.data.control.value   = iProg;
 	snd_seq_event_output(pMidiEngine->alsaSeq(), &ev);
-	if (pMidiManager) pMidiManager->direct(&ev);
+	if (pTrackMidiManager)
+		pTrackMidiManager->direct(&ev);
+	if (pBusMidiManager)
+		pBusMidiManager->direct(&ev);
 
 	pMidiEngine->flush();
 }
@@ -2517,6 +2529,8 @@ void qtractorMidiBus::setControllerEx ( unsigned short iChannel,
 	// Do it for the MIDI plugins too...
 	if (pTrack && (pTrack->pluginList())->midiManager())
 		(pTrack->pluginList())->midiManager()->direct(&ev);
+	if (pluginList_out() && pluginList_out()->midiManager())
+		(pluginList_out()->midiManager())->direct(&ev);
 
 	pMidiEngine->flush();
 }
@@ -2564,6 +2578,8 @@ void qtractorMidiBus::sendNote ( qtractorTrack *pTrack,
 	// Do it for the MIDI plugins too...
 	if ((pTrack->pluginList())->midiManager())
 		(pTrack->pluginList())->midiManager()->direct(&ev);
+	if (pluginList_out() && pluginList_out()->midiManager())
+		(pluginList_out()->midiManager())->direct(&ev);
 
 	pMidiEngine->flush();
 
@@ -2956,6 +2972,10 @@ bool qtractorMidiBus::loadElement ( qtractorSessionDocument *pDocument,
 			if (qtractorMidiBus::monitor_in())
 				qtractorMidiBus::monitor_in()->setPanning(
 					eProp.text().toFloat());
+		} else if (eProp.tagName() == "input-plugins") {
+			if (qtractorMidiBus::pluginList_in())
+				qtractorMidiBus::pluginList_in()->loadElement(
+					pDocument, &eProp);
 		} else if (eProp.tagName() == "input-connects") {
 			qtractorMidiBus::loadConnects(
 				qtractorMidiBus::inputs(), pDocument, &eProp);
@@ -2967,6 +2987,10 @@ bool qtractorMidiBus::loadElement ( qtractorSessionDocument *pDocument,
 			if (qtractorMidiBus::monitor_out())
 				qtractorMidiBus::monitor_out()->setPanning(
 					eProp.text().toFloat());
+		} else if (eProp.tagName() == "output-plugins") {
+			if (qtractorMidiBus::pluginList_out())
+				qtractorMidiBus::pluginList_out()->loadElement(
+					pDocument, &eProp);
 		} else if (eProp.tagName() == "output-connects") {
 			qtractorMidiBus::loadConnects(
 				qtractorMidiBus::outputs(), pDocument, &eProp);
@@ -2995,6 +3019,13 @@ bool qtractorMidiBus::saveElement ( qtractorSessionDocument *pDocument,
 		pDocument->saveTextElement("input-panning",
 			QString::number(qtractorMidiBus::monitor_in()->panning()),
 				pElement);
+		if (qtractorMidiBus::pluginList_in()) {
+			QDomElement eInputPlugins
+				= pDocument->document()->createElement("input-plugins");
+			qtractorMidiBus::pluginList_in()->saveElement(
+				pDocument, &eInputPlugins);
+			pElement->appendChild(eInputPlugins);
+		}
 		QDomElement eMidiInputs
 			= pDocument->document()->createElement("input-connects");
 		qtractorBus::ConnectList inputs;
@@ -3010,6 +3041,13 @@ bool qtractorMidiBus::saveElement ( qtractorSessionDocument *pDocument,
 		pDocument->saveTextElement("output-panning",
 			QString::number(qtractorMidiBus::monitor_out()->panning()),
 				pElement);
+		if (qtractorMidiBus::pluginList_out()) {
+			QDomElement eOutputPlugins
+				= pDocument->document()->createElement("output-plugins");
+			qtractorMidiBus::pluginList_out()->saveElement(
+				pDocument, &eOutputPlugins);
+			pElement->appendChild(eOutputPlugins);
+		}
 		QDomElement eMidiOutputs
 			= pDocument->document()->createElement("output-connects");
 		qtractorBus::ConnectList outputs;
