@@ -31,6 +31,7 @@
 
 // Forward declarations...
 class qtractorMidiBus;
+class qtractorMidiManager;
 class qtractorCommand;
 
 
@@ -52,27 +53,32 @@ public:
 	qtractorTrack *track() const;
 	const qtractorTrack::Properties& properties() const;
 
-	qtractorTrack::TrackType trackType();
+	qtractorTrack::TrackType trackType() const;
 
 public slots:
 
 	void accept();
 	void reject();
+
 	void stabilizeForm();
 	void changed();
+
 	void trackTypeChanged();
 	void inputBusNameChanged(const QString& sBusName);
 	void outputBusNameChanged(const QString& sBusName);
 	void busNameClicked();
+
 	void channelChanged(int iChannel);
 	void instrumentChanged(const QString& sInstrumentName);
 	void bankSelMethodChanged(int iBankSelMethod);
 	void bankChanged();
 	void progChanged();
+
 	void foregroundColorChanged(const QString& sText);
 	void backgroundColorChanged(const QString& sText);
 	void selectForegroundColor();
 	void selectBackgroundColor();
+
 	void addPlugin();
 	void removePlugin();
 	void moveUpPlugin();
@@ -80,16 +86,29 @@ public slots:
 
 protected:
 
-	qtractorMidiBus *midiBus();
-	int midiBank();
-	int midiProgram();
+	qtractorMidiBus *midiBus() const;
+
+	int midiBank() const;
+	int midiProgram() const;
+
 	void updateInstruments();
+	void updateInstrumentsAdd(
+		const QIcon& icon, qtractorMidiManager *pMidiManager);
+
 	void updateTrackType(qtractorTrack::TrackType trackType);
+
 	void updateChannel(int iChannel, int iBankSelMethod, int iBank, int iProg);
 	void updateBanks(const QString& sInstrumentName, int iBankSelMethod, int iBank, int iProg);
 	void updatePrograms(const QString& sInstrumentName, int iBank, int iProg);
+
+	bool updateBanksAdd(const QIcon& icon, qtractorMidiManager *pMidiManager,
+		const QString& sInstrumentName, int iBank, int& iBankIndex);
+	bool updateProgramsAdd(const QIcon& icon, qtractorMidiManager *pMidiManager,
+		const QString& sInstrumentName, int iBank, int iProg, int& iProgIndex);
+
 	void updateColorItem(QComboBox *pComboBox, const QColor& color);
 	void updateColorText(QComboBox *pComboBox, const QColor& color);
+
 	QColor colorItem(QComboBox *pComboBox);
 
 private:
@@ -100,6 +119,7 @@ private:
 	// Instance variables...
 	qtractorTrack *m_pTrack;
 	qtractorTrack::Properties m_props;
+	qtractorMidiBus *m_pMidiBus;
 	QMap<int, int> m_banks;
 	QMap<int, int> m_progs;
 	int m_iDirtySetup;

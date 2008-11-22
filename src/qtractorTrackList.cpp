@@ -243,11 +243,44 @@ qtractorTrackList::Item::Item ( qtractorTrackList *pTrackList,
 	update(pTrackList);
 }
 
+
 // Track-list model item destructor
 qtractorTrackList::Item::~Item (void)
 {
 	if (widget) delete widget;
 }
+
+
+// Track-list model item bank/program names helper.
+bool qtractorTrackList::Item::updateBankProgram (
+	qtractorMidiManager *pMidiManager, const QString& sInstrument,
+	QString& sBank, QString& sProgram ) const
+{
+	if (pMidiManager == NULL)
+		return false;
+
+	const qtractorMidiManager::Instruments& list
+		= pMidiManager->instruments();
+	if (!list.contains(sInstrument))
+		return false;
+
+	const qtractorMidiManager::Banks& banks
+		= list[sInstrument];
+	int iBank = track->midiBank();
+	if (banks.contains(iBank)) {
+		const qtractorMidiManager::Bank& bank
+			= banks[iBank];
+		int iProg = track->midiProgram();
+		if (bank.progs.contains(iProg)) {
+			sProgram = QString("%1 - %2").arg(iProg)
+				.arg(bank.progs[iProg]);
+			sBank = bank.name;
+		}
+	}
+
+	return true;
+}
+
 
 // Track-list model item cache updater.
 void qtractorTrackList::Item::update ( qtractorTrackList *pTrackList )
@@ -310,28 +343,13 @@ void qtractorTrackList::Item::update ( qtractorTrackList *pTrackList )
 					= pMidiBus->patch(iChannel);
 				if (!patch.instrumentName.isEmpty()) {
 					sInstrument = patch.instrumentName;
-					bool bMidiManager = false;
-					qtractorMidiManager *pMidiManager
-						= (track->pluginList())->midiManager();
-					if (pMidiManager) {
-						const qtractorMidiManager::Instruments& list
-							= pMidiManager->instruments();
-						if (list.contains(sInstrument)) {
-							const qtractorMidiManager::Banks& banks
-								= list[sInstrument];
-							int iBank = track->midiBank();
-							if (banks.contains(iBank)) {
-								const qtractorMidiManager::Bank& bank
-									= banks[iBank];
-								int iProg = track->midiProgram();
-								if (bank.progs.contains(iProg)) {
-									sProgram = QString("%1 - %2").arg(iProg)
-										.arg(bank.progs[iProg]);
-									sBank = bank.name;
-								}
-							}
-							bMidiManager = true;
-						}
+					bool bMidiManager = updateBankProgram(
+						(track->pluginList())->midiManager(),
+						sInstrument, sBank, sProgram);
+					if (!bMidiManager && pMidiBus->pluginList_out()) {
+						bMidiManager = updateBankProgram(
+							(pMidiBus->pluginList_out())->midiManager(),
+							sInstrument, sBank, sProgram);
 					}
 					if (!bMidiManager) {
 						qtractorInstrumentList *pInstruments = NULL;

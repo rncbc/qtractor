@@ -33,6 +33,7 @@ class qtractorTracks;
 class qtractorTrackList;
 class qtractorTrackButton;
 class qtractorRubberBand;
+class qtractorMidiManager;
 
 class QHeaderView;
 
@@ -215,6 +216,10 @@ private:
 		Item(qtractorTrackList *pTrackList, qtractorTrack *pTrack);
 		// Destructor.
 		~Item();
+		// Bank/program names helper.
+		bool updateBankProgram (qtractorMidiManager *pMidiManager,
+			const QString& sInstrument,
+			QString& sBank, QString& sProgram ) const;
 		// Item updater.
 		void update(qtractorTrackList *pTrackList);
 		// Item members.
