@@ -1038,7 +1038,7 @@ void qtractorTrackForm::outputBusNameChanged ( const QString& sBusName )
 			if (pAudioBus) {
 				m_pTrack->pluginList()->setBuffer(pAudioBus->channels(),
 					pAudioEngine->bufferSize(), pAudioEngine->sampleRate(),
-					trackType == qtractorTrack::Midi);
+					qtractorPluginList::AudioTrack);
 			}
 		}
 	}

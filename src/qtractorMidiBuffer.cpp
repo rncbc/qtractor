@@ -235,6 +235,7 @@ bool qtractorMidiManager::direct ( snd_seq_event_t *pEvent )
 	return m_directBuffer.push(pEvent);
 }
 
+
 // Queued buffering.
 bool qtractorMidiManager::queued ( snd_seq_event_t *pEvent )
 {
@@ -245,7 +246,7 @@ bool qtractorMidiManager::queued ( snd_seq_event_t *pEvent )
 		ev.type = SND_SEQ_EVENT_NOTEON;
 		if (!m_queuedBuffer.push(&ev, iTick))
 			return false;
-		iTick += m_pSession->frameFromTick(ev.data.note.duration);
+		iTick += m_pSession->frameFromTick(ev.data.note.duration - 1);
 		ev.type = SND_SEQ_EVENT_NOTEOFF;
 		ev.data.note.velocity = 0;
 		ev.data.note.duration = 0;
@@ -302,7 +303,7 @@ void qtractorMidiManager::process (
 			pEv1 = m_postedBuffer.next();
 		}
 		while (pEv2 && pEv2->time.tick < iTimeEnd
-			&& ((pEv1 && pEv1->time.tick >= pEv2->time.tick) || !pEv1)) {
+			&& ((pEv1 && pEv1->time.tick > pEv2->time.tick) || !pEv1)) {
 			m_pBuffer[m_iBuffer] = *pEv2;
 			m_pBuffer[m_iBuffer++].time.tick
 				= (pEv2->time.tick > iTimeStart
@@ -315,7 +316,8 @@ void qtractorMidiManager::process (
 	for (unsigned int i = 0; i < m_iBuffer; ++i) {
 		snd_seq_event_t *pEv = &m_pBuffer[i];
 		// - show event for debug purposes...
-		fprintf(stderr, "MIDI Seq %05d 0x%02x", pEv->time.tick, pEv->type);
+		unsigned long iTime = iTimeStart + pEv->time.tick;
+		fprintf(stderr, "MIDI Seq %06lu 0x%02x", iTime, pEv->type);
 		if (pEv->type == SND_SEQ_EVENT_SYSEX) {
 			fprintf(stderr, " sysex {");
 			unsigned char *data = (unsigned char *) pEv->data.ext.ptr;
@@ -396,11 +398,13 @@ void qtractorMidiManager::processSync (void)
 		else if (m_iPendingBankMSB >= 0)
 			m_iCurrentBank = m_iPendingBankMSB;
 		// Make the change (should be RT safe...)
-		qtractorPlugin *pPlugin = m_pPluginList->first();
-		while (pPlugin) {
-			pPlugin->selectProgram(m_iCurrentBank, m_iCurrentProg);
-			pPlugin = pPlugin->next();
-		}
+		//if ((m_pPluginList->flags() & qtractorPluginList::Bus) == 0) {
+			qtractorPlugin *pPlugin = m_pPluginList->first();
+			while (pPlugin) {
+				pPlugin->selectProgram(m_iCurrentBank, m_iCurrentProg);
+				pPlugin = pPlugin->next();
+			}
+		//}
 		// Reset pending status.
 		m_iPendingBankMSB = -1;
 		m_iPendingBankLSB = -1;

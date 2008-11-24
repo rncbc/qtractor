@@ -1953,7 +1953,8 @@ qtractorPluginList *qtractorAudioBus::createPluginList (void) const
 
 	// Create plugin-list alright...
 	return new qtractorPluginList(m_iChannels,
-		pAudioEngine->bufferSize(), pAudioEngine->sampleRate(), false);
+		pAudioEngine->bufferSize(), pAudioEngine->sampleRate(),
+		qtractorPluginList::AudioBus);
 }
 
 
@@ -1971,7 +1972,8 @@ void qtractorAudioBus::updatePluginList ( qtractorPluginList *pPluginList )
 	
 	// Set plugin-list buffer alright...
 	pPluginList->setBuffer(m_iChannels,
-		pAudioEngine->bufferSize(), pAudioEngine->sampleRate(), false);
+		pAudioEngine->bufferSize(), pAudioEngine->sampleRate(),
+		qtractorPluginList::AudioBus);
 }
 
 

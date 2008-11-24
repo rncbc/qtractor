@@ -832,22 +832,22 @@ void qtractorPlugin::realizeConfigs (void)
 
 // Constructor.
 qtractorPluginList::qtractorPluginList ( unsigned short iChannels,
-	unsigned int iBufferSize, unsigned int iSampleRate, bool bMidi )
+	unsigned int iBufferSize, unsigned int iSampleRate, unsigned int iFlags )
 	: m_iChannels(0), m_iBufferSize(0), m_iSampleRate(0),
-		m_bMidi(false),	m_iActivated(0), m_pMidiManager(NULL)
+		m_iFlags(0), m_iActivated(0), m_pMidiManager(NULL)
 		
 {
 	m_pppBuffers[0] = NULL;
 	m_pppBuffers[1] = NULL;
 
-	setBuffer(iChannels, iBufferSize, iSampleRate, bMidi);
+	setBuffer(iChannels, iBufferSize, iSampleRate, iFlags);
 }
 
 // Destructor.
 qtractorPluginList::~qtractorPluginList (void)
 {
 	// Reset allocated channel buffers.
-	setBuffer(0, 0, 0, false);
+	setBuffer(0, 0, 0, 0);
 
 	// Now that's one manager less.
 	if (m_pMidiManager)
@@ -876,7 +876,7 @@ void qtractorPluginList::setName ( const QString& sName )
 
 // Main-parameters accessor.
 void qtractorPluginList::setBuffer ( unsigned short iChannels,
-	unsigned int iBufferSize, unsigned int iSampleRate, bool bMidi )
+	unsigned int iBufferSize, unsigned int iSampleRate, unsigned int iFlags )
 {
 	unsigned short i;
 
@@ -888,8 +888,8 @@ void qtractorPluginList::setBuffer ( unsigned short iChannels,
 		m_pppBuffers[1] = NULL;
 	}
 
-	// Make type special...
-	m_bMidi = bMidi;
+	// Set proper flags at once.
+	m_iFlags = iFlags;
 
 	// Some sanity is in order, at least for now...
 	if (iChannels == 0 || iBufferSize == 0 || iSampleRate == 0)
@@ -1106,7 +1106,7 @@ void qtractorPluginList::addPluginRef ( qtractorPlugin *pPlugin )
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorPluginList[%p]::addPluginRef(%p)", this, pPlugin);
 #endif
-	if (m_bMidi && m_pMidiManager == NULL && count() == 0)
+	if ((m_iFlags & Midi) && m_pMidiManager == NULL && count() == 0)
 		m_pMidiManager = qtractorMidiManager::createMidiManager(this);
 
 	if (m_pMidiManager)

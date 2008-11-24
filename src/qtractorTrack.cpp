@@ -111,7 +111,11 @@ qtractorTrack::qtractorTrack ( qtractorSession *pSession, TrackType trackType )
 
 	m_clips.setAutoDelete(true);
 
-	m_pPluginList = new qtractorPluginList(0, 0, 0, (trackType == Midi));
+	unsigned int iFlags = qtractorPluginList::Track;
+	if (trackType == qtractorTrack::Midi)
+		iFlags |= qtractorPluginList::Midi;
+
+	m_pPluginList = new qtractorPluginList(0, 0, 0, iFlags);
 
 	setHeight(48);	// Default track height (qtractorTrackList::ItemHeightBase).
 	clear();
@@ -228,7 +232,8 @@ bool qtractorTrack::open (void)
 			m_pMonitor = new qtractorAudioMonitor(pAudioBus->channels(),
 				m_props.gain, m_props.panning);
 			m_pPluginList->setBuffer(pAudioBus->channels(),
-				pAudioEngine->bufferSize(), pAudioEngine->sampleRate(), false);
+				pAudioEngine->bufferSize(), pAudioEngine->sampleRate(),
+				qtractorPluginList::AudioTrack);
 		}
 		break;
 	}
@@ -257,7 +262,8 @@ bool qtractorTrack::open (void)
 		// Set plugin-list buffer alright...
 		if (pAudioBus) {
 			m_pPluginList->setBuffer(pAudioBus->channels(),
-				pAudioEngine->bufferSize(), pAudioEngine->sampleRate(), true);
+				pAudioEngine->bufferSize(), pAudioEngine->sampleRate(),
+				qtractorPluginList::MidiTrack);
 		}
 		break;
 	}
@@ -344,13 +350,15 @@ void qtractorTrack::setTrackType ( qtractorTrack::TrackType trackType )
 	// Set new track type, now...
 	m_props.trackType = trackType;
 
-	// Acquire a new midi-tag...
-	if (m_props.trackType == qtractorTrack::Midi)
+	// Acquire a new midi-tag and setup new plugin-list flags...
+	unsigned int iFlags = qtractorPluginList::Track;
+	if (m_props.trackType == qtractorTrack::Midi) {
 		m_pSession->acquireMidiTag(this);
+		iFlags |= qtractorPluginList::Midi;
+	}
 
-	// (Re)set plugin-list
-	m_pPluginList->setBuffer(0, 0, 0,
-		(m_props.trackType == qtractorTrack::Midi));
+	// (Re)set plugin-list...
+	m_pPluginList->setBuffer(0, 0, 0, iFlags);
 }
 
 

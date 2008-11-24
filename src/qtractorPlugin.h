@@ -472,12 +472,24 @@ class qtractorPluginList : public qtractorList<qtractorPlugin>
 {
 public:
 
+	// Plugin-list type flags.
+	enum Flags {
+		// Basic flags.
+		Audio = 0, Midi = 1,
+		Track = 0, Bus  = 2,
+		// Composite helper flags.
+		AudioTrack = Audio | Track,
+		AudioBus   = Audio | Bus,
+		MidiTrack  = Midi  | Track,
+		MidiBus    = Midi  | Bus
+	};
+
 	// Constructor.
 	qtractorPluginList(
 		unsigned short iChannels,
 		unsigned int iBufferSize,
 		unsigned int iSampleRate,
-		bool bMidi = false);
+		unsigned int iFlags);
 
 	// Destructor.
 	~qtractorPluginList();
@@ -492,7 +504,7 @@ public:
 		unsigned short iChannels,
 		unsigned int iBufferSize,
 		unsigned int iSampleRate,
-		bool bMidi = false);
+		unsigned int iFlags);
 
 	// Reset and (re)activate all plugin chain.
 	void resetBuffer();
@@ -501,7 +513,7 @@ public:
 	unsigned short channels() const { return m_iChannels;   }
 	unsigned int sampleRate() const { return m_iSampleRate; }
 	unsigned int bufferSize() const { return m_iBufferSize; }
-	bool         isMidi()     const { return m_bMidi; }
+	unsigned int flags()      const { return m_iFlags; }
 
 	// Specific MIDI manager accessor.
 	qtractorMidiManager *midiManager() const
@@ -552,7 +564,7 @@ private:
 	unsigned short m_iChannels;
 	unsigned int   m_iBufferSize;
 	unsigned int   m_iSampleRate;
-	bool           m_bMidi;
+	unsigned int   m_iFlags;
 
 	// Activation state.
 	unsigned int   m_iActivated;

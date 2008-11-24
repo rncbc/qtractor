@@ -397,7 +397,8 @@ void qtractorPluginListView::addPlugin (void)
 		return;
 
 	qtractorPluginSelectForm selectForm(this);
-	selectForm.setChannels(m_pPluginList->channels(), m_pPluginList->isMidi());
+	selectForm.setChannels(m_pPluginList->channels(),
+		(m_pPluginList->flags() & qtractorPluginList::Midi));
 	if (!selectForm.exec())
 		return;
 
