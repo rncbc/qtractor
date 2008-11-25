@@ -398,13 +398,11 @@ void qtractorMidiManager::processSync (void)
 		else if (m_iPendingBankMSB >= 0)
 			m_iCurrentBank = m_iPendingBankMSB;
 		// Make the change (should be RT safe...)
-		//if ((m_pPluginList->flags() & qtractorPluginList::Bus) == 0) {
-			qtractorPlugin *pPlugin = m_pPluginList->first();
-			while (pPlugin) {
-				pPlugin->selectProgram(m_iCurrentBank, m_iCurrentProg);
-				pPlugin = pPlugin->next();
-			}
-		//}
+		qtractorPlugin *pPlugin = m_pPluginList->first();
+		while (pPlugin) {
+			pPlugin->selectProgram(m_iCurrentBank, m_iCurrentProg);
+			pPlugin = pPlugin->next();
+		}
 		// Reset pending status.
 		m_iPendingBankMSB = -1;
 		m_iPendingBankLSB = -1;

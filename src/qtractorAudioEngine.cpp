@@ -1788,10 +1788,10 @@ void qtractorAudioBus::process_prepare ( unsigned int nframes )
 			m_ppIBuffer[i] = static_cast<float *>
 				(jack_port_get_buffer(m_ppIPorts[i], nframes));
 		}
-		if (m_pIAudioMonitor)
-			m_pIAudioMonitor->process(m_ppIBuffer, nframes);
 		if (m_pIPluginList && m_pIPluginList->activated())
 			m_pIPluginList->process(m_ppIBuffer, nframes);
+		if (m_pIAudioMonitor)
+			m_pIAudioMonitor->process(m_ppIBuffer, nframes);
 	}
 
 	if (busMode() & qtractorBus::Output) {
@@ -1814,10 +1814,10 @@ void qtractorAudioBus::process_commit ( unsigned int nframes )
 	if (!m_bEnabled)
 		return;
 
-	if (m_pOAudioMonitor)
-		m_pOAudioMonitor->process(m_ppOBuffer, nframes);
 	if (m_pOPluginList && m_pOPluginList->activated())
 		m_pOPluginList->process(m_ppOBuffer, nframes);
+	if (m_pOAudioMonitor)
+		m_pOAudioMonitor->process(m_ppOBuffer, nframes);
 }
 
 

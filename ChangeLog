@@ -5,6 +5,11 @@ ChangeLog
 
 CVS HEAD
 
+- Major silent move: audio plugins chain are now applied
+  in a pre-fader/meter basis as is usually implied from
+  the mixer strip layout ie. signal flows from the top to
+  the bottom (EXPERIMENTAL).
+
 - All MIDI buses may now have plugins inserted so that 
   multi-timbral synth/sampler plugins get driven to their
   fullness. (EXPERIMENTAL)
