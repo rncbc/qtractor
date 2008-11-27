@@ -486,7 +486,9 @@ void qtractorMidiClip::draw ( QPainter *pPainter, const QRect& clipRect,
 				+ pSession->pixelFromTick(pEvent->time()) - cx;
 			int y = clipRect.bottom()
 				- (h1 * (pEvent->note() - m_pSeq->noteMin() + 1)) / iNoteSpan;
-			int w = pSession->pixelFromTick(pEvent->duration());
+			int w = (pEvent->duration() > 0
+				? pSession->pixelFromTick(pEvent->duration())
+				: clipRect.right() - x); // Pending note-off? (while recording)
 			if (h > 4) {
 				if (w < 5) w = 5;
 				pPainter->fillRect(x, y, w, h - 1, fg);
