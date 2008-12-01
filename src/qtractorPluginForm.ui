@@ -143,6 +143,22 @@
       </spacer>
      </item>
      <item>
+      <widget class="QToolButton" name="ParamsToolButton" >
+       <property name="focusPolicy" >
+        <enum>Qt::TabFocus</enum>
+       </property>
+       <property name="toolTip" >
+        <string>Parameters</string>
+       </property>
+       <property name="text" >
+        <string>Params</string>
+       </property>
+       <property name="checkable" >
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QToolButton" name="EditToolButton" >
        <property name="focusPolicy" >
         <enum>Qt::TabFocus</enum>
@@ -188,6 +204,9 @@
      </item>
     </layout>
    </item>
+   <item>
+    <widget class="QWidget" name="ParamsGridWidget" />
+   </item>
   </layout>
  </widget>
  <tabstops>
@@ -195,6 +214,7 @@
   <tabstop>OpenPresetToolButton</tabstop>
   <tabstop>SavePresetToolButton</tabstop>
   <tabstop>DeletePresetToolButton</tabstop>
+  <tabstop>ParamsToolButton</tabstop>
   <tabstop>EditToolButton</tabstop>
   <tabstop>ActivateToolButton</tabstop>
  </tabstops>

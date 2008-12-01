@@ -235,6 +235,10 @@ public:
 	unsigned long punchInTime() const;
 	unsigned long punchOutTime() const;
 
+	// Absolute frame time and offset.
+	unsigned long frameTime() const;
+	unsigned long framePos() const;
+
 	// Sanitize a given name.
 	static QString sanitize(const QString& s); 
 

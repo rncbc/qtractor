@@ -360,54 +360,55 @@ int qtractorAudioBuffer::read ( float **ppFrames, unsigned int iFrames,
 #endif
 
 	// Check for logical EOF...
-	if (m_iReadOffset + iFrames > m_iFileLength)
-		iFrames = m_iFileLength - m_iReadOffset;
+	unsigned long ro = m_iReadOffset;
+	if (iFrames + ro > m_iFileLength)
+		iFrames = m_iFileLength - ro;
+
+	int nread;
 
 	// Are we self-contained (ie. got integral file in buffer) and looping?
-	unsigned int nframes = iFrames;
 	unsigned long ls = m_iLoopStart;
 	unsigned long le = m_iLoopEnd;
 	// Are we in the middle of the loop range ?
 	if (ls < le) {
 		if (m_bIntegral) {
 			unsigned int ri = m_pRingBuffer->readIndex();
-			while (ri < le && ri + nframes >= le) {
-				unsigned int nread = le - ri;
-				m_pRingBuffer->read(ppFrames, nread, iOffset);
-				nframes -= nread;
+			while (ri < le && ri + iFrames >= le) {
+				nread = m_pRingBuffer->read(ppFrames, le - ri, iOffset);
+				iFrames -= nread;
 				iOffset += nread;
+				ro = m_iOffset + ls;
 				m_pRingBuffer->setReadIndex(ls);
-				m_iReadOffset = m_iOffset + ls;
 			}
-			iFrames = nframes;
 		} else {
 			ls += m_iOffset;
 			le += m_iOffset;
-			while (le >= m_iReadOffset && m_iReadOffset + nframes >= le) {
-				nframes -= (le - m_iReadOffset);
-				m_iReadOffset = ls;
+			while (ro < le && ro + iFrames >= le) {
+				nread = m_pRingBuffer->read(ppFrames, le - ro, iOffset);
+				iFrames -= nread;
+				iOffset += nread;
+				ro = ls;
 			}
 		}
 	}
 
 	// Move the (remaining) data around...
-	m_pRingBuffer->read(ppFrames, iFrames, iOffset);
-
-	m_iReadOffset += nframes;
+	nread = m_pRingBuffer->read(ppFrames, iFrames, iOffset);
+	m_iReadOffset = (ro + nread);
 	if (m_iReadOffset >= m_iOffset + m_iLength) {
 		// Force out-of-sync...
 		m_bReadSync = false;
 	}
 
 #ifdef DEBUG_0
-	dump_state(QString("-read(%1)").arg(iFrames));
+	dump_state(QString("-read(%1)").arg(nread));
 #endif
 
 	// Time to sync()?
 	if (m_pSyncThread && m_pRingBuffer->writable() > m_iThreshold)
 		m_pSyncThread->sync();
 
-	return iFrames;
+	return nread;
 }
 
 
@@ -485,7 +486,7 @@ int qtractorAudioBuffer::write ( float **ppFrames, unsigned int iFrames,
 	m_iWriteOffset += nwrite;
 
 #ifdef DEBUG_0
-	dump_state(QString("-write(%1)").arg(iFrames));
+	dump_state(QString("-write(%1)").arg(nwrite));
 #endif
 
 	// Time to sync()?
@@ -510,56 +511,57 @@ int qtractorAudioBuffer::readMix ( float **ppFrames, unsigned int iFrames,
 #endif
 
 	// Check for logical EOF...
-	if (m_iReadOffset + iFrames > m_iFileLength)
-		iFrames = m_iFileLength - m_iReadOffset;
+	unsigned long ro = m_iReadOffset;
+	if (iFrames + ro > m_iFileLength)
+		iFrames = m_iFileLength - ro;
+
+	int nread;
 
 	// Are we self-contained (ie. got integral file in buffer) and looping?
-	unsigned int nframes = iFrames;
 	unsigned long ls = m_iLoopStart;
 	unsigned long le = m_iLoopEnd;
 	// Are we in the middle of the loop range ?
 	if (ls < le) {
 		if (m_bIntegral) {
 			unsigned int ri = m_pRingBuffer->readIndex();
-			while (ri < le && ri + nframes >= le) {
-				unsigned int nread = le - ri;
+			while (ri < le && ri + iFrames >= le) {
 				m_fNextGain = 0.0f;
-				readMixFrames(ppFrames, nread, iChannels, iOffset, fGain);
-				nframes -= nread;
+				nread = readMixFrames(ppFrames, le - ri, iChannels, iOffset, fGain);
+				iFrames -= nread;
 				iOffset += nread;
+				ro = m_iOffset + ls;
 				m_pRingBuffer->setReadIndex(ls);
-				m_iReadOffset = m_iOffset + ls;
 			}
-			iFrames = nframes;
 		} else {
 			ls += m_iOffset;
 			le += m_iOffset;
-			while (le >= m_iReadOffset && m_iReadOffset + nframes >= le) {
-				nframes -= (le - m_iReadOffset);
-				m_iReadOffset = ls;
+			while (le >= ro && ro + iFrames >= le) {
+				nread = readMixFrames(ppFrames, le - ro, iChannels, iOffset, fGain);
+				iFrames -= nread;
+				iOffset += nread;
+				ro = ls;
 				m_fNextGain = 0.0f;
 			}
 		}
 	}
 
 	// Mix the (remaining) data around...
-	readMixFrames(ppFrames, iFrames, iChannels, iOffset, fGain);
-
-	m_iReadOffset += nframes;
+	nread = readMixFrames(ppFrames, iFrames, iChannels, iOffset, fGain);
+	m_iReadOffset = (ro + nread);
 	if (m_iReadOffset >= m_iOffset + m_iLength) {
 		// Force out-of-sync...
 		m_bReadSync = false;
 	}
 
 #ifdef DEBUG_0
-	dump_state(QString("-readMix(%1)").arg(iFrames));
+	dump_state(QString("-readMix(%1)").arg(nread));
 #endif
 
 	// Time to sync()?
 	if (m_pSyncThread && m_pRingBuffer->writable() > m_iThreshold)
 		m_pSyncThread->sync();
 
-	return iFrames;
+	return nread;
 }
 
 

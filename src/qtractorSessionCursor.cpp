@@ -118,15 +118,21 @@ unsigned long qtractorSessionCursor::frame (void) const
 }
 
 
-// Absolute frame-time posiion accessor.
+// Absolute frame-time position accessors.
 void qtractorSessionCursor::setFrameTime ( unsigned long iFrameTime )
 {
 	m_iFrameTime = iFrameTime;
+	m_iFrameDelta = m_iFrame - iFrameTime;
 }
 
 unsigned long qtractorSessionCursor::frameTime (void) const
 {
 	return m_iFrameTime;
+}
+
+unsigned long qtractorSessionCursor::framePos (void) const
+{
+	return m_iFrameTime + m_iFrameDelta;
 }
 
 
@@ -241,6 +247,7 @@ void qtractorSessionCursor::reset (void)
 #endif
 
 	m_iFrameTime = 0;
+	m_iFrameDelta = m_iFrame;
 
 	// Free existing clip references.
 	if (m_ppClips) {

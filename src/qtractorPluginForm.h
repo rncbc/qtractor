@@ -85,6 +85,7 @@ protected slots:
 	void openPresetSlot();
 	void savePresetSlot();
 	void deletePresetSlot();
+	void paramsSlot(bool bOn);
 	void editSlot(bool bOn);
 	void activateSlot(bool bOn);
 	void valueChangeSlot(qtractorPluginParam *pParam, float fValue);

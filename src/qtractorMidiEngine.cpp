@@ -882,14 +882,14 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 					qtractorMidiClip *pMidiClip
 						= static_cast<qtractorMidiClip *> (pTrack->clipRecord());
 					if (pMidiClip && (!pSession->isPunching()
-						|| (pEv->time.tick >= pSession->punchInTime()
-						&&  pEv->time.tick <  pSession->punchOutTime()))) {
+						|| ((pEv->time.tick + m_iTimeStart >= pSession->punchInTime())
+						&&  (pEv->time.tick + m_iTimeStart <  pSession->punchOutTime())))) {
 						// Yep, we got a new MIDI event...
 						qtractorMidiEvent *pEvent = new qtractorMidiEvent(
 							pEv->time.tick, type, data1, data2, duration);
 						if (pSysex)
 							pEvent->setSysex(pSysex, iSysex);
-						pMidiClip->sequence()->addEvent(pEvent);
+						(pMidiClip->sequence())->addEvent(pEvent);
 					}
 				}
 				// Track input monitoring...

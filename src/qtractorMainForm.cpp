@@ -3569,9 +3569,9 @@ void qtractorMainForm::stabilizeForm (void)
 	m_ui.transportRecordAction->setEnabled(
 		(!bLooping || !bPunching) && m_pSession->recordTracks() > 0);
 	m_ui.transportPunchAction->setEnabled(
-		!bRolling && !bLooping && (bPunching || bSelectable));
+		!bLooping && (bPunching || bSelectable));
 	m_ui.transportPunchSetAction->setEnabled(
-		!bRolling && !bLooping && bSelectable);
+		!bLooping && bSelectable);
 	m_ui.transportMetroAction->setEnabled(
 		m_pOptions->bAudioMetronome || m_pOptions->bMidiMetronome);
 

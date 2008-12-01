@@ -348,18 +348,29 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 		if (iTrackStart < iTrackEnd) {
 			int y1 = 0;
 			int y2 = 0;
+			unsigned long iFramePos = pSession->framePos();
+			unsigned long iFrameOffset = iFramePos - iTrackEnd;
 			qtractorTrack *pTrack = pSession->tracks().first();
 			while (pTrack && y2 < ch) {
 				y1  = y2;
 				y2 += pTrack->zoomHeight();
 				// Dispatch to paint this track...
-				if (y2 > cy && pTrack->clipRecord()) {
+				qtractorClip *pClipRecord = pTrack->clipRecord();
+				if (pClipRecord && y2 > cy) {
 					int h = y2 - y1 - 2;
 					const QRect trackRect(
 						rect.left() - 1, y1 - cy + 1, rect.width() + 2, h);
-					qtractorClip *pClipRecord = pTrack->clipRecord();
 					unsigned long iClipStart  = pClipRecord->clipStart();
-					unsigned long iClipOffset = 0;
+					unsigned long iClipOffset = iFrameOffset;
+					if (pSession->isLooping()) {
+						unsigned long iLoopStart = pSession->loopStart();
+						unsigned long iLoopEnd   = pSession->loopEnd();
+						if (iClipStart > iLoopStart && iClipStart < iLoopEnd
+							&& iFramePos > iLoopEnd) {
+							iClipOffset -= iClipStart - iLoopStart;
+							iClipStart = iLoopStart;
+						}
+					}
 					if (iClipStart < iTrackStart)
 						iClipOffset += iTrackStart - iClipStart;
 					x = pSession->pixelFromFrame(iClipStart) - cx;

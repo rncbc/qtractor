@@ -624,7 +624,7 @@ bool qtractorTracks::normalizeClip ( qtractorClip *pClip )
 		QApplication::restoreOverrideCursor();
 	}
 
-	// make it as an undoable command...
+	// Make it as an undoable command...
 	qtractorClipCommand *pClipCommand
 		= new qtractorClipCommand(tr("clip normalize"));
 	pClipCommand->gainClip(pClip, fGain);

@@ -99,6 +99,9 @@ qtractorPluginForm::qtractorPluginForm (
 	QObject::connect(m_ui.DeletePresetToolButton,
 		SIGNAL(clicked()),
 		SLOT(deletePresetSlot()));
+	QObject::connect(m_ui.ParamsToolButton,
+		SIGNAL(toggled(bool)),
+		SLOT(paramsSlot(bool)));
 	QObject::connect(m_ui.EditToolButton,
 		SIGNAL(toggled(bool)),
 		SLOT(editSlot(bool)));
@@ -173,16 +176,21 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 			}
 		}
 	}
-	layout()->addItem(m_pGridLayout);
+	m_ui.ParamsGridWidget->setLayout(m_pGridLayout);
 
 	// Show editor button if available?
 	m_ui.EditToolButton->setVisible(bEditor);
-	if (bEditor)
-		toggleEditor(m_pPlugin->isEditorVisible());
+	//if (bEditor)
+	//	toggleEditor(m_pPlugin->isEditorVisible());
 
 	// Set plugin name as title...
 	updateCaption();
-	adjustSize();
+
+	// This should trigger paramsSlot(!bEditor)
+	// and adjust the size of the params dialog...
+	m_ui.ParamsToolButton->setVisible(iRows > 0 && iRows < 101);
+	m_ui.ParamsToolButton->setChecked(!bEditor);
+	paramsSlot(!bEditor);
 
 	updateActivated();
 	refresh();
@@ -190,8 +198,8 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 	show();
 
 	// Do we have a dedicated editor GUI?
-	// if (bEditor)
-	//	m_pPlugin->openEditor(this);
+	if (bEditor)
+		m_pPlugin->openEditor(this);
 }
 
 
@@ -558,6 +566,26 @@ void qtractorPluginForm::deletePresetSlot (void)
 	refresh();
 
 	stabilize();
+}
+
+
+// Params slot.
+void qtractorPluginForm::paramsSlot ( bool bOn )
+{
+	if (m_pPlugin == NULL)
+		return;
+
+	if (m_iUpdate > 0)
+		return;
+
+	m_ui.ParamsGridWidget->setVisible(bOn);
+
+	// Shake it a little bit first, but
+	// make it as tight as possible...
+	resize(width() - 1, height() - 1);
+	adjustSize();
+
+	m_iUpdate--;
 }
 
 

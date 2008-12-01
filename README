@@ -42,7 +42,7 @@ Features
 - Unlimited number of overlapping clips per track.
 - XML encoded session/project description files (SDI).
 - Point-and-click, multi-select, drag-and-drop interaction
-  (drag, move, drop, cut, copy, paste, delete, split)
+  (drag, move, drop, cut, copy, paste, paste-repeat, delete, split).
 - Unlimited undo/redo.
 - Built-in mixer and monitor controls.
 - Built-in connection patchbay control and persistence
@@ -51,6 +51,7 @@ Features
 - Unlimited number of plug-ins per track or bus.
 - Plug-in presets, programs and chunk/configurations support.
 - Audio/MIDI clip fade-in/out (linear, quadratic, cubic).
+- Audio/MIDI clip gain/volume, normalize, export.
 - Audio clip time-stretching (WSOLA-like or via librubberband [9]),
   pitch-shifting (via librubberband [9]) and seamless sample-rate
   conversion (via libsamplerate [8]).
