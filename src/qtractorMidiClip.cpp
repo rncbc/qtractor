@@ -340,16 +340,24 @@ void qtractorMidiClip::close ( bool bForce )
 	if (pSession == NULL)
 		return;
 
+	// Take pretended clip-length...
+	unsigned long iClipLength = clipLength();
+	if (iClipLength > 0)
+		m_pSeq->setTimeLength(pSession->tickFromFrame(iClipLength));
+
 	// Actual sequence closure...
 	m_pSeq->close();
 
 	// Commit the final clip length...
-	if (clipLength() < 1)
-		setClipLength(pSession->frameFromTick(m_pSeq->duration()));
+	if (m_pSeq->events().count() < 1)
+		iClipLength = 0;
+	else if (iClipLength < 1)
+		iClipLength = pSession->frameFromTick(m_pSeq->duration());
+	setClipLength(iClipLength);
 
 	// Now's time to write the whole thing...
 	bool bNewFile = (m_pFile && m_pFile->mode() == qtractorMidiFile::Write);
-	if (bNewFile && clipLength() > 0) {
+	if (bNewFile && iClipLength > 0) {
 		// Write SMF header...
 		unsigned short iTracks = 1;
 		if (m_iFormat == 1)
@@ -360,10 +368,6 @@ void qtractorMidiClip::close ( bool bForce )
 			m_pFile->writeTrack(NULL);  // Setup track (SMF format 1).
 		m_pFile->writeTrack(m_pSeq);    // Channel track.
 		m_pFile->close();
-		// Nite to know that actual clip length
-		// shall be the whole recorded segment,
-		// not just until the last stored event...
-		setClipLength(pSession->playHead() - clipStart());
 	}
 
 	// Get rid of owned allocations...
@@ -376,7 +380,7 @@ void qtractorMidiClip::close ( bool bForce )
 	m_pSeq->clear();
 
 	// If proven empty, remove the file.
-	if (bForce && bNewFile && clipLength() < 1)
+	if (bForce && bNewFile && iClipLength < 1)
 		QFile::remove(filename());
 
 	// Get rid of editor form, if any.

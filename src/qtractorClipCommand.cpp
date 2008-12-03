@@ -189,28 +189,23 @@ bool qtractorClipCommand::addClipRecord ( qtractorTrack *pTrack )
 	if (pClip == NULL)
 		return false;
 
-	// Time to close the clip...
-	pClip->close(true);
-
-	// Check final contents length...
-	unsigned long iClipLength = pClip->clipLength();
-	if (iClipLength < 1)
-		return false;
-
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
 		return false;
 
-	unsigned long iClipStart = pClip->clipStart();
-	unsigned long iClipEnd = iClipStart + iClipLength;
+	// Arrange for formal clip length...
+	unsigned long iClipEnd = (pSession->isPunching()
+		? pSession->punchOut() : pSession->playHead());
 
-	if (pSession->isPunching()) {
-		iClipEnd = pSession->punchOut();
-		if (iClipStart >= iClipEnd)
-			return false;
-		if (iClipStart + iClipLength > iClipEnd)
-			iClipLength = iClipEnd - iClipStart;
-	}
+	unsigned long iClipStart = pClip->clipStart();
+	if (iClipStart >= iClipEnd)
+		return false;
+
+	unsigned long iClipLength = iClipEnd - iClipStart;
+	pClip->setClipLength(iClipLength);
+
+	// Time to close the clip...
+	pClip->close(true);
 
 	// Reference for immediate file addition...
 	qtractorFiles    *pFiles    = NULL;

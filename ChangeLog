@@ -5,6 +5,10 @@ ChangeLog
 
 CVS HEAD
 
+- Make all recorded clips to honor either the punch-out or
+  play-head; resolve pending MIDI sequence note events on
+  record stop/close.
+
 - Major silent move: audio plugins chain are now applied
   in a pre-fader/meter basis as is usually implied from
   the mixer strip layout ie. signal flows from the top to
