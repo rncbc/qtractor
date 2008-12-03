@@ -195,7 +195,7 @@ bool qtractorClipCommand::addClipRecord ( qtractorTrack *pTrack )
 
 	// Arrange for formal clip length...
 	unsigned long iClipEnd = (pSession->isPunching()
-		? pSession->punchOut() : pSession->playHead());
+		? pSession->punchOut() : pSession->framePos());
 
 	unsigned long iClipStart = pClip->clipStart();
 	if (iClipStart >= iClipEnd)
