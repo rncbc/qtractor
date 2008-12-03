@@ -201,11 +201,14 @@ bool qtractorClipCommand::addClipRecord ( qtractorTrack *pTrack )
 	if (iClipStart >= iClipEnd)
 		return false;
 
-	unsigned long iClipLength = iClipEnd - iClipStart;
-	pClip->setClipLength(iClipLength);
-
 	// Time to close the clip...
+	pClip->setClipLength(iClipEnd - iClipStart);
 	pClip->close(true);
+
+	// Actual clip length might have changed on close.
+	unsigned long iClipLength = pClip->clipLength();
+	if (iClipLength < 1)
+		return false;
 
 	// Reference for immediate file addition...
 	qtractorFiles    *pFiles    = NULL;
