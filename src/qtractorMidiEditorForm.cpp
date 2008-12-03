@@ -1233,8 +1233,15 @@ void qtractorMidiEditorForm::stabilizeForm (void)
 	m_ui.editPasteRepeatAction->setEnabled(bClipboard);
 	m_ui.editDeleteAction->setEnabled(bSelected);
 	m_ui.editSelectNoneAction->setEnabled(bSelected);
+#if 0
 	m_ui.toolsMenu->setEnabled(bSelected);
-
+#else
+	m_ui.toolsQuantizeAction->setEnabled(bSelected);
+	m_ui.toolsTransposeAction->setEnabled(bSelected);
+	m_ui.toolsNormalizeAction->setEnabled(bSelected);
+	m_ui.toolsRandomizeAction->setEnabled(bSelected);
+	m_ui.toolsResizeAction->setEnabled(bSelected);
+#endif
 	// Just having a non-null sequence will indicate
 	// that we're editing a legal MIDI clip...
 	qtractorMidiSequence *pSeq = sequence();

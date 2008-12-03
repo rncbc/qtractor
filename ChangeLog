@@ -5,6 +5,9 @@ ChangeLog
 
 CVS HEAD
 
+- MIDI clip editor Tools menu is not disabled anymore when
+  there's no selection, drop-down menu items are instead.
+
 - Make all recorded clips to honor either the punch-out or
   play-head accumulated position; resolve all pending MIDI
   sequence note events on record stop/close.
