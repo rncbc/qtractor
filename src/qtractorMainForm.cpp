@@ -643,6 +643,9 @@ qtractorMainForm::qtractorMainForm (
 	QObject::connect(m_ui.transportPunchSetAction,
 		SIGNAL(triggered(bool)),
 		SLOT(transportPunchSet()));
+	QObject::connect(m_ui.transportMetroAction,
+		SIGNAL(triggered(bool)),
+		SLOT(transportMetro()));
 	QObject::connect(m_ui.transportFollowAction,
 		SIGNAL(triggered(bool)),
 		SLOT(transportFollow()));
