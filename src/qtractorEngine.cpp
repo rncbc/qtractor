@@ -195,9 +195,8 @@ void qtractorEngine::close (void)
 // Engine state methods.
 void qtractorEngine::setPlaying ( bool bPlaying )
 {
-	m_pSessionCursor->setFrameTime(0);
-
 	if (bPlaying && !m_bPlaying) {
+		m_pSessionCursor->setFrameTime(0);
 		m_bPlaying = start();
 	}
 	else

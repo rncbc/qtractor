@@ -1615,8 +1615,11 @@ bool qtractorMainForm::loadSessionFile (
 
 	if (bResult) {
 		// Save as default session directory.
+		const QString& sSessionDir = QFileInfo(sFilename).absolutePath();
+		if (!QDir(m_pSession->sessionDir()).exists())
+			m_pSession->setSessionDir(sSessionDir);
 		if (m_pOptions)
-			m_pOptions->sSessionDir = QFileInfo(sFilename).absolutePath();
+			m_pOptions->sSessionDir = sSessionDir;
 		// We're not dirty anymore.
 		if (!bTemplate) {
 			updateRecentFiles(sFilename);
