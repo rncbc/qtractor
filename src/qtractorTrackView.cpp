@@ -218,8 +218,8 @@ void qtractorTrackView::updateContentsHeight (void)
 	if (pSession == NULL)
 		return;
 
-	// Allways give some room to drop something...
-	int iContentsHeight = qtractorTrackList::ItemHeightBase;
+	// Allways give some room to drop something at the bottom...
+	int iContentsHeight = qtractorTrackList::ItemHeightBase << 1;
 	// Compute total track height...
 	qtractorTrack *pTrack = pSession->tracks().first();
 	while (pTrack) {
@@ -648,7 +648,7 @@ qtractorTrack *qtractorTrackView::trackAt ( const QPoint& pos,
 		iTrack++;
 	}
 
-	if (bSelectTrack)
+	if (pTrack && bSelectTrack)
 		m_pTracks->trackList()->setCurrentTrackRow(iTrack);
 
 	if (pTrackViewInfo) {
@@ -1200,7 +1200,7 @@ void qtractorTrackView::dropTrack ( const QPoint& pos, const QMimeData *pMimeDat
 
 void qtractorTrackView::dropEvent ( QDropEvent *pDropEvent )
 {
-	dropTrack(pDropEvent->pos(), pDropEvent->mimeData());
+	dropTrack(viewportToContents(pDropEvent->pos()), pDropEvent->mimeData());
 }
 
 

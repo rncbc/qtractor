@@ -462,7 +462,7 @@ qtractorTrack *qtractorTrackList::track ( int iTrack ) const
 // Retrive the given track row rectangular (in viewport coordinates).
 QRect qtractorTrackList::trackRect ( int iTrack ) const
 {
-	QRect rect(0, 0, qtractorScrollView::viewport()->width(), 0);
+	QRect rect(0, 0, qtractorScrollView::viewport()->width(), ItemHeightBase);
 
 	if (iTrack >= 0 && iTrack < m_items.count()) {
 		int y1, y2;
@@ -526,17 +526,17 @@ void qtractorTrackList::setCurrentTrackRow ( int iTrack )
 	m_iCurrentTrack = iCurrentTrack;
 
 	int hh = m_pHeader->sizeHint().height();
-	int  y = qtractorScrollView::contentsY() - hh;
+	int cy = qtractorScrollView::contentsY();
 	const QRect& rect = trackRect(m_iCurrentTrack);
 	if (rect.top() < hh) {
 		qtractorScrollView::ensureVisible(
-			qtractorScrollView::contentsX(), y + rect.top(), 0, hh);
+			qtractorScrollView::contentsX(), cy + rect.top(), 0, 24);
 	} else if (rect.bottom() > qtractorScrollView::viewport()->height()) {
 		qtractorScrollView::ensureVisible(
-			qtractorScrollView::contentsX(), y + rect.bottom(), 0, hh);
+			qtractorScrollView::contentsX(), cy + rect.bottom() - hh, 0, 24);
+	} else {
+		updateContents();
 	}
-
-	updateContents();
 
 	emit selectionChanged();
 }
@@ -550,7 +550,6 @@ int qtractorTrackList::trackRowCount (void) const
 {
 	return m_items.count();
 }
-
 
 
 // Retrieves current selected track reference.
@@ -612,8 +611,8 @@ void qtractorTrackList::clear (void)
 // Update all tracks item height.
 void qtractorTrackList::updateContentsHeight (void)
 {
-	// Remember to give some room to drop something...
-	int iContentsHeight = m_pHeader->sizeHint().height() + ItemHeightBase;
+	// Remember to give some room to drop something at the bottom...
+	int iContentsHeight = m_pHeader->sizeHint().height() + (ItemHeightBase << 1);
 	QListIterator<Item *> iter(m_items);
 	while (iter.hasNext()) {
 		qtractorTrack *pTrack = iter.next()->track;
@@ -775,7 +774,7 @@ void qtractorTrackList::updatePixmap ( int cx, int cy )
 	int iColCount = m_pHeader->count();
 	int hh = m_pHeader->sizeHint().height();
 	// Account for the item dropping headroom...
-	int ch = qtractorScrollView::contentsHeight() - ItemHeightBase;
+	int ch = qtractorScrollView::contentsHeight() - (ItemHeightBase << 1);
 
 	int x, y1, y2, h1;
 	y1 = y2 = 0;
@@ -1035,7 +1034,6 @@ void qtractorTrackList::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 // Draw a dragging separator line.
 void qtractorTrackList::moveRubberBand ( const QPoint& posDrag )
 {
-
 	// Create the rubber-band if there's none...
 	if (m_pRubberBand == NULL) {
 		m_pRubberBand = new qtractorRubberBand(

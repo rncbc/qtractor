@@ -1,7 +1,7 @@
 // qtractorScrollView.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2006, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -118,12 +118,12 @@ void qtractorScrollView::ensureVisible ( int cx, int cy, int mx, int my )
 		dx = 0;
 	else if (dx < w - cw && cw > w)
 		dx = w - cw;
-	
+
 	if (dy > 0)
 		dy = 0;
 	else if (dy < h - ch && ch > h)
 		dy = h - ch;
-	
+
 	setContentsPos(-dx, -dy);
 }
 
@@ -134,7 +134,7 @@ void qtractorScrollView::updateScrollBars (void)
 	QWidget *pViewport = QAbstractScrollArea::viewport();
 	int w = pViewport->width()  - 2;
 	int h = pViewport->height() - 2;
-	
+
 	QScrollBar *pHScrollBar = QAbstractScrollArea::horizontalScrollBar();
 	int cw = (m_rectContents.width() > w ? m_rectContents.width() - w : 0);
 	if (pHScrollBar->sliderPosition() > cw)
