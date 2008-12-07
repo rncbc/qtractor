@@ -525,18 +525,9 @@ void qtractorTrackList::setCurrentTrackRow ( int iTrack )
 
 	m_iCurrentTrack = iCurrentTrack;
 
-	int hh = m_pHeader->sizeHint().height();
-	int cy = qtractorScrollView::contentsY();
-	const QRect& rect = trackRect(m_iCurrentTrack);
-	if (rect.top() < hh) {
-		qtractorScrollView::ensureVisible(
-			qtractorScrollView::contentsX(), cy + rect.top(), 0, 24);
-	} else if (rect.bottom() > qtractorScrollView::viewport()->height()) {
-		qtractorScrollView::ensureVisible(
-			qtractorScrollView::contentsX(), cy + rect.bottom() - hh, 0, 24);
-	} else {
+	// Make sure the new current track is visiable...
+	if (!ensureVisibleRect(trackRect(m_iCurrentTrack)))
 		updateContents();
-	}
 
 	emit selectionChanged();
 }
@@ -911,8 +902,10 @@ void qtractorTrackList::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 		if (m_iDragTrack >= 0) {
 			int iTrack = trackRowAt(pMouseEvent->pos());
 			if (iTrack >= 0) {
-				m_posDrag = trackRect(iTrack).topLeft();
+				const QRect& rect = trackRect(iTrack);
+				m_posDrag = rect.topLeft();
 				moveRubberBand(m_posDrag);
+				ensureVisibleRect(rect);
 			}
 		}
 		break;
@@ -1051,6 +1044,27 @@ void qtractorTrackList::moveRubberBand ( const QPoint& posDrag )
 	// Ah, and make it visible, of course...
 	if (!m_pRubberBand->isVisible())
 		m_pRubberBand->show();
+}
+
+
+// Make sure the given (track) rectangle is visible.
+bool qtractorTrackList::ensureVisibleRect ( const QRect& rect )
+{
+	int hh = m_pHeader->sizeHint().height();
+	int cx = qtractorScrollView::contentsX();
+	int cy = qtractorScrollView::contentsY();
+
+	if (rect.top() < hh) {
+		qtractorScrollView::ensureVisible(cx, cy + rect.top(), 0, 24);
+		return true;
+	}
+
+	if (rect.bottom() > qtractorScrollView::viewport()->height()) {
+		qtractorScrollView::ensureVisible(cx, cy + rect.bottom() - hh, 0, 24);
+		return true;
+	}
+
+	return false;
 }
 
 

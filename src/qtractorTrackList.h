@@ -176,6 +176,9 @@ protected:
 	// Show and move rubber-band item.
 	void moveRubberBand(const QPoint& posDrag);
 
+	// Make sure the given (track) rectangle is visible.
+	bool ensureVisibleRect(const QRect& rect);
+
 	// Keyboard event handler.
 	void keyPressEvent(QKeyEvent *pKeyEvent);
 
