@@ -81,8 +81,6 @@ bool qtractorTrackCommand::addTrack (void)
 	pSession->insertTrack(m_pTrack, pAfterTrack);
 	// And the new track list view item too...
 	iTrack = pTracks->trackList()->insertTrack(iTrack, m_pTrack);
-	if (iTrack >= 0)
-		pTracks->trackList()->setCurrentTrackRow(iTrack);
 	// Special MIDI track cases...
 	if (m_pTrack->trackType() == qtractorTrack::Midi)
 	    pTracks->updateMidiTrack(m_pTrack);
@@ -91,6 +89,9 @@ bool qtractorTrackCommand::addTrack (void)
 	qtractorMixer *pMixer = pMainForm->mixer();
 	if (pMixer)
 		pMixer->updateTracks();
+
+	// Let the change get visible.
+	pTracks->trackList()->setCurrentTrackRow(iTrack);
 
 	// Avoid disposal of the track reference.
 	setAutoDelete(false);

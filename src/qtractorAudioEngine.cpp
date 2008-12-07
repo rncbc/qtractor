@@ -674,7 +674,7 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 							pInputBus->in(), nframes, pInputBus->channels());
 					}
 					// Monitor passthru processing...
-					if (pTrack->isMonitor()) {
+					if (pSession->isTrackMonitor(pTrack)) {
 						pAudioMonitor->process(
 							pInputBus->in(), nframes, pInputBus->channels());
 						// Plugin-chain processing...

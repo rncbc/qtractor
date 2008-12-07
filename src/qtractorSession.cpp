@@ -196,6 +196,8 @@ void qtractorSession::clear (void)
 	ATOMIC_SET(&m_locks, 0);
 	ATOMIC_SET(&m_mutex, 0);
 
+	m_pCurrentTrack = NULL;
+
 	m_tracks.clear();
 	m_cursors.clear();
 
@@ -858,6 +860,37 @@ void qtractorSession::setSoloTracks ( bool bSolo )
 unsigned int qtractorSession::soloTracks (void) const
 {
 	return m_iSoloTracks;
+}
+
+
+// Temporary current track accessors.
+void qtractorSession::setCurrentTrack ( qtractorTrack *pTrack )
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorSession::setCurrentTrack(%p)", pTrack);
+#endif
+	m_pCurrentTrack = pTrack;
+}
+
+qtractorTrack *qtractorSession::currentTrack (void) const
+{
+	return m_pCurrentTrack;
+}
+
+
+// Temporary current track predicates.
+bool qtractorSession::isTrackMonitor ( qtractorTrack *pTrack ) const
+{
+	return pTrack->isMonitor()
+		|| pTrack == m_pCurrentTrack;
+}
+
+bool qtractorSession::isTrackMidiChannel (
+	qtractorTrack *pTrack, unsigned short iChannel ) const
+{
+	return pTrack->isMidiOmni()
+		|| pTrack->midiChannel() == iChannel
+		|| pTrack == m_pCurrentTrack;
 }
 
 

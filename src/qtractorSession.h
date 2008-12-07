@@ -174,6 +174,15 @@ public:
 	void setSoloTracks(bool bSolo);
 	unsigned int soloTracks() const;
 
+	// Temporary current track accessors.
+	void setCurrentTrack(qtractorTrack *pTrack);
+	qtractorTrack *currentTrack() const;
+
+	// Temporary current track predicates.
+	bool isTrackMonitor(qtractorTrack *pTrack) const;
+	bool isTrackMidiChannel(qtractorTrack *pTrack,
+		unsigned short iChannel) const;
+
 	// Session cursor factory methods.
 	qtractorSessionCursor *createSessionCursor(unsigned long iFrame = 0,
 		qtractorTrack::TrackType syncType = qtractorTrack::None);
@@ -347,6 +356,8 @@ private:
 	unsigned int   m_iRecordTracks;     // Current number of record-armed tracks.
 	unsigned int   m_iMuteTracks;       // Current number of muted tracks.
 	unsigned int   m_iSoloTracks;       // Current number of solo tracks.
+
+	qtractorTrack *m_pCurrentTrack;     // Temporary current track.
 
 	// The track list.
 	qtractorList<qtractorTrack> m_tracks;

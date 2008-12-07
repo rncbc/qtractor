@@ -515,6 +515,9 @@ int qtractorTrackList::removeTrack ( int iTrack )
 // Manage current track row by index.
 void qtractorTrackList::setCurrentTrackRow ( int iTrack )
 {
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorTrackList::setCurrentTrackRow(%d)", iTrack);
+#endif
 	int iCurrentTrack = m_iCurrentTrack;
 	if (iTrack < 0 || iTrack >= m_items.count())
 		iCurrentTrack = -1;

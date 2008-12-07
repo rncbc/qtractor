@@ -5,6 +5,10 @@ ChangeLog
 
 CVS HEAD
 
+- Current selected track is now set on monitor and MIDI
+  channel omni-mode automagically, as a convenient workflow
+  feature (kindly suggested by Holborn).
+
 - MIDI clip editor Tools menu is not disabled anymore when
   there's no selection, drop-down menu items are instead.
 
