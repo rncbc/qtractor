@@ -218,6 +218,8 @@
     <addaction name="trackNavigateMenu" />
     <addaction name="trackMoveMenu" />
     <addaction name="separator" />
+    <addaction name="trackAutoMonitorAction" />
+    <addaction name="separator" />
     <addaction name="trackImportMenu" />
     <addaction name="trackExportMenu" />
    </widget>
@@ -991,7 +993,7 @@
     <string>Monitor track</string>
    </property>
    <property name="statusTip" >
-    <string>Monitor current track for recording</string>
+    <string>Monitor current track</string>
    </property>
   </action>
   <action name="trackNavigateFirstAction" >
@@ -1104,6 +1106,26 @@
    </property>
    <property name="statusTip" >
     <string>Move current track to bottom</string>
+   </property>
+  </action>
+  <action name="trackAutoMonitorAction" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="text" >
+    <string>A&amp;uto Monitor</string>
+   </property>
+   <property name="iconText" >
+    <string>Auto Monitor</string>
+   </property>
+   <property name="toolTip" >
+    <string>Auto monitor</string>
+   </property>
+   <property name="statusTip" >
+    <string>Auto-monitor current track</string>
+   </property>
+   <property name="shortcut" >
+    <string>F4</string>
    </property>
   </action>
   <action name="trackImportAudioAction" >

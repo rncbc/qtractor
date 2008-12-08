@@ -157,6 +157,7 @@ qtractorOptions::qtractorOptions (void)
 	sMidiDir       = m_settings.value("/MidiDir").toString();
 	sPresetDir     = m_settings.value("/PresetDir").toString();
 	sInstrumentDir = m_settings.value("/InstrumentDir").toString();
+	bAutoMonitor   = m_settings.value("/AutoMonitor", true).toBool();
 	iSnapPerBeat   = m_settings.value("/SnapPerBeat", 4).toInt();
 	fTempo   = float(m_settings.value("/Tempo", 120.0).toDouble());
 	iPasteRepeatCount = m_settings.value("/PasteRepeatCount", 2).toInt();
@@ -339,6 +340,7 @@ qtractorOptions::~qtractorOptions (void)
 	m_settings.setValue("/MidiDir", sMidiDir);
 	m_settings.setValue("/PresetDir", sPresetDir);
 	m_settings.setValue("/InstrumentDir", sInstrumentDir);
+	m_settings.setValue("/AutoMonitor", bAutoMonitor);
 	m_settings.setValue("/SnapPerBeat", iSnapPerBeat);
 	m_settings.setValue("/Tempo", double(fTempo));
 	m_settings.setValue("/PasteRepeatCount", iPasteRepeatCount);

@@ -132,7 +132,7 @@ public:
 	// Session options.
 	bool    bSessionTemplate;
 	QString sSessionTemplatePath;
-
+	bool	bAutoMonitor;
 	int     iSnapPerBeat;
 	float   fTempo;
 

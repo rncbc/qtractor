@@ -4410,7 +4410,6 @@ void qtractorMainForm::trackSelectionChanged (void)
 		// Doesn't matter whether strip is null...
 		(m_pMixer->trackRack())->setSelectedStrip(pStrip);
 		// HACK: Set current session track for monitoring purposes...
-		// (should be subject of some global user option, not yet there)
 		if (m_ui.trackAutoMonitorAction->isChecked())
 			m_pSession->setCurrentTrack(pTrack);
 	}

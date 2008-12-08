@@ -147,11 +147,11 @@ public slots:
 	void trackMoveUp();
 	void trackMoveDown();
 	void trackMoveBottom();
+	void trackAutoMonitor(bool bOn);
 	void trackImportAudio();
 	void trackImportMidi();
 	void trackExportAudio();
 	void trackExportMidi();
-	void trackAutoMonitor(bool bOn);
 
 	void viewMenubar(bool bOn);
 	void viewStatusbar(bool bOn);
