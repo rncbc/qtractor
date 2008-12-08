@@ -151,6 +151,7 @@ public slots:
 	void trackImportMidi();
 	void trackExportAudio();
 	void trackExportMidi();
+	void trackAutoMonitor(bool bOn);
 
 	void viewMenubar(bool bOn);
 	void viewStatusbar(bool bOn);

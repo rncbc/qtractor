@@ -5,7 +5,8 @@ ChangeLog
 
 CVS HEAD
 
-- Current selected track is now set on monitor and MIDI
+- New auto-monitor toggle option (menu Track/Auto Monitor):
+  the current selected track is now set on monitor and MIDI
   channel omni-mode automagically, as a convenient workflow
   feature (kindly suggested by Holborn).
 

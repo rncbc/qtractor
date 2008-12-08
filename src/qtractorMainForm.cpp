@@ -536,6 +536,9 @@ qtractorMainForm::qtractorMainForm (
 	QObject::connect(m_ui.trackMoveBottomAction,
 		SIGNAL(triggered(bool)),
 		SLOT(trackMoveBottom()));
+	QObject::connect(m_ui.trackAutoMonitorAction,
+		SIGNAL(triggered(bool)),
+		SLOT(trackAutoMonitor(bool)));
 	QObject::connect(m_ui.trackImportAudioAction,
 		SIGNAL(triggered(bool)),
 		SLOT(trackImportAudio()));
@@ -811,6 +814,8 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 	m_ui.transportAutoBackwardAction->setChecked(m_pOptions->bAutoBackward);
 	m_ui.transportContinueAction->setChecked(m_pOptions->bContinuePastEnd);
 
+	m_ui.trackAutoMonitorAction->setChecked(m_pOptions->bAutoMonitor);
+
 	// Initial decorations visibility state.
 	viewMenubar(m_pOptions->bMenubar);
 	viewStatusbar(m_pOptions->bStatusbar);
@@ -976,6 +981,7 @@ bool qtractorMainForm::queryClose (void)
 			m_pOptions->bFollowPlayhead = m_ui.transportFollowAction->isChecked();
 			m_pOptions->bAutoBackward = m_ui.transportAutoBackwardAction->isChecked();
 			m_pOptions->bContinuePastEnd = m_ui.transportContinueAction->isChecked();
+			m_pOptions->bAutoMonitor = m_ui.trackAutoMonitorAction->isChecked();
 			// Save instrument definition file list...
 			m_pOptions->instrumentFiles = (m_pSession->instruments())->files();
 			// Save custom meter colors, if any...
@@ -2302,6 +2308,20 @@ void qtractorMainForm::trackMoveBottom (void)
 }
 
 
+// Auto-monitor current track.
+void qtractorMainForm::trackAutoMonitor ( bool bOn )
+{
+#ifdef CONFIG_DEBUG
+	appendMessages("qtractorMainForm::trackAutoMonitor()");
+#endif
+
+	qtractorTrack *pTrack = NULL;
+	if (bOn && m_pTracks)
+		pTrack = m_pTracks->currentTrack();
+	m_pSession->setCurrentTrack(pTrack);
+}
+
+
 // Import some tracks from Audio file.
 void qtractorMainForm::trackImportAudio (void)
 {
@@ -3486,6 +3506,7 @@ void qtractorMainForm::stabilizeForm (void)
 	m_ui.trackMoveBottomAction->setEnabled(bEnabled && pTrack->next() != NULL);
 	m_ui.trackImportAudioAction->setEnabled(m_pTracks != NULL);
 	m_ui.trackImportMidiAction->setEnabled(m_pTracks != NULL);
+	m_ui.trackAutoMonitorAction->setEnabled(m_pTracks != NULL);
 
 	// Update track menu state...
 	if (bEnabled) {
@@ -4390,7 +4411,8 @@ void qtractorMainForm::trackSelectionChanged (void)
 		(m_pMixer->trackRack())->setSelectedStrip(pStrip);
 		// HACK: Set current session track for monitoring purposes...
 		// (should be subject of some global user option, not yet there)
-		m_pSession->setCurrentTrack(pTrack);
+		if (m_ui.trackAutoMonitorAction->isChecked())
+			m_pSession->setCurrentTrack(pTrack);
 	}
 
 	stabilizeForm();
