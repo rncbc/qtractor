@@ -18,7 +18,7 @@
    with this program; if not, write to the Free Software Foundation, Inc.,
    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-  </comment>
+ </comment>
  <exportmacro></exportmacro>
  <class>qtractorPluginForm</class>
  <widget class="QWidget" name="qtractorPluginForm" >
@@ -148,10 +148,16 @@
         <enum>Qt::TabFocus</enum>
        </property>
        <property name="toolTip" >
-        <string>Parameters</string>
+        <string>Plugin parameters</string>
        </property>
        <property name="text" >
         <string>Params</string>
+       </property>
+       <property name="icon" >
+        <iconset resource="../icons/qtractor.qrc" >:/icons/formParamsOff.png</iconset>
+       </property>
+       <property name="toolButtonStyle" >
+        <enum>Qt::ToolButtonTextBesideIcon</enum>
        </property>
        <property name="checkable" >
         <bool>true</bool>

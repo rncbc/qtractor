@@ -73,12 +73,19 @@ qtractorPluginForm::qtractorPluginForm (
 	m_ui.PresetComboBox->setInsertPolicy(QComboBox::NoInsert);
 
 	// Have some effective feedback when toggling on/off...
-	QIcon icons;
-	icons.addPixmap(
+	QIcon iconParams;
+	iconParams.addPixmap(
+		QPixmap(":/icons/formParamsOff.png"), QIcon::Active, QIcon::Off);
+	iconParams.addPixmap(
+		QPixmap(":/icons/formParamsOn.png"), QIcon::Active, QIcon::On);
+	m_ui.ParamsToolButton->setIcon(iconParams);
+
+	QIcon iconActivate;
+	iconActivate.addPixmap(
 		QPixmap(":/icons/itemLedOff.png"), QIcon::Active, QIcon::Off);
-	icons.addPixmap(
+	iconActivate.addPixmap(
 		QPixmap(":/icons/itemLedOn.png"), QIcon::Active, QIcon::On);
-	m_ui.ActivateToolButton->setIcon(icons);
+	m_ui.ActivateToolButton->setIcon(iconActivate);
 
 	if (g_sDefPreset.isEmpty())
 		g_sDefPreset = tr("(default)");

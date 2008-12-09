@@ -5,6 +5,9 @@ ChangeLog
 
 CVS HEAD
 
+- Generic plugin forms now have the option to show/hide the
+  parameter widgets through the new "Params" button.
+
 - New auto-monitor toggle option (menu Track/Auto Monitor):
   the current selected track is now set on monitor and MIDI
   channel omni-mode automagically, as a convenient workflow

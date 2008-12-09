@@ -28,6 +28,8 @@
 		<file>formMoveDown.png</file>
 		<file>formMoveUp.png</file>
 		<file>formOpen.png</file>
+		<file>formParamsOn.png</file>
+		<file>formParamsOff.png</file>
 		<file>formRefresh.png</file>
 		<file>formReject.png</file>
 		<file>formRemove.png</file>
