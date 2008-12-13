@@ -1125,7 +1125,7 @@
     <string>Auto-monitor current track</string>
    </property>
    <property name="shortcut" >
-    <string>F4</string>
+    <string>F6</string>
    </property>
   </action>
   <action name="trackImportAudioAction" >
