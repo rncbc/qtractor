@@ -105,12 +105,6 @@ qtractorBusForm::qtractorBusForm (
 	m_ui.BusTitleTextLabel->setPalette(QPalette(rgbDark));
 	m_ui.BusTitleTextLabel->setAutoFillBackground(true);
 
-	// FIXME: Initial horizontal splitter sizes.
-	QList<int> sizes;
-	sizes.append(140);
-	sizes.append(200);
-	m_ui.BusSplitter->setSizes(sizes);
-
 	// (Re)initial contents.
 	refreshBuses();
 

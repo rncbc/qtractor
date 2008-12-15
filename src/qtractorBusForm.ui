@@ -646,6 +646,7 @@
  <layoutdefault spacing="4" margin="8" />
  <tabstops>
   <tabstop>BusListView</tabstop>
+  <tabstop>BusTabWidget</tabstop>
   <tabstop>BusNameLineEdit</tabstop>
   <tabstop>BusModeComboBox</tabstop>
   <tabstop>PassthruCheckBox</tabstop>
