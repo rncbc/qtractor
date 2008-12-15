@@ -5,6 +5,9 @@ ChangeLog
 
 CVS HEAD
 
+- Track form plugin lists are now properly (re)initialized
+  when track type setting changes.
+
 - Generic plugin forms now have the option to show/hide the
   parameter widgets through the new "Params" button.
 

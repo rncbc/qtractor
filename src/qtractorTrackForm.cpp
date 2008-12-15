@@ -1023,30 +1023,33 @@ void qtractorTrackForm::outputBusNameChanged ( const QString& sBusName )
 
 	// It all depends on the track type we're into...
 	qtractorTrack::TrackType trackType = qtractorTrackForm::trackType();
-	if (trackType == qtractorTrack::Audio) {
-		qtractorAudioEngine *pAudioEngine = m_pTrack->session()->audioEngine();
-		if (pAudioEngine) {
-			// Get the audio bus applicable for the plugin list...
-			qtractorAudioBus *pAudioBus = static_cast<qtractorAudioBus *> (
+
+	// (Re)initialize plugin-list audio output bus properly...
+	qtractorAudioEngine *pAudioEngine = m_pTrack->session()->audioEngine();
+	if (pAudioEngine) {
+		// Get the audio bus applicable for the plugin list...
+		qtractorAudioBus *pAudioBus = NULL;
+		if (trackType == qtractorTrack::Audio)
+			pAudioBus = static_cast<qtractorAudioBus *> (
 				pAudioEngine->findBus(sBusName));
-			// FIXME: Master audio bus as reference, still...
-			if (pAudioBus == NULL)
-				pAudioBus = static_cast<qtractorAudioBus *> (
-					pAudioEngine->buses().first());
-			// If an audio bus has been found applicable,
-			// must set plugin-list channel buffers...
-			if (pAudioBus) {
-				m_pTrack->pluginList()->setBuffer(pAudioBus->channels(),
-					pAudioEngine->bufferSize(), pAudioEngine->sampleRate(),
-					qtractorPluginList::AudioTrack);
-			}
+		// FIXME: Master audio bus as reference, still...
+		if (pAudioBus == NULL)
+			pAudioBus = static_cast<qtractorAudioBus *> (
+				pAudioEngine->buses().first());
+		// If an audio bus has been found applicable,
+		// must set plugin-list channel buffers...
+		if (pAudioBus) {
+			m_pTrack->pluginList()->setBuffer(pAudioBus->channels(),
+				pAudioEngine->bufferSize(), pAudioEngine->sampleRate(),
+				trackType == qtractorTrack::Audio
+					? qtractorPluginList::AudioTrack
+					: qtractorPluginList::MidiTrack);
 		}
 	}
-	else
-	if (trackType == qtractorTrack::Midi) {
-		// Recache the applicable MIDI output bus ...
+
+	// Recache the applicable MIDI output bus ...
+	if (trackType == qtractorTrack::Midi)
 		m_pMidiBus = midiBus();
-	}
 
 	channelChanged(m_ui.ChannelSpinBox->value());
 }

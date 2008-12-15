@@ -3,7 +3,7 @@
 %define release 22
 %define prefix  @ac_prefix@
 
-Summary:	An Audio/MIDI multi-track sequencer.
+Summary:	An Audio/MIDI multi-track sequencer
 Name:		%{name}
 Version:	%{version}
 Release:	%{release}

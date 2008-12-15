@@ -88,14 +88,6 @@
          </property>
          <item>
           <widget class="QGroupBox" name="TrackTypeGroup" >
-           <property name="sizePolicy" >
-            <sizepolicy>
-             <hsizetype>5</hsizetype>
-             <vsizetype>3</vsizetype>
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
            <property name="title" >
             <string>Type</string>
            </property>
@@ -137,14 +129,6 @@
          </item>
          <item>
           <widget class="QGroupBox" name="TrackBusGroup" >
-           <property name="sizePolicy" >
-            <sizepolicy>
-             <hsizetype>5</hsizetype>
-             <vsizetype>3</vsizetype>
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
            <property name="title" >
             <string>Input / Output</string>
            </property>
@@ -229,14 +213,6 @@
        </item>
        <item>
         <widget class="QGroupBox" name="MidiGroupBox" >
-         <property name="sizePolicy" >
-          <sizepolicy>
-           <hsizetype>5</hsizetype>
-           <vsizetype>3</vsizetype>
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
          <property name="title" >
           <string>MIDI / Instrument</string>
          </property>
@@ -302,6 +278,12 @@
           </item>
           <item row="0" column="2" >
            <widget class="QSpinBox" name="ChannelSpinBox" >
+            <property name="maximumSize" >
+             <size>
+              <width>48</width>
+              <height>24</height>
+             </size>
+            </property>
             <property name="toolTip" >
              <string>MIDI Channel (1-16)</string>
             </property>
@@ -313,26 +295,18 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="3" >
+          <item row="0" column="3" colspan="3" >
            <widget class="QComboBox" name="InstrumentComboBox" >
-            <property name="sizePolicy" >
-             <sizepolicy>
-              <hsizetype>3</hsizetype>
-              <vsizetype>0</vsizetype>
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
             <property name="toolTip" >
              <string>MIDI Patch: Instrument</string>
             </property>
            </widget>
           </item>
-          <item row="1" column="2" colspan="2" >
+          <item row="1" column="2" colspan="4" >
            <widget class="QComboBox" name="BankSelMethodComboBox" >
             <property name="sizePolicy" >
              <sizepolicy>
-              <hsizetype>3</hsizetype>
+              <hsizetype>7</hsizetype>
               <vsizetype>0</vsizetype>
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
@@ -343,16 +317,8 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="1" colspan="3" >
+          <item row="2" column="1" colspan="5" >
            <widget class="QComboBox" name="BankComboBox" >
-            <property name="sizePolicy" >
-             <sizepolicy>
-              <hsizetype>3</hsizetype>
-              <vsizetype>0</vsizetype>
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
             <property name="toolTip" >
              <string>MIDI Patch: Bank</string>
             </property>
@@ -361,16 +327,8 @@
             </property>
            </widget>
           </item>
-          <item row="3" column="1" colspan="3" >
+          <item row="3" column="1" colspan="5" >
            <widget class="QComboBox" name="ProgComboBox" >
-            <property name="sizePolicy" >
-             <sizepolicy>
-              <hsizetype>3</hsizetype>
-              <vsizetype>0</vsizetype>
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
             <property name="toolTip" >
              <string>MIDI Patch: Program</string>
             </property>
@@ -384,14 +342,6 @@
        </item>
        <item>
         <widget class="QGroupBox" name="TrackViewGroup" >
-         <property name="sizePolicy" >
-          <sizepolicy>
-           <hsizetype>5</hsizetype>
-           <vsizetype>3</vsizetype>
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
          <property name="title" >
           <string>View / Colors</string>
          </property>
@@ -414,14 +364,6 @@
           </item>
           <item>
            <widget class="QComboBox" name="ForegroundColorComboBox" >
-            <property name="sizePolicy" >
-             <sizepolicy>
-              <hsizetype>3</hsizetype>
-              <vsizetype>0</vsizetype>
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
             <property name="minimumSize" >
              <size>
               <width>64</width>
@@ -492,14 +434,6 @@
           </item>
           <item>
            <widget class="QComboBox" name="BackgroundColorComboBox" >
-            <property name="sizePolicy" >
-             <sizepolicy>
-              <hsizetype>3</hsizetype>
-              <vsizetype>0</vsizetype>
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
             <property name="minimumSize" >
              <size>
               <width>64</width>
