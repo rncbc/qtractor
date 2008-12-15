@@ -602,13 +602,17 @@ void qtractorVstPlugin::setChannels ( unsigned short iChannels )
 	for (unsigned short i = 1; i < iInstances; ++i) {
 		m_ppEffects[i] = new qtractorVstPluginType::Effect();
 		m_ppEffects[i]->open(pVstType->file());
-		// Replicate the current parameter values...
+	}
+
+	// Replicate the current parameter values...
+	for (unsigned short i = 1; i < iInstances; ++i) {
 		AEffect *pVstEffect = m_ppEffects[i]->vst_effect();
 		if (pVstEffect) {
 			QListIterator<qtractorPluginParam *> iter(params());
 			while (iter.hasNext()) {
 				qtractorPluginParam *pParam = iter.next();
-				pVstEffect->setParameter(pVstEffect, i, pParam->value());
+				pVstEffect->setParameter(pVstEffect,
+					pParam->index(), pParam->value());
 			}
 		}
 	}
@@ -648,9 +652,8 @@ void qtractorVstPlugin::setChannels ( unsigned short iChannels )
 		QListIterator<qtractorPluginParam *> param(params());
 		while (param.hasNext()) {
 			qtractorPluginParam *pParam = param.next();
-			float *pfValue = pParam->data();
-			*pfValue = pVstEffect->getParameter(pVstEffect, pParam->index());
-			pParam->setDefaultValue(*pfValue);
+			pParam->setDefaultValue(
+				pVstEffect->getParameter(pVstEffect, pParam->index()));
 		}
 	}
 
