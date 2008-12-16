@@ -585,11 +585,17 @@ void qtractorPluginForm::paramsSlot ( bool bOn )
 	if (m_iUpdate > 0)
 		return;
 
+	m_iUpdate++;
+
 	m_ui.ParamsGridWidget->setVisible(bOn);
+	if (bOn)
+		m_ui.ParamsGridWidget->show();
+	else
+		m_ui.ParamsGridWidget->hide();
 
 	// Shake it a little bit first, but
 	// make it as tight as possible...
-	resize(width() - 1, height() - 1);
+	resize(width() + 1, height() + 1);
 	adjustSize();
 
 	m_iUpdate--;
