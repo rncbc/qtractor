@@ -5,6 +5,9 @@ ChangeLog
 
 CVS HEAD
 
+- MIDI bank/program selection is now taken into account on
+  plugins initialization and replication. (EXPERIMENTAL)
+
 - Fixed initial parameter values for native VST plugins.
 
 - Track form plugin lists are now properly (re)initialized

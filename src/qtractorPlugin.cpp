@@ -1085,12 +1085,21 @@ qtractorPlugin *qtractorPluginList::copyPlugin ( qtractorPlugin *pPlugin )
 	// Clone the plugin instance...
 	pPlugin->freezeConfigs();
 
+	// MIDI bank program whether necessary...
+	int iBank = 0;
+	int iProg = 0;
+	if (m_pMidiManager && m_pMidiManager->currentBank() >= 0)
+		iBank = m_pMidiManager->currentBank();
+	if (m_pMidiManager && m_pMidiManager->currentProg() >= 0)
+		iProg = m_pMidiManager->currentProg();
+
 	qtractorPlugin *pNewPlugin = qtractorPluginFile::createPlugin(this,
 		(pType->file())->filename(), pType->index(), pType->typeHint());
 	if (pNewPlugin) {
 		pNewPlugin->setPreset(pPlugin->preset());
-		pNewPlugin->setValues(pPlugin->values());
 		pNewPlugin->setConfigs(pPlugin->configs());
+		pNewPlugin->selectProgram(iBank, iProg);
+		pNewPlugin->setValues(pPlugin->values());
 		pNewPlugin->setActivated(pPlugin->isActivated());
 	}
 
@@ -1186,6 +1195,9 @@ void qtractorPluginList::process ( float **ppBuffer, unsigned int nframes )
 bool qtractorPluginList::loadElement ( qtractorSessionDocument *pDocument,
 	QDomElement *pElement )
 {
+	int iBank = 0;
+	int iProg = 0;
+
 	// Load plugin-list children...
 	for (QDomNode nPlugin = pElement->firstChild();
 			!nPlugin.isNull();
@@ -1195,6 +1207,12 @@ bool qtractorPluginList::loadElement ( qtractorSessionDocument *pDocument,
 		QDomElement ePlugin = nPlugin.toElement();
 		if (ePlugin.isNull())
 			continue;
+		if (ePlugin.tagName() == "bank")
+			iBank = ePlugin.text().toInt();
+		else
+		if (ePlugin.tagName() == "program")
+			iProg = ePlugin.text().toInt();
+		else
 		if (ePlugin.tagName() == "plugin") {
 			QString sFilename;
 			unsigned long iIndex = 0;
@@ -1249,6 +1267,7 @@ bool qtractorPluginList::loadElement ( qtractorSessionDocument *pDocument,
 			if (pPlugin) {
 				pPlugin->setPreset(sPreset);
 				pPlugin->setConfigs(configs);
+				pPlugin->selectProgram(iBank, iProg);
 				pPlugin->setValues(vlist);
 				pPlugin->setActivated(bActivated);
 				addPluginRef(pPlugin);
@@ -1283,6 +1302,14 @@ bool qtractorPluginList::loadElement ( qtractorSessionDocument *pDocument,
 bool qtractorPluginList::saveElement ( qtractorSessionDocument *pDocument,
 	QDomElement *pElement )
 {
+	// Save current MIDI bank/program setting...
+	if (m_pMidiManager && m_pMidiManager->currentBank() >= 0)
+		pDocument->saveTextElement("bank",
+			QString::number(m_pMidiManager->currentBank()), pElement);
+	if (m_pMidiManager && m_pMidiManager->currentProg() >= 0)
+		pDocument->saveTextElement("program",
+			QString::number(m_pMidiManager->currentProg()), pElement);
+
 	// Save plugins...
 	for (qtractorPlugin *pPlugin = first();
 			pPlugin; pPlugin = pPlugin->next()) {
