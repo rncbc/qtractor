@@ -5,6 +5,9 @@ ChangeLog
 
 CVS HEAD
 
+- Almost complete rewrite of the plugin configuration and
+  parameter initialization logic (EXPERIMENTAL).
+
 - MIDI bank/program selection is now taken into account on
   plugins initialization and replication. (EXPERIMENTAL)
 

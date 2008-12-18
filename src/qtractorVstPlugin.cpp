@@ -604,6 +604,11 @@ void qtractorVstPlugin::setChannels ( unsigned short iChannels )
 		m_ppEffects[i]->open(pVstType->file());
 	}
 
+	// (Re)issue all configuration as needed...
+	realizeConfigs();
+	// But won't need it anymore.
+	clearConfigs();
+
 	// Replicate the current parameter values...
 	for (unsigned short i = 1; i < iInstances; ++i) {
 		AEffect *pVstEffect = m_ppEffects[i]->vst_effect();
@@ -616,11 +621,6 @@ void qtractorVstPlugin::setChannels ( unsigned short iChannels )
 			}
 		}
 	}
-
-	// (Re)issue all configuration as needed...
-	realizeConfigs();
-	// But won't need it anymore.
-	clearConfigs();
 
 #if 0
 	// Prepare the bank/program stuff... 
@@ -644,17 +644,6 @@ void qtractorVstPlugin::setChannels ( unsigned short iChannels )
 		for (j = 0; j < pVstType->audioOuts(); ++j)
 			pEffect->vst_dispatch(effConnectOutput, j, 1, NULL, 0.0f);
 	#endif
-	}
-
-	// Reset parameters direct and default value...
-	AEffect *pVstEffect = m_ppEffects[0]->vst_effect();
-	if (pVstEffect) {
-		QListIterator<qtractorPluginParam *> param(params());
-		while (param.hasNext()) {
-			qtractorPluginParam *pParam = param.next();
-			pParam->setDefaultValue(
-				pVstEffect->getParameter(pVstEffect, pParam->index()));
-		}
 	}
 
 	// (Re)activate instance if necessary...

@@ -556,22 +556,27 @@ void qtractorPlugin::setActivated ( bool bActivated )
 
 
 // Plugin state serialization methods.
-void qtractorPlugin::setValues ( const QStringList& vlist )
+void qtractorPlugin::setValueList ( const QStringList& vlist )
 {
 	// Split it up...
+	m_values.clear();
 	QStringListIterator val(vlist);
-	QListIterator<qtractorPluginParam *> iter(m_params);
-	while (iter.hasNext() && val.hasNext())
-		iter.next()->setValue(val.next().toFloat());
+	for (unsigned long iIndex = 0; val.hasNext(); ++iIndex)
+		m_values[iIndex] = val.next().toFloat();
 }
 
-QStringList qtractorPlugin::values (void) const
+QStringList qtractorPlugin::valueList (void) const
 {
 	// Join it up...
 	QStringList vlist;
 	QListIterator<qtractorPluginParam *> iter(m_params);
-	while (iter.hasNext())
-		vlist.append(QString::number(iter.next()->value()));
+	while (iter.hasNext()) {
+		qtractorPluginParam *pParam = iter.next();
+		int iIndex = pParam->index();
+		while (vlist.count() < iIndex + 1)
+			vlist.append(QString());
+		vlist[iIndex] = QString::number(pParam->value());
+	}
 
 	return vlist;
 }
@@ -697,6 +702,9 @@ bool qtractorPlugin::loadPreset ( const QString& sFilename )
 	if (ePreset.attribute("type") != presetPrefix())
 		return false;
 
+	// Reset any old configs.
+	clearConfigs();
+
 	// Now parse for children...
 	for (QDomNode nChild = ePreset.firstChild();
 			!nChild.isNull(); nChild = nChild.nextSibling()) {
@@ -708,8 +716,6 @@ bool qtractorPlugin::loadPreset ( const QString& sFilename )
 
 		// Check for preset item...
 		if (eChild.tagName() == "configs") {
-			// Reset any old configs.
-			m_configs.clear();
 			// Parse for config entries...
 			for (QDomNode nConfig = eChild.firstChild();
 					!nConfig.isNull(); nConfig = nConfig.nextSibling()) {
@@ -721,9 +727,6 @@ bool qtractorPlugin::loadPreset ( const QString& sFilename )
 				if (eConfig.tagName() == "config")
 					m_configs[eConfig.attribute("key")] = eConfig.text();
 			}
-			// Make it real.
-			realizeConfigs();
-			releaseConfigs();
 		}
 		else
 		if (eChild.tagName() == "params") {
@@ -735,15 +738,16 @@ bool qtractorPlugin::loadPreset ( const QString& sFilename )
 				if (eParam.isNull())
 					continue;
 				// Check for config item...
-				if (eParam.tagName() == "param") {
-					qtractorPluginParam *pParam
-						= findParam(eParam.attribute("index").toULong());
-					if (pParam)
-					 	pParam->setValue(eParam.text().toFloat());
-				}
+				if (eParam.tagName() == "param")
+					m_values[eParam.attribute("index").toULong()]
+						= eParam.text().toFloat();
 			}
 		}
 	}
+
+	// Make it real.
+	realizeConfigs();
+	releaseConfigs();
 
 	return true;
 }
@@ -820,9 +824,27 @@ qtractorPluginParam *qtractorPlugin::findParam ( unsigned long iIndex ) const
 // Plugin configure realization.
 void qtractorPlugin::realizeConfigs (void)
 {
-	Configs::ConstIterator iter = m_configs.constBegin();
-	for (; iter != m_configs.constEnd(); ++iter)
-		configure(iter.key(), iter.value());
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorPlugin[%p]::realizeConfigs()", this);
+#endif
+
+	// Set configuration (CLOBs)...
+	Configs::ConstIterator config = m_configs.constBegin();
+	for (; config != m_configs.constEnd(); ++config)
+		configure(config.key(), config.value());
+
+	// Set proper bank/program selection...
+	qtractorMidiManager *pMidiManager = m_pList->midiManager();
+	if (pMidiManager)
+		selectProgram(pMidiManager->currentBank(), pMidiManager->currentProg());
+
+	// (Re)set parameter values (initial)...
+	Values::ConstIterator param = m_values.constBegin();
+	for (; param != m_values.constEnd(); ++param) {
+		qtractorPluginParam *pParam = findParam(param.key());
+		if (pParam)
+			pParam->setValue(param.value());
+	}
 }
 
 
@@ -1098,7 +1120,6 @@ qtractorPlugin *qtractorPluginList::copyPlugin ( qtractorPlugin *pPlugin )
 	if (pNewPlugin) {
 		pNewPlugin->setPreset(pPlugin->preset());
 		pNewPlugin->setConfigs(pPlugin->configs());
-		pNewPlugin->selectProgram(iBank, iProg);
 		pNewPlugin->setValues(pPlugin->values());
 		pNewPlugin->setActivated(pPlugin->isActivated());
 	}
@@ -1267,8 +1288,7 @@ bool qtractorPluginList::loadElement ( qtractorSessionDocument *pDocument,
 			if (pPlugin) {
 				pPlugin->setPreset(sPreset);
 				pPlugin->setConfigs(configs);
-				pPlugin->selectProgram(iBank, iProg);
-				pPlugin->setValues(vlist);
+				pPlugin->setValueList(vlist);
 				pPlugin->setActivated(bActivated);
 				addPluginRef(pPlugin);
 				append(pPlugin);
@@ -1293,6 +1313,12 @@ bool qtractorPluginList::loadElement ( qtractorSessionDocument *pDocument,
 				}
 			}
 		}
+	}
+
+	// Set current bank/program properly...
+	if (m_pMidiManager) {
+		m_pMidiManager->setCurrentBank(iBank);
+		m_pMidiManager->setCurrentProg(iProg);
 	}
 
 	return true;
@@ -1328,7 +1354,7 @@ bool qtractorPluginList::saveElement ( qtractorSessionDocument *pDocument,
 		pDocument->saveTextElement("preset",
 			pPlugin->preset(), &ePlugin);
 		pDocument->saveTextElement("values",
-			pPlugin->values().join(","), &ePlugin);
+			pPlugin->valueList().join(","), &ePlugin);
 		pDocument->saveTextElement("activated",
 			pDocument->textFromBool(pPlugin->isActivated()), &ePlugin);
 		// Plugin configuration stuff (CLOB)...

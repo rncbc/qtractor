@@ -272,6 +272,9 @@ void qtractorLadspaPlugin::setChannels ( unsigned short iChannels )
 		m_phInstances[i] = handle;
 	}
 
+	// (Re)issue all configuration as needed...
+	realizeConfigs();
+
 	// (Re)activate instance if necessary...
 	setActivated(bActivated);
 }

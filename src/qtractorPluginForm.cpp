@@ -195,9 +195,10 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 
 	// This should trigger paramsSlot(!bEditor)
 	// and adjust the size of the params dialog...
-	m_ui.ParamsToolButton->setVisible(iRows > 0 && iRows < 101);
+	bool bParams = (iRows > 0 && iRows < 101);
+	m_ui.ParamsToolButton->setVisible(bParams);
 	m_ui.ParamsToolButton->setChecked(!bEditor);
-	paramsSlot(!bEditor);
+	paramsSlot(bParams);
 
 	updateActivated();
 	refresh();
@@ -205,7 +206,7 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 	show();
 
 	// Do we have a dedicated editor GUI?
-	if (bEditor)
+	if (!bParams && bEditor)
 		m_pPlugin->openEditor(this);
 }
 
@@ -525,7 +526,7 @@ void qtractorPluginForm::savePresetSlot (void)
 			}
 		}
 	}	// Just leave it to simple parameter value list...
-	else settings.setValue(sPreset, m_pPlugin->values());
+	else settings.setValue(sPreset, m_pPlugin->valueList());
 	settings.endGroup();
 	refresh();
 

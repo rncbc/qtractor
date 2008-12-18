@@ -420,7 +420,6 @@ void qtractorPluginListView::addPlugin (void)
 				selectForm.pluginFilename(i),
 				selectForm.pluginIndex(i),
 				selectForm.pluginTypeHint(i));
-		pPlugin->selectProgram(0, 0);
 		pPlugin->setActivated(selectForm.isPluginActivated());
 		pAddPluginCommand->addPlugin(pPlugin);
 		// Show the plugin form right away...

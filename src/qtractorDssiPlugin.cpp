@@ -935,9 +935,6 @@ void qtractorDssiPlugin::resetChannels (void)
 				m_apControllerMap[DSSI_CC_NUMBER(iController)] = pParam;
 		}
 	}
-
-	// (Re)issue all configuration as needed...
-	realizeConfigs();
 }
 
 

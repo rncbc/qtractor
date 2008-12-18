@@ -320,8 +320,8 @@ public:
 		{ return m_pType->audioOuts(); }
 
 	// Plugin state serialization methods.
-	void setValues(const QStringList& vlist);
-	QStringList values() const;
+	void setValueList(const QStringList& vlist);
+	QStringList valueList() const;
 
 	// Reset-to-default method.
 	void reset();
@@ -417,19 +417,34 @@ public:
 	typedef QHash<QString, QString> Configs;
 
 	void setConfigs(const Configs& configs)
-		{ m_configs = configs; realizeConfigs(); }
+		{ m_configs = configs; }
 	const Configs& configs() const
 		{ return m_configs; }
-	void clearConfigs()
-		{ m_configs.clear(); }
 
 	void setConfig(const QString& sKey, const QString& sValue)
 		{ m_configs[sKey] = sValue; }
 	QString config(const QString& sKey) const
 		{ return m_configs[sKey]; }
 
+	// Plugin parameter values stuff.
+	typedef QHash<unsigned long, float> Values;
+
+	void setValues(const Values& values)
+		{ m_values = values; }
+	const Values& values() const
+		{ return m_values; }
+
+	void setValue(unsigned long iIndex, float fValue)
+		{ m_values[iIndex] = fValue; }
+	float value(unsigned long iIndex) const
+		{ return m_values[iIndex]; }
+
 	// Plugin configure realization.
 	void realizeConfigs();
+
+	// Plugin configure clearance.
+	void clearConfigs()
+		{ m_configs.clear(); m_values.clear(); }
 
 protected:
 
@@ -461,6 +476,9 @@ private:
 
 	// Plugin configuration (CLOB) stuff.
 	Configs m_configs;
+
+	// Plugin parameter values (part of configuration).
+	Values m_values;
 };
 
 

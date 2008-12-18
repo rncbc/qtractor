@@ -247,9 +247,17 @@ public:
 		{ return m_pAudioOutputBus; }
 	void resetAudioOutputBus();
 
+	// Current bank selection accessors.
+	void setCurrentBank(int iBank)
+		{ m_iCurrentBank = iBank; }
+	int currentBank() const
+		{ return m_iCurrentBank; }
+
 	// Current program selection accessors.
-	int currentBank() const { return m_iCurrentBank; }
-	int currentProg() const { return m_iCurrentProg; }
+	void setCurrentProg(int iProg)
+		{ m_iCurrentProg = iProg; }
+	int currentProg() const
+		{ return m_iCurrentProg; }
 
 	// MIDI Instrument collection map-types.
 	typedef QMap<int, QString> Progs;
