@@ -348,6 +348,7 @@ bool qtractorPresetPluginCommand::redo (void)
 	// Save the current toggled state alright...
 	QStringList vlist = pPlugin->valueList();
 	pPlugin->setValueList(m_vlist);
+	pPlugin->realizeValues();
 	// Swap it nice, finally.
 	m_vlist = vlist;
 
@@ -391,6 +392,7 @@ bool qtractorResetPluginCommand::redo (void)
 		pPlugin->reset();
 	} else {
 		pPlugin->setValueList(m_vlist);
+		pPlugin->realizeValues();
 	}
 
 	// Update the form, showing it up as necessary...

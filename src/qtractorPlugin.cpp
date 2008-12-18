@@ -704,6 +704,7 @@ bool qtractorPlugin::loadPreset ( const QString& sFilename )
 
 	// Reset any old configs.
 	clearConfigs();
+	clearValues();
 
 	// Now parse for children...
 	for (QDomNode nChild = ePreset.firstChild();
@@ -747,6 +748,8 @@ bool qtractorPlugin::loadPreset ( const QString& sFilename )
 
 	// Make it real.
 	realizeConfigs();
+	realizeValues();
+
 	releaseConfigs();
 
 	return true;
@@ -837,6 +840,23 @@ void qtractorPlugin::realizeConfigs (void)
 	qtractorMidiManager *pMidiManager = m_pList->midiManager();
 	if (pMidiManager)
 		selectProgram(pMidiManager->currentBank(), pMidiManager->currentProg());
+
+	// (Re)set parameter values (initial)...
+	Values::ConstIterator param = m_values.constBegin();
+	for (; param != m_values.constEnd(); ++param) {
+		qtractorPluginParam *pParam = findParam(param.key());
+		if (pParam)
+			pParam->setValue(param.value());
+	}
+}
+
+
+// Plugin parameter realization.
+void qtractorPlugin::realizeValues (void)
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorPlugin[%p]::realizeValues()", this);
+#endif
 
 	// (Re)set parameter values (initial)...
 	Values::ConstIterator param = m_values.constBegin();

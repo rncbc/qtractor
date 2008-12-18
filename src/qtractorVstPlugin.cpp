@@ -606,8 +606,10 @@ void qtractorVstPlugin::setChannels ( unsigned short iChannels )
 
 	// (Re)issue all configuration as needed...
 	realizeConfigs();
+	realizeValues();
 	// But won't need it anymore.
 	clearConfigs();
+	clearValues();
 
 	// Replicate the current parameter values...
 	for (unsigned short i = 1; i < iInstances; ++i) {

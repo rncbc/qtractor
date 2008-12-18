@@ -441,10 +441,13 @@ public:
 
 	// Plugin configure realization.
 	void realizeConfigs();
+	void realizeValues();
 
 	// Plugin configure clearance.
 	void clearConfigs()
-		{ m_configs.clear(); m_values.clear(); }
+		{ m_configs.clear(); }
+	void clearValues()
+		{ m_values.clear(); }
 
 protected:
 

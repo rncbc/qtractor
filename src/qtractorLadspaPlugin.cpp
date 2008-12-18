@@ -274,6 +274,7 @@ void qtractorLadspaPlugin::setChannels ( unsigned short iChannels )
 
 	// (Re)issue all configuration as needed...
 	realizeConfigs();
+	realizeValues();
 
 	// (Re)activate instance if necessary...
 	setActivated(bActivated);
