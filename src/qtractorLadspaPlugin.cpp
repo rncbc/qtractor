@@ -240,6 +240,11 @@ void qtractorLadspaPlugin::setChannels ( unsigned short iChannels )
 		return;
 	}
 
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorLadspaPlugin[%p]::setChannels(%u) instances=%u",
+		this, iChannels, iInstances);
+#endif
+
 	// FIXME: The dummy value for output control (dummy) port indexes...
 	unsigned short iControlOuts = pType->controlOuts();
 	static float s_fDummyData = 0.0f;
@@ -275,6 +280,9 @@ void qtractorLadspaPlugin::setChannels ( unsigned short iChannels )
 	// (Re)issue all configuration as needed...
 	realizeConfigs();
 	realizeValues();
+
+	// But won't need it anymore.
+	releaseConfigs();
 
 	// (Re)activate instance if necessary...
 	setActivated(bActivated);

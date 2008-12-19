@@ -515,9 +515,6 @@ int qtractorTrackList::removeTrack ( int iTrack )
 // Manage current track row by index.
 void qtractorTrackList::setCurrentTrackRow ( int iTrack )
 {
-#ifdef CONFIG_DEBUG
-	qDebug("qtractorTrackList::setCurrentTrackRow(%d)", iTrack);
-#endif
 	int iCurrentTrack = m_iCurrentTrack;
 	if (iTrack < 0 || iTrack >= m_items.count())
 		iCurrentTrack = -1;
@@ -526,9 +523,13 @@ void qtractorTrackList::setCurrentTrackRow ( int iTrack )
 	if (iCurrentTrack == m_iCurrentTrack)
 		return;
 
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorTrackList::setCurrentTrackRow(%d)", iCurrentTrack);
+#endif
+
 	m_iCurrentTrack = iCurrentTrack;
 
-	// Make sure the new current track is visiable...
+	// Make sure the new current track is visible...
 	if (!ensureVisibleRect(trackRect(m_iCurrentTrack)))
 		updateContents();
 

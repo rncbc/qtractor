@@ -915,6 +915,10 @@ void qtractorDssiPlugin::resetChannels (void)
 	if (iInstances < 1)
 		return;
 
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorDssiPlugin[%p]::resetChannels() instances=%u", this, iInstances);
+#endif
+
 	// (Re)set according to existing instances...
 	if (m_pDssiMulti)
 		m_pDssiMulti->addPlugin(this);
@@ -1142,6 +1146,9 @@ bool qtractorDssiPlugin::isEditorVisible (void) const
 // Bank/program selector.
 void qtractorDssiPlugin::selectProgram ( int iBank, int iProg )
 {
+	if (iBank < 0 || iProg < 0)
+		return;
+
 	if (m_phInstances == NULL)
 		return;
 
@@ -1151,6 +1158,10 @@ void qtractorDssiPlugin::selectProgram ( int iBank, int iProg )
 
 	if (pDssiDescriptor->select_program == NULL)
 		return;
+
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorDssiPlugin[%p]::selectprogram(%d, %d)", this, iBank, iProg);
+#endif
 
 	// For each plugin instance...
 	for (unsigned short i = 0; i < instances(); ++i)

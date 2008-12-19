@@ -840,14 +840,6 @@ void qtractorPlugin::realizeConfigs (void)
 	qtractorMidiManager *pMidiManager = m_pList->midiManager();
 	if (pMidiManager)
 		selectProgram(pMidiManager->currentBank(), pMidiManager->currentProg());
-
-	// (Re)set parameter values (initial)...
-	Values::ConstIterator param = m_values.constBegin();
-	for (; param != m_values.constEnd(); ++param) {
-		qtractorPluginParam *pParam = findParam(param.key());
-		if (pParam)
-			pParam->setValue(param.value());
-	}
 }
 
 

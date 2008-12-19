@@ -596,6 +596,11 @@ void qtractorVstPlugin::setChannels ( unsigned short iChannels )
 		return;
 	}
 
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorVstPlugin[%p]::setChannels(%u) instances=%u",
+		this, iChannels, iInstances);
+#endif
+
 	// Allocate new instances...
 	m_ppEffects = new  qtractorVstPluginType::Effect * [iInstances];
 	m_ppEffects[0] = pVstType->effect();
@@ -607,30 +612,9 @@ void qtractorVstPlugin::setChannels ( unsigned short iChannels )
 	// (Re)issue all configuration as needed...
 	realizeConfigs();
 	realizeValues();
+
 	// But won't need it anymore.
-	clearConfigs();
-	clearValues();
-
-	// Replicate the current parameter values...
-	for (unsigned short i = 1; i < iInstances; ++i) {
-		AEffect *pVstEffect = m_ppEffects[i]->vst_effect();
-		if (pVstEffect) {
-			QListIterator<qtractorPluginParam *> iter(params());
-			while (iter.hasNext()) {
-				qtractorPluginParam *pParam = iter.next();
-				pVstEffect->setParameter(pVstEffect,
-					pParam->index(), pParam->value());
-			}
-		}
-	}
-
-#if 0
-	// Prepare the bank/program stuff... 
-	int iIndex = 0;
-	qtractorMidiManager *pMidiManager = list()->midiManager();
-	if (pMidiManager && pMidiManager->currentBank() >= 0 && pMidiManager->currentProg() >= 0)
-		iIndex = (pMidiManager->currentBank() << 7) + pMidiManager->currentProg();
-#endif
+	releaseConfigs();
 
 	// Setup all those instance alright...
 	for (unsigned short i = 0; i < iInstances; ++i) {
@@ -638,7 +622,7 @@ void qtractorVstPlugin::setChannels ( unsigned short iChannels )
 		qtractorVstPluginType::Effect *pEffect = m_ppEffects[i];
 		pEffect->vst_dispatch(effSetSampleRate, 0, 0, NULL, float(sampleRate()));
 		pEffect->vst_dispatch(effSetBlockSize,  0, bufferSize(), NULL, 0.0f);
-	//	pEffect->vst_dispatch(effSetProgram, 0, iIndex, NULL, 0.0f);
+	//	pEffect->vst_dispatch(effSetProgram, 0, 0, NULL, 0.0f);
 	#if 0 // !VST_FORCE_DEPRECATED
 		unsigned short j;
 		for (j = 0; j < pVstType->audioIns(); ++j)
@@ -751,10 +735,17 @@ void qtractorVstPlugin::updateParam (
 // Bank/program selector.
 void qtractorVstPlugin::selectProgram ( int iBank, int iProg )
 {
+	if (iBank < 0 || iProg < 0)
+		return;
+
 	// HACK: We don't change program-preset when
 	// we're supposed to be multi-timbral...
 	if (list()->flags() == qtractorPluginList::MidiBus)
 		return;
+
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorVstPlugin[%p]::selectprogram(%d, %d)", this, iBank, iProg);
+#endif
 
 	int iIndex = 0;
 	if (iBank >= 0 && iProg >= 0)
@@ -769,8 +760,9 @@ void qtractorVstPlugin::selectProgram ( int iBank, int iProg )
 		QListIterator<qtractorPluginParam *> param(params());
 		while (param.hasNext()) {
 			qtractorPluginParam *pParam = param.next();
-			pParam->setDefaultValue(
-				pVstEffect->getParameter(pVstEffect, pParam->index()));
+			float *pfValue = pParam->data();
+			*pfValue = pVstEffect->getParameter(pVstEffect, pParam->index());
+			pParam->setDefaultValue(*pfValue);
 		}
 	}
 }
