@@ -561,22 +561,18 @@ void qtractorPlugin::setValueList ( const QStringList& vlist )
 	// Split it up...
 	m_values.clear();
 	QStringListIterator val(vlist);
-	for (unsigned long iIndex = 0; val.hasNext(); ++iIndex)
-		m_values[iIndex] = val.next().toFloat();
+	QListIterator<qtractorPluginParam *> param(m_params);
+	while (val.hasNext() && param.hasNext())
+		m_values[param.next()->index()] = val.next().toFloat();
 }
 
 QStringList qtractorPlugin::valueList (void) const
 {
 	// Join it up...
 	QStringList vlist;
-	QListIterator<qtractorPluginParam *> iter(m_params);
-	while (iter.hasNext()) {
-		qtractorPluginParam *pParam = iter.next();
-		int iIndex = pParam->index();
-		while (vlist.count() < iIndex + 1)
-			vlist.append(QString());
-		vlist[iIndex] = QString::number(pParam->value());
-	}
+	QListIterator<qtractorPluginParam *> param(m_params);
+	while (param.hasNext())
+		vlist.append(QString::number(param.next()->value()));
 
 	return vlist;
 }
