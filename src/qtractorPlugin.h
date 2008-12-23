@@ -44,6 +44,8 @@ class qtractorPluginListItem;
 class qtractorMidiManager;
 
 class qtractorSessionDocument;
+
+class QDomDocument;
 class QDomElement;
 
 
@@ -448,6 +450,14 @@ public:
 		{ m_configs.clear(); }
 	void clearValues()
 		{ m_values.clear(); }
+
+	// Load plugin configuration/parameter values stuff.
+	static void loadConfigs(QDomElement *pElement, Configs& configs);
+	static void loadValues(QDomElement *pElement, Values& values);
+
+	// Save plugin configuration/parameter values stuff.
+	void saveConfigs(QDomDocument *pDocument, QDomElement *pElement);
+	void saveValues(QDomDocument *pDocument, QDomElement *pElement);
 
 protected:
 

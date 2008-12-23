@@ -712,33 +712,14 @@ bool qtractorPlugin::loadPreset ( const QString& sFilename )
 			continue;
 
 		// Check for preset item...
-		if (eChild.tagName() == "configs") {
+		if (eChild.tagName() == "configs" || eChild.tagName() == "configure") {
 			// Parse for config entries...
-			for (QDomNode nConfig = eChild.firstChild();
-					!nConfig.isNull(); nConfig = nConfig.nextSibling()) {
-				// Convert node to element, if any.
-				QDomElement eConfig = nConfig.toElement();
-				if (eConfig.isNull())
-					continue;
-				// Check for config item...
-				if (eConfig.tagName() == "config")
-					m_configs[eConfig.attribute("key")] = eConfig.text();
-			}
+			qtractorPlugin::loadConfigs(&eChild, m_configs);
 		}
 		else
 		if (eChild.tagName() == "params") {
 			// Parse for param entries...
-			for (QDomNode nParam = eChild.firstChild();
-					!nParam.isNull(); nParam = nParam.nextSibling()) {
-				// Convert node to element, if any.
-				QDomElement eParam = nParam.toElement();
-				if (eParam.isNull())
-					continue;
-				// Check for config item...
-				if (eParam.tagName() == "param")
-					m_values[eParam.attribute("index").toULong()]
-						= eParam.text().toFloat();
-			}
+			qtractorPlugin::loadValues(&eChild, m_values);
 		}
 	}
 
@@ -765,31 +746,13 @@ bool qtractorPlugin::savePreset ( const QString& sFilename )
 	ePreset.setAttribute("version", QTRACTOR_VERSION);
 
 	// Save plugin configs...
-	freezeConfigs();
 	QDomElement eConfigs = doc.createElement("configs");
-	Configs::ConstIterator iter = m_configs.constBegin();
-	for (; iter != m_configs.constEnd(); ++iter) {
-		QDomElement eConfig = doc.createElement("config");
-		eConfig.setAttribute("key", iter.key());
-		eConfig.appendChild(
-			doc.createTextNode(iter.value()));
-		eConfigs.appendChild(eConfig);
-	}
+	saveConfigs(&doc, &eConfigs);
 	ePreset.appendChild(eConfigs);
-	releaseConfigs();
 
 	// Save plugin params...
 	QDomElement eParams = doc.createElement("params");
-	QListIterator<qtractorPluginParam *> param(m_params);
-	while (param.hasNext()) {
-		qtractorPluginParam *pParam = param.next();
-		QDomElement eParam = doc.createElement("param");
-		eParam.setAttribute("name", pParam->name());
-		eParam.setAttribute("index", QString::number(pParam->index()));
-		eParam.appendChild(
-			doc.createTextNode(QString::number(pParam->value())));
-		eParams.appendChild(eParam);
-	}
+	saveValues(&doc, &eParams);
 	ePreset.appendChild(eParams);
 
 	doc.appendChild(ePreset);
@@ -856,6 +819,75 @@ void qtractorPlugin::realizeValues (void)
 }
 
 
+// Load plugin configuration stuff (CLOB).
+void qtractorPlugin::loadConfigs ( QDomElement *pElement, Configs& configs )
+{
+	for (QDomNode nConfig = pElement->firstChild();
+			!nConfig.isNull();
+				nConfig = nConfig.nextSibling()) {
+		// Convert config node to element...
+		QDomElement eConfig = nConfig.toElement();
+		if (eConfig.isNull())
+			continue;
+		if (eConfig.tagName() == "config")
+			configs[eConfig.attribute("key")] = eConfig.text();
+	}
+}
+
+
+// Load plugin parameter values.
+void qtractorPlugin::loadValues ( QDomElement *pElement, Values& values )
+{
+	for (QDomNode nParam = pElement->firstChild();
+			!nParam.isNull(); nParam = nParam.nextSibling()) {
+		// Convert node to element, if any.
+		QDomElement eParam = nParam.toElement();
+		if (eParam.isNull())
+			continue;
+		// Check for config item...
+		if (eParam.tagName() == "param")
+			values[eParam.attribute("index").toULong()] = eParam.text().toFloat();
+	}
+}
+
+
+// Save plugin configuration stuff (CLOB)...
+void qtractorPlugin::saveConfigs (
+	QDomDocument *pDocument, QDomElement *pElement )
+{
+	freezeConfigs();
+
+	// Save plugin configs...
+	Configs::ConstIterator iter = m_configs.constBegin();
+	for (; iter != m_configs.constEnd(); ++iter) {
+		QDomElement eConfig = pDocument->createElement("config");
+		eConfig.setAttribute("key", iter.key());
+		eConfig.appendChild(
+			pDocument->createTextNode(iter.value()));
+		pElement->appendChild(eConfig);
+	}
+
+	releaseConfigs();
+}
+
+
+// Save plugin parameter values.
+void qtractorPlugin::saveValues (
+	QDomDocument *pDocument, QDomElement *pElement )
+{
+	QListIterator<qtractorPluginParam *> param(m_params);
+	while (param.hasNext()) {
+		qtractorPluginParam *pParam = param.next();
+		QDomElement eParam = pDocument->createElement("param");
+		eParam.setAttribute("name", pParam->name());
+		eParam.setAttribute("index", QString::number(pParam->index()));
+		eParam.appendChild(
+			pDocument->createTextNode(QString::number(pParam->value())));
+		pElement->appendChild(eParam);
+	}
+}
+
+	
 //----------------------------------------------------------------------------
 // qtractorPluginList -- Plugin chain list instance.
 //
@@ -1249,6 +1281,7 @@ bool qtractorPluginList::loadElement ( qtractorSessionDocument *pDocument,
 			QStringList vlist;
 			bool bActivated = false;
 			qtractorPlugin::Configs configs;
+			qtractorPlugin::Values values;
 			qtractorPluginType::Hint typeHint
 				= qtractorPluginType::hintFromText(
 					ePlugin.attribute("type"));
@@ -1274,18 +1307,14 @@ bool qtractorPluginList::loadElement ( qtractorSessionDocument *pDocument,
 				if (eParam.tagName() == "activated")
 					bActivated = pDocument->boolFromText(eParam.text());
 				else
-				if (eParam.tagName() == "configure") {
+				if (eParam.tagName() == "configs" || eParam.tagName() == "configure") {
 					// Load plugin configuration stuff (CLOB)...
-					for (QDomNode nConfig = eParam.firstChild();
-							!nConfig.isNull();
-								nConfig = nConfig.nextSibling()) {
-						// Convert config node to element...
-						QDomElement eConfig = nConfig.toElement();
-						if (eConfig.isNull())
-							continue;
-						if (eConfig.tagName() == "config")
-							configs[eConfig.attribute("key")] = eConfig.text();
-					}
+					qtractorPlugin::loadConfigs(&eParam, configs);
+				}
+				else
+				if (eParam.tagName() == "params") {
+					// Load plugin parameter values...
+					qtractorPlugin::loadValues(&eParam, values);
 				}
 			}
 			if (sFilename.isEmpty())
@@ -1296,7 +1325,10 @@ bool qtractorPluginList::loadElement ( qtractorSessionDocument *pDocument,
 			if (pPlugin) {
 				pPlugin->setPreset(sPreset);
 				pPlugin->setConfigs(configs);
-				pPlugin->setValueList(vlist);
+				if (!vlist.isEmpty())
+					pPlugin->setValueList(vlist);
+				if (!values.isEmpty())
+					pPlugin->setValues(values);
 				pPlugin->setActivated(bActivated);
 				addPluginRef(pPlugin);
 				append(pPlugin);
@@ -1361,24 +1393,18 @@ bool qtractorPluginList::saveElement ( qtractorSessionDocument *pDocument,
 			QString::number((pPlugin->type())->index()), &ePlugin);
 		pDocument->saveTextElement("preset",
 			pPlugin->preset(), &ePlugin);
-		pDocument->saveTextElement("values",
-			pPlugin->valueList().join(","), &ePlugin);
+	//	pDocument->saveTextElement("values",
+	//		pPlugin->valueList().join(","), &ePlugin);
 		pDocument->saveTextElement("activated",
 			pDocument->textFromBool(pPlugin->isActivated()), &ePlugin);
 		// Plugin configuration stuff (CLOB)...
-		QDomElement eConfigs
-			= pDocument->document()->createElement("configure");
-		const qtractorPlugin::Configs& configs = pPlugin->configs();
-		qtractorPlugin::Configs::ConstIterator iter = configs.constBegin();
-		for ( ; iter != configs.constEnd(); ++iter) {
-			QDomElement eConfig
-				= pDocument->document()->createElement("config");
-			eConfig.setAttribute("key", iter.key());
-			eConfig.appendChild(
-				pDocument->document()->createTextNode(iter.value()));
-			eConfigs.appendChild(eConfig);
-		}
+		QDomElement eConfigs = pDocument->document()->createElement("configs");
+		pPlugin->saveConfigs(pDocument->document(), &eConfigs);
 		ePlugin.appendChild(eConfigs);
+		// Plugin parameter values...
+		QDomElement eParams = pDocument->document()->createElement("params");
+		pPlugin->saveValues(pDocument->document(), &eParams);
+		ePlugin.appendChild(eParams);
 		// Add this plugin...
 		pElement->appendChild(ePlugin);
 
