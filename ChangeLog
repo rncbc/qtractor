@@ -3,18 +3,18 @@ Qtractor - An Audio/MIDI multi-track sequencer
 
 ChangeLog
 
-CVS HEAD
+0.3.0  2008-12-25  The Fluffy Doll
 
 - Almost complete rewrite of the plugin configuration and
-  parameter initialization logic (EXPERIMENTAL).
+  parameter initialization logic.
 
 - MIDI bank/program selection is now taken into account on
-  plugins initialization and replication. (EXPERIMENTAL)
+  plugins initialization and replication.
 
 - Fixed initial parameter values for native VST plugins.
 
 - Track form plugin lists are now properly (re)initialized
-  when track type setting changes.
+  when track type changes.
 
 - Generic plugin forms now have the option to show/hide the
   parameter widgets through the new "Params" button.
@@ -34,24 +34,24 @@ CVS HEAD
 - Major silent move: audio plugins chain are now applied
   in a pre-fader/meter basis as is usually implied from
   the mixer strip layout ie. signal flows from the top to
-  the bottom (EXPERIMENTAL).
+  the bottom.
 
 - All MIDI buses may now have plugins inserted so that 
   multi-timbral synth/sampler plugins get driven to their
-  fullness. (EXPERIMENTAL)
+  fullness.
 
 - MIDI track plugin's dedicated audio output bus may now
   be effective, as it seems, good old master audio output
-  bus was being used, no matter what. (EXPERIMENTAL)
+  bus was being used, no matter what.
 
 - Paste-repeat command has been introduced, now allowing to
   replicate and concatenate the clipboard contents over the
   time-line, with a given repeat-count and optional period
   (see menu Edit/Paste Repeat... on the main and MIDI clip
-  editor windows) (EXPERIMENTAL).
+  editor windows).
 
 - Normalize tool on MIDI clip editor got rewritten from its
-  previous brain dead, useless and utterly wrong operation.
+  previous brain-dead, useless and utterly wrong operation.
 
 - All time offsets and lengths are now zero-bar/beat based
   when displayed in the BBT (bar.beat.ticks) format.
@@ -438,7 +438,6 @@ CVS HEAD
 
 - Drifting correction among audio and MIDI engines is now back,
   but avoided while recording or should it be while looping?
-  (EXPERIMENTAL REGRESSION)
 
 - Time-stretching percent value gets its semantics inverted,
   as thought consistent with ones general sense for relative
@@ -900,14 +899,14 @@ CVS HEAD
 - MIDI edit tools (quantize, transpose, normalize, randomize,
   resize) are all functional and ready for experimentalism;
   gets in its own top-level menu and form with named preset
-  store and recall functionality (EXPERIMENTAL).
+  store and recall functionality.
 
 - Main form backward and rewind transport actions are now being
   immediately enabled when playing from the session (zero-time)
   start position.
 
 - Audio and MIDI export sneaks in and in form and accessible
-  from the main Track menu (EXPERIMENTAL).
+  from the main Track menu.
 
 - MIDI track channel is now properly set on session (re)load;
   track background color changes was missing the alpha setting.

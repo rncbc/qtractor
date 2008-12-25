@@ -57,7 +57,7 @@ Features
   conversion (via libsamplerate [8]).
 - Audio/MIDI track export (mix-down, merge).
 - Audio/MIDI metronome bar/beat clicks.
-- MIDI clip editor (piano roll).
+- MIDI clip editor (matrix/piano roll).
 - MIDI instrument definitions (a-la Cakewalk(tm) [15])
 - JACK transport sync master.
 - MMC control surface enabled.

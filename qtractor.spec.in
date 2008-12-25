@@ -1,6 +1,6 @@
 %define name    @PACKAGE_TARNAME@
 %define version @PACKAGE_VERSION@
-%define release 22
+%define release 23
 %define prefix  @ac_prefix@
 
 Summary:	An Audio/MIDI multi-track sequencer
@@ -21,7 +21,7 @@ BuildRequires:	libjack-devel >= 0.100.0
 BuildRequires:	alsa-devel
 BuildRequires:	libsndfile-devel >= 1.0.11
 BuildRequires:	libvorbis-devel
-BuildRequires:	mad-devel
+BuildRequires:	libmad-devel
 BuildRequires:	libsamplerate-devel
 BuildRequires:	librubberband-devel >= 1.0.1
 BuildRequires:	liblo-devel
@@ -60,21 +60,23 @@ specially dedicated to the personal home-studio.
 %{_datadir}/pixmaps/%{name}.png
 
 %changelog
-* Sun Oct 05 2008 Rui Nuno Capela <rncbc@users.sourceforge.net>
+* Thu Dec 25 2008 Rui Nuno Capela <rncbc@users.sourceforge.net> - 0.3.0
+- Fluffy Doll release.
+* Sun Oct 05 2008 Rui Nuno Capela <rncbc@users.sourceforge.net> - 0.2.2
 - Flirty Ditz release.
-* Sat Aug 30 2008 Rui Nuno Capela <rncbc@users.sourceforge.net>
+* Sat Aug 30 2008 Rui Nuno Capela <rncbc@users.sourceforge.net> - 0.2.1
 - Fainty Diva release.
-* Fri Jul 18 2008 Rui Nuno Capela <rncbc@users.sourceforge.net>
+* Fri Jul 18 2008 Rui Nuno Capela <rncbc@users.sourceforge.net> - 0.2.0
 - Frolic Demoiselle release.
-* Fri May 02 2008 Rui Nuno Capela <rncbc@users.sourceforge.net>
+* Fri May 02 2008 Rui Nuno Capela <rncbc@users.sourceforge.net> - 0.1.3
 - Frugal Damsel release.
 * Tue Apr 01 2008 Rui Nuno Capela <rncbc@users.sourceforge.net>
 - librubberband requirement added.
-* Sun Mar 23 2008 Rui Nuno Capela <rncbc@users.sourceforge.net>
+* Sun Mar 23 2008 Rui Nuno Capela <rncbc@users.sourceforge.net> - 0.1.2
 - Frantic Dame release.
-* Sat Feb 16 2008 Rui Nuno Capela <rncbc@users.sourceforge.net>
+* Sat Feb 16 2008 Rui Nuno Capela <rncbc@users.sourceforge.net> - 0.1.1
 - Futile Duchess release.
-* Sat Jan  5 2008 Rui Nuno Capela <rncbc@users.sourceforge.net>
+* Sat Jan  5 2008 Rui Nuno Capela <rncbc@users.sourceforge.net> - 0.1.0
 - Frivolous Debutante release.
 * Fri Nov 30 2007 Rui Nuno Capela <rncbc@users.sourceforge.net>
 - Adolescence Prime pre-release.

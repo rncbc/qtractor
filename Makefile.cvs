@@ -7,5 +7,5 @@ configure:	 Makefile.in configure.ac
 
 clean:
 	@if [ -f Makefile ]; then make clean; fi || true
-	@rm -rvf Makefile configure config.*
+	@rm -rvf Makefile configure config.* .ui .obj .moc
 	@rm -rvf *.cache *.log *.status *.pro *.spec *.desktop

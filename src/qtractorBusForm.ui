@@ -191,7 +191,7 @@
               <item row="2" column="0" colspan="3" >
                <widget class="QCheckBox" name="PassthruCheckBox" >
                 <property name="text" >
-                 <string>&amp;Pass-through</string>
+                 <string>&amp;Pass-through (monitor)</string>
                 </property>
                 <property name="shortcut" >
                  <string>Alt+P</string>
