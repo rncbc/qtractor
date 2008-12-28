@@ -1217,8 +1217,8 @@ void qtractorMainForm::midiControlEvent ( qtractorMidiControlEvent *pCtlEvent )
 		}
 	}
 	else
-	// Handle volume controls...                                                                                                                                         
-	if (pCtlEvent->controller() == 7) {                                                                                                                         
+	// Handle volume controls...
+	if (pCtlEvent->controller() == 7) {
 		int iTrack = 0;
 		for (qtractorTrack *pTrack = m_pSession->tracks().first();
 				pTrack; pTrack = pTrack->next()) {
@@ -1266,7 +1266,7 @@ void qtractorMainForm::midiControlEvent ( qtractorMidiControlEvent *pCtlEvent )
 				sCtlText += tr("(track %1, panning %2)")
 					.arg(iTrack).arg(fPanning);
 			}
-			iTrack++;
+			++iTrack;
 		}
 	}
 

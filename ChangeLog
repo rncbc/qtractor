@@ -3,6 +3,11 @@ Qtractor - An Audio/MIDI multi-track sequencer
 
 ChangeLog
 
+CVS HEAD
+
+- Infra-minor post-release code cleanups.
+
+
 0.3.0  2008-12-25  The Fluffy Doll
 
 - Almost complete rewrite of the plugin configuration and

@@ -26,11 +26,12 @@
 
 #include <QList>
 
+#include <stdio.h>
+
 #ifdef CONFIG_LIBMAD
 // libmad API
 #include <mad.h>
 #endif
-
 
 //----------------------------------------------------------------------
 // class qtractorAudioMadFile -- Buffered audio file declaration.
