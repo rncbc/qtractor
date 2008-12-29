@@ -64,7 +64,7 @@ qtractorSessionTempoCommand::qtractorSessionTempoCommand (
 		m_iTicksPerBeat = iTicksPerBeat;
 
 	// Take care of time-stretching of all audio-clips...
-	if (m_fTempo > 0.0f && pSession->isAutoTimeStretch()) {
+	if (m_fTempo > 0.0f) {
 		for (qtractorTrack *pTrack = pSession->tracks().first();
 				pTrack; pTrack = pTrack->next()) {
 			if (pTrack->trackType() == qtractorTrack::Audio) {
@@ -75,9 +75,14 @@ qtractorSessionTempoCommand::qtractorSessionTempoCommand (
 					if (pAudioClip) {
 						if (m_pClipCommand == NULL)
 							m_pClipCommand = new qtractorClipCommand(name());
-						float fTimeStretch = (pSession->tempo()
-							* pAudioClip->timeStretch()) / m_fTempo;
-						m_pClipCommand->timeStretchClip(pClip, fTimeStretch);
+						if (pSession->isAutoTimeStretch()) {
+							float fTimeStretch = (pSession->tempo()
+								* pAudioClip->timeStretch()) / m_fTempo;
+							m_pClipCommand->timeStretchClip(pClip, fTimeStretch);
+						} else {
+							m_pClipCommand->resizeClip(pClip, pClip->clipStart(),
+								pClip->clipOffset(), pClip->clipLength());
+						}
 					}
 				}
 			}

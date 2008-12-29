@@ -5,6 +5,10 @@ ChangeLog
 
 CVS HEAD
 
+- Attempt to retain original size (clip length) of all audio
+  clips when changing the global session tempo and automatic
+  time-stretching is not an option. (EXPERIMENTAL)
+
 - Infra-minor post-release code cleanups.
 
 
