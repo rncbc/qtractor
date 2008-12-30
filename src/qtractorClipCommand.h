@@ -64,8 +64,9 @@ public:
 		qtractorClip::FadeType fadeInType);
 	void fadeOutClip(qtractorClip *pClip, unsigned long iFadeOutLength,
 		qtractorClip::FadeType fadeOutType);
-	void timeStretchClip(qtractorClip *pClip, float fTimeStetch);
+	void timeStretchClip(qtractorClip *pClip, float fTimeStretch);
 	void pitchShiftClip(qtractorClip *pClip, float fPitchShift);
+	void resetClip(qtractorClip *pClip, unsigned long iClipLength);
 
 	// Special clip record method.
 	bool addClipRecord(qtractorTrack *pTrack);
@@ -89,7 +90,8 @@ private:
 		AddClip, RemoveClip, FileClip,
 		RenameClip, MoveClip, ResizeClip,
 		GainClip, FadeInClip, FadeOutClip,
-		TimeStretchClip, PitchShiftClip
+		TimeStretchClip, PitchShiftClip,
+		ResetClip
 	};
 
 	// Clip item struct.

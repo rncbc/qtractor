@@ -182,6 +182,21 @@ void qtractorClipCommand::pitchShiftClip ( qtractorClip *pClip,
 }
 
 
+void qtractorClipCommand::resetClip ( qtractorClip *pClip,
+	unsigned long iClipLength )
+{
+	Item *pItem = new Item(ResetClip, pClip, pClip->track());
+	pItem->clipLength = iClipLength;
+	long iFadeOutLength = long(pClip->fadeOutLength());
+	if (iFadeOutLength > 0) {
+		iFadeOutLength += long(iClipLength)	- long(pClip->clipLength());
+		if (iFadeOutLength > 0)
+			pItem->fadeOutLength = iFadeOutLength;
+	}
+	m_items.append(pItem);
+}
+
+
 // Special clip record nethod.
 bool qtractorClipCommand::addClipRecord ( qtractorTrack *pTrack )
 {
@@ -438,6 +453,17 @@ bool qtractorClipCommand::execute ( bool bRedo )
 				pAudioClip->open();
 				pItem->pitchShift = fOldPitchShift;
 			}
+			break;
+		}
+		case ResetClip: {
+			unsigned long iOldLength  = pClip->clipLength();
+			unsigned long iOldFadeOut = pClip->fadeOutLength();
+			pClip->setClipLength(pItem->clipLength);
+			pClip->setFadeOutLength(pItem->fadeOutLength);
+			pClip->open();
+			pItem->clipLength = iOldLength;
+			pItem->fadeOutLength = iOldFadeOut;
+			pSession->updateTrack(pTrack);
 			break;
 		}
 		default:

@@ -80,8 +80,7 @@ qtractorSessionTempoCommand::qtractorSessionTempoCommand (
 								* pAudioClip->timeStretch()) / m_fTempo;
 							m_pClipCommand->timeStretchClip(pClip, fTimeStretch);
 						} else {
-							m_pClipCommand->resizeClip(pClip, pClip->clipStart(),
-								pClip->clipOffset(), pClip->clipLength());
+							m_pClipCommand->resetClip(pClip, pClip->clipLength());
 						}
 					}
 				}
