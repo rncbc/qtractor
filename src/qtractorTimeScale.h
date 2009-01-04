@@ -1,7 +1,7 @@
 // qtractorTimeScale.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -70,7 +70,12 @@ public:
 	void setBeatsPerBar(unsigned short iBeatsPerBar)
 		{ m_iBeatsPerBar = iBeatsPerBar; }
 	unsigned short beatsPerBar() const { return m_iBeatsPerBar; }
-		
+
+	// Time signature (denominator)
+	void setBeatDivisor(unsigned short iBeatDivisor)
+		{ m_iBeatDivisor = iBeatDivisor; }
+	unsigned short beatDivisor() const { return m_iBeatDivisor; }
+
 	// Pixels per beat (width).	
 	void setPixelsPerBeat(unsigned short iPixelsPerBeat)
 		{ m_iPixelsPerBeat = iPixelsPerBeat; }
@@ -174,6 +179,7 @@ private:
 	float          m_fTempo;            // Tempo (beats per minute; BPM)
 	unsigned short m_iTicksPerBeat;     // Resolution (pulses per beat; PPQN)
 	unsigned short m_iBeatsPerBar;      // Measure (beats per bar)
+	unsigned short m_iBeatDivisor;      // Time signature (denominator)
 	unsigned short m_iPixelsPerBeat;    // Pixels per beat (width).
 	unsigned short m_iSnapPerBeat;      // Snap per beat (divisor).
 	unsigned short m_iHorizontalZoom;   // Horizontal zoom factor.

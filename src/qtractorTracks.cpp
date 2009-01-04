@@ -836,6 +836,7 @@ bool qtractorTracks::exportClip ( qtractorClip *pClip )
 		if (pMidiFile->open(sFilename, qtractorMidiFile::Write)) {
 			pMidiFile->setTempo(pSession->tempo());
 			pMidiFile->setBeatsPerBar(pSession->beatsPerBar());
+			pMidiFile->setBeatDivisor(pSession->beatDivisor());
 			unsigned short iFormat = qtractorMidiClip::defaultFormat();
 			unsigned short iTracks = (iFormat == 0 ? 1 : 2);
 			pMidiFile->writeHeader(iFormat, iTracks, pSession->ticksPerBeat());

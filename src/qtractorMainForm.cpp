@@ -1,7 +1,7 @@
 // qtractorMainForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -1532,11 +1532,12 @@ bool qtractorMainForm::editSession (void)
 		m_sFilename.clear();
 
 	// Restore playback state, if needed...
-	if (bPlaying) {
+	if (bPlaying)
 		m_pSession->unlock();
-		m_iTransportUpdate++;
-	}
-	
+
+	// Transport status needs an update too...
+	m_iTransportUpdate++;
+
 	// Done.
 	return true;
 }
@@ -3445,6 +3446,7 @@ void qtractorMainForm::stabilizeForm (void)
 	pCommands->updateAction(m_ui.editUndoAction, pCommands->lastCommand());
 	pCommands->updateAction(m_ui.editRedoAction, pCommands->nextCommand());
 
+	unsigned long iPlayHead = m_pSession->playHead();
 	unsigned long iSessionLength = m_pSession->sessionLength();
 	qtractorTrack *pTrack = NULL;
 	qtractorClip  *pClip  = NULL;
@@ -3462,7 +3464,7 @@ void qtractorMainForm::stabilizeForm (void)
 	bool bPunching   = m_pSession->isPunching();
 	bool bLooping    = m_pSession->isLooping();
 	bool bRolling    = (bPlaying && bRecording);
-	bool bBumped     = (!bRolling && (m_iPlayHead > 0 || bPlaying));
+	bool bBumped     = (!bRolling && (iPlayHead > 0 || bPlaying));
 
 	m_ui.editCutAction->setEnabled(bSelected);
 	m_ui.editCopyAction->setEnabled(bSelected);
@@ -3479,8 +3481,8 @@ void qtractorMainForm::stabilizeForm (void)
 	m_ui.editClipNewAction->setEnabled(bEnabled);
 	m_ui.editClipEditAction->setEnabled(pClip != NULL);
 	m_ui.editClipSplitAction->setEnabled(pClip != NULL
-		&& m_iPlayHead > pClip->clipStart()
-		&& m_iPlayHead < pClip->clipStart() + pClip->clipLength());
+		&& iPlayHead > pClip->clipStart()
+		&& iPlayHead < pClip->clipStart() + pClip->clipLength());
 	m_ui.editClipNormalizeAction->setEnabled(pClip != NULL);
 	m_ui.editClipExportAction->setEnabled(pClip != NULL);
 
@@ -3586,9 +3588,9 @@ void qtractorMainForm::stabilizeForm (void)
 	m_ui.transportRewindAction->setEnabled(bBumped);
 	m_ui.transportFastForwardAction->setEnabled(!bRolling);
 	m_ui.transportForwardAction->setEnabled(
-		!bRolling && (m_iPlayHead < iSessionLength
-			|| m_iPlayHead < m_pSession->editHead()
-			|| m_iPlayHead < m_pSession->editTail()));
+		!bRolling && (iPlayHead < iSessionLength
+			|| iPlayHead < m_pSession->editHead()
+			|| iPlayHead < m_pSession->editTail()));
 	m_ui.transportLoopAction->setEnabled(
 		!bRolling && (bLooping || bSelectable));
 	m_ui.transportLoopSetAction->setEnabled(
@@ -4525,9 +4527,10 @@ void qtractorMainForm::contentsChanged (void)
 	appendMessages("qtractorMainForm::contentsChanged()");
 #endif
 
-	// Stabilize session toolbar widgets...
-	updateTransportTime(m_iPlayHead);
+	// HACK: Force play-head position update...
+	m_iPlayHead = 0;
 
+	// Stabilize session toolbar widgets...
 	m_pTempoSpinBox->setValue(m_pSession->tempo());
 	m_pSnapPerBeatComboBox->setCurrentIndex(
 		qtractorTimeScale::indexFromSnap(m_pSession->snapPerBeat()));

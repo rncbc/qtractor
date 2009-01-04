@@ -1,7 +1,7 @@
 // qtractorSessionForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -88,6 +88,9 @@ qtractorSessionForm::qtractorSessionForm (
 	QObject::connect(m_ui.BeatsPerBarSpinBox,
 		SIGNAL(valueChanged(int)),
 		SLOT(changed()));
+	QObject::connect(m_ui.BeatDivisorComboBox,
+		SIGNAL(activated(int)),
+		SLOT(changed()));
 	QObject::connect(m_ui.TicksPerBeatSpinBox,
 		SIGNAL(valueChanged(int)),
 		SLOT(changed()));
@@ -135,6 +138,8 @@ void qtractorSessionForm::setSession ( qtractorSession *pSession )
 	m_ui.SampleRateComboBox->setEnabled(!pSession->isActivated());
 	m_ui.TempoSpinBox->setValue(m_props.timeScale.tempo());
 	m_ui.BeatsPerBarSpinBox->setValue(int(m_props.timeScale.beatsPerBar()));
+	m_ui.BeatDivisorComboBox->setCurrentIndex(
+		m_props.timeScale.beatDivisor() - 1);
 	m_ui.TicksPerBeatSpinBox->setValue(int(m_props.timeScale.ticksPerBeat()));
 	// View properties...
 	m_ui.SnapPerBeatComboBox->setCurrentIndex(
@@ -176,6 +181,8 @@ void qtractorSessionForm::accept (void)
 			m_ui.SampleRateComboBox->currentText().toUInt());
 		m_props.timeScale.setTempo(m_ui.TempoSpinBox->value());
 		m_props.timeScale.setBeatsPerBar(m_ui.BeatsPerBarSpinBox->value());
+		m_props.timeScale.setBeatDivisor(
+			m_ui.BeatDivisorComboBox->currentIndex() + 1);
 		m_props.timeScale.setTicksPerBeat(m_ui.TicksPerBeatSpinBox->value());
 		// View properties...
 		m_props.timeScale.setSnapPerBeat(qtractorTimeScale::snapFromIndex(

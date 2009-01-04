@@ -1,7 +1,7 @@
 // qtractorSession.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -396,6 +396,19 @@ void qtractorSession::setBeatsPerBar ( unsigned short iBeatsPerBar )
 unsigned short qtractorSession::beatsPerBar (void) const
 {
 	return m_props.timeScale.beatsPerBar();
+}
+
+
+// Time signature (denominator) accessors.
+void qtractorSession::setBeatDivisor ( unsigned short iBeatDivisor )
+{
+	m_props.timeScale.setBeatDivisor(iBeatDivisor);
+}
+
+
+unsigned short qtractorSession::beatDivisor (void) const
+{
+	return m_props.timeScale.beatDivisor();
 }
 
 
@@ -1567,6 +1580,8 @@ bool qtractorSession::loadElement ( qtractorSessionDocument *pDocument,
 					qtractorSession::setTicksPerBeat(eProp.text().toUShort());
 				else if (eProp.tagName() == "beats-per-bar")
 					qtractorSession::setBeatsPerBar(eProp.text().toUShort());
+				else if (eProp.tagName() == "beat-divisor")
+					qtractorSession::setBeatDivisor(eProp.text().toUShort());
 			}
 			// We need to make this permanent, right now.
 			qtractorSession::updateTimeScale();
@@ -1735,6 +1750,8 @@ bool qtractorSession::saveElement ( qtractorSessionDocument *pDocument,
 		QString::number(qtractorSession::ticksPerBeat()), &eProps);
 	pDocument->saveTextElement("beats-per-bar",
 		QString::number(qtractorSession::beatsPerBar()), &eProps);
+	pDocument->saveTextElement("beat-divisor",
+		QString::number(qtractorSession::beatDivisor()), &eProps);
 	pElement->appendChild(eProps);
 
 	// Save session state...

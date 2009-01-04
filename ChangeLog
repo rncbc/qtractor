@@ -5,6 +5,11 @@ ChangeLog
 
 CVS HEAD
 
+- Time signature denominator (ie. beat divisor) is now an
+  accessible session setting. Although it has no practical
+  nor explicit use in the whole application, besides being
+  just informational.
+
 - Attempt to retain original size (clip length) of all audio
   clips when changing the global session tempo and automatic
   time-stretching is not an option. (EXPERIMENTAL)

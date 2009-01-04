@@ -1,7 +1,7 @@
 // qtractorTrackView.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -569,13 +569,14 @@ void qtractorTrackView::updatePixmap ( int cx, int cy )
 		unsigned long iFrameFromBeat = pSession->frameFromBeat(iBeat);
 		unsigned long iFramesPerBeat = pSession->frameFromBeat(1);
 		unsigned int  iPixelsPerBeat = pSession->pixelFromBeat(1);
-		x = pSession->pixelFromFrame(iFrameFromBeat) - cx;
+		int x0 = x = pSession->pixelFromFrame(iFrameFromBeat) - cx;
 		while (x < w) {
 			if (x >= 0) {
-				bool bBeatIsBar = pSession->beatIsBar(iBeat);
+				bool bBeatIsBar = pSession->beatIsBar(iBeat) && (x >= x0);
 				if (bBeatIsBar) {
 					painter.setPen(rgbLight);
 					painter.drawLine(x, 0, x, y2 - cy - 2);
+					x0 = x + 16;
 				}
 				if (bBeatIsBar || iPixelsPerBeat > 16) {
 					painter.setPen(rgbDark);

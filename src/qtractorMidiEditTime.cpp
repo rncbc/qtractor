@@ -1,7 +1,7 @@
 // qtractorMidiEditTime.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -113,14 +113,15 @@ void qtractorMidiEditTime::updatePixmap ( int cx, int /*cy*/)
 	unsigned long iFrameFromBeat = pTimeScale->frameFromBeat(iBeat);
 	unsigned long iFramesPerBeat = pTimeScale->frameFromBeat(1);
 	unsigned int  iPixelsPerBeat = pTimeScale->pixelFromBeat(1);
-	x = pTimeScale->pixelFromFrame(iFrameFromBeat) - dx;
+	int x0 = x = pTimeScale->pixelFromFrame(iFrameFromBeat) - dx;
 	while (x < w) {
-		bool bBeatIsBar = pTimeScale->beatIsBar(iBeat);
+		bool bBeatIsBar = pTimeScale->beatIsBar(iBeat) && (x >= x0);
 		if (bBeatIsBar) {
 			y1 = 0;
 			p.setPen(pal.windowText().color());
 			p.drawText(x + 2, y1 + fm.ascent(), QString::number(
 				1 + (iBeat / pTimeScale->beatsPerBar())));
+			x0 = x + 16;
 		} else {
 			y1 = (y2 >> 1);
 		}

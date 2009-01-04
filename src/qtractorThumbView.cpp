@@ -1,7 +1,7 @@
 // qtractorThumbView.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -120,8 +120,8 @@ void qtractorThumbView::updateContents (void)
 		qtractorTrack *pTrack = pSession->tracks().first();
 		while (pTrack && y2 < h) {
 			int h2 = ((h * pTrack->zoomHeight()) / ch);
-			if (h2 < 3)
-				h2 = 3;
+			if (h2 < 2)
+				h2 = 2;
 			qtractorClip *pClip = pTrack->clips().first();
 			while (pClip) {
 				x2 = int(pClip->clipStart()  / f2);

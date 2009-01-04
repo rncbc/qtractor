@@ -1,7 +1,7 @@
 // qtractorMidiFile.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -65,6 +65,11 @@ public:
 		{ m_iBeatsPerBar = iBeatsPerBar; }
 	unsigned short beatsPerBar() const { return m_iBeatsPerBar; }
 
+	// Sequence/track time signature (denominator) accessors.
+	void setBeatDivisor(unsigned short iBeatDivisor)
+		{ m_iBeatDivisor = iBeatDivisor; }
+	unsigned short beatDivisor() const { return m_iBeatDivisor; }
+
 	// Sequence/track readers.
 	bool readTracks(qtractorMidiSequence **ppSeqs, unsigned short iSeqs,
 		unsigned short iTrackChannel = 0);
@@ -115,6 +120,7 @@ private:
 	// Special uniform track properties.
 	float          m_fTempo;
 	unsigned short m_iBeatsPerBar;
+	unsigned short m_iBeatDivisor;
 
 	// Track info map.
 	struct TrackInfo {

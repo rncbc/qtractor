@@ -1,7 +1,7 @@
 // qtractorTimeScale.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -35,6 +35,7 @@ void qtractorTimeScale::clear (void)
 	m_fTempo          = 120.0f;
 	m_iTicksPerBeat   = 96;
 	m_iBeatsPerBar    = 4;
+	m_iBeatDivisor    = 2;
 	m_iPixelsPerBeat  = 32;
 	m_iSnapPerBeat    = 4;
 	m_iHorizontalZoom = 100;
@@ -54,6 +55,7 @@ qtractorTimeScale& qtractorTimeScale::copy ( const qtractorTimeScale& ts )
 		m_fTempo          = ts.m_fTempo;
 		m_iTicksPerBeat   = ts.m_iTicksPerBeat;
 		m_iBeatsPerBar    = ts.m_iBeatsPerBar;
+		m_iBeatDivisor    = ts.m_iBeatDivisor;
 		m_iPixelsPerBeat  = ts.m_iPixelsPerBeat;
 		m_iSnapPerBeat    = ts.m_iSnapPerBeat;
 		m_iHorizontalZoom = ts.m_iHorizontalZoom;

@@ -1,7 +1,7 @@
 // qtractorTrackTime.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -110,14 +110,15 @@ void qtractorTrackTime::updatePixmap ( int cx, int /* cy */)
 	unsigned long iFrameFromBeat = pSession->frameFromBeat(iBeat);
 	unsigned long iFramesPerBeat = pSession->frameFromBeat(1);
 	unsigned int  iPixelsPerBeat = pSession->pixelFromBeat(1);
-	x = pSession->pixelFromFrame(iFrameFromBeat) - cx;
+	int x0 = x = pSession->pixelFromFrame(iFrameFromBeat) - cx;
 	while (x < w) {
-		bool bBeatIsBar = pSession->beatIsBar(iBeat);
+		bool bBeatIsBar = pSession->beatIsBar(iBeat) && (x >= x0);
 		if (bBeatIsBar) {
 			y1 = 0;
 			painter.setPen(pal.windowText().color());
 			painter.drawText(x + 2, y1 + fm.ascent(), QString::number(
 				1 + (iBeat / pSession->beatsPerBar())));
+			x0 = x + 16;
 		} else {
 			y1 = (y2 >> 1);
 		}

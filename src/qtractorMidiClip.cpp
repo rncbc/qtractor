@@ -164,6 +164,7 @@ bool qtractorMidiClip::openMidiFile ( qtractorMidiFile *pFile,
 		if (m_bSessionFlag) {
 			pSession->setTempo(pFile->tempo());
 			pSession->setBeatsPerBar(pFile->beatsPerBar());
+			pSession->setBeatDivisor(pFile->beatDivisor());
 			pSession->updateTimeScale();
 			// Reset session flag now.
 			m_bSessionFlag = false;

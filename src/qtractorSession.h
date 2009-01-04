@@ -1,7 +1,7 @@
 // qtractorSession.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -95,6 +95,11 @@ public:
 	// Beats/Bar(measure) accessors.
 	void setBeatsPerBar(unsigned short iBeatsPerBar);
 	unsigned short beatsPerBar() const;
+
+	// Time signature (denominator) accessors.
+	void setBeatDivisor(unsigned short iBeatDivisor);
+	unsigned short beatDivisor() const;
+
 	bool beatIsBar(unsigned int iBeat) const;
 
 	// Horizontal zoom factor.

@@ -1,7 +1,7 @@
 // qtractorAudioEngine.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -155,7 +155,7 @@ static void qtractorAudioEngine_timebase ( jack_transport_state_t,
 		pPos->beats_per_bar    = iBeatsPerBar;
 		pPos->ticks_per_beat   = iTicksPerBeat;
 		pPos->beats_per_minute = pSession->tempo();
-	//	pPos->beat_type        = 4.0;	// Quarter note.
+		pPos->beat_type        = float(1 << pSession->beatDivisor());
 	}
 }
 

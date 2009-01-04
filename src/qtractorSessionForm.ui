@@ -2,7 +2,7 @@
  <author>rncbc aka Rui Nuno Capela</author>
  <comment>qtractor - An Audio/MIDI multi-track sequencer.
 
-   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -25,8 +25,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>394</width>
-    <height>300</height>
+    <width>519</width>
+    <height>324</height>
    </rect>
   </property>
   <property name="focusPolicy" >
@@ -179,7 +179,7 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="1" >
+          <item row="0" column="1" colspan="3" >
            <widget class="QComboBox" name="SampleRateComboBox" >
             <property name="toolTip" >
              <string>Sample rate (Hz)</string>
@@ -222,7 +222,7 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="1" >
+          <item row="1" column="1" colspan="3" >
            <widget class="QDoubleSpinBox" name="TempoSpinBox" >
             <property name="toolTip" >
              <string>Tempo (BPM)</string>
@@ -262,9 +262,6 @@
             <property name="toolTip" >
              <string>Time signature (beats/bar)</string>
             </property>
-            <property name="suffix" >
-             <string> / 4</string>
-            </property>
             <property name="minimum" >
              <number>2</number>
             </property>
@@ -274,6 +271,54 @@
             <property name="value" >
              <number>4</number>
             </property>
+           </widget>
+          </item>
+          <item row="2" column="2" >
+           <widget class="QLabel" name="BeatDivisorTextLabel" >
+            <property name="text" >
+             <string>/</string>
+            </property>
+            <property name="buddy" >
+             <cstring>BeatsPerBarSpinBox</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="3" >
+           <widget class="QComboBox" name="BeatDivisorComboBox" >
+            <property name="toolTip" >
+             <string>Time signature (denominator)</string>
+            </property>
+            <property name="editable" >
+             <bool>false</bool>
+            </property>
+            <property name="currentIndex" >
+             <number>0</number>
+            </property>
+            <item>
+             <property name="text" >
+              <string>2</string>
+             </property>
+            </item>
+            <item>
+             <property name="text" >
+              <string>4</string>
+             </property>
+            </item>
+            <item>
+             <property name="text" >
+              <string>8</string>
+             </property>
+            </item>
+            <item>
+             <property name="text" >
+              <string>16</string>
+             </property>
+            </item>
+            <item>
+             <property name="text" >
+              <string>32</string>
+             </property>
+            </item>
            </widget>
           </item>
           <item row="3" column="0" >
@@ -289,7 +334,7 @@
             </property>
            </widget>
           </item>
-          <item row="3" column="1" >
+          <item row="3" column="1" colspan="3" >
            <widget class="QSpinBox" name="TicksPerBeatSpinBox" >
             <property name="toolTip" >
              <string>Resolution (ticks/beat; TPQN)</string>
@@ -308,7 +353,7 @@
             </property>
            </widget>
           </item>
-          <item row="4" column="0" colspan="2" >
+          <item row="4" column="1" >
            <spacer>
             <property name="orientation" >
              <enum>Qt::Vertical</enum>
@@ -529,11 +574,13 @@
   <tabstop>SampleRateComboBox</tabstop>
   <tabstop>TempoSpinBox</tabstop>
   <tabstop>BeatsPerBarSpinBox</tabstop>
+  <tabstop>BeatDivisorComboBox</tabstop>
   <tabstop>TicksPerBeatSpinBox</tabstop>
   <tabstop>SnapPerBeatComboBox</tabstop>
   <tabstop>PixelsPerBeatSpinBox</tabstop>
   <tabstop>HorizontalZoomSpinBox</tabstop>
   <tabstop>VerticalZoomSpinBox</tabstop>
+  <tabstop>SessionTabWidget</tabstop>
   <tabstop>OkPushButton</tabstop>
   <tabstop>CancelPushButton</tabstop>
  </tabstops>

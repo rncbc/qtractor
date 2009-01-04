@@ -1,7 +1,7 @@
 // qtractorMidiFile.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -52,6 +52,7 @@ qtractorMidiFile::qtractorMidiFile (void)
 
 	m_fTempo        = 120.0f;
 	m_iBeatsPerBar  = 4;
+	m_iBeatDivisor  = 2;
 
 	m_pTrackInfo    = NULL;
 }
@@ -361,6 +362,7 @@ bool qtractorMidiFile::readTracks ( qtractorMidiSequence **ppSeqs,
 						case qtractorMidiEvent::TIME:
 							// Beats per bar is the numerator of time signature...
 							m_iBeatsPerBar = (unsigned short) data[0];
+							m_iBeatDivisor = (unsigned short) data[1];
 							break;
 						default:
 							// Ignore all others...
@@ -506,7 +508,7 @@ bool qtractorMidiFile::writeTracks ( qtractorMidiSequence **ppSeqs,
 			writeInt(qtractorMidiEvent::TIME, 1);
 			writeInt(4);
 			writeInt(m_iBeatsPerBar, 1);    // Numerator.
-			writeInt(2, 1);                 // Denominator.
+			writeInt(m_iBeatDivisor, 1);    // Denominator.
 			writeInt(32, 1);                // MIDI clocks per metronome click.
 			writeInt(4, 1);                 // 32nd notes per quarter.
 		}
@@ -904,6 +906,7 @@ bool qtractorMidiFile::saveCopyFile ( const QString& sNewFilename,
 	float fTempo = (pTimeScale ? pTimeScale->tempo() : 120.0f);
 	unsigned short iTicksPerBeat = (pTimeScale ? pTimeScale->ticksPerBeat() : 96);
 	unsigned short iBeatsPerBar  = (pTimeScale ? pTimeScale->beatsPerBar()  : 4);
+	unsigned short iBeatDivisor  = (pTimeScale ? pTimeScale->beatDivisor()  : 2);
 	unsigned short iSeq, iSeqs = 0;
 	qtractorMidiSequence **ppSeqs = NULL;
 	const QString sTrackName = QObject::tr("Track %1");
@@ -924,6 +927,7 @@ bool qtractorMidiFile::saveCopyFile ( const QString& sNewFilename,
 		if (file.readTracks(ppSeqs, iSeqs)) {
 			fTempo = file.tempo();
 			iBeatsPerBar = file.beatsPerBar();
+			iBeatDivisor = file.beatDivisor();
 		}
 		file.close();
 	}
@@ -934,6 +938,7 @@ bool qtractorMidiFile::saveCopyFile ( const QString& sNewFilename,
 
 	file.setTempo(fTempo);
 	file.setBeatsPerBar(iBeatsPerBar);
+	file.setBeatDivisor(iBeatDivisor);
 
 	if (ppSeqs == NULL)
 		iSeqs = (iFormat == 0 ? 1 : 2);

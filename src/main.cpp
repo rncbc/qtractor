@@ -1,7 +1,7 @@
 // main.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -294,18 +294,13 @@ int main ( int argc, char **argv )
 
 	// Construct, setup and show the main form (a pseudo-singleton).
 	qtractorMainForm w;
-//	app.setMainWidget(&w);
 	w.setup(&options);
 	w.show();
 
 	// Settle this one as application main widget...
 	app.setMainWidget(&w);
 
-	// Register the quit signal/slot.
-	// app.connect(&app, SIGNAL(lastWindowClosed()), &app, SLOT(quit()));
-
 	return app.exec();
 }
 
 // end of main.cpp
-
