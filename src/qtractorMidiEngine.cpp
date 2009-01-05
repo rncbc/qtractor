@@ -649,7 +649,7 @@ void qtractorMidiEngine::resetTempo (void)
 	// Fill tempo struct with current tempo info.
 	snd_seq_get_queue_tempo(m_pAlsaSeq, m_iAlsaQueue, tempo);
 	// Set the new intended ones...
-	snd_seq_queue_tempo_set_ppq(tempo, (int) pSession->ticksPerBeat());
+	snd_seq_queue_tempo_set_ppq(tempo, (int) pSession->ticksPerBeat2());
 	snd_seq_queue_tempo_set_tempo(tempo,
 		(unsigned int) (60000000.0f / pSession->tempo()));
 	// Give tempo struct to the queue.
