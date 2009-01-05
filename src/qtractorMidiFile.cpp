@@ -904,9 +904,9 @@ bool qtractorMidiFile::saveCopyFile ( const QString& sNewFilename,
 {
 	qtractorMidiFile file;
 	float fTempo = (pTimeScale ? pTimeScale->tempo() : 120.0f);
-	unsigned short iTicksPerBeat = (pTimeScale ? pTimeScale->ticksPerBeat() : 96);
-	unsigned short iBeatsPerBar  = (pTimeScale ? pTimeScale->beatsPerBar()  : 4);
-	unsigned short iBeatDivisor  = (pTimeScale ? pTimeScale->beatDivisor()  : 2);
+	unsigned short iTicksPerBeat = (pTimeScale ? pTimeScale->ticksPerBeat2() : 96);
+	unsigned short iBeatsPerBar  = (pTimeScale ? pTimeScale->beatsPerBar() : 4);
+	unsigned short iBeatDivisor  = (pTimeScale ? pTimeScale->beatDivisor() : 2);
 	unsigned short iSeq, iSeqs = 0;
 	qtractorMidiSequence **ppSeqs = NULL;
 	const QString sTrackName = QObject::tr("Track %1");

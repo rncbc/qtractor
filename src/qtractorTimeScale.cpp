@@ -73,10 +73,16 @@ qtractorTimeScale& qtractorTimeScale::copy ( const qtractorTimeScale& ts )
 // Update scale divisor factors.
 void qtractorTimeScale::updateScale (void)
 {
+	m_iTicksPerBeat2 = m_iTicksPerBeat;
+	if (m_iBeatDivisor > 2)
+		m_iTicksPerBeat2 >>= (m_iBeatDivisor - 2);
+	else if (m_iBeatDivisor < 2)
+		m_iTicksPerBeat2 <<= 1;
+
 	m_iScale_a = (unsigned int) (m_iHorizontalZoom * m_iPixelsPerBeat);
 	m_fScale_b = (float) (0.01f * m_fTempo * m_iScale_a);
 	m_fScale_c = (float) (60.0f * m_iSampleRate);
-	m_fScale_d = (float) (m_fTempo * m_iTicksPerBeat);
+	m_fScale_d = (float) (m_fTempo * m_iTicksPerBeat2);
 }
 
 
@@ -85,7 +91,7 @@ unsigned long qtractorTimeScale::tickSnap ( unsigned long iTick ) const
 {
 	unsigned long iTickSnap = iTick;
 	if (m_iSnapPerBeat > 0) {
-		unsigned long q = m_iTicksPerBeat / m_iSnapPerBeat;
+		unsigned long q = m_iTicksPerBeat2 / m_iSnapPerBeat;
 		iTickSnap = q * ((iTickSnap + (q >> 1)) / q);
 	}
 	return iTickSnap;
@@ -113,7 +119,7 @@ unsigned long qtractorTimeScale::frameFromText (
 					beats--;
 			}
 			beats += bars  * m_iBeatsPerBar;
-			ticks += beats * m_iTicksPerBeat;
+			ticks += beats * m_iTicksPerBeat2;
 			iFrame = frameFromTick(ticks);
 			break;
 		}
@@ -155,9 +161,9 @@ QString qtractorTimeScale::textFromFrame (
 			unsigned int bars, beats;
 			unsigned long ticks = tickFromFrame(iFrame);
 			bars = beats = 0;
-			if (ticks >= (unsigned long) m_iTicksPerBeat) {
-				beats  = (unsigned int)  (ticks / m_iTicksPerBeat);
-				ticks -= (unsigned long) (beats * m_iTicksPerBeat);
+			if (ticks >= (unsigned long) m_iTicksPerBeat2) {
+				beats  = (unsigned int)  (ticks / m_iTicksPerBeat2);
+				ticks -= (unsigned long) (beats * m_iTicksPerBeat2);
 			}
 			if (beats >= (unsigned int) m_iBeatsPerBar) {
 				bars   = (unsigned int) (beats / m_iBeatsPerBar);

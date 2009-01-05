@@ -91,6 +91,7 @@ public:
 	// Resolution accessors.
 	void setTicksPerBeat(unsigned short iTicksPerBeat);
 	unsigned short ticksPerBeat() const;
+	unsigned short ticksPerBeat2() const;
 
 	// Beats/Bar(measure) accessors.
 	void setBeatsPerBar(unsigned short iBeatsPerBar);

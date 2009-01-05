@@ -61,10 +61,13 @@ public:
 		{ m_fTempo = fTempo; }
 	float tempo() const { return m_fTempo; }
 
-	// Resolution (pulses per beat; PPQN)
+	// Resolution (ticks per quarter note; PPQN)
 	void setTicksPerBeat(unsigned short iTicksPerBeat)
 		{ m_iTicksPerBeat = iTicksPerBeat; }
 	unsigned short ticksPerBeat() const { return m_iTicksPerBeat; }
+
+	// Actual resolution (ticks per beat)
+	unsigned short ticksPerBeat2() const { return m_iTicksPerBeat2; }
 
 	// Measure (beats per bar)
 	void setBeatsPerBar(unsigned short iBeatsPerBar)
@@ -177,7 +180,7 @@ private:
 
 	unsigned int   m_iSampleRate;       // Sample rate (frames per second)
 	float          m_fTempo;            // Tempo (beats per minute; BPM)
-	unsigned short m_iTicksPerBeat;     // Resolution (pulses per beat; PPQN)
+	unsigned short m_iTicksPerBeat;     // Resolution (ticks per quarter note; PPQN)
 	unsigned short m_iBeatsPerBar;      // Measure (beats per bar)
 	unsigned short m_iBeatDivisor;      // Time signature (denominator)
 	unsigned short m_iPixelsPerBeat;    // Pixels per beat (width).
@@ -192,6 +195,8 @@ private:
 	float          m_fScale_b;
 	float          m_fScale_c;
 	float          m_fScale_d;
+
+	unsigned short m_iTicksPerBeat2;    // Resolution (actual ticks per beat)
 };
 
 

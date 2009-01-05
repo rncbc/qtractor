@@ -1,7 +1,7 @@
 // qtractorClipForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -693,7 +693,7 @@ void qtractorClipForm::fileChanged (
 		qtractorMidiFile file;
 		if (file.open(sFilename)) {
 			qtractorMidiSequence seq;
-			seq.setTicksPerBeat(pSession->ticksPerBeat());
+			seq.setTicksPerBeat(pSession->ticksPerBeat2());
 			if (file.readTrack(&seq, iTrackChannel) && seq.duration() > 0)
 				iClipLength = pSession->frameFromTick(seq.duration());
 			file.close();

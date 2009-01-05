@@ -1,7 +1,7 @@
 // qtractorMidiClip.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -132,7 +132,7 @@ bool qtractorMidiClip::openMidiFile ( qtractorMidiFile *pFile,
 
 	// Initialize event container...
 	m_pSeq->clear();
-	m_pSeq->setTicksPerBeat(pSession->ticksPerBeat());
+	m_pSeq->setTicksPerBeat(pSession->ticksPerBeat2());
 	m_pSeq->setTimeOffset(pSession->tickFromFrame(clipOffset()));
 	m_pSeq->setTimeLength(pSession->tickFromFrame(clipLength()));
 
@@ -594,7 +594,7 @@ QString qtractorMidiClip::toolTip (void) const
 		sToolTip += QObject::tr("Track %1").arg(m_iTrackChannel);
 
 	if (m_pFile) {
-		sToolTip += QObject::tr(", %1 tracks, %2 tpb")
+		sToolTip += QObject::tr(", %1 tracks, %2 ppqn")
 			.arg(m_pFile->tracks())
 			.arg(m_pFile->ticksPerBeat());
 	}
@@ -692,7 +692,7 @@ bool qtractorMidiClip::clipExport ( ClipExport pfnClipExport, void *pvArg,
 		iLength = clipLength();
 
 	qtractorMidiSequence *pSeq = sequence();
-	unsigned short iTicksPerBeat = pSession->ticksPerBeat();
+	unsigned short iTicksPerBeat = pSession->ticksPerBeat2();
 	unsigned long iTimeOffset = pSeq->timep(pSeq->timeOffset(), iTicksPerBeat);
 	unsigned long iTimeStart = pSession->tickFromFrame(iOffset);
 	iTimeStart = (iTimeStart > iTimeOffset ? iTimeStart - iTimeOffset : 0);

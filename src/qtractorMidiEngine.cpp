@@ -758,7 +758,7 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 
 	// - capture quantization...
 	if (m_iCaptureQuantize > 0) {
-		unsigned long q = pSession->ticksPerBeat() / m_iCaptureQuantize;
+		unsigned long q = pSession->ticksPerBeat2() / m_iCaptureQuantize;
 		pEv->time.tick = q * ((pEv->time.tick + (q >> 1)) / q);
 	}
 
@@ -1833,7 +1833,7 @@ void qtractorMidiEngine::processMetro (
 	unsigned long  iTimeStart = pSession->tickFromFrame(iFrameStart);
 	unsigned long  iTimeEnd   = pSession->tickFromFrame(iFrameEnd);
 
-	unsigned short iTicksPerBeat = pSession->ticksPerBeat();
+	unsigned short iTicksPerBeat = pSession->ticksPerBeat2();
 	unsigned int   iBeat = (iTimeStart + (iTicksPerBeat >> 1)) / iTicksPerBeat;
 	unsigned long  iTime = iBeat * iTicksPerBeat;
 
@@ -2008,7 +2008,7 @@ bool qtractorMidiEngine::fileExport ( const QString& sExportPath,
 	if (pExportBus == NULL)
 		return false;
 
-	unsigned short iTicksPerBeat = pSession->ticksPerBeat();
+	unsigned short iTicksPerBeat = pSession->ticksPerBeat2();
 
 	unsigned long iTimeStart = pSession->tickFromFrame(iExportStart);
 	unsigned long iTimeEnd   = pSession->tickFromFrame(iExportEnd);

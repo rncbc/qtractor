@@ -882,7 +882,7 @@ qtractorTrack *qtractorTrackView::dragDropTrack (
 			qtractorMidiFile file;
 			if (file.open(pDropItem->path)) {
 				qtractorMidiSequence seq;
-				seq.setTicksPerBeat(pSession->ticksPerBeat());
+				seq.setTicksPerBeat(pSession->ticksPerBeat2());
 				if (pDropItem->channel < 0) {
 					int iTracks = (file.format() == 1 ? file.tracks() : 16);
 					for (int iTrackChannel = 0;

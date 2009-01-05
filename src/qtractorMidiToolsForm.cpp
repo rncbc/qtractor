@@ -1,7 +1,7 @@
 // qtractorMidiToolsForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -492,7 +492,7 @@ unsigned long qtractorMidiToolsForm::quantize (
 	unsigned long iTicks, int iIndex, int i ) const
 {
 	unsigned short p = qtractorTimeScale::snapFromIndex(iIndex + 1);
-	unsigned long  q = m_pTimeScale->ticksPerBeat() / p;
+	unsigned long  q = m_pTimeScale->ticksPerBeat2() / p;
 	return q * ((iTicks + (q >> i)) / q);
 }
 
@@ -630,7 +630,7 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::editCommand (
 			}
 			if (m_ui.RandomizeTimeCheckBox->isChecked()) {
 				p = m_ui.RandomizeTimeSpinBox->value();
-				q = m_pTimeScale->ticksPerBeat();
+				q = m_pTimeScale->ticksPerBeat2();
 				if (p > 0) {
 					iTime += (p * (q - (::rand() % (q << 1)))) / 100;
 					if (iTime < 0)
@@ -640,7 +640,7 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::editCommand (
 			}
 			if (m_ui.RandomizeDurationCheckBox->isChecked()) {
 				p = m_ui.RandomizeDurationSpinBox->value();
-				q = m_pTimeScale->ticksPerBeat();
+				q = m_pTimeScale->ticksPerBeat2();
 				if (p > 0) {
 					iDuration += (p * (q - (::rand() % (q << 1)))) / 100;
 					if (iDuration < 0)

@@ -133,7 +133,7 @@ static void qtractorAudioEngine_timebase ( jack_transport_state_t,
 
 	qtractorSession *pSession = pAudioEngine->session();
 	if (pSession) {
-		unsigned short iTicksPerBeat = pSession->ticksPerBeat();
+		unsigned short iTicksPerBeat = pSession->ticksPerBeat2();
 		unsigned short iBeatsPerBar  = pSession->beatsPerBar();
 		unsigned int   bars  = 0;
 		unsigned int   beats = 0;

@@ -385,6 +385,12 @@ unsigned short qtractorSession::ticksPerBeat (void) const
 	return m_props.timeScale.ticksPerBeat();
 }
 
+unsigned short qtractorSession::ticksPerBeat2 (void) const
+{
+	return m_props.timeScale.ticksPerBeat2();
+}
+
+
 
 // Beats/Bar(measure) accessors.
 void qtractorSession::setBeatsPerBar ( unsigned short iBeatsPerBar )

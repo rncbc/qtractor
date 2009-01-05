@@ -1,7 +1,7 @@
 // qtractorSessionCommand.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -65,8 +65,8 @@ class qtractorSessionTempoCommand : public qtractorSessionCommand
 public:
 
 	// Constructor.
-	qtractorSessionTempoCommand(qtractorSession *pSession,
-		float fTempo, unsigned short iTicksPerBeat = 0);
+	qtractorSessionTempoCommand(qtractorSession *pSession, float fTempo,
+		unsigned short iTicksPerBeat = 0, unsigned short iBeatDivisor = 0);
 
 	// Desstructor.
 	~qtractorSessionTempoCommand();
@@ -80,6 +80,7 @@ private:
 	// Instance variables.
 	float                m_fTempo;
 	unsigned short       m_iTicksPerBeat;
+	unsigned short       m_iBeatDivisor;
 	qtractorClipCommand *m_pClipCommand;
 };
 

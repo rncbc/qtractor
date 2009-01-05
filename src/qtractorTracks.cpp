@@ -1,7 +1,7 @@
 // qtractorTracks.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -394,7 +394,7 @@ bool qtractorTracks::newClip (void)
 			pClip->setClipLength(pSession->editTail() - pSession->editHead());
 		} else {
 			pClip->setClipLength(pSession->frameFromTick(
-				pSession->ticksPerBeat() * pSession->beatsPerBar()));
+				pSession->ticksPerBeat2() * pSession->beatsPerBar()));
 		}
 		// Create a clip filename from scratch...
 		const QString& sFilename = pSession->createFilePath(
@@ -409,7 +409,7 @@ bool qtractorTracks::newClip (void)
 			qtractorMidiSequence *pSeq = pMidiClip->sequence();
 			pSeq->setName(pMidiClip->clipName());
 			pSeq->setChannel(pTrack->midiChannel());
-			pSeq->setTicksPerBeat(pSession->ticksPerBeat());
+			pSeq->setTicksPerBeat(pSession->ticksPerBeat2());
 			// Which SMF format?
 			if (pMidiClip->format() == 0) {
 				// SMF format 0 (1 track, 1 channel)
@@ -839,7 +839,7 @@ bool qtractorTracks::exportClip ( qtractorClip *pClip )
 			pMidiFile->setBeatDivisor(pSession->beatDivisor());
 			unsigned short iFormat = qtractorMidiClip::defaultFormat();
 			unsigned short iTracks = (iFormat == 0 ? 1 : 2);
-			pMidiFile->writeHeader(iFormat, iTracks, pSession->ticksPerBeat());
+			pMidiFile->writeHeader(iFormat, iTracks, pSession->ticksPerBeat2());
 			if (iFormat == 1)
 				pMidiFile->writeTrack(NULL);  // Setup track (SMF format 1).
 			pMidiClip->clipExport(
