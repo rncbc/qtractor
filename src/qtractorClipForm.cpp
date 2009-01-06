@@ -693,7 +693,7 @@ void qtractorClipForm::fileChanged (
 		qtractorMidiFile file;
 		if (file.open(sFilename)) {
 			qtractorMidiSequence seq;
-			seq.setTicksPerBeat(pSession->ticksPerBeat2());
+			seq.setTicksPerBeat(pSession->ticksPerBeat());
 			if (file.readTrack(&seq, iTrackChannel) && seq.duration() > 0)
 				iClipLength = pSession->frameFromTick(seq.duration());
 			file.close();

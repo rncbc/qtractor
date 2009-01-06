@@ -394,7 +394,7 @@ bool qtractorTracks::newClip (void)
 			pClip->setClipLength(pSession->editTail() - pSession->editHead());
 		} else {
 			pClip->setClipLength(pSession->frameFromTick(
-				pSession->ticksPerBeat2() * pSession->beatsPerBar()));
+				pSession->ticksPerBeat() * pSession->beatsPerBar()));
 		}
 		// Create a clip filename from scratch...
 		const QString& sFilename = pSession->createFilePath(
@@ -409,7 +409,7 @@ bool qtractorTracks::newClip (void)
 			qtractorMidiSequence *pSeq = pMidiClip->sequence();
 			pSeq->setName(pMidiClip->clipName());
 			pSeq->setChannel(pTrack->midiChannel());
-			pSeq->setTicksPerBeat(pSession->ticksPerBeat2());
+			pSeq->setTicksPerBeat(pSession->ticksPerBeat());
 			// Which SMF format?
 			if (pMidiClip->format() == 0) {
 				// SMF format 0 (1 track, 1 channel)
@@ -839,7 +839,7 @@ bool qtractorTracks::exportClip ( qtractorClip *pClip )
 			pMidiFile->setBeatDivisor(pSession->beatDivisor());
 			unsigned short iFormat = qtractorMidiClip::defaultFormat();
 			unsigned short iTracks = (iFormat == 0 ? 1 : 2);
-			pMidiFile->writeHeader(iFormat, iTracks, pSession->ticksPerBeat2());
+			pMidiFile->writeHeader(iFormat, iTracks, pSession->ticksPerBeat());
 			if (iFormat == 1)
 				pMidiFile->writeTrack(NULL);  // Setup track (SMF format 1).
 			pMidiClip->clipExport(

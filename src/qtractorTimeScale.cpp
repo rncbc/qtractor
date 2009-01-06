@@ -73,16 +73,24 @@ qtractorTimeScale& qtractorTimeScale::copy ( const qtractorTimeScale& ts )
 // Update scale divisor factors.
 void qtractorTimeScale::updateScale (void)
 {
-	m_iTicksPerBeat2 = m_iTicksPerBeat;
-	if (m_iBeatDivisor > 2)
-		m_iTicksPerBeat2 >>= (m_iBeatDivisor - 2);
-	else if (m_iBeatDivisor < 2)
-		m_iTicksPerBeat2 <<= 1;
-
 	m_iScale_a = (unsigned int) (m_iHorizontalZoom * m_iPixelsPerBeat);
 	m_fScale_b = (float) (0.01f * m_fTempo * m_iScale_a);
 	m_fScale_c = (float) (60.0f * m_iSampleRate);
-	m_fScale_d = (float) (m_fTempo * m_iTicksPerBeat2);
+	m_fScale_d = (float) (m_fTempo * m_iTicksPerBeat);
+
+	m_iTicksPerBeat2 = m_iTicksPerBeat;
+	m_iScale_a2 = m_iScale_a;
+	m_fScale_c2 = m_fScale_c;
+	if (m_iBeatDivisor > 2) {
+		unsigned short n = (m_iBeatDivisor - 2);
+		m_iTicksPerBeat2 >>= n;
+		m_iScale_a2 >>= n;
+		m_fScale_c2 /= float(1 << n);
+	} else if (m_iBeatDivisor < 2) {
+		m_iTicksPerBeat2 <<= 1;
+		m_iScale_a2 <<= 1;
+		m_fScale_c2 *= 2.0f;
+	}
 }
 
 

@@ -66,10 +66,10 @@ public:
 		{ m_iTicksPerBeat = iTicksPerBeat; }
 	unsigned short ticksPerBeat() const { return m_iTicksPerBeat; }
 
-	// Actual resolution (ticks per beat)
+	// Resolution (ticks per beat)
 	unsigned short ticksPerBeat2() const { return m_iTicksPerBeat2; }
 
-	// Measure (beats per bar)
+	// Time signature (numerator)
 	void setBeatsPerBar(unsigned short iBeatsPerBar)
 		{ m_iBeatsPerBar = iBeatsPerBar; }
 	unsigned short beatsPerBar() const { return m_iBeatsPerBar; }
@@ -105,9 +105,9 @@ public:
 
 	// Pixel/Beat number conversion.
 	unsigned int beatFromPixel(unsigned int x) const
-		{ return ((100 * x) / m_iScale_a); }
+		{ return ((100 * x) / m_iScale_a2); }
 	unsigned int pixelFromBeat(unsigned int iBeat) const
-		{ return ((iBeat * m_iScale_a) / 100); }
+		{ return ((iBeat * m_iScale_a2) / 100); }
 
 	// Pixel/Tick number conversion.
 	unsigned int tickFromPixel(unsigned int x) const
@@ -123,9 +123,9 @@ public:
 
 	// Beat/frame conversion.
 	unsigned long frameFromBeat(unsigned int iBeat) const
-		{ return uroundf((m_fScale_c * iBeat) / m_fTempo); }
+		{ return uroundf((m_fScale_c2 * iBeat) / m_fTempo); }
 	unsigned int beatFromFrame(unsigned long iFrame) const
-		{ return uroundf((m_fTempo * iFrame) / m_fScale_c); }
+		{ return uroundf((m_fTempo * iFrame) / m_fScale_c2); }
 
 	// Tick/Frame number conversion.
 	unsigned long frameFromTick(unsigned int iTick) const
@@ -181,7 +181,7 @@ private:
 	unsigned int   m_iSampleRate;       // Sample rate (frames per second)
 	float          m_fTempo;            // Tempo (beats per minute; BPM)
 	unsigned short m_iTicksPerBeat;     // Resolution (ticks per quarter note; PPQN)
-	unsigned short m_iBeatsPerBar;      // Measure (beats per bar)
+	unsigned short m_iBeatsPerBar;      // Time signature (numerator)
 	unsigned short m_iBeatDivisor;      // Time signature (denominator)
 	unsigned short m_iPixelsPerBeat;    // Pixels per beat (width).
 	unsigned short m_iSnapPerBeat;      // Snap per beat (divisor).
@@ -196,7 +196,9 @@ private:
 	float          m_fScale_c;
 	float          m_fScale_d;
 
-	unsigned short m_iTicksPerBeat2;    // Resolution (actual ticks per beat)
+	unsigned short m_iTicksPerBeat2;    // Resolution (ticks per beat)
+	unsigned long  m_iScale_a2;
+	float          m_fScale_c2;
 };
 
 

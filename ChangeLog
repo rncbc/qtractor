@@ -6,7 +6,8 @@ ChangeLog
 CVS HEAD
 
 - Time signature denominator (ie. beat divisor) is now an
-  accessible and effective session property. (EXPERIMENTAL)
+  accessible and effective session property. (EXPERIMENTAL,
+  HIGHLY UNSTABLE/TEMPORARILY BROKEN)
 
 - Attempt to retain original size (clip length) of all audio
   clips when changing the global session tempo and automatic

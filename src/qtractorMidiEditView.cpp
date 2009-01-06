@@ -303,7 +303,7 @@ void qtractorMidiEditView::updatePixmap ( int cx, int cy )
 
 	// Draw vertical grid lines...
 	unsigned short iBeat = pTimeScale->beatFromPixel(dx);
-	unsigned short iTicksPerBeat  = pTimeScale->ticksPerBeat2();
+	unsigned short iTicksPerBeat  = pTimeScale->ticksPerBeat();
 	unsigned short iPixelsPerBeat = pTimeScale->pixelsPerBeat();
 	unsigned long  iTickFromBeat  = iBeat * iTicksPerBeat;
 	int x = pTimeScale->pixelFromTick(iTickFromBeat) - dx;

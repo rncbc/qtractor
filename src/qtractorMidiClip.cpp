@@ -132,7 +132,7 @@ bool qtractorMidiClip::openMidiFile ( qtractorMidiFile *pFile,
 
 	// Initialize event container...
 	m_pSeq->clear();
-	m_pSeq->setTicksPerBeat(pSession->ticksPerBeat2());
+	m_pSeq->setTicksPerBeat(pSession->ticksPerBeat());
 	m_pSeq->setTimeOffset(pSession->tickFromFrame(clipOffset()));
 	m_pSeq->setTimeLength(pSession->tickFromFrame(clipLength()));
 
@@ -692,7 +692,7 @@ bool qtractorMidiClip::clipExport ( ClipExport pfnClipExport, void *pvArg,
 		iLength = clipLength();
 
 	qtractorMidiSequence *pSeq = sequence();
-	unsigned short iTicksPerBeat = pSession->ticksPerBeat2();
+	unsigned short iTicksPerBeat = pSession->ticksPerBeat();
 	unsigned long iTimeOffset = pSeq->timep(pSeq->timeOffset(), iTicksPerBeat);
 	unsigned long iTimeStart = pSession->tickFromFrame(iOffset);
 	iTimeStart = (iTimeStart > iTimeOffset ? iTimeStart - iTimeOffset : 0);
