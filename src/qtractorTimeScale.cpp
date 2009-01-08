@@ -33,6 +33,7 @@ void qtractorTimeScale::clear (void)
 {
 	m_iSampleRate     = 44100;
 	m_fTempo          = 120.0f;
+	m_iBeatType       = 2;
 	m_iTicksPerBeat   = 96;
 	m_iBeatsPerBar    = 4;
 	m_iBeatDivisor    = 2;
@@ -53,6 +54,7 @@ qtractorTimeScale& qtractorTimeScale::copy ( const qtractorTimeScale& ts )
 
 		m_iSampleRate     = ts.m_iSampleRate;
 		m_fTempo          = ts.m_fTempo;
+		m_iBeatType       = ts.m_iBeatType;
 		m_iTicksPerBeat   = ts.m_iTicksPerBeat;
 		m_iBeatsPerBar    = ts.m_iBeatsPerBar;
 		m_iBeatDivisor    = ts.m_iBeatDivisor;
@@ -81,15 +83,16 @@ void qtractorTimeScale::updateScale (void)
 	m_iTicksPerBeat2 = m_iTicksPerBeat;
 	m_iScale_a2 = m_iScale_a;
 	m_fScale_c2 = m_fScale_c;
-	if (m_iBeatDivisor > 2) {
-		unsigned short n = (m_iBeatDivisor - 2);
+	if (m_iBeatDivisor > m_iBeatType) {
+		unsigned short n = (m_iBeatDivisor - m_iBeatType);
 		m_iTicksPerBeat2 >>= n;
 		m_iScale_a2 >>= n;
 		m_fScale_c2 /= float(1 << n);
-	} else if (m_iBeatDivisor < 2) {
-		m_iTicksPerBeat2 <<= 1;
-		m_iScale_a2 <<= 1;
-		m_fScale_c2 *= 2.0f;
+	} else if (m_iBeatDivisor < m_iBeatType) {
+		unsigned short n = (m_iBeatType - m_iBeatDivisor);
+		m_iTicksPerBeat2 <<= n;
+		m_iScale_a2 <<= n;
+		m_fScale_c2 *= float(1 << n);
 	}
 }
 

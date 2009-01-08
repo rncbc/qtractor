@@ -1,7 +1,7 @@
 // qtractorAudioMadFile.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -128,6 +128,11 @@ bool qtractorAudioMadFile::open ( const QString& sFilename, int iMode )
 			((float) m_iSampleRate * st.st_size * 8.0f / (float) m_iBitRate);
 	}
 
+#ifdef DEBUG_0
+	qDebug("qtractorAudioMadFile::open(\"%s\", %d) bit_rate=%u farmes_est=%lu",
+		sFilename.toUtf8().constData(), iMode, m_iBitRate, m_iFramesEst);
+#endif
+
 	// Set open mode (deterministically).
 	m_iMode = iMode;
 
@@ -212,7 +217,8 @@ bool qtractorAudioMadFile::decode (void)
 #ifdef CONFIG_LIBMAD
 
 	bool bError = (mad_frame_decode(&m_madFrame, &m_madStream) < 0);
-	while (bError && m_madStream.error == MAD_ERROR_BUFLEN) {
+	while (bError && (m_madStream.error == MAD_ERROR_BUFLEN
+		|| MAD_RECOVERABLE(m_madStream.error))) {
 		if (!input())
 			return false;
 		bError = (mad_frame_decode(&m_madFrame, &m_madStream) < 0);
@@ -372,7 +378,7 @@ bool qtractorAudioMadFile::seek ( unsigned long iOffset )
 			}
 		}
 #ifdef DEBUG_0
-		qDebug(stderr, "qtractorAudioMadFile::seek(%lu) i=%lu o=%lu c=%u",
+		qDebug("qtractorAudioMadFile::seek(%lu) i=%lu o=%lu c=%u",
 			iOffset,
 			m_curr.iInputOffset,
 			m_curr.iOutputOffset,

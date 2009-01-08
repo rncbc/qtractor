@@ -61,6 +61,11 @@ public:
 		{ m_fTempo = fTempo; }
 	float tempo() const { return m_fTempo; }
 
+	// Tempo beat type (if not standard 2=quarter note)
+	void setBeatType(unsigned short iBeatType)
+		{ m_iBeatType = iBeatType; }
+	unsigned short beatType() const { return m_iBeatType; }
+
 	// Resolution (ticks per quarter note; PPQN)
 	void setTicksPerBeat(unsigned short iTicksPerBeat)
 		{ m_iTicksPerBeat = iTicksPerBeat; }
@@ -180,6 +185,7 @@ private:
 
 	unsigned int   m_iSampleRate;       // Sample rate (frames per second)
 	float          m_fTempo;            // Tempo (beats per minute; BPM)
+	unsigned short m_iBeatType;         // Tempo beat type (2=quarter note, default)
 	unsigned short m_iTicksPerBeat;     // Resolution (ticks per quarter note; PPQN)
 	unsigned short m_iBeatsPerBar;      // Time signature (numerator)
 	unsigned short m_iBeatDivisor;      // Time signature (denominator)

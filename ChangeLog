@@ -5,9 +5,12 @@ ChangeLog
 
 CVS HEAD
 
+- MP3 audio file decoding was broken for way too long and
+  falling short for every file with custom frames, ID3 tags
+  and comments. Got shamefully fixed.
+
 - Time signature denominator (ie. beat divisor) is now an
-  accessible and effective session property. (EXPERIMENTAL,
-  HIGHLY UNSTABLE/TEMPORARILY BROKEN)
+  accessible and effective session property. (EXPERIMENTAL)
 
 - Attempt to retain original size (clip length) of all audio
   clips when changing the global session tempo and automatic
