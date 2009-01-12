@@ -5,6 +5,8 @@ ChangeLog
 
 CVS HEAD
 
+- MIDI metronome fixed, preventing duplicate click events.
+
 - MP3 audio file decoding was broken for way too long and
   falling short for every file with custom frames, ID3 tags
   and comments. Got shamefully fixed.

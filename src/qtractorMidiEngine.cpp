@@ -1834,7 +1834,7 @@ void qtractorMidiEngine::processMetro (
 	unsigned long  iTimeEnd   = pSession->tickFromFrame(iFrameEnd);
 
 	unsigned short iTicksPerBeat = pSession->ticksPerBeat2();
-	unsigned int   iBeat = (iTimeStart + (iTicksPerBeat >> 1)) / iTicksPerBeat;
+	unsigned int   iBeat = iTimeStart / iTicksPerBeat;
 	unsigned long  iTime = iBeat * iTicksPerBeat;
 
 	// Intialize outbound event...
@@ -1851,25 +1851,27 @@ void qtractorMidiEngine::processMetro (
 	while (iTime < iTimeEnd) {
 		// Scheduled delivery: take into account
 		// the time playback/queue started...
-		unsigned long tick
-			= ((long) iTime > m_iTimeStart ? iTime - m_iTimeStart : 0);
-		snd_seq_ev_schedule_tick(&ev, m_iAlsaQueue, 0, tick);
-		// Set proper event data...
-		if (pSession->beatIsBar(iBeat)) {
-			ev.data.note.note     = m_iMetroBarNote;
-			ev.data.note.velocity = m_iMetroBarVelocity;
-			ev.data.note.duration = m_iMetroBarDuration;
-		} else {
-			ev.data.note.note     = m_iMetroBeatNote;
-			ev.data.note.velocity = m_iMetroBeatVelocity;
-			ev.data.note.duration = m_iMetroBeatDuration;
-		}
-		// Pump it into the queue.
-		snd_seq_event_output(m_pAlsaSeq, &ev);
-		// MIDI track monitoring...
-		if (m_pOControlBus->midiMonitor_out()) {
-			m_pOControlBus->midiMonitor_out()->enqueue(
-				qtractorMidiEvent::NOTEON, ev.data.note.velocity, tick);
+		if (iTime >= iTimeStart) {
+			unsigned long tick
+				= ((long) iTime > m_iTimeStart ? iTime - m_iTimeStart : 0);
+			snd_seq_ev_schedule_tick(&ev, m_iAlsaQueue, 0, tick);
+			// Set proper event data...
+			if (pSession->beatIsBar(iBeat)) {
+				ev.data.note.note     = m_iMetroBarNote;
+				ev.data.note.velocity = m_iMetroBarVelocity;
+				ev.data.note.duration = m_iMetroBarDuration;
+			} else {
+				ev.data.note.note     = m_iMetroBeatNote;
+				ev.data.note.velocity = m_iMetroBeatVelocity;
+				ev.data.note.duration = m_iMetroBeatDuration;
+			}
+			// Pump it into the queue.
+			snd_seq_event_output(m_pAlsaSeq, &ev);
+			// MIDI track monitoring...
+			if (m_pOControlBus->midiMonitor_out()) {
+				m_pOControlBus->midiMonitor_out()->enqueue(
+					qtractorMidiEvent::NOTEON, ev.data.note.velocity, tick);
+			}
 		}
 		// Go for next beat...
 		iTime += iTicksPerBeat;
