@@ -4514,8 +4514,10 @@ void qtractorMainForm::updateContents (
 	QListIterator<qtractorMidiEditorForm *> iter(m_editors);
 	while (iter.hasNext()) {
 		qtractorMidiEditor *pEditor = (iter.next())->editor();
-		if (pEditor != pMidiEditor)
+		if (pEditor != pMidiEditor) {
+			pEditor->updateTimeScale();
 			pEditor->updateContents();
+		}
 	}
 
 	// Notify who's watching...

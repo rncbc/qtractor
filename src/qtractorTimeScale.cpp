@@ -31,6 +31,12 @@
 // (Re)nitializer method.
 void qtractorTimeScale::clear (void)
 {
+	m_iSnapPerBeat    = 4;
+	m_iHorizontalZoom = 100;
+	m_iVerticalZoom   = 100;
+
+//	m_displayFormat   = Frames;
+
 	m_iSampleRate     = 44100;
 	m_fTempo          = 120.0f;
 	m_iBeatType       = 2;
@@ -38,37 +44,41 @@ void qtractorTimeScale::clear (void)
 	m_iBeatsPerBar    = 4;
 	m_iBeatDivisor    = 2;
 	m_iPixelsPerBeat  = 32;
-	m_iSnapPerBeat    = 4;
-	m_iHorizontalZoom = 100;
-	m_iVerticalZoom   = 100;
-
-//	m_displayFormat   = Frames;
 
 	updateScale();
 }
+
 
 // Copy method.
 qtractorTimeScale& qtractorTimeScale::copy ( const qtractorTimeScale& ts )
 {
 	if (&ts != this) {
 
-		m_iSampleRate     = ts.m_iSampleRate;
-		m_fTempo          = ts.m_fTempo;
-		m_iBeatType       = ts.m_iBeatType;
-		m_iTicksPerBeat   = ts.m_iTicksPerBeat;
-		m_iBeatsPerBar    = ts.m_iBeatsPerBar;
-		m_iBeatDivisor    = ts.m_iBeatDivisor;
-		m_iPixelsPerBeat  = ts.m_iPixelsPerBeat;
 		m_iSnapPerBeat    = ts.m_iSnapPerBeat;
 		m_iHorizontalZoom = ts.m_iHorizontalZoom;
 		m_iVerticalZoom   = ts.m_iVerticalZoom;
 
 		m_displayFormat   = ts.m_displayFormat;
 
-		updateScale();
+		sync(ts);
 	}
 
 	return *this;
+}
+
+
+// Sync method.
+void qtractorTimeScale::sync ( const qtractorTimeScale& ts )
+{
+	m_iSampleRate    = ts.m_iSampleRate;
+	m_fTempo         = ts.m_fTempo;
+	m_iBeatType      = ts.m_iBeatType;
+	m_iTicksPerBeat  = ts.m_iTicksPerBeat;
+	m_iBeatsPerBar   = ts.m_iBeatsPerBar;
+	m_iBeatDivisor   = ts.m_iBeatDivisor;
+	m_iPixelsPerBeat = ts.m_iPixelsPerBeat;
+
+	updateScale();
 }
 
 

@@ -120,29 +120,29 @@ public:
 	unsigned short snapPerBeat(void) const;
 
 	// Pixel/Beat number conversion.
-	unsigned int beatFromPixel(unsigned int x) const;
-	unsigned int pixelFromBeat(unsigned int iBeat) const;
+	unsigned int beatFromPixel(unsigned int x);
+	unsigned int pixelFromBeat(unsigned int iBeat);
 
 	// Pixel/Tick number conversion.
-	unsigned long tickFromPixel(unsigned int x) const;
-	unsigned int pixelFromTick(unsigned long iTick) const;
+	unsigned long tickFromPixel(unsigned int x);
+	unsigned int pixelFromTick(unsigned long iTick);
 
 	// Pixel/Frame number conversion.
 	unsigned long frameFromPixel(unsigned int x) const;
 	unsigned int pixelFromFrame(unsigned long iFrame) const;
 
 	// Beat/frame conversion.
-	unsigned long frameFromBeat(unsigned int iBeat) const;
-	unsigned int beatFromFrame(unsigned long iFrame) const;
+	unsigned long frameFromBeat(unsigned int iBeat);
+	unsigned int beatFromFrame(unsigned long iFrame);
 
 	// Tick/Frame number conversion.
-	unsigned long frameFromTick(unsigned long iTick) const;
-	unsigned long tickFromFrame(unsigned long iFrame) const;
+	unsigned long frameFromTick(unsigned long iTick);
+	unsigned long tickFromFrame(unsigned long iFrame);
 
 	// Beat/frame snap filters.
-	unsigned long tickSnap(unsigned long iTick) const;
-	unsigned long frameSnap(unsigned long iFrame) const;
-	unsigned int pixelSnap(unsigned int x) const;
+	unsigned long tickSnap(unsigned long iTick);
+	unsigned long frameSnap(unsigned long iFrame);
+	unsigned int pixelSnap(unsigned int x);
 
 	// Frame/locate (SMPTE) conversion.
 	unsigned long frameFromLocate(unsigned long iLocate) const;

@@ -498,24 +498,24 @@ unsigned long qtractorSession::editTail (void) const
 
 
 // Pixel/Beat number conversion.
-unsigned int qtractorSession::beatFromPixel ( unsigned int x ) const
+unsigned int qtractorSession::beatFromPixel ( unsigned int x )
 {
 	return m_props.timeScale.beatFromPixel(x);
 }
 
-unsigned int qtractorSession::pixelFromBeat ( unsigned int iBeat ) const
+unsigned int qtractorSession::pixelFromBeat ( unsigned int iBeat )
 { 
 	return m_props.timeScale.pixelFromBeat(iBeat);
 }
 
 
 // Pixel/Tick number conversion.
-unsigned long qtractorSession::tickFromPixel ( unsigned int x ) const
+unsigned long qtractorSession::tickFromPixel ( unsigned int x )
 {
 	return m_props.timeScale.tickFromPixel(x);
 }
 
-unsigned int qtractorSession::pixelFromTick ( unsigned long iTick ) const
+unsigned int qtractorSession::pixelFromTick ( unsigned long iTick )
 {
 	return m_props.timeScale.pixelFromTick(iTick);
 }
@@ -534,41 +534,41 @@ unsigned int qtractorSession::pixelFromFrame ( unsigned long iFrame ) const
 
 
 // Beat/frame conversion.
-unsigned long qtractorSession::frameFromBeat ( unsigned int iBeat ) const
+unsigned long qtractorSession::frameFromBeat ( unsigned int iBeat )
 {
 	return m_props.timeScale.frameFromBeat(iBeat);
 }
 
-unsigned int qtractorSession::beatFromFrame ( unsigned long iFrame ) const
+unsigned int qtractorSession::beatFromFrame ( unsigned long iFrame )
 {
 	return m_props.timeScale.beatFromFrame(iFrame);
 }
 
 
 // Tick/Frame number conversion.
-unsigned long qtractorSession::frameFromTick ( unsigned long iTick ) const
+unsigned long qtractorSession::frameFromTick ( unsigned long iTick )
 {
 	return m_props.timeScale.frameFromTick(iTick);
 }
 
-unsigned long qtractorSession::tickFromFrame ( unsigned long iFrame ) const
+unsigned long qtractorSession::tickFromFrame ( unsigned long iFrame )
 {
 	return m_props.timeScale.tickFromFrame(iFrame);
 }
 
 
 // Beat/frame snap filters.
-unsigned long qtractorSession::tickSnap ( unsigned long iTick ) const
+unsigned long qtractorSession::tickSnap ( unsigned long iTick )
 {
 	return m_props.timeScale.tickSnap(iTick);
 }
 
-unsigned long qtractorSession::frameSnap ( unsigned long iFrame ) const
+unsigned long qtractorSession::frameSnap ( unsigned long iFrame )
 {
 	return m_props.timeScale.frameSnap(iFrame);
 }
 
-unsigned int qtractorSession::pixelSnap ( unsigned int x ) const
+unsigned int qtractorSession::pixelSnap ( unsigned int x )
 {
 	return m_props.timeScale.pixelSnap(x);
 }

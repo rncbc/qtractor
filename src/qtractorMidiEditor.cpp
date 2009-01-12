@@ -1,7 +1,7 @@
 // qtractorMidiEditor.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -649,6 +649,25 @@ unsigned long qtractorMidiEditor::playHead (void) const
 int qtractorMidiEditor::playHeadX (void) const
 {
 	return m_iPlayHeadX;
+}
+
+
+// Update time-scale to master session.
+void qtractorMidiEditor::updateTimeScale (void)
+{
+	if (m_pTimeScale == NULL)
+		return;
+
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return;
+
+	m_pTimeScale->sync(*pSession->timeScale());
+
+	setEditHead(pSession->editHead());
+	setEditTail(pSession->editTail());
+
+	setPlayHead(pSession->playHead());
 }
 
 

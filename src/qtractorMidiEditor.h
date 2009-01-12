@@ -1,7 +1,7 @@
 // qtractorMidiEditor.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -124,6 +124,9 @@ public:
 	void setPlayHead(unsigned long iPlayHead, bool bSyncView = true);
 	unsigned long playHead() const;
 	int playHeadX() const;
+
+	// Update time-scale to master session.
+	void updateTimeScale();
 
 	// Play-head follow-ness.
 	void setSyncView(bool bSyncView);

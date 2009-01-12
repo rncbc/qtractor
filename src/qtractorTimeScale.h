@@ -48,6 +48,9 @@ public:
 	// (Re)nitializer method.
 	void clear();
 
+	// Sync method.
+	void sync(const qtractorTimeScale& ts);
+
 	// Copy method.
 	qtractorTimeScale& copy(const qtractorTimeScale& ts);
 
@@ -183,18 +186,19 @@ public:
 
 private:
 
-	unsigned int   m_iSampleRate;       // Sample rate (frames per second)
-	float          m_fTempo;            // Tempo (beats per minute; BPM)
-	unsigned short m_iBeatType;         // Tempo beat type (2=quarter note, default)
-	unsigned short m_iTicksPerBeat;     // Resolution (ticks per quarter note; PPQN)
-	unsigned short m_iBeatsPerBar;      // Time signature (numerator)
-	unsigned short m_iBeatDivisor;      // Time signature (denominator)
 	unsigned short m_iPixelsPerBeat;    // Pixels per beat (width).
 	unsigned short m_iSnapPerBeat;      // Snap per beat (divisor).
 	unsigned short m_iHorizontalZoom;   // Horizontal zoom factor.
 	unsigned short m_iVerticalZoom;     // Vertical zoom factor.
 
 	DisplayFormat  m_displayFormat;     // Textual display format.
+
+	unsigned int   m_iSampleRate;       // Sample rate (frames per second)
+	float          m_fTempo;            // Tempo (beats per minute; BPM)
+	unsigned short m_iBeatType;         // Tempo beat type (2=quarter note, default)
+	unsigned short m_iTicksPerBeat;     // Resolution (ticks per quarter note; PPQN)
+	unsigned short m_iBeatsPerBar;      // Time signature (numerator)
+	unsigned short m_iBeatDivisor;      // Time signature (denominator)
 
 	// Internal time scaling factors.
 	unsigned long  m_iScale_a;
