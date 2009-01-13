@@ -5,6 +5,10 @@ ChangeLog
 
 CVS HEAD
 
+- Tempo beat type is a new session property; however it is
+  not yet user modifiable and currently disabled to default
+  MIDI quarter note (1/4).
+
 - All open MIDI clip editor time-scales are now updated and
   corrected when the main session time base changes (tempo,
   time-signature, resolution, etc.)

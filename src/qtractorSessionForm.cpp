@@ -85,6 +85,9 @@ qtractorSessionForm::qtractorSessionForm (
 	QObject::connect(m_ui.TempoSpinBox,
 		SIGNAL(valueChanged(double)),
 		SLOT(changed()));
+	QObject::connect(m_ui.BeatTypeComboBox,
+		SIGNAL(activated(int)),
+		SLOT(changed()));
 	QObject::connect(m_ui.BeatsPerBarSpinBox,
 		SIGNAL(valueChanged(int)),
 		SLOT(changed()));
@@ -137,6 +140,8 @@ void qtractorSessionForm::setSession ( qtractorSession *pSession )
 	m_ui.SampleRateTextLabel->setEnabled(!pSession->isActivated());
 	m_ui.SampleRateComboBox->setEnabled(!pSession->isActivated());
 	m_ui.TempoSpinBox->setValue(m_props.timeScale.tempo());
+	m_ui.BeatTypeComboBox->setCurrentIndex(
+		m_props.timeScale.beatType() - 1);
 	m_ui.BeatsPerBarSpinBox->setValue(int(m_props.timeScale.beatsPerBar()));
 	m_ui.BeatDivisorComboBox->setCurrentIndex(
 		m_props.timeScale.beatDivisor() - 1);
@@ -147,6 +152,9 @@ void qtractorSessionForm::setSession ( qtractorSession *pSession )
 	m_ui.PixelsPerBeatSpinBox->setValue(int(m_props.timeScale.pixelsPerBeat()));
 	m_ui.HorizontalZoomSpinBox->setValue(int(m_props.timeScale.horizontalZoom()));
 	m_ui.VerticalZoomSpinBox->setValue(int(m_props.timeScale.verticalZoom()));
+
+	// FIXME: Don't let tempo beat type be modified...
+	m_ui.BeatTypeComboBox->setEnabled(false);
 
 	// Start editing session name, if empty...
 	if (m_props.sessionName.isEmpty())
@@ -180,6 +188,8 @@ void qtractorSessionForm::accept (void)
 		m_props.timeScale.setSampleRate(
 			m_ui.SampleRateComboBox->currentText().toUInt());
 		m_props.timeScale.setTempo(m_ui.TempoSpinBox->value());
+		m_props.timeScale.setBeatType(
+			m_ui.BeatTypeComboBox->currentIndex() + 1);
 		m_props.timeScale.setBeatsPerBar(m_ui.BeatsPerBarSpinBox->value());
 		m_props.timeScale.setBeatDivisor(
 			m_ui.BeatDivisorComboBox->currentIndex() + 1);

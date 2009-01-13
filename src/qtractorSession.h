@@ -88,6 +88,10 @@ public:
 	void setTempo(float fTempo);
 	float tempo() const;
 
+	// Tempo beat type accessors.
+	void setBeatType(unsigned short iBeatType);
+	unsigned short beatType() const;
+
 	// Resolution accessors.
 	void setTicksPerBeat(unsigned short iTicksPerBeat);
 	unsigned short ticksPerBeat() const;

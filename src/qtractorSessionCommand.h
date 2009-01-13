@@ -65,7 +65,8 @@ class qtractorSessionTempoCommand : public qtractorSessionCommand
 public:
 
 	// Constructor.
-	qtractorSessionTempoCommand(qtractorSession *pSession, float fTempo,
+	qtractorSessionTempoCommand(qtractorSession *pSession,
+		float fTempo, unsigned short iBeatType = 0,
 		unsigned short iTicksPerBeat = 0, unsigned short iBeatDivisor = 0);
 
 	// Desstructor.
@@ -79,8 +80,10 @@ private:
 
 	// Instance variables.
 	float                m_fTempo;
+	unsigned short       m_iBeatType;
 	unsigned short       m_iTicksPerBeat;
 	unsigned short       m_iBeatDivisor;
+
 	qtractorClipCommand *m_pClipCommand;
 };
 

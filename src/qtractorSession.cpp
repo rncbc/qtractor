@@ -374,6 +374,19 @@ float qtractorSession::tempo (void) const
 }
 
 
+// Tempo beat type accessors.
+void qtractorSession::setBeatType ( unsigned short iBeatType )
+{
+	m_props.timeScale.setBeatType(iBeatType);
+}
+
+
+unsigned short qtractorSession::beatType (void) const
+{
+	return m_props.timeScale.beatType();
+}
+
+
 // Resolution accessors.
 void qtractorSession::setTicksPerBeat ( unsigned short iTicksPerBeat )
 {
