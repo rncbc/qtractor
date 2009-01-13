@@ -2662,6 +2662,14 @@ void qtractorMainForm::viewRefresh (void)
 
 	m_pThumbView->updateContents();
 
+	// Update other editors contents...
+	QListIterator<qtractorMidiEditorForm *> iter(m_editors);
+	while (iter.hasNext()) {
+		qtractorMidiEditor *pEditor = (iter.next())->editor();
+		pEditor->updateTimeScale();
+		pEditor->updateContents();
+	}
+
 	// We're formerly done.
 	QApplication::restoreOverrideCursor();
 

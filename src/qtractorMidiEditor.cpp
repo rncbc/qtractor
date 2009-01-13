@@ -302,6 +302,12 @@ qtractorMidiEditor::qtractorMidiEditor ( QWidget *pParent )
 
 	// Local time-scale.
 	m_pTimeScale = new qtractorTimeScale();
+
+	// The original clip time-scale length/time.
+	m_iClipLength = 0;
+	m_iClipLengthTime = 0;
+
+	// The local time-scale offset/length.
 	m_iOffset = 0;
 	m_iLength = 0;
 
@@ -436,6 +442,7 @@ void qtractorMidiEditor::setMidiClip ( qtractorMidiClip *pMidiClip )
 
 	if (m_pMidiClip) {
 		// Now set the editing MIDI sequence alright...
+		setClipLength(m_pMidiClip->clipLength());
 		setOffset(m_pMidiClip->clipStart());
 		setLength(m_pMidiClip->clipLength());
 		// Set its most outstanding properties...
@@ -458,6 +465,7 @@ void qtractorMidiEditor::setMidiClip ( qtractorMidiClip *pMidiClip )
 		// Got clip!
 	} else {
 		// Reset those little things too..
+		setClipLength(0);
 		setOffset(0);
 		setLength(0);
 	}
@@ -539,6 +547,21 @@ bool qtractorMidiEditor::isEditMode() const
 qtractorTimeScale *qtractorMidiEditor::timeScale (void) const
 {
 	return m_pTimeScale;
+}
+
+
+// The original clip time-scale length/time.
+void qtractorMidiEditor::setClipLength ( unsigned long iClipLength )
+{
+	m_iClipLength = iClipLength;
+	m_iClipLengthTime = (m_pTimeScale ? m_pTimeScale->tickFromFrame(m_iClipLength) : 0);
+qDebug("DEBUG> setClipLength(%lu) time=%lu", m_iClipLength, m_iClipLengthTime);
+}
+
+unsigned long qtractorMidiEditor::clipLength (void) const
+{
+qDebug("DEBUG> clipLength() = %lu, time=%lu", m_iClipLength, m_iClipLengthTime);
+	return m_iClipLength;
 }
 
 
@@ -655,6 +678,9 @@ int qtractorMidiEditor::playHeadX (void) const
 // Update time-scale to master session.
 void qtractorMidiEditor::updateTimeScale (void)
 {
+	if (m_pMidiClip == NULL)
+		return;
+
 	if (m_pTimeScale == NULL)
 		return;
 
@@ -664,10 +690,15 @@ void qtractorMidiEditor::updateTimeScale (void)
 
 	m_pTimeScale->sync(*pSession->timeScale());
 
-	setEditHead(pSession->editHead());
-	setEditTail(pSession->editTail());
+	if (m_iClipLengthTime > 0)
+		m_iClipLength = m_pTimeScale->frameFromTick(m_iClipLengthTime);
 
-	setPlayHead(pSession->playHead());
+	setOffset(m_pMidiClip->clipStart());
+	setLength(m_pMidiClip->clipLength());
+
+	setPlayHead(pSession->playHead(), false);
+	setEditHead(pSession->editHead(), false);
+	setEditTail(pSession->editTail(), false);
 }
 
 

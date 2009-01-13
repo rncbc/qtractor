@@ -5,6 +5,10 @@ ChangeLog
 
 CVS HEAD
 
+- All open MIDI clip editor time-scales are now updated and
+  corrected when the main session time base changes (tempo,
+  time-signature, resolution, etc.)
+
 - MIDI metronome fixed, preventing duplicate click events.
 
 - MP3 audio file decoding was broken for way too long and

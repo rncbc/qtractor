@@ -1,7 +1,7 @@
 // qtractorMidiEditorForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -61,7 +61,6 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	// Setup UI struct...
 	m_ui.setupUi(this);
 
-	m_iClipLength = 0;
 	m_iDirtyCount = 0;
 
 	// Set our central widget.
@@ -540,7 +539,7 @@ void qtractorMidiEditorForm::closeEvent ( QCloseEvent *pCloseEvent )
 		qtractorMidiClip *pMidiClip = m_pMidiEditor->midiClip();
 		if (pMidiClip && pMidiClip->isDirty()) {
 			 // Revert to original clip length...
-			pMidiClip->setClipLength(m_iClipLength);
+			pMidiClip->setClipLength(m_pMidiEditor->clipLength());
 			pMidiClip->openMidiFile(
 				pMidiClip->filename(),
 				pMidiClip->trackChannel());
@@ -589,7 +588,6 @@ void qtractorMidiEditorForm::setMidiClip ( qtractorMidiClip *pMidiClip  )
 {
 	if (queryClose()) {
 		m_pMidiEditor->setMidiClip(pMidiClip);
-		m_iClipLength = pMidiClip->clipLength();
 		m_iDirtyCount = 0;
 	}
 }
