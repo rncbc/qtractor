@@ -21,8 +21,6 @@
 
 #include "qtractorTimeScale.h"
 
-#include <QStringList>
-
 
 //----------------------------------------------------------------------
 // class qtractorTimeScale -- Time scale conversion helper class.
@@ -31,6 +29,8 @@
 // (Re)nitializer method.
 void qtractorTimeScale::clear (void)
 {
+	m_nodes.setAutoDelete(true);
+
 	m_iSnapPerBeat    = 4;
 	m_iHorizontalZoom = 100;
 	m_iVerticalZoom   = 100;
@@ -38,12 +38,39 @@ void qtractorTimeScale::clear (void)
 //	m_displayFormat   = Frames;
 
 	m_iSampleRate     = 44100;
-	m_fTempo          = 120.0f;
-	m_iBeatType       = 2;
 	m_iTicksPerBeat   = 96;
-	m_iBeatsPerBar    = 4;
-	m_iBeatDivisor    = 2;
 	m_iPixelsPerBeat  = 32;
+
+	// Clear/reset tempo-map...
+	m_nodes.clear();
+	m_cursor.reset();
+
+	// There must always be one node, always.
+	addNode(0);
+
+	// Commit new scale...
+	updateScale();
+}
+
+
+// Sync method.
+void qtractorTimeScale::sync ( const qtractorTimeScale& ts )
+{
+	// Copy master parameters...
+	m_iSampleRate    = ts.m_iSampleRate;
+	m_iTicksPerBeat  = ts.m_iTicksPerBeat;
+	m_iPixelsPerBeat = ts.m_iPixelsPerBeat;
+
+	// Copy tempo-map nodes...
+	m_nodes.clear();
+	Node *pNode = ts.m_nodes.first();
+	while (pNode) {
+		m_nodes.append(new Node(this, pNode->frame,
+			pNode->tempo, pNode->beatType,
+			pNode->beatsPerBar, pNode->beatDivisor));
+		pNode = pNode->next();
+	}
+	m_cursor.reset();
 
 	updateScale();
 }
@@ -54,12 +81,16 @@ qtractorTimeScale& qtractorTimeScale::copy ( const qtractorTimeScale& ts )
 {
 	if (&ts != this) {
 
+		m_nodes.setAutoDelete(true);
+
+		m_iSampleRate     = ts.m_iSampleRate;
 		m_iSnapPerBeat    = ts.m_iSnapPerBeat;
 		m_iHorizontalZoom = ts.m_iHorizontalZoom;
 		m_iVerticalZoom   = ts.m_iVerticalZoom;
 
 		m_displayFormat   = ts.m_displayFormat;
 
+		// Sync/copy tempo-map nodes...
 		sync(ts);
 	}
 
@@ -67,55 +98,291 @@ qtractorTimeScale& qtractorTimeScale::copy ( const qtractorTimeScale& ts )
 }
 
 
-// Sync method.
-void qtractorTimeScale::sync ( const qtractorTimeScale& ts )
+// Update scale coefficient divisor factors.
+void qtractorTimeScale::Node::update (void)
 {
-	m_iSampleRate    = ts.m_iSampleRate;
-	m_fTempo         = ts.m_fTempo;
-	m_iBeatType      = ts.m_iBeatType;
-	m_iTicksPerBeat  = ts.m_iTicksPerBeat;
-	m_iBeatsPerBar   = ts.m_iBeatsPerBar;
-	m_iBeatDivisor   = ts.m_iBeatDivisor;
-	m_iPixelsPerBeat = ts.m_iPixelsPerBeat;
-
-	updateScale();
+	ticksPerBeat = ts->ticksPerBeat();
+	tickRate = tempo * ticksPerBeat;
+	if (beatDivisor > beatType) {
+		ticksPerBeat >>= (beatDivisor - beatType);
+	} else if (beatDivisor < beatType) {
+		ticksPerBeat <<= (beatType - beatDivisor);
+	}
 }
 
 
-// Update scale divisor factors.
-void qtractorTimeScale::updateScale (void)
+// Update time-scale node position metrics.
+void qtractorTimeScale::Node::reset ( qtractorTimeScale::Node *pNode )
 {
-	m_iScale_a = (unsigned int) (m_iHorizontalZoom * m_iPixelsPerBeat);
-	m_fScale_b = (float) (0.01f * m_fTempo * m_iScale_a);
-	m_fScale_c = (float) (60.0f * m_iSampleRate);
-	m_fScale_d = (float) (m_fTempo * m_iTicksPerBeat);
+	if (bar > pNode->bar)
+		frame = pNode->frameFromBar(bar);
+	else
+		bar = pNode->barFromFrame(frame);
 
-	m_iTicksPerBeat2 = m_iTicksPerBeat;
-	m_iScale_a2 = m_iScale_a;
-	m_fScale_c2 = m_fScale_c;
-	if (m_iBeatDivisor > m_iBeatType) {
-		unsigned short n = (m_iBeatDivisor - m_iBeatType);
-		m_iTicksPerBeat2 >>= n;
-		m_iScale_a2 >>= n;
-		m_fScale_c2 /= float(1 << n);
-	} else if (m_iBeatDivisor < m_iBeatType) {
-		unsigned short n = (m_iBeatType - m_iBeatDivisor);
-		m_iTicksPerBeat2 <<= n;
-		m_iScale_a2 <<= n;
-		m_fScale_c2 *= float(1 << n);
-	}
+	beat = pNode->beatFromFrame(frame);
+ 	tick = pNode->tickFromFrame(frame);
+
+	pixel = ts->pixelFromFrame(frame);
 }
 
 
 // Beat/frame snap filters.
-unsigned long qtractorTimeScale::tickSnap ( unsigned long iTick ) const
+unsigned long qtractorTimeScale::Node::tickSnap (
+	unsigned long iTick ) const
 {
-	unsigned long iTickSnap = iTick;
-	if (m_iSnapPerBeat > 0) {
-		unsigned long q = m_iTicksPerBeat2 / m_iSnapPerBeat;
+	unsigned long iTickSnap = iTick - tick;
+	if (ts->snapPerBeat() > 0) {
+		unsigned long q = ticksPerBeat / ts->snapPerBeat();
 		iTickSnap = q * ((iTickSnap + (q >> 1)) / q);
 	}
-	return iTickSnap;
+	return tick + iTickSnap;
+}
+
+
+// Time-scale cursor frame positioning reset.
+void qtractorTimeScale::Cursor::reset ( qtractorTimeScale::Node *pNode )
+{
+	node = (pNode ? pNode : ts->nodes().first());
+}
+
+
+// Time-scale cursor node seeker (by frame).
+qtractorTimeScale::Node *qtractorTimeScale::Cursor::seekFrame (
+	unsigned long iFrame )
+{
+	if (node == 0) {
+		node = ts->nodes().first();
+		if (node == 0)
+			return 0;
+	}
+
+	if (iFrame > node->frame) {
+		// Seek frame forward...
+		while (node && node->next() && iFrame >= (node->next())->frame)
+			node = node->next();
+	}
+	else
+	if (iFrame < node->frame) {
+		// Seek frame backward...
+		while (node && node->frame > iFrame)
+			node = node->prev();
+		if (node == 0)
+			node = ts->nodes().first();
+	}
+
+	return node;
+}
+
+
+// Time-scale cursor node seeker (by bar).
+qtractorTimeScale::Node *qtractorTimeScale::Cursor::seekBar (
+	unsigned short iBar )
+{
+	if (node == 0) {
+		node = ts->nodes().first();
+		if (node == 0)
+			return 0;
+	}
+
+	if (iBar > node->bar) {
+		// Seek bar forward...
+		while (node && node->next() && iBar >= (node->next())->bar)
+			node = node->next();
+	}
+	else
+	if (iBar < node->bar) {
+		// Seek bar backward...
+		while (node && node->bar > iBar)
+			node = node->prev();
+		if (node == 0)
+			node = ts->nodes().first();
+	}
+
+	return node;
+}
+
+
+// Time-scale cursor node seeker (by beat).
+qtractorTimeScale::Node *qtractorTimeScale::Cursor::seekBeat (
+	unsigned int iBeat )
+{
+	if (node == 0) {
+		node = ts->nodes().first();
+		if (node == 0)
+			return 0;
+	}
+
+	if (iBeat > node->beat) {
+		// Seek beat forward...
+		while (node && node->next() && iBeat >= (node->next())->beat)
+			node = node->next();
+	}
+	else
+	if (iBeat < node->beat) {
+		// Seek beat backward...
+		while (node && node->beat > iBeat)
+			node = node->prev();
+		if (node == 0)
+			node = ts->nodes().first();
+	}
+
+	return node;
+}
+
+
+// Time-scale cursor node seeker (by tick).
+qtractorTimeScale::Node *qtractorTimeScale::Cursor::seekTick (
+	unsigned long iTick )
+{
+	if (node == 0) {
+		node = ts->nodes().first();
+		if (node == 0)
+			return 0;
+	}
+
+	if (iTick > node->tick) {
+		// Seek tick forward...
+		while (node && node->next() && iTick >= (node->next())->tick)
+			node = node->next();
+	}
+	else
+	if (iTick < node->tick) {
+		// Seek tick backward...
+		while (node && node->tick > iTick)
+			node = node->prev();
+		if (node == 0)
+			node = ts->nodes().first();
+	}
+
+	return node;
+}
+
+
+// Time-scale cursor node seeker (by pixel).
+qtractorTimeScale::Node *qtractorTimeScale::Cursor::seekPixel ( int x )
+{
+	if (node == 0) {
+		node = ts->nodes().first();
+		if (node == 0)
+			return 0;
+	}
+
+	if (x > node->pixel) {
+		// Seek pixel forward...
+		while (node && node->next() && x >= (node->next())->pixel)
+			node = node->next();
+	}
+	else
+	if (x < node->pixel) {
+		// Seek tick backward...
+		while (node && node->pixel > x)
+			node = node->prev();
+		if (node == 0)
+			node = ts->nodes().first();
+	}
+
+	return node;
+}
+
+
+// Node list specifics.
+qtractorTimeScale::Node *qtractorTimeScale::addNode (
+	unsigned long iFrame, float fTempo, unsigned short iBeatType,
+	unsigned short iBeatsPerBar, unsigned short iBeatDivisor )
+{
+	Node *pNode	= 0;
+
+	// Seek for the nearest preceding node...
+	Node *pPrev = m_cursor.seekFrame(iFrame);
+	// Snap frame to nearest bar...
+	if (pPrev) {
+		iFrame = pPrev->frameSnapToBar(iFrame);
+		pPrev = m_cursor.seekFrame(iFrame);
+	}
+	// Either update existing node or add new one...
+	if (pPrev && pPrev->frame == iFrame) {
+		// Update exact matching node...
+		pNode = pPrev;
+		pNode->tempo = fTempo;
+		pNode->beatType = iBeatType;
+		pNode->beatsPerBar = iBeatsPerBar;
+		pNode->beatDivisor = iBeatDivisor;
+	} else {
+		// Add/insert a new node...
+		pNode = new Node(this,
+			iFrame, fTempo, iBeatType, iBeatsPerBar, iBeatDivisor);
+		if (pPrev)
+			m_nodes.insertAfter(pNode, pPrev);
+		else
+			m_nodes.append(pNode);
+	}
+
+	// Update coefficients and positioning thereafter...
+	updateNode(pNode);
+
+	return pNode;
+}
+
+
+void qtractorTimeScale::updateNode ( qtractorTimeScale::Node *pNode )
+{
+	// Update coefficients...
+	pNode->update();
+
+	// Relocate internal cursor...
+	m_cursor.reset(pNode);
+
+	// Update positioning on all nodes thereafter...
+	Node *pPrev = pNode->prev();
+	while (pNode) {
+		if (pPrev) pNode->reset(pPrev);
+		pPrev = pNode;
+		pNode = pNode->next();
+	}
+}
+
+
+void qtractorTimeScale::removeNode ( qtractorTimeScale::Node *pNode )
+{
+	// Don't ever remove the very first node... 
+	Node *pPrev = pNode->prev();
+	if (pPrev == 0)
+		return;
+
+	// Relocate internal cursor...
+	m_cursor.reset(pPrev);
+
+	// Update positioning on all nodes thereafter...
+	Node *pNext = pNode->next();
+	while (pNext) {
+		if (pPrev) pNext->reset(pPrev);
+		pPrev = pNext;
+		pNext = pNext->next();
+	}
+
+	// Actually remove/unlink the node...
+	m_nodes.remove(pNode);
+}
+
+
+
+// Complete time-scale update method.
+void qtractorTimeScale::updateScale (void)
+{
+	// Update time-map independent coefficients...
+	m_fPixelRate = 1.20f * float(m_iHorizontalZoom * m_iPixelsPerBeat);
+	m_fFrameRate = 60.0f * float(m_iSampleRate);
+
+	// Update all nodes thereafter...
+	Node *pNode = m_nodes.first();
+	while (pNode) {
+		pNode->update();
+		Node *pPrev = pNode->prev();
+		if (pPrev) pNode->reset(pPrev);
+		//	pNode->pixel = pPrev->pixelFromFrame(pNode->frame);
+		pPrev = pNode;
+		pNode = pNode->next();
+	}
 }
 
 
@@ -130,18 +397,21 @@ unsigned long qtractorTimeScale::frameFromText (
 		case BBT:
 		{
 			// Time frame code in bars.beats.ticks ...
-			unsigned int  bars  = sText.section('.', 0, 0).toUInt();
-			unsigned int  beats = sText.section('.', 1, 1).toUInt();
-			unsigned long ticks = sText.section('.', 2).toULong();
+			unsigned short bars  = sText.section('.', 0, 0).toUShort();
+			unsigned int   beats = sText.section('.', 1, 1).toUInt();
+			unsigned long  ticks = sText.section('.', 2).toULong();
 			if (!bDelta) {
 				if (bars > 0)
 					bars--;
 				if (beats > 0)
 					beats--;
 			}
-			beats += bars  * m_iBeatsPerBar;
-			ticks += beats * m_iTicksPerBeat2;
-			iFrame = frameFromTick(ticks);
+			Cursor cursor((qtractorTimeScale *) this);
+			Node *pNode = cursor.seekBar(bars);
+			if (pNode) {
+				ticks += pNode->tick + beats * pNode->ticksPerBeat;
+				iFrame = pNode->frameFromTick(ticks);
+			}
 			break;
 		}
 
@@ -179,16 +449,22 @@ QString qtractorTimeScale::textFromFrame (
 		case BBT:
 		{
 			// Time frame code in bars.beats.ticks ...
-			unsigned int bars, beats;
-			unsigned long ticks = tickFromFrame(iFrame);
-			bars = beats = 0;
-			if (ticks >= (unsigned long) m_iTicksPerBeat2) {
-				beats  = (unsigned int)  (ticks / m_iTicksPerBeat2);
-				ticks -= (unsigned long) (beats * m_iTicksPerBeat2);
-			}
-			if (beats >= (unsigned int) m_iBeatsPerBar) {
-				bars   = (unsigned int) (beats / m_iBeatsPerBar);
-				beats -= (unsigned int) (bars  * m_iBeatsPerBar);
+			unsigned short bars  = 0;
+			unsigned int   beats = 0;
+			unsigned long  ticks = 0;
+			Cursor cursor((qtractorTimeScale *) this);
+			Node *pNode = cursor.seekFrame(iFrame);
+			if (pNode) {
+				ticks = pNode->tickFromFrame(iFrame) - pNode->tick;
+				if (ticks >= (unsigned long) pNode->ticksPerBeat) {
+					beats  = (unsigned int) (ticks / pNode->ticksPerBeat);
+					ticks -= (unsigned long) (beats * pNode->ticksPerBeat);
+				}
+				if (beats >= (unsigned int) pNode->beatsPerBar) {
+					bars   = (unsigned short) (beats / pNode->beatsPerBar);
+					beats -= (unsigned int) (bars * pNode->beatsPerBar);
+				}
+				bars += pNode->bar;
 			}
 			if (!bDelta) {
 				bars++;

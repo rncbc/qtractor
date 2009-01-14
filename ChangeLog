@@ -5,6 +5,10 @@ ChangeLog
 
 CVS HEAD
 
+- Complete new time-scale infrastructure is now in place --
+  the one which will support tempo and time-signature maps,
+  in the future. (EXTREMELY EXPERIMENTAL)
+
 - Zoom mode option introduced (on menu View/Zoom/Horizontal,
   Vertical, All).
 
@@ -23,13 +27,11 @@ CVS HEAD
   and comments. Got shamefully fixed.
 
 - Time signature denominator (ie. beat divisor) is now an
-  accessible and effective session property. (EXPERIMENTAL)
+  accessible and effective session property.
 
 - Attempt to retain original size (clip length) of all audio
   clips when changing the global session tempo and automatic
-  time-stretching is not an option. (EXPERIMENTAL)
-
-- Infra-minor post-release code cleanups.
+  time-stretching is not an option.
 
 
 0.3.0  2008-12-25  The Fluffy Doll

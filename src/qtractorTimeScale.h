@@ -22,7 +22,9 @@
 #ifndef __qtractorTimeScale_h
 #define __qtractorTimeScale_h
 
-#include <QString>
+#include "qtractorList.h"
+
+#include <QStringList>
 
 
 //----------------------------------------------------------------------
@@ -34,11 +36,11 @@ class qtractorTimeScale
 public:
 
 	// Default constructor.
-	qtractorTimeScale()
+	qtractorTimeScale() : m_cursor(this)
 		{ clear(); }
 
 	// Copy constructor.
-	qtractorTimeScale(const qtractorTimeScale& ts)
+	qtractorTimeScale(const qtractorTimeScale& ts) : m_cursor(this)
 		{ copy(ts); }
 
 	// Assignment operator,
@@ -59,33 +61,10 @@ public:
 		{ m_iSampleRate = iSampleRate; }
 	unsigned int sampleRate() const { return m_iSampleRate; }
 
-	// Tempo (beats per minute; BPM)
-	void setTempo(float fTempo)
-		{ m_fTempo = fTempo; }
-	float tempo() const { return m_fTempo; }
-
-	// Tempo beat type (if not standard 2=quarter note)
-	void setBeatType(unsigned short iBeatType)
-		{ m_iBeatType = iBeatType; }
-	unsigned short beatType() const { return m_iBeatType; }
-
 	// Resolution (ticks per quarter note; PPQN)
 	void setTicksPerBeat(unsigned short iTicksPerBeat)
 		{ m_iTicksPerBeat = iTicksPerBeat; }
 	unsigned short ticksPerBeat() const { return m_iTicksPerBeat; }
-
-	// Resolution (ticks per beat)
-	unsigned short ticksPerBeat2() const { return m_iTicksPerBeat2; }
-
-	// Time signature (numerator)
-	void setBeatsPerBar(unsigned short iBeatsPerBar)
-		{ m_iBeatsPerBar = iBeatsPerBar; }
-	unsigned short beatsPerBar() const { return m_iBeatsPerBar; }
-
-	// Time signature (denominator)
-	void setBeatDivisor(unsigned short iBeatDivisor)
-		{ m_iBeatDivisor = iBeatDivisor; }
-	unsigned short beatDivisor() const { return m_iBeatDivisor; }
 
 	// Pixels per beat (width).	
 	void setPixelsPerBeat(unsigned short iPixelsPerBeat)
@@ -107,47 +86,267 @@ public:
 		{ m_iVerticalZoom = iVerticalZoom; }
 	unsigned short verticalZoom() const { return m_iVerticalZoom; }
 
-	// Tell whether a beat is a bar.
-	bool beatIsBar(unsigned int iBeat) const
-		{ return ((iBeat % m_iBeatsPerBar) == 0); }
+	// Fastest rounding-from-float helper.
+	static unsigned long uroundf(float x)
+		{ return (unsigned long) (x >= 0.0f ? x + 0.5f : x - 0.5f); }
 
-	// Pixel/Beat number conversion.
-	unsigned int beatFromPixel(unsigned int x) const
-		{ return ((100 * x) / m_iScale_a2); }
-	unsigned int pixelFromBeat(unsigned int iBeat) const
-		{ return ((iBeat * m_iScale_a2) / 100); }
+	// Beat divisor (snap index) accessors.
+	static unsigned short snapFromIndex(int iSnap);
+	static int indexFromSnap(unsigned short iSnapPerBeat);
 
-	// Pixel/Tick number conversion.
-	unsigned int tickFromPixel(unsigned int x) const
-		{ return uroundf((m_fScale_d * x) / m_fScale_b); }
-	unsigned int pixelFromTick(unsigned int iTick) const
-		{ return uroundf((m_fScale_b * iTick) / m_fScale_d); }
+	// Beat divisor (snap index) text item list.
+	static QStringList snapItems(int iSnap = 0);
 
-	// Pixel/Frame number conversion.
-	unsigned long frameFromPixel(unsigned int x) const
-		{ return uroundf((m_fScale_c * x) / m_fScale_b); }
-	unsigned int pixelFromFrame(unsigned long iFrame) const
-		{ return uroundf((m_fScale_b * iFrame) / m_fScale_c); }
+	// Time scale node declaration.
+	struct Node : public qtractorList<Node>::Link
+	{
+		// Constructor.
+		Node(qtractorTimeScale *pTimeScale,
+			unsigned long iFrame = 0,
+			float fTempo = 120.0f,
+			unsigned short iBeatType = 2,
+			unsigned short iBeatsPerBar = 4,
+			unsigned short iBeatDivisor = 2)
+			: ts(pTimeScale), frame(iFrame),
+				bar(0), beat(0), tick(0), pixel(0),
+				tempo(fTempo), beatType(iBeatType),
+				beatsPerBar(iBeatsPerBar),
+				beatDivisor(iBeatDivisor) {}
 
-	// Beat/frame conversion.
-	unsigned long frameFromBeat(unsigned int iBeat) const
-		{ return uroundf((m_fScale_c2 * iBeat) / m_fTempo); }
-	unsigned int beatFromFrame(unsigned long iFrame) const
-		{ return uroundf((m_fTempo * iFrame) / m_fScale_c2); }
+		// Update node scale coefficients.
+		void update();
 
-	// Tick/Frame number conversion.
-	unsigned long frameFromTick(unsigned int iTick) const
-		{ return uroundf((m_fScale_c * iTick) / m_fScale_d); }
-	unsigned int tickFromFrame(unsigned long iFrame) const
-		{ return uroundf((m_fScale_d * iFrame) / m_fScale_c); }
+		// Update node position metrics.
+		void reset(Node *pNode);
 
-	// Beat/frame snap filters.
-	unsigned long tickSnap(unsigned long iTick) const;
+		// Frame/bar convertors.
+		unsigned short barFromFrame(unsigned long iFrame) const
+			{ return bar + uroundf(
+				(tempo * (iFrame - frame)) / (ts->frameRate() * beatsPerBar)); }
+		unsigned long frameFromBar(unsigned short iBar) const
+			{ return frame + uroundf(
+				(ts->frameRate() * beatsPerBar * (iBar - bar)) / tempo); }
 
-	unsigned long frameSnap(unsigned long iFrame) const
-		{ return frameFromTick(tickSnap(tickFromFrame(iFrame))); }
-	unsigned int pixelSnap(unsigned int x) const
-		{ return pixelFromTick(tickSnap(tickFromPixel(x))); }
+		// Frame/beat convertors.
+		unsigned int beatFromFrame(unsigned long iFrame) const
+			{ return beat + uroundf(
+				(tempo * (iFrame - frame)) / ts->frameRate()); }
+		unsigned long frameFromBeat(unsigned int iBeat) const
+			{ return frame + uroundf(
+				(ts->frameRate() * (iBeat - beat)) / tempo); }
+
+		// Frame/tick convertors.
+		unsigned long tickFromFrame(unsigned long iFrame) const
+			{ return tick + uroundf(
+				(tickRate * (iFrame - frame)) / ts->frameRate()); }
+		unsigned long frameFromTick(unsigned long iTick) const
+			{ return frame + uroundf(
+				(ts->frameRate() * (iTick - tick)) / tickRate); }
+
+		// Tick/pixel convertors.
+		unsigned long tickFromPixel(int x) const
+			{ return tick + uroundf(
+				(tickRate * (x - pixel)) / ts->pixelRate()); }
+		int pixelFromTick(unsigned long iTick) const
+			{ return pixel + uroundf(
+				(ts->pixelRate() * (iTick - tick)) / tickRate); }
+
+		// Beat/pixel convertors.
+		unsigned int beatFromPixel(int x) const
+			{ return beat + uroundf(
+				(tempo * (x - pixel)) / ts->pixelRate()); }
+		int pixelFromBeat(unsigned int iBeat) const
+			{ return pixel + uroundf(
+				(ts->pixelRate() * (iBeat - beat)) / tempo); }
+
+		// Bar/pixel convertors.
+		unsigned short barFromPixel(int x) const
+			{ return bar + uroundf(
+				(tempo * (x - pixel)) / (ts->pixelRate() * beatsPerBar)); }
+		int pixelFromBar(unsigned short iBar) const
+			{ return pixel + uroundf(
+				(ts->pixelRate() * beatsPerBar * (iBar - bar)) / tempo); }
+
+		// Bar/beat convertors.
+		unsigned short barFromBeat(unsigned int iBeat) const
+			{ return bar + ((iBeat - beat) / beatsPerBar); }
+		unsigned int beatFromBar(unsigned short iBar) const
+			{ return beat + (beatsPerBar * (iBar - bar)); }
+
+		bool beatIsBar(unsigned int iBeat) const
+			{ return ((iBeat - beat) % beatsPerBar) == 0; }
+
+		// Frame/bar quantizer.
+		unsigned long frameSnapToBar(unsigned long iFrame) const
+			{ return frameFromBar(barFromFrame(iFrame)); }
+
+		// Beat snap filters.
+		unsigned long tickSnap(unsigned long iTick) const;
+
+		unsigned long frameSnap(unsigned long iFrame) const
+			{ return frameFromTick(tickSnap(tickFromFrame(iFrame))); }
+		int pixelSnap(int x) const
+			{ return pixelFromTick(tickSnap(tickFromPixel(x))); }
+
+		// Node owner.
+		qtractorTimeScale *ts;
+
+		// Node keys.
+		unsigned long  frame;
+		unsigned short bar;
+		unsigned int   beat;
+		unsigned long  tick;
+		int            pixel;
+
+		// Node parameter payload.
+		float          tempo;
+		unsigned short beatType;
+		unsigned short beatsPerBar;
+		unsigned short beatDivisor;
+
+		// Node cached coefficients.
+		unsigned short ticksPerBeat;
+		float          tickRate;
+	};
+
+	// Node list accessor.
+	const qtractorList<Node>& nodes() const { return m_nodes; }
+
+	// To optimize and keep track of current frame
+	// position, mostly like an sequence cursor/iterator.
+	struct Cursor
+	{
+		// Constructor.
+		Cursor(qtractorTimeScale *pTimeScale)
+			: ts(pTimeScale), node(0) {}
+
+		// Reset method.
+		void reset(Node *pNode = 0);
+
+		// Seek methods.
+		Node *seekFrame(unsigned long iFrame);
+		Node *seekBar(unsigned short iBar);
+		Node *seekBeat(unsigned int iBeat);
+		Node *seekTick(unsigned long iTick);
+		Node *seekPixel(int x);
+
+		// Member variables.
+		qtractorTimeScale *ts;
+		Node *node;
+	};
+
+	// Internal cursor accessor.
+	Cursor& cursor() { return m_cursor; }
+
+	// Node list specifics.
+	Node *addNode(
+		unsigned long iFrame = 0,
+		float fTempo = 120.0f,
+		unsigned short iBeatType = 2,
+		unsigned short iBeatsPerBar = 4,
+		unsigned short iBeatDivisor = 2);
+	void updateNode(Node *pNode);
+	void removeNode(Node *pNode);
+
+	// Complete time-scale update method.
+	void updateScale();
+
+	// Frame/pixel convertors.
+	int pixelFromFrame(unsigned long iFrame) const
+		{ return uroundf((m_fPixelRate * iFrame) / m_fFrameRate); }
+	unsigned long frameFromPixel(int x) const
+		{ return uroundf((m_fFrameRate * x) / m_fPixelRate); }
+
+	// Frame/bar general converters.
+	unsigned short barFromFrame(unsigned long iFrame)
+	{
+		Node *pNode = m_cursor.seekFrame(iFrame);
+		return (pNode ? pNode->barFromFrame(iFrame) : 0);
+	}
+
+	unsigned long frameFromBar(unsigned short iBar)
+	{
+		Node *pNode = m_cursor.seekBar(iBar);
+		return (pNode ? pNode->frameFromBar(iBar) : 0);
+	}
+
+	// Frame/beat general converters.
+	unsigned int beatFromFrame(unsigned long iFrame)
+	{
+		Node *pNode = m_cursor.seekFrame(iFrame);
+		return (pNode ? pNode->beatFromFrame(iFrame) : 0);
+	}
+
+	unsigned long frameFromBeat(unsigned int iBeat)
+	{
+		Node *pNode = m_cursor.seekBeat(iBeat);
+		return (pNode ? pNode->frameFromBeat(iBeat) : 0);
+	}
+
+	// Frame/tick general converters.
+	unsigned long tickFromFrame(unsigned long iFrame)
+	{
+		Node *pNode = m_cursor.seekFrame(iFrame);
+		return (pNode ? pNode->tickFromFrame(iFrame) : 0);
+	}
+
+	unsigned long frameFromTick(unsigned long iTick)
+	{
+		Node *pNode = m_cursor.seekTick(iTick);
+		return (pNode ? pNode->frameFromTick(iTick) : 0);
+	}
+
+	// Tick/pixel general converters.
+	unsigned long tickFromPixel(int x)
+	{
+		Node *pNode = m_cursor.seekPixel(x);
+		return (pNode ? pNode->tickFromPixel(x) : 0);
+	}
+
+	int pixelFromTick(unsigned long iTick)
+	{
+		Node *pNode = m_cursor.seekTick(iTick);
+		return (pNode ? pNode->pixelFromTick(iTick) : 0);
+	}
+
+	// Beat/pixel composite converters.
+	unsigned int beatFromPixel(int x)
+	{
+		Node *pNode = m_cursor.seekPixel(x);
+		return (pNode ? pNode->beatFromPixel(x) : 0);
+	}
+
+	int pixelFromBeat(unsigned int iBeat)
+	{
+		Node *pNode = m_cursor.seekBeat(iBeat);
+		return (pNode ? pNode->pixelFromBeat(iBeat) : 0);
+	}
+
+	// Bar/beat predicate.
+	bool beatIsBar(unsigned int iBeat)
+	{
+		Node *pNode = m_cursor.seekBeat(iBeat);
+		return (pNode ? pNode->beatIsBar(iBeat) : false);
+	}
+
+	// Snap functions.
+	unsigned long tickSnap(unsigned long iTick)
+	{
+		Node *pNode = m_cursor.seekTick(iTick);
+		return (pNode ? pNode->tickSnap(iTick) : iTick);
+	}
+
+	unsigned long frameSnap(unsigned long iFrame)
+	{
+		Node *pNode = m_cursor.seekFrame(iFrame);
+		return (pNode ? pNode->frameSnap(iFrame) : iFrame);
+	}
+
+	int pixelSnap(int x)
+	{
+		Node *pNode = m_cursor.seekPixel(x);
+		return (pNode ? pNode->pixelSnap(x) : x);
+	}
 
 	// Available display-formats.
 	enum DisplayFormat { Frames, Time, BBT };
@@ -165,28 +364,78 @@ public:
 		const QString& sText, bool bDelta = false) const;
 
 	// Convert to time string and vice-versa.
-	QString textFromTick(unsigned long iTick, bool bDelta = false) const
+	QString textFromTick(unsigned long iTick, bool bDelta = false)
 		{ return textFromFrame(frameFromTick(iTick), bDelta); }
-	unsigned long tickFromText(const QString& sText, bool bDelta = false) const
+	unsigned long tickFromText(const QString& sText, bool bDelta = false)
 		{ return tickFromFrame(frameFromText(sText, bDelta)); }
 
-	// Update scale divisor factors.
-	void updateScale();
+	// Tempo (beats per minute; BPM)
+	void setTempo(float fTempo)
+	{
+		Node *pNode = m_nodes.first();
+		if (pNode) pNode->tempo = fTempo;
+	}
 
-	// Fastest rounding-from-float helper.
-	static unsigned long uroundf(float x)
-		{ return (unsigned long) (x >= 0.0f ? x + 0.5f : x - 0.5f); }
+	float tempo() const
+	{
+		Node *pNode = m_nodes.first();
+		return (pNode ? pNode->tempo : 120.0f);
+	}
 
-	// Beat divisor (snap index) accessors.
-	static unsigned short snapFromIndex(int iSnap);
-	static int indexFromSnap(unsigned short iSnapPerBeat);
+	// Tempo beat type (if not standard 2=quarter note)
+	void setBeatType(unsigned short iBeatType)
+	{
+		Node *pNode = m_nodes.first();
+		if (pNode) pNode->beatType = iBeatType;
+	}
 
-	// Beat divisor (snap index) text item list.
-	static QStringList snapItems(int iSnap = 0);
+	unsigned short beatType() const
+	{
+		Node *pNode = m_nodes.first();
+		return (pNode ? pNode->beatType : 2);
+	}
+
+	// Resolution (ticks per beat)
+	unsigned short ticksPerBeat2() const
+	{
+		Node *pNode = m_nodes.first();
+		return (pNode ? pNode->ticksPerBeat : 96);
+	}
+
+	// Time signature (numerator)
+	void setBeatsPerBar(unsigned short iBeatsPerBar)
+	{
+		Node *pNode = m_nodes.first();
+		if (pNode) pNode->beatsPerBar = iBeatsPerBar;
+	}
+
+	unsigned short beatsPerBar() const
+	{
+		Node *pNode = m_nodes.first();
+		return (pNode ? pNode->beatsPerBar : 4);
+	}
+
+	// Time signature (denominator)
+	void setBeatDivisor(unsigned short iBeatDivisor)
+	{
+		Node *pNode = m_nodes.first();
+		if (pNode) pNode->beatDivisor = iBeatDivisor;
+	}
+
+	unsigned short beatDivisor() const
+	{
+		Node *pNode = m_nodes.first();
+		return (pNode ? pNode->beatDivisor : 2);
+	}
+
+protected:
+
+	// Tempo-map independent coefficients.
+	float pixelRate() const { return m_fPixelRate; }
+	float frameRate() const { return m_fFrameRate; }
 
 private:
 
-	unsigned short m_iPixelsPerBeat;    // Pixels per beat (width).
 	unsigned short m_iSnapPerBeat;      // Snap per beat (divisor).
 	unsigned short m_iHorizontalZoom;   // Horizontal zoom factor.
 	unsigned short m_iVerticalZoom;     // Vertical zoom factor.
@@ -194,25 +443,21 @@ private:
 	DisplayFormat  m_displayFormat;     // Textual display format.
 
 	unsigned int   m_iSampleRate;       // Sample rate (frames per second)
-	float          m_fTempo;            // Tempo (beats per minute; BPM)
-	unsigned short m_iBeatType;         // Tempo beat type (2=quarter note, default)
-	unsigned short m_iTicksPerBeat;     // Resolution (ticks per quarter note; PPQN)
-	unsigned short m_iBeatsPerBar;      // Time signature (numerator)
-	unsigned short m_iBeatDivisor;      // Time signature (denominator)
+	unsigned short m_iTicksPerBeat;     // Tticks per quarter note (PPQN)
+	unsigned short m_iPixelsPerBeat;    // Pixels per beat (width).
 
-	// Internal time scaling factors.
-	unsigned long  m_iScale_a;
-	float          m_fScale_b;
-	float          m_fScale_c;
-	float          m_fScale_d;
+	// Tempo-map node list.
+	qtractorList<Node> m_nodes;
 
-	unsigned short m_iTicksPerBeat2;    // Resolution (ticks per beat)
-	unsigned long  m_iScale_a2;
-	float          m_fScale_c2;
+	// Internal node cursor.
+	Cursor m_cursor;
+
+	// Tempo-map independent coefficients.
+	float m_fPixelRate;
+	float m_fFrameRate;
 };
 
-
-#endif  // __qtractorTimeScale_h
+#endif	// __qtractorTimeScale_h
 
 
 // end of qtractorTimeScale.h
