@@ -304,7 +304,6 @@ qtractorMidiEditor::qtractorMidiEditor ( QWidget *pParent )
 	m_pTimeScale = new qtractorTimeScale();
 
 	// The original clip time-scale length/time.
-	m_iClipLength = 0;
 	m_iClipLengthTime = 0;
 
 	// The local time-scale offset/length.
@@ -553,15 +552,12 @@ qtractorTimeScale *qtractorMidiEditor::timeScale (void) const
 // The original clip time-scale length/time.
 void qtractorMidiEditor::setClipLength ( unsigned long iClipLength )
 {
-	m_iClipLength = iClipLength;
-	m_iClipLengthTime = (m_pTimeScale ? m_pTimeScale->tickFromFrame(m_iClipLength) : 0);
-qDebug("DEBUG> setClipLength(%lu) time=%lu", m_iClipLength, m_iClipLengthTime);
+	m_iClipLengthTime = (m_pTimeScale ? m_pTimeScale->tickFromFrame(iClipLength) : 0);
 }
 
 unsigned long qtractorMidiEditor::clipLength (void) const
 {
-qDebug("DEBUG> clipLength() = %lu, time=%lu", m_iClipLength, m_iClipLengthTime);
-	return m_iClipLength;
+	return (m_pTimeScale ? m_pTimeScale->frameFromTick(m_iClipLengthTime) : 0);
 }
 
 
@@ -689,9 +685,6 @@ void qtractorMidiEditor::updateTimeScale (void)
 		return;
 
 	m_pTimeScale->sync(*pSession->timeScale());
-
-	if (m_iClipLengthTime > 0)
-		m_iClipLength = m_pTimeScale->frameFromTick(m_iClipLengthTime);
 
 	setOffset(m_pMidiClip->clipStart());
 	setLength(m_pMidiClip->clipLength());

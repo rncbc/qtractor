@@ -382,7 +382,6 @@ private:
 	qtractorTimeScale *m_pTimeScale;
 
 	// The original clip time-scale length/time.
-	unsigned long m_iClipLength;
 	unsigned long m_iClipLengthTime;
 
 	// The local time-scale offset/length.
