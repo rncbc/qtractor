@@ -103,10 +103,15 @@ void qtractorTimeScale::Node::update (void)
 {
 	ticksPerBeat = ts->ticksPerBeat();
 	tickRate = tempo * ticksPerBeat;
+	beatRate = tempo;
 	if (beatDivisor > beatType) {
-		ticksPerBeat >>= (beatDivisor - beatType);
+		unsigned short n = (beatDivisor - beatType);
+		ticksPerBeat >>= n;
+		beatRate *= float(1 << n);
 	} else if (beatDivisor < beatType) {
-		ticksPerBeat <<= (beatType - beatDivisor);
+		unsigned short n = (beatType - beatDivisor);
+		ticksPerBeat <<= n;
+		beatRate /= float(1 << n);
 	}
 }
 

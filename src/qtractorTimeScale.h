@@ -122,18 +122,18 @@ public:
 		// Frame/bar convertors.
 		unsigned short barFromFrame(unsigned long iFrame) const
 			{ return bar + uroundf(
-				(tempo * (iFrame - frame)) / (ts->frameRate() * beatsPerBar)); }
+				(beatRate * (iFrame - frame)) / (ts->frameRate() * beatsPerBar)); }
 		unsigned long frameFromBar(unsigned short iBar) const
 			{ return frame + uroundf(
-				(ts->frameRate() * beatsPerBar * (iBar - bar)) / tempo); }
+				(ts->frameRate() * beatsPerBar * (iBar - bar)) / beatRate); }
 
 		// Frame/beat convertors.
 		unsigned int beatFromFrame(unsigned long iFrame) const
 			{ return beat + uroundf(
-				(tempo * (iFrame - frame)) / ts->frameRate()); }
+				(beatRate * (iFrame - frame)) / ts->frameRate()); }
 		unsigned long frameFromBeat(unsigned int iBeat) const
 			{ return frame + uroundf(
-				(ts->frameRate() * (iBeat - beat)) / tempo); }
+				(ts->frameRate() * (iBeat - beat)) / beatRate); }
 
 		// Frame/tick convertors.
 		unsigned long tickFromFrame(unsigned long iFrame) const
@@ -154,18 +154,18 @@ public:
 		// Beat/pixel convertors.
 		unsigned int beatFromPixel(int x) const
 			{ return beat + uroundf(
-				(tempo * (x - pixel)) / ts->pixelRate()); }
+				(beatRate * (x - pixel)) / ts->pixelRate()); }
 		int pixelFromBeat(unsigned int iBeat) const
 			{ return pixel + uroundf(
-				(ts->pixelRate() * (iBeat - beat)) / tempo); }
+				(ts->pixelRate() * (iBeat - beat)) / beatRate); }
 
 		// Bar/pixel convertors.
 		unsigned short barFromPixel(int x) const
 			{ return bar + uroundf(
-				(tempo * (x - pixel)) / (ts->pixelRate() * beatsPerBar)); }
+				(beatRate * (x - pixel)) / (ts->pixelRate() * beatsPerBar)); }
 		int pixelFromBar(unsigned short iBar) const
 			{ return pixel + uroundf(
-				(ts->pixelRate() * beatsPerBar * (iBar - bar)) / tempo); }
+				(ts->pixelRate() * beatsPerBar * (iBar - bar)) / beatRate); }
 
 		// Bar/beat convertors.
 		unsigned short barFromBeat(unsigned int iBeat) const
@@ -207,6 +207,7 @@ public:
 		// Node cached coefficients.
 		unsigned short ticksPerBeat;
 		float          tickRate;
+		float          beatRate;
 	};
 
 	// Node list accessor.
