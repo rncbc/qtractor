@@ -126,6 +126,9 @@ public slots:
 	void viewZoomIn();
 	void viewZoomOut();
 	void viewZoomReset();
+	void viewZoomHorizontal();
+	void viewZoomVertical();
+	void viewZoomAll();
 	void viewSnap();
 	void viewRefresh();
 
@@ -133,6 +136,7 @@ public slots:
 	void helpAbout();
 	void helpAboutQt();
 
+	void updateZoomMenu();
 	void updateSnapMenu();
 
 	void sendNote(int iNote, int iVelocity);

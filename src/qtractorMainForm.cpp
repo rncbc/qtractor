@@ -603,6 +603,15 @@ qtractorMainForm::qtractorMainForm (
 	QObject::connect(m_ui.viewZoomResetAction,
 		SIGNAL(triggered(bool)),
 		SLOT(viewZoomReset()));
+	QObject::connect(m_ui.viewZoomHorizontalAction,
+		SIGNAL(triggered(bool)),
+		SLOT(viewZoomHorizontal()));
+	QObject::connect(m_ui.viewZoomVerticalAction,
+		SIGNAL(triggered(bool)),
+		SLOT(viewZoomVertical()));
+	QObject::connect(m_ui.viewZoomAllAction,
+		SIGNAL(triggered(bool)),
+		SLOT(viewZoomAll()));
 	QObject::connect(m_ui.viewRefreshAction,
 		SIGNAL(triggered(bool)),
 		SLOT(viewRefresh()));
@@ -675,6 +684,9 @@ qtractorMainForm::qtractorMainForm (
 	QObject::connect(m_ui.trackExportMenu,
 		SIGNAL(aboutToShow()),
 		SLOT(updateExportMenu()));
+	QObject::connect(m_ui.viewZoomMenu,
+		SIGNAL(aboutToShow()),
+		SLOT(updateZoomMenu()));
 	QObject::connect(m_ui.viewSnapMenu,
 		SIGNAL(aboutToShow()),
 		SLOT(updateSnapMenu()));
@@ -2598,28 +2610,53 @@ void qtractorMainForm::viewConnections ( bool bOn )
 }
 
 
-// Horizontal and vertical zoom-in.
+// Horizontal and/or vertical zoom-in.
 void qtractorMainForm::viewZoomIn (void)
 {
-	if (m_pTracks)
-		m_pTracks->zoomIn();
+	if (m_pTracks && m_pOptions)
+		m_pTracks->zoomIn(m_pOptions->iZoomMode);
 }
 
 
-// Horizontal and vertical zoom-out.
+// Horizontal and/or vertical zoom-out.
 void qtractorMainForm::viewZoomOut (void)
 {
-	if (m_pTracks)
-		m_pTracks->zoomOut();
+	if (m_pTracks && m_pOptions)
+		m_pTracks->zoomOut(m_pOptions->iZoomMode);
 }
 
 
-// Reset both zoom levels to default.
+// Reset zoom level to default.
 void qtractorMainForm::viewZoomReset (void)
 {
-	if (m_pTracks)
-		m_pTracks->zoomReset();
+	if (m_pTracks && m_pOptions)
+		m_pTracks->zoomReset(m_pOptions->iZoomMode);
 }
+
+
+// Set horizontal zoom mode
+void qtractorMainForm::viewZoomHorizontal (void)
+{
+	if (m_pOptions)
+		m_pOptions->iZoomMode = qtractorTracks::ZoomHorizontal;
+}
+
+
+// Set vertical zoom mode
+void qtractorMainForm::viewZoomVertical (void)
+{
+	if (m_pOptions)
+		m_pOptions->iZoomMode = qtractorTracks::ZoomVertical;
+}
+
+
+// Set all zoom mode
+void qtractorMainForm::viewZoomAll (void)
+{
+	if (m_pOptions)
+		m_pOptions->iZoomMode = qtractorTracks::ZoomAll;
+}
+
 
 
 // Change snap-per-beat setting via menu.
@@ -3955,6 +3992,21 @@ void qtractorMainForm::updateMidiMetronome (void)
 		bMidiMetronome && m_pOptions->bMidiMetroBus);
 	pMidiEngine->setMetronome(
 		bMidiMetronome && m_ui.transportMetroAction->isChecked());
+}
+
+
+// Zoom view menu stabilizer.
+void qtractorMainForm::updateZoomMenu (void)
+{
+	if (m_pOptions == NULL)
+		return;
+
+	m_ui.viewZoomHorizontalAction->setChecked(
+		m_pOptions->iZoomMode == qtractorTracks::ZoomHorizontal);
+	m_ui.viewZoomVerticalAction->setChecked(
+		m_pOptions->iZoomMode == qtractorTracks::ZoomVertical);
+	m_ui.viewZoomAllAction->setChecked(
+		m_pOptions->iZoomMode == qtractorTracks::ZoomAll);
 }
 
 

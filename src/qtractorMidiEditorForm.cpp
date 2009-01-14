@@ -295,6 +295,15 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	QObject::connect(m_ui.viewZoomResetAction,
 		SIGNAL(triggered(bool)),
 		SLOT(viewZoomReset()));
+	QObject::connect(m_ui.viewZoomHorizontalAction,
+		SIGNAL(triggered(bool)),
+		SLOT(viewZoomHorizontal()));
+	QObject::connect(m_ui.viewZoomVerticalAction,
+		SIGNAL(triggered(bool)),
+		SLOT(viewZoomVertical()));
+	QObject::connect(m_ui.viewZoomAllAction,
+		SIGNAL(triggered(bool)),
+		SLOT(viewZoomAll()));
 	QObject::connect(m_ui.viewRefreshAction,
 		SIGNAL(triggered(bool)),
 		SLOT(viewRefresh()));
@@ -309,6 +318,9 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 		SIGNAL(triggered(bool)),
 		SLOT(helpAboutQt()));
 
+	QObject::connect(m_ui.viewZoomMenu,
+		SIGNAL(aboutToShow()),
+		SLOT(updateZoomMenu()));
 	QObject::connect(m_ui.viewSnapMenu,
 		SIGNAL(aboutToShow()),
 		SLOT(updateSnapMenu()));
@@ -361,6 +373,7 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 		viewToolbarEdit(pOptions->bMidiEditToolbar);
 		viewToolbarView(pOptions->bMidiViewToolbar);
 		viewToolbarTransport(pOptions->bMidiTransportToolbar);
+		m_pMidiEditor->setZoomMode(pOptions->iMidiZoomMode);
 		m_pMidiEditor->setEditMode(pOptions->bMidiEditMode);
 		m_pMidiEditor->setNoteColor(pOptions->bMidiNoteColor);
 		m_pMidiEditor->setValueColor(pOptions->bMidiValueColor);
@@ -484,7 +497,8 @@ bool qtractorMidiEditorForm::queryClose (void)
 			pOptions->bMidiEditToolbar = m_ui.editToolbar->isVisible();
 			pOptions->bMidiViewToolbar = m_ui.viewToolbar->isVisible();
 			pOptions->bMidiTransportToolbar = m_ui.transportToolbar->isVisible();
-			pOptions->bMidiEditMode = m_ui.editModeOnAction->isChecked();
+			pOptions->iMidiZoomMode = m_pMidiEditor->zoomMode();
+			pOptions->bMidiEditMode = m_pMidiEditor->isEditMode();
 			pOptions->bMidiNoteDuration = m_ui.viewNoteDurationAction->isChecked();
 			pOptions->bMidiNoteColor = m_ui.viewNoteColorAction->isChecked();
 			pOptions->bMidiValueColor = m_ui.viewValueColorAction->isChecked();
@@ -1102,24 +1116,45 @@ void qtractorMidiEditorForm::viewFollow ( bool bOn )
 }
 
 
-// Horizontal and vertical zoom-in.
+// Horizontal and/or vertical zoom-in.
 void qtractorMidiEditorForm::viewZoomIn (void)
 {
 	m_pMidiEditor->zoomIn();
 }
 
 
-// Horizontal and vertical zoom-out.
+// Horizontal and/or vertical zoom-out.
 void qtractorMidiEditorForm::viewZoomOut (void)
 {
 	m_pMidiEditor->zoomOut();
 }
 
 
-// Reset both zoom levels to default.
+// Reset zoom level to default.
 void qtractorMidiEditorForm::viewZoomReset (void)
 {
 	m_pMidiEditor->zoomReset();
+}
+
+
+// Set horizontal zoom mode
+void qtractorMidiEditorForm::viewZoomHorizontal (void)
+{
+	m_pMidiEditor->setZoomMode(qtractorMidiEditor::ZoomHorizontal);
+}
+
+
+// Set vertical zoom mode
+void qtractorMidiEditorForm::viewZoomVertical (void)
+{
+	m_pMidiEditor->setZoomMode(qtractorMidiEditor::ZoomVertical);
+}
+
+
+// Set all zoom mode
+void qtractorMidiEditorForm::viewZoomAll (void)
+{
+	m_pMidiEditor->setZoomMode(qtractorMidiEditor::ZoomAll);
 }
 
 
@@ -1340,6 +1375,20 @@ void qtractorMidiEditorForm::updateInstrumentNames (void)
 //-------------------------------------------------------------------------
 // qtractorMidiEditorForm -- Selection widget slots.
 
+// Zoom view menu stabilizer.
+void qtractorMidiEditorForm::updateZoomMenu (void)
+{
+	int iZoomMode = m_pMidiEditor->zoomMode();
+	
+	m_ui.viewZoomHorizontalAction->setChecked(
+		iZoomMode == qtractorMidiEditor::ZoomHorizontal);
+	m_ui.viewZoomVerticalAction->setChecked(
+		iZoomMode == qtractorMidiEditor::ZoomVertical);
+	m_ui.viewZoomAllAction->setChecked(
+		iZoomMode == qtractorMidiEditor::ZoomAll);
+}
+ 
+ 
 // Snap-per-beat view menu builder.
 void qtractorMidiEditorForm::updateSnapMenu (void)
 {

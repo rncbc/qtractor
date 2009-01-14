@@ -170,6 +170,9 @@ public slots:
 	void viewZoomIn();
 	void viewZoomOut();
 	void viewZoomReset();
+	void viewZoomHorizontal();
+	void viewZoomVertical();
+	void viewZoomAll();
 	void viewSnap();
 	void viewRefresh();
 	void viewInstruments();
@@ -204,6 +207,7 @@ public slots:
 
 	void updateRecentFilesMenu();
 	void updateExportMenu();
+	void updateZoomMenu();
 	void updateSnapMenu();
 
 	void addAudioFile(const QString& sFilename);

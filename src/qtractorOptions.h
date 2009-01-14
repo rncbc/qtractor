@@ -1,7 +1,7 @@
 // qtractorOptions.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -82,6 +82,7 @@ public:
 	bool    bTransportToolbar;
 	bool    bTimeToolbar;
 	bool    bThumbToolbar;
+	int     iZoomMode;
 
 	// Transport options...
 	bool    bMetronome;
@@ -180,6 +181,7 @@ public:
 	bool bMidiPreview;
 	bool bMidiFollow;
 	bool bMidiEditMode;
+	int  iMidiZoomMode;
 
 	// Meter colors.
 	QStringList audioMeterColors;

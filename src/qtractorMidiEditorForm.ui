@@ -130,6 +130,10 @@
      <addaction name="viewZoomOutAction" />
      <addaction name="separator" />
      <addaction name="viewZoomResetAction" />
+     <addaction name="separator" />
+     <addaction name="viewZoomHorizontalAction" />
+     <addaction name="viewZoomVerticalAction" />
+     <addaction name="viewZoomAllAction" />
     </widget>
     <widget class="QMenu" name="viewSnapMenu" >
      <property name="title" >
@@ -983,6 +987,57 @@
    </property>
    <property name="statusTip" >
     <string>Zoom reset</string>
+   </property>
+  </action>
+  <action name="viewZoomHorizontalAction" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="text" >
+    <string>&amp;Horizontal</string>
+   </property>
+   <property name="iconText" >
+    <string>Horizontal Zoom</string>
+   </property>
+   <property name="toolTip" >
+    <string>Horizontal zoom</string>
+   </property>
+   <property name="statusTip" >
+    <string>Horizontal zoom mode</string>
+   </property>
+  </action>
+  <action name="viewZoomVerticalAction" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="text" >
+    <string>&amp;Vertical</string>
+   </property>
+   <property name="iconText" >
+    <string>Vertical Zoom</string>
+   </property>
+   <property name="toolTip" >
+    <string>Vertical zoom</string>
+   </property>
+   <property name="statusTip" >
+    <string>Vertical zoom mode</string>
+   </property>
+  </action>
+  <action name="viewZoomAllAction" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="text" >
+    <string>&amp;All</string>
+   </property>
+   <property name="iconText" >
+    <string>All Zoom</string>
+   </property>
+   <property name="toolTip" >
+    <string>All zoom</string>
+   </property>
+   <property name="statusTip" >
+    <string>All zoom mode</string>
    </property>
   </action>
   <action name="viewRefreshAction" >

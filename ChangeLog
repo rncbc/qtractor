@@ -5,6 +5,9 @@ ChangeLog
 
 CVS HEAD
 
+- Zoom mode option introduced (on menu View/Zoom/Horizontal,
+  Vertical, All).
+
 - Tempo beat type is a new session property; however it is
   not yet user modifiable and currently disabled to default
   MIDI quarter note (1/4).

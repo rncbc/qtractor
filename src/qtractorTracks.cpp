@@ -190,30 +190,39 @@ void qtractorTracks::verticalZoomStep ( int iZoomStep )
 }
 
 
-// Zoom view slots.
-void qtractorTracks::zoomIn (void)
+// Zoom view actuators.
+void qtractorTracks::zoomIn ( int iZoomMode )
 {
-	horizontalZoomStep(+ ZoomStep);
-	verticalZoomStep(+ ZoomStep);
+	if (iZoomMode & ZoomHorizontal)
+		horizontalZoomStep(+ ZoomStep);
+	if (iZoomMode & ZoomVertical)
+		verticalZoomStep(+ ZoomStep);
+
 	centerContents();
 }
 
-void qtractorTracks::zoomOut (void)
+void qtractorTracks::zoomOut ( int iZoomMode )
 {
-	horizontalZoomStep(- ZoomStep);
-	verticalZoomStep(- ZoomStep);
+	if (iZoomMode & ZoomHorizontal)
+		horizontalZoomStep(- ZoomStep);
+	if (iZoomMode & ZoomVertical)
+		verticalZoomStep(- ZoomStep);
+
 	centerContents();
 }
 
 
-void qtractorTracks::zoomReset (void)
+void qtractorTracks::zoomReset ( int iZoomMode )
 {
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
 		return;
 
-	horizontalZoomStep(ZoomBase - pSession->horizontalZoom());
-	verticalZoomStep(ZoomBase - pSession->verticalZoom());
+	if (iZoomMode & ZoomHorizontal)
+		horizontalZoomStep(ZoomBase - pSession->horizontalZoom());
+	if (iZoomMode & ZoomVertical)
+		verticalZoomStep(ZoomBase - pSession->verticalZoom());
+
 	centerContents();
 }
 

@@ -1,7 +1,7 @@
 // qtractorOptions.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -97,6 +97,7 @@ qtractorOptions::qtractorOptions (void)
 	bTransportToolbar = m_settings.value("/TransportToolbar", true).toBool();
 	bTimeToolbar    = m_settings.value("/TimeToolbar", true).toBool();
 	bThumbToolbar   = m_settings.value("/ThumbToolbar", true).toBool();
+	iZoomMode       = m_settings.value("/ZoomMode", 1).toInt();
 	m_settings.endGroup();
 
 	// Transport options group.
@@ -224,6 +225,7 @@ qtractorOptions::qtractorOptions (void)
 	bMidiPreview     = m_settings.value("/Preview", true).toBool();
 	bMidiFollow      = m_settings.value("/Follow", false).toBool();
 	bMidiEditMode    = m_settings.value("/EditMode", false).toBool();
+	iMidiZoomMode    = m_settings.value("/ZoomMode", 3).toInt();
 	m_settings.endGroup();
 
 	// Meter colors.
@@ -280,6 +282,7 @@ qtractorOptions::~qtractorOptions (void)
 	m_settings.setValue("/TransportToolbar", bTransportToolbar);
 	m_settings.setValue("/TimeToolbar", bTimeToolbar);
 	m_settings.setValue("/ThumbToolbar", bThumbToolbar);
+	m_settings.setValue("/ZoomMode", iZoomMode);
 	m_settings.endGroup();
 
 	// Transport options group.
@@ -401,6 +404,7 @@ qtractorOptions::~qtractorOptions (void)
 	m_settings.setValue("/Preview", bMidiPreview);
 	m_settings.setValue("/Follow", bMidiFollow);
 	m_settings.setValue("/EditMode", bMidiEditMode);
+	m_settings.setValue("/ZoomMode", iMidiZoomMode);
 	m_settings.endGroup();
 
 	// Meter colors.

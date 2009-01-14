@@ -91,6 +91,12 @@ public:
 	void setEditMode(bool bEditMode);
 	bool isEditMode() const;
 
+	// Zoom (view) modes.
+	enum { ZoomNone = 0, ZoomHorizontal = 1, ZoomVertical = 2, ZoomAll = 3 };
+
+	void setZoomMode(int iZoomMode);
+	int zoomMode() const;
+
 	// Local time scale accessors.
 	qtractorTimeScale *timeScale() const;
 
@@ -423,6 +429,9 @@ private:
 
 	// Viewport rubber-banding stuff.
 	qtractorRubberBand *m_pRubberBand;
+
+	// Zoom mode flag.
+	int m_iZoomMode;
 
 	// Edit mode flag.
 	bool m_bEditMode;

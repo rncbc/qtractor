@@ -111,15 +111,18 @@ public:
 	// Overall contents reset.
 	void clear();
 
+	// Zoom modes.
+	enum { ZoomNone = 0, ZoomHorizontal = 1, ZoomVertical = 2, ZoomAll = 3 };
+
+	// Zoom view actuators.
+	void zoomIn(int iZoomMode = ZoomAll);
+	void zoomOut(int iZoomMode = ZoomAll);
+	void zoomReset(int iZoomMode = ZoomAll);
+
 public slots:
 
 	// Track button notification.
 	void trackButtonToggledSlot(qtractorTrackButton *pTrackButton, bool bOn);
-
-	// Zoom view slots.
-	void zoomIn();
-	void zoomOut();
-	void zoomReset();
 
 protected:
 

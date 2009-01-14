@@ -288,6 +288,9 @@ qtractorMidiEditor::qtractorMidiEditor ( QWidget *pParent )
 
 	m_pRubberBand = NULL;
 
+	// Zoom mode flag.
+	m_iZoomMode = ZoomAll;
+
 	// Edit mode flag.
 	m_bEditMode = false;
 
@@ -526,6 +529,18 @@ const QColor& qtractorMidiEditor::background (void) const
 }
 
 
+// Zoom (view) mode.
+void qtractorMidiEditor::setZoomMode ( int iZoomMode )
+{
+	m_iZoomMode = iZoomMode;
+}
+
+int qtractorMidiEditor::zoomMode (void) const
+{
+	return m_iZoomMode;
+}
+
+
 // Edit (creational) mode.
 void qtractorMidiEditor::setEditMode ( bool bEditMode )
 {
@@ -536,7 +551,7 @@ void qtractorMidiEditor::setEditMode ( bool bEditMode )
 //	updateContents();
 }
 
-bool qtractorMidiEditor::isEditMode() const
+bool qtractorMidiEditor::isEditMode (void) const
 {
 	return m_bEditMode;
 }
@@ -879,23 +894,32 @@ void qtractorMidiEditor::verticalZoomStep ( int iZoomStep )
 // Zoom view slots.
 void qtractorMidiEditor::zoomIn (void)
 {
-	horizontalZoomStep(+ ZoomStep);
-	verticalZoomStep(+ ZoomStep);
+	if (m_iZoomMode & ZoomHorizontal)
+		horizontalZoomStep(+ ZoomStep);
+	if (m_iZoomMode & ZoomVertical)
+		verticalZoomStep(+ ZoomStep);
+
 	centerContents();
 }
 
 void qtractorMidiEditor::zoomOut (void)
 {
-	horizontalZoomStep(- ZoomStep);
-	verticalZoomStep(- ZoomStep);
+	if (m_iZoomMode & ZoomHorizontal)
+		horizontalZoomStep(- ZoomStep);
+	if (m_iZoomMode & ZoomVertical)
+		verticalZoomStep(- ZoomStep);
+
 	centerContents();
 }
 
 
 void qtractorMidiEditor::zoomReset (void)
 {
-	horizontalZoomStep(ZoomBase - m_pTimeScale->horizontalZoom());
-	verticalZoomStep(ZoomBase - m_pTimeScale->verticalZoom());
+	if (m_iZoomMode & ZoomHorizontal)
+		horizontalZoomStep(ZoomBase - m_pTimeScale->horizontalZoom());
+	if (m_iZoomMode & ZoomVertical)
+		verticalZoomStep(ZoomBase - m_pTimeScale->verticalZoom());
+
 	centerContents();
 }
 
