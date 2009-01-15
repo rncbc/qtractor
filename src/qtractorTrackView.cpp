@@ -219,7 +219,7 @@ void qtractorTrackView::updateContentsHeight (void)
 		return;
 
 	// Allways give some room to drop something at the bottom...
-	int iContentsHeight = qtractorTrackList::ItemHeightBase << 1;
+	int iContentsHeight = qtractorTrack::HeightBase << 1;
 	// Compute total track height...
 	qtractorTrack *pTrack = pSession->tracks().first();
 	while (pTrack) {
@@ -657,7 +657,7 @@ qtractorTrack *qtractorTrackView::trackAt ( const QPoint& pos,
 		int w = qtractorScrollView::width();// View width, not contents.
 		if (pTrack == NULL) {				// Below all tracks.
 			y1 = y2;
-			y2 = y1 + (qtractorTrackList::ItemHeightBase
+			y2 = y1 + (qtractorTrack::HeightBase
 				* pSession->verticalZoom()) / 100;
 		}
 		pTrackViewInfo->trackIndex = iTrack;
@@ -2310,7 +2310,7 @@ bool qtractorTrackView::keyStep ( int iKey )
 		m_dragState != DragDropPaste)
 		return false;
 
-	int iVerticalStep = qtractorTrackList::ItemHeightMin;
+	int iVerticalStep = qtractorTrack::HeightMin;
 	qtractorTrack *pTrack = m_pTracks->currentTrack();
 	if (pTrack)
 		iVerticalStep += (pTrack->zoomHeight() >> 1);

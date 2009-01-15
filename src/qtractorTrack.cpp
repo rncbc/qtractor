@@ -1,7 +1,7 @@
 // qtractorTrack.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -117,7 +117,7 @@ qtractorTrack::qtractorTrack ( qtractorSession *pSession, TrackType trackType )
 
 	m_pPluginList = new qtractorPluginList(0, 0, 0, iFlags);
 
-	setHeight(48);	// Default track height (qtractorTrackList::ItemHeightBase).
+	setHeight(HeightBase);	// Default track height.
 	clear();
 }
 
@@ -595,14 +595,19 @@ int qtractorTrack::height (void) const
 void qtractorTrack::setHeight ( int iHeight )
 {
 	m_iHeight = iHeight;
+	if (m_iHeight < HeightMin)
+		m_iHeight = HeightMin;
 
 	updateZoomHeight();
 }
 
 void qtractorTrack::updateHeight (void)
 {
-	if (m_pSession)
+	if (m_pSession) {
 		m_iHeight = (100 * m_iZoomHeight) / m_pSession->verticalZoom();
+		if (m_iHeight < HeightMin)
+			m_iHeight = HeightMin;
+	}
 }
 
 
@@ -615,14 +620,19 @@ int qtractorTrack::zoomHeight (void) const
 void qtractorTrack::setZoomHeight ( int iZoomHeight )
 {
 	m_iZoomHeight = iZoomHeight;
+	if (m_iZoomHeight < HeightMin)
+		m_iZoomHeight = HeightMin;
 
 	updateHeight();
 }
 
 void qtractorTrack::updateZoomHeight (void)
 {
-	if (m_pSession)
+	if (m_pSession) {
 		m_iZoomHeight = (m_iHeight * m_pSession->verticalZoom()) / 100;
+		if (m_iZoomHeight < HeightMin)
+			m_iZoomHeight = HeightMin;
+	}
 }
 
 

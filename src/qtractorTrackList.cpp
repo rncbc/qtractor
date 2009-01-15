@@ -1,7 +1,7 @@
 // qtractorTrackList.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -462,7 +462,9 @@ qtractorTrack *qtractorTrackList::track ( int iTrack ) const
 // Retrive the given track row rectangular (in viewport coordinates).
 QRect qtractorTrackList::trackRect ( int iTrack ) const
 {
-	QRect rect(0, 0, qtractorScrollView::viewport()->width(), ItemHeightBase);
+	QRect rect(0, 0,
+		qtractorScrollView::viewport()->width(),
+		qtractorTrack::HeightBase);
 
 	if (iTrack >= 0 && iTrack < m_items.count()) {
 		int y1, y2;
@@ -607,7 +609,8 @@ void qtractorTrackList::clear (void)
 void qtractorTrackList::updateContentsHeight (void)
 {
 	// Remember to give some room to drop something at the bottom...
-	int iContentsHeight = m_pHeader->sizeHint().height() + (ItemHeightBase << 1);
+	int iContentsHeight
+		= m_pHeader->sizeHint().height() + (qtractorTrack::HeightBase << 1);
 	QListIterator<Item *> iter(m_items);
 	while (iter.hasNext()) {
 		qtractorTrack *pTrack = iter.next()->track;
@@ -769,7 +772,8 @@ void qtractorTrackList::updatePixmap ( int cx, int cy )
 	int iColCount = m_pHeader->count();
 	int hh = m_pHeader->sizeHint().height();
 	// Account for the item dropping headroom...
-	int ch = qtractorScrollView::contentsHeight() - (ItemHeightBase << 1);
+	int ch = qtractorScrollView::contentsHeight()
+		- (qtractorTrack::HeightBase << 1);
 
 	int x, y1, y2, h1;
 	y1 = y2 = 0;
@@ -917,8 +921,8 @@ void qtractorTrackList::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 		// Currently resizing an item...
 		if (m_iDragTrack >= 0) {
 			int y = pMouseEvent->y();
-			if (y < m_iDragY + ItemHeightMin)
-				y = m_iDragY + ItemHeightMin;
+			if (y < m_iDragY + qtractorTrack::HeightMin)
+				y = m_iDragY + qtractorTrack::HeightMin;
 			m_posDrag.setY(y);
 			moveRubberBand(m_posDrag);
 		}
@@ -1007,8 +1011,8 @@ void qtractorTrackList::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 		if (m_iDragTrack >= 0) {
 			int iZoomHeight = pMouseEvent->y() - m_iDragY;
 			// Check for minimum item height.
-			if (iZoomHeight < ItemHeightMin)
-				iZoomHeight = ItemHeightMin;
+			if (iZoomHeight < qtractorTrack::HeightMin)
+				iZoomHeight = qtractorTrack::HeightMin;
 			// Go for it...
 			qtractorTrack *pTrack = track(m_iDragTrack);
 			if (pTrack) {
