@@ -5,6 +5,10 @@ ChangeLog
 
 CVS HEAD
 
+- Fixed that hideous bug affecting overlapped audio clips
+  when playhead gets moved backward, causing the playback
+  of those audio clips in particular, go out of sync.
+
 - Complete new time-scale infrastructure is now in place --
   the one which will support tempo and time-signature maps,
   in the future. (EXTREMELY EXPERIMENTAL)

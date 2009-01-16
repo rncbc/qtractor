@@ -1,7 +1,7 @@
 // qtractorSessionCursor.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -91,13 +91,20 @@ void qtractorSessionCursor::seek ( unsigned long iFrame, bool bSync )
 		pClip = seekClip(pTrack, pClip, iFrame);
 		// Set fine position within target clip...
 		if (pClip && bSync && pTrack->trackType() == m_syncType) {
-			unsigned long iClipStart = pClip->clipStart();
-			if (iFrame < iClipStart) {
-				pClip->seek(0);
-			} else if (iFrame < iClipStart + pClip->clipLength()) {
-				pClip->seek(iFrame - iClipStart);
-			} else {
-				pClip->reset(m_pSession->isLooping());
+			// Take care of overlapping clips...
+			unsigned long iClipEnd = pClip->clipStart() + pClip->clipLength();
+			while (pClip) {
+				unsigned long iClipStart = pClip->clipStart();
+				if (iClipStart > iClipEnd)
+					break;
+				if (iFrame < iClipStart) {
+					pClip->seek(0);
+				} else if (iFrame < iClipStart + pClip->clipLength()) {
+					pClip->seek(iFrame - iClipStart);
+				} else {
+					pClip->reset(m_pSession->isLooping());
+				}
+				pClip = pClip->next();
 			}
 		}
 		// Update cursor track clip...
