@@ -4508,9 +4508,6 @@ void qtractorMainForm::selectionNotifySlot ( qtractorMidiEditor *pMidiEditor )
 	appendMessages("qtractorMainForm::selectionNotifySlot()");
 #endif
 
-	// HACK: Force play-head position update...
-	m_iPlayHead = 0;
-
 	// Read session edit-head/tails...
 	unsigned long iEditHead = m_pSession->editHead();
 	unsigned long iEditTail = m_pSession->editTail();
@@ -4591,6 +4588,9 @@ void qtractorMainForm::contentsChanged (void)
 #ifdef CONFIG_DEBUG_0
 	appendMessages("qtractorMainForm::contentsChanged()");
 #endif
+
+	// HACK: Force play-head position update...
+	m_iPlayHead = 0;
 
 	// Stabilize session toolbar widgets...
 	m_pTempoSpinBox->setValue(m_pSession->tempo());
