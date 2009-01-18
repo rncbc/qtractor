@@ -89,6 +89,8 @@ void qtractorSessionCursor::seek ( unsigned long iFrame, bool bSync )
 		// Locate first clip not past
 		// the target frame position..
 		pClip = seekClip(pTrack, pClip, iFrame);
+		// Update cursor track clip...
+		m_ppClips[iTrack] = pClip;
 		// Set fine position within target clip...
 		if (pClip && bSync && pTrack->trackType() == m_syncType) {
 			// Take care of overlapping clips...
@@ -107,8 +109,7 @@ void qtractorSessionCursor::seek ( unsigned long iFrame, bool bSync )
 				pClip = pClip->next();
 			}
 		}
-		// Update cursor track clip...
-		m_ppClips[iTrack] = pClip;
+		// Next track...
 		pTrack = pTrack->next();
 		iTrack++;
 	}
