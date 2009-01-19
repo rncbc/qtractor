@@ -11,7 +11,7 @@ CVS HEAD
 
 - Complete new time-scale infrastructure is now in place --
   the one which will support tempo and time-signature maps,
-  in the future. (EXTREMELY EXPERIMENTAL)
+  in the future. (HIGHLY EXPERIMENTAL)
 
 - Tracks are now limited to their minimum height, specially
   effective in face of vertical zooming.

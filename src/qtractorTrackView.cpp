@@ -565,14 +565,14 @@ void qtractorTrackView::updatePixmap ( int cx, int cy )
 
 	// Draw vertical grid lines...
 	if (cy < y2) {
-		unsigned short iBeat = pSession->beatFromPixel(cx);
-		unsigned long iFrameFromBeat = pSession->frameFromBeat(iBeat);
-		unsigned long iFramesPerBeat = pSession->frameFromBeat(1);
-		unsigned int  iPixelsPerBeat = pSession->pixelFromBeat(1);
-		int x0 = x = pSession->pixelFromFrame(iFrameFromBeat) - cx;
+		qtractorTimeScale::Cursor cursor(pSession->timeScale());
+		qtractorTimeScale::Node *pNode = cursor.seekPixel(cx);
+		unsigned short iPixelsPerBeat = pNode->pixelsPerBeat();
+		unsigned int iBeat = pNode->beatFromPixel(cx);
+		int x0 = x = pNode->pixelFromBeat(iBeat) - cx;
 		while (x < w) {
 			if (x >= 0) {
-				bool bBeatIsBar = pSession->beatIsBar(iBeat) && (x >= x0);
+				bool bBeatIsBar = pNode->beatIsBar(iBeat) && (x >= x0);
 				if (bBeatIsBar) {
 					painter.setPen(rgbLight);
 					painter.drawLine(x, 0, x, y2 - cy - 2);
@@ -583,9 +583,8 @@ void qtractorTrackView::updatePixmap ( int cx, int cy )
 					painter.drawLine(x - 1, 0, x - 1, y2 - cy - 2);
 				}
 			}
-			iFrameFromBeat += iFramesPerBeat;
-			x = pSession->pixelFromFrame(iFrameFromBeat) - cx;
-			iBeat++;
+			pNode = cursor.seekBeat(++iBeat);
+			x = pNode->pixelFromBeat(iBeat) - cx;
 		}
 	}
 

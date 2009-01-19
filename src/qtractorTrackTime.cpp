@@ -106,18 +106,19 @@ void qtractorTrackTime::updatePixmap ( int cx, int /* cy */)
 	const QFontMetrics& fm = painter.fontMetrics();
 	int x, y1, y2 = h - 1;
 
-	unsigned short iBeat = pSession->beatFromPixel(cx);
-	unsigned long iFrameFromBeat = pSession->frameFromBeat(iBeat);
-	unsigned long iFramesPerBeat = pSession->frameFromBeat(1);
-	unsigned int  iPixelsPerBeat = pSession->pixelFromBeat(1);
-	int x0 = x = pSession->pixelFromFrame(iFrameFromBeat) - cx;
+	qtractorTimeScale::Cursor cursor(pSession->timeScale());
+	qtractorTimeScale::Node *pNode = cursor.seekPixel(cx);
+
+	unsigned short iPixelsPerBeat = pNode->pixelsPerBeat();
+	unsigned int iBeat = pNode->beatFromPixel(cx);
+	int x0 = x = pNode->pixelFromBeat(iBeat) - cx;
 	while (x < w) {
-		bool bBeatIsBar = pSession->beatIsBar(iBeat) && (x >= x0);
+		bool bBeatIsBar = pNode->beatIsBar(iBeat) && (x >= x0);
 		if (bBeatIsBar) {
 			y1 = 0;
 			painter.setPen(pal.windowText().color());
-			painter.drawText(x + 2, y1 + fm.ascent(), QString::number(
-				1 + (iBeat / pSession->beatsPerBar())));
+			painter.drawText(x + 2, y1 + fm.ascent(),
+				QString::number(pNode->barFromBeat(iBeat) + 1));
 			x0 = x + 16;
 		} else {
 			y1 = (y2 >> 1);
@@ -128,9 +129,8 @@ void qtractorTrackTime::updatePixmap ( int cx, int /* cy */)
 			painter.setPen(pal.light().color());
 			painter.drawLine(x + 1, y1, x + 1, y2);
 		}
-		iFrameFromBeat += iFramesPerBeat;
-		x = pSession->pixelFromFrame(iFrameFromBeat) - cx;
-		iBeat++;
+		pNode = cursor.seekBeat(++iBeat);
+		x = pNode->pixelFromBeat(iBeat) - cx;
 	}
 
 	// Draw loop boundaries, if applicable...

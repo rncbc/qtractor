@@ -159,6 +159,10 @@ public:
 			{ return pixel + uroundf(
 				(ts->pixelRate() * (iBeat - beat)) / beatRate); }
 
+		// Pixel/beat rate convertor.
+		unsigned short pixelsPerBeat() const
+			{ return uroundf(ts->pixelRate() / beatRate); }
+
 		// Bar/pixel convertors.
 		unsigned short barFromPixel(int x) const
 			{ return bar + uroundf(

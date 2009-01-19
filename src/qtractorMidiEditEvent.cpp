@@ -318,14 +318,14 @@ void qtractorMidiEditEvent::updatePixmap ( int cx, int /*cy*/ )
 	int dx = cx + pTimeScale->pixelFromFrame(m_pEditor->offset());
 
 	// Draw vertical grid lines...
-	unsigned short iBeat = pTimeScale->beatFromPixel(dx);
-	unsigned short iTicksPerBeat  = pTimeScale->ticksPerBeat2();
-	unsigned short iPixelsPerBeat = pTimeScale->pixelsPerBeat();
-	unsigned long  iTickFromBeat  = iBeat * iTicksPerBeat;
-	int x = pTimeScale->pixelFromTick(iTickFromBeat) - dx;
+	qtractorTimeScale::Cursor cursor(pTimeScale);
+	qtractorTimeScale::Node *pNode = cursor.seekPixel(dx);
+	unsigned short iPixelsPerBeat = pNode->pixelsPerBeat();
+	unsigned int iBeat = pNode->beatFromPixel(dx);
+	int x = pNode->pixelFromBeat(iBeat) - dx;
 	while (x < w) {
 		if (x >= 0) {
-			bool bBeatIsBar = pTimeScale->beatIsBar(iBeat);
+			bool bBeatIsBar = pNode->beatIsBar(iBeat);
 			if (bBeatIsBar) {
 				p.setPen(rgbLight);
 				p.drawLine(x, 0, x, h);
@@ -335,9 +335,8 @@ void qtractorMidiEditEvent::updatePixmap ( int cx, int /*cy*/ )
 				p.drawLine(x - 1, 0, x - 1, h);
 			}
 		}
-		iTickFromBeat += iTicksPerBeat;
-		x = pTimeScale->pixelFromTick(iTickFromBeat) - dx;
-		iBeat++;
+		pNode = cursor.seekBeat(++iBeat);
+		x = pNode->pixelFromBeat(iBeat) - dx;
 	}
 
 	//

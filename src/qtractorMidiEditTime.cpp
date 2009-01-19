@@ -109,18 +109,19 @@ void qtractorMidiEditTime::updatePixmap ( int cx, int /*cy*/)
 	// Account for the editing offset:
 	int dx = cx + pTimeScale->pixelFromFrame(m_pEditor->offset());
 
-	unsigned short iBeat = pTimeScale->beatFromPixel(dx);
-	unsigned long iFrameFromBeat = pTimeScale->frameFromBeat(iBeat);
-	unsigned long iFramesPerBeat = pTimeScale->frameFromBeat(1);
-	unsigned int  iPixelsPerBeat = pTimeScale->pixelFromBeat(1);
-	int x0 = x = pTimeScale->pixelFromFrame(iFrameFromBeat) - dx;
+	qtractorTimeScale::Cursor cursor(pTimeScale);
+	qtractorTimeScale::Node *pNode = cursor.seekPixel(dx);
+
+	unsigned short iPixelsPerBeat = pNode->pixelsPerBeat();
+	unsigned int iBeat = pNode->beatFromPixel(dx);
+	int x0 = x = pNode->pixelFromBeat(iBeat) - dx;
 	while (x < w) {
-		bool bBeatIsBar = pTimeScale->beatIsBar(iBeat) && (x >= x0);
+		bool bBeatIsBar = pNode->beatIsBar(iBeat) && (x >= x0);
 		if (bBeatIsBar) {
 			y1 = 0;
 			p.setPen(pal.windowText().color());
-			p.drawText(x + 2, y1 + fm.ascent(), QString::number(
-				1 + (iBeat / pTimeScale->beatsPerBar())));
+			p.drawText(x + 2, y1 + fm.ascent(),
+				QString::number(pNode->barFromBeat(iBeat) + 1));
 			x0 = x + 16;
 		} else {
 			y1 = (y2 >> 1);
@@ -131,9 +132,8 @@ void qtractorMidiEditTime::updatePixmap ( int cx, int /*cy*/)
 			p.setPen(pal.light().color());
 			p.drawLine(x + 1, y1, x + 1, y2);
 		}
-		iFrameFromBeat += iFramesPerBeat;
-		x = pTimeScale->pixelFromFrame(iFrameFromBeat) - dx;
-		iBeat++;
+		pNode = cursor.seekBeat(++iBeat);
+		x = pNode->pixelFromBeat(iBeat) - dx;
 	}
 
 	qtractorSession *pSession = qtractorSession::getInstance();
