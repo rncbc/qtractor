@@ -98,8 +98,10 @@ public:
 	static QStringList snapItems(int iSnap = 0);
 
 	// Time scale node declaration.
-	struct Node : public qtractorList<Node>::Link
+	class Node : public qtractorList<Node>::Link
 	{
+	public:
+
 		// Constructor.
 		Node(qtractorTimeScale *pTimeScale,
 			unsigned long iFrame = 0,
@@ -107,17 +109,23 @@ public:
 			unsigned short iBeatType = 2,
 			unsigned short iBeatsPerBar = 4,
 			unsigned short iBeatDivisor = 2)
-			: ts(pTimeScale), frame(iFrame),
+			: frame(iFrame),
 				bar(0), beat(0), tick(0), pixel(0),
 				tempo(fTempo), beatType(iBeatType),
 				beatsPerBar(iBeatsPerBar),
-				beatDivisor(iBeatDivisor) {}
+				beatDivisor(iBeatDivisor),
+				ticksPerBeat(0), ts(pTimeScale),
+				tickRate(1.0f), beatRate(1.0f) {}
 
 		// Update node scale coefficients.
 		void update();
 
 		// Update node position metrics.
 		void reset(Node *pNode);
+
+		// Tempo accessor/convertors.
+		void setTempoEx(float fTempo, unsigned short iBeatType = 2);
+		float tempoEx(unsigned short iBeatType = 2) const;
 
 		// Frame/bar convertors.
 		unsigned short barFromFrame(unsigned long iFrame) const
@@ -192,9 +200,6 @@ public:
 		int pixelSnap(int x) const
 			{ return pixelFromTick(tickSnap(tickFromPixel(x))); }
 
-		// Node owner.
-		qtractorTimeScale *ts;
-
 		// Node keys.
 		unsigned long  frame;
 		unsigned short bar;
@@ -202,16 +207,22 @@ public:
 		unsigned long  tick;
 		int            pixel;
 
-		// Node parameter payload.
+		// Node payload.
 		float          tempo;
 		unsigned short beatType;
 		unsigned short beatsPerBar;
 		unsigned short beatDivisor;
 
-		// Node cached coefficients.
 		unsigned short ticksPerBeat;
-		float          tickRate;
-		float          beatRate;
+
+	protected:
+
+		// Node owner.
+		qtractorTimeScale *ts;
+
+		// Node cached coefficients.
+		float tickRate;
+		float beatRate;
 	};
 
 	// Node list accessor.
@@ -219,8 +230,10 @@ public:
 
 	// To optimize and keep track of current frame
 	// position, mostly like an sequence cursor/iterator.
-	struct Cursor
+	class Cursor
 	{
+	public:
+
 		// Constructor.
 		Cursor(qtractorTimeScale *pTimeScale)
 			: ts(pTimeScale), node(0) {}
@@ -234,6 +247,8 @@ public:
 		Node *seekBeat(unsigned int iBeat);
 		Node *seekTick(unsigned long iTick);
 		Node *seekPixel(int x);
+
+	protected:
 
 		// Member variables.
 		qtractorTimeScale *ts;
@@ -374,14 +389,27 @@ public:
 	unsigned long tickFromText(const QString& sText, bool bDelta = false)
 		{ return tickFromFrame(frameFromText(sText, bDelta)); }
 
+	// Tempo convertors (default's quarter notes per minute)
+	void setTempo(float fTempo, unsigned short iBeatType = 2)
+	{
+		Node *pNode = m_nodes.first();
+		if (pNode) pNode->setTempoEx(fTempo, iBeatType);
+	}
+
+	float tempo(unsigned short iBeatType = 2) const
+	{
+		Node *pNode = m_nodes.first();
+		return (pNode ? pNode->tempoEx(iBeatType) : 120.0f);
+	}
+
 	// Tempo (beats per minute; BPM)
-	void setTempo(float fTempo)
+	void setTempo2(float fTempo)
 	{
 		Node *pNode = m_nodes.first();
 		if (pNode) pNode->tempo = fTempo;
 	}
 
-	float tempo() const
+	float tempo2() const
 	{
 		Node *pNode = m_nodes.first();
 		return (pNode ? pNode->tempo : 120.0f);
@@ -401,6 +429,12 @@ public:
 	}
 
 	// Resolution (ticks per beat)
+	void setTicksPerBeat2(unsigned short iTicksPerBeat)
+	{
+		Node *pNode = m_nodes.first();
+		if (pNode) pNode->ticksPerBeat = iTicksPerBeat;
+	}
+
 	unsigned short ticksPerBeat2() const
 	{
 		Node *pNode = m_nodes.first();
