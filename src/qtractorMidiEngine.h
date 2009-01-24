@@ -237,11 +237,11 @@ private:
 	// Time-scale cursor (tempo/time-signature map)
 	qtractorTimeScale::Cursor *m_pMetroCursor;
 
+	// Track down tempo changes.
+	float m_fMetroTempo;
+
 	// Input quantization (aka. record snap-per-beat).
 	unsigned short   m_iCaptureQuantize;
-
-	// Track down tempo changes.
-	float m_fTempo;
 };
 
 

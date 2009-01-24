@@ -120,6 +120,14 @@ void qtractorTrackTime::updatePixmap ( int cx, int /* cy */)
 			painter.drawText(x + 2, y1 + fm.ascent(),
 				QString::number(pNode->barFromBeat(iBeat) + 1));
 			x0 = x + 16;
+			if (iBeat == pNode->beat) {
+				painter.setPen(pal.light().color());
+				painter.drawText(x0, y1 + fm.ascent(),
+					QString("%1 %2/%3")
+					.arg(pNode->tempoEx(), 0, 'g', 3)
+					.arg(pNode->beatsPerBar)
+					.arg(1 << pNode->beatDivisor));
+			}
 		} else {
 			y1 = (y2 >> 1);
 		}

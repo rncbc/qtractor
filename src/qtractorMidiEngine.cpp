@@ -568,11 +568,11 @@ qtractorMidiEngine::qtractorMidiEngine ( qtractorSession *pSession )
 	// Time-scale cursor (tempo/time-signature map)
 	m_pMetroCursor = NULL;
 
+	// Track down tempo changes.
+	m_fMetroTempo = 0.0f;
+
 	// No input/capture quantization (default).
 	m_iCaptureQuantize = 0;
-
-	// Track down tempo changes.
-	m_fTempo = 0.0f;
 }
 
 
@@ -673,7 +673,7 @@ void qtractorMidiEngine::resetTempo (void)
 	snd_seq_set_queue_tempo(m_pAlsaSeq, m_iAlsaQueue, tempo);
 
 	// Recache tempo value...
-	m_fTempo = pNode->tempo;
+	m_fMetroTempo = pNode->tempo;
 }
 
 
@@ -1854,7 +1854,7 @@ void qtractorMidiEngine::processMetro (
 	qtractorTimeScale::Node *pNode = m_pMetroCursor->seekFrame(iFrameStart);
 
 	// Take this moment to check for tempo changes...
-	if (pNode->tempo != m_fTempo
+	if (pNode->tempo != m_fMetroTempo
 		&& pNode->frame >= iFrameStart
 		&& pNode->frame <  iFrameEnd) {
 		// New tempo node...
@@ -1875,7 +1875,7 @@ void qtractorMidiEngine::processMetro (
 		// Pump it into the queue.
 		snd_seq_event_output(m_pAlsaSeq, &ev);
 		// Save for next change.
-		m_fTempo = pNode->tempo;
+		m_fMetroTempo = pNode->tempo;
 	}
 
 	// Get on with the actual metronome stuff...
