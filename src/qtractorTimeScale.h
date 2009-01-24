@@ -151,6 +151,18 @@ public:
 			{ return frame + uroundf(
 				(ts->frameRate() * (iTick - tick)) / tickRate); }
 
+		// Tick/beat convertors.
+		unsigned int beatFromTick(unsigned long iTick) const
+			{ return beat + ((iTick - tick) / ticksPerBeat); }
+		unsigned long tickFromBeat(unsigned int iBeat) const
+			{ return tick + (ticksPerBeat * (iBeat - beat)); }
+
+		// Tick/bar convertors.
+		unsigned short barFromTick(unsigned long iTick) const
+			{ return bar + ((iTick - tick) / (ticksPerBeat * beatsPerBar)); }
+		unsigned long tickFromBar(unsigned short iBar) const
+			{ return tick + (ticksPerBeat * beatsPerBar * (iBar - bar)) ; }
+
 		// Tick/pixel convertors.
 		unsigned long tickFromPixel(int x) const
 			{ return tick + uroundf(

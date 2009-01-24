@@ -565,8 +565,14 @@ qtractorMidiEngine::qtractorMidiEngine ( qtractorSession *pSession )
 	m_iMetroBeatVelocity = 64;
 	m_iMetroBeatDuration = 16;
 
+	// Time-scale cursor (tempo/time-signature map)
+	m_pMetroCursor = NULL;
+
 	// No input/capture quantization (default).
 	m_iCaptureQuantize = 0;
+
+	// Track down tempo changes.
+	m_fTempo = 0.0f;
 }
 
 
@@ -638,10 +644,21 @@ void qtractorMidiEngine::resetTempo (void)
 	if (!isActivated())
 		return;
 
+	// Needs a valid cursor...
+	if (m_pMetroCursor == NULL)
+		return;
+
+	// Reset tempo cursor.
+	m_pMetroCursor->reset();
+
 	// There must a session reference...
 	qtractorSession *pSession = session();
 	if (pSession == NULL)
 		return;
+
+	// Recache tempo node...
+	qtractorTimeScale::Node *pNode
+		= m_pMetroCursor->seekFrame(pSession->playHead());
 
 	// Set queue tempo...
 	snd_seq_queue_tempo_t *tempo;
@@ -651,9 +668,12 @@ void qtractorMidiEngine::resetTempo (void)
 	// Set the new intended ones...
 	snd_seq_queue_tempo_set_ppq(tempo, (int) pSession->ticksPerBeat());
 	snd_seq_queue_tempo_set_tempo(tempo,
-		(unsigned int) (60000000.0f / pSession->tempo()));
+		(unsigned int) (60000000.0f / pNode->tempoEx()));
 	// Give tempo struct to the queue.
 	snd_seq_set_queue_tempo(m_pAlsaSeq, m_iAlsaQueue, tempo);
+
+	// Recache tempo value...
+	m_fTempo = pNode->tempo;
 }
 
 
@@ -1182,6 +1202,9 @@ bool qtractorMidiEngine::activate (void)
 	m_pOutputThread = new qtractorMidiOutputThread(pSession);
 	m_pOutputThread->start(QThread::HighPriority);
 
+	// Time-scale cursor (tempo/time-signature map)
+	m_pMetroCursor = new qtractorTimeScale::Cursor(pSession->timeScale());
+
 	m_iTimeStart = 0;
 	m_iTimeDelta = 0;
 	m_iTimeDrift = 0;
@@ -1301,6 +1324,12 @@ void qtractorMidiEngine::clean (void)
 		}
 		delete m_pInputThread;
 		m_pInputThread = NULL;
+	}
+
+	// Time-scale cursor (tempo/time-signature map)
+	if (m_pMetroCursor) {
+		delete m_pMetroCursor;
+		m_pMetroCursor = NULL;
 	}
 
 	// Drop subscription stuff.
@@ -1819,23 +1848,49 @@ unsigned long qtractorMidiEngine::metroBeatDuration (void) const
 void qtractorMidiEngine::processMetro (
 	unsigned long iFrameStart, unsigned long iFrameEnd )
 {
+	if (m_pMetroCursor == NULL)
+		return;
+
+	qtractorTimeScale::Node *pNode = m_pMetroCursor->seekFrame(iFrameStart);
+
+	// Take this moment to check for tempo changes...
+	if (pNode->tempo != m_fTempo
+		&& pNode->frame >= iFrameStart
+		&& pNode->frame <  iFrameEnd) {
+		// New tempo node...
+		unsigned long iTime = pNode->tick;
+		float fTempo = pNode->tempoEx();
+		// Enqueue tempo event...
+		snd_seq_event_t ev;
+		snd_seq_ev_clear(&ev);
+		// Scheduled delivery: take into account
+		// the time playback/queue started...
+		snd_seq_ev_schedule_tick(&ev, m_iAlsaQueue, 0,
+			((long) iTime > m_iTimeStart ? iTime - m_iTimeStart : 0));
+		ev.type = SND_SEQ_EVENT_TEMPO;
+		ev.data.queue.queue = m_iAlsaQueue;
+		ev.data.queue.param.value = (unsigned int) (60000000.0f / fTempo);
+		ev.dest.client = SND_SEQ_CLIENT_SYSTEM;
+		ev.dest.port = SND_SEQ_PORT_SYSTEM_TIMER;
+		// Pump it into the queue.
+		snd_seq_event_output(m_pAlsaSeq, &ev);
+		// Save for next change.
+		m_fTempo = pNode->tempo;
+	}
+
+	// Get on with the actual metronome stuff...
 	if (!m_bMetronome)
 		return;
 
 	if (m_pMetroBus == NULL)
 		return;
 
-	qtractorSession *pSession = session();
-	if (pSession == NULL)
-		return;
+	// Register the next metronome beat slot.
+	unsigned long iTimeStart = pNode->tickFromFrame(iFrameStart);
+	unsigned long iTimeEnd   = pNode->tickFromFrame(iFrameEnd);
 
-	// Register the next metronome slot.
-	unsigned long  iTimeStart = pSession->tickFromFrame(iFrameStart);
-	unsigned long  iTimeEnd   = pSession->tickFromFrame(iFrameEnd);
-
-	unsigned short iTicksPerBeat = pSession->ticksPerBeat2();
-	unsigned int   iBeat = iTimeStart / iTicksPerBeat;
-	unsigned long  iTime = iBeat * iTicksPerBeat;
+	unsigned int  iBeat = pNode->beatFromTick(iTimeStart);
+	unsigned long iTime = pNode->tickFromBeat(iBeat);
 
 	// Intialize outbound event...
 	snd_seq_event_t ev;
@@ -1856,7 +1911,7 @@ void qtractorMidiEngine::processMetro (
 				= ((long) iTime > m_iTimeStart ? iTime - m_iTimeStart : 0);
 			snd_seq_ev_schedule_tick(&ev, m_iAlsaQueue, 0, tick);
 			// Set proper event data...
-			if (pSession->beatIsBar(iBeat)) {
+			if (pNode->beatIsBar(iBeat)) {
 				ev.data.note.note     = m_iMetroBarNote;
 				ev.data.note.velocity = m_iMetroBarVelocity;
 				ev.data.note.duration = m_iMetroBarDuration;
@@ -1874,8 +1929,8 @@ void qtractorMidiEngine::processMetro (
 			}
 		}
 		// Go for next beat...
-		iTime += iTicksPerBeat;
-		iBeat++;
+		iTime += pNode->ticksPerBeat;
+		pNode = m_pMetroCursor->seekBeat(++iBeat);
 	}
 }
 

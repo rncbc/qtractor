@@ -234,8 +234,14 @@ private:
 	int              m_iMetroBeatVelocity;
 	unsigned long    m_iMetroBeatDuration;
 
+	// Time-scale cursor (tempo/time-signature map)
+	qtractorTimeScale::Cursor *m_pMetroCursor;
+
 	// Input quantization (aka. record snap-per-beat).
 	unsigned short   m_iCaptureQuantize;
+
+	// Track down tempo changes.
+	float m_fTempo;
 };
 
 

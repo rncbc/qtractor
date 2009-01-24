@@ -298,6 +298,7 @@ qtractorAudioEngine::qtractorAudioEngine ( qtractorSession *pSession )
 	m_pMetroBeatBuff  = NULL;
 	m_iMetroBeatStart = 0;
 	m_iMetroBeat      = 0;
+	m_pMetroCursor    = NULL;
 
 	// Audition/pre-listening player stuff.
 	ATOMIC_SET(&m_playerLock, 0);
@@ -714,8 +715,10 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 
 	// Metronome stuff...
 	if (m_bMetronome && m_pMetroBus && iFrameEnd > m_iMetroBeatStart) {
+		qtractorTimeScale::Node *pNode
+			= m_pMetroCursor->seekFrame(iFrameStart);
 		qtractorAudioBuffer *pMetroBuff
-			= (pSession->beatIsBar(m_iMetroBeat)
+			= (pNode->beatIsBar(m_iMetroBeat)
 				? m_pMetroBarBuff : m_pMetroBeatBuff);
 		if (iFrameStart < m_iMetroBeatStart) {
 			pMetroBuff->readMix(m_pMetroBus->out(),
@@ -725,7 +728,7 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 			pMetroBuff->readMix(m_pMetroBus->out(),
 				nframes, m_pMetroBus->channels(), 0, 1.0f);
 		} else {
-			m_iMetroBeatStart = pSession->frameFromBeat(++m_iMetroBeat);
+			m_iMetroBeatStart = pNode->frameFromBeat(++m_iMetroBeat);
 			pMetroBuff->reset(false);
 		}
 		if (m_bMetroBus)
@@ -1165,6 +1168,9 @@ bool qtractorAudioEngine::openMetroBus (void)
 	m_pMetroBeatBuff = new qtractorAudioBuffer(iChannels, sampleRate());
 	m_pMetroBeatBuff->open(m_sMetroBeatFilename);
 
+	// Time-scale cursor (tempo/time-signature map)
+	m_pMetroCursor = new qtractorTimeScale::Cursor(session()->timeScale());
+
 	return true;
 }
 
@@ -1172,6 +1178,11 @@ bool qtractorAudioEngine::openMetroBus (void)
 // Close audio metronome stuff.
 void qtractorAudioEngine::closeMetroBus (void)
 {
+	if (m_pMetroCursor) {
+		delete m_pMetroCursor;
+		m_pMetroCursor = NULL;
+	}
+
 	if (m_pMetroBarBuff) {
 		m_pMetroBarBuff->close();
 		delete m_pMetroBarBuff;
@@ -1210,19 +1221,24 @@ void qtractorAudioEngine::resetMetro (void)
 	if (!m_bMetronome)
 		return;
 
-	qtractorSession *pSession = session();
-	if (pSession == NULL)
+	if (m_pMetroCursor == NULL)
 		return;
 
 	qtractorSessionCursor *pAudioCursor = sessionCursor();
 	if (pAudioCursor == NULL)
 		return;
 
-	// Reset the next beat position...
-	m_iMetroBeat = pSession->beatFromFrame(pAudioCursor->frame()) + 1;
-	m_iMetroBeatStart = pSession->frameFromBeat(m_iMetroBeat);
+	// Reset metronome cursor.
+	m_pMetroCursor->reset();
 
-	// Now each sample buffer must be bounded properly...
+	// Reset to the next beat position...
+	unsigned long iFrame = pAudioCursor->frame();
+	qtractorTimeScale::Node *pNode = m_pMetroCursor->seekFrame(iFrame);
+
+	m_iMetroBeat = pNode->beatFromFrame(iFrame) + 1;
+	m_iMetroBeatStart = pNode->frameFromBeat(m_iMetroBeat);
+
+	// FIXME: Each sample buffer must be bounded properly...
 	unsigned long iMaxLength = (m_iMetroBeatStart / m_iMetroBeat);
 
 	if (m_pMetroBarBuff) {

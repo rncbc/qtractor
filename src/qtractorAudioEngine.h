@@ -191,6 +191,9 @@ private:
 	unsigned long        m_iMetroBeatStart;
 	unsigned int         m_iMetroBeat;
 
+	// Time-scale cursor (tempo/time-signature map)
+	qtractorTimeScale::Cursor *m_pMetroCursor;
+
 	// Audition/pre-listening player stuff.
 	qtractorAtomic       m_playerLock;
 	bool                 m_bPlayerOpen;
