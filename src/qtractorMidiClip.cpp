@@ -703,7 +703,7 @@ bool qtractorMidiClip::clipExport ( ClipExport pfnClipExport, void *pvArg,
 	for (qtractorMidiEvent *pEvent = pSeq->events().first();
 			pEvent; pEvent = pEvent->next()) {
 		unsigned long iTime = seq.timeq(pEvent->time(), pSeq->ticksPerBeat());
-		if (iTime >= iTimeStart &&	iTime < iTimeEnd) {
+		if (iTime >= iTimeStart && iTime < iTimeEnd) {
 			qtractorMidiEvent *pNewEvent = new qtractorMidiEvent(*pEvent);
 			pNewEvent->setTime(iTime - iTimeStart);
 			if (pNewEvent->type() == qtractorMidiEvent::NOTEON) {

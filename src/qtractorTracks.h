@@ -83,6 +83,7 @@ public:
 	bool editClip(qtractorClip *pClip = NULL);
 	bool splitClip(qtractorClip *pClip = NULL);
 	bool normalizeClip(qtractorClip *pClip = NULL);
+	bool quantizeClip(qtractorClip *pClip = NULL);
 	bool exportClip(qtractorClip *pClip = NULL);
 
 	// Whether there's any clip currently selected.

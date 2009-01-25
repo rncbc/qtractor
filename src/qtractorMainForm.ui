@@ -342,8 +342,9 @@
      <addaction name="separator" />
      <addaction name="editClipSplitAction" />
      <addaction name="editClipNormalizeAction" />
-	 <addaction name="separator" />
-	 <addaction name="editClipExportAction" />
+     <addaction name="editClipQuantizeAction" />
+     <addaction name="separator" />
+     <addaction name="editClipExportAction" />
     </widget>
     <addaction name="editUndoAction" />
     <addaction name="editRedoAction" />
@@ -828,6 +829,20 @@
    </property>
    <property name="statusTip" >
     <string>Normalize current clip (gain/volume)</string>
+   </property>
+  </action>
+  <action name="editClipQuantizeAction" >
+   <property name="text" >
+    <string>&amp;Quantize</string>
+   </property>
+   <property name="iconText" >
+    <string>Quantize Clip</string>
+   </property>
+   <property name="toolTip" >
+    <string>Quantize clip</string>
+   </property>
+   <property name="statusTip" >
+    <string>Quantize current MIDI clip (snap to beat)</string>
    </property>
   </action>
   <action name="editClipExportAction" >

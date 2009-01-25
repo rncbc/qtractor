@@ -31,6 +31,8 @@
 #include "qtractorTrackCommand.h"
 #include "qtractorClipCommand.h"
 
+#include "qtractorMidiEditCommand.h"
+
 #include "qtractorAudioEngine.h"
 #include "qtractorAudioClip.h"
 
@@ -640,6 +642,70 @@ bool qtractorTracks::normalizeClip ( qtractorClip *pClip )
 
 	// That's it...
 	return pSession->execute(pClipCommand);
+}
+
+
+// Quantize given(current) MIDI clip.
+bool qtractorTracks::quantizeClip ( qtractorClip *pClip )
+{
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return false;
+	if (pSession->snapPerBeat() < 1)
+		return false;
+
+	if (pClip == NULL)
+		pClip = m_pTrackView->currentClip();
+	if (pClip == NULL)
+		return false;
+
+	qtractorTrack *pTrack = pClip->track();
+	if (pTrack == NULL)
+		return false;
+	if (pTrack->trackType() != qtractorTrack::Midi)
+		return false;
+
+	qtractorMidiClip *pMidiClip = static_cast<qtractorMidiClip *> (pClip);
+	if (pMidiClip == NULL)
+		return false;
+
+	unsigned long iOffset = 0;
+	unsigned long iLength = pClip->clipLength();
+
+	if (pClip->isClipSelected()) {
+		iOffset = pClip->clipSelectStart() - pClip->clipStart();
+		iLength = pClip->clipSelectEnd() - pClip->clipSelectStart();
+	}
+
+	// Make it as an undoable command...
+	qtractorMidiEditCommand *pEditCommand
+		= new qtractorMidiEditCommand(pMidiClip, tr("clip quantize"));
+
+	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+
+	qtractorMidiSequence *pSeq = pMidiClip->sequence();
+	unsigned short iTicksPerBeat = pSession->ticksPerBeat();
+	unsigned long iTimeOffset = pSeq->timep(pSeq->timeOffset(), iTicksPerBeat);
+	unsigned long iTimeStart = pSession->tickFromFrame(iOffset);
+	iTimeStart = (iTimeStart > iTimeOffset ? iTimeStart - iTimeOffset : 0);
+	unsigned long iTimeEnd = iTimeStart + pSession->tickFromFrame(iLength);
+
+	for (qtractorMidiEvent *pEvent = pSeq->events().first();
+			pEvent; pEvent = pEvent->next()) {
+		unsigned long iTime = pEvent->time();
+		unsigned long iDuration = pEvent->duration();
+		if (iTime >= iTimeStart && iTime < iTimeEnd) {
+			iTime = pSession->tickSnap(iTime + iTimeOffset) - iTimeOffset;
+			if (pEvent->type() == qtractorMidiEvent::NOTEON)
+				iDuration = pSession->tickSnap(iDuration);
+			pEditCommand->resizeEventTime(pEvent, iTime, iDuration);
+		}
+	}
+
+	QApplication::restoreOverrideCursor();
+
+	// That's it...
+	return pSession->execute(pEditCommand);
 }
 
 

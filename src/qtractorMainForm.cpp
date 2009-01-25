@@ -481,6 +481,9 @@ qtractorMainForm::qtractorMainForm (
 	QObject::connect(m_ui.editClipNormalizeAction,
 		SIGNAL(triggered(bool)),
 		SLOT(editClipNormalize()));
+	QObject::connect(m_ui.editClipQuantizeAction,
+		SIGNAL(triggered(bool)),
+		SLOT(editClipQuantize()));
 	QObject::connect(m_ui.editClipExportAction,
 		SIGNAL(triggered(bool)),
 		SLOT(editClipExport()));
@@ -2068,6 +2071,19 @@ void qtractorMainForm::editClipNormalize (void)
 }
 
 
+// Quantize current clip.
+void qtractorMainForm::editClipQuantize (void)
+{
+#ifdef CONFIG_DEBUG
+	appendMessages("qtractorMainForm::editClipQuantize()");
+#endif
+
+	// Export current clip, if any...
+	if (m_pTracks)
+		m_pTracks->quantizeClip();
+}
+
+
 // Export current clip.
 void qtractorMainForm::editClipExport (void)
 {
@@ -3529,6 +3545,9 @@ void qtractorMainForm::stabilizeForm (void)
 		&& iPlayHead > pClip->clipStart()
 		&& iPlayHead < pClip->clipStart() + pClip->clipLength());
 	m_ui.editClipNormalizeAction->setEnabled(pClip != NULL);
+	m_ui.editClipQuantizeAction->setEnabled(pClip != NULL
+		&& pTrack && pTrack->trackType() == qtractorTrack::Midi
+		&& m_pSession->snapPerBeat() > 0);
 	m_ui.editClipExportAction->setEnabled(pClip != NULL);
 
 	// Update track menu state...

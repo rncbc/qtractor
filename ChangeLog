@@ -5,6 +5,11 @@ ChangeLog
 
 CVS HEAD
 
+- An expedite MIDI clip quantize command is now available
+  from the main track view menu (Edit/Clip/Quantize), which
+  simply applies the current snap-to-beat setting to a MIDI
+  clip range selection.
+
 - Fixed that hideous bug affecting overlapped audio clips
   when playhead gets moved backward, causing the playback
   of those audio clips in particular, go out of sync.
@@ -129,7 +134,7 @@ CVS HEAD
   line, as found convenient to display progress of the also new
   clip tools (normalize, export, etc.).
 
-- Clip normalize tool is now available (Edit/Clip/Normalise).
+- Clip normalize tool is now available (Edit/Clip/Normalize).
 
 - Audio and MIDI clip file export is now available as a tool
   (see Edit/Clip/Export...).
