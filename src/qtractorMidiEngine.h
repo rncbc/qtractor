@@ -125,6 +125,9 @@ public:
 	// Process metronome clicks.
 	void processMetro(unsigned long iFrameStart, unsigned long iFrameEnd);
 
+	// Access to current tempo/time-signature cursor.
+	qtractorTimeScale::Cursor *metroCursor() const;
+
 	// Event notifier widget settings.
 	void setNotifyObject  (QObject *pNotifyObject);
 	void setNotifyMmcType (QEvent::Type eNotifyMmcType);

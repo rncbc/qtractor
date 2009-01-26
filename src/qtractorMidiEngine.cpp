@@ -1142,6 +1142,11 @@ void qtractorMidiEngine::flush (void)
 // Device engine initialization method.
 bool qtractorMidiEngine::init ( const QString& sClientName )
 {
+	// There must a session reference...
+	qtractorSession *pSession = session();
+	if (pSession == NULL)
+		return false;
+
 	// Try open a new client...
 	if (snd_seq_open(&m_pAlsaSeq, "hw", SND_SEQ_OPEN_DUPLEX, 0) < 0)
 		return false;
@@ -1178,6 +1183,9 @@ bool qtractorMidiEngine::init ( const QString& sClientName )
 		}
 	}
 
+	// Time-scale cursor (tempo/time-signature map)
+	m_pMetroCursor = new qtractorTimeScale::Cursor(pSession->timeScale());
+
 	// Open control/metronome buses, at least try...
 	openControlBus();
 	openMetroBus();
@@ -1202,9 +1210,7 @@ bool qtractorMidiEngine::activate (void)
 	m_pOutputThread = new qtractorMidiOutputThread(pSession);
 	m_pOutputThread->start(QThread::HighPriority);
 
-	// Time-scale cursor (tempo/time-signature map)
-	m_pMetroCursor = new qtractorTimeScale::Cursor(pSession->timeScale());
-
+	// Reset/zero tickers...
 	m_iTimeStart = 0;
 	m_iTimeDelta = 0;
 	m_iTimeDrift = 0;
@@ -1932,6 +1938,13 @@ void qtractorMidiEngine::processMetro (
 		iTime += pNode->ticksPerBeat;
 		pNode = m_pMetroCursor->seekBeat(++iBeat);
 	}
+}
+
+
+// Access to current tempo/time-signature cursor.
+qtractorTimeScale::Cursor *qtractorMidiEngine::metroCursor (void) const
+{
+	return m_pMetroCursor;
 }
 
 

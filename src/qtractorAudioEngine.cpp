@@ -131,31 +131,30 @@ static void qtractorAudioEngine_timebase ( jack_transport_state_t,
 	qtractorAudioEngine *pAudioEngine
 		= static_cast<qtractorAudioEngine *> (pvArg);
 
-	qtractorSession *pSession = pAudioEngine->session();
-	if (pSession) {
-		unsigned short iTicksPerBeat = pSession->ticksPerBeat();
-		unsigned short iBeatsPerBar  = pSession->beatsPerBar();
-		unsigned int   bars  = 0;
+	qtractorTimeScale::Cursor *pMetroCursor = pAudioEngine->metroCursor();
+	if (pMetroCursor) {
+		qtractorTimeScale::Node *pNode = pMetroCursor->seekFrame(pPos->frame);
+		unsigned short bars  = 0;
 		unsigned int   beats = 0;
-		unsigned long  ticks = pSession->tickFromFrame(pPos->frame);
-		if (ticks >= (unsigned long) iTicksPerBeat) {
-			beats  = (unsigned int)  (ticks / iTicksPerBeat);
-			ticks -= (unsigned long) (beats * iTicksPerBeat);
+		unsigned long  ticks = pNode->tickFromFrame(pPos->frame) - pNode->tick;
+		if (ticks >= (unsigned long) pNode->ticksPerBeat) {
+			beats  = (unsigned int) (ticks / pNode->ticksPerBeat);
+			ticks -= (unsigned long) (beats * pNode->ticksPerBeat);
 		}
-		if (beats >= (unsigned int) iBeatsPerBar) {
-			bars   = (unsigned int) (beats / iBeatsPerBar);
-			beats -= (unsigned int) (bars  * iBeatsPerBar);
+		if (beats >= (unsigned int) pNode->beatsPerBar) {
+			bars   = (unsigned short) (beats / pNode->beatsPerBar);
+			beats -= (unsigned int) (bars * pNode->beatsPerBar);
 		}
 		// Time frame code in bars.beats.ticks ...
 		pPos->valid = JackPositionBBT;
-		pPos->bar   = bars  + 1;
+		pPos->bar   = pNode->bar + bars + 1;
 		pPos->beat  = beats + 1;
 		pPos->tick  = ticks;
 		// Keep current tempo (BPM)...
-		pPos->beats_per_bar    = iBeatsPerBar;
-		pPos->ticks_per_beat   = iTicksPerBeat;
-		pPos->beats_per_minute = pSession->tempo();
-		pPos->beat_type        = float(1 << pSession->beatDivisor());
+		pPos->beats_per_bar    = pNode->beatsPerBar;
+		pPos->ticks_per_beat   = pNode->ticksPerBeat;
+		pPos->beats_per_minute = pNode->tempo;
+		pPos->beat_type        = float(1 << pNode->beatDivisor);
 	}
 }
 
@@ -400,6 +399,11 @@ void qtractorAudioEngine::shutdown (void)
 // Device engine initialization method.
 bool qtractorAudioEngine::init ( const QString& sClientName )
 {
+	// There must a session reference...
+	qtractorSession *pSession = session();
+	if (pSession == NULL)
+		return false;
+
 	// Try open a new client...
 	m_pJackClient = jack_client_open(
 		sClientName.toUtf8().constData(), JackUseExactName, NULL);
@@ -407,7 +411,10 @@ bool qtractorAudioEngine::init ( const QString& sClientName )
 		return false;
 
 	// ATTN: First thing to remember to set session sample rate.
-	session()->setSampleRate(sampleRate());
+	pSession->setSampleRate(sampleRate());
+
+	// Time-scale cursor (tempo/time-signature map)
+	m_pMetroCursor = new qtractorTimeScale::Cursor(pSession->timeScale());
 
 	// Open player/metronome buses, at least try...
 	openPlayerBus();
@@ -496,7 +503,7 @@ bool qtractorAudioEngine::start (void)
 	// Make sure we have an actual session cursor...
 	resetMetro();
 
-	// Start trnsport rolling...
+	// Start transport rolling...
 	jack_transport_start(m_pJackClient);
 
 	// We're now ready and running...
@@ -540,6 +547,12 @@ void qtractorAudioEngine::clean (void)
 	// Clean player/metronome buses...
 	deletePlayerBus();
 	deleteMetroBus();
+
+	// Time-scale cursor (tempo/time-signature map)
+	if (m_pMetroCursor) {
+		delete m_pMetroCursor;
+		m_pMetroCursor = NULL;
+	}
 
 	// Audio-export stilll around? weird...
 	if (m_pExportFile) {
@@ -714,9 +727,8 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 	unsigned long iFrameEnd   = iFrameStart + nframes;
 
 	// Metronome stuff...
+	qtractorTimeScale::Node *pNode = m_pMetroCursor->seekFrame(iFrameStart);
 	if (m_bMetronome && m_pMetroBus && iFrameEnd > m_iMetroBeatStart) {
-		qtractorTimeScale::Node *pNode
-			= m_pMetroCursor->seekFrame(iFrameStart);
 		qtractorAudioBuffer *pMetroBuff
 			= (pNode->beatIsBar(m_iMetroBeat)
 				? m_pMetroBarBuff : m_pMetroBeatBuff);
@@ -1168,9 +1180,6 @@ bool qtractorAudioEngine::openMetroBus (void)
 	m_pMetroBeatBuff = new qtractorAudioBuffer(iChannels, sampleRate());
 	m_pMetroBeatBuff->open(m_sMetroBeatFilename);
 
-	// Time-scale cursor (tempo/time-signature map)
-	m_pMetroCursor = new qtractorTimeScale::Cursor(session()->timeScale());
-
 	return true;
 }
 
@@ -1178,11 +1187,6 @@ bool qtractorAudioEngine::openMetroBus (void)
 // Close audio metronome stuff.
 void qtractorAudioEngine::closeMetroBus (void)
 {
-	if (m_pMetroCursor) {
-		delete m_pMetroCursor;
-		m_pMetroCursor = NULL;
-	}
-
 	if (m_pMetroBarBuff) {
 		m_pMetroBarBuff->close();
 		delete m_pMetroBarBuff;
@@ -1254,6 +1258,13 @@ void qtractorAudioEngine::resetMetro (void)
 			iMetroBeatLength > iMaxLength ? iMaxLength : iMetroBeatLength);
 		m_pMetroBeatBuff->reset(false);
 	}
+}
+
+
+// Access to current tempo/time-signature cursor.
+qtractorTimeScale::Cursor *qtractorAudioEngine::metroCursor (void) const
+{
+	return m_pMetroCursor;
 }
 
 

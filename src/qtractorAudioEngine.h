@@ -118,6 +118,9 @@ public:
 
 	void resetMetro();
 
+	// Access to current tempo/time-signature cursor.
+	qtractorTimeScale::Cursor *metroCursor() const;
+
 	// Audition/pre-listening bus mode accessors.
 	void setPlayerBus(bool bPlayerBus);
 	bool isPlayerBus() const;

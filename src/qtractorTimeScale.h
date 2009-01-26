@@ -391,9 +391,9 @@ public:
 
 	// Convert frame to time string and vice-versa.
 	QString textFromFrame(
-		unsigned long iFrame, bool bDelta = false) const;
+		unsigned long iFrame, bool bDelta = false);
 	unsigned long frameFromText(
-		const QString& sText, bool bDelta = false) const;
+		const QString& sText, bool bDelta = false);
 
 	// Convert to time string and vice-versa.
 	QString textFromTick(unsigned long iTick, bool bDelta = false)

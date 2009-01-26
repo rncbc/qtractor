@@ -415,7 +415,7 @@ void qtractorTimeScale::updateScale (void)
 
 // Value/text format converters.
 unsigned long qtractorTimeScale::frameFromText (
-	const QString& sText, bool bDelta ) const
+	const QString& sText, bool bDelta )
 {
 	unsigned long iFrame = 0;
 
@@ -433,8 +433,7 @@ unsigned long qtractorTimeScale::frameFromText (
 				if (beats > 0)
 					beats--;
 			}
-			Cursor cursor((qtractorTimeScale *) this);
-			Node *pNode = cursor.seekBar(bars);
+			Node *pNode = m_cursor.seekBar(bars);
 			if (pNode) {
 				ticks += pNode->tick + beats * pNode->ticksPerBeat;
 				iFrame = pNode->frameFromTick(ticks);
@@ -467,7 +466,7 @@ unsigned long qtractorTimeScale::frameFromText (
 
 
 QString qtractorTimeScale::textFromFrame (
-	unsigned long iFrame, bool bDelta ) const
+	unsigned long iFrame, bool bDelta )
 {
 	QString sText;
 
@@ -479,8 +478,7 @@ QString qtractorTimeScale::textFromFrame (
 			unsigned short bars  = 0;
 			unsigned int   beats = 0;
 			unsigned long  ticks = 0;
-			Cursor cursor((qtractorTimeScale *) this);
-			Node *pNode = cursor.seekFrame(iFrame);
+			Node *pNode = m_cursor.seekFrame(iFrame);
 			if (pNode) {
 				ticks = pNode->tickFromFrame(iFrame) - pNode->tick;
 				if (ticks >= (unsigned long) pNode->ticksPerBeat) {
