@@ -422,7 +422,7 @@ bool qtractorAudioEngine::init ( const QString& sClientName )
 
 	// MIDI plugin managers output buses...
 	qtractorMidiManager *pMidiManager
-		= session()->midiManagers().first();
+		= pSession->midiManagers().first();
 	while (pMidiManager) {
 		qtractorAudioBus *pAudioBus = pMidiManager->audioOutputBus();
 		if (pAudioBus && pMidiManager->isAudioOutputBus())
