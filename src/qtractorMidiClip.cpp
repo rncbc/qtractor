@@ -470,30 +470,39 @@ void qtractorMidiClip::draw ( QPainter *pPainter, const QRect& clipRect,
 	if (iNoteSpan < 4)
 		iNoteSpan = 4;
 
-	unsigned long iTimeStart = pSession->tickFromFrame(iClipOffset);
-	unsigned long iTimeEnd
-		= iTimeStart + pSession->tickFromPixel(clipRect.width());
+	unsigned long iFrameStart = clipStart() + iClipOffset;
+	int cx = pSession->pixelFromFrame(iFrameStart);
+
+	qtractorTimeScale::Cursor cursor(pSession->timeScale());
+	qtractorTimeScale::Node *pNode = cursor.seekFrame(clipStart());
+	unsigned long t0 = pNode->tickFromFrame(clipStart());
+
+	pNode = cursor.seekFrame(iFrameStart);	
+	unsigned long iTimeStart = pNode->tickFromFrame(iFrameStart);
+	unsigned long iTimeEnd   = pSession->tickFromPixel(cx + clipRect.width());
 
 	const QColor& fg = track()->foreground();
 	pPainter->setPen(fg);
 	pPainter->setBrush(fg.lighter());
 
-	int cx = pSession->pixelFromTick(iTimeStart);
 	int h1 = clipRect.height() - 4;
 	int h  = h1 / iNoteSpan;
 	if (h < 4) h = 4;
 
-	qtractorMidiEvent *pEvent = m_drawCursor.reset(m_pSeq, iTimeStart);
-	while (pEvent && pEvent->time() < iTimeEnd) {
-		if (pEvent->type() == qtractorMidiEvent::NOTEON
-			&& pEvent->time() + pEvent->duration() >= iTimeStart) {
-			int x = clipRect.x()
-				+ pSession->pixelFromTick(pEvent->time()) - cx;
+	qtractorMidiEvent *pEvent = m_drawCursor.reset(m_pSeq, iTimeStart - t0);
+	while (pEvent) {
+		unsigned long t1 = t0 + pEvent->time();
+		if (t1 >= iTimeEnd)
+			break;
+		unsigned long t2 = t1 + pEvent->duration();
+		if (pEvent->type() == qtractorMidiEvent::NOTEON && t2 >= iTimeStart) {
+			pNode = cursor.seekTick(t1);
+			int x = clipRect.x() + pNode->pixelFromTick(t1) - cx;
 			int y = clipRect.bottom()
 				- (h1 * (pEvent->note() - m_pSeq->noteMin() + 1)) / iNoteSpan;
 			int w = (pEvent->duration() > 0
-				? pSession->pixelFromTick(pEvent->duration())
-				: clipRect.right() - x); // Pending note-off? (while recording)
+				? clipRect.x() + pNode->pixelFromTick(t2) - cx
+				: clipRect.right()) - x; // Pending note-off? (while recording)
 			if (h > 4) {
 				if (w < 5) w = 5;
 				pPainter->fillRect(x, y, w, h - 1, fg);
