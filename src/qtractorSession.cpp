@@ -1685,6 +1685,46 @@ bool qtractorSession::loadElement ( qtractorSessionDocument *pDocument,
 			stabilize();
 		}
 		else
+		// Load tempo/time-signature map...
+		if (eChild.tagName() == "tempo-map") {
+			for (QDomNode nNode = eChild.firstChild();
+					!nNode.isNull();
+						nNode = nNode.nextSibling()) {
+				// Convert tempo node to element...
+				QDomElement eNode = nNode.toElement();
+				if (eNode.isNull())
+					continue;
+				// Load time-scale...
+				if (eNode.tagName() == "tempo-node") {
+					unsigned long iFrame = eNode.attribute("frame").toULong();
+					float fTempo = 120.0f;
+					unsigned short iBeatType = 2;
+					unsigned short iBeatsPerBar = 4;
+					unsigned short iBeatDivisor = 2;
+					for (QDomNode nTime = eNode.firstChild();
+							!nTime.isNull();
+								nTime = nTime.nextSibling()) {
+						// Convert node to element...
+						QDomElement eTime = nTime.toElement();
+						if (eTime.isNull())
+							continue;
+						if (eTime.tagName() == "tempo")
+							fTempo = eTime.text().toFloat();
+						else if (eTime.tagName() == "beat-type")
+							iBeatType = eTime.text().toUShort();
+						else if (eTime.tagName() == "beats-per-bar")
+							iBeatsPerBar = eTime.text().toUShort();
+						else if (eTime.tagName() == "beat-divisor")
+							iBeatDivisor = eTime.text().toUShort();
+					}
+					// Add new node to tempo/time-signature map...
+					qtractorSession::timeScale()->addNode(iFrame,
+						fTempo, iBeatType, iBeatsPerBar, iBeatDivisor);
+				}
+			}
+			// Again, make view/time scaling factors permanent.
+			qtractorSession::updateTimeScale();
+		}
 		// Load tracks...
 		if (eChild.tagName() == "tracks") {
 			for (QDomNode nTrack = eChild.firstChild();
@@ -1829,6 +1869,30 @@ bool qtractorSession::saveElement ( qtractorSessionDocument *pDocument,
 		return false;
 	eDevices.appendChild(eMidiEngine);
 	pElement->appendChild(eDevices);
+
+	// Save tempo/time-signature, if any...
+	qtractorTimeScale::Node *pNode
+		= qtractorSession::timeScale()->nodes().first();
+	if (pNode) pNode = pNode->next(); // Skip first anchor node.
+	if (pNode) {
+		QDomElement eTimeScale = pDocument->document()->createElement("tempo-map");
+		while (pNode) {
+			QDomElement eNode = pDocument->document()->createElement("tempo-node");
+			eNode.setAttribute("bar", QString::number(pNode->bar));
+			eNode.setAttribute("frame", QString::number(pNode->frame));
+			pDocument->saveTextElement("tempo",
+				QString::number(pNode->tempo), &eNode);
+			pDocument->saveTextElement("beat-type",
+				QString::number(pNode->beatType), &eNode);
+			pDocument->saveTextElement("beats-per-bar",
+				QString::number(pNode->beatsPerBar), &eNode);
+			pDocument->saveTextElement("beat-divisor",
+				QString::number(pNode->beatDivisor), &eNode);
+			eTimeScale.appendChild(eNode);
+			pNode = pNode->next();
+		}
+		pElement->appendChild(eTimeScale);
+	}
 
 	// Save track view state...
 	QDomElement eTracks = pDocument->document()->createElement("tracks");
