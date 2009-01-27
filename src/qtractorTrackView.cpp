@@ -577,6 +577,8 @@ void qtractorTrackView::updatePixmap ( int cx, int cy )
 					painter.setPen(rgbLight);
 					painter.drawLine(x, 0, x, y2 - cy - 2);
 					x0 = x + 16;
+					if (iBeat == pNode->beat)
+						iPixelsPerBeat = pNode->pixelsPerBeat();
 				}
 				if (bBeatIsBar || iPixelsPerBeat > 16) {
 					painter.setPen(rgbDark);

@@ -313,6 +313,8 @@ void qtractorMidiEditView::updatePixmap ( int cx, int cy )
 			if (bBeatIsBar) {
 				p.setPen(rgbLight);
 				p.drawLine(x, 0, x, ch);
+				if (iBeat == pNode->beat)
+					iPixelsPerBeat = pNode->pixelsPerBeat();
 			}
 			if (bBeatIsBar || iPixelsPerBeat > 16) {
 				p.setPen(rgbDark);

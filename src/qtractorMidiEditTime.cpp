@@ -124,6 +124,7 @@ void qtractorMidiEditTime::updatePixmap ( int cx, int /*cy*/)
 				QString::number(pNode->barFromBeat(iBeat) + 1));
 			x0 = x + 16;
 			if (iBeat == pNode->beat) {
+				iPixelsPerBeat = pNode->pixelsPerBeat();
 				p.setPen(pal.base().color().value() < 0x7f
 					? pal.light().color() : pal.dark().color()); 
 				p.drawText(x0, y1 + fm.ascent(),
