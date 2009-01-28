@@ -349,8 +349,9 @@ void qtractorMidiEditEvent::updatePixmap ( int cx, int /*cy*/ )
 	if (pSeq == NULL)
 		return;
 
-	unsigned long iTickStart = pTimeScale->tickFromPixel(cx);
-	unsigned long iTickEnd   = iTickStart + pTimeScale->tickFromPixel(w);
+	pNode = cursor.seekPixel(cx);
+	unsigned long iTickStart = pNode->tickFromPixel(cx);
+	unsigned long iTickEnd   = pTimeScale->tickFromPixel(cx + w);
 
 	// This is the zero-line...
 	int y0 = h;
@@ -371,16 +372,21 @@ void qtractorMidiEditEvent::updatePixmap ( int cx, int /*cy*/ )
 
 	bool bController = (m_eventType == qtractorMidiEvent::CONTROLLER);
 	qtractorMidiEvent *pEvent = m_pEditor->seekEvent(iTickStart);
-	while (pEvent && pEvent->time() < iTickEnd) {
-		if (pEvent->type() == m_eventType	// Filter event type!
-			&& (!bController || pEvent->controller() == m_controller)
-			&& pEvent->time() + pEvent->duration() >= iTickStart) {
+	while (pEvent) {
+		unsigned long t1 = pEvent->time();
+		if (t1 >= iTickEnd)
+			break;
+		unsigned long t2 = t1 + pEvent->duration();	
+		// Filter event type!...
+		if (pEvent->type() == m_eventType && t2 >= iTickStart
+			&& (!bController || pEvent->controller() == m_controller)) {
 			if (m_eventType == qtractorMidiEvent::PITCHBEND)
 				y = y0 - (y0 * pEvent->pitchBend()) / 8192;
 			else
 				y = y0 - (y0 * pEvent->value()) / 128;
-			x = pTimeScale->pixelFromTick(pEvent->time()) - cx;
-			int w1 = pTimeScale->pixelFromTick(pEvent->duration()) + 1;
+			pNode = cursor.seekTick(t1);
+			x = pNode->pixelFromTick(t1) - cx;
+			int w1 = pNode->pixelFromTick(t2) - cx - x;
 			if (w1 < 5 || !m_pEditor->isNoteDuration())
 				w1 = 5;
 			if (m_eventType == qtractorMidiEvent::NOTEON ||

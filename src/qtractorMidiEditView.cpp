@@ -152,9 +152,11 @@ void qtractorMidiEditView::updateContentsWidth ( int iContentsWidth )
 	if (pTimeScale) {
 		qtractorMidiSequence *pSeq = m_pEditor->sequence();
 		if (pSeq) {
-			int iSeqWidth = pTimeScale->pixelFromTick(pSeq->duration());
-			if (iContentsWidth < iSeqWidth)
-				iContentsWidth = iSeqWidth;
+			unsigned long t0 = pTimeScale->tickFromFrame(m_pEditor->offset());
+			int x0 = pTimeScale->pixelFromFrame(m_pEditor->offset());
+			int w0 = pTimeScale->pixelFromTick(t0 + pSeq->duration()) - x0;
+			if (iContentsWidth < w0)
+				iContentsWidth = w0;
 		}
 		iContentsWidth += pTimeScale->pixelFromBeat(
 			2 * pTimeScale->beatsPerBar()) + qtractorScrollView::width();
@@ -336,8 +338,9 @@ void qtractorMidiEditView::updatePixmap ( int cx, int cy )
 	if (pSeq == NULL)
 		return;
 
-	unsigned long iTickStart = pTimeScale->tickFromPixel(cx);
-	unsigned long iTickEnd   = iTickStart + pTimeScale->tickFromPixel(w);
+	pNode = cursor.seekPixel(cx);
+	unsigned long iTickStart = pNode->tickFromPixel(cx);
+	unsigned long iTickEnd   = pTimeScale->tickFromPixel(cx + w);
 
 //	p.setPen(rgbFore);
 //	p.setBrush(rgbBack);
@@ -347,13 +350,18 @@ void qtractorMidiEditView::updatePixmap ( int cx, int cy )
 	rgbNote.getHsv(&hue, &sat, &val); sat = 86;
 
 	qtractorMidiEvent *pEvent = m_pEditor->seekEvent(iTickStart);
-	while (pEvent && pEvent->time() < iTickEnd) {
-		if (pEvent->type() == m_eventType	// Filter event type!
-			&& pEvent->time() + pEvent->duration() >= iTickStart) {
+	while (pEvent) {
+		unsigned long t1 = pEvent->time();
+		if (t1 >= iTickEnd)
+			break;
+		unsigned long t2 = t1 + pEvent->duration();	
+		// Filter event type!...
+		if (pEvent->type() == m_eventType && t2 >= iTickStart) {
 			y = ch - h1 * (pEvent->note() + 1);
 			if (y + h1 >= 0 && y < h) {
-				x = pTimeScale->pixelFromTick(pEvent->time()) - cx;
-				int w1 = pTimeScale->pixelFromTick(pEvent->duration()) + 1;
+				pNode = cursor.seekTick(t1);
+				x = pNode->pixelFromTick(t1) - cx;
+				int w1 = pNode->pixelFromTick(t2) - cx - x;
 				if (w1 < 5)
 					w1 = 5;
 				if (m_pEditor->isNoteColor()) {

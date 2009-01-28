@@ -567,12 +567,22 @@ qtractorTimeScale *qtractorMidiEditor::timeScale (void) const
 // The original clip time-scale length/time.
 void qtractorMidiEditor::setClipLength ( unsigned long iClipLength )
 {
-	m_iClipLengthTime = (m_pTimeScale ? m_pTimeScale->tickFromFrame(iClipLength) : 0);
+	if (m_pTimeScale) {
+		m_iClipLengthTime
+			= m_pTimeScale->tickFromFrame(m_iOffset + iClipLength)
+			- m_pTimeScale->tickFromFrame(m_iOffset);
+	} else {
+		m_iClipLengthTime = 0;
+	}
 }
 
 unsigned long qtractorMidiEditor::clipLength (void) const
 {
-	return (m_pTimeScale ? m_pTimeScale->frameFromTick(m_iClipLengthTime) : 0);
+	if (m_pTimeScale == NULL)
+		return 0;
+
+	return m_pTimeScale->frameFromTick(
+		m_pTimeScale->tickFromFrame(m_iOffset) + m_iClipLengthTime);
 }
 
 
@@ -1068,21 +1078,21 @@ void qtractorMidiEditor::copyClipboard (void)
 // (as from current clipboard width)
 unsigned long qtractorMidiEditor::pastePeriod (void) const
 {
-	unsigned long t0 = 0;
 	unsigned long t1 = 0;
+	unsigned long t2 = 0;
 
 	QListIterator<qtractorMidiEvent *> iter(g_clipboard.items);
 	while (iter.hasNext()) {
 		qtractorMidiEvent *pEvent = iter.next();
-		unsigned long t2 = pEvent->time();
-		if (t0 > t2 || t0 == 0)
-			t0 = t2;
-		t2 += pEvent->duration();
-		if (t1 < t2)
-			t1 = t2;
+		unsigned long t = pEvent->time();
+		if (t1 > t || t1 == 0)
+			t1 = t;
+		t += pEvent->duration();
+		if (t2 < t)
+			t2 = t;
 	}
 
-	return m_pTimeScale->frameFromTick(t1 - t0);
+	return m_pTimeScale->frameFromTick(t2) - m_pTimeScale->frameFromTick(t1);
 }
 
 
