@@ -323,6 +323,9 @@ protected:
 	void updateDragSelect(qtractorScrollView *pScrollView,
 		const QRect& rectSelect, int flags);
 
+	// Compute curent drag time delta (in ticks).
+	long timeDelta(qtractorScrollView *pScrollView);
+
 	// Drag-move current selection.
 	void updateDragMove(qtractorScrollView *pScrollView, const QPoint& pos);
 	// Finalize the event drag-move.
