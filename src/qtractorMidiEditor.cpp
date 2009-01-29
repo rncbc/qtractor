@@ -1078,18 +1078,21 @@ void qtractorMidiEditor::copyClipboard (void)
 // (as from current clipboard width)
 unsigned long qtractorMidiEditor::pastePeriod (void) const
 {
+	unsigned long t0 = m_pTimeScale->tickFromFrame(m_iOffset);
 	unsigned long t1 = 0;
 	unsigned long t2 = 0;
 
+	int k = 0;
 	QListIterator<qtractorMidiEvent *> iter(g_clipboard.items);
 	while (iter.hasNext()) {
 		qtractorMidiEvent *pEvent = iter.next();
-		unsigned long t = pEvent->time();
-		if (t1 > t || t1 == 0)
+		unsigned long t = t0 + pEvent->time();
+		if (t1 > t || k == 0)
 			t1 = t;
 		t += pEvent->duration();
 		if (t2 < t)
 			t2 = t;
+		++k;
 	}
 
 	return m_pTimeScale->frameFromTick(t2) - m_pTimeScale->frameFromTick(t1);
@@ -1119,12 +1122,12 @@ void qtractorMidiEditor::pasteClipboard (
 	// Multi-paste period...
 	if (iPastePeriod < 1)
 		iPastePeriod = pastePeriod();
-		
-	int x0 = 0;
-	int dx = m_pTimeScale->pixelFromFrame(iPastePeriod);
 
-	unsigned long t0 = 0;
-	unsigned long dt = m_pTimeScale->tickFromFrame(iPastePeriod);
+	qtractorTimeScale::Cursor cursor(m_pTimeScale);
+	qtractorTimeScale::Node *pNode = cursor.seekFrame(m_iOffset);
+	unsigned long t0 = pNode->tickFromFrame(m_iOffset);
+	int x0 = m_pTimeScale->pixelFromFrame(m_iOffset);
+	int dx = m_pTimeScale->pixelFromFrame(iPastePeriod);
 	
 	// This is the edit-view spacifics...
 	int h1 = m_pEditList->itemHeight();
@@ -1135,22 +1138,27 @@ void qtractorMidiEditor::pasteClipboard (
 	if (m_pEditEvent->eventType() == qtractorMidiEvent::PITCHBEND)
 		y0 = ((y0 >> 3) << 2);
 
+	int k, x1;
 	QListIterator<qtractorMidiEvent *> iter(g_clipboard.items);
 	for (unsigned short i = 0; i < iPasteCount; ++i) {
 		iter.toFront();
+		k = x1 = 0;
 		while (iter.hasNext()) {
 			qtractorMidiEvent *pEvent = iter.next();
 			// Common event coords...
 			int y;
-			int x  = m_pTimeScale->pixelFromTick(pEvent->time()) + x0;
-			int w1 = m_pTimeScale->pixelFromTick(pEvent->duration()) + 1;
+			unsigned long t1 = t0 + pEvent->time();
+			unsigned long t2 = t1 + pEvent->duration();
+			pNode = cursor.seekTick(t1);
+			int x  = pNode->pixelFromTick(t1);
+			int w1 = pNode->pixelFromTick(t2) - x;
 			if (w1 < 5)
 				w1 = 5;
 			// View item...
 			QRect rectView;
 			if (pEvent->type() == m_pEditView->eventType()) {
 				y = ch - h1 * (pEvent->note() + 1);
-				rectView.setRect(x, y, w1, h1);
+				rectView.setRect(x - x0, y, w1, h1);
 			}
 			// Event item...
 			QRect rectEvent;
@@ -1162,20 +1170,26 @@ void qtractorMidiEditor::pasteClipboard (
 				if (!m_bNoteDuration)
 					w1 = 5;
 				if (y < y0)
-					rectEvent.setRect(x, y, w1, y0 - y);
+					rectEvent.setRect(x - x0, y, w1, y0 - y);
 				else if (y > y0)
-					rectEvent.setRect(x, y0, w1, y - y0);
+					rectEvent.setRect(x - x0, y0, w1, y - y0);
 				else
-					rectEvent.setRect(x, y0 - 2, w1, 4);
+					rectEvent.setRect(x - x0, y0 - 2, w1, 4);
 			}
 			m_select.addItem(pEvent, rectEvent, rectView, t0);
 			if (m_pEventDrag == NULL) {
 				m_pEventDrag = pEvent;
 				m_rectDrag = (bEditView ? rectView : rectEvent);
 			}
+			if (x1 > x || k == 0)
+				x1 = x;
+			++k;
 		}
-		x0 += dx;
-		t0 += dt;
+		pNode = cursor.seekTick(x1 + dx);
+		t0 += pNode->tickFromPixel(x1 + dx);
+		pNode = cursor.seekTick(x1);
+		t0 -= pNode->tickFromPixel(x1);
+		x0 -= dx;
 	}
 
 	// We'll start a brand new floating state...
@@ -1187,9 +1201,9 @@ void qtractorMidiEditor::pasteClipboard (
 	m_pEditPaste = pScrollView;
 
 	// It doesn't matter which one, both pasteable views are due...
-	QCursor cursor(QPixmap(":/icons/editPaste.png"), 20, 20);
-	m_pEditView->setCursor(cursor);
-	m_pEditEvent->setCursor(cursor);
+	QCursor cursr(QPixmap(":/icons/editPaste.png"), 20, 20);
+	m_pEditView->setCursor(cursr);
+	m_pEditEvent->setCursor(cursr);
 
 	// Make sure the mouse pointer is properly located...
 	const QPoint& pos = pScrollView->viewportToContents(
@@ -1486,7 +1500,7 @@ qtractorMidiEvent *qtractorMidiEditor::dragEditEvent (
 
 	// Now try to get the visual rectangular coordinates...
 	int w1 = pNode->pixelFromTick(
-		t0 + pEvent->time() + pEvent->duration()) - x0 - x1;
+		t0 + pEvent->time() + pEvent->duration()) - x1;
 	if (w1 < 5)
 		w1 = 5;
 
@@ -1496,7 +1510,7 @@ qtractorMidiEvent *qtractorMidiEditor::dragEditEvent (
 		(pEvent->type() == qtractorMidiEvent::NOTEON ||
 			pEvent->type() == qtractorMidiEvent::KEYPRESS)) {
 		y1 = ch - h1 * (pEvent->note() + 1);
-		rectView.setRect(x1, y1, w1, h1);
+		rectView.setRect(x1 - x0, y1, w1, h1);
 	}
 
 	// Event item...
@@ -1519,7 +1533,7 @@ qtractorMidiEvent *qtractorMidiEditor::dragEditEvent (
 			w1 = 5;
 		if (h1 < 3)
 			h1 = 3;
-		rectEvent.setRect(x1, y1, w1, h1);
+		rectEvent.setRect(x1 - x0, y1, w1, h1);
 	}
 
 	// Set the correct target rectangle...
@@ -1863,8 +1877,11 @@ void qtractorMidiEditor::updateDragSelect ( qtractorScrollView *pScrollView,
 		x1 = x2 = rectSelect.x();
 	}
 
+	pNode = cursor.seekPixel(x0 + x1);
 	unsigned long iTickStart = pNode->tickFromPixel(x0 + x1) - t0;
-	unsigned long iTickEnd   = m_pTimeScale->tickFromPixel(x0 + x2) - t0;
+
+	pNode = cursor.seekPixel(x0 + x2);
+	unsigned long iTickEnd = pNode->tickFromPixel(x0 + x2) - t0;
 
 	// This is the edit-view spacifics...
 	int h1 = m_pEditList->itemHeight();

@@ -301,11 +301,14 @@ void qtractorMidiEditView::updatePixmap ( int cx, int cy )
 	}
 
 	// Account for the editing offset:
-	int dx = cx + pTimeScale->pixelFromFrame(m_pEditor->offset());
+	qtractorTimeScale::Cursor cursor(pTimeScale);
+	qtractorTimeScale::Node *pNode = cursor.seekFrame(m_pEditor->offset());
+	unsigned long t0 = pNode->tickFromFrame(m_pEditor->offset());
+	int x0 = pTimeScale->pixelFromFrame(m_pEditor->offset());
+	int dx = x0 + cx;
 
 	// Draw vertical grid lines...
-	qtractorTimeScale::Cursor cursor(pTimeScale);
-	qtractorTimeScale::Node *pNode = cursor.seekPixel(dx);
+	pNode = cursor.seekPixel(dx);
 	unsigned short iPixelsPerBeat = pNode->pixelsPerBeat();
 	unsigned int iBeat = pNode->beatFromPixel(dx);
 	int x = pNode->pixelFromBeat(iBeat) - dx;
@@ -338,9 +341,9 @@ void qtractorMidiEditView::updatePixmap ( int cx, int cy )
 	if (pSeq == NULL)
 		return;
 
-	pNode = cursor.seekPixel(cx);
-	unsigned long iTickStart = pNode->tickFromPixel(cx);
-	unsigned long iTickEnd   = pTimeScale->tickFromPixel(cx + w);
+	pNode = cursor.seekPixel(dx);
+	unsigned long iTickStart = pNode->tickFromPixel(dx);
+	unsigned long iTickEnd   = pTimeScale->tickFromPixel(dx + w);
 
 //	p.setPen(rgbFore);
 //	p.setBrush(rgbBack);
@@ -349,9 +352,9 @@ void qtractorMidiEditView::updatePixmap ( int cx, int cy )
 	int hue, sat, val;
 	rgbNote.getHsv(&hue, &sat, &val); sat = 86;
 
-	qtractorMidiEvent *pEvent = m_pEditor->seekEvent(iTickStart);
+	qtractorMidiEvent *pEvent = m_pEditor->seekEvent(iTickStart - t0);
 	while (pEvent) {
-		unsigned long t1 = pEvent->time();
+		unsigned long t1 = t0 + pEvent->time();
 		if (t1 >= iTickEnd)
 			break;
 		unsigned long t2 = t1 + pEvent->duration();	
@@ -360,8 +363,8 @@ void qtractorMidiEditView::updatePixmap ( int cx, int cy )
 			y = ch - h1 * (pEvent->note() + 1);
 			if (y + h1 >= 0 && y < h) {
 				pNode = cursor.seekTick(t1);
-				x = pNode->pixelFromTick(t1) - cx;
-				int w1 = pNode->pixelFromTick(t2) - cx - x;
+				x = pNode->pixelFromTick(t1) - x0 - cx;
+				int w1 = pNode->pixelFromTick(t2) - x0 - cx - x;
 				if (w1 < 5)
 					w1 = 5;
 				if (m_pEditor->isNoteColor()) {
