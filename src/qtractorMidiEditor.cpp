@@ -1139,6 +1139,7 @@ void qtractorMidiEditor::pasteClipboard (
 		y0 = ((y0 >> 3) << 2);
 
 	int k, x1;
+	unsigned long d0 = t0;
 	QListIterator<qtractorMidiEvent *> iter(g_clipboard.items);
 	for (unsigned short i = 0; i < iPasteCount; ++i) {
 		iter.toFront();
@@ -1176,7 +1177,7 @@ void qtractorMidiEditor::pasteClipboard (
 				else
 					rectEvent.setRect(x - x0, y0 - 2, w1, 4);
 			}
-			m_select.addItem(pEvent, rectEvent, rectView, t0);
+			m_select.addItem(pEvent, rectEvent, rectView, t0 - d0);
 			if (m_pEventDrag == NULL) {
 				m_pEventDrag = pEvent;
 				m_rectDrag = (bEditView ? rectView : rectEvent);
@@ -1189,7 +1190,6 @@ void qtractorMidiEditor::pasteClipboard (
 		t0 += pNode->tickFromPixel(x1 + dx);
 		pNode = cursor.seekTick(x1);
 		t0 -= pNode->tickFromPixel(x1);
-		x0 -= dx;
 	}
 
 	// We'll start a brand new floating state...
