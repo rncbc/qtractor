@@ -389,17 +389,17 @@ public:
 	DisplayFormat displayFormat() const
 		{ return m_displayFormat; }
 
-	// Convert frame to time string and vice-versa.
+	// Convert frames to time string and vice-versa.
 	QString textFromFrame(
-		unsigned long iFrame, bool bDelta = false);
+		unsigned long iFrame, bool bDelta = false, unsigned long iDelta = 0);
 	unsigned long frameFromText(
-		const QString& sText, bool bDelta = false);
+		const QString& sText, bool bDelta = false, unsigned long iFrame = 0);
 
-	// Convert to time string and vice-versa.
-	QString textFromTick(unsigned long iTick, bool bDelta = false)
-		{ return textFromFrame(frameFromTick(iTick), bDelta); }
-	unsigned long tickFromText(const QString& sText, bool bDelta = false)
-		{ return tickFromFrame(frameFromText(sText, bDelta)); }
+	// Convert ticks to time string and vice-versa.
+	QString textFromTick(
+		unsigned long iTick, bool bDelta = false, unsigned long iDelta = 0);
+	unsigned long tickFromText(
+		const QString& sText, bool bDelta = false, unsigned long iTick = 0);
 
 	// Tempo convertors (default's quarter notes per minute)
 	void setTempo(float fTempo, unsigned short iBeatType = 2)

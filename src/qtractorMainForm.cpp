@@ -4216,6 +4216,7 @@ void qtractorMainForm::timerSlot (void)
 			m_pTracks->trackView()->ensureVisibleFrame(iPlayHead);
 		// Take the change to give some visual feedback...
 		if (m_iTransportUpdate > 0) {
+			m_iTransportUpdate = 0;
 			updateTransportTime(iPlayHead);
 			m_pThumbView->updateThumb();
 		} else {

@@ -1313,8 +1313,9 @@ void qtractorMidiEditorForm::stabilizeForm (void)
 	else
 		m_pStatusModLabel->clear();
 
-	m_pDurationLabel->setText(
-		(m_pMidiEditor->timeScale())->textFromTick(pSeq->duration(), true));
+	qtractorTimeScale *pTimeScale = m_pMidiEditor->timeScale();
+	m_pDurationLabel->setText(pTimeScale->textFromTick(
+		pTimeScale->tickFromFrame(m_pMidiEditor->offset()), true, pSeq->duration()));
 
 	qtractorSession  *pSession  = qtractorSession::getInstance();
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();

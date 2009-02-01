@@ -603,7 +603,7 @@ QString qtractorMidiClip::toolTip (void) const
 		sToolTip += QObject::tr("Track %1").arg(m_iTrackChannel);
 
 	if (m_pFile) {
-		sToolTip += QObject::tr(", %1 tracks, %2 ppqn")
+		sToolTip += QObject::tr(", %1 tracks, %2 tpqn")
 			.arg(m_pFile->tracks())
 			.arg(m_pFile->ticksPerBeat());
 	}

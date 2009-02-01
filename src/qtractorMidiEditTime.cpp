@@ -506,9 +506,10 @@ void qtractorMidiEditTime::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 		& (Qt::ShiftModifier | Qt::ControlModifier));
 
 	// Direct snap positioning...
+	const QPoint& pos = viewportToContents(pMouseEvent->pos());
 	qtractorTimeScale *pTimeScale = m_pEditor->timeScale();
 	unsigned long iFrame = pTimeScale->frameSnap(m_pEditor->offset()
-		+ pTimeScale->frameFromPixel(m_posDrag.x() > 0 ? m_posDrag.x() : 0));
+		+ pTimeScale->frameFromPixel(pos.x() > 0 ? pos.x() : 0));
 	switch (m_dragState) {
 	case DragSelect:
 		// Do the final range selection...
@@ -517,6 +518,7 @@ void qtractorMidiEditTime::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 		break;
 	case DragPlayHead:
 		// Play-head positioning commit...
+		m_pEditor->setPlayHead(iFrame);
 		pSession->setPlayHead(m_pEditor->playHead());
 		// Not quite a selection change,
 		// but for visual feedback...

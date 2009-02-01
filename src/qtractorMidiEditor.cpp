@@ -1443,13 +1443,13 @@ qtractorMidiEvent *qtractorMidiEditor::dragEditEvent (
 	unsigned long t0 = pNode->tickFromFrame(m_iOffset);
 	int x0 = m_pTimeScale->pixelFromFrame(m_iOffset);
 	
-	pNode = cursor.seekPixel(x0 + pos.x());
-	int x1 = pNode->pixelSnap(x0 + pos.x());
+	int x1 = x0 + pos.x();
 	int y1 = 0;
 
 	// This will be the new editing event...
-	qtractorMidiEvent *pEvent = new qtractorMidiEvent(
-		pNode->tickFromPixel(x1) - t0,
+	pNode = cursor.seekPixel(x1);
+	unsigned long t1 = pNode->tickSnap(pNode->tickFromPixel(x1));
+	qtractorMidiEvent *pEvent = new qtractorMidiEvent(t1 - t0,
 		bEditView ? m_pEditView->eventType() : m_pEditEvent->eventType());
 
 	switch (pEvent->type()) {
@@ -2680,9 +2680,9 @@ void qtractorMidiEditor::sendNote ( int iNote, int iVelocity )
 // MIDI event tool tip helper.
 QString qtractorMidiEditor::eventToolTip ( qtractorMidiEvent *pEvent ) const
 {
+	unsigned long t0 = m_pTimeScale->tickFromFrame(m_iOffset);
 	QString sToolTip = tr("Time:\t%1\nType:\t")
-		.arg(m_pTimeScale->textFromTick(pEvent->time()
-			+ m_pTimeScale->tickFromFrame(m_iOffset)));
+		.arg(m_pTimeScale->textFromTick(t0 + pEvent->time()));
 
 	switch (pEvent->type()) {
 //	case qtractorMidiEvent::NOTEOFF:
@@ -2693,7 +2693,7 @@ QString qtractorMidiEditor::eventToolTip ( qtractorMidiEvent *pEvent ) const
 			.arg(int(pEvent->note()))
 			.arg(noteName(pEvent->note()))
 			.arg(int(pEvent->velocity()))
-			.arg(m_pTimeScale->textFromTick(pEvent->duration(), true));
+			.arg(m_pTimeScale->textFromTick(t0, true, pEvent->duration()));
 		break;
 	case qtractorMidiEvent::KEYPRESS:
 		sToolTip += tr("Key Press (%1) %2\nValue:\t%3")

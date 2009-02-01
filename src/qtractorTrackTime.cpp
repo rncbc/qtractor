@@ -492,8 +492,9 @@ void qtractorTrackTime::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 		const bool bModifier = (pMouseEvent->modifiers()
 			& (Qt::ShiftModifier | Qt::ControlModifier));
 		// Direct snap positioning...
+		const QPoint& pos = viewportToContents(pMouseEvent->pos());
 		unsigned long iFrame = pSession->frameSnap(
-			pSession->frameFromPixel(m_posDrag.x() > 0 ? m_posDrag.x() : 0));
+			pSession->frameFromPixel(pos.x() > 0 ? pos.x() : 0));
 		switch (m_dragState) {
 		case DragSelect:
 			// Do the final range selection...
@@ -504,6 +505,7 @@ void qtractorTrackTime::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 			break;
 		case DragPlayHead:
 			// Play-head positioning commit...
+			m_pTracks->trackView()->setPlayHead(iFrame);
 			pSession->setPlayHead(m_pTracks->trackView()->playHead());
 			// Not quite a selection, rather just
 			// for immediate visual feedback...

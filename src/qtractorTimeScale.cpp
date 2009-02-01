@@ -413,12 +413,10 @@ void qtractorTimeScale::updateScale (void)
 }
 
 
-// Value/text format converters.
+// Convert frames to time string and vice-versa.
 unsigned long qtractorTimeScale::frameFromText (
-	const QString& sText, bool bDelta )
+	const QString& sText, bool bDelta, unsigned long iFrame )
 {
-	unsigned long iFrame = 0;
-
 	switch (m_displayFormat) {
 
 		case BBT:
@@ -427,13 +425,18 @@ unsigned long qtractorTimeScale::frameFromText (
 			unsigned short bars  = sText.section('.', 0, 0).toUShort();
 			unsigned int   beats = sText.section('.', 1, 1).toUInt();
 			unsigned long  ticks = sText.section('.', 2).toULong();
-			if (!bDelta) {
+			Node *pNode;
+			if (bDelta) {
+				pNode = m_cursor.seekFrame(iFrame);
+				if (pNode)
+					bars += pNode->bar;
+			} else {
 				if (bars > 0)
 					bars--;
 				if (beats > 0)
 					beats--;
 			}
-			Node *pNode = m_cursor.seekBar(bars);
+			pNode = m_cursor.seekBar(bars);
 			if (pNode) {
 				ticks += pNode->tick + beats * pNode->ticksPerBeat;
 				iFrame = pNode->frameFromTick(ticks);
@@ -448,8 +451,8 @@ unsigned long qtractorTimeScale::frameFromText (
 			unsigned int mm = sText.section(':', 1, 1).toUInt();
 			float secs = sText.section(':', 2).toFloat();
 			mm   += 60 * hh;
-			secs += 60.f * (float) mm;
-			iFrame = uroundf(secs * (float) m_iSampleRate);
+			secs += 60.f * float(mm);
+			iFrame = uroundf(secs * float(m_iSampleRate));
 			break;
 		}
 
@@ -466,7 +469,7 @@ unsigned long qtractorTimeScale::frameFromText (
 
 
 QString qtractorTimeScale::textFromFrame (
-	unsigned long iFrame, bool bDelta )
+	unsigned long iFrame, bool bDelta, unsigned long iDelta )
 {
 	QString sText;
 
@@ -480,7 +483,13 @@ QString qtractorTimeScale::textFromFrame (
 			unsigned long  ticks = 0;
 			Node *pNode = m_cursor.seekFrame(iFrame);
 			if (pNode) {
-				ticks = pNode->tickFromFrame(iFrame) - pNode->tick;
+				if (bDelta) {
+					ticks = pNode->tickFromFrame(iFrame + iDelta)
+						  - pNode->tickFromFrame(iFrame);
+				} else {
+					ticks = pNode->tickFromFrame(iFrame)
+						  - pNode->tick;
+				}
 				if (ticks >= (unsigned long) pNode->ticksPerBeat) {
 					beats  = (unsigned int) (ticks / pNode->ticksPerBeat);
 					ticks -= (unsigned long) (beats * pNode->ticksPerBeat);
@@ -489,7 +498,8 @@ QString qtractorTimeScale::textFromFrame (
 					bars   = (unsigned short) (beats / pNode->beatsPerBar);
 					beats -= (unsigned int) (bars * pNode->beatsPerBar);
 				}
-				bars += pNode->bar;
+				if (!bDelta)
+					bars += pNode->bar;
 			}
 			if (!bDelta) {
 				bars++;
@@ -503,19 +513,19 @@ QString qtractorTimeScale::textFromFrame (
 		{
 			// Time frame code in hh:mm:ss.zzz ...
 			unsigned int hh, mm, ss, zzz;
-			float secs = (float) iFrame / (float) m_iSampleRate;
+			float secs = float(bDelta ? iDelta : iFrame) / float(m_iSampleRate);
 			hh = mm = ss = 0;
 			if (secs >= 3600.0f) {
 				hh = (unsigned int) (secs / 3600.0f);
-				secs -= (float) hh * 3600.0f;
+				secs -= float(hh) * 3600.0f;
 			}
 			if (secs >= 60.0f) {
 				mm = (unsigned int) (secs / 60.0f);
-				secs -= (float) mm * 60.0f;
+				secs -= float(mm) * 60.0f;
 			}
 			if (secs >= 0.0f) {
 				ss = (unsigned int) secs;
-				secs -= (float) ss;
+				secs -= float(ss);
 			}
 			zzz = (unsigned int) (secs * 1000.0f);
 			sText.sprintf("%02u:%02u:%02u.%03u", hh, mm, ss, zzz);
@@ -525,12 +535,39 @@ QString qtractorTimeScale::textFromFrame (
 		case Frames:
 		default:
 		{
-			sText = QString::number(iFrame);
+			sText = QString::number(bDelta ? iDelta : iFrame);
 			break;
 		}
 	}
 
 	return sText;
+}
+
+
+// Convert ticks to time string and vice-versa.
+unsigned long qtractorTimeScale::tickFromText (
+	const QString& sText, bool bDelta, unsigned long iTick )
+{
+	unsigned long iFrame = 0;
+	if (bDelta) {
+		Node *pNode = m_cursor.seekTick(iTick);
+		iFrame = (pNode ? pNode->frameFromTick(iTick) : 0);
+	}
+	return tickFromFrame(frameFromText(sText, bDelta, iFrame));
+}
+
+
+QString qtractorTimeScale::textFromTick (
+	unsigned long iTick, bool bDelta, unsigned long iDelta )
+{
+	Node *pNode = m_cursor.seekTick(iTick);
+	unsigned long iFrame = (pNode ? pNode->frameFromTick(iTick) : 0);
+	if (bDelta > 0 && pNode) {
+		iTick += iDelta;
+		pNode  = m_cursor.seekTick(iTick);
+		iDelta = (pNode ? pNode->frameFromTick(iTick) - iFrame : 0);
+	}
+	return textFromFrame(iFrame, bDelta, iDelta);
 }
 
 
