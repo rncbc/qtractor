@@ -56,6 +56,8 @@ public slots:
 	void filenameChanged(const QString& sFilename);
 	void trackChannelChanged(int iTrackChannel);
 
+	void clipStartChanged(unsigned long iClipStart);
+
 protected:
 
 	qtractorClip::FadeType fadeTypeFromIndex(int iIndex) const;

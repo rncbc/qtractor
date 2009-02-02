@@ -93,7 +93,7 @@ qtractorClipForm::qtractorClipForm (
 		SLOT(formatChanged()));
 	QObject::connect(m_ui.ClipStartSpinBox,
 		SIGNAL(valueChanged(unsigned long)),
-		SLOT(changed()));
+		SLOT(clipStartChanged(unsigned long)));
 	QObject::connect(m_ui.ClipOffsetSpinBox,
 		SIGNAL(valueChanged(unsigned long)),
 		SLOT(changed()));
@@ -166,10 +166,7 @@ void qtractorClipForm::setClip ( qtractorClip *pClip, bool bClipNew )
 	m_ui.FadeInLengthSpinBox->setTimeScale(m_pTimeScale);
 	m_ui.FadeOutLengthSpinBox->setTimeScale(m_pTimeScale);
 	// These have special delta formats...
-	m_ui.ClipOffsetSpinBox->setDeltaValue(true);
-	m_ui.ClipLengthSpinBox->setDeltaValue(true);
-	m_ui.FadeInLengthSpinBox->setDeltaValue(true);
-	m_ui.FadeOutLengthSpinBox->setDeltaValue(true);
+	clipStartChanged(m_pClip->clipStart());
 	// Initialize dialog widgets...
 	m_ui.ClipNameLineEdit->setText(m_pClip->clipName());
 	// Parameters...
@@ -740,6 +737,19 @@ void qtractorClipForm::filenameChanged ( const QString& sFilename )
 void qtractorClipForm::trackChannelChanged ( int iTrackChannel )
 {
 	fileChanged(m_ui.FilenameComboBox->currentText(), iTrackChannel);
+}
+
+
+// Adjust delta-value spin-boxes to new anchor frame.
+void qtractorClipForm::clipStartChanged ( unsigned long iClipStart )
+{
+	m_ui.ClipOffsetSpinBox->setDeltaValue(true, iClipStart);
+	m_ui.ClipLengthSpinBox->setDeltaValue(true, iClipStart);
+	m_ui.FadeInLengthSpinBox->setDeltaValue(true, iClipStart);
+	m_ui.FadeOutLengthSpinBox->setDeltaValue(true, iClipStart);
+
+	if (m_iDirtySetup == 0)
+		changed();
 }
 
 

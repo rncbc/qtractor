@@ -1,7 +1,7 @@
 // qtractorSpinBox.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -35,6 +35,7 @@ qtractorSpinBox::qtractorSpinBox ( QWidget *pParent )
 	m_iDefaultValue = 0;
 	m_iMinimumValue = 0;
 	m_iMaximumValue = 0;
+	m_iDeltaValue   = 0;
 	m_bDeltaValue   = false;
 
 #if QT_VERSION >= 0x040200
@@ -145,14 +146,20 @@ unsigned long qtractorSpinBox::maximum (void) const
 
 
 // Differential value mode (BBT format only) accessor.
-void qtractorSpinBox::setDeltaValue ( bool bDeltaValue )
+void qtractorSpinBox::setDeltaValue ( bool bDeltaValue, unsigned long iDeltaValue )
 {
 	m_bDeltaValue = bDeltaValue;
+	m_iDeltaValue = iDeltaValue;
 }
 
 bool qtractorSpinBox::isDeltaValue (void) const
 {
 	return m_bDeltaValue;
+}
+
+unsigned long qtractorSpinBox::deltaValue (void) const
+{
+	return m_iDeltaValue;
 }
 
 
@@ -243,14 +250,16 @@ QAbstractSpinBox::StepEnabled qtractorSpinBox::stepEnabled (void) const
 unsigned long qtractorSpinBox::valueFromText ( const QString& sText ) const
 {
 	return (m_pTimeScale
-		? m_pTimeScale->frameFromText(sText, m_bDeltaValue)
+		? m_pTimeScale->frameFromText(sText, m_bDeltaValue, m_iDeltaValue)
 		: sText.toULong());
 }
 
 QString qtractorSpinBox::textFromValue ( unsigned long iValue ) const
 {
 	return (m_pTimeScale
-		? m_pTimeScale->textFromFrame(iValue, m_bDeltaValue)
+		? (m_bDeltaValue
+			? m_pTimeScale->textFromFrame(m_iDeltaValue, true, iValue)
+			: m_pTimeScale->textFromFrame(iValue))
 		: QString::number(iValue));
 }
 

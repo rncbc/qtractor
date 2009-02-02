@@ -438,6 +438,7 @@ unsigned long qtractorTimeScale::frameFromText (
 			}
 			pNode = m_cursor.seekBar(bars);
 			if (pNode) {
+				beats += pNode->beat + bars * pNode->beatsPerBar;
 				ticks += pNode->tick + beats * pNode->ticksPerBeat;
 				iFrame = pNode->frameFromTick(ticks);
 			}

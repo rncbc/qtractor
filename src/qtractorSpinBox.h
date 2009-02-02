@@ -1,7 +1,7 @@
 // qtractorSpinBox.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -66,8 +66,9 @@ public:
 	unsigned long maximum() const;
 
 	// Differential value mode (BBT format only) accessor.
-	void setDeltaValue(bool bDeltaValue);
+	void setDeltaValue(bool bDeltaValue, unsigned long iDeltaValue = 0);
 	bool isDeltaValue() const;
+	unsigned long deltaValue() const;
 
 signals:
 
@@ -103,6 +104,7 @@ private:
 	unsigned long      m_iDefaultValue;
 	unsigned long      m_iMinimumValue;
 	unsigned long      m_iMaximumValue;
+	unsigned long      m_iDeltaValue;
 	bool               m_bDeltaValue;
 };
 
