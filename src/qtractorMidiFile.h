@@ -24,7 +24,10 @@
 
 #include "qtractorMidiSequence.h"
 
+#include "qtractorMidiFileTempo.h"
+
 class qtractorTimeScale;
+
 
 //----------------------------------------------------------------------
 // class qtractorMidiFile -- A SMF (Standard MIDI File) class.
@@ -55,26 +58,32 @@ public:
 	unsigned short tracks() const { return m_iTracks; }
 	unsigned short ticksPerBeat() const { return m_iTicksPerBeat; }
 
+	// Tempo/time-signature map accessor.
+	qtractorMidiFileTempo *tempoMap() const { return m_pTempoMap; }
+
 	// Sequence/track tempo (BPM) accessors.
 	void setTempo(float fTempo)
-		{ m_fTempo = fTempo; }
-	float tempo() const { return m_fTempo; }
+		{ if (m_pTempoMap) m_pTempoMap->setTempo(fTempo); }
+	float tempo() const
+		{ return (m_pTempoMap ? m_pTempoMap->tempo() : 120.0f); }
 
 	// Sequence/track beats per bar accessors.
 	void setBeatsPerBar(unsigned short iBeatsPerBar)
-		{ m_iBeatsPerBar = iBeatsPerBar; }
-	unsigned short beatsPerBar() const { return m_iBeatsPerBar; }
+		{ if (m_pTempoMap) m_pTempoMap->setBeatsPerBar(iBeatsPerBar); }
+	unsigned short beatsPerBar() const
+		{ return (m_pTempoMap ? m_pTempoMap->beatsPerBar() : 4); }
 
 	// Sequence/track time signature (denominator) accessors.
 	void setBeatDivisor(unsigned short iBeatDivisor)
-		{ m_iBeatDivisor = iBeatDivisor; }
-	unsigned short beatDivisor() const { return m_iBeatDivisor; }
+		{ if (m_pTempoMap) m_pTempoMap->setBeatDivisor(iBeatDivisor); }
+	unsigned short beatDivisor() const
+		{ return (m_pTempoMap ? m_pTempoMap->beatDivisor() : 2); }
 
 	// Sequence/track readers.
 	bool readTracks(qtractorMidiSequence **ppSeqs, unsigned short iSeqs,
 		unsigned short iTrackChannel = 0);
 	bool readTrack(qtractorMidiSequence *pSeq,
-		unsigned short iTrackChannel);		
+		unsigned short iTrackChannel);
 
 	// Header writer.
 	bool writeHeader(unsigned short iFormat,
@@ -104,6 +113,9 @@ protected:
 	int writeInt  (int val, unsigned short n = 0);
 	int writeData (unsigned char *pData, unsigned short n);
 
+	// Write tempo-time-signature node.
+	void writeNode(qtractorMidiFileTempo::Node *pNode, unsigned long iLastTime);
+
 private:
 
 	// SMF instance variables.
@@ -117,16 +129,14 @@ private:
 	unsigned short m_iTracks;
 	unsigned short m_iTicksPerBeat;
 
-	// Special uniform track properties.
-	float          m_fTempo;
-	unsigned short m_iBeatsPerBar;
-	unsigned short m_iBeatDivisor;
-
 	// Track info map.
 	struct TrackInfo {
 		unsigned int  length;
 		unsigned long offset;
 	} *m_pTrackInfo;
+
+	// Special tempo/time-signature map.
+	qtractorMidiFileTempo *m_pTempoMap;
 };
 
 

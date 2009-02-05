@@ -47,6 +47,9 @@ public:
 	qtractorTimeScale& operator=(const qtractorTimeScale& ts)
 		{ return copy(ts); }
 
+	// Node list cleaner.
+	void reset();
+
 	// (Re)nitializer method.
 	void clear();
 

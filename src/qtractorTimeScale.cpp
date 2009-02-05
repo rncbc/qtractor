@@ -26,11 +26,26 @@
 // class qtractorTimeScale -- Time scale conversion helper class.
 //
 
-// (Re)nitializer method.
-void qtractorTimeScale::clear (void)
+// Node list cleaner.
+void qtractorTimeScale::reset (void)
 {
 	m_nodes.setAutoDelete(true);
 
+	// Clear/reset tempo-map...
+	m_nodes.clear();
+	m_cursor.reset();
+
+	// There must always be one node, always.
+	addNode(0);
+
+	// Commit new scale...
+	updateScale();
+}
+
+
+// (Re)nitializer method.
+void qtractorTimeScale::clear (void)
+{
 	m_iSnapPerBeat    = 4;
 	m_iHorizontalZoom = 100;
 	m_iVerticalZoom   = 100;
@@ -42,14 +57,7 @@ void qtractorTimeScale::clear (void)
 	m_iPixelsPerBeat  = 32;
 
 	// Clear/reset tempo-map...
-	m_nodes.clear();
-	m_cursor.reset();
-
-	// There must always be one node, always.
-	addNode(0);
-
-	// Commit new scale...
-	updateScale();
+	reset();
 }
 
 
@@ -334,6 +342,12 @@ qtractorTimeScale::Node *qtractorTimeScale::addNode (
 		pNode->beatType = iBeatType;
 		pNode->beatsPerBar = iBeatsPerBar;
 		pNode->beatDivisor = iBeatDivisor;
+	} else if (pPrev && pPrev->tempo == fTempo
+		&& pPrev->beatType == iBeatType
+		&& pPrev->beatsPerBar == iBeatsPerBar
+		&& pPrev->beatDivisor == iBeatDivisor) {
+		// No need for a new node...
+		return pPrev;
 	} else {
 		// Add/insert a new node...
 		pNode = new Node(this,

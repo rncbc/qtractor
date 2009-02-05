@@ -21,8 +21,8 @@
 
 #include "qtractorAbout.h"
 #include "qtractorMidiFile.h"
+
 #include "qtractorTimeScale.h"
-#include "qtractorSession.h"
 
 #include <QFileInfo>
 #include <QDir>
@@ -50,11 +50,10 @@ qtractorMidiFile::qtractorMidiFile (void)
 	m_iTracks       = 0;
 	m_iTicksPerBeat = 0;
 
-	m_fTempo        = 120.0f;
-	m_iBeatsPerBar  = 4;
-	m_iBeatDivisor  = 2;
-
 	m_pTrackInfo    = NULL;
+
+	// Special tempo/time-signature map.
+	m_pTempoMap     = NULL;
 }
 
 
@@ -143,6 +142,9 @@ bool qtractorMidiFile::open ( const QString& sFilename, int iMode )
 		}
 	}
 
+	// Special tempo/time-signature map.
+	m_pTempoMap = new qtractorMidiFileTempo(this);
+
 	// We're in business...
 	return true;
 }
@@ -160,6 +162,11 @@ void qtractorMidiFile::close (void)
 		delete [] m_pTrackInfo;
 		m_pTrackInfo = NULL;
 	}
+
+	if (m_pTempoMap) {
+		delete m_pTempoMap;
+		m_pTempoMap = NULL;
+	}
 }
 
 
@@ -168,6 +175,8 @@ bool qtractorMidiFile::readTracks ( qtractorMidiSequence **ppSeqs,
 	unsigned short iSeqs, unsigned short iTrackChannel )
 {
 	if (m_pFile == NULL)
+		return false;
+	if (m_pTempoMap == NULL)
 		return false;
 	if (m_iMode != Read)
 		return false;
@@ -346,7 +355,9 @@ bool qtractorMidiFile::readTracks ( qtractorMidiSequence **ppSeqs,
 				len = readInt();
 				if (len > 0) {
 					if (meta == qtractorMidiEvent::TEMPO) {
-						m_fTempo = (60000000.0f / float(readInt(len)));
+						m_pTempoMap->addNodeTempo(iTime,
+							qtractorTimeScale::uroundf(
+								60000000.0f / float(readInt(len))));
 					} else {
 						data = new unsigned char [len + 1];
 						if (readData(data, len) < (int) len) {
@@ -361,8 +372,9 @@ bool qtractorMidiFile::readTracks ( qtractorMidiSequence **ppSeqs,
 							break;
 						case qtractorMidiEvent::TIME:
 							// Beats per bar is the numerator of time signature...
-							m_iBeatsPerBar = (unsigned short) data[0];
-							m_iBeatDivisor = (unsigned short) data[1];
+							m_pTempoMap->addNodeTime(iTime,
+								(unsigned short) data[0],
+								(unsigned short) data[1]);
 							break;
 						default:
 							// Ignore all others...
@@ -411,6 +423,8 @@ bool qtractorMidiFile::writeHeader ( unsigned short iFormat,
 {
 	if (m_pFile == NULL)
 		return false;
+	if (m_pTempoMap)
+		return false;
 	if (m_iMode != Write)
 		return false;
 
@@ -434,7 +448,10 @@ bool qtractorMidiFile::writeHeader ( unsigned short iFormat,
 	writeInt(m_iFormat = iFormat, 2);
 	writeInt(m_iTracks = iTracks, 2);
 	writeInt(m_iTicksPerBeat = iTicksPerBeat, 2);
-	
+
+	// Special tempo/time-signature map.
+	m_pTempoMap = new qtractorMidiFileTempo(this);
+
 	// Assume all is fine.
 	return true;
 }
@@ -445,6 +462,8 @@ bool qtractorMidiFile::writeTracks ( qtractorMidiSequence **ppSeqs,
 	unsigned short iSeqs )
 {
 	if (m_pFile == NULL)
+		return false;
+	if (m_pTempoMap == NULL)
 		return false;
 	if (m_iMode != Write)
 		return false;
@@ -494,26 +513,21 @@ bool qtractorMidiFile::writeTracks ( qtractorMidiSequence **ppSeqs,
 		QByteArray aTrackName = sTrackName.toUtf8();
 		writeData((unsigned char *) aTrackName.constData(), aTrackName.length());
 
-		// Write basic META data...
-		if (m_iFormat == 0 || pSeq == NULL || (iSeqs > 1 && iTrack == 0)) {
-			// Tempo...
-			writeInt(0); // delta-delta=0
-			writeInt(qtractorMidiEvent::META, 1);
-			writeInt(qtractorMidiEvent::TEMPO, 1);
-			writeInt(3);
-			writeInt(int(60000000.0f / m_fTempo), 3);
-			// Time signature...
-			writeInt(0); // delta-time=0
-			writeInt(qtractorMidiEvent::META, 1);
-			writeInt(qtractorMidiEvent::TIME, 1);
-			writeInt(4);
-			writeInt(m_iBeatsPerBar, 1);    // Numerator.
-			writeInt(m_iBeatDivisor, 1);    // Denominator.
-			writeInt(32, 1);                // MIDI clocks per metronome click.
-			writeInt(4, 1);                 // 32nd notes per quarter.
+		// Tempo/time-signature map...
+		qtractorMidiFileTempo::Node *pNode = m_pTempoMap->nodes().first();
+
+		// Tempo/time-signature map (track 0)
+		// - applicable to SMF format 1 files...
+		if (pSeq == NULL) {
+			unsigned long iNodeTime = 0;
+			while (pNode) {
+				writeNode(pNode, iNodeTime);
+				iNodeTime = pNode->tick;
+				pNode = pNode->next();
+			}
 		}
 
-		// Now's time for proper event beeing written down...
+		// Now's time for proper events being written down...
 		//
 		if (pSeq) {
 
@@ -632,6 +646,17 @@ bool qtractorMidiFile::writeTracks ( qtractorMidiSequence **ppSeqs,
 
 					// Remove from note-off list and continue...
 					pNoteOffItem->notesOff.remove(pNoteOff);
+				}
+
+				// Tempo/time-signature map (interleaved)
+				// - applicable to SMF format 0 files...
+				if (iSeqs > 1 && iTrack == 0) {
+					while (pNode && iTime >= pNode->tick) {
+						writeNode(pNode, iLastTime);
+						iLastTime = pNode->tick;
+						iLastStatus = 0;
+						pNode = pNode->next();
+					}
 				}
 
 				// OK. Let's get back to actual event...
@@ -869,6 +894,49 @@ int qtractorMidiFile::writeData ( unsigned char *pData, unsigned short n )
 }
 
 
+// Write tempo-time-signature node.
+void qtractorMidiFile::writeNode (
+	qtractorMidiFileTempo::Node *pNode, unsigned long iLastTime )
+{
+	unsigned long iDeltaTime
+		= (pNode->tick > iLastTime ? pNode->tick - iLastTime : 0);
+	qtractorMidiFileTempo::Node *pPrev = pNode->prev();
+
+	if (pPrev == NULL || (pPrev->tempo != pNode->tempo)) {
+	#ifdef CONFIG_DEBUG_0
+		qDebug("qtractorMidiFile::writeNode(%lu) time=%lu TEMPO (%g)",
+			iLastTime, iDeltaTime, pNode->tempo);
+	#endif
+		// Tempo change...
+		writeInt(iDeltaTime);
+		writeInt(qtractorMidiEvent::META, 1);
+		writeInt(qtractorMidiEvent::TEMPO, 1);
+		writeInt(3);
+		writeInt(qtractorTimeScale::uroundf(60000000.0f / pNode->tempo), 3);
+		iDeltaTime = 0;
+	}
+
+	if (pPrev == NULL ||
+		pPrev->beatsPerBar != pNode->beatsPerBar ||
+		pPrev->beatDivisor != pNode->beatDivisor) {
+	#ifdef CONFIG_DEBUG_0
+		qDebug("qtractorMidiFile::writeNode(%lu) time=%lu TIME (%u/%u)",
+			iLastTime, iDeltaTime, pNode->beatsPerBar, 1 << pNode->beatDivisor);
+	#endif
+		// Time signature change...
+		writeInt(iDeltaTime);
+		writeInt(qtractorMidiEvent::META, 1);
+		writeInt(qtractorMidiEvent::TIME, 1);
+		writeInt(4);
+		writeInt(pNode->beatsPerBar, 1);    // Numerator.
+		writeInt(pNode->beatDivisor, 1);    // Denominator.
+		writeInt(32, 1);                    // MIDI clocks per metronome click.
+		writeInt(4, 1);                     // 32nd notes per quarter.
+	//	iDeltaTime = 0;
+	}
+}
+
+
 // Create filename revision (name says it all).
 QString qtractorMidiFile::createFilePathRevision (
 	const QString& sFilename, int iRevision )
@@ -936,15 +1004,19 @@ bool qtractorMidiFile::saveCopyFile ( const QString& sNewFilename,
 	if (!file.open(sNewFilename, qtractorMidiFile::Write))
 		return false;
 
-	file.setTempo(fTempo);
-	file.setBeatsPerBar(iBeatsPerBar);
-	file.setBeatDivisor(iBeatDivisor);
-
 	if (ppSeqs == NULL)
 		iSeqs = (iFormat == 0 ? 1 : 2);
 
 	// Write SMF header...
-	file.writeHeader(iFormat, (iFormat == 0 ? 1 : iSeqs), iTicksPerBeat);
+	if (!file.writeHeader(iFormat, (iFormat == 0 ? 1 : iSeqs), iTicksPerBeat)) {
+		file.close();
+		return false;
+	}
+
+	// Set (initial) tempo/time-signature node.
+	file.setTempo(fTempo);
+	file.setBeatsPerBar(iBeatsPerBar);
+	file.setBeatDivisor(iBeatDivisor);
 
 	// Write SMF tracks(s)...
 	if (ppSeqs) {

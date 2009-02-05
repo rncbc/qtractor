@@ -1,0 +1,200 @@
+// qtractorMidiFileTempo.cpp
+//
+/****************************************************************************
+   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
+
+   This program is free software; you can redistribute it and/or
+   modify it under the terms of the GNU General Public License
+   as published by the Free Software Foundation; either version 2
+   of the License, or (at your option) any later version.
+
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+
+   You should have received a copy of the GNU General Public License along
+   with this program; if not, write to the Free Software Foundation, Inc.,
+   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
+*****************************************************************************/
+
+#include "qtractorMidiFileTempo.h"
+
+#include "qtractorMidiFile.h"
+#include "qtractorTimeScale.h"
+
+
+//----------------------------------------------------------------------
+// class qtractorMidiFileTempo -- MIDI tempo/time-signature map class.
+//
+
+// (Re)initializer method.
+void qtractorMidiFileTempo::clear (void)
+{
+	m_nodes.setAutoDelete(true);
+
+	// Clear/reset tempo-map...
+	m_nodes.clear();
+
+	// There must always be one node, always.
+	addNode(0);
+}
+
+
+// Update node coefficient divisor factors.
+void qtractorMidiFileTempo::Node::update ( qtractorMidiFile *pMidiFile )
+{
+	ticksPerBeat = pMidiFile->ticksPerBeat();
+	if (beatDivisor > 2) {
+		ticksPerBeat >>= (beatDivisor - 2);
+	} else if (beatDivisor < 2) {
+		ticksPerBeat <<= (2 - beatDivisor);
+	}
+}
+
+
+// Update tempo-map node position metrics.
+void qtractorMidiFileTempo::Node::reset ( qtractorMidiFileTempo::Node *pNode )
+{
+	if (bar > pNode->bar)
+		tick = pNode->tickFromBar(bar);
+	else
+		bar = pNode->barFromTick(tick);
+}
+
+
+// Tempo-map node seeker (by tick).
+qtractorMidiFileTempo::Node *qtractorMidiFileTempo::seekNode ( unsigned long iTick ) const
+{
+	Node *pNode = m_nodes.first();
+
+	// Seek tick forward...
+	while (pNode && pNode->next() && iTick >= (pNode->next())->tick)
+		pNode = pNode->next();
+
+	return pNode;
+}
+
+
+// Node list specifics.
+qtractorMidiFileTempo::Node *qtractorMidiFileTempo::addNode (
+	unsigned long iTick, float fTempo,
+	unsigned short iBeatsPerBar, unsigned short iBeatDivisor )
+{
+	Node *pNode = 0;
+
+	// Seek for the nearest preceding node...
+	Node *pPrev = seekNode(iTick);
+	// Snap to nearest bar...
+	if (pPrev) {
+		iTick = pPrev->tickSnapToBar(iTick);
+		pPrev = seekNode(iTick);
+	}
+	// Either update existing node or add new one...
+	if (pPrev && pPrev->tick == iTick) {
+		// Update exact matching node...
+		pNode = pPrev;
+		pNode->tempo = fTempo;
+		pNode->beatsPerBar = iBeatsPerBar;
+		pNode->beatDivisor = iBeatDivisor;
+	} else if (pPrev && pPrev->tempo == fTempo
+		&& pPrev->beatsPerBar == iBeatsPerBar
+		&& pPrev->beatDivisor == iBeatDivisor) {
+		// No need for a new node...
+		return pPrev;
+	} else {
+		// Add/insert a new node...
+		pNode = new Node(iTick, fTempo, iBeatsPerBar, iBeatDivisor);
+		if (pPrev)
+			m_nodes.insertAfter(pNode, pPrev);
+		else
+			m_nodes.append(pNode);
+	}
+
+	// Update coefficients and positioning thereafter...
+	updateNode(pNode);
+
+	return pNode;
+}
+
+
+void qtractorMidiFileTempo::updateNode ( qtractorMidiFileTempo::Node *pNode )
+{
+	// Update coefficients...
+	pNode->update(m_pMidiFile);
+
+	// Update positioning on all nodes thereafter...
+	Node *pPrev = pNode->prev();
+	while (pNode) {
+		if (pPrev) pNode->reset(pPrev);
+		pPrev = pNode;
+		pNode = pNode->next();
+	}
+}
+
+
+void qtractorMidiFileTempo::removeNode ( qtractorMidiFileTempo::Node *pNode )
+{
+	// Don't ever remove the very first node... 
+	Node *pPrev = pNode->prev();
+	if (pPrev == 0)
+		return;
+
+	// Update positioning on all nodes thereafter...
+	Node *pNext = pNode->next();
+	while (pNext) {
+		if (pPrev) pNext->reset(pPrev);
+		pPrev = pNext;
+		pNext = pNext->next();
+	}
+
+	// Actually remove/unlink the node...
+	m_nodes.remove(pNode);
+}
+
+
+// Time-scale sync methods.
+void qtractorMidiFileTempo::fromTimeScale (
+	qtractorTimeScale *pTimeScale, unsigned long iOffset )
+{
+	// Needed conversion if resolutions differ...
+	unsigned short p = m_pMidiFile->ticksPerBeat();
+	unsigned short q = pTimeScale->ticksPerBeat();
+
+	// Copy tempo-map nodes...
+	m_nodes.clear();
+
+	qtractorTimeScale::Node *pNode = pTimeScale->nodes().first();
+	while (pNode) {
+		addNode(((pNode->tick - iOffset) * p) / q,
+			pNode->tempoEx(),
+			pNode->beatsPerBar,
+			pNode->beatDivisor);
+		pNode = pNode->next();
+	}
+}
+
+void qtractorMidiFileTempo::intoTimeScale (
+	qtractorTimeScale *pTimeScale, unsigned long iOffset )
+{
+	// Needed conversion if resolutions differ...
+	unsigned short p = pTimeScale->ticksPerBeat();
+	unsigned short q = m_pMidiFile->ticksPerBeat();
+
+	// Copy tempo-map nodes...
+	pTimeScale->reset();
+
+	qtractorMidiFileTempo::Node *pNode = m_nodes.first();
+	while (pNode) {
+		pTimeScale->addNode(
+			pTimeScale->frameFromTick(((pNode->tick + iOffset) * p) / q),
+			pNode->tempo, 2,
+			pNode->beatsPerBar,
+			pNode->beatDivisor);
+		pNode = pNode->next();
+	}
+}
+
+
+// end of qtractorMidiFileTempo.cpp

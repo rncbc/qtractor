@@ -50,6 +50,7 @@ headers = config.h \
 	src/qtractorMidiEngine.h \
 	src/qtractorMidiEvent.h \
 	src/qtractorMidiFile.h \
+	src/qtractorMidiFileTempo.h \
 	src/qtractorMidiListView.h \
 	src/qtractorMidiMeter.h \
 	src/qtractorMidiMonitor.h \
@@ -140,6 +141,7 @@ sources = src/main.cpp \
 	src/qtractorMidiEditView.cpp \
 	src/qtractorMidiEngine.cpp \
 	src/qtractorMidiFile.cpp \
+	src/qtractorMidiFileTempo.cpp \
 	src/qtractorMidiListView.cpp \
 	src/qtractorMidiMeter.cpp \
 	src/qtractorMidiMonitor.cpp \

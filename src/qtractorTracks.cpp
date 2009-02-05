@@ -909,18 +909,19 @@ bool qtractorTracks::exportClip ( qtractorClip *pClip )
 		QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 		qtractorMidiFile *pMidiFile = new qtractorMidiFile();
 		if (pMidiFile->open(sFilename, qtractorMidiFile::Write)) {
-			pMidiFile->setTempo(pSession->tempo());
-			pMidiFile->setBeatsPerBar(pSession->beatsPerBar());
-			pMidiFile->setBeatDivisor(pSession->beatDivisor());
 			unsigned short iFormat = qtractorMidiClip::defaultFormat();
 			unsigned short iTracks = (iFormat == 0 ? 1 : 2);
-			pMidiFile->writeHeader(iFormat, iTracks, pSession->ticksPerBeat());
-			if (iFormat == 1)
-				pMidiFile->writeTrack(NULL);  // Setup track (SMF format 1).
-			pMidiClip->clipExport(
-				midiClipExport, pMidiFile, iOffset, iLength);
+			if (pMidiFile->writeHeader(iFormat, iTracks, pSession->ticksPerBeat())) {
+				pMidiFile->setTempo(pSession->tempo());
+				pMidiFile->setBeatsPerBar(pSession->beatsPerBar());
+				pMidiFile->setBeatDivisor(pSession->beatDivisor());
+				if (iFormat == 1)
+					pMidiFile->writeTrack(NULL);  // Setup track (SMF format 1).
+				pMidiClip->clipExport(
+					midiClipExport, pMidiFile, iOffset, iLength);
+				bResult = true;
+			}
 			pMidiFile->close();
-			bResult = true;
 		}
 		delete pMidiFile;
 		QApplication::restoreOverrideCursor();

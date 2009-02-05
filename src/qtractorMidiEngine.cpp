@@ -2198,11 +2198,12 @@ bool qtractorMidiEngine::fileExport ( const QString& sExportPath,
 	// File ready for export?
 	bool bResult = file.open(sExportPath, qtractorMidiFile::Write);
 	if (bResult) {
-		file.setTempo(pSession->tempo());
-		file.setBeatsPerBar(pSession->beatsPerBar());
-		file.setBeatDivisor(pSession->beatDivisor());
-		file.writeHeader(iFormat, iTracks, iTicksPerBeat);
-		file.writeTracks(ppSeqs, iSeqs);
+		if (file.writeHeader(iFormat, iTracks, iTicksPerBeat)) {
+			file.setTempo(pSession->tempo());
+			file.setBeatsPerBar(pSession->beatsPerBar());
+			file.setBeatDivisor(pSession->beatDivisor());
+			file.writeTracks(ppSeqs, iSeqs);
+		}
 		file.close();
 	}
 
