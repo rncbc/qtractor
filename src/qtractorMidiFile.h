@@ -61,24 +61,6 @@ public:
 	// Tempo/time-signature map accessor.
 	qtractorMidiFileTempo *tempoMap() const { return m_pTempoMap; }
 
-	// Sequence/track tempo (BPM) accessors.
-	void setTempo(float fTempo)
-		{ if (m_pTempoMap) m_pTempoMap->setTempo(fTempo); }
-	float tempo() const
-		{ return (m_pTempoMap ? m_pTempoMap->tempo() : 120.0f); }
-
-	// Sequence/track beats per bar accessors.
-	void setBeatsPerBar(unsigned short iBeatsPerBar)
-		{ if (m_pTempoMap) m_pTempoMap->setBeatsPerBar(iBeatsPerBar); }
-	unsigned short beatsPerBar() const
-		{ return (m_pTempoMap ? m_pTempoMap->beatsPerBar() : 4); }
-
-	// Sequence/track time signature (denominator) accessors.
-	void setBeatDivisor(unsigned short iBeatDivisor)
-		{ if (m_pTempoMap) m_pTempoMap->setBeatDivisor(iBeatDivisor); }
-	unsigned short beatDivisor() const
-		{ return (m_pTempoMap ? m_pTempoMap->beatDivisor() : 2); }
-
 	// Sequence/track readers.
 	bool readTracks(qtractorMidiSequence **ppSeqs, unsigned short iSeqs,
 		unsigned short iTrackChannel = 0);

@@ -2199,9 +2199,10 @@ bool qtractorMidiEngine::fileExport ( const QString& sExportPath,
 	bool bResult = file.open(sExportPath, qtractorMidiFile::Write);
 	if (bResult) {
 		if (file.writeHeader(iFormat, iTracks, iTicksPerBeat)) {
-			file.setTempo(pSession->tempo());
-			file.setBeatsPerBar(pSession->beatsPerBar());
-			file.setBeatDivisor(pSession->beatDivisor());
+			if (file.tempoMap()) {
+				file.tempoMap()->fromTimeScale(
+					pSession->timeScale(), iTimeStart);
+			}
 			file.writeTracks(ppSeqs, iSeqs);
 		}
 		file.close();

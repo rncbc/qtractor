@@ -19,7 +19,6 @@
 
 *****************************************************************************/
 
-#include "qtractorAbout.h"
 #include "qtractorMidiFile.h"
 
 #include "qtractorTimeScale.h"
@@ -971,10 +970,9 @@ bool qtractorMidiFile::saveCopyFile ( const QString& sNewFilename,
 	unsigned short iFormat )
 {
 	qtractorMidiFile file;
-	float fTempo = (pTimeScale ? pTimeScale->tempo() : 120.0f);
-	unsigned short iTicksPerBeat = (pTimeScale ? pTimeScale->ticksPerBeat() : 96);
-	unsigned short iBeatsPerBar  = (pTimeScale ? pTimeScale->beatsPerBar() : 4);
-	unsigned short iBeatDivisor  = (pTimeScale ? pTimeScale->beatDivisor() : 2);
+	qtractorTimeScale ts;
+	unsigned short iTicksPerBeat
+		= (pTimeScale ? pTimeScale->ticksPerBeat() : ts.ticksPerBeat());
 	unsigned short iSeq, iSeqs = 0;
 	qtractorMidiSequence **ppSeqs = NULL;
 	const QString sTrackName = QObject::tr("Track %1");
@@ -992,11 +990,8 @@ bool qtractorMidiFile::saveCopyFile ( const QString& sNewFilename,
 			ppSeqs[iSeq] = new qtractorMidiSequence(
 				sTrackName.arg(iSeq + 1), iSeq, iTicksPerBeat);
 		}
-		if (file.readTracks(ppSeqs, iSeqs)) {
-			fTempo = file.tempo();
-			iBeatsPerBar = file.beatsPerBar();
-			iBeatDivisor = file.beatDivisor();
-		}
+		if (file.readTracks(ppSeqs, iSeqs) && file.tempoMap())
+			file.tempoMap()->intoTimeScale(&ts);
 		file.close();
 	}
 
@@ -1014,9 +1009,8 @@ bool qtractorMidiFile::saveCopyFile ( const QString& sNewFilename,
 	}
 
 	// Set (initial) tempo/time-signature node.
-	file.setTempo(fTempo);
-	file.setBeatsPerBar(iBeatsPerBar);
-	file.setBeatDivisor(iBeatDivisor);
+	if (file.tempoMap())
+		file.tempoMap()->fromTimeScale(&ts);
 
 	// Write SMF tracks(s)...
 	if (ppSeqs) {

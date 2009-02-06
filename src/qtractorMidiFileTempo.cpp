@@ -156,8 +156,11 @@ void qtractorMidiFileTempo::removeNode ( qtractorMidiFileTempo::Node *pNode )
 
 // Time-scale sync methods.
 void qtractorMidiFileTempo::fromTimeScale (
-	qtractorTimeScale *pTimeScale, unsigned long iOffset )
+	qtractorTimeScale *pTimeScale, unsigned long iTimeOffset )
 {
+	if (pTimeScale == NULL)
+		return;
+
 	// Needed conversion if resolutions differ...
 	unsigned short p = m_pMidiFile->ticksPerBeat();
 	unsigned short q = pTimeScale->ticksPerBeat();
@@ -165,9 +168,12 @@ void qtractorMidiFileTempo::fromTimeScale (
 	// Copy tempo-map nodes...
 	m_nodes.clear();
 
-	qtractorTimeScale::Node *pNode = pTimeScale->nodes().first();
+	qtractorTimeScale::Cursor cursor(pTimeScale);
+	qtractorTimeScale::Node *pNode = cursor.seekTick(iTimeOffset);
 	while (pNode) {
-		addNode(((pNode->tick - iOffset) * p) / q,
+		unsigned long iTime
+			= (pNode->tick > iTimeOffset ? pNode->tick - iTimeOffset : 0);
+		addNode((iTime * p) / q,
 			pNode->tempoEx(),
 			pNode->beatsPerBar,
 			pNode->beatDivisor);
@@ -176,8 +182,11 @@ void qtractorMidiFileTempo::fromTimeScale (
 }
 
 void qtractorMidiFileTempo::intoTimeScale (
-	qtractorTimeScale *pTimeScale, unsigned long iOffset )
+	qtractorTimeScale *pTimeScale, unsigned long iTimeOffset )
 {
+	if (pTimeScale == NULL)
+		return;
+
 	// Needed conversion if resolutions differ...
 	unsigned short p = pTimeScale->ticksPerBeat();
 	unsigned short q = m_pMidiFile->ticksPerBeat();
@@ -187,8 +196,9 @@ void qtractorMidiFileTempo::intoTimeScale (
 
 	qtractorMidiFileTempo::Node *pNode = m_nodes.first();
 	while (pNode) {
+		unsigned long iTime = pNode->tick + iTimeOffset;
 		pTimeScale->addNode(
-			pTimeScale->frameFromTick(((pNode->tick + iOffset) * p) / q),
+			pTimeScale->frameFromTick((iTime * p) / q),
 			pNode->tempo, 2,
 			pNode->beatsPerBar,
 			pNode->beatDivisor);

@@ -153,11 +153,13 @@ bool qtractorMidiClip::openMidiFile ( qtractorMidiFile *pFile,
 		// That's it.
 		setFormat(iFormat);
 		// Write SMF header...
-		if (m_pFile->writeHeader(iFormat, iTracks, m_pSeq->ticksPerBeat())) {
+		if (pFile->writeHeader(iFormat, iTracks, m_pSeq->ticksPerBeat())) {
 			// Set initial local properties...
-			pFile->setTempo(pSession->tempo());
-			pFile->setBeatsPerBar(pSession->beatsPerBar());
-			pFile->setBeatDivisor(pSession->beatDivisor());
+			if (pFile->tempoMap()) {
+				pFile->tempoMap()->fromTimeScale(
+					pSession->timeScale(),
+					m_pSeq->timeOffset());
+			}
 		}
 		// And initial clip name...
 		m_pSeq->setName(QFileInfo(pFile->filename()).baseName());
@@ -170,10 +172,10 @@ bool qtractorMidiClip::openMidiFile ( qtractorMidiFile *pFile,
 		if (!pFile->readTrack(m_pSeq, iTrackChannel))
 			return false;
 		// FIXME: On demand, set session time properties from MIDI file...
-		if (m_bSessionFlag) {
-			pSession->setTempo(pFile->tempo());
-			pSession->setBeatsPerBar(pFile->beatsPerBar());
-			pSession->setBeatDivisor(pFile->beatDivisor());
+		if (m_bSessionFlag && pFile->tempoMap()) {
+			pFile->tempoMap()->intoTimeScale(
+				pSession->timeScale(),
+				m_pSeq->timeOffset());
 			pSession->updateTimeScale();
 			// Reset session flag now.
 			m_bSessionFlag = false;

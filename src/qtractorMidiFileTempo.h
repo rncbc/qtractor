@@ -172,8 +172,10 @@ public:
 	}
 
 	// Time-scale sync methods.
-	void fromTimeScale(qtractorTimeScale *pTimeScale, unsigned long iOffset = 0);
-	void intoTimeScale(qtractorTimeScale *pTimeScale, unsigned long iOffset = 0);
+	void fromTimeScale(
+		qtractorTimeScale *pTimeScale, unsigned long iTimeOffset = 0);
+	void intoTimeScale(
+		qtractorTimeScale *pTimeScale, unsigned long iTimeOffset = 0);
 
 private:
 

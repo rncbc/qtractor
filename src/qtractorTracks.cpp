@@ -912,9 +912,11 @@ bool qtractorTracks::exportClip ( qtractorClip *pClip )
 			unsigned short iFormat = qtractorMidiClip::defaultFormat();
 			unsigned short iTracks = (iFormat == 0 ? 1 : 2);
 			if (pMidiFile->writeHeader(iFormat, iTracks, pSession->ticksPerBeat())) {
-				pMidiFile->setTempo(pSession->tempo());
-				pMidiFile->setBeatsPerBar(pSession->beatsPerBar());
-				pMidiFile->setBeatDivisor(pSession->beatDivisor());
+				if (pMidiFile->tempoMap()) {
+					pMidiFile->tempoMap()->fromTimeScale(
+						pSession->timeScale(),
+						pSession->tickFromFrame(pClip->clipStart() + iOffset));
+				}
 				if (iFormat == 1)
 					pMidiFile->writeTrack(NULL);  // Setup track (SMF format 1).
 				pMidiClip->clipExport(
