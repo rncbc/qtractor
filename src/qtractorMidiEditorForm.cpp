@@ -596,6 +596,11 @@ qtractorTimeScale *qtractorMidiEditorForm::timeScale (void) const
 	return m_pMidiEditor->timeScale();
 }
 
+unsigned long qtractorMidiEditorForm::timeOffset (void) const
+{
+	return m_pMidiEditor->timeOffset();
+}
+
 
 // Editing MIDI clip accessors.
 void qtractorMidiEditorForm::setMidiClip ( qtractorMidiClip *pMidiClip  )
@@ -759,7 +764,8 @@ bool qtractorMidiEditorForm::saveClipFile ( bool bPrompt )
 
 	// Save it right away...
 	bool bResult = qtractorMidiFile::saveCopyFile(sFilename,
-		filename(), trackChannel(), sequence(), timeScale(), format());
+		filename(), trackChannel(), format(), sequence(),
+		timeScale(), timeOffset());
 
 	// Have we done it right?
 	if (bResult) {

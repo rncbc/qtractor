@@ -665,9 +665,11 @@ bool qtractorMidiClip::saveClipElement (
 			qtractorMidiFile::saveCopyFile(sFilename,
 				qtractorMidiClip::filename(),
 				qtractorMidiClip::trackChannel(),
+				qtractorMidiClip::format(),
 				qtractorMidiClip::sequence(),
 				pSession->timeScale(),
-				qtractorMidiClip::format());
+				pSession->tickFromFrame(
+					qtractorMidiClip::clipStart()));
 			// Pre-commit dirty changes...
 			qtractorMidiClip::setFilename(sFilename);
 			qtractorMidiClip::setDirty(false);

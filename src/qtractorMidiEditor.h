@@ -99,6 +99,7 @@ public:
 
 	// Local time scale accessors.
 	qtractorTimeScale *timeScale() const;
+	unsigned long timeOffset() const;
 
 	// The original clip time-scale length/time.
 	void setClipLength(unsigned long iClipLength);

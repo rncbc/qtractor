@@ -563,6 +563,11 @@ qtractorTimeScale *qtractorMidiEditor::timeScale (void) const
 	return m_pTimeScale;
 }
 
+unsigned long qtractorMidiEditor::timeOffset (void) const
+{
+	return (m_pTimeScale ? m_pTimeScale->tickFromFrame(m_iOffset) : 0);
+}
+
 
 // The original clip time-scale length/time.
 void qtractorMidiEditor::setClipLength ( unsigned long iClipLength )

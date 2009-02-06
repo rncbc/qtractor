@@ -56,6 +56,7 @@ public:
 
 	// Local time-scale accessor.
 	qtractorTimeScale *timeScale() const;
+	unsigned long timeOffset() const;
 
 	// MIDI clip sequence accessors.
 	void setMidiClip(qtractorMidiClip *pMidiClip);

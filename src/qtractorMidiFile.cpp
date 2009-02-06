@@ -966,13 +966,12 @@ QString qtractorMidiFile::createFilePathRevision (
 // All-in-one SMF file writer/creator method.
 bool qtractorMidiFile::saveCopyFile ( const QString& sNewFilename,
 	const QString& sOldFilename, unsigned short iTrackChannel,
-	qtractorMidiSequence *pSeq, qtractorTimeScale *pTimeScale,
-	unsigned short iFormat )
+	unsigned short iFormat, qtractorMidiSequence *pSeq,
+	qtractorTimeScale *pTimeScale, unsigned long iTimeOffset )
 {
 	qtractorMidiFile file;
 	qtractorTimeScale ts;
-	unsigned short iTicksPerBeat
-		= (pTimeScale ? pTimeScale->ticksPerBeat() : ts.ticksPerBeat());
+	unsigned short iTracks;
 	unsigned short iSeq, iSeqs = 0;
 	qtractorMidiSequence **ppSeqs = NULL;
 	const QString sTrackName = QObject::tr("Track %1");
@@ -980,18 +979,21 @@ bool qtractorMidiFile::saveCopyFile ( const QString& sNewFilename,
 	if (pSeq == NULL)
 		return false;
 
+	if (pTimeScale)
+		ts.copy(*pTimeScale);
+
 	// Open and load the whole source file...
 	if (file.open(sOldFilename)) {
-		iTicksPerBeat = file.ticksPerBeat();
+		ts.setTicksPerBeat(file.ticksPerBeat());
 		iFormat = file.format();
 		iSeqs = (iFormat == 1 ? file.tracks() : 16);
 		ppSeqs = new qtractorMidiSequence * [iSeqs];
 		for (iSeq = 0; iSeq < iSeqs; ++iSeq) {
 			ppSeqs[iSeq] = new qtractorMidiSequence(
-				sTrackName.arg(iSeq + 1), iSeq, iTicksPerBeat);
+				sTrackName.arg(iSeq + 1), iSeq, ts.ticksPerBeat());
 		}
 		if (file.readTracks(ppSeqs, iSeqs) && file.tempoMap())
-			file.tempoMap()->intoTimeScale(&ts);
+			file.tempoMap()->intoTimeScale(&ts, iTimeOffset);
 		file.close();
 	}
 
@@ -1003,14 +1005,15 @@ bool qtractorMidiFile::saveCopyFile ( const QString& sNewFilename,
 		iSeqs = (iFormat == 0 ? 1 : 2);
 
 	// Write SMF header...
-	if (!file.writeHeader(iFormat, (iFormat == 0 ? 1 : iSeqs), iTicksPerBeat)) {
+	iTracks = (iFormat == 0 ? 1 : iSeqs);
+	if (!file.writeHeader(iFormat, iTracks, ts.ticksPerBeat())) {
 		file.close();
 		return false;
 	}
 
 	// Set (initial) tempo/time-signature node.
 	if (file.tempoMap())
-		file.tempoMap()->fromTimeScale(&ts);
+		file.tempoMap()->fromTimeScale(&ts, iTimeOffset);
 
 	// Write SMF tracks(s)...
 	if (ppSeqs) {
