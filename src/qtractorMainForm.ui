@@ -277,6 +277,8 @@
     <addaction name="separator" />
     <addaction name="viewInstrumentsAction" />
     <addaction name="viewBusesAction" />
+	<addaction name="viewTempoMapAction" />
+	<addaction name="separator" />
     <addaction name="viewOptionsAction" />
    </widget>
    <widget class="QMenu" name="transportMenu" >
@@ -1637,6 +1639,23 @@
    </property>
    <property name="statusTip" >
     <string>Change session bus definitions</string>
+   </property>
+   <property name="shortcut" >
+    <string/>
+   </property>
+  </action>
+  <action name="viewTempoMapAction" >
+   <property name="text" >
+    <string>&amp;Tempo Map...</string>
+   </property>
+   <property name="iconText" >
+    <string>Tempo Map</string>
+   </property>
+   <property name="toolTip" >
+    <string>Tempo map</string>
+   </property>
+   <property name="statusTip" >
+    <string>Change session tempo map</string>
    </property>
    <property name="shortcut" >
     <string/>

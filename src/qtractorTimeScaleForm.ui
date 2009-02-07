@@ -1,0 +1,445 @@
+<ui version="4.0" >
+ <author>rncbc aka Rui Nuno Capela</author>
+ <comment>qtractor - An Audio/MIDI multi-track sequencer.
+
+   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
+
+   This program is free software; you can redistribute it and/or
+   modify it under the terms of the GNU General Public License
+   as published by the Free Software Foundation; either version 2
+   of the License, or (at your option) any later version.
+
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+
+   You should have received a copy of the GNU General Public License along
+   with this program; if not, write to the Free Software Foundation, Inc.,
+   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
+ </comment>
+ <class>qtractorTimeScaleForm</class>
+ <widget class="QDialog" name="qtractorTimeScaleForm" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>512</width>
+    <height>240</height>
+   </rect>
+  </property>
+  <property name="focusPolicy" >
+   <enum>Qt::StrongFocus</enum>
+  </property>
+  <property name="windowTitle" >
+   <string>Tempo Map - Qtractor</string>
+  </property>
+  <property name="windowIcon" >
+   <iconset resource="../icons/qtractor.qrc" >:/icons/qtractorTracks.png</iconset>
+  </property>
+  <layout class="QVBoxLayout" >
+   <item>
+    <widget class="QSplitter" name="TimeScaleSplitter" >
+     <property name="orientation" >
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="handleWidth" >
+      <number>4</number>
+     </property>
+     <widget class="QTreeWidget" name="TimeScaleListView" >
+      <property name="minimumSize" >
+       <size>
+        <width>120</width>
+        <height>0</height>
+       </size>
+      </property>
+      <property name="toolTip" >
+       <string>Tempo map</string>
+      </property>
+      <property name="rootIsDecorated" >
+       <bool>false</bool>
+      </property>
+      <property name="uniformRowHeights" >
+       <bool>true</bool>
+      </property>
+      <column>
+       <property name="text" >
+        <string>Bar</string>
+       </property>
+      </column>
+      <column>
+       <property name="text" >
+        <string>Time</string>
+       </property>
+      </column>
+      <column>
+       <property name="text" >
+        <string>Tempo</string>
+       </property>
+      </column>
+      <column>
+       <property name="text" >
+        <string>Signature</string>
+       </property>
+      </column>
+     </widget>
+     <widget class="QGroupBox" name="TimeGroupBox" >
+      <property name="title" >
+       <string>Time</string>
+      </property>
+      <layout class="QGridLayout" >
+       <item row="0" column="0" >
+        <widget class="QLabel" name="FrameTextLabel" >
+         <property name="text" >
+          <string>T&amp;ime:</string>
+         </property>
+         <property name="alignment" >
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+         <property name="buddy" >
+          <cstring>FrameSpinBox</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1" colspan="3" >
+        <widget class="qtractorSpinBox" name="FrameSpinBox" >
+         <property name="minimumSize" >
+          <size>
+           <width>120</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="toolTip" >
+          <string>Time node</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0" >
+        <widget class="QLabel" name="TempoTextLabel" >
+         <property name="text" >
+          <string>&amp;Tempo:</string>
+         </property>
+         <property name="alignment" >
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+         <property name="buddy" >
+          <cstring>TempoSpinBox</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1" colspan="2" >
+        <widget class="QDoubleSpinBox" name="TempoSpinBox" >
+         <property name="toolTip" >
+          <string>Tempo (BPM)</string>
+         </property>
+         <property name="decimals" >
+          <number>1</number>
+         </property>
+         <property name="minimum" >
+          <double>1.0</double>
+         </property>
+         <property name="maximum" >
+          <double>1000.0</double>
+         </property>
+         <property name="singleStep" >
+          <double>0.1</double>
+         </property>
+         <property name="value" >
+          <double>120.0</double>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="3" >
+        <widget class="QComboBox" name="BeatTypeComboBox" >
+         <property name="toolTip" >
+          <string>Tempo beat type (divisor)</string>
+         </property>
+         <property name="editable" >
+          <bool>false</bool>
+         </property>
+         <property name="currentIndex" >
+          <number>1</number>
+         </property>
+         <item>
+          <property name="text" >
+           <string>2</string>
+          </property>
+         </item>
+         <item>
+          <property name="text" >
+           <string>4</string>
+          </property>
+         </item>
+         <item>
+          <property name="text" >
+           <string>8</string>
+          </property>
+         </item>
+         <item>
+          <property name="text" >
+           <string>16</string>
+          </property>
+         </item>
+         <item>
+          <property name="text" >
+           <string>32</string>
+          </property>
+         </item>
+         <item>
+          <property name="text" >
+           <string>64</string>
+          </property>
+         </item>
+         <item>
+          <property name="text" >
+           <string>128</string>
+          </property>
+         </item>
+         <item>
+          <property name="text" >
+           <string>256</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="2" column="0" >
+        <widget class="QLabel" name="BeatsPerBarTextLabel" >
+         <property name="text" >
+          <string>&amp;Signature:</string>
+         </property>
+         <property name="alignment" >
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+         <property name="buddy" >
+          <cstring>BeatsPerBarSpinBox</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1" >
+        <widget class="QSpinBox" name="BeatsPerBarSpinBox" >
+         <property name="toolTip" >
+          <string>Time signature (beats/bar)</string>
+         </property>
+         <property name="minimum" >
+          <number>2</number>
+         </property>
+         <property name="maximum" >
+          <number>128</number>
+         </property>
+         <property name="value" >
+          <number>4</number>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="2" >
+        <widget class="QLabel" name="BeatDivisorTextLabel" >
+         <property name="text" >
+          <string>/</string>
+         </property>
+         <property name="alignment" >
+          <set>Qt::AlignCenter</set>
+         </property>
+         <property name="buddy" >
+          <cstring>BeatsPerBarSpinBox</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="3" >
+        <widget class="QComboBox" name="BeatDivisorComboBox" >
+         <property name="toolTip" >
+          <string>Time signature (denominator)</string>
+         </property>
+         <property name="editable" >
+          <bool>false</bool>
+         </property>
+         <property name="currentIndex" >
+          <number>1</number>
+         </property>
+         <item>
+          <property name="text" >
+           <string>2</string>
+          </property>
+         </item>
+         <item>
+          <property name="text" >
+           <string>4</string>
+          </property>
+         </item>
+         <item>
+          <property name="text" >
+           <string>8</string>
+          </property>
+         </item>
+         <item>
+          <property name="text" >
+           <string>16</string>
+          </property>
+         </item>
+         <item>
+          <property name="text" >
+           <string>32</string>
+          </property>
+         </item>
+         <item>
+          <property name="text" >
+           <string>64</string>
+          </property>
+         </item>
+         <item>
+          <property name="text" >
+           <string>128</string>
+          </property>
+         </item>
+         <item>
+          <property name="text" >
+           <string>256</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="3" column="0" colspan="4" >
+        <spacer>
+         <property name="orientation" >
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" >
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" >
+     <property name="spacing" >
+      <number>4</number>
+     </property>
+     <property name="margin" >
+      <number>0</number>
+     </property>
+     <item>
+      <widget class="QPushButton" name="RefreshPushButton" >
+       <property name="toolTip" >
+        <string>Refresh tempo map</string>
+       </property>
+       <property name="text" >
+        <string>Re&amp;fresh</string>
+       </property>
+       <property name="icon" >
+        <iconset resource="../icons/qtractor.qrc" >:/icons/formRefresh.png</iconset>
+       </property>
+       <property name="shortcut" >
+        <string>Alt+F</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer>
+       <property name="orientation" >
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeType" >
+        <enum>QSizePolicy::MinimumExpanding</enum>
+       </property>
+       <property name="sizeHint" >
+        <size>
+         <width>20</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="AddPushButton" >
+       <property name="toolTip" >
+        <string>Add node</string>
+       </property>
+       <property name="text" >
+        <string>&amp;Add</string>
+       </property>
+       <property name="icon" >
+        <iconset resource="../icons/qtractor.qrc" >:/icons/formCreate.png</iconset>
+       </property>
+       <property name="shortcut" >
+        <string>Alt+A</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="UpdatePushButton" >
+       <property name="toolTip" >
+        <string>Update node</string>
+       </property>
+       <property name="text" >
+        <string>&amp;Update</string>
+       </property>
+       <property name="icon" >
+        <iconset resource="../icons/qtractor.qrc" >:/icons/formAccept.png</iconset>
+       </property>
+       <property name="shortcut" >
+        <string>Alt+U</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="RemovePushButton" >
+       <property name="toolTip" >
+        <string>Remove node</string>
+       </property>
+       <property name="text" >
+        <string>&amp;Remove</string>
+       </property>
+       <property name="icon" >
+        <iconset resource="../icons/qtractor.qrc" >:/icons/formRemove.png</iconset>
+       </property>
+       <property name="shortcut" >
+        <string>Alt+R</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="ClosePushButton" >
+       <property name="toolTip" >
+        <string>Close this dialog</string>
+       </property>
+       <property name="text" >
+        <string>Close</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <layoutdefault spacing="4" margin="8" />
+ <customwidgets>
+  <customwidget>
+   <class>qtractorSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qtractorSpinBox.h</header>
+  </customwidget>
+ </customwidgets>
+ <tabstops>
+  <tabstop>TimeScaleListView</tabstop>
+  <tabstop>FrameSpinBox</tabstop>
+  <tabstop>TempoSpinBox</tabstop>
+  <tabstop>BeatTypeComboBox</tabstop>
+  <tabstop>BeatsPerBarSpinBox</tabstop>
+  <tabstop>BeatDivisorComboBox</tabstop>
+  <tabstop>RefreshPushButton</tabstop>
+  <tabstop>AddPushButton</tabstop>
+  <tabstop>UpdatePushButton</tabstop>
+  <tabstop>RemovePushButton</tabstop>
+  <tabstop>ClosePushButton</tabstop>
+ </tabstops>
+ <resources>
+  <include location="../icons/qtractor.qrc" />
+ </resources>
+ <connections/>
+</ui>

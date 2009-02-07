@@ -178,6 +178,7 @@ public slots:
 	void viewRefresh();
 	void viewInstruments();
 	void viewBuses();
+	void viewTempoMap();
 	void viewOptions();
 
 	void transportBackward();

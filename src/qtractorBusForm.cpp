@@ -793,7 +793,7 @@ void qtractorBusForm::contextMenu ( const QPoint& /*pos*/ )
 
 	pAction = menu.addAction(
 		QIcon(":/icons/formRemove.png"),
-		tr("&Remove"), this, SLOT(deleteBus()));
+		tr("&Delete"), this, SLOT(deleteBus()));
 	pAction->setEnabled(canDeleteBus());
 
 	menu.addSeparator();

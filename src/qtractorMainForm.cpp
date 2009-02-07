@@ -62,6 +62,7 @@
 #include "qtractorShortcutForm.h"
 #include "qtractorInstrumentForm.h"
 #include "qtractorBusForm.h"
+#include "qtractorTimeScaleForm.h"
 
 #include "qtractorMidiEditorForm.h"
 #include "qtractorMidiEditor.h"
@@ -624,6 +625,9 @@ qtractorMainForm::qtractorMainForm (
 	QObject::connect(m_ui.viewBusesAction,
 		SIGNAL(triggered(bool)),
 		SLOT(viewBuses()));
+	QObject::connect(m_ui.viewTempoMapAction,
+		SIGNAL(triggered(bool)),
+		SLOT(viewTempoMap()));
 	QObject::connect(m_ui.viewOptionsAction,
 		SIGNAL(triggered(bool)),
 		SLOT(viewOptions()));
@@ -2741,8 +2745,16 @@ void qtractorMainForm::viewInstruments (void)
 // Show buses dialog.
 void qtractorMainForm::viewBuses (void)
 {
-	// Just set and show the instruments dialog...
+	// Just set and show the buses dialog...
 	qtractorBusForm(this).exec();
+}
+
+
+// Show tempo-map dialog.
+void qtractorMainForm::viewTempoMap (void)
+{
+	// Just set and show the tempo-map dialog...
+	qtractorTimeScaleForm(this).exec();
 }
 
 
