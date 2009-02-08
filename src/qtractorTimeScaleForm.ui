@@ -25,7 +25,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>512</width>
+    <width>480</width>
     <height>240</height>
    </rect>
   </property>
@@ -92,7 +92,7 @@
        <item row="0" column="0" >
         <widget class="QLabel" name="FrameTextLabel" >
          <property name="text" >
-          <string>T&amp;ime:</string>
+          <string>&amp;Bar/Time:</string>
          </property>
          <property name="alignment" >
           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -106,12 +106,12 @@
         <widget class="qtractorSpinBox" name="FrameSpinBox" >
          <property name="minimumSize" >
           <size>
-           <width>120</width>
+           <width>80</width>
            <height>0</height>
           </size>
          </property>
          <property name="toolTip" >
-          <string>Time node</string>
+          <string>Bar/Time node</string>
          </property>
         </widget>
        </item>

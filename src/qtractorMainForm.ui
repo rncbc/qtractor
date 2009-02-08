@@ -1646,7 +1646,7 @@
   </action>
   <action name="viewTempoMapAction" >
    <property name="text" >
-    <string>&amp;Tempo Map...</string>
+    <string>Tempo M&amp;ap...</string>
    </property>
    <property name="iconText" >
     <string>Tempo Map</string>

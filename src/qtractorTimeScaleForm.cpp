@@ -25,6 +25,10 @@
 #include "qtractorOptions.h"
 #include "qtractorSession.h"
 
+#include "qtractorMainForm.h"
+#include "qtractorTracks.h"
+#include "qtractorTrackView.h"
+
 #include <QItemDelegate>
 
 #include <QHeaderView>
@@ -129,6 +133,9 @@ qtractorTimeScaleForm::qtractorTimeScaleForm (
 	if (pSession)
 		setTimeScale(pSession->timeScale());
 
+	// FIXME: Don't let tempo beat type be modified...
+	m_ui.BeatTypeComboBox->setEnabled(false);
+
 	// Try to restore normal window positioning.
 	adjustSize();
 
@@ -142,7 +149,7 @@ qtractorTimeScaleForm::qtractorTimeScaleForm (
 
 	QObject::connect(m_ui.FrameSpinBox,
 		SIGNAL(valueChanged(unsigned long)),
-		SLOT(changed()));
+		SLOT(frameChanged(unsigned long)));
 	QObject::connect(m_ui.TempoSpinBox,
 		SIGNAL(valueChanged(double)),
 		SLOT(changed()));
@@ -183,7 +190,7 @@ void qtractorTimeScaleForm::setTimeScale ( qtractorTimeScale *pTimeScale )
 
 	m_ui.FrameSpinBox->setTimeScale(m_pTimeScale);
 
-	refresh();
+	refreshNodes();
 }
 
 qtractorTimeScale *qtractorTimeScaleForm::timeScale (void) const
@@ -207,12 +214,16 @@ void qtractorTimeScaleForm::setFrame ( unsigned long iFrame )
 
 	if (pNode) {
 		m_iDirtySetup++;
+		// Make this into view...
 		m_ui.FrameSpinBox->setValue(iFrame);
 		m_ui.TempoSpinBox->setValue(pNode->tempo);
 		m_ui.BeatTypeComboBox->setCurrentIndex(pNode->beatType - 1);
 		m_ui.BeatsPerBarSpinBox->setValue(int(pNode->beatsPerBar));
 		m_ui.BeatDivisorComboBox->setCurrentIndex(pNode->beatDivisor - 1);
+		// Done.
 		m_iDirtySetup = 0;
+		// Locate nearest list item...
+		setCurrentNode(pNode);
 	}
 
 	stabilizeForm();
@@ -232,7 +243,7 @@ bool qtractorTimeScaleForm::isDirty (void)
 
 
 // Refresh all list and views.
-void qtractorTimeScaleForm::refresh (void)
+void qtractorTimeScaleForm::refreshNodes (void)
 {
 	if (m_pTimeScale == NULL)
 		return;
@@ -246,29 +257,74 @@ void qtractorTimeScaleForm::refresh (void)
 			m_ui.TimeScaleListView, m_pTimeScale, pNode);
 		pNode = pNode->next();
 	}
+}
+
+void qtractorTimeScaleForm::refresh (void)
+{
+	refreshNodes();
+	frameChanged(frame());
 
 	m_iDirtyCount = 0;
+}
 
-	stabilizeForm();
+
+// Current node list accessors.
+void qtractorTimeScaleForm::setCurrentNode ( qtractorTimeScale::Node *pNode )
+{
+	m_iDirtySetup++;
+
+	int iItemCount = m_ui.TimeScaleListView->topLevelItemCount();
+	for (int i = 0; i < iItemCount; ++i) {
+		qtractorTimeScaleListItem *pNodeItem
+			= static_cast<qtractorTimeScaleListItem *> (
+				m_ui.TimeScaleListView->topLevelItem(i));
+		if (pNodeItem && pNodeItem->node() == pNode) {
+			m_ui.TimeScaleListView->setCurrentItem(pNodeItem);
+			break;
+		}
+	}
+
+	m_iDirtySetup = 0;
+}
+
+qtractorTimeScale::Node *qtractorTimeScaleForm::currentNode (void) const
+{
+	// Get current selected item...
+	QTreeWidgetItem *pItem = m_ui.TimeScaleListView->currentItem();
+	if (pItem == NULL)
+		return NULL;
+
+	// Just make it in current view...
+	qtractorTimeScaleListItem *pNodeItem
+		= static_cast<qtractorTimeScaleListItem *> (pItem);
+	if (pNodeItem == NULL)
+		return NULL;
+
+	// That's it...
+	return pNodeItem->node();
+}
+
+
+// Make given frame visble at the main tracks view.
+void qtractorTimeScaleForm::ensureVisibleFrame ( unsigned long iFrame )
+{
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm && pMainForm->tracks())
+		pMainForm->tracks()->trackView()->ensureVisibleFrame(iFrame);
 }
 
 
 // Time-scale node selection slot.
 void qtractorTimeScaleForm::selectNode (void)
 {
-	// Get current selected item, must not be a root one...
-	QTreeWidgetItem *pItem = m_ui.TimeScaleListView->currentItem();
-	if (pItem == NULL)
-		return;
-
-	// Just make it in current view...
-	qtractorTimeScaleListItem *pNodeItem
-		= static_cast<qtractorTimeScaleListItem *> (pItem);
-	if (pNodeItem == NULL)
+	if (m_iDirtySetup > 0)
 		return;
 
 	// Check if we need an update?...
-	qtractorTimeScale::Node *pNode = pNodeItem->node();
+	qtractorTimeScale::Node *pNode = currentNode();
+	if (pNode == NULL)
+		return;
+
 	if (m_iDirtyCount > 0) {
 		switch (QMessageBox::warning(this,
 			tr("Warning") + " - " QTRACTOR_TITLE,
@@ -294,8 +350,7 @@ void qtractorTimeScaleForm::selectNode (void)
 	m_ui.BeatsPerBarSpinBox->setValue(int(pNode->beatsPerBar));
 	m_ui.BeatDivisorComboBox->setCurrentIndex(pNode->beatDivisor - 1);
 
-	// FIXME: Don't let tempo beat type be modified...
-	m_ui.BeatTypeComboBox->setEnabled(false);
+	ensureVisibleFrame(pNode->frame);
 
 	m_iDirtySetup = 0;
 	m_iDirtyCount = 0;
@@ -310,8 +365,6 @@ unsigned int qtractorTimeScaleForm::flags (void) const
 	if (m_pTimeScale == NULL)
 		return 0;
 
-	unsigned int iFlags = 0;
-
 	unsigned long iFrame = frame();
 	qtractorTimeScale::Cursor cursor(m_pTimeScale);
 	qtractorTimeScale::Node *pNode = cursor.seekFrame(iFrame);
@@ -324,6 +377,8 @@ unsigned int qtractorTimeScaleForm::flags (void) const
 	unsigned short iBeatType = m_ui.BeatTypeComboBox->currentIndex() + 1;
 	unsigned short iBeatsPerBar = m_ui.BeatsPerBarSpinBox->value();
 	unsigned short iBeatDivisor = m_ui.BeatDivisorComboBox->currentIndex() + 1;
+
+	unsigned int iFlags = 0;
 
 	if (pNode && pNode->prev())
 		iFlags |= Remove;
@@ -440,6 +495,28 @@ void qtractorTimeScaleForm::removeNode (void)
 
 
 // Make changes due.
+void qtractorTimeScaleForm::frameChanged ( unsigned long iFrame )
+{
+	if (m_pTimeScale == NULL)
+		return;
+	if (m_iDirtySetup > 0)
+		return;
+
+	qtractorTimeScale::Cursor cursor(m_pTimeScale);
+	qtractorTimeScale::Node *pNode = cursor.seekFrame(iFrame);
+	if (pNode) {
+		iFrame = pNode->frameSnapToBar(iFrame);
+		pNode = cursor.seekFrame(iFrame);
+	}
+
+	if (pNode) setCurrentNode(pNode);
+
+	ensureVisibleFrame(iFrame);
+
+	m_iDirtyCount++;
+	stabilizeForm();
+}
+
 void qtractorTimeScaleForm::changed (void)
 {
 	if (m_iDirtySetup > 0)

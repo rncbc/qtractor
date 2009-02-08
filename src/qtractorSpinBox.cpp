@@ -218,9 +218,12 @@ void qtractorSpinBox::stepBy ( int iSteps )
 
 	if (m_pTimeScale) {
 		switch (m_pTimeScale->displayFormat()) {
-		case qtractorTimeScale::BBT:
-			iSteps *= int(m_pTimeScale->frameFromTick(1));
+		case qtractorTimeScale::BBT: {
+			qtractorTimeScale::Cursor cursor(m_pTimeScale);
+			qtractorTimeScale::Node *pNode = cursor.seekFrame(iValue);
+			iSteps *= int(pNode->frameFromBeat(pNode->beat + 1) - pNode->frame);
 			break;
+		}
 		case qtractorTimeScale::Time:
 			iSteps *= int(m_pTimeScale->sampleRate());
 			break;

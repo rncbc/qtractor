@@ -49,7 +49,7 @@ public:
 
 	bool isDirty();
 
-public slots:
+protected slots:
 
 	void reject();
 	void refresh();
@@ -59,6 +59,8 @@ public slots:
 	void addNode();
 	void updateNode();
 	void removeNode();
+
+	void frameChanged(unsigned long);
 
 	void changed();
 
@@ -71,6 +73,13 @@ protected:
 	enum { Add = 1, Update = 2, Remove = 4 };
 
 	unsigned int flags() const;
+
+	void refreshNodes();
+
+	void setCurrentNode(qtractorTimeScale::Node *pNode);
+	qtractorTimeScale::Node *currentNode() const;
+
+	void ensureVisibleFrame(unsigned long iFrame);
 
 private:
 

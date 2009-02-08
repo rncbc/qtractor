@@ -335,6 +335,7 @@ qtractorTimeScale::Node *qtractorTimeScale::addNode (
 		pPrev = m_cursor.seekFrame(iFrame);
 	}
 	// Either update existing node or add new one...
+	Node *pNext = (pPrev ? pPrev->next() : 0);
 	if (pPrev && pPrev->frame == iFrame) {
 		// Update exact matching node...
 		pNode = pPrev;
@@ -348,6 +349,14 @@ qtractorTimeScale::Node *qtractorTimeScale::addNode (
 		&& pPrev->beatDivisor == iBeatDivisor) {
 		// No need for a new node...
 		return pPrev;
+	} else if (pNext && pNext->tempo == fTempo
+		&& pNext->beatType == iBeatType
+		&& pNext->beatsPerBar == iBeatsPerBar
+		&& pNext->beatDivisor == iBeatDivisor) {
+		// Update next exact matching node...
+		pNode = pNext;
+		pNode->frame = iFrame;
+		pNode->bar = 0;
 	} else {
 		// Add/insert a new node...
 		pNode = new Node(this,
@@ -452,7 +461,7 @@ unsigned long qtractorTimeScale::frameFromText (
 			}
 			pNode = m_cursor.seekBar(bars);
 			if (pNode) {
-				beats += pNode->beat + bars * pNode->beatsPerBar;
+				beats += (bars - pNode->bar) * pNode->beatsPerBar;
 				ticks += pNode->tick + beats * pNode->ticksPerBeat;
 				iFrame = pNode->frameFromTick(ticks);
 			}

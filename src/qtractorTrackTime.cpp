@@ -29,6 +29,8 @@
 
 #include "qtractorMainForm.h"
 
+#include "qtractorTimeScaleForm.h"
+
 #include <QApplication>
 #include <QPainter>
 #include <QCursor>
@@ -626,9 +628,26 @@ void qtractorTrackTime::resetDragState (void)
 
 
 // Context menu event handler (dummy).
-void qtractorTrackTime::contextMenuEvent ( QContextMenuEvent * )
+void qtractorTrackTime::contextMenuEvent (
+	QContextMenuEvent *pContextMenuEvent )
 {
-	// Do exactly nothing; ignore event.
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm == NULL)
+		return;
+
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return;
+
+	// Direct snap positioning...
+	const QPoint& pos = viewportToContents(pContextMenuEvent->pos());
+	unsigned long iFrame = pSession->frameSnap(
+		pSession->frameFromPixel(pos.x() > 0 ? pos.x() : 0));
+
+	// Show tempo map dialog.
+	qtractorTimeScaleForm form(pMainForm);
+	form.setFrame(iFrame);
+	form.exec();
 }
 
 

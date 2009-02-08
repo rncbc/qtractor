@@ -92,6 +92,7 @@ qtractorMidiFileTempo::Node *qtractorMidiFileTempo::addNode (
 		pPrev = seekNode(iTick);
 	}
 	// Either update existing node or add new one...
+	Node *pNext = (pPrev ? pPrev->next() : 0);
 	if (pPrev && pPrev->tick == iTick) {
 		// Update exact matching node...
 		pNode = pPrev;
@@ -103,6 +104,13 @@ qtractorMidiFileTempo::Node *qtractorMidiFileTempo::addNode (
 		&& pPrev->beatDivisor == iBeatDivisor) {
 		// No need for a new node...
 		return pPrev;
+	} else if (pNext && pNext->tempo == fTempo
+		&& pNext->beatsPerBar == iBeatsPerBar
+		&& pNext->beatDivisor == iBeatDivisor) {
+		// Update next exact matching node...
+		pNode = pNext;
+		pNode->tick = iTick;
+		pNode->bar = 0;
 	} else {
 		// Add/insert a new node...
 		pNode = new Node(iTick, fTempo, iBeatsPerBar, iBeatDivisor);
