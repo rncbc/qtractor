@@ -70,6 +70,7 @@ HEADERS += src/qtractorAbout.h \
            src/qtractorSpinBox.h \
            src/qtractorThumbView.h \
            src/qtractorTimeScale.h \
+           src/qtractorTimeScaleCommand.h \
            src/qtractorTimeStretch.h \
            src/qtractorTimeStretcher.h \
            src/qtractorTrack.h \
@@ -159,6 +160,7 @@ SOURCES += src/main.cpp \
            src/qtractorSpinBox.cpp \
            src/qtractorThumbView.cpp \
            src/qtractorTimeScale.cpp \
+           src/qtractorTimeScaleCommand.cpp \
            src/qtractorTimeStretch.cpp \
            src/qtractorTimeStretcher.cpp \
            src/qtractorTrack.cpp \

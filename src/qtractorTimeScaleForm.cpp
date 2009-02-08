@@ -20,6 +20,7 @@
 *****************************************************************************/
 
 #include "qtractorTimeScaleForm.h"
+#include "qtractorTimeScaleCommand.h"
 
 #include "qtractorAbout.h"
 #include "qtractorOptions.h"
@@ -405,13 +406,18 @@ void qtractorTimeScaleForm::addNode (void)
 	if (m_pTimeScale == NULL)
 		return;
 
-	// TODO: Make it as an undoable command...
-	m_pTimeScale->addNode(
-		m_ui.FrameSpinBox->value(),
-		m_ui.TempoSpinBox->value(),
-		m_ui.BeatTypeComboBox->currentIndex() + 1,
-		m_ui.BeatsPerBarSpinBox->value(),
-		m_ui.BeatDivisorComboBox->currentIndex() + 1);
+	// Make it as an undoable command...
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return;
+
+	pSession->execute(
+		new qtractorTimeScaleAddNodeCommand(m_pTimeScale,
+			m_ui.FrameSpinBox->value(),
+			m_ui.TempoSpinBox->value(),
+			m_ui.BeatTypeComboBox->currentIndex() + 1,
+			m_ui.BeatsPerBarSpinBox->value(),
+			m_ui.BeatDivisorComboBox->currentIndex() + 1));
 
 	refresh();
 
@@ -433,14 +439,20 @@ void qtractorTimeScaleForm::updateNode (void)
 		pNode = cursor.seekFrame(iFrame);
 	}
 
-//	pNode->frame = iFrame;
-	pNode->tempo = m_ui.TempoSpinBox->value();
-	pNode->beatType = m_ui.BeatTypeComboBox->currentIndex() + 1;
-	pNode->beatsPerBar = m_ui.BeatsPerBarSpinBox->value();
-	pNode->beatDivisor = m_ui.BeatDivisorComboBox->currentIndex() + 1;
+	if (pNode == NULL)
+		return;
 
-	// TODO: Make it as an undoable command...
-	m_pTimeScale->updateNode(pNode);
+	// Make it as an undoable command...
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return;
+
+	pSession->execute(
+		new qtractorTimeScaleUpdateNodeCommand(m_pTimeScale, iFrame,
+			m_ui.TempoSpinBox->value(),
+			m_ui.BeatTypeComboBox->currentIndex() + 1,
+			m_ui.BeatsPerBarSpinBox->value(),
+			m_ui.BeatDivisorComboBox->currentIndex() + 1));
 
 	refresh();
 
@@ -485,8 +497,13 @@ void qtractorTimeScaleForm::removeNode (void)
 			return;
 	}
 
-	// TODO: Make it as an undoable command...
-	m_pTimeScale->removeNode(pNode);
+	// Make it as an undoable command...
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return;
+
+	pSession->execute(
+		new qtractorTimeScaleRemoveNodeCommand(m_pTimeScale, pNode));
 
 	refresh();
 
