@@ -52,10 +52,11 @@ qtractorSessionCommand::~qtractorSessionCommand (void)
 // Constructor.
 qtractorSessionTempoCommand::qtractorSessionTempoCommand (
 	qtractorSession *pSession, float fTempo, unsigned short iBeatType,
-	unsigned short iTicksPerBeat, unsigned short iBeatDivisor )
+	unsigned short iBeatsPerBar, unsigned short iBeatDivisor,
+	unsigned short iTicksPerBeat )
 	: qtractorSessionCommand(QObject::tr("session tempo"), pSession),
-		m_fTempo(0.0f), m_iBeatType(0), m_iTicksPerBeat(0), m_iBeatDivisor(0),
-		m_pClipCommand(NULL)
+		m_fTempo(0.0f), m_iBeatType(0), m_iBeatsPerBar(0), m_iBeatDivisor(0),
+		m_iTicksPerBeat(0), m_pClipCommand(NULL)
 {
 	// Tempo changes...
 	if (fTempo > 0.0f && fTempo != pSession->tempo())
@@ -64,10 +65,14 @@ qtractorSessionTempoCommand::qtractorSessionTempoCommand (
 		m_iBeatType = iBeatType;
 
 	// Time signature changes...
-	if (iTicksPerBeat > 0 && iTicksPerBeat != pSession->ticksPerBeat())
-		m_iTicksPerBeat = iTicksPerBeat;
+	if (iBeatsPerBar > 0 && iBeatsPerBar != pSession->beatsPerBar())
+		m_iBeatsPerBar = iBeatsPerBar;
 	if (iBeatDivisor > 0 && iBeatDivisor != pSession->beatDivisor())
 		m_iBeatDivisor = iBeatDivisor;
+
+	// Resolution changes...
+	if (iTicksPerBeat > 0 && iTicksPerBeat != pSession->ticksPerBeat())
+		m_iTicksPerBeat = iTicksPerBeat;
 
 	// Take care of time-stretching of all audio-clips...
 	if (m_fTempo > 0.0f) {
@@ -128,11 +133,11 @@ bool qtractorSessionTempoCommand::redo (void)
 	}
 
 	// Time signature changes...
-	unsigned short iTicksPerBeat = 0;
+	unsigned short iBeatsPerBar = 0;
 	unsigned short iBeatDivisor = 0;
-	if (m_iTicksPerBeat > 0) {
-		iTicksPerBeat = pSession->ticksPerBeat();
-		pSession->setTicksPerBeat(m_iTicksPerBeat);
+	if (m_iBeatsPerBar > 0) {
+		iBeatsPerBar = pSession->beatsPerBar();
+		pSession->setBeatsPerBar(m_iBeatsPerBar);
 	}
 	if (m_iBeatDivisor > 0) {
 		iBeatDivisor = pSession->beatDivisor();
@@ -140,6 +145,12 @@ bool qtractorSessionTempoCommand::redo (void)
 	}
 
 	// Time resolution changes...
+	unsigned short iTicksPerBeat = 0;
+	if (m_iTicksPerBeat > 0) {
+		iTicksPerBeat = pSession->ticksPerBeat();
+		pSession->setTicksPerBeat(m_iTicksPerBeat);
+	}
+
 	if (m_iBeatType > 0 || m_iTicksPerBeat > 0 || m_iBeatDivisor > 0)
 		pSession->updateTimeResolution();
 
@@ -163,10 +174,12 @@ bool qtractorSessionTempoCommand::redo (void)
 		m_fTempo = fTempo;
 	if (iBeatType > 0)
 		m_iBeatType = iBeatType;
-	if (iTicksPerBeat > 0)
-		m_iTicksPerBeat = iTicksPerBeat;
+	if (iBeatsPerBar > 0)
+		m_iBeatsPerBar = iBeatsPerBar;
 	if (iBeatDivisor > 0)
 		m_iBeatDivisor = iBeatDivisor;
+	if (iTicksPerBeat > 0)
+		m_iTicksPerBeat = iTicksPerBeat;
 
 	return true;
 }
@@ -240,14 +253,16 @@ qtractorSessionEditCommand::qtractorSessionEditCommand (
 	// Append tempo/resolution changes too...
 	float fTempo = properties.timeScale.tempo();
 	unsigned short iBeatType = properties.timeScale.beatType();
-	unsigned short iTicksPerBeat = properties.timeScale.ticksPerBeat();
+	unsigned short iBeatsPerBar = properties.timeScale.beatsPerBar();
 	unsigned short iBeatDivisor = properties.timeScale.beatDivisor();
+	unsigned short iTicksPerBeat = properties.timeScale.ticksPerBeat();
 	if (pSession->tempo() != fTempo ||
 		pSession->beatType() != iBeatType ||
-		pSession->ticksPerBeat() != iTicksPerBeat ||
-		pSession->beatDivisor()  != iBeatDivisor) {
+		pSession->beatsPerBar()  != iBeatsPerBar ||
+		pSession->beatDivisor()  != iBeatDivisor ||
+		pSession->ticksPerBeat() != iTicksPerBeat) {
 		m_pTempoCommand = new qtractorSessionTempoCommand(pSession,
-			fTempo, iBeatType, iTicksPerBeat, iBeatDivisor);
+			fTempo, iBeatType, iBeatsPerBar, iBeatDivisor, iTicksPerBeat);
 	}
 
 }

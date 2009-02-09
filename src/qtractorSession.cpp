@@ -431,12 +431,6 @@ unsigned short qtractorSession::beatDivisor (void) const
 }
 
 
-bool qtractorSession::beatIsBar ( unsigned int iBeat ) const
-{
-	return ((iBeat % m_props.timeScale.beatsPerBar()) == 0);
-}
-
-
 // Pixels per beat (width).
 void qtractorSession::setPixelsPerBeat ( unsigned short iPixelsPerBeat )
 {
@@ -507,18 +501,6 @@ void qtractorSession::setEditTail ( unsigned long iEditTail )
 unsigned long qtractorSession::editTail (void) const
 {
 	return m_iEditTail;
-}
-
-
-// Pixel/Beat number conversion.
-unsigned int qtractorSession::beatFromPixel ( unsigned int x )
-{
-	return m_props.timeScale.beatFromPixel(x);
-}
-
-unsigned int qtractorSession::pixelFromBeat ( unsigned int iBeat )
-{ 
-	return m_props.timeScale.pixelFromBeat(iBeat);
 }
 
 

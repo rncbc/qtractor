@@ -106,10 +106,15 @@ void qtractorThumbView::updateContents (void)
 
 	// Local contents length (in frames).
 	m_iContentsLength = pSession->sessionLength();
-	if (m_iContentsLength > 0)
-		m_iContentsLength += pSession->frameFromBeat(2 * pSession->beatsPerBar());
-	else
-		m_iContentsLength += pSession->frameFromPixel(pTracks->trackView()->width());
+	if (m_iContentsLength > 0) {
+		qtractorTimeScale::Cursor cursor(pSession->timeScale());
+		qtractorTimeScale::Node *pNode = cursor.seekFrame(m_iContentsLength);
+		m_iContentsLength += pNode->frameFromBeat(
+			pNode->beat + 2 * pSession->beatsPerBar()) - pNode->frame;
+	} else {
+		m_iContentsLength += pSession->frameFromPixel(
+			pTracks->trackView()->width());
+	}
 
 	int ch = pTracks->trackView()->contentsHeight();
 	int f2 = 1 + (m_iContentsLength / w);

@@ -249,7 +249,10 @@ void qtractorTrackView::updateContentsWidth ( int iContentsWidth )
 		int iSessionWidth = pSession->pixelFromFrame(pSession->sessionLength());
 		if (iContentsWidth < iSessionWidth)
 			iContentsWidth = iSessionWidth;
-		iContentsWidth += pSession->pixelFromBeat(2 * pSession->beatsPerBar());
+		qtractorTimeScale::Cursor cursor(pSession->timeScale());
+		qtractorTimeScale::Node *pNode = cursor.seekPixel(iContentsWidth);
+		iContentsWidth += pNode->pixelFromBeat(
+			pNode->beat + 2 * pNode->beatsPerBar) - pNode->pixel;
 		if (iContentsWidth < qtractorScrollView::width())
 			iContentsWidth += qtractorScrollView::width();
 		m_iEditHeadX = pSession->pixelFromFrame(pSession->editHead());
@@ -880,6 +883,10 @@ qtractorTrack *qtractorTrackView::dragDropTrack (
 		// First test as a MIDI file...
 		if (m_dropType == qtractorTrack::None
 			|| m_dropType == qtractorTrack::Midi) {
+			int x0 = m_posDrag.x();
+			qtractorTimeScale::Cursor cursor(pSession->timeScale());
+			qtractorTimeScale::Node *pNode = cursor.seekPixel(x0);
+			unsigned long t1, t0 = pNode->tickFromPixel(x0);
 			qtractorMidiFile file;
 			if (file.open(pDropItem->path)) {
 				qtractorMidiSequence seq;
@@ -887,11 +894,12 @@ qtractorTrack *qtractorTrackView::dragDropTrack (
 				if (pDropItem->channel < 0) {
 					int iTracks = (file.format() == 1 ? file.tracks() : 16);
 					for (int iTrackChannel = 0;
-						iTrackChannel < iTracks; iTrackChannel++) {
+							iTrackChannel < iTracks; iTrackChannel++) {
 						if (file.readTrack(&seq, iTrackChannel)
 							&& seq.duration() > 0) {
-							m_rectDrag.setWidth(
-								pSession->pixelFromTick(seq.duration()));
+							t1 = t0 + seq.duration();
+							pNode = cursor.seekTick(t1);
+							m_rectDrag.setWidth(pNode->pixelFromTick(t1) - x0);
 							pDropItem->rect = m_rectDrag;
 							m_rectDrag.translate(0, m_rectDrag.height() + 4);
 						}
@@ -900,8 +908,9 @@ qtractorTrack *qtractorTrackView::dragDropTrack (
 						m_dropType = qtractorTrack::Midi;
 				} else if (file.readTrack(&seq, pDropItem->channel)
 					&& seq.duration() > 0) {
-					m_rectDrag.setWidth(
-						pSession->pixelFromTick(seq.duration()));
+					t1 = t0 + seq.duration();
+					pNode = cursor.seekTick(t1);
+					m_rectDrag.setWidth(pNode->pixelFromTick(t1) - x0);
 					pDropItem->rect = m_rectDrag;
 					m_rectDrag.translate(0, m_rectDrag.height() + 4);
 					if (m_dropType == qtractorTrack::None)

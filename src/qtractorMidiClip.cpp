@@ -485,7 +485,8 @@ void qtractorMidiClip::draw ( QPainter *pPainter, const QRect& clipRect,
 
 	pNode = cursor.seekFrame(iFrameStart);	
 	unsigned long iTimeStart = pNode->tickFromFrame(iFrameStart);
-	unsigned long iTimeEnd   = pSession->tickFromPixel(cx + clipRect.width());
+	pNode = cursor.seekPixel(cx + clipRect.width());	
+	unsigned long iTimeEnd = pNode->tickFromPixel(cx + clipRect.width());
 
 	const QColor& fg = track()->foreground();
 	pPainter->setPen(fg);

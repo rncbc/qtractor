@@ -105,8 +105,6 @@ public:
 	void setBeatDivisor(unsigned short iBeatDivisor);
 	unsigned short beatDivisor() const;
 
-	bool beatIsBar(unsigned int iBeat) const;
-
 	// Horizontal zoom factor.
 	void setHorizontalZoom(unsigned short iHorizontalZoom);
 	unsigned short horizontalZoom() const;
@@ -122,10 +120,6 @@ public:
 	// Beat divisor (snap) accessors.
 	void setSnapPerBeat(unsigned short iSnapPerBeat);
 	unsigned short snapPerBeat(void) const;
-
-	// Pixel/Beat number conversion.
-	unsigned int beatFromPixel(unsigned int x);
-	unsigned int pixelFromBeat(unsigned int iBeat);
 
 	// Pixel/Tick number conversion.
 	unsigned long tickFromPixel(unsigned int x);
