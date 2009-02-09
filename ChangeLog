@@ -5,6 +5,10 @@ ChangeLog
 
 CVS HEAD
 
+- Complete new time-scale infrastructure is now in place --
+  the one which will support tempo and time-signature maps,
+  in the future. (HIGHLY EXPERIMENTAL)
+
 - An expedite MIDI clip quantize command is now available
   from the main track view menu (Edit/Clip/Quantize), which
   simply applies the current snap-to-beat setting to a MIDI
@@ -13,10 +17,6 @@ CVS HEAD
 - Fixed that hideous bug affecting overlapped audio clips
   when playhead gets moved backward, causing the playback
   of those audio clips in particular, go out of sync.
-
-- Complete new time-scale infrastructure is now in place --
-  the one which will support tempo and time-signature maps,
-  in the future. (HIGHLY EXPERIMENTAL)
 
 - Tracks are now limited to their minimum height, specially
   effective in face of vertical zooming.

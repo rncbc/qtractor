@@ -47,6 +47,8 @@ public:
 	void setFrame(unsigned long iFrame);
 	unsigned long frame() const;
 
+	unsigned short bar() const;
+
 	bool isDirty();
 
 protected slots:
@@ -60,6 +62,7 @@ protected slots:
 	void updateNode();
 	void removeNode();
 
+	void barChanged(int);
 	void frameChanged(unsigned long);
 
 	void changed();
