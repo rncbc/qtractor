@@ -449,8 +449,9 @@ void qtractorMidiOutputThread::trackSync ( qtractorTrack *pTrack,
 		unsigned long le = m_pSession->loopEnd();
 		if (iFrameStart < le) {
 			long iTimeStart = pMidiEngine->timeStart();
-			pMidiEngine->setTimeStart(
-				iTimeStart + m_pSession->tickFromFrame(le - ls));
+			pMidiEngine->setTimeStart(iTimeStart
+				+ m_pSession->tickFromFrame(le)
+				- m_pSession->tickFromFrame(ls));
 			trackClipSync(pTrack, iFrameStart, le);
 			pMidiEngine->setTimeStart(iTimeStart);
 			iFrameStart = ls;
@@ -1369,8 +1370,8 @@ void qtractorMidiEngine::restartLoop (void)
 {
 	qtractorSession *pSession = session();
 	if (pSession && pSession->isLooping()) {
-		m_iTimeStart -= (long) pSession->tickFromFrame(
-			pSession->loopEnd() - pSession->loopStart());
+		m_iTimeStart -= (long) (pSession->tickFromFrame(pSession->loopEnd())
+			- pSession->tickFromFrame(pSession->loopStart()));
 		m_iTimeStart += m_iTimeDelta; // Drift correction...
 		m_iTimeDelta  = 0;
 	}
