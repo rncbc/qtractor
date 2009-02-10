@@ -383,18 +383,23 @@ bool qtractorClipCommand::execute ( bool bRedo )
 			if (pTrack->trackType() == qtractorTrack::Audio
 				&& pItem->timeStretch > 0.0f)
 				pAudioClip = static_cast<qtractorAudioClip *> (pClip);
-			if (pAudioClip)
+			if (pAudioClip) {
 				fOldTimeStretch = pAudioClip->timeStretch();
+				pAudioClip->close(true);	// Scrap peak file.
+			}
+			if (iOldStart != pItem->clipStart)
+				pTrack->unlinkClip(pClip);
 			pClip->setClipStart(pItem->clipStart);
 			pClip->setClipOffset(pItem->clipOffset);
 			pClip->setClipLength(pItem->clipLength);
 			pClip->setFadeInLength(pItem->fadeInLength);
 			pClip->setFadeOutLength(pItem->fadeOutLength);
-			if (pAudioClip) {
+			if (pAudioClip)
 				pAudioClip->setTimeStretch(pItem->timeStretch);
-				pAudioClip->close(true);	// Scrap peak file.
-			}
-			pClip->open();
+			if (iOldStart != pItem->clipStart)
+				pTrack->addClip(pClip);
+			else
+				pClip->open();
 			pItem->clipStart  = iOldStart;
 			pItem->clipOffset = iOldOffset;
 			pItem->clipLength = iOldLength;

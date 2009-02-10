@@ -9,6 +9,10 @@ CVS HEAD
   the one which will support tempo and time-signature maps,
   in the future. (HIGHLY EXPERIMENTAL)
 
+- Moving and resizing individual clips now cares for track
+  proper ordering and overlapping changes, avoiding nasty
+  out of sequence clips and other unpredictable effects.
+
 - An expedite MIDI clip quantize command is now available
   from the main track view menu (Edit/Clip/Quantize), which
   simply applies the current snap-to-beat setting to a MIDI
