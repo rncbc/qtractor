@@ -132,10 +132,12 @@ public:
 	void setNotifyObject  (QObject *pNotifyObject);
 	void setNotifyMmcType (QEvent::Type eNotifyMmcType);
 	void setNotifyCtlType (QEvent::Type eNotifyCtlType);
+	void setNotifySppType (QEvent::Type eNotifySppType);
 
 	QObject     *notifyObject() const;
 	QEvent::Type notifyMmcType() const;
 	QEvent::Type notifyCtlType() const;
+	QEvent::Type notifySppType() const;
 
 	// Control bus accessors.
 	void setControlBus(bool bControlBus);
@@ -152,6 +154,9 @@ public:
 		int iTrack, bool bOn) const;
 	void sendMmcCommand(qtractorMmcEvent::Command cmd,
 		unsigned char *pMmcData = NULL, unsigned short iMmcData = 0) const;
+
+	// SPP dispatch special command.
+	void sendSppCommand(int iCmdType, unsigned short iSongPos = 0) const;
 
 	// Document element methods.
 	bool loadElement(qtractorSessionDocument *pDocument,
@@ -219,6 +224,7 @@ private:
 	QObject      *m_pNotifyObject;
 	QEvent::Type  m_eNotifyMmcType;
 	QEvent::Type  m_eNotifyCtlType;
+	QEvent::Type  m_eNotifySppType;
 
 	// The assigned control buses.
 	bool             m_bControlBus;
@@ -404,6 +410,30 @@ private:
 	unsigned short m_channel;
 	unsigned short m_controller;
 	unsigned short m_value;
+};
+
+
+//----------------------------------------------------------------------
+// qtractorMidiSppEvent - MIDI SPP custom event.
+//
+
+class qtractorMidiSppEvent : public QEvent
+{
+public:
+
+	// Contructor.
+	qtractorMidiSppEvent(QEvent::Type eType, int iCmdType, unsigned short iSongPos)
+		: QEvent(eType), m_iCmdType(iCmdType), m_iSongPos(iSongPos) {}
+
+	// Accessors.
+	int            cmdType() const { return m_iCmdType; }
+	unsigned short songPos() const { return m_iSongPos; }
+
+private:
+
+	// Instance variables.
+	int            m_iCmdType;
+	unsigned short m_iSongPos;
 };
 
 

@@ -550,6 +550,7 @@ qtractorMidiEngine::qtractorMidiEngine ( qtractorSession *pSession )
 	m_pNotifyObject  = NULL;
 	m_eNotifyMmcType = QEvent::None;
 	m_eNotifyCtlType = QEvent::None;
+	m_eNotifySppType = QEvent::None;
 
 	m_bControlBus    = false;
 	m_pIControlBus   = NULL;
@@ -862,6 +863,21 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 		data1    = (iSysex & 0x007f);
 		data2    = (iSysex & 0x3f80) >> 7;
 		break;
+	case SND_SEQ_EVENT_START:
+	case SND_SEQ_EVENT_STOP:
+	case SND_SEQ_EVENT_CONTINUE:
+	case SND_SEQ_EVENT_SONGPOS:
+		// Trap controller commands...
+		if (m_pIControlBus && m_pIControlBus->alsaPort() == iAlsaPort) {
+			// Post the stuffed event...
+			if (m_pNotifyObject) {
+				QApplication::postEvent(m_pNotifyObject,
+					new qtractorMidiSppEvent(m_eNotifySppType,
+						int(pEv->type), pEv->data.control.value));
+			}
+		}
+		// Not handled any longer.
+		return;
 	case SND_SEQ_EVENT_SYSEX:
 		type     = qtractorMidiEvent::SYSEX;
 		pSysex   = (unsigned char *) pEv->data.ext.ptr;
@@ -1499,6 +1515,11 @@ void qtractorMidiEngine::setNotifyCtlType ( QEvent::Type eNotifyCtlType )
 	m_eNotifyCtlType = eNotifyCtlType;
 }
 
+void qtractorMidiEngine::setNotifySppType ( QEvent::Type eNotifySppType )
+{
+	m_eNotifySppType = eNotifySppType;
+}
+
 
 QObject *qtractorMidiEngine::notifyObject (void) const
 {
@@ -1513,6 +1534,11 @@ QEvent::Type qtractorMidiEngine::notifyMmcType (void) const
 QEvent::Type qtractorMidiEngine::notifyCtlType (void) const
 {
 	return m_eNotifyCtlType;
+}
+
+QEvent::Type qtractorMidiEngine::notifySppType (void) const
+{
+	return m_eNotifySppType;
 }
 
 
@@ -1684,6 +1710,37 @@ void qtractorMidiEngine::sendMmcCommand ( qtractorMmcEvent::Command cmd,
 
 	// Done.
 	delete pSysex;
+}
+
+
+// SPP dispatch special command.
+void qtractorMidiEngine::sendSppCommand ( int iCmdType, unsigned short iSongPos ) const
+{
+	// We surely need a output control bus...
+	if (m_pOControlBus == NULL)
+		return;
+
+	// Initialize sequencer event...
+	snd_seq_event_t ev;
+	snd_seq_ev_clear(&ev);
+
+	// Addressing...
+	snd_seq_ev_set_source(&ev, m_pOControlBus->alsaPort());
+	snd_seq_ev_set_subs(&ev);
+
+	// The event will be direct...
+	snd_seq_ev_set_direct(&ev);
+
+	// Set command parameters...
+	// - SND_SEQ_EVENT_START
+	// - SND_SEQ_EVENT_STOP
+	// - SND_SEQ_EVENT_CONTINUE
+	// - SND_SEQ_EVENT_SONGPOS
+	ev.type = snd_seq_event_type(iCmdType);
+	ev.data.control.value = iSongPos;
+
+	// Bail out...
+	snd_seq_event_output_direct(m_pAlsaSeq, &ev);
 }
 
 

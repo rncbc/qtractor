@@ -39,6 +39,7 @@ class qtractorConnections;
 class qtractorMixer;
 class qtractorMmcEvent;
 class qtractorMidiControlEvent;
+class qtractorMidiSppEvent;
 class qtractorSpinBox;
 
 class qtractorMidiEditorForm;
@@ -241,6 +242,7 @@ protected:
 
 	void mmcEvent(qtractorMmcEvent *pMmcEvent);
 	void midiControlEvent(qtractorMidiControlEvent *pCtlEvent);
+	void midiSppEvent(qtractorMidiSppEvent *pSppEvent);
 
 	bool queryClose();
 
@@ -266,6 +268,8 @@ protected:
 	void setStep(int iStep);
 
 	void setTrack(int scmd, int iTrack, bool bOn);
+
+	void setSongPos(unsigned short iSongPos);
 
 	void updateSession();
 	void updateRecentFiles(const QString& sFilename);

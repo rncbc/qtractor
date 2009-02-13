@@ -5,6 +5,10 @@ ChangeLog
 
 CVS HEAD
 
+- Primordial attempt to include MIDI Song Position Pointer
+  (SPP), Song Start, Stop and Continue sequencing support.
+  (EXPERIMENTAL)
+
 - Complete new time-scale infrastructure is now in place --
   the one which will support tempo and time-signature maps,
   in the future. (HIGHLY EXPERIMENTAL)

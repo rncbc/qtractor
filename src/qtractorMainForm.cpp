@@ -125,6 +125,7 @@ static const char *s_pszTemplateExt  = "qtt";
 #define QTRACTOR_BUFF_EVENT     QEvent::Type(QEvent::User + 5)
 #define QTRACTOR_MMC_EVENT      QEvent::Type(QEvent::User + 6)
 #define QTRACTOR_CTL_EVENT      QEvent::Type(QEvent::User + 7)
+#define QTRACTOR_SPP_EVENT      QEvent::Type(QEvent::User + 8)
 
 
 //-------------------------------------------------------------------------
@@ -208,6 +209,7 @@ qtractorMainForm::qtractorMainForm (
 		pMidiEngine->setNotifyObject(this);
 		pMidiEngine->setNotifyMmcType(QTRACTOR_MMC_EVENT);
 		pMidiEngine->setNotifyCtlType(QTRACTOR_CTL_EVENT);
+		pMidiEngine->setNotifySppType(QTRACTOR_SPP_EVENT);
 	}
 
 #ifdef HAVE_SIGNAL_H
@@ -1122,6 +1124,10 @@ void qtractorMainForm::customEvent ( QEvent *pEvent )
 	case QTRACTOR_CTL_EVENT:
 		// Contrller event handling...
 		midiControlEvent(static_cast<qtractorMidiControlEvent *> (pEvent));
+		break;
+	case QTRACTOR_SPP_EVENT:
+		// SPP event handling...
+		midiSppEvent(static_cast<qtractorMidiSppEvent *> (pEvent));
 		// Fall thru.
 	default:
 		break;
@@ -1290,6 +1296,38 @@ void qtractorMainForm::midiControlEvent ( qtractorMidiControlEvent *pCtlEvent )
 	}
 
 	appendMessages("CTL: " + sCtlText);
+}
+
+
+// Custom MIDI SPP  event handler.
+void qtractorMainForm::midiSppEvent ( qtractorMidiSppEvent *pSppEvent )
+{
+	QString sSppText;
+	switch (pSppEvent->cmdType()) {
+	case SND_SEQ_EVENT_START:
+		sSppText = tr("START");
+		setSongPos(0);
+		setPlaying(true);
+		break;
+	case SND_SEQ_EVENT_STOP:
+		sSppText = tr("STOP");
+		setPlaying(false);
+		break;
+	case SND_SEQ_EVENT_CONTINUE:
+		sSppText = tr("CONTINUE");
+		setPlaying(true);
+		break;
+	case SND_SEQ_EVENT_SONGPOS:
+		sSppText = tr("SONGPOS %1").arg(pSppEvent->songPos());
+		setSongPos(pSppEvent->songPos());
+		break;
+	default:
+		sSppText = tr("Not implemented");
+		break;
+	}
+
+	appendMessages("SPP: " + sSppText);
+	stabilizeForm();
 }
 
 
@@ -3088,9 +3126,18 @@ void qtractorMainForm::transportPlay (void)
 	// Toggle playing...
 	bool bPlaying = !m_pSession->isPlaying();
 	if (setPlaying(bPlaying)) {
-		// Send MMC PLAY/STOP command...
-		m_pSession->midiEngine()->sendMmcCommand(bPlaying ?
-			qtractorMmcEvent::PLAY : qtractorMmcEvent::STOP);
+		qtractorMidiEngine *pMidiEngine = m_pSession->midiEngine();
+		if (pMidiEngine) {
+			// Send MMC PLAY/STOP command...
+			pMidiEngine->sendMmcCommand(bPlaying
+				? qtractorMmcEvent::PLAY
+				: qtractorMmcEvent::STOP);
+			pMidiEngine->sendSppCommand(bPlaying
+				? (m_pSession->playHead() > 0
+					? SND_SEQ_EVENT_CONTINUE
+					: SND_SEQ_EVENT_START)
+				: SND_SEQ_EVENT_STOP);
+		}
 	}
 
 	stabilizeForm();
@@ -3480,6 +3527,13 @@ void qtractorMainForm::setTrack ( int scmd, int iTrack, bool bOn )
 			stabilizeForm();
 		}
 	}
+}
+
+
+void qtractorMainForm::setSongPos ( unsigned short iSongPos )
+{
+	m_pSession->setPlayHead(m_pSession->frameFromSongPos(iSongPos));
+	m_iTransportUpdate++;
 }
 
 
@@ -4188,6 +4242,8 @@ void qtractorMainForm::timerSlot (void)
 			if (!pAudioEngine->isFreewheel()) {
 				pMidiEngine->sendMmcLocate(
 					m_pSession->locateFromFrame(iPlayHead));
+				pMidiEngine->sendSppCommand(SND_SEQ_EVENT_SONGPOS,
+					m_pSession->songPosFromFrame(iPlayHead));
 			}
 		}
 	}
@@ -4218,6 +4274,7 @@ void qtractorMainForm::timerSlot (void)
 				if (setPlaying(false)) {
 					// Send MMC STOP command...
 					pMidiEngine->sendMmcCommand(qtractorMmcEvent::STOP);
+					pMidiEngine->sendSppCommand(SND_SEQ_EVENT_STOP);
 				}
 			}
 			// Make it thru...

@@ -581,6 +581,19 @@ unsigned long qtractorSession::locateFromFrame ( unsigned long iFrame ) const
 }
 
 
+
+// Song position pointer (SPP=MIDI beats) to frame converters.
+unsigned long qtractorSession::frameFromSongPos ( unsigned short iSongPos )
+{
+	return frameFromTick((iSongPos * ticksPerBeat()) >> 2);
+}
+
+unsigned short qtractorSession::songPosFromFrame ( unsigned long iFrame )
+{
+	return ((tickFromFrame(iFrame) << 2) / ticksPerBeat());
+}
+
+
 // Update scale divisor factors.
 void qtractorSession::updateTimeScale (void)
 {
