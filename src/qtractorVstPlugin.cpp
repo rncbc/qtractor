@@ -896,6 +896,7 @@ void qtractorVstPlugin::openEditor ( QWidget */*pParent*/ )
 		| Qt::WindowTitleHint
 		| Qt::WindowSystemMenuHint
 		| Qt::WindowMinMaxButtonsHint
+		| Qt::WindowCloseButtonHint
 		| Qt::Tool;
 
 	m_pEditorWidget = new EditorWidget(NULL, wflags);

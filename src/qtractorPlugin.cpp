@@ -628,7 +628,8 @@ qtractorPluginForm *qtractorPlugin::form (void)
 		#endif
 			| Qt::WindowTitleHint
 			| Qt::WindowSystemMenuHint
-			| Qt::WindowMinMaxButtonsHint;
+			| Qt::WindowMinMaxButtonsHint
+			| Qt::WindowCloseButtonHint;
 		qtractorOptions *pOptions = qtractorOptions::getInstance();
 		if (pOptions && pOptions->bKeepToolsOnTop) {
 		//	pParent = qtractorMainForm::getInstance();
