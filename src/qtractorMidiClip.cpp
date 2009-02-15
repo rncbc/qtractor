@@ -148,6 +148,7 @@ bool qtractorMidiClip::openMidiFile ( qtractorMidiFile *pFile,
 		} else {
 			// SMF format 1 (2 tracks, 1 channel)
 			iTrackChannel = 1;
+			iFormat = 1;
 			iTracks++;
 		}
 		// That's it.
