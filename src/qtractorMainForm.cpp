@@ -768,11 +768,13 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 	Qt::WindowFlags wflags = Qt::Window
 #if QT_VERSION >= 0x040200
 		| Qt::CustomizeWindowHint
+#if QT_VERSION >= 0x040500
+		| Qt::WindowCloseButtonHint
+#endif
 #endif
 		| Qt::WindowTitleHint
 		| Qt::WindowSystemMenuHint
-		| Qt::WindowMinMaxButtonsHint
-		| Qt::WindowCloseButtonHint;
+		| Qt::WindowMinMaxButtonsHint;
 	if (m_pOptions->bKeepToolsOnTop) {
 		pParent = this;
 		wflags |= Qt::Tool;

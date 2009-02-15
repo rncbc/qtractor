@@ -538,11 +538,13 @@ bool qtractorMidiClip::startEditor ( QWidget *pParent )
 		Qt::WindowFlags wflags = Qt::Window
 		#if QT_VERSION >= 0x040200
 			| Qt::CustomizeWindowHint
+		#if QT_VERSION >= 0x040500
+			| Qt::WindowCloseButtonHint
+		#endif
 		#endif
 			| Qt::WindowTitleHint
 			| Qt::WindowSystemMenuHint
-			| Qt::WindowMinMaxButtonsHint
-			| Qt::WindowCloseButtonHint;
+			| Qt::WindowMinMaxButtonsHint;
 		qtractorOptions *pOptions = qtractorOptions::getInstance();
 		if (pOptions && pOptions->bKeepToolsOnTop)
 			wflags |= Qt::Tool;
