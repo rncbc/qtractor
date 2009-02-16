@@ -5,6 +5,12 @@ ChangeLog
 
 CVS HEAD
 
+- Time/frame spin-boxes now allow to step change each field
+  individually, depending on the cursor beam position.
+
+- Make sure that Transport/Follow playhead option is only
+  effective when playback is actually rolling.
+
 - Primordial attempt to include MIDI Song Position Pointer
   (SPP), Song Start, Stop and Continue sequencing support.
   (EXPERIMENTAL)

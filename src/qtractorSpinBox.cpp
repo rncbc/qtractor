@@ -94,6 +94,8 @@ void qtractorSpinBox::updateDisplayFormat (void)
 // Nominal value (in frames) accessors.
 void qtractorSpinBox::setValue ( unsigned long iValue, bool bNotifyChange )
 {
+	int iCursorPos = QAbstractSpinBox::lineEdit()->cursorPosition();
+
 	if (iValue < m_iMinimumValue)
 		iValue = m_iMinimumValue;
 	if (iValue > m_iMaximumValue && m_iMaximumValue > m_iMinimumValue)
@@ -109,6 +111,8 @@ void qtractorSpinBox::setValue ( unsigned long iValue, bool bNotifyChange )
 		if (bNotifyChange && bValueChanged)
 			emit valueChanged(iValue);
 	}
+
+	QAbstractSpinBox::lineEdit()->setCursorPosition(iCursorPos);
 }
 
 unsigned long qtractorSpinBox::value (void) const
@@ -214,6 +218,8 @@ void qtractorSpinBox::stepBy ( int iSteps )
 	qDebug("qtractorSpinBox[%p]::stepBy(%d)", this, iSteps);
 #endif
 
+	int iCursorPos = QAbstractSpinBox::lineEdit()->cursorPosition();
+	
 	long iValue = long(value());
 
 	if (m_pTimeScale) {
@@ -221,12 +227,29 @@ void qtractorSpinBox::stepBy ( int iSteps )
 		case qtractorTimeScale::BBT: {
 			qtractorTimeScale::Cursor cursor(m_pTimeScale);
 			qtractorTimeScale::Node *pNode = cursor.seekFrame(iValue);
-			iSteps *= int(pNode->frameFromBeat(pNode->beat + 1) - pNode->frame);
+			unsigned long iFrame = pNode->frame;
+			const QString& sText = QAbstractSpinBox::lineEdit()->text();
+			int iPos = sText.section('.', 0, 0).length() + 1;
+			if (iCursorPos < iPos)
+				iFrame = pNode->frameFromBar(pNode->bar + 1);
+			else if (iCursorPos < iPos + sText.section('.', 1, 1).length() + 1)
+				iFrame = pNode->frameFromBeat(pNode->beat + 1);
+			else
+				iFrame = pNode->frameFromTick(pNode->tick + 1);
+			iSteps *= int(iFrame - pNode->frame);
 			break;
 		}
-		case qtractorTimeScale::Time:
-			iSteps *= int(m_pTimeScale->sampleRate());
+		case qtractorTimeScale::Time: {
+			const QString& sText = QAbstractSpinBox::lineEdit()->text();
+			int iPos = sText.section(':', 0, 0).length() + 1;
+			if (iCursorPos < iPos)
+				iSteps *= int(3600 * m_pTimeScale->sampleRate());
+			else if (iCursorPos < iPos + sText.section(':', 1, 1).length() + 1)
+				iSteps *= int(60 * m_pTimeScale->sampleRate());
+			else
+				iSteps *= int(m_pTimeScale->sampleRate());
 			break;
+		}
 		case qtractorTimeScale::Frames:
 		default:
 			break;
@@ -237,6 +260,8 @@ void qtractorSpinBox::stepBy ( int iSteps )
 	if (iValue < 0)
 		iValue = 0;
 	setValue(iValue);
+
+	QAbstractSpinBox::lineEdit()->setCursorPosition(iCursorPos);
 }
 
 
