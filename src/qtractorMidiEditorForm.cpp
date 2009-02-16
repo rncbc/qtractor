@@ -374,6 +374,8 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 		viewToolbarView(pOptions->bMidiViewToolbar);
 		viewToolbarTransport(pOptions->bMidiTransportToolbar);
 		m_pMidiEditor->setZoomMode(pOptions->iMidiZoomMode);
+		m_pMidiEditor->setHorizontalZoom(pOptions->iMidiHorizontalZoom);
+		m_pMidiEditor->setVerticalZoom(pOptions->iMidiVerticalZoom);
 		m_pMidiEditor->setEditMode(pOptions->bMidiEditMode);
 		m_pMidiEditor->setNoteColor(pOptions->bMidiNoteColor);
 		m_pMidiEditor->setValueColor(pOptions->bMidiValueColor);
@@ -498,6 +500,8 @@ bool qtractorMidiEditorForm::queryClose (void)
 			pOptions->bMidiViewToolbar = m_ui.viewToolbar->isVisible();
 			pOptions->bMidiTransportToolbar = m_ui.transportToolbar->isVisible();
 			pOptions->iMidiZoomMode = m_pMidiEditor->zoomMode();
+			pOptions->iMidiHorizontalZoom = m_pMidiEditor->horizontalZoom();
+			pOptions->iMidiVerticalZoom = m_pMidiEditor->verticalZoom();
 			pOptions->bMidiEditMode = m_pMidiEditor->isEditMode();
 			pOptions->bMidiNoteDuration = m_ui.viewNoteDurationAction->isChecked();
 			pOptions->bMidiNoteColor = m_ui.viewNoteColorAction->isChecked();
@@ -653,9 +657,14 @@ void qtractorMidiEditorForm::setup ( qtractorMidiClip *pMidiClip )
 	if (pMainForm == NULL)
 		return;
 
-	// Get those time-scales in sync...
-	qtractorTimeScale *pTimeScale = m_pMidiEditor->timeScale();
+	// Get those time-scales in sync,
+	// while keeping zoom ratios persistant...
+	unsigned short iHorizontalZoom = m_pMidiEditor->horizontalZoom();
+	unsigned short iVerticalZoom   = m_pMidiEditor->verticalZoom();
+	qtractorTimeScale *pTimeScale  = m_pMidiEditor->timeScale();
 	pTimeScale->copy(*pSession->timeScale());
+	m_pMidiEditor->setHorizontalZoom(iHorizontalZoom);
+	m_pMidiEditor->setVerticalZoom(iVerticalZoom);
 
 	// Default snap-per-beat setting...
 	m_pSnapPerBeatComboBox->setCurrentIndex(

@@ -541,6 +541,42 @@ int qtractorMidiEditor::zoomMode (void) const
 }
 
 
+
+// Zoom ratio accessors.
+void qtractorMidiEditor::setHorizontalZoom ( unsigned short iHorizontalZoom )
+{
+	m_pTimeScale->setHorizontalZoom(iHorizontalZoom);
+	m_pTimeScale->updateScale();
+}
+
+unsigned short qtractorMidiEditor::horizontalZoom (void) const
+{
+	return m_pTimeScale->horizontalZoom();
+}
+
+
+void qtractorMidiEditor::setVerticalZoom ( unsigned short iVerticalZoom )
+{
+	// Hold and try setting new item height...
+	int iZoomStep = int(iVerticalZoom) - int(verticalZoom());
+	int iItemHeight
+		= (iVerticalZoom * qtractorMidiEditList::ItemHeightBase) / 100;
+	if (iItemHeight < qtractorMidiEditList::ItemHeightMax && iZoomStep > 0)
+		iItemHeight++;
+	else
+	if (iItemHeight > qtractorMidiEditList::ItemHeightMin && iZoomStep < 0)
+		iItemHeight--;
+	m_pEditList->setItemHeight(iItemHeight);
+
+	m_pTimeScale->setVerticalZoom(iVerticalZoom);
+}
+
+unsigned short qtractorMidiEditor::verticalZoom (void) const
+{
+	return m_pTimeScale->verticalZoom();
+}
+
+
 // Edit (creational) mode.
 void qtractorMidiEditor::setEditMode ( bool bEditMode )
 {
@@ -866,43 +902,32 @@ QFrame *qtractorMidiEditor::editEventFrame (void) const
 // Horizontal zoom factor.
 void qtractorMidiEditor::horizontalZoomStep ( int iZoomStep )
 {
-	int iHorizontalZoom = m_pTimeScale->horizontalZoom() + iZoomStep;
+	int iHorizontalZoom = horizontalZoom() + iZoomStep;
 	if (iHorizontalZoom < ZoomMin)
 		iHorizontalZoom = ZoomMin;
 	else if (iHorizontalZoom > ZoomMax)
 		iHorizontalZoom = ZoomMax;
-	if (iHorizontalZoom == m_pTimeScale->horizontalZoom())
+	if (iHorizontalZoom == horizontalZoom())
 		return;
 
-	// Fix the local time scale zoom determinant.
-	m_pTimeScale->setHorizontalZoom(iHorizontalZoom);
-	m_pTimeScale->updateScale();
+	// Fix the local horizontal view zoom.
+	setHorizontalZoom(iHorizontalZoom);
 }
 
 
 // Vertical zoom factor.
 void qtractorMidiEditor::verticalZoomStep ( int iZoomStep )
 {
-	int iVerticalZoom = m_pTimeScale->verticalZoom() + iZoomStep;
+	int iVerticalZoom = verticalZoom() + iZoomStep;
 	if (iVerticalZoom < ZoomMin)
 		iVerticalZoom = ZoomMin;
 	else if (iVerticalZoom > ZoomMax)
 		iVerticalZoom = ZoomMax;
-	if (iVerticalZoom == m_pTimeScale->verticalZoom())
+	if (iVerticalZoom == verticalZoom())
 		return;
 
-	// Hold and try setting new item height...
-	int iItemHeight
-		= (iVerticalZoom * qtractorMidiEditList::ItemHeightBase) / 100;
-	if (iItemHeight < qtractorMidiEditList::ItemHeightMax && iZoomStep > 0)
-		iItemHeight++;
-	else
-	if (iItemHeight > qtractorMidiEditList::ItemHeightMin && iZoomStep < 0)
-		iItemHeight--;
-	m_pEditList->setItemHeight(iItemHeight);
-
 	// Fix the local vertical view zoom.
-	m_pTimeScale->setVerticalZoom(iVerticalZoom);
+	setVerticalZoom(iVerticalZoom);
 }
 
 

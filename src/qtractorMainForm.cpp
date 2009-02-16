@@ -291,7 +291,7 @@ qtractorMainForm::qtractorMainForm (
 	m_pTempoSpinBox->setPalette(pal);
 //	m_pTempoSpinBox->setAutoFillBackground(true);
 	m_pTempoSpinBox->setToolTip(tr("Current tempo (BPM)"));
-	m_pTimeSpinBox->setContextMenuPolicy(Qt::CustomContextMenu);
+	m_pTempoSpinBox->setContextMenuPolicy(Qt::CustomContextMenu);
 	m_ui.timeToolbar->addWidget(m_pTempoSpinBox);
 	m_ui.timeToolbar->addSeparator();
 
@@ -4766,9 +4766,15 @@ void qtractorMainForm::transportTempoChanged (
 	qtractorTimeScale::Node *pNode = cursor.seekFrame(m_pSession->playHead());
 
 	// Now, express the change as a undoable command...
-	m_pSession->execute(
-		new qtractorTimeScaleUpdateNodeCommand(pTimeScale,
-			pNode->frame, fTempo, 2, iBeatsPerBar, iBeatDivisor));
+	if (pNode->prev()) {
+		m_pSession->execute(
+			new qtractorTimeScaleUpdateNodeCommand(pTimeScale, pNode->frame,
+				fTempo, 2, iBeatsPerBar, iBeatDivisor));
+	} else {
+		m_pSession->execute(
+			new qtractorSessionTempoCommand(m_pSession,
+				fTempo, 2, iBeatsPerBar, iBeatDivisor));
+	}
 
 	m_iTransportUpdate++;
 }
@@ -4845,7 +4851,7 @@ void qtractorMainForm::transportTimeContextMenu ( const QPoint& pos )
 
 
 // Tempo-map custom context menu.
-void qtractorMainForm::transportTempoContextMenu ( const QPoint& pos )
+void qtractorMainForm::transportTempoContextMenu ( const QPoint& /*pos*/ )
 {
 	viewTempoMap();
 }

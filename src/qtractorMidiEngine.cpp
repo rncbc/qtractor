@@ -901,7 +901,7 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 	}
 
 	// Now check which bus and track we're into...
-	int iDrainOutput = 0;
+//	int iDrainOutput = 0;
 	bool bRecording = (pSession->isRecording() && isPlaying());
 	for (qtractorTrack *pTrack = pSession->tracks().first();
 			pTrack; pTrack = pTrack->next()) {
@@ -945,9 +945,8 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 						snd_seq_ev_set_source(pEv, pMidiBus->alsaPort());
 						snd_seq_ev_set_subs(pEv);
 						snd_seq_ev_set_direct(pEv);
-						snd_seq_event_output(m_pAlsaSeq, pEv);
-					//	snd_seq_drain_output(m_pAlsaSeq);
-						iDrainOutput++;
+						snd_seq_event_output_direct(m_pAlsaSeq, pEv);
+					//	iDrainOutput++;
 						// Done with MIDI-thru.
 						pMidiBus->midiMonitor_out()->enqueue(type, data2);
 						// Do it for the MIDI plugins too...
@@ -984,9 +983,8 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 					snd_seq_ev_set_source(pEv, pMidiBus->alsaPort());
 					snd_seq_ev_set_subs(pEv);
 					snd_seq_ev_set_direct(pEv);
-					snd_seq_event_output(m_pAlsaSeq, pEv);
-				//	snd_seq_drain_output(m_pAlsaSeq);
-					iDrainOutput++;
+					snd_seq_event_output_direct(m_pAlsaSeq, pEv);
+				//	iDrainOutput++;
 					// Done with MIDI-thru.
 					pMidiBus->midiMonitor_out()->enqueue(type, data2);
 				}
@@ -994,8 +992,8 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 		}
 	}
 
-	if (iDrainOutput > 0)
-		snd_seq_drain_output(m_pAlsaSeq);
+//	if (iDrainOutput > 0)
+//		snd_seq_drain_output(m_pAlsaSeq);
 }
 
 
@@ -2577,7 +2575,7 @@ void qtractorMidiBus::setPatch ( unsigned short iChannel,
 			ev.data.control.value = (iBank & 0x3f80) >> 7;
 		else
 			ev.data.control.value = (iBank & 0x007f);
-		snd_seq_event_output(pMidiEngine->alsaSeq(), &ev);
+		snd_seq_event_output_direct(pMidiEngine->alsaSeq(), &ev);
 		if (pTrackMidiManager)
 			pTrackMidiManager->direct(&ev);
 		if (pBusMidiManager)
@@ -2590,7 +2588,7 @@ void qtractorMidiBus::setPatch ( unsigned short iChannel,
 		ev.data.control.channel = iChannel;
 		ev.data.control.param   = BANK_SELECT_LSB;
 		ev.data.control.value   = (iBank & 0x007f);
-		snd_seq_event_output(pMidiEngine->alsaSeq(), &ev);
+		snd_seq_event_output_direct(pMidiEngine->alsaSeq(), &ev);
 		if (pTrackMidiManager)
 			pTrackMidiManager->direct(&ev);
 		if (pBusMidiManager)
@@ -2601,13 +2599,13 @@ void qtractorMidiBus::setPatch ( unsigned short iChannel,
 	ev.type = SND_SEQ_EVENT_PGMCHANGE;
 	ev.data.control.channel = iChannel;
 	ev.data.control.value   = iProg;
-	snd_seq_event_output(pMidiEngine->alsaSeq(), &ev);
+	snd_seq_event_output_direct(pMidiEngine->alsaSeq(), &ev);
 	if (pTrackMidiManager)
 		pTrackMidiManager->direct(&ev);
 	if (pBusMidiManager)
 		pBusMidiManager->direct(&ev);
 
-	pMidiEngine->flush();
+//	pMidiEngine->flush();
 }
 
 
@@ -2655,7 +2653,7 @@ void qtractorMidiBus::setControllerEx ( unsigned short iChannel,
 	ev.data.control.channel = iChannel;
 	ev.data.control.param   = iController;
 	ev.data.control.value   = iValue;
-	snd_seq_event_output(pMidiEngine->alsaSeq(), &ev);
+	snd_seq_event_output_direct(pMidiEngine->alsaSeq(), &ev);
 
 	// Do it for the MIDI plugins too...
 	if (pTrack && (pTrack->pluginList())->midiManager())
@@ -2663,7 +2661,7 @@ void qtractorMidiBus::setControllerEx ( unsigned short iChannel,
 	if (pluginList_out() && pluginList_out()->midiManager())
 		(pluginList_out()->midiManager())->direct(&ev);
 
-	pMidiEngine->flush();
+//	pMidiEngine->flush();
 }
 
 
@@ -2704,7 +2702,7 @@ void qtractorMidiBus::sendNote ( qtractorTrack *pTrack,
 	ev.data.note.channel  = iChannel;
 	ev.data.note.note     = iNote;
 	ev.data.note.velocity = iVelocity;
-	snd_seq_event_output(pMidiEngine->alsaSeq(), &ev);
+	snd_seq_event_output_direct(pMidiEngine->alsaSeq(), &ev);
 
 	// Do it for the MIDI plugins too...
 	if ((pTrack->pluginList())->midiManager())
@@ -2712,7 +2710,7 @@ void qtractorMidiBus::sendNote ( qtractorTrack *pTrack,
 	if (pluginList_out() && pluginList_out()->midiManager())
 		(pluginList_out()->midiManager())->direct(&ev);
 
-	pMidiEngine->flush();
+//	pMidiEngine->flush();
 
 	// Bus/track output monitoring...
 	if (iVelocity > 0) {
@@ -2764,9 +2762,9 @@ void qtractorMidiBus::sendSysex ( unsigned char *pSysex, unsigned int iSysex ) c
 	// Just set SYSEX stuff and send it out..
 	ev.type = SND_SEQ_EVENT_SYSEX;
 	snd_seq_ev_set_sysex(&ev, iSysex, pSysex);
-	snd_seq_event_output(pMidiEngine->alsaSeq(), &ev);
+	snd_seq_event_output_direct(pMidiEngine->alsaSeq(), &ev);
 
-	pMidiEngine->flush();
+//	pMidiEngine->flush();
 }
 
 

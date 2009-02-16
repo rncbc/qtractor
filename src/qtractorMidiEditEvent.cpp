@@ -374,12 +374,13 @@ void qtractorMidiEditEvent::updatePixmap ( int cx, int /*cy*/ )
 	rgbValue.getHsv(&hue, &sat, &val); sat = 86;
 
 	bool bController = (m_eventType == qtractorMidiEvent::CONTROLLER);
-	qtractorMidiEvent *pEvent = m_pEditor->seekEvent(iTickStart - t0);
+	qtractorMidiEvent *pEvent
+		= m_pEditor->seekEvent(iTickStart > t0 ? iTickStart - t0 : 0);
 	while (pEvent) {
 		unsigned long t1 = t0 + pEvent->time();
 		if (t1 >= iTickEnd)
 			break;
-		unsigned long t2 = t1 + pEvent->duration();	
+		unsigned long t2 = t1 + pEvent->duration();
 		// Filter event type!...
 		if (pEvent->type() == m_eventType && t2 >= iTickStart
 			&& (!bController || pEvent->controller() == m_controller)) {

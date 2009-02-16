@@ -5,6 +5,9 @@ ChangeLog
 
 CVS HEAD
 
+- MIDI clip editor zoom ratios are now saved and preserved
+  across sessions.
+
 - Time-signature is now directly accessible from the main
   tempo spin-box which also reflecs current tempo status.
 

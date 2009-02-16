@@ -184,6 +184,8 @@ public:
 	bool bMidiFollow;
 	bool bMidiEditMode;
 	int  iMidiZoomMode;
+	int  iMidiHorizontalZoom;
+	int  iMidiVerticalZoom;
 
 	// Meter colors.
 	QStringList audioMeterColors;

@@ -97,6 +97,13 @@ public:
 	void setZoomMode(int iZoomMode);
 	int zoomMode() const;
 
+	// Zoom ratio accessors.
+	void setHorizontalZoom(unsigned short iHorizontalZoom);
+	unsigned short horizontalZoom() const;
+
+	void setVerticalZoom(unsigned short iVerticalZoom);
+	unsigned short verticalZoom() const;
+
 	// Local time scale accessors.
 	qtractorTimeScale *timeScale() const;
 	unsigned long timeOffset() const;
