@@ -32,18 +32,18 @@ class QShowEvent;
 
 
 //----------------------------------------------------------------------------
-// qtractorSpinBox -- A time-scale formatted spin-box widget.
+// qtractorTimeSpinBox -- A time-scale formatted spin-box widget.
 
-class qtractorSpinBox : public QAbstractSpinBox
+class qtractorTimeSpinBox : public QAbstractSpinBox
 {
     Q_OBJECT
 
 public:
 
 	// Constructor.
-	qtractorSpinBox(QWidget *pParent = 0);
+	qtractorTimeSpinBox(QWidget *pParent = 0);
 	// Destructor.
-	~qtractorSpinBox();
+	~qtractorTimeSpinBox();
 
 	// Time-scale accessors.
 	void setTimeScale(qtractorTimeScale *pTimeScale);
@@ -106,6 +106,72 @@ private:
 	unsigned long      m_iMaximumValue;
 	unsigned long      m_iDeltaValue;
 	bool               m_bDeltaValue;
+};
+
+
+//----------------------------------------------------------------------------
+// qtractorTempoSpinBox -- A tempo/time-signature formatted spin-box widget.
+
+class qtractorTempoSpinBox : public QAbstractSpinBox
+{
+    Q_OBJECT
+
+public:
+
+	// Constructor.
+	qtractorTempoSpinBox(QWidget *pParent = 0);
+	// Destructor.
+	~qtractorTempoSpinBox();
+
+	// Nominal tempo value (BPM) accessors.
+	void setTempo(float fTempo, bool bNotifyChange = true);
+	float tempo() const;
+
+	// Nominal time-signature numerator (beats/bar) accessors.
+	void setBeatsPerBar(unsigned short iBeatsPerBar, bool bNotifyChange = true);
+	unsigned short beatsPerBar() const;
+
+	// Nominal time-signature denominator (beat-divisor) accessors.
+	void setBeatDivisor(unsigned short iBeatDivisor, bool bNotifyChange = true);
+	unsigned short beatDivisor() const;
+
+signals:
+
+	// Common value change notification.
+	void valueChanged(float, unsigned short, unsigned short);
+	void valueChanged(const QString&);
+
+protected:
+
+	// Mark that we got actual value.
+	void showEvent(QShowEvent *);
+
+	// Inherited/override methods.
+	QValidator::State validate(QString& sText,int& iPos) const;
+	void fixup(QString& sText) const;
+	void stepBy(int iSteps);
+	StepEnabled stepEnabled() const;
+
+	// Value/text format converters.
+	float tempoFromText(const QString& sText) const;
+	unsigned short beatsPerBarFromText(const QString& sText) const;
+	unsigned short beatDivisorFromText(const QString& sText) const;
+
+	QString textFromValue(float fTempo,
+		unsigned short iBeatsPerBar, unsigned short iBeatDivisor) const;
+
+protected slots:
+
+	// Pseudo-fixup slot.
+	void editingFinishedSlot();
+	void valueChangedSlot(const QString&);
+
+private:
+
+	// Instance variables.
+	float          m_fTempo;
+	unsigned short m_iBeatsPerBar;
+	unsigned short m_iBeatDivisor;
 };
 
 

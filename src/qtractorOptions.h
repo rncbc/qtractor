@@ -136,6 +136,8 @@ public:
 	bool	bAutoMonitor;
 	int     iSnapPerBeat;
 	float   fTempo;
+	int     iBeatsPerBar;
+	int     iBeatDivisor;
 
 	// Paste-repeat convenient defaults.
 	int     iPasteRepeatCount;

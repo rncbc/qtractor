@@ -5,6 +5,9 @@ ChangeLog
 
 CVS HEAD
 
+- Time-signature is now directly accessible from the main
+  tempo spin-box which also reflecs current tempo status.
+
 - Time/frame spin-boxes now allow to step change each field
   individually, depending on the cursor beam position.
 

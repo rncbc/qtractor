@@ -161,6 +161,8 @@ qtractorOptions::qtractorOptions (void)
 	bAutoMonitor   = m_settings.value("/AutoMonitor", true).toBool();
 	iSnapPerBeat   = m_settings.value("/SnapPerBeat", 4).toInt();
 	fTempo   = float(m_settings.value("/Tempo", 120.0).toDouble());
+	iBeatsPerBar   = m_settings.value("/BeatsPerBar", 4).toInt();
+	iBeatDivisor   = m_settings.value("/BeatDivisor", 2).toInt();
 	iPasteRepeatCount = m_settings.value("/PasteRepeatCount", 2).toInt();
 	bPasteRepeatPeriod = m_settings.value("/PasteRepeatPeriod", false).toInt();
 	sPluginSearch  = m_settings.value("/PluginSearch").toString();
@@ -346,6 +348,8 @@ qtractorOptions::~qtractorOptions (void)
 	m_settings.setValue("/AutoMonitor", bAutoMonitor);
 	m_settings.setValue("/SnapPerBeat", iSnapPerBeat);
 	m_settings.setValue("/Tempo", double(fTempo));
+	m_settings.setValue("/BeatsPerBar", iBeatsPerBar);
+	m_settings.setValue("/BeatDivisor", iBeatDivisor);
 	m_settings.setValue("/PasteRepeatCount", iPasteRepeatCount);
 	m_settings.setValue("/PasteRepeatPeriod", bPasteRepeatPeriod);
 	m_settings.setValue("/PluginSearch", sPluginSearch);

@@ -23,12 +23,14 @@
 
 #include <QLineEdit>
 
+#include <math.h>
+
 
 //----------------------------------------------------------------------------
-// qtractorSpinBox -- A time-scale formatted spin-box widget.
+// qtractorTimeSpinBox -- A time-scale formatted spin-box widget.
 
 // Constructor.
-qtractorSpinBox::qtractorSpinBox ( QWidget *pParent )
+qtractorTimeSpinBox::qtractorTimeSpinBox ( QWidget *pParent )
 	: QAbstractSpinBox(pParent)
 {
 	m_pTimeScale    = NULL;
@@ -52,13 +54,13 @@ qtractorSpinBox::qtractorSpinBox ( QWidget *pParent )
 
 
 // Destructor.
-qtractorSpinBox::~qtractorSpinBox (void)
+qtractorTimeSpinBox::~qtractorTimeSpinBox (void)
 {
 }
 
 
 // Mark that we got actual value.
-void qtractorSpinBox::showEvent ( QShowEvent */*pShowEvent*/ )
+void qtractorTimeSpinBox::showEvent ( QShowEvent */*pShowEvent*/ )
 {
 	QAbstractSpinBox::lineEdit()->setText(textFromValue(m_iDefaultValue));
 	QAbstractSpinBox::interpretText();
@@ -66,33 +68,33 @@ void qtractorSpinBox::showEvent ( QShowEvent */*pShowEvent*/ )
 
 
 // Time-scale accessors.
-void qtractorSpinBox::setTimeScale ( qtractorTimeScale *pTimeScale )
+void qtractorTimeSpinBox::setTimeScale ( qtractorTimeScale *pTimeScale )
 {
 	m_pTimeScale = pTimeScale;
 }
 
-qtractorTimeScale *qtractorSpinBox::timeScale (void) const
+qtractorTimeScale *qtractorTimeSpinBox::timeScale (void) const
 {
 	return m_pTimeScale;
 }
 
 
 // Display-format accessors.
-qtractorTimeScale::DisplayFormat qtractorSpinBox::displayFormat (void) const
+qtractorTimeScale::DisplayFormat qtractorTimeSpinBox::displayFormat (void) const
 {
 	return (m_pTimeScale
 		? m_pTimeScale->displayFormat()
 		: qtractorTimeScale::Frames);
 }
 
-void qtractorSpinBox::updateDisplayFormat (void)
+void qtractorTimeSpinBox::updateDisplayFormat (void)
 {
 	setValue(m_iDefaultValue);
 }
 
 
 // Nominal value (in frames) accessors.
-void qtractorSpinBox::setValue ( unsigned long iValue, bool bNotifyChange )
+void qtractorTimeSpinBox::setValue ( unsigned long iValue, bool bNotifyChange )
 {
 	int iCursorPos = QAbstractSpinBox::lineEdit()->cursorPosition();
 
@@ -115,7 +117,7 @@ void qtractorSpinBox::setValue ( unsigned long iValue, bool bNotifyChange )
 	QAbstractSpinBox::lineEdit()->setCursorPosition(iCursorPos);
 }
 
-unsigned long qtractorSpinBox::value (void) const
+unsigned long qtractorTimeSpinBox::value (void) const
 {
 	if (QAbstractSpinBox::isVisible()) {
 		return valueFromText(QAbstractSpinBox::text());
@@ -126,52 +128,52 @@ unsigned long qtractorSpinBox::value (void) const
 
 
 // Minimum value (in frames) accessors.
-void qtractorSpinBox::setMinimum ( unsigned long iMinimum )
+void qtractorTimeSpinBox::setMinimum ( unsigned long iMinimum )
 {
 	m_iMinimumValue = iMinimum;
 }
 
-unsigned long qtractorSpinBox::minimum (void) const
+unsigned long qtractorTimeSpinBox::minimum (void) const
 {
 	return m_iMinimumValue;
 }
 
 
 // Maximum value (in frames) accessors.
-void qtractorSpinBox::setMaximum ( unsigned long iMaximum )
+void qtractorTimeSpinBox::setMaximum ( unsigned long iMaximum )
 {
 	m_iMaximumValue = iMaximum;
 }
 
-unsigned long qtractorSpinBox::maximum (void) const
+unsigned long qtractorTimeSpinBox::maximum (void) const
 {
 	return m_iMaximumValue;
 }
 
 
 // Differential value mode (BBT format only) accessor.
-void qtractorSpinBox::setDeltaValue ( bool bDeltaValue, unsigned long iDeltaValue )
+void qtractorTimeSpinBox::setDeltaValue ( bool bDeltaValue, unsigned long iDeltaValue )
 {
 	m_bDeltaValue = bDeltaValue;
 	m_iDeltaValue = iDeltaValue;
 }
 
-bool qtractorSpinBox::isDeltaValue (void) const
+bool qtractorTimeSpinBox::isDeltaValue (void) const
 {
 	return m_bDeltaValue;
 }
 
-unsigned long qtractorSpinBox::deltaValue (void) const
+unsigned long qtractorTimeSpinBox::deltaValue (void) const
 {
 	return m_iDeltaValue;
 }
 
 
 // Inherited/override methods.
-QValidator::State qtractorSpinBox::validate ( QString& sText, int& iPos ) const
+QValidator::State qtractorTimeSpinBox::validate ( QString& sText, int& iPos ) const
 {
 #ifdef CONFIG_DEBUG_0
-	qDebug("qtractorSpinBox[%p]::validate(\"%s\",%d)",
+	qDebug("qtractorTimeSpinBox[%p]::validate(\"%s\",%d)",
 		this, sText.toUtf8().constData(), iPos);
 #endif
 
@@ -201,10 +203,10 @@ QValidator::State qtractorSpinBox::validate ( QString& sText, int& iPos ) const
 }
 
 
-void qtractorSpinBox::fixup ( QString& sText ) const
+void qtractorTimeSpinBox::fixup ( QString& sText ) const
 {
 #ifdef CONFIG_DEBUG_0
-	qDebug("qtractorSpinBox[%p]::fixup(\"%s\")",
+	qDebug("qtractorTimeSpinBox[%p]::fixup(\"%s\")",
 		this, sText.toUtf8().constData());
 #endif
 
@@ -212,10 +214,10 @@ void qtractorSpinBox::fixup ( QString& sText ) const
 }
 
 
-void qtractorSpinBox::stepBy ( int iSteps )
+void qtractorTimeSpinBox::stepBy ( int iSteps )
 {
 #ifdef CONFIG_DEBUG_0
-	qDebug("qtractorSpinBox[%p]::stepBy(%d)", this, iSteps);
+	qDebug("qtractorTimeSpinBox[%p]::stepBy(%d)", this, iSteps);
 #endif
 
 	int iCursorPos = QAbstractSpinBox::lineEdit()->cursorPosition();
@@ -265,7 +267,7 @@ void qtractorSpinBox::stepBy ( int iSteps )
 }
 
 
-QAbstractSpinBox::StepEnabled qtractorSpinBox::stepEnabled (void) const
+QAbstractSpinBox::StepEnabled qtractorTimeSpinBox::stepEnabled (void) const
 {
 	StepEnabled flags = StepUpEnabled;
 	if (value() > 0)
@@ -275,14 +277,14 @@ QAbstractSpinBox::StepEnabled qtractorSpinBox::stepEnabled (void) const
 
 
 // Value/text format converters.
-unsigned long qtractorSpinBox::valueFromText ( const QString& sText ) const
+unsigned long qtractorTimeSpinBox::valueFromText ( const QString& sText ) const
 {
 	return (m_pTimeScale
 		? m_pTimeScale->frameFromText(sText, m_bDeltaValue, m_iDeltaValue)
 		: sText.toULong());
 }
 
-QString qtractorSpinBox::textFromValue ( unsigned long iValue ) const
+QString qtractorTimeSpinBox::textFromValue ( unsigned long iValue ) const
 {
 	return (m_pTimeScale
 		? (m_bDeltaValue
@@ -293,10 +295,10 @@ QString qtractorSpinBox::textFromValue ( unsigned long iValue ) const
 
 
 // Pseudo-fixup slot.
-void qtractorSpinBox::editingFinishedSlot (void)
+void qtractorTimeSpinBox::editingFinishedSlot (void)
 {
 #ifdef CONFIG_DEBUG_0
-	qDebug("qtractorSpinBox[%p]::editingFinishedSlot()", this);
+	qDebug("qtractorTimeSpinBox[%p]::editingFinishedSlot()", this);
 #endif
 
 	// Kind of final fixup.
@@ -305,10 +307,10 @@ void qtractorSpinBox::editingFinishedSlot (void)
 
 
 // Textual value change notification.
-void qtractorSpinBox::valueChangedSlot ( const QString& sText )
+void qtractorTimeSpinBox::valueChangedSlot ( const QString& sText )
 {
 #ifdef CONFIG_DEBUG_0
-	qDebug("qtractorSpinBox[%p]::valueChangedSlot(\"%s\")",
+	qDebug("qtractorTimeSpinBox[%p]::valueChangedSlot(\"%s\")",
 		this, sText.toUtf8().constData());
 #endif
 
@@ -317,4 +319,286 @@ void qtractorSpinBox::valueChangedSlot ( const QString& sText )
 }
 
 
-// end of qtractorSpinBox.cpp
+
+//----------------------------------------------------------------------------
+// qtractorTempoSpinBox -- A time-scale formatted spin-box widget.
+
+// Constructor.
+qtractorTempoSpinBox::qtractorTempoSpinBox ( QWidget *pParent )
+	: QAbstractSpinBox(pParent), m_fTempo(120.0f),
+		m_iBeatsPerBar(4), m_iBeatDivisor(2)
+{
+#if QT_VERSION >= 0x040200
+	QAbstractSpinBox::setAccelerated(true);
+#endif
+
+	QObject::connect(this,
+		SIGNAL(editingFinished()),
+		SLOT(editingFinishedSlot()));
+	QObject::connect(QAbstractSpinBox::lineEdit(),
+		SIGNAL(textChanged(const QString&)),
+		SLOT(valueChangedSlot(const QString&)));
+}
+
+
+// Destructor.
+qtractorTempoSpinBox::~qtractorTempoSpinBox (void)
+{
+}
+
+
+// Mark that we got actual value.
+void qtractorTempoSpinBox::showEvent ( QShowEvent */*pShowEvent*/ )
+{
+	QAbstractSpinBox::lineEdit()->setText(
+		textFromValue(m_fTempo, m_iBeatsPerBar, m_iBeatDivisor));
+	QAbstractSpinBox::interpretText();
+}
+
+
+// Nominal tempo value (BPM) accessors.
+void qtractorTempoSpinBox::setTempo (
+	float fTempo, bool bNotifyChange )
+{
+	int iCursorPos = QAbstractSpinBox::lineEdit()->cursorPosition();
+
+	if (fTempo < 1.0f)
+		fTempo = 1.0f;
+	if (fTempo > 1000.0f)
+		fTempo = 1000.0f;
+	
+	bool bValueChanged = (::fabs(fTempo - m_fTempo) > 0.001f);
+
+	m_fTempo = fTempo;
+
+	if (QAbstractSpinBox::isVisible()) {
+		unsigned short iBeatsPerBar = beatsPerBar();
+		unsigned short iBeatDivisor = beatDivisor();
+		QAbstractSpinBox::lineEdit()->setText(
+			textFromValue(fTempo, iBeatsPerBar, iBeatDivisor));
+		QAbstractSpinBox::interpretText();
+		if (bNotifyChange && bValueChanged)
+			emit valueChanged(fTempo, iBeatsPerBar, iBeatDivisor);
+	}
+
+	QAbstractSpinBox::lineEdit()->setCursorPosition(iCursorPos);
+}
+
+
+float qtractorTempoSpinBox::tempo (void) const
+{
+	if (QAbstractSpinBox::isVisible()) {
+		return tempoFromText(QAbstractSpinBox::text());
+	} else {
+		return m_fTempo;
+	}
+}
+
+
+// Nominal time-signature numerator (beats/bar) accessors.
+void qtractorTempoSpinBox::setBeatsPerBar (
+	unsigned short iBeatsPerBar, bool bNotifyChange )
+{
+	int iCursorPos = QAbstractSpinBox::lineEdit()->cursorPosition();
+
+	if (iBeatsPerBar < 2)
+		iBeatsPerBar = 2;
+	if (iBeatsPerBar > 128)
+		iBeatsPerBar = 128;
+	
+	bool bValueChanged = (iBeatsPerBar != m_iBeatsPerBar);
+
+	m_iBeatsPerBar = iBeatsPerBar;
+
+	if (QAbstractSpinBox::isVisible()) {
+		float fTempo = tempo();
+		unsigned short iBeatDivisor = beatDivisor();
+		QAbstractSpinBox::lineEdit()->setText(
+			textFromValue(fTempo, iBeatsPerBar, iBeatDivisor));
+		QAbstractSpinBox::interpretText();
+		if (bNotifyChange && bValueChanged)
+			emit valueChanged(fTempo, iBeatsPerBar, iBeatDivisor);
+	}
+
+	QAbstractSpinBox::lineEdit()->setCursorPosition(iCursorPos);
+}
+
+
+unsigned short qtractorTempoSpinBox::beatsPerBar (void) const
+{
+	if (QAbstractSpinBox::isVisible()) {
+		return beatsPerBarFromText(QAbstractSpinBox::text());
+	} else {
+		return m_iBeatsPerBar;
+	}
+}
+
+
+// Nominal time-signature denominator (beat-divisor) accessors.
+void qtractorTempoSpinBox::setBeatDivisor (
+	unsigned short iBeatDivisor, bool bNotifyChange )
+{
+	int iCursorPos = QAbstractSpinBox::lineEdit()->cursorPosition();
+
+	if (iBeatDivisor < 1)
+		iBeatDivisor = 1;
+	if (iBeatDivisor > 8)
+		iBeatDivisor = 8;
+	
+	bool bValueChanged = (iBeatDivisor != m_iBeatDivisor);
+
+	m_iBeatDivisor = iBeatDivisor;
+
+	if (QAbstractSpinBox::isVisible()) {
+		float fTempo = tempo();
+		unsigned short iBeatsPerBar = beatsPerBar();
+		QAbstractSpinBox::lineEdit()->setText(
+			textFromValue(fTempo, iBeatsPerBar, iBeatDivisor));
+		QAbstractSpinBox::interpretText();
+		if (bNotifyChange && bValueChanged)
+			emit valueChanged(fTempo, iBeatsPerBar, iBeatDivisor);
+	}
+
+	QAbstractSpinBox::lineEdit()->setCursorPosition(iCursorPos);
+}
+
+
+unsigned short qtractorTempoSpinBox::beatDivisor (void) const
+{
+	if (QAbstractSpinBox::isVisible()) {
+		return beatDivisorFromText(QAbstractSpinBox::text());
+	} else {
+		return m_iBeatDivisor;
+	}
+}
+
+
+// Inherited/override methods.
+QValidator::State qtractorTempoSpinBox::validate ( QString& sText, int& iPos ) const
+{
+#ifdef CONFIG_DEBUG_0
+	qDebug("qtractorTempoSpinBox[%p]::validate(\"%s\",%d)",
+		this, sText.toUtf8().constData(), iPos);
+#endif
+
+	if (iPos == 0)
+		return QValidator::Acceptable;
+
+	const QChar& ch = sText[iPos - 1];
+	if (ch == '.' || ch == ',' || ch == '/' || ch == ' ' || ch.isDigit())
+		return QValidator::Acceptable;
+	else
+		return QValidator::Invalid;
+}
+
+
+void qtractorTempoSpinBox::fixup ( QString& sText ) const
+{
+#ifdef CONFIG_DEBUG_0
+	qDebug("qtractorTempoSpinBox[%p]::fixup(\"%s\")",
+		this, sText.toUtf8().constData());
+#endif
+
+	sText = textFromValue(m_fTempo, m_iBeatsPerBar, m_iBeatDivisor);
+}
+
+
+void qtractorTempoSpinBox::stepBy ( int iSteps )
+{
+#ifdef CONFIG_DEBUG_0
+	qDebug("qtractorTempoSpinBox[%p]::stepBy(%d)", this, iSteps);
+#endif
+
+	int iCursorPos = QAbstractSpinBox::lineEdit()->cursorPosition();
+
+	const QString& sText = QAbstractSpinBox::lineEdit()->text();
+	const int iPos = sText.section(' ', 0, 0).length() + 1;
+	if (iCursorPos < iPos)
+		setTempo(tempo() + 0.1f * float(iSteps));
+	else
+	if (iCursorPos < iPos + sText.section(' ', 1, 1).section('/', 0, 0).length() + 1)
+		setBeatsPerBar(int(beatsPerBar()) + iSteps);
+	else
+		setBeatDivisor(int(beatDivisor()) + iSteps);
+
+	QAbstractSpinBox::lineEdit()->setCursorPosition(iCursorPos);
+}
+
+
+QAbstractSpinBox::StepEnabled qtractorTempoSpinBox::stepEnabled (void) const
+{
+	StepEnabled flags = StepNone;
+	float fTempo = tempo();
+	unsigned short iBeatsPerBar = beatsPerBar();
+	unsigned short iBeatDivisor = beatDivisor();
+	if (fTempo > 1.0f && iBeatsPerBar > 2 && iBeatDivisor > 1)
+		flags |= StepDownEnabled;
+	if (fTempo < 1000.0f && iBeatsPerBar < 128 && iBeatDivisor < 8)
+		flags |= StepUpEnabled;
+	return flags;
+}
+
+
+// Value/text format converters.
+float qtractorTempoSpinBox::tempoFromText ( const QString& sText ) const
+{
+	float fTempo = sText.section(' ', 0, 0).toFloat();
+	return (fTempo >= 1.0f ? fTempo : m_fTempo);
+}
+
+
+unsigned short qtractorTempoSpinBox::beatsPerBarFromText ( const QString& sText) const
+{
+	unsigned short iBeatsPerBar
+		= sText.section(' ', 1, 1).section('/', 0, 0).toUShort();
+	return (iBeatsPerBar >= 2 ? iBeatsPerBar : m_iBeatsPerBar);
+}
+
+
+unsigned short qtractorTempoSpinBox::beatDivisorFromText ( const QString& sText) const
+{
+	unsigned short iBeatDivisor = 0;
+	unsigned short i = sText.section(' ', 1, 1).section('/', 1, 1).toUShort();
+	while (i > 1) {	++iBeatDivisor;	i >>= 1; }
+	return (iBeatDivisor >= 1 ? iBeatDivisor : m_iBeatDivisor);
+}
+
+
+QString qtractorTempoSpinBox::textFromValue ( float fTempo,
+	unsigned short iBeatsPerBar, unsigned short iBeatDivisor) const
+{
+	return QString("%1 %2/%3")
+		.arg(fTempo, 0, 'f', 1)
+		.arg(iBeatsPerBar)
+		.arg(1 << iBeatDivisor);
+}
+
+
+// Pseudo-fixup slot.
+void qtractorTempoSpinBox::editingFinishedSlot (void)
+{
+#ifdef CONFIG_DEBUG_0
+	qDebug("qtractorTempoSpinBox[%p]::editingFinishedSlot()", this);
+#endif
+
+	// Kind of final fixup.
+	setTempo(tempo());
+	setBeatsPerBar(beatsPerBar());
+	setBeatDivisor(beatDivisor());
+}
+
+
+// Textual value change notification.
+void qtractorTempoSpinBox::valueChangedSlot ( const QString& sText )
+{
+#ifdef CONFIG_DEBUG_0
+	qDebug("qtractorTempoSpinBox[%p]::valueChangedSlot(\"%s\")",
+		this, sText.toUtf8().constData());
+#endif
+
+	// Forward this...
+	emit valueChanged(sText);
+}
+
+
+// end of qtractorTimeSpinBox.cpp

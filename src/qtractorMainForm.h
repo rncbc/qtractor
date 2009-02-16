@@ -40,7 +40,9 @@ class qtractorMixer;
 class qtractorMmcEvent;
 class qtractorMidiControlEvent;
 class qtractorMidiSppEvent;
-class qtractorSpinBox;
+class qtractorTimeSpinBox;
+class qtractorTempoSpinBox;
+class qtractorTempoCursor;
 
 class qtractorMidiEditorForm;
 class qtractorMidiEditor;
@@ -49,7 +51,6 @@ class QLabel;
 class QComboBox;
 class QProgressBar;
 class QActionGroup;
-class QDoubleSpinBox;
 class QPalette;
 
 
@@ -226,12 +227,14 @@ public slots:
 	void changeNotifySlot(qtractorMidiEditor *pMidiEditor);
 	void updateNotifySlot(bool bRefresh);
 
-	void tempoChanged(double fTempo);
-	void snapPerBeatChanged(int iSnap);
 	void transportTimeChanged(unsigned long iPlayHead);
+	void transportTempoChanged(float fTempo,
+		unsigned short iBeatsPerBar, unsigned short iBeatDivisor);
+	void snapPerBeatChanged(int iSnap);
 	void contentsChanged();
 
 	void transportTimeContextMenu(const QPoint& pos);
+	void transportTempoContextMenu(const QPoint& pos);
 
 protected:
 
@@ -303,11 +306,12 @@ private:
 	int m_iUntitled;
 	int m_iDirtyCount;
 	QActionGroup *m_pSelectModeActionGroup;
-	qtractorSpinBox *m_pTransportTimeSpinBox;
-	QDoubleSpinBox *m_pTempoSpinBox;
+	qtractorTimeSpinBox *m_pTimeSpinBox;
+	qtractorTempoSpinBox *m_pTempoSpinBox;
 	QComboBox *m_pSnapPerBeatComboBox;
 	QProgressBar *m_pProgressBar;
 	qtractorThumbView *m_pThumbView;
+	qtractorTempoCursor *m_pTempoCursor;
 	unsigned long m_iPlayHead;
 	long m_iDeltaTimer;
 	int m_iPeakTimer;

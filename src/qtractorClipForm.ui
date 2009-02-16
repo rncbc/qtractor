@@ -186,7 +186,7 @@
        </spacer>
       </item>
       <item row="0" column="1" >
-       <widget class="qtractorSpinBox" name="ClipStartSpinBox" >
+       <widget class="qtractorTimeSpinBox" name="ClipStartSpinBox" >
         <property name="minimumSize" >
          <size>
           <width>120</width>
@@ -199,7 +199,7 @@
        </widget>
       </item>
       <item row="1" column="1" >
-       <widget class="qtractorSpinBox" name="ClipOffsetSpinBox" >
+       <widget class="qtractorTimeSpinBox" name="ClipOffsetSpinBox" >
         <property name="minimumSize" >
          <size>
           <width>120</width>
@@ -212,7 +212,7 @@
        </widget>
       </item>
       <item row="2" column="1" >
-       <widget class="qtractorSpinBox" name="ClipLengthSpinBox" >
+       <widget class="qtractorTimeSpinBox" name="ClipLengthSpinBox" >
         <property name="minimumSize" >
          <size>
           <width>120</width>
@@ -353,7 +353,7 @@
        </widget>
       </item>
       <item row="0" column="1" >
-       <widget class="qtractorSpinBox" name="FadeInLengthSpinBox" >
+       <widget class="qtractorTimeSpinBox" name="FadeInLengthSpinBox" >
         <property name="minimumSize" >
          <size>
           <width>120</width>
@@ -417,7 +417,7 @@
        </widget>
       </item>
       <item row="1" column="1" >
-       <widget class="qtractorSpinBox" name="FadeOutLengthSpinBox" >
+       <widget class="qtractorTimeSpinBox" name="FadeOutLengthSpinBox" >
         <property name="minimumSize" >
          <size>
           <width>120</width>
@@ -603,7 +603,7 @@
  <layoutdefault spacing="4" margin="8" />
  <customwidgets>
   <customwidget>
-   <class>qtractorSpinBox</class>
+   <class>qtractorTimeSpinBox</class>
    <extends>QSpinBox</extends>
    <header>qtractorSpinBox.h</header>
   </customwidget>

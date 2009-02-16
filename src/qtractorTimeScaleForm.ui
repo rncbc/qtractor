@@ -119,7 +119,7 @@
         </widget>
        </item>
        <item row="0" column="2" colspan="4" >
-        <widget class="qtractorSpinBox" name="FrameSpinBox" >
+        <widget class="qtractorTimeSpinBox" name="FrameSpinBox" >
          <property name="minimumSize" >
           <size>
            <width>100</width>
@@ -449,7 +449,7 @@
  <layoutdefault spacing="4" margin="8" />
  <customwidgets>
   <customwidget>
-   <class>qtractorSpinBox</class>
+   <class>qtractorTimeSpinBox</class>
    <extends>QSpinBox</extends>
    <header>qtractorSpinBox.h</header>
   </customwidget>

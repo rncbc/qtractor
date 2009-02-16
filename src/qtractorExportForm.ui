@@ -210,7 +210,7 @@
        </widget>
       </item>
       <item row="5" column="2" >
-       <widget class="qtractorSpinBox" name="ExportStartSpinBox" >
+       <widget class="qtractorTimeSpinBox" name="ExportStartSpinBox" >
         <property name="minimumSize" >
          <size>
           <width>120</width>
@@ -233,7 +233,7 @@
        </widget>
       </item>
       <item row="6" column="2" >
-       <widget class="qtractorSpinBox" name="ExportEndSpinBox" >
+       <widget class="qtractorTimeSpinBox" name="ExportEndSpinBox" >
         <property name="minimumSize" >
          <size>
           <width>120</width>
@@ -382,7 +382,7 @@
  <layoutdefault spacing="4" margin="8" />
  <customwidgets>
   <customwidget>
-   <class>qtractorSpinBox</class>
+   <class>qtractorTimeSpinBox</class>
    <extends>QSpinBox</extends>
    <header>qtractorSpinBox.h</header>
   </customwidget>

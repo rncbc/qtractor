@@ -307,7 +307,7 @@
         </widget>
        </item>
        <item row="2" column="2" colspan="2" >
-        <widget class="qtractorSpinBox" name="TransposeTimeSpinBox" >
+        <widget class="qtractorTimeSpinBox" name="TransposeTimeSpinBox" >
          <property name="minimumSize" >
           <size>
            <width>120</width>
@@ -715,7 +715,7 @@
         </widget>
        </item>
        <item row="1" column="2" colspan="2" >
-        <widget class="qtractorSpinBox" name="ResizeDurationSpinBox" >
+        <widget class="qtractorTimeSpinBox" name="ResizeDurationSpinBox" >
          <property name="minimumSize" >
           <size>
            <width>120</width>
@@ -863,7 +863,7 @@
  <layoutdefault spacing="4" margin="4" />
  <customwidgets>
   <customwidget>
-   <class>qtractorSpinBox</class>
+   <class>qtractorTimeSpinBox</class>
    <extends>QSpinBox</extends>
    <header>qtractorSpinBox.h</header>
   </customwidget>

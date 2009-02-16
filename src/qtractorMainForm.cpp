@@ -45,6 +45,7 @@
 #include "qtractorSessionCursor.h"
 
 #include "qtractorSessionCommand.h"
+#include "qtractorTimeScaleCommand.h"
 #include "qtractorClipCommand.h"
 
 #include "qtractorAudioClip.h"
@@ -127,6 +128,33 @@ static const char *s_pszTemplateExt  = "qtt";
 #define QTRACTOR_CTL_EVENT      QEvent::Type(QEvent::User + 7)
 #define QTRACTOR_SPP_EVENT      QEvent::Type(QEvent::User + 8)
 
+//-------------------------------------------------------------------------
+// qtractorTempoCursor -- Custom session tempo helper class
+
+class qtractorTempoCursor : public qtractorTimeScale::Cursor
+{
+public:
+
+	// Constructor.
+	qtractorTempoCursor(qtractorTimeScale *pTimeScale)
+		: qtractorTimeScale::Cursor(pTimeScale), m_pNode(NULL) {}
+
+	// Reset method.
+	void clear() { reset(); m_pNode = NULL; }
+
+	// Predicate method.
+	qtractorTimeScale::Node *seek(unsigned long iFrame)
+	{
+		qtractorTimeScale::Node *pNode = seekFrame(iFrame);
+		return (m_pNode == pNode ? NULL : m_pNode = pNode);
+	}
+
+private:
+
+	// Instance variables.
+	qtractorTimeScale::Node *m_pNode;
+};
+
 
 //-------------------------------------------------------------------------
 // qtractorMainForm -- Main window form implementation.
@@ -150,6 +178,7 @@ qtractorMainForm::qtractorMainForm (
 
 	// FIXME: This gotta go, somwhere in time...
 	m_pSession = qtractorSession::getInstance();
+	m_pTempoCursor = new qtractorTempoCursor(m_pSession->timeScale());
 
 	// All child forms are to be created later, not earlier than setup.
 	m_pMessages    = NULL;
@@ -239,31 +268,30 @@ qtractorMainForm::qtractorMainForm (
 
 	// Transport time.
 	const QFont& font = qtractorMainForm::font();
-	m_pTransportTimeSpinBox = new qtractorSpinBox();
-	m_pTransportTimeSpinBox->setTimeScale(m_pSession->timeScale());
-	m_pTransportTimeSpinBox->setFont(QFont(font.family(), font.pointSize() + 2));
-	m_pTransportTimeSpinBox->setPalette(pal);
-//	m_pTransportTimeSpinBox->setAutoFillBackground(true);
-	m_pTransportTimeSpinBox->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-	m_pTransportTimeSpinBox->setMinimumSize(QSize(128, 26));
-	m_pTransportTimeSpinBox->setToolTip(tr("Current transport time (playhead)"));
-	m_pTransportTimeSpinBox->setContextMenuPolicy(Qt::CustomContextMenu);
-	m_ui.timeToolbar->addWidget(m_pTransportTimeSpinBox);
+	m_pTimeSpinBox = new qtractorTimeSpinBox();
+	m_pTimeSpinBox->setTimeScale(m_pSession->timeScale());
+	m_pTimeSpinBox->setFont(QFont(font.family(), font.pointSize() + 2));
+	m_pTimeSpinBox->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+	m_pTimeSpinBox->setMinimumSize(QSize(128, 26));
+	m_pTimeSpinBox->setPalette(pal);
+//	m_pTimeSpinBox->setAutoFillBackground(true);
+	m_pTimeSpinBox->setToolTip(tr("Current time (playhead)"));
+	m_pTimeSpinBox->setContextMenuPolicy(Qt::CustomContextMenu);
+	m_ui.timeToolbar->addWidget(m_pTimeSpinBox);
 	m_ui.timeToolbar->addSeparator();
 
 	// Tempo spin-box.
 	const QSize pad(4, 0);
-	m_pTempoSpinBox = new QDoubleSpinBox();
-	m_pTempoSpinBox->setDecimals(1);
-	m_pTempoSpinBox->setMinimum(1.0f);
-	m_pTempoSpinBox->setMaximum(1000.0f);
+	m_pTempoSpinBox = new qtractorTempoSpinBox();
+//	m_pTempoSpinBox->setDecimals(1);
+//	m_pTempoSpinBox->setMinimum(1.0f);
+//	m_pTempoSpinBox->setMaximum(1000.0f);
 	m_pTempoSpinBox->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-	m_pTempoSpinBox->setMinimumSize(m_pTempoSpinBox->sizeHint() + pad);
-#if QT_VERSION >= 0x040300
-	m_pTempoSpinBox->setKeyboardTracking(false);
-#endif
+	m_pTempoSpinBox->setMinimumWidth(80);
 	m_pTempoSpinBox->setPalette(pal);
-	m_pTempoSpinBox->setToolTip(tr("Tempo (BPM)"));
+//	m_pTempoSpinBox->setAutoFillBackground(true);
+	m_pTempoSpinBox->setToolTip(tr("Current tempo (BPM)"));
+	m_pTimeSpinBox->setContextMenuPolicy(Qt::CustomContextMenu);
 	m_ui.timeToolbar->addWidget(m_pTempoSpinBox);
 	m_ui.timeToolbar->addSeparator();
 
@@ -280,15 +308,18 @@ qtractorMainForm::qtractorMainForm (
 	m_ui.thumbToolbar->setAllowedAreas(
 		Qt::TopToolBarArea | Qt::BottomToolBarArea);
 
-	QObject::connect(m_pTransportTimeSpinBox,
+	QObject::connect(m_pTimeSpinBox,
 		SIGNAL(customContextMenuRequested(const QPoint&)),
 		SLOT(transportTimeContextMenu(const QPoint&)));
-	QObject::connect(m_pTransportTimeSpinBox,
+	QObject::connect(m_pTimeSpinBox,
 		SIGNAL(valueChanged(unsigned long)),
 		SLOT(transportTimeChanged(unsigned long)));
 	QObject::connect(m_pTempoSpinBox,
-		SIGNAL(valueChanged(double)),
-		SLOT(tempoChanged(double)));
+		SIGNAL(customContextMenuRequested(const QPoint&)),
+		SLOT(transportTempoContextMenu(const QPoint&)));
+	QObject::connect(m_pTempoSpinBox,
+		SIGNAL(valueChanged(float, unsigned short, unsigned short)),
+		SLOT(transportTempoChanged(float, unsigned short, unsigned short)));
 	QObject::connect(m_pSnapPerBeatComboBox,
 		SIGNAL(activated(int)),
 		SLOT(snapPerBeatChanged(int)));
@@ -734,6 +765,10 @@ qtractorMainForm::~qtractorMainForm (void)
 	for (int i = 0; i < PaletteItems; i++)
 		delete m_paletteItems[i];
 
+	// Custom tempo cursor.
+	if (m_pTempoCursor)
+		delete m_pTempoCursor;
+	
 	// Pseudo-singleton reference shut-down.
 	g_pMainForm = NULL;
 }
@@ -1020,7 +1055,9 @@ bool qtractorMainForm::queryClose (void)
 					qtractorMidiMeter::color(iColor).name());
 			// Make sure there will be defaults...
 			m_pOptions->iSnapPerBeat = m_pSnapPerBeatComboBox->currentIndex();
-			m_pOptions->fTempo = float(m_pTempoSpinBox->value());
+			m_pOptions->fTempo = m_pTempoSpinBox->tempo();
+			m_pOptions->iBeatsPerBar = m_pTempoSpinBox->beatsPerBar();
+			m_pOptions->iBeatDivisor = m_pTempoSpinBox->beatDivisor();
 			// Save the dock windows state.
 			m_pOptions->settings().setValue("/Layout/DockWindows", saveState());
 			// And the main windows state.
@@ -1639,6 +1676,7 @@ bool qtractorMainForm::closeSession (void)
 		// Close session engines.
 		m_pSession->close();
 		m_pSession->clear();
+		m_pTempoCursor->clear();
 		// And last but not least.
 		m_pConnections->clear();
 		m_pTracks->clear();
@@ -1649,6 +1687,8 @@ bool qtractorMainForm::closeSession (void)
 			m_pSession->setSnapPerBeat(
 				qtractorTimeScale::snapFromIndex(m_pOptions->iSnapPerBeat));
 			m_pSession->setTempo(m_pOptions->fTempo);
+			m_pSession->setBeatsPerBar(m_pOptions->iBeatsPerBar);
+			m_pSession->setBeatDivisor(m_pOptions->iBeatDivisor);
 		}
 		// We're now clean, for sure.
 		m_iDirtyCount = 0;
@@ -3545,8 +3585,15 @@ void qtractorMainForm::setSongPos ( unsigned short iSongPos )
 
 void qtractorMainForm::updateTransportTime ( unsigned long iPlayHead )
 {
-	m_pTransportTimeSpinBox->setValue(iPlayHead, false);
+	m_pTimeSpinBox->setValue(iPlayHead, false);
 	m_pThumbView->updatePlayHead(iPlayHead);
+
+	qtractorTimeScale::Node *pNode = m_pTempoCursor->seek(iPlayHead);
+	if (pNode) {
+		m_pTempoSpinBox->setTempo(pNode->tempoEx(), false);
+		m_pTempoSpinBox->setBeatsPerBar(pNode->beatsPerBar, false);
+		m_pTempoSpinBox->setBeatDivisor(pNode->beatDivisor, false);
+	}
 
 #ifdef CONFIG_VST
 #if 0 // !VST_FORCE_DEPRECATED
@@ -3745,7 +3792,7 @@ void qtractorMainForm::stabilizeForm (void)
 	m_ui.transportPunchAction->setChecked(bPunching);
 
 	// Special record mode settlement.
-	m_pTransportTimeSpinBox->setReadOnly(bRecording);
+	m_pTimeSpinBox->setReadOnly(bRecording);
 	m_pTempoSpinBox->setReadOnly(bRecording);
 
 	m_pThumbView->update();
@@ -3847,7 +3894,10 @@ void qtractorMainForm::updateSession (void)
 #endif
 
 	// Initialize toolbar widgets...
-	m_pTempoSpinBox->setValue(m_pSession->tempo());
+	m_pTempoCursor->clear();
+//	m_pTempoSpinBox->setTempo(m_pSession->tempo(), false);
+//	m_pTempoSpinBox->setBeatsPerBar(m_pSession->beatsPerBar(), false);
+//	m_pTempoSpinBox->setBeatDivisor(m_pSession->beatDivisor(), false);
 	m_pSnapPerBeatComboBox->setCurrentIndex(
 		qtractorTimeScale::indexFromSnap(m_pSession->snapPerBeat()));
 
@@ -3982,7 +4032,7 @@ void qtractorMainForm::updateDisplayFormat (void)
 	}
 
 	m_pSession->timeScale()->setDisplayFormat(displayFormat);
-	m_pTransportTimeSpinBox->updateDisplayFormat();
+	m_pTimeSpinBox->updateDisplayFormat();
 }
 
 
@@ -4685,9 +4735,12 @@ void qtractorMainForm::contentsChanged (void)
 
 	// HACK: Force play-head position update...
 	m_iPlayHead = 0;
+	m_pTempoCursor->clear();
 
 	// Stabilize session toolbar widgets...
-	m_pTempoSpinBox->setValue(m_pSession->tempo());
+//	m_pTempoSpinBox->setTempo(m_pSession->tempo(), false);
+//	m_pTempoSpinBox->setBeatsPerBar(m_pSession->beatsPerBar(), false);
+//	m_pTempoSpinBox->setBeatDivisor(m_pSession->beatDivisor(), false);
 	m_pSnapPerBeatComboBox->setCurrentIndex(
 		qtractorTimeScale::indexFromSnap(m_pSession->snapPerBeat()));
 
@@ -4699,20 +4752,23 @@ void qtractorMainForm::contentsChanged (void)
 
 
 // Tempo spin-box change slot.
-void qtractorMainForm::tempoChanged ( double fTempo )
+void qtractorMainForm::transportTempoChanged (
+	float fTempo, unsigned short iBeatsPerBar, unsigned short iBeatDivisor )
 {
 #ifdef CONFIG_DEBUG
-	appendMessages("qtractorMainForm::tempoChanged("
-		+ QString::number(fTempo) + ")");
+	appendMessages(QString("qtractorMainForm::transportTempoChanged(%1, %2, %3)")
+		.arg(fTempo).arg(iBeatsPerBar).arg(iBeatDivisor));
 #endif
 
-	// Are we really changing the tempo?
-	if (::fabsf(m_pSession->tempo() - fTempo) < 0.001f)
-		return;
+	// Find appropriate node...
+	qtractorTimeScale *pTimeScale = m_pSession->timeScale();
+	qtractorTimeScale::Cursor cursor(pTimeScale);
+	qtractorTimeScale::Node *pNode = cursor.seekFrame(m_pSession->playHead());
 
 	// Now, express the change as a undoable command...
 	m_pSession->execute(
-		new qtractorSessionTempoCommand(m_pSession, float(fTempo)));
+		new qtractorTimeScaleUpdateNodeCommand(pTimeScale,
+			pNode->frame, fTempo, 2, iBeatsPerBar, iBeatDivisor));
 
 	m_iTransportUpdate++;
 }
@@ -4778,13 +4834,20 @@ void qtractorMainForm::transportTimeContextMenu ( const QPoint& pos )
 	pAction->setChecked(m_pOptions->iDisplayFormat == 2);
 	pAction->setData(2);
 
-	pAction = menu.exec(m_pTransportTimeSpinBox->mapToGlobal(pos));
+	pAction = menu.exec(m_pTimeSpinBox->mapToGlobal(pos));
 	if (pAction) {
 		m_pOptions->iDisplayFormat = pAction->data().toInt();
 		updateDisplayFormat();
 	}
 
 	stabilizeForm();
+}
+
+
+// Tempo-map custom context menu.
+void qtractorMainForm::transportTempoContextMenu ( const QPoint& pos )
+{
+	viewTempoMap();
 }
 
 
