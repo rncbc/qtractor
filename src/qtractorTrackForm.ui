@@ -660,6 +660,13 @@
   </layout>
  </widget>
  <layoutdefault spacing="4" margin="8" />
+ <customwidgets>
+  <customwidget>
+   <class>qtractorPluginListView</class>
+   <extends>QListWidget</extends>
+   <header>qtractorPluginListView.h</header>
+  </customwidget>
+ </customwidgets>
  <tabstops>
   <tabstop>TrackNameTextEdit</tabstop>
   <tabstop>AudioRadioButton</tabstop>
@@ -685,9 +692,6 @@
   <tabstop>OkPushButton</tabstop>
   <tabstop>CancelPushButton</tabstop>
  </tabstops>
- <includes>
-  <include location="local" >qtractorPluginListView.h</include>
- </includes>
  <resources>
   <include location="../icons/qtractor.qrc" />
  </resources>

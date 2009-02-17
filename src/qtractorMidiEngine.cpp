@@ -1938,6 +1938,9 @@ void qtractorMidiEngine::processMetro (
 		snd_seq_event_output(m_pAlsaSeq, &ev);
 		// Save for next change.
 		m_fMetroTempo = pNode->tempo;
+		// Reset time drifting stuff...
+		m_iTimeDelta = 0;
+		m_iTimeDrift = 0;
 	}
 
 	// Get on with the actual metronome stuff...

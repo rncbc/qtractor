@@ -440,25 +440,22 @@ void qtractorMidiClip::process ( unsigned long iFrameStart,
 	bool bMute = (pTrack->isMute()
 		|| (pSession->soloTracks() && !pTrack->isSolo()));
 
-	unsigned long iTimeClip  = pSession->tickFromFrame(clipStart());
+	unsigned long t0 = pSession->tickFromFrame(clipStart());
+
 	unsigned long iTimeStart = pSession->tickFromFrame(iFrameStart);
 	unsigned long iTimeEnd   = pSession->tickFromFrame(iFrameEnd);
 
-	// Set precise event cursory positioning...
-	unsigned long iTimeSeek = 0;
-	if (iTimeStart > iTimeClip)
-		iTimeSeek = iTimeStart - iTimeClip;
-
 	// Enqueue the requested events...
-	qtractorMidiEvent *pEvent = m_playCursor.seek(m_pSeq, iTimeSeek);
+	qtractorMidiEvent *pEvent
+		= m_playCursor.seek(m_pSeq, iTimeStart > t0 ? iTimeStart - t0 : 0);
 	while (pEvent) {
-		unsigned long iTimeEvent = iTimeClip + pEvent->time();
-		if (iTimeEvent >= iTimeEnd)
+		unsigned long t1 = t0 + pEvent->time();
+		if (t1 >= iTimeEnd)
 			break;
-		if (iTimeEvent >= iTimeStart
+		if (t1 >= iTimeStart
 			&& (!bMute || pEvent->type() != qtractorMidiEvent::NOTEON))
-			pMidiEngine->enqueue(pTrack, pEvent, iTimeEvent,
-				gain(pSession->frameFromTick(pEvent->time())));
+			pMidiEngine->enqueue(pTrack, pEvent, t1,
+				gain(pSession->frameFromTick(t1) - clipStart()));
 		pEvent = pEvent->next();
 	}
 }
@@ -497,7 +494,8 @@ void qtractorMidiClip::draw ( QPainter *pPainter, const QRect& clipRect,
 	int h  = h1 / iNoteSpan;
 	if (h < 4) h = 4;
 
-	qtractorMidiEvent *pEvent = m_drawCursor.reset(m_pSeq, iTimeStart - t0);
+	qtractorMidiEvent *pEvent
+		= m_drawCursor.reset(m_pSeq, iTimeStart > t0 ? iTimeStart - t0 : 0);
 	while (pEvent) {
 		unsigned long t1 = t0 + pEvent->time();
 		if (t1 >= iTimeEnd)

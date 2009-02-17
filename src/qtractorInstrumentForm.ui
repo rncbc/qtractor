@@ -330,7 +330,6 @@
   </layout>
  </widget>
  <layoutdefault spacing="4" margin="8" />
- <pixmapfunction></pixmapfunction>
  <tabstops>
   <tabstop>InstrumentsListView</tabstop>
   <tabstop>FilesListView</tabstop>

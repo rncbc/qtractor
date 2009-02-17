@@ -376,28 +376,21 @@
   </layout>
  </widget>
  <layoutdefault spacing="4" margin="4" />
- <pixmapfunction></pixmapfunction>
  <customwidgets>
   <customwidget>
    <class>qtractorAudioClientListView</class>
-   <extends></extends>
+   <extends>QTreeWidget</extends>
    <header>qtractorAudioConnect.h</header>
-   <container>0</container>
-   <pixmap></pixmap>
   </customwidget>
   <customwidget>
    <class>qtractorMidiClientListView</class>
-   <extends></extends>
+   <extends>QTreeWidget</extends>
    <header>qtractorMidiConnect.h</header>
-   <container>0</container>
-   <pixmap></pixmap>
   </customwidget>
   <customwidget>
    <class>qtractorConnectorView</class>
-   <extends></extends>
+   <extends>QWidget</extends>
    <header>qtractorConnect.h</header>
-   <container>0</container>
-   <pixmap></pixmap>
   </customwidget>
  </customwidgets>
  <tabstops>
@@ -419,10 +412,6 @@
   <tabstop>MidiDisconnectAllPushButton</tabstop>
   <tabstop>MidiRefreshPushButton</tabstop>
  </tabstops>
- <includes>
-  <include location="local" >qtractorAudioConnect.h</include>
-  <include location="local" >qtractorMidiConnect.h</include>
- </includes>
  <resources>
   <include location="../icons/qtractor.qrc" />
  </resources>
