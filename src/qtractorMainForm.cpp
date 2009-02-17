@@ -4294,7 +4294,7 @@ void qtractorMainForm::timerSlot (void)
 		if (m_pTracks) {
 			// Update tracks-view play-head...
 			m_pTracks->trackView()->setPlayHead(iPlayHead,
-				m_ui.transportFollowAction->isChecked());
+				bPlaying && m_ui.transportFollowAction->isChecked());
 			// Update editors play-head...
 			QListIterator<qtractorMidiEditorForm *> iter(m_editors);
 			while (iter.hasNext())
@@ -4344,6 +4344,9 @@ void qtractorMainForm::timerSlot (void)
 			}
 			// Make it thru...
 			m_pSession->setPlayHead(iPlayHead);
+			// Ensure track-view into visibility...
+			if (m_pTracks && m_ui.transportFollowAction->isChecked())
+				m_pTracks->trackView()->ensureVisibleFrame(iPlayHead);
 		}
 		// Take the change to give some visual feedback...
 		if (m_iTransportUpdate > 0) {

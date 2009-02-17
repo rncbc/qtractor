@@ -157,9 +157,8 @@ bool qtractorMidiClip::openMidiFile ( qtractorMidiFile *pFile,
 		if (pFile->writeHeader(iFormat, iTracks, m_pSeq->ticksPerBeat())) {
 			// Set initial local properties...
 			if (pFile->tempoMap()) {
-				pFile->tempoMap()->fromTimeScale(
-					pSession->timeScale(),
-					m_pSeq->timeOffset());
+				pFile->tempoMap()->fromTimeScale(pSession->timeScale(),
+					pSession->tickFromFrame(clipStart() + clipOffset()));
 			}
 		}
 		// And initial clip name...
@@ -174,9 +173,8 @@ bool qtractorMidiClip::openMidiFile ( qtractorMidiFile *pFile,
 			return false;
 		// FIXME: On demand, set session time properties from MIDI file...
 		if (m_bSessionFlag && pFile->tempoMap()) {
-			pFile->tempoMap()->intoTimeScale(
-				pSession->timeScale(),
-				m_pSeq->timeOffset());
+			pFile->tempoMap()->intoTimeScale(pSession->timeScale(),
+				pSession->tickFromFrame(clipStart() + clipOffset()));
 			pSession->updateTimeScale();
 			// Reset session flag now.
 			m_bSessionFlag = false;
