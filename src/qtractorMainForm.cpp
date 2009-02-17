@@ -3046,8 +3046,14 @@ void qtractorMainForm::transportRewind (void)
 	if (!checkRestartSession())
 		return;
 
+	// Rolling direction and speed (negative)...
+	int iRolling = -1;
+	if (QApplication::keyboardModifiers()
+		& (Qt::ShiftModifier | Qt::ControlModifier))
+		--iRolling;
+
 	// Toggle rolling backward...
-	if (setRolling(-1) < 0) {
+	if (setRolling(iRolling) < 0) {
 		// Send MMC STOP command...
 		m_pSession->midiEngine()->sendMmcCommand(
 			qtractorMmcEvent::STOP);
@@ -3072,8 +3078,14 @@ void qtractorMainForm::transportFastForward (void)
 	if (!checkRestartSession())
 		return;
 
+	// Rolling direction and speed (positive)...
+	int iRolling = +1;
+	if (QApplication::keyboardModifiers()
+		& (Qt::ShiftModifier | Qt::ControlModifier))
+		++iRolling;
+
 	// Toggle rolling backward...
-	if (setRolling(+1) > 0) {
+	if (setRolling(iRolling) > 0) {
 		// Send MMC STOP command...
 		m_pSession->midiEngine()->sendMmcCommand(
 			qtractorMmcEvent::STOP);

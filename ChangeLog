@@ -5,6 +5,10 @@ ChangeLog
 
 CVS HEAD
 
+- Transport/Rewind and Fast-forward commands may now be set
+  to double-speed, by pressing the Shift or Ctrl modifiers,
+  while clicking their respective tool buttons.
+
 - MIDI clip editor zoom ratios are now saved and preserved
   across sessions.
 
