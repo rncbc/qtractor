@@ -117,8 +117,8 @@ qtractorTimeScaleAddNodeCommand::qtractorTimeScaleAddNodeCommand (
 	qtractorTimeScale *pTimeScale, unsigned long iFrame,
 	float fTempo, unsigned short iBeatType,
 	unsigned short iBeatsPerBar, unsigned short iBeatDivisor )
-	: qtractorTimeScaleCommand(QObject::tr("add node"), pTimeScale, NULL,
-		iFrame, fTempo, iBeatType, iBeatsPerBar, iBeatDivisor)
+	: qtractorTimeScaleCommand(QObject::tr("add tempo node"), pTimeScale,
+		NULL, iFrame, fTempo, iBeatType, iBeatsPerBar, iBeatDivisor)
 {
 }
 
@@ -136,8 +136,8 @@ qtractorTimeScaleUpdateNodeCommand::qtractorTimeScaleUpdateNodeCommand (
 	qtractorTimeScale *pTimeScale, unsigned long iFrame,
 	float fTempo, unsigned short iBeatType,
 	unsigned short iBeatsPerBar, unsigned short iBeatDivisor)
-	: qtractorTimeScaleCommand(QObject::tr("update node"), pTimeScale, NULL,
-		iFrame, fTempo, iBeatType, iBeatsPerBar, iBeatDivisor)
+	: qtractorTimeScaleCommand(QObject::tr("update tempo node"), pTimeScale,
+		NULL, iFrame, fTempo, iBeatType, iBeatsPerBar, iBeatDivisor)
 {
 }
 
@@ -153,7 +153,7 @@ bool qtractorTimeScaleUpdateNodeCommand::undo (void) { return redo(); }
 // Constructor.
 qtractorTimeScaleRemoveNodeCommand::qtractorTimeScaleRemoveNodeCommand (
 	qtractorTimeScale *pTimeScale, qtractorTimeScale::Node *pNode )
-	: qtractorTimeScaleCommand(QObject::tr("remove node"), pTimeScale, pNode)
+	: qtractorTimeScaleCommand(QObject::tr("remove tempo node"), pTimeScale, pNode)
 {
 }
 

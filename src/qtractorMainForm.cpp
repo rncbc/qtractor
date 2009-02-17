@@ -278,7 +278,7 @@ qtractorMainForm::qtractorMainForm (
 	m_pTimeSpinBox->setToolTip(tr("Current time (playhead)"));
 	m_pTimeSpinBox->setContextMenuPolicy(Qt::CustomContextMenu);
 	m_ui.timeToolbar->addWidget(m_pTimeSpinBox);
-	m_ui.timeToolbar->addSeparator();
+//	m_ui.timeToolbar->addSeparator();
 
 	// Tempo spin-box.
 	const QSize pad(4, 0);
@@ -287,7 +287,7 @@ qtractorMainForm::qtractorMainForm (
 //	m_pTempoSpinBox->setMinimum(1.0f);
 //	m_pTempoSpinBox->setMaximum(1000.0f);
 	m_pTempoSpinBox->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-	m_pTempoSpinBox->setMinimumWidth(80);
+	m_pTempoSpinBox->setMinimumSize(QSize(96, 26));
 	m_pTempoSpinBox->setPalette(pal);
 //	m_pTempoSpinBox->setAutoFillBackground(true);
 	m_pTempoSpinBox->setToolTip(tr("Current tempo (BPM)"));
@@ -3050,7 +3050,7 @@ void qtractorMainForm::transportRewind (void)
 	int iRolling = -1;
 	if (QApplication::keyboardModifiers()
 		& (Qt::ShiftModifier | Qt::ControlModifier))
-		--iRolling;
+		iRolling -= 2;
 
 	// Toggle rolling backward...
 	if (setRolling(iRolling) < 0) {
@@ -3082,7 +3082,7 @@ void qtractorMainForm::transportFastForward (void)
 	int iRolling = +1;
 	if (QApplication::keyboardModifiers()
 		& (Qt::ShiftModifier | Qt::ControlModifier))
-		++iRolling;
+		iRolling += 2;
 
 	// Toggle rolling backward...
 	if (setRolling(iRolling) > 0) {
@@ -4294,7 +4294,7 @@ void qtractorMainForm::timerSlot (void)
 		if (m_pTracks) {
 			// Update tracks-view play-head...
 			m_pTracks->trackView()->setPlayHead(iPlayHead,
-				bPlaying && m_ui.transportFollowAction->isChecked());
+				m_ui.transportFollowAction->isChecked());
 			// Update editors play-head...
 			QListIterator<qtractorMidiEditorForm *> iter(m_editors);
 			while (iter.hasNext())
@@ -4331,7 +4331,7 @@ void qtractorMainForm::timerSlot (void)
 		} else {
 			// Transport rolling over...
 			iPlayHead += long(m_fTransportShuttle
-				* float(m_pSession->sampleRate())) / 2;
+				* float(m_pSession->sampleRate())) >> 1;
 			if (iPlayHead < 0) {
 				iPlayHead = 0;
 				m_iTransportUpdate = 0;
@@ -4345,14 +4345,8 @@ void qtractorMainForm::timerSlot (void)
 			// Make it thru...
 			m_pSession->setPlayHead(iPlayHead);
 		}
-	#if 0
-		// Ensure track-view into visibility...
-		if (m_pTracks)
-			m_pTracks->trackView()->ensureVisibleFrame(iPlayHead);
-	#endif
 		// Take the change to give some visual feedback...
 		if (m_iTransportUpdate > 0) {
-			m_iTransportUpdate = 0;
 			updateTransportTime(iPlayHead);
 			m_pThumbView->updateThumb();
 		} else {
