@@ -6,14 +6,14 @@ ChangeLog
 CVS HEAD
 
 - Transport/Rewind and Fast-forward commands may now be set
-  to double-speed, by pressing the Shift or Ctrl modifiers,
+  to double-speed, by pressing the Shift or Ctrl modifiers
   while clicking their respective tool buttons.
 
 - MIDI clip editor zoom ratios are now saved and preserved
   across sessions.
 
 - Time-signature is now directly accessible from the main
-  tempo spin-box which also reflecs current tempo status.
+  tempo spin-box which also reflects current tempo status.
 
 - Time/frame spin-boxes now allow to step change each field
   individually, depending on the cursor beam position.
@@ -25,9 +25,12 @@ CVS HEAD
   (SPP), Song Start, Stop and Continue sequencing support.
   (EXPERIMENTAL)
 
-- Complete new time-scale infrastructure is now in place --
-  the one which will support tempo and time-signature maps,
-  in the future. (HIGHLY EXPERIMENTAL)
+- A completely new time-scale infrastructure is now in place,
+  with full support for session tempo and time-signature map;
+  this long due feature is primarily accessible through the
+  main menu, View/Tempo Map...; also by left-clicking on the
+  time rulers and main toolbar tempo/signature spin-box.
+  (HIGHLY EXPERIMENTAL)
 
 - Moving and resizing individual clips now cares for track
   proper ordering and overlapping changes, avoiding nasty

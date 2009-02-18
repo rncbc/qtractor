@@ -84,28 +84,28 @@
        </property>
       </column>
      </widget>
-     <widget class="QGroupBox" name="TimeGroupBox" >
+     <widget class="QGroupBox" name="NodeGroupBox" >
       <property name="title" >
-       <string>Time</string>
+       <string>Node</string>
       </property>
       <layout class="QGridLayout" name="gridLayout" >
        <item row="0" column="0" >
-        <widget class="QLabel" name="FrameTextLabel" >
+        <widget class="QLabel" name="BarTextLabel" >
          <property name="text" >
-          <string>&amp;Bar/Time:</string>
+          <string>&amp;Bar:</string>
          </property>
          <property name="alignment" >
           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
          </property>
          <property name="buddy" >
-          <cstring>FrameSpinBox</cstring>
+          <cstring>BarSpinBox</cstring>
          </property>
         </widget>
        </item>
        <item row="0" column="1" >
         <widget class="QSpinBox" name="BarSpinBox" >
          <property name="toolTip" >
-          <string>Time signature (beats/bar)</string>
+          <string>Bar</string>
          </property>
          <property name="minimum" >
           <number>1</number>
@@ -118,7 +118,20 @@
          </property>
         </widget>
        </item>
-       <item row="0" column="2" colspan="4" >
+       <item row="1" column="0" >
+        <widget class="QLabel" name="FrameTextLabel" >
+         <property name="text" >
+          <string>T&amp;ime:</string>
+         </property>
+         <property name="alignment" >
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+         <property name="buddy" >
+          <cstring>FrameSpinBox</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1" colspan="3" >
         <widget class="qtractorTimeSpinBox" name="FrameSpinBox" >
          <property name="minimumSize" >
           <size>
@@ -131,7 +144,7 @@
          </property>
         </widget>
        </item>
-       <item row="1" column="0" >
+       <item row="2" column="0" >
         <widget class="QLabel" name="TempoTextLabel" >
          <property name="text" >
           <string>&amp;Tempo:</string>
@@ -144,190 +157,14 @@
          </property>
         </widget>
        </item>
-       <item row="1" column="1" colspan="3" >
-        <widget class="QDoubleSpinBox" name="TempoSpinBox" >
-         <property name="toolTip" >
-          <string>Tempo (BPM)</string>
-         </property>
-         <property name="decimals" >
-          <number>1</number>
-         </property>
-         <property name="minimum" >
-          <double>1.0</double>
-         </property>
-         <property name="maximum" >
-          <double>1000.0</double>
-         </property>
-         <property name="singleStep" >
-          <double>0.1</double>
-         </property>
-         <property name="value" >
-          <double>120.0</double>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="4" >
-        <widget class="QComboBox" name="BeatTypeComboBox" >
-         <property name="toolTip" >
-          <string>Tempo beat type (divisor)</string>
-         </property>
-         <property name="editable" >
-          <bool>false</bool>
-         </property>
-         <property name="currentIndex" >
-          <number>1</number>
-         </property>
-         <item>
-          <property name="text" >
-           <string>2</string>
-          </property>
-         </item>
-         <item>
-          <property name="text" >
-           <string>4</string>
-          </property>
-         </item>
-         <item>
-          <property name="text" >
-           <string>8</string>
-          </property>
-         </item>
-         <item>
-          <property name="text" >
-           <string>16</string>
-          </property>
-         </item>
-         <item>
-          <property name="text" >
-           <string>32</string>
-          </property>
-         </item>
-         <item>
-          <property name="text" >
-           <string>64</string>
-          </property>
-         </item>
-         <item>
-          <property name="text" >
-           <string>128</string>
-          </property>
-         </item>
-         <item>
-          <property name="text" >
-           <string>256</string>
-          </property>
-         </item>
-        </widget>
-       </item>
-       <item rowspan="2" row="1" column="5" >
-        <spacer>
-         <property name="orientation" >
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" >
-          <size>
-           <width>22</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item row="2" column="0" >
-        <widget class="QLabel" name="BeatsPerBarTextLabel" >
-         <property name="text" >
-          <string>&amp;Signature:</string>
-         </property>
-         <property name="alignment" >
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-         </property>
-         <property name="buddy" >
-          <cstring>BeatsPerBarSpinBox</cstring>
-         </property>
-        </widget>
-       </item>
        <item row="2" column="1" colspan="2" >
-        <widget class="QSpinBox" name="BeatsPerBarSpinBox" >
+        <widget class="qtractorTempoSpinBox" name="TempoSpinBox" >
          <property name="toolTip" >
-          <string>Time signature (beats/bar)</string>
-         </property>
-         <property name="minimum" >
-          <number>2</number>
-         </property>
-         <property name="maximum" >
-          <number>128</number>
-         </property>
-         <property name="value" >
-          <number>4</number>
+          <string>Tempo (BPM) / Signature</string>
          </property>
         </widget>
        </item>
-       <item row="2" column="3" >
-        <widget class="QLabel" name="BeatDivisorTextLabel" >
-         <property name="text" >
-          <string>/</string>
-         </property>
-         <property name="alignment" >
-          <set>Qt::AlignCenter</set>
-         </property>
-         <property name="buddy" >
-          <cstring>BeatsPerBarSpinBox</cstring>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="4" >
-        <widget class="QComboBox" name="BeatDivisorComboBox" >
-         <property name="toolTip" >
-          <string>Time signature (denominator)</string>
-         </property>
-         <property name="editable" >
-          <bool>false</bool>
-         </property>
-         <property name="currentIndex" >
-          <number>1</number>
-         </property>
-         <item>
-          <property name="text" >
-           <string>2</string>
-          </property>
-         </item>
-         <item>
-          <property name="text" >
-           <string>4</string>
-          </property>
-         </item>
-         <item>
-          <property name="text" >
-           <string>8</string>
-          </property>
-         </item>
-         <item>
-          <property name="text" >
-           <string>16</string>
-          </property>
-         </item>
-         <item>
-          <property name="text" >
-           <string>32</string>
-          </property>
-         </item>
-         <item>
-          <property name="text" >
-           <string>64</string>
-          </property>
-         </item>
-         <item>
-          <property name="text" >
-           <string>128</string>
-          </property>
-         </item>
-         <item>
-          <property name="text" >
-           <string>256</string>
-          </property>
-         </item>
-        </widget>
-       </item>
-       <item row="3" column="0" colspan="6" >
+       <item row="3" column="0" colspan="4" >
         <spacer>
          <property name="orientation" >
           <enum>Qt::Vertical</enum>
@@ -453,15 +290,17 @@
    <extends>QSpinBox</extends>
    <header>qtractorSpinBox.h</header>
   </customwidget>
+  <customwidget>
+   <class>qtractorTempoSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qtractorSpinBox.h</header>
+  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>TimeScaleListView</tabstop>
   <tabstop>BarSpinBox</tabstop>
   <tabstop>FrameSpinBox</tabstop>
   <tabstop>TempoSpinBox</tabstop>
-  <tabstop>BeatTypeComboBox</tabstop>
-  <tabstop>BeatsPerBarSpinBox</tabstop>
-  <tabstop>BeatDivisorComboBox</tabstop>
   <tabstop>RefreshPushButton</tabstop>
   <tabstop>AddPushButton</tabstop>
   <tabstop>UpdatePushButton</tabstop>

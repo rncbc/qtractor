@@ -134,9 +134,6 @@ qtractorTimeScaleForm::qtractorTimeScaleForm (
 	if (pSession)
 		setTimeScale(pSession->timeScale());
 
-	// FIXME: Don't let tempo beat type be modified...
-	m_ui.BeatTypeComboBox->setEnabled(false);
-
 	// Try to restore normal window positioning.
 	adjustSize();
 
@@ -155,16 +152,7 @@ qtractorTimeScaleForm::qtractorTimeScaleForm (
 		SIGNAL(valueChanged(unsigned long)),
 		SLOT(frameChanged(unsigned long)));
 	QObject::connect(m_ui.TempoSpinBox,
-		SIGNAL(valueChanged(double)),
-		SLOT(changed()));
-	QObject::connect(m_ui.BeatTypeComboBox,
-		SIGNAL(activated(int)),
-		SLOT(changed()));
-	QObject::connect(m_ui.BeatsPerBarSpinBox,
-		SIGNAL(valueChanged(int)),
-		SLOT(changed()));
-	QObject::connect(m_ui.BeatDivisorComboBox,
-		SIGNAL(activated(int)),
+		SIGNAL(valueChanged(float, unsigned short, unsigned short)),
 		SLOT(changed()));
 
 	QObject::connect(m_ui.RefreshPushButton,
@@ -221,10 +209,9 @@ void qtractorTimeScaleForm::setFrame ( unsigned long iFrame )
 		// Make this into view...
 		m_ui.BarSpinBox->setValue(pNode->barFromFrame(iFrame) + 1);
 		m_ui.FrameSpinBox->setValue(iFrame);
-		m_ui.TempoSpinBox->setValue(pNode->tempo);
-		m_ui.BeatTypeComboBox->setCurrentIndex(pNode->beatType - 1);
-		m_ui.BeatsPerBarSpinBox->setValue(int(pNode->beatsPerBar));
-		m_ui.BeatDivisorComboBox->setCurrentIndex(pNode->beatDivisor - 1);
+		m_ui.TempoSpinBox->setTempo(pNode->tempoEx(), false);
+		m_ui.TempoSpinBox->setBeatsPerBar(pNode->beatsPerBar, false);
+		m_ui.TempoSpinBox->setBeatDivisor(pNode->beatDivisor, false);
 		// Done.
 		m_iDirtySetup = 0;
 		// Locate nearest list item...
@@ -359,10 +346,9 @@ void qtractorTimeScaleForm::selectNode (void)
 
 	m_ui.BarSpinBox->setValue(pNode->bar + 1);
 	m_ui.FrameSpinBox->setValue(pNode->frame);
-	m_ui.TempoSpinBox->setValue(pNode->tempo);
-	m_ui.BeatTypeComboBox->setCurrentIndex(pNode->beatType - 1);
-	m_ui.BeatsPerBarSpinBox->setValue(int(pNode->beatsPerBar));
-	m_ui.BeatDivisorComboBox->setCurrentIndex(pNode->beatDivisor - 1);
+	m_ui.TempoSpinBox->setTempo(pNode->tempoEx(), false);
+	m_ui.TempoSpinBox->setBeatsPerBar(pNode->beatsPerBar, false);
+	m_ui.TempoSpinBox->setBeatDivisor(pNode->beatDivisor, false);
 
 	ensureVisibleFrame(pNode->frame);
 
@@ -383,10 +369,9 @@ unsigned int qtractorTimeScaleForm::flags (void) const
 	qtractorTimeScale::Cursor cursor(m_pTimeScale);
 	qtractorTimeScale::Node *pNode = cursor.seekBar(iBar);
 
-	float          fTempo = m_ui.TempoSpinBox->value();
-	unsigned short iBeatType = m_ui.BeatTypeComboBox->currentIndex() + 1;
-	unsigned short iBeatsPerBar = m_ui.BeatsPerBarSpinBox->value();
-	unsigned short iBeatDivisor = m_ui.BeatDivisorComboBox->currentIndex() + 1;
+	float fTempo = m_ui.TempoSpinBox->tempo();
+	unsigned short iBeatsPerBar = m_ui.TempoSpinBox->beatsPerBar();
+	unsigned short iBeatDivisor = m_ui.TempoSpinBox->beatDivisor();
 
 	unsigned int iFlags = 0;
 
@@ -396,7 +381,7 @@ unsigned int qtractorTimeScaleForm::flags (void) const
 			iFlags |= Remove;
 	}
 	if (pNode && pNode->tempo == fTempo
-		&& pNode->beatType == iBeatType
+	//	&& pNode->beatType == iBeatType
 		&& pNode->beatsPerBar == iBeatsPerBar
 		&& pNode->beatDivisor == iBeatDivisor)
 		iFlags &= ~Update;
@@ -423,10 +408,9 @@ void qtractorTimeScaleForm::addNode (void)
 	pSession->execute(
 		new qtractorTimeScaleAddNodeCommand(m_pTimeScale,
 			m_ui.FrameSpinBox->value(),
-			m_ui.TempoSpinBox->value(),
-			m_ui.BeatTypeComboBox->currentIndex() + 1,
-			m_ui.BeatsPerBarSpinBox->value(),
-			m_ui.BeatDivisorComboBox->currentIndex() + 1));
+			m_ui.TempoSpinBox->tempo(), 2,
+			m_ui.TempoSpinBox->beatsPerBar(),
+			m_ui.TempoSpinBox->beatDivisor()));
 
 	refresh();
 
@@ -457,10 +441,9 @@ void qtractorTimeScaleForm::updateNode (void)
 
 	pSession->execute(
 		new qtractorTimeScaleUpdateNodeCommand(m_pTimeScale, iFrame,
-			m_ui.TempoSpinBox->value(),
-			m_ui.BeatTypeComboBox->currentIndex() + 1,
-			m_ui.BeatsPerBarSpinBox->value(),
-			m_ui.BeatDivisorComboBox->currentIndex() + 1));
+			m_ui.TempoSpinBox->tempo(), 2,
+			m_ui.TempoSpinBox->beatsPerBar(),
+			m_ui.TempoSpinBox->beatDivisor()));
 
 	refresh();
 
