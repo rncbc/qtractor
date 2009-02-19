@@ -375,10 +375,10 @@ void qtractorMidiOutputThread::process (void)
 	if (m_pSession->isLooping() && iFrameStart < m_pSession->loopEnd()) {
 		// Loop-length might be shorter than the read-ahead...
 		while (iFrameEnd >= m_pSession->loopEnd()) {
-			// Process the remaining until end-of-loop...
-			m_pSession->process(pMidiCursor, iFrameStart, m_pSession->loopEnd());
 			// Process metronome clicks...
 			pMidiEngine->processMetro(iFrameStart, m_pSession->loopEnd());
+			// Process the remaining until end-of-loop...
+			m_pSession->process(pMidiCursor, iFrameStart, m_pSession->loopEnd());
 			// Reset to start-of-loop...
 			iFrameStart = m_pSession->loopStart();
 			iFrameEnd   = iFrameStart + (iFrameEnd - m_pSession->loopEnd());
@@ -388,10 +388,10 @@ void qtractorMidiOutputThread::process (void)
 		}
 	}
 
-	// Regular range...
-	m_pSession->process(pMidiCursor, iFrameStart, iFrameEnd);
 	// Process metronome clicks...
 	pMidiEngine->processMetro(iFrameStart, iFrameEnd);
+	// Regular range...
+	m_pSession->process(pMidiCursor, iFrameStart, iFrameEnd);
 
 	// Sync with loop boundaries (unlikely?)...
 	if (m_pSession->isLooping() && iFrameStart < m_pSession->loopEnd()
@@ -1913,15 +1913,13 @@ void qtractorMidiEngine::processMetro (
 	if (m_pMetroCursor == NULL)
 		return;
 
-	qtractorTimeScale::Node *pNode = m_pMetroCursor->seekFrame(iFrameStart);
+	qtractorTimeScale::Node *pNode = m_pMetroCursor->seekFrame(iFrameEnd);
 
 	// Take this moment to check for tempo changes...
-	if (pNode->tempo != m_fMetroTempo
-		&& pNode->frame >= iFrameStart
-		&& pNode->frame <  iFrameEnd) {
+	if (pNode->tempo != m_fMetroTempo) {
 		// New tempo node...
-		unsigned long iTime = pNode->tick;
-		float fTempo = pNode->tempoEx();
+		unsigned long iTime = (pNode->frame < iFrameStart
+			? pNode->tickFromFrame(iFrameStart) : pNode->tick);
 		// Enqueue tempo event...
 		snd_seq_event_t ev;
 		snd_seq_ev_clear(&ev);
@@ -1931,7 +1929,8 @@ void qtractorMidiEngine::processMetro (
 			((long) iTime > m_iTimeStart ? iTime - m_iTimeStart : 0));
 		ev.type = SND_SEQ_EVENT_TEMPO;
 		ev.data.queue.queue = m_iAlsaQueue;
-		ev.data.queue.param.value = (unsigned int) (60000000.0f / fTempo);
+		ev.data.queue.param.value
+			= (unsigned int) (60000000.0f / pNode->tempoEx());
 		ev.dest.client = SND_SEQ_CLIENT_SYSTEM;
 		ev.dest.port = SND_SEQ_PORT_SYSTEM_TIMER;
 		// Pump it into the queue.
@@ -1951,9 +1950,10 @@ void qtractorMidiEngine::processMetro (
 		return;
 
 	// Register the next metronome beat slot.
-	unsigned long iTimeStart = pNode->tickFromFrame(iFrameStart);
-	unsigned long iTimeEnd   = pNode->tickFromFrame(iFrameEnd);
+	unsigned long iTimeEnd = pNode->tickFromFrame(iFrameEnd);
 
+	pNode = m_pMetroCursor->seekFrame(iFrameStart);
+	unsigned long iTimeStart = pNode->tickFromFrame(iFrameStart);
 	unsigned int  iBeat = pNode->beatFromTick(iTimeStart);
 	unsigned long iTime = pNode->tickFromBeat(iBeat);
 
