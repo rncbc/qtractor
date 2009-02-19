@@ -1589,7 +1589,7 @@ bool qtractorMainForm::saveSession ( bool bPrompt )
 				"\"%1\"\n\n"
 				"Do you want to replace it?")
 				.arg(sFilename),
-				tr("Replace"), tr("Cancel")) > 0)
+				QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
 				return false;
 		}
 	}
@@ -1654,11 +1654,13 @@ bool qtractorMainForm::closeSession (void)
 			"\"%1\"\n\n"
 			"Do you want to save the changes?")
 			.arg(sessionName(m_sFilename)),
-			tr("Save"), tr("Discard"), tr("Cancel"))) {
-		case 0:     // Save...
+			QMessageBox::Save |
+			QMessageBox::Discard |
+			QMessageBox::Cancel)) {
+		case QMessageBox::Save:
 			bClose = saveSession(false);
 			// Fall thru....
-		case 1:     // Discard
+		case QMessageBox::Discard:
 			break;
 		default:    // Cancel.
 			bClose = false;
@@ -2997,7 +2999,7 @@ void qtractorMainForm::viewOptions (void)
 				tr("Information") + " - " QTRACTOR_TITLE,
 				tr("Some settings may be only effective\n"
 				"next time you start this %1.")
-				.arg(sNeedRestart), tr("OK"));
+				.arg(sNeedRestart));
 		}
 	}
 
@@ -4214,7 +4216,7 @@ void qtractorMainForm::appendMessagesError( const QString& s )
 	appendMessagesColor(s.simplified(), "#ff0000");
 
 	QMessageBox::critical(this,
-		tr("Error") + " - " QTRACTOR_TITLE, s, tr("Cancel"));
+		tr("Error") + " - " QTRACTOR_TITLE, s, QMessageBox::Cancel);
 }
 
 

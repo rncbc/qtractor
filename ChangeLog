@@ -5,6 +5,8 @@ ChangeLog
 
 CVS HEAD
 
+- Converted obsolete QMessageBox forms to standard buttons.
+
 - Transport/Rewind and Fast-forward commands may now be set
   to double-speed, by pressing the Shift or Ctrl modifiers
   while clicking their respective tool buttons.

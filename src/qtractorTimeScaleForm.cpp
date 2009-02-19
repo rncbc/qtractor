@@ -330,11 +330,13 @@ void qtractorTimeScaleForm::selectNode (void)
 			tr("Warning") + " - " QTRACTOR_TITLE,
 			tr("Some settings have been changed.\n\n"
 			"Do you want to apply the changes?"),
-			tr("Apply"), tr("Discard"), tr("Cancel"))) {
-		case 0:     // Apply
+			QMessageBox::Apply |
+			QMessageBox::Discard |
+			QMessageBox::Cancel)) {
+		case QMessageBox::Apply:
 			updateNode();
 			// Fall thru...
-		case 1:     // Discard
+		case QMessageBox::Discard:
 			break;;
 		default:    // Cancel.
 			return;
@@ -482,7 +484,8 @@ void qtractorTimeScaleForm::removeNode (void)
 			.arg(pNode->tempoEx())
 			.arg(pNode->beatsPerBar)
 			.arg(1 << pNode->beatDivisor),
-			tr("OK"), tr("Cancel")) > 0)
+			QMessageBox::Ok | QMessageBox::Cancel)
+			== QMessageBox::Cancel)
 			return;
 	}
 
@@ -572,16 +575,13 @@ void qtractorTimeScaleForm::reject (void)
 
 	// Check if there's any pending changes...
 	if (m_iDirtyCount > 0) {
-		switch (QMessageBox::warning(this,
+		if (QMessageBox::warning(this,
 			tr("Warning") + " - " QTRACTOR_TITLE,
 			tr("Some settings have been changed.\n\n"
 			"Do you want to discard the changes?"),
-			tr("Discard"), tr("Cancel"))) {
-		case 0:     // Discard
-			break;
-		default:    // Cancel.
+			QMessageBox::Discard | QMessageBox::Cancel)
+			== QMessageBox::Cancel) {
 			bReject = false;
-			break;
 		}
 	}
 

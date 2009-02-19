@@ -1,7 +1,7 @@
 // qtractorBusForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -386,14 +386,16 @@ void qtractorBusForm::selectBus (void)
 			tr("Warning") + " - " QTRACTOR_TITLE,
 			tr("Some settings have been changed.\n\n"
 			"Do you want to apply the changes?"),
-			tr("Apply"), tr("Discard"), tr("Cancel"))) {
-		case 0:     // Apply
+			QMessageBox::Apply |
+			QMessageBox::Discard |
+			QMessageBox::Cancel)) {
+		case QMessageBox::Apply:
 			if (updateBusEx(m_pBus)) {
 				m_iDirtyTotal++;
 				refreshBuses();
 			}
 			// Fall thru...
-		case 1:     // Discard
+		case QMessageBox::Discard:
 			break;;
 		default:    // Cancel.
 			return;
@@ -649,7 +651,7 @@ void qtractorBusForm::deleteBus (void)
 			"Are you sure?")
 			.arg(m_pBus->busName())
 			.arg(sBusType),
-			tr("OK"), tr("Cancel")) > 0)
+			QMessageBox::Ok | QMessageBox::Cancel) == QMessageBox::Cancel)
 			return;
 	}
 
@@ -693,8 +695,8 @@ void qtractorBusForm::reject (void)
 			tr("Warning") + " - " QTRACTOR_TITLE,
 			tr("Some settings have been changed.\n\n"
 			"Do you want to discard the changes?"),
-			tr("Discard"), tr("Cancel"))) {
-		case 0:     // Discard
+			QMessageBox::Discard | QMessageBox::Cancel)) {
+		case QMessageBox::Discard:
 			break;
 		default:    // Cancel.
 			bReject = false;

@@ -1096,7 +1096,8 @@ bool qtractorTracks::removeTrack ( qtractorTrack *pTrack )
 			"\"%1\"\n\n"
 			"Are you sure?")
 			.arg(pTrack->trackName()),
-			tr("OK"), tr("Cancel")) > 0)
+			QMessageBox::Ok | QMessageBox::Cancel)
+			== QMessageBox::Cancel)
 			return false;
 	}
 

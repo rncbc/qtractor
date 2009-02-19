@@ -1,7 +1,7 @@
 // qtractorPluginForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -455,7 +455,7 @@ void qtractorPluginForm::openPresetSlot (void)
 				tr("Preset could not be loaded\n"
 				"from \"%1\".\n\n"
 				"Sorry.").arg(sFilename),
-				tr("Cancel"));
+				QMessageBox::Cancel);
 		}
 	}
 	refresh();
@@ -558,7 +558,8 @@ void qtractorPluginForm::deletePresetSlot (void)
 			"Are you sure?")
 			.arg(sPreset)
 			.arg((m_pPlugin->type())->name()),
-			tr("OK"), tr("Cancel")) > 0)
+			QMessageBox::Ok | QMessageBox::Cancel)
+			== QMessageBox::Cancel)
 			return;
 	}
 	// Go ahead...

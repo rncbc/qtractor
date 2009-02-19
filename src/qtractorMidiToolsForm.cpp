@@ -474,7 +474,8 @@ void qtractorMidiToolsForm::presetDelete (void)
 				"\"%1\"\n\n"
 				"Are you sure?")
 				.arg(sPreset),
-				tr("OK"), tr("Cancel")) > 0)
+				QMessageBox::Ok | QMessageBox::Cancel)
+				== QMessageBox::Cancel)
 				return;
 		}
 		// Go ahead...

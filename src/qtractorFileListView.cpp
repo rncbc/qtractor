@@ -1,7 +1,7 @@
 // qtractorFileListView.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -620,7 +620,8 @@ void qtractorFileListView::deleteItem (void)
 				tr("About to remove %1 file items.\n\n"
 				"Are you sure?")
 				.arg(items.count()),
-				tr("OK"), tr("Cancel")) > 0)
+				QMessageBox::Ok | QMessageBox::Cancel)
+				== QMessageBox::Cancel)
 				return;
 		}
 		// Definite multi-delete...
@@ -642,7 +643,8 @@ void qtractorFileListView::deleteItem (void)
 					"Are you sure?")
 					.arg(pItem->type() == GroupItem ? tr("group") : tr("file"))
 					.arg(pItem->text(0)),
-					tr("OK"), tr("Cancel")) > 0)
+					QMessageBox::Ok | QMessageBox::Cancel)
+					== QMessageBox::Cancel)
 					return;
 			}
 			// Definite single-delete...

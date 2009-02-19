@@ -476,11 +476,13 @@ bool qtractorMidiEditorForm::queryClose (void)
 			"\"%1\"\n\n"
 			"Do you want to save the changes?")
 			.arg(filename()),
-			tr("Save"), tr("Discard"), tr("Cancel"))) {
-		case 0:     // Save...
+			QMessageBox::Save |
+			QMessageBox::Discard |
+			QMessageBox::Cancel)) {
+		case QMessageBox::Save:
 			bQueryClose = saveClipFile(false);
 			// Fall thru....
-		case 1:     // Discard
+		case QMessageBox::Discard:
 			break;
 		default:    // Cancel.
 			bQueryClose = false;
