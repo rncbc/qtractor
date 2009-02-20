@@ -1,7 +1,7 @@
 // qtractorMidiEditCommand.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -192,7 +192,10 @@ bool qtractorMidiEditCommand::execute ( bool bRedo )
 	// Or are we changing something more durable?
 	if (pSeq->duration() != iOldDuration) {
 		pSeq->setTimeLength(pSeq->duration());
-		m_pMidiClip->setClipLength(pSession->frameFromTick(pSeq->duration()));
+		m_pMidiClip->setClipLength(
+			pSession->frameFromTick(pSession->tickFromFrame(
+				m_pMidiClip->clipStart()) + pSeq->duration())
+			- m_pMidiClip->clipStart());
 		m_pMidiClip->updateEditor();
 	}
 

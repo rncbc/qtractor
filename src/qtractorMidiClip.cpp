@@ -133,8 +133,23 @@ bool qtractorMidiClip::openMidiFile ( qtractorMidiFile *pFile,
 	// Initialize event container...
 	m_pSeq->clear();
 	m_pSeq->setTicksPerBeat(pSession->ticksPerBeat());
-	m_pSeq->setTimeOffset(pSession->tickFromFrame(clipOffset()));
-	m_pSeq->setTimeLength(pSession->tickFromFrame(clipLength()));
+	
+	qtractorTimeScale::Cursor cursor(pSession->timeScale());
+	qtractorTimeScale::Node *pNode = cursor.seekFrame(clipStart());
+	unsigned long t0 = pNode->tickFromFrame(clipStart());
+
+	if (clipStart() > clipOffset()) {
+		unsigned long iOffset = clipStart() - clipOffset();
+		pNode = cursor.seekFrame(iOffset);
+		m_pSeq->setTimeOffset(t0 - pNode->tickFromFrame(iOffset));
+	} else {
+		pNode = cursor.seekFrame(clipOffset());
+		m_pSeq->setTimeOffset(pNode->tickFromFrame(clipOffset()));
+	}
+
+	unsigned long iLength = clipStart() + clipLength();
+	pNode = cursor.seekFrame(iLength);
+	m_pSeq->setTimeLength(pNode->tickFromFrame(iLength) - t0);
 
 	// Are we on a pre-writing status?
 	if (pFile->mode() == qtractorMidiFile::Write) {
@@ -157,8 +172,8 @@ bool qtractorMidiClip::openMidiFile ( qtractorMidiFile *pFile,
 		if (pFile->writeHeader(iFormat, iTracks, m_pSeq->ticksPerBeat())) {
 			// Set initial local properties...
 			if (pFile->tempoMap()) {
-				pFile->tempoMap()->fromTimeScale(pSession->timeScale(),
-					pSession->tickFromFrame(clipStart() + clipOffset()));
+				pFile->tempoMap()->fromTimeScale(
+					pSession->timeScale(), m_pSeq->timeOffset());
 			}
 		}
 		// And initial clip name...
@@ -173,8 +188,7 @@ bool qtractorMidiClip::openMidiFile ( qtractorMidiFile *pFile,
 			return false;
 		// FIXME: On demand, set session time properties from MIDI file...
 		if (m_bSessionFlag && pFile->tempoMap()) {
-			pFile->tempoMap()->intoTimeScale(pSession->timeScale(),
-				pSession->tickFromFrame(clipStart() + clipOffset()));
+			pFile->tempoMap()->intoTimeScale(pSession->timeScale(), t0);
 			pSession->updateTimeScale();
 			// Reset session flag now.
 			m_bSessionFlag = false;
@@ -197,8 +211,9 @@ bool qtractorMidiClip::openMidiFile ( qtractorMidiFile *pFile,
 
 	// Default clip length will be whole sequence duration.
 	if (clipLength() == 0 && m_pSeq->timeLength() > m_pSeq->timeOffset()) {
-		setClipLength(pSession->frameFromTick(
-			m_pSeq->timeLength() - m_pSeq->timeOffset()));
+		unsigned long t1 = t0 + (m_pSeq->timeLength() - m_pSeq->timeOffset());
+		pNode = cursor.seekTick(t1);
+		setClipLength(pNode->frameFromTick(t1) - clipStart());
 	}
 
 	// Uh oh...
