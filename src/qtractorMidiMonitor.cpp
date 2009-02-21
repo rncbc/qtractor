@@ -1,7 +1,7 @@
 // qtractorMidiMonitor.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -97,22 +97,19 @@ void qtractorMidiMonitor::enqueue ( qtractorMidiEvent::EventType type,
 		// out-of-time phantom monitor peak values...)
 		if (iOffset > m_iQueueMask)
 			iOffset = m_iQueueMask;
-		unsigned int iIndex  = (m_iQueueIndex + iOffset) & m_iQueueMask;
+		unsigned int iIndex = (m_iQueueIndex + iOffset) & m_iQueueMask;
 		// Set the value in buffer...
-		if (type == qtractorMidiEvent::NOTEON) {
-			if (m_pQueue[iIndex].value < val)
-				m_pQueue[iIndex].value = val;
-		}
+		QueueItem& item = m_pQueue[iIndex];
+		if (item.value < val && type == qtractorMidiEvent::NOTEON)
+			item.value = val;
 		// Increment enqueued count.
-		m_pQueue[iIndex].count++;
+		item.count++;
 		// Done with enqueueing.
 	} else {
 		// Alternative is sending it directly
 		// as a non-enqueued direct value...
-		if (type == qtractorMidiEvent::NOTEON) {
-			if (m_item.value < val)
-				m_item.value = val;
-		}
+		if (m_item.value < val && type == qtractorMidiEvent::NOTEON)
+			m_item.value = val;
 		// Increment direct count.
 		m_item.count++;
 		// Done direct.
@@ -128,9 +125,9 @@ float qtractorMidiMonitor::value (void)
 	m_item.value = 0;
 	// Sweep the queue until current time...
 	if (m_iTimeSlot > 0) {
-		unsigned long iFrameTime = m_pSession->tickFromFrame(
+		unsigned long iTimeEnd = m_pSession->tickFromFrame(
 			m_pSession->audioEngine()->sessionCursor()->frameTime());
-		while (iFrameTime > m_iTimeStart) {
+		while (m_iTimeStart < iTimeEnd) {
 			QueueItem& item = m_pQueue[m_iQueueIndex];
 			if (val < item.value)
 				val = item.value;
@@ -166,14 +163,18 @@ void qtractorMidiMonitor::reset (void)
 	// have we an actual queue?...
 	if (m_pQueue && m_iQueueSize > 0) {
 		// Reset time references...
-		// time slot: the amount of time (in ticks)
-		// each queue slot will hold scheduled events;
-		m_iTimeSlot = 1 + m_pSession->tickFromFrame(
-			m_pSession->midiEngine()->readAhead() << 1) / m_iQueueSize;
+		unsigned long iFrameStart
+			= m_pSession->audioEngine()->sessionCursor()->frameTime();
+		qtractorTimeScale::Cursor cursor(m_pSession->timeScale());
+		qtractorTimeScale::Node *pNode = cursor.seekFrame(iFrameStart);
 		// time start: the time (in ticks) of the
 		// current queue head slot; usually zero ;)
-		m_iTimeStart = m_pSession->tickFromFrame(
-			m_pSession->audioEngine()->sessionCursor()->frameTime());
+		m_iTimeStart = pNode->tickFromFrame(iFrameStart);
+		// time slot: the amount of time (in ticks)
+		// each queue slot will hold scheduled events;
+		m_iTimeSlot = 1 + (pNode->tickFromFrame(iFrameStart
+			+ (m_pSession->midiEngine()->readAhead() << 1))
+				- m_iTimeStart) / m_iQueueSize;
 		// Time to reset buffer...
 		for (unsigned int i = 0; i < m_iQueueSize; ++i) {
 			m_pQueue[i].value = 0;

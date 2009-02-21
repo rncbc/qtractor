@@ -2926,23 +2926,21 @@ int qtractorMidiBus::updateConnects ( qtractorBus::BusMode busMode,
 	while (snd_seq_query_next_client(
 			pMidiEngine->alsaSeq(), pClientInfo) >= 0) {
 		item.client = snd_seq_client_info_get_client(pClientInfo);
-		if (item.client > 0) {
-			item.clientName = snd_seq_client_info_get_name(pClientInfo);
-			snd_seq_port_info_set_client(pPortInfo, item.client);
-			snd_seq_port_info_set_port(pPortInfo, -1);
-			while (snd_seq_query_next_port(
-					pMidiEngine->alsaSeq(), pPortInfo) >= 0) {
-				unsigned int iPortCapability
-					= snd_seq_port_info_get_capability(pPortInfo);
-				if (((iPortCapability & iPortFlags) == iPortFlags) &&
-					((iPortCapability & SND_SEQ_PORT_CAP_NO_EXPORT) == 0)) {
-					item.port = snd_seq_port_info_get_port(pPortInfo);
-					item.portName = snd_seq_port_info_get_name(pPortInfo);
-					pItem = connects.findItem(item);
-					if (pItem) {
-						pItem->port = item.port;
-						pItem->client = item.client;
-					}
+		item.clientName = snd_seq_client_info_get_name(pClientInfo);
+		snd_seq_port_info_set_client(pPortInfo, item.client);
+		snd_seq_port_info_set_port(pPortInfo, -1);
+		while (snd_seq_query_next_port(
+				pMidiEngine->alsaSeq(), pPortInfo) >= 0) {
+			unsigned int iPortCapability
+				= snd_seq_port_info_get_capability(pPortInfo);
+			if (((iPortCapability & iPortFlags) == iPortFlags) &&
+				((iPortCapability & SND_SEQ_PORT_CAP_NO_EXPORT) == 0)) {
+				item.port = snd_seq_port_info_get_port(pPortInfo);
+				item.portName = snd_seq_port_info_get_name(pPortInfo);
+				pItem = connects.findItem(item);
+				if (pItem) {
+					pItem->port = item.port;
+					pItem->client = item.client;
 				}
 			}
 		}

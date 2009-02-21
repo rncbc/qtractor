@@ -1,7 +1,7 @@
 // qtractorEngine.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -342,7 +342,7 @@ bool qtractorBus::loadConnects ( ConnectList& connects,
 				// Add this one to map...
 				if (eConnect.tagName() == "client") {
 					const QString& sClient = eConnect.text();
-					const QString& sClientName = sClient.section(':', 1, 1);
+					const QString& sClientName = sClient.section(':', 1);
 					if (sClientName.isEmpty()) {
 						pItem->clientName = sClient;
 					} else {
@@ -353,7 +353,7 @@ bool qtractorBus::loadConnects ( ConnectList& connects,
 				else
 				if (eConnect.tagName() == "port") {
 					const QString& sPort = eConnect.text();
-					const QString& sPortName = sPort.section(':', 1, 1);
+					const QString& sPortName = sPort.section(':', 1);
 					if (sPortName.isEmpty()) {
 						pItem->portName = sPort;
 					} else {
