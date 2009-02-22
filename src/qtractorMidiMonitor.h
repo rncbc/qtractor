@@ -78,6 +78,8 @@ private:
 	unsigned int     m_iQueueMask;
 	QueueItem       *m_pQueue;
 	unsigned int     m_iQueueIndex;
+	unsigned long    m_iFrameStart;
+	unsigned long    m_iFrameSlot;
 	unsigned long    m_iTimeStart;
 	unsigned long    m_iTimeSlot;
 	QueueItem        m_item;

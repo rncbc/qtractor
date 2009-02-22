@@ -123,11 +123,18 @@ float qtractorMidiMonitor::value (void)
 	// Grab-and-reset current direct value...
 	unsigned char val = m_item.value;
 	m_item.value = 0;
+
 	// Sweep the queue until current time...
-	if (m_iTimeSlot > 0) {
-		unsigned long iTimeEnd = m_pSession->tickFromFrame(
-			m_pSession->audioEngine()->sessionCursor()->frameTime());
-		while (m_iTimeStart < iTimeEnd) {
+	if (m_iFrameSlot > 0) {
+		// Reset time references...
+		unsigned long iFrame = m_pSession->playHead();
+		qtractorTimeScale::Cursor cursor(m_pSession->timeScale());
+		qtractorTimeScale::Node *pNode = cursor.seekFrame(iFrame);
+		unsigned long t0 = pNode->tickFromFrame(iFrame);
+		m_iTimeSlot = pNode->tickFromFrame(iFrame + m_iFrameSlot) - t0;
+		unsigned long iFrameEnd
+			= m_pSession->audioEngine()->sessionCursor()->frameTime();
+		while (m_iFrameStart < iFrameEnd) {
 			QueueItem& item = m_pQueue[m_iQueueIndex];
 			if (val < item.value)
 				val = item.value;
@@ -135,9 +142,11 @@ float qtractorMidiMonitor::value (void)
 			item.value = 0;
 			item.count = 0;
 			++m_iQueueIndex &= m_iQueueMask;
+			m_iFrameStart += m_iFrameSlot;
 			m_iTimeStart += m_iTimeSlot;
 		}
 	}
+
 	// Dequeue done.
 	return (gain() * val) / 127.0f;
 }
@@ -163,18 +172,18 @@ void qtractorMidiMonitor::reset (void)
 	// have we an actual queue?...
 	if (m_pQueue && m_iQueueSize > 0) {
 		// Reset time references...
-		unsigned long iFrameStart
-			= m_pSession->audioEngine()->sessionCursor()->frameTime();
+		unsigned long iFrame = m_pSession->playHead();
 		qtractorTimeScale::Cursor cursor(m_pSession->timeScale());
-		qtractorTimeScale::Node *pNode = cursor.seekFrame(iFrameStart);
+		qtractorTimeScale::Node *pNode = cursor.seekFrame(iFrame);
+		unsigned long t0 = pNode->tickFromFrame(iFrame);
 		// time start: the time (in ticks) of the
 		// current queue head slot; usually zero ;)
-		m_iTimeStart = pNode->tickFromFrame(iFrameStart);
+		m_iFrameStart = m_pSession->audioEngine()->sessionCursor()->frameTime();
+		m_iTimeStart = pNode->tickFromFrame(iFrame + m_iFrameStart) - t0;
 		// time slot: the amount of time (in ticks)
 		// each queue slot will hold scheduled events;
-		m_iTimeSlot = 1 + (pNode->tickFromFrame(iFrameStart
-			+ (m_pSession->midiEngine()->readAhead() << 1))
-				- m_iTimeStart) / m_iQueueSize;
+		m_iFrameSlot = (m_pSession->midiEngine()->readAhead() << 1) / m_iQueueSize;
+		m_iTimeSlot = (pNode->tickFromFrame(iFrame + m_iFrameSlot) - t0);
 		// Time to reset buffer...
 		for (unsigned int i = 0; i < m_iQueueSize; ++i) {
 			m_pQueue[i].value = 0;
@@ -182,8 +191,10 @@ void qtractorMidiMonitor::reset (void)
 		}
 		// Done reset.
 	} else {
-		m_iTimeStart = 0;
-		m_iTimeSlot  = 0;
+		m_iFrameStart = 0;
+		m_iFrameSlot  = 0;
+		m_iTimeStart  = 0;
+		m_iTimeSlot   = 0;
 	}
 }
 
