@@ -241,7 +241,7 @@ bool qtractorTrack::open (void)
 		qtractorMidiBus *pMidiBus
 			= static_cast<qtractorMidiBus *> (m_pOutputBus);
 		if (pMidiBus) {
-			m_pMonitor = new qtractorMidiMonitor(m_pSession,
+			m_pMonitor = new qtractorMidiMonitor(
 				m_props.gain, m_props.panning);
 		}
 		// Get audio bus as for the plugin list...

@@ -1136,19 +1136,23 @@ void qtractorMidiEngine::flush (void)
 	snd_seq_queue_status_alloca(&pQueueStatus);
 	if (snd_seq_get_queue_status(
 			m_pAlsaSeq, m_iAlsaQueue, pQueueStatus) >= 0) {
-		unsigned long iMidiTime
-			= snd_seq_queue_status_get_tick_time(pQueueStatus);
-		unsigned long iAudioTime = pSession->tickFromFrame(
-			pSession->audioEngine()->sessionCursor()->frameTime());
+		long iMidiTime = long(snd_seq_queue_status_get_tick_time(pQueueStatus));
+	#if 1
+		long iAudioTime = long(pSession->tickFromFrame(
+			pSession->audioEngine()->sessionCursor()->frameTime()));
 		m_iTimeDelta = (iAudioTime - iMidiTime) - m_iTimeDrift;
-		if (m_iTimeDelta && iAudioTime > 0 && iMidiTime > 0) {
+	#else
+		long iAudioTime = long(pSession->tickFromFrame(pSession->playHead()));
+		m_iTimeDelta = m_iTimeStart + (iAudioTime - iMidiTime) - m_iTimeDrift;
+	#endif
+		if (m_iTimeDelta) {
 		//	m_iTimeStart += m_iTimeDelta;
 			m_iTimeDrift += m_iTimeDelta;
-#ifdef CONFIG_DEBUG
+		#ifdef CONFIG_DEBUG
 			qDebug("qtractorMidiEngine::flush(): "
-				"iAudioTime=%lu iMidiTime=%lu iTimeDelta=%ld (%ld)",
+				"iAudioTime=%ld iMidiTime=%ld iTimeDelta=%ld (%ld)",
 				iAudioTime, iMidiTime, m_iTimeDelta, m_iTimeDrift);
-#endif
+		#endif
 		}
 	}
 }
@@ -1264,7 +1268,7 @@ bool qtractorMidiEngine::start (void)
 	resetAllMonitors();
 
 	// Start queue timer...
-	m_iTimeStart = (long) pSession->tickFromFrame(pMidiCursor->frame());
+	m_iTimeStart = long(pSession->tickFromFrame(pMidiCursor->frame()));
 	m_iTimeDelta = 0;
 	m_iTimeDrift = 0;
 
@@ -1384,7 +1388,7 @@ void qtractorMidiEngine::restartLoop (void)
 {
 	qtractorSession *pSession = session();
 	if (pSession && pSession->isLooping()) {
-		m_iTimeStart -= (long) (pSession->tickFromFrame(pSession->loopEnd())
+		m_iTimeStart -= long(pSession->tickFromFrame(pSession->loopEnd())
 			- pSession->tickFromFrame(pSession->loopStart()));
 		m_iTimeStart += m_iTimeDelta; // Drift correction...
 		m_iTimeDelta  = 0;
@@ -2336,7 +2340,7 @@ qtractorMidiBus::qtractorMidiBus ( qtractorMidiEngine *pMidiEngine,
 	m_iAlsaPort = -1;
 
 	if (busMode & qtractorBus::Input) {
-		m_pIMidiMonitor = new qtractorMidiMonitor(pMidiEngine->session());
+		m_pIMidiMonitor = new qtractorMidiMonitor();
 		m_pIPluginList  = createPluginList();
 	} else {
 		m_pIMidiMonitor = NULL;
@@ -2344,7 +2348,7 @@ qtractorMidiBus::qtractorMidiBus ( qtractorMidiEngine *pMidiEngine,
 	}
 
 	if (busMode & qtractorBus::Output) {
-		m_pOMidiMonitor = new qtractorMidiMonitor(pMidiEngine->session());
+		m_pOMidiMonitor = new qtractorMidiMonitor();
 		m_pOPluginList  = createPluginList();
 	} else {
 		m_pOMidiMonitor = NULL;
@@ -2456,7 +2460,7 @@ void qtractorMidiBus::updateBusMode (void)
 	// Have a new/old input monitor?
 	if (busMode() & qtractorBus::Input) {
 		if (m_pIMidiMonitor == NULL)
-			m_pIMidiMonitor = new qtractorMidiMonitor(engine()->session());
+			m_pIMidiMonitor = new qtractorMidiMonitor();
 		if (m_pIPluginList == NULL)
 			m_pIPluginList = createPluginList();
 	} else {
@@ -2473,7 +2477,7 @@ void qtractorMidiBus::updateBusMode (void)
 	// Have a new/old output monitor?
 	if (busMode() & qtractorBus::Output) {
 		if (m_pOMidiMonitor == NULL)
-			m_pOMidiMonitor = new qtractorMidiMonitor(engine()->session());
+			m_pOMidiMonitor = new qtractorMidiMonitor();
 		if (m_pOPluginList == NULL)
 			m_pOPluginList = createPluginList();
 	} else {

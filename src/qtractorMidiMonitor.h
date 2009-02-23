@@ -37,15 +37,9 @@ class qtractorMidiMonitor : public qtractorMonitor
 public:
 
 	// Constructor.
-	qtractorMidiMonitor(qtractorSession *pSession,
-		float fGain = 1.0f, float fPanning = 0.0f,
-		unsigned int iQueueSize = 16);
+	qtractorMidiMonitor(float fGain = 1.0f, float fPanning = 0.0f);
 	// Destructor.
 	~qtractorMidiMonitor();
-
-	// Queue property accessors.
-	void setQueueSize(unsigned int iQueueSize);
-	unsigned int queueSize() const;
 
 	// Monitor enqueue methods.
 	void enqueue(qtractorMidiEvent::EventType type,

@@ -27,61 +27,29 @@
 #include "qtractorMidiEngine.h"
 
 
+// Module constants.
+const unsigned int c_iQueueSize = 16; // Must be power of 2;
+const unsigned int c_iQueueMask = c_iQueueSize - 1;
+
+
 //----------------------------------------------------------------------------
 // qtractorMidiMonitor -- MIDI monitor bridge value processor.
 
 // Constructor.
-qtractorMidiMonitor::qtractorMidiMonitor ( qtractorSession *pSession,
-	float fGain, float fPanning, unsigned int iQueueSize )
-	: qtractorMonitor(fGain, fPanning),	m_pSession(pSession), m_pQueue(0)
+qtractorMidiMonitor::qtractorMidiMonitor ( float fGain, float fPanning )
+	: qtractorMonitor(fGain, fPanning)
 {
-	setQueueSize(iQueueSize);
-}
-
-// Destructor.
-qtractorMidiMonitor::~qtractorMidiMonitor (void)
-{
-	setQueueSize(0);
-}
-
-
-// Queue property accessors.
-void qtractorMidiMonitor::setQueueSize ( unsigned int iQueueSize)
-{
-	// Delete old buffer...
-	if (m_pQueue) {
-		delete [] m_pQueue;
-		m_pQueue = 0;
-	}
-
-	// Set new buffer holders...
-	m_iQueueMask = 0;
-	m_iQueueSize = iQueueSize;
-	if (m_iQueueSize > 0) {
-		// Queue size range.
-		const unsigned int iMinQueueSize = 8;
-		const unsigned int iMaxQueueSize = 256;
-		// Adjust size to nearest power-of-two, if necessary.
-		if (iQueueSize < iMaxQueueSize) {
-			m_iQueueSize = iMinQueueSize;
-			while (m_iQueueSize < iQueueSize)
-				m_iQueueSize <<= 1;
-		} else {
-			m_iQueueSize = iMaxQueueSize;
-		}
-		// The size overflow convenience mask.
-		m_iQueueMask = (m_iQueueSize - 1);
-		// Allocate actual buffer stuff...
-		m_pQueue = new QueueItem [m_iQueueSize];
-	}
+	// Allocate actual buffer stuff...
+	m_pQueue = new QueueItem [c_iQueueSize];
 
 	// May reset now...
 	reset();
 }
 
-unsigned int qtractorMidiMonitor::queueSize() const
+// Destructor.
+qtractorMidiMonitor::~qtractorMidiMonitor (void)
 {
-	return m_iQueueSize;
+	delete [] m_pQueue;
 }
 
 
@@ -95,9 +63,9 @@ void qtractorMidiMonitor::enqueue ( qtractorMidiEvent::EventType type,
 		unsigned int iOffset = (tick - m_iTimeStart) / m_iTimeSlot;
 		// FIXME: Ignore outsiders (which would manifest as
 		// out-of-time phantom monitor peak values...)
-		if (iOffset > m_iQueueMask)
-			iOffset = m_iQueueMask;
-		unsigned int iIndex = (m_iQueueIndex + iOffset) & m_iQueueMask;
+		if (iOffset > c_iQueueMask)
+			iOffset = c_iQueueMask;
+		unsigned int iIndex = (m_iQueueIndex + iOffset) & c_iQueueMask;
 		// Set the value in buffer...
 		QueueItem& item = m_pQueue[iIndex];
 		if (item.value < val && type == qtractorMidiEvent::NOTEON)
@@ -124,16 +92,17 @@ float qtractorMidiMonitor::value (void)
 	unsigned char val = m_item.value;
 	m_item.value = 0;
 
-	// Sweep the queue until current time...
-	if (m_iFrameSlot > 0) {
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession && m_iFrameSlot > 0) {
 		// Reset time references...
-		unsigned long iFrame = m_pSession->playHead();
-		qtractorTimeScale::Cursor cursor(m_pSession->timeScale());
+		unsigned long iFrame = pSession->playHead();
+		qtractorTimeScale::Cursor cursor(pSession->timeScale());
 		qtractorTimeScale::Node *pNode = cursor.seekFrame(iFrame);
 		unsigned long t0 = pNode->tickFromFrame(iFrame);
 		m_iTimeSlot = pNode->tickFromFrame(iFrame + m_iFrameSlot) - t0;
+		// Sweep the queue until current time...
 		unsigned long iFrameEnd
-			= m_pSession->audioEngine()->sessionCursor()->frameTime();
+			= pSession->audioEngine()->sessionCursor()->frameTime();
 		while (m_iFrameStart < iFrameEnd) {
 			QueueItem& item = m_pQueue[m_iQueueIndex];
 			if (val < item.value)
@@ -141,7 +110,7 @@ float qtractorMidiMonitor::value (void)
 			m_item.count += item.count;
 			item.value = 0;
 			item.count = 0;
-			++m_iQueueIndex &= m_iQueueMask;
+			++m_iQueueIndex &= c_iQueueMask;
 			m_iFrameStart += m_iFrameSlot;
 			m_iTimeStart += m_iTimeSlot;
 		}
@@ -169,23 +138,24 @@ void qtractorMidiMonitor::reset (void)
 	m_item.value  = 0;
 	m_item.count  = 0;
 	m_iQueueIndex = 0;
-	// have we an actual queue?...
-	if (m_pQueue && m_iQueueSize > 0) {
+
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession) {
 		// Reset time references...
-		unsigned long iFrame = m_pSession->playHead();
-		qtractorTimeScale::Cursor cursor(m_pSession->timeScale());
+		unsigned long iFrame = pSession->playHead();
+		qtractorTimeScale::Cursor cursor(pSession->timeScale());
 		qtractorTimeScale::Node *pNode = cursor.seekFrame(iFrame);
 		unsigned long t0 = pNode->tickFromFrame(iFrame);
 		// time start: the time (in ticks) of the
 		// current queue head slot; usually zero ;)
-		m_iFrameStart = m_pSession->audioEngine()->sessionCursor()->frameTime();
+		m_iFrameStart = pSession->audioEngine()->sessionCursor()->frameTime();
 		m_iTimeStart = pNode->tickFromFrame(iFrame + m_iFrameStart) - t0;
 		// time slot: the amount of time (in ticks)
 		// each queue slot will hold scheduled events;
-		m_iFrameSlot = (m_pSession->midiEngine()->readAhead() << 1) / m_iQueueSize;
+		m_iFrameSlot = (pSession->midiEngine()->readAhead() << 1) / c_iQueueSize;
 		m_iTimeSlot = (pNode->tickFromFrame(iFrame + m_iFrameSlot) - t0);
 		// Time to reset buffer...
-		for (unsigned int i = 0; i < m_iQueueSize; ++i) {
+		for (unsigned int i = 0; i < c_iQueueSize; ++i) {
 			m_pQueue[i].value = 0;
 			m_pQueue[i].count = 0;
 		}
