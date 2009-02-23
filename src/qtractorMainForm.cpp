@@ -3433,11 +3433,10 @@ bool qtractorMainForm::setPlaying ( bool bPlaying )
 
 	// Toggle engine play status...
 	m_pSession->setPlaying(bPlaying);
-	m_iTransportUpdate++;
 
 	// We must start/stop certain things...
 	if (!bPlaying) {
-		// And shutdown recording anyway...
+		// Shutdown recording anyway...
 		if (m_pSession->isRecording())
 			setRecording(false);
 		// Stop transport rolling, immediately...
@@ -3451,7 +3450,8 @@ bool qtractorMainForm::setPlaying ( bool bPlaying )
 				iPlayHead = 0;
 			m_pSession->setPlayHead(iPlayHead);
 		}
-	}
+	}	// Start something... ;)
+	else m_iTransportUpdate++;
 
 	// Done with playback switch...
 	return true;

@@ -25,8 +25,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>518</width>
-    <height>244</height>
+    <width>478</width>
+    <height>246</height>
    </rect>
   </property>
   <property name="focusPolicy" >
@@ -48,12 +48,6 @@
       <number>4</number>
      </property>
      <widget class="QTreeWidget" name="TimeScaleListView" >
-      <property name="minimumSize" >
-       <size>
-        <width>120</width>
-        <height>0</height>
-       </size>
-      </property>
       <property name="toolTip" >
        <string>Tempo map</string>
       </property>
@@ -88,7 +82,7 @@
       <property name="title" >
        <string>Node</string>
       </property>
-      <layout class="QGridLayout" name="gridLayout" >
+      <layout class="QGridLayout" >
        <item row="0" column="0" >
         <widget class="QLabel" name="BarTextLabel" >
          <property name="text" >
@@ -135,7 +129,7 @@
         <widget class="qtractorTimeSpinBox" name="FrameSpinBox" >
          <property name="minimumSize" >
           <size>
-           <width>100</width>
+           <width>120</width>
            <height>0</height>
           </size>
          </property>
@@ -159,6 +153,12 @@
        </item>
        <item row="2" column="1" colspan="2" >
         <widget class="qtractorTempoSpinBox" name="TempoSpinBox" >
+         <property name="minimumSize" >
+          <size>
+           <width>100</width>
+           <height>0</height>
+          </size>
+         </property>
          <property name="toolTip" >
           <string>Tempo (BPM) / Signature</string>
          </property>

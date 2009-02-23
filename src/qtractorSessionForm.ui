@@ -25,8 +25,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>519</width>
-    <height>324</height>
+    <width>469</width>
+    <height>311</height>
    </rect>
   </property>
   <property name="focusPolicy" >
@@ -224,6 +224,12 @@
           </item>
           <item row="1" column="1" >
            <widget class="qtractorTempoSpinBox" name="TempoSpinBox" >
+            <property name="minimumSize" >
+             <size>
+              <width>100</width>
+              <height>0</height>
+             </size>
+            </property>
             <property name="toolTip" >
              <string>Tempo (BPM) / Signature</string>
             </property>
