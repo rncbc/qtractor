@@ -52,6 +52,9 @@ public:
 	// Reset monitor.
 	void reset();
 
+	// Singleton sync reset.
+	static void syncReset();
+
 protected:
 
 	// Update monitor (nothing really done here).
@@ -67,16 +70,15 @@ private:
 	};
 
 	// Instance variables.
-	qtractorSession *m_pSession;
-	unsigned int     m_iQueueSize;
-	unsigned int     m_iQueueMask;
-	QueueItem       *m_pQueue;
-	unsigned int     m_iQueueIndex;
-	unsigned long    m_iFrameStart;
-	unsigned long    m_iFrameSlot;
-	unsigned long    m_iTimeStart;
-	unsigned long    m_iTimeSlot;
-	QueueItem        m_item;
+	QueueItem    *m_pQueue;
+	unsigned int  m_iQueueIndex;
+	unsigned long m_iFrameStart;
+	unsigned long m_iTimeStart;
+	QueueItem     m_item;
+
+	// Singleton variables.
+	static unsigned long s_iFrameSlot;
+	static unsigned long s_iTimeSlot;
 };
 
 

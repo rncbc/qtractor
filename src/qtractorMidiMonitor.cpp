@@ -31,6 +31,10 @@
 const unsigned int c_iQueueSize = 16; // Must be power of 2;
 const unsigned int c_iQueueMask = c_iQueueSize - 1;
 
+// Singleton variables.
+unsigned long qtractorMidiMonitor::s_iFrameSlot = 0;
+unsigned long qtractorMidiMonitor::s_iTimeSlot  = 0;
+
 
 //----------------------------------------------------------------------------
 // qtractorMidiMonitor -- MIDI monitor bridge value processor.
@@ -58,9 +62,9 @@ void qtractorMidiMonitor::enqueue ( qtractorMidiEvent::EventType type,
 	unsigned char val, unsigned long tick )
 {
 	// Check whether this is a scheduled value...
-	if (m_iTimeStart < tick && m_iTimeSlot > 0) {
+	if (m_iTimeStart < tick && s_iTimeSlot > 0) {
 		// Find queue offset index...
-		unsigned int iOffset = (tick - m_iTimeStart) / m_iTimeSlot;
+		unsigned int iOffset = (tick - m_iTimeStart) / s_iTimeSlot;
 		// FIXME: Ignore outsiders (which would manifest as
 		// out-of-time phantom monitor peak values...)
 		if (iOffset > c_iQueueMask)
@@ -93,13 +97,7 @@ float qtractorMidiMonitor::value (void)
 	m_item.value = 0;
 
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession && m_iFrameSlot > 0) {
-		// Reset time references...
-		unsigned long iFrame = pSession->playHead();
-		qtractorTimeScale::Cursor cursor(pSession->timeScale());
-		qtractorTimeScale::Node *pNode = cursor.seekFrame(iFrame);
-		unsigned long t0 = pNode->tickFromFrame(iFrame);
-		m_iTimeSlot = pNode->tickFromFrame(iFrame + m_iFrameSlot) - t0;
+	if (pSession && s_iFrameSlot > 0) {
 		// Sweep the queue until current time...
 		unsigned long iFrameEnd
 			= pSession->audioEngine()->sessionCursor()->frameTime();
@@ -111,8 +109,8 @@ float qtractorMidiMonitor::value (void)
 			item.value = 0;
 			item.count = 0;
 			++m_iQueueIndex &= c_iQueueMask;
-			m_iFrameStart += m_iFrameSlot;
-			m_iTimeStart += m_iTimeSlot;
+			m_iFrameStart += s_iFrameSlot;
+			m_iTimeStart += s_iTimeSlot;
 		}
 	}
 
@@ -146,25 +144,19 @@ void qtractorMidiMonitor::reset (void)
 		qtractorTimeScale::Cursor cursor(pSession->timeScale());
 		qtractorTimeScale::Node *pNode = cursor.seekFrame(iFrame);
 		unsigned long t0 = pNode->tickFromFrame(iFrame);
-		// time start: the time (in ticks) of the
+		// Time (re)start: the time (in ticks) of the
 		// current queue head slot; usually zero ;)
 		m_iFrameStart = pSession->audioEngine()->sessionCursor()->frameTime();
-		m_iTimeStart = pNode->tickFromFrame(iFrame + m_iFrameStart) - t0;
-		// time slot: the amount of time (in ticks)
-		// each queue slot will hold scheduled events;
-		m_iFrameSlot = (pSession->midiEngine()->readAhead() << 1) / c_iQueueSize;
-		m_iTimeSlot = (pNode->tickFromFrame(iFrame + m_iFrameSlot) - t0);
-		// Time to reset buffer...
-		for (unsigned int i = 0; i < c_iQueueSize; ++i) {
-			m_pQueue[i].value = 0;
-			m_pQueue[i].count = 0;
-		}
-		// Done reset.
+		m_iTimeStart  = pNode->tickFromFrame(iFrame + m_iFrameStart) - t0;
 	} else {
 		m_iFrameStart = 0;
-		m_iFrameSlot  = 0;
 		m_iTimeStart  = 0;
-		m_iTimeSlot   = 0;
+	}
+
+	// Time to reset buffer...
+	for (unsigned int i = 0; i < c_iQueueSize; ++i) {
+		m_pQueue[i].value = 0;
+		m_pQueue[i].count = 0;
 	}
 }
 
@@ -173,6 +165,26 @@ void qtractorMidiMonitor::reset (void)
 void qtractorMidiMonitor::update (void)
 {
 	// Do nothing yet...
+}
+
+
+// Singleton sync reset.
+void qtractorMidiMonitor::syncReset (void)
+{
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return;
+
+	// Reset time references...
+	unsigned long iFrame = pSession->playHead();
+	qtractorTimeScale::Cursor cursor(pSession->timeScale());
+	qtractorTimeScale::Node *pNode = cursor.seekFrame(iFrame);
+	unsigned long t0 = pNode->tickFromFrame(iFrame);
+
+	// Time slot: the amount of time (in ticks)
+	// each queue slot will hold scheduled events;
+	s_iFrameSlot = (pSession->midiEngine()->readAhead() << 1) / c_iQueueSize;
+	s_iTimeSlot  = (pNode->tickFromFrame(iFrame + s_iFrameSlot) - t0);
 }
 
 
