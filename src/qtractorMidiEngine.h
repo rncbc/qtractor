@@ -83,6 +83,9 @@ public:
 	void enqueue(qtractorTrack *pTrack, qtractorMidiEvent *pEvent,
 		unsigned long iTime, float fGain = 1.0f);
 
+	// Do ouput queue drift stats (audio vs. MIDI)...
+	void drift();
+
 	// Flush ouput queue (if necessary)...
 	void flush();
 
@@ -217,7 +220,6 @@ private:
 
 	// The delta-time when playback started .
 	long m_iTimeStart;
-	long m_iTimeDelta;
 	long m_iTimeDrift;
 
 	// The event notifier widget.

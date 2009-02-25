@@ -5,6 +5,10 @@ ChangeLog
 
 CVS HEAD
 
+- Internal Audio/MIDI engines queue/time drift correction
+  takes a brand new approach, specially adapted to rolling
+  tempo/time-siganture changes.
+
 - MIDI monitor refresh-cycle slight internal optimization.
 
 - Converted obsolete QMessageBox forms to standard buttons.

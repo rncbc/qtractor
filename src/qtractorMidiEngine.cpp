@@ -362,6 +362,9 @@ void qtractorMidiOutputThread::process (void)
 	if (pMidiCursor == NULL)
 		return;
 
+	// Always do the queue drift stats ahead of the pack...
+	pMidiEngine->drift();
+
 	// Now for the next readahead bunch...
 	unsigned long iFrameStart = pMidiCursor->frame();
 	unsigned long iFrameEnd   = iFrameStart + m_iReadAhead;
@@ -544,7 +547,6 @@ qtractorMidiEngine::qtractorMidiEngine ( qtractorSession *pSession )
 	m_pOutputThread  = NULL;
 
 	m_iTimeStart     = 0;
-	m_iTimeDelta     = 0;
 	m_iTimeDrift     = 0;
 
 	m_pNotifyObject  = NULL;
@@ -1122,42 +1124,50 @@ void qtractorMidiEngine::enqueue ( qtractorTrack *pTrack,
 }
 
 
-// Flush ouput queue (if necessary)...
-void qtractorMidiEngine::flush (void)
+// Do ouput queue status (audio vs. MIDI)...
+void qtractorMidiEngine::drift (void)
 {
-	// Really flush MIDI output...
-	snd_seq_drain_output(m_pAlsaSeq);
-
 	qtractorSession *pSession = session();
 	if (pSession == NULL)
 		return;
 //	if (pSession->isRecording())
 //		return;
 
+	if (m_pMetroCursor == NULL)
+		return;
+
 	// Time to have some corrective approach...?
 	snd_seq_queue_status_t *pQueueStatus;
 	snd_seq_queue_status_alloca(&pQueueStatus);
 	if (snd_seq_get_queue_status(
 			m_pAlsaSeq, m_iAlsaQueue, pQueueStatus) >= 0) {
-		long iMidiTime = long(snd_seq_queue_status_get_tick_time(pQueueStatus));
-	#if 1
-		long iAudioTime = long(pSession->tickFromFrame(
-			pSession->audioEngine()->sessionCursor()->frameTime()));
-		m_iTimeDelta = (iAudioTime - iMidiTime) - m_iTimeDrift;
-	#else
-		long iAudioTime = long(pSession->tickFromFrame(pSession->playHead()));
-		m_iTimeDelta = m_iTimeStart + (iAudioTime - iMidiTime) - m_iTimeDrift;
-	#endif
-		if (m_iTimeDelta) {
-		//	m_iTimeStart += m_iTimeDelta;
-			m_iTimeDrift += m_iTimeDelta;
+		unsigned long iAudioFrame = pSession->playHead();
+		qtractorTimeScale::Node *pNode = m_pMetroCursor->seekFrame(iAudioFrame);
+		long iAudioTime = long(pNode->tickFromFrame(iAudioFrame));
+		long iMidiTime = m_iTimeStart
+			+ long(snd_seq_queue_status_get_tick_time(pQueueStatus));
+		iAudioFrame += readAhead();
+		long iDeltaMax = long(pNode->tickFromFrame(iAudioFrame)) - iAudioTime;
+		long iDeltaTime = (iAudioTime - iMidiTime) - m_iTimeDrift;
+		if (iDeltaTime > -iDeltaTime && iDeltaTime < +iDeltaMax) {
+		//	m_iTimeStart += iDeltaTime;
+			m_iTimeDrift += iDeltaTime;
+			m_iTimeDrift >>= 1; // Accumulate average drift.
 		#ifdef CONFIG_DEBUG
-			qDebug("qtractorMidiEngine::flush(): "
-				"iAudioTime=%ld iMidiTime=%ld iTimeDelta=%ld (%ld)",
-				iAudioTime, iMidiTime, m_iTimeDelta, m_iTimeDrift);
+			qDebug("qtractorMidiEngine::drift(): "
+				"iAudioTime=%ld iMidiTime=%ld (%ld) iTimeDrift=%ld",
+				iAudioTime, iMidiTime, iDeltaTime, m_iTimeDrift);
 		#endif
 		}
 	}
+}
+
+
+// Flush ouput queue (if necessary)...
+void qtractorMidiEngine::flush (void)
+{
+	// Really flush MIDI output...
+	snd_seq_drain_output(m_pAlsaSeq);
 }
 
 
@@ -1234,7 +1244,6 @@ bool qtractorMidiEngine::activate (void)
 
 	// Reset/zero tickers...
 	m_iTimeStart = 0;
-	m_iTimeDelta = 0;
 	m_iTimeDrift = 0;
 
 	// Reset all dependable monitoring...
@@ -1272,7 +1281,6 @@ bool qtractorMidiEngine::start (void)
 
 	// Start queue timer...
 	m_iTimeStart = long(pSession->tickFromFrame(pMidiCursor->frame()));
-	m_iTimeDelta = 0;
 	m_iTimeDrift = 0;
 
 	// Effectively start sequencer queue timer...
@@ -1339,7 +1347,6 @@ void qtractorMidiEngine::clean (void)
 		delete m_pOutputThread;
 		m_pOutputThread = NULL;
 		m_iTimeStart = 0;
-		m_iTimeDelta = 0;
 		m_iTimeDrift = 0;
 	}
 
@@ -1393,8 +1400,8 @@ void qtractorMidiEngine::restartLoop (void)
 	if (pSession && pSession->isLooping()) {
 		m_iTimeStart -= long(pSession->tickFromFrame(pSession->loopEnd())
 			- pSession->tickFromFrame(pSession->loopStart()));
-		m_iTimeStart += m_iTimeDelta; // Drift correction...
-		m_iTimeDelta  = 0;
+		m_iTimeStart += m_iTimeDrift; // Drift correction...
+		m_iTimeDrift  = 0;
 	}
 }
 
@@ -1945,7 +1952,6 @@ void qtractorMidiEngine::processMetro (
 		// Save for next change.
 		m_fMetroTempo = pNode->tempo;
 		// Reset time drifting stuff...
-		// m_iTimeDelta = 0;
 		// m_iTimeDrift = 0;
 	}
 
