@@ -53,6 +53,7 @@
 
 #include "qtractorAudioMeter.h"
 #include "qtractorMidiMeter.h"
+#include "qtractorMidiMonitor.h"
 
 #include "qtractorMidiBuffer.h"
 
@@ -3608,6 +3609,9 @@ void qtractorMainForm::updateTransportTime ( unsigned long iPlayHead )
 		m_pTempoSpinBox->setBeatsPerBar(pNode->beatsPerBar, false);
 		m_pTempoSpinBox->setBeatDivisor(pNode->beatDivisor, false);
 	}
+
+	// Update MIDI monitor slot stuff...
+	qtractorMidiMonitor::syncReset(m_pSession);
 
 #ifdef CONFIG_VST
 #if 0 // !VST_FORCE_DEPRECATED

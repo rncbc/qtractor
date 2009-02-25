@@ -688,7 +688,7 @@ void qtractorMidiEngine::resetAllMonitors (void)
 		return;
 
 	// Reset common MIDI monitor stuff...
-	qtractorMidiMonitor::syncReset();
+	qtractorMidiMonitor::syncReset(pSession);
 
 	// Reset all MIDI bus monitors...
 	for (qtractorBus *pBus = buses().first();

@@ -1370,9 +1370,6 @@ void qtractorMixer::updateTracks (void)
 // Complete mixer refreshment.
 void qtractorMixer::refresh (void)
 {
-	// Reset common MIDI monitor stuff...
-	qtractorMidiMonitor::syncReset();
-
 	m_pInputRack->refresh();
 	m_pTrackRack->refresh();
 	m_pOutputRack->refresh();

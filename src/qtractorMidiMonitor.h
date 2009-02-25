@@ -53,7 +53,7 @@ public:
 	void reset();
 
 	// Singleton sync reset.
-	static void syncReset();
+	static void syncReset(qtractorSession *pSession);
 
 protected:
 

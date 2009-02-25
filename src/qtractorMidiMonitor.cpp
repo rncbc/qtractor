@@ -169,12 +169,8 @@ void qtractorMidiMonitor::update (void)
 
 
 // Singleton sync reset.
-void qtractorMidiMonitor::syncReset (void)
+void qtractorMidiMonitor::syncReset ( qtractorSession *pSession )
 {
-	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
-		return;
-
 	// Reset time references...
 	unsigned long iFrame = pSession->playHead();
 	qtractorTimeScale::Cursor cursor(pSession->timeScale());

@@ -5,6 +5,8 @@ ChangeLog
 
 CVS HEAD
 
+- MIDI monitor refresh-cycle slight internal optimization.
+
 - Converted obsolete QMessageBox forms to standard buttons.
 
 - Transport/Rewind and Fast-forward commands may now be set
