@@ -1152,7 +1152,7 @@ void qtractorMidiEngine::drift (void)
 		if (iDeltaTime > -iDeltaTime && iDeltaTime < +iDeltaMax) {
 		//	m_iTimeStart += iDeltaTime;
 			m_iTimeDrift += iDeltaTime;
-			m_iTimeDrift >>= 1; // Accumulate average drift.
+		//	m_iTimeDrift >>= 1; // Damp fast-average drift.
 		#ifdef CONFIG_DEBUG
 			qDebug("qtractorMidiEngine::drift(): "
 				"iAudioTime=%ld iMidiTime=%ld (%ld) iTimeDrift=%ld",

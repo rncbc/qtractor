@@ -76,7 +76,7 @@ void qtractorMidiMonitor::enqueue ( qtractorMidiEvent::EventType type,
 			item.value = val;
 		// Increment enqueued count.
 		item.count++;
-		// Done with enqueueing.
+		// Done enqueueing.
 	} else {
 		// Alternative is sending it directly
 		// as a non-enqueued direct value...
@@ -99,9 +99,8 @@ float qtractorMidiMonitor::value (void)
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession && s_iFrameSlot > 0) {
 		// Sweep the queue until current time...
-		unsigned long iFrameEnd
-			= pSession->audioEngine()->sessionCursor()->frameTime();
-		while (m_iFrameStart < iFrameEnd) {
+		unsigned long iFramePos = pSession->framePos();
+		while (m_iFrameStart < iFramePos) {
 			QueueItem& item = m_pQueue[m_iQueueIndex];
 			if (val < item.value)
 				val = item.value;
@@ -135,29 +134,21 @@ void qtractorMidiMonitor::reset (void)
 	// (Re)initialize all...
 	m_item.value  = 0;
 	m_item.count  = 0;
+
 	m_iQueueIndex = 0;
 
-	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession) {
-		// Reset time references...
-		unsigned long iFrame = pSession->playHead();
-		qtractorTimeScale::Cursor cursor(pSession->timeScale());
-		qtractorTimeScale::Node *pNode = cursor.seekFrame(iFrame);
-		unsigned long t0 = pNode->tickFromFrame(iFrame);
-		// Time (re)start: the time (in ticks) of the
-		// current queue head slot; usually zero ;)
-		m_iFrameStart = pSession->audioEngine()->sessionCursor()->frameTime();
-		m_iTimeStart  = pNode->tickFromFrame(iFrame + m_iFrameStart) - t0;
-	} else {
-		m_iFrameStart = 0;
-		m_iTimeStart  = 0;
-	}
+	m_iFrameStart = 0;
+	m_iTimeStart  = 0;
 
 	// Time to reset buffer...
 	for (unsigned int i = 0; i < c_iQueueSize; ++i) {
 		m_pQueue[i].value = 0;
 		m_pQueue[i].count = 0;
 	}
+
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession)
+		m_iFrameStart = pSession->framePos();
 }
 
 
@@ -180,7 +171,7 @@ void qtractorMidiMonitor::syncReset ( qtractorSession *pSession )
 	// Time slot: the amount of time (in ticks)
 	// each queue slot will hold scheduled events;
 	s_iFrameSlot = (pSession->midiEngine()->readAhead() << 1) / c_iQueueSize;
-	s_iTimeSlot  = (pNode->tickFromFrame(iFrame + s_iFrameSlot) - t0);
+	s_iTimeSlot  = pNode->tickFromFrame(iFrame + s_iFrameSlot) - t0;
 }
 
 

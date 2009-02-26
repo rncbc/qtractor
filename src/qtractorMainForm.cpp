@@ -3603,15 +3603,15 @@ void qtractorMainForm::updateTransportTime ( unsigned long iPlayHead )
 	m_pTimeSpinBox->setValue(iPlayHead, false);
 	m_pThumbView->updatePlayHead(iPlayHead);
 
+	// Tricky stuff: node's non-null iif tempo changes...
 	qtractorTimeScale::Node *pNode = m_pTempoCursor->seek(iPlayHead);
 	if (pNode) {
 		m_pTempoSpinBox->setTempo(pNode->tempoEx(), false);
 		m_pTempoSpinBox->setBeatsPerBar(pNode->beatsPerBar, false);
 		m_pTempoSpinBox->setBeatDivisor(pNode->beatDivisor, false);
+		// Update MIDI monitor slot stuff...
+		qtractorMidiMonitor::syncReset(m_pSession);
 	}
-
-	// Update MIDI monitor slot stuff...
-	qtractorMidiMonitor::syncReset(m_pSession);
 
 #ifdef CONFIG_VST
 #if 0 // !VST_FORCE_DEPRECATED
