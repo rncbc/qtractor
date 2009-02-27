@@ -1481,6 +1481,7 @@ qtractorMidiEvent *qtractorMidiEditor::dragEditEvent (
 	unsigned long t1 = pNode->tickSnap(pNode->tickFromPixel(x1));
 	qtractorMidiEvent *pEvent = new qtractorMidiEvent(t1 - t0,
 		bEditView ? m_pEditView->eventType() : m_pEditEvent->eventType());
+	x1 = pNode->pixelFromTick(t1);
 
 	switch (pEvent->type()) {
 	case qtractorMidiEvent::NOTEON:
