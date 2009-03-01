@@ -690,7 +690,7 @@ void qtractorMidiEngine::resetAllMonitors (void)
 		return;
 
 	// Reset common MIDI monitor stuff...
-	qtractorMidiMonitor::syncReset(pSession);
+	qtractorMidiMonitor::resetTime(pSession);
 
 	// Reset all MIDI bus monitors...
 	for (qtractorBus *pBus = buses().first();
@@ -1149,7 +1149,7 @@ void qtractorMidiEngine::drift (void)
 		iAudioFrame += readAhead();
 		long iDeltaMax = long(pNode->tickFromFrame(iAudioFrame)) - iAudioTime;
 		long iDeltaTime = (iAudioTime - iMidiTime) - m_iTimeDrift;
-		if (iDeltaTime > -iDeltaTime && iDeltaTime < +iDeltaMax) {
+		if (iDeltaTime && iDeltaTime > -iDeltaMax && iDeltaTime < +iDeltaMax) {
 		//	m_iTimeStart += iDeltaTime;
 			m_iTimeDrift += iDeltaTime;
 		//	m_iTimeDrift >>= 1; // Damp fast-average drift.
@@ -1939,8 +1939,9 @@ void qtractorMidiEngine::processMetro (
 		snd_seq_ev_clear(&ev);
 		// Scheduled delivery: take into account
 		// the time playback/queue started...
-		snd_seq_ev_schedule_tick(&ev, m_iAlsaQueue, 0,
-			((long) iTime > m_iTimeStart ? iTime - m_iTimeStart : 0));
+		unsigned long tick
+			= ((long) iTime > m_iTimeStart ? iTime - m_iTimeStart : 0);
+		snd_seq_ev_schedule_tick(&ev, m_iAlsaQueue, 0, tick);
 		ev.type = SND_SEQ_EVENT_TEMPO;
 		ev.data.queue.queue = m_iAlsaQueue;
 		ev.data.queue.param.value
@@ -1951,8 +1952,8 @@ void qtractorMidiEngine::processMetro (
 		snd_seq_event_output(m_pAlsaSeq, &ev);
 		// Save for next change.
 		m_fMetroTempo = pNode->tempo;
-		// Reset time drifting stuff...
-		// m_iTimeDrift = 0;
+		// Update MIDI monitor slot stuff...
+		qtractorMidiMonitor::splitTime(session(), pNode->frame, tick);
 	}
 
 	// Get on with the actual metronome stuff...
@@ -2512,7 +2513,7 @@ void qtractorMidiBus::shutOff ( bool bClose ) const
 	if (pMidiEngine->alsaSeq() == NULL)
 		return;
 
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	qDebug("qtractorMidiBus[%p]::shutOff(%d)", this, int(bClose));
 #endif
 

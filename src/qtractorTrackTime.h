@@ -70,6 +70,9 @@ protected:
 	void mouseMoveEvent(QMouseEvent *pMouseEvent);
 	void mouseReleaseEvent(QMouseEvent *pMouseEvent);
 
+	// Tempo-map dialog accessor.
+	void mouseDoubleClickEvent(QMouseEvent *pMouseEvent);
+
 	// Reset drag/select state.
 	void resetDragState();
 

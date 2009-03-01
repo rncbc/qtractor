@@ -893,7 +893,7 @@ unsigned int qtractorSession::soloTracks (void) const
 // Temporary current track accessors.
 void qtractorSession::setCurrentTrack ( qtractorTrack *pTrack )
 {
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	qDebug("qtractorSession::setCurrentTrack(%p)", pTrack);
 #endif
 	m_pCurrentTrack = pTrack;

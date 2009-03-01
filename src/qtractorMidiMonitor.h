@@ -52,10 +52,18 @@ public:
 	// Reset monitor.
 	void reset();
 
-	// Singleton sync reset.
-	static void syncReset(qtractorSession *pSession);
+	// Singleton time base reset.
+	static void resetTime(qtractorSession *pSession);
+
+	// Singleton time base split (scheduled tempo change)
+	static void splitTime(qtractorSession *pSession,
+		unsigned long iFrame, unsigned long iTime);
 
 protected:
+
+	// Singleton time base slot.
+	static unsigned int timeSlot(unsigned long iTime)
+		{ return g_iTimeSlot[g_iTimeSplit >= iTime ? 0 : 1]; }
 
 	// Update monitor (nothing really done here).
 	void update();
@@ -77,8 +85,9 @@ private:
 	QueueItem     m_item;
 
 	// Singleton variables.
-	static unsigned long s_iFrameSlot;
-	static unsigned long s_iTimeSlot;
+	static unsigned int  g_iFrameSlot;
+	static unsigned int  g_iTimeSlot[2];
+	static unsigned long g_iTimeSplit;
 };
 
 

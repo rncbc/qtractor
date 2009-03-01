@@ -32,8 +32,9 @@ const unsigned int c_iQueueSize = 16; // Must be power of 2;
 const unsigned int c_iQueueMask = c_iQueueSize - 1;
 
 // Singleton variables.
-unsigned long qtractorMidiMonitor::s_iFrameSlot = 0;
-unsigned long qtractorMidiMonitor::s_iTimeSlot  = 0;
+unsigned int  qtractorMidiMonitor::g_iFrameSlot = 0;
+unsigned int  qtractorMidiMonitor::g_iTimeSlot[2] = { 0, 0 };
+unsigned long qtractorMidiMonitor::g_iTimeSplit = 0;
 
 
 //----------------------------------------------------------------------------
@@ -62,9 +63,9 @@ void qtractorMidiMonitor::enqueue ( qtractorMidiEvent::EventType type,
 	unsigned char val, unsigned long tick )
 {
 	// Check whether this is a scheduled value...
-	if (m_iTimeStart < tick && s_iTimeSlot > 0) {
+	if (m_iTimeStart < tick && g_iTimeSlot[1] > 0) {
 		// Find queue offset index...
-		unsigned int iOffset = (tick - m_iTimeStart) / s_iTimeSlot;
+		unsigned int iOffset = (tick - m_iTimeStart) / timeSlot(tick);
 		// FIXME: Ignore outsiders (which would manifest as
 		// out-of-time phantom monitor peak values...)
 		if (iOffset > c_iQueueMask)
@@ -97,7 +98,7 @@ float qtractorMidiMonitor::value (void)
 	m_item.value = 0;
 
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession && s_iFrameSlot > 0) {
+	if (pSession && g_iFrameSlot > 0) {
 		// Sweep the queue until current time...
 		unsigned long iFramePos = pSession->framePos();
 		while (m_iFrameStart < iFramePos) {
@@ -108,8 +109,8 @@ float qtractorMidiMonitor::value (void)
 			item.value = 0;
 			item.count = 0;
 			++m_iQueueIndex &= c_iQueueMask;
-			m_iFrameStart += s_iFrameSlot;
-			m_iTimeStart += s_iTimeSlot;
+			m_iFrameStart += g_iFrameSlot;
+			m_iTimeStart += timeSlot(m_iTimeStart);
 		}
 	}
 
@@ -159,19 +160,31 @@ void qtractorMidiMonitor::update (void)
 }
 
 
-// Singleton sync reset.
-void qtractorMidiMonitor::syncReset ( qtractorSession *pSession )
+// Singleton time base reset.
+void qtractorMidiMonitor::resetTime ( qtractorSession *pSession )
+{
+	g_iFrameSlot = (pSession->midiEngine()->readAhead() << 1) / c_iQueueSize;
+
+	splitTime(pSession, pSession->playHead(), 0);
+}
+
+
+// Singleton time base split (scheduled tempo change)
+void qtractorMidiMonitor::splitTime ( qtractorSession *pSession,
+	unsigned long iFrame, unsigned long iTime )
 {
 	// Reset time references...
-	unsigned long iFrame = pSession->playHead();
 	qtractorTimeScale::Cursor cursor(pSession->timeScale());
 	qtractorTimeScale::Node *pNode = cursor.seekFrame(iFrame);
 	unsigned long t0 = pNode->tickFromFrame(iFrame);
 
 	// Time slot: the amount of time (in ticks)
 	// each queue slot will hold scheduled events;
-	s_iFrameSlot = (pSession->midiEngine()->readAhead() << 1) / c_iQueueSize;
-	s_iTimeSlot  = pNode->tickFromFrame(iFrame + s_iFrameSlot) - t0;
+	g_iTimeSlot[0] = g_iTimeSlot[1];
+	g_iTimeSlot[1] = pNode->tickFromFrame(iFrame + g_iFrameSlot) - t0;
+
+	// Relative time where time splits.
+	g_iTimeSplit = iTime;
 }
 
 

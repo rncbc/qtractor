@@ -15,7 +15,6 @@ on in the times to come (not in any particular order):
 - Clip locking, muting and plug-ins.
 - LV2 plug-in support.
 - JACK MIDI support.
-- Tempo and key signature map.
 - MIDI SysEx manager.
 - MIDI event list editor.
 - MIDI editor (piano roll) draw mode.

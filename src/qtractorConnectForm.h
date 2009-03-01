@@ -1,7 +1,7 @@
 // qtractorConnectForm.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -81,6 +81,7 @@ public slots:
 	void audioConnectSelected();
 	void audioDisconnectSelected();
 	void audioDisconnectAll();
+	void audioConnectChanged();
 	void audioStabilize();
 
 	void audioRefresh() { audioUpdate(false); }
@@ -91,10 +92,15 @@ public slots:
 	void midiConnectSelected();
 	void midiDisconnectSelected();
 	void midiDisconnectAll();
+	void midiConnectChanged();
 	void midiStabilize();
 
 	void midiRefresh()  { midiUpdate(false); }
 	void midiClear()    { midiUpdate(true);  }
+
+signals:
+
+	void connectChanged();
 
 protected:
 

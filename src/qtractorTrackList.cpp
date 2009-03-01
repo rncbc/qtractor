@@ -525,7 +525,7 @@ void qtractorTrackList::setCurrentTrackRow ( int iTrack )
 	if (iCurrentTrack == m_iCurrentTrack)
 		return;
 
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	qDebug("qtractorTrackList::setCurrentTrackRow(%d)", iCurrentTrack);
 #endif
 

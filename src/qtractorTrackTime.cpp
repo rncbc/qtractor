@@ -585,6 +585,29 @@ void qtractorTrackTime::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 }
 
 
+// Tempo-map dialog accessor.
+void qtractorTrackTime::mouseDoubleClickEvent ( QMouseEvent *pMouseEvent )
+{
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm == NULL)
+		return;
+
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return;
+
+	// Direct snap positioning...
+	const QPoint& pos = viewportToContents(pMouseEvent->pos());
+	unsigned long iFrame = pSession->frameSnap(
+		pSession->frameFromPixel(pos.x() > 0 ? pos.x() : 0));
+
+	// Show tempo map dialog.
+	qtractorTimeScaleForm form(pMainForm);
+	form.setFrame(iFrame);
+	form.exec();
+}
+
+
 // Keyboard event handler.
 void qtractorTrackTime::keyPressEvent ( QKeyEvent *pKeyEvent )
 {
@@ -629,25 +652,8 @@ void qtractorTrackTime::resetDragState (void)
 
 // Context menu event handler (dummy).
 void qtractorTrackTime::contextMenuEvent (
-	QContextMenuEvent *pContextMenuEvent )
+	QContextMenuEvent */*pContextMenuEvent*/ )
 {
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
-		return;
-
-	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
-		return;
-
-	// Direct snap positioning...
-	const QPoint& pos = viewportToContents(pContextMenuEvent->pos());
-	unsigned long iFrame = pSession->frameSnap(
-		pSession->frameFromPixel(pos.x() > 0 ? pos.x() : 0));
-
-	// Show tempo map dialog.
-	qtractorTimeScaleForm form(pMainForm);
-	form.setFrame(iFrame);
-	form.exec();
 }
 
 

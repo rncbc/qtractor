@@ -977,6 +977,9 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 	QObject::connect(m_pMessages->toggleViewAction(),
 		SIGNAL(triggered(bool)),
 		SLOT(stabilizeForm()));
+	QObject::connect(m_pConnections->connectForm(),
+		SIGNAL(connectChanged()),
+		SLOT(contentsChanged()));
 	QObject::connect(m_pMixer->trackRack(),
 		SIGNAL(selectionChanged()),
 		SLOT(mixerSelectionChanged()));
@@ -3609,8 +3612,6 @@ void qtractorMainForm::updateTransportTime ( unsigned long iPlayHead )
 		m_pTempoSpinBox->setTempo(pNode->tempoEx(), false);
 		m_pTempoSpinBox->setBeatsPerBar(pNode->beatsPerBar, false);
 		m_pTempoSpinBox->setBeatDivisor(pNode->beatDivisor, false);
-		// Update MIDI monitor slot stuff...
-		qtractorMidiMonitor::syncReset(m_pSession);
 	}
 
 #ifdef CONFIG_VST

@@ -5,6 +5,8 @@ ChangeLog
 
 CVS HEAD
 
+- Making (dis)connections now also flags session as dirty.
+
 - Internal Audio/MIDI engines queue/time drift correction
   takes a brand new approach, specially adapted to rolling
   tempo/time-siganture changes.
@@ -36,9 +38,10 @@ CVS HEAD
 - A completely new time-scale infrastructure is now in place,
   with full support for session tempo and time-signature map;
   this long due feature is primarily accessible through the
-  main menu, View/Tempo Map...; also by left-clicking on the
-  time rulers and main toolbar tempo/signature spin-box.
-  (HIGHLY EXPERIMENTAL)
+  main menu, View/Tempo Map...; also by double-clicking on
+  the the main window and MIDI clip editor time rulers and
+  left-clicking on the main toolbar tempo/signature spin-box.
+  (EXPERIMENTAL)
 
 - Moving and resizing individual clips now cares for track
   proper ordering and overlapping changes, avoiding nasty
