@@ -1551,6 +1551,7 @@ bool qtractorSession::loadElement ( qtractorSessionDocument *pDocument,
 	QDomElement *pElement )
 {
 	qtractorSession::clear();
+	qtractorSession::lock();
 
 	// Templates have no session name...
 	if (!pDocument->isTemplate())
@@ -1776,6 +1777,8 @@ bool qtractorSession::loadElement ( qtractorSessionDocument *pDocument,
 		qtractorSession::setLoop(iLoopStart, iLoopEnd);
 	if (iPunchIn < iPunchOut)
 		qtractorSession::setPunch(iPunchIn, iPunchOut);
+
+	qtractorSession::unlock();
 
 	return true;
 }
