@@ -564,10 +564,10 @@ qtractorMidiEngine::qtractorMidiEngine ( qtractorSession *pSession )
 	m_iMetroChannel      = 9;	// GM Drums channel (10)
 	m_iMetroBarNote      = 76;	// GM High-wood stick
 	m_iMetroBarVelocity  = 96;
-	m_iMetroBarDuration  = 24;
+	m_iMetroBarDuration  = 48;
 	m_iMetroBeatNote     = 77;	// GM Low-wood stick
 	m_iMetroBeatVelocity = 64;
-	m_iMetroBeatDuration = 16;
+	m_iMetroBeatDuration = 24;
 
 	// Time-scale cursor (tempo/time-signature map)
 	m_pMetroCursor = NULL;

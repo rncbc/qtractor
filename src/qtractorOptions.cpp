@@ -141,10 +141,10 @@ qtractorOptions::qtractorOptions (void)
 	iMetroChannel      = m_settings.value("/Channel", 9).toInt();
 	iMetroBarNote      = m_settings.value("/BarNote", 76).toInt();
 	iMetroBarVelocity  = m_settings.value("/BarVelocity", 96).toInt();
-	iMetroBarDuration  = m_settings.value("/BarDuration", 24).toInt();
+	iMetroBarDuration  = m_settings.value("/BarDuration", 48).toInt();
 	iMetroBeatNote     = m_settings.value("/BeatNote", 77).toInt();
 	iMetroBeatVelocity = m_settings.value("/BeatVelocity", 64).toInt();
-	iMetroBeatDuration = m_settings.value("/BeatDuration", 16).toInt();
+	iMetroBeatDuration = m_settings.value("/BeatDuration", 24).toInt();
 	m_settings.endGroup();
 
 	m_settings.endGroup(); // Options group.

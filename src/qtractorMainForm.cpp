@@ -3026,15 +3026,20 @@ void qtractorMainForm::transportBackward (void)
 	checkRestartSession();
 
 	// Move playhead to edit-tail, head or full session-start.
-	unsigned long iPlayHead = m_pSession->playHead();
-	if (iPlayHead > m_pSession->editTail() && !m_pSession->isPlaying())
-		iPlayHead = m_pSession->editTail();
-	else
-	if (iPlayHead > m_pSession->editHead())
-		iPlayHead = m_pSession->editHead();
-	else
-		iPlayHead = 0;
-	m_pSession->setPlayHead(iPlayHead);
+	if (QApplication::keyboardModifiers()
+		& (Qt::ShiftModifier | Qt::ControlModifier)) {
+		m_pSession->setPlayHead(0);
+	} else {
+		unsigned long iPlayHead = m_pSession->playHead();
+		if (iPlayHead > m_pSession->editTail() && !m_pSession->isPlaying())
+			iPlayHead = m_pSession->editTail();
+		else
+		if (iPlayHead > m_pSession->editHead())
+			iPlayHead = m_pSession->editHead();
+		else
+			iPlayHead = 0;
+		m_pSession->setPlayHead(iPlayHead);
+	}
 	m_iTransportUpdate++;
 
 	stabilizeForm();
@@ -3116,15 +3121,20 @@ void qtractorMainForm::transportForward (void)
 	checkRestartSession();
 
 	// Move playhead to edit-head, tail or full session-end.
-	unsigned long iPlayHead = m_pSession->playHead();
-	if (iPlayHead < m_pSession->editHead())
-		iPlayHead = m_pSession->editHead();
-	else
-	if (iPlayHead < m_pSession->editTail())
-		iPlayHead = m_pSession->editTail();
-	else
-		iPlayHead = m_pSession->sessionLength();
-	m_pSession->setPlayHead(iPlayHead);
+	if (QApplication::keyboardModifiers()
+		& (Qt::ShiftModifier | Qt::ControlModifier)) {
+		m_pSession->setPlayHead(m_pSession->sessionLength());
+	} else {
+		unsigned long iPlayHead = m_pSession->playHead();
+		if (iPlayHead < m_pSession->editHead())
+			iPlayHead = m_pSession->editHead();
+		else
+		if (iPlayHead < m_pSession->editTail())
+			iPlayHead = m_pSession->editTail();
+		else
+			iPlayHead = m_pSession->sessionLength();
+		m_pSession->setPlayHead(iPlayHead);
+	}
 	m_iTransportUpdate++;
 
 	stabilizeForm();

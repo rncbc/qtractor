@@ -53,7 +53,7 @@ void qtractorTimeScale::clear (void)
 //	m_displayFormat   = Frames;
 
 	m_iSampleRate     = 44100;
-	m_iTicksPerBeat   = 96;
+	m_iTicksPerBeat   = 960;
 	m_iPixelsPerBeat  = 32;
 
 	// Clear/reset tempo-map...

@@ -453,7 +453,7 @@ public:
 	unsigned short ticksPerBeat2() const
 	{
 		Node *pNode = m_nodes.first();
-		return (pNode ? pNode->ticksPerBeat : 96);
+		return (pNode ? pNode->ticksPerBeat : 960);
 	}
 
 	// Time signature (numerator)

@@ -168,7 +168,7 @@ public:
 	unsigned short ticksPerBeat() const
 	{
 		Node *pNode = m_nodes.first();
-		return (pNode ? pNode->ticksPerBeat : 96);
+		return (pNode ? pNode->ticksPerBeat : 960);
 	}
 
 	// Time-scale sync methods.

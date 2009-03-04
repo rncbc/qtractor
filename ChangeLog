@@ -5,6 +5,16 @@ ChangeLog
 
 CVS HEAD
 
+- Transport/Backward and Forward commands may now reset to
+  immediate full start or end of session locations, by just
+  pressing the Shift or Ctrl keyboard modifiers and clicking
+  their respective toolbar buttons.
+
+- Default session/MIDI resolution has been set to 960 ticks
+  per beat (960 TPQN, where a beat equals a quarter-note);
+  it is worth of note that the previous default resolution
+  was set to one order of maginute lower, ie. 96 TPQN ;).
+
 - Making (dis)connections now also flags session as dirty.
 
 - Internal Audio/MIDI engines queue/time drift correction
