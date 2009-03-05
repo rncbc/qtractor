@@ -449,9 +449,9 @@ qtractorMidiBus *qtractorTrackForm::midiBus (void) const
 // Retrieve currently selected MIDI bank number.
 int qtractorTrackForm::midiBank (void) const
 {
-	int iBankIndex = m_ui.BankComboBox->currentIndex();
 	const QString& sBankText = m_ui.BankComboBox->currentText();
-	if (m_banks.contains(iBankIndex)
+	int iBankIndex = m_ui.BankComboBox->findText(sBankText);
+	if (iBankIndex >= 0 && m_banks.contains(iBankIndex)
 		&& m_ui.BankComboBox->itemText(iBankIndex) == sBankText)
 		return m_banks[iBankIndex];
 
@@ -462,12 +462,12 @@ int qtractorTrackForm::midiBank (void) const
 // Retrieve currently selected MIDI program number.
 int qtractorTrackForm::midiProgram (void) const
 {
-	int iProgIndex = m_ui.ProgComboBox->currentIndex();
 	const QString& sProgText = m_ui.ProgComboBox->currentText();
-	if (m_progs.contains(iProgIndex)
+	int iProgIndex = m_ui.ProgComboBox->findText(sProgText);
+	if (iProgIndex >= 0 && m_progs.contains(iProgIndex)
 		&& m_ui.ProgComboBox->itemText(iProgIndex) == sProgText)
 		return m_progs[iProgIndex];
-
+	
 	return sProgText.toInt();
 }
 
@@ -819,7 +819,7 @@ void qtractorTrackForm::updatePrograms (  const QString& sInstrumentName,
 			m_progs[i + 1] = i;
 		}
 		if (iProg >= 0)
-			iProgIndex = iProg;
+			iProgIndex = iProg + 1;
 	}
 
 	// Do the proper program selection...
