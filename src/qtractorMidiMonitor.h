@@ -49,6 +49,9 @@ public:
 	float value();
 	int   count();
 
+	// Clear monitor.
+	void clear();
+
 	// Reset monitor.
 	void reset();
 

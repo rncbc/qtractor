@@ -1453,11 +1453,11 @@ void qtractorMidiEngine::trackMute ( qtractorTrack *pTrack, bool bMute )
 			= static_cast<qtractorMidiBus *> (pTrack->outputBus());
 		if (pMidiBus)
 			pMidiBus->setController(pTrack, ALL_NOTES_OFF);
-		// Reset track monitor...
+		// Clear/reset track monitor...
 		qtractorMidiMonitor *pMidiMonitor
 			= static_cast<qtractorMidiMonitor *> (pTrack->monitor());
 		if (pMidiMonitor)
-			pMidiMonitor->reset();
+			pMidiMonitor->clear();
 		// Reset track plugin buffers...
 		if ((pTrack->pluginList())->midiManager())
 			(pTrack->pluginList())->midiManager()->reset();

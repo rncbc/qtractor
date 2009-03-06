@@ -129,8 +129,8 @@ int qtractorMidiMonitor::count (void)
 }
 
 
-// Reset monitor.
-void qtractorMidiMonitor::reset (void)
+// Clear monitor.
+void qtractorMidiMonitor::clear (void)
 {
 	// (Re)initialize all...
 	m_item.value  = 0;
@@ -138,14 +138,23 @@ void qtractorMidiMonitor::reset (void)
 
 	m_iQueueIndex = 0;
 
-	m_iFrameStart = 0;
-	m_iTimeStart  = 0;
-
 	// Time to reset buffer...
 	for (unsigned int i = 0; i < c_iQueueSize; ++i) {
 		m_pQueue[i].value = 0;
 		m_pQueue[i].count = 0;
 	}
+}
+
+
+// Reset monitor.
+void qtractorMidiMonitor::reset (void)
+{
+	// (Re)initialize all...
+	clear();
+
+	// Reset actual frame/time start...
+	m_iFrameStart = 0;
+	m_iTimeStart  = 0;
 
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession)
