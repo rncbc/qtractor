@@ -2327,8 +2327,11 @@ bool qtractorTrackView::keyStep ( int iKey )
 	unsigned short iSnapPerBeat = pSession->snapPerBeat();
 	if (iSnapPerBeat < 1)
 		iSnapPerBeat = 1;
+	qtractorTimeScale::Cursor cursor(pSession->timeScale());
+	qtractorTimeScale::Node *pNode
+		= cursor.seekPixel(m_posDrag.x() + m_posStep.x());
 	int iHorizontalStep
-		= (pSession->horizontalZoom() * pSession->pixelsPerBeat())
+		= (pSession->horizontalZoom() * pNode->pixelsPerBeat())
 			/ (iSnapPerBeat * 100);
 
 	// Now determine which step...
