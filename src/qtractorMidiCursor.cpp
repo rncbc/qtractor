@@ -1,7 +1,7 @@
 // qtractorMidiCursor.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -69,7 +69,7 @@ qtractorMidiEvent *qtractorMidiCursor::seek (
 
 // Intra-seuqnce tick/time positioning reset (seek forward).
 qtractorMidiEvent *qtractorMidiCursor::reset (
-	qtractorMidiSequence *pSeq,	unsigned long iTime )
+	qtractorMidiSequence *pSeq, unsigned long iTime )
 {
 	// Reset-seek forward...
 	if (m_iTime >= iTime)
@@ -78,6 +78,10 @@ qtractorMidiEvent *qtractorMidiCursor::reset (
 		m_pEvent = pSeq->events().first();
 	while (m_pEvent && m_pEvent->time() + m_pEvent->duration() < iTime)
 		m_pEvent = m_pEvent->next();
+	while (m_pEvent && m_pEvent->time() > iTime)
+		m_pEvent = m_pEvent->prev();
+	if (m_pEvent == NULL)
+		m_pEvent = pSeq->events().first();
 	// That was it...
 	m_iTime = iTime;
 	

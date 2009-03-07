@@ -1390,15 +1390,6 @@ qtractorMidiEvent *qtractorMidiEditor::eventAt (
 	unsigned char controller = m_pEditEvent->controller();
 
 	qtractorMidiEvent *pEvent = m_cursorAt.reset(pSeq, iTime);
-#if 0
-	if (pEvent && pEvent->prev()) {
-		unsigned long iPrevTime = (pEvent->prev())->time();
-		while (pEvent && pEvent->time() >= iPrevTime)
-			pEvent = pEvent->prev();
-		if (pEvent == NULL)
-			pEvent = pSeq->events().first();
-	}
-#endif
 	qtractorMidiEvent *pEventAt = NULL;
 	while (pEvent && iTime >= pEvent->time()) {
 		if (((bEditView && pEvent->type() == m_pEditView->eventType()) ||
