@@ -2909,9 +2909,7 @@ bool qtractorMidiEditor::keyStep ( int iKey )
 	qtractorTimeScale::Cursor cursor(m_pTimeScale);
 	qtractorTimeScale::Node *pNode
 		= cursor.seekPixel(m_posDrag.x() + m_posStep.x());
-	int iHorizontalStep
-		= (m_pTimeScale->horizontalZoom() * pNode->pixelsPerBeat())
-			/ (iSnapPerBeat * 100);
+	int iHorizontalStep = pNode->pixelsPerBeat() / iSnapPerBeat;
 
 	// Now determine which step...
 	switch (iKey) {
