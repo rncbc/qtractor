@@ -2902,33 +2902,34 @@ bool qtractorMidiEditor::keyStep ( int iKey )
 		m_dragState != DragPaste)
 		return false;
 
-	int iVerticalStep = m_pEditList->itemHeight();
-	unsigned short iSnapPerBeat = m_pTimeScale->snapPerBeat();
-	if (iSnapPerBeat < 1)
-		iSnapPerBeat = 1;
-	qtractorTimeScale::Cursor cursor(m_pTimeScale);
-	qtractorTimeScale::Node *pNode
-		= cursor.seekPixel(m_posDrag.x() + m_posStep.x());
-	int iHorizontalStep = pNode->pixelsPerBeat() / iSnapPerBeat;
-
-	// Now determine which step...
-	switch (iKey) {
-	case Qt::Key_Left:
-		m_posStep.setX(m_posStep.x() - iHorizontalStep);
-		break;
-	case Qt::Key_Right:
-		m_posStep.setX(m_posStep.x() + iHorizontalStep);
-		break;
-	case Qt::Key_Up:
-		m_posStep.setY(m_posStep.y() - iVerticalStep);
-		break;
-	case Qt::Key_Down:
-		m_posStep.setY(m_posStep.y() + iVerticalStep);
-		break;
-	default:
-		return false;
+	// Determine vertical step...
+	if (iKey == Qt::Key_Up || iKey == Qt::Key_Down)  {
+		int iVerticalStep = m_pEditList->itemHeight();
+		int y0 = m_posDrag.y();
+		int y1 = y0 + m_posStep.y();
+		if (iKey == Qt::Key_Up)
+			y1 -= iVerticalStep;
+		else
+			y1 += iVerticalStep;
+		m_posStep.setY((y1 < 0 ? 0 : y1) - y0);
 	}
-
+	else
+	// Determine horizontal step...
+	if (iKey == Qt::Key_Left || iKey == Qt::Key_Right)  {
+		unsigned short iSnapPerBeat = m_pTimeScale->snapPerBeat();
+		if (iSnapPerBeat < 1)
+			iSnapPerBeat = 1;
+		int x0 = m_posDrag.x() + m_pTimeScale->pixelFromFrame(m_iOffset);
+		int x1 = x0 + m_posStep.x();
+		qtractorTimeScale::Cursor cursor(m_pTimeScale);
+		qtractorTimeScale::Node *pNode = cursor.seekPixel(x1);
+		int iHorizontalStep = pNode->pixelsPerBeat() / iSnapPerBeat;
+		if (iKey == Qt::Key_Left)
+			x1 -= iHorizontalStep;
+		else
+			x1 += iHorizontalStep;
+		m_posStep.setX(m_pTimeScale->pixelSnap(x1 < 0 ? 0 : x1) - x0);
+	}
 
 	// Early sanity check...
 	const QRect& rect = m_select.rectView();
