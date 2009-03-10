@@ -145,6 +145,9 @@ qtractorSession::~qtractorSession (void)
 // Open session engine(s).
 bool qtractorSession::open ( const QString& sClientName )
 {
+	// Lock it up...
+	lock();
+
 	// A default MIDI master bus is always in order...
 	if (m_pMidiEngine->buses().count() == 0)
 		m_pMidiEngine->addBus(new qtractorMidiBus(m_pMidiEngine, "Master"));
@@ -156,6 +159,7 @@ bool qtractorSession::open ( const QString& sClientName )
 	//  Actually open session device engines...
 	if (!m_pAudioEngine->open(sClientName) ||
 		!m_pMidiEngine->open(sClientName)) {
+		unlock();
 		close();
 		return false;
 	}
@@ -164,12 +168,15 @@ bool qtractorSession::open ( const QString& sClientName )
 	for (qtractorTrack *pTrack = m_tracks.first();
 			pTrack; pTrack = pTrack->next()) {
 		if (!pTrack->open()) {
+			unlock();
 			close();
 			return false;
 		}
 	}
 
 	// Done.
+	unlock();
+
 	return true;
 }
 
@@ -177,6 +184,9 @@ bool qtractorSession::open ( const QString& sClientName )
 // Close session engine(s).
 void qtractorSession::close (void)
 {
+	// Lock it up...
+	lock();
+
 	m_pAudioEngine->close();
 	m_pMidiEngine->close();
 
@@ -186,6 +196,7 @@ void qtractorSession::close (void)
 		pTrack->close();
 	}
 
+	unlock();
 //	clear();
 }
 
