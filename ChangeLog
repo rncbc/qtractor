@@ -3,7 +3,7 @@ Qtractor - An Audio/MIDI multi-track sequencer
 
 ChangeLog
 
-CVS HEAD
+0.4.0  2009-03-13  The Foxy Dryad
 
 - MIDI (re)connections fix; now caring for the ALSA client
   and port textual names only, avoiding as much as possible,
@@ -17,7 +17,7 @@ CVS HEAD
 - Default session/MIDI resolution has been set to 960 ticks
   per beat (960 TPQN, where a beat equals a quarter-note);
   it is worth of note that the previous default resolution
-  was set to one order of maginute lower, ie. 96 TPQN ;).
+  was set to one order of magninude lower, ie. 96 TPQN ;).
 
 - Making (dis)connections now also flags session as dirty.
 
@@ -47,7 +47,6 @@ CVS HEAD
 
 - Primordial attempt to include MIDI Song Position Pointer
   (SPP), Song Start, Stop and Continue sequencing support.
-  (EXPERIMENTAL)
 
 - A completely new time-scale infrastructure is now in place,
   with full support for session tempo and time-signature map;
@@ -55,7 +54,6 @@ CVS HEAD
   main menu, View/Tempo Map...; also by double-clicking on
   the the main window and MIDI clip editor time rulers and
   left-clicking on the main toolbar tempo/signature spin-box.
-  (EXPERIMENTAL)
 
 - Moving and resizing individual clips now cares for track
   proper ordering and overlapping changes, avoiding nasty
