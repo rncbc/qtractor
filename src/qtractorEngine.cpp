@@ -346,7 +346,7 @@ bool qtractorBus::loadConnects ( ConnectList& connects,
 					if (sClientName.isEmpty()) {
 						pItem->clientName = sClient;
 					} else {
-						pItem->client = sClient.section(':', 0, 0).toInt();
+					//	pItem->client = sClient.section(':', 0, 0).toInt();
 						pItem->clientName = sClientName;
 					}
 				}
@@ -357,7 +357,7 @@ bool qtractorBus::loadConnects ( ConnectList& connects,
 					if (sPortName.isEmpty()) {
 						pItem->portName = sPort;
 					} else {
-						pItem->port = sPort.section(':', 0, 0).toInt();
+					//	pItem->port = sPort.section(':', 0, 0).toInt();
 						pItem->portName = sPortName;
 					}
 				}

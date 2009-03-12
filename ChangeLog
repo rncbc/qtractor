@@ -5,6 +5,10 @@ ChangeLog
 
 CVS HEAD
 
+- MIDI (re)connections fix; now caring for the ALSA client
+  and port textual names only, avoiding as much as possible,
+  any reliance on those volatile client and port numbers.
+
 - Transport/Backward and Forward commands may now reset to
   immediate full start or end of session locations, by just
   pressing the Shift or Ctrl keyboard modifiers and clicking

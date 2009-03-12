@@ -3004,6 +3004,9 @@ int qtractorMidiBus::updateConnects ( qtractorBus::BusMode busMode,
 	QListIterator<ConnectItem *> iter(connects);
 	while (iter.hasNext()) {
 		ConnectItem *pItem = iter.next();
+		// Don't care of non-valid client/ports...
+		if (pItem->client < 0 || pItem->port < 0)
+			continue;
 		// Mangle which is output and input...
 		if (busMode == qtractorBus::Input) {
 			seq_addr.client = pItem->client;
