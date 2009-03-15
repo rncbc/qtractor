@@ -5,6 +5,9 @@ ChangeLog
 
 CVS HEAD
 
+- A floating-rectangle flip that showed while dragging new
+  files beyhond the left of main track view is now gone.
+
 - MIDI track export event length truncation has been fixed.
 
 

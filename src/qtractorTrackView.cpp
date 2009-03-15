@@ -843,7 +843,6 @@ qtractorTrack *qtractorTrackView::dragDropTrack (
 	// Nothing more?
 	if (pMimeData == NULL)
 		return NULL;
-		
 	// Can it be single track channel (MIDI for sure)?
 	if (qtractorFileChannelDrag::canDecode(pMimeData)) {
 		// Let's see how many track-channels are there...
@@ -871,7 +870,7 @@ qtractorTrack *qtractorTrackView::dragDropTrack (
 	}
 
 	// Nice, now we'll try to set a preview selection rectangle set...
-	m_posDrag.setX(pSession->pixelSnap(pos.x() - 8));
+	m_posDrag.setX(pSession->pixelSnap(pos.x() > 8 ? pos.x() - 8 : 0));
 	m_posDrag.setY(tvi.trackRect.y() + 1);
 	m_rectDrag.setRect(
 		m_posDrag.x(), m_posDrag.y(), 0, tvi.trackRect.height() - 2);
