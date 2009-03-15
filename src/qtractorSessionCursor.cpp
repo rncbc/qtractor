@@ -201,7 +201,7 @@ void qtractorSessionCursor::updateTrack ( qtractorTrack *pTrack )
 		qtractorClip *pClip = seekClip(pTrack, NULL, m_iFrame);
 		if (pClip && pTrack->trackType() == m_syncType
 			&& m_iFrame >= pClip->clipStart()
-			&& m_iFrame <  pClip->clipStart() - pClip->clipLength()) {
+			&& m_iFrame <  pClip->clipStart() + pClip->clipLength()) {
 			pClip->seek(m_iFrame - pClip->clipStart());
 		}
 		m_ppClips[iTrack] = pClip;

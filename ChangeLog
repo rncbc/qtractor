@@ -5,6 +5,11 @@ ChangeLog
 
 CVS HEAD
 
+- A bad and shame-on-me bug was fixed: this was hideously
+  affecting any track/clip playback synchronization, most
+  noticeable on toggling solo/mute track states and while
+  playback is rolling.
+
 - A floating-rectangle flip that showed while dragging new
   files beyhond the left of main track view is now gone.
 
