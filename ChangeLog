@@ -3,6 +3,11 @@ Qtractor - An Audio/MIDI multi-track sequencer
 
 ChangeLog
 
+CVS HEAD
+
+- MIDI track export event length truncation has been fixed.
+
+
 0.4.0  2009-03-13  The Foxy Dryad
 
 - MIDI (re)connections fix; now caring for the ALSA client

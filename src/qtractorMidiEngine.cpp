@@ -2223,19 +2223,21 @@ bool qtractorMidiEngine::fileExport ( const QString& sExportPath,
 				// For each event...
 				qtractorMidiEvent *pEvent
 					= pMidiClip->sequence()->events().first();
-				while (pEvent && iTimeClip
-					+ pEvent->time() < iTimeStart)
+				while (pEvent && iTimeClip + pEvent->time() < iTimeStart)
 					pEvent = pEvent->next();
-				while (pEvent && iTimeClip
-					+ pEvent->time() + pEvent->duration() < iTimeEnd) {
+				while (pEvent && iTimeClip + pEvent->time() < iTimeEnd) {
 					qtractorMidiEvent *pNewEvent
 						= new qtractorMidiEvent(*pEvent);
 					pNewEvent->setTime(iTimeOffset + pEvent->time());
 					if (pNewEvent->type() == qtractorMidiEvent::NOTEON) {
+						unsigned long iTimeEvent = iTimeClip + pEvent->time();
 						float fGain = pMidiClip->gain(
-							pSession->frameFromTick(pEvent->time()));
+							pSession->frameFromTick(iTimeEvent)
+							- pClip->clipStart());
 						pNewEvent->setVelocity((unsigned char)
 							(fGain * float(pEvent->velocity())) & 0x7f);
+						if (iTimeEvent + pEvent->duration() > iTimeEnd)
+							pNewEvent->setDuration(iTimeEnd - iTimeEvent);
 					}
 					pSeq->insertEvent(pNewEvent);
 					pEvent = pEvent->next();
