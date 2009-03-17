@@ -203,6 +203,7 @@ qtractorMainForm::qtractorMainForm (
 	m_iTransportUpdate  = 0; 
 	m_iTransportDelta   = 0;
 	m_iTransportRolling = 0;
+	m_bTransportPlaying = false;
 	m_fTransportShuttle = 0.0f;
 	m_iTransportStep    = 0;
 
@@ -3528,9 +3529,18 @@ int qtractorMainForm::setRolling ( int iRolling )
 	m_fTransportShuttle = float(iRolling);
 	m_iTransportStep    = 0;
 
-	// We've started something...
-	if (m_iTransportRolling)
+	// We've started/stopped something...
+	if (m_iTransportRolling) {
+		if (!m_bTransportPlaying)
+			m_bTransportPlaying = m_pSession->isPlaying();
+		if (m_bTransportPlaying)
+			m_pSession->setPlaying(false);
 		m_iTransportUpdate++;
+	} else {
+		if (m_bTransportPlaying)
+			m_pSession->setPlaying(true);
+		m_bTransportPlaying = false;
+	}
 
 	// Done with rolling switch...
 	return iOldRolling;
@@ -3840,6 +3850,7 @@ bool qtractorMainForm::startSession (void)
 	m_iTransportUpdate  = 0; 
 	m_iTransportDelta   = 0;
 	m_iTransportRolling = 0;
+	m_bTransportPlaying = false;
 	m_fTransportShuttle = 0.0f;
 	m_iTransportStep    = 0;
 

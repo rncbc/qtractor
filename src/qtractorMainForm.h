@@ -319,6 +319,7 @@ private:
 	int m_iTransportUpdate;
 	int m_iTransportDelta;
 	int m_iTransportRolling;
+	bool m_bTransportPlaying;
 	float m_fTransportShuttle;
 	int m_iTransportStep;
 	int m_iXrunCount;

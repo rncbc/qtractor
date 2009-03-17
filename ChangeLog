@@ -5,10 +5,15 @@ ChangeLog
 
 CVS HEAD
 
+- Playback is now being temporarily suspended while either
+  transport rewind or fast-forward rolling is engaged.
+  (EXPERIMENTAL)
+
 - A bad and shame-on-me bug was fixed: this was hideously
   affecting any track/clip playback synchronization, most
-  noticeable on toggling solo/mute track states and while
-  playback is rolling.
+  noticeable after toggling solo/mute track states while
+  playback is rolling and skipping the play-head backward 
+  over more than one clip under the same track.
 
 - A floating-rectangle flip that showed while dragging new
   files beyhond the left of main track view is now gone.
