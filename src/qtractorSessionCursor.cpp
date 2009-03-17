@@ -94,8 +94,8 @@ void qtractorSessionCursor::seek ( unsigned long iFrame, bool bSync )
 		m_ppClips[iTrack] = pClip;
 		// Set fine position within target clip...
 		if (bSync && pClip && pTrack->trackType() == m_syncType) {
-			bool bLooping = m_pSession->isLooping();
 			// Now care for old/previous clip...
+			bool bLooping = m_pSession->isLooping();
 			if (pClipLast && pClipLast != pClip)
 				pClipLast->reset(bLooping);
 			// Take care of overlapping clips...
@@ -241,7 +241,7 @@ void qtractorSessionCursor::updateClips ( qtractorClip **ppClips,
 		qtractorClip *pClip = seekClip(pTrack, NULL, m_iFrame);
 		if (pClip && pTrack->trackType() == m_syncType
 			&& m_iFrame >= pClip->clipStart()
-			&& m_iFrame <  pClip->clipStart() - pClip->clipLength()) {
+			&& m_iFrame <  pClip->clipStart() + pClip->clipLength()) {
 			pClip->seek(m_iFrame - pClip->clipStart());
 		}
 		ppClips[iTrack] = pClip;
