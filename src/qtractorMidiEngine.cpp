@@ -785,7 +785,7 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 
 	// - capture quantization...
 	if (m_iCaptureQuantize > 0) {
-		unsigned long q = pSession->ticksPerBeat2() / m_iCaptureQuantize;
+		unsigned long q = pSession->ticksPerBeat() / m_iCaptureQuantize;
 		pEv->time.tick = q * ((pEv->time.tick + (q >> 1)) / q);
 	}
 
@@ -838,7 +838,7 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 		data2    = pEv->data.control.value;
 		// Trap controller commands...
 		if (m_pIControlBus && m_pIControlBus->alsaPort() == iAlsaPort) {
-			// FIXME: Avoid some estraneous events...
+			// FIXME: Avoid some extraneous events...
 			if (data1 > 0x7f || data2 > 0x7f)
 				return;
 			// Post the stuffed event...

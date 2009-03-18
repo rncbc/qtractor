@@ -651,7 +651,9 @@ bool qtractorTracks::quantizeClip ( qtractorClip *pClip )
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
 		return false;
-	if (pSession->snapPerBeat() < 1)
+
+	unsigned short iQuantize = pSession->snapPerBeat();
+	if (iQuantize < 1)
 		return false;
 
 	if (pClip == NULL)
@@ -684,20 +686,30 @@ bool qtractorTracks::quantizeClip ( qtractorClip *pClip )
 	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
 	qtractorMidiSequence *pSeq = pMidiClip->sequence();
-	unsigned short iTicksPerBeat = pSession->ticksPerBeat();
-	unsigned long iTimeOffset = pSeq->timep(pSeq->timeOffset(), iTicksPerBeat);
-	unsigned long iTimeStart = pSession->tickFromFrame(iOffset);
+	unsigned long iTimeOffset = pSeq->timeOffset();
+
+	qtractorTimeScale::Cursor cursor(pSession->timeScale());
+	qtractorTimeScale::Node *pNode = cursor.seekFrame(pClip->clipStart());
+	unsigned long t0 = pNode->tickFromFrame(pClip->clipStart());
+
+	unsigned long f1 = pClip->clipStart() + pClip->clipOffset() + iOffset;
+	pNode = cursor.seekFrame(f1);
+	unsigned long t1 = pNode->tickFromFrame(f1);
+	unsigned long iTimeStart = t1 - t0;
 	iTimeStart = (iTimeStart > iTimeOffset ? iTimeStart - iTimeOffset : 0);
-	unsigned long iTimeEnd = iTimeStart + pSession->tickFromFrame(iLength);
+	pNode = cursor.seekFrame(f1 += iLength);
+	unsigned long iTimeEnd = iTimeStart + pNode->tickFromFrame(f1) - t1;
 
 	for (qtractorMidiEvent *pEvent = pSeq->events().first();
 			pEvent; pEvent = pEvent->next()) {
 		unsigned long iTime = pEvent->time();
-		unsigned long iDuration = pEvent->duration();
 		if (iTime >= iTimeStart && iTime < iTimeEnd) {
-			iTime = pSession->tickSnap(iTime + iTimeOffset) - iTimeOffset;
+			pNode = cursor.seekTick(iTime);
+			unsigned long q = pNode->ticksPerBeat / iQuantize;
+			iTime = q * ((iTime + (q >> 1)) / q);
+			unsigned long iDuration = pEvent->duration();
 			if (pEvent->type() == qtractorMidiEvent::NOTEON)
-				iDuration = pSession->tickSnap(iDuration);
+				iDuration = q * ((iDuration + q - 1) / q);
 			pEditCommand->resizeEventTime(pEvent, iTime, iDuration);
 		}
 	}

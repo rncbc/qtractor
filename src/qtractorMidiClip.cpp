@@ -725,7 +725,7 @@ bool qtractorMidiClip::clipExport ( ClipExport pfnClipExport, void *pvArg,
 
 	qtractorMidiSequence *pSeq = sequence();
 	unsigned short iTicksPerBeat = pSession->ticksPerBeat();
-	unsigned long iTimeOffset = pSeq->timep(pSeq->timeOffset(), iTicksPerBeat);
+	unsigned long iTimeOffset = pSeq->timeOffset();
 
 	qtractorTimeScale::Cursor cursor(pSession->timeScale());
 	qtractorTimeScale::Node *pNode = cursor.seekFrame(clipStart());
@@ -736,16 +736,14 @@ bool qtractorMidiClip::clipExport ( ClipExport pfnClipExport, void *pvArg,
 	unsigned long t1 = pNode->tickFromFrame(f1);
 	unsigned long iTimeStart = t1 - t0;
 	iTimeStart = (iTimeStart > iTimeOffset ? iTimeStart - iTimeOffset : 0);
-
-	f1 += iLength;
-	pNode = cursor.seekFrame(f1);
+	pNode = cursor.seekFrame(f1 += iLength);
 	unsigned long iTimeEnd = iTimeStart + pNode->tickFromFrame(f1) - t1;
 
 	qtractorMidiSequence seq(pSeq->name(), pSeq->channel(), iTicksPerBeat);
 
 	for (qtractorMidiEvent *pEvent = pSeq->events().first();
 			pEvent; pEvent = pEvent->next()) {
-		unsigned long iTime = seq.timeq(pEvent->time(), pSeq->ticksPerBeat());
+		unsigned long iTime = pEvent->time();
 		if (iTime >= iTimeStart && iTime < iTimeEnd) {
 			qtractorMidiEvent *pNewEvent = new qtractorMidiEvent(*pEvent);
 			pNewEvent->setTime(iTime - iTimeStart);

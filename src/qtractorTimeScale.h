@@ -443,19 +443,6 @@ public:
 		return (pNode ? pNode->beatType : 2);
 	}
 
-	// Resolution (ticks per beat)
-	void setTicksPerBeat2(unsigned short iTicksPerBeat)
-	{
-		Node *pNode = m_nodes.first();
-		if (pNode) pNode->ticksPerBeat = iTicksPerBeat;
-	}
-
-	unsigned short ticksPerBeat2() const
-	{
-		Node *pNode = m_nodes.first();
-		return (pNode ? pNode->ticksPerBeat : 960);
-	}
-
 	// Time signature (numerator)
 	void setBeatsPerBar(unsigned short iBeatsPerBar)
 	{

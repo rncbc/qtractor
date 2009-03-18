@@ -23,6 +23,7 @@
 
 #include "qtractorAbout.h"
 #include "qtractorMidiEditor.h"
+#include "qtractorMidiClip.h"
 
 #include "qtractorMidiEditCommand.h"
 
@@ -488,16 +489,6 @@ void qtractorMidiToolsForm::presetDelete (void)
 }
 
 
-// Quantize method.
-unsigned long qtractorMidiToolsForm::quantize (
-	unsigned long iTicks, int iIndex, int i ) const
-{
-	unsigned short p = qtractorTimeScale::snapFromIndex(iIndex + 1);
-	unsigned long  q = m_pTimeScale->ticksPerBeat2() / p;
-	return q * ((iTicks + (q >> i)) / q);
-}
-
-
 // Create edit command based on given selection.
 qtractorMidiEditCommand *qtractorMidiToolsForm::editCommand (
 	qtractorMidiClip *pMidiClip, qtractorMidiEditSelect *pSelect,
@@ -539,24 +530,30 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::editCommand (
 		iter.toFront();
 	}
 
+	qtractorTimeScale::Cursor cursor(m_pTimeScale);
+
 	while (iter.hasNext()) {
 		qtractorMidiEvent *pEvent = iter.next()->event;
 		long iTime = pEvent->time();
 		long iDuration = pEvent->duration();
 		bool bPitchBend = (pEvent->type() == qtractorMidiEvent::PITCHBEND);
 		int iValue = (bPitchBend ? pEvent->pitchBend() : pEvent->value());
+		qtractorTimeScale::Node *pNode = cursor.seekTick(iTime + iTimeOffset);
 		// Quantize tool...
 		if (m_ui.QuantizeCheckBox->isChecked()) {
 			tools.append(tr("quantize"));
 			if (m_ui.QuantizeTimeCheckBox->isChecked()) {
-				iTime = quantize(iTime + iTimeOffset,
-					m_ui.QuantizeTimeComboBox->currentIndex(), 1)
-						- iTimeOffset;
+				unsigned short p = qtractorTimeScale::snapFromIndex(
+					m_ui.QuantizeTimeComboBox->currentIndex() + 1);
+				unsigned long q = pNode->ticksPerBeat / p;
+				iTime = q * ((iTime + (q >> 1)) / q);
 			}
 			if (m_ui.QuantizeDurationCheckBox->isChecked()
 				&& pEvent->type() == qtractorMidiEvent::NOTEON) {
-				iDuration = quantize(iDuration,
-					m_ui.QuantizeDurationComboBox->currentIndex(), 0);
+				unsigned short p = qtractorTimeScale::snapFromIndex(
+					m_ui.QuantizeDurationComboBox->currentIndex() + 1);
+				unsigned long q = pNode->ticksPerBeat / p;
+				iDuration = q * ((iDuration + q - 1) / q);
 			}
 			pEditCommand->resizeEventTime(pEvent, iTime, iDuration);
 		}
@@ -574,8 +571,10 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::editCommand (
 					iNote = 127;
 			}
 			if (m_ui.TransposeTimeCheckBox->isChecked()) {
-				iTime += m_pTimeScale->tickFromFrame(
-					m_ui.TransposeTimeSpinBox->value());
+				iTime += pNode->tickFromFrame(
+					pNode->frameFromTick(iTime + iTimeOffset)
+						+ m_ui.TransposeTimeSpinBox->value())
+							- (iTime + iTimeOffset);
 				if (iTime < 0)
 					iTime = 0;
 			}
@@ -631,7 +630,7 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::editCommand (
 			}
 			if (m_ui.RandomizeTimeCheckBox->isChecked()) {
 				p = m_ui.RandomizeTimeSpinBox->value();
-				q = m_pTimeScale->ticksPerBeat2();
+				q = pNode->ticksPerBeat;
 				if (p > 0) {
 					iTime += (p * (q - (::rand() % (q << 1)))) / 100;
 					if (iTime < 0)
@@ -641,7 +640,7 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::editCommand (
 			}
 			if (m_ui.RandomizeDurationCheckBox->isChecked()) {
 				p = m_ui.RandomizeDurationSpinBox->value();
-				q = m_pTimeScale->ticksPerBeat2();
+				q = pNode->ticksPerBeat;
 				if (p > 0) {
 					iDuration += (p * (q - (::rand() % (q << 1)))) / 100;
 					if (iDuration < 0)
@@ -675,8 +674,10 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::editCommand (
 		if (m_ui.ResizeCheckBox->isChecked()) {
 			tools.append(tr("resize"));
 			if (m_ui.ResizeDurationCheckBox->isChecked()) {
-				iDuration = m_pTimeScale->tickFromFrame(
-					m_ui.ResizeDurationSpinBox->value());
+				iDuration = pNode->tickFromFrame(
+					pNode->frameFromTick(iTime + iTimeOffset)
+						+ m_ui.ResizeDurationSpinBox->value())
+							- (iTime + iTimeOffset);
 				pEditCommand->resizeEventTime(pEvent, iTime, iDuration);
 			}
 			if (m_ui.ResizeValueCheckBox->isChecked()) {

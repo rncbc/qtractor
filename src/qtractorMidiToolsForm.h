@@ -79,9 +79,6 @@ protected:
 
 	void refreshPresets();
 
-	// Quantize method.
-	unsigned long quantize(unsigned long iTicks, int iIndex, int i) const;
-
 private:
 
 	// The Qt-designer UI struct...
