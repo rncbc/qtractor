@@ -5,6 +5,10 @@ ChangeLog
 
 CVS HEAD
 
+- Audio/MIDI drift correction is now progressive, taking a
+  least significant differential approach, on every read-
+  ahead cycle and swallowed on loop turn-arounds, as before.
+
 - Improved Edit/Clip/Normalize and Quantize commands, now
   affecting the whole extended multi-clip selection.
   (EXPERIMENTAL)
@@ -40,13 +44,13 @@ CVS HEAD
 - Default session/MIDI resolution has been set to 960 ticks
   per beat (960 TPQN, where a beat equals a quarter-note);
   it is worth of note that the previous default resolution
-  was set to one order of magninude lower, ie. 96 TPQN ;).
+  was set to one order of magnitude lower, ie. 96 TPQN ;).
 
 - Making (dis)connections now also flags session as dirty.
 
 - Internal Audio/MIDI engines queue/time drift correction
   takes a brand new approach, specially adapted to rolling
-  tempo/time-siganture changes.
+  tempo/time-signature changes.
 
 - MIDI monitor refresh-cycle slight internal optimization.
 

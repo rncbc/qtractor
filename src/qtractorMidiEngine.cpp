@@ -1159,6 +1159,10 @@ void qtractorMidiEngine::drift (void)
 				iAudioTime, iMidiTime, iDeltaTime, m_iTimeDrift);
 		#endif
 		}
+		// HACK: Make the least significant correction now!
+		if (m_iTimeDrift > 0) { --m_iTimeDrift;	++m_iTimeStart; }
+		else
+		if (m_iTimeDrift < 0) { ++m_iTimeDrift;	--m_iTimeStart; }
 	}
 }
 
