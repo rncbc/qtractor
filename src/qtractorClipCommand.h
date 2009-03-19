@@ -74,6 +74,9 @@ public:
 	// When new tracks are needed.
 	void addTrack(qtractorTrack *pTrack);
 
+	// Composite predicate.
+	bool isEmpty() const;
+
 	// Virtual command methods.
 	bool redo();
 	bool undo();

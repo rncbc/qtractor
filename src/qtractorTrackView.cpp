@@ -1772,6 +1772,13 @@ qtractorClip *qtractorTrackView::currentClip (void) const
 }
 
 
+// Clip selection accessor.
+qtractorClipSelect *qtractorTrackView::clipSelect (void) const
+{
+	return m_pClipSelect;
+}
+
+
 // Draw/hide the whole current clip selection.
 void qtractorTrackView::updateClipSelect ( int y, int h ) const
 {

@@ -5,6 +5,10 @@ ChangeLog
 
 CVS HEAD
 
+- Improved Edit/Clip/Normalize and Quantize commands, now
+  affecting the whole extended multi-clip selection.
+  (EXPERIMENTAL)
+
 - Playback is now being temporarily suspended while either
   transport rewind or fast-forward rolling is engaged.
   (EXPERIMENTAL)

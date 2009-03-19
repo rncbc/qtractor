@@ -279,6 +279,13 @@ void qtractorClipCommand::addTrack ( qtractorTrack *pTrack )
 }
 
 
+// Composite predicate.
+bool qtractorClipCommand::isEmpty (void) const
+{
+	return m_trackCommands.isEmpty() && m_items.isEmpty();
+}
+
+
 // Common executive method.
 bool qtractorClipCommand::execute ( bool bRedo )
 {

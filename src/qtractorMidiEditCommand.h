@@ -111,6 +111,36 @@ private:
 };
 
 
+//----------------------------------------------------------------------
+// class qtractorMidiClipCommand - declaration.
+//
+
+class qtractorMidiClipCommand : public qtractorCommand
+{
+public:
+
+	// Constructor.
+	qtractorMidiClipCommand(const QString& sName);
+	// Destructor.
+	virtual ~qtractorMidiClipCommand();
+
+	// Composite command methods.
+	void addEditCommand(qtractorMidiEditCommand *pEditCommand);
+
+	// Composite predicate.
+	bool isEmpty() const;
+
+	// Virtual command methods.
+	bool redo();
+	bool undo();
+
+private:
+
+	// Multi-clip command list.
+	QList<qtractorMidiEditCommand *> m_editCommands;
+};
+
+
 #endif	// __qtractorMidiEditCommand_h
 
 // end of qtractorMidiEditCommand.h

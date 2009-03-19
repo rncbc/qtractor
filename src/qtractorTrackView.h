@@ -111,6 +111,9 @@ public:
 	// Whether there's any clip currently editable.
 	qtractorClip *currentClip() const;
 
+	// Clip selection accessor.
+	qtractorClipSelect *clipSelect() const;
+
 	// Whether there's any clip currently selected.
 	bool isClipSelected() const;
 

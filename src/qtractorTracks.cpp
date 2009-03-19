@@ -30,7 +30,6 @@
 
 #include "qtractorTrackCommand.h"
 #include "qtractorClipCommand.h"
-
 #include "qtractorMidiEditCommand.h"
 
 #include "qtractorAudioEngine.h"
@@ -38,6 +37,8 @@
 
 #include "qtractorMidiEngine.h"
 #include "qtractorMidiClip.h"
+
+#include "qtractorClipSelect.h"
 
 #include "qtractorOptions.h"
 
@@ -571,6 +572,38 @@ bool qtractorTracks::normalizeClip ( qtractorClip *pClip )
 	if (pSession == NULL)
 		return false;
 
+	// Make it as an undoable command...
+	qtractorClipCommand *pClipCommand
+		= new qtractorClipCommand(tr("clip normalize"));
+
+	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+
+	// Multiple clip selection...
+	qtractorClipSelect *pClipSelect = m_pTrackView->clipSelect();
+	if (pClipSelect->items().count() > 0) {
+		QListIterator<qtractorClipSelect::Item *> iter(pClipSelect->items());
+		while (iter.hasNext())
+			normalizeClipCommand(pClipCommand, iter.next()->clip);
+	}	// Single, current clip instead?
+	else normalizeClipCommand(pClipCommand, pClip);
+
+	QApplication::restoreOverrideCursor();
+
+	// Check if valid...
+	if (pClipCommand->isEmpty()) {
+		delete pClipCommand;
+		return false;
+	}
+
+	// That's it...
+	return pSession->execute(pClipCommand);
+
+}
+
+
+bool qtractorTracks::normalizeClipCommand (
+	qtractorClipCommand *pClipCommand, qtractorClip *pClip )
+{
 	if (pClip == NULL)
 		pClip = m_pTrackView->currentClip();
 	if (pClip == NULL)
@@ -603,7 +636,6 @@ bool qtractorTracks::normalizeClip ( qtractorClip *pClip )
 			= static_cast<qtractorAudioBus *> (pTrack->outputBus());
 		if (pAudioBus == NULL)
 			return false;
-		QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 		QProgressBar *pProgressBar = NULL;
 		if (pMainForm)
 			pProgressBar = pMainForm->progressBar();
@@ -618,7 +650,6 @@ bool qtractorTracks::normalizeClip ( qtractorClip *pClip )
 			fGain /= data.max;
 		if (pProgressBar)
 			pProgressBar->hide();
-		QApplication::restoreOverrideCursor();
 	}
 	else
 	if (pTrack->trackType() == qtractorTrack::Midi) {
@@ -627,26 +658,57 @@ bool qtractorTracks::normalizeClip ( qtractorClip *pClip )
 			= static_cast<qtractorMidiClip *> (pClip);
 		if (pMidiClip == NULL)
 			return false;
-		QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 		unsigned char max = 0;
 		pMidiClip->clipExport(midiClipNormalize, &max, iOffset, iLength);
 		if (max > 0x0c && max < 0x7f)
 			fGain *= (127.0f / float(max));
-		QApplication::restoreOverrideCursor();
 	}
 
 	// Make it as an undoable command...
-	qtractorClipCommand *pClipCommand
-		= new qtractorClipCommand(tr("clip normalize"));
 	pClipCommand->gainClip(pClip, fGain);
 
 	// That's it...
-	return pSession->execute(pClipCommand);
+	return true;
 }
 
 
 // Quantize given(current) MIDI clip.
 bool qtractorTracks::quantizeClip ( qtractorClip *pClip )
+{
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return false;
+
+	// Make it as an undoable command...
+	qtractorMidiClipCommand *pMidiClipCommand
+		= new qtractorMidiClipCommand(tr("clip quantize"));
+
+	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+
+	// Multiple clip selection...
+	qtractorClipSelect *pClipSelect = m_pTrackView->clipSelect();
+	if (pClipSelect->items().count() > 0) {
+		QListIterator<qtractorClipSelect::Item *> iter(pClipSelect->items());
+		while (iter.hasNext())
+			quantizeClipCommand(pMidiClipCommand, iter.next()->clip);
+	}	// Single, current clip instead?
+	else quantizeClipCommand(pMidiClipCommand, pClip);
+
+	QApplication::restoreOverrideCursor();
+
+	// Check if valid...
+	if (pMidiClipCommand->isEmpty()) {
+		delete pMidiClipCommand;
+		return false;
+	}
+
+	// That's it...
+	return pSession->execute(pMidiClipCommand);
+}
+
+
+bool qtractorTracks::quantizeClipCommand (
+	qtractorMidiClipCommand *pMidiClipCommand, qtractorClip *pClip )
 {
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
@@ -683,8 +745,6 @@ bool qtractorTracks::quantizeClip ( qtractorClip *pClip )
 	qtractorMidiEditCommand *pEditCommand
 		= new qtractorMidiEditCommand(pMidiClip, tr("clip quantize"));
 
-	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-
 	qtractorMidiSequence *pSeq = pMidiClip->sequence();
 	unsigned long iTimeOffset = pSeq->timeOffset();
 
@@ -714,10 +774,9 @@ bool qtractorTracks::quantizeClip ( qtractorClip *pClip )
 		}
 	}
 
-	QApplication::restoreOverrideCursor();
-
 	// That's it...
-	return pSession->execute(pEditCommand);
+	pMidiClipCommand->addEditCommand(pEditCommand);
+	return true;
 }
 
 

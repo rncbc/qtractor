@@ -34,6 +34,8 @@ class qtractorTrackView;
 class qtractorTrack;
 class qtractorSession;
 class qtractorClip;
+class qtractorClipCommand;
+class qtractorMidiClipCommand;
 
 
 //----------------------------------------------------------------------------
@@ -137,6 +139,12 @@ protected:
 	// Try to center horizontally/vertically
 	// (usually after zoom change)
 	void centerContents();
+
+	// Multi-clip command builders.
+	bool normalizeClipCommand(
+		qtractorClipCommand *pMidiClipCommand, qtractorClip *pClip);
+	bool quantizeClipCommand(
+		qtractorMidiClipCommand *pMidiClipCommand, qtractorClip *pClip);
 
 protected slots:
 
