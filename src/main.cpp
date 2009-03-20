@@ -240,11 +240,75 @@ private:
 
 
 //-------------------------------------------------------------------------
+// stacktrace - Signal crash handler.
+//
+
+#ifdef CONFIG_STACKTRACE
+#if defined(__GNUC__) && defined(Q_OS_LINUX)
+
+#include <errno.h>
+#include <signal.h>
+#include <sys/wait.h>
+
+void stacktrace ( int signo )
+{
+	pid_t pid;
+	int rc;
+	int status = 0;
+	char cmd[80];
+
+	// Reinstall default handler; prevent race conditions...
+	signal(signo, SIG_DFL);
+
+	static const char *shell  = "/bin/sh";
+	static const char *format = "gdb -q --batch --pid=%d --eval-command=bt";
+
+	snprintf(cmd, sizeof(cmd), format, (int) getpid());
+
+	pid = fork();
+
+	// Fork failure!
+	if (pid < 0)
+		return;
+
+	// Fork child...
+	if (pid == 0) {
+		execl(shell, shell, "-c", cmd, NULL);
+		_exit(1);
+		return;
+	}
+
+	// Parent here: wait for child to terminate...
+	do { rc = waitpid(pid, &status, 0); }
+	while ((rc < 0) && (errno == EINTR));
+
+	// Dispatch any logging, if any...
+	QApplication::processEvents(QEventLoop::AllEvents, 300);
+
+	// Make sure everyone terminates...
+	kill(pid, SIGTERM);
+	_exit(1);
+}
+
+#endif
+#endif
+
+
+//-------------------------------------------------------------------------
 // main - The main program trunk.
 //
 
 int main ( int argc, char **argv )
 {
+#ifdef CONFIG_STACKTRACE
+#if defined(__GNUC__) && defined(Q_OS_LINUX)
+	signal(SIGILL,  stacktrace);
+	signal(SIGFPE,  stacktrace);
+	signal(SIGSEGV, stacktrace);
+	signal(SIGABRT, stacktrace);
+	signal(SIGBUS,  stacktrace);
+#endif
+#endif
 #ifdef CONFIG_VST
 #ifdef CONFIG_XINITTHREADS
 #if defined(Q_WS_X11)
@@ -302,5 +366,6 @@ int main ( int argc, char **argv )
 
 	return app.exec();
 }
+
 
 // end of main.cpp

@@ -5,17 +5,21 @@ ChangeLog
 
 CVS HEAD
 
+- Automatic crash-dump reports, debugger stack-traces (gdb),
+  back-traces, whatever, are being introduced as a brand new
+  configure option (--enable-stacktrace) and default enabled
+  on debug build targets (--enable-debug). (EXPERIMENTAL)
+  
 - Audio/MIDI drift correction is now progressive, taking a
   least significant differential approach, on every read-
   ahead cycle and swallowed on loop turn-arounds, as before.
+  (EXPERIMENTAL)
 
 - Improved Edit/Clip/Normalize and Quantize commands, now
   affecting the whole extended multi-clip selection.
-  (EXPERIMENTAL)
 
 - Playback is now being temporarily suspended while either
   transport rewind or fast-forward rolling is engaged.
-  (EXPERIMENTAL)
 
 - A bad and shame-on-me bug was fixed: this was hideously
   affecting any track/clip playback synchronization, most

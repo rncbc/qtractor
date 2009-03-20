@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(Qtractor, 0.4.0.1276, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.4.0.1277, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractorMainForm.ui)
 AC_CONFIG_HEADERS(config.h)
@@ -21,11 +21,15 @@ AC_ARG_ENABLE(debug,
 
 if test "x$ac_debug" = "xyes"; then
    AC_DEFINE(CONFIG_DEBUG, 1, [Define if debugging is enabled.])
+   ac_stacktrace="yes"
    ac_debug="debug"
 else
+   ac_stacktrace="no"
    ac_debug="release"
 fi
+
 AC_SUBST(ac_debug)
+
 
 # Enable libvorbis(file) availability.
 AC_ARG_ENABLE(libvorbis,
@@ -92,6 +96,11 @@ AC_ARG_ENABLE(gradient,
   AC_HELP_STRING([--enable-gradient], [enable gradient eye-candy (default=yes)]),
   [ac_gradient="$enableval"],
   [ac_gradient="yes"])
+
+# Enable debugger stack-trace option (assumes --enable-debug).
+AC_ARG_ENABLE(stacktrace,
+  AC_HELP_STRING([--enable-stacktrace], [enable debugger stack-trace (default=no)]),
+  [ac_stacktrace="$enableval"])
 
 
 # Standard installation base dirs.
@@ -552,6 +561,11 @@ if test "x$ac_gradient" = "xyes"; then
    AC_DEFINE(CONFIG_GRADIENT, 1, [Define if gradient eye-candy is enabled.])
 fi
 
+# Check for debugging stack-trace.
+if test "x$ac_stacktrace" = "xyes"; then
+   AC_DEFINE(CONFIG_STACKTRACE, 1, [Define if debugger stack-trace is enabled.])
+fi
+
 AC_SUBST(ac_incpath)
 
 
@@ -589,6 +603,7 @@ echo "  VST Plug-in support  . . . . . . . . . . . . . . .: $ac_vst"
 echo
 echo "  XInitThreads() support (DANGEROUS) . . . . . . . .: $ac_xinitthreads"
 echo "  Gradient eye-candy . . . . . . . . . . . . . . . .: $ac_gradient"
+echo "  Debugger stack-trace (gdb) . . . . . . . . . . . .: $ac_stacktrace"
 echo
 echo "  Install prefix . . . . . . . . . . . . . . . . . .: $ac_prefix"
 echo
