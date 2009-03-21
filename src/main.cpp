@@ -283,7 +283,7 @@ void stacktrace ( int signo )
 	while ((rc < 0) && (errno == EINTR));
 
 	// Dispatch any logging, if any...
-	QApplication::processEvents(QEventLoop::AllEvents, 300);
+	QApplication::processEvents(QEventLoop::AllEvents, 3000);
 
 	// Make sure everyone terminates...
 	kill(pid, SIGTERM);
