@@ -2000,12 +2000,14 @@ void qtractorMidiEditor::updateDragSelect ( qtractorScrollView *pScrollView,
 		m_pEditEvent->contentsToViewport(rectUpdateEvent.topLeft()),
 		rectUpdateEvent.size()));
 
+#if 0
 	if (bEditView) {
 		setEditHead(m_pTimeScale->frameSnap(m_iOffset
 			+ m_pTimeScale->frameFromPixel(rectSelect.left())), bCommit);
 		setEditTail(m_pTimeScale->frameSnap(m_iOffset
 			+ m_pTimeScale->frameFromPixel(rectSelect.right())), bCommit);
 	}
+#endif
 }
 
 

@@ -322,8 +322,11 @@ void qtractorMidiClip::seek ( unsigned long iFrame )
 	if (pSession == NULL)
 		return;
 
+	unsigned long t0 = pSession->tickFromFrame(clipStart());
+	unsigned long t1 = pSession->tickFromFrame(iFrame);
+
 	// Seek for the nearest sequence event...
-	m_playCursor.seek(m_pSeq, pSession->tickFromFrame(iFrame));
+	m_playCursor.seek(m_pSeq, (t1 > t0 ? t1 - t0 : 0));
 }
 
 
