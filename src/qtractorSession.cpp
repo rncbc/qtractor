@@ -252,13 +252,21 @@ void qtractorSession::clear (void)
 
 	updateTimeScale();
 
-	m_pAudioEngine->sessionCursor()->reset();
-	m_pAudioEngine->sessionCursor()->seek(0);
-	m_cursors.append(m_pAudioEngine->sessionCursor());
+	qtractorSessionCursor *pAudioCursor = m_pAudioEngine->sessionCursor(); 
+	if (pAudioCursor) {
+		pAudioCursor->resetClips();
+		pAudioCursor->reset();
+		pAudioCursor->seek(0);
+		m_cursors.append(pAudioCursor);
+	}
 
-	m_pMidiEngine->sessionCursor()->reset();
-	m_pMidiEngine->sessionCursor()->seek(0);
-	m_cursors.append(m_pMidiEngine->sessionCursor());
+	qtractorSessionCursor *pMidiCursor = m_pMidiEngine->sessionCursor(); 
+	if (pMidiCursor) {
+		pMidiCursor->resetClips();
+		pMidiCursor->reset();
+		pMidiCursor->seek(0);
+		m_cursors.append(pMidiCursor);
+	}
 }
 
 
@@ -790,7 +798,11 @@ void qtractorSession::moveTrack ( qtractorTrack *pTrack,
 	else
 		m_tracks.append(pTrack);
 
-	reset();
+	qtractorSessionCursor *pSessionCursor = m_cursors.first();
+	while (pSessionCursor) {
+		pSessionCursor->resetClips();
+		pSessionCursor = pSessionCursor->next();
+	}
 
 //	unlock();
 }
@@ -942,17 +954,6 @@ void qtractorSession::unlinkSessionCursor (
 	qtractorSessionCursor *pSessionCursor )
 {
 	m_cursors.unlink(pSessionCursor);
-}
-
-
-// Reset all linked session cursors.
-void qtractorSession::reset (void)
-{
-	qtractorSessionCursor *pSessionCursor = m_cursors.first();
-	while (pSessionCursor) {
-		pSessionCursor->reset();
-		pSessionCursor = pSessionCursor->next();
-	}
 }
 
 

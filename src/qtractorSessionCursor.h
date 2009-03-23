@@ -73,6 +73,9 @@ public:
 	// Reset cursor.
 	void reset();
 
+	// Reset track/clips cache.
+	void resetClips();
+
 	// Frame-time processor (increment only).
 	void process(unsigned int nframes);
 

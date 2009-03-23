@@ -5,6 +5,10 @@ ChangeLog
 
 CVS HEAD
 
+- Moving tracks, any track, up or down, were leaving MIDI
+  playback and meter monitoring completely out-of-sync, now
+  fixed.
+
 - Automatic crash-dump reports, debugger stack-traces (gdb),
   back-traces, whatever, are being introduced as a brand new
   configure option (--enable-stacktrace) and default enabled

@@ -195,9 +195,6 @@ public:
 		qtractorTrack::TrackType syncType = qtractorTrack::None);
 	void unlinkSessionCursor(qtractorSessionCursor *pSessionCursor);
 
-	// Reset all linked session cursors.
-	void reset();
-
 	// Reset (reactivate) all plugin chains...
 	void resetAllPlugins();
 

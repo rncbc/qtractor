@@ -144,6 +144,7 @@ bool qtractorEngine::open ( const QString& sClientName )
 	m_sClientName = sClientName;
 
 	// Update the session cursor tracks...
+	m_pSessionCursor->resetClips();
 	m_pSessionCursor->reset();
 
 	// Open all buses (allocated and register ports...)

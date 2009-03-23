@@ -41,6 +41,7 @@ qtractorSessionCursor::qtractorSessionCursor ( qtractorSession *pSession,
 	m_ppClips  = NULL;
 	m_iSize    = 0;
 
+	resetClips();
 	reset();
 }
 
@@ -260,6 +261,15 @@ void qtractorSessionCursor::reset (void)
 
 	m_iFrameTime = 0;
 	m_iFrameDelta = m_iFrame;
+}
+
+
+// Reset track/clips cache.
+void qtractorSessionCursor::resetClips (void)
+{
+#ifdef CONFIG_DEBUG_0
+	qDebug("qtractorSessionCursor[%p,%d]::resetClips()", this, (int) m_syncType);
+#endif
 
 	// Free existing clip references.
 	if (m_ppClips) {
