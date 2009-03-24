@@ -3256,6 +3256,10 @@ void qtractorMainForm::transportPunch (void)
 	if (!m_pSession->isPunching()) {
 		iPunchIn  = m_pSession->editHead();
 		iPunchOut = m_pSession->editTail();
+		// Cannot punch and loop at the same time...
+		if (m_pSession->isLooping())
+			m_pSession->execute(
+				new qtractorSessionLoopCommand(m_pSession, 0, 0));
 	}
 
 	// Now, express the change as command...
@@ -3275,6 +3279,10 @@ void qtractorMainForm::transportPunchSet (void)
 
 	// Make sure session is activated...
 	checkRestartSession();
+
+	// Cannot punch and loop at the same time...
+	if (!m_pSession->isPunching() && m_pSession->isLooping())
+		m_pSession->execute(new qtractorSessionLoopCommand(m_pSession, 0, 0));
 
 	// Do the punch in/out setting...
 	m_pSession->setPunch(m_pSession->editHead(), m_pSession->editTail());
@@ -3816,10 +3824,8 @@ void qtractorMainForm::stabilizeForm (void)
 		!bRolling && bSelectable);
 	m_ui.transportRecordAction->setEnabled(
 		(!bLooping || !bPunching) && m_pSession->recordTracks() > 0);
-	m_ui.transportPunchAction->setEnabled(
-		!bRolling && (bPunching || bSelectable));
-	m_ui.transportPunchSetAction->setEnabled(
-		!bRolling && bSelectable);
+	m_ui.transportPunchAction->setEnabled(bPunching || bSelectable);
+	m_ui.transportPunchSetAction->setEnabled(bSelectable);
 	m_ui.transportMetroAction->setEnabled(
 		m_pOptions->bAudioMetronome || m_pOptions->bMidiMetronome);
 

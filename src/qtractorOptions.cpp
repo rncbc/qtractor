@@ -450,7 +450,7 @@ void qtractorOptions::print_usage ( const char *arg0 )
 		"Usage: %1 [options] [session-file]\n\n"
 		QTRACTOR_TITLE " - " QTRACTOR_SUBTITLE "\n\n"
 		"Options:\n\n"
-		"  -?, --help\n\tShow help about command line options\n\n"
+		"  -h, --help\n\tShow help about command line options\n\n"
 		"  -v, --version\n\tShow version information\n\n")
 		.arg(arg0);
 }
