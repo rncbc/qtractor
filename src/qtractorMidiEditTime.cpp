@@ -401,11 +401,17 @@ void qtractorMidiEditTime::mousePressEvent ( QMouseEvent *pMouseEvent )
 		m_dragState = DragStart;
 		m_posDrag   = pos;
 		// Try to catch mouse clicks over the cursor heads...
-		if (dragHeadStart(m_posDrag))
+		if (dragHeadStart(m_posDrag)) {
 			m_dragState = m_dragCursor;
+		} else if (!bModifier) {
+			// Edit-head positioning...
+			m_pEditor->setEditHead(iFrame);
+			// Logical contents changed, just for visual feedback...
+			m_pEditor->selectionChangeNotify();
+		}
 		break;
 	case Qt::MidButton:
-		// Edit-tail positioning...
+		// Edit-head/tail positioning...
 		m_pEditor->setEditHead(iFrame);
 		m_pEditor->setEditTail(iFrame);
 		// Logical contents changed, just for visual feedback...
@@ -449,6 +455,8 @@ void qtractorMidiEditTime::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 		m_pEditor->editView()->ensureVisible(pos.x(), y, 16, 0);
 		m_pEditor->selectRect(m_rectDrag,
 			pMouseEvent->modifiers() & Qt::ControlModifier, false);
+		// Edit-tail positioning...
+		m_pEditor->setEditTail(iFrame);
 		break;
 	case DragPlayHead:
 		// Play-head positioning...
@@ -516,20 +524,18 @@ void qtractorMidiEditTime::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 		// Do the final range selection...
 		m_pEditor->selectRect(m_rectDrag,
 			pMouseEvent->modifiers() & Qt::ControlModifier, true);
+		// Edit-tail positioning...
+		m_pEditor->setEditTail(iFrame);
+		// Not quite a selection change,
+		// but for visual feedback...
+		m_pEditor->selectionChangeNotify();
 		break;
 	case DragPlayHead:
 		// Play-head positioning commit...
 		m_pEditor->setPlayHead(iFrame);
 		pSession->setPlayHead(m_pEditor->playHead());
-		// Not quite a selection change,
-		// but for visual feedback...
-		m_pEditor->selectionChangeNotify();
-		break;
+		// Fall thru...
 	case DragEditHead:
-		// Not quite a selection change,
-		// but for visual feedback...
-		m_pEditor->selectionChangeNotify();
-		break;
 	case DragEditTail:
 		// Not quite a selection change,
 		// but for visual feedback...
@@ -542,8 +548,6 @@ void qtractorMidiEditTime::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 			m_pEditor->commands()->exec(
 				new qtractorSessionLoopCommand(pSession,
 					pSession->editHead(), pSession->loopEnd()));
-		/*	m_pEditor->updateContents();
-			m_pEditor->contentsChangeNotify(); */
 		}
 		break;
 	case DragLoopEnd:
@@ -553,28 +557,24 @@ void qtractorMidiEditTime::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 			m_pEditor->commands()->exec(
 				new qtractorSessionLoopCommand(pSession,
 					pSession->loopStart(), pSession->editTail()));
-		/*	m_pEditor->updateContents();
-			m_pEditor->contentsChangeNotify(); */
 		}
 		break;
 	case DragPunchIn:
 		// New punch-in boundary...
 		if (pSession->editHead() < pSession->punchOut()) {
 			// Yep, new punch-in point...
-			pSession->setPunch(pSession->editHead(), pSession->punchOut());
-			// For visual feedback...
-			m_pEditor->updateContents();
-			m_pEditor->contentsChangeNotify();
+			m_pEditor->commands()->exec(
+				new qtractorSessionPunchCommand(pSession,
+					pSession->editHead(), pSession->punchOut()));
 		}
 		break;
 	case DragPunchOut:
 		// New punch-out boundary...
 		if (pSession->punchIn() < pSession->editTail()) {
 			// Yep, new punch-out point...
-			pSession->setPunch(pSession->punchIn(), pSession->editTail());
-			// For visual feedback...
-			m_pEditor->updateContents();
-			m_pEditor->contentsChangeNotify();
+			m_pEditor->commands()->exec(
+				new qtractorSessionPunchCommand(pSession,
+					pSession->punchIn(), pSession->editTail()));
 		}
 		break;
 	case DragStart:
@@ -584,13 +584,10 @@ void qtractorMidiEditTime::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 			m_pEditor->setPlayHead(iFrame);
 			// Immediately commited...
 			pSession->setPlayHead(iFrame);
-		} else {
-			// Deferred left-button edit-head positioning...
-			m_pEditor->setEditHead(iFrame);
+			// Not quite a selection, rather just
+			// for immediate visual feedback...
+			m_pEditor->selectionChangeNotify();
 		}
-		// Not quite a selection, rather just
-		// for immediate visual feedback...
-		m_pEditor->selectionChangeNotify();
 		// Fall thru...
 	case DragNone:
 	default:

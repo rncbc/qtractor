@@ -482,7 +482,7 @@ bool qtractorOptions::parse_args ( int argc, char **argv )
 		else if (i < argc)
 			sVal = argv[i + 1];
 
-		if (sArg == "-?" || sArg == "--help") {
+		if (sArg == "-h" || sArg == "--help") {
 			print_usage(argv[0]);
 			return false;
 		}

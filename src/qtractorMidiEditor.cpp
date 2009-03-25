@@ -1374,7 +1374,8 @@ qtractorMidiEvent *qtractorMidiEditor::eventAt (
 	int x0 = m_pTimeScale->pixelFromFrame(m_iOffset);
 
 	pNode = cursor.seekPixel(x0 + pos.x());
-	unsigned long iTime = pNode->tickFromPixel(x0 + pos.x()) - t0;
+	unsigned long iTime = pNode->tickFromPixel(x0 + pos.x());
+	iTime = (iTime > t0 ? iTime - t0 : 0);
 
 	// This is the edit-view spacifics...
 	int h1 = m_pEditList->itemHeight();
@@ -1900,10 +1901,12 @@ void qtractorMidiEditor::updateDragSelect ( qtractorScrollView *pScrollView,
 	}
 
 	pNode = cursor.seekPixel(x0 + x1);
-	unsigned long iTickStart = pNode->tickFromPixel(x0 + x1) - t0;
+	unsigned long t1 = pNode->tickFromPixel(x0 + x1);
+	unsigned long iTickStart = (t1 > t0 ? t1 - t0 : 0);
 
 	pNode = cursor.seekPixel(x0 + x2);
-	unsigned long iTickEnd = pNode->tickFromPixel(x0 + x2) - t0;
+	unsigned long t2 = pNode->tickFromPixel(x0 + x2);
+	unsigned long iTickEnd = (t2 > t0 ? t2 - t0 : 0);
 
 	// This is the edit-view spacifics...
 	int h1 = m_pEditList->itemHeight();
@@ -1933,8 +1936,8 @@ void qtractorMidiEditor::updateDragSelect ( qtractorScrollView *pScrollView,
 			bool bSelect = false;
 			// Common event coords...
 			int y;
-			unsigned long t1 = t0 + pEvent->time();
-			unsigned long t2 = t1 + pEvent->duration();
+			t1 = t0 + pEvent->time();
+			t2 = t1 + pEvent->duration();
 			pNode = cursor.seekTick(t1);
 			int x  = pNode->pixelFromTick(t1) - x0;
 			int w1 = pNode->pixelFromTick(t2) - x0 - x;

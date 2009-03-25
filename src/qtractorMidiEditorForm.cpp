@@ -1359,10 +1359,8 @@ void qtractorMidiEditorForm::stabilizeForm (void)
 			!bRolling && bSelectable);
 		m_ui.transportRecordAction->setEnabled(
 			(!bLooping || !bPunching) && pSession->recordTracks() > 0);
-		m_ui.transportPunchAction->setEnabled(
-			!bLooping && (bPunching || bSelectable));
-		m_ui.transportPunchSetAction->setEnabled(
-			!bLooping && bSelectable);
+		m_ui.transportPunchAction->setEnabled(bPunching || bSelectable);
+		m_ui.transportPunchSetAction->setEnabled(bSelectable);
 		m_ui.transportRewindAction->setChecked(iRolling < 0);
 		m_ui.transportFastForwardAction->setChecked(iRolling > 0);
 		m_ui.transportLoopAction->setChecked(bLooping);

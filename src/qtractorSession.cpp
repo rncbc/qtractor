@@ -1155,8 +1155,7 @@ void qtractorSession::setLoop ( unsigned long iLoopStart,
 	if (iLoopStart >= iLoopEnd) {
 		iLoopStart = 0;
 		iLoopEnd   = 0;
-	} else if (isPunching())
-		setPunch(0, 0);
+	}
 
 	// Save exact current play-head position...
 	unsigned long iFrame = playHead();
@@ -1208,8 +1207,7 @@ void qtractorSession::setPunch (
 	if (iPunchIn >= iPunchOut) {
 		iPunchIn  = 0;
 		iPunchOut = 0;
-	} else if (isLooping())
-		setLoop(0, 0);
+	}
 
 	// Local commit...
 	m_iPunchIn  = iPunchIn;
