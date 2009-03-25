@@ -198,11 +198,20 @@ bool qtractorSessionTempoCommand::undo (void)
 // Constructor.
 qtractorSessionLoopCommand::qtractorSessionLoopCommand (
 	qtractorSession *pSession, unsigned long iLoopStart, unsigned long iLoopEnd )
-	: qtractorSessionCommand(QObject::tr("session loop"), pSession)
+	: qtractorSessionCommand(QObject::tr("session loop"), pSession),
+		m_iLoopStart(iLoopStart), m_iLoopEnd(iLoopEnd), m_pPunchCommand(NULL)
 {
-	m_iLoopStart = iLoopStart;
-	m_iLoopEnd   = iLoopEnd;
+	// Cannot loop and punch at the same time...
+	if (pSession->isPunching() && iLoopStart < iLoopEnd)
+		m_pPunchCommand = new qtractorSessionPunchCommand(pSession, 0, 0);
 }
+
+// Destructor.
+qtractorSessionLoopCommand::~qtractorSessionLoopCommand (void)
+{
+	if (m_pPunchCommand) delete m_pPunchCommand;
+}
+
 
 
 // Session-loop command methods.
@@ -215,6 +224,10 @@ bool qtractorSessionLoopCommand::redo (void)
 	// Save the previous session loop state alright...
 	unsigned long iLoopStart = pSession->loopStart();
 	unsigned long iLoopEnd   = pSession->loopEnd();
+
+	// Do cross-command, if any.
+	if (m_pPunchCommand)
+		m_pPunchCommand->redo();
 
 	// Just set new bounds...
 	pSession->setLoop(m_iLoopStart, m_iLoopEnd);
@@ -233,6 +246,66 @@ bool qtractorSessionLoopCommand::redo (void)
 }
 
 bool qtractorSessionLoopCommand::undo (void)
+{
+	// As we swap the prev/loop this is non-idempotent.
+	return redo();
+}
+
+
+//----------------------------------------------------------------------
+// class qtractorSessionPunchCommand - implementation
+//
+
+// Constructor.
+qtractorSessionPunchCommand::qtractorSessionPunchCommand (
+	qtractorSession *pSession, unsigned long iPunchIn, unsigned long iPunchOut )
+	: qtractorSessionCommand(QObject::tr("session punch"), pSession),
+		m_iPunchIn(iPunchIn), m_iPunchOut(iPunchOut), m_pLoopCommand(NULL)
+{
+	// Cannot punch and loop at the same time...
+	if (pSession->isLooping() && iPunchIn < iPunchOut)
+		m_pLoopCommand = new qtractorSessionLoopCommand(pSession, 0, 0);
+}
+
+// Destructor.
+qtractorSessionPunchCommand::~qtractorSessionPunchCommand (void)
+{
+	if (m_pLoopCommand) delete m_pLoopCommand;
+}
+
+
+// Session-punch command methods.
+bool qtractorSessionPunchCommand::redo (void)
+{
+	qtractorSession *pSession = session();
+	if (pSession == NULL)
+		return false;
+
+	// Save the previous session punch state alright...
+	unsigned long iPunchIn  = pSession->punchIn();
+	unsigned long iPunchOut = pSession->punchOut();
+
+	// Do cross-command, if any.
+	if (m_pLoopCommand)
+		m_pLoopCommand->redo();
+
+	// Just set new bounds...
+	pSession->setPunch(m_iPunchIn, m_iPunchOut);
+
+	// Restore edit cursors too...
+	if (m_iPunchIn < m_iPunchOut) {
+		pSession->setEditHead(m_iPunchIn);
+		pSession->setEditTail(m_iPunchOut);
+	}
+
+	// Swap it nice, finally.
+	m_iPunchIn  = iPunchIn;
+	m_iPunchOut = iPunchOut;
+
+	return true;
+}
+
+bool qtractorSessionPunchCommand::undo (void)
 {
 	// As we swap the prev/tempo this is non-idempotent.
 	return redo();

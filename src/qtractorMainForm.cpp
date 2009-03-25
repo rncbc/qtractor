@@ -3256,17 +3256,11 @@ void qtractorMainForm::transportPunch (void)
 	if (!m_pSession->isPunching()) {
 		iPunchIn  = m_pSession->editHead();
 		iPunchOut = m_pSession->editTail();
-		// Cannot punch and loop at the same time...
-		if (m_pSession->isLooping())
-			m_pSession->execute(
-				new qtractorSessionLoopCommand(m_pSession, 0, 0));
 	}
 
-	// Now, express the change as command...
-	m_pSession->setPunch(iPunchIn, iPunchOut);
-
-	// No need for turn-around notification...
-	updateContents(NULL, true);
+	// Now, express the change as an undoable command...
+	m_pSession->execute(
+		new qtractorSessionPunchCommand(m_pSession, iPunchIn, iPunchOut));
 }
 
 
@@ -3280,15 +3274,10 @@ void qtractorMainForm::transportPunchSet (void)
 	// Make sure session is activated...
 	checkRestartSession();
 
-	// Cannot punch and loop at the same time...
-	if (!m_pSession->isPunching() && m_pSession->isLooping())
-		m_pSession->execute(new qtractorSessionLoopCommand(m_pSession, 0, 0));
-
-	// Do the punch in/out setting...
-	m_pSession->setPunch(m_pSession->editHead(), m_pSession->editTail());
-
-	// No need for turn-around notification...
-	updateContents(NULL, true);
+	// Now, express the change as an undoable command...
+	m_pSession->execute(
+		new qtractorSessionPunchCommand(m_pSession,
+			m_pSession->editHead(), m_pSession->editTail()));
 }
 
 
