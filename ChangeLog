@@ -5,6 +5,9 @@ ChangeLog
 
 CVS HEAD
 
+- SSE optimization is back in town after being misteriously
+  disabled since dawn :/ (EXPERIMENTAL)
+
 - Looping and punch-recording now actively mutual exclusive
   states: setting either one unsets the other off and vice-
   versa. Also, punch-in/out is now made an undoable command.

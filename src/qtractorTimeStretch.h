@@ -1,7 +1,7 @@
 // qtractorTimeStretch.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
 
    Adapted and refactored from the SoundTouch library (L)GPL,
    Copyright (C) 2001-2006, Olli Parviainen.

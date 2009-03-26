@@ -1,7 +1,7 @@
 // qtractorAudioMonitor.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -33,18 +33,29 @@ static inline bool sse_enabled (void)
 {
 	bool bSSE = false;
 #if defined(__GNUC__)
-#if defined(__i386__) || defined(__x86_64__)
 	unsigned int eax, ebx, ecx, edx;
+#if defined(__x86_64__)
 	__asm__ __volatile__ (
-		"movl %%ebx, %%esi\n\t" \
+		"push %%rbx\n\t" \
 		"cpuid\n\t" \
-		"xchgl %%ebx, %%esi" \
-		: "=a" (eax), "=S" (ebx), "=c" (ecx), "=d" (edx) \
-		: "0" (1));
+		"movl %%ebx,%1\n\t" \
+		"pop %%rbx\n\t" \
+		: "=a" (eax), "=r" (ebx), "=c" (ecx), "=d" (edx) \
+		: "a" (1) : "cc");
+#else // defined(__i386__)
+	__asm__ __volatile__ (
+		"push %%ebx\n\t" \
+		"cpuid\n\t" \
+		"movl %%ebx,%1\n\t" \
+		"pop %%ebx\n\t" \
+		: "=a" (eax), "=r" (ebx), "=c" (ecx), "=d" (edx) \
+		: "a" (1) : "cc");
 #endif
+	bSSE = (edx & (1 << 25));
 #endif
 	return bSSE;
 }
+
 
 // SSE enabled processor versions.
 static inline void sse_process (
