@@ -35,18 +35,14 @@
 // SSE detection.
 static inline bool sse_enabled (void)
 {
-	bool bSSE = false;
 #if defined(__GNUC__)
 	unsigned int eax, ebx, ecx, edx;
-#if defined(__x86_64__)
+#if defined(__x86_64__) || (!defined(PIC) && !defined(__PIC__))
 	__asm__ __volatile__ (
-		"push %%rbx\n\t" \
 		"cpuid\n\t" \
-		"movl %%ebx,%1\n\t" \
-		"pop %%rbx\n\t" \
-		: "=a" (eax), "=r" (ebx), "=c" (ecx), "=d" (edx) \
+		: "=a" (eax), "=b" (ebx), "=c" (ecx), "=d" (edx) \
 		: "a" (1) : "cc");
-#else // defined(__i386__)
+#else
 	__asm__ __volatile__ (
 		"push %%ebx\n\t" \
 		"cpuid\n\t" \
@@ -55,9 +51,10 @@ static inline bool sse_enabled (void)
 		: "=a" (eax), "=r" (ebx), "=c" (ecx), "=d" (edx) \
 		: "a" (1) : "cc");
 #endif
-	bSSE = (edx & (1 << 25));
+	return (edx & (1 << 25));
+#else
+	return false;
 #endif
-	return bSSE;
 }
 
 

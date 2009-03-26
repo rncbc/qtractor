@@ -1,6 +1,6 @@
 
 #define PACKAGE_NAME    "Qtractor"
-#define PACKAGE_VERSION "0.4.0.1284"
+#define PACKAGE_VERSION "0.4.0.1285"
 
 #define PACKAGE_STRING  PACKAGE_NAME " " PACKAGE_VERSION
 
