@@ -571,6 +571,25 @@ bool qtractorMidiFile::writeTracks ( qtractorMidiSequence **ppSeqs,
 
 			unsigned long iEventTime = 0;
 
+			// Track/channel bank-select...
+			if (pSeq->bank() >= 0) {
+				writeInt(0); // delta-time=0
+				writeInt(qtractorMidiEvent::CONTROLLER, 1);
+				writeInt(0x00, 1);	// Bank MSB.
+				writeInt((pSeq->bank() & 0x3f80) >> 7, 1);
+				writeInt(0); // delta-time=0
+				writeInt(qtractorMidiEvent::CONTROLLER, 1);
+				writeInt(0x20, 1);	// Bank LSB.
+				writeInt((pSeq->bank() & 0x007f), 1);
+			}
+
+			// Track/channel program change...
+			if (pSeq->program() >= 0) {
+				writeInt(0); // delta-time=0
+				writeInt(qtractorMidiEvent::PGMCHANGE, 1);
+				writeInt((pSeq->program() & 0x007f), 1);
+			}
+
 			// Lets-a go, down to event merge loop...
 			//
 			for (;;) {

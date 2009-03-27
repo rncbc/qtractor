@@ -5,6 +5,10 @@ ChangeLog
 
 CVS HEAD
 
+- MIDI track/channel patch information, ie. bank-select and
+  program-change events, are now being properly set on MIDI
+  track/clip export.
+
 - SSE optimization is back in town after being misteriously
   disabled since dawn :/ (EXPERIMENTAL)
 

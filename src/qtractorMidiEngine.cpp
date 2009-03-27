@@ -2135,7 +2135,7 @@ bool qtractorMidiEngine::fileExport ( const QString& sExportPath,
 	qtractorMidiBus *pExportBus )
 {
 	// No simultaneous or foul exports...
-	if (!isActivated() || isPlaying())
+	if (isPlaying())
 		return false;
 
 	// Make sure we have an actual session cursor...
