@@ -64,9 +64,6 @@ public:
 	void write(float **ppBuffer, unsigned int iFrames,
 		unsigned short iChannels = 0, unsigned int iOffset = 0);
 
-	// Export-mode sync method.
-	void syncExport();
-
 	// Intra-clip frame positioning.
 	void seek(unsigned long iFrame);
 

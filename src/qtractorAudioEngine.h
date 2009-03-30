@@ -96,9 +96,6 @@ public:
 		unsigned long iExportStart = 0, unsigned long iExportEnd = 0,
 		qtractorAudioBus *pExportBus = NULL);
 
-	// Direct sync method (needed for export)
-	void syncExport();
-
 	// Metronome switching.
 	void setMetronome(bool bMetronome);
 	bool isMetronome() const;

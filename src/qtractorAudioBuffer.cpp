@@ -880,7 +880,8 @@ bool qtractorAudioBuffer::seekSync ( unsigned long iFrame )
 {
 #ifdef CONFIG_DEBUG_0
 	qDebug("qtractorAudioBuffer[%p]::seekSync(%lu) pending(%d, %lu) wo=%lu ro=%lu",
-		this, iFrame, m_iSeekPending, m_iSeekOffset, m_iWriteOffset, m_iReadOffset);
+		this, iFrame, ATOMIC_GET(&m_seekPending), m_iSeekOffset,
+		m_iWriteOffset, m_iReadOffset);
 #endif
 
 #ifdef CONFIG_LIBSAMPLERATE
@@ -889,7 +890,7 @@ bool qtractorAudioBuffer::seekSync ( unsigned long iFrame )
 		for (unsigned short i = 0; i < m_pRingBuffer->channels(); ++i) {
 			if (m_ppSrcState && m_ppSrcState[i])
 				src_reset(m_ppSrcState[i]);
-			m_ppFrames[i] = m_ppInBuffer[i];
+			m_ppInBuffer[i] = m_ppFrames[i];
 		}
 	}
 #endif
@@ -944,12 +945,8 @@ int qtractorAudioBuffer::flushFrames ( unsigned int iFrames )
 	if (nread < int(iFrames)
 		&& m_iWriteOffset + nread < m_iOffset + m_iLength) {
 		unsigned int nahead = iFrames - nread;
-		for (unsigned int i = 0; i < m_pRingBuffer->channels(); ++i) {
-		#ifdef CONFIG_LIBSAMPLERATE
-			m_ppFrames[i] = m_ppInBuffer[i];
-		#endif
+		for (unsigned int i = 0; i < m_pRingBuffer->channels(); ++i)
 			::memset(m_ppFrames[i], 0, nahead * sizeof(float));
-		}
 		nread += m_pRingBuffer->write(m_ppFrames, nahead);
 	}
 
@@ -969,8 +966,8 @@ int qtractorAudioBuffer::readBuffer ( unsigned int iFrames )
 #ifdef CONFIG_LIBSAMPLERATE
 	if (m_bResample) {
 
-		if (m_iBufferSize >= m_iInputPending + iFrames)
-			nread = m_pFile->read(m_ppFrames, iFrames);
+		if (iFrames > m_iInputPending)
+			nread = m_pFile->read(m_ppInBuffer, iFrames - m_iInputPending);
 
 		nread += m_iInputPending;
 
@@ -979,7 +976,7 @@ int qtractorAudioBuffer::readBuffer ( unsigned int iFrames )
 
 		for (unsigned short i = 0; i < m_pRingBuffer->channels(); ++i) {
 			// Fill all resampler parameter data...
-			src_data.data_in       = m_ppInBuffer[i];
+			src_data.data_in       = m_ppFrames[i];
 			src_data.data_out      = m_ppOutBuffer[i];
 			src_data.input_frames  = nread;
 			src_data.output_frames = iFrames;
@@ -994,18 +991,18 @@ int qtractorAudioBuffer::readBuffer ( unsigned int iFrames )
 					ngen = src_data.output_frames_gen;
 				}
 				if (m_iInputPending > 0 && src_data.input_frames_used > 0) {
-					::memmove(m_ppInBuffer[i],
-						m_ppInBuffer[i] + src_data.input_frames_used,
+					::memcpy(m_ppFrames[i],
+						m_ppFrames[i] + src_data.input_frames_used,
 						m_iInputPending * sizeof(float));
 				}
-				m_ppFrames[i] = m_ppInBuffer[i] + m_iInputPending;
+				m_ppInBuffer[i] = m_ppFrames[i] + m_iInputPending;
 			}
 		}
 
 		if (ngen > 0)
 			nread = writeFrames(m_ppOutBuffer, ngen);
 		else
-		if (m_iInputPending < 1)
+		if (nread < 1)
 			nread = flushFrames(iFrames); // Maybe EoF!
 
 	} else {
@@ -1137,10 +1134,6 @@ void qtractorAudioBuffer::deleteIOBuffers (void)
 			delete [] m_ppOutBuffer[i];
 			m_ppOutBuffer[i] = NULL;
 		}
-		if (m_ppInBuffer && m_ppInBuffer[i]) {
-			delete [] m_ppInBuffer[i];
-			m_ppInBuffer[i] = NULL;
-		}
 	}
 	if (m_ppSrcState) {
 		delete [] m_ppSrcState;
@@ -1158,6 +1151,12 @@ void qtractorAudioBuffer::deleteIOBuffers (void)
 #endif
 
 	if (m_ppFrames) {
+		for (unsigned short i = 0; i < m_pRingBuffer->channels(); ++i) {
+			if (m_ppFrames[i]) {
+				delete [] m_ppFrames[i];
+				m_ppFrames[i] = NULL;
+			}
+		}
 		delete [] m_ppFrames;
 		m_ppFrames = NULL;
 	}

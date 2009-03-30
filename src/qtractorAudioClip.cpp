@@ -192,13 +192,6 @@ void qtractorAudioClip::write ( float **ppBuffer,
 }
 
 
-// Direct sync method.
-void qtractorAudioClip::syncExport (void)
-{
-	if (m_pBuff) m_pBuff->syncExport();
-}
-
-
 // Intra-clip frame positioning.
 void qtractorAudioClip::seek ( unsigned long iFrame )
 {

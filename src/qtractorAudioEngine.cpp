@@ -445,6 +445,9 @@ bool qtractorAudioEngine::init ( const QString& sClientName )
 // Device engine activation method.
 bool qtractorAudioEngine::activate (void)
 {
+	// Ensure (not) freewheeling state...
+	jack_set_freewheel(m_pJackClient, 0);
+
 	// Set our main engine processor callbacks.
 	jack_set_process_callback(m_pJackClient,
 			qtractorAudioEngine_process, this);
@@ -601,8 +604,6 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 	if (m_bFreewheel) {
 		// Make sure we're in a valid state...
 		if (m_pExportFile && m_pExportBus && !m_bExportDone) {
-			// Force/sync every audio clip approaching...
-			syncExport();
 			// This the legal process cycle frame range...
 			unsigned long iFrameStart = pAudioCursor->frame();
 			unsigned long iFrameEnd   = iFrameStart + nframes;
@@ -988,11 +989,7 @@ bool qtractorAudioEngine::fileExport ( const QString& sExportPath,
 	pSession->setPlayHead(m_iExportStart);
 	pExportBus->setPassthru(false);
 
-	// Force sync...
-	syncExport();
-
 	// Special initialization.
-	pSession->resetAllPlugins();
     m_iBufferOffset = 0;
 
 	// Start export (freewheeling)...
@@ -1027,37 +1024,6 @@ bool qtractorAudioEngine::fileExport ( const QString& sExportPath,
 
 	// Done whether successfully.
 	return bResult;
-}
-
-
-// Direct sync method (needed for export)
-void qtractorAudioEngine::syncExport (void)
-{
-	qtractorSession *pSession = session();
-	if (pSession == NULL)
-		return;
-
-	qtractorSessionCursor *pAudioCursor = sessionCursor();
-	if (pAudioCursor == NULL)
-		return;
-
-	unsigned long iFrameSync = pAudioCursor->frame() + sampleRate();
-
-	int iTrack = 0;
-	for (qtractorTrack *pTrack = pSession->tracks().first();
-			pTrack; pTrack = pTrack->next()) {
-		if (pTrack->trackType() == qtractorTrack::Audio) {
-			qtractorAudioClip *pAudioClip
-				= static_cast<qtractorAudioClip *> (
-					pAudioCursor->clip(iTrack));
-			while (pAudioClip && pAudioClip->clipStart() < iFrameSync) {
-				pAudioClip->syncExport();
-				pAudioClip = static_cast<qtractorAudioClip *> (
-					pAudioClip->next());
-			}
-		}
-		iTrack++;
-	}
 }
 
 
