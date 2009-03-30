@@ -5,6 +5,10 @@ ChangeLog
 
 CVS HEAD
 
+- One potential buffer-overflow/memory-corruption crash bug
+  has been fixed, long due on most audio (down) sample-rate
+  conversions and affecting audio export in particular.
+
 - MIDI track/channel patch information, ie. bank-select and
   program-change events, are now being properly set on MIDI
   track/clip export.

@@ -1,7 +1,7 @@
 // qtractorAudioBuffer.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -944,8 +944,12 @@ int qtractorAudioBuffer::flushFrames ( unsigned int iFrames )
 	if (nread < int(iFrames)
 		&& m_iWriteOffset + nread < m_iOffset + m_iLength) {
 		unsigned int nahead = iFrames - nread;
-		for (unsigned int i = 0; i < m_pRingBuffer->channels(); ++i)
+		for (unsigned int i = 0; i < m_pRingBuffer->channels(); ++i) {
+		#ifdef CONFIG_LIBSAMPLERATE
+			m_ppFrames[i] = m_ppInBuffer[i];
+		#endif
 			::memset(m_ppFrames[i], 0, nahead * sizeof(float));
+		}
 		nread += m_pRingBuffer->write(m_ppFrames, nahead);
 	}
 
@@ -965,17 +969,10 @@ int qtractorAudioBuffer::readBuffer ( unsigned int iFrames )
 #ifdef CONFIG_LIBSAMPLERATE
 	if (m_bResample) {
 
-		if (iFrames > m_iInputPending)
-			nread = m_pFile->read(m_ppFrames, iFrames - m_iInputPending);
+		if (m_iBufferSize >= m_iInputPending + iFrames)
+			nread = m_pFile->read(m_ppFrames, iFrames);
 
 		nread += m_iInputPending;
-
-		if (m_ppOutBuffer == NULL) {
-			if (nread > 0)
-				return writeFrames(m_ppFrames, nread);
-			else
-				return flushFrames(iFrames); // Maybe EoF!
-		}
 
 		int ngen = 0;
 		SRC_DATA src_data;
@@ -1008,7 +1005,7 @@ int qtractorAudioBuffer::readBuffer ( unsigned int iFrames )
 		if (ngen > 0)
 			nread = writeFrames(m_ppOutBuffer, ngen);
 		else
-		if (nread < 1)
+		if (m_iInputPending < 1)
 			nread = flushFrames(iFrames); // Maybe EoF!
 
 	} else {
