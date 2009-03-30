@@ -5,6 +5,9 @@ ChangeLog
 
 CVS HEAD
 
+- Actual non-zero session length gets back to status bar of
+  main application window.
+
 - One potential buffer-overflow/memory-corruption crash bug
   has been fixed, long due on most audio (down) sample-rate
   conversions and affecting audio export in particular.
@@ -14,12 +17,11 @@ CVS HEAD
   track/clip export.
 
 - SSE optimization is back in town after being misteriously
-  disabled since dawn :/ (EXPERIMENTAL)
+  disabled since its dawn :/
 
 - Looping and punch-recording now actively mutual exclusive
   states: setting either one unsets the other off and vice-
   versa. Also, punch-in/out is now made an undoable command.
-  (EXPERIMENTAL)
 
 - Moving tracks, any track, up or down, were leaving MIDI
   playback and meter monitoring completely out-of-sync, now
@@ -28,12 +30,11 @@ CVS HEAD
 - Automatic crash-dump reports, debugger stack-traces (gdb),
   back-traces, whatever, are being introduced as a brand new
   configure option (--enable-stacktrace) and default enabled
-  on debug build targets (--enable-debug). (EXPERIMENTAL)
-  
+  on debug build targets (--enable-debug).
+
 - Audio/MIDI drift correction is now progressive, taking a
   least significant differential approach, on every read-
   ahead cycle and swallowed on loop turn-arounds, as before.
-  (EXPERIMENTAL)
 
 - Improved Edit/Clip/Normalize and Quantize commands, now
   affecting the whole extended multi-clip selection.
@@ -741,7 +742,7 @@ CVS HEAD
   (see View/Options.../Audio/Playback/Automatic time-stretching).
 
 - Double-clicking on an empty area (de)selects all clips on track.
- 
+
 - MIDI capture (record) quantization is now an option, possibly
   handy for some jerky performance musicians, as the one found
   in myself ;) (see View/Options.../MIDI/Capture/Quantize).

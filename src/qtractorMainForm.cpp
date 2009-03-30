@@ -3785,7 +3785,7 @@ void qtractorMainForm::stabilizeForm (void)
 		m_statusItems[StatusLoop]->clear();
 
 	m_statusItems[StatusTime]->setText(
-		m_pSession->timeScale()->textFromFrame(iSessionLength, true));
+		m_pSession->timeScale()->textFromFrame(0, true, iSessionLength));
 
 	m_statusItems[StatusRate]->setText(
 		tr("%1 Hz").arg(m_pSession->sampleRate()));
