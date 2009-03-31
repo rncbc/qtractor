@@ -87,6 +87,10 @@ public:
 	void setBackground(const QColor& back);
 	const QColor& background() const;
 
+	// Snap-to-beat grid mode.
+	void setSnapGrid(bool bSnapGrid);
+	bool isSnapGrid() const;
+
 	// Edit (creational) mode.
 	void setEditMode(bool bEditMode);
 	bool isEditMode() const;
@@ -447,6 +451,9 @@ private:
 	// Edit mode flag.
 	bool m_bEditMode;
 	bool m_bEventDragEdit;
+
+	// Snap-to-beat grid mode.
+	bool m_bSnapGrid;
 
 	// Last useful editing values.
 	struct {

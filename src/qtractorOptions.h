@@ -186,6 +186,7 @@ public:
 	int  iMidiZoomMode;
 	int  iMidiHorizontalZoom;
 	int  iMidiVerticalZoom;
+	bool bMidiSnapGrid;
 
 	// Meter colors.
 	QStringList audioMeterColors;

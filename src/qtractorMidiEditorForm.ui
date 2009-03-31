@@ -1040,6 +1040,23 @@
     <string>All zoom mode</string>
    </property>
   </action>
+  <action name="viewSnapGridAction" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="text" >
+    <string>&amp;Grid</string>
+   </property>
+   <property name="iconText" >
+    <string>Grid</string>
+   </property>
+   <property name="toolTip" >
+    <string>Grid</string>
+   </property>
+   <property name="statusTip" >
+    <string>Snap grid mode</string>
+   </property>
+  </action>
   <action name="viewRefreshAction" >
    <property name="text" >
     <string>&amp;Refresh</string>

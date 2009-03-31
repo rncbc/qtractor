@@ -304,6 +304,9 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	QObject::connect(m_ui.viewZoomAllAction,
 		SIGNAL(triggered(bool)),
 		SLOT(viewZoomAll()));
+	QObject::connect(m_ui.viewSnapGridAction,
+		SIGNAL(triggered(bool)),
+		SLOT(viewSnapGrid(bool)));
 	QObject::connect(m_ui.viewRefreshAction,
 		SIGNAL(triggered(bool)),
 		SLOT(viewRefresh()));
@@ -362,6 +365,7 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 		m_ui.viewValueColorAction->setChecked(pOptions->bMidiValueColor);
 		m_ui.viewPreviewAction->setChecked(pOptions->bMidiPreview);
 		m_ui.viewFollowAction->setChecked(pOptions->bMidiFollow);
+		m_ui.viewSnapGridAction->setChecked(pOptions->bMidiSnapGrid);
 		if (pOptions->bMidiEditMode)
 			m_ui.editModeOnAction->setChecked(true);
 		else
@@ -376,6 +380,7 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 		m_pMidiEditor->setZoomMode(pOptions->iMidiZoomMode);
 		m_pMidiEditor->setHorizontalZoom(pOptions->iMidiHorizontalZoom);
 		m_pMidiEditor->setVerticalZoom(pOptions->iMidiVerticalZoom);
+		m_pMidiEditor->setSnapGrid(pOptions->bMidiSnapGrid);
 		m_pMidiEditor->setEditMode(pOptions->bMidiEditMode);
 		m_pMidiEditor->setNoteColor(pOptions->bMidiNoteColor);
 		m_pMidiEditor->setValueColor(pOptions->bMidiValueColor);
@@ -504,6 +509,7 @@ bool qtractorMidiEditorForm::queryClose (void)
 			pOptions->iMidiZoomMode = m_pMidiEditor->zoomMode();
 			pOptions->iMidiHorizontalZoom = m_pMidiEditor->horizontalZoom();
 			pOptions->iMidiVerticalZoom = m_pMidiEditor->verticalZoom();
+			pOptions->bMidiSnapGrid = m_pMidiEditor->isSnapGrid();
 			pOptions->bMidiEditMode = m_pMidiEditor->isEditMode();
 			pOptions->bMidiNoteDuration = m_ui.viewNoteDurationAction->isChecked();
 			pOptions->bMidiNoteColor = m_ui.viewNoteColorAction->isChecked();
@@ -1175,6 +1181,14 @@ void qtractorMidiEditorForm::viewZoomAll (void)
 }
 
 
+// Set grid mode
+void qtractorMidiEditorForm::viewSnapGrid ( bool bOn )
+{
+	m_pMidiEditor->setSnapGrid(bOn);
+	m_pMidiEditor->updateContents();
+}
+
+
 // Change snap-per-beat setting via menu.
 void qtractorMidiEditorForm::viewSnap (void)
 {
@@ -1426,6 +1440,9 @@ void qtractorMidiEditorForm::updateSnapMenu (void)
 		pAction->setChecked(iSnap == iSnapCurrent);
 		pAction->setData(iSnap++);
 	}
+
+	m_ui.viewSnapMenu->addSeparator();
+	m_ui.viewSnapMenu->addAction(m_ui.viewSnapGridAction);
 }
 
 
@@ -1443,6 +1460,11 @@ void qtractorMidiEditorForm::snapPerBeatChanged ( int iSnap )
 
 	// No need to express the change as a undoable command?
 	pTimeScale->setSnapPerBeat(iSnapPerBeat);
+
+	// If showing grid, it changed a bit for sure...
+	if (m_pMidiEditor->isSnapGrid())
+		m_pMidiEditor->updateContents();
+
 	m_pMidiEditor->editView()->setFocus();
 }
 

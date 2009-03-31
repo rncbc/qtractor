@@ -137,7 +137,7 @@ void qtractorMidiEditTime::updatePixmap ( int cx, int /*cy*/)
 		} else {
 			y1 = (y2 >> 1);
 		}
-		if (bBeatIsBar || iPixelsPerBeat > 16) {
+		if (bBeatIsBar || iPixelsPerBeat > 8) {
 			p.setPen(pal.mid().color());
 			p.drawLine(x, y1, x, y2);
 			p.setPen(pal.light().color());

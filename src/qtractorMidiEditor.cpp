@@ -294,6 +294,9 @@ qtractorMidiEditor::qtractorMidiEditor ( QWidget *pParent )
 	// Edit mode flag.
 	m_bEditMode = false;
 
+	// Snap-to-beat grid mode.
+	m_bSnapGrid = false;
+
 	// Last default editing values.
 	m_last.note      = 0x3c;	// middle-C
 	m_last.value     = 0x40;
@@ -590,6 +593,19 @@ void qtractorMidiEditor::setEditMode ( bool bEditMode )
 bool qtractorMidiEditor::isEditMode (void) const
 {
 	return m_bEditMode;
+}
+
+
+// Snap-to-beat grid mode.
+void qtractorMidiEditor::setSnapGrid ( bool bSnapGrid )
+{
+	m_bSnapGrid = bSnapGrid;
+//	updateContents();
+}
+
+bool qtractorMidiEditor::isSnapGrid (void) const
+{
+	return m_bSnapGrid;
 }
 
 

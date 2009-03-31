@@ -323,8 +323,10 @@ void qtractorMidiEditEvent::updatePixmap ( int cx, int /*cy*/ )
 
 	// Draw vertical grid lines...
 	pNode = cursor.seekPixel(dx);
+	unsigned short iSnapPerBeat
+		= (m_pEditor->isSnapGrid() ? pTimeScale->snapPerBeat() : 0);
 	unsigned short iPixelsPerBeat = pNode->pixelsPerBeat();
-	unsigned int iBeat = pNode->beatFromPixel(dx);
+	unsigned int iBeat = pNode->beatFromPixel(dx - (iPixelsPerBeat >> 1));
 	int x = pNode->pixelFromBeat(iBeat) - dx;
 	while (x < w) {
 		if (x >= 0) {
@@ -335,9 +337,19 @@ void qtractorMidiEditEvent::updatePixmap ( int cx, int /*cy*/ )
 				if (iBeat == pNode->beat)
 					iPixelsPerBeat = pNode->pixelsPerBeat();
 			}
-			if (bBeatIsBar || iPixelsPerBeat > 16) {
+			if (bBeatIsBar || iPixelsPerBeat > 8) {
 				p.setPen(rgbDark);
 				p.drawLine(x - 1, 0, x - 1, h);
+			}
+		}
+		if (iSnapPerBeat > 1) {
+			int q = iPixelsPerBeat / iSnapPerBeat;
+			if (q > 4) {  
+				p.setPen(rgbLight.lighter(120));
+				for (int i = 1; i < iSnapPerBeat; ++i) {
+					x = pTimeScale->pixelSnap(x + dx + q) - dx;
+					p.drawLine(x, 0, x, h);
+				}
 			}
 		}
 		pNode = cursor.seekBeat(++iBeat);

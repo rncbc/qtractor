@@ -5,6 +5,10 @@ ChangeLog
 
 CVS HEAD
 
+- MIDI clip editor (aka. piano-roll/matrix editor) sees one
+  of its most wanted features introduced: visual snap grid,
+  now accessible through View/Snap/Grid option toggle.
+
 - Actual non-zero session length gets back to status bar of
   main application window.
 
