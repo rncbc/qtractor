@@ -5,6 +5,10 @@ ChangeLog
 
 CVS HEAD
 
+- MIDI editor command item execution order has been fixed,
+  correcting the redo/undo adjustment of overlapping note
+  events (probably fixing bug #2723861).
+
 - MIDI clip editor (aka. piano-roll/matrix editor) sees one
   of its most wanted features introduced: visual snap grid,
   now accessible through View/Snap/Grid option toggle.

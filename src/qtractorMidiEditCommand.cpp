@@ -124,8 +124,10 @@ bool qtractorMidiEditCommand::execute ( bool bRedo )
 
 	// Changes are due...
 	QListIterator<Item *> iter(m_items);
-	while (iter.hasNext()) {
-		Item *pItem = iter.next();
+	if (!bRedo)
+		iter.toBack();
+	while (bRedo ? iter.hasNext() : iter.hasPrevious()) {
+		Item *pItem = (bRedo ? iter.next() : iter.previous());
 		qtractorMidiEvent *pEvent = pItem->event;
 		// Execute the command item...
 		switch (pItem->command) {

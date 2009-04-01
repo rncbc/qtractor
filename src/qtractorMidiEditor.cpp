@@ -2531,6 +2531,7 @@ bool qtractorMidiEditor::adjustEditCommand (
 	while (pEvent) {
 		unsigned long iTime = pEvent->time();
 		unsigned long iTimeEnd = iTime + pEvent->duration();
+		qtractorMidiEvent *pNextEvent = pEvent->next();
 		// NOTEON: Find previous note event and check overlaps...
 		if (pEvent->type() == qtractorMidiEvent::NOTEON) {
 			// Already there?
@@ -2540,8 +2541,9 @@ bool qtractorMidiEditor::adjustEditCommand (
 				qtractorMidiEvent *pPrevEvent = *iter;
 				unsigned long iPrevTime = pPrevEvent->time();
 				unsigned long iPrevTimeEnd = iPrevTime + pPrevEvent->duration();
-				// Left-side event...
+				// Inner operlap...
 				if (iTime > iPrevTime && iTime < iPrevTimeEnd) {
+					// Left-side outer event...
 					unsigned long iDuration = pPrevEvent->duration();
 					pPrevEvent->setDuration(iTime - iPrevTime);
 					if (!pEditCommand->findEvent(pPrevEvent,
@@ -2549,7 +2551,7 @@ bool qtractorMidiEditor::adjustEditCommand (
 						pEditCommand->resizeEventTime(
 							pPrevEvent, iPrevTime, iDuration);
 					}
-					// Right-side event...
+					// Right-side outer event...
 					if (iTimeEnd < iPrevTimeEnd) {
 						qtractorMidiEvent *pNewEvent
 							= new qtractorMidiEvent(*pPrevEvent);
@@ -2561,18 +2563,52 @@ bool qtractorMidiEditor::adjustEditCommand (
 				}
 				else
 				// Loose overlap?...
-				if (iTime == iPrevTime || iTimeEnd == iPrevTimeEnd) {
-					pSeq->unlinkEvent(pPrevEvent);
-					if (!pEditCommand->findEvent(pPrevEvent,
-							qtractorMidiEditCommand::RemoveEvent))
-						pEditCommand->removeEvent(pPrevEvent);
+				if (iTime == iPrevTime) {
+					// Exact overlap...
+					if (iTimeEnd == iPrevTimeEnd) {
+						pSeq->unlinkEvent(pPrevEvent);
+						if (!pEditCommand->findEvent(pPrevEvent,
+								qtractorMidiEditCommand::RemoveEvent))
+							pEditCommand->removeEvent(pPrevEvent);
+					} else {
+						if (iTimeEnd < iPrevTimeEnd) {
+							unsigned long iDuration = pPrevEvent->duration();
+							pPrevEvent->setDuration(pEvent->duration());
+							if (!pEditCommand->findEvent(pPrevEvent,
+									qtractorMidiEditCommand::ResizeEventTime)) {
+								pEditCommand->resizeEventTime(
+									pPrevEvent, iPrevTime, iDuration);
+							}
+							iDuration = pEvent->duration();
+							pSeq->unlinkEvent(pEvent);
+							pEvent->setTime(iTimeEnd);
+							pEvent->setDuration(iPrevTimeEnd - iTimeEnd);
+							pSeq->insertEvent(pEvent);
+							if (!pEditCommand->findEvent(pEvent,
+									qtractorMidiEditCommand::ResizeEventTime)) {
+								pEditCommand->resizeEventTime(
+									pEvent, iTime, iDuration);
+							}
+						} else {
+							unsigned long iDuration = pEvent->duration();
+							pSeq->unlinkEvent(pEvent);
+							pEvent->setTime(iPrevTimeEnd);
+							pEvent->setDuration(iTimeEnd - iPrevTimeEnd);
+							pSeq->insertEvent(pEvent);
+							if (!pEditCommand->findEvent(pEvent,
+									qtractorMidiEditCommand::ResizeEventTime)) {
+								pEditCommand->resizeEventTime(
+									pEvent, iTime, iDuration);
+							}
+						}
+					}					
 				}
 			}
 			// Set as last note...
 			notes[note] = pEvent;
 		}
 		// Iterate next...
-		pEvent = pEvent->next();
+		pEvent = pNextEvent;
 	}
 
 	return true;
