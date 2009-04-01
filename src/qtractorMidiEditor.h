@@ -214,6 +214,9 @@ public:
 	// Try to center vertically the edit-view...
 	void centerContents();
 
+	// Reset event cursors.
+	void reset();
+
 	// To optimize and keep track of current (re)draw
 	// position, mostly like an sequence cursor/iterator.
 	qtractorMidiEvent *seekEvent(unsigned long iTime);

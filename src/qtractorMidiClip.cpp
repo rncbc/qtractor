@@ -591,27 +591,37 @@ bool qtractorMidiClip::queryEditor (void)
 }
 
 
+// Clip editor reset.
+void qtractorMidiClip::resetEditor (void)
+{
+	if (m_pMidiEditorForm) {
+		qtractorMidiEditor *pMidiEditor = m_pMidiEditorForm->editor();
+		if (pMidiEditor)
+			pMidiEditor->reset();
+	}
+}
+
+
 // Clip editor update.
 void qtractorMidiClip::updateEditor (void)
 {
 	if (m_pMidiEditorForm == NULL)
 		return;
 
-	qtractorTrack *pTrack = track();
-	if (pTrack == NULL)
-		return;
-
 	qtractorMidiEditor *pMidiEditor = m_pMidiEditorForm->editor();
 	if (pMidiEditor) {
+		pMidiEditor->reset();
 		pMidiEditor->setOffset(clipStart());
 		pMidiEditor->setLength(clipLength());
-		pMidiEditor->setForeground(pTrack->foreground());
-		pMidiEditor->setBackground(pTrack->background());
+		qtractorTrack *pTrack = track();
+		if (pTrack) {
+			pMidiEditor->setForeground(pTrack->foreground());
+			pMidiEditor->setBackground(pTrack->background());
+		}
 		pMidiEditor->updateContents();
 	}
 
 	m_pMidiEditorForm->updateInstrumentNames();
-
 	m_pMidiEditorForm->stabilizeForm();
 }
 

@@ -191,6 +191,7 @@ bool qtractorMidiEditCommand::execute ( bool bRedo )
 		pSeq->setDuration(m_iDuration);
 		m_iDuration = iOldDuration;
 	}
+
 	// Or are we changing something more durable?
 	if (pSeq->duration() != iOldDuration) {
 		pSeq->setTimeLength(pSeq->duration());
@@ -199,7 +200,8 @@ bool qtractorMidiEditCommand::execute ( bool bRedo )
 				m_pMidiClip->clipStart()) + pSeq->duration())
 			- m_pMidiClip->clipStart());
 		m_pMidiClip->updateEditor();
-	}
+	}	// Just reset editor internals...
+	else m_pMidiClip->resetEditor();
 
 	// Renqueue dropped events...
 	if (pSession && pSession->isPlaying())

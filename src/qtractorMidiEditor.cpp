@@ -1362,6 +1362,20 @@ void qtractorMidiEditor::centerContents (void)
 }
 
 
+// Reset event cursors.
+void qtractorMidiEditor::reset (void)
+{
+	// Reset some internal state...
+	if (m_pMidiClip) {
+		qtractorMidiSequence *pSeq = m_pMidiClip->sequence();
+		if (pSeq) {
+			m_cursor.reset(pSeq);
+			m_cursorAt.reset(pSeq);
+		}
+	}
+}
+
+
 // Intra-clip tick/time positioning reset.
 qtractorMidiEvent *qtractorMidiEditor::seekEvent ( unsigned long iTime )
 {
