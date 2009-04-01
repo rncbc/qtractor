@@ -2571,7 +2571,9 @@ bool qtractorMidiEditor::adjustEditCommand (
 								qtractorMidiEditCommand::RemoveEvent))
 							pEditCommand->removeEvent(pPrevEvent);
 					} else {
+						// Partial overlap...
 						if (iTimeEnd < iPrevTimeEnd) {
+							// Short over large...
 							unsigned long iDuration = pPrevEvent->duration();
 							pPrevEvent->setDuration(pEvent->duration());
 							if (!pEditCommand->findEvent(pPrevEvent,
@@ -2590,6 +2592,7 @@ bool qtractorMidiEditor::adjustEditCommand (
 									pEvent, iTime, iDuration);
 							}
 						} else {
+							// Large over short...
 							unsigned long iDuration = pEvent->duration();
 							pSeq->unlinkEvent(pEvent);
 							pEvent->setTime(iPrevTimeEnd);
@@ -2601,6 +2604,8 @@ bool qtractorMidiEditor::adjustEditCommand (
 									pEvent, iTime, iDuration);
 							}
 						}
+						// We've move it ahead...
+						pEvent = pPrevEvent;
 					}					
 				}
 			}
