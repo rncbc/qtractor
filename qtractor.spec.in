@@ -1,6 +1,6 @@
 %define name    @PACKAGE_TARNAME@
 %define version @PACKAGE_VERSION@
-%define release 24
+%define release 25
 %define prefix  @ac_prefix@
 
 Summary:	An Audio/MIDI multi-track sequencer
@@ -60,6 +60,8 @@ specially dedicated to the personal home-studio.
 %{_datadir}/pixmaps/%{name}.png
 
 %changelog
+* Sat Apr 04 2009 Rui Nuno Capela <rncbc@users.sourceforge.net> - 0.4.1
+- Funky Dominatrix release.
 * Fri Mar 13 2009 Rui Nuno Capela <rncbc@users.sourceforge.net> - 0.4.0
 - Foxy Dryad release.
 * Thu Dec 25 2008 Rui Nuno Capela <rncbc@users.sourceforge.net> - 0.3.0

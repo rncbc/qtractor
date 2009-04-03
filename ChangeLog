@@ -3,7 +3,7 @@ Qtractor - An Audio/MIDI multi-track sequencer
 
 ChangeLog
 
-CVS HEAD
+0.4.1  2009-04-04  The Funky Dominatrix
 
 - MIDI editor command item execution order has been fixed,
   correcting the redo/undo adjustment of overlapping note
@@ -24,7 +24,7 @@ CVS HEAD
   program-change events, are now being properly set on MIDI
   track/clip export.
 
-- SSE optimization is back in town after being misteriously
+- SSE optimization is back in town after being mysteriously
   disabled since its dawn :/
 
 - Looping and punch-recording now actively mutual exclusive
@@ -57,7 +57,7 @@ CVS HEAD
   over more than one clip under the same track.
 
 - A floating-rectangle flip that showed while dragging new
-  files beyhond the left of main track view is now gone.
+  files beyond the left of main track view is now gone.
 
 - MIDI note event truncation on both track and clip export
   has been fixed.
