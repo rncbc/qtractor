@@ -3,6 +3,12 @@ Qtractor - An Audio/MIDI multi-track sequencer
 
 ChangeLog
 
+CVS HEAD
+
+- Reset local tempo map cursor on newer MIDI file imports
+  in a tentative to fix incidental but random crashes.
+
+
 0.4.1  2009-04-04  The Funky Dominatrix
 
 - MIDI editor command item execution order has been fixed,

@@ -4608,6 +4608,9 @@ void qtractorMainForm::activateAudioFile ( const QString& sFilename )
 // MIDI file addition slot funtion.
 void qtractorMainForm::addMidiFile ( const QString& sFilename )
 {
+	// Newer MIDI files might have changed the tempo-map...
+	m_pTempoCursor->clear();
+
 	// Add the just dropped MIDI file...
 	if (m_pFiles)
 		m_pFiles->addMidiFile(sFilename);
