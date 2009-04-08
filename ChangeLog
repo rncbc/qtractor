@@ -5,6 +5,9 @@ ChangeLog
 
 CVS HEAD
 
+- MIDI editor snap grid lines get slight different color
+  then regular beat divisions.
+
 - Reset local tempo map cursor on newer MIDI file imports
   in a tentative to fix incidental but random crashes.
 
