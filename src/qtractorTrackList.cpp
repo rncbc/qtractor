@@ -335,7 +335,7 @@ void qtractorTrackList::Item::update ( qtractorTrackList *pTrackList )
 			QString sProgram = s;
 			QString sBank;
 			if (track->midiProgram() >= 0)
-				sProgram = QString::number(track->midiProgram()) + s;
+				sProgram = QString::number(track->midiProgram() + 1) + s;
 			if (track->midiBank() >= 0)
 				sBank = QString::number(track->midiBank());
 			if (pMidiBus) {

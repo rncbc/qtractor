@@ -5,6 +5,10 @@ ChangeLog
 
 CVS HEAD
 
+- MIDI track program number is now listed in 1-128 range,
+  in an attempt to be consistent with corresponding MIDI
+  track dialog drop-down list.
+
 - MIDI editor snap grid lines get slight different color
   then regular beat divisions.
 
