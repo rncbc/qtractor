@@ -332,7 +332,7 @@ void qtractorMidiEditView::updatePixmap ( int cx, int cy )
 			int q = iPixelsPerBeat / iSnapPerBeat;
 			if (q > 4) {  
 				p.setPen(rgbBase.value() < 0x7f
-					? rgbDark.darker(120) : rgbLight.lighter(120));
+					? rgbDark.darker(105) : rgbLight.lighter(120));
 				for (int i = 1; i < iSnapPerBeat; ++i) {
 					x = pTimeScale->pixelSnap(x + dx + q) - dx - 1;
 					p.drawLine(x, 0, x, ch);

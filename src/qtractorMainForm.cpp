@@ -132,21 +132,22 @@ static const char *s_pszTemplateExt  = "qtt";
 //-------------------------------------------------------------------------
 // qtractorTempoCursor -- Custom session tempo helper class
 
-class qtractorTempoCursor : public qtractorTimeScale::Cursor
+class qtractorTempoCursor
 {
 public:
 
 	// Constructor.
-	qtractorTempoCursor(qtractorTimeScale *pTimeScale)
-		: qtractorTimeScale::Cursor(pTimeScale), m_pNode(NULL) {}
+	qtractorTempoCursor() : m_pNode(NULL) {}
 
 	// Reset method.
-	void clear() { reset(); m_pNode = NULL; }
+	void clear() { m_pNode = NULL; }
 
 	// Predicate method.
-	qtractorTimeScale::Node *seek(unsigned long iFrame)
+	qtractorTimeScale::Node *seek(
+		qtractorSession *pSession, unsigned long iFrame)
 	{
-		qtractorTimeScale::Node *pNode = seekFrame(iFrame);
+		qtractorTimeScale::Cursor& cursor = pSession->timeScale()->cursor();
+		qtractorTimeScale::Node *pNode = cursor.seekFrame(iFrame);
 		return (m_pNode == pNode ? NULL : m_pNode = pNode);
 	}
 
@@ -179,7 +180,7 @@ qtractorMainForm::qtractorMainForm (
 
 	// FIXME: This gotta go, somwhere in time...
 	m_pSession = qtractorSession::getInstance();
-	m_pTempoCursor = new qtractorTempoCursor(m_pSession->timeScale());
+	m_pTempoCursor = new qtractorTempoCursor();
 
 	// All child forms are to be created later, not earlier than setup.
 	m_pMessages    = NULL;
@@ -1683,7 +1684,6 @@ bool qtractorMainForm::closeSession (void)
 		// Close session engines.
 		m_pSession->close();
 		m_pSession->clear();
-		m_pTempoCursor->clear();
 		// And last but not least.
 		m_pConnections->clear();
 		m_pTracks->clear();
@@ -3624,7 +3624,7 @@ void qtractorMainForm::updateTransportTime ( unsigned long iPlayHead )
 	m_pThumbView->updatePlayHead(iPlayHead);
 
 	// Tricky stuff: node's non-null iif tempo changes...
-	qtractorTimeScale::Node *pNode = m_pTempoCursor->seek(iPlayHead);
+	qtractorTimeScale::Node *pNode = m_pTempoCursor->seek(m_pSession, iPlayHead);
 	if (pNode) {
 		m_pTempoSpinBox->setTempo(pNode->tempoEx(), false);
 		m_pTempoSpinBox->setBeatsPerBar(pNode->beatsPerBar, false);
@@ -3929,7 +3929,6 @@ void qtractorMainForm::updateSession (void)
 #endif
 
 	// Initialize toolbar widgets...
-	m_pTempoCursor->clear();
 //	m_pTempoSpinBox->setTempo(m_pSession->tempo(), false);
 //	m_pTempoSpinBox->setBeatsPerBar(m_pSession->beatsPerBar(), false);
 //	m_pTempoSpinBox->setBeatDivisor(m_pSession->beatDivisor(), false);
@@ -4608,9 +4607,6 @@ void qtractorMainForm::activateAudioFile ( const QString& sFilename )
 // MIDI file addition slot funtion.
 void qtractorMainForm::addMidiFile ( const QString& sFilename )
 {
-	// Newer MIDI files might have changed the tempo-map...
-	m_pTempoCursor->clear();
-
 	// Add the just dropped MIDI file...
 	if (m_pFiles)
 		m_pFiles->addMidiFile(sFilename);
@@ -4770,7 +4766,6 @@ void qtractorMainForm::contentsChanged (void)
 
 	// HACK: Force play-head position update...
 	// m_iPlayHead = 0;
-	m_pTempoCursor->clear();
 
 	// Stabilize session toolbar widgets...
 //	m_pTempoSpinBox->setTempo(m_pSession->tempo(), false);
