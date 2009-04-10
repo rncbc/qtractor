@@ -2841,7 +2841,8 @@ void qtractorTrackView::moveClipSelect ( qtractorTrack *pTrack )
 		= new qtractorClipCommand(tr("move clip"));
 
 	// We can only move clips between tracks of the same type...
-	int iTrackClip = 0;
+	int  iTrackClip = 0;
+	long iClipDelta = 0;
 	bool bAddTrack = (pTrack == NULL);
 	qtractorTrack *pSingleTrack = m_pClipSelect->singleTrack();
 	if (pSingleTrack) {
@@ -2872,7 +2873,6 @@ void qtractorTrackView::moveClipSelect ( qtractorTrack *pTrack )
 		qtractorClip *pClip = pClipItem->clip;
 		if (pSingleTrack == NULL)
 			pTrack = pClip->track();
-		int x = (pClipItem->rectClip.x() + m_iDraggingX);
 		// Clip parameters.
 		unsigned long iClipStart    = pClip->clipStart();
 		unsigned long iClipOffset   = pClip->clipOffset();
@@ -2905,9 +2905,23 @@ void qtractorTrackView::moveClipSelect ( qtractorTrack *pTrack )
 			pClipCommand->addClip(pClipRight, pClipRight->track());
 			// Done, right clip.
 		}
+		// Convert to precise frame positioning,
+		// but only the first clip gets snapped...
+		iClipStart = iSelectStart;
+		if (iTrackClip == 0) {
+			int x = (pClipItem->rectClip.x() + m_iDraggingX);
+			unsigned long iFrameStart = pSession->frameSnap(
+				pSession->frameFromPixel(x > 0 ? x : 0));
+			iClipDelta = long(iFrameStart) - long(iClipStart);
+			iClipStart = iFrameStart;
+		} else if (long(iClipStart) + iClipDelta > 0) {
+			iClipStart += iClipDelta;
+		} else {
+			iClipStart = 0;
+		}
 		// -- Moved clip...
 		pClipCommand->moveClip(pClip, pTrack,
-			pSession->frameSnap(pSession->frameFromPixel(x > 0 ? x : 0)),
+			iClipStart,
 			iClipOffset + iSelectOffset,
 			iSelectLength);
 		// If track's new it will need a name...
@@ -2977,16 +2991,20 @@ void qtractorTrackView::pasteClipSelect ( qtractorTrack *pTrack )
 			qtractorClip *pClip = pClipItem->clip;
 			if (pSingleTrack == NULL)
 				pTrack = pClip->track();
-			int x = (pClipItem->rect.x() + m_iDraggingX);
 			// Convert to precise frame positioning,
 			// but only the first clip gets snapped...
-			unsigned long iClipStart = pSession->frameFromPixel(x > 0 ? x : 0);
+			unsigned long iClipStart = pClipItem->clipStart;
 			if (iTrackClip == 0) {
-				unsigned long iFrameStart = pSession->frameSnap(iClipStart);
+				int x = (pClipItem->rect.x() + m_iDraggingX);
+				unsigned long iFrameStart = pSession->frameSnap(
+					pSession->frameFromPixel(x > 0 ? x : 0));
 				iClipDelta = long(iFrameStart) - long(iClipStart);
 				iClipStart = iFrameStart;
-			} else if (long(iClipStart) + iClipDelta > 0)
+			} else if (long(iClipStart) + iClipDelta > 0) {
 				iClipStart += iClipDelta;
+			} else {
+				iClipStart = 0;
+			}
 			// Now, its imperative to make a proper copy of those clips...
 			qtractorClip *pNewClip = NULL;
 			switch (pTrack->trackType()) {

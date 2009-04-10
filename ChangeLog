@@ -5,6 +5,10 @@ ChangeLog
 
 CVS HEAD
 
+- Improved, or better said, fixed (again) the precision of
+  multi-clip final positioning as result of drag/move and
+  paste operations in main track view (as in bug #2741611).
+
 - MIDI track program number is now listed in 1-128 range,
   in an attempt to be consistent with corresponding MIDI
   track dialog drop-down list.
@@ -394,7 +398,7 @@ CVS HEAD
 
 - The floating selection, as shown for a clipboard pasting operation,
   has been corrected regarding time scale (horizontal zoom) changes,
-  while in the main track-view. Also fixed final position snapping 
+  while in the main track-view. Also fixed final position snapping
   precision (spotted in bug #2055846).
 
 - Current tempo and snap-per-beat setting now survive session cycling.
