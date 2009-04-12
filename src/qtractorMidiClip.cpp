@@ -506,9 +506,10 @@ void qtractorMidiClip::draw ( QPainter *pPainter, const QRect& clipRect,
 	pPainter->setPen(fg);
 	pPainter->setBrush(fg.lighter());
 
-	int h1 = clipRect.height() - 4;
+	bool bClipRecord = (track()->clipRecord() == this);
+	int h1 = clipRect.height() - 3;
 	int h  = h1 / iNoteSpan;
-	if (h < 4) h = 4;
+	if (h < 3) h = 3;
 
 	qtractorMidiEvent *pEvent
 		= m_drawCursor.reset(m_pSeq, iTimeStart > t0 ? iTimeStart - t0 : 0);
@@ -522,11 +523,11 @@ void qtractorMidiClip::draw ( QPainter *pPainter, const QRect& clipRect,
 			int x = clipRect.x() + pNode->pixelFromTick(t1) - cx;
 			int y = clipRect.bottom()
 				- (h1 * (pEvent->note() - m_pSeq->noteMin() + 1)) / iNoteSpan;
-			int w = (pEvent->duration() > 0
+			int w = (pEvent->duration() > 0 || !bClipRecord
 				? clipRect.x() + pNode->pixelFromTick(t2) - cx
 				: clipRect.right()) - x; // Pending note-off? (while recording)
-			if (h > 4) {
-				if (w < 5) w = 5;
+			if (h > 4 && w > 4) {
+			//	if (w < 5) w = 5;
 				pPainter->fillRect(x, y, w, h - 1, fg);
 				pPainter->fillRect(x + 1, y + 1, w - 4, h - 4, fg.lighter());
 			} else {

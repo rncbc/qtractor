@@ -354,9 +354,10 @@ void qtractorMidiEditView::updatePixmap ( int cx, int cy )
 	if (pSeq == NULL)
 		return;
 
-	pNode = cursor.seekPixel(dx);
-	unsigned long iTickStart = pNode->tickFromPixel(dx);
-	unsigned long iTickEnd   = pTimeScale->tickFromPixel(dx + w);
+	pNode = cursor.seekPixel(x = dx);
+	unsigned long iTickStart = pNode->tickFromPixel(x);
+	pNode = cursor.seekPixel(x += w);
+	unsigned long iTickEnd = pNode->tickFromPixel(x);
 
 //	p.setPen(rgbFore);
 //	p.setBrush(rgbBack);
