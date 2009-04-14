@@ -526,7 +526,7 @@ void qtractorMidiClip::draw ( QPainter *pPainter, const QRect& clipRect,
 			int w = (pEvent->duration() > 0 || !bClipRecord
 				? clipRect.x() + pNode->pixelFromTick(t2) - cx
 				: clipRect.right()) - x; // Pending note-off? (while recording)
-			if (h > 4 && w > 4) {
+			if (h > 3 && w > 3) {
 			//	if (w < 5) w = 5;
 				pPainter->fillRect(x, y, w, h - 1, fg);
 				pPainter->fillRect(x + 1, y + 1, w - 4, h - 4, fg.lighter());

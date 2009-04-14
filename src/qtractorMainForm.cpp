@@ -1684,6 +1684,7 @@ bool qtractorMainForm::closeSession (void)
 		// Close session engines.
 		m_pSession->close();
 		m_pSession->clear();
+		m_pTempoCursor->clear();
 		// And last but not least.
 		m_pConnections->clear();
 		m_pTracks->clear();
@@ -4390,7 +4391,7 @@ void qtractorMainForm::timerSlot (void)
 				(state == JackTransportRolling && !bPlaying)) {
 				if (!bPlaying)
 					m_pSession->seek(pos.frame, true);
-				transportPlay();	// Toggle playing!
+				transportPlay(); // Toggle playing!
 				if (bPlaying)
 					m_pSession->seek(pos.frame, true);
 			} else {
@@ -4430,7 +4431,7 @@ void qtractorMainForm::timerSlot (void)
 						m_pSession->updateSessionLength(m_iPlayHead);
 						m_statusItems[StatusTime]->setText(
 							m_pSession->timeScale()->textFromFrame(
-								m_pSession->sessionLength(), true));
+								0, true, m_pSession->sessionLength()));
 					}
 				}
 				else
@@ -4766,6 +4767,7 @@ void qtractorMainForm::contentsChanged (void)
 
 	// HACK: Force play-head position update...
 	// m_iPlayHead = 0;
+	m_pTempoCursor->clear();
 
 	// Stabilize session toolbar widgets...
 //	m_pTempoSpinBox->setTempo(m_pSession->tempo(), false);
@@ -4792,7 +4794,7 @@ void qtractorMainForm::transportTempoChanged (
 
 	// Find appropriate node...
 	qtractorTimeScale *pTimeScale = m_pSession->timeScale();
-	qtractorTimeScale::Cursor cursor(pTimeScale);
+	qtractorTimeScale::Cursor& cursor = pTimeScale->cursor();
 	qtractorTimeScale::Node *pNode = cursor.seekFrame(m_pSession->playHead());
 
 	// Now, express the change as a undoable command...
