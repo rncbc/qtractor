@@ -2542,6 +2542,13 @@ bool qtractorTrackView::isClipSelected (void) const
 }
 
 
+// Whether there's a single track selection.
+qtractorTrack *qtractorTrackView::singleTrackSelected (void)
+{
+	return m_pClipSelect->singleTrack();
+}
+
+
 // Whether there's any clip on clipboard. (static)
 bool qtractorTrackView::isClipboard (void)
 {

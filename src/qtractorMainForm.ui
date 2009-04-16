@@ -343,6 +343,8 @@
      <addaction name="editClipEditAction" />
      <addaction name="separator" />
      <addaction name="editClipSplitAction" />
+     <addaction name="editClipMergeAction" />
+     <addaction name="separator" />
      <addaction name="editClipNormalizeAction" />
      <addaction name="editClipQuantizeAction" />
      <addaction name="separator" />
@@ -819,9 +821,23 @@
     <string>Split current clip at playhead</string>
    </property>
   </action>
+  <action name="editClipMergeAction" >
+   <property name="text" >
+    <string>&amp;Merge...</string>
+   </property>
+   <property name="iconText" >
+    <string>Merge Clips</string>
+   </property>
+   <property name="toolTip" >
+    <string>Merge clips</string>
+   </property>
+   <property name="statusTip" >
+    <string>Merge selected clips</string>
+   </property>
+  </action>
   <action name="editClipNormalizeAction" >
    <property name="text" >
-    <string>Nor&amp;malize</string>
+	   <string>N&amp;ormalize</string>
    </property>
    <property name="iconText" >
     <string>Normalize Clip</string>

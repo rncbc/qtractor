@@ -1018,10 +1018,213 @@ bool qtractorTracks::exportClip ( qtractorClip *pClip )
 }
 
 
+// Merge selected(MIDI) clips.
+bool qtractorTracks::mergeClips (void)
+{
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return false;
+
+	// Multiple clip selection...
+	qtractorClipSelect *pClipSelect = m_pTrackView->clipSelect();
+	if (pClipSelect->items().count() < 2)
+		return false;
+
+	// Should be one single MIDI track...
+	qtractorTrack *pTrack = pClipSelect->singleTrack();
+	if (pTrack == NULL)
+		return false;
+	if (pTrack->trackType() != qtractorTrack::Midi)
+		return false;
+
+	// Merge CLIp filename requester...
+	const QString  sExt("mid");
+	const QString& sTitle  = tr("Merge MIDI Clip") + " - " QTRACTOR_TITLE;
+	const QString& sFilter = tr("MIDI files (*.%1 *.smf *.midi)").arg(sExt); 
+#if QT_VERSION < 0x040400
+	// Ask for the filename to save...
+	QString sFilename = QFileDialog::getSaveFileName(this, sTitle,
+		pSession->createFilePath(pTrack->trackName(), 0, sExt), sFilter);
+#else
+	// Construct save-file dialog...
+	QFileDialog fileDialog(this, sTitle,
+		pSession->createFilePath(pTrack->trackName(), 0, sExt), sFilter);
+	// Set proper open-file modes...
+	fileDialog.setAcceptMode(QFileDialog::AcceptSave);
+	fileDialog.setFileMode(QFileDialog::AnyFile);
+	fileDialog.setDefaultSuffix(sExt);
+	// Stuff sidebar...
+	qtractorOptions *pOptions = qtractorOptions::getInstance();
+	if (pOptions) {
+		QList<QUrl> urls(fileDialog.sidebarUrls());
+		urls.append(QUrl::fromLocalFile(pOptions->sSessionDir));
+		urls.append(QUrl::fromLocalFile(pOptions->sMidiDir));
+		fileDialog.setSidebarUrls(urls);
+	}
+	// Show dialog...
+	if (!fileDialog.exec())
+		return false;
+	QString sFilename = fileDialog.selectedFiles().first();
+#endif
+
+	// Should take sometime...
+	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+
+	// Make it as an undoable command...
+	qtractorClipCommand *pClipCommand
+		= new qtractorClipCommand(tr("clip merge"));
+
+	// Create SMF...
+	qtractorMidiFile file;
+	if (!file.open(sFilename, qtractorMidiFile::Write)) {
+		QApplication::restoreOverrideCursor();
+		return false;
+	}
+
+	// Write SMF header...
+	unsigned short iTicksPerBeat = pSession->ticksPerBeat();
+	unsigned short iFormat = qtractorMidiClip::defaultFormat();
+	unsigned short iTracks = (iFormat == 0 ? 1 : 2);
+	if (!file.writeHeader(iFormat, iTracks, iTicksPerBeat)) {
+		QApplication::restoreOverrideCursor();
+		return false;
+	}
+
+	// Multiple clip selection...
+	QListIterator<qtractorClipSelect::Item *> iter(pClipSelect->items());
+
+	// Multi-selection extents (in frames)...
+	unsigned long iSelectStart = pSession->sessionLength();
+	unsigned long iSelectEnd = 0;
+	while (iter.hasNext()) {
+		qtractorClip *pClip = iter.next()->clip;
+		if (iSelectStart > pClip->clipSelectStart())
+			iSelectStart = pClip->clipSelectStart();
+		if (iSelectEnd < pClip->clipSelectEnd())
+			iSelectEnd = pClip->clipSelectEnd();
+	}
+
+	// Multi-selection extents (in ticks)...
+	unsigned long iTimeStart = pSession->tickFromFrame(iSelectStart);
+	unsigned long iTimeEnd   = pSession->tickFromFrame(iSelectEnd);
+
+	// Set proper tempo map...
+	if (file.tempoMap()) {
+		file.tempoMap()->fromTimeScale(
+			pSession->timeScale(),
+			pSession->tickFromFrame(iTimeStart));
+	}
+
+	// Setup track (SMF format 1).
+	if (iFormat == 1)
+		file.writeTrack(NULL);
+
+	// Setup merge sequence...
+	qtractorMidiSequence seq(pTrack->trackName(), 1, iTicksPerBeat);
+	seq.setChannel(pTrack->midiChannel());
+	seq.setBank(pTrack->midiBank());
+	seq.setProgram(pTrack->midiProgram());
+
+	// The merge...
+	iter.toFront();
+	while (iter.hasNext()) {
+		qtractorClip *pClip = iter.next()->clip;
+		// Clip parameters.
+		unsigned long iClipStart  = pClip->clipStart();
+		unsigned long iClipOffset = pClip->clipOffset();
+		unsigned long iClipLength = pClip->clipLength();
+		unsigned long iClipEnd    = iClipStart + iClipLength;
+		// Determine and keep clip regions...
+		if (iSelectStart > iClipStart) {
+			// -- Left clip...
+			pClipCommand->resizeClip(pClip,
+				iClipStart,
+				iClipOffset,
+				iSelectStart - iClipStart);
+			// Done, left clip.
+		}
+		else
+		if (iSelectEnd < iClipEnd) {
+			// -- Right clip...
+			pClipCommand->resizeClip(pClip,
+				iSelectEnd,
+				iClipOffset + (iSelectEnd - iClipStart),
+				iClipEnd - iSelectEnd);
+			// Done, right clip.
+		} else {
+			// -- Inner clip...
+			pClipCommand->removeClip(pClip);
+			// Done, inner clip.
+		}
+		// Do the MIDI merge, itself...
+		qtractorMidiClip *pMidiClip
+			= static_cast<qtractorMidiClip *> (pClip);
+		if (pMidiClip) {
+			unsigned long iTimeClip
+				= pSession->tickFromFrame(pClip->clipStart());
+			unsigned long iTimeOffset = iTimeClip - iTimeStart;
+			// For each event...
+			qtractorMidiEvent *pEvent
+				= pMidiClip->sequence()->events().first();
+			while (pEvent && iTimeClip + pEvent->time() < iTimeStart)
+				pEvent = pEvent->next();
+			while (pEvent && iTimeClip + pEvent->time() < iTimeEnd) {
+				qtractorMidiEvent *pNewEvent
+					= new qtractorMidiEvent(*pEvent);
+				pNewEvent->setTime(iTimeOffset + pEvent->time());
+				if (pNewEvent->type() == qtractorMidiEvent::NOTEON) {
+					unsigned long iTimeEvent = iTimeClip + pEvent->time();
+					float fGain = pMidiClip->gain(
+						pSession->frameFromTick(iTimeEvent)
+						- pClip->clipStart());
+					pNewEvent->setVelocity((unsigned char)
+						(fGain * float(pEvent->velocity())) & 0x7f);
+					if (iTimeEvent + pEvent->duration() > iTimeEnd)
+						pNewEvent->setDuration(iTimeEnd - iTimeEvent);
+				}
+				seq.insertEvent(pNewEvent);
+				pEvent = pEvent->next();
+			}
+		}
+	}
+
+	// Write the track and close SMF...
+	file.writeTrack(&seq);
+	file.close();
+
+	// Set the resulting clip command...
+	qtractorMidiClip *pNewClip = new qtractorMidiClip(pTrack);
+	pNewClip->setClipStart(iSelectStart);
+	pNewClip->setClipLength(iSelectEnd - iSelectStart);
+	pNewClip->setFilename(sFilename);
+	pNewClip->setTrackChannel(1);
+	pClipCommand->addClip(pNewClip, pTrack);
+
+	// Almost done with it...
+	QApplication::restoreOverrideCursor();
+
+	// Check if valid...
+	if (pClipCommand->isEmpty()) {
+		delete pClipCommand;
+		return false;
+	}
+
+	// That's it...
+	return pSession->execute(pClipCommand);
+}
+
+
 // Whether there's any clip currently selected.
 bool qtractorTracks::isClipSelected (void) const
 {
 	return m_pTrackView->isClipSelected();
+}
+
+
+// Whether there's a single track selection.
+qtractorTrack *qtractorTracks::singleTrackSelected (void)
+{
+	return m_pTrackView->singleTrackSelected();
 }
 
 

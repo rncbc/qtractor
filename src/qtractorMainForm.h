@@ -129,6 +129,7 @@ public slots:
 	void editClipNew();
 	void editClipEdit();
 	void editClipSplit();
+	void editClipMerge();
 	void editClipNormalize();
 	void editClipQuantize();
 	void editClipExport();

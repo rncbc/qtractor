@@ -87,9 +87,13 @@ public:
 	bool normalizeClip(qtractorClip *pClip = NULL);
 	bool quantizeClip(qtractorClip *pClip = NULL);
 	bool exportClip(qtractorClip *pClip = NULL);
+	bool mergeClips();
 
 	// Whether there's any clip currently selected.
 	bool isClipSelected() const;
+
+	// Whether there's a single track selection.
+	qtractorTrack *singleTrackSelected();
 
 	// Clipboard methods.
 	void cutClipboard();

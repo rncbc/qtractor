@@ -117,6 +117,9 @@ public:
 	// Whether there's any clip currently selected.
 	bool isClipSelected() const;
 
+	// Whether there's a single track selection.
+	qtractorTrack *singleTrackSelected();
+
 	// Whether there's any clip on clipboard.
 	static bool isClipboard();
 

@@ -515,6 +515,9 @@ qtractorMainForm::qtractorMainForm (
 	QObject::connect(m_ui.editClipSplitAction,
 		SIGNAL(triggered(bool)),
 		SLOT(editClipSplit()));
+	QObject::connect(m_ui.editClipMergeAction,
+		SIGNAL(triggered(bool)),
+		SLOT(editClipMerge()));
 	QObject::connect(m_ui.editClipNormalizeAction,
 		SIGNAL(triggered(bool)),
 		SLOT(editClipNormalize()));
@@ -2151,6 +2154,19 @@ void qtractorMainForm::editClipSplit (void)
 }
 
 
+// Merge selected (MIDI) clips.
+void qtractorMainForm::editClipMerge (void)
+{
+#ifdef CONFIG_DEBUG
+	appendMessages("qtractorMainForm::editClipMerge()");
+#endif
+
+	// Merge clip selection, if any...
+	if (m_pTracks)
+		m_pTracks->mergeClips();
+}
+
+
 // Normalize current clip.
 void qtractorMainForm::editClipNormalize (void)
 {
@@ -3697,6 +3713,9 @@ void qtractorMainForm::stabilizeForm (void)
 	m_ui.editClipSplitAction->setEnabled(pClip != NULL
 		&& iPlayHead > pClip->clipStart()
 		&& iPlayHead < pClip->clipStart() + pClip->clipLength());
+	m_ui.editClipMergeAction->setEnabled((pClip != NULL || bSelected)
+		&& pTrack && pTrack->trackType() == qtractorTrack::Midi
+		&& m_pTracks->singleTrackSelected() == pTrack);
 	m_ui.editClipNormalizeAction->setEnabled(pClip != NULL || bSelected);
 	m_ui.editClipQuantizeAction->setEnabled((pClip != NULL || bSelected)
 		&& pTrack && pTrack->trackType() == qtractorTrack::Midi
