@@ -1059,7 +1059,6 @@ struct audioClipMergeItem
 		buff->setTimeStretch(clip->timeStretch());
 		buff->setPitchShift(clip->pitchShift());
 		buff->open(clip->filename());
-		buff->syncExport();
 	}
 
 	// Destructor.
@@ -1143,6 +1142,14 @@ bool qtractorTracks::mergeAudioClips (void)
 		return false;
 	}
 
+	// Start logging...
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm) {
+		pMainForm->appendMessages(
+			tr("Audio clip merge: \"%1\" started...")
+			.arg(sFilename));
+	}
+
 	// Make it as an undoable command...
 	qtractorClipCommand *pClipCommand
 		= new qtractorClipCommand(tr("clip merge"));
@@ -1164,8 +1171,8 @@ bool qtractorTracks::mergeAudioClips (void)
 			pClip, pAudioBus->channels(), pSession->sampleRate()));
 	}
 
+	// A progress indication might be friendly...
 	QProgressBar *pProgressBar = NULL;
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm)
 		pProgressBar = pMainForm->progressBar();
 	if (pProgressBar) {
@@ -1182,8 +1189,24 @@ bool qtractorTracks::mergeAudioClips (void)
 	for (i = 0; i < iChannels; ++i)
 		ppFrames[i] = new float[iBufferSize];
 
-	// Merge audio clips...
+	// Setup clip buffers...
 	QListIterator<audioClipMergeItem *> it(items);
+	while (it.hasNext()) {
+		audioClipMergeItem  *pItem = it.next();
+		qtractorAudioClip   *pClip = pItem->clip;
+		qtractorAudioBuffer *pBuff = pItem->buff;
+		// Almost similar to qtractorAudioClip::process(0)...
+		unsigned long iOffset = 0;
+		unsigned long iClipStart = pClip->clipStart();
+		unsigned long iClipEnd   = iClipStart + pClip->clipLength();
+		if (iSelectStart > iClipStart && iSelectStart < iClipEnd)
+			iOffset = iSelectStart - iClipStart;
+		// Make it initially filled...
+		pBuff->seek(iOffset);
+		pBuff->syncExport();
+	}
+
+	// Loop-merge audio clips...
 	unsigned long iFrameStart = iSelectStart;
 	unsigned long iFrameEnd = iFrameStart + iBufferSize;
 	int count = 0;
@@ -1209,6 +1232,7 @@ bool qtractorTracks::mergeAudioClips (void)
 						iChannels, iClipStart - iFrameStart,
 						pClip->gain(iOffset));
 				}
+				else pBuff->syncExport();
 			}
 			else
 			if (iFrameStart >= iClipStart && iFrameStart < iClipEnd) {
@@ -1217,9 +1241,9 @@ bool qtractorTracks::mergeAudioClips (void)
 					pBuff->readMix(ppFrames, iFrameEnd - iFrameStart,
 						iChannels, 0, pClip->gain(iOffset));
 				}
+				else pBuff->syncExport();
 			}
-			// Enforce thread sync...
-			pBuff->syncExport();
+			else pBuff->syncExport();
 		}
 		// Actually write to merge audio file...
 		pAudioFile->write(ppFrames, iBufferSize);
@@ -1246,6 +1270,14 @@ bool qtractorTracks::mergeAudioClips (void)
 
 	if (pProgressBar)
 		pProgressBar->hide();
+
+	// Stop logging...
+	if (pMainForm) {
+		pMainForm->addAudioFile(sFilename);
+		pMainForm->appendMessages(
+			tr("Audio clip merge: \"%1\" complete.")
+			.arg(sFilename));
+	}
 
 	// The resulting merge comands...
 	iter.toFront();
@@ -1369,6 +1401,14 @@ bool qtractorTracks::mergeMidiClips (void)
 		return false;
 	}
 
+	// Start logging...
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm) {
+		pMainForm->appendMessages(
+			tr("MIDI clip merge: \"%1\" started...")
+			.arg(sFilename));
+	}
+
 	// Make it as an undoable command...
 	qtractorClipCommand *pClipCommand
 		= new qtractorClipCommand(tr("clip merge"));
@@ -1474,6 +1514,14 @@ bool qtractorTracks::mergeMidiClips (void)
 	// Write the track and close SMF...
 	file.writeTrack(&seq);
 	file.close();
+
+	// Stop logging...
+	if (pMainForm) {
+		pMainForm->addMidiFile(sFilename);
+		pMainForm->appendMessages(
+			tr("MIDI clip merge: \"%1\" complete.")
+			.arg(sFilename));
+	}
 
 	// Set the resulting clip command...
 	qtractorMidiClip *pNewClip = new qtractorMidiClip(pTrack);
