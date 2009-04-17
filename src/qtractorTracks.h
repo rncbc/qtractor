@@ -150,6 +150,10 @@ protected:
 	bool quantizeClipCommand(
 		qtractorMidiClipCommand *pMidiClipCommand, qtractorClip *pClip);
 
+	// Specialized clip-merge methods.
+	bool mergeAudioClips();
+	bool mergeMidiClips();
+
 protected slots:
 
 	// Zoom view slots.

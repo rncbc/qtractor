@@ -33,6 +33,7 @@
 #include "qtractorMidiEditCommand.h"
 
 #include "qtractorAudioEngine.h"
+#include "qtractorAudioBuffer.h"
 #include "qtractorAudioClip.h"
 
 #include "qtractorMidiEngine.h"
@@ -780,7 +781,7 @@ bool qtractorTracks::quantizeClipCommand (
 }
 
 
-// Audio clip export calback.
+// Audio clip export callback.
 struct audioClipExportData
 {	// Ctor.
 	audioClipExportData(qtractorAudioFile *pFile)
@@ -1021,23 +1022,301 @@ bool qtractorTracks::exportClip ( qtractorClip *pClip )
 // Merge selected(MIDI) clips.
 bool qtractorTracks::mergeClips (void)
 {
-	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
-		return false;
-
-	// Multiple clip selection...
+	// Multiple clip selection:
+	// - make sure we have at least 2 clips to merge...
 	qtractorClipSelect *pClipSelect = m_pTrackView->clipSelect();
 	if (pClipSelect->items().count() < 2)
 		return false;
 
+	// Should be one single track...
+	qtractorTrack *pTrack = pClipSelect->singleTrack();
+	if (pTrack == NULL)
+		return false;
+
+	// Dispatch to specialized method...
+	if (pTrack->trackType() == qtractorTrack::Audio)
+		return mergeAudioClips();
+	else
+	if (pTrack->trackType() == qtractorTrack::Midi)
+		return mergeMidiClips();
+
+	return false;
+}
+
+
+// Audio clip buffer merge item.
+struct audioClipMergeItem
+{
+	// Constructor.
+	audioClipMergeItem(qtractorClip *pClip,
+		unsigned short iChannels,
+		unsigned int iSampleRate)
+		: clip(static_cast<qtractorAudioClip *> (pClip))
+	{
+		buff = new qtractorAudioBuffer(iChannels, iSampleRate);
+		buff->setOffset(clip->clipOffset());
+		buff->setLength(clip->clipLength());
+		buff->setTimeStretch(clip->timeStretch());
+		buff->setPitchShift(clip->pitchShift());
+		buff->open(clip->filename());
+		buff->syncExport();
+	}
+
+	// Destructor.
+	~audioClipMergeItem()
+		{ if (buff) delete buff; }
+
+	// Members.
+	qtractorAudioClip   *clip;
+	qtractorAudioBuffer *buff;
+};
+
+
+// Merge selected(audio) clips.
+bool qtractorTracks::mergeAudioClips (void)
+{
 	// Should be one single MIDI track...
+	qtractorClipSelect *pClipSelect = m_pTrackView->clipSelect();
+	qtractorTrack *pTrack = pClipSelect->singleTrack();
+	if (pTrack == NULL)
+		return false;
+	if (pTrack->trackType() != qtractorTrack::Audio)
+		return false;
+
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return false;
+
+	qtractorAudioBus *pAudioBus
+		= static_cast<qtractorAudioBus *> (pTrack->outputBus());
+	if (pAudioBus == NULL)
+		return false;
+
+	const QString& sExt = qtractorAudioFileFactory::defaultExt();
+	const QString& sTitle  = tr("Merge Audio Clip") + " - " QTRACTOR_TITLE;
+	const QString& sFilter = tr("Audio files (*.%1)").arg(sExt); 
+#if QT_VERSION < 0x040400
+	// Ask for the filename to save...
+	QString sFilename = QFileDialog::getSaveFileName(this, sTitle,
+		pSession->createFilePath(pTrack->trackName(), 0, sExt), sFilter);
+#else
+	// Construct save-file dialog...
+	QFileDialog fileDialog(this, sTitle,
+		pSession->createFilePath(pTrack->trackName(), 0, sExt), sFilter);
+	// Set proper open-file modes...
+	fileDialog.setAcceptMode(QFileDialog::AcceptSave);
+	fileDialog.setFileMode(QFileDialog::AnyFile);
+	fileDialog.setDefaultSuffix(sExt);
+	// Stuff sidebar...
+	qtractorOptions *pOptions = qtractorOptions::getInstance();
+	if (pOptions) {
+		QList<QUrl> urls(fileDialog.sidebarUrls());
+		urls.append(QUrl::fromLocalFile(pOptions->sSessionDir));
+		urls.append(QUrl::fromLocalFile(pOptions->sAudioDir));
+		fileDialog.setSidebarUrls(urls);
+	}
+	// Show dialog...
+	if (!fileDialog.exec())
+		return false;
+	QString sFilename = fileDialog.selectedFiles().first();
+#endif
+	if (sFilename.isEmpty())
+		return false;
+	if (QFileInfo(sFilename).suffix() != sExt)
+		sFilename += '.' + sExt;
+
+	// Should take sometime...
+	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+
+	qtractorAudioFile *pAudioFile
+		= qtractorAudioFileFactory::createAudioFile(sFilename,
+			pAudioBus->channels(), pSession->sampleRate());
+	if (pAudioFile == NULL) {
+		QApplication::restoreOverrideCursor();
+		return false;
+	}
+
+	// Open the file for writing...
+	if (!pAudioFile->open(sFilename, qtractorAudioFile::Write)) {
+		QApplication::restoreOverrideCursor();
+		delete pAudioFile;
+		return false;
+	}
+
+	// Make it as an undoable command...
+	qtractorClipCommand *pClipCommand
+		= new qtractorClipCommand(tr("clip merge"));
+
+	// Multiple clip selection...
+	QListIterator<qtractorClipSelect::Item *> iter(pClipSelect->items());
+
+	// Multi-selection extents (in frames)...
+	QList<audioClipMergeItem *> items;
+	unsigned long iSelectStart = pSession->sessionLength();
+	unsigned long iSelectEnd = 0;
+	while (iter.hasNext()) {
+		qtractorClip *pClip = iter.next()->clip;
+		if (iSelectStart > pClip->clipSelectStart())
+			iSelectStart = pClip->clipSelectStart();
+		if (iSelectEnd < pClip->clipSelectEnd())
+			iSelectEnd = pClip->clipSelectEnd();
+		items.append(new audioClipMergeItem(
+			pClip, pAudioBus->channels(), pSession->sampleRate()));
+	}
+
+	QProgressBar *pProgressBar = NULL;
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm)
+		pProgressBar = pMainForm->progressBar();
+	if (pProgressBar) {
+		pProgressBar->setRange(0, (iSelectEnd - iSelectStart) / 100);
+		pProgressBar->reset();
+		pProgressBar->show();
+	}
+
+	// Allocate merge audio scratch buffer...
+	unsigned int iBufferSize = pSession->audioEngine()->bufferSize();
+	unsigned short iChannels = pAudioBus-> channels();
+	unsigned short i;
+	float **ppFrames = new float * [iChannels];
+	for (i = 0; i < iChannels; ++i)
+		ppFrames[i] = new float[iBufferSize];
+
+	// Merge audio clips...
+	QListIterator<audioClipMergeItem *> it(items);
+	unsigned long iFrameStart = iSelectStart;
+	unsigned long iFrameEnd = iFrameStart + iBufferSize;
+	int count = 0;
+
+	// Loop until EOF...
+	while (iFrameEnd < iSelectEnd) {
+		// Zero-silence on scratch buffers...
+		for (i = 0; i < iChannels; ++i)
+			::memset(ppFrames[i], 0, iBufferSize * sizeof(float));
+		// Merge clips in window...
+		it.toFront();
+		while (it.hasNext()) {
+			audioClipMergeItem  *pItem = it.next();
+			qtractorAudioClip   *pClip = pItem->clip;
+			qtractorAudioBuffer *pBuff = pItem->buff;
+			// Quite similar to qtractorAudioClip::process()...
+			unsigned long iClipStart = pClip->clipStart();
+			unsigned long iClipEnd   = iClipStart + pClip->clipLength();
+			if (iFrameStart < iClipStart && iFrameEnd > iClipStart) {
+				unsigned long iOffset = iFrameEnd - iClipStart;
+				if (pBuff->inSync(0, iOffset)) {
+					pBuff->readMix(ppFrames, iOffset,
+						iChannels, iClipStart - iFrameStart,
+						pClip->gain(iOffset));
+				}
+			}
+			else
+			if (iFrameStart >= iClipStart && iFrameStart < iClipEnd) {
+				unsigned long iOffset = iFrameEnd - iClipStart;
+				if (pBuff->inSync(iFrameStart - iClipStart, iOffset)) {
+					pBuff->readMix(ppFrames, iFrameEnd - iFrameStart,
+						iChannels, 0, pClip->gain(iOffset));
+				}
+			}
+			// Enforce thread sync...
+			pBuff->syncExport();
+		}
+		// Actually write to merge audio file...
+		pAudioFile->write(ppFrames, iBufferSize);
+		// Advance to next buffer...
+		iFrameStart = iFrameEnd;
+		iFrameEnd = iFrameStart + iBufferSize;
+		if (++count > 100 && pProgressBar) {
+			pProgressBar->setValue(pProgressBar->value() + iBufferSize);
+			qtractorSession::stabilize();
+			count = 0;
+		}
+	}
+
+	for (i = 0; i < iChannels; ++i)
+		delete ppFrames[i];
+	delete [] ppFrames;
+
+	qDeleteAll(items);
+	items.clear();
+
+	// Close and free it up...
+	pAudioFile->close();
+	delete pAudioFile;
+
+	if (pProgressBar)
+		pProgressBar->hide();
+
+	// The resulting merge comands...
+	iter.toFront();
+	while (iter.hasNext()) {
+		qtractorClip *pClip = iter.next()->clip;
+		// Clip parameters.
+		unsigned long iClipStart  = pClip->clipStart();
+		unsigned long iClipOffset = pClip->clipOffset();
+		unsigned long iClipLength = pClip->clipLength();
+		unsigned long iClipEnd    = iClipStart + iClipLength;
+		// Determine and keep clip regions...
+		if (iSelectStart > iClipStart) {
+			// -- Left clip...
+			pClipCommand->resizeClip(pClip,
+				iClipStart,
+				iClipOffset,
+				iSelectStart - iClipStart);
+			// Done, left clip.
+		}
+		else
+		if (iSelectEnd < iClipEnd) {
+			// -- Right clip...
+			pClipCommand->resizeClip(pClip,
+				iSelectEnd,
+				iClipOffset + (iSelectEnd - iClipStart),
+				iClipEnd - iSelectEnd);
+			// Done, right clip.
+		} else {
+			// -- Inner clip...
+			pClipCommand->removeClip(pClip);
+			// Done, inner clip.
+		}
+	}
+
+	// Set the resulting clip command...
+	qtractorAudioClip *pNewClip = new qtractorAudioClip(pTrack);
+	pNewClip->setClipStart(iSelectStart);
+	pNewClip->setClipLength(iSelectEnd - iSelectStart);
+	pNewClip->setFilename(sFilename);
+	pClipCommand->addClip(pNewClip, pTrack);
+
+	// Almost done with it...
+	QApplication::restoreOverrideCursor();
+
+	// Check if valid...
+	if (pClipCommand->isEmpty()) {
+		delete pClipCommand;
+		return false;
+	}
+
+	// That's it...
+	return pSession->execute(pClipCommand);
+}
+
+
+// Merge selected(MIDI) clips.
+bool qtractorTracks::mergeMidiClips (void)
+{
+	// Should be one single MIDI track...
+	qtractorClipSelect *pClipSelect = m_pTrackView->clipSelect();
 	qtractorTrack *pTrack = pClipSelect->singleTrack();
 	if (pTrack == NULL)
 		return false;
 	if (pTrack->trackType() != qtractorTrack::Midi)
 		return false;
 
-	// Merge CLIp filename requester...
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return false;
+
+	// Merge MIDI Clip filename requester...
 	const QString  sExt("mid");
 	const QString& sTitle  = tr("Merge MIDI Clip") + " - " QTRACTOR_TITLE;
 	const QString& sFilter = tr("MIDI files (*.%1 *.smf *.midi)").arg(sExt); 
@@ -1066,13 +1345,13 @@ bool qtractorTracks::mergeClips (void)
 		return false;
 	QString sFilename = fileDialog.selectedFiles().first();
 #endif
+	if (sFilename.isEmpty())
+		return false;
+	if (QFileInfo(sFilename).suffix() != sExt)
+		sFilename += '.' + sExt;
 
 	// Should take sometime...
 	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-
-	// Make it as an undoable command...
-	qtractorClipCommand *pClipCommand
-		= new qtractorClipCommand(tr("clip merge"));
 
 	// Create SMF...
 	qtractorMidiFile file;
@@ -1089,6 +1368,10 @@ bool qtractorTracks::mergeClips (void)
 		QApplication::restoreOverrideCursor();
 		return false;
 	}
+
+	// Make it as an undoable command...
+	qtractorClipCommand *pClipCommand
+		= new qtractorClipCommand(tr("clip merge"));
 
 	// Multiple clip selection...
 	QListIterator<qtractorClipSelect::Item *> iter(pClipSelect->items());

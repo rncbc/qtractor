@@ -5,7 +5,8 @@ ChangeLog
 
 CVS HEAD
 
-- MIDI clip merge is now featured (see Edit/Clip/Merge...).
+- Clip merge is now featured both for audio and MIDI tracks
+  (see Edit/Clip/Merge...). (EXPERIMENTAL)
 
 - Improved, or better said, fixed (again) the precision of
   multi-clip final positioning as result of drag/move and

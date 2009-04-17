@@ -3713,9 +3713,8 @@ void qtractorMainForm::stabilizeForm (void)
 	m_ui.editClipSplitAction->setEnabled(pClip != NULL
 		&& iPlayHead > pClip->clipStart()
 		&& iPlayHead < pClip->clipStart() + pClip->clipLength());
-	m_ui.editClipMergeAction->setEnabled((pClip != NULL || bSelected)
-		&& pTrack && pTrack->trackType() == qtractorTrack::Midi
-		&& m_pTracks->singleTrackSelected() == pTrack);
+	m_ui.editClipMergeAction->setEnabled(bSelected
+		&& pTrack && m_pTracks->singleTrackSelected() == pTrack);
 	m_ui.editClipNormalizeAction->setEnabled(pClip != NULL || bSelected);
 	m_ui.editClipQuantizeAction->setEnabled((pClip != NULL || bSelected)
 		&& pTrack && pTrack->trackType() == qtractorTrack::Midi
