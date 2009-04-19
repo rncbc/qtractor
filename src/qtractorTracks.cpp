@@ -1203,7 +1203,7 @@ bool qtractorTracks::mergeAudioClips (void)
 			iOffset = iSelectStart - iClipStart;
 		// Make it initially filled...
 		pBuff->seek(iOffset);
-		pBuff->syncExport();
+	//	pBuff->syncExport();
 	}
 
 	// Loop-merge audio clips...
@@ -1222,6 +1222,8 @@ bool qtractorTracks::mergeAudioClips (void)
 			audioClipMergeItem  *pItem = it.next();
 			qtractorAudioClip   *pClip = pItem->clip;
 			qtractorAudioBuffer *pBuff = pItem->buff;
+			// Should force sync now and then...
+			if ((count % 33) == 0) pBuff->syncExport();
 			// Quite similar to qtractorAudioClip::process()...
 			unsigned long iClipStart = pClip->clipStart();
 			unsigned long iClipEnd   = iClipStart + pClip->clipLength();
@@ -1232,7 +1234,6 @@ bool qtractorTracks::mergeAudioClips (void)
 						iChannels, iClipStart - iFrameStart,
 						pClip->gain(iOffset));
 				}
-				else pBuff->syncExport();
 			}
 			else
 			if (iFrameStart >= iClipStart && iFrameStart < iClipEnd) {
@@ -1241,9 +1242,7 @@ bool qtractorTracks::mergeAudioClips (void)
 					pBuff->readMix(ppFrames, iFrameEnd - iFrameStart,
 						iChannels, 0, pClip->gain(iOffset));
 				}
-				else pBuff->syncExport();
 			}
-			else pBuff->syncExport();
 		}
 		// Actually write to merge audio file...
 		pAudioFile->write(ppFrames, iBufferSize);

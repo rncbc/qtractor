@@ -1456,9 +1456,9 @@ void qtractorAudioBufferThread::run (void)
 	m_bRunState = m_pAudioBuffer->initSync();
 	while (m_bRunState) {
 		// Do whatever we must, then wait for more...
-		m_mutex.unlock();
+		//m_mutex.unlock();
 		m_pAudioBuffer->sync();
-		m_mutex.lock();
+		//m_mutex.lock();
 		m_cond.wait(&m_mutex);
 	}
 	m_mutex.unlock();
