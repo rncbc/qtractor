@@ -336,9 +336,9 @@ void qtractorMidiOutputThread::run (void)
 #endif
 		// Only if playing, the output process cycle.
 		if (m_pSession->isPlaying()) {
-			m_mutex.unlock();
+			//m_mutex.unlock();
 			process();
-			m_mutex.lock();
+			//m_mutex.lock();
 		}
 	}
 	m_mutex.unlock();

@@ -134,9 +134,9 @@ void qtractorMidiManagerThread::run (void)
 		qDebug("qtractorMidiManagerThread[%p]::run(): waked.", this);
 #endif
 		// Call control process cycle.
-		m_mutex.unlock();
+		//m_mutex.unlock();
 		m_pMidiManager->processSync();
-		m_mutex.lock();
+		//m_mutex.lock();
 	}
 	m_mutex.unlock();
 
