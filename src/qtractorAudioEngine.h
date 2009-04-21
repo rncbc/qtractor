@@ -96,6 +96,9 @@ public:
 		unsigned long iExportStart = 0, unsigned long iExportEnd = 0,
 		qtractorAudioBus *pExportBus = NULL);
 
+	// Direct sync method (needed for export)
+	void syncExport(unsigned long iFrameStart, unsigned long iFrameEnd);
+
 	// Metronome switching.
 	void setMetronome(bool bMetronome);
 	bool isMetronome() const;
@@ -170,12 +173,12 @@ private:
 	bool m_bFreewheel;
 
 	// Audio-export (in)active state.
-	bool                 m_bExporting;
+	volatile bool        m_bExporting;
 	qtractorAudioBus    *m_pExportBus;
 	qtractorAudioFile   *m_pExportFile;
 	unsigned long        m_iExportStart;
 	unsigned long        m_iExportEnd;
-	bool                 m_bExportDone;
+	volatile bool        m_bExportDone;
 
 	// Audio metronome stuff.
 	bool                 m_bMetronome;

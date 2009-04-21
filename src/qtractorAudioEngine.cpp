@@ -598,6 +598,8 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 			unsigned long iFrameEnd   = iFrameStart + nframes;
 			// Write output bus buffer to export audio file...
 			if (iFrameStart < m_iExportEnd && iFrameEnd > m_iExportStart) {
+				// Force/sync every audio clip approaching...
+				syncExport(iFrameStart, iFrameEnd);
 				// Prepare the output bus only...
 				m_pExportBus->process_prepare(nframes);
 				// Export cycle...
@@ -979,6 +981,9 @@ bool qtractorAudioEngine::fileExport ( const QString& sExportPath,
 	pSession->setPlayHead(m_iExportStart);
 	pExportBus->setPassthru(false);
 
+	// Force initial full-sync...
+	syncExport(m_iExportStart, m_iExportEnd);
+
 	// Special initialization.
     m_iBufferOffset = 0;
 
@@ -1014,6 +1019,38 @@ bool qtractorAudioEngine::fileExport ( const QString& sExportPath,
 
 	// Done whether successfully.
 	return bResult;
+}
+
+
+// Direct sync method (needed for export)
+void qtractorAudioEngine::syncExport (
+	unsigned long iFrameStart, unsigned long iFrameEnd )
+{
+	qtractorSession *pSession = session();
+	if (pSession == NULL)
+		return;
+
+	qtractorSessionCursor *pAudioCursor = sessionCursor();
+	if (pAudioCursor == NULL)
+		return;
+
+	int iTrack = 0;
+	for (qtractorTrack *pTrack = pSession->tracks().first();
+			pTrack; pTrack = pTrack->next()) {
+		if (pTrack->trackType() == qtractorTrack::Audio) {
+			qtractorClip *pClip = pAudioCursor->clip(iTrack);
+			while (pClip
+				&& pClip->clipStart() < iFrameEnd
+				&& pClip->clipStart() + pClip->clipLength() > iFrameStart) {
+				qtractorAudioClip *pAudioClip
+					= static_cast<qtractorAudioClip *> (pClip);
+				if (pAudioClip)
+					pAudioClip->syncExport();
+				pClip = pClip->next();
+			}
+		}
+		++iTrack;
+	}
 }
 
 

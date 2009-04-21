@@ -5,6 +5,9 @@ ChangeLog
 
 CVS HEAD
 
+- Improved, may be just fixed yet again, audio track export
+  synchronization and reliability. (EXPERIMENTAL)
+
 - Clip merge is now featured both for audio and MIDI tracks
   (see Edit/Clip/Merge...). (EXPERIMENTAL)
 
