@@ -86,7 +86,7 @@ public:
 	bool splitClip(qtractorClip *pClip = NULL);
 	bool normalizeClip(qtractorClip *pClip = NULL);
 	bool quantizeClip(qtractorClip *pClip = NULL);
-	bool exportClip(qtractorClip *pClip = NULL);
+	bool exportClips();
 	bool mergeClips();
 
 	// Whether there's any clip currently selected.
@@ -150,9 +150,12 @@ protected:
 	bool quantizeClipCommand(
 		qtractorMidiClipCommand *pMidiClipCommand, qtractorClip *pClip);
 
-	// Specialized clip-merge methods.
-	bool mergeAudioClips();
-	bool mergeMidiClips();
+	// Common clip-export/merge methods.
+	bool mergeExportClips(qtractorClipCommand *pClipCommand);
+
+	// Specialized clip-export/merge methods.
+	bool mergeExportAudioClips(qtractorClipCommand *pClipCommand);
+	bool mergeExportMidiClips(qtractorClipCommand *pClipCommand);
 
 protected slots:
 

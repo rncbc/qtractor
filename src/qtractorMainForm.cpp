@@ -2202,7 +2202,7 @@ void qtractorMainForm::editClipExport (void)
 
 	// Export current clip, if any...
 	if (m_pTracks)
-		m_pTracks->exportClip();
+		m_pTracks->exportClips();
 }
 
 
@@ -3696,6 +3696,9 @@ void qtractorMainForm::stabilizeForm (void)
 	bool bRolling    = (bPlaying && bRecording);
 	bool bBumped     = (!bRolling && (iPlayHead > 0 || bPlaying));
 
+	bool bSingleTrackSelected = (bSelected && pTrack != NULL
+		&& m_pTracks->singleTrackSelected() == pTrack);
+
 	m_ui.editCutAction->setEnabled(bSelected);
 	m_ui.editCopyAction->setEnabled(bSelected);
 	m_ui.editPasteAction->setEnabled(qtractorTrackView::isClipboard()
@@ -3713,13 +3716,12 @@ void qtractorMainForm::stabilizeForm (void)
 	m_ui.editClipSplitAction->setEnabled(pClip != NULL
 		&& iPlayHead > pClip->clipStart()
 		&& iPlayHead < pClip->clipStart() + pClip->clipLength());
-	m_ui.editClipMergeAction->setEnabled(bSelected
-		&& pTrack && m_pTracks->singleTrackSelected() == pTrack);
+	m_ui.editClipMergeAction->setEnabled(bSingleTrackSelected);
 	m_ui.editClipNormalizeAction->setEnabled(pClip != NULL || bSelected);
 	m_ui.editClipQuantizeAction->setEnabled((pClip != NULL || bSelected)
 		&& pTrack && pTrack->trackType() == qtractorTrack::Midi
 		&& m_pSession->snapPerBeat() > 0);
-	m_ui.editClipExportAction->setEnabled(pClip != NULL);
+	m_ui.editClipExportAction->setEnabled(bSingleTrackSelected);
 
 	// Update track menu state...
 	m_ui.trackRemoveAction->setEnabled(

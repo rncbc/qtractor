@@ -5,6 +5,10 @@ ChangeLog
 
 CVS HEAD
 
+- Clip export may now be applied to multiple clips, sharing
+  common refactored code and same semantics as merging of
+  current selected clips. (EXPERIMENTAL)
+
 - Improved, may be just fixed yet again, audio track export
   synchronization and reliability. (EXPERIMENTAL)
 
