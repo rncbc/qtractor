@@ -1009,7 +1009,7 @@ bool qtractorTracks::mergeExportAudioClips ( qtractorClipCommand *pClipCommand )
 	int count = 0;
 
 	// Loop until EOF...
-	while (iFrameEnd < iSelectEnd) {
+	while (iFrameStart < iSelectEnd && iFrameEnd > iSelectStart) {
 		// Zero-silence on scratch buffers...
 		for (i = 0; i < iChannels; ++i)
 			::memset(ppFrames[i], 0, iBufferSize * sizeof(float));
@@ -1041,8 +1041,12 @@ bool qtractorTracks::mergeExportAudioClips ( qtractorClipCommand *pClipCommand )
 				}
 			}
 		}
-		// Actually write to merge audio file...
-		pAudioFile->write(ppFrames, iBufferSize);
+		// Actually write to merge audio file;
+		// - check for last incomplete block...
+		if (iFrameEnd > iSelectEnd)
+			pAudioFile->write(ppFrames, iBufferSize - (iFrameEnd - iSelectEnd));
+		else
+			pAudioFile->write(ppFrames, iBufferSize);
 		// Advance to next buffer...
 		iFrameStart = iFrameEnd;
 		iFrameEnd = iFrameStart + iBufferSize;
