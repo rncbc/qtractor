@@ -5,6 +5,10 @@ ChangeLog
 
 CVS HEAD
 
+- Plugin chain buffer reset on playback start/stop is not
+  guarded by a momentary plugin de/activation anymore.
+  (EXPERIMENTAL).
+
 - Clip export may now be applied to multiple clips, sharing
   common refactored code and same semantics as merging of
   current selected clips. (EXPERIMENTAL)

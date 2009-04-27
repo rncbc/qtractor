@@ -988,6 +988,7 @@ void qtractorPluginList::setBuffer ( unsigned short iChannels,
 // Reset and (re)activate all plugin chain.
 void qtractorPluginList::resetBuffer (void)
 {
+#if 0
 	// Save and reset activation count...
 	int iActivated = m_iActivated;
 	m_iActivated = 0;
@@ -998,13 +999,13 @@ void qtractorPluginList::resetBuffer (void)
 		if (pPlugin->isActivated())
 			pPlugin->deactivate();
 	}
-
+#endif
 	// Reset interim buffer, if any...
 	if (m_pppBuffers[1]) {
 		for (unsigned short i = 0; i < m_iChannels; i++)
 			::memset(m_pppBuffers[1][i], 0, m_iBufferSize * sizeof(float));
 	}
-
+#if 0
 	// Restore activation of all previously deactivated plugins...
 	for (qtractorPlugin *pPlugin = first();
 			pPlugin; pPlugin = pPlugin->next()) {
@@ -1014,6 +1015,7 @@ void qtractorPluginList::resetBuffer (void)
 
 	// Restore activation count.
 	m_iActivated = iActivated;
+#endif
 }
 
 
