@@ -48,9 +48,9 @@ public:
 	QSettings& settings();
 
 	// Command line arguments parser.
-	bool parse_args(int argc, char **argv);
+	bool parse_args(const QStringList& args);
 	// Command line usage helper.
-	void print_usage(const char *arg0);
+	void print_usage(const QString& arg0);
 
 	// Startup supplied session file.
 	QString sSessionFile;

@@ -323,7 +323,7 @@ int main ( int argc, char **argv )
 
 	// Construct default settings; override with command line arguments.
 	qtractorOptions options;
-	if (!options.parse_args(app.argc(), app.argv())) {
+	if (!options.parse_args(app.arguments())) {
 		app.quit();
 		return 1;
 	}

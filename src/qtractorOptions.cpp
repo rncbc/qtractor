@@ -445,7 +445,7 @@ QSettings& qtractorOptions::settings (void)
 //
 
 // Help about command line options.
-void qtractorOptions::print_usage ( const char *arg0 )
+void qtractorOptions::print_usage ( const QString& arg0 )
 {
 	QTextStream out(stderr);
 	out << QObject::tr(
@@ -459,33 +459,26 @@ void qtractorOptions::print_usage ( const char *arg0 )
 
 
 // Parse command line arguments into m_settings.
-bool qtractorOptions::parse_args ( int argc, char **argv )
+bool qtractorOptions::parse_args ( const QStringList& args )
 {
 	QTextStream out(stderr);
 	const QString sEol = "\n\n";
 	int iCmdArgs = 0;
+	int argc = args.count();
 
-	for (int i = 1; i < argc; i++) {
+	for (int i = 1; i < argc; ++i) {
 
 		if (iCmdArgs > 0) {
 			sSessionFile += ' ';
-			sSessionFile += argv[i];
+			sSessionFile += args.at(i);
 			iCmdArgs++;
 			continue;
 		}
 
-		QString sVal;
-		QString sArg = argv[i];
-		int iEqual = sArg.indexOf('=');
-		if (iEqual >= 0) {
-			sVal = sArg.right(sArg.length() - iEqual - 1);
-			sArg = sArg.left(iEqual);
-		}
-		else if (i < argc)
-			sVal = argv[i + 1];
+		QString sArg = args.at(i);
 
 		if (sArg == "-h" || sArg == "--help") {
-			print_usage(argv[0]);
+			print_usage(args.at(0));
 			return false;
 		}
 		else if (sArg == "-v" || sArg == "--version") {
@@ -495,7 +488,7 @@ bool qtractorOptions::parse_args ( int argc, char **argv )
 		}
 		else {
 			// If we don't have one by now,
-			// this will be the startup sesion file...
+			// this will be the startup session file...
 			sSessionFile += sArg;
 			iCmdArgs++;
 		}
