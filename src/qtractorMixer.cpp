@@ -1,7 +1,7 @@
 // qtractorMixer.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -806,7 +806,7 @@ void qtractorMixerStrip::gainChangedSlot ( float fGain )
 		return;
 
 #ifdef CONFIG_DEBUG
-	qDebug("qtractorMixerStrip[%p]::gainChangedSlot(%.3g)\n", this, fGain);
+	qDebug("qtractorMixerStrip[%p]::gainChangedSlot(%.3g)", this, fGain);
 #endif
 
 	qtractorSession *pSession = qtractorSession::getInstance();

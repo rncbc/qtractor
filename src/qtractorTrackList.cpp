@@ -459,6 +459,15 @@ qtractorTrack *qtractorTrackList::track ( int iTrack ) const
 }
 
 
+qtractorTrackItemWidget *qtractorTrackList::trackWidget ( int iTrack ) const
+{
+	if (iTrack < 0 || iTrack >= m_items.count())
+		return NULL;
+
+	return m_items.at(iTrack)->widget;
+}
+
+
 // Retrive the given track row rectangular (in viewport coordinates).
 QRect qtractorTrackList::trackRect ( int iTrack ) const
 {

@@ -31,6 +31,7 @@
 #include "qtractorMidiSequence.h"
 #include "qtractorMidiClip.h"
 #include "qtractorMidiBuffer.h"
+#include "qtractorMidiControl.h"
 
 #include "qtractorPlugin.h"
 
@@ -2311,19 +2312,19 @@ int qtractorMidiEngine::updateConnects (void)
 	// Control bus inputs...
 	if (m_bControlBus && m_pIControlBus) {
 		iUpdate += m_pIControlBus->updateConnects(
-				qtractorBus::Input, m_pIControlBus->inputs(), true);
+			qtractorBus::Input, m_pIControlBus->inputs(), true);
 	}
 
 	// Control bus outputs...
 	if (m_bControlBus && m_pOControlBus) {
 		iUpdate += m_pOControlBus->updateConnects(
-				qtractorBus::Output, m_pOControlBus->outputs(), true);
+			qtractorBus::Output, m_pOControlBus->outputs(), true);
 	}
 
 	// Metronome bus outputs...
 	if (m_bMetroBus && m_pMetroBus) {
 		iUpdate += m_pMetroBus->updateConnects(
-				qtractorBus::Output, m_pMetroBus->outputs(), true);
+			qtractorBus::Output, m_pMetroBus->outputs(), true);
 	}
 
 	// Done.
@@ -2637,6 +2638,12 @@ void qtractorMidiBus::setController ( qtractorTrack *pTrack,
 	int iController, int iValue ) const
 {
 	setControllerEx(pTrack->midiChannel(), iController, iValue, pTrack);
+}
+
+void qtractorMidiBus::setController ( unsigned short iChannel,
+	int iController, int iValue ) const
+{
+	setControllerEx(iChannel, iController, iValue, NULL);
 }
 
 

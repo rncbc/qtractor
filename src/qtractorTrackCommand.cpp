@@ -1,7 +1,7 @@
 // qtractorTrackCommand.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -30,6 +30,7 @@
 #include "qtractorTrackView.h"
 #include "qtractorTrackButton.h"
 #include "qtractorMidiEngine.h"
+#include "qtractorMidiControl.h"
 #include "qtractorMixer.h"
 #include "qtractorMeter.h"
 
@@ -435,13 +436,34 @@ bool qtractorEditTrackCommand::undo (void)
 
 
 //----------------------------------------------------------------------
+// class qtractorTrackControlCommand - implementation.
+//
+
+// Constructor.
+qtractorTrackControlCommand::qtractorTrackControlCommand (
+	const QString& sName, qtractorTrack *pTrack, bool bMidiControl )
+	: qtractorTrackCommand(sName, pTrack),
+		m_bMidiControl(bMidiControl), m_iMidiControlFeedback(0)
+{
+}
+
+
+// Primitive control predicate.
+bool qtractorTrackControlCommand::midiControlFeedback (void)
+{
+	return (m_bMidiControl ? (++m_iMidiControlFeedback > 1) : true);
+}
+
+
+//----------------------------------------------------------------------
 // class qtractorTrackButtonCommand - implementation.
 //
 
 // Constructor.
 qtractorTrackButtonCommand::qtractorTrackButtonCommand (
-	qtractorTrackButton *pTrackButton, bool bOn )
-	: qtractorTrackCommand(QString::null, pTrackButton->track())
+	qtractorTrackButton *pTrackButton, bool bOn, bool bMidiControl )
+	: qtractorTrackControlCommand(
+		QString(), pTrackButton->track(), bMidiControl)
 {
 	m_toolType = pTrackButton->toolType();
 	m_bOn = bOn;
@@ -507,10 +529,12 @@ bool qtractorTrackButtonCommand::redo (void)
 
 	bool bOn = false;
 	qtractorMmcEvent::SubCommand scmd = qtractorMmcEvent::TRACK_NONE;
+	qtractorMidiControl::Command ccmd = qtractorMidiControl::TrackNone;
 
 	switch (m_toolType) {
 	case qtractorTrack::Record:
 		scmd = qtractorMmcEvent::TRACK_RECORD;
+		ccmd = qtractorMidiControl::TrackRecord;
 		// Special stuffing if currently recording at first place...
 		bOn = pTrack->isRecord();
 		if (bOn && !m_bOn
@@ -535,23 +559,35 @@ bool qtractorTrackButtonCommand::redo (void)
 		break;
 	case qtractorTrack::Mute:
 		scmd = qtractorMmcEvent::TRACK_MUTE;
+		ccmd = qtractorMidiControl::TrackMute;
 		bOn = pTrack->isMute();
 		pTrack->setMute(m_bOn);
 		break;
 	case qtractorTrack::Solo:
 		scmd = qtractorMmcEvent::TRACK_SOLO;
+		ccmd = qtractorMidiControl::TrackSolo;
 		bOn = pTrack->isSolo();
 		pTrack->setSolo(m_bOn);
 		break;
+	default:
+		// Whaa?
+		return false;
 	}
 
-	// Track-list and mixer update...
-	qtractorMidiEngine *pMidiEngine = pSession->midiEngine();
-	qtractorTrackList  *pTrackList  = pMainForm->tracks()->trackList();
-
 	// Send MMC MASKED_WRITE command...
-	pMidiEngine->sendMmcMaskedWrite(scmd,
-		pTrackList->trackRow(pTrack), m_bOn);
+	qtractorTrackList *pTrackList = pMainForm->tracks()->trackList();
+	qtractorMidiEngine *pMidiEngine = pSession->midiEngine();
+	int iTrack = pTrackList->trackRow(pTrack);
+	if (pMidiEngine)
+		pMidiEngine->sendMmcMaskedWrite(scmd, iTrack, m_bOn);
+
+	// Send MIDI controller command...
+	if (midiControlFeedback()) {
+		qtractorMidiControl *pMidiControl = qtractorMidiControl::getInstance();
+		if (pMidiControl)
+			pMidiControl->processCommand(ccmd, iTrack, m_bOn);
+	}
+
 	// Update track list item...
 	pTrackList->updateTrack(pTrack);
 
@@ -569,6 +605,9 @@ bool qtractorTrackButtonCommand::redo (void)
 		// Done with single mode.
 	} else {
 		// Exclusive mode.
+		qtractorTrackList *pTrackList = pMainForm->tracks()->trackList();
+		qtractorMidiEngine *pMidiEngine = pSession->midiEngine();
+		qtractorMidiControl *pMidiControl = qtractorMidiControl::getInstance();
 		QListIterator<TrackItem *> iter(m_tracks);
 		while (iter.hasNext()) {
 			TrackItem *pTrackItem = iter.next();
@@ -584,8 +623,12 @@ bool qtractorTrackButtonCommand::redo (void)
 				pTrack->setSolo(pTrackItem->on);
 			}
 			// Send MMC MASKED_WRITE command...
-			pMidiEngine->sendMmcMaskedWrite(scmd,
-				pTrackList->trackRow(pTrack), pTrackItem->on);
+			int iTrack = pTrackList->trackRow(pTrack);
+			if (pMidiEngine)
+				pMidiEngine->sendMmcMaskedWrite(scmd, iTrack, pTrackItem->on);
+			// Send MIDI controller command...
+			if (pMidiControl)
+				pMidiControl->processCommand(ccmd, iTrack, pTrackItem->on);
 			// Update track list item...
 			pTrackList->updateTrack(pTrack);
 			// Swap for undo...
@@ -614,8 +657,9 @@ bool qtractorTrackButtonCommand::undo (void)
 
 // Constructor.
 qtractorTrackMonitorCommand::qtractorTrackMonitorCommand (
-	qtractorTrack *pTrack, bool bMonitor )
-	: qtractorTrackCommand(QObject::tr("track monitor"), pTrack)
+	qtractorTrack *pTrack, bool bMonitor, bool bMidiControl )
+	: qtractorTrackControlCommand(
+		QObject::tr("track monitor"), pTrack, bMidiControl)
 {
 	m_bMonitor = bMonitor;
 
@@ -662,8 +706,21 @@ bool qtractorTrackMonitorCommand::redo (void)
 
 	// Save undo value...
 	bool bMonitor = pTrack->isMonitor();
+
 	// Set track monitoring...
 	pTrack->setMonitor(m_bMonitor);
+
+	// Send MIDI controller command(s)...
+	if (midiControlFeedback()) {
+		qtractorMidiControl *pMidiControl = qtractorMidiControl::getInstance();
+		if (pMidiControl) {
+			qtractorTrackList *pTrackList = pMainForm->tracks()->trackList();
+			int iTrack = pTrackList->trackRow(pTrack);
+			pMidiControl->processCommand(
+				qtractorMidiControl::TrackMonitor, iTrack, m_bMonitor);
+		}
+	}
+
 	// Set undo value...
 	m_bMonitor = bMonitor;
 
@@ -678,12 +735,20 @@ bool qtractorTrackMonitorCommand::redo (void)
 		// Done with single mode.
 	} else {
 		// Exclusive mode.
+		qtractorTrackList *pTrackList = pMainForm->tracks()->trackList();
+		qtractorMidiControl *pMidiControl = qtractorMidiControl::getInstance();
 		QListIterator<TrackItem *> iter(m_tracks);
 		while (iter.hasNext()) {
 			TrackItem *pTrackItem = iter.next();
 			pTrack = pTrackItem->track;
 			bMonitor = pTrack->isMonitor();
 			pTrack->setMonitor(pTrackItem->on);
+			// Send MIDI controller command...
+			if (pMidiControl) {
+				int iTrack = pTrackList->trackRow(pTrack);
+				pMidiControl->processCommand(
+					qtractorMidiControl::TrackMonitor, iTrack, pTrackItem->on);
+			}
 			// Swap for undo...
 			pTrackItem->on = bMonitor;
 		}
@@ -701,8 +766,9 @@ bool qtractorTrackMonitorCommand::redo (void)
 //
 // Constructor.
 qtractorTrackGainCommand::qtractorTrackGainCommand (
-	qtractorTrack *pTrack, float fGain )
-	: qtractorTrackCommand(QObject::tr("track gain"), pTrack)
+	qtractorTrack *pTrack, float fGain, bool bMidiControl )
+	: qtractorTrackControlCommand(
+		QObject::tr("track gain"), pTrack, bMidiControl)
 {
 	m_fGain = fGain;
 	m_fPrevGain = 1.0f;
@@ -743,20 +809,38 @@ qtractorTrackGainCommand::qtractorTrackGainCommand (
 // Track-gain command method.
 bool qtractorTrackGainCommand::redo (void)
 {
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm == NULL)
+		return false;
+
 	qtractorTrack *pTrack = track();
 	if (pTrack == NULL)
 		return false;
 
-	// Set track gain (repective monitor gets set too...)
+	// Set undo value...
 	float fGain = (m_bPrevGain ? m_fPrevGain : pTrack->gain());	
+
+	// Set track gain (respective monitor gets set too...)
 	pTrack->setGain(m_fGain);
+
 	// MIDI tracks are special...
 	if (pTrack->trackType() == qtractorTrack::Midi) {
-		// Now we gotta make sure of proper MIDI bus...
+		// Gotta make sure we've a proper MIDI bus...
 		qtractorMidiBus *pMidiBus
 			= static_cast<qtractorMidiBus *> (pTrack->outputBus());
 		if (pMidiBus)
 			pMidiBus->setVolume(pTrack, m_fGain);
+	}
+
+	// Send MIDI controller command(s)...
+	if (midiControlFeedback()) {
+		qtractorMidiControl *pMidiControl = qtractorMidiControl::getInstance();
+		if (pMidiControl) {
+			qtractorTrackList *pTrackList = pMainForm->tracks()->trackList();
+			int iTrack = pTrackList->trackRow(pTrack);
+			pMidiControl->processCommand(
+				qtractorMidiControl::TrackGain, iTrack, m_fGain);
+		}
 	}
 
 	// Set undo value...
@@ -765,15 +849,12 @@ bool qtractorTrackGainCommand::redo (void)
 	m_fGain     = fGain;
 
 	// Mixer/Meter turn...
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm) {
-		qtractorMixer *pMixer = pMainForm->mixer();
-		if (pMixer) {
-			qtractorMixerStrip *pStrip
-				= pMixer->trackRack()->findStrip(pTrack->monitor());
-			if (pStrip && pStrip->meter())
-				pStrip->meter()->updateGain();
-		}
+	qtractorMixer *pMixer = pMainForm->mixer();
+	if (pMixer) {
+		qtractorMixerStrip *pStrip
+			= pMixer->trackRack()->findStrip(pTrack->monitor());
+		if (pStrip && pStrip->meter())
+			pStrip->meter()->updateGain();
 	}
 
 	return true;
@@ -786,8 +867,9 @@ bool qtractorTrackGainCommand::redo (void)
 
 // Constructor.
 qtractorTrackPanningCommand::qtractorTrackPanningCommand (
-	qtractorTrack *pTrack, float fPanning )
-	: qtractorTrackCommand(QObject::tr("track pan"), pTrack)
+	qtractorTrack *pTrack, float fPanning, bool bMidiControl )
+	: qtractorTrackControlCommand(
+		QObject::tr("track pan"), pTrack, bMidiControl)
 {
 	m_fPanning = fPanning;
 	m_fPrevPanning = 0.0f;
@@ -828,37 +910,52 @@ qtractorTrackPanningCommand::qtractorTrackPanningCommand (
 // Track-panning command method.
 bool qtractorTrackPanningCommand::redo (void)
 {
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm == NULL)
+		return false;
+
 	qtractorTrack *pTrack = track();
 	if (pTrack == NULL)
 		return false;
 
-	// Set track panning (repective monitor gets set too...)
+	// Set undo value...
 	float fPanning = (m_bPrevPanning ? m_fPrevPanning : pTrack->panning());	
+
+	// Set track panning (respective monitor gets set too...)
 	pTrack->setPanning(m_fPanning);
+
 	// MIDI tracks are special...
 	if (pTrack->trackType() == qtractorTrack::Midi) {
-		// Now we gotta make sure of proper MIDI bus...
+		// Gotta make sure we've a proper MIDI bus...
 		qtractorMidiBus *pMidiBus
 			= static_cast<qtractorMidiBus *> (pTrack->outputBus());
 		if (pMidiBus)
 			pMidiBus->setPanning(pTrack, m_fPanning);
 	}
-	
+
+	// Send MIDI controller command(s)...
+	if (midiControlFeedback()) {
+		qtractorMidiControl *pMidiControl = qtractorMidiControl::getInstance();
+		if (pMidiControl) {
+			qtractorTrackList *pTrackList = pMainForm->tracks()->trackList();
+			int iTrack = pTrackList->trackRow(pTrack);
+			pMidiControl->processCommand(
+				qtractorMidiControl::TrackPanning, iTrack, m_fPanning);
+		}
+	}
+
 	// Set undo value...
 	m_bPrevPanning = false;
 	m_fPrevPanning = m_fPanning;
 	m_fPanning     = fPanning;
 
 	// Mixer/Meter turn...
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm) {
-		qtractorMixer *pMixer = pMainForm->mixer();
-		if (pMixer) {
-			qtractorMixerStrip *pStrip
-				= pMixer->trackRack()->findStrip(pTrack->monitor());
-			if (pStrip && pStrip->meter())
-				pStrip->meter()->updatePanning();
-		}
+	qtractorMixer *pMixer = pMainForm->mixer();
+	if (pMixer) {
+		qtractorMixerStrip *pStrip
+			= pMixer->trackRack()->findStrip(pTrack->monitor());
+		if (pStrip && pStrip->meter())
+			pStrip->meter()->updatePanning();
 	}
 
 	return true;

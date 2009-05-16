@@ -1,7 +1,7 @@
 // qtractorTrackCommand.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -212,15 +212,41 @@ private:
 
 
 //----------------------------------------------------------------------
-// class qtractorTrackButtonCommand - declaration.
+// class qtractorTrackControlCommand - declaration.
 //
 
-class qtractorTrackButtonCommand : public qtractorTrackCommand
+class qtractorTrackControlCommand : public qtractorTrackCommand
 {
 public:
 
 	// Constructor.
-	qtractorTrackButtonCommand(qtractorTrackButton *pTrackButton, bool bOn);
+	qtractorTrackControlCommand(const QString& sName,
+		qtractorTrack *pTrack, bool bMidiControl = false);
+
+protected:
+
+	// Primitive control predicates.
+	bool midiControlFeedback();
+
+private:
+
+	// Instance variables.
+	bool m_bMidiControl;
+	int  m_iMidiControlFeedback; 
+};
+
+
+//----------------------------------------------------------------------
+// class qtractorTrackButtonCommand - declaration.
+//
+
+class qtractorTrackButtonCommand : public qtractorTrackControlCommand
+{
+public:
+
+	// Constructor.
+	qtractorTrackButtonCommand(qtractorTrackButton *pTrackButton,
+		bool bOn, bool bMidiControl = false);
 
 	// Destructor.
 	~qtractorTrackButtonCommand();
@@ -248,12 +274,13 @@ private:
 // class qtractorTrackMonitorCommand - declaration.
 //
 
-class qtractorTrackMonitorCommand : public qtractorTrackCommand
+class qtractorTrackMonitorCommand : public qtractorTrackControlCommand
 {
 public:
 
 	// Constructor.
-	qtractorTrackMonitorCommand(qtractorTrack *pTrack, bool bMonitor);
+	qtractorTrackMonitorCommand(qtractorTrack *pTrack,
+		bool bMonitor, bool bMidiControl = false);
 
 	// Destructor.
 	~qtractorTrackMonitorCommand();
@@ -265,7 +292,7 @@ public:
 private:
 
 	// Instance variables.
-	bool  m_bMonitor;
+	bool m_bMonitor;
 
 	// Extra track list.
 	QList<TrackItem *> m_tracks;
@@ -276,12 +303,13 @@ private:
 // class qtractorTrackGainCommand - declaration.
 //
 
-class qtractorTrackGainCommand : public qtractorTrackCommand
+class qtractorTrackGainCommand : public qtractorTrackControlCommand
 {
 public:
 
 	// Constructor.
-	qtractorTrackGainCommand(qtractorTrack *pTrack, float fGain);
+	qtractorTrackGainCommand(qtractorTrack *pTrack,
+		float fGain, bool bMidiControl = false);
 
 	// Track-gain command methods.
 	bool redo();
@@ -306,12 +334,13 @@ private:
 // class qtractorTrackPanningCommand - declaration.
 //
 
-class qtractorTrackPanningCommand : public qtractorTrackCommand
+class qtractorTrackPanningCommand : public qtractorTrackControlCommand
 {
 public:
 
 	// Constructor.
-	qtractorTrackPanningCommand(qtractorTrack *pTrack, float fPanning);
+	qtractorTrackPanningCommand(qtractorTrack *pTrack,
+		float fPanning, bool bMidiControl = false);
 
 	// Track-panning command methods.
 	bool redo();
@@ -335,4 +364,3 @@ private:
 #endif	// __qtractorTrackCommand_h
 
 // end of qtractorTrackCommand.h
-

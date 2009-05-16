@@ -39,6 +39,7 @@ class qtractorConnections;
 class qtractorMixer;
 class qtractorMmcEvent;
 class qtractorMidiControlEvent;
+class qtractorMidiControl;
 class qtractorMidiSppEvent;
 class qtractorTimeSpinBox;
 class qtractorTempoSpinBox;
@@ -329,6 +330,8 @@ private:
 	int m_iAudioRefreshTimer;
 	int m_iMidiRefreshTimer;
 	int m_iPlayerTimer;
+
+	qtractorMidiControl* m_pMidiControl;
 
 	// Status bar item indexes
 	enum {

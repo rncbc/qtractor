@@ -5,6 +5,10 @@ ChangeLog
 
 CVS HEAD
 
+- A new MIDI controller mapping infrastructure is getting
+  in place, on-going contribution from Mathias aka gizzmo
+  (EXPERIEMNTAL).
+
 - Plugin chain buffer reset on playback start/stop is not
   guarded by a momentary plugin de/activation anymore.
   (EXPERIMENTAL).

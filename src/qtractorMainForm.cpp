@@ -53,8 +53,9 @@
 
 #include "qtractorAudioMeter.h"
 #include "qtractorMidiMeter.h"
-#include "qtractorMidiMonitor.h"
 
+#include "qtractorMidiMonitor.h"
+#include "qtractorMidiControl.h"
 #include "qtractorMidiBuffer.h"
 
 #include "qtractorExportForm.h"
@@ -243,6 +244,9 @@ qtractorMainForm::qtractorMainForm (
 		pMidiEngine->setNotifyCtlType(QTRACTOR_CTL_EVENT);
 		pMidiEngine->setNotifySppType(QTRACTOR_SPP_EVENT);
 	}
+
+	// add the midi controller map
+	m_pMidiControl = new qtractorMidiControl();
 
 #ifdef HAVE_SIGNAL_H
 	// Set to ignore any fatal "Broken pipe" signals.
@@ -774,7 +778,11 @@ qtractorMainForm::~qtractorMainForm (void)
 	// Custom tempo cursor.
 	if (m_pTempoCursor)
 		delete m_pTempoCursor;
-	
+
+	// remove midi controller
+	if (m_pMidiControl)
+		delete m_pMidiControl;
+
 	// Pseudo-singleton reference shut-down.
 	g_pMainForm = NULL;
 }
@@ -1187,29 +1195,29 @@ void qtractorMainForm::customEvent ( QEvent *pEvent )
 // Custom MMC event handler.
 void qtractorMainForm::mmcEvent ( qtractorMmcEvent *pMmcEvent )
 {
-	QString sMmcText;
+	QString sMmcText("MMC: ");
 	switch (pMmcEvent->cmd()) {
 	case qtractorMmcEvent::STOP:
 	case qtractorMmcEvent::PAUSE:
-		sMmcText = tr("STOP");
+		sMmcText += tr("STOP");
 		setPlaying(false);
 		break;
 	case qtractorMmcEvent::PLAY:
 	case qtractorMmcEvent::DEFERRED_PLAY:
-		sMmcText = tr("PLAY");
+		sMmcText += tr("PLAY");
 		setPlaying(true);
 		break;
 	case qtractorMmcEvent::FAST_FORWARD:
-		sMmcText = tr("FFWD");
+		sMmcText += tr("FFWD");
 		setRolling(+1);
 		break;
 	case qtractorMmcEvent::REWIND:
-		sMmcText = tr("REW");
+		sMmcText += tr("REW");
 		setRolling(-1);
 		break;
 	case qtractorMmcEvent::RECORD_STROBE:
 	case qtractorMmcEvent::RECORD_PAUSE:
-		sMmcText = tr("REC ON");
+		sMmcText += tr("REC ON");
 		if (!setRecording(true)) {
 			// Send MMC RECORD_EXIT command immediate reply...
 			m_pSession->midiEngine()->sendMmcCommand(
@@ -1217,54 +1225,54 @@ void qtractorMainForm::mmcEvent ( qtractorMmcEvent *pMmcEvent )
 		}
 		break;
 	case qtractorMmcEvent::RECORD_EXIT:
-		sMmcText = tr("REC OFF");
+		sMmcText += tr("REC OFF");
 		setRecording(false);
 		break;
 	case qtractorMmcEvent::MMC_RESET:
-		sMmcText = tr("RESET");
+		sMmcText += tr("RESET");
 		setRolling(0);
 		break;
 	case qtractorMmcEvent::LOCATE:
-		sMmcText = tr("LOCATE %1").arg(pMmcEvent->locate());
+		sMmcText += tr("LOCATE %1").arg(pMmcEvent->locate());
 		setLocate(pMmcEvent->locate());
 		break;
 	case qtractorMmcEvent::SHUTTLE:
-		sMmcText = tr("SHUTTLE %1").arg(pMmcEvent->shuttle());
+		sMmcText += tr("SHUTTLE %1").arg(pMmcEvent->shuttle());
 		setShuttle(pMmcEvent->shuttle());
 		break;
 	case qtractorMmcEvent::STEP:
-		sMmcText = tr("STEP %1").arg(pMmcEvent->step());
+		sMmcText += tr("STEP %1").arg(pMmcEvent->step());
 		setStep(pMmcEvent->step());
 		break;
 	case qtractorMmcEvent::MASKED_WRITE:
 		switch (pMmcEvent->scmd()) {
 		case qtractorMmcEvent::TRACK_RECORD:
-			sMmcText = tr("TRACK RECORD %1 %2")
+			sMmcText += tr("TRACK RECORD %1 %2")
 				.arg(pMmcEvent->track())
 				.arg(pMmcEvent->isOn());
 			break;
 		case qtractorMmcEvent::TRACK_MUTE:
-			sMmcText = tr("TRACK MUTE %1 %2")
+			sMmcText += tr("TRACK MUTE %1 %2")
 				.arg(pMmcEvent->track())
 				.arg(pMmcEvent->isOn());
 			break;
 		case qtractorMmcEvent::TRACK_SOLO:
-			sMmcText = tr("TRACK SOLO %1 %2")
+			sMmcText += tr("TRACK SOLO %1 %2")
 				.arg(pMmcEvent->track())
 				.arg(pMmcEvent->isOn());
 			break;
 		default:
-			sMmcText = tr("Unknown sub-command");
+			sMmcText += tr("Unknown sub-command");
 			break;
 		}
 		setTrack(pMmcEvent->scmd(), pMmcEvent->track(), pMmcEvent->isOn());
 		break;
 	default:
-		sMmcText = tr("Not implemented");
+		sMmcText += tr("Not implemented");
 		break;
 	}
 
-	appendMessages("MMC: " + sMmcText);
+	appendMessages(sMmcText);
 	stabilizeForm();
 }
 
@@ -1272,12 +1280,19 @@ void qtractorMainForm::mmcEvent ( qtractorMmcEvent *pMmcEvent )
 // Custom controller event handler.
 void qtractorMainForm::midiControlEvent ( qtractorMidiControlEvent *pCtlEvent )
 {
-	QString sCtlText = tr("MIDI channel %1, Controller %2, Value %3")
+	QString sCtlText("CTL: ");
+	sCtlText += tr("MIDI channel %1, Controller %2, Value %3")
 		.arg(pCtlEvent->channel())
 		.arg(pCtlEvent->controller())
 		.arg(pCtlEvent->value());
 
-	// FIXME: JCooper faders (as from US-224)...
+	// TODO: check if controller is used as MIDI controller...
+	if (m_pMidiControl->processEvent(pCtlEvent)) {
+		appendMessages(sCtlText);
+		return;
+	}
+
+	/* FIXME: JLCooper faders (as from US-224)...
 	if (pCtlEvent->channel() == 15) {
 		// Event translation...
 		int   iTrack = int(pCtlEvent->controller()) & 0x3f;
@@ -1286,31 +1301,22 @@ void qtractorMainForm::midiControlEvent ( qtractorMidiControlEvent *pCtlEvent )
 		qtractorTrack *pTrack = m_pSession->tracks().at(iTrack);
 		if (pTrack) {
 			m_pSession->execute(
-				new qtractorTrackGainCommand(pTrack, fGain));
-			sCtlText += tr("(track %1, gain %2)").arg(iTrack).arg(fGain);
+				new qtractorTrackGainCommand(pTrack, fGain, true));
+			sCtlText += tr("(track %1, gain %2)")
+				.arg(iTrack).arg(fGain);
 		}
 	}
-	else
+	else */
 	// Handle volume controls...
 	if (pCtlEvent->controller() == 7) {
 		int iTrack = 0;
+		float fGain = float(pCtlEvent->value()) / 127.0f;
 		for (qtractorTrack *pTrack = m_pSession->tracks().first();
 				pTrack; pTrack = pTrack->next()) {
 			if (pTrack->trackType() == qtractorTrack::Midi &&
 				pTrack->midiChannel() == pCtlEvent->channel()) {
-				float fGain = float(pCtlEvent->value()) / 127.0f;
-				// Set track gain/volume directly,
-				// bypassing the undo/redo system
-				// to avoid feedback issues with
-				// motorized external controllers...
-				pTrack->setGain(fGain);
-				qtractorMixer *pMixer = mixer();
-				if (pMixer) {
-					qtractorMixerStrip *pStrip
-						= pMixer->trackRack()->findStrip(pTrack->monitor());
-					if (pStrip && pStrip->meter())
-						pStrip->meter()->updateGain();
-				}
+				m_pSession->execute(
+					new qtractorTrackGainCommand(pTrack, fGain, true));
 				sCtlText += tr("(track %1, gain %2)")
 					.arg(iTrack).arg(fGain);
 			}
@@ -1321,22 +1327,13 @@ void qtractorMainForm::midiControlEvent ( qtractorMidiControlEvent *pCtlEvent )
 	// Handle pan controls...
 	if (pCtlEvent->controller() == 10) {
 		int iTrack = 0;
+		float fPanning = (float(pCtlEvent->value()) - 63.0f) / 64.0f;
 		for (qtractorTrack *pTrack = m_pSession->tracks().first();
 				pTrack; pTrack = pTrack->next()) {
 			if (pTrack->trackType() == qtractorTrack::Midi &&
 				pTrack->midiChannel() == pCtlEvent->channel()) {
-				// Set track panning directly,
-				// bypassing the undo/redo system
-				// to avoid feedback issues with
-				// motorized external controllers...
-				float fPanning = (float(pCtlEvent->value()) - 63.0f) / 64.0f;
-				qtractorMixer *pMixer = mixer();
-				if (pMixer) {
-					qtractorMixerStrip *pStrip
-						= pMixer->trackRack()->findStrip(pTrack->monitor());
-					if (pStrip && pStrip->meter())
-						pStrip->meter()->updatePanning();
-				}
+				m_pSession->execute(
+					new qtractorTrackPanningCommand(pTrack, fPanning, true));
 				sCtlText += tr("(track %1, panning %2)")
 					.arg(iTrack).arg(fPanning);
 			}
@@ -1344,38 +1341,38 @@ void qtractorMainForm::midiControlEvent ( qtractorMidiControlEvent *pCtlEvent )
 		}
 	}
 
-	appendMessages("CTL: " + sCtlText);
+	appendMessages(sCtlText);
 }
 
 
 // Custom MIDI SPP  event handler.
 void qtractorMainForm::midiSppEvent ( qtractorMidiSppEvent *pSppEvent )
 {
-	QString sSppText;
+	QString sSppText("SPP: ");
 	switch (pSppEvent->cmdType()) {
 	case SND_SEQ_EVENT_START:
-		sSppText = tr("START");
+		sSppText += tr("START");
 		setSongPos(0);
 		setPlaying(true);
 		break;
 	case SND_SEQ_EVENT_STOP:
-		sSppText = tr("STOP");
+		sSppText += tr("STOP");
 		setPlaying(false);
 		break;
 	case SND_SEQ_EVENT_CONTINUE:
-		sSppText = tr("CONTINUE");
+		sSppText += tr("CONTINUE");
 		setPlaying(true);
 		break;
 	case SND_SEQ_EVENT_SONGPOS:
-		sSppText = tr("SONGPOS %1").arg(pSppEvent->songPos());
+		sSppText += tr("SONGPOS %1").arg(pSppEvent->songPos());
 		setSongPos(pSppEvent->songPos());
 		break;
 	default:
-		sSppText = tr("Not implemented");
+		sSppText += tr("Not implemented");
 		break;
 	}
 
-	appendMessages("SPP: " + sSppText);
+	appendMessages(sSppText);
 	stabilizeForm();
 }
 
@@ -1684,6 +1681,7 @@ bool qtractorMainForm::closeSession (void)
 		// Reset all dependables to default.
 		m_pMixer->clear();
 		m_pFiles->clear();
+		m_pMidiControl->clear();
 		// Close session engines.
 		m_pSession->close();
 		m_pSession->clear();
@@ -3962,6 +3960,8 @@ void qtractorMainForm::updateSession (void)
 		m_pSession->setPlayHead(0);
 		// (Re)initialize MIDI instrument patching...
 		m_pSession->setMidiPatch();
+		// Re-send all mapped MIDI controllers...
+		m_pMidiControl->sendAllControllers();
 		// Get on with the special ALSA sequencer notifier...
 		if (m_pSession->midiEngine()->alsaNotifier()) {
 			QObject::connect(m_pSession->midiEngine()->alsaNotifier(),

@@ -307,6 +307,8 @@ public:
 	// Direct MIDI controller helpers.
 	void setController(qtractorTrack *pTrack,
 		int iController, int iValue = 0) const;
+	void setController(unsigned short iChannel,
+		int iController, int iValue = 0) const;
 
 	// Direct MIDI note helper.
 	void sendNote(qtractorTrack *pTrack,
@@ -384,34 +386,6 @@ private:
 
 	// Channel patch mapper.
 	QHash<unsigned short, Patch> m_patches;
-};
-
-
-//----------------------------------------------------------------------
-// qtractorMidiControlEvent - MIDI Control custom event.
-//
-
-class qtractorMidiControlEvent : public QEvent
-{
-public:
-
-	// Contructor.
-	qtractorMidiControlEvent(QEvent::Type eType, unsigned short iChannel,
-		unsigned char controller, unsigned char value)
-		: QEvent(eType), m_channel(iChannel),
-			m_controller(controller), m_value(value) {}
-
-	// Accessors.
-	unsigned short channel()    const { return m_channel; }
-	unsigned short controller() const { return m_controller; }
-	unsigned short value()      const { return m_value; }
-
-private:
-
-	// Instance variables.
-	unsigned short m_channel;
-	unsigned short m_controller;
-	unsigned short m_value;
 };
 
 
