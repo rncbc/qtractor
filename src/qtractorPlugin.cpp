@@ -890,7 +890,7 @@ void qtractorPlugin::saveValues (
 	}
 }
 
-	
+
 //----------------------------------------------------------------------------
 // qtractorPluginList -- Plugin chain list instance.
 //

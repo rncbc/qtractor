@@ -245,7 +245,7 @@ qtractorMainForm::qtractorMainForm (
 		pMidiEngine->setNotifySppType(QTRACTOR_SPP_EVENT);
 	}
 
-	// add the midi controller map
+	// Add the midi controller map...
 	m_pMidiControl = new qtractorMidiControl();
 
 #ifdef HAVE_SIGNAL_H
@@ -779,7 +779,7 @@ qtractorMainForm::~qtractorMainForm (void)
 	if (m_pTempoCursor)
 		delete m_pTempoCursor;
 
-	// remove midi controller
+	// Remove midi controllers.
 	if (m_pMidiControl)
 		delete m_pMidiControl;
 
@@ -1286,7 +1286,7 @@ void qtractorMainForm::midiControlEvent ( qtractorMidiControlEvent *pCtlEvent )
 		.arg(pCtlEvent->controller())
 		.arg(pCtlEvent->value());
 
-	// TODO: check if controller is used as MIDI controller...
+	// TODO: Check if controller is used as MIDI controller...
 	if (m_pMidiControl->processEvent(pCtlEvent)) {
 		appendMessages(sCtlText);
 		return;

@@ -27,6 +27,8 @@
 
 // Forward declarations.
 class qtractorTrack;
+class qtractorDocument;
+class QDomElement;
 
 
 //----------------------------------------------------------------------
@@ -114,6 +116,24 @@ public:
 	// Process incoming command.
 	void processCommand(Command command, int iParam, float fValue) const;
 	void processCommand(Command command, int iParam, bool bValue) const;
+
+	// Forward declaration.
+	class Document;
+
+	// Document element methods.
+	bool loadElement(qtractorDocument *pDocument, QDomElement *pElement);
+	bool saveElement(qtractorDocument *pDocument, QDomElement *pElement);
+
+	// Document file methods.
+	bool loadDocument(const QString& sFilename);
+	bool saveDocument(const QString& sFilename);
+
+	// Document textual helpers.
+	static unsigned short keyFromText(const QString& sText);
+	static QString textFromKey(unsigned short iKey);
+
+	static Command commandFromText(const QString& sText);
+	static QString textFromCommand(Command command);
 
 protected:
 

@@ -29,6 +29,10 @@
 #include "qtractorTrackList.h"
 #include "qtractorTrackCommand.h"
 
+#include "qtractorDocument.h"
+
+#include <QFile>
+
 
 //----------------------------------------------------------------------
 // qtractorMidiControl::MapKey -- MIDI control map key.
@@ -46,7 +50,7 @@ public:
 	void setChannel(unsigned short iChannel)
 		{ m_iChannel = iChannel; }
 	unsigned short channel() const
-		{ return (m_iChannel & MaskParam); }
+		{ return m_iChannel; }
 
 	bool isChannel() const
 		{ return ((m_iChannel & MaskParam) == m_iChannel); }
@@ -57,7 +61,7 @@ public:
 	void setController (unsigned short iController)
 		{ m_iController = iController; }
 	unsigned short controller() const
-		{ return (m_iController & MaskParam); }
+		{ return m_iController; }
 
 	bool isController() const
 		{ return ((m_iController & MaskParam ) == m_iController); }
@@ -70,10 +74,6 @@ public:
 		return (isChannelParam() || channel() == iChannel)
 			&& (isControllerParam() || controller() == iController);
 	}
-
-	// Raw hash key.
-	unsigned short hash() const
-		{ return (m_iChannel ^ m_iController); }
 
 	// Hash key comparator.
 	bool operator== ( const MapKey& key ) const
@@ -93,7 +93,7 @@ private:
 // Hash key function
 inline uint qHash ( const qtractorMidiControl::MapKey& key )
 {
-	return qHash(key.hash());
+	return qHash(key.channel() ^ key.controller());
 }
 
 
@@ -177,7 +177,7 @@ void qtractorMidiControl::clear (void)
 	//
 	// JLCooper faders (as in US-224)...
 	mapChannelControllerParam(15, TrackGain, 0x40); // No feedback.
-#ifdef CONFIG_TEST_BCx2000
+#ifdef TEST_BCx2000
 	// Generic track feedback controllers (eg. Behringer BCx2000)...
 	mapChannelParamController(7, TrackGain, 0, true);
 	mapChannelParamController(10, TrackPanning, 0, true);
@@ -490,6 +490,196 @@ void qtractorMidiControl::sendController (
 #endif
 
 	pMidiBus->setController(iChannel, iController, iValue);
+}
+
+
+//----------------------------------------------------------------------
+// qtractorMidiControl::Document -- MIDI control document.
+//
+
+class qtractorMidiControl::Document : public qtractorDocument
+{
+public:
+
+	// Constructor.
+	Document(QDomDocument *pDocument, qtractorMidiControl *pMidiControl)
+		: qtractorDocument(pDocument, "midi-control"),
+			m_pMidiControl(pMidiControl) {}
+
+	// Elemental loader/savers...
+	bool loadElement(QDomElement *pElement)
+		{ return m_pMidiControl->loadElement(this, pElement); }
+	bool saveElement(QDomElement *pElement)
+		{ return m_pMidiControl->saveElement(this, pElement); }
+
+private:
+
+	// Instance variables.
+	qtractorMidiControl *m_pMidiControl;
+};
+
+
+// Load controller rules.
+bool qtractorMidiControl::loadElement (
+	qtractorDocument *pDocument, QDomElement *pElement )
+{
+	for (QDomNode nItem = pElement->firstChild();
+			!nItem.isNull();
+				nItem = nItem.nextSibling()) {
+		// Convert item node to element...
+		QDomElement eItem = nItem.toElement();
+		if (eItem.isNull())
+			continue;
+		if (eItem.tagName() == "map") {
+			unsigned short iChannel
+				= keyFromText(eItem.attribute("channel"));
+			unsigned short iController
+				= keyFromText(eItem.attribute("controller"));
+			Command command = TrackNone;
+			int iParam = 0;
+			bool bFeedback = false;
+			for (QDomNode nVal = eItem.firstChild();
+					!nVal.isNull();
+						nVal = nVal.nextSibling()) {
+				// Convert value node to element...
+				QDomElement eVal = nVal.toElement();
+				if (eVal.isNull())
+					continue;
+				if (eVal.tagName() == "command")
+					command = commandFromText(eVal.text());
+				else
+				if (eVal.tagName() == "param")
+					iParam = eVal.text().toInt();
+				else
+				if (eVal.tagName() == "feedback")
+					bFeedback = pDocument->boolFromText(eVal.text());
+			}
+			m_controlMap.insert(
+				MapKey(iChannel, iController),
+				MapVal(command, iParam, bFeedback));
+		}
+	}
+
+	return true;
+}
+
+
+// Save controller rules.
+bool qtractorMidiControl::saveElement (
+	qtractorDocument *pDocument, QDomElement *pElement )
+{
+	ControlMap::ConstIterator it = m_controlMap.constBegin();
+	for ( ; it != m_controlMap.constEnd(); ++it) {
+		const MapKey& key = it.key();
+		const MapVal& val = it.value();
+		QDomElement eItem = pDocument->document()->createElement("map");
+		const QString sTrackParam("TrackParam");
+		eItem.setAttribute("channel",
+			textFromKey(key.channel()));
+		eItem.setAttribute("controller",
+			textFromKey(key.controller()));
+		pDocument->saveTextElement("command",
+			textFromCommand(val.command()), &eItem);
+		pDocument->saveTextElement("param",
+			QString::number(val.param()), &eItem);
+		pDocument->saveTextElement("feedback",
+			pDocument->textFromBool(val.isFeedback()), &eItem);
+		pElement->appendChild(eItem);
+	}
+
+	return true;
+}
+
+
+// Document file methods.
+bool qtractorMidiControl::loadDocument ( const QString& sFilename )
+{
+	QDomDocument doc("qtractorMidiControl");
+	return qtractorMidiControl::Document(&doc, this).load(sFilename);
+}
+
+bool qtractorMidiControl::saveDocument ( const QString& sFilename )
+{
+	QDomDocument doc("qtractorMidiControl");
+	return qtractorMidiControl::Document(&doc, this).save(sFilename);
+}
+
+
+// Document textual helpers.
+unsigned short qtractorMidiControl::keyFromText ( const QString& sText )
+{
+	if (sText == "TrackParam")
+		return TrackParam;
+	else
+		return sText.toUShort();
+}
+
+
+QString qtractorMidiControl::textFromKey ( unsigned short iKey )
+{
+	if (iKey & TrackParam)
+		return "TrackParam";
+	else
+		return QString::number(iKey);
+}
+
+
+qtractorMidiControl::Command qtractorMidiControl::commandFromText (
+	const QString& sText )
+{
+	if (sText == "TrackGain")
+		return TrackGain;
+	else
+	if (sText == "TrackPanning")
+		return TrackPanning;
+	else
+	if (sText == "TrackMonitor")
+		return TrackMonitor;
+	else
+	if (sText == "TrackRecord")
+		return TrackRecord;
+	else
+	if (sText == "TrackMute")
+		return TrackMute;
+	else
+	if (sText == "TrackSolo")
+		return TrackSolo;
+	else
+		return TrackNone;
+}
+
+
+QString qtractorMidiControl::textFromCommand (
+	qtractorMidiControl::Command command )
+{
+	QString sText;
+
+	switch (command) {
+	case TrackGain:
+		sText = "TrackGain";
+		break;
+	case TrackPanning:
+		sText = "TrackPanning";
+		break;
+	case TrackMonitor:
+		sText = "TrackMonitor";
+		break;
+	case TrackRecord:
+		sText = "TrackRecord";
+		break;
+	case TrackMute:
+		sText = "TrackMute";
+		break;
+	case TrackSolo:
+		sText = "TrackSolo";
+		break;
+	case TrackNone:
+	default:
+		sText = "TrackNone";
+		break;
+	}
+
+	return sText;
 }
 
 
