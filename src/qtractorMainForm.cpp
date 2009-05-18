@@ -63,6 +63,7 @@
 #include "qtractorOptionsForm.h"
 #include "qtractorConnectForm.h"
 #include "qtractorShortcutForm.h"
+#include "qtractorMidiControlForm.h"
 #include "qtractorInstrumentForm.h"
 #include "qtractorBusForm.h"
 #include "qtractorTimeScaleForm.h"
@@ -665,6 +666,9 @@ qtractorMainForm::qtractorMainForm (
 	QObject::connect(m_ui.viewInstrumentsAction,
 		SIGNAL(triggered(bool)),
 		SLOT(viewInstruments()));
+	QObject::connect(m_ui.viewControllersAction,
+		SIGNAL(triggered(bool)),
+		SLOT(viewControllers()));
 	QObject::connect(m_ui.viewBusesAction,
 		SIGNAL(triggered(bool)),
 		SLOT(viewBuses()));
@@ -916,6 +920,11 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 	m_pOptions->loadWidgetGeometry(this);
 	m_pOptions->loadWidgetGeometry(m_pMixer);
 	m_pOptions->loadWidgetGeometry(m_pConnections);
+
+	// Load MIDI controller configuration files...
+	QStringListIterator it(m_pOptions->midiControlFiles);
+	while (it.hasNext())
+		m_pMidiControl->loadDocument(it.next());
 
 	// Load instrument definition files...
 	QStringListIterator iter(m_pOptions->instrumentFiles);
@@ -1681,7 +1690,6 @@ bool qtractorMainForm::closeSession (void)
 		// Reset all dependables to default.
 		m_pMixer->clear();
 		m_pFiles->clear();
-		m_pMidiControl->clear();
 		// Close session engines.
 		m_pSession->close();
 		m_pSession->clear();
@@ -2842,6 +2850,14 @@ void qtractorMainForm::viewInstruments (void)
 {
 	// Just set and show the instruments dialog...
 	qtractorInstrumentForm(this).exec();
+}
+
+
+// Show MIDI controllers dialog.
+void qtractorMainForm::viewControllers (void)
+{
+	// Just set and show the MIDI controllers dialog...
+	qtractorMidiControlForm(this).exec();
 }
 
 

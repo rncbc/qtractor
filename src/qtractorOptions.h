@@ -129,6 +129,7 @@ public:
 	QString sMidiDir;
 	QString sPresetDir;
 	QString sInstrumentDir;
+	QString sMidiControlDir;
 
 	// Session options.
 	bool    bSessionTemplate;
@@ -161,6 +162,9 @@ public:
 
 	// The instrument file list.
 	QStringList instrumentFiles;
+
+	// The MIDI controllers file list.
+	QStringList midiControlFiles;
 
 	// Recent file list.
 	int iMaxRecentFiles;

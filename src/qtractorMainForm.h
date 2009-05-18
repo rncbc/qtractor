@@ -78,7 +78,7 @@ public:
 	qtractorConnections *connections() const;
 	qtractorMixer *mixer() const;
 	qtractorThumbView *thumbView() const;
-
+	
 	QString sessionName(const QString& sFilename);
 
 	void updateTransportTime(unsigned long iPlayHead);
@@ -181,6 +181,7 @@ public slots:
 	void viewSnap();
 	void viewRefresh();
 	void viewInstruments();
+	void viewControllers();
 	void viewBuses();
 	void viewTempoMap();
 	void viewOptions();
@@ -314,6 +315,7 @@ private:
 	QProgressBar *m_pProgressBar;
 	qtractorThumbView *m_pThumbView;
 	qtractorTempoCursor *m_pTempoCursor;
+	qtractorMidiControl *m_pMidiControl;
 	unsigned long m_iPlayHead;
 	long m_iDeltaTimer;
 	int m_iPeakTimer;
@@ -330,8 +332,6 @@ private:
 	int m_iAudioRefreshTimer;
 	int m_iMidiRefreshTimer;
 	int m_iPlayerTimer;
-
-	qtractorMidiControl* m_pMidiControl;
 
 	// Status bar item indexes
 	enum {

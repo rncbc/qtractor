@@ -5,9 +5,10 @@ ChangeLog
 
 CVS HEAD
 
-- A new MIDI controller mapping infrastructure is getting
-  in place, on-going contribution from Mathias aka gizzmo
-  (EXPERIEMNTAL).
+- A new MIDI controller mapping infrastructure, with primal
+  configuration file management (View/Controllers...), is
+  now breeding into place; on-going contribution by Mathias
+  aka gizzmo (EXPERIMENTAL).
 
 - Plugin chain buffer reset on playback start/stop is not
   guarded by a momentary plugin de/activation anymore.

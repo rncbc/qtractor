@@ -158,6 +158,7 @@ qtractorOptions::qtractorOptions (void)
 	sMidiDir       = m_settings.value("/MidiDir").toString();
 	sPresetDir     = m_settings.value("/PresetDir").toString();
 	sInstrumentDir = m_settings.value("/InstrumentDir").toString();
+	sMidiControlDir = m_settings.value("/MidiControlDir").toString();
 	bAutoMonitor   = m_settings.value("/AutoMonitor", true).toBool();
 	iSnapPerBeat   = m_settings.value("/SnapPerBeat", 4).toInt();
 	fTempo   = float(m_settings.value("/Tempo", 120.0).toDouble());
@@ -193,6 +194,19 @@ qtractorOptions::qtractorOptions (void)
 	}
 	m_settings.endGroup();
 
+	// MIDI controller file list.
+	iFile = 0;
+	midiControlFiles.clear();
+	m_settings.beginGroup("/MidiControlFiles");
+	for (;;) {
+		QString sFilename = m_settings.value(
+			sFilePrefix.arg(++iFile)).toString();
+		if (sFilename.isEmpty())
+			break;
+		midiControlFiles.append(sFilename);
+	}
+	m_settings.endGroup();
+
 	// Recent file list.
 	iFile = 0;
 	recentFiles.clear();
@@ -200,8 +214,9 @@ qtractorOptions::qtractorOptions (void)
 	while (iFile < iMaxRecentFiles) {
 		QString sFilename = m_settings.value(
 			sFilePrefix.arg(++iFile)).toString();
-		if (!sFilename.isEmpty())
-			recentFiles.append(sFilename);
+		if (sFilename.isEmpty())
+			break;
+		recentFiles.append(sFilename);
 	}
 	m_settings.endGroup();
 
@@ -348,6 +363,7 @@ qtractorOptions::~qtractorOptions (void)
 	m_settings.setValue("/MidiDir", sMidiDir);
 	m_settings.setValue("/PresetDir", sPresetDir);
 	m_settings.setValue("/InstrumentDir", sInstrumentDir);
+	m_settings.setValue("/MidiControlDir", sMidiControlDir);
 	m_settings.setValue("/AutoMonitor", bAutoMonitor);
 	m_settings.setValue("/SnapPerBeat", iSnapPerBeat);
 	m_settings.setValue("/Tempo", double(fTempo));
@@ -381,12 +397,23 @@ qtractorOptions::~qtractorOptions (void)
         m_settings.remove(sFilePrefix.arg(iFile));
 	m_settings.endGroup();
 
+	// MIDI controller file list.
+	iFile = 0;
+	m_settings.beginGroup("/MidiControlFiles");
+	QStringListIterator iter2(midiControlFiles);
+    while (iter2.hasNext())
+		m_settings.setValue(sFilePrefix.arg(++iFile), iter2.next());
+    // Cleanup old entries, if any...
+    while (!m_settings.value(sFilePrefix.arg(++iFile)).isNull())
+        m_settings.remove(sFilePrefix.arg(iFile));
+	m_settings.endGroup();
+
 	// Recent file list.
 	iFile = 0;
 	m_settings.beginGroup("/RecentFiles");
-	QStringListIterator iter2(recentFiles);
-    while (iter2.hasNext())
-		m_settings.setValue(sFilePrefix.arg(++iFile), iter2.next());
+	QStringListIterator iter3(recentFiles);
+    while (iter3.hasNext())
+		m_settings.setValue(sFilePrefix.arg(++iFile), iter3.next());
 	m_settings.endGroup();
 
 	// Tracks widget settings.

@@ -276,6 +276,7 @@
     <addaction name="viewRefreshAction" />
     <addaction name="separator" />
     <addaction name="viewInstrumentsAction" />
+    <addaction name="viewControllersAction" />
     <addaction name="viewBusesAction" />
 	<addaction name="viewTempoMapAction" />
 	<addaction name="separator" />
@@ -1638,6 +1639,26 @@
    </property>
    <property name="statusTip" >
     <string>Change instrument definitions and files</string>
+   </property>
+   <property name="shortcut" >
+    <string/>
+   </property>
+  </action>
+  <action name="viewControllersAction" >
+   <property name="icon" >
+    <iconset resource="../icons/qtractor.qrc" >:/icons/itemControllers.png</iconset>
+   </property>
+   <property name="text" >
+    <string>&amp;Controllers...</string>
+   </property>
+   <property name="iconText" >
+    <string>Controllers</string>
+   </property>
+   <property name="toolTip" >
+    <string>Controllers</string>
+   </property>
+   <property name="statusTip" >
+    <string>Change MIDI controllers configuration</string>
    </property>
    <property name="shortcut" >
     <string/>

@@ -1,0 +1,211 @@
+<ui version="4.0">
+ <author>rncbc aka Rui Nuno Capela</author>
+ <comment>qtractor - An Audio/MIDI multi-track sequencer.
+
+   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
+
+   This program is free software; you can redistribute it and/or
+   modify it under the terms of the GNU General Public License
+   as published by the Free Software Foundation; either version 2
+   of the License, or (at your option) any later version.
+
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+
+   You should have received a copy of the GNU General Public License along
+   with this program; if not, write to the Free Software Foundation, Inc.,
+   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
+ </comment>
+ <class>qtractorMidiControlForm</class>
+ <widget class="QDialog" name="qtractorMidiControlForm">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>423</width>
+    <height>258</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Controllers - Qtractor</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="../icons/qtractor.qrc">:/icons/itemControllers.png</iconset>
+  </property>
+  <layout class="QHBoxLayout">
+   <item>
+    <widget class="QTreeWidget" name="FilesListView">
+     <property name="minimumSize">
+      <size>
+       <width>320</width>
+       <height>240</height>
+      </size>
+     </property>
+     <property name="rootIsDecorated">
+      <bool>false</bool>
+     </property>
+     <property name="uniformRowHeights">
+      <bool>true</bool>
+     </property>
+     <property name="itemsExpandable">
+      <bool>false</bool>
+     </property>
+     <column>
+      <property name="text">
+       <string>Files</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Path</string>
+      </property>
+     </column>
+    </widget>
+   </item>
+   <item>
+    <layout class="QVBoxLayout">
+     <item>
+      <widget class="QPushButton" name="ImportPushButton">
+       <property name="toolTip">
+        <string>Import from MIDI controllers file</string>
+       </property>
+       <property name="text">
+        <string>&amp;Import...</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../icons/qtractor.qrc">:/icons/fileOpen.png</iconset>
+       </property>
+       <property name="shortcut">
+        <string>Alt+I</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="RemovePushButton">
+       <property name="toolTip">
+        <string>Remove MIDI controllers file</string>
+       </property>
+       <property name="text">
+        <string>&amp;Remove</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../icons/qtractor.qrc">:/icons/formRemove.png</iconset>
+       </property>
+       <property name="shortcut">
+        <string>Alt+R</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="MoveUpPushButton">
+       <property name="toolTip">
+        <string>Move MIDI controllers file up on list order</string>
+       </property>
+       <property name="text">
+        <string>&amp;Up</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../icons/qtractor.qrc">:/icons/formMoveUp.png</iconset>
+       </property>
+       <property name="shortcut">
+        <string>Alt+U</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="MoveDownPushButton">
+       <property name="toolTip">
+        <string>Move MIDI controllers file down on list order</string>
+       </property>
+       <property name="text">
+        <string>&amp;Down</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../icons/qtractor.qrc">:/icons/formMoveDown.png</iconset>
+       </property>
+       <property name="shortcut">
+        <string>Alt+D</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer>
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>0</width>
+         <height>0</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="ExportPushButton">
+       <property name="toolTip">
+        <string>Export to MIDI controllers file</string>
+       </property>
+       <property name="text">
+        <string>&amp;Export...</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../icons/qtractor.qrc">:/icons/fileSave.png</iconset>
+       </property>
+       <property name="shortcut">
+        <string>Alt+E</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="ApplyPushButton">
+       <property name="toolTip">
+        <string>Apply all MIDI controllers files</string>
+       </property>
+       <property name="text">
+        <string>&amp;Apply</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../icons/qtractor.qrc">:/icons/formAccept.png</iconset>
+       </property>
+       <property name="shortcut">
+        <string>Alt+A</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="ClosePushButton">
+       <property name="toolTip">
+        <string>Close this dialog</string>
+       </property>
+       <property name="text">
+        <string>Close</string>
+       </property>
+       <property name="shortcut">
+        <string/>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <layoutdefault spacing="4" margin="8"/>
+ <tabstops>
+  <tabstop>FilesListView</tabstop>
+  <tabstop>ImportPushButton</tabstop>
+  <tabstop>RemovePushButton</tabstop>
+  <tabstop>MoveUpPushButton</tabstop>
+  <tabstop>MoveDownPushButton</tabstop>
+  <tabstop>ExportPushButton</tabstop>
+  <tabstop>ApplyPushButton</tabstop>
+  <tabstop>ClosePushButton</tabstop>
+ </tabstops>
+ <resources>
+  <include location="../icons/qtractor.qrc"/>
+ </resources>
+ <connections/>
+</ui>

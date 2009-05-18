@@ -173,10 +173,10 @@ void qtractorMidiControl::clear (void)
 {
 	m_controlMap.clear();
 
-	// TEST: (Re)generate the default controller map...
-	//
+#ifdef TEST_USx2y
 	// JLCooper faders (as in US-224)...
 	mapChannelControllerParam(15, TrackGain, 0x40); // No feedback.
+#endif
 #ifdef TEST_BCx2000
 	// Generic track feedback controllers (eg. Behringer BCx2000)...
 	mapChannelParamController(7, TrackGain, 0, true);
