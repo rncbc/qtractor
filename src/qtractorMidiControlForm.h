@@ -48,6 +48,8 @@ protected slots:
     void removeSlot();
     void moveUpSlot();
     void moveDownSlot();
+	void mapSlot();
+	void unmapSlot();
     void exportSlot();
     void applySlot();
 

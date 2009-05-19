@@ -56,6 +56,34 @@ qtractorMidiControlForm::qtractorMidiControlForm (
 	pHeader->setDefaultAlignment(Qt::AlignLeft);
 	pHeader->setMovable(false);
 
+//	m_ui.ChannelComboBox->clear();
+	m_ui.ChannelComboBox->addItem("*");
+	for (unsigned short i = 0; i < 16; ++i)
+		m_ui.ChannelComboBox->addItem(QString::number(i + 1));
+
+//	m_ui.ControllerComboBox->clear();
+	m_ui.ControllerComboBox->addItem("*");
+	for (unsigned short i = 0; i < 128; ++i)
+		m_ui.ControllerComboBox->addItem(QString::number(i));
+
+//	m_ui.CommandComboBox->clear();
+	m_ui.CommandComboBox->addItem(
+		qtractorMidiControl::textFromCommand(qtractorMidiControl::TrackGain));
+	m_ui.CommandComboBox->addItem(
+		qtractorMidiControl::textFromCommand(qtractorMidiControl::TrackPanning));
+	m_ui.CommandComboBox->addItem(
+		qtractorMidiControl::textFromCommand(qtractorMidiControl::TrackMonitor));
+	m_ui.CommandComboBox->addItem(
+		qtractorMidiControl::textFromCommand(qtractorMidiControl::TrackRecord));
+	m_ui.CommandComboBox->addItem(
+		qtractorMidiControl::textFromCommand(qtractorMidiControl::TrackMute));
+	m_ui.CommandComboBox->addItem(
+		qtractorMidiControl::textFromCommand(qtractorMidiControl::TrackSolo));
+
+	// TODO...
+	m_ui.MapPushButton->setEnabled(false);
+	m_ui.UnmapPushButton->setEnabled(false);
+
 	refreshFiles();
 	adjustSize();
 
@@ -78,6 +106,12 @@ qtractorMidiControlForm::qtractorMidiControlForm (
 	QObject::connect(m_ui.MoveDownPushButton,
 		SIGNAL(clicked()),
 		SLOT(moveDownSlot()));
+	QObject::connect(m_ui.MapPushButton,
+		SIGNAL(clicked()),
+		SLOT(mapSlot()));
+	QObject::connect(m_ui.UnmapPushButton,
+		SIGNAL(clicked()),
+		SLOT(unmapSlot()));
 	QObject::connect(m_ui.ExportPushButton,
 		SIGNAL(clicked()),
 		SLOT(exportSlot()));
@@ -256,6 +290,22 @@ void qtractorMidiControlForm::moveDownSlot (void)
 }
 
 
+// Map current channel/control command.
+void qtractorMidiControlForm::mapSlot (void)
+{
+	// TODO...
+	stabilizeForm();
+}
+
+
+// Unmap current channel/control command.
+void qtractorMidiControlForm::unmapSlot (void)
+{
+	// TODO...
+	stabilizeForm();
+}
+
+
 // Export the whole state into a single controller file.
 void qtractorMidiControlForm::exportSlot (void)
 {
@@ -366,6 +416,19 @@ void qtractorMidiControlForm::stabilizeForm (void)
 		m_ui.RemovePushButton->setEnabled(false);
 		m_ui.MoveUpPushButton->setEnabled(false);
 		m_ui.MoveDownPushButton->setEnabled(false);
+	}
+
+	// TODO...
+	pItem = m_ui.ControlMapListView->currentItem();
+	if (pItem) {
+		m_ui.ChannelComboBox->setCurrentIndex(
+			m_ui.ChannelComboBox->findText(pItem->text(0)));
+		m_ui.ControllerComboBox->setCurrentIndex(
+			m_ui.ControllerComboBox->findText(pItem->text(1)));
+		m_ui.CommandComboBox->setCurrentIndex(
+			m_ui.CommandComboBox->findText(pItem->text(2)));
+		m_ui.ParamSpinBox->setValue(pItem->text(3).toInt());
+		m_ui.FeedbackCheckBox->setChecked(pItem->text(4) == tr("Yes"));
 	}
 
 	qtractorMidiControl *pMidiControl = qtractorMidiControl::getInstance();
