@@ -35,108 +35,6 @@
 
 
 //----------------------------------------------------------------------
-// qtractorMidiControl::MapKey -- MIDI control map key.
-//
-
-class qtractorMidiControl::MapKey
-{
-public:
-
-	// Constructor.
-	MapKey(unsigned short iChannel = 0, unsigned short iController = 0)
-		: m_iChannel(iChannel), m_iController(iController) {}
-
-	// Channel accessors.
-	void setChannel(unsigned short iChannel)
-		{ m_iChannel = iChannel; }
-	unsigned short channel() const
-		{ return m_iChannel; }
-
-	bool isChannel() const
-		{ return ((m_iChannel & MaskParam) == m_iChannel); }
-	bool isChannelParam() const
-		{ return (m_iChannel & TrackParam); }
-
-	// Controller accessors.
-	void setController (unsigned short iController)
-		{ m_iController = iController; }
-	unsigned short controller() const
-		{ return m_iController; }
-
-	bool isController() const
-		{ return ((m_iController & MaskParam ) == m_iController); }
-	bool isControllerParam() const
-		{ return (m_iController & TrackParam); }
-
-	// Generic key matcher.
-	bool match (unsigned short iChannel, unsigned iController) const
-	{
-		return (isChannelParam() || channel() == iChannel)
-			&& (isControllerParam() || controller() == iController);
-	}
-
-	// Hash key comparator.
-	bool operator== ( const MapKey& key ) const
-	{
-		return (key.m_iChannel == m_iChannel)
-			&& (key.m_iController == m_iController);
-	}
-
-private:
-
-	// Instance (key) member variables.
-	unsigned short m_iChannel;
-	unsigned short m_iController;
-};
-
-
-// Hash key function
-inline uint qHash ( const qtractorMidiControl::MapKey& key )
-{
-	return qHash(key.channel() ^ key.controller());
-}
-
-
-//----------------------------------------------------------------------
-// qtractorMidiControl::MapVal -- MIDI control map data value.
-//
-
-class qtractorMidiControl::MapVal
-{
-public:
-
-	// Constructor.
-	MapVal(Command command = TrackNone, int iParam = 0, bool bFeedback = false)
-		: m_command(command), m_iParam(iParam), m_bFeedback(bFeedback) {}
-
-	// Command accessors
-	void setCommand(Command command)
-		{ m_command = command; }
-	Command command() const
-		{ return m_command; }
-
-	// Parameter accessor (eg. track delta-index)
-	void setParam(int iParam)
-		{ m_iParam = iParam; }
-	int param() const
-		{ return m_iParam; }
-
-	// Feedback flag accessor.
-	void setFeedback(bool bFeedback)
-		{ m_bFeedback = bFeedback; }
-	int isFeedback() const
-		{ return m_bFeedback; }
-
-private:
-
-	// Instance (value) member variables.
-	Command m_command;
-	int     m_iParam;
-	bool    m_bFeedback;
-};
-
-
-//----------------------------------------------------------------------
 // qtractorMidiControl -- MIDI control map (singleton).
 //
 
@@ -608,7 +506,7 @@ bool qtractorMidiControl::saveDocument ( const QString& sFilename )
 // Document textual helpers.
 unsigned short qtractorMidiControl::keyFromText ( const QString& sText )
 {
-	if (sText == "TrackParam")
+	if (sText == "TrackParam" || sText == "*" || sText.isEmpty())
 		return TrackParam;
 	else
 		return sText.toUShort();
@@ -618,7 +516,7 @@ unsigned short qtractorMidiControl::keyFromText ( const QString& sText )
 QString qtractorMidiControl::textFromKey ( unsigned short iKey )
 {
 	if (iKey & TrackParam)
-		return "TrackParam";
+		return "*"; // "TrackParam";
 	else
 		return QString::number(iKey);
 }

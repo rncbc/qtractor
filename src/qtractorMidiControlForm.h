@@ -51,8 +51,12 @@ protected slots:
     void exportSlot();
     void applySlot();
 
-    void refreshForm();
     void stabilizeForm();
+
+protected:
+
+    void refreshFiles();
+    void refreshControlMap();
 
 private:
 

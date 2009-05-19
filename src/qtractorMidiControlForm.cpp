@@ -47,14 +47,23 @@ qtractorMidiControlForm::qtractorMidiControlForm (
 
 	QHeaderView *pHeader = m_ui.FilesListView->header();
 //	pHeader->setResizeMode(QHeaderView::Custom);
+	pHeader->setResizeMode(QHeaderView::ResizeToContents);
 	pHeader->setDefaultAlignment(Qt::AlignLeft);
 	pHeader->setMovable(false);
 
-	refreshForm();
+	pHeader = m_ui.ControlMapListView->header();
+	pHeader->setResizeMode(QHeaderView::ResizeToContents);
+	pHeader->setDefaultAlignment(Qt::AlignLeft);
+	pHeader->setMovable(false);
+
+	refreshFiles();
 	adjustSize();
 
 	// UI signal/slot connections...
 	QObject::connect(m_ui.FilesListView,
+		SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)),
+		SLOT(stabilizeForm()));
+	QObject::connect(m_ui.ControlMapListView,
 		SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)),
 		SLOT(stabilizeForm()));
 	QObject::connect(m_ui.ImportPushButton,
@@ -131,10 +140,6 @@ void qtractorMidiControlForm::reject (void)
 // Import new intrument file(s) into listing.
 void qtractorMidiControlForm::importSlot (void)
 {
-	qtractorMidiControl *pMidiControl = qtractorMidiControl::getInstance();
-	if (pMidiControl == NULL)
-		return;
-
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
 	if (pOptions == NULL)
 		return;
@@ -142,8 +147,8 @@ void qtractorMidiControlForm::importSlot (void)
 	QStringList files;
 
 	const QString  sExt("qtc");
-	const QString& sTitle  = tr("Import MIDI Controller Files") + " - " QTRACTOR_TITLE;
-	const QString& sFilter = tr("MIDI Controller files (*.%1)").arg(sExt);
+	const QString& sTitle  = tr("Import Controller Files") + " - " QTRACTOR_TITLE;
+	const QString& sFilter = tr("Controller files (*.%1)").arg(sExt);
 #if QT_VERSION < 0x040400
 	// Ask for the filename to open...
 	files = QFileDialog::getOpenFileNames(this,
@@ -177,26 +182,24 @@ void qtractorMidiControlForm::importSlot (void)
 	while (iter.hasNext()) {
 		// Merge the file contents into global container...
 		const QString& sPath = iter.next();
-		if (pMidiControl->loadDocument(sPath)) {
-			// Start inserting in the current selected or last item...
-			if (pItem == NULL)
-				pItem = m_ui.FilesListView->currentItem();
-			if (pItem == NULL) {
-				int iLastItem = m_ui.FilesListView->topLevelItemCount() - 1;
-				if (iLastItem >= 0)
-					pItem = m_ui.FilesListView->topLevelItem(iLastItem);
-			}
-			// New item on the block :-)
-			pItem = new QTreeWidgetItem(m_ui.FilesListView, pItem);
-			if (pItem) {
-				QFileInfo info(sPath);
-				pItem->setIcon(0, QIcon(":/icons/itemFile.png"));
-				pItem->setText(0, info.fileName());
-				pItem->setText(1, sPath);
-				m_ui.FilesListView->setCurrentItem(pItem);
-				pOptions->sMidiControlDir = info.absolutePath();
-				m_iDirtyCount++;
-			}
+		// Start inserting in the current selected or last item...
+		if (pItem == NULL)
+			pItem = m_ui.FilesListView->currentItem();
+		if (pItem == NULL) {
+			int iLastItem = m_ui.FilesListView->topLevelItemCount() - 1;
+			if (iLastItem >= 0)
+				pItem = m_ui.FilesListView->topLevelItem(iLastItem);
+		}
+		// New item on the block :-)
+		pItem = new QTreeWidgetItem(m_ui.FilesListView, pItem);
+		if (pItem) {
+			QFileInfo info(sPath);
+			pItem->setIcon(0, QIcon(":/icons/itemFile.png"));
+			pItem->setText(0, info.fileName());
+			pItem->setText(1, sPath);
+			m_ui.FilesListView->setCurrentItem(pItem);
+			pOptions->sMidiControlDir = info.absolutePath();
+			m_iDirtyCount++;
 		}
 	}
 
@@ -267,8 +270,8 @@ void qtractorMidiControlForm::exportSlot (void)
 	QString sPath;
 
 	const QString  sExt("qtc");
-	const QString& sTitle  = tr("Export MIDI Controller File") + " - " QTRACTOR_TITLE;
-	const QString& sFilter = tr("MIDI Controller files (*.%1)").arg(sExt);
+	const QString& sTitle  = tr("Export Controller File") + " - " QTRACTOR_TITLE;
+	const QString& sFilter = tr("Controller files (*.%1)").arg(sExt);
 #if QT_VERSION < 0x040400
 	// Ask for the filename to open...
 	sPath = QFileDialog::getOpenFileName(this,
@@ -345,12 +348,36 @@ void qtractorMidiControlForm::applySlot (void)
 	// Not dirty anymore...
 	m_iDirtyCount = 0;
 
-	stabilizeForm();
+	refreshControlMap();
+}
+
+
+// Stabilize form status.
+void qtractorMidiControlForm::stabilizeForm (void)
+{
+	QTreeWidgetItem *pItem = m_ui.FilesListView->currentItem();
+	if (pItem) {
+		int iItem = m_ui.FilesListView->indexOfTopLevelItem(pItem);
+		int iItemCount = m_ui.FilesListView->topLevelItemCount();
+		m_ui.RemovePushButton->setEnabled(true);
+		m_ui.MoveUpPushButton->setEnabled(iItem > 0);
+		m_ui.MoveDownPushButton->setEnabled(iItem < iItemCount - 1);
+	} else {
+		m_ui.RemovePushButton->setEnabled(false);
+		m_ui.MoveUpPushButton->setEnabled(false);
+		m_ui.MoveDownPushButton->setEnabled(false);
+	}
+
+	qtractorMidiControl *pMidiControl = qtractorMidiControl::getInstance();
+	m_ui.ExportPushButton->setEnabled(
+		pMidiControl != NULL && pMidiControl->controlMap().count() > 0);
+
+	m_ui.ApplyPushButton->setEnabled(m_iDirtyCount > 0);
 }
 
 
 // Refresh all controller definition views.
-void qtractorMidiControlForm::refreshForm (void)
+void qtractorMidiControlForm::refreshFiles (void)
 {
 	qtractorMidiControl *pMidiControl = qtractorMidiControl::getInstance();
 	if (pMidiControl == NULL)
@@ -380,28 +407,43 @@ void qtractorMidiControlForm::refreshForm (void)
 	// Bail out...
 	m_ui.FilesListView->setUpdatesEnabled(true);
 
-	stabilizeForm();
+	refreshControlMap();
 }
 
 
-// Stabilize form status.
-void qtractorMidiControlForm::stabilizeForm (void)
+// Refresh controller map view.
+void qtractorMidiControlForm::refreshControlMap (void)
 {
-	QTreeWidgetItem *pItem = m_ui.FilesListView->currentItem();
-	if (pItem) {
-		int iItem = m_ui.FilesListView->indexOfTopLevelItem(pItem);
-		int iItemCount = m_ui.FilesListView->topLevelItemCount();
-		m_ui.RemovePushButton->setEnabled(true);
-		m_ui.MoveUpPushButton->setEnabled(iItem > 0);
-		m_ui.MoveDownPushButton->setEnabled(iItem < iItemCount - 1);
-	} else {
-		m_ui.RemovePushButton->setEnabled(false);
-		m_ui.MoveUpPushButton->setEnabled(false);
-		m_ui.MoveDownPushButton->setEnabled(false);
-	}
+	qtractorMidiControl *pMidiControl = qtractorMidiControl::getInstance();
+	if (pMidiControl == NULL)
+		return;
 
-	m_ui.ExportPushButton->setEnabled(m_iDirtyCount > 0);
-	m_ui.ApplyPushButton->setEnabled(m_iDirtyCount > 0);
+	// Freeze...
+	m_ui.ControlMapListView->setUpdatesEnabled(false);
+
+	// Control map list view...
+	m_ui.ControlMapListView->clear();
+	QList<QTreeWidgetItem *> items;
+	const qtractorMidiControl::ControlMap& controlMap = pMidiControl->controlMap();
+	qtractorMidiControl::ControlMap::ConstIterator it = controlMap.constBegin();
+	for ( ; it != controlMap.constEnd(); ++it) {
+		const qtractorMidiControl::MapKey& key = it.key();
+		const qtractorMidiControl::MapVal& val = it.value();
+		QTreeWidgetItem *pItem = new QTreeWidgetItem();
+		pItem->setIcon(0, QIcon(":/icons/itemControllers.png"));
+		pItem->setText(0, qtractorMidiControl::textFromKey(key.channel() + 1));
+		pItem->setText(1, qtractorMidiControl::textFromKey(key.controller()));
+		pItem->setText(2, qtractorMidiControl::textFromCommand(val.command()));
+		pItem->setText(3, QString::number(val.param()));
+		pItem->setText(4, val.isFeedback() ? tr("Yes") : tr("No"));
+		items.append(pItem);
+	}
+	m_ui.ControlMapListView->addTopLevelItems(items);
+
+	// Bail out...
+	m_ui.ControlMapListView->setUpdatesEnabled(true);
+
+	stabilizeForm();
 }
 
 
