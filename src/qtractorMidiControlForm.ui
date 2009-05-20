@@ -33,13 +33,12 @@
    <string>Controllers - Qtractor</string>
   </property>
   <property name="windowIcon" >
-   <iconset resource="../icons/qtractor.qrc" >
-    <normaloff>:/icons/itemControllers.png</normaloff>:/icons/itemControllers.png</iconset>
+   <iconset resource="../icons/qtractor.qrc" >:/icons/itemControllers.png</iconset>
   </property>
   <layout class="QVBoxLayout" >
    <item>
     <layout class="QGridLayout" >
-     <item rowspan="4" row="0" column="0" colspan="5" >
+     <item rowspan="4" row="0" column="0" colspan="6" >
       <widget class="QTreeWidget" name="FilesListView" >
        <property name="toolTip" >
         <string>Controller files</string>
@@ -53,6 +52,9 @@
        <property name="itemsExpandable" >
         <bool>false</bool>
        </property>
+       <property name="allColumnsShowFocus" >
+        <bool>true</bool>
+       </property>
        <column>
         <property name="text" >
          <string>Files</string>
@@ -65,7 +67,7 @@
        </column>
       </widget>
      </item>
-     <item row="0" column="5" >
+     <item row="0" column="6" >
       <widget class="QPushButton" name="ImportPushButton" >
        <property name="toolTip" >
         <string>Import controllers file</string>
@@ -81,7 +83,7 @@
        </property>
       </widget>
      </item>
-     <item row="1" column="5" >
+     <item row="1" column="6" >
       <widget class="QPushButton" name="RemovePushButton" >
        <property name="toolTip" >
         <string>Remove controller file</string>
@@ -97,7 +99,7 @@
        </property>
       </widget>
      </item>
-     <item row="2" column="5" >
+     <item row="2" column="6" >
       <widget class="QPushButton" name="MoveUpPushButton" >
        <property name="toolTip" >
         <string>Move controller file up on list order</string>
@@ -113,7 +115,7 @@
        </property>
       </widget>
      </item>
-     <item row="3" column="5" >
+     <item row="3" column="6" >
       <widget class="QPushButton" name="MoveDownPushButton" >
        <property name="toolTip" >
         <string>Move controller file down on list order</string>
@@ -132,7 +134,7 @@
      <item row="4" column="0" >
       <widget class="QLabel" name="ChannelTextLabel" >
        <property name="text" >
-        <string>C&amp;hannel:</string>
+        <string>C&amp;hannel</string>
        </property>
        <property name="alignment" >
         <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
@@ -145,7 +147,7 @@
      <item row="4" column="1" >
       <widget class="QLabel" name="ControllerTextLabel" >
        <property name="text" >
-        <string>&amp;Controller:</string>
+        <string>&amp;Controller</string>
        </property>
        <property name="alignment" >
         <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
@@ -158,7 +160,7 @@
      <item row="4" column="2" >
       <widget class="QLabel" name="CommandTextLabel" >
        <property name="text" >
-        <string>C&amp;ommand:</string>
+        <string>C&amp;ommand</string>
        </property>
        <property name="alignment" >
         <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
@@ -171,7 +173,7 @@
      <item row="4" column="3" >
       <widget class="QLabel" name="ParamTextLabel" >
        <property name="text" >
-        <string>&amp;Param:</string>
+        <string>&amp;Parameter</string>
        </property>
        <property name="alignment" >
         <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
@@ -181,7 +183,7 @@
        </property>
       </widget>
      </item>
-     <item row="4" column="4" >
+     <item row="4" column="4" colspan="3" >
       <spacer>
        <property name="orientation" >
         <enum>Qt::Horizontal</enum>
@@ -189,26 +191,10 @@
        <property name="sizeHint" >
         <size>
          <width>20</width>
-         <height>20</height>
+         <height>8</height>
         </size>
        </property>
       </spacer>
-     </item>
-     <item row="4" column="5" >
-      <widget class="QPushButton" name="MapPushButton" >
-       <property name="toolTip" >
-        <string>Map channel/controller command</string>
-       </property>
-       <property name="text" >
-        <string>&amp;Map</string>
-       </property>
-       <property name="icon" >
-        <iconset resource="../icons/qtractor.qrc" >:/icons/formCreate.png</iconset>
-       </property>
-       <property name="shortcut" >
-        <string>Alt+A</string>
-       </property>
-      </widget>
      </item>
      <item row="5" column="0" >
       <widget class="QComboBox" name="ChannelComboBox" >
@@ -226,12 +212,6 @@
      </item>
      <item row="5" column="2" >
       <widget class="QComboBox" name="CommandComboBox" >
-       <property name="minimumSize" >
-        <size>
-         <width>120</width>
-         <height>0</height>
-        </size>
-       </property>
        <property name="toolTip" >
         <string>Command type</string>
        </property>
@@ -250,11 +230,27 @@
         <string>Commend feedback</string>
        </property>
        <property name="text" >
-        <string>&amp;Feedback:</string>
+        <string>&amp;Feedback</string>
        </property>
       </widget>
      </item>
      <item row="5" column="5" >
+      <widget class="QPushButton" name="MapPushButton" >
+       <property name="toolTip" >
+        <string>Map channel/controller command</string>
+       </property>
+       <property name="text" >
+        <string>&amp;Map</string>
+       </property>
+       <property name="icon" >
+        <iconset resource="../icons/qtractor.qrc" >:/icons/formAccept.png</iconset>
+       </property>
+       <property name="shortcut" >
+        <string>Alt+M</string>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="6" >
       <widget class="QPushButton" name="UnmapPushButton" >
        <property name="toolTip" >
         <string>Unmap channel/controller command</string>
@@ -263,14 +259,14 @@
         <string>U&amp;nmap</string>
        </property>
        <property name="icon" >
-        <iconset resource="../icons/qtractor.qrc" >:/icons/formRemove.png</iconset>
+        <iconset resource="../icons/qtractor.qrc" >:/icons/formReject.png</iconset>
        </property>
        <property name="shortcut" >
-        <string>Alt+A</string>
+        <string>Alt+N</string>
        </property>
       </widget>
      </item>
-     <item row="6" column="0" colspan="6" >
+     <item row="6" column="0" colspan="7" >
       <widget class="QTreeWidget" name="ControlMapListView" >
        <property name="minimumSize" >
         <size>
@@ -289,6 +285,12 @@
        </property>
        <property name="itemsExpandable" >
         <bool>false</bool>
+       </property>
+       <property name="allColumnsShowFocus" >
+        <bool>true</bool>
+       </property>
+       <property name="sortingEnabled" >
+        <bool>true</bool>
        </property>
        <column>
         <property name="text" >
@@ -322,6 +324,22 @@
    <item>
     <layout class="QHBoxLayout" >
      <item>
+      <widget class="QPushButton" name="ReloadPushButton" >
+       <property name="toolTip" >
+        <string>Reload/apply all controller files</string>
+       </property>
+       <property name="text" >
+        <string>Relo&amp;ad</string>
+       </property>
+       <property name="icon" >
+        <iconset resource="../icons/qtractor.qrc" >:/icons/formRefresh.png</iconset>
+       </property>
+       <property name="shortcut" >
+        <string>Alt+A</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QPushButton" name="ExportPushButton" >
        <property name="toolTip" >
         <string>Export to controller file</string>
@@ -333,7 +351,7 @@
         <iconset resource="../icons/qtractor.qrc" >:/icons/fileSave.png</iconset>
        </property>
        <property name="shortcut" >
-        <string>Alt+E</string>
+        <string>Alt+X</string>
        </property>
       </widget>
      </item>
@@ -344,27 +362,11 @@
        </property>
        <property name="sizeHint" >
         <size>
-         <width>220</width>
-         <height>20</height>
+         <width>20</width>
+         <height>8</height>
         </size>
        </property>
       </spacer>
-     </item>
-     <item>
-      <widget class="QPushButton" name="ApplyPushButton" >
-       <property name="toolTip" >
-        <string>Apply all controller files</string>
-       </property>
-       <property name="text" >
-        <string>&amp;Apply</string>
-       </property>
-       <property name="icon" >
-        <iconset resource="../icons/qtractor.qrc" >:/icons/formAccept.png</iconset>
-       </property>
-       <property name="shortcut" >
-        <string>Alt+A</string>
-       </property>
-      </widget>
      </item>
      <item>
       <widget class="QPushButton" name="ClosePushButton" >
@@ -398,8 +400,8 @@
   <tabstop>MapPushButton</tabstop>
   <tabstop>UnmapPushButton</tabstop>
   <tabstop>ControlMapListView</tabstop>
+  <tabstop>ReloadPushButton</tabstop>
   <tabstop>ExportPushButton</tabstop>
-  <tabstop>ApplyPushButton</tabstop>
   <tabstop>ClosePushButton</tabstop>
  </tabstops>
  <resources>

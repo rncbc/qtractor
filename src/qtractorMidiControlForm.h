@@ -24,6 +24,8 @@
 
 #include "ui_qtractorMidiControlForm.h"
 
+#include "qtractorMidiControl.h"
+
 
 //----------------------------------------------------------------------------
 // qtractorMidiControlForm -- UI wrapper form.
@@ -50,15 +52,27 @@ protected slots:
     void moveDownSlot();
 	void mapSlot();
 	void unmapSlot();
+    void reloadSlot();
     void exportSlot();
-    void applySlot();
+	void changedSlot();
 
     void stabilizeForm();
 
 protected:
 
+    void stabilizeChange();
+
     void refreshFiles();
     void refreshControlMap();
+
+	unsigned short channelFromText(const QString& sText) const;
+	QString textFromChannel(unsigned short iChannel) const;
+
+	unsigned short controllerFromText(const QString& sText) const;
+	QString textFromController(unsigned short iController) const;
+
+	qtractorMidiControl::Command commandFromText(const QString& sText) const;
+	QString textFromCommand(qtractorMidiControl::Command command) const;
 
 private:
 
@@ -66,7 +80,10 @@ private:
 	Ui::qtractorMidiControlForm m_ui;
 
 	// Instance variables...
-	int *m_iDirtyCount;
+	int m_iDirtyFiles;
+	int m_iDirtyCount;
+	int m_iDirtyMap;
+	int m_iUpdating;
 };
 
 

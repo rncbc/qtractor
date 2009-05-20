@@ -111,6 +111,22 @@ void qtractorMidiControl::mapChannelControllerParam (
 }
 
 
+// Remove existing controller mapping.
+void qtractorMidiControl::unmapChannelController (
+	unsigned short iChannel, unsigned short iController )
+{
+	m_controlMap.remove(MapKey(iChannel, iController));
+}
+
+
+// Check if given channel, controller pair is currently mapped.
+bool qtractorMidiControl::isChannelControllerMapped (
+	unsigned short iChannel, unsigned short iController ) const
+{
+	return m_controlMap.contains(MapKey(iChannel, iController));
+}
+
+
 // Resend all the controllers
 // (as output bus changed, or session initialized)
 void qtractorMidiControl::sendAllControllers (void) const

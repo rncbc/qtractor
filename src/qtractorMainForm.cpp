@@ -1594,18 +1594,19 @@ bool qtractorMainForm::saveSession ( bool bPrompt )
 		if (sFilename.isEmpty())
 			return false;
 		// Enforce extension...
-		if (QFileInfo(sFilename).suffix() != sExt)
+		if (QFileInfo(sFilename).suffix() != sExt) {
 			sFilename += '.' + sExt;
-		// Check if already exists...
-		if (sFilename != m_sFilename && QFileInfo(sFilename).exists()) {
-			if (QMessageBox::warning(this,
-				tr("Warning") + " - " QTRACTOR_TITLE,
-				tr("The file already exists:\n\n"
-				"\"%1\"\n\n"
-				"Do you want to replace it?")
-				.arg(sFilename),
-				QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
-				return false;
+			// Check if already exists...
+			if (sFilename != m_sFilename && QFileInfo(sFilename).exists()) {
+				if (QMessageBox::warning(this,
+					tr("Warning") + " - " QTRACTOR_TITLE,
+					tr("The file already exists:\n\n"
+					"\"%1\"\n\n"
+					"Do you want to replace it?")
+					.arg(sFilename),
+					QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+					return false;
+			}
 		}
 	}
 

@@ -183,7 +183,7 @@ public:
 	// Clear control map (reset to default).
 	void clear();
 
-	// Insert new contrller mappings.
+	// Insert new controller mappings.
 	void mapChannelController(
 		unsigned short iChannel, unsigned short iController,
 		Command command, int iParam = 0, bool bFeedback = false);
@@ -191,6 +191,14 @@ public:
 		Command command, int iParam = 0, bool bFeedback = false);
 	void mapChannelControllerParam(unsigned short iChannel,
 		Command command, int iParam = 0, bool bFeedback = false);
+
+	// Remove existing controller mapping.
+	void unmapChannelController(
+		unsigned short iChannel, unsigned short iController);
+
+	// Check if given channel, controller pair is currently mapped.
+	bool isChannelControllerMapped(
+		unsigned short iChannel, unsigned short iController) const;
 
 	// Re-send all controllers.
 	void sendAllControllers() const;

@@ -19,16 +19,53 @@
 
 *****************************************************************************/
 
+#include "qtractorAbout.h"
 #include "qtractorMidiControlForm.h"
 
-#include "qtractorAbout.h"
-#include "qtractorMidiControl.h"
 #include "qtractorOptions.h"
+
+// Needed for controller names.
+#include "qtractorMidiEditor.h"
 
 #include <QHeaderView>
 #include <QMessageBox>
 #include <QFileDialog>
 #include <QUrl>
+
+
+//----------------------------------------------------------------------------
+// MIDI Controller Command Names - Default command names hash map.
+
+static struct
+{
+	qtractorMidiControl::Command command;
+	const char *name;
+
+} g_aCommandNames[] = {
+
+	{ qtractorMidiControl::TrackGain,    QT_TR_NOOP("Track Gain") },
+	{ qtractorMidiControl::TrackPanning, QT_TR_NOOP("Track Panning") },
+	{ qtractorMidiControl::TrackMonitor, QT_TR_NOOP("Track Monitor") },
+	{ qtractorMidiControl::TrackRecord,  QT_TR_NOOP("Track Record") },
+	{ qtractorMidiControl::TrackMute,    QT_TR_NOOP("Track Mute") },
+	{ qtractorMidiControl::TrackSolo,    QT_TR_NOOP("Track Solo") },
+
+	{ qtractorMidiControl::TrackNone, NULL }
+};
+
+static QHash<qtractorMidiControl::Command, QString> g_commandNames;
+
+static void initCommandNames (void)
+{
+	if (g_commandNames.isEmpty()) {
+		// Pre-load command-names hash table...
+		for (int i = 0; g_aCommandNames[i].name; ++i) {
+			g_commandNames.insert(
+				g_aCommandNames[i].command,
+				QObject::tr(g_aCommandNames[i].name));
+		}
+	}
+}
 
 
 //----------------------------------------------------------------------
@@ -43,7 +80,10 @@ qtractorMidiControlForm::qtractorMidiControlForm (
 	// Setup UI struct...
 	m_ui.setupUi(this);
 
+	m_iDirtyFiles = 0;
 	m_iDirtyCount = 0;
+	m_iDirtyMap = 0;
+	m_iUpdating = 0;
 
 	QHeaderView *pHeader = m_ui.FilesListView->header();
 //	pHeader->setResizeMode(QHeaderView::Custom);
@@ -58,31 +98,27 @@ qtractorMidiControlForm::qtractorMidiControlForm (
 
 //	m_ui.ChannelComboBox->clear();
 	m_ui.ChannelComboBox->addItem("*");
-	for (unsigned short i = 0; i < 16; ++i)
-		m_ui.ChannelComboBox->addItem(QString::number(i + 1));
+	for (unsigned short iChannel = 0; iChannel < 16; ++iChannel)
+		m_ui.ChannelComboBox->addItem(textFromChannel(iChannel));
 
 //	m_ui.ControllerComboBox->clear();
 	m_ui.ControllerComboBox->addItem("*");
-	for (unsigned short i = 0; i < 128; ++i)
-		m_ui.ControllerComboBox->addItem(QString::number(i));
+	for (unsigned short iController = 0; iController < 128; ++iController)
+		m_ui.ControllerComboBox->addItem(textFromController(iController));
 
 //	m_ui.CommandComboBox->clear();
 	m_ui.CommandComboBox->addItem(
-		qtractorMidiControl::textFromCommand(qtractorMidiControl::TrackGain));
+		textFromCommand(qtractorMidiControl::TrackGain));
 	m_ui.CommandComboBox->addItem(
-		qtractorMidiControl::textFromCommand(qtractorMidiControl::TrackPanning));
+		textFromCommand(qtractorMidiControl::TrackPanning));
 	m_ui.CommandComboBox->addItem(
-		qtractorMidiControl::textFromCommand(qtractorMidiControl::TrackMonitor));
+		textFromCommand(qtractorMidiControl::TrackMonitor));
 	m_ui.CommandComboBox->addItem(
-		qtractorMidiControl::textFromCommand(qtractorMidiControl::TrackRecord));
+		textFromCommand(qtractorMidiControl::TrackRecord));
 	m_ui.CommandComboBox->addItem(
-		qtractorMidiControl::textFromCommand(qtractorMidiControl::TrackMute));
+		textFromCommand(qtractorMidiControl::TrackMute));
 	m_ui.CommandComboBox->addItem(
-		qtractorMidiControl::textFromCommand(qtractorMidiControl::TrackSolo));
-
-	// TODO...
-	m_ui.MapPushButton->setEnabled(false);
-	m_ui.UnmapPushButton->setEnabled(false);
+		textFromCommand(qtractorMidiControl::TrackSolo));
 
 	refreshFiles();
 	adjustSize();
@@ -106,18 +142,33 @@ qtractorMidiControlForm::qtractorMidiControlForm (
 	QObject::connect(m_ui.MoveDownPushButton,
 		SIGNAL(clicked()),
 		SLOT(moveDownSlot()));
+	QObject::connect(m_ui.ChannelComboBox,
+		SIGNAL(activated(int)),
+		SLOT(changedSlot()));
+	QObject::connect(m_ui.ControllerComboBox,
+		SIGNAL(activated(int)),
+		SLOT(changedSlot()));
+	QObject::connect(m_ui.CommandComboBox,
+		SIGNAL(activated(int)),
+		SLOT(changedSlot()));
+	QObject::connect(m_ui.ParamSpinBox,
+		SIGNAL(valueChanged(int)),
+		SLOT(changedSlot()));
+	QObject::connect(m_ui.FeedbackCheckBox,
+		SIGNAL(toggled(bool)),
+		SLOT(changedSlot()));
 	QObject::connect(m_ui.MapPushButton,
 		SIGNAL(clicked()),
 		SLOT(mapSlot()));
 	QObject::connect(m_ui.UnmapPushButton,
 		SIGNAL(clicked()),
 		SLOT(unmapSlot()));
+	QObject::connect(m_ui.ReloadPushButton,
+		SIGNAL(clicked()),
+		SLOT(reloadSlot()));
 	QObject::connect(m_ui.ExportPushButton,
 		SIGNAL(clicked()),
 		SLOT(exportSlot()));
-	QObject::connect(m_ui.ApplyPushButton,
-		SIGNAL(clicked()),
-		SLOT(applySlot()));
 	QObject::connect(m_ui.ClosePushButton,
 		SIGNAL(clicked()),
 		SLOT(reject()));
@@ -134,8 +185,12 @@ qtractorMidiControlForm::~qtractorMidiControlForm (void)
 void qtractorMidiControlForm::accept (void)
 {
 	// If we're dirty do a complete and final reload...
-	if (m_iDirtyCount > 0)
-		applySlot();
+	if (m_iDirtyFiles > 0 || m_iDirtyMap > 0)
+		reloadSlot();
+
+	// Should not accept if there are pending mapping
+	if (m_iDirtyMap > 0)
+		return;
 
 	// Just go with dialog acceptance.
 	QDialog::accept();
@@ -147,8 +202,28 @@ void qtractorMidiControlForm::reject (void)
 {
 	bool bReject = true;
 
-	// Check if there's any pending changes...
-	if (m_iDirtyCount > 0) {
+	// Check if there's any pending map changes...
+	if (m_iDirtyMap > 0) {
+		switch (QMessageBox::warning(this,
+			tr("Warning") + " - " QTRACTOR_TITLE,
+			tr("Controller mappings have been changed.") + "\n\n" +
+			tr("Do you want to save the changes?"),
+			QMessageBox::Save |
+			QMessageBox::Discard |
+			QMessageBox::Cancel)) {
+		case QMessageBox::Save:
+			exportSlot();
+			// Fall thru....
+		case QMessageBox::Cancel:
+			return;
+		case QMessageBox::Discard:
+		default:
+			break;
+		}
+	}
+
+	// Check if there's any pending file changes...
+	if (m_iDirtyFiles > 0) {
 		switch (QMessageBox::warning(this,
 			tr("Warning") + " - " QTRACTOR_TITLE,
 			tr("Controller settings have been changed.") + "\n\n" +
@@ -233,7 +308,7 @@ void qtractorMidiControlForm::importSlot (void)
 			pItem->setText(1, sPath);
 			m_ui.FilesListView->setCurrentItem(pItem);
 			pOptions->sMidiControlDir = info.absolutePath();
-			m_iDirtyCount++;
+			m_iDirtyFiles++;
 		}
 	}
 
@@ -247,7 +322,7 @@ void qtractorMidiControlForm::removeSlot (void)
 	QTreeWidgetItem *pItem = m_ui.FilesListView->currentItem();
 	if (pItem) {
 		delete pItem;
-		m_iDirtyCount++;
+		m_iDirtyFiles++;
 	}
 
 	stabilizeForm();
@@ -264,7 +339,7 @@ void qtractorMidiControlForm::moveUpSlot (void)
 			pItem = m_ui.FilesListView->takeTopLevelItem(iItem);
 			m_ui.FilesListView->insertTopLevelItem(iItem - 1, pItem);
 			m_ui.FilesListView->setCurrentItem(pItem);
-			m_iDirtyCount++;
+			m_iDirtyFiles++;
 		}
 	}
 
@@ -282,7 +357,7 @@ void qtractorMidiControlForm::moveDownSlot (void)
 			pItem = m_ui.FilesListView->takeTopLevelItem(iItem);
 			m_ui.FilesListView->insertTopLevelItem(iItem + 1, pItem);
 			m_ui.FilesListView->setCurrentItem(pItem);
-			m_iDirtyCount++;
+			m_iDirtyFiles++;
 		}
 	}
 
@@ -293,16 +368,47 @@ void qtractorMidiControlForm::moveDownSlot (void)
 // Map current channel/control command.
 void qtractorMidiControlForm::mapSlot (void)
 {
-	// TODO...
-	stabilizeForm();
+	qtractorMidiControl *pMidiControl = qtractorMidiControl::getInstance();
+	if (pMidiControl == NULL)
+		return;
+
+	unsigned short iChannel = channelFromText(
+		m_ui.ChannelComboBox->currentText());
+	unsigned short iController = controllerFromText(
+		m_ui.ControllerComboBox->currentText());
+	qtractorMidiControl::Command command = commandFromText(
+		m_ui.CommandComboBox->currentText());
+	int iParam = m_ui.ParamSpinBox->value();
+	bool bFeedback = m_ui.FeedbackCheckBox->isChecked();
+
+	pMidiControl->mapChannelController(iChannel, iController,
+		command, iParam, bFeedback);
+
+	m_iDirtyCount = 0;
+	m_iDirtyMap++;
+
+	refreshControlMap();
 }
 
 
 // Unmap current channel/control command.
 void qtractorMidiControlForm::unmapSlot (void)
 {
-	// TODO...
-	stabilizeForm();
+	qtractorMidiControl *pMidiControl = qtractorMidiControl::getInstance();
+	if (pMidiControl == NULL)
+		return;
+
+	unsigned short iChannel = channelFromText(
+		m_ui.ChannelComboBox->currentText());
+	unsigned short iController = controllerFromText(
+		m_ui.ControllerComboBox->currentText());
+
+	pMidiControl->unmapChannelController(iChannel, iController);
+
+	m_iDirtyCount = 0;
+	m_iDirtyMap++;
+
+	refreshControlMap();
 }
 
 
@@ -348,29 +454,31 @@ void qtractorMidiControlForm::exportSlot (void)
 		return;
 
 	// Enforce .qtc extension...
-	if (QFileInfo(sPath).suffix().isEmpty())
+	if (QFileInfo(sPath).suffix() != sExt) {
 		sPath += '.' + sExt;
-
-	// Check if already exists...
-	if (QFileInfo(sPath).exists()) {
-		if (QMessageBox::warning(this,
-			tr("Warning") + " - " QTRACTOR_TITLE,
-			tr("The controller file already exists:\n\n"
-			"\"%1\"\n\n"
-			"Do you want to replace it?")
-			.arg(sPath),
-			QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
-			return;
+		// Check if already exists...
+		if (QFileInfo(sPath).exists()) {
+			if (QMessageBox::warning(this,
+				tr("Warning") + " - " QTRACTOR_TITLE,
+				tr("The controller file already exists:\n\n"
+				"\"%1\"\n\n"
+				"Do you want to replace it?")
+				.arg(sPath),
+				QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+				return;
+		}
 	}
 
 	// Just save the whole bunch...
-	if (pMidiControl->saveDocument(sPath))
+	if (pMidiControl->saveDocument(sPath)) {
 		pOptions->sMidiControlDir = QFileInfo(sPath).absolutePath();
+		m_iDirtyMap = 0;
+	}
 }
 
 
 // Reload the complete controller configurations, from list.
-void qtractorMidiControlForm::applySlot (void)
+void qtractorMidiControlForm::reloadSlot (void)
 {
 	qtractorMidiControl *pMidiControl = qtractorMidiControl::getInstance();
 	if (pMidiControl == NULL)
@@ -396,9 +504,40 @@ void qtractorMidiControlForm::applySlot (void)
 	}
 
 	// Not dirty anymore...
+	m_iDirtyFiles = 0;
 	m_iDirtyCount = 0;
+	m_iDirtyMap = 0;
 
 	refreshControlMap();
+}
+
+
+// Mapping fields have changed..
+void qtractorMidiControlForm::changedSlot (void)
+{
+	if (m_iUpdating > 0)
+		return;
+
+	m_iDirtyCount++;
+
+	stabilizeChange();
+}
+
+void qtractorMidiControlForm::stabilizeChange (void)
+{
+	qtractorMidiControl *pMidiControl = qtractorMidiControl::getInstance();
+	if (pMidiControl) {
+		unsigned short iChannel = channelFromText(
+			m_ui.ChannelComboBox->currentText());
+		unsigned short iController = controllerFromText(
+			m_ui.ControllerComboBox->currentText());
+		m_ui.MapPushButton->setEnabled(m_iDirtyCount > 0);
+		m_ui.UnmapPushButton->setEnabled(
+			pMidiControl->isChannelControllerMapped(iChannel, iController));
+	} else {
+		m_ui.MapPushButton->setEnabled(false);
+		m_ui.UnmapPushButton->setEnabled(false);
+	}
 }
 
 
@@ -418,9 +557,9 @@ void qtractorMidiControlForm::stabilizeForm (void)
 		m_ui.MoveDownPushButton->setEnabled(false);
 	}
 
-	// TODO...
 	pItem = m_ui.ControlMapListView->currentItem();
 	if (pItem) {
+		m_iUpdating++;
 		m_ui.ChannelComboBox->setCurrentIndex(
 			m_ui.ChannelComboBox->findText(pItem->text(0)));
 		m_ui.ControllerComboBox->setCurrentIndex(
@@ -429,13 +568,17 @@ void qtractorMidiControlForm::stabilizeForm (void)
 			m_ui.CommandComboBox->findText(pItem->text(2)));
 		m_ui.ParamSpinBox->setValue(pItem->text(3).toInt());
 		m_ui.FeedbackCheckBox->setChecked(pItem->text(4) == tr("Yes"));
+		m_iUpdating--;
 	}
 
-	qtractorMidiControl *pMidiControl = qtractorMidiControl::getInstance();
-	m_ui.ExportPushButton->setEnabled(
-		pMidiControl != NULL && pMidiControl->controlMap().count() > 0);
+	m_ui.ReloadPushButton->setEnabled(m_iDirtyFiles > 0 || m_iDirtyMap > 0);
 
-	m_ui.ApplyPushButton->setEnabled(m_iDirtyCount > 0);
+	qtractorMidiControl *pMidiControl = qtractorMidiControl::getInstance();
+	if (pMidiControl)
+		m_ui.ExportPushButton->setEnabled(
+			pMidiControl != NULL && !pMidiControl->controlMap().isEmpty());
+
+	stabilizeChange();
 }
 
 
@@ -494,9 +637,9 @@ void qtractorMidiControlForm::refreshControlMap (void)
 		const qtractorMidiControl::MapVal& val = it.value();
 		QTreeWidgetItem *pItem = new QTreeWidgetItem();
 		pItem->setIcon(0, QIcon(":/icons/itemControllers.png"));
-		pItem->setText(0, qtractorMidiControl::textFromKey(key.channel() + 1));
-		pItem->setText(1, qtractorMidiControl::textFromKey(key.controller()));
-		pItem->setText(2, qtractorMidiControl::textFromCommand(val.command()));
+		pItem->setText(0, textFromChannel(key.channel()));
+		pItem->setText(1, textFromController(key.controller()));
+		pItem->setText(2, textFromCommand(val.command()));
 		pItem->setText(3, QString::number(val.param()));
 		pItem->setText(4, val.isFeedback() ? tr("Yes") : tr("No"));
 		items.append(pItem);
@@ -509,5 +652,67 @@ void qtractorMidiControlForm::refreshControlMap (void)
 	stabilizeForm();
 }
 
+
+// Channel text conversion helpers.
+unsigned short qtractorMidiControlForm::channelFromText (
+	const QString& sText ) const
+{
+	if (sText == "TrackParam" || sText == "*" || sText.isEmpty())
+		return qtractorMidiControl::TrackParam;
+	else
+		return sText.toUShort() - 1;
+}
+
+QString qtractorMidiControlForm::textFromChannel (
+	unsigned short iChannel ) const
+{
+	if (iChannel & qtractorMidiControl::TrackParam)
+		return "*"; // "TrackParam";
+	else
+		return QString::number(iChannel + 1);
+}
+
+
+// Controller text conversion helpers.
+unsigned short qtractorMidiControlForm::controllerFromText (
+	const QString& sText ) const
+{
+	return qtractorMidiControl::keyFromText(sText.section(' ', 0, 0));
+}
+
+QString qtractorMidiControlForm::textFromController (
+	unsigned short iController ) const
+{
+	if (iController & qtractorMidiControl::TrackParam)
+		return "*"; // "TrackParam";
+	else
+		return QString::number(iController) + " - "
+			+ qtractorMidiEditor::defaultControllerName(iController);
+}
+
+
+// Command text conversion helpers.
+qtractorMidiControl::Command qtractorMidiControlForm::commandFromText (
+	const QString& sText ) const
+{
+	initCommandNames();
+
+	QHashIterator<qtractorMidiControl::Command, QString> iter(g_commandNames);
+	while (iter.hasNext()) {
+		iter.next();
+		if (iter.value() == sText)
+			return iter.key();
+	}
+
+	return qtractorMidiControl::TrackNone;
+}
+
+QString qtractorMidiControlForm::textFromCommand (
+	qtractorMidiControl::Command command ) const
+{
+	initCommandNames();
+
+	return g_commandNames[command];
+}
 
 // end of qtractorMidiControlForm.cpp

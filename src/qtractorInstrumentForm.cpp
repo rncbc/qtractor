@@ -351,19 +351,19 @@ void qtractorInstrumentForm::exportSlot (void)
 		return;
 
 	// Enforce .ins extension...
-	if (QFileInfo(sPath).suffix().isEmpty())
+	if (QFileInfo(sPath).suffix() != sExt) {
 		sPath += '.' + sExt;
-
-	// Check if already exists...
-	if (QFileInfo(sPath).exists()) {
-		if (QMessageBox::warning(this,
-			tr("Warning") + " - " QTRACTOR_TITLE,
-			tr("The instrument file already exists:\n\n"
-			"\"%1\"\n\n"
-			"Do you want to replace it?")
-			.arg(sPath),
-			QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
-			return;
+		// Check if already exists...
+		if (QFileInfo(sPath).exists()) {
+			if (QMessageBox::warning(this,
+				tr("Warning") + " - " QTRACTOR_TITLE,
+				tr("The instrument file already exists:\n\n"
+				"\"%1\"\n\n"
+				"Do you want to replace it?")
+				.arg(sPath),
+				QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+				return;
+		}
 	}
 
 	// Just save the whole bunch...

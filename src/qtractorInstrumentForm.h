@@ -79,7 +79,7 @@ private:
 	Ui::qtractorInstrumentForm m_ui;
 
 	// Instance variables...
-	int *m_iDirtyCount;
+	int m_iDirtyCount;
 };
 
 
