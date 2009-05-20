@@ -18,16 +18,15 @@
    with this program; if not, write to the Free Software Foundation, Inc.,
    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-  </comment>
- <exportmacro></exportmacro>
+ </comment>
  <class>qtractorInstrumentForm</class>
  <widget class="QDialog" name="qtractorInstrumentForm" >
   <property name="geometry" >
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>593</width>
-    <height>345</height>
+    <width>580</width>
+    <height>340</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -37,26 +36,12 @@
    <iconset resource="../icons/qtractor.qrc" >:/icons/itemInstrument.png</iconset>
   </property>
   <layout class="QHBoxLayout" >
-   <property name="margin" >
-    <number>8</number>
-   </property>
-   <property name="spacing" >
-    <number>4</number>
-   </property>
    <item>
-    <widget class="QSplitter" name="splitter1" >
+    <widget class="QSplitter" >
      <property name="orientation" >
       <enum>Qt::Horizontal</enum>
      </property>
      <widget class="QTreeWidget" name="InstrumentsListView" >
-      <property name="sizePolicy" >
-       <sizepolicy>
-        <hsizetype>7</hsizetype>
-        <vsizetype>7</vsizetype>
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
       <property name="minimumSize" >
        <size>
         <width>240</width>
@@ -81,19 +66,11 @@
        </property>
       </column>
      </widget>
-     <widget class="QSplitter" name="splitter2" >
+     <widget class="QSplitter" >
       <property name="orientation" >
        <enum>Qt::Vertical</enum>
       </property>
       <widget class="QTreeWidget" name="FilesListView" >
-       <property name="sizePolicy" >
-        <sizepolicy>
-         <hsizetype>7</hsizetype>
-         <vsizetype>7</vsizetype>
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
        <property name="minimumSize" >
         <size>
          <width>240</width>
@@ -124,14 +101,6 @@
        </column>
       </widget>
       <widget class="QTreeWidget" name="NamesListView" >
-       <property name="sizePolicy" >
-        <sizepolicy>
-         <hsizetype>7</hsizetype>
-         <vsizetype>7</vsizetype>
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
        <property name="minimumSize" >
         <size>
          <width>240</width>
@@ -147,6 +116,9 @@
        <property name="uniformRowHeights" >
         <bool>true</bool>
        </property>
+       <property name="allColumnsShowFocus" >
+        <bool>true</bool>
+       </property>
        <column>
         <property name="text" >
          <string>Names</string>
@@ -158,20 +130,8 @@
    </item>
    <item>
     <layout class="QVBoxLayout" >
-     <property name="margin" >
-      <number>0</number>
-     </property>
-     <property name="spacing" >
-      <number>4</number>
-     </property>
      <item>
       <widget class="QPushButton" name="ImportPushButton" >
-       <property name="minimumSize" >
-        <size>
-         <width>0</width>
-         <height>26</height>
-        </size>
-       </property>
        <property name="toolTip" >
         <string>Import from instrument file</string>
        </property>
@@ -188,12 +148,6 @@
      </item>
      <item>
       <widget class="QPushButton" name="RemovePushButton" >
-       <property name="minimumSize" >
-        <size>
-         <width>0</width>
-         <height>26</height>
-        </size>
-       </property>
        <property name="toolTip" >
         <string>Remove instrument file</string>
        </property>
@@ -210,12 +164,6 @@
      </item>
      <item>
       <widget class="QPushButton" name="MoveUpPushButton" >
-       <property name="minimumSize" >
-        <size>
-         <width>0</width>
-         <height>26</height>
-        </size>
-       </property>
        <property name="toolTip" >
         <string>Move instrument file up on list order</string>
        </property>
@@ -232,12 +180,6 @@
      </item>
      <item>
       <widget class="QPushButton" name="MoveDownPushButton" >
-       <property name="minimumSize" >
-        <size>
-         <width>0</width>
-         <height>26</height>
-        </size>
-       </property>
        <property name="toolTip" >
         <string>Move instrument file down on list order</string>
        </property>
@@ -263,63 +205,45 @@
        <property name="sizeHint" >
         <size>
          <width>20</width>
-         <height>98</height>
+         <height>20</height>
         </size>
        </property>
       </spacer>
      </item>
      <item>
       <widget class="QPushButton" name="ReloadPushButton" >
-       <property name="minimumSize" >
-        <size>
-         <width>0</width>
-         <height>26</height>
-        </size>
-       </property>
        <property name="toolTip" >
         <string>Reload all instrument files</string>
        </property>
        <property name="text" >
-        <string>R&amp;eload</string>
+        <string>Relo&amp;ad</string>
        </property>
        <property name="icon" >
         <iconset resource="../icons/qtractor.qrc" >:/icons/formRefresh.png</iconset>
        </property>
        <property name="shortcut" >
-        <string>Alt+E</string>
+        <string>Alt+A</string>
        </property>
       </widget>
      </item>
      <item>
       <widget class="QPushButton" name="ExportPushButton" >
-       <property name="minimumSize" >
-        <size>
-         <width>0</width>
-         <height>26</height>
-        </size>
-       </property>
        <property name="toolTip" >
         <string>Export to instrument file</string>
        </property>
        <property name="text" >
-        <string>&amp;Export...</string>
+        <string>E&amp;xport...</string>
        </property>
        <property name="icon" >
         <iconset resource="../icons/qtractor.qrc" >:/icons/fileSave.png</iconset>
        </property>
        <property name="shortcut" >
-        <string>Alt+E</string>
+        <string>Alt+X</string>
        </property>
       </widget>
      </item>
      <item>
       <widget class="QPushButton" name="ClosePushButton" >
-       <property name="minimumSize" >
-        <size>
-         <width>0</width>
-         <height>26</height>
-        </size>
-       </property>
        <property name="toolTip" >
         <string>Close this dialog</string>
        </property>

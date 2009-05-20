@@ -304,7 +304,7 @@ void qtractorMidiControlForm::importSlot (void)
 		if (pItem) {
 			QFileInfo info(sPath);
 			pItem->setIcon(0, QIcon(":/icons/itemFile.png"));
-			pItem->setText(0, info.fileName());
+			pItem->setText(0, info.completeBaseName());
 			pItem->setText(1, sPath);
 			m_ui.FilesListView->setCurrentItem(pItem);
 			pOptions->sMidiControlDir = info.absolutePath();
@@ -604,7 +604,7 @@ void qtractorMidiControlForm::refreshFiles (void)
 		const QString& sPath = iter.next();
 		QTreeWidgetItem *pFileItem = new QTreeWidgetItem();
 		pFileItem->setIcon(0, QIcon(":/icons/itemFile.png"));
-		pFileItem->setText(0, QFileInfo(sPath).fileName());
+		pFileItem->setText(0, QFileInfo(sPath).completeBaseName());
 		pFileItem->setText(1, sPath);
 		files.append(pFileItem);
 	}
