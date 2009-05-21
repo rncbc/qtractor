@@ -43,7 +43,6 @@ public:
 
 protected slots:
 
-    void accept();
     void reject();
 
     void importSlot();
@@ -80,7 +79,6 @@ private:
 	Ui::qtractorMidiControlForm m_ui;
 
 	// Instance variables...
-	int m_iDirtyFiles;
 	int m_iDirtyCount;
 	int m_iDirtyMap;
 	int m_iUpdating;

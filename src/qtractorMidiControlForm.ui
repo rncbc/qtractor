@@ -68,7 +68,7 @@
    <item row="0" column="5" >
     <widget class="QPushButton" name="ImportPushButton" >
      <property name="toolTip" >
-      <string>Import controllers file</string>
+      <string>Import controller files</string>
      </property>
      <property name="text" >
       <string>&amp;Import...</string>
@@ -211,7 +211,7 @@
    <item row="5" column="2" >
     <widget class="QComboBox" name="CommandComboBox" >
      <property name="toolTip" >
-      <string>Command type</string>
+      <string>Command action</string>
      </property>
     </widget>
    </item>
@@ -225,7 +225,7 @@
    <item row="5" column="4" >
     <widget class="QCheckBox" name="FeedbackCheckBox" >
      <property name="toolTip" >
-      <string>Commend feedback</string>
+      <string>Command feedback</string>
      </property>
      <property name="text" >
       <string>&amp;Feedback</string>
@@ -235,7 +235,7 @@
    <item row="5" column="5" >
     <widget class="QPushButton" name="MapPushButton" >
      <property name="toolTip" >
-      <string>Map channel/controller command</string>
+      <string>Map/update controller command</string>
      </property>
      <property name="text" >
       <string>&amp;Map</string>
@@ -304,7 +304,7 @@
    <item row="6" column="5" >
     <widget class="QPushButton" name="UnmapPushButton" >
      <property name="toolTip" >
-      <string>Unmap channel/controller command</string>
+      <string>Unmap/remove controller command</string>
      </property>
      <property name="text" >
       <string>U&amp;nmap</string>

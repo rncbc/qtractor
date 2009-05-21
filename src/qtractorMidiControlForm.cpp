@@ -80,7 +80,6 @@ qtractorMidiControlForm::qtractorMidiControlForm (
 	// Setup UI struct...
 	m_ui.setupUi(this);
 
-	m_iDirtyFiles = 0;
 	m_iDirtyCount = 0;
 	m_iDirtyMap = 0;
 	m_iUpdating = 0;
@@ -181,67 +180,14 @@ qtractorMidiControlForm::~qtractorMidiControlForm (void)
 }
 
 
-// Accept settings (OK button slot).
-void qtractorMidiControlForm::accept (void)
-{
-	// If we're dirty do a complete and final reload...
-	if (m_iDirtyFiles > 0 || m_iDirtyMap > 0)
-		reloadSlot();
-
-	// Should not accept if there are pending mapping
-	if (m_iDirtyMap > 0)
-		return;
-
-	// Just go with dialog acceptance.
-	QDialog::accept();
-}
-
-
 // Reject settings (Cancel button slot).
 void qtractorMidiControlForm::reject (void)
 {
-	bool bReject = true;
+	// Check if there's any pending changes...
+	if (m_iDirtyMap > 0)
+		reloadSlot();
 
-	// Check if there's any pending map changes...
-	if (m_iDirtyMap > 0) {
-		switch (QMessageBox::warning(this,
-			tr("Warning") + " - " QTRACTOR_TITLE,
-			tr("Controller mappings have been changed.") + "\n\n" +
-			tr("Do you want to save the changes?"),
-			QMessageBox::Save |
-			QMessageBox::Discard |
-			QMessageBox::Cancel)) {
-		case QMessageBox::Save:
-			exportSlot();
-			// Fall thru....
-		case QMessageBox::Cancel:
-			return;
-		case QMessageBox::Discard:
-		default:
-			break;
-		}
-	}
-
-	// Check if there's any pending file changes...
-	if (m_iDirtyFiles > 0) {
-		switch (QMessageBox::warning(this,
-			tr("Warning") + " - " QTRACTOR_TITLE,
-			tr("Controller settings have been changed.") + "\n\n" +
-			tr("Do you want to apply the changes?"),
-			QMessageBox::Apply |
-			QMessageBox::Discard |
-			QMessageBox::Cancel)) {
-		case QMessageBox::Apply:
-			accept();
-			return;
-		case QMessageBox::Discard:
-			break;
-		default:    // Cancel.
-			bReject = false;
-		}
-	}
-
-	if (bReject)
+	if (m_iDirtyMap == 0)
 		QDialog::reject();
 }
 
@@ -308,11 +254,11 @@ void qtractorMidiControlForm::importSlot (void)
 			pItem->setText(1, sPath);
 			m_ui.FilesListView->setCurrentItem(pItem);
 			pOptions->sMidiControlDir = info.absolutePath();
-			m_iDirtyFiles++;
 		}
 	}
 
-	stabilizeForm();
+	// Make effect immediately.
+	reloadSlot();
 }
 
 
@@ -322,10 +268,9 @@ void qtractorMidiControlForm::removeSlot (void)
 	QTreeWidgetItem *pItem = m_ui.FilesListView->currentItem();
 	if (pItem) {
 		delete pItem;
-		m_iDirtyFiles++;
 	}
 
-	stabilizeForm();
+	reloadSlot();
 }
 
 
@@ -339,11 +284,10 @@ void qtractorMidiControlForm::moveUpSlot (void)
 			pItem = m_ui.FilesListView->takeTopLevelItem(iItem);
 			m_ui.FilesListView->insertTopLevelItem(iItem - 1, pItem);
 			m_ui.FilesListView->setCurrentItem(pItem);
-			m_iDirtyFiles++;
 		}
 	}
 
-	stabilizeForm();
+	reloadSlot();
 }
 
 
@@ -357,11 +301,10 @@ void qtractorMidiControlForm::moveDownSlot (void)
 			pItem = m_ui.FilesListView->takeTopLevelItem(iItem);
 			m_ui.FilesListView->insertTopLevelItem(iItem + 1, pItem);
 			m_ui.FilesListView->setCurrentItem(pItem);
-			m_iDirtyFiles++;
 		}
 	}
 
-	stabilizeForm();
+	reloadSlot();
 }
 
 
@@ -472,7 +415,25 @@ void qtractorMidiControlForm::exportSlot (void)
 	// Just save the whole bunch...
 	if (pMidiControl->saveDocument(sPath)) {
 		pOptions->sMidiControlDir = QFileInfo(sPath).absolutePath();
-		m_iDirtyMap = 0;
+		if (m_iDirtyMap > 0 &&
+			QMessageBox::warning(this,
+				tr("Warning") + " - " QTRACTOR_TITLE,
+				tr("Saved controller mappings may not be effective\n"
+				"the next time you start this program.\n\n"
+				"\"%1\"\n\n"
+				"Do you want to apply to controller files?")
+				.arg(sPath),
+				QMessageBox::Apply |
+				QMessageBox::Ignore) == QMessageBox::Apply) {
+			// Apply by append...
+			pOptions->midiControlFiles.clear();
+			pOptions->midiControlFiles.append(sPath);
+			// Won't be dirty anymore.
+			m_iDirtyMap = 0;
+			// Make it renew...
+			refreshFiles();
+			reloadSlot();
+		}
 	}
 }
 
@@ -483,6 +444,19 @@ void qtractorMidiControlForm::reloadSlot (void)
 	qtractorMidiControl *pMidiControl = qtractorMidiControl::getInstance();
 	if (pMidiControl == NULL)
 		return;
+
+	// Check if there's any pending map changes...
+	if (m_iDirtyMap > 0 && !pMidiControl->controlMap().isEmpty() &&
+		QMessageBox::warning(this,
+			tr("Warning") + " - " QTRACTOR_TITLE,
+			tr("Controller mappings have been changed.") + "\n\n" +
+			tr("Do you want to save the changes?"),
+			QMessageBox::Save |
+			QMessageBox::Discard) == QMessageBox::Save) {
+			// Export is save... :)
+			exportSlot();
+			return;
+	}
 
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
 	if (pOptions == NULL)
@@ -504,7 +478,6 @@ void qtractorMidiControlForm::reloadSlot (void)
 	}
 
 	// Not dirty anymore...
-	m_iDirtyFiles = 0;
 	m_iDirtyCount = 0;
 	m_iDirtyMap = 0;
 
@@ -571,7 +544,7 @@ void qtractorMidiControlForm::stabilizeForm (void)
 		m_iUpdating--;
 	}
 
-	m_ui.ReloadPushButton->setEnabled(m_iDirtyFiles > 0 || m_iDirtyMap > 0);
+	m_ui.ReloadPushButton->setEnabled(m_iDirtyMap > 0);
 
 	qtractorMidiControl *pMidiControl = qtractorMidiControl::getInstance();
 	if (pMidiControl)
@@ -714,5 +687,6 @@ QString qtractorMidiControlForm::textFromCommand (
 
 	return g_commandNames[command];
 }
+
 
 // end of qtractorMidiControlForm.cpp
