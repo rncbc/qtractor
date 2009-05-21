@@ -94,6 +94,11 @@ bool qtractorTrackCommand::addTrack (void)
 	// Let the change get visible.
 	pTracks->trackList()->setCurrentTrackRow(iTrack);
 
+	// ATTN: MIDI controller map feedback.
+	qtractorMidiControl *pMidiControl = qtractorMidiControl::getInstance();
+	if (pMidiControl)
+		pMidiControl->sendAllControllers(iTrack);
+
 	// Avoid disposal of the track reference.
 	setAutoDelete(false);
 
@@ -135,6 +140,11 @@ bool qtractorTrackCommand::removeTrack (void)
 	qtractorMixer *pMixer = pMainForm->mixer();
 	if (pMixer)
 		pMixer->updateTracks();
+
+	// ATTN: MIDI controller map feedback.
+	qtractorMidiControl *pMidiControl = qtractorMidiControl::getInstance();
+	if (pMidiControl)
+		pMidiControl->sendAllControllers(iTrack);
 
 	// Make ths track reference disposable.
 	setAutoDelete(true);
@@ -239,6 +249,14 @@ bool qtractorMoveTrackCommand::redo (void)
 
 	// Swap it nice, finally.
 	m_pNextTrack = pNextTrack;
+
+	// ATTN: MIDI controller map feedback.
+	qtractorMidiControl *pMidiControl = qtractorMidiControl::getInstance();
+	if (pMidiControl) {
+		if (iTrack > iNextTrack)
+			iTrack = iNextTrack;
+		pMidiControl->sendAllControllers(iTrack);
+	}
 
 	return true;
 }

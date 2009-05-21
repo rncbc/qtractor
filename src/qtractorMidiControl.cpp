@@ -127,16 +127,19 @@ bool qtractorMidiControl::isChannelControllerMapped (
 }
 
 
-// Resend all the controllers
-// (as output bus changed, or session initialized)
-void qtractorMidiControl::sendAllControllers (void) const
+// Resend all (tracks) controllers
+// (eg. session initialized, track added/removed)
+void qtractorMidiControl::sendAllControllers ( int iFirstTrack ) const
 {
+	if (iFirstTrack < 0)
+		return;
+
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
 		return;
 
 #ifdef CONFIG_DEBUG
-	qDebug("qtractorMidiControl::sendAllControllers()");
+	qDebug("qtractorMidiControl::sendAllControllers(%d)", iFirstTrack);
 #endif
 
 	// Walk through midi controller map...
@@ -152,16 +155,18 @@ void qtractorMidiControl::sendAllControllers (void) const
 			int iTrack = 0;
 			for (qtractorTrack *pTrack = pSession->tracks().first();
 					pTrack; pTrack = pTrack->next()) {
-				if (key.isChannelParam())
-					sendTrackController(pTrack,
-						val.command(), iParam + iTrack, iController);
-				else if (key.isControllerParam())
-					sendTrackController(pTrack,
-						val.command(), iChannel, iParam + iTrack);
-				else if (val.param() == iTrack) {
-					sendTrackController(pTrack,
-						val.command(), iChannel, iController);
-					break; // Bail out from inner track loop.
+				if (iTrack >= iFirstTrack) {
+					if (key.isChannelParam())
+						sendTrackController(pTrack,
+							val.command(), iParam + iTrack, iController);
+					else if (key.isControllerParam())
+						sendTrackController(pTrack,
+							val.command(), iChannel, iParam + iTrack);
+					else if (val.param() == iTrack) {
+						sendTrackController(pTrack,
+							val.command(), iChannel, iController);
+						break; // Bail out from inner track loop.
+					}
 				}
 				++iTrack;
 			}

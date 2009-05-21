@@ -200,8 +200,8 @@ public:
 	bool isChannelControllerMapped(
 		unsigned short iChannel, unsigned short iController) const;
 
-	// Re-send all controllers.
-	void sendAllControllers() const;
+	// Re-send all (track) controllers.
+	void sendAllControllers(int iFirstTrack = 0) const;
 
 	// Process incoming controller messages.
 	bool processEvent(qtractorMidiControlEvent *pEvent) const;
