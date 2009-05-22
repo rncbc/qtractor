@@ -34,23 +34,7 @@
 
 #include <QFile>
 
-
-#ifndef CONFIG_FLOAT32
 #include <math.h>
-#endif
-
-// Possible cube roor optimization.
-// (borrowed from metamerist.com)
-static inline float cbrtf ( float x )
-{
-#ifdef CONFIG_FLOAT32
-	int *i = (int *) &x;
-	*i = *i / 3 + 710235478;
-	return x;
-#else
-	return ::powf(x, 0.3333333333333333333f);
-#endif
-}
 
 static inline float cubef ( float x )
 {
@@ -325,7 +309,7 @@ void qtractorMidiControl::processCommand (
 {
 	switch (command) {
 	case TrackGain:
-		if (bCubic) fValue = cbrtf(fValue);
+		if (bCubic) fValue = ::cbrtf(fValue);
 		sendParamController(command, iParam, int(127.0f * fValue));
 		break;
 	case TrackPanning:
@@ -385,7 +369,7 @@ void qtractorMidiControl::sendTrackController ( qtractorTrack *pTrack,
 	switch (command) {
 	case TrackGain:
 		if (pTrack->trackType() == qtractorTrack::Audio)
-			iValue = int(127.0f * cbrtf(pTrack->gain()));
+			iValue = int(127.0f * ::cbrtf(pTrack->gain()));
 		else
 			iValue = int(127.0f * pTrack->gain());
 		break;
