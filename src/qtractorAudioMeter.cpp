@@ -1,7 +1,7 @@
 // qtractorAudioMeter.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -48,17 +48,19 @@
 #define QTRACTOR_AUDIO_METER_PEAK_FALLOFF	32
 
 
-// Possible  20 * log10(x) optimization
+// Possible 20 * log10(x) optimization
 // (borrowed from musicdsp.org)
 static inline float log10f2 ( float x )
 {
 #ifdef CONFIG_FLOAT32
 #	define M_LOG10F20 6.0205999132796239042f // (= 20.0f * M_LN2 / M_LN10)
-	int i = *(int *) &x;
-	return M_LOG10F20 * ((((i & 0x7f800000) >> 23) - 0x7f)
-		+ (i & 0x007fffff) / (float) 0x800000);
+	// Avoid strict-aliasing optimization (gcc -O2).
+	union { float f; int i; } u;
+	u.f = x;
+	return M_LOG10F20 * ((((u.i & 0x7f800000) >> 23) - 0x7f)
+		+ (u.i & 0x007fffff) / (float) 0x800000);
 #else
-	return 20.0f * ::log10f(x);
+	return 20.0f * log10f(x);
 #endif
 }
 

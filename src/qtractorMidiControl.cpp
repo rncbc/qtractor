@@ -36,7 +36,22 @@
 
 #include <math.h>
 
-static inline float cubef ( float x )
+// Possible cube roor optimization.
+// (borrowed from metamerist.com)
+static inline float cbrtf2 ( float x )
+{
+#ifdef CONFIG_FLOAT32
+	// Avoid strict-aliasing optimization (gcc -O2).
+	union { float f; int i; } u;
+	u.f = x;
+	u.i = (u.i / 3) + 710235478;
+	return u.f;
+#else
+	return cbrtf(x);
+#endif
+}
+
+static inline float cubef2 ( float x )
 {
 	return x * x * x;
 }
@@ -258,7 +273,7 @@ bool qtractorMidiControl::processEvent (
 		pSession->execute(
 			new qtractorTrackGainCommand(pTrack,
 				(pTrack->trackType() == qtractorTrack::Audio
-					? cubef(float(pEvent->value()) / 127.0f)
+					? cubef2(float(pEvent->value()) / 127.0f)
 					: float(pEvent->value()) / 127.0f),
 				true));
 		break;
@@ -309,7 +324,7 @@ void qtractorMidiControl::processCommand (
 {
 	switch (command) {
 	case TrackGain:
-		if (bCubic) fValue = ::cbrtf(fValue);
+		if (bCubic) fValue = cbrtf2(fValue);
 		sendParamController(command, iParam, int(127.0f * fValue));
 		break;
 	case TrackPanning:
@@ -369,7 +384,7 @@ void qtractorMidiControl::sendTrackController ( qtractorTrack *pTrack,
 	switch (command) {
 	case TrackGain:
 		if (pTrack->trackType() == qtractorTrack::Audio)
-			iValue = int(127.0f * ::cbrtf(pTrack->gain()));
+			iValue = int(127.0f * cbrtf2(pTrack->gain()));
 		else
 			iValue = int(127.0f * pTrack->gain());
 		break;
