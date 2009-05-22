@@ -857,7 +857,8 @@ bool qtractorTrackGainCommand::redo (void)
 			qtractorTrackList *pTrackList = pMainForm->tracks()->trackList();
 			int iTrack = pTrackList->trackRow(pTrack);
 			pMidiControl->processCommand(
-				qtractorMidiControl::TrackGain, iTrack, m_fGain);
+				qtractorMidiControl::TrackGain, iTrack, m_fGain,
+				pTrack->trackType() == qtractorTrack::Audio);
 		}
 	}
 

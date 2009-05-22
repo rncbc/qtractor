@@ -207,8 +207,10 @@ public:
 	bool processEvent(qtractorMidiControlEvent *pEvent) const;
 
 	// Process incoming command.
-	void processCommand(Command command, int iParam, float fValue) const;
-	void processCommand(Command command, int iParam, bool bValue) const;
+	void processCommand(
+		Command command, int iParam, float fValue, bool bCubic = false) const;
+	void processCommand(
+		Command command, int iParam, bool bValue) const;
 
 	// Control map accessor.
 	const ControlMap& controlMap() const { return m_controlMap; }

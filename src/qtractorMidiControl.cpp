@@ -34,6 +34,29 @@
 #include <QFile>
 
 
+#ifndef CONFIG_FLOAT32
+#include <math.h>
+#endif
+
+// Possible cube roor optimization.
+// (borrowed from metamerist.com)
+static inline float cbrtf ( float x )
+{
+#ifdef CONFIG_FLOAT32
+	int *i = (int *) &x;
+	*i = *i / 3 + 710235478;
+	return x;
+#else
+	return ::powf(x, 0.3333333333333333333f);
+#endif
+}
+
+static inline float cubef ( float x )
+{
+	return x * x * x;
+}
+
+
 //----------------------------------------------------------------------
 // qtractorMidiControl -- MIDI control map (singleton).
 //
@@ -249,7 +272,9 @@ bool qtractorMidiControl::processEvent (
 	case TrackGain:
 		pSession->execute(
 			new qtractorTrackGainCommand(pTrack,
-				float(pEvent->value()) / 127.0f,
+				(pTrack->trackType() == qtractorTrack::Audio
+					? cbrtf(float(pEvent->value()))
+					: float(pEvent->value())) / 127.0f,
 				true));
 		break;
 	case TrackPanning:
@@ -295,10 +320,11 @@ bool qtractorMidiControl::processEvent (
 
 // Process incoming command.
 void qtractorMidiControl::processCommand (
-	Command command, int iParam, float fValue ) const
+	Command command, int iParam, float fValue, bool bCubic ) const
 {
 	switch (command) {
 	case TrackGain:
+		if (bCubic) fValue = cubef(fValue);
 		sendParamController(command, iParam, int(127.0f * fValue));
 		break;
 	case TrackPanning:
@@ -357,7 +383,10 @@ void qtractorMidiControl::sendTrackController ( qtractorTrack *pTrack,
 
 	switch (command) {
 	case TrackGain:
-		iValue = int(127.0f * pTrack->gain());
+		if (pTrack->trackType() == qtractorTrack::Audio)
+			iValue = int(127.0f * cubef(pTrack->gain()));
+		else
+			iValue = int(127.0f * pTrack->gain());
 		break;
 	case TrackPanning:
 		iValue = int((64.0f * pTrack->panning()) + 63.0f);
