@@ -274,8 +274,8 @@ bool qtractorMidiControl::processEvent (
 		pSession->execute(
 			new qtractorTrackGainCommand(pTrack,
 				(pTrack->trackType() == qtractorTrack::Audio
-					? cubef(float(pEvent->value()))
-					: float(pEvent->value())) / 127.0f,
+					? cubef(float(pEvent->value()) / 127.0f)
+					: float(pEvent->value()) / 127.0f),
 				true));
 		break;
 	case TrackPanning:
@@ -325,7 +325,7 @@ void qtractorMidiControl::processCommand (
 {
 	switch (command) {
 	case TrackGain:
-		if (bCubic) fValue = cubef(fValue);
+		if (bCubic) fValue = cbrtf(fValue);
 		sendParamController(command, iParam, int(127.0f * fValue));
 		break;
 	case TrackPanning:
@@ -385,7 +385,7 @@ void qtractorMidiControl::sendTrackController ( qtractorTrack *pTrack,
 	switch (command) {
 	case TrackGain:
 		if (pTrack->trackType() == qtractorTrack::Audio)
-			iValue = int(127.0f * cubef(pTrack->gain()));
+			iValue = int(127.0f * cbrtf(pTrack->gain()));
 		else
 			iValue = int(127.0f * pTrack->gain());
 		break;
