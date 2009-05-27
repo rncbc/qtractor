@@ -2111,7 +2111,7 @@ bool qtractorMidiEngine::saveElement ( qtractorSessionDocument *pDocument,
 		}
 	}
 
-	// Contrrol bus (input) connects...
+	// Control bus (input) connects...
 	if (m_bControlBus && m_pIControlBus) {
 		QDomElement eInputs
 			= pDocument->document()->createElement("control-inputs");
@@ -2121,7 +2121,7 @@ bool qtractorMidiEngine::saveElement ( qtractorSessionDocument *pDocument,
 		pElement->appendChild(eInputs);
 	}
 
-	// Contrrol bus (output) connects...
+	// Control bus (output) connects...
 	if (m_bControlBus && m_pOControlBus) {
 		QDomElement eOutputs
 			= pDocument->document()->createElement("control-outputs");
@@ -2324,28 +2324,28 @@ int qtractorMidiEngine::updateConnects (void)
 	// Do it first on all standard owned dependable buses...
 	int iUpdate = qtractorEngine::updateConnects();
 
-	// Control bus outputs...
-	if (m_bControlBus && m_pOControlBus) {
-		iUpdate += m_pOControlBus->updateConnects(
-			qtractorBus::Output, m_pOControlBus->outputs(), true);
-	}
-
-	// HACK: Place here pending MIDI controller map reset...
-	if (iUpdate > 0 && m_iResetAllControllers > 0) {
-		resetAllControllers(true); // Force immediate!
-		m_iResetAllControllers = 0;
-	}
-
 	// Control bus inputs...
 	if (m_bControlBus && m_pIControlBus) {
 		iUpdate += m_pIControlBus->updateConnects(
 			qtractorBus::Input, m_pIControlBus->inputs(), true);
 	}
 
+	// Control bus outputs...
+	if (m_bControlBus && m_pOControlBus) {
+		iUpdate += m_pOControlBus->updateConnects(
+			qtractorBus::Output, m_pOControlBus->outputs(), true);
+	}
+
 	// Metronome bus outputs...
 	if (m_bMetroBus && m_pMetroBus) {
 		iUpdate += m_pMetroBus->updateConnects(
 			qtractorBus::Output, m_pMetroBus->outputs(), true);
+	}
+
+	// HACK: Place here pending all controllers reset...
+	if (m_iResetAllControllers > 0) {
+		resetAllControllers(true); // Force immediate!
+		m_iResetAllControllers = 0;
 	}
 
 	// Done.
