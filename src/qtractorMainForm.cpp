@@ -1297,7 +1297,9 @@ void qtractorMainForm::midiControlEvent ( qtractorMidiControlEvent *pCtlEvent )
 
 	// TODO: Check if controller is used as MIDI controller...
 	if (m_pMidiControl->processEvent(pCtlEvent)) {
+	#ifdef CONFIG_DEBUG
 		appendMessages(sCtlText);
+	#endif
 		return;
 	}
 
@@ -3977,8 +3979,6 @@ void qtractorMainForm::updateSession (void)
 		m_pSession->setPlayHead(0);
 		// (Re)initialize MIDI instrument patching...
 		m_pSession->setMidiPatch();
-		// Re-send all mapped MIDI controllers...
-		m_pMidiControl->sendAllControllers();
 		// Get on with the special ALSA sequencer notifier...
 		if (m_pSession->midiEngine()->alsaNotifier()) {
 			QObject::connect(m_pSession->midiEngine()->alsaNotifier(),

@@ -762,6 +762,11 @@ void qtractorMidiEngine::resetAllControllers (void)
 			}
 		}
 	}
+
+	// Re-send all mapped feedback MIDI controllers...
+	qtractorMidiControl *pMidiControl = qtractorMidiControl::getInstance();
+	if (pMidiControl)
+		pMidiControl->sendAllControllers();
 }
 
 

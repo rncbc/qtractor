@@ -407,11 +407,6 @@ void qtractorMidiControl::sendTrackController ( qtractorTrack *pTrack,
 		break;
 	}
 
-	if (iValue < 0)
-		iValue = 0;
-	else if (iValue > 127)
-		iValue = 127;
-
 	sendController(iChannel, iController, iValue);
 }
 
@@ -431,6 +426,11 @@ void qtractorMidiControl::sendController (
 	qtractorMidiBus *pMidiBus = pMidiEngine->controlBus_out();
 	if (pMidiBus == NULL)
 		return;
+
+	if (iValue < 0)
+		iValue = 0;
+	else if (iValue > 127)
+		iValue = 127;
 
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorMidiControl::sendController(%u, %u, %d)",
