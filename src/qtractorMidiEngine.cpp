@@ -578,6 +578,9 @@ qtractorMidiEngine::qtractorMidiEngine ( qtractorSession *pSession )
 
 	// No input/capture quantization (default).
 	m_iCaptureQuantize = 0;
+
+	// MIDI controller mapping flagger.
+	m_iResetAllControllers = 0;
 }
 
 
@@ -720,8 +723,14 @@ void qtractorMidiEngine::resetAllMonitors (void)
 
 
 // Reset all MIDI controllers...
-void qtractorMidiEngine::resetAllControllers (void)
+void qtractorMidiEngine::resetAllControllers ( bool bForceImmediate )
 {
+	// Deferred processsing?
+	if (!bForceImmediate) {
+		m_iResetAllControllers++;
+		return;
+	}
+
 	// There must a session reference...
 	qtractorSession *pSession = session();
 	if (pSession == NULL)
@@ -764,7 +773,8 @@ void qtractorMidiEngine::resetAllControllers (void)
 	}
 
 	// Re-send all mapped feedback MIDI controllers...
-	qtractorMidiControl *pMidiControl = qtractorMidiControl::getInstance();
+	qtractorMidiControl *pMidiControl
+		= qtractorMidiControl::getInstance();
 	if (pMidiControl)
 		pMidiControl->sendAllControllers();
 }
@@ -2314,16 +2324,22 @@ int qtractorMidiEngine::updateConnects (void)
 	// Do it first on all standard owned dependable buses...
 	int iUpdate = qtractorEngine::updateConnects();
 
-	// Control bus inputs...
-	if (m_bControlBus && m_pIControlBus) {
-		iUpdate += m_pIControlBus->updateConnects(
-			qtractorBus::Input, m_pIControlBus->inputs(), true);
-	}
-
 	// Control bus outputs...
 	if (m_bControlBus && m_pOControlBus) {
 		iUpdate += m_pOControlBus->updateConnects(
 			qtractorBus::Output, m_pOControlBus->outputs(), true);
+	}
+
+	// HACK: Place here pending MIDI controller map reset...
+	if (iUpdate > 0 && m_iResetAllControllers > 0) {
+		resetAllControllers(true); // Force immediate!
+		m_iResetAllControllers = 0;
+	}
+
+	// Control bus inputs...
+	if (m_bControlBus && m_pIControlBus) {
+		iUpdate += m_pIControlBus->updateConnects(
+			qtractorBus::Input, m_pIControlBus->inputs(), true);
 	}
 
 	// Metronome bus outputs...

@@ -1021,7 +1021,7 @@ void qtractorOptionsForm::chooseMessagesLogPath (void)
 	const QString& sFilter = tr("Log files (*.%1)").arg(sExt); 
 #if QT_VERSION < 0x040400
 	// Ask for the filename to open...
-	sFilename = QFileDialog::getOpenFileName(this,
+	sFilename = QFileDialog::getSaveFileName(this,
 		sTitle, m_ui.MessagesLogPathComboBox->currentText(), sFilter);
 #else
 	// Construct open-file dialog...

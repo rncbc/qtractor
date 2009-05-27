@@ -74,7 +74,7 @@ public:
 	void resetAllMonitors();
 
 	// Reset all MIDI controllers...
-	void resetAllControllers();
+	void resetAllControllers(bool bForceImmediate = false);
 
 	// MIDI event capture method.
 	void capture(snd_seq_event_t *pEv);
@@ -252,7 +252,10 @@ private:
 	float m_fMetroTempo;
 
 	// Input quantization (aka. record snap-per-beat).
-	unsigned short   m_iCaptureQuantize;
+	unsigned short m_iCaptureQuantize;
+
+	// Controller update pending flagger.
+	int m_iResetAllControllers;
 };
 
 

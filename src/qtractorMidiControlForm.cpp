@@ -373,7 +373,7 @@ void qtractorMidiControlForm::exportSlot (void)
 	const QString& sFilter = tr("Controller files (*.%1)").arg(sExt);
 #if QT_VERSION < 0x040400
 	// Ask for the filename to open...
-	sPath = QFileDialog::getOpenFileName(this,
+	sPath = QFileDialog::getSaveFileName(this,
 		sTitle, pOptions->sMidiControlDir, sFilter);
 #else
 	// Construct open-files dialog...

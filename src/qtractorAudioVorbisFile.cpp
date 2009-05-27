@@ -1,7 +1,7 @@
 // qtractorAudioVorbisFile.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -134,7 +134,7 @@ bool qtractorAudioVorbisFile::open ( const QString& sFilename, int iMode )
 			// Add a comments
 			vorbis_comment_init(&m_ovcomment);
 			vorbis_comment_add_tag(&m_ovcomment,
-				"ENCODER", "qtractorAudioVorbisFile");
+				(char *) "ENCODER", (char *) "qtractorAudioVorbisFile");
 			// Set up the analysis state and auxiliary encoding storage.
 			vorbis_analysis_init(&m_ovdsp, m_ovinfo);
 			vorbis_block_init(&m_ovdsp, &m_ovblock);

@@ -1488,7 +1488,7 @@ void qtractorSession::setMidiPatch (void)
 			pTrack->setMidiPatch(m_pInstruments);
 	}
 
-	m_pMidiEngine->resetAllControllers();
+	m_pMidiEngine->resetAllControllers(); // Deferred!
 }
 
 
