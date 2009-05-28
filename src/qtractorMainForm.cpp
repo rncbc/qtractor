@@ -3475,7 +3475,7 @@ bool qtractorMainForm::setPlaying ( bool bPlaying )
 	// In case of (re)starting playback, send now
 	// all tracks MIDI bank select/program changes...
 	if (bPlaying)
-		m_pSession->setMidiPatch();
+		m_pSession->setMidiPatch(true); // Force conditional!
 
 	// Toggle engine play status...
 	m_pSession->setPlaying(bPlaying);
@@ -3978,7 +3978,7 @@ void qtractorMainForm::updateSession (void)
 		// (Re)set playhead...
 		m_pSession->setPlayHead(0);
 		// (Re)initialize MIDI instrument patching...
-		m_pSession->setMidiPatch();
+		m_pSession->setMidiPatch(false); // Deferred++
 		// Get on with the special ALSA sequencer notifier...
 		if (m_pSession->midiEngine()->alsaNotifier()) {
 			QObject::connect(m_pSession->midiEngine()->alsaNotifier(),
@@ -4545,7 +4545,7 @@ void qtractorMainForm::timerSlot (void)
 		}
 	}
 
-	// Check if its time to refresh autition/pre-listening status...
+	// Check if its time to refresh audition/pre-listening status...
 	if (m_iPlayerTimer > 0) {
 		m_iPlayerTimer -= QTRACTOR_TIMER_MSECS;
 		if (m_iPlayerTimer < QTRACTOR_TIMER_MSECS) {

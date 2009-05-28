@@ -722,7 +722,7 @@ void qtractorMidiEngine::resetAllMonitors (void)
 }
 
 
-// Reset all MIDI controllers...
+// Reset all MIDI instrument/controllers...
 void qtractorMidiEngine::resetAllControllers ( bool bForceImmediate )
 {
 	// Deferred processsing?
@@ -757,10 +757,13 @@ void qtractorMidiEngine::resetAllControllers ( bool bForceImmediate )
 		}
 	}
 
-	// Reset all MIDI track channel controllers...
+	// Reset all MIDI tracks channel bank/program and controllers...
 	for (qtractorTrack *pTrack = pSession->tracks().first();
 			pTrack; pTrack = pTrack->next()) {
 		if (pTrack->trackType() == qtractorTrack::Midi) {
+			// MIDI track instrument patching (channel bank/program)...
+			pTrack->setMidiPatch(pSession->instruments());
+			// MIDI track channel controllers...
 			qtractorMidiBus *pMidiBus
 				= static_cast<qtractorMidiBus *> (pTrack->outputBus());
 			qtractorMidiMonitor *pMidiMonitor
@@ -777,6 +780,17 @@ void qtractorMidiEngine::resetAllControllers ( bool bForceImmediate )
 		= qtractorMidiControl::getInstance();
 	if (pMidiControl)
 		pMidiControl->sendAllControllers();
+
+	// Done.
+	m_iResetAllControllers = 0;
+}
+
+
+// Whether is actually pending a reset of
+// all the MIDI instrument/controllers...
+bool qtractorMidiEngine::isResetAllControllers (void) const
+{
+	return (m_iResetAllControllers > 0);
 }
 
 
@@ -2342,11 +2356,9 @@ int qtractorMidiEngine::updateConnects (void)
 			qtractorBus::Output, m_pMetroBus->outputs(), true);
 	}
 
-	// HACK: Place here pending all controllers reset...
-	if (m_iResetAllControllers > 0) {
+	// Reset all pending controllers, if any...
+	if (m_iResetAllControllers > 0)
 		resetAllControllers(true); // Force immediate!
-		m_iResetAllControllers = 0;
-	}
 
 	// Done.
 	return iUpdate;
@@ -3073,6 +3085,11 @@ int qtractorMidiBus::updateConnects ( qtractorBus::BusMode busMode,
 			}
 		}
 	}
+
+	// Remember to resend all session/tracks control stuff,
+	// iif we've changed any of the intended MIDI connections...
+	if (iUpdate)
+		pMidiEngine->resetAllControllers(false); // Deferred++
 
 	// Done.
 	return iUpdate;

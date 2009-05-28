@@ -280,8 +280,8 @@ public:
 	void acquireMidiTag(qtractorTrack *pTrack);
 	void releaseMidiTag(qtractorTrack *pTrack);
 
-	// MIDI session/tracks instrument patching.
-	void setMidiPatch();
+	// MIDI session/tracks instrument/controller patching (conditional).
+	void setMidiPatch(bool bForceImmediate);
 
 	// MIDI managers factory methods.
 	qtractorMidiManager *createMidiManager(qtractorPluginList *pPluginList);

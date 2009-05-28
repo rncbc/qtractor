@@ -74,7 +74,8 @@ public:
 	void resetAllMonitors();
 
 	// Reset all MIDI controllers...
-	void resetAllControllers(bool bForceImmediate = false);
+	void resetAllControllers(bool bForceImmediate);
+	bool isResetAllControllers() const;
 
 	// MIDI event capture method.
 	void capture(snd_seq_event_t *pEv);

@@ -5,6 +5,10 @@ ChangeLog
 
 CVS HEAD
 
+- MIDI tracks channel bank/program and controller stuff are
+  now only issued when the respective bus connections have
+  changed, seldom on every playback start (EXPERIMENTAL).
+
 - MIDI controller mapping infrastructure, with file based
   configuration management (see View/Controllers...), is
   now in place, following an original contribution from
