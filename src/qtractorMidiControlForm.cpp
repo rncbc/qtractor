@@ -565,6 +565,8 @@ void qtractorMidiControlForm::stabilizeValueChange (void)
 		m_iDirtyCount = 0;
 		m_iDirtyMap++;
 		refreshControlMap();
+	} else {
+		stabilizeForm();
 	}
 }
 
@@ -607,7 +609,7 @@ void qtractorMidiControlForm::stabilizeForm (void)
 	qtractorMidiControl *pMidiControl = qtractorMidiControl::getInstance();
 	if (pMidiControl)
 		m_ui.ExportPushButton->setEnabled(
-			pMidiControl != NULL && !pMidiControl->controlMap().isEmpty());
+			!pMidiControl->controlMap().isEmpty());
 
 	stabilizeKeyChange();
 }
