@@ -334,6 +334,9 @@ protected:
 		SelectCommit = 4
 	};
 
+	// Update all selection rectangular areas.
+	void updateSelect();
+
 	// Update the event selection list.
 	void updateDragSelect(qtractorScrollView *pScrollView,
 		const QRect& rectSelect, int flags);

@@ -600,6 +600,7 @@ bool qtractorMidiEditor::isEditMode (void) const
 void qtractorMidiEditor::setSnapGrid ( bool bSnapGrid )
 {
 	m_bSnapGrid = bSnapGrid;
+
 //	updateContents();
 }
 
@@ -1292,6 +1293,7 @@ void qtractorMidiEditor::selectAll ( bool bSelect, bool bToggle )
 			m_pEditView->contentsHeight());
 		selectRect(rect, bToggle, true);
 	} else {
+		m_select.clear();
 		updateContents();
 	}
 }
@@ -1311,10 +1313,73 @@ void qtractorMidiEditor::selectRect ( const QRect& rect, bool bToggle,
 }
 
 
+// Update all selection rectangular areas.
+void qtractorMidiEditor::updateSelect (void)
+{
+	qtractorTimeScale::Cursor cursor(m_pTimeScale);
+	qtractorTimeScale::Node *pNode = cursor.seekFrame(m_iOffset);
+	unsigned long t0 = pNode->tickFromFrame(m_iOffset);
+	int x0 = m_pTimeScale->pixelFromFrame(m_iOffset);
+
+	// This is the edit-view specifics...
+	int h1 = m_pEditList->itemHeight();
+	int ch = m_pEditView->contentsHeight(); // + 1;
+
+	// This is the edit-event zero-line...
+	int y0 = (m_pEditEvent->viewport())->height();
+	if (m_pEditEvent->eventType() == qtractorMidiEvent::PITCHBEND)
+		y0 = ((y0 >> 3) << 2);
+
+	QListIterator<qtractorMidiEditSelect::Item *> iter(m_select.items());
+	while (iter.hasNext()) {
+		qtractorMidiEditSelect::Item *pItem = iter.next();
+		qtractorMidiEvent *pEvent = pItem->event;
+		// Common event coords...
+		int y;
+		unsigned long t1 = t0 + pEvent->time();
+		unsigned long t2 = t1 + pEvent->duration();
+		pNode = cursor.seekTick(t1);
+		int x  = pNode->pixelFromTick(t1);
+		int w1 = pNode->pixelFromTick(t2) - x;
+		if (w1 < 5)
+			w1 = 5;
+		// View item...
+		if (pEvent->type() == m_pEditView->eventType()) {
+			y = ch - h1 * (pEvent->note() + 1);
+			pItem->rectView.setRect(x - x0, y, w1, h1);
+		} else {
+			pItem->rectView.setRect(0, 0, 0, 0);
+		}
+		// Event item...
+		if (pEvent->type() == m_pEditEvent->eventType()) {
+			if (pEvent->type() == qtractorMidiEvent::PITCHBEND)
+				y = y0 - (y0 * pEvent->pitchBend()) / 8192;
+			else
+				y = y0 - (y0 * pEvent->value()) / 128;
+			if (!m_bNoteDuration)
+				w1 = 5;
+			if (y < y0)
+				pItem->rectEvent.setRect(x - x0, y, w1, y0 - y);
+			else if (y > y0)
+				pItem->rectEvent.setRect(x - x0, y0, w1, y - y0);
+			else
+				pItem->rectEvent.setRect(x - x0, y0 - 2, w1, 4);
+		} else {
+			pItem->rectEvent.setRect(0, 0, 0, 0);
+		}
+	}
+
+	// Final touch.
+	m_select.commit();
+	m_pEventDrag = NULL;
+}
+
+
 // Update/sync integral contents.
 void qtractorMidiEditor::updateContents (void)
 {
-	m_select.clear();
+//	m_select.clear();
+	updateSelect();
 
 	// Update dependant views.
 	m_pEditList->updateContentsHeight();
@@ -1331,7 +1396,8 @@ void qtractorMidiEditor::updateContents (void)
 // Try to center vertically the edit-view...
 void qtractorMidiEditor::centerContents (void)
 {
-	m_select.clear();
+//	m_select.clear();
+	updateSelect();
 
 	// Update dependant views.
 	m_pEditList->updateContentsHeight();
@@ -1722,11 +1788,9 @@ void qtractorMidiEditor::dragMoveUpdate ( qtractorScrollView *pScrollView,
 		if ((pos - m_posDrag).manhattanLength()
 			< QApplication::startDragDistance())
 			break;
-	#if 0
 		// Take care of selection modifier...
 		if ((modifiers & (Qt::ShiftModifier | Qt::ControlModifier)) == 0)
 			flags |= SelectClear;
-	#endif
 		// Are we about to move something around?
 		if (m_pEventDrag) {
 			if (m_resizeMode == ResizeNone) {
@@ -2101,7 +2165,7 @@ void qtractorMidiEditor::updateDragMove ( qtractorScrollView *pScrollView,
 	m_posDelta.setX(m_pTimeScale->pixelSnap(x0 + dx) - x0);
 
 	int h1 = m_pEditList->itemHeight();
-	if (bEditView && h1 > 0) {
+	if (h1 > 0) {
 		int ch = m_pEditView->contentsHeight();
 		int y0 = rect.y();
 		int y1 = y0 + delta.y();
@@ -2513,6 +2577,7 @@ void qtractorMidiEditor::resetDragState ( qtractorScrollView *pScrollView )
 			m_dragState == DragResize ||
 			m_dragState == DragPaste  ||
 			m_dragState == DragStep)
+			m_select.clear();
 			updateContents();
 	}
 
@@ -2847,7 +2912,7 @@ bool qtractorMidiEditor::keyPress ( qtractorScrollView *pScrollView,
 	case Qt::Key_Insert: // Aha, joking :)
 	case Qt::Key_Return:
 		if (m_dragState == DragStep) {
-			executeDragMove(pScrollView, m_posDrag);
+			executeDragMove(m_pEditView, m_posDrag);
 		} else {
 			const QPoint& pos = pScrollView->viewportToContents(
 				pScrollView->viewport()->mapFromGlobal(QCursor::pos()));

@@ -5,14 +5,19 @@ ChangeLog
 
 CVS HEAD
 
+- Several MIDI clip editor (piano-roll/matrix editor) fixes,
+  the most notable avoids clearing the current selection as
+  much as possible when updating view contents (eg. changing
+  zoom levels does not reset current selection anymore).
+
 - MIDI tracks channel bank/program and controller stuff are
   now only issued when the respective bus connections have
   changed, seldom on every playback start (EXPERIMENTAL).
 
 - MIDI controller mapping infrastructure, with file based
-  configuration management (see View/Controllers...), is
-  now in place, following an original contribution from
-  Mathias aka gizzmo (EXPERIMENTAL).
+  configuration management (see View/Controllers...), is now
+  in place, following an original contribution from Mathias
+  aka gizzmo (EXPERIMENTAL).
 
 - Plugin chain buffer reset on playback start/stop is not
   guarded by a momentary plugin de/activation anymore.
