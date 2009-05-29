@@ -143,19 +143,19 @@ qtractorMidiControlForm::qtractorMidiControlForm (
 		SLOT(moveDownSlot()));
 	QObject::connect(m_ui.ChannelComboBox,
 		SIGNAL(activated(int)),
-		SLOT(changedSlot()));
+		SLOT(keyChangedSlot()));
 	QObject::connect(m_ui.ControllerComboBox,
 		SIGNAL(activated(int)),
-		SLOT(changedSlot()));
+		SLOT(keyChangedSlot()));
 	QObject::connect(m_ui.CommandComboBox,
 		SIGNAL(activated(int)),
-		SLOT(changedSlot()));
+		SLOT(valueChangedSlot()));
 	QObject::connect(m_ui.ParamSpinBox,
 		SIGNAL(valueChanged(int)),
-		SLOT(changedSlot()));
+		SLOT(valueChangedSlot()));
 	QObject::connect(m_ui.FeedbackCheckBox,
 		SIGNAL(toggled(bool)),
-		SLOT(changedSlot()));
+		SLOT(valueChangedSlot()));
 	QObject::connect(m_ui.MapPushButton,
 		SIGNAL(clicked()),
 		SLOT(mapSlot()));
@@ -485,31 +485,86 @@ void qtractorMidiControlForm::reloadSlot (void)
 }
 
 
-// Mapping fields have changed..
-void qtractorMidiControlForm::changedSlot (void)
+// Mapping key fields have changed..
+void qtractorMidiControlForm::keyChangedSlot (void)
 {
 	if (m_iUpdating > 0)
 		return;
 
 	m_iDirtyCount++;
 
-	stabilizeChange();
+	stabilizeKeyChange();
 }
 
-void qtractorMidiControlForm::stabilizeChange (void)
+void qtractorMidiControlForm::stabilizeKeyChange (void)
 {
 	qtractorMidiControl *pMidiControl = qtractorMidiControl::getInstance();
-	if (pMidiControl) {
-		unsigned short iChannel = channelFromText(
-			m_ui.ChannelComboBox->currentText());
-		unsigned short iController = controllerFromText(
-			m_ui.ControllerComboBox->currentText());
-		m_ui.MapPushButton->setEnabled(m_iDirtyCount > 0);
-		m_ui.UnmapPushButton->setEnabled(
-			pMidiControl->isChannelControllerMapped(iChannel, iController));
-	} else {
-		m_ui.MapPushButton->setEnabled(false);
-		m_ui.UnmapPushButton->setEnabled(false);
+	if (pMidiControl == NULL)
+		return;
+
+	const QString& sChannel    = m_ui.ChannelComboBox->currentText();
+	const QString& sController = m_ui.ControllerComboBox->currentText();
+	unsigned short iChannel    = channelFromText(sChannel);
+	unsigned short iController = controllerFromText(sController);
+
+	bool bMapped = pMidiControl->isChannelControllerMapped(
+		iChannel, iController);
+
+	if (bMapped) {
+		QList<QTreeWidgetItem *> items
+			=  m_ui.ControlMapListView->findItems(sChannel, Qt::MatchExactly, 0);
+		QListIterator<QTreeWidgetItem *> iter(items);
+		while (iter.hasNext()) {
+			QTreeWidgetItem *pItem = iter.next();
+			if (pItem->text(1) == sController) {
+				m_iUpdating++;
+				m_ui.ControlMapListView->setCurrentItem(pItem);
+				m_iUpdating--;
+				break;
+			}
+		}
+	}
+
+	m_ui.MapPushButton->setEnabled(!bMapped && m_iDirtyCount > 0);
+	m_ui.UnmapPushButton->setEnabled(bMapped);
+}
+
+
+// Mapping value fields have changed..
+void qtractorMidiControlForm::valueChangedSlot (void)
+{
+	if (m_iUpdating > 0)
+		return;
+
+	m_iDirtyCount++;
+
+	stabilizeValueChange();
+}
+
+void qtractorMidiControlForm::stabilizeValueChange (void)
+{
+	qtractorMidiControl *pMidiControl = qtractorMidiControl::getInstance();
+	if (pMidiControl == NULL)
+		return;
+
+	const QString& sChannel    = m_ui.ChannelComboBox->currentText();
+	const QString& sController = m_ui.ControllerComboBox->currentText();
+	unsigned short iChannel    = channelFromText(sChannel);
+	unsigned short iController = controllerFromText(sController);
+
+	bool bMapped = pMidiControl->isChannelControllerMapped(
+		iChannel, iController);
+
+	if (bMapped) {
+		qtractorMidiControl::Command command = commandFromText(
+			m_ui.CommandComboBox->currentText());
+		int iParam = m_ui.ParamSpinBox->value();
+		bool bFeedback = m_ui.FeedbackCheckBox->isChecked();
+		pMidiControl->mapChannelController(
+			iChannel, iController, command, iParam, bFeedback);
+		m_iDirtyCount = 0;
+		m_iDirtyMap++;
+		refreshControlMap();
 	}
 }
 
@@ -517,6 +572,9 @@ void qtractorMidiControlForm::stabilizeChange (void)
 // Stabilize form status.
 void qtractorMidiControlForm::stabilizeForm (void)
 {
+	if (m_iUpdating > 0)
+		return;
+
 	QTreeWidgetItem *pItem = m_ui.FilesListView->currentItem();
 	if (pItem) {
 		int iItem = m_ui.FilesListView->indexOfTopLevelItem(pItem);
@@ -551,7 +609,7 @@ void qtractorMidiControlForm::stabilizeForm (void)
 		m_ui.ExportPushButton->setEnabled(
 			pMidiControl != NULL && !pMidiControl->controlMap().isEmpty());
 
-	stabilizeChange();
+	stabilizeKeyChange();
 }
 
 

@@ -53,13 +53,16 @@ protected slots:
 	void unmapSlot();
     void reloadSlot();
     void exportSlot();
-	void changedSlot();
+
+	void keyChangedSlot();
+	void valueChangedSlot();
 
     void stabilizeForm();
 
 protected:
 
-    void stabilizeChange();
+    void stabilizeKeyChange();
+    void stabilizeValueChange();
 
     void refreshFiles();
     void refreshControlMap();
