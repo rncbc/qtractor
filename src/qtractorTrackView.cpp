@@ -232,12 +232,12 @@ void qtractorTrackView::updateContentsHeight (void)
 		" => iContentsHeight=%d", iContentsHeight);
 #endif
 
-	// No selection anymore (we'll update all contents anyway)...
-	m_pClipSelect->clear();
-
 	// Do the contents resize thing...
 	qtractorScrollView::resizeContents(
 		qtractorScrollView::contentsWidth(), iContentsHeight);
+
+	// Keep selection (we'll update all contents anyway)...
+	updateClipSelect();
 }
 
 
@@ -264,12 +264,12 @@ void qtractorTrackView::updateContentsWidth ( int iContentsWidth )
 		" => iContentsWidth=%d", iContentsWidth);
 #endif
 
-	// No selection anymore (we'll update all contents anyway)...
-	m_pClipSelect->clear();
-
 	// Do the contents resize thing...
 	qtractorScrollView::resizeContents(
 		iContentsWidth, qtractorScrollView::contentsHeight());
+
+	// Keep selection (we'll update all contents anyway)...
+	updateClipSelect();
 
 	// Force an update on the track time line too...
 	m_pTracks->trackTime()->resizeContents(
@@ -782,7 +782,7 @@ qtractorTrack *qtractorTrackView::dragMoveTrack ( const QPoint& pos,
 	qtractorTrack *pSingleTrack = m_pClipSelect->singleTrack();
 	if (pSingleTrack &&
 		(pTrack == NULL || pSingleTrack->trackType() == pTrack->trackType()))
-		updateClipSelect(tvi.trackRect.y() + 1, tvi.trackRect.height() - 2);
+		updateSingleTrack(tvi.trackRect.y() + 1, tvi.trackRect.height() - 2);
 	// Special update on keyboard vertical drag-stepping...
 	if (bKeyStep)
 		m_posStep.setY(m_posStep.y() - pos.y() + tvi.trackRect.y()
@@ -1779,20 +1779,40 @@ qtractorClipSelect *qtractorTrackView::clipSelect (void) const
 }
 
 
-// Draw/hide the whole current clip selection.
-void qtractorTrackView::updateClipSelect ( int y, int h ) const
+// Update whole clip selection.
+void qtractorTrackView::updateClipSelect (void)
 {
-	bool bSingleTrack = (m_pClipSelect->singleTrack() != NULL);
-	QListIterator<qtractorClipSelect::Item *> iter(m_pClipSelect->items());
-	while (iter.hasNext()) {
-		qtractorClipSelect::Item *pClipItem	= iter.next();
-		if (bSingleTrack) {
-			pClipItem->rectClip.setY(y);
-			pClipItem->rectClip.setHeight(h);
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return;
+
+	// Reset all selected clips, but don't
+	// clear their own selection state...
+	m_pClipSelect->reset();
+
+	// Now find all the clips/regions
+	// that were currently selected...
+	int y1, y2 = 0;
+	qtractorTrack *pTrack = pSession->tracks().first();
+	while (pTrack) {
+		y1  = y2;
+		y2 += pTrack->zoomHeight();
+		int y = y1 + 1;
+		int h = y2 - y1 - 2;
+		for (qtractorClip *pClip = pTrack->clips().first();
+				pClip; pClip = pClip->next()) {
+			if (pClip->isClipSelected()) {
+				int x = pSession->pixelFromFrame(pClip->clipSelectStart());
+				int w = pSession->pixelFromFrame(pClip->clipSelectEnd()) - x;
+				m_pClipSelect->addClip(pClip, QRect(x, y, w, h));
+			}
 		}
+		pTrack = pTrack->next();
 	}
 }
 
+
+// Draw/hide the whole current clip selection.
 void qtractorTrackView::showClipSelect (void) const
 {
 	QListIterator<qtractorClipSelect::Item *> iter(m_pClipSelect->items());
@@ -1809,6 +1829,18 @@ void qtractorTrackView::hideClipSelect (void) const
 		qtractorRubberBand *pRubberBand = iter.next()->rubberBand;
 		if (pRubberBand && pRubberBand->isVisible())
 			pRubberBand->hide();
+	}
+}
+
+
+// Update single track clip selection.
+void qtractorTrackView::updateSingleTrack ( int y, int h ) const
+{
+	QListIterator<qtractorClipSelect::Item *> iter(m_pClipSelect->items());
+	while (iter.hasNext()) {
+		qtractorClipSelect::Item *pClipItem	= iter.next();
+		pClipItem->rectClip.setY(y);
+		pClipItem->rectClip.setHeight(h);
 	}
 }
 

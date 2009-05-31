@@ -5,10 +5,11 @@ ChangeLog
 
 CVS HEAD
 
-- Several MIDI clip editor (piano-roll/matrix editor) fixes,
-  the most notable avoids clearing the current selection as
-  much as possible when updating view contents (eg. changing
-  zoom levels does not reset current selection anymore).
+- The MIDI clip editor (piano-roll/matrix editor), the main
+  track view as well, have been subject to usability fixing,
+  the most notable avoids clearing current selection as much
+  as possible when updating view contents (eg. changing zoom
+  levels does not reset current selection anymore).
 
 - MIDI tracks channel bank/program and controller stuff are
   now only issued when the respective bus connections have

@@ -223,10 +223,15 @@ protected:
 	// Clip selection sanity check method.
 	bool queryClipSelect();
 
+	// Update whole clip selection.
+	void updateClipSelect();
+
 	// Draw/hide the whole current clip selection.
-	void updateClipSelect(int y, int h) const;
 	void showClipSelect() const;
 	void hideClipSelect() const;
+
+	// Update single track clip selection.
+	void updateSingleTrack(int y, int h) const;
 
 	// Draw/hide the whole drop rectagle list
 	void updateDropRects(int y, int h) const;

@@ -57,7 +57,7 @@ void qtractorClipSelect::selectClip ( qtractorClip *pClip,
 			pClipItem = p;
 			break;
 		}
-	}	
+	}
 
 	if (pClipItem && !bSelect) {
 	    iter.remove();
@@ -150,19 +150,26 @@ qtractorClipSelect::Item *qtractorClipSelect::findClipItem ( qtractorClip *pClip
 
 
 // Reset clip selection.
-void qtractorClipSelect::clear (void)
+void qtractorClipSelect::reset (void)
 {
 	m_bTrackSingle = false;
 	m_pTrackSingle = NULL;
-
-	QListIterator<Item *> iter(m_items);
-	while (iter.hasNext())
-		(iter.next()->clip)->setClipSelected(false);
 
 	m_rect.setRect(0, 0, 0, 0);
 
 	qDeleteAll(m_items);
 	m_items.clear();
+}
+
+
+// Clear clip selection.
+void qtractorClipSelect::clear (void)
+{
+	QListIterator<Item *> iter(m_items);
+	while (iter.hasNext())
+		(iter.next()->clip)->setClipSelected(false);
+
+	reset();
 }
 
 

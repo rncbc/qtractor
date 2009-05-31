@@ -82,6 +82,9 @@ public:
 	Item *findClipItem(qtractorClip *pClip);
 
 	// Reset clip selection.
+	void reset();
+
+	// Clear clip selection.
 	void clear();
 
 private:

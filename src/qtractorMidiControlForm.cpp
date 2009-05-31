@@ -266,10 +266,28 @@ void qtractorMidiControlForm::importSlot (void)
 void qtractorMidiControlForm::removeSlot (void)
 {
 	QTreeWidgetItem *pItem = m_ui.FilesListView->currentItem();
-	if (pItem) {
-		delete pItem;
+	if (pItem == NULL)
+		return;
+
+	// Prompt user if he/she's sure about this...
+	qtractorOptions *pOptions = qtractorOptions::getInstance();
+	if (pOptions && pOptions->bConfirmRemove) {
+		// Show the warning...
+		if (QMessageBox::warning(this,
+			tr("Warning") + " - " QTRACTOR_TITLE,
+			tr("About to remove controller file:\n\n"
+			"\"%1\"\n\n"
+			"Are you sure?")
+			.arg(pItem->text(1)),
+			QMessageBox::Ok | QMessageBox::Cancel)
+			== QMessageBox::Cancel)
+			return;
 	}
 
+	// Just do it!
+	delete pItem;
+
+	// Effect immediate.
 	reloadSlot();
 }
 

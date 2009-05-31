@@ -2165,7 +2165,7 @@ void qtractorMidiEditor::updateDragMove ( qtractorScrollView *pScrollView,
 	m_posDelta.setX(m_pTimeScale->pixelSnap(x0 + dx) - x0);
 
 	int h1 = m_pEditList->itemHeight();
-	if (h1 > 0) {
+	if (bEditView && h1 > 0) {
 		int ch = m_pEditView->contentsHeight();
 		int y0 = rect.y();
 		int y1 = y0 + delta.y();

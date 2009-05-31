@@ -1338,7 +1338,7 @@ void qtractorMainForm::midiControlEvent ( qtractorMidiControlEvent *pCtlEvent )
 	// Handle pan controls...
 	if (pCtlEvent->controller() == 10) {
 		int iTrack = 0;
-		float fPanning = (float(pCtlEvent->value()) - 63.0f) / 64.0f;
+		float fPanning = (float(pCtlEvent->value()) - 64.0f) / 63.0f;
 		for (qtractorTrack *pTrack = m_pSession->tracks().first();
 				pTrack; pTrack = pTrack->next()) {
 			if (pTrack->trackType() == qtractorTrack::Midi &&

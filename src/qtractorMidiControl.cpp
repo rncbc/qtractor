@@ -280,7 +280,7 @@ bool qtractorMidiControl::processEvent (
 	case TrackPanning:
 		pSession->execute(
 			new qtractorTrackPanningCommand(pTrack,
-				(float(pEvent->value()) - 63.0f) / 64.0f,
+				(float(pEvent->value()) - 64.0f) / 63.0f,
 				true));
 		break;
 	case TrackMonitor:
@@ -328,7 +328,7 @@ void qtractorMidiControl::processCommand (
 		sendParamController(command, iParam, int(127.0f * fValue));
 		break;
 	case TrackPanning:
-		sendParamController(command, iParam, int((64.0f * fValue) + 63.0f));
+		sendParamController(command, iParam, 0x40 + int(63.0f * fValue));
 		break;
 	default:
 		break;
@@ -389,7 +389,7 @@ void qtractorMidiControl::sendTrackController ( qtractorTrack *pTrack,
 			iValue = int(127.0f * pTrack->gain());
 		break;
 	case TrackPanning:
-		iValue = int((64.0f * pTrack->panning()) + 63.0f);
+		iValue = 0x40 + int(63.0f * pTrack->panning());
 		break;
 	case TrackMonitor:
 		iValue = (pTrack->isMonitor() ? 127 : 0);

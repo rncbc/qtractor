@@ -3139,7 +3139,7 @@ void qtractorMidiBus::setVolume ( qtractorTrack *pTrack, float fVolume )
 // MIDI channel stereo panning.
 void qtractorMidiBus::setPanning ( qtractorTrack *pTrack, float fPanning )
 {
-	unsigned char pan = (int(63.0f * (1.0f + fPanning)) + 1) & 0x7f;
+	unsigned char pan = (unsigned char) ((0x40 + int(63.0f * fPanning)) & 0x7f);
 	setController(pTrack, CHANNEL_PANNING, pan);
 }
 

@@ -431,13 +431,12 @@ void qtractorMidiConnect::disconnectPortsUpdate (
 			} else {
 				qDeleteAll(pBus->outputs());
 				pBus->outputs().clear();
+				// Remember to resend all session/tracks control stuff...
+				pMidiEngine->resetAllControllers(false); // Deferred++
 			}
-			return;
+			break;
 		}
 	}
-
-	// Remember to resend all session/tracks control stuff...
-	pMidiEngine->resetAllControllers(false); // Deferred++
 }
 
 
