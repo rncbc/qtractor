@@ -1431,6 +1431,9 @@ void qtractorMidiEditor::centerContents (void)
 // Reset event cursors.
 void qtractorMidiEditor::reset (void)
 {
+	// Force reset of all current selection first...
+	m_select.clear();
+
 	// Reset some internal state...
 	if (m_pMidiClip) {
 		qtractorMidiSequence *pSeq = m_pMidiClip->sequence();
@@ -1799,7 +1802,7 @@ void qtractorMidiEditor::dragMoveUpdate ( qtractorScrollView *pScrollView,
 					= m_select.findItem(m_pEventDrag);
 				if	(pItem == NULL || (pItem->flags & 1) == 0) {
 					updateDragSelect(pScrollView,
-						QRect(m_posDrag, QSize()), flags | SelectCommit);
+						QRect(m_posDrag, QSize(1, 1)), flags | SelectCommit);
 				}
 				// Start drag-moving...
 				m_dragState = DragMove;
@@ -1808,7 +1811,7 @@ void qtractorMidiEditor::dragMoveUpdate ( qtractorScrollView *pScrollView,
 				// Start resizing... take care of yet initial selection...
 				if (!m_bEventDragEdit) {
 					updateDragSelect(pScrollView,
-						QRect(m_posDrag, QSize()), flags | SelectCommit);
+						QRect(m_posDrag, QSize(1, 1)), flags | SelectCommit);
 				}
 				// Start drag-resizing...
 				m_dragState = DragResize;
@@ -2251,7 +2254,7 @@ void qtractorMidiEditor::updateDragResize ( qtractorScrollView *pScrollView,
 
 	m_posDelta.setX(dx);
 	m_posDelta.setY(dy);
-	
+
 	rectUpdateView = rectUpdateView.unite(
 		m_select.rectView().translated(m_posDelta.x(), 0));
 	m_pEditView->viewport()->update(QRect(
