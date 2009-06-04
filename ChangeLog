@@ -17,8 +17,8 @@ ChangeLog
 
 - MIDI controller mapping infrastructure, with file based
   configuration management (see View/Controllers...), is now
-  in place, following an original contribution from Mathias
-  aka gizzmo.
+  in place, following an original contribution from gizzmo
+  aka Mathias Krause.
 
 - Plugin chain buffer reset on playback start/stop is not
   guarded by a momentary plugin de/activation anymore.
