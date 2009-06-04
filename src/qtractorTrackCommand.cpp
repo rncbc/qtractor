@@ -28,7 +28,6 @@
 #include "qtractorTracks.h"
 #include "qtractorTrackList.h"
 #include "qtractorTrackView.h"
-#include "qtractorTrackButton.h"
 #include "qtractorMidiEngine.h"
 #include "qtractorMidiControl.h"
 #include "qtractorMixer.h"
@@ -474,16 +473,15 @@ bool qtractorTrackControlCommand::midiControlFeedback (void)
 
 
 //----------------------------------------------------------------------
-// class qtractorTrackButtonCommand - implementation.
+// class qtractorTrackStateCommand - implementation.
 //
 
 // Constructor.
-qtractorTrackButtonCommand::qtractorTrackButtonCommand (
-	qtractorTrackButton *pTrackButton, bool bOn, bool bMidiControl )
-	: qtractorTrackControlCommand(
-		QString(), pTrackButton->track(), bMidiControl)
+qtractorTrackStateCommand::qtractorTrackStateCommand ( qtractorTrack *pTrack,
+	qtractorTrack::ToolType toolType, bool bOn, bool bMidiControl )
+	: qtractorTrackControlCommand(QString(), pTrack, bMidiControl)
 {
-	m_toolType = pTrackButton->toolType();
+	m_toolType = toolType;
 	m_bOn = bOn;
 
 	m_pClipCommand = NULL;
@@ -521,7 +519,7 @@ qtractorTrackButtonCommand::qtractorTrackButtonCommand (
 }
 
 // Destructor.
-qtractorTrackButtonCommand::~qtractorTrackButtonCommand (void)
+qtractorTrackStateCommand::~qtractorTrackStateCommand (void)
 {
 	if (m_pClipCommand)
 		delete m_pClipCommand;
@@ -531,7 +529,7 @@ qtractorTrackButtonCommand::~qtractorTrackButtonCommand (void)
 
 
 // Track-button command method.
-bool qtractorTrackButtonCommand::redo (void)
+bool qtractorTrackStateCommand::redo (void)
 {
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
@@ -660,7 +658,7 @@ bool qtractorTrackButtonCommand::redo (void)
 	return true;
 }
 
-bool qtractorTrackButtonCommand::undo (void)
+bool qtractorTrackStateCommand::undo (void)
 {
 	if (m_pClipCommand)
 		m_pClipCommand->undo();

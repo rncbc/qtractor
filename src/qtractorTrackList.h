@@ -114,7 +114,6 @@ public:
 
 	// Find the track pointer reference from list view item row.
 	qtractorTrack *track(int iTrack) const;
-	qtractorTrackItemWidget *trackWidget(int iTrack) const;
 
 	// Insert/remove a track item; return actual track of incident.
 	int insertTrack(int iTrack, qtractorTrack *pTrack);
@@ -127,9 +126,6 @@ public:
 
 	// Retrieve current selected track reference.
 	qtractorTrack *currentTrack() const;
-
-	// Give direct access to curent track button widgets.
-	qtractorTrackItemWidget *currentTrackWidget() const;
 
 	// Update the list view item from track pointer reference.
 	void updateTrack(qtractorTrack *pTrack);

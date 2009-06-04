@@ -24,10 +24,6 @@
 #include "qtractorMidiControl.h"
 #include "qtractorMidiEngine.h"
 
-#include "qtractorMainForm.h"
-
-#include "qtractorTracks.h"
-#include "qtractorTrackList.h"
 #include "qtractorTrackCommand.h"
 
 #include "qtractorDocument.h"
@@ -243,29 +239,12 @@ bool qtractorMidiControl::processEvent (
 
 	if (iTrack < 0) return false;
 
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
-		return false;
-
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
 		return false;
 
-	qtractorTracks *pTracks = pMainForm->tracks();
-	if (pTracks == NULL)
-		return false;
-
-	qtractorTrackList *pTrackList = pTracks->trackList();
-	if (pTrackList == NULL)
-		return false;
-
-	qtractorTrack *pTrack = pTrackList->track(iTrack);
+	qtractorTrack *pTrack = pSession->tracks().at(iTrack);
 	if (pTrack == NULL)
-		return false;
-
-	qtractorTrackItemWidget *pTrackWidget
-		= pTrackList->trackWidget(iTrack);
-	if (pTrackWidget == NULL)
 		return false;
 
 	switch (val.command()) {
@@ -291,22 +270,22 @@ bool qtractorMidiControl::processEvent (
 		break;
 	case TrackRecord:
 		pSession->execute(
-			new qtractorTrackButtonCommand(
-				pTrackWidget->recordButton(),
+			new qtractorTrackStateCommand(pTrack,
+				qtractorTrack::Record,
 				bool(pEvent->value() > 0),
 				true));
 		break;
 	case TrackMute:
 		pSession->execute(
-			new qtractorTrackButtonCommand(
-				pTrackWidget->muteButton(),
+			new qtractorTrackStateCommand(pTrack,
+				qtractorTrack::Mute,
 				bool(pEvent->value() > 0),
 				true));
 		break;
 	case TrackSolo:
 		pSession->execute(
-			new qtractorTrackButtonCommand(
-				pTrackWidget->soloButton(),
+			new qtractorTrackStateCommand(pTrack,
+				qtractorTrack::Solo,
 				bool(pEvent->value() > 0),
 				true));
 		break;

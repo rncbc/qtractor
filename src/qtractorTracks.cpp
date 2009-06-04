@@ -32,6 +32,8 @@
 #include "qtractorClipCommand.h"
 #include "qtractorMidiEditCommand.h"
 
+#include "qtractorTrackButton.h"
+
 #include "qtractorAudioEngine.h"
 #include "qtractorAudioBuffer.h"
 #include "qtractorAudioClip.h"
@@ -52,7 +54,6 @@
 #include "qtractorMidiEditorForm.h"
 
 #include <QVBoxLayout>
-#include <QToolButton>
 #include <QProgressBar>
 #include <QMessageBox>
 #include <QFileDialog>
@@ -345,13 +346,6 @@ qtractorTrack *qtractorTracks::currentTrack (void) const
 	}
 
 	return pTrack;
-}
-
-
-// Retrieves current selected track widget reference.
-qtractorTrackItemWidget *qtractorTracks::currentTrackWidget (void) const
-{
-	return m_pTrackList->currentTrackWidget();
 }
 
 
@@ -1862,7 +1856,8 @@ void qtractorTracks::trackButtonToggledSlot (
 		return;
 
 	pSession->execute(
-		new qtractorTrackButtonCommand(pTrackButton, bOn));
+		new qtractorTrackStateCommand(
+			pTrackButton->track(), pTrackButton->toolType(), bOn));
 }
 
 

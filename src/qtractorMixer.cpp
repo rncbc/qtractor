@@ -1395,7 +1395,8 @@ void qtractorMixer::trackButtonToggledSlot (
 		return;
 
 	pSession->execute(
-		new qtractorTrackButtonCommand(pTrackButton, bOn));
+		new qtractorTrackStateCommand(
+			pTrackButton->track(), pTrackButton->toolType(), bOn));
 }
 
 

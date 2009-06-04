@@ -3,7 +3,7 @@ Qtractor - An Audio/MIDI multi-track sequencer
 
 ChangeLog
 
-CVS HEAD
+0.4.2  2009-06-04  The Flaunty Demoness
 
 - The MIDI clip editor (piano-roll/matrix editor), the main
   track view as well, have been subject to usability fixing,
@@ -13,26 +13,25 @@ CVS HEAD
 
 - MIDI tracks channel bank/program and controller stuff are
   now only issued when the respective bus connections have
-  changed, seldom on every playback start (EXPERIMENTAL).
+  changed, seldom on every playback start.
 
 - MIDI controller mapping infrastructure, with file based
   configuration management (see View/Controllers...), is now
   in place, following an original contribution from Mathias
-  aka gizzmo (EXPERIMENTAL).
+  aka gizzmo.
 
 - Plugin chain buffer reset on playback start/stop is not
   guarded by a momentary plugin de/activation anymore.
-  (EXPERIMENTAL).
 
 - Clip export may now be applied to multiple clips, sharing
   common refactored code and same semantics as merging of
-  current selected clips. (EXPERIMENTAL)
+  current selected clips.
 
 - Improved, may be just fixed yet again, audio track export
-  synchronization and reliability. (EXPERIMENTAL)
+  synchronization and reliability.
 
 - Clip merge is now featured both for audio and MIDI tracks
-  (see Edit/Clip/Merge...). (EXPERIMENTAL)
+  (see Edit/Clip/Merge...).
 
 - Improved, or better said, fixed (again) the precision of
   multi-clip final positioning as result of drag/move and

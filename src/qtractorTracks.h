@@ -67,8 +67,6 @@ public:
 	bool removeTrack(qtractorTrack *pTrack = NULL);
 	bool editTrack(qtractorTrack *pTrack = NULL);
 
-	qtractorTrackItemWidget *currentTrackWidget() const;
-
 	// Import Audio/MIDI files into new tracks...
 	bool addAudioTracks(QStringList files, unsigned long iClipStart = 0);
 	bool addMidiTracks(QStringList files, unsigned long iClipStart = 0);

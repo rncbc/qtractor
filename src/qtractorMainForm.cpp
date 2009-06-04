@@ -2292,42 +2292,42 @@ void qtractorMainForm::trackOutputs (void)
 // Arm current track for recording.
 void qtractorMainForm::trackStateRecord ( bool bOn )
 {
-	qtractorTrackItemWidget *pTrackWidget = NULL;
+	qtractorTrack *pTrack = NULL;
 	if (m_pTracks)
-		pTrackWidget = m_pTracks->currentTrackWidget();
-	if (pTrackWidget == NULL)
+		pTrack = m_pTracks->currentTrack();
+	if (pTrack == NULL)
 		return;
 
 	m_pSession->execute(
-		new qtractorTrackButtonCommand(pTrackWidget->recordButton(), bOn));
+		new qtractorTrackStateCommand(pTrack, qtractorTrack::Record, bOn));
 }
 
 
 // Mute current track.
 void qtractorMainForm::trackStateMute ( bool bOn )
 {
-	qtractorTrackItemWidget *pTrackWidget = NULL;
+	qtractorTrack *pTrack = NULL;
 	if (m_pTracks)
-		pTrackWidget = m_pTracks->currentTrackWidget();
-	if (pTrackWidget == NULL)
+		pTrack = m_pTracks->currentTrack();
+	if (pTrack == NULL)
 		return;
 
 	m_pSession->execute(
-		new qtractorTrackButtonCommand(pTrackWidget->muteButton(), bOn));
+		new qtractorTrackStateCommand(pTrack, qtractorTrack::Mute, bOn));
 }
 
 
 // Solo current track.
 void qtractorMainForm::trackStateSolo (  bool bOn  )
 {
-	qtractorTrackItemWidget *pTrackWidget = NULL;
+	qtractorTrack *pTrack = NULL;
 	if (m_pTracks)
-		pTrackWidget = m_pTracks->currentTrackWidget();
-	if (pTrackWidget == NULL)
+		pTrack = m_pTracks->currentTrack();
+	if (pTrack == NULL)
 		return;
 
 	m_pSession->execute(
-		new qtractorTrackButtonCommand(pTrackWidget->soloButton(), bOn));
+		new qtractorTrackStateCommand(pTrack, qtractorTrack::Solo, bOn));
 }
 
 

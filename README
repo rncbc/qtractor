@@ -42,7 +42,7 @@ Features
 - Unlimited number of overlapping clips per track.
 - XML encoded session/project description files (SDI).
 - Point-and-click, multi-select, drag-and-drop interaction
-  (drag, move, drop, cut, copy, paste, paste-repeat, delete, split).
+  (drag, move, drop, cut, copy, paste, paste-repeat, delete, split, merge).
 - Unlimited undo/redo.
 - Built-in mixer and monitor controls.
 - Built-in connection patchbay control and persistence
@@ -59,7 +59,8 @@ Features
 - Audio/MIDI metronome bar/beat clicks.
 - Unlimited tempo/time-signature map.
 - MIDI clip editor (matrix/piano roll).
-- MIDI instrument definitions (a-la Cakewalk(tm) [15])
+- MIDI instrument definitions (a-la Cakewalk(tm) [15]).
+- MIDI controller mapping (mixer)
 - JACK transport sync master.
 - MMC control surface enabled.
 - MIDI Song Position cueing support.
@@ -75,7 +76,7 @@ The software requirements for build and runtime are listed as follows:
 
   [1] Qt4 (core, gui, xml), C++ class library and tools for
         crossplatform development and internationalization
-        http://www.trolltech.org/products/qt/
+        http://www.qtsoftware.com/qt/
 
   [2] JACK Audio Connection Kit
         http://jackaudio.org/
@@ -188,7 +189,7 @@ References
 
 [1] Qt4 (core, gui, xml), C++ class library and tools
      for crossplatform development and internationalization
-     http://www.trolltech.org/products/qt/
+     http://www.qtsoftware.com/qt/
 
 [2] JACK Audio Connection Kit
      http://jackaudio.org/

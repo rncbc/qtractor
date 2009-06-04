@@ -30,7 +30,6 @@
 #include <QList>
 
 // Forward declarations.
-class qtractorTrackButton;
 class qtractorClipCommand;
 
 
@@ -237,19 +236,20 @@ private:
 
 
 //----------------------------------------------------------------------
-// class qtractorTrackButtonCommand - declaration.
+// class qtractorTrackStateCommand - declaration.
 //
 
-class qtractorTrackButtonCommand : public qtractorTrackControlCommand
+class qtractorTrackStateCommand : public qtractorTrackControlCommand
 {
 public:
 
 	// Constructor.
-	qtractorTrackButtonCommand(qtractorTrackButton *pTrackButton,
-		bool bOn, bool bMidiControl = false);
+	qtractorTrackStateCommand(qtractorTrack *pTrack,
+		qtractorTrack::ToolType toolType, bool bOn,
+		bool bMidiControl = false);
 
 	// Destructor.
-	~qtractorTrackButtonCommand();
+	~qtractorTrackStateCommand();
 
 	// Track-button command methods.
 	bool redo();
