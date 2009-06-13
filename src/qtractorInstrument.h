@@ -1,7 +1,7 @@
 // qtractorInstrument.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -28,6 +28,7 @@
 
 // Forward declarations.
 class QTextStream;
+class QFile;
 
 
 //----------------------------------------------------------------------
@@ -334,6 +335,10 @@ protected:
 	// Special instrument data list merge method.
 	void mergeDataList(qtractorInstrumentDataList& dst,
 		const qtractorInstrumentDataList& src);
+
+	// Special SoundFont loader.
+	bool loadSoundFont(QFile *pFile);
+	void loadSoundFontPresets(QFile *pFile, int iSize);
 
 private:
 

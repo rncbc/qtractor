@@ -139,7 +139,7 @@
         <string>&amp;Import...</string>
        </property>
        <property name="icon" >
-        <iconset resource="../icons/qtractor.qrc" >:/icons/fileOpen.png</iconset>
+        <iconset resource="../icons/qtractor.qrc" >:/icons/formOpen.png</iconset>
        </property>
        <property name="shortcut" >
         <string>Alt+I</string>
@@ -235,7 +235,7 @@
         <string>E&amp;xport...</string>
        </property>
        <property name="icon" >
-        <iconset resource="../icons/qtractor.qrc" >:/icons/fileSave.png</iconset>
+        <iconset resource="../icons/qtractor.qrc" >:/icons/formSave.png</iconset>
        </property>
        <property name="shortcut" >
         <string>Alt+X</string>

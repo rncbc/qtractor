@@ -74,7 +74,7 @@
       <string>&amp;Import...</string>
      </property>
      <property name="icon" >
-      <iconset>:/icons/fileOpen.png</iconset>
+      <iconset>:/icons/formOpen.png</iconset>
      </property>
      <property name="shortcut" >
       <string>Alt+I</string>
@@ -355,7 +355,7 @@
       <string>E&amp;xport...</string>
      </property>
      <property name="icon" >
-      <iconset>:/icons/fileSave.png</iconset>
+      <iconset>:/icons/formSave.png</iconset>
      </property>
      <property name="shortcut" >
       <string>Alt+X</string>

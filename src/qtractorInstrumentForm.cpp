@@ -19,13 +19,14 @@
 
 *****************************************************************************/
 
-#include "qtractorInstrumentForm.h"
-
 #include "qtractorAbout.h"
+#include "qtractorInstrumentForm.h"
 #include "qtractorInstrument.h"
+
 #include "qtractorSession.h"
 #include "qtractorOptions.h"
 
+#include <QApplication>
 #include <QHeaderView>
 #include <QMessageBox>
 #include <QFileDialog>
@@ -67,20 +68,29 @@ qtractorInstrumentForm::qtractorInstrumentForm (
 	// Setup UI struct...
 	m_ui.setupUi(this);
 
+	m_pInstruments = NULL;
+
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession)
+		m_pInstruments = pSession->instruments();
+
 	m_iDirtyCount = 0;
 
 	QHeaderView *pHeader = m_ui.InstrumentsListView->header();
-	pHeader->setResizeMode(QHeaderView::Custom);
+//	pHeader->setResizeMode(QHeaderView::Custom);
+	pHeader->setResizeMode(QHeaderView::ResizeToContents);
 	pHeader->setDefaultAlignment(Qt::AlignLeft);
 	pHeader->setMovable(false);
 
 	pHeader = m_ui.FilesListView->header();
 //	pHeader->setResizeMode(QHeaderView::Custom);
+	pHeader->setResizeMode(QHeaderView::ResizeToContents);
 	pHeader->setDefaultAlignment(Qt::AlignLeft);
 	pHeader->setMovable(false);
 
 	pHeader = m_ui.NamesListView->header();
-	pHeader->setResizeMode(QHeaderView::Custom);
+//	pHeader->setResizeMode(QHeaderView::Custom);
+	pHeader->setResizeMode(QHeaderView::ResizeToContents);
 	pHeader->setDefaultAlignment(Qt::AlignLeft);
 	pHeader->setMovable(false);
 
@@ -135,26 +145,36 @@ qtractorInstrumentForm::~qtractorInstrumentForm (void)
 }
 
 
+// Instrument list accessors.
+void qtractorInstrumentForm::setInstruments ( qtractorInstrumentList *pInstruments )
+{
+	m_pInstruments = pInstruments;
+
+	refreshForm();
+	stabilizeForm();
+}
+
+qtractorInstrumentList *qtractorInstrumentForm::instruments (void) const
+{
+	return m_pInstruments;
+}
+
+
 // Import new intrument file(s) into listing.
 void qtractorInstrumentForm::importSlot (void)
 {
-	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (m_pInstruments == NULL)
 		return;
 
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
 	if (pOptions == NULL)
 		return;
 
-	qtractorInstrumentList *pInstruments = pSession->instruments();
-	if (pInstruments == NULL)
-		return;
-
 	QStringList files;
 
 	const QString  sExt("ins");
 	const QString& sTitle  = tr("Import Instrument Files") + " - " QTRACTOR_TITLE;
-	const QString& sFilter = tr("Instrument files (*.%1)").arg(sExt);
+	const QString& sFilter = tr("Instrument files (*.%1 *.sf2)").arg(sExt);
 #if QT_VERSION < 0x040400
 	// Ask for the filename to open...
 	files = QFileDialog::getOpenFileNames(this,
@@ -180,7 +200,8 @@ void qtractorInstrumentForm::importSlot (void)
 	if (files.isEmpty())
 		return;
 
-	// Remember this last directory...
+	// Tell that we may take some time...
+	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 	
 	// For avery selected instrument file to load...
 	QTreeWidgetItem *pItem = NULL;
@@ -188,7 +209,7 @@ void qtractorInstrumentForm::importSlot (void)
 	while (iter.hasNext()) {
 		// Merge the file contents into global container...
 		const QString& sPath = iter.next();
-		if (pInstruments->load(sPath)) {
+		if (m_pInstruments->load(sPath)) {
 			// Start inserting in the current selected or last item...
 			if (pItem == NULL)
 				pItem = m_ui.FilesListView->currentItem();
@@ -214,23 +235,20 @@ void qtractorInstrumentForm::importSlot (void)
 	// May refresh the whole form?
 	refreshForm();
 	stabilizeForm();
+
+	// Done waiting.
+	QApplication::restoreOverrideCursor();
 }
 
 
 // Remove a file from instrument list.
 void qtractorInstrumentForm::removeSlot (void)
 {
-	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
-		return;
-
-	qtractorInstrumentList *pInstruments = pSession->instruments();
-	if (pInstruments == NULL)
+	if (m_pInstruments == NULL)
 		return;
 
 	QTreeWidgetItem *pItem = m_ui.FilesListView->currentItem();
 	if (pItem) {
-		pInstruments->removeFile(pItem->text(1));
 		delete pItem;
 		m_iDirtyCount++;
 	}
@@ -278,46 +296,42 @@ void qtractorInstrumentForm::moveDownSlot (void)
 // Reload the complete instrument definitions, from list.
 void qtractorInstrumentForm::reloadSlot (void)
 {
-	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (m_pInstruments == NULL)
 		return;
 
-	qtractorInstrumentList *pInstruments = pSession->instruments();
-	if (pInstruments == NULL)
-		return;
+	// Tell that we may take some time...
+	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
 	// Ooops...
-	pInstruments->clearAll();
+	m_pInstruments->clearAll();
 
 	// Load each file in order...
 	int iItemCount = m_ui.FilesListView->topLevelItemCount();
 	for (int iItem = 0; iItem < iItemCount; iItem++) {
 		QTreeWidgetItem *pItem = m_ui.FilesListView->topLevelItem(iItem);
 		if (pItem) 
-			pInstruments->load(pItem->text(1));
+			m_pInstruments->load(pItem->text(1));
 	}
 
-	// Not dirty anymore...
+	// We're clear.
 	m_iDirtyCount = 0;
 
 	refreshForm();
 	stabilizeForm();
+
+	// Done with reload.
+	QApplication::restoreOverrideCursor();
 }
 
 
 // Export the whole state into a single instrument file.
 void qtractorInstrumentForm::exportSlot (void)
 {
-	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (m_pInstruments == NULL)
 		return;
 
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
 	if (pOptions == NULL)
-		return;
-
-	qtractorInstrumentList *pInstruments = pSession->instruments();
-	if (pInstruments == NULL)
 		return;
 
 	QString sPath;
@@ -366,9 +380,15 @@ void qtractorInstrumentForm::exportSlot (void)
 		}
 	}
 
+	// Tell that we may take some time...
+	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+
 	// Just save the whole bunch...
-	if (pInstruments->save(sPath))
+	if (m_pInstruments->save(sPath))
 		pOptions->sInstrumentDir = QFileInfo(sPath).absolutePath();
+
+	// Done with export.
+	QApplication::restoreOverrideCursor();
 }
 
 
@@ -418,8 +438,8 @@ void qtractorInstrumentForm::stabilizeForm (void)
 {
 	QTreeWidgetItem *pItem = m_ui.FilesListView->currentItem();
 	if (pItem) {
-		int iItem = m_ui.FilesListView->indexOfTopLevelItem(pItem);
 		int iItemCount = m_ui.FilesListView->topLevelItemCount();
+		int iItem = m_ui.FilesListView->indexOfTopLevelItem(pItem);
 		m_ui.RemovePushButton->setEnabled(true);
 		m_ui.MoveUpPushButton->setEnabled(iItem > 0);
 		m_ui.MoveDownPushButton->setEnabled(iItem < iItemCount - 1);
@@ -430,24 +450,15 @@ void qtractorInstrumentForm::stabilizeForm (void)
 	}
 
 	m_ui.ReloadPushButton->setEnabled(m_iDirtyCount > 0);
-
-	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession && pSession->instruments())
-		m_ui.ExportPushButton->setEnabled((pSession->instruments())->count() > 0);
-	else
-		m_ui.ExportPushButton->setEnabled(false);
+	m_ui.ExportPushButton->setEnabled(
+		m_pInstruments && m_pInstruments->count() > 0);
 }
 
 
 // Refresh all instrument definition views.
 void qtractorInstrumentForm::refreshForm (void)
 {
-	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
-		return;
-
-	qtractorInstrumentList *pInstruments = pSession->instruments();
-	if (pInstruments == NULL)
+	if (m_pInstruments == NULL)
 		return;
 
 	// Freeze...
@@ -458,7 +469,7 @@ void qtractorInstrumentForm::refreshForm (void)
 	// Files list view...
 	m_ui.FilesListView->clear();
 	QList<QTreeWidgetItem *> files;
-	QStringListIterator ifile(pInstruments->files());
+	QStringListIterator ifile(m_pInstruments->files());
 	while (ifile.hasNext()) {
 		const QString& sPath = ifile.next();
 		QTreeWidgetItem *pFileItem = new QTreeWidgetItem();
@@ -473,8 +484,8 @@ void qtractorInstrumentForm::refreshForm (void)
 	m_ui.InstrumentsListView->clear();
 	QList<QTreeWidgetItem *> instrs;
 	qtractorInstrumentList::ConstIterator iter;
-	for (iter = pInstruments->begin();
-			iter != pInstruments->end(); ++iter) {
+	for (iter = m_pInstruments->begin();
+			iter != m_pInstruments->end(); ++iter) {
 		const qtractorInstrument& instr = iter.value();
 		// Instrument Name...
 		QTreeWidgetItem *pChildItem = NULL;
@@ -485,9 +496,9 @@ void qtractorInstrumentForm::refreshForm (void)
 		pChildItem = new qtractorInstrumentGroupItem(pInstrItem, pChildItem);
 		pChildItem->setText(0, tr("Patch Names for Banks"));
 		QTreeWidgetItem *pBankItem = NULL;
-		qtractorInstrumentPatches::ConstIterator pat;
-		for (pat = instr.patches().begin();
-				pat != instr.patches().end(); ++pat) {
+		const qtractorInstrumentPatches& patches = instr.patches();
+		qtractorInstrumentPatches::ConstIterator pat = patches.constBegin();
+		for ( ; pat != patches.constEnd(); ++pat) {
 			pBankItem = new QTreeWidgetItem(pChildItem, pBankItem);
 			int iBank = pat.key();
 			const QString sBank = (iBank < 0
@@ -504,8 +515,8 @@ void qtractorInstrumentForm::refreshForm (void)
 				pProgItem->setText(0,
 					QString("Based On = %1").arg(patch.basedOn()));
 			}
-			qtractorInstrumentData::ConstIterator it;
-			for (it = patch.constBegin(); it != patch.constEnd(); ++it) {
+			qtractorInstrumentData::ConstIterator it = patch.constBegin();
+			for ( ; it != patch.constEnd(); ++it) {
 				int iProg = it.key();
 				pProgItem = new QTreeWidgetItem(pBankItem, pProgItem);
 				pProgItem->setText(0,
@@ -551,42 +562,42 @@ void qtractorInstrumentForm::refreshForm (void)
 	// Names list view...
 	m_ui.NamesListView->clear();
 	QList<QTreeWidgetItem *> names;
-	if (pInstruments->count() > 0) {
+	if (m_pInstruments->count() > 0) {
 		QTreeWidgetItem *pListItem = NULL;
 		// - Patch Names...
 		pListItem = new qtractorInstrumentGroupItem();
 		pListItem->setText(0, tr("Patch Names"));
-		listInstrumentDataList(pListItem, pInstruments->patches(),
+		listInstrumentDataList(pListItem, m_pInstruments->patches(),
 			QIcon(":/icons/itemPatches.png"));
 		names.append(pListItem);
 		// - Note Names...
 		pListItem = new qtractorInstrumentGroupItem();
 		pListItem->setText(0, tr("Note Names"));
-		listInstrumentDataList(pListItem, pInstruments->notes(),
+		listInstrumentDataList(pListItem, m_pInstruments->notes(),
 			QIcon(":/icons/itemNotes.png"));
 		names.append(pListItem);
 		// - Controller Names...
 		pListItem = new qtractorInstrumentGroupItem();
 		pListItem->setText(0, tr("Controller Names"));
-		listInstrumentDataList(pListItem, pInstruments->controllers(),
+		listInstrumentDataList(pListItem, m_pInstruments->controllers(),
 			QIcon(":/icons/itemControllers.png"));
 		names.append(pListItem);
 		// - RPN Names...
 		pListItem = new qtractorInstrumentGroupItem();
 		pListItem->setText(0, tr("RPN Names"));
-		listInstrumentDataList(pListItem, pInstruments->rpns(),
+		listInstrumentDataList(pListItem, m_pInstruments->rpns(),
 			QIcon(":/icons/itemRpns.png"));
 		names.append(pListItem);
 		// - NRPN Names...
 		pListItem = new qtractorInstrumentGroupItem();
 		pListItem->setText(0, tr("NRPN Names"));
-		listInstrumentDataList(pListItem, pInstruments->nrpns(),
+		listInstrumentDataList(pListItem, m_pInstruments->nrpns(),
 			QIcon(":/icons/itemNrpns.png"));
 		names.append(pListItem);
 		// - Bank Select Methods...
 		pListItem = new qtractorInstrumentGroupItem();
 		pListItem->setText(0, tr("Bank Select Methods"));
-		if (pInstruments->count() > 0) {
+		if (m_pInstruments->count() > 0) {
 			QTreeWidgetItem *pChildItem = NULL;
 			for (int iBankSelMethod = 0; iBankSelMethod < 4; iBankSelMethod++) {
 				pChildItem = new qtractorInstrumentGroupItem(pListItem, pChildItem);
@@ -631,8 +642,8 @@ void qtractorInstrumentForm::listInstrumentData (
 		pItem->setText(0,
 			tr("Based On = %1").arg(data.basedOn()));
 	}
-	qtractorInstrumentData::ConstIterator it;
-	for (it = data.constBegin(); it != data.constEnd(); ++it) {
+	qtractorInstrumentData::ConstIterator it = data.constBegin();
+	for ( ; it != data.constEnd(); ++it) {
 		pItem = new QTreeWidgetItem(pParentItem, pItem);
 		pItem->setText(0,
 			QString("%1 = %2").arg(it.key()).arg(it.value()));
@@ -645,8 +656,8 @@ void qtractorInstrumentForm::listInstrumentDataList (
 	const QIcon& icon )
 {
 	QTreeWidgetItem *pItem = NULL;
-	qtractorInstrumentDataList::ConstIterator it;
-	for (it = list.begin(); it != list.end(); ++it) {
+	qtractorInstrumentDataList::ConstIterator it = list.begin();
+	for ( ; it != list.end(); ++it) {
 		pItem = new QTreeWidgetItem(pParentItem, pItem);
 		pItem->setIcon(0, icon);
 		pItem->setText(0, it.value().name());

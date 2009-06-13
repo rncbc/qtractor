@@ -1,7 +1,7 @@
 // qtractorInstrument.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -124,8 +124,8 @@ void qtractorInstrumentList::merge ( const qtractorInstrumentList& instruments )
 void qtractorInstrumentList::mergeDataList (
 	qtractorInstrumentDataList& dst, const qtractorInstrumentDataList& src )
 {
-	qtractorInstrumentDataList::ConstIterator it;
-	for (it = src.begin(); it != src.end(); ++it)
+	qtractorInstrumentDataList::ConstIterator it = src.constBegin();
+	for ( ; it != src.constEnd(); ++it)
 		dst[it.key()] = it.value();
 }
 
@@ -144,6 +144,16 @@ bool qtractorInstrumentList::load ( const QString& sFilename )
 	QFile file(sFilename);
 	if (!file.open(QIODevice::ReadOnly))
 		return false;
+
+	// Check for a soundfont...
+	if (loadSoundFont(&file)) {
+		file.close();
+		appendFile(sFilename);
+		return true;
+	}
+
+	// Proceed with regulat Cakewalk .ins file...
+	file.seek(0);
 
 	enum FileSection {
 		None         = 0,
@@ -183,7 +193,7 @@ bool qtractorInstrumentList::load ( const QString& sFilename )
 
 		// Read the line.
 		iLine++;
-		QString sLine = ts.readLine().simplified();
+		const QString& sLine = ts.readLine().simplified();
 		// If not empty, nor a comment, call the server...
 		if (sLine.isEmpty() || sLine[0] == ';')
 			continue;
@@ -442,41 +452,50 @@ bool qtractorInstrumentList::save ( const QString& sFilename ) const
 		if (!instr.nrpn().name().isEmpty())
 		    ts << "NRPN=" << instr.nrpn().name() << endl;
 		// - Patches...
-		qtractorInstrumentPatches::ConstIterator pit;
-		for (pit = instr.patches().begin();
-				pit != instr.patches().end(); ++pit) {
-			int iBank = pit.key();
-			const QString sBank = (iBank < 0
-				? QString("*") : QString::number(iBank));
-			ts << "Patch[" << sBank << "]=" << pit.value().name() << endl;
+		const qtractorInstrumentPatches& patches = instr.patches();
+		qtractorInstrumentPatches::ConstIterator pit = patches.constBegin();
+		for ( ;	pit != patches.constEnd(); ++pit) {
+			const QString& sPatch = pit.value().name();
+			if (!sPatch.isEmpty()) {
+				int iBank = pit.key();
+				const QString& sBank = (iBank < 0
+					? QString("*") : QString::number(iBank));
+				ts << "Patch[" << sBank << "]="
+				   << sPatch << endl;
+			}
 		}
 		// - Keys...
-		qtractorInstrumentKeys::ConstIterator kit;
-		for (kit = instr.keys().begin(); kit != instr.keys().end(); ++kit) {
+		const qtractorInstrumentKeys& keys = instr.keys();
+		qtractorInstrumentKeys::ConstIterator kit = keys.constBegin();
+		for ( ; kit != keys.constEnd(); ++kit) {
 			int iBank = kit.key();
-			const QString sBank = (iBank < 0
+			const QString& sBank = (iBank < 0
 				? QString("*") : QString::number(iBank));
 			const qtractorInstrumentNotes& notes = kit.value();
-			qtractorInstrumentNotes::ConstIterator nit;
-			for (nit = notes.begin(); nit != notes.end(); ++nit) {
-				int iProg = nit.key();
-				const QString sProg = (iProg < 0
-					? QString("*") : QString::number(iProg));
-				ts << "Key[" << sBank << "," << sProg << "]="
-				   << nit.value().name() << endl;
+			qtractorInstrumentNotes::ConstIterator nit = notes.constBegin();
+			for ( ; nit != notes.constEnd(); ++nit) {
+				const QString& sKey = nit.value().name();
+				if (!sKey.isEmpty()) {
+					int iProg = nit.key();
+					const QString& sProg = (iProg < 0
+						? QString("*") : QString::number(iProg));
+					ts << "Key[" << sBank << "," << sProg << "]="
+					   << sKey << endl;
+				}
 			}
 		}
 		// - Drums...
-		qtractorInstrumentDrums::ConstIterator dit;
-		for (dit = instr.drums().begin(); dit != instr.drums().end(); ++dit) {
+		const qtractorInstrumentDrums& drums = instr.drums();
+		qtractorInstrumentDrums::ConstIterator dit = drums.constBegin();
+		for ( ; dit != drums.constEnd(); ++dit) {
 			int iBank = dit.key();
-			const QString sBank = (iBank < 0
+			const QString& sBank = (iBank < 0
 				? QString("*") : QString::number(iBank));
 			const qtractorInstrumentDrumFlags& flags = dit.value();
-			qtractorInstrumentDrumFlags::ConstIterator fit;
-			for (fit = flags.begin(); fit != flags.end(); ++fit) {
+			qtractorInstrumentDrumFlags::ConstIterator fit = flags.constBegin();
+			for ( ; fit != flags.constEnd(); ++fit) {
 				int iProg = fit.key();
-				const QString sProg = (iProg < 0
+				const QString& sProg = (iProg < 0
 					? QString("*") : QString::number(iProg));
 				ts << "Drum[" << sBank << "," << sProg << "]="
 				   << fit.value() << endl;
@@ -496,10 +515,13 @@ void qtractorInstrumentList::saveDataList ( QTextStream& ts,
 	const qtractorInstrumentDataList& list ) const
 {
     ts << endl;
-	qtractorInstrumentDataList::ConstIterator it;
-	for (it = list.begin(); it != list.end(); ++it) {
-		ts << "[" << it.value().name() << "]" << endl;
-		saveData(ts, it.value());
+	qtractorInstrumentDataList::ConstIterator it = list.constBegin(); 
+	for ( ; it != list.constEnd(); ++it) {
+		const QString& sName = it.value().name();
+		if (!sName.isEmpty()) {
+			ts << "[" << sName << "]" << endl;
+			saveData(ts, it.value());
+		}
 	}
 }
 
@@ -513,6 +535,109 @@ void qtractorInstrumentList::saveData ( QTextStream& ts,
 	for (it = data.constBegin(); it != data.constEnd(); ++it)
 		ts << it.key() << "=" << it.value() << endl;
 	ts << endl;
+}
+
+
+// SoundFont chunk record header.
+typedef struct _SoundFontChunk
+{
+	char id[4];
+	int32_t size;
+
+} SoundFontChunk;
+
+
+// Special SoundFont loader.
+bool qtractorInstrumentList::loadSoundFont ( QFile *pFile )
+{
+	// Check RIFF file header...
+	SoundFontChunk chunk;
+	pFile->read((char *) &chunk, sizeof(chunk));
+	if (::strncmp(chunk.id, "RIFF", 4) != 0)
+		return false;
+
+	// Check file id...
+	pFile->read(chunk.id, sizeof(chunk.id));
+	if (::strncmp(chunk.id, "sfbk", 4) != 0) 
+		return false;
+
+	for (;;) {
+
+		pFile->read((char *) &chunk, sizeof(chunk));
+		if (pFile->atEnd())
+			break;
+
+		int iSize = chunk.size;
+		if (::strncmp(chunk.id, "LIST", 4) == 0) {
+			// Process a list chunk.
+			pFile->read(chunk.id, sizeof(chunk.id));
+			iSize -= sizeof(chunk.id);
+			if (::strncmp(chunk.id, "pdta", 4) == 0) {
+				loadSoundFontPresets(pFile, iSize);
+				break; // We have enough!
+			}
+		}
+
+		// Maybe illegal; ignored; skip it.
+		pFile->seek(pFile->pos() + iSize);
+	}
+
+	return true;
+}
+
+
+void qtractorInstrumentList::loadSoundFontPresets ( QFile *pFile, int iSize )
+{
+	const QString& sInstrumentName
+		= QFileInfo(pFile->fileName()).baseName();
+	qtractorInstrument& instr = (*this)[sInstrumentName];
+	int iDrums = 0;
+
+	// Stabilize insytrument name, for good.
+	instr.setInstrumentName(sInstrumentName);
+
+	// Parse the buffer...
+	while (iSize > 0) {
+
+		// Read a sub-chunk...
+		SoundFontChunk chunk;
+		pFile->read((char *) &chunk, sizeof(chunk));
+		if (pFile->atEnd())
+			break;
+		iSize -= sizeof(chunk);
+
+		if (::strncmp(chunk.id, "phdr", 4) == 0) {
+			// Preset header...
+			int npresets = (chunk.size / 38);
+			for (int i = 0; i < npresets; ++i) {
+				char name[20];
+				int16_t prog;
+				int16_t bank;
+				pFile->read(name, sizeof(name));
+				pFile->read((char *) &(prog), sizeof(int16_t));
+				pFile->read((char *) &(bank), sizeof(int16_t));
+				pFile->seek(pFile->pos() + 14);
+				// Add actual preset name...
+				if (i < npresets - 1) {
+					const QString& sBank = QObject::tr("%1 Bank %2")
+						.arg(instr.instrumentName()).arg(int(bank));
+					qtractorInstrumentData& patch = m_patches[sBank];
+					patch.setName(sBank);
+					instr.setPatch(int(bank), patch);
+					patch[int(prog)] = QString(name).simplified();
+					if (bank == 128 && iDrums == 0) {
+						instr.setDrum(128, -1, true); // Usual SF2 standard ;)
+						iDrums++;
+					}
+				}
+			}			
+		} else {
+			// Ignored; skip it.
+			pFile->seek(pFile->pos() + chunk.size);
+		}
+
+		iSize -= chunk.size;
+	}
 }
 
 

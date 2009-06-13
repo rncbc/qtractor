@@ -3,6 +3,12 @@ Qtractor - An Audio/MIDI multi-track sequencer
 
 ChangeLog
 
+CVS HEAD
+
+- MIDI instrument definitions may now be imported from plain
+  SoundFont files. (EXPERIMENTAL)
+
+
 0.4.2  2009-06-04  The Flaunty Demoness
 
 - The MIDI clip editor (piano-roll/matrix editor), the main

@@ -26,7 +26,6 @@
 
 
 // Forward declarations...
-class qtractorMainForm;
 class qtractorInstrumentData;
 class qtractorInstrumentDataList;
 class qtractorInstrumentList;
@@ -49,16 +48,22 @@ public:
 	// Special group item types.
 	enum { GroupItem = QTreeWidgetItem::UserType + 1 };
 
+	// Instrument list accessors.
+	void setInstruments(qtractorInstrumentList *pInstruments);
+	qtractorInstrumentList *instruments() const;
+
 public slots:
 
     void accept();
     void reject();
+
     void importSlot();
     void removeSlot();
     void moveUpSlot();
     void moveDownSlot();
     void reloadSlot();
     void exportSlot();
+
     void stabilizeForm();
     void refreshForm();
 
@@ -71,12 +76,16 @@ protected:
 		const qtractorInstrumentData& data);
     void listInstrumentDataList(QTreeWidgetItem *pParentItem,
 		const qtractorInstrumentDataList& list, const QIcon& icon);
+
     QString bankSelMethod(int iBankSelMethod);
 
 private:
 
 	// The Qt-designer UI struct...
 	Ui::qtractorInstrumentForm m_ui;
+
+	// Main editable data structure.
+	qtractorInstrumentList *m_pInstruments;
 
 	// Instance variables...
 	int m_iDirtyCount;
