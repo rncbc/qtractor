@@ -588,14 +588,6 @@ bool qtractorInstrumentList::loadSoundFont ( QFile *pFile )
 
 void qtractorInstrumentList::loadSoundFontPresets ( QFile *pFile, int iSize )
 {
-	const QString& sInstrumentName
-		= QFileInfo(pFile->fileName()).baseName();
-	qtractorInstrument& instr = (*this)[sInstrumentName];
-	int iDrums = 0;
-
-	// Stabilize insytrument name, for good.
-	instr.setInstrumentName(sInstrumentName);
-
 	// Parse the buffer...
 	while (iSize > 0) {
 
@@ -607,9 +599,15 @@ void qtractorInstrumentList::loadSoundFontPresets ( QFile *pFile, int iSize )
 		iSize -= sizeof(chunk);
 
 		if (::strncmp(chunk.id, "phdr", 4) == 0) {
+			// Instrument name based on SoundFont file name...
+			const QString& sInstrumentName
+				= QFileInfo(pFile->fileName()).baseName();
+			qtractorInstrument& instr = (*this)[sInstrumentName];
+			instr.setInstrumentName(sInstrumentName);		
 			// Preset header...
-			int npresets = (chunk.size / 38);
-			for (int i = 0; i < npresets; ++i) {
+			int iDrums = 0;
+			int iPresets = (chunk.size / 38);
+			for (int i = 0; i < iPresets; ++i) {
 				char name[20];
 				int16_t prog;
 				int16_t bank;
@@ -618,7 +616,7 @@ void qtractorInstrumentList::loadSoundFontPresets ( QFile *pFile, int iSize )
 				pFile->read((char *) &(bank), sizeof(int16_t));
 				pFile->seek(pFile->pos() + 14);
 				// Add actual preset name...
-				if (i < npresets - 1) {
+				if (i < iPresets - 1) {
 					const QString& sBank = QObject::tr("%1 Bank %2")
 						.arg(instr.instrumentName()).arg(int(bank));
 					qtractorInstrumentData& patch = m_patches[sBank];
@@ -630,11 +628,13 @@ void qtractorInstrumentList::loadSoundFontPresets ( QFile *pFile, int iSize )
 						iDrums++;
 					}
 				}
-			}			
-		} else {
-			// Ignored; skip it.
-			pFile->seek(pFile->pos() + chunk.size);
+			}
+			// Enough done.
+			break;
 		}
+
+		// Ignored; skip it.
+		pFile->seek(pFile->pos() + chunk.size);
 
 		iSize -= chunk.size;
 	}
