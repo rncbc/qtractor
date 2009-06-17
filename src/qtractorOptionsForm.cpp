@@ -395,7 +395,7 @@ void qtractorOptionsForm::setOptions ( qtractorOptions *pOptions )
 			if (iDevice < 0)
 				iDevice = 0;
 			int iSubDev = snd_timer_id_get_subdevice(pTimerID);
-			if (iSubDev)
+			if (iSubDev < 0)
 				iSubDev = 0;
 			char szTimer[64];
 			snprintf(szTimer, sizeof(szTimer) - 1,
@@ -410,10 +410,15 @@ void qtractorOptionsForm::setOptions ( qtractorOptions *pOptions )
 						atimer(iClass, iCard, iDevice, iSubDev);
 					if (m_pOptions->iMidiQueueTimer == int(atimer.alsaTimer()))
 						iMidiQueueTimerCurrent = iMidiQueueTimer;
-					m_ui.MidiQueueTimerComboBox->addItem(tr("%1 [%2] %3ns")
-						.arg(snd_timer_info_get_name(pTimerInfo))
-						.arg(snd_timer_info_get_id(pTimerInfo))
-						.arg(snd_timer_info_get_resolution(pTimerInfo)),
+					long iResol = snd_timer_info_get_resolution(pTimerInfo);
+					QString sTimerName = snd_timer_info_get_name(pTimerInfo);
+					QString sTimerText;
+					if (!snd_timer_info_is_slave(pTimerInfo) && iResol > 0)
+						sTimerText = tr("%1 Hz").arg(1000000000L / iResol); 
+					else
+						sTimerText = tr("slave");
+					m_ui.MidiQueueTimerComboBox->addItem(
+						tr("%1 (%2)").arg(sTimerName).arg(sTimerText),
 						int(atimer.alsaTimer()));
 					++iMidiQueueTimer;
 				}
