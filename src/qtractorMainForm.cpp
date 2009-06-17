@@ -947,6 +947,7 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 	updateAudioPlayer();
 	updateAudioMetronome();
 	updateMidiCaptureQuantize();
+	updateMidiQueueTimer();
 	updateMidiControl();
 	updateMidiMetronome();
 
@@ -2908,6 +2909,7 @@ void qtractorMainForm::viewOptions (void)
 	bool    bOldAudioPlayerBus     = m_pOptions->bAudioPlayerBus;
 	bool    bOldAudioMetronome     = m_pOptions->bAudioMetronome;
 	int     iOldMidiCaptureQuantize = m_pOptions->iMidiCaptureQuantize;
+	int     iOldMidiQueueTimer     = m_pOptions->iMidiQueueTimer;
 	QString sOldMetroBarFilename   = m_pOptions->sMetroBarFilename;
 	QString sOldMetroBeatFilename  = m_pOptions->sMetroBeatFilename;
 	bool    bOldAudioMetroBus      = m_pOptions->bAudioMetroBus;
@@ -2936,6 +2938,10 @@ void qtractorMainForm::viewOptions (void)
 		if (( bOldTimeStretch && !m_pOptions->bAudioTimeStretch) ||
 			(!bOldTimeStretch &&  m_pOptions->bAudioTimeStretch)) {
 			qtractorAudioBuffer::setWsolaTimeStretch(m_pOptions->bAudioTimeStretch);
+			iNeedRestart |= RestartSession;
+		}
+		if (iOldMidiQueueTimer != m_pOptions->iMidiQueueTimer) {
+			updateMidiQueueTimer();
 			iNeedRestart |= RestartSession;
 		}
 		if (( bOldQuickSeek && !m_pOptions->bAudioQuickSeek) ||
@@ -4136,6 +4142,21 @@ void qtractorMainForm::updateMidiCaptureQuantize (void)
 
 	pMidiEngine->setCaptureQuantize(
 		qtractorTimeScale::snapFromIndex(m_pOptions->iMidiCaptureQuantize));
+}
+
+
+// Update MIDI playback queue timersetting.
+void qtractorMainForm::updateMidiQueueTimer (void)
+{
+	if (m_pOptions == NULL)
+		return;
+
+	// Configure the MIDI engine player handling...
+	qtractorMidiEngine *pMidiEngine = m_pSession->midiEngine();
+	if (pMidiEngine == NULL)
+		return;
+
+	pMidiEngine->setAlsaTimer(m_pOptions->iMidiQueueTimer);
 }
 
 

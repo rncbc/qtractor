@@ -110,6 +110,7 @@ public:
 	// MIDI options...
 	int  iMidiCaptureFormat;
 	int  iMidiCaptureQuantize;
+	int  iMidiQueueTimer;
 	bool bMidiControlBus;
 	bool bMidiMetroBus;
 	bool bMidiMetronome;

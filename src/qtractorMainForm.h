@@ -286,6 +286,7 @@ protected:
 	void updateDisplayFormat();
 	void updateAudioPlayer();
 	void updateMidiCaptureQuantize();
+	void updateMidiQueueTimer();
 	void updateMidiControl();
 	void updateAudioMetronome();
 	void updateMidiMetronome();

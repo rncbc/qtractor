@@ -539,6 +539,7 @@ qtractorMidiEngine::qtractorMidiEngine ( qtractorSession *pSession )
 	m_pAlsaSeq       = NULL;
 	m_iAlsaClient    = -1;
 	m_iAlsaQueue     = -1;
+	m_iAlsaTimer     = 0;
 
 	m_pAlsaSubsSeq   = NULL;
 	m_iAlsaSubsPort  = -1;
@@ -1224,6 +1225,22 @@ bool qtractorMidiEngine::init ( const QString& sClientName )
 
 	m_iAlsaClient = snd_seq_client_id(m_pAlsaSeq);
 	m_iAlsaQueue  = snd_seq_alloc_queue(m_pAlsaSeq);
+
+	// Set sequencer queue timer.
+	if (m_iAlsaTimer > 0) {
+		AlsaTimer atimer((unsigned long) m_iAlsaTimer);	
+		snd_timer_id_t *pAlsaTimerId;
+		snd_timer_id_alloca(&pAlsaTimerId);
+		snd_timer_id_set_class(pAlsaTimerId, atimer.alsaTimerClass());
+		snd_timer_id_set_card(pAlsaTimerId, atimer.alsaTimerCard());
+		snd_timer_id_set_device(pAlsaTimerId, atimer.alsaTimerDevice());
+		snd_timer_id_set_subdevice(pAlsaTimerId, atimer.alsaTimerSubDev());
+		snd_seq_queue_timer_t *pAlsaTimer;
+		snd_seq_queue_timer_alloca(&pAlsaTimer);
+		snd_seq_queue_timer_set_type(pAlsaTimer, SND_SEQ_TIMER_ALSA);
+		snd_seq_queue_timer_set_id(pAlsaTimer, pAlsaTimerId);
+		snd_seq_set_queue_timer(m_pAlsaSeq, m_iAlsaQueue, pAlsaTimer);
+	}
 
 	// Setup subscriptions stuff...
 	if (snd_seq_open(&m_pAlsaSubsSeq, "hw", SND_SEQ_OPEN_DUPLEX, 0) >= 0) {
