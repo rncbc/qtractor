@@ -56,6 +56,7 @@ headers = config.h \
 	src/qtractorMidiMeter.h \
 	src/qtractorMidiMonitor.h \
 	src/qtractorMidiSequence.h \
+	src/qtractorMidiTimer.h \
 	src/qtractorMixer.h \
 	src/qtractorMonitor.h \
 	src/qtractorOptions.h \
@@ -151,6 +152,7 @@ sources = src/main.cpp \
 	src/qtractorMidiMeter.cpp \
 	src/qtractorMidiMonitor.cpp \
 	src/qtractorMidiSequence.cpp \
+	src/qtractorMidiTimer.cpp \
 	src/qtractorMixer.cpp \
 	src/qtractorOptions.cpp \
 	src/qtractorPlugin.cpp \

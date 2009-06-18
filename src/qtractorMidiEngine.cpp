@@ -32,6 +32,7 @@
 #include "qtractorMidiClip.h"
 #include "qtractorMidiBuffer.h"
 #include "qtractorMidiControl.h"
+#include "qtractorMidiTimer.h"
 
 #include "qtractorPlugin.h"
 
@@ -1227,14 +1228,14 @@ bool qtractorMidiEngine::init ( const QString& sClientName )
 	m_iAlsaQueue  = snd_seq_alloc_queue(m_pAlsaSeq);
 
 	// Set sequencer queue timer.
-	if (m_iAlsaTimer > 0) {
-		AlsaTimer atimer((unsigned long) m_iAlsaTimer);	
+	if (qtractorMidiTimer().indexOf(m_iAlsaTimer) > 0) {
+		qtractorMidiTimer::Key key(m_iAlsaTimer);	
 		snd_timer_id_t *pAlsaTimerId;
 		snd_timer_id_alloca(&pAlsaTimerId);
-		snd_timer_id_set_class(pAlsaTimerId, atimer.alsaTimerClass());
-		snd_timer_id_set_card(pAlsaTimerId, atimer.alsaTimerCard());
-		snd_timer_id_set_device(pAlsaTimerId, atimer.alsaTimerDevice());
-		snd_timer_id_set_subdevice(pAlsaTimerId, atimer.alsaTimerSubDev());
+		snd_timer_id_set_class(pAlsaTimerId, key.alsaTimerClass());
+		snd_timer_id_set_card(pAlsaTimerId, key.alsaTimerCard());
+		snd_timer_id_set_device(pAlsaTimerId, key.alsaTimerDevice());
+		snd_timer_id_set_subdevice(pAlsaTimerId, key.alsaTimerSubDev());
 		snd_seq_queue_timer_t *pAlsaTimer;
 		snd_seq_queue_timer_alloca(&pAlsaTimer);
 		snd_seq_queue_timer_set_type(pAlsaTimer, SND_SEQ_TIMER_ALSA);

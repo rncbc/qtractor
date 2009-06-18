@@ -52,6 +52,7 @@ HEADERS += src/qtractorAbout.h \
            src/qtractorMidiMeter.h \
            src/qtractorMidiMonitor.h \
            src/qtractorMidiSequence.h \
+           src/qtractorMidiTimer.h \
            src/qtractorMixer.h \
            src/qtractorMmcEvent.h \
            src/qtractorMonitor.h \
@@ -148,6 +149,7 @@ SOURCES += src/main.cpp \
            src/qtractorMidiMeter.cpp \
            src/qtractorMidiMonitor.cpp \
            src/qtractorMidiSequence.cpp \
+           src/qtractorMidiTimer.cpp \
            src/qtractorMixer.cpp \
            src/qtractorMmcEvent.cpp \
            src/qtractorOptions.cpp \

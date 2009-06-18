@@ -25,7 +25,7 @@
 #include "qtractorOptions.h"
 
 #include "qtractorAudioFile.h"
-#include "qtractorMidiEngine.h"
+#include "qtractorMidiTimer.h"
 #include "qtractorMidiEditor.h"
 #include "qtractorTimeScale.h"
 #include "qtractorPlugin.h"
@@ -371,65 +371,12 @@ void qtractorOptionsForm::setOptions ( qtractorOptions *pOptions )
 	m_ui.MidiCaptureQuantizeComboBox->setCurrentIndex(m_pOptions->iMidiCaptureQuantize);
 
 	// MIDI playback options.
-	int iMidiQueueTimer = 0;
-	int iMidiQueueTimerCurrent = 0;
+	qtractorMidiTimer timer;
 	m_ui.MidiQueueTimerComboBox->clear();
-	m_ui.MidiQueueTimerComboBox->addItem(tr("(default)"), 0);
-	++iMidiQueueTimer;
-	snd_timer_query_t *pTimerQuery = NULL;
-	if (snd_timer_query_open(&pTimerQuery, "hw", 0) >= 0) {
-		snd_timer_id_t *pTimerID = NULL;
-		snd_timer_id_alloca(&pTimerID);
-		snd_timer_id_set_class(pTimerID, SND_TIMER_CLASS_NONE);
-		while (snd_timer_query_next_device(pTimerQuery, pTimerID) >= 0) {
-			int iClass = snd_timer_id_get_class(pTimerID);
-			if (iClass < 0)
-				break;
-			int iSClass = snd_timer_id_get_sclass(pTimerID);
-			if (iSClass < 0)
-				iSClass = 0;
-			int iCard = snd_timer_id_get_card(pTimerID);
-			if (iCard < 0)
-				iCard = 0;
-			int iDevice = snd_timer_id_get_device(pTimerID);
-			if (iDevice < 0)
-				iDevice = 0;
-			int iSubDev = snd_timer_id_get_subdevice(pTimerID);
-			if (iSubDev < 0)
-				iSubDev = 0;
-			char szTimer[64];
-			snprintf(szTimer, sizeof(szTimer) - 1,
-				"hw:CLASS=%i,SCLASS=%i,CARD=%i,DEV=%i,SUBDEV=%i",
-				iClass, iSClass, iCard, iDevice, iSubDev);
-			snd_timer_t *pTimer = NULL;
-			if (snd_timer_open(&pTimer, szTimer, SND_TIMER_OPEN_NONBLOCK) >= 0) {
-				snd_timer_info_t *pTimerInfo;
-				snd_timer_info_alloca(&pTimerInfo);
-				if (snd_timer_info(pTimer, pTimerInfo) >= 0) {
-					qtractorMidiEngine::AlsaTimer
-						atimer(iClass, iCard, iDevice, iSubDev);
-					if (m_pOptions->iMidiQueueTimer == int(atimer.alsaTimer()))
-						iMidiQueueTimerCurrent = iMidiQueueTimer;
-					long iResol = snd_timer_info_get_resolution(pTimerInfo);
-					QString sTimerName = snd_timer_info_get_name(pTimerInfo);
-					QString sTimerText;
-					if (!snd_timer_info_is_slave(pTimerInfo) && iResol > 0)
-						sTimerText = tr("%1 Hz").arg(1000000000L / iResol); 
-					else
-						sTimerText = tr("slave");
-					m_ui.MidiQueueTimerComboBox->addItem(
-						tr("%1 (%2)").arg(sTimerName).arg(sTimerText),
-						int(atimer.alsaTimer()));
-					++iMidiQueueTimer;
-				}
-				snd_timer_close(pTimer);
-			}
-		}
-		snd_timer_query_close(pTimerQuery);
-	}
-	m_ui.MidiQueueTimerComboBox->setCurrentIndex(iMidiQueueTimerCurrent);
-	m_ui.MidiQueueTimerComboBox->setEnabled(iMidiQueueTimer > 1);
-	m_ui.MidiQueueTimerTextLabel->setEnabled(iMidiQueueTimer > 1);
+	for (int i = 0; i < timer.count(); ++i)
+		m_ui.MidiQueueTimerComboBox->addItem(timer.name(i), timer.key(i));
+	m_ui.MidiQueueTimerComboBox->setCurrentIndex(
+		timer.indexOf(m_pOptions->iMidiQueueTimer));
 
 	// MIDI control options.
 	m_ui.MidiControlBusCheckBox->setChecked(m_pOptions->bMidiControlBus);

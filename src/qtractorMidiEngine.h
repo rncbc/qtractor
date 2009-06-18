@@ -181,61 +181,10 @@ public:
 	void setCaptureQuantize(unsigned short iCaptureQuantize);
 	unsigned short captureQuantize() const;
 
-	// Special ALSA sequencer queue timer stuff.
-	class AlsaTimer
-	{
-	public:
-
-		// Constructors.
-		AlsaTimer(unsigned long iAlsaTimer = 0)
-			{ setAlsaTimer(iAlsaTimer); }
-		AlsaTimer(int iClass, int iCard, int iDevice, int iSubDev)
-			{ setAlsaTimer(iClass, iCard, iDevice, iSubDev); }
-		AlsaTimer(const AlsaTimer& atimer)
-			{ setAlsaTimer(atimer.alsaTimer()); }
-
-		// Setters.
-		void setAlsaTimer(unsigned long iAlsaTimer)
-		{
-			if (iAlsaTimer == 0)
-				iAlsaTimer = ((SND_TIMER_CLASS_GLOBAL & 0xff) << 24);
-			m_iAlsaTimer = iAlsaTimer;
-		}
-
-		void setAlsaTimer(int iClass, int iCard, int iDevice, int iSubDev)
-		{
-			if (iClass < 0 || iClass == SND_TIMER_CLASS_NONE)
-				iClass = SND_TIMER_CLASS_GLOBAL;
-			setAlsaTimer((unsigned long)
-				((iClass  & 0xff) << 24) |
-				((iCard   & 0xff) << 16) |
-				((iDevice & 0xff) <<  8) |
-				 (iSubDev & 0xff));
-		}
-
-		// Getters.
-		unsigned long alsaTimer() const
-			{ return m_iAlsaTimer; }
-
-		int alsaTimerClass() const
-			{ return int((m_iAlsaTimer & 0xff000000) >> 24); }
-		int alsaTimerCard() const
-			{ return int((m_iAlsaTimer & 0x00ff0000) >> 16); }
-		int alsaTimerDevice() const
-			{ return int((m_iAlsaTimer & 0x0000ff00) >> 8); }
-		int alsaTimerSubDev() const
-			{ return int(m_iAlsaTimer & 0x000000ff); }
-
-	private:
-
-		// Queue timer
-		unsigned long m_iAlsaTimer;
-	};
-
-	// Device queue timer.
+	// ALSA device queue timer.
 	void setAlsaTimer(int iAlsaTimer)
 		{ m_iAlsaTimer = iAlsaTimer; }
-	unsigned long alsaTimer() const
+	int alsaTimer() const
 		{ return m_iAlsaTimer; }
 
 protected:

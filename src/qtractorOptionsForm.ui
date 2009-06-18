@@ -776,7 +776,7 @@
              </font>
             </property>
             <property name="text" >
-             <string>Queue &amp;timer:</string>
+             <string>Queue &amp;timer (resolution):</string>
             </property>
             <property name="buddy" >
              <cstring>MidiQueueTimerComboBox</cstring>
@@ -792,7 +792,7 @@
              </font>
             </property>
             <property name="toolTip" >
-             <string>Queue timer</string>
+             <string>Queue timer (resolution)</string>
             </property>
            </widget>
           </item>

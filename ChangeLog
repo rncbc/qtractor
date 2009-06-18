@@ -5,8 +5,8 @@ ChangeLog
 
 CVS HEAD
 
-- New MIDI Playback/Queue timer option is now available (see
-  View/Options.../MIDI). (HIGHLY EXPERIMENTAL)
+- New MIDI Playback/Queue timer (resolution) option is now
+  available (see View/Options.../MIDI). (EXPERIMENTAL)
 
 - MIDI instrument definitions may now be imported from plain
   SoundFont files. (EXPERIMENTAL)
