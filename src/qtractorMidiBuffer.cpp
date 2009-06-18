@@ -1,7 +1,7 @@
 // qtractorMidiBuffer.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -244,7 +244,7 @@ bool qtractorMidiManager::queued ( snd_seq_event_t *pEvent )
 	if (pEvent->type == SND_SEQ_EVENT_NOTE) {
 		snd_seq_event_t ev = *pEvent;
 		ev.type = SND_SEQ_EVENT_NOTEON;
-		if (!m_queuedBuffer.push(&ev, iTick))
+		if (!m_queuedBuffer.insert(&ev, iTick))
 			return false;
 		iTick += m_pSession->frameFromTick(ev.data.note.duration - 1);
 		ev.type = SND_SEQ_EVENT_NOTEOFF;

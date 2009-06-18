@@ -5,6 +5,9 @@ ChangeLog
 
 CVS HEAD
 
+- Overlapped MIDI clips were rendering garbled note events
+  to DSSI/VSTi plugins, now fixed.
+
 - New MIDI Playback/Queue timer (resolution) option is now
   available (see View/Options.../MIDI). (EXPERIMENTAL)
 
