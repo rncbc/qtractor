@@ -312,7 +312,7 @@ void qtractorMidiEditView::updatePixmap ( int cx, int cy )
 	unsigned short iSnapPerBeat
 		= (m_pEditor->isSnapGrid() ? pTimeScale->snapPerBeat() : 0);
 	unsigned short iPixelsPerBeat = pNode->pixelsPerBeat();
-	unsigned int iBeat = pNode->beatFromPixel(dx - (iPixelsPerBeat >> 1));
+	unsigned int iBeat = pNode->beatFromPixel(dx);
 	int x = pNode->pixelFromBeat(iBeat) - dx;
 	while (x < w) {
 		if (x >= 0) {

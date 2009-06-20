@@ -5,6 +5,9 @@ ChangeLog
 
 CVS HEAD
 
+- Fixed glitch displaying beat snap/grid lines on MIDI clip
+  editor, incidental to clips located at absolute zero time.
+
 - Overlapped MIDI clips were rendering garbled note events
   to DSSI/VSTi plugins, now fixed.
 
