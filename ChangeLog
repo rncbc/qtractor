@@ -5,6 +5,8 @@ ChangeLog
 
 CVS HEAD
 
+- Crash when updating bus probably fixed (bug #2811630).
+
 - Fixed glitch displaying beat snap/grid lines on MIDI clip
   editor, incidental to clips located at absolute zero time.
 

@@ -494,6 +494,10 @@ bool qtractorBusForm::updateBusEx ( qtractorBus *pBus ) const
 	if (sBusName.isEmpty())
 		return false;
 
+	// Reset plugin lists...
+	m_ui.InputPluginListView->setPluginList(NULL);
+	m_ui.OutputPluginListView->setPluginList(NULL);
+
 	qtractorBus::BusMode busMode = qtractorBus::None;
 	switch (m_ui.BusModeComboBox->currentIndex()) {
 	case 0:
@@ -552,6 +556,10 @@ void qtractorBusForm::createBus (void)
 	const QString sBusName = m_ui.BusNameLineEdit->text().simplified();
 	if (sBusName.isEmpty())
 		return;
+
+	// Reset plugin lists...
+	m_ui.InputPluginListView->setPluginList(NULL);
+	m_ui.OutputPluginListView->setPluginList(NULL);
 
 	qtractorBus::BusMode busMode = qtractorBus::None;
 	switch (m_ui.BusModeComboBox->currentIndex()) {
@@ -654,6 +662,10 @@ void qtractorBusForm::deleteBus (void)
 			QMessageBox::Ok | QMessageBox::Cancel) == QMessageBox::Cancel)
 			return;
 	}
+
+	// Reset plugin lists...
+	m_ui.InputPluginListView->setPluginList(NULL);
+	m_ui.OutputPluginListView->setPluginList(NULL);
 
 	// Make it as an unduable command...
 	qtractorDeleteBusCommand *pDeleteBusCommand
