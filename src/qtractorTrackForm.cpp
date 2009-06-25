@@ -1050,8 +1050,10 @@ void qtractorTrackForm::outputBusNameChanged ( const QString& sBusName )
 	}
 
 	// Recache the applicable MIDI output bus ...
-	if (trackType == qtractorTrack::Midi)
+	if (trackType == qtractorTrack::Midi) {
 		m_pMidiBus = midiBus();
+		updateInstruments();
+	}
 
 	channelChanged(m_ui.ChannelSpinBox->value());
 }

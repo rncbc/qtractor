@@ -76,7 +76,9 @@ protected:
 	bool canUpdateBus() const;
 	bool canDeleteBus() const;
 
-	bool updateBusEx(qtractorBus *pBus) const;
+	bool updateBusEx(qtractorBus *pBus);
+
+	void resetPluginLists();
 
 private:
 

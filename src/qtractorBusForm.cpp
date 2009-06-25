@@ -244,8 +244,7 @@ void qtractorBusForm::showBus ( qtractorBus *pBus )
 	m_iDirtySetup++;
 
 	// Reset plugin lists...
-	m_ui.InputPluginListView->setPluginList(NULL);
-	m_ui.OutputPluginListView->setPluginList(NULL);
+	resetPluginLists();
 
 	// Settle current bus reference...
 	m_pBus = pBus;
@@ -481,7 +480,7 @@ bool qtractorBusForm::canDeleteBus (void) const
 
 
 // Update bus method.
-bool qtractorBusForm::updateBusEx ( qtractorBus *pBus ) const
+bool qtractorBusForm::updateBusEx ( qtractorBus *pBus )
 {
 	if (pBus == NULL)
 		return false;
@@ -495,8 +494,7 @@ bool qtractorBusForm::updateBusEx ( qtractorBus *pBus ) const
 		return false;
 
 	// Reset plugin lists...
-	m_ui.InputPluginListView->setPluginList(NULL);
-	m_ui.OutputPluginListView->setPluginList(NULL);
+	resetPluginLists();
 
 	qtractorBus::BusMode busMode = qtractorBus::None;
 	switch (m_ui.BusModeComboBox->currentIndex()) {
@@ -556,10 +554,6 @@ void qtractorBusForm::createBus (void)
 	const QString sBusName = m_ui.BusNameLineEdit->text().simplified();
 	if (sBusName.isEmpty())
 		return;
-
-	// Reset plugin lists...
-	m_ui.InputPluginListView->setPluginList(NULL);
-	m_ui.OutputPluginListView->setPluginList(NULL);
 
 	qtractorBus::BusMode busMode = qtractorBus::None;
 	switch (m_ui.BusModeComboBox->currentIndex()) {
@@ -664,8 +658,7 @@ void qtractorBusForm::deleteBus (void)
 	}
 
 	// Reset plugin lists...
-	m_ui.InputPluginListView->setPluginList(NULL);
-	m_ui.OutputPluginListView->setPluginList(NULL);
+	resetPluginLists();
 
 	// Make it as an unduable command...
 	qtractorDeleteBusCommand *pDeleteBusCommand
@@ -682,6 +675,14 @@ void qtractorBusForm::deleteBus (void)
 
 	// Done.
 	stabilizeForm();
+}
+
+
+// Reset (stabilize) plugin lists...
+void qtractorBusForm::resetPluginLists (void)
+{
+	m_ui.InputPluginListView->setPluginList(NULL);
+	m_ui.OutputPluginListView->setPluginList(NULL);
 }
 
 
