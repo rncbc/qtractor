@@ -63,6 +63,21 @@ public:
 			break;
 		}
 		QTreeWidgetItem::setText(0, m_pBus->busName());
+		switch (m_pBus->busMode()) {
+		case qtractorBus::Duplex:
+			QTreeWidgetItem::setText(1, QObject::tr("Duplex"));
+			break;
+		case qtractorBus::Output:
+			QTreeWidgetItem::setText(1, QObject::tr("Output"));
+			break;
+		case qtractorBus::Input:
+			QTreeWidgetItem::setText(1, QObject::tr("Input"));
+			break;
+		case qtractorBus::None:
+		default:
+			QTreeWidgetItem::setText(1, QObject::tr("None"));
+			break;
+		}
 	}
 
 	// Bus accessors.
@@ -95,7 +110,9 @@ qtractorBusForm::qtractorBusForm (
 	m_iDirtyTotal = 0;
 
 	QHeaderView *pHeader = m_ui.BusListView->header();
-	pHeader->setResizeMode(QHeaderView::Custom);
+//	pHeader->setResizeMode(QHeaderView::Custom);
+	pHeader->resizeSection(0, 160);
+	pHeader->resizeSection(1,  40);
 	pHeader->setDefaultAlignment(Qt::AlignLeft);
 	pHeader->setMovable(false);
 

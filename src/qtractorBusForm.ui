@@ -25,7 +25,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>480</width>
+    <width>360</width>
     <height>320</height>
    </rect>
   </property>
@@ -51,7 +51,7 @@
       <property name="minimumSize" >
        <size>
         <width>120</width>
-        <height>0</height>
+        <height>120</height>
        </size>
       </property>
       <property name="toolTip" >
@@ -69,6 +69,11 @@
       <column>
        <property name="text" >
         <string>Buses</string>
+       </property>
+      </column>
+      <column>
+       <property name="text" >
+        <string>Mode</string>
        </property>
       </column>
      </widget>
