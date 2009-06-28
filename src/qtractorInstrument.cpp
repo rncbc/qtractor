@@ -27,6 +27,8 @@
 #include <QRegExp>
 #include <QDate>
 
+#include <stdlib.h>
+
 
 //----------------------------------------------------------------------
 // class qtractorInstrument -- instrument definition instance class.

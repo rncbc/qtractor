@@ -5,6 +5,10 @@ ChangeLog
 
 CVS HEAD
 
+- More legacy headers, stdio.h and stdlib.h, are yet again
+  necessary to build with gcc/g++ >= 4.4 (as patch noted by
+  Alexis Ballier on Gentoo bug report #274168, thanks).
+
 - Bus manager dialog (View/Buses...) gets new column on the
   left pane buses list as for mode display.
 
