@@ -54,9 +54,12 @@ public:
 		switch (m_pBus->busType()) {
 		case qtractorTrack::Audio:
 			QTreeWidgetItem::setIcon(0, QIcon(":/icons/trackAudio.png"));
+			QTreeWidgetItem::setText(1, QString::number(
+				static_cast<qtractorAudioBus *> (m_pBus)->channels()));
 			break;
 		case qtractorTrack::Midi:
 			QTreeWidgetItem::setIcon(0, QIcon(":/icons/trackMidi.png"));
+			QTreeWidgetItem::setText(1, QString::number(16));
 			break;
 		case qtractorTrack::None:
 		default:
@@ -65,17 +68,17 @@ public:
 		QTreeWidgetItem::setText(0, m_pBus->busName());
 		switch (m_pBus->busMode()) {
 		case qtractorBus::Duplex:
-			QTreeWidgetItem::setText(1, QObject::tr("Duplex"));
+			QTreeWidgetItem::setText(2, QObject::tr("Duplex"));
 			break;
 		case qtractorBus::Output:
-			QTreeWidgetItem::setText(1, QObject::tr("Output"));
+			QTreeWidgetItem::setText(2, QObject::tr("Output"));
 			break;
 		case qtractorBus::Input:
-			QTreeWidgetItem::setText(1, QObject::tr("Input"));
+			QTreeWidgetItem::setText(2, QObject::tr("Input"));
 			break;
 		case qtractorBus::None:
 		default:
-			QTreeWidgetItem::setText(1, QObject::tr("None"));
+			QTreeWidgetItem::setText(2, QObject::tr("None"));
 			break;
 		}
 	}
@@ -112,7 +115,8 @@ qtractorBusForm::qtractorBusForm (
 	QHeaderView *pHeader = m_ui.BusListView->header();
 //	pHeader->setResizeMode(QHeaderView::Custom);
 	pHeader->resizeSection(0, 160);
-	pHeader->resizeSection(1,  40);
+ 	pHeader->setResizeMode(1, QHeaderView::ResizeToContents);
+ 	pHeader->setResizeMode(2, QHeaderView::ResizeToContents);
 	pHeader->setDefaultAlignment(Qt::AlignLeft);
 	pHeader->setMovable(false);
 

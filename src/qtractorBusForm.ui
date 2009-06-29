@@ -73,6 +73,11 @@
       </column>
       <column>
        <property name="text" >
+        <string>Ch</string>
+       </property>
+      </column>
+      <column>
+       <property name="text" >
         <string>Mode</string>
        </property>
       </column>
