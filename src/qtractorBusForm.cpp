@@ -29,6 +29,7 @@
 #include "qtractorMidiBuffer.h"
 
 #include "qtractorMidiSysexForm.h"
+#include "qtractorMidiSysex.h"
 
 #include "qtractorInstrument.h"
 #include "qtractorPlugin.h"
@@ -280,6 +281,10 @@ void qtractorBusForm::showBus ( qtractorBus *pBus )
 	// Settle current bus reference...
 	m_pBus = pBus;
 
+	// Update some dependable specifics...
+	updateMidiInstruments();
+	updateMidiSysex();
+
 	// Show bus properties into view pane...
 	if (pBus) {
 		QString sBusTitle = pBus->busName();
@@ -314,7 +319,6 @@ void qtractorBusForm::showBus ( qtractorBus *pBus )
 				= static_cast<qtractorMidiBus *> (pBus);
 			if (pMidiBus) {
 				// MIDI bus specifics...
-				updateInstruments();
 				m_ui.MidiInstrumentComboBox->setCurrentIndex(
 					m_ui.MidiInstrumentComboBox->findText(
 						pMidiBus->instrumentName()));
@@ -885,16 +889,19 @@ void qtractorBusForm::midiSysex (void)
 		= static_cast<qtractorMidiBus *> (m_pBus);
 	if (pMidiBus == NULL)
 		return;
+	if (pMidiBus->sysexList() == NULL)
+		return;
 
 	qtractorMidiSysexForm form(this);
 	form.setSysexList(pMidiBus->sysexList());
-	if (form.exec())
-		m_iDirtyCount++;
+	form.exec();
+
+	updateMidiSysex();
 }
 
 
 // Refresh instrument list.
-void qtractorBusForm::updateInstruments (void)
+void qtractorBusForm::updateMidiInstruments (void)
 {
 	m_ui.MidiInstrumentComboBox->clear();
 
@@ -943,6 +950,42 @@ void qtractorBusForm::updateInstruments (void)
 
 	// Done.
 	m_iDirtySetup--;
+}
+
+
+// Update SysEx status.
+void qtractorBusForm::updateMidiSysex (void)
+{
+	m_ui.MidiSysexTextLabel->clear();
+
+	// Care of MIDI output bus...
+	if (m_pBus == NULL)
+		return;
+	if (m_pBus->busType() != qtractorTrack::Midi)
+		return;
+	if ((m_pBus->busMode() & qtractorBus::Output) == 0)
+		return;
+
+	qtractorMidiBus *pMidiBus
+		= static_cast<qtractorMidiBus *> (m_pBus);
+	if (pMidiBus == NULL)
+		return;
+	if (pMidiBus->sysexList() == NULL)
+		return;
+
+	// Show proper count status...
+	int iSysexCount = (pMidiBus->sysexList())->count();
+	switch (iSysexCount) {
+	case 0:
+		m_ui.MidiSysexTextLabel->setText(tr("(none)"));
+		break;
+	case 1:
+		m_ui.MidiSysexTextLabel->setText(tr("(1 item)"));
+		break;
+	default:
+		m_ui.MidiSysexTextLabel->setText(tr("(%1 items)").arg(iSysexCount));
+		break;
+	}
 }
 
 

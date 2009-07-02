@@ -95,13 +95,9 @@
         <widget class="QLabel" name="BusTitleTextLabel">
          <property name="font">
           <font>
-           <family>Sans Serif</family>
            <pointsize>10</pointsize>
            <weight>75</weight>
-           <italic>false</italic>
            <bold>true</bold>
-           <underline>false</underline>
-           <strikeout>false</strikeout>
           </font>
          </property>
          <property name="text">
@@ -288,7 +284,7 @@
               <string>MIDI</string>
              </property>
              <layout class="QGridLayout">
-              <item row="0" column="0" colspan="2">
+              <item row="0" column="0" colspan="3">
                <widget class="QComboBox" name="MidiInstrumentComboBox">
                 <property name="toolTip">
                  <string>MIDI Instrument name</string>
@@ -306,13 +302,23 @@
                </widget>
               </item>
               <item row="1" column="1">
+               <widget class="QLabel" name="MidiSysexTextLabel">
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="alignment" >
+                 <set>Qt::AlignCenter</set>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="2">
                <spacer>
                 <property name="orientation">
                  <enum>Qt::Horizontal</enum>
                 </property>
                 <property name="sizeHint">
                  <size>
-                  <width>88</width>
+                  <width>20</width>
                   <height>20</height>
                  </size>
                 </property>

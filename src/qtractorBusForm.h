@@ -80,7 +80,8 @@ protected:
 
 	bool updateBusEx(qtractorBus *pBus);
 
-	void updateInstruments();
+	void updateMidiInstruments();
+	void updateMidiSysex();
 
 	void resetPluginLists();
 
