@@ -1,7 +1,7 @@
 // qtractorEngineCommand.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -39,28 +39,48 @@ public:
 		qtractorBus::BusMode busMode = qtractorBus::None);
 
 	// Bus accessors.
-	void setBus(qtractorBus *pBus){ m_pBus = pBus; }
-	qtractorBus *bus() const { return m_pBus; }
+	void setBus(qtractorBus *pBus)
+		{ m_pBus = pBus; }
+	qtractorBus *bus() const
+		{ return m_pBus; }
 
 	// Bus properties accessors.
-	void setBusMode(qtractorBus::BusMode busMode) { m_busMode = busMode; }
-	qtractorBus::BusMode busMode() const { return m_busMode; }
+	void setBusMode(qtractorBus::BusMode busMode)
+		{ m_busMode = busMode; }
+	qtractorBus::BusMode busMode() const
+		{ return m_busMode; }
 
-	void setBusType(qtractorTrack::TrackType busType) { m_busType = busType; }
-	qtractorTrack::TrackType busType() const { return m_busType; }
+	void setBusType(qtractorTrack::TrackType busType)
+		{ m_busType = busType; }
+	qtractorTrack::TrackType busType() const
+		{ return m_busType; }
 
-	void setBusName(const QString& sBusName) { m_sBusName = sBusName; }
-	const QString& busName() const { return m_sBusName; }
+	void setBusName(const QString& sBusName)
+		{ m_sBusName = sBusName; }
+	const QString& busName() const
+		{ return m_sBusName; }
 
-	void setPassthru(bool bPassthru) { m_bPassthru = bPassthru; }
-	bool isPassthru() const { return m_bPassthru; }
+	void setPassthru(bool bPassthru)
+		{ m_bPassthru = bPassthru; }
+	bool isPassthru() const
+		{ return m_bPassthru; }
 
 	// Special Audio bus properties accessors.
-	void setChannels(unsigned short iChannels) { m_iChannels = iChannels; }
-	unsigned short channels() const { return m_iChannels; }
+	void setChannels(unsigned short iChannels)
+		{ m_iChannels = iChannels; }
+	unsigned short channels() const
+		{ return m_iChannels; }
 
-	void setAutoConnect(bool bAutoConnect) { m_bAutoConnect = bAutoConnect; }
-	bool isAutoConnect() const { return m_bAutoConnect; }
+	void setAutoConnect(bool bAutoConnect)
+		{ m_bAutoConnect = bAutoConnect; }
+	bool isAutoConnect() const
+		{ return m_bAutoConnect; }
+
+	// Special MIDI bus properties accessors.
+	void setInstrumentName(const QString& sInstrumentName)
+		{ m_sInstrumentName = sInstrumentName; }
+	const QString& instrumentName() const
+		{ return m_sInstrumentName; }
 
 protected:
 
@@ -79,6 +99,7 @@ private:
 	bool                     m_bPassthru;
 	unsigned short           m_iChannels;
 	bool                     m_bAutoConnect;
+	QString                  m_sInstrumentName;
 };
 
 

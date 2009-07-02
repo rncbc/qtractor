@@ -1,0 +1,310 @@
+<ui version="4.0" >
+ <author>rncbc aka Rui Nuno Capela</author>
+ <comment>qtractor - An Audio/MIDI multi-track sequencer.
+
+   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
+
+   This program is free software; you can redistribute it and/or
+   modify it under the terms of the GNU General Public License
+   as published by the Free Software Foundation; either version 2
+   of the License, or (at your option) any later version.
+
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+
+   You should have received a copy of the GNU General Public License along
+   with this program; if not, write to the Free Software Foundation, Inc.,
+   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
+ </comment>
+ <class>qtractorMidiSysexForm</class>
+ <widget class="QDialog" name="qtractorMidiSysexForm" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>480</width>
+    <height>320</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>MIDI SysEx - Qtractor</string>
+  </property>
+  <property name="windowIcon" >
+   <iconset resource="../icons/qtractor.qrc" >:/icons/qtractorTracks.png</iconset>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout" >
+   <item>
+    <layout class="QGridLayout" >
+     <item rowspan="5" row="0" column="0" colspan="2" >
+      <widget class="QTreeWidget" name="SysexListView" >
+       <property name="rootIsDecorated" >
+        <bool>false</bool>
+       </property>
+       <property name="uniformRowHeights" >
+        <bool>true</bool>
+       </property>
+       <property name="itemsExpandable" >
+        <bool>false</bool>
+       </property>
+       <property name="allColumnsShowFocus" >
+        <bool>true</bool>
+       </property>
+       <column>
+        <property name="text" >
+         <string>Name</string>
+        </property>
+       </column>
+       <column>
+        <property name="text" >
+         <string>Size</string>
+        </property>
+       </column>
+       <column>
+        <property name="text" >
+         <string>Data (hex)</string>
+        </property>
+       </column>
+      </widget>
+     </item>
+     <item row="0" column="2" >
+      <widget class="QPushButton" name="ImportButton" >
+       <property name="toolTip" >
+        <string>Import from SysEx file</string>
+       </property>
+       <property name="text" >
+        <string>&amp;Import...</string>
+       </property>
+       <property name="icon" >
+        <iconset resource="../icons/qtractor.qrc" >:/icons/formOpen.png</iconset>
+       </property>
+       <property name="shortcut" >
+        <string>Alt+I</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="2" >
+      <widget class="QPushButton" name="ExportButton" >
+       <property name="toolTip" >
+        <string>Export to SysEx file</string>
+       </property>
+       <property name="text" >
+        <string>E&amp;xport...</string>
+       </property>
+       <property name="icon" >
+        <iconset resource="../icons/qtractor.qrc" >:/icons/formSave.png</iconset>
+       </property>
+       <property name="shortcut" >
+        <string>Alt+X</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="2" >
+      <spacer name="verticalSpacer_2" >
+       <property name="orientation" >
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeHint" >
+        <size>
+         <width>20</width>
+         <height>4</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item row="3" column="2" >
+      <widget class="QPushButton" name="MoveUpButton" >
+       <property name="toolTip" >
+        <string>Move SysEx item up on list order</string>
+       </property>
+       <property name="text" >
+        <string>&amp;Up</string>
+       </property>
+       <property name="icon" >
+        <iconset resource="../icons/qtractor.qrc" >:/icons/formMoveUp.png</iconset>
+       </property>
+       <property name="shortcut" >
+        <string>Alt+U</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="2" >
+      <widget class="QPushButton" name="MoveDownButton" >
+       <property name="toolTip" >
+        <string>Move SysEx item down on list order</string>
+       </property>
+       <property name="text" >
+        <string>&amp;Down</string>
+       </property>
+       <property name="icon" >
+        <iconset resource="../icons/qtractor.qrc" >:/icons/formMoveDown.png</iconset>
+       </property>
+       <property name="shortcut" >
+        <string>Alt+D</string>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="0" >
+      <widget class="QLabel" name="SysexNameLabel" >
+       <property name="text" >
+        <string>&amp;Name:</string>
+       </property>
+       <property name="buddy" >
+        <cstring>SysexNameEdit</cstring>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="1" >
+      <widget class="QLineEdit" name="SysexNameEdit" >
+       <property name="minimumSize" >
+        <size>
+         <width>320</width>
+         <height>0</height>
+        </size>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="2" >
+      <widget class="QPushButton" name="AddButton" >
+       <property name="toolTip" >
+        <string>Create SysEx item</string>
+       </property>
+       <property name="text" >
+        <string>&amp;Add</string>
+       </property>
+       <property name="icon" >
+        <iconset resource="../icons/qtractor.qrc" >:/icons/formCreate.png</iconset>
+       </property>
+       <property name="shortcut" >
+        <string>Alt+A</string>
+       </property>
+      </widget>
+     </item>
+     <item rowspan="3" row="6" column="0" colspan="2" >
+      <widget class="QTextEdit" name="SysexTextEdit" >
+       <property name="font" >
+        <font>
+         <family>Monospace</family>
+        </font>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="2" >
+      <widget class="QPushButton" name="UpdateButton" >
+       <property name="toolTip" >
+        <string>Update SysEx item</string>
+       </property>
+       <property name="text" >
+        <string>Upda&amp;te</string>
+       </property>
+       <property name="icon" >
+        <iconset resource="../icons/qtractor.qrc" >:/icons/formEdit.png</iconset>
+       </property>
+       <property name="shortcut" >
+        <string>Alt+T</string>
+       </property>
+      </widget>
+     </item>
+     <item row="7" column="2" >
+      <widget class="QPushButton" name="RemoveButton" >
+       <property name="toolTip" >
+        <string>Remove SysEx item</string>
+       </property>
+       <property name="text" >
+        <string>&amp;Remove</string>
+       </property>
+       <property name="icon" >
+        <iconset resource="../icons/qtractor.qrc" >:/icons/formRemove.png</iconset>
+       </property>
+       <property name="shortcut" >
+        <string>Alt+R</string>
+       </property>
+      </widget>
+     </item>
+     <item row="8" column="2" >
+      <spacer name="verticalSpacer" >
+       <property name="orientation" >
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeHint" >
+        <size>
+         <width>20</width>
+         <height>4</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" >
+     <item>
+      <widget class="QPushButton" name="ClearButton" >
+       <property name="toolTip" >
+        <string>Clear all SysEx items</string>
+       </property>
+       <property name="text" >
+        <string>Clear</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer" >
+       <property name="orientation" >
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" >
+        <size>
+         <width>220</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="OkButton" >
+       <property name="text" >
+        <string>OK</string>
+       </property>
+       <property name="icon" >
+        <iconset resource="../icons/qtractor.qrc" >:/icons/formAccept.png</iconset>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="CancelButton" >
+       <property name="text" >
+        <string>Cancel</string>
+       </property>
+       <property name="icon" >
+        <iconset resource="../icons/qtractor.qrc" >:/icons/formReject.png</iconset>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <layoutdefault spacing="4" margin="8" />
+ <tabstops>
+  <tabstop>SysexListView</tabstop>
+  <tabstop>ImportButton</tabstop>
+  <tabstop>ExportButton</tabstop>
+  <tabstop>MoveUpButton</tabstop>
+  <tabstop>MoveDownButton</tabstop>
+  <tabstop>SysexNameEdit</tabstop>
+  <tabstop>SysexTextEdit</tabstop>
+  <tabstop>AddButton</tabstop>
+  <tabstop>UpdateButton</tabstop>
+  <tabstop>RemoveButton</tabstop>
+  <tabstop>ClearButton</tabstop>
+  <tabstop>OkButton</tabstop>
+  <tabstop>CancelButton</tabstop>
+ </tabstops>
+ <resources>
+  <include location="../icons/qtractor.qrc" />
+ </resources>
+ <connections/>
+</ui>

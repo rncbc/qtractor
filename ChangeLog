@@ -5,6 +5,17 @@ ChangeLog
 
 CVS HEAD
 
+- A MIDI SysEx manager is being finally introduced, in some
+  primordial rather basic form though. MIDI System Exclusive
+  (SysEx) event strings may now be freely assigned to MIDI
+  output buses only, allowing for proper setup of external
+  outboard MIDI equipment. Each bus may have an unlimited
+  SysEx queue that gets sent out on every connection change
+  (see View/Buses.../MIDI/SysEx...).
+
+- A default MIDI instrument name may now be assigned to any
+  MIDI output bus (see View/Buses.../MIDI).
+
 - More legacy headers, stdio.h and stdlib.h, are yet again
   necessary to build with gcc/g++ >= 4.4 (as patch noted by
   Alexis Ballier on Gentoo bug report #274168, thanks).

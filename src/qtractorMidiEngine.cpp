@@ -33,6 +33,7 @@
 #include "qtractorMidiBuffer.h"
 #include "qtractorMidiControl.h"
 #include "qtractorMidiTimer.h"
+#include "qtractorMidiSysex.h"
 
 #include "qtractorPlugin.h"
 
@@ -744,17 +745,17 @@ void qtractorMidiEngine::resetAllControllers ( bool bForceImmediate )
 		qtractorMidiBus *pMidiBus
 			= static_cast<qtractorMidiBus *> (pBus);
 		if (pMidiBus) {
-			qtractorMidiMonitor *pInputMonitor  = pMidiBus->midiMonitor_in();
 			qtractorMidiMonitor *pOutputMonitor = pMidiBus->midiMonitor_out();
-			if (pInputMonitor) {
-				if (pOutputMonitor == NULL) {
+			if (pOutputMonitor) {
+				pMidiBus->sendSysexList(); // SysEx setup!
+				pMidiBus->setMasterVolume(pOutputMonitor->gain());
+				pMidiBus->setMasterPanning(pOutputMonitor->panning());
+			} else {
+				qtractorMidiMonitor *pInputMonitor = pMidiBus->midiMonitor_in();
+				if (pInputMonitor) {
 					pMidiBus->setMasterVolume(pInputMonitor->gain());
 					pMidiBus->setMasterPanning(pInputMonitor->panning());
 				}
-			}
-			if (pOutputMonitor) {
-				pMidiBus->setMasterVolume(pOutputMonitor->gain());
-				pMidiBus->setMasterPanning(pOutputMonitor->panning());
 			}
 		}
 	}
@@ -2418,9 +2419,11 @@ qtractorMidiBus::qtractorMidiBus ( qtractorMidiEngine *pMidiEngine,
 	if (busMode & qtractorBus::Output) {
 		m_pOMidiMonitor = new qtractorMidiMonitor();
 		m_pOPluginList  = createPluginList();
+		m_pSysexList    = new qtractorMidiSysexList();
 	} else {
 		m_pOMidiMonitor = NULL;
 		m_pOPluginList  = NULL;
+		m_pSysexList    = NULL;
 	}
 }
 
@@ -2438,6 +2441,9 @@ qtractorMidiBus::~qtractorMidiBus (void)
 		delete m_pIPluginList;
 	if (m_pOPluginList)
 		delete m_pOPluginList;
+
+	if (m_pSysexList)
+		delete m_pSysexList;
 }
 
 
@@ -2548,6 +2554,8 @@ void qtractorMidiBus::updateBusMode (void)
 			m_pOMidiMonitor = new qtractorMidiMonitor();
 		if (m_pOPluginList == NULL)
 			m_pOPluginList = createPluginList();
+		if (m_pSysexList == NULL)
+			m_pSysexList = new qtractorMidiSysexList();
 	} else {
 		if (m_pOMidiMonitor) {
 			delete m_pOMidiMonitor;
@@ -2556,6 +2564,10 @@ void qtractorMidiBus::updateBusMode (void)
 		if (m_pOPluginList) {
 			delete m_pOPluginList;
 			m_pOPluginList = NULL;
+		}
+		if (m_pSysexList) {
+			delete m_pSysexList;
+			m_pSysexList = NULL;
 		}
 	}
 }
@@ -2583,6 +2595,25 @@ void qtractorMidiBus::shutOff ( bool bClose ) const
 		if (bClose)
 			setControllerEx(iChannel, ALL_CONTROLLERS_OFF);
 	}
+}
+
+
+// Default instrument name accessors.
+void qtractorMidiBus::setInstrumentName ( const QString& sInstrumentName )
+{
+	m_sInstrumentName = sInstrumentName;
+}
+
+const QString& qtractorMidiBus::instrumentName (void) const
+{
+	return m_sInstrumentName;
+}
+
+
+// SysEx setup list accessors.
+qtractorMidiSysexList *qtractorMidiBus::sysexList (void) const
+{
+	return m_pSysexList;
 }
 
 
@@ -2807,7 +2838,7 @@ void qtractorMidiBus::sendNote ( qtractorTrack *pTrack,
 }
 
 
-// Direct SysEx helper.
+// Direct SysEx helpers.
 void qtractorMidiBus::sendSysex ( unsigned char *pSysex, unsigned int iSysex ) const
 {
 	// Yet again, we need our MIDI engine reference...
@@ -2822,9 +2853,9 @@ void qtractorMidiBus::sendSysex ( unsigned char *pSysex, unsigned int iSysex ) c
 		return;
 
 #ifdef CONFIG_DEBUG_0
-	fprintf(stderr, "qtractorMidiBus::sendSysEx(%p, %u)", pSysex, iSysex);
+	fprintf(stderr, "qtractorMidiBus::sendSysex(%p, %u)", pSysex, iSysex);
 	fprintf(stderr, " sysex {");
-	for (unsigned int i = 0; i < iSysex; i++)
+	for (unsigned int i = 0; i < iSysex; ++i)
 		fprintf(stderr, " %02x", pSysex[i]);
 	fprintf(stderr, " }\n");
 #endif
@@ -2846,6 +2877,55 @@ void qtractorMidiBus::sendSysex ( unsigned char *pSysex, unsigned int iSysex ) c
 	snd_seq_event_output_direct(pMidiEngine->alsaSeq(), &ev);
 
 //	pMidiEngine->flush();
+}
+
+
+void qtractorMidiBus::sendSysexList (void) const
+{
+	// Check that we have some SysEx for setup...
+	if (m_pSysexList == NULL)
+		return;
+	if (m_pSysexList->count() < 1)
+		return;
+
+	// Yet again, we need our MIDI engine reference...
+	qtractorMidiEngine *pMidiEngine
+		= static_cast<qtractorMidiEngine *> (engine());
+	if (pMidiEngine == NULL)
+		return;
+
+	// Don't do anything else if engine
+	// has not been activated...
+	if (pMidiEngine->alsaSeq() == NULL)
+		return;
+
+	QListIterator<qtractorMidiSysex *> iter(*m_pSysexList);
+	while (iter.hasNext()) {
+		qtractorMidiSysex *pSysex = iter.next();
+	#ifdef CONFIG_DEBUG_0
+		unsigned char *pData = pSysex->data();
+		unsigned short iSize = pSysex->size();
+		fprintf(stderr, "qtractorMidiBus::sendSysexList(%p, %u)", pData, iSize);
+		fprintf(stderr, " sysex {");
+		for (unsigned short i = 0; i < iSize; ++i)
+			fprintf(stderr, " %02x", pData[i]);
+		fprintf(stderr, " }\n");
+	#endif
+		// Initialize sequencer event...
+		snd_seq_event_t ev;
+		snd_seq_ev_clear(&ev);
+		// Addressing...
+		snd_seq_ev_set_source(&ev, m_iAlsaPort);
+		snd_seq_ev_set_subs(&ev);
+		// The event will be direct...
+		snd_seq_ev_set_direct(&ev);
+		// Just set SYSEX stuff and send it out..
+		ev.type = SND_SEQ_EVENT_SYSEX;
+		snd_seq_ev_set_sysex(&ev, pSysex->size(), pSysex->data());
+		snd_seq_event_output(pMidiEngine->alsaSeq(), &ev);
+	}
+
+	pMidiEngine->flush();
 }
 
 
@@ -3180,8 +3260,12 @@ bool qtractorMidiBus::loadElement ( qtractorSessionDocument *pDocument,
 			eProp.tagName() == "midi-thru") { // Legacy compat.
 			qtractorMidiBus::setPassthru(
 				pDocument->boolFromText(eProp.text()));
+		} else if (eProp.tagName() == "midi-sysex-list") {
+			qtractorMidiBus::loadSysexList(pDocument, &eProp);
 		} else if (eProp.tagName() == "midi-map") {
 			qtractorMidiBus::loadMidiMap(pDocument, &eProp);
+		} else if (eProp.tagName() == "midi-instrument-name") {
+			qtractorMidiBus::setInstrumentName(eProp.text());
 		} else if (eProp.tagName() == "input-gain") {
 			if (qtractorMidiBus::monitor_in())
 				qtractorMidiBus::monitor_in()->setGain(
@@ -3274,11 +3358,27 @@ bool qtractorMidiBus::saveElement ( qtractorSessionDocument *pDocument,
 		pElement->appendChild(eMidiOutputs);
 	}
 
+	// Save default intrument name, if any...
+	if (!qtractorMidiBus::instrumentName().isEmpty()) {
+		pDocument->saveTextElement("midi-instrument-name",
+			qtractorMidiBus::instrumentName(), pElement);
+	}
+
+	// Create the sysex element...
+	if (m_pSysexList && m_pSysexList->count() > 0) {
+		QDomElement eSysexList
+			= pDocument->document()->createElement("midi-sysex-list");
+		qtractorMidiBus::saveSysexList(pDocument, &eSysexList);
+		pElement->appendChild(eSysexList);
+	}
+
 	// Create the map element...
-	QDomElement eMidiMap
-		= pDocument->document()->createElement("midi-map");
-	qtractorMidiBus::saveMidiMap(pDocument, &eMidiMap);
-	pElement->appendChild(eMidiMap);
+	if (m_patches.count() > 0) {
+		QDomElement eMidiMap
+			= pDocument->document()->createElement("midi-map");
+		qtractorMidiBus::saveMidiMap(pDocument, &eMidiMap);
+		pElement->appendChild(eMidiMap);
+	}
 
 	return true;
 }
@@ -3360,6 +3460,65 @@ bool qtractorMidiBus::saveMidiMap ( qtractorSessionDocument *pDocument,
 				QString::number(patch.prog), &ePatch);
 		}
 		pElement->appendChild(ePatch);
+	}
+
+	return true;
+}
+
+
+// Document SysEx setup list methods.
+bool qtractorMidiBus::loadSysexList ( qtractorSessionDocument * /*pDocument*/,
+	QDomElement *pElement )
+{
+	// Must have one...
+	if (m_pSysexList == NULL)
+		return false;
+
+	// Crystal clear...
+	m_pSysexList->clear();
+
+	// Load map items...
+	for (QDomNode nChild = pElement->firstChild();
+			!nChild.isNull();
+				nChild = nChild.nextSibling()) {
+
+		// Convert node to element...
+		QDomElement eChild = nChild.toElement();
+		if (eChild.isNull())
+			continue;
+
+		// Load map item...
+		if (eChild.tagName() == "midi-sysex") {
+			qtractorMidiSysex *pSysex
+				= new qtractorMidiSysex(
+					eChild.attribute("name"), eChild.text());
+			if (pSysex->size() > 0)
+				m_pSysexList->append(pSysex);
+			else
+				delete pSysex;
+		}
+	}
+
+	return true;
+}
+
+
+bool qtractorMidiBus::saveSysexList ( qtractorSessionDocument *pDocument,
+	QDomElement *pElement )
+{
+	// Must have one...
+	if (m_pSysexList == NULL)
+		return false;
+
+	// Save map items...
+	QListIterator<qtractorMidiSysex *> iter(*m_pSysexList);
+	while (iter.hasNext()) {
+		qtractorMidiSysex *pSysex = iter.next();
+		QDomElement eSysex = pDocument->document()->createElement("midi-sysex");
+		eSysex.setAttribute("name", pSysex->name());
+		eSysex.appendChild(
+			pDocument->document()->createTextNode(pSysex->text()));
+		pElement->appendChild(eSysex);
 	}
 
 	return true;

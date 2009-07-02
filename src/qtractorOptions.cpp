@@ -160,6 +160,7 @@ qtractorOptions::qtractorOptions (void)
 	sPresetDir     = m_settings.value("/PresetDir").toString();
 	sInstrumentDir = m_settings.value("/InstrumentDir").toString();
 	sMidiControlDir = m_settings.value("/MidiControlDir").toString();
+	sMidiSysexDir  = m_settings.value("/MidiSysexDir").toString();
 	bAutoMonitor   = m_settings.value("/AutoMonitor", true).toBool();
 	iSnapPerBeat   = m_settings.value("/SnapPerBeat", 4).toInt();
 	fTempo   = float(m_settings.value("/Tempo", 120.0).toDouble());
@@ -366,6 +367,7 @@ qtractorOptions::~qtractorOptions (void)
 	m_settings.setValue("/PresetDir", sPresetDir);
 	m_settings.setValue("/InstrumentDir", sInstrumentDir);
 	m_settings.setValue("/MidiControlDir", sMidiControlDir);
+	m_settings.setValue("/MidiSysexDir", sMidiSysexDir);
 	m_settings.setValue("/AutoMonitor", bAutoMonitor);
 	m_settings.setValue("/SnapPerBeat", iSnapPerBeat);
 	m_settings.setValue("/Tempo", double(fTempo));

@@ -486,7 +486,7 @@ void qtractorTrackForm::updateInstruments (void)
 	if (pInstruments == NULL)
 		return;
 
-	// Avoid superfluos change notifications...
+	// Avoid superfluous change notifications...
 	m_iDirtySetup++;
 
 	m_ui.InstrumentComboBox->clear();
@@ -607,6 +607,9 @@ void qtractorTrackForm::updateChannel ( int iChannel,
 
 	// MIDI channel patch...
 	const qtractorMidiBus::Patch& patch = m_pMidiBus->patch(iChannel);
+	QString sInstrumentName = patch.instrumentName;
+	if (sInstrumentName.isEmpty())
+		sInstrumentName = m_pMidiBus->instrumentName();
 	if (iBankSelMethod < 0)
 		iBankSelMethod = patch.bankSelMethod;
 #if 0
@@ -618,7 +621,7 @@ void qtractorTrackForm::updateChannel ( int iChannel,
 
 	// Select instrument...
 	m_ui.InstrumentComboBox->setCurrentIndex(
-		m_ui.InstrumentComboBox->findText(patch.instrumentName));
+		m_ui.InstrumentComboBox->findText(sInstrumentName));
 
 	// Go and update the bank and program listings...
 	updateBanks(m_ui.InstrumentComboBox->currentText(),

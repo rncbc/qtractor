@@ -26,7 +26,11 @@
 #include "qtractorEngineCommand.h"
 #include "qtractorAudioEngine.h"
 #include "qtractorMidiEngine.h"
+#include "qtractorMidiBuffer.h"
 
+#include "qtractorMidiSysexForm.h"
+
+#include "qtractorInstrument.h"
 #include "qtractorPlugin.h"
 
 #include <QHeaderView>
@@ -154,6 +158,12 @@ qtractorBusForm::qtractorBusForm (
 	QObject::connect(m_ui.AudioAutoConnectCheckBox,
 		SIGNAL(clicked()),
 		SLOT(changed()));
+	QObject::connect(m_ui.MidiInstrumentComboBox,
+		SIGNAL(activated(int)),
+		SLOT(changed()));
+	QObject::connect(m_ui.MidiSysexPushButton,
+		SIGNAL(clicked()),
+		SLOT(midiSysex()));
 
 	QObject::connect(m_ui.InputPluginListView,
 		SIGNAL(currentRowChanged(int)),
@@ -282,6 +292,7 @@ void qtractorBusForm::showBus ( qtractorBus *pBus )
 			qtractorAudioBus *pAudioBus
 				= static_cast<qtractorAudioBus *> (pBus);
 			if (pAudioBus) {
+				// Audio bus specifics...
 				m_ui.AudioChannelsSpinBox->setValue(
 					pAudioBus->channels());
 				m_ui.AudioAutoConnectCheckBox->setChecked(
@@ -302,6 +313,11 @@ void qtractorBusForm::showBus ( qtractorBus *pBus )
 			qtractorMidiBus *pMidiBus
 				= static_cast<qtractorMidiBus *> (pBus);
 			if (pMidiBus) {
+				// MIDI bus specifics...
+				updateInstruments();
+				m_ui.MidiInstrumentComboBox->setCurrentIndex(
+					m_ui.MidiInstrumentComboBox->findText(
+						pMidiBus->instrumentName()));
 				// Set plugin lists...
 				if (pMidiBus->busMode() & qtractorBus::Input)
 					m_ui.InputPluginListView->setPluginList(
@@ -552,6 +568,9 @@ bool qtractorBusForm::updateBusEx ( qtractorBus *pBus )
 			m_ui.AudioAutoConnectCheckBox->isChecked());
 		break;
 	case qtractorTrack::Midi:
+		pUpdateBusCommand->setInstrumentName(
+			m_ui.MidiInstrumentComboBox->currentText());
+		break;
 	case qtractorTrack::None:
 	default:
 		break;
@@ -611,6 +630,8 @@ void qtractorBusForm::createBus (void)
 			m_ui.AudioAutoConnectCheckBox->isChecked());
 		break;
 	case qtractorTrack::Midi:
+		pCreateBusCommand->setInstrumentName(
+			m_ui.MidiInstrumentComboBox->currentText());
 	case qtractorTrack::None:
 	default:
 		break;
@@ -748,10 +769,15 @@ void qtractorBusForm::stabilizeForm (void)
 {
 	if (m_pBus) {
 		m_ui.CommonBusGroup->setEnabled(true);
-		m_ui.AudioBusGroup->setEnabled(m_pBus->busType() == qtractorTrack::Audio);
+		m_ui.AudioBusGroup->setEnabled(
+			m_pBus->busType() == qtractorTrack::Audio);
+		m_ui.MidiBusGroup->setEnabled(
+			m_pBus->busType() == qtractorTrack::Midi &&
+			(m_pBus->busMode() & qtractorBus::Output));
 	} else {
 		m_ui.CommonBusGroup->setEnabled(false);
 		m_ui.AudioBusGroup->setEnabled(false);
+		m_ui.MidiBusGroup->setEnabled(false);
 	}
 
 	m_ui.PassthruCheckBox->setEnabled(
@@ -841,6 +867,82 @@ void qtractorBusForm::contextMenu ( const QPoint& /*pos*/ )
 
 //	menu.exec(m_ui.BusListView->mapToGlobal(pos));
 	menu.exec(QCursor::pos());
+}
+
+
+// Show MIDI SysEx bank manager dialog...
+void qtractorBusForm::midiSysex (void)
+{
+	// Care of MIDI output bus...
+	if (m_pBus == NULL)
+		return;
+	if (m_pBus->busType() != qtractorTrack::Midi)
+		return;
+	if ((m_pBus->busMode() & qtractorBus::Output) == 0)
+		return;
+
+	qtractorMidiBus *pMidiBus
+		= static_cast<qtractorMidiBus *> (m_pBus);
+	if (pMidiBus == NULL)
+		return;
+
+	qtractorMidiSysexForm form(this);
+	form.setSysexList(pMidiBus->sysexList());
+	if (form.exec())
+		m_iDirtyCount++;
+}
+
+
+// Refresh instrument list.
+void qtractorBusForm::updateInstruments (void)
+{
+	m_ui.MidiInstrumentComboBox->clear();
+
+	// Care of MIDI output bus...
+	if (m_pBus == NULL)
+		return;
+	if (m_pBus->busType() != qtractorTrack::Midi)
+		return;
+	if ((m_pBus->busMode() & qtractorBus::Output) == 0)
+		return;
+
+	qtractorMidiBus *pMidiBus
+		= static_cast<qtractorMidiBus *> (m_pBus);
+	if (pMidiBus == NULL)
+		return;
+
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return;
+
+	qtractorInstrumentList *pInstruments = pSession->instruments();
+	if (pInstruments == NULL)
+		return;
+
+	// Avoid superfluous change notifications...
+	m_iDirtySetup++;
+
+	const QIcon& icon = QIcon(":/icons/itemInstrument.png");
+	if (pMidiBus->pluginList_out()) {
+		qtractorMidiManager *pMidiManager
+			= (pMidiBus->pluginList_out())->midiManager();
+		if (pMidiManager) {
+			pMidiManager->updateInstruments();
+			const qtractorMidiManager::Instruments& list
+				= pMidiManager->instruments();
+			qtractorMidiManager::Instruments::ConstIterator iter = list.constBegin();
+			for ( ; iter != list.constEnd(); ++iter)
+				m_ui.MidiInstrumentComboBox->addItem(icon, iter.key());
+		}
+	}
+
+	// Regular instrument names...
+	qtractorInstrumentList::ConstIterator iter = pInstruments->constBegin();
+	for ( ; iter != pInstruments->constEnd(); ++iter)
+		m_ui.MidiInstrumentComboBox->addItem(icon, iter.value().instrumentName());
+
+	// Done.
+	m_iDirtySetup--;
 }
 
 

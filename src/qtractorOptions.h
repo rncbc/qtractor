@@ -131,6 +131,7 @@ public:
 	QString sPresetDir;
 	QString sInstrumentDir;
 	QString sMidiControlDir;
+	QString sMidiSysexDir;
 
 	// Session options.
 	bool    bSessionTemplate;

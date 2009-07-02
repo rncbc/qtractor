@@ -56,6 +56,7 @@ headers = config.h \
 	src/qtractorMidiMeter.h \
 	src/qtractorMidiMonitor.h \
 	src/qtractorMidiSequence.h \
+	src/qtractorMidiSysex.h \
 	src/qtractorMidiTimer.h \
 	src/qtractorMixer.h \
 	src/qtractorMonitor.h \
@@ -94,6 +95,7 @@ headers = config.h \
 	src/qtractorMainForm.h \
 	src/qtractorMidiControlForm.h \
 	src/qtractorMidiEditorForm.h \
+	src/qtractorMidiSysexForm.h \
 	src/qtractorMidiToolsForm.h \
 	src/qtractorOptionsForm.h \
 	src/qtractorPasteRepeatForm.h \
@@ -186,6 +188,7 @@ sources = src/main.cpp \
 	src/qtractorMainForm.cpp \
 	src/qtractorMidiControlForm.cpp \
 	src/qtractorMidiEditorForm.cpp \
+	src/qtractorMidiSysexForm.cpp \
 	src/qtractorMidiToolsForm.cpp \
 	src/qtractorOptionsForm.cpp \
 	src/qtractorPasteRepeatForm.cpp \
@@ -205,6 +208,7 @@ forms = \
 	src/qtractorMainForm.ui \
 	src/qtractorMidiControlForm.ui \
 	src/qtractorMidiEditorForm.ui \
+	src/qtractorMidiSysexForm.ui \
 	src/qtractorMidiToolsForm.ui \
 	src/qtractorOptionsForm.ui \
 	src/qtractorPasteRepeatForm.ui \

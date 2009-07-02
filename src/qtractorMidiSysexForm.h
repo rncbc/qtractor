@@ -1,4 +1,4 @@
-// qtractorBusForm.h
+// qtractorMidiSysexForm.h
 //
 /****************************************************************************
    Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
@@ -19,86 +19,77 @@
 
 *****************************************************************************/
 
-#ifndef __qtractorBusForm_h
-#define __qtractorBusForm_h
+#ifndef __qtractorMidiSysexForm_h
+#define __qtractorMidiSysexForm_h
 
-#include "ui_qtractorBusForm.h"
+#include "ui_qtractorMidiSysexForm.h"
+
 
 // Forward declarations...
-class qtractorBus;
+class qtractorMidiSysexList;
 
 
 //----------------------------------------------------------------------------
-// qtractorBusForm -- UI wrapper form.
+// qtractorMidiSysexForm -- UI wrapper form.
 
-class qtractorBusForm : public QDialog
+class qtractorMidiSysexForm : public QDialog
 {
 	Q_OBJECT
 
 public:
 
 	// Constructor.
-	qtractorBusForm(QWidget *pParent = 0, Qt::WindowFlags wflags = 0);
+	qtractorMidiSysexForm(QWidget *pParent = 0, Qt::WindowFlags wflags = 0);
+	// Destructor.
+	~qtractorMidiSysexForm();
 
-	void setBus(qtractorBus *pBus);
-	qtractorBus *bus();
+	// SysEx list accessors.
+	void setSysexList(qtractorMidiSysexList *pSysexList);
+	qtractorMidiSysexList *sysexList() const;
 
-	bool isDirty();
+public slots:
 
-protected slots:
+    void accept();
+    void reject();
 
-	void reject();
-	void refreshBuses();
-	void selectBus();
-	void createBus();
-	void updateBus();
-	void deleteBus();
-	void changed();
-	void stabilizeForm();
+    void importSlot();
+    void exportSlot();
+    void moveUpSlot();
+    void moveDownSlot();
 
-	void contextMenu(const QPoint&);
+	void textChanged();
 
-	void midiSysex();
+    void addSlot();
+    void updateSlot();
+    void removeSlot();
+    void clearSlot();
 
-	void addInputPlugin();
-	void removeInputPlugin();
-	void moveUpInputPlugin();
-	void moveDownInputPlugin();
-
-	void addOutputPlugin();
-	void removeOutputPlugin();
-	void moveUpOutputPlugin();
-	void moveDownOutputPlugin();
+    void refreshForm();
+    void stabilizeForm();
 
 protected:
 
-	void showBus(qtractorBus *pBus);
-
-	bool canCreateBus() const;
-	bool canUpdateBus() const;
-	bool canDeleteBus() const;
-
-	bool updateBusEx(qtractorBus *pBus);
-
-	void updateInstruments();
-
-	void resetPluginLists();
-
+	// SysEx file i/o methods.
+	bool loadSysexItems(
+		QList<QTreeWidgetItem *>& items, const QString& sFilename);
+	bool saveSysexItems(
+		const QList<QTreeWidgetItem *>& items, const QString& sFilename) const;
+	
 private:
 
 	// The Qt-designer UI struct...
-	Ui::qtractorBusForm m_ui;
+	Ui::qtractorMidiSysexForm m_ui;
+
+	// Main editable data structure.
+	qtractorMidiSysexList *m_pSysexList;
 
 	// Instance variables...
-	qtractorBus *m_pBus;
-	QTreeWidgetItem *m_pAudioRoot;
-	QTreeWidgetItem *m_pMidiRoot;
-	int m_iDirtySetup;
 	int m_iDirtyCount;
-	int m_iDirtyTotal;
+	int m_iDirtyItem;
 };
 
-#endif	// __qtractorBusForm_h
+
+#endif	// __qtractorMidiSysexForm_h
 
 
-// end of qtractorBusForm.h
+// end of qtractorMidiSysexForm.h

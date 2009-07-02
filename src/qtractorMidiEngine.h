@@ -35,6 +35,7 @@ class qtractorMidiEvent;
 class qtractorMidiInputThread;
 class qtractorMidiOutputThread;
 class qtractorMidiMonitor;
+class qtractorMidiSysexList;
 class qtractorPluginList;
 
 class QSocketNotifier;
@@ -293,6 +294,13 @@ public:
 	// Shut-off everything out there.
 	void shutOff(bool bClose = false) const;
 
+	// SysEx setup list accessors.
+	qtractorMidiSysexList *sysexList() const;
+
+	// Default instrument name accessors.
+	void setInstrumentName(const QString& sInstrumentName);
+	const QString& instrumentName() const;
+
 	// Channel map payload.
 	struct Patch
 	{
@@ -325,8 +333,9 @@ public:
 	void sendNote(qtractorTrack *pTrack,
 		int iNote, int iVelocity = 0) const;
 
-	// Direct SysEx helper.
+	// Direct SysEx helpers.
 	void sendSysex(unsigned char *pSysex, unsigned int iSysex) const;
+	void sendSysexList() const;
 
 	// Virtual I/O bus-monitor accessors.
 	qtractorMonitor *monitor_in()  const;
@@ -382,6 +391,12 @@ protected:
 	bool saveMidiMap(qtractorSessionDocument *pDocument,
 		QDomElement *pElement);
 
+	// Document SysEx setup list methods.
+	bool loadSysexList(qtractorSessionDocument *pDocument,
+		QDomElement *pElement);
+	bool saveSysexList(qtractorSessionDocument *pDocument,
+		QDomElement *pElement);
+
 private:
 
 	// Instance variables.
@@ -394,6 +409,12 @@ private:
 	// Plugin-chain instances.
 	qtractorPluginList *m_pIPluginList;
 	qtractorPluginList *m_pOPluginList;
+
+	// SysEx setup list.
+	qtractorMidiSysexList *m_pSysexList;
+
+	// Deafult instrument name.
+	QString m_sInstrumentName;
 
 	// Channel patch mapper.
 	QHash<unsigned short, Patch> m_patches;

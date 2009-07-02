@@ -1,7 +1,7 @@
 // qtractorEngineCommand.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -63,7 +63,14 @@ qtractorBusCommand::qtractorBusCommand ( const QString& sName,
 			}
 			break;
 		}
-		case qtractorTrack::Midi:
+		case qtractorTrack::Midi: {
+			qtractorMidiBus *pMidiBus
+				= static_cast<qtractorMidiBus *> (m_pBus);
+			if (pMidiBus) {
+				m_sInstrumentName = pMidiBus->instrumentName();
+			}
+			break;
+		}
 		case qtractorTrack::None:
 		default:
 			break;
@@ -105,6 +112,7 @@ bool qtractorBusCommand::createBus (void)
 			qtractorMidiBus *pMidiBus
 				= new qtractorMidiBus(pMidiEngine,
 					m_sBusName, m_busMode, m_bPassthru);
+			pMidiBus->setInstrumentName(m_sInstrumentName);
 			pMidiEngine->addBus(pMidiBus);
 			pMidiEngine->resetControlBus();
 			pMidiEngine->resetMetroBus();
@@ -163,8 +171,10 @@ bool qtractorBusCommand::updateBus (void)
 
 	// Special case typed buses...
 	qtractorAudioBus *pAudioBus = NULL;
+	qtractorMidiBus *pMidiBus = NULL;
 	unsigned short iChannels = 0;
 	bool bAutoConnect = false;
+	QString sInstrumentName;
 	switch (m_pBus->busType()) {
 	case qtractorTrack::Audio:
 		pAudioBus = static_cast<qtractorAudioBus *> (m_pBus);
@@ -174,6 +184,11 @@ bool qtractorBusCommand::updateBus (void)
 		}
 		break;
 	case qtractorTrack::Midi:
+		pMidiBus = static_cast<qtractorMidiBus *> (m_pBus);
+		if (pMidiBus) {
+			sInstrumentName = pMidiBus->instrumentName();
+		}
+		break;
 	case qtractorTrack::None:
 	default:
 		break;
@@ -239,6 +254,9 @@ bool qtractorBusCommand::updateBus (void)
 		pAudioBus->setChannels(m_iChannels);
 		pAudioBus->setAutoConnect(m_bAutoConnect);
 	}
+	if (pMidiBus) {
+		pMidiBus->setInstrumentName(m_sInstrumentName);
+	}
 
 	// May reopen up the bus...
 	m_pBus->open();
@@ -278,6 +296,7 @@ bool qtractorBusCommand::updateBus (void)
 	m_bPassthru    = bPassthru;
 	m_iChannels    = iChannels;
 	m_bAutoConnect = bAutoConnect;
+	m_sInstrumentName = sInstrumentName;
 
 	// Carry on...
 	pSession->setPlaying(bPlaying);

@@ -52,6 +52,7 @@ HEADERS += ../src/qtractorAbout.h \
            ../src/qtractorMidiMeter.h \
            ../src/qtractorMidiMonitor.h \
            ../src/qtractorMidiSequence.h \
+           ../src/qtractorMidiSysex.h \
            ../src/qtractorMidiTimer.h \
            ../src/qtractorMixer.h \
            ../src/qtractorMmcEvent.h \
@@ -91,6 +92,7 @@ HEADERS += ../src/qtractorAbout.h \
            ../src/qtractorMainForm.h \
            ../src/qtractorMidiControlForm.h \
            ../src/qtractorMidiEditorForm.h \
+           ../src/qtractorMidiSysexForm.h \
            ../src/qtractorMidiToolsForm.h \
            ../src/qtractorOptionsForm.h \
            ../src/qtractorPasteRepeatForm.h \
@@ -136,6 +138,7 @@ SOURCES += ../src/main.cpp \
            ../src/qtractorMidiControl.cpp \
            ../src/qtractorMidiCursor.cpp \
            ../src/qtractorMidiEditor.cpp \
+           ../src/qtractorMidiSysexForm.cpp \
            ../src/qtractorMidiEditCommand.cpp \
            ../src/qtractorMidiEditEvent.cpp \
            ../src/qtractorMidiEditList.cpp \
@@ -202,6 +205,7 @@ FORMS    = ../src/qtractorBusForm.ui \
            ../src/qtractorMainForm.ui \
            ../src/qtractorMidiControlForm.ui \
            ../src/qtractorMidiEditorForm.ui \
+           ../src/qtractorMidiSysexForm.ui \
            ../src/qtractorMidiToolsForm.ui \
            ../src/qtractorOptionsForm.ui \
            ../src/qtractorPasteRepeatForm.ui \
