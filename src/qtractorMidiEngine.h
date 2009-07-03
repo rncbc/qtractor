@@ -32,6 +32,7 @@
 // Forward declarations.
 class qtractorMidiBus;
 class qtractorMidiEvent;
+class qtractorMidiSequence;
 class qtractorMidiInputThread;
 class qtractorMidiOutputThread;
 class qtractorMidiMonitor;
@@ -336,6 +337,10 @@ public:
 	// Direct SysEx helpers.
 	void sendSysex(unsigned char *pSysex, unsigned int iSysex) const;
 	void sendSysexList() const;
+
+	// Import/export SysEx setup from/into event sequence.
+	bool importSysexList(qtractorMidiSequence *pSeq);
+	bool exportSysexList(qtractorMidiSequence *pSeq);
 
 	// Virtual I/O bus-monitor accessors.
 	qtractorMonitor *monitor_in()  const;

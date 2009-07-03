@@ -187,9 +187,17 @@ bool qtractorMidiClip::openMidiFile ( qtractorMidiFile *pFile,
 		if (!pFile->readTrack(m_pSeq, iTrackChannel))
 			return false;
 		// FIXME: On demand, set session time properties from MIDI file...
-		if (m_bSessionFlag && pFile->tempoMap()) {
-			pFile->tempoMap()->intoTimeScale(pSession->timeScale(), t0);
-			pSession->updateTimeScale();
+		if (m_bSessionFlag) {
+			// Import eventual SysEx setup...
+			qtractorMidiBus *pMidiBus
+				= static_cast<qtractorMidiBus *> (pTrack->outputBus());
+			if (pMidiBus)
+				pMidiBus->importSysexList(m_pSeq);
+			// Import tempo map as well...
+			if (pFile->tempoMap()) {
+				pFile->tempoMap()->intoTimeScale(pSession->timeScale(), t0);
+				pSession->updateTimeScale();
+			}
 			// Reset session flag now.
 			m_bSessionFlag = false;
 		}

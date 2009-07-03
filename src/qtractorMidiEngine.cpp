@@ -38,6 +38,7 @@
 #include "qtractorPlugin.h"
 
 #include <QApplication>
+#include <QFileInfo>
 
 #include <QThread>
 #include <QMutex>
@@ -2327,6 +2328,16 @@ bool qtractorMidiEngine::fileExport ( const QString& sExportPath,
 	bool bResult = file.open(sExportPath, qtractorMidiFile::Write);
 	if (bResult) {
 		if (file.writeHeader(iFormat, iTracks, iTicksPerBeat)) {
+			// Export SysEx setup...	
+			qtractorMidiSysexList *pSysexList = pExportBus->sysexList();
+			if (pSysexList && pSysexList->count() > 0) {
+				if (ppSeqs[0] == NULL) {
+					ppSeqs[0] = new qtractorMidiSequence(
+						QFileInfo(sExportPath).baseName(), 0, iTicksPerBeat);
+				}
+				pExportBus->exportSysexList(ppSeqs[0]);
+			}
+			// Export tempo map as well...	
 			if (file.tempoMap()) {
 				file.tempoMap()->fromTimeScale(
 					pSession->timeScale(), iTimeStart);
@@ -2337,8 +2348,10 @@ bool qtractorMidiEngine::fileExport ( const QString& sExportPath,
 	}
 
 	// Free locally allocated track/sequence array.
-	for (iSeq = 0; iSeq < iSeqs; ++iSeq)
-		delete ppSeqs[iSeq];
+	for (iSeq = 0; iSeq < iSeqs; ++iSeq) {
+		if (ppSeqs[iSeq])
+			delete ppSeqs[iSeq];
+	}
 	delete [] ppSeqs;
 
 	// Done successfully.
@@ -3519,6 +3532,51 @@ bool qtractorMidiBus::saveSysexList ( qtractorSessionDocument *pDocument,
 		eSysex.appendChild(
 			pDocument->document()->createTextNode(pSysex->text()));
 		pElement->appendChild(eSysex);
+	}
+
+	return true;
+}
+
+
+// Import SysEx setup from event sequence.
+bool qtractorMidiBus::importSysexList ( qtractorMidiSequence *pSeq )  
+{
+	if (m_pSysexList == NULL)
+		return false;
+
+	m_pSysexList->clear();
+
+	int iSysex = 0;
+	qtractorMidiEvent *pEvent = pSeq->events().first();
+	while (pEvent) {
+		if (pEvent->type() == qtractorMidiEvent::SYSEX) {
+			m_pSysexList->append(
+				new qtractorMidiSysex(pSeq->name()
+					+ '-' + QString::number(++iSysex),
+					pEvent->sysex(), pEvent->sysex_len())
+			);
+		}
+		pEvent = pEvent->next();
+	}
+
+	return true;
+}
+
+
+// Export SysEx setup to event sequence.
+bool qtractorMidiBus::exportSysexList ( qtractorMidiSequence *pSeq )
+{
+	if (m_pSysexList == NULL)
+		return false;
+
+	QListIterator<qtractorMidiSysex *> iter(*m_pSysexList);
+	iter.toBack();
+	while (iter.hasPrevious()) {
+		qtractorMidiSysex *pSysex = iter.previous();
+		qtractorMidiEvent *pEvent
+			= new qtractorMidiEvent(0, qtractorMidiEvent::SYSEX);
+		pEvent->setSysex(pSysex->data(), pSysex->size());
+		pSeq->addEvent(pEvent);			
 	}
 
 	return true;
