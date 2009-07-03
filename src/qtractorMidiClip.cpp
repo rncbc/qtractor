@@ -189,8 +189,24 @@ bool qtractorMidiClip::openMidiFile ( qtractorMidiFile *pFile,
 		// FIXME: On demand, set session time properties from MIDI file...
 		if (m_bSessionFlag) {
 			// Import eventual SysEx setup...
-			qtractorMidiBus *pMidiBus
-				= static_cast<qtractorMidiBus *> (pTrack->outputBus());
+			// - take care that given track might not be currently open,
+			//   so that we'll resolve MIDI output bus somehow...
+			qtractorMidiBus *pMidiBus = NULL;
+			qtractorMidiEngine *pMidiEngine = pSession->midiEngine();
+			if (pMidiEngine) {
+				pMidiBus = static_cast<qtractorMidiBus *> (
+					pMidiEngine->findBus(pTrack->outputBusName()));
+				if (pMidiBus == NULL) {
+					for (qtractorBus *pBus = pMidiEngine->buses().first();
+							pBus; pBus = pBus->next()) {
+						if (pBus->busMode() & qtractorBus::Output) {
+							pMidiBus = static_cast<qtractorMidiBus *> (pBus);
+							break;
+						}
+					}
+				}
+			}
+			// Import eventual SysEx setup...
 			if (pMidiBus)
 				pMidiBus->importSysexList(m_pSeq);
 			// Import tempo map as well...
