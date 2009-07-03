@@ -3570,9 +3570,8 @@ bool qtractorMidiBus::exportSysexList ( qtractorMidiSequence *pSeq )
 		return false;
 
 	QListIterator<qtractorMidiSysex *> iter(*m_pSysexList);
-	iter.toBack();
-	while (iter.hasPrevious()) {
-		qtractorMidiSysex *pSysex = iter.previous();
+	while (iter.hasNext()) {
+		qtractorMidiSysex *pSysex = iter.next();
 		qtractorMidiEvent *pEvent
 			= new qtractorMidiEvent(0, qtractorMidiEvent::SYSEX);
 		pEvent->setSysex(pSysex->data(), pSysex->size());
