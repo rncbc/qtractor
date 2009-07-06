@@ -23,6 +23,8 @@
 #include "qtractorMidiSysexForm.h"
 #include "qtractorMidiSysex.h"
 
+#include "qtractorMidiFile.h"
+
 #include "qtractorOptions.h"
 
 #include <QApplication>
@@ -176,8 +178,11 @@ void qtractorMidiSysexForm::importSlot (void)
 	QStringList files;
 
 	const QString  sExt("syx");
+	QStringList filters;
+	filters.append(tr("SysEx files (*.%1)").arg(sExt));
+	filters.append(tr("MIDI files (*.mid *.smf *.midi)"));
 	const QString& sTitle  = tr("Import SysEx Files") + " - " QTRACTOR_TITLE;
-	const QString& sFilter = tr("SysEx files (*.%1)").arg(sExt);
+	const QString& sFilter = filters.join(";;");
 #if QT_VERSION < 0x040400
 	// Ask for the filename to open...
 	files = QFileDialog::getOpenFileNames(this,
@@ -559,12 +564,36 @@ void qtractorMidiSysexForm::refreshForm (void)
 bool qtractorMidiSysexForm::loadSysexItems (
 	QList<QTreeWidgetItem *>& items, const QString& sFilename )
 {
+	int iSysex = 0;
+	QFileInfo info(sFilename);
+
+	// Try on SMF files first...
+	qtractorMidiFile midifile;
+	if (midifile.open(sFilename)) {
+		qtractorMidiSequence seq;
+		if (midifile.readTrack(&seq, 0)) {
+			qtractorMidiEvent *pEvent = seq.events().first();
+			while (pEvent) {
+				if (pEvent->type() == qtractorMidiEvent::SYSEX) {
+					items.append(new qtractorMidiSysexItem(
+						new qtractorMidiSysex(
+							info.baseName()
+							+ '-' + QString::number(++iSysex),
+							pEvent->sysex(),
+							pEvent->sysex_len())));
+				}
+				pEvent = pEvent->next();
+			}
+		}
+		midifile.close();
+		return (iSysex > 0);
+	}
+
+	// Should be a SysEx file then...
 	QFile file(sFilename);
 	if (!file.open(QIODevice::ReadOnly))
 		return false;
 
-	int iSysex = 0;
-	QFileInfo info(sFilename);
 	unsigned short iBuff = 0;
 	unsigned char *pBuff = NULL;
 	unsigned short i = 0;
