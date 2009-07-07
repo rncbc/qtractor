@@ -5,6 +5,8 @@ ChangeLog
 
 CVS HEAD
 
+- Increased tolerance on reading corrupt MIDI files (SMF).
+
 - A MIDI SysEx manager is being finally introduced, in some
   primordial rather basic form though. MIDI System Exclusive
   (SysEx) event strings may now be freely assigned to MIDI

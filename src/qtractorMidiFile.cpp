@@ -333,6 +333,10 @@ bool qtractorMidiFile::readTracks ( qtractorMidiSequence **ppSeqs,
 				break;
 			case qtractorMidiEvent::SYSEX:
 				len = readInt();
+				if ((int) len < 1) {
+					m_iOffset = iTrackEnd; // Force EoT!
+					break;
+				}
 				data = new unsigned char [1 + len];
 				data[0] = (unsigned char) type;	// Skip 0xf0 head.
 				if (readData(&data[1], len) < (int) len) {
@@ -352,38 +356,39 @@ bool qtractorMidiFile::readTracks ( qtractorMidiSequence **ppSeqs,
 				meta = qtractorMidiEvent::MetaType(readInt(1));
 				// Get the meta data...
 				len = readInt();
-				if (len > 0) {
-					if (meta == qtractorMidiEvent::TEMPO) {
-						m_pTempoMap->addNodeTempo(iTime,
-							qtractorTimeScale::uroundf(
-								60000000.0f / float(readInt(len))));
-					} else {
-						data = new unsigned char [len + 1];
-						if (readData(data, len) < (int) len) {
-							delete [] data;
-							return false;
-						}
-						data[len] = (unsigned char) 0;
-						// Now, we'll deal only with some...
-						switch (meta) {
-						case qtractorMidiEvent::TRACKNAME:
-							pSeq->setName(QString((const char *) data).simplified());
-							break;
-						case qtractorMidiEvent::TIME:
-							// Beats per bar is the numerator of time signature...
-							m_pTempoMap->addNodeTime(iTime,
-								(unsigned short) data[0],
-								(unsigned short) data[1]);
-							break;
-						default:
-							// Ignore all others...
-							break;
-						}
+				if ((int) len < 1) {
+					m_iOffset = iTrackEnd; // Force EoT!
+					break;
+				}
+				if (meta == qtractorMidiEvent::TEMPO) {
+					m_pTempoMap->addNodeTempo(iTime,
+						qtractorTimeScale::uroundf(
+							60000000.0f / float(readInt(len))));
+				} else {
+					data = new unsigned char [len + 1];
+					if (readData(data, len) < (int) len) {
 						delete [] data;
+						return false;
+					}
+					data[len] = (unsigned char) 0;
+					// Now, we'll deal only with some...
+					switch (meta) {
+					case qtractorMidiEvent::TRACKNAME:
+						pSeq->setName(QString((const char *) data).simplified());
+						break;
+					case qtractorMidiEvent::TIME:
+						// Beats per bar is the numerator of time signature...
+						m_pTempoMap->addNodeTime(iTime,
+							(unsigned short) data[0],
+							(unsigned short) data[1]);
+						break;
+					default:
+						// Ignore all others...
 						break;
 					}
+					delete [] data;
 				}
-				break;
+				// Fall thru...
 			default:
 				break;
 			}
