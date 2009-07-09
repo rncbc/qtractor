@@ -490,6 +490,7 @@ void qtractorTrackForm::updateInstruments (void)
 	m_iDirtySetup++;
 
 	m_ui.InstrumentComboBox->clear();
+	m_ui.InstrumentComboBox->addItem(tr("(no instrument)"));
 	const QIcon& icon = QIcon(":/icons/itemInstrument.png");
 
 	// Take care of MIDI plugin instrument names...
@@ -620,11 +621,16 @@ void qtractorTrackForm::updateChannel ( int iChannel,
 #endif
 
 	// Select instrument...
-	m_ui.InstrumentComboBox->setCurrentIndex(
-		m_ui.InstrumentComboBox->findText(sInstrumentName));
+	int iInstrumentIndex
+		= m_ui.InstrumentComboBox->findText(sInstrumentName);
+	if (iInstrumentIndex < 0) {
+		iInstrumentIndex = 0;
+		sInstrumentName.clear();
+	}
+	m_ui.InstrumentComboBox->setCurrentIndex(iInstrumentIndex);
 
 	// Go and update the bank and program listings...
-	updateBanks(m_ui.InstrumentComboBox->currentText(),
+	updateBanks(sInstrumentName,
 		iBankSelMethod, iBank, iProg);
 
 	// Done.
@@ -1156,8 +1162,13 @@ void qtractorTrackForm::bankChanged (void)
 	if (m_iDirtySetup > 0)
 		return;
 
-	updatePrograms(m_ui.InstrumentComboBox->currentText(),
-		midiBank(), midiProgram());
+	QString sInstrumentName;
+	if (m_ui.InstrumentComboBox->currentIndex() > 0)
+		sInstrumentName = m_ui.InstrumentComboBox->currentText();
+
+	updatePrograms(sInstrumentName,
+		midiBank(),
+		midiProgram());
 
 	progChanged();
 }
@@ -1173,7 +1184,9 @@ void qtractorTrackForm::progChanged (void)
 	if (m_pMidiBus) {
 		// Patch parameters...
 		unsigned short iChannel = m_ui.ChannelSpinBox->value() - 1;
-		const QString& sInstrumentName = m_ui.InstrumentComboBox->currentText();
+		QString sInstrumentName;
+		if (m_ui.InstrumentComboBox->currentIndex() > 0)
+			sInstrumentName = m_ui.InstrumentComboBox->currentText();
 		int iBankSelMethod = m_ui.BankSelMethodComboBox->currentIndex();
 		int iBank = midiBank();
 		int iProg = midiProgram();

@@ -319,9 +319,11 @@ void qtractorBusForm::showBus ( qtractorBus *pBus )
 				= static_cast<qtractorMidiBus *> (pBus);
 			if (pMidiBus) {
 				// MIDI bus specifics...
+				int iInstrumentIndex
+					= m_ui.MidiInstrumentComboBox->findText(
+						pMidiBus->instrumentName());
 				m_ui.MidiInstrumentComboBox->setCurrentIndex(
-					m_ui.MidiInstrumentComboBox->findText(
-						pMidiBus->instrumentName()));
+					iInstrumentIndex > 0 ? iInstrumentIndex : 0);
 				// Set plugin lists...
 				if (pMidiBus->busMode() & qtractorBus::Input)
 					m_ui.InputPluginListView->setPluginList(
@@ -573,8 +575,10 @@ bool qtractorBusForm::updateBusEx ( qtractorBus *pBus )
 		break;
 	case qtractorTrack::Midi:
 		pUpdateBusCommand->setInstrumentName(
-			m_ui.MidiInstrumentComboBox->currentText());
-		break;
+			m_ui.MidiInstrumentComboBox->currentIndex() > 0
+			? m_ui.MidiInstrumentComboBox->currentText()
+			: QString::null);
+		// Fall thru...
 	case qtractorTrack::None:
 	default:
 		break;
@@ -635,7 +639,10 @@ void qtractorBusForm::createBus (void)
 		break;
 	case qtractorTrack::Midi:
 		pCreateBusCommand->setInstrumentName(
-			m_ui.MidiInstrumentComboBox->currentText());
+			m_ui.MidiInstrumentComboBox->currentIndex() > 0
+			? m_ui.MidiInstrumentComboBox->currentText()
+			: QString::null);
+		// Fall thru...
 	case qtractorTrack::None:
 	default:
 		break;
@@ -904,6 +911,7 @@ void qtractorBusForm::midiSysex (void)
 void qtractorBusForm::updateMidiInstruments (void)
 {
 	m_ui.MidiInstrumentComboBox->clear();
+	m_ui.MidiInstrumentComboBox->addItem(tr("(no instrument)"));
 
 	// Care of MIDI output bus...
 	if (m_pBus == NULL)
