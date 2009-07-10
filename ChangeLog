@@ -5,6 +5,9 @@ ChangeLog
 
 CVS HEAD
 
+- Fixed any ghost clip selections that were haunting the
+  main track view, specially after undo/redo.
+
 - Increased tolerance on reading corrupt MIDI files (SMF).
 
 - A MIDI SysEx manager is being finally introduced, in some

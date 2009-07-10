@@ -1328,6 +1328,13 @@ bool qtractorTracks::mergeExportMidiClips ( qtractorClipCommand *pClipCommand )
 }
 
 
+// Clear current selection (no notify).
+void qtractorTracks::clearClipSelect (void)
+{
+	m_pTrackView->clearClipSelect();
+}
+
+
 // Whether there's any clip currently selected.
 bool qtractorTracks::isClipSelected (void) const
 {
@@ -1383,28 +1390,7 @@ void qtractorTracks::deleteClipSelect (void)
 // Select range interval between edit head and tail.
 void qtractorTracks::selectEditRange (void)
 {
-	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
-		return;
-
-	// Get and select the whole rectangular area
-	// between the edit head and tail points...
-	QRect rect(0, 0, 0, m_pTrackView->contentsHeight());
-	rect.setLeft(pSession->pixelFromFrame(pSession->editHead()));
-	rect.setRight(pSession->pixelFromFrame(pSession->editTail()));
-
-	// HACK: Make sure the snap goes straight...
-	unsigned short iSnapPerBeat4 = (pSession->snapPerBeat() << 2);
-	if (iSnapPerBeat4 > 0)
-		rect.translate(pSession->pixelsPerBeat() / iSnapPerBeat4, 0);
-
-	// Make the selection, but don't change edit head nor tail...
-	m_pTrackView->selectRect(rect,
-		qtractorTrackView::SelectRange,
-		qtractorTrackView::EditNone);
-
-	// Make its due...
-	selectionChangeNotify();
+	m_pTrackView->selectEditRange();
 }
 
 

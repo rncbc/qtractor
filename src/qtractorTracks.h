@@ -87,6 +87,9 @@ public:
 	bool exportClips();
 	bool mergeClips();
 
+	// Clear current selection (no notify).
+	void clearClipSelect();
+
 	// Whether there's any clip currently selected.
 	bool isClipSelected() const;
 

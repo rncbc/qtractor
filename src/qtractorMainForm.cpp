@@ -4785,6 +4785,12 @@ void qtractorMainForm::updateNotifySlot ( bool bRefresh )
 	appendMessages("qtractorMainForm::updateNotifySlot()");
 #endif
 
+	// Always reset any track view selection...
+	// (avoid change/update notifications, again)
+	if (m_pTracks)
+		m_pTracks->clearClipSelect();
+
+	// Proceed as usual...
 	updateContents(NULL, bRefresh);
 }
 

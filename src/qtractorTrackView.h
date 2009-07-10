@@ -105,6 +105,8 @@ public:
 		SelectMode selectMode, SelectEdit = EditBoth);
 	// Select every clip of a given track.
 	void selectTrack(qtractorTrack *pTrackPtr, bool bReset = true);
+	// Select range interval between edit head and tail.
+	void selectEditRange();
 	// Select all contents.
 	void selectAll(bool bSelect = true);
 
@@ -113,6 +115,9 @@ public:
 
 	// Clip selection accessor.
 	qtractorClipSelect *clipSelect() const;
+
+	// Clear current selection (no notify).
+	void clearClipSelect();
 
 	// Whether there's any clip currently selected.
 	bool isClipSelected() const;
