@@ -19,6 +19,7 @@
 
 *****************************************************************************/
 
+#include "qtractorAbout.h"
 #include "qtractorMidiMeter.h"
 #include "qtractorMidiMonitor.h"
 
@@ -341,14 +342,13 @@ void qtractorMidiMeter::resizeEvent ( QResizeEvent * )
 	topWidget()->setFixedHeight(iFixedHeight);
 
 #ifdef CONFIG_GRADIENT
-	int w = boxWidget()->width()
-	int h = boxWidget()->height() - iFixedHeight;
+	int w = boxWidget()->width();
+	int h = boxWidget()->height();
 	QLinearGradient grad(0, 0, 0, h);
-	grad.setColorAt(0.2f, color(ColorPeak));
-	grad.setColorAt(0.8f, color(ColorOver));
+	grad.setColorAt(0.1f, color(ColorPeak));
+	grad.setColorAt(0.6f, color(ColorOver));
 	*m_pPixmap = QPixmap(w, h);
-	QPainter painter(m_pPixmap);
-	painter.fillRect(0, 0, w, h, grad);
+	QPainter(m_pPixmap).fillRect(0, 0, w, h, grad);
 #endif
 }
 

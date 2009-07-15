@@ -19,6 +19,7 @@
 
 *****************************************************************************/
 
+#include "qtractorAbout.h"
 #include "qtractorAudioMeter.h"
 #include "qtractorAudioMonitor.h"
 
@@ -487,8 +488,7 @@ void qtractorAudioMeter::resizeEvent ( QResizeEvent * )
 	grad.setColorAt(0.3f, color(Color3dB));
 	grad.setColorAt(1.0f, color(Color10dB));
 	*m_pPixmap = QPixmap(w, h);
-	QPainter painter(m_pPixmap);
-	painter.fillRect(0, 0, w, h, grad);
+	QPainter(m_pPixmap).fillRect(0, 0, w, h, grad);
 #endif
 }
 
