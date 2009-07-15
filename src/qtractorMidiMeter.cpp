@@ -345,8 +345,8 @@ void qtractorMidiMeter::resizeEvent ( QResizeEvent * )
 	int w = boxWidget()->width();
 	int h = boxWidget()->height();
 	QLinearGradient grad(0, 0, 0, h);
-	grad.setColorAt(0.1f, color(ColorPeak));
-	grad.setColorAt(0.6f, color(ColorOver));
+	grad.setColorAt(0.0f, color(ColorPeak));
+	grad.setColorAt(0.4f, color(ColorOver));
 	*m_pPixmap = QPixmap(w, h);
 	QPainter(m_pPixmap).fillRect(0, 0, w, h, grad);
 #endif
