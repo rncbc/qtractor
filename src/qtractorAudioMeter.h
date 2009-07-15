@@ -24,8 +24,6 @@
 
 #include "qtractorMeter.h"
 
-#include <QFrame>
-
 
 // Forward declarations.
 class qtractorAudioMeter;
@@ -59,7 +57,7 @@ protected:
 //----------------------------------------------------------------------------
 // qtractorAudioMeterValue -- Audio meter bridge value widget.
 
-class qtractorAudioMeterValue : public QFrame
+class qtractorAudioMeterValue : public QWidget
 {
 	Q_OBJECT
 
@@ -139,6 +137,10 @@ public:
 	int iec_scale(float dB) const;
 	int iec_level(int iIndex) const;
 
+#ifdef CONFIG_GRADIENT
+	const QPixmap& pixmap() const;
+#endif
+
 	// Color/level indexes.
 	enum {
 		ColorOver	= 0,
@@ -180,6 +182,10 @@ private:
 
 	float  m_fScale;
 	int    m_levels[LevelCount];
+
+#ifdef CONFIG_GRADIENT
+	QPixmap *m_pPixmap;
+#endif
 
 	static QColor g_defaultColors[ColorCount];
 	static QColor g_currentColors[ColorCount];

@@ -5,6 +5,8 @@ ChangeLog
 
 CVS HEAD
 
+- Mixer level meters get their long deserved gradient look.
+
 - Fixed any ghost clip selections that were haunting the
   main track view, specially after undo/redo.
 

@@ -24,8 +24,6 @@
 
 #include "qtractorMeter.h"
 
-#include <QFrame>
-
 
 // Forward declarations.
 class qtractorMidiMeter;
@@ -62,7 +60,7 @@ protected:
 //----------------------------------------------------------------------------
 // qtractorMidiMeterValue -- MIDI meter bridge value widget.
 
-class qtractorMidiMeterValue : public QFrame
+class qtractorMidiMeterValue : public QWidget
 {
 	Q_OBJECT
 
@@ -137,6 +135,10 @@ public:
 	// Reset peak holder.
 	void peakReset();
 
+#ifdef CONFIG_GRADIENT
+	const QPixmap& pixmap() const;
+#endif
+
 	// Color/level indexes.
 	enum {
 		ColorPeak	= 0,
@@ -169,6 +171,10 @@ private:
 
 	QLabel      *m_pMidiLabel;
 	unsigned int m_iMidiCount;
+
+#ifdef CONFIG_GRADIENT
+	QPixmap *m_pPixmap;
+#endif
 
 	// MIDI I/O LED pixmap stuff.
 	enum { LedOff = 0, LedOn = 1, LedCount = 2 };

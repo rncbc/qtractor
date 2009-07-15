@@ -21,6 +21,7 @@
 
 #include "qtractorAudioMeter.h"
 #include "qtractorAudioMonitor.h"
+
 #include "qtractorSlider.h"
 
 #include <QDoubleSpinBox>
@@ -170,9 +171,9 @@ void qtractorAudioMeterScale::paintScale ( QPainter *p )
 // qtractorAudioMeterValue -- Meter bridge value widget.
 
 // Constructor.
-qtractorAudioMeterValue::qtractorAudioMeterValue(
+qtractorAudioMeterValue::qtractorAudioMeterValue (
 	qtractorAudioMeter *pAudioMeter, unsigned short iChannel, QWidget *pParent )
-	: QFrame(pParent), m_pAudioMeter(pAudioMeter), m_iChannel(iChannel)
+	: QWidget(pParent), m_pAudioMeter(pAudioMeter), m_iChannel(iChannel)
 {
 	m_iValue      = 0;
 	m_fValueDecay = QTRACTOR_AUDIO_METER_DECAY_RATE1;
@@ -182,11 +183,8 @@ qtractorAudioMeterValue::qtractorAudioMeterValue(
 	m_fPeakDecay  = QTRACTOR_AUDIO_METER_DECAY_RATE2;
 	m_iPeakColor  = qtractorAudioMeter::Color6dB;
 
-	QFrame::setFixedWidth(10);
-	QFrame::setBackgroundRole(QPalette::NoRole);
-
-	QFrame::setFrameShape(QFrame::StyledPanel);
-	QFrame::setFrameShadow(QFrame::Sunken);
+	QWidget::setFixedWidth(10);
+	QWidget::setBackgroundRole(QPalette::NoRole);
 
 	pAudioMeter->boxLayout()->addWidget(this);
 }
@@ -279,6 +277,10 @@ void qtractorAudioMeterValue::paintEvent ( QPaintEvent * )
 		painter.fillRect(0, 0, w, h, Qt::gray);
 	}
 
+#ifdef CONFIG_GRADIENT
+	painter.drawPixmap(0, h - m_iValue,
+		m_pAudioMeter->pixmap(), 0, h - m_iValue, w, m_iValue);
+#else
 	y = m_iValue;
 	
 	int y_over = 0;
@@ -301,6 +303,7 @@ void qtractorAudioMeterValue::paintEvent ( QPaintEvent * )
 		painter.fillRect(0, h - y, w, y - y_over,
 			m_pAudioMeter->color(qtractorAudioMeter::ColorOver));
 	}
+#endif
 
 	painter.setPen(m_pAudioMeter->color(m_iPeakColor));
 	painter.drawLine(0, h - m_iPeak, w, h - m_iPeak);
@@ -331,6 +334,10 @@ qtractorAudioMeter::qtractorAudioMeter ( qtractorAudioMonitor *pAudioMonitor,
 	m_fScale        = 0.0f;
 	m_ppAudioValues = NULL;
 
+#ifdef CONFIG_GRADIENT
+	m_pPixmap = new QPixmap();
+#endif
+
 	topWidget()->hide();
 
 	gainSlider()->setMaximum(11500);
@@ -355,6 +362,9 @@ qtractorAudioMeter::qtractorAudioMeter ( qtractorAudioMonitor *pAudioMonitor,
 // Default destructor.
 qtractorAudioMeter::~qtractorAudioMeter (void)
 {
+#ifdef CONFIG_GRADIENT
+	delete m_pPixmap;
+#endif
 	// No need to delete child widgets, Qt does it all for us
 	for (unsigned short i = 0; i < m_iChannels; ++i)
 		delete m_ppAudioValues[i];
@@ -441,6 +451,15 @@ void qtractorAudioMeter::peakReset (void)
 }
 
 
+#ifdef CONFIG_GRADIENT
+// Gradient pixmap accessor.
+const QPixmap& qtractorAudioMeter::pixmap (void) const
+{
+	return *m_pPixmap;
+}
+#endif
+
+
 // Slot refreshment.
 void qtractorAudioMeter::refresh (void)
 {
@@ -458,6 +477,19 @@ void qtractorAudioMeter::resizeEvent ( QResizeEvent * )
 	m_levels[Color3dB]  = iec_scale( -3.0f);
 	m_levels[Color6dB]  = iec_scale( -6.0f);
 	m_levels[Color10dB] = iec_scale(-10.0f);
+
+#ifdef CONFIG_GRADIENT
+	int w = boxWidget()->width();
+	int h = boxWidget()->height();
+	QLinearGradient grad(0, 0, 0, h);
+	grad.setColorAt(0.10f, color(ColorOver));
+	grad.setColorAt(0.2f, color(Color0dB));
+	grad.setColorAt(0.3f, color(Color3dB));
+	grad.setColorAt(1.0f, color(Color10dB));
+	*m_pPixmap = QPixmap(w, h);
+	QPainter painter(m_pPixmap);
+	painter.fillRect(0, 0, w, h, grad);
+#endif
 }
 
 
