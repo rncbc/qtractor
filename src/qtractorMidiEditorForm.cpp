@@ -528,17 +528,25 @@ bool qtractorMidiEditorForm::queryClose (void)
 }
 
 
-// Unconditional-close.
-void qtractorMidiEditorForm::forceClose (void)
+// (Un)conditional-close.
+bool qtractorMidiEditorForm::testClose ( bool bForce )
 {
 	// Give it a chance to save....
-	queryClose();
+	bool bQueryClose = queryClose();
 
-	// Make it clean...
-	m_iDirtyCount = 0;
+	if (bQueryClose || bForce) {
+		// Make it clean...
+		m_iDirtyCount = 0;
+		// Close it down!
+		close();
+	}
 
-	// Close it down!
-	close();
+	return bQueryClose;
+}
+
+bool qtractorMidiEditorForm::forceClose (void)
+{
+	return testClose(true);
 }
 
 
@@ -722,6 +730,9 @@ void qtractorMidiEditorForm::setup ( qtractorMidiClip *pMidiClip )
 
 	// Done.
 	stabilizeForm();
+
+	// Almost.
+	m_pMidiEditor->editView()->setFocus();
 }
 
 
@@ -1199,7 +1210,7 @@ void qtractorMidiEditorForm::viewSnap (void)
 		snapPerBeatChanged(pAction->data().toInt());
 		// Update the other toolbar control...
 		qtractorTimeScale *pTimeScale = m_pMidiEditor->timeScale();
-		if (pTimeScale) 
+		if (pTimeScale)
 			m_pSnapPerBeatComboBox->setCurrentIndex(
 				qtractorTimeScale::indexFromSnap(pTimeScale->snapPerBeat()));
 	}

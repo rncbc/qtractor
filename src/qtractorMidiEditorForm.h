@@ -78,8 +78,9 @@ public:
 	// Pre-close event handler.
 	bool queryClose();
 
-	// Unconditional-close.
-	void forceClose();
+	// (Un)conditional-close.
+	bool testClose(bool bForce = false);
+	bool forceClose();
 
 public slots:
 

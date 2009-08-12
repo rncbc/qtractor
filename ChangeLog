@@ -5,6 +5,9 @@ ChangeLog
 
 CVS HEAD
 
+- All dirty open MIDI clip editors are now prompted to save
+  before the main application closes (fixes bug #2835516).
+
 - Mixer level meters get their long deserved gradient look.
 
 - Fixed any ghost clip selections that were haunting the

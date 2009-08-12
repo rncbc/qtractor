@@ -1665,8 +1665,13 @@ bool qtractorMainForm::closeSession (void)
 {
 	bool bClose = true;
 
+	// Try closing any open/dirty clip editors...
+	QListIterator<qtractorMidiEditorForm *> iter(m_editors);
+	while (bClose && iter.hasNext())
+		bClose = iter.next()->testClose();
+
 	// Are we dirty enough to prompt it?
-	if (m_iDirtyCount > 0) {
+	if (bClose && m_iDirtyCount > 0) {
 		switch (QMessageBox::warning(this,
 			tr("Warning") + " - " QTRACTOR_TITLE,
 			tr("The current session has been changed:\n\n"
