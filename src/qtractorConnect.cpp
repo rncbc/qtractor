@@ -1,7 +1,7 @@
 // qtractorConnect.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -1411,8 +1411,7 @@ bool qtractorConnect::connectSelectedEx (void)
 						= static_cast<qtractorPortListItem *> (pOItem);
 					qtractorPortListItem *pIPort
 						= static_cast<qtractorPortListItem *> (pIItem);
-					if (!connectPortsEx(pOPort, pIPort))
-						return false;
+					connectPortsEx(pOPort, pIPort);
 				}
 				iOItem++;
 				iIItem++;
@@ -1430,8 +1429,7 @@ bool qtractorConnect::connectSelectedEx (void)
 				if (pOItem && pOItem->type() == qtractorConnect::PortItem) {
 					qtractorPortListItem *pOPort
 						= static_cast<qtractorPortListItem *> (pOItem);
-					if (!connectPortsEx(pOPort, pIPort))
-						return false;
+					connectPortsEx(pOPort, pIPort);
 				}
 				iOItem++;
 			}
@@ -1454,8 +1452,7 @@ bool qtractorConnect::connectSelectedEx (void)
 				if (pIItem && pIItem->type() == qtractorConnect::PortItem) {
 					qtractorPortListItem *pIPort
 						= static_cast<qtractorPortListItem *> (pIItem);
-					if (!connectPortsEx(pOPort, pIPort))
-						return false;
+					connectPortsEx(pOPort, pIPort);
 				}
 				iIItem++;
 			}
@@ -1463,8 +1460,7 @@ bool qtractorConnect::connectSelectedEx (void)
 			// One-to-one connection...
 			qtractorPortListItem *pIPort
 				= static_cast<qtractorPortListItem *> (pIItem);
-			if (!connectPortsEx(pOPort, pIPort))
-				return false;
+			connectPortsEx(pOPort, pIPort);
 		}
 	}
 
@@ -1616,8 +1612,7 @@ bool qtractorConnect::disconnectSelectedEx (void)
 						= static_cast<qtractorPortListItem *> (pOItem);
 					qtractorPortListItem *pIPort
 						= static_cast<qtractorPortListItem *> (pIItem);
-					if (!disconnectPortsEx(pOPort, pIPort))
-						return false;
+					disconnectPortsEx(pOPort, pIPort);
 				}
 				iOItem++;
 				iIItem++;
@@ -1635,8 +1630,7 @@ bool qtractorConnect::disconnectSelectedEx (void)
 				if (pOItem && pOItem->type() == qtractorConnect::PortItem) {
 					qtractorPortListItem *pOPort
 						= static_cast<qtractorPortListItem *> (pOItem);
-					if (!disconnectPortsEx(pOPort, pIPort))
-						return false;
+					disconnectPortsEx(pOPort, pIPort);
 				}
 				iOItem++;
 			}
@@ -1659,8 +1653,7 @@ bool qtractorConnect::disconnectSelectedEx (void)
 				if (pIItem && pIItem->type() == qtractorConnect::PortItem) {
 					qtractorPortListItem *pIPort
 						= static_cast<qtractorPortListItem *> (pIItem);
-					if (!disconnectPortsEx(pOPort, pIPort))
-						return false;
+					disconnectPortsEx(pOPort, pIPort);
 				}
 				iIItem++;
 			}
@@ -1668,8 +1661,7 @@ bool qtractorConnect::disconnectSelectedEx (void)
 			// One-to-one connection...
 			qtractorPortListItem *pIPort
 				= static_cast<qtractorPortListItem *> (pIItem);
-			if (!disconnectPortsEx(pOPort, pIPort))
-				return false;
+			disconnectPortsEx(pOPort, pIPort);
 		}
 	}
 
@@ -1744,8 +1736,7 @@ bool qtractorConnect::disconnectAllEx (void)
 				QListIterator<qtractorPortListItem *> iter(connects);
 				while (iter.hasNext()) {
 					qtractorPortListItem *pIPort = iter.next();
-					if (!disconnectPortsEx(pOPort, pIPort))
-						return false;
+					disconnectPortsEx(pOPort, pIPort);
 				}
 			}
 		}

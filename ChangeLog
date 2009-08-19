@@ -5,6 +5,9 @@ ChangeLog
 
 CVS HEAD
 
+- Client to/from port (dis)connections now found consistent
+  as good ol'QjackCtl behavior (fixes bug #2834657).
+
 - All dirty open MIDI clip editors are now prompted to save
   before the main application closes (fixes bug #2835516).
 
