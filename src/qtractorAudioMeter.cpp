@@ -484,8 +484,8 @@ void qtractorAudioMeter::resizeEvent ( QResizeEvent * )
 	int h = boxWidget()->height();
 	QLinearGradient grad(0, 0, 0, h);
 	grad.setColorAt(0.1f, color(ColorOver));
-	grad.setColorAt(0.15f, color(Color0dB));
-	grad.setColorAt(0.2f, color(Color3dB));
+	grad.setColorAt(0.2f, color(Color0dB));
+	grad.setColorAt(0.3f, color(Color3dB));
 	grad.setColorAt(0.4f, color(Color6dB));
 	grad.setColorAt(0.8f, color(Color10dB));
 	*m_pPixmap = QPixmap(w, h);

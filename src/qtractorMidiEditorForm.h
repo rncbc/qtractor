@@ -76,7 +76,7 @@ public:
 	void updateInstrumentNames();
 
 	// Pre-close event handler.
-	bool queryClose();
+	bool queryClose(bool bForce = false);
 
 	// (Un)conditional-close.
 	bool testClose(bool bForce = false);

@@ -4299,8 +4299,7 @@ void qtractorMainForm::appendMessagesError( const QString& s )
 
 	appendMessagesColor(s.simplified(), "#ff0000");
 
-	QMessageBox::critical(this,
-		tr("Error") + " - " QTRACTOR_TITLE, s, QMessageBox::Cancel);
+	QMessageBox::critical(this, tr("Error") + " - " QTRACTOR_TITLE, s);
 }
 
 

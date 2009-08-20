@@ -469,21 +469,23 @@ qtractorMidiEditorForm::~qtractorMidiEditorForm (void)
 // qtractorMidiEditorForm -- Window close event handlers.
 
 // Pre-close event handlers.
-bool qtractorMidiEditorForm::queryClose (void)
+bool qtractorMidiEditorForm::queryClose ( bool bForce )
 {
 	bool bQueryClose = true;
 
 	// Are we dirty enough to prompt it?
 	if (m_iDirtyCount > 0) {
+		QMessageBox::StandardButtons buttons
+			= QMessageBox::Save
+			| QMessageBox::Discard;
+		if (!bForce)
+			buttons |= QMessageBox::Cancel;
 		switch (QMessageBox::warning(this,
 			tr("Warning") + " - " QTRACTOR_TITLE,
 			tr("The current MIDI clip has been changed:\n\n"
 			"\"%1\"\n\n"
 			"Do you want to save the changes?")
-			.arg(filename()),
-			QMessageBox::Save |
-			QMessageBox::Discard |
-			QMessageBox::Cancel)) {
+			.arg(filename()), buttons)) {
 		case QMessageBox::Save:
 			bQueryClose = saveClipFile(false);
 			// Fall thru....
@@ -532,7 +534,7 @@ bool qtractorMidiEditorForm::queryClose (void)
 bool qtractorMidiEditorForm::testClose ( bool bForce )
 {
 	// Give it a chance to save....
-	bool bQueryClose = queryClose();
+	bool bQueryClose = queryClose(bForce);
 
 	if (bQueryClose || bForce) {
 		// Make it clean...
