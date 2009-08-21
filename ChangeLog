@@ -5,6 +5,9 @@ ChangeLog
 
 CVS HEAD
 
+- First audio metronome beat/bar now played back correctly
+  (fixes bug #2841437).
+
 - Client to/from port (dis)connections now found consistent
   as good ol'QjackCtl behavior (fixes bug #2834657).
 

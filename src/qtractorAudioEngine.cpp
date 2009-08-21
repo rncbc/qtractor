@@ -1239,11 +1239,18 @@ void qtractorAudioEngine::resetMetro (void)
 	qtractorTimeScale::Cursor& cursor = pSession->timeScale()->cursor();
 	qtractorTimeScale::Node *pNode = cursor.seekFrame(iFrame);
 
-	m_iMetroBeat = pNode->beatFromFrame(iFrame) + 1;
-	m_iMetroBeatStart = pNode->frameFromBeat(m_iMetroBeat);
-
 	// FIXME: Each sample buffer must be bounded properly...
-	unsigned long iMaxLength = (m_iMetroBeatStart / m_iMetroBeat);
+	unsigned long  iMaxLength = 0;
+	unsigned short iNextBeat = pNode->beatFromFrame(iFrame);
+	if (iNextBeat > 0) {
+		m_iMetroBeat = iNextBeat;
+		m_iMetroBeatStart = pNode->frameFromBeat(m_iMetroBeat);
+		iMaxLength = (m_iMetroBeatStart / m_iMetroBeat);
+	} else {
+		m_iMetroBeat = 0;
+		m_iMetroBeatStart = 0;
+		iMaxLength = pNode->frameFromBeat(1);
+	}
 
 	if (m_pMetroBarBuff) {
 		unsigned long iMetroBarLength = m_pMetroBarBuff->frames();

@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(Qtractor, 0.4.2.1370, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.4.2.1372, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractorMainForm.ui)
 AC_CONFIG_HEADERS(config.h)
@@ -602,6 +602,7 @@ echo "  DSSI Plug-in support . . . . . . . . . . . . . . .: $ac_dssi"
 echo "  VST Plug-in support  . . . . . . . . . . . . . . .: $ac_vst"
 echo
 echo "  XInitThreads() support (DANGEROUS) . . . . . . . .: $ac_xinitthreads"
+echo
 echo "  Gradient eye-candy . . . . . . . . . . . . . . . .: $ac_gradient"
 echo "  Debugger stack-trace (gdb) . . . . . . . . . . . .: $ac_stacktrace"
 echo

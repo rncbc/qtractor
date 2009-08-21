@@ -545,7 +545,6 @@ void qtractorOptionsForm::accept (void)
 		m_pOptions->sSessionTemplatePath = m_ui.SessionTemplatePathComboBox->currentText();
 		// Custom colors.
 		int iColor;
-		m_pOptions->audioMeterColors.clear();
 		for (iColor = 0; iColor < AudioMeterColors; ++iColor)
 			qtractorAudioMeter::setColor(iColor, m_audioMeterColors[iColor]);
 		for (iColor = 0; iColor < MidiMeterColors; ++iColor)

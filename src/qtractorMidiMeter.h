@@ -137,6 +137,7 @@ public:
 
 #ifdef CONFIG_GRADIENT
 	const QPixmap& pixmap() const;
+	void updatePixmap();
 #endif
 
 	// Color/level indexes.

@@ -310,6 +310,20 @@ const QPixmap& qtractorMidiMeter::pixmap (void) const
 {
 	return *m_pPixmap;
 }
+
+void qtractorMidiMeter::updatePixmap (void)
+{
+	int w = boxWidget()->width();
+	int h = boxWidget()->height();
+
+	QLinearGradient grad(0, 0, 0, h);
+	grad.setColorAt(0.0f, color(ColorPeak));
+	grad.setColorAt(0.4f, color(ColorOver));
+
+	*m_pPixmap = QPixmap(w, h);
+
+	QPainter(m_pPixmap).fillRect(0, 0, w, h, grad);
+}
 #endif
 
 
@@ -342,13 +356,7 @@ void qtractorMidiMeter::resizeEvent ( QResizeEvent * )
 	topWidget()->setFixedHeight(iFixedHeight);
 
 #ifdef CONFIG_GRADIENT
-	int w = boxWidget()->width();
-	int h = boxWidget()->height();
-	QLinearGradient grad(0, 0, 0, h);
-	grad.setColorAt(0.0f, color(ColorPeak));
-	grad.setColorAt(0.4f, color(ColorOver));
-	*m_pPixmap = QPixmap(w, h);
-	QPainter(m_pPixmap).fillRect(0, 0, w, h, grad);
+	updatePixmap();
 #endif
 }
 

@@ -458,6 +458,23 @@ const QPixmap& qtractorAudioMeter::pixmap (void) const
 {
 	return *m_pPixmap;
 }
+
+void qtractorAudioMeter::updatePixmap (void)
+{
+	int w = boxWidget()->width();
+	int h = boxWidget()->height();
+
+	QLinearGradient grad(0, 0, 0, h);
+	grad.setColorAt(0.1f, color(ColorOver));
+	grad.setColorAt(0.2f, color(Color0dB));
+	grad.setColorAt(0.3f, color(Color3dB));
+	grad.setColorAt(0.4f, color(Color6dB));
+	grad.setColorAt(0.8f, color(Color10dB));
+
+	*m_pPixmap = QPixmap(w, h);
+
+	QPainter(m_pPixmap).fillRect(0, 0, w, h, grad);
+}
 #endif
 
 
@@ -480,16 +497,7 @@ void qtractorAudioMeter::resizeEvent ( QResizeEvent * )
 	m_levels[Color10dB] = iec_scale(-10.0f);
 
 #ifdef CONFIG_GRADIENT
-	int w = boxWidget()->width();
-	int h = boxWidget()->height();
-	QLinearGradient grad(0, 0, 0, h);
-	grad.setColorAt(0.1f, color(ColorOver));
-	grad.setColorAt(0.2f, color(Color0dB));
-	grad.setColorAt(0.3f, color(Color3dB));
-	grad.setColorAt(0.4f, color(Color6dB));
-	grad.setColorAt(0.8f, color(Color10dB));
-	*m_pPixmap = QPixmap(w, h);
-	QPainter(m_pPixmap).fillRect(0, 0, w, h, grad);
+	updatePixmap();
 #endif
 }
 
