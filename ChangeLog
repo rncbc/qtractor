@@ -5,6 +5,10 @@ ChangeLog
 
 CVS HEAD
 
+- Keyboard focus is now cleared/reset from the main toolbar
+  time and tempo spin-boxes when editing gets finished (eg.
+  Enter key is pressed).
+
 - First audio metronome beat/bar now played back correctly
   (fixes bug #2841437).
 

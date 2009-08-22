@@ -490,7 +490,7 @@ void qtractorTrackForm::updateInstruments (void)
 	m_iDirtySetup++;
 
 	m_ui.InstrumentComboBox->clear();
-	m_ui.InstrumentComboBox->addItem(tr("(no instrument)"));
+	m_ui.InstrumentComboBox->addItem(tr("(No instrument)"));
 	const QIcon& icon = QIcon(":/icons/itemInstrument.png");
 
 	// Take care of MIDI plugin instrument names...

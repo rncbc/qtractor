@@ -911,7 +911,7 @@ void qtractorBusForm::midiSysex (void)
 void qtractorBusForm::updateMidiInstruments (void)
 {
 	m_ui.MidiInstrumentComboBox->clear();
-	m_ui.MidiInstrumentComboBox->addItem(tr("(no instrument)"));
+	m_ui.MidiInstrumentComboBox->addItem(tr("(No instrument)"));
 
 	// Care of MIDI output bus...
 	if (m_pBus == NULL)

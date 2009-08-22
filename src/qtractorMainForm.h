@@ -231,8 +231,12 @@ public slots:
 	void updateNotifySlot(bool bRefresh);
 
 	void transportTimeChanged(unsigned long iPlayHead);
+	void transportTimeFinished();
+
 	void transportTempoChanged(float fTempo,
 		unsigned short iBeatsPerBar, unsigned short iBeatDivisor);
+	void transportTempoFinished();
+
 	void snapPerBeatChanged(int iSnap);
 	void contentsChanged();
 

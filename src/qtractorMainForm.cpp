@@ -322,12 +322,18 @@ qtractorMainForm::qtractorMainForm (
 	QObject::connect(m_pTimeSpinBox,
 		SIGNAL(valueChanged(unsigned long)),
 		SLOT(transportTimeChanged(unsigned long)));
+	QObject::connect(m_pTimeSpinBox,
+		SIGNAL(editingFinished()),
+		SLOT(transportTimeFinished()));
 	QObject::connect(m_pTempoSpinBox,
 		SIGNAL(customContextMenuRequested(const QPoint&)),
 		SLOT(transportTempoContextMenu(const QPoint&)));
 	QObject::connect(m_pTempoSpinBox,
 		SIGNAL(valueChanged(float, unsigned short, unsigned short)),
 		SLOT(transportTempoChanged(float, unsigned short, unsigned short)));
+	QObject::connect(m_pTempoSpinBox,
+		SIGNAL(editingFinished()),
+		SLOT(transportTempoFinished()));
 	QObject::connect(m_pSnapPerBeatComboBox,
 		SIGNAL(activated(int)),
 		SLOT(snapPerBeatChanged(int)));
@@ -4879,6 +4885,21 @@ void qtractorMainForm::transportTempoChanged (
 	m_iTransportUpdate++;
 }
 
+void qtractorMainForm::transportTempoFinished (void)
+{
+	if (m_iTransportUpdate > 0)
+		return;
+
+#ifdef CONFIG_DEBUG
+	appendMessages("qtractorMainForm::transportTempoFinished()");
+#endif
+
+	m_iTransportUpdate++;
+	m_pTempoSpinBox->clearFocus();
+//	if (m_pTracks)
+//		m_pTracks->trackView()->setFocus();
+}
+
 
 // Snap-per-beat spin-box change slot.
 void qtractorMainForm::snapPerBeatChanged ( int iSnap )
@@ -4913,6 +4934,21 @@ void qtractorMainForm::transportTimeChanged ( unsigned long iPlayHead )
 	m_iTransportUpdate++;
 
 	stabilizeForm();
+}
+
+void qtractorMainForm::transportTimeFinished (void)
+{
+	if (m_iTransportUpdate > 0)
+		return;
+
+#ifdef CONFIG_DEBUG
+	appendMessages("qtractorMainForm::transportTimeFinished()");
+#endif
+
+	m_iTransportUpdate++;
+	m_pTimeSpinBox->clearFocus();
+//	if (m_pTracks)
+//		m_pTracks->trackView()->setFocus();
 }
 
 
