@@ -219,7 +219,7 @@ FORMS    = ../src/qtractorBusForm.ui \
 RESOURCES += ../icons/qtractor.qrc
 
 TEMPLATE = app
-CONFIG  += qt thread warn_on release
+CONFIG  += qt thread warn_on debug
 LANGUAGE = C++
 
 win32 {

@@ -4887,17 +4887,19 @@ void qtractorMainForm::transportTempoChanged (
 
 void qtractorMainForm::transportTempoFinished (void)
 {
-	if (m_iTransportUpdate > 0)
+	static int s_iTempoFinished = 0;
+	if (s_iTempoFinished > 0)
 		return;
 
 #ifdef CONFIG_DEBUG
 	appendMessages("qtractorMainForm::transportTempoFinished()");
 #endif
 
-	m_iTransportUpdate++;
+	s_iTempoFinished++;
 	m_pTempoSpinBox->clearFocus();
 //	if (m_pTracks)
 //		m_pTracks->trackView()->setFocus();
+	s_iTempoFinished--;
 }
 
 
@@ -4938,17 +4940,19 @@ void qtractorMainForm::transportTimeChanged ( unsigned long iPlayHead )
 
 void qtractorMainForm::transportTimeFinished (void)
 {
-	if (m_iTransportUpdate > 0)
+	static int s_iTimeFinished = 0;
+	if (s_iTimeFinished > 0)
 		return;
 
 #ifdef CONFIG_DEBUG
 	appendMessages("qtractorMainForm::transportTimeFinished()");
 #endif
 
-	m_iTransportUpdate++;
+	s_iTimeFinished++;
 	m_pTimeSpinBox->clearFocus();
 //	if (m_pTracks)
 //		m_pTracks->trackView()->setFocus();
+	s_iTimeFinished--;
 }
 
 

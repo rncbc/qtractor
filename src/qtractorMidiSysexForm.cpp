@@ -634,7 +634,6 @@ bool qtractorMidiSysexForm::loadSysexItems (
 		delete [] pBuff;	
 	file.close();
 
-	file.close();
 	return (iSysex > 0);
 }
 
