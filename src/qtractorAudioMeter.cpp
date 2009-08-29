@@ -408,7 +408,7 @@ float qtractorAudioMeter::gainFromValue ( float fValue ) const
 
 float qtractorAudioMeter::valueFromGain ( float fGain ) const
 {
-	return (fGain > 0.0f ? log10f2(fGain) : QTRACTOR_AUDIO_METER_MINDB);
+	return (fGain > 0.0f ? 20.0f * log10f(fGain) : QTRACTOR_AUDIO_METER_MINDB);
 }
 
 
