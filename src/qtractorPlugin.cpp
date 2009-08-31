@@ -1282,6 +1282,7 @@ bool qtractorPluginList::loadElement ( qtractorSessionDocument *pDocument,
 		if (ePlugin.tagName() == "plugin") {
 			QString sFilename;
 			unsigned long iIndex = 0;
+			QString sLabel;
 			QString sPreset;
 			QStringList vlist;
 			bool bActivated = false;
@@ -1302,6 +1303,9 @@ bool qtractorPluginList::loadElement ( qtractorSessionDocument *pDocument,
 				else
 				if (eParam.tagName() == "index")
 					iIndex = eParam.text().toULong();
+				else
+				if (eParam.tagName() == "label")
+					sLabel = eParam.text();
 				else
 				if (eParam.tagName() == "preset")
 					sPreset = eParam.text();
@@ -1327,6 +1331,14 @@ bool qtractorPluginList::loadElement ( qtractorSessionDocument *pDocument,
 			qtractorPlugin *pPlugin
 				= qtractorPluginFile::createPlugin(this,
 					sFilename, iIndex, typeHint);
+			if (!sLabel.isEmpty() &&
+				((pPlugin == NULL) || ((pPlugin->type())->label() != sLabel))) {
+				iIndex = 0;
+				do {
+					pPlugin = qtractorPluginFile::createPlugin(this,
+						sFilename, iIndex++, typeHint);
+				} while (pPlugin && (pPlugin->type())->label() != sLabel);
+			}
 			if (pPlugin) {
 				pPlugin->setPreset(sPreset);
 				pPlugin->setConfigs(configs);
@@ -1396,6 +1408,8 @@ bool qtractorPluginList::saveElement ( qtractorSessionDocument *pDocument,
 			((pPlugin->type())->file())->filename(), &ePlugin);
 		pDocument->saveTextElement("index",
 			QString::number((pPlugin->type())->index()), &ePlugin);
+		pDocument->saveTextElement("label",
+			(pPlugin->type())->label(), &ePlugin);
 		pDocument->saveTextElement("preset",
 			pPlugin->preset(), &ePlugin);
 	//	pDocument->saveTextElement("values",

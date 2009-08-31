@@ -5,6 +5,10 @@ ChangeLog
 
 CVS HEAD
 
+- Plugins are now also referenced by label, avoiding plugin
+  index clash/misses eg. when plugin object file/path changes
+  or is moved externally.
+
 - Keyboard focus is now cleared/reset from the main toolbar
   time and tempo spin-boxes when editing gets finished (eg.
   Enter key is pressed).
