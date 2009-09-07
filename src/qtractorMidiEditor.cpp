@@ -1954,8 +1954,8 @@ void qtractorMidiEditor::updateDragSelect ( qtractorScrollView *pScrollView,
 		return;
 
 	// Rubber-banding only applicable whenever
-	// the selection rectangle is not empty...
-	bool bRectSelect = !rectSelect.isEmpty();
+	// the selection rectangle is not that empty...
+	bool bRectSelect = (rectSelect.width() > 1 || rectSelect.height() > 1);
 	if (bRectSelect) {
 		// Create rubber-band, if not already...
 		if (m_pRubberBand == NULL) {
@@ -1970,7 +1970,6 @@ void qtractorMidiEditor::updateDragSelect ( qtractorScrollView *pScrollView,
 	}
 
 	// Do the drag-select update properly...
-
 	bool bEditView
 		= (static_cast<qtractorScrollView *> (m_pEditView) == pScrollView);
 

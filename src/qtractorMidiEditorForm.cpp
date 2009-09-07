@@ -41,6 +41,7 @@
 #include "qtractorClipForm.h"
 
 #include "qtractorTimeScale.h"
+#include "qtractorCommand.h"
 
 #include <QFileDialog>
 #include <QMessageBox>
@@ -578,6 +579,7 @@ void qtractorMidiEditorForm::closeEvent ( QCloseEvent *pCloseEvent )
 			pMidiClip->setDirty(false);
 			pMidiClip->setClipLength(m_pMidiEditor->clipLength());
 			// Restart from scratch...
+			m_pMidiEditor->commands()->clear();
 			pMidiClip->sequence()->clear();
 			pMidiClip->openMidiFile(
 				pMidiClip->filename(),
