@@ -1,7 +1,7 @@
 // qtractorMidiEditList.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -32,6 +32,8 @@
 #include <QPainter>
 
 #include <QToolTip>
+
+#include <QLinearGradient>
 
 
 //----------------------------------------------------------------------------
@@ -163,24 +165,52 @@ void qtractorMidiEditList::updatePixmap ( int /*cx*/, int cy )
 
 	int ch = qtractorScrollView::contentsHeight() - cy;
 
-	int x = (w << 1) / 3;
-	p.drawLine(x, 0, x, ch);
+	float hk = (12.0f * m_iItemHeight) / 7.0f;	// Key height.
+	int wk = (w << 1) / 3;	// Key width.
 
-	int q = (cy / m_iItemHeight);
-	int n = 127 - q;
-	int y = q * m_iItemHeight - cy;
+	int q0 = (cy / m_iItemHeight);
+	int n0 = 127 - q0;
+	int y0 = q0 * m_iItemHeight - cy;
+
+	int n, y, x = w - wk;
+
+	p.setPen(pal.mid().color());
+
+	QLinearGradient litegrad(x, 0, w, 0);
+	litegrad.setColorAt(0.0f, pal.mid().color());
+	litegrad.setColorAt(0.1f, pal.base().color());
+
+	p.setBrush(litegrad);
+	y = y0;
+	n = n0;
 	while (y < h && y < ch) {
 		int k = (n % 12);
-		if (k == 1 || k == 3 || k == 6 || k == 8 || k == 10) {
-			p.drawRect(x, y + 1, w, m_iItemHeight); 
-		} else {
-			p.drawLine(x, y, w, y);
+		if (k >= 5) ++k;
+		if ((k % 2) == 0) {
+			float yk = ch - ((n / 12) * 7 + (k / 2) + 1) * hk + 1;
+			p.drawRect(QRectF(x, yk, wk, hk));
 			if (k == 0) {
 				int y1 = y + m_iItemHeight;
 				p.drawText(2, y1 - 2, tr("C%1").arg((n / 12) - 2));
-				p.drawLine(0, y1, x, y1);
+			//	p.drawLine(0, y1, x, y1);
 			}
 		}
+		y += m_iItemHeight;
+		n--;
+	}
+
+	QLinearGradient darkgrad(x, 0, x + wk, 0);
+	darkgrad.setColorAt(0.0f, pal.base().color());
+	darkgrad.setColorAt(0.3f, pal.shadow().color());
+
+	p.setBrush(darkgrad);
+	y = y0;
+	n = n0;
+	while (y < h && y < ch) {
+		int k = (n % 12);
+		if (k >= 5) ++k;
+		if (k % 2)
+			p.drawRect(x, y, (wk * 6) / 10, m_iItemHeight);
 		y += m_iItemHeight;
 		n--;
 	}
@@ -233,12 +263,23 @@ void qtractorMidiEditList::dragNoteOn ( int iNote, int iVelocity )
 	if (iNote >= 0) {
 		// This stands for the keyboard area...
 		QWidget *pViewport = qtractorScrollView::viewport();
-		int w = pViewport->width();
-		int x = ((w << 1) / 3);
-		int y = ((127 - iNote) * m_iItemHeight) + 1;
+		int w  = pViewport->width();
+		int wk = (w << 1) / 3;
+		int xk = w - wk;
+		float yk, hk;
+		int k  = (iNote % 12);
+		if (k >= 5) ++k;
+		if ((k % 2) == 0) {
+			hk = (12.0f * m_iItemHeight) / 7.0f;
+			yk = (128 * m_iItemHeight) - ((iNote / 12) * 7 + (k / 2) + 1) * hk + 2;
+		} else {
+			hk = m_iItemHeight;
+			yk = ((127 - iNote) * hk) + 1;
+			wk = (wk * 6) / 10;
+		}
 		// This is the new note on...
 		m_iNoteOn = iNote;
-		m_rectNote.setRect(x, y, w - x, m_iItemHeight);
+		m_rectNote.setRect(xk, int(yk), wk, int(hk));
 		m_pEditor->sendNote(m_iNoteOn, iVelocity);
 		qtractorScrollView::viewport()->update(
 			QRect(contentsToViewport(m_rectNote.topLeft()),
@@ -252,7 +293,7 @@ void qtractorMidiEditList::dragNoteOn ( const QPoint& pos, int iVelocity )
 	// This stands for the keyboard area...
 	QWidget *pViewport = qtractorScrollView::viewport();
 	int w = pViewport->width();
-	int x = ((w << 1) / 3);
+	int x = w - ((w << 1) / 3);
 
 	// Are we on it?
 	if (pos.x() < x || pos.x() > w)

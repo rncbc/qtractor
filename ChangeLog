@@ -5,6 +5,9 @@ ChangeLog
 
 CVS HEAD
 
+- MIDI clip editor (aka piano-roll/matrix aditor) gets better
+  on the virtual piano keyboard eye-candy side of things ;).
+  
 - Plugins are now also referenced by label, avoiding plugin
   index clash/misses eg. when plugin object file/path changes
   or is moved externally.
