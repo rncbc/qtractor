@@ -4760,6 +4760,7 @@ void qtractorMainForm::selectionNotifySlot ( qtractorMidiEditor *pMidiEditor )
 	if (m_pTracks && pMidiEditor) {
 		m_pTracks->trackView()->setEditHead(iEditHead);
 		m_pTracks->trackView()->setEditTail(iEditTail);
+		m_pTracks->trackView()->clearClipSelect();
 	}
 
 	// Update editors edit-head/tails...
@@ -4798,7 +4799,7 @@ void qtractorMainForm::updateNotifySlot ( bool bRefresh )
 	// Always reset any track view selection...
 	// (avoid change/update notifications, again)
 	if (m_pTracks)
-		m_pTracks->clearClipSelect();
+		m_pTracks->trackView()->clearClipSelect();
 
 	// Proceed as usual...
 	updateContents(NULL, bRefresh);

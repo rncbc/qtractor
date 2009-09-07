@@ -1328,13 +1328,6 @@ bool qtractorTracks::mergeExportMidiClips ( qtractorClipCommand *pClipCommand )
 }
 
 
-// Clear current selection (no notify).
-void qtractorTracks::clearClipSelect (void)
-{
-	m_pTrackView->clearClipSelect();
-}
-
-
 // Whether there's any clip currently selected.
 bool qtractorTracks::isClipSelected (void) const
 {
