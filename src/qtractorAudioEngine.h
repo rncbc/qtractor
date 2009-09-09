@@ -1,5 +1,3 @@
-- Stealth introduction of audio aux. insert pseudo-plugins.
- 
 // qtractorAudioEngine.h
 //
 /****************************************************************************
