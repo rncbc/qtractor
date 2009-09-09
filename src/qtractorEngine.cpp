@@ -39,6 +39,7 @@ qtractorEngine::qtractorEngine ( qtractorSession *pSession,
 	m_bPlaying       = false;
 
 	m_buses.setAutoDelete(true);
+	m_busesEx.setAutoDelete(false);
 }
 
 // Destructor.
@@ -55,6 +56,7 @@ qtractorEngine::~qtractorEngine (void)
 void qtractorEngine::clear (void)
 {
 	m_buses.clear();
+	m_busesEx.clear();
 }
 
 
@@ -118,6 +120,40 @@ void qtractorEngine::removeBus ( qtractorBus *pBus )
 qtractorBus *qtractorEngine::findBus ( const QString& sBusName )
 {
 	for (qtractorBus *pBus = m_buses.first();
+			pBus; pBus = pBus->next()) {
+		if (pBus->busName() == sBusName)
+			return pBus;
+	}
+
+	return NULL;
+}
+
+
+// Exo-buses list managament methods.
+const qtractorList<qtractorBus>& qtractorEngine::busesEx (void) const
+{
+	return m_busesEx;
+}
+
+
+// Add an exo-bus to a device engine.
+void qtractorEngine::addBusEx ( qtractorBus *pBus )
+{
+	m_busesEx.append(pBus);
+}
+
+
+// Remove an exo-bus from a device.
+void qtractorEngine::removeBusEx ( qtractorBus *pBus )
+{
+	m_busesEx.remove(pBus);
+}
+
+
+// Find a exo-device bus by name
+qtractorBus *qtractorEngine::findBusEx ( const QString& sBusName )
+{
+	for (qtractorBus *pBus = m_busesEx.first();
 			pBus; pBus = pBus->next()) {
 		if (pBus->busName() == sBusName)
 			return pBus;
@@ -223,7 +259,18 @@ int qtractorEngine::updateConnects (void)
 
 	// On all dependable buses...
 	int iUpdate = 0;
-	for (qtractorBus *pBus = m_buses.first(); pBus; pBus = pBus->next()) {
+
+	iUpdate += updateConnects(m_buses.first());
+	iUpdate += updateConnects(m_busesEx.first());
+
+	// Done.
+	return iUpdate;
+}
+
+int qtractorEngine::updateConnects ( qtractorBus* pBus )
+{
+	int iUpdate = 0;
+	for (; pBus; pBus = pBus->next()) {
 		// Input connections...
 		if (pBus->busMode() & qtractorBus::Input) {
 			iUpdate += pBus->updateConnects(
@@ -235,8 +282,6 @@ int qtractorEngine::updateConnects (void)
 				qtractorBus::Output, pBus->outputs(), true);
 		}
 	}
-
-	// Done.
 	return iUpdate;
 }
 

@@ -140,7 +140,7 @@ void qtractorInsertPlugin::setChannels ( unsigned short iChannels )
 
 	// TODO: Cleanup bus...
 	if (m_pAudioBus) {
-	//	pAudioEngine->detach(m_pAudioBus);
+		pAudioEngine->removeBusEx(m_pAudioBus);
 		m_pAudioBus->close();
 		delete m_pAudioBus;
 		m_pAudioBus = NULL;
@@ -162,7 +162,7 @@ void qtractorInsertPlugin::setChannels ( unsigned short iChannels )
 	m_pAudioBus = new qtractorAudioBus(pAudioEngine,
 		pType->label(), qtractorBus::Duplex, false, iChannels, false);
 
-//	pAudioEngine->attach(m_pAudioBus);
+	pAudioEngine->addBusEx(m_pAudioBus);
 	m_pAudioBus->open();
 
 	// (Re)activate instance if necessary...

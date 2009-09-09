@@ -1670,8 +1670,10 @@ bool qtractorMidiEngine::openControlBus (void)
 		return false;
 
 	// This is it, when dedicated...
-	if (m_bControlBus)
+	if (m_bControlBus) {
+		addBusEx(m_pOControlBus);
 		m_pOControlBus->open();
+	}
 
 	return true;
 }
@@ -1680,20 +1682,22 @@ bool qtractorMidiEngine::openControlBus (void)
 // Close MIDI control stuff.
 void qtractorMidiEngine::closeControlBus (void)
 {
-	if (m_pOControlBus && m_bControlBus)
+	if (m_pOControlBus && m_bControlBus) {
+		removeBusEx(m_pOControlBus);
 		m_pOControlBus->close();
+	}
 }
 
 
 // Destroy MIDI control stuff.
 void qtractorMidiEngine::deleteControlBus (void)
 {
+	closeMetroBus();
+
 	// When owned, both input and output
 	// bus are the one and the same...
-	if (m_pOControlBus && m_bControlBus) {
-		m_pOControlBus->close();
+	if (m_pOControlBus && m_bControlBus)
 		delete m_pOControlBus;
-	}
 
 	// Reset both control buses...
 	m_pIControlBus = NULL;
@@ -1886,8 +1890,10 @@ bool qtractorMidiEngine::openMetroBus (void)
 		return false;
 
 	// This is it, when dedicated...
-	if (m_bMetroBus)
+	if (m_bMetroBus) {
+		addBusEx(m_pMetroBus);
 		m_pMetroBus->open();
+	}
 
 	return true;
 }
@@ -1896,8 +1902,10 @@ bool qtractorMidiEngine::openMetroBus (void)
 // Close MIDI metronome stuff.
 void qtractorMidiEngine::closeMetroBus (void)
 {
-	if (m_pMetroBus && m_bMetroBus)
+	if (m_pMetroBus && m_bMetroBus) {
+		removeBusEx(m_pMetroBus);
 		m_pMetroBus->close();
+	}
 }
 
 
@@ -2363,30 +2371,8 @@ bool qtractorMidiEngine::fileExport ( const QString& sExportPath,
 // return the total number of effective (re)connection attempts...
 int qtractorMidiEngine::updateConnects (void)
 {
-	// It must be activated, sure...
-	if (!isActivated())
-		return 0;
-
-	// Do it first on all standard owned dependable buses...
+	// Do it as usual, on all standard owned dependable buses...
 	int iUpdate = qtractorEngine::updateConnects();
-
-	// Control bus inputs...
-	if (m_bControlBus && m_pIControlBus) {
-		iUpdate += m_pIControlBus->updateConnects(
-			qtractorBus::Input, m_pIControlBus->inputs(), true);
-	}
-
-	// Control bus outputs...
-	if (m_bControlBus && m_pOControlBus) {
-		iUpdate += m_pOControlBus->updateConnects(
-			qtractorBus::Output, m_pOControlBus->outputs(), true);
-	}
-
-	// Metronome bus outputs...
-	if (m_bMetroBus && m_pMetroBus) {
-		iUpdate += m_pMetroBus->updateConnects(
-			qtractorBus::Output, m_pMetroBus->outputs(), true);
-	}
 
 	// Reset all pending controllers, if any...
 	if (m_iResetAllControllers > 0)

@@ -83,6 +83,14 @@ public:
 
 	qtractorBus *findBus(const QString& sBusName);
 
+	// Exo-buses list managament methods.
+	const qtractorList<qtractorBus>& busesEx() const;
+
+	void addBusEx(qtractorBus *pBus);
+	void removeBusEx(qtractorBus *pBus);
+
+	qtractorBus *findBusEx(const QString& sBusName);
+
 	// Retrieve/restore all connections, on all buses;
 	// return the effective number of connection attempts.
 	virtual int updateConnects();
@@ -103,6 +111,10 @@ protected:
 	virtual void deactivate() = 0;
 	virtual void clean() = 0;
 
+	// Retrieve/restore connections, on given buses;
+	// return the effective number of connection attempts.
+	int updateConnects(qtractorBus *pBus);
+
 private:
 
 	// Device instance variables.
@@ -116,6 +128,7 @@ private:
 	bool m_bPlaying;
 
 	qtractorList<qtractorBus> m_buses;
+	qtractorList<qtractorBus> m_busesEx;
 };
 
 

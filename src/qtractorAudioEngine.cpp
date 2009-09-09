@@ -1167,8 +1167,10 @@ bool qtractorAudioEngine::openMetroBus (void)
 		return false;
 
 	// This is it, when dedicated...
-	if (m_bMetroBus)
+	if (m_bMetroBus) {
+		addBusEx(m_pMetroBus);
 		m_pMetroBus->open();
+	}
 
 	// Enough number of channels?...
 	unsigned short iChannels = m_pMetroBus->channels();
@@ -1200,8 +1202,10 @@ void qtractorAudioEngine::closeMetroBus (void)
 		m_pMetroBeatBuff = NULL;
 	}
 
-	if (m_pMetroBus && m_bMetroBus)
+	if (m_pMetroBus && m_bMetroBus) {
+		removeBusEx(m_pMetroBus);
 		m_pMetroBus->close();
+	}
 
 	m_iMetroBeatStart = 0;
 	m_iMetroBeat = 0;
@@ -1332,8 +1336,10 @@ bool qtractorAudioEngine::openPlayerBus (void)
 	if (m_pPlayerBus == NULL)
 		return false;
 
-	if (m_bPlayerBus)
+	if (m_bPlayerBus) {
+		addBusEx(m_pPlayerBus);
 		m_pPlayerBus->open();
+	}
 
 	// Enough number of channels?...
 	unsigned short iChannels = m_pPlayerBus->channels();
@@ -1356,8 +1362,10 @@ void qtractorAudioEngine::closePlayerBus (void)
 		m_pPlayerBuff = NULL;
 	}
 
-	if (m_pPlayerBus && m_bPlayerBus)
+	if (m_pPlayerBus && m_bPlayerBus) {
+		removeBusEx(m_pPlayerBus);
 		m_pPlayerBus->close();
+	}
 }
 
 
@@ -1439,27 +1447,8 @@ void qtractorAudioEngine::closePlayer (void)
 // return the total number of effective (re)connection attempts...
 int qtractorAudioEngine::updateConnects (void)
 {
-	// It must be activated, sure...
-	if (!isActivated())
-		return 0;
-
-	// Do it first on all standard owned dependable buses...
-	int iUpdate = qtractorEngine::updateConnects();
-
-	// Metronome bus outputs...
-	if (m_bMetroBus && m_pMetroBus) {
-		iUpdate += m_pMetroBus->updateConnects(
-			qtractorBus::Output, m_pMetroBus->outputs(), true);
-	}
-
-	// Player bus outputs...
-	if (m_bPlayerBus && m_pPlayerBus) {
-		iUpdate += m_pPlayerBus->updateConnects(
-			qtractorBus::Output, m_pPlayerBus->outputs(), true);
-	}
-
-	// Done.
-	return iUpdate;
+	// Do it as usual, on all standard owned dependable buses...
+	return qtractorEngine::updateConnects();
 }
 
 
