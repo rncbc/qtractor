@@ -608,7 +608,7 @@ void qtractorMidiManager::createAudioOutputBus (void)
 		// Owned, not part of audio engine...
 		m_pAudioOutputBus = new qtractorAudioBus(pAudioEngine,
 			m_pPluginList->name(),
-			qtractorBus::Output,
+			qtractorBus::Output, false,
 			m_pPluginList->channels());
 		if (pAudioEngine->isActivated()) {
 			if (m_pAudioOutputBus->open())

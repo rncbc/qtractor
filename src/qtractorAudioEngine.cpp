@@ -1141,7 +1141,7 @@ void qtractorAudioEngine::createMetroBus (void)
 	// Whether metronome bus is here owned, or...
 	if (m_bMetroBus) {
 		m_pMetroBus = new qtractorAudioBus(this,
-			"Metronome", qtractorBus::Output, 2);
+			"Metronome", qtractorBus::Output);
 	} else {
 		// Metronome bus gets to be the first available output bus...
 		for (qtractorBus *pBus = qtractorEngine::buses().first();
@@ -1306,7 +1306,7 @@ void qtractorAudioEngine::createPlayerBus (void)
 	// Whether audition/pre-listening bus is here owned, or...
 	if (m_bPlayerBus) {
 		m_pPlayerBus = new qtractorAudioBus(this,
-			"Player", qtractorBus::Output, 2);
+			"Player", qtractorBus::Output);
 	} else {
 		// Audition/pre-listening bus gets to be
 		// the first available output bus...
