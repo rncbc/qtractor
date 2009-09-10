@@ -90,23 +90,24 @@ qtractorInsertPluginType *qtractorInsertPluginType::createType (
 //
 
 // Constructors.
-qtractorInsertPlugin::qtractorInsertPlugin ( qtractorPluginList *pList,
-	qtractorInsertPluginType *pInsertType )
-	: qtractorPlugin(pList, pInsertType)
+qtractorInsertPlugin::qtractorInsertPlugin (
+	qtractorPluginList *pList, qtractorInsertPluginType *pInsertType )
+	: qtractorPlugin(pList, pInsertType), m_pAudioBus(NULL)
 {
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorInsertPlugin[%p] channels=%u",
 		this, pInsertType->channels());
 #endif
 
-	setChannels(pInsertType->channels());
+	// Setup plugin instance...
+	setChannels(channels());
 }
 
 
 // Destructor.
 qtractorInsertPlugin::~qtractorInsertPlugin (void)
 {
-	// Cleanup all plugin instances...
+	// Cleanup plugin instance...
 	setChannels(0);
 }
 
@@ -273,9 +274,12 @@ void qtractorInsertPlugin::freezeConfigs (void)
 	qDebug("qtractorInsertPlugin[%p]::freezeConfigs()",	this);
 #endif
 
+	clearConfigs();
+
 	freezeConfigs(qtractorBus::Input);
 	freezeConfigs(qtractorBus::Output);
 }
+
 
 void qtractorInsertPlugin::releaseConfigs (void)
 {
@@ -287,12 +291,13 @@ void qtractorInsertPlugin::releaseConfigs (void)
 }
 
 
-void qtractorInsertPlugin::freezeConfigs ( qtractorBus::BusMode busMode )
+void qtractorInsertPlugin::freezeConfigs ( int iBusMode )
 {
 	if (m_pAudioBus == NULL)
 		return;
 
 	// Save connect items...
+	qtractorBus::BusMode busMode = qtractorBus::BusMode(iBusMode);
 	const QString sKeyPrefix(busMode & qtractorBus::Input ? "in" : "out");
 	int iKey = 0;
 
@@ -313,6 +318,13 @@ void qtractorInsertPlugin::freezeConfigs ( qtractorBus::BusMode busMode )
 		QString sKey = sKeyPrefix + '_' + QString::number(iKey++);
 		setConfig(sKey, sIndex + '|' + sClient + '|' + sPort);
 	}
+}
+
+
+// Audio specific accessor.
+qtractorAudioBus *qtractorInsertPlugin::audioBus (void) const
+{
+	return m_pAudioBus;
 }
 
 

@@ -422,10 +422,12 @@ void qtractorPluginListView::addPlugin (void)
 				selectForm.pluginFilename(i),
 				selectForm.pluginIndex(i),
 				selectForm.pluginTypeHint(i));
-		pPlugin->setActivated(selectForm.isPluginActivated());
-		pAddPluginCommand->addPlugin(pPlugin);
-		// Show the plugin form right away...
-		(pPlugin->form())->activateForm();
+		if (pPlugin) {
+			pPlugin->setActivated(selectForm.isPluginActivated());
+			pAddPluginCommand->addPlugin(pPlugin);
+			// Show the plugin form right away...
+			(pPlugin->form())->activateForm();
+		}
 	}
 
 	pSession->execute(pAddPluginCommand);
@@ -449,19 +451,12 @@ void qtractorPluginListView::addInsertPlugin (void)
 	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
 	// Make it a undoable command...
-	// Must create our special pseudo-plugin type...
-	qtractorInsertPluginType *pInsertType
-		= qtractorInsertPluginType::createType(m_pPluginList->channels());
-	if (pInsertType) {
-		if (pInsertType->open()) {
-			qtractorAddPluginCommand *pAddPluginCommand
-				= new qtractorAddPluginCommand();
-			pAddPluginCommand->addPlugin(
-				new qtractorInsertPlugin(m_pPluginList, pInsertType));
-			pSession->execute(pAddPluginCommand);
-		}
-		delete pInsertType;
-	}
+	// create our special pseudo-plugin type...
+	pSession->execute(new qtractorAddInsertPluginCommand(
+		qtractorPluginFile::createPlugin(m_pPluginList,
+			QString(), // Empty filename!
+			m_pPluginList->channels(),
+			qtractorPluginType::Insert)));
 
 	// We're formerly done.
 	QApplication::restoreOverrideCursor();
@@ -653,6 +648,45 @@ void qtractorPluginListView::moveDownPlugin (void)
 void qtractorPluginListView::editPlugin (void)
 {
 	itemActivatedSlot(QListWidget::currentItem());
+}
+
+
+// Insert specific slots.
+void qtractorPluginListView::insertPluginOutputs (void)
+{
+	insertPluginBus(qtractorBus::Output);
+}
+
+void qtractorPluginListView::insertPluginInputs (void)
+{
+	insertPluginBus(qtractorBus::Input);
+}
+
+
+// Show insert pseudo-plugin audio bus connections.
+void qtractorPluginListView::insertPluginBus ( int iBusMode )
+{
+	qtractorPluginListItem *pItem
+		= static_cast<qtractorPluginListItem *> (QListWidget::currentItem());
+	if (pItem == NULL)
+		return;
+
+	qtractorPlugin *pPlugin = pItem->plugin();
+	if (pPlugin == NULL)
+		return;
+
+	if ((pPlugin->type())->typeHint() == qtractorPluginType::Insert) {
+		qtractorInsertPlugin *pInsertPlugin
+			= static_cast<qtractorInsertPlugin *> (pPlugin);
+		if (pInsertPlugin) {
+			qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+			if (pMainForm && pMainForm->connections()) {
+				(pMainForm->connections())->showBus(
+					pInsertPlugin->audioBus(),
+					qtractorBus::BusMode(iBusMode));
+			}
+		}
+	}
 }
 
 
@@ -1038,20 +1072,25 @@ void qtractorPluginListView::contextMenuEvent (
 		pPlugin = pItem->plugin();
 	}
 
+	QMenu *pInsertMenu = menu.addMenu("&Inserts");
+	pAction = pInsertMenu->addAction(
+		QIcon(":/icons/formCreate.png"),
+		tr("&Add Insert"), this, SLOT(addInsertPlugin()));
+	pAction->setEnabled(m_pPluginList->channels() > 0);
+	pInsertMenu->addSeparator();
+	bool bInsertEnabled = (pPlugin
+		&& (pPlugin->type())->typeHint() == qtractorPluginType::Insert);
+	pAction = pInsertMenu->addAction(
+		tr("&Outputs (Sends)"), this, SLOT(insertPluginOutputs()));
+	pAction->setEnabled(bInsertEnabled);
+	pAction = pInsertMenu->addAction(
+		tr("&Inputs (Returns)"), this, SLOT(insertPluginInputs()));
+	pAction->setEnabled(bInsertEnabled);
+
 	pAction = menu.addAction(
 		QIcon(":/icons/formCreate.png"),
 		tr("&Add Plugin..."), this, SLOT(addPlugin()));
 //	pAction->setEnabled(true);
-
-	pAction = menu.addAction(
-	//	QIcon(":/icons/formCreate.png"),
-		tr("Add &Insert"), this, SLOT(addInsertPlugin()));
-//	pAction->setEnabled(true);
-
-	pAction = menu.addAction(
-		QIcon(":/icons/formRemove.png"),
-		tr("&Remove"), this, SLOT(removePlugin()));
-	pAction->setEnabled(pPlugin != NULL);
 
 	menu.addSeparator();
 
@@ -1060,8 +1099,6 @@ void qtractorPluginListView::contextMenuEvent (
 	pAction->setCheckable(true);
 	pAction->setChecked(pPlugin && pPlugin->isActivated());
 	pAction->setEnabled(pPlugin != NULL);
-
-	menu.addSeparator();
 
 	bool bActivatedAll = m_pPluginList->isActivatedAll();
 	pAction = menu.addAction(
@@ -1078,6 +1115,11 @@ void qtractorPluginListView::contextMenuEvent (
 	pAction->setEnabled(bEnabled && !bDeactivatedAll);
 
 	menu.addSeparator();
+
+	pAction = menu.addAction(
+		QIcon(":/icons/formRemove.png"),
+		tr("&Remove"), this, SLOT(removePlugin()));
+	pAction->setEnabled(pPlugin != NULL);
 
 	pAction = menu.addAction(
 		tr("Re&move All"), this, SLOT(removeAllPlugins()));

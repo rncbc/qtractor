@@ -23,7 +23,7 @@
 #define __qtractorInsertPlugin_h
 
 #include "qtractorPlugin.h"
-#include "qtractorEngine.h"
+
 
 // Forward declarations.
 class qtractorAudioBus;
@@ -39,7 +39,7 @@ public:
 
 	// Constructor.
 	qtractorInsertPluginType(unsigned short iChannels)
-		: qtractorPluginType(NULL, iChannels, qtractorPluginType::Any),
+		: qtractorPluginType(NULL, iChannels, qtractorPluginType::Insert),
 			m_iChannels(iChannels) {}
 
 	// Destructor.
@@ -102,10 +102,13 @@ public:
 	void freezeConfigs();
 	void releaseConfigs();
 
+	// Audio specific accessor.
+	qtractorAudioBus *audioBus() const;
+
 protected:
 
 	// Plugin configuration (connections).
-	void freezeConfigs(qtractorBus::BusMode busMode);
+	void freezeConfigs(int iBusMode);
 
 private:
 

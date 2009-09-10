@@ -41,6 +41,8 @@
 #include "qtractorVstPlugin.h"
 #endif
 
+#include "qtractorInsertPlugin.h"
+
 #include <QDomDocument>
 #include <QTextStream>
 #include <QFileInfo>
@@ -288,6 +290,19 @@ qtractorPlugin *qtractorPluginFile::createPlugin (
 		pList, sFilename.toUtf8().constData(), iIndex, int(typeHint));
 #endif
 
+	// Attend to insert pseudo-plugin hints...
+	if (sFilename.isEmpty() || typeHint == qtractorPluginType::Insert) {
+		qtractorInsertPluginType *pInsertType
+			= qtractorInsertPluginType::createType(pList->channels());
+		if (pInsertType) {
+			if (pInsertType->open())
+				return new qtractorInsertPlugin(pList, pInsertType);
+			delete pInsertType;
+		}
+		// Don't bother with anything else.
+		return NULL;
+	}
+
 	// Try to fill the types list at this moment...
 	qtractorPluginFile *pFile = new qtractorPluginFile(sFilename);
 	if (!pFile->open()) {
@@ -384,6 +399,9 @@ qtractorPluginType::Hint qtractorPluginType::hintFromText (
 		return Vst;
 	else
 #endif
+	if (sText == "Insert")
+		return Insert;
+	else
 	return Any;
 }
 
@@ -405,6 +423,9 @@ QString qtractorPluginType::textFromHint (
 		return "VST";
 	else
 #endif
+	if (typeHint == Insert)
+		return "Insert";
+	else
 	return QObject::tr("(Any)");
 }
 
@@ -1326,12 +1347,10 @@ bool qtractorPluginList::loadElement ( qtractorSessionDocument *pDocument,
 					qtractorPlugin::loadValues(&eParam, values);
 				}
 			}
-			if (sFilename.isEmpty())
-				continue;
 			qtractorPlugin *pPlugin
 				= qtractorPluginFile::createPlugin(this,
 					sFilename, iIndex, typeHint);
-			if (!sLabel.isEmpty() &&
+			if (!sFilename.isEmpty() && !sLabel.isEmpty() &&
 				((pPlugin == NULL) || ((pPlugin->type())->label() != sLabel))) {
 				iIndex = 0;
 				do {
@@ -1402,14 +1421,17 @@ bool qtractorPluginList::saveElement ( qtractorSessionDocument *pDocument,
 
 		// Create the new plugin element...
 		QDomElement ePlugin = pDocument->document()->createElement("plugin");
-		ePlugin.setAttribute("type", qtractorPluginType::textFromHint(
-			(pPlugin->type())->typeHint()));
-		pDocument->saveTextElement("filename",
-			((pPlugin->type())->file())->filename(), &ePlugin);
+		qtractorPluginType *pType = pPlugin->type();
+		ePlugin.setAttribute("type",
+			qtractorPluginType::textFromHint(pType->typeHint()));
+		if (pType->file()) { // Pseudo-plugins don't have a file...
+			pDocument->saveTextElement("filename",
+				(pType->file())->filename(), &ePlugin);
+		}
 		pDocument->saveTextElement("index",
-			QString::number((pPlugin->type())->index()), &ePlugin);
+			QString::number(pType->index()), &ePlugin);
 		pDocument->saveTextElement("label",
-			(pPlugin->type())->label(), &ePlugin);
+			pType->label(), &ePlugin);
 		pDocument->saveTextElement("preset",
 			pPlugin->preset(), &ePlugin);
 	//	pDocument->saveTextElement("values",

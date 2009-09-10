@@ -118,6 +118,10 @@ protected slots:
 	void deactivateAllPlugins();
 	void removeAllPlugins();
 
+	// Insert specific slots.
+	void insertPluginOutputs();
+	void insertPluginInputs();
+
 	// Audio specific slots.
 	void audioOutputs();
 	void audioOutputBus();
@@ -172,6 +176,9 @@ protected:
 	static bool canDecodeItem(const QMimeData *pMimeData);
 	static qtractorPluginListItem *decodeItem(const QMimeData *pMimeData);
 
+	// Show insert pseudo-plugin audio bus connections.
+	void insertPluginBus(int iBusMode);
+	
 private:
 
 	// Instance variables.

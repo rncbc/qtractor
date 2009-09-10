@@ -1,7 +1,7 @@
 // qtractorPluginCommand.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -125,6 +125,30 @@ bool qtractorAddPluginCommand::redo (void)
 }
 
 bool qtractorAddPluginCommand::undo (void)
+{
+	return removePlugins();
+}
+
+
+//----------------------------------------------------------------------
+// class qtractorAddInsertPluginCommand - implementation
+//
+
+// Constructor.
+qtractorAddInsertPluginCommand::qtractorAddInsertPluginCommand (
+	qtractorPlugin *pPlugin ) : qtractorPluginCommand(
+		QObject::tr("add insert"), pPlugin)
+{
+}
+
+
+// Plugin insertion command methods.
+bool qtractorAddInsertPluginCommand::redo (void)
+{
+	return addPlugins();
+}
+
+bool qtractorAddInsertPluginCommand::undo (void)
 {
 	return removePlugins();
 }
