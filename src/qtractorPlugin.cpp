@@ -293,7 +293,7 @@ qtractorPlugin *qtractorPluginFile::createPlugin (
 	// Attend to insert pseudo-plugin hints...
 	if (sFilename.isEmpty() || typeHint == qtractorPluginType::Insert) {
 		qtractorInsertPluginType *pInsertType
-			= qtractorInsertPluginType::createType(pList->channels());
+			= qtractorInsertPluginType::createType(iIndex);
 		if (pInsertType) {
 			if (pInsertType->open())
 				return new qtractorInsertPlugin(pList, pInsertType);

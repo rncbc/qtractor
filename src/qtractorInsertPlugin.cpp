@@ -284,7 +284,7 @@ void qtractorInsertPlugin::freezeConfigs (void)
 void qtractorInsertPlugin::releaseConfigs (void)
 {
 #ifdef CONFIG_DEBUG
-	qDebug("qtractorVstPlugin[%p]::releaseConfigs()", this);
+	qDebug("qtractorInsertPlugin[%p]::releaseConfigs()", this);
 #endif
 
 	clearConfigs();

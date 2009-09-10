@@ -505,11 +505,16 @@ public:
 		// Basic flags.
 		Audio = 0, Midi = 1,
 		Track = 0, Bus  = 2,
+		Out   = 0, In   = 4,
 		// Composite helper flags.
-		AudioTrack = Audio | Track,
-		AudioBus   = Audio | Bus,
-		MidiTrack  = Midi  | Track,
-		MidiBus    = Midi  | Bus
+		AudioTrack  = Audio | Track,
+		AudioBus    = Audio | Bus,
+		AudioInBus  = Audio | Bus | In,
+		AudioOutBus = Audio | Bus | Out,
+		MidiTrack   = Midi  | Track,
+		MidiBus     = Midi  | Bus, 
+		MidiInBus   = Midi  | Bus | In,
+		MidiOutBus  = Midi  | Bus | Out
 	};
 
 	// Constructor.

@@ -1466,7 +1466,7 @@ qtractorAudioBus::qtractorAudioBus ( qtractorAudioEngine *pAudioEngine,
 
 	if (busMode & qtractorBus::Input) {
 		m_pIAudioMonitor = new qtractorAudioMonitor(iChannels);
-		m_pIPluginList   = createPluginList();
+		m_pIPluginList   = createPluginList(qtractorPluginList::AudioInBus);
 	} else {
 		m_pIAudioMonitor = NULL;
 		m_pIPluginList   = NULL;
@@ -1474,7 +1474,7 @@ qtractorAudioBus::qtractorAudioBus ( qtractorAudioEngine *pAudioEngine,
 
 	if (busMode & qtractorBus::Output) {
 		m_pOAudioMonitor = new qtractorAudioMonitor(iChannels);
-		m_pOPluginList   = createPluginList();
+		m_pOPluginList   = createPluginList(qtractorPluginList::AudioOutBus);
 	} else {
 		m_pOAudioMonitor = NULL;
 		m_pOPluginList   = NULL;
@@ -1534,8 +1534,10 @@ void qtractorAudioBus::setChannels ( unsigned short iChannels )
 	if (m_pOAudioMonitor)
 		m_pOAudioMonitor->setChannels(iChannels);
 
-	updatePluginList(m_pIPluginList);
-	updatePluginList(m_pOPluginList);
+	if (m_pIPluginList)
+		updatePluginList(m_pIPluginList, qtractorPluginList::AudioInBus);
+	if (m_pOPluginList)
+		updatePluginList(m_pOPluginList, qtractorPluginList::AudioOutBus);
 }
 
 unsigned short qtractorAudioBus::channels (void) const
@@ -1610,14 +1612,10 @@ bool qtractorAudioBus::open (void)
 	}
 
 	// Plugin lists need some buffer (re)allocation too...
-	if (m_pIPluginList) {
-		updatePluginList(m_pIPluginList);
-		m_pIPluginList->setName(QObject::tr("%1 In").arg(busName()));
-	}
-	if (m_pOPluginList) {
-		updatePluginList(m_pOPluginList);
-		m_pOPluginList->setName(QObject::tr("%1 Out").arg(busName()));
-	}
+	if (m_pIPluginList)
+		updatePluginList(m_pIPluginList, qtractorPluginList::AudioInBus);
+	if (m_pOPluginList)
+		updatePluginList(m_pOPluginList, qtractorPluginList::AudioOutBus);
 
 	// Finally, open for biz...
 	m_bEnabled = true;
@@ -1760,7 +1758,7 @@ void qtractorAudioBus::updateBusMode (void)
 		if (m_pIAudioMonitor == NULL)
 			m_pIAudioMonitor = new qtractorAudioMonitor(m_iChannels);
 		if (m_pIPluginList == NULL)
-			m_pIPluginList = createPluginList();
+			m_pIPluginList = createPluginList(qtractorPluginList::AudioInBus);
 	} else {
 		if (m_pIAudioMonitor) {
 			delete m_pIAudioMonitor;
@@ -1777,7 +1775,7 @@ void qtractorAudioBus::updateBusMode (void)
 		if (m_pOAudioMonitor == NULL)
 			m_pOAudioMonitor = new qtractorAudioMonitor(m_iChannels);
 		if (m_pOPluginList == NULL)
-			m_pOPluginList = createPluginList();
+			m_pOPluginList = createPluginList(qtractorPluginList::AudioOutBus);
 	} else {
 		if (m_pOAudioMonitor) {
 			delete m_pOAudioMonitor;
@@ -1960,7 +1958,7 @@ qtractorPluginList *qtractorAudioBus::pluginList_out (void) const
 
 
 // Create plugin-list properly.
-qtractorPluginList *qtractorAudioBus::createPluginList (void) const
+qtractorPluginList *qtractorAudioBus::createPluginList ( int iFlags ) const
 {
 	qtractorAudioEngine *pAudioEngine
 		= static_cast<qtractorAudioEngine *> (engine());
@@ -1968,28 +1966,40 @@ qtractorPluginList *qtractorAudioBus::createPluginList (void) const
 		return NULL;
 
 	// Create plugin-list alright...
-	return new qtractorPluginList(m_iChannels,
-		pAudioEngine->bufferSize(), pAudioEngine->sampleRate(),
-		qtractorPluginList::AudioBus);
+	qtractorPluginList *pPluginList = new qtractorPluginList(m_iChannels,
+		pAudioEngine->bufferSize(), pAudioEngine->sampleRate(), iFlags);
+
+	// Set plugin-list title name...
+	updatePluginListName(pPluginList, iFlags);
+
+	return pPluginList;
 }
 
 
-// Update plugin-list buffers properly.
-void qtractorAudioBus::updatePluginList ( qtractorPluginList *pPluginList )
+// Update plugin-list title name...
+void qtractorAudioBus::updatePluginListName (
+	qtractorPluginList *pPluginList, int iFlags ) const
+{
+	pPluginList->setName((iFlags & qtractorPluginList::In ?
+		QObject::tr("%1 In") : QObject::tr("%1 Out")).arg(busName()));
+}
+
+// Update plugin-list name/buffers properly.
+void qtractorAudioBus::updatePluginList (
+	qtractorPluginList *pPluginList, int iFlags )
 {
 	// Sanity checks...
-	if (pPluginList == NULL)
-		return;
-
 	qtractorAudioEngine *pAudioEngine
 		= static_cast<qtractorAudioEngine *> (engine());
 	if (pAudioEngine == NULL)
 		return;
-	
+
+	// Set plugin-list title name...
+	updatePluginListName(pPluginList, iFlags);
+
 	// Set plugin-list buffer alright...
 	pPluginList->setBuffer(m_iChannels,
-		pAudioEngine->bufferSize(), pAudioEngine->sampleRate(),
-		qtractorPluginList::AudioBus);
+		pAudioEngine->bufferSize(), pAudioEngine->sampleRate(), iFlags);
 }
 
 

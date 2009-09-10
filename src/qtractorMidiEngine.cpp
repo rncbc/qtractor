@@ -2409,7 +2409,7 @@ qtractorMidiBus::qtractorMidiBus ( qtractorMidiEngine *pMidiEngine,
 
 	if (busMode & qtractorBus::Input) {
 		m_pIMidiMonitor = new qtractorMidiMonitor();
-		m_pIPluginList  = createPluginList();
+		m_pIPluginList  = createPluginList(qtractorPluginList::MidiInBus);
 	} else {
 		m_pIMidiMonitor = NULL;
 		m_pIPluginList  = NULL;
@@ -2417,7 +2417,7 @@ qtractorMidiBus::qtractorMidiBus ( qtractorMidiEngine *pMidiEngine,
 
 	if (busMode & qtractorBus::Output) {
 		m_pOMidiMonitor = new qtractorMidiMonitor();
-		m_pOPluginList  = createPluginList();
+		m_pOPluginList  = createPluginList(qtractorPluginList::MidiOutBus);
 		m_pSysexList    = new qtractorMidiSysexList();
 	} else {
 		m_pOMidiMonitor = NULL;
@@ -2495,14 +2495,10 @@ bool qtractorMidiBus::open (void)
 		return false;
 
 	// Plugin lists need some buffer (re)allocation too...
-	if (m_pIPluginList) {
-		updatePluginList(m_pIPluginList);
-		m_pIPluginList->setName(QObject::tr("%1 In").arg(busName()));
-	}
-	if (m_pOPluginList) {
-		updatePluginList(m_pOPluginList);
-		m_pOPluginList->setName(QObject::tr("%1 Out").arg(busName()));
-	}
+	if (m_pIPluginList)
+		updatePluginList(m_pIPluginList, qtractorPluginList::MidiInBus);
+	if (m_pOPluginList)
+		updatePluginList(m_pOPluginList, qtractorPluginList::MidiOutBus);
 
 	// Done.
 	return true;
@@ -2535,7 +2531,7 @@ void qtractorMidiBus::updateBusMode (void)
 		if (m_pIMidiMonitor == NULL)
 			m_pIMidiMonitor = new qtractorMidiMonitor();
 		if (m_pIPluginList == NULL)
-			m_pIPluginList = createPluginList();
+			m_pIPluginList = createPluginList(qtractorPluginList::MidiInBus);
 	} else {
 		if (m_pIMidiMonitor) {
 			delete m_pIMidiMonitor;
@@ -2552,7 +2548,7 @@ void qtractorMidiBus::updateBusMode (void)
 		if (m_pOMidiMonitor == NULL)
 			m_pOMidiMonitor = new qtractorMidiMonitor();
 		if (m_pOPluginList == NULL)
-			m_pOPluginList = createPluginList();
+			m_pOPluginList = createPluginList(qtractorPluginList::MidiOutBus);
 		if (m_pSysexList == NULL)
 			m_pSysexList = new qtractorMidiSysexList();
 	} else {
@@ -2965,7 +2961,7 @@ qtractorPluginList *qtractorMidiBus::pluginList_out (void) const
 
 
 // Create plugin-list properly.
-qtractorPluginList *qtractorMidiBus::createPluginList (void) const
+qtractorPluginList *qtractorMidiBus::createPluginList ( int iFlags ) const
 {
 	qtractorSession *pSession = engine()->session();
 	if (pSession == NULL)
@@ -2985,24 +2981,36 @@ qtractorPluginList *qtractorMidiBus::createPluginList (void) const
 		}
 	}
 
-	// Got it?
-	if (pAudioBus == NULL)
-		return new qtractorPluginList(0, 0, 0, qtractorPluginList::MidiBus);
-
 	// Create plugin-list alright...
-	return new qtractorPluginList(pAudioBus->channels(),
-		pAudioEngine->bufferSize(), pAudioEngine->sampleRate(),
-		qtractorPluginList::MidiBus);
+	qtractorPluginList *pPluginList = NULL;
+	if (pAudioBus) {
+	 	pPluginList = new qtractorPluginList(pAudioBus->channels(),
+			pAudioEngine->bufferSize(), pAudioEngine->sampleRate(), iFlags);
+	} else {
+		pPluginList = new qtractorPluginList(0, 0, 0, iFlags);
+	}
+
+	// Set plugin-list title name...
+	updatePluginListName(pPluginList, iFlags);
+
+	return pPluginList;
+}
+
+
+// Update plugin-list title name...
+void qtractorMidiBus::updatePluginListName (
+	qtractorPluginList *pPluginList, int iFlags ) const
+{
+	pPluginList->setName((iFlags & qtractorPluginList::In ?
+		QObject::tr("%1 In") : QObject::tr("%1 Out")).arg(busName()));
 }
 
 
 // Update plugin-list buffers properly.
-void qtractorMidiBus::updatePluginList ( qtractorPluginList *pPluginList )
+void qtractorMidiBus::updatePluginList (
+	qtractorPluginList *pPluginList, int iFlags )
 {
 	// Sanity checks...
-	if (pPluginList == NULL)
-		return;
-
 	qtractorSession *pSession = engine()->session();
 	if (pSession == NULL)
 		return;
@@ -3010,7 +3018,10 @@ void qtractorMidiBus::updatePluginList ( qtractorPluginList *pPluginList )
 	qtractorAudioEngine *pAudioEngine = pSession->audioEngine();
 	if (pAudioEngine == NULL)
 		return;
-	
+
+	// Set plugin-list title name...
+	updatePluginListName(pPluginList, iFlags);
+
 	// Get audio bus as for the plugin list...
 	qtractorAudioBus *pAudioBus = NULL;
 	if (pPluginList->midiManager())
@@ -3032,8 +3043,7 @@ void qtractorMidiBus::updatePluginList ( qtractorPluginList *pPluginList )
 
 	// Set plugin-list buffer alright...
 	pPluginList->setBuffer(pAudioBus->channels(),
-		pAudioEngine->bufferSize(), pAudioEngine->sampleRate(),
-		qtractorPluginList::MidiBus);
+		pAudioEngine->bufferSize(), pAudioEngine->sampleRate(), iFlags);
 }
 
 

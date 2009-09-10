@@ -385,10 +385,14 @@ protected:
 	void updateBusMode();
 
 	// Create plugin-list properly.
-	qtractorPluginList *createPluginList (void) const;
+	qtractorPluginList *createPluginList(int iFlags) const;
+
+	// Set plugin-list title name properly.
+	void updatePluginListName(
+		qtractorPluginList *pPluginList, int iFlags) const;
 
 	// Set plugin-list buffers properly.
-	void updatePluginList(qtractorPluginList *pPluginList);
+	void updatePluginList(qtractorPluginList *pPluginList, int iFlags);
 
 	// Document instrument map methods.
 	bool loadMidiMap(qtractorSessionDocument *pDocument,
