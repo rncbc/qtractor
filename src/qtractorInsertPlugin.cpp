@@ -59,7 +59,8 @@ bool qtractorInsertPluginType::open (void)
 	m_iMidiOuts    = 0;
 
 	// Cache flags.
-	m_bRealtime = true;
+	m_bRealtime  = true;
+	m_bConfigure = true;
 
 	// Done.
 	return true;
@@ -165,6 +166,13 @@ void qtractorInsertPlugin::setChannels ( unsigned short iChannels )
 	pAudioEngine->addBusEx(m_pAudioBus);
 	m_pAudioBus->open();
 
+	// (Re)issue all configuration as needed...
+	realizeConfigs();
+	realizeValues();
+
+	// But won't need it anymore.
+	releaseConfigs();
+
 	// (Re)activate instance if necessary...
 	setActivated(bActivated);
 }
@@ -202,6 +210,95 @@ void qtractorInsertPlugin::process (
 	}
 
 //	m_pAudioBus->process_commit(nframes);
+}
+
+
+// Pseudo-plugin configuration handlers.
+void qtractorInsertPlugin::configure ( const QString& sKey, const QString& sValue )
+{
+	if (m_pAudioBus == NULL)
+		return;
+
+	qtractorBus::ConnectItem *pItem = new qtractorBus::ConnectItem;
+	
+	pItem->index = sValue.section('|', 0, 0).toUShort();
+
+	const QString& sClient = sValue.section('|', 1, 1);
+	const QString& sClientName = sClient.section(':', 1);
+	if (sClientName.isEmpty()) {
+		pItem->clientName = sClient;
+	} else {
+	//	pItem->client = sClient.section(':', 0, 0).toInt();
+		pItem->clientName = sClientName;
+	}
+
+	const QString& sPort = sValue.section('|', 2, 2);
+	const QString& sPortName = sPort.section(':', 1);
+	if (sPortName.isEmpty()) {
+		pItem->portName = sPort;
+	} else {
+	//	pItem->port = sPort.section(':', 0, 0).toInt();
+		pItem->portName = sPortName;
+	}
+
+	const QString& sKeyPrefix = sKey.section('_', 0, 0);
+	if (sKeyPrefix == "in")
+		m_pAudioBus->inputs().append(pItem);
+	else
+	if (sKeyPrefix == "out")
+		m_pAudioBus->outputs().append(pItem);
+	else
+		delete pItem;
+}
+
+
+// Pseudo-plugin configuration/state snapshot.
+void qtractorInsertPlugin::freezeConfigs (void)
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorInsertPlugin[%p]::freezeConfigs()",	this);
+#endif
+
+	freezeConfigs(qtractorBus::Input);
+	freezeConfigs(qtractorBus::Output);
+}
+
+void qtractorInsertPlugin::releaseConfigs (void)
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorVstPlugin[%p]::releaseConfigs()", this);
+#endif
+
+	clearConfigs();
+}
+
+
+void qtractorInsertPlugin::freezeConfigs ( qtractorBus::BusMode busMode )
+{
+	if (m_pAudioBus == NULL)
+		return;
+
+	// Save connect items...
+	const QString sKeyPrefix(busMode & qtractorBus::Input ? "in" : "out");
+	int iKey = 0;
+
+	qtractorBus::ConnectList connects;
+	m_pAudioBus->updateConnects(busMode, connects);
+	QListIterator<qtractorBus::ConnectItem *> iter(connects);
+	while (iter.hasNext()) {
+		qtractorBus::ConnectItem *pItem = iter.next();
+		QString sIndex = QString::number(pItem->index);
+		QString sClient;
+		if (pItem->client >= 0)
+			sClient += QString::number(pItem->client) + ':';
+		sClient += pItem->clientName;
+		QString sPort;
+		if (pItem->port >= 0)
+			sPort += QString::number(pItem->port) + ':';
+		sPort += pItem->portName;
+		QString sKey = sKeyPrefix + '_' + QString::number(iKey++);
+		setConfig(sKey, sIndex + '|' + sClient + '|' + sPort);
+	}
 }
 
 

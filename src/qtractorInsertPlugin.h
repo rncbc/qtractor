@@ -23,7 +23,7 @@
 #define __qtractorInsertPlugin_h
 
 #include "qtractorPlugin.h"
-
+#include "qtractorEngine.h"
 
 // Forward declarations.
 class qtractorAudioBus;
@@ -94,6 +94,18 @@ public:
 
 	// The main plugin processing procedure.
 	void process(float **ppIBuffer, float **ppOBuffer, unsigned int nframes);
+
+	// Plugin configuration handlers.
+	void configure(const QString& sKey, const QString& sValue);
+
+	// Plugin configuration/state snapshot.
+	void freezeConfigs();
+	void releaseConfigs();
+
+protected:
+
+	// Plugin configuration (connections).
+	void freezeConfigs(qtractorBus::BusMode busMode);
 
 private:
 

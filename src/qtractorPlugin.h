@@ -365,9 +365,6 @@ public:
 	virtual void configure(
 		const QString& /*sKey*/, const QString& /*sValue*/) {}
 
-	// Tall whether configuration snapshot is needed.
-	virtual bool isConfigure() { return false; }
-
 	// Plugin configuration/state snapshot.
 	virtual void freezeConfigs() {}
 	virtual void releaseConfigs() {}

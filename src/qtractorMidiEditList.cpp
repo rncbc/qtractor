@@ -449,7 +449,7 @@ bool qtractorMidiEditList::eventFilter ( QObject *pObject, QEvent *pEvent )
 			const QPoint& pos
 				= qtractorScrollView::viewportToContents(pHelpEvent->pos());
 			int w = pViewport->width();
-			int x = ((w << 1) / 3);
+			int x = w - ((w << 1) / 3);
 			if (pos.x() >= x && pos.x() < w && m_iItemHeight > 0) {
 				const QString sToolTip("%1 (%2)");
 				int note = 127 - ((pos.y() - 1) / m_iItemHeight);
