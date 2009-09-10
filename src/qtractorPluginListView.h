@@ -104,6 +104,7 @@ public slots:
 
 	// User interaction slots.
 	void addPlugin();
+	void addInsertPlugin();
 	void removePlugin();
 	void moveUpPlugin();
 	void moveDownPlugin();

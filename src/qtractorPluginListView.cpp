@@ -33,6 +33,8 @@
 #include "qtractorMidiBuffer.h"
 #include "qtractorConnections.h"
 
+#include "qtractorInsertPlugin.h"
+
 #include <QItemDelegate>
 #include <QPainter>
 #include <QMenu>
@@ -427,6 +429,39 @@ void qtractorPluginListView::addPlugin (void)
 	}
 
 	pSession->execute(pAddPluginCommand);
+
+	// We're formerly done.
+	QApplication::restoreOverrideCursor();
+}
+
+
+// Add an insert pseudo-plugin slot.
+void qtractorPluginListView::addInsertPlugin (void)
+{
+	if (m_pPluginList == NULL)
+		return;
+
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return;
+
+	// Tell the world we'll take some time...
+	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+
+	// Make it a undoable command...
+	// Must create our special pseudo-plugin type...
+	qtractorInsertPluginType *pInsertType
+		= qtractorInsertPluginType::createType(m_pPluginList->channels());
+	if (pInsertType) {
+		if (pInsertType->open()) {
+			qtractorAddPluginCommand *pAddPluginCommand
+				= new qtractorAddPluginCommand();
+			pAddPluginCommand->addPlugin(
+				new qtractorInsertPlugin(m_pPluginList, pInsertType));
+			pSession->execute(pAddPluginCommand);
+		}
+		delete pInsertType;
+	}
 
 	// We're formerly done.
 	QApplication::restoreOverrideCursor();
@@ -1006,6 +1041,11 @@ void qtractorPluginListView::contextMenuEvent (
 	pAction = menu.addAction(
 		QIcon(":/icons/formCreate.png"),
 		tr("&Add Plugin..."), this, SLOT(addPlugin()));
+//	pAction->setEnabled(true);
+
+	pAction = menu.addAction(
+	//	QIcon(":/icons/formCreate.png"),
+		tr("Add &Insert"), this, SLOT(addInsertPlugin()));
 //	pAction->setEnabled(true);
 
 	pAction = menu.addAction(

@@ -159,12 +159,23 @@ void qtractorInsertPlugin::setChannels ( unsigned short iChannels )
 		this, iChannels, iInstances);
 #endif
 
-	// TODO: Create audio bus...
-	m_pAudioBus = new qtractorAudioBus(pAudioEngine,
-		pType->label(), qtractorBus::Duplex, false, iChannels, false);
+	// Audio bus name -- it must be unique...
+	const QString& sBusNamePrefix
+		= qtractorSession::sanitize(list()->name() + '_' + pType->name());
 
+	int iBusName = 1;
+	QString sBusName = sBusNamePrefix;
+	while (pAudioEngine->findBus(sBusName)
+		|| pAudioEngine->findBusEx(sBusName))
+		sBusName = sBusNamePrefix + '_' + QString::number(++iBusName);
+
+	// Create the private audio bus...
+	m_pAudioBus = new qtractorAudioBus(pAudioEngine,
+		sBusName, qtractorBus::Duplex, false, iChannels, false);
+
+	// Add this one to the engine's exo-bus list,
+	// for conection persistence purposes...
 	pAudioEngine->addBusEx(m_pAudioBus);
-	m_pAudioBus->open();
 
 	// (Re)issue all configuration as needed...
 	realizeConfigs();
@@ -172,6 +183,9 @@ void qtractorInsertPlugin::setChannels ( unsigned short iChannels )
 
 	// But won't need it anymore.
 	releaseConfigs();
+
+	// Open-up private bus...
+	m_pAudioBus->open();
 
 	// (Re)activate instance if necessary...
 	setActivated(bActivated);
