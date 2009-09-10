@@ -1181,8 +1181,11 @@ qtractorPlugin *qtractorPluginList::copyPlugin ( qtractorPlugin *pPlugin )
 	if (m_pMidiManager && m_pMidiManager->currentProg() >= 0)
 		iProg = m_pMidiManager->currentProg();
 
+	QString sFilename; // Filname is empty for insert pseudo-plugins.
+	if (pType->file())
+		sFilename = (pType->file())->filename();
 	qtractorPlugin *pNewPlugin = qtractorPluginFile::createPlugin(this,
-		(pType->file())->filename(), pType->index(), pType->typeHint());
+		sFilename, pType->index(), pType->typeHint());
 	if (pNewPlugin) {
 		pNewPlugin->setPreset(pPlugin->preset());
 		pNewPlugin->setConfigs(pPlugin->configs());

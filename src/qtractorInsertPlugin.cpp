@@ -220,8 +220,8 @@ void qtractorInsertPlugin::process (
 	unsigned short iChannels = channels();
 	
 	for (unsigned short i = 0; i < iChannels; ++i) {
-		::memcpy(ppOut[i], ppIBuffer[i], nframes);
-		::memcpy(ppOBuffer[i], ppIn[i], nframes);
+		::memcpy(ppOut[i], ppIBuffer[i], nframes * sizeof(float));
+		::memcpy(ppOBuffer[i], ppIn[i], nframes * sizeof(float));
 	}
 
 //	m_pAudioBus->process_commit(nframes);
