@@ -39,8 +39,7 @@ public:
 
 	// Constructor.
 	qtractorInsertPluginType(unsigned short iChannels)
-		: qtractorPluginType(NULL, iChannels, qtractorPluginType::Insert),
-			m_iChannels(iChannels) {}
+		: qtractorPluginType(NULL, iChannels, qtractorPluginType::Insert) {}
 
 	// Destructor.
 	~qtractorInsertPluginType()
@@ -59,14 +58,9 @@ public:
 	// Factory method (static)
 	static qtractorInsertPluginType *createType(unsigned short iChannels);
 
-	// Specific accessors.
+	// Specific named accessors.
 	unsigned short channels() const
-		{ return m_iChannels; }
-
-private:
-
-	// Number of insert channels
-	unsigned short m_iChannels;
+		{ return index(); }
 };
 
 

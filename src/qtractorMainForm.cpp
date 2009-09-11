@@ -4511,6 +4511,15 @@ void qtractorMainForm::timerSlot (void)
 						// Maybe it's better go on with looping, eh?
 						m_pSession->setPlayHead(m_pSession->loopStart());
 						m_iTransportUpdate++;
+					}
+					else
+					// Auto-backward reset feature...
+					if (m_ui.transportAutoBackwardAction->isChecked()) {
+						if (m_iPlayHead > m_pSession->editHead())
+							m_pSession->setPlayHead(m_pSession->editHead());
+						else
+							m_pSession->setPlayHead(0);
+						m_iTransportUpdate++;
 					} else {
 						// Stop at once!
 						transportPlay();

@@ -35,12 +35,13 @@
 bool qtractorInsertPluginType::open (void)
 {
 	// Sanity check...
-	if (m_iChannels < 1)
+	unsigned short iChannels = index();
+	if (iChannels < 1)
 		return false;
 
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorInsertPluginType[%p]::open() channels=%u",
-		this, m_iChannels);
+		this, iChannels);
 #endif
 
 	// Pseudo-plugin type names.
@@ -48,13 +49,13 @@ bool qtractorInsertPluginType::open (void)
 	m_sLabel = m_sName;
 
 	// Pseudo-plugin unique identifier.
-	m_iUniqueID = m_iChannels;
+	m_iUniqueID = iChannels;
 
 	// Pseudo-plugin port counts...
 	m_iControlIns  = 0;
 	m_iControlOuts = 0;
-	m_iAudioIns    = m_iChannels;
-	m_iAudioOuts   = m_iChannels;
+	m_iAudioIns    = iChannels;
+	m_iAudioOuts   = iChannels;
 	m_iMidiIns     = 0;
 	m_iMidiOuts    = 0;
 
@@ -162,7 +163,7 @@ void qtractorInsertPlugin::setChannels ( unsigned short iChannels )
 
 	// Audio bus name -- it must be unique...
 	const QString& sBusNamePrefix
-		= qtractorSession::sanitize(list()->name() + '_' + pType->name());
+		= qtractorSession::sanitize(list()->name() + '/' + pType->name());
 
 	int iBusName = 1;
 	QString sBusName = sBusNamePrefix;

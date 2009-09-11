@@ -1072,6 +1072,11 @@ void qtractorPluginListView::contextMenuEvent (
 		pPlugin = pItem->plugin();
 	}
 
+	pAction = menu.addAction(
+		QIcon(":/icons/formCreate.png"),
+		tr("&Add Plugin..."), this, SLOT(addPlugin()));
+//	pAction->setEnabled(true);
+
 	QMenu *pInsertMenu = menu.addMenu("&Inserts");
 	pAction = pInsertMenu->addAction(
 		QIcon(":/icons/formCreate.png"),
@@ -1086,11 +1091,6 @@ void qtractorPluginListView::contextMenuEvent (
 	pAction = pInsertMenu->addAction(
 		tr("&Inputs (Returns)"), this, SLOT(insertPluginInputs()));
 	pAction->setEnabled(bInsertEnabled);
-
-	pAction = menu.addAction(
-		QIcon(":/icons/formCreate.png"),
-		tr("&Add Plugin..."), this, SLOT(addPlugin()));
-//	pAction->setEnabled(true);
 
 	menu.addSeparator();
 

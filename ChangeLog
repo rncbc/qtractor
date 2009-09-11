@@ -5,8 +5,11 @@ ChangeLog
 
 CVS HEAD
 
-- Audio effect send/return aux. inserts are now introduced
-  in special pseudo-plugin instance form. (EXPERIMENTAL)
+- Audio effect send/return aux. inserts are implemented as
+  special pseudo-plugins (Plugins/Inserts). (EXPERIMENTAL)
+
+- Reset play-head position on auto-backward and keep playback
+  rolling when continue past end transport option is not set.
 
 - MIDI clip editor (aka piano-roll/matrix aditor) gets better
   on the virtual piano keyboard eye-candy side of things ;).

@@ -50,6 +50,7 @@ Features
 - LADSPA [5], DSSI [11] and native VSTi [12] plug-ins support.
 - Unlimited number of plug-ins per track or bus.
 - Plug-in presets, programs and chunk/configurations support.
+- Unlimited audio effect send/return inserts per track or bus.
 - Audio/MIDI clip fade-in/out (linear, quadratic, cubic).
 - Audio/MIDI clip gain/volume, normalize, export.
 - Audio clip time-stretching (WSOLA-like or via librubberband [9]),
