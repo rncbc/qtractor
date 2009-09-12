@@ -100,6 +100,9 @@ public:
 	// Common pixmap accessors.
 	static QIcon *itemIcon(int iIndex);
 
+	// Show insert pseudo-plugin audio bus connections.
+	static void insertPluginBus(qtractorPlugin *pPlugin, int iBusMode);
+
 public slots:
 
 	// User interaction slots.

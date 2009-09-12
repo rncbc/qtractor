@@ -30,6 +30,7 @@
 
 #include "qtractorOptions.h"
 #include "qtractorSession.h"
+#include "qtractorEngine.h"
 
 #include <QMessageBox>
 #include <QGridLayout>
@@ -112,6 +113,12 @@ qtractorPluginForm::qtractorPluginForm (
 	QObject::connect(m_ui.EditToolButton,
 		SIGNAL(toggled(bool)),
 		SLOT(editSlot(bool)));
+	QObject::connect(m_ui.SendsToolButton,
+		SIGNAL(clicked()),
+		SLOT(sendsSlot()));
+	QObject::connect(m_ui.ReturnsToolButton,
+		SIGNAL(clicked()),
+		SLOT(returnsSlot()));
 	QObject::connect(m_ui.ActivateToolButton,
 		SIGNAL(toggled(bool)),
 		SLOT(activateSlot(bool)));
@@ -189,6 +196,12 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 	m_ui.EditToolButton->setVisible(bEditor);
 	//if (bEditor)
 	//	toggleEditor(m_pPlugin->isEditorVisible());
+
+	// Show insert tool options...
+	bool bInsertPlugin
+		= ((m_pPlugin->type())->typeHint() == qtractorPluginType::Insert);
+	m_ui.SendsToolButton->setVisible(bInsertPlugin);
+	m_ui.ReturnsToolButton->setVisible(bInsertPlugin);
 
 	// Set plugin name as title...
 	updateCaption();
@@ -621,6 +634,20 @@ void qtractorPluginForm::editSlot ( bool bOn )
 		m_pPlugin->closeEditor();
 
 	m_iUpdate--;
+}
+
+
+// Outputs (Sends) slot.
+void qtractorPluginForm::sendsSlot (void)
+{
+	qtractorPluginListView::insertPluginBus(m_pPlugin, qtractorBus::Output);
+}
+
+
+// Inputs (Returns) slot.
+void qtractorPluginForm::returnsSlot (void)
+{
+	qtractorPluginListView::insertPluginBus(m_pPlugin, qtractorBus::Input);
 }
 
 

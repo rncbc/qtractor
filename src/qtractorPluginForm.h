@@ -87,12 +87,17 @@ protected slots:
 	void deletePresetSlot();
 	void paramsSlot(bool bOn);
 	void editSlot(bool bOn);
+	void sendsSlot();
+	void returnsSlot();
 	void activateSlot(bool bOn);
 	void valueChangeSlot(qtractorPluginParam *pParam, float fValue);
 
 protected:
 
 	void stabilize();
+
+	// Show insert pseudo-plugin audio bus connections.
+	void insertPluginBus(int iBusMode);
 
 private:
 

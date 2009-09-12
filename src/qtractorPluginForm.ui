@@ -187,6 +187,32 @@
       </widget>
      </item>
      <item>
+      <widget class="QToolButton" name="SendsToolButton" >
+       <property name="focusPolicy" >
+        <enum>Qt::TabFocus</enum>
+       </property>
+       <property name="toolTip" >
+        <string>Outputs (Sends)</string>
+       </property>
+       <property name="text" >
+        <string>Sends</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="ReturnsToolButton" >
+       <property name="focusPolicy" >
+        <enum>Qt::TabFocus</enum>
+       </property>
+       <property name="toolTip" >
+        <string>Inputs (Returns)</string>
+       </property>
+       <property name="text" >
+        <string>Returns</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QToolButton" name="ActivateToolButton" >
        <property name="focusPolicy" >
         <enum>Qt::TabFocus</enum>

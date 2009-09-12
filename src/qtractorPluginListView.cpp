@@ -450,13 +450,18 @@ void qtractorPluginListView::addInsertPlugin (void)
 	// Tell the world we'll take some time...
 	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
-	// Make it a undoable command...
-	// create our special pseudo-plugin type...
-	pSession->execute(new qtractorAddInsertPluginCommand(
-		qtractorPluginFile::createPlugin(m_pPluginList,
+	// Create our special pseudo-plugin type...
+	qtractorPlugin *pPlugin
+		= qtractorPluginFile::createPlugin(m_pPluginList,
 			QString(), // Empty filename!
 			m_pPluginList->channels(),
-			qtractorPluginType::Insert)));
+			qtractorPluginType::Insert);
+	if (pPlugin) {
+		// Show the plugin form right away...
+		(pPlugin->form())->activateForm();
+		// Make it a undoable command...
+		pSession->execute(new qtractorAddInsertPluginCommand(pPlugin));
+	}
 
 	// We're formerly done.
 	QApplication::restoreOverrideCursor();
@@ -671,7 +676,14 @@ void qtractorPluginListView::insertPluginBus ( int iBusMode )
 	if (pItem == NULL)
 		return;
 
-	qtractorPlugin *pPlugin = pItem->plugin();
+	insertPluginBus(pItem->plugin(), iBusMode);
+}
+
+
+// Show insert pseudo-plugin audio bus connections (static)
+void qtractorPluginListView::insertPluginBus (
+	qtractorPlugin *pPlugin, int iBusMode )
+{
 	if (pPlugin == NULL)
 		return;
 
