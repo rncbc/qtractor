@@ -1092,16 +1092,18 @@ void qtractorPluginListView::contextMenuEvent (
 	QMenu *pInsertMenu = menu.addMenu("&Inserts");
 	pAction = pInsertMenu->addAction(
 		QIcon(":/icons/formCreate.png"),
-		tr("&Add Insert"), this, SLOT(addInsertPlugin()));
+		tr("Add &Insert"), this, SLOT(addInsertPlugin()));
 	pAction->setEnabled(m_pPluginList->channels() > 0);
 	pInsertMenu->addSeparator();
 	bool bInsertEnabled = (pPlugin
 		&& (pPlugin->type())->typeHint() == qtractorPluginType::Insert);
 	pAction = pInsertMenu->addAction(
-		tr("&Outputs (Sends)"), this, SLOT(insertPluginOutputs()));
+		QIcon(":/icons/itemAudioPortOut.png"),
+		tr("&Sends"), this, SLOT(insertPluginOutputs()));
 	pAction->setEnabled(bInsertEnabled);
 	pAction = pInsertMenu->addAction(
-		tr("&Inputs (Returns)"), this, SLOT(insertPluginInputs()));
+		QIcon(":/icons/itemAudioPortIn.png"),
+		tr("&Returns"), this, SLOT(insertPluginInputs()));
 	pAction->setEnabled(bInsertEnabled);
 
 	menu.addSeparator();

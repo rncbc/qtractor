@@ -197,6 +197,12 @@
        <property name="text" >
         <string>Sends</string>
        </property>
+       <property name="icon" >
+        <iconset resource="../icons/qtractor.qrc" >:/icons/itemAudioPortOut.png</iconset>
+       </property>
+       <property name="toolButtonStyle" >
+        <enum>Qt::ToolButtonTextBesideIcon</enum>
+       </property>
       </widget>
      </item>
      <item>
@@ -209,6 +215,12 @@
        </property>
        <property name="text" >
         <string>Returns</string>
+       </property>
+       <property name="icon" >
+        <iconset resource="../icons/qtractor.qrc" >:/icons/itemAudioPortIn.png</iconset>
+       </property>
+       <property name="toolButtonStyle" >
+        <enum>Qt::ToolButtonTextBesideIcon</enum>
        </property>
       </widget>
      </item>
