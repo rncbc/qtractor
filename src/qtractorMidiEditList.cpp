@@ -19,6 +19,7 @@
 
 *****************************************************************************/
 
+#include "qtractorAbout.h"
 #include "qtractorMidiEditList.h"
 
 #include "qtractorMidiEditor.h"
@@ -33,7 +34,9 @@
 
 #include <QToolTip>
 
+#ifdef CONFIG_GRADIENT
 #include <QLinearGradient>
+#endif
 
 
 //----------------------------------------------------------------------------
@@ -176,11 +179,15 @@ void qtractorMidiEditList::updatePixmap ( int /*cx*/, int cy )
 
 	p.setPen(pal.mid().color());
 
+#ifdef CONFIG_GRADIENT
 	QLinearGradient litegrad(x, 0, w, 0);
 	litegrad.setColorAt(0.0f, pal.mid().color());
 	litegrad.setColorAt(0.1f, pal.base().color());
-
 	p.setBrush(litegrad);
+#else
+	p.setBrush(pal.base().color());
+#endif
+
 	y = y0;
 	n = n0;
 	while (y < h && y < ch) {
@@ -199,11 +206,15 @@ void qtractorMidiEditList::updatePixmap ( int /*cx*/, int cy )
 		n--;
 	}
 
+#ifdef CONFIG_GRADIENT
 	QLinearGradient darkgrad(x, 0, x + wk, 0);
-	darkgrad.setColorAt(0.0f, pal.base().color());
+	darkgrad.setColorAt(0.0f, pal.mid().color());
 	darkgrad.setColorAt(0.3f, pal.shadow().color());
-
 	p.setBrush(darkgrad);
+#else
+	p.setBrush(pal.shadow().color());
+#endif
+
 	y = y0;
 	n = n0;
 	while (y < h && y < ch) {

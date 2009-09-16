@@ -19,6 +19,7 @@
 
 *****************************************************************************/
 
+#include "qtractorAbout.h"
 #include "qtractorMidiEditor.h"
 
 #include "qtractorMidiEditor.h"
