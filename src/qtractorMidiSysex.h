@@ -25,6 +25,8 @@
 #include <QString>
 #include <QList>
 
+#include <stdio.h>
+
 
 //----------------------------------------------------------------------
 // class qtractorMidiSysex -- MIDI SysEx data bank item.
