@@ -4,7 +4,7 @@
    Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
 
    Adapted and refactored from the SoundTouch library (L)GPL,
-   Copyright (C) 2001-2006, Olli Parviainen.
+   Copyright (C) 2001-2009, Olli Parviainen.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -195,6 +195,9 @@ void qtractorTimeStretch::setTempo ( float fTempo )
 	// Set new is tempo scaling.
 	m_fTempo = fTempo;
 
+	calcSeekWindowLength();
+	calcOverlapLength();
+
 	// Calculate ideal skip length (according to tempo value) 
 	m_fNominalSkip = m_fTempo * (m_iSeekWindowLength - m_iOverlapLength);
 	m_fSkipFract = 0;
@@ -254,10 +257,8 @@ void qtractorTimeStretch::setParameters (
 	m_iSeekWindowMs = iSeekWindowMs;
 	m_iOverlapMs = iOverlapMs;
 
-	m_iSeekLength = (m_iSampleRate * m_iSeekWindowMs) / 1000;
-	m_iSeekWindowLength = (m_iSampleRate * m_iSequenceMs) / 1000;
-
-	calcOverlapLength();
+	m_bAutoSequenceMs = (iSequenceMs < 1);
+	m_bAutoSeekWindowMs = (iSeekWindowMs < 1);
 
 	// Set tempo to recalculate required frames...
 	setTempo(m_fTempo);
@@ -573,6 +574,50 @@ void qtractorTimeStretch::calcOverlapLength (void)
 		m_bMidBufferDirty = true;
 		clearMidBuffer();
 	}
+}
+
+
+// Calculates processing sequence length according to tempo setting.
+void qtractorTimeStretch::calcSeekWindowLength (void)
+{
+	// Adjust tempo param according to tempo,
+	// so that variating processing sequence length is used...
+	// at varius tempo settings, between the given low...top limits
+	#define AUTO_TEMPO_MIN	0.5f	// auto setting low tempo range (-50%)
+	#define AUTO_TEMPO_MAX	2.0f	// auto setting top tempo range (+100%)
+	#define AUTO_TEMPO_DIFF (AUTO_TEMPO_MAX - AUTO_TEMPO_MIN)
+
+	// iSequenceMs setting values at above low & top tempo.
+	#define AUTO_SEQ_MIN	125.0f
+	#define AUTO_SEQ_MAX	50.0f
+	#define AUTO_SEQ_DIFF	(AUTO_SEQ_MAX - AUTO_SEQ_MIN)
+	#define AUTO_SEQ_K		(AUTO_SEQ_DIFF / AUTO_TEMPO_DIFF)
+	#define AUTO_SEQ_C		(AUTO_SEQ_MIN - (AUTO_SEQ_K * AUTO_TEMPO_MIN))
+
+	// iSeekWindowMs setting values at above low & top tempo.
+	#define AUTO_SEEK_MIN	25.0f
+	#define AUTO_SEEK_MAX	15.0f
+	#define AUTO_SEEK_DIFF	(AUTO_SEEK_MAX - AUTO_SEEK_MIN)
+	#define AUTO_SEEK_K		(AUTO_SEEK_DIFF / AUTO_TEMPO_DIFF)
+	#define AUTO_SEEK_C		(AUTO_SEEK_MIN - (AUTO_SEEK_K * AUTO_TEMPO_MIN))
+
+	#define AUTO_LIMITS(x, a, b) ((x) < (a) ? (a) : ((x) > (b) ? (b) : (x)))
+
+	if (m_bAutoSequenceMs) {
+		float fSeq = AUTO_SEQ_C + AUTO_SEQ_K * m_fTempo;
+		fSeq = AUTO_LIMITS(fSeq, AUTO_SEQ_MAX, AUTO_SEQ_MIN);
+		m_iSequenceMs = (unsigned int) (fSeq + 0.5f);
+	}
+
+	if (m_bAutoSeekWindowMs) {
+		float fSeek = AUTO_SEEK_C + AUTO_SEEK_K * m_fTempo;
+		fSeek = AUTO_LIMITS(fSeek, AUTO_SEEK_MAX, AUTO_SEEK_MIN);
+		m_iSeekWindowMs = (unsigned int) (fSeek + 0.5f);
+	}
+
+	// Update seek window lengths.
+	m_iSeekLength = (m_iSampleRate * m_iSeekWindowMs) / 1000;
+	m_iSeekWindowLength = (m_iSampleRate * m_iSequenceMs) / 1000;
 }
 
 

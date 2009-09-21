@@ -4,7 +4,7 @@
    Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
 
    Adapted and refactored from the SoundTouch library (L)GPL,
-   Copyright (C) 2001-2006, Olli Parviainen.
+   Copyright (C) 2001-2009, Olli Parviainen.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -75,8 +75,10 @@ public:
 		// slowing down tempo, but worse when increasing tempo and vice versa.
 		//
 		// Increasing this value reduces computational burden and vice versa.
+		// DEFAULT_SEQUENCE_MS = 82,
+		// DEFAULT_SEQUENCE_MS = 130,
 
-		DEFAULT_SEQUENCE_MS = 82,
+		DEFAULT_SEQUENCE_MS = 0,
 
 		// Seeking window default length in milliseconds for algorithm
 		// that finds the best possible overlapping location. This determines
@@ -92,8 +94,10 @@ public:
 		// frequency was drifting around, try reducing this setting.
 		//
 		// Increasing this value increases computational burden and vice versa.
+		// DEFAULT_SEEKWINDOW_MS = 14,
+		// DEFAULT_SEEKWINDOW_MS = 25,
 
-		DEFAULT_SEEKWINDOW_MS = 14,
+		DEFAULT_SEEKWINDOW_MS = 0,
 
 		// Overlap length in milliseconds. When the chopped sound sequences
 		// are mixed back together, to form a continuous sound stream,
@@ -105,8 +109,9 @@ public:
 		// to try a smaller value on this.
 		//
 		// Increasing this value increases computational burden and vice versa.
+		// DEFAULT_OVERLAP_MS = 12
 
-		DEFAULT_OVERLAP_MS = 12
+		DEFAULT_OVERLAP_MS = 8
 	};
 
 	// Sets routine control parameters.
@@ -156,6 +161,9 @@ public:
 
 protected:
 
+	// Calculates processing sequence length according to tempo setting.
+	void calcSeekWindowLength();
+
 	// Calculates overlap period length in frames.
 	void calcOverlapLength();
 
@@ -183,6 +191,9 @@ private:
 	unsigned int m_iSequenceMs;
 	unsigned int m_iSeekWindowMs;
 	unsigned int m_iOverlapMs;
+
+	bool m_bAutoSequenceMs;
+	bool m_bAutoSeekWindowMs;
 
 	unsigned int m_iFramesReq;
 	float **m_ppMidBuffer;
