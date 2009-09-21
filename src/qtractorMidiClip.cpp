@@ -37,6 +37,15 @@
 #define lighter light
 #endif
 
+#if QT_VERSION < 0x040500
+namespace Qt {
+	enum { WindowCloseButtonHint = 0x08000000 };
+#if QT_VERSION < 0x040200
+	enum { CustomizeWindowHint   = 0x02000000 };
+#endif
+}
+#endif
+
 
 //----------------------------------------------------------------------
 // class qtractorMidiClip -- Audio file/buffer clip.
@@ -575,15 +584,11 @@ bool qtractorMidiClip::startEditor ( QWidget *pParent )
 		// Build up the editor form...
 		// What style do we create tool childs?
 		Qt::WindowFlags wflags = Qt::Window
-		#if QT_VERSION >= 0x040200
 			| Qt::CustomizeWindowHint
-		#if QT_VERSION >= 0x040500
-			| Qt::WindowCloseButtonHint
-		#endif
-		#endif
 			| Qt::WindowTitleHint
 			| Qt::WindowSystemMenuHint
-			| Qt::WindowMinMaxButtonsHint;
+			| Qt::WindowMinMaxButtonsHint
+			| Qt::WindowCloseButtonHint;
 		qtractorOptions *pOptions = qtractorOptions::getInstance();
 		if (pOptions && pOptions->bKeepToolsOnTop)
 			wflags |= Qt::Tool;

@@ -30,11 +30,22 @@
 #include "qtractorMidiBuffer.h"
 
 #include "qtractorSession.h"
+#include "qtractorOptions.h"
 
 #include <QApplication>
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QWidget>
+
+#if QT_VERSION < 0x040500
+namespace Qt {
+	enum { WindowCloseButtonHint = 0x08000000 };
+#if QT_VERSION < 0x040200
+	enum { CustomizeWindowHint   = 0x02000000 };
+#endif
+}
+#endif
+
 
 #if defined(Q_WS_X11)
 #include <QX11Info>
@@ -890,16 +901,14 @@ void qtractorVstPlugin::openEditor ( QWidget */*pParent*/ )
 
 	// Create the new parent frame...
 	Qt::WindowFlags wflags = Qt::Window
-	#if QT_VERSION >= 0x040200
 		| Qt::CustomizeWindowHint
-	#if QT_VERSION >= 0x040500
-		| Qt::WindowCloseButtonHint
-	#endif
-	#endif
 		| Qt::WindowTitleHint
 		| Qt::WindowSystemMenuHint
 		| Qt::WindowMinMaxButtonsHint
-		| Qt::Tool;
+		| Qt::WindowCloseButtonHint;
+	qtractorOptions *pOptions = qtractorOptions::getInstance();
+	if (pOptions && pOptions->bKeepToolsOnTop)
+		wflags |= Qt::Tool;
 
 	m_pEditorWidget = new EditorWidget(NULL, wflags);
 	m_pEditorWidget->open(this);

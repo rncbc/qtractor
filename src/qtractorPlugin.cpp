@@ -48,6 +48,16 @@
 #include <QFileInfo>
 #include <QDir>
 
+#if QT_VERSION < 0x040500
+namespace Qt {
+	enum { WindowCloseButtonHint = 0x08000000 };
+#if QT_VERSION < 0x040200
+	enum { CustomizeWindowHint   = 0x02000000 };
+#endif
+}
+#endif
+
+
 typedef void (*qtractorPluginFile_Function)(void);
 
 #if defined(__WIN32__) || defined(_WIN32) || defined(WIN32)
@@ -644,15 +654,11 @@ qtractorPluginForm *qtractorPlugin::form (void)
 		// What style do we create tool childs?
 		QWidget *pParent = NULL;
 		Qt::WindowFlags wflags = Qt::Window
-		#if QT_VERSION >= 0x040200
 			| Qt::CustomizeWindowHint
-		#if QT_VERSION >= 0x040500
-			| Qt::WindowCloseButtonHint
-		#endif
-		#endif
 			| Qt::WindowTitleHint
 			| Qt::WindowSystemMenuHint
-			| Qt::WindowMinMaxButtonsHint;
+			| Qt::WindowMinMaxButtonsHint
+			| Qt::WindowCloseButtonHint;
 		qtractorOptions *pOptions = qtractorOptions::getInstance();
 		if (pOptions && pOptions->bKeepToolsOnTop) {
 		//	pParent = qtractorMainForm::getInstance();
