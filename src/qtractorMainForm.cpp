@@ -103,12 +103,13 @@
 
 #if QT_VERSION < 0x040500
 namespace Qt {
-	enum { WindowCloseButtonHint = 0x08000000 };
+const WindowFlags WindowCloseButtonHint = WindowFlags(0x08000000);
 #if QT_VERSION < 0x040200
-	enum { CustomizeWindowHint   = 0x02000000 };
+const WindowFlags CustomizeWindowHint   = WindowFlags(0x02000000);
 #endif
 }
 #endif
+
 
 #if defined(WIN32)
 #undef HAVE_SIGNAL_H
