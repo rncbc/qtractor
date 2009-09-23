@@ -393,9 +393,6 @@ void qtractorMidiSysexForm::loadSlot ( const QString& sName )
 // Open a SysEx item.
 void qtractorMidiSysexForm::openSlot (void)
 {
-	if (m_iUpdateSysex > 0)
-		return;
-
 	// We'll need this, sure.
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
 	if (pOptions == NULL)
@@ -437,8 +434,9 @@ void qtractorMidiSysexForm::openSlot (void)
 			m_iUpdateSysex++;
 			loadSysexFile(sFilename);
 			m_ui.NameComboBox->setEditText(fi.baseName());
-			m_iUpdateSysex--;
 			pOptions->sMidiSysexDir = fi.absolutePath();
+			m_iDirtyItem++;
+			m_iUpdateSysex--;
 		}
 	}
 
@@ -526,9 +524,6 @@ void qtractorMidiSysexForm::saveSlot (void)
 // Delete a SysEx item.
 void qtractorMidiSysexForm::deleteSlot (void)
 {
-	if (m_iUpdateSysex > 0)
-		return;
-
 	const QString& sName = m_ui.NameComboBox->currentText();
 	if (sName.isEmpty())
 		return;
@@ -639,9 +634,13 @@ void qtractorMidiSysexForm::removeSlot (void)
 // Clear all SysEx items from list.
 void qtractorMidiSysexForm::clearSlot (void)
 {
+	m_iUpdateSysex++;
+
 	m_ui.SysexListView->clear();
 	m_ui.NameComboBox->lineEdit()->clear();
 	m_ui.SysexTextEdit->clear();
+
+	m_iUpdateSysex--;
 
 	m_iDirtyCount++;
 	m_iDirtyItem = 0;
@@ -666,6 +665,9 @@ void qtractorMidiSysexForm::nameChanged ( const QString& sName )
 
 void qtractorMidiSysexForm::textChanged (void)
 {
+	if (m_iUpdateSysex > 0)
+		return;
+
 	m_iDirtySysex++;
 
 	m_iDirtyItem++;
@@ -737,10 +739,12 @@ void qtractorMidiSysexForm::stabilizeForm (void)
 	QTreeWidgetItem *pItem = m_ui.SysexListView->currentItem();
 	if (pItem) {
 		if (m_iDirtyItem == 0) {
+			m_iUpdateSysex++;
 			qtractorMidiSysex *pSysex
 				= static_cast<qtractorMidiSysexItem *> (pItem)->sysex();
 			m_ui.NameComboBox->setEditText(pSysex->name());
 			m_ui.SysexTextEdit->setText(pSysex->text());
+			m_iUpdateSysex--;
 			m_iDirtyItem = 0;
 		}
 		int iItem = m_ui.SysexListView->indexOfTopLevelItem(pItem);
@@ -756,14 +760,12 @@ void qtractorMidiSysexForm::stabilizeForm (void)
 	const QString& sName = m_ui.NameComboBox->currentText();
 	bool bEnabled = (!sName.isEmpty());
 	bool bExists  = (m_ui.NameComboBox->findText(sName) >= 0);
+	if (bEnabled && m_iDirtyItem > 0) {
+		qtractorMidiSysex sysex(sName, m_ui.SysexTextEdit->toPlainText());
+		bEnabled = (sysex.size() > 0);
+	}
 	m_ui.SaveButton->setEnabled(bEnabled && (!bExists || m_iDirtySysex > 0));
 	m_ui.DeleteButton->setEnabled(bEnabled && bExists);
-
-	bEnabled = false;
-	if (m_iDirtyItem > 0) {
-		qtractorMidiSysex sysex(sName, m_ui.SysexTextEdit->toPlainText());
-		bEnabled = (!sysex.name().isEmpty() && sysex.size() > 0);
-	}
 	m_ui.AddButton->setEnabled(bEnabled);
 	m_ui.UpdateButton->setEnabled(bEnabled && pItem != NULL);
 
