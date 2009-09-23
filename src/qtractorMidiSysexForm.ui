@@ -38,7 +38,7 @@
   <layout class="QVBoxLayout" name="verticalLayout" >
    <item>
     <layout class="QGridLayout" >
-     <item rowspan="5" row="0" column="0" colspan="2" >
+     <item rowspan="5" row="0" column="0" colspan="4" >
       <widget class="QTreeWidget" name="SysexListView" >
        <property name="rootIsDecorated" >
         <bool>false</bool>
@@ -69,7 +69,7 @@
        </column>
       </widget>
      </item>
-     <item row="0" column="2" >
+     <item row="0" column="4" >
       <widget class="QPushButton" name="ImportButton" >
        <property name="toolTip" >
         <string>Import from SysEx file</string>
@@ -85,7 +85,7 @@
        </property>
       </widget>
      </item>
-     <item row="1" column="2" >
+     <item row="1" column="4" >
       <widget class="QPushButton" name="ExportButton" >
        <property name="toolTip" >
         <string>Export to SysEx file</string>
@@ -101,8 +101,8 @@
        </property>
       </widget>
      </item>
-     <item row="2" column="2" >
-      <spacer name="verticalSpacer_2" >
+     <item row="2" column="4" >
+      <spacer>
        <property name="orientation" >
         <enum>Qt::Vertical</enum>
        </property>
@@ -114,7 +114,7 @@
        </property>
       </spacer>
      </item>
-     <item row="3" column="2" >
+     <item row="3" column="4" >
       <widget class="QPushButton" name="MoveUpButton" >
        <property name="toolTip" >
         <string>Move SysEx item up on list order</string>
@@ -130,7 +130,7 @@
        </property>
       </widget>
      </item>
-     <item row="4" column="2" >
+     <item row="4" column="4" >
       <widget class="QPushButton" name="MoveDownButton" >
        <property name="toolTip" >
         <string>Move SysEx item down on list order</string>
@@ -147,26 +147,61 @@
       </widget>
      </item>
      <item row="5" column="0" >
-      <widget class="QLabel" name="SysexNameLabel" >
-       <property name="text" >
-        <string>&amp;Name:</string>
+      <widget class="QToolButton" name="OpenButton" >
+       <property name="focusPolicy" >
+        <enum>Qt::TabFocus</enum>
        </property>
-       <property name="buddy" >
-        <cstring>SysexNameEdit</cstring>
+       <property name="toolTip" >
+        <string>Open SysEx</string>
+       </property>
+       <property name="icon" >
+        <iconset resource="../icons/qtractor.qrc" >:/icons/formOpen.png</iconset>
        </property>
       </widget>
      </item>
      <item row="5" column="1" >
-      <widget class="QLineEdit" name="SysexNameEdit" >
+      <widget class="QComboBox" name="NameComboBox" >
        <property name="minimumSize" >
         <size>
          <width>320</width>
          <height>0</height>
         </size>
        </property>
+       <property name="toolTip" >
+        <string>Sysex name</string>
+       </property>
+       <property name="editable" >
+        <bool>true</bool>
+       </property>
       </widget>
      </item>
      <item row="5" column="2" >
+      <widget class="QToolButton" name="SaveButton" >
+       <property name="focusPolicy" >
+        <enum>Qt::TabFocus</enum>
+       </property>
+       <property name="toolTip" >
+        <string>Save SysEx</string>
+       </property>
+       <property name="icon" >
+        <iconset resource="../icons/qtractor.qrc" >:/icons/formSave.png</iconset>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="3" >
+      <widget class="QToolButton" name="DeleteButton" >
+       <property name="focusPolicy" >
+        <enum>Qt::TabFocus</enum>
+       </property>
+       <property name="toolTip" >
+        <string>Delete SysEx</string>
+       </property>
+       <property name="icon" >
+        <iconset resource="../icons/qtractor.qrc" >:/icons/formRemove.png</iconset>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="4" >
       <widget class="QPushButton" name="AddButton" >
        <property name="toolTip" >
         <string>Create SysEx item</string>
@@ -182,7 +217,7 @@
        </property>
       </widget>
      </item>
-     <item rowspan="3" row="6" column="0" colspan="2" >
+     <item rowspan="3" row="6" column="0" colspan="4" >
       <widget class="QTextEdit" name="SysexTextEdit" >
        <property name="font" >
         <font>
@@ -191,7 +226,7 @@
        </property>
       </widget>
      </item>
-     <item row="6" column="2" >
+     <item row="6" column="4" >
       <widget class="QPushButton" name="UpdateButton" >
        <property name="toolTip" >
         <string>Update SysEx item</string>
@@ -207,7 +242,7 @@
        </property>
       </widget>
      </item>
-     <item row="7" column="2" >
+     <item row="7" column="4" >
       <widget class="QPushButton" name="RemoveButton" >
        <property name="toolTip" >
         <string>Remove SysEx item</string>
@@ -223,8 +258,8 @@
        </property>
       </widget>
      </item>
-     <item row="8" column="2" >
-      <spacer name="verticalSpacer" >
+     <item row="8" column="4" >
+      <spacer>
        <property name="orientation" >
         <enum>Qt::Vertical</enum>
        </property>
@@ -251,7 +286,7 @@
       </widget>
      </item>
      <item>
-      <spacer name="horizontalSpacer" >
+      <spacer>
        <property name="orientation" >
         <enum>Qt::Horizontal</enum>
        </property>
@@ -294,7 +329,10 @@
   <tabstop>ExportButton</tabstop>
   <tabstop>MoveUpButton</tabstop>
   <tabstop>MoveDownButton</tabstop>
-  <tabstop>SysexNameEdit</tabstop>
+  <tabstop>OpenButton</tabstop>
+  <tabstop>NameComboBox</tabstop>
+  <tabstop>SaveButton</tabstop>
+  <tabstop>DeleteButton</tabstop>
   <tabstop>SysexTextEdit</tabstop>
   <tabstop>AddButton</tabstop>
   <tabstop>UpdateButton</tabstop>

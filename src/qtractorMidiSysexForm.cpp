@@ -33,6 +33,8 @@
 #include <QFileDialog>
 #include <QUrl>
 
+#include <QLineEdit>
+
 
 //----------------------------------------------------------------------
 // class qtractorMidiSysexItem -- custom list view item.
@@ -90,8 +92,10 @@ qtractorMidiSysexForm::qtractorMidiSysexForm (
 
 	m_pSysexList = NULL;
 
-	m_iDirtyCount = 0;
-	m_iDirtyItem  = 0;
+	m_iDirtyCount  = 0;
+	m_iDirtyItem   = 0;
+	m_iDirtySysex  = 0;
+	m_iUpdateSysex = 0;
 
 	QHeaderView *pHeader = m_ui.SysexListView->header();
 //	pHeader->setResizeMode(QHeaderView::Custom);
@@ -99,6 +103,7 @@ qtractorMidiSysexForm::qtractorMidiSysexForm (
 	pHeader->setDefaultAlignment(Qt::AlignLeft);
 	pHeader->setMovable(false);
 
+	refreshSysex();
 	refreshForm();
 	stabilizeForm();
 
@@ -120,12 +125,24 @@ qtractorMidiSysexForm::qtractorMidiSysexForm (
 	QObject::connect(m_ui.MoveDownButton,
 		SIGNAL(clicked()),
 		SLOT(moveDownSlot()));
-	QObject::connect(m_ui.SysexNameEdit,
-		SIGNAL(textChanged(const QString&)),
-		SLOT(textChanged()));
+	QObject::connect(m_ui.NameComboBox,
+		SIGNAL(editTextChanged(const QString&)),
+		SLOT(nameChanged(const QString&)));
+	QObject::connect(m_ui.NameComboBox,
+		SIGNAL(activated(const QString &)),
+		SLOT(loadSlot(const QString&)));
 	QObject::connect(m_ui.SysexTextEdit,
 		SIGNAL(textChanged()),
 		SLOT(textChanged()));
+	QObject::connect(m_ui.OpenButton,
+		SIGNAL(clicked()),
+		SLOT(openSlot()));
+	QObject::connect(m_ui.SaveButton,
+		SIGNAL(clicked()),
+		SLOT(saveSlot()));
+	QObject::connect(m_ui.DeleteButton,
+		SIGNAL(clicked()),
+		SLOT(deleteSlot()));
 	QObject::connect(m_ui.AddButton,
 		SIGNAL(clicked()),
 		SLOT(addSlot()));
@@ -348,6 +365,211 @@ void qtractorMidiSysexForm::moveDownSlot (void)
 }
 
 
+// Load a SysEx item.
+void qtractorMidiSysexForm::loadSlot ( const QString& sName )
+{
+	if (m_iUpdateSysex > 0 || sName.isEmpty())
+		return;
+
+	// We'll need this, sure.
+	qtractorOptions *pOptions = qtractorOptions::getInstance();
+	if (pOptions == NULL)
+		return;
+
+	m_iUpdateSysex++;
+
+	QSettings& settings = pOptions->settings();
+	settings.beginGroup(sysexGroup());
+	loadSysexFile(settings.value(sName).toString());
+	settings.endGroup();
+
+	m_iUpdateSysex--;
+
+	refreshSysex();
+	stabilizeForm();
+}
+
+
+// Open a SysEx item.
+void qtractorMidiSysexForm::openSlot (void)
+{
+	if (m_iUpdateSysex > 0)
+		return;
+
+	// We'll need this, sure.
+	qtractorOptions *pOptions = qtractorOptions::getInstance();
+	if (pOptions == NULL)
+		return;
+
+	// We'll assume that there's an external file...
+	QString sFilename;
+
+	// Prompt if file does not currently exist...
+	const QString  sExt("syx");
+	const QString& sTitle  = tr("Open SysEx") + " - " QTRACTOR_TITLE;
+	const QString& sFilter = tr("SysEx files (*.%1)").arg(sExt);
+#if QT_VERSION < 0x040400
+	// Ask for the filename to save...
+	sFilename = QFileDialog::getSaveFileName(this,
+		sTitle, pOptions->sMidiSysexDir, sFilter);
+#else
+	// Construct save-file dialog...
+	QFileDialog fileDialog(this,
+		sTitle, pOptions->sMidiSysexDir, sFilter);
+	// Set proper open-file modes...
+	fileDialog.setAcceptMode(QFileDialog::AcceptOpen);
+	fileDialog.setFileMode(QFileDialog::ExistingFile);
+	fileDialog.setDefaultSuffix(sExt);
+	// Stuff sidebar...
+	QList<QUrl> urls(fileDialog.sidebarUrls());
+	urls.append(QUrl::fromLocalFile(pOptions->sSessionDir));
+	urls.append(QUrl::fromLocalFile(pOptions->sMidiSysexDir));
+	fileDialog.setSidebarUrls(urls);
+	// Show dialog...
+	if (fileDialog.exec())
+		sFilename = fileDialog.selectedFiles().first();
+#endif
+	// Have we a filename to load a preset from?
+	if (!sFilename.isEmpty()) {
+		QFileInfo fi(sFilename);
+		if (fi.exists()) {
+			// Get it loaded alright...
+			m_iUpdateSysex++;
+			loadSysexFile(sFilename);
+			m_ui.NameComboBox->setEditText(fi.baseName());
+			m_iUpdateSysex--;
+			pOptions->sMidiSysexDir = fi.absolutePath();
+		}
+	}
+
+	refreshSysex();
+	stabilizeForm();
+}
+
+
+// Save a SysEx item.
+void qtractorMidiSysexForm::saveSlot (void)
+{
+	const QString& sName = m_ui.NameComboBox->currentText();
+	if (sName.isEmpty())
+		return;
+
+	// We'll need this, sure.
+	qtractorOptions *pOptions = qtractorOptions::getInstance();
+	if (pOptions == NULL)
+		return;
+
+	// The current state preset is about to be saved...
+	// this is where we'll make it...
+	QSettings& settings = pOptions->settings();
+	settings.beginGroup(sysexGroup());
+	// Sure, we'll have something complex enough
+	// to make it save into an external file...
+	const QString sExt("syx");
+	QFileInfo fi(QDir(pOptions->sMidiSysexDir), sName + '.' + sExt);
+	QString sFilename = fi.absoluteFilePath();
+	// Prompt if file does not currently exist...
+	if (!fi.exists()) {
+		const QString& sTitle  = tr("Save SysEx") + " - " QTRACTOR_TITLE;
+		const QString& sFilter = tr("Sysex files (*.%1)").arg(sExt);
+	#if QT_VERSION < 0x040400
+		// Ask for the filename to save...
+		sFilename = QFileDialog::getSaveFileName(this,
+			sTitle, sFilename, sFilter);
+	#else
+		// Construct save-file dialog...
+		QFileDialog fileDialog(this,
+			sTitle, sFilename, sFilter);
+		// Set proper open-file modes...
+		fileDialog.setAcceptMode(QFileDialog::AcceptSave);
+		fileDialog.setFileMode(QFileDialog::AnyFile);
+		fileDialog.setDefaultSuffix(sExt);
+		// Stuff sidebar...
+		QList<QUrl> urls(fileDialog.sidebarUrls());
+		urls.append(QUrl::fromLocalFile(pOptions->sSessionDir));
+		urls.append(QUrl::fromLocalFile(pOptions->sMidiSysexDir));
+		fileDialog.setSidebarUrls(urls);
+		// Show dialog...
+		if (fileDialog.exec())
+			sFilename = fileDialog.selectedFiles().first();
+	#endif
+	} else if (pOptions->bConfirmRemove) {
+		if (QMessageBox::warning(parentWidget(),
+			tr("Warning") + " - " QTRACTOR_TITLE,
+			tr("About to replace SysEx:\n\n"
+			"\"%1\"\n\n"
+			"Are you sure?")
+			.arg(sName),
+			QMessageBox::Ok | QMessageBox::Cancel)
+			== QMessageBox::Cancel) {
+			sFilename.clear();
+		}
+	}
+	// We've a filename to save the preset
+	if (!sFilename.isEmpty()) {
+		if (QFileInfo(sFilename).suffix() != sExt)
+			sFilename += '.' + sExt;
+		// Get it saved alright...
+		m_iUpdateSysex++;
+		saveSysexFile(sFilename);
+		settings.setValue(sName, sFilename);
+		m_iUpdateSysex--;
+		pOptions->sMidiSysexDir = QFileInfo(sFilename).absolutePath();
+	}
+	settings.endGroup();
+
+	refreshSysex();
+	stabilizeForm();
+}
+
+
+// Delete a SysEx item.
+void qtractorMidiSysexForm::deleteSlot (void)
+{
+	if (m_iUpdateSysex > 0)
+		return;
+
+	const QString& sName = m_ui.NameComboBox->currentText();
+	if (sName.isEmpty())
+		return;
+
+	// We'll need this, sure.
+	qtractorOptions *pOptions = qtractorOptions::getInstance();
+	if (pOptions == NULL)
+		return;
+
+	// A preset entry is about to be removed;
+	// prompt user if he/she's sure about this...
+	if (pOptions->bConfirmRemove) {
+		if (QMessageBox::warning(this,
+			tr("Warning") + " - " QTRACTOR_TITLE,
+			tr("About to delete SysEx:\n\n"
+			"\"%1\"\n\n"
+			"Are you sure?")
+			.arg(sName),
+			QMessageBox::Ok | QMessageBox::Cancel)
+			== QMessageBox::Cancel)
+			return;
+	}
+
+	// Go ahead...
+	m_iUpdateSysex++;
+
+	QSettings& settings = pOptions->settings();
+	settings.beginGroup(sysexGroup());
+	const QString& sFilename = settings.value(sName).toString();
+	if (QFileInfo(sFilename).exists())
+		QFile(sFilename).remove();
+	settings.remove(sName);
+	settings.endGroup();
+
+	m_iUpdateSysex--;
+
+	refreshSysex();
+	stabilizeForm();
+}
+
+
 // Add a SysEx item to list.
 void qtractorMidiSysexForm::addSlot (void)
 {
@@ -363,7 +585,7 @@ void qtractorMidiSysexForm::addSlot (void)
 	pItem = new qtractorMidiSysexItem(
 		m_ui.SysexListView, pItem,
 		new qtractorMidiSysex(
-			m_ui.SysexNameEdit->text(),
+			m_ui.NameComboBox->currentText(),
 			m_ui.SysexTextEdit->toPlainText())
 	);
 
@@ -387,7 +609,7 @@ void qtractorMidiSysexForm::updateSlot (void)
 	qtractorMidiSysexItem *pSysexItem
 		= static_cast<qtractorMidiSysexItem *> (pItem);
 	qtractorMidiSysex *pSysex = pSysexItem->sysex();
-	pSysex->setName(m_ui.SysexNameEdit->text());
+	pSysex->setName(m_ui.NameComboBox->currentText());
 	pSysex->setText(m_ui.SysexTextEdit->toPlainText());
 	pSysexItem->update();
 
@@ -418,7 +640,7 @@ void qtractorMidiSysexForm::removeSlot (void)
 void qtractorMidiSysexForm::clearSlot (void)
 {
 	m_ui.SysexListView->clear();
-	m_ui.SysexNameEdit->clear();
+	m_ui.NameComboBox->lineEdit()->clear();
 	m_ui.SysexTextEdit->clear();
 
 	m_iDirtyCount++;
@@ -429,8 +651,23 @@ void qtractorMidiSysexForm::clearSlot (void)
 
 
 // SysEx item name change.
+void qtractorMidiSysexForm::nameChanged ( const QString& sName )
+{
+	if (m_iUpdateSysex > 0)
+		return;
+
+	if (!sName.isEmpty() && m_ui.NameComboBox->findText(sName) >= 0)
+		m_iDirtySysex++;
+
+	m_iDirtyItem++;
+	stabilizeForm();
+}
+
+
 void qtractorMidiSysexForm::textChanged (void)
 {
+	m_iDirtySysex++;
+
 	m_iDirtyItem++;
 	stabilizeForm();
 }
@@ -502,7 +739,7 @@ void qtractorMidiSysexForm::stabilizeForm (void)
 		if (m_iDirtyItem == 0) {
 			qtractorMidiSysex *pSysex
 				= static_cast<qtractorMidiSysexItem *> (pItem)->sysex();
-			m_ui.SysexNameEdit->setText(pSysex->name());
+			m_ui.NameComboBox->setEditText(pSysex->name());
 			m_ui.SysexTextEdit->setText(pSysex->text());
 			m_iDirtyItem = 0;
 		}
@@ -516,11 +753,15 @@ void qtractorMidiSysexForm::stabilizeForm (void)
 		m_ui.RemoveButton->setEnabled(false);
 	}
 
-	bool bEnabled = false;
+	const QString& sName = m_ui.NameComboBox->currentText();
+	bool bEnabled = (!sName.isEmpty());
+	bool bExists  = (m_ui.NameComboBox->findText(sName) >= 0);
+	m_ui.SaveButton->setEnabled(bEnabled && (!bExists || m_iDirtySysex > 0));
+	m_ui.DeleteButton->setEnabled(bEnabled && bExists);
+
+	bEnabled = false;
 	if (m_iDirtyItem > 0) {
-		qtractorMidiSysex sysex(
-			m_ui.SysexNameEdit->text(),
-			m_ui.SysexTextEdit->toPlainText());
+		qtractorMidiSysex sysex(sName, m_ui.SysexTextEdit->toPlainText());
 		bEnabled = (!sysex.name().isEmpty() && sysex.size() > 0);
 	}
 	m_ui.AddButton->setEnabled(bEnabled);
@@ -557,6 +798,29 @@ void qtractorMidiSysexForm::refreshForm (void)
 	// Clean.
 	m_iDirtyCount = 0;
 	m_iDirtyItem = 0;
+}
+
+
+// Refresh SysEx names (presets).
+void qtractorMidiSysexForm::refreshSysex (void)
+{
+	if (m_iUpdateSysex > 0)
+		return;
+
+	m_iUpdateSysex++;
+
+	const QString sOldName = m_ui.NameComboBox->currentText();
+	m_ui.NameComboBox->clear();
+	qtractorOptions *pOptions = qtractorOptions::getInstance();
+	if (pOptions) {
+		pOptions->settings().beginGroup(sysexGroup());
+		m_ui.NameComboBox->insertItems(0, pOptions->settings().childKeys());
+		pOptions->settings().endGroup();
+	}
+	m_ui.NameComboBox->setEditText(sOldName);
+
+	m_iDirtySysex = 0;
+	m_iUpdateSysex--;
 }
 
 
@@ -657,6 +921,101 @@ bool qtractorMidiSysexForm::saveSysexItems (
 
 	file.close();
 	return true;
+}
+
+
+// Preset file handlers.
+void qtractorMidiSysexForm::loadSysexFile ( const QString& sFilename )
+{
+	// Open the source file...
+	QFile file(sFilename);
+	if (!file.open(QIODevice::ReadOnly))
+		return;
+
+	// Tell the world we'll take some time...
+	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+
+	bool bResult = false;
+
+	unsigned short iBuff = 0;
+	unsigned char *pBuff = NULL;
+	unsigned short i = 0;
+
+	// Read the file....
+	while (!file.atEnd()) {
+		// (Re)allocate buffer...
+		if (i >= iBuff) {
+			unsigned char *pTemp = pBuff;
+			iBuff += 1024;
+			pBuff  = new unsigned char [iBuff];
+			if (pTemp) {
+				::memcpy(pBuff, pTemp, i);
+				delete [] pTemp;
+			}
+		}
+		// Read the next chunk...
+		unsigned short iRead = file.read((char *) pBuff + i, iBuff - i) + i;
+		while (i < iRead) {
+			if (pBuff[i++] == 0xf7) {
+				QFileInfo info(sFilename);
+				qtractorMidiSysex sysex(info.baseName(), pBuff, i);
+				m_ui.NameComboBox->setEditText(sysex.name());
+				m_ui.SysexTextEdit->setText(sysex.text());
+				bResult = true;
+				break;
+			}
+		}
+	}
+
+	// Cleanup...
+	if (pBuff)
+		delete [] pBuff;	
+
+	file.close();
+
+	// We're formerly done.
+	QApplication::restoreOverrideCursor();
+	
+	// Any late warning?
+	if (!bResult) {
+		// Failure (maybe wrong preset)...
+		QMessageBox::critical(this,
+			tr("Error") + " - " QTRACTOR_TITLE,
+			tr("SysEx could not be loaded:\n\n"
+			"\"%1\".\n\n"
+			"Sorry.").arg(sFilename),
+			QMessageBox::Cancel);		
+	}
+}
+
+
+void qtractorMidiSysexForm::saveSysexFile ( const QString& sFilename )
+{
+	// Open the target file...
+	QFile file(sFilename);
+	if (!file.open(QIODevice::ReadWrite | QIODevice::Truncate))
+		return;
+
+	// Tell the world we'll take some time...
+	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+
+	// Parse the data...
+	qtractorMidiSysex sysex(
+		m_ui.NameComboBox->currentText(),
+		m_ui.SysexTextEdit->toPlainText());
+
+	file.write((const char *) sysex.data(), sysex.size());
+	file.close();
+
+	// We're formerly done.
+	QApplication::restoreOverrideCursor();
+}
+
+
+// Preset group path name.
+QString qtractorMidiSysexForm::sysexGroup (void)
+{
+	return "/Midi/Sysex/";
 }
 
 

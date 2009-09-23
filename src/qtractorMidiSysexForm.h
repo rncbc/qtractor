@@ -57,7 +57,13 @@ public slots:
     void moveUpSlot();
     void moveDownSlot();
 
+	void nameChanged(const QString&);
 	void textChanged();
+
+    void openSlot();
+	void loadSlot(const QString&);
+    void saveSlot();
+    void deleteSlot();
 
     void addSlot();
     void updateSlot();
@@ -74,7 +80,16 @@ protected:
 		QList<QTreeWidgetItem *>& items, const QString& sFilename);
 	bool saveSysexItems(
 		const QList<QTreeWidgetItem *>& items, const QString& sFilename) const;
-	
+
+	void loadSysexFile(const QString& sFilename);
+	void saveSysexFile(const QString& sFilename);
+
+	// Refresh SysEx names (presets).
+    void refreshSysex();
+
+	// SysEx preset group path name.
+	static QString sysexGroup();
+
 private:
 
 	// The Qt-designer UI struct...
@@ -86,6 +101,8 @@ private:
 	// Instance variables...
 	int m_iDirtyCount;
 	int m_iDirtyItem;
+	int m_iDirtySysex;
+	int m_iUpdateSysex;
 };
 
 
