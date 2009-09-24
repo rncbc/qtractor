@@ -72,6 +72,9 @@ qtractorPluginForm::qtractorPluginForm (
     m_ui.PresetComboBox->setValidator(
 		new QRegExpValidator(QRegExp("[\\w-]+"), m_ui.PresetComboBox));
 	m_ui.PresetComboBox->setInsertPolicy(QComboBox::NoInsert);
+#if QT_VERSION >= 0x040200
+	m_ui.PresetComboBox->setCompleter(NULL);
+#endif
 
 	// Have some effective feedback when toggling on/off...
 	QIcon iconParams;

@@ -103,6 +103,11 @@ qtractorMidiSysexForm::qtractorMidiSysexForm (
 	pHeader->setDefaultAlignment(Qt::AlignLeft);
 	pHeader->setMovable(false);
 
+	m_ui.NameComboBox->setInsertPolicy(QComboBox::NoInsert);
+#if QT_VERSION >= 0x040200
+	m_ui.NameComboBox->setCompleter(NULL);
+#endif
+
 	refreshSysex();
 	refreshForm();
 	stabilizeForm();

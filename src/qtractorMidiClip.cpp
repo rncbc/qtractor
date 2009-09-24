@@ -39,9 +39,9 @@
 
 #if QT_VERSION < 0x040500
 namespace Qt {
-const WindowFlags WindowCloseButtonHint = WindowFlags(0x08000000);
+const WindowFlags WindowCloseButtonHint = WindowFlags(0);
 #if QT_VERSION < 0x040200
-const WindowFlags CustomizeWindowHint   = WindowFlags(0x02000000);
+const WindowFlags CustomizeWindowHint   = WindowFlags(0);
 #endif
 }
 #endif
