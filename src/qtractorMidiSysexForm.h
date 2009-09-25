@@ -47,7 +47,7 @@ public:
 	void setSysexList(qtractorMidiSysexList *pSysexList);
 	qtractorMidiSysexList *sysexList() const;
 
-public slots:
+protected slots:
 
     void accept();
     void reject();

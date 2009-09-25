@@ -611,7 +611,7 @@ void qtractorTimeScaleForm::contextMenu ( const QPoint& /*pos*/ )
 	unsigned int iFlags = flags();
 	
 	pAction = menu.addAction(
-		QIcon(":/icons/formCreate.png"),
+		QIcon(":/icons/formAdd.png"),
 		tr("&Add"), this, SLOT(addNode()));
 	pAction->setEnabled(iFlags & Add);
 

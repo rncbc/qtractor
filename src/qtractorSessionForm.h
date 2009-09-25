@@ -44,7 +44,7 @@ public:
     void setSession(qtractorSession *pSession);
     const qtractorSession::Properties& properties();
 
-public slots:
+protected slots:
 
     void accept();
     void reject();

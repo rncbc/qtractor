@@ -363,6 +363,11 @@ bool qtractorTracks::newClip (void)
 	if (pSession == NULL)
 		return false;
 
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm == NULL)
+		return false;
+
+	// Create on current track, or take the first...
 	// Create on current track, or take the first...
 	qtractorTrack *pTrack = currentTrack();
 	if (pTrack == NULL)
@@ -433,12 +438,12 @@ bool qtractorTracks::newClip (void)
 			pClipCommand->addClip(pClip, pTrack);
 			pSession->execute(pClipCommand);
 			// Just start the MIDI editor on it...
-			return pClip->startEditor(this);
+			return pClip->startEditor(pMainForm);
 		}
 	}
 
 	// Then ask user to refine clip properties...
-	qtractorClipForm clipForm(this);
+	qtractorClipForm clipForm(pMainForm);
 	clipForm.setClip(pClip, true);
 	if (!clipForm.exec()) {
 		delete pClip;
@@ -458,8 +463,12 @@ bool qtractorTracks::editClip ( qtractorClip *pClip )
 	if (pClip == NULL)
 		return false;
 
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm == NULL)
+		return false;
+
 	// All else hasn't fail.
-	return pClip->startEditor(this);
+	return pClip->startEditor(pMainForm);
 }
 
 
@@ -1411,6 +1420,10 @@ bool qtractorTracks::addTrack (void)
 	if (pSession == NULL)
 		return false;
 
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm == NULL)
+		return false;
+
 	// Create a new track right away...
 	const int iTrack = pSession->tracks().count() + 1;
 	const QColor color = qtractorTrack::trackColor(iTrack);
@@ -1421,7 +1434,7 @@ bool qtractorTracks::addTrack (void)
 	pTrack->setForeground(color.darker());
 
 	// Open dialog for settings...
-	qtractorTrackForm trackForm(this);
+	qtractorTrackForm trackForm(pMainForm);
 	trackForm.setTrack(pTrack);
 	if (!trackForm.exec()) {
 		delete pTrack;
@@ -1481,6 +1494,10 @@ bool qtractorTracks::editTrack ( qtractorTrack *pTrack )
 	if (pSession == NULL)
 		return false;
 
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm == NULL)
+		return false;
+
 	// Get the list view item reference of the intended track...
 	if (pTrack == NULL)
 		pTrack = currentTrack();
@@ -1492,7 +1509,7 @@ bool qtractorTracks::editTrack ( qtractorTrack *pTrack )
 		return false;
 
 	// Open dialog for settings...
-	qtractorTrackForm trackForm(this);
+	qtractorTrackForm trackForm(pMainForm);
 	trackForm.setTrack(pTrack);
 	if (!trackForm.exec())
 		return false;

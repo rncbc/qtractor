@@ -210,7 +210,7 @@
         <string>&amp;Add</string>
        </property>
        <property name="icon" >
-        <iconset resource="../icons/qtractor.qrc" >:/icons/formCreate.png</iconset>
+        <iconset resource="../icons/qtractor.qrc" >:/icons/formAdd.png</iconset>
        </property>
        <property name="shortcut" >
         <string>Alt+A</string>

@@ -44,7 +44,7 @@ public:
 	void setClip(qtractorClip *pClip, bool bClipNew = false);
 	qtractorClip *clip() const;
 
-public slots:
+protected slots:
 
 	void accept();
 	void reject();

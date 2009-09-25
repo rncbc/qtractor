@@ -76,6 +76,14 @@ public:
 
 public slots:
 
+	void audioRefresh() { audioUpdate(false); }
+	void audioClear()   { audioUpdate(true);  }
+
+	void midiRefresh()  { midiUpdate(false); }
+	void midiClear()    { midiUpdate(true);  }
+
+protected slots:
+
 	void audioIClientChanged();
 	void audioOClientChanged();
 	void audioConnectSelected();
@@ -84,9 +92,6 @@ public slots:
 	void audioConnectChanged();
 	void audioStabilize();
 
-	void audioRefresh() { audioUpdate(false); }
-	void audioClear()   { audioUpdate(true);  }
-
 	void midiIClientChanged();
 	void midiOClientChanged();
 	void midiConnectSelected();
@@ -94,9 +99,6 @@ public slots:
 	void midiDisconnectAll();
 	void midiConnectChanged();
 	void midiStabilize();
-
-	void midiRefresh()  { midiUpdate(false); }
-	void midiClear()    { midiUpdate(true);  }
 
 signals:
 

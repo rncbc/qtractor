@@ -1091,7 +1091,7 @@ void qtractorPluginListView::contextMenuEvent (
 
 	QMenu *pInsertMenu = menu.addMenu("&Inserts");
 	pAction = pInsertMenu->addAction(
-		QIcon(":/icons/formCreate.png"),
+		QIcon(":/icons/formAdd.png"),
 		tr("Add &Insert"), this, SLOT(addInsertPlugin()));
 	pAction->setEnabled(m_pPluginList->channels() > 0);
 	pInsertMenu->addSeparator();

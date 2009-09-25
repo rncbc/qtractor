@@ -2235,6 +2235,7 @@ void qtractorMainForm::editClipExport (void)
 
 //-------------------------------------------------------------------------
 // qtractorMainForm -- Track Action slots.
+#include "qtractorTrackForm.h"
 
 // Add a new track to session.
 void qtractorMainForm::trackAdd (void)

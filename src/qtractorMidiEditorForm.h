@@ -84,6 +84,10 @@ public:
 
 public slots:
 
+	void stabilizeForm();
+
+protected slots:
+
 	void fileSave();
 	void fileSaveAs();
 	void fileTrackInputs();
@@ -146,10 +150,6 @@ public slots:
 
 	void selectionChanged(qtractorMidiEditor *);
 	void contentsChanged(qtractorMidiEditor *);
-
-	void stabilizeForm();
-
-protected slots:
 
 	// Event type selection slots.
 	void viewTypeChanged(int);

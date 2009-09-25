@@ -44,7 +44,7 @@ public:
 	void setExportType(qtractorTrack::TrackType exportType);
 	qtractorTrack::TrackType exportType() const;
 
-public slots:
+protected slots:
 
 	void accept();
 	void reject();

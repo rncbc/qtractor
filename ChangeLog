@@ -5,6 +5,9 @@ ChangeLog
 
 CVS HEAD
 
+- Force track and clip properties dialog widget to be modal
+  as it should from their beginning dawn.
+
 - Audio effect send/return aux. inserts are implemented as
   special pseudo-plugins (Plugins/Inserts). (EXPERIMENTAL)
 

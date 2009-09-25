@@ -52,7 +52,7 @@ public:
 	void setInstruments(qtractorInstrumentList *pInstruments);
 	qtractorInstrumentList *instruments() const;
 
-public slots:
+protected slots:
 
     void accept();
     void reject();

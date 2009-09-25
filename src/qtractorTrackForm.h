@@ -51,11 +51,12 @@ public:
 
 	void setTrack(qtractorTrack *pTrack);
 	qtractorTrack *track() const;
+
 	const qtractorTrack::Properties& properties() const;
 
 	qtractorTrack::TrackType trackType() const;
 
-public slots:
+protected slots:
 
 	void accept();
 	void reject();
