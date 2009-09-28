@@ -94,7 +94,8 @@ qtractorMidiTimer::qtractorMidiTimer (void)
 				if (snd_timer_info(pTimer, pTimerInfo) >= 0) {
 					qtractorMidiTimer::Key key(iClass, iCard, iDevice, iSubDev);
 					long iResol = snd_timer_info_get_resolution(pTimerInfo);
-					QString sTimerName = snd_timer_info_get_name(pTimerInfo);
+					QString sTimerName = QString::fromUtf8(
+						snd_timer_info_get_name(pTimerInfo));
 					QString sTimerText;
 					if (!snd_timer_info_is_slave(pTimerInfo) && iResol > 0)
 						sTimerText = QObject::tr("%1 Hz").arg(1000000000L / iResol); 

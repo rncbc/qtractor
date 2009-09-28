@@ -5,6 +5,8 @@ ChangeLog
 
 CVS HEAD
 
+- Connections support for UTF-8 encoded client/port names.
+
 - Force track and clip properties dialog widget to be modal
   as it should from their beginning dawn.
 

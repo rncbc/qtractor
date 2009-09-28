@@ -3093,7 +3093,8 @@ int qtractorMidiBus::updateConnects ( qtractorBus::BusMode busMode,
 	while (snd_seq_query_next_client(
 			pMidiEngine->alsaSeq(), pClientInfo) >= 0) {
 		item.client = snd_seq_client_info_get_client(pClientInfo);
-		item.clientName = snd_seq_client_info_get_name(pClientInfo);
+		item.clientName = QString::fromUtf8(
+			snd_seq_client_info_get_name(pClientInfo));
 		snd_seq_port_info_set_client(pPortInfo, item.client);
 		snd_seq_port_info_set_port(pPortInfo, -1);
 		while (snd_seq_query_next_port(
@@ -3103,7 +3104,8 @@ int qtractorMidiBus::updateConnects ( qtractorBus::BusMode busMode,
 			if (((iPortCapability & iPortFlags) == iPortFlags) &&
 				((iPortCapability & SND_SEQ_PORT_CAP_NO_EXPORT) == 0)) {
 				item.port = snd_seq_port_info_get_port(pPortInfo);
-				item.portName = snd_seq_port_info_get_name(pPortInfo);
+				item.portName = QString::fromUtf8(
+					snd_seq_port_info_get_name(pPortInfo));
 				pItem = connects.findItem(item);
 				if (pItem) {
 					pItem->port = item.port;
@@ -3125,11 +3127,13 @@ int qtractorMidiBus::updateConnects ( qtractorBus::BusMode busMode,
 		snd_seq_get_any_client_info(
 			pMidiEngine->alsaSeq(), seq_addr.client, pClientInfo);
 		item.client = seq_addr.client;
-		item.clientName = snd_seq_client_info_get_name(pClientInfo);
+		item.clientName = QString::fromUtf8(
+			snd_seq_client_info_get_name(pClientInfo));
 		snd_seq_get_any_port_info(
 			pMidiEngine->alsaSeq(), seq_addr.client, seq_addr.port, pPortInfo);
 		item.port = seq_addr.port;
-		item.portName = snd_seq_port_info_get_name(pPortInfo);
+		item.portName = QString::fromUtf8(
+			snd_seq_port_info_get_name(pPortInfo));
 		// Check if already in list/connected...
 		pItem = connects.findItem(item);
 		if (pItem && bConnect) {

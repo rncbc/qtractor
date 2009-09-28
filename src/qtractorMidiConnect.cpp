@@ -209,12 +209,14 @@ int qtractorMidiClientListView::updateClientPorts (void)
 					((uiPortCapability & SND_SEQ_PORT_CAP_NO_EXPORT) == 0)) {
 					QString sClientName = QString::number(iAlsaClient);
 					sClientName += ':';
-					sClientName += snd_seq_client_info_get_name(pClientInfo);
+					sClientName += QString::fromUtf8(
+						snd_seq_client_info_get_name(pClientInfo));
 					if (isClientName(sClientName)) {
 						int iAlsaPort = snd_seq_port_info_get_port(pPortInfo);
 						QString sPortName = QString::number(iAlsaPort);
 						sPortName += ':';
-						sPortName += snd_seq_port_info_get_name(pPortInfo);
+						sPortName += QString::fromUtf8(
+							snd_seq_port_info_get_name(pPortInfo));
 						if (isPortName(sPortName)) {
 							qtractorMidiPortItem *pPortItem = NULL;
 							if (pClientItem == NULL) {

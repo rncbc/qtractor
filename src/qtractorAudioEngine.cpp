@@ -2038,7 +2038,8 @@ int qtractorAudioBus::updateConnects ( qtractorBus::BusMode busMode,
 			int iClientPort = 0;
 			while (ppszClientPorts[iClientPort]) {
 				// Check if already in list/connected...
-				const QString sClientPort = ppszClientPorts[iClientPort];
+				const QString sClientPort
+					= QString::fromUtf8(ppszClientPorts[iClientPort]);
 				item.clientName = sClientPort.section(':', 0, 0);
 				item.portName   = sClientPort.section(':', 1, 1);
 				ConnectItem *pItem = connects.findItem(item);

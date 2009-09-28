@@ -143,14 +143,15 @@ int qtractorAudioClientListView::updateClientPorts (void)
 	if (ppszClientPorts) {
 		int iClientPort = 0;
 		while (ppszClientPorts[iClientPort]) {
-			QString sClientPort = ppszClientPorts[iClientPort];
+			const QString sClientPort
+				= QString::fromUtf8(ppszClientPorts[iClientPort]);
 			qtractorAudioClientItem *pClientItem = NULL;
 			qtractorAudioPortItem   *pPortItem   = NULL;
 			int iColon = sClientPort.indexOf(':');
 			if (iColon >= 0) {
-				QString sClientName = sClientPort.left(iColon);
+				const QString sClientName = sClientPort.left(iColon);
 				if (isClientName(sClientName)) {
-					QString sPortName
+					const QString sPortName
 						= sClientPort.right(sClientPort.length() - iColon - 1);
 					if (isPortName(sPortName)) {
 						pClientItem
