@@ -581,11 +581,13 @@ void qtractorPluginForm::deletePresetSlot (void)
 	// Go ahead...
 	QSettings& settings = pOptions->settings();
 	settings.beginGroup(m_pPlugin->presetGroup());
+#ifdef QTRACTOR_REMOVE_PRESET_FILES
 	if ((m_pPlugin->type())->isConfigure()) {
 		const QString& sFilename = settings.value(sPreset).toString();
 		if (QFileInfo(sFilename).exists())
 			QFile(sFilename).remove();
 	}
+#endif
 	settings.remove(sPreset);
 	settings.endGroup();
 	refresh();

@@ -557,9 +557,11 @@ void qtractorMidiSysexForm::deleteSlot (void)
 
 	QSettings& settings = pOptions->settings();
 	settings.beginGroup(sysexGroup());
+#ifdef QTRACTOR_REMOVE_PRESET_FILES
 	const QString& sFilename = settings.value(sName).toString();
 	if (QFileInfo(sFilename).exists())
 		QFile(sFilename).remove();
+#endif
 	settings.remove(sName);
 	settings.endGroup();
 

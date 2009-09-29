@@ -5,6 +5,9 @@ ChangeLog
 
 CVS HEAD
 
+- External preset files are not removed nor deleted from the
+  file-system anymore.
+
 - Connections support for UTF-8 encoded client/port names.
 
 - Force track and clip properties dialog widget to be modal
