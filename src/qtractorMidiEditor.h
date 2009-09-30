@@ -217,6 +217,9 @@ public:
 	// Reset event cursors.
 	void reset();
 
+	// Clear all contents.
+	void clear();
+
 	// To optimize and keep track of current (re)draw
 	// position, mostly like an sequence cursor/iterator.
 	qtractorMidiEvent *seekEvent(unsigned long iTime);

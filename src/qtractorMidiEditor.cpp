@@ -1446,6 +1446,18 @@ void qtractorMidiEditor::reset (void)
 }
 
 
+// Clear all contents.
+void qtractorMidiEditor::clear (void)
+{
+	m_pCommands->clear();
+
+	if (m_pMidiClip)
+		m_pMidiClip->sequence()->clear();
+
+	reset();
+}
+
+
 // Intra-clip tick/time positioning reset.
 qtractorMidiEvent *qtractorMidiEditor::seekEvent ( unsigned long iTime )
 {

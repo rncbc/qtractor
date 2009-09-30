@@ -579,8 +579,7 @@ void qtractorMidiEditorForm::closeEvent ( QCloseEvent *pCloseEvent )
 			pMidiClip->setDirty(false);
 			pMidiClip->setClipLength(m_pMidiEditor->clipLength());
 			// Restart from scratch...
-			m_pMidiEditor->commands()->clear();
-			pMidiClip->sequence()->clear();
+			m_pMidiEditor->clear();
 			pMidiClip->openMidiFile(
 				pMidiClip->filename(),
 				pMidiClip->trackChannel());

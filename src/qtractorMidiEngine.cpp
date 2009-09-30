@@ -1183,14 +1183,15 @@ void qtractorMidiEngine::drift (void)
 		iAudioFrame += readAhead();
 		long iDeltaMax = long(pNode->tickFromFrame(iAudioFrame)) - iAudioTime;
 		long iDeltaTime = (iAudioTime - iMidiTime) - m_iTimeDrift;
-		if (iDeltaTime && iDeltaTime > -iDeltaMax && iDeltaTime < +iDeltaMax) {
+		if (iAudioTime && iMidiTime &&
+			iDeltaTime && iDeltaTime > -iDeltaMax && iDeltaTime < +iDeltaMax) {
 		//	m_iTimeStart += iDeltaTime;
 			m_iTimeDrift += iDeltaTime;
 		//	m_iTimeDrift >>= 1; // Damp fast-average drift.
 		#ifdef CONFIG_DEBUG
 			qDebug("qtractorMidiEngine::drift(): "
-				"iAudioTime=%ld iMidiTime=%ld (%ld) iTimeDrift=%ld",
-				iAudioTime, iMidiTime, iDeltaTime, m_iTimeDrift);
+				"iAudioTime=%ld iMidiTime=%ld (%ld) iTimeDrift=%ld iAudioFrame=%lu iDelltaMax=%ld",
+				iAudioTime, iMidiTime, iDeltaTime, m_iTimeDrift, iAudioFrame, iDeltaMax);
 		#endif
 		}
 		// HACK: Make the least significant correction now!
