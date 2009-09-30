@@ -72,11 +72,11 @@ protected slots:
 
 protected:
 
-	void showBus(qtractorBus *pBus);
+	enum { Create = 1, Update = 2, Delete = 4 };
 
-	bool canCreateBus() const;
-	bool canUpdateBus() const;
-	bool canDeleteBus() const;
+	unsigned int flags() const;
+
+	void showBus(qtractorBus *pBus);
 
 	bool updateBusEx(qtractorBus *pBus);
 

@@ -438,7 +438,7 @@ void qtractorBusForm::selectBus (void)
 			}
 			// Fall thru...
 		case QMessageBox::Discard:
-			break;;
+			break;
 		default:    // Cancel.
 			return;
 		}
@@ -449,21 +449,27 @@ void qtractorBusForm::selectBus (void)
 }
 
 
-// Check whether the current view is elligible as a new bus.
-bool qtractorBusForm::canCreateBus (void) const
+// Check whether the current view is elligible for action.
+unsigned int qtractorBusForm::flags (void) const
 {
-	if (m_iDirtyCount == 0)
-		return false;
-	if (m_pBus == NULL)
-		return false;
+	unsigned int iFlags = 0;
 
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
-		return false;
+		return iFlags;
+
+	if (m_pBus == NULL)
+		return iFlags;
+
+	if (m_pBus->prev())
+		iFlags |= Delete;
+	
+	if (m_iDirtyCount == 0)
+		return iFlags;
 
 	const QString sBusName = m_ui.BusNameLineEdit->text().simplified();
 	if (sBusName.isEmpty())
-		return false;
+		return iFlags;
 
 	// Get the device view root item...
 	qtractorEngine *pEngine = NULL;
@@ -479,46 +485,17 @@ bool qtractorBusForm::canCreateBus (void) const
 	}
 	// Is it still valid?
 	if (pEngine == NULL)
-		return false;
+		return iFlags;
 
 	// Is there one already?
-	return (pEngine->findBus(sBusName) == NULL);
-}
+	qtractorBus *pBus = pEngine->findBus(sBusName);
+	if (pBus == NULL)
+		iFlags |= Create;
+	if ((pBus == NULL || pBus == m_pBus)
+		&& (m_pBus->prev() || m_ui.BusModeComboBox->currentIndex() == 2))
+		iFlags |= Update;
 
-
-// Check whether the current view is elligible for update.
-bool qtractorBusForm::canUpdateBus (void) const
-{
-	if (m_iDirtyCount == 0)
-		return false;
-	if (m_pBus == NULL)
-		return false;
-
-	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
-		return false;
-
-	const QString sBusName = m_ui.BusNameLineEdit->text().simplified();
-	if (sBusName.isEmpty())
-		return false;
-
-	// Master (default) buses must be duplex...
-	return (m_pBus->prev() || m_ui.BusModeComboBox->currentIndex() == 2);
-}
-
-
-// Check whether the current view is elligible for deletion.
-bool qtractorBusForm::canDeleteBus (void) const
-{
-	if (m_pBus == NULL)
-		return false;
-
-	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
-		return false;
-
-	// The very first bus is never deletable...
-	return (m_pBus->prev() != NULL);
+	return iFlags;
 }
 
 
@@ -794,10 +771,11 @@ void qtractorBusForm::stabilizeForm (void)
 	m_ui.PassthruCheckBox->setEnabled(
 		m_pBus && m_ui.BusModeComboBox->currentIndex() == 2);
 
+	unsigned int iFlags = flags();
 	m_ui.RefreshPushButton->setEnabled(m_iDirtyCount > 0);
-	m_ui.CreatePushButton->setEnabled(canCreateBus());
-	m_ui.UpdatePushButton->setEnabled(canUpdateBus());
-	m_ui.DeletePushButton->setEnabled(canDeleteBus());
+	m_ui.CreatePushButton->setEnabled(iFlags & Create);
+	m_ui.UpdatePushButton->setEnabled(iFlags & Update);
+	m_ui.DeletePushButton->setEnabled(iFlags & Delete);
 
 	// Stabilize current plugin lists state.
 	bool bEnabled;
@@ -853,21 +831,23 @@ void qtractorBusForm::contextMenu ( const QPoint& /*pos*/ )
 	// Build the device context menu...
 	QMenu menu(this);
 	QAction *pAction;
-	
+
+	unsigned int iFlags = flags();
+
 	pAction = menu.addAction(
 		QIcon(":/icons/formCreate.png"),
 		tr("&Create"), this, SLOT(createBus()));
-	pAction->setEnabled(canCreateBus());
+	pAction->setEnabled(iFlags & Create);
 
 	pAction = menu.addAction(
 		QIcon(":/icons/formAccept.png"),
 		tr("&Update"), this, SLOT(updateBus()));
-	pAction->setEnabled(canUpdateBus());
+	pAction->setEnabled(iFlags & Update);
 
 	pAction = menu.addAction(
 		QIcon(":/icons/formRemove.png"),
 		tr("&Delete"), this, SLOT(deleteBus()));
-	pAction->setEnabled(canDeleteBus());
+	pAction->setEnabled(iFlags & Delete);
 
 	menu.addSeparator();
 
