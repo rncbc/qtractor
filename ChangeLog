@@ -3,7 +3,7 @@ Qtractor - An Audio/MIDI multi-track sequencer
 
 ChangeLog
 
-CVS HEAD
+0.4.3  2009-10-05  The Fussy Doula
 
 - External preset files are not removed nor deleted from the
   file-system anymore.
@@ -14,7 +14,7 @@ CVS HEAD
   as it should from their beginning dawn.
 
 - Audio effect send/return aux. inserts are implemented as
-  special pseudo-plugins (Plugins/Inserts). (EXPERIMENTAL)
+  special pseudo-plugins (Plugins/Inserts).
 
 - Reset play-head position on auto-backward and keep playback
   rolling when continue past end transport option is not set.
@@ -62,7 +62,7 @@ CVS HEAD
   Alexis Ballier on Gentoo bug report #274168, thanks).
 
 - Bus manager dialog (View/Buses...) gets new columns on the
-  left pane buses list as for displaying number of channles
+  left pane buses list as for displaying number of channels
   and bus mode.
 
 - Crash when updating bus probably fixed (bug #2811630).
@@ -74,10 +74,10 @@ CVS HEAD
   to DSSI/VSTi plugins, now fixed.
 
 - New MIDI Playback/Queue timer (resolution) option is now
-  available (see View/Options.../MIDI). (EXPERIMENTAL)
+  available (see View/Options.../MIDI).
 
 - MIDI instrument definitions may now be imported from plain
-  SoundFont files. (EXPERIMENTAL)
+  SoundFont files.
 
 
 0.4.2  2009-06-04  The Flaunty Demoness

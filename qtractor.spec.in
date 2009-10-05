@@ -1,6 +1,6 @@
 %define name    @PACKAGE_TARNAME@
 %define version @PACKAGE_VERSION@
-%define release 26
+%define release 27
 %define prefix  @ac_prefix@
 
 Summary:	An Audio/MIDI multi-track sequencer
@@ -16,7 +16,7 @@ Packager:	rncbc.org
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
-BuildRequires:	qt-devel >= 4.1
+BuildRequires:	libqt4-devel >= 4.1
 BuildRequires:	libjack-devel >= 0.100.0
 BuildRequires:	alsa-devel
 BuildRequires:	libsndfile-devel >= 1.0.11
@@ -60,6 +60,8 @@ specially dedicated to the personal home-studio.
 %{_datadir}/pixmaps/%{name}.png
 
 %changelog
+* Mon Oct 05 2009 Rui Nuno Capela <rncbc@users.sourceforge.net> - 0.4.3
+- Fussy Doula release.
 * Thu Jun 04 2009 Rui Nuno Capela <rncbc@users.sourceforge.net> - 0.4.2
 - Flaunty Demoness release.
 * Sat Apr 04 2009 Rui Nuno Capela <rncbc@users.sourceforge.net> - 0.4.1

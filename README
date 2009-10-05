@@ -61,7 +61,8 @@ Features
 - Unlimited tempo/time-signature map.
 - MIDI clip editor (matrix/piano roll).
 - MIDI instrument definitions (a-la Cakewalk(tm) [15]).
-- MIDI controller mapping (mixer)
+- MIDI controller mapping (mixer).
+- MIDI system exclusive (SysEx) setups.
 - JACK transport sync master.
 - MMC control surface enabled.
 - MIDI Song Position cueing support.
