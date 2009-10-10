@@ -1421,6 +1421,14 @@ void qtractorMidiEditor::centerContents (void)
 		m_pEditView->setContentsPos(m_pEditView->contentsX(), cy);
 	}
 
+	// Update visual cursors anyway...
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession) {
+		setPlayHead(pSession->playHead(), false);
+		setEditHead(pSession->editHead(), false);
+		setEditTail(pSession->editTail(), false);
+	}
+
 	// Trigger a complete view update...
 	m_pEditList->updateContents();
 	m_pEditTime->updateContents();

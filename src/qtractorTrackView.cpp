@@ -255,6 +255,7 @@ void qtractorTrackView::updateContentsWidth ( int iContentsWidth )
 			pNode->beat + 2 * pNode->beatsPerBar) - pNode->pixel;
 		if (iContentsWidth < qtractorScrollView::width())
 			iContentsWidth += qtractorScrollView::width();
+		m_iPlayHeadX = pSession->pixelFromFrame(pSession->playHead());
 		m_iEditHeadX = pSession->pixelFromFrame(pSession->editHead());
 		m_iEditTailX = pSession->pixelFromFrame(pSession->editTail());
 	}

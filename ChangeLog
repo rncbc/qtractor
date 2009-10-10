@@ -3,6 +3,25 @@ Qtractor - An Audio/MIDI multi-track sequencer
 
 ChangeLog
 
+CVS HEAD
+
+- Late audio track processing optimization, supressing all plugin,
+  mixer and monitor pass-through activity when given track is muted,
+  either explicitly or implicitly (ie. other track is in solo state).
+
+- Entering System Exclusive events (SysEx) on the MIDI clip editor
+  (aka matrix/piano-roll widget), yet something not fully supported
+  anyway, even though allowed in edit mode, doesn't crash the whole
+  damn thing anymore, while saving the clip to a file.
+
+- Strict aliasing avoidance, with plain and demanded use of 'union',
+  as much as to stop nagging warnings from gcc >= 4.4.1 (last seen
+  on src/qtractorMidiEvent.h hackery).
+
+- Visual correct play-head position while changing zoom levels,
+  applicable to both main track and MIDI clip editor views.
+
+
 0.4.3  2009-10-05  The Fussy Doula
 
 - External preset files are not removed nor deleted from the

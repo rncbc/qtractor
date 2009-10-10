@@ -729,11 +729,13 @@ bool qtractorMidiFile::writeTracks ( qtractorMidiSequence **ppSeqs,
 					writeInt(pEvent->value(), 1);
 					break;
 				case qtractorMidiEvent::SYSEX:
-					data = pEvent->sysex() + 1;	// Skip 0xf0 head.
-					len  = pEvent->sysex_len() - 1;
-					writeInt(len);
-					writeData(data, len);
-					break;
+					if (pEvent->sysex() && pEvent->sysex_len() > 1) {
+						data = pEvent->sysex() + 1; // Skip 0xf0 head.
+						len  = pEvent->sysex_len() - 1;
+						writeInt(len);
+						writeData(data, len);
+					}
+					// Fall thru...
 				default:
 					break;
 				}

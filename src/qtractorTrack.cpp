@@ -757,28 +757,10 @@ void qtractorTrack::process ( qtractorClip *pClip,
 	qtractorAudioMonitor *pAudioMonitor = NULL;
 	if (m_props.trackType == qtractorTrack::Audio) {
 		pAudioMonitor = static_cast<qtractorAudioMonitor *> (m_pMonitor);
-		// Input/Output stuff...
-		pInputBus  = static_cast<qtractorAudioBus *> (m_pInputBus);
-		pOutputBus = static_cast<qtractorAudioBus *> (m_pOutputBus);
-		// Prepare this track buffer...
-		if (pOutputBus)
-			pOutputBus->buffer_prepare(nframes, isMonitor() ? pInputBus : NULL);
-	}
-
-	// Playback...
-	if (!isMute() && (!m_pSession->soloTracks() || isSolo())) {
-		// Now, for every clip...
-		while (pClip && pClip->clipStart() < iFrameEnd) {
-			if (iFrameStart < pClip->clipStart() + pClip->clipLength())
-				pClip->process(iFrameStart, iFrameEnd);
-			pClip = pClip->next();
-		}
-	}
-
-	// Audio buffers needs monitoring and commitment...
-	if (pAudioMonitor) {
+		// Input stuff...
+		pInputBus = static_cast<qtractorAudioBus *> (m_pInputBus);
 		// Audio-recording?
-		if (isRecord() && pInputBus) {
+		if (isRecord() && pAudioMonitor && pInputBus) {
 			// Need the audio buffer offset on this...
 			unsigned int offset = m_pSession->audioEngine()->bufferOffset();
 			// Effective audio-recording?
@@ -817,8 +799,23 @@ void qtractorTrack::process ( qtractorClip *pClip,
 			pAudioMonitor->process_meter(
 				pInputBus->in(), nframes, pInputBus->channels(), offset);
 		}
-		// Output monitor processing...
-		if (pOutputBus) {
+		// Output stuff...
+		pOutputBus = static_cast<qtractorAudioBus *> (m_pOutputBus);
+		// Prepare this track buffer...
+		if (pOutputBus)
+			pOutputBus->buffer_prepare(nframes, isMonitor() ? pInputBus : NULL);
+	}
+
+	// Playback...
+	if (!isMute() && (!m_pSession->soloTracks() || isSolo())) {
+		// Now, for every clip...
+		while (pClip && pClip->clipStart() < iFrameEnd) {
+			if (iFrameStart < pClip->clipStart() + pClip->clipLength())
+				pClip->process(iFrameStart, iFrameEnd);
+			pClip = pClip->next();
+		}
+		// Audio buffers needs monitoring and commitment...
+		if (pAudioMonitor && pOutputBus) {
 			// Plugin chain post-processing...
 			if (m_pPluginList->activated() > 0)
 				m_pPluginList->process(pOutputBus->buffer(), nframes);
