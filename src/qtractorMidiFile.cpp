@@ -334,7 +334,7 @@ bool qtractorMidiFile::readTracks ( qtractorMidiSequence **ppSeqs,
 			case qtractorMidiEvent::SYSEX:
 				len = readInt();
 				if ((int) len < 1) {
-					m_iOffset = iTrackEnd; // Force EoT!
+				//	m_iOffset = iTrackEnd; // Force EoT!
 					break;
 				}
 				data = new unsigned char [1 + len];
@@ -510,12 +510,14 @@ bool qtractorMidiFile::writeTracks ( qtractorMidiSequence **ppSeqs,
 		// Track name...
 		QString sTrackName
 			= (pSeq ? pSeq->name() : QFileInfo(m_sFilename).baseName());
-		writeInt(0); // delta-time=0
-		writeInt(qtractorMidiEvent::META, 1);
-		writeInt(qtractorMidiEvent::TRACKNAME, 1);
-		writeInt(sTrackName.length());
-		QByteArray aTrackName = sTrackName.toUtf8();
-		writeData((unsigned char *) aTrackName.constData(), aTrackName.length());
+		if (!sTrackName.isEmpty()) {
+			writeInt(0); // delta-time=0
+			writeInt(qtractorMidiEvent::META, 1);
+			writeInt(qtractorMidiEvent::TRACKNAME, 1);
+			writeInt(sTrackName.length());
+			QByteArray aTrackName = sTrackName.toUtf8();
+			writeData((unsigned char *) aTrackName.constData(), aTrackName.length());
+		}
 
 		// Tempo/time-signature map...
 		qtractorMidiFileTempo::Node *pNode = m_pTempoMap->nodes().first();
@@ -740,7 +742,7 @@ bool qtractorMidiFile::writeTracks ( qtractorMidiSequence **ppSeqs,
 					break;
 				}
 			}
-	
+
 			// Merge all remaining note-offs...
 			for (iItem = 0; iItem < iItems; ++iItem) {
 				pItem = ppItems[iItem];
@@ -1067,4 +1069,4 @@ bool qtractorMidiFile::saveCopyFile ( const QString& sNewFilename,
 }
 
 
-// end of qtractorMidiFile.h
+// end of qtractorMidiFile.cpp

@@ -992,6 +992,7 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 			appendMessagesError(
 				tr("Could not set default session directory:\n\n"
 				"%1\n\nSorry.").arg(m_pOptions->sSessionDir));
+			m_pOptions->sSessionDir.clear();
 		}
 	}
 
