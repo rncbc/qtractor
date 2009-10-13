@@ -357,7 +357,7 @@ bool qtractorMidiFile::readTracks ( qtractorMidiSequence **ppSeqs,
 				// Get the meta data...
 				len = readInt();
 				if ((int) len < 1) {
-					m_iOffset = iTrackEnd; // Force EoT!
+				//	m_iOffset = iTrackEnd; // Force EoT!
 					break;
 				}
 				if (meta == qtractorMidiEvent::TEMPO) {

@@ -22,7 +22,6 @@
 #include "qtractorAbout.h"
 #include "qtractorMidiEditor.h"
 
-#include "qtractorMidiEditor.h"
 #include "qtractorMidiEditList.h"
 #include "qtractorMidiEditTime.h"
 #include "qtractorMidiEditView.h"
