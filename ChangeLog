@@ -5,6 +5,10 @@ ChangeLog
 
 CVS HEAD
 
+- Avoid duplicate snap-to-grid effect when changing the length of
+  MIDI clip editor events across non-zero clip offsets (after a
+  glitch reported by Ralf Mardorf).
+
 - Late audio track processing optimization, supressing all plugin,
   mixer and monitor pass-through activity when given track is muted,
   either explicitly or implicitly (ie. other track is in solo state).

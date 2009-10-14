@@ -2157,7 +2157,8 @@ long qtractorMidiEditor::timeDelta ( qtractorScrollView *pScrollView )
 	pNode = cursor.seekPixel(x2);
 	t2 = pNode->tickFromPixel(x2);
 
-	return long(pNode->tickSnap(t2)) - long(t1);
+//	return long(pNode->tickSnap(t2)) - long(t1);
+	return long(t2) - long(t1);
 }
 
 
