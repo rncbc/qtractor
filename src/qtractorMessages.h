@@ -24,8 +24,10 @@
 
 #include <QDockWidget>
 
+// Forward declarations.
+class qtractorMessagesTextEdit;
+
 class QSocketNotifier;
-class QTextEdit;
 class QFile;
 
 
@@ -94,7 +96,7 @@ private:
 	int m_iMessagesHigh;
 
 	// The textview main widget.
-	QTextEdit *m_pMessagesTextView;
+	qtractorMessagesTextEdit *m_pMessagesTextView;
 
 	// Stdout capture variables.
 	QSocketNotifier *m_pStdoutNotifier;

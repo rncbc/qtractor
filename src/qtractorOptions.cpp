@@ -551,8 +551,8 @@ void qtractorOptions::loadWidgetGeometry ( QWidget *pWidget )
 			pWidget->move(fpos);
 		if (fsize.width() > 0 && fsize.height() > 0)
 			pWidget->resize(fsize);
-		else
-			pWidget->adjustSize();
+	//	else
+	//		pWidget->adjustSize();
 		if (bVisible)
 			pWidget->show();
 		else

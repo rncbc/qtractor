@@ -49,6 +49,24 @@
 
 
 //-------------------------------------------------------------------------
+// qtractorMessagesTextEdit - Messages log dockable child window.
+//
+
+class qtractorMessagesTextEdit : public QTextEdit
+{
+public:
+
+	// Constructor.
+	qtractorMessagesTextEdit(QWidget *pParent) : QTextEdit(pParent) {}
+
+protected:
+
+	// Minimum recommended.
+	QSize sizeHint() const { return QTextEdit::minimumSize(); }
+};
+
+
+//-------------------------------------------------------------------------
 // qtractorMessages - Messages log dockable window.
 //
 
@@ -65,7 +83,7 @@ qtractorMessages::qtractorMessages ( QWidget *pParent )
 	m_fdStdout[QTRACTOR_MESSAGES_FDWRITE] = QTRACTOR_MESSAGES_FDNIL;
 
 	// Create local text view widget.
-	m_pMessagesTextView = new QTextEdit(this);
+	m_pMessagesTextView = new qtractorMessagesTextEdit(this);
 //  QFont font(m_pMessagesTextView->font());
 //  font.setFamily("Fixed");
 //  m_pMessagesTextView->setFont(font);

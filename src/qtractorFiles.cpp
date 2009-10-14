@@ -1,7 +1,7 @@
 // qtractorFiles.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -35,6 +35,24 @@
 
 
 //-------------------------------------------------------------------------
+// qtractorFilesTabWidget - File/Groups dockable child window.
+//
+
+class qtractorFilesTabWidget : public QTabWidget
+{
+public:
+
+	// Constructor.
+	qtractorFilesTabWidget(QWidget *pParent) : QTabWidget(pParent) {}
+
+protected:
+
+	// Minimum recommended.
+	QSize sizeHint() const { return QTabWidget::minimumSize(); }
+};
+
+
+//-------------------------------------------------------------------------
 // qtractorFiles - File/Groups dockable window.
 //
 
@@ -47,7 +65,7 @@ qtractorFiles::qtractorFiles ( QWidget *pParent )
 
 	// Create file type selection tab widget.
 	const QFont& font = QDockWidget::font();
-	m_pTabWidget = new QTabWidget(this);
+	m_pTabWidget = new qtractorFilesTabWidget(this);
 	m_pTabWidget->setFont(QFont(font.family(), font.pointSize() - 1));
 	m_pTabWidget->setTabPosition(QTabWidget::South);
 	// Create local tabs.
@@ -124,7 +142,7 @@ qtractorFiles::qtractorFiles ( QWidget *pParent )
 	QDockWidget::setAllowedAreas(
 		Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
 	// Some specialties to this kind of dock window...
-	QDockWidget::setMinimumWidth(120);
+	QDockWidget::setMinimumWidth(160);
 
 	// Finally set the default caption and tooltip.
 	const QString& sCaption = tr("Files");

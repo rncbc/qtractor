@@ -1,7 +1,7 @@
 // qtractorFiles.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -29,7 +29,8 @@
 
 
 // Forward declarations.
-class QTabWidget;
+class qtractorFilesTabWidget;
+
 class QHBoxLayout;
 class QToolButton;
 
@@ -114,7 +115,7 @@ protected:
 private:
 
 	// File type selection tab widget.
-	QTabWidget *m_pTabWidget;
+	qtractorFilesTabWidget *m_pTabWidget;
 
 	// Specific file type widgets.
 	qtractorAudioListView *m_pAudioListView;

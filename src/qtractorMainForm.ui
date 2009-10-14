@@ -25,14 +25,14 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>683</width>
-    <height>432</height>
+    <width>800</width>
+    <height>600</height>
    </rect>
   </property>
   <property name="minimumSize" >
    <size>
-    <width>21</width>
-    <height>284</height>
+    <width>320</width>
+    <height>240</height>
    </size>
   </property>
   <property name="acceptDrops" >

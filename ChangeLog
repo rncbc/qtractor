@@ -5,6 +5,9 @@ ChangeLog
 
 CVS HEAD
 
+- Adjusted first-time application window size to fit into 800x600
+  screen size and with reasonable initial dockables layout.
+
 - Avoid duplicate snap-to-grid effect when changing the length of
   MIDI clip editor events across non-zero clip offsets (after a
   glitch reported by Ralf Mardorf).
