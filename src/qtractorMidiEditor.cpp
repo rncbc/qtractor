@@ -2162,6 +2162,19 @@ long qtractorMidiEditor::timeDelta ( qtractorScrollView *pScrollView )
 }
 
 
+// Compute current drag time snap (in ticks).
+long qtractorMidiEditor::timeSnap ( long iTime )
+{
+	qtractorTimeScale::Cursor cursor(m_pTimeScale);
+	qtractorTimeScale::Node *pNode = cursor.seekFrame(m_iOffset);	
+	unsigned long t0 = pNode->tickFromFrame(m_iOffset);
+	unsigned long t1 = t0 + iTime;
+	pNode = cursor.seekTick(t1);
+	iTime = long(pNode->tickSnap(t1)) - long(t0);
+	return (iTime > 0 ? iTime : 0);
+}
+
+
 // Drag-move current selection.
 void qtractorMidiEditor::updateDragMove ( qtractorScrollView *pScrollView,
 	const QPoint& pos )
@@ -2317,9 +2330,7 @@ void qtractorMidiEditor::executeDragMove ( qtractorScrollView *pScrollView,
 			iNote = 0;
 		if (iNote > 127)
 			iNote = 127;
-		long iTime = long(pEvent->time()) + iTimeDelta;
-		if (iTime < 0)
-			iTime = 0;
+		long iTime = timeSnap(long(pEvent->time()) + iTimeDelta);
 		pEditCommand->moveEvent(pEvent, iNote, iTime);
 	}
 
@@ -2362,10 +2373,9 @@ void qtractorMidiEditor::executeDragResize ( qtractorScrollView *pScrollView,
 		qtractorMidiEvent *pEvent = pItem->event;
 		switch (m_resizeMode) {
 		case ResizeNoteLeft:
-			iTime = long(pEvent->time()) + iTimeDelta;
-			iDuration = long(pEvent->duration()) - iTimeDelta;
-			if (iTime < 0)
-				iTime = 0;
+			iTime = timeSnap(long(pEvent->time()) + iTimeDelta);
+			iDuration = long(pEvent->duration())
+				+ (long(pEvent->time()) - iTime);
 			if (iDuration < 0)
 				iDuration = 0;
 			if (m_bEventDragEdit) {
@@ -2380,7 +2390,8 @@ void qtractorMidiEditor::executeDragResize ( qtractorScrollView *pScrollView,
 			break;
 		case ResizeNoteRight:
 			iTime = pEvent->time();
-			iDuration = long(pEvent->duration()) + iTimeDelta;
+			iDuration = timeSnap(
+				long(pEvent->time() + pEvent->duration()) + iTimeDelta) - iTime;
 			if (iDuration < 0)
 				iDuration = 0;
 			if (m_bEventDragEdit) {
@@ -2467,9 +2478,7 @@ void qtractorMidiEditor::executeDragPaste ( qtractorScrollView *pScrollView,
 		if (iNote > 127)
 			iNote = 127;
 		pEvent->setNote(iNote);
-		long iTime = long(pEvent->time() + pItem->delta) + iTimeDelta;
-		if (iTime < 0)
-			iTime = 0;
+		long iTime = timeSnap(long(pEvent->time() + pItem->delta) + iTimeDelta);
 		pEvent->setTime(iTime);
 		pEditCommand->insertEvent(pEvent);
 	}
