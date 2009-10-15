@@ -1610,7 +1610,7 @@ qtractorMidiEvent *qtractorMidiEditor::dragEditEvent (
 		}
 		// Default duration...
 		if (pEvent->type() == qtractorMidiEvent::NOTEON) {
-			unsigned long iDuration = pSeq->ticksPerBeat();
+			unsigned long iDuration = m_pTimeScale->ticksPerBeat();
 			if (m_pTimeScale->snapPerBeat() > 0)
 				iDuration /= m_pTimeScale->snapPerBeat();
 			pEvent->setDuration(iDuration);
@@ -2013,7 +2013,7 @@ void qtractorMidiEditor::updateDragSelect ( qtractorScrollView *pScrollView,
 		if (x2 < rectSelect.right())
 			x2 = rectSelect.right();
 	} else {
-		x1 = x2 = rectSelect.x();
+		x1 = x2 = rectSelect.x(); x2++;
 	}
 
 	pNode = cursor.seekPixel(x0 + x1);
@@ -2044,8 +2044,7 @@ void qtractorMidiEditor::updateDragSelect ( qtractorScrollView *pScrollView,
 	QRect rectEventAt;
 
 	while (pEvent && iTickEnd >= pEvent->time()) {
-		if (((bEditView && pEvent->type() == m_pEditView->eventType() &&
-				pEvent->time() + pEvent->duration() >= iTickStart) ||
+		if (((bEditView && pEvent->type() == m_pEditView->eventType()) ||
 			 (!bEditView && (pEvent->type() == m_pEditEvent->eventType() &&
 				(!bController || pEvent->controller() == controller))))) {
 			// Assume unselected...
@@ -2376,8 +2375,8 @@ void qtractorMidiEditor::executeDragResize ( qtractorScrollView *pScrollView,
 			iTime = timeSnap(long(pEvent->time()) + iTimeDelta);
 			iDuration = long(pEvent->duration())
 				+ (long(pEvent->time()) - iTime);
-			if (iDuration < 0)
-				iDuration = 0;
+			if (iDuration < 1)
+				iDuration = 1;
 			if (m_bEventDragEdit) {
 				pEvent->setTime(iTime);
 				pEvent->setDuration(iDuration);
@@ -2392,8 +2391,8 @@ void qtractorMidiEditor::executeDragResize ( qtractorScrollView *pScrollView,
 			iTime = pEvent->time();
 			iDuration = timeSnap(
 				long(pEvent->time() + pEvent->duration()) + iTimeDelta) - iTime;
-			if (iDuration < 0)
-				iDuration = 0;
+			if (iDuration < 1)
+				iDuration = 1;
 			if (m_bEventDragEdit) {
 				pEvent->setDuration(iDuration);
 				pEditCommand->insertEvent(pEvent);
