@@ -334,7 +334,7 @@ bool qtractorMidiFile::readTracks ( qtractorMidiSequence **ppSeqs,
 			case qtractorMidiEvent::SYSEX:
 				len = readInt();
 				if ((int) len < 1) {
-				//	m_iOffset = iTrackEnd; // Force EoT!
+					m_iOffset = iTrackEnd; // Force EoT!
 					break;
 				}
 				data = new unsigned char [1 + len];
