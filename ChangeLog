@@ -5,6 +5,11 @@ ChangeLog
 
 CVS HEAD
 
+- In an attempt to mitigate potential stack corruption and sudden
+  crashes, old commented out session pseudo-locks are now back in
+  business while executing clip editing commands (cut, paste, drag,
+  move, insert, delete) and playback is currently rolling.
+
 - Adjusted first-time application window size to fit into 800x600
   screen size and with reasonable initial dockables layout.
 
