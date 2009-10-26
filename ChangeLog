@@ -3,7 +3,10 @@ Qtractor - An Audio/MIDI multi-track sequencer
 
 ChangeLog
 
-CVS HEAD
+SVN HEAD
+
+- Session files may now be dragged and dropped over the main track
+  view and get loaded for business as usual (once quietly ignored).
 
 - In an attempt to mitigate potential stack corruption and sudden
   crashes, old commented out session pseudo-locks are now back in

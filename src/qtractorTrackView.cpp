@@ -1084,11 +1084,11 @@ void qtractorTrackView::dragTimeout (void)
 
 
 // Drop event handler.
-void qtractorTrackView::dropTrack ( const QPoint& pos, const QMimeData *pMimeData )
+bool qtractorTrackView::dropTrack ( const QPoint& pos, const QMimeData *pMimeData )
 {
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
-		return;
+		return false;
 
 	// Add new clips on proper and consecutive track locations...
 	unsigned long iClipStart = pSession->frameSnap(
@@ -1101,6 +1101,7 @@ void qtractorTrackView::dropTrack ( const QPoint& pos, const QMimeData *pMimeDat
 		&& (!m_bDropSpan || m_dropType == qtractorTrack::Midi)) {
 		// Do we have something to drop anyway?
 		// if yes, this is a extra-track drop...
+		int iAddTrack = 0;
 		if (!m_dropItems.isEmpty()) {
 			// Prepare file list for import...
 			QStringList files;
@@ -1111,6 +1112,7 @@ void qtractorTrackView::dropTrack ( const QPoint& pos, const QMimeData *pMimeDat
 					&& pDropItem->channel >= 0) {
 					m_pTracks->addMidiTrackChannel(
 						pDropItem->path, pDropItem->channel, iClipStart);
+					iAddTrack++;
 				} else  {
 					files.append(pDropItem->path);
 				}
@@ -1120,9 +1122,11 @@ void qtractorTrackView::dropTrack ( const QPoint& pos, const QMimeData *pMimeDat
 				switch (m_dropType) {
 				case qtractorTrack::Audio:
 					m_pTracks->addAudioTracks(files, iClipStart);
+					iAddTrack++;
 					break;
 				case qtractorTrack::Midi:
 					m_pTracks->addMidiTracks(files, iClipStart);
+					iAddTrack++;
 					break;
 				default:
 					break;
@@ -1130,13 +1134,13 @@ void qtractorTrackView::dropTrack ( const QPoint& pos, const QMimeData *pMimeDat
 			}
 		}
 		resetDragState();
-		return;
+		return (iAddTrack > 0);
 	}
 
 	// Check whether we can really drop it.
 	if (pTrack && pTrack->trackType() != m_dropType) {
 		resetDragState();
-		return;
+		return false;
 	}
 
 	// We'll build a composite command...
@@ -1206,12 +1210,17 @@ void qtractorTrackView::dropTrack ( const QPoint& pos, const QMimeData *pMimeDat
 	resetDragState();
 
 	// Put it in the form of an undoable command...
-	pSession->execute(pClipCommand);
+	return pSession->execute(pClipCommand);
 }
+
 
 void qtractorTrackView::dropEvent ( QDropEvent *pDropEvent )
 {
-	dropTrack(viewportToContents(pDropEvent->pos()), pDropEvent->mimeData());
+	if (!dropTrack(viewportToContents(pDropEvent->pos()), pDropEvent->mimeData())) {
+		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+		if (pMainForm)
+			pMainForm->dropEvent(pDropEvent);
+	}
 }
 
 

@@ -101,6 +101,8 @@ public:
 
 	void contextMenuEvent(QContextMenuEvent *pEvent);
 
+	void dropEvent(QDropEvent *pDropEvent);
+
 	int rolling() const;
 
 public slots:
@@ -247,7 +249,6 @@ protected:
 
 	void closeEvent(QCloseEvent *pCloseEvent);
 	void dragEnterEvent(QDragEnterEvent *pDragEnterEvent);
-	void dropEvent(QDropEvent *pDropEvent);
 	void customEvent(QEvent *pEvent);
 
 	void mmcEvent(qtractorMmcEvent *pMmcEvent);

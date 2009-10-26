@@ -205,8 +205,9 @@ protected:
 	void dragEnterEvent(QDragEnterEvent *pDragEnterEvent);
 	void dragMoveEvent(QDragMoveEvent *pDragMoveEvent);
 	void dragLeaveEvent(QDragLeaveEvent *pDragLeaveEvent);
-	void dropTrack(const QPoint& pos, const QMimeData *pMimeData = NULL);
 	void dropEvent(QDropEvent *pDropEvent);
+
+	bool dropTrack(const QPoint& pos, const QMimeData *pMimeData = NULL);
 
 	// Handle item selection with mouse.
 	void mousePressEvent(QMouseEvent *pMouseEvent);
