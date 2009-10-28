@@ -131,6 +131,10 @@ public:
 	// return the effective number of connection attempts.
 	int updateConnects();
 
+	// JACK Transport mode accessors.
+	void setTransportMode(qtractorBus::BusMode transportMode);
+	qtractorBus::BusMode transportMode() const;
+
 protected:
 
 	// Concrete device (de)activation methods.
@@ -198,6 +202,9 @@ private:
 	qtractorAudioBus    *m_pPlayerBus;
 	qtractorAudioBuffer *m_pPlayerBuff;
 	unsigned long        m_iPlayerFrame;
+
+	// JACK Transport mode.
+	qtractorBus::BusMode m_transportMode;
 };
 
 

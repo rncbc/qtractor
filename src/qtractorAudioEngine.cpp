@@ -312,6 +312,9 @@ qtractorAudioEngine::qtractorAudioEngine ( qtractorSession *pSession )
 	m_pPlayerBus   = NULL;
 	m_pPlayerBuff  = NULL;
 	m_iPlayerFrame = 0;
+
+	// JACK transport mode.
+	m_transportMode = qtractorBus::Duplex;
 }
 
 
@@ -448,8 +451,11 @@ bool qtractorAudioEngine::activate (void)
 			qtractorAudioEngine_process, this);
 
 	// Trnsport timebase callbacks...
-	jack_set_timebase_callback(m_pJackClient, 0 /* FIXME: un-conditional! */,
-		qtractorAudioEngine_timebase, this);
+	if (m_transportMode & qtractorBus::Output) {
+		jack_set_timebase_callback(m_pJackClient,
+			0 /* FIXME: un-conditional! */,
+			qtractorAudioEngine_timebase, this);
+	}
 
 	// And some other event callbacks...
 	jack_set_xrun_callback(m_pJackClient,
@@ -510,7 +516,8 @@ bool qtractorAudioEngine::start (void)
 	resetMetro();
 
 	// Start transport rolling...
-	jack_transport_start(m_pJackClient);
+	if (m_transportMode & qtractorBus::Output)
+		jack_transport_start(m_pJackClient);
 
 	// We're now ready and running...
 	return true;
@@ -523,7 +530,8 @@ void qtractorAudioEngine::stop (void)
 	if (!isActivated())
 	    return;
 
-	jack_transport_stop(m_pJackClient);
+	if (m_transportMode & qtractorBus::Output)
+		jack_transport_stop(m_pJackClient);
 
 	// MIDI plugin managers reset...
 	qtractorMidiManager *pMidiManager
@@ -761,7 +769,8 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 				iFrameStart = pSession->loopStart();
 				iFrameEnd   = iFrameStart + (iFrameEnd - iLoopEnd);
 				// Set to new transport location...
-				jack_transport_locate(m_pJackClient, iFrameStart);
+				if (m_transportMode & qtractorBus::Output)
+					jack_transport_locate(m_pJackClient, iFrameStart);
 				pAudioCursor->seek(iFrameStart);
 				// Take special care on metronome too...
 				if (m_bMetronome) {
@@ -791,7 +800,8 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 		iFrameEnd = pSession->loopStart()
 			+ (iFrameEnd - pSession->loopEnd());
 		// Set to new transport location...
-		jack_transport_locate(m_pJackClient, iFrameEnd);
+		if (m_transportMode & qtractorBus::Output)
+			jack_transport_locate(m_pJackClient, iFrameEnd);
 	}
 
 	// Prepare advance for next cycle...
@@ -1450,6 +1460,20 @@ int qtractorAudioEngine::updateConnects (void)
 	// Do it as usual, on all standard owned dependable buses...
 	return qtractorEngine::updateConnects();
 }
+
+
+// JACK Transport mode accessors.
+void qtractorAudioEngine::setTransportMode (
+	qtractorBus::BusMode transportMode )
+{
+	m_transportMode = transportMode;
+}
+
+qtractorBus::BusMode qtractorAudioEngine::transportMode (void) const
+{
+	return m_transportMode;
+}
+
 
 
 //----------------------------------------------------------------------

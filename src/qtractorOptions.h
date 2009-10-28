@@ -89,6 +89,7 @@ public:
 	bool    bFollowPlayhead;
 	bool    bAutoBackward;
 	bool    bContinuePastEnd;
+	int     iTransportMode;
 
 	// Audio options...
 	QString sAudioCaptureExt;
@@ -114,6 +115,9 @@ public:
 	bool bMidiControlBus;
 	bool bMidiMetroBus;
 	bool bMidiMetronome;
+	int  iMidiMmcDevice;
+	int  iMidiMmcMode;
+	int  iMidiSppMode;
 
 	// MIDI Metronome parameters.
 	int iMetroChannel;

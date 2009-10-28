@@ -189,6 +189,18 @@ public:
 	int alsaTimer() const
 		{ return m_iAlsaTimer; }
 
+	// MMC device-id accessors.
+	void setMmcDevice(unsigned char mmcDevice);
+	unsigned char mmcDevice() const;
+
+	// MMC mode accessors.
+	void setMmcMode(qtractorBus::BusMode mmcMode);
+	qtractorBus::BusMode mmcMode() const;
+
+	// SPP mode accessors.
+	void setSppMode(qtractorBus::BusMode sppMode);
+	qtractorBus::BusMode sppMode() const;
+
 protected:
 
 	// Concrete device (de)activation methods.
@@ -266,6 +278,13 @@ private:
 
 	// Controller update pending flagger.
 	int m_iResetAllControllers;
+
+	// MMC Device ID.
+	unsigned char m_mmcDevice;
+
+	// MMC/SPP modes.
+	qtractorBus::BusMode m_mmcMode;
+	qtractorBus::BusMode m_sppMode;
 };
 
 

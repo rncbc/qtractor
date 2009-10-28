@@ -956,9 +956,9 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 	updateRecentFilesMenu();
 	updatePeakAutoRemove();
 	updateDisplayFormat();
+	updateControlModes();
 	updateAudioPlayer();
 	updateAudioMetronome();
-	updateMidiCaptureQuantize();
 	updateMidiQueueTimer();
 	updateMidiControl();
 	updateMidiMetronome();
@@ -2927,6 +2927,10 @@ void qtractorMainForm::viewOptions (void)
 	bool    bOldQuickSeek          = m_pOptions->bAudioQuickSeek;
 	bool    bOldAudioPlayerBus     = m_pOptions->bAudioPlayerBus;
 	bool    bOldAudioMetronome     = m_pOptions->bAudioMetronome;
+	int     iOldTransportMode      = m_pOptions->iTransportMode;
+	int     iOldMidiMmcDevice      = m_pOptions->iMidiMmcDevice;
+	int     iOldMidiMmcMode        = m_pOptions->iMidiMmcMode;
+	int     iOldMidiSppMode        = m_pOptions->iMidiSppMode;
 	int     iOldMidiCaptureQuantize = m_pOptions->iMidiCaptureQuantize;
 	int     iOldMidiQueueTimer     = m_pOptions->iMidiQueueTimer;
 	QString sOldMetroBarFilename   = m_pOptions->sMetroBarFilename;
@@ -3016,13 +3020,17 @@ void qtractorMainForm::viewOptions (void)
 		// Special track-view drop-span mode...
 		if (m_pTracks)
 			m_pTracks->trackView()->setDropSpan(m_pOptions->bTrackViewDropSpan);
+		// Audio/MIDI engine control modes...
+		if ((iOldTransportMode != m_pOptions->iTransportMode) ||
+			(iOldMidiMmcDevice != m_pOptions->iMidiMmcDevice) ||
+			(iOldMidiMmcMode   != m_pOptions->iMidiMmcMode)   ||
+			(iOldMidiSppMode   != m_pOptions->iMidiSppMode)   ||
+			(iOldMidiCaptureQuantize != m_pOptions->iMidiCaptureQuantize))
+			updateControlModes();
 		// Audio engine audition/pre-listening player options...
 		if (( bOldAudioPlayerBus && !m_pOptions->bAudioPlayerBus) ||
 			(!bOldAudioPlayerBus &&  m_pOptions->bAudioPlayerBus))
 			updateAudioPlayer();
-		// MIDI capture quantize option...
-		if (iOldMidiCaptureQuantize != m_pOptions->iMidiCaptureQuantize)
-			updateMidiCaptureQuantize();
 		// MIDI engine control options...
 		if (( bOldMidiControlBus && !m_pOptions->bMidiControlBus) ||
 			(!bOldMidiControlBus &&  m_pOptions->bMidiControlBus))
@@ -4148,19 +4156,30 @@ void qtractorMainForm::updateAudioPlayer (void)
 }
 
 
-// Update MIDI capture quantize setting.
-void qtractorMainForm::updateMidiCaptureQuantize (void)
+// Update Audio/MIDI engine control mode settings.
+void qtractorMainForm::updateControlModes (void)
 {
 	if (m_pOptions == NULL)
 		return;
 
-	// Configure the MIDI engine player handling...
+	// Configure the Audio engine handling...
+	qtractorAudioEngine *pAudioEngine = m_pSession->audioEngine();
+	if (pAudioEngine) {
+		pAudioEngine->setTransportMode(
+			qtractorBus::BusMode(m_pOptions->iTransportMode));
+	}
+	// Configure the MIDI engine handling...
 	qtractorMidiEngine *pMidiEngine = m_pSession->midiEngine();
-	if (pMidiEngine == NULL)
-		return;
-
-	pMidiEngine->setCaptureQuantize(
-		qtractorTimeScale::snapFromIndex(m_pOptions->iMidiCaptureQuantize));
+	if (pMidiEngine) {
+		pMidiEngine->setCaptureQuantize(
+			qtractorTimeScale::snapFromIndex(
+				m_pOptions->iMidiCaptureQuantize));
+		pMidiEngine->setMmcDevice(m_pOptions->iMidiMmcDevice);
+		pMidiEngine->setMmcMode(
+			qtractorBus::BusMode(m_pOptions->iMidiMmcMode));
+		pMidiEngine->setSppMode(
+			qtractorBus::BusMode(m_pOptions->iMidiSppMode));
+	}
 }
 
 
@@ -4457,7 +4476,9 @@ void qtractorMainForm::timerSlot (void)
 		// Done with transport tricks.
 	} else if (m_pSession->isActivated()) {
 		// Read JACK transport state and react if out-of-sync..
-		jack_client_t *pJackClient = pAudioEngine->jackClient();
+		jack_client_t *pJackClient = NULL;
+		if (pAudioEngine->transportMode() & qtractorBus::Input)
+			pJackClient = pAudioEngine->jackClient();
 		if (pJackClient && !pAudioEngine->isFreewheel()) {
 			jack_position_t pos;
 			jack_transport_state_t state

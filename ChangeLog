@@ -5,6 +5,11 @@ ChangeLog
 
 SVN HEAD
 
+- JACK Transport, MMC Device, and MIDI Song Position pointer (SPP)
+  control modes are now made optional (View/Options...), allowing
+  for discretionary configuration: None/Disabled, Slave/Input,
+  Master/Output or Full/Duplex (default).
+
 - Session files may now be dragged and dropped over the main track
   view and get loaded for business as usual (once quietly ignored).
 
@@ -55,7 +60,7 @@ SVN HEAD
 
 - MIDI clip editor (aka piano-roll/matrix aditor) gets better
   on the virtual piano keyboard eye-candy side of things ;).
-  
+
 - Plugins are now also referenced by label, avoiding plugin
   index clash/misses eg. when plugin object file/path changes
   or is moved externally.

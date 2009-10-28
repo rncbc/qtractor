@@ -82,9 +82,16 @@ qtractorOptionsForm::qtractorOptionsForm (
 	m_ui.MidiCaptureFormatComboBox->addItem(tr("SMF Format 0"));
 	m_ui.MidiCaptureFormatComboBox->addItem(tr("SMF Format 1"));
 
+	// Populate the MIDI capture quantize combo-box.
 	QStringList items = qtractorTimeScale::snapItems(0);
 	m_ui.MidiCaptureQuantizeComboBox->clear();
 	m_ui.MidiCaptureQuantizeComboBox->insertItems(0, items);
+
+	// Populate the MMC device combo-box.
+	m_ui.MidiMmcDeviceComboBox->clear();
+	for (unsigned char mmcDevice = 0; mmcDevice < 0x7f; ++mmcDevice)
+		m_ui.MidiMmcDeviceComboBox->addItem(QString::number(int(mmcDevice)));
+	m_ui.MidiMmcDeviceComboBox->addItem(tr("(Any)"));
 
 //	updateMetroNoteNames();
 
@@ -124,6 +131,9 @@ qtractorOptionsForm::qtractorOptionsForm (
 	QObject::connect(m_ui.AudioResampleTypeComboBox,
 		SIGNAL(activated(int)),
 		SLOT(changed()));
+	QObject::connect(m_ui.TransportModeComboBox,
+		SIGNAL(activated(int)),
+		SLOT(changed()));
 	QObject::connect(m_ui.AudioAutoTimeStretchCheckBox,
 		SIGNAL(stateChanged(int)),
 		SLOT(changed()));
@@ -161,6 +171,15 @@ qtractorOptionsForm::qtractorOptionsForm (
 		SIGNAL(activated(int)),
 		SLOT(changed()));
 	QObject::connect(m_ui.MidiQueueTimerComboBox,
+		SIGNAL(activated(int)),
+		SLOT(changed()));
+	QObject::connect(m_ui.MidiMmcModeComboBox,
+		SIGNAL(activated(int)),
+		SLOT(changed()));
+	QObject::connect(m_ui.MidiMmcDeviceComboBox,
+		SIGNAL(activated(int)),
+		SLOT(changed()));
+	QObject::connect(m_ui.MidiSppModeComboBox,
 		SIGNAL(activated(int)),
 		SLOT(changed()));
 	QObject::connect(m_ui.MidiControlBusCheckBox,
@@ -345,6 +364,7 @@ void qtractorOptionsForm::setOptions ( qtractorOptions *pOptions )
 	m_ui.AudioCaptureFormatComboBox->setCurrentIndex(m_pOptions->iAudioCaptureFormat);
 	m_ui.AudioCaptureQualitySpinBox->setValue(m_pOptions->iAudioCaptureQuality);
 	m_ui.AudioResampleTypeComboBox->setCurrentIndex(m_pOptions->iAudioResampleType);
+	m_ui.TransportModeComboBox->setCurrentIndex(m_pOptions->iTransportMode);
 	m_ui.AudioAutoTimeStretchCheckBox->setChecked(m_pOptions->bAudioAutoTimeStretch);
 #ifdef CONFIG_LIBRUBBERBAND
 	m_ui.AudioTimeStretchCheckBox->setChecked(m_pOptions->bAudioTimeStretch);
@@ -379,6 +399,9 @@ void qtractorOptionsForm::setOptions ( qtractorOptions *pOptions )
 		timer.indexOf(m_pOptions->iMidiQueueTimer));
 
 	// MIDI control options.
+	m_ui.MidiMmcModeComboBox->setCurrentIndex(m_pOptions->iMidiMmcMode);
+	m_ui.MidiMmcDeviceComboBox->setCurrentIndex(m_pOptions->iMidiMmcDevice);
+	m_ui.MidiSppModeComboBox->setCurrentIndex(m_pOptions->iMidiSppMode);
 	m_ui.MidiControlBusCheckBox->setChecked(m_pOptions->bMidiControlBus);
 
 	// MIDI metronome options.
@@ -490,6 +513,7 @@ void qtractorOptionsForm::accept (void)
 		m_pOptions->iAudioCaptureFormat  = m_ui.AudioCaptureFormatComboBox->currentIndex();
 		m_pOptions->iAudioCaptureQuality = m_ui.AudioCaptureQualitySpinBox->value();
 		m_pOptions->iAudioResampleType   = m_ui.AudioResampleTypeComboBox->currentIndex();
+		m_pOptions->iTransportMode       = m_ui.TransportModeComboBox->currentIndex();
 		m_pOptions->bAudioAutoTimeStretch = m_ui.AudioAutoTimeStretchCheckBox->isChecked();
 		m_pOptions->bAudioTimeStretch    = m_ui.AudioTimeStretchCheckBox->isChecked();
 		m_pOptions->bAudioQuickSeek      = m_ui.AudioQuickSeekCheckBox->isChecked();
@@ -504,6 +528,9 @@ void qtractorOptionsForm::accept (void)
 		m_pOptions->iMidiCaptureQuantize = m_ui.MidiCaptureQuantizeComboBox->currentIndex();
 		m_pOptions->iMidiQueueTimer      = m_ui.MidiQueueTimerComboBox->itemData(
 			m_ui.MidiQueueTimerComboBox->currentIndex()).toInt();
+		m_pOptions->iMidiMmcMode         = m_ui.MidiMmcModeComboBox->currentIndex();
+		m_pOptions->iMidiMmcDevice       = m_ui.MidiMmcDeviceComboBox->currentIndex();
+		m_pOptions->iMidiSppMode         = m_ui.MidiSppModeComboBox->currentIndex();
 		m_pOptions->bMidiControlBus      = m_ui.MidiControlBusCheckBox->isChecked();
 		// MIDI metronome options.
 		m_pOptions->bMidiMetronome       = m_ui.MidiMetronomeCheckBox->isChecked();
@@ -1136,6 +1163,9 @@ void qtractorOptionsForm::stabilizeForm (void)
 	m_ui.MetroBeatFilenameComboBox->setEnabled(bAudioMetronome);
 	m_ui.MetroBeatFilenameToolButton->setEnabled(bAudioMetronome);
 	m_ui.AudioMetroBusCheckBox->setEnabled(bAudioMetronome);
+
+	m_ui.MidiMmcDeviceComboBox->setEnabled(
+		m_ui.MidiMmcModeComboBox->currentIndex() > 0);
 
 	bool bMidiMetronome = m_ui.MidiMetronomeCheckBox->isChecked();
 	m_ui.MetroChannelTextLabel->setEnabled(bMidiMetronome);

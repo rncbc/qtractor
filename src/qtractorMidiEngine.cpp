@@ -585,6 +585,11 @@ qtractorMidiEngine::qtractorMidiEngine ( qtractorSession *pSession )
 
 	// MIDI controller mapping flagger.
 	m_iResetAllControllers = 0;
+
+	// MIDI MMC/SPP modes.
+	m_mmcDevice = 0x7f; // All-caller-id.
+	m_mmcMode = qtractorBus::Duplex;
+	m_sppMode = qtractorBus::Duplex;
 }
 
 
@@ -906,8 +911,9 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 	case SND_SEQ_EVENT_STOP:
 	case SND_SEQ_EVENT_CONTINUE:
 	case SND_SEQ_EVENT_SONGPOS:
-		// Trap controller commands...
-		if (m_pIControlBus && m_pIControlBus->alsaPort() == iAlsaPort) {
+		// Trap SPP commands...
+		if ((m_sppMode & qtractorBus::Input)
+			&& m_pIControlBus && m_pIControlBus->alsaPort() == iAlsaPort) {
 			// Post the stuffed event...
 			if (m_pNotifyObject) {
 				QApplication::postEvent(m_pNotifyObject,
@@ -922,8 +928,8 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 		pSysex   = (unsigned char *) pEv->data.ext.ptr;
 		iSysex   = (unsigned short)  pEv->data.ext.len;
 		// Trap MMC commands...
-		if (pSysex[1] == 0x7f && pSysex[3] == 0x06
-			// check if it was intended to our input control bus!
+		if ((m_mmcMode & qtractorBus::Input)
+			&& pSysex[1] == 0x7f && pSysex[3] == 0x06 // MMC command mode.
 			&& m_pIControlBus && m_pIControlBus->alsaPort() == iAlsaPort) {
 			// Post the stuffed event...
 			if (m_pNotifyObject) {
@@ -1750,6 +1756,10 @@ void qtractorMidiEngine::sendMmcMaskedWrite ( qtractorMmcEvent::SubCommand scmd,
 void qtractorMidiEngine::sendMmcCommand ( qtractorMmcEvent::Command cmd,
 	unsigned char *pMmcData, unsigned short iMmcData ) const
 {
+	// Do we have MMC output enabled?
+	if ((m_mmcMode & qtractorBus::Output) == 0)
+		return;
+
 	// We surely need a output control bus...
 	if (m_pOControlBus == NULL)
 		return;
@@ -1766,7 +1776,7 @@ void qtractorMidiEngine::sendMmcCommand ( qtractorMmcEvent::Command cmd,
 
 	pSysex[iSysex++] = 0xf0;				// Sysex header.
 	pSysex[iSysex++] = 0x7f;				// Realtime sysex.
-	pSysex[iSysex++] = 0x7f;				// All-caller-id.
+	pSysex[iSysex++] = m_mmcDevice;			// MMC device id.
 	pSysex[iSysex++] = 0x06;				// MMC command mode.
 	pSysex[iSysex++] = (unsigned char) cmd;	// MMC command code.
 	if (pMmcData && iMmcData > 0) {
@@ -1787,6 +1797,10 @@ void qtractorMidiEngine::sendMmcCommand ( qtractorMmcEvent::Command cmd,
 // SPP dispatch special command.
 void qtractorMidiEngine::sendSppCommand ( int iCmdType, unsigned short iSongPos ) const
 {
+	// Do we have SPP output enabled?
+	if ((m_sppMode & qtractorBus::Output) == 0)
+		return;
+
 	// We surely need a output control bus...
 	if (m_pOControlBus == NULL)
 		return;
@@ -2395,6 +2409,43 @@ unsigned short qtractorMidiEngine::captureQuantize (void) const
 {
 	return m_iCaptureQuantize;
 }
+
+
+// MMC device-id accessors.
+void qtractorMidiEngine::setMmcDevice ( unsigned char mmcDevice )
+{
+	m_mmcDevice = mmcDevice;
+}
+
+unsigned char qtractorMidiEngine::mmcDevice (void) const
+{
+	return m_mmcDevice;
+}
+
+
+// MMC mode accessors.
+void qtractorMidiEngine::setMmcMode ( qtractorBus::BusMode mmcMode )
+{
+	m_mmcMode = mmcMode;
+}
+
+qtractorBus::BusMode qtractorMidiEngine::mmcMode (void) const
+{
+	return m_mmcMode;
+}
+
+
+// SPP mode accessors.
+void qtractorMidiEngine::setSppMode ( qtractorBus::BusMode sppMode )
+{
+	m_sppMode = sppMode;
+}
+
+qtractorBus::BusMode qtractorMidiEngine::sppMode (void) const
+{
+	return m_sppMode;
+}
+
 
 
 //----------------------------------------------------------------------

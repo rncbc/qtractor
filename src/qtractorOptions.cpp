@@ -106,6 +106,7 @@ qtractorOptions::qtractorOptions (void)
 	bFollowPlayhead  = m_settings.value("/FollowPlayhead", true).toBool();
 	bAutoBackward    = m_settings.value("/AutoBackward", false).toBool();
 	bContinuePastEnd = m_settings.value("/ContinuePastEnd", true).toBool();
+	iTransportMode   = m_settings.value("/TransportMode", 3).toInt();
 	m_settings.endGroup();
 
 	// Audio rendering options group.
@@ -131,6 +132,9 @@ qtractorOptions::qtractorOptions (void)
 	bMidiControlBus    = m_settings.value("/ControlBus", false).toBool();
 	bMidiMetroBus      = m_settings.value("/MetroBus", false).toBool();
 	bMidiMetronome     = m_settings.value("/Metronome", true).toBool();
+	iMidiMmcDevice     = m_settings.value("/MmcDevice", 0x7f).toInt();
+	iMidiMmcMode       = m_settings.value("/MmcMode", 3).toInt();
+	iMidiSppMode       = m_settings.value("/SppMode", 3).toInt();
 	m_settings.endGroup();
 
 	// Metronome options group.
@@ -313,6 +317,7 @@ qtractorOptions::~qtractorOptions (void)
 	m_settings.setValue("/FollowPlayhead", bFollowPlayhead);
 	m_settings.setValue("/AutoBackward", bAutoBackward);
 	m_settings.setValue("/ContinuePastEnd", bContinuePastEnd);
+	m_settings.setValue("/TransportMode", iTransportMode);
 	m_settings.endGroup();
 
 	// Audio redndering options group.
@@ -338,6 +343,9 @@ qtractorOptions::~qtractorOptions (void)
 	m_settings.setValue("/ControlBus", bMidiControlBus);
 	m_settings.setValue("/MetroBus", bMidiMetroBus);
 	m_settings.setValue("/Metronome", bMidiMetronome);
+	m_settings.setValue("/MmcDevice", iMidiMmcDevice);
+	m_settings.setValue("/MmcMode", iMidiMmcMode);
+	m_settings.setValue("/SppMode", iMidiSppMode);
 	m_settings.endGroup();
 
 	// Metronome options group.
