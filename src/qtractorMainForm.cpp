@@ -956,9 +956,10 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 	updateRecentFilesMenu();
 	updatePeakAutoRemove();
 	updateDisplayFormat();
-	updateControlModes();
+	updateTransportMode();
 	updateAudioPlayer();
 	updateAudioMetronome();
+	updateMidiControlModes();
 	updateMidiQueueTimer();
 	updateMidiControl();
 	updateMidiMetronome();
@@ -2963,6 +2964,11 @@ void qtractorMainForm::viewOptions (void)
 			qtractorAudioBuffer::setWsolaTimeStretch(m_pOptions->bAudioTimeStretch);
 			iNeedRestart |= RestartSession;
 		}
+		// Audio engine control modes...
+		if (iOldTransportMode != m_pOptions->iTransportMode) {
+			updateTransportMode();
+			iNeedRestart |= RestartSession;
+		}
 		if (iOldMidiQueueTimer != m_pOptions->iMidiQueueTimer) {
 			updateMidiQueueTimer();
 			iNeedRestart |= RestartSession;
@@ -3020,13 +3026,12 @@ void qtractorMainForm::viewOptions (void)
 		// Special track-view drop-span mode...
 		if (m_pTracks)
 			m_pTracks->trackView()->setDropSpan(m_pOptions->bTrackViewDropSpan);
-		// Audio/MIDI engine control modes...
-		if ((iOldTransportMode != m_pOptions->iTransportMode) ||
-			(iOldMidiMmcDevice != m_pOptions->iMidiMmcDevice) ||
+		// MIDI engine control modes...
+		if ((iOldMidiMmcDevice != m_pOptions->iMidiMmcDevice) ||
 			(iOldMidiMmcMode   != m_pOptions->iMidiMmcMode)   ||
 			(iOldMidiSppMode   != m_pOptions->iMidiSppMode)   ||
 			(iOldMidiCaptureQuantize != m_pOptions->iMidiCaptureQuantize))
-			updateControlModes();
+			updateMidiControlModes();
 		// Audio engine audition/pre-listening player options...
 		if (( bOldAudioPlayerBus && !m_pOptions->bAudioPlayerBus) ||
 			(!bOldAudioPlayerBus &&  m_pOptions->bAudioPlayerBus))
@@ -4156,30 +4161,38 @@ void qtractorMainForm::updateAudioPlayer (void)
 }
 
 
-// Update Audio/MIDI engine control mode settings.
-void qtractorMainForm::updateControlModes (void)
+// Update Audio engine control mode settings.
+void qtractorMainForm::updateTransportMode (void)
 {
 	if (m_pOptions == NULL)
 		return;
 
 	// Configure the Audio engine handling...
 	qtractorAudioEngine *pAudioEngine = m_pSession->audioEngine();
-	if (pAudioEngine) {
-		pAudioEngine->setTransportMode(
-			qtractorBus::BusMode(m_pOptions->iTransportMode));
-	}
+	if (pAudioEngine == NULL)
+		return;
+
+	pAudioEngine->setTransportMode(
+		qtractorBus::BusMode(m_pOptions->iTransportMode));
+}
+
+
+// Update MIDI engine control mode settings.
+void qtractorMainForm::updateMidiControlModes (void)
+{
+	if (m_pOptions == NULL)
+		return;
+
 	// Configure the MIDI engine handling...
 	qtractorMidiEngine *pMidiEngine = m_pSession->midiEngine();
-	if (pMidiEngine) {
-		pMidiEngine->setCaptureQuantize(
-			qtractorTimeScale::snapFromIndex(
-				m_pOptions->iMidiCaptureQuantize));
-		pMidiEngine->setMmcDevice(m_pOptions->iMidiMmcDevice);
-		pMidiEngine->setMmcMode(
-			qtractorBus::BusMode(m_pOptions->iMidiMmcMode));
-		pMidiEngine->setSppMode(
-			qtractorBus::BusMode(m_pOptions->iMidiSppMode));
-	}
+	if (pMidiEngine == NULL)
+		return;
+
+	pMidiEngine->setCaptureQuantize(
+		qtractorTimeScale::snapFromIndex(m_pOptions->iMidiCaptureQuantize));
+	pMidiEngine->setMmcDevice(m_pOptions->iMidiMmcDevice);
+	pMidiEngine->setMmcMode(qtractorBus::BusMode(m_pOptions->iMidiMmcMode));
+	pMidiEngine->setSppMode(qtractorBus::BusMode(m_pOptions->iMidiSppMode));
 }
 
 

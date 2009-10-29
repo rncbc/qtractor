@@ -289,7 +289,8 @@ protected:
 	void updateMessagesLimit();
 	void updateMessagesCapture();
 	void updateDisplayFormat();
-	void updateControlModes();
+	void updateTransportMode();
+	void updateMidiControlModes();
 	void updateAudioPlayer();
 	void updateMidiQueueTimer();
 	void updateMidiControl();
