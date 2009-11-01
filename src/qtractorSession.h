@@ -214,6 +214,9 @@ public:
 	void lock();
 	void unlock();
 
+	// Re-entrancy check.
+	bool isBusy() const;
+
 	// Consolidated session engine start status.
 	void setPlaying(bool bPlaying);
 	bool isPlaying() const;
@@ -417,6 +420,9 @@ private:
 	// RT-safeness hackish lock-mutex.
 	qtractorAtomic m_locks;
 	qtractorAtomic m_mutex;
+
+	// Re-entrancy mutex.
+	qtractorAtomic m_busy;
 
 	// Instrument names mapping.
 	qtractorInstrumentList *m_pInstruments;

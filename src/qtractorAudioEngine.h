@@ -22,6 +22,7 @@
 #ifndef __qtractorAudioEngine_h
 #define __qtractorAudioEngine_h
 
+#include "qtractorAtomic.h"
 #include "qtractorEngine.h"
 
 #include <jack/jack.h>
@@ -135,6 +136,10 @@ public:
 	void setTransportMode(qtractorBus::BusMode transportMode);
 	qtractorBus::BusMode transportMode() const;
 
+	// Ramping playback spin-lock.
+	void setRamping(int iRamping);
+	int ramping() const;
+
 protected:
 
 	// Concrete device (de)activation methods.
@@ -205,6 +210,10 @@ private:
 
 	// JACK Transport mode.
 	qtractorBus::BusMode m_transportMode;
+
+	// Ramping hacky spin-lock.
+	qtractorAtomic m_ramping;
+	qtractorAtomic m_ramping_off;
 };
 
 
@@ -243,6 +252,9 @@ public:
 	// Process cycle (preparator only).
 	void process_prepare(unsigned int nframes);
 	void process_commit(unsigned int nframes);
+
+	// Process cycle fade in/out ramp (+1/-1).
+	void process_ramp(unsigned int nframes, float fRamp);
 
 	// Bus-buffering methods.
 	void buffer_prepare(unsigned int nframes,

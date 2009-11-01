@@ -5,6 +5,10 @@ ChangeLog
 
 SVN HEAD
 
+- Audio ramping spin-locking makes its smooth stuff, in an attempt
+  to reduce glitching and crackling when editing (due to its own
+  pseudo spin-locking) and toggling playback states. (EXPERIMENTAL)
+
 - JACK Transport, MMC Device, and MIDI Song Position pointer (SPP)
   control modes are now made optional (View/Options...), allowing
   for discretionary configuration: None/Disabled, Slave/Input,

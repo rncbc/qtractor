@@ -207,6 +207,8 @@ void qtractorSession::clear (void)
 	ATOMIC_SET(&m_locks, 0);
 	ATOMIC_SET(&m_mutex, 0);
 
+	ATOMIC_SET(&m_busy, 0);
+
 	m_pCurrentTrack = NULL;
 
 	m_tracks.clear();
@@ -754,7 +756,7 @@ void qtractorSession::addTrack ( qtractorTrack *pTrack )
 void qtractorSession::insertTrack ( qtractorTrack *pTrack,
 	qtractorTrack *pPrevTrack )
 {
-//	lock();
+	lock();
 
 	if (pTrack->trackType() == qtractorTrack::Midi)
 		acquireMidiTag(pTrack);
@@ -783,14 +785,14 @@ void qtractorSession::insertTrack ( qtractorTrack *pTrack,
 	pTrack->setLoop(m_iLoopStart, m_iLoopEnd);
 	pTrack->open();
 
-//	unlock();
+	unlock();
 }
 
 
 void qtractorSession::moveTrack ( qtractorTrack *pTrack,
 	qtractorTrack *pNextTrack )
 {
-//	lock();
+	lock();
 
 	m_tracks.unlink(pTrack);
 	if (pNextTrack)
@@ -804,13 +806,13 @@ void qtractorSession::moveTrack ( qtractorTrack *pTrack,
 		pSessionCursor = pSessionCursor->next();
 	}
 
-//	unlock();
+	unlock();
 }
 
 
 void qtractorSession::updateTrack ( qtractorTrack *pTrack )
 {
-//	lock();
+	lock();
 
 	pTrack->setLoop(m_iLoopStart, m_iLoopEnd);
 
@@ -820,13 +822,13 @@ void qtractorSession::updateTrack ( qtractorTrack *pTrack )
 		pSessionCursor = pSessionCursor->next();
 	}
 
-//	unlock();
+	unlock();
 }
 
 
 void qtractorSession::unlinkTrack ( qtractorTrack *pTrack )
 {
-//	lock();
+	lock();
 
 	pTrack->setLoop(0, 0);
 	pTrack->close();
@@ -849,7 +851,7 @@ void qtractorSession::unlinkTrack ( qtractorTrack *pTrack )
 
 	m_tracks.unlink(pTrack);
 
-//	unlock();
+	unlock();
 }
 
 
@@ -1019,6 +1021,8 @@ bool qtractorSession::isActivated (void) const
 // Consolidated session engine start status.
 void qtractorSession::setPlaying ( bool bPlaying )
 {
+	ATOMIC_INC(&m_busy);
+
 	// For all armed tracks...
 	if (bPlaying && isRecording()) {
 		// Take a snapshot on where recording
@@ -1050,18 +1054,26 @@ void qtractorSession::setPlaying ( bool bPlaying )
 		}
 	}
 
+	if (!bPlaying)
+		m_pAudioEngine->setRamping(-1);
+
 	// Do it.
 	m_pAudioEngine->setPlaying(bPlaying);
 	m_pMidiEngine->setPlaying(bPlaying);
 
+	if (bPlaying)
+		m_pAudioEngine->setRamping(+1);
+
 	// Have all MIDI instrument plugins be shut...
-	if (!bPlaying) {
+	if (bPlaying) {
 		qtractorMidiManager *pMidiManager = m_midiManagers.first();
 		while (pMidiManager) {
 			pMidiManager->reset();
 			pMidiManager = pMidiManager->next();
 		}
 	}
+
+	ATOMIC_DEC(&m_busy);
 }
 
 bool qtractorSession::isPlaying() const
@@ -1097,21 +1109,38 @@ void qtractorSession::release (void)
 
 void qtractorSession::lock (void)
 {
+	ATOMIC_INC(&m_busy);
+
 	// Wind up as pending lock...
 	if (ATOMIC_INC(&m_locks) == 1) {
 		// Get lost for a while...
+		m_pAudioEngine->setRamping(-1);
 		while (!acquire())
 			stabilize();
 	}
+
+	ATOMIC_DEC(&m_busy);
 }
 
 void qtractorSession::unlock (void)
 {
+	ATOMIC_INC(&m_busy);
+
 	// Unwind pending locks and force back to business...
 	if (ATOMIC_DEC(&m_locks) < 1) {
 		ATOMIC_SET(&m_locks, 0);
 		release();
+		m_pAudioEngine->setRamping(+1);
 	}
+
+	ATOMIC_DEC(&m_busy);
+}
+
+
+// Re-entrancy check.
+bool qtractorSession::isBusy (void) const
+{
+	return (ATOMIC_GET(&m_busy) > 0);
 }
 
 
@@ -1123,14 +1152,14 @@ void qtractorSession::setPlayHead ( unsigned long iFrame )
 		return;
 
 	lock();
-	setPlaying(false);
+//	setPlaying(false);
 
 	if (m_pAudioEngine->jackClient())
 		jack_transport_locate(m_pAudioEngine->jackClient(), iFrame);
 
 	seek(iFrame, true);
 
-	setPlaying(bPlaying);
+//	setPlaying(bPlaying);
 	unlock();
 }
 
@@ -1149,7 +1178,7 @@ void qtractorSession::setLoop ( unsigned long iLoopStart,
 		return;
 
 	lock();
-	setPlaying(false);
+//	setPlaying(false);
 
 	// Local prepare...
 	if (iLoopStart >= iLoopEnd) {
@@ -1179,7 +1208,7 @@ void qtractorSession::setLoop ( unsigned long iLoopStart,
 	m_pAudioEngine->sessionCursor()->seek(iFrame, true);
 	m_pMidiEngine->sessionCursor()->seek(iFrame, true);
 
-	setPlaying(bPlaying);
+//	setPlaying(bPlaying);
 	unlock();
 }
 
