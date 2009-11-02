@@ -587,6 +587,9 @@ void qtractorOptionsForm::accept (void)
 	m_pOptions->saveComboBoxHistory(m_ui.MessagesLogPathComboBox);
 	m_pOptions->saveComboBoxHistory(m_ui.SessionTemplatePathComboBox);
 
+	// Save/commit to disk.
+	m_pOptions->saveOptions();
+
 	// Just go with dialog acceptance
 	QDialog::accept();
 }

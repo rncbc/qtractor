@@ -61,6 +61,23 @@ qtractorOptions::qtractorOptions (void)
 	// Pseudo-singleton reference setup.
 	g_pOptions = this;
 
+	loadOptions();
+}
+
+
+// Default Destructor.
+qtractorOptions::~qtractorOptions (void)
+{
+	saveOptions();
+
+	// Pseudo-singleton reference shut-down.
+	g_pOptions = NULL;
+}
+
+
+// Explicit load method.
+void qtractorOptions::loadOptions (void)
+{
 	// And go into general options group.
 	m_settings.beginGroup("/Options");
 
@@ -264,8 +281,8 @@ qtractorOptions::qtractorOptions (void)
 }
 
 
-// Default Destructor.
-qtractorOptions::~qtractorOptions (void)
+// Explicit save method.
+void qtractorOptions::saveOptions (void)
 {
 	// Make program version available in the future.
 	m_settings.beginGroup("/Program");
@@ -464,8 +481,8 @@ qtractorOptions::~qtractorOptions (void)
 
 	m_settings.endGroup();
 
-	// Pseudo-singleton reference shut-down.
-	g_pOptions = NULL;
+	// Save/commit to disk.
+	m_settings.sync();
 }
 
 

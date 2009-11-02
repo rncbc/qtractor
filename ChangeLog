@@ -5,6 +5,9 @@ ChangeLog
 
 SVN HEAD
 
+- Global configuration state is now explicitly saved/committed to
+  disk whenever View/Options... dialog changes are applied.
+
 - Audio ramping spin-locking makes its smooth stuff, in an attempt
   to reduce glitching and crackling when editing (due to its own
   pseudo spin-locking) and toggling playback states. (EXPERIMENTAL)
