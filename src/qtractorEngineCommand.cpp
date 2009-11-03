@@ -89,16 +89,18 @@ bool qtractorBusCommand::createBus (void)
 	if (pSession == NULL)
 		return false;
 
+
 	// Create the bus of proper type...
 	m_pBus = NULL;
+	qtractorAudioBus *pAudioBus = NULL;
+	qtractorMidiBus *pMidiBus = NULL;
 	switch (m_busType) {
 	case qtractorTrack::Audio: {
 		qtractorAudioEngine *pAudioEngine = pSession->audioEngine();
 		if (pAudioEngine) {
-			qtractorAudioBus *pAudioBus
-				= new qtractorAudioBus(pAudioEngine,
-					m_sBusName, m_busMode, m_bPassthru,
-					m_iChannels, m_bAutoConnect);
+			pAudioBus = new qtractorAudioBus(pAudioEngine,
+				m_sBusName, m_busMode, m_bPassthru,
+				m_iChannels, m_bAutoConnect);
 			pAudioEngine->addBus(pAudioBus);
 			pAudioEngine->resetPlayerBus();
 			pAudioEngine->resetMetroBus();
@@ -109,9 +111,8 @@ bool qtractorBusCommand::createBus (void)
 	case qtractorTrack::Midi: {
 		qtractorMidiEngine *pMidiEngine = pSession->midiEngine();
 		if (pMidiEngine) {
-			qtractorMidiBus *pMidiBus
-				= new qtractorMidiBus(pMidiEngine,
-					m_sBusName, m_busMode, m_bPassthru);
+			pMidiBus = new qtractorMidiBus(pMidiEngine,
+				m_sBusName, m_busMode, m_bPassthru);
 			pMidiBus->setInstrumentName(m_sInstrumentName);
 			pMidiEngine->addBus(pMidiBus);
 			pMidiEngine->resetControlBus();
@@ -130,6 +131,10 @@ bool qtractorBusCommand::createBus (void)
 
 	// Open up the new bus...
 	m_pBus->open();
+
+	// Yet special for audio buses...
+	if (pAudioBus)
+		pAudioBus->autoConnect();
 
 	// Update mixer (look for new strips...)
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
@@ -260,6 +265,10 @@ bool qtractorBusCommand::updateBus (void)
 
 	// May reopen up the bus...
 	m_pBus->open();
+
+	// Yet special for audio buses...
+	if (pAudioBus)
+		pAudioBus->autoConnect();
 
 	// (Re)open all applicable tracks
 	// and (reset) respective mixer strips too ...

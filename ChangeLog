@@ -5,6 +5,9 @@ ChangeLog
 
 SVN HEAD
 
+- Audio bus auto-connection option is now applied when creating or
+  updating, newer or existing buses, respectively.
+
 - Global configuration state is now explicitly saved/committed to
   disk whenever View/Options... dialog changes are applied.
 
