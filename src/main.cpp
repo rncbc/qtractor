@@ -246,6 +246,7 @@ private:
 #ifdef CONFIG_STACKTRACE
 #if defined(__GNUC__) && defined(Q_OS_LINUX)
 
+#include <stdio.h>
 #include <errno.h>
 #include <signal.h>
 #include <sys/wait.h>
