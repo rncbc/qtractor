@@ -1,6 +1,6 @@
 
 #define PACKAGE_NAME    "Qtractor"
-#define PACKAGE_VERSION "0.4.3.1418"
+#define PACKAGE_VERSION "0.4.3.1421"
 
 #define PACKAGE_STRING  PACKAGE_NAME " " PACKAGE_VERSION
 
@@ -16,6 +16,7 @@
 
 #define CONFIG_LADSPA
 #define CONFIG_DSSI
+#undef  CONFIG_LV2
 #define CONFIG_VST
 
 #define CONFIG_FLOAT32

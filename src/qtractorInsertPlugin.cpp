@@ -129,7 +129,7 @@ void qtractorInsertPlugin::setChannels ( unsigned short iChannels )
 	qtractorAudioEngine *pAudioEngine = pSession->audioEngine();
 	if (pAudioEngine == NULL)
 		return;
-	
+
 	// Estimate the (new) number of instances...
 	unsigned short iInstances
 		= pType->instances(iChannels, pType->isMidi());
@@ -219,7 +219,7 @@ void qtractorInsertPlugin::process (
 	float **ppIn  = m_pAudioBus->in();  // Returns.
 
 	unsigned short iChannels = channels();
-	
+
 	for (unsigned short i = 0; i < iChannels; ++i) {
 		::memcpy(ppOut[i], ppIBuffer[i], nframes * sizeof(float));
 		::memcpy(ppOBuffer[i], ppIn[i], nframes * sizeof(float));
@@ -236,7 +236,7 @@ void qtractorInsertPlugin::configure ( const QString& sKey, const QString& sValu
 		return;
 
 	qtractorBus::ConnectItem *pItem = new qtractorBus::ConnectItem;
-	
+
 	pItem->index = sValue.section('|', 0, 0).toUShort();
 
 	const QString& sClient = sValue.section('|', 1, 1);

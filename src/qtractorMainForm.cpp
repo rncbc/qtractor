@@ -77,6 +77,10 @@
 #include "qtractorVstPlugin.h"
 #endif
 
+#ifdef CONFIG_LV2
+#include "qtractorLv2Plugin.h"
+#endif
+
 #include <QApplication>
 #include <QMessageBox>
 #include <QFileDialog>
@@ -955,6 +959,7 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 	updateRecentFilesMenu();
 	updatePeakAutoRemove();
 	updateDisplayFormat();
+	updatePluginPaths();
 	updateTransportMode();
 	updateAudioPlayer();
 	updateAudioMetronome();
@@ -1477,6 +1482,10 @@ bool qtractorMainForm::newSession (void)
 	if (!closeSession())
 		return false;
 
+#ifdef CONFIG_LV2
+	qtractorLv2PluginType::slv2_open();
+#endif
+
 	// Check whether we start new session
 	// based on existing template...
 	if (m_pOptions && m_pOptions->bSessionTemplate)
@@ -1721,6 +1730,9 @@ bool qtractorMainForm::closeSession (void)
 		m_pTracks->clear();
 		// Reset playhead.
 		m_iPlayHead = 0;
+	#ifdef CONFIG_LV2
+		qtractorLv2PluginType::slv2_close();
+	#endif
 		// Some defaults are due...
 		if (m_pOptions) {
 			m_pSession->setSnapPerBeat(
@@ -1750,6 +1762,10 @@ bool qtractorMainForm::loadSessionFile (
 
 	// Tell the world we'll take some time...
 	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+
+#ifdef CONFIG_LV2
+	qtractorLv2PluginType::slv2_open();
+#endif
 
 	// Read the file.
 	QDomDocument doc("qtractorSession");
@@ -2754,11 +2770,13 @@ void qtractorMainForm::viewConnections ( bool bOn )
 		m_pOptions->saveWidgetGeometry(m_pConnections);
 #if 0
 	if (bOn) {
+		m_pConnections->clear();
 		m_pConnections->show();
 	} else {
 		m_pConnections->hide();
 	}
 #else
+	if (bOn) m_pConnections->clear();
 	m_pConnections->setVisible(bOn);
 #endif
 }
@@ -2906,6 +2924,15 @@ void qtractorMainForm::viewOptions (void)
 	if (m_pOptions == NULL)
 		return;
 
+#ifdef CONFIG_LV2
+#if defined(__WIN32__) || defined(_WIN32) || defined(WIN32)
+	const QString sPathSep(';');
+#else
+	const QString sPathSep(':');
+#endif
+	QString sOldLv2Path = m_pOptions->lv2Paths.join(sPathSep);
+#endif
+
 	// Check out some initial nullities(tm)...
 	if (m_pOptions->sMessagesFont.isEmpty() && m_pMessages)
 		m_pOptions->sMessagesFont = m_pMessages->messagesFont().toString();
@@ -2977,6 +3004,12 @@ void qtractorMainForm::viewOptions (void)
 			qtractorAudioBuffer::setWsolaQuickSeek(m_pOptions->bAudioQuickSeek);
 			iNeedRestart |= RestartSession;
 		}
+	#ifdef CONFIG_LV2
+		if (sOldLv2Path != m_pOptions->lv2Paths.join(sPathSep)) {
+			updatePluginPaths();
+			iNeedRestart |= RestartSession;
+		}
+	#endif
 		if (( bOldStdoutCapture && !m_pOptions->bStdoutCapture) ||
 			(!bOldStdoutCapture &&  m_pOptions->bStdoutCapture)) {
 			updateMessagesCapture();
@@ -3475,6 +3508,11 @@ void qtractorMainForm::helpAbout (void)
 #ifndef CONFIG_DSSI
 	sText += "<small><font color=\"red\">";
 	sText += tr("DSSI Plug-in support disabled.");
+	sText += "</font></small><br />";
+#endif
+#ifndef CONFIG_LV2
+	sText += "<small><font color=\"red\">";
+	sText += tr("LV2 Plug-in support disabled.");
 	sText += "</font></small><br />";
 #endif
 #ifndef CONFIG_VST
@@ -4148,6 +4186,20 @@ void qtractorMainForm::updateDisplayFormat (void)
 
 	m_pSession->timeScale()->setDisplayFormat(displayFormat);
 	m_pTimeSpinBox->updateDisplayFormat();
+}
+
+
+// Update plugins search paths (LV2_PATH).
+void qtractorMainForm::updatePluginPaths (void)
+{
+	if (m_pOptions == NULL)
+		return;
+
+#ifdef CONFIG_LV2
+	qtractorPluginPath path(qtractorPluginType::Lv2);
+	path.setPaths(m_pOptions->lv2Paths);
+	path.open();
+#endif
 }
 
 

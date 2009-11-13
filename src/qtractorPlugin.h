@@ -58,7 +58,7 @@ class qtractorPluginType
 public:
 
 	// Have hints for plugin paths.
-	enum Hint { Any = 0, Ladspa, Dssi, Vst, Insert };
+	enum Hint { Any = 0, Ladspa, Dssi, Vst, Lv2, Insert };
 
 	// Constructor.
 	qtractorPluginType(qtractorPluginFile *pFile, unsigned long iIndex,
@@ -74,6 +74,9 @@ public:
 	qtractorPluginFile *file() const { return m_pFile; }
 	unsigned long index() const { return m_iIndex; }
 	Hint typeHint() const { return m_typeHint; }
+
+	// Plugin filename accessor (default virtual).
+	virtual QString filename() const;
 
 	// Must be derived methods.
 	virtual bool open()  = 0;

@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(Qtractor, 0.4.3.1418, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.4.3.1421, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractorMainForm.ui)
 AC_CONFIG_HEADERS(config.h)
@@ -85,6 +85,12 @@ AC_ARG_ENABLE(vst,
   [ac_vst="$enableval"],
   [ac_vst="yes"])
 
+# Enable LV2 support.
+AC_ARG_ENABLE(lv2,
+  AC_HELP_STRING([--enable-lv2], [enable LV2 plug-in support (default=yes)]),
+  [ac_lv2="$enableval"],
+  [ac_lv2="yes"])
+
 # Enable XInitThreads() support.
 AC_ARG_ENABLE(xinitthreads,
   AC_HELP_STRING([--enable-xinitthreads], [enable XInitThreads() support (default=no)]),
@@ -160,6 +166,11 @@ AC_ARG_WITH(liblo,
   AC_HELP_STRING([--with-liblo=PATH], [use alternate liblo path]),
   [ac_with_paths="$ac_with_paths $withval"])
 
+# Set for alternate libslv2 installation dir.
+AC_ARG_WITH(libslv2,
+  AC_HELP_STRING([--with-libslv2=PATH], [use alternate libslv2 path]),
+  [ac_with_paths="$ac_with_paths $withval"])
+
 # Set for alternate LADSPA include dir.
 AC_ARG_WITH(ladspa,
   AC_HELP_STRING([--with-ladspa=PATH], [use alternate LADSPA header path]),
@@ -174,6 +185,11 @@ AC_ARG_WITH(dssi,
 AC_ARG_WITH(vst,
   AC_HELP_STRING([--with-vst=PATH], [use alternate VST header path]),
   [ac_with_vst="$withval"])
+
+# Set for alternate LV2 include dir.
+AC_ARG_WITH(lv2,
+  AC_HELP_STRING([--with-lv2=PATH], [use alternate LV2 header path]),
+  [ac_with_lv2="$withval"])
 
 
 # Checks for programs.
@@ -425,6 +441,18 @@ if test "x$ac_liblo" = "xyes"; then
    fi
 fi
 
+# Check for optional libslv2 library.
+if test "x$ac_lv2" = "xyes"; then
+   AC_CHECK_LIB(slv2, main, [ac_lv2="yes"], [ac_lv2="no"])
+   if test "x$ac_lv2" = "xyes"; then
+      AC_DEFINE(CONFIG_LIBSLV2, 1, [Define if libslv2 is available.])
+      ac_libs="$ac_libs -lslv2"
+   else
+      AC_MSG_WARN([*** slv2 library not found.])
+      AC_MSG_WARN([*** LV2 plugin support will be disabled.])
+   fi
+fi
+
 AC_SUBST(ac_libs)
 
 
@@ -551,6 +579,44 @@ else
    ac_xinitthreads="no"
 fi
 
+# Check for LV2 headers.
+if test -n "$ac_with_lv2"; then
+   CFLAGS="-I$ac_with_lv2 $CFLAGS"
+   CPPFLAGS="-I$ac_with_lv2 $CPPFLAGS"
+   ac_lv2="yes"
+else
+   ac_lv2_event="no"
+fi
+if test "x$ac_lv2" = "xyes"; then
+   # Check for LV2 related headers (eg. librdf).
+   for X in $ac_with_paths; do
+      if test -d $X/include; then
+         for Y in redland rdf; do
+            if test -d $X/include/$Y; then
+               CFLAGS="-I$X/include/$Y $CFLAGS"
+               CPPFLAGS="-I$X/include/$Y $CPPFLAGS"
+               ac_incpath="$X/include/$Y $ac_incpath"
+            fi
+         done
+      fi
+   done
+   # Check for proper headers.
+   AC_CHECK_HEADER(slv2/slv2.h, [ac_lv2="yes"], [ac_lv2="no"])
+   if test "x$ac_lv2" = "xyes"; then
+      AC_DEFINE(CONFIG_LV2, 1, [Define if LV2 header is available.])
+   else
+      AC_MSG_WARN([*** slv2.h header file not found.])
+      AC_MSG_WARN([*** LV2 plug-in support will be disabled.])
+   fi
+   AC_CHECK_HEADERS(lv2_event.h lv2_event_helpers.h lv2_uri_map.h,
+      [ac_lv2_event="yes"], [ac_lv2_event="no"])
+   if test "x$ac_lv2_event" = "xyes"; then
+      AC_DEFINE(CONFIG_LV2_EVENT, 1, [Define if LV2 event extension is available.])
+   else
+      AC_MSG_WARN([*** LV2 event extension will be disabled.])
+   fi
+fi
+
 # Check for XInitThreads() support.
 if test "x$ac_xinitthreads" = "xyes"; then
    AC_DEFINE(CONFIG_XINITTHREADS, 1, [Define if XInitThreads() is supported.])
@@ -600,6 +666,8 @@ echo "  SSE optimization support (x86) . . . . . . . . . .: $ac_sse"
 echo "  LADSPA Plug-in support . . . . . . . . . . . . . .: $ac_ladspa"
 echo "  DSSI Plug-in support . . . . . . . . . . . . . . .: $ac_dssi"
 echo "  VST Plug-in support  . . . . . . . . . . . . . . .: $ac_vst"
+echo "  LV2 Plug-in support  . . . . . . . . . . . . . . .: $ac_lv2"
+echo "  LV2 Plug-in MIDI/Event support . . . . . . . . . .: $ac_lv2_event"
 echo
 echo "  XInitThreads() support (DANGEROUS) . . . . . . . .: $ac_xinitthreads"
 echo

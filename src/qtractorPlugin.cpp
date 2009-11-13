@@ -40,6 +40,9 @@
 #ifdef CONFIG_VST
 #include "qtractorVstPlugin.h"
 #endif
+#ifdef CONFIG_LV2
+#include "qtractorLv2Plugin.h"
+#endif
 
 #include "qtractorInsertPlugin.h"
 
@@ -88,6 +91,10 @@ typedef void (*qtractorPluginFile_Function)(void);
 #define VST_PATH PATH_PRE1 "/vst" PATH_SEP PATH_PRE2 "/vst"
 #endif
 
+#ifdef CONFIG_LV2
+#define LV2_PATH PATH_PRE1 "/lv2" PATH_SEP PATH_PRE2 "/lv2"
+#endif
+
 
 //----------------------------------------------------------------------------
 // qtractorPluginPath -- Plugin path helper.
@@ -133,10 +140,23 @@ bool qtractorPluginPath::open (void)
 			m_paths << sPaths.split(PATH_SEP);
 	}
 #endif
+#ifdef CONFIG_LV2
+	// LV2 default path...
+	if (m_typeHint == qtractorPluginType::Any ||
+		(m_typeHint == qtractorPluginType::Lv2 && m_paths.isEmpty())) {
+		sPaths = ::getenv("LV2_PATH");
+		if (sPaths.isEmpty())
+			sPaths = LV2_PATH;
+		if (!sPaths.isEmpty())
+			m_paths << sPaths.split(PATH_SEP);
+		// Must to this before anything related to LV2 plugins...
+		::setenv("LV2_PATH", m_paths.join(PATH_SEP).toUtf8().constData(), 1);
+	}
+#endif
 
 #ifdef CONFIG_DEBUG
-	qDebug("qtractorPluginPath[%p]::open() paths=\"%s\"",
-		this, m_paths.join(PATH_SEP).toUtf8().constData());
+	qDebug("qtractorPluginPath[%p]::open() paths=\"%s\" typeHint=%d",
+		this, m_paths.join(PATH_SEP).toUtf8().constData(), int(m_typeHint));
 #endif
 
 	QStringListIterator ipath(m_paths);
@@ -313,6 +333,20 @@ qtractorPlugin *qtractorPluginFile::createPlugin (
 		return NULL;
 	}
 
+#ifdef CONFIG_LV2
+	// Try LV2 plugins hints before anything else...
+	if (typeHint == qtractorPluginType::Any ||
+		typeHint == qtractorPluginType::Lv2) {
+		qtractorLv2PluginType *pLv2Type
+			= qtractorLv2PluginType::createType(sFilename);
+		if (pLv2Type) {
+			if (pLv2Type->open())
+				return new qtractorLv2Plugin(pList, pLv2Type);
+			delete pLv2Type;
+		}
+	}
+#endif
+
 	// Try to fill the types list at this moment...
 	qtractorPluginFile *pFile = new qtractorPluginFile(sFilename);
 	if (!pFile->open()) {
@@ -348,6 +382,20 @@ qtractorPlugin *qtractorPluginFile::createPlugin (
 	}
 #endif
 
+#ifdef CONFIG_LV2
+	// Try LV2 plugin types...
+	if (typeHint == qtractorPluginType::Any ||
+		typeHint == qtractorPluginType::Lv2) {
+		qtractorLv2PluginType *pLv2Type
+			= qtractorLv2PluginType::createType(sFilename);
+		if (pLv2Type) {
+			if (pLv2Type->open())
+				return new qtractorLv2Plugin(pList, pLv2Type);
+			delete pLv2Type;
+		}
+	}
+#endif
+
 #ifdef CONFIG_VST
 	// Try VST plugin types...
 	if (typeHint == qtractorPluginType::Any ||
@@ -371,6 +419,13 @@ qtractorPlugin *qtractorPluginFile::createPlugin (
 //----------------------------------------------------------------------------
 // qtractorPluginType -- Plugin type instance.
 //
+
+// Plugin filename accessor (default virtual).
+QString qtractorPluginType::filename (void) const
+{
+	return (m_pFile ? m_pFile->filename() : QString());
+}
+
 
 // Compute the number of instances needed
 // for the given input/output audio channels.
@@ -409,6 +464,11 @@ qtractorPluginType::Hint qtractorPluginType::hintFromText (
 		return Vst;
 	else
 #endif
+#ifdef CONFIG_LV2
+	if (sText == "LV2")
+		return Lv2;
+	else
+#endif
 	if (sText == "Insert")
 		return Insert;
 	else
@@ -433,6 +493,11 @@ QString qtractorPluginType::textFromHint (
 		return "VST";
 	else
 #endif
+#ifdef CONFIG_LV2
+	if (typeHint == Lv2)
+		return "LV2";
+	else
+#endif
 	if (typeHint == Insert)
 		return "Insert";
 	else
@@ -454,7 +519,7 @@ qtractorDummyPluginType::qtractorDummyPluginType (
 // Must be overriden methods.
 bool qtractorDummyPluginType::open (void)
 {
-	m_sName  = QFileInfo(file()->filename()).baseName();
+	m_sName  = QFileInfo(filename()).baseName();
 	m_sLabel = m_sName.simplified().replace(QRegExp("[\\s|\\.|\\-]+"), "_");
 
 	m_iUniqueID = 0;
@@ -1187,9 +1252,8 @@ qtractorPlugin *qtractorPluginList::copyPlugin ( qtractorPlugin *pPlugin )
 	if (m_pMidiManager && m_pMidiManager->currentProg() >= 0)
 		iProg = m_pMidiManager->currentProg();
 
-	QString sFilename; // Filname is empty for insert pseudo-plugins.
-	if (pType->file())
-		sFilename = (pType->file())->filename();
+	// Filename is empty for insert pseudo-plugins.
+	QString sFilename = pType->filename();
 	qtractorPlugin *pNewPlugin = qtractorPluginFile::createPlugin(this,
 		sFilename, pType->index(), pType->typeHint());
 	if (pNewPlugin) {
@@ -1433,9 +1497,11 @@ bool qtractorPluginList::saveElement ( qtractorSessionDocument *pDocument,
 		qtractorPluginType *pType = pPlugin->type();
 		ePlugin.setAttribute("type",
 			qtractorPluginType::textFromHint(pType->typeHint()));
-		if (pType->file()) { // Pseudo-plugins don't have a file...
+		// Pseudo-plugins don't have a file...
+		const QString& sFilename = pType->filename();
+		if (!sFilename.isEmpty()) {
 			pDocument->saveTextElement("filename",
-				(pType->file())->filename(), &ePlugin);
+				sFilename, &ePlugin);
 		}
 		pDocument->saveTextElement("index",
 			QString::number(pType->index()), &ePlugin);

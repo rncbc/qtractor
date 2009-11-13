@@ -165,7 +165,7 @@ public:
 		value = (long) m_pDisplay;
 	#endif
 		m_pVstPlugin->vst_dispatch(0, effEditOpen, 0, value, ptr, 0.0f);
-	
+
 		// Make it the right size
 		struct ERect {
 			short top;
@@ -173,7 +173,7 @@ public:
 			short bottom;
 			short right;
 		} *pRect;
-	
+
 		if (m_pVstPlugin->vst_dispatch(0, effEditGetRect, 0, 0, &pRect, 0.0f)) {
 			QWidget::setFixedSize(
 				pRect->right - pRect->left,
@@ -526,7 +526,7 @@ qtractorVstPlugin::qtractorVstPlugin ( qtractorPluginList *pList,
 {
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorVstPlugin[%p] filename=\"%s\" index=%lu typeHint=%d",
-		this, (type()->file())->filename().toUtf8().constData(),
+		this, type()->filename().toUtf8().constData(),
 		type()->index(), int(type()->typeHint()));
 #endif
 
@@ -677,7 +677,7 @@ void qtractorVstPlugin::process (
 
 	// To process MIDI events, if any...
 	qtractorMidiManager *pMidiManager = NULL;
-	if (type()->midiIns() > 0)
+	if (type()->isMidi())
 		pMidiManager = list()->midiManager();
 
 	// We'll cross channels over instances...
@@ -1283,7 +1283,7 @@ static VstIntPtr qtractorVstPlugin_closeFileSelector (
 		pvfs->returnPath = NULL;
 		pvfs->reserved   = 0;
 	}
-	
+
 	return 1;
 }
 

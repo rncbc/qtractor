@@ -719,7 +719,7 @@ static QHash<QString, DssiMulti *> g_dssiHash;
 // DSSI multiple instance key helper.
 static QString dssi_multi_key ( qtractorDssiPluginType *pDssiType )
 {
-	return (pDssiType->file())->filename() + '_' + pDssiType->label();
+	return pDssiType->filename() + '_' + pDssiType->label();
 }
 
 
@@ -793,7 +793,7 @@ bool qtractorDssiPluginType::open (void)
 
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorDssiPluginType[%p]::open() filename=\"%s\" index=%lu",
-		this, file()->filename().toUtf8().constData(), index());
+		this, filename().toUtf8().constData(), index());
 #endif
 
 	// Things we have now for granted...

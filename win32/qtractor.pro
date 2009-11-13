@@ -31,6 +31,7 @@ HEADERS += ../src/qtractorAbout.h \
            ../src/qtractorInstrument.h \
            ../src/qtractorLadspaPlugin.h \
            ../src/qtractorList.h \
+           ../src/qtractorLv2Plugin.h \
            ../src/qtractorMessages.h \
            ../src/qtractorMeter.h \
            ../src/qtractorMidiBuffer.h \
@@ -132,6 +133,7 @@ SOURCES += ../src/main.cpp \
            ../src/qtractorInsertPlugin.cpp \
            ../src/qtractorInstrument.cpp \
            ../src/qtractorLadspaPlugin.cpp \
+           ../src/qtractorLv2Plugin.cpp \
            ../src/qtractorMessages.cpp \
            ../src/qtractorMeter.cpp \
            ../src/qtractorMidiBuffer.cpp \

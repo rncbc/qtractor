@@ -27,6 +27,16 @@
 
 #ifdef CONFIG_VST
 #include "qtractorVstPlugin.h"
+#ifndef CONFIG_MIDI_PARSER
+#define CONFIG_MIDI_PARSER 1
+#endif
+#endif
+
+#ifdef CONFIG_LV2_EVENT
+#include "qtractorLv2Plugin.h"
+#ifndef CONFIG_MIDI_PARSER
+#define CONFIG_MIDI_PARSER 1
+#endif
 #endif
 
 #include <stdio.h>
@@ -239,6 +249,10 @@ public:
 	VstEvents *vst_events() const { return (VstEvents *) m_pVstBuffer; }
 #endif
 
+#ifdef CONFIG_LV2_EVENT
+	LV2_Event_Buffer *lv2_buffer() const { return m_pLv2Buffer; }
+#endif
+
 	// Audio output bus mode accessors.
 	void setAudioOutputBus(bool bAudioOutputBus);
 	bool isAudioOutputBus() const
@@ -286,9 +300,9 @@ protected:
 	void deleteAudioOutputBus();
 
 private:
-#ifdef CONFIG_VST
-	void createVstMidiParser();
-	void deleteVstMidiParser();
+#ifdef CONFIG_MIDI_PARSER
+	void createMidiParser();
+	void deleteMidiParser();
 #endif
 
 	// Instance variables
@@ -304,11 +318,18 @@ private:
 	snd_seq_event_t    *m_pBuffer;
 	unsigned int        m_iBuffer;
 
+#ifdef CONFIG_MIDI_PARSER
+	unsigned int        m_iMidiRefCount;
+	snd_midi_event_t   *m_pMidiParser;
+#endif
+
 #ifdef CONFIG_VST
-	unsigned int        m_iVstRefCount;
-	snd_midi_event_t   *m_pVstMidiParser;
 	VstMidiEvent       *m_pVstMidiBuffer;
 	unsigned char      *m_pVstBuffer;
+#endif
+
+#ifdef CONFIG_LV2_EVENT
+	LV2_Event_Buffer   *m_pLv2Buffer;
 #endif
 
 	bool                m_bAudioOutputBus;

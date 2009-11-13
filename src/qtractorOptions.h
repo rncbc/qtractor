@@ -163,6 +163,7 @@ public:
 	QStringList ladspaPaths;
 	QStringList dssiPaths;
 	QStringList vstPaths;
+	QStringList lv2Paths;
 
 	// Plug-in instrument options.
 	bool bAudioOutputBus;

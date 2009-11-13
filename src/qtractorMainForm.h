@@ -289,6 +289,7 @@ protected:
 	void updateMessagesLimit();
 	void updateMessagesCapture();
 	void updateDisplayFormat();
+	void updatePluginPaths();
 	void updateTransportMode();
 	void updateMidiControlModes();
 	void updateAudioPlayer();

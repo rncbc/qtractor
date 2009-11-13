@@ -21,7 +21,7 @@ Weblog:
   http://www.rncbc.org
 
 Qtractor is free, open-source software, distributed under the terms of
-the GNU General Public License (GPL) [15] version 2 or later.
+the GNU General Public License (GPL) [16] version 2 or later.
 
 
 Features
@@ -46,8 +46,8 @@ Features
 - Unlimited undo/redo.
 - Built-in mixer and monitor controls.
 - Built-in connection patchbay control and persistence
-  (a-la QjackCtl [13]).
-- LADSPA [5], DSSI [11] and native VSTi [12] plug-ins support.
+  (a-la QjackCtl [15]).
+- LADSPA [5], DSSI [12], native VST [13] and LV2 [14] plug-ins support.
 - Unlimited number of plug-ins per track or bus.
 - Plug-in presets, programs and chunk/configurations support.
 - Unlimited audio effect send/return inserts per track or bus.
@@ -60,7 +60,7 @@ Features
 - Audio/MIDI metronome bar/beat clicks.
 - Unlimited tempo/time-signature map.
 - MIDI clip editor (matrix/piano roll).
-- MIDI instrument definitions (a-la Cakewalk(tm) [15]).
+- MIDI instrument definitions (a-la Cakewalk(tm) [17]).
 - MIDI controller mapping (mixer).
 - MIDI system exclusive (SysEx) setups.
 - JACK transport sync master.
@@ -113,11 +113,18 @@ The software requirements for build and runtime are listed as follows:
         (needed for DSSI GUI support)
         http://liblo.sourceforge.net/
 
-  [11] DSSI, An API for soft synth plugins with custom user interfaces
+  [11] libslv2, Simple C library for LV2 hosts
+        (needed for LV2 support)
+        http://drobilla.net/software/slv2/
+
+  [12] DSSI, An API for soft synth plugins with custom user interfaces
         http://dssi.sourceforge.net/
 
-  [12] VST SDK, Steinberg's Virtual Studio Technology (see README.VST)
+  [13] VST SDK, Steinberg's Virtual Studio Technology (see README.VST)
         http://www.steinberg.net/
+
+  [14] LV2, Audio Plugin Standard, the extensible successor of LADSPA
+        http://lv2plug.in/
 
 
 Installation
@@ -224,19 +231,23 @@ References
      (needed for DSSI GUI support)
      http://liblo.sourceforge.net/
 
-[11] DSSI, an API for soft synth plugins with custom user interfaces
+[11] libslv2, Simple C library for LV2 hosts
+	 (needed for LV2 support)
+	  http://drobilla.net/software/slv2/
+
+[12] DSSI, an API for soft synth plugins with custom user interfaces
      http://dssi.sourceforge.net/
 
-[12] VST SDK, Steinberg's Virtual Studio Technology (see README.VST)
+[13] VST SDK, Steinberg's Virtual Studio Technology (see README.VST)
      http://www.steinberg.net/
 
-[13] QjackCtl - JACK Qt GUI Interface
+[15] QjackCtl - JACK Qt GUI Interface
      http://qjackctl.sourceforge.net
 
-[14] GNU General Public License
+[16] GNU General Public License
      http://www.gnu.org/copyleft/gpl.html
 
-[15] Cakewalk (by Roland), powerful and easy-to-use tools
+[17] Cakewalk (by Roland), powerful and easy-to-use tools
      for Windows-based music and sound production
      http://www.cakewalk.com/
 

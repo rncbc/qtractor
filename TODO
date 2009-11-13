@@ -12,7 +12,6 @@ on in the times to come (not in any particular order):
 - Loop recording (takes).
 - Audio clip cross-fading.
 - Clip locking, muting and plug-ins.
-- LV2 plug-in support.
 - JACK MIDI support.
 - MIDI event list editor.
 - MIDI editor (piano roll) draw mode.

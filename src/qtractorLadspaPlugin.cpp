@@ -43,7 +43,7 @@ bool qtractorLadspaPluginType::open (void)
 
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorLadspaPluginType[%p]::open() filename=\"%s\" index=%lu",
-		this, file()->filename().toUtf8().constData(), index());
+		this, filename().toUtf8().constData(), index());
 #endif
 
 	// Retrieve plugin type names.
@@ -142,7 +142,7 @@ qtractorLadspaPlugin::qtractorLadspaPlugin ( qtractorPluginList *pList,
 {
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorLadspaPlugin[%p] filename=\"%s\" index=%lu typeHint=%d",
-		this, (type()->file())->filename().toUtf8().constData(),
+		this, type()->filename().toUtf8().constData(),
 		type()->index(), int(type()->typeHint()));
 #endif
 

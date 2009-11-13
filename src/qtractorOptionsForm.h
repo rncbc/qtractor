@@ -100,6 +100,7 @@ private:
 	// Plug-ins path cache.
 	QStringList m_ladspaPaths;
 	QStringList m_dssiPaths;
+	QStringList m_lv2Paths;
 	QStringList m_vstPaths;
 };
 

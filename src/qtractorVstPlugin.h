@@ -36,7 +36,7 @@
 
 
 //----------------------------------------------------------------------------
-// qtractorVstPluginType -- LADSPA plugin type instance.
+// qtractorVstPluginType -- VST plugin type instance.
 //
 
 class qtractorVstPluginType : public qtractorPluginType

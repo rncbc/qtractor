@@ -22,6 +22,10 @@
 #include "qtractorAbout.h"
 #include "qtractorPluginSelectForm.h"
 
+#ifdef CONFIG_LV2
+#include "qtractorLv2Plugin.h"
+#endif
+
 #include "qtractorOptions.h"
 
 #include <QHeaderView>
@@ -33,6 +37,7 @@
 
 static qtractorPluginPath     g_pluginPath;
 static qtractorPluginTypeList g_pluginTypes;
+
 
 //----------------------------------------------------------------------------
 // qtractorPluginSelectForm -- UI wrapper form.
@@ -62,6 +67,10 @@ qtractorPluginSelectForm::qtractorPluginSelectForm (
 #ifdef CONFIG_VST
 	m_ui.PluginTypeComboBox->addItem(
 		qtractorPluginType::textFromHint(qtractorPluginType::Vst));
+#endif
+#ifdef CONFIG_LV2
+	m_ui.PluginTypeComboBox->addItem(
+		qtractorPluginType::textFromHint(qtractorPluginType::Lv2));
 #endif
 
 	QHeaderView *pHeader = m_ui.PluginListView->header();
@@ -223,6 +232,9 @@ void qtractorPluginSelectForm::typeHintChanged ( int iTypeHint )
 		if (typeHint == qtractorPluginType::Any ||
 			typeHint == qtractorPluginType::Vst)
 			paths += pOptions->vstPaths;
+	//	if (typeHint == qtractorPluginType::Any ||
+	//		typeHint == qtractorPluginType::Lv2)
+	//		paths += pOptions->lv2Paths;
 		if (typeHint == qtractorPluginType::Any ||
 			typeHint == qtractorPluginType::Dssi)
 			paths += pOptions->dssiPaths;
@@ -274,6 +286,12 @@ void qtractorPluginSelectForm::refresh (void)
 				pFile->close();
 			}
 		}
+	#ifdef CONFIG_LV2
+		if (typeHint == qtractorPluginType::Any ||
+			typeHint == qtractorPluginType::Lv2) {
+			qtractorLv2PluginType::getTypes(g_pluginTypes);
+		}
+	#endif
 		m_ui.PluginTypeProgressBar->hide();
 		// We're formerly done.
 		QApplication::restoreOverrideCursor();
@@ -287,7 +305,7 @@ void qtractorPluginSelectForm::refresh (void)
 	QListIterator<qtractorPluginType *> type_iter(g_pluginTypes.list());
 	while (type_iter.hasNext()) {
 		qtractorPluginType *pType = type_iter.next();
-		const QString& sFilename = (pType->file())->filename();
+		const QString& sFilename = pType->filename();
 		const QString& sName = pType->name();
 		if (rx.isEmpty()
 			|| rx.indexIn(sName) >= 0
