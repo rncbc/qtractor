@@ -1054,17 +1054,8 @@ void qtractorSession::setPlaying ( bool bPlaying )
 		}
 	}
 
-	if (!bPlaying)
-		m_pAudioEngine->setRamping(-1);
-
-	// Do it.
-	m_pAudioEngine->setPlaying(bPlaying);
-	m_pMidiEngine->setPlaying(bPlaying);
-
-	if (bPlaying)
-		m_pAudioEngine->setRamping(+1);
-
-	// Have all MIDI instrument plugins be shut...
+	// Have all MIDI instrument plugins be shut up
+	// if start playing, otherwise do ramping down...
 	if (bPlaying) {
 		qtractorMidiManager *pMidiManager = m_midiManagers.first();
 		while (pMidiManager) {
@@ -1072,6 +1063,15 @@ void qtractorSession::setPlaying ( bool bPlaying )
 			pMidiManager = pMidiManager->next();
 		}
 	}
+	else m_pAudioEngine->setRamping(-1);
+
+	// Do it.
+	m_pAudioEngine->setPlaying(bPlaying);
+	m_pMidiEngine->setPlaying(bPlaying);
+
+	// Do ramping up...
+	if (bPlaying)
+		m_pAudioEngine->setRamping(+1);
 
 	ATOMIC_DEC(&m_busy);
 }
@@ -1140,7 +1140,7 @@ void qtractorSession::unlock (void)
 // Re-entrancy check.
 bool qtractorSession::isBusy (void) const
 {
-	return (ATOMIC_GET(&m_busy) > 0);
+	return (ATOMIC_GET(&m_busy) > 0 || ATOMIC_GET(&m_locks) > 0);
 }
 
 
@@ -1158,6 +1158,17 @@ void qtractorSession::setPlayHead ( unsigned long iFrame )
 		jack_transport_locate(m_pAudioEngine->jackClient(), iFrame);
 
 	seek(iFrame, true);
+
+	// Reset all MIDI instrument plugins...
+	if (bPlaying) {
+		qtractorMidiManager *pMidiManager = m_midiManagers.first();
+		while (pMidiManager) {
+			pMidiManager->reset();
+			pMidiManager = pMidiManager->next();
+		}
+		m_pAudioEngine->sessionCursor()->setFrameTime(0);
+		m_pMidiEngine->sessionCursor()->setFrameTime(0);
+	}
 
 //	setPlaying(bPlaying);
 	unlock();
@@ -1207,6 +1218,17 @@ void qtractorSession::setLoop ( unsigned long iLoopStart,
 	// Replace last known play-head...
 	m_pAudioEngine->sessionCursor()->seek(iFrame, true);
 	m_pMidiEngine->sessionCursor()->seek(iFrame, true);
+
+	// Reset all MIDI instrument plugins...
+	if (bPlaying) {
+		qtractorMidiManager *pMidiManager = m_midiManagers.first();
+		while (pMidiManager) {
+			pMidiManager->reset();
+			pMidiManager = pMidiManager->next();
+		}
+		m_pAudioEngine->sessionCursor()->setFrameTime(0);
+		m_pMidiEngine->sessionCursor()->setFrameTime(0);
+	}
 
 //	setPlaying(bPlaying);
 	unlock();

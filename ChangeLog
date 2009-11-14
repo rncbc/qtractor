@@ -6,14 +6,14 @@ ChangeLog
 SVN TRUNK
 
 - LV2 plug-in hosting has finally emerged into actual implementation;
-  only the most basic LV2 plugi-ins are supported at the moment, that
+  only the most basic LV2 plug-ins are supported at the moment, that
   is, only audio fx plug-ins will work; probably there's no advantage
   against the good old LADSPA ones and no, there's no support for any
   of the still illusive LV2 GUI extensions, as of yet. LV2 core only.
-  Revisions may vary your milleage. LV2 MIDI/Event barebones support
-  is  included but chances are it won't build nor work right on most
-  of the setups out there. It's a WIP host implementation anyways, as
-  is the LV2 spec. ;) (EXPERIMENTAL)
+  Revisions may vary your mileage. LV2 MIDI/Event bare-bones support
+  is included but chances are it won't build nor work right on most
+  of the setups out there. It's a WIP host implementation anyways,
+  as is the LV2 spec. for that matter ;) (EXPERIMENTAL)
 
 - Connections filter is now reset when widget is shown through the
   View/Connections main menu or toolbar button.
