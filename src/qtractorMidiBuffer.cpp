@@ -387,6 +387,9 @@ void qtractorMidiManager::process (
 				fprintf(stderr, " %02x", pMidiData[i]);
 			fprintf(stderr, " }\n");
 		#endif
+		#ifdef CONFIG_VST
+			pVstEvents->events[iMidiEvents] = (VstEvent *) pVstMidiEvent;
+		#endif
 		#ifdef CONFIG_LV2_EVENT
 			lv2_event_write(&iter, pEv->time.tick, 0,
 				QTRACTOR_LV2_MIDI_EVENT_ID, iMidiData, pMidiData);
