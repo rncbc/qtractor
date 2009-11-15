@@ -1063,14 +1063,15 @@ void qtractorSession::setPlaying ( bool bPlaying )
 			pMidiManager = pMidiManager->next();
 		}
 	}
-	else m_pAudioEngine->setRamping(-1);
+	else if (!ATOMIC_GET(&m_locks))
+		m_pAudioEngine->setRamping(-1);
 
 	// Do it.
 	m_pAudioEngine->setPlaying(bPlaying);
 	m_pMidiEngine->setPlaying(bPlaying);
 
 	// Do ramping up...
-	if (bPlaying)
+	if (bPlaying && !ATOMIC_GET(&m_locks))
 		m_pAudioEngine->setRamping(+1);
 
 	ATOMIC_DEC(&m_busy);
@@ -1152,25 +1153,14 @@ void qtractorSession::setPlayHead ( unsigned long iFrame )
 		return;
 
 	lock();
-//	setPlaying(false);
+	setPlaying(false);
 
 	if (m_pAudioEngine->jackClient())
 		jack_transport_locate(m_pAudioEngine->jackClient(), iFrame);
 
 	seek(iFrame, true);
 
-	// Reset all MIDI instrument plugins...
-	if (bPlaying) {
-		qtractorMidiManager *pMidiManager = m_midiManagers.first();
-		while (pMidiManager) {
-			pMidiManager->reset();
-			pMidiManager = pMidiManager->next();
-		}
-		m_pAudioEngine->sessionCursor()->setFrameTime(0);
-		m_pMidiEngine->sessionCursor()->setFrameTime(0);
-	}
-
-//	setPlaying(bPlaying);
+	setPlaying(bPlaying);
 	unlock();
 }
 
@@ -1189,7 +1179,7 @@ void qtractorSession::setLoop ( unsigned long iLoopStart,
 		return;
 
 	lock();
-//	setPlaying(false);
+	setPlaying(false);
 
 	// Local prepare...
 	if (iLoopStart >= iLoopEnd) {
@@ -1219,18 +1209,7 @@ void qtractorSession::setLoop ( unsigned long iLoopStart,
 	m_pAudioEngine->sessionCursor()->seek(iFrame, true);
 	m_pMidiEngine->sessionCursor()->seek(iFrame, true);
 
-	// Reset all MIDI instrument plugins...
-	if (bPlaying) {
-		qtractorMidiManager *pMidiManager = m_midiManagers.first();
-		while (pMidiManager) {
-			pMidiManager->reset();
-			pMidiManager = pMidiManager->next();
-		}
-		m_pAudioEngine->sessionCursor()->setFrameTime(0);
-		m_pMidiEngine->sessionCursor()->setFrameTime(0);
-	}
-
-//	setPlaying(bPlaying);
+	setPlaying(bPlaying);
 	unlock();
 }
 

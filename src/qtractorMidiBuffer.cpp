@@ -333,11 +333,11 @@ void qtractorMidiManager::process (
 		if (pEv->type == SND_SEQ_EVENT_SYSEX) {
 			fprintf(stderr, " sysex {");
 			unsigned char *data = (unsigned char *) pEv->data.ext.ptr;
-			for (unsigned int i = 0; i < pEv->data.ext.len; i++)
+			for (unsigned int i = 0; i < pEv->data.ext.len; ++i)
 				fprintf(stderr, " %02x", data[i]);
 			fprintf(stderr, " }\n");
 		} else {
-			for (unsigned int i = 0; i < sizeof(pEv->data.raw8.d); i++)
+			for (unsigned int i = 0; i < sizeof(pEv->data.raw8.d); ++i)
 				fprintf(stderr, " %3d", pEv->data.raw8.d[i]);
 			fprintf(stderr, "\n");
 		}
@@ -379,6 +379,14 @@ void qtractorMidiManager::process (
 				pMidiData, iMidiData, pEv);
 			if (iMidiData < 0)
 				break;
+		#ifdef CONFIG_DEBUG_0
+			// - show event for debug purposes...
+			unsigned long iTime = pEv->time.tick;
+			fprintf(stderr, "MIDI Raw %06lu {", iTime);
+			for (unsigned int i = 0; i < iMidiData; ++i)
+				fprintf(stderr, " %02x", pMidiData[i]);
+			fprintf(stderr, " }\n");
+		#endif
 		#ifdef CONFIG_LV2_EVENT
 			lv2_event_write(&iter, pEv->time.tick, 0,
 				QTRACTOR_LV2_MIDI_EVENT_ID, iMidiData, pMidiData);

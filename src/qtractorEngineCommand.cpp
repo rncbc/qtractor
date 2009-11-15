@@ -164,10 +164,10 @@ bool qtractorBusCommand::updateBus (void)
 		return false;
 
 	// We need to hold things for a while...
-//	bool bPlaying = pSession->isPlaying();
+	bool bPlaying = pSession->isPlaying();
 
 	pSession->lock();
-//	pSession->setPlaying(false);
+	pSession->setPlaying(false);
 
 	// Save current bus properties...
 	qtractorBus::BusMode busMode = m_pBus->busMode();
@@ -308,7 +308,7 @@ bool qtractorBusCommand::updateBus (void)
 	m_sInstrumentName = sInstrumentName;
 
 	// Carry on...
-//	pSession->setPlaying(bPlaying);
+	pSession->setPlaying(bPlaying);
 	pSession->unlock();
 
 	// Done.
@@ -343,10 +343,10 @@ bool qtractorBusCommand::deleteBus (void)
 		return false;
 
 	// We need to hold things for a while...
-//	bool bPlaying = pSession->isPlaying();
+	bool bPlaying = pSession->isPlaying();
 
 	pSession->lock();
-//	pSession->setPlaying(false);
+	pSession->setPlaying(false);
 
 	// Close all applicable tracks...
 	for (qtractorTrack *pTrack = pSession->tracks().first();
@@ -392,7 +392,7 @@ bool qtractorBusCommand::deleteBus (void)
 	}
 
 	// Carry on...
-//	pSession->setPlaying(bPlaying);
+	pSession->setPlaying(bPlaying);
 	pSession->unlock();
 
 	// Done.
