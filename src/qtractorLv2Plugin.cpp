@@ -33,7 +33,7 @@
 // URI map feature for event types (MIDI).
 #include "lv2_uri_map.h"
 
-static uint32_t qtractor_slv2_uri_to_id (
+static uint32_t qtractor_lv2_uri_to_id (
 	LV2_URI_Map_Callback_Data /*data*/, const char *map, const char *uri )
 {
 	if (strcmp(map, LV2_EVENT_URI) == 0 &&
@@ -44,28 +44,28 @@ static uint32_t qtractor_slv2_uri_to_id (
 }
 
 // LV2 type 0 events (not supported anyway).
-static uint32_t qtractor_slv2_event_ref (
+static uint32_t qtractor_lv2_event_ref (
 	LV2_Event_Callback_Data /*data*/, LV2_Event */*event*/ )
 {
 	return 0;
 }
 
-static LV2_URI_Map_Feature g_slv2_uri_map =
-	{ NULL, qtractor_slv2_uri_to_id };
-static const LV2_Feature g_slv2_uri_map_feature =
-	{ "http://lv2plug.in/ns/ext/uri-map", &g_slv2_uri_map };
+static LV2_URI_Map_Feature g_lv2_uri_map =
+	{ NULL, qtractor_lv2_uri_to_id };
+static const LV2_Feature g_lv2_uri_map_feature =
+	{ "http://lv2plug.in/ns/ext/uri-map", &g_lv2_uri_map };
 
-static LV2_Event_Feature g_slv2_event_ref =
-	{ NULL, qtractor_slv2_event_ref, qtractor_slv2_event_ref };
-static const LV2_Feature g_slv2_event_ref_feature =
-	{ "http://lv2plug.in/ns/ext/event", &g_slv2_event_ref };
+static LV2_Event_Feature g_lv2_event_ref =
+	{ NULL, qtractor_lv2_event_ref, qtractor_lv2_event_ref };
+static const LV2_Feature g_lv2_event_ref_feature =
+	{ "http://lv2plug.in/ns/ext/event", &g_lv2_event_ref };
 
-static const LV2_Feature *g_slv2_features[] =
-	{ &g_slv2_uri_map_feature, &g_slv2_event_ref_feature, NULL };
+static const LV2_Feature *g_lv2_features[] =
+	{ &g_lv2_uri_map_feature, &g_lv2_event_ref_feature, NULL };
 
 #else
 
-static const LV2_Feature *g_slv2_features[] = { NULL };
+static const LV2_Feature *g_lv2_features[] = { NULL };
 
 #endif	// !CONFIG_LV2_EVENT
 
@@ -461,7 +461,7 @@ void qtractorLv2Plugin::setChannels ( unsigned short iChannels )
 	for (unsigned short i = 0; i < iInstances; ++i) {
 		// Instantiate them properly first...
 		SLV2Instance instance
-			= slv2_plugin_instantiate(plugin, sampleRate(), g_slv2_features);
+			= slv2_plugin_instantiate(plugin, sampleRate(), g_lv2_features);
 		// (Dis)connect all ports...
 		unsigned long iNumPorts = slv2_plugin_get_num_ports(plugin);
 		for (unsigned long k = 0; k < iNumPorts; ++k)

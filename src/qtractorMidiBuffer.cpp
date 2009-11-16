@@ -350,8 +350,6 @@ void qtractorMidiManager::process (
 		VstEvents *pVstEvents = (VstEvents *) m_pVstBuffer;
 	#endif
 	#ifdef CONFIG_LV2_EVENT
-		lv2_event_buffer_reset(m_pLv2Buffer, LV2_EVENT_AUDIO_STAMP,
-			(unsigned char *) (m_pLv2Buffer + 1));
 		LV2_Event_Iterator iter;
 		lv2_event_begin(&iter, m_pLv2Buffer);
 	#endif
