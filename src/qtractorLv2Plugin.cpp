@@ -82,6 +82,9 @@ static SLV2Value g_slv2_audio_class      = NULL;
 static SLV2Value g_slv2_event_class      = NULL;
 static SLV2Value g_slv2_midi_class       = NULL;
 
+// Supported plugin features.
+static SLV2Value g_slv2_realtime_hint    = NULL;
+
 // Supported port properties (hints).
 static SLV2Value g_slv2_toggled_prop     = NULL;
 static SLV2Value g_slv2_integer_prop     = NULL;
@@ -158,7 +161,7 @@ bool qtractorLv2PluginType::open (void)
 	}
 
 	// Cache flags.
-	m_bRealtime = true;
+	m_bRealtime = slv2_plugin_has_feature(m_slv2_plugin, g_slv2_realtime_hint);
 
 	// Done.
 	return true;
@@ -230,15 +233,19 @@ void qtractorLv2PluginType::slv2_open (void)
 	g_slv2_event_class   = slv2_value_new_uri(g_slv2_world, SLV2_PORT_CLASS_EVENT);
 	g_slv2_midi_class    = slv2_value_new_uri(g_slv2_world, SLV2_EVENT_CLASS_MIDI);
 
+	// Set up the feature we may want to know (as hints).
+	g_slv2_realtime_hint = slv2_value_new_uri(g_slv2_world,
+		SLV2_NAMESPACE_LV2 "hardRtCapable");
+
 	// Set up the port properties we support (as hints).
 	g_slv2_toggled_prop = slv2_value_new_uri(g_slv2_world,
-		"http://lv2plug.in/ns/lv2core#toggled");
+		SLV2_NAMESPACE_LV2 "toggled");
 	g_slv2_integer_prop = slv2_value_new_uri(g_slv2_world,
-		"http://lv2plug.in/ns/lv2core#integer");
+		SLV2_NAMESPACE_LV2 "integer");
 	g_slv2_sample_rate_prop = slv2_value_new_uri(g_slv2_world,
-		"http://lv2plug.in/ns/lv2core#sampleRate");
+		SLV2_NAMESPACE_LV2 "sampleRate");
 	g_slv2_logarithmic_prop = slv2_value_new_uri(g_slv2_world,
-		"http://lv2plug.in/ns/lv2core#logarithmic");
+		"http://lv2plug.in/ns/dev/extportinfo#logarithmic");
 }
 
 
@@ -256,6 +263,8 @@ void qtractorLv2PluginType::slv2_close (void)
 	slv2_value_free(g_slv2_integer_prop);
 	slv2_value_free(g_slv2_sample_rate_prop);
 	slv2_value_free(g_slv2_logarithmic_prop);
+
+	slv2_value_free(g_slv2_realtime_hint);
 
 	slv2_value_free(g_slv2_input_class);
 	slv2_value_free(g_slv2_output_class);
@@ -312,9 +321,9 @@ bool qtractorLv2PluginType::getTypes ( qtractorPluginTypeList& types )
 qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 	qtractorLv2PluginType *pLv2Type )
 	: qtractorPlugin(pList, pLv2Type), m_pInstances(NULL),
-		m_piControlOuts(NULL), m_piAudioIns(NULL), m_piAudioOuts(NULL)
+		m_piAudioIns(NULL), m_piAudioOuts(NULL)
 	#ifdef CONFIG_LV2_EVENT
-		, m_piMidiIns(NULL), m_piMidiOuts(NULL)
+		, m_piMidiIns(NULL)
 	#endif
 {
 #ifdef CONFIG_DEBUG
@@ -325,24 +334,18 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 	// Get some structural data first...
 	SLV2Plugin plugin = pLv2Type->slv2_plugin();
 	if (plugin) {
-		unsigned short iControlOuts = pLv2Type->controlOuts();
-		unsigned short iAudioIns    = pLv2Type->audioIns();
-		unsigned short iAudioOuts   = pLv2Type->audioOuts();
-		if (iControlOuts > 0)
-			m_piControlOuts = new unsigned long [iControlOuts];
+		unsigned short iAudioIns  = pLv2Type->audioIns();
+		unsigned short iAudioOuts = pLv2Type->audioOuts();
 		if (iAudioIns > 0)
 			m_piAudioIns = new unsigned long [iAudioIns];
 		if (iAudioOuts > 0)
 			m_piAudioOuts = new unsigned long [iAudioOuts];
-		iControlOuts = iAudioIns = iAudioOuts = 0;
+		iAudioIns = iAudioOuts = 0;
 	#ifdef CONFIG_LV2_EVENT
-		unsigned short iMidiIns  = pLv2Type->midiIns();
-		unsigned short iMidiOuts = pLv2Type->midiOuts();
+		unsigned short iMidiIns = pLv2Type->midiIns();
 		if (iMidiIns > 0)
 			m_piMidiIns = new unsigned long [iMidiIns];
-		if (iMidiOuts > 0)
-			m_piMidiOuts = new unsigned long [iMidiOuts];
-		iMidiIns = iMidiOuts = 0;
+		iMidiIns = 0;
 	#endif
 		unsigned long iNumPorts = slv2_plugin_get_num_ports(plugin);
 		for (unsigned long i = 0; i < iNumPorts; ++i) {
@@ -365,15 +368,6 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 				if (slv2_port_is_a(plugin, port, g_slv2_output_class)) {
 					if (slv2_port_is_a(plugin, port, g_slv2_audio_class))
 						m_piAudioOuts[iAudioOuts++] = i;
-					else
-				#ifdef CONFIG_LV2_EVENT
-					if (slv2_port_is_a(plugin, port, g_slv2_event_class) ||
-						slv2_port_is_a(plugin, port, g_slv2_midi_class))
-						m_piMidiOuts[iMidiOuts++] = i;
-					else
-				#endif
-					if (slv2_port_is_a(plugin, port, g_slv2_control_class))
-						m_piControlOuts[iControlOuts++] = i;
 				}
 			}
 		}
@@ -391,8 +385,6 @@ qtractorLv2Plugin::~qtractorLv2Plugin (void)
 
 	// Free up all the rest...
 #ifdef CONFIG_LV2_EVENT
-	if (m_piMidiOuts)
-		delete [] m_piMidiOuts;
 	if (m_piMidiIns)
 		delete [] m_piMidiIns;
 #endif
@@ -400,8 +392,6 @@ qtractorLv2Plugin::~qtractorLv2Plugin (void)
 		delete [] m_piAudioOuts;
 	if (m_piAudioIns)
 		delete [] m_piAudioIns;
-	if (m_piControlOuts)
-		delete [] m_piControlOuts;
 }
 
 
@@ -455,8 +445,6 @@ void qtractorLv2Plugin::setChannels ( unsigned short iChannels )
 #endif
 
 	// Allocate new instances...
-	unsigned short iControlOuts = pType->controlOuts();
-	// Allocate new instances...
 	m_pInstances = new SLV2Instance [iInstances];
 	for (unsigned short i = 0; i < iInstances; ++i) {
 		// Instantiate them properly first...
@@ -472,11 +460,6 @@ void qtractorLv2Plugin::setChannels ( unsigned short iChannels )
 			qtractorPluginParam *pParam = param.next();
 			slv2_instance_connect_port(instance,
 				pParam->index(), pParam->data());
-		}
-		// Connect all existing output control (null) ports...
-		for (unsigned short j = 0; j < iControlOuts; ++j) {
-			slv2_instance_connect_port(instance,
-				m_piControlOuts[j], NULL);
 		}
 	#ifdef CONFIG_LV2_EVENT
 		// Connect all existing input MIDI ports...

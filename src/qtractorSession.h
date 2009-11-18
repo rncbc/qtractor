@@ -286,11 +286,10 @@ public:
 	// MIDI session/tracks instrument/controller patching (conditional).
 	void setMidiPatch(bool bForceImmediate);
 
-	// MIDI managers factory methods.
-	qtractorMidiManager *createMidiManager(qtractorPluginList *pPluginList);
-	void deleteMidiManager(qtractorMidiManager *pMidiManager);
-
 	// MIDI manager list accessors.
+	void addMidiManager(qtractorMidiManager *pMidiManager);
+	void removeMidiManager(qtractorMidiManager *pMidiManager);
+
 	const qtractorList<qtractorMidiManager>& midiManagers() const;
 
 	// Auto time-stretching global flag (when tempo changes)

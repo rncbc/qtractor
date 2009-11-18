@@ -127,9 +127,6 @@ protected:
 	// Instance variables.
 	SLV2Instance *m_pInstances;
 
-	// List of output control (dummy) port indexes.
-	unsigned long *m_piControlOuts;
-
 	// List of audio port indexes.
 	unsigned long *m_piAudioIns;
 	unsigned long *m_piAudioOuts;
@@ -137,7 +134,6 @@ protected:
 #ifdef CONFIG_LV2_EVENT
 	// List of MIDI port indexes.
 	unsigned long *m_piMidiIns;
-	unsigned long *m_piMidiOuts;
 #endif
 };
 

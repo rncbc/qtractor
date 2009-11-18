@@ -241,10 +241,6 @@ public:
 	static void setDefaultAudioOutputBus(bool bAudioOutputBus);
 	static bool isDefaultAudioOutputBus();
 
-	// Plugin reference counting.
-	void addPluginRef(qtractorPlugin *pPlugin);
-	void removePluginRef(qtractorPlugin *pPlugin);
-
 #ifdef CONFIG_VST
 	VstEvents *vst_events() const { return (VstEvents *) m_pVstBuffer; }
 #endif
@@ -299,12 +295,12 @@ protected:
 	void createAudioOutputBus();
 	void deleteAudioOutputBus();
 
-private:
 #ifdef CONFIG_MIDI_PARSER
 	void createMidiParser();
 	void deleteMidiParser();
 #endif
 
+private:
 	// Instance variables
 	qtractorSession    *m_pSession;
 	qtractorPluginList *m_pPluginList;
@@ -319,7 +315,6 @@ private:
 	unsigned int        m_iBuffer;
 
 #ifdef CONFIG_MIDI_PARSER
-	unsigned int        m_iMidiRefCount;
 	snd_midi_event_t   *m_pMidiParser;
 #endif
 

@@ -175,7 +175,6 @@ qtractorMidiManager::qtractorMidiManager ( qtractorSession *pSession,
 	m_controllerBuffer(iBufferSize >> 2),
 	m_pBuffer(NULL), m_iBuffer(0),
 #ifdef CONFIG_MIDI_PARSER
-	m_iMidiRefCount(0),
 	m_pMidiParser(NULL),
 #endif
 #ifdef CONFIG_VST
@@ -197,6 +196,10 @@ qtractorMidiManager::qtractorMidiManager ( qtractorSession *pSession,
 
 	m_pSyncThread = new qtractorMidiManagerThread(this);
 	m_pSyncThread->start();
+	
+#ifdef CONFIG_MIDI_PARSER
+	createMidiParser();
+#endif
 
 	createAudioOutputBus();
 }
@@ -493,11 +496,13 @@ void qtractorMidiManager::reset (void)
 qtractorMidiManager *qtractorMidiManager::createMidiManager (
 	qtractorPluginList *pPluginList )
 {
-	qtractorMidiManager *pMidiManager = NULL;
-
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession)
-		pMidiManager = pSession->createMidiManager(pPluginList);
+	if (pSession == NULL)
+		return NULL;
+
+	qtractorMidiManager *pMidiManager
+		= new qtractorMidiManager(pSession, pPluginList);
+	pSession->addMidiManager(pMidiManager);
 
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorMidiManager::createMidiManager(%p)", pMidiManager);
@@ -509,13 +514,19 @@ qtractorMidiManager *qtractorMidiManager::createMidiManager (
 
 void qtractorMidiManager::deleteMidiManager ( qtractorMidiManager *pMidiManager )
 {
+	if (pMidiManager == NULL)
+		return;
+
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return;
+
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorMidiManager::deleteMidiManager(%p)", pMidiManager);
 #endif
 
-	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession)
-		pSession->deleteMidiManager(pMidiManager);
+	pSession->removeMidiManager(pMidiManager);
+	delete pMidiManager;
 }
 
 
@@ -593,35 +604,6 @@ void qtractorMidiManager::deleteMidiParser (void)
 }
 
 #endif	// CONFIG_MIDI_PARSER
-
-
-// Plugin reference counting.
-void qtractorMidiManager::addPluginRef ( qtractorPlugin *pPlugin )
-{
-#ifdef CONFIG_DEBUG
-	qDebug("qtractorMidiManager[%p]::addPluginRef(%p)", this, pPlugin);
-#endif
-#ifdef CONFIG_MIDI_PARSER
-	if ((pPlugin->type())->isMidi()) {
-		if (++m_iMidiRefCount == 1)
-			createMidiParser();
-	}
-#endif
-}
-
-
-void qtractorMidiManager::removePluginRef ( qtractorPlugin *pPlugin )
-{
-#ifdef CONFIG_DEBUG
-	qDebug("qtractorMidiManager[%p]::removePluginRef(%p)", this, pPlugin);
-#endif
-#ifdef CONFIG_MIDI_PARSER
-	if ((pPlugin->type())->isMidi()) {
-		if (--m_iMidiRefCount == 0)
-			deleteMidiParser();
-	}
-#endif
-}
 
 
 // Output bus mode accessors.

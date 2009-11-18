@@ -217,7 +217,7 @@ void qtractorSession::clear (void)
 	m_props.clear();
 
 	m_midiTags.clear();
-	m_midiManagers.clear();
+//	m_midiManagers.clear();
 
 	m_pAudioEngine->clear();
 	m_pMidiEngine->clear();
@@ -1518,26 +1518,14 @@ void qtractorSession::setMidiPatch ( bool bForceImmediate )
 
 
 // MIDI manager list accessors.
-qtractorMidiManager *qtractorSession::createMidiManager (
-	qtractorPluginList *pPluginList )
+void qtractorSession::addMidiManager ( qtractorMidiManager *pMidiManager )
 {
-	qtractorMidiManager *pMidiManager
-		= new qtractorMidiManager(this, pPluginList);
 	m_midiManagers.append(pMidiManager);
-#ifdef CONFIG_DEBUG
-	qDebug("qtractorSession[%p]::createMidiManager(%p)", this, pMidiManager);
-#endif
-	return pMidiManager;
 }
 
-void qtractorSession::deleteMidiManager (
-	qtractorMidiManager *pMidiManager )
+void qtractorSession::removeMidiManager ( qtractorMidiManager *pMidiManager )
 {
-#ifdef CONFIG_DEBUG
-	qDebug("qtractorSession[%p]::deleteMidiManager(%p)", this, pMidiManager);
-#endif
 	m_midiManagers.remove(pMidiManager);
-	delete pMidiManager;
 }
 
 

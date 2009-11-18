@@ -588,12 +588,6 @@ public:
 	bool saveElement(qtractorSessionDocument *pDocument,
 		QDomElement *pElement);
 
-protected:
-
-	// Plugin management helpers.
-	void addPluginRef(qtractorPlugin *pPlugin);
-	void removePluginRef(qtractorPlugin *pPlugin);
-
 private:
 
 	// Instance variables.
