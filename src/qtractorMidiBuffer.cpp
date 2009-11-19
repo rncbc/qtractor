@@ -194,13 +194,27 @@ qtractorMidiManager::qtractorMidiManager ( qtractorSession *pSession,
 {
 	m_pBuffer = new snd_seq_event_t [bufferSize() << 1];
 
+#ifdef CONFIG_MIDI_PARSER
+	if (snd_midi_event_new(4, &m_pMidiParser) == 0) {
+		snd_midi_event_no_status(m_pMidiParser, 1);
+		const unsigned int MaxMidiEvents = (bufferSize() << 1);
+	#ifdef CONFIG_VST
+		const unsigned int VstBufferSize = sizeof(VstEvents)
+			+ MaxMidiEvents * sizeof(VstMidiEvent *);
+		m_pVstBuffer = new unsigned char [VstBufferSize];
+		m_pVstMidiBuffer = new VstMidiEvent [MaxMidiEvents];
+	#endif
+	#ifdef CONFIG_LV2_EVENT
+		const unsigned int Lv2BufferSize = (MaxMidiEvents << 2);
+		m_pLv2Buffer = lv2_event_buffer_new(Lv2BufferSize,
+			LV2_EVENT_AUDIO_STAMP);
+	#endif
+	}
+#endif
+
 	m_pSyncThread = new qtractorMidiManagerThread(this);
 	m_pSyncThread->start();
 	
-#ifdef CONFIG_MIDI_PARSER
-	createMidiParser();
-#endif
-
 	createAudioOutputBus();
 }
 
@@ -209,12 +223,31 @@ qtractorMidiManager::~qtractorMidiManager (void)
 {
 	deleteAudioOutputBus();
 
-#ifdef CONFIG_MIDI_PARSER
-	deleteMidiParser();
-#endif
-
 	if (m_pSyncThread)
 		delete m_pSyncThread;
+
+#ifdef CONFIG_MIDI_PARSER
+#ifdef CONFIG_VST
+	if (m_pVstMidiBuffer) {
+		delete [] m_pVstMidiBuffer;
+		m_pVstMidiBuffer = NULL;
+	}
+	if (m_pVstBuffer) {
+		delete [] m_pVstBuffer;
+		m_pVstBuffer = NULL;
+	}
+#endif
+#ifdef CONFIG_LV2_EVENT
+	if (m_pLv2Buffer) {
+		::free(m_pLv2Buffer);
+		m_pLv2Buffer = NULL;
+	}
+#endif
+	if (m_pMidiParser) {
+		snd_midi_event_free(m_pMidiParser);
+		m_pMidiParser = NULL;
+	}
+#endif
 
 	if (m_pBuffer)
 		delete [] m_pBuffer;
@@ -540,70 +573,6 @@ bool qtractorMidiManager::isDefaultAudioOutputBus (void)
 {
 	return g_bAudioOutputBus;
 }
-
-
-#ifdef CONFIG_MIDI_PARSER
-
-void qtractorMidiManager::createMidiParser (void)
-{
-	if (m_pMidiParser)
-		return;
-
-	if (snd_midi_event_new(4, &m_pMidiParser) == 0) {
-		snd_midi_event_no_status(m_pMidiParser, 1);
-		const unsigned int MaxMidiEvents = (bufferSize() << 1);
-	#ifdef CONFIG_VST
-		const unsigned int VstBufferSize = sizeof(VstEvents)
-			+ MaxMidiEvents * sizeof(VstMidiEvent *);
-		m_pVstBuffer = new unsigned char [VstBufferSize];
-		m_pVstMidiBuffer = new VstMidiEvent [MaxMidiEvents];
-	#endif
-	#ifdef CONFIG_LV2_EVENT
-		const unsigned int Lv2BufferSize = (MaxMidiEvents << 2);
-		m_pLv2Buffer = lv2_event_buffer_new(Lv2BufferSize,
-			LV2_EVENT_AUDIO_STAMP);
-	#endif
-	}
-
-#ifdef CONFIG_DEBUG
-	qDebug("qtractorMidiManager[%p]::createMidiParser(%p)",
-		this, m_pMidiParser);
-#endif
-}
-
-void qtractorMidiManager::deleteMidiParser (void)
-{
-	if (m_pMidiParser == NULL)
-		return;
-
-#ifdef CONFIG_DEBUG
-	qDebug("qtractorMidiManager[%p]::deleteMidiParser(%p)",
-		this, m_pMidiParser);
-#endif
-
-#ifdef CONFIG_VST
-	if (m_pVstMidiBuffer) {
-		delete [] m_pVstMidiBuffer;
-		m_pVstMidiBuffer = NULL;
-	}
-	if (m_pVstBuffer) {
-		delete [] m_pVstBuffer;
-		m_pVstBuffer = NULL;
-	}
-#endif
-
-#ifdef CONFIG_LV2_EVENT
-	if (m_pLv2Buffer) {
-		::free(m_pLv2Buffer);
-		m_pLv2Buffer = NULL;
-	}
-#endif
-
-	snd_midi_event_free(m_pMidiParser);
-	m_pMidiParser = NULL;
-}
-
-#endif	// CONFIG_MIDI_PARSER
 
 
 // Output bus mode accessors.

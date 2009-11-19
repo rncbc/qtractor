@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(Qtractor, 0.4.3.1427, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.4.3.1429, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractorMainForm.ui)
 AC_CONFIG_HEADERS(config.h)
@@ -90,6 +90,16 @@ AC_ARG_ENABLE(lv2,
   AC_HELP_STRING([--enable-lv2], [enable LV2 plug-in support (default=yes)]),
   [ac_lv2="$enableval"],
   [ac_lv2="yes"])
+
+AC_ARG_ENABLE(lv2-event,
+  AC_HELP_STRING([--enable-lv2-event], [enable LV2 plug-in event/MIDI support (default=yes)]),
+  [ac_lv2_event="$enableval"],
+  [ac_lv2_event="yes"])
+
+AC_ARG_ENABLE(lv2-external-ui,
+  AC_HELP_STRING([--enable-lv2-external-ui], [enable LV2 plug-in external UI support (default=yes)]),
+  [ac_lv2_external_ui="$enableval"],
+  [ac_lv2_external_ui="yes"])
 
 # Enable XInitThreads() support.
 AC_ARG_ENABLE(xinitthreads,
@@ -584,14 +594,12 @@ if test -n "$ac_with_lv2"; then
    CFLAGS="-I$ac_with_lv2 $CFLAGS"
    CPPFLAGS="-I$ac_with_lv2 $CPPFLAGS"
    ac_lv2="yes"
-else
-   ac_lv2_event="no"
 fi
 if test "x$ac_lv2" = "xyes"; then
-   # Check for LV2 related headers (eg. librdf).
+   # Check for LV2 related headers (eg. slv2, librdf).
    for X in $ac_with_paths; do
       if test -d $X/include; then
-         for Y in redland rdf; do
+         for Y in slv2 redland rdf; do
             if test -d $X/include/$Y; then
                CFLAGS="-I$X/include/$Y $CFLAGS"
                CPPFLAGS="-I$X/include/$Y $CPPFLAGS"
@@ -601,20 +609,39 @@ if test "x$ac_lv2" = "xyes"; then
       fi
    done
    # Check for proper headers.
-   AC_CHECK_HEADER(slv2/slv2.h, [ac_lv2="yes"], [ac_lv2="no"])
+   AC_CHECK_HEADERS(lv2.h slv2.h, [ac_lv2="yes"], [ac_lv2="no"])
    if test "x$ac_lv2" = "xyes"; then
-      AC_DEFINE(CONFIG_LV2, 1, [Define if LV2 header is available.])
+      AC_DEFINE(CONFIG_LV2, 1, [Define if LV2 headers are available.])
    else
-      AC_MSG_WARN([*** slv2.h header file not found.])
+      AC_MSG_WARN([*** LV2 header files not found.])
       AC_MSG_WARN([*** LV2 plug-in support will be disabled.])
    fi
-   AC_CHECK_HEADERS(lv2_event.h lv2_event_helpers.h lv2_uri_map.h,
-      [ac_lv2_event="yes"], [ac_lv2_event="no"])
    if test "x$ac_lv2_event" = "xyes"; then
-      AC_DEFINE(CONFIG_LV2_EVENT, 1, [Define if LV2 event extension is available.])
-   else
-      AC_MSG_WARN([*** LV2 event extension will be disabled.])
+      AC_CHECK_HEADERS(lv2_event.h lv2_event_helpers.h lv2_uri_map.h,
+         [ac_lv2_event="yes"], [ac_lv2_event="no"])
+      if test "x$ac_lv2_event" = "xyes"; then
+         AC_DEFINE(CONFIG_LV2_EVENT, 1, [Define if LV2 event extension is available.])
+      else
+         AC_MSG_WARN([*** LV2 event extension will be disabled.])
+      fi
    fi
+   if test "x$ac_lv2_external_ui" = "xyes"; then
+      AC_CHECK_HEADERS(lv2_ui.h lv2_external_ui.h,
+         [ac_lv2_external_ui="yes"],
+         [ac_lv2_external_ui="no"],
+         [[#ifdef HAVE_LV2_UI_H
+           # include <lv2_ui.h>
+           #endif
+         ]])
+      if test "x$ac_lv2_external_ui" = "xyes"; then
+         AC_DEFINE(CONFIG_LV2_EXTERNAL_UI, 1, [Define if LV2 external UI extension is available.])
+      else
+         AC_MSG_WARN([*** LV2 external UI extension will be disabled.])
+      fi
+   fi
+else
+   ac_lv2_event="no"
+   ac_lv2_external_ui="no"
 fi
 
 # Check for XInitThreads() support.
@@ -668,6 +695,7 @@ echo "  DSSI Plug-in support . . . . . . . . . . . . . . .: $ac_dssi"
 echo "  VST Plug-in support  . . . . . . . . . . . . . . .: $ac_vst"
 echo "  LV2 Plug-in support  . . . . . . . . . . . . . . .: $ac_lv2"
 echo "  LV2 Plug-in MIDI/Event support . . . . . . . . . .: $ac_lv2_event"
+echo "  LV2 Plug-in External UI support  . . . . . . . . .: $ac_lv2_external_ui"
 echo
 echo "  XInitThreads() support (DANGEROUS) . . . . . . . .: $ac_xinitthreads"
 echo

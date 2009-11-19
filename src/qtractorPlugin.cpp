@@ -233,7 +233,7 @@ void qtractorPluginFile::close (void)
 
 
 // Plugin type listing.
-bool qtractorPluginFile::getTypes ( qtractorPluginTypeList& types,
+bool qtractorPluginFile::getTypes ( qtractorPluginPath& path,
 	qtractorPluginType::Hint typeHint )
 {
 	// Try to fill the types list at this moment...
@@ -247,7 +247,7 @@ bool qtractorPluginFile::getTypes ( qtractorPluginTypeList& types,
 		while ((pType
 			= qtractorDssiPluginType::createType(this, iIndex)) != NULL) {
 			if (pType->open()) {
-				types.append(pType);
+				path.addType(pType);
 				pType->close();
 				iIndex++;
 			} else {
@@ -268,7 +268,7 @@ bool qtractorPluginFile::getTypes ( qtractorPluginTypeList& types,
 		while ((pType
 			= qtractorLadspaPluginType::createType(this, iIndex)) != NULL) {
 			if (pType->open()) {
-				types.append(pType);
+				path.addType(pType);
 				pType->close();
 				iIndex++;
 			} else {
@@ -294,7 +294,7 @@ bool qtractorPluginFile::getTypes ( qtractorPluginTypeList& types,
 			pType = qtractorVstPluginType::createType(this);
 		if (pType) {
 			if (pType->open()) {
-				types.append(pType);
+				path.addType(pType);
 				pType->close();
 				iIndex++;
 			} else {

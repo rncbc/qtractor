@@ -434,7 +434,7 @@ bool qtractorResetPluginCommand::undo (void)
 
 
 //----------------------------------------------------------------------
-// class qtractorResetPluginCommand - implementation
+// class qtractorPluginParamCommand - implementation
 //
 
 // Constructor.

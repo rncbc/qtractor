@@ -32,6 +32,7 @@
 
 
 // Forward declarations.
+class qtractorPluginPath;
 class qtractorPluginFile;
 class qtractorPluginList;
 class qtractorPluginParam;
@@ -164,40 +165,6 @@ public:
 
 
 //----------------------------------------------------------------------------
-// qtractorPluginTypeList -- Plugin type list instance.
-//
-
-class qtractorPluginTypeList
-{
-public:
-
-	// Constructor.
-	qtractorPluginTypeList() {}
-	// Destructor
-	~qtractorPluginTypeList()
-		{ clear(); }
-
-	// Simple list management method.
-	void append(qtractorPluginType *pType)
-		{ m_list.append(pType); }
-
-	// List reset method.
-	void clear() { qDeleteAll(m_list); m_list.clear(); }
-
-	// List contents predicate.
-	bool isEmpty() const { return m_list.isEmpty(); }
-
-	// List accessor.
-	const QList<qtractorPluginType *>& list() const { return m_list; }
-
-private:
-
-	// Instance variables (just the list)
-	QList<qtractorPluginType *> m_list;
-};
-
-
-//----------------------------------------------------------------------------
 // qtractorPluginFile -- Plugin file library instance.
 //
 
@@ -221,7 +188,7 @@ public:
 	void close();
 
 	// Plugin type listing.
-	bool getTypes(qtractorPluginTypeList& types,
+	bool getTypes(qtractorPluginPath& path,
 		qtractorPluginType::Hint typeHint = qtractorPluginType::Any);
 
 	// Plugin factory method.
@@ -245,7 +212,7 @@ public:
 
 	// Destructor.
 	~qtractorPluginPath()
-		{ close(); }
+		{ close(); clear(); }
 
 	// Type-hint accessors...
 	void setTypeHint(qtractorPluginType::Hint typeHint)
@@ -262,8 +229,17 @@ public:
 	bool open();
 	void close();
 
-	// Plugin file list.
+	// Plugin files list.
 	const QList<qtractorPluginFile *>& files() const { return m_files; }
+
+	// Plugin types list accessor.
+	const QList<qtractorPluginType *>& types() const { return m_types; }
+
+	// Plugin type adder.
+	void addType(qtractorPluginType *pType)	{ m_types.append(pType); }
+
+	// Type list reset method.
+	void clear() { qDeleteAll(m_types); m_types.clear(); }
 
 private:
 
@@ -272,8 +248,9 @@ private:
 
 	QStringList m_paths;
 	
-	// Internal plugin file list.
+	// Internal plugin file/type list.
 	QList<qtractorPluginFile *> m_files;
+	QList<qtractorPluginType *> m_types;
 };
 
 

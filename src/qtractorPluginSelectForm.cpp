@@ -35,8 +35,7 @@
 #include <QList>
 
 
-static qtractorPluginPath     g_pluginPath;
-static qtractorPluginTypeList g_pluginTypes;
+static qtractorPluginPath g_pluginPath;
 
 
 //----------------------------------------------------------------------------
@@ -243,7 +242,7 @@ void qtractorPluginSelectForm::typeHintChanged ( int iTypeHint )
 			paths += pOptions->ladspaPaths;
 		g_pluginPath.setPaths(paths);
 		g_pluginPath.open();
-		g_pluginTypes.clear();
+		g_pluginPath.clear();
 	}
 
 	refresh();
@@ -267,7 +266,7 @@ void qtractorPluginSelectForm::refresh (void)
 	m_ui.PluginListView->clear();
 
 	// FIXME: Should this be a global (singleton) registry?
-	if (g_pluginTypes.isEmpty()) {
+	if (g_pluginPath.types().isEmpty()) {
 		// Tell the world we'll take some time...
 		QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 		int iFile = 0;
@@ -282,14 +281,14 @@ void qtractorPluginSelectForm::refresh (void)
 			QApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
 			qtractorPluginFile *pFile = file_iter.next();
 			if (pFile->open()) {
-				pFile->getTypes(g_pluginTypes, typeHint);
+				pFile->getTypes(g_pluginPath, typeHint);
 				pFile->close();
 			}
 		}
 	#ifdef CONFIG_LV2
 		if (typeHint == qtractorPluginType::Any ||
 			typeHint == qtractorPluginType::Lv2) {
-			qtractorLv2PluginType::getTypes(g_pluginTypes);
+			qtractorLv2PluginType::getTypes(g_pluginPath);
 		}
 	#endif
 		m_ui.PluginTypeProgressBar->hide();
@@ -302,7 +301,7 @@ void qtractorPluginSelectForm::refresh (void)
 
 	QStringList cols;
 	QList<QTreeWidgetItem *> items;
-	QListIterator<qtractorPluginType *> type_iter(g_pluginTypes.list());
+	QListIterator<qtractorPluginType *> type_iter(g_pluginPath.types());
 	while (type_iter.hasNext()) {
 		qtractorPluginType *pType = type_iter.next();
 		const QString& sFilename = pType->filename();

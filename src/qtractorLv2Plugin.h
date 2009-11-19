@@ -27,10 +27,15 @@
 #include <slv2/slv2.h>
 
 #ifdef CONFIG_LV2_EVENT
-// LV2 Event types (MIDI).
+// LV2 Event/MIDI support.
 #include "lv2_event.h"
 #include "lv2_event_helpers.h"
 #define  QTRACTOR_LV2_MIDI_EVENT_ID 1
+#endif
+
+#ifdef CONFIG_LV2_EXTERNAL_UI
+// LV2 External UI support.
+#include "lv2_external_ui.h"
 #endif
 
 
@@ -45,7 +50,7 @@ public:
 	// Constructor.
 	qtractorLv2PluginType(const QString& sUri, SLV2Plugin plugin = NULL)
 		: qtractorPluginType(NULL, 0, qtractorPluginType::Lv2),
-			m_sUri(sUri), m_slv2_plugin(plugin) {}
+			m_sUri(sUri), m_slv2_plugin(plugin)	{}
 
 	// Destructor.
 	~qtractorLv2PluginType()
@@ -75,12 +80,12 @@ public:
 	static void slv2_close();
 
 	// Plugin type listing (static).
-	static bool getTypes(qtractorPluginTypeList& types);
+	static bool getTypes(qtractorPluginPath& path);
 
 protected:
 
 	// LV2 plgin URI.
-	QString m_sUri;
+	QString    m_sUri;
 
 	// LV2 descriptor itself.
 	SLV2Plugin m_slv2_plugin;
@@ -122,6 +127,24 @@ public:
 	unsigned long audioOut(unsigned short i)
 		{ return m_piAudioOuts[i]; }
 
+#ifdef CONFIG_LV2_EXTERNAL_UI
+
+	// GUI Editor stuff.
+	void openEditor(QWidget *pParent);
+	void closeEditor();
+	void idleEditor();
+
+	// GUI editor visibility state.
+	void setEditorVisible(bool bVisible);
+	bool isEditorVisible() const;
+
+	void setEditorTitle(const QString& sTitle);
+
+	// Idle editor (static).
+	static void idleEditorAll();
+
+#endif
+
 protected:
 
 	// Instance variables.
@@ -134,6 +157,23 @@ protected:
 #ifdef CONFIG_LV2_EVENT
 	// List of MIDI port indexes.
 	unsigned long *m_piMidiIns;
+#endif
+
+#ifdef CONFIG_LV2_EXTERNAL_UI
+
+	QByteArray     m_aEditorTitle;
+	bool           m_bEditorVisible;
+
+	SLV2UIs        m_slv2_uis;
+	SLV2UI         m_slv2_ui;
+	SLV2UIInstance m_slv2_ui_instance;
+
+	lv2_external_ui_host m_lv2_ui_external;
+
+	LV2_Feature    m_lv2_ui_feature;
+	LV2_Feature  **m_lv2_ui_features;
+	LV2UI_Widget   m_lv2_ui_widget;
+
 #endif
 };
 

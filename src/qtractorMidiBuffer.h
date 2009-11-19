@@ -295,11 +295,6 @@ protected:
 	void createAudioOutputBus();
 	void deleteAudioOutputBus();
 
-#ifdef CONFIG_MIDI_PARSER
-	void createMidiParser();
-	void deleteMidiParser();
-#endif
-
 private:
 	// Instance variables
 	qtractorSession    *m_pSession;

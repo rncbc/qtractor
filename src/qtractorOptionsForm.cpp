@@ -105,15 +105,15 @@ qtractorOptionsForm::qtractorOptionsForm (
 	m_ui.PluginTypeComboBox->addItem(
 		qtractorPluginType::textFromHint(qtractorPluginType::Dssi));
 #endif
-#ifdef CONFIG_LV2
-	m_ui.PluginTypeComboBox->addItem(
-		qtractorPluginType::textFromHint(qtractorPluginType::Lv2));
-#endif
 #ifdef CONFIG_VST
 	m_ui.PluginTypeComboBox->addItem(
 		qtractorPluginType::textFromHint(qtractorPluginType::Vst));
 #else
 	m_ui.PluginExperimentalGroupBox->hide();
+#endif
+#ifdef CONFIG_LV2
+	m_ui.PluginTypeComboBox->addItem(
+		qtractorPluginType::textFromHint(qtractorPluginType::Lv2));
 #endif
 
 	// Initialize dirty control state.

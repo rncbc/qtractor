@@ -1780,14 +1780,16 @@ bool qtractorMainForm::loadSessionFile (
 		const QString& sSessionDir = QFileInfo(sFilename).absolutePath();
 		if (!QDir(m_pSession->sessionDir()).exists())
 			m_pSession->setSessionDir(sSessionDir);
-		if (m_pOptions)
-			m_pOptions->sSessionDir = sSessionDir;
 		// We're not dirty anymore.
 		if (!bTemplate) {
 			updateRecentFiles(sFilename);
 		//	m_iDirtyCount = 0;
 		}
 		// Got something loaded...
+		if (m_pOptions) {
+			m_pOptions->sSessionDir = sSessionDir;
+			m_pOptions->saveOptions();
+		}
 	} else {
 		// Something went wrong...
 		appendMessagesError(
@@ -1850,8 +1852,10 @@ bool qtractorMainForm::saveSessionFile (
 	}
 
 	// Save as default session directory.
-	if (m_pOptions)
+	if (m_pOptions) {
 		m_pOptions->sSessionDir = QFileInfo(sFilename).absolutePath();
+		m_pOptions->saveOptions();
+	}
 
 	// Stabilize form...
 	if (!bTemplate)
@@ -4715,6 +4719,10 @@ void qtractorMainForm::timerSlot (void)
 	// Always update mixer monitoring...
 	if (m_pMixer)
 		m_pMixer->refresh();
+
+#ifdef CONFIG_LV2_EXTERNAL_UI
+	qtractorLv2Plugin::idleEditorAll();
+#endif
 
 	// Register the next timer slot.
 	QTimer::singleShot(QTRACTOR_TIMER_MSECS, this, SLOT(timerSlot()));
