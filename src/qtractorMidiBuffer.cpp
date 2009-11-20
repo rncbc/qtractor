@@ -559,6 +559,7 @@ void qtractorMidiManager::deleteMidiManager ( qtractorMidiManager *pMidiManager 
 #endif
 
 	pSession->removeMidiManager(pMidiManager);
+
 	delete pMidiManager;
 }
 

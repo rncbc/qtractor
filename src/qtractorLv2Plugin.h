@@ -140,8 +140,17 @@ public:
 
 	void setEditorTitle(const QString& sTitle);
 
+	// Parameter update method.
+	void updateParam(qtractorPluginParam *pParam, float fValue);
+
 	// Idle editor (static).
 	static void idleEditorAll();
+
+	// LV2 UI descriptor accessor.
+	const LV2UI_Descriptor *lv2_ui_descriptor() const;
+
+	// LV2 UI handle accessor.
+	LV2UI_Handle lv2_ui_handle() const;
 
 #endif
 

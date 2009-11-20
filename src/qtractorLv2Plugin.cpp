@@ -75,29 +75,32 @@ static const LV2_Feature *g_lv2_features[] = { NULL };
 #include "qtractorPluginForm.h"
 
 static  void qtractor_lv2_ui_write (
-	LV2UI_Controller ui_handle, uint32_t port_index,
+	LV2UI_Controller ui_controller, uint32_t port_index,
 	uint32_t buffer_size, uint32_t format, const void *buffer )
 {
 	qtractorLv2Plugin *pLv2Plugin
-		= static_cast<qtractorLv2Plugin *> (ui_handle);
+		= static_cast<qtractorLv2Plugin *> (ui_controller);
 	if (pLv2Plugin == NULL)
 		return;
+	if (buffer_size != 4 || format != 0)
+		return;
+
+	float val = *(float *) buffer;
 
 #ifdef CONFIG_DEBUG
-	qDebug("qtractor_lv2_ui_write(%p, %u, %u, %u, %p)", pLv2Plugin,
-		port_index, buffer_size, format, buffer);
+	qDebug("qtractor_lv2_ui_write(%p, %u, %g)", pLv2Plugin,	port_index, val);
 #endif
 
 	// FIXME: Update plugin params...
 	qtractorPluginForm *pForm = pLv2Plugin->form();
 	if (pForm)
-		pForm->updateParamValue(port_index, *(float *) buffer);
+		pForm->updateParamValue(port_index, val);
 }
 
-static void qtractor_lv2_ui_closed ( LV2UI_Controller ui_handle )
+static void qtractor_lv2_ui_closed ( LV2UI_Controller ui_controller )
 {
 	qtractorLv2Plugin *pLv2Plugin
-		= static_cast<qtractorLv2Plugin *> (ui_handle);
+		= static_cast<qtractorLv2Plugin *> (ui_controller);
 	if (pLv2Plugin == NULL)
 		return;
 
@@ -105,8 +108,26 @@ static void qtractor_lv2_ui_closed ( LV2UI_Controller ui_handle )
 	qDebug("qtractor_lv2_ui_closed(%p)", pLv2Plugin);
 #endif
 
+	if (pLv2Plugin->isFormVisible())
+		(pLv2Plugin->form())->toggleEditor(false);
+
+#if 0
+	const LV2UI_Descriptor *ui_descriptor = pLv2Plugin->lv2_ui_descriptor();
+	if (ui_descriptor == NULL)
+		return;
+	if (ui_descriptor->cleanup == NULL)
+		return;
+
+	LV2UI_Handle ui_handle = pLv2Plugin->lv2_ui_handle();
+	if (ui_handle == NULL)
+		return;
+
+	// Just tdo the cleaup...
+	(*ui_descriptor->cleanup)(ui_handle);
+#else
 	// FIXME: Close plugin editor...
 	pLv2Plugin->closeEditor();
+#endif
 }
 
 #endif	// CONFIG_LV2_EXTERNAL_UI
@@ -690,14 +711,14 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 	if (m_slv2_ui == NULL)
 		return;
 
+	m_aEditorTitle = editorTitle().toUtf8();
+
 	int iFeatures = 0;
 	while (g_lv2_features[iFeatures]) { ++iFeatures; }
 
 	m_lv2_ui_features = new LV2_Feature * [iFeatures + 2];
 	for (int i = 0; i < iFeatures; ++i)
 		m_lv2_ui_features[i] = (LV2_Feature *) g_lv2_features[i];
-
-	m_aEditorTitle = editorTitle().toUtf8();
 
 	m_lv2_ui_external.ui_closed = qtractor_lv2_ui_closed;
 	m_lv2_ui_external.plugin_human_id = m_aEditorTitle.constData();
@@ -709,12 +730,28 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 	m_slv2_ui_instance = slv2_ui_instantiate(pLv2Type->slv2_plugin(),
 		m_slv2_ui, qtractor_lv2_ui_write, this, m_lv2_ui_features);
 
+	const LV2UI_Descriptor *ui_descriptor = lv2_ui_descriptor();
+	if (ui_descriptor && ui_descriptor->port_event) {
+		LV2UI_Handle ui_handle = lv2_ui_handle();
+		if (ui_handle) {
+			QListIterator<qtractorPluginParam *> iter(params());
+			while (iter.hasNext()) {
+				qtractorPluginParam *pParam = iter.next();
+				float fValue = pParam->value();
+				(*ui_descriptor->port_event)(ui_handle,
+					pParam->index(), 4, 0, &fValue);
+			}
+		}
+	}
+	
 	if (m_slv2_ui_instance) {
 		m_lv2_ui_widget = slv2_ui_instance_get_widget(m_slv2_ui_instance);
 		g_lv2Plugins.append(this);
 	}
 
 	setEditorVisible(true);
+
+//	idleEditor();
 }
 
 
@@ -798,6 +835,29 @@ void qtractorLv2Plugin::setEditorTitle ( const QString& sTitle )
 }
 
 
+// Parameter update method.
+void qtractorLv2Plugin::updateParam (
+	qtractorPluginParam *pParam, float fValue )
+{
+	const LV2UI_Descriptor *ui_descriptor = lv2_ui_descriptor();
+	if (ui_descriptor == NULL)
+		return;
+	if (ui_descriptor->port_event == NULL)
+		return;
+
+	LV2UI_Handle ui_handle = lv2_ui_handle();
+	if (ui_handle == NULL)
+		return;
+
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorLv2Plugin[%p]::updateParam(%lu, %g)",
+		this, pParam->index(), fValue); 
+#endif
+
+	(*ui_descriptor->port_event)(ui_handle, pParam->index(), 4, 0, &fValue);
+}
+
+
 // Idle editor (static).
 void qtractorLv2Plugin::idleEditorAll (void)
 {
@@ -806,6 +866,25 @@ void qtractorLv2Plugin::idleEditorAll (void)
 		iter.next()->idleEditor();
 }
 
+
+// LV2 UI descriptor accessor.
+const LV2UI_Descriptor *qtractorLv2Plugin::lv2_ui_descriptor (void) const
+{
+	if (m_slv2_ui_instance == NULL)
+		return NULL;
+		
+	return slv2_ui_instance_get_descriptor(m_slv2_ui_instance);
+}
+
+
+// LV2 UI handle accessor.
+LV2UI_Handle qtractorLv2Plugin::lv2_ui_handle (void) const
+{
+	if (m_slv2_ui_instance == NULL)
+		return NULL;
+		
+	return slv2_ui_instance_get_handle(m_slv2_ui_instance);
+}
 
 #endif	// !CONFIG_LV2_EXTERNAL_UI
 
@@ -841,12 +920,10 @@ qtractorLv2PluginParam::qtractorLv2PluginParam (
 	SLV2Value vdef, vmin, vmax;
 	slv2_port_get_range(plugin, port, &vdef, &vmin, &vmax);
 
-	setDefaultValue(vdef && slv2_value_is_float(vdef)
-		? slv2_value_as_float(vdef) : 0.0f);
-	setMinValue(vmin && slv2_value_is_float(vmin)
-		? slv2_value_as_float(vmin) : 0.0f);
-	setMaxValue(vmax && slv2_value_is_float(vmax)
-		? slv2_value_as_float(vmax) : 1.0f);
+	setMinValue(vmin ? slv2_value_as_float(vmin) : 0.0f);
+	setMaxValue(vmax ? slv2_value_as_float(vmax) : 1.0f);
+
+	setDefaultValue(vdef ? slv2_value_as_float(vdef) : 0.0f);
 
 	if (vdef) slv2_value_free(vdef);
 	if (vmin) slv2_value_free(vmin);
