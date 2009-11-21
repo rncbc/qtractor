@@ -521,7 +521,7 @@ void qtractorLv2Plugin::setChannels ( unsigned short iChannels )
 	unsigned short iInstances
 		= pType->instances(iChannels, pType->isMidi());
 	// Now see if instance count changed anyhow...
-	if (iInstances == instances())
+	if (iInstances == instances() && !pType->isMidi())
 		return;
 
 	SLV2Plugin plugin = slv2_plugin();
@@ -954,7 +954,7 @@ qtractorLv2PluginParam::qtractorLv2PluginParam (
 			SLV2ScalePoint point = slv2_scale_points_get_at(points, i);
 			SLV2Value value = slv2_scale_point_get_value(point);
 			SLV2Value label = slv2_scale_point_get_label(point);
-			if (value && label && slv2_value_is_float(value)) {
+			if (value && label) {
 				float   fValue = slv2_value_as_float(value);
 				QString sLabel = slv2_value_as_string(label);
 				m_display.insert(QString::number(fValue), sLabel);

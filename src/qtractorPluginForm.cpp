@@ -814,7 +814,11 @@ qtractorPluginParamWidget::qtractorPluginParamWidget (
 		m_pLabel = new QLabel(/*this*/);
 		m_pLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
 		m_pLabel->setText(m_pParam->name() + ':');
-		m_pGridLayout->addWidget(m_pLabel, 0, 0, 1, 2);
+		if (m_pParam->isDisplay()) {
+			m_pGridLayout->addWidget(m_pLabel, 0, 0);
+		} else {
+			m_pGridLayout->addWidget(m_pLabel, 0, 0, 1, 2);
+		}
 		m_pSpinBox = new QDoubleSpinBox(/*this*/);
 		m_pSpinBox->setMaximumWidth(64);
 		m_pSpinBox->setDecimals(0);
@@ -822,7 +826,17 @@ qtractorPluginParamWidget::qtractorPluginParamWidget (
 		m_pSpinBox->setMaximum(m_pParam->maxValue());
 		m_pSpinBox->setAlignment(Qt::AlignHCenter);
 	//	m_pSpinBox->setValue(int(m_pParam->value()));
-		m_pGridLayout->addWidget(m_pSpinBox, 0, 2);
+		if (m_pParam->isDisplay()) {
+			m_pGridLayout->addWidget(m_pSpinBox, 0, 1);
+			m_pDisplay = new QLabel(/*this*/);
+			m_pDisplay->setAlignment(Qt::AlignCenter | Qt::AlignVCenter);
+			m_pDisplay->setText(m_pParam->display());
+		//	m_pDisplay->setFixedWidth(72);
+			m_pDisplay->setMinimumWidth(64);
+			m_pGridLayout->addWidget(m_pDisplay, 0, 2);
+		} else {
+			m_pGridLayout->addWidget(m_pSpinBox, 0, 2);
+		}
 		QObject::connect(m_pSpinBox,
 			SIGNAL(valueChanged(const QString&)),
 			SLOT(spinBoxValueChanged(const QString&)));
@@ -1000,6 +1014,8 @@ void qtractorPluginParamWidget::spinBoxValueChanged ( const QString& sText )
 		emit valueChanged(m_pParam, fValue);
 		if (m_pSlider)
 			m_pSlider->setValue(paramToSlider(fValue));
+		if (m_pDisplay)
+			m_pDisplay->setText(m_pParam->display());
 	}
 
 	m_iUpdate--;

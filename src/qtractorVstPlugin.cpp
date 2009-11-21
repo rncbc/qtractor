@@ -583,7 +583,7 @@ void qtractorVstPlugin::setChannels ( unsigned short iChannels )
 	unsigned short iInstances
 		= pVstType->instances(iChannels, pVstType->isMidi());
 	// Now see if instance count changed anyhow...
-	if (iInstances == instances())
+	if (iInstances == instances() && !pVstType->isMidi())
 		return;
 
 	// Gotta go for a while...
