@@ -39,6 +39,9 @@ qtractorMidiSequence::qtractorMidiSequence ( const QString& sName,
 
 	m_events.setAutoDelete(true);
 
+	m_noteMax = 0;
+	m_noteMin = 0;
+
 	clear();
 }
 
@@ -56,8 +59,8 @@ void qtractorMidiSequence::clear (void)
 	m_iBank    = -1;
 	m_iProgram = -1;
 
-	m_noteMax  = 0;
-	m_noteMin  = 0;
+//	m_noteMax  = 0;
+//	m_noteMin  = 0;
 
 	m_duration = 0;
 

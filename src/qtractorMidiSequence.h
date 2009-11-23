@@ -82,6 +82,11 @@ public:
 	unsigned long duration() const { return m_duration; }
 
 	// Statiscal helper accessors.
+	void setNoteMin(unsigned char note)
+		{ if (m_noteMin > note || m_noteMin == 0) m_noteMin = note; }
+	void setNoteMax(unsigned char note)
+		{ if (m_noteMax < note || m_noteMax == 0) m_noteMax = note; }
+
 	unsigned char noteMin() const { return m_noteMin;  }
 	unsigned char noteMax() const { return m_noteMax;  }
 

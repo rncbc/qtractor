@@ -1063,7 +1063,7 @@ void qtractorSession::setPlaying ( bool bPlaying )
 			pMidiManager = pMidiManager->next();
 		}
 	}
-	else if (!ATOMIC_GET(&m_locks))
+	else /* if (!ATOMIC_GET(&m_locks)) */
 		m_pAudioEngine->setRamping(-1);
 
 	// Do it.
@@ -1071,7 +1071,7 @@ void qtractorSession::setPlaying ( bool bPlaying )
 	m_pMidiEngine->setPlaying(bPlaying);
 
 	// Do ramping up...
-	if (bPlaying && !ATOMIC_GET(&m_locks))
+	if (bPlaying /*&& !ATOMIC_GET(&m_locks)*/)
 		m_pAudioEngine->setRamping(+1);
 
 	ATOMIC_DEC(&m_busy);
@@ -1110,31 +1110,31 @@ void qtractorSession::release (void)
 
 void qtractorSession::lock (void)
 {
-	ATOMIC_INC(&m_busy);
+//	ATOMIC_INC(&m_busy);
 
 	// Wind up as pending lock...
 	if (ATOMIC_INC(&m_locks) == 1) {
 		// Get lost for a while...
-		m_pAudioEngine->setRamping(-1);
+	//	m_pAudioEngine->setRamping(-1);
 		while (!acquire())
 			stabilize();
 	}
 
-	ATOMIC_DEC(&m_busy);
+//	ATOMIC_DEC(&m_busy);
 }
 
 void qtractorSession::unlock (void)
 {
-	ATOMIC_INC(&m_busy);
+//	ATOMIC_INC(&m_busy);
 
 	// Unwind pending locks and force back to business...
 	if (ATOMIC_DEC(&m_locks) < 1) {
 		ATOMIC_SET(&m_locks, 0);
 		release();
-		m_pAudioEngine->setRamping(+1);
+	//	m_pAudioEngine->setRamping(+1);
 	}
 
-	ATOMIC_DEC(&m_busy);
+//	ATOMIC_DEC(&m_busy);
 }
 
 

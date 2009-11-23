@@ -73,6 +73,9 @@ qtractorMidiClip::qtractorMidiClip ( const qtractorMidiClip& clip )
 	m_pFile = NULL;
 	m_pSeq  = new qtractorMidiSequence();
 
+	m_pSeq->setNoteMin(clip.sequence()->noteMin());
+	m_pSeq->setNoteMax(clip.sequence()->noteMax());
+	
 	setFilename(clip.filename());
 	setTrackChannel(clip.trackChannel());
 	setClipGain(clip.clipGain());

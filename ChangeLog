@@ -5,6 +5,10 @@ ChangeLog
 
 SVN TRUNK
 
+- Graphical MIDI clip representation regarding note/pitch range is
+  now kept as much as possible across clip edits (cut, copy, paste,
+  drag, move, delete, etc.)
+
 - LV2 plug-in hosting has finally come into actual implementation;
   only some and the most basic LV2 plug-in features are supported
   at the moment; probably there's no big advantage against the old
