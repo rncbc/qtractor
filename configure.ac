@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(Qtractor, 0.4.3.1434, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.4.3.1435, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractorMainForm.ui)
 AC_CONFIG_HEADERS(config.h)
@@ -454,13 +454,15 @@ fi
 # Check for optional libslv2 library.
 if test "x$ac_lv2" = "xyes"; then
    AC_CHECK_LIB(slv2, main, [ac_lv2="yes"], [ac_lv2="no"])
-   if test "x$ac_lv2" = "xyes"; then
-      AC_DEFINE(CONFIG_LIBSLV2, 1, [Define if libslv2 is available.])
-      ac_libs="$ac_libs -lslv2"
-   else
-      AC_MSG_WARN([*** slv2 library not found.])
-      AC_MSG_WARN([*** LV2 plugin support will be disabled.])
-   fi
+fi
+if test "x$ac_lv2" = "xyes"; then
+   AC_DEFINE(CONFIG_LIBSLV2, 1, [Define if libslv2 is available.])
+   ac_libs="$ac_libs -lslv2"
+else
+   AC_MSG_WARN([*** slv2 library not found.])
+   AC_MSG_WARN([*** LV2 plugin support will be disabled.])
+   ac_lv2_event="no"
+   ac_lv2_external_ui="no"
 fi
 
 AC_SUBST(ac_libs)
@@ -610,38 +612,37 @@ if test "x$ac_lv2" = "xyes"; then
    done
    # Check for proper headers.
    AC_CHECK_HEADERS(lv2.h slv2.h, [ac_lv2="yes"], [ac_lv2="no"])
-   if test "x$ac_lv2" = "xyes"; then
-      AC_DEFINE(CONFIG_LV2, 1, [Define if LV2 headers are available.])
-   else
-      AC_MSG_WARN([*** LV2 header files not found.])
-      AC_MSG_WARN([*** LV2 plug-in support will be disabled.])
-   fi
-   if test "x$ac_lv2_event" = "xyes"; then
-      AC_CHECK_HEADERS(lv2_event.h lv2_event_helpers.h lv2_uri_map.h,
-         [ac_lv2_event="yes"], [ac_lv2_event="no"])
-      if test "x$ac_lv2_event" = "xyes"; then
-         AC_DEFINE(CONFIG_LV2_EVENT, 1, [Define if LV2 event extension is available.])
-      else
-         AC_MSG_WARN([*** LV2 event extension will be disabled.])
-      fi
-   fi
-   if test "x$ac_lv2_external_ui" = "xyes"; then
-      AC_CHECK_HEADERS(lv2_ui.h lv2_external_ui.h,
-         [ac_lv2_external_ui="yes"],
-         [ac_lv2_external_ui="no"],
-         [[#ifdef HAVE_LV2_UI_H
-           # include <lv2_ui.h>
-           #endif
-         ]])
-      if test "x$ac_lv2_external_ui" = "xyes"; then
-         AC_DEFINE(CONFIG_LV2_EXTERNAL_UI, 1, [Define if LV2 external UI extension is available.])
-      else
-         AC_MSG_WARN([*** LV2 external UI extension will be disabled.])
-      fi
-   fi
+fi
+if test "x$ac_lv2" = "xyes"; then
+   AC_DEFINE(CONFIG_LV2, 1, [Define if LV2 headers are available.])
 else
+   AC_MSG_WARN([*** LV2 header files not found.])
+   AC_MSG_WARN([*** LV2 plug-in support will be disabled.])
    ac_lv2_event="no"
    ac_lv2_external_ui="no"
+fi
+if test "x$ac_lv2_event" = "xyes"; then
+   AC_CHECK_HEADERS(lv2_event.h lv2_event_helpers.h lv2_uri_map.h,
+      [ac_lv2_event="yes"], [ac_lv2_event="no"])
+   if test "x$ac_lv2_event" = "xyes"; then
+      AC_DEFINE(CONFIG_LV2_EVENT, 1, [Define if LV2 event extension is available.])
+   else
+      AC_MSG_WARN([*** LV2 event extension will be disabled.])
+   fi
+fi
+if test "x$ac_lv2_external_ui" = "xyes"; then
+   AC_CHECK_HEADERS(lv2_ui.h lv2_external_ui.h,
+      [ac_lv2_external_ui="yes"],
+      [ac_lv2_external_ui="no"],
+      [[#ifdef HAVE_LV2_UI_H
+        # include <lv2_ui.h>
+        #endif
+      ]])
+   if test "x$ac_lv2_external_ui" = "xyes"; then
+      AC_DEFINE(CONFIG_LV2_EXTERNAL_UI, 1, [Define if LV2 external UI extension is available.])
+   else
+      AC_MSG_WARN([*** LV2 external UI extension will be disabled.])
+   fi
 fi
 
 # Check for XInitThreads() support.

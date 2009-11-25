@@ -296,6 +296,7 @@ protected:
 	void deleteAudioOutputBus();
 
 private:
+
 	// Instance variables
 	qtractorSession    *m_pSession;
 	qtractorPluginList *m_pPluginList;

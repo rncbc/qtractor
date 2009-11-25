@@ -3518,6 +3518,17 @@ void qtractorMainForm::helpAbout (void)
 	sText += "<small><font color=\"red\">";
 	sText += tr("LV2 Plug-in support disabled.");
 	sText += "</font></small><br />";
+#else
+#ifndef CONFIG_LV2_EVENT
+	sText += "<small><font color=\"red\">";
+	sText += tr("LV2 Plug-in MIDI/Event support disabled.");
+	sText += "</font></small><br />";
+#endif
+#ifndef CONFIG_LV2_EXTERNAL_UI
+	sText += "<small><font color=\"red\">";
+	sText += tr("LV2 Plug-in External UI support disabled.");
+	sText += "</font></small><br />";
+#endif
 #endif
 #ifndef CONFIG_VST
 	sText += "<small><font color=\"red\">";

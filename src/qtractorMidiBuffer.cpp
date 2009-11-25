@@ -171,7 +171,7 @@ qtractorMidiManager::qtractorMidiManager ( qtractorSession *pSession,
 	m_pPluginList(pPluginList),
 	m_directBuffer(iBufferSize >> 2),
 	m_queuedBuffer(iBufferSize),
-	m_postedBuffer(iBufferSize >> 1),
+	m_postedBuffer(iBufferSize),
 	m_controllerBuffer(iBufferSize >> 2),
 	m_pBuffer(NULL), m_iBuffer(0),
 #ifdef CONFIG_MIDI_PARSER
@@ -192,12 +192,13 @@ qtractorMidiManager::qtractorMidiManager ( qtractorSession *pSession,
 	m_iPendingBankLSB(-1),
 	m_iPendingProg(-1)
 {
-	m_pBuffer = new snd_seq_event_t [bufferSize() << 1];
+	const unsigned int MaxMidiEvents = (bufferSize() << 1);
+
+	m_pBuffer = new snd_seq_event_t [MaxMidiEvents];
 
 #ifdef CONFIG_MIDI_PARSER
 	if (snd_midi_event_new(4, &m_pMidiParser) == 0) {
 		snd_midi_event_no_status(m_pMidiParser, 1);
-		const unsigned int MaxMidiEvents = (bufferSize() << 1);
 	#ifdef CONFIG_VST
 		const unsigned int VstBufferSize = sizeof(VstEvents)
 			+ MaxMidiEvents * sizeof(VstMidiEvent *);
@@ -205,7 +206,8 @@ qtractorMidiManager::qtractorMidiManager ( qtractorSession *pSession,
 		m_pVstMidiBuffer = new VstMidiEvent [MaxMidiEvents];
 	#endif
 	#ifdef CONFIG_LV2_EVENT
-		const unsigned int Lv2BufferSize = (MaxMidiEvents << 2);
+		const unsigned int Lv2BufferSize
+			= sizeof(LV2_Event)	* MaxMidiEvents;
 		m_pLv2Buffer = lv2_event_buffer_new(Lv2BufferSize,
 			LV2_EVENT_AUDIO_STAMP);
 	#endif
