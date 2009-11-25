@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(Qtractor, 0.4.3.1435, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.4.3.1436, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractorMainForm.ui)
 AC_CONFIG_HEADERS(config.h)
@@ -199,7 +199,7 @@ AC_ARG_WITH(vst,
 # Set for alternate LV2 include dir.
 AC_ARG_WITH(lv2,
   AC_HELP_STRING([--with-lv2=PATH], [use alternate LV2 header path]),
-  [ac_with_lv2="$withval"])
+  [ac_with_lv2="$withval"], [ac_with_lv2="lv2"])
 
 
 # Checks for programs.
@@ -615,6 +615,7 @@ if test "x$ac_lv2" = "xyes"; then
 fi
 if test "x$ac_lv2" = "xyes"; then
    AC_DEFINE(CONFIG_LV2, 1, [Define if LV2 headers are available.])
+   ac_incpath="$ac_with_lv2 $ac_incpath"
 else
    AC_MSG_WARN([*** LV2 header files not found.])
    AC_MSG_WARN([*** LV2 plug-in support will be disabled.])
@@ -694,7 +695,7 @@ echo "  SSE optimization support (x86) . . . . . . . . . .: $ac_sse"
 echo "  LADSPA Plug-in support . . . . . . . . . . . . . .: $ac_ladspa"
 echo "  DSSI Plug-in support . . . . . . . . . . . . . . .: $ac_dssi"
 echo "  VST Plug-in support  . . . . . . . . . . . . . . .: $ac_vst"
-echo "  LV2 Plug-in support  . . . . . . . . . . . . . . .: $ac_lv2"
+echo "  LV2 Plug-in support (libslv2)  . . . . . . . . . .: $ac_lv2"
 echo "  LV2 Plug-in MIDI/Event support . . . . . . . . . .: $ac_lv2_event"
 echo "  LV2 Plug-in External UI support  . . . . . . . . .: $ac_lv2_external_ui"
 echo
