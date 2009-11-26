@@ -82,6 +82,9 @@ public slots:
 	void midiRefresh()  { midiUpdate(false); }
 	void midiClear()    { midiUpdate(true);  }
 
+	void audioReset();
+	void midiReset();
+
 protected slots:
 
 	void audioIClientChanged();

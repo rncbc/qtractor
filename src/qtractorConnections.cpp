@@ -249,6 +249,14 @@ void qtractorConnections::clear (void)
 }
 
 
+// Conditional connections recycle.
+void qtractorConnections::reset (void)
+{
+	m_pConnectForm->audioReset();
+	m_pConnectForm->midiReset();
+}
+
+
 // Keyboard event handler.
 void qtractorConnections::keyPressEvent ( QKeyEvent *pKeyEvent )
 {

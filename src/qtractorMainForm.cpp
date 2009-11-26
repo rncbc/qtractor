@@ -145,6 +145,7 @@ static const char *s_pszTemplateExt  = "qtt";
 #define QTRACTOR_CTL_EVENT      QEvent::Type(QEvent::User + 7)
 #define QTRACTOR_SPP_EVENT      QEvent::Type(QEvent::User + 8)
 
+
 //-------------------------------------------------------------------------
 // qtractorTempoCursor -- Custom session tempo helper class
 
@@ -2774,13 +2775,13 @@ void qtractorMainForm::viewConnections ( bool bOn )
 		m_pOptions->saveWidgetGeometry(m_pConnections);
 #if 0
 	if (bOn) {
-		m_pConnections->clear();
+		m_pConnections->reset();
 		m_pConnections->show();
 	} else {
 		m_pConnections->hide();
 	}
 #else
-	if (bOn) m_pConnections->clear();
+	if (bOn) m_pConnections->reset();
 	m_pConnections->setVisible(bOn);
 #endif
 }

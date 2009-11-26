@@ -58,6 +58,9 @@ public:
 	// Complete connections recycle.
 	void clear();
 
+	// Conditional connections recycle.
+	void reset();
+
 protected:
 
 	// Notify the main application widget that we're closing.

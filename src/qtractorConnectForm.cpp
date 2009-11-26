@@ -199,6 +199,15 @@ void qtractorConnectForm::audioUpdate ( bool bClear )
 }
 
 
+// Refresh complete form conditionally.
+void qtractorConnectForm::audioReset (void)
+{
+	audioUpdate(
+		m_ui.AudioOClientsComboBox->currentIndex() > 0 ||
+		m_ui.AudioIClientsComboBox->currentIndex() > 0);
+}
+
+
 // A helper connection change slot.
 void qtractorConnectForm::audioConnectChanged (void)
 {
@@ -307,6 +316,15 @@ void qtractorConnectForm::midiUpdate ( bool bClear )
 		m_pMidiConnect->icon(qtractorMidiConnect::ClientIn));
 
 	midiStabilize();
+}
+
+
+// Refresh complete form conditionally.
+void qtractorConnectForm::midiReset (void)
+{
+	midiUpdate(
+		m_ui.MidiOClientsComboBox->currentIndex() > 0 ||
+		m_ui.MidiIClientsComboBox->currentIndex() > 0);
 }
 
 
