@@ -149,8 +149,8 @@ bool qtractorPluginPath::open (void)
 			sPaths = LV2_PATH;
 		if (!sPaths.isEmpty())
 			m_paths << sPaths.split(PATH_SEP);
-		// Must to this before anything related to LV2 plugins...
-		::setenv("LV2_PATH", m_paths.join(PATH_SEP).toUtf8().constData(), 1);
+		// Must do this before anything related to LV2 plugins...
+		::setenv("LV2_PATH", sPaths.toUtf8().constData(), 1);
 	}
 #endif
 

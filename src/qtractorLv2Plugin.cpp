@@ -389,6 +389,8 @@ bool qtractorLv2PluginType::getTypes ( qtractorPluginPath& path )
 	if (g_slv2_plugins == NULL)
 		return false;
 
+	unsigned long iIndex = 0;
+
 	unsigned int iNumPlugins = slv2_plugins_size(g_slv2_plugins);
 	for (unsigned int i = 0; i < iNumPlugins; ++i) {
 		SLV2Plugin  plugin = slv2_plugins_get_at(g_slv2_plugins, i);
@@ -398,13 +400,15 @@ bool qtractorLv2PluginType::getTypes ( qtractorPluginPath& path )
 		if (pLv2Type) {
 			if (pLv2Type->open()) {
 				path.addType(pLv2Type);
+				pLv2Type->close();
+				iIndex++;
 			} else {
 				delete pLv2Type;
 			}
 		}
 	}
 
-	return true;
+	return (iIndex > 0);
 }
 
 
