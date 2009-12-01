@@ -545,8 +545,11 @@ void qtractorLv2Plugin::setChannels ( unsigned short iChannels )
 	setActivated(false);
 
 	if (m_pInstances) {
-		for (unsigned short i = 0; i < instances(); ++i)
-			slv2_instance_free(m_pInstances[i]);
+		for (unsigned short i = 0; i < instances(); ++i) {
+			SLV2Instance instance = m_pInstances[i];
+			if (instance)
+				slv2_instance_free(instance);
+		}
 		delete [] m_pInstances;
 		m_pInstances = NULL;
 	}
@@ -578,30 +581,32 @@ void qtractorLv2Plugin::setChannels ( unsigned short iChannels )
 		// Instantiate them properly first...
 		SLV2Instance instance
 			= slv2_plugin_instantiate(plugin, sampleRate(), g_lv2_features);
-		// (Dis)connect all ports...
-		unsigned long iNumPorts = slv2_plugin_get_num_ports(plugin);
-		for (unsigned long k = 0; k < iNumPorts; ++k)
-			slv2_instance_connect_port(instance, k, NULL);
-		// Connect all existing input control ports...
-		QListIterator<qtractorPluginParam *> param(params());
-		while (param.hasNext()) {
-			qtractorPluginParam *pParam = param.next();
-			slv2_instance_connect_port(instance,
-				pParam->index(), pParam->data());
-		}
-	#ifdef CONFIG_LV2_EVENT
-		// Connect all existing input MIDI ports...
-		if (pMidiManager) {
-			for (unsigned short j = 0; j < iMidiIns; ++j) {
+		if (instance) {
+			// (Dis)connect all ports...
+			unsigned long iNumPorts = slv2_plugin_get_num_ports(plugin);
+			for (unsigned long k = 0; k < iNumPorts; ++k)
+				slv2_instance_connect_port(instance, k, NULL);
+			// Connect all existing input control ports...
+			QListIterator<qtractorPluginParam *> param(params());
+			while (param.hasNext()) {
+				qtractorPluginParam *pParam = param.next();
 				slv2_instance_connect_port(instance,
-					m_piMidiIns[j], pMidiManager->lv2_buffer());
+					pParam->index(), pParam->data());
 			}
-		}
-	#endif
-		// Connect all existing output control (dummy) ports...
-		for (unsigned short j = 0; j < iControlOuts; ++j) {
-			slv2_instance_connect_port(instance,
-				m_piControlOuts[j], &m_pfControlOuts[j]);
+		#ifdef CONFIG_LV2_EVENT
+			// Connect all existing input MIDI ports...
+			if (pMidiManager) {
+				for (unsigned short j = 0; j < iMidiIns; ++j) {
+					slv2_instance_connect_port(instance,
+						m_piMidiIns[j], pMidiManager->lv2_buffer());
+				}
+			}
+		#endif
+			// Connect all existing output control (dummy) ports...
+			for (unsigned short j = 0; j < iControlOuts; ++j) {
+				slv2_instance_connect_port(instance,
+					m_piControlOuts[j], &m_pfControlOuts[j]);
+			}
 		}
 		// This is it...
 		m_pInstances[i] = instance;
@@ -638,8 +643,11 @@ SLV2Instance qtractorLv2Plugin::slv2_instance ( unsigned short iInstance ) const
 void qtractorLv2Plugin::activate (void)
 {
 	if (m_pInstances) {
-		for (unsigned short i = 0; i < instances(); ++i)
-			slv2_instance_activate(m_pInstances[i]);
+		for (unsigned short i = 0; i < instances(); ++i) {
+			SLV2Instance instance = m_pInstances[i];
+			if (instance)
+				slv2_instance_activate(instance);
+		}
 	}
 }
 
@@ -648,8 +656,11 @@ void qtractorLv2Plugin::activate (void)
 void qtractorLv2Plugin::deactivate (void)
 {
 	if (m_pInstances) {
-		for (unsigned short i = 0; i < instances(); ++i)
-			slv2_instance_deactivate(m_pInstances[i]);
+		for (unsigned short i = 0; i < instances(); ++i) {
+			SLV2Instance instance = m_pInstances[i];
+			if (instance)
+				slv2_instance_deactivate(instance);
+		}
 	}
 }
 
@@ -677,27 +688,29 @@ void qtractorLv2Plugin::process (
 	// For each plugin instance...
 	for (i = 0; i < iInstances; ++i) {
 		SLV2Instance instance = m_pInstances[i];
-		// For each instance audio input port...
-		for (j = 0; j < iAudioIns; ++j) {
-			slv2_instance_connect_port(instance,
-				m_piAudioIns[j], ppIBuffer[iIChannel]);
-			if (++iIChannel >= iChannels)
-				iIChannel = 0;
+		if (instance) {
+			// For each instance audio input port...
+			for (j = 0; j < iAudioIns; ++j) {
+				slv2_instance_connect_port(instance,
+					m_piAudioIns[j], ppIBuffer[iIChannel]);
+				if (++iIChannel >= iChannels)
+					iIChannel = 0;
+			}
+			// For each instance audio output port...
+			for (j = 0; j < iAudioOuts; ++j) {
+				slv2_instance_connect_port(instance,
+					m_piAudioOuts[j], ppOBuffer[iOChannel]);
+				if (++iOChannel >= iChannels)
+					iOChannel = 0;
+			}
+			// Make it run...
+			slv2_instance_run(instance, nframes);
+			// Wrap channels?...
+			if (iIChannel < iChannels - 1)
+				iIChannel++;
+			if (iOChannel < iChannels - 1)
+				iOChannel++;
 		}
-		// For each instance audio output port...
-		for (j = 0; j < iAudioOuts; ++j) {
-			slv2_instance_connect_port(instance,
-				m_piAudioOuts[j], ppOBuffer[iOChannel]);
-			if (++iOChannel >= iChannels)
-				iOChannel = 0;
-		}
-		// Make it run...
-		slv2_instance_run(instance, nframes);
-		// Wrap channels?...
-		if (iIChannel < iChannels - 1)
-			iIChannel++;
-		if (iOChannel < iChannels - 1)
-			iOChannel++;
 	}
 }
 
