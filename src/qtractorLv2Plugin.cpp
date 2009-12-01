@@ -823,6 +823,20 @@ void qtractorLv2Plugin::idleEditor (void)
 	if (m_lv2_ui_widget == NULL)
 		return;
 
+	if (m_piControlOuts && m_pfControlOuts) {
+		const LV2UI_Descriptor *ui_descriptor = lv2_ui_descriptor();
+		if (ui_descriptor && ui_descriptor->port_event) {
+			LV2UI_Handle ui_handle = lv2_ui_handle();
+			if (ui_handle) {
+				unsigned long iControlOuts = type()->controlOuts();
+				for (unsigned short j = 0; j < iControlOuts; ++j) {
+					(*ui_descriptor->port_event)(ui_handle,
+						m_piControlOuts[j], 4, 0, &m_pfControlOuts[j]);
+				}
+			}
+		}
+	}
+
 	LV2_EXTERNAL_UI_RUN((lv2_external_ui *) m_lv2_ui_widget);
 }
 
