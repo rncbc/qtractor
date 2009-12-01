@@ -423,7 +423,8 @@ static QList<qtractorLv2Plugin *> g_lv2Plugins;
 qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 	qtractorLv2PluginType *pLv2Type )
 	: qtractorPlugin(pList, pLv2Type), m_pInstances(NULL),
-		m_piControlOuts(NULL), m_piAudioIns(NULL), m_piAudioOuts(NULL)
+		m_piControlOuts(NULL), m_pfControlOuts(NULL),
+		m_piAudioIns(NULL), m_piAudioOuts(NULL)
 	#ifdef CONFIG_LV2_EVENT
 		, m_piMidiIns(NULL)
 	#endif
@@ -451,8 +452,10 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 			m_piAudioIns = new unsigned long [iAudioIns];
 		if (iAudioOuts > 0)
 			m_piAudioOuts = new unsigned long [iAudioOuts];
-		if (iControlOuts > 0)
+		if (iControlOuts > 0) {
 			m_piControlOuts = new unsigned long [iControlOuts];
+			m_pfControlOuts = new float [iControlOuts];
+		}
 		iControlOuts = iAudioIns = iAudioOuts = 0;
 	#ifdef CONFIG_LV2_EVENT
 		unsigned short iMidiIns = pLv2Type->midiIns();
@@ -482,8 +485,11 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 					if (slv2_port_is_a(plugin, port, g_slv2_audio_class))
 						m_piAudioOuts[iAudioOuts++] = i;
 					else
-					if (slv2_port_is_a(plugin, port, g_slv2_control_class))
-						m_piControlOuts[iControlOuts++] = i;
+					if (slv2_port_is_a(plugin, port, g_slv2_control_class)) {
+						m_piControlOuts[iControlOuts] = i;
+						m_pfControlOuts[iControlOuts] = 0.0f;
+						++iControlOuts;
+					}
 				}
 			}
 		}
@@ -510,6 +516,8 @@ qtractorLv2Plugin::~qtractorLv2Plugin (void)
 		delete [] m_piAudioIns;
 	if (m_piControlOuts)
 		delete [] m_piControlOuts;
+	if (m_pfControlOuts)
+		delete [] m_pfControlOuts;
 }
 
 
@@ -562,9 +570,8 @@ void qtractorLv2Plugin::setChannels ( unsigned short iChannels )
 		pMidiManager = list()->midiManager();
 #endif
 
-	// FIXME: The dummy value for output control (dummy) port indexes...
+	// We'll need output control (not dummy anymore) port indexes...
 	unsigned short iControlOuts = pType->controlOuts();
-	static float s_fDummyData = 0.0f;
 	// Allocate new instances...
 	m_pInstances = new SLV2Instance [iInstances];
 	for (unsigned short i = 0; i < iInstances; ++i) {
@@ -594,7 +601,7 @@ void qtractorLv2Plugin::setChannels ( unsigned short iChannels )
 		// Connect all existing output control (dummy) ports...
 		for (unsigned short j = 0; j < iControlOuts; ++j) {
 			slv2_instance_connect_port(instance,
-				m_piControlOuts[j], &s_fDummyData);
+				m_piControlOuts[j], &m_pfControlOuts[j]);
 		}
 		// This is it...
 		m_pInstances[i] = instance;
