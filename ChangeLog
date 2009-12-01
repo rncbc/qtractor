@@ -5,6 +5,10 @@ ChangeLog
 
 SVN TRUNK
 
+- An off-by-one nasty old bug fixed in audio clip drawing, was
+  causing instant crashes on certain zoom levels of the main
+  track view.
+
 - Graphical MIDI clip representation regarding note/pitch range is
   now kept as much as possible across clip edits (cut, copy, paste,
   drag, move, delete, etc.)

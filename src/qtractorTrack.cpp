@@ -854,7 +854,7 @@ void qtractorTrack::drawTrack ( QPainter *pPainter, const QRect& trackRect,
 				x--;	// Give some clip left-border room.
 			}
 			if (iClipEnd < iTrackEnd) {
-				w -= m_pSession->pixelFromFrame(iTrackEnd - iClipEnd) + 1;
+				w -= m_pSession->pixelFromFrame(iTrackEnd - iClipEnd);// + 1;
 			} else {
 				w++;	// Give some clip right-border room.
 			}

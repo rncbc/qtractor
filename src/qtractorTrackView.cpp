@@ -702,7 +702,7 @@ qtractorClip *qtractorTrackView::clipAt ( const QPoint& pos,
 	while (pClip && pClip->clipStart() < tvi.trackEnd) {
 		int x = pSession->pixelFromFrame(pClip->clipStart());
 		int w = pSession->pixelFromFrame(pClip->clipLength());
-		if (pos.x() > x && pos.x() < x + w) {
+		if (pos.x() >= x && x + w >= pos.x()) {
 			pClipAt = pClip;
 			if (pClipRect)
 				pClipRect->setRect(
@@ -1998,7 +1998,7 @@ bool qtractorTrackView::dragFadeResizeStart ( const QPoint& pos )
 			return true;
 		}
 		// Resize-right check...
-		if (pos.x() > rectClip.right() - 4) {
+		if (pos.x() >= rectClip.right() - 4) {
 			m_dragCursor = DragResizeRight;
 			qtractorScrollView::setCursor(QCursor(Qt::SizeHorCursor));
 			return true;
