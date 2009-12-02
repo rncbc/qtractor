@@ -152,6 +152,12 @@ public:
 	// LV2 UI handle accessor.
 	LV2UI_Handle lv2_ui_handle() const;
 
+	// GUI editor closed state.
+	void setEditorClosed(bool bClosed)
+		{ m_bEditorClosed = bClosed; }
+	bool isEditorClosed() const
+		{ return m_bEditorClosed; }
+
 #endif
 
 protected:
@@ -176,6 +182,7 @@ protected:
 
 	QByteArray     m_aEditorTitle;
 	bool           m_bEditorVisible;
+	bool           m_bEditorClosed;
 
 	SLV2UIs        m_slv2_uis;
 	SLV2UI         m_slv2_ui;

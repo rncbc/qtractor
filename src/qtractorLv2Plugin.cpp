@@ -108,26 +108,8 @@ static void qtractor_lv2_ui_closed ( LV2UI_Controller ui_controller )
 	qDebug("qtractor_lv2_ui_closed(%p)", pLv2Plugin);
 #endif
 
-	if (pLv2Plugin->isFormVisible())
-		(pLv2Plugin->form())->toggleEditor(false);
-
-#if 0
-	const LV2UI_Descriptor *ui_descriptor = pLv2Plugin->lv2_ui_descriptor();
-	if (ui_descriptor == NULL)
-		return;
-	if (ui_descriptor->cleanup == NULL)
-		return;
-
-	LV2UI_Handle ui_handle = pLv2Plugin->lv2_ui_handle();
-	if (ui_handle == NULL)
-		return;
-
-	// Just tdo the cleaup...
-	(*ui_descriptor->cleanup)(ui_handle);
-#else
-	// FIXME: Close plugin editor...
-	pLv2Plugin->closeEditor();
-#endif
+	// Just flag up the closure...
+	pLv2Plugin->setEditorClosed(true);
 }
 
 #endif	// CONFIG_LV2_EXTERNAL_UI
@@ -430,6 +412,7 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 	#endif
 	#ifdef CONFIG_LV2_EXTERNAL_UI
 		, m_bEditorVisible(false)
+		, m_bEditorClosed(false)
 		, m_slv2_uis(NULL)
 		, m_slv2_ui(NULL)
 		, m_slv2_ui_instance(NULL)
@@ -783,7 +766,7 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 			}
 		}
 	}
-	
+
 	if (m_slv2_ui_instance) {
 		m_lv2_ui_widget = slv2_ui_instance_get_widget(m_slv2_ui_instance);
 		g_lv2Plugins.append(this);
@@ -804,6 +787,21 @@ void qtractorLv2Plugin::closeEditor (void)
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorLv2Plugin[%p]::closeEditor()", this);
 #endif
+
+	// Just do the cleaup...
+    if (isEditorClosed()) {
+		setEditorClosed(false);
+		if (isFormVisible())
+			form()->toggleEditor(false);
+	#if 0
+		const LV2UI_Descriptor *ui_descriptor = lv2_ui_descriptor();
+		if (ui_descriptor && ui_descriptor->cleanup) {
+			LV2UI_Handle ui_handle = lv2_ui_handle();
+			if (ui_handle)
+				(*ui_descriptor->cleanup)(ui_handle);
+		}
+	#endif
+	}
 
 	setEditorVisible(false);
 
@@ -851,6 +849,9 @@ void qtractorLv2Plugin::idleEditor (void)
 	}
 
 	LV2_EXTERNAL_UI_RUN((lv2_external_ui *) m_lv2_ui_widget);
+
+	if (isEditorClosed())
+		closeEditor();
 }
 
 
