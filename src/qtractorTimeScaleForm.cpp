@@ -112,6 +112,9 @@ qtractorTimeScaleForm::qtractorTimeScaleForm (
 	// Setup UI struct...
 	m_ui.setupUi(this);
 
+	// Window modality (let plugin/tool windows rave around).
+	QDialog::setWindowModality(Qt::WindowModal);
+
 	// Initialize locals.
 	m_pTimeScale  = NULL;
 

@@ -68,6 +68,9 @@ qtractorInstrumentForm::qtractorInstrumentForm (
 	// Setup UI struct...
 	m_ui.setupUi(this);
 
+	// Window modality (let plugin/tool windows rave around).
+	QDialog::setWindowModality(Qt::WindowModal);
+
 	m_pInstruments = NULL;
 
 	qtractorSession *pSession = qtractorSession::getInstance();

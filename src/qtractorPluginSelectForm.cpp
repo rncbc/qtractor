@@ -1,7 +1,7 @@
 // qtractorPluginSelectForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -48,6 +48,9 @@ qtractorPluginSelectForm::qtractorPluginSelectForm (
 {
 	// Setup UI struct...
 	m_ui.setupUi(this);
+
+	// Window modality (let plugin/tool windows rave around).
+	QDialog::setWindowModality(Qt::WindowModal);
 
 	m_iChannels = 0;
 	m_bMidi = false;

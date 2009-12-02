@@ -5,6 +5,11 @@ ChangeLog
 
 SVN TRUNK
 
+- All session related dialogs are now set to window modality,
+  (were set to default application modality before) allowing
+  for continued input focus and interaction on all plugin/tool
+  windows. (EXPERIMENTAL)
+
 - An off-by-one nasty old bug fixed in audio clip drawing, was
   causing instant crashes on certain zoom levels of the main
   track view.

@@ -100,6 +100,9 @@ qtractorTrackForm::qtractorTrackForm (
 	// Setup UI struct...
 	m_ui.setupUi(this);
 
+	// Window modality (let plugin/tool windows rave around).
+	QDialog::setWindowModality(Qt::WindowModal);
+
 	// No settings descriptor initially (the caller will set it).
 	m_pTrack = NULL;
 

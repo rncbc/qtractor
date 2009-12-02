@@ -247,6 +247,9 @@ qtractorShortcutForm::qtractorShortcutForm ( QList<QAction *> actions,
 	// Setup UI struct...
 	m_ui.setupUi(this);
 
+	// Window modality (let plugin/tool windows rave around).
+	QDialog::setWindowModality(Qt::ApplicationModal);
+
 	m_iDirtyCount = 0;
 
 //	m_ui.qtractorShortcutTable = new QTableWidget(0, 3, this);

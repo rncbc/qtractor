@@ -53,6 +53,9 @@ qtractorOptionsForm::qtractorOptionsForm (
 	// Setup UI struct...
 	m_ui.setupUi(this);
 
+	// Window modality (let plugin/tool windows rave around).
+	QDialog::setWindowModality(Qt::ApplicationModal);
+
 	// No settings descriptor initially (the caller will set it).
 	m_pOptions = NULL;
 

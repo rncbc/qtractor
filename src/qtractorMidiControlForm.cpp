@@ -80,6 +80,9 @@ qtractorMidiControlForm::qtractorMidiControlForm (
 	// Setup UI struct...
 	m_ui.setupUi(this);
 
+	// Window modality (let plugin/tool windows rave around).
+	QDialog::setWindowModality(Qt::WindowModal);
+
 	m_iDirtyCount = 0;
 	m_iDirtyMap = 0;
 	m_iUpdating = 0;
