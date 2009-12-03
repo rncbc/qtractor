@@ -788,21 +788,6 @@ void qtractorLv2Plugin::closeEditor (void)
 	qDebug("qtractorLv2Plugin[%p]::closeEditor()", this);
 #endif
 
-	// Just do the cleaup...
-    if (isEditorClosed()) {
-		setEditorClosed(false);
-		if (isFormVisible())
-			form()->toggleEditor(false);
-	#if 0
-		const LV2UI_Descriptor *ui_descriptor = lv2_ui_descriptor();
-		if (ui_descriptor && ui_descriptor->cleanup) {
-			LV2UI_Handle ui_handle = lv2_ui_handle();
-			if (ui_handle)
-				(*ui_descriptor->cleanup)(ui_handle);
-		}
-	#endif
-	}
-
 	setEditorVisible(false);
 
 	int iLv2Plugin = g_lv2Plugins.indexOf(this);
@@ -850,8 +835,23 @@ void qtractorLv2Plugin::idleEditor (void)
 
 	LV2_EXTERNAL_UI_RUN((lv2_external_ui *) m_lv2_ui_widget);
 
-	if (isEditorClosed())
+	// Do we need some clean-up...?
+    if (isEditorClosed()) {
+		setEditorClosed(false);
+		if (isFormVisible())
+			form()->toggleEditor(false);
+		m_bEditorVisible = false;
+	#if 0
+		const LV2UI_Descriptor *ui_descriptor = lv2_ui_descriptor();
+		if (ui_descriptor && ui_descriptor->cleanup) {
+			LV2UI_Handle ui_handle = lv2_ui_handle();
+			if (ui_handle)
+				(*ui_descriptor->cleanup)(ui_handle);
+		}
+	#else
 		closeEditor();
+	#endif
+	}
 }
 
 

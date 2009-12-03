@@ -229,8 +229,10 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 
 void qtractorPluginForm::activateForm (void)
 {
-	if (!isVisible())
+	if (!isVisible()) {
+		if (m_pPlugin) toggleEditor(m_pPlugin->isEditorVisible());
 		show();
+	}
 
 	raise();
 	activateWindow();
