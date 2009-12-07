@@ -180,6 +180,10 @@ public:
 	void process(qtractorClip *pClip,
 		unsigned long iFrameStart, unsigned long iFrameEnd);
 
+	// Track special process record executive (audio recording only).
+	void process_record(
+		unsigned long iFrameStart, unsigned long iFrameEnd);
+
 	// Track paint method.
 	void drawTrack(QPainter *pPainter, const QRect& trackRect,
 		unsigned long iTrackStart, unsigned long iTrackEnd,

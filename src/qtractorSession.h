@@ -300,6 +300,10 @@ public:
 	void process(qtractorSessionCursor *pSessionCursor,
 		unsigned long iFrameStart, unsigned long iFrameEnd);
 
+	// Session special process record executive (audio recording only).
+	void process_record(
+		unsigned long iFrameStart, unsigned long iFrameEnd);
+
 	// Document element methods.
 	bool loadElement(qtractorSessionDocument *pDocument,
 		QDomElement *pElement);

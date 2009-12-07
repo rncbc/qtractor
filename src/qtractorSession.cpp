@@ -1565,6 +1565,19 @@ void qtractorSession::process ( qtractorSessionCursor *pSessionCursor,
 }
 
 
+// Session special process record executive (audio recording only).
+void qtractorSession::process_record (
+	unsigned long iFrameStart, unsigned long iFrameEnd )
+{
+	// Now, for every Audio track...
+	for (qtractorTrack *pTrack = m_tracks.first();
+			pTrack; pTrack = pTrack->next()) {
+		if (pTrack->trackType() == qtractorTrack::Audio && pTrack->isRecord())
+			pTrack->process_record(iFrameStart, iFrameEnd);
+	}
+}
+
+
 // Document element methods.
 bool qtractorSession::loadElement ( qtractorSessionDocument *pDocument,
 	QDomElement *pElement )

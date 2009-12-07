@@ -752,58 +752,17 @@ void qtractorTrack::process ( qtractorClip *pClip,
 {
 	// Audio-buffers needs some preparation...
 	unsigned int nframes = iFrameEnd - iFrameStart;
-	qtractorAudioBus *pInputBus = NULL;
-	qtractorAudioBus *pOutputBus = NULL;
 	qtractorAudioMonitor *pAudioMonitor = NULL;
+	qtractorAudioBus *pOutputBus = NULL;
 	if (m_props.trackType == qtractorTrack::Audio) {
 		pAudioMonitor = static_cast<qtractorAudioMonitor *> (m_pMonitor);
-		// Input stuff...
-		pInputBus = static_cast<qtractorAudioBus *> (m_pInputBus);
-		// Audio-recording?
-		if (isRecord() && pAudioMonitor && pInputBus) {
-			// Need the audio buffer offset on this...
-			unsigned int offset = m_pSession->audioEngine()->bufferOffset();
-			// Effective audio-recording?
-			qtractorAudioClip *pAudioClip
-				= static_cast<qtractorAudioClip *> (m_pClipRecord);
-			if (pAudioClip) {
-				// Clip recording...
-				if (m_pSession->isPunching()) {
-					// Punch-in/out recording...
-					unsigned long iPunchIn  = m_pSession->punchIn();
-					unsigned long iPunchOut = m_pSession->punchOut();
-					if (iPunchIn < iFrameEnd && iPunchOut > iFrameStart) {
-						unsigned int offs = offset;
-						unsigned int nfrs = nframes;
-						if (iPunchIn >= iFrameStart) {
-							// Punch-in...
-							offs += (iPunchIn - iFrameStart);
-							if (iPunchOut < iFrameEnd)	// Punch-out (unlikely...)
-								nfrs = (iPunchOut - iPunchIn);
-							else
-								nfrs = (iFrameEnd - iPunchIn);
-						}
-						else
-						if (iPunchOut < iFrameEnd)	// Punch-out (likely...)
-							nfrs = (iPunchOut - iFrameStart);
-						pAudioClip->write(
-							pInputBus->in(), nfrs, pInputBus->channels(), offs);
-					}
-				} else {
-					// Regular full-length recording...
-					pAudioClip->write(
-						pInputBus->in(), nframes, pInputBus->channels(), offset);
-				}
-			}
-			// Record non-passthru metering...
-			pAudioMonitor->process_meter(
-				pInputBus->in(), nframes, pInputBus->channels(), offset);
-		}
-		// Output stuff...
 		pOutputBus = static_cast<qtractorAudioBus *> (m_pOutputBus);
 		// Prepare this track buffer...
-		if (pOutputBus)
-			pOutputBus->buffer_prepare(nframes, isMonitor() ? pInputBus : NULL);
+		if (pOutputBus) {
+			qtractorAudioBus *pInputBus = (isMonitor()
+				? static_cast<qtractorAudioBus *> (m_pInputBus) : NULL);
+			pOutputBus->buffer_prepare(nframes, pInputBus);
+		}
 	}
 
 	// Playback...
@@ -823,6 +782,56 @@ void qtractorTrack::process ( qtractorClip *pClip,
 			pAudioMonitor->process(pOutputBus->buffer(), nframes);
 			// Actually render it...
 			pOutputBus->buffer_commit(nframes);
+		}
+	}
+}
+
+
+// Track special process record executive (audio recording only).
+void qtractorTrack::process_record (
+	unsigned long iFrameStart, unsigned long iFrameEnd )
+{
+	// Audio track-recording?
+	qtractorAudioBus *pInputBus
+		= static_cast<qtractorAudioBus *> (m_pInputBus);
+	qtractorAudioClip *pAudioClip
+		= static_cast<qtractorAudioClip *> (m_pClipRecord);
+	if (pAudioClip && pInputBus) {
+		// Clip recording...
+		unsigned int nframes = iFrameEnd - iFrameStart;
+		if (m_pSession->isPunching()) {
+			// Punch-in/out recording...
+			unsigned long iPunchIn  = m_pSession->punchIn();
+			unsigned long iPunchOut = m_pSession->punchOut();
+			if (iPunchIn < iFrameEnd && iPunchOut > iFrameStart) {
+				unsigned int offs = 0;
+				// Punch-out (unlikely...)
+				if (iPunchIn >= iFrameStart) {
+					offs += (iPunchIn - iFrameStart);
+					if (iPunchOut < iFrameEnd)
+						nframes = (iPunchOut - iPunchIn);
+					else
+						nframes = (iFrameEnd - iPunchIn);
+				}
+				else
+				// Punch-out (likely...)
+				if (iPunchOut < iFrameEnd)
+					nframes = (iPunchOut - iFrameStart);
+				// Punch-in/out recording...
+				pAudioClip->write(
+					pInputBus->in(), nframes, pInputBus->channels(), offs);
+			}
+		} else {
+			// Regular full-length recording...
+			pAudioClip->write(
+				pInputBus->in(), nframes, pInputBus->channels());
+		}
+		// Record non-passthru metering...
+		qtractorAudioMonitor *pAudioMonitor
+			= static_cast<qtractorAudioMonitor *> (m_pMonitor);
+		if (pAudioMonitor) {
+			pAudioMonitor->process_meter(
+				pInputBus->in(), nframes, pInputBus->channels());
 		}
 	}
 }

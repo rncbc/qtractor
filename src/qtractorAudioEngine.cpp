@@ -793,7 +793,7 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 		}
 	}
 
-	// Regular range...
+	// Regular range playback...
 	pSession->process(pAudioCursor, iFrameStart, iFrameEnd);
 	m_iBufferOffset += (iFrameEnd - iFrameStart);
 
@@ -819,6 +819,10 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 		if (iRamping < 0)
 			ATOMIC_SET(&m_ramping_off, 1);
 	}
+
+	// Regular range recording (if and when applicable)...
+	if (pSession->isRecording())
+		pSession->process_record(iFrameStart, iFrameEnd);
 
 	// Sync with loop boundaries (unlikely?)
 	if (pSession->isLooping() && iFrameStart < pSession->loopEnd()
