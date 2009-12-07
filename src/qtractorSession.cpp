@@ -296,7 +296,10 @@ qtractorInstrumentList *qtractorSession::instruments (void) const
 // Session directory path accessors.
 void qtractorSession::setSessionDir ( const QString& sSessionDir )
 {
-	m_props.sessionDir = sSessionDir;
+	QDir sdir(sSessionDir);
+
+	if (sdir.exists())
+		m_props.sessionDir = sdir.absolutePath();
 }
 
 const QString& qtractorSession::sessionDir (void) const

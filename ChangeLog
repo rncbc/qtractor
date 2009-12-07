@@ -5,6 +5,8 @@ ChangeLog
 
 SVN TRUNK
 
+- Set default session directory effective to file's location.
+
 - Audio track/clip recording process has been target to special
   refactorization across the internal audio engine process cycle,
   in a late attempt to get self-bounce/recording effective and
