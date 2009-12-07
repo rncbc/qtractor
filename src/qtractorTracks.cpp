@@ -368,7 +368,6 @@ bool qtractorTracks::newClip (void)
 		return false;
 
 	// Create on current track, or take the first...
-	// Create on current track, or take the first...
 	qtractorTrack *pTrack = currentTrack();
 	if (pTrack == NULL)
 		pTrack = pSession->tracks().first();
@@ -783,6 +782,77 @@ bool qtractorTracks::quantizeClipCommand (
 	return true;
 }
 
+
+
+// Import (audio) clip(s) into current track...
+bool qtractorTracks::importClips (
+	QStringList files, unsigned long iClipStart )
+{
+	// Have we some?
+	if (files.isEmpty())
+		return false;
+
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return false;
+
+	// Create on current track, or take the first...
+	qtractorTrack *pTrack = currentTrack();
+	if (pTrack == NULL)
+		pTrack = pSession->tracks().first();
+	if (pTrack == NULL)
+		return false;
+
+	// Track must be an audio one...
+	if (pTrack->trackType() != qtractorTrack::Audio)
+		return false;
+
+	// To log this import into session description.
+	QString sDescription = pSession->description().trimmed();
+	if (!sDescription.isEmpty())
+		sDescription += '\n';
+
+	qtractorClipCommand *pImportClipCommand
+		= new qtractorClipCommand(tr("clip import"));
+
+	// For each one of those files...
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	QStringListIterator iter(files);
+	while (iter.hasNext()) {
+		// This is one of the selected filenames....
+		const QString& sPath = iter.next();
+		// Add the clip at once...
+		qtractorAudioClip *pAudioClip = new qtractorAudioClip(pTrack);
+		pAudioClip->setFilename(sPath);
+		pAudioClip->setClipStart(iClipStart);
+		// Redundant but necessary for multi-clip
+		// concatenation, as we only know the actual
+		// audio clip length after opening it...
+		if (files.count() > 1) {
+			pAudioClip->open();
+			iClipStart += pAudioClip->clipLength();
+		}
+		// Will add the new clip into session on command execute...
+		pImportClipCommand->addClip(pAudioClip, pTrack);
+		// Don't forget to add this one to local repository.
+		if (pMainForm) {
+			pMainForm->addAudioFile(sPath);
+			// Log this successful import operation...
+			sDescription += tr("Audio file import \"%1\" on %2 %3.\n")
+				.arg(QFileInfo(sPath).fileName())
+				.arg(QDate::currentDate().toString("MMM dd yyyy"))
+				.arg(QTime::currentTime().toString("hh:mm:ss"));
+			pMainForm->appendMessages(
+				tr("Audio file import: \"%1\".").arg(sPath));
+		}
+	}
+
+	// Log to session (undoable by import-track command)...
+	pSession->setDescription(sDescription);
+
+	// Done.
+	return pSession->execute(pImportClipCommand);
+}
 
 
 // Export selected clips.
@@ -1521,9 +1591,13 @@ bool qtractorTracks::editTrack ( qtractorTrack *pTrack )
 
 
 // Import Audio files into new tracks...
-bool qtractorTracks::addAudioTracks ( QStringList files,
-	unsigned long iClipStart )
+bool qtractorTracks::addAudioTracks (
+	QStringList files, unsigned long iClipStart )
 {
+	// Have we some?
+	if (files.isEmpty())
+		return false;
+
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
 		return false;
@@ -1549,7 +1623,7 @@ bool qtractorTracks::addAudioTracks ( QStringList files,
 	qtractorTrack *pTrack = NULL;
 	int iTrackClip = 0;
 
-	// For each one of those files, if any...
+	// For each one of those files...
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	QStringListIterator iter(files);
 	while (iter.hasNext()) {
@@ -1569,7 +1643,7 @@ bool qtractorTracks::addAudioTracks ( QStringList files,
 		pAudioClip->setFilename(sPath);
 		pAudioClip->setClipStart(iClipStart);
 		// Time to add the new track/clip into session;
-		// actuallly, this is wheen the given audio file gets open...
+		// actuallly, this is when the given audio file gets open...
 		pTrack->addClip(pAudioClip);
 		if (iTrackClip == 0)
 			pTrack->setTrackName(pAudioClip->clipName());
@@ -1608,9 +1682,13 @@ bool qtractorTracks::addAudioTracks ( QStringList files,
 
 
 // Import MIDI files into new tracks...
-bool qtractorTracks::addMidiTracks ( QStringList files,
-	unsigned long iClipStart )
+bool qtractorTracks::addMidiTracks (
+	QStringList files, unsigned long iClipStart )
 {
+	// Have we some?
+	if (files.isEmpty())
+		return false;
+
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
 		return false;
@@ -1635,7 +1713,7 @@ bool qtractorTracks::addMidiTracks ( QStringList files,
 	if (!sDescription.isEmpty())
 		sDescription += '\n';
 
-	// For each one of those files, if any...
+	// For each one of those files...
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	QStringListIterator iter(files);
 	while (iter.hasNext()) {
@@ -1663,7 +1741,7 @@ bool qtractorTracks::addMidiTracks ( QStringList files,
 			if (iTrackChannel == 0 && iImport == 0)
 				pMidiClip->setSessionFlag(true);
 			// Time to add the new track/clip into session;
-			// actuallly, this is wheen the given MIDI file and
+			// actuallly, this is when the given MIDI file and
 			// track-channel gets open and read into the clip!
 			pTrack->addClip(pMidiClip);
 			// As far the standards goes,from which we'll strictly follow,

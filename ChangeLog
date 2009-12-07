@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- Edit/Clip/Import... menu option is now available for expedite
+  clip insertion from audio file requester.
+
 - Set default session directory effective to file's location.
 
 - Audio track/clip recording process has been target to special

@@ -549,6 +549,9 @@ qtractorMainForm::qtractorMainForm (
 	QObject::connect(m_ui.editClipQuantizeAction,
 		SIGNAL(triggered(bool)),
 		SLOT(editClipQuantize()));
+	QObject::connect(m_ui.editClipImportAction,
+		SIGNAL(triggered(bool)),
+		SLOT(editClipImport()));
 	QObject::connect(m_ui.editClipExportAction,
 		SIGNAL(triggered(bool)),
 		SLOT(editClipExport()));
@@ -2243,6 +2246,23 @@ void qtractorMainForm::editClipQuantize (void)
 }
 
 
+// Import (audio) clip.
+void qtractorMainForm::editClipImport (void)
+{
+#ifdef CONFIG_DEBUG
+	appendMessages("qtractorMainForm::editClipImport()");
+#endif
+
+	// Import (audio) clip(s)...
+	if (m_pTracks) {
+		unsigned long iClipStart = m_pSession->editHead();
+		m_pTracks->importClips(
+			m_pFiles->audioListView()->openFileNames(), iClipStart);
+		m_pTracks->trackView()->ensureVisibleFrame(iClipStart);
+	}
+}
+
+
 // Export current clip.
 void qtractorMainForm::editClipExport (void)
 {
@@ -2521,8 +2541,8 @@ void qtractorMainForm::trackImportAudio (void)
 	// Import Audio files into tracks...
 	if (m_pTracks) {
 		unsigned long iClipStart = m_pSession->editHead();
-		m_pTracks->addAudioTracks(m_pFiles->audioListView()->openFileNames(),
-			iClipStart);
+		m_pTracks->addAudioTracks(
+			m_pFiles->audioListView()->openFileNames(), iClipStart);
 		m_pTracks->trackView()->ensureVisibleFrame(iClipStart);
 	}
 }
@@ -2538,8 +2558,8 @@ void qtractorMainForm::trackImportMidi (void)
 	// Import MIDI files into tracks...
 	if (m_pTracks) {
 		unsigned long iClipStart = m_pSession->editHead();
-		m_pTracks->addMidiTracks(m_pFiles->midiListView()->openFileNames(),
-			iClipStart);
+		m_pTracks->addMidiTracks(
+			m_pFiles->midiListView()->openFileNames(), iClipStart);
 		m_pTracks->trackView()->ensureVisibleFrame(iClipStart);
 	}
 }
@@ -3830,6 +3850,8 @@ void qtractorMainForm::stabilizeForm (void)
 	m_ui.editClipQuantizeAction->setEnabled((pClip != NULL || bSelected)
 		&& pTrack && pTrack->trackType() == qtractorTrack::Midi
 		&& m_pSession->snapPerBeat() > 0);
+	m_ui.editClipImportAction->setEnabled(
+		pTrack && pTrack->trackType() == qtractorTrack::Audio);
 	m_ui.editClipExportAction->setEnabled(bSingleTrackSelected);
 
 	// Update track menu state...

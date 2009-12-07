@@ -84,6 +84,7 @@ public:
 	bool splitClip(qtractorClip *pClip = NULL);
 	bool normalizeClip(qtractorClip *pClip = NULL);
 	bool quantizeClip(qtractorClip *pClip = NULL);
+	bool importClips(QStringList files, unsigned long iClipStart = 0);
 	bool exportClips();
 	bool mergeClips();
 
