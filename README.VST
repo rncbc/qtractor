@@ -9,7 +9,10 @@ from its site:
   Steinberg Media Technologies GmbH
   http://www.steinberg.net
 
-specifically, dig it through the 3rd Party Developers section.
+specifically, dig it through the 3rd Party Developers section:
+
+  http://www.steinberg.net/en/company/3rd_party_developer.html
+
 It doesn't really matter much whether you pick the VST 2.3 or VST 2.4
 version, you need to pick one and just one only. Do not ask for the
 recently announced VST 3.0. It won't work and I won't care :)
@@ -41,5 +44,9 @@ Next step, once properly built, you'll need to tell where the actual
 native VST plug-ins can be found in your file system. The directories
 where plug-ins can be picked up by qtractor at run-time are specified
 respectively in the View/Options.../Display/Plugin Paths dialog.
+
+Last warning notice: leave that VST_PATH environment variable alone.
+That variable is most precious for DSSI-VST, in finding Windows(tm)
+VST plug-ins (.dll's) on its own. Have a glass of WINE and relax ;)
 
 Enjoy.
