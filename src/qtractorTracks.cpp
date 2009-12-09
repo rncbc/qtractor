@@ -800,12 +800,8 @@ bool qtractorTracks::importClips (
 	qtractorTrack *pTrack = currentTrack();
 	if (pTrack == NULL)
 		pTrack = pSession->tracks().first();
-	if (pTrack == NULL)
-		return false;
-
-	// Track must be an audio one...
-	if (pTrack->trackType() != qtractorTrack::Audio)
-		return false;
+	if (pTrack == NULL || pTrack->trackType() != qtractorTrack::Audio)
+		return addAudioTracks(files, iClipStart);
 
 	// To log this import into session description.
 	QString sDescription = pSession->description().trimmed();
@@ -828,7 +824,7 @@ bool qtractorTracks::importClips (
 		// Redundant but necessary for multi-clip
 		// concatenation, as we only know the actual
 		// audio clip length after opening it...
-		if (files.count() > 1) {
+		if (iter.hasNext()) {
 			pAudioClip->open();
 			iClipStart += pAudioClip->clipLength();
 		}

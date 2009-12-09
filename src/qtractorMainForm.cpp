@@ -1153,8 +1153,7 @@ void qtractorMainForm::dropEvent ( QDropEvent* pDropEvent )
 
 	const QMimeData *pMimeData = pDropEvent->mimeData();
 	if (pMimeData->hasUrls()) {
-		QString sFilename
-			= QDir::toNativeSeparators(pMimeData->urls().first().toLocalFile());
+		QString sFilename = pMimeData->urls().first().toLocalFile();
 		// Close current session and try to load the new one...
 		if (!sFilename.isEmpty() && closeSession())
 			loadSessionFile(sFilename);
@@ -3850,8 +3849,8 @@ void qtractorMainForm::stabilizeForm (void)
 	m_ui.editClipQuantizeAction->setEnabled((pClip != NULL || bSelected)
 		&& pTrack && pTrack->trackType() == qtractorTrack::Midi
 		&& m_pSession->snapPerBeat() > 0);
-	m_ui.editClipImportAction->setEnabled(
-		pTrack && pTrack->trackType() == qtractorTrack::Audio);
+	m_ui.editClipImportAction->setEnabled(m_pTracks != NULL);
+		// pTrack && pTrack->trackType() == qtractorTrack::Audio);
 	m_ui.editClipExportAction->setEnabled(bSingleTrackSelected);
 
 	// Update track menu state...

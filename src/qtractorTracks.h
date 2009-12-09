@@ -145,7 +145,7 @@ protected:
 
 	// Multi-clip command builders.
 	bool normalizeClipCommand(
-		qtractorClipCommand *pMidiClipCommand, qtractorClip *pClip);
+		qtractorClipCommand *pClipCommand, qtractorClip *pClip);
 	bool quantizeClipCommand(
 		qtractorMidiClipCommand *pMidiClipCommand, qtractorClip *pClip);
 
