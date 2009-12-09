@@ -404,12 +404,13 @@ void qtractorMidiManager::process (
 			pVstMidiEvent->byteSize = sizeof(VstMidiEvent);
 			pVstMidiEvent->deltaFrames = pEv->time.tick;
 			pMidiData = (unsigned char *) &pVstMidiEvent->midiData[0];
-			iMidiData = 4;
-		#endif
+			iMidiData = sizeof(pVstMidiEvent->midiData);
+		#else
 		#ifdef CONFIG_LV2_EVENT
-			unsigned char data[4];
-			pMidiData = &data[0];
-			iMidiData = sizeof(data);
+			unsigned char midiData[4];
+			pMidiData = &midiData[0];
+			iMidiData = sizeof(midiData);
+		#endif
 		#endif
 			iMidiData = snd_midi_event_decode(m_pMidiParser,
 				pMidiData, iMidiData, pEv);
