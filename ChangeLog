@@ -5,6 +5,10 @@ ChangeLog
 
 SVN TRUNK
 
+- Avoid any anti-glitch, period sized fade-ins, for zero-offset
+  audio clips, now rendering those in their full, uncut glory. 
+  (EXPERIMENTAL)
+
 - Edit/Clip/Import... menu option is now available for expedite
   clip insertion from audio file requester.
 

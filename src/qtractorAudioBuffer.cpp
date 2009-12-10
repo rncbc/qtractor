@@ -582,8 +582,13 @@ bool qtractorAudioBuffer::seek ( unsigned long iFrame )
 		return false;
 
 	// Reset running gain...
-	m_fPrevGain = 0.0f;
-	m_fNextGain = 0.0f;
+	if (m_iOffset + iFrame) {
+		m_fPrevGain = 0.0f;
+		m_fNextGain = 0.0f;
+	} else {
+		m_fPrevGain = 1.0f;
+		m_fNextGain = 1.0f;
+	}
 
 	// Special case on integral cached files...
 	if (m_bIntegral) {
@@ -659,8 +664,13 @@ bool qtractorAudioBuffer::initSync (void)
 	ATOMIC_SET(&m_seekPending, 0);
 
 	// Reset running gain...
-	m_fPrevGain = 0.0f;
-	m_fNextGain = 0.0f;
+	if (m_iOffset) {
+		m_fPrevGain = 0.0f;
+		m_fNextGain = 0.0f;
+	} else {
+		m_fPrevGain = 1.0f;
+		m_fNextGain = 1.0f;
+	}
 
 	// Read-ahead a whole bunch, if applicable...
 	if (m_pFile->mode() & qtractorAudioFile::Read) {
