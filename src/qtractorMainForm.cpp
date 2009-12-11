@@ -4043,13 +4043,13 @@ bool qtractorMainForm::startSession (void)
 	}
 
 	// The maximum delta frames the time slot spans (magic)...
-	m_iDeltaTimer = (m_pSession->sampleRate() * QTRACTOR_TIMER_MSECS) / 1000;
+	m_iDeltaTimer = (m_pSession->sampleRate() * QTRACTOR_TIMER_MSECS) / 500;
 
 	// Round up to next buffer size, and double it...
 	qtractorAudioEngine *pAudioEngine = m_pSession->audioEngine();
 	if (pAudioEngine) {
 		unsigned int q = pAudioEngine->bufferSize();
-		if (q) m_iDeltaTimer = (q << 1) * (1 + (m_iDeltaTimer / q));
+		if (q) m_iDeltaTimer = q * (2 + (m_iDeltaTimer / q));
 	}
 
 	return bResult;
@@ -4594,10 +4594,10 @@ void qtractorMainForm::timerSlot (void)
 			// Check on external transport state request changes...
 			if ((state == JackTransportStopped &&  bPlaying) ||
 				(state == JackTransportRolling && !bPlaying)) {
-				#ifdef CONFIG_DEBUG
-					qDebug("qtractorMainForm::timerSlot() playing=%d state=%d",
-						int(bPlaying), int(state == JackTransportRolling));
-				#endif
+			#ifdef CONFIG_DEBUG
+				qDebug("qtractorMainForm::timerSlot() playing=%d state=%d",
+					int(bPlaying), int(state == JackTransportRolling));
+			#endif
 				if (!bPlaying)
 					m_pSession->seek(pos.frame, true);
 				transportPlay(); // Toggle playing!

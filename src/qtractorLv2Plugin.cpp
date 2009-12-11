@@ -747,8 +747,8 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 	m_lv2_ui_external.plugin_human_id = m_aEditorTitle.constData();
 	m_lv2_ui_feature.URI = LV2_EXTERNAL_UI_URI;
 	m_lv2_ui_feature.data = &m_lv2_ui_external;
-	m_lv2_ui_features[iFeatures++] = &m_lv2_ui_feature;
-	m_lv2_ui_features[iFeatures]   = NULL;
+	m_lv2_ui_features[iFeatures] = &m_lv2_ui_feature;
+	m_lv2_ui_features[++iFeatures]   = NULL;
 
 	m_slv2_ui_instance = slv2_ui_instantiate(pLv2Type->slv2_plugin(),
 		m_slv2_ui, qtractor_lv2_ui_write, this, m_lv2_ui_features);
