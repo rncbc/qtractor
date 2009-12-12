@@ -1208,9 +1208,9 @@ void qtractorMidiEngine::drift (void)
 		//	m_iTimeDrift >>= 1; // Damp fast-average drift.
 		#ifdef CONFIG_DEBUG
 			qDebug("qtractorMidiEngine::drift(): "
-				"iAudioTime=%ld iMidiTime=%ld (%ld) iTimeDrift=%ld (%.6g)",
+				"iAudioTime=%ld iMidiTime=%ld (%ld) iTimeDrift=%ld (%.2g%%)",
 				iAudioTime, iMidiTime, iDeltaTime, m_iTimeDrift,
-				float(iSkewNext) / float(iSkewBase));
+				((100.0f * float(iSkewNext)) / float(iSkewBase)) - 100.0f);
 		#endif
 		}
 		// HACK: Make the least significant correction now!

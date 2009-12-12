@@ -1144,7 +1144,7 @@ void qtractorSession::unlock (void)
 // Re-entrancy check.
 bool qtractorSession::isBusy (void) const
 {
-	return (ATOMIC_GET(&m_busy) > 0);
+	return (ATOMIC_GET(&m_busy) > 0 || ATOMIC_GET(&m_locks) > 0);
 }
 
 
