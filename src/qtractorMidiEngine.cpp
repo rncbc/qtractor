@@ -1191,25 +1191,26 @@ void qtractorMidiEngine::drift (void)
 		long iDeltaTime = (iAudioTime - iMidiTime) - m_iTimeDrift;
 		if (iAudioTime > iDeltaMax &&
 			iDeltaTime && iDeltaTime > -iDeltaMax && iDeltaTime < +iDeltaMax) {
-		//--SKEW-BEGIN--
+		//--DRIFT-SKEW-BEGIN--
 			snd_seq_queue_tempo_t *pAlsaTempo;
 			snd_seq_queue_tempo_alloca(&pAlsaTempo);
 			snd_seq_get_queue_tempo(m_pAlsaSeq, m_iAlsaQueue, pAlsaTempo);
 			unsigned int iSkewBase = snd_seq_queue_tempo_get_skew_base(pAlsaTempo);
-			unsigned int iOldSkew = snd_seq_queue_tempo_get_skew(pAlsaTempo);
-			unsigned int iNewSkew = (iAudioTime * iSkewBase) / iMidiTime;
-			if (iNewSkew != iOldSkew) {
-				snd_seq_queue_tempo_set_skew(pAlsaTempo, iNewSkew);
+			unsigned int iSkewPrev = snd_seq_queue_tempo_get_skew(pAlsaTempo);
+			unsigned int iSkewNext = (iAudioTime * iSkewBase) / iMidiTime;
+			if (iSkewNext != iSkewPrev) {
+				snd_seq_queue_tempo_set_skew(pAlsaTempo, iSkewNext);
 				snd_seq_set_queue_tempo(m_pAlsaSeq, m_iAlsaQueue, pAlsaTempo);
 			}
-		//--SKEW-END--
+		//--DRIFT-SKEW-END--
 		//	m_iTimeStart += iDeltaTime;
 			m_iTimeDrift += iDeltaTime;
 		//	m_iTimeDrift >>= 1; // Damp fast-average drift.
 		#ifdef CONFIG_DEBUG
 			qDebug("qtractorMidiEngine::drift(): "
-				"iAudioTime=%ld iMidiTime=%ld (%ld) iTimeDrift=%ld",
-				iAudioTime, iMidiTime, iDeltaTime, m_iTimeDrift);
+				"iAudioTime=%ld iMidiTime=%ld (%ld) iTimeDrift=%ld (%.6g)",
+				iAudioTime, iMidiTime, iDeltaTime, m_iTimeDrift,
+				float(iSkewNext) / float(iSkewBase));
 		#endif
 		}
 		// HACK: Make the least significant correction now!
