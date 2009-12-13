@@ -330,6 +330,7 @@ private:
 	int m_iPeakTimer;
 	int m_iPlayTimer;
 	int m_iTransportUpdate;
+	int m_iTransportDelta;
 	int m_iTransportRolling;
 	bool m_bTransportPlaying;
 	float m_fTransportShuttle;
