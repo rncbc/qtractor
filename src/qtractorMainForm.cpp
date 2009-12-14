@@ -4051,12 +4051,12 @@ bool qtractorMainForm::startSession (void)
 	m_iDeltaFrames = (m_pSession->sampleRate() * QTRACTOR_TIMER_MSECS) / 1000;
 
 	// Round up to next buffer size, and double it...
-	if (m_iDeltaFrames) {
-		qtractorAudioEngine *pAudioEngine = m_pSession->audioEngine();
-		if (pAudioEngine) {
-			unsigned int q = pAudioEngine->bufferSize();
-			m_iDeltaLimit  = (q << 1) / m_iDeltaFrames;
-			m_iDeltaFrames = q * (2 + (m_iDeltaFrames / q));
+	qtractorAudioEngine *pAudioEngine = m_pSession->audioEngine();
+	if (pAudioEngine) {
+		unsigned int iBufferSize = pAudioEngine->bufferSize();
+		if (iBufferSize && m_iDeltaFrames) {
+			m_iDeltaLimit  = (iBufferSize << 1) / m_iDeltaFrames;
+			m_iDeltaFrames = iBufferSize * (2 + (m_iDeltaFrames / iBufferSize));
 		}
 	}
 

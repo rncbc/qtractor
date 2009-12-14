@@ -131,7 +131,7 @@ void qtractorThumbView::updateContents (void)
 			while (pClip) {
 				x2 = int(pClip->clipStart()  / f2);
 				w2 = int(pClip->clipLength() / f2);
-				painter.fillRect(x2, y2, w2 - 1, h2 - 1, pTrack->background());
+				painter.fillRect(x2, y2, w2, h2 - 1, pTrack->background());
 				pClip = pClip->next();
 			}
 			y2 += h2;
