@@ -1188,8 +1188,8 @@ void qtractorMidiEngine::drift (void)
 			+ long(snd_seq_queue_status_get_tick_time(pQueueStatus));
 		iAudioFrame += readAhead();
 		long iDeltaMax = long(pNode->tickFromFrame(iAudioFrame)) - iAudioTime;
-		long iDeltaTime = (iAudioTime - iMidiTime) - m_iTimeDrift;
-		if (iAudioTime > iDeltaMax && iMidiTime > iDeltaMax &&
+		long iDeltaTime = (iAudioTime - iMidiTime); // - m_iTimeDrift;
+		if (iAudioTime > iDeltaMax && iMidiTime > m_iTimeDrift /*iDeltaMax*/ &&
 			iDeltaTime && iDeltaTime > -iDeltaMax && iDeltaTime < +iDeltaMax) {
 		//--DRIFT-SKEW-BEGIN--
 			snd_seq_queue_tempo_t *pAlsaTempo;
@@ -1197,14 +1197,13 @@ void qtractorMidiEngine::drift (void)
 			snd_seq_get_queue_tempo(m_pAlsaSeq, m_iAlsaQueue, pAlsaTempo);
 			unsigned int iSkewBase = snd_seq_queue_tempo_get_skew_base(pAlsaTempo);
 			unsigned int iSkewPrev = snd_seq_queue_tempo_get_skew(pAlsaTempo);
-			unsigned int iSkewNext = (unsigned int)
-				(float(iSkewBase) * (float(iAudioTime) / float(iMidiTime)));
+			unsigned int iSkewNext = (unsigned int) (float(iSkewBase)
+				* float(iAudioTime) / float(iMidiTime - m_iTimeDrift));
 			if (iSkewNext != iSkewPrev) {
 				snd_seq_queue_tempo_set_skew(pAlsaTempo, iSkewNext);
 				snd_seq_set_queue_tempo(m_pAlsaSeq, m_iAlsaQueue, pAlsaTempo);
 			}
 		//--DRIFT-SKEW-END--
-		//	m_iTimeStart += iDeltaTime;
 			m_iTimeDrift += iDeltaTime;
 		//	m_iTimeDrift >>= 1; // Damp fast-average drift?
 		#ifdef CONFIG_DEBUG
@@ -1214,10 +1213,12 @@ void qtractorMidiEngine::drift (void)
 				((100.0f * float(iSkewNext)) / float(iSkewBase)) - 100.0f);
 		#endif
 		}
-		// HACK: Make the least significant correction now!
+	#if 0
+		// HACK: Make the least significant correction now?
 		if (m_iTimeDrift > 0) { --m_iTimeDrift;	++m_iTimeStart; }
 		else
 		if (m_iTimeDrift < 0) { ++m_iTimeDrift;	--m_iTimeStart; }
+	#endif
 	}
 }
 
@@ -1475,7 +1476,7 @@ void qtractorMidiEngine::restartLoop (void)
 	if (pSession && pSession->isLooping()) {
 		m_iTimeStart -= long(pSession->tickFromFrame(pSession->loopEnd())
 			- pSession->tickFromFrame(pSession->loopStart()));
-		m_iTimeStart += m_iTimeDrift; // Drift correction...
+	//	m_iTimeStart += m_iTimeDrift; -- Drift correction?
 		m_iTimeDrift  = 0;
 	}
 }

@@ -5,8 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
-- Audio/MIDI engine drift correction gets one additional help
-  from (now old) ALSA MIDI tempo skew facility. (EXPERIMENTAL)
+- Audio/MIDI engine drift correction gets really sofisticated,
+  with the help of (now old) ALSA MIDI tempo skew facility.
+  (EXPERIMENTAL)
 
 - Avoid any anti-glitch, period sized fade-ins, for zero-offset
   audio clips, now rendering those in their full, uncut glory. 
