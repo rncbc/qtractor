@@ -222,6 +222,7 @@ private:
 
 	float          m_fPrevGain;
 	float          m_fNextGain;
+	int            m_iRampGain;
 
 #ifdef CONFIG_LIBSAMPLERATE
 	bool           m_bResample;
