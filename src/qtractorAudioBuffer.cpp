@@ -1063,13 +1063,19 @@ int qtractorAudioBuffer::readMixFrames (
 	// Reset running gain...
 	m_fNextGain = fGain;
 
-	// HACK: Case of clip ramp out-set in this run...
-	if (m_fPrevGain >= (1.0f - 1E-6f) && m_fNextGain < 1E-6f) {
-		m_fPrevGain = m_fNextGain = fGain = 1.0f;
-		m_iRampGain = -1;
+	// HACK: Case of clip ramp out-set or initial fade-in...
+	if (m_fPrevGain > (1.0f - 1E-6f) && m_fNextGain < (1.0f - 1E-6f)) {
+		if (m_fNextGain < 1E-6f) {
+			// Anti-glitch ramp out-set...
+			m_fPrevGain = m_fNextGain = 1.0f;
+			m_iRampGain = -1;
+		} else {
+			// Initial fade-in...
+			m_fPrevGain = 0.0f;
+		}
 	}
 
-	float fGainStep = (fGain - m_fPrevGain) / float(iFrames);
+	float fGainStep = (m_fNextGain - m_fPrevGain) / float(iFrames);
 
 	if (iFrames > rs)
 		iFrames = rs;
