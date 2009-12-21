@@ -1064,14 +1064,16 @@ int qtractorAudioBuffer::readMixFrames (
 	m_fNextGain = fGain;
 
 	// HACK: Case of clip ramp out-set or initial fade-in...
-	if (m_fPrevGain > (1.0f - 1E-6f) && m_fNextGain < (1.0f - 1E-6f)) {
-		if (m_fNextGain < 1E-6f) {
-			// Anti-glitch ramp out-set...
+	if (m_fNextGain < (1.0f - 1E-6f) && m_fPrevGain > (1.0f - 1E-6f)) {
+		if (m_iReadOffset < (m_iOffset + iFrames)) {
+			// Initial macro fade-in...
+			// (no anti-glitch in-set ramp)
+			m_fPrevGain = 0.0f;
+		} else if (m_fNextGain < 1E-6f) {
+			// Final micro fade-out...
+			// (anti-glitch out-set ramp)
 			m_fPrevGain = m_fNextGain = 1.0f;
 			m_iRampGain = -1;
-		} else {
-			// Initial fade-in...
-			m_fPrevGain = 0.0f;
 		}
 	}
 
