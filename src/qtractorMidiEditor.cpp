@@ -2329,7 +2329,9 @@ void qtractorMidiEditor::executeDragMove ( qtractorScrollView *pScrollView,
 			iNote = 0;
 		if (iNote > 127)
 			iNote = 127;
-		long iTime = timeSnap(long(pEvent->time()) + iTimeDelta);
+		long iTime = long(pEvent->time() + pItem->delta) + iTimeDelta;
+		if (pEvent == m_pEventDrag)
+			iTime = timeSnap(iTime);
 		pEditCommand->moveEvent(pEvent, iNote, iTime);
 	}
 
@@ -2477,7 +2479,9 @@ void qtractorMidiEditor::executeDragPaste ( qtractorScrollView *pScrollView,
 		if (iNote > 127)
 			iNote = 127;
 		pEvent->setNote(iNote);
-		long iTime = timeSnap(long(pEvent->time() + pItem->delta) + iTimeDelta);
+		long iTime = long(pEvent->time() + pItem->delta) + iTimeDelta;
+		if (pEvent == m_pEventDrag)
+			iTime = timeSnap(iTime);
 		pEvent->setTime(iTime);
 		pEditCommand->insertEvent(pEvent);
 	}

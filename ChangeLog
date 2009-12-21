@@ -5,6 +5,10 @@ ChangeLog
 
 SVN TRUNK
 
+- Current snap-to-beat setting (time quantization) now affects
+  the anchor event only, while dragging, moving and/or pasting
+  multiple events over the MIDI clip editor (aka piano-roll).
+  
 - Make anti-glitch audio clip micro fade-in/outs independent
   from current buffer size as much as possible. (EXPERIMENTAL)
 
