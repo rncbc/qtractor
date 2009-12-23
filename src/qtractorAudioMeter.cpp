@@ -176,6 +176,10 @@ qtractorAudioMeterValue::qtractorAudioMeterValue (
 	qtractorAudioMeter *pAudioMeter, unsigned short iChannel, QWidget *pParent )
 	: QWidget(pParent), m_pAudioMeter(pAudioMeter), m_iChannel(iChannel)
 {
+	// Avoid intensively annoying repaints...
+	QWidget::setAttribute(Qt::WA_StaticContents);
+	QWidget::setAttribute(Qt::WA_OpaquePaintEvent);
+
 	m_iValue      = 0;
 	m_fValueDecay = QTRACTOR_AUDIO_METER_DECAY_RATE1;
 

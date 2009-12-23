@@ -5,6 +5,10 @@ ChangeLog
 
 SVN TRUNK
 
+- Last used session directory is now made current on startup
+  only when no filename is given on the command line (solving
+  bug #2920244).
+
 - Current snap-to-beat setting (time quantization) now affects
   the anchor event only, while dragging, moving and/or pasting
   multiple events over the MIDI clip editor (aka piano-roll).

@@ -1,7 +1,7 @@
 // qtractorMidiMeter.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -105,6 +105,10 @@ qtractorMidiMeterValue::qtractorMidiMeterValue (
 	qtractorMidiMeter *pMidiMeter, QWidget *pParent )
 	: QWidget(pParent), m_pMidiMeter(pMidiMeter)
 {
+	// Avoid intensively annoying repaints...
+	QWidget::setAttribute(Qt::WA_StaticContents);
+	QWidget::setAttribute(Qt::WA_OpaquePaintEvent);
+
 	m_iValue      = 0;
 	m_fValueDecay = QTRACTOR_MIDI_METER_DECAY_RATE1;
 

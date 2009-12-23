@@ -997,22 +997,21 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 	// Initial thumb-view background (empty)
 	m_pThumbView->updateContents();
 
-	// Change to last known session dir...
-	if (!m_pOptions->sSessionDir.isEmpty()) {
-		if (!QDir::setCurrent(m_pOptions->sSessionDir)) {
-			appendMessagesError(
-				tr("Could not set default session directory:\n\n"
-				"%1\n\nSorry.").arg(m_pOptions->sSessionDir));
-			m_pOptions->sSessionDir.clear();
-		}
-	}
-
 	// Is any session pending to be loaded?
 	if (!m_pOptions->sSessionFile.isEmpty()) {
-		// Just load the prabably startup session...
+		// Just load the prabable startup session...
 		if (loadSessionFile(m_pOptions->sSessionFile))
 			m_pOptions->sSessionFile.clear();
 	} else {
+		// Change to last known session dir...
+		if (!m_pOptions->sSessionDir.isEmpty()) {
+			if (!QDir::setCurrent(m_pOptions->sSessionDir)) {
+				appendMessagesError(
+					tr("Could not set default session directory:\n\n"
+					"%1\n\nSorry.").arg(m_pOptions->sSessionDir));
+				m_pOptions->sSessionDir.clear();
+			}
+		}
 		// Open up with a new empty session...
 		newSession();
 	}

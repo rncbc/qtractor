@@ -47,10 +47,6 @@ qtractorMidiEditList::qtractorMidiEditList (
 	qtractorMidiEditor *pEditor, QWidget *pParent )
 	: qtractorScrollView(pParent)
 {
-	// Avoid intensively annoying repaints...
-	qtractorScrollView::setAttribute(Qt::WA_StaticContents);
-	qtractorScrollView::setAttribute(Qt::WA_OpaquePaintEvent);
-
 	m_pEditor = pEditor;
 
 	m_iItemHeight = ItemHeightBase;
