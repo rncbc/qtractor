@@ -208,6 +208,12 @@ public:
 	void selectRect(const QRect& rect, bool bToggle = false,
 		bool bCommit = false);
 
+	// Add/remove one single event to current selection.
+	void selectEvent(qtractorMidiEvent *pEvent, bool bSelect = true);
+
+	// Retrieve current selection.
+	QList<qtractorMidiEvent *> selectedEvents() const;
+
 	// Update/sync integral contents.
 	void updateContents();
 	

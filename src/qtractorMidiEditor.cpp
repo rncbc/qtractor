@@ -1295,6 +1295,7 @@ void qtractorMidiEditor::selectAll ( bool bSelect, bool bToggle )
 	} else {
 		m_select.clear();
 		updateContents();
+		selectionChangeNotify();
 	}
 }
 
@@ -1310,6 +1311,97 @@ void qtractorMidiEditor::selectRect ( const QRect& rect, bool bToggle,
 		flags |= SelectCommit;
 	updateDragSelect(m_pEditView, rect.normalized(), flags);
 	selectionChangeNotify();
+}
+
+
+// Add/remove one single event to current selection.
+void qtractorMidiEditor::selectEvent ( qtractorMidiEvent *pEvent, bool bSelect )
+{
+	if (pEvent == NULL)
+		return;
+
+	if ((pEvent->type() != m_pEditView->eventType()
+		&& pEvent->type() != m_pEditEvent->eventType()) ||
+		(m_pEditEvent->eventType() == qtractorMidiEvent::CONTROLLER
+		&& pEvent->controller() != m_pEditEvent->controller()))
+		return;
+
+	QRect rectUpdateView(m_select.rectView());
+	QRect rectUpdateEvent(m_select.rectEvent());
+
+	qtractorTimeScale::Cursor cursor(m_pTimeScale);
+	qtractorTimeScale::Node *pNode = cursor.seekFrame(m_iOffset);	
+	unsigned long t0 = pNode->tickFromFrame(m_iOffset);
+	int x0 = m_pTimeScale->pixelFromFrame(m_iOffset);
+
+	// This is the edit-view spacifics...
+	int h1 = m_pEditList->itemHeight();
+	int ch = m_pEditView->contentsHeight(); // + 1;
+
+	// This is the edit-event zero-line...
+	int y0 = (m_pEditEvent->viewport())->height();
+	if (m_pEditEvent->eventType() == qtractorMidiEvent::PITCHBEND)
+		y0 = ((y0 >> 3) << 2);
+
+	// Common event coords...
+	int y;
+	unsigned long t1 = t0 + pEvent->time();
+	unsigned long t2 = t1 + pEvent->duration();
+	pNode = cursor.seekTick(t1);
+	int x  = pNode->pixelFromTick(t1) - x0;
+	int w1 = pNode->pixelFromTick(t2) - x0 - x;
+	if (w1 < 5)
+		w1 = 5;
+	// View item...
+	QRect rectView;
+	if (pEvent->type() == m_pEditView->eventType()) {
+		y = ch - h1 * (pEvent->note() + 1);
+		rectView.setRect(x, y, w1, h1);
+	}
+	// Event item...
+	QRect rectEvent;
+	if (pEvent->type() == m_pEditEvent->eventType()) {
+		if (pEvent->type() == qtractorMidiEvent::PITCHBEND)
+			y = y0 - (y0 * pEvent->pitchBend()) / 8192;
+		else
+			y = y0 - (y0 * pEvent->value()) / 128;
+		if (!m_bNoteDuration)
+			w1 = 5;
+		if (y < y0)
+			rectEvent.setRect(x, y, w1, y0 - y);
+		else if (y > y0)
+			rectEvent.setRect(x, y0, w1, y - y0);
+		else
+			rectEvent.setRect(x, y0 - 2, w1, 4);
+	}
+	// Select item (or toggle)...
+	m_select.selectItem(pEvent, rectEvent, rectView, true, !bSelect);
+
+	// Commit selection...
+	m_select.update(true);
+
+	rectUpdateView = rectUpdateView.unite(m_select.rectView());
+	m_pEditView->viewport()->update(QRect(
+		m_pEditView->contentsToViewport(rectUpdateView.topLeft()),
+		rectUpdateView.size()));
+
+	rectUpdateEvent = rectUpdateEvent.unite(m_select.rectEvent());
+	m_pEditEvent->viewport()->update(QRect(
+		m_pEditEvent->contentsToViewport(rectUpdateEvent.topLeft()),
+		rectUpdateEvent.size()));
+}
+
+
+// Retrieve current selection.
+QList<qtractorMidiEvent *> qtractorMidiEditor::selectedEvents (void) const
+{
+	QList<qtractorMidiEvent *> list;
+
+	QListIterator<qtractorMidiEditSelect::Item *> iter(m_select.items());
+	while (iter.hasNext())
+		list.append(iter.next()->event);
+
+	return list;
 }
 
 

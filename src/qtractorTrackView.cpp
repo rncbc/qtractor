@@ -80,6 +80,10 @@ qtractorTrackView::ClipBoard qtractorTrackView::g_clipboard;
 qtractorTrackView::qtractorTrackView ( qtractorTracks *pTracks,
 	QWidget *pParent ) : qtractorScrollView(pParent)
 {
+	// Avoid intensively annoying repaints...
+	qtractorScrollView::setAttribute(Qt::WA_StaticContents);
+	qtractorScrollView::setAttribute(Qt::WA_OpaquePaintEvent);
+
 	m_pTracks = pTracks;
 
 	m_pClipSelect    = new qtractorClipSelect();
