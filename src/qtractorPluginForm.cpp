@@ -213,7 +213,7 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 	// and adjust the size of the params dialog...
 	bool bParams = (iRows > 0 && iRows < 101);
 	m_ui.ParamsToolButton->setVisible(bParams);
-	m_ui.ParamsToolButton->setChecked(!bEditor);
+	m_ui.ParamsToolButton->setChecked(bParams);
 	paramsSlot(bParams);
 
 	updateActivated();
