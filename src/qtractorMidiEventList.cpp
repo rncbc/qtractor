@@ -45,13 +45,16 @@ qtractorMidiEventList::qtractorMidiEventList ( QWidget *pParent )
 	// Cross-selection fake-mutex.
 	m_iSelectUpdate = 0;
 
+	const QFont& font = QDockWidget::font();
+	m_pListView->setFont(QFont(font.family(), font.pointSize() - 1));
+
 	// Prepare the dockable window stuff.
 	QDockWidget::setWidget(m_pListView);
 	QDockWidget::setFeatures(QDockWidget::AllDockWidgetFeatures);
 	QDockWidget::setAllowedAreas(
 		Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
 	// Some specialties to this kind of dock window...
-	QDockWidget::setMinimumWidth(268);
+	QDockWidget::setMinimumWidth(280);
 
 	// Finally set the default caption and tooltip.
 	const QString& sCaption = tr("Events");

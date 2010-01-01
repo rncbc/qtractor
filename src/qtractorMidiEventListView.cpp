@@ -65,7 +65,7 @@ void qtractorMidiEventListView::setEditor ( qtractorMidiEditor *pEditor )
 //	pHeader->setResizeMode(QHeaderView::ResizeToContents);
 	pHeader->setDefaultSectionSize(80);
 	pHeader->resizeSection(2, 60); // Name
-	pHeader->resizeSection(3, 44); // Value
+	pHeader->resizeSection(3, 40); // Value
 //	pHeader->setDefaultAlignment(Qt::AlignLeft);
 	pHeader->setStretchLastSection(true);
 }
