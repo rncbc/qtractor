@@ -71,6 +71,15 @@ qtractorMidiEventList::~qtractorMidiEventList (void)
 }
 
 
+// Full update when show up.
+void qtractorMidiEventList::showEvent ( QShowEvent *pShowEvent )
+{
+	QDockWidget::showEvent(pShowEvent);
+
+	refresh();
+}
+
+
 // Just about to notify main-window that we're closing.
 void qtractorMidiEventList::closeEvent ( QCloseEvent * /*pCloseEvent*/ )
 {
@@ -203,7 +212,7 @@ void qtractorMidiEventList::selectNotifySlot (
 
 	// FIXME: Maybe this deserves a separate slot...
 	m_pListView->setCurrentIndex(
-		m_pListView->indexFromFrame(pEditor->playHead()));
+		m_pListView->indexFromFrame(pEditor->editHead()));
 
 	m_pListView->clearSelection();
 	QListIterator<qtractorMidiEvent *> iter(pEditor->selectedEvents());

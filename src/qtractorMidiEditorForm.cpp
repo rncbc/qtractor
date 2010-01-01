@@ -1174,8 +1174,6 @@ void qtractorMidiEditorForm::viewNoteDuration ( bool bOn )
 void qtractorMidiEditorForm::viewEvents ( bool bOn )
 {
 	m_pMidiEventList->setVisible(bOn);
-	if (bOn)
-		m_pMidiEventList->refresh();
 }
 
 

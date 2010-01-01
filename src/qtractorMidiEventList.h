@@ -56,6 +56,9 @@ public:
 
 protected:
 
+	// Full update when show up.
+	void showEvent(QShowEvent *);
+
 	// Just about to notify main-window that we're closing.
 	void closeEvent(QCloseEvent *);
 
