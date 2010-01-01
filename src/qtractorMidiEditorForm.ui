@@ -2,7 +2,7 @@
  <author>rncbc aka Rui Nuno Capela</author>
  <comment>qtractor - A MIDI/Audio multi-track sequencer.
 
-   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -26,7 +26,7 @@
     <x>0</x>
     <y>0</y>
     <width>800</width>
-    <height>520</height>
+    <height>600</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -148,6 +148,8 @@
     <addaction name="viewNoteColorAction" />
     <addaction name="viewValueColorAction" />
     <addaction name="separator" />
+    <addaction name="viewEventsAction" />
+    <addaction name="separator" />
     <addaction name="viewPreviewAction" />
     <addaction name="viewFollowAction" />
     <addaction name="separator" />
@@ -255,6 +257,8 @@
    <attribute name="toolBarArea" >
     <number>4</number>
    </attribute>
+   <addaction name="viewEventsAction" />
+   <addaction name="separator" />
    <addaction name="viewPreviewAction" />
    <addaction name="viewFollowAction" />
   </widget>
@@ -887,6 +891,26 @@
    </property>
    <property name="shortcut" >
     <string/>
+   </property>
+  </action>
+  <action name="viewEventsAction" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="icon" >
+    <iconset resource="../icons/qtractor.qrc" >:/icons/viewEvents.png</iconset>
+   </property>
+   <property name="text" >
+    <string>&amp;Events</string>
+   </property>
+   <property name="iconText" >
+    <string>View events</string>
+   </property>
+   <property name="toolTip" >
+    <string>View events</string>
+   </property>
+   <property name="statusTip" >
+    <string>Show/hide the events list</string>
    </property>
   </action>
   <action name="viewPreviewAction" >

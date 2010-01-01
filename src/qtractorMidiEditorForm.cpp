@@ -1,7 +1,7 @@
 // qtractorMidiEditorForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -43,6 +43,8 @@
 #include "qtractorTimeScale.h"
 #include "qtractorCommand.h"
 
+#include "qtractorMidiEventList.h"
+
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QActionGroup>
@@ -67,6 +69,11 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	// Set our central widget.
 	m_pMidiEditor = new qtractorMidiEditor(this);
 	setCentralWidget(m_pMidiEditor);
+
+	// Dockable widgets time.
+	m_pMidiEventList = new qtractorMidiEventList(this);
+	m_pMidiEventList->setEditor(m_pMidiEditor);
+	m_pMidiEventList->hide(); // Initially hidden.
 
 	// Set edit-mode action group up...
 	m_pEditModeActionGroup = new QActionGroup(this);
@@ -173,6 +180,9 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	addAction(m_ui.transportPlayAction);
 	addAction(m_ui.transportPunchAction);
 	addAction(m_ui.transportPunchSetAction);
+
+	// Make those primordially docked...
+	addDockWidget(Qt::RightDockWidgetArea, m_pMidiEventList, Qt::Vertical);
 
 	// Ah, make it stand right.
 	setFocus();
@@ -281,6 +291,9 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	QObject::connect(m_ui.viewValueColorAction,
 		SIGNAL(triggered(bool)),
 		SLOT(viewValueColor(bool)));
+	QObject::connect(m_ui.viewEventsAction,
+		SIGNAL(triggered(bool)),
+		SLOT(viewEvents(bool)));
 	QObject::connect(m_ui.viewPreviewAction,
 		SIGNAL(triggered(bool)),
 		SLOT(viewPreview(bool)));
@@ -350,6 +363,10 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	QObject::connect(m_pMidiEditor,
 		SIGNAL(changeNotifySignal(qtractorMidiEditor *)),
 		SLOT(contentsChanged(qtractorMidiEditor *)));
+
+	QObject::connect(m_pMidiEventList->toggleViewAction(),
+		SIGNAL(triggered(bool)),
+		SLOT(stabilizeForm()));
 
 	// Try to restore old editor state...
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
@@ -457,6 +474,8 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 qtractorMidiEditorForm::~qtractorMidiEditorForm (void)
 {
 	// Drop any widgets around (not really necessary)...
+	if (m_pMidiEventList)
+		delete m_pMidiEventList;
 	if (m_pMidiEditor)
 		delete m_pMidiEditor;
 
@@ -605,6 +624,12 @@ void qtractorMidiEditorForm::contextMenuEvent (
 	m_ui.contextMenu->exec(pContextMenuEvent->globalPos());
 }
 
+// Edit menu accessor.
+QMenu *qtractorMidiEditorForm::editMenu (void) const
+{
+	return m_ui.editMenu;
+}
+
 
 //-------------------------------------------------------------------------
 // qtractorMidiEditorForm -- Central widget redirect methods.
@@ -713,6 +738,7 @@ void qtractorMidiEditorForm::setup ( qtractorMidiClip *pMidiClip )
 
 	// Refresh and try to center (vertically) the edit-view...
 	m_pMidiEditor->centerContents();
+	m_pMidiEventList->refresh();
 
 	// (Re)try to position the editor in same of track view...
 	qtractorTracks *pTracks = pMainForm->tracks();
@@ -1142,6 +1168,15 @@ void qtractorMidiEditorForm::viewNoteDuration ( bool bOn )
 }
 
 
+// Show/hide the events window view.
+void qtractorMidiEditorForm::viewEvents ( bool bOn )
+{
+	m_pMidiEventList->setVisible(bOn);
+	if (bOn)
+		m_pMidiEventList->refresh();
+}
+
+
 // View preview notes
 void qtractorMidiEditorForm::viewPreview ( bool bOn )
 {
@@ -1227,6 +1262,7 @@ void qtractorMidiEditorForm::viewSnap (void)
 void qtractorMidiEditorForm::viewRefresh (void)
 {
 	m_pMidiEditor->updateContents();
+	m_pMidiEventList->refresh();
 
 	stabilizeForm();
 }
@@ -1352,6 +1388,8 @@ void qtractorMidiEditorForm::stabilizeForm (void)
 	if (m_iDirtyCount > 0)
 		sTitle += ' ' + tr("[modified]");
 	setWindowTitle(sTitle + " - " QTRACTOR_TITLE);
+
+	m_ui.viewEventsAction->setChecked(m_pMidiEventList->isVisible());
 
 	m_pFileNameLabel->setText(filename());
 	m_pTrackChannelLabel->setText(sTrackChannel.arg(trackChannel() + k));

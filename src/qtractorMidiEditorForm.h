@@ -1,7 +1,7 @@
 // qtractorMidiEditorForm.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -30,6 +30,8 @@ class qtractorMidiEditor;
 class qtractorMidiClip;
 class qtractorMidiSequence;
 class qtractorTimeScale;
+
+class qtractorMidiEventList;
 
 class QContextMenuEvent;
 class QActionGroup;
@@ -82,6 +84,9 @@ public:
 	bool testClose(bool bForce = false);
 	bool forceClose();
 
+	// Edit menu accessor.
+	QMenu *editMenu() const;
+
 public slots:
 
 	void stabilizeForm();
@@ -127,6 +132,7 @@ protected slots:
 	void viewNoteDuration(bool bOn);
 	void viewNoteColor(bool bOn);
 	void viewValueColor(bool bOn);
+	void viewEvents(bool bOn);
 	void viewPreview(bool bOn);
 	void viewFollow(bool bOn);
 	void viewZoomIn();
@@ -177,6 +183,9 @@ private:
 
 	// Instance variables...
 	qtractorMidiEditor *m_pMidiEditor;
+
+	// Event list dockable widget.
+	qtractorMidiEventList *m_pMidiEventList;
 
 	int m_iDirtyCount;
 

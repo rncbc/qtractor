@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- Another TODO item bites the dust: MIDI event list editor,
+  now acessible from the MIDI clip editor menu (View/Events) 
+
 - Last used session directory is now made current on startup
   only when no filename is given on the command line (solving
   bug #2920244).
