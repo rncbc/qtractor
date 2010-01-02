@@ -1532,6 +1532,7 @@ void qtractorMidiEditorForm::viewTypeChanged ( int iIndex )
 
 	m_pMidiEditor->editView()->setEventType(eventType);
 	m_pMidiEditor->updateContents();
+	m_pMidiEventList->refresh();
 
 	stabilizeForm();
 }
@@ -1546,6 +1547,7 @@ void qtractorMidiEditorForm::eventTypeChanged ( int iIndex )
 
 	m_pMidiEditor->editEvent()->setEventType(eventType);
 	m_pMidiEditor->updateContents();
+	m_pMidiEventList->refresh();
 
 	stabilizeForm();
 }
@@ -1558,6 +1560,7 @@ void qtractorMidiEditorForm::controllerChanged ( int iIndex )
 
 	m_pMidiEditor->editEvent()->setController(controller);
 	m_pMidiEditor->updateContents();
+	m_pMidiEventList->refresh();
 
 	stabilizeForm();
 }

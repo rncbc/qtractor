@@ -1,7 +1,7 @@
 // qtractorMidiEditor.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -1320,10 +1320,7 @@ void qtractorMidiEditor::selectEvent ( qtractorMidiEvent *pEvent, bool bSelect )
 	if (pEvent == NULL)
 		return;
 
-	if ((pEvent->type() != m_pEditView->eventType()
-		&& pEvent->type() != m_pEditEvent->eventType()) ||
-		(m_pEditEvent->eventType() == qtractorMidiEvent::CONTROLLER
-		&& pEvent->controller() != m_pEditEvent->controller()))
+	if (!isEventSelectable(pEvent))
 		return;
 
 	QRect rectUpdateView(m_select.rectView());
@@ -1402,6 +1399,16 @@ QList<qtractorMidiEvent *> qtractorMidiEditor::selectedEvents (void) const
 		list.append(iter.next()->event);
 
 	return list;
+}
+
+
+// Selectable event predicate.
+bool qtractorMidiEditor::isEventSelectable ( qtractorMidiEvent *pEvent ) const
+{
+	return (pEvent->type() == m_pEditView->eventType() ||
+		(pEvent->type() == m_pEditEvent->eventType() &&
+			(m_pEditEvent->eventType() != qtractorMidiEvent::CONTROLLER
+			|| pEvent->controller() == m_pEditEvent->controller())));
 }
 
 
