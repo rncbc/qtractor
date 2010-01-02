@@ -148,13 +148,23 @@ void qtractorMidiEventList::contextMenuEvent (
 void qtractorMidiEventList::currentRowChangedSlot (
 	const QModelIndex& index, const QModelIndex& /*previous*/ )
 {
+	qtractorMidiEditor *pEditor = m_pListView->editor();
+	if (pEditor == NULL)
+		return;
+
+	if (m_iSelectUpdate > 0)
+		return;
+
+	++m_iSelectUpdate;
+
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorMidiEventList[%p]::currentRowChangedSlot()", this);
 #endif
 
-	qtractorMidiEditor *pEditor = m_pListView->editor();
-	if (pEditor)
-		pEditor->setEditHead(m_pListView->frameFromIndex(index));
+	pEditor->setEditHead(m_pListView->frameFromIndex(index));
+	pEditor->selectionChangeNotify();
+
+	--m_iSelectUpdate;
 }
 
 
@@ -190,6 +200,8 @@ void qtractorMidiEventList::selectionChangedSlot (
 	}
 	m_pListView->setUpdatesEnabled(true);
 
+	pEditor->selectionChangeNotify();
+	
 	--m_iSelectUpdate;
 }
 
