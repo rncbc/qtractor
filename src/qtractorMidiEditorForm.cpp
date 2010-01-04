@@ -538,6 +538,9 @@ bool qtractorMidiEditorForm::queryClose ( bool bForce )
 			pOptions->bMidiValueColor = m_ui.viewValueColorAction->isChecked();
 			pOptions->bMidiPreview = m_ui.viewPreviewAction->isChecked();
 			pOptions->bMidiFollow  = m_ui.viewFollowAction->isChecked();
+			// Close floating dock windows...
+			if (m_pMidiEventList->isFloating())
+				m_pMidiEventList->close();
 			// Save the dock windows state.
 			pOptions->settings().setValue(
 				"/MidiEditor/Layout/DockWindows", saveState());
