@@ -34,6 +34,9 @@
 #include <QRegExp>
 #include <QList>
 
+#if QT_VERSION < 0x040200
+#define setForeground	setTextColor
+#endif
 
 static qtractorPluginPath g_pluginPath;
 
@@ -339,7 +342,7 @@ void qtractorPluginSelectForm::refresh (void)
 				pItem->setFlags(pItem->flags() & ~Qt::ItemIsSelectable);
 				int iColumnCount = m_ui.PluginListView->columnCount();
 				for (int i = 0; i < iColumnCount; ++i) {
-					pItem->setTextColor(i,
+					pItem->setForeground(i,
 						m_ui.PluginListView->palette().mid().color());
 				}
 			}

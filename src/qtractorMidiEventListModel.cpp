@@ -1,7 +1,7 @@
 // qtractorMidiEventListModel.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -23,12 +23,7 @@
 #include "qtractorMidiEventListModel.h"
 
 #include "qtractorMidiEditor.h"
-
-#if !defined(QTRACTOR_TEST)
 #include "qtractorMidiClip.h"
-#else
-#include "qtractorMidiSequence.h"
-#endif
 
 #include "qtractorTimeScale.h"
 
@@ -121,7 +116,7 @@ QVariant qtractorMidiEventListModel::data (
 Qt::ItemFlags qtractorMidiEventListModel::flags (
 	const QModelIndex& index ) const
 {
-	qtractorMidiEvent *pEvent = eventAt(index.row());
+	qtractorMidiEvent *pEvent = eventOfIndex(index);
 	if (pEvent && m_pEditor->isEventSelectable(pEvent))
 		return QAbstractItemModel::flags(index);
 	else
@@ -150,14 +145,7 @@ void qtractorMidiEventListModel::reset (void)
 {
 //	qDebug("reset()");
 
-#if !defined(QTRACTOR_TEST)
-	m_pSeq = NULL;
-	qtractorMidiClip *pMidiClip = m_pEditor->midiClip();
-	if (pMidiClip)
-		m_pSeq = pMidiClip->sequence();
-#else
 	m_pSeq = m_pEditor->sequence();
-#endif
 
 	m_iTimeOffset = m_pEditor->timeOffset();
 

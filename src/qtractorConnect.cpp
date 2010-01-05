@@ -40,6 +40,10 @@
 #include <QDropEvent>
 #include <QContextMenuEvent>
 
+#if QT_VERSION < 0x040200
+#define setForeground	setTextColor
+#endif
+
 
 //----------------------------------------------------------------------
 // qtractorPortListItem -- Port list item.
@@ -187,7 +191,7 @@ void qtractorPortListItem::setHilite ( bool bHilite )
 	
 	// Set the new color.
 	const QPalette& pal = QTreeWidgetItem::treeWidget()->palette();
-	QTreeWidgetItem::setTextColor(0, m_bHilite
+	QTreeWidgetItem::setForeground(0, m_bHilite
 		? (pal.base().color().value() < 0x7f ? Qt::cyan : Qt::blue)
 		: pal.text().color());
 }
@@ -380,7 +384,7 @@ void qtractorClientListItem::setHilite ( bool bHilite )
 
 	// Set the new color.
 	const QPalette& pal = QTreeWidgetItem::treeWidget()->palette();
-	QTreeWidgetItem::setTextColor(0, m_iHilite > 0
+	QTreeWidgetItem::setForeground(0, m_iHilite > 0
 		? (pal.base().color().value() < 0x7f ? Qt::darkCyan : Qt::darkBlue)
 		: pal.text().color());
 }
