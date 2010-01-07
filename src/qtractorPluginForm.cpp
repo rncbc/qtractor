@@ -1,7 +1,7 @@
 // qtractorPluginForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -127,8 +127,8 @@ qtractorPluginForm::qtractorPluginForm (
 		SLOT(activateSlot(bool)));
 
 	QObject::connect(this,
-		SIGNAL(valueChanged(qtractorPluginParam *, float)),
-		SLOT(valueChangeSlot(qtractorPluginParam *, float)));
+		SIGNAL(valueChanged(qtractorPluginParam *, float, bool)),
+		SLOT(valueChangeSlot(qtractorPluginParam *, float, bool)));
 }
 
 
@@ -185,8 +185,8 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 			m_paramWidgets.append(pParamWidget);
 			m_pGridLayout->addWidget(pParamWidget, iRow, iCol);
 			QObject::connect(pParamWidget,
-				SIGNAL(valueChanged(qtractorPluginParam *, float)),
-				SLOT(valueChangeSlot(qtractorPluginParam *, float)));
+				SIGNAL(valueChanged(qtractorPluginParam *, float, bool)),
+				SLOT(valueChangeSlot(qtractorPluginParam *, float, bool)));
 			if (++iRow >= iRows) {
 				iRow = 0;
 				iCol++;
@@ -320,18 +320,19 @@ void qtractorPluginForm::updateActivated (void)
 
 // Update parameter value state.
 void qtractorPluginForm::updateParamValue (
-	unsigned long iIndex, float fValue )
+	unsigned long iIndex, float fValue, bool bSetValue )
 {
 	if (m_pPlugin == NULL)
 		return;
 
 #ifdef CONFIG_DEBUG
-	qDebug("qtractorPluginForm[%p]::updateParamValue(%lu)", this, iIndex);
+	qDebug("qtractorPluginForm[%p]::updateParamValue(%lu, %d)",
+		this, iIndex, int(bSetValue));
 #endif
 
 	qtractorPluginParam *pParam = m_pPlugin->findParam(iIndex);
 	if (pParam)
-		emit valueChanged(pParam, fValue);
+		emit valueChanged(pParam, fValue, bSetValue);
 }
 
 
@@ -681,7 +682,7 @@ void qtractorPluginForm::activateSlot ( bool bOn )
 
 // Something has changed.
 void qtractorPluginForm::valueChangeSlot (
-	qtractorPluginParam *pParam, float fValue )
+	qtractorPluginParam *pParam, float fValue, bool bSetValue )
 {
 	if (m_pPlugin == NULL)
 		return;
@@ -690,7 +691,8 @@ void qtractorPluginForm::valueChangeSlot (
 		return;
 
 #ifdef CONFIG_DEBUG
-	qDebug("qtractorPluginForm[%p]::valueChangeSlot(%p, %g)", this, pParam, fValue);
+	qDebug("qtractorPluginForm[%p]::valueChangeSlot(%p, %g, %d)",
+		this, pParam, fValue, int(bSetValue));
 #endif
 	m_iUpdate++;
 
@@ -698,7 +700,7 @@ void qtractorPluginForm::valueChangeSlot (
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession)
 		pSession->execute(
-			new qtractorPluginParamCommand(pParam, fValue));
+			new qtractorPluginParamCommand(pParam, fValue, bSetValue));
 
 	m_iUpdate--;
 
@@ -989,8 +991,7 @@ void qtractorPluginParamWidget::checkBoxToggled ( bool bOn )
 {
 	float fValue = (bOn ? 1.0f : 0.0f);
 
-//	m_pParam->setValue(fValue);
-	emit valueChanged(m_pParam, fValue);
+	emit valueChanged(m_pParam, fValue, true);
 }
 
 void qtractorPluginParamWidget::spinBoxValueChanged ( const QString& sText )
@@ -1013,7 +1014,7 @@ void qtractorPluginParamWidget::spinBoxValueChanged ( const QString& sText )
 	//	Don't let be no-changes...
 	if (::fabsf(m_pParam->value() - fValue)
 		> ::powf(10.0f, - float(paramDecs()))) {
-		emit valueChanged(m_pParam, fValue);
+		emit valueChanged(m_pParam, fValue, true);
 		if (m_pSlider)
 			m_pSlider->setValue(paramToSlider(fValue));
 		if (m_pDisplay)
@@ -1037,7 +1038,7 @@ void qtractorPluginParamWidget::sliderValueChanged ( int iValue )
 	//	Don't let be no-changes...
 	if (::fabsf(m_pParam->value() - fValue)
 		> ::powf(10.0f, - float(paramDecs()))) {
-		emit valueChanged(m_pParam, fValue);
+		emit valueChanged(m_pParam, fValue, true);
 		if (m_pSpinBox)
 			m_pSpinBox->setValue(fValue);
 		if (m_pDisplay)

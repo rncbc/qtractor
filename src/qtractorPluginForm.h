@@ -1,7 +1,7 @@
 // qtractorPluginForm.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -63,7 +63,7 @@ public:
 	void updateCaption();
 	void updateActivated();
 
-	void updateParamValue(unsigned long iIndex, float fValue);
+	void updateParamValue(unsigned long iIndex, float fValue, bool bSetValue);
 	void updateParamWidget(unsigned long iIndex);
 
 	void activateForm();
@@ -76,7 +76,7 @@ public:
 signals:
 
 	// Change notification.
-	void valueChanged(qtractorPluginParam *, float);
+	void valueChanged(qtractorPluginParam *, float, bool);
 
 protected slots:
 
@@ -90,7 +90,8 @@ protected slots:
 	void sendsSlot();
 	void returnsSlot();
 	void activateSlot(bool bOn);
-	void valueChangeSlot(qtractorPluginParam *pParam, float fValue);
+	void valueChangeSlot(
+		qtractorPluginParam *pParam, float fValue, bool bSetValue);
 
 protected:
 
@@ -137,7 +138,7 @@ public:
 signals:
 
 	// Change notification.
-	void valueChanged(qtractorPluginParam *, float);
+	void valueChanged(qtractorPluginParam *, float, bool);
 
 protected slots:
 

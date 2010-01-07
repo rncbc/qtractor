@@ -1,7 +1,7 @@
 // qtractorLv2Plugin.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -94,7 +94,7 @@ static  void qtractor_lv2_ui_write (
 	// FIXME: Update plugin params...
 	qtractorPluginForm *pForm = pLv2Plugin->form();
 	if (pForm)
-		pForm->updateParamValue(port_index, val);
+		pForm->updateParamValue(port_index, val, true);
 }
 
 static void qtractor_lv2_ui_closed ( LV2UI_Controller ui_controller )

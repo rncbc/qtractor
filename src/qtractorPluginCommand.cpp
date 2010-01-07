@@ -1,7 +1,7 @@
 // qtractorPluginCommand.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -439,13 +439,11 @@ bool qtractorResetPluginCommand::undo (void)
 
 // Constructor.
 qtractorPluginParamCommand::qtractorPluginParamCommand (
-	qtractorPluginParam *pParam, float fValue )
-	: qtractorCommand(QString(pParam->name()).toLower()), m_pParam(pParam)
+	qtractorPluginParam *pParam, float fValue, bool bSetValue )
+	: qtractorCommand(QString(pParam->name()).toLower()),
+		m_pParam(pParam), m_fValue(fValue), m_bSetValue(bSetValue),
+		m_fPrevValue(0.0f), m_bPrevValue(false)
 {
-	m_fValue = fValue;
-	m_fPrevValue = 0.0f;
-	m_bPrevValue = false;
-
 	setRefresh(false);
 
 	// Try replacing an previously equivalent command...
@@ -487,11 +485,13 @@ bool qtractorPluginParamCommand::redo (void)
 
 	// Set plugin parameter value...
 	float fValue = (m_bPrevValue ? m_fPrevValue : m_pParam->value());
-	m_pParam->setValue(m_fValue);
+	if (m_bSetValue)
+		m_pParam->setValue(m_fValue);
 
 	// Set undo value...
 	m_bPrevValue = false;
 	m_fPrevValue = m_fValue;
+	m_bSetValue  = true;
 	m_fValue     = fValue;
 
 	// Update the form, showing it up as necessary...

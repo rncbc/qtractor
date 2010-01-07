@@ -5,6 +5,11 @@ ChangeLog
 
 SVN TRUNK
 
+- Avoid parameter value flickering, due to duplicate command
+  invocation, most evident when changing values massively on
+  native Linux VSTi plugin editor GUIs (thanks to a detailed
+  report on this odd behavior, from Mike of linuxDSP.co.uk).
+
 - Another TODO item bites the dust: MIDI event list editor,
   now acessible from the MIDI clip editor menu (View/Events) 
 

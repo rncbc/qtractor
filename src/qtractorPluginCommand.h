@@ -1,7 +1,7 @@
 // qtractorPluginCommand.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -252,7 +252,8 @@ class qtractorPluginParamCommand : public qtractorCommand
 public:
 
 	// Constructor.
-	qtractorPluginParamCommand(qtractorPluginParam *pParam, float fValue);
+	qtractorPluginParamCommand(
+		qtractorPluginParam *pParam, float fValue, bool bSetValue);
 
 	// Plugin-port command methods.
 	bool redo();
@@ -272,6 +273,7 @@ private:
 	// Instance variables.
 	qtractorPluginParam *m_pParam;
 	float m_fValue;
+	bool  m_bSetValue;
 	float m_fPrevValue;
 	bool  m_bPrevValue;
 };

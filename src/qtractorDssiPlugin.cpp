@@ -1,7 +1,7 @@
 // qtractorDssiPlugin.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -331,7 +331,7 @@ static int osc_control ( DssiEditor *pDssiEditor, lo_arg **argv )
 	pDssiEditor->busy++;
 	qtractorPluginForm *pForm = pDssiPlugin->form();
 	if (pForm)
-		pForm->updateParamValue(param, value);
+		pForm->updateParamValue(param, value, true);
 	pDssiEditor->busy--;
 
 	return 0;

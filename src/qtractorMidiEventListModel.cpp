@@ -120,7 +120,7 @@ Qt::ItemFlags qtractorMidiEventListModel::flags (
 	if (pEvent && m_pEditor->isEventSelectable(pEvent))
 		return QAbstractItemModel::flags(index);
 	else
-		return Qt::NoItemFlags;
+		return Qt::ItemFlags(0);
 }
 
 
