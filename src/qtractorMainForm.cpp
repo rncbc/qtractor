@@ -1,7 +1,7 @@
 // qtractorMainForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -144,6 +144,7 @@ static const char *s_pszTemplateExt  = "qtt";
 #define QTRACTOR_MMC_EVENT      QEvent::Type(QEvent::User + 6)
 #define QTRACTOR_CTL_EVENT      QEvent::Type(QEvent::User + 7)
 #define QTRACTOR_SPP_EVENT      QEvent::Type(QEvent::User + 8)
+#define QTRACTOR_SAVE_EVENT     QEvent::Type(QEvent::User + 9)
 
 
 //-------------------------------------------------------------------------
@@ -173,6 +174,17 @@ private:
 	// Instance variables.
 	qtractorTimeScale::Node *m_pNode;
 };
+
+
+//-------------------------------------------------------------------------
+// LADISH Level 1 support stuff.
+
+void qtractor_on_sigusr1 ( int /*signo*/ )
+{
+	QApplication::postEvent(
+		qtractorMainForm::getInstance(),
+		new QEvent(QTRACTOR_SAVE_EVENT));
+}
 
 
 //-------------------------------------------------------------------------
@@ -268,6 +280,8 @@ qtractorMainForm::qtractorMainForm (
 #ifdef HAVE_SIGNAL_H
 	// Set to ignore any fatal "Broken pipe" signals.
 	::signal(SIGPIPE, SIG_IGN);
+	// LADISH Level 1 suport.
+	::signal(SIGUSR1, qtractor_on_sigusr1);
 #endif
 
 	// Get edit selection mode action group up...
@@ -1211,12 +1225,16 @@ void qtractorMainForm::customEvent ( QEvent *pEvent )
 		mmcEvent(static_cast<qtractorMmcEvent *> (pEvent));
 		break;
 	case QTRACTOR_CTL_EVENT:
-		// Contrller event handling...
+		// Controller event handling...
 		midiControlEvent(static_cast<qtractorMidiControlEvent *> (pEvent));
 		break;
 	case QTRACTOR_SPP_EVENT:
 		// SPP event handling...
 		midiSppEvent(static_cast<qtractorMidiSppEvent *> (pEvent));
+		break;
+	case QTRACTOR_SAVE_EVENT:
+		// LADISH Level 1 support...
+		saveSession(false);
 		// Fall thru.
 	default:
 		break;

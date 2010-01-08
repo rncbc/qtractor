@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- LADISH Level 1 support has been added: SIGUSR1 signal trap
+  just makes it a shortcut to File/Save. (EXPERIMENTAL)
+
 - Avoid parameter value flickering, due to duplicate command
   invocation, most evident when changing values massively on
   native Linux VSTi plugin editor GUIs (thanks to a detailed
