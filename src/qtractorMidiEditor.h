@@ -116,6 +116,9 @@ public:
 	void setClipLength(unsigned long iClipLength);
 	unsigned long clipLength() const;
 
+	// Reset original clip time-scale length/time.
+	void resetClipLength();
+
 	// Time-scale offset (in frames) accessors.
 	void setOffset(unsigned long iOffset);
 	unsigned long offset() const;

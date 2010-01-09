@@ -736,7 +736,8 @@ void qtractorMidiEditorForm::setup ( qtractorMidiClip *pMidiClip )
 		QObject::connect(m_pMidiEditor,
 			SIGNAL(sendNoteSignal(int,int)),
 			SLOT(sendNote(int,int)));
-	}
+	}   // Reset MIDI clip length alright...
+	else m_pMidiEditor->resetClipLength();
 
 	// Get all those names right...
 	updateInstrumentNames();
@@ -838,6 +839,7 @@ bool qtractorMidiEditorForm::saveClipFile ( bool bPrompt )
 		m_iDirtyCount = 0;
 		pMidiClip->setFilename(sFilename);
 		pMidiClip->setDirty(false);
+		m_pMidiEditor->setClipLength(pMidiClip->clipLength());
 		// HACK: This operation is so important that
 		// it surely deserves being in the front page...
 		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();

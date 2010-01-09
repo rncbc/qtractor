@@ -644,6 +644,13 @@ unsigned long qtractorMidiEditor::clipLength (void) const
 }
 
 
+// Reset original clip time-scale length/time.
+void qtractorMidiEditor::resetClipLength (void)
+{
+	if (m_pMidiClip) setClipLength(m_pMidiClip->clipLength());
+}
+
+
 // Time-scale offset (in frames) accessors.
 void qtractorMidiEditor::setOffset ( unsigned long iOffset )
 {

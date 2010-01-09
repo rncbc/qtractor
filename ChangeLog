@@ -5,6 +5,10 @@ ChangeLog
 
 SVN TRUNK
 
+- Fixed MIDI clip editor mistake when reverting to initial
+  clip length, before closing and discard changes (thanks
+  to Frank Neumann, for spotting this one).
+
 - LADISH Level 1 support has been added: SIGUSR1 signal trap
   just makes it a shortcut to File/Save. (EXPERIMENTAL)
 
