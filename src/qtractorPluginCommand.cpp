@@ -439,9 +439,9 @@ bool qtractorResetPluginCommand::undo (void)
 
 // Constructor.
 qtractorPluginParamCommand::qtractorPluginParamCommand (
-	qtractorPluginParam *pParam, float fValue, bool bSetValue )
+	qtractorPluginParam *pParam, float fValue, bool bUpdate )
 	: qtractorCommand(QString(pParam->name()).toLower()),
-		m_pParam(pParam), m_fValue(fValue), m_bSetValue(bSetValue),
+		m_pParam(pParam), m_fValue(fValue), m_bUpdate(bUpdate),
 		m_fPrevValue(0.0f), m_bPrevValue(false)
 {
 	setRefresh(false);
@@ -485,13 +485,12 @@ bool qtractorPluginParamCommand::redo (void)
 
 	// Set plugin parameter value...
 	float fValue = (m_bPrevValue ? m_fPrevValue : m_pParam->value());
-	if (m_bSetValue)
-		m_pParam->setValue(m_fValue);
+	m_pParam->setValue(m_fValue, m_bUpdate);
 
 	// Set undo value...
 	m_bPrevValue = false;
 	m_fPrevValue = m_fValue;
-	m_bSetValue  = true;
+	m_bUpdate    = true;
 	m_fValue     = fValue;
 
 	// Update the form, showing it up as necessary...

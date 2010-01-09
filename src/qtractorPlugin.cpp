@@ -909,7 +909,7 @@ void qtractorPlugin::realizeValues (void)
 	for (; param != m_values.constEnd(); ++param) {
 		qtractorPluginParam *pParam = findParam(param.key());
 		if (pParam)
-			pParam->setValue(param.value());
+			pParam->setValue(param.value(), true);
 	}
 }
 
@@ -1542,7 +1542,7 @@ void qtractorPluginParam::setDefaultValue ( float fDefaultValue )
 
 
 // Current port value.
-void qtractorPluginParam::setValue ( float fValue )
+void qtractorPluginParam::setValue ( float fValue, bool bUpdate )
 {
 	if (isBoundedAbove() && fValue > m_fMaxValue)
 		fValue = m_fMaxValue;
@@ -1556,7 +1556,7 @@ void qtractorPluginParam::setValue ( float fValue )
 	m_fValue = fValue;
 
 	// Update specifics.
-	m_pPlugin->updateParam(this, m_fValue);
+	if (bUpdate) m_pPlugin->updateParam(this, m_fValue);
 }
 
 

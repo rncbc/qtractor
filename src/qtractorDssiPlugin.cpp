@@ -1225,13 +1225,7 @@ void qtractorDssiPlugin::setController ( int iController, int iValue )
 #endif
 
 	float fValue = float(iValue) / 127.0f;
-	pParam->setValue(fValue);
-
-#ifdef CONFIG_LIBLO
-	DssiEditor *pDssiEditor = osc_find_editor(this);
-	if (pDssiEditor)
-		osc_send_control(pDssiEditor, pParam->index(), fValue);
-#endif
+	pParam->setValue(fValue, true);
 }
 
 

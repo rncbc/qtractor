@@ -63,7 +63,7 @@ public:
 	void updateCaption();
 	void updateActivated();
 
-	void updateParamValue(unsigned long iIndex, float fValue, bool bSetValue);
+	void updateParamValue(unsigned long iIndex, float fValue, bool bUpdate);
 	void updateParamWidget(unsigned long iIndex);
 
 	void activateForm();
@@ -91,7 +91,7 @@ protected slots:
 	void returnsSlot();
 	void activateSlot(bool bOn);
 	void valueChangeSlot(
-		qtractorPluginParam *pParam, float fValue, bool bSetValue);
+		qtractorPluginParam *pParam, float fValue, bool bUpdate);
 
 protected:
 

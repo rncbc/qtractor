@@ -253,7 +253,7 @@ public:
 
 	// Constructor.
 	qtractorPluginParamCommand(
-		qtractorPluginParam *pParam, float fValue, bool bSetValue);
+		qtractorPluginParam *pParam, float fValue, bool bUpdate);
 
 	// Plugin-port command methods.
 	bool redo();
@@ -273,7 +273,7 @@ private:
 	// Instance variables.
 	qtractorPluginParam *m_pParam;
 	float m_fValue;
-	bool  m_bSetValue;
+	bool  m_bUpdate;
 	float m_fPrevValue;
 	bool  m_bPrevValue;
 };

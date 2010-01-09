@@ -320,19 +320,19 @@ void qtractorPluginForm::updateActivated (void)
 
 // Update parameter value state.
 void qtractorPluginForm::updateParamValue (
-	unsigned long iIndex, float fValue, bool bSetValue )
+	unsigned long iIndex, float fValue, bool bUpdate )
 {
 	if (m_pPlugin == NULL)
 		return;
 
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorPluginForm[%p]::updateParamValue(%lu, %d)",
-		this, iIndex, int(bSetValue));
+		this, iIndex, int(bUpdate));
 #endif
 
 	qtractorPluginParam *pParam = m_pPlugin->findParam(iIndex);
 	if (pParam)
-		emit valueChanged(pParam, fValue, bSetValue);
+		emit valueChanged(pParam, fValue, bUpdate);
 }
 
 
@@ -682,7 +682,7 @@ void qtractorPluginForm::activateSlot ( bool bOn )
 
 // Something has changed.
 void qtractorPluginForm::valueChangeSlot (
-	qtractorPluginParam *pParam, float fValue, bool bSetValue )
+	qtractorPluginParam *pParam, float fValue, bool bUpdate )
 {
 	if (m_pPlugin == NULL)
 		return;
@@ -692,7 +692,7 @@ void qtractorPluginForm::valueChangeSlot (
 
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorPluginForm[%p]::valueChangeSlot(%p, %g, %d)",
-		this, pParam, fValue, int(bSetValue));
+		this, pParam, fValue, int(bUpdate));
 #endif
 	m_iUpdate++;
 
@@ -700,7 +700,7 @@ void qtractorPluginForm::valueChangeSlot (
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession)
 		pSession->execute(
-			new qtractorPluginParamCommand(pParam, fValue, bSetValue));
+			new qtractorPluginParamCommand(pParam, fValue, bUpdate));
 
 	m_iUpdate--;
 

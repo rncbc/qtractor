@@ -648,12 +648,12 @@ public:
 		{ return m_fDefaultValue; }
 	
 	// Current parameter value.
-	void setValue(float fValue);
+	void setValue(float fValue, bool bUpdate);
 	float value() const
 		{ return m_fValue; }
 
 	// Reset-to-default method.
-	void reset() { setValue(m_fDefaultValue); }
+	void reset() { setValue(m_fDefaultValue, true); }
 
 	// Direct parameter value.
 	float *data() { return &m_fValue; }

@@ -1109,7 +1109,7 @@ qtractorVstPluginParam::qtractorVstPluginParam (
 		AEffect *pVstEffect = (pVstType->effect())->vst_effect();
 		if (pVstEffect)
 			qtractorPluginParam::setValue(
-				pVstEffect->getParameter(pVstEffect, iIndex));
+				pVstEffect->getParameter(pVstEffect, iIndex), true);
 	}
 
 	setDefaultValue(qtractorPluginParam::value());
