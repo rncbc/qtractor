@@ -676,12 +676,12 @@ unsigned long qtractorMidiEditor::length (void) const
 
 
 // Edit-head/tail positioning.
-void qtractorMidiEditor::setEditHead ( unsigned long iEditHead, bool bSync )
+void qtractorMidiEditor::setEditHead ( unsigned long iEditHead, bool bSyncView )
 {
 	if (iEditHead > m_iEditTail)
-		setEditTail(iEditHead, bSync);
+		setEditTail(iEditHead, bSyncView);
 
-	if (bSync) {
+	if (bSyncView) {
 		qtractorSession *pSession = qtractorSession::getInstance();
 		if (pSession)
 			pSession->setEditHead(iEditHead);
@@ -692,7 +692,7 @@ void qtractorMidiEditor::setEditHead ( unsigned long iEditHead, bool bSync )
 		= m_pTimeScale->pixelFromFrame(iEditHead)
 		- m_pTimeScale->pixelFromFrame(m_iOffset);
 
-	drawPositionX(m_iEditHeadX, iEditHeadX, false);
+	drawPositionX(m_iEditHeadX, iEditHeadX, bSyncView);
 }
 
 unsigned long qtractorMidiEditor::editHead (void) const
@@ -706,12 +706,12 @@ int qtractorMidiEditor::editHeadX (void) const
 }
 
 
-void qtractorMidiEditor::setEditTail ( unsigned long iEditTail, bool bSync )
+void qtractorMidiEditor::setEditTail ( unsigned long iEditTail, bool bSyncView )
 {
 	if (iEditTail < m_iEditHead)
-		setEditHead(iEditTail, bSync);
+		setEditHead(iEditTail, bSyncView);
 
-	if (bSync) {
+	if (bSyncView) {
 		qtractorSession *pSession = qtractorSession::getInstance();
 		if (pSession)
 			pSession->setEditTail(iEditTail);
@@ -722,7 +722,7 @@ void qtractorMidiEditor::setEditTail ( unsigned long iEditTail, bool bSync )
 		= m_pTimeScale->pixelFromFrame(iEditTail)
 		- m_pTimeScale->pixelFromFrame(m_iOffset);
 
-	drawPositionX(m_iEditTailX, iEditTailX, false);
+	drawPositionX(m_iEditTailX, iEditTailX, bSyncView);
 }
 
 unsigned long qtractorMidiEditor::editTail (void) const

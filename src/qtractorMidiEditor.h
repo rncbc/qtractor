@@ -137,11 +137,11 @@ public:
 	QFrame *editEventFrame() const;
 
 	// Edit-head/tail accessors.
-	void setEditHead(unsigned long iEditHead, bool bSync = true);
+	void setEditHead(unsigned long iEditHead, bool bSyncView = true);
 	unsigned long editHead() const;
 	int editHeadX() const;
 
-	void setEditTail(unsigned long iEditTail, bool bSync = true);
+	void setEditTail(unsigned long iEditTail, bool bSyncView = true);
 	unsigned long editTail() const;
 	int editTailX() const;
 
