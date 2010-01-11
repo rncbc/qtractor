@@ -36,7 +36,7 @@ SVN TRUNK
   (EXPERIMENTAL)
 
 - Edit/Clip/Import... menu option is now available for expedite
-  clip insertion from audio file requester.
+  clip insertion from audio and MIDI file requesters.
 
 - Set default session directory effective to file's location.
 

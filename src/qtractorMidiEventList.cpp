@@ -123,7 +123,7 @@ qtractorMidiEditor *qtractorMidiEventList::editor (void) const
 // Event list view refreshner.
 void qtractorMidiEventList::refresh (void)
 {
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	qDebug("qtractorMidiEventList[%p]::refresh()", this);
 #endif
 
@@ -157,7 +157,7 @@ void qtractorMidiEventList::currentRowChangedSlot (
 
 	++m_iSelectUpdate;
 
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	qDebug("qtractorMidiEventList[%p]::currentRowChangedSlot()", this);
 #endif
 
@@ -179,7 +179,7 @@ void qtractorMidiEventList::selectionChangedSlot (
 	if (m_iSelectUpdate > 0)
 		return;
 
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	qDebug("qtractorMidiEventList[%p]::selectionChangedSlot()", this);
 #endif
 
@@ -216,20 +216,22 @@ void qtractorMidiEventList::selectNotifySlot (
 	if (m_iSelectUpdate > 0)
 		return;
 
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	qDebug("qtractorMidiEventList[%p]::selectNotifySlot()", this);
 #endif
 
 	++m_iSelectUpdate;
 
-	// FIXME: Maybe this deserves a separate slot...
-	m_pListView->setCurrentIndex(
-		m_pListView->indexFromFrame(pEditor->editHead()));
-
 	m_pListView->clearSelection();
-	QListIterator<qtractorMidiEvent *> iter(pEditor->selectedEvents());
-	while (iter.hasNext())
-		m_pListView->selectEvent(iter.next(), true);
+
+	const QList<qtractorMidiEvent *>& list = pEditor->selectedEvents();
+	if (list.count() > 0) {
+		m_pListView->setCurrentIndex(
+			m_pListView->indexOfEvent(list.first()));
+		QListIterator<qtractorMidiEvent *> iter(list);
+		while (iter.hasNext())
+			m_pListView->selectEvent(iter.next(), true);
+	}
 
 	--m_iSelectUpdate;
 }
@@ -238,7 +240,7 @@ void qtractorMidiEventList::selectNotifySlot (
 // MIDI editor selection changed slot.
 void qtractorMidiEventList::changeNotifySlot ( qtractorMidiEditor * )
 {
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	qDebug("qtractorMidiEventList[%p]::changeNotifySlot()", this);
 #endif
 

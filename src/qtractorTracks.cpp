@@ -1,7 +1,7 @@
 // qtractorTracks.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -800,7 +800,7 @@ bool qtractorTracks::importClips (
 	qtractorTrack *pTrack = currentTrack();
 	if (pTrack == NULL)
 		pTrack = pSession->tracks().first();
-	if (pTrack == NULL || pTrack->trackType() != qtractorTrack::Audio)
+	if (pTrack == NULL) // || pTrack->trackType() != qtractorTrack::Audio)
 		return addAudioTracks(files, iClipStart);
 
 	// To log this import into session description.
@@ -817,29 +817,74 @@ bool qtractorTracks::importClips (
 	while (iter.hasNext()) {
 		// This is one of the selected filenames....
 		const QString& sPath = iter.next();
-		// Add the clip at once...
-		qtractorAudioClip *pAudioClip = new qtractorAudioClip(pTrack);
-		pAudioClip->setFilename(sPath);
-		pAudioClip->setClipStart(iClipStart);
-		// Redundant but necessary for multi-clip
-		// concatenation, as we only know the actual
-		// audio clip length after opening it...
-		if (iter.hasNext()) {
-			pAudioClip->open();
-			iClipStart += pAudioClip->clipLength();
+		switch (pTrack->trackType()) {
+		case qtractorTrack::Audio: {
+			// Add the audio clip at once...
+			qtractorAudioClip *pAudioClip = new qtractorAudioClip(pTrack);
+			pAudioClip->setFilename(sPath);
+			pAudioClip->setClipStart(iClipStart);
+			// Redundant but necessary for multi-clip
+			// concatenation, as we only know the actual
+			// audio clip length after opening it...
+			if (iter.hasNext()) {
+				pAudioClip->open();
+				iClipStart += pAudioClip->clipLength();
+			}
+			// Will add the new clip into session on command execute...
+			pImportClipCommand->addClip(pAudioClip, pTrack);
+			// Don't forget to add this one to local repository.
+			if (pMainForm) {
+				pMainForm->addAudioFile(sPath);
+				// Log this successful import operation...
+				sDescription += tr("Audio file import \"%1\" on %2 %3.\n")
+					.arg(QFileInfo(sPath).fileName())
+					.arg(QDate::currentDate().toString("MMM dd yyyy"))
+					.arg(QTime::currentTime().toString("hh:mm:ss"));
+				pMainForm->appendMessages(
+					tr("Audio file import: \"%1\".").arg(sPath));
+			}
+			break;
 		}
-		// Will add the new clip into session on command execute...
-		pImportClipCommand->addClip(pAudioClip, pTrack);
-		// Don't forget to add this one to local repository.
-		if (pMainForm) {
-			pMainForm->addAudioFile(sPath);
-			// Log this successful import operation...
-			sDescription += tr("Audio file import \"%1\" on %2 %3.\n")
-				.arg(QFileInfo(sPath).fileName())
-				.arg(QDate::currentDate().toString("MMM dd yyyy"))
-				.arg(QTime::currentTime().toString("hh:mm:ss"));
-			pMainForm->appendMessages(
-				tr("Audio file import: \"%1\".").arg(sPath));
+		case qtractorTrack::Midi: {
+			// We'll be careful and pre-open the SMF header here...
+			qtractorMidiFile file;
+			if (file.open(sPath)) {
+				// Depending of SMF format...
+				int iTrackChannel = pTrack->midiChannel();
+				if (file.format() == 1)
+					iTrackChannel++;
+				// Add the MIDI clip at once...
+				qtractorMidiClip *pMidiClip = new qtractorMidiClip(pTrack);
+				pMidiClip->setFilename(sPath);
+				pMidiClip->setTrackChannel(iTrackChannel);
+				pMidiClip->setClipStart(iClipStart);
+				// Redundant but necessary for multi-clip
+				// concatenation, as we only know the actual
+				// MIDI clip length after opening it...
+				if (iter.hasNext()) {
+					pMidiClip->open();
+					iClipStart += pMidiClip->clipLength();
+				}
+				// Will add the new clip into session on command execute...
+				pImportClipCommand->addClip(pMidiClip, pTrack);
+				// Don't forget to add this one to local repository.
+				if (pMainForm) {
+					pMainForm->addMidiFile(sPath);
+					// Log this successful import operation...
+					sDescription += tr("MIDI file import \"%1\""
+						" track-channel %2 on %3 %4.\n")
+						.arg(QFileInfo(sPath).fileName()).arg(iTrackChannel)
+						.arg(QDate::currentDate().toString("MMM dd yyyy"))
+						.arg(QTime::currentTime().toString("hh:mm:ss"));
+					pMainForm->appendMessages(
+						tr("MIDI file import: \"%1\", track-channel: %2.")
+						.arg(sPath).arg(iTrackChannel));
+				}
+			}
+			break;
+		}
+		default:
+			break;
 		}
 	}
 
@@ -1800,6 +1845,11 @@ bool qtractorTracks::addMidiTrackChannel ( const QString& sPath,
 	if (pSession == NULL)
 		return false;
 
+	// To log this import into session description.
+	QString sDescription = pSession->description().trimmed();
+	if (!sDescription.isEmpty())
+		sDescription += '\n';
+
 	// We'll build a composite command...
 	qtractorImportTrackCommand *pImportTrackCommand
 		= new qtractorImportTrackCommand();
@@ -1830,13 +1880,19 @@ bool qtractorTracks::addMidiTrackChannel ( const QString& sPath,
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm) {
 		pMainForm->addMidiFile(sPath);
-		// Make things temporarily stable...
+		// Log this successful import operation...
+		sDescription += tr("MIDI file import \"%1\""
+			" track-channel %2 on %3 %4.\n")
+			.arg(QFileInfo(sPath).fileName()).arg(iTrackChannel)
+			.arg(QDate::currentDate().toString("MMM dd yyyy"))
+			.arg(QTime::currentTime().toString("hh:mm:ss"));
 		pMainForm->appendMessages(
-			tr("MIDI file import: \"%1\""
-				", track-channel: %2.").arg(sPath).arg(iTrackChannel));
+			tr("MIDI file import: \"%1\", track-channel: %2.")
+			.arg(sPath).arg(iTrackChannel));
 	}
 
-	qtractorSession::stabilize();
+	// Log to session (undoable by import-track command)...
+	pSession->setDescription(sDescription);
 
 	// Put it in the form of an undoable command...
 	return pSession->execute(pImportTrackCommand);

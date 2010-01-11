@@ -2273,9 +2273,17 @@ void qtractorMainForm::editClipImport (void)
 
 	// Import (audio) clip(s)...
 	if (m_pTracks) {
+		// Depending on current track type (default to audio)...
 		unsigned long iClipStart = m_pSession->editHead();
-		m_pTracks->importClips(
-			m_pFiles->audioListView()->openFileNames(), iClipStart);
+		QStringList files;
+		qtractorTrack *pTrack = m_pTracks->currentTrack();
+		if (pTrack == NULL)
+			pTrack = m_pSession->tracks().first();
+		if (pTrack && pTrack->trackType() == qtractorTrack::Midi)
+			files = m_pFiles->midiListView()->openFileNames();
+		else
+			files = m_pFiles->audioListView()->openFileNames();
+		m_pTracks->importClips(files, iClipStart);
 		m_pTracks->trackView()->ensureVisibleFrame(iClipStart);
 	}
 }

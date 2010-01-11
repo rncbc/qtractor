@@ -876,7 +876,7 @@
     <string>Import clip</string>
    </property>
    <property name="statusTip" >
-    <string>Import clip from file (audio)</string>
+    <string>Import clip from file(s)</string>
    </property>
   </action>
   <action name="editClipExportAction" >
