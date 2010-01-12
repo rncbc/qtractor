@@ -5,6 +5,10 @@ ChangeLog
 
 SVN TRUNK
 
+- MIDI clip editor (aka piano-roll) snap-to-beat behavior on
+  edit mode is now kind of more like 'filling-in-the-blanks'
+  (as Frank Neumann et al. wishes ;)
+
 - Fixed MIDI clip editor mistake when reverting to initial
   clip length, before closing and discard changes (thanks
   to Frank Neumann, for spotting this one).

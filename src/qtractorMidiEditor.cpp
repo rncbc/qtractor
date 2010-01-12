@@ -1695,7 +1695,7 @@ qtractorMidiEvent *qtractorMidiEditor::dragEditEvent (
 
 	// This will be the new editing event...
 	pNode = cursor.seekPixel(x1);
-	unsigned long t1 = pNode->tickSnap(pNode->tickFromPixel(x1));
+	unsigned long t1 = pNode->tickSnap(pNode->tickFromPixel(x1), 8);
 	qtractorMidiEvent *pEvent = new qtractorMidiEvent(t1 - t0,
 		bEditView ? m_pEditView->eventType() : m_pEditEvent->eventType());
 	x1 = pNode->pixelFromTick(t1);

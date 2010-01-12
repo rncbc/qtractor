@@ -1,7 +1,7 @@
 // qtractorTimeScale.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -163,12 +163,12 @@ float qtractorTimeScale::Node::tempoEx ( unsigned short iBeatType ) const
 
 // Beat/frame snap filters.
 unsigned long qtractorTimeScale::Node::tickSnap (
-	unsigned long iTick ) const
+	unsigned long iTick, unsigned short p ) const
 {
 	unsigned long iTickSnap = iTick - tick;
 	if (ts->snapPerBeat() > 0) {
 		unsigned long q = ticksPerBeat / ts->snapPerBeat();
-		iTickSnap = q * ((iTickSnap + (q >> 1)) / q);
+		iTickSnap = q * ((iTickSnap + (q >> p)) / q);
 	}
 	return tick + iTickSnap;
 }
