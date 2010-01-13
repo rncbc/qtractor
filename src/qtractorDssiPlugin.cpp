@@ -44,8 +44,9 @@
 struct DssiEditor
 {
 	// Constructor.
-	DssiEditor(qtractorDssiPlugin *pPlugin)
-		: plugin(pPlugin), target(NULL), source(NULL), path(NULL), busy(0) {}
+	DssiEditor(qtractorDssiPlugin *pDssiPlugin)
+		: plugin(pDssiPlugin), target(NULL), source(NULL), path(NULL), busy(0)
+		{ pDssiPlugin->setDssiEditor(this); }
 
 	// Destructor.
 	~DssiEditor() {
@@ -72,19 +73,6 @@ static QString             g_sOscPath;
 static QList<DssiEditor *> g_dssiEditors;
 
 
-static DssiEditor *osc_find_editor ( qtractorDssiPlugin *pDssiPlugin )
-{
-	QListIterator<DssiEditor *> iter(g_dssiEditors);
-	while (iter.hasNext()) {
-		DssiEditor *pDssiEditor = iter.next();
-		if (pDssiEditor->plugin == pDssiPlugin)
-			return pDssiEditor;
-	}
-
-	return NULL;
-}
-
-
 static QString osc_label ( qtractorDssiPlugin *pDssiPlugin )
 {
 	return (pDssiPlugin->type())->label()
@@ -92,10 +80,10 @@ static QString osc_label ( qtractorDssiPlugin *pDssiPlugin )
 }
 
 
-static DssiEditor *osc_find_editor_by_label ( const QString& sOscLabel )
+static DssiEditor *osc_find_editor ( const QString& sOscLabel )
 {
-#ifdef CONFIG_DEBUG
-	qDebug("osc_find_editor_by_label(\"%s\")", sOscLabel.toUtf8().constData());
+#ifdef CONFIG_DEBUG_0
+	qDebug("osc_find_editor(\"%s\")", sOscLabel.toUtf8().constData());
 #endif
 
 	QListIterator<DssiEditor *> iter(g_dssiEditors);
@@ -121,6 +109,8 @@ static int osc_send_configure ( DssiEditor *pDssiEditor,
 {
 	if (pDssiEditor->busy > 0)
 		return 1;
+	if (pDssiEditor->target == NULL)
+		return 1;
 
 #ifdef CONFIG_DEBUG
 	qDebug("osc_send_configure: path \"%s\", key \"%s\", value \"%s\"",
@@ -140,6 +130,8 @@ static int osc_send_control ( DssiEditor *pDssiEditor,
 	int param, float value )
 {
 	if (pDssiEditor->busy > 0)
+		return 1;
+	if (pDssiEditor->target == NULL)
 		return 1;
 
 #ifdef CONFIG_DEBUG
@@ -161,6 +153,8 @@ static int osc_send_program ( DssiEditor *pDssiEditor,
 {
 	if (pDssiEditor->busy > 0)
 		return 1;
+	if (pDssiEditor->target == NULL)
+		return 1;
 
 #ifdef CONFIG_DEBUG
 	qDebug("osc_send_program: path \"%s\", bank %d, prog %d",
@@ -180,6 +174,8 @@ static int osc_send_show ( DssiEditor *pDssiEditor )
 {
 	if (pDssiEditor->busy > 0)
 		return 1;
+	if (pDssiEditor->target == NULL)
+		return 1;
 
 #ifdef CONFIG_DEBUG
 	qDebug("osc_send_show: path \"%s\"", pDssiEditor->path);
@@ -197,6 +193,8 @@ static int osc_send_hide ( DssiEditor *pDssiEditor )
 {
 	if (pDssiEditor->busy > 0)
 		return 1;
+	if (pDssiEditor->target == NULL)
+		return 1;
 
 #ifdef CONFIG_DEBUG
 	qDebug("osc_send_hide: path \"%s\"", pDssiEditor->path);
@@ -213,6 +211,8 @@ static int osc_send_hide ( DssiEditor *pDssiEditor )
 static int osc_send_quit ( DssiEditor *pDssiEditor )
 {
 	if (pDssiEditor->busy > 0)
+		return 1;
+	if (pDssiEditor->target == NULL)
 		return 1;
 
 #ifdef CONFIG_DEBUG
@@ -241,6 +241,8 @@ static int osc_update ( DssiEditor *pDssiEditor,
 	if (pDssiPlugin == NULL)
 		return 1;
 
+	pDssiEditor->busy++;
+
 	if (pDssiEditor->target)
 		lo_address_free(pDssiEditor->target);
 	host = lo_url_get_hostname(url);
@@ -258,6 +260,8 @@ static int osc_update ( DssiEditor *pDssiEditor,
 	if (pDssiEditor->path)
 		::free(pDssiEditor->path);
 	pDssiEditor->path = lo_url_get_path(url);
+
+	pDssiEditor->busy--;
 
 	// Update plugin configuration...
 	const qtractorPlugin::Configs& configs = pDssiPlugin->configs();
@@ -284,6 +288,9 @@ static int osc_update ( DssiEditor *pDssiEditor,
 			pParam->index(),
 			pParam->value());
 	}
+
+	// Update all control output ports...
+	pDssiPlugin->updateControlOuts(pDssiEditor);
 
 	return osc_send_show(pDssiEditor);
 }
@@ -364,7 +371,7 @@ static int osc_program ( DssiEditor *pDssiEditor, lo_arg **argv )
 static int osc_midi ( DssiEditor *pDssiEditor, lo_arg **argv )
 {
 	static snd_midi_event_t *s_pAlsaCoder = NULL;
-	static snd_seq_event_t   s_aAlsaEvent[8];
+	static snd_seq_event_t   s_aAlsaEvent[4];
 
 	unsigned char *data = argv[0]->m;
 
@@ -381,7 +388,7 @@ static int osc_midi ( DssiEditor *pDssiEditor, lo_arg **argv )
 	if (pMidiManager == NULL)
 		return 1;
 
-	if (s_pAlsaCoder == NULL && snd_midi_event_new(8, &s_pAlsaCoder))
+	if (s_pAlsaCoder == NULL && snd_midi_event_new(4, &s_pAlsaCoder))
 		return 1;
 
 	snd_midi_event_reset_encode(s_pAlsaCoder);	
@@ -404,8 +411,11 @@ static int osc_exiting ( DssiEditor *pDssiEditor )
 #endif
 
 	qtractorDssiPlugin *pDssiPlugin	= pDssiEditor->plugin;
-	if (pDssiPlugin && pDssiPlugin->isFormVisible())
-		(pDssiPlugin->form())->toggleEditor(false);
+	if (pDssiPlugin) {
+		if (pDssiPlugin->isFormVisible())
+			(pDssiPlugin->form())->toggleEditor(false);
+		pDssiPlugin->setDssiEditor(NULL);
+	}
 
 	pDssiEditor->plugin = NULL;
 
@@ -422,7 +432,7 @@ static int osc_exiting ( DssiEditor *pDssiEditor )
 static int osc_message ( const char *path, const char *types,
 	lo_arg **argv, int argc, void *data, void *user_data )
 {
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	printf("osc_message: path \"%s\"", path);
 	for (int i = 0; i < argc; ++i) {
 		printf(", arg %d '%c' ", i, types[i]);
@@ -436,7 +446,7 @@ static int osc_message ( const char *path, const char *types,
 
 	const QString sPath = path;
 	const QString& sLabel = sPath.section('/', 2, 2);
-	DssiEditor *pDssiEditor = osc_find_editor_by_label(sLabel);
+	DssiEditor *pDssiEditor = osc_find_editor(sLabel);
 	if (pDssiEditor == NULL)
 		return 1;
 
@@ -522,7 +532,7 @@ static void osc_close_editor ( qtractorDssiPlugin *pDssiPlugin )
 		osc_label(pDssiPlugin).toUtf8().constData());
 #endif
 
-	DssiEditor *pDssiEditor = osc_find_editor(pDssiPlugin);
+	DssiEditor *pDssiEditor = pDssiPlugin->dssiEditor();
 	if (pDssiEditor) {
 		osc_send_hide(pDssiEditor);
 		osc_send_quit(pDssiEditor);
@@ -867,7 +877,8 @@ const DSSI_Descriptor *qtractorDssiPluginType::dssi_descriptor (
 qtractorDssiPlugin::qtractorDssiPlugin ( qtractorPluginList *pList,
 	qtractorDssiPluginType *pDssiType )
 	: qtractorLadspaPlugin(pList, pDssiType),
-		m_pDssiMulti(NULL), m_bEditorVisible(false)
+		m_pDssiMulti(NULL), m_pDssiEditor(NULL),
+		m_bEditorVisible(false)
 {
 	// Check whether we're go into a multiple instance pool.
 	m_pDssiMulti = dssi_multi_create(pDssiType);
@@ -1036,9 +1047,8 @@ void qtractorDssiPlugin::updateParam (
 {
 #ifdef CONFIG_LIBLO
 	// And update the editor too...
-	DssiEditor *pDssiEditor = osc_find_editor(this);
-	if (pDssiEditor)
-		osc_send_control(pDssiEditor, pParam->index(), fValue);
+	if (m_pDssiEditor)
+		osc_send_control(m_pDssiEditor, pParam->index(), fValue);
 #endif
 }
 
@@ -1056,10 +1066,9 @@ void qtractorDssiPlugin::openEditor ( QWidget */*pParent*/ )
 #ifdef CONFIG_LIBLO
 
 	// Are we already there?
-	DssiEditor *pDssiEditor = osc_find_editor(this);
-	if (pDssiEditor) {
+	if (m_pDssiEditor) {
 		if (!m_bEditorVisible) {
-			osc_send_show(pDssiEditor);
+			osc_send_show(m_pDssiEditor);
 			m_bEditorVisible = true;
 		}
 		// Bail out.
@@ -1118,17 +1127,16 @@ void qtractorDssiPlugin::setEditorVisible ( bool bVisible )
 #ifdef CONFIG_LIBLO
 
 	// Check if still here...
-	DssiEditor *pDssiEditor = osc_find_editor(this);
-	if (pDssiEditor == NULL) {
+	if (m_pDssiEditor == NULL) {
 		if (bVisible) openEditor(form());
 		return;
 	}
 
 	// Do our deeds...
 	if (bVisible)
-		osc_send_show(pDssiEditor);
+		osc_send_show(m_pDssiEditor);
 	else
-		osc_send_hide(pDssiEditor);
+		osc_send_hide(m_pDssiEditor);
 
 #endif
 
@@ -1169,9 +1177,8 @@ void qtractorDssiPlugin::selectProgram ( int iBank, int iProg )
 
 #ifdef CONFIG_LIBLO
 	// And update the editor too...
-	DssiEditor *pDssiEditor = osc_find_editor(this);
-	if (pDssiEditor)
-		osc_send_program(pDssiEditor, iBank, iProg);
+	if (m_pDssiEditor)
+		osc_send_program(m_pDssiEditor, iBank, iProg);
 #endif
 
 	// Reset parameters default value...
@@ -1255,9 +1262,8 @@ void qtractorDssiPlugin::configure ( const QString& sKey, const QString& sValue 
 	}
 
 #ifdef CONFIG_LIBLO
-	DssiEditor *pDssiEditor = osc_find_editor(this);
-	if (pDssiEditor) {
-		osc_send_configure(pDssiEditor,
+	if (m_pDssiEditor) {
+		osc_send_configure(m_pDssiEditor,
 			sKey.toUtf8().constData(),
 			sValue.toUtf8().constData());
 	}
@@ -1271,6 +1277,49 @@ const DSSI_Descriptor *qtractorDssiPlugin::dssi_descriptor (void) const
 	qtractorDssiPluginType *pDssiType
 		= static_cast<qtractorDssiPluginType *> (type());
 	return (pDssiType ? pDssiType->dssi_descriptor() : NULL);
+}
+
+
+// Internal editor structure accessor...
+void qtractorDssiPlugin::setDssiEditor ( DssiEditor *pDssiEditor )
+{
+	m_pDssiEditor = pDssiEditor;
+}
+
+DssiEditor *qtractorDssiPlugin::dssiEditor (void) const
+{
+	return m_pDssiEditor;
+}
+
+
+// Update all control output ports...
+void qtractorDssiPlugin::updateControlOuts ( DssiEditor *pDssiEditor )
+{
+#ifdef CONFIG_LIBLO
+	if (m_piControlOuts && m_pfControlOuts) {
+		unsigned long iControlOuts = type()->controlOuts();
+		for (unsigned long j = 0; j < iControlOuts; ++j) {
+			osc_send_control(pDssiEditor,
+				m_piControlOuts[j],
+				m_pfControlOuts[j]);
+		}
+	}
+#endif
+}
+
+
+// Idle editor update (static)
+void qtractorDssiPlugin::idleEditorAll (void)
+{
+#ifdef CONFIG_LIBLO
+	QListIterator<DssiEditor *> iter(g_dssiEditors);
+	while (iter.hasNext()) {
+		DssiEditor *pDssiEditor = iter.next();
+		qtractorDssiPlugin *pDssiPlugin = pDssiEditor->plugin;
+		if (pDssiPlugin)
+			pDssiPlugin->updateControlOuts(pDssiEditor);
+	}
+#endif
 }
 
 

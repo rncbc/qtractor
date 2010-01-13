@@ -73,6 +73,10 @@
 
 #include "qtractorTrackCommand.h"
 
+#ifdef CONFIG_DSSI
+#include "qtractorDssiPlugin.h"
+#endif
+
 #ifdef CONFIG_VST
 #include "qtractorVstPlugin.h"
 #endif
@@ -4804,12 +4808,17 @@ void qtractorMainForm::timerSlot (void)
 	if (m_pMixer)
 		m_pMixer->refresh();
 
-#ifdef CONFIG_LV2_EXTERNAL_UI
 	if ((m_iIdleTimer += QTRACTOR_TIMER_MSECS) >= QTRACTOR_TIMER_DELAY) {
-		qtractorLv2Plugin::idleEditorAll();
 		m_iIdleTimer = 0;
+	#ifdef CONFIG_DSSI
+	#ifdef CONFIG_LIBLO
+		qtractorDssiPlugin::idleEditorAll();
+	#endif
+	#endif
+	#ifdef CONFIG_LV2_EXTERNAL_UI
+		qtractorLv2Plugin::idleEditorAll();
+	#endif
 	}
-#endif
 
 	// Register the next timer slot.
 	QTimer::singleShot(QTRACTOR_TIMER_MSECS, this, SLOT(timerSlot()));
