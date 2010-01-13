@@ -3078,8 +3078,8 @@ void qtractorTrackView::pasteClipSelect ( qtractorTrack *pTrack )
 			unsigned long iClipStart = pClipItem->clipStart;
 			if (iTrackClip == 0) {
 				int x = (pClipItem->rect.x() + m_iDraggingX);
-				unsigned long iFrameStart // = pSession->frameSnap(...);
-					= pSession->frameFromPixel(x > 0 ? x : 0);
+				unsigned long iFrameStart = pSession->frameSnap(
+					pSession->frameFromPixel(x > 0 ? x : 0));
 				iClipDelta = long(iFrameStart) - long(iClipStart);
 				iClipStart = iFrameStart;
 			} else if (long(iClipStart) + iClipDelta > 0) {
