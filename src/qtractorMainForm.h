@@ -78,7 +78,7 @@ public:
 	qtractorConnections *connections() const;
 	qtractorMixer *mixer() const;
 	qtractorThumbView *thumbView() const;
-	
+
 	QString sessionName(const QString& sFilename);
 
 	void updateTransportTime(unsigned long iPlayHead);
@@ -331,6 +331,7 @@ private:
 	int m_iDeltaLimit;
 	int m_iPeakTimer;
 	int m_iPlayTimer;
+	int m_iIdleTimer;
 	int m_iTransportUpdate;
 	int m_iTransportRolling;
 	bool m_bTransportPlaying;

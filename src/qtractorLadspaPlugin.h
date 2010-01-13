@@ -1,7 +1,7 @@
 // qtractorLadspaPlugin.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -109,8 +109,9 @@ protected:
 	// Instance variables.
 	LADSPA_Handle *m_phInstances;
 
-	// List of output control (dummy) port indexes.
+	// List of output control port indexes and data.
 	unsigned long *m_piControlOuts;
+	float         *m_pfControlOuts;
 
 	// List of audio port indexes.
 	unsigned long *m_piAudioIns;

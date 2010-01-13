@@ -585,7 +585,7 @@ void qtractorLv2Plugin::setChannels ( unsigned short iChannels )
 				}
 			}
 		#endif
-			// Connect all existing output control (dummy) ports...
+			// Connect all existing output control ports...
 			for (unsigned short j = 0; j < iControlOuts; ++j) {
 				slv2_instance_connect_port(instance,
 					m_piControlOuts[j], &m_pfControlOuts[j]);

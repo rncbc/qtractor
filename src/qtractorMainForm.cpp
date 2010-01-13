@@ -227,6 +227,7 @@ qtractorMainForm::qtractorMainForm (
 
 	m_iPeakTimer = 0;
 	m_iPlayTimer = 0;
+	m_iIdleTimer = 0;
 
 	m_iDeltaFrames = 0;
 	m_iDeltaCount  = 0;
@@ -4804,7 +4805,10 @@ void qtractorMainForm::timerSlot (void)
 		m_pMixer->refresh();
 
 #ifdef CONFIG_LV2_EXTERNAL_UI
-	qtractorLv2Plugin::idleEditorAll();
+	if ((m_iIdleTimer += QTRACTOR_TIMER_MSECS) >= QTRACTOR_TIMER_DELAY) {
+		qtractorLv2Plugin::idleEditorAll();
+		m_iIdleTimer = 0;
+	}
 #endif
 
 	// Register the next timer slot.

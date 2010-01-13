@@ -163,7 +163,7 @@ public:
 protected:
 
 	// Instance variables.
-	SLV2Instance *m_pInstances;
+	SLV2Instance  *m_pInstances;
 
 	// List of output control port indexes and data.
 	unsigned long *m_piControlOuts;

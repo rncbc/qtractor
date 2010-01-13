@@ -1,7 +1,7 @@
 // qtractorLadspaPlugin.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -138,7 +138,8 @@ const LADSPA_Descriptor *qtractorLadspaPluginType::ladspa_descriptor (
 qtractorLadspaPlugin::qtractorLadspaPlugin ( qtractorPluginList *pList,
 	qtractorLadspaPluginType *pLadspaType )
 	: qtractorPlugin(pList, pLadspaType), m_phInstances(NULL),
-		m_piControlOuts(NULL), m_piAudioIns(NULL), m_piAudioOuts(NULL)
+		m_piControlOuts(NULL), m_pfControlOuts(NULL),
+		m_piAudioIns(NULL), m_piAudioOuts(NULL)
 {
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorLadspaPlugin[%p] filename=\"%s\" index=%lu typeHint=%d",
@@ -153,13 +154,15 @@ qtractorLadspaPlugin::qtractorLadspaPlugin ( qtractorPluginList *pList,
 		unsigned short iControlOuts = pLadspaType->controlOuts();
 		unsigned short iAudioIns    = pLadspaType->audioIns();
 		unsigned short iAudioOuts   = pLadspaType->audioOuts();
-		if (iControlOuts > 0)
-			m_piControlOuts = new unsigned long [iControlOuts];
 		if (iAudioIns > 0)
 			m_piAudioIns = new unsigned long [iAudioIns];
 		if (iAudioOuts > 0)
 			m_piAudioOuts = new unsigned long [iAudioOuts];
-		iControlOuts = iAudioIns = iAudioOuts  = 0;
+		if (iControlOuts > 0) {
+			m_piControlOuts = new unsigned long [iControlOuts];
+			m_pfControlOuts = new float [iControlOuts];
+		}
+		iControlOuts = iAudioIns = iAudioOuts = 0;
 		for (unsigned long i = 0; i < pLadspaDescriptor->PortCount; ++i) {
 			const LADSPA_PortDescriptor portType
 				= pLadspaDescriptor->PortDescriptors[i];
@@ -175,8 +178,11 @@ qtractorLadspaPlugin::qtractorLadspaPlugin ( qtractorPluginList *pList,
 				if (LADSPA_IS_PORT_AUDIO(portType))
 					m_piAudioOuts[iAudioOuts++] = i;
 				else
-				if (LADSPA_IS_PORT_CONTROL(portType))
-					m_piControlOuts[iControlOuts++] = i;
+				if (LADSPA_IS_PORT_CONTROL(portType)) {
+					m_piControlOuts[iControlOuts] = i;
+					m_pfControlOuts[iControlOuts] = 0.0f;
+					++iControlOuts;
+				}
 			}
 		}
 		// FIXME: instantiate each instance properly...
@@ -198,6 +204,8 @@ qtractorLadspaPlugin::~qtractorLadspaPlugin (void)
 		delete [] m_piAudioIns;
 	if (m_piControlOuts)
 		delete [] m_piControlOuts;
+	if (m_pfControlOuts)
+		delete [] m_pfControlOuts;
 }
 
 
@@ -245,9 +253,8 @@ void qtractorLadspaPlugin::setChannels ( unsigned short iChannels )
 		this, iChannels, iInstances);
 #endif
 
-	// FIXME: The dummy value for output control (dummy) port indexes...
+	// We'll need output control (not dummy anymore) port indexes...
 	unsigned short iControlOuts = pType->controlOuts();
-	static float s_fDummyData = 0.0f;
 	// Allocate new instances...
 	m_phInstances = new LADSPA_Handle [iInstances];
 	for (unsigned short i = 0; i < iInstances; ++i) {
@@ -268,10 +275,10 @@ void qtractorLadspaPlugin::setChannels ( unsigned short iChannels )
 			pParam->setDefaultValue(*pfValue);
 			*pfValue = fValue;
 		}
-		// Connect all existing output control (dummy) ports...
+		// Connect all existing output control ports...
 		for (unsigned short j = 0; j < iControlOuts; ++j) {
 			(*pLadspaDescriptor->connect_port)(handle,
-				m_piControlOuts[j], &s_fDummyData);
+				m_piControlOuts[j], &m_pfControlOuts[j]);
 		}
 		// This is it...
 		m_phInstances[i] = handle;
