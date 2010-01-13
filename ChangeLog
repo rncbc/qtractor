@@ -5,6 +5,12 @@ ChangeLog
 
 SVN TRUNK
 
+- For all the DSSI plugins that have output control ports,
+  a host feedback/update process cycle is now being finally
+  provided: all output control ports are now marshalled to
+  their respective GUI process, rather often and when found
+  open/visible.
+
 - MIDI clip editor (aka piano-roll) snap-to-beat behavior on
   edit mode is now kind of more like 'filling-in-the-blanks'
   (as Frank Neumann et al. wishes ;)
