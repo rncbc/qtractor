@@ -134,7 +134,7 @@ public:
 	DssiEditor *dssiEditor() const;
 
 	// Update all control output ports...
-	void updateControlOuts(DssiEditor *pDssiEditor);
+	void updateControlOuts(DssiEditor *pDssiEditor, bool bForce = false);
 
 	// Idle editor update (static)
 	static void idleEditorAll();
@@ -151,12 +151,15 @@ private:
 
 	// Internal editor structure accessor...
 	DssiEditor *m_pDssiEditor;
-	
 
 	// GUI editor visiability status.
 	bool m_bEditorVisible;
+
 	// Controller port map.
 	qtractorPluginParam *m_apControllerMap[128];
+
+	// Tracking changes on output control ports.
+	float *m_pfControlOutsLast;
 };
 
 

@@ -38,6 +38,7 @@
 #include <lo/lo.h>
 
 #include <QProcess>
+#include <QMutexLocker>
 
 
 // DSSI GUI Editor instance.
@@ -71,6 +72,7 @@ struct DssiEditor
 static lo_server_thread    g_oscThread;
 static QString             g_sOscPath;
 static QList<DssiEditor *> g_dssiEditors;
+static QMutex              g_oscMutex;
 
 
 static QString osc_label ( qtractorDssiPlugin *pDssiPlugin )
@@ -290,7 +292,7 @@ static int osc_update ( DssiEditor *pDssiEditor,
 	}
 
 	// Update all control output ports...
-	pDssiPlugin->updateControlOuts(pDssiEditor);
+	pDssiPlugin->updateControlOuts(pDssiEditor, true);
 
 	return osc_send_show(pDssiEditor);
 }
@@ -432,6 +434,8 @@ static int osc_exiting ( DssiEditor *pDssiEditor )
 static int osc_message ( const char *path, const char *types,
 	lo_arg **argv, int argc, void *data, void *user_data )
 {
+	QMutexLocker locker(&g_oscMutex);
+
 #ifdef CONFIG_DEBUG_0
 	printf("osc_message: path \"%s\"", path);
 	for (int i = 0; i < argc; ++i) {
@@ -513,6 +517,8 @@ static void osc_stop (void)
 
 static void osc_open_editor ( qtractorDssiPlugin *pDssiPlugin )
 {
+	QMutexLocker locker(&g_oscMutex);
+
 #ifdef CONFIG_DEBUG
 	qDebug("osc_open_editor(\"%s\")",
 		osc_label(pDssiPlugin).toUtf8().constData());
@@ -527,6 +533,8 @@ static void osc_open_editor ( qtractorDssiPlugin *pDssiPlugin )
 
 static void osc_close_editor ( qtractorDssiPlugin *pDssiPlugin )
 {
+	QMutexLocker locker(&g_oscMutex);
+
 #ifdef CONFIG_DEBUG
 	qDebug("osc_close_editor(\"%s\")",
 		osc_label(pDssiPlugin).toUtf8().constData());
@@ -878,10 +886,18 @@ qtractorDssiPlugin::qtractorDssiPlugin ( qtractorPluginList *pList,
 	qtractorDssiPluginType *pDssiType )
 	: qtractorLadspaPlugin(pList, pDssiType),
 		m_pDssiMulti(NULL), m_pDssiEditor(NULL),
-		m_bEditorVisible(false)
+		m_bEditorVisible(false), m_pfControlOutsLast(NULL)
 {
 	// Check whether we're go into a multiple instance pool.
 	m_pDssiMulti = dssi_multi_create(pDssiType);
+
+	// For tracking changes on output control ports.
+	unsigned long iControlOuts = pDssiType->controlOuts();
+	if (iControlOuts > 0) {
+		m_pfControlOutsLast = new float [iControlOuts];
+		for (unsigned long j = 0; j < iControlOuts; ++j)
+			m_pfControlOutsLast[j] = 0.0f;
+	}
 
 	// Extended first instantiantion.
 	resetChannels();
@@ -894,9 +910,13 @@ qtractorDssiPlugin::~qtractorDssiPlugin (void)
 	// Cleanup all plugin instances...
 	setChannels(0);
 
-	// Remove refernce from multiple instance pool.
+	// Remove reference from multiple instance pool.
 	if (m_pDssiMulti)
 		dssi_multi_destroy(static_cast<qtractorDssiPluginType *> (type()));
+
+	// Remove last output control port values seen...
+	if (m_pfControlOutsLast)
+		delete [] m_pfControlOutsLast;
 }
 
 
@@ -1293,15 +1313,20 @@ DssiEditor *qtractorDssiPlugin::dssiEditor (void) const
 
 
 // Update all control output ports...
-void qtractorDssiPlugin::updateControlOuts ( DssiEditor *pDssiEditor )
+void qtractorDssiPlugin::updateControlOuts (
+	DssiEditor *pDssiEditor, bool bForce )
 {
 #ifdef CONFIG_LIBLO
-	if (m_piControlOuts && m_pfControlOuts) {
+	if (m_piControlOuts && m_pfControlOuts && m_pfControlOutsLast) {
 		unsigned long iControlOuts = type()->controlOuts();
 		for (unsigned long j = 0; j < iControlOuts; ++j) {
-			osc_send_control(pDssiEditor,
-				m_piControlOuts[j],
-				m_pfControlOuts[j]);
+		//	if (::fabs(m_pfControlOuts[j] - m_pfControlOutsLast[j]) > 1E-6f) {
+			if (m_pfControlOutsLast[j] != m_pfControlOuts[j] || bForce) {
+				osc_send_control(pDssiEditor,
+					m_piControlOuts[j],
+					m_pfControlOuts[j]);
+				m_pfControlOutsLast[j] = m_pfControlOuts[j];
+			}
 		}
 	}
 #endif
