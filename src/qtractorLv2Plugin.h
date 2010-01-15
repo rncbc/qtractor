@@ -168,6 +168,7 @@ protected:
 	// List of output control port indexes and data.
 	unsigned long *m_piControlOuts;
 	float         *m_pfControlOuts;
+	float         *m_pfControlOutsLast;
 
 	// List of audio port indexes.
 	unsigned long *m_piAudioIns;

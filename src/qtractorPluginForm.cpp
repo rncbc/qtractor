@@ -975,11 +975,13 @@ int qtractorPluginParamWidget::paramDecs (void) const
 {
 	int   iDecs = 0;
 	float fDecs = ::log10f(m_pParam->maxValue() - m_pParam->minValue());
-	if (fDecs < 0.0f)
+	if (fDecs < -3.0f)
+		iDecs = 6;
+	else if (fDecs < 0.0f)
 		iDecs = 3;
 	else if (fDecs < 1.0f)
 		iDecs = 2;
-	else if (fDecs < 3.0f)
+	else if (fDecs < 6.0f)
 		iDecs = 1;
 
 	return iDecs;

@@ -404,9 +404,13 @@ static QList<qtractorLv2Plugin *> g_lv2Plugins;
 // Constructors.
 qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 	qtractorLv2PluginType *pLv2Type )
-	: qtractorPlugin(pList, pLv2Type), m_pInstances(NULL),
-		m_piControlOuts(NULL), m_pfControlOuts(NULL),
-		m_piAudioIns(NULL), m_piAudioOuts(NULL)
+	: qtractorPlugin(pList, pLv2Type)
+		, m_pInstances(NULL),
+		, m_piControlOuts(NULL)
+		, m_pfControlOuts(NULL)
+		, m_pfControlOutsLast(NULL)
+		, m_piAudioIns(NULL)
+		, m_piAudioOuts(NULL)
 	#ifdef CONFIG_LV2_EVENT
 		, m_piMidiIns(NULL)
 	#endif
@@ -438,6 +442,7 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 		if (iControlOuts > 0) {
 			m_piControlOuts = new unsigned long [iControlOuts];
 			m_pfControlOuts = new float [iControlOuts];
+			m_pfControlOutsLast = new float [iControlOuts];
 		}
 		iControlOuts = iAudioIns = iAudioOuts = 0;
 	#ifdef CONFIG_LV2_EVENT
@@ -471,6 +476,7 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 					if (slv2_port_is_a(plugin, port, g_slv2_control_class)) {
 						m_piControlOuts[iControlOuts] = i;
 						m_pfControlOuts[iControlOuts] = 0.0f;
+						m_pfControlOutsLast[iControlOuts] = 0.0f;
 						++iControlOuts;
 					}
 				}
@@ -501,6 +507,8 @@ qtractorLv2Plugin::~qtractorLv2Plugin (void)
 		delete [] m_piControlOuts;
 	if (m_pfControlOuts)
 		delete [] m_pfControlOuts;
+	if (m_pfControlOutsLast)
+		delete [] m_pfControlOutsLast;
 }
 
 
@@ -764,6 +772,11 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 				(*ui_descriptor->port_event)(ui_handle,
 					pParam->index(), 4, 0, &fValue);
 			}
+			unsigned long iControlOuts = pLv2Type->controlsOuts();
+			for (unsigned long j = 0; j < iControlOuts; ++j) {
+				(*ui_descriptor->port_event)(ui_handle,
+					m_piControlOuts[j], 4, 0, &m_pfControlOuts[j]);
+			}
 		}
 	}
 
@@ -819,15 +832,18 @@ void qtractorLv2Plugin::idleEditor (void)
 	if (m_lv2_ui_widget == NULL)
 		return;
 
-	if (m_piControlOuts && m_pfControlOuts) {
+	if (m_piControlOuts && m_pfControlOuts && m_pfControlOutsLast) {
 		const LV2UI_Descriptor *ui_descriptor = lv2_ui_descriptor();
 		if (ui_descriptor && ui_descriptor->port_event) {
 			LV2UI_Handle ui_handle = lv2_ui_handle();
 			if (ui_handle) {
 				unsigned long iControlOuts = type()->controlOuts();
 				for (unsigned short j = 0; j < iControlOuts; ++j) {
-					(*ui_descriptor->port_event)(ui_handle,
-						m_piControlOuts[j], 4, 0, &m_pfControlOuts[j]);
+					if (m_pfControlsOutsLast[j] != m_pfControlsOuts[j]) {
+						(*ui_descriptor->port_event)(ui_handle,
+							m_piControlOuts[j], 4, 0, &m_pfControlOuts[j]);
+						m_pfControlsOutsLast[j] = m_pfControlsOuts[j];
+					}
 				}
 			}
 		}
