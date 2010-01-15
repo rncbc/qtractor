@@ -405,7 +405,7 @@ static QList<qtractorLv2Plugin *> g_lv2Plugins;
 qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 	qtractorLv2PluginType *pLv2Type )
 	: qtractorPlugin(pList, pLv2Type)
-		, m_pInstances(NULL),
+		, m_pInstances(NULL)
 		, m_piControlOuts(NULL)
 		, m_pfControlOuts(NULL)
 		, m_pfControlOutsLast(NULL)
@@ -772,7 +772,7 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 				(*ui_descriptor->port_event)(ui_handle,
 					pParam->index(), 4, 0, &fValue);
 			}
-			unsigned long iControlOuts = pLv2Type->controlsOuts();
+			unsigned long iControlOuts = pLv2Type->controlOuts();
 			for (unsigned long j = 0; j < iControlOuts; ++j) {
 				(*ui_descriptor->port_event)(ui_handle,
 					m_piControlOuts[j], 4, 0, &m_pfControlOuts[j]);
@@ -839,10 +839,10 @@ void qtractorLv2Plugin::idleEditor (void)
 			if (ui_handle) {
 				unsigned long iControlOuts = type()->controlOuts();
 				for (unsigned short j = 0; j < iControlOuts; ++j) {
-					if (m_pfControlsOutsLast[j] != m_pfControlsOuts[j]) {
+					if (m_pfControlOutsLast[j] != m_pfControlOuts[j]) {
 						(*ui_descriptor->port_event)(ui_handle,
 							m_piControlOuts[j], 4, 0, &m_pfControlOuts[j]);
-						m_pfControlsOutsLast[j] = m_pfControlsOuts[j];
+						m_pfControlOutsLast[j] = m_pfControlOuts[j];
 					}
 				}
 			}
