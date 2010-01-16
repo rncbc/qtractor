@@ -3,11 +3,11 @@ Qtractor - An Audio/MIDI multi-track sequencer
 
 ChangeLog
 
-SVN TRUNK
+0.4.4  2010-01-16  The Frisky Demivierge
 
 - For all the DSSI plugins that have output control ports,
   a host feedback/update process cycle is now being finally
-  provided: all output control ports are now marshalled to
+  provided: all output control ports are now marshaled to
   their respective GUI process, rather often and when found
   open/visible.
 
@@ -20,7 +20,7 @@ SVN TRUNK
   to Frank Neumann, for spotting this one).
 
 - LADISH Level 1 support has been added: SIGUSR1 signal trap
-  just makes it a shortcut to File/Save. (EXPERIMENTAL)
+  just makes it a shortcut to File/Save.
 
 - Avoid parameter value flickering, due to duplicate command
   invocation, most evident when changing values massively on
@@ -37,13 +37,12 @@ SVN TRUNK
 - Current snap-to-beat setting (time quantization) now affects
   the anchor event only, while dragging, moving and/or pasting
   multiple events over the MIDI clip editor (aka piano-roll).
-  
-- Make anti-glitch audio clip micro fade-in/outs independent
-  from current buffer size as much as possible. (EXPERIMENTAL)
 
-- Audio/MIDI engine drift correction gets really sofisticated,
+- Make anti-glitch audio clip micro fade-in/outs independent
+  from current buffer size as much as possible.
+
+- Audio/MIDI engine drift correction gets really sophisticated,
   with the help of (now old) ALSA MIDI tempo skew facility.
-  (EXPERIMENTAL)
 
 - Edit/Clip/Import... menu option is now available for expedite
   clip insertion from audio and MIDI file requesters.
@@ -53,12 +52,12 @@ SVN TRUNK
 - Audio track/clip recording process has been target to special
   refactorization across the internal audio engine process cycle,
   in a late attempt to get self-bounce/recording effective and
-  working consistently for all track layouts (EXPERIMENTAL). 
-  
+  working consistently for all track layouts.
+
 - All session related dialogs are now set to window modality,
   (were set to default application modality before) allowing
   for continued input focus and interaction on all plugin/tool
-  windows. (EXPERIMENTAL)
+  windows.
 
 - An off-by-one nasty old bug fixed in audio clip drawing, was
   causing instant crashes on certain zoom levels of the main
@@ -75,7 +74,7 @@ SVN TRUNK
   LV2 MIDI/Event bare-bones support is included but chances are it
   won't build nor work right on most of the setups out there. It's
   a WIP host implementation anyways, as is the whole LV2 spec. for
-  that matter ;) (EXPERIMENTAL)
+  that matter ;)
 
 - Connections filter is now reset when widget is shown through the
   View/Connections main menu or toolbar button.
@@ -89,7 +88,7 @@ SVN TRUNK
 
 - Audio ramping spin-locking makes its smooth stuff, in an attempt
   to reduce glitching and crackling when editing (due to its own
-  pseudo spin-locking) and toggling playback states. (EXPERIMENTAL)
+  pseudo spin-locking) and toggling playback states.
 
 - JACK Transport, MMC Device, and MIDI Song Position pointer (SPP)
   control modes are now made optional (View/Options...), allowing
@@ -111,7 +110,7 @@ SVN TRUNK
   MIDI clip editor events across non-zero clip offsets (after a
   glitch reported by Ralf Mardorf).
 
-- Late audio track processing optimization, supressing all plugin,
+- Late audio track processing optimization, suppressing all plugin,
   mixer and monitor pass-through activity when given track is muted,
   either explicitly or implicitly (ie. other track is in solo state).
 
