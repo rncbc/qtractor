@@ -41,13 +41,15 @@
 #include <QMutexLocker>
 
 
-// DSSI GUI Editor instance.
+//----------------------------------------------------------------------------
+// qtractorDssiPlugin::DssiEditor -- DSSI GUI Editor instance.
+//
+ 
 struct DssiEditor
 {
 	// Constructor.
 	DssiEditor(qtractorDssiPlugin *pDssiPlugin)
-		: plugin(pDssiPlugin), target(NULL), source(NULL), path(NULL), busy(0)
-		{ pDssiPlugin->setDssiEditor(this); }
+		: plugin(pDssiPlugin), target(NULL), source(NULL), path(NULL), busy(0) {}
 
 	// Destructor.
 	~DssiEditor() {
@@ -292,7 +294,7 @@ static int osc_update ( DssiEditor *pDssiEditor,
 	}
 
 	// Update all control output ports...
-	pDssiPlugin->updateControlOuts(pDssiEditor, true);
+	pDssiPlugin->updateControlOuts(true);
 
 	return osc_send_show(pDssiEditor);
 }
@@ -414,9 +416,7 @@ static int osc_exiting ( DssiEditor *pDssiEditor )
 
 	qtractorDssiPlugin *pDssiPlugin	= pDssiEditor->plugin;
 	if (pDssiPlugin) {
-		if (pDssiPlugin->isFormVisible())
-			(pDssiPlugin->form())->toggleEditor(false);
-		pDssiPlugin->setDssiEditor(NULL);
+		pDssiPlugin->clearEditor();
 	}
 
 	pDssiEditor->plugin = NULL;
@@ -515,7 +515,7 @@ static void osc_stop (void)
 }
 
 
-static void osc_open_editor ( qtractorDssiPlugin *pDssiPlugin )
+static DssiEditor *osc_open_editor ( qtractorDssiPlugin *pDssiPlugin )
 {
 	QMutexLocker locker(&g_oscMutex);
 
@@ -527,25 +527,25 @@ static void osc_open_editor ( qtractorDssiPlugin *pDssiPlugin )
 	if (g_dssiEditors.count() < 1)
 		osc_start();
 
-	g_dssiEditors.append(new DssiEditor(pDssiPlugin));
+	DssiEditor *pDssiEditor = new DssiEditor(pDssiPlugin);
+	g_dssiEditors.append(pDssiEditor);
+
+	return pDssiEditor;
 }
 
 
-static void osc_close_editor ( qtractorDssiPlugin *pDssiPlugin )
+static void osc_close_editor ( DssiEditor *pDssiEditor )
 {
 	QMutexLocker locker(&g_oscMutex);
 
 #ifdef CONFIG_DEBUG
 	qDebug("osc_close_editor(\"%s\")",
-		osc_label(pDssiPlugin).toUtf8().constData());
+		osc_label(pDssiEditor->plugin).toUtf8().constData());
 #endif
 
-	DssiEditor *pDssiEditor = pDssiPlugin->dssiEditor();
-	if (pDssiEditor) {
-		osc_send_hide(pDssiEditor);
-		osc_send_quit(pDssiEditor);
-		osc_exiting(pDssiEditor);
-	}
+	osc_send_hide(pDssiEditor);
+	osc_send_quit(pDssiEditor);
+	osc_exiting(pDssiEditor);
 
 	if (g_dssiEditors.count() < 1)
 		osc_stop();
@@ -1096,7 +1096,7 @@ void qtractorDssiPlugin::openEditor ( QWidget */*pParent*/ )
 	}
 
 	// Open up a new one...
-	osc_open_editor(this);
+	m_pDssiEditor = osc_open_editor(this);
 
 	const QString& sDssiEditor = pDssiType->dssi_editor();
 
@@ -1117,7 +1117,7 @@ void qtractorDssiPlugin::openEditor ( QWidget */*pParent*/ )
 #endif
 
 	if (!QProcess::startDetached(sDssiEditor, args)) {
-		osc_close_editor(this);
+		closeEditor();
 		return;
 	}
 
@@ -1131,12 +1131,11 @@ void qtractorDssiPlugin::openEditor ( QWidget */*pParent*/ )
 
 void qtractorDssiPlugin::closeEditor (void)
 {
-	if (isFormVisible())
-		form()->toggleEditor(false);
-	m_bEditorVisible = false;
-
 #ifdef CONFIG_LIBLO
-	osc_close_editor(this);
+	if (m_pDssiEditor)
+		osc_close_editor(m_pDssiEditor);
+#else
+	clearEditor();
 #endif
 }
 
@@ -1300,29 +1299,16 @@ const DSSI_Descriptor *qtractorDssiPlugin::dssi_descriptor (void) const
 }
 
 
-// Internal editor structure accessor...
-void qtractorDssiPlugin::setDssiEditor ( DssiEditor *pDssiEditor )
-{
-	m_pDssiEditor = pDssiEditor;
-}
-
-DssiEditor *qtractorDssiPlugin::dssiEditor (void) const
-{
-	return m_pDssiEditor;
-}
-
-
 // Update all control output ports...
-void qtractorDssiPlugin::updateControlOuts (
-	DssiEditor *pDssiEditor, bool bForce )
+void qtractorDssiPlugin::updateControlOuts ( bool bForce )
 {
 #ifdef CONFIG_LIBLO
-	if (m_piControlOuts && m_pfControlOuts && m_pfControlOutsLast) {
+	if (m_pDssiEditor && m_piControlOuts && m_pfControlOuts) {
 		unsigned long iControlOuts = type()->controlOuts();
 		for (unsigned long j = 0; j < iControlOuts; ++j) {
 		//	if (::fabs(m_pfControlOuts[j] - m_pfControlOutsLast[j]) > 1E-6f) {
 			if (m_pfControlOutsLast[j] != m_pfControlOuts[j] || bForce) {
-				osc_send_control(pDssiEditor,
+				osc_send_control(m_pDssiEditor,
 					m_piControlOuts[j],
 					m_pfControlOuts[j]);
 				m_pfControlOutsLast[j] = m_pfControlOuts[j];
@@ -1330,6 +1316,17 @@ void qtractorDssiPlugin::updateControlOuts (
 		}
 	}
 #endif
+}
+
+
+// Reset(null) internal editor reference.
+void qtractorDssiPlugin::clearEditor (void)
+{
+	m_pDssiEditor = NULL;
+
+	if (isFormVisible())
+		form()->toggleEditor(false);
+	m_bEditorVisible = false;
 }
 
 
@@ -1342,7 +1339,7 @@ void qtractorDssiPlugin::idleEditorAll (void)
 		DssiEditor *pDssiEditor = iter.next();
 		qtractorDssiPlugin *pDssiPlugin = pDssiEditor->plugin;
 		if (pDssiPlugin)
-			pDssiPlugin->updateControlOuts(pDssiEditor);
+			pDssiPlugin->updateControlOuts();
 	}
 #endif
 }

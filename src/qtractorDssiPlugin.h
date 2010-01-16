@@ -27,10 +27,6 @@
 #include <dssi.h>
 
 
-// Forward declarations
-struct DssiEditor;
-
-
 //----------------------------------------------------------------------------
 // qtractorDssiPluginType -- DSSI plugin type instance.
 //
@@ -129,12 +125,11 @@ public:
 	// Specific accessors.
 	const DSSI_Descriptor *dssi_descriptor() const;
 
-	// Internal editor structure accessor...
-	void setDssiEditor(DssiEditor *pDssiEditor);
-	DssiEditor *dssiEditor() const;
-
 	// Update all control output ports...
-	void updateControlOuts(DssiEditor *pDssiEditor, bool bForce = false);
+	void updateControlOuts(bool bForce = false);
+
+	// Reset(null) internal editor reference.
+	void clearEditor();
 
 	// Idle editor update (static)
 	static void idleEditorAll();
@@ -150,7 +145,7 @@ private:
 	class DssiMulti *m_pDssiMulti;
 
 	// Internal editor structure accessor...
-	DssiEditor *m_pDssiEditor;
+	struct DssiEditor *m_pDssiEditor;
 
 	// GUI editor visiability status.
 	bool m_bEditorVisible;
