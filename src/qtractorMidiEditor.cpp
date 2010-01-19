@@ -2262,8 +2262,8 @@ long qtractorMidiEditor::timeDelta ( qtractorScrollView *pScrollView )
 	pNode = cursor.seekPixel(x2);
 	t2 = pNode->tickFromPixel(x2);
 
-//	return long(pNode->tickSnap(t2)) - long(t1);
-	return long(t2) - long(t1);
+	return long(pNode->tickSnap(t2)) - long(t1);
+//	return long(t2) - long(t1);
 }
 
 
@@ -2436,8 +2436,8 @@ void qtractorMidiEditor::executeDragMove ( qtractorScrollView *pScrollView,
 		if (iNote > 127)
 			iNote = 127;
 		long iTime = long(pEvent->time() + pItem->delta) + iTimeDelta;
-		if (pEvent == m_pEventDrag)
-			iTime = timeSnap(iTime);
+	//	if (pEvent == m_pEventDrag)
+	//		iTime = timeSnap(iTime);
 		pEditCommand->moveEvent(pEvent, iNote, iTime);
 	}
 
@@ -2586,8 +2586,8 @@ void qtractorMidiEditor::executeDragPaste ( qtractorScrollView *pScrollView,
 			iNote = 127;
 		pEvent->setNote(iNote);
 		long iTime = long(pEvent->time() + pItem->delta) + iTimeDelta;
-		if (pEvent == m_pEventDrag)
-			iTime = timeSnap(iTime);
+	//	if (pEvent == m_pEventDrag)
+	//		iTime = timeSnap(iTime);
 		pEvent->setTime(iTime);
 		pEditCommand->insertEvent(pEvent);
 	}
@@ -3183,6 +3183,10 @@ bool qtractorMidiEditor::keyStep ( int iKey )
 		m_dragState != DragStep &&
 		m_dragState != DragPaste)
 		return false;
+
+	// Make sure we've a anchor...
+	if (m_pEventDrag == NULL)
+		m_pEventDrag = m_select.items().first()->event;
 
 	// Determine vertical step...
 	if (iKey == Qt::Key_Up || iKey == Qt::Key_Down)  {

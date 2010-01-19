@@ -3,6 +3,12 @@ Qtractor - An Audio/MIDI multi-track sequencer
 
 ChangeLog
 
+SVN TRUNK
+
+- MIDI clip editor (aka piano-roll) multiple selection has
+  been fixed (again) re. move/paste-snapping consistency.
+
+
 0.4.4  2010-01-16  The Frisky Demivierge
 
 - For all the DSSI plugins that have output control ports,
