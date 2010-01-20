@@ -232,7 +232,7 @@ QModelIndex qtractorMidiEventListModel::indexFromTick (
 
 	unsigned long iTime = (iTick > m_iTimeOffset ? iTick - m_iTimeOffset : 0);
 
-	if (iTime < m_pEvent->time()) {
+	if (m_pEvent->time() >= iTime) {
 		while (m_pEvent && m_pEvent->prev()
 			&& (m_pEvent->prev())->time() >= iTime) {
 			m_pEvent = m_pEvent->prev();

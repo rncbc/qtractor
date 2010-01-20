@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- MIDI event list view was missing some selected items with
+  the very same onset time, now fixed.
+
 - When failing to detect a SSE enabled build, the CFLAGS
   variables are now properly restored to their previous
   sane state, preventing all subsequent dependency tests
