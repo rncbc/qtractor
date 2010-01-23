@@ -3,7 +3,10 @@ Qtractor - An Audio/MIDI multi-track sequencer
 
 ChangeLog
 
-SVN TRUNK
+0.4.5  2010-01-23  A Friskier Demivierge ;)
+
+- Changing loop points while playback is rolling, with the
+  play-head any near, was leaving audio clips out-of-sync.
 
 - MIDI event list view was missing some selected items with
   the very same onset time, now fixed.
