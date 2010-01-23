@@ -1307,12 +1307,9 @@ void qtractorAudioBuffer::setLoop ( unsigned long iLoopStart,
 	}
 
 	// Force out-of-sync...
-#if 0
 	m_bReadSync = false;
 	m_iReadOffset = m_iOffset + m_iLength + 1; // An unlikely offset!
-#else
-	seek(m_iReadOffset - m_iOffset);
-#endif
+//	seek(m_iReadOffset - m_iOffset);
 }
 
 unsigned long qtractorAudioBuffer::loopStart (void) const
