@@ -614,8 +614,16 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 			if (iFrameStart < m_iExportEnd && iFrameEnd > m_iExportStart) {
 				// Force/sync every audio clip approaching...
 				syncExport(iFrameStart, iFrameEnd);
-				// Prepare the output bus only...
+				// Prepare the output bus first...
 				m_pExportBus->process_prepare(nframes);
+				// Prepare all extra audio buses...
+				for (qtractorBus *pBusEx = busesEx().first();
+						pBusEx; pBusEx = pBusEx->next()) {
+					qtractorAudioBus *pAudioBus
+						= static_cast<qtractorAudioBus *> (pBusEx);
+					if (pAudioBus)
+						pAudioBus->process_prepare(nframes);
+				}
 				// Export cycle...
 				pSession->process(pAudioCursor, iFrameStart, iFrameEnd);
 				// Commit the output bus only...
@@ -650,6 +658,15 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 			pAudioBus->process_prepare(nframes);
 	}
 
+	// Prepare all extra audio buses...
+	for (qtractorBus *pBusEx = busesEx().first();
+			pBusEx; pBusEx = pBusEx->next()) {
+		qtractorAudioBus *pAudioBus
+			= static_cast<qtractorAudioBus *> (pBusEx);
+		if (pAudioBus)
+			pAudioBus->process_prepare(nframes);
+	}
+
 	// The owned buses too, if any...
 	if (m_bMetroBus)
 		m_pMetroBus->process_prepare(nframes);
@@ -667,6 +684,20 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 		else
 			iOutputBus++;
 		ATOMIC_SET(&m_playerLock, 0);
+	}
+
+	// MIDI plugin manager processing...
+	qtractorMidiManager *pMidiManager
+		= pSession->midiManagers().first();
+	if (pMidiManager) {
+		unsigned long iTimeStart = pAudioCursor->frameTime();
+		unsigned long iTimeEnd   = iTimeStart + nframes;
+		while (pMidiManager) {
+			pMidiManager->process(iTimeStart, iTimeEnd);
+			if (!pMidiManager->isAudioOutputBus())
+				iOutputBus++;
+			pMidiManager = pMidiManager->next();
+		}
 	}
 
 	// Don't go any further, if not playing.
@@ -704,19 +735,6 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 						}
 					}
 				}
-			}
-		}
-		// MIDI plugin manager processing...
-		qtractorMidiManager *pMidiManager
-			= pSession->midiManagers().first();
-		if (pMidiManager) {
-			unsigned long iTimeStart = pAudioCursor->frameTime();
-			unsigned long iTimeEnd   = iTimeStart + nframes;
-			while (pMidiManager) {
-				pMidiManager->process(iTimeStart, iTimeEnd);
-				if (!pMidiManager->isAudioOutputBus())
-					iOutputBus++;
-				pMidiManager = pMidiManager->next();
 			}
 		}
 		// Process audition/pre-listening bus...
@@ -796,22 +814,7 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 
 	// Regular range playback...
 	pSession->process(pAudioCursor, iFrameStart, iFrameEnd);
-//	m_iBufferOffset += (iFrameEnd - iFrameStart);
-	m_iBufferOffset = 0;
-
-	// MIDI plugin manager processing...
-	qtractorMidiManager *pMidiManager
-		= pSession->midiManagers().first();
-	if (pMidiManager) {
-		unsigned long iTimeStart = pAudioCursor->frameTime();
-		unsigned long iTimeEnd   = iTimeStart + nframes;
-		while (pMidiManager) {
-			pMidiManager->process(iTimeStart, iTimeEnd);
-		//	if (!pMidiManager->isAudioOutputBus())
-		//		iOutputBus++;
-			pMidiManager = pMidiManager->next();
-		}
-	}
+	m_iBufferOffset += (iFrameEnd - iFrameStart);
 
 	// Commit current audio buses...
 	for (qtractorBus *pBus = buses().first();

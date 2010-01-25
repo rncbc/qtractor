@@ -1,7 +1,7 @@
 // qtractorInsertPlugin.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -213,7 +213,7 @@ void qtractorInsertPlugin::process (
 	if (m_pAudioBus == NULL)
 		return;
 
-	m_pAudioBus->process_prepare(nframes);
+//	m_pAudioBus->process_prepare(nframes);
 	
 	float **ppOut = m_pAudioBus->out(); // Sends.
 	float **ppIn  = m_pAudioBus->in();  // Returns.

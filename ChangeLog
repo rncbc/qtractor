@@ -5,8 +5,8 @@ ChangeLog
 
 SVN TRUNK
 
-- Attempt to make MIDI track inserts to process properly
-  all audio from any output bus signal bounced as returns.
+- Almost since its inception, audio inserts were injecting
+  garbage random noise when not being activated, now fixed.
 
 - Dedicated audio output ports for MIDI track plugins, now
   have their connection persistence back in business due on
