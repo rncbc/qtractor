@@ -23,6 +23,8 @@
 #include "qtractorMidiClip.h"
 #include "qtractorMidiEngine.h"
 
+#include "qtractorSession.h"
+
 #include "qtractorSessionDocument.h"
 
 #include "qtractorMidiEditor.h"

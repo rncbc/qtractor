@@ -22,6 +22,8 @@
 #include "qtractorAbout.h"
 #include "qtractorClip.h"
 
+#include "qtractorSession.h"
+
 #include "qtractorSessionDocument.h"
 
 #include "qtractorClipForm.h"

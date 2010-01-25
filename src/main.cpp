@@ -40,16 +40,16 @@
 
 #if defined(Q_WS_X11)
 
+#ifdef CONFIG_VST
+#include "qtractorVstPlugin.h"
+#endif
+
 #include <QX11Info>
 
 #include <X11/Xatom.h>
 #include <X11/Xlib.h>
 
 #define QTRACTOR_XUNIQUE "qtractorApplication"
-
-#ifdef CONFIG_VST
-#include "qtractorVstPlugin.h"
-#endif
 
 #endif
 

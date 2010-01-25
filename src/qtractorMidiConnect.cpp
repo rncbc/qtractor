@@ -22,6 +22,8 @@
 #include "qtractorMidiConnect.h"
 #include "qtractorMidiEngine.h"
 
+#include "qtractorSession.h"
+
 #include <QIcon>
 
 

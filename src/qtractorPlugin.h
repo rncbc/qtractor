@@ -1,7 +1,7 @@
 // qtractorPlugin.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -22,7 +22,7 @@
 #ifndef __qtractorPlugin_h
 #define __qtractorPlugin_h
 
-#include "qtractorList.h"
+#include "qtractorEngine.h"
 
 #include <QStringList>
 #include <QLibrary>
@@ -565,6 +565,22 @@ public:
 	bool saveElement(qtractorSessionDocument *pDocument,
 		QDomElement *pElement);
 
+	// MIDI manager deferred load/cache specifics.
+	void setMidiBank(int iMidiBank)
+		{ m_iMidiBank = iMidiBank; }
+	int midiBank() const
+		{ return m_iMidiBank; }
+
+	void setMidiProg(int iMidiProg)
+		{ m_iMidiProg = iMidiProg; }
+	int midiProg() const
+		{ return m_iMidiProg; }
+	
+	void setAudioOutputBus(bool bAudioOutputBus)
+		{ m_bAudioOutputBus = bAudioOutputBus; }
+	bool isAudioOutputBus() const
+		{ return m_bAudioOutputBus; }
+
 private:
 
 	// Instance variables.
@@ -584,6 +600,13 @@ private:
 
 	// Specific MIDI manager.
 	qtractorMidiManager *m_pMidiManager;
+
+	int  m_iMidiBank;
+	int  m_iMidiProg;
+
+	bool m_bAudioOutputBus;
+
+	qtractorBus::ConnectList m_audioOutputs;
 
 	// Internal running buffer chain references.
 	float **m_pppBuffers[2];

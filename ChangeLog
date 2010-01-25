@@ -3,6 +3,16 @@ Qtractor - An Audio/MIDI multi-track sequencer
 
 ChangeLog
 
+SVN TRUNK
+
+- Attempt to make MIDI track inserts to process properly
+  all audio from any output bus signal bounced as returns.
+
+- Dedicated audio output ports for MIDI track plugins, now
+  have their connection persistence back in business due on
+  session load.
+
+
 0.4.5  2010-01-23  A Friskier Demivierge ;)
 
 - Changing loop points while playback is rolling, with the

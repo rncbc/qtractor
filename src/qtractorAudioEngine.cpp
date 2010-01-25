@@ -1,7 +1,7 @@
 // qtractorAudioEngine.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -24,6 +24,8 @@
 #include "qtractorAudioMonitor.h"
 #include "qtractorAudioBuffer.h"
 #include "qtractorAudioClip.h"
+
+#include "qtractorSession.h"
 
 #include "qtractorMonitor.h"
 #include "qtractorSessionCursor.h"
@@ -667,20 +669,6 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 		ATOMIC_SET(&m_playerLock, 0);
 	}
 
-	// MIDI plugin manager processing...
-	qtractorMidiManager *pMidiManager
-		= pSession->midiManagers().first();
-	if (pMidiManager) {
-		unsigned long iTimeStart = pAudioCursor->frameTime();
-		unsigned long iTimeEnd   = iTimeStart + nframes;
-		while (pMidiManager) {
-			pMidiManager->process(iTimeStart, iTimeEnd);
-			if (!pMidiManager->isAudioOutputBus())
-				iOutputBus++;
-			pMidiManager = pMidiManager->next();
-		}
-	}
-
 	// Don't go any further, if not playing.
 	if (!isPlaying()) {
 		// Do the idle processing...
@@ -716,6 +704,19 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 						}
 					}
 				}
+			}
+		}
+		// MIDI plugin manager processing...
+		qtractorMidiManager *pMidiManager
+			= pSession->midiManagers().first();
+		if (pMidiManager) {
+			unsigned long iTimeStart = pAudioCursor->frameTime();
+			unsigned long iTimeEnd   = iTimeStart + nframes;
+			while (pMidiManager) {
+				pMidiManager->process(iTimeStart, iTimeEnd);
+				if (!pMidiManager->isAudioOutputBus())
+					iOutputBus++;
+				pMidiManager = pMidiManager->next();
 			}
 		}
 		// Process audition/pre-listening bus...
@@ -795,7 +796,22 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 
 	// Regular range playback...
 	pSession->process(pAudioCursor, iFrameStart, iFrameEnd);
-	m_iBufferOffset += (iFrameEnd - iFrameStart);
+//	m_iBufferOffset += (iFrameEnd - iFrameStart);
+	m_iBufferOffset = 0;
+
+	// MIDI plugin manager processing...
+	qtractorMidiManager *pMidiManager
+		= pSession->midiManagers().first();
+	if (pMidiManager) {
+		unsigned long iTimeStart = pAudioCursor->frameTime();
+		unsigned long iTimeEnd   = iTimeStart + nframes;
+		while (pMidiManager) {
+			pMidiManager->process(iTimeStart, iTimeEnd);
+		//	if (!pMidiManager->isAudioOutputBus())
+		//		iOutputBus++;
+			pMidiManager = pMidiManager->next();
+		}
+	}
 
 	// Commit current audio buses...
 	for (qtractorBus *pBus = buses().first();

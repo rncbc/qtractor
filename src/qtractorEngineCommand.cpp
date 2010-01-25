@@ -24,6 +24,8 @@
 #include "qtractorAudioEngine.h"
 #include "qtractorMidiEngine.h"
 
+#include "qtractorSession.h"
+
 #include "qtractorMainForm.h"
 
 #include "qtractorTracks.h"

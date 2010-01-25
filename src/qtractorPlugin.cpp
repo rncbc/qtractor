@@ -1,7 +1,7 @@
 // qtractorPlugin.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -991,7 +991,8 @@ void qtractorPlugin::saveValues (
 qtractorPluginList::qtractorPluginList ( unsigned short iChannels,
 	unsigned int iBufferSize, unsigned int iSampleRate, unsigned int iFlags )
 	: m_iChannels(0), m_iBufferSize(0), m_iSampleRate(0),
-		m_iFlags(0), m_iActivated(0), m_pMidiManager(NULL)
+		m_iFlags(0), m_iActivated(0), m_pMidiManager(NULL),
+		m_iMidiBank(-1), m_iMidiProg(-1), m_bAudioOutputBus(false)
 		
 {
 	m_pppBuffers[0] = NULL;
@@ -1069,8 +1070,17 @@ void qtractorPluginList::setBuffer ( unsigned short iChannels,
 	}
 
     // Allocate new MIDI manager, if applicable...
-	if (m_iFlags & Midi)
+	if (m_iFlags & Midi) {
 		m_pMidiManager = qtractorMidiManager::createMidiManager(this);
+		// Set loaded/cached properties properly...
+		m_pMidiManager->setCurrentBank(m_iMidiBank);
+		m_pMidiManager->setCurrentProg(m_iMidiProg);
+		m_pMidiManager->setAudioOutputBus(m_bAudioOutputBus);
+		qtractorAudioBus *pAudioOutputBus = m_pMidiManager->audioOutputBus();
+		if (pAudioOutputBus)
+			pAudioOutputBus->outputs().copy(m_audioOutputs);
+	}
+
 
 	// Reset all plugin chain channels...
 	for (qtractorPlugin *pPlugin = first();
@@ -1328,8 +1338,11 @@ void qtractorPluginList::process ( float **ppBuffer, unsigned int nframes )
 bool qtractorPluginList::loadElement ( qtractorSessionDocument *pDocument,
 	QDomElement *pElement )
 {
-	int iBank = 0;
-	int iProg = 0;
+	// Reset some MIDI manager elements...
+	m_iMidiBank = -1;
+	m_iMidiProg = -1;
+	m_bAudioOutputBus = false;
+	m_audioOutputs.clear();
 
 	// Load plugin-list children...
 	for (QDomNode nPlugin = pElement->firstChild();
@@ -1341,10 +1354,10 @@ bool qtractorPluginList::loadElement ( qtractorSessionDocument *pDocument,
 		if (ePlugin.isNull())
 			continue;
 		if (ePlugin.tagName() == "bank")
-			iBank = ePlugin.text().toInt();
+			setMidiBank(ePlugin.text().toInt());
 		else
 		if (ePlugin.tagName() == "program")
-			iProg = ePlugin.text().toInt();
+			setMidiProg(ePlugin.text().toInt());
 		else
 		if (ePlugin.tagName() == "plugin") {
 			QString sFilename;
@@ -1418,28 +1431,13 @@ bool qtractorPluginList::loadElement ( qtractorSessionDocument *pDocument,
 		else
 		// Load audio output bus flag...
 		if (ePlugin.tagName() == "audio-output-bus") {
-			if (m_pMidiManager) {
-				m_pMidiManager->setAudioOutputBus(
-					pDocument->boolFromText(ePlugin.text()));
-			}
+			setAudioOutputBus(pDocument->boolFromText(ePlugin.text()));
 		}
 		else
 		// Load audio output connections...
 		if (ePlugin.tagName() == "audio-outputs") {
-			if (m_pMidiManager && m_pMidiManager->isAudioOutputBus()) {
-				qtractorAudioBus *pAudioBus = m_pMidiManager->audioOutputBus();
-				if (pAudioBus) {
-					pAudioBus->loadConnects(
-						pAudioBus->outputs(), pDocument, &ePlugin);
-				}
-			}
+			qtractorBus::loadConnects(m_audioOutputs, pDocument, &ePlugin);
 		}
-	}
-
-	// Set current bank/program properly...
-	if (m_pMidiManager) {
-		m_pMidiManager->setCurrentBank(iBank);
-		m_pMidiManager->setCurrentProg(iProg);
 	}
 
 	return true;

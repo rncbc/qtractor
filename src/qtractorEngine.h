@@ -1,7 +1,7 @@
 // qtractorEngine.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -22,12 +22,13 @@
 #ifndef __qtractorEngine_h
 #define __qtractorEngine_h
 
-#include "qtractorSession.h"
+#include "qtractorTrack.h"
 
 #include <QList>
 
 // Forward declarations.
 class qtractorBus;
+class qtractorSession;
 class qtractorSessionCursor;
 class qtractorSessionDocument;
 class qtractorMonitor;
@@ -182,6 +183,12 @@ public:
 	{
 		// Default contructor
 		ConnectItem() : index(0), client(-1), port (-1) {}
+		// Copy contructor
+		ConnectItem(const ConnectItem& item)
+			: index(item.index),
+			client(item.client), port(item.port),
+			clientName(item.clientName),
+			portName(item.portName) {}
 		// Item members.
 		unsigned short index;
 		int client, port;
@@ -192,10 +199,27 @@ public:
 	class ConnectList : public QList<ConnectItem *>
 	{
 	public:
-		// Constructor
+		// Constructor.
 		ConnectList() {}
+		// Copy onstructor.
+		ConnectList(const ConnectList& connects)
+			: QList<ConnectItem *>() { copy(connects); }
 		// Destructor.
-		~ConnectList() { qDeleteAll(*this); }
+		~ConnectList() { clear(); }
+		// Item cleaner...
+		void clear()
+		{
+			qDeleteAll(*this);
+			QList<ConnectItem *>::clear();
+		}
+		// List copy...
+		void copy (const ConnectList& connects)
+		{
+			clear();
+			QListIterator<ConnectItem *> iter(connects);
+			while (iter.hasNext())
+				append(new ConnectItem(*iter.next()));
+		}
 		// Item finder...
 		ConnectItem *findItem(const ConnectItem& item)
 		{
@@ -222,9 +246,9 @@ public:
 		ConnectList& connects, bool bConnect = false) = 0;
 
 	// Document element methods.
-	bool loadConnects(ConnectList& connects,
+	static bool loadConnects(ConnectList& connects,
 		qtractorSessionDocument *pDocument, QDomElement *pElement);
-	bool saveConnects(ConnectList& connects,
+	static bool saveConnects(ConnectList& connects,
 		qtractorSessionDocument *pDocument, QDomElement *pElement);
 
 protected:
