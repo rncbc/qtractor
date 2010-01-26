@@ -575,8 +575,23 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::editCommand (
 					p = qtractorTimeScale::snapFromIndex(
 						m_ui.QuantizeSwingComboBox->currentIndex() + 1);
 					q = pNode->ticksPerBeat / p;
+				#if 0
 					if (q > 0 && ((iTime / q) % 2))
 						iTime += (q * m_ui.QuantizeSwingSpinBox->value()) / 100;
+				#else
+					if (q > 0) {
+						long d;
+						unsigned long t0 = q * (iTime / q);
+						unsigned short s = m_ui.QuantizeSwingSpinBox->value();
+						if ((iTime / q) % 2) {
+							d = long(t0 + q) - long(iTime);
+						} else {
+							d = long(iTime) - long(t0);
+						}
+						iTime += (((d * d) / q) * s) / 100; // Quadratic.
+					//	iTime += (d * s) / 100; -- Linear.
+					}
+				#endif
 				}
 			}
 			if (m_ui.QuantizeDurationCheckBox->isChecked()
