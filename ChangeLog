@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- Swing-quantize make its debut as an additional MIDI clip
+  editor tool (see Tools/Quantize...).
+
 - Almost since its inception, audio inserts were injecting
   garbage random noise when not being activated, now fixed.
 

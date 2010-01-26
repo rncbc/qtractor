@@ -2,7 +2,7 @@
  <author>rncbc aka Rui Nuno Capela</author>
  <comment>qtractor - An Audio/MIDI multi-track sequencer.
 
-   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -129,7 +129,7 @@
        <property name="spacing" >
         <number>4</number>
        </property>
-       <item row="0" column="0" colspan="4" >
+       <item row="0" column="0" colspan="5" >
         <widget class="QCheckBox" name="QuantizeCheckBox" >
          <property name="font" >
           <font>
@@ -175,7 +175,7 @@
          </property>
         </widget>
        </item>
-       <item row="1" column="3" >
+       <item row="1" column="3" colspan="2" >
         <spacer>
          <property name="orientation" >
           <enum>Qt::Horizontal</enum>
@@ -203,6 +203,52 @@
         </widget>
        </item>
        <item row="3" column="1" >
+        <widget class="QCheckBox" name="QuantizeSwingCheckBox" >
+         <property name="text" >
+          <string>&amp;Swing:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="2" >
+        <widget class="QComboBox" name="QuantizeSwingComboBox" >
+         <property name="toolTip" >
+          <string>Swing-quantize time</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="3" >
+        <widget class="QSpinBox" name="QuantizeSwingSpinBox" >
+         <property name="minimumSize" >
+          <size>
+           <width>60</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="toolTip" >
+          <string>Swing-quantize percent</string>
+         </property>
+         <property name="suffix" >
+          <string> %</string>
+         </property>
+         <property name="maximum" >
+          <number>100</number>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="4" >
+        <spacer>
+         <property name="orientation" >
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" >
+          <size>
+           <width>16</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="4" column="1" colspan="4" >
         <spacer>
          <property name="orientation" >
           <enum>Qt::Vertical</enum>
@@ -878,6 +924,9 @@
   <tabstop>QuantizeTimeComboBox</tabstop>
   <tabstop>QuantizeDurationCheckBox</tabstop>
   <tabstop>QuantizeDurationComboBox</tabstop>
+  <tabstop>QuantizeSwingCheckBox</tabstop>
+  <tabstop>QuantizeSwingComboBox</tabstop>
+  <tabstop>QuantizeSwingSpinBox</tabstop>
   <tabstop>TransposeCheckBox</tabstop>
   <tabstop>TransposeNoteCheckBox</tabstop>
   <tabstop>TransposeNoteSpinBox</tabstop>
