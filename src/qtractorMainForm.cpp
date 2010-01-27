@@ -4986,8 +4986,8 @@ void qtractorMainForm::selectionNotifySlot ( qtractorMidiEditor *pMidiEditor )
 	while (iter.hasNext()) {
 		qtractorMidiEditor *pEditor = (iter.next())->editor();
 		if (pEditor != pMidiEditor) {
-			pEditor->setEditHead(iEditHead);
-			pEditor->setEditTail(iEditTail);
+			pEditor->setEditHead(iEditHead, false);
+			pEditor->setEditTail(iEditTail, false);
 		}
 	}
 

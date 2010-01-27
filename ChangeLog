@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- MIDI clip editor snap-per-beat setting is now independent
+  from main multi-track view.
+
 - Swing-quantize make its debut as an additional MIDI clip
   editor tool (see Tools/Quantize...).
 

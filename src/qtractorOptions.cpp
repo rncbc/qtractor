@@ -1,7 +1,7 @@
 // qtractorOptions.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -269,6 +269,7 @@ void qtractorOptions::loadOptions (void)
 	iMidiZoomMode    = m_settings.value("/ZoomMode", 3).toInt();
 	iMidiHorizontalZoom = m_settings.value("/HorizontalZoom", 100).toInt();
 	iMidiVerticalZoom = m_settings.value("/VerticalZoom", 100).toInt();
+	iMidiSnapPerBeat = m_settings.value("/SnapPerBeat", 4).toInt();
 	bMidiSnapGrid    = m_settings.value("/SnapGrid", false).toBool();
 	m_settings.endGroup();
 
@@ -472,6 +473,7 @@ void qtractorOptions::saveOptions (void)
 	m_settings.setValue("/ZoomMode", iMidiZoomMode);
 	m_settings.setValue("/HorizontalZoom", iMidiHorizontalZoom);
 	m_settings.setValue("/VerticalZoom", iMidiVerticalZoom);
+	m_settings.setValue("/SnapPerBeat", iMidiSnapPerBeat);
 	m_settings.setValue("/SnapGrid", bMidiSnapGrid);
 	m_settings.endGroup();
 

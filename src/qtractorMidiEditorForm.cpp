@@ -405,6 +405,8 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 		m_pMidiEditor->setNoteDuration(pOptions->bMidiNoteDuration);
 		m_pMidiEditor->setSendNotes(pOptions->bMidiPreview);
 		m_pMidiEditor->setSyncView(pOptions->bMidiFollow);
+		// Default snap-per-beat setting...
+		m_pSnapPerBeatComboBox->setCurrentIndex(pOptions->iMidiSnapPerBeat);
 		// Restore whole dock windows state.
 		QByteArray aDockables = pOptions->settings().value(
 			"/MidiEditor/Layout/DockWindows").toByteArray();
@@ -458,14 +460,7 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 			SIGNAL(triggered(bool)),
 			pMainForm, SLOT(transportPunchSet()));
 	}
-#if 0
-	// Default snap-per-beat setting...
-	qtractorTimeScale *pTimeScale = m_pMidiEditor->timeScale();
-	if (pTimeScale) {
-		m_pSnapPerBeatComboBox->setCurrentIndex(
-			pTimeScale->indexFromSnap(pTimeScale->snapPerBeat()));
-	}
-#endif
+
 	eventTypeChanged(0);
 }
 
@@ -538,6 +533,8 @@ bool qtractorMidiEditorForm::queryClose ( bool bForce )
 			pOptions->bMidiValueColor = m_ui.viewValueColorAction->isChecked();
 			pOptions->bMidiPreview = m_ui.viewPreviewAction->isChecked();
 			pOptions->bMidiFollow  = m_ui.viewFollowAction->isChecked();
+			// Save snap-per-beat setting...
+			pOptions->iMidiSnapPerBeat = m_pSnapPerBeatComboBox->currentIndex();
 			// Close floating dock windows...
 			if (m_pMidiEventList->isFloating())
 				m_pMidiEventList->close();
@@ -719,11 +716,12 @@ void qtractorMidiEditorForm::setup ( qtractorMidiClip *pMidiClip )
 	m_pMidiEditor->setVerticalZoom(iVerticalZoom);
 
 	// Default snap-per-beat setting...
-	m_pSnapPerBeatComboBox->setCurrentIndex(
-		pTimeScale->indexFromSnap(pTimeScale->snapPerBeat()));
+	pTimeScale->setSnapPerBeat(
+		qtractorTimeScale::snapFromIndex(
+			m_pSnapPerBeatComboBox->currentIndex()));
 
 	// Note that there's two modes for this method:
-	// wether pMidiClip is given non-null wich means
+	// whether pMidiClip is given non-null wich means
 	// form initialization and first setup or else... 
 	if (pMidiClip) {
 		// Set initial MIDI clip properties has seen fit...
@@ -1514,7 +1512,7 @@ void qtractorMidiEditorForm::snapPerBeatChanged ( int iSnap )
 		return;
 
 	// Avoid bogus changes...
-	unsigned short iSnapPerBeat = pTimeScale->snapFromIndex(iSnap);
+	unsigned short iSnapPerBeat = qtractorTimeScale::snapFromIndex(iSnap);
 	if (iSnapPerBeat == pTimeScale->snapPerBeat())
 		return;
 
