@@ -566,33 +566,28 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::editCommand (
 		// Quantize tool...
 		if (m_ui.QuantizeCheckBox->isChecked()) {
 			tools.append(tr("quantize"));
+			if (m_ui.QuantizeSwingCheckBox->isChecked()) {
+				unsigned short p = qtractorTimeScale::snapFromIndex(
+					m_ui.QuantizeSwingComboBox->currentIndex() + 1);
+				unsigned long q = pNode->ticksPerBeat / p;
+				if (q > 0) {
+					long d;
+					unsigned long t0 = q * (iTime / q);
+					unsigned short s = m_ui.QuantizeSwingSpinBox->value();
+					if ((iTime / q) % 2) {
+						d = long(t0 + q) - long(iTime);
+					} else {
+						d = long(iTime) - long(t0);
+					}
+					iTime += (((d * d) / q) * s) / 100; // Quadratic.
+				//	iTime += (d * s) / 100; -- Linear.
+				}
+			}
 			if (m_ui.QuantizeTimeCheckBox->isChecked()) {
 				unsigned short p = qtractorTimeScale::snapFromIndex(
 					m_ui.QuantizeTimeComboBox->currentIndex() + 1);
 				unsigned long q = pNode->ticksPerBeat / p;
 				iTime = q * ((iTime + (q >> 1)) / q);
-				if (m_ui.QuantizeSwingCheckBox->isChecked()) {
-					p = qtractorTimeScale::snapFromIndex(
-						m_ui.QuantizeSwingComboBox->currentIndex() + 1);
-					q = pNode->ticksPerBeat / p;
-				#if 0
-					if (q > 0 && ((iTime / q) % 2))
-						iTime += (q * m_ui.QuantizeSwingSpinBox->value()) / 100;
-				#else
-					if (q > 0) {
-						long d;
-						unsigned long t0 = q * (iTime / q);
-						unsigned short s = m_ui.QuantizeSwingSpinBox->value();
-						if ((iTime / q) % 2) {
-							d = long(t0 + q) - long(iTime);
-						} else {
-							d = long(iTime) - long(t0);
-						}
-						iTime += (((d * d) / q) * s) / 100; // Quadratic.
-					//	iTime += (d * s) / 100; -- Linear.
-					}
-				#endif
-				}
 			}
 			if (m_ui.QuantizeDurationCheckBox->isChecked()
 				&& pEvent->type() == qtractorMidiEvent::NOTEON) {
@@ -820,8 +815,8 @@ void qtractorMidiToolsForm::stabilizeForm (void)
 		iEnabled++;
 	m_ui.QuantizeDurationComboBox->setEnabled(bEnabled2);
 
-	if (bEnabled)
-		bEnabled = m_ui.QuantizeTimeCheckBox->isChecked();
+//	if (bEnabled)
+//		bEnabled = m_ui.QuantizeTimeCheckBox->isChecked();
 	m_ui.QuantizeSwingCheckBox->setEnabled(bEnabled);
 	bEnabled2 = bEnabled && m_ui.QuantizeSwingCheckBox->isChecked();
 	if (bEnabled2)
