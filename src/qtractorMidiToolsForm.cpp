@@ -90,6 +90,7 @@ qtractorMidiToolsForm::qtractorMidiToolsForm (
 		m_ui.QuantizeTimeComboBox->setCurrentIndex(iSnapIndex);
 		m_ui.QuantizeDurationComboBox->setCurrentIndex(iSnapIndex);
 		m_ui.QuantizeSwingComboBox->setCurrentIndex(0);
+		m_ui.QuantizeSwingTypeComboBox->setCurrentIndex(0);
 	}
 
 	// Choose BBT to be default format here.
@@ -135,6 +136,12 @@ qtractorMidiToolsForm::qtractorMidiToolsForm (
 		SIGNAL(toggled(bool)),
 		SLOT(changed()));
 	QObject::connect(m_ui.QuantizeSwingComboBox,
+		SIGNAL(activated(int)),
+		SLOT(changed()));
+	QObject::connect(m_ui.QuantizeSwingSpinBox,
+		SIGNAL(valueChanged(int)),
+		SLOT(changed()));
+	QObject::connect(m_ui.QuantizeSwingTypeComboBox,
 		SIGNAL(activated(int)),
 		SLOT(changed()));
 	QObject::connect(m_ui.QuantizeSwingSpinBox,
@@ -300,10 +307,11 @@ void qtractorMidiToolsForm::loadPreset ( const QString& sPreset )
 			m_ui.QuantizeDurationComboBox->setCurrentIndex(vlist[4].toInt());
 		}
 		// Swing-quantize tool...
-		if (vlist.count() > 7) {
+		if (vlist.count() > 8) {
 			m_ui.QuantizeSwingCheckBox->setChecked(vlist[5].toBool());
 			m_ui.QuantizeSwingComboBox->setCurrentIndex(vlist[6].toInt());
 			m_ui.QuantizeSwingSpinBox->setValue(vlist[7].toInt());
+			m_ui.QuantizeSwingTypeComboBox->setCurrentIndex(vlist[8].toInt());
 		}
 		// Transpose tool...
 		vlist = settings.value("/Transpose").toList();
@@ -374,6 +382,7 @@ void qtractorMidiToolsForm::savePreset ( const QString& sPreset )
 		vlist.append(m_ui.QuantizeSwingCheckBox->isChecked());
 		vlist.append(m_ui.QuantizeSwingComboBox->currentIndex());
 		vlist.append(m_ui.QuantizeSwingSpinBox->value());
+		vlist.append(m_ui.QuantizeSwingTypeComboBox->currentIndex());
 		settings.setValue("/Quantize", vlist);
 		// Transpose tool...
 		vlist.clear();
@@ -571,16 +580,24 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::editCommand (
 					m_ui.QuantizeSwingComboBox->currentIndex() + 1);
 				unsigned long q = pNode->ticksPerBeat / p;
 				if (q > 0) {
-					long d;
+					long d0;
 					unsigned long t0 = q * (iTime / q);
-					unsigned short s = m_ui.QuantizeSwingSpinBox->value();
 					if ((iTime / q) % 2) {
-						d = long(t0 + q) - long(iTime);
+						d0 = long(t0 + q) - long(iTime);
 					} else {
-						d = long(iTime) - long(t0);
+						d0 = long(iTime) - long(t0);
 					}
-					iTime += (((d * d) / q) * s) / 100; // Quadratic.
-				//	iTime += (d * s) / 100; -- Linear.
+					unsigned short s = m_ui.QuantizeSwingSpinBox->value();
+					unsigned long ds = (d0 * s) / 100;
+					switch (m_ui.QuantizeSwingTypeComboBox->currentIndex()) {
+					case 2: // Cubic...
+						ds = (ds * d0) / q;
+					case 1: // Quadratic...
+						ds = (ds * d0) / q;
+					case 0: // Linear...
+						iTime += ds;
+						break;
+					}
 				}
 			}
 			if (m_ui.QuantizeTimeCheckBox->isChecked()) {
@@ -823,6 +840,7 @@ void qtractorMidiToolsForm::stabilizeForm (void)
 		iEnabled++;
 	m_ui.QuantizeSwingComboBox->setEnabled(bEnabled2);
 	m_ui.QuantizeSwingSpinBox->setEnabled(bEnabled2);
+	m_ui.QuantizeSwingTypeComboBox->setEnabled(bEnabled2);
 
 	// Transpose tool...
 

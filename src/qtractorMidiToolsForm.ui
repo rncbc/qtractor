@@ -236,17 +236,26 @@
         </widget>
        </item>
        <item row="3" column="4" >
-        <spacer>
-         <property name="orientation" >
-          <enum>Qt::Horizontal</enum>
+        <widget class="QComboBox" name="QuantizeSwingTypeComboBox" >
+         <property name="toolTip" >
+          <string>Swing-quantize type</string>
          </property>
-         <property name="sizeHint" >
-          <size>
-           <width>16</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
+         <item>
+          <property name="text" >
+           <string>Linear</string>
+          </property>
+         </item>
+         <item>
+          <property name="text" >
+           <string>Quadratic</string>
+          </property>
+         </item>
+         <item>
+          <property name="text" >
+           <string>Cubic</string>
+          </property>
+         </item>
+        </widget>
        </item>
        <item row="4" column="1" colspan="4" >
         <spacer>
