@@ -1,7 +1,7 @@
 // qtractorMidiSysexForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -779,7 +779,7 @@ void qtractorMidiSysexForm::stabilizeForm (void)
 	m_ui.AddButton->setEnabled(bEnabled);
 	m_ui.UpdateButton->setEnabled(bEnabled && pItem != NULL);
 
-	m_ui.ClearButton->setEnabled(iItemCount > 0);
+	m_ui.ClearButton->setEnabled(bEnabled || iItemCount > 0);
 	m_ui.OkButton->setEnabled(m_iDirtyCount > 0 && m_iDirtyItem == 0);
 }
 

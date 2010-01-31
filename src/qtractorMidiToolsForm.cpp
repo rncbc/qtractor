@@ -580,7 +580,7 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::editCommand (
 					m_ui.QuantizeSwingComboBox->currentIndex() + 1);
 				unsigned long q = pNode->ticksPerBeat / p;
 				if (q > 0) {
-					long d0;
+					long d0 = 0;
 					unsigned long t0 = q * (iTime / q);
 					if ((iTime / q) % 2) {
 						d0 = long(t0 + q) - long(iTime);
