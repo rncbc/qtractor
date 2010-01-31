@@ -63,6 +63,10 @@ qtractorMidiToolsForm::qtractorMidiToolsForm (
 	if (g_sDefPreset.isEmpty())
 		g_sDefPreset = tr("(default)");
 
+	// Set some time spin-box specialties...
+	m_ui.TransposeTimeSpinBox->setDeltaValue(true);
+	m_ui.ResizeDurationSpinBox->setDeltaValue(true);
+
 	// Reinitialize random seed.
 	::srand(::time(NULL));
 
