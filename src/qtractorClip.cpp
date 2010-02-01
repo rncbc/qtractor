@@ -554,7 +554,7 @@ bool qtractorClip::queryEditor (void)
 }
 
 // Clip editor reset.
-void qtractorClip::resetEditor (void)
+void qtractorClip::resetEditor ( bool bSelectClear )
 {
 	// Do nothing here.
 }

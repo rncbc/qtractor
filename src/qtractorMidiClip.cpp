@@ -627,12 +627,12 @@ bool qtractorMidiClip::queryEditor (void)
 
 
 // Clip editor reset.
-void qtractorMidiClip::resetEditor (void)
+void qtractorMidiClip::resetEditor ( bool bSelectClear )
 {
 	if (m_pMidiEditorForm) {
 		qtractorMidiEditor *pMidiEditor = m_pMidiEditorForm->editor();
 		if (pMidiEditor)
-			pMidiEditor->reset(false);
+			pMidiEditor->reset(bSelectClear);
 	}
 }
 

@@ -100,7 +100,7 @@ public:
 	// Clip editor methods.
 	bool startEditor(QWidget *pParent);
 	bool queryEditor();
-	void resetEditor();
+	void resetEditor(bool bSelectClear);
 	void updateEditor();
 
 	// MIDI clip tool-tip.

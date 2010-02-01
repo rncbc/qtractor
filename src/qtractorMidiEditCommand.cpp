@@ -123,6 +123,7 @@ bool qtractorMidiEditCommand::execute ( bool bRedo )
 
 	// Track sequence duration changes...
 	unsigned long iOldDuration = pSeq->duration();
+	int iSelectClear = 0;
 
 	// Changes are due...
 	QListIterator<Item *> iter(m_items);
@@ -186,6 +187,8 @@ bool qtractorMidiEditCommand::execute ( bool bRedo )
 		default:
 			break;
 		}
+		if (pItem->autoDelete)
+			++iSelectClear;
 	}
 
 	// Have we changed on something less durable?
@@ -203,7 +206,7 @@ bool qtractorMidiEditCommand::execute ( bool bRedo )
 			- m_pMidiClip->clipStart());
 		m_pMidiClip->updateEditor();
 	}	// Just reset editor internals...
-	else m_pMidiClip->resetEditor();
+	else m_pMidiClip->resetEditor(iSelectClear > 0);
 
 	// Renqueue dropped events...
 	if (pSession && pSession->isPlaying())

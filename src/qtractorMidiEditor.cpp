@@ -1093,9 +1093,6 @@ void qtractorMidiEditor::cutClipboard (void)
 		pEditCommand->removeEvent(pItem->event);
 	}
 
-	// Get rid of all selection...
-	m_select.clear();
-
 	// Make it as an undoable command...
 	m_pCommands->exec(pEditCommand);
 }
@@ -1279,9 +1276,6 @@ void qtractorMidiEditor::deleteSelect (void)
 		qtractorMidiEditSelect::Item *pItem = iter.next();
 		pEditCommand->removeEvent(pItem->event);
 	}
-
-	// Get rid of all selection...
-	m_select.clear();
 
 	m_pCommands->exec(pEditCommand);
 }
@@ -1475,21 +1469,16 @@ void qtractorMidiEditor::updateSelect (void)
 	// Final touch.
 	m_select.commit();
 
-	m_pEventDrag = NULL;
 	m_rectDrag = m_select.rectView();
 	m_posDrag  = m_rectDrag.topLeft();
-	m_posStep  = QPoint(0, 0);
-	m_posDelta = QPoint(0, 0);
 
-	if (m_pEditList)
-		m_pEditList->dragNoteOn(-1);
+	resetDragState(NULL);
 }
 
 
 // Update/sync integral contents.
 void qtractorMidiEditor::updateContents (void)
 {
-//	m_select.clear();
 	updateSelect();
 
 	// Update dependant views.
@@ -1507,7 +1496,6 @@ void qtractorMidiEditor::updateContents (void)
 // Try to center vertically the edit-view...
 void qtractorMidiEditor::centerContents (void)
 {
-//	m_select.clear();
 	updateSelect();
 
 	// Update dependant views.
@@ -2556,8 +2544,10 @@ void qtractorMidiEditor::executeDragResize ( qtractorScrollView *pScrollView,
 	}
 
 	// On edit mod we now own the new event...
-	if (m_bEventDragEdit)
+	if (m_bEventDragEdit) {
 		m_pEventDrag = NULL;
+		m_select.clear();
+	}
 
 	// Make it as an undoable command...
 	if (m_pCommands->exec(pEditCommand))
@@ -2726,9 +2716,10 @@ void qtractorMidiEditor::resetDragState ( qtractorScrollView *pScrollView )
 		if (m_dragState == DragMove   ||
 			m_dragState == DragResize ||
 			m_dragState == DragPaste  ||
-			m_dragState == DragStep)
+			m_dragState == DragStep) {
 		//	m_select.clear();
 			updateContents();
+		}
 	}
 
 	if (m_pEditList)
