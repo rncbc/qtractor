@@ -227,7 +227,7 @@ public:
 	void centerContents();
 
 	// Reset event cursors.
-	void reset();
+	void reset(bool bSelectClear);
 
 	// Clear all contents.
 	void clear();
@@ -338,9 +338,6 @@ protected:
 	void horizontalZoomStep(int iZoomStep);
 	void verticalZoomStep(int iZoomStep);
 
-	// Close event override to save some geometry settings.
-	virtual void closeEvent(QCloseEvent *pCloseEvent);
-
 	// Selection flags
 	enum { 
 		SelectNone   = 0,
@@ -394,9 +391,6 @@ protected slots:
 	void updateNotifySlot(bool bRefresh);
 
 signals:
-
-	// Emitted on late close.
-	void closeNotifySignal();
 
 	// Emitted on selection/changes.
 	void selectNotifySignal(qtractorMidiEditor *);

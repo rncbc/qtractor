@@ -430,15 +430,6 @@ qtractorMidiEditor::~qtractorMidiEditor (void)
 }
 
 
-// Close event override to emit respective signal.
-void qtractorMidiEditor::closeEvent ( QCloseEvent *pCloseEvent )
-{
-	emit closeNotifySignal();
-
-	QWidget::closeEvent(pCloseEvent);
-}
-
-
 // Editing sequence accessor.
 void qtractorMidiEditor::setMidiClip ( qtractorMidiClip *pMidiClip )
 {
@@ -1102,6 +1093,9 @@ void qtractorMidiEditor::cutClipboard (void)
 		pEditCommand->removeEvent(pItem->event);
 	}
 
+	// Get rid of all selection...
+	m_select.clear();
+
 	// Make it as an undoable command...
 	m_pCommands->exec(pEditCommand);
 }
@@ -1285,6 +1279,9 @@ void qtractorMidiEditor::deleteSelect (void)
 		qtractorMidiEditSelect::Item *pItem = iter.next();
 		pEditCommand->removeEvent(pItem->event);
 	}
+
+	// Get rid of all selection...
+	m_select.clear();
 
 	m_pCommands->exec(pEditCommand);
 }
@@ -1477,7 +1474,15 @@ void qtractorMidiEditor::updateSelect (void)
 
 	// Final touch.
 	m_select.commit();
+
 	m_pEventDrag = NULL;
+	m_rectDrag = m_select.rectView();
+	m_posDrag  = m_rectDrag.topLeft();
+	m_posStep  = QPoint(0, 0);
+	m_posDelta = QPoint(0, 0);
+
+	if (m_pEditList)
+		m_pEditList->dragNoteOn(-1);
 }
 
 
@@ -1543,10 +1548,10 @@ void qtractorMidiEditor::centerContents (void)
 
 
 // Reset event cursors.
-void qtractorMidiEditor::reset (void)
+void qtractorMidiEditor::reset ( bool bSelectClear )
 {
-	// Force reset of all current selection first...
-	m_select.clear();
+	if (bSelectClear)
+		m_select.clear();
 
 	// Reset some internal state...
 	if (m_pMidiClip) {
@@ -1567,7 +1572,7 @@ void qtractorMidiEditor::clear (void)
 	if (m_pMidiClip)
 		m_pMidiClip->sequence()->clear();
 
-	reset();
+	reset(true);
 }
 
 
@@ -2722,7 +2727,7 @@ void qtractorMidiEditor::resetDragState ( qtractorScrollView *pScrollView )
 			m_dragState == DragResize ||
 			m_dragState == DragPaste  ||
 			m_dragState == DragStep)
-			m_select.clear();
+		//	m_select.clear();
 			updateContents();
 	}
 

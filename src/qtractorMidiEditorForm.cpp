@@ -588,7 +588,7 @@ void qtractorMidiEditorForm::closeEvent ( QCloseEvent *pCloseEvent )
 {
 	if (queryClose()) {
 		// Reset editor anyway...
-		m_pMidiEditor->reset();
+		m_pMidiEditor->reset(true);
 		// Remove this one from main-form list...
 		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 		if (pMainForm)

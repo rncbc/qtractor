@@ -632,7 +632,7 @@ void qtractorMidiClip::resetEditor (void)
 	if (m_pMidiEditorForm) {
 		qtractorMidiEditor *pMidiEditor = m_pMidiEditorForm->editor();
 		if (pMidiEditor)
-			pMidiEditor->reset();
+			pMidiEditor->reset(false);
 	}
 }
 
@@ -645,7 +645,7 @@ void qtractorMidiClip::updateEditor (void)
 
 	qtractorMidiEditor *pMidiEditor = m_pMidiEditorForm->editor();
 	if (pMidiEditor) {
-		pMidiEditor->reset();
+		pMidiEditor->reset(true);
 		pMidiEditor->setOffset(clipStart());
 		pMidiEditor->setLength(clipLength());
 		qtractorTrack *pTrack = track();
