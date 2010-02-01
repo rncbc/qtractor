@@ -30,8 +30,10 @@
 #include "qtractorOptions.h"
 #include "qtractorSession.h"
 
-
 #include <QMessageBox>
+
+#include <time.h>
+
 
 // This shall hold the default preset name.
 static QString g_sDefPreset;

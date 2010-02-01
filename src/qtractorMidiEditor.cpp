@@ -2119,8 +2119,12 @@ void qtractorMidiEditor::updateDragSelect ( qtractorScrollView *pScrollView,
 		if (x2 < rectSelect.right())
 			x2 = rectSelect.right();
 	} else {
-		x1 = x2 = rectSelect.x(); x2++;
+		x1 = x2 = rectSelect.x();
 	}
+
+	if (--x0 < 0) x0 = 0;
+	if (--x1 < 0) x1 = 0;
+	++x2;
 
 	pNode = cursor.seekPixel(x0 + x1);
 	unsigned long t1 = pNode->tickFromPixel(x0 + x1);

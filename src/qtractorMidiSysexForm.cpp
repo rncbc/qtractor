@@ -415,7 +415,7 @@ void qtractorMidiSysexForm::openSlot (void)
 	const QString& sFilter = tr("SysEx files (*.%1)").arg(sExt);
 #if QT_VERSION < 0x040400
 	// Ask for the filename to save...
-	sFilename = QFileDialog::getSaveFileName(this,
+	sFilename = QFileDialog::getOpenFileName(this,
 		sTitle, pOptions->sMidiSysexDir, sFilter);
 #else
 	// Construct save-file dialog...
@@ -498,6 +498,8 @@ void qtractorMidiSysexForm::saveSlot (void)
 		// Show dialog...
 		if (fileDialog.exec())
 			sFilename = fileDialog.selectedFiles().first();
+		else
+			sFilename.clear();
 	#endif
 	} else if (pOptions->bConfirmRemove) {
 		if (QMessageBox::warning(parentWidget(),

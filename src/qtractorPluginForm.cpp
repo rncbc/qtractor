@@ -440,7 +440,7 @@ void qtractorPluginForm::openPresetSlot (void)
 	const QString& sFilter = tr("Preset files (*.%1)").arg(sExt); 
 #if QT_VERSION < 0x040400
 	// Ask for the filename to save...
-	sFilename = QFileDialog::getSaveFileName(this,
+	sFilename = QFileDialog::getOpenFileName(this,
 		sTitle, pOptions->sPresetDir, sFilter);
 #else
 	// Construct save-file dialog...
@@ -533,6 +533,8 @@ void qtractorPluginForm::savePresetSlot (void)
 			// Show dialog...
 			if (fileDialog.exec())
 				sFilename = fileDialog.selectedFiles().first();
+			else
+				sFilename.clear();
 		#endif
 		}
 		// We've a filename to save the preset
