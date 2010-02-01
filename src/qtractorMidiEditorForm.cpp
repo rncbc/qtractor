@@ -766,9 +766,6 @@ void qtractorMidiEditorForm::setup ( qtractorMidiClip *pMidiClip )
 
 	// Done.
 	stabilizeForm();
-
-	// Almost.
-	m_pMidiEditor->editView()->setFocus();
 }
 
 

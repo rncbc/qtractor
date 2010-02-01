@@ -230,8 +230,14 @@
          <property name="suffix" >
           <string> %</string>
          </property>
+         <property name="minimum" >
+          <number>-100</number>
+         </property>
          <property name="maximum" >
           <number>100</number>
+         </property>
+         <property name="value" >
+          <number>0</number>
          </property>
         </widget>
        </item>

@@ -593,15 +593,15 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::editCommand (
 					} else {
 						d0 = long(iTime) - long(t0);
 					}
-					unsigned short s = m_ui.QuantizeSwingSpinBox->value();
-					unsigned long ds = (d0 * s) / 100;
+					long ds = (d0 * m_ui.QuantizeSwingSpinBox->value()) / 100;
 					switch (m_ui.QuantizeSwingTypeComboBox->currentIndex()) {
 					case 2: // Cubic...
-						ds = (ds * d0) / q;
+						ds = (ds * d0) / long(q);
 					case 1: // Quadratic...
-						ds = (ds * d0) / q;
+						ds = (ds * d0) / long(q);
 					case 0: // Linear...
 						iTime += ds;
+                        if (iTime < 0) iTime = 0;
 						break;
 					}
 				}

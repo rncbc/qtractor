@@ -2855,7 +2855,10 @@ void qtractorMidiEditor::executeTool ( int iToolIndex )
 				m_pTimeScale->tickFromFrame(m_iOffset));
 		if (m_pCommands->exec(pEditCommand))
 			adjustEditCommand(pEditCommand);
-	}		
+	}
+
+	QWidget::activateWindow();
+	m_pEditView->setFocus();
 }
 
 
