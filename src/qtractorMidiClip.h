@@ -99,9 +99,9 @@ public:
 
 	// Clip editor methods.
 	bool startEditor(QWidget *pParent);
-	bool queryEditor();
 	void resetEditor(bool bSelectClear);
-	void updateEditor();
+	void updateEditor(bool bSelectClear);
+	bool queryEditor();
 
 	// MIDI clip tool-tip.
 	QString toolTip() const;

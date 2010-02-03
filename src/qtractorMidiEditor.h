@@ -347,7 +347,7 @@ protected:
 	};
 
 	// Update all selection rectangular areas.
-	void updateSelect();
+	void updateSelect(bool bSelectReset);
 
 	// Update the event selection list.
 	void updateDragSelect(qtractorScrollView *pScrollView,

@@ -1,7 +1,7 @@
 // qtractorClip.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -547,22 +547,22 @@ bool qtractorClip::startEditor ( QWidget *pParent )
 	return clipForm.exec();
 }
 
-// Clip query-close method (return true if editing is done).
-bool qtractorClip::queryEditor (void)
-{
-	return !isDirty();
-}
-
 // Clip editor reset.
-void qtractorClip::resetEditor ( bool bSelectClear )
+void qtractorClip::resetEditor ( bool /*bSelectClear*/ )
 {
 	// Do nothing here.
 }
 
 // Clip editor update.
-void qtractorClip::updateEditor (void)
+void qtractorClip::updateEditor ( bool /*bSelectClear*/ )
 {
 	// Do nothing here.
+}
+
+// Clip query-close method (return true if editing is done).
+bool qtractorClip::queryEditor (void)
+{
+	return !isDirty();
 }
 
 

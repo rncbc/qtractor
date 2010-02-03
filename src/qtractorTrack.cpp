@@ -945,7 +945,7 @@ void qtractorTrack::updateClipEditors (void)
 {
 	qtractorClip *pClip = m_clips.first();
 	while (pClip) {
-		pClip->updateEditor();
+		pClip->updateEditor(true);
 		pClip = pClip->next();
 	}
 }

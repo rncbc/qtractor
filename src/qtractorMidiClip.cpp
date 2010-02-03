@@ -616,16 +616,6 @@ bool qtractorMidiClip::startEditor ( QWidget *pParent )
 }
 
 
-// Clip query-close method (return true if editing is done).
-bool qtractorMidiClip::queryEditor (void)
-{
-	if (m_pMidiEditorForm)
-		return m_pMidiEditorForm->queryClose();
-	else
-		return qtractorClip::queryEditor();
-}
-
-
 // Clip editor reset.
 void qtractorMidiClip::resetEditor ( bool bSelectClear )
 {
@@ -638,14 +628,14 @@ void qtractorMidiClip::resetEditor ( bool bSelectClear )
 
 
 // Clip editor update.
-void qtractorMidiClip::updateEditor (void)
+void qtractorMidiClip::updateEditor ( bool bSelectClear )
 {
 	if (m_pMidiEditorForm == NULL)
 		return;
 
 	qtractorMidiEditor *pMidiEditor = m_pMidiEditorForm->editor();
 	if (pMidiEditor) {
-		pMidiEditor->reset(true);
+		pMidiEditor->reset(bSelectClear);
 		pMidiEditor->setOffset(clipStart());
 		pMidiEditor->setLength(clipLength());
 		qtractorTrack *pTrack = track();
@@ -658,6 +648,16 @@ void qtractorMidiClip::updateEditor (void)
 
 	m_pMidiEditorForm->updateInstrumentNames();
 	m_pMidiEditorForm->stabilizeForm();
+}
+
+
+// Clip query-close method (return true if editing is done).
+bool qtractorMidiClip::queryEditor (void)
+{
+	if (m_pMidiEditorForm)
+		return m_pMidiEditorForm->queryClose();
+	else
+		return qtractorClip::queryEditor();
 }
 
 
@@ -738,7 +738,7 @@ bool qtractorMidiClip::saveClipElement (
 			qtractorMidiClip::setFilename(sFilename);
 			qtractorMidiClip::setDirty(false);
 			// And refresh any eventual editor out there...
-			qtractorMidiClip::updateEditor();
+			qtractorMidiClip::updateEditor(true);
 		}
 	}
 

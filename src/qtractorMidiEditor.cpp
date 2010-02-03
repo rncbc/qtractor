@@ -1411,7 +1411,7 @@ bool qtractorMidiEditor::isEventSelectable ( qtractorMidiEvent *pEvent ) const
 
 
 // Update all selection rectangular areas.
-void qtractorMidiEditor::updateSelect (void)
+void qtractorMidiEditor::updateSelect ( bool bSelectReset )
 {
 	qtractorTimeScale::Cursor cursor(m_pTimeScale);
 	qtractorTimeScale::Node *pNode = cursor.seekFrame(m_iOffset);
@@ -1469,21 +1469,22 @@ void qtractorMidiEditor::updateSelect (void)
 	// Final touch.
 	m_select.commit();
 
-	m_rectDrag = m_select.rectView();
-	m_posDrag  = m_rectDrag.topLeft();
-
-	resetDragState(NULL);
+	if (bSelectReset) {
+		m_rectDrag = m_select.rectView();
+		m_posDrag  = m_rectDrag.topLeft();
+		resetDragState(NULL);
+	}
 }
 
 
 // Update/sync integral contents.
 void qtractorMidiEditor::updateContents (void)
 {
-	updateSelect();
-
 	// Update dependant views.
 	m_pEditList->updateContentsHeight();
 	m_pEditView->updateContentsWidth();
+
+	updateSelect(false);
 
 	// Trigger a complete view update...
 	m_pEditList->updateContents();
@@ -1496,11 +1497,11 @@ void qtractorMidiEditor::updateContents (void)
 // Try to center vertically the edit-view...
 void qtractorMidiEditor::centerContents (void)
 {
-	updateSelect();
-
 	// Update dependant views.
 	m_pEditList->updateContentsHeight();
 	m_pEditView->updateContentsWidth();
+
+	updateSelect(true);
 
 	// Do the centering...
 	qtractorMidiSequence *pSeq = NULL;

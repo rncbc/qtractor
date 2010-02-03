@@ -140,6 +140,7 @@ bool qtractorMidiEditCommand::execute ( bool bRedo )
 			else
 				pSeq->unlinkEvent(pEvent);
 			pItem->autoDelete = !bRedo;
+			++iSelectClear;
 			break;
 		}
 		case MoveEvent: {
@@ -182,13 +183,12 @@ bool qtractorMidiEditCommand::execute ( bool bRedo )
 			else
 				pSeq->insertEvent(pEvent);
 			pItem->autoDelete = bRedo;
+			++iSelectClear;
 			break;
 		}
 		default:
 			break;
 		}
-		if (pItem->autoDelete)
-			++iSelectClear;
 	}
 
 	// Have we changed on something less durable?
@@ -204,7 +204,7 @@ bool qtractorMidiEditCommand::execute ( bool bRedo )
 			pSession->frameFromTick(pSession->tickFromFrame(
 				m_pMidiClip->clipStart()) + pSeq->duration())
 			- m_pMidiClip->clipStart());
-		m_pMidiClip->updateEditor();
+		m_pMidiClip->updateEditor(iSelectClear > 0);
 	}	// Just reset editor internals...
 	else m_pMidiClip->resetEditor(iSelectClear > 0);
 
