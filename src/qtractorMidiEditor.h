@@ -359,6 +359,14 @@ protected:
 	// Compute current drag time snap (in ticks).
 	long timeSnap(long iTime);
 
+	// Apply the event drag-resize (also editing).
+	void resizeEvent(qtractorMidiEvent *pEvent,
+		long iTimeDelta, int iValueDelta,
+		qtractorMidiEditCommand *pEditCommand = NULL);
+
+	// Update event selection rectangle.
+	void updateEvent(qtractorMidiEvent *pEvent);
+
 	// Drag-move current selection.
 	void updateDragMove(qtractorScrollView *pScrollView, const QPoint& pos);
 	// Finalize the event drag-move.

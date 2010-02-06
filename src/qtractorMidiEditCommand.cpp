@@ -96,7 +96,8 @@ bool qtractorMidiEditCommand::findEvent ( qtractorMidiEvent *pEvent,
 	QListIterator<Item *> iter(m_items);
 	while (iter.hasNext()) {
 		Item *pItem = iter.next();
-		if (pItem->event == pEvent && pItem->command == cmd)
+		if (pItem->event == pEvent
+			&& (pItem->command == InsertEvent || pItem->command == cmd))
 			return true;
 	}
 	return false;

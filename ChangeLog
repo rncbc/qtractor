@@ -8,7 +8,9 @@ SVN TRUNK
 - MIDI clip editor snap-per-beat setting is now independent
   from main multi-track view; File/Save As... dialog fixed;
   the current event selection is now kept floating as long
-  as it's possible after editing command actions.
+  as it's possible after editing command actions; finally,
+  edit mode has been extended to free-hand event drawing,
+  chalking off (piano roll) draw mode from the TODO list.
 
 - Swing-quantize has finally made its overdue debut as an
   additional MIDI clip editor tool (see Tools/Quantize...).

@@ -1,7 +1,7 @@
 // qtractorMidiEditSelect.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -70,6 +70,13 @@ public:
 	void selectItem(qtractorMidiEvent *pEvent,
 		const QRect& rectEvent, const QRect& rectView,
 		bool bSelect = true, bool bToggle = false);
+
+	// Item update method (visual rects).
+	void updateItem ( Item *pItem )
+	{
+		m_rectEvent = m_rectEvent.unite(pItem->rectEvent);
+		m_rectView  = m_rectView.unite(pItem->rectView);
+	}
 
 	// The united selection rectangle.
 	const QRect& rectEvent() const { return m_rectEvent; }
