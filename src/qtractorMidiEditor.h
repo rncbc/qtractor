@@ -353,11 +353,17 @@ protected:
 	void updateDragSelect(qtractorScrollView *pScrollView,
 		const QRect& rectSelect, int flags);
 
-	// Compute current drag time delta (in ticks).
-	long timeDelta(qtractorScrollView *pScrollView);
-
 	// Compute current drag time snap (in ticks).
-	long timeSnap(long iTime);
+	long timeSnap(long iTime) const;
+
+	// Compute current drag time delta (in ticks).
+	long timeDelta(qtractorScrollView *pScrollView) const;
+
+	// Compute current drag note delta.
+	int noteDelta(qtractorScrollView *pScrollView) const;
+
+	// Compute current drag value delta.
+	int valueDelta(qtractorScrollView *pScrollView) const;
 
 	// Apply the event drag-resize (also editing).
 	void resizeEvent(qtractorMidiEvent *pEvent,

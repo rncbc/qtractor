@@ -1869,8 +1869,9 @@ qtractorMidiEvent *qtractorMidiEditor::dragMoveEvent (
 
 
 // Start drag-move-selecting...
-void qtractorMidiEditor::dragMoveStart ( qtractorScrollView *pScrollView,
-	const QPoint& pos, Qt::KeyboardModifiers modifiers )
+void qtractorMidiEditor::dragMoveStart (
+	qtractorScrollView *pScrollView, const QPoint& pos,
+	Qt::KeyboardModifiers modifiers )
 {
 	// Are we already step-moving or pasting something?
 	switch (m_dragState) {
@@ -1919,8 +1920,9 @@ void qtractorMidiEditor::dragMoveStart ( qtractorScrollView *pScrollView,
 
 
 // Update drag-move-selection...
-void qtractorMidiEditor::dragMoveUpdate ( qtractorScrollView *pScrollView,
-	const QPoint& pos, Qt::KeyboardModifiers modifiers )
+void qtractorMidiEditor::dragMoveUpdate (
+	qtractorScrollView *pScrollView, const QPoint& pos,
+	Qt::KeyboardModifiers modifiers )
 {
 	int flags = SelectNone;
 	
@@ -1976,12 +1978,14 @@ void qtractorMidiEditor::dragMoveUpdate ( qtractorScrollView *pScrollView,
 	case DragResize:
 		// Drag-resizeing...
 		updateDragResize(pScrollView, pos);
-		// FIXME: Drag-edit/drawing...
+		// Drag-edit/drawing...
 		if (m_bEventDragEdit && m_pEventDrag) {
 			qtractorMidiEvent *pEvent
 				= dragEditEvent(pScrollView, pos, modifiers);
 			if (pEvent) {
-				resizeEvent(m_pEventDrag, timeDelta(pScrollView), 0);
+				resizeEvent(m_pEventDrag,
+					timeDelta(pScrollView),
+					valueDelta(pScrollView));
 				m_posDelta = QPoint(0, 0);
 				m_pEventDrag = pEvent;
 			}
@@ -1998,8 +2002,9 @@ void qtractorMidiEditor::dragMoveUpdate ( qtractorScrollView *pScrollView,
 
 
 // Commit drag-move-selection...
-void qtractorMidiEditor::dragMoveCommit ( qtractorScrollView *pScrollView,
-	const QPoint& pos, Qt::KeyboardModifiers modifiers )
+void qtractorMidiEditor::dragMoveCommit (
+	qtractorScrollView *pScrollView, const QPoint& pos,
+	Qt::KeyboardModifiers modifiers )
 {
 	int flags = qtractorMidiEditor::SelectCommit;
 
@@ -2060,8 +2065,8 @@ void qtractorMidiEditor::dragMoveCommit ( qtractorScrollView *pScrollView,
 
 
 // Trap for help/tool-tip and leave events.
-bool qtractorMidiEditor::dragMoveFilter ( qtractorScrollView *pScrollView,
-	QObject *pObject, QEvent *pEvent )
+bool qtractorMidiEditor::dragMoveFilter (
+	qtractorScrollView *pScrollView, QObject *pObject, QEvent *pEvent )
 {
 	if (static_cast<QWidget *> (pObject) == pScrollView->viewport()) {
 		if (pEvent->type() == QEvent::ToolTip) {
@@ -2092,8 +2097,8 @@ bool qtractorMidiEditor::dragMoveFilter ( qtractorScrollView *pScrollView,
 
 
 // Update the event selection list.
-void qtractorMidiEditor::updateDragSelect ( qtractorScrollView *pScrollView,
-	const QRect& rectSelect, int flags )
+void qtractorMidiEditor::updateDragSelect (
+	qtractorScrollView *pScrollView, const QRect& rectSelect, int flags )
 {
 	if (m_pMidiClip == NULL)
 		return;
@@ -2262,8 +2267,21 @@ void qtractorMidiEditor::updateDragSelect ( qtractorScrollView *pScrollView,
 }
 
 
-// Compute curent drag time delta (in ticks).
-long qtractorMidiEditor::timeDelta ( qtractorScrollView *pScrollView )
+// Compute current drag time snap (in ticks).
+long qtractorMidiEditor::timeSnap ( long iTime ) const
+{
+	qtractorTimeScale::Cursor cursor(m_pTimeScale);
+	qtractorTimeScale::Node *pNode = cursor.seekFrame(m_iOffset);	
+	unsigned long t0 = pNode->tickFromFrame(m_iOffset);
+	unsigned long t1 = t0 + iTime;
+	pNode = cursor.seekTick(t1);
+	iTime = long(pNode->tickSnap(t1)) - long(t0);
+	return (iTime > 0 ? iTime : 0);
+}
+
+
+// Compute current drag time delta (in ticks).
+long qtractorMidiEditor::timeDelta ( qtractorScrollView *pScrollView ) const
 {
 	qtractorTimeScale::Cursor cursor(m_pTimeScale);
 	qtractorTimeScale::Node *pNode = cursor.seekFrame(m_iOffset);	
@@ -2294,16 +2312,38 @@ long qtractorMidiEditor::timeDelta ( qtractorScrollView *pScrollView )
 }
 
 
-// Compute current drag time snap (in ticks).
-long qtractorMidiEditor::timeSnap ( long iTime )
+// Compute current drag note delta.
+int qtractorMidiEditor::noteDelta ( qtractorScrollView *pScrollView ) const
 {
-	qtractorTimeScale::Cursor cursor(m_pTimeScale);
-	qtractorTimeScale::Node *pNode = cursor.seekFrame(m_iOffset);	
-	unsigned long t0 = pNode->tickFromFrame(m_iOffset);
-	unsigned long t1 = t0 + iTime;
-	pNode = cursor.seekTick(t1);
-	iTime = long(pNode->tickSnap(t1)) - long(t0);
-	return (iTime > 0 ? iTime : 0);
+	int iNoteDelta = 0;
+
+	if (pScrollView == static_cast<qtractorScrollView *> (m_pEditView)) {
+		int h1 = m_pEditList->itemHeight();
+		if (h1 > 0)
+			iNoteDelta = -(m_posDelta.y() / h1);
+	}
+
+	return iNoteDelta;
+}
+
+
+// Compute current drag value delta.
+int qtractorMidiEditor::valueDelta ( qtractorScrollView *pScrollView ) const
+{
+	int iValueDelta = 0;
+
+	if (pScrollView == static_cast<qtractorScrollView *> (m_pEditEvent)) {
+		int h = (m_pEditEvent->viewport())->height();
+		if (h > 0) {
+			if (m_resizeMode == ResizePitchBendTop ||
+				m_resizeMode == ResizePitchBendBottom)
+				iValueDelta = -(m_posDelta.y() * 8192 * 2) / h;
+			else
+				iValueDelta = -(m_posDelta.y() * 128) / h;
+		}
+	}
+
+	return iValueDelta;
 }
 
 
@@ -2456,8 +2496,8 @@ void qtractorMidiEditor::updateEvent ( qtractorMidiEvent *pEvent )
 
 
 // Drag-move current selection.
-void qtractorMidiEditor::updateDragMove ( qtractorScrollView *pScrollView,
-	const QPoint& pos )
+void qtractorMidiEditor::updateDragMove (
+	qtractorScrollView *pScrollView, const QPoint& pos )
 {
 	pScrollView->ensureVisible(pos.x(), pos.y(), 16, 16);
 
@@ -2518,8 +2558,8 @@ void qtractorMidiEditor::updateDragMove ( qtractorScrollView *pScrollView,
 
 
 // Drag-resize current selection (also editing).
-void qtractorMidiEditor::updateDragResize ( qtractorScrollView *pScrollView,
-	const QPoint& pos )
+void qtractorMidiEditor::updateDragResize (
+	qtractorScrollView *pScrollView, const QPoint& pos )
 {
 	pScrollView->ensureVisible(pos.x(), pos.y(), 16, 16);
 
@@ -2583,8 +2623,8 @@ void qtractorMidiEditor::updateDragResize ( qtractorScrollView *pScrollView,
 
 
 // Finalize the event drag-move.
-void qtractorMidiEditor::executeDragMove ( qtractorScrollView *pScrollView,
-	const QPoint& pos )
+void qtractorMidiEditor::executeDragMove (
+	qtractorScrollView *pScrollView, const QPoint& pos )
 {
 	if (m_pMidiClip == NULL)
 		return;
@@ -2592,11 +2632,7 @@ void qtractorMidiEditor::executeDragMove ( qtractorScrollView *pScrollView,
 	updateDragMove(pScrollView, pos + m_posStep);
 
 	long iTimeDelta = timeDelta(pScrollView);
-
-	int h1 = m_pEditList->itemHeight();
-	int iNoteDelta = 0;
-	if (h1 > 0)
-		iNoteDelta = -(m_posDelta.y() / h1);
+	int  iNoteDelta = noteDelta(pScrollView);
 
 	qtractorMidiEditCommand *pEditCommand
 		= new qtractorMidiEditCommand(m_pMidiClip, tr("move"));
@@ -2632,21 +2668,11 @@ void qtractorMidiEditor::executeDragResize (
 	updateDragResize(pScrollView, pos);
 
 	long iTimeDelta = timeDelta(pScrollView);
-
-	int h = (m_pEditEvent->viewport())->height();
-	int iValueDelta = 0;
-	if (h > 0) {
-		if (m_resizeMode == ResizePitchBendTop ||
-			m_resizeMode == ResizePitchBendBottom)
-			iValueDelta = -(m_posDelta.y() * 8192 * 2) / h;
-		else
-			iValueDelta = -(m_posDelta.y() * 128) / h;
-	}
+	int iValueDelta = valueDelta(pScrollView);
 
 	qtractorMidiEditCommand *pEditCommand
 		= new qtractorMidiEditCommand(m_pMidiClip,
 			m_bEventDragEdit ? tr("edit") : tr("resize"));
-
 
 	QListIterator<qtractorMidiEditSelect::Item *> iter(m_select.items());
 	while (iter.hasNext()) {
@@ -2672,8 +2698,8 @@ void qtractorMidiEditor::executeDragResize (
 
 
 // Finalize the event drag-paste.
-void qtractorMidiEditor::executeDragPaste ( qtractorScrollView *pScrollView,
-	const QPoint& pos )
+void qtractorMidiEditor::executeDragPaste (
+	qtractorScrollView *pScrollView, const QPoint& pos )
 {
 	if (m_pMidiClip == NULL)
 		return;
@@ -2681,11 +2707,7 @@ void qtractorMidiEditor::executeDragPaste ( qtractorScrollView *pScrollView,
 	updateDragMove(pScrollView, pos + m_posStep);
 
 	long iTimeDelta = timeDelta(pScrollView);
-
-	int h1 = m_pEditList->itemHeight();
-	int iNoteDelta = 0;
-	if (h1 > 0)
-		iNoteDelta = -(m_posDelta.y() / h1);
+	int  iNoteDelta = noteDelta(pScrollView);
 
 	qtractorMidiEditCommand *pEditCommand
 		= new qtractorMidiEditCommand(m_pMidiClip, tr("paste"));
@@ -2714,8 +2736,8 @@ void qtractorMidiEditor::executeDragPaste ( qtractorScrollView *pScrollView,
 
 
 // Visualize the event selection drag-move.
-void qtractorMidiEditor::paintDragState ( qtractorScrollView *pScrollView,
-	QPainter *pPainter )
+void qtractorMidiEditor::paintDragState (
+	qtractorScrollView *pScrollView, QPainter *pPainter )
 {
 #ifdef CONFIG_DEBUG_0
 	const QRect& rectSelect = (bEditView
