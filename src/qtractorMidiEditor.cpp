@@ -1682,16 +1682,19 @@ qtractorMidiEvent *qtractorMidiEditor::dragEditEvent (
 	unsigned char note = (ch - pos.y()) / h1;
 
 	// Check for note/pitch changes...
-	if (bEditView && m_bEventDragEdit && m_pEventDrag
+	if (m_bEventDragEdit && m_pEventDrag
+		&& bEditView
 		&& (etype == qtractorMidiEvent::NOTEON ||
 			etype == qtractorMidiEvent::KEYPRESS)
 		&& m_pEventDrag->note() == note)
 		return NULL;
 
+	// Must be inside the visible event canvas...
 	int y0 = (m_pEditEvent->viewport())->height();
 	if (!bEditView && (pos.y() < 0 || pos.y() > y0))
 		return NULL;
 
+	// Compute onset time from given horizontal position...
 	int x0 = m_pTimeScale->pixelFromFrame(m_iOffset);
 	int x1 = x0 + pos.x();
 	int y1 = 0;
@@ -1704,10 +1707,38 @@ qtractorMidiEvent *qtractorMidiEditor::dragEditEvent (
 	pNode = cursor.seekPixel(x1);
 	unsigned long t1 = pNode->tickSnap(pNode->tickFromPixel(x1), 8) - t0;
 
-	// Check for time/onset changes...
-	if (m_bEventDragEdit && m_pEventDrag && m_pEventDrag->time() >= t1)
-		return NULL;
+	// Check for time/onset changes and whether it's already drawn...
+	if (m_bEventDragEdit && m_pEventDrag) {
+		QListIterator<qtractorMidiEditSelect::Item *> iter(m_select.items());
+		while (iter.hasNext()) {
+			qtractorMidiEditSelect::Item *pItem = iter.next();
+			qtractorMidiEvent *pEvent = pItem->event;
+			if (bEditView && pEvent->type() == qtractorMidiEvent::NOTEON) {
+				if (pEvent->note() == note && t1 >= pEvent->time()
+					&& t1 < pEvent->time() + pEvent->duration()) {
+					m_rectDrag = (bEditView ? pItem->rectView : pItem->rectEvent);
+					m_posDrag = m_rectDrag.topLeft();			
+					return pEvent;
+				}
+			}
+			else
+			if (bEditView && pEvent->type() == qtractorMidiEvent::KEYPRESS) {
+				if (pEvent->note() == note && t1 == pEvent->time()) {
+					m_rectDrag = (bEditView ? pItem->rectView : pItem->rectEvent);
+					m_posDrag = m_rectDrag.topLeft();			
+					return pEvent;
+				}
+			}
+			else
+			if (t1 == pEvent->time()) {
+				m_rectDrag = (bEditView ? pItem->rectView : pItem->rectEvent);
+				m_posDrag = m_rectDrag.topLeft();			
+				return pEvent;
+			}
+		}
+	}
 
+	// Create a brand new event...
 	qtractorMidiEvent *pEvent = new qtractorMidiEvent(t1, etype);
 	x1 = pNode->pixelFromTick(t0 + t1);
 
@@ -1982,7 +2013,7 @@ void qtractorMidiEditor::dragMoveUpdate (
 		if (m_bEventDragEdit && m_pEventDrag) {
 			qtractorMidiEvent *pEvent
 				= dragEditEvent(pScrollView, pos, modifiers);
-			if (pEvent) {
+			if (pEvent && pEvent != m_pEventDrag) {
 				resizeEvent(m_pEventDrag,
 					timeDelta(pScrollView),
 					valueDelta(pScrollView));
