@@ -244,7 +244,7 @@ void qtractorMidiEventList::changeNotifySlot ( qtractorMidiEditor * )
 	qDebug("qtractorMidiEventList[%p]::changeNotifySlot()", this);
 #endif
 
-	m_pListView->refresh();
+	refresh();
 }
 
 
