@@ -1076,9 +1076,12 @@ void qtractorPluginList::setBuffer ( unsigned short iChannels,
 		m_pMidiManager->setCurrentBank(m_iMidiBank);
 		m_pMidiManager->setCurrentProg(m_iMidiProg);
 		m_pMidiManager->setAudioOutputBus(m_bAudioOutputBus);
-		qtractorAudioBus *pAudioOutputBus = m_pMidiManager->audioOutputBus();
-		if (pAudioOutputBus)
-			pAudioOutputBus->outputs().copy(m_audioOutputs);
+		if (m_pMidiManager->isAudioOutputBus()) {
+			qtractorAudioBus *pAudioOutputBus
+				= m_pMidiManager->audioOutputBus();
+			if (pAudioOutputBus)
+				pAudioOutputBus->outputs().copy(m_audioOutputs);
+		}
 	}
 
 
