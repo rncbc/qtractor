@@ -1717,7 +1717,7 @@ qtractorMidiEvent *qtractorMidiEditor::dragEditEvent (
 				if (pEvent->note() == note && t1 >= pEvent->time()
 					&& t1 < pEvent->time() + pEvent->duration()) {
 					m_rectDrag = (bEditView ? pItem->rectView : pItem->rectEvent);
-					m_posDrag = m_rectDrag.topLeft();			
+					m_posDrag = pos; // m_rectDrag.topLeft();			
 					return pEvent;
 				}
 			}
@@ -1725,14 +1725,14 @@ qtractorMidiEvent *qtractorMidiEditor::dragEditEvent (
 			if (bEditView && pEvent->type() == qtractorMidiEvent::KEYPRESS) {
 				if (pEvent->note() == note && t1 == pEvent->time()) {
 					m_rectDrag = (bEditView ? pItem->rectView : pItem->rectEvent);
-					m_posDrag = m_rectDrag.topLeft();			
+					m_posDrag = pos; // m_rectDrag.topLeft();			
 					return pEvent;
 				}
 			}
 			else
 			if (t1 == pEvent->time()) {
 				m_rectDrag = (bEditView ? pItem->rectView : pItem->rectEvent);
-				m_posDrag = m_rectDrag.topLeft();			
+				m_posDrag = pos; // m_rectDrag.topLeft();			
 				return pEvent;
 			}
 		}
@@ -1828,7 +1828,7 @@ qtractorMidiEvent *qtractorMidiEditor::dragEditEvent (
 
 	// Set the correct target rectangle...
 	m_rectDrag = (bEditView ? rectView : rectEvent);
-	m_posDrag = m_rectDrag.topLeft();
+	m_posDrag = pos; // m_rectDrag.topLeft();
 
 	// Just add this one the selection...
 	if (!m_bEventDragEdit || m_pEventDrag == NULL)
