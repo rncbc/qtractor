@@ -408,6 +408,10 @@ public:
 	// Plugin parameter values stuff.
 	typedef QHash<unsigned long, float> Values;
 
+	// Plugin parameter/state snapshot.
+	void freezeValues();
+	void releaseValues();
+
 	void setValues(const Values& values)
 		{ m_values = values; }
 	const Values& values() const

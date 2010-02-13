@@ -185,6 +185,7 @@ void qtractorInsertPlugin::setChannels ( unsigned short iChannels )
 
 	// But won't need it anymore.
 	releaseConfigs();
+	releaseValues();
 
 	// Open-up private bus...
 	m_pAudioBus->open();

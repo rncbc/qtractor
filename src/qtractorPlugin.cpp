@@ -823,6 +823,7 @@ bool qtractorPlugin::loadPreset ( const QString& sFilename )
 	realizeValues();
 
 	releaseConfigs();
+	releaseValues();
 
 	return true;
 }
@@ -875,6 +876,34 @@ qtractorPluginParam *qtractorPlugin::findParam ( unsigned long iIndex ) const
 	}
 
 	return NULL;
+}
+
+
+
+// Plugin parameter/state snapshot.
+void qtractorPlugin::freezeValues (void)
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorPlugin[%p]::freezeValues()", this);
+#endif
+
+	clearValues();
+
+	QListIterator<qtractorPluginParam *> iter(m_params);
+	while (iter.hasNext()) {
+		qtractorPluginParam *pParam = iter.next();
+		setValue(pParam->index(), pParam->value());
+	}
+}
+
+
+void qtractorPlugin::releaseValues (void)
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorPlugin[%p]::releaseValues()", this);
+#endif
+
+	clearValues();
 }
 
 
@@ -1048,17 +1077,17 @@ void qtractorPluginList::setBuffer ( unsigned short iChannels,
 		m_pMidiManager = NULL;
 	}
 
-	// Set proper flags at once.
+	// Set proper sample-rate and flags at once.
+	m_iSampleRate = iSampleRate;
 	m_iFlags = iFlags;
 
 	// Some sanity is in order, at least for now...
-	if (iChannels == 0 || iBufferSize == 0 || iSampleRate == 0)
+	if (iChannels == 0 || iBufferSize == 0)
 		return;
 
 	// Go, go, go...
 	m_iChannels   = iChannels;
 	m_iBufferSize = iBufferSize;
-	m_iSampleRate = iSampleRate;
 
 	// Allocate new interim buffer...
 	if (m_iChannels > 0 && m_iBufferSize > 0) {
@@ -1256,6 +1285,7 @@ qtractorPlugin *qtractorPluginList::copyPlugin ( qtractorPlugin *pPlugin )
 		return NULL;
 
 	// Clone the plugin instance...
+	pPlugin->freezeValues();
 	pPlugin->freezeConfigs();
 
 	// MIDI bank program whether necessary...
@@ -1274,10 +1304,15 @@ qtractorPlugin *qtractorPluginList::copyPlugin ( qtractorPlugin *pPlugin )
 		pNewPlugin->setPreset(pPlugin->preset());
 		pNewPlugin->setConfigs(pPlugin->configs());
 		pNewPlugin->setValues(pPlugin->values());
+		pNewPlugin->realizeConfigs();
+		pNewPlugin->realizeValues();
+		pNewPlugin->releaseConfigs();
+		pNewPlugin->releaseValues();
 		pNewPlugin->setActivated(pPlugin->isActivated());
 	}
 
 	pPlugin->releaseConfigs();
+	pPlugin->releaseValues();
 
 	return pNewPlugin;
 }

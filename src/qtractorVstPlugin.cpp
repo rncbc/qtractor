@@ -626,6 +626,7 @@ void qtractorVstPlugin::setChannels ( unsigned short iChannels )
 
 	// But won't need it anymore.
 	releaseConfigs();
+	releaseValues();
 
 	// Setup all those instance alright...
 	for (unsigned short i = 0; i < iInstances; ++i) {

@@ -609,6 +609,7 @@ void qtractorLv2Plugin::setChannels ( unsigned short iChannels )
 
 	// But won't need it anymore.
 	releaseConfigs();
+	releaseValues();
 
 	// (Re)activate instance if necessary...
 	setActivated(bActivated);

@@ -1,7 +1,7 @@
 // qtractorTrackForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -1039,7 +1039,10 @@ void qtractorTrackForm::outputBusNameChanged ( const QString& sBusName )
 	qtractorTrack::TrackType trackType = qtractorTrackForm::trackType();
 
 	// (Re)initialize plugin-list audio output bus properly...
-	qtractorAudioEngine *pAudioEngine = m_pTrack->session()->audioEngine();
+	qtractorSession *pSession = m_pTrack->session();
+	qtractorAudioEngine *pAudioEngine = NULL;
+	if (pSession)
+		pAudioEngine = pSession->audioEngine();
 	if (pAudioEngine) {
 		// Get the audio bus applicable for the plugin list...
 		qtractorAudioBus *pAudioBus = NULL;
@@ -1054,7 +1057,7 @@ void qtractorTrackForm::outputBusNameChanged ( const QString& sBusName )
 		// must set plugin-list channel buffers...
 		if (pAudioBus) {
 			m_pTrack->pluginList()->setBuffer(pAudioBus->channels(),
-				pAudioEngine->bufferSize(), pAudioEngine->sampleRate(),
+				pAudioEngine->bufferSize(), pSession->sampleRate(),
 				trackType == qtractorTrack::Audio
 					? qtractorPluginList::AudioTrack
 					: qtractorPluginList::MidiTrack);

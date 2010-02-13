@@ -3052,11 +3052,12 @@ qtractorPluginList *qtractorMidiBus::createPluginList ( int iFlags ) const
 
 	// Create plugin-list alright...
 	qtractorPluginList *pPluginList = NULL;
+	unsigned int iSampleRate = pSession->sampleRate();
 	if (pAudioBus) {
 	 	pPluginList = new qtractorPluginList(pAudioBus->channels(),
-			pAudioEngine->bufferSize(), pAudioEngine->sampleRate(), iFlags);
+			pAudioEngine->bufferSize(), iSampleRate, iFlags);
 	} else {
-		pPluginList = new qtractorPluginList(0, 0, 0, iFlags);
+		pPluginList = new qtractorPluginList(0, 0, iSampleRate, iFlags);
 	}
 
 	// Set plugin-list title name...
@@ -3112,7 +3113,7 @@ void qtractorMidiBus::updatePluginList (
 
 	// Set plugin-list buffer alright...
 	pPluginList->setBuffer(pAudioBus->channels(),
-		pAudioEngine->bufferSize(), pAudioEngine->sampleRate(), iFlags);
+		pAudioEngine->bufferSize(), pSession->sampleRate(), iFlags);
 }
 
 
