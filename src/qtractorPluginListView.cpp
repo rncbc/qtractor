@@ -226,9 +226,11 @@ qtractorPluginListView::qtractorPluginListView ( QWidget *pParent )
 	QObject::connect(this,
 		SIGNAL(itemDoubleClicked(QListWidgetItem*)),
 		SLOT(itemDoubleClickedSlot(QListWidgetItem*)));
+#if 0
 	QObject::connect(this,
 		SIGNAL(itemActivated(QListWidgetItem*)),
 		SLOT(itemActivatedSlot(QListWidgetItem*)));
+#endif
 }
 
 
