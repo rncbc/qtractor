@@ -1,7 +1,7 @@
 // qtractorClipCommand.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -235,10 +235,7 @@ bool qtractorClipCommand::addClipRecord ( qtractorTrack *pTrack )
 		return false;
 
 	// Reference for immediate file addition...
-	qtractorFiles    *pFiles    = NULL;
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm)
-		pFiles = pMainForm->files();
 
 	// Now, its imperative to make a proper copy of those clips...
 	switch (pTrack->trackType()) {
@@ -250,8 +247,8 @@ bool qtractorClipCommand::addClipRecord ( qtractorTrack *pTrack )
 			pAudioClip->setClipStart(iClipStart);
 			pAudioClip->setClipLength(iClipLength);
 			addClip(pAudioClip, pTrack);
-			if (pFiles)
-				pFiles->addAudioFile(pAudioClip->filename());
+			if (pMainForm)
+				pMainForm->addAudioFile(pAudioClip->filename());
 		}
 		break;
 	}
@@ -263,8 +260,8 @@ bool qtractorClipCommand::addClipRecord ( qtractorTrack *pTrack )
 			pMidiClip->setClipStart(iClipStart);
 			pMidiClip->setClipLength(iClipLength);
 			addClip(pMidiClip, pTrack);
-			if (pFiles)
-				pFiles->addMidiFile(pMidiClip->filename());
+			if (pMainForm)
+				pMainForm->addMidiFile(pMidiClip->filename());
 		}
 		break;
 	}
@@ -329,6 +326,9 @@ qtractorMidiEditCommand *qtractorClipCommand::createMidiEditCommand (
 			pEditCommand->resizeEventTime(pEvent, iTime, iDuration);
 		}
 	}
+
+	// Must have brand new revision...
+	pMidiClip->setRevision(0);
 
 	// That's it...
 	return pEditCommand;

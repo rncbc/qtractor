@@ -777,6 +777,9 @@ bool qtractorTracks::quantizeClipCommand (
 		}
 	}
 
+	// Must be brand new revision...
+	pMidiClip->setRevision(0);
+
 	// That's it...
 	pMidiClipCommand->addEditCommand(pEditCommand);
 	return true;

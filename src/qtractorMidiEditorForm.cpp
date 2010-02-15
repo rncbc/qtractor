@@ -1580,11 +1580,8 @@ void qtractorMidiEditorForm::selectionChanged ( qtractorMidiEditor *pMidiEditor 
 
 void qtractorMidiEditorForm::contentsChanged ( qtractorMidiEditor *pMidiEditor )
 {
-	qtractorMidiClip *pMidiClip = m_pMidiEditor->midiClip();
-	if (pMidiClip)
-		pMidiClip->setDirty(true);
-
 	m_iDirtyCount++;
+
 	selectionChanged(pMidiEditor);
 }
 

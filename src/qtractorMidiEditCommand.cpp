@@ -209,6 +209,9 @@ bool qtractorMidiEditCommand::execute ( bool bRedo )
 	}	// Just reset editor internals...
 	else m_pMidiClip->resetEditor(iSelectClear > 0);
 
+	// It's dirty, definitly...
+	m_pMidiClip->setDirty(true);
+
 	// Renqueue dropped events...
 	if (pSession && pSession->isPlaying())
 		pSession->midiEngine()->trackMute(pTrack, false);

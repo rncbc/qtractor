@@ -5,6 +5,8 @@ ChangeLog
 
 SVN TRUNK
 
+- MIDI file revisions needs a serious approach, soon...
+
 - MIDI clip time-stretching is now made available through
   the same gestures as audio ones, by just shift+dragging
   either of the clip edges. (EXPERIMENTAL)

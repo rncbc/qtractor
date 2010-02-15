@@ -30,6 +30,8 @@
 #include "qtractorMidiEditor.h"
 #include "qtractorMidiEditorForm.h"
 
+#include "qtractorMainForm.h"
+
 #include "qtractorOptions.h"
 
 #include <QFileInfo>
@@ -739,6 +741,10 @@ bool qtractorMidiClip::saveClipElement (
 			qtractorMidiClip::setDirty(false);
 			// And refresh any eventual editor out there...
 			qtractorMidiClip::updateEditor(true);
+			// Reference for immediate file addition...
+			qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+			if (pMainForm)
+				pMainForm->addMidiFile(sFilename);
 		}
 	}
 
