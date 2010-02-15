@@ -783,7 +783,6 @@ bool qtractorTracks::quantizeClipCommand (
 }
 
 
-
 // Import (audio) clip(s) into current track...
 bool qtractorTracks::importClips (
 	QStringList files, unsigned long iClipStart )

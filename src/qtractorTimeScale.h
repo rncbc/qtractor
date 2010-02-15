@@ -208,7 +208,7 @@ public:
 			{ return frameFromBar(barFromFrame(iFrame)); }
 
 		// Beat snap filters.
-		unsigned long tickSnap(unsigned long iTick, unsigned short p = 2) const;
+		unsigned long tickSnap(unsigned long iTick, unsigned short p = 1) const;
 
 		unsigned long frameSnap(unsigned long iFrame) const
 			{ return frameFromTick(tickSnap(tickFromFrame(iFrame))); }
