@@ -30,6 +30,8 @@
 #include "qtractorMidiClip.h"
 #include "qtractorFiles.h"
 
+#include "qtractorMidiEditCommand.h"
+
 
 //----------------------------------------------------------------------
 // class qtractorClipCommand - declaration.
@@ -47,6 +49,8 @@ qtractorClipCommand::~qtractorClipCommand (void)
 	QListIterator<Item *> iter(m_items);
 	while (iter.hasNext()) {
 		Item *pItem = iter.next();
+		if (pItem->editCommand)
+			delete pItem->editCommand;
 		if (pItem->autoDelete)
 			delete pItem->clip;
 	}
@@ -130,8 +134,13 @@ void qtractorClipCommand::resizeClip ( qtractorClip *pClip,
 		if (iFadeOutLength > 0)
 			pItem->fadeOutLength = iFadeOutLength;
 	}
-	if (fTimeStretch > 0.0f)
+	if (fTimeStretch > 0.0f) {
 		pItem->timeStretch = fTimeStretch;
+		if ((pClip->track())->trackType() == qtractorTrack::Midi) {
+			pItem->editCommand = createMidiEditCommand(
+				static_cast<qtractorMidiClip *> (pClip), fTimeStretch);
+		}
+	}
 	m_items.append(pItem);
 }
 
@@ -279,6 +288,53 @@ void qtractorClipCommand::addTrack ( qtractorTrack *pTrack )
 }
 
 
+// When MIDI clips are stretched.
+qtractorMidiEditCommand *qtractorClipCommand::createMidiEditCommand (
+	qtractorMidiClip *pMidiClip, float fTimeStretch )
+{
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return NULL;
+
+	// Make it like an undoable command...
+	qtractorMidiEditCommand *pEditCommand
+		= new qtractorMidiEditCommand(pMidiClip, name());
+
+	qtractorMidiSequence *pSeq = pMidiClip->sequence();
+	unsigned long iTimeOffset = pSeq->timeOffset();
+
+	qtractorTimeScale::Cursor cursor(pSession->timeScale());
+	qtractorTimeScale::Node *pNode = cursor.seekFrame(pMidiClip->clipStart());
+	unsigned long t0 = pNode->tickFromFrame(pMidiClip->clipStart());
+
+	unsigned long f1 = pMidiClip->clipStart() + pMidiClip->clipOffset();
+	pNode = cursor.seekFrame(f1);
+	unsigned long t1 = pNode->tickFromFrame(f1);
+	unsigned long iTimeStart = t1 - t0;
+	iTimeStart = (iTimeStart > iTimeOffset ? iTimeStart - iTimeOffset : 0);
+	pNode = cursor.seekFrame(f1 += pMidiClip->clipLength());
+	unsigned long iTimeEnd = iTimeStart + pNode->tickFromFrame(f1) - t1;
+
+	for (qtractorMidiEvent *pEvent = pSeq->events().first();
+			pEvent; pEvent = pEvent->next()) {
+		unsigned long iTime = pEvent->time();
+		if (iTime >= iTimeStart && iTime < iTimeEnd) {
+			iTime = qtractorTimeScale::uroundf(
+				fTimeStretch * float(iTime));
+			unsigned long iDuration = pEvent->duration();
+			if (pEvent->type() == qtractorMidiEvent::NOTEON) {
+				iDuration = qtractorTimeScale::uroundf(
+					fTimeStretch * float(iDuration));
+			}
+			pEditCommand->resizeEventTime(pEvent, iTime, iDuration);
+		}
+	}
+
+	// That's it...
+	return pEditCommand;
+}
+
+
 // Composite predicate.
 bool qtractorClipCommand::isEmpty (void) const
 {
@@ -315,14 +371,14 @@ bool qtractorClipCommand::execute ( bool bRedo )
 			if (bRedo)
 				pTrack->addClip(pClip);
 			else
-				pTrack->unlinkClip(pClip);
+				pTrack->removeClip(pClip);
 			pItem->autoDelete = !bRedo;
 			pSession->updateTrack(pTrack);
 			break;
 		}
 		case RemoveClip: {
 			if (bRedo)
-				pTrack->unlinkClip(pClip);
+				pTrack->removeClip(pClip);
 			else
 				pTrack->addClip(pClip);
 			pItem->autoDelete = bRedo;
@@ -361,7 +417,7 @@ bool qtractorClipCommand::execute ( bool bRedo )
 			unsigned long iOldLength = pClip->clipLength();
 			unsigned long iOldFadeIn = pClip->fadeInLength();
 			unsigned long iOldFadeOut = pClip->fadeOutLength();
-			pOldTrack->unlinkClip(pClip);
+			pOldTrack->removeClip(pClip);
 			pClip->setClipStart(pItem->clipStart);
 			pClip->setClipOffset(pItem->clipOffset);
 			pClip->setClipLength(pItem->clipLength);
@@ -387,12 +443,16 @@ bool qtractorClipCommand::execute ( bool bRedo )
 			unsigned long iOldFadeOut = pClip->fadeOutLength();
 			float fOldTimeStretch = 0.0f;
 			qtractorAudioClip *pAudioClip = NULL;
-			if (pTrack->trackType() == qtractorTrack::Audio
-				&& pItem->timeStretch > 0.0f)
+			if (pTrack->trackType() == qtractorTrack::Audio) {
 				pAudioClip = static_cast<qtractorAudioClip *> (pClip);
-			if (pAudioClip) {
-				fOldTimeStretch = pAudioClip->timeStretch();
-				pAudioClip->close(true);	// Scrap peak file.
+				if (pAudioClip) {
+					if (pItem->timeStretch > 0.0f) {
+						fOldTimeStretch = pAudioClip->timeStretch();
+						pAudioClip->close(true);	// Scrap peak file.
+					} else {
+						pAudioClip->close(false);
+					}
+				}
 			}
 			if (iOldStart != pItem->clipStart)
 				pTrack->unlinkClip(pClip);
@@ -401,19 +461,26 @@ bool qtractorClipCommand::execute ( bool bRedo )
 			pClip->setClipLength(pItem->clipLength);
 			pClip->setFadeInLength(pItem->fadeInLength);
 			pClip->setFadeOutLength(pItem->fadeOutLength);
-			if (pAudioClip)
-				pAudioClip->setTimeStretch(pItem->timeStretch);
+			if (pAudioClip) {
+				if (pItem->timeStretch > 0.0f) {
+					pAudioClip->setTimeStretch(pItem->timeStretch);
+					pItem->timeStretch = fOldTimeStretch;
+				}
+				pAudioClip->open();
+			}
+			if (pItem->editCommand) {
+				if (bRedo)
+					(pItem->editCommand)->redo();
+				else
+					(pItem->editCommand)->undo();
+			}
 			if (iOldStart != pItem->clipStart)
-				pTrack->addClip(pClip);
-			else
-				pClip->open();
+				pTrack->insertClip(pClip);
 			pItem->clipStart  = iOldStart;
 			pItem->clipOffset = iOldOffset;
 			pItem->clipLength = iOldLength;
 			pItem->fadeInLength = iOldFadeIn;
 			pItem->fadeOutLength = iOldFadeOut;
-			if (pAudioClip)
-				pItem->timeStretch = fOldTimeStretch;
 			pSession->updateTrack(pTrack);
 			break;
 		}

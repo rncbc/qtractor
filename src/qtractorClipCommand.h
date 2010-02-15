@@ -1,7 +1,7 @@
 // qtractorClipCommand.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -30,6 +30,8 @@
 
 // Forward declarations.
 class qtractorAddTrackCommand;
+class qtractorMidiEditCommand;
+class qtractorMidiClip;
 
 
 //----------------------------------------------------------------------
@@ -74,6 +76,10 @@ public:
 	// When new tracks are needed.
 	void addTrack(qtractorTrack *pTrack);
 
+	// When MIDI clips are stretched.
+	qtractorMidiEditCommand *createMidiEditCommand(
+		qtractorMidiClip *pMidiClip, float fTimeStretch);
+
 	// Composite predicate.
 	bool isEmpty() const;
 
@@ -107,7 +113,7 @@ private:
 				clipStart(0), clipOffset(0), clipLength(0), clipGain(0.0f),
 				fadeInLength(0), fadeInType(qtractorClip::Quadratic), 
 				fadeOutLength(0), fadeOutType(qtractorClip::Quadratic),
-				timeStretch(0.0f), pitchShift(0.0f) {}
+				timeStretch(0.0f), pitchShift(0.0f), editCommand(NULL) {}
 		// Item members.
 		CommandType    command;
 		qtractorClip  *clip;
@@ -126,6 +132,8 @@ private:
 		qtractorClip::FadeType fadeOutType;
 		float          timeStretch;
 		float          pitchShift;
+		// When MIDI clips are time-stretched...
+		qtractorMidiEditCommand *editCommand;
 	};
 
 	// Instance variables.

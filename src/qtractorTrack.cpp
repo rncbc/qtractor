@@ -665,6 +665,11 @@ void qtractorTrack::addClip ( qtractorClip *pClip )
 	}
 
 	// Now do insert the clip in proper place in track...
+	insertClip(pClip);
+}
+
+void qtractorTrack::insertClip ( qtractorClip *pClip )
+{
 	qtractorClip *pNextClip = m_clips.first();
 	while (pNextClip && pNextClip->clipStart() < pClip->clipStart())
 		pNextClip = pNextClip->next();
@@ -677,18 +682,15 @@ void qtractorTrack::addClip ( qtractorClip *pClip )
 
 void qtractorTrack::unlinkClip ( qtractorClip *pClip )
 {
-//	pClip->setTrack(NULL);
-	pClip->close(false);
-
 	m_clips.unlink(pClip);
 }
 
 void qtractorTrack::removeClip ( qtractorClip *pClip )
 {
 //	pClip->setTrack(NULL);
-	pClip->close(true);
+	pClip->close(false);
 
-	m_clips.remove(pClip);
+	unlinkClip(pClip);
 }
 
 

@@ -1,7 +1,7 @@
 // qtractorTrackView.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -2173,14 +2173,16 @@ void qtractorTrackView::dragResizeDrop ( const QPoint& pos, bool bTimeStretch )
 
 	// Time stretching...
 	float fTimeStretch = 0.0f;
-	if (bTimeStretch && m_pClipDrag->track()
-		&& (m_pClipDrag->track())->trackType() == qtractorTrack::Audio) {
-		qtractorAudioClip *pAudioClip
-			= static_cast<qtractorAudioClip *> (m_pClipDrag);
-		if (pAudioClip) {
-			fTimeStretch = (float(iClipLength) * pAudioClip->timeStretch())
-				/ float(m_pClipDrag->clipLength());
+	if (bTimeStretch && m_pClipDrag->track()) {
+		float fOldTimeStretch = 1.0f;
+		if ((m_pClipDrag->track())->trackType() == qtractorTrack::Audio) {
+			qtractorAudioClip *pAudioClip
+				= static_cast<qtractorAudioClip *> (m_pClipDrag);
+			if (pAudioClip)
+				fOldTimeStretch = pAudioClip->timeStretch();
 		}
+		fTimeStretch = (float(iClipLength) * fOldTimeStretch)
+			/ float(m_pClipDrag->clipLength());
 	}
 
 	// Declare the clip resize parcel...

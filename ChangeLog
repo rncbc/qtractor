@@ -5,6 +5,10 @@ ChangeLog
 
 SVN TRUNK
 
+- MIDI clip time-stretching is now made available through
+  the same gestures as audio ones, by just shift+dragging
+  either of the clip edges. (EXPERIMENTAL)
+
 - Drag-and-copying plug-in instances (cloning) is now fixed
   with regard to parameter value replication.
 
