@@ -8,7 +8,7 @@ SVN TRUNK
 - MIDI file revisions needs a serious approach, soon...
 
 - Add-plugin selection dialog position and extent are now
-  remembered acroos invocations and application sessions
+  remembered across invocations and application sessions
   (tipping by Frank Neumann).
 
 - MIDI clip time-stretching is now made available through
