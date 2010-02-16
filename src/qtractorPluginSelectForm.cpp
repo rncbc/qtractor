@@ -1,7 +1,7 @@
 // qtractorPluginSelectForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -124,6 +124,10 @@ qtractorPluginSelectForm::qtractorPluginSelectForm (
 
 	adjustSize();
 
+	// Restore last seen dialog position and extent...
+	if (pOptions)
+		pOptions->loadWidgetGeometry(this);
+
 	// UI signal/slot connections...
 	QObject::connect(m_ui.PluginResetToolButton,
 		SIGNAL(clicked()),
@@ -165,6 +169,8 @@ qtractorPluginSelectForm::~qtractorPluginSelectForm (void)
 		pOptions->sPluginSearch = m_ui.PluginSearchComboBox->currentText();
 		pOptions->saveComboBoxHistory(m_ui.PluginSearchComboBox);
 		pOptions->bPluginActivate= m_ui.PluginActivateCheckBox->isChecked();
+		// Save aslast seen dialog position and extent...
+		pOptions->saveWidgetGeometry(this);
 	}
 }
 
