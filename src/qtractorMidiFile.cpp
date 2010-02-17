@@ -979,8 +979,13 @@ QString qtractorMidiFile::createFilePathRevision (
 	}
 
 	sBasename += "-%1." + fi.completeSuffix();
-	do { fi.setFile(adir, sBasename.arg(++iRevision)); }
-	while (fi.exists());
+
+	if (iRevision < 1)
+		iRevision++;
+
+	fi.setFile(adir, sBasename.arg(iRevision));
+	while (fi.exists())
+		fi.setFile(adir, sBasename.arg(++iRevision));
 
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorMidiFile::createFilePathRevision(\"%s\")",

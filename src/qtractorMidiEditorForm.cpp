@@ -661,6 +661,8 @@ void qtractorMidiEditorForm::setMidiClip ( qtractorMidiClip *pMidiClip  )
 	if (queryClose()) {
 		m_pMidiEditor->setMidiClip(pMidiClip);
 		m_iDirtyCount = 0;
+		if (pMidiClip->isDirty()) // MIDI clip might be dirty already.
+			m_iDirtyCount++;
 	}
 }
 

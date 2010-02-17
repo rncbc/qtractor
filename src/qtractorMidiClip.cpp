@@ -315,8 +315,16 @@ QString qtractorMidiClip::createFilePathRevision ( bool bForce )
 {
 	QString sFilename = filename();
 
-	if (m_iRevision == 0 || bForce)
+	if (m_iRevision == 0 || bForce) {
+		qtractorSession *pSession = qtractorSession::getInstance();
+		if (pSession && track())
+			sFilename = pSession->createFilePath(track()->trackName(), 0, "mid");
 		sFilename = qtractorMidiFile::createFilePathRevision(sFilename);
+	#ifdef CONFIG_DEBUG
+		qDebug("qtractorMidiClip::createFilePathRevision(\"%s\")",
+			sFilename.toUtf8().constData());
+	#endif
+	}
 
 	if (!bForce)
 		m_iRevision++;
