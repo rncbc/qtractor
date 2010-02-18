@@ -1856,6 +1856,42 @@ bool qtractorMainForm::saveSessionFile (
 	// Tell the world we'll take some time...
 	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
+	// Trap dirty clips (only MIDI at this time...)
+	for (qtractorTrack *pTrack = m_pSession->tracks().first();
+			pTrack; pTrack = pTrack->next()) {
+		// Only MIDI track/clips...
+		if (pTrack->trackType() != qtractorTrack::Midi)
+			continue;
+		for (qtractorClip *pClip = pTrack->clips().first();
+				pClip; pClip = pClip->next()) {
+			// Are any dirty changes pending commit?
+			if (pClip->isDirty()) {
+				qtractorMidiClip *pMidiClip
+					= static_cast<qtractorMidiClip *> (pClip);
+				if (pMidiClip) {
+					// Have a new filename revision...
+					const QString& sFilename
+						= pMidiClip->createFilePathRevision();
+					// Save/replace the clip track...
+					qtractorMidiFile::saveCopyFile(sFilename,
+						pMidiClip->filename(),
+						pMidiClip->trackChannel(),
+						pMidiClip->format(),
+						pMidiClip->sequence(),
+						m_pSession->timeScale(),
+						m_pSession->tickFromFrame(pMidiClip->clipStart()));
+					// Pre-commit dirty changes...
+					pMidiClip->setFilename(sFilename);
+					pMidiClip->setDirty(false);
+					// And refresh any eventual editor out there...
+					pMidiClip->updateEditor(true);
+					// Reference for immediate file addition...
+					addMidiFile(sFilename);
+				}
+			}
+		}
+	}
+
 	// Have we any errors?
 	QDomDocument doc("qtractorSession");
 	bool bResult = qtractorSessionDocument(

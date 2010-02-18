@@ -724,38 +724,6 @@ bool qtractorMidiClip::loadClipElement (
 bool qtractorMidiClip::saveClipElement (
 	qtractorSessionDocument *pDocument, QDomElement *pElement )
 {
-	// Trap dirty clips...
-	if (qtractorMidiClip::isDirty()) {
-		// We'll need the correct time-scale...
-		qtractorSession *pSession = NULL;
-		qtractorTrack *pTrack = qtractorMidiClip::track();
-		if (pTrack)
-			pSession = pTrack->session();
-		if (pSession) {
-			// Have a new filename revision...
-			const QString& sFilename
-				= qtractorMidiClip::createFilePathRevision();
-			// Save/replace the clip track...
-			qtractorMidiFile::saveCopyFile(sFilename,
-				qtractorMidiClip::filename(),
-				qtractorMidiClip::trackChannel(),
-				qtractorMidiClip::format(),
-				qtractorMidiClip::sequence(),
-				pSession->timeScale(),
-				pSession->tickFromFrame(
-					qtractorMidiClip::clipStart()));
-			// Pre-commit dirty changes...
-			qtractorMidiClip::setFilename(sFilename);
-			qtractorMidiClip::setDirty(false);
-			// And refresh any eventual editor out there...
-			qtractorMidiClip::updateEditor(true);
-			// Reference for immediate file addition...
-			qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-			if (pMainForm)
-				pMainForm->addMidiFile(sFilename);
-		}
-	}
-
 	QDomElement eMidiClip = pDocument->document()->createElement("midi-clip");
 	pDocument->saveTextElement("filename",
 		qtractorMidiClip::relativeFilename(), &eMidiClip);
@@ -763,7 +731,6 @@ bool qtractorMidiClip::saveClipElement (
 		QString::number(qtractorMidiClip::trackChannel()), &eMidiClip);
 	pDocument->saveTextElement("revision",
 		QString::number(qtractorMidiClip::revision()), &eMidiClip);
-
 	pElement->appendChild(eMidiClip);
 
 	return true;
