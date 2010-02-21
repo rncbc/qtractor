@@ -116,11 +116,18 @@ QVariant qtractorMidiEventListModel::data (
 Qt::ItemFlags qtractorMidiEventListModel::flags (
 	const QModelIndex& index ) const
 {
+	Qt::ItemFlags ret = Qt::ItemFlags(0);
+
 	qtractorMidiEvent *pEvent = eventOfIndex(index);
-	if (pEvent && m_pEditor->isEventSelectable(pEvent))
-		return QAbstractItemModel::flags(index);
-	else
-		return Qt::ItemIsEnabled; // Qt::ItemFlags(0);
+	if (pEvent) {
+		if (m_pEditor->isEventSelectable(pEvent))
+			ret = QAbstractItemModel::flags(index);
+		else
+			ret = Qt::ItemIsEnabled;
+		ret |= Qt::ItemIsEditable;
+	}
+
+	return ret;
 }
 
 
