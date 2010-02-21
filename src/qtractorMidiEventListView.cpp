@@ -22,6 +22,7 @@
 #include "qtractorAbout.h"
 #include "qtractorMidiEventListView.h"
 #include "qtractorMidiEventListModel.h"
+#include "qtractorMidiEventItemDelegate.h"
 
 #include <QHeaderView>
 
@@ -31,7 +32,7 @@
 
 // Constructor.
 qtractorMidiEventListView::qtractorMidiEventListView ( QWidget *pParent )
-	: QTreeView(pParent), m_pListModel(NULL)
+	: QTreeView(pParent), m_pListModel(NULL), m_pItemDelegate(NULL)
 {
 }
 
@@ -39,6 +40,9 @@ qtractorMidiEventListView::qtractorMidiEventListView ( QWidget *pParent )
 // Destructor.
 qtractorMidiEventListView::~qtractorMidiEventListView (void)
 {
+	if (m_pItemDelegate)
+		delete m_pItemDelegate;
+
 	if (m_pListModel)
 		delete m_pListModel;
 }
@@ -47,12 +51,17 @@ qtractorMidiEventListView::~qtractorMidiEventListView (void)
 // Settlers.
 void qtractorMidiEventListView::setEditor ( qtractorMidiEditor *pEditor )
 {
+	if (m_pItemDelegate)
+		delete m_pItemDelegate;
+
 	if (m_pListModel)
 		delete m_pListModel;
 
 	m_pListModel = new qtractorMidiEventListModel(pEditor);
+	m_pItemDelegate = new qtractorMidiEventItemDelegate();
 
 	QTreeView::setModel(m_pListModel);
+	QTreeView::setItemDelegate(m_pItemDelegate);
 
 	QTreeView::setSelectionMode(QAbstractItemView::ExtendedSelection);
 	QTreeView::setRootIsDecorated(false);

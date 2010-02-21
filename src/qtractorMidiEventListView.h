@@ -26,6 +26,7 @@
 
 // Forwards.
 class qtractorMidiEditor;
+class qtractorMidiEventItemDelegate;
 class qtractorMidiEventListModel;
 class qtractorMidiEvent;
 
@@ -68,7 +69,8 @@ public:
 private:
 
 	// Instance variables.
-	qtractorMidiEventListModel * m_pListModel;
+	qtractorMidiEventListModel    *m_pListModel;
+	qtractorMidiEventItemDelegate *m_pItemDelegate;
 };
 
 

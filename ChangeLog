@@ -5,6 +5,10 @@ ChangeLog
 
 SVN TRUNK
 
+- MIDI clip editor event list gets its due inline editing,
+  for time, note, value/velocity and duration columns, just
+  one click away over the target cell ;) (EXPERIMENTAL)
+
 - MIDI file revisions needs a serious approach, soon...
 
 - Add-plugin selection dialog position and extent are now
