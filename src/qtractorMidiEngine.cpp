@@ -246,7 +246,7 @@ qtractorMidiOutputThread::qtractorMidiOutputThread (
 	qtractorSession *pSession, unsigned int iReadAhead ) : QThread()
 {
 	if (iReadAhead < 1)
-		iReadAhead = pSession->sampleRate();
+		iReadAhead = (pSession->sampleRate() >> 1);
 
 	m_pSession   = pSession;
 	m_bRunState  = false;
