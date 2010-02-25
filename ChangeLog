@@ -5,6 +5,8 @@ ChangeLog
 
 SVN TRUNK
 
+- LV2 Save/Restore extension support kicks off (UNTESTED).
+
 - MIDI engine read-ahead period has been shortened to half
   than it was since inception--now it's a 500msec cycle.
   (EXPERIMENTAL)

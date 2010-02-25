@@ -38,6 +38,11 @@
 #include "lv2_external_ui.h"
 #endif
 
+#ifdef CONFIG_LV2_SAVERESTORE
+// LV2 Save/Restore support.
+#include "lv2_saverestore.h"
+#endif
+
 
 //----------------------------------------------------------------------------
 // qtractorLv2PluginType -- LV2 plugin type instance.
@@ -157,6 +162,24 @@ public:
 		{ m_bEditorClosed = bClosed; }
 	bool isEditorClosed() const
 		{ return m_bEditorClosed; }
+
+#endif
+
+#ifdef CONFIG_LV2_SAVERESTORE
+
+	// Configuration (restore) stuff.
+	void configure(const QString& sKey, const QString& sValue);
+
+	// Plugin configuration/state (save) snapshot.
+	void freezeConfigs();
+
+	// LV2 Save/Restore extension data descriptor accessor.
+	const LV2SR_Descriptor *lv2_sr_descriptor(unsigned short iInstance) const;
+
+	bool lv2_save(unsigned short iInstance,
+		const char *pszDirectory, LV2SR_File ***pppFiles);
+	bool lv2_restore(unsigned short iInstance,
+		const LV2SR_File **ppFiles);
 
 #endif
 

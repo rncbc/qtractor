@@ -53,22 +53,40 @@ static uint32_t qtractor_lv2_event_ref (
 static LV2_URI_Map_Feature g_lv2_uri_map =
 	{ NULL, qtractor_lv2_uri_to_id };
 static const LV2_Feature g_lv2_uri_map_feature =
-	{ "http://lv2plug.in/ns/ext/uri-map", &g_lv2_uri_map };
+	{ LV2_URI_MAP_URI, &g_lv2_uri_map };
 
 static LV2_Event_Feature g_lv2_event_ref =
 	{ NULL, qtractor_lv2_event_ref, qtractor_lv2_event_ref };
 static const LV2_Feature g_lv2_event_ref_feature =
-	{ "http://lv2plug.in/ns/ext/event", &g_lv2_event_ref };
+	{ LV2_EVENT_URI, &g_lv2_event_ref };
+
+#endif	// CONFIG_LV2_EVENT
+
+
+#ifdef CONFIG_LV2_SAVERESTORE
+
+#include "qtractorSession.h"
+
+#include <QDir>
+#include <QFile>
+
+static const LV2_Feature g_lv2_saverestore_feature =
+	{ LV2_SAVERESTORE_URI, NULL };
+
+#endif
+
 
 static const LV2_Feature *g_lv2_features[] =
-	{ &g_lv2_uri_map_feature, &g_lv2_event_ref_feature, NULL };
-
-#else
-
-static const LV2_Feature *g_lv2_features[] = { NULL };
-
-#endif	// !CONFIG_LV2_EVENT
-
+{
+#ifdef CONFIG_LV2_EVENT
+	&g_lv2_uri_map_feature,
+	&g_lv2_event_ref_feature,
+#endif
+#ifdef CONFIG_LV2_SAVERESTORE
+	&g_lv2_saverestore_feature,
+#endif
+	NULL
+};
 
 #ifdef CONFIG_LV2_EXTERNAL_UI
 
@@ -133,6 +151,10 @@ static SLV2Value g_slv2_external_ui_class = NULL;
 
 // Supported plugin features.
 static SLV2Value g_slv2_realtime_hint    = NULL;
+
+#ifdef CONFIG_LV2_SAVERESTORE
+static SLV2Value g_slv2_saverestore_hint = NULL;
+#endif
 
 // Supported port properties (hints).
 static SLV2Value g_slv2_toggled_prop     = NULL;
@@ -211,6 +233,9 @@ bool qtractorLv2PluginType::open (void)
 
 	// Cache flags.
 	m_bRealtime = slv2_plugin_has_feature(m_slv2_plugin, g_slv2_realtime_hint);
+#ifdef CONFIG_LV2_SAVERESTORE
+	m_bConfigure = slv2_plugin_has_feature(m_slv2_plugin, g_slv2_saverestore_hint);
+#endif
 
 #ifdef CONFIG_LV2_EXTERNAL_UI
 	// Check the UI inventory...
@@ -306,6 +331,11 @@ void qtractorLv2PluginType::slv2_open (void)
 	g_slv2_realtime_hint = slv2_value_new_uri(g_slv2_world,
 		SLV2_NAMESPACE_LV2 "hardRtCapable");
 
+#ifdef CONFIG_LV2_SAVERESTORE
+	g_slv2_saverestore_hint = slv2_value_new_uri(g_slv2_world,
+		LV2_SAVERESTORE_URI);
+#endif
+
 	// Set up the port properties we support (as hints).
 	g_slv2_toggled_prop = slv2_value_new_uri(g_slv2_world,
 		SLV2_NAMESPACE_LV2 "toggled");
@@ -332,6 +362,10 @@ void qtractorLv2PluginType::slv2_close (void)
 	slv2_value_free(g_slv2_integer_prop);
 	slv2_value_free(g_slv2_sample_rate_prop);
 	slv2_value_free(g_slv2_logarithmic_prop);
+
+#ifdef CONFIG_LV2_SAVERESTORE
+	slv2_value_free(g_slv2_saverestore_hint);
+#endif
 
 	slv2_value_free(g_slv2_realtime_hint);
 
@@ -958,7 +992,147 @@ LV2UI_Handle qtractorLv2Plugin::lv2_ui_handle (void) const
 	return slv2_ui_instance_get_handle(m_slv2_ui_instance);
 }
 
-#endif	// !CONFIG_LV2_EXTERNAL_UI
+#endif	// CONFIG_LV2_EXTERNAL_UI
+
+
+#ifdef CONFIG_LV2_SAVERESTORE
+
+// Configuration (restore) stuff.
+void qtractorLv2Plugin::configure ( const QString& sKey, const QString& sValue )
+{
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return;
+
+	const QDir dir(pSession->sessionDir());
+
+	if (sKey.section(':', 0, 0) == "saverestore") {
+		QFileInfo fi(dir, sValue);
+		if (fi.exists() && fi.isReadable()) {
+			const QString sName = sKey.section(':', 1);
+			const QString sPath = fi.absolutePath();
+			LV2SR_File sr_file;
+			sr_file.name = sName.toUtf8().data();
+			sr_file.path = sPath.toUtf8().data();
+			sr_file.must_copy = 0;
+			const LV2SR_File *ppFiles[2];
+			ppFiles[0] = &sr_file;
+			ppFiles[1] = NULL;
+			for (unsigned short i = 0; i < instances(); ++i)
+				lv2_restore(i, ppFiles);
+		}
+	}
+}
+
+
+// Plugin configuration/state (save) snapshot.
+void qtractorLv2Plugin::freezeConfigs (void)
+{
+	if (!type()->isConfigure())
+		return;
+
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return;
+
+	const QDir dir(pSession->sessionDir());
+	
+	LV2SR_File **ppFiles = NULL;
+	if (!lv2_save(0, dir.absolutePath().toUtf8().constData(), &ppFiles))
+		return;
+	if (ppFiles == NULL)
+		return;
+
+	const QString sKey("saverestore:%1");
+
+	for (int i = 0; ppFiles[i]; ++i) {
+		LV2SR_File *pFile = ppFiles[i];
+		if (pFile->name && pFile->path) {
+			const QString sName = pFile->name;
+			const QString sPath = pFile->path;
+			if (pFile->must_copy) {
+				const QString sNewPath = pSession->createFilePath(
+					list()->name() + ' ' + type()->label() + ' ' + sName, 0, "sav");
+				if (QFile(sPath).copy(sNewPath))
+					setConfig(sKey.arg(sName), QFileInfo(sNewPath).fileName());
+			}
+			else setConfig(sKey.arg(sName), QFileInfo(sPath).fileName());
+			::free(pFile->path);
+			::free(pFile->name);
+			::free(pFile);
+		}
+	}
+	::free(ppFiles);
+}
+
+
+// LV2 Save/Restore extension data descriptor accessor.
+const LV2SR_Descriptor *qtractorLv2Plugin::lv2_sr_descriptor (
+	unsigned short iInstance ) const
+{
+	SLV2Instance instance = slv2_instance(iInstance);
+	if (instance == NULL)
+		return NULL;
+
+	const LV2_Descriptor *descriptor = slv2_instance_get_descriptor(instance);
+	if (descriptor == NULL)
+		return NULL;
+	if (descriptor->extension_data == NULL)
+		return NULL;
+
+	return (const LV2SR_Descriptor *)
+		(*descriptor->extension_data)(LV2_SAVERESTORE_URI);
+}
+
+
+bool qtractorLv2Plugin::lv2_save ( unsigned short iInstance,
+	const char *pszDirectory, LV2SR_File ***pppFiles )
+{
+	const LV2SR_Descriptor *sr_descriptor = lv2_sr_descriptor(iInstance);
+	if (sr_descriptor == NULL)
+		return false;
+	if (sr_descriptor->save == NULL)
+		return false;
+
+	SLV2Instance instance = slv2_instance(iInstance);
+	if (instance) {
+		LV2_Handle handle = slv2_instance_get_handle(instance);
+		char *pszError = (*sr_descriptor->save)(handle, pszDirectory, pppFiles);
+		if (pszError) {
+			qDebug("lv2_save: Failed to save plugin state: %s", pszError);
+			::free(pszError);
+			return false;
+		}
+	}
+
+	return true;
+}
+
+
+bool qtractorLv2Plugin::lv2_restore ( unsigned short iInstance,
+	const LV2SR_File **ppFiles )
+{
+	const LV2SR_Descriptor *sr_descriptor = lv2_sr_descriptor(iInstance);
+	if (sr_descriptor == NULL)
+		return false;
+	if (sr_descriptor->restore == NULL)
+		return false;
+
+	SLV2Instance instance = slv2_instance(iInstance);
+	if (instance) {
+		LV2_Handle handle = slv2_instance_get_handle(instance);
+		char *pszError = (*sr_descriptor->restore)(handle, ppFiles);
+		if (pszError) {
+			qDebug("lv2_restore: Failed to restore plugin state: %s", pszError);
+			::free(pszError);
+			return false;
+		}
+	}
+
+	return true;
+}
+
+#endif	// CONFIG_LV2_SAVERESTORE
 
 
 //----------------------------------------------------------------------------

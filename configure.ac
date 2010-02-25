@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(Qtractor, 0.4.5.1527, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.4.5.1528, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractorMainForm.ui)
 AC_CONFIG_HEADERS(config.h)
@@ -100,6 +100,11 @@ AC_ARG_ENABLE(lv2-external-ui,
   AC_HELP_STRING([--enable-lv2-external-ui], [enable LV2 plug-in external UI support (default=yes)]),
   [ac_lv2_external_ui="$enableval"],
   [ac_lv2_external_ui="yes"])
+
+AC_ARG_ENABLE(lv2-saverestore,
+  AC_HELP_STRING([--enable-lv2-saverestore], [enable LV2 plug-in save/restore support (default=yes)]),
+  [ac_lv2_saverestore="$enableval"],
+  [ac_lv2_saverestore="yes"])
 
 # Enable XInitThreads() support.
 AC_ARG_ENABLE(xinitthreads,
@@ -468,6 +473,7 @@ else
    AC_MSG_WARN([*** LV2 plugin support will be disabled.])
    ac_lv2_event="no"
    ac_lv2_external_ui="no"
+   ac_lv2_saverestore="no"
 fi
 
 AC_SUBST(ac_libs)
@@ -626,12 +632,13 @@ else
    AC_MSG_WARN([*** LV2 plug-in support will be disabled.])
    ac_lv2_event="no"
    ac_lv2_external_ui="no"
+   ac_lv2_saverestore="no"
 fi
 if test "x$ac_lv2_event" = "xyes"; then
    AC_CHECK_HEADERS(lv2_event.h lv2_event_helpers.h lv2_uri_map.h,
       [ac_lv2_event="yes"], [ac_lv2_event="no"])
    if test "x$ac_lv2_event" = "xyes"; then
-      AC_DEFINE(CONFIG_LV2_EVENT, 1, [Define if LV2 event extension is available.])
+      AC_DEFINE(CONFIG_LV2_EVENT, 1, [Define if LV2 event/MIDI extension is available.])
    else
       AC_MSG_WARN([*** LV2 event extension will be disabled.])
    fi
@@ -648,6 +655,14 @@ if test "x$ac_lv2_external_ui" = "xyes"; then
       AC_DEFINE(CONFIG_LV2_EXTERNAL_UI, 1, [Define if LV2 external UI extension is available.])
    else
       AC_MSG_WARN([*** LV2 external UI extension will be disabled.])
+   fi
+fi
+if test "x$ac_lv2_saverestore" = "xyes"; then
+   AC_CHECK_HEADER(lv2_saverestore.h, [ac_lv2_saverestore="yes"], [ac_lv2_saverestore="no"])
+   if test "x$ac_lv2_saverestore" = "xyes"; then
+      AC_DEFINE(CONFIG_LV2_SAVERESTORE, 1, [Define if LV2 save/restore extension is available.])
+   else
+      AC_MSG_WARN([*** LV2 save/restore extension will be disabled.])
    fi
 fi
 
@@ -701,8 +716,9 @@ echo "  LADSPA Plug-in support . . . . . . . . . . . . . .: $ac_ladspa"
 echo "  DSSI Plug-in support . . . . . . . . . . . . . . .: $ac_dssi"
 echo "  VST Plug-in support  . . . . . . . . . . . . . . .: $ac_vst"
 echo "  LV2 Plug-in support (libslv2)  . . . . . . . . . .: $ac_lv2"
-echo "  LV2 Plug-in MIDI/Event support . . . . . . . . . .: $ac_lv2_event"
+echo "  LV2 Plug-in Event/MIDI support . . . . . . . . . .: $ac_lv2_event"
 echo "  LV2 Plug-in External UI support  . . . . . . . . .: $ac_lv2_external_ui"
+echo "  LV2 Plug-in Save/Restore support . . . . . . . . .: $ac_lv2_saverestore"
 echo
 echo "  XInitThreads() support (DANGEROUS) . . . . . . . .: $ac_xinitthreads"
 echo
