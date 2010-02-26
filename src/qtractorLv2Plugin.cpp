@@ -1060,10 +1060,20 @@ void qtractorLv2Plugin::freezeConfigs (void)
 		QFileInfo fi(sPath);
 		if (fi.exists() && fi.isReadable()) {
 			if (pFile->must_copy) {
-				fi.setFile(dir,
-					qtractorSession::sanitize(pSession->sessionName()) + '-'
-					qtractorSession::sanitize(list()->name()) + '-'
-					qtractorSession::sanitize(type()->name()) + "-lv2.sav");
+				const QString  sSuffix("-lv2.sav");
+				const QString& sPreset = preset();
+				if (sPreset.isEmpty()) {
+					fi.setFile(dir,
+						qtractorSession::sanitize(pSession->sessionName())
+						+ '-' + qtractorSession::sanitize(list()->name())
+						+ '-' + qtractorSession::sanitize(type()->name())
+						+ sSuffix);
+				} else {
+					fi.setFile(dir,
+						qtractorSession::sanitize(type()->name())
+						+ '-' + qtractorSession::sanitize(sPreset)
+						+ sSuffix);
+				}
 				QFile(sPath).copy(fi.absolutePath());
 			}
 			setConfig("saverestore:" + sName, fi.fileName());
