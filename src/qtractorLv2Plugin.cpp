@@ -67,8 +67,10 @@ static const LV2_Feature g_lv2_event_ref_feature =
 
 #include "qtractorSession.h"
 
-#include <QDir>
+#include <QByteArray>
+#include <QFileInfo>
 #include <QFile>
+#include <QDir>
 
 static const LV2_Feature g_lv2_saverestore_feature =
 	{ LV2_SAVERESTORE_URI, NULL };
@@ -1009,12 +1011,16 @@ void qtractorLv2Plugin::configure ( const QString& sKey, const QString& sValue )
 	if (sKey.section(':', 0, 0) == "saverestore") {
 		QFileInfo fi(dir, sValue);
 		if (fi.exists() && fi.isReadable()) {
-			const QString sName = sKey.section(':', 1);
-			const QString sPath = fi.absolutePath();
+			const QByteArray aName = sKey.section(':', 1).toUtf8();
+			const QByteArray aPath = fi.absolutePath().toUtf8();
 			LV2SR_File sr_file;
-			sr_file.name = sName.toUtf8().data();
-			sr_file.path = sPath.toUtf8().data();
+			sr_file.name = aName.data();
+			sr_file.path = aPath.data();
 			sr_file.must_copy = 0;
+		#ifdef CONFIG_DEBUG
+			qDebug("qtractorLv2Plugin[%p]::configure() name=\"%s\" path=\"%s\" must_copy=%d",
+				this, sr_file.name, sr_file.path, sr_file.must_copy);
+		#endif
 			const LV2SR_File *ppFiles[2];
 			ppFiles[0] = &sr_file;
 			ppFiles[1] = NULL;
@@ -1043,24 +1049,28 @@ void qtractorLv2Plugin::freezeConfigs (void)
 	if (ppFiles == NULL)
 		return;
 
-	const QString sKey("saverestore:%1");
-
 	for (int i = 0; ppFiles[i]; ++i) {
 		LV2SR_File *pFile = ppFiles[i];
-		if (pFile->name && pFile->path) {
-			const QString sName = pFile->name;
-			const QString sPath = pFile->path;
+	#ifdef CONFIG_DEBUG
+		qDebug("qtractorLv2Plugin[%p]::freezeConfigs() name=\"%s\" path=\"%s\" must_copy=%d",
+			this, pFile->name, pFile->path, pFile->must_copy);
+	#endif
+		const QString sName = pFile->name;
+		const QString sPath = pFile->path;
+		QFileInfo fi(sPath);
+		if (fi.exists() && fi.isReadable()) {
 			if (pFile->must_copy) {
-				const QString sNewPath = pSession->createFilePath(
-					list()->name() + ' ' + type()->label() + ' ' + sName, 0, "sav");
-				if (QFile(sPath).copy(sNewPath))
-					setConfig(sKey.arg(sName), QFileInfo(sNewPath).fileName());
+				fi.setFile(dir,
+					qtractorSession::sanitize(pSession->sessionName()) + '-'
+					qtractorSession::sanitize(list()->name()) + '-'
+					qtractorSession::sanitize(type()->name()) + "-lv2.sav");
+				QFile(sPath).copy(fi.absolutePath());
 			}
-			else setConfig(sKey.arg(sName), QFileInfo(sPath).fileName());
-			::free(pFile->path);
-			::free(pFile->name);
-			::free(pFile);
+			setConfig("saverestore:" + sName, fi.fileName());
 		}
+		::free(pFile->path);
+		::free(pFile->name);
+		::free(pFile);
 	}
 	::free(ppFiles);
 }

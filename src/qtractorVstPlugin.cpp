@@ -815,10 +815,10 @@ void qtractorVstPlugin::configure ( const QString& sKey, const QString& sValue )
 		QByteArray data = qUncompress(QByteArray::fromBase64(sValue.toAscii()));
 		const char *pData = data.constData();
 		int iData = data.size();
-#ifdef CONFIG_DEBUG
+	#ifdef CONFIG_DEBUG
 		qDebug("qtractorVstPlugin[%p]::configure() chunk.size=%d checksum=0x%04x",
 			this, iData, qChecksum(pData, iData));
-#endif
+	#endif
 		for (unsigned short i = 0; i < instances(); ++i)
 			vst_dispatch(i, effSetChunk, 0, iData, (void *) pData, 0.0f);
 	}
