@@ -1012,10 +1012,10 @@ void qtractorLv2Plugin::configure ( const QString& sKey, const QString& sValue )
 		QFileInfo fi(dir, sValue);
 		if (fi.exists() && fi.isReadable()) {
 			const QByteArray aName = sKey.section(':', 1).toUtf8();
-			const QByteArray aPath = fi.absolutePath().toUtf8();
+			const QByteArray aPath = fi.absoluteFilePath().toUtf8();
 			LV2SR_File sr_file;
-			sr_file.name = aName.data();
-			sr_file.path = aPath.data();
+			sr_file.name = (char *) aName.constData();
+			sr_file.path = (char *) aPath.constData();
 			sr_file.must_copy = 0;
 		#ifdef CONFIG_DEBUG
 			qDebug("qtractorLv2Plugin[%p]::configure() name=\"%s\" path=\"%s\" must_copy=%d",
@@ -1082,11 +1082,7 @@ void qtractorLv2Plugin::freezeConfigs (void)
 					sNewFile += qtractorSession::sanitize(sPreset);
 				}
 				fi.setFile(dir, sNewFile + "-lv2.sav");
-				QFile(sPath).copy(fi.absolutePath());
-			#ifdef CONFIG_DEBUG
-				qDebug("qtractorLv2Plugin[%p]::freezeConfigs() name=\"%s\" path=\"%s\" (copy)",
-					this, pFile->name, fi.absolutePath().toUtf8().constData());
-			#endif
+				QFile(sPath).copy(fi.absoluteFilePath());
 			}
 			setConfig("saverestore:" + sName, fi.fileName());
 		}
