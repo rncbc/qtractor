@@ -1052,13 +1052,13 @@ void qtractorLv2Plugin::freezeConfigs (void)
 	for (int i = 0; ppFiles[i]; ++i) {
 		LV2SR_File *pFile = ppFiles[i];
 	#ifdef CONFIG_DEBUG
-		qDebug("qtractorLv2Plugin[%p]::freezeConfigs() name=\"%s\" path=\"%s\"",
-			this, pFile->name, pFile->path);
+		qDebug("qtractorLv2Plugin[%p]::freezeConfigs(%d) name=\"%s\" path=\"%s\"",
+			this, i, pFile->name, pFile->path);
 	#endif
 		const QString sName = pFile->name;
 		const QString sPath = pFile->path;
 		QFile file(sPath);
-		if (file.exists() && file.isReadable()) {
+		if (file.exists()) {
 			// Always copy/rename the damn file...
 			QString sNewFile;
 			const QString& sPreset = preset();
@@ -1082,7 +1082,7 @@ void qtractorLv2Plugin::freezeConfigs (void)
 				sNewFile += qtractorSession::sanitize(sPreset);
 			}
 			const QFileInfo fi(dir, sNewFile + "-lv2.sav");
-			const QString& sNewPath = fi.absoluteFilePath();
+			const QString sNewPath = fi.absoluteFilePath();
 			if (fi.exists()) QFile::remove(sNewPath);
 			if (pFile->must_copy) {
 				file.copy(sNewPath);
