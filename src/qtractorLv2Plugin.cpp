@@ -1018,8 +1018,8 @@ void qtractorLv2Plugin::configure ( const QString& sKey, const QString& sValue )
 			sr_file.path = (char *) aPath.constData();
 			sr_file.must_copy = 0;
 		#ifdef CONFIG_DEBUG
-			qDebug("qtractorLv2Plugin[%p]::configure() name=\"%s\" path=\"%s\" must_copy=%d",
-				this, sr_file.name, sr_file.path, sr_file.must_copy);
+			qDebug("qtractorLv2Plugin[%p]::configure() name=\"%s\" path=\"%s\"",
+				this, sr_file.name, sr_file.path);
 		#endif
 			const LV2SR_File *ppFiles[2];
 			ppFiles[0] = &sr_file;
@@ -1052,37 +1052,42 @@ void qtractorLv2Plugin::freezeConfigs (void)
 	for (int i = 0; ppFiles[i]; ++i) {
 		LV2SR_File *pFile = ppFiles[i];
 	#ifdef CONFIG_DEBUG
-		qDebug("qtractorLv2Plugin[%p]::freezeConfigs() name=\"%s\" path=\"%s\" must_copy=%d",
-			this, pFile->name, pFile->path, pFile->must_copy);
+		qDebug("qtractorLv2Plugin[%p]::freezeConfigs() name=\"%s\" path=\"%s\"",
+			this, pFile->name, pFile->path);
 	#endif
 		const QString sName = pFile->name;
 		const QString sPath = pFile->path;
-		QFileInfo fi(sPath);
-		if (fi.exists() && fi.isReadable()) {
+		QFile file(sPath);
+		if (file.exists() && file.isReadable()) {
+			// Always copy/rename the damn file...
+			QString sNewFile;
+			const QString& sPreset = preset();
+			if (sPreset.isEmpty()) {
+				const QString& sSessionName = pSession->sessionName();
+				if (!sSessionName.isEmpty()) {
+					sNewFile += qtractorSession::sanitize(sSessionName);
+					sNewFile += '-';
+				}
+				const QString& sListName = list()->name();
+				if (!sListName.isEmpty()) {
+					sNewFile += qtractorSession::sanitize(sListName);
+					sNewFile += '-';
+				}
+			}
+			sNewFile += type()->label();
+			sNewFile += '-';
+			if (sPreset.isEmpty()) {
+				sNewFile += QString::number(type()->uniqueID(), 16);
+			} else {
+				sNewFile += qtractorSession::sanitize(sPreset);
+			}
+			const QFileInfo fi(dir, sNewFile + "-lv2.sav");
+			const QString& sNewPath = fi.absoluteFilePath();
+			if (fi.exists()) QFile::remove(sNewPath);
 			if (pFile->must_copy) {
-				QString sNewFile;
-				const QString& sPreset = preset();
-				if (sPreset.isEmpty()) {
-					const QString& sSessionName = pSession->sessionName();
-					if (!sSessionName.isEmpty()) {
-						sNewFile += qtractorSession::sanitize(sSessionName);
-						sNewFile += '-';
-					}
-					const QString& sListName = list()->name();
-					if (!sListName.isEmpty()) {
-						sNewFile += qtractorSession::sanitize(sListName);
-						sNewFile += '-';
-					}
-				}
-				sNewFile += type()->label();
-				sNewFile += '-';
-				if (sPreset.isEmpty()) {
-					sNewFile += QString::number(type()->uniqueID(), 16);
-				} else {
-					sNewFile += qtractorSession::sanitize(sPreset);
-				}
-				fi.setFile(dir, sNewFile + "-lv2.sav");
-				QFile(sPath).copy(fi.absoluteFilePath());
+				file.copy(sNewPath);
+			} else {
+				file.rename(sNewPath);
 			}
 			setConfig("saverestore:" + sName, fi.fileName());
 		}
