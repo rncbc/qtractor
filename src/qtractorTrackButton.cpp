@@ -1,7 +1,7 @@
 // qtractorTrackButton.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -21,6 +21,11 @@
 
 #include "qtractorAbout.h"
 #include "qtractorTrackButton.h"
+
+#if QT_VERSION < 0x040300
+#define lighter(x)	light(x)
+#define darker(x)	dark(x)
+#endif
 
 
 //----------------------------------------------------------------------------
@@ -42,7 +47,9 @@ qtractorTrackButton::qtractorTrackButton ( qtractorTrack *pTrack,
 	QToolButton::setFont(
 		QFont(QToolButton::font().family(), (fixedSize.height() < 16 ? 5 : 6)));
 
-	m_rgbOff = QToolButton::palette().button().color();
+	QPalette pal(QToolButton::palette());
+	m_rgbText = pal.buttonText().color();
+	m_rgbOff  = pal.button().color();
 	switch (toolType) {
 	case qtractorTrack::Record:
 		QToolButton::setText("R");
@@ -87,6 +94,7 @@ void qtractorTrackButton::updateTrack (void)
 	}
 
 	QPalette pal(QToolButton::palette());
+	pal.setColor(QPalette::ButtonText, bOn ? m_rgbOn.darker() : m_rgbText);
 	pal.setColor(QPalette::Button, bOn ? m_rgbOn : m_rgbOff);
 	QToolButton::setPalette(pal);
 
