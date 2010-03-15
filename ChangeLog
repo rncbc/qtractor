@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- An ancient double-free corruption has been finally fixed
+  at the audio/MIDI bus connection persistence logic. 
+
 - Improved visibility of track state buttons text (R, M, S)
   when turned on dark colored themes.
 

@@ -349,10 +349,8 @@ void qtractorAudioConnect::disconnectPortsUpdate (
 			continue;
 		if (sPortName == pBus->busName()) {
 			if (busMode & qtractorBus::Input) {
-				qDeleteAll(pBus->inputs());
 				pBus->inputs().clear();
 			} else {
-				qDeleteAll(pBus->outputs());
 				pBus->outputs().clear();
 			}
 			break;
