@@ -517,7 +517,7 @@ bool qtractorMidiEditorForm::queryClose ( bool bForce )
 		qtractorOptions *pOptions = qtractorOptions::getInstance();
 		if (pOptions) {
 			// Save decorations state.
-			pOptions->bMidiMenubar = m_ui.MenuBar->isVisible();
+			pOptions->bMidiMenubar = m_ui.menuBar->isVisible();
 			pOptions->bMidiStatusbar = statusBar()->isVisible();
 			pOptions->bMidiFileToolbar = m_ui.fileToolbar->isVisible();
 			pOptions->bMidiEditToolbar = m_ui.editToolbar->isVisible();
@@ -623,7 +623,24 @@ void qtractorMidiEditorForm::closeEvent ( QCloseEvent *pCloseEvent )
 void qtractorMidiEditorForm::contextMenuEvent (
 	QContextMenuEvent *pContextMenuEvent )
 {
-	m_ui.contextMenu->exec(pContextMenuEvent->globalPos());
+	QMenu menu(this);
+
+	menu.addAction(m_ui.editUndoAction);
+	menu.addAction(m_ui.editRedoAction);
+	menu.addSeparator();
+	menu.addAction(m_ui.editCutAction);
+	menu.addAction(m_ui.editCopyAction);
+	menu.addAction(m_ui.editPasteAction);
+	menu.addAction(m_ui.editPasteRepeatAction);
+	menu.addSeparator();
+	menu.addAction(m_ui.editDeleteAction);
+	menu.addSeparator();
+	menu.addMenu(m_ui.editModeMenu);
+	menu.addMenu(m_ui.editSelectMenu);
+	menu.addSeparator();
+	menu.addMenu(m_ui.toolsMenu);
+
+	menu.exec(pContextMenuEvent->globalPos());
 }
 
 // Edit menu accessor.
@@ -1089,64 +1106,84 @@ void qtractorMidiEditorForm::toolsResize (void)
 // Show/hide the main program window menubar.
 void qtractorMidiEditorForm::viewMenubar ( bool bOn )
 {
+#if 0
 	if (bOn)
-		m_ui.MenuBar->show();
+		m_ui.menuBar->show();
 	else
-		m_ui.MenuBar->hide();
+		m_ui.menuBar->hide();
+#else
+	m_ui.menuBar->setVisible(bOn);
+#endif
 }
 
 
 // Show/hide the main program window statusbar.
 void qtractorMidiEditorForm::viewStatusbar ( bool bOn )
 {
+#if 0
 	if (bOn)
 		statusBar()->show();
 	else
 		statusBar()->hide();
+#else
+	statusBar()->setVisible(bOn);
+#endif
 }
 
 
 // Show/hide the file-toolbar.
 void qtractorMidiEditorForm::viewToolbarFile ( bool bOn )
 {
-	if (bOn) {
+#if 0
+	if (bOn)
 		m_ui.fileToolbar->show();
-	} else {
+	else
 		m_ui.fileToolbar->hide();
-	}
+#else
+	m_ui.fileToolbar->setVisible(bOn);
+#endif
 }
 
 
 // Show/hide the edit-toolbar.
 void qtractorMidiEditorForm::viewToolbarEdit ( bool bOn )
 {
-	if (bOn) {
+#if 0
+	if (bOn)
 		m_ui.editToolbar->show();
-	} else {
+	else
 		m_ui.editToolbar->hide();
-	}
+#else
+	m_ui.editToolbar->setVisible(bOn);
+#endif
 }
 
 
 // Show/hide the view-toolbar.
 void qtractorMidiEditorForm::viewToolbarView ( bool bOn )
 {
-	if (bOn) {
+#if 0
+	if (bOn)
 		m_ui.viewToolbar->show();
-	} else {
+	else
 		m_ui.viewToolbar->hide();
-	}
+#else
+	m_ui.viewToolbar->setVisible(bOn);
+#endif
 }
 
 
 // Show/hide the transport-toolbar.
 void qtractorMidiEditorForm::viewToolbarTransport ( bool bOn )
 {
-	if (bOn) {
+#if 0
+	if (bOn)
 		m_ui.transportToolbar->show();
-	} else {
+	else
 		m_ui.transportToolbar->hide();
-	}
+#else
+	m_ui.transportToolbar->setVisible(bOn);
+#endif
 }
 
 

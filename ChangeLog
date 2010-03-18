@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- MIDI clip editor's context menu crash on Qt >= 4.6 has been
+  fixed (resolving bug #2972603).
+
 - An ancient double-free corruption has been finally fixed
   at the audio/MIDI bus connection persistence logic. 
 

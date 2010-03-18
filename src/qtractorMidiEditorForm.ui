@@ -32,8 +32,7 @@
   <property name="windowTitle" >
    <string>MIDI Editor</string>
   </property>
-  <widget class="QWidget" name="centralwidget" />
-  <widget class="QMenuBar" name="MenuBar" >
+  <widget class="QMenuBar" name="menuBar" >
    <property name="geometry" >
     <rect>
      <x>0</x>
@@ -191,25 +190,6 @@
    <addaction name="toolsMenu" />
    <addaction name="transportMenu" />
    <addaction name="helpMenu" />
-  </widget>
-  <widget class="QMenu" name="contextMenu" >
-   <property name="title" >
-    <string>&amp;Context</string>
-   </property>
-   <addaction name="editUndoAction" />
-   <addaction name="editRedoAction" />
-   <addaction name="separator" />
-   <addaction name="editCutAction" />
-   <addaction name="editCopyAction" />
-   <addaction name="editPasteAction" />
-   <addaction name="editPasteRepeatAction" />
-   <addaction name="separator" />
-   <addaction name="editDeleteAction" />
-   <addaction name="separator" />
-   <addaction name="editModeMenu" />
-   <addaction name="editSelectMenu" />
-   <addaction name="separator" />
-   <addaction name="toolsMenu" />
   </widget>
   <widget class="QStatusBar" name="statusBar" />
   <widget class="QToolBar" name="fileToolbar" >

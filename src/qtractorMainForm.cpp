@@ -1095,7 +1095,7 @@ bool qtractorMainForm::queryClose (void)
 		// Try to save current positioning.
 		if (bQueryClose) {
 			// Save decorations state.
-			m_pOptions->bMenubar = m_ui.MenuBar->isVisible();
+			m_pOptions->bMenubar = m_ui.menuBar->isVisible();
 			m_pOptions->bStatusbar = statusBar()->isVisible();
 			m_pOptions->bFileToolbar = m_ui.fileToolbar->isVisible();
 			m_pOptions->bEditToolbar = m_ui.editToolbar->isVisible();
@@ -2666,11 +2666,11 @@ void qtractorMainForm::viewMenubar ( bool bOn )
 {
 #if 0
 	if (bOn)
-		m_ui.MenuBar->show();
+		m_ui.menuBar->show();
 	else
-		m_ui.MenuBar->hide();
+		m_ui.menuBar->hide();
 #else
-	m_ui.MenuBar->setVisible(bOn);
+	m_ui.menuBar->setVisible(bOn);
 #endif
 }
 

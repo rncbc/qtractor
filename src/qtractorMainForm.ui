@@ -151,7 +151,7 @@
     <number>4</number>
    </attribute>
   </widget>
-  <widget class="QMenuBar" name="MenuBar" >
+  <widget class="QMenuBar" name="menuBar" >
    <property name="geometry" >
     <rect>
      <x>0</x>
