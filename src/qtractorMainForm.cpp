@@ -1816,6 +1816,15 @@ bool qtractorMainForm::loadSessionFile (
 		// Got something loaded...
 		if (m_pOptions) {
 			m_pOptions->sSessionDir = sSessionDir;
+			qtractorAudioEngine *pAudioEngine = m_pSession->audioEngine();
+			if (pAudioEngine)
+				m_pOptions->iTransportMode = int(pAudioEngine->transportMode());
+			qtractorMidiEngine *pMidiEngine = m_pSession->midiEngine();
+			if (pMidiEngine) {
+				m_pOptions->iMidiMmcMode   = int(pMidiEngine->mmcMode());
+				m_pOptions->iMidiMmcDevice = int(pMidiEngine->mmcDevice());
+				m_pOptions->iMidiSppMode   = int(pMidiEngine->sppMode());
+			}
 			m_pOptions->saveOptions();
 		}
 	} else {
@@ -3085,6 +3094,7 @@ void qtractorMainForm::viewOptions (void)
 		}
 		// Audio engine control modes...
 		if (iOldTransportMode != m_pOptions->iTransportMode) {
+			m_iDirtyCount++; // Fake session properties change.
 			updateTransportMode();
 			iNeedRestart |= RestartSession;
 		}
@@ -3155,8 +3165,10 @@ void qtractorMainForm::viewOptions (void)
 		if ((iOldMidiMmcDevice != m_pOptions->iMidiMmcDevice) ||
 			(iOldMidiMmcMode   != m_pOptions->iMidiMmcMode)   ||
 			(iOldMidiSppMode   != m_pOptions->iMidiSppMode)   ||
-			(iOldMidiCaptureQuantize != m_pOptions->iMidiCaptureQuantize))
+			(iOldMidiCaptureQuantize != m_pOptions->iMidiCaptureQuantize)) {
+			m_iDirtyCount++; // Fake session properties change.
 			updateMidiControlModes();
+		}
 		// Audio engine audition/pre-listening player options...
 		if (( bOldAudioPlayerBus && !m_pOptions->bAudioPlayerBus) ||
 			(!bOldAudioPlayerBus &&  m_pOptions->bAudioPlayerBus))

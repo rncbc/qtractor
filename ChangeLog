@@ -5,6 +5,10 @@ ChangeLog
 
 SVN TRUNK
 
+- Current JACK Transport, MMC Device, and MIDI Song Position
+  pointer (SPP) control modes are now saved/loaded as part of
+  session option properties.
+
 - MIDI clip editor's context menu crash on Qt >= 4.6 has been
   fixed (resolving bug #2972603).
 

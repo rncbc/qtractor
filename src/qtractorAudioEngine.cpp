@@ -888,7 +888,19 @@ bool qtractorAudioEngine::loadElement ( qtractorSessionDocument *pDocument,
 		if (eChild.isNull())
 			continue;
 
-		if (eChild.tagName() == "audio-bus") {
+		if (eChild.tagName() == "audio-control") {
+			for (QDomNode nProp = eChild.firstChild();
+					!nProp.isNull(); nProp = nProp.nextSibling()) {
+				QDomElement eProp = nProp.toElement();
+				if (eProp.isNull())
+					continue;
+				if (eProp.tagName() == "transport-mode") {
+					qtractorAudioEngine::setTransportMode(
+						pDocument->loadBusMode(eProp.text()));
+				}
+			}
+		}
+		else if (eChild.tagName() == "audio-bus") {
 			QString sBusName = eChild.attribute("name");
 			qtractorBus::BusMode busMode
 				= pDocument->loadBusMode(eChild.attribute("mode"));
@@ -919,6 +931,13 @@ bool qtractorAudioEngine::loadElement ( qtractorSessionDocument *pDocument,
 bool qtractorAudioEngine::saveElement ( qtractorSessionDocument *pDocument,
 	QDomElement *pElement )
 {
+	// Save transport/control modes...
+	QDomElement eControl
+		= pDocument->document()->createElement("audio-control");
+	pDocument->saveTextElement("transport-mode",
+		pDocument->saveBusMode(qtractorAudioEngine::transportMode()), &eControl);
+	pElement->appendChild(eControl);
+
 	// Save audio buses...
 	for (qtractorBus *pBus = qtractorEngine::buses().first();
 			pBus; pBus = pBus->next()) {

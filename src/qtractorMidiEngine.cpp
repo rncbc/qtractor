@@ -2134,7 +2134,27 @@ bool qtractorMidiEngine::loadElement ( qtractorSessionDocument *pDocument,
 		if (eChild.isNull())
 			continue;
 
-		if (eChild.tagName() == "midi-bus") {
+		if (eChild.tagName() == "midi-control") {
+			for (QDomNode nProp = eChild.firstChild();
+					!nProp.isNull(); nProp = nProp.nextSibling()) {
+				QDomElement eProp = nProp.toElement();
+				if (eProp.isNull())
+					continue;
+				if (eProp.tagName() == "mmc-mode") {
+					qtractorMidiEngine::setMmcMode(
+						pDocument->loadBusMode(eProp.text()));
+				}
+				else if (eProp.tagName() == "mmc-device") {
+					qtractorMidiEngine::setMmcDevice(
+						eProp.text().toInt() & 0x7f);
+				}
+				else if (eProp.tagName() == "spp-mode") {
+					qtractorMidiEngine::setSppMode(
+						pDocument->loadBusMode(eProp.text()));
+				}
+			}
+		}
+		else if (eChild.tagName() == "midi-bus") {
 			QString sBusName = eChild.attribute("name");
 			qtractorMidiBus::BusMode busMode
 				= pDocument->loadBusMode(eChild.attribute("mode"));
@@ -2171,6 +2191,17 @@ bool qtractorMidiEngine::loadElement ( qtractorSessionDocument *pDocument,
 bool qtractorMidiEngine::saveElement ( qtractorSessionDocument *pDocument,
 	QDomElement *pElement )
 {
+	// Save transport/control modes...
+	QDomElement eControl
+		= pDocument->document()->createElement("midi-control");
+	pDocument->saveTextElement("mmc-mode",
+		pDocument->saveBusMode(qtractorMidiEngine::mmcMode()), &eControl);
+	pDocument->saveTextElement("mmc-device",
+		QString::number(int(qtractorMidiEngine::mmcDevice())), &eControl);
+	pDocument->saveTextElement("spp-mode",
+		pDocument->saveBusMode(qtractorMidiEngine::sppMode()), &eControl);
+	pElement->appendChild(eControl);
+
 	// Save MIDI buses...
 	for (qtractorBus *pBus = qtractorEngine::buses().first();
 			pBus; pBus = pBus->next()) {

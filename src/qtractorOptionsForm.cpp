@@ -1,7 +1,7 @@
 // qtractorOptionsForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -1193,8 +1193,9 @@ void qtractorOptionsForm::stabilizeForm (void)
 	m_ui.MetroBeatFilenameToolButton->setEnabled(bAudioMetronome);
 	m_ui.AudioMetroBusCheckBox->setEnabled(bAudioMetronome);
 
-	m_ui.MidiMmcDeviceComboBox->setEnabled(
-		m_ui.MidiMmcModeComboBox->currentIndex() > 0);
+	bool bMmcMode =(m_ui.MidiMmcModeComboBox->currentIndex() > 0);
+	m_ui.MidiMmcDeviceTextLabel->setEnabled(bMmcMode);
+	m_ui.MidiMmcDeviceComboBox->setEnabled(bMmcMode);
 
 	bool bMidiMetronome = m_ui.MidiMetronomeCheckBox->isChecked();
 	m_ui.MetroChannelTextLabel->setEnabled(bMidiMetronome);
