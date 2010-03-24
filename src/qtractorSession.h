@@ -55,7 +55,7 @@ public:
 	~qtractorSession();
 
 	// Open/close session engine(s).
-	bool open(const QString& sClientName);
+	bool open();
 	void close();
 
 	// Reset session.
@@ -79,6 +79,10 @@ public:
 
 	// Time-scale helper accessors.
 	qtractorTimeScale *timeScale();
+
+	// Device engine common client name accessors.
+	void setClientName(const QString& sClientName);
+	const QString& clientName() const;
 
 	// Sample rate accessors.
 	void setSampleRate(unsigned int iSampleRate);
@@ -374,6 +378,9 @@ private:
 
 	// Managed session cursors.
 	qtractorList<qtractorSessionCursor> m_cursors;
+
+	// Device engine common client name.
+	QString m_sClientName;
 
 	// Device engine instances.
 	qtractorMidiEngine  *m_pMidiEngine;

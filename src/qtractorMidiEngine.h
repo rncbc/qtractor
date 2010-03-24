@@ -205,7 +205,7 @@ public:
 protected:
 
 	// Concrete device (de)activation methods.
-	bool init(const QString& sClientName);
+	bool init(void);
 	bool activate();
 	bool start();
 	void stop();

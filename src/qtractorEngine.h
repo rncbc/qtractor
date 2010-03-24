@@ -51,7 +51,7 @@ public:
 	virtual ~qtractorEngine();
 
 	// Device engine activation methods.
-	bool open(const QString& sClientName);
+	bool open();
 	void close();
 
 	// Buses list clear.
@@ -105,7 +105,7 @@ public:
 protected:
 
 	// Derived classes must set on this...
-	virtual bool init(const QString& sClientName) = 0;
+	virtual bool init() = 0;
 	virtual bool activate() = 0;
 	virtual bool start() = 0;
 	virtual void stop() = 0;
@@ -121,8 +121,6 @@ private:
 	// Device instance variables.
 	qtractorSession       *m_pSession;
 	qtractorSessionCursor *m_pSessionCursor;
-
-	QString m_sClientName;
 
 	// Engine running flags.
 	bool m_bActivated;

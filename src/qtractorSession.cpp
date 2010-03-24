@@ -113,6 +113,9 @@ qtractorSession::qtractorSession (void)
 
 	m_midiManagers.setAutoDelete(false);
 
+	// Initial comon client name.
+	m_sClientName = QTRACTOR_TITLE;
+
 	// Singleton ownings.
 	m_pCommands    = new qtractorCommandList();
 	m_pInstruments = new qtractorInstrumentList();
@@ -144,7 +147,7 @@ qtractorSession::~qtractorSession (void)
 
 
 // Open session engine(s).
-bool qtractorSession::open ( const QString& sClientName )
+bool qtractorSession::open (void)
 {
 	// Lock it up...
 	lock();
@@ -158,8 +161,7 @@ bool qtractorSession::open ( const QString& sClientName )
 		m_pAudioEngine->addBus(new qtractorAudioBus(m_pAudioEngine, "Master"));
 
 	//  Actually open session device engines...
-	if (!m_pAudioEngine->open(sClientName) ||
-		!m_pMidiEngine->open(sClientName)) {
+	if (!m_pAudioEngine->open() || !m_pMidiEngine->open()) {
 		unlock();
 		close();
 		return false;
@@ -371,6 +373,18 @@ unsigned long qtractorSession::sessionLength (void) const
 qtractorTimeScale *qtractorSession::timeScale (void)
 {
 	return &(m_props.timeScale);
+}
+
+
+// Device engine common client name accessors.
+void qtractorSession::setClientName ( const QString& sClientName )
+{
+	m_sClientName = sClientName;
+}
+
+const QString& qtractorSession::clientName (void) const
+{
+	return m_sClientName;
 }
 
 

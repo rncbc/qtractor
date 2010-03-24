@@ -1234,7 +1234,7 @@ void qtractorMidiEngine::flush (void)
 
 
 // Device engine initialization method.
-bool qtractorMidiEngine::init ( const QString& sClientName )
+bool qtractorMidiEngine::init (void)
 {
 	// There must a session reference...
 	qtractorSession *pSession = session();
@@ -1248,7 +1248,8 @@ bool qtractorMidiEngine::init ( const QString& sClientName )
 		return false;
 
 	// Fix client name.
-	snd_seq_set_client_name(m_pAlsaSeq, sClientName.toUtf8().constData());
+	const QByteArray aClientName = pSession->clientName().toUtf8();
+	snd_seq_set_client_name(m_pAlsaSeq, aClientName.constData());
 
 	m_iAlsaClient = snd_seq_client_id(m_pAlsaSeq);
 	m_iAlsaQueue  = snd_seq_alloc_queue(m_pAlsaSeq);

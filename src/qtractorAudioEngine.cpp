@@ -412,7 +412,7 @@ void qtractorAudioEngine::shutdown (void)
 
 
 // Device engine initialization method.
-bool qtractorAudioEngine::init ( const QString& sClientName )
+bool qtractorAudioEngine::init (void)
 {
 	// There must a session reference...
 	qtractorSession *pSession = session();
@@ -420,12 +420,17 @@ bool qtractorAudioEngine::init ( const QString& sClientName )
 		return false;
 
 	// Try open a new client...
+	const QByteArray aClientName = pSession->clientName().toUtf8();
 	m_pJackClient = jack_client_open(
-		sClientName.toUtf8().constData(), JackUseExactName, NULL);
+		aClientName.constData(), JackNullOption, NULL);
 	if (m_pJackClient == NULL)
 		return false;
 
 	// ATTN: First thing to remember to set session sample rate.
+	pSession->setClientName(
+		QString::fromUtf8(jack_get_client_name(m_pJackClient)));
+
+	// ATTN: Second thing to remember to set session sample rate.
 	pSession->setSampleRate(sampleRate());
 
 	// Open player/metronome buses, at least try...

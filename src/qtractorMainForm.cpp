@@ -4094,7 +4094,7 @@ bool qtractorMainForm::startSession (void)
 	unsigned int iOldSampleRate = m_pSession->sampleRate();
 
 	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-	bool bResult = m_pSession->open(QTRACTOR_TITLE);
+	bool bResult = m_pSession->open();
 	QApplication::restoreOverrideCursor();
 
 	if (bResult) {

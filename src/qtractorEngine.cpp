@@ -86,7 +86,7 @@ qtractorTrack::TrackType qtractorEngine::syncType (void) const
 // Client name accessor.
 const QString& qtractorEngine::clientName (void) const
 {
-	return m_sClientName;
+	return m_pSession->clientName();
 }
 
 
@@ -166,7 +166,7 @@ qtractorBus *qtractorEngine::findBusEx ( const QString& sBusName )
 
 
 // Device engine activation method.
-bool qtractorEngine::open ( const QString& sClientName )
+bool qtractorEngine::open (void)
 {
 //	close();
 
@@ -175,11 +175,8 @@ bool qtractorEngine::open ( const QString& sClientName )
 		return false;
 
 	// Call derived initialization...
-	if (!init(sClientName))
+	if (!init())
 		return false;
-
-	// Set actual client name...
-	m_sClientName = sClientName;
 
 	// Update the session cursor tracks...
 	m_pSessionCursor->resetClips();
