@@ -44,6 +44,8 @@
 #include "qtractorVstPlugin.h"
 #endif
 
+#ifdef CONFIG_XUNIQUE
+
 #include <QX11Info>
 
 #include <X11/Xatom.h>
@@ -51,6 +53,7 @@
 
 #define QTRACTOR_XUNIQUE "qtractorApplication"
 
+#endif
 #endif
 
 class qtractorApplication : public QApplication
@@ -102,11 +105,13 @@ public:
 			}
 		}
 	#if defined(Q_WS_X11)
+	#ifdef CONFIG_XUNIQUE
 		m_pDisplay = QX11Info::display();
 		m_aUnique  = XInternAtom(m_pDisplay, QTRACTOR_XUNIQUE, false);
 		XGrabServer(m_pDisplay);
 		m_wOwner = XGetSelectionOwner(m_pDisplay, m_aUnique);
 		XUngrabServer(m_pDisplay);
+	#endif
 	#endif
 	}
 
@@ -122,10 +127,12 @@ public:
 	{
 		m_pWidget = pWidget;
 	#if defined(Q_WS_X11)
+	#ifdef CONFIG_XUNIQUE
 		XGrabServer(m_pDisplay);
 		m_wOwner = m_pWidget->winId();
 		XSetSelectionOwner(m_pDisplay, m_aUnique, m_wOwner, CurrentTime);
 		XUngrabServer(m_pDisplay);
+	#endif
 	#endif
 	}
 
@@ -136,6 +143,7 @@ public:
 	bool setup()
 	{
 	#if defined(Q_WS_X11)
+	#ifdef CONFIG_XUNIQUE
 		if (m_wOwner != None) {
 			// First, notify any freedesktop.org WM
 			// that we're about to show the main widget...
@@ -173,12 +181,14 @@ public:
 			return true;
 		}
 	#endif
+	#endif
 		return false;
 	}
 
 #if defined(Q_WS_X11)
 	bool x11EventFilter(XEvent *pEv)
 	{
+	#ifdef CONFIG_XUNIQUE
 		if (m_pWidget && m_wOwner != None
 			&& pEv->type == PropertyNotify
 			&& pEv->xproperty.window == m_wOwner
@@ -213,11 +223,12 @@ public:
 			if (iItems > 0 && pData)
 				XFree(pData);
 		}
-#ifdef CONFIG_VST
+	#endif
+	#ifdef CONFIG_VST
 		// Let xevents be processed by VST plugin editors...
 		if (qtractorVstPlugin::x11EventFilter(pEv))
 			return true;
-#endif
+	#endif
 		return QApplication::x11EventFilter(pEv);
 	}
 #endif
@@ -232,9 +243,11 @@ private:
 	QWidget *m_pWidget;
 
 #if defined(Q_WS_X11)
+#ifdef CONFIG_XUNIQUE
 	Display *m_pDisplay;
 	Atom     m_aUnique;
 	Window   m_wOwner;
+#endif
 #endif
 };
 

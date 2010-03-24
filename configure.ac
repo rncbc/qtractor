@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(Qtractor, 0.4.5.1536, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.4.5.1537, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractorMainForm.ui)
 AC_CONFIG_HEADERS(config.h)
@@ -105,6 +105,12 @@ AC_ARG_ENABLE(lv2-saverestore,
   AC_HELP_STRING([--enable-lv2-saverestore], [enable LV2 plug-in save/restore support (default=yes)]),
   [ac_lv2_saverestore="$enableval"],
   [ac_lv2_saverestore="yes"])
+
+# Enable X11 unique/single instance.
+AC_ARG_ENABLE(xunique,
+  AC_HELP_STRING([--enable-xunique], [enable X11 unique/single instance (default=no)]),
+  [ac_xunique="$enableval"],
+  [ac_xunique="no"])
 
 # Enable XInitThreads() support.
 AC_ARG_ENABLE(xinitthreads,
@@ -666,6 +672,11 @@ if test "x$ac_lv2_saverestore" = "xyes"; then
    fi
 fi
 
+# Check for X11 unique/single instance.
+if test "x$ac_xunique" = "xyes"; then
+   AC_DEFINE(CONFIG_XUNIQUE, 1, [Define if X11 unique/single instance is enabled.])
+fi
+
 # Check for XInitThreads() support.
 if test "x$ac_xinitthreads" = "xyes"; then
    AC_DEFINE(CONFIG_XINITTHREADS, 1, [Define if XInitThreads() is supported.])
@@ -720,8 +731,8 @@ echo "  LV2 Plug-in Event/MIDI support . . . . . . . . . .: $ac_lv2_event"
 echo "  LV2 Plug-in External UI support  . . . . . . . . .: $ac_lv2_external_ui"
 echo "  LV2 Plug-in Save/Restore support . . . . . . . . .: $ac_lv2_saverestore"
 echo
+echo "  X11 Unique/Single instance . . . . . . . . . . . .: $ac_xunique"
 echo "  XInitThreads() support (DANGEROUS) . . . . . . . .: $ac_xinitthreads"
-echo
 echo "  Gradient eye-candy . . . . . . . . . . . . . . . .: $ac_gradient"
 echo "  Debugger stack-trace (gdb) . . . . . . . . . . . .: $ac_stacktrace"
 echo

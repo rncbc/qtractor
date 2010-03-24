@@ -422,7 +422,14 @@ bool qtractorAudioEngine::init (void)
 	// Try open a new client...
 	const QByteArray aClientName = pSession->clientName().toUtf8();
 	m_pJackClient = jack_client_open(
-		aClientName.constData(), JackNullOption, NULL);
+		aClientName.constData(),
+	#ifdef CONFIG_XUNIQUE
+		JackUseExactName,
+	#else
+		JackNullOption,
+	#endif
+		NULL);
+
 	if (m_pJackClient == NULL)
 		return false;
 

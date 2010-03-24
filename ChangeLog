@@ -5,10 +5,11 @@ ChangeLog
 
 SVN TRUNK
 
-- Refactorization for common engine client naming, as provided
-  by JACK, then passed to ALSA Sequencer, getting rid of the
-  JackUseExactName requirement and lifting the once artificial
-  single application instance restriction. (EXPERIMENTAL)
+- Refactored for common engine client nomenclature, primarily
+  provided by JACK, then secondarily passed to ALSA Sequencer,
+  getting rid of the JackUseExactName requirement and lifting
+  the unique/single instance restriction in the process.
+  (EXPERIMENTAL)
 
 - Current JACK Transport, MMC Device, and MIDI Song Position
   pointer (SPP) control modes are now saved/loaded as part of
