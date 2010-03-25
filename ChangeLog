@@ -5,6 +5,10 @@ ChangeLog
 
 SVN TRUNK
 
+- Ever since smooth-ramping introduction that having at least
+  one input-only buses were causing immediate playback crashes,
+  now hopefully fixed.
+
 - Refactored for common engine client nomenclature, primarily
   provided by JACK, then secondarily passed to ALSA Sequencer,
   getting rid of the JackUseExactName requirement and lifting

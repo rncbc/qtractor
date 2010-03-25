@@ -844,7 +844,7 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 				pBus; pBus = pBus->next()) {
 			qtractorAudioBus *pAudioBus
 				= static_cast<qtractorAudioBus *> (pBus);
-			if (pAudioBus)
+			if (pAudioBus && (pAudioBus->busMode() & qtractorBus::Output))
 				pAudioBus->process_ramp(nframes, float(iRamping));
 		}
 		if (iRamping < 0)

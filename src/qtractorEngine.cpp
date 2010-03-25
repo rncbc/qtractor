@@ -119,11 +119,41 @@ void qtractorEngine::removeBus ( qtractorBus *pBus )
 
 
 // Find a device bus by name
-qtractorBus *qtractorEngine::findBus ( const QString& sBusName )
+qtractorBus *qtractorEngine::findBus ( const QString& sBusName ) const
 {
 	for (qtractorBus *pBus = m_buses.first();
 			pBus; pBus = pBus->next()) {
 		if (pBus->busName() == sBusName)
+			return pBus;
+	}
+
+	return NULL;
+}
+
+
+// Find an input bus by name
+qtractorBus *qtractorEngine::findInputBus (
+	const QString& sInputBusName ) const
+{
+	for (qtractorBus *pBus = m_buses.first();
+			pBus; pBus = pBus->next()) {
+		if ((pBus->busMode() & qtractorBus::Input)
+			&& pBus->busName() == sInputBusName)
+			return pBus;
+	}
+
+	return NULL;
+}
+
+
+// Find an output bus by name
+qtractorBus *qtractorEngine::findOutputBus (
+	const QString& sOutputBusName ) const
+{
+	for (qtractorBus *pBus = m_buses.first();
+			pBus; pBus = pBus->next()) {
+		if ((pBus->busMode() & qtractorBus::Input)
+			&& pBus->busName() == sOutputBusName)
 			return pBus;
 	}
 
@@ -153,7 +183,7 @@ void qtractorEngine::removeBusEx ( qtractorBus *pBus )
 
 
 // Find a exo-device bus by name
-qtractorBus *qtractorEngine::findBusEx ( const QString& sBusName )
+qtractorBus *qtractorEngine::findBusEx ( const QString& sBusName ) const
 {
 	for (qtractorBus *pBus = m_busesEx.first();
 			pBus; pBus = pBus->next()) {

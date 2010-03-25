@@ -211,7 +211,7 @@ bool qtractorMidiClip::openMidiFile ( qtractorMidiFile *pFile,
 			qtractorMidiEngine *pMidiEngine = pSession->midiEngine();
 			if (pMidiEngine) {
 				pMidiBus = static_cast<qtractorMidiBus *> (
-					pMidiEngine->findBus(pTrack->outputBusName()));
+					pMidiEngine->findOutputBus(pTrack->outputBusName()));
 				if (pMidiBus == NULL) {
 					for (qtractorBus *pBus = pMidiEngine->buses().first();
 							pBus; pBus = pBus->next()) {

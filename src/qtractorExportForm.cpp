@@ -244,8 +244,9 @@ void qtractorExportForm::accept (void)
 			if (pAudioEngine) {
 				// Get the export bus by name...
 				qtractorAudioBus *pExportBus
-					= static_cast<qtractorAudioBus *> (pAudioEngine->findBus(
-						m_ui.ExportBusNameComboBox->currentText()));
+					= static_cast<qtractorAudioBus *> (
+						pAudioEngine->findOutputBus(
+							m_ui.ExportBusNameComboBox->currentText()));
 				// Log this event...
 				pMainForm->appendMessages(
 					tr("Audio file export: \"%1\" started...")
@@ -279,8 +280,9 @@ void qtractorExportForm::accept (void)
 			if (pMidiEngine) {
 				// Get the export bus by name...
 				qtractorMidiBus *pExportBus
-					= static_cast<qtractorMidiBus *> (pMidiEngine->findBus(
-						m_ui.ExportBusNameComboBox->currentText()));
+					= static_cast<qtractorMidiBus *> (
+						pMidiEngine->findOutputBus(
+							m_ui.ExportBusNameComboBox->currentText()));
 				// Log this event...
 				pMainForm->appendMessages(
 					tr("MIDI file export: \"%1\" started...")

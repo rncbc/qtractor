@@ -82,7 +82,9 @@ public:
 	void addBus(qtractorBus *pBus);
 	void removeBus(qtractorBus *pBus);
 
-	qtractorBus *findBus(const QString& sBusName);
+	qtractorBus *findBus(const QString& sBusName) const;
+	qtractorBus *findInputBus(const QString& sInputBusName) const;
+	qtractorBus *findOutputBus(const QString& sOutputBusName) const;
 
 	// Exo-buses list managament methods.
 	const qtractorList<qtractorBus>& busesEx() const;
@@ -90,7 +92,7 @@ public:
 	void addBusEx(qtractorBus *pBus);
 	void removeBusEx(qtractorBus *pBus);
 
-	qtractorBus *findBusEx(const QString& sBusName);
+	qtractorBus *findBusEx(const QString& sBusName) const;
 
 	// Retrieve/restore all connections, on all buses;
 	// return the effective number of connection attempts.

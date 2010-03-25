@@ -266,10 +266,10 @@ void qtractorTrackForm::setTrack ( qtractorTrack *pTrack )
 	}
 	updateTrackType(m_props.trackType);
 
-	if (pEngine && pEngine->findBus(m_props.inputBusName))
+	if (pEngine && pEngine->findInputBus(m_props.inputBusName))
 		m_ui.InputBusNameComboBox->setCurrentIndex(
 			m_ui.InputBusNameComboBox->findText(m_props.inputBusName));
-	if (pEngine && pEngine->findBus(m_props.outputBusName))
+	if (pEngine && pEngine->findOutputBus(m_props.outputBusName))
 		m_ui.OutputBusNameComboBox->setCurrentIndex(
 			m_ui.OutputBusNameComboBox->findText(m_props.outputBusName));
 
@@ -444,8 +444,10 @@ qtractorMidiBus *qtractorTrackForm::midiBus (void) const
 		return NULL;
 
 	// MIDI bus...
-	const QString& sBusName = m_ui.OutputBusNameComboBox->currentText();
-	return static_cast<qtractorMidiBus *> (pMidiEngine->findBus(sBusName));
+	const QString& sOutputBusName
+		= m_ui.OutputBusNameComboBox->currentText();
+	return static_cast<qtractorMidiBus *> (
+		pMidiEngine->findOutputBus(sOutputBusName));
 }
 
 
@@ -1048,7 +1050,7 @@ void qtractorTrackForm::outputBusNameChanged ( const QString& sBusName )
 		qtractorAudioBus *pAudioBus = NULL;
 		if (trackType == qtractorTrack::Audio)
 			pAudioBus = static_cast<qtractorAudioBus *> (
-				pAudioEngine->findBus(sBusName));
+				pAudioEngine->findOutputBus(sBusName));
 		// FIXME: Master audio bus as reference, still...
 		if (pAudioBus == NULL)
 			pAudioBus = static_cast<qtractorAudioBus *> (
@@ -1111,10 +1113,10 @@ void qtractorTrackForm::busNameClicked (void)
 		// Update the comboboxes...
 		trackTypeChanged();
 		// Restore old current selected ones...
-		if (pEngine->findBus(sInputBusName))
+		if (pEngine->findInputBus(sInputBusName))
 			m_ui.InputBusNameComboBox->setCurrentIndex(
 				m_ui.InputBusNameComboBox->findText(sInputBusName));
-		if (pEngine->findBus(sOutputBusName))
+		if (pEngine->findOutputBus(sOutputBusName))
 			m_ui.OutputBusNameComboBox->setCurrentIndex(
 				m_ui.OutputBusNameComboBox->findText(sOutputBusName));
 	}
