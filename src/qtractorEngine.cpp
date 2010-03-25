@@ -152,7 +152,7 @@ qtractorBus *qtractorEngine::findOutputBus (
 {
 	for (qtractorBus *pBus = m_buses.first();
 			pBus; pBus = pBus->next()) {
-		if ((pBus->busMode() & qtractorBus::Input)
+		if ((pBus->busMode() & qtractorBus::Output)
 			&& pBus->busName() == sOutputBusName)
 			return pBus;
 	}

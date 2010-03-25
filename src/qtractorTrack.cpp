@@ -200,7 +200,7 @@ bool qtractorTrack::open (void)
 	}
 
 	// (Re)assign the output bus to the track.
-	m_pOutputBus = pEngine->findInputBus(outputBusName());
+	m_pOutputBus = pEngine->findOutputBus(outputBusName());
 	// Fallback to first usable one...
 	if (m_pOutputBus == NULL) {
 		for (qtractorBus *pBus = pEngine->buses().first();
