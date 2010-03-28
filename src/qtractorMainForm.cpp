@@ -150,6 +150,11 @@ static const char *s_pszTemplateExt  = "qtt";
 #define QTRACTOR_SPP_EVENT      QEvent::Type(QEvent::User + 8)
 #define QTRACTOR_SAVE_EVENT     QEvent::Type(QEvent::User + 9)
 
+#ifdef CONFIG_JACK_SESSION
+#include <jack/session.h>
+#define QTRACTOR_SESS_EVENT     QEvent::Type(QEvent::User + 10)
+#endif
+
 
 //-------------------------------------------------------------------------
 // qtractorTempoCursor -- Custom session tempo helper class
@@ -260,6 +265,9 @@ qtractorMainForm::qtractorMainForm (
 		pAudioEngine->setNotifyXrunType(QTRACTOR_XRUN_EVENT);
 		pAudioEngine->setNotifyPortType(QTRACTOR_PORT_EVENT);
 		pAudioEngine->setNotifyBufferType(QTRACTOR_BUFF_EVENT);
+	#ifdef CONFIG_JACK_SESSION
+		pAudioEngine->setNotifyBufferType(QTRACTOR_SESS_EVENT);
+	#endif
 	}
 
 	// Configure the audio file peak factory...
@@ -1240,7 +1248,12 @@ void qtractorMainForm::customEvent ( QEvent *pEvent )
 	case QTRACTOR_SAVE_EVENT:
 		// LADISH Level 1 support...
 		saveSession(false);
-		// Fall thru.
+		break;
+#ifdef CONFIG_JACK_SESSION
+	case QTRACTOR_SESS_EVENT:
+		// TODO: JACK session support...
+		break;
+#endif
 	default:
 		break;
 	}

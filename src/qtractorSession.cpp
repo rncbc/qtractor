@@ -376,6 +376,18 @@ qtractorTimeScale *qtractorSession::timeScale (void)
 }
 
 
+// Session UUID accessors.
+void qtractorSession::setSessionId ( const QString& sSessionId )
+{
+	m_sSessionId = sSessionId;
+}
+
+const QString& qtractorSession::sessionId (void) const
+{
+	return m_sSessionId;
+}
+
+
 // Device engine common client name accessors.
 void qtractorSession::setClientName ( const QString& sClientName )
 {
@@ -1624,6 +1636,12 @@ bool qtractorSession::loadElement ( qtractorSessionDocument *pDocument,
 		if (eChild.isNull())
 			continue;
 
+	#ifdef CONFIG_JACK_SESSION
+		// Load session identification...
+		if (eChild.tagName() == "session-id")
+			qtractorSession::setSessionId(eChild.text());
+		else
+	#endif
 		// Load session properties...
 		if (eChild.tagName() == "properties") {
 			for (QDomNode nProp = eChild.firstChild();
@@ -1842,6 +1860,13 @@ bool qtractorSession::saveElement ( qtractorSessionDocument *pDocument,
 		pElement->setAttribute("name", qtractorSession::sessionName());
 
 	pElement->setAttribute("version", PACKAGE_STRING);
+
+#ifdef CONFIG_JACK_SESSION
+	// Save  session identification...
+	const QString& sSessionId = qtractorSession::sessionId();
+	if (!sSessionId.isEmpty())
+		pDocument->saveTextElement("session-id", sSessionId, pElement);
+#endif
 
 	// Save session properties...
 	QDomElement eProps = pDocument->document()->createElement("properties");

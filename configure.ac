@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(Qtractor, 0.4.5.1538, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.4.5.1539, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractorMainForm.ui)
 AC_CONFIG_HEADERS(config.h)
@@ -105,6 +105,12 @@ AC_ARG_ENABLE(lv2-saverestore,
   AC_HELP_STRING([--enable-lv2-saverestore], [enable LV2 plug-in save/restore support (default=yes)]),
   [ac_lv2_saverestore="$enableval"],
   [ac_lv2_saverestore="yes"])
+
+# Enable JACK session support.
+AC_ARG_ENABLE(jack-session,
+  AC_HELP_STRING([--jack-session], [enable JACK session support (default=yes)]),
+  [ac_jack_session="$enableval"],
+  [ac_jack_session="yes"])
 
 # Enable X11 unique/single instance.
 AC_ARG_ENABLE(xunique,
@@ -482,6 +488,11 @@ else
    ac_lv2_saverestore="no"
 fi
 
+# Check for JACK session event callback availability.
+if test "x$ac_jack_session" = "xyes"; then
+   AC_CHECK_LIB(jack, jack_set_session_callback, [ac_jack_session="yes"], [ac_jack_session="no"])
+fi
+
 AC_SUBST(ac_libs)
 
 
@@ -672,6 +683,16 @@ if test "x$ac_lv2_saverestore" = "xyes"; then
    fi
 fi
 
+# Chack for JACK session headers availability.
+if test "x$ac_jack_session" = "xyes"; then
+   AC_CHECK_HEADER(jack/session.h, [ac_jack_session="yes"], [ac_jack_session="no"])
+   if test "x$ac_jack_session" = "xyes"; then
+      AC_DEFINE(CONFIG_JACK_SESSION, 1, [Define if JACK session support is available.])
+   else
+      AC_MSG_WARN([*** JACK session support will be disabled.])
+   fi
+fi
+
 # Check for X11 unique/single instance.
 if test "x$ac_xunique" = "xyes"; then
    AC_DEFINE(CONFIG_XUNIQUE, 1, [Define if X11 unique/single instance is enabled.])
@@ -731,6 +752,8 @@ echo "  LV2 Plug-in Event/MIDI support . . . . . . . . . .: $ac_lv2_event"
 echo "  LV2 Plug-in External UI support  . . . . . . . . .: $ac_lv2_external_ui"
 echo "  LV2 Plug-in Save/Restore support . . . . . . . . .: $ac_lv2_saverestore"
 echo
+echo "  JACK Session support (EXPERIMENTAL)  . . . . . . .: $ac_jack_session"
+echo
 echo "  X11 Unique/Single instance . . . . . . . . . . . .: $ac_xunique"
 echo "  XInitThreads() support (DANGEROUS) . . . . . . . .: $ac_xinitthreads"
 echo "  Gradient eye-candy . . . . . . . . . . . . . . . .: $ac_gradient"
@@ -740,4 +763,3 @@ echo "  Install prefix . . . . . . . . . . . . . . . . . .: $ac_prefix"
 echo
 echo "Now type 'make', followed by 'make install' as root."
 echo
-

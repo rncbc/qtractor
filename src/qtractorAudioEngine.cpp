@@ -35,6 +35,10 @@
 #include "qtractorPlugin.h"
 #include "qtractorClip.h"
 
+#ifdef CONFIG_JACK_SESSION
+#include <jack/session.h>
+#endif
+
 #include <QApplication>
 #include <QEvent>
 
@@ -269,6 +273,31 @@ static void qtractorAudioEngine_freewheel ( int iStarting, void *pvArg )
 }
 
 
+#ifdef CONFIG_JACK_SESSION
+//----------------------------------------------------------------------
+// qtractorAudioEngine_session -- JACK session event callabck
+//
+
+static void qtractorAudioEngine_session (
+	jack_session_event_t *pSessionEvent, void *pvArg )
+{
+	qtractorAudioEngine *pAudioEngine
+		= static_cast<qtractorAudioEngine *> (pvArg);
+
+	qtractorSession *pSession = pAudioEngine->session();
+	if (pSession) {
+		pSession->setSessionId(
+			QString::fromLocal8Bit(pSessionEvent->client_uuid));
+	}
+
+	if (pAudioEngine->notifyObject()) {
+		QApplication::postEvent(pAudioEngine->notifyObject(),
+			new QEvent(pAudioEngine->notifySessionType()));
+	}
+}
+#endif
+
+
 //----------------------------------------------------------------------
 // class qtractorAudioEngine -- JACK client instance (singleton).
 //
@@ -284,6 +313,7 @@ qtractorAudioEngine::qtractorAudioEngine ( qtractorSession *pSession )
 	m_eNotifyXrunType     = QEvent::None;
 	m_eNotifyPortType     = QEvent::None;
 	m_eNotifyBufferType   = QEvent::None;
+	m_eNotifySessionType  = QEvent::None;
 
 	m_iBufferOffset = 0;
 
@@ -357,6 +387,11 @@ void qtractorAudioEngine::setNotifyBufferType ( QEvent::Type eNotifyBufferType )
 	m_eNotifyBufferType = eNotifyBufferType;
 }
 
+void qtractorAudioEngine::setNotifySessionType ( QEvent::Type eNotifySessionType )
+{
+	m_eNotifySessionType = eNotifySessionType;
+}
+
 
 QObject *qtractorAudioEngine::notifyObject (void) const
 {
@@ -382,6 +417,12 @@ QEvent::Type qtractorAudioEngine::notifyBufferType (void) const
 {
 	return m_eNotifyBufferType;
 }
+
+QEvent::Type qtractorAudioEngine::notifySessionType (void) const
+{
+	return m_eNotifySessionType;
+}
+
 
 
 // Internal sample-rate accessor.
@@ -421,14 +462,25 @@ bool qtractorAudioEngine::init (void)
 
 	// Try open a new client...
 	const QByteArray aClientName = pSession->clientName().toUtf8();
+	int opts = JackNullOption;
+#ifdef CONFIG_XUNIQUE
+	opts |= JackUseExactName;
+#endif
+#ifdef CONFIG_JACK_SESSION
+	const QString& sSessionId = pSession->sessionId();
+	if (!sSessionId.isEmpty()) {
+		opts |= JackSessionID;
+		const QByteArray aSessionId = sSessionId.toLocal8Bit();
+		m_pJackClient = jack_client_open(
+			aClientName.constData(),
+			jack_options_t(opts), NULL,
+			aSessionId.constData());
+	}
+	else
+#endif
 	m_pJackClient = jack_client_open(
 		aClientName.constData(),
-	#ifdef CONFIG_XUNIQUE
-		JackUseExactName,
-	#else
-		JackNullOption,
-	#endif
-		NULL);
+		jack_options_t(opts), NULL);
 
 	if (m_pJackClient == NULL)
 		return false;
@@ -490,6 +542,11 @@ bool qtractorAudioEngine::activate (void)
 	// Set audio export processor callback.
 	jack_set_freewheel_callback(m_pJackClient,
 		qtractorAudioEngine_freewheel, this);
+
+#ifdef CONFIG_JACK_SESSION
+	jack_set_session_callback(m_pJackClient,
+		qtractorAudioEngine_session, this);
+#endif
 
 	// Time to activate ourselves...
 	jack_activate(m_pJackClient);

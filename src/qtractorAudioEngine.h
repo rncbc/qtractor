@@ -67,12 +67,14 @@ public:
 	void setNotifyXrunType     (QEvent::Type eNotifyXrunType);
 	void setNotifyPortType     (QEvent::Type eNotifyPortType);
 	void setNotifyBufferType   (QEvent::Type eNotifyBufferType);
+	void setNotifySessionType  (QEvent::Type eNotifySessionType);
 
 	QObject     *notifyObject() const;
 	QEvent::Type notifyShutdownType() const;
 	QEvent::Type notifyXrunType() const;
 	QEvent::Type notifyPortType() const;
 	QEvent::Type notifyBufferType() const;
+	QEvent::Type notifySessionType() const;
 
 	// Internal sample-rate accessor.
 	unsigned int sampleRate() const;
@@ -173,6 +175,7 @@ private:
 	QEvent::Type  m_eNotifyXrunType;
 	QEvent::Type  m_eNotifyPortType;
 	QEvent::Type  m_eNotifyBufferType;
+	QEvent::Type  m_eNotifySessionType;
 
 	// Partial buffer offset state;
 	// careful for proper loop concatenation.
