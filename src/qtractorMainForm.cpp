@@ -85,6 +85,10 @@
 #include "qtractorLv2Plugin.h"
 #endif
 
+#ifdef CONFIG_JACK_SESSION
+#include <jack/session.h>
+#endif
+
 #include <QApplication>
 #include <QMessageBox>
 #include <QFileDialog>
@@ -1024,6 +1028,12 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 	// Initial thumb-view background (empty)
 	m_pThumbView->updateContents();
 
+	// Is any session identification to get loaded?
+	if (!m_pOptions->sSessionId.isEmpty()) {
+		m_pSession->setSessionId(m_pOptions->sSessionId);
+		m_pOptions->sSessionId.clear();
+	}
+
 	// Is any session pending to be loaded?
 	if (!m_pOptions->sSessionFile.isEmpty()) {
 		// Just load the prabable startup session...
@@ -1447,6 +1457,66 @@ void qtractorMainForm::midiSppEvent ( qtractorMidiSppEvent *pSppEvent )
 }
 
 
+// Custome (JACK) session event handler.
+void qtractorMainForm::sessionEvent ( qtractorSessionEvent *pSessionEvent )
+{
+#ifdef CONFIG_JACK_SESSION
+
+	jack_session_event_t *pJackSessionEvent
+		= (jack_session_event_t *) pSessionEvent->arg();
+
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::sessionEvent()"
+		" type=%d client_uuid=\"%s\" session_dir=\"%s\"",
+		int(pJackSessionEvent->type),
+		pJackSessionEvent->client_uuid,
+		pJackSessionEvent->session_dir);
+#endif
+
+	bool bTemplate = (pJackSessionEvent->type == JackSessionSaveTemplate);
+	bool bQuit = (pJackSessionEvent->type == JackSessionSaveAndQuit);
+
+	m_pSession->setSessionId(
+		QString::fromLocal8Bit(pJackSessionEvent->client_uuid));
+	m_pSession->setSessionDir(
+			QString::fromUtf8(pJackSessionEvent->session_dir));
+
+	if (m_pSession->sessionName().isEmpty())
+		editSession();
+
+	QString sSessionName = m_pSession->sessionName();
+	if (sSessionName.isEmpty())
+		sSessionName = tr("Untitled%1").arg(m_iUntitled);
+	
+	const QString sExt
+		= (bTemplate ? s_pszTemplateExt : s_pszSessionExt);
+	const QString sFilename
+		= QFileInfo(m_pSession->sessionDir(), 
+			sSessionName + '.' + sExt).absoluteFilePath();
+
+	QStringList args;
+	args << QApplication::applicationFilePath();
+	args << "--session-id=" + m_pSession->sessionId();
+
+	if (saveSessionFile(sFilename, bTemplate))
+		args << '"' + sFilename + '"';
+
+	const QByteArray aCmdLine = args.join(" ").toUtf8();
+	pJackSessionEvent->command_line = strdup(aCmdLine.constData());
+
+	qtractorAudioEngine *pAudioEngine = m_pSession->audioEngine();
+	if (pAudioEngine && pAudioEngine->jackClient())
+		jack_session_reply(pAudioEngine->jackClient(), pJackSessionEvent);
+
+	jack_session_event_free(pJackSessionEvent);
+
+	if (bQuit)
+		close();
+
+#endif
+}
+
+
 // Context menu event handler.
 void qtractorMainForm::contextMenuEvent( QContextMenuEvent *pEvent )
 {
@@ -1508,7 +1578,7 @@ QString qtractorMainForm::sessionName ( const QString& sFilename )
 	if (sSessionName.isEmpty() && m_pSession)
 		sSessionName = m_pSession->sessionName();
 	if (sSessionName.isEmpty())
-		sSessionName = tr("Untitled") + QString::number(m_iUntitled);
+		sSessionName = tr("Untitled%1").arg(m_iUntitled);
 	else if (!bCompletePath)
 		sSessionName = QFileInfo(sSessionName).baseName();
 	return sSessionName;

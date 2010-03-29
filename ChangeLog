@@ -7,7 +7,7 @@ SVN TRUNK
 
 - General source tree layout and build configuration change.
 
-- JACK session infrastructure support. (EXPERIMENTAL STUB)
+- JACK session infrastructure support. (EXPERIMENTAL)
 
 - Ever since smooth-ramping introduction that having at least
   one input-only buses were causing immediate playback crashes,

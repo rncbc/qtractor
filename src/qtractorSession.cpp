@@ -227,6 +227,8 @@ void qtractorSession::clear (void)
 
 	m_pCommands->clear();
 
+	m_sSessionId.clear();
+
 	m_iSessionLength = 0;
 
 	m_iRecordTracks  = 0;

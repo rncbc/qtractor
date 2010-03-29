@@ -508,13 +508,19 @@ QSettings& qtractorOptions::settings (void)
 void qtractorOptions::print_usage ( const QString& arg0 )
 {
 	QTextStream out(stderr);
-	out << QObject::tr(
-		"Usage: %1 [options] [session-file]\n\n"
-		QTRACTOR_TITLE " - " QTRACTOR_SUBTITLE "\n\n"
-		"Options:\n\n"
-		"  -h, --help\n\tShow help about command line options\n\n"
-		"  -v, --version\n\tShow version information\n\n")
-		.arg(arg0);
+	const QString sEot = "\n\t";
+	const QString sEol = "\n\n";
+
+	out << QObject::tr("Usage: %1"
+		" [options] [session-file]").arg(arg0) + sEol;
+	out << QTRACTOR_TITLE " - " + QObject::tr(QTRACTOR_SUBTITLE) + sEol;
+	out << QObject::tr("Options:") + sEol;
+	out << "  -s, --session-id=[uuid]" + sEot +
+		QObject::tr("Set session identification (uuid)") + sEol;
+	out << "  -h, --help" + sEot +
+		QObject::tr("Show help about command line options") + sEol;
+	out << "  -v, --version" + sEot +
+		QObject::tr("Show version information") + sEol;
 }
 
 
@@ -536,7 +542,25 @@ bool qtractorOptions::parse_args ( const QStringList& args )
 		}
 
 		QString sArg = args.at(i);
+		QString sVal = QString::null;
+		int iEqual = sArg.indexOf('=');
+		if (iEqual >= 0) {
+			sVal = sArg.right(sArg.length() - iEqual - 1);
+			sArg = sArg.left(iEqual);
+		}
+		else if (i < argc - 1)
+			sVal = args.at(i + 1);
 
+		if (sArg == "-s" || sArg == "--session-id") {
+			if (sVal.isNull()) {
+				out << QObject::tr("Option -s requires an argument (session-id).") + sEol;
+				return false;
+			}
+			sSessionId = sVal;
+			if (iEqual < 0)
+				i++;
+		}
+		else
 		if (sArg == "-h" || sArg == "--help") {
 			print_usage(args.at(0));
 			return false;

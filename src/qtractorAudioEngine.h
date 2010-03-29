@@ -341,6 +341,28 @@ private:
 };
 
 
+//------------------------------------------------------------------
+// qtractorSessionEvent - (JACK) Session custom event.
+//
+
+class qtractorSessionEvent : public QEvent
+{
+public:
+
+	// Contructor.
+	qtractorSessionEvent(QEvent::Type eType, void *pvArg)
+		: QEvent(eType), m_pvArg(pvArg) {}
+
+	// Accessors.
+	void *arg() const { return m_pvArg; }
+
+private:
+
+	// Instance variables.
+	void *m_pvArg;
+};
+
+
 #endif  // __qtractorAudioEngine_h
 
 

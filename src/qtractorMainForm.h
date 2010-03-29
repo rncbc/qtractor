@@ -28,6 +28,7 @@
 // Forward declarations...
 class qtractorOptions;
 class qtractorSession;
+class qtractorSessionEvent;
 class qtractorTracks;
 class qtractorThumbView;
 class qtractorCommand;
@@ -255,6 +256,8 @@ protected:
 	void mmcEvent(qtractorMmcEvent *pMmcEvent);
 	void midiControlEvent(qtractorMidiControlEvent *pCtlEvent);
 	void midiSppEvent(qtractorMidiSppEvent *pSppEvent);
+
+	void sessionEvent(qtractorSessionEvent *pSessionEvent);
 
 	bool queryClose();
 

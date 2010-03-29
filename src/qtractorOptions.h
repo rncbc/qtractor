@@ -56,6 +56,9 @@ public:
 	// Command line usage helper.
 	void print_usage(const QString& arg0);
 
+	// Startup supplied session uuid.
+	QString sSessionId;
+
 	// Startup supplied session file.
 	QString sSessionFile;
 

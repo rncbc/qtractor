@@ -274,27 +274,24 @@ static void qtractorAudioEngine_freewheel ( int iStarting, void *pvArg )
 
 
 #ifdef CONFIG_JACK_SESSION
+
 //----------------------------------------------------------------------
-// qtractorAudioEngine_session -- JACK session event callabck
+// qtractorAudioEngine_session_event -- JACK session event callabck
 //
 
-static void qtractorAudioEngine_session (
+static void qtractorAudioEngine_session_event (
 	jack_session_event_t *pSessionEvent, void *pvArg )
 {
 	qtractorAudioEngine *pAudioEngine
 		= static_cast<qtractorAudioEngine *> (pvArg);
 
-	qtractorSession *pSession = pAudioEngine->session();
-	if (pSession) {
-		pSession->setSessionId(
-			QString::fromLocal8Bit(pSessionEvent->client_uuid));
-	}
-
 	if (pAudioEngine->notifyObject()) {
 		QApplication::postEvent(pAudioEngine->notifyObject(),
-			new QEvent(pAudioEngine->notifySessionType()));
+			new qtractorSessionEvent(
+				pAudioEngine->notifySessionType(), pSessionEvent));
 	}
 }
+
 #endif
 
 
@@ -544,8 +541,9 @@ bool qtractorAudioEngine::activate (void)
 		qtractorAudioEngine_freewheel, this);
 
 #ifdef CONFIG_JACK_SESSION
+	// Set JACK session event callback.
 	jack_set_session_callback(m_pJackClient,
-		qtractorAudioEngine_session, this);
+		qtractorAudioEngine_session_event, this);
 #endif
 
 	// Time to activate ourselves...
