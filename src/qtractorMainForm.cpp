@@ -3698,6 +3698,11 @@ void qtractorMainForm::helpAbout (void)
 	sText += tr("DSSI Plug-in support disabled.");
 	sText += "</font></small><br />";
 #endif
+#ifndef CONFIG_VST
+	sText += "<small><font color=\"red\">";
+	sText += tr("VST Plug-in support disabled.");
+	sText += "</font></small><br />";
+#endif
 #ifndef CONFIG_LV2
 	sText += "<small><font color=\"red\">";
 	sText += tr("LV2 Plug-in support disabled.");
@@ -3713,10 +3718,15 @@ void qtractorMainForm::helpAbout (void)
 	sText += tr("LV2 Plug-in External UI support disabled.");
 	sText += "</font></small><br />";
 #endif
-#endif
-#ifndef CONFIG_VST
+#ifndef CONFIG_LV2_SAVERESTORE
 	sText += "<small><font color=\"red\">";
-	sText += tr("VST Plug-in support disabled.");
+	sText += tr("LV2 Plug-in Save/Restore support disabled.");
+	sText += "</font></small><br />";
+#endif
+#endif
+#ifndef CONFIG_JACK_SESSION
+	sText += "<small><font color=\"red\">";
+	sText += tr("JACK Session support disabled.");
 	sText += "</font></small><br />";
 #endif
 	sText += "<br />\n";
