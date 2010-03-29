@@ -1,7 +1,7 @@
 // qtractorTrackList.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -179,8 +179,8 @@ qtractorTrackList::qtractorTrackList ( qtractorTracks *pTracks, QWidget *pParent
 
 	m_pRubberBand = NULL;
 
-	m_pPixmap[IconAudio] = new QPixmap(":/icons/trackAudio.png");
-	m_pPixmap[IconMidi]  = new QPixmap(":/icons/trackMidi.png");
+	m_pPixmap[IconAudio] = new QPixmap(":/images/trackAudio.png");
+	m_pPixmap[IconMidi]  = new QPixmap(":/images/trackMidi.png");
 
 	// Allocate local header.
 	m_pHeader = new QHeaderView(Qt::Horizontal, qtractorScrollView::viewport());

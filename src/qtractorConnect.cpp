@@ -1,7 +1,7 @@
 // qtractorConnect.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -1795,24 +1795,24 @@ void qtractorConnect::contextMenu ( const QPoint& gpos )
 	QAction *pAction;
 
 	pAction = menu.addAction(
-		QIcon(":/icons/formConnect.png"),
+		QIcon(":/images/formConnect.png"),
 		tr("Connect"), this, SLOT(connectSelected()));
 	pAction->setEnabled(canConnectSelected());
 
 	pAction = menu.addAction(
-		QIcon(":/icons/formDisconnect.png"),
+		QIcon(":/images/formDisconnect.png"),
 		tr("Disconnect"), this, SLOT(disconnectSelected()));
 	pAction->setEnabled(canDisconnectSelected());
 
 	pAction = menu.addAction(
-		QIcon(":/icons/formDisconnectAll.png"),
+		QIcon(":/images/formDisconnectAll.png"),
 		tr("Disconnect All"), this, SLOT(disconnectAll()));
 	pAction->setEnabled(canDisconnectAll());
 
 	menu.addSeparator();
 
 	pAction = menu.addAction(
-		QIcon(":/icons/formRefresh.png"),
+		QIcon(":/images/formRefresh.png"),
 		tr("Refresh"), this, SLOT(refresh()));
 
 	menu.exec(gpos);

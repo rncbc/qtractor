@@ -1,7 +1,7 @@
 // qtractorMidiEditEvent.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -131,9 +131,9 @@ qtractorMidiEditEvent::qtractorMidiEditEvent (
 	m_pHzoomIn    = new QToolButton(this);
 	m_pHzoomReset = new QToolButton(this);
 
-	m_pHzoomOut->setIcon(QIcon(":/icons/viewZoomOut.png"));
-	m_pHzoomIn->setIcon(QIcon(":/icons/viewZoomIn.png"));
-	m_pHzoomReset->setIcon(QIcon(":/icons/viewZoomTool.png"));
+	m_pHzoomOut->setIcon(QIcon(":/images/viewZoomOut.png"));
+	m_pHzoomIn->setIcon(QIcon(":/images/viewZoomIn.png"));
+	m_pHzoomReset->setIcon(QIcon(":/images/viewZoomTool.png"));
 
 #if QT_VERSION >= 0x040201
 	int iScrollBarExtent

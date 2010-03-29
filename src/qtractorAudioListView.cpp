@@ -1,7 +1,7 @@
 // qtractorAudioListView.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -45,7 +45,7 @@ qtractorAudioFileItem::qtractorAudioFileItem (
 		qtractorAudioListView::Rate, Qt::AlignRight);
 
 	QTreeWidgetItem::setIcon(qtractorAudioListView::Name,
-		QIcon(":/icons/itemAudioFile.png"));
+		QIcon(":/images/itemAudioFile.png"));
 
 	QTreeWidgetItem::setText(qtractorAudioListView::Channels,
 		QString::number(pFile->channels()));

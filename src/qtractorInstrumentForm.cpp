@@ -1,7 +1,7 @@
 // qtractorInstrumentForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -52,7 +52,7 @@ public:
 protected:
 
 	// Initializer.
-	void initGroupItem() { setIcon(0, QIcon(":/icons/itemGroup.png")); }
+	void initGroupItem() { setIcon(0, QIcon(":/images/itemGroup.png")); }
 };
 
 
@@ -225,7 +225,7 @@ void qtractorInstrumentForm::importSlot (void)
 			pItem = new QTreeWidgetItem(m_ui.FilesListView, pItem);
 			if (pItem) {
 				QFileInfo info(sPath);
-				pItem->setIcon(0, QIcon(":/icons/itemFile.png"));
+				pItem->setIcon(0, QIcon(":/images/itemFile.png"));
 				pItem->setText(0, info.completeBaseName());
 				pItem->setText(1, sPath);
 				m_ui.FilesListView->setCurrentItem(pItem);
@@ -476,7 +476,7 @@ void qtractorInstrumentForm::refreshForm (void)
 	while (ifile.hasNext()) {
 		const QString& sPath = ifile.next();
 		QTreeWidgetItem *pFileItem = new QTreeWidgetItem();
-		pFileItem->setIcon(0, QIcon(":/icons/itemFile.png"));
+		pFileItem->setIcon(0, QIcon(":/images/itemFile.png"));
 		pFileItem->setText(0, QFileInfo(sPath).completeBaseName());
 		pFileItem->setText(1, sPath);
 		files.append(pFileItem);
@@ -493,7 +493,7 @@ void qtractorInstrumentForm::refreshForm (void)
 		// Instrument Name...
 		QTreeWidgetItem *pChildItem = NULL;
 		QTreeWidgetItem *pInstrItem = new QTreeWidgetItem();
-		pInstrItem->setIcon(0, QIcon(":/icons/itemInstrument.png"));
+		pInstrItem->setIcon(0, QIcon(":/images/itemInstrument.png"));
 		pInstrItem->setText(0, instr.instrumentName());
 		// - Patches Names for Banks...
 		pChildItem = new qtractorInstrumentGroupItem(pInstrItem, pChildItem);
@@ -506,7 +506,7 @@ void qtractorInstrumentForm::refreshForm (void)
 			int iBank = pat.key();
 			const QString sBank = (iBank < 0
 				? QString("*") : QString::number(iBank));
-			pBankItem->setIcon(0, QIcon(":/icons/itemPatches.png"));
+			pBankItem->setIcon(0, QIcon(":/images/itemPatches.png"));
 			pBankItem->setText(0,
 				QString("%1 = %2").arg(sBank).arg(pat.value().name()));
 			// Patches/Progs...
@@ -514,7 +514,7 @@ void qtractorInstrumentForm::refreshForm (void)
 			QTreeWidgetItem *pProgItem = NULL;
 			if (!patch.basedOn().isEmpty()) {
 				pProgItem = new QTreeWidgetItem(pBankItem, pProgItem);
-				pProgItem->setIcon(0, QIcon(":/icons/itemProperty.png"));
+				pProgItem->setIcon(0, QIcon(":/images/itemProperty.png"));
 				pProgItem->setText(0,
 					QString("Based On = %1").arg(patch.basedOn()));
 			}
@@ -531,7 +531,7 @@ void qtractorInstrumentForm::refreshForm (void)
 		// - Controller Names...
 		if (instr.control().count() > 0) {
 			pChildItem = new QTreeWidgetItem(pInstrItem, pChildItem);
-			pChildItem->setIcon(0, QIcon(":/icons/itemControllers.png"));
+			pChildItem->setIcon(0, QIcon(":/images/itemControllers.png"));
 			pChildItem->setText(0,
 				tr("Controller Names = %1").arg(instr.control().name()));
 			listInstrumentData(pChildItem, instr.control());
@@ -539,7 +539,7 @@ void qtractorInstrumentForm::refreshForm (void)
 		// - RPN Names...
 		if (instr.rpn().count() > 0) {
 			pChildItem = new QTreeWidgetItem(pInstrItem, pChildItem);
-			pChildItem->setIcon(0, QIcon(":/icons/itemRpns.png"));
+			pChildItem->setIcon(0, QIcon(":/images/itemRpns.png"));
 			pChildItem->setText(0,
 				tr("RPN Names = %1").arg(instr.rpn().name()));
 			listInstrumentData(pChildItem, instr.rpn());
@@ -547,14 +547,14 @@ void qtractorInstrumentForm::refreshForm (void)
 		// - NRPN Names...
 		if (instr.nrpn().count() > 0) {
 			pChildItem = new QTreeWidgetItem(pInstrItem, pChildItem);
-			pChildItem->setIcon(0, QIcon(":/icons/itemNrpns.png"));
+			pChildItem->setIcon(0, QIcon(":/images/itemNrpns.png"));
 			pChildItem->setText(0,
 				tr("NRPN Names = %1").arg(instr.nrpn().name()));
 			listInstrumentData(pChildItem, instr.nrpn());
 		}
 		// - BankSelMethod...
 		pChildItem = new QTreeWidgetItem(pInstrItem, pChildItem);
-		pChildItem->setIcon(0, QIcon(":/icons/itemProperty.png"));
+		pChildItem->setIcon(0, QIcon(":/images/itemProperty.png"));
 		pChildItem->setText(0,
 			tr("Bank Select Method = %1")
 			.arg(bankSelMethod(instr.bankSelMethod())));
@@ -571,31 +571,31 @@ void qtractorInstrumentForm::refreshForm (void)
 		pListItem = new qtractorInstrumentGroupItem();
 		pListItem->setText(0, tr("Patch Names"));
 		listInstrumentDataList(pListItem, m_pInstruments->patches(),
-			QIcon(":/icons/itemPatches.png"));
+			QIcon(":/images/itemPatches.png"));
 		names.append(pListItem);
 		// - Note Names...
 		pListItem = new qtractorInstrumentGroupItem();
 		pListItem->setText(0, tr("Note Names"));
 		listInstrumentDataList(pListItem, m_pInstruments->notes(),
-			QIcon(":/icons/itemNotes.png"));
+			QIcon(":/images/itemNotes.png"));
 		names.append(pListItem);
 		// - Controller Names...
 		pListItem = new qtractorInstrumentGroupItem();
 		pListItem->setText(0, tr("Controller Names"));
 		listInstrumentDataList(pListItem, m_pInstruments->controllers(),
-			QIcon(":/icons/itemControllers.png"));
+			QIcon(":/images/itemControllers.png"));
 		names.append(pListItem);
 		// - RPN Names...
 		pListItem = new qtractorInstrumentGroupItem();
 		pListItem->setText(0, tr("RPN Names"));
 		listInstrumentDataList(pListItem, m_pInstruments->rpns(),
-			QIcon(":/icons/itemRpns.png"));
+			QIcon(":/images/itemRpns.png"));
 		names.append(pListItem);
 		// - NRPN Names...
 		pListItem = new qtractorInstrumentGroupItem();
 		pListItem->setText(0, tr("NRPN Names"));
 		listInstrumentDataList(pListItem, m_pInstruments->nrpns(),
-			QIcon(":/icons/itemNrpns.png"));
+			QIcon(":/images/itemNrpns.png"));
 		names.append(pListItem);
 		// - Bank Select Methods...
 		pListItem = new qtractorInstrumentGroupItem();
@@ -604,7 +604,7 @@ void qtractorInstrumentForm::refreshForm (void)
 			QTreeWidgetItem *pChildItem = NULL;
 			for (int iBankSelMethod = 0; iBankSelMethod < 4; iBankSelMethod++) {
 				pChildItem = new qtractorInstrumentGroupItem(pListItem, pChildItem);
-				pChildItem->setIcon(0, QIcon(":/icons/itemProperty.png"));
+				pChildItem->setIcon(0, QIcon(":/images/itemProperty.png"));
 				pChildItem->setText(0,
 					tr("%1 = %2").arg(iBankSelMethod)
 					.arg(bankSelMethod(iBankSelMethod)));
@@ -624,14 +624,14 @@ void qtractorInstrumentForm::refreshForm (void)
 void qtractorInstrumentForm::itemCollapsed ( QTreeWidgetItem *pItem )
 {
 	if (pItem->type() == GroupItem)
-		pItem->setIcon(0, QIcon(":/icons/itemGroup.png"));
+		pItem->setIcon(0, QIcon(":/images/itemGroup.png"));
 }
 
 
 void qtractorInstrumentForm::itemExpanded ( QTreeWidgetItem *pItem )
 {
 	if (pItem->type() == GroupItem)
-		pItem->setIcon(0, QIcon(":/icons/itemGroupOpen.png"));
+		pItem->setIcon(0, QIcon(":/images/itemGroupOpen.png"));
 }
 
 
@@ -641,7 +641,7 @@ void qtractorInstrumentForm::listInstrumentData (
 	QTreeWidgetItem *pItem = NULL;
 	if (!data.basedOn().isEmpty()) {
 		pItem = new QTreeWidgetItem(pParentItem, pItem);
-		pItem->setIcon(0, QIcon(":/icons/itemProperty.png"));
+		pItem->setIcon(0, QIcon(":/images/itemProperty.png"));
 		pItem->setText(0,
 			tr("Based On = %1").arg(data.basedOn()));
 	}

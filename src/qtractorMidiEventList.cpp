@@ -59,7 +59,7 @@ qtractorMidiEventList::qtractorMidiEventList ( QWidget *pParent )
 	// Finally set the default caption and tooltip.
 	const QString& sCaption = tr("Events");
 	QDockWidget::setWindowTitle(sCaption);
-	QDockWidget::setWindowIcon(QIcon(":/icons/viewEvents.png"));
+	QDockWidget::setWindowIcon(QIcon(":/images/viewEvents.png"));
 	QDockWidget::setToolTip(sCaption);
 }
 

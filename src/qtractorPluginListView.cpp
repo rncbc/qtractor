@@ -196,8 +196,8 @@ qtractorPluginListView::qtractorPluginListView ( QWidget *pParent )
 	: QListWidget(pParent), m_pPluginList(NULL), m_pClickedItem(NULL)
 {
 	if (++g_iItemRefCount == 1) {
-		g_pItemIcons[0] = new QIcon(":/icons/itemLedOff.png");
-		g_pItemIcons[1] = new QIcon(":/icons/itemLedOn.png");
+		g_pItemIcons[0] = new QIcon(":/images/itemLedOff.png");
+		g_pItemIcons[1] = new QIcon(":/images/itemLedOn.png");
 	}
 
 	// Drag-and-drop stuff.
@@ -999,7 +999,7 @@ void qtractorPluginListView::dropEvent ( QDropEvent *pDropEvent )
 		menu.addAction(tr("&Move Here"), this, SLOT(dropMove()));
 		menu.addAction(tr("&Copy Here"), this, SLOT(dropCopy()));
 		menu.addSeparator();
-		menu.addAction(QIcon(":/icons/formReject.png"),
+		menu.addAction(QIcon(":/images/formReject.png"),
 			tr("C&ancel"), this, SLOT(dropCancel()));
 		menu.exec(QListWidget::mapToGlobal(pDropEvent->pos()));
 	}
@@ -1089,24 +1089,24 @@ void qtractorPluginListView::contextMenuEvent (
 	}
 
 	pAction = menu.addAction(
-		QIcon(":/icons/formCreate.png"),
+		QIcon(":/images/formCreate.png"),
 		tr("&Add Plugin..."), this, SLOT(addPlugin()));
 //	pAction->setEnabled(true);
 
 	QMenu *pInsertMenu = menu.addMenu("&Inserts");
 	pAction = pInsertMenu->addAction(
-		QIcon(":/icons/formAdd.png"),
+		QIcon(":/images/formAdd.png"),
 		tr("Add &Insert"), this, SLOT(addInsertPlugin()));
 	pAction->setEnabled(m_pPluginList->channels() > 0);
 	pInsertMenu->addSeparator();
 	bool bInsertEnabled = (pPlugin
 		&& (pPlugin->type())->typeHint() == qtractorPluginType::Insert);
 	pAction = pInsertMenu->addAction(
-		QIcon(":/icons/itemAudioPortOut.png"),
+		QIcon(":/images/itemAudioPortOut.png"),
 		tr("&Sends"), this, SLOT(insertPluginOutputs()));
 	pAction->setEnabled(bInsertEnabled);
 	pAction = pInsertMenu->addAction(
-		QIcon(":/icons/itemAudioPortIn.png"),
+		QIcon(":/images/itemAudioPortIn.png"),
 		tr("&Returns"), this, SLOT(insertPluginInputs()));
 	pAction->setEnabled(bInsertEnabled);
 
@@ -1135,7 +1135,7 @@ void qtractorPluginListView::contextMenuEvent (
 	menu.addSeparator();
 
 	pAction = menu.addAction(
-		QIcon(":/icons/formRemove.png"),
+		QIcon(":/images/formRemove.png"),
 		tr("&Remove"), this, SLOT(removePlugin()));
 	pAction->setEnabled(pPlugin != NULL);
 
@@ -1146,19 +1146,19 @@ void qtractorPluginListView::contextMenuEvent (
 	menu.addSeparator();
 
 	pAction = menu.addAction(
-		QIcon(":/icons/formMoveUp.png"),
+		QIcon(":/images/formMoveUp.png"),
 		tr("Move &Up"), this, SLOT(moveUpPlugin()));
 	pAction->setEnabled(pItem && iItem > 0);
 
 	pAction = menu.addAction(
-		QIcon(":/icons/formMoveDown.png"),
+		QIcon(":/images/formMoveDown.png"),
 		tr("Move &Down"), this, SLOT(moveDownPlugin()));
 	pAction->setEnabled(pItem && iItem < iItemCount - 1);
 
 	menu.addSeparator();
 
 	pAction = menu.addAction(
-		QIcon(":/icons/formEdit.png"),
+		QIcon(":/images/formEdit.png"),
 		tr("&Edit Plugin..."), this, SLOT(editPlugin()));
 	pAction->setCheckable(true);
 	pAction->setChecked(pPlugin && pPlugin->isFormVisible());
@@ -1168,7 +1168,7 @@ void qtractorPluginListView::contextMenuEvent (
 	if (pMidiManager) {
 		menu.addSeparator();
 		QMenu *pAudioMenu = menu.addMenu(
-			QIcon(":/icons/trackAudio.png"), "Audi&o");
+			QIcon(":/images/trackAudio.png"), "Audi&o");
 		pAction = pAudioMenu->addAction(
 			tr("&Outputs"), this, SLOT(audioOutputs()));
 		pAction->setEnabled(pMidiManager->audioOutputBus() != NULL);

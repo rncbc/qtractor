@@ -33,7 +33,7 @@
    <string>Options - Qtractor</string>
   </property>
   <property name="windowIcon" >
-   <iconset resource="../icons/qtractor.qrc" >:/icons/qtractor.png</iconset>
+   <iconset resource="qtractor.qrc" >:/images/qtractor.png</iconset>
   </property>
   <property name="sizeGripEnabled" >
    <bool>true</bool>
@@ -565,7 +565,7 @@
              </size>
             </property>
             <property name="icon" >
-             <iconset resource="../icons/qtractor.qrc" >:/icons/fileOpen.png</iconset>
+             <iconset resource="qtractor.qrc" >:/images/fileOpen.png</iconset>
             </property>
             <property name="focusPolicy" >
              <enum>Qt::TabFocus</enum>
@@ -636,7 +636,7 @@
              </size>
             </property>
             <property name="icon" >
-             <iconset resource="../icons/qtractor.qrc" >:/icons/fileOpen.png</iconset>
+             <iconset resource="qtractor.qrc" >:/images/fileOpen.png</iconset>
             </property>
             <property name="focusPolicy" >
              <enum>Qt::TabFocus</enum>
@@ -1867,7 +1867,7 @@
              </size>
             </property>
             <property name="icon" >
-             <iconset resource="../icons/qtractor.qrc" >:/icons/fileOpen.png</iconset>
+             <iconset resource="qtractor.qrc" >:/images/fileOpen.png</iconset>
             </property>
             <property name="font" >
              <font>
@@ -2360,7 +2360,7 @@
              </size>
             </property>
             <property name="icon" >
-             <iconset resource="../icons/qtractor.qrc" >:/icons/fileOpen.png</iconset>
+             <iconset resource="qtractor.qrc" >:/images/fileOpen.png</iconset>
             </property>
             <property name="font" >
              <font>
@@ -2478,7 +2478,7 @@
                </size>
               </property>
               <property name="icon" >
-               <iconset resource="../icons/qtractor.qrc" >:/icons/fileOpen.png</iconset>
+               <iconset resource="qtractor.qrc" >:/images/fileOpen.png</iconset>
               </property>
               <property name="font" >
                <font>
@@ -2784,7 +2784,7 @@
         <string>OK</string>
        </property>
        <property name="icon" >
-        <iconset resource="../icons/qtractor.qrc" >:/icons/formAccept.png</iconset>
+        <iconset resource="qtractor.qrc" >:/images/formAccept.png</iconset>
        </property>
       </widget>
      </item>
@@ -2794,7 +2794,7 @@
         <string>Cancel</string>
        </property>
        <property name="icon" >
-        <iconset resource="../icons/qtractor.qrc" >:/icons/formReject.png</iconset>
+        <iconset resource="qtractor.qrc" >:/images/formReject.png</iconset>
        </property>
       </widget>
      </item>
@@ -2875,7 +2875,7 @@
   <tabstop>CancelPushButton</tabstop>
  </tabstops>
  <resources>
-  <include location="../icons/qtractor.qrc" />
+  <include location="qtractor.qrc" />
  </resources>
  <connections/>
 </ui>

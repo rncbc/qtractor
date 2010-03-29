@@ -114,7 +114,7 @@ qtractorTrackForm::qtractorTrackForm (
 	m_ui.ProgComboBox->setValidator(new QIntValidator(m_ui.ProgComboBox));
 
 	// Bank select methods.
-	const QIcon& icon = QIcon(":/icons/itemProperty.png");
+	const QIcon& icon = QIcon(":/images/itemProperty.png");
 	m_ui.BankSelMethodComboBox->clear();
 	m_ui.BankSelMethodComboBox->addItem(icon, tr("Normal"));
 	m_ui.BankSelMethodComboBox->addItem(icon, tr("Bank MSB"));
@@ -496,7 +496,7 @@ void qtractorTrackForm::updateInstruments (void)
 
 	m_ui.InstrumentComboBox->clear();
 	m_ui.InstrumentComboBox->addItem(tr("(No instrument)"));
-	const QIcon& icon = QIcon(":/icons/itemInstrument.png");
+	const QIcon& icon = QIcon(":/images/itemInstrument.png");
 
 	// Take care of MIDI plugin instrument names...
 	updateInstrumentsAdd(icon,
@@ -546,7 +546,7 @@ void qtractorTrackForm::updateTrackType ( qtractorTrack::TrackType trackType )
 	switch (trackType) {
 	case qtractorTrack::Audio:
 		pEngine = m_pTrack->session()->audioEngine();
-		icon = QIcon(":/icons/trackAudio.png");
+		icon = QIcon(":/images/trackAudio.png");
 		m_ui.MidiGroupBox->hide();
 		m_ui.MidiGroupBox->setEnabled(false);
 		m_ui.InputBusNameComboBox->setEnabled(true);
@@ -554,7 +554,7 @@ void qtractorTrackForm::updateTrackType ( qtractorTrack::TrackType trackType )
 		break;
 	case qtractorTrack::Midi:
 		pEngine = m_pTrack->session()->midiEngine();
-		icon = QIcon(":/icons/trackMidi.png");
+		icon = QIcon(":/images/trackMidi.png");
 		m_ui.MidiGroupBox->show();
 		m_ui.MidiGroupBox->setEnabled(true);
 		m_ui.InputBusNameComboBox->setEnabled(true);
@@ -671,7 +671,7 @@ void qtractorTrackForm::updateBanks ( const QString& sInstrumentName,
 
 	// Default (none) patch bank list...
 	int iBankIndex = 0;
-	const QIcon& icon = QIcon(":/icons/itemPatches.png");
+	const QIcon& icon = QIcon(":/images/itemPatches.png");
 	m_banks.clear();
 	m_ui.BankComboBox->clear();
 	m_ui.BankComboBox->addItem(icon, tr("(None)"));
@@ -781,7 +781,7 @@ void qtractorTrackForm::updatePrograms (  const QString& sInstrumentName,
 	// Default (none) patch program list...
 	// Refresh patch program mapping...
 	int iProgIndex = 0;
-	const QIcon& icon = QIcon(":/icons/itemChannel.png");
+	const QIcon& icon = QIcon(":/images/itemChannel.png");
 	m_progs.clear();
 	m_ui.ProgComboBox->clear();
 	m_ui.ProgComboBox->addItem(icon, tr("(None)"));

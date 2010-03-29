@@ -2,7 +2,7 @@
  <author>rncbc aka Rui Nuno Capela</author>
  <comment>qtractor - An Audio/MIDI multi-track sequencer.
 
-   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -33,7 +33,7 @@
    <string>Instruments - Qtractor</string>
   </property>
   <property name="windowIcon" >
-   <iconset resource="../icons/qtractor.qrc" >:/icons/itemInstrument.png</iconset>
+   <iconset resource="qtractor.qrc" >:/images/itemInstrument.png</iconset>
   </property>
   <layout class="QHBoxLayout" >
    <item>
@@ -139,7 +139,7 @@
         <string>&amp;Import...</string>
        </property>
        <property name="icon" >
-        <iconset resource="../icons/qtractor.qrc" >:/icons/formOpen.png</iconset>
+        <iconset resource="qtractor.qrc" >:/images/formOpen.png</iconset>
        </property>
        <property name="shortcut" >
         <string>Alt+I</string>
@@ -155,7 +155,7 @@
         <string>&amp;Remove</string>
        </property>
        <property name="icon" >
-        <iconset resource="../icons/qtractor.qrc" >:/icons/formRemove.png</iconset>
+        <iconset resource="qtractor.qrc" >:/images/formRemove.png</iconset>
        </property>
        <property name="shortcut" >
         <string>Alt+R</string>
@@ -171,7 +171,7 @@
         <string>&amp;Up</string>
        </property>
        <property name="icon" >
-        <iconset resource="../icons/qtractor.qrc" >:/icons/formMoveUp.png</iconset>
+        <iconset resource="qtractor.qrc" >:/images/formMoveUp.png</iconset>
        </property>
        <property name="shortcut" >
         <string>Alt+U</string>
@@ -187,7 +187,7 @@
         <string>&amp;Down</string>
        </property>
        <property name="icon" >
-        <iconset resource="../icons/qtractor.qrc" >:/icons/formMoveDown.png</iconset>
+        <iconset resource="qtractor.qrc" >:/images/formMoveDown.png</iconset>
        </property>
        <property name="shortcut" >
         <string>Alt+D</string>
@@ -219,7 +219,7 @@
         <string>Relo&amp;ad</string>
        </property>
        <property name="icon" >
-        <iconset resource="../icons/qtractor.qrc" >:/icons/formRefresh.png</iconset>
+        <iconset resource="qtractor.qrc" >:/images/formRefresh.png</iconset>
        </property>
        <property name="shortcut" >
         <string>Alt+A</string>
@@ -235,7 +235,7 @@
         <string>E&amp;xport...</string>
        </property>
        <property name="icon" >
-        <iconset resource="../icons/qtractor.qrc" >:/icons/formSave.png</iconset>
+        <iconset resource="qtractor.qrc" >:/images/formSave.png</iconset>
        </property>
        <property name="shortcut" >
         <string>Alt+X</string>
@@ -273,7 +273,7 @@
   <tabstop>ClosePushButton</tabstop>
  </tabstops>
  <resources>
-  <include location="../icons/qtractor.qrc" />
+  <include location="qtractor.qrc" />
  </resources>
  <connections/>
 </ui>

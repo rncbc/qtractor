@@ -2,7 +2,7 @@
  <author>rncbc aka Rui Nuno Capela</author>
  <comment>qtractor - An Audio/MIDI multi-track sequencer.
 
-   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -42,7 +42,7 @@
    <string>qtractorConnectTest</string>
   </property>
   <property name="windowIcon" >
-   <iconset resource="../icons/qtractor.qrc" >:/icons/viewConnections.png</iconset>
+   <iconset resource="qtractor.qrc" >:/images/viewConnections.png</iconset>
   </property>
   <layout class="QVBoxLayout" >
    <property name="margin" >
@@ -137,7 +137,7 @@
             <string>&amp;Connect</string>
            </property>
            <property name="icon" >
-            <iconset resource="../icons/qtractor.qrc" >:/icons/formConnect.png</iconset>
+            <iconset resource="qtractor.qrc" >:/images/formConnect.png</iconset>
            </property>
            <property name="shortcut" >
             <string>Alt+C</string>
@@ -153,7 +153,7 @@
             <string>&amp;Disconnect</string>
            </property>
            <property name="icon" >
-            <iconset resource="../icons/qtractor.qrc" >:/icons/formDisconnect.png</iconset>
+            <iconset resource="qtractor.qrc" >:/images/formDisconnect.png</iconset>
            </property>
            <property name="shortcut" >
             <string>Alt+D</string>
@@ -169,7 +169,7 @@
             <string>Disconnect &amp;All</string>
            </property>
            <property name="icon" >
-            <iconset resource="../icons/qtractor.qrc" >:/icons/formDisconnectAll.png</iconset>
+            <iconset resource="qtractor.qrc" >:/images/formDisconnectAll.png</iconset>
            </property>
            <property name="shortcut" >
             <string>Alt+A</string>
@@ -201,7 +201,7 @@
             <string>&amp;Refresh</string>
            </property>
            <property name="icon" >
-            <iconset resource="../icons/qtractor.qrc" >:/icons/formRefresh.png</iconset>
+            <iconset resource="qtractor.qrc" >:/images/formRefresh.png</iconset>
            </property>
            <property name="shortcut" >
             <string>Alt+R</string>
@@ -296,7 +296,7 @@
             <string>&amp;Connect</string>
            </property>
            <property name="icon" >
-            <iconset resource="../icons/qtractor.qrc" >:/icons/formConnect.png</iconset>
+            <iconset resource="qtractor.qrc" >:/images/formConnect.png</iconset>
            </property>
            <property name="shortcut" >
             <string>Alt+C</string>
@@ -312,7 +312,7 @@
             <string>&amp;Disconnect</string>
            </property>
            <property name="icon" >
-            <iconset resource="../icons/qtractor.qrc" >:/icons/formDisconnect.png</iconset>
+            <iconset resource="qtractor.qrc" >:/images/formDisconnect.png</iconset>
            </property>
            <property name="shortcut" >
             <string>Alt+D</string>
@@ -328,7 +328,7 @@
             <string>Disconnect &amp;All</string>
            </property>
            <property name="icon" >
-            <iconset resource="../icons/qtractor.qrc" >:/icons/formDisconnectAll.png</iconset>
+            <iconset resource="qtractor.qrc" >:/images/formDisconnectAll.png</iconset>
            </property>
            <property name="shortcut" >
             <string>Alt+A</string>
@@ -360,7 +360,7 @@
             <string>&amp;Refresh</string>
            </property>
            <property name="icon" >
-            <iconset resource="../icons/qtractor.qrc" >:/icons/formRefresh.png</iconset>
+            <iconset resource="qtractor.qrc" >:/images/formRefresh.png</iconset>
            </property>
            <property name="shortcut" >
             <string>Alt+R</string>
@@ -413,7 +413,7 @@
   <tabstop>MidiRefreshPushButton</tabstop>
  </tabstops>
  <resources>
-  <include location="../icons/qtractor.qrc" />
+  <include location="qtractor.qrc" />
  </resources>
  <connections/>
 </ui>

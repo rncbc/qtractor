@@ -1,7 +1,7 @@
 // qtractorMidiListView.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -46,7 +46,7 @@ qtractorMidiFileItem::qtractorMidiFileItem (
 		qtractorMidiListView::Resolution, Qt::AlignRight);
 
 	QTreeWidgetItem::setIcon(qtractorMidiListView::Name,
-		QIcon(":/icons/itemMidiFile.png"));
+		QIcon(":/images/itemMidiFile.png"));
 
 	QTreeWidgetItem::setText(qtractorMidiListView::Format,
 		QString::number(pFile->format()));
@@ -96,7 +96,7 @@ qtractorMidiChannelItem::qtractorMidiChannelItem (
 	: qtractorFileChannelItem(pFileItem, sName, iChannel)
 {
 	QTreeWidgetItem::setIcon(qtractorMidiListView::Name,
-		QIcon(":/icons/itemChannel.png"));
+		QIcon(":/images/itemChannel.png"));
 }
 
 

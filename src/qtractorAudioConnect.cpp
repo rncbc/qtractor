@@ -223,17 +223,17 @@ void qtractorAudioConnect::createIcons (void)
 {
 	if (++g_iIconsRefCount == 1) {
 		g_apIcons[ClientIn]
-			= new QIcon(":/icons/itemAudioClientIn.png");
+			= new QIcon(":/images/itemAudioClientIn.png");
 		g_apIcons[ClientOut]
-			= new QIcon(":/icons/itemAudioClientOut.png");
+			= new QIcon(":/images/itemAudioClientOut.png");
 		g_apIcons[PortIn]
-			= new QIcon(":/icons/itemAudioPortIn.png");
+			= new QIcon(":/images/itemAudioPortIn.png");
 		g_apIcons[PortOut]
-			= new QIcon(":/icons/itemAudioPortOut.png");
+			= new QIcon(":/images/itemAudioPortOut.png");
 		g_apIcons[PortPhysIn]
-			= new QIcon(":/icons/itemAudioPortPhysIn.png");
+			= new QIcon(":/images/itemAudioPortPhysIn.png");
 		g_apIcons[PortPhysOut]
-			= new QIcon(":/icons/itemAudioPortPhysOut.png");
+			= new QIcon(":/images/itemAudioPortPhysOut.png");
 	}
 	
 }

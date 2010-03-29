@@ -79,16 +79,16 @@ qtractorPluginForm::qtractorPluginForm (
 	// Have some effective feedback when toggling on/off...
 	QIcon iconParams;
 	iconParams.addPixmap(
-		QPixmap(":/icons/formParamsOff.png"), QIcon::Active, QIcon::Off);
+		QPixmap(":/images/formParamsOff.png"), QIcon::Active, QIcon::Off);
 	iconParams.addPixmap(
-		QPixmap(":/icons/formParamsOn.png"), QIcon::Active, QIcon::On);
+		QPixmap(":/images/formParamsOn.png"), QIcon::Active, QIcon::On);
 	m_ui.ParamsToolButton->setIcon(iconParams);
 
 	QIcon iconActivate;
 	iconActivate.addPixmap(
-		QPixmap(":/icons/itemLedOff.png"), QIcon::Active, QIcon::Off);
+		QPixmap(":/images/itemLedOff.png"), QIcon::Active, QIcon::Off);
 	iconActivate.addPixmap(
-		QPixmap(":/icons/itemLedOn.png"), QIcon::Active, QIcon::On);
+		QPixmap(":/images/itemLedOn.png"), QIcon::Active, QIcon::On);
 	m_ui.ActivateToolButton->setIcon(iconActivate);
 
 	if (g_sDefPreset.isEmpty())

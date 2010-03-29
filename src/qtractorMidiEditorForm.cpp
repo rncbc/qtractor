@@ -99,13 +99,13 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	m_pControllerComboBox->setMinimumWidth(220);
 
 	// Pre-fill the combo-boxes...
-	const QIcon iconViewType(":/icons/itemProperty.png");
+	const QIcon iconViewType(":/images/itemProperty.png");
 	m_pViewTypeComboBox->addItem(iconViewType,
 		tr("Note On"), int(qtractorMidiEvent::NOTEON));
 	m_pViewTypeComboBox->addItem(iconViewType,
 		tr("Key Press"), int(qtractorMidiEvent::KEYPRESS));
 
-	const QIcon iconEventType(":/icons/itemProperty.png");
+	const QIcon iconEventType(":/images/itemProperty.png");
 	m_pEventTypeComboBox->addItem(iconEventType,
 		tr("Note Velocity"), int(qtractorMidiEvent::NOTEON));
 	m_pEventTypeComboBox->addItem(iconEventType,
@@ -1488,7 +1488,7 @@ void qtractorMidiEditorForm::updateInstrumentNames (void)
 	m_pMidiEditor->updateInstrumentNames();
 
 	// Update the controller names...
-	const QIcon iconController(":/icons/itemControllers.png");
+	const QIcon iconController(":/images/itemControllers.png");
 	m_pControllerComboBox->clear();
 	for (int i = 0; i < 128; ++i) {
 		m_pControllerComboBox->addItem(iconController,

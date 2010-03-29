@@ -1,7 +1,7 @@
 // qtractorClipForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -156,7 +156,7 @@ void qtractorClipForm::setClip ( qtractorClip *pClip, bool bClipNew )
 
 	// Why not change the dialog icon accordingly?
 	if (m_bClipNew)
-		QDialog::setWindowIcon(QIcon(":/icons/editClipNew.png"));
+		QDialog::setWindowIcon(QIcon(":/images/editClipNew.png"));
 
 	// Copy from global time-scale instance...
 	if (m_pTimeScale)

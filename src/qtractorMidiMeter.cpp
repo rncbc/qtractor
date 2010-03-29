@@ -1,7 +1,7 @@
 // qtractorMidiMeter.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -224,8 +224,8 @@ qtractorMidiMeter::qtractorMidiMeter ( qtractorMidiMonitor *pMidiMonitor,
 	QWidget *pParent ) : qtractorMeter(pParent)
 {
 	if (++g_iLedRefCount == 1) {
-		g_pLedPixmap[LedOff] = new QPixmap(":/icons/trackMidiOff.png");
-		g_pLedPixmap[LedOn]  = new QPixmap(":/icons/trackMidiOn.png");
+		g_pLedPixmap[LedOff] = new QPixmap(":/images/trackMidiOff.png");
+		g_pLedPixmap[LedOn]  = new QPixmap(":/images/trackMidiOn.png");
 	}
 
 	m_pMidiMonitor = pMidiMonitor;

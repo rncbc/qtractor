@@ -133,13 +133,13 @@ void qtractorExportForm::setExportType ( qtractorTrack::TrackType exportType )
 		switch (m_exportType) {
 		case qtractorTrack::Audio:
 			pEngine = pSession->audioEngine();
-			icon = QIcon(":/icons/trackAudio.png");
+			icon = QIcon(":/images/trackAudio.png");
 			m_sExportType = tr("Audio");
 			m_sExportExt  = qtractorAudioFileFactory::defaultExt();
 			break;
 		case qtractorTrack::Midi:
 			pEngine = pSession->midiEngine();
-			icon = QIcon(":/icons/trackMidi.png");
+			icon = QIcon(":/images/trackMidi.png");
 			m_sExportType = tr("MIDI");
 			m_sExportExt  = "mid";
 			break;

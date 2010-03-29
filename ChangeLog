@@ -5,6 +5,8 @@ ChangeLog
 
 SVN TRUNK
 
+- General source tree layout and build configuration change.
+
 - JACK session infrastructure support. (EXPERIMENTAL STUB)
 
 - Ever since smooth-ramping introduction that having at least

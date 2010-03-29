@@ -1,7 +1,7 @@
 // qtractorMidiControlForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -252,7 +252,7 @@ void qtractorMidiControlForm::importSlot (void)
 		pItem = new QTreeWidgetItem(m_ui.FilesListView, pItem);
 		if (pItem) {
 			QFileInfo info(sPath);
-			pItem->setIcon(0, QIcon(":/icons/itemFile.png"));
+			pItem->setIcon(0, QIcon(":/images/itemFile.png"));
 			pItem->setText(0, info.completeBaseName());
 			pItem->setText(1, sPath);
 			m_ui.FilesListView->setCurrentItem(pItem);
@@ -657,7 +657,7 @@ void qtractorMidiControlForm::refreshFiles (void)
 	while (iter.hasNext()) {
 		const QString& sPath = iter.next();
 		QTreeWidgetItem *pFileItem = new QTreeWidgetItem();
-		pFileItem->setIcon(0, QIcon(":/icons/itemFile.png"));
+		pFileItem->setIcon(0, QIcon(":/images/itemFile.png"));
 		pFileItem->setText(0, QFileInfo(sPath).completeBaseName());
 		pFileItem->setText(1, sPath);
 		files.append(pFileItem);
@@ -690,7 +690,7 @@ void qtractorMidiControlForm::refreshControlMap (void)
 		const qtractorMidiControl::MapKey& key = it.key();
 		const qtractorMidiControl::MapVal& val = it.value();
 		QTreeWidgetItem *pItem = new QTreeWidgetItem();
-		pItem->setIcon(0, QIcon(":/icons/itemControllers.png"));
+		pItem->setIcon(0, QIcon(":/images/itemControllers.png"));
 		pItem->setText(0, textFromChannel(key.channel()));
 		pItem->setText(1, textFromController(key.controller()));
 		pItem->setText(2, textFromCommand(val.command()));

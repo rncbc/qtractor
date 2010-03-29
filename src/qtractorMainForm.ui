@@ -42,7 +42,7 @@
    <string>Qtractor</string>
   </property>
   <property name="windowIcon" >
-   <iconset resource="../icons/qtractor.qrc" >:/icons/qtractor.png</iconset>
+   <iconset resource="qtractor.qrc" >:/images/qtractor.png</iconset>
   </property>
   <widget class="QWidget" name="widget" />
   <widget class="QToolBar" name="fileToolbar" >
@@ -242,7 +242,7 @@
     </widget>
     <widget class="QMenu" name="viewZoomMenu" >
      <property name="icon" >
-      <iconset resource="../icons/qtractor.qrc" >:/icons/viewZoomTool.png</iconset>
+      <iconset resource="qtractor.qrc" >:/images/viewZoomTool.png</iconset>
      </property>
      <property name="title" >
       <string>&amp;Zoom</string>
@@ -398,7 +398,7 @@
   </widget>
   <action name="fileNewAction" >
    <property name="icon" >
-    <iconset resource="../icons/qtractor.qrc" >:/icons/fileNew.png</iconset>
+    <iconset resource="qtractor.qrc" >:/images/fileNew.png</iconset>
    </property>
    <property name="text" >
     <string>&amp;New</string>
@@ -418,7 +418,7 @@
   </action>
   <action name="fileOpenAction" >
    <property name="icon" >
-    <iconset resource="../icons/qtractor.qrc" >:/icons/fileOpen.png</iconset>
+    <iconset resource="qtractor.qrc" >:/images/fileOpen.png</iconset>
    </property>
    <property name="text" >
     <string>&amp;Open...</string>
@@ -438,7 +438,7 @@
   </action>
   <action name="fileSaveAction" >
    <property name="icon" >
-    <iconset resource="../icons/qtractor.qrc" >:/icons/fileSave.png</iconset>
+    <iconset resource="qtractor.qrc" >:/images/fileSave.png</iconset>
    </property>
    <property name="text" >
     <string>&amp;Save</string>
@@ -509,7 +509,7 @@
   </action>
   <action name="editUndoAction" >
    <property name="icon" >
-    <iconset resource="../icons/qtractor.qrc" >:/icons/editUndo.png</iconset>
+    <iconset resource="qtractor.qrc" >:/images/editUndo.png</iconset>
    </property>
    <property name="text" >
     <string>&amp;Undo</string>
@@ -529,7 +529,7 @@
   </action>
   <action name="editRedoAction" >
    <property name="icon" >
-    <iconset resource="../icons/qtractor.qrc" >:/icons/editRedo.png</iconset>
+    <iconset resource="qtractor.qrc" >:/images/editRedo.png</iconset>
    </property>
    <property name="text" >
     <string>&amp;Redo</string>
@@ -549,7 +549,7 @@
   </action>
   <action name="editCutAction" >
    <property name="icon" >
-    <iconset resource="../icons/qtractor.qrc" >:/icons/editCut.png</iconset>
+    <iconset resource="qtractor.qrc" >:/images/editCut.png</iconset>
    </property>
    <property name="text" >
     <string>Cu&amp;t</string>
@@ -569,7 +569,7 @@
   </action>
   <action name="editCopyAction" >
    <property name="icon" >
-    <iconset resource="../icons/qtractor.qrc" >:/icons/editCopy.png</iconset>
+    <iconset resource="qtractor.qrc" >:/images/editCopy.png</iconset>
    </property>
    <property name="text" >
     <string>&amp;Copy</string>
@@ -589,7 +589,7 @@
   </action>
   <action name="editPasteAction" >
    <property name="icon" >
-    <iconset resource="../icons/qtractor.qrc" >:/icons/editPaste.png</iconset>
+    <iconset resource="qtractor.qrc" >:/images/editPaste.png</iconset>
    </property>
    <property name="text" >
     <string>&amp;Paste</string>
@@ -626,7 +626,7 @@
   </action>
   <action name="editDeleteAction" >
    <property name="icon" >
-    <iconset resource="../icons/qtractor.qrc" >:/icons/editDelete.png</iconset>
+    <iconset resource="qtractor.qrc" >:/images/editDelete.png</iconset>
    </property>
    <property name="text" >
     <string>&amp;Delete</string>
@@ -649,7 +649,7 @@
     <bool>true</bool>
    </property>
    <property name="icon" >
-    <iconset resource="../icons/qtractor.qrc" >:/icons/editSelectClip.png</iconset>
+    <iconset resource="qtractor.qrc" >:/images/editSelectClip.png</iconset>
    </property>
    <property name="text" >
     <string>&amp;Clip</string>
@@ -669,7 +669,7 @@
     <bool>true</bool>
    </property>
    <property name="icon" >
-    <iconset resource="../icons/qtractor.qrc" >:/icons/editSelectRange.png</iconset>
+    <iconset resource="qtractor.qrc" >:/images/editSelectRange.png</iconset>
    </property>
    <property name="text" >
     <string>&amp;Range</string>
@@ -689,7 +689,7 @@
     <bool>true</bool>
    </property>
    <property name="icon" >
-    <iconset resource="../icons/qtractor.qrc" >:/icons/editSelectRect.png</iconset>
+    <iconset resource="qtractor.qrc" >:/images/editSelectRect.png</iconset>
    </property>
    <property name="text" >
     <string>R&amp;ectangle</string>
@@ -774,7 +774,7 @@
   </action>
   <action name="editClipNewAction" >
    <property name="icon" >
-    <iconset resource="../icons/qtractor.qrc" >:/icons/editClipNew.png</iconset>
+    <iconset resource="qtractor.qrc" >:/images/editClipNew.png</iconset>
    </property>
    <property name="text" >
     <string>&amp;New...</string>
@@ -791,7 +791,7 @@
   </action>
   <action name="editClipEditAction" >
    <property name="icon" >
-    <iconset resource="../icons/qtractor.qrc" >:/icons/editClip.png</iconset>
+    <iconset resource="qtractor.qrc" >:/images/editClip.png</iconset>
    </property>
    <property name="text" >
     <string>&amp;Edit...</string>
@@ -895,7 +895,7 @@
   </action>
   <action name="trackAddAction" >
    <property name="icon" >
-    <iconset resource="../icons/qtractor.qrc" >:/icons/trackAdd.png</iconset>
+    <iconset resource="qtractor.qrc" >:/images/trackAdd.png</iconset>
    </property>
    <property name="text" >
     <string>&amp;Add Track...</string>
@@ -915,7 +915,7 @@
   </action>
   <action name="trackRemoveAction" >
    <property name="icon" >
-    <iconset resource="../icons/qtractor.qrc" >:/icons/trackRemove.png</iconset>
+    <iconset resource="qtractor.qrc" >:/images/trackRemove.png</iconset>
    </property>
    <property name="text" >
     <string>&amp;Remove Track</string>
@@ -935,7 +935,7 @@
   </action>
   <action name="trackPropertiesAction" >
    <property name="icon" >
-    <iconset resource="../icons/qtractor.qrc" >:/icons/trackProperties.png</iconset>
+    <iconset resource="qtractor.qrc" >:/images/trackProperties.png</iconset>
    </property>
    <property name="text" >
     <string>Track &amp;Properties...</string>
@@ -1183,7 +1183,7 @@
   </action>
   <action name="trackImportAudioAction" >
    <property name="icon" >
-    <iconset resource="../icons/qtractor.qrc" >:/icons/trackAudio.png</iconset>
+    <iconset resource="qtractor.qrc" >:/images/trackAudio.png</iconset>
    </property>
    <property name="text" >
     <string>&amp;Audio...</string>
@@ -1200,7 +1200,7 @@
   </action>
   <action name="trackImportMidiAction" >
    <property name="icon" >
-    <iconset resource="../icons/qtractor.qrc" >:/icons/trackMidi.png</iconset>
+    <iconset resource="qtractor.qrc" >:/images/trackMidi.png</iconset>
    </property>
    <property name="text" >
     <string>&amp;MIDI...</string>
@@ -1217,7 +1217,7 @@
   </action>
   <action name="trackExportAudioAction" >
    <property name="icon" >
-    <iconset resource="../icons/qtractor.qrc" >:/icons/trackAudio.png</iconset>
+    <iconset resource="qtractor.qrc" >:/images/trackAudio.png</iconset>
    </property>
    <property name="text" >
     <string>&amp;Audio...</string>
@@ -1234,7 +1234,7 @@
   </action>
   <action name="trackExportMidiAction" >
    <property name="icon" >
-    <iconset resource="../icons/qtractor.qrc" >:/icons/trackMidi.png</iconset>
+    <iconset resource="qtractor.qrc" >:/images/trackMidi.png</iconset>
    </property>
    <property name="text" >
     <string>&amp;MIDI...</string>
@@ -1430,7 +1430,7 @@
     <bool>true</bool>
    </property>
    <property name="icon" >
-    <iconset resource="../icons/qtractor.qrc" >:/icons/viewFiles.png</iconset>
+    <iconset resource="qtractor.qrc" >:/images/viewFiles.png</iconset>
    </property>
    <property name="text" >
     <string>&amp;Files</string>
@@ -1453,7 +1453,7 @@
     <bool>true</bool>
    </property>
    <property name="icon" >
-    <iconset resource="../icons/qtractor.qrc" >:/icons/viewMessages.png</iconset>
+    <iconset resource="qtractor.qrc" >:/images/viewMessages.png</iconset>
    </property>
    <property name="text" >
     <string>M&amp;essages</string>
@@ -1476,7 +1476,7 @@
     <bool>true</bool>
    </property>
    <property name="icon" >
-    <iconset resource="../icons/qtractor.qrc" >:/icons/viewConnections.png</iconset>
+    <iconset resource="qtractor.qrc" >:/images/viewConnections.png</iconset>
    </property>
    <property name="text" >
     <string>&amp;Connections</string>
@@ -1499,7 +1499,7 @@
     <bool>true</bool>
    </property>
    <property name="icon" >
-    <iconset resource="../icons/qtractor.qrc" >:/icons/viewMixer.png</iconset>
+    <iconset resource="qtractor.qrc" >:/images/viewMixer.png</iconset>
    </property>
    <property name="text" >
     <string>Mi&amp;xer</string>
@@ -1519,7 +1519,7 @@
   </action>
   <action name="viewZoomInAction" >
    <property name="icon" >
-    <iconset resource="../icons/qtractor.qrc" >:/icons/viewZoomIn.png</iconset>
+    <iconset resource="qtractor.qrc" >:/images/viewZoomIn.png</iconset>
    </property>
    <property name="text" >
     <string>&amp;In</string>
@@ -1539,7 +1539,7 @@
   </action>
   <action name="viewZoomOutAction" >
    <property name="icon" >
-    <iconset resource="../icons/qtractor.qrc" >:/icons/viewZoomOut.png</iconset>
+    <iconset resource="qtractor.qrc" >:/images/viewZoomOut.png</iconset>
    </property>
    <property name="text" >
     <string>&amp;Out</string>
@@ -1641,7 +1641,7 @@
   </action>
   <action name="viewInstrumentsAction" >
    <property name="icon" >
-    <iconset resource="../icons/qtractor.qrc" >:/icons/itemInstrument.png</iconset>
+    <iconset resource="qtractor.qrc" >:/images/itemInstrument.png</iconset>
    </property>
    <property name="text" >
     <string>&amp;Instruments...</string>
@@ -1661,7 +1661,7 @@
   </action>
   <action name="viewControllersAction" >
    <property name="icon" >
-    <iconset resource="../icons/qtractor.qrc" >:/icons/itemControllers.png</iconset>
+    <iconset resource="qtractor.qrc" >:/images/itemControllers.png</iconset>
    </property>
    <property name="text" >
     <string>&amp;Controllers...</string>
@@ -1732,7 +1732,7 @@
   </action>
   <action name="transportBackwardAction" >
    <property name="icon" >
-    <iconset resource="../icons/qtractor.qrc" >:/icons/transportBackward.png</iconset>
+    <iconset resource="qtractor.qrc" >:/images/transportBackward.png</iconset>
    </property>
    <property name="text" >
     <string>&amp;Backward</string>
@@ -1755,7 +1755,7 @@
     <bool>true</bool>
    </property>
    <property name="icon" >
-    <iconset resource="../icons/qtractor.qrc" >:/icons/transportRewind.png</iconset>
+    <iconset resource="qtractor.qrc" >:/images/transportRewind.png</iconset>
    </property>
    <property name="text" >
     <string>Re&amp;wind</string>
@@ -1778,7 +1778,7 @@
     <bool>true</bool>
    </property>
    <property name="icon" >
-    <iconset resource="../icons/qtractor.qrc" >:/icons/transportFastForward.png</iconset>
+    <iconset resource="qtractor.qrc" >:/images/transportFastForward.png</iconset>
    </property>
    <property name="text" >
     <string>F&amp;ast Forward</string>
@@ -1798,7 +1798,7 @@
   </action>
   <action name="transportForwardAction" >
    <property name="icon" >
-    <iconset resource="../icons/qtractor.qrc" >:/icons/transportForward.png</iconset>
+    <iconset resource="qtractor.qrc" >:/images/transportForward.png</iconset>
    </property>
    <property name="text" >
     <string>&amp;Forward</string>
@@ -1821,7 +1821,7 @@
     <bool>true</bool>
    </property>
    <property name="icon" >
-    <iconset resource="../icons/qtractor.qrc" >:/icons/transportLoop.png</iconset>
+    <iconset resource="qtractor.qrc" >:/images/transportLoop.png</iconset>
    </property>
    <property name="text" >
     <string>&amp;Loop</string>
@@ -1861,7 +1861,7 @@
     <bool>true</bool>
    </property>
    <property name="icon" >
-    <iconset resource="../icons/qtractor.qrc" >:/icons/transportPlay.png</iconset>
+    <iconset resource="qtractor.qrc" >:/images/transportPlay.png</iconset>
    </property>
    <property name="text" >
     <string>&amp;Play</string>
@@ -1884,7 +1884,7 @@
     <bool>true</bool>
    </property>
    <property name="icon" >
-    <iconset resource="../icons/qtractor.qrc" >:/icons/transportRecord.png</iconset>
+    <iconset resource="qtractor.qrc" >:/images/transportRecord.png</iconset>
    </property>
    <property name="text" >
     <string>&amp;Record</string>
@@ -1907,7 +1907,7 @@
     <bool>true</bool>
    </property>
    <property name="icon" >
-    <iconset resource="../icons/qtractor.qrc" >:/icons/transportPunch.png</iconset>
+    <iconset resource="qtractor.qrc" >:/images/transportPunch.png</iconset>
    </property>
    <property name="text" >
     <string>&amp;Punch</string>
@@ -1947,7 +1947,7 @@
     <bool>true</bool>
    </property>
    <property name="icon" >
-    <iconset resource="../icons/qtractor.qrc" >:/icons/transportMetro.png</iconset>
+    <iconset resource="qtractor.qrc" >:/images/transportMetro.png</iconset>
    </property>
    <property name="text" >
     <string>&amp;Metronome</string>
@@ -1970,7 +1970,7 @@
     <bool>true</bool>
    </property>
    <property name="icon" >
-    <iconset resource="../icons/qtractor.qrc" >:/icons/transportFollow.png</iconset>
+    <iconset resource="qtractor.qrc" >:/images/transportFollow.png</iconset>
    </property>
    <property name="text" >
     <string>F&amp;ollow Playhead</string>
@@ -1993,7 +1993,7 @@
     <bool>true</bool>
    </property>
    <property name="icon" >
-    <iconset resource="../icons/qtractor.qrc" >:/icons/transportAutoBackward.png</iconset>
+    <iconset resource="qtractor.qrc" >:/images/transportAutoBackward.png</iconset>
    </property>
    <property name="text" >
     <string>A&amp;uto Backward</string>
@@ -2016,7 +2016,7 @@
     <bool>true</bool>
    </property>
    <property name="icon" >
-    <iconset resource="../icons/qtractor.qrc" >:/icons/transportContinue.png</iconset>
+    <iconset resource="qtractor.qrc" >:/images/transportContinue.png</iconset>
    </property>
    <property name="text" >
     <string>&amp;Continue Past End</string>
@@ -2036,7 +2036,7 @@
   </action>
   <action name="helpShortcutsAction" >
    <property name="icon" >
-    <iconset resource="../icons/qtractor.qrc" >:/icons/helpShortcuts.png</iconset>
+    <iconset resource="qtractor.qrc" >:/images/helpShortcuts.png</iconset>
    </property>
    <property name="text" >
     <string>&amp;Shortcuts...</string>
@@ -2091,7 +2091,7 @@
  </widget>
  <layoutdefault spacing="4" margin="8" />
  <resources>
-  <include location="../icons/qtractor.qrc" />
+  <include location="qtractor.qrc" />
  </resources>
  <connections/>
 </ui>

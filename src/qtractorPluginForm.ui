@@ -2,7 +2,7 @@
  <author>rncbc aka Rui Nuno Capela</author>
  <comment>qtractor - An Audio/MIDI multi-track sequencer.
 
-   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -45,7 +45,7 @@
    <string>qtractorPluginForm</string>
   </property>
   <property name="windowIcon" >
-   <iconset resource="../icons/qtractor.qrc" >:/icons/qtractorTracks.png</iconset>
+   <iconset resource="qtractor.qrc" >:/images/qtractorTracks.png</iconset>
   </property>
   <layout class="QVBoxLayout" >
    <property name="margin" >
@@ -74,7 +74,7 @@
         <string/>
        </property>
        <property name="icon" >
-        <iconset resource="../icons/qtractor.qrc" >:/icons/formOpen.png</iconset>
+        <iconset resource="qtractor.qrc" >:/images/formOpen.png</iconset>
        </property>
       </widget>
      </item>
@@ -106,7 +106,7 @@
         <string/>
        </property>
        <property name="icon" >
-        <iconset resource="../icons/qtractor.qrc" >:/icons/formSave.png</iconset>
+        <iconset resource="qtractor.qrc" >:/images/formSave.png</iconset>
        </property>
       </widget>
      </item>
@@ -122,7 +122,7 @@
         <string/>
        </property>
        <property name="icon" >
-        <iconset resource="../icons/qtractor.qrc" >:/icons/formRemove.png</iconset>
+        <iconset resource="qtractor.qrc" >:/images/formRemove.png</iconset>
        </property>
       </widget>
      </item>
@@ -154,7 +154,7 @@
         <string>Params</string>
        </property>
        <property name="icon" >
-        <iconset resource="../icons/qtractor.qrc" >:/icons/formParamsOff.png</iconset>
+        <iconset resource="qtractor.qrc" >:/images/formParamsOff.png</iconset>
        </property>
        <property name="toolButtonStyle" >
         <enum>Qt::ToolButtonTextBesideIcon</enum>
@@ -176,7 +176,7 @@
         <string>Edit</string>
        </property>
        <property name="icon" >
-        <iconset resource="../icons/qtractor.qrc" >:/icons/formEdit.png</iconset>
+        <iconset resource="qtractor.qrc" >:/images/formEdit.png</iconset>
        </property>
        <property name="checkable" >
         <bool>true</bool>
@@ -198,7 +198,7 @@
         <string>Sends</string>
        </property>
        <property name="icon" >
-        <iconset resource="../icons/qtractor.qrc" >:/icons/itemAudioPortOut.png</iconset>
+        <iconset resource="qtractor.qrc" >:/images/itemAudioPortOut.png</iconset>
        </property>
        <property name="toolButtonStyle" >
         <enum>Qt::ToolButtonTextBesideIcon</enum>
@@ -217,7 +217,7 @@
         <string>Returns</string>
        </property>
        <property name="icon" >
-        <iconset resource="../icons/qtractor.qrc" >:/icons/itemAudioPortIn.png</iconset>
+        <iconset resource="qtractor.qrc" >:/images/itemAudioPortIn.png</iconset>
        </property>
        <property name="toolButtonStyle" >
         <enum>Qt::ToolButtonTextBesideIcon</enum>
@@ -236,7 +236,7 @@
         <string>Active</string>
        </property>
        <property name="icon" >
-        <iconset resource="../icons/qtractor.qrc" >:/icons/itemLedOff.png</iconset>
+        <iconset resource="qtractor.qrc" >:/images/itemLedOff.png</iconset>
        </property>
        <property name="checkable" >
         <bool>true</bool>
@@ -263,7 +263,7 @@
   <tabstop>ActivateToolButton</tabstop>
  </tabstops>
  <resources>
-  <include location="../icons/qtractor.qrc" />
+  <include location="qtractor.qrc" />
  </resources>
  <connections/>
 </ui>

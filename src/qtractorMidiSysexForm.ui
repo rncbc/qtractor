@@ -33,7 +33,7 @@
    <string>MIDI SysEx - Qtractor</string>
   </property>
   <property name="windowIcon" >
-   <iconset resource="../icons/qtractor.qrc" >:/icons/qtractorTracks.png</iconset>
+   <iconset resource="qtractor.qrc" >:/images/qtractorTracks.png</iconset>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout" >
    <item>
@@ -78,7 +78,7 @@
         <string>&amp;Import...</string>
        </property>
        <property name="icon" >
-        <iconset resource="../icons/qtractor.qrc" >:/icons/formOpen.png</iconset>
+        <iconset resource="qtractor.qrc" >:/images/formOpen.png</iconset>
        </property>
        <property name="shortcut" >
         <string>Alt+I</string>
@@ -94,7 +94,7 @@
         <string>E&amp;xport...</string>
        </property>
        <property name="icon" >
-        <iconset resource="../icons/qtractor.qrc" >:/icons/formSave.png</iconset>
+        <iconset resource="qtractor.qrc" >:/images/formSave.png</iconset>
        </property>
        <property name="shortcut" >
         <string>Alt+X</string>
@@ -123,7 +123,7 @@
         <string>&amp;Up</string>
        </property>
        <property name="icon" >
-        <iconset resource="../icons/qtractor.qrc" >:/icons/formMoveUp.png</iconset>
+        <iconset resource="qtractor.qrc" >:/images/formMoveUp.png</iconset>
        </property>
        <property name="shortcut" >
         <string>Alt+U</string>
@@ -139,7 +139,7 @@
         <string>&amp;Down</string>
        </property>
        <property name="icon" >
-        <iconset resource="../icons/qtractor.qrc" >:/icons/formMoveDown.png</iconset>
+        <iconset resource="qtractor.qrc" >:/images/formMoveDown.png</iconset>
        </property>
        <property name="shortcut" >
         <string>Alt+D</string>
@@ -155,7 +155,7 @@
         <string>Open SysEx</string>
        </property>
        <property name="icon" >
-        <iconset resource="../icons/qtractor.qrc" >:/icons/formOpen.png</iconset>
+        <iconset resource="qtractor.qrc" >:/images/formOpen.png</iconset>
        </property>
       </widget>
      </item>
@@ -184,7 +184,7 @@
         <string>Save SysEx</string>
        </property>
        <property name="icon" >
-        <iconset resource="../icons/qtractor.qrc" >:/icons/formSave.png</iconset>
+        <iconset resource="qtractor.qrc" >:/images/formSave.png</iconset>
        </property>
       </widget>
      </item>
@@ -197,7 +197,7 @@
         <string>Delete SysEx</string>
        </property>
        <property name="icon" >
-        <iconset resource="../icons/qtractor.qrc" >:/icons/formRemove.png</iconset>
+        <iconset resource="qtractor.qrc" >:/images/formRemove.png</iconset>
        </property>
       </widget>
      </item>
@@ -210,7 +210,7 @@
         <string>&amp;Add</string>
        </property>
        <property name="icon" >
-        <iconset resource="../icons/qtractor.qrc" >:/icons/formAdd.png</iconset>
+        <iconset resource="qtractor.qrc" >:/images/formAdd.png</iconset>
        </property>
        <property name="shortcut" >
         <string>Alt+A</string>
@@ -235,7 +235,7 @@
         <string>Upda&amp;te</string>
        </property>
        <property name="icon" >
-        <iconset resource="../icons/qtractor.qrc" >:/icons/formEdit.png</iconset>
+        <iconset resource="qtractor.qrc" >:/images/formEdit.png</iconset>
        </property>
        <property name="shortcut" >
         <string>Alt+T</string>
@@ -251,7 +251,7 @@
         <string>&amp;Remove</string>
        </property>
        <property name="icon" >
-        <iconset resource="../icons/qtractor.qrc" >:/icons/formRemove.png</iconset>
+        <iconset resource="qtractor.qrc" >:/images/formRemove.png</iconset>
        </property>
        <property name="shortcut" >
         <string>Alt+R</string>
@@ -304,7 +304,7 @@
         <string>OK</string>
        </property>
        <property name="icon" >
-        <iconset resource="../icons/qtractor.qrc" >:/icons/formAccept.png</iconset>
+        <iconset resource="qtractor.qrc" >:/images/formAccept.png</iconset>
        </property>
       </widget>
      </item>
@@ -314,7 +314,7 @@
         <string>Cancel</string>
        </property>
        <property name="icon" >
-        <iconset resource="../icons/qtractor.qrc" >:/icons/formReject.png</iconset>
+        <iconset resource="qtractor.qrc" >:/images/formReject.png</iconset>
        </property>
       </widget>
      </item>
@@ -342,7 +342,7 @@
   <tabstop>CancelButton</tabstop>
  </tabstops>
  <resources>
-  <include location="../icons/qtractor.qrc" />
+  <include location="qtractor.qrc" />
  </resources>
  <connections/>
 </ui>

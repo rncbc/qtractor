@@ -1,7 +1,7 @@
 // qtractorFiles.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -75,8 +75,8 @@ qtractorFiles::qtractorFiles ( QWidget *pParent )
 	m_pTabWidget->addTab(m_pAudioListView, tr("Audio"));
 	m_pTabWidget->addTab(m_pMidiListView, tr("MIDI"));
 	// Icons...
-	m_pTabWidget->setTabIcon(qtractorFiles::Audio, QIcon(":/icons/trackAudio.png"));
-	m_pTabWidget->setTabIcon(qtractorFiles::Midi,  QIcon(":/icons/trackMidi.png"));
+	m_pTabWidget->setTabIcon(qtractorFiles::Audio, QIcon(":/images/trackAudio.png"));
+	m_pTabWidget->setTabIcon(qtractorFiles::Midi,  QIcon(":/images/trackMidi.png"));
 #if QT_VERSION >= 0x040201
 	m_pTabWidget->setUsesScrollButtons(false);
 #endif
@@ -90,7 +90,7 @@ qtractorFiles::qtractorFiles ( QWidget *pParent )
 
 	m_iPlayUpdate = 0;
 	m_pPlayButton = new QToolButton(m_pPlayWidget);
-	m_pPlayButton->setIcon(QIcon(":/icons/transportPlay.png"));
+	m_pPlayButton->setIcon(QIcon(":/images/transportPlay.png"));
 	m_pPlayButton->setToolTip(tr("Play file"));
 	m_pPlayButton->setCheckable(true);
 	m_pPlayButton->setEnabled(false);
@@ -99,21 +99,21 @@ qtractorFiles::qtractorFiles ( QWidget *pParent )
 
 	// Common file list-view actions...
 	m_pNewGroupAction = new QAction(
-		QIcon(":/icons/itemGroup.png"), tr("New &Group"), this);
+		QIcon(":/images/itemGroup.png"), tr("New &Group"), this);
 	m_pOpenFileAction = new QAction(
-		QIcon(":/icons/itemFile.png"), tr("Add &Files..."), this);
+		QIcon(":/images/itemFile.png"), tr("Add &Files..."), this);
 	m_pCutItemAction = new QAction(
-		QIcon(":/icons/editCut.png"), tr("Cu&t"), NULL);
+		QIcon(":/images/editCut.png"), tr("Cu&t"), NULL);
 	m_pCopyItemAction = new QAction(
-		QIcon(":/icons/editCopy.png"), tr("&Copy"), NULL);
+		QIcon(":/images/editCopy.png"), tr("&Copy"), NULL);
 	m_pPasteItemAction = new QAction(
-		QIcon(":/icons/editPaste.png"), tr("P&aste"), NULL);
+		QIcon(":/images/editPaste.png"), tr("P&aste"), NULL);
 	m_pRenameItemAction = new QAction(
-		QIcon(":/icons/formEdit.png"), tr("R&ename"), this);
+		QIcon(":/images/formEdit.png"), tr("R&ename"), this);
 	m_pDeleteItemAction = new QAction(
-		QIcon(":/icons/formRemove.png"), tr("&Delete"), NULL);
+		QIcon(":/images/formRemove.png"), tr("&Delete"), NULL);
 	m_pPlayItemAction = new QAction(
-		QIcon(":/icons/transportPlay.png"), tr("Play"), this);
+		QIcon(":/images/transportPlay.png"), tr("Play"), this);
 	m_pPlayItemAction->setCheckable(true);
 
 	m_pNewGroupAction->setShortcut(tr("Ctrl+G"));
@@ -147,7 +147,7 @@ qtractorFiles::qtractorFiles ( QWidget *pParent )
 	// Finally set the default caption and tooltip.
 	const QString& sCaption = tr("Files");
 	QDockWidget::setWindowTitle(sCaption);
-	QDockWidget::setWindowIcon(QIcon(":/icons/viewFiles.png"));
+	QDockWidget::setWindowIcon(QIcon(":/images/viewFiles.png"));
 	QDockWidget::setToolTip(sCaption);
 
 	// Make it initially stable...

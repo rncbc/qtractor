@@ -1,7 +1,7 @@
 // qtractorFileListView.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -54,7 +54,7 @@ qtractorFileGroupItem::qtractorFileGroupItem (
 	const QString& sName, int iType )
 	: QTreeWidgetItem(iType)
 {
-	QTreeWidgetItem::setIcon(0, QIcon(":/icons/itemGroup.png"));
+	QTreeWidgetItem::setIcon(0, QIcon(":/images/itemGroup.png"));
 	QTreeWidgetItem::setText(0, sName);
 
 	Qt::ItemFlags flags = QTreeWidgetItem::flags();
@@ -106,7 +106,7 @@ void qtractorFileGroupItem::setOpen ( bool bOpen )
 	// Set the proper pixmap of this...
 	if (type() == qtractorFileListView::GroupItem) {
 		QTreeWidgetItem::setIcon(0, QIcon(
-			bOpen ? ":/icons/itemGroupOpen.png" : ":/icons/itemGroup.png"));
+			bOpen ? ":/images/itemGroupOpen.png" : ":/images/itemGroup.png"));
 	}
 
 	// Open it up...
@@ -758,13 +758,13 @@ void qtractorFileListView::itemActivatedSlot ( QTreeWidgetItem *pItem )
 void qtractorFileListView::itemExpandedSlot ( QTreeWidgetItem *pItem )
 {
 	if (pItem->type() == GroupItem)
-		pItem->setIcon(0, QIcon(":/icons/itemGroupOpen.png"));
+		pItem->setIcon(0, QIcon(":/images/itemGroupOpen.png"));
 }
 
 void qtractorFileListView::itemCollapsedSlot ( QTreeWidgetItem *pItem )
 {
 	if (pItem->type() == GroupItem)
-		pItem->setIcon(0, QIcon(":/icons/itemGroup.png"));
+		pItem->setIcon(0, QIcon(":/images/itemGroup.png"));
 }
 
 

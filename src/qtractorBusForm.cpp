@@ -60,12 +60,12 @@ public:
 	{
 		switch (m_pBus->busType()) {
 		case qtractorTrack::Audio:
-			QTreeWidgetItem::setIcon(0, QIcon(":/icons/trackAudio.png"));
+			QTreeWidgetItem::setIcon(0, QIcon(":/images/trackAudio.png"));
 			QTreeWidgetItem::setText(1, QString::number(
 				static_cast<qtractorAudioBus *> (m_pBus)->channels()));
 			break;
 		case qtractorTrack::Midi:
-			QTreeWidgetItem::setIcon(0, QIcon(":/icons/trackMidi.png"));
+			QTreeWidgetItem::setIcon(0, QIcon(":/images/trackMidi.png"));
 			QTreeWidgetItem::setText(1, QString::number(16));
 			break;
 		case qtractorTrack::None:
@@ -840,24 +840,24 @@ void qtractorBusForm::contextMenu ( const QPoint& /*pos*/ )
 	unsigned int iFlags = flags();
 
 	pAction = menu.addAction(
-		QIcon(":/icons/formCreate.png"),
+		QIcon(":/images/formCreate.png"),
 		tr("&Create"), this, SLOT(createBus()));
 	pAction->setEnabled(iFlags & Create);
 
 	pAction = menu.addAction(
-		QIcon(":/icons/formAccept.png"),
+		QIcon(":/images/formAccept.png"),
 		tr("&Update"), this, SLOT(updateBus()));
 	pAction->setEnabled(iFlags & Update);
 
 	pAction = menu.addAction(
-		QIcon(":/icons/formRemove.png"),
+		QIcon(":/images/formRemove.png"),
 		tr("&Delete"), this, SLOT(deleteBus()));
 	pAction->setEnabled(iFlags & Delete);
 
 	menu.addSeparator();
 
 	pAction = menu.addAction(
-		QIcon(":/icons/formRefresh.png"),
+		QIcon(":/images/formRefresh.png"),
 		tr("&Refresh"), this, SLOT(refreshBuses()));
 	pAction->setEnabled(m_iDirtyCount > 0);
 
@@ -922,7 +922,7 @@ void qtractorBusForm::updateMidiInstruments (void)
 	// Avoid superfluous change notifications...
 	m_iDirtySetup++;
 
-	const QIcon& icon = QIcon(":/icons/itemInstrument.png");
+	const QIcon& icon = QIcon(":/images/itemInstrument.png");
 	if (pMidiBus->pluginList_out()) {
 		qtractorMidiManager *pMidiManager
 			= (pMidiBus->pluginList_out())->midiManager();

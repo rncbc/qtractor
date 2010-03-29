@@ -1,7 +1,7 @@
 // qtractorConnections.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -53,8 +53,8 @@ qtractorConnections::qtractorConnections (
 	m_pConnectForm = new qtractorConnectForm(this);
 	// Set proper tab widget icons...
 	QTabWidget *pTabWidget = m_pConnectForm->connectTabWidget();
-	pTabWidget->setTabIcon(0, QIcon(":/icons/trackAudio.png"));
-	pTabWidget->setTabIcon(1, QIcon(":/icons/trackMidi.png"));
+	pTabWidget->setTabIcon(0, QIcon(":/images/trackAudio.png"));
+	pTabWidget->setTabIcon(1, QIcon(":/images/trackMidi.png"));
 
 	// Prepare the layout stuff.
 	QHBoxLayout *pLayout = new QHBoxLayout();
@@ -70,7 +70,7 @@ qtractorConnections::qtractorConnections (
 	// Finally set the default caption and tooltip.
 	const QString& sCaption = tr("Connections") + " - " QTRACTOR_TITLE;
 	QWidget::setWindowTitle(sCaption);
-	QWidget::setWindowIcon(QIcon(":/icons/viewConnections.png"));
+	QWidget::setWindowIcon(QIcon(":/images/viewConnections.png"));
 	QWidget::setToolTip(sCaption);
 
 	// Get previously saved splitter sizes,

@@ -286,13 +286,13 @@ void qtractorMidiConnect::createIcons (void)
 {
 	if (++g_iIconsRefCount == 1) {
 		g_apIcons[ClientIn]
-			= new QIcon(":/icons/itemMidiClientIn.png");
+			= new QIcon(":/images/itemMidiClientIn.png");
 		g_apIcons[ClientOut]
-			= new QIcon(":/icons/itemMidiClientOut.png");
+			= new QIcon(":/images/itemMidiClientOut.png");
 		g_apIcons[PortIn]
-			= new QIcon(":/icons/itemMidiPortIn.png");
+			= new QIcon(":/images/itemMidiPortIn.png");
 		g_apIcons[PortOut]
-			= new QIcon(":/icons/itemMidiPortOut.png");
+			= new QIcon(":/images/itemMidiPortOut.png");
 	}
 }
 

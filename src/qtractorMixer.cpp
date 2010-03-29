@@ -1,7 +1,7 @@
 // qtractorMixer.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -183,9 +183,9 @@ void qtractorMixerStrip::initMixerStrip (void)
 	m_pLayout->addWidget(m_pPluginListView);
 
 	QIcon icons;
-	icons.addPixmap(QPixmap(":/icons/itemLedOff.png"),
+	icons.addPixmap(QPixmap(":/images/itemLedOff.png"),
 		QIcon::Normal, QIcon::Off);
-	icons.addPixmap(QPixmap(":/icons/itemLedOn.png"),
+	icons.addPixmap(QPixmap(":/images/itemLedOn.png"),
 		QIcon::Normal, QIcon::On);
 	const QSizePolicy buttonPolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 
@@ -416,11 +416,11 @@ void qtractorMixerStrip::updateName (void)
 	QString sSuffix;
 	switch (meterType) {
 	case qtractorTrack::Audio:
-		m_pLabel->setIcon(QIcon(":/icons/trackAudio.png"));
+		m_pLabel->setIcon(QIcon(":/images/trackAudio.png"));
 		sSuffix = tr("(Audio)");
 		break;
 	case qtractorTrack::Midi:
-		m_pLabel->setIcon(QIcon(":/icons/trackMidi.png"));
+		m_pLabel->setIcon(QIcon(":/images/trackMidi.png"));
 		sSuffix = tr("(MIDI)");
 		break;
 	case qtractorTrack::None:
@@ -1182,7 +1182,7 @@ qtractorMixer::qtractorMixer ( QWidget *pParent, Qt::WindowFlags wflags )
 	// Finally set the default caption and tooltip.
 	const QString& sCaption = tr("Mixer") + " - " QTRACTOR_TITLE;
 	QWidget::setWindowTitle(sCaption);
-	QWidget::setWindowIcon(QIcon(":/icons/viewMixer.png"));
+	QWidget::setWindowIcon(QIcon(":/images/viewMixer.png"));
 	QWidget::setToolTip(sCaption);
 
 	// Get previously saved splitter sizes...
