@@ -216,7 +216,7 @@ AC_ARG_WITH(vst,
 # Set for alternate LV2 include dir.
 AC_ARG_WITH(lv2,
   AC_HELP_STRING([--with-lv2=PATH], [use alternate LV2 header path]),
-  [ac_with_lv2="$withval"], [ac_with_lv2="lv2"])
+  [ac_with_lv2="$withval"])
 
 
 # Checks for programs.
@@ -643,7 +643,13 @@ if test "x$ac_lv2" = "xyes"; then
 fi
 if test "x$ac_lv2" = "xyes"; then
    AC_DEFINE(CONFIG_LV2, 1, [Define if LV2 headers are available.])
-   ac_incpath="$ac_with_lv2 $ac_incpath"
+   if test -n "$ac_with_lv2"; then
+      ac_incpath="$ac_with_lv2 $ac_incpath"
+   else
+      CFLAGS="$CFLAGS -Isrc/lv2"
+      CPPFLAGS="$CPPFLAGS -Isrc/lv2"
+      ac_incpath="$ac_incpath lv2"
+   fi
 else
    AC_MSG_WARN([*** LV2 header files not found.])
    AC_MSG_WARN([*** LV2 plug-in support will be disabled.])
