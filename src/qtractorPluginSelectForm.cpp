@@ -126,7 +126,7 @@ qtractorPluginSelectForm::qtractorPluginSelectForm (
 
 	// Restore last seen dialog position and extent...
 	if (pOptions)
-		pOptions->loadWidgetGeometry(this);
+		pOptions->loadWidgetGeometry(this, true);
 
 	// UI signal/slot connections...
 	QObject::connect(m_ui.PluginResetToolButton,
@@ -170,7 +170,7 @@ qtractorPluginSelectForm::~qtractorPluginSelectForm (void)
 		pOptions->saveComboBoxHistory(m_ui.PluginSearchComboBox);
 		pOptions->bPluginActivate= m_ui.PluginActivateCheckBox->isChecked();
 		// Save aslast seen dialog position and extent...
-		pOptions->saveWidgetGeometry(this);
+		pOptions->saveWidgetGeometry(this, true);
 	}
 }
 

@@ -418,7 +418,7 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 			restoreState(aDockables);
 		}
 		// Try to restore old window positioning?
-		// pOptions->loadWidgetGeometry(this);
+		// pOptions->loadWidgetGeometry(this, true);
 		// Load (action) keyboard shortcuts...
 		pOptions->loadActionShortcuts(this);
 	}
@@ -542,7 +542,7 @@ bool qtractorMidiEditorForm::queryClose ( bool bForce )
 			pOptions->settings().setValue(
 				"/MidiEditor/Layout/DockWindows", saveState());
 			// And the main windows state?
-			// pOptions->saveWidgetGeometry(this);
+			// pOptions->saveWidgetGeometry(this, true);
 		}
 	}
 

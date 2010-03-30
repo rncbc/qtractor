@@ -322,6 +322,9 @@ protected:
 	void loadSplitterSizes();
 	void saveSplitterSizes();
 
+	// Initial minimum widget extents.
+	QSize sizeHint() const;
+
 private:
 
 	// Child controls.

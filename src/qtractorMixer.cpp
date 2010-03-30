@@ -1267,6 +1267,13 @@ void qtractorMixer::saveSplitterSizes (void)
 }
 
 
+// Initial minimum widget extents.
+QSize qtractorMixer::sizeHint (void) const
+{
+	return QSize(480, 320);
+}
+
+
 // The mixer strips rack accessors.
 qtractorMixerRack *qtractorMixer::inputRack (void) const
 {

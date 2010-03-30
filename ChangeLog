@@ -5,6 +5,12 @@ ChangeLog
 
 SVN TRUNK
 
+- Initial widget geometry and visibility persistence logic 
+  has been slightly revised as much to avoid crash failures
+  due to wrong main widget hidden state.
+
+- Initial mixer widget extents are now set reasonably larger.
+
 - General source tree layout and build configuration change.
 
 - JACK session infrastructure support. (EXPERIMENTAL)

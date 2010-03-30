@@ -212,8 +212,8 @@ public:
 	QStringList midiMeterColors;
 
 	// Widget geometry persistence helper prototypes.
-	void saveWidgetGeometry(QWidget *pWidget);
-	void loadWidgetGeometry(QWidget *pWidget);
+	void saveWidgetGeometry(QWidget *pWidget, bool bVisible = false);
+	void loadWidgetGeometry(QWidget *pWidget, bool bVisible = false);
 
 	// Combo box history persistence helper prototypes.
 	void loadComboBoxHistory(QComboBox *pComboBox, int iLimit = 8);

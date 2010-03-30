@@ -969,7 +969,7 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 	}
 
 	// Try to restore old window positioning.
-	m_pOptions->loadWidgetGeometry(this);
+	m_pOptions->loadWidgetGeometry(this, true);
 	m_pOptions->loadWidgetGeometry(m_pMixer);
 	m_pOptions->loadWidgetGeometry(m_pConnections);
 
@@ -1150,7 +1150,7 @@ bool qtractorMainForm::queryClose (void)
 			// And the main windows state.
 			m_pOptions->saveWidgetGeometry(m_pConnections);
 			m_pOptions->saveWidgetGeometry(m_pMixer);
-			m_pOptions->saveWidgetGeometry(this);
+			m_pOptions->saveWidgetGeometry(this, true);
 		}
 	}
 
