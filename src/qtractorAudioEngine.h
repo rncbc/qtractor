@@ -76,6 +76,10 @@ public:
 	QEvent::Type notifyBufferType() const;
 	QEvent::Type notifySessionType() const;
 
+	// Session UUID accessors.
+	void setSessionId(const QString& sSessionId);
+	const QString& sessionId() const;
+
 	// Internal sample-rate accessor.
 	unsigned int sampleRate() const;
 	// Buffer size accessor.
@@ -176,6 +180,9 @@ private:
 	QEvent::Type  m_eNotifyPortType;
 	QEvent::Type  m_eNotifyBufferType;
 	QEvent::Type  m_eNotifySessionType;
+
+	// JACK Session UUID.
+	QString m_sSessionId;
 
 	// Partial buffer offset state;
 	// careful for proper loop concatenation.

@@ -80,10 +80,6 @@ public:
 	// Time-scale helper accessors.
 	qtractorTimeScale *timeScale();
 
-	// Session UUID accessors.
-	void setSessionId(const QString& sSessionId);
-	const QString& sessionId() const;
-
 	// Device engine common client name accessors.
 	void setClientName(const QString& sClientName);
 	const QString& clientName() const;
@@ -382,9 +378,6 @@ private:
 
 	// Managed session cursors.
 	qtractorList<qtractorSessionCursor> m_cursors;
-
-	// Session UUID.
-	QString m_sSessionId;
 
 	// Device engine common client name.
 	QString m_sClientName;

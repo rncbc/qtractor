@@ -464,14 +464,15 @@ bool qtractorAudioEngine::init (void)
 	opts |= JackUseExactName;
 #endif
 #ifdef CONFIG_JACK_SESSION
-	const QString& sSessionId = pSession->sessionId();
-	if (!sSessionId.isEmpty()) {
+	if (!m_sSessionId.isEmpty()) {
 		opts |= JackSessionID;
-		const QByteArray aSessionId = sSessionId.toLocal8Bit();
+		const QByteArray aSessionId = m_sSessionId.toLocal8Bit();
 		m_pJackClient = jack_client_open(
 			aClientName.constData(),
 			jack_options_t(opts), NULL,
 			aSessionId.constData());
+		// Reset JACK session UUID.
+		m_sSessionId.clear();
 	}
 	else
 #endif
@@ -481,7 +482,7 @@ bool qtractorAudioEngine::init (void)
 
 	if (m_pJackClient == NULL)
 		return false;
-
+	
 	// ATTN: First thing to remember to set session sample rate.
 	pSession->setClientName(
 		QString::fromUtf8(jack_get_client_name(m_pJackClient)));
@@ -1042,6 +1043,18 @@ bool qtractorAudioEngine::saveElement ( qtractorSessionDocument *pDocument,
 	}
 
 	return true;
+}
+
+
+// JACK Session UUID accessors.
+void qtractorAudioEngine::setSessionId ( const QString& sSessionId )
+{
+	m_sSessionId = sSessionId;
+}
+
+const QString& qtractorAudioEngine::sessionId (void) const
+{
+	return m_sSessionId;
 }
 
 

@@ -227,8 +227,6 @@ void qtractorSession::clear (void)
 
 	m_pCommands->clear();
 
-	m_sSessionId.clear();
-
 	m_iSessionLength = 0;
 
 	m_iRecordTracks  = 0;
@@ -375,18 +373,6 @@ unsigned long qtractorSession::sessionLength (void) const
 qtractorTimeScale *qtractorSession::timeScale (void)
 {
 	return &(m_props.timeScale);
-}
-
-
-// Session UUID accessors.
-void qtractorSession::setSessionId ( const QString& sSessionId )
-{
-	m_sSessionId = sSessionId;
-}
-
-const QString& qtractorSession::sessionId (void) const
-{
-	return m_sSessionId;
 }
 
 
@@ -1611,8 +1597,8 @@ void qtractorSession::process_record (
 
 
 // Document element methods.
-bool qtractorSession::loadElement ( qtractorSessionDocument *pDocument,
-	QDomElement *pElement )
+bool qtractorSession::loadElement (
+	qtractorSessionDocument *pDocument, QDomElement *pElement )
 {
 	qtractorSession::clear();
 	qtractorSession::lock();
@@ -1638,12 +1624,6 @@ bool qtractorSession::loadElement ( qtractorSessionDocument *pDocument,
 		if (eChild.isNull())
 			continue;
 
-	#ifdef CONFIG_JACK_SESSION
-		// Load session identification...
-		if (eChild.tagName() == "session-id")
-			qtractorSession::setSessionId(eChild.text());
-		else
-	#endif
 		// Load session properties...
 		if (eChild.tagName() == "properties") {
 			for (QDomNode nProp = eChild.firstChild();
@@ -1854,21 +1834,14 @@ bool qtractorSession::loadElement ( qtractorSessionDocument *pDocument,
 }
 
 
-bool qtractorSession::saveElement ( qtractorSessionDocument *pDocument,
-	QDomElement *pElement )
+bool qtractorSession::saveElement (
+	qtractorSessionDocument *pDocument, QDomElement *pElement )
 {
 	// Templates should have no session name...
 	if (!pDocument->isTemplate())
 		pElement->setAttribute("name", qtractorSession::sessionName());
 
 	pElement->setAttribute("version", PACKAGE_STRING);
-
-#ifdef CONFIG_JACK_SESSION
-	// Save  session identification...
-	const QString& sSessionId = qtractorSession::sessionId();
-	if (!sSessionId.isEmpty())
-		pDocument->saveTextElement("session-id", sSessionId, pElement);
-#endif
 
 	// Save session properties...
 	QDomElement eProps = pDocument->document()->createElement("properties");

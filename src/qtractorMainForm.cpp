@@ -1030,8 +1030,11 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 
 	// Is any session identification to get loaded?
 	if (!m_pOptions->sSessionId.isEmpty()) {
-		m_pSession->setSessionId(m_pOptions->sSessionId);
-		m_pOptions->sSessionId.clear();
+		qtractorAudioEngine *pAudioEngine = m_pSession->audioEngine();
+		if (pAudioEngine) {
+			pAudioEngine->setSessionId(m_pOptions->sSessionId);
+			m_pOptions->sSessionId.clear();
+		}
 	}
 
 	// Is any session pending to be loaded?
@@ -1463,9 +1466,17 @@ void qtractorMainForm::sessionEvent ( qtractorSessionEvent *pSessionEvent )
 {
 #ifdef CONFIG_JACK_SESSION
 
+	qtractorAudioEngine *pAudioEngine = m_pSession->audioEngine();
+	if (pAudioEngine == NULL)
+		return;
+
+	jack_client_t *pJackClient = pAudioEngine->jackClient();
+	if (pJackClient == NULL)
+		return;
+
 	jack_session_event_t *pJackSessionEvent
 		= (jack_session_event_t *) pSessionEvent->arg();
-
+	
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorMainForm::sessionEvent()"
 		" type=%d client_uuid=\"%s\" session_dir=\"%s\"",
@@ -1476,9 +1487,6 @@ void qtractorMainForm::sessionEvent ( qtractorSessionEvent *pSessionEvent )
 
 	bool bTemplate = (pJackSessionEvent->type == JackSessionSaveTemplate);
 	bool bQuit = (pJackSessionEvent->type == JackSessionSaveAndQuit);
-
-	m_pSession->setSessionId(
-		QString::fromLocal8Bit(pJackSessionEvent->client_uuid));
 
 	if (m_pSession->sessionName().isEmpty())
 		editSession();
@@ -1496,7 +1504,7 @@ void qtractorMainForm::sessionEvent ( qtractorSessionEvent *pSessionEvent )
 
 	QStringList args;
 	args << QApplication::applicationFilePath();
-	args << "--session-id=" + m_pSession->sessionId();
+	args << QString("--session-id=%1").arg(pJackSessionEvent->client_uuid);
 
 	const QString sFilename
 		= QFileInfo(sSessionDir, sSessionFile).absoluteFilePath();
@@ -1507,10 +1515,7 @@ void qtractorMainForm::sessionEvent ( qtractorSessionEvent *pSessionEvent )
 	const QByteArray aCmdLine = args.join(" ").toUtf8();
 	pJackSessionEvent->command_line = strdup(aCmdLine.constData());
 
-	qtractorAudioEngine *pAudioEngine = m_pSession->audioEngine();
-	if (pAudioEngine && pAudioEngine->jackClient())
-		jack_session_reply(pAudioEngine->jackClient(), pJackSessionEvent);
-
+	jack_session_reply(pJackClient, pJackSessionEvent);
 	jack_session_event_free(pJackSessionEvent);
 
 	if (bQuit)
