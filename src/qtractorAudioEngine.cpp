@@ -482,7 +482,7 @@ bool qtractorAudioEngine::init (void)
 
 	if (m_pJackClient == NULL)
 		return false;
-	
+
 	// ATTN: First thing to remember to set session sample rate.
 	pSession->setClientName(
 		QString::fromUtf8(jack_get_client_name(m_pJackClient)));
