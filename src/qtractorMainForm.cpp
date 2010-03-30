@@ -1478,8 +1478,6 @@ void qtractorMainForm::sessionEvent ( qtractorSessionEvent *pSessionEvent )
 
 	m_pSession->setSessionId(
 		QString::fromLocal8Bit(pJackSessionEvent->client_uuid));
-	m_pSession->setSessionDir(
-			QString::fromUtf8(pJackSessionEvent->session_dir));
 
 	if (m_pSession->sessionName().isEmpty())
 		editSession();
@@ -1488,18 +1486,22 @@ void qtractorMainForm::sessionEvent ( qtractorSessionEvent *pSessionEvent )
 	if (sSessionName.isEmpty())
 		sSessionName = tr("Untitled%1").arg(m_iUntitled);
 	
-	const QString sExt
+	const QString sSessionDir
+		= QString::fromUtf8(pJackSessionEvent->session_dir);
+	const QString sSessionExt
 		= (bTemplate ? s_pszTemplateExt : s_pszSessionExt);
-	const QString sFilename
-		= QFileInfo(m_pSession->sessionDir(), 
-			sSessionName + '.' + sExt).absoluteFilePath();
+	const QString sSessionFile
+		= sSessionName + '.' + sSessionExt;
 
 	QStringList args;
 	args << QApplication::applicationFilePath();
 	args << "--session-id=" + m_pSession->sessionId();
 
+	const QString sFilename
+		= QFileInfo(sSessionDir, sSessionFile).absoluteFilePath();
+
 	if (saveSessionFile(sFilename, bTemplate))
-		args << '"' + sFilename + '"';
+		args << QString("\"${SESSION_DIR}%1\"").arg(sSessionFile);
 
 	const QByteArray aCmdLine = args.join(" ").toUtf8();
 	pJackSessionEvent->command_line = strdup(aCmdLine.constData());

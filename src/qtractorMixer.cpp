@@ -44,7 +44,6 @@
 #include "qtractorBusForm.h"
 
 #include <QSplitter>
-#include <QFrame>
 #include <QLabel>
 
 #include <QHBoxLayout>

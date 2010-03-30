@@ -5,15 +5,15 @@ ChangeLog
 
 SVN TRUNK
 
-- Initial widget geometry and visibility persistence logic 
+- JACK session infrastructure support. (EXPERIMENTAL)
+
+- Initial widget geometry and visibility persistence logic
   has been slightly revised as much to avoid crash failures
   due to wrong main widget hidden state.
 
 - Initial mixer widget extents are now set reasonably larger.
 
 - General source tree layout and build configuration change.
-
-- JACK session infrastructure support. (EXPERIMENTAL)
 
 - Ever since smooth-ramping introduction that having at least
   one input-only buses were causing immediate playback crashes,

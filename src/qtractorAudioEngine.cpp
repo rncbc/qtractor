@@ -542,8 +542,10 @@ bool qtractorAudioEngine::activate (void)
 
 #ifdef CONFIG_JACK_SESSION
 	// Set JACK session event callback.
-	jack_set_session_callback(m_pJackClient,
-		qtractorAudioEngine_session_event, this);
+	if (jack_set_session_callback) {
+		jack_set_session_callback(m_pJackClient,
+			qtractorAudioEngine_session_event, this);
+	}
 #endif
 
 	// Time to activate ourselves...
