@@ -1,7 +1,7 @@
 // qtractorAudioSndFile.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -19,6 +19,7 @@
 
 *****************************************************************************/
 
+#include "qtractorAbout.h"
 #include "qtractorAudioSndFile.h"
 
 
@@ -134,6 +135,7 @@ int qtractorAudioSndFile::write ( float **ppFrames, unsigned int iFrames )
 	return ::sf_writef_float(m_pSndFile, m_pBuffer, iFrames);
 }
 
+
 // Seek method.
 bool qtractorAudioSndFile::seek ( unsigned long iOffset )
 {
@@ -145,7 +147,7 @@ bool qtractorAudioSndFile::seek ( unsigned long iOffset )
 
 
 // Close method.
-void qtractorAudioSndFile::close()
+void qtractorAudioSndFile::close (void)
 {
 #ifdef DEBUG_0
 	qDebug("qtractorAudioSndFile::close()");
@@ -165,28 +167,28 @@ void qtractorAudioSndFile::close()
 
 
 // Open mode accessor.
-int qtractorAudioSndFile::mode() const
+int qtractorAudioSndFile::mode (void) const
 {
 	return m_iMode;
 }
 
 
 // Open channel(s) accessor.
-unsigned short qtractorAudioSndFile::channels() const
+unsigned short qtractorAudioSndFile::channels (void) const
 {
 	return m_sfinfo.channels;
 }
 
 
 // Total number of frames specialty.
-unsigned long qtractorAudioSndFile::frames() const
+unsigned long qtractorAudioSndFile::frames (void) const
 {
 	return m_sfinfo.frames;
 }
 
 
 // Sample rate specialty.
-unsigned int qtractorAudioSndFile::sampleRate() const
+unsigned int qtractorAudioSndFile::sampleRate (void) const
 {
 	return m_sfinfo.samplerate;
 }

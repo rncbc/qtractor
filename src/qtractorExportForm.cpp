@@ -209,7 +209,7 @@ void qtractorExportForm::accept (void)
 	// Enforce (again) default file extension...
 	QString sExportPath = m_ui.ExportPathComboBox->currentText();
 
-	if (QFileInfo(sExportPath).suffix() != m_sExportExt)
+	if (QFileInfo(sExportPath).suffix().isEmpty())
 		sExportPath += '.' + m_sExportExt;
 
 	// Check (again) wether the file already exists...
@@ -400,7 +400,7 @@ void qtractorExportForm::browseExportPath (void)
 		return;
 
 	// Enforce default file extension...
-	if (QFileInfo(sExportPath).suffix() != m_sExportExt)
+	if (QFileInfo(sExportPath).suffix().isEmpty())
 		sExportPath += '.' + m_sExportExt;
 
 	// Finallly set as wanted...

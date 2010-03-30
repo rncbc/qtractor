@@ -539,7 +539,7 @@ void qtractorPluginForm::savePresetSlot (void)
 		}
 		// We've a filename to save the preset
 		if (!sFilename.isEmpty()) {
-			if (QFileInfo(sFilename).suffix() != sExt)
+			if (QFileInfo(sFilename).suffix().isEmpty())
 				sFilename += '.' + sExt;
 			if (m_pPlugin->savePreset(sFilename)) {
 				settings.setValue(sPreset, sFilename);

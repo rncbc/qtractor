@@ -19,6 +19,7 @@
 
 *****************************************************************************/
 
+#include "qtractorAbout.h"
 #include "qtractorAudioVorbisFile.h"
 
 #ifdef CONFIG_LIBVORBIS
@@ -187,8 +188,7 @@ bool qtractorAudioVorbisFile::open ( const QString& sFilename, int iMode )
 
 
 // Read method.
-int qtractorAudioVorbisFile::read ( float **ppFrames,
-	unsigned int iFrames )
+int qtractorAudioVorbisFile::read ( float **ppFrames, unsigned int iFrames )
 {
 #ifdef DEBUG_0
 	qDebug("qtractorAudioVorbisFile::read(%p, %d)", ppFrames, iFrames);
@@ -214,8 +214,7 @@ int qtractorAudioVorbisFile::read ( float **ppFrames,
 
 
 // Write method.
-int qtractorAudioVorbisFile::write ( float **ppFrames,
-	unsigned int iFrames )
+int qtractorAudioVorbisFile::write ( float **ppFrames, unsigned int iFrames )
 {
 #ifdef DEBUG_0
 	qDebug("qtractorAudioVorbisFile::write(%p, %d)", ppFrames, iFrames);

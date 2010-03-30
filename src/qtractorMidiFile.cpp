@@ -19,6 +19,7 @@
 
 *****************************************************************************/
 
+#include "qtractorAbout.h"
 #include "qtractorMidiFile.h"
 
 #include "qtractorTimeScale.h"
@@ -26,6 +27,7 @@
 #include <QFileInfo>
 #include <QDir>
 #include <QRegExp>
+
 
 // Symbolic header markers.
 #define SMF_MTHD "MThd"

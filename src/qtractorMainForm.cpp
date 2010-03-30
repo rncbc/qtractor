@@ -270,7 +270,7 @@ qtractorMainForm::qtractorMainForm (
 		pAudioEngine->setNotifyPortType(QTRACTOR_PORT_EVENT);
 		pAudioEngine->setNotifyBufferType(QTRACTOR_BUFF_EVENT);
 	#ifdef CONFIG_JACK_SESSION
-		pAudioEngine->setNotifyBufferType(QTRACTOR_SESS_EVENT);
+		pAudioEngine->setNotifySessionType(QTRACTOR_SESS_EVENT);
 	#endif
 	}
 
@@ -1261,7 +1261,8 @@ void qtractorMainForm::customEvent ( QEvent *pEvent )
 		break;
 #ifdef CONFIG_JACK_SESSION
 	case QTRACTOR_SESS_EVENT:
-		// TODO: JACK session support...
+		// JACK session support...
+		sessionEvent(static_cast<qtractorSessionEvent *> (pEvent));
 		break;
 #endif
 	default:
@@ -1731,7 +1732,7 @@ bool qtractorMainForm::saveSession ( bool bPrompt )
 		if (sFilename.isEmpty())
 			return false;
 		// Enforce extension...
-		if (QFileInfo(sFilename).suffix() != sExt) {
+		if (QFileInfo(sFilename).suffix().isEmpty()) {
 			sFilename += '.' + sExt;
 			// Check if already exists...
 			if (sFilename != m_sFilename && QFileInfo(sFilename).exists()) {

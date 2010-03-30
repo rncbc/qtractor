@@ -418,7 +418,7 @@ void qtractorMidiControlForm::exportSlot (void)
 		return;
 
 	// Enforce .qtc extension...
-	if (QFileInfo(sPath).suffix() != sExt) {
+	if (QFileInfo(sPath).suffix().isEmpty()) {
 		sPath += '.' + sExt;
 		// Check if already exists...
 		if (QFileInfo(sPath).exists()) {

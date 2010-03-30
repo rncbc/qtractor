@@ -305,7 +305,7 @@ void qtractorMidiSysexForm::exportSlot (void)
 		return;
 
 	// Enforce .ins extension...
-	if (QFileInfo(sPath).suffix() != sExt) {
+	if (QFileInfo(sPath).suffix().isEmpty()) {
 		sPath += '.' + sExt;
 		// Check if already exists...
 		if (QFileInfo(sPath).exists()) {
@@ -515,7 +515,7 @@ void qtractorMidiSysexForm::saveSlot (void)
 	}
 	// We've a filename to save the preset
 	if (!sFilename.isEmpty()) {
-		if (QFileInfo(sFilename).suffix() != sExt)
+		if (QFileInfo(sFilename).suffix().isEmpty())
 			sFilename += '.' + sExt;
 		// Get it saved alright...
 		m_iUpdateSysex++;

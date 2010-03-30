@@ -1,7 +1,7 @@
 // qtractorAudioMadFile.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -19,6 +19,7 @@
 
 *****************************************************************************/
 
+#include "qtractorAbout.h"
 #include "qtractorAudioMadFile.h"
 
 #include <sys/stat.h>
@@ -295,8 +296,7 @@ bool qtractorAudioMadFile::decode (void)
 
 
 // Read method.
-int qtractorAudioMadFile::read ( float **ppFrames,
-	unsigned int iFrames )
+int qtractorAudioMadFile::read ( float **ppFrames, unsigned int iFrames )
 {
 #ifdef DEBUG_0
 	qDebug("qtractorAudioMadFile::read(%p, %d)", ppFrames, iFrames);
@@ -338,8 +338,7 @@ int qtractorAudioMadFile::read ( float **ppFrames,
 
 
 // Write method.
-int qtractorAudioMadFile::write ( float ** /* ppFrames */,
-	unsigned int /* iFrames */ )
+int qtractorAudioMadFile::write ( float **/*ppFrames*/, unsigned int /*iFrames*/ )
 {
 	return 0;
 }
@@ -460,7 +459,7 @@ void qtractorAudioMadFile::close (void)
 
 
 // Open mode accessor.
-int qtractorAudioMadFile::mode() const
+int qtractorAudioMadFile::mode (void) const
 {
 	return m_iMode;
 }

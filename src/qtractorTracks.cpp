@@ -1038,7 +1038,7 @@ bool qtractorTracks::mergeExportAudioClips ( qtractorClipCommand *pClipCommand )
 #endif
 	if (sFilename.isEmpty())
 		return false;
-	if (QFileInfo(sFilename).suffix() != sExt)
+	if (QFileInfo(sFilename).suffix().isEmpty())
 		sFilename += '.' + sExt;
 
 	// Should take sometime...
@@ -1290,7 +1290,7 @@ bool qtractorTracks::mergeExportMidiClips ( qtractorClipCommand *pClipCommand )
 #endif
 	if (sFilename.isEmpty())
 		return false;
-	if (QFileInfo(sFilename).suffix() != sExt)
+	if (QFileInfo(sFilename).suffix().isEmpty())
 		sFilename += '.' + sExt;
 
 	// Should take sometime...

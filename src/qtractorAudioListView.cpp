@@ -19,6 +19,7 @@
 
 *****************************************************************************/
 
+#include "qtractorAbout.h"
 #include "qtractorAudioListView.h"
 #include "qtractorAudioFile.h"
 
