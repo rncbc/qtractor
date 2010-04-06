@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(Qtractor, 0.4.5.1547, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.4.5.1548, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractor.cpp)
 AC_CONFIG_HEADERS(src/config.h)
@@ -667,7 +667,7 @@ if test "x$ac_lv2_event" = "xyes"; then
    fi
 fi
 if test "x$ac_lv2_external_ui" = "xyes"; then
-   AC_CHECK_HEADERS(lv2_ui.h lv2_external_ui.h,
+   AC_CHECK_HEADERS(lv2_ui.h lv2_external_ui.h lv2_data_access.h lv2_instance_access.h,
       [ac_lv2_external_ui="yes"],
       [ac_lv2_external_ui="no"],
       [[#ifdef HAVE_LV2_UI_H

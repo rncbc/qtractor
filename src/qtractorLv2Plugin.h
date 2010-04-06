@@ -36,6 +36,9 @@
 #ifdef CONFIG_LV2_EXTERNAL_UI
 // LV2 External UI support.
 #include "lv2_external_ui.h"
+// LV2 UI data/instance access support.
+#include "lv2_data_access.h"
+#include "lv2_instance_access.h"
 #endif
 
 #ifdef CONFIG_LV2_SAVERESTORE
@@ -173,7 +176,7 @@ public:
 	// Plugin configuration/state (save) snapshot.
 	void freezeConfigs();
 
-	// LV2 Save/Restore extension data descriptor accessor.
+	// LV2 Save/Restore extension data descriptor accessor.
 	const LV2SR_Descriptor *lv2_sr_descriptor(unsigned short iInstance) const;
 
 	bool lv2_save(unsigned short iInstance,
@@ -213,6 +216,11 @@ protected:
 	SLV2UIInstance m_slv2_ui_instance;
 
 	lv2_external_ui_host m_lv2_ui_external;
+
+	LV2_Extension_Data_Feature m_lv2_data_access;
+
+	LV2_Feature    m_lv2_data_access_feature;
+	LV2_Feature    m_lv2_instance_access_feature;
 
 	LV2_Feature    m_lv2_ui_feature;
 	LV2_Feature  **m_lv2_ui_features;

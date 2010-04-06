@@ -779,21 +779,39 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 	if (m_slv2_ui == NULL)
 		return;
 
+	SLV2Instance instance = slv2_instance(0);
+	if (instance == NULL)
+		return;
+	
+	const LV2_Descriptor *descriptor = slv2_instance_get_descriptor(instance);
+	if (descriptor == NULL)
+		return;
+
 	m_aEditorTitle = editorTitle().toUtf8();
 
 	int iFeatures = 0;
 	while (g_lv2_features[iFeatures]) { ++iFeatures; }
 
-	m_lv2_ui_features = new LV2_Feature * [iFeatures + 2];
+	m_lv2_ui_features = new LV2_Feature * [iFeatures + 4];
 	for (int i = 0; i < iFeatures; ++i)
 		m_lv2_ui_features[i] = (LV2_Feature *) g_lv2_features[i];
+
+	m_lv2_data_access.data_access = descriptor->extension_data;
+	m_lv2_data_access_feature.URI = LV2_DATA_ACCESS_URI;
+	m_lv2_data_access_feature.data = &m_lv2_data_access;
+	m_lv2_ui_features[iFeatures++] = &m_lv2_data_access_feature;
+
+	m_lv2_instance_access_feature.URI = LV2_INSTANCE_ACCESS_URI;
+	m_lv2_instance_access_feature.data = slv2_instance_get_handle(instance);
+	m_lv2_ui_features[iFeatures++] = &m_lv2_instance_access_feature;
 
 	m_lv2_ui_external.ui_closed = qtractor_lv2_ui_closed;
 	m_lv2_ui_external.plugin_human_id = m_aEditorTitle.constData();
 	m_lv2_ui_feature.URI = LV2_EXTERNAL_UI_URI;
 	m_lv2_ui_feature.data = &m_lv2_ui_external;
-	m_lv2_ui_features[iFeatures] = &m_lv2_ui_feature;
-	m_lv2_ui_features[++iFeatures]   = NULL;
+	m_lv2_ui_features[iFeatures++] = &m_lv2_ui_feature;
+
+	m_lv2_ui_features[iFeatures] = NULL;
 
 	m_slv2_ui_instance = slv2_ui_instantiate(pLv2Type->slv2_plugin(),
 		m_slv2_ui, qtractor_lv2_ui_write, this, m_lv2_ui_features);

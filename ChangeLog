@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- LV2 UI Instance and Data Access extension support added.
+  (EXPERIMENTAL)
+
 - JACK session infrastructure support. (EXPERIMENTAL)
 
 - Initial widget geometry and visibility persistence logic
@@ -38,7 +41,7 @@ SVN TRUNK
 - Improved visibility of track state buttons text (R, M, S)
   when turned on dark colored themes.
 
-- LV2 Save/Restore extension support kicks off. (EXPERIMENTAL)
+- LV2 Save/Restore extension support kicks off.
 
 - MIDI engine read-ahead period has been shortened to half
   than it was since inception--now it's a 500msec cycle.
@@ -46,7 +49,7 @@ SVN TRUNK
 
 - MIDI clip editor event list gets its due inline editing,
   for time, note, value/velocity and duration columns, just
-  one double-click away over the target cell ;) (EXPERIMENTAL)
+  one double-click away over the target cell ;)
 
 - MIDI file revisions needs a serious approach, soon...
 
@@ -56,7 +59,7 @@ SVN TRUNK
 
 - MIDI clip time-stretching is now made available through
   the same gestures as audio ones, by just shift+dragging
-  either of the clip edges. (EXPERIMENTAL)
+  either of the clip edges.
 
 - Drag-and-copying plug-in instances (cloning) is now fixed
   with regard to parameter value replication.
