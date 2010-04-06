@@ -94,7 +94,7 @@ static const LV2_Feature *g_lv2_features[] =
 
 #include "qtractorPluginForm.h"
 
-static  void qtractor_lv2_ui_write (
+static void qtractor_lv2_ui_write (
 	LV2UI_Controller ui_controller, uint32_t port_index,
 	uint32_t buffer_size, uint32_t format, const void *buffer )
 {

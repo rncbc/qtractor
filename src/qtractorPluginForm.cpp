@@ -326,8 +326,8 @@ void qtractorPluginForm::updateParamValue (
 		return;
 
 #ifdef CONFIG_DEBUG
-	qDebug("qtractorPluginForm[%p]::updateParamValue(%lu, %d)",
-		this, iIndex, int(bUpdate));
+	qDebug("qtractorPluginForm[%p]::updateParamValue(%lu, %g, %d)",
+		this, iIndex, fValue, int(bUpdate));
 #endif
 
 	qtractorPluginParam *pParam = m_pPlugin->findParam(iIndex);
