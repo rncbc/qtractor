@@ -4279,6 +4279,9 @@ void qtractorMainForm::updateSession (void)
 	m_pSnapPerBeatComboBox->setCurrentIndex(
 		qtractorTimeScale::indexFromSnap(m_pSession->snapPerBeat()));
 
+	// We're supposedly clean...
+	m_iDirtyCount = 0;
+
 	//  Actually (re)start session engines...
 	if (startSession()) {
 		// (Re)set playhead...
@@ -4292,9 +4295,6 @@ void qtractorMainForm::updateSession (void)
 				SLOT(alsaNotify()));			
 		}
 	}
-
-	// We're supposedly clean...
-	m_iDirtyCount = 0;
 
 	// Update the session views...
 	viewRefresh();
