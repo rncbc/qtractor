@@ -5,7 +5,8 @@ ChangeLog
 
 SVN TRUNK
 
-- LV2 UI Instance and Data Access extension support added.
+- LV2 UI Instance and Data Access extension support added;
+  reduce LV2 external UI parameter value update flickering
   (EXPERIMENTAL)
 
 - JACK session infrastructure support. (EXPERIMENTAL)
