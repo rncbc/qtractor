@@ -117,6 +117,9 @@
              <height>24</height>
             </size>
            </property>
+           <property name="icon" >
+            <iconset resource="qtractor.qrc" >:/images/fileOpen.png</iconset>
+           </property>
            <property name="focusPolicy" >
             <enum>Qt::TabFocus</enum>
            </property>

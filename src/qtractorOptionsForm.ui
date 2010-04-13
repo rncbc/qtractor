@@ -2473,8 +2473,8 @@
               </property>
               <property name="maximumSize" >
                <size>
-                <width>22</width>
-                <height>22</height>
+                <width>24</width>
+                <height>24</height>
                </size>
               </property>
               <property name="icon" >
@@ -2505,7 +2505,7 @@
               <property name="maximumSize" >
                <size>
                 <width>60</width>
-                <height>22</height>
+                <height>24</height>
                </size>
               </property>
               <property name="font" >
@@ -2569,7 +2569,7 @@
             <property name="maximumSize" >
              <size>
               <width>60</width>
-              <height>22</height>
+              <height>24</height>
              </size>
             </property>
             <property name="font" >
@@ -2600,7 +2600,7 @@
             <property name="maximumSize" >
              <size>
               <width>60</width>
-              <height>22</height>
+              <height>24</height>
              </size>
             </property>
             <property name="font" >
@@ -2631,7 +2631,7 @@
             <property name="maximumSize" >
              <size>
               <width>60</width>
-              <height>22</height>
+              <height>24</height>
              </size>
             </property>
             <property name="font" >
