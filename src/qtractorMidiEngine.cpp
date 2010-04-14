@@ -2728,7 +2728,7 @@ void qtractorMidiBus::setPatch ( unsigned short iChannel,
 	if (pMidiEngine == NULL)
 		return;
 
-#ifdef CONFIG_DEBUG_0
+#ifdef CONFIG_DEBUG
 	qDebug("qtractorMidiBus[%p]::setPatch(%d, \"%s\", %d, %d, %d)",
 		this, iChannel, sInstrumentName.toUtf8().constData(),
 		iBankSelMethod, iBank, iProg);

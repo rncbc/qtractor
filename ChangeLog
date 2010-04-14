@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- MIDI bank select method has been corrected for tracks with
+  no instrument defined (probably fixing bug #2987071).
+
 - LV2 UI Instance and Data Access extension support added;
   reduce LV2 external UI parameter value update flickering
   (EXPERIMENTAL)

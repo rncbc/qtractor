@@ -276,6 +276,14 @@ void qtractorTrackForm::setTrack ( qtractorTrack *pTrack )
 	// Force MIDI output bus recaching.
 	m_pMidiBus = midiBus();
 
+	// Make sure this will be remembered for backup.
+	m_pOldMidiBus = m_pMidiBus;
+	m_iOldChannel = m_props.midiChannel;
+//	m_sOldInstrumentName initially blank...
+	m_iOldBankSelMethod  = m_props.midiBankSelMethod;
+	m_iOldBank = m_props.midiBank;
+	m_iOldProg = m_props.midiProgram;
+
 	// Already time for instrument cacheing...
 	updateInstruments();
 

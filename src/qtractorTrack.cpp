@@ -933,7 +933,7 @@ void qtractorTrack::setMidiPatch ( qtractorInstrumentList *pInstruments )
 		return;
 
 	const qtractorMidiBus::Patch& patch = pMidiBus->patch(midiChannel());
-	int iBankSelMethod = patch.bankSelMethod;
+	int iBankSelMethod = midiBankSelMethod();
 	if (!patch.instrumentName.isEmpty() && iBankSelMethod < 0)
 		iBankSelMethod = (*pInstruments)[patch.instrumentName].bankSelMethod();
 
