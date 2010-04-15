@@ -5,12 +5,14 @@ ChangeLog
 
 SVN TRUNK
 
+- MIDI bank/program backout has been corrected on MIDI track
+  properties dialog rejection (ie. user cancellation).
+
 - MIDI bank select method has been corrected for tracks with
   no instrument defined (probably fixing bug #2987071).
 
 - LV2 UI Instance and Data Access extension support added;
   reduce LV2 external UI parameter value update flickering
-  (EXPERIMENTAL)
 
 - JACK session infrastructure support. (EXPERIMENTAL)
 
@@ -30,7 +32,6 @@ SVN TRUNK
   provided by JACK, then secondarily passed to ALSA Sequencer,
   getting rid of the JackUseExactName requirement and lifting
   the unique/single instance restriction in the process.
-  (EXPERIMENTAL)
 
 - Current JACK Transport, MMC Device, and MIDI Song Position
   pointer (SPP) control modes are now saved/loaded as part of
@@ -49,7 +50,6 @@ SVN TRUNK
 
 - MIDI engine read-ahead period has been shortened to half
   than it was since inception--now it's a 500msec cycle.
-  (EXPERIMENTAL)
 
 - MIDI clip editor event list gets its due inline editing,
   for time, note, value/velocity and duration columns, just

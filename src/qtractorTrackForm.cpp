@@ -149,6 +149,7 @@ qtractorTrackForm::qtractorTrackForm (
 	// Initialize dirty control state.
 	m_iDirtySetup = 0;
 	m_iDirtyCount = 0;
+	m_iDirtyPatch = 0;
 
 	// UI signal/slot connections...
 	QObject::connect(m_ui.TrackNameTextEdit,
@@ -397,7 +398,7 @@ void qtractorTrackForm::reject (void)
 			// Backout all commands made this far...
 			((m_pTrack->session())->commands())->backout(m_pLastCommand);
 			// Try to restore the previously saved patch...
-			if (m_pOldMidiBus) {
+			if (m_pOldMidiBus && m_iDirtyPatch > 0) {
 				m_pOldMidiBus->setPatch(m_iOldChannel, m_sOldInstrumentName,
 					m_iOldBankSelMethod, m_iOldBank, m_iOldProg, m_pTrack);
 			}
@@ -1227,6 +1228,8 @@ void qtractorTrackForm::progChanged (void)
 		// Patch it directly...
 		m_pMidiBus->setPatch(iChannel, sInstrumentName,
 			iBankSelMethod, iBank, iProg, m_pTrack);
+		// Make it dirty.
+		m_iDirtyPatch++;
 	}
 
 	// Flag that it changed anyhow!

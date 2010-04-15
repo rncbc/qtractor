@@ -252,7 +252,7 @@ void qtractorSessionForm::stabilizeForm (void)
 void qtractorSessionForm::browseSessionDir (void)
 {
 	const QString& sTitle = tr("Session Directory") + " - " QTRACTOR_TITLE; 
-#if QT_VERSION < 0x040400
+#if 1 // QT_VERSION < 0x040400
     QString sSessionDir = QFileDialog::getExistingDirectory(this,                                  // Parent.
 		sTitle, m_ui.SessionDirComboBox->currentText());
 #else

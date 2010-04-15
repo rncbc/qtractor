@@ -125,6 +125,7 @@ private:
 	QMap<int, int> m_progs;
 	int m_iDirtySetup;
 	int m_iDirtyCount;
+	int m_iDirtyPatch;
 	qtractorMidiBus *m_pOldMidiBus;
 	int m_iOldChannel;
 	QString m_sOldInstrumentName;
