@@ -836,7 +836,7 @@ void qtractorOptionsForm::choosePluginPath (void)
 	QString sPluginPath;
 
 	const QString& sTitle = tr("Plug-in Directory") + " - " QTRACTOR_TITLE;
-#if QT_VERSION < 0x040400
+#if 1 // QT_VERSION < 0x040400
 	// Ask for the directory...
     sPluginPath = QFileDialog::getExistingDirectory(this,
 		sTitle, m_ui.PluginPathComboBox->currentText());
