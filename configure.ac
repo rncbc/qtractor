@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(Qtractor, 0.4.5.1555, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.4.5.1556, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractor.cpp)
 AC_CONFIG_HEADERS(src/config.h)
@@ -689,7 +689,7 @@ if test "x$ac_lv2_saverestore" = "xyes"; then
    fi
 fi
 
-# Chack for JACK session headers availability.
+# Check for JACK session headers availability.
 if test "x$ac_jack_session" = "xyes"; then
    AC_CHECK_HEADER(jack/session.h, [ac_jack_session="yes"], [ac_jack_session="no"])
    if test "x$ac_jack_session" = "xyes"; then

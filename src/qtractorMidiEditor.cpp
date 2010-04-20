@@ -142,7 +142,7 @@ const QString qtractorMidiEditor::defaultNoteName (
 	if (fDrums) {
 		// Pre-load drum-names hash table...
 		if (g_noteNames.isEmpty()) {
-			for (int i = 13; g_aNoteNames[i].name; ++i) {
+			for (int i = 12; g_aNoteNames[i].name; ++i) {
 				g_noteNames.insert(
 					g_aNoteNames[i].note,
 					tr(g_aNoteNames[i].name));
