@@ -1717,7 +1717,7 @@ void qtractorMidiEngine::closeControlBus (void)
 // Destroy MIDI control stuff.
 void qtractorMidiEngine::deleteControlBus (void)
 {
-	closeMetroBus();
+	closeControlBus();
 
 	// When owned, both input and output
 	// bus are the one and the same...

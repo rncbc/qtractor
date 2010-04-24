@@ -296,7 +296,7 @@ int qtractorEngine::updateConnects (void)
 	return iUpdate;
 }
 
-int qtractorEngine::updateConnects ( qtractorBus* pBus )
+int qtractorEngine::updateConnects ( qtractorBus *pBus )
 {
 	int iUpdate = 0;
 	for (; pBus; pBus = pBus->next()) {

@@ -5,6 +5,10 @@ ChangeLog
 
 SVN TRUNK
 
+- Dedicated MIDI control bus switching fixed. Was closing
+  the wrong bus eventually and crashing the whole show with
+  it (fixes bug #2989590).
+
 - MIDI bank/program backout has been corrected on MIDI track
   properties dialog rejection (ie. user cancellation).
 
