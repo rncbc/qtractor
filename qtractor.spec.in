@@ -1,13 +1,13 @@
 %define name    @PACKAGE_TARNAME@
 %define version @PACKAGE_VERSION@
-%define release 29
-%define prefix  @ac_prefix@
+%define release 30
+
+%define _prefix	@ac_prefix@
 
 Summary:	An Audio/MIDI multi-track sequencer
 Name:		%{name}
 Version:	%{version}
 Release:	%{release}
-Prefix:		%{prefix}
 License:	GPL
 Group:		Productivity/Multimedia/Sound/Midi
 Source0:	%{name}-%{version}.tar.gz
@@ -47,10 +47,10 @@ specially dedicated to the personal home-studio.
 %__make
 
 %install
-%makeinstall
+%__make DESTDIR=%{buildroot} install
 
 %clean
-[ -d %{buildroot} -a "%{buildroot}" != "" ] && %__rm -rf  %{buildroot}
+[ -d %{buildroot} -a "%{buildroot}" != "" ] && %__rm -rf %{buildroot}
 
 %files
 %defattr(-,root,root)
