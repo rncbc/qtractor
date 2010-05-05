@@ -1236,7 +1236,7 @@ void qtractorMainForm::customEvent ( QEvent *pEvent )
 	case QTRACTOR_SHUT_EVENT:
 	case QTRACTOR_BUFF_EVENT:
 		// Engine shutdown is on demand...
-		m_pSession->close();
+		m_pSession->shutdown();
 		m_pConnections->clear();
 		// Send an informative message box...
 		appendMessagesError(

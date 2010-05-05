@@ -181,8 +181,6 @@ static void qtractorAudioEngine_shutdown ( void *pvArg )
 	qtractorAudioEngine *pAudioEngine
 		= static_cast<qtractorAudioEngine *> (pvArg);
 
-	pAudioEngine->shutdown();
-
 	if (pAudioEngine->notifyObject()) {
 		QApplication::postEvent(pAudioEngine->notifyObject(),
 			new QEvent(pAudioEngine->notifyShutdownType()));
@@ -442,13 +440,6 @@ unsigned int qtractorAudioEngine::bufferOffset (void) const
 }
 
 
-// Special disaster recovery method.
-void qtractorAudioEngine::shutdown (void)
-{
-	m_pJackClient = NULL;
-}
-
-
 // Device engine initialization method.
 bool qtractorAudioEngine::init (void)
 {
@@ -649,6 +640,10 @@ void qtractorAudioEngine::clean (void)
 		jack_client_close(m_pJackClient);
 		m_pJackClient = NULL;
 	}
+
+	// Ramping playback spin-lock off.
+	ATOMIC_SET(&m_ramping, 0);
+	ATOMIC_SET(&m_ramping_off, 0);
 }
 
 

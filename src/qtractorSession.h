@@ -225,6 +225,9 @@ public:
 	void setPlaying(bool bPlaying);
 	bool isPlaying() const;
 
+	// Shutdown procedure.
+	void shutdown();
+
 	// (Hazardous) bi-directional locate method.
 	void seek(unsigned long iFrame, bool bSync = false);
 

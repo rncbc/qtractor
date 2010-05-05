@@ -1101,6 +1101,16 @@ bool qtractorSession::isPlaying() const
 }
 
 
+// Shutdown procedure.
+void qtractorSession::shutdown (void)
+{
+	m_pAudioEngine->setPlaying(false);	
+	m_pMidiEngine->setPlaying(false);
+
+	close();
+}
+
+
 // (Hazardous) bi-directional locate method.
 void qtractorSession::seek ( unsigned long iFrame, bool bSync )
 {

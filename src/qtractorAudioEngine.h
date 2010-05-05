@@ -87,9 +87,6 @@ public:
 	// Buffer offset accessor.
 	unsigned int bufferOffset() const;
 
-	// Special disaster recovery method.
-	void shutdown();
-
 	// Audio-export freewheeling (internal) state.
 	void setFreewheel(bool bFreewheel);
 	bool isFreewheel() const;
