@@ -1645,6 +1645,8 @@ bool qtractorTracks::addAudioTracks (
 	if (pSession == NULL)
 		return false;
 
+	pSession->lock();
+
 	// Account for actual updates...
 	int iUpdate = 0;
 
@@ -1706,21 +1708,21 @@ bool qtractorTracks::addAudioTracks (
 			pMainForm->appendMessages(
 				tr("Audio file import: \"%1\".").arg(sPath));
 		}
-		// Make things temporarily stable...
-		qtractorSession::stabilize();
 	}
 
 	// Have we changed anything?
-	if (iUpdate < 1) {
+	bool bResult = false;
+	if (iUpdate > 0) {
+		// Log to session (undoable by import-track command)...
+		pSession->setDescription(sDescription);
+		// Put it in the form of an undoable command...
+		bResult = pSession->execute(pImportTrackCommand);
+	} else {
 		delete pImportTrackCommand;
-		return false;
 	}
-	
-	// Log to session (undoable by import-track command)...
-	pSession->setDescription(sDescription);
 
-	// Put it in the form of an undoable command...
-	return pSession->execute(pImportTrackCommand);
+	pSession->unlock();
+	return bResult;
 }
 
 
@@ -1735,6 +1737,8 @@ bool qtractorTracks::addMidiTracks (
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
 		return false;
+
+	pSession->lock();
 
 	// Account for actual updates...
 	int iUpdate = 0;
@@ -1821,21 +1825,21 @@ bool qtractorTracks::addMidiTracks (
 			pMainForm->appendMessages(
 				tr("MIDI file import: \"%1\".").arg(sPath));
 		}
-		// Make things temporarily stable...
-		qtractorSession::stabilize();
 	}
 
 	// Have we changed anything?
-	if (iUpdate < 1) {
+	bool bResult = false;
+	if (iUpdate > 0) {
+		// Log to session (undoable by import-track command)...
+		pSession->setDescription(sDescription);	
+		// Put it in the form of an undoable command...
+		bResult = pSession->execute(pImportTrackCommand);
+	} else {
 		delete pImportTrackCommand;
-		return false;
 	}
 
-	// Log to session (undoable by import-track command)...
-	pSession->setDescription(sDescription);
-
-	// Put it in the form of an undoable command...
-	return pSession->execute(pImportTrackCommand);
+	pSession->unlock();
+	return bResult;
 }
 
 

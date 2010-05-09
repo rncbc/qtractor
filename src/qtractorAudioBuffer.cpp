@@ -219,7 +219,7 @@ bool qtractorAudioBuffer::open ( const QString& sFilename, int iMode )
 	m_fResampleRatio = 1.0f;
 	m_bResample = (m_iSampleRate != m_pFile->sampleRate());
 	if (m_bResample) {
-		m_fResampleRatio = (float) m_iSampleRate / m_pFile->sampleRate();
+		m_fResampleRatio = float(m_iSampleRate) / float(m_pFile->sampleRate());
 		m_ppInBuffer  = new float *     [iChannels];
 		m_ppOutBuffer = new float *     [iChannels];
 		m_ppSrcState  = new SRC_STATE * [iChannels];
@@ -727,11 +727,11 @@ bool qtractorAudioBuffer::inSync (
 		return false;
 
 	if (!m_bReadSync) {
-#ifdef CONFIG_DEBUG
+	#ifdef CONFIG_DEBUG
 		qDebug("qtractorAudioBuffer[%p]::inSync(%lu, %lu) (%ld)",
 			this, iFrameStart, iFrameEnd,
 			(long) m_iReadOffset - (iFrameStart + m_iOffset));
-#endif
+	#endif
 		if (m_iReadOffset == iFrameStart + m_iOffset) {
 			m_bReadSync = true;
 		} else {
@@ -1237,11 +1237,11 @@ unsigned long qtractorAudioBuffer::framesIn ( unsigned long iFrames ) const
 {
 #ifdef CONFIG_LIBSAMPLERATE
 	if (m_bResample)
-		iFrames = (unsigned long) ((float) iFrames * m_fResampleRatio);
+		iFrames = (unsigned long) (float(iFrames) * m_fResampleRatio);
 #endif
 
 	if (m_bTimeStretch)
-		iFrames = (unsigned long) ((float) iFrames * m_fTimeStretch);
+		iFrames = (unsigned long) (float(iFrames) * m_fTimeStretch);
 
 	return iFrames;
 }
@@ -1250,11 +1250,11 @@ unsigned long qtractorAudioBuffer::framesOut ( unsigned long iFrames ) const
 {
 #ifdef CONFIG_LIBSAMPLERATE
 	if (m_bResample)
-		iFrames = (unsigned long) ((float) iFrames / m_fResampleRatio);
+		iFrames = (unsigned long) (float(iFrames) / m_fResampleRatio);
 #endif
 
 	if (m_bTimeStretch)
-		iFrames = (unsigned long) ((float) iFrames / m_fTimeStretch);
+		iFrames = (unsigned long) (float(iFrames) / m_fTimeStretch);
 
 	return iFrames;
 }

@@ -332,12 +332,12 @@ qtractorFileListView::qtractorFileListView ( QWidget *pParent )
 	QObject::connect(this,
 		SIGNAL(itemClicked(QTreeWidgetItem*,int)),
 		SLOT(itemClickedSlot(QTreeWidgetItem*)));
-//	QObject::connect(this,
-//		SIGNAL(itemDoubleClicked(QTreeWidgetItem*,int)),
-//		SLOT(itemActivatedSlot(QTreeWidgetItem*)));
 	QObject::connect(this,
-		SIGNAL(itemActivated(QTreeWidgetItem*,int)),
+		SIGNAL(itemDoubleClicked(QTreeWidgetItem*,int)),
 		SLOT(itemActivatedSlot(QTreeWidgetItem*)));
+//	QObject::connect(this,
+//		SIGNAL(itemActivated(QTreeWidgetItem*,int)),
+//		SLOT(itemActivatedSlot(QTreeWidgetItem*)));
 	QObject::connect(this,
 		SIGNAL(itemExpanded(QTreeWidgetItem*)),
 		SLOT(itemExpandedSlot(QTreeWidgetItem*)));
