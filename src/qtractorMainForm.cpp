@@ -3187,7 +3187,7 @@ void qtractorMainForm::viewOptions (void)
 		if (iOldTransportMode != m_pOptions->iTransportMode) {
 			m_iDirtyCount++; // Fake session properties change.
 			updateTransportMode();
-			iNeedRestart |= RestartSession;
+		//	iNeedRestart |= RestartSession;
 		}
 		if (iOldMidiQueueTimer != m_pOptions->iMidiQueueTimer) {
 			updateMidiQueueTimer();

@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- Don't show session restart message box when changing JACK
+  transport mode option anymore.
+
 - Dedicated MIDI control bus switching fixed. Was closing
   the wrong bus eventually and crashing the whole show with
   it (fixes bug #2989590).
