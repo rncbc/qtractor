@@ -550,28 +550,6 @@ bool qtractorMidiEditorForm::queryClose ( bool bForce )
 }
 
 
-// (Un)conditional-close.
-bool qtractorMidiEditorForm::testClose ( bool bForce )
-{
-	// Give it a chance to save....
-	bool bQueryClose = queryClose(bForce);
-
-	if (bQueryClose || bForce) {
-		// Make it clean...
-		m_iDirtyCount = 0;
-		// Close it down!
-		close();
-	}
-
-	return bQueryClose;
-}
-
-bool qtractorMidiEditorForm::forceClose (void)
-{
-	return testClose(true);
-}
-
-
 // On-show event handler.
 void qtractorMidiEditorForm::showEvent ( QShowEvent *pShowEvent )
 {
@@ -586,33 +564,12 @@ void qtractorMidiEditorForm::showEvent ( QShowEvent *pShowEvent )
 // On-close event handler.
 void qtractorMidiEditorForm::closeEvent ( QCloseEvent *pCloseEvent )
 {
-	if (queryClose()) {
-		// Reset editor anyway...
-		m_pMidiEditor->reset(true);
-		// Remove this one from main-form list...
-		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-		if (pMainForm)
-			pMainForm->removeEditorForm(this);
-		// Should always (re)open the clip...
-		qtractorMidiClip *pMidiClip = m_pMidiEditor->midiClip();
-		if (pMidiClip && pMidiClip->isDirty()) {
-			// Revert to original clip length...
-			pMidiClip->setDirty(false);
-			pMidiClip->setClipLength(m_pMidiEditor->clipLength());
-			// Restart from scratch...
-			m_pMidiEditor->clear();
-			pMidiClip->openMidiFile(
-				pMidiClip->filename(),
-				pMidiClip->trackChannel());
-			if (pMainForm)
-				pMainForm->updateNotifySlot(true);
-		}
-		// Not dirty anymore...
-		m_iDirtyCount = 0;
-		pCloseEvent->accept();
-	} else {
-		pCloseEvent->ignore();
-	}
+	// Remove this one from main-form list...
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm)
+		pMainForm->removeEditorForm(this);
+
+	pCloseEvent->accept();
 }
 
 
@@ -673,16 +630,6 @@ unsigned long qtractorMidiEditorForm::timeOffset (void) const
 
 
 // Editing MIDI clip accessors.
-void qtractorMidiEditorForm::setMidiClip ( qtractorMidiClip *pMidiClip  )
-{
-	if (queryClose()) {
-		m_pMidiEditor->setMidiClip(pMidiClip);
-		m_iDirtyCount = 0;
-		if (pMidiClip->isDirty()) // MIDI clip might be dirty already.
-			m_iDirtyCount++;
-	}
-}
-
 qtractorMidiClip *qtractorMidiEditorForm::midiClip (void) const
 {
 	return m_pMidiEditor->midiClip();
@@ -744,7 +691,8 @@ void qtractorMidiEditorForm::setup ( qtractorMidiClip *pMidiClip )
 	// form initialization and first setup or else... 
 	if (pMidiClip) {
 		// Set initial MIDI clip properties has seen fit...
-		setMidiClip(pMidiClip);
+		if (queryClose())
+			m_pMidiEditor->setMidiClip(pMidiClip);
 		// Setup connections to main widget...
 		QObject::connect(m_pMidiEditor,
 			SIGNAL(changeNotifySignal(qtractorMidiEditor *)),
@@ -755,6 +703,9 @@ void qtractorMidiEditorForm::setup ( qtractorMidiClip *pMidiClip )
 			SLOT(sendNote(int,int)));
 	}   // Reset MIDI clip length alright...
 	else m_pMidiEditor->resetClipLength();
+
+	// Reset local dirty flag.
+	resetDirtyCount();
 
 	// Get all those names right...
 	updateInstrumentNames();
@@ -785,6 +736,18 @@ void qtractorMidiEditorForm::setup ( qtractorMidiClip *pMidiClip )
 
 	// Done.
 	stabilizeForm();
+}
+
+
+// Reset coomposite dirty flag.
+void qtractorMidiEditorForm::resetDirtyCount (void)
+{
+	m_iDirtyCount = 0;
+
+	// MIDI clip might be dirty already.
+	qtractorMidiClip *pMidiClip = midiClip();
+	if (pMidiClip && pMidiClip->isDirty())
+		m_iDirtyCount++;
 }
 
 

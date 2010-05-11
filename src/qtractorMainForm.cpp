@@ -1805,11 +1805,6 @@ bool qtractorMainForm::closeSession (void)
 {
 	bool bClose = true;
 
-	// Try closing any open/dirty clip editors...
-	QListIterator<qtractorMidiEditorForm *> iter(m_editors);
-	while (bClose && iter.hasNext())
-		bClose = iter.next()->testClose();
-
 	// Are we dirty enough to prompt it?
 	if (bClose && m_iDirtyCount > 0) {
 		switch (QMessageBox::warning(this,

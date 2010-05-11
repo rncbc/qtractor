@@ -61,7 +61,6 @@ public:
 	unsigned long timeOffset() const;
 
 	// MIDI clip sequence accessors.
-	void setMidiClip(qtractorMidiClip *pMidiClip);
 	qtractorMidiClip *midiClip() const;
 
 	// MIDI clip properties accessors.
@@ -74,15 +73,14 @@ public:
 	// Special executive setup method.
 	void setup(qtractorMidiClip *pMidiClip = NULL);
 
+	// Reset coomposite dirty flag.
+	void resetDirtyCount();
+
 	// Instrument/controller names update.
 	void updateInstrumentNames();
 
 	// Pre-close event handler.
 	bool queryClose(bool bForce = false);
-
-	// (Un)conditional-close.
-	bool testClose(bool bForce = false);
-	bool forceClose();
 
 	// Edit menu accessor.
 	QMenu *editMenu() const;

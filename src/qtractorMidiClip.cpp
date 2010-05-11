@@ -98,7 +98,7 @@ qtractorMidiClip::~qtractorMidiClip (void)
 	close(true);
 
 	if (m_pMidiEditorForm) {
-		m_pMidiEditorForm->forceClose();
+		m_pMidiEditorForm->close();
 		delete m_pMidiEditorForm;
 	}
 
@@ -457,7 +457,7 @@ void qtractorMidiClip::close ( bool bForce )
 
 	// Get rid of editor form, if any.
 	if (m_pMidiEditorForm) {
-		m_pMidiEditorForm->forceClose();
+		m_pMidiEditorForm->close();
 		delete m_pMidiEditorForm;
 		m_pMidiEditorForm = NULL;
 	}
@@ -469,7 +469,7 @@ void qtractorMidiClip::open (void)
 {
 	// WTF? is there an editor outstanding still there?
 	if (m_pMidiEditorForm) {
-		m_pMidiEditorForm->forceClose();
+		m_pMidiEditorForm->close();
 		delete m_pMidiEditorForm;
 		m_pMidiEditorForm = NULL;
 	}
@@ -656,6 +656,7 @@ void qtractorMidiClip::updateEditor ( bool bSelectClear )
 		pMidiEditor->updateContents();
 	}
 
+	m_pMidiEditorForm->resetDirtyCount();
 	m_pMidiEditorForm->updateInstrumentNames();
 	m_pMidiEditorForm->stabilizeForm();
 }
