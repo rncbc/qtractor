@@ -484,23 +484,20 @@ qtractorMidiEditorForm::~qtractorMidiEditorForm (void)
 // qtractorMidiEditorForm -- Window close event handlers.
 
 // Pre-close event handlers.
-bool qtractorMidiEditorForm::queryClose ( bool bForce )
+bool qtractorMidiEditorForm::queryClose (void)
 {
 	bool bQueryClose = true;
 
 	// Are we dirty enough to prompt it?
 	if (m_iDirtyCount > 0) {
-		QMessageBox::StandardButtons buttons
-			= QMessageBox::Save
-			| QMessageBox::Discard;
-		if (!bForce)
-			buttons |= QMessageBox::Cancel;
 		switch (QMessageBox::warning(this,
 			tr("Warning") + " - " QTRACTOR_TITLE,
 			tr("The current MIDI clip has been changed:\n\n"
 			"\"%1\"\n\n"
-			"Do you want to save the changes?")
-			.arg(filename()), buttons)) {
+			"Do you want to save the changes?").arg(filename()),
+			QMessageBox::Save |
+			QMessageBox::Discard |
+			QMessageBox::Cancel)) {
 		case QMessageBox::Save:
 			bQueryClose = saveClipFile(false);
 			// Fall thru....
@@ -509,40 +506,6 @@ bool qtractorMidiEditorForm::queryClose ( bool bForce )
 		default:    // Cancel.
 			bQueryClose = false;
 			break;
-		}
-	}
-
-	// Try to save current editor view state...
-	if (bQueryClose && isVisible()) {
-		qtractorOptions *pOptions = qtractorOptions::getInstance();
-		if (pOptions) {
-			// Save decorations state.
-			pOptions->bMidiMenubar = m_ui.menuBar->isVisible();
-			pOptions->bMidiStatusbar = statusBar()->isVisible();
-			pOptions->bMidiFileToolbar = m_ui.fileToolbar->isVisible();
-			pOptions->bMidiEditToolbar = m_ui.editToolbar->isVisible();
-			pOptions->bMidiViewToolbar = m_ui.viewToolbar->isVisible();
-			pOptions->bMidiTransportToolbar = m_ui.transportToolbar->isVisible();
-			pOptions->iMidiZoomMode = m_pMidiEditor->zoomMode();
-			pOptions->iMidiHorizontalZoom = m_pMidiEditor->horizontalZoom();
-			pOptions->iMidiVerticalZoom = m_pMidiEditor->verticalZoom();
-			pOptions->bMidiSnapGrid = m_pMidiEditor->isSnapGrid();
-			pOptions->bMidiEditMode = m_pMidiEditor->isEditMode();
-			pOptions->bMidiNoteDuration = m_ui.viewNoteDurationAction->isChecked();
-			pOptions->bMidiNoteColor = m_ui.viewNoteColorAction->isChecked();
-			pOptions->bMidiValueColor = m_ui.viewValueColorAction->isChecked();
-			pOptions->bMidiPreview = m_ui.viewPreviewAction->isChecked();
-			pOptions->bMidiFollow  = m_ui.viewFollowAction->isChecked();
-			// Save snap-per-beat setting...
-			pOptions->iMidiSnapPerBeat = m_pSnapPerBeatComboBox->currentIndex();
-			// Close floating dock windows...
-			if (m_pMidiEventList->isFloating())
-				m_pMidiEventList->close();
-			// Save the dock windows state.
-			pOptions->settings().setValue(
-				"/MidiEditor/Layout/DockWindows", saveState());
-			// And the main windows state?
-			// pOptions->saveWidgetGeometry(this, true);
 		}
 	}
 
@@ -564,11 +527,44 @@ void qtractorMidiEditorForm::showEvent ( QShowEvent *pShowEvent )
 // On-close event handler.
 void qtractorMidiEditorForm::closeEvent ( QCloseEvent *pCloseEvent )
 {
+	// Try to save current editor view state...
+	qtractorOptions *pOptions = qtractorOptions::getInstance();
+	if (pOptions && isVisible()) {
+		// Save decorations state.
+		pOptions->bMidiMenubar = m_ui.menuBar->isVisible();
+		pOptions->bMidiStatusbar = statusBar()->isVisible();
+		pOptions->bMidiFileToolbar = m_ui.fileToolbar->isVisible();
+		pOptions->bMidiEditToolbar = m_ui.editToolbar->isVisible();
+		pOptions->bMidiViewToolbar = m_ui.viewToolbar->isVisible();
+		pOptions->bMidiTransportToolbar = m_ui.transportToolbar->isVisible();
+		pOptions->iMidiZoomMode = m_pMidiEditor->zoomMode();
+		pOptions->iMidiHorizontalZoom = m_pMidiEditor->horizontalZoom();
+		pOptions->iMidiVerticalZoom = m_pMidiEditor->verticalZoom();
+		pOptions->bMidiSnapGrid = m_pMidiEditor->isSnapGrid();
+		pOptions->bMidiEditMode = m_pMidiEditor->isEditMode();
+		pOptions->bMidiNoteDuration = m_ui.viewNoteDurationAction->isChecked();
+		pOptions->bMidiNoteColor = m_ui.viewNoteColorAction->isChecked();
+		pOptions->bMidiValueColor = m_ui.viewValueColorAction->isChecked();
+		pOptions->bMidiPreview = m_ui.viewPreviewAction->isChecked();
+		pOptions->bMidiFollow  = m_ui.viewFollowAction->isChecked();
+		// Save snap-per-beat setting...
+		pOptions->iMidiSnapPerBeat = m_pSnapPerBeatComboBox->currentIndex();
+		// Close floating dock windows...
+		if (m_pMidiEventList->isFloating())
+			m_pMidiEventList->close();
+		// Save the dock windows state.
+		pOptions->settings().setValue(
+			"/MidiEditor/Layout/DockWindows", saveState());
+		// And the main windows state?
+		// pOptions->saveWidgetGeometry(this, true);
+	}
+
 	// Remove this one from main-form list...
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm)
 		pMainForm->removeEditorForm(this);
 
+	// Close it good.
 	pCloseEvent->accept();
 }
 

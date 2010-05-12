@@ -80,7 +80,7 @@ public:
 	void updateInstrumentNames();
 
 	// Pre-close event handler.
-	bool queryClose(bool bForce = false);
+	bool queryClose();
 
 	// Edit menu accessor.
 	QMenu *editMenu() const;

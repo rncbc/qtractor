@@ -239,7 +239,7 @@ resources = \
 	src/qtractor.qrc
 
 
-all:	$(target) $(style_target)
+all:	$(target)
 
 
 $(target):	$(name).mak $(resources) ${forms} $(sources) $(headers)
@@ -249,7 +249,7 @@ $(name).mak:	$(name).pro
 	@$(qmake) -o $(name).mak $(name).pro
 
 
-install:	$(target) $(style_target)
+install:	$(target)
 	@make INSTALL_ROOT=$(DESTDIR) -f $(name).mak install
 
 uninstall:	$(DESTDIR)$(prefix)/bin/$(name)

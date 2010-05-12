@@ -633,6 +633,7 @@ void qtractorMidiClip::resetEditor ( bool bSelectClear )
 		qtractorMidiEditor *pMidiEditor = m_pMidiEditorForm->editor();
 		if (pMidiEditor)
 			pMidiEditor->reset(bSelectClear);
+		m_pMidiEditorForm->resetDirtyCount();
 	}
 }
 

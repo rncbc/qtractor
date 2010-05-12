@@ -192,6 +192,9 @@ bool qtractorMidiEditCommand::execute ( bool bRedo )
 		}
 	}
 
+	// It's dirty, definitly...
+	m_pMidiClip->setDirty(true);
+
 	// Have we changed on something less durable?
 	if (m_iDuration != iOldDuration) {
 		pSeq->setDuration(m_iDuration);
@@ -208,9 +211,6 @@ bool qtractorMidiEditCommand::execute ( bool bRedo )
 		m_pMidiClip->updateEditor(iSelectClear > 0);
 	}	// Just reset editor internals...
 	else m_pMidiClip->resetEditor(iSelectClear > 0);
-
-	// It's dirty, definitly...
-	m_pMidiClip->setDirty(true);
 
 	// Renqueue dropped events...
 	if (pSession && pSession->isPlaying())

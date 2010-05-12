@@ -722,8 +722,8 @@ void qtractorMidiSysexForm::reject (void)
 	if (m_iDirtyCount > 0) {
 		switch (QMessageBox::warning(this,
 			tr("Warning") + " - " QTRACTOR_TITLE,
-			tr("SysEx settings have been changed.") + "\n\n" +
-			tr("Do you want to apply the changes?"),
+			tr("SysEx settings have been changed.\n\n"
+			"Do you want to apply the changes?"),
 			QMessageBox::Apply |
 			QMessageBox::Discard |
 			QMessageBox::Cancel)) {
