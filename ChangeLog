@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- Introducing a non-painting edit sub-mode on the MIDI clip
+  editor's piano-roll (TESTING).
+
 - The MIDI clip editor (aka piano-roll) is now a lot more
   quiet about saving its own dirty content, delegating all
   salvage questions to main session control (EXPERIMENTAL). 

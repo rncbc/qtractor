@@ -373,6 +373,10 @@ protected:
 	// Update event selection rectangle.
 	void updateEvent(qtractorMidiEvent *pEvent);
 
+	// Update event visual rectangles.
+	void updateEventRects(qtractorMidiEvent *pEvent,
+		QRect& rectEvent, QRect& rectView) const;
+
 	// Drag-move current selection.
 	void updateDragMove(qtractorScrollView *pScrollView, const QPoint& pos);
 	// Finalize the event drag-move.
