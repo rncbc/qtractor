@@ -217,6 +217,10 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 		SIGNAL(triggered(bool)),
 		SLOT(editModeOff()));
 
+	QObject::connect(m_ui.editModeDrawAction,
+		SIGNAL(triggered(bool)),
+		SLOT(editModeDraw(bool)));
+
 	QObject::connect(m_ui.editUndoAction,
 		SIGNAL(triggered(bool)),
 		SLOT(editUndo()));
@@ -335,6 +339,9 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 		SIGNAL(triggered(bool)),
 		SLOT(helpAboutQt()));
 
+	QObject::connect(m_ui.editModeMenu,
+		SIGNAL(aboutToShow()),
+		SLOT(updateModeMenu()));
 	QObject::connect(m_ui.viewZoomMenu,
 		SIGNAL(aboutToShow()),
 		SLOT(updateZoomMenu()));
@@ -388,6 +395,7 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 			m_ui.editModeOnAction->setChecked(true);
 		else
 			m_ui.editModeOffAction->setChecked(true);
+		m_ui.editModeDrawAction->setChecked(pOptions->bMidiEditModeDraw);
 		// Initial decorations visibility state.
 		viewMenubar(pOptions->bMidiMenubar);
 		viewStatusbar(pOptions->bMidiStatusbar);
@@ -400,6 +408,7 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 		m_pMidiEditor->setVerticalZoom(pOptions->iMidiVerticalZoom);
 		m_pMidiEditor->setSnapGrid(pOptions->bMidiSnapGrid);
 		m_pMidiEditor->setEditMode(pOptions->bMidiEditMode);
+		m_pMidiEditor->setEditModeDraw(pOptions->bMidiEditModeDraw);
 		m_pMidiEditor->setNoteColor(pOptions->bMidiNoteColor);
 		m_pMidiEditor->setValueColor(pOptions->bMidiValueColor);
 		m_pMidiEditor->setNoteDuration(pOptions->bMidiNoteDuration);
@@ -542,6 +551,7 @@ void qtractorMidiEditorForm::closeEvent ( QCloseEvent *pCloseEvent )
 		pOptions->iMidiVerticalZoom = m_pMidiEditor->verticalZoom();
 		pOptions->bMidiSnapGrid = m_pMidiEditor->isSnapGrid();
 		pOptions->bMidiEditMode = m_pMidiEditor->isEditMode();
+		pOptions->bMidiEditModeDraw = m_pMidiEditor->isEditModeDraw();
 		pOptions->bMidiNoteDuration = m_ui.viewNoteDurationAction->isChecked();
 		pOptions->bMidiNoteColor = m_ui.viewNoteColorAction->isChecked();
 		pOptions->bMidiValueColor = m_ui.viewValueColorAction->isChecked();
@@ -944,6 +954,13 @@ void qtractorMidiEditorForm::editModeOff (void)
 {
 	m_pMidiEditor->setEditMode(false);
 	m_pMidiEditor->updateContents();
+}
+
+
+// Toggle draw-mode (notes) 
+void qtractorMidiEditorForm::editModeDraw ( bool bOn )
+{
+	m_pMidiEditor->setEditModeDraw(bOn);
 }
 
 
@@ -1459,6 +1476,13 @@ void qtractorMidiEditorForm::updateInstrumentNames (void)
 
 //-------------------------------------------------------------------------
 // qtractorMidiEditorForm -- Selection widget slots.
+
+// Edit mode menu stabilizer.
+void qtractorMidiEditorForm::updateModeMenu (void)
+{
+	m_ui.editModeDrawAction->setEnabled(m_pMidiEditor->isEditMode());
+}
+
 
 // Zoom view menu stabilizer.
 void qtractorMidiEditorForm::updateZoomMenu (void)

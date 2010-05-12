@@ -95,6 +95,10 @@ public:
 	void setEditMode(bool bEditMode);
 	bool isEditMode() const;
 
+	// Edit draw (notes) mode.
+	void setEditModeDraw(bool bEditModeDraw);
+	bool isEditModeDraw() const;
+
 	// Zoom (view) modes.
 	enum { ZoomNone = 0, ZoomHorizontal = 1, ZoomVertical = 2, ZoomAll = 3 };
 
@@ -484,8 +488,10 @@ private:
 	// Zoom mode flag.
 	int m_iZoomMode;
 
-	// Edit mode flag.
+	// Edit mode flags.
 	bool m_bEditMode;
+	bool m_bEditModeDraw;
+
 	bool m_bEventDragEdit;
 
 	// Snap-to-beat grid mode.

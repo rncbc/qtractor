@@ -201,6 +201,7 @@ public:
 	bool bMidiPreview;
 	bool bMidiFollow;
 	bool bMidiEditMode;
+	bool bMidiEditModeDraw;
 	int  iMidiZoomMode;
 	int  iMidiHorizontalZoom;
 	int  iMidiVerticalZoom;

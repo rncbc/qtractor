@@ -69,6 +69,8 @@
     </property>
     <addaction name="editModeOffAction" />
     <addaction name="editModeOnAction" />
+    <addaction name="separator" />
+    <addaction name="editModeDrawAction" />
    </widget>
    <widget class="QMenu" name="editSelectMenu" >
     <property name="title" >
@@ -398,7 +400,7 @@
     <iconset resource="qtractor.qrc" >:/images/editModeOff.png</iconset>
    </property>
    <property name="text" >
-    <string>Edit Off</string>
+    <string>Edit Of&amp;f</string>
    </property>
    <property name="iconText" >
     <string>Edit Off</string>
@@ -418,7 +420,7 @@
     <iconset resource="qtractor.qrc" >:/images/editModeOn.png</iconset>
    </property>
    <property name="text" >
-    <string>Edit On</string>
+    <string>Edit &amp;On</string>
    </property>
    <property name="iconText" >
     <string>Edit On</string>
@@ -428,6 +430,23 @@
    </property>
    <property name="statusTip" >
     <string>Set edit mode on</string>
+   </property>
+  </action>
+  <action name="editModeDrawAction" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="text" >
+    <string>Edit &amp;Draw</string>
+   </property>
+   <property name="iconText" >
+    <string>Edit draw mode</string>
+   </property>
+   <property name="statusTip" >
+    <string>Edit draw mode (notes)</string>
+   </property>
+   <property name="shortcut" >
+    <string/>
    </property>
   </action>
   <action name="editUndoAction" >

@@ -102,6 +102,8 @@ protected slots:
 	void editModeOn();
 	void editModeOff();
 
+	void editModeDraw(bool bOn);
+
 	void editUndo();
 	void editRedo();
 
@@ -147,6 +149,7 @@ protected slots:
 	void helpAbout();
 	void helpAboutQt();
 
+	void updateModeMenu();
 	void updateZoomMenu();
 	void updateSnapMenu();
 

@@ -291,8 +291,9 @@ qtractorMidiEditor::qtractorMidiEditor ( QWidget *pParent )
 	// Zoom mode flag.
 	m_iZoomMode = ZoomAll;
 
-	// Edit mode flag.
+	// Edit mode flags.
 	m_bEditMode = false;
+	m_bEditModeDraw = false;
 
 	// Snap-to-beat grid mode.
 	m_bSnapGrid = false;
@@ -584,6 +585,18 @@ void qtractorMidiEditor::setEditMode ( bool bEditMode )
 bool qtractorMidiEditor::isEditMode (void) const
 {
 	return m_bEditMode;
+}
+
+
+// Edit draw (notes) mode.
+void qtractorMidiEditor::setEditModeDraw ( bool bEditModeDraw )
+{
+	m_bEditModeDraw = bEditModeDraw;
+}
+
+bool qtractorMidiEditor::isEditModeDraw (void) const
+{
+	return m_bEditModeDraw;
 }
 
 
@@ -1674,23 +1687,23 @@ qtractorMidiEvent *qtractorMidiEditor::dragEditEvent (
 					m_posDrag = pos; // m_rectDrag.topLeft();
 					return pEvent;
 				}
- 			#if defined(QTRACTOR_TEST)
- 				else
- 				if (pEvent == m_pEventDrag && pEvent->note() != note) {
- 					// Bump pitch...
- 					pEvent->setNote(note);
- 					pItem->rectView.setY(ch - h1 * (note + 1));
- 					m_rectDrag = pItem->rectView;
- 					m_posDrag = pos; // m_rectDrag.topLeft();
- 					resizeEvent(pEvent, timeDelta(pScrollView), 0);
- 				//	m_posDelta = QPoint(0, 0);
- 					if (m_bSendNotes)
- 						m_pEditList->dragNoteOn(note, pEvent->velocity());
- 					// Bumped.
- 					return NULL;
- 				}
- 			#endif
-			}
+				else
+				if (!m_bEditModeDraw
+					&& pEvent == m_pEventDrag
+					&& pEvent->note() != note) {
+					// Bump pitch...
+					pEvent->setNote(note);
+					pItem->rectView.setY(ch - h1 * (note + 1));
+					m_rectDrag = pItem->rectView;
+					m_posDrag = pos; // m_rectDrag.topLeft();
+					resizeEvent(pEvent, timeDelta(pScrollView), 0);
+				//	m_posDelta = QPoint(0, 0);
+					if (m_bSendNotes)
+						m_pEditList->dragNoteOn(note, pEvent->velocity());
+					// Bumped.
+					return NULL;
+				}
+		}
 			else
 			if (bEditView && pEvent->type() == qtractorMidiEvent::KEYPRESS) {
 				if (pEvent->note() == note && t1 == pEvent->time()) {

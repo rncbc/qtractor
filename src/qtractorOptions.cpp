@@ -266,6 +266,7 @@ void qtractorOptions::loadOptions (void)
 	bMidiPreview     = m_settings.value("/Preview", true).toBool();
 	bMidiFollow      = m_settings.value("/Follow", false).toBool();
 	bMidiEditMode    = m_settings.value("/EditMode", false).toBool();
+	bMidiEditModeDraw = m_settings.value("/EditModeDraw", false).toBool();
 	iMidiZoomMode    = m_settings.value("/ZoomMode", 3).toInt();
 	iMidiHorizontalZoom = m_settings.value("/HorizontalZoom", 100).toInt();
 	iMidiVerticalZoom = m_settings.value("/VerticalZoom", 100).toInt();
@@ -470,6 +471,7 @@ void qtractorOptions::saveOptions (void)
 	m_settings.setValue("/Preview", bMidiPreview);
 	m_settings.setValue("/Follow", bMidiFollow);
 	m_settings.setValue("/EditMode", bMidiEditMode);
+	m_settings.setValue("/EditModeDraw", bMidiEditModeDraw);
 	m_settings.setValue("/ZoomMode", iMidiZoomMode);
 	m_settings.setValue("/HorizontalZoom", iMidiHorizontalZoom);
 	m_settings.setValue("/VerticalZoom", iMidiVerticalZoom);
