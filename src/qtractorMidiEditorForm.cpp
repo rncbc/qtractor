@@ -339,9 +339,6 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 		SIGNAL(triggered(bool)),
 		SLOT(helpAboutQt()));
 
-	QObject::connect(m_ui.editModeMenu,
-		SIGNAL(aboutToShow()),
-		SLOT(updateModeMenu()));
 	QObject::connect(m_ui.viewZoomMenu,
 		SIGNAL(aboutToShow()),
 		SLOT(updateZoomMenu()));
@@ -947,6 +944,8 @@ void qtractorMidiEditorForm::editModeOn (void)
 {
 	m_pMidiEditor->setEditMode(true);
 	m_pMidiEditor->updateContents();
+	
+	stabilizeForm();
 }
 
 // Set edit-mode off.
@@ -954,6 +953,8 @@ void qtractorMidiEditorForm::editModeOff (void)
 {
 	m_pMidiEditor->setEditMode(false);
 	m_pMidiEditor->updateContents();
+
+	stabilizeForm();
 }
 
 
@@ -1476,13 +1477,6 @@ void qtractorMidiEditorForm::updateInstrumentNames (void)
 
 //-------------------------------------------------------------------------
 // qtractorMidiEditorForm -- Selection widget slots.
-
-// Edit mode menu stabilizer.
-void qtractorMidiEditorForm::updateModeMenu (void)
-{
-	m_ui.editModeDrawAction->setEnabled(m_pMidiEditor->isEditMode());
-}
-
 
 // Zoom view menu stabilizer.
 void qtractorMidiEditorForm::updateZoomMenu (void)

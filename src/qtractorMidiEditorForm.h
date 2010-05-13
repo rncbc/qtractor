@@ -149,7 +149,6 @@ protected slots:
 	void helpAbout();
 	void helpAboutQt();
 
-	void updateModeMenu();
 	void updateZoomMenu();
 	void updateSnapMenu();
 

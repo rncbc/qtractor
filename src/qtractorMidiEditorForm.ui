@@ -215,6 +215,8 @@
    </attribute>
    <addaction name="editModeOffAction" />
    <addaction name="editModeOnAction" />
+   <addaction name="separator" />
+   <addaction name="editModeDrawAction" />
   </widget>
   <widget class="QToolBar" name="editToolbar" >
    <property name="orientation" >
@@ -435,6 +437,9 @@
   <action name="editModeDrawAction" >
    <property name="checkable" >
     <bool>true</bool>
+   </property>
+   <property name="icon" >
+    <iconset resource="qtractor.qrc" >:/images/editModeDraw.png</iconset>
    </property>
    <property name="text" >
     <string>Edit &amp;Draw</string>
