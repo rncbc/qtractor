@@ -1367,6 +1367,7 @@ void qtractorMidiEditorForm::stabilizeForm (void)
 	m_ui.editPasteAction->setEnabled(bClipboard);
 	m_ui.editPasteRepeatAction->setEnabled(bClipboard);
 	m_ui.editDeleteAction->setEnabled(bSelected);
+	m_ui.editModeDrawAction->setEnabled(m_pMidiEditor->isEditMode());
 	m_ui.editSelectNoneAction->setEnabled(bSelected);
 #if 0
 	m_ui.toolsMenu->setEnabled(bSelected);
