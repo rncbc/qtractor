@@ -2791,12 +2791,16 @@ void qtractorMidiEditor::paintDragState (
 					if (x1 > rect.right())
 						x1 = rect.right();
 					rect.setLeft(x1);
+					if (!bEditView && !m_bNoteDuration)
+						rect.setWidth(5);
 					break;
 				case ResizeNoteRight:
-					x1 = rect.right() + m_posDelta.x();
-					if (x1 < rect.left())
-						x1 = rect.left();
-					rect.setRight(x1);
+					if (bEditView || m_bNoteDuration) {
+						x1 = rect.right() + m_posDelta.x();
+						if (x1 < rect.left())
+							x1 = rect.left();
+						rect.setRight(x1);
+					}
 					break;
 				case ResizeValueTop:
 					if (!bEditView) {
