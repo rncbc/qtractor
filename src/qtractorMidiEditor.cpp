@@ -2601,16 +2601,34 @@ void qtractorMidiEditor::updateDragResize (
 		x1 = m_rectDrag.left() + dx;
 		if (x1 < 0)
 			dx = -(m_rectDrag.left());
-		if (x1 > m_rectDrag.right())
-			dx = m_rectDrag.width();
+		if (x1 > m_rectDrag.right()) {
+			if (m_bEventDragEdit) {
+				m_resizeMode = ResizeNoteRight;
+				m_rectDrag.setLeft(m_rectDrag.right());
+				m_rectDrag.setRight(x1);
+				dx = (x0 - x1);
+				// $$$
+			} else {
+				dx = +(m_rectDrag.width());
+			}
+		}
 		dx = m_pTimeScale->pixelSnap(x0 + dx) - x0;
 		break;
 	case ResizeNoteRight:
 		dx = delta.x();
 		x0 = m_rectDrag.right() + m_pTimeScale->pixelFromFrame(m_iOffset);
 		x1 = m_rectDrag.right() + dx;
-		if (x1 < m_rectDrag.left())
-			dx = -(m_rectDrag.width());
+		if (x1 < m_rectDrag.left()) {
+			if (m_bEventDragEdit) {
+				m_resizeMode = ResizeNoteLeft;
+				m_rectDrag.setRight(m_rectDrag.left());
+				m_rectDrag.setLeft(x1);
+				dx = (x1 - x0);
+				// $$$
+			} else {
+				dx = -(m_rectDrag.width());
+			}
+		}
 		dx = m_pTimeScale->pixelSnap(x0 + dx) - x0;
 		break;
 	case ResizeValueTop:
