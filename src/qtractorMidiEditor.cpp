@@ -1693,7 +1693,8 @@ qtractorMidiEvent *qtractorMidiEditor::dragEditEvent (
 					&& pEvent->note() != note) {
 					// Bump pitch...
 					pEvent->setNote(note);
-					pItem->rectView.setY(ch - h1 * (note + 1));
+					pItem->rectView.moveTop(ch - h1 * (note + 1));
+					m_select.updateItem(pItem);
 					m_rectDrag = pItem->rectView;
 					m_posDrag = pos; // m_rectDrag.topLeft();
 					resizeEvent(pEvent, timeDelta(pScrollView), 0);

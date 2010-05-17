@@ -6,12 +6,11 @@ ChangeLog
 SVN TRUNK
 
 - Introducing a non-painting edit sub-mode on the MIDI clip
-  editor's piano-roll (see Edit/Select Mode/Edit Draw menu)
-  (EXPERIMENTAL).
+  editor's piano-roll (see Edit/Select Mode/Edit Draw menu).
 
 - The MIDI clip editor (aka piano-roll) is now a lot more
   quiet about saving its own dirty content, delegating all
-  salvage questions to main session control (EXPERIMENTAL). 
+  salvage questions to main session control.
 
 - Don't show session restart message box when changing JACK
   transport mode option anymore.
