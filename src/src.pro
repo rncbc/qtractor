@@ -268,7 +268,7 @@ unix {
 	desktop.path = $$DATADIR/applications
 	desktop.files += $${TARGET}.desktop
 
-	icon.path = $$DATADIR/pixmaps
+	icon.path = $$DATADIR/icons/hicolor/32x32/apps
 	icon.files += images/$${TARGET}.png 
 }
 

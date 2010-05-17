@@ -56,10 +56,16 @@ specially dedicated to the personal home-studio.
 %defattr(-,root,root)
 %doc AUTHORS COPYING ChangeLog README TODO
 %{_bindir}/%{name}
+%dir %{_datadir}/applications
 %{_datadir}/applications/%{name}.desktop
-%{_datadir}/pixmaps/%{name}.png
+%dir %{_datadir}/icons/hicolor
+%dir %{_datadir}/icons/hicolor/32x32
+%dir %{_datadir}/icons/hicolor/32x32/apps
+%{_datadir}/icons/hicolor/32x32/apps/%{name}.png
 
 %changelog
+* Mon May 17 2010 Rui Nuno Capela <rncbc@users.sourceforge.net>
+- Standard desktop icon fixing. 
 * Sat Jan 23 2010 Rui Nuno Capela <rncbc@users.sourceforge.net> - 0.4.5
 - A Friskier Demivierge release.
 * Sat Jan 16 2010 Rui Nuno Capela <rncbc@users.sourceforge.net> - 0.4.4
