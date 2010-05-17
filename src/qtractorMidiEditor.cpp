@@ -1681,16 +1681,16 @@ qtractorMidiEvent *qtractorMidiEditor::dragEditEvent (
 			qtractorMidiEditSelect::Item *pItem = iter.next();
 			qtractorMidiEvent *pEvent = pItem->event;
 			if (bEditView && pEvent->type() == qtractorMidiEvent::NOTEON) {
-				if (pEvent->note() == note && t1 >= pEvent->time()
-					&& t1 < pEvent->time() + pEvent->duration()) {
-					m_rectDrag = pItem->rectView;
-					m_posDrag = pos; // m_rectDrag.topLeft();
-					return pEvent;
+				if (pEvent->note() == note) {
+					if (t1 >= pEvent->time() &&
+						t1 <  pEvent->time() + pEvent->duration()) {
+						m_rectDrag = pItem->rectView;
+						m_posDrag = pos; // m_rectDrag.topLeft();
+						return pEvent;
+					}
 				}
 				else
-				if (!m_bEditModeDraw
-					&& pEvent == m_pEventDrag
-					&& pEvent->note() != note) {
+				if (!m_bEditModeDraw && pEvent == m_pEventDrag) {
 					// Bump pitch...
 					pEvent->setNote(note);
 					pItem->rectView.moveTop(ch - h1 * (note + 1));
@@ -1704,22 +1704,17 @@ qtractorMidiEvent *qtractorMidiEditor::dragEditEvent (
 					// Bumped.
 					return NULL;
 				}
-		}
-			else
-			if (bEditView && pEvent->type() == qtractorMidiEvent::KEYPRESS) {
-				if (pEvent->note() == note && t1 == pEvent->time()) {
-					m_rectDrag = pItem->rectView;
-					m_posDrag = pos; // m_rectDrag.topLeft();			
-					return pEvent;
-				}
 			}
 			else
 			if (t1 == pEvent->time()) {
 				m_rectDrag = (bEditView ? pItem->rectView : pItem->rectEvent);
-				m_posDrag = pos; // m_rectDrag.topLeft();			
+			//	m_posDrag = pos; // m_rectDrag.topLeft();			
 				return pEvent;
 			}
 		}
+		// No new events if ain't drawing...
+		if (!m_bEditModeDraw)
+			return NULL;
 	}
 
 	// Create a brand new event...
