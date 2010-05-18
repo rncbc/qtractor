@@ -1,6 +1,6 @@
 [Desktop Entry]
 Name=@PACKAGE_NAME@
-Version=@PACKAGE_VERSION@
+Version=1.0
 GenericName=Multi-track Sequencer
 Comment=Qtractor is an Audio/MIDI multi-track sequencer application
 Exec=@ac_prefix@/bin/qtractor

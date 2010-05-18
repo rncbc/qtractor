@@ -314,6 +314,7 @@ void stacktrace ( int signo )
 
 int main ( int argc, char **argv )
 {
+	Q_INIT_RESOURCE(qtractor);
 #ifdef CONFIG_STACKTRACE
 #if defined(__GNUC__) && defined(Q_OS_LINUX)
 	signal(SIGILL,  stacktrace);
