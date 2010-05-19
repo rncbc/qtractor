@@ -1,6 +1,6 @@
 %define name    @PACKAGE_TARNAME@
 %define version @PACKAGE_VERSION@
-%define release 30
+%define release 31
 
 %define _prefix	@ac_prefix@
 
@@ -55,11 +55,12 @@ specially dedicated to the personal home-studio.
 %files
 %defattr(-,root,root)
 %doc AUTHORS COPYING ChangeLog README TODO
-%{_bindir}/%{name}
-%{_datadir}/applications/%{name}.desktop
+#dir %{_datadir}/applications
 %dir %{_datadir}/icons/hicolor
 %dir %{_datadir}/icons/hicolor/32x32
 %dir %{_datadir}/icons/hicolor/32x32/apps
+%{_bindir}/%{name}
+%{_datadir}/applications/%{name}.desktop
 %{_datadir}/icons/hicolor/32x32/apps/%{name}.png
 
 %changelog
