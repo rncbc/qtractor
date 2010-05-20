@@ -21,7 +21,7 @@ BuildRequires:	libjack-devel >= 0.100.0
 BuildRequires:	alsa-devel
 BuildRequires:	libsndfile-devel >= 1.0.11
 BuildRequires:	libvorbis-devel
-BuildRequires:	libmad-devel
+#BuildRequires:	libmad-devel
 BuildRequires:	libsamplerate-devel
 BuildRequires:	librubberband-devel >= 1.0.1
 BuildRequires:	liblo-devel
