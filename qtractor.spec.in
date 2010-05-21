@@ -64,8 +64,8 @@ specially dedicated to the personal home-studio.
 %{_datadir}/icons/hicolor/32x32/apps/%{name}.png
 
 %changelog
-* Mon May 17 2010 Rui Nuno Capela <rncbc@users.sourceforge.net>
-- Standard desktop icon fixing. 
+* Fri May 21 2010 Rui Nuno Capela <rncbc@users.sourceforge.net> - 0.4.6
+- The Funky Deviless release.
 * Sat Jan 23 2010 Rui Nuno Capela <rncbc@users.sourceforge.net> - 0.4.5
 - A Friskier Demivierge release.
 * Sat Jan 16 2010 Rui Nuno Capela <rncbc@users.sourceforge.net> - 0.4.4

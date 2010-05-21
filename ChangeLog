@@ -3,7 +3,7 @@ Qtractor - An Audio/MIDI multi-track sequencer
 
 ChangeLog
 
-SVN TRUNK
+0.4.6  2010-05-21  The Funky Deviless
 
 - Introducing a non-painting edit sub-mode on the MIDI clip
   editor's piano-roll (see Edit/Select Mode/Edit Draw menu).
@@ -26,7 +26,7 @@ SVN TRUNK
   no instrument defined (probably fixing bug #2987071).
 
 - LV2 UI Instance and Data Access extension support added;
-  reduce LV2 external UI parameter value update flickering
+  reduce LV2 external UI parameter value update flickering.
 
 - JACK session infrastructure support. (EXPERIMENTAL)
 
@@ -68,8 +68,6 @@ SVN TRUNK
 - MIDI clip editor event list gets its due inline editing,
   for time, note, value/velocity and duration columns, just
   one double-click away over the target cell ;)
-
-- MIDI file revisions needs a serious approach, soon...
 
 - Add-plugin selection dialog position and extent are now
   remembered across invocations and application sessions
