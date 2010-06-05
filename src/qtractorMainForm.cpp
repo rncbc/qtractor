@@ -3327,6 +3327,7 @@ void qtractorMainForm::transportBackward (void)
 		m_pSession->setPlayHead(0);
 	} else {
 		unsigned long iPlayHead = m_pSession->playHead();
+	#if 0
 		if (iPlayHead > m_pSession->editTail() && !m_pSession->isPlaying())
 			iPlayHead = m_pSession->editTail();
 		else
@@ -3334,6 +3335,24 @@ void qtractorMainForm::transportBackward (void)
 			iPlayHead = m_pSession->editHead();
 		else
 			iPlayHead = 0;
+	#else
+		QList<unsigned long> list;
+		list.append(0);
+		if (iPlayHead > m_pSession->editHead())
+			list.append(m_pSession->editHead());
+		if (iPlayHead > m_pSession->editTail() && !m_pSession->isPlaying())
+			list.append(m_pSession->editTail());
+		if (m_pSession->isLooping()) {
+			if (iPlayHead > m_pSession->loopStart())
+				list.append(m_pSession->loopStart());
+			if (iPlayHead > m_pSession->loopEnd() && !m_pSession->isPlaying())
+				list.append(m_pSession->loopEnd());
+		}
+		if (iPlayHead > m_pSession->sessionLength() && !m_pSession->isPlaying())
+			list.append(m_pSession->sessionLength());
+		qSort(list.begin(), list.end());
+		iPlayHead = list.last();
+	#endif
 		m_pSession->setPlayHead(iPlayHead);
 	}
 	m_iTransportUpdate++;
@@ -3422,6 +3441,7 @@ void qtractorMainForm::transportForward (void)
 		m_pSession->setPlayHead(m_pSession->sessionLength());
 	} else {
 		unsigned long iPlayHead = m_pSession->playHead();
+	#if 0
 		if (iPlayHead < m_pSession->editHead())
 			iPlayHead = m_pSession->editHead();
 		else
@@ -3429,6 +3449,23 @@ void qtractorMainForm::transportForward (void)
 			iPlayHead = m_pSession->editTail();
 		else
 			iPlayHead = m_pSession->sessionLength();
+	#else
+		QList<unsigned long> list;
+		if (iPlayHead < m_pSession->editHead())
+			list.append(m_pSession->editHead());
+		if (iPlayHead < m_pSession->editTail())
+			list.append(m_pSession->editTail());
+		if (m_pSession->isLooping()) {
+			if (iPlayHead < m_pSession->loopStart())
+				list.append(m_pSession->loopStart());
+			if (iPlayHead < m_pSession->loopEnd())
+				list.append(m_pSession->loopEnd());
+		}
+		if (iPlayHead < m_pSession->sessionLength())
+			list.append(m_pSession->sessionLength());
+		qSort(list.begin(), list.end());
+		iPlayHead = list.first();
+	#endif
 		m_pSession->setPlayHead(iPlayHead);
 	}
 	m_iTransportUpdate++;

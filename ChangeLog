@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- Backward and Forward transport commands are now taking
+  additional stops on loop points.
+
 - Attempt to optimize track solo/mute redundant transactions,
   in special regard to MIDI track events which were being
   duplicated on soloing and temporarily muted on unsoloing.
