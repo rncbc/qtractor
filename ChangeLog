@@ -3,6 +3,13 @@ Qtractor - An Audio/MIDI multi-track sequencer
 
 ChangeLog
 
+SVN TRUNK
+
+- Attempt to optimize track solo/mute redundant transactions,
+  in special regard to MIDI track events which were being
+  duplicated on soloing and temporarily muted on unsoloing.
+
+
 0.4.6  2010-05-21  The Funky Deviless
 
 - Introducing a non-painting edit sub-mode on the MIDI clip

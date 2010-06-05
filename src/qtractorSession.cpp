@@ -1454,6 +1454,7 @@ void qtractorSession::trackRecord ( qtractorTrack *pTrack, bool bRecord )
 #endif
 }
 
+
 // Immediate track mute (engine indirection).
 void qtractorSession::trackMute ( qtractorTrack *pTrack, bool bMute )
 {
@@ -1481,10 +1482,10 @@ void qtractorSession::trackSolo ( qtractorTrack *pTrack, bool bSolo )
 	for (qtractorTrack *pTrackMute = m_tracks.first();
 			pTrackMute; pTrackMute = pTrackMute->next()) {
 		// For all other track, but this one.
-		if (pTrackMute->isMute())
+		if (pTrackMute == pTrack || pTrackMute->isMute())
 			continue;
 		// (Un)mute each other track...
-		trackMute(pTrackMute, pTrackMute == pTrack ? !bSolo : bSolo);
+		trackMute(pTrackMute, bSolo);
 	}
 }
 
