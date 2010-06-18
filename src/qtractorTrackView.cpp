@@ -2122,6 +2122,9 @@ void qtractorTrackView::dragResizeDrop ( const QPoint& pos, bool bTimeStretch )
 	if (m_pClipDrag == NULL)
 		return;
 
+	if (!m_pClipDrag->queryEditor())
+		return;
+
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
 		return;

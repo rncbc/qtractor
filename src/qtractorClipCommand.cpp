@@ -454,6 +454,9 @@ bool qtractorClipCommand::execute ( bool bRedo )
 					}
 				}
 			}
+			else
+			if (pItem->editCommand == NULL)
+				pClip->close(true);
 			if (iOldStart != pItem->clipStart)
 				pTrack->unlinkClip(pClip);
 			pClip->setClipStart(pItem->clipStart);

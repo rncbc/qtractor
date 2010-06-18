@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- Make sure to ask whether a dirty MIDI clip should be saved,
+  upon resizing or stretching its edges (fixes bug #3017723).
+
 - Backward and Forward transport commands are now taking
   additional stops on loop points.
 
