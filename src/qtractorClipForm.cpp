@@ -509,7 +509,7 @@ void qtractorClipForm::formatChanged (void)
 		displayFormat = qtractorTimeScale::Time;
 	else
 	if (m_ui.BbtRadioButton->isChecked())
-		displayFormat= qtractorTimeScale::BBT;
+		displayFormat = qtractorTimeScale::BBT;
 
 	if (m_pTimeScale) {
 		// Set from local time-scale instance...

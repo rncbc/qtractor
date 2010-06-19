@@ -5,6 +5,10 @@ ChangeLog
 
 SVN TRUNK
 
+- A tempo adjustment tool is making inroads (EXPERIMENTAL).
+
+- Audio tracks auto-monitoring is now effective on playback.
+
 - Make sure to ask whether a dirty MIDI clip should be saved,
   upon resizing or stretching its edges (fixes bug #3017723).
 

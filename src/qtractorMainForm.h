@@ -201,6 +201,7 @@ public slots:
 	void transportPunch();
 	void transportPunchSet();
 	void transportMetro();
+	void transportTempo();
 	void transportFollow();
 	void transportAutoBackward();
 	void transportContinue();

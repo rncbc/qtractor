@@ -763,7 +763,7 @@ void qtractorTrack::process ( qtractorClip *pClip,
 		pOutputBus = static_cast<qtractorAudioBus *> (m_pOutputBus);
 		// Prepare this track buffer...
 		if (pOutputBus) {
-			qtractorAudioBus *pInputBus = (isMonitor()
+			qtractorAudioBus *pInputBus = (m_pSession->isTrackMonitor(this)
 				? static_cast<qtractorAudioBus *> (m_pInputBus) : NULL);
 			pOutputBus->buffer_prepare(nframes, pInputBus);
 		}

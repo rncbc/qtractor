@@ -1,0 +1,315 @@
+// qtractorTempoAdjustForm.cpp
+//
+/****************************************************************************
+   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
+
+   This program is free software; you can redistribute it and/or
+   modify it under the terms of the GNU General Public License
+   as published by the Free Software Foundation; either version 2
+   of the License, or (at your option) any later version.
+
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+
+   You should have received a copy of the GNU General Public License along
+   with this program; if not, write to the Free Software Foundation, Inc.,
+   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
+*****************************************************************************/
+
+#include "qtractorTempoAdjustForm.h"
+
+#include "qtractorAbout.h"
+
+#include "qtractorSession.h"
+
+#include "qtractorMainForm.h"
+
+#include <QMessageBox>
+#include <QLineEdit>
+#include <QTime>
+
+
+//----------------------------------------------------------------------------
+// qtractorTempoAdjustForm -- UI wrapper form.
+
+// Constructor.
+qtractorTempoAdjustForm::qtractorTempoAdjustForm (
+	QWidget *pParent, Qt::WindowFlags wflags )
+	: QDialog(pParent, wflags)
+{
+	// Setup UI struct...
+	m_ui.setupUi(this);
+
+	m_pTime = new QTime();
+
+	// Initialize local time scale.
+	m_pTimeScale = new qtractorTimeScale();
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession)
+		m_pTimeScale->copy(*pSession->timeScale());
+
+	m_ui.RangeStartSpinBox->setTimeScale(m_pTimeScale);
+	m_ui.RangeLengthSpinBox->setTimeScale(m_pTimeScale);
+
+	m_ui.TempoSpinBox->setTempo(m_pTimeScale->tempo(), false);
+	m_ui.TempoSpinBox->setBeatsPerBar(m_pTimeScale->beatsPerBar(), false);
+	m_ui.TempoSpinBox->setBeatDivisor(m_pTimeScale->beatDivisor(), false);
+
+	m_iTimeTaps = m_pTimeScale->beatsPerBar();
+	m_fTimeTap = 0.0f;
+
+	// Set proper time scales display format...
+	switch (m_pTimeScale->displayFormat()) {
+	case qtractorTimeScale::BBT:
+		m_ui.BbtRadioButton->setChecked(true);
+		break;
+	case qtractorTimeScale::Time:
+		m_ui.TimeRadioButton->setChecked(true);
+		break;
+	case qtractorTimeScale::Frames:
+	default:
+		m_ui.FramesRadioButton->setChecked(true);
+		break;
+	}
+
+	// Initialize dirty control state (nope).
+	m_iDirtyCount = 0;
+
+	// Try to set minimal window positioning.
+	adjustSize();
+
+	// UI signal/slot connections...
+	QObject::connect(m_ui.TempoSpinBox,
+		SIGNAL(valueChanged(float, unsigned short, unsigned short)),
+		SLOT(tempoChanged(float, unsigned short, unsigned short)));
+	QObject::connect(m_ui.RangeStartSpinBox,
+		SIGNAL(valueChanged(unsigned long)),
+		SLOT(changed()));
+	QObject::connect(m_ui.RangeLengthSpinBox,
+		SIGNAL(valueChanged(unsigned long)),
+		SLOT(changed()));
+	QObject::connect(m_ui.RangeBeatsSpinBox,
+		SIGNAL(valueChanged(int)),
+		SLOT(changed()));
+	QObject::connect(m_ui.AdjustPushButton,
+		SIGNAL(clicked()),
+		SLOT(adjust()));
+	QObject::connect(m_ui.FramesRadioButton,
+		SIGNAL(toggled(bool)),
+		SLOT(formatChanged()));
+	QObject::connect(m_ui.TimeRadioButton,
+		SIGNAL(toggled(bool)),
+		SLOT(formatChanged()));
+	QObject::connect(m_ui.BbtRadioButton,
+		SIGNAL(toggled(bool)),
+		SLOT(formatChanged()));
+	QObject::connect(m_ui.TempoPushButton,
+		SIGNAL(clicked()),
+		SLOT(tempoTap()));
+	QObject::connect(m_ui.OkPushButton,
+		SIGNAL(clicked()),
+		SLOT(accept()));
+	QObject::connect(m_ui.CancelPushButton,
+		SIGNAL(clicked()),
+		SLOT(reject()));
+}
+
+
+// Destructor.
+qtractorTempoAdjustForm::~qtractorTempoAdjustForm (void)
+{
+	// Don't forget to get rid of local time-scale instance...
+	if (m_pTimeScale)
+		delete m_pTimeScale;
+	if (m_pTime)
+		delete m_pTime;
+}
+
+
+// Range accessors.
+void qtractorTempoAdjustForm::setRangeStart ( unsigned long iRangeStart )
+{
+	m_ui.RangeStartSpinBox->setValue(iRangeStart, false);
+}
+
+unsigned long qtractorTempoAdjustForm::rangeStart (void) const
+{
+	return m_ui.RangeStartSpinBox->value();
+}
+
+void qtractorTempoAdjustForm::setRangeLength ( unsigned long iRangeLength )
+{
+	m_ui.RangeLengthSpinBox->setValue(iRangeLength, false);
+	m_ui.RangeBeatsSpinBox->setValue(
+		m_pTimeScale->beatFromFrame(iRangeLength));
+}
+
+unsigned long qtractorTempoAdjustForm::rangeLength (void) const
+{
+	return m_ui.RangeLengthSpinBox->value();
+}
+
+unsigned short qtractorTempoAdjustForm::rangeBeats (void) const
+{
+	return m_ui.RangeBeatsSpinBox->value();
+}
+
+
+// Accept settings (OK button slot).
+void qtractorTempoAdjustForm::accept (void)
+{
+	// Just go with dialog acceptance.
+	QDialog::accept();
+}
+
+
+// Reject settings (Cancel button slot).
+void qtractorTempoAdjustForm::reject (void)
+{
+	bool bReject = true;
+
+	// Check if there's any pending changes...
+	if (m_iDirtyCount > 0) {
+		switch (QMessageBox::warning(this,
+			tr("Warning") + " - " QTRACTOR_TITLE,
+			tr("Some settings have been changed.\n\n"
+			"Do you want to apply the changes?"),
+			QMessageBox::Apply |
+			QMessageBox::Discard |
+			QMessageBox::Cancel)) {
+		case QMessageBox::Apply:
+			accept();
+			return;
+		case QMessageBox::Discard:
+			break;
+		default:    // Cancel.
+			bReject = false;
+		}
+	}
+
+	if (bReject)
+		QDialog::reject();
+}
+
+
+// Dirty up settings.
+void qtractorTempoAdjustForm::changed (void)
+{
+	m_iDirtyCount++;
+	stabilizeForm();
+}
+
+
+// Tempo signature  has changed.
+void qtractorTempoAdjustForm::tempoChanged (
+	float fTempo, unsigned short iBeatsPerBar, unsigned short iBeatDivisor )
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorTempoAdjustForm::tempoChanged(%g, %u, %u)",
+		fTempo, iBeatsPerBar, iBeatDivisor);
+#endif
+
+	m_iTimeTaps = iBeatsPerBar;
+	m_fTimeTap  = 0.0f;
+	
+	changed();
+}
+
+
+// Adjust as instructed.
+void qtractorTempoAdjustForm::adjust (void)
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorTempoAdjustForm::adjust()");
+#endif
+
+	unsigned short iRangeBeats = m_ui.RangeBeatsSpinBox->value();
+	if (iRangeBeats < 1)
+		return;
+
+//	unsigned long iRangeStart  = m_ui.RangeStartSpinBox->value();
+	unsigned long iRangeLength = m_ui.RangeLengthSpinBox->value();
+	unsigned long iBeatLength = iRangeLength / iRangeBeats;
+	
+//	qtractorTimeScale::Cursor cursor(m_pTimeScale);
+//	qtractorTimeScale::Node *pNode = cursor.seekFrame(iRangeStart);
+	float fTempo = 60.0f * float(m_pTimeScale->sampleRate()) / float(iBeatLength);
+	m_ui.TempoSpinBox->setTempo(fTempo, false);
+
+	changed();
+}
+
+
+// Display format has changed.
+void qtractorTempoAdjustForm::formatChanged (void)
+{
+	qtractorTimeScale::DisplayFormat displayFormat = qtractorTimeScale::Frames;
+
+	if (m_ui.TimeRadioButton->isChecked())
+		displayFormat = qtractorTimeScale::Time;
+	else
+	if (m_ui.BbtRadioButton->isChecked())
+		displayFormat = qtractorTimeScale::BBT;
+
+	if (m_pTimeScale) {
+		// Set from local time-scale instance...
+		m_pTimeScale->setDisplayFormat(displayFormat);
+		m_ui.RangeStartSpinBox->updateDisplayFormat();
+		m_ui.RangeLengthSpinBox->updateDisplayFormat();
+	}
+
+	stabilizeForm();
+}
+
+
+// Stabilize current form state.
+void qtractorTempoAdjustForm::stabilizeForm (void)
+{
+	bool bValid = (m_iDirtyCount > 0);
+	unsigned long iRangeLength = m_ui.RangeLengthSpinBox->value();
+	unsigned short iRangeBeats = m_ui.RangeBeatsSpinBox->value();
+	bValid = bValid && (iRangeLength > 0);
+	bValid = bValid && (iRangeBeats > 0);
+	m_ui.AdjustPushButton->setEnabled(bValid);
+//	m_ui.OkPushButton->setEnabled(bValid);
+}
+
+
+// Tempo tap click.
+void qtractorTempoAdjustForm::tempoTap (void)
+{
+	// TODO: Compute tempo tap...
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorTempoAdjustForm::tempoTap()");
+#endif
+
+	int iTime = m_pTime->restart();
+	if (iTime > 200 && iTime < 1200) { // Magic!
+		m_fTimeTap = (float(m_iTimeTaps - 1) * m_fTimeTap + iTime) / float(m_iTimeTaps);
+		m_ui.TempoSpinBox->setTempo((60000.0f / m_fTimeTap), false);
+	}
+	else m_fTimeTap = 0.0f;
+}
+
+
+// Accepted results accessors.
+float qtractorTempoAdjustForm::tempo (void) const
+{
+	return m_ui.TempoSpinBox->tempo();
+}
+
+unsigned short qtractorTempoAdjustForm::beatsPerBar (void) const
+{
+	return m_ui.TempoSpinBox->beatsPerBar();
+}
+
+unsigned short qtractorTempoAdjustForm::beatDivisor (void) const
+{
+	return m_ui.TempoSpinBox->beatDivisor();
+}
+
+
+// end of qtractorTempoAdjustForm.cpp

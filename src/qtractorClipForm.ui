@@ -225,7 +225,7 @@
        </widget>
       </item>
       <item row="1" column="0" >
-       <widget class="QLabel" name="ClipOffsetTextLLabel" >
+       <widget class="QLabel" name="ClipOffsetTextLabel" >
         <property name="minimumSize" >
          <size>
           <width>60</width>
@@ -241,7 +241,7 @@
        </widget>
       </item>
       <item row="2" column="0" >
-       <widget class="QLabel" name="ClipLengthTextLLabel" >
+       <widget class="QLabel" name="ClipLengthTextLabel" >
         <property name="minimumSize" >
          <size>
           <width>60</width>
@@ -257,7 +257,7 @@
        </widget>
       </item>
       <item row="0" column="0" >
-       <widget class="QLabel" name="ClipStartTextLLabel" >
+       <widget class="QLabel" name="ClipStartTextLabel" >
         <property name="minimumSize" >
          <size>
           <width>60</width>

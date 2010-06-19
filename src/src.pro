@@ -117,6 +117,7 @@ HEADERS += config.h \
 	qtractorPluginSelectForm.h \
 	qtractorSessionForm.h \
 	qtractorShortcutForm.h \
+	qtractorTempoAdjustForm.h \
 	qtractorTimeScaleForm.h \
 	qtractorTrackForm.h
 
@@ -218,6 +219,7 @@ SOURCES += \
 	qtractorPluginSelectForm.cpp \
 	qtractorSessionForm.cpp \
 	qtractorShortcutForm.cpp \
+	qtractorTempoAdjustForm.cpp \
 	qtractorTimeScaleForm.cpp \
 	qtractorTrackForm.cpp
 
@@ -238,6 +240,7 @@ FORMS += \
 	qtractorPluginSelectForm.ui \
 	qtractorSessionForm.ui \
 	qtractorShortcutForm.ui \
+	qtractorTempoAdjustForm.ui \
 	qtractorTimeScaleForm.ui \
 	qtractorTrackForm.ui
 

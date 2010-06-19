@@ -301,6 +301,7 @@
     <addaction name="transportPunchSetAction" />
     <addaction name="separator" />
     <addaction name="transportMetroAction" />
+    <addaction name="transportTempoAction" />
     <addaction name="separator" />
     <addaction name="transportFollowAction" />
     <addaction name="transportAutoBackwardAction" />
@@ -469,9 +470,6 @@
    <property name="statusTip" >
     <string>Save current session with another file name</string>
    </property>
-   <property name="shortcut" >
-    <string/>
-   </property>
   </action>
   <action name="filePropertiesAction" >
    <property name="text" >
@@ -502,9 +500,6 @@
    </property>
    <property name="statusTip" >
     <string>Exit this application program</string>
-   </property>
-   <property name="shortcut" >
-    <string/>
    </property>
   </action>
   <action name="editUndoAction" >
@@ -1285,9 +1280,6 @@
    <property name="statusTip" >
     <string>Show/hide the main program window statusbar</string>
    </property>
-   <property name="shortcut" >
-    <string/>
-   </property>
   </action>
   <action name="viewToolbarFileAction" >
    <property name="checkable" >
@@ -1444,9 +1436,6 @@
    <property name="statusTip" >
     <string>Show/hide the files window</string>
    </property>
-   <property name="shortcut" >
-    <string/>
-   </property>
   </action>
   <action name="viewMessagesAction" >
    <property name="checkable" >
@@ -1466,9 +1455,6 @@
    </property>
    <property name="statusTip" >
     <string>Show/hide the messages window</string>
-   </property>
-   <property name="shortcut" >
-    <string/>
    </property>
   </action>
   <action name="viewConnectionsAction" >
@@ -1655,9 +1641,6 @@
    <property name="statusTip" >
     <string>Change instrument definitions and files</string>
    </property>
-   <property name="shortcut" >
-    <string/>
-   </property>
   </action>
   <action name="viewControllersAction" >
    <property name="icon" >
@@ -1675,9 +1658,6 @@
    <property name="statusTip" >
     <string>Change MIDI controllers configuration</string>
    </property>
-   <property name="shortcut" >
-    <string/>
-   </property>
   </action>
   <action name="viewBusesAction" >
    <property name="text" >
@@ -1692,9 +1672,6 @@
    <property name="statusTip" >
     <string>Change session bus definitions</string>
    </property>
-   <property name="shortcut" >
-    <string/>
-   </property>
   </action>
   <action name="viewTempoMapAction" >
    <property name="text" >
@@ -1708,9 +1685,6 @@
    </property>
    <property name="statusTip" >
     <string>Change session tempo map</string>
-   </property>
-   <property name="shortcut" >
-    <string/>
    </property>
   </action>
   <action name="viewOptionsAction" >
@@ -1769,9 +1743,6 @@
    <property name="statusTip" >
     <string>Transport rewind</string>
    </property>
-   <property name="shortcut" >
-    <string/>
-   </property>
   </action>
   <action name="transportFastForwardAction" >
    <property name="checkable" >
@@ -1792,9 +1763,6 @@
    <property name="statusTip" >
     <string>Transport fast forward</string>
    </property>
-   <property name="shortcut" >
-    <string/>
-   </property>
   </action>
   <action name="transportForwardAction" >
    <property name="icon" >
@@ -1811,9 +1779,6 @@
    </property>
    <property name="statusTip" >
     <string>Transport forward</string>
-   </property>
-   <property name="shortcut" >
-    <string/>
    </property>
   </action>
   <action name="transportLoopAction" >
@@ -1898,9 +1863,6 @@
    <property name="statusTip" >
     <string>Transport record</string>
    </property>
-   <property name="shortcut" >
-    <string/>
-   </property>
   </action>
   <action name="transportPunchAction" >
    <property name="checkable" >
@@ -1961,8 +1923,22 @@
    <property name="statusTip" >
     <string>Metronome</string>
    </property>
+  </action>
+  <action name="transportTempoAction" >
+   <property name="text" >
+    <string>&amp;Tempo...</string>
+   </property>
+   <property name="iconText" >
+    <string>Tempo Adjust</string>
+   </property>
+   <property name="toolTip" >
+    <string>Tempo Adjust</string>
+   </property>
+   <property name="statusTip" >
+    <string>Adjust session tempo from current selection</string>
+   </property>
    <property name="shortcut" >
-    <string/>
+    <string>F7</string>
    </property>
   </action>
   <action name="transportFollowAction" >
@@ -1984,9 +1960,6 @@
    <property name="statusTip" >
     <string>Follow playhead</string>
    </property>
-   <property name="shortcut" >
-    <string/>
-   </property>
   </action>
   <action name="transportAutoBackwardAction" >
    <property name="checkable" >
@@ -2006,9 +1979,6 @@
    </property>
    <property name="statusTip" >
     <string>Auto backward</string>
-   </property>
-   <property name="shortcut" >
-    <string/>
    </property>
   </action>
   <action name="transportContinueAction" >
@@ -2030,9 +2000,6 @@
    <property name="statusTip" >
     <string>Continue past end</string>
    </property>
-   <property name="shortcut" >
-    <string/>
-   </property>
   </action>
   <action name="helpShortcutsAction" >
    <property name="icon" >
@@ -2050,9 +2017,6 @@
    <property name="statusTip" >
     <string>Keyboard shortcuts</string>
    </property>
-   <property name="shortcut" >
-    <string/>
-   </property>
   </action>
   <action name="helpAboutAction" >
    <property name="text" >
@@ -2067,9 +2031,6 @@
    <property name="statusTip" >
     <string>Show information about this application program</string>
    </property>
-   <property name="shortcut" >
-    <string/>
-   </property>
   </action>
   <action name="helpAboutQtAction" >
    <property name="text" >
@@ -2083,9 +2044,6 @@
    </property>
    <property name="statusTip" >
     <string>Show information about the Qt toolkit</string>
-   </property>
-   <property name="shortcut" >
-    <string/>
    </property>
   </action>
  </widget>
