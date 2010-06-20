@@ -79,6 +79,7 @@ private:
 	int m_iTimeTaps;
 	float m_fTimeTap;
 
+	int m_iDirtySetup;
 	int m_iDirtyCount;
 };
 

@@ -5,7 +5,8 @@ ChangeLog
 
 SVN TRUNK
 
-- A tempo adjustment tool is making inroads (EXPERIMENTAL).
+- A tempo adjustment tool is making inroads from the menu as
+  Edit/Clip/Tempo... (factory shortcut: F7) (EXPERIMENTAL).
 
 - Audio tracks auto-monitoring is now effective on playback.
 

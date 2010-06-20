@@ -59,7 +59,7 @@ qtractorTempoAdjustForm::qtractorTempoAdjustForm (
 	m_ui.TempoSpinBox->setBeatDivisor(m_pTimeScale->beatDivisor(), false);
 
 	m_iTimeTaps = m_pTimeScale->beatsPerBar();
-	m_fTimeTap = 0.0f;
+	m_fTimeTap = 60000.0f / m_ui.TempoSpinBox->tempo();
 
 	// Set proper time scales display format...
 	switch (m_pTimeScale->displayFormat()) {
@@ -76,6 +76,7 @@ qtractorTempoAdjustForm::qtractorTempoAdjustForm (
 	}
 
 	// Initialize dirty control state (nope).
+	m_iDirtySetup = 0;
 	m_iDirtyCount = 0;
 
 	// Try to set minimal window positioning.
@@ -143,8 +144,11 @@ unsigned long qtractorTempoAdjustForm::rangeStart (void) const
 void qtractorTempoAdjustForm::setRangeLength ( unsigned long iRangeLength )
 {
 	m_ui.RangeLengthSpinBox->setValue(iRangeLength, false);
+
+	m_iDirtySetup++;
 	m_ui.RangeBeatsSpinBox->setValue(
 		m_pTimeScale->beatFromFrame(iRangeLength));
+	m_iDirtySetup--;
 }
 
 unsigned long qtractorTempoAdjustForm::rangeLength (void) const
@@ -198,6 +202,9 @@ void qtractorTempoAdjustForm::reject (void)
 // Dirty up settings.
 void qtractorTempoAdjustForm::changed (void)
 {
+	if (m_iDirtySetup > 0)
+		return;
+
 	m_iDirtyCount++;
 	stabilizeForm();
 }
@@ -213,7 +220,7 @@ void qtractorTempoAdjustForm::tempoChanged (
 #endif
 
 	m_iTimeTaps = iBeatsPerBar;
-	m_fTimeTap  = 0.0f;
+	m_fTimeTap = 60000.0f / m_ui.TempoSpinBox->tempo();
 	
 	changed();
 }
@@ -288,10 +295,11 @@ void qtractorTempoAdjustForm::tempoTap (void)
 
 	int iTime = m_pTime->restart();
 	if (iTime > 200 && iTime < 1200) { // Magic!
-		m_fTimeTap = (float(m_iTimeTaps - 1) * m_fTimeTap + iTime) / float(m_iTimeTaps);
+		m_fTimeTap = (float(m_iTimeTaps - 1) * m_fTimeTap + float(iTime))
+			/ float(m_iTimeTaps);
 		m_ui.TempoSpinBox->setTempo((60000.0f / m_fTimeTap), false);
 	}
-	else m_fTimeTap = 0.0f;
+	else m_fTimeTap = 60000.0f / m_ui.TempoSpinBox->tempo();
 }
 
 

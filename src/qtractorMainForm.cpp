@@ -583,6 +583,9 @@ qtractorMainForm::qtractorMainForm (
 	QObject::connect(m_ui.editClipQuantizeAction,
 		SIGNAL(triggered(bool)),
 		SLOT(editClipQuantize()));
+	QObject::connect(m_ui.editClipTempoAction,
+		SIGNAL(triggered(bool)),
+		SLOT(editClipTempo()));
 	QObject::connect(m_ui.editClipImportAction,
 		SIGNAL(triggered(bool)),
 		SLOT(editClipImport()));
@@ -769,9 +772,6 @@ qtractorMainForm::qtractorMainForm (
 	QObject::connect(m_ui.transportMetroAction,
 		SIGNAL(triggered(bool)),
 		SLOT(transportMetro()));
-	QObject::connect(m_ui.transportTempoAction,
-		SIGNAL(triggered(bool)),
-		SLOT(transportTempo()));
 	QObject::connect(m_ui.transportFollowAction,
 		SIGNAL(triggered(bool)),
 		SLOT(transportFollow()));
@@ -2404,6 +2404,39 @@ void qtractorMainForm::editClipQuantize (void)
 }
 
 
+// Adjust current tempo from clip selection or interactive tapping...
+void qtractorMainForm::editClipTempo (void)
+{
+#ifdef CONFIG_DEBUG
+	appendMessages("qtractorMainForm::editClipTempo()");
+#endif
+
+	qtractorTempoAdjustForm form(this);
+	unsigned long iRangeStart  = m_pSession->editHead();
+	unsigned long iRangeLength = m_pSession->editTail() - iRangeStart;
+	if (m_pTracks) {
+		qtractorClip *pClip = m_pTracks->currentClip();
+		if (pClip) {
+			if (m_pTracks->isClipSelected()) {
+				iRangeStart  = pClip->clipSelectStart();
+				iRangeLength = pClip->clipSelectEnd() - iRangeStart;
+			} else {
+				iRangeStart  = pClip->clipStart();
+				iRangeLength = pClip->clipLength();
+			}
+		}
+	}
+	form.setRangeStart(iRangeStart);
+	form.setRangeLength(iRangeLength);
+	if (form.exec()) {
+		transportTempoChanged (
+			form.tempo(),
+			form.beatsPerBar(),
+			form.beatDivisor());
+	}
+}
+
+
 // Import (audio) clip.
 void qtractorMainForm::editClipImport (void)
 {
@@ -3642,34 +3675,6 @@ void qtractorMainForm::transportMetro (void)
 }
 
 
-// Adjust current tempo from selection or interactive tapping...
-void qtractorMainForm::transportTempo (void)
-{
-#ifdef CONFIG_DEBUG
-	appendMessages("qtractorMainForm::transportTempo()");
-#endif
-
-	qtractorTempoAdjustForm form(this);
-	unsigned long iRangeStart  = m_pSession->editHead();
-	unsigned long iRangeLength = m_pSession->editTail() - iRangeStart;
-	if (m_pTracks && m_pTracks->isClipSelected()) {
-		qtractorClip *pClip = m_pTracks->currentClip();
-		if (pClip) {
-			iRangeStart  = pClip->clipSelectStart();
-			iRangeLength = pClip->clipSelectEnd() - iRangeStart;
-		}
-	}
-	form.setRangeStart(iRangeStart);
-	form.setRangeLength(iRangeLength);
-	if (form.exec()) {
-		transportTempoChanged (
-			form.tempo(),
-			form.beatsPerBar(),
-			form.beatDivisor());
-	}
-}
-
-
 // Follow playhead transport option.
 void qtractorMainForm::transportFollow (void)
 {
@@ -4094,6 +4099,7 @@ void qtractorMainForm::stabilizeForm (void)
 	m_ui.editClipQuantizeAction->setEnabled((pClip != NULL || bSelected)
 		&& pTrack && pTrack->trackType() == qtractorTrack::Midi
 		&& m_pSession->snapPerBeat() > 0);
+	m_ui.editClipTempoAction->setEnabled(pClip != NULL || bSelectable);
 	m_ui.editClipImportAction->setEnabled(m_pTracks != NULL);
 		// pTrack && pTrack->trackType() == qtractorTrack::Audio);
 	m_ui.editClipExportAction->setEnabled(bSingleTrackSelected);
@@ -4213,7 +4219,6 @@ void qtractorMainForm::stabilizeForm (void)
 	m_ui.transportPunchSetAction->setEnabled(bSelectable);
 	m_ui.transportMetroAction->setEnabled(
 		m_pOptions->bAudioMetronome || m_pOptions->bMidiMetronome);
-	m_ui.transportTempoAction->setEnabled(bSelectable);
 
 	m_ui.transportRewindAction->setChecked(m_iTransportRolling < 0);
 	m_ui.transportFastForwardAction->setChecked(m_iTransportRolling > 0);

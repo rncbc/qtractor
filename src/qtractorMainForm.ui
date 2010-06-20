@@ -301,7 +301,6 @@
     <addaction name="transportPunchSetAction" />
     <addaction name="separator" />
     <addaction name="transportMetroAction" />
-    <addaction name="transportTempoAction" />
     <addaction name="separator" />
     <addaction name="transportFollowAction" />
     <addaction name="transportAutoBackwardAction" />
@@ -349,6 +348,8 @@
      <addaction name="separator" />
      <addaction name="editClipNormalizeAction" />
      <addaction name="editClipQuantizeAction" />
+     <addaction name="separator" />
+	 <addaction name="editClipTempoAction" />
      <addaction name="separator" />
      <addaction name="editClipImportAction" />
      <addaction name="editClipExportAction" />
@@ -858,6 +859,23 @@
    </property>
    <property name="statusTip" >
     <string>Quantize current MIDI clip (snap to beat)</string>
+   </property>
+  </action>
+  <action name="editClipTempoAction" >
+   <property name="text" >
+    <string>&amp;Tempo...</string>
+   </property>
+   <property name="iconText" >
+    <string>Tempo Adjust</string>
+   </property>
+   <property name="toolTip" >
+    <string>Tempo Adjust</string>
+   </property>
+   <property name="statusTip" >
+    <string>Adjust session tempo from current clip selection</string>
+   </property>
+   <property name="shortcut" >
+    <string>F7</string>
    </property>
   </action>
   <action name="editClipImportAction" >
@@ -1922,23 +1940,6 @@
    </property>
    <property name="statusTip" >
     <string>Metronome</string>
-   </property>
-  </action>
-  <action name="transportTempoAction" >
-   <property name="text" >
-    <string>&amp;Tempo...</string>
-   </property>
-   <property name="iconText" >
-    <string>Tempo Adjust</string>
-   </property>
-   <property name="toolTip" >
-    <string>Tempo Adjust</string>
-   </property>
-   <property name="statusTip" >
-    <string>Adjust session tempo from current selection</string>
-   </property>
-   <property name="shortcut" >
-    <string>F7</string>
    </property>
   </action>
   <action name="transportFollowAction" >
