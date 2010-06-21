@@ -59,7 +59,7 @@ qtractorTempoAdjustForm::qtractorTempoAdjustForm (
 	m_ui.TempoSpinBox->setBeatDivisor(m_pTimeScale->beatDivisor(), false);
 
 	m_iTimeTaps = m_pTimeScale->beatsPerBar();
-	m_fTimeTap = 60000.0f / m_ui.TempoSpinBox->tempo();
+	m_fTimeTap = 60000.0f / m_pTimeScale->tempo();
 
 	// Set proper time scales display format...
 	switch (m_pTimeScale->displayFormat()) {
@@ -89,9 +89,9 @@ qtractorTempoAdjustForm::qtractorTempoAdjustForm (
 	QObject::connect(m_ui.RangeStartSpinBox,
 		SIGNAL(valueChanged(unsigned long)),
 		SLOT(changed()));
-	QObject::connect(m_ui.RangeLengthSpinBox,
+	QObject::connect(m_ui.RangeStartSpinBox,
 		SIGNAL(valueChanged(unsigned long)),
-		SLOT(changed()));
+		SLOT(rangeStartChanged(unsigned long)));
 	QObject::connect(m_ui.RangeBeatsSpinBox,
 		SIGNAL(valueChanged(int)),
 		SLOT(changed()));
@@ -133,7 +133,10 @@ qtractorTempoAdjustForm::~qtractorTempoAdjustForm (void)
 // Range accessors.
 void qtractorTempoAdjustForm::setRangeStart ( unsigned long iRangeStart )
 {
+	m_iDirtySetup++;
 	m_ui.RangeStartSpinBox->setValue(iRangeStart, false);
+	rangeStartChanged(iRangeStart);
+	m_iDirtySetup--;
 }
 
 unsigned long qtractorTempoAdjustForm::rangeStart (void) const
@@ -143,9 +146,8 @@ unsigned long qtractorTempoAdjustForm::rangeStart (void) const
 
 void qtractorTempoAdjustForm::setRangeLength ( unsigned long iRangeLength )
 {
-	m_ui.RangeLengthSpinBox->setValue(iRangeLength, false);
-
 	m_iDirtySetup++;
+	m_ui.RangeLengthSpinBox->setValue(iRangeLength, false);
 	m_ui.RangeBeatsSpinBox->setValue(
 		m_pTimeScale->beatFromFrame(iRangeLength));
 	m_iDirtySetup--;
@@ -226,6 +228,19 @@ void qtractorTempoAdjustForm::tempoChanged (
 }
 
 
+// Adjust delta-value spin-boxes to new anchor frame.
+void qtractorTempoAdjustForm::rangeStartChanged ( unsigned long iRangeStart )
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorTempoAdjustForm::rangeStartChanged(%lu)", iRangeStart);
+#endif
+
+	m_ui.RangeLengthSpinBox->setDeltaValue(true, iRangeStart);
+
+	changed();
+}
+
+
 // Adjust as instructed.
 void qtractorTempoAdjustForm::adjust (void)
 {
@@ -288,18 +303,16 @@ void qtractorTempoAdjustForm::stabilizeForm (void)
 // Tempo tap click.
 void qtractorTempoAdjustForm::tempoTap (void)
 {
-	// TODO: Compute tempo tap...
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorTempoAdjustForm::tempoTap()");
 #endif
 
-	int iTime = m_pTime->restart();
-	if (iTime > 200 && iTime < 1200) { // Magic!
-		m_fTimeTap = (float(m_iTimeTaps - 1) * m_fTimeTap + float(iTime))
+	int iTimeTap = m_pTime->restart();
+	if (iTimeTap > 200 && iTimeTap < 2000) { // Magic!
+		m_fTimeTap = (float(m_iTimeTaps - 1) * m_fTimeTap + float(iTimeTap))
 			/ float(m_iTimeTaps);
 		m_ui.TempoSpinBox->setTempo((60000.0f / m_fTimeTap), false);
 	}
-	else m_fTimeTap = 60000.0f / m_ui.TempoSpinBox->tempo();
 }
 
 
