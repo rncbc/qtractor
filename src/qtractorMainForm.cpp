@@ -244,8 +244,6 @@ qtractorMainForm::qtractorMainForm (
 	m_iIdleTimer = 0;
 
 	m_iDeltaFrames = 0;
-	m_iDeltaCount  = 0;
-	m_iDeltaLimit  = 0;
 
 	m_iTransportUpdate  = 0; 
 	m_iTransportRolling = 0;
@@ -4244,9 +4242,6 @@ void qtractorMainForm::stabilizeForm (void)
 // Actually start all session engines.
 bool qtractorMainForm::startSession (void)
 {
-	m_iDeltaCount = 0;
-	m_iDeltaLimit = 0;
-
 	m_iTransportUpdate  = 0; 
 	m_iTransportRolling = 0;
 	m_bTransportPlaying = false;
@@ -4303,10 +4298,8 @@ bool qtractorMainForm::startSession (void)
 	qtractorAudioEngine *pAudioEngine = m_pSession->audioEngine();
 	if (pAudioEngine) {
 		unsigned int iBufferSize = pAudioEngine->bufferSize();
-		if (iBufferSize && m_iDeltaFrames) {
-			m_iDeltaLimit  = (iBufferSize << 1) / m_iDeltaFrames;
+		if (iBufferSize)
 			m_iDeltaFrames = iBufferSize * (2 + (m_iDeltaFrames / iBufferSize));
-		}
 	}
 
 	return bResult;
@@ -4846,7 +4839,7 @@ void qtractorMainForm::timerSlot (void)
 			stabilizeForm();
 		}
 		// Done with transport tricks.
-	} else /*if (m_pSession->isActivated() && !m_pSession->isBusy())*/ {
+	} else {
 		// Read JACK transport state and react if out-of-sync..
 		jack_client_t *pJackClient = NULL;
 		if (pAudioEngine->transportMode() & qtractorBus::Input)
@@ -4859,39 +4852,34 @@ void qtractorMainForm::timerSlot (void)
 			// 1. Check on external transport state request changes...
 			if ((state == JackTransportStopped &&  bPlaying) ||
 				(state == JackTransportRolling && !bPlaying)) {
-				if (++m_iDeltaCount > m_iDeltaLimit) {
-					m_iDeltaCount = 0;
-				#ifdef CONFIG_DEBUG
-					qDebug("qtractorMainForm::timerSlot()"
-						" playing=%d state=%d",
-						int(bPlaying), int(state == JackTransportRolling));
-				#endif
-					if (!bPlaying)
-						m_pSession->seek(pos.frame, true);
-					transportPlay(); // Toggle playing!
-					if (bPlaying)
-						m_pSession->seek(pos.frame, true);
-				}
+			#ifdef CONFIG_DEBUG
+				qDebug("qtractorMainForm::timerSlot()"
+					" playing=%d state=%d",
+					int(bPlaying), int(state == JackTransportRolling));
+			#endif
+				iPlayHead = pos.frame + pAudioEngine->bufferSize();
+				if (!bPlaying)
+					m_pSession->seek(iPlayHead, true);
+				transportPlay(); // Toggle playing!
+				if (bPlaying)
+					m_pSession->seek(iPlayHead, true);
 			}
 			else
 			// 2. Check on external transport location changes;
 			// note that we'll have a safe delta-timer guard...
 			if (labs(iDeltaFrames) > m_iDeltaFrames) {
-				if (++m_iDeltaCount > m_iDeltaLimit) {
-					m_iDeltaCount = 0;
-				#ifdef CONFIG_DEBUG
-					qDebug("qtractorMainForm::timerSlot()"
-						" frame=%lu pos=%ld delta=%ld (%ld)",
-						iPlayHead, long(pos.frame),
-						iDeltaFrames, m_iDeltaFrames);
-				#endif
-					iPlayHead = pos.frame;
-					m_pSession->setPlayHead(iPlayHead);
-					m_iTransportUpdate++;
-				}
+			#ifdef CONFIG_DEBUG
+				qDebug("qtractorMainForm::timerSlot()"
+					" frame=%lu pos=%ld delta=%ld (%ld)",
+					iPlayHead, long(pos.frame),
+					iDeltaFrames, m_iDeltaFrames);
+			#endif
+				iPlayHead = pos.frame;
+				if (bPlaying)
+					iPlayHead += pAudioEngine->bufferSize();
+				m_pSession->setPlayHead(iPlayHead);
+				m_iTransportUpdate++;
 			}
-			// 3. All is quiet...
-			else m_iDeltaCount = 0;
 		}
 		// Check if its time to refresh playhead timer...
 		if (bPlaying && m_iPlayTimer < QTRACTOR_TIMER_DELAY) {
@@ -4912,7 +4900,7 @@ void qtractorMainForm::timerSlot (void)
 						}
 					} else {
 						m_pTracks->trackView()->updateContentsRecord();
-						m_pSession->updateSessionLength(m_iPlayHead);
+						m_pSession->updateSessionLength(iPlayHead);
 						m_statusItems[StatusTime]->setText(
 							m_pSession->timeScale()->textFromFrame(
 								0, true, m_pSession->sessionLength()));

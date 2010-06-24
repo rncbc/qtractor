@@ -260,6 +260,7 @@ void qtractorTempoAdjustForm::adjust (void)
 //	qtractorTimeScale::Node *pNode = cursor.seekFrame(iRangeStart);
 	float fTempo = 60.0f * float(m_pTimeScale->sampleRate()) / float(iBeatLength);
 	m_ui.TempoSpinBox->setTempo(fTempo, false);
+//	m_ui.RangeLengthSpinBox->setValue(iRangeBeats * iBeatLength, false);
 
 	changed();
 }
