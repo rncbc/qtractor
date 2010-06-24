@@ -331,6 +331,8 @@ private:
 	qtractorMidiControl *m_pMidiControl;
 	unsigned long m_iPlayHead;
 	long m_iDeltaFrames;
+	int m_iDeltaCount;
+	int m_iDeltaLimit;
 	int m_iPeakTimer;
 	int m_iPlayTimer;
 	int m_iIdleTimer;
