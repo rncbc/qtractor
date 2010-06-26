@@ -68,6 +68,7 @@ public:
 	void setNotifyPortType     (QEvent::Type eNotifyPortType);
 	void setNotifyBufferType   (QEvent::Type eNotifyBufferType);
 	void setNotifySessionType  (QEvent::Type eNotifySessionType);
+	void setNotifySyncType     (QEvent::Type eNotifySyncType);
 
 	QObject     *notifyObject() const;
 	QEvent::Type notifyShutdownType() const;
@@ -75,6 +76,7 @@ public:
 	QEvent::Type notifyPortType() const;
 	QEvent::Type notifyBufferType() const;
 	QEvent::Type notifySessionType() const;
+	QEvent::Type notifySyncType() const;
 
 	// Session UUID accessors.
 	void setSessionId(const QString& sSessionId);
@@ -177,6 +179,7 @@ private:
 	QEvent::Type  m_eNotifyPortType;
 	QEvent::Type  m_eNotifyBufferType;
 	QEvent::Type  m_eNotifySessionType;
+	QEvent::Type  m_eNotifySyncType;
 
 	// JACK Session UUID.
 	QString m_sSessionId;
@@ -364,6 +367,28 @@ private:
 
 	// Instance variables.
 	void *m_pvArg;
+};
+
+
+//------------------------------------------------------------------
+// qtractorSyncEvent - (JACK) Transport sync custom event.
+//
+
+class qtractorSyncEvent : public QEvent
+{
+public:
+
+	// Contructor.
+	qtractorSyncEvent(QEvent::Type eType, unsigned long iPlayHead)
+		: QEvent(eType), m_iPlayHead(iPlayHead) {}
+
+	// Accessors.
+	unsigned long playHead() const { return m_iPlayHead; }
+
+private:
+
+	// Instance variables.
+	unsigned long m_iPlayHead;
 };
 
 

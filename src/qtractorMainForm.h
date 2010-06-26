@@ -29,6 +29,7 @@
 class qtractorOptions;
 class qtractorSession;
 class qtractorSessionEvent;
+class qtractorSyncEvent;
 class qtractorTracks;
 class qtractorThumbView;
 class qtractorCommand;
@@ -260,6 +261,8 @@ protected:
 
 	void sessionEvent(qtractorSessionEvent *pSessionEvent);
 
+	void syncEvent(qtractorSyncEvent *pSyncEvent);
+
 	bool queryClose();
 
 	bool newSession();
@@ -330,9 +333,6 @@ private:
 	qtractorTempoCursor *m_pTempoCursor;
 	qtractorMidiControl *m_pMidiControl;
 	unsigned long m_iPlayHead;
-	long m_iDeltaFrames;
-	int m_iDeltaCount;
-	int m_iDeltaLimit;
 	int m_iPeakTimer;
 	int m_iPlayTimer;
 	int m_iIdleTimer;

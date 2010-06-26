@@ -294,6 +294,37 @@ static void qtractorAudioEngine_session_event (
 
 
 //----------------------------------------------------------------------
+// qtractorAudioEngine_sync -- JACK transport sync event callabck
+//
+
+static int qtractorAudioEngine_sync (
+	jack_transport_state_t state, jack_position_t *pos, void *pvArg )
+{
+	qtractorAudioEngine *pAudioEngine
+		= static_cast<qtractorAudioEngine *> (pvArg);
+
+	if (pAudioEngine->isFreewheel())
+		return 0;
+
+	long iDeltaFrames
+		= long(pos->frame) - long(pAudioEngine->sessionCursor()->frame());
+	unsigned int iBufferSize = pAudioEngine->bufferSize();
+	if (labs(iDeltaFrames) > long(iBufferSize << 1)) {
+		if (pAudioEngine->notifyObject()) {
+			unsigned long iPlayHead = pos->frame;
+			if (pAudioEngine->isPlaying())
+				iPlayHead += iBufferSize;
+			QApplication::postEvent(pAudioEngine->notifyObject(),
+				new qtractorSyncEvent(
+					pAudioEngine->notifySyncType(), iPlayHead));
+		}
+	}
+
+	return 1;
+}
+
+
+//----------------------------------------------------------------------
 // class qtractorAudioEngine -- JACK client instance (singleton).
 //
 
@@ -309,6 +340,7 @@ qtractorAudioEngine::qtractorAudioEngine ( qtractorSession *pSession )
 	m_eNotifyPortType     = QEvent::None;
 	m_eNotifyBufferType   = QEvent::None;
 	m_eNotifySessionType  = QEvent::None;
+	m_eNotifySyncType     = QEvent::None;
 
 	m_iBufferOffset = 0;
 
@@ -387,6 +419,11 @@ void qtractorAudioEngine::setNotifySessionType ( QEvent::Type eNotifySessionType
 	m_eNotifySessionType = eNotifySessionType;
 }
 
+void qtractorAudioEngine::setNotifySyncType ( QEvent::Type eNotifySyncType )
+{
+	m_eNotifySyncType = eNotifySyncType;
+}
+
 
 QObject *qtractorAudioEngine::notifyObject (void) const
 {
@@ -418,6 +455,10 @@ QEvent::Type qtractorAudioEngine::notifySessionType (void) const
 	return m_eNotifySessionType;
 }
 
+QEvent::Type qtractorAudioEngine::notifySyncType (void) const
+{
+	return m_eNotifySyncType;
+}
 
 
 // Internal sample-rate accessor.
@@ -539,6 +580,12 @@ bool qtractorAudioEngine::activate (void)
 			qtractorAudioEngine_session_event, this);
 	}
 #endif
+
+	// Set transport sync callback.
+	if (m_transportMode & qtractorBus::Input) {
+		jack_set_sync_callback(m_pJackClient,
+			qtractorAudioEngine_sync, this);
+	}
 
 	// Time to activate ourselves...
 	jack_activate(m_pJackClient);
