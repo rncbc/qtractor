@@ -32,7 +32,9 @@
 
 #include "qtractorMainForm.h"
 
+#ifdef QTRACTOR_MIDI_EDITOR_TOOL
 #include "qtractorOptions.h"
+#endif
 
 #include <QFileInfo>
 #include <QPainter>
@@ -604,9 +606,11 @@ bool qtractorMidiClip::startEditor ( QWidget *pParent )
 			| Qt::WindowSystemMenuHint
 			| Qt::WindowMinMaxButtonsHint
 			| Qt::WindowCloseButtonHint;
+	#ifdef QTRACTOR_MIDI_EDITOR_TOOL
 		qtractorOptions *pOptions = qtractorOptions::getInstance();
 		if (pOptions && pOptions->bKeepToolsOnTop)
 			wflags |= Qt::Tool;
+	#endif
 		// Do it...
 		m_pMidiEditorForm = new qtractorMidiEditorForm(pParent, wflags);
 		// Set its most standing properties...

@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- The MIDI clip editor (piano roll) widget won't be flagged as
+  a tool window anymore.
+
 - A tempo adjustment tool is making inroads from the menu as
   Edit/Clip/Tempo... (factory shortcut: F7) (EXPERIMENTAL).
 

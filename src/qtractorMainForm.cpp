@@ -5171,10 +5171,11 @@ void qtractorMainForm::selectionNotifySlot ( qtractorMidiEditor *pMidiEditor )
 	unsigned long iEditTail = m_pSession->editTail();
 
 	// Track-view is due...
-	if (m_pTracks && pMidiEditor) {
+	if (m_pTracks) {
 		m_pTracks->trackView()->setEditHead(iEditHead);
 		m_pTracks->trackView()->setEditTail(iEditTail);
-		m_pTracks->trackView()->clearClipSelect();
+		if (pMidiEditor)
+			m_pTracks->trackView()->clearClipSelect();
 	}
 
 	// Update editors edit-head/tails...

@@ -88,10 +88,10 @@ qtractorTempoAdjustForm::qtractorTempoAdjustForm (
 		SLOT(tempoChanged(float, unsigned short, unsigned short)));
 	QObject::connect(m_ui.RangeStartSpinBox,
 		SIGNAL(valueChanged(unsigned long)),
-		SLOT(changed()));
-	QObject::connect(m_ui.RangeStartSpinBox,
-		SIGNAL(valueChanged(unsigned long)),
 		SLOT(rangeStartChanged(unsigned long)));
+	QObject::connect(m_ui.RangeLengthSpinBox,
+		SIGNAL(valueChanged(unsigned long)),
+		SLOT(rangeLengthChanged(unsigned long)));
 	QObject::connect(m_ui.RangeBeatsSpinBox,
 		SIGNAL(valueChanged(int)),
 		SLOT(changed()));
@@ -135,7 +135,7 @@ void qtractorTempoAdjustForm::setRangeStart ( unsigned long iRangeStart )
 {
 	m_iDirtySetup++;
 	m_ui.RangeStartSpinBox->setValue(iRangeStart, false);
-	rangeStartChanged(iRangeStart);
+	m_ui.RangeLengthSpinBox->setDeltaValue(true, iRangeStart);
 	m_iDirtySetup--;
 }
 
@@ -237,7 +237,17 @@ void qtractorTempoAdjustForm::rangeStartChanged ( unsigned long iRangeStart )
 
 	m_ui.RangeLengthSpinBox->setDeltaValue(true, iRangeStart);
 
-	changed();
+	selectChanged();
+}
+
+
+void qtractorTempoAdjustForm::rangeLengthChanged ( unsigned long iRangeLength )
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorTempoAdjustForm::rangeLengthChanged(%lu)", iRangeLength);
+#endif
+
+	selectChanged();
 }
 
 
@@ -252,15 +262,35 @@ void qtractorTempoAdjustForm::adjust (void)
 	if (iRangeBeats < 1)
 		return;
 
-//	unsigned long iRangeStart  = m_ui.RangeStartSpinBox->value();
 	unsigned long iRangeLength = m_ui.RangeLengthSpinBox->value();
-	unsigned long iBeatLength = iRangeLength / iRangeBeats;
+	unsigned long iBeatLength  = iRangeLength / iRangeBeats;
 	
-//	qtractorTimeScale::Cursor cursor(m_pTimeScale);
-//	qtractorTimeScale::Node *pNode = cursor.seekFrame(iRangeStart);
 	float fTempo = 60.0f * float(m_pTimeScale->sampleRate()) / float(iBeatLength);
 	m_ui.TempoSpinBox->setTempo(fTempo, false);
-//	m_ui.RangeLengthSpinBox->setValue(iRangeBeats * iBeatLength, false);
+
+	m_ui.RangeLengthSpinBox->setValue(iRangeBeats * iBeatLength, true);
+}
+
+
+// Adjust current selection edit/tail.
+void qtractorTempoAdjustForm::selectChanged (void)
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorTempoAdjustForm::selectChanged()");
+#endif
+
+	unsigned long iRangeStart  = m_ui.RangeStartSpinBox->value();
+	unsigned long iRangeLength = m_ui.RangeLengthSpinBox->value();
+
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession) {
+		pSession->setEditHead(iRangeStart);
+		pSession->setEditTail(iRangeStart + iRangeLength);
+	}
+
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm)
+		pMainForm->selectionNotifySlot(NULL);
 
 	changed();
 }
