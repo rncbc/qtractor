@@ -644,8 +644,10 @@ void qtractorAudioEngine::stop (void)
 	if (!isActivated())
 	    return;
 
-	if (m_transportMode & qtractorBus::Output)
+	if (m_transportMode & qtractorBus::Output) {
 		jack_transport_stop(m_pJackClient);
+		jack_transport_locate(m_pJackClient, sessionCursor()->frame());
+	}
 
 	// MIDI plugin managers reset...
 	qtractorMidiManager *pMidiManager

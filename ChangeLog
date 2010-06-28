@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- JACK transport support has been slightly rewritten, in fact
+  the sync callback is now in effect for repositioning.
+
 - The MIDI clip editor (piano roll) widget won't be flagged as
   a tool window anymore.
 
