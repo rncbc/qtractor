@@ -316,6 +316,7 @@ qtractorMainForm::qtractorMainForm (
 
 	// Editable toolbar widgets special palette.
 	QPalette pal;
+	pal.setColor(QPalette::Window, Qt::black);
 	pal.setColor(QPalette::Base, Qt::black);
 	pal.setColor(QPalette::Text, Qt::green);
 //	pal.setColor(QPalette::Button, Qt::darkGray);
@@ -4866,8 +4867,8 @@ void qtractorMainForm::timerSlot (void)
 				if (!bPlaying)
 					m_pSession->seek(iPlayHead, true);
 				transportPlay(); // Toggle playing!
-				if (bPlaying)
-					m_pSession->seek(iPlayHead, true);
+			//	if (bPlaying)
+			//		m_pSession->seek(iPlayHead, true);
 			}
 		}
 		// Check if its time to refresh playhead timer...
