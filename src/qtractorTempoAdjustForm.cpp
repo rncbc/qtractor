@@ -268,7 +268,9 @@ void qtractorTempoAdjustForm::adjust (void)
 	float fTempo = 60.0f * float(m_pTimeScale->sampleRate()) / float(iBeatLength);
 	m_ui.TempoSpinBox->setTempo(fTempo, false);
 
-	m_ui.RangeLengthSpinBox->setValue(iRangeBeats * iBeatLength, true);
+	m_ui.RangeLengthSpinBox->setValue(iRangeBeats * iBeatLength, false);
+	
+	selectChanged();
 }
 
 
