@@ -298,7 +298,7 @@ static void qtractorAudioEngine_session_event (
 //
 
 static int qtractorAudioEngine_sync (
-	jack_transport_state_t state, jack_position_t *pos, void *pvArg )
+	jack_transport_state_t /*state*/, jack_position_t *pos, void *pvArg )
 {
 	qtractorAudioEngine *pAudioEngine
 		= static_cast<qtractorAudioEngine *> (pvArg);

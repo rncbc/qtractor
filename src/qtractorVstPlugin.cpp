@@ -824,6 +824,7 @@ bool qtractorVstPlugin::getProgram ( int iIndex, Program& program ) const
 // Configuration (CLOB) stuff.
 void qtractorVstPlugin::configure ( const QString& sKey, const QString& sValue )
 {
+#ifndef CONFIG_VESTIGE
 	if (sKey == "chunk") {
 		// Load the BLOB (base64 encoded)...
 		QByteArray data = qUncompress(QByteArray::fromBase64(sValue.toAscii()));
@@ -833,11 +834,10 @@ void qtractorVstPlugin::configure ( const QString& sKey, const QString& sValue )
 		qDebug("qtractorVstPlugin[%p]::configure() chunk.size=%d checksum=0x%04x",
 			this, iData, qChecksum(pData, iData));
 	#endif
-	#ifndef CONFIG_VESTIGE
 		for (unsigned short i = 0; i < instances(); ++i)
 			vst_dispatch(i, effSetChunk, 0, iData, (void *) pData, 0.0f);
-	#endif
 	}
+#endif
 }
 
 

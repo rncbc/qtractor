@@ -611,8 +611,10 @@ fi
 if test -n "$ac_with_vst"; then
    CFLAGS="-I$ac_with_vst $CFLAGS"
    CPPFLAGS="-I$ac_with_vst $CPPFLAGS"
+   ac_incpath="$ac_with_vst $ac_incpath"
    ac_vst="yes"
-   if test "x$ac_vestige" = "x$yes"; then
+else
+   if test "x$ac_vestige" = "xyes"; then
 	  CFLAGS="$CFLAGS -Isrc/vestige"
 	  CPPFLAGS="$CPPFLAGS -Isrc/vestige"
 	  ac_incpath="$ac_incpath vestige"
@@ -624,7 +626,6 @@ if test "x$ac_vst" = "xyes"; then
    AC_CHECK_HEADER(aeffectx.h, [ac_vst="yes"], [ac_vst="no"])
    if test "x$ac_vst" = "xyes"; then
       AC_DEFINE(CONFIG_VST, 1, [Define if VST header is available.])
-      ac_incpath="$ac_with_vst $ac_incpath"
    else
       AC_MSG_WARN([*** aeffectx.h header file not found.])
       AC_MSG_WARN([*** VST plug-in support will be disabled.])
@@ -637,7 +638,7 @@ else
 fi
 
 # Post-check for VeSTige header.
-if test "$ac_vestige" = "xyes"; then
+if test "x$ac_vestige" = "xyes"; then
    AC_DEFINE(CONFIG_VESTIGE, 1, [Define if VeSTige header is available.])
 fi
 
@@ -775,7 +776,6 @@ echo "  SSE optimization support (x86) . . . . . . . . . .: $ac_sse"
 echo "  LADSPA Plug-in support . . . . . . . . . . . . . .: $ac_ladspa"
 echo "  DSSI Plug-in support . . . . . . . . . . . . . . .: $ac_dssi"
 echo "  VST Plug-in support  . . . . . . . . . . . . . . .: $ac_vst"
-echo "  VeSTige header support . . . . . . . . . . . . . .: $ac_vestige"
 echo "  LV2 Plug-in support (libslv2)  . . . . . . . . . .: $ac_lv2"
 echo "  LV2 Plug-in Event/MIDI support . . . . . . . . . .: $ac_lv2_event"
 echo "  LV2 Plug-in External UI support  . . . . . . . . .: $ac_lv2_external_ui"
@@ -786,6 +786,7 @@ echo
 echo "  X11 Unique/Single instance . . . . . . . . . . . .: $ac_xunique"
 echo "  XInitThreads() support (DANGEROUS) . . . . . . . .: $ac_xinitthreads"
 echo "  Gradient eye-candy . . . . . . . . . . . . . . . .: $ac_gradient"
+echo "  VeSTige header support . . . . . . . . . . . . . .: $ac_vestige"
 echo "  Debugger stack-trace (gdb) . . . . . . . . . . . .: $ac_stacktrace"
 echo
 echo "  Install prefix . . . . . . . . . . . . . . . . . .: $ac_prefix"
