@@ -3745,83 +3745,66 @@ void qtractorMainForm::helpShortcuts (void)
 // Show information about application program.
 void qtractorMainForm::helpAbout (void)
 {
+	QStringList list;
+#ifdef CONFIG_DEBUG
+	list << tr("Debugging option enabled.");
+#endif
+#ifndef CONFIG_LIBVORBIS
+	list << tr("Ogg Vorbis (libvorbis) file support disabled.");
+#endif
+#ifndef CONFIG_LIBMAD
+	list << tr("MPEG-1 Audio Layer 3 (libmad) file support disabled.");
+#endif
+#ifndef CONFIG_LIBSAMPLERATE
+	list << tr("Sample-rate conversion (libsamplerate) disabled.");
+#endif
+#ifndef CONFIG_LIBRUBBERBAND
+	list << tr("Pitch-shifting support (librubberband) disabled.");
+#endif
+#ifndef CONFIG_LIBLO
+	list << tr("OSC service support (liblo) disabled.");
+#endif
+#ifndef CONFIG_LADSPA
+	list << tr("LADSPA Plug-in support disabled.");
+#endif
+#ifndef CONFIG_DSSI
+	list << tr("DSSI Plug-in support disabled.");
+#endif
+#ifndef CONFIG_VST
+	list << tr("VST Plug-in support disabled.");
+#endif
+#ifdef CONFIG_VESTIGE
+	list << tr("VeSTige header support enabled.");
+#endif
+#ifndef CONFIG_LV2
+	list << tr("LV2 Plug-in support disabled.");
+#else
+#ifndef CONFIG_LV2_EVENT
+	list << tr("LV2 Plug-in MIDI/Event support disabled.");
+#endif
+#ifndef CONFIG_LV2_EXTERNAL_UI
+	list << tr("LV2 Plug-in External UI support disabled.");
+#endif
+#ifndef CONFIG_LV2_SAVERESTORE
+	list << tr("LV2 Plug-in Save/Restore support disabled.");
+#endif
+#endif
+#ifndef CONFIG_JACK_SESSION
+	list << tr("JACK Session support disabled.");
+#endif
+
 	// Stuff the about box text...
 	QString sText = "<p>\n";
 	sText += "<b>" QTRACTOR_TITLE " - " + tr(QTRACTOR_SUBTITLE) + "</b><br />\n";
 	sText += "<br />\n";
 	sText += tr("Version") + ": <b>" QTRACTOR_VERSION "</b><br />\n";
 	sText += "<small>" + tr("Build") + ": " __DATE__ " " __TIME__ "</small><br />\n";
-#ifdef CONFIG_DEBUG
-	sText += "<small><font color=\"red\">";
-	sText += tr("Debugging option enabled.");
-	sText += "</font></small><br />";
-#endif
-#ifndef CONFIG_LIBVORBIS
-	sText += "<small><font color=\"red\">";
-	sText += tr("Ogg Vorbis (libvorbis) file support disabled.");
-	sText += "</font></small><br />";
-#endif
-#ifndef CONFIG_LIBMAD
-	sText += "<small><font color=\"red\">";
-	sText += tr("MPEG-1 Audio Layer 3 (libmad) file support disabled.");
-	sText += "</font></small><br />";
-#endif
-#ifndef CONFIG_LIBSAMPLERATE
-	sText += "<small><font color=\"red\">";
-	sText += tr("Sample-rate conversion (libsamplerate) disabled.");
-	sText += "</font></small><br />";
-#endif
-#ifndef CONFIG_LIBRUBBERBAND
-	sText += "<small><font color=\"red\">";
-	sText += tr("Pitch-shifting support (librubberband) disabled.");
-	sText += "</font></small><br />";
-#endif
-#ifndef CONFIG_LIBLO
-	sText += "<small><font color=\"red\">";
-	sText += tr("OSC service support (liblo) disabled.");
-	sText += "</font></small><br />";
-#endif
-#ifndef CONFIG_LADSPA
-	sText += "<small><font color=\"red\">";
-	sText += tr("LADSPA Plug-in support disabled.");
-	sText += "</font></small><br />";
-#endif
-#ifndef CONFIG_DSSI
-	sText += "<small><font color=\"red\">";
-	sText += tr("DSSI Plug-in support disabled.");
-	sText += "</font></small><br />";
-#endif
-#ifndef CONFIG_VST
-	sText += "<small><font color=\"red\">";
-	sText += tr("VST Plug-in support disabled.");
-	sText += "</font></small><br />";
-#endif
-#ifndef CONFIG_LV2
-	sText += "<small><font color=\"red\">";
-	sText += tr("LV2 Plug-in support disabled.");
-	sText += "</font></small><br />";
-#else
-#ifndef CONFIG_LV2_EVENT
-	sText += "<small><font color=\"red\">";
-	sText += tr("LV2 Plug-in MIDI/Event support disabled.");
-	sText += "</font></small><br />";
-#endif
-#ifndef CONFIG_LV2_EXTERNAL_UI
-	sText += "<small><font color=\"red\">";
-	sText += tr("LV2 Plug-in External UI support disabled.");
-	sText += "</font></small><br />";
-#endif
-#ifndef CONFIG_LV2_SAVERESTORE
-	sText += "<small><font color=\"red\">";
-	sText += tr("LV2 Plug-in Save/Restore support disabled.");
-	sText += "</font></small><br />";
-#endif
-#endif
-#ifndef CONFIG_JACK_SESSION
-	sText += "<small><font color=\"red\">";
-	sText += tr("JACK Session support disabled.");
-	sText += "</font></small><br />";
-#endif
+	QStringListIterator iter(list);
+	while (iter.hasNext()) {
+		sText += "<small><font color=\"red\">";
+		sText += iter.next();
+		sText += "</font></small><br />";
+	}
 	sText += "<br />\n";
 	sText += tr("Website") + ": <a href=\"" QTRACTOR_WEBSITE "\">" QTRACTOR_WEBSITE "</a><br />\n";
 	sText += "<br />\n";

@@ -328,7 +328,7 @@ bool qtractorVstPluginType::Effect::open ( qtractorPluginFile *pFile )
 #endif
 
 //	vst_dispatch(effIdentify, 0, 0, NULL, 0);
-	vst_dispatch(effOpen,0, 0, NULL, 0.0f);
+	vst_dispatch(effOpen, 0, 0, NULL, 0.0f);
 //	vst_dispatch(effMainsChanged, 0, 0, NULL, 0.0f);
 
 	return true;
@@ -399,7 +399,11 @@ bool qtractorVstPluginType::open (void)
 	m_sLabel = m_sName.simplified().replace(QRegExp("[\\s|\\.|\\-]+"), "_");
 
 	// Retrieve plugin unique identifier.
+#ifdef CONFIG_VESTIGE
+	m_iUniqueID = qHash(file()->filename());
+#else
 	m_iUniqueID = pVstEffect->uniqueID;
+#endif
 
 	// Specific inquiries...
 	m_iFlagsEx = 0;
@@ -426,7 +430,9 @@ bool qtractorVstPluginType::open (void)
 
 	// Cache flags.
 	m_bRealtime  = true;
+#ifndef CONFIG_VESTIGE
 	m_bConfigure = (pVstEffect->flags & effFlagsProgramChunks);
+#endif
 	m_bEditor    = (pVstEffect->flags & effFlagsHasEditor);
 
 	return true;
@@ -654,7 +660,9 @@ void qtractorVstPlugin::activate (void)
 {
 	for (unsigned short i = 0; i < instances(); ++i) {
 		vst_dispatch(i, effMainsChanged, 0, 1, NULL, 0.0f);
+	#ifndef CONFIG_VESTIGE
 		vst_dispatch(i, effStartProcess, 0, 0, NULL, 0.0f);
+	#endif
 	}
 }
 
@@ -663,7 +671,9 @@ void qtractorVstPlugin::activate (void)
 void qtractorVstPlugin::deactivate (void)
 {
 	for (unsigned short i = 0; i < instances(); ++i) {
+	#ifndef CONFIG_VESTIGE
 		vst_dispatch(i, effStopProcess, 0, 0, NULL, 0.0f);
+	#endif
 		vst_dispatch(i, effMainsChanged, 0, 0, NULL, 0.0f);
 	}
 }
@@ -791,12 +801,16 @@ bool qtractorVstPlugin::getProgram ( int iIndex, Program& program ) const
 		return false;
 
 	char szName[256]; ::memset(szName, 0, sizeof(szName));
+#ifndef CONFIG_VESTIGE
 	if (vst_dispatch(0, effGetProgramNameIndexed, iIndex, 0, (void *) szName, 0.0f) == 0) {
+#endif
 		int iOldIndex = vst_dispatch(0, effGetProgram, 0, 0, NULL, 0.0f);
 		vst_dispatch(0, effSetProgram, 0, iIndex, NULL, 0.0f);
 		vst_dispatch(0, effGetProgramName, 0, 0, (void *) szName, 0.0f);
 		vst_dispatch(0, effSetProgram, 0, iOldIndex, NULL, 0.0f);
+#ifndef CONFIG_VESTIGE
 	}
+#endif
 
 	// Map this to that...
 	program.bank = 0;
@@ -819,8 +833,10 @@ void qtractorVstPlugin::configure ( const QString& sKey, const QString& sValue )
 		qDebug("qtractorVstPlugin[%p]::configure() chunk.size=%d checksum=0x%04x",
 			this, iData, qChecksum(pData, iData));
 	#endif
+	#ifndef CONFIG_VESTIGE
 		for (unsigned short i = 0; i < instances(); ++i)
 			vst_dispatch(i, effSetChunk, 0, iData, (void *) pData, 0.0f);
+	#endif
 	}
 }
 
@@ -828,6 +844,8 @@ void qtractorVstPlugin::configure ( const QString& sKey, const QString& sValue )
 // Plugin configuration/state snapshot.
 void qtractorVstPlugin::freezeConfigs (void)
 {
+#ifndef CONFIG_VESTIGE
+
 	if (!type()->isConfigure())
 		return;
 
@@ -851,6 +869,8 @@ void qtractorVstPlugin::freezeConfigs (void)
 	for (int i = data.size() - (data.size() % 72); i >= 0; i -= 72)
 		data.insert(i, "\n       "); // Indentation.
 	setConfig("chunk", data.constData());
+
+#endif	// !CONFIG_VESTIGE
 }
 
 void qtractorVstPlugin::releaseConfigs (void)
@@ -1075,12 +1095,20 @@ qtractorVstPluginParam::qtractorVstPluginParam (
 
 	if (pVstType &&	pVstType->vst_dispatch(
 			effGetParameterProperties, iIndex, 0, (void *) &m_props, 0.0f)) {
-#ifdef CONFIG_DEBUG_0
+	#ifdef CONFIG_DEBUG_0
 		qDebug("  VstParamProperties(%lu) {", iIndex);
+		qDebug("    .label                   = \"%s\"", m_props.label);
+		qDebug("    .shortLabel              = \"%s\"", m_props.shortLabel);
+		qDebug("    .category                = %d", m_props.category);
+		qDebug("    .categoryLabel           = \"%s\"", m_props.categoryLabel);
+		qDebug("    .minInteger              = %d", int(m_props.minInteger));
+		qDebug("    .maxInteger              = %d", int(m_props.maxInteger));
+		qDebug("    .stepInteger             = %d", int(m_props.stepInteger));
 		qDebug("    .stepFloat               = %g", m_props.stepFloat);
+	#ifndef CONFIG_VESTIGE
 		qDebug("    .smallStepFloat          = %g", m_props.smallStepFloat);
 		qDebug("    .largeStepFloat          = %g", m_props.largeStepFloat);
-		qDebug("    .label                   = \"%s\"", m_props.label);
+		qDebug("    .largeStepInteger        = %d", int(m_props.largeStepInteger));
 		qDebug("    >IsSwitch                = %d", (m_props.flags & kVstParameterIsSwitch ? 1 : 0));
 		qDebug("    >UsesIntegerMinMax       = %d", (m_props.flags & kVstParameterUsesIntegerMinMax ? 1 : 0));
 		qDebug("    >UsesFloatStep           = %d", (m_props.flags & kVstParameterUsesFloatStep ? 1 : 0));
@@ -1088,17 +1116,11 @@ qtractorVstPluginParam::qtractorVstPluginParam (
 		qDebug("    >SupportsDisplayIndex    = %d", (m_props.flags & kVstParameterSupportsDisplayIndex ? 1 : 0));
 		qDebug("    >SupportsDisplayCategory = %d", (m_props.flags & kVstParameterSupportsDisplayCategory ? 1 : 0));
 		qDebug("    >CanRamp                 = %d", (m_props.flags & kVstParameterCanRamp ? 1 : 0));
-		qDebug("    .minInteger              = %d", int(m_props.minInteger));
-		qDebug("    .maxInteger              = %d", int(m_props.maxInteger));
-		qDebug("    .stepInteger             = %d", int(m_props.stepInteger));
-		qDebug("    .largeStepInteger        = %d", int(m_props.largeStepInteger));
-		qDebug("    .shortLabel              = \"%s\"", m_props.shortLabel);
 		qDebug("    .displayIndex            = %d", m_props.displayIndex);
-		qDebug("    .category                = %d", m_props.category);
 		qDebug("    .numParametersInCategory = %d", m_props.numParametersInCategory);
-		qDebug("    .categoryLabel           = \"%s\"", m_props.categoryLabel);
+	#endif
 		qDebug("}");
-#endif
+	#endif
 		if (isBoundedBelow())
 			setMinValue(float(m_props.minInteger));
 		if (isBoundedAbove())
@@ -1129,12 +1151,20 @@ qtractorVstPluginParam::~qtractorVstPluginParam (void)
 // Port range hints predicate methods.
 bool qtractorVstPluginParam::isBoundedBelow (void) const
 {
+#ifdef CONFIG_VESTIGE
+	return false;
+#else
 	return (m_props.flags & kVstParameterUsesIntegerMinMax);
+#endif
 }
 
 bool qtractorVstPluginParam::isBoundedAbove (void) const
 {
+#ifdef CONFIG_VESTIGE
+	return false;
+#else
 	return (m_props.flags & kVstParameterUsesIntegerMinMax);
+#endif
 }
 
 bool qtractorVstPluginParam::isDefaultValue (void) const
@@ -1154,23 +1184,36 @@ bool qtractorVstPluginParam::isSampleRate (void) const
 
 bool qtractorVstPluginParam::isInteger (void) const
 {
+#ifdef CONFIG_VESTIGE
+	return false;
+#else
 	return (m_props.flags & kVstParameterUsesIntStep);
+#endif
 }
 
 bool qtractorVstPluginParam::isToggled (void) const
 {
+#ifdef CONFIG_VESTIGE
+	return false;
+#else
 	return (m_props.flags & kVstParameterIsSwitch);
+#endif
 }
 
 bool qtractorVstPluginParam::isDisplay (void) const
 {
+#ifdef CONFIG_VESTIGE
+	return false;
+#else
 	return true;
+#endif
 }
 
 
 // Current display value.
 QString qtractorVstPluginParam::display (void) const
 {
+#ifndef CONFIG_VESTIGE
 	qtractorVstPluginType *pVstType = NULL;
 	if (plugin())
 		pVstType = static_cast<qtractorVstPluginType *> (plugin()->type());
@@ -1194,6 +1237,7 @@ QString qtractorVstPluginParam::display (void) const
 			return sDisplay;
 		}
 	}
+#endif	// !CONFIG_VESTIGE
 
 	// Default parameter display value...
 	return qtractorPluginParam::display();
@@ -1202,6 +1246,8 @@ QString qtractorVstPluginParam::display (void) const
 
 //----------------------------------------------------------------------
 // VST host callback file selection helpers.
+
+#ifndef CONFIG_VESTIGE
 
 static VstIntPtr qtractorVstPlugin_openFileSelector (
 	AEffect *effect, VstFileSelect *pvfs )
@@ -1287,6 +1333,9 @@ static VstIntPtr qtractorVstPlugin_closeFileSelector (
 
 	return 1;
 }
+
+#endif	// !CONFIG_VESTIGE
+
 
 //----------------------------------------------------------------------
 // The magnificient host callback, which every VSTi plugin will call.
@@ -1537,6 +1586,7 @@ static VstIntPtr VSTCALLBACK qtractorVstPlugin_HostCallback ( AEffect* effect,
 		}
 		break;
 
+#ifndef CONFIG_VESTIGE
 	case audioMasterOpenFileSelector:
 		VST_HC_DEBUG("audioMasterOpenFileSelector");
 		ret = qtractorVstPlugin_openFileSelector(effect, (VstFileSelect *) ptr);
@@ -1546,7 +1596,7 @@ static VstIntPtr VSTCALLBACK qtractorVstPlugin_HostCallback ( AEffect* effect,
 		VST_HC_DEBUG("audioMasterCloseFileSelector");
 		ret = qtractorVstPlugin_closeFileSelector(effect, (VstFileSelect *) ptr);
 		break;
-
+#endif
 	default:
 		VST_HC_DEBUG("audioMasterUnknown");
 		break;

@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(Qtractor, 0.4.6.9, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.4.6.10, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractor.cpp)
 AC_CONFIG_HEADERS(src/config.h)
@@ -84,6 +84,11 @@ AC_ARG_ENABLE(vst,
   AC_HELP_STRING([--enable-vst], [enable VST plug-in support (default=yes)]),
   [ac_vst="$enableval"],
   [ac_vst="yes"])
+
+AC_ARG_ENABLE(vestige,
+  AC_HELP_STRING([--enable-vestige], [enable VeSTige header support (default=no)]),
+  [ac_vestige="$enableval"],
+  [ac_vestige="no"])
 
 # Enable LV2 support.
 AC_ARG_ENABLE(lv2,
@@ -597,11 +602,21 @@ if test "x$ac_dssi" = "xyes"; then
    fi
 fi
 
+# Pre-check for VeSTige header.
+if test "$ac_vestige" = "xyes"; then
+   ac_vst="yes"
+fi
+
 # Check for VST headers.
 if test -n "$ac_with_vst"; then
    CFLAGS="-I$ac_with_vst $CFLAGS"
    CPPFLAGS="-I$ac_with_vst $CPPFLAGS"
    ac_vst="yes"
+   if test "x$ac_vestige" = "x$yes"; then
+	  CFLAGS="$CFLAGS -Isrc/vestige"
+	  CPPFLAGS="$CPPFLAGS -Isrc/vestige"
+	  ac_incpath="$ac_incpath vestige"
+   fi
 fi
 if test "x$ac_vst" = "xyes"; then
    CFLAGS="-D__cdecl= $CFLAGS"
@@ -614,9 +629,16 @@ if test "x$ac_vst" = "xyes"; then
       AC_MSG_WARN([*** aeffectx.h header file not found.])
       AC_MSG_WARN([*** VST plug-in support will be disabled.])
       ac_xinitthreads="no"
+	  ac_vestige="no"
    fi
 else
    ac_xinitthreads="no"
+   ac_vestige="no"
+fi
+
+# Post-check for VeSTige header.
+if test "$ac_vestige" = "xyes"; then
+   AC_DEFINE(CONFIG_VESTIGE, 1, [Define if VeSTige header is available.])
 fi
 
 # Check for LV2 headers.
@@ -753,6 +775,7 @@ echo "  SSE optimization support (x86) . . . . . . . . . .: $ac_sse"
 echo "  LADSPA Plug-in support . . . . . . . . . . . . . .: $ac_ladspa"
 echo "  DSSI Plug-in support . . . . . . . . . . . . . . .: $ac_dssi"
 echo "  VST Plug-in support  . . . . . . . . . . . . . . .: $ac_vst"
+echo "  VeSTige header support . . . . . . . . . . . . . .: $ac_vestige"
 echo "  LV2 Plug-in support (libslv2)  . . . . . . . . . .: $ac_lv2"
 echo "  LV2 Plug-in Event/MIDI support . . . . . . . . . .: $ac_lv2_event"
 echo "  LV2 Plug-in External UI support  . . . . . . . . .: $ac_lv2_external_ui"

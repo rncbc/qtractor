@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- First attempt to include the VeSTige header for minimal VST
+  plugin support (./configure --enable-vestige; default=no).
+
 - JACK transport support has been slightly rewritten, in fact
   the sync callback is now in effect for repositioning.
 
