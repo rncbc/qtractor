@@ -2449,6 +2449,9 @@ void qtractorMainForm::editClipTempo (void)
 			form.tempo(),
 			form.beatsPerBar(),
 			form.beatDivisor());
+		m_pSession->setEditTail(
+			m_pSession->editHead() + form.rangeLength());
+		selectionNotifySlot(NULL);
 	}
 }
 
