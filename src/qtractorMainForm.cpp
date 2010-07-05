@@ -316,7 +316,7 @@ qtractorMainForm::qtractorMainForm (
 
 	// Editable toolbar widgets special palette.
 	QPalette pal;
-	pal.setColor(QPalette::Window, Qt::black);
+//	pal.setColor(QPalette::Window, Qt::black);
 	pal.setColor(QPalette::Base, Qt::black);
 	pal.setColor(QPalette::Text, Qt::green);
 //	pal.setColor(QPalette::Button, Qt::darkGray);

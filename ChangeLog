@@ -5,6 +5,11 @@ ChangeLog
 
 SVN TRUNK
 
+- Main tool-bar Time and Tempo spin-boxes, may now have
+  their colors correct, as for most non-Qt based theme
+  engines (ie. Gnome). Green text on black background has
+  been and still is the the intended aspect design ;)
+
 - MIDI file import and internal sequence representation has
   been changed to be inclusive on all bank-select (CC#0,32)
   and program-change events which were previously discarded

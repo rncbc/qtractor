@@ -319,6 +319,18 @@ void qtractorTimeSpinBox::valueChangedSlot ( const QString& sText )
 }
 
 
+// Possible palette hacking.
+void qtractorTimeSpinBox::setPalette ( const QPalette& pal )
+{
+	QAbstractSpinBox::lineEdit()->setPalette(pal);
+	QAbstractSpinBox::setPalette(pal);
+}
+
+QPalette qtractorTimeSpinBox::palette (void) const
+{
+	return QAbstractSpinBox::palette();
+}
+
 
 //----------------------------------------------------------------------------
 // qtractorTempoSpinBox -- A time-scale formatted spin-box widget.
@@ -598,6 +610,19 @@ void qtractorTempoSpinBox::valueChangedSlot ( const QString& sText )
 
 	// Forward this...
 	emit valueChanged(sText);
+}
+
+
+// Possible palette hacking.
+void qtractorTempoSpinBox::setPalette ( const QPalette& pal )
+{
+	QAbstractSpinBox::lineEdit()->setPalette(pal);
+	QAbstractSpinBox::setPalette(pal);
+}
+
+QPalette qtractorTempoSpinBox::palette (void) const
+{
+	return QAbstractSpinBox::palette();
 }
 
 

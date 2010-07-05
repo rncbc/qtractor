@@ -960,8 +960,9 @@ void qtractorTrackForm::updateColorText ( QComboBox *pComboBox,
 	QPalette pal;
 //	pal.setColor(QPalette::Window, color);
 	pal.setColor(QPalette::Base, color);
-	pal.setColor(QPalette::Text, color.value() < 0x7f
-		? color.lighter(200) : color.darker(300));
+	pal.setColor(QPalette::Text,
+		color.value() < 0x7f ? color.lighter(200) : color.darker(300));
+	pComboBox->lineEdit()->setPalette(pal);
 	pComboBox->setPalette(pal);
 }
 
