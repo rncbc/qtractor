@@ -5,6 +5,14 @@ ChangeLog
 
 SVN TRUNK
 
+- MIDI file import and internal sequence representation has
+  been changed to be inclusive on all bank-select (CC#0,32)
+  and program-change events which were previously discarded
+  while honoring MIDI track properties. Interleaved SysEx
+  events are now also preserved on their original sequence
+  positions instead of squashing a duplicate into the MIDI
+  bus SysEx setup. (EXPERIMENTAL)
+
 - First attempt to include the VeSTige header for minimal VST
   plugin support (./configure --enable-vestige; default=no).
   (EXPERIMENTAL)

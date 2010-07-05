@@ -40,7 +40,7 @@
 #include <QPainter>
 
 #if QT_VERSION < 0x040300
-#define lighter light
+#define lighter(x) light(x)
 #endif
 
 #if QT_VERSION < 0x040500
@@ -206,6 +206,7 @@ bool qtractorMidiClip::openMidiFile ( qtractorMidiFile *pFile,
 			return false;
 		// FIXME: On demand, set session time properties from MIDI file...
 		if (m_bSessionFlag) {
+		#if 0
 			// Import eventual SysEx setup...
 			// - take care that given track might not be currently open,
 			//   so that we'll resolve MIDI output bus somehow...
@@ -227,6 +228,7 @@ bool qtractorMidiClip::openMidiFile ( qtractorMidiFile *pFile,
 			// Import eventual SysEx setup...
 			if (pMidiBus)
 				pMidiBus->importSysexList(m_pSeq);
+		#endif
 			// Import tempo map as well...
 			if (pFile->tempoMap()) {
 				pFile->tempoMap()->intoTimeScale(pSession->timeScale(), t0);

@@ -276,8 +276,11 @@ bool qtractorMidiFile::readTracks ( qtractorMidiSequence **ppSeqs,
 				data2 = readInt(1);
 				// Check if its channel filtered...
 				if (bChannelEvent) {
-					// We don't sequence bank select events here,
-					// just set the primordial bank patch...
+					// Create the new event...
+					pEvent = new qtractorMidiEvent(iTime, type, data1, data2);
+					pSeq->addEvent(pEvent);
+					pSeq->setChannel(iChannel);
+					// Set the primordial bank patch...
 					switch (data1) {
 					case 0x00:
 						// Bank MSB...
@@ -290,12 +293,8 @@ bool qtractorMidiFile::readTracks ( qtractorMidiSequence **ppSeqs,
 						pSeq->setBank(bank | data2);
 						break;
 					default:
-						// Create the new event...
-						pEvent = new qtractorMidiEvent(iTime, type, data1, data2);
-						pSeq->addEvent(pEvent);
 						break;
 					}
-					pSeq->setChannel(iChannel);
 				}
 				break;
 			case qtractorMidiEvent::KEYPRESS:
@@ -315,11 +314,13 @@ bool qtractorMidiFile::readTracks ( qtractorMidiSequence **ppSeqs,
 				data2 = readInt(1);
 				// Check if its channel filtered...
 				if (bChannelEvent) {
-					// We don't sequence prog change events here,
-					// just set the primordial program patch...
+					// Create the new event...
+					pEvent = new qtractorMidiEvent(iTime, type, data1, data2);
+					pSeq->addEvent(pEvent);
+					pSeq->setChannel(iChannel);
+					// Set the primordial program patch...
 					if (pSeq->program() < 0)
 						pSeq->setProgram(data2);
-					pSeq->setChannel(iChannel);
 				}
 				break;
 			case qtractorMidiEvent::CHANPRESS:

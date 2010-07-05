@@ -4076,8 +4076,8 @@ void qtractorMainForm::stabilizeForm (void)
 	bool bRolling    = (bPlaying && bRecording);
 	bool bBumped     = (!bRolling && (iPlayHead > 0 || bPlaying));
 
-	bool bSingleTrackSelected = (bSelected && pTrack != NULL
-		&& m_pTracks->singleTrackSelected() == pTrack);
+	bool bSingleTrackSelected = ((pClip != NULL || bSelected)
+		&& pTrack != NULL && m_pTracks->singleTrackSelected() == pTrack);
 
 	m_ui.editCutAction->setEnabled(bSelected);
 	m_ui.editCopyAction->setEnabled(bSelected);

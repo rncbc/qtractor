@@ -924,7 +924,8 @@ void qtractorTrack::setLoop ( unsigned long iLoopStart,
 // MIDI track instrument patching.
 void qtractorTrack::setMidiPatch ( qtractorInstrumentList *pInstruments )
 {
-	if (midiProgram() < 0)
+	int iProg = midiProgram();
+	if (iProg < 0)
 		return;
 
 	qtractorMidiBus *pMidiBus
@@ -932,13 +933,19 @@ void qtractorTrack::setMidiPatch ( qtractorInstrumentList *pInstruments )
 	if (pMidiBus == NULL)
 		return;
 
-	const qtractorMidiBus::Patch& patch = pMidiBus->patch(midiChannel());
+	unsigned short iChannel = midiChannel();
+	const qtractorMidiBus::Patch& patch = pMidiBus->patch(iChannel);
+	int iBank = midiBank();
 	int iBankSelMethod = midiBankSelMethod();
-	if (!patch.instrumentName.isEmpty() && iBankSelMethod < 0)
-		iBankSelMethod = (*pInstruments)[patch.instrumentName].bankSelMethod();
+	if (iBankSelMethod < 0) {
+		if (!patch.instrumentName.isEmpty())
+			iBankSelMethod = (*pInstruments)[patch.instrumentName].bankSelMethod();
+		else if (iBank >= 0)
+			iBankSelMethod = 0;
+	}
 
-	pMidiBus->setPatch(midiChannel(), patch.instrumentName,
-		iBankSelMethod, midiBank(), midiProgram(), this);
+	pMidiBus->setPatch(iChannel, patch.instrumentName,
+		iBankSelMethod, iBank, iProg, this);
 }
 
 
