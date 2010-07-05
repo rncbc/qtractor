@@ -1117,11 +1117,25 @@ void qtractorMidiEngine::enqueue ( qtractorTrack *pTrack,
 			ev.data.control.channel = pTrack->midiChannel();
 			ev.data.control.param   = pEvent->controller();
 			ev.data.control.value   = pEvent->value();
+			// HACK: Track properties override...
+			if (pTrack->midiBank() >= 0) {
+				switch (pEvent->controller()) {
+				case BANK_SELECT_MSB:
+					ev.data.control.value = (pTrack->midiBank() & 0x3f80) >> 7;
+					break;
+				case BANK_SELECT_LSB:
+					ev.data.control.value = (pTrack->midiBank() & 0x007f);
+					break;
+				}
+			}
 			break;
 		case qtractorMidiEvent::PGMCHANGE:
 			ev.type = SND_SEQ_EVENT_PGMCHANGE;
 			ev.data.control.channel = pTrack->midiChannel();
-			ev.data.control.value   = pEvent->value();
+			ev.data.control.value = pEvent->value();
+			// HACK: Track properties override...
+			if (pTrack->midiProgram() >= 0)
+				ev.data.control.value = pTrack->midiProgram();
 			break;
 		case qtractorMidiEvent::CHANPRESS:
 			ev.type = SND_SEQ_EVENT_CHANPRESS;
