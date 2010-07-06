@@ -5,6 +5,8 @@ ChangeLog
 
 SVN TRUNK
 
+- Fixed main track view off-limits play-head positioning.
+
 - Main tool-bar Time and Tempo spin-boxes, may now have
   their colors correct, as for most non-Qt based theme
   engines (ie. Gnome). Green text on black background has

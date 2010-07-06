@@ -2530,11 +2530,11 @@ void qtractorTrackView::drawPositionX ( int& iPositionX, int x, bool bSyncView )
 	// Force position to be in view?
 	if (bSyncView && (x < x0 || x > x0 + w - wm) && m_dragState == DragNone) {
 		 // Maybe we'll need some head-room...
-		if (x0 < qtractorScrollView::contentsWidth() - w) {
+		if (x < qtractorScrollView::contentsWidth() - w) {
 			qtractorScrollView::setContentsPos(
 				x - wm, qtractorScrollView::contentsY());
 		}
-		else updateContentsWidth(x0 + w);
+		else updateContentsWidth(x + w);
 	}
 	else {
 		// Draw the line, by updating the new region...
