@@ -34,6 +34,7 @@
 #include "qtractorMainForm.h"
 
 #include <QMessageBox>
+#include <QPushButton>
 #include <QFileDialog>
 #include <QLineEdit>
 #include <QUrl>
@@ -121,11 +122,11 @@ qtractorClipForm::qtractorClipForm (
 	QObject::connect(m_ui.PitchShiftSpinBox,
 		SIGNAL(valueChanged(double)),
 		SLOT(changed()));
-	QObject::connect(m_ui.OkPushButton,
-		SIGNAL(clicked()),
+	QObject::connect(m_ui.DialogButtonBox,
+		SIGNAL(accepted()),
 		SLOT(accept()));
-	QObject::connect(m_ui.CancelPushButton,
-		SIGNAL(clicked()),
+	QObject::connect(m_ui.DialogButtonBox,
+		SIGNAL(rejected()),
 		SLOT(reject()));
 }
 
@@ -541,7 +542,7 @@ void qtractorClipForm::stabilizeForm (void)
 	bValid = bValid && !m_ui.ClipNameLineEdit->text().isEmpty();
 	bValid = bValid && !sFilename.isEmpty() && QFileInfo(sFilename).exists();
 	bValid = bValid && (iClipLength > 0);
-	m_ui.OkPushButton->setEnabled(bValid);
+	m_ui.DialogButtonBox->button(QDialogButtonBox::Ok)->setEnabled(bValid);
 }
 
 

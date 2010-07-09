@@ -877,47 +877,14 @@
     </widget>
    </item>
    <item>
-    <layout class="QHBoxLayout" >
-     <property name="margin" >
-      <number>0</number>
+    <widget class="QDialogButtonBox" name="DialogButtonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
      </property>
-     <property name="spacing" >
-      <number>4</number>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
      </property>
-     <item>
-      <spacer>
-       <property name="orientation" >
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" >
-        <size>
-         <width>16</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <widget class="QPushButton" name="OkPushButton" >
-       <property name="text" >
-        <string>OK</string>
-       </property>
-       <property name="icon" >
-        <iconset resource="qtractor.qrc" >:/images/formAccept.png</iconset>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="CancelPushButton" >
-       <property name="text" >
-        <string>Cancel</string>
-       </property>
-       <property name="icon" >
-        <iconset resource="qtractor.qrc" >:/images/formReject.png</iconset>
-       </property>
-      </widget>
-     </item>
-    </layout>
+    </widget>
    </item>
   </layout>
  </widget>
@@ -968,8 +935,7 @@
   <tabstop>ResizeFormatComboBox</tabstop>
   <tabstop>ResizeValueCheckBox</tabstop>
   <tabstop>ResizeValueSpinBox</tabstop>
-  <tabstop>OkPushButton</tabstop>
-  <tabstop>CancelPushButton</tabstop>
+  <tabstop>DialogButtonBox</tabstop>
  </tabstops>
  <resources>
   <include location="qtractor.qrc" />

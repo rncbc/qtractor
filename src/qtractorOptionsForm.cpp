@@ -324,11 +324,11 @@ qtractorOptionsForm::qtractorOptionsForm (
 	QObject::connect(m_ui.MessagesLogPathToolButton,
 		SIGNAL(clicked()),
 		SLOT(chooseMessagesLogPath()));
-	QObject::connect(m_ui.OkPushButton,
-		SIGNAL(clicked()),
+	QObject::connect(m_ui.DialogButtonBox,
+		SIGNAL(accepted()),
 		SLOT(accept()));
-	QObject::connect(m_ui.CancelPushButton,
-		SIGNAL(clicked()),
+	QObject::connect(m_ui.DialogButtonBox,
+		SIGNAL(rejected()),
 		SLOT(reject()));
 }
 
@@ -1236,7 +1236,7 @@ void qtractorOptionsForm::stabilizeForm (void)
 		&& m_ui.PluginPathListWidget->findItems(
 			sPluginPath, Qt::MatchExactly).isEmpty());
 		
-	m_ui.OkPushButton->setEnabled(bValid);
+	m_ui.DialogButtonBox->button(QDialogButtonBox::Ok)->setEnabled(bValid);
 }
 
 

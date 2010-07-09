@@ -217,11 +217,11 @@ qtractorTrackForm::qtractorTrackForm (
 		SIGNAL(clicked()),
 		SLOT(moveDownPlugin()));
 
-	QObject::connect(m_ui.OkPushButton,
-		SIGNAL(clicked()),
+	QObject::connect(m_ui.DialogButtonBox,
+		SIGNAL(accepted()),
 		SLOT(accept()));
-	QObject::connect(m_ui.CancelPushButton,
-		SIGNAL(clicked()),
+	QObject::connect(m_ui.DialogButtonBox,
+		SIGNAL(rejected()),
 		SLOT(reject()));
 }
 
@@ -414,7 +414,7 @@ void qtractorTrackForm::stabilizeForm (void)
 	bool bValid = (m_iDirtyCount > 0);
 	bValid = bValid && !m_ui.TrackNameTextEdit->toPlainText().isEmpty();
 	bValid = bValid && trackType() != qtractorTrack::None;
-	m_ui.OkPushButton->setEnabled(bValid);
+	m_ui.DialogButtonBox->button(QDialogButtonBox::Ok)->setEnabled(bValid);
 
 	// Stabilize current plugin list state.
 	int iItem = -1;

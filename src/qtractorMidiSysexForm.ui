@@ -274,51 +274,14 @@
     </layout>
    </item>
    <item>
-    <layout class="QHBoxLayout" >
-     <item>
-      <widget class="QPushButton" name="ClearButton" >
-       <property name="toolTip" >
-        <string>Clear all SysEx items</string>
-       </property>
-       <property name="text" >
-        <string>Clear</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <spacer>
-       <property name="orientation" >
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" >
-        <size>
-         <width>220</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <widget class="QPushButton" name="OkButton" >
-       <property name="text" >
-        <string>OK</string>
-       </property>
-       <property name="icon" >
-        <iconset resource="qtractor.qrc" >:/images/formAccept.png</iconset>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="CancelButton" >
-       <property name="text" >
-        <string>Cancel</string>
-       </property>
-       <property name="icon" >
-        <iconset resource="qtractor.qrc" >:/images/formReject.png</iconset>
-       </property>
-      </widget>
-     </item>
-    </layout>
+    <widget class="QDialogButtonBox" name="DialogButtonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Reset|QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>
@@ -337,9 +300,7 @@
   <tabstop>AddButton</tabstop>
   <tabstop>UpdateButton</tabstop>
   <tabstop>RemoveButton</tabstop>
-  <tabstop>ClearButton</tabstop>
-  <tabstop>OkButton</tabstop>
-  <tabstop>CancelButton</tabstop>
+  <tabstop>DialogButtonBox</tabstop>
  </tabstops>
  <resources>
   <include location="qtractor.qrc" />

@@ -5,6 +5,8 @@ ChangeLog
 
 SVN TRUNK
 
+- General standard dialog buttons layout is now in place.
+
 - Fixed main track view off-limits play-head positioning.
 
 - Main tool-bar Time and Tempo spin-boxes, may now have

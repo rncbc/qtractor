@@ -128,43 +128,14 @@
     </widget>
    </item>
    <item>
-    <layout class="QHBoxLayout" >
-     <item>
-      <spacer>
-       <property name="orientation" >
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0" >
-        <size>
-         <width>20</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <widget class="QPushButton" name="OkPushButton" >
-       <property name="text" >
-        <string>OK</string>
-       </property>
-       <property name="icon" >
-        <iconset resource="qtractor.qrc" >
-         <normaloff>:/images/formAccept.png</normaloff>:/images/formAccept.png</iconset>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="CancelPushButton" >
-       <property name="text" >
-        <string>Cancel</string>
-       </property>
-       <property name="icon" >
-        <iconset resource="qtractor.qrc" >
-         <normaloff>:/images/formReject.png</normaloff>:/images/formReject.png</iconset>
-       </property>
-      </widget>
-     </item>
-    </layout>
+    <widget class="QDialogButtonBox" name="DialogButtonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>
@@ -181,8 +152,7 @@
   <tabstop>RepeatPeriodCheckBox</tabstop>
   <tabstop>RepeatPeriodSpinBox</tabstop>
   <tabstop>RepeatFormatComboBox</tabstop>
-  <tabstop>OkPushButton</tabstop>
-  <tabstop>CancelPushButton</tabstop>
+  <tabstop>DialogButtonBox</tabstop>
  </tabstops>
  <resources>
   <include location="qtractor.qrc" />

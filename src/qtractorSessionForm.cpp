@@ -30,6 +30,7 @@
 #include <QUrl>
 
 #include <QMessageBox>
+#include <QPushButton>
 #include <QValidator>
 #include <QLineEdit>
 
@@ -103,11 +104,11 @@ qtractorSessionForm::qtractorSessionForm (
 	QObject::connect(m_ui.VerticalZoomSpinBox,
 		SIGNAL(valueChanged(int)),
 		SLOT(changed()));
-	QObject::connect(m_ui.OkPushButton,
-		SIGNAL(clicked()),
+	QObject::connect(m_ui.DialogButtonBox,
+		SIGNAL(accepted()),
 		SLOT(accept()));
-	QObject::connect(m_ui.CancelPushButton,
-		SIGNAL(clicked()),
+	QObject::connect(m_ui.DialogButtonBox,
+		SIGNAL(rejected()),
 		SLOT(reject()));
 }
 
@@ -244,7 +245,7 @@ void qtractorSessionForm::stabilizeForm (void)
 	bValid = bValid && !m_ui.SessionNameLineEdit->text().isEmpty();
 	bValid = bValid && QDir(m_ui.SessionDirComboBox->currentText()).exists();
 //	bValid = bValid && !m_ui.DescriptionTextEdit->text().isEmpty();
-	m_ui.OkPushButton->setEnabled(bValid);
+	m_ui.DialogButtonBox->button(QDialogButtonBox::Ok)->setEnabled(bValid);
 }
 
 

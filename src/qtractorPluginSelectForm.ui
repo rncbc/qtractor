@@ -223,38 +223,12 @@
       </widget>
      </item>
      <item>
-      <spacer>
-       <property name="orientation" >
+      <widget class="QDialogButtonBox" name="DialogButtonBox">
+       <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
-       <property name="sizeType" >
-        <enum>QSizePolicy::Expanding</enum>
-       </property>
-       <property name="sizeHint" >
-        <size>
-         <width>20</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <widget class="QPushButton" name="OkPushButton" >
-       <property name="text" >
-        <string>OK</string>
-       </property>
-       <property name="icon" >
-        <iconset resource="qtractor.qrc" >:/images/formAccept.png</iconset>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="CancelPushButton" >
-       <property name="text" >
-        <string>Cancel</string>
-       </property>
-       <property name="icon" >
-        <iconset resource="qtractor.qrc" >:/images/formReject.png</iconset>
+       <property name="standardButtons">
+        <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
        </property>
       </widget>
      </item>
@@ -269,8 +243,7 @@
   <tabstop>PluginTypeComboBox</tabstop>
   <tabstop>PluginListView</tabstop>
   <tabstop>PluginActivateCheckBox</tabstop>
-  <tabstop>OkPushButton</tabstop>
-  <tabstop>CancelPushButton</tabstop>
+  <tabstop>DialogButtonBox</tabstop>
  </tabstops>
  <resources>
   <include location="qtractor.qrc" />

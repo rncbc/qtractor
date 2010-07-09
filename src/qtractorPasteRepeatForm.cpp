@@ -27,6 +27,7 @@
 #include "qtractorOptions.h"
 
 #include <QMessageBox>
+#include <QPushButton>
 
 
 //----------------------------------------------------------------------------
@@ -81,11 +82,11 @@ qtractorPasteRepeatForm::qtractorPasteRepeatForm (
 	QObject::connect(m_ui.RepeatFormatComboBox,
 		SIGNAL(activated(int)),
 		SLOT(formatChanged(int)));
-	QObject::connect(m_ui.OkPushButton,
-		SIGNAL(clicked()),
+	QObject::connect(m_ui.DialogButtonBox,
+		SIGNAL(accepted()),
 		SLOT(accept()));
-	QObject::connect(m_ui.CancelPushButton,
-		SIGNAL(clicked()),
+	QObject::connect(m_ui.DialogButtonBox,
+		SIGNAL(rejected()),
 		SLOT(reject()));
 }
 
@@ -203,7 +204,8 @@ void qtractorPasteRepeatForm::stabilizeForm (void)
 	m_ui.RepeatPeriodSpinBox->setEnabled(bEnabled);
 	m_ui.RepeatFormatComboBox->setEnabled(bEnabled);
 
-	m_ui.OkPushButton->setEnabled(m_pTimeScale != NULL);
+	m_ui.DialogButtonBox->button(
+		QDialogButtonBox::Ok)->setEnabled(m_pTimeScale != NULL);
 }
 
 

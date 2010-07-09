@@ -160,14 +160,14 @@ qtractorMidiSysexForm::qtractorMidiSysexForm (
 	QObject::connect(m_ui.RemoveButton,
 		SIGNAL(clicked()),
 		SLOT(removeSlot()));
-	QObject::connect(m_ui.ClearButton,
-		SIGNAL(clicked()),
-		SLOT(clearSlot()));
-	QObject::connect(m_ui.OkButton,
-		SIGNAL(clicked()),
+	QObject::connect(m_ui.DialogButtonBox,
+		SIGNAL(clicked(QAbstractButton *)),
+		SLOT(click(QAbstractButton *)));
+	QObject::connect(m_ui.DialogButtonBox,
+		SIGNAL(accepted()),
 		SLOT(accept()));
-	QObject::connect(m_ui.CancelButton,
-		SIGNAL(clicked()),
+	QObject::connect(m_ui.DialogButtonBox,
+		SIGNAL(rejected()),
 		SLOT(reject()));
 }
 
@@ -687,6 +687,16 @@ void qtractorMidiSysexForm::textChanged (void)
 }
 
 
+// Reset settings (action button slot).
+void qtractorMidiSysexForm::click ( QAbstractButton *pButton )
+{
+	QDialogButtonBox::ButtonRole role
+		= m_ui.DialogButtonBox->buttonRole(pButton);
+	if ((role & QDialogButtonBox::ResetRole) == QDialogButtonBox::ResetRole)
+		clearSlot();
+}
+
+
 // Accept settings (OK button slot).
 void qtractorMidiSysexForm::accept (void)
 {
@@ -781,8 +791,10 @@ void qtractorMidiSysexForm::stabilizeForm (void)
 	m_ui.AddButton->setEnabled(bEnabled);
 	m_ui.UpdateButton->setEnabled(bEnabled && pItem != NULL);
 
-	m_ui.ClearButton->setEnabled(bEnabled || iItemCount > 0);
-	m_ui.OkButton->setEnabled(m_iDirtyCount > 0 && m_iDirtyItem == 0);
+	m_ui.DialogButtonBox->button(QDialogButtonBox::Reset)->setEnabled(
+		bEnabled || iItemCount > 0);
+	m_ui.DialogButtonBox->button(QDialogButtonBox::Ok)->setEnabled(
+		m_iDirtyCount > 0 && m_iDirtyItem == 0);
 }
 
 

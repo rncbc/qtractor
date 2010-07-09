@@ -29,6 +29,7 @@
 #include "qtractorOptions.h"
 
 #include <QHeaderView>
+#include <QPushButton>
 #include <QLineEdit>
 #include <QPainter>
 #include <QRegExp>
@@ -150,12 +151,12 @@ qtractorPluginSelectForm::qtractorPluginSelectForm (
 	QObject::connect(m_ui.PluginActivateCheckBox,
 		SIGNAL(clicked()),
 		SLOT(stabilize()));
-	QObject::connect(m_ui.OkPushButton,
-		SIGNAL(clicked()),
+	QObject::connect(m_ui.DialogButtonBox,
+		SIGNAL(accepted()),
 		SLOT(accept()));
-	QObject::connect(m_ui.CancelPushButton,
-		SIGNAL(clicked()),
-		SLOT(close()));
+	QObject::connect(m_ui.DialogButtonBox,
+		SIGNAL(rejected()),
+		SLOT(reject()));
 }
 
 
@@ -377,7 +378,7 @@ void qtractorPluginSelectForm::refresh (void)
 // Stabilize slot.
 void qtractorPluginSelectForm::stabilize (void)
 {
-	m_ui.OkPushButton->setEnabled(
+	m_ui.DialogButtonBox->button(QDialogButtonBox::Ok)->setEnabled(
 		!m_ui.PluginListView->selectedItems().isEmpty());
 }
 

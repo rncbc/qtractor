@@ -49,29 +49,31 @@ public:
 
 protected slots:
 
-    void accept();
-    void reject();
+	void click(QAbstractButton *);
 
-    void importSlot();
-    void exportSlot();
-    void moveUpSlot();
-    void moveDownSlot();
+	void accept();
+	void reject();
+
+	void importSlot();
+	void exportSlot();
+	void moveUpSlot();
+	void moveDownSlot();
 
 	void nameChanged(const QString&);
 	void textChanged();
 
-    void openSlot();
+	void openSlot();
 	void loadSlot(const QString&);
-    void saveSlot();
-    void deleteSlot();
+	void saveSlot();
+	void deleteSlot();
 
-    void addSlot();
-    void updateSlot();
-    void removeSlot();
-    void clearSlot();
+	void addSlot();
+	void updateSlot();
+	void removeSlot();
+	void clearSlot();
 
-    void refreshForm();
-    void stabilizeForm();
+	void refreshForm();
+	void stabilizeForm();
 
 protected:
 
@@ -85,7 +87,7 @@ protected:
 	void saveSysexFile(const QString& sFilename);
 
 	// Refresh SysEx names (presets).
-    void refreshSysex();
+	void refreshSysex();
 
 	// SysEx preset group path name.
 	static QString sysexGroup();

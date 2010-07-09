@@ -33,6 +33,7 @@
 #include "qtractorOptions.h"
 
 #include <QMessageBox>
+#include <QPushButton>
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QUrl>
@@ -96,11 +97,11 @@ qtractorExportForm::qtractorExportForm (
 	QObject::connect(m_ui.ExportEndSpinBox,
 		SIGNAL(valueChanged(unsigned long)),
 		SLOT(valueChanged()));
-	QObject::connect(m_ui.OkPushButton,
-		SIGNAL(clicked()),
+	QObject::connect(m_ui.DialogButtonBox,
+		SIGNAL(accepted()),
 		SLOT(accept()));
-	QObject::connect(m_ui.CancelPushButton,
-		SIGNAL(clicked()),
+	QObject::connect(m_ui.DialogButtonBox,
+		SIGNAL(rejected()),
 		SLOT(reject()));
 }
 
@@ -236,7 +237,7 @@ void qtractorExportForm::accept (void)
 		m_ui.ExportBusGroupBox->setEnabled(false);
 		m_ui.ExportRangeGroupBox->setEnabled(false);
 		m_ui.FormatGroupBox->setEnabled(false);
-		m_ui.OkPushButton->setEnabled(false);
+		m_ui.DialogButtonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
 		// Carry on...
 		if (m_exportType == qtractorTrack::Audio) {
 			// Audio file export...
@@ -326,7 +327,7 @@ void qtractorExportForm::reject (void)
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession) {
 		// It can take a minute...
-		m_ui.CancelPushButton->setEnabled(false);
+		m_ui.DialogButtonBox->button(QDialogButtonBox::Cancel)->setEnabled(false);
 		switch (m_exportType) {
 		case qtractorTrack::Audio: {
 			// Audio file export...
@@ -485,7 +486,7 @@ void qtractorExportForm::stabilizeForm (void)
 	m_ui.EditRangeRadioButton->setEnabled(
 		pSession->editHead() < pSession->editTail());
 
-	m_ui.OkPushButton->setEnabled(
+	m_ui.DialogButtonBox->button(QDialogButtonBox::Ok)->setEnabled(
 		!m_ui.ExportPathComboBox->currentText().isEmpty() &&
 		m_ui.ExportStartSpinBox->value() < m_ui.ExportEndSpinBox->value());
 }

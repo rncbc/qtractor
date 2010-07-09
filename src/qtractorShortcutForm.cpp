@@ -297,11 +297,11 @@ qtractorShortcutForm::qtractorShortcutForm ( QList<QAction *> actions,
 		SIGNAL(itemChanged(QTableWidgetItem *)),
 		SLOT(actionChanged(QTableWidgetItem *)));
 
-	QObject::connect(m_ui.OkPushButton,
-		SIGNAL(clicked()),
+	QObject::connect(m_ui.DialogButtonBox,
+		SIGNAL(accepted()),
 		SLOT(accept()));
-	QObject::connect(m_ui.CancelPushButton,
-		SIGNAL(clicked()),
+	QObject::connect(m_ui.DialogButtonBox,
+		SIGNAL(rejected()),
 		SLOT(reject()));
 }
 
