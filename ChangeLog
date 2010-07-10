@@ -5,6 +5,11 @@ ChangeLog
 
 SVN TRUNK
 
+- Hopefully, an outrageously old bug got squashed away,
+  which was causing random impromptu crashes, most often
+  when importing audio clips while looping and play-head
+  is any near the loop end point.
+
 - General standard dialog buttons layout is now in place.
 
 - Fixed main track view off-limits play-head positioning.

@@ -365,14 +365,10 @@ int qtractorAudioBuffer::read ( float **ppFrames, unsigned int iFrames,
 	dump_state(QString("+read(%1)").arg(iFrames));
 #endif
 
-	// Check for logical EOF...
-	unsigned long ro = m_iReadOffset;
-	if (iFrames + ro > m_iFileLength)
-		iFrames = m_iFileLength - ro;
-
 	int nread;
 
 	// Are we self-contained (ie. got integral file in buffer) and looping?
+	unsigned long ro = m_iReadOffset;
 	unsigned long ls = m_iLoopStart;
 	unsigned long le = m_iLoopEnd;
 	// Are we in the middle of the loop range ?
@@ -516,14 +512,10 @@ int qtractorAudioBuffer::readMix ( float **ppFrames, unsigned int iFrames,
 	dump_state(QString("+readMix(%1)").arg(iFrames));
 #endif
 
-	// Check for logical EOF...
-	unsigned long ro = m_iReadOffset;
-	if (iFrames + ro > m_iFileLength)
-		iFrames = m_iFileLength - ro;
-
 	int nread;
 
 	// Are we self-contained (ie. got integral file in buffer) and looping?
+	unsigned long ro = m_iReadOffset;
 	unsigned long ls = m_iLoopStart;
 	unsigned long le = m_iLoopEnd;
 	// Are we in the middle of the loop range ?
