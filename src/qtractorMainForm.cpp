@@ -114,6 +114,8 @@
 #include <QCloseEvent>
 #include <QDropEvent>
 
+#include <QGtkStyle>
+
 #if QT_VERSION < 0x040500
 namespace Qt {
 const WindowFlags WindowCloseButtonHint = WindowFlags(0x08000000);
@@ -316,11 +318,14 @@ qtractorMainForm::qtractorMainForm (
 
 	// Editable toolbar widgets special palette.
 	QPalette pal;
-//	pal.setColor(QPalette::Window, Qt::black);
-	pal.setColor(QPalette::Base, Qt::black);
-	pal.setColor(QPalette::Text, Qt::green);
-//	pal.setColor(QPalette::Button, Qt::darkGray);
-//	pal.setColor(QPalette::ButtonText, Qt::green);
+	// Outrageous HACK: GTK+ ppl won't see green on black thing...
+	if (qobject_cast<QGtkStyle *> (style()) == NULL) {
+	//	pal.setColor(QPalette::Window, Qt::black);
+		pal.setColor(QPalette::Base, Qt::black);
+		pal.setColor(QPalette::Text, Qt::green);
+	//	pal.setColor(QPalette::Button, Qt::darkGray);
+	//	pal.setColor(QPalette::ButtonText, Qt::green);
+	}
 
 	// Transport time.
 	const QFont& font = qtractorMainForm::font();

@@ -70,10 +70,6 @@ public:
 	bool isDeltaValue() const;
 	unsigned long deltaValue() const;
 
-	// Possible palette hacking.
-	void setPalette(const QPalette& pal);
-	QPalette palette() const;
-
 signals:
 
 	// Common value change notification.
@@ -138,10 +134,6 @@ public:
 	// Nominal time-signature denominator (beat-divisor) accessors.
 	void setBeatDivisor(unsigned short iBeatDivisor, bool bNotifyChange = true);
 	unsigned short beatDivisor() const;
-
-	// Possible palette hacking.
-	void setPalette(const QPalette& pal);
-	QPalette palette() const;
 
 signals:
 
