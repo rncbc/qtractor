@@ -323,11 +323,13 @@ qtractorMainForm::qtractorMainForm (
 	// Outrageous HACK: GTK+ ppl won't see green on black thing...
 #if defined(Q_WS_X11)
 	if (qobject_cast<QGtkStyle *> (style()) == NULL) {
+#endif
 	//	pal.setColor(QPalette::Window, Qt::black);
 		pal.setColor(QPalette::Base, Qt::black);
 		pal.setColor(QPalette::Text, Qt::green);
 	//	pal.setColor(QPalette::Button, Qt::darkGray);
 	//	pal.setColor(QPalette::ButtonText, Qt::green);
+#if defined(Q_WS_X11)
 	}
 #endif
 

@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- Standard warning Apply button is now only shown when
+  dismissing dialog changes are actually valid.
+
 - Make sure non-dedicated metronome and player buses are
   properly reset and reopen when changing regular audio
   buses (hopefully fixing bug item #3021645 - Crash after

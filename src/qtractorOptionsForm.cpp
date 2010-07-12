@@ -611,13 +611,15 @@ void qtractorOptionsForm::reject (void)
 
 	// Check if there's any pending changes...
 	if (m_iDirtyCount > 0) {
+		QMessageBox::StandardButtons buttons
+			= QMessageBox::Discard | QMessageBox::Cancel;
+		if (m_ui.DialogButtonBox->button(QDialogButtonBox::Ok)->isEnabled())
+			buttons |= QMessageBox::Apply;
 		switch (QMessageBox::warning(this,
 			tr("Warning") + " - " QTRACTOR_TITLE,
 			tr("Some settings have been changed.\n\n"
 			"Do you want to apply the changes?"),
-			QMessageBox::Apply |
-			QMessageBox::Discard |
-			QMessageBox::Cancel)) {
+			buttons)) {
 		case QMessageBox::Apply:
 			accept();
 			return;
