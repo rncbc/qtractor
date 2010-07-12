@@ -5,6 +5,11 @@ ChangeLog
 
 SVN TRUNK
 
+- Make sure non-dedicated metronome and player buses are
+  properly reset and reopen when changing regular audio
+  buses (hopefully fixing bug item #3021645 - Crash after
+  changing audio bus).
+
 - Hopefully, an outrageously old bug got squashed away,
   which was causing random impromptu crashes, most often
   when importing audio clips while looping and play-head

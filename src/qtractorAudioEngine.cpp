@@ -1300,6 +1300,9 @@ void qtractorAudioEngine::resetMetroBus (void)
 		return;
 
 	createMetroBus();
+
+	if (isActivated())
+		openMetroBus();
 }
 
 
@@ -1503,6 +1506,9 @@ void qtractorAudioEngine::resetPlayerBus (void)
 		return;
 
 	createPlayerBus();
+
+	if (isActivated())
+		openPlayerBus();
 }
 
 

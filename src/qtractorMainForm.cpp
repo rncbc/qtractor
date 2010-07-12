@@ -114,7 +114,9 @@
 #include <QCloseEvent>
 #include <QDropEvent>
 
+#if defined(Q_WS_X11)
 #include <QGtkStyle>
+#endif
 
 #if QT_VERSION < 0x040500
 namespace Qt {
@@ -319,6 +321,7 @@ qtractorMainForm::qtractorMainForm (
 	// Editable toolbar widgets special palette.
 	QPalette pal;
 	// Outrageous HACK: GTK+ ppl won't see green on black thing...
+#if defined(Q_WS_X11)
 	if (qobject_cast<QGtkStyle *> (style()) == NULL) {
 	//	pal.setColor(QPalette::Window, Qt::black);
 		pal.setColor(QPalette::Base, Qt::black);
@@ -326,6 +329,7 @@ qtractorMainForm::qtractorMainForm (
 	//	pal.setColor(QPalette::Button, Qt::darkGray);
 	//	pal.setColor(QPalette::ButtonText, Qt::green);
 	}
+#endif
 
 	// Transport time.
 	const QFont& font = qtractorMainForm::font();
