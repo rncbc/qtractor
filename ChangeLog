@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- Automatic audio time-stretch option is not enabled by
+  default anymore.
+
 - Standard warning Apply button is now only shown when
   dismissing dialog changes are actually valid.
 

@@ -105,8 +105,8 @@ public:
 	int     iAudioCaptureQuality;
 	int     iAudioResampleType;
 	bool    bAudioAutoTimeStretch;
-	bool    bAudioTimeStretch;
-	bool    bAudioQuickSeek;
+	bool    bAudioWsolaTimeStretch;
+	bool    bAudioWsolaQuickSeek;
 	bool    bAudioPlayerBus;
 	bool    bAudioMetroBus;
 	bool    bAudioMetronome;

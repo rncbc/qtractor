@@ -114,7 +114,7 @@
 #include <QCloseEvent>
 #include <QDropEvent>
 
-#if defined(Q_WS_X11)
+#if defined(Q_WS_X11) && QT_VERSION >= 0x040500
 #include <QGtkStyle>
 #endif
 
@@ -321,7 +321,7 @@ qtractorMainForm::qtractorMainForm (
 	// Editable toolbar widgets special palette.
 	QPalette pal;
 	// Outrageous HACK: GTK+ ppl won't see green on black thing...
-#if defined(Q_WS_X11)
+#if defined(Q_WS_X11) && QT_VERSION >= 0x040500
 	if (qobject_cast<QGtkStyle *> (style()) == NULL) {
 #endif
 	//	pal.setColor(QPalette::Window, Qt::black);
@@ -329,7 +329,7 @@ qtractorMainForm::qtractorMainForm (
 		pal.setColor(QPalette::Text, Qt::green);
 	//	pal.setColor(QPalette::Button, Qt::darkGray);
 	//	pal.setColor(QPalette::ButtonText, Qt::green);
-#if defined(Q_WS_X11)
+#if defined(Q_WS_X11) && QT_VERSION >= 0x040500
 	}
 #endif
 
@@ -1034,8 +1034,8 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 		m_pOptions->bAudioOutputBus);
 	// Set default audio-buffer quality...
 	qtractorAudioBuffer::setResampleType(m_pOptions->iAudioResampleType);
-	qtractorAudioBuffer::setWsolaTimeStretch(m_pOptions->bAudioTimeStretch);
-	qtractorAudioBuffer::setWsolaQuickSeek(m_pOptions->bAudioQuickSeek);
+	qtractorAudioBuffer::setWsolaTimeStretch(m_pOptions->bAudioWsolaTimeStretch);
+	qtractorAudioBuffer::setWsolaQuickSeek(m_pOptions->bAudioWsolaQuickSeek);
 
 	// Load (action) keyboard shortcuts...
 	m_pOptions->loadActionShortcuts(this);
@@ -3205,8 +3205,8 @@ void qtractorMainForm::viewOptions (void)
 	int     iOldDisplayFormat      = m_pOptions->iDisplayFormat;
 	int     iOldBaseFontSize       = m_pOptions->iBaseFontSize;
 	int     iOldResampleType       = m_pOptions->iAudioResampleType;
-	bool    bOldTimeStretch        = m_pOptions->bAudioTimeStretch;
-	bool    bOldQuickSeek          = m_pOptions->bAudioQuickSeek;
+	bool    bOldWsolaTimeStretch   = m_pOptions->bAudioWsolaTimeStretch;
+	bool    bOldWsolaQuickSeek     = m_pOptions->bAudioWsolaQuickSeek;
 	bool    bOldAudioPlayerBus     = m_pOptions->bAudioPlayerBus;
 	bool    bOldAudioMetronome     = m_pOptions->bAudioMetronome;
 	int     iOldTransportMode      = m_pOptions->iTransportMode;
@@ -3240,9 +3240,10 @@ void qtractorMainForm::viewOptions (void)
 			qtractorAudioBuffer::setResampleType(m_pOptions->iAudioResampleType);
 			iNeedRestart |= RestartSession;
 		}
-		if (( bOldTimeStretch && !m_pOptions->bAudioTimeStretch) ||
-			(!bOldTimeStretch &&  m_pOptions->bAudioTimeStretch)) {
-			qtractorAudioBuffer::setWsolaTimeStretch(m_pOptions->bAudioTimeStretch);
+		if (( bOldWsolaTimeStretch && !m_pOptions->bAudioWsolaTimeStretch) ||
+			(!bOldWsolaTimeStretch &&  m_pOptions->bAudioWsolaTimeStretch)) {
+			qtractorAudioBuffer::setWsolaTimeStretch(
+				m_pOptions->bAudioWsolaTimeStretch);
 			iNeedRestart |= RestartSession;
 		}
 		// Audio engine control modes...
@@ -3255,9 +3256,10 @@ void qtractorMainForm::viewOptions (void)
 			updateMidiQueueTimer();
 			iNeedRestart |= RestartSession;
 		}
-		if (( bOldQuickSeek && !m_pOptions->bAudioQuickSeek) ||
-			(!bOldQuickSeek &&  m_pOptions->bAudioQuickSeek)) {
-			qtractorAudioBuffer::setWsolaQuickSeek(m_pOptions->bAudioQuickSeek);
+		if (( bOldWsolaQuickSeek && !m_pOptions->bAudioWsolaQuickSeek) ||
+			(!bOldWsolaQuickSeek &&  m_pOptions->bAudioWsolaQuickSeek)) {
+			qtractorAudioBuffer::setWsolaQuickSeek(
+				m_pOptions->bAudioWsolaQuickSeek);
 			iNeedRestart |= RestartSession;
 		}
 	#ifdef CONFIG_LV2

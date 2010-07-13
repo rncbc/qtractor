@@ -144,10 +144,10 @@ qtractorOptionsForm::qtractorOptionsForm (
 	QObject::connect(m_ui.AudioAutoTimeStretchCheckBox,
 		SIGNAL(stateChanged(int)),
 		SLOT(changed()));
-	QObject::connect(m_ui.AudioTimeStretchCheckBox,
+	QObject::connect(m_ui.AudioWsolaTimeStretchCheckBox,
 		SIGNAL(stateChanged(int)),
 		SLOT(changed()));
-	QObject::connect(m_ui.AudioQuickSeekCheckBox,
+	QObject::connect(m_ui.AudioWsolaQuickSeekCheckBox,
 		SIGNAL(stateChanged(int)),
 		SLOT(changed()));
 	QObject::connect(m_ui.AudioPlayerBusCheckBox,
@@ -374,12 +374,12 @@ void qtractorOptionsForm::setOptions ( qtractorOptions *pOptions )
 	m_ui.TransportModeComboBox->setCurrentIndex(m_pOptions->iTransportMode);
 	m_ui.AudioAutoTimeStretchCheckBox->setChecked(m_pOptions->bAudioAutoTimeStretch);
 #ifdef CONFIG_LIBRUBBERBAND
-	m_ui.AudioTimeStretchCheckBox->setChecked(m_pOptions->bAudioTimeStretch);
+	m_ui.AudioWsolaTimeStretchCheckBox->setChecked(m_pOptions->bAudioWsolaTimeStretch);
 #else
-	m_ui.AudioTimeStretchCheckBox->setChecked(true);
-	m_ui.AudioTimeStretchCheckBox->setEnabled(false);
+	m_ui.AudioWsolaTimeStretchCheckBox->setChecked(true);
+	m_ui.AudioWsolaTimeStretchCheckBox->setEnabled(false);
 #endif
-	m_ui.AudioQuickSeekCheckBox->setChecked(m_pOptions->bAudioQuickSeek);
+	m_ui.AudioWsolaQuickSeekCheckBox->setChecked(m_pOptions->bAudioWsolaQuickSeek);
 	m_ui.AudioPlayerBusCheckBox->setChecked(m_pOptions->bAudioPlayerBus);
 
 #ifndef CONFIG_LIBSAMPLERATE
@@ -523,8 +523,8 @@ void qtractorOptionsForm::accept (void)
 		m_pOptions->iAudioResampleType   = m_ui.AudioResampleTypeComboBox->currentIndex();
 		m_pOptions->iTransportMode       = m_ui.TransportModeComboBox->currentIndex();
 		m_pOptions->bAudioAutoTimeStretch = m_ui.AudioAutoTimeStretchCheckBox->isChecked();
-		m_pOptions->bAudioTimeStretch    = m_ui.AudioTimeStretchCheckBox->isChecked();
-		m_pOptions->bAudioQuickSeek      = m_ui.AudioQuickSeekCheckBox->isChecked();
+		m_pOptions->bAudioWsolaTimeStretch = m_ui.AudioWsolaTimeStretchCheckBox->isChecked();
+		m_pOptions->bAudioWsolaQuickSeek = m_ui.AudioWsolaQuickSeekCheckBox->isChecked();
 		m_pOptions->bAudioPlayerBus      = m_ui.AudioPlayerBusCheckBox->isChecked();
 		// Audio metronome options.
 		m_pOptions->bAudioMetronome      = m_ui.AudioMetronomeCheckBox->isChecked();
@@ -1183,8 +1183,8 @@ void qtractorOptionsForm::stabilizeForm (void)
 		bValid  = qtractorAudioFileFactory::isValidFormat(pFormat, iFormat);
 	}
 
-	m_ui.AudioQuickSeekCheckBox->setEnabled(
-		m_ui.AudioTimeStretchCheckBox->isChecked());
+	m_ui.AudioWsolaQuickSeekCheckBox->setEnabled(
+		m_ui.AudioWsolaTimeStretchCheckBox->isChecked());
 
 	bool bAudioMetronome = m_ui.AudioMetronomeCheckBox->isChecked();
 	m_ui.MetroBarFilenameTextLabel->setEnabled(bAudioMetronome);

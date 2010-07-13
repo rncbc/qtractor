@@ -392,7 +392,7 @@
            </widget>
           </item>
           <item row="2" column="0" colspan="3" >
-           <widget class="QCheckBox" name="AudioTimeStretchCheckBox" >
+           <widget class="QCheckBox" name="AudioWsolaTimeStretchCheckBox" >
             <property name="font" >
              <font>
               <weight>50</weight>
@@ -411,7 +411,7 @@
            </widget>
           </item>
           <item row="3" column="0" colspan="3" >
-           <widget class="QCheckBox" name="AudioQuickSeekCheckBox" >
+           <widget class="QCheckBox" name="AudioWsolaQuickSeekCheckBox" >
             <property name="font" >
              <font>
               <weight>50</weight>
@@ -2778,8 +2778,8 @@
   <tabstop>AudioResampleTypeComboBox</tabstop>
   <tabstop>TransportModeComboBox</tabstop>
   <tabstop>AudioAutoTimeStretchCheckBox</tabstop>
-  <tabstop>AudioTimeStretchCheckBox</tabstop>
-  <tabstop>AudioQuickSeekCheckBox</tabstop>
+  <tabstop>AudioWsolaTimeStretchCheckBox</tabstop>
+  <tabstop>AudioWsolaQuickSeekCheckBox</tabstop>
   <tabstop>AudioPlayerBusCheckBox</tabstop>
   <tabstop>AudioMetronomeCheckBox</tabstop>
   <tabstop>MetroBarFilenameComboBox</tabstop>
