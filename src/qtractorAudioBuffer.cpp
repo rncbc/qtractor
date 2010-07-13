@@ -584,6 +584,9 @@ bool qtractorAudioBuffer::seek ( unsigned long iFrame )
 	m_fNextGain = 1.0f;
 	m_iRampGain = 1;
 
+	// Force (premature) out-of-sync...
+	m_bReadSync = false;
+
 	// Special case on integral cached files...
 	if (m_bIntegral) {
 		if (iFrame >= m_iLength)
@@ -623,8 +626,8 @@ bool qtractorAudioBuffer::seek ( unsigned long iFrame )
 	// Bad luck, gotta go straight down to disk...
 	//	if (!seekSync(iFrame))
 	//		return false;
-	// Force out-of-sync...
-	m_bReadSync   = false;
+	// Force (late) out-of-sync...
+	//	m_bReadSync = false;
 	m_iReadOffset = m_iOffset + m_iLength + 1; // An unlikely offset!
 	m_iSeekOffset = iFrame;
 

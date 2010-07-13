@@ -1263,6 +1263,8 @@ void qtractorAudioEngine::setMetronome ( bool bMetronome )
 {
 	m_bMetronome = bMetronome;
 
+	openMetroBus();
+
 	if (isPlaying())
 		resetMetro();
 }
@@ -1296,7 +1298,7 @@ bool qtractorAudioEngine::isMetroBus (void) const
 
 void qtractorAudioEngine::resetMetroBus (void)
 {
-	if (m_bMetroBus && m_pMetroBus)
+	if (m_bMetronome && m_bMetroBus && m_pMetroBus)
 		return;
 
 	createMetroBus();
@@ -1345,6 +1347,9 @@ void qtractorAudioEngine::createMetroBus (void)
 {
 	deleteMetroBus();
 
+	if (!m_bMetronome)
+		return;
+
 	// Whether metronome bus is here owned, or...
 	if (m_bMetroBus) {
 		m_pMetroBus = new qtractorAudioBus(this,
@@ -1367,6 +1372,9 @@ bool qtractorAudioEngine::openMetroBus (void)
 {
 	closeMetroBus();
 
+	if (!m_bMetronome)
+		return false;
+
 	// Is there any?
 	if (m_pMetroBus == NULL)
 		createMetroBus();
@@ -1381,8 +1389,10 @@ bool qtractorAudioEngine::openMetroBus (void)
 
 	// Enough number of channels?...
 	unsigned short iChannels = m_pMetroBus->channels();
-	if (iChannels < 1)
+	if (iChannels < 1) {
+		closeMetroBus();
 		return false;
+	}
 
 	// We got it...
 	m_pMetroBarBuff = new qtractorAudioBuffer(iChannels, sampleRate());
@@ -1553,8 +1563,10 @@ bool qtractorAudioEngine::openPlayerBus (void)
 
 	// Enough number of channels?...
 	unsigned short iChannels = m_pPlayerBus->channels();
-	if (iChannels < 1)
+	if (iChannels < 1) {
+		closePlayerBus();
 		return false;
+	}
 
 	// We got it...
 	m_pPlayerBuff = new qtractorAudioBuffer(iChannels, sampleRate());
