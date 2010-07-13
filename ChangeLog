@@ -5,6 +5,10 @@ ChangeLog
 
 SVN TRUNK
 
+- All tempo (BPM) calculations are now compliant to the
+  MIDI conventional equivalence between beat and quarter
+  note (1/4, crotchet) as common standard time division.
+
 - Automatic audio time-stretch option is not enabled by
   default anymore.
 

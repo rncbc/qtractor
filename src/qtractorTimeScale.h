@@ -404,30 +404,30 @@ public:
 	unsigned long tickFromText(
 		const QString& sText, bool bDelta = false, unsigned long iTick = 0);
 
-	// Tempo convertors (default's quarter notes per minute)
-	void setTempo(float fTempo, unsigned short iBeatType = 2)
-	{
-		Node *pNode = m_nodes.first();
-		if (pNode) pNode->setTempoEx(fTempo, iBeatType);
-	}
-
-	float tempo(unsigned short iBeatType = 2) const
-	{
-		Node *pNode = m_nodes.first();
-		return (pNode ? pNode->tempoEx(iBeatType) : 120.0f);
-	}
-
 	// Tempo (beats per minute; BPM)
-	void setTempo2(float fTempo)
+	void setTempo(float fTempo)
 	{
 		Node *pNode = m_nodes.first();
 		if (pNode) pNode->tempo = fTempo;
 	}
 
-	float tempo2() const
+	float tempo() const
 	{
 		Node *pNode = m_nodes.first();
 		return (pNode ? pNode->tempo : 120.0f);
+	}
+
+	// Tempo convertors (default's quarter notes per minute)
+	void setTempoEx(float fTempo, unsigned short iBeatType = 2)
+	{
+		Node *pNode = m_nodes.first();
+		if (pNode) pNode->setTempoEx(fTempo, iBeatType);
+	}
+
+	float tempoEx(unsigned short iBeatType = 2) const
+	{
+		Node *pNode = m_nodes.first();
+		return (pNode ? pNode->tempoEx(iBeatType) : 120.0f);
 	}
 
 	// Tempo beat type (if not standard 2=quarter note)
