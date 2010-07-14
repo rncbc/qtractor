@@ -189,6 +189,9 @@ qtractorOptionsForm::qtractorOptionsForm (
 	QObject::connect(m_ui.MidiSppModeComboBox,
 		SIGNAL(activated(int)),
 		SLOT(changed()));
+	QObject::connect(m_ui.MidiClockModeComboBox,
+		SIGNAL(activated(int)),
+		SLOT(changed()));
 	QObject::connect(m_ui.MidiControlBusCheckBox,
 		SIGNAL(stateChanged(int)),
 		SLOT(changed()));
@@ -409,6 +412,7 @@ void qtractorOptionsForm::setOptions ( qtractorOptions *pOptions )
 	m_ui.MidiMmcModeComboBox->setCurrentIndex(m_pOptions->iMidiMmcMode);
 	m_ui.MidiMmcDeviceComboBox->setCurrentIndex(m_pOptions->iMidiMmcDevice);
 	m_ui.MidiSppModeComboBox->setCurrentIndex(m_pOptions->iMidiSppMode);
+	m_ui.MidiClockModeComboBox->setCurrentIndex(m_pOptions->iMidiClockMode);
 	m_ui.MidiControlBusCheckBox->setChecked(m_pOptions->bMidiControlBus);
 
 	// MIDI metronome options.
@@ -539,6 +543,7 @@ void qtractorOptionsForm::accept (void)
 		m_pOptions->iMidiMmcMode         = m_ui.MidiMmcModeComboBox->currentIndex();
 		m_pOptions->iMidiMmcDevice       = m_ui.MidiMmcDeviceComboBox->currentIndex();
 		m_pOptions->iMidiSppMode         = m_ui.MidiSppModeComboBox->currentIndex();
+		m_pOptions->iMidiClockMode       = m_ui.MidiClockModeComboBox->currentIndex();
 		m_pOptions->bMidiControlBus      = m_ui.MidiControlBusCheckBox->isChecked();
 		// MIDI metronome options.
 		m_pOptions->bMidiMetronome       = m_ui.MidiMetronomeCheckBox->isChecked();

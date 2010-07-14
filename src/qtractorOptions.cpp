@@ -152,6 +152,7 @@ void qtractorOptions::loadOptions (void)
 	iMidiMmcDevice     = m_settings.value("/MmcDevice", 0x7f).toInt();
 	iMidiMmcMode       = m_settings.value("/MmcMode", 3).toInt();
 	iMidiSppMode       = m_settings.value("/SppMode", 3).toInt();
+	iMidiClockMode     = m_settings.value("/ClockMode", 0).toInt();
 	m_settings.endGroup();
 
 	// Metronome options group.
@@ -366,6 +367,7 @@ void qtractorOptions::saveOptions (void)
 	m_settings.setValue("/MmcDevice", iMidiMmcDevice);
 	m_settings.setValue("/MmcMode", iMidiMmcMode);
 	m_settings.setValue("/SppMode", iMidiSppMode);
+	m_settings.setValue("/ClockMode", iMidiClockMode);
 	m_settings.endGroup();
 
 	// Metronome options group.

@@ -43,6 +43,7 @@ class qtractorMmcEvent;
 class qtractorMidiControlEvent;
 class qtractorMidiControl;
 class qtractorMidiSppEvent;
+class qtractorMidiClockEvent;
 class qtractorTimeSpinBox;
 class qtractorTempoSpinBox;
 class qtractorTempoCursor;
@@ -258,6 +259,7 @@ protected:
 	void mmcEvent(qtractorMmcEvent *pMmcEvent);
 	void midiControlEvent(qtractorMidiControlEvent *pCtlEvent);
 	void midiSppEvent(qtractorMidiSppEvent *pSppEvent);
+	void midiClockEvent(qtractorMidiClockEvent *pClkEvent);
 
 	void sessionEvent(qtractorSessionEvent *pSessionEvent);
 

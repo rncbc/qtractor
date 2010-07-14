@@ -140,11 +140,13 @@ public:
 	void setNotifyMmcType (QEvent::Type eNotifyMmcType);
 	void setNotifyCtlType (QEvent::Type eNotifyCtlType);
 	void setNotifySppType (QEvent::Type eNotifySppType);
+	void setNotifyClkType (QEvent::Type eNotifyClkType);
 
 	QObject     *notifyObject() const;
 	QEvent::Type notifyMmcType() const;
 	QEvent::Type notifyCtlType() const;
 	QEvent::Type notifySppType() const;
+	QEvent::Type notifyClkType() const;
 
 	// Control bus accessors.
 	void setControlBus(bool bControlBus);
@@ -202,6 +204,10 @@ public:
 	void setSppMode(qtractorBus::BusMode sppMode);
 	qtractorBus::BusMode sppMode() const;
 
+	// MIDI Clock mode accessors.
+	void setClockMode(qtractorBus::BusMode clockMode);
+	qtractorBus::BusMode clockMode() const;
+
 protected:
 
 	// Concrete device (de)activation methods.
@@ -250,6 +256,7 @@ private:
 	QEvent::Type  m_eNotifyMmcType;
 	QEvent::Type  m_eNotifyCtlType;
 	QEvent::Type  m_eNotifySppType;
+	QEvent::Type  m_eNotifyClkType;
 
 	// The assigned control buses.
 	bool             m_bControlBus;
@@ -286,6 +293,14 @@ private:
 	// MMC/SPP modes.
 	qtractorBus::BusMode m_mmcMode;
 	qtractorBus::BusMode m_sppMode;
+
+	// MIDI Clock mode.
+	qtractorBus::BusMode m_clockMode;
+
+	// MIDI Clock tempo tracking.
+	unsigned short m_iClockCount;
+	float          m_fClockTempo;
+	
 };
 
 
@@ -471,6 +486,28 @@ private:
 	// Instance variables.
 	int            m_iCmdType;
 	unsigned short m_iSongPos;
+};
+
+
+//----------------------------------------------------------------------
+// qtractorMidiClockEvent - MIDI Clock custom event.
+//
+
+class qtractorMidiClockEvent : public QEvent
+{
+public:
+
+	// Contructor.
+	qtractorMidiClockEvent(QEvent::Type eType, float fTempo)
+		: QEvent(eType), m_fTempo(fTempo) {}
+
+	// Accessors.
+	float tempo() const { return m_fTempo; }
+
+private:
+
+	// Instance variables.
+	float m_fTempo;
 };
 
 

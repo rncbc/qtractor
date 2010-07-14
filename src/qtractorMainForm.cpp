@@ -157,14 +157,15 @@ static const char *s_pszTemplateExt  = "qtt";
 #define QTRACTOR_MMC_EVENT      QEvent::Type(QEvent::User + 6)
 #define QTRACTOR_CTL_EVENT      QEvent::Type(QEvent::User + 7)
 #define QTRACTOR_SPP_EVENT      QEvent::Type(QEvent::User + 8)
-#define QTRACTOR_SAVE_EVENT     QEvent::Type(QEvent::User + 9)
+#define QTRACTOR_CLK_EVENT      QEvent::Type(QEvent::User + 9)
+#define QTRACTOR_SAVE_EVENT     QEvent::Type(QEvent::User + 10)
 
 #ifdef CONFIG_JACK_SESSION
 #include <jack/session.h>
-#define QTRACTOR_SESS_EVENT     QEvent::Type(QEvent::User + 10)
+#define QTRACTOR_SESS_EVENT     QEvent::Type(QEvent::User + 11)
 #endif
 
-#define QTRACTOR_SYNC_EVENT     QEvent::Type(QEvent::User + 11)
+#define QTRACTOR_SYNC_EVENT     QEvent::Type(QEvent::User + 12)
 
 
 //-------------------------------------------------------------------------
@@ -293,6 +294,7 @@ qtractorMainForm::qtractorMainForm (
 		pMidiEngine->setNotifyMmcType(QTRACTOR_MMC_EVENT);
 		pMidiEngine->setNotifyCtlType(QTRACTOR_CTL_EVENT);
 		pMidiEngine->setNotifySppType(QTRACTOR_SPP_EVENT);
+		pMidiEngine->setNotifyClkType(QTRACTOR_CLK_EVENT);
 	}
 
 	// Add the midi controller map...
@@ -1273,6 +1275,10 @@ void qtractorMainForm::customEvent ( QEvent *pEvent )
 		// SPP event handling...
 		midiSppEvent(static_cast<qtractorMidiSppEvent *> (pEvent));
 		break;
+	case QTRACTOR_CLK_EVENT:
+		// MIDI Clock event...
+		midiClockEvent(static_cast<qtractorMidiClockEvent *> (pEvent));
+		break;
 	case QTRACTOR_SAVE_EVENT:
 		// LADISH Level 1 support...
 		saveSession(false);
@@ -1476,6 +1482,32 @@ void qtractorMainForm::midiSppEvent ( qtractorMidiSppEvent *pSppEvent )
 	}
 
 	appendMessages(sSppText);
+	stabilizeForm();
+}
+
+
+// Custom MIDI Clock event handler.
+void qtractorMainForm::midiClockEvent ( qtractorMidiClockEvent *pClkEvent )
+{
+	QString sClkText("CLK: ");
+	sClkText += tr("%1 BPM").arg(pClkEvent->tempo());
+	appendMessages(sClkText);
+
+	// Find appropriate node...
+	qtractorTimeScale *pTimeScale = m_pSession->timeScale();
+	qtractorTimeScale::Cursor& cursor = pTimeScale->cursor();
+	qtractorTimeScale::Node *pNode = cursor.seekFrame(m_pSession->playHead());
+
+	// Now, express the change immediately...
+	if (pNode->prev()) {
+		pNode->tempo = pClkEvent->tempo();
+		pTimeScale->updateNode(pNode);
+	} else {
+		m_pSession->setTempo(pClkEvent->tempo());
+	}
+	m_iTransportUpdate++;
+
+	updateContents(NULL, true);
 	stabilizeForm();
 }
 
@@ -1941,6 +1973,7 @@ bool qtractorMainForm::loadSessionFile (
 				m_pOptions->iMidiMmcMode   = int(pMidiEngine->mmcMode());
 				m_pOptions->iMidiMmcDevice = int(pMidiEngine->mmcDevice());
 				m_pOptions->iMidiSppMode   = int(pMidiEngine->sppMode());
+				m_pOptions->iMidiClockMode = int(pMidiEngine->clockMode());
 			}
 			m_pOptions->saveOptions();
 		}
@@ -3213,6 +3246,7 @@ void qtractorMainForm::viewOptions (void)
 	int     iOldMidiMmcDevice      = m_pOptions->iMidiMmcDevice;
 	int     iOldMidiMmcMode        = m_pOptions->iMidiMmcMode;
 	int     iOldMidiSppMode        = m_pOptions->iMidiSppMode;
+	int     iOldMidiClockMode      = m_pOptions->iMidiClockMode;
 	int     iOldMidiCaptureQuantize = m_pOptions->iMidiCaptureQuantize;
 	int     iOldMidiQueueTimer     = m_pOptions->iMidiQueueTimer;
 	QString sOldMetroBarFilename   = m_pOptions->sMetroBarFilename;
@@ -3320,6 +3354,7 @@ void qtractorMainForm::viewOptions (void)
 		if ((iOldMidiMmcDevice != m_pOptions->iMidiMmcDevice) ||
 			(iOldMidiMmcMode   != m_pOptions->iMidiMmcMode)   ||
 			(iOldMidiSppMode   != m_pOptions->iMidiSppMode)   ||
+			(iOldMidiClockMode != m_pOptions->iMidiClockMode) ||
 			(iOldMidiCaptureQuantize != m_pOptions->iMidiCaptureQuantize)) {
 			m_iDirtyCount++; // Fake session properties change.
 			updateMidiControlModes();
@@ -4544,6 +4579,7 @@ void qtractorMainForm::updateMidiControlModes (void)
 	pMidiEngine->setMmcDevice(m_pOptions->iMidiMmcDevice);
 	pMidiEngine->setMmcMode(qtractorBus::BusMode(m_pOptions->iMidiMmcMode));
 	pMidiEngine->setSppMode(qtractorBus::BusMode(m_pOptions->iMidiSppMode));
+	pMidiEngine->setClockMode(qtractorBus::BusMode(m_pOptions->iMidiClockMode));
 }
 
 

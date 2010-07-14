@@ -48,6 +48,10 @@
 
 #include <QSocketNotifier>
 
+#include <QTime>
+
+#include <math.h>
+
 
 // Specific controller definitions
 #define BANK_SELECT_MSB		0x00
@@ -560,6 +564,7 @@ qtractorMidiEngine::qtractorMidiEngine ( qtractorSession *pSession )
 	m_eNotifyMmcType = QEvent::None;
 	m_eNotifyCtlType = QEvent::None;
 	m_eNotifySppType = QEvent::None;
+	m_eNotifyClkType = QEvent::None;
 
 	m_bControlBus    = false;
 	m_pIControlBus   = NULL;
@@ -592,6 +597,13 @@ qtractorMidiEngine::qtractorMidiEngine ( qtractorSession *pSession )
 	m_mmcDevice = 0x7f; // All-caller-id.
 	m_mmcMode = qtractorBus::Duplex;
 	m_sppMode = qtractorBus::Duplex;
+
+	// MIDI Clock mode.
+	m_clockMode = qtractorBus::None;
+
+	// MIDI Clock tempo tracking.
+	m_iClockCount = 0;
+	m_fClockTempo = 120.0f;
 }
 
 
@@ -693,6 +705,10 @@ void qtractorMidiEngine::resetTempo (void)
 
 	// Recache tempo value...
 	m_fMetroTempo = pNode->tempo;
+
+	// MIDI Clock tempo tracking.
+	m_iClockCount = 0;
+	m_fClockTempo = pNode->tempo;
 }
 
 
@@ -921,6 +937,29 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 				QApplication::postEvent(m_pNotifyObject,
 					new qtractorMidiSppEvent(m_eNotifySppType,
 						int(pEv->type), pEv->data.control.value));
+			}
+		}
+		// Not handled any longer.
+		return;
+	case SND_SEQ_EVENT_CLOCK:
+		// Trap MIDI Clocks...
+		if ((m_clockMode & qtractorBus::Input)
+			&& m_pIControlBus && m_pIControlBus->alsaPort() == iAlsaPort) {
+			static QTime s_clockTime;
+			if (++m_iClockCount == 1)
+				s_clockTime.start();
+			else
+			if (m_iClockCount > 72) { // 3 beat averaging...
+				m_iClockCount = 0;
+				float fTempo = int(180000.0f / float(s_clockTime.elapsed()));
+				if (::fabs(fTempo - m_fClockTempo) / m_fClockTempo > 0.01f) {
+					m_fClockTempo = fTempo;
+					// Post the stuffed event...
+					if (m_pNotifyObject) {
+						QApplication::postEvent(m_pNotifyObject,
+							new qtractorMidiClockEvent(m_eNotifyClkType, fTempo));
+					}
+				}
 			}
 		}
 		// Not handled any longer.
@@ -1625,6 +1664,11 @@ void qtractorMidiEngine::setNotifySppType ( QEvent::Type eNotifySppType )
 	m_eNotifySppType = eNotifySppType;
 }
 
+void qtractorMidiEngine::setNotifyClkType ( QEvent::Type eNotifyClkType )
+{
+	m_eNotifyClkType = eNotifyClkType;
+}
+
 
 QObject *qtractorMidiEngine::notifyObject (void) const
 {
@@ -1644,6 +1688,11 @@ QEvent::Type qtractorMidiEngine::notifyCtlType (void) const
 QEvent::Type qtractorMidiEngine::notifySppType (void) const
 {
 	return m_eNotifySppType;
+}
+
+QEvent::Type qtractorMidiEngine::notifyClkType (void) const
+{
+	return m_eNotifyClkType;
 }
 
 
@@ -2065,14 +2114,11 @@ void qtractorMidiEngine::processMetro (
 		qtractorMidiMonitor::splitTime(session(), pNode->frame, tick);
 	}
 
-	// Get on with the actual metronome stuff...
-	if (!m_bMetronome)
+	// Get on with the actual metronome/clock stuff...
+	if (!m_bMetronome && (m_clockMode & qtractorBus::Output) == 0)
 		return;
 
-	if (m_pMetroBus == NULL)
-		return;
-
-	// Register the next metronome beat slot.
+	// Register the next metronome/clock beat slot.
 	unsigned long iTimeEnd = pNode->tickFromFrame(iFrameEnd);
 
 	pNode = m_pMetroCursor->seekFrame(iFrameStart);
@@ -2080,23 +2126,52 @@ void qtractorMidiEngine::processMetro (
 	unsigned int  iBeat = pNode->beatFromTick(iTimeStart);
 	unsigned long iTime = pNode->tickFromBeat(iBeat);
 
-	// Intialize outbound event...
+	// Intialize outbound metronome event...
 	snd_seq_event_t ev;
 	snd_seq_ev_clear(&ev);
 	// Addressing...
-	snd_seq_ev_set_source(&ev, m_pMetroBus->alsaPort());
-	snd_seq_ev_set_subs(&ev);
+	if (m_pMetroBus) {
+		snd_seq_ev_set_source(&ev, m_pMetroBus->alsaPort());
+		snd_seq_ev_set_subs(&ev);
+	}
 	// Set common event data...
 	ev.tag = (unsigned char) 0xff;
 	ev.type = SND_SEQ_EVENT_NOTE;
-	ev.data.note.channel  = m_iMetroChannel;
+	ev.data.note.channel = m_iMetroChannel;
+
+	// Intialize outbound clock event...
+	snd_seq_event_t ev_clock;
+	snd_seq_ev_clear(&ev_clock);
+	// Addressing...
+	if (m_pOControlBus) {
+		snd_seq_ev_set_source(&ev_clock, m_pOControlBus->alsaPort());
+		snd_seq_ev_set_subs(&ev_clock);
+	}
+	// Set common event data...
+	ev_clock.tag = (unsigned char) 0xff;
+	ev_clock.type = SND_SEQ_EVENT_CLOCK;
 
 	while (iTime < iTimeEnd) {
 		// Scheduled delivery: take into account
 		// the time playback/queue started...
-		if (iTime >= iTimeStart) {
+		if (m_clockMode & qtractorBus::Output) {
+			unsigned long iTimeClock = iTime;
+			unsigned int iTicksPerClock = pNode->ticksPerBeat / 24;
+			for (unsigned int iClock = 0; iClock < 24; ++iClock) {
+				if (iTimeClock >= iTimeEnd)
+					break;
+				if (iTimeClock >= iTimeStart) {
+					unsigned long tick
+						= (long(iTimeClock) > m_iTimeStart ? iTimeClock - m_iTimeStart : 0);
+					snd_seq_ev_schedule_tick(&ev_clock, m_iAlsaQueue, 0, tick);
+					snd_seq_event_output(m_pAlsaSeq, &ev_clock);
+				}
+				iTimeClock += iTicksPerClock;
+			}
+		}
+		if (m_bMetronome && iTime >= iTimeStart) {
 			unsigned long tick
-				= ((long) iTime > m_iTimeStart ? iTime - m_iTimeStart : 0);
+				= (long(iTime) > m_iTimeStart ? iTime - m_iTimeStart : 0);
 			snd_seq_ev_schedule_tick(&ev, m_iAlsaQueue, 0, tick);
 			// Set proper event data...
 			if (pNode->beatIsBar(iBeat)) {
@@ -2111,8 +2186,8 @@ void qtractorMidiEngine::processMetro (
 			// Pump it into the queue.
 			snd_seq_event_output(m_pAlsaSeq, &ev);
 			// MIDI track monitoring...
-			if (m_pOControlBus->midiMonitor_out()) {
-				m_pOControlBus->midiMonitor_out()->enqueue(
+			if (m_pMetroBus->midiMonitor_out()) {
+				m_pMetroBus->midiMonitor_out()->enqueue(
 					qtractorMidiEvent::NOTEON, ev.data.note.velocity, tick);
 			}
 		}
@@ -2167,6 +2242,10 @@ bool qtractorMidiEngine::loadElement ( qtractorSessionDocument *pDocument,
 					qtractorMidiEngine::setSppMode(
 						pDocument->loadBusMode(eProp.text()));
 				}
+				else if (eProp.tagName() == "clock-mode") {
+					qtractorMidiEngine::setClockMode(
+						pDocument->loadBusMode(eProp.text()));
+				}
 			}
 		}
 		else if (eChild.tagName() == "midi-bus") {
@@ -2215,6 +2294,8 @@ bool qtractorMidiEngine::saveElement ( qtractorSessionDocument *pDocument,
 		QString::number(int(qtractorMidiEngine::mmcDevice())), &eControl);
 	pDocument->saveTextElement("spp-mode",
 		pDocument->saveBusMode(qtractorMidiEngine::sppMode()), &eControl);
+	pDocument->saveTextElement("clock-mode",
+		pDocument->saveBusMode(qtractorMidiEngine::clockMode()), &eControl);
 	pElement->appendChild(eControl);
 
 	// Save MIDI buses...
@@ -2509,6 +2590,17 @@ qtractorBus::BusMode qtractorMidiEngine::sppMode (void) const
 	return m_sppMode;
 }
 
+
+// MIDI Clock mode accessors.
+void qtractorMidiEngine::setClockMode ( qtractorBus::BusMode clockMode )
+{
+	m_clockMode = clockMode;
+}
+
+qtractorBus::BusMode qtractorMidiEngine::clockMode (void) const
+{
+	return m_clockMode;
+}
 
 
 //----------------------------------------------------------------------

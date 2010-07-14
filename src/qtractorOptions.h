@@ -125,6 +125,7 @@ public:
 	int  iMidiMmcDevice;
 	int  iMidiMmcMode;
 	int  iMidiSppMode;
+	int  iMidiClockMode;
 
 	// MIDI Metronome parameters.
 	int iMetroChannel;
