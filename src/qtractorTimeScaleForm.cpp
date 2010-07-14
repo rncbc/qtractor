@@ -86,7 +86,7 @@ public:
 	{
 		QTreeWidgetItem::setText(0, QString::number(m_pNode->bar + 1));
 		QTreeWidgetItem::setText(1, pTimeScale->textFromTick(m_pNode->tick));
-		QTreeWidgetItem::setText(2, QString::number(m_pNode->tempoEx()));
+		QTreeWidgetItem::setText(2, QString::number(m_pNode->tempo));
 		QTreeWidgetItem::setText(3, QString("%1 / %2")
 			.arg(m_pNode->beatsPerBar).arg(1 << m_pNode->beatDivisor));
 	}
@@ -212,7 +212,7 @@ void qtractorTimeScaleForm::setFrame ( unsigned long iFrame )
 		// Make this into view...
 		m_ui.BarSpinBox->setValue(pNode->barFromFrame(iFrame) + 1);
 		m_ui.FrameSpinBox->setValue(iFrame);
-		m_ui.TempoSpinBox->setTempo(pNode->tempoEx(), false);
+		m_ui.TempoSpinBox->setTempo(pNode->tempo, false);
 		m_ui.TempoSpinBox->setBeatsPerBar(pNode->beatsPerBar, false);
 		m_ui.TempoSpinBox->setBeatDivisor(pNode->beatDivisor, false);
 		// Done.
@@ -353,7 +353,7 @@ void qtractorTimeScaleForm::selectNode (void)
 
 	m_ui.BarSpinBox->setValue(pNode->bar + 1);
 	m_ui.FrameSpinBox->setValue(pNode->frame);
-	m_ui.TempoSpinBox->setTempo(pNode->tempoEx(), false);
+	m_ui.TempoSpinBox->setTempo(pNode->tempo, false);
 	m_ui.TempoSpinBox->setBeatsPerBar(pNode->beatsPerBar, false);
 	m_ui.TempoSpinBox->setBeatDivisor(pNode->beatDivisor, false);
 
@@ -486,7 +486,7 @@ void qtractorTimeScaleForm::removeNode (void)
 			"Are you sure?")
 			.arg(pNode->bar + 1)
 			.arg(m_pTimeScale->textFromTick(pNode->tick))
-			.arg(pNode->tempoEx())
+			.arg(pNode->tempo)
 			.arg(pNode->beatsPerBar)
 			.arg(1 << pNode->beatDivisor),
 			QMessageBox::Ok | QMessageBox::Cancel)

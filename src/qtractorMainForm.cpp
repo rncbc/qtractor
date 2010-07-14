@@ -4036,7 +4036,7 @@ void qtractorMainForm::updateTransportTime ( unsigned long iPlayHead )
 	// Tricky stuff: node's non-null iif tempo changes...
 	qtractorTimeScale::Node *pNode = m_pTempoCursor->seek(m_pSession, iPlayHead);
 	if (pNode) {
-		m_pTempoSpinBox->setTempo(pNode->tempoEx(), false);
+		m_pTempoSpinBox->setTempo(pNode->tempo, false);
 		m_pTempoSpinBox->setBeatsPerBar(pNode->beatsPerBar, false);
 		m_pTempoSpinBox->setBeatDivisor(pNode->beatDivisor, false);
 	}

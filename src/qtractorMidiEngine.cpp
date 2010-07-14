@@ -687,7 +687,7 @@ void qtractorMidiEngine::resetTempo (void)
 	// Set the new intended ones...
 	snd_seq_queue_tempo_set_ppq(tempo, (int) pSession->ticksPerBeat());
 	snd_seq_queue_tempo_set_tempo(tempo,
-		(unsigned int) (60000000.0f / pNode->tempoEx()));
+		(unsigned int) (60000000.0f / pNode->tempo));
 	// Give tempo struct to the queue.
 	snd_seq_set_queue_tempo(m_pAlsaSeq, m_iAlsaQueue, tempo);
 
@@ -2054,7 +2054,7 @@ void qtractorMidiEngine::processMetro (
 		ev.type = SND_SEQ_EVENT_TEMPO;
 		ev.data.queue.queue = m_iAlsaQueue;
 		ev.data.queue.param.value
-			= (unsigned int) (60000000.0f / pNode->tempoEx());
+			= (unsigned int) (60000000.0f / pNode->tempo);
 		ev.dest.client = SND_SEQ_CLIENT_SYSTEM;
 		ev.dest.port = SND_SEQ_PORT_SYSTEM_TIMER;
 		// Pump it into the queue.

@@ -141,28 +141,6 @@ void qtractorTimeScale::Node::reset ( qtractorTimeScale::Node *pNode )
 }
 
 
-// Tempo accessor/convertors.
-void qtractorTimeScale::Node::setTempoEx (
-	float fTempo, unsigned short iBeatType )
-{
-	if (iBeatType > beatType)
-		fTempo /= float(1 << (iBeatType - beatType));
-	else if (beatType > iBeatType)
-		fTempo *= float(1 << (beatType - iBeatType));
-	tempo = fTempo;
-}
-
-float qtractorTimeScale::Node::tempoEx ( unsigned short iBeatType ) const
-{
-	float fTempo = tempo;
-	if (beatType > iBeatType)
-		fTempo /= float(1 << (beatType - iBeatType));
-	else if (iBeatType > beatType)
-		fTempo *= float(1 << (iBeatType - beatType));
-	return fTempo;
-}
-
-
 // Beat/frame snap filters.
 unsigned long qtractorTimeScale::Node::tickSnap (
 	unsigned long iTick, unsigned short p ) const

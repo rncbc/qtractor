@@ -182,7 +182,7 @@ void qtractorMidiFileTempo::fromTimeScale (
 		unsigned long iTime
 			= (pNode->tick > iTimeOffset ? pNode->tick - iTimeOffset : 0);
 		addNode((iTime * p) / q,
-			pNode->tempoEx(),
+			pNode->tempo,
 			pNode->beatsPerBar,
 			pNode->beatDivisor);
 		pNode = pNode->next();
