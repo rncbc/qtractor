@@ -1459,12 +1459,17 @@ void qtractorSession::trackRecord ( qtractorTrack *pTrack, bool bRecord )
 void qtractorSession::trackMute ( qtractorTrack *pTrack, bool bMute )
 {
 	// For the time being, only needed for ALSA sequencer...
-	if (pTrack->trackType() == qtractorTrack::Midi)
+	switch (pTrack->trackType()) {
+	case qtractorTrack::Audio:
+		m_pAudioEngine->trackMute(pTrack, bMute);
+		break;
+	case qtractorTrack::Midi:
 		m_pMidiEngine->trackMute(pTrack, bMute);
-	else if (bMute) // Audio plugins must also be muted (sort of)...
-		(pTrack->pluginList())->resetBuffer();
-	else // Muted audio tracks must re-synchronize...
-		m_pAudioEngine->sessionCursor()->updateTrack(pTrack);
+		break;
+	case qtractorTrack::None:
+	default:
+		break;
+	}
 }
 
 

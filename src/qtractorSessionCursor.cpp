@@ -231,6 +231,24 @@ void qtractorSessionCursor::removeTrack ( unsigned int iTrack )
 }
 
 
+// Update current track clip under cursor.
+void qtractorSessionCursor::updateTrackClip ( qtractorTrack *pTrack )
+{
+	int iTrack = m_pSession->tracks().find(pTrack);
+	if (iTrack >= 0) {
+		qtractorClip *pClip = m_ppClips[iTrack];
+		if (pClip && pTrack->trackType() == m_syncType) {
+			if (m_iFrame >= pClip->clipStart() &&
+				m_iFrame <  pClip->clipStart() + pClip->clipLength()) {
+				pClip->seek(m_iFrame - pClip->clipStart());
+			} else {
+				pClip->reset(m_pSession->isLooping());
+			}
+		}
+	}
+}
+
+
 // Update (stabilize) cursor.
 void qtractorSessionCursor::updateClips ( qtractorClip **ppClips,
 	unsigned int iTracks )

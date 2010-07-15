@@ -5,6 +5,11 @@ ChangeLog
 
 SVN TRUNK
 
+- Muting/soloing tracks while playback is looping was
+  leaving current audio clip out-of-sync whenever that
+  same track is later un-muted on any other preceding
+  clip. Now hopefully fixed.
+
 - MIDI Clock support makes its first appearence. (TESTING)
 
 - All tempo (BPM) calculations are now compliant to the

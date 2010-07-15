@@ -70,6 +70,9 @@ public:
 	// Remove a track from cursor.
 	void removeTrack (qtractorTrack *pTrack);
 
+	// Update current track clip under cursor.
+	void updateTrackClip(qtractorTrack *pTrack);
+
 	// Reset cursor.
 	void reset();
 

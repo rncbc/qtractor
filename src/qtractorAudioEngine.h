@@ -105,6 +105,9 @@ public:
 	// Direct sync method (needed for export)
 	void syncExport(unsigned long iFrameStart, unsigned long iFrameEnd);
 
+	// Special track-immediate methods.
+	void trackMute(qtractorTrack *pTrack, bool bMute);
+
 	// Metronome switching.
 	void setMetronome(bool bMetronome);
 	bool isMetronome() const;

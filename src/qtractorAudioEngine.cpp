@@ -1258,6 +1258,16 @@ void qtractorAudioEngine::syncExport (
 }
 
 
+// Special track-immediate methods.
+void qtractorAudioEngine::trackMute ( qtractorTrack *pTrack, bool bMute )
+{
+	if (bMute)
+		(pTrack->pluginList())->resetBuffer();
+
+	sessionCursor()->updateTrackClip(pTrack);
+}
+
+
 // Metronome switching.
 void qtractorAudioEngine::setMetronome ( bool bMetronome )
 {
