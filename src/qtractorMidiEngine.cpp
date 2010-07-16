@@ -160,6 +160,9 @@ private:
 	// Thread synchronization objects.
 	QMutex m_mutex;
 	QWaitCondition m_cond;
+
+	// The number of time we check for time drift.
+	unsigned int m_iDriftCheck; 
 };
 
 
@@ -255,6 +258,8 @@ qtractorMidiOutputThread::qtractorMidiOutputThread (
 	m_pSession   = pSession;
 	m_bRunState  = false;
 	m_iReadAhead = iReadAhead;
+
+	m_iDriftCheck = 0;
 }
 
 
@@ -372,9 +377,6 @@ void qtractorMidiOutputThread::process (void)
 	if (pMidiCursor == NULL)
 		return;
 
-	// Always do the queue drift stats ahead of the pack...
-	pMidiEngine->drift();
-
 	// Now for the next readahead bunch...
 	unsigned long iFrameStart = pMidiCursor->frame();
 	unsigned long iFrameEnd   = iFrameStart + m_iReadAhead;
@@ -419,6 +421,12 @@ void qtractorMidiOutputThread::process (void)
 
 	// Flush the MIDI engine output queue...
 	pMidiEngine->flush();
+
+	// Always do the queue drift stats abottom of the pack...
+	if (++m_iDriftCheck > 8) {
+		pMidiEngine->drift();
+		m_iDriftCheck = 0;
+	}
 }
 
 
@@ -1268,12 +1276,6 @@ void qtractorMidiEngine::drift (void)
 				((100.0f * float(iSkewNext)) / float(iSkewBase)) - 100.0f);
 		#endif
 		}
-	#if 0
-		// HACK: Make the least significant correction now?
-		if (m_iTimeDrift > 0) { --m_iTimeDrift;	++m_iTimeStart; }
-		else
-		if (m_iTimeDrift < 0) { ++m_iTimeDrift;	--m_iTimeStart; }
-	#endif
 	}
 }
 
