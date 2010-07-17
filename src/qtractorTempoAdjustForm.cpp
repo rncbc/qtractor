@@ -43,7 +43,7 @@ qtractorTempoAdjustForm::qtractorTempoAdjustForm (
 	// Setup UI struct...
 	m_ui.setupUi(this);
 
-	m_pTime = new QTime();
+	m_pTempoTap = new QTime();
 
 	// Initialize local time scale.
 	m_pTimeScale = new qtractorTimeScale();
@@ -58,8 +58,8 @@ qtractorTempoAdjustForm::qtractorTempoAdjustForm (
 	m_ui.TempoSpinBox->setBeatsPerBar(m_pTimeScale->beatsPerBar(), false);
 	m_ui.TempoSpinBox->setBeatDivisor(m_pTimeScale->beatDivisor(), false);
 
-	m_iTimeTaps = m_pTimeScale->beatsPerBar();
-	m_fTimeTap = 60000.0f / m_pTimeScale->tempo();
+	m_iTempoTap = 0;
+	m_fTempoTap = 0.0f;
 
 	// Set proper time scales display format...
 	switch (m_pTimeScale->displayFormat()) {
@@ -125,8 +125,8 @@ qtractorTempoAdjustForm::~qtractorTempoAdjustForm (void)
 	// Don't forget to get rid of local time-scale instance...
 	if (m_pTimeScale)
 		delete m_pTimeScale;
-	if (m_pTime)
-		delete m_pTime;
+	if (m_pTempoTap)
+		delete m_pTempoTap;
 }
 
 
@@ -223,8 +223,8 @@ void qtractorTempoAdjustForm::tempoChanged (
 		fTempo, iBeatsPerBar, iBeatDivisor);
 #endif
 
-	m_iTimeTaps = iBeatsPerBar;
-	m_fTimeTap = 60000.0f / m_ui.TempoSpinBox->tempo();
+	m_iTempoTap = 0;
+	m_fTempoTap = 0.0f;
 	
 	changed();
 }
@@ -341,11 +341,16 @@ void qtractorTempoAdjustForm::tempoTap (void)
 	qDebug("qtractorTempoAdjustForm::tempoTap()");
 #endif
 
-	int iTimeTap = m_pTime->restart();
+	int iTimeTap = m_pTempoTap->restart();
 	if (iTimeTap > 200 && iTimeTap < 2000) { // Magic!
-		m_fTimeTap = (float(m_iTimeTaps - 1) * m_fTimeTap + float(iTimeTap))
-			/ float(m_iTimeTaps);
-		m_ui.TempoSpinBox->setTempo((60000.0f / m_fTimeTap), false);
+		m_fTempoTap += (60000.0f / float(iTimeTap));
+		if ((++m_iTempoTap % 3) == 2) {
+			m_ui.TempoSpinBox->setTempo(
+				int(m_fTempoTap / float(m_iTempoTap)), false);
+		}
+	} else {
+		m_iTempoTap = 0;
+		m_fTempoTap = 0.0f;
 	}
 }
 

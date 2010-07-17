@@ -78,9 +78,9 @@ private:
 	// Instance variables...
 	qtractorTimeScale *m_pTimeScale;
 
-	QTime *m_pTime;
-	int m_iTimeTaps;
-	float m_fTimeTap;
+	QTime *m_pTempoTap;
+	int    m_iTempoTap;
+	float  m_fTempoTap;
 
 	int m_iDirtySetup;
 	int m_iDirtyCount;
