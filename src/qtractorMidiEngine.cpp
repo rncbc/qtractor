@@ -323,6 +323,7 @@ qtractorSessionCursor *qtractorMidiOutputThread::midiCursorSync ( bool bStart )
 	if (bStart) {
 		pMidiCursor->seek(pAudioCursor->frame());
 	//	pMidiCursor->setFrameTime(pAudioCursor->frameTime());
+		m_iDriftCheck = 0;
 	}
 	else // No, it cannot be behind more than the read-ahead period...
 	if (pMidiCursor->frameTime() > pAudioCursor->frameTime() + m_iReadAhead)
