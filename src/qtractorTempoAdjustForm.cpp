@@ -148,8 +148,10 @@ void qtractorTempoAdjustForm::setRangeLength ( unsigned long iRangeLength )
 {
 	m_iDirtySetup++;
 	m_ui.RangeLengthSpinBox->setValue(iRangeLength, false);
-	m_ui.RangeBeatsSpinBox->setValue(
-		m_pTimeScale->beatFromFrame(iRangeLength));
+	unsigned int iRangeBeats = m_pTimeScale->beatFromFrame(iRangeLength);
+	unsigned long q = m_pTimeScale->beatsPerBar();
+	iRangeBeats = q * ((iRangeBeats + (q >> 1)) / q);
+	m_ui.RangeBeatsSpinBox->setValue(iRangeBeats);
 	m_iDirtySetup--;
 }
 
@@ -248,6 +250,10 @@ void qtractorTempoAdjustForm::rangeLengthChanged ( unsigned long iRangeLength )
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorTempoAdjustForm::rangeLengthChanged(%lu)", iRangeLength);
 #endif
+
+	int iRangeBeatsMax // It follows from max. tempo = 300bpm.
+		= int(5.0f * float(iRangeLength) / float(m_pTimeScale->sampleRate()));
+	m_ui.RangeBeatsSpinBox->setMaximum(iRangeBeatsMax);
 
 	selectChanged();
 }
