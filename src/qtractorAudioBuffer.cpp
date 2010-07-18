@@ -1293,7 +1293,8 @@ void qtractorAudioBuffer::setLoop ( unsigned long iLoopStart,
 	if (iLoopStart == m_iLoopStart && iLoopEnd == m_iLoopEnd)
 		return;
 
-	if (iLoopStart < iLoopEnd) {
+	if (iLoopStart < iLoopEnd && // Buffer-looping magic check!
+		iLoopStart >= m_iOffset && m_iOffset + m_iLength >= iLoopEnd) {
 		m_iLoopStart = iLoopStart;
 		m_iLoopEnd   = iLoopEnd;
 	} else {
