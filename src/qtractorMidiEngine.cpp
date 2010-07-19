@@ -1298,7 +1298,8 @@ bool qtractorMidiEngine::init (void)
 		return false;
 
 	// Try open a new client...
-	if (snd_seq_open(&m_pAlsaSeq, "hw", SND_SEQ_OPEN_DUPLEX, 0) < 0)
+	if (snd_seq_open(&m_pAlsaSeq, "default",
+			SND_SEQ_OPEN_DUPLEX, SND_SEQ_NONBLOCK) < 0)
 		return false;
 	if (m_pAlsaSeq == NULL)
 		return false;
