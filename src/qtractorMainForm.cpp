@@ -1111,7 +1111,7 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 	statusBar()->showMessage(tr("Ready"), 3000);
  
 	// Register the first timer slot.
-	QTimer::singleShot(QTRACTOR_TIMER_MSECS, this, SLOT(timerSlot()));
+	QTimer::singleShot(QTRACTOR_TIMER_DELAY, this, SLOT(timerSlot()));
 }
 
 
@@ -1227,7 +1227,7 @@ void qtractorMainForm::customEvent ( QEvent *pEvent )
 		+ QString::number((int) pEvent->type()) + ")");
 #endif
 
-	switch (pEvent->type()) {
+	switch (int(pEvent->type())) {
 	case QTRACTOR_PEAK_EVENT:
 		// A peak file has just been (re)created;
 		// try to postpone the event effect a little more...
