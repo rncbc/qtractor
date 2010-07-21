@@ -132,12 +132,33 @@ const WindowFlags CustomizeWindowHint   = WindowFlags(0x02000000);
 #undef HAVE_SIGNAL_H
 #endif
 
+//-------------------------------------------------------------------------
+// LADISH Level 1 support stuff.
+
 #ifdef HAVE_SIGNAL_H
+
+#include <QSocketNotifier>
+
+#include <sys/types.h>
+#include <sys/socket.h>
+
 #include <signal.h>
-#endif
+
+// File descriptor for SIGUSR1 notifier.
+static int g_fdUsr1[2];
+
+// Unix SIGUSR1 signal handler.
+static void qxxxxxxx_sigusr1_handler ( int /* signo */ )
+{
+	char c = 1;
+
+	(::write(g_fdUsr1[0], &c, sizeof(c)) > 0);
+}
+
+#endif	// HANDLE_SIGNAL_H
+
 
 #include <math.h>
-
 
 // New default session/template file extensions...
 static const char *s_pszSessionExt   = "qts";
@@ -158,14 +179,13 @@ static const char *s_pszTemplateExt  = "qtt";
 #define QTRACTOR_CTL_EVENT      QEvent::Type(QEvent::User + 7)
 #define QTRACTOR_SPP_EVENT      QEvent::Type(QEvent::User + 8)
 #define QTRACTOR_CLK_EVENT      QEvent::Type(QEvent::User + 9)
-#define QTRACTOR_SAVE_EVENT     QEvent::Type(QEvent::User + 10)
 
 #ifdef CONFIG_JACK_SESSION
 #include <jack/session.h>
-#define QTRACTOR_SESS_EVENT     QEvent::Type(QEvent::User + 11)
+#define QTRACTOR_SESS_EVENT     QEvent::Type(QEvent::User + 10)
 #endif
 
-#define QTRACTOR_SYNC_EVENT     QEvent::Type(QEvent::User + 12)
+#define QTRACTOR_SYNC_EVENT     QEvent::Type(QEvent::User + 11)
 
 
 //-------------------------------------------------------------------------
@@ -195,17 +215,6 @@ private:
 	// Instance variables.
 	qtractorTimeScale::Node *m_pNode;
 };
-
-
-//-------------------------------------------------------------------------
-// LADISH Level 1 support stuff.
-
-void qtractor_on_sigusr1 ( int /*signo*/ )
-{
-	QApplication::postEvent(
-		qtractorMainForm::getInstance(),
-		new QEvent(QTRACTOR_SAVE_EVENT));
-}
 
 
 //-------------------------------------------------------------------------
@@ -301,11 +310,33 @@ qtractorMainForm::qtractorMainForm (
 	m_pMidiControl = new qtractorMidiControl();
 
 #ifdef HAVE_SIGNAL_H
+
 	// Set to ignore any fatal "Broken pipe" signals.
 	::signal(SIGPIPE, SIG_IGN);
+
 	// LADISH Level 1 suport.
-	::signal(SIGUSR1, qtractor_on_sigusr1);
-#endif
+	// Initialize file descriptors for SIGUSR1 socket notifier.
+	::socketpair(AF_UNIX, SOCK_STREAM, 0, g_fdUsr1);
+	m_pUsr1Notifier
+		= new QSocketNotifier(g_fdUsr1[1], QSocketNotifier::Read, this);
+
+	QObject::connect(m_pUsr1Notifier,
+		SIGNAL(activated(int)),
+		SLOT(handle_sigusr1()));
+
+	// Install SIGUSR1 signal handler.
+    struct sigaction usr1;
+    usr1.sa_handler = qxxxxxxx_sigusr1_handler;
+    ::sigemptyset(&usr1.sa_mask);
+    usr1.sa_flags = 0;
+    usr1.sa_flags |= SA_RESTART;
+    ::sigaction(SIGUSR1, &usr1, NULL);
+
+#else	// HAVE_SIGNAL_H
+
+	m_pSocketNotifier = NULL;
+	
+#endif	// !HAVE_SIGNAL_H
 
 	// Get edit selection mode action group up...
 //	m_ui.editToolbar->addSeparator();
@@ -832,6 +863,11 @@ qtractorMainForm::qtractorMainForm (
 // Destructor.
 qtractorMainForm::~qtractorMainForm (void)
 {
+#ifdef HAVE_SIGNAL_H
+	if (m_pUsr1Notifier)
+		delete m_pUsr1Notifier;
+#endif
+
 	// Drop any widgets around (not really necessary)...
 	if (m_pMixer)
 		delete m_pMixer;
@@ -1115,6 +1151,16 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 }
 
 
+// LADISH Level 1 -- SIGUSR1 signal handler.
+void qtractorMainForm::handle_sigusr1 (void)
+{
+	char c;
+
+	if (::read(g_fdUsr1[1], &c, sizeof(c)) > 0)
+		saveSession(false);
+}
+
+
 // Window close event handlers.
 bool qtractorMainForm::queryClose (void)
 {
@@ -1278,10 +1324,6 @@ void qtractorMainForm::customEvent ( QEvent *pEvent )
 	case QTRACTOR_CLK_EVENT:
 		// MIDI Clock event...
 		midiClockEvent(static_cast<qtractorMidiClockEvent *> (pEvent));
-		break;
-	case QTRACTOR_SAVE_EVENT:
-		// LADISH Level 1 support...
-		saveSession(false);
 		break;
 #ifdef CONFIG_JACK_SESSION
 	case QTRACTOR_SESS_EVENT:

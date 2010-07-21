@@ -5,6 +5,10 @@ ChangeLog
 
 SVN TRUNK
 
+- Moving from old deprecated Qt3'ish custom event post
+  handling into regular asynchronous signal/slot strategy.
+  (EXPERIMENTAL)
+
 - Muting/soloing tracks while playback is looping was
   leaving current audio clip out-of-sync whenever that
   same track is later un-muted on any other preceding

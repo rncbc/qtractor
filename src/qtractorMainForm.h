@@ -54,6 +54,7 @@ class qtractorMidiEditor;
 class QLabel;
 class QComboBox;
 class QProgressBar;
+class QSocketNotifier;
 class QActionGroup;
 class QPalette;
 
@@ -250,6 +251,8 @@ public slots:
 	void transportTimeContextMenu(const QPoint& pos);
 	void transportTempoContextMenu(const QPoint& pos);
 
+	void handle_sigusr1();
+
 protected:
 
 	void closeEvent(QCloseEvent *pCloseEvent);
@@ -326,6 +329,7 @@ private:
 	QString m_sFilename;
 	int m_iUntitled;
 	int m_iDirtyCount;
+	QSocketNotifier *m_pUsr1Notifier;
 	QActionGroup *m_pSelectModeActionGroup;
 	qtractorTimeSpinBox *m_pTimeSpinBox;
 	qtractorTempoSpinBox *m_pTempoSpinBox;
