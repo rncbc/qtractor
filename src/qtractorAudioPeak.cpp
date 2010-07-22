@@ -148,10 +148,7 @@ void qtractorAudioPeakThread::run (void)
 	}
 
 	// May send notification event, anyway...
-	if (m_pPeakFile->notifyObject()) {
-		QApplication::postEvent(m_pPeakFile->notifyObject(),
-			new QEvent(m_pPeakFile->notifyPeakType()));
-	}
+	m_pPeakFile->notifyPeakEvent();
 
 #ifdef CONFIG_DEBUG_0
 	qDebug("qtractorAudioPeakThread[%p]::run(): stopped.\n", this);
@@ -398,22 +395,17 @@ unsigned short qtractorAudioPeakFile::channels (void)
 }
 
 
-// Event notifier widget settings.
-QObject *qtractorAudioPeakFile::notifyObject (void) const
-{
-	return m_pFactory->notifyObject();
-}
-
-QEvent::Type qtractorAudioPeakFile::notifyPeakType (void) const
-{
-	return m_pFactory->notifyPeakType();
-}
-
-
 // Auto-delete property.
 bool qtractorAudioPeakFile::isAutoRemove (void) const
 {
 	return m_pFactory->isAutoRemove();
+}
+
+
+// Event notifier.
+void qtractorAudioPeakFile::notifyPeakEvent (void)
+{
+	m_pFactory->notifyPeakEvent();
 }
 
 
@@ -778,11 +770,9 @@ void qtractorAudioPeak::closeWrite (void)
 //
 
 // Constructor.
-qtractorAudioPeakFactory::qtractorAudioPeakFactory (void)
+qtractorAudioPeakFactory::qtractorAudioPeakFactory ( QObject *pParent )
+	: QObject(pParent)
 {
-	m_pNotifyObject   = NULL;
-	m_eNotifyPeakType = QEvent::None;
-	
 	m_bAutoRemove = false;
 }
 
@@ -826,29 +816,6 @@ void qtractorAudioPeakFactory::removePeak ( qtractorAudioPeakFile *pPeakFile )
 }
 
 
-// Event notifier widget settings.
-void qtractorAudioPeakFactory::setNotifyObject ( QObject *pNotifyObject )
-{
-	m_pNotifyObject = pNotifyObject;
-}
-
-void qtractorAudioPeakFactory::setNotifyPeakType ( QEvent::Type eNotifyPeakType )
-{
-	m_eNotifyPeakType = eNotifyPeakType;
-}
-
-
-QObject *qtractorAudioPeakFactory::notifyObject (void) const
-{
-	return m_pNotifyObject;
-}
-
-QEvent::Type qtractorAudioPeakFactory::notifyPeakType (void) const
-{
-	return m_eNotifyPeakType;
-}
-
-
 // Auto-delete property.
 void qtractorAudioPeakFactory::setAutoRemove ( bool bAutoRemove )
 {
@@ -858,6 +825,13 @@ void qtractorAudioPeakFactory::setAutoRemove ( bool bAutoRemove )
 bool qtractorAudioPeakFactory::isAutoRemove (void) const
 {
 	return m_bAutoRemove;
+}
+
+
+// Event notifier.
+void qtractorAudioPeakFactory::notifyPeakEvent (void)
+{
+	emit peakEvent();
 }
 
 

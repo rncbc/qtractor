@@ -82,12 +82,11 @@ public:
 	void write(float **ppAudioFrames, unsigned int iAudioFrames);
 	void closeWrite();
 
-	// Event notifier widget settings.
-	QObject     *notifyObject() const;
-	QEvent::Type notifyPeakType() const;
-
 	// Auto-delete property.
 	bool isAutoRemove() const;
+
+	// Event notifier widget settings.
+	void notifyPeakEvent();
 
 	// Reference count methods.
 	void addRef();
@@ -183,12 +182,14 @@ private:
 // class qtractorAudioPeakFactory -- Audio peak file factory (singleton).
 //
 
-class qtractorAudioPeakFactory
+class qtractorAudioPeakFactory : public QObject
 {
+	Q_OBJECT
+
 public:
 
 	// Constructor.
-	qtractorAudioPeakFactory();
+	qtractorAudioPeakFactory(QObject *pParent = NULL);
 	// Default destructor.
 	~qtractorAudioPeakFactory();
 
@@ -196,16 +197,17 @@ public:
 	qtractorAudioPeak *createPeak(const QString& sFilename, float fTimeStretch);
 	void removePeak(qtractorAudioPeakFile *pPeakFile);
 
-	// Event notifier widget settings.
-	void setNotifyObject   (QObject *pNotifyObject);
-	void setNotifyPeakType (QEvent::Type eNotifyPeakType);
-
-	QObject     *notifyObject() const;
-	QEvent::Type notifyPeakType() const;
-
 	// Auto-delete property.
 	void setAutoRemove(bool bAutoRemove);
 	bool isAutoRemove() const;
+
+	// Peak ready event notification.
+	void notifyPeakEvent();
+
+signals:
+
+	// Peak ready signal.
+	void peakEvent();
 
 private:
 
@@ -214,10 +216,6 @@ private:
 
 	// The list of managed peak files.
 	QHash<QString, qtractorAudioPeakFile *> m_peaks;
-
-	// The event notifier widget.
-	QObject      *m_pNotifyObject;
-	QEvent::Type  m_eNotifyPeakType;
 
 	// Auto-delete property.
 	bool m_bAutoRemove;

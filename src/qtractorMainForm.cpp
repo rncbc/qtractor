@@ -170,7 +170,6 @@ static const char *s_pszTemplateExt  = "qtt";
 
 
 // Specialties for thread-callback comunication.
-#define QTRACTOR_PEAK_EVENT     QEvent::Type(QEvent::User + 1)
 #define QTRACTOR_XRUN_EVENT     QEvent::Type(QEvent::User + 2)
 #define QTRACTOR_SHUT_EVENT     QEvent::Type(QEvent::User + 3)
 #define QTRACTOR_PORT_EVENT     QEvent::Type(QEvent::User + 4)
@@ -289,11 +288,10 @@ qtractorMainForm::qtractorMainForm (
 	}
 
 	// Configure the audio file peak factory...
-	qtractorAudioPeakFactory *pAudioPeakFactory
-		= m_pSession->audioPeakFactory();
-	if (pAudioPeakFactory) {
-		pAudioPeakFactory->setNotifyObject(this);
-		pAudioPeakFactory->setNotifyPeakType(QTRACTOR_PEAK_EVENT);
+	if (m_pSession->audioPeakFactory()) {
+		QObject::connect(m_pSession->audioPeakFactory(),
+			SIGNAL(peakEvent()),
+			SLOT(peakNotify()));
 	}
 
 	// Configure the MIDI engine event handling...
@@ -1278,12 +1276,6 @@ void qtractorMainForm::customEvent ( QEvent *pEvent )
 #endif
 
 	switch (int(pEvent->type())) {
-	case QTRACTOR_PEAK_EVENT:
-		// A peak file has just been (re)created;
-		// try to postpone the event effect a little more...
-		if (m_iPeakTimer  < QTRACTOR_TIMER_DELAY)
-			m_iPeakTimer += QTRACTOR_TIMER_DELAY;
-		break;
 	case QTRACTOR_PORT_EVENT:
 		// An Audio graph change has just been issued;
 		// try to postpone the event effect a little more...
@@ -5105,6 +5097,16 @@ void qtractorMainForm::timerSlot (void)
 
 //-------------------------------------------------------------------------
 // qtractorMainForm -- MIDI engine notifications.
+
+// Audio file peak notification slot.
+void qtractorMainForm::peakNotify (void)
+{
+	// A peak file has just been (re)created;
+	// try to postpone the event effect a little more...
+	if (m_iPeakTimer  < QTRACTOR_TIMER_DELAY)
+		m_iPeakTimer += QTRACTOR_TIMER_DELAY;
+}
+
 
 // ALSA sequencer notification slot.
 void qtractorMainForm::alsaNotify (void)

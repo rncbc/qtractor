@@ -217,6 +217,7 @@ public slots:
 
 	void timerSlot();
 
+	void peakNotify();
 	void alsaNotify();
 	void tracksClosed();
 
