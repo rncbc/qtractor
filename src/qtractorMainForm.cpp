@@ -334,7 +334,7 @@ qtractorMainForm::qtractorMainForm (
 
 #else	// HAVE_SIGNAL_H
 
-	m_pSocketNotifier = NULL;
+	m_pUsr1Notifier = NULL;
 	
 #endif	// !HAVE_SIGNAL_H
 
@@ -1154,10 +1154,14 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 // LADISH Level 1 -- SIGUSR1 signal handler.
 void qtractorMainForm::handle_sigusr1 (void)
 {
+#ifdef HAVE_SIGNAL_H
+
 	char c;
 
 	if (::read(g_fdUsr1[1], &c, sizeof(c)) > 0)
 		saveSession(false);
+
+#endif
 }
 
 
