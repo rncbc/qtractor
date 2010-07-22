@@ -40,7 +40,6 @@
 #endif
 
 #include <QApplication>
-#include <QEvent>
 
 
 #if defined(__SSE__)
@@ -181,10 +180,7 @@ static void qtractorAudioEngine_shutdown ( void *pvArg )
 	qtractorAudioEngine *pAudioEngine
 		= static_cast<qtractorAudioEngine *> (pvArg);
 
-	if (pAudioEngine->notifyObject()) {
-		QApplication::postEvent(pAudioEngine->notifyObject(),
-			new QEvent(pAudioEngine->notifyShutdownType()));
-	}
+	pAudioEngine->notifyShutEvent();
 }
 
 
@@ -197,10 +193,7 @@ static int qtractorAudioEngine_xrun ( void *pvArg )
 	qtractorAudioEngine *pAudioEngine
 		= static_cast<qtractorAudioEngine *> (pvArg);
 
-	if (pAudioEngine->notifyObject()) {
-		QApplication::postEvent(pAudioEngine->notifyObject(),
-			new QEvent(pAudioEngine->notifyXrunType()));
-	}
+	pAudioEngine->notifyXrunEvent();
 
 	return 0;
 }
@@ -215,10 +208,7 @@ static int qtractorAudioEngine_graph_order ( void *pvArg )
 	qtractorAudioEngine *pAudioEngine
 		= static_cast<qtractorAudioEngine *> (pvArg);
 
-	if (pAudioEngine->notifyObject()) {
-		QApplication::postEvent(pAudioEngine->notifyObject(),
-			new QEvent(pAudioEngine->notifyPortType()));
-	}
+	pAudioEngine->notifyPortEvent();
 
 	return 0;
 }
@@ -233,10 +223,7 @@ static void qtractorAudioEngine_graph_port ( jack_port_id_t, int, void *pvArg )
 	qtractorAudioEngine *pAudioEngine
 		= static_cast<qtractorAudioEngine *> (pvArg);
 
-	if (pAudioEngine->notifyObject()) {
-		QApplication::postEvent(pAudioEngine->notifyObject(),
-			new QEvent(pAudioEngine->notifyPortType()));
-	}
+	pAudioEngine->notifyPortEvent();
 }
 
 
@@ -249,10 +236,7 @@ static int qtractorAudioEngine_buffer_size ( jack_nframes_t, void *pvArg )
 	qtractorAudioEngine *pAudioEngine
 		= static_cast<qtractorAudioEngine *> (pvArg);
 
-	if (pAudioEngine->notifyObject()) {
-		QApplication::postEvent(pAudioEngine->notifyObject(),
-			new QEvent(pAudioEngine->notifyBufferType()));
-	}
+	pAudioEngine->notifyBuffEvent();
 
 	return 0;
 }
@@ -283,11 +267,7 @@ static void qtractorAudioEngine_session_event (
 	qtractorAudioEngine *pAudioEngine
 		= static_cast<qtractorAudioEngine *> (pvArg);
 
-	if (pAudioEngine->notifyObject()) {
-		QApplication::postEvent(pAudioEngine->notifyObject(),
-			new qtractorSessionEvent(
-				pAudioEngine->notifySessionType(), pSessionEvent));
-	}
+	pAudioEngine->notifySessEvent(pSessionEvent);
 }
 
 #endif
@@ -310,14 +290,10 @@ static int qtractorAudioEngine_sync (
 		= long(pos->frame) - long(pAudioEngine->sessionCursor()->frame());
 	unsigned int iBufferSize = pAudioEngine->bufferSize();
 	if (labs(iDeltaFrames) > long(iBufferSize << 1)) {
-		if (pAudioEngine->notifyObject()) {
-			unsigned long iPlayHead = pos->frame;
-			if (pAudioEngine->isPlaying())
-				iPlayHead += iBufferSize;
-			QApplication::postEvent(pAudioEngine->notifyObject(),
-				new qtractorSyncEvent(
-					pAudioEngine->notifySyncType(), iPlayHead));
-		}
+		unsigned long iPlayHead = pos->frame;
+		if (pAudioEngine->isPlaying())
+			iPlayHead += iBufferSize;
+		pAudioEngine->notifySyncEvent(iPlayHead);
 	}
 
 	return 1;
@@ -333,14 +309,6 @@ qtractorAudioEngine::qtractorAudioEngine ( qtractorSession *pSession )
 	: qtractorEngine(pSession, qtractorTrack::Audio)
 {
 	m_pJackClient = NULL;
-
-	m_pNotifyObject       = NULL;
-	m_eNotifyShutdownType = QEvent::None;
-	m_eNotifyXrunType     = QEvent::None;
-	m_eNotifyPortType     = QEvent::None;
-	m_eNotifyBufferType   = QEvent::None;
-	m_eNotifySessionType  = QEvent::None;
-	m_eNotifySyncType     = QEvent::None;
 
 	m_iBufferOffset = 0;
 
@@ -381,83 +349,49 @@ qtractorAudioEngine::qtractorAudioEngine ( qtractorSession *pSession )
 }
 
 
+// Special event notifier proxy object.
+const qtractorAudioEngineProxy *qtractorAudioEngine::proxy (void) const
+{
+	return &m_proxy;
+}
+
+
+// Event notifications.
+void qtractorAudioEngine::notifyShutEvent (void)
+{
+	m_proxy.notifyShutEvent();
+}
+
+void qtractorAudioEngine::notifyXrunEvent (void)
+{
+	m_proxy.notifyXrunEvent();
+}
+
+void qtractorAudioEngine::notifyPortEvent (void)
+{
+	m_proxy.notifyPortEvent();
+}
+
+void qtractorAudioEngine::notifyBuffEvent (void)
+{
+	m_proxy.notifyBuffEvent();
+}
+
+void qtractorAudioEngine::notifySessEvent ( void *pvSessionArg )
+{
+	m_proxy.notifySessEvent(pvSessionArg);
+}
+
+void qtractorAudioEngine::notifySyncEvent ( unsigned long iPlayHead )
+{
+	m_proxy.notifySyncEvent(iPlayHead);
+}
+
+
 // JACK client descriptor accessor.
 jack_client_t *qtractorAudioEngine::jackClient (void) const
 {
 	return m_pJackClient;
-}
-
-
-// Event notifier widget settings.
-void qtractorAudioEngine::setNotifyObject ( QObject *pNotifyObject )
-{
-	m_pNotifyObject = pNotifyObject;
-}
-
-void qtractorAudioEngine::setNotifyShutdownType ( QEvent::Type eNotifyShutdownType )
-{
-	m_eNotifyShutdownType = eNotifyShutdownType;
-}
-
-void qtractorAudioEngine::setNotifyXrunType ( QEvent::Type eNotifyXrunType )
-{
-	m_eNotifyXrunType = eNotifyXrunType;
-}
-
-void qtractorAudioEngine::setNotifyPortType ( QEvent::Type eNotifyPortType )
-{
-	m_eNotifyPortType = eNotifyPortType;
-}
-
-void qtractorAudioEngine::setNotifyBufferType ( QEvent::Type eNotifyBufferType )
-{
-	m_eNotifyBufferType = eNotifyBufferType;
-}
-
-void qtractorAudioEngine::setNotifySessionType ( QEvent::Type eNotifySessionType )
-{
-	m_eNotifySessionType = eNotifySessionType;
-}
-
-void qtractorAudioEngine::setNotifySyncType ( QEvent::Type eNotifySyncType )
-{
-	m_eNotifySyncType = eNotifySyncType;
-}
-
-
-QObject *qtractorAudioEngine::notifyObject (void) const
-{
-	return m_pNotifyObject;
-}
-
-QEvent::Type qtractorAudioEngine::notifyShutdownType (void) const
-{
-	return m_eNotifyShutdownType;
-}
-
-QEvent::Type qtractorAudioEngine::notifyXrunType (void) const
-{
-	return m_eNotifyXrunType;
-}
-
-QEvent::Type qtractorAudioEngine::notifyPortType (void) const
-{
-	return m_eNotifyPortType;
-}
-
-QEvent::Type qtractorAudioEngine::notifyBufferType (void) const
-{
-	return m_eNotifyBufferType;
-}
-
-QEvent::Type qtractorAudioEngine::notifySessionType (void) const
-{
-	return m_eNotifySessionType;
-}
-
-QEvent::Type qtractorAudioEngine::notifySyncType (void) const
-{
-	return m_eNotifySyncType;
 }
 
 

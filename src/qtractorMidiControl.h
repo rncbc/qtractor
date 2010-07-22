@@ -1,7 +1,7 @@
 // qtractorMidiControl.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
    Copyright (C) 2009, gizzmo aka Mathias Krause. 
 
    This program is free software; you can redistribute it and/or
@@ -23,7 +23,8 @@
 #ifndef __qtractorMidiControl_h
 #define __qtractorMidiControl_h
 
-#include <QEvent>
+#include "qtractorCtlEvent.h"
+
 #include <QHash>
 
 // Forward declarations.
@@ -31,34 +32,6 @@ class qtractorTrack;
 class qtractorDocument;
 
 class QDomElement;
-
-
-//----------------------------------------------------------------------
-// qtractorMidiControlEvent - MIDI Control custom event.
-//
-
-class qtractorMidiControlEvent : public QEvent
-{
-public:
-
-	// Contructor.
-	qtractorMidiControlEvent(QEvent::Type eType, unsigned short iChannel,
-		unsigned char controller, unsigned char value)
-		: QEvent(eType), m_channel(iChannel),
-			m_controller(controller), m_value(value) {}
-
-	// Accessors.
-	unsigned short channel()    const { return m_channel; }
-	unsigned short controller() const { return m_controller; }
-	unsigned short value()      const { return m_value; }
-
-private:
-
-	// Instance variables.
-	unsigned short m_channel;
-	unsigned short m_controller;
-	unsigned short m_value;
-};
 
 
 //----------------------------------------------------------------------
@@ -205,7 +178,7 @@ public:
 	void sendAllControllers(int iFirstTrack = 0) const;
 
 	// Process incoming controller messages.
-	bool processEvent(qtractorMidiControlEvent *pEvent) const;
+	bool processEvent(const qtractorCtlEvent& ctle) const;
 
 	// Process incoming command.
 	void processCommand(
@@ -237,7 +210,7 @@ public:
 protected:
 
 	// Find incoming controller event map.
-	ControlMap::ConstIterator findEvent(qtractorMidiControlEvent *pEvent) const;
+	ControlMap::ConstIterator findEvent(const qtractorCtlEvent& ctle) const;
 
 	// Overloaded controller value senders.
 	void sendParamController(Command command, int iParam, int iValue) const;

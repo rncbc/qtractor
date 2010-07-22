@@ -25,10 +25,11 @@
 #include "qtractorEngine.h"
 #include "qtractorTimeScale.h"
 #include "qtractorMmcEvent.h"
-
-#include <QHash>
+#include "qtractorCtlEvent.h"
 
 #include <alsa/asoundlib.h>
+
+#include <QHash>
 
 // Forward declarations.
 class qtractorMidiBus;
@@ -44,6 +45,40 @@ class QSocketNotifier;
 
 
 //----------------------------------------------------------------------
+// class qtractorMidiEngineProxy -- MIDI engine event proxy object.
+//
+
+class qtractorMidiEngineProxy : public QObject
+{
+	Q_OBJECT
+
+public:
+
+	// Constructor.
+	qtractorMidiEngineProxy(QObject *pParent = NULL)
+		: QObject(pParent) {}
+
+	// Event notifications.
+	void notifyMmcEvent(const qtractorMmcEvent& mmce)
+		{ emit mmcEvent(mmce); }
+	void notifyCtlEvent(const qtractorCtlEvent& ctle)
+		{ emit ctlEvent(ctle); }
+	void notifySppEvent(int iSppCmd, unsigned short iSongPos)
+		{ emit sppEvent(iSppCmd, iSongPos); }
+	void notifyClkEvent(float fTempo)
+		{ emit clkEvent(fTempo); }
+
+signals:
+	
+	// Event signals.
+	void mmcEvent(const qtractorMmcEvent& mmce);
+	void ctlEvent(const qtractorCtlEvent& ctle);
+	void sppEvent(int iSppCmd, unsigned short iSongPos);
+	void clkEvent(float fTempo);
+};	
+
+
+//----------------------------------------------------------------------
 // class qtractorMidiEngine -- ALSA sequencer client instance (singleton).
 //
 
@@ -53,6 +88,9 @@ public:
 
 	// Constructor.
 	qtractorMidiEngine(qtractorSession *pSession);
+
+	// Special event notifier proxy object.
+	const qtractorMidiEngineProxy *proxy() const;
 
 	// ALSA client descriptor accessor.
 	snd_seq_t *alsaSeq() const;
@@ -134,19 +172,6 @@ public:
 
 	// Access to current tempo/time-signature cursor.
 	qtractorTimeScale::Cursor *metroCursor() const;
-
-	// Event notifier widget settings.
-	void setNotifyObject  (QObject *pNotifyObject);
-	void setNotifyMmcType (QEvent::Type eNotifyMmcType);
-	void setNotifyCtlType (QEvent::Type eNotifyCtlType);
-	void setNotifySppType (QEvent::Type eNotifySppType);
-	void setNotifyClkType (QEvent::Type eNotifyClkType);
-
-	QObject     *notifyObject() const;
-	QEvent::Type notifyMmcType() const;
-	QEvent::Type notifyCtlType() const;
-	QEvent::Type notifySppType() const;
-	QEvent::Type notifyClkType() const;
 
 	// Control bus accessors.
 	void setControlBus(bool bControlBus);
@@ -232,6 +257,9 @@ protected:
 
 private:
 
+	// Special event notifier proxy object.
+	qtractorMidiEngineProxy m_proxy;
+
 	// Device instance variables.
 	snd_seq_t *m_pAlsaSeq;
 	int        m_iAlsaClient;
@@ -250,14 +278,7 @@ private:
 	// The delta-time when playback started .
 	long m_iTimeStart;
 	long m_iTimeDrift;
-
-	// The event notifier widget.
-	QObject      *m_pNotifyObject;
-	QEvent::Type  m_eNotifyMmcType;
-	QEvent::Type  m_eNotifyCtlType;
-	QEvent::Type  m_eNotifySppType;
-	QEvent::Type  m_eNotifyClkType;
-
+	
 	// The assigned control buses.
 	bool             m_bControlBus;
 	qtractorMidiBus *m_pIControlBus;
@@ -300,7 +321,6 @@ private:
 	// MIDI Clock tempo tracking.
 	unsigned short m_iClockCount;
 	float          m_fClockTempo;
-	
 };
 
 
@@ -462,52 +482,6 @@ private:
 
 	// Channel patch mapper.
 	QHash<unsigned short, Patch> m_patches;
-};
-
-
-//----------------------------------------------------------------------
-// qtractorMidiSppEvent - MIDI SPP custom event.
-//
-
-class qtractorMidiSppEvent : public QEvent
-{
-public:
-
-	// Contructor.
-	qtractorMidiSppEvent(QEvent::Type eType, int iCmdType, unsigned short iSongPos)
-		: QEvent(eType), m_iCmdType(iCmdType), m_iSongPos(iSongPos) {}
-
-	// Accessors.
-	int            cmdType() const { return m_iCmdType; }
-	unsigned short songPos() const { return m_iSongPos; }
-
-private:
-
-	// Instance variables.
-	int            m_iCmdType;
-	unsigned short m_iSongPos;
-};
-
-
-//----------------------------------------------------------------------
-// qtractorMidiClockEvent - MIDI Clock custom event.
-//
-
-class qtractorMidiClockEvent : public QEvent
-{
-public:
-
-	// Contructor.
-	qtractorMidiClockEvent(QEvent::Type eType, float fTempo)
-		: QEvent(eType), m_fTempo(fTempo) {}
-
-	// Accessors.
-	float tempo() const { return m_fTempo; }
-
-private:
-
-	// Instance variables.
-	float m_fTempo;
 };
 
 

@@ -31,6 +31,7 @@ HEADERS += config.h \
 	qtractorCommand.h \
 	qtractorConnect.h \
 	qtractorConnections.h \
+	qtractorCtlEvent.h \
 	qtractorDocument.h \
 	qtractorDssiPlugin.h \
 	qtractorEngine.h \

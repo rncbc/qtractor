@@ -1,7 +1,7 @@
 // qtractorMidiControl.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
    Copyright (C) 2009, gizzmo aka Mathias Krause. 
 
    This program is free software; you can redistribute it and/or
@@ -196,14 +196,13 @@ void qtractorMidiControl::sendAllControllers ( int iFirstTrack ) const
 
 // Find incoming controller event map.
 qtractorMidiControl::ControlMap::ConstIterator
-qtractorMidiControl::findEvent (
-	qtractorMidiControlEvent *pEvent ) const
+qtractorMidiControl::findEvent ( const qtractorCtlEvent& ctle ) const
 {
 	// Check if controller map includes this event...
 	ControlMap::ConstIterator it = m_controlMap.constBegin();
 	for ( ; it != m_controlMap.constEnd(); ++it) {
 		const MapKey& key = it.key();
-		if (key.match(pEvent->channel(), pEvent->controller()))
+		if (key.match(ctle.channel(), ctle.controller()))
 			break;
 	}
 	return it;
@@ -211,12 +210,11 @@ qtractorMidiControl::findEvent (
 
 
 // Process incoming controller event.
-bool qtractorMidiControl::processEvent (
-	qtractorMidiControlEvent *pEvent ) const
+bool qtractorMidiControl::processEvent ( const qtractorCtlEvent& ctle ) const
 {
 
 	// Find incoming controller event map tuple.
-	ControlMap::ConstIterator it = findEvent(pEvent);
+	ControlMap::ConstIterator it = findEvent(ctle);
 	// Is there one mapped, indeed?
 	if (it == m_controlMap.end())
 		return false;
@@ -227,13 +225,13 @@ bool qtractorMidiControl::processEvent (
 
 	int iTrack = -1;	
 	if (key.isChannelParam()) {
-		if (int(pEvent->channel()) >= val.param())
-			iTrack = int(pEvent->channel()) - val.param();
+		if (int(ctle.channel()) >= val.param())
+			iTrack = int(ctle.channel()) - val.param();
 	}
 	else
 	if (key.isControllerParam()) {
-		if (int(pEvent->controller()) >= val.param())
-			iTrack = int(pEvent->controller()) - val.param();
+		if (int(ctle.controller()) >= val.param())
+			iTrack = int(ctle.controller()) - val.param();
 	}
 	else iTrack = val.param();
 
@@ -252,41 +250,41 @@ bool qtractorMidiControl::processEvent (
 		pSession->execute(
 			new qtractorTrackGainCommand(pTrack,
 				(pTrack->trackType() == qtractorTrack::Audio
-					? cubef2(float(pEvent->value()) / 127.0f)
-					: float(pEvent->value()) / 127.0f),
+					? cubef2(float(ctle.value()) / 127.0f)
+					: float(ctle.value()) / 127.0f),
 				true));
 		break;
 	case TrackPanning:
 		pSession->execute(
 			new qtractorTrackPanningCommand(pTrack,
-				(float(pEvent->value()) - 64.0f) / 63.0f,
+				(float(ctle.value()) - 64.0f) / 63.0f,
 				true));
 		break;
 	case TrackMonitor:
 		pSession->execute(
 			new qtractorTrackMonitorCommand(pTrack,
-				bool(pEvent->value() > 0),
+				bool(ctle.value() > 0),
 				true));
 		break;
 	case TrackRecord:
 		pSession->execute(
 			new qtractorTrackStateCommand(pTrack,
 				qtractorTrack::Record,
-				bool(pEvent->value() > 0),
+				bool(ctle.value()> 0),
 				true));
 		break;
 	case TrackMute:
 		pSession->execute(
 			new qtractorTrackStateCommand(pTrack,
 				qtractorTrack::Mute,
-				bool(pEvent->value() > 0),
+				bool(ctle.value() > 0),
 				true));
 		break;
 	case TrackSolo:
 		pSession->execute(
 			new qtractorTrackStateCommand(pTrack,
 				qtractorTrack::Solo,
-				bool(pEvent->value() > 0),
+				bool(ctle.value() > 0),
 				true));
 		break;
 	default:

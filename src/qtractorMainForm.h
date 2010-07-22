@@ -40,10 +40,8 @@ class qtractorMessages;
 class qtractorConnections;
 class qtractorMixer;
 class qtractorMmcEvent;
-class qtractorMidiControlEvent;
+class qtractorCtlEvent;
 class qtractorMidiControl;
-class qtractorMidiSppEvent;
-class qtractorMidiClockEvent;
 class qtractorTimeSpinBox;
 class qtractorTempoSpinBox;
 class qtractorTempoCursor;
@@ -219,7 +217,18 @@ public slots:
 
 	void peakNotify();
 	void alsaNotify();
-	void tracksClosed();
+
+	void audioShutNotify();
+	void audioXrunNotify();
+	void audioPortNotify();
+	void audioBuffNotify();
+	void audioSessNotify(void *pvSessionArg);
+	void audioSyncNotify(unsigned long iPlayHead);
+
+	void midiMmcNotify(const qtractorMmcEvent& mmce);
+	void midiCtlNotify(const qtractorCtlEvent& ctle);
+	void midiSppNotify(int iSppCmd, unsigned short iSongPos);
+	void midiClkNotify(float fTempo);
 
 	void updateRecentFilesMenu();
 	void updateExportMenu();
@@ -258,16 +267,6 @@ protected:
 
 	void closeEvent(QCloseEvent *pCloseEvent);
 	void dragEnterEvent(QDragEnterEvent *pDragEnterEvent);
-	void customEvent(QEvent *pEvent);
-
-	void mmcEvent(qtractorMmcEvent *pMmcEvent);
-	void midiControlEvent(qtractorMidiControlEvent *pCtlEvent);
-	void midiSppEvent(qtractorMidiSppEvent *pSppEvent);
-	void midiClockEvent(qtractorMidiClockEvent *pClkEvent);
-
-	void sessionEvent(qtractorSessionEvent *pSessionEvent);
-
-	void syncEvent(qtractorSyncEvent *pSyncEvent);
 
 	bool queryClose();
 

@@ -569,12 +569,6 @@ qtractorMidiEngine::qtractorMidiEngine ( qtractorSession *pSession )
 	m_iTimeStart     = 0;
 	m_iTimeDrift     = 0;
 
-	m_pNotifyObject  = NULL;
-	m_eNotifyMmcType = QEvent::None;
-	m_eNotifyCtlType = QEvent::None;
-	m_eNotifySppType = QEvent::None;
-	m_eNotifyClkType = QEvent::None;
-
 	m_bControlBus    = false;
 	m_pIControlBus   = NULL;
 	m_pOControlBus   = NULL;
@@ -613,6 +607,13 @@ qtractorMidiEngine::qtractorMidiEngine ( qtractorSession *pSession )
 	// MIDI Clock tempo tracking.
 	m_iClockCount = 0;
 	m_fClockTempo = 120.0f;
+}
+
+
+// Special event notifier proxy object.
+const qtractorMidiEngineProxy *qtractorMidiEngine::proxy (void) const
+{
+	return &m_proxy;
 }
 
 
@@ -908,11 +909,7 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 			if (data1 > 0x7f || data2 > 0x7f)
 				return;
 			// Post the stuffed event...
-			if (m_pNotifyObject) {
-				QApplication::postEvent(m_pNotifyObject,
-					new qtractorMidiControlEvent(m_eNotifyCtlType,
-						iChannel, data1, data2));
-			}
+			m_proxy.notifyCtlEvent(qtractorCtlEvent(iChannel, data1, data2));
 		}
 		break;
 	case SND_SEQ_EVENT_PGMCHANGE:
@@ -942,11 +939,7 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 		if ((m_sppMode & qtractorBus::Input)
 			&& m_pIControlBus && m_pIControlBus->alsaPort() == iAlsaPort) {
 			// Post the stuffed event...
-			if (m_pNotifyObject) {
-				QApplication::postEvent(m_pNotifyObject,
-					new qtractorMidiSppEvent(m_eNotifySppType,
-						int(pEv->type), pEv->data.control.value));
-			}
+			m_proxy.notifySppEvent(int(pEv->type), pEv->data.control.value);
 		}
 		// Not handled any longer.
 		return;
@@ -964,10 +957,7 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 				if (::fabs(fTempo - m_fClockTempo) / m_fClockTempo > 0.01f) {
 					m_fClockTempo = fTempo;
 					// Post the stuffed event...
-					if (m_pNotifyObject) {
-						QApplication::postEvent(m_pNotifyObject,
-							new qtractorMidiClockEvent(m_eNotifyClkType, fTempo));
-					}
+					m_proxy.notifyClkEvent(m_fClockTempo);
 				}
 			}
 		}
@@ -982,10 +972,7 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 			&& pSysex[1] == 0x7f && pSysex[3] == 0x06 // MMC command mode.
 			&& m_pIControlBus && m_pIControlBus->alsaPort() == iAlsaPort) {
 			// Post the stuffed event...
-			if (m_pNotifyObject) {
-				QApplication::postEvent(m_pNotifyObject,
-					new qtractorMmcEvent(m_eNotifyMmcType, pSysex));
-			}
+			m_proxy.notifyMmcEvent(qtractorMmcEvent(pSysex));
 			// Bail out, right now!
 			return;
 		}
@@ -1644,59 +1631,6 @@ void qtractorMidiEngine::metroMute ( bool bMute )
 		m_pOutputThread->metroSync(iFrame);
 		// Done metronome unmute.
 	}
-}
-
-
-// Event notifier widget settings.
-void qtractorMidiEngine::setNotifyObject ( QObject *pNotifyObject )
-{
-	m_pNotifyObject = pNotifyObject;
-}
-
-void qtractorMidiEngine::setNotifyMmcType ( QEvent::Type eNotifyMmcType )
-{
-	m_eNotifyMmcType = eNotifyMmcType;
-}
-
-void qtractorMidiEngine::setNotifyCtlType ( QEvent::Type eNotifyCtlType )
-{
-	m_eNotifyCtlType = eNotifyCtlType;
-}
-
-void qtractorMidiEngine::setNotifySppType ( QEvent::Type eNotifySppType )
-{
-	m_eNotifySppType = eNotifySppType;
-}
-
-void qtractorMidiEngine::setNotifyClkType ( QEvent::Type eNotifyClkType )
-{
-	m_eNotifyClkType = eNotifyClkType;
-}
-
-
-QObject *qtractorMidiEngine::notifyObject (void) const
-{
-	return m_pNotifyObject;
-}
-
-QEvent::Type qtractorMidiEngine::notifyMmcType (void) const
-{
-	return m_eNotifyMmcType;
-}
-
-QEvent::Type qtractorMidiEngine::notifyCtlType (void) const
-{
-	return m_eNotifyCtlType;
-}
-
-QEvent::Type qtractorMidiEngine::notifySppType (void) const
-{
-	return m_eNotifySppType;
-}
-
-QEvent::Type qtractorMidiEngine::notifyClkType (void) const
-{
-	return m_eNotifyClkType;
 }
 
 

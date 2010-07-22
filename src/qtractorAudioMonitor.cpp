@@ -1,7 +1,7 @@
 // qtractorAudioMonitor.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -84,7 +84,7 @@ static inline void sse_process_meter (
 	__m128 v1 = _mm_load_ps1(pfValue);
 
 	for (; (long(pFrames) & 15) && (iFrames > 0); --iFrames)
-		*pFrames++;
+		++pFrames;
 	
 	for (; iFrames >= 4; iFrames -= 4) {
 		v1 = _mm_max_ps(_mm_loadu_ps(pFrames), v1);

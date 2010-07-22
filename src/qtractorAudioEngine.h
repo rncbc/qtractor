@@ -27,7 +27,7 @@
 
 #include <jack/jack.h>
 
-#include <QEvent>
+#include <QObject>
 
 
 // Forward declarations.
@@ -36,6 +36,46 @@ class qtractorAudioBuffer;
 class qtractorAudioMonitor;
 class qtractorAudioFile;
 class qtractorPluginList;
+
+
+//----------------------------------------------------------------------
+// class qtractorAudioEngineProxy -- Audio engine event proxy object.
+//
+
+class qtractorAudioEngineProxy : public QObject
+{
+	Q_OBJECT
+
+public:
+
+	// Constructor.
+	qtractorAudioEngineProxy(QObject *pParent = NULL)
+		: QObject(pParent) {}
+
+	// Event notifications.
+	void notifyShutEvent()
+		{ emit shutEvent(); }
+	void notifyXrunEvent()
+		{ emit xrunEvent(); }
+	void notifyPortEvent()
+		{ emit portEvent(); }
+	void notifyBuffEvent()
+		{ emit buffEvent(); }
+	void notifySessEvent(void *pvSessionArg)
+		{ emit sessEvent(pvSessionArg); }
+	void notifySyncEvent(unsigned long iPlayHead)
+		{ emit syncEvent(iPlayHead); }
+
+signals:
+	
+	// Event signals.
+	void shutEvent();
+	void xrunEvent();
+	void portEvent();
+	void buffEvent();
+	void sessEvent(void *pvSessionArg);
+	void syncEvent(unsigned long iPlayHead);
+};	
 
 
 //----------------------------------------------------------------------
@@ -49,6 +89,17 @@ public:
 	// Constructor.
 	qtractorAudioEngine(qtractorSession *pSession);
 
+	// Special event notifier proxy object.
+	const qtractorAudioEngineProxy *proxy() const;
+
+	// Event notifications.
+	void notifyShutEvent();
+	void notifyXrunEvent();
+	void notifyPortEvent();
+	void notifyBuffEvent();
+	void notifySessEvent(void *pvSessionArg);
+	void notifySyncEvent(unsigned long iPlayHead);
+
 	// JACK client descriptor accessor.
 	jack_client_t *jackClient() const;
 
@@ -60,23 +111,6 @@ public:
 		QDomElement *pElement);
 	bool saveElement(qtractorSessionDocument *pDocument,
 		QDomElement *pElement);
-
-	// Event notifier widget settings.
-	void setNotifyObject       (QObject *pNotifyObject);
-	void setNotifyShutdownType (QEvent::Type eNotifyShutdownType);
-	void setNotifyXrunType     (QEvent::Type eNotifyXrunType);
-	void setNotifyPortType     (QEvent::Type eNotifyPortType);
-	void setNotifyBufferType   (QEvent::Type eNotifyBufferType);
-	void setNotifySessionType  (QEvent::Type eNotifySessionType);
-	void setNotifySyncType     (QEvent::Type eNotifySyncType);
-
-	QObject     *notifyObject() const;
-	QEvent::Type notifyShutdownType() const;
-	QEvent::Type notifyXrunType() const;
-	QEvent::Type notifyPortType() const;
-	QEvent::Type notifyBufferType() const;
-	QEvent::Type notifySessionType() const;
-	QEvent::Type notifySyncType() const;
 
 	// Session UUID accessors.
 	void setSessionId(const QString& sSessionId);
@@ -172,17 +206,11 @@ protected:
 
 private:
 
+	// Special event notifier proxy object.
+	qtractorAudioEngineProxy m_proxy;
+
 	// Audio device instance variables.
 	jack_client_t *m_pJackClient;
-
-	// The event notifier widget.
-	QObject      *m_pNotifyObject;
-	QEvent::Type  m_eNotifyShutdownType;
-	QEvent::Type  m_eNotifyXrunType;
-	QEvent::Type  m_eNotifyPortType;
-	QEvent::Type  m_eNotifyBufferType;
-	QEvent::Type  m_eNotifySessionType;
-	QEvent::Type  m_eNotifySyncType;
 
 	// JACK Session UUID.
 	QString m_sSessionId;
@@ -348,50 +376,6 @@ private:
 	// Buffer mix-down processor.
 	void (*m_pfnBufferAdd)(float **, float **, unsigned int,
 		unsigned short, unsigned short, unsigned int);
-};
-
-
-//------------------------------------------------------------------
-// qtractorSessionEvent - (JACK) Session custom event.
-//
-
-class qtractorSessionEvent : public QEvent
-{
-public:
-
-	// Contructor.
-	qtractorSessionEvent(QEvent::Type eType, void *pvArg)
-		: QEvent(eType), m_pvArg(pvArg) {}
-
-	// Accessors.
-	void *arg() const { return m_pvArg; }
-
-private:
-
-	// Instance variables.
-	void *m_pvArg;
-};
-
-
-//------------------------------------------------------------------
-// qtractorSyncEvent - (JACK) Transport sync custom event.
-//
-
-class qtractorSyncEvent : public QEvent
-{
-public:
-
-	// Contructor.
-	qtractorSyncEvent(QEvent::Type eType, unsigned long iPlayHead)
-		: QEvent(eType), m_iPlayHead(iPlayHead) {}
-
-	// Accessors.
-	unsigned long playHead() const { return m_iPlayHead; }
-
-private:
-
-	// Instance variables.
-	unsigned long m_iPlayHead;
 };
 
 

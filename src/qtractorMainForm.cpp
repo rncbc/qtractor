@@ -55,7 +55,6 @@
 #include "qtractorMidiMeter.h"
 
 #include "qtractorMidiMonitor.h"
-#include "qtractorMidiControl.h"
 #include "qtractorMidiBuffer.h"
 
 #include "qtractorExportForm.h"
@@ -148,7 +147,7 @@ const WindowFlags CustomizeWindowHint   = WindowFlags(0x02000000);
 static int g_fdUsr1[2];
 
 // Unix SIGUSR1 signal handler.
-static void qxxxxxxx_sigusr1_handler ( int /* signo */ )
+static void qtractor_sigusr1_handler ( int /* signo */ )
 {
 	char c = 1;
 
@@ -167,24 +166,6 @@ static const char *s_pszTemplateExt  = "qtt";
 // Timer constant (magic) stuff.
 #define QTRACTOR_TIMER_MSECS    66
 #define QTRACTOR_TIMER_DELAY    233
-
-
-// Specialties for thread-callback comunication.
-#define QTRACTOR_XRUN_EVENT     QEvent::Type(QEvent::User + 2)
-#define QTRACTOR_SHUT_EVENT     QEvent::Type(QEvent::User + 3)
-#define QTRACTOR_PORT_EVENT     QEvent::Type(QEvent::User + 4)
-#define QTRACTOR_BUFF_EVENT     QEvent::Type(QEvent::User + 5)
-#define QTRACTOR_MMC_EVENT      QEvent::Type(QEvent::User + 6)
-#define QTRACTOR_CTL_EVENT      QEvent::Type(QEvent::User + 7)
-#define QTRACTOR_SPP_EVENT      QEvent::Type(QEvent::User + 8)
-#define QTRACTOR_CLK_EVENT      QEvent::Type(QEvent::User + 9)
-
-#ifdef CONFIG_JACK_SESSION
-#include <jack/session.h>
-#define QTRACTOR_SESS_EVENT     QEvent::Type(QEvent::User + 10)
-#endif
-
-#define QTRACTOR_SYNC_EVENT     QEvent::Type(QEvent::User + 11)
 
 
 //-------------------------------------------------------------------------
@@ -273,20 +254,6 @@ qtractorMainForm::qtractorMainForm (
 
 	m_iPlayerTimer = 0;
 
-	// Configure the audio engine event handling...
-	qtractorAudioEngine *pAudioEngine = m_pSession->audioEngine();
-	if (pAudioEngine) {
-		pAudioEngine->setNotifyObject(this);
-		pAudioEngine->setNotifyShutdownType(QTRACTOR_SHUT_EVENT);
-		pAudioEngine->setNotifyXrunType(QTRACTOR_XRUN_EVENT);
-		pAudioEngine->setNotifyPortType(QTRACTOR_PORT_EVENT);
-		pAudioEngine->setNotifyBufferType(QTRACTOR_BUFF_EVENT);
-	#ifdef CONFIG_JACK_SESSION
-		pAudioEngine->setNotifySessionType(QTRACTOR_SESS_EVENT);
-	#endif
-		pAudioEngine->setNotifySyncType(QTRACTOR_SYNC_EVENT);
-	}
-
 	// Configure the audio file peak factory...
 	if (m_pSession->audioPeakFactory()) {
 		QObject::connect(m_pSession->audioPeakFactory(),
@@ -294,14 +261,46 @@ qtractorMainForm::qtractorMainForm (
 			SLOT(peakNotify()));
 	}
 
+	// Configure the audio engine event handling...
+	qtractorAudioEngine *pAudioEngine = m_pSession->audioEngine();
+	if (pAudioEngine) {
+		QObject::connect(pAudioEngine->proxy(),
+			SIGNAL(shutEvent()),
+			SLOT(audioShutNotify()));
+		QObject::connect(pAudioEngine->proxy(),
+			SIGNAL(xrunEvent()),
+			SLOT(audioXrunNotify()));
+		QObject::connect(pAudioEngine->proxy(),
+			SIGNAL(portEvent()),
+			SLOT(audioPortNotify()));
+		QObject::connect(pAudioEngine->proxy(),
+			SIGNAL(buffEvent()),
+			SLOT(audioBuffNotify()));
+		QObject::connect(pAudioEngine->proxy(),
+			SIGNAL(sessEvent(void *)),
+			SLOT(audioSessNotify(void *)));
+		QObject::connect(pAudioEngine->proxy(),
+			SIGNAL(syncEvent(unsigned long)),
+			SLOT(audioSyncNotify(unsigned long)));
+	}
+
 	// Configure the MIDI engine event handling...
 	qtractorMidiEngine *pMidiEngine = m_pSession->midiEngine();
 	if (pMidiEngine) {
-		pMidiEngine->setNotifyObject(this);
-		pMidiEngine->setNotifyMmcType(QTRACTOR_MMC_EVENT);
-		pMidiEngine->setNotifyCtlType(QTRACTOR_CTL_EVENT);
-		pMidiEngine->setNotifySppType(QTRACTOR_SPP_EVENT);
-		pMidiEngine->setNotifyClkType(QTRACTOR_CLK_EVENT);
+		qRegisterMetaType<qtractorMmcEvent> ("qtractorMmcEvent");
+		qRegisterMetaType<qtractorCtlEvent> ("qtractorCtlEvent");
+		QObject::connect(pMidiEngine->proxy(),
+			SIGNAL(mmcEvent(const qtractorMmcEvent&)),
+			SLOT(midiMmcNotify(const qtractorMmcEvent&)));
+		QObject::connect(pMidiEngine->proxy(),
+			SIGNAL(ctlEvent(const qtractorCtlEvent&)),
+			SLOT(midiCtlNotify(const qtractorCtlEvent&)));
+		QObject::connect(pMidiEngine->proxy(),
+			SIGNAL(sppEvent(int, unsigned short)),
+			SLOT(midiSppNotify(int, unsigned short)));
+		QObject::connect(pMidiEngine->proxy(),
+			SIGNAL(clkEvent(float)),
+			SLOT(midiClkNotify(float)));
 	}
 
 	// Add the midi controller map...
@@ -324,7 +323,7 @@ qtractorMainForm::qtractorMainForm (
 
 	// Install SIGUSR1 signal handler.
     struct sigaction usr1;
-    usr1.sa_handler = qxxxxxxx_sigusr1_handler;
+    usr1.sa_handler = qtractor_sigusr1_handler;
     ::sigemptyset(&usr1.sa_mask);
     usr1.sa_flags = 0;
     usr1.sa_flags |= SA_RESTART;
@@ -1264,365 +1263,6 @@ void qtractorMainForm::dropEvent ( QDropEvent* pDropEvent )
 		if (!sFilename.isEmpty() && closeSession())
 			loadSessionFile(sFilename);
 	}
-}
-
-
-// Custom event handler.
-void qtractorMainForm::customEvent ( QEvent *pEvent )
-{
-#ifdef CONFIG_DEBUG_0
-	appendMessages("qtractorMainForm::customEvent("
-		+ QString::number((int) pEvent->type()) + ")");
-#endif
-
-	switch (int(pEvent->type())) {
-	case QTRACTOR_PORT_EVENT:
-		// An Audio graph change has just been issued;
-		// try to postpone the event effect a little more...
-		if (m_iAudioRefreshTimer  < QTRACTOR_TIMER_DELAY)
-			m_iAudioRefreshTimer += QTRACTOR_TIMER_DELAY;
-		break;
-	case QTRACTOR_XRUN_EVENT:
-		// An XRUN has just been notified...
-		m_iXrunCount++;
-		// Skip this one, maybe we're under some kind of storm;
-		if (m_iXrunTimer > 0)
-			m_iXrunSkip++;
-		// Defer the informative effect...
-		if (m_iXrunTimer  < QTRACTOR_TIMER_DELAY)
-			m_iXrunTimer += QTRACTOR_TIMER_DELAY;
-		break;
-	case QTRACTOR_SHUT_EVENT:
-	case QTRACTOR_BUFF_EVENT:
-		// Engine shutdown is on demand...
-		m_pSession->shutdown();
-		m_pConnections->clear();
-		// Send an informative message box...
-		appendMessagesError(
-			tr("The audio engine has been shutdown.\n\n"
-			"Make sure the JACK audio server (jackd)\n"
-			"is up and running and then restart session."));
-		// Make things just bearable...
-		stabilizeForm();
-		break;
-	case QTRACTOR_MMC_EVENT:
-		// MMC event handling...
-		mmcEvent(static_cast<qtractorMmcEvent *> (pEvent));
-		break;
-	case QTRACTOR_CTL_EVENT:
-		// Controller event handling...
-		midiControlEvent(static_cast<qtractorMidiControlEvent *> (pEvent));
-		break;
-	case QTRACTOR_SPP_EVENT:
-		// SPP event handling...
-		midiSppEvent(static_cast<qtractorMidiSppEvent *> (pEvent));
-		break;
-	case QTRACTOR_CLK_EVENT:
-		// MIDI Clock event...
-		midiClockEvent(static_cast<qtractorMidiClockEvent *> (pEvent));
-		break;
-#ifdef CONFIG_JACK_SESSION
-	case QTRACTOR_SESS_EVENT:
-		// JACK session support...
-		sessionEvent(static_cast<qtractorSessionEvent *> (pEvent));
-		break;
-#endif
-	case QTRACTOR_SYNC_EVENT:
-		// JACK transport sync...
-		syncEvent(static_cast<qtractorSyncEvent *> (pEvent));
-		break;
-	default:
-		break;
-	}
-}
-
-
-// Custom MMC event handler.
-void qtractorMainForm::mmcEvent ( qtractorMmcEvent *pMmcEvent )
-{
-	QString sMmcText("MMC: ");
-	switch (pMmcEvent->cmd()) {
-	case qtractorMmcEvent::STOP:
-	case qtractorMmcEvent::PAUSE:
-		sMmcText += tr("STOP");
-		setPlaying(false);
-		break;
-	case qtractorMmcEvent::PLAY:
-	case qtractorMmcEvent::DEFERRED_PLAY:
-		sMmcText += tr("PLAY");
-		setPlaying(true);
-		break;
-	case qtractorMmcEvent::FAST_FORWARD:
-		sMmcText += tr("FFWD");
-		setRolling(+1);
-		break;
-	case qtractorMmcEvent::REWIND:
-		sMmcText += tr("REW");
-		setRolling(-1);
-		break;
-	case qtractorMmcEvent::RECORD_STROBE:
-	case qtractorMmcEvent::RECORD_PAUSE:
-		sMmcText += tr("REC ON");
-		if (!setRecording(true)) {
-			// Send MMC RECORD_EXIT command immediate reply...
-			m_pSession->midiEngine()->sendMmcCommand(
-				qtractorMmcEvent::RECORD_EXIT);
-		}
-		break;
-	case qtractorMmcEvent::RECORD_EXIT:
-		sMmcText += tr("REC OFF");
-		setRecording(false);
-		break;
-	case qtractorMmcEvent::MMC_RESET:
-		sMmcText += tr("RESET");
-		setRolling(0);
-		break;
-	case qtractorMmcEvent::LOCATE:
-		sMmcText += tr("LOCATE %1").arg(pMmcEvent->locate());
-		setLocate(pMmcEvent->locate());
-		break;
-	case qtractorMmcEvent::SHUTTLE:
-		sMmcText += tr("SHUTTLE %1").arg(pMmcEvent->shuttle());
-		setShuttle(pMmcEvent->shuttle());
-		break;
-	case qtractorMmcEvent::STEP:
-		sMmcText += tr("STEP %1").arg(pMmcEvent->step());
-		setStep(pMmcEvent->step());
-		break;
-	case qtractorMmcEvent::MASKED_WRITE:
-		switch (pMmcEvent->scmd()) {
-		case qtractorMmcEvent::TRACK_RECORD:
-			sMmcText += tr("TRACK RECORD %1 %2")
-				.arg(pMmcEvent->track())
-				.arg(pMmcEvent->isOn());
-			break;
-		case qtractorMmcEvent::TRACK_MUTE:
-			sMmcText += tr("TRACK MUTE %1 %2")
-				.arg(pMmcEvent->track())
-				.arg(pMmcEvent->isOn());
-			break;
-		case qtractorMmcEvent::TRACK_SOLO:
-			sMmcText += tr("TRACK SOLO %1 %2")
-				.arg(pMmcEvent->track())
-				.arg(pMmcEvent->isOn());
-			break;
-		default:
-			sMmcText += tr("Unknown sub-command");
-			break;
-		}
-		setTrack(pMmcEvent->scmd(), pMmcEvent->track(), pMmcEvent->isOn());
-		break;
-	default:
-		sMmcText += tr("Not implemented");
-		break;
-	}
-
-	appendMessages(sMmcText);
-	stabilizeForm();
-}
-
-
-// Custom controller event handler.
-void qtractorMainForm::midiControlEvent ( qtractorMidiControlEvent *pCtlEvent )
-{
-	QString sCtlText("CTL: ");
-	sCtlText += tr("MIDI channel %1, Controller %2, Value %3")
-		.arg(pCtlEvent->channel())
-		.arg(pCtlEvent->controller())
-		.arg(pCtlEvent->value());
-
-	// TODO: Check if controller is used as MIDI controller...
-	if (m_pMidiControl->processEvent(pCtlEvent)) {
-	#ifdef CONFIG_DEBUG
-		appendMessages(sCtlText);
-	#endif
-		return;
-	}
-
-	/* FIXME: JLCooper faders (as from US-224)...
-	if (pCtlEvent->channel() == 15) {
-		// Event translation...
-		int   iTrack = int(pCtlEvent->controller()) & 0x3f;
-		float fGain  = float(pCtlEvent->value()) / 127.0f;
-		// Find the track by number...
-		qtractorTrack *pTrack = m_pSession->tracks().at(iTrack);
-		if (pTrack) {
-			m_pSession->execute(
-				new qtractorTrackGainCommand(pTrack, fGain, true));
-			sCtlText += tr("(track %1, gain %2)")
-				.arg(iTrack).arg(fGain);
-		}
-	}
-	else */
-	// Handle volume controls...
-	if (pCtlEvent->controller() == 7) {
-		int iTrack = 0;
-		float fGain = float(pCtlEvent->value()) / 127.0f;
-		for (qtractorTrack *pTrack = m_pSession->tracks().first();
-				pTrack; pTrack = pTrack->next()) {
-			if (pTrack->trackType() == qtractorTrack::Midi &&
-				pTrack->midiChannel() == pCtlEvent->channel()) {
-				m_pSession->execute(
-					new qtractorTrackGainCommand(pTrack, fGain, true));
-				sCtlText += tr("(track %1, gain %2)")
-					.arg(iTrack).arg(fGain);
-			}
-			++iTrack;
-		}
-	}
-	else
-	// Handle pan controls...
-	if (pCtlEvent->controller() == 10) {
-		int iTrack = 0;
-		float fPanning = (float(pCtlEvent->value()) - 64.0f) / 63.0f;
-		for (qtractorTrack *pTrack = m_pSession->tracks().first();
-				pTrack; pTrack = pTrack->next()) {
-			if (pTrack->trackType() == qtractorTrack::Midi &&
-				pTrack->midiChannel() == pCtlEvent->channel()) {
-				m_pSession->execute(
-					new qtractorTrackPanningCommand(pTrack, fPanning, true));
-				sCtlText += tr("(track %1, panning %2)")
-					.arg(iTrack).arg(fPanning);
-			}
-			++iTrack;
-		}
-	}
-
-	appendMessages(sCtlText);
-}
-
-
-// Custom MIDI SPP  event handler.
-void qtractorMainForm::midiSppEvent ( qtractorMidiSppEvent *pSppEvent )
-{
-	QString sSppText("SPP: ");
-	switch (pSppEvent->cmdType()) {
-	case SND_SEQ_EVENT_START:
-		sSppText += tr("START");
-		setSongPos(0);
-		setPlaying(true);
-		break;
-	case SND_SEQ_EVENT_STOP:
-		sSppText += tr("STOP");
-		setPlaying(false);
-		break;
-	case SND_SEQ_EVENT_CONTINUE:
-		sSppText += tr("CONTINUE");
-		setPlaying(true);
-		break;
-	case SND_SEQ_EVENT_SONGPOS:
-		sSppText += tr("SONGPOS %1").arg(pSppEvent->songPos());
-		setSongPos(pSppEvent->songPos());
-		break;
-	default:
-		sSppText += tr("Not implemented");
-		break;
-	}
-
-	appendMessages(sSppText);
-	stabilizeForm();
-}
-
-
-// Custom MIDI Clock event handler.
-void qtractorMainForm::midiClockEvent ( qtractorMidiClockEvent *pClkEvent )
-{
-	QString sClkText("CLK: ");
-	sClkText += tr("%1 BPM").arg(pClkEvent->tempo());
-	appendMessages(sClkText);
-
-	// Find appropriate node...
-	qtractorTimeScale *pTimeScale = m_pSession->timeScale();
-	qtractorTimeScale::Cursor& cursor = pTimeScale->cursor();
-	qtractorTimeScale::Node *pNode = cursor.seekFrame(m_pSession->playHead());
-
-	// Now, express the change immediately...
-	if (pNode->prev()) {
-		pNode->tempo = pClkEvent->tempo();
-		pTimeScale->updateNode(pNode);
-	} else {
-		m_pSession->setTempo(pClkEvent->tempo());
-	}
-	m_iTransportUpdate++;
-
-	updateContents(NULL, true);
-	stabilizeForm();
-}
-
-
-// Custom (JACK) session event handler.
-void qtractorMainForm::sessionEvent ( qtractorSessionEvent *pSessionEvent )
-{
-#ifdef CONFIG_JACK_SESSION
-
-	qtractorAudioEngine *pAudioEngine = m_pSession->audioEngine();
-	if (pAudioEngine == NULL)
-		return;
-
-	jack_client_t *pJackClient = pAudioEngine->jackClient();
-	if (pJackClient == NULL)
-		return;
-
-	jack_session_event_t *pJackSessionEvent
-		= (jack_session_event_t *) pSessionEvent->arg();
-	
-#ifdef CONFIG_DEBUG
-	qDebug("qtractorMainForm::sessionEvent()"
-		" type=%d client_uuid=\"%s\" session_dir=\"%s\"",
-		int(pJackSessionEvent->type),
-		pJackSessionEvent->client_uuid,
-		pJackSessionEvent->session_dir);
-#endif
-
-	bool bTemplate = (pJackSessionEvent->type == JackSessionSaveTemplate);
-	bool bQuit = (pJackSessionEvent->type == JackSessionSaveAndQuit);
-
-	if (m_pSession->sessionName().isEmpty())
-		editSession();
-
-	QString sSessionName = m_pSession->sessionName();
-	if (sSessionName.isEmpty())
-		sSessionName = tr("Untitled%1").arg(m_iUntitled);
-	
-	const QString sSessionDir
-		= QString::fromUtf8(pJackSessionEvent->session_dir);
-	const QString sSessionExt
-		= (bTemplate ? s_pszTemplateExt : s_pszSessionExt);
-	const QString sSessionFile
-		= sSessionName + '.' + sSessionExt;
-
-	QStringList args;
-	args << QApplication::applicationFilePath();
-	args << QString("--session-id=%1").arg(pJackSessionEvent->client_uuid);
-
-	const QString sFilename
-		= QFileInfo(sSessionDir, sSessionFile).absoluteFilePath();
-
-	if (saveSessionFile(sFilename, bTemplate))
-		args << QString("\"${SESSION_DIR}%1\"").arg(sSessionFile);
-
-	const QByteArray aCmdLine = args.join(" ").toUtf8();
-	pJackSessionEvent->command_line = strdup(aCmdLine.constData());
-
-	jack_session_reply(pJackClient, pJackSessionEvent);
-	jack_session_event_free(pJackSessionEvent);
-
-	if (bQuit)
-		close();
-
-#endif
-}
-
-
-// Custom (JACK) transport sync event handler.
-void qtractorMainForm::syncEvent ( qtractorSyncEvent *pSyncEvent )
-{
-#ifdef CONFIG_DEBUG
-	qDebug("qtractorMainForm::syncEvent() playHead=%lu", pSyncEvent->playHead());
-#endif
-
-	m_pSession->setPlayHead(pSyncEvent->playHead());
-	m_iTransportUpdate++;
 }
 
 
@@ -5121,17 +4761,345 @@ void qtractorMainForm::alsaNotify (void)
 }
 
 
-//-------------------------------------------------------------------------
-// qtractorMainForm -- Tracks stuff.
-
-// Tracks view close slot funtion.
-void qtractorMainForm::tracksClosed (void)
+// Custom audio shutdown event handler.
+void qtractorMainForm::audioShutNotify (void)
 {
-	// Log this simple event.
-	appendMessages(tr("Tracks closed."));
+	// Engine shutdown is on demand...
+	m_pSession->shutdown();
+	m_pConnections->clear();
 
-	// Just reset the tracks handler, before something else does.
-	m_pTracks = NULL;
+	// Send an informative message box...
+	appendMessagesError(
+		tr("The audio engine has been shutdown.\n\n"
+		"Make sure the JACK audio server (jackd)\n"
+		"is up and running and then restart session."));
+
+	// Make things just bearable...
+	stabilizeForm();
+}
+
+
+// Custom audio XRUN event handler.
+void qtractorMainForm::audioXrunNotify (void)
+{
+	// An XRUN has just been notified...
+	m_iXrunCount++;
+
+	// Skip this one, maybe we're under some kind of storm;
+	if (m_iXrunTimer > 0)
+		m_iXrunSkip++;
+
+	// Defer the informative effect...
+	if (m_iXrunTimer  < QTRACTOR_TIMER_DELAY)
+		m_iXrunTimer += QTRACTOR_TIMER_DELAY;
+}
+
+
+// Custom audio port/graph change event handler.
+void qtractorMainForm::audioPortNotify (void)
+{
+	// An Audio graph change has just been issued;
+	// try to postpone the event effect a little more...
+	if (m_iAudioRefreshTimer  < QTRACTOR_TIMER_DELAY)
+		m_iAudioRefreshTimer += QTRACTOR_TIMER_DELAY;
+}
+
+
+// Custom audio buffer size change event handler.
+void qtractorMainForm::audioBuffNotify (void)
+{
+	audioShutNotify();
+}
+
+
+// Custom (JACK) session event handler.
+void qtractorMainForm::audioSessNotify ( void *pvSessionArg )
+{
+#ifdef CONFIG_JACK_SESSION
+
+	qtractorAudioEngine *pAudioEngine = m_pSession->audioEngine();
+	if (pAudioEngine == NULL)
+		return;
+
+	jack_client_t *pJackClient = pAudioEngine->jackClient();
+	if (pJackClient == NULL)
+		return;
+
+	jack_session_event_t *pJackSessionEvent
+		= (jack_session_event_t *) pvSessionArg;
+	
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::audioSessNotify()"
+		" type=%d client_uuid=\"%s\" session_dir=\"%s\"",
+		int(pJackSessionEvent->type),
+		pJackSessionEvent->client_uuid,
+		pJackSessionEvent->session_dir);
+#endif
+
+	bool bTemplate = (pJackSessionEvent->type == JackSessionSaveTemplate);
+	bool bQuit = (pJackSessionEvent->type == JackSessionSaveAndQuit);
+
+	if (m_pSession->sessionName().isEmpty())
+		editSession();
+
+	QString sSessionName = m_pSession->sessionName();
+	if (sSessionName.isEmpty())
+		sSessionName = tr("Untitled%1").arg(m_iUntitled);
+	
+	const QString sSessionDir
+		= QString::fromUtf8(pJackSessionEvent->session_dir);
+	const QString sSessionExt
+		= (bTemplate ? s_pszTemplateExt : s_pszSessionExt);
+	const QString sSessionFile
+		= sSessionName + '.' + sSessionExt;
+
+	QStringList args;
+	args << QApplication::applicationFilePath();
+	args << QString("--session-id=%1").arg(pJackSessionEvent->client_uuid);
+
+	const QString sFilename
+		= QFileInfo(sSessionDir, sSessionFile).absoluteFilePath();
+
+	if (saveSessionFile(sFilename, bTemplate))
+		args << QString("\"${SESSION_DIR}%1\"").arg(sSessionFile);
+
+	const QByteArray aCmdLine = args.join(" ").toUtf8();
+	pJackSessionEvent->command_line = strdup(aCmdLine.constData());
+
+	jack_session_reply(pJackClient, pJackSessionEvent);
+	jack_session_event_free(pJackSessionEvent);
+
+	if (bQuit)
+		close();
+
+#endif
+}
+
+
+// Custom (JACK) transport sync event handler.
+void qtractorMainForm::audioSyncNotify ( unsigned long iPlayHead )
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::audioSyncNotify(%lu)", iPlayHead);
+#endif
+
+	m_pSession->setPlayHead(iPlayHead);
+	m_iTransportUpdate++;
+}
+
+
+
+
+// Custom MMC event handler.
+void qtractorMainForm::midiMmcNotify ( const qtractorMmcEvent& mmce )
+{
+	QString sMmcText("MMC: ");
+	switch (mmce.cmd()) {
+	case qtractorMmcEvent::STOP:
+	case qtractorMmcEvent::PAUSE:
+		sMmcText += tr("STOP");
+		setPlaying(false);
+		break;
+	case qtractorMmcEvent::PLAY:
+	case qtractorMmcEvent::DEFERRED_PLAY:
+		sMmcText += tr("PLAY");
+		setPlaying(true);
+		break;
+	case qtractorMmcEvent::FAST_FORWARD:
+		sMmcText += tr("FFWD");
+		setRolling(+1);
+		break;
+	case qtractorMmcEvent::REWIND:
+		sMmcText += tr("REW");
+		setRolling(-1);
+		break;
+	case qtractorMmcEvent::RECORD_STROBE:
+	case qtractorMmcEvent::RECORD_PAUSE:
+		sMmcText += tr("REC ON");
+		if (!setRecording(true)) {
+			// Send MMC RECORD_EXIT command immediate reply...
+			m_pSession->midiEngine()->sendMmcCommand(
+				qtractorMmcEvent::RECORD_EXIT);
+		}
+		break;
+	case qtractorMmcEvent::RECORD_EXIT:
+		sMmcText += tr("REC OFF");
+		setRecording(false);
+		break;
+	case qtractorMmcEvent::MMC_RESET:
+		sMmcText += tr("RESET");
+		setRolling(0);
+		break;
+	case qtractorMmcEvent::LOCATE:
+		sMmcText += tr("LOCATE %1").arg(mmce.locate());
+		setLocate(mmce.locate());
+		break;
+	case qtractorMmcEvent::SHUTTLE:
+		sMmcText += tr("SHUTTLE %1").arg(mmce.shuttle());
+		setShuttle(mmce.shuttle());
+		break;
+	case qtractorMmcEvent::STEP:
+		sMmcText += tr("STEP %1").arg(mmce.step());
+		setStep(mmce.step());
+		break;
+	case qtractorMmcEvent::MASKED_WRITE:
+		switch (mmce.scmd()) {
+		case qtractorMmcEvent::TRACK_RECORD:
+			sMmcText += tr("TRACK RECORD %1 %2")
+				.arg(mmce.track())
+				.arg(mmce.isOn());
+			break;
+		case qtractorMmcEvent::TRACK_MUTE:
+			sMmcText += tr("TRACK MUTE %1 %2")
+				.arg(mmce.track())
+				.arg(mmce.isOn());
+			break;
+		case qtractorMmcEvent::TRACK_SOLO:
+			sMmcText += tr("TRACK SOLO %1 %2")
+				.arg(mmce.track())
+				.arg(mmce.isOn());
+			break;
+		default:
+			sMmcText += tr("Unknown sub-command");
+			break;
+		}
+		setTrack(mmce.scmd(), mmce.track(), mmce.isOn());
+		break;
+	default:
+		sMmcText += tr("Not implemented");
+		break;
+	}
+
+	appendMessages(sMmcText);
+	stabilizeForm();
+}
+
+
+// Custom controller event handler.
+void qtractorMainForm::midiCtlNotify ( const qtractorCtlEvent& ctle )
+{
+	QString sCtlText("CTL: ");
+	sCtlText += tr("MIDI channel %1, Controller %2, Value %3")
+		.arg(ctle.channel())
+		.arg(ctle.controller())
+		.arg(ctle.value());
+
+	// TODO: Check if controller is used as MIDI controller...
+	if (m_pMidiControl->processEvent(ctle)) {
+	#ifdef CONFIG_DEBUG
+		appendMessages(sCtlText);
+	#endif
+		return;
+	}
+
+	/* FIXME: JLCooper faders (as from US-224)...
+	if (ctle.channel() == 15) {
+		// Event translation...
+		int   iTrack = int(ctle.controller()) & 0x3f;
+		float fGain  = float(ctle.value()) / 127.0f;
+		// Find the track by number...
+		qtractorTrack *pTrack = m_pSession->tracks().at(iTrack);
+		if (pTrack) {
+			m_pSession->execute(
+				new qtractorTrackGainCommand(pTrack, fGain, true));
+			sCtlText += tr("(track %1, gain %2)")
+				.arg(iTrack).arg(fGain);
+		}
+	}
+	else */
+	// Handle volume controls...
+	if (ctle.controller() == 7) {
+		int iTrack = 0;
+		float fGain = float(ctle.value()) / 127.0f;
+		for (qtractorTrack *pTrack = m_pSession->tracks().first();
+				pTrack; pTrack = pTrack->next()) {
+			if (pTrack->trackType() == qtractorTrack::Midi &&
+				pTrack->midiChannel() == ctle.channel()) {
+				m_pSession->execute(
+					new qtractorTrackGainCommand(pTrack, fGain, true));
+				sCtlText += tr("(track %1, gain %2)")
+					.arg(iTrack).arg(fGain);
+			}
+			++iTrack;
+		}
+	}
+	else
+	// Handle pan controls...
+	if (ctle.controller() == 10) {
+		int iTrack = 0;
+		float fPanning = (float(ctle.value()) - 64.0f) / 63.0f;
+		for (qtractorTrack *pTrack = m_pSession->tracks().first();
+				pTrack; pTrack = pTrack->next()) {
+			if (pTrack->trackType() == qtractorTrack::Midi &&
+				pTrack->midiChannel() == ctle.channel()) {
+				m_pSession->execute(
+					new qtractorTrackPanningCommand(pTrack, fPanning, true));
+				sCtlText += tr("(track %1, panning %2)")
+					.arg(iTrack).arg(fPanning);
+			}
+			++iTrack;
+		}
+	}
+
+	appendMessages(sCtlText);
+}
+
+
+// Custom MIDI SPP  event handler.
+void qtractorMainForm::midiSppNotify ( int iSppCmd, unsigned short iSongPos )
+{
+	QString sSppText("SPP: ");
+	switch (iSppCmd) {
+	case SND_SEQ_EVENT_START:
+		sSppText += tr("START");
+		setSongPos(0);
+		setPlaying(true);
+		break;
+	case SND_SEQ_EVENT_STOP:
+		sSppText += tr("STOP");
+		setPlaying(false);
+		break;
+	case SND_SEQ_EVENT_CONTINUE:
+		sSppText += tr("CONTINUE");
+		setPlaying(true);
+		break;
+	case SND_SEQ_EVENT_SONGPOS:
+		sSppText += tr("SONGPOS %1").arg(iSongPos);
+		setSongPos(iSongPos);
+		break;
+	default:
+		sSppText += tr("Not implemented");
+		break;
+	}
+
+	appendMessages(sSppText);
+	stabilizeForm();
+}
+
+
+// Custom MIDI Clock event handler.
+void qtractorMainForm::midiClkNotify ( float fTempo )
+{
+	QString sClkText("CLK: ");
+	sClkText += tr("%1 BPM").arg(fTempo);
+	appendMessages(sClkText);
+
+	// Find appropriate node...
+	qtractorTimeScale *pTimeScale = m_pSession->timeScale();
+	qtractorTimeScale::Cursor& cursor = pTimeScale->cursor();
+	qtractorTimeScale::Node *pNode = cursor.seekFrame(m_pSession->playHead());
+
+	// Now, express the change immediately...
+	if (pNode->prev()) {
+		pNode->tempo = fTempo;
+		pTimeScale->updateNode(pNode);
+	} else {
+		m_pSession->setTempo(fTempo);
+	}
+	m_iTransportUpdate++;
+
+	updateContents(NULL, true);
+	stabilizeForm();
 }
 
 

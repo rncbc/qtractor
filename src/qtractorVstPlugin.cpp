@@ -144,7 +144,7 @@ public:
 		: QWidget(pParent, wflags),
 	#if defined(Q_WS_X11)
 		m_pDisplay(QX11Info::display()),
-		m_wVstEditor(NULL),
+		m_wVstEditor(0),
 		m_pVstEventProc(NULL),
 		m_bButtonPress(false),
 	#endif

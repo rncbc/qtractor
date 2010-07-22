@@ -1,7 +1,7 @@
 // qtractorMmcEvent.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -22,7 +22,6 @@
 #ifndef __qtractorMmcEvent_h
 #define __qtractorMmcEvent_h
 
-#include <QEvent>
 #include <QByteArray>
 
 
@@ -30,7 +29,7 @@
 // qtractorMmcEvent - MMC custom event.
 //
 
-class qtractorMmcEvent : public QEvent
+class qtractorMmcEvent
 {
 public:
 
@@ -85,11 +84,18 @@ public:
 		TRACK_SOLO              = 0x66 // Custom-implementation ;)
 	};
 
+	// Default contructor (fake).
+	qtractorMmcEvent() : m_cmd(Command(0)) {}
+		
 	// Contructor.
-	qtractorMmcEvent(QEvent::Type eType, unsigned char *pSysex)
-		: QEvent(eType), m_cmd(Command(pSysex[4])),
+	qtractorMmcEvent(unsigned char *pSysex)
+		: m_cmd(Command(pSysex[4])),
 			m_data((const char *) &pSysex[6], (int) pSysex[5]) {}
 
+	// Copy contructor.
+	qtractorMmcEvent(const qtractorMmcEvent& mmce)
+		: m_cmd(mmce.m_cmd), m_data(mmce.m_data) {}
+	
 	// Accessors.
 	Command        cmd()  const { return m_cmd; }
 	unsigned char *data() const { return (unsigned char *) m_data.constData(); }

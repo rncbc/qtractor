@@ -27,6 +27,7 @@ headers = \
 	src/qtractorCommand.h \
 	src/qtractorConnect.h \
 	src/qtractorConnections.h \
+	src/qtractorCtlEvent.h \
 	src/qtractorDocument.h \
 	src/qtractorDssiPlugin.h \
 	src/qtractorEngine.h \
