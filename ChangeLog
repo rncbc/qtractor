@@ -53,9 +53,8 @@ SVN TRUNK
   positions instead of squashing a duplicate into the MIDI
   bus SysEx setup. (EXPERIMENTAL)
 
-- First attempt to include the VeSTige header for minimal VST
-  plugin support (./configure --enable-vestige; default=no).
-  (EXPERIMENTAL)
+- Attempt to include the VeSTige header by default for minimal
+  VST plugin support (EXPERIMENTAL)
 
 - JACK transport support has been slightly rewritten, in fact
   the sync callback is now in effect for repositioning.

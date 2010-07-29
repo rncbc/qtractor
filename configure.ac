@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(Qtractor, 0.4.6.32, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.4.6.33, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractor.cpp)
 AC_CONFIG_HEADERS(src/config.h)
@@ -86,9 +86,9 @@ AC_ARG_ENABLE(vst,
   [ac_vst="yes"])
 
 AC_ARG_ENABLE(vestige,
-  AC_HELP_STRING([--enable-vestige], [enable VeSTige header support (default=no)]),
+  AC_HELP_STRING([--enable-vestige], [enable VeSTige header support (default=yes)]),
   [ac_vestige="$enableval"],
-  [ac_vestige="no"])
+  [ac_vestige="yes"])
 
 # Enable LV2 support.
 AC_ARG_ENABLE(lv2,
@@ -613,24 +613,32 @@ if test -n "$ac_with_vst"; then
    CPPFLAGS="-I$ac_with_vst $CPPFLAGS"
    ac_incpath="$ac_with_vst $ac_incpath"
    ac_vst="yes"
-else
-   if test "x$ac_vestige" = "xyes"; then
-	  CFLAGS="$CFLAGS -Isrc/vestige"
-	  CPPFLAGS="$CPPFLAGS -Isrc/vestige"
-	  ac_incpath="$ac_incpath vestige"
-   fi
 fi
 if test "x$ac_vst" = "xyes"; then
    CFLAGS="-D__cdecl= $CFLAGS"
    CPPFLAGS="-D__cdecl= $CPPFLAGS"
-   AC_CHECK_HEADER(aeffectx.h, [ac_vst="yes"], [ac_vst="no"])
+   AC_CACHE_CHECK([for VST headers],
+      ac_cv_vst, [
+      AC_TRY_LINK([#include <aeffectx.h>], [
+         // Checking for VST headers...
+      ], ac_cv_vst="yes", ac_cv_vst="no")
+   ])
+   ac_vst=$ac_cv_vst
+   if test "x$ac_vst" = "xno" -a "x$ac_vestige" = "xyes"; then
+      CFLAGS="$CFLAGS -Isrc/vestige"
+      CPPFLAGS="$CPPFLAGS -Isrc/vestige"
+      ac_incpath="$ac_incpath vestige"
+      AC_CHECK_HEADER(aeffectx.h, [ac_vst="yes"], [ac_vst="no"])
+   else
+      ac_vestige="no"
+   fi
    if test "x$ac_vst" = "xyes"; then
       AC_DEFINE(CONFIG_VST, 1, [Define if VST header is available.])
    else
       AC_MSG_WARN([*** aeffectx.h header file not found.])
       AC_MSG_WARN([*** VST plug-in support will be disabled.])
       ac_xinitthreads="no"
-	  ac_vestige="no"
+      ac_vestige="no"
    fi
 else
    ac_xinitthreads="no"
@@ -785,8 +793,8 @@ echo "  JACK Session support (EXPERIMENTAL)  . . . . . . .: $ac_jack_session"
 echo
 echo "  X11 Unique/Single instance . . . . . . . . . . . .: $ac_xunique"
 echo "  XInitThreads() support (DANGEROUS) . . . . . . . .: $ac_xinitthreads"
-echo "  Gradient eye-candy . . . . . . . . . . . . . . . .: $ac_gradient"
 echo "  VeSTige header support . . . . . . . . . . . . . .: $ac_vestige"
+echo "  Gradient eye-candy . . . . . . . . . . . . . . . .: $ac_gradient"
 echo "  Debugger stack-trace (gdb) . . . . . . . . . . . .: $ac_stacktrace"
 echo
 echo "  Install prefix . . . . . . . . . . . . . . . . . .: $ac_prefix"
