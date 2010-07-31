@@ -13,7 +13,6 @@ on in the times to come (not in any particular order):
 - Audio clip cross-fading.
 - Clip locking, muting and plug-ins.
 - JACK MIDI support.
-- MIDI groove/swing quantize.
 - OSC interface.
 - Scripting.
 - etc. etc.

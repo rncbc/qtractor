@@ -4718,6 +4718,9 @@ void qtractorMainForm::timerSlot (void)
 	if (m_pMixer)
 		m_pMixer->refresh();
 
+	// Asynchronous observer update...
+	qtractorSubject::flushQueue();
+
 #ifdef CONFIG_DSSI
 #ifdef CONFIG_LIBLO
 	if ((m_iIdleTimer += QTRACTOR_TIMER_MSECS) >= QTRACTOR_TIMER_DELAY) {

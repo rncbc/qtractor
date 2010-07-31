@@ -1,7 +1,7 @@
 // qtractorMonitor.h
 //
 /****************************************************************************
-   Copyright (C) 2006, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2006-2010, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -22,6 +22,8 @@
 #ifndef __qtractorMonitor_h
 #define __qtractorMonitor_h
 
+#include "qtractorObserver.h"
+
 
 //----------------------------------------------------------------------------
 // qtractorMonitor -- Monitor bridge value processor.
@@ -32,22 +34,26 @@ public:
 
 	// Constructor.
 	qtractorMonitor(float fGain = 1.0f, float fPanning = 0.0f)
-		: m_fGain(fGain), m_fPanning(fPanning) {}
+		: m_gain(fGain), m_panning(fPanning) {}
 
 	// Virtual destructor.
 	virtual ~qtractorMonitor() {}
 
 	// Gain accessors.
 	float gain() const
-		{ return m_fGain; }
+		{ return m_gain.value(); }
 	void setGain(float fGain)
-		{ m_fGain = fGain; update(); }
+		{ m_gain.setValue(fGain); update(); }
+	qtractorSubject *gainSubject()
+		{ return &m_gain; }
 
 	// Stereo panning accessors.
 	float panning() const
-		{ return m_fPanning; }
+		{ return m_panning.value(); }
 	void setPanning(float fPanning)
-		{ m_fPanning = fPanning; update(); }
+		{ m_panning.setValue(fPanning); update(); }
+	qtractorSubject *panningSubject()
+		{ return &m_panning; }
 
 protected:
 
@@ -57,8 +63,8 @@ protected:
 private:
 
 	// Instance variables.
-	float m_fGain;
-	float m_fPanning;
+	qtractorSubject m_gain;
+	qtractorSubject m_panning;
 };
 
 

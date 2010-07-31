@@ -29,6 +29,8 @@
 #include "qtractorAudioMonitor.h"
 #include "qtractorMidiMonitor.h"
 
+#include "qtractorObserverWidget.h"
+
 #include "qtractorOptions.h"
 #include "qtractorSession.h"
 #include "qtractorTracks.h"
@@ -38,7 +40,7 @@
 #include "qtractorEngineCommand.h"
 #include "qtractorAudioEngine.h"
 #include "qtractorMidiEngine.h"
-#include "qtractorSlider.h"
+
 
 #include "qtractorMainForm.h"
 #include "qtractorBusForm.h"

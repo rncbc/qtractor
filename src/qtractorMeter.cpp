@@ -1,7 +1,7 @@
 // qtractorMeter.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -22,9 +22,8 @@
 #include "qtractorAbout.h"
 #include "qtractorMeter.h"
 
-#include "qtractorSlider.h"
+#include "qtractorObserverWidget.h"
 
-#include <QDoubleSpinBox>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QPainter>
@@ -116,11 +115,12 @@ qtractorMeter::qtractorMeter ( QWidget *pParent )
 	m_pVBoxLayout->setSpacing(2);
 	QWidget::setLayout(m_pVBoxLayout);
 
-	m_pPanSlider = new qtractorSlider(Qt::Horizontal/*, this*/);
+	m_pPanSlider = new qtractorObserverSlider(/*this*/);
+	m_pPanSlider->setOrientation(Qt::Horizontal);
 	m_pPanSlider->setFixedHeight(20);
 	m_pVBoxLayout->addWidget(m_pPanSlider);
 
-	m_pPanSpinBox = new QDoubleSpinBox(/*this*/);
+	m_pPanSpinBox = new qtractorObserverDoubleSpinBox(/*this*/);
 	m_pPanSpinBox->setFont(font7);
 	m_pPanSpinBox->setFixedHeight(fm.lineSpacing() + 2);
 #if QT_VERSION >= 0x040300
@@ -142,11 +142,12 @@ qtractorMeter::qtractorMeter ( QWidget *pParent )
 	m_pBoxWidget->setLayout(m_pBoxLayout);
 	m_pVBoxLayout->addWidget(m_pBoxWidget);
 
-	m_pGainSlider = new qtractorSlider(Qt::Vertical/*, m_pBoxWidget*/);
+	m_pGainSlider = new qtractorObserverSlider(/*, m_pBoxWidget*/);
+	m_pGainSlider->setOrientation(Qt::Vertical);
 	m_pGainSlider->setFixedWidth(20);
 	m_pBoxLayout->addWidget(m_pGainSlider);
 
-	m_pGainSpinBox = new QDoubleSpinBox(/*this*/);
+	m_pGainSpinBox = new qtractorObserverDoubleSpinBox(/*this*/);
 	m_pGainSpinBox->setFont(font7);
 	m_pGainSpinBox->setFixedHeight(fm.lineSpacing() + 2);
 #if QT_VERSION >= 0x040300
@@ -267,22 +268,22 @@ float qtractorMeter::gainScale (void) const
 
 
 // Common slider/spin-box accessors.
-qtractorSlider *qtractorMeter::panSlider (void) const
+qtractorObserverSlider *qtractorMeter::panSlider (void) const
 {
 	return m_pPanSlider;
 }
 
-QDoubleSpinBox *qtractorMeter::panSpinBox (void) const
+qtractorObserverDoubleSpinBox *qtractorMeter::panSpinBox (void) const
 {
 	return m_pPanSpinBox;
 }
 
-qtractorSlider *qtractorMeter::gainSlider (void) const
+qtractorObserverSlider *qtractorMeter::gainSlider (void) const
 {
 	return m_pGainSlider;
 }
 
-QDoubleSpinBox *qtractorMeter::gainSpinBox (void) const
+qtractorObserverDoubleSpinBox *qtractorMeter::gainSpinBox (void) const
 {
 	return m_pGainSpinBox;
 }

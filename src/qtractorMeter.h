@@ -1,7 +1,7 @@
 // qtractorMeter.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -28,9 +28,10 @@
 // Forward declarations.
 class qtractorMeter;
 class qtractorMonitor;
-class qtractorSlider;
 
-class QDoubleSpinBox;
+class qtractorObserverSlider;
+class qtractorObserverDoubleSpinBox;
+
 class QHBoxLayout;
 class QVBoxLayout;
 
@@ -98,10 +99,11 @@ public:
 	QWidget     *boxWidget() const;
 
 	// Common slider/spin-box accessors.
-	qtractorSlider *panSlider() const;
-	QDoubleSpinBox *panSpinBox() const;
-	qtractorSlider *gainSlider() const;
-	QDoubleSpinBox *gainSpinBox() const;
+	qtractorObserverSlider *panSlider() const;
+	qtractorObserverDoubleSpinBox *panSpinBox() const;
+
+	qtractorObserverSlider *gainSlider() const;
+	qtractorObserverDoubleSpinBox *gainSpinBox() const;
 
 	// Panning accessors.
 	void setPanning(float fPanning);
@@ -158,15 +160,16 @@ signals:
 private:
 
 	// Local instance variables.
-	QVBoxLayout    *m_pVBoxLayout;
-	qtractorSlider *m_pPanSlider;
-	QDoubleSpinBox *m_pPanSpinBox;
-	QWidget        *m_pTopWidget;
-	QHBoxLayout    *m_pTopLayout;
-	QWidget        *m_pBoxWidget;
-	QHBoxLayout    *m_pBoxLayout;
-	qtractorSlider *m_pGainSlider;
-	QDoubleSpinBox *m_pGainSpinBox;
+	QVBoxLayout *m_pVBoxLayout;
+	QWidget     *m_pTopWidget;
+	QHBoxLayout *m_pTopLayout;
+	QWidget     *m_pBoxWidget;
+	QHBoxLayout *m_pBoxLayout;
+
+	qtractorObserverSlider        *m_pPanSlider;
+	qtractorObserverDoubleSpinBox *m_pPanSpinBox;
+	qtractorObserverSlider        *m_pGainSlider;
+	qtractorObserverDoubleSpinBox *m_pGainSpinBox;
 
 	// Update exclusiveness flag.
 	int m_iUpdate;

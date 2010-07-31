@@ -5,6 +5,12 @@ ChangeLog
 
 SVN TRUNK
 
+- Finally, the observer pattern is being introduced
+  progressively, targeting all potentially automatable
+  controls and widgets as plain ground-zero for the
+  (ultra-)long overdue automation feature (EXTREMELY
+  EXPERIMENTAL).
+
 - Moving from old deprecated Qt3'ish custom event post
   handling into regular asynchronous signal/slot strategy.
   (EXPERIMENTAL)

@@ -23,9 +23,7 @@
 #include "qtractorMidiMeter.h"
 #include "qtractorMidiMonitor.h"
 
-#include "qtractorSlider.h"
-
-#include <QDoubleSpinBox>
+#include "qtractorObserverWidget.h"
 
 #include <QResizeEvent>
 #include <QPaintEvent>
@@ -252,13 +250,13 @@ qtractorMidiMeter::qtractorMidiMeter ( qtractorMidiMonitor *pMidiMonitor,
 
 	setPeakFalloff(QTRACTOR_MIDI_METER_PEAK_FALLOFF);
 
+	reset();
+
 	setGain(monitor()->gain());
 	setPanning(monitor()->panning());
 
 	updatePanning();
 	updateGain();
-
-	reset();
 }
 
 
@@ -297,6 +295,13 @@ float qtractorMidiMeter::valueFromGain ( float fGain ) const
 // MIDI monitor reset
 void qtractorMidiMeter::reset (void)
 {
+	if (m_pMidiMonitor == NULL)
+		return;
+
+	panSlider()->setSubject(m_pMidiMonitor->panningSubject());
+	panSpinBox()->setSubject(m_pMidiMonitor->panningSubject());
+	gainSlider()->setSubject(m_pMidiMonitor->gainSubject());
+	gainSpinBox()->setSubject(m_pMidiMonitor->gainSubject());
 }
 
 

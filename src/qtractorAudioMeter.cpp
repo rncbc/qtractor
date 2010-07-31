@@ -1,7 +1,7 @@
 // qtractorAudioMeter.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -23,9 +23,8 @@
 #include "qtractorAudioMeter.h"
 #include "qtractorAudioMonitor.h"
 
-#include "qtractorSlider.h"
+#include "qtractorObserverWidget.h"
 
-#include <QDoubleSpinBox>
 #include <QResizeEvent>
 #include <QPaintEvent>
 #include <QPainter>
@@ -357,10 +356,10 @@ qtractorAudioMeter::qtractorAudioMeter ( qtractorAudioMonitor *pAudioMonitor,
 	for (int i = 0; i < LevelCount; ++i)
 		m_levels[i] = 0;
 
+	reset();
+
 	updatePanning();
 	updateGain();
-
-	reset();
 }
 
 
@@ -421,6 +420,11 @@ void qtractorAudioMeter::reset (void)
 {
 	if (m_pAudioMonitor == NULL)
 		return;
+
+	panSlider()->setSubject(m_pAudioMonitor->panningSubject());
+	panSpinBox()->setSubject(m_pAudioMonitor->panningSubject());
+	gainSlider()->setSubject(m_pAudioMonitor->gainSubject());
+	gainSpinBox()->setSubject(m_pAudioMonitor->gainSubject());
 
 	unsigned short iChannels = m_pAudioMonitor->channels();
 

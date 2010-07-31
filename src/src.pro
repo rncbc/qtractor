@@ -75,6 +75,8 @@ HEADERS += config.h \
 	qtractorMixer.h \
 	qtractorMmcEvent.h \
 	qtractorMonitor.h \
+	qtractorObserver.h \
+	qtractorObserverWidget.h \
 	qtractorOptions.h \
 	qtractorPlugin.h \
 	qtractorPluginCommand.h \
@@ -180,6 +182,8 @@ SOURCES += \
 	qtractorMidiTimer.cpp \
 	qtractorMixer.cpp \
 	qtractorMmcEvent.cpp \
+	qtractorObserver.cpp \
+	qtractorObserverWidget.cpp \
 	qtractorOptions.cpp \
 	qtractorPlugin.cpp \
 	qtractorPluginCommand.cpp \
