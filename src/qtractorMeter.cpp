@@ -170,6 +170,9 @@ qtractorMeter::qtractorMeter ( QWidget *pParent )
 	m_pPanSpinBox->setMaximum(+1.0f);
 	m_pPanSpinBox->setSingleStep(0.1f);
 	m_pPanSpinBox->setAlignment(Qt::AlignHCenter);
+#if QT_VERSION >= 0x040200
+	m_pPanSpinBox->setAccelerated(true);
+#endif
 	m_pPanSpinBox->setToolTip(tr("Pan"));
 
 	m_pGainSlider->setTickPosition(QSlider::NoTicks);
@@ -179,8 +182,12 @@ qtractorMeter::qtractorMeter ( QWidget *pParent )
 	m_pGainSlider->setSingleStep(100);
 	m_pGainSlider->setDefault(10000);
 
-	m_pGainSpinBox->setAlignment(Qt::AlignHCenter);
 	m_pGainSpinBox->setDecimals(1);
+//	m_pGainSpinBox->setSingleStep(0.1f);
+	m_pGainSpinBox->setAlignment(Qt::AlignHCenter);
+#if QT_VERSION >= 0x040200
+	m_pGainSpinBox->setAccelerated(true);
+#endif
 	m_pGainSpinBox->setToolTip(tr("Gain"));
 
 	QWidget::setMinimumHeight(140);

@@ -19,6 +19,7 @@
 
 *****************************************************************************/
 
+#include "qtractorAbout.h"
 #include "qtractorObserverWidget.h"
 
 #include <QMouseEvent>
@@ -45,7 +46,9 @@ void qtractorObserverCheckBox::checkBoxChanged ( bool bValue )
 		return;
 
 	float fValue = (bValue ? 1.0f : 0.0f);
+#ifdef CONFIG_DEBUG
 	qDebug("qtractorObserverCheckBox[%p]::checkBoxChanged(%g)", this, fValue);
+#endif
 	observer()->setValue(fValue);
 }
 
@@ -70,7 +73,9 @@ void qtractorObserverSpinBox::spinBoxChanged ( int iValue )
 		return;
 
 	float fValue = float(iValue) / float(maximum() - minimum());
+#ifdef CONFIG_DEBUG
 	qDebug("qtractorObserverSpinBox[%p]::spinBoxChanged(%g)", this, fValue);
+#endif
 	observer()->setValue(fValue);
 }
 
@@ -95,7 +100,9 @@ void qtractorObserverDoubleSpinBox::spinBoxChanged ( double value )
 		return;
 
 	float fValue = float(value) / float(maximum() - minimum());
+#ifdef CONFIG_DEBUG
 	qDebug("qtractorObserverDoubleSpinBox[%p]::spinBoxChanged(%g)", this, fValue);
+#endif
 	observer()->setValue(fValue);
 }
 
@@ -162,8 +169,13 @@ void qtractorObserverSlider::sliderChanged ( int iValue )
 	if (observer()->isBusy())
 		return;
 
-	float fValue = float(iValue) / float(maximum() - minimum());
+	int iMaximum = maximum();
+	if (iMaximum > m_iDefault)
+		iMaximum = m_iDefault;
+	float fValue = float(iValue) / float(iMaximum - minimum());
+#ifdef CONFIG_DEBUG
 	qDebug("qtractorObserverSlider[%p]::sliderChanged(%g)", this, fValue);
+#endif
 	observer()->setValue(fValue);
 };
 
