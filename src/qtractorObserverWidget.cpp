@@ -72,7 +72,7 @@ void qtractorObserverSpinBox::spinBoxChanged ( int iValue )
 	if (observer()->isBusy())
 		return;
 
-	float fValue = float(iValue) / float(maximum() - minimum());
+	float fValue = float(iValue); // float(maximum() - minimum());
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorObserverSpinBox[%p]::spinBoxChanged(%g)", this, fValue);
 #endif
@@ -99,7 +99,7 @@ void qtractorObserverDoubleSpinBox::spinBoxChanged ( double value )
 	if (observer()->isBusy())
 		return;
 
-	float fValue = float(value) / float(maximum() - minimum());
+	float fValue = float(value); // float(maximum() - minimum());
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorObserverDoubleSpinBox[%p]::spinBoxChanged(%g)", this, fValue);
 #endif
