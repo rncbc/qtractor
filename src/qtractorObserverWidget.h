@@ -43,28 +43,30 @@ public:
 	class Observer : public qtractorObserver
 	{
 	public:
+
 		// Constructor.
-		Observer(qtractorSubject *pSubject, W *pWidget)
+		Observer(qtractorSubject *pSubject, qtractorObserverWidget<W> *pWidget)
 			: qtractorObserver(pSubject), m_pWidget(pWidget) {}
 
 	protected:
 
 		// Visitors overload.
 		void visit(QCheckBox *pCheckBox, float fValue)
-			{ pCheckBox->setChecked(fValue > 0.0f); }
+			{ pCheckBox->setChecked(bool(m_pWidget->scaleFromValue(fValue))); }
 		void visit(QSpinBox *pSpinBox, float fValue)
-			{ pSpinBox->setValue(int(100.0f * fValue)); }
+			{ pSpinBox->setValue(int(m_pWidget->scaleFromValue(fValue))); }
 		void visit(QDoubleSpinBox *pDoubleSpinBox, float fValue)
-			{ pDoubleSpinBox->setValue(fValue); }
+			{ pDoubleSpinBox->setValue(m_pWidget->scaleFromValue(fValue)); }
 		void visit(QSlider *pSlider, float fValue)
-			{ pSlider->setValue(int(10000.0f * fValue)); }
+			{ pSlider->setValue(int(m_pWidget->scaleFromValue(fValue))); }
 
 		// Observer updater.
 		void update() { visit(m_pWidget, value()); }
 
 	private:
+
 		// Members.
-		W *m_pWidget;
+		qtractorObserverWidget<W> *m_pWidget;
 	};
 
 	// Constructor.
@@ -85,6 +87,12 @@ public:
 	// Observer accessor.
 	Observer *observer() const { return m_pObserver; }
 
+protected:
+
+	// Pure virtuals.
+	virtual float scaleFromValue(float fValue) const = 0;
+	virtual float valueFromScale(float fScale) const = 0;
+
 private:
 
 	// Members.
@@ -104,6 +112,12 @@ public:
 
 	// Constructor.
 	qtractorObserverCheckBox(QWidget *pParent = 0);
+	
+protected:
+	
+	// Pure virtuals.
+	float scaleFromValue(float fValue) const;
+	float valueFromScale(float fScale) const;
 
 protected slots:
 
@@ -124,6 +138,12 @@ public:
 	// Constructor.
 	qtractorObserverSpinBox(QWidget *pParent = 0);
 
+protected:
+
+	// Pure virtuals.
+	float scaleFromValue(float fValue) const;
+	float valueFromScale(float fScale) const;
+
 protected slots:
 
 	void spinBoxChanged(int iValue);
@@ -142,6 +162,12 @@ public:
 
 	// Constructor.
 	qtractorObserverDoubleSpinBox(QWidget *pParent = 0);
+
+protected:
+	
+	// Pure virtuals.
+	float scaleFromValue(float fValue) const;
+	float valueFromScale(float fScale) const;
 
 protected slots:
 
@@ -171,6 +197,10 @@ public slots:
 	void setDefault(int iDefault);
 
 protected:
+
+	// Pure virtuals.
+	float scaleFromValue(float fValue) const;
+	float valueFromScale(float fScale) const;
 
 	// Alternate mouse behavior event handlers.
 	void mousePressEvent(QMouseEvent *pMouseEvent);

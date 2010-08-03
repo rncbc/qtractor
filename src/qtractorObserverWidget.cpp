@@ -39,13 +39,26 @@ qtractorObserverCheckBox::qtractorObserverCheckBox ( QWidget *pParent )
 		SLOT(checkBoxChanged(bool)));
 }
 
+
+// Pure virtuals.
+float qtractorObserverCheckBox::scaleFromValue ( float fValue ) const
+{
+	return (fValue > 0.0f);
+}
+
+float qtractorObserverCheckBox::valueFromScale ( float fScale ) const
+{
+	return (fScale > 0.0f);
+}
+
+
 // Protected slot.
 void qtractorObserverCheckBox::checkBoxChanged ( bool bValue )
 {
 	if (observer()->isBusy())
 		return;
 
-	float fValue = (bValue ? 1.0f : 0.0f);
+	float fValue = valueFromScale(bValue ? 1.0f : 0.0f);
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorObserverCheckBox[%p]::checkBoxChanged(%g)", this, fValue);
 #endif
@@ -66,13 +79,26 @@ qtractorObserverSpinBox::qtractorObserverSpinBox ( QWidget *pParent )
 		SLOT(spinBoxChanged(int)));
 }
 
+
+// Pure virtuals.
+float qtractorObserverSpinBox::scaleFromValue ( float fValue ) const
+{
+	return (/* float(maximum() - minimum()) * */ fValue);
+}
+
+float qtractorObserverSpinBox::valueFromScale ( float fScale ) const
+{
+	return (fScale /* / float(maximum() - minimum()) */);
+}
+
+
 // Protected slot.
 void qtractorObserverSpinBox::spinBoxChanged ( int iValue )
 {
 	if (observer()->isBusy())
 		return;
 
-	float fValue = float(iValue); // float(maximum() - minimum());
+	float fValue = valueFromScale(float(iValue));
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorObserverSpinBox[%p]::spinBoxChanged(%g)", this, fValue);
 #endif
@@ -93,13 +119,26 @@ qtractorObserverDoubleSpinBox::qtractorObserverDoubleSpinBox ( QWidget *pParent 
 		SLOT(spinBoxChanged(double)));
 }
 
+
+// Pure virtuals.
+float qtractorObserverDoubleSpinBox::scaleFromValue ( float fValue ) const
+{
+	return (/* float(maximum() - minimum()) * */ fValue);
+}
+
+float qtractorObserverDoubleSpinBox::valueFromScale ( float fScale ) const
+{
+	return (fScale /* / float(maximum() - minimum()) */);
+}
+
+
 // Protected slot.
 void qtractorObserverDoubleSpinBox::spinBoxChanged ( double value )
 {
 	if (observer()->isBusy())
 		return;
 
-	float fValue = float(value); // float(maximum() - minimum());
+	float fValue = valueFromScale(float(value));
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorObserverDoubleSpinBox[%p]::spinBoxChanged(%g)", this, fValue);
 #endif
@@ -131,6 +170,12 @@ int qtractorObserverSlider::getDefault (void) const
 // Set default (mid) value.
 void qtractorObserverSlider::setDefault ( int iDefault )
 {
+	if (iDefault < minimum())
+		iDefault = minimum();
+	else
+	if (iDefault > maximum())
+		iDefault = maximum();
+
 	m_iDefault = iDefault;
 }
 
@@ -163,16 +208,31 @@ void qtractorObserverSlider::wheelEvent ( QWheelEvent *pWheelEvent )
 }
 
 
+// Pure virtuals.
+float qtractorObserverSlider::scaleFromValue ( float fValue ) const
+{
+	int iMaximum = maximum();
+	if (iMaximum > m_iDefault)
+		iMaximum = m_iDefault;
+	return (float(iMaximum - minimum()) * fValue);
+}
+
+float qtractorObserverSlider::valueFromScale ( float fScale ) const
+{
+	int iMaximum = maximum();
+	if (iMaximum > m_iDefault)
+		iMaximum = m_iDefault;
+	return (fScale / float(iMaximum - minimum()));
+}
+
+
 // Protected slot.
 void qtractorObserverSlider::sliderChanged ( int iValue )
 {
 	if (observer()->isBusy())
 		return;
 
-	int iMaximum = maximum();
-	if (iMaximum > m_iDefault)
-		iMaximum = m_iDefault;
-	float fValue = float(iValue) / float(iMaximum - minimum());
+	float fValue = valueFromScale(float(iValue));
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorObserverSlider[%p]::sliderChanged(%g)", this, fValue);
 #endif
