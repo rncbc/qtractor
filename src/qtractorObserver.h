@@ -47,6 +47,8 @@ public:
 	void setValue(float fValue, qtractorObserver *pSender = NULL);
 	float value() const;
 
+	float prevValue() const;
+
 	// Busy flag predicate.
 	bool isBusy() const;
 
@@ -65,6 +67,9 @@ public:
 
 	// Queue flush (singleton) -- notify all pending observers.
 	static void flushQueue();
+	
+	// Queue reset (clear).
+	static void resetQueue();
 
 private:
 
@@ -72,6 +77,8 @@ private:
 	float   m_fValue;
 	bool	m_bBusy;
 	bool	m_bQueued;
+
+	float   m_fPrevValue;
 
 	QList<qtractorObserver *> m_observers;
 };
@@ -102,6 +109,8 @@ public:
 	void setValue(float fValue);
 	float value() const;
 
+	float prevValue() const;
+	
 	// Busy flag predicate.
 	bool isBusy() const;
 

@@ -4081,6 +4081,9 @@ void qtractorMainForm::updateSession (void)
 	// Update the session views...
 	viewRefresh();
 
+	// We're definitely clean...
+	qtractorSubject::resetQueue();
+
 	// Ah, make it stand right.
 	if (m_pTracks)
 		m_pTracks->trackView()->setFocus();

@@ -565,18 +565,26 @@ bool qtractorBusGainCommand::redo (void)
 	if (pMainForm == NULL)
 		return false;
 
+	// Mixer/Meter turn...
+	qtractorMixer *pMixer = pMainForm->mixer();
+	if (pMixer == NULL)
+		return false;
+
 	// Set Bus gain (repective monitor gets set too...)
 	float fGain = m_fPrevGain;
-	if ((busMode() & qtractorBus::Input) && pBus->monitor_in()) {
+
+	qtractorMixerStrip *pStrip = NULL;
+	if ((busMode() & qtractorBus::Input) && pBus->monitor_in())
+		pStrip = pMixer->inputRack()->findStrip(pBus->monitor_in());
+	else
+	if ((busMode() & qtractorBus::Output) && pBus->monitor_out())
+		pStrip = pMixer->outputRack()->findStrip(pBus->monitor_out());
+	if (pStrip && pStrip->meter()) {
 		if (!m_bPrevGain)
-			fGain = pBus->monitor_in()->gain();	
-		pBus->monitor_in()->setGain(m_fGain);
+			fGain = pStrip->meter()->prevGain();	
+		pStrip->meter()->setGain(m_fGain);
 	}
-	if ((busMode() & qtractorBus::Output) && pBus->monitor_out()) {
-		if (!m_bPrevGain)
-			fGain = pBus->monitor_out()->gain();	
-		pBus->monitor_out()->setGain(m_fGain);
-	}
+
 	// MIDI buses are special...
 	if (pBus->busType() == qtractorTrack::Midi) {
 		// Now we gotta make sure of proper MIDI bus...
@@ -590,22 +598,6 @@ bool qtractorBusGainCommand::redo (void)
 	m_bPrevGain = false;
 	m_fPrevGain = m_fGain;
 	m_fGain     = fGain;
-
-	// Mixer/Meter turn...
-	qtractorMixer *pMixer = pMainForm->mixer();
-	if (pMixer) {
-		qtractorMixerStrip *pStrip;
-		if ((busMode() & qtractorBus::Input) && pBus->monitor_in()) {
-			pStrip = pMixer->inputRack()->findStrip(pBus->monitor_in());
-			if (pStrip && pStrip->meter())
-				pStrip->meter()->updateGain();
-		}
-		if ((busMode() & qtractorBus::Output) && pBus->monitor_out()) {
-			pStrip = pMixer->outputRack()->findStrip(pBus->monitor_out());
-			if (pStrip && pStrip->meter())
-				pStrip->meter()->updateGain();
-		}
-	}
 
 	return true;
 }
@@ -666,18 +658,26 @@ bool qtractorBusPanningCommand::redo (void)
 	if (pMainForm == NULL)
 		return false;
 
-	// Set bus panning (repective monitor gets set too...)
-	float fPanning = m_fPrevPanning;	
-	if ((busMode() & qtractorBus::Input) && pBus->monitor_in()) {
+	// Mixer/Meter turn...
+	qtractorMixer *pMixer = pMainForm->mixer();
+	if (pMixer == NULL)
+		return false;
+
+	// Set Bus panning (repective monitor gets set too...)
+	float fPanning = m_fPrevPanning;
+
+	qtractorMixerStrip *pStrip = NULL;
+	if ((busMode() & qtractorBus::Input) && pBus->monitor_in())
+		pStrip = pMixer->inputRack()->findStrip(pBus->monitor_in());
+	else
+	if ((busMode() & qtractorBus::Output) && pBus->monitor_out())
+		pStrip = pMixer->outputRack()->findStrip(pBus->monitor_out());
+	if (pStrip && pStrip->meter()) {
 		if (!m_bPrevPanning)
-			fPanning = pBus->monitor_in()->panning();	
-		pBus->monitor_in()->setPanning(m_fPanning);
+			fPanning = pStrip->meter()->prevPanning();	
+		pStrip->meter()->setPanning(m_fPanning);
 	}
-	if ((busMode() & qtractorBus::Output) && pBus->monitor_out()) {
-		if (!m_bPrevPanning)
-			fPanning = pBus->monitor_out()->panning();	
-		pBus->monitor_out()->setPanning(m_fPanning);
-	}
+
 	// MIDI buses are special...
 	if (pBus->busType() == qtractorTrack::Midi) {
 		// Now we gotta make sure of proper MIDI bus...
@@ -691,22 +691,6 @@ bool qtractorBusPanningCommand::redo (void)
 	m_bPrevPanning = false;
 	m_fPrevPanning = m_fPanning;
 	m_fPanning     = fPanning;
-
-	// Mixer/Meter turn...
-	qtractorMixer *pMixer = pMainForm->mixer();
-	if (pMixer) {
-		qtractorMixerStrip *pStrip;
-		if ((busMode() & qtractorBus::Input) && pBus->monitor_in()) {
-			pStrip = pMixer->inputRack()->findStrip(pBus->monitor_in());
-			if (pStrip && pStrip->meter())
-				pStrip->meter()->updatePanning();
-		}
-		if ((busMode() & qtractorBus::Output) && pBus->monitor_out()) {
-			pStrip = pMixer->outputRack()->findStrip(pBus->monitor_out());
-			if (pStrip && pStrip->meter())
-				pStrip->meter()->updatePanning();
-		}
-	}
 
 	return true;
 }

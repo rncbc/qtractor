@@ -22,6 +22,8 @@
 #ifndef __qtractorMeter_h
 #define __qtractorMeter_h
 
+#include "qtractorObserver.h"
+
 #include <QWidget>
 
 
@@ -31,6 +33,9 @@ class qtractorMonitor;
 
 class qtractorObserverSlider;
 class qtractorObserverDoubleSpinBox;
+
+class qtractorMeterPanObserver;
+class qtractorMeterGainObserver;
 
 class QHBoxLayout;
 class QVBoxLayout;
@@ -105,14 +110,23 @@ public:
 	qtractorObserverSlider *gainSlider() const;
 	qtractorObserverDoubleSpinBox *gainSpinBox() const;
 
+	// Panning subject accessors.
+	void setPanningSubject(qtractorSubject *pSubject);
+	qtractorSubject *panningSubject() const;
+
 	// Panning accessors.
 	void setPanning(float fPanning);
 	float panning() const;
+	float prevPanning() const;
+
+	// Gain subject accessors.
+	void setGainSubject(qtractorSubject *pSubject);
+	qtractorSubject *gainSubject() const;
 
 	// Gain accessors.
 	void setGain(float fGain);
-	float gainScale() const;
 	float gain() const;
+	float prevGain() const;
 
 	// Monitor accessors.
 	virtual void setMonitor(qtractorMonitor *pMonitor) = 0;
@@ -135,28 +149,16 @@ public:
 	void setPeakFalloff(int bPeakFalloff);
 	int peakFalloff() const;
 
-protected:
-
-	// Gain-scale converters...
-	virtual float gainFromScale(float fScale) const { return fScale; }
-	virtual float scaleFromGain(float fGain)  const { return fGain;  }
-	virtual float gainFromValue(float fValue) const { return fValue; }
-	virtual float valueFromGain(float fGain)  const { return fGain;  }
-
-protected slots:
-
-	// Slider value-changed slots.
-	void panSliderChangedSlot(int);
-	void panSpinBoxChangedSlot(double);
-	void gainSliderChangedSlot(int);
-	void gainSpinBoxChangedSlot(double);
+	// Observer value-changed callbacks.
+	void panningChangedNotify(float fPanning);
+	void gainChangedNotify(float fGain);
 
 signals:
 
-	// Slider change signals.
-	void panChangedSignal(float fPanning);
-	void gainChangedSignal(float fGain);
-	
+	// Observer value-changed signals.
+	void panningChangedSignal(float);
+	void gainChangedSignal(float);
+
 private:
 
 	// Local instance variables.
@@ -171,8 +173,8 @@ private:
 	qtractorObserverSlider        *m_pGainSlider;
 	qtractorObserverDoubleSpinBox *m_pGainSpinBox;
 
-	// Update exclusiveness flag.
-	int m_iUpdate;
+	qtractorMeterPanObserver  *m_pPanObserver;
+	qtractorMeterGainObserver *m_pGainObserver;
 
 	// Peak falloff mode setting (0=no peak falloff).
 	int m_iPeakFalloff;

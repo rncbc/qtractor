@@ -36,6 +36,7 @@
 #include "qtractorInstrument.h"
 #include "qtractorPlugin.h"
 #include "qtractorMixer.h"
+#include "qtractorMeter.h"
 
 #include "qtractorMainForm.h"
 
@@ -441,8 +442,16 @@ void qtractorTrack::setGain ( float fGain )
 {
 	m_props.gain = fGain;
 
-	if (m_pMonitor)
-		m_pMonitor->setGain(fGain);
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm) {
+		qtractorMixer *pMixer = pMainForm->mixer();
+		if (pMixer) {
+			qtractorMixerStrip *pStrip
+				= pMixer->trackRack()->findStrip(m_pMonitor);
+			if (pStrip && pStrip->meter())
+				pStrip->meter()->setGain(fGain);
+		}
+	}
 }
 
 float qtractorTrack::gain (void) const
@@ -450,19 +459,38 @@ float qtractorTrack::gain (void) const
 	return (m_pMonitor ? m_pMonitor->gain() : m_props.gain);
 }
 
+float qtractorTrack::prevGain (void) const
+{
+	return (m_pMonitor ? m_pMonitor->prevGain() : 1.0f);
+}
+
+
 
 // Track stereo-panning accessor.
 void qtractorTrack::setPanning ( float fPanning )
 {
 	m_props.panning = fPanning;
 
-	if (m_pMonitor)
-		m_pMonitor->setPanning(fPanning);
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm) {
+		qtractorMixer *pMixer = pMainForm->mixer();
+		if (pMixer) {
+			qtractorMixerStrip *pStrip
+				= pMixer->trackRack()->findStrip(m_pMonitor);
+			if (pStrip && pStrip->meter())
+				pStrip->meter()->setPanning(fPanning);
+		}
+	}
 }
 
 float qtractorTrack::panning (void) const
 {
 	return (m_pMonitor ? m_pMonitor->panning() : m_props.panning);
+}
+
+float qtractorTrack::prevPanning (void) const
+{
+	return (m_pMonitor ? m_pMonitor->prevPanning() : 0.0f);
 }
 
 

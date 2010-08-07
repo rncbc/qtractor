@@ -40,15 +40,13 @@ qtractorObserverCheckBox::qtractorObserverCheckBox ( QWidget *pParent )
 }
 
 
-// Pure virtuals.
-float qtractorObserverCheckBox::scaleFromValue ( float fValue ) const
+// Visitors overload.
+void qtractorObserverCheckBox::updateValue ( float fValue )
 {
-	return (fValue > 0.0f);
-}
-
-float qtractorObserverCheckBox::valueFromScale ( float fScale ) const
-{
-	return (fScale > 0.0f);
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorObserverCheckBox[%p]::updateValue(%g)", this, fValue);
+#endif
+	QCheckBox::setChecked(bool(scaleFromValue(fValue)));
 }
 
 
@@ -80,15 +78,13 @@ qtractorObserverSpinBox::qtractorObserverSpinBox ( QWidget *pParent )
 }
 
 
-// Pure virtuals.
-float qtractorObserverSpinBox::scaleFromValue ( float fValue ) const
+// Visitors overload.
+void qtractorObserverSpinBox::updateValue ( float fValue )
 {
-	return (/* float(maximum() - minimum()) * */ fValue);
-}
-
-float qtractorObserverSpinBox::valueFromScale ( float fScale ) const
-{
-	return (fScale /* / float(maximum() - minimum()) */);
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorObserverSpinBox[%p]::updateValue(%g)", this, fValue);
+#endif
+	QSpinBox::setValue(int(scaleFromValue(fValue)));
 }
 
 
@@ -120,15 +116,13 @@ qtractorObserverDoubleSpinBox::qtractorObserverDoubleSpinBox ( QWidget *pParent 
 }
 
 
-// Pure virtuals.
-float qtractorObserverDoubleSpinBox::scaleFromValue ( float fValue ) const
+// Visitors overload.
+void qtractorObserverDoubleSpinBox::updateValue ( float fValue )
 {
-	return (/* float(maximum() - minimum()) * */ fValue);
-}
-
-float qtractorObserverDoubleSpinBox::valueFromScale ( float fScale ) const
-{
-	return (fScale /* / float(maximum() - minimum()) */);
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorObserverDoubleSpinBox[%p]::updateValue(%g)", this, fValue);
+#endif
+	QDoubleSpinBox::setValue(scaleFromValue(fValue));
 }
 
 
@@ -208,21 +202,13 @@ void qtractorObserverSlider::wheelEvent ( QWheelEvent *pWheelEvent )
 }
 
 
-// Pure virtuals.
-float qtractorObserverSlider::scaleFromValue ( float fValue ) const
+// Visitors overload.
+void qtractorObserverSlider::updateValue ( float fValue )
 {
-	int iMaximum = maximum();
-	if (iMaximum > m_iDefault)
-		iMaximum = m_iDefault;
-	return (float(iMaximum - minimum()) * fValue);
-}
-
-float qtractorObserverSlider::valueFromScale ( float fScale ) const
-{
-	int iMaximum = maximum();
-	if (iMaximum > m_iDefault)
-		iMaximum = m_iDefault;
-	return (fScale / float(iMaximum - minimum()));
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorObserverSlider[%p]::updateValue(%g)", this, fValue);
+#endif
+	QSlider::setValue(int(scaleFromValue(fValue)));
 }
 
 

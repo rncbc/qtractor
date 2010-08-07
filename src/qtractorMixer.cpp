@@ -356,8 +356,8 @@ void qtractorMixerStrip::initMixerStrip (void)
 	if (m_pMeter) {
 		m_pLayout->addWidget(m_pMeter);
 		QObject::connect(m_pMeter,
-			SIGNAL(panChangedSignal(float)),
-			SLOT(panChangedSlot(float)));
+			SIGNAL(panningChangedSignal(float)),
+			SLOT(panningChangedSlot(float)));
 		QObject::connect(m_pMeter,
 			SIGNAL(gainChangedSignal(float)),
 			SLOT(gainChangedSlot(float)));
@@ -776,13 +776,13 @@ void qtractorMixerStrip::monitorButtonSlot ( bool bOn )
 
 
 // Pan-meter slider value change slot.
-void qtractorMixerStrip::panChangedSlot ( float fPanning )
+void qtractorMixerStrip::panningChangedSlot ( float fPanning )
 {
 	if (m_pMeter == NULL)
 		return;
 
 #ifdef CONFIG_DEBUG
-	qDebug("qtractorMixerStrip[%p]::panChangedSlot(%.3g)", this, fPanning);
+	qDebug("qtractorMixerStrip[%p]::panningChangedSlot(%g)", this, fPanning);
 #endif
 
 	qtractorSession *pSession = qtractorSession::getInstance();
@@ -807,7 +807,7 @@ void qtractorMixerStrip::gainChangedSlot ( float fGain )
 		return;
 
 #ifdef CONFIG_DEBUG
-	qDebug("qtractorMixerStrip[%p]::gainChangedSlot(%.3g)", this, fGain);
+	qDebug("qtractorMixerStrip[%p]::gainChangedSlot(%g)", this, fGain);
 #endif
 
 	qtractorSession *pSession = qtractorSession::getInstance();

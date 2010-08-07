@@ -51,7 +51,7 @@
 
 // Possible 20 * log10(x) optimization
 // (borrowed from musicdsp.org)
-static inline float log10f2 ( float x )
+static inline float log10f2_opt ( float x )
 {
 #ifdef CONFIG_FLOAT32
 #	define M_LOG10F20 6.0205999132796239042f // (= 20.0f * M_LN2 / M_LN10)
@@ -61,8 +61,18 @@ static inline float log10f2 ( float x )
 	return M_LOG10F20 * ((((u.i & 0x7f800000) >> 23) - 0x7f)
 		+ (u.i & 0x007fffff) / (float) 0x800000);
 #else
-	return 20.0f * log10f(x);
+	return 20.0f * ::log10f(x);
 #endif
+}
+
+static inline float log10f2 ( float x )
+{
+	return (x > 0.0f ? 20.0f * ::log10f(x) : QTRACTOR_AUDIO_METER_MINDB);	
+}
+
+static inline float pow10f2 ( float x )
+{
+	return ::powf(10.0f, x / 20.0f);
 }
 
 
@@ -219,8 +229,7 @@ void qtractorAudioMeterValue::refresh (void)
 
 	float dB = QTRACTOR_AUDIO_METER_MINDB;
 	if (fValue > 0.0f)
-		dB = log10f2(fValue);
-
+		dB = log10f2_opt(fValue);
 	if (dB < QTRACTOR_AUDIO_METER_MINDB)
 		dB = QTRACTOR_AUDIO_METER_MINDB;
 	else if (dB > QTRACTOR_AUDIO_METER_MAXDB)
@@ -324,6 +333,54 @@ void qtractorAudioMeterValue::resizeEvent (QResizeEvent *pResizeEvent)
 }
 
 
+//----------------------------------------------------------------------
+// class qtractorAudioMeterGainSpinBoxInterface -- Observer interface.
+//
+
+// Local converter interface.
+class qtractorAudioMeterGainSpinBoxInterface
+	: public qtractorObserverDoubleSpinBox::Interface
+{
+public:
+
+	// Constructor.
+	qtractorAudioMeterGainSpinBoxInterface (
+		qtractorObserverDoubleSpinBox *pSpinBox )
+		: qtractorObserverDoubleSpinBox::Interface(pSpinBox) {}
+
+	// Formerly Pure virtuals.
+	float scaleFromValue ( float fValue ) const
+		{ return log10f2(fValue); }
+
+	float valueFromScale ( float fScale ) const
+		{ return pow10f2(fScale); }
+};
+
+
+//----------------------------------------------------------------------
+// class qtractorAudioMeterGainSliderInterface -- Observer interface.
+//
+
+// Local converter interface.
+class qtractorAudioMeterGainSliderInterface
+	: public qtractorObserverSlider::Interface
+{
+public:
+
+	// Constructor.
+	qtractorAudioMeterGainSliderInterface (
+		qtractorObserverSlider *pSlider )
+		: qtractorObserverSlider::Interface(pSlider) {}
+
+	// Formerly Pure virtuals.
+	float scaleFromValue ( float fValue ) const
+		{ return 10000.0f * IEC_Scale(log10f2(fValue)); }
+
+	float valueFromScale ( float fScale ) const
+		{ return pow10f2(IEC_dB(fScale / 10000.0f)); }
+};
+
+
 //----------------------------------------------------------------------------
 // qtractorAudioMeter -- Audio meter bridge slot widget.
 
@@ -343,6 +400,11 @@ qtractorAudioMeter::qtractorAudioMeter ( qtractorAudioMonitor *pAudioMonitor,
 #endif
 
 	topWidget()->hide();
+
+	gainSlider()->setInterface(
+		new qtractorAudioMeterGainSliderInterface(gainSlider()));
+	gainSpinBox()->setInterface(
+		new qtractorAudioMeterGainSpinBoxInterface(gainSpinBox()));
 
 	gainSlider()->setMaximum(11500);
 
@@ -391,40 +453,14 @@ int qtractorAudioMeter::iec_level ( int iIndex ) const
 }
 
 
-// Gain-scale converters...
-float qtractorAudioMeter::gainFromScale ( float fScale ) const
-{
-	return ::powf(10.0f, IEC_dB(fScale) / 20.0f);
-}
-
-float qtractorAudioMeter::scaleFromGain ( float fGain ) const
-{
-	return IEC_Scale(valueFromGain(fGain));
-}
-
-
-// Gain-value (dB) converters...
-float qtractorAudioMeter::gainFromValue ( float fValue ) const
-{
-	return gainFromScale(IEC_Scale(fValue));
-}
-
-float qtractorAudioMeter::valueFromGain ( float fGain ) const
-{
-	return (fGain > 0.0f ? 20.0f * log10f(fGain) : QTRACTOR_AUDIO_METER_MINDB);
-}
-
-
 // Audio monitor reset
 void qtractorAudioMeter::reset (void)
 {
 	if (m_pAudioMonitor == NULL)
 		return;
 
-	panSlider()->setSubject(m_pAudioMonitor->panningSubject());
-	panSpinBox()->setSubject(m_pAudioMonitor->panningSubject());
-	gainSlider()->setSubject(m_pAudioMonitor->gainSubject());
-	gainSpinBox()->setSubject(m_pAudioMonitor->gainSubject());
+	setPanningSubject(m_pAudioMonitor->panningSubject());
+	setGainSubject(m_pAudioMonitor->gainSubject());
 
 	unsigned short iChannels = m_pAudioMonitor->channels();
 
@@ -556,7 +592,7 @@ const QColor& qtractorAudioMeter::defaultColor ( int iIndex )
 // Pan-slider value change method.
 void qtractorAudioMeter::updatePanning (void)
 {
-	setPanning(m_pAudioMonitor->panning());
+//	setPanning(m_pAudioMonitor->panning());
 
 	panSlider()->setToolTip(
 		tr("Pan: %1").arg(panning(), 0, 'g', 2));
@@ -565,10 +601,10 @@ void qtractorAudioMeter::updatePanning (void)
 // Gain-slider value change method.
 void qtractorAudioMeter::updateGain (void)
 {
-	setGain(m_pAudioMonitor->gain());
+//	setGain(m_pAudioMonitor->gain());
 
 	gainSlider()->setToolTip(
-		tr("Gain: %1 dB").arg(IEC_dB(gainScale()), 0, 'g', 3));
+		tr("Gain: %1 dB").arg(gainSpinBox()->value(), 0, 'g', 3));
 }
 
 

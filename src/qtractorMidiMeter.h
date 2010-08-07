@@ -156,10 +156,6 @@ public:
 
 protected:
 
-	// Gain-value (percent) converters...
-	float gainFromValue(float fValue) const;
-	float valueFromGain(float fGain)  const;
-
 	// Specific event handlers.
 	void resizeEvent(QResizeEvent *);
 

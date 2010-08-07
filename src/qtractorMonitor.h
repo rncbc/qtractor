@@ -40,22 +40,24 @@ public:
 	virtual ~qtractorMonitor() {}
 
 	// Gain accessors.
-	float gain() const
-		{ return m_gain.value(); }
-	void setGain(float fGain)
-		{ m_gain.setValue(fGain); update(); }
 	qtractorSubject *gainSubject()
 		{ return &m_gain; }
+	void setGain(float fGain)
+		{ m_gain.setValue(fGain); update(); }
+	float gain() const
+		{ return m_gain.value(); }
+	float prevGain() const
+		{ return m_gain.prevValue(); }
 
 	// Stereo panning accessors.
-	float panning() const
-		{ return m_panning.value(); }
-	void setPanning(float fPanning)
-		{ m_panning.setValue(fPanning); update(); }
 	qtractorSubject *panningSubject()
 		{ return &m_panning; }
-
-protected:
+	void setPanning(float fPanning)
+		{ m_panning.setValue(fPanning); update(); }
+	float panning() const
+		{ return m_panning.value(); }
+	float prevPanning() const
+		{ return m_panning.prevValue(); }
 
 	// Rebuild the whole panning-gain array...
 	virtual void update() = 0;

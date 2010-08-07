@@ -70,8 +70,6 @@ public:
 
 	bool push ( qtractorSubject *pSubject, qtractorObserver *pSender )
 	{
-		if (pSubject->isQueued())
-			return true;
 		unsigned int iIndex = m_iQueueIndex;
 		if (iIndex >= m_iQueueSize)
 			return false;
@@ -89,16 +87,26 @@ public:
 		if (iIndex == 0)
 			return false;
 		QueueItem *pItem = &m_pQueueItems[--iIndex];
-		if ((pItem->subject)->isQueued()) {
-			(pItem->subject)->setQueued(false);
-			(pItem->subject)->notify(pItem->sender);
-		}
+		qtractorSubject *pSubject = pItem->subject;
+		pSubject->setQueued(false);
+		pSubject->notify(pItem->sender);
 		m_iQueueIndex = iIndex;
 		return true;
 	}
 
 	void flush ()
 		{ while (pop()) ; }
+
+	void reset ()
+	{
+		unsigned int iIndex = m_iQueueIndex;
+		while (iIndex > 0) {
+			QueueItem *pItem = &m_pQueueItems[--iIndex];
+			if ((pItem->subject)->isQueued())
+				(pItem->subject)->setQueued(false);
+		}
+		clear();
+	}
 
 	void resize ( unsigned int iNewSize )
 	{
@@ -136,7 +144,7 @@ static qtractorSubjectQueue g_subjectQueue;
 
 // Constructor.
 qtractorSubject::qtractorSubject ( float fValue )
-	: m_fValue(fValue), m_bBusy(false), m_bQueued(false)
+	: m_fValue(fValue), m_bBusy(false), m_bQueued(false), m_fPrevValue(fValue)
 {
 }
 
@@ -156,17 +164,25 @@ qtractorSubject::~qtractorSubject (void)
 // Direct value accessors.
 void qtractorSubject::setValue ( float fValue, qtractorObserver *pSender )
 {
-	float fOldValue = m_fValue;
+	if (fValue == m_fValue)
+		return;
+
+	if (!m_bQueued) {
+		m_fPrevValue = m_fValue;
+		g_subjectQueue.push(this, pSender);
+	}
 
 	m_fValue = fValue;
-
-	if (fValue != fOldValue)
-		g_subjectQueue.push(this, pSender);
 }
 
 float qtractorSubject::value (void) const
 {
 	return m_fValue;
+}
+
+float qtractorSubject::prevValue (void) const
+{
+	return m_fPrevValue;
 }
 
 
@@ -228,6 +244,13 @@ bool qtractorSubject::isQueued (void) const
 void qtractorSubject::flushQueue (void)
 {
 	g_subjectQueue.flush();
+}
+
+
+// Queue reset (clear).
+void qtractorSubject::resetQueue (void)
+{
+	g_subjectQueue.reset();
 }
 
 
@@ -301,6 +324,20 @@ float qtractorObserver::value (void) const
 		fValue = cbrtf2(fValue);
 
 	return fValue;
+}
+
+
+float qtractorObserver::prevValue (void) const
+{
+	if (m_pSubject == NULL)
+		return 0.0f;
+
+	float fPrevValue = m_pSubject->prevValue();
+
+	if (m_bLogarithmic)
+		fPrevValue = cbrtf2(fPrevValue);
+
+	return fPrevValue;
 }
 
 

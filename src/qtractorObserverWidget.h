@@ -34,69 +34,117 @@
 #include <QSlider>
 
 
-template <class W>
-class qtractorObserverWidget : public W
+template <class Widget>
+class qtractorObserverWidget : public Widget
 {
 public:
 
+	// Local interface converter.
+	class Interface
+	{
+	public:
+		
+		// Constructor.
+		Interface(qtractorObserverWidget<Widget> *pWidget)
+			: m_pWidget(pWidget) {}
+
+		qtractorObserverWidget<Widget> *widget() const
+			{ return m_pWidget; }
+
+		// Pure virtuals.
+		virtual float scaleFromValue(float fValue) const = 0;
+		virtual float valueFromScale(float fScale) const = 0;
+	
+	private:
+
+		// Members.
+		qtractorObserverWidget<Widget> *m_pWidget;
+	};
+	
 	// Local observer.
 	class Observer : public qtractorObserver
 	{
 	public:
 
 		// Constructor.
-		Observer(qtractorSubject *pSubject, qtractorObserverWidget<W> *pWidget)
+		Observer(qtractorSubject *pSubject,
+			qtractorObserverWidget<Widget> *pWidget)
 			: qtractorObserver(pSubject), m_pWidget(pWidget) {}
+
+		// Observer updater.
+		void update() { m_pWidget->updateValue(value()); }
 
 	protected:
 
 		// Visitors overload.
 		void visit(QCheckBox *pCheckBox, float fValue)
-			{ pCheckBox->setChecked(bool(m_pWidget->scaleFromValue(fValue))); }
+			{ pCheckBox->setChecked(bool(fValue)); }
 		void visit(QSpinBox *pSpinBox, float fValue)
-			{ pSpinBox->setValue(int(m_pWidget->scaleFromValue(fValue))); }
+			{ pSpinBox->setValue(int(fValue)); }
 		void visit(QDoubleSpinBox *pDoubleSpinBox, float fValue)
-			{ pDoubleSpinBox->setValue(m_pWidget->scaleFromValue(fValue)); }
+			{ pDoubleSpinBox->setValue(fValue); }
 		void visit(QSlider *pSlider, float fValue)
-			{ pSlider->setValue(int(m_pWidget->scaleFromValue(fValue))); }
-
-		// Observer updater.
-		void update() { visit(m_pWidget, value()); }
+			{ pSlider->setValue(int(fValue)); }
 
 	private:
 
 		// Members.
-		qtractorObserverWidget<W> *m_pWidget;
+		qtractorObserverWidget<Widget> *m_pWidget;
 	};
 
 	// Constructor.
 	qtractorObserverWidget(QWidget *pParent = 0)
-		: W(pParent), m_pObserver(NULL) {};
+		: Widget(pParent), m_pObserver(NULL), m_pInterface(NULL) {};
 
 	// Destructor.
 	~qtractorObserverWidget()
-		{ if (m_pObserver) delete m_pObserver; }
+	{
+		if (m_pObserver)
+			delete m_pObserver;
+		if (m_pInterface)
+			delete m_pInterface;
+	}
 
 	// Setup.
 	void setSubject(qtractorSubject *pSubject)
 	{
-		if (m_pObserver) delete m_pObserver;
+		if (m_pObserver)
+			delete m_pObserver;
 		m_pObserver = new Observer(pSubject, this); 
 	}
 
 	// Observer accessor.
-	Observer *observer() const { return m_pObserver; }
+	Observer *observer() const
+		{ return m_pObserver; }
+
+	// Interface setup.
+	void setInterface(Interface *pInterface)
+	{
+		if (m_pInterface)
+			delete m_pInterface;
+		m_pInterface = pInterface;
+	}
+
+	// Interface accessor.
+	Interface *interface() const
+		{ return m_pInterface; }
+
+	// Interface methods.
+	float scaleFromValue(float fValue) const
+		{ return (m_pInterface ? m_pInterface->scaleFromValue(fValue) : fValue); }
+	float valueFromScale(float fScale) const
+		{ return (m_pInterface ? m_pInterface->valueFromScale(fScale) : fScale); }
 
 protected:
 
-	// Pure virtuals.
-	virtual float scaleFromValue(float fValue) const = 0;
-	virtual float valueFromScale(float fScale) const = 0;
-
+	// Pure virtual visitor.
+	virtual void updateValue(float fValue) = 0;
+	
 private:
 
 	// Members.
-	Observer *m_pObserver;
+	Observer  *m_pObserver;
+	Interface *m_pInterface;
 };
 
 
@@ -114,10 +162,9 @@ public:
 	qtractorObserverCheckBox(QWidget *pParent = 0);
 	
 protected:
-	
-	// Pure virtuals.
-	float scaleFromValue(float fValue) const;
-	float valueFromScale(float fScale) const;
+
+	// Visitors overload.
+	void updateValue(float fValue);
 
 protected slots:
 
@@ -140,9 +187,8 @@ public:
 
 protected:
 
-	// Pure virtuals.
-	float scaleFromValue(float fValue) const;
-	float valueFromScale(float fScale) const;
+	// Visitors overload.
+	void updateValue(float fValue);
 
 protected slots:
 
@@ -162,12 +208,11 @@ public:
 
 	// Constructor.
 	qtractorObserverDoubleSpinBox(QWidget *pParent = 0);
-
-protected:
 	
-	// Pure virtuals.
-	float scaleFromValue(float fValue) const;
-	float valueFromScale(float fScale) const;
+protected:
+
+	// Visitors overload.
+	void updateValue(float fValue);
 
 protected slots:
 
@@ -198,13 +243,12 @@ public slots:
 
 protected:
 
-	// Pure virtuals.
-	float scaleFromValue(float fValue) const;
-	float valueFromScale(float fScale) const;
-
 	// Alternate mouse behavior event handlers.
 	void mousePressEvent(QMouseEvent *pMouseEvent);
 	void wheelEvent(QWheelEvent *pWheelEvent);
+
+	// Visitors overload.
+	void updateValue(float fValue);
 
 protected slots:
 

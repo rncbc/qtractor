@@ -1,7 +1,7 @@
 // qtractorTrackCommand.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -31,7 +31,6 @@
 #include "qtractorMidiEngine.h"
 #include "qtractorMidiControl.h"
 #include "qtractorMixer.h"
-#include "qtractorMeter.h"
 
 
 //----------------------------------------------------------------------
@@ -834,7 +833,7 @@ bool qtractorTrackGainCommand::redo (void)
 		return false;
 
 	// Set undo value...
-	float fGain = (m_bPrevGain ? m_fPrevGain : pTrack->gain());	
+	float fGain = (m_bPrevGain ? m_fPrevGain : pTrack->prevGain());
 
 	// Set track gain (respective monitor gets set too...)
 	pTrack->setGain(m_fGain);
@@ -864,15 +863,6 @@ bool qtractorTrackGainCommand::redo (void)
 	m_bPrevGain = false;
 	m_fPrevGain = m_fGain;
 	m_fGain     = fGain;
-
-	// Mixer/Meter turn...
-	qtractorMixer *pMixer = pMainForm->mixer();
-	if (pMixer) {
-		qtractorMixerStrip *pStrip
-			= pMixer->trackRack()->findStrip(pTrack->monitor());
-		if (pStrip && pStrip->meter())
-			pStrip->meter()->updateGain();
-	}
 
 	return true;
 }
@@ -936,7 +926,7 @@ bool qtractorTrackPanningCommand::redo (void)
 		return false;
 
 	// Set undo value...
-	float fPanning = (m_bPrevPanning ? m_fPrevPanning : pTrack->panning());	
+	float fPanning = (m_bPrevPanning ? m_fPrevPanning : pTrack->prevPanning());
 
 	// Set track panning (respective monitor gets set too...)
 	pTrack->setPanning(m_fPanning);
@@ -965,15 +955,6 @@ bool qtractorTrackPanningCommand::redo (void)
 	m_bPrevPanning = false;
 	m_fPrevPanning = m_fPanning;
 	m_fPanning     = fPanning;
-
-	// Mixer/Meter turn...
-	qtractorMixer *pMixer = pMainForm->mixer();
-	if (pMixer) {
-		qtractorMixerStrip *pStrip
-			= pMixer->trackRack()->findStrip(pTrack->monitor());
-		if (pStrip && pStrip->meter())
-			pStrip->meter()->updatePanning();
-	}
 
 	return true;
 }

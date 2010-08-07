@@ -96,10 +96,12 @@ public:
 	// Track gain (volume) accessor.
 	void setGain(float fGain);
 	float gain() const;
+	float prevGain() const;
 
 	// Track stereo-panning accessor.
 	void setPanning(float fPanning);
 	float panning() const;
+	float prevPanning() const;
 
 	// MIDI specific: track-tag accessors.
 	void setMidiTag(unsigned short iMidiTag);

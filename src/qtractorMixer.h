@@ -114,7 +114,7 @@ protected slots:
 	void monitorButtonSlot(bool bOn);
 
 	// Meter slider change slots.
-	void panChangedSlot(float);
+	void panningChangedSlot(float);
 	void gainChangedSlot(float);
 
 protected:
