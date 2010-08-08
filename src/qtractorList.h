@@ -274,6 +274,9 @@ Node *qtractorList<Node>::at ( int iNode ) const
 	int i;
 	Node *pNode;
 
+	if (iNode < 0 || iNode >= m_iCount)
+		return 0;
+
 	if (iNode > (m_iCount >> 1)) {
 		for (i = m_iCount - 1, pNode = m_pLast;
 				pNode && i > iNode;

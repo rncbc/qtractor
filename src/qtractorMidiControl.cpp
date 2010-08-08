@@ -235,8 +235,6 @@ bool qtractorMidiControl::processEvent ( const qtractorCtlEvent& ctle ) const
 	}
 	else iTrack = val.param();
 
-	if (iTrack < 0) return false;
-
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
 		return false;
