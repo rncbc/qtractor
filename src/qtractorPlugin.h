@@ -24,6 +24,8 @@
 
 #include "qtractorEngine.h"
 
+#include "qtractorObserver.h"
+
 #include <QStringList>
 #include <QLibrary>
 #include <QSize>
@@ -36,6 +38,7 @@ class qtractorPluginPath;
 class qtractorPluginFile;
 class qtractorPluginList;
 class qtractorPluginParam;
+class qtractorPluginParamObserver;
 class qtractorPluginForm;
 class qtractorPlugin;
 
@@ -625,14 +628,11 @@ class qtractorPluginParam
 {
 public:
 
-	// Constructors.
-	qtractorPluginParam(qtractorPlugin *pPlugin, unsigned long iIndex)
-		: m_pPlugin(pPlugin), m_iIndex(iIndex),
-			m_fMinValue(0.0f), m_fMaxValue(0.0f),
-			m_fDefaultValue(0.0f), m_fValue(0.0f) {}
+	// Constructor.
+	qtractorPluginParam(qtractorPlugin *pPlugin, unsigned long iIndex);
 
 	// Destructor.
-	virtual ~qtractorPluginParam() {}
+	virtual ~qtractorPluginParam();
 
 	// Main properties accessors.
 	qtractorPlugin *plugin() const { return m_pPlugin; }
@@ -676,14 +676,17 @@ public:
 	
 	// Current parameter value.
 	void setValue(float fValue, bool bUpdate);
-	float value() const
-		{ return m_fValue; }
+	float value() const;
+	float prevValue() const;
+
+	// Parameter update method.
+	void updateValue(float fValue, bool bUpdate);
 
 	// Reset-to-default method.
 	void reset() { setValue(m_fDefaultValue, true); }
 
 	// Direct parameter value.
-	float *data() { return &m_fValue; }
+	qtractorSubject *subject() { return &m_subject; }
 
 private:
 
@@ -694,11 +697,16 @@ private:
 	// Parameter name/label.
 	QString m_sName;
 
-	// Port values.
+	// Port value limits.
 	float m_fMinValue;
 	float m_fMaxValue;
 	float m_fDefaultValue;
-	float m_fValue;
+	
+	// Port subject value.
+	qtractorSubject m_subject;
+
+	// Port observer manager.
+	qtractorPluginParamObserver *m_pObserver;
 };
 
 

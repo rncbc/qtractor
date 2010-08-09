@@ -84,7 +84,6 @@ headers = \
 	src/qtractorSessionCommand.h \
 	src/qtractorSessionCursor.h \
 	src/qtractorSessionDocument.h \
-	src/qtractorSlider.h \
 	src/qtractorSpinBox.h \
 	src/qtractorThumbView.h \
 	src/qtractorTimeScale.h \

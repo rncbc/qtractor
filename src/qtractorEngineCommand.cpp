@@ -403,6 +403,33 @@ bool qtractorBusCommand::deleteBus (void)
 
 
 
+// Monitor meter accessor.
+qtractorMeter *qtractorBusCommand::meter (void) const
+{
+	qtractorBus *pBus = bus();
+	if (pBus == NULL)
+		return false;
+
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm == NULL)
+		return NULL;
+
+	qtractorMixer *pMixer = pMainForm->mixer();
+	if (pMixer == NULL)
+		return NULL;
+
+	// Mixer strip determination...
+	qtractorMixerStrip *pStrip = NULL;
+	if ((busMode() & qtractorBus::Input) && pBus->monitor_in())
+		pStrip = pMixer->inputRack()->findStrip(pBus->monitor_in());
+	else
+	if ((busMode() & qtractorBus::Output) && pBus->monitor_out())
+		pStrip = pMixer->outputRack()->findStrip(pBus->monitor_out());
+
+	return (pStrip ? pStrip->meter() : NULL);
+}
+
+
 //----------------------------------------------------------------------
 // class qtractorCreateBusCommand - implementation.
 //
@@ -519,9 +546,12 @@ qtractorBusGainCommand::qtractorBusGainCommand ( qtractorBus *pBus,
 	qtractorBus::BusMode busMode, float fGain )
 	: qtractorBusCommand(QObject::tr("bus gain"), pBus, busMode)
 {
-	m_fGain     = fGain;
+	m_fGain = fGain;
 	m_fPrevGain = 1.0f;
-	m_bPrevGain = false;
+
+	qtractorMeter *pMeter = meter();
+	if (pMeter)
+		m_fPrevGain = pMeter->prevGain();
 
 	// Try replacing an previously equivalent command...
 	static qtractorBusGainCommand *s_pPrevGainCommand = NULL;
@@ -544,7 +574,6 @@ qtractorBusGainCommand::qtractorBusGainCommand ( qtractorBus *pBus,
 				int   iCurrSign = (fPrevGain < m_fGain   ? +1 : -1); 
 				if (iPrevSign == iCurrSign) {
 					m_fPrevGain = fLastGain;
-					m_bPrevGain = true;
 					(pSession->commands())->removeLastCommand();
 				}
 			}
@@ -561,29 +590,12 @@ bool qtractorBusGainCommand::redo (void)
 	if (pBus == NULL)
 		return false;
 
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
-		return false;
-
-	// Mixer/Meter turn...
-	qtractorMixer *pMixer = pMainForm->mixer();
-	if (pMixer == NULL)
-		return false;
-
 	// Set Bus gain (repective monitor gets set too...)
 	float fGain = m_fPrevGain;
 
-	qtractorMixerStrip *pStrip = NULL;
-	if ((busMode() & qtractorBus::Input) && pBus->monitor_in())
-		pStrip = pMixer->inputRack()->findStrip(pBus->monitor_in());
-	else
-	if ((busMode() & qtractorBus::Output) && pBus->monitor_out())
-		pStrip = pMixer->outputRack()->findStrip(pBus->monitor_out());
-	if (pStrip && pStrip->meter()) {
-		if (!m_bPrevGain)
-			fGain = pStrip->meter()->prevGain();	
-		pStrip->meter()->setGain(m_fGain);
-	}
+	qtractorMeter *pMeter = meter();
+	if (pMeter)
+		pMeter->setGain(m_fGain);
 
 	// MIDI buses are special...
 	if (pBus->busType() == qtractorTrack::Midi) {
@@ -595,7 +607,6 @@ bool qtractorBusGainCommand::redo (void)
 	}
 
 	// Set undo value...
-	m_bPrevGain = false;
 	m_fPrevGain = m_fGain;
 	m_fGain     = fGain;
 
@@ -614,7 +625,10 @@ qtractorBusPanningCommand::qtractorBusPanningCommand ( qtractorBus *pBus,
 {
 	m_fPanning = fPanning;
 	m_fPrevPanning = 0.0f;
-	m_bPrevPanning = false;
+	
+	qtractorMeter *pMeter = meter();
+	if (pMeter)
+		m_fPrevPanning = pMeter->prevPanning();
 
 	// Try replacing an previously equivalent command...
 	static qtractorBusPanningCommand *s_pPrevPanningCommand = NULL;
@@ -637,7 +651,6 @@ qtractorBusPanningCommand::qtractorBusPanningCommand ( qtractorBus *pBus,
 				int   iCurrSign    = (fPrevPanning < m_fPanning   ? +1 : -1); 
 				if (iPrevSign == iCurrSign) {
 					m_fPrevPanning = fLastPanning;
-					m_bPrevPanning = true;
 					(pSession->commands())->removeLastCommand();
 				}
 			}
@@ -654,29 +667,12 @@ bool qtractorBusPanningCommand::redo (void)
 	if (pBus == NULL)
 		return false;
 
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
-		return false;
-
-	// Mixer/Meter turn...
-	qtractorMixer *pMixer = pMainForm->mixer();
-	if (pMixer == NULL)
-		return false;
-
 	// Set Bus panning (repective monitor gets set too...)
 	float fPanning = m_fPrevPanning;
 
-	qtractorMixerStrip *pStrip = NULL;
-	if ((busMode() & qtractorBus::Input) && pBus->monitor_in())
-		pStrip = pMixer->inputRack()->findStrip(pBus->monitor_in());
-	else
-	if ((busMode() & qtractorBus::Output) && pBus->monitor_out())
-		pStrip = pMixer->outputRack()->findStrip(pBus->monitor_out());
-	if (pStrip && pStrip->meter()) {
-		if (!m_bPrevPanning)
-			fPanning = pStrip->meter()->prevPanning();	
-		pStrip->meter()->setPanning(m_fPanning);
-	}
+	qtractorMeter *pMeter = meter();
+	if (pMeter)
+		pMeter->setPanning(m_fPanning);
 
 	// MIDI buses are special...
 	if (pBus->busType() == qtractorTrack::Midi) {
@@ -688,7 +684,6 @@ bool qtractorBusPanningCommand::redo (void)
 	}
 
 	// Set undo value...
-	m_bPrevPanning = false;
 	m_fPrevPanning = m_fPanning;
 	m_fPanning     = fPanning;
 

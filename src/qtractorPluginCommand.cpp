@@ -442,7 +442,7 @@ qtractorPluginParamCommand::qtractorPluginParamCommand (
 	qtractorPluginParam *pParam, float fValue, bool bUpdate )
 	: qtractorCommand(QString(pParam->name()).toLower()),
 		m_pParam(pParam), m_fValue(fValue), m_bUpdate(bUpdate),
-		m_fPrevValue(0.0f), m_bPrevValue(false)
+		m_fPrevValue(pParam->prevValue())
 {
 	setRefresh(false);
 
@@ -466,7 +466,6 @@ qtractorPluginParamCommand::qtractorPluginParamCommand (
 				int   iCurrSign  = (fPrevValue < m_fValue   ? +1 : -1); 
 				if (iPrevSign == iCurrSign) {
 					m_fPrevValue = fLastValue;
-					m_bPrevValue = true;
 					(pSession->commands())->removeLastCommand();
 				}
 			}
@@ -484,14 +483,14 @@ bool qtractorPluginParamCommand::redo (void)
 		return false;
 
 	// Set plugin parameter value...
-	float fValue = (m_bPrevValue ? m_fPrevValue : m_pParam->value());
+	float fValue = m_fPrevValue;
+
 	m_pParam->setValue(m_fValue, m_bUpdate);
 
 	// Set undo value...
-	m_bPrevValue = false;
 	m_fPrevValue = m_fValue;
-	m_bUpdate    = true;
 	m_fValue     = fValue;
+	m_bUpdate    = true;
 
 	// Update the form, showing it up as necessary...
 	(pPlugin->form())->updateParamWidget(m_pParam->index());

@@ -32,7 +32,7 @@ class qtractorMeter;
 class qtractorMonitor;
 
 class qtractorObserverSlider;
-class qtractorObserverDoubleSpinBox;
+class qtractorObserverSpinBox;
 
 class qtractorMeterPanObserver;
 class qtractorMeterGainObserver;
@@ -104,11 +104,11 @@ public:
 	QWidget     *boxWidget() const;
 
 	// Common slider/spin-box accessors.
-	qtractorObserverSlider *panSlider() const;
-	qtractorObserverDoubleSpinBox *panSpinBox() const;
+	qtractorObserverSlider  *panSlider()  const;
+	qtractorObserverSpinBox *panSpinBox() const;
 
-	qtractorObserverSlider *gainSlider() const;
-	qtractorObserverDoubleSpinBox *gainSpinBox() const;
+	qtractorObserverSlider  *gainSlider()  const;
+	qtractorObserverSpinBox *gainSpinBox() const;
 
 	// Panning subject accessors.
 	void setPanningSubject(qtractorSubject *pSubject);
@@ -168,10 +168,10 @@ private:
 	QWidget     *m_pBoxWidget;
 	QHBoxLayout *m_pBoxLayout;
 
-	qtractorObserverSlider        *m_pPanSlider;
-	qtractorObserverDoubleSpinBox *m_pPanSpinBox;
-	qtractorObserverSlider        *m_pGainSlider;
-	qtractorObserverDoubleSpinBox *m_pGainSpinBox;
+	qtractorObserverSlider  *m_pPanSlider;
+	qtractorObserverSpinBox *m_pPanSpinBox;
+	qtractorObserverSlider  *m_pGainSlider;
+	qtractorObserverSpinBox *m_pGainSpinBox;
 
 	qtractorMeterPanObserver  *m_pPanObserver;
 	qtractorMeterGainObserver *m_pGainObserver;

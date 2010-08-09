@@ -65,6 +65,9 @@ public:
 	void setQueued(bool bQueued);
 	bool isQueued() const;
 
+	// Direct address accessor.
+	float *data() { return &m_fValue; }
+
 	// Queue flush (singleton) -- notify all pending observers.
 	static void flushQueue();
 	
@@ -92,7 +95,7 @@ class qtractorObserver
 public:
 
 	// Constructor.
-	qtractorObserver(qtractorSubject *pSubject);
+	qtractorObserver(qtractorSubject *pSubject = NULL);
 
 	// Virtual destructor.
 	virtual ~qtractorObserver();

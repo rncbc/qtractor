@@ -192,7 +192,7 @@ qtractorMeter::qtractorMeter ( QWidget *pParent )
 	m_pPanSlider->setFixedHeight(20);
 	m_pVBoxLayout->addWidget(m_pPanSlider);
 
-	m_pPanSpinBox = new qtractorObserverDoubleSpinBox(/*this*/);
+	m_pPanSpinBox = new qtractorObserverSpinBox(/*this*/);
 	m_pPanSpinBox->setFont(font7);
 	m_pPanSpinBox->setFixedHeight(fm.lineSpacing() + 2);
 #if QT_VERSION >= 0x040300
@@ -219,7 +219,7 @@ qtractorMeter::qtractorMeter ( QWidget *pParent )
 	m_pGainSlider->setFixedWidth(20);
 	m_pBoxLayout->addWidget(m_pGainSlider);
 
-	m_pGainSpinBox = new qtractorObserverDoubleSpinBox(/*this*/);
+	m_pGainSpinBox = new qtractorObserverSpinBox(/*this*/);
 	m_pGainSpinBox->setFont(font7);
 	m_pGainSpinBox->setFixedHeight(fm.lineSpacing() + 2);
 #if QT_VERSION >= 0x040300
@@ -386,7 +386,7 @@ qtractorObserverSlider *qtractorMeter::panSlider (void) const
 	return m_pPanSlider;
 }
 
-qtractorObserverDoubleSpinBox *qtractorMeter::panSpinBox (void) const
+qtractorObserverSpinBox *qtractorMeter::panSpinBox (void) const
 {
 	return m_pPanSpinBox;
 }
@@ -396,7 +396,7 @@ qtractorObserverSlider *qtractorMeter::gainSlider (void) const
 	return m_pGainSlider;
 }
 
-qtractorObserverDoubleSpinBox *qtractorMeter::gainSpinBox (void) const
+qtractorObserverSpinBox *qtractorMeter::gainSpinBox (void) const
 {
 	return m_pGainSpinBox;
 }

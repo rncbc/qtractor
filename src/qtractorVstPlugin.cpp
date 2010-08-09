@@ -782,7 +782,7 @@ void qtractorVstPlugin::selectProgram ( int iBank, int iProg )
 		QListIterator<qtractorPluginParam *> param(params());
 		while (param.hasNext()) {
 			qtractorPluginParam *pParam = param.next();
-			float *pfValue = pParam->data();
+			float *pfValue = pParam->subject()->data();
 			*pfValue = pVstEffect->getParameter(pVstEffect, pParam->index());
 			pParam->setDefaultValue(*pfValue);
 		}

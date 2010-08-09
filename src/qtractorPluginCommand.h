@@ -275,7 +275,6 @@ private:
 	float m_fValue;
 	bool  m_bUpdate;
 	float m_fPrevValue;
-	bool  m_bPrevValue;
 };
 
 

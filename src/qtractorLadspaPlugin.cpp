@@ -267,7 +267,7 @@ void qtractorLadspaPlugin::setChannels ( unsigned short iChannels )
 			qtractorPluginParam *pParam = param.next();
 			// Just in case the plugin decides
 			// to set the port value at this time...
-			float *pfValue = pParam->data();
+			float *pfValue = pParam->subject()->data();
 			float   fValue = *pfValue;
 			(*pLadspaDescriptor->connect_port)(handle,
 				pParam->index(), pfValue);

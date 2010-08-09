@@ -32,12 +32,12 @@ class qtractorPlugin;
 class qtractorPluginParam;
 class qtractorPluginParamWidget;
 
-class qtractorSlider;
+class qtractorObserverCheckBox;
+class qtractorObserverSlider;
+class qtractorObserverSpinBox;
 
-class QLabel;
-class QCheckBox;
 class QGridLayout;
-class QDoubleSpinBox;
+class QLabel;
 
 
 //----------------------------------------------------------------------------
@@ -135,26 +135,18 @@ public:
 	// Refreshner-loader method.
 	void refresh();
 
+	// Change notification method.
+	void valueChangedNotify(float fValue);
+	
 signals:
 
 	// Change notification.
 	void valueChanged(qtractorPluginParam *, float, bool);
 
-protected slots:
-
-	// Change slots.
-	void checkBoxToggled(bool);
-	void spinBoxValueChanged(const QString&);
-	void sliderValueChanged(int);
-
 protected:
-
-	// Slider conversion methods.
-	int   paramToSlider(float fValue) const;
-	float sliderToParam(int iValue) const;
-
+	
 	// Spin-box decimals helper.
-	int   paramDecs() const;
+	int paramDecimals() const;
 
 private:
 
@@ -162,17 +154,15 @@ private:
 	qtractorPluginParam *m_pParam;
 
 	// Some basic layout managers.
-	QGridLayout    *m_pGridLayout;
+	QGridLayout *m_pGridLayout;
 
 	// Some possible managed widgets.
-	QLabel         *m_pLabel;
-	QCheckBox      *m_pCheckBox;
-	qtractorSlider *m_pSlider;
-	QDoubleSpinBox *m_pSpinBox;
-	QLabel         *m_pDisplay;
+	QLabel *m_pLabel;
+	QLabel *m_pDisplay;
 
-	// Avoid cascaded intra-notifications.
-	int m_iUpdate;
+	qtractorObserverCheckBox *m_pCheckBox;
+	qtractorObserverSlider   *m_pSlider;
+	qtractorObserverSpinBox  *m_pSpinBox;
 };
 
 

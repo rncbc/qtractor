@@ -74,18 +74,6 @@ public:
 		// Observer updater.
 		void update() { m_pWidget->updateValue(value()); }
 
-	protected:
-
-		// Visitors overload.
-		void visit(QCheckBox *pCheckBox, float fValue)
-			{ pCheckBox->setChecked(bool(fValue)); }
-		void visit(QSpinBox *pSpinBox, float fValue)
-			{ pSpinBox->setValue(int(fValue)); }
-		void visit(QDoubleSpinBox *pDoubleSpinBox, float fValue)
-			{ pDoubleSpinBox->setValue(fValue); }
-		void visit(QSlider *pSlider, float fValue)
-			{ pSlider->setValue(int(fValue)); }
-
 	private:
 
 		// Members.
@@ -94,28 +82,23 @@ public:
 
 	// Constructor.
 	qtractorObserverWidget(QWidget *pParent = 0)
-		: Widget(pParent), m_pObserver(NULL), m_pInterface(NULL) {};
+		: Widget(pParent), m_pInterface(NULL), m_observer(NULL, this) {}
 
 	// Destructor.
 	~qtractorObserverWidget()
 	{
-		if (m_pObserver)
-			delete m_pObserver;
 		if (m_pInterface)
 			delete m_pInterface;
 	}
 
 	// Setup.
 	void setSubject(qtractorSubject *pSubject)
-	{
-		if (m_pObserver)
-			delete m_pObserver;
-		m_pObserver = new Observer(pSubject, this); 
-	}
+		{ m_observer.setSubject(pSubject); }
+	qtractorSubject *subject() const
+		{ return m_observer.subject(); }
 
 	// Observer accessor.
-	Observer *observer() const
-		{ return m_pObserver; }
+	Observer *observer() { return &m_observer; }
 
 	// Interface setup.
 	void setInterface(Interface *pInterface)
@@ -143,8 +126,8 @@ protected:
 private:
 
 	// Members.
-	Observer  *m_pObserver;
 	Interface *m_pInterface;
+	Observer   m_observer;
 };
 
 
@@ -176,7 +159,7 @@ protected slots:
 // class qtractorObserverSpinBox -- Concrete widget observer.
 //
 
-class qtractorObserverSpinBox : public qtractorObserverWidget<QSpinBox>
+class qtractorObserverSpinBox : public qtractorObserverWidget<QDoubleSpinBox>
 {
 	Q_OBJECT
 
@@ -184,30 +167,6 @@ public:
 
 	// Constructor.
 	qtractorObserverSpinBox(QWidget *pParent = 0);
-
-protected:
-
-	// Visitors overload.
-	void updateValue(float fValue);
-
-protected slots:
-
-	void spinBoxChanged(int iValue);
-};
-
-
-//----------------------------------------------------------------------
-// class qtractorObserverDoubleSpinBox -- Concrete widget observer.
-//
-
-class qtractorObserverDoubleSpinBox : public qtractorObserverWidget<QDoubleSpinBox>
-{
-	Q_OBJECT
-
-public:
-
-	// Constructor.
-	qtractorObserverDoubleSpinBox(QWidget *pParent = 0);
 	
 protected:
 

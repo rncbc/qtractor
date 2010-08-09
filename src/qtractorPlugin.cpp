@@ -22,6 +22,7 @@
 #include "qtractorAbout.h"
 #include "qtractorPlugin.h"
 #include "qtractorPluginListView.h"
+#include "qtractorPluginCommand.h"
 #include "qtractorPluginForm.h"
 
 #include "qtractorAudioEngine.h"
@@ -29,6 +30,7 @@
 
 #include "qtractorOptions.h"
 
+#include "qtractorSession.h"
 #include "qtractorSessionDocument.h"
 
 #ifdef CONFIG_LADSPA
@@ -1558,8 +1560,49 @@ bool qtractorPluginList::saveElement ( qtractorSessionDocument *pDocument,
 
 
 //----------------------------------------------------------------------------
+// qtractorPluginParamObserver -- Local dedicated observer.
+
+class qtractorPluginParamObserver : public qtractorObserver
+{
+public:
+
+	// Constructor.
+	qtractorPluginParamObserver(qtractorPluginParam *pParam)
+		: qtractorObserver(NULL), m_pParam(pParam) {}
+
+protected:
+
+	// Update feedback.
+	void update() { m_pParam->updateValue(value(), false); }
+
+private:
+
+	// Members.
+	qtractorPluginParam *m_pParam;
+};
+
+
+//----------------------------------------------------------------------------
 // qtractorPluginParam -- Plugin parameter (control input port) instance.
 //
+
+// Constructor.
+qtractorPluginParam::qtractorPluginParam (
+	qtractorPlugin *pPlugin, unsigned long iIndex )
+	: m_pPlugin(pPlugin), m_iIndex(iIndex),
+		m_fMinValue(0.0f), m_fMaxValue(0.0f),
+		m_fDefaultValue(0.0f), m_subject(0.0f)
+{
+	m_pObserver = new qtractorPluginParamObserver(this);
+	m_pObserver->setSubject(&m_subject);
+}
+
+// Destructor.
+qtractorPluginParam::~qtractorPluginParam (void)
+{
+	delete m_pObserver;
+}
+
 
 // Default value
 void qtractorPluginParam::setDefaultValue ( float fDefaultValue )
@@ -1586,13 +1629,36 @@ void qtractorPluginParam::setValue ( float fValue, bool bUpdate )
 	if (isBoundedBelow() && fValue < m_fMinValue)
 		fValue = m_fMinValue;
 
-	if (fValue == m_fValue)
-		return;
-
-	m_fValue = fValue;
+	m_pObserver->setValue(fValue);
 
 	// Update specifics.
-	if (bUpdate) m_pPlugin->updateParam(this, m_fValue);
+	if (bUpdate) m_pPlugin->updateParam(this, fValue);
+}
+
+
+float qtractorPluginParam::value (void) const
+{
+	return m_pObserver->value();
+}
+
+float qtractorPluginParam::prevValue (void) const
+{
+	return m_pObserver->prevValue();
+}
+
+
+void qtractorPluginParam::updateValue ( float fValue, bool bUpdate )
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorPluginParam[%p]::updateValue(%g, %d)", this, fValue, int(bUpdate));
+#endif
+
+	// Make it a undoable command...
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession) {
+		pSession->execute(
+			new qtractorPluginParamCommand(this, fValue, bUpdate));
+	}
 }
 
 

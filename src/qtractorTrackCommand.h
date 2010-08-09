@@ -326,7 +326,6 @@ private:
 	// Instance variables.
 	float m_fGain;
 	float m_fPrevGain;
-	bool  m_bPrevGain;
 };
 
 
@@ -357,7 +356,6 @@ private:
 	// Instance variables.
 	float m_fPanning;
 	float m_fPrevPanning;
-	bool  m_bPrevPanning;
 };
 
 

@@ -142,9 +142,9 @@ qtractorPluginSelectForm::qtractorPluginSelectForm (
 	QObject::connect(m_ui.PluginListView,
 		SIGNAL(itemSelectionChanged()),
 		SLOT(stabilize()));
-	QObject::connect(m_ui.PluginListView,
-		SIGNAL(itemActivated(QTreeWidgetItem *, int)),
-		SLOT(accept()));
+//	QObject::connect(m_ui.PluginListView,
+//		SIGNAL(itemActivated(QTreeWidgetItem *, int)),
+//		SLOT(accept()));
 	QObject::connect(m_ui.PluginListView,
 		SIGNAL(itemDoubleClicked(QTreeWidgetItem *, int)),
 		SLOT(accept()));

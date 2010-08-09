@@ -5,18 +5,17 @@ ChangeLog
 
 SVN TRUNK
 
-- MIDI controller mapping of still non-existing tracks
-  were being implicitly assigned to the last, highly
-  numbered, existing track. Now fixed.
-
 - Progressively, the observer pattern is being finally
   introduced, targeting all potentially automatable
   controls and widgets as plain ground-zero for the
   (ultra-)long overdue automation feature (EXPERIMENTAL).
 
+- MIDI controller mapping of still non-existing tracks
+  were being implicitly assigned to the last, highly
+  numbered, existing track. Now fixed.
+
 - Moving from old deprecated Qt3'ish custom event post
   handling into regular asynchronous signal/slot strategy.
-  (EXPERIMENTAL)
 
 - Muting/soloing tracks while playback is looping was
   leaving current audio clip out-of-sync whenever that

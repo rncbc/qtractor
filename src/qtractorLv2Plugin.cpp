@@ -618,7 +618,7 @@ void qtractorLv2Plugin::setChannels ( unsigned short iChannels )
 			while (param.hasNext()) {
 				qtractorPluginParam *pParam = param.next();
 				slv2_instance_connect_port(instance,
-					pParam->index(), pParam->data());
+					pParam->index(), pParam->subject()->data());
 			}
 		#ifdef CONFIG_LV2_EVENT
 			// Connect all existing input MIDI ports...

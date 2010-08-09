@@ -786,8 +786,7 @@ qtractorTrackGainCommand::qtractorTrackGainCommand (
 		QObject::tr("track gain"), pTrack, bMidiControl)
 {
 	m_fGain = fGain;
-	m_fPrevGain = 1.0f;
-	m_bPrevGain = false;
+	m_fPrevGain = pTrack->prevGain();
 
 	setRefresh(false);
 
@@ -811,7 +810,6 @@ qtractorTrackGainCommand::qtractorTrackGainCommand (
 				int   iCurrSign = (fPrevGain < m_fGain   ? +1 : -1); 
 				if (iPrevSign == iCurrSign) {
 					m_fPrevGain = fLastGain;
-					m_bPrevGain = true;
 					(pSession->commands())->removeLastCommand();
 				}
 			}
@@ -833,7 +831,7 @@ bool qtractorTrackGainCommand::redo (void)
 		return false;
 
 	// Set undo value...
-	float fGain = (m_bPrevGain ? m_fPrevGain : pTrack->prevGain());
+	float fGain = m_fPrevGain;
 
 	// Set track gain (respective monitor gets set too...)
 	pTrack->setGain(m_fGain);
@@ -860,7 +858,6 @@ bool qtractorTrackGainCommand::redo (void)
 	}
 
 	// Set undo value...
-	m_bPrevGain = false;
 	m_fPrevGain = m_fGain;
 	m_fGain     = fGain;
 
@@ -879,8 +876,7 @@ qtractorTrackPanningCommand::qtractorTrackPanningCommand (
 		QObject::tr("track pan"), pTrack, bMidiControl)
 {
 	m_fPanning = fPanning;
-	m_fPrevPanning = 0.0f;
-	m_bPrevPanning = false;
+	m_fPrevPanning = pTrack->prevPanning();
 
 	setRefresh(false);
 
@@ -904,7 +900,6 @@ qtractorTrackPanningCommand::qtractorTrackPanningCommand (
 				int   iCurrSign    = (fPrevPanning < m_fPanning   ? +1 : -1); 
 				if (iPrevSign == iCurrSign) {
 					m_fPrevPanning = fLastPanning;
-					m_bPrevPanning = true;
 					(pSession->commands())->removeLastCommand();
 				}
 			}
@@ -926,7 +921,7 @@ bool qtractorTrackPanningCommand::redo (void)
 		return false;
 
 	// Set undo value...
-	float fPanning = (m_bPrevPanning ? m_fPrevPanning : pTrack->prevPanning());
+	float fPanning = m_fPrevPanning;
 
 	// Set track panning (respective monitor gets set too...)
 	pTrack->setPanning(m_fPanning);
@@ -952,7 +947,6 @@ bool qtractorTrackPanningCommand::redo (void)
 	}
 
 	// Set undo value...
-	m_bPrevPanning = false;
 	m_fPrevPanning = m_fPanning;
 	m_fPanning     = fPanning;
 

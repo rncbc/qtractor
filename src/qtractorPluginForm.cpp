@@ -26,7 +26,7 @@
 #include "qtractorPlugin.h"
 #include "qtractorPluginListView.h"
 
-#include "qtractorSlider.h"
+#include "qtractorObserverWidget.h"
 
 #include "qtractorOptions.h"
 #include "qtractorSession.h"
@@ -37,8 +37,6 @@
 #include <QValidator>
 #include <QLineEdit>
 #include <QLabel>
-#include <QCheckBox>
-#include <QDoubleSpinBox>
 
 #include <QFileInfo>
 #include <QFileDialog>
@@ -126,9 +124,9 @@ qtractorPluginForm::qtractorPluginForm (
 		SIGNAL(toggled(bool)),
 		SLOT(activateSlot(bool)));
 
-	QObject::connect(this,
-		SIGNAL(valueChanged(qtractorPluginParam *, float, bool)),
-		SLOT(valueChangeSlot(qtractorPluginParam *, float, bool)));
+//	QObject::connect(this,
+//		SIGNAL(valueChanged(qtractorPluginParam *, float, bool)),
+//		SLOT(valueChangeSlot(qtractorPluginParam *, float, bool)));
 }
 
 
@@ -184,9 +182,9 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 				= new qtractorPluginParamWidget(pParam, this);
 			m_paramWidgets.append(pParamWidget);
 			m_pGridLayout->addWidget(pParamWidget, iRow, iCol);
-			QObject::connect(pParamWidget,
-				SIGNAL(valueChanged(qtractorPluginParam *, float, bool)),
-				SLOT(valueChangeSlot(qtractorPluginParam *, float, bool)));
+		//	QObject::connect(pParamWidget,
+		//		SIGNAL(valueChanged(qtractorPluginParam *, float, bool)),
+		//		SLOT(valueChangeSlot(qtractorPluginParam *, float, bool)));
 			if (++iRow >= iRows) {
 				iRow = 0;
 				iCol++;
@@ -215,6 +213,9 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 	m_ui.ParamsToolButton->setVisible(bParams);
 	m_ui.ParamsToolButton->setChecked(bParams);
 	paramsSlot(bParams);
+
+	// Clear any initial param update.
+	qtractorSubject::resetQueue();
 
 	updateActivated();
 	refresh();
@@ -778,7 +779,7 @@ void qtractorPluginForm::stabilize (void)
 
 
 // Clear up plugin form...
-void qtractorPluginForm::clear()
+void qtractorPluginForm::clear (void)
 {
 	if (m_pPlugin)
 		m_pPlugin->closeEditor();
@@ -788,6 +789,65 @@ void qtractorPluginForm::clear()
 }
 
 
+//----------------------------------------------------------------------
+// class qtractorPluginParamSliderInterface -- Observer interface.
+//
+
+// Local converter interface.
+class qtractorPluginParamSliderInterface
+	: public qtractorObserverSlider::Interface
+{
+public:
+
+	// Constructor.
+	qtractorPluginParamSliderInterface (
+		qtractorObserverSlider *pSlider, qtractorPluginParam *pParam )
+		: qtractorObserverSlider::Interface(pSlider), m_pParam(pParam) {}
+
+	// Formerly Pure virtuals.
+	float scaleFromValue ( float fValue ) const
+	{
+		float fScale = 0.0f;
+	
+		if (m_pParam->isLogarithmic() && m_pParam->minValue() > 1E-6f) {
+			if (fValue > 1E-6f) {
+				float fLogMaxValue = ::logf(m_pParam->maxValue());
+				float fLogMinValue = ::logf(m_pParam->minValue());
+				fScale = (10000.0f * (::logf(fValue) - fLogMinValue))
+					/ (fLogMaxValue - fLogMinValue);
+			}
+		} else {
+			float fDelta = m_pParam->maxValue() - m_pParam->minValue();
+			if (fDelta > 1E-6f)
+				fScale = (10000.0f * (fValue - m_pParam->minValue())) / fDelta;
+		}
+	
+		return fScale;		
+	}
+
+	float valueFromScale ( float fScale ) const
+	{
+		float fValue = 0.0f;
+	
+		if (m_pParam->isLogarithmic() && m_pParam->minValue() > 1E-6f) {
+			float fRatio = m_pParam->maxValue() / m_pParam->minValue();
+			fValue = m_pParam->minValue() * ::powf(fRatio, (fScale / 10000.0f));
+		} else {
+			float fDelta = m_pParam->maxValue() - m_pParam->minValue();
+			fValue = m_pParam->minValue() + (fScale * fDelta) / 10000.0f;
+		}
+	
+		return fValue;
+
+	}
+
+private:
+
+	// Instance references.
+	qtractorPluginParam *m_pParam;
+};
+
+
 //----------------------------------------------------------------------------
 // qtractorPluginParamWidget -- Plugin port widget.
 //
@@ -795,26 +855,25 @@ void qtractorPluginForm::clear()
 // Constructor.
 qtractorPluginParamWidget::qtractorPluginParamWidget (
 	qtractorPluginParam *pParam, QWidget *pParent )
-	: QFrame(pParent), m_pParam(pParam), m_iUpdate(0)
+	: QFrame(pParent), m_pParam(pParam)
 {
 	m_pGridLayout = new QGridLayout();
 	m_pGridLayout->setMargin(0);
 	m_pGridLayout->setSpacing(4);
 
 	m_pLabel    = NULL;
+	m_pDisplay  = NULL;
+
 	m_pSlider   = NULL;
 	m_pSpinBox  = NULL;
 	m_pCheckBox = NULL;
-	m_pDisplay  = NULL;
 
 	if (m_pParam->isToggled()) {
-		m_pCheckBox = new QCheckBox(/*this*/);
+		m_pCheckBox = new qtractorObserverCheckBox(/*this*/);
 		m_pCheckBox->setText(m_pParam->name());
+		m_pCheckBox->setSubject(m_pParam->subject());
 	//	m_pCheckBox->setChecked(m_pParam->value() > 0.1f);
 		m_pGridLayout->addWidget(m_pCheckBox, 0, 0);
-		QObject::connect(m_pCheckBox,
-			SIGNAL(toggled(bool)),
-			SLOT(checkBoxToggled(bool)));
 	} else if (m_pParam->isInteger()) {
 		m_pGridLayout->setColumnMinimumWidth(0, 120);
 		m_pLabel = new QLabel(/*this*/);
@@ -825,12 +884,13 @@ qtractorPluginParamWidget::qtractorPluginParamWidget (
 		} else {
 			m_pGridLayout->addWidget(m_pLabel, 0, 0, 1, 2);
 		}
-		m_pSpinBox = new QDoubleSpinBox(/*this*/);
+		m_pSpinBox = new qtractorObserverSpinBox(/*this*/);
 		m_pSpinBox->setMaximumWidth(64);
 		m_pSpinBox->setDecimals(0);
 		m_pSpinBox->setMinimum(m_pParam->minValue());
 		m_pSpinBox->setMaximum(m_pParam->maxValue());
 		m_pSpinBox->setAlignment(Qt::AlignHCenter);
+		m_pSpinBox->setSubject(m_pParam->subject());
 	//	m_pSpinBox->setValue(int(m_pParam->value()));
 		if (m_pParam->isDisplay()) {
 			m_pGridLayout->addWidget(m_pSpinBox, 0, 1);
@@ -843,9 +903,6 @@ qtractorPluginParamWidget::qtractorPluginParamWidget (
 		} else {
 			m_pGridLayout->addWidget(m_pSpinBox, 0, 2);
 		}
-		QObject::connect(m_pSpinBox,
-			SIGNAL(valueChanged(const QString&)),
-			SLOT(spinBoxValueChanged(const QString&)));
 	} else {
 		m_pLabel = new QLabel(/*this*/);
 		if (m_pParam->isDisplay()) {
@@ -859,15 +916,19 @@ qtractorPluginParamWidget::qtractorPluginParamWidget (
 			m_pLabel->setText(m_pParam->name() + ':');
 			m_pGridLayout->addWidget(m_pLabel, 0, 0, 1, 3);
 		}
-		m_pSlider = new qtractorSlider(Qt::Horizontal/*, this*/);
+		m_pSlider = new qtractorObserverSlider(/*this*/);
+		m_pSlider->setInterface(
+			new qtractorPluginParamSliderInterface(m_pSlider, m_pParam));
+		m_pSlider->setOrientation(Qt::Horizontal);
 		m_pSlider->setTickPosition(QSlider::NoTicks);
 		m_pSlider->setMinimumWidth(120);
 		m_pSlider->setMinimum(0);
 		m_pSlider->setMaximum(10000);
 		m_pSlider->setPageStep(1000);
 		m_pSlider->setSingleStep(100);
-		m_pSlider->setDefault(paramToSlider(m_pParam->defaultValue()));
-	//	m_pSlider->setValue(paramToSlider(m_pParam->value()));
+		m_pSlider->setDefault(m_pSlider->scaleFromValue(m_pParam->defaultValue()));
+		m_pSlider->setSubject(m_pParam->subject());
+	//	m_pSlider->setValue(m_pSlider->scaleFromValue(m_pParam->value()));
 		if (m_pParam->isDisplay()) {
 			m_pGridLayout->addWidget(m_pSlider, 0, 1);
 			m_pDisplay = new QLabel(/*this*/);
@@ -878,25 +939,20 @@ qtractorPluginParamWidget::qtractorPluginParamWidget (
 			m_pGridLayout->addWidget(m_pDisplay, 0, 2);
 		} else {
 			m_pGridLayout->addWidget(m_pSlider, 1, 0, 1, 2);
-			int iDecs = paramDecs();
-			m_pSpinBox = new QDoubleSpinBox(/*this*/);
+			int iDecimals = paramDecimals();
+			m_pSpinBox = new qtractorObserverSpinBox(/*this*/);
 			m_pSpinBox->setMaximumWidth(64);
-			m_pSpinBox->setDecimals(iDecs);
+			m_pSpinBox->setDecimals(iDecimals);
 			m_pSpinBox->setMinimum(m_pParam->minValue());
 			m_pSpinBox->setMaximum(m_pParam->maxValue());
-			m_pSpinBox->setSingleStep(::powf(10.0f, - float(iDecs)));
+			m_pSpinBox->setSingleStep(::powf(10.0f, - float(iDecimals)));
 		#if QT_VERSION >= 0x040200
 			m_pSpinBox->setAccelerated(true);
 		#endif
+			m_pSpinBox->setSubject(m_pParam->subject());
 		//	m_pSpinBox->setValue(m_pParam->value());
 			m_pGridLayout->addWidget(m_pSpinBox, 1, 2);
-			QObject::connect(m_pSpinBox,
-				SIGNAL(valueChanged(const QString&)),
-				SLOT(spinBoxValueChanged(const QString&)));
 		}
-		QObject::connect(m_pSlider,
-			SIGNAL(valueChanged(int)),
-			SLOT(sliderValueChanged(int)));
 	}
 
 	QFrame::setLayout(m_pGridLayout);
@@ -906,150 +962,52 @@ qtractorPluginParamWidget::qtractorPluginParamWidget (
 }
 
 
+// Change notification method.
+void qtractorPluginParamWidget::valueChangedNotify ( float fValue )
+{
+	emit valueChanged(m_pParam, fValue, true);	
+
+	if (m_pDisplay)
+		m_pDisplay->setText(m_pParam->display());
+}
+
+
 // Refreshner-loader method.
 void qtractorPluginParamWidget::refresh (void)
 {
-	if (m_iUpdate > 0)
-		return;
-
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorPluginParamWidget[%p]::refresh()", this);
 #endif
-	m_iUpdate++;
 
-	float fValue = m_pParam->value();
-	if (m_pParam->isToggled()) {
-		m_pCheckBox->setChecked(fValue > 0.001f);
-	} else if (m_pParam->isInteger()) {
-		m_pSpinBox->setValue(int(fValue));
-	} else {
-		m_pSlider->setValue(paramToSlider(fValue));
-		if (m_pSpinBox)
-			m_pSpinBox->setValue(fValue);
-		if (m_pDisplay)
-			m_pDisplay->setText(m_pParam->display());
-	}
+	if (m_pCheckBox)
+		m_pCheckBox->observer()->update();
+	if (m_pSpinBox)
+		m_pSpinBox->observer()->update();
+	if (m_pSlider)
+		m_pSlider->observer()->update();
 
-	m_iUpdate--;
-}
-
-
-// Slider conversion methods.
-int qtractorPluginParamWidget::paramToSlider ( float fValue ) const
-{
-	int iValue = 0;
-
-	if (m_pParam->isLogarithmic() && m_pParam->minValue() > 1E-6f) {
-		if (fValue > 1E-6f) {
-			float fLogMaxValue = ::logf(m_pParam->maxValue());
-			float fLogMinValue = ::logf(m_pParam->minValue());
-			iValue = ::lroundf(10000.0f
-				* (::logf(fValue) - fLogMinValue)
-				/ (fLogMaxValue - fLogMinValue));
-		}
-	} else {
-		float fScale = m_pParam->maxValue() - m_pParam->minValue();
-		if (fScale > 1E-6f)
-			iValue = int((10000.0f * (fValue - m_pParam->minValue())) / fScale);
-	}
-
-	return iValue;
-}
-
-float qtractorPluginParamWidget::sliderToParam ( int iValue ) const
-{
-	float fValue = 0.0f;
-
-	if (m_pParam->isLogarithmic() && m_pParam->minValue() > 1E-6f) {
-		float fRatio = m_pParam->maxValue() / m_pParam->minValue();
-		fValue = m_pParam->minValue() * ::powf(fRatio, (float(iValue) / 10000.0f));
-	} else {
-		float fDelta = m_pParam->maxValue() - m_pParam->minValue();
-		fValue = m_pParam->minValue() + (float(iValue) * fDelta) / 10000.0f;
-	}
-
-	return fValue;
+	if (m_pDisplay)
+		m_pDisplay->setText(m_pParam->display());
 }
 
 
 // Spin-box decimals helper.
-int qtractorPluginParamWidget::paramDecs (void) const
+int qtractorPluginParamWidget::paramDecimals (void) const
 {
-	int   iDecs = 0;
-	float fDecs = ::log10f(m_pParam->maxValue() - m_pParam->minValue());
-	if (fDecs < -3.0f)
-		iDecs = 6;
-	else if (fDecs < 0.0f)
-		iDecs = 3;
-	else if (fDecs < 1.0f)
-		iDecs = 2;
-	else if (fDecs < 6.0f)
-		iDecs = 1;
+	int iDecimals = 0;
 
-	return iDecs;
+	float fDecimals = ::log10f(m_pParam->maxValue() - m_pParam->minValue());
+	if (fDecimals < -3.0f)
+		iDecimals = 6;
+	else if (fDecimals < 0.0f)
+		iDecimals = 3;
+	else if (fDecimals < 1.0f)
+		iDecimals = 2;
+	else if (fDecimals < 6.0f)
+		iDecimals = 1;
 
-}
+	return iDecimals;
 
-// Change slots.
-void qtractorPluginParamWidget::checkBoxToggled ( bool bOn )
-{
-	float fValue = (bOn ? 1.0f : 0.0f);
-
-	emit valueChanged(m_pParam, fValue, true);
-}
-
-void qtractorPluginParamWidget::spinBoxValueChanged ( const QString& sText )
-{
-	if (m_iUpdate > 0)
-		return;
-
-#ifdef CONFIG_DEBUG
-	qDebug("qtractorPluginParamWidget[%p]::spinBoxValueChanged()", this);
-#endif
-	m_iUpdate++;
-
-	float fValue = 0.0f;
-	if (m_pParam->isInteger()) {
-		fValue = float(sText.toInt());
-	} else {
-		fValue = sText.toFloat();
-	}
-
-	//	Don't let be no-changes...
-	if (::fabsf(m_pParam->value() - fValue)
-		> ::powf(10.0f, - float(paramDecs()))) {
-		emit valueChanged(m_pParam, fValue, true);
-		if (m_pSlider)
-			m_pSlider->setValue(paramToSlider(fValue));
-		if (m_pDisplay)
-			m_pDisplay->setText(m_pParam->display());
-	}
-
-	m_iUpdate--;
-}
-
-void qtractorPluginParamWidget::sliderValueChanged ( int iValue )
-{
-	if (m_iUpdate > 0)
-		return;
-
-#ifdef CONFIG_DEBUG
-	qDebug("qtractorPluginParamWidget[%p]::sliderValueChanged()", this);
-#endif
-	m_iUpdate++;
-
-	float fValue = sliderToParam(iValue);
-	//	Don't let be no-changes...
-	if (::fabsf(m_pParam->value() - fValue)
-		> ::powf(10.0f, - float(paramDecs()))) {
-		emit valueChanged(m_pParam, fValue, true);
-		if (m_pSpinBox)
-			m_pSpinBox->setValue(fValue);
-		if (m_pDisplay)
-			m_pDisplay->setText(m_pParam->display());
-	}
-
-	m_iUpdate--;
 }
 
 

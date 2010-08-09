@@ -25,6 +25,9 @@
 #include "qtractorCommand.h"
 #include "qtractorEngine.h"
 
+// Forward declarations.
+class qtractorMeter;
+
 
 //----------------------------------------------------------------------
 // class qtractorBusCommand - declaration.
@@ -88,6 +91,9 @@ protected:
 	bool createBus();
 	bool updateBus();
 	bool deleteBus();
+
+	// Monitor meter accessor.
+	qtractorMeter *meter() const;
 
 private:
 
@@ -198,7 +204,6 @@ private:
 	// Instance variables.
 	float m_fGain;
 	float m_fPrevGain;
-	bool  m_bPrevGain;
 };
 
 
@@ -229,7 +234,6 @@ private:
 	// Instance variables.
 	float m_fPanning;
 	float m_fPrevPanning;
-	bool  m_bPrevPanning;
 };
 
 

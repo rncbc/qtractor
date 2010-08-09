@@ -89,7 +89,6 @@ HEADERS += config.h \
 	qtractorSessionCommand.h \
 	qtractorSessionCursor.h \
 	qtractorSessionDocument.h \
-	qtractorSlider.h \
 	qtractorSpinBox.h \
 	qtractorThumbView.h \
 	qtractorTimeScale.h \

@@ -339,14 +339,14 @@ void qtractorAudioMeterValue::resizeEvent (QResizeEvent *pResizeEvent)
 
 // Local converter interface.
 class qtractorAudioMeterGainSpinBoxInterface
-	: public qtractorObserverDoubleSpinBox::Interface
+	: public qtractorObserverSpinBox::Interface
 {
 public:
 
 	// Constructor.
 	qtractorAudioMeterGainSpinBoxInterface (
-		qtractorObserverDoubleSpinBox *pSpinBox )
-		: qtractorObserverDoubleSpinBox::Interface(pSpinBox) {}
+		qtractorObserverSpinBox *pSpinBox )
+		: qtractorObserverSpinBox::Interface(pSpinBox) {}
 
 	// Formerly Pure virtuals.
 	float scaleFromValue ( float fValue ) const

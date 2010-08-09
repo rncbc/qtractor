@@ -70,44 +70,6 @@ void qtractorObserverCheckBox::checkBoxChanged ( bool bValue )
 
 // Constructor.
 qtractorObserverSpinBox::qtractorObserverSpinBox ( QWidget *pParent ) 
-	: qtractorObserverWidget<QSpinBox> (pParent)
-{
-	QObject::connect(this,
-		SIGNAL(valueChanged(int)),
-		SLOT(spinBoxChanged(int)));
-}
-
-
-// Visitors overload.
-void qtractorObserverSpinBox::updateValue ( float fValue )
-{
-#ifdef CONFIG_DEBUG
-	qDebug("qtractorObserverSpinBox[%p]::updateValue(%g)", this, fValue);
-#endif
-	QSpinBox::setValue(int(scaleFromValue(fValue)));
-}
-
-
-// Protected slot.
-void qtractorObserverSpinBox::spinBoxChanged ( int iValue )
-{
-	if (observer()->isBusy())
-		return;
-
-	float fValue = valueFromScale(float(iValue));
-#ifdef CONFIG_DEBUG
-	qDebug("qtractorObserverSpinBox[%p]::spinBoxChanged(%g)", this, fValue);
-#endif
-	observer()->setValue(fValue);
-}
-
-
-//----------------------------------------------------------------------
-// class qtractorObserverDoubleSpinBox -- Concrete widget observer.
-//
-
-// Constructor.
-qtractorObserverDoubleSpinBox::qtractorObserverDoubleSpinBox ( QWidget *pParent ) 
 	: qtractorObserverWidget<QDoubleSpinBox> (pParent)
 {
 	QObject::connect(this,
@@ -117,24 +79,24 @@ qtractorObserverDoubleSpinBox::qtractorObserverDoubleSpinBox ( QWidget *pParent 
 
 
 // Visitors overload.
-void qtractorObserverDoubleSpinBox::updateValue ( float fValue )
+void qtractorObserverSpinBox::updateValue ( float fValue )
 {
 #ifdef CONFIG_DEBUG
-	qDebug("qtractorObserverDoubleSpinBox[%p]::updateValue(%g)", this, fValue);
+	qDebug("qtractorObserverSpinBox[%p]::updateValue(%g)", this, fValue);
 #endif
 	QDoubleSpinBox::setValue(scaleFromValue(fValue));
 }
 
 
 // Protected slot.
-void qtractorObserverDoubleSpinBox::spinBoxChanged ( double value )
+void qtractorObserverSpinBox::spinBoxChanged ( double value )
 {
 	if (observer()->isBusy())
 		return;
 
 	float fValue = valueFromScale(float(value));
 #ifdef CONFIG_DEBUG
-	qDebug("qtractorObserverDoubleSpinBox[%p]::spinBoxChanged(%g)", this, fValue);
+	qDebug("qtractorObserverSpinBox[%p]::spinBoxChanged(%g)", this, fValue);
 #endif
 	observer()->setValue(fValue);
 }
