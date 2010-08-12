@@ -123,10 +123,6 @@ qtractorPluginForm::qtractorPluginForm (
 	QObject::connect(m_ui.ActivateToolButton,
 		SIGNAL(toggled(bool)),
 		SLOT(activateSlot(bool)));
-
-//	QObject::connect(this,
-//		SIGNAL(valueChanged(qtractorPluginParam *, float, bool)),
-//		SLOT(valueChangeSlot(qtractorPluginParam *, float, bool)));
 }
 
 
@@ -155,6 +151,9 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 	if (m_pPlugin == NULL)
 		return;
 
+	// Dispatch any pending updates.
+	qtractorSubject::flushQueue();
+
 	// Plugin might not have its own editor...
 	m_pGridLayout = new QGridLayout();
 	m_pGridLayout->setMargin(4);
@@ -182,9 +181,6 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 				= new qtractorPluginParamWidget(pParam, this);
 			m_paramWidgets.append(pParamWidget);
 			m_pGridLayout->addWidget(pParamWidget, iRow, iCol);
-		//	QObject::connect(pParamWidget,
-		//		SIGNAL(valueChanged(qtractorPluginParam *, float, bool)),
-		//		SLOT(valueChangeSlot(qtractorPluginParam *, float, bool)));
 			if (++iRow >= iRows) {
 				iRow = 0;
 				iCol++;
@@ -333,7 +329,7 @@ void qtractorPluginForm::updateParamValue (
 
 	qtractorPluginParam *pParam = m_pPlugin->findParam(iIndex);
 	if (pParam)
-		emit valueChanged(pParam, fValue, bUpdate);
+		pParam->updateValue(fValue, bUpdate);
 }
 
 
@@ -726,6 +722,8 @@ void qtractorPluginForm::refresh (void)
 #endif
 	m_iUpdate++;
 
+	qtractorSubject::flushQueue();
+
 	const QString sOldPreset = m_ui.PresetComboBox->currentText();
 	m_ui.PresetComboBox->clear();
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
@@ -743,6 +741,8 @@ void qtractorPluginForm::refresh (void)
 		iter.next()->refresh();
 
 	m_pPlugin->idleEditor();
+
+	qtractorSubject::resetQueue();
 
 	m_iDirtyCount = 0;
 	m_iUpdate--;
@@ -959,16 +959,6 @@ qtractorPluginParamWidget::qtractorPluginParamWidget (
 //	QFrame::setFrameShape(QFrame::StyledPanel);
 //	QFrame::setFrameShadow(QFrame::Raised);
 	QFrame::setToolTip(m_pParam->name());
-}
-
-
-// Change notification method.
-void qtractorPluginParamWidget::valueChangedNotify ( float fValue )
-{
-	emit valueChanged(m_pParam, fValue, true);	
-
-	if (m_pDisplay)
-		m_pDisplay->setText(m_pParam->display());
 }
 
 

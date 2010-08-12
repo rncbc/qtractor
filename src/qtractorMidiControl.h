@@ -54,7 +54,7 @@ public:
 	};
 
 	// Key param masks (wildcard flags).
-	enum { TrackParam = 0x4000, MaskParam = 0x3fff };
+	enum { TrackParam = 0x4000, TrackParamMask = 0x3fff };
 
 	// MIDI control map key.
 	class MapKey
@@ -72,8 +72,8 @@ public:
 			{ return m_iChannel; }
 
 		bool isChannel() const
-			{ return ((m_iChannel & MaskParam) == m_iChannel); }
-		bool isChannelParam() const
+			{ return ((m_iChannel & TrackParamMask) == m_iChannel); }
+		bool isChannelTrack() const
 			{ return (m_iChannel & TrackParam); }
 
 		// Controller accessors.
@@ -83,15 +83,15 @@ public:
 			{ return m_iController; }
 
 		bool isController() const
-			{ return ((m_iController & MaskParam ) == m_iController); }
-		bool isControllerParam() const
+			{ return ((m_iController & TrackParamMask ) == m_iController); }
+		bool isControllerTrack() const
 			{ return (m_iController & TrackParam); }
 
 		// Generic key matcher.
 		bool match (unsigned short iChannel, unsigned iController) const
 		{
-			return (isChannelParam() || channel() == iChannel)
-				&& (isControllerParam() || controller() == iController);
+			return (isChannelTrack() || channel() == iChannel)
+				&& (isControllerTrack() || controller() == iController);
 		}
 
 		// Hash key comparator.

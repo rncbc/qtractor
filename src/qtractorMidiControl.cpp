@@ -175,10 +175,10 @@ void qtractorMidiControl::sendAllControllers ( int iFirstTrack ) const
 			for (qtractorTrack *pTrack = pSession->tracks().first();
 					pTrack; pTrack = pTrack->next()) {
 				if (iTrack >= iFirstTrack) {
-					if (key.isChannelParam())
+					if (key.isChannelTrack())
 						sendTrackController(pTrack,
 							val.command(), iParam + iTrack, iController);
-					else if (key.isControllerParam())
+					else if (key.isControllerTrack())
 						sendTrackController(pTrack,
 							val.command(), iChannel, iParam + iTrack);
 					else if (val.param() == iTrack) {
@@ -224,12 +224,12 @@ bool qtractorMidiControl::processEvent ( const qtractorCtlEvent& ctle ) const
 	const MapVal& val = it.value();
 
 	int iTrack = -1;	
-	if (key.isChannelParam()) {
+	if (key.isChannelTrack()) {
 		if (int(ctle.channel()) >= val.param())
 			iTrack = int(ctle.channel()) - val.param();
 	}
 	else
-	if (key.isControllerParam()) {
+	if (key.isControllerTrack()) {
 		if (int(ctle.controller()) >= val.param())
 			iTrack = int(ctle.controller()) - val.param();
 	}
@@ -338,10 +338,10 @@ void qtractorMidiControl::sendParamController (
 		const MapVal& val = it.value();
 		if (val.command() == command && val.isFeedback()) {
 			// Now send the message out...
-			if (key.isChannelParam())
+			if (key.isChannelTrack())
 				sendController(val.param() + iParam, key.controller(), iValue);
 			else
-			if (key.isControllerParam())
+			if (key.isControllerTrack())
 				sendController(key.channel(), val.param() + iParam, iValue);
 			else
 			if (val.param() == iParam)

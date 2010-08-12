@@ -73,11 +73,6 @@ public:
 
 	void toggleEditor(bool bOn);
 
-signals:
-
-	// Change notification.
-	void valueChanged(qtractorPluginParam *, float, bool);
-
 protected slots:
 
 	void changePresetSlot(const QString& sPreset);
@@ -120,8 +115,6 @@ private:
 
 class qtractorPluginParamWidget : public QFrame
 {
-	Q_OBJECT
-
 public:
 
 	// Constructor.
@@ -134,14 +127,6 @@ public:
 
 	// Refreshner-loader method.
 	void refresh();
-
-	// Change notification method.
-	void valueChangedNotify(float fValue);
-	
-signals:
-
-	// Change notification.
-	void valueChanged(qtractorPluginParam *, float, bool);
 
 protected:
 	

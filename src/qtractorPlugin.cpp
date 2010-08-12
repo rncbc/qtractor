@@ -1560,49 +1560,8 @@ bool qtractorPluginList::saveElement ( qtractorSessionDocument *pDocument,
 
 
 //----------------------------------------------------------------------------
-// qtractorPluginParamObserver -- Local dedicated observer.
-
-class qtractorPluginParamObserver : public qtractorObserver
-{
-public:
-
-	// Constructor.
-	qtractorPluginParamObserver(qtractorPluginParam *pParam)
-		: qtractorObserver(NULL), m_pParam(pParam) {}
-
-protected:
-
-	// Update feedback.
-	void update() { m_pParam->updateValue(value(), false); }
-
-private:
-
-	// Members.
-	qtractorPluginParam *m_pParam;
-};
-
-
-//----------------------------------------------------------------------------
 // qtractorPluginParam -- Plugin parameter (control input port) instance.
 //
-
-// Constructor.
-qtractorPluginParam::qtractorPluginParam (
-	qtractorPlugin *pPlugin, unsigned long iIndex )
-	: m_pPlugin(pPlugin), m_iIndex(iIndex),
-		m_fMinValue(0.0f), m_fMaxValue(0.0f),
-		m_fDefaultValue(0.0f), m_subject(0.0f)
-{
-	m_pObserver = new qtractorPluginParamObserver(this);
-	m_pObserver->setSubject(&m_subject);
-}
-
-// Destructor.
-qtractorPluginParam::~qtractorPluginParam (void)
-{
-	delete m_pObserver;
-}
-
 
 // Default value
 void qtractorPluginParam::setDefaultValue ( float fDefaultValue )
@@ -1629,21 +1588,10 @@ void qtractorPluginParam::setValue ( float fValue, bool bUpdate )
 	if (isBoundedBelow() && fValue < m_fMinValue)
 		fValue = m_fMinValue;
 
-	m_pObserver->setValue(fValue);
+	m_observer.setValue(fValue);
 
 	// Update specifics.
 	if (bUpdate) m_pPlugin->updateParam(this, fValue);
-}
-
-
-float qtractorPluginParam::value (void) const
-{
-	return m_pObserver->value();
-}
-
-float qtractorPluginParam::prevValue (void) const
-{
-	return m_pObserver->prevValue();
 }
 
 

@@ -629,10 +629,11 @@ class qtractorPluginParam
 public:
 
 	// Constructor.
-	qtractorPluginParam(qtractorPlugin *pPlugin, unsigned long iIndex);
-
-	// Destructor.
-	virtual ~qtractorPluginParam();
+	qtractorPluginParam(qtractorPlugin *pPlugin, unsigned long iIndex)
+		: m_pPlugin(pPlugin), m_iIndex(iIndex),
+			m_fMinValue(0.0f), m_fMaxValue(0.0f),
+			m_fDefaultValue(0.0f), m_subject(0.0f),
+			m_observer(&m_subject, this) {}
 
 	// Main properties accessors.
 	qtractorPlugin *plugin() const { return m_pPlugin; }
@@ -674,10 +675,34 @@ public:
 	float defaultValue() const
 		{ return m_fDefaultValue; }
 	
+	//------------------------------------------------------------------------
+	// Observer -- Local dedicated observer.
+	
+	class Observer : public qtractorObserver
+	{
+	public:
+	
+		// Constructor.
+		Observer(qtractorSubject *pSubject, qtractorPluginParam *pParam)
+			: qtractorObserver(pSubject), m_pParam(pParam) {}
+	
+	protected:
+	
+		// Update feedback.
+		void update() { m_pParam->updateValue(value(), true); }
+	
+	private:
+	
+		// Members.
+		qtractorPluginParam *m_pParam;
+	};
+
 	// Current parameter value.
 	void setValue(float fValue, bool bUpdate);
-	float value() const;
-	float prevValue() const;
+	float value() const
+		{ return m_observer.value(); }
+	float prevValue() const
+		{ return m_observer.prevValue(); }
 
 	// Parameter update method.
 	void updateValue(float fValue, bool bUpdate);
@@ -706,7 +731,7 @@ private:
 	qtractorSubject m_subject;
 
 	// Port observer manager.
-	qtractorPluginParamObserver *m_pObserver;
+	Observer m_observer;
 };
 
 
