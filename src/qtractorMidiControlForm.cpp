@@ -345,7 +345,8 @@ void qtractorMidiControlForm::mapSlot (void)
 	int iParam = m_ui.ParamSpinBox->value();
 	bool bFeedback = m_ui.FeedbackCheckBox->isChecked();
 
-	pMidiControl->mapChannelController(iChannel, iController,
+	pMidiControl->mapChannelController(
+		qtractorMidiControl::CONTROLLER, iChannel, iController,
 		command, iParam, bFeedback);
 
 	m_iDirtyCount = 0;
@@ -367,7 +368,8 @@ void qtractorMidiControlForm::unmapSlot (void)
 	unsigned short iController = controllerFromText(
 		m_ui.ControllerComboBox->currentText());
 
-	pMidiControl->unmapChannelController(iChannel, iController);
+	pMidiControl->unmapChannelController(
+		qtractorMidiControl::CONTROLLER, iChannel, iController);
 
 	m_iDirtyCount = 0;
 	m_iDirtyMap++;
@@ -529,7 +531,7 @@ void qtractorMidiControlForm::stabilizeKeyChange (void)
 	unsigned short iController = controllerFromText(sController);
 
 	bool bMapped = pMidiControl->isChannelControllerMapped(
-		iChannel, iController);
+		qtractorMidiControl::CONTROLLER, iChannel, iController);
 
 	if (bMapped) {
 		QList<QTreeWidgetItem *> items
@@ -574,7 +576,7 @@ void qtractorMidiControlForm::stabilizeValueChange (void)
 	unsigned short iController = controllerFromText(sController);
 
 	bool bMapped = pMidiControl->isChannelControllerMapped(
-		iChannel, iController);
+		qtractorMidiControl::CONTROLLER, iChannel, iController);
 
 	if (bMapped) {
 		qtractorMidiControl::Command command = commandFromText(
@@ -582,7 +584,8 @@ void qtractorMidiControlForm::stabilizeValueChange (void)
 		int iParam = m_ui.ParamSpinBox->value();
 		bool bFeedback = m_ui.FeedbackCheckBox->isChecked();
 		pMidiControl->mapChannelController(
-			iChannel, iController, command, iParam, bFeedback);
+			qtractorMidiControl::CONTROLLER, iChannel, iController,
+			command, iParam, bFeedback);
 		m_iDirtyCount = 0;
 		m_iDirtyMap++;
 		refreshControlMap();

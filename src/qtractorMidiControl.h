@@ -53,6 +53,19 @@ public:
 		TrackSolo    = 6
 	};
 
+	// Controller types.
+	enum ControlType
+	{
+		MMC        = 1,
+		NOTE_ON    = 2,
+		NOTE_OFF   = 3,
+		KEY_PRESS  = 4,
+		CONTROLLER = 5,
+		PGM_CHANGE = 6,
+		CHAN_PRESS = 7,
+		PITCH_BEND = 8
+	};
+
 	// Key param masks (wildcard flags).
 	enum { TrackParam = 0x4000, TrackParamMask = 0x3fff };
 
@@ -62,8 +75,15 @@ public:
 	public:
 
 		// Constructor.
-		MapKey(unsigned short iChannel = 0, unsigned short iController = 0)
-			: m_iChannel(iChannel), m_iController(iController) {}
+		MapKey(ControlType ctype = CONTROLLER,
+			unsigned short iChannel = 0, unsigned short iController = 0)
+			: m_ctype(ctype), m_iChannel(iChannel), m_iController(iController) {}
+
+		// Type accessors.
+		void setType(ControlType ctype)
+			{ m_ctype = ctype; }
+		ControlType type() const
+			{ return m_ctype; }
 
 		// Channel accessors.
 		void setChannel(unsigned short iChannel)
@@ -88,22 +108,26 @@ public:
 			{ return (m_iController & TrackParam); }
 
 		// Generic key matcher.
-		bool match (unsigned short iChannel, unsigned iController) const
+		bool match (ControlType ctype,
+			unsigned short iChannel, unsigned short iController) const
 		{
-			return (isChannelTrack() || channel() == iChannel)
-				&& (isControllerTrack() || controller() == iController);
+			return (type() == ctype 
+				&& (isChannelTrack() || channel() == iChannel)
+				&& (isControllerTrack() || controller() == iController));
 		}
 
 		// Hash key comparator.
 		bool operator== ( const MapKey& key ) const
 		{
-			return (key.m_iChannel == m_iChannel)
+			return (key.m_ctype == m_ctype)
+				&& (key.m_iChannel == m_iChannel)
 				&& (key.m_iController == m_iController);
 		}
 
 	private:
 
 		// Instance (key) member variables.
+		ControlType    m_ctype;
 		unsigned short m_iChannel;
 		unsigned short m_iController;
 	};
@@ -159,7 +183,7 @@ public:
 
 	// Insert new controller mappings.
 	void mapChannelController(
-		unsigned short iChannel, unsigned short iController,
+		ControlType ctype, unsigned short iChannel, unsigned short iController,
 		Command command, int iParam = 0, bool bFeedback = false);
 	void mapChannelParamController (unsigned short iController,
 		Command command, int iParam = 0, bool bFeedback = false);
@@ -168,11 +192,11 @@ public:
 
 	// Remove existing controller mapping.
 	void unmapChannelController(
-		unsigned short iChannel, unsigned short iController);
+		ControlType ctype, unsigned short iChannel, unsigned short iController);
 
 	// Check if given channel, controller pair is currently mapped.
 	bool isChannelControllerMapped(
-		unsigned short iChannel, unsigned short iController) const;
+		ControlType ctype, unsigned short iChannel, unsigned short iController) const;
 
 	// Re-send all (track) controllers.
 	void sendAllControllers(int iFirstTrack = 0) const;

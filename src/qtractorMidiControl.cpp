@@ -105,11 +105,11 @@ void qtractorMidiControl::clear (void)
 
 // Insert new controller mappings.
 void qtractorMidiControl::mapChannelController (
-	unsigned short iChannel, unsigned short iController,
+	ControlType ctype, unsigned short iChannel, unsigned short iController,
 	Command command, int iParam, bool bFeedback )
 {
 	m_controlMap.insert(
-		MapKey(iChannel, iController),
+		MapKey(ctype, iChannel, iController),
 		MapVal(command, iParam, bFeedback));
 }
 
@@ -118,7 +118,7 @@ void qtractorMidiControl::mapChannelParamController (
 	Command command, int iParam, bool bFeedback )
 {
 	mapChannelController(
-		TrackParam, iController, command, iParam, bFeedback);
+		CONTROLLER, TrackParam, iController, command, iParam, bFeedback);
 }
 
 void qtractorMidiControl::mapChannelControllerParam (
@@ -126,23 +126,23 @@ void qtractorMidiControl::mapChannelControllerParam (
 	Command command, int iParam, bool bFeedback )
 {
 	mapChannelController(
-		iChannel, TrackParam, command, iParam, bFeedback);
+		CONTROLLER, iChannel, TrackParam, command, iParam, bFeedback);
 }
 
 
 // Remove existing controller mapping.
 void qtractorMidiControl::unmapChannelController (
-	unsigned short iChannel, unsigned short iController )
+	ControlType ctype, unsigned short iChannel, unsigned short iController )
 {
-	m_controlMap.remove(MapKey(iChannel, iController));
+	m_controlMap.remove(MapKey(ctype, iChannel, iController));
 }
 
 
 // Check if given channel, controller pair is currently mapped.
 bool qtractorMidiControl::isChannelControllerMapped (
-	unsigned short iChannel, unsigned short iController ) const
+	ControlType ctype, unsigned short iChannel, unsigned short iController ) const
 {
-	return m_controlMap.contains(MapKey(iChannel, iController));
+	return m_controlMap.contains(MapKey(ctype, iChannel, iController));
 }
 
 
@@ -202,7 +202,7 @@ qtractorMidiControl::findEvent ( const qtractorCtlEvent& ctle ) const
 	ControlMap::ConstIterator it = m_controlMap.constBegin();
 	for ( ; it != m_controlMap.constEnd(); ++it) {
 		const MapKey& key = it.key();
-		if (key.match(ctle.channel(), ctle.controller()))
+		if (key.match(CONTROLLER, ctle.channel(), ctle.controller()))
 			break;
 	}
 	return it;
@@ -478,7 +478,7 @@ bool qtractorMidiControl::loadElement (
 					bFeedback = pDocument->boolFromText(eVal.text());
 			}
 			m_controlMap.insert(
-				MapKey(iChannel, iController),
+				MapKey(CONTROLLER, iChannel, iController),
 				MapVal(command, iParam, bFeedback));
 		}
 	}
