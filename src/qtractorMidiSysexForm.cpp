@@ -279,7 +279,7 @@ void qtractorMidiSysexForm::exportSlot (void)
 	const QString  sExt("syx");
 	const QString& sTitle  = tr("Export SysEx File") + " - " QTRACTOR_TITLE;
 	const QString& sFilter = tr("SysEx files (*.%1)").arg(sExt);
-#if QT_VERSION < 0x040400
+#if 1 // QT_VERSION < 0x040400
 	// Ask for the filename to open...
 	sPath = QFileDialog::getSaveFileName(this,
 		sTitle, pOptions->sMidiSysexDir, sFilter);
