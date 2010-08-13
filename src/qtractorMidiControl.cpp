@@ -104,45 +104,45 @@ void qtractorMidiControl::clear (void)
 
 
 // Insert new controller mappings.
-void qtractorMidiControl::mapChannelController (
-	ControlType ctype, unsigned short iChannel, unsigned short iController,
-	Command command, int iParam, bool bFeedback )
+void qtractorMidiControl::mapChannelParam (
+	ControlType ctype, unsigned short iChannel, unsigned short iParam,
+	Command command, bool bFeedback )
 {
 	m_controlMap.insert(
-		MapKey(ctype, iChannel, iController),
-		MapVal(command, iParam, bFeedback));
+		MapKey(ctype, iChannel, iParam),
+		MapVal(command, bFeedback));
 }
 
-void qtractorMidiControl::mapChannelParamController (
-	unsigned short iController,
-	Command command, int iParam, bool bFeedback )
+void qtractorMidiControl::mapChannelTrack (
+	ControlType ctype, unsigned short iParam,
+	Command command, bool bFeedback )
 {
-	mapChannelController(
-		CONTROLLER, TrackParam, iController, command, iParam, bFeedback);
+	mapChannelParam(
+		ctype, TrackParam, iParam, command, bFeedback);
 }
 
-void qtractorMidiControl::mapChannelControllerParam (
-	unsigned short iChannel,
-	Command command, int iParam, bool bFeedback )
+void qtractorMidiControl::mapChannelParamTrack (
+	ControlType ctype, unsigned short iChannel, unsigned short iParam,
+	Command command, bool bFeedback )
 {
-	mapChannelController(
-		CONTROLLER, iChannel, TrackParam, command, iParam, bFeedback);
+	mapChannelParam(
+		ctype, iChannel, iParam | TrackParam, command, bFeedback);
 }
 
 
 // Remove existing controller mapping.
-void qtractorMidiControl::unmapChannelController (
-	ControlType ctype, unsigned short iChannel, unsigned short iController )
+void qtractorMidiControl::unmapChannelParam (
+	ControlType ctype, unsigned short iChannel, unsigned short iParam )
 {
-	m_controlMap.remove(MapKey(ctype, iChannel, iController));
+	m_controlMap.remove(MapKey(ctype, iChannel, iParam));
 }
 
 
-// Check if given channel, controller pair is currently mapped.
-bool qtractorMidiControl::isChannelControllerMapped (
-	ControlType ctype, unsigned short iChannel, unsigned short iController ) const
+// Check if given channel, param triplet is currently mapped.
+bool qtractorMidiControl::isChannelParamMapped (
+	ControlType ctype, unsigned short iChannel, unsigned short iParam ) const
 {
-	return m_controlMap.contains(MapKey(ctype, iChannel, iController));
+	return m_controlMap.contains(MapKey(ctype, iChannel, iParam));
 }
 
 
@@ -169,21 +169,22 @@ void qtractorMidiControl::sendAllControllers ( int iFirstTrack ) const
 		if (val.isFeedback()) {
 			const MapKey& key = it.key();
 			unsigned short iChannel = key.channel();
-			unsigned short iController = key.controller();
-			int iParam = val.param();
+			unsigned short iParam = key.param();
+			if (key.isParamTrack())
+				iParam &= TrackParamMask;
 			int iTrack = 0;
 			for (qtractorTrack *pTrack = pSession->tracks().first();
 					pTrack; pTrack = pTrack->next()) {
 				if (iTrack >= iFirstTrack) {
 					if (key.isChannelTrack())
 						sendTrackController(pTrack,
-							val.command(), iParam + iTrack, iController);
-					else if (key.isControllerTrack())
+							val.command(), iTrack, iParam);
+					else if (key.isParamTrack())
 						sendTrackController(pTrack,
 							val.command(), iChannel, iParam + iTrack);
-					else if (val.param() == iTrack) {
+					else /* if (iParam == iTrack) */ {
 						sendTrackController(pTrack,
-							val.command(), iChannel, iController);
+							val.command(), iChannel, iParam);
 						break; // Bail out from inner track loop.
 					}
 				}
@@ -225,15 +226,15 @@ bool qtractorMidiControl::processEvent ( const qtractorCtlEvent& ctle ) const
 
 	int iTrack = -1;	
 	if (key.isChannelTrack()) {
-		if (int(ctle.channel()) >= val.param())
-			iTrack = int(ctle.channel()) - val.param();
+		iTrack = int(ctle.channel());
 	}
 	else
-	if (key.isControllerTrack()) {
-		if (int(ctle.controller()) >= val.param())
-			iTrack = int(ctle.controller()) - val.param();
+	if (key.isParamTrack()) {
+		unsigned short iParam = key.param() & TrackParamMask;
+		if (int(ctle.controller()) >= iParam)
+			iTrack = int(ctle.controller()) - iParam;
 	}
-	else iTrack = val.param();
+//	else iTrack = key.param();
 
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
@@ -336,16 +337,18 @@ void qtractorMidiControl::sendParamController (
 	for ( ; it != m_controlMap.constEnd(); ++it) {
 		const MapKey& key = it.key();
 		const MapVal& val = it.value();
-		if (val.command() == command && val.isFeedback()) {
+		if (key.type() == CONTROLLER &&
+			val.command() == command &&
+			val.isFeedback()) {
 			// Now send the message out...
 			if (key.isChannelTrack())
-				sendController(val.param() + iParam, key.controller(), iValue);
+				sendController(iParam, key.param(), iValue);
 			else
-			if (key.isControllerTrack())
-				sendController(key.channel(), val.param() + iParam, iValue);
+			if (key.isParamTrack())
+				sendController(key.channel(), (key.param() & TrackParamMask) + iParam, iValue);
 			else
-			if (val.param() == iParam)
-				sendController(key.channel(), key.controller(), iValue);
+			if (key.param() == iParam)
+				sendController(key.channel(), key.param(), iValue);
 		}
 	}
 }
@@ -454,12 +457,21 @@ bool qtractorMidiControl::loadElement (
 		if (eItem.isNull())
 			continue;
 		if (eItem.tagName() == "map") {
+			ControlType ctype
+				= typeFromText(eItem.attribute("type"));
 			unsigned short iChannel
 				= keyFromText(eItem.attribute("channel"));
-			unsigned short iController
-				= keyFromText(eItem.attribute("controller"));
+			unsigned short iParam = 0;
+			bool bOldMap = (ctype == ControlType(0));
+			if (bOldMap) {
+				ctype  = CONTROLLER;
+				iParam = keyFromText(eItem.attribute("controller"));
+			} else {
+				iParam = eItem.attribute("param").toUShort();
+				if (pDocument->boolFromText(eItem.attribute("track")))
+					iParam |= TrackParam;
+			}
 			Command command = TrackNone;
-			int iParam = 0;
 			bool bFeedback = false;
 			for (QDomNode nVal = eItem.firstChild();
 					!nVal.isNull();
@@ -471,15 +483,15 @@ bool qtractorMidiControl::loadElement (
 				if (eVal.tagName() == "command")
 					command = commandFromText(eVal.text());
 				else
-				if (eVal.tagName() == "param")
-					iParam = eVal.text().toInt();
+				if (eVal.tagName() == "param" && bOldMap)
+					iParam |= eVal.text().toUShort();
 				else
 				if (eVal.tagName() == "feedback")
 					bFeedback = pDocument->boolFromText(eVal.text());
 			}
 			m_controlMap.insert(
-				MapKey(CONTROLLER, iChannel, iController),
-				MapVal(command, iParam, bFeedback));
+				MapKey(ctype, iChannel, iParam),
+				MapVal(command, bFeedback));
 		}
 	}
 
@@ -496,15 +508,16 @@ bool qtractorMidiControl::saveElement (
 		const MapKey& key = it.key();
 		const MapVal& val = it.value();
 		QDomElement eItem = pDocument->document()->createElement("map");
-		const QString sTrackParam("TrackParam");
+		eItem.setAttribute("type",
+			textFromType(key.type()));
 		eItem.setAttribute("channel",
 			textFromKey(key.channel()));
-		eItem.setAttribute("controller",
-			textFromKey(key.controller()));
+		eItem.setAttribute("param",
+			QString::number(key.param() & TrackParamMask));
+		eItem.setAttribute("track",
+			pDocument->textFromBool(key.isParamTrack()));
 		pDocument->saveTextElement("command",
 			textFromCommand(val.command()), &eItem);
-		pDocument->saveTextElement("param",
-			QString::number(val.param()), &eItem);
 		pDocument->saveTextElement("feedback",
 			pDocument->textFromBool(val.isFeedback()), &eItem);
 		pElement->appendChild(eItem);
@@ -529,6 +542,72 @@ bool qtractorMidiControl::saveDocument ( const QString& sFilename )
 
 
 // Document textual helpers.
+qtractorMidiControl::ControlType qtractorMidiControl::typeFromText (
+	const QString& sText )
+{
+	if (sText == "MMC")
+		return MMC;
+	else
+	if (sText == "NOTE_ON")
+		return NOTE_ON;
+	else
+	if (sText == "NOTE_OFF")
+		return NOTE_OFF;
+	else
+	if (sText == "KEY_PRESS")
+		return KEY_PRESS;
+	else
+	if (sText == "CONTROLLER")
+		return CONTROLLER;
+	else
+	if (sText == "PGM_CHANGE")
+		return PGM_CHANGE;
+	else
+	if (sText == "CHAN_PRESS")
+		return CHAN_PRESS;
+	else
+	if (sText == "PITCH_BEND")
+		return PITCH_BEND;
+	else
+		return ControlType(0);
+}
+
+QString qtractorMidiControl::textFromType (
+	qtractorMidiControl::ControlType ctype )
+{
+	QString sText;
+
+	switch (ctype) {
+	case MMC:
+		sText = "MMC";
+		break;
+	case NOTE_ON:
+		sText = "NOTE_ON";
+		break;
+	case NOTE_OFF:
+		sText = "NOTE_OFF";
+		break;
+	case KEY_PRESS:
+		sText = "KEY_PRESS";
+		break;
+	case CONTROLLER:
+		sText = "CONTROLLER";
+		break;
+	case PGM_CHANGE:
+		sText = "PGM_CHANGE";
+		break;
+	case CHAN_PRESS:
+		sText = "CHAN_PRESS";
+		break;
+	case PITCH_BEND:
+		sText = "PITCH_BEND";
+		break;
+	}
+
+	return sText;
+}
+
+
 unsigned short qtractorMidiControl::keyFromText ( const QString& sText )
 {
 	if (sText == "TrackParam" || sText == "*" || sText.isEmpty())

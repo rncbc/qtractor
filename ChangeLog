@@ -5,6 +5,10 @@ ChangeLog
 
 SVN TRUNK
 
+- MIDI controller mapping is being silently refactored
+  to support some other event types than just CC (0xBn)
+  ones (EXPERIMENTAL).
+
 - Progressively, the observer pattern is being finally
   introduced, targeting all potentially automatable
   controls and widgets as plain ground-zero for the

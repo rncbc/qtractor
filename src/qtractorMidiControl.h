@@ -76,8 +76,8 @@ public:
 
 		// Constructor.
 		MapKey(ControlType ctype = CONTROLLER,
-			unsigned short iChannel = 0, unsigned short iController = 0)
-			: m_ctype(ctype), m_iChannel(iChannel), m_iController(iController) {}
+			unsigned short iChannel = 0, unsigned short iParam = 0)
+			: m_ctype(ctype), m_iChannel(iChannel), m_iParam(iParam) {}
 
 		// Type accessors.
 		void setType(ControlType ctype)
@@ -97,23 +97,23 @@ public:
 			{ return (m_iChannel & TrackParam); }
 
 		// Controller accessors.
-		void setController (unsigned short iController)
-			{ m_iController = iController; }
-		unsigned short controller() const
-			{ return m_iController; }
+		void setParam (unsigned short iParam)
+			{ m_iParam = iParam; }
+		unsigned short param() const
+			{ return m_iParam; }
 
-		bool isController() const
-			{ return ((m_iController & TrackParamMask ) == m_iController); }
-		bool isControllerTrack() const
-			{ return (m_iController & TrackParam); }
+		bool isParam() const
+			{ return ((m_iParam & TrackParamMask ) == m_iParam); }
+		bool isParamTrack() const
+			{ return (m_iParam & TrackParam); }
 
 		// Generic key matcher.
 		bool match (ControlType ctype,
-			unsigned short iChannel, unsigned short iController) const
+			unsigned short iChannel, unsigned short iParam) const
 		{
 			return (type() == ctype 
 				&& (isChannelTrack() || channel() == iChannel)
-				&& (isControllerTrack() || controller() == iController));
+				&& (isParamTrack() || param() == iParam));
 		}
 
 		// Hash key comparator.
@@ -121,7 +121,7 @@ public:
 		{
 			return (key.m_ctype == m_ctype)
 				&& (key.m_iChannel == m_iChannel)
-				&& (key.m_iController == m_iController);
+				&& (key.m_iParam == m_iParam);
 		}
 
 	private:
@@ -129,7 +129,7 @@ public:
 		// Instance (key) member variables.
 		ControlType    m_ctype;
 		unsigned short m_iChannel;
-		unsigned short m_iController;
+		unsigned short m_iParam;
 	};
 
 	// MIDI control map data value.
@@ -138,20 +138,14 @@ public:
 	public:
 
 		// Constructor.
-		MapVal(Command command = TrackNone, int iParam = 0, bool bFeedback = false)
-			: m_command(command), m_iParam(iParam), m_bFeedback(bFeedback) {}
+		MapVal(Command command = TrackNone, bool bFeedback = false)
+			: m_command(command), m_bFeedback(bFeedback) {}
 
 		// Command accessors
 		void setCommand(Command command)
 			{ m_command = command; }
 		Command command() const
 			{ return m_command; }
-
-		// Parameter accessor (eg. track delta-index)
-		void setParam(int iParam)
-			{ m_iParam = iParam; }
-		int param() const
-			{ return m_iParam; }
 
 		// Feedback flag accessor.
 		void setFeedback(bool bFeedback)
@@ -163,7 +157,6 @@ public:
 
 		// Instance (value) member variables.
 		Command m_command;
-		int     m_iParam;
 		bool    m_bFeedback;
 	};
 
@@ -182,21 +175,23 @@ public:
 	void clear();
 
 	// Insert new controller mappings.
-	void mapChannelController(
-		ControlType ctype, unsigned short iChannel, unsigned short iController,
-		Command command, int iParam = 0, bool bFeedback = false);
-	void mapChannelParamController (unsigned short iController,
-		Command command, int iParam = 0, bool bFeedback = false);
-	void mapChannelControllerParam(unsigned short iChannel,
-		Command command, int iParam = 0, bool bFeedback = false);
+	void mapChannelParam(
+		ControlType ctype, unsigned short iChannel, unsigned short iParam,
+		Command command, bool bFeedback = false);
+	void mapChannelTrack(
+		ControlType ctype, unsigned short iParam,
+		Command command, bool bFeedback = false);
+	void mapChannelParamTrack(
+		ControlType ctype, unsigned short iChannel, unsigned short iParam,
+		Command command, bool bFeedback = false);
 
 	// Remove existing controller mapping.
-	void unmapChannelController(
-		ControlType ctype, unsigned short iChannel, unsigned short iController);
+	void unmapChannelParam(
+		ControlType ctype, unsigned short iChannel, unsigned short iParam);
 
-	// Check if given channel, controller pair is currently mapped.
-	bool isChannelControllerMapped(
-		ControlType ctype, unsigned short iChannel, unsigned short iController) const;
+	// Check if given channel, param triplet is currently mapped.
+	bool isChannelParamMapped(
+		ControlType ctype, unsigned short iChannel, unsigned short iParam) const;
 
 	// Re-send all (track) controllers.
 	void sendAllControllers(int iFirstTrack = 0) const;
@@ -225,6 +220,9 @@ public:
 	bool saveDocument(const QString& sFilename);
 
 	// Document textual helpers.
+	static ControlType typeFromText(const QString& sText);
+	static QString textFromType(ControlType ctype);
+
 	static unsigned short keyFromText(const QString& sText);
 	static QString textFromKey(unsigned short iKey);
 
@@ -256,7 +254,7 @@ private:
 // Hash key function
 inline uint qHash ( const qtractorMidiControl::MapKey& key )
 {
-	return qHash(key.channel() ^ key.controller());
+	return qHash(key.channel() ^ key.param());
 }
 
 
