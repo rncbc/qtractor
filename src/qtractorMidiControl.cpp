@@ -617,7 +617,6 @@ unsigned short qtractorMidiControl::keyFromText ( const QString& sText )
 		return sText.toUShort();
 }
 
-
 QString qtractorMidiControl::textFromKey ( unsigned short iKey )
 {
 	if (iKey & TrackParam)
@@ -650,7 +649,6 @@ qtractorMidiControl::Command qtractorMidiControl::commandFromText (
 	else
 		return Command(0);
 }
-
 
 QString qtractorMidiControl::textFromCommand (
 	qtractorMidiControl::Command command )

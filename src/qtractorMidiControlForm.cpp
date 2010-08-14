@@ -377,7 +377,8 @@ void qtractorMidiControlForm::mapSlot (void)
 		m_ui.ChannelComboBox->currentText());
 	unsigned short iController = controllerFromText(
 		m_ui.ParamComboBox->currentText());
-	if (m_ui.TrackCheckBox->isChecked())
+	if (m_ui.TrackCheckBox->isChecked()
+		&& (iChannel & qtractorMidiControl::TrackParam) == 0)
 		iController |= qtractorMidiControl::TrackParam;
 	qtractorMidiControl::Command command = commandFromText(
 		m_ui.CommandComboBox->currentText());
@@ -404,7 +405,8 @@ void qtractorMidiControlForm::unmapSlot (void)
 		m_ui.ChannelComboBox->currentText());
 	unsigned short iController = controllerFromText(
 		m_ui.ParamComboBox->currentText());
-	if (m_ui.TrackCheckBox->isChecked())
+	if (m_ui.TrackCheckBox->isChecked()
+		&& (iChannel & qtractorMidiControl::TrackParam) == 0)
 		iController |= qtractorMidiControl::TrackParam;
 
 	pMidiControl->unmapChannelParam(
@@ -568,7 +570,8 @@ void qtractorMidiControlForm::stabilizeKeyChange (void)
 	const QString& sController = m_ui.ParamComboBox->currentText();
 	unsigned short iChannel    = channelFromText(sChannel);
 	unsigned short iController = controllerFromText(sController);
-	if (m_ui.TrackCheckBox->isChecked())
+	if (m_ui.TrackCheckBox->isChecked()
+		&& (iChannel & qtractorMidiControl::TrackParam) == 0)
 		iController |= qtractorMidiControl::TrackParam;
 
 	bool bMapped = pMidiControl->isChannelParamMapped(
@@ -588,6 +591,9 @@ void qtractorMidiControlForm::stabilizeKeyChange (void)
 			}
 		}
 	}
+
+	m_ui.TrackCheckBox->setEnabled(
+		(iChannel & qtractorMidiControl::TrackParam) == 0);
 
 	m_ui.MapPushButton->setEnabled(!bMapped && m_iDirtyCount > 0);
 	m_ui.UnmapPushButton->setEnabled(bMapped);
@@ -615,7 +621,8 @@ void qtractorMidiControlForm::stabilizeValueChange (void)
 	const QString& sController = m_ui.ParamComboBox->currentText();
 	unsigned short iChannel    = channelFromText(sChannel);
 	unsigned short iController = controllerFromText(sController);
-	if (m_ui.TrackCheckBox->isChecked())
+	if (m_ui.TrackCheckBox->isChecked()
+		&& (iChannel & qtractorMidiControl::TrackParam) == 0)
 		iController |= qtractorMidiControl::TrackParam;
 
 	bool bMapped = pMidiControl->isChannelParamMapped(
@@ -780,7 +787,7 @@ QString qtractorMidiControlForm::textFromType (
 unsigned short qtractorMidiControlForm::channelFromText (
 	const QString& sText ) const
 {
-	if (sText == "TrackParam" || sText == "*" || sText.isEmpty())
+	if (sText == "*" || sText.isEmpty())
 		return qtractorMidiControl::TrackParam;
 	else
 		return sText.toUShort() - 1;
