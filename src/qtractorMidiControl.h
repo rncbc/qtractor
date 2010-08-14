@@ -42,21 +42,10 @@ class qtractorMidiControl
 {
 public:
 
-	// Controller command types.
-	enum Command {
-		TrackNone    = 0,
-		TrackGain    = 1,
-		TrackPanning = 2,
-		TrackMonitor = 3,
-		TrackRecord  = 4,
-		TrackMute    = 5,
-		TrackSolo    = 6
-	};
-
 	// Controller types.
 	enum ControlType
 	{
-		MMC        = 1,
+	  	MMC        = 1,
 		NOTE_ON    = 2,
 		NOTE_OFF   = 3,
 		KEY_PRESS  = 4,
@@ -64,6 +53,16 @@ public:
 		PGM_CHANGE = 6,
 		CHAN_PRESS = 7,
 		PITCH_BEND = 8
+	};
+
+	// Controller command types.
+	enum Command {
+		TRACK_GAIN    = 1,
+		TRACK_PANNING = 2,
+		TRACK_MONITOR = 3,
+		TRACK_RECORD  = 4,
+		TRACK_MUTE    = 5,
+		TRACK_SOLO    = 6
 	};
 
 	// Key param masks (wildcard flags).
@@ -138,7 +137,7 @@ public:
 	public:
 
 		// Constructor.
-		MapVal(Command command = TrackNone, bool bFeedback = false)
+		MapVal(Command command = Command(0), bool bFeedback = false)
 			: m_command(command), m_bFeedback(bFeedback) {}
 
 		// Command accessors
@@ -200,10 +199,10 @@ public:
 	bool processEvent(const qtractorCtlEvent& ctle) const;
 
 	// Process incoming command.
-	void processCommand(
-		Command command, int iParam, float fValue, bool bCubic = false) const;
-	void processCommand(
-		Command command, int iParam, bool bValue) const;
+	void processTrackCommand(
+		Command command, int iTrack, float fValue, bool bCubic = false) const;
+	void processTrackCommand(
+		Command command, int iTrack, bool bValue) const;
 
 	// Control map accessor.
 	const ControlMap& controlMap() const { return m_controlMap; }
@@ -235,9 +234,10 @@ protected:
 	ControlMap::ConstIterator findEvent(const qtractorCtlEvent& ctle) const;
 
 	// Overloaded controller value senders.
-	void sendParamController(Command command, int iParam, int iValue) const;
 	void sendTrackController(qtractorTrack *pTrack, Command command,
 		unsigned short iChannel, unsigned short iController) const;
+	void sendTrackController(int iTrack, Command command, int iValue) const;
+
 	void sendController(
 		unsigned short iChannel, unsigned short iController, int iValue) const;
 

@@ -34,6 +34,43 @@
 
 
 //----------------------------------------------------------------------------
+// MIDI Controller Type Names - Default control types hash map.
+
+static struct
+{
+	qtractorMidiControl::ControlType ctype;
+	const char *name;
+
+} g_aControlTypes[] = {
+
+//	{ qtractorMidiControl::MMC,          QT_TR_NOOP("MMC") },
+	{ qtractorMidiControl::NOTE_ON,      QT_TR_NOOP("Note On") },
+	{ qtractorMidiControl::NOTE_OFF,     QT_TR_NOOP("Note Off") },
+	{ qtractorMidiControl::KEY_PRESS,    QT_TR_NOOP("Key Press") },
+	{ qtractorMidiControl::CONTROLLER,   QT_TR_NOOP("Controller") },
+	{ qtractorMidiControl::PGM_CHANGE,   QT_TR_NOOP("Pgm Change") },
+	{ qtractorMidiControl::CHAN_PRESS,   QT_TR_NOOP("Chan Press") },
+	{ qtractorMidiControl::PITCH_BEND,   QT_TR_NOOP("Pitch Bend") },
+
+	{ qtractorMidiControl::ControlType(0), NULL }
+};
+
+static QHash<qtractorMidiControl::ControlType, QString> g_controlTypes;
+
+static void initControlTypes (void)
+{
+	if (g_controlTypes.isEmpty()) {
+		// Pre-load ontrol-types hash table...
+		for (int i = 0; g_aControlTypes[i].name; ++i) {
+			g_controlTypes.insert(
+				g_aControlTypes[i].ctype,
+				QObject::tr(g_aControlTypes[i].name));
+		}
+	}
+}
+
+
+//----------------------------------------------------------------------------
 // MIDI Controller Command Names - Default command names hash map.
 
 static struct
@@ -43,14 +80,14 @@ static struct
 
 } g_aCommandNames[] = {
 
-	{ qtractorMidiControl::TrackGain,    QT_TR_NOOP("Track Gain") },
-	{ qtractorMidiControl::TrackPanning, QT_TR_NOOP("Track Panning") },
-	{ qtractorMidiControl::TrackMonitor, QT_TR_NOOP("Track Monitor") },
-	{ qtractorMidiControl::TrackRecord,  QT_TR_NOOP("Track Record") },
-	{ qtractorMidiControl::TrackMute,    QT_TR_NOOP("Track Mute") },
-	{ qtractorMidiControl::TrackSolo,    QT_TR_NOOP("Track Solo") },
+	{ qtractorMidiControl::TRACK_GAIN,    QT_TR_NOOP("Track Gain") },
+	{ qtractorMidiControl::TRACK_PANNING, QT_TR_NOOP("Track Panning") },
+	{ qtractorMidiControl::TRACK_MONITOR, QT_TR_NOOP("Track Monitor") },
+	{ qtractorMidiControl::TRACK_RECORD,  QT_TR_NOOP("Track Record") },
+	{ qtractorMidiControl::TRACK_MUTE,    QT_TR_NOOP("Track Mute") },
+	{ qtractorMidiControl::TRACK_SOLO,    QT_TR_NOOP("Track Solo") },
 
-	{ qtractorMidiControl::TrackNone, NULL }
+	{ qtractorMidiControl::Command(0), NULL }
 };
 
 static QHash<qtractorMidiControl::Command, QString> g_commandNames;
@@ -110,17 +147,17 @@ qtractorMidiControlForm::qtractorMidiControlForm (
 
 //	m_ui.CommandComboBox->clear();
 	m_ui.CommandComboBox->addItem(
-		textFromCommand(qtractorMidiControl::TrackGain));
+		textFromCommand(qtractorMidiControl::TRACK_GAIN));
 	m_ui.CommandComboBox->addItem(
-		textFromCommand(qtractorMidiControl::TrackPanning));
+		textFromCommand(qtractorMidiControl::TRACK_PANNING));
 	m_ui.CommandComboBox->addItem(
-		textFromCommand(qtractorMidiControl::TrackMonitor));
+		textFromCommand(qtractorMidiControl::TRACK_MONITOR));
 	m_ui.CommandComboBox->addItem(
-		textFromCommand(qtractorMidiControl::TrackRecord));
+		textFromCommand(qtractorMidiControl::TRACK_RECORD));
 	m_ui.CommandComboBox->addItem(
-		textFromCommand(qtractorMidiControl::TrackMute));
+		textFromCommand(qtractorMidiControl::TRACK_MUTE));
 	m_ui.CommandComboBox->addItem(
-		textFromCommand(qtractorMidiControl::TrackSolo));
+		textFromCommand(qtractorMidiControl::TRACK_SOLO));
 
 	refreshFiles();
 	adjustSize();
@@ -714,6 +751,31 @@ void qtractorMidiControlForm::refreshControlMap (void)
 }
 
 
+// Control type text conversion helpers.
+qtractorMidiControl::ControlType qtractorMidiControlForm::typeFromText (
+	const QString& sText ) const
+{
+	initControlTypes();
+
+	QHashIterator<qtractorMidiControl::ControlType, QString> iter(g_controlTypes);
+	while (iter.hasNext()) {
+		iter.next();
+		if (iter.value() == sText)
+			return iter.key();
+	}
+
+	return qtractorMidiControl::ControlType(0);
+}
+
+QString qtractorMidiControlForm::textFromType (
+	qtractorMidiControl::ControlType ctype ) const
+{
+	initControlTypes();
+
+	return g_controlTypes[ctype];
+}
+
+
 // Channel text conversion helpers.
 unsigned short qtractorMidiControlForm::channelFromText (
 	const QString& sText ) const
@@ -763,7 +825,7 @@ qtractorMidiControl::Command qtractorMidiControlForm::commandFromText (
 			return iter.key();
 	}
 
-	return qtractorMidiControl::TrackNone;
+	return qtractorMidiControl::Command(0);
 }
 
 QString qtractorMidiControlForm::textFromCommand (

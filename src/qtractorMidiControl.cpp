@@ -245,7 +245,7 @@ bool qtractorMidiControl::processEvent ( const qtractorCtlEvent& ctle ) const
 		return false;
 
 	switch (val.command()) {
-	case TrackGain:
+	case TRACK_GAIN:
 		pSession->execute(
 			new qtractorTrackGainCommand(pTrack,
 				(pTrack->trackType() == qtractorTrack::Audio
@@ -253,33 +253,33 @@ bool qtractorMidiControl::processEvent ( const qtractorCtlEvent& ctle ) const
 					: float(ctle.value()) / 127.0f),
 				true));
 		break;
-	case TrackPanning:
+	case TRACK_PANNING:
 		pSession->execute(
 			new qtractorTrackPanningCommand(pTrack,
 				(float(ctle.value()) - 64.0f) / 63.0f,
 				true));
 		break;
-	case TrackMonitor:
+	case TRACK_MONITOR:
 		pSession->execute(
 			new qtractorTrackMonitorCommand(pTrack,
 				bool(ctle.value() > 0),
 				true));
 		break;
-	case TrackRecord:
+	case TRACK_RECORD:
 		pSession->execute(
 			new qtractorTrackStateCommand(pTrack,
 				qtractorTrack::Record,
 				bool(ctle.value()> 0),
 				true));
 		break;
-	case TrackMute:
+	case TRACK_MUTE:
 		pSession->execute(
 			new qtractorTrackStateCommand(pTrack,
 				qtractorTrack::Mute,
 				bool(ctle.value() > 0),
 				true));
 		break;
-	case TrackSolo:
+	case TRACK_SOLO:
 		pSession->execute(
 			new qtractorTrackStateCommand(pTrack,
 				qtractorTrack::Solo,
@@ -295,16 +295,16 @@ bool qtractorMidiControl::processEvent ( const qtractorCtlEvent& ctle ) const
 
 
 // Process incoming command.
-void qtractorMidiControl::processCommand (
-	Command command, int iParam, float fValue, bool bCubic ) const
+void qtractorMidiControl::processTrackCommand (
+	Command command, int iTrack, float fValue, bool bCubic ) const
 {
 	switch (command) {
-	case TrackGain:
+	case TRACK_GAIN:
 		if (bCubic) fValue = cbrtf2(fValue);
-		sendParamController(command, iParam, int(127.0f * fValue));
+		sendTrackController(iTrack, command, int(127.0f * fValue));
 		break;
-	case TrackPanning:
-		sendParamController(command, iParam, 0x40 + int(63.0f * fValue));
+	case TRACK_PANNING:
+		sendTrackController(iTrack, command, 0x40 + int(63.0f * fValue));
 		break;
 	default:
 		break;
@@ -312,15 +312,15 @@ void qtractorMidiControl::processCommand (
 }
 
 
-void qtractorMidiControl::processCommand (
-	Command command, int iParam, bool bValue ) const
+void qtractorMidiControl::processTrackCommand (
+	Command command, int iTrack, bool bValue ) const
 {
 	switch (command) {
-	case TrackMonitor:
-	case TrackRecord:
-	case TrackMute:
-	case TrackSolo:
-		sendParamController(command, iParam, (bValue ? 127 : 0));
+	case TRACK_MONITOR:
+	case TRACK_RECORD:
+	case TRACK_MUTE:
+	case TRACK_SOLO:
+		sendTrackController(iTrack, command, (bValue ? 127 : 0));
 		break;
 	default:
 		break;
@@ -329,8 +329,8 @@ void qtractorMidiControl::processCommand (
 
 
 // Further processing of outgoing midi controller messages
-void qtractorMidiControl::sendParamController (
-	Command command, int iParam, int iValue ) const
+void qtractorMidiControl::sendTrackController (
+	int iTrack, Command command, int iValue ) const
 {
 	// Search for the command and parameter in controller map...
 	ControlMap::ConstIterator it = m_controlMap.constBegin();
@@ -341,14 +341,15 @@ void qtractorMidiControl::sendParamController (
 			val.command() == command &&
 			val.isFeedback()) {
 			// Now send the message out...
+			unsigned short iParam = (key.param() & TrackParamMask);
 			if (key.isChannelTrack())
-				sendController(iParam, key.param(), iValue);
+				sendController(iTrack, iParam, iValue);
 			else
 			if (key.isParamTrack())
-				sendController(key.channel(), (key.param() & TrackParamMask) + iParam, iValue);
-			else
-			if (key.param() == iParam)
-				sendController(key.channel(), key.param(), iValue);
+				sendController(key.channel(), iParam + iTrack, iValue);
+		//	else
+		//	if (iParam == iTrack)
+		//		sendController(key.channel(), iParam, iValue);
 		}
 	}
 }
@@ -360,25 +361,25 @@ void qtractorMidiControl::sendTrackController ( qtractorTrack *pTrack,
 	int iValue = 0;
 
 	switch (command) {
-	case TrackGain:
+	case TRACK_GAIN:
 		if (pTrack->trackType() == qtractorTrack::Audio)
 			iValue = int(127.0f * cbrtf2(pTrack->gain()));
 		else
 			iValue = int(127.0f * pTrack->gain());
 		break;
-	case TrackPanning:
+	case TRACK_PANNING:
 		iValue = 0x40 + int(63.0f * pTrack->panning());
 		break;
-	case TrackMonitor:
+	case TRACK_MONITOR:
 		iValue = (pTrack->isMonitor() ? 127 : 0);
 		break;
-	case TrackRecord:
+	case TRACK_RECORD:
 		iValue = (pTrack->isRecord() ? 127 : 0);
 		break;
-	case TrackMute:
+	case TRACK_MUTE:
 		iValue = (pTrack->isMute() ? 127 : 0);
 		break;
-	case TrackSolo:
+	case TRACK_SOLO:
 		iValue = (pTrack->isSolo() ? 127 : 0);
 		break;
 	default:
@@ -471,7 +472,7 @@ bool qtractorMidiControl::loadElement (
 				if (pDocument->boolFromText(eItem.attribute("track")))
 					iParam |= TrackParam;
 			}
-			Command command = TrackNone;
+			Command command = Command(0);
 			bool bFeedback = false;
 			for (QDomNode nVal = eItem.firstChild();
 					!nVal.isNull();
@@ -629,25 +630,25 @@ QString qtractorMidiControl::textFromKey ( unsigned short iKey )
 qtractorMidiControl::Command qtractorMidiControl::commandFromText (
 	const QString& sText )
 {
-	if (sText == "TrackGain")
-		return TrackGain;
+	if (sText == "TRACK_GAIN" || sText == "TrackGain")
+		return TRACK_GAIN;
 	else
-	if (sText == "TrackPanning")
-		return TrackPanning;
+	if (sText == "TRACK_PANNING" || sText == "TrackPanning")
+		return TRACK_PANNING;
 	else
-	if (sText == "TrackMonitor")
-		return TrackMonitor;
+	if (sText == "TRACK_MONITOR" || sText == "TrackMonitor")
+		return TRACK_MONITOR;
 	else
-	if (sText == "TrackRecord")
-		return TrackRecord;
+	if (sText == "TRACK_RECORD" || sText == "TrackRecord")
+		return TRACK_RECORD;
 	else
-	if (sText == "TrackMute")
-		return TrackMute;
+	if (sText == "TRACK_MUTE" || sText == "TrackMute")
+		return TRACK_MUTE;
 	else
-	if (sText == "TrackSolo")
-		return TrackSolo;
+	if (sText == "TRACK_SOLO" || sText == "TrackSolo")
+		return TRACK_SOLO;
 	else
-		return TrackNone;
+		return Command(0);
 }
 
 
@@ -657,27 +658,25 @@ QString qtractorMidiControl::textFromCommand (
 	QString sText;
 
 	switch (command) {
-	case TrackGain:
-		sText = "TrackGain";
+	case TRACK_GAIN:
+		sText = "TRACK_GAIN";
 		break;
-	case TrackPanning:
-		sText = "TrackPanning";
+	case TRACK_PANNING:
+		sText = "TRACK_PANNING";
 		break;
-	case TrackMonitor:
-		sText = "TrackMonitor";
+	case TRACK_MONITOR:
+		sText = "TRACK_MONITOR";
 		break;
-	case TrackRecord:
-		sText = "TrackRecord";
+	case TRACK_RECORD:
+		sText = "TRACK_RECORD";
 		break;
-	case TrackMute:
-		sText = "TrackMute";
+	case TRACK_MUTE:
+		sText = "TRACK_MUTE";
 		break;
-	case TrackSolo:
-		sText = "TrackSolo";
+	case TRACK_SOLO:
+		sText = "TRACK_SOLO";
 		break;
-	case TrackNone:
 	default:
-		sText = "TrackNone";
 		break;
 	}
 
