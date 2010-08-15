@@ -4985,9 +4985,10 @@ void qtractorMainForm::midiMmcNotify ( const qtractorMmcEvent& mmce )
 void qtractorMainForm::midiCtlNotify ( const qtractorCtlEvent& ctle )
 {
 	QString sCtlText("CTL: ");
-	sCtlText += tr("MIDI channel %1, Controller %2, Value %3")
+	sCtlText += tr("MIDI channel %1, %2 Param %3, Value %4")
+		.arg(qtractorMidiControl::textFromType(ctle.type()))
 		.arg(ctle.channel())
-		.arg(ctle.controller())
+		.arg(ctle.param())
 		.arg(ctle.value());
 
 	// TODO: Check if controller is used as MIDI controller...
@@ -4998,52 +4999,54 @@ void qtractorMainForm::midiCtlNotify ( const qtractorCtlEvent& ctle )
 		return;
 	}
 
-	/* FIXME: JLCooper faders (as from US-224)...
-	if (ctle.channel() == 15) {
-		// Event translation...
-		int   iTrack = int(ctle.controller()) & 0x3f;
-		float fGain  = float(ctle.value()) / 127.0f;
-		// Find the track by number...
-		qtractorTrack *pTrack = m_pSession->tracks().at(iTrack);
-		if (pTrack) {
-			m_pSession->execute(
-				new qtractorTrackGainCommand(pTrack, fGain, true));
-			sCtlText += tr("(track %1, gain %2)")
-				.arg(iTrack).arg(fGain);
-		}
-	}
-	else */
-	// Handle volume controls...
-	if (ctle.controller() == 7) {
-		int iTrack = 0;
-		float fGain = float(ctle.value()) / 127.0f;
-		for (qtractorTrack *pTrack = m_pSession->tracks().first();
-				pTrack; pTrack = pTrack->next()) {
-			if (pTrack->trackType() == qtractorTrack::Midi &&
-				pTrack->midiChannel() == ctle.channel()) {
+	if (ctle.type() == qtractorMidiControl::CONTROLLER) {
+		/* FIXME: JLCooper faders (as from US-224)...
+		if (ctle.channel() == 15) {
+			// Event translation...
+			int   iTrack = int(ctle.controller()) & 0x3f;
+			float fGain  = float(ctle.value()) / 127.0f;
+			// Find the track by number...
+			qtractorTrack *pTrack = m_pSession->tracks().at(iTrack);
+			if (pTrack) {
 				m_pSession->execute(
 					new qtractorTrackGainCommand(pTrack, fGain, true));
 				sCtlText += tr("(track %1, gain %2)")
 					.arg(iTrack).arg(fGain);
 			}
-			++iTrack;
 		}
-	}
-	else
-	// Handle pan controls...
-	if (ctle.controller() == 10) {
-		int iTrack = 0;
-		float fPanning = (float(ctle.value()) - 64.0f) / 63.0f;
-		for (qtractorTrack *pTrack = m_pSession->tracks().first();
-				pTrack; pTrack = pTrack->next()) {
-			if (pTrack->trackType() == qtractorTrack::Midi &&
-				pTrack->midiChannel() == ctle.channel()) {
-				m_pSession->execute(
-					new qtractorTrackPanningCommand(pTrack, fPanning, true));
-				sCtlText += tr("(track %1, panning %2)")
-					.arg(iTrack).arg(fPanning);
+		else */
+		// Handle volume controls...
+		if (ctle.param() == 7) {
+			int iTrack = 0;
+			float fGain = float(ctle.value()) / 127.0f;
+			for (qtractorTrack *pTrack = m_pSession->tracks().first();
+					pTrack; pTrack = pTrack->next()) {
+				if (pTrack->trackType() == qtractorTrack::Midi &&
+					pTrack->midiChannel() == ctle.channel()) {
+					m_pSession->execute(
+						new qtractorTrackGainCommand(pTrack, fGain, true));
+					sCtlText += tr("(track %1, gain %2)")
+						.arg(iTrack).arg(fGain);
+				}
+				++iTrack;
 			}
-			++iTrack;
+		}
+		else
+		// Handle pan controls...
+		if (ctle.param() == 10) {
+			int iTrack = 0;
+			float fPanning = (float(ctle.value()) - 64.0f) / 63.0f;
+			for (qtractorTrack *pTrack = m_pSession->tracks().first();
+					pTrack; pTrack = pTrack->next()) {
+				if (pTrack->trackType() == qtractorTrack::Midi &&
+					pTrack->midiChannel() == ctle.channel()) {
+					m_pSession->execute(
+						new qtractorTrackPanningCommand(pTrack, fPanning, true));
+					sCtlText += tr("(track %1, panning %2)")
+						.arg(iTrack).arg(fPanning);
+				}
+				++iTrack;
+			}
 		}
 	}
 

@@ -23,13 +23,12 @@
 #ifndef __qtractorMidiControl_h
 #define __qtractorMidiControl_h
 
-#include "qtractorCtlEvent.h"
-
 #include <QHash>
 
 // Forward declarations.
 class qtractorTrack;
 class qtractorDocument;
+class qtractorCtlEvent;
 
 class QDomElement;
 

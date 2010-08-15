@@ -22,6 +22,9 @@
 #ifndef __qtractorCtlEvent_h
 #define __qtractorCtlEvent_h
 
+#include "qtractorMidiControl.h"
+
+
 //----------------------------------------------------------------------
 // qtractorCtlEvent - MIDI Control custom event.
 //
@@ -31,27 +34,30 @@ class qtractorCtlEvent
 public:
 
 	// Contructor.
-	qtractorCtlEvent(unsigned short iChannel = 0,
-		unsigned char controller = 0, unsigned char value = 0)
-		: m_channel(iChannel),
-			m_controller(controller), m_value(value) {}
+	qtractorCtlEvent(qtractorMidiControl::ControlType ctype
+		= qtractorMidiControl::CONTROLLER, unsigned short iChannel = 0,
+		unsigned char param = 0, unsigned char value = 0)
+		: m_ctype(ctype), m_channel(iChannel),
+			m_param(param), m_value(value) {}
 
 	// Copy constructor.
 	qtractorCtlEvent(const qtractorCtlEvent& ctle)
-		: m_channel(ctle.m_channel),
-			m_controller(ctle.m_controller), m_value(ctle.m_value) {}
+		: m_ctype(ctle.m_ctype), m_channel(ctle.m_channel),
+			m_param(ctle.m_param), m_value(ctle.m_value) {}
 
 
 	// Accessors.
-	unsigned short channel()    const { return m_channel; }
-	unsigned char  controller() const { return m_controller; }
-	unsigned char  value()      const { return m_value; }
+	qtractorMidiControl::ControlType type() const { return m_ctype; }
+	unsigned short channel() const { return m_channel; }
+	unsigned char  param() const { return m_param; }
+	unsigned char  value() const { return m_value; }
 
 private:
 
 	// Instance variables.
+	qtractorMidiControl::ControlType m_ctype;
 	unsigned short m_channel;
-	unsigned char  m_controller;
+	unsigned char  m_param;
 	unsigned char  m_value;
 };
 

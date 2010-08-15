@@ -909,7 +909,8 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 			if (data1 > 0x7f || data2 > 0x7f)
 				return;
 			// Post the stuffed event...
-			m_proxy.notifyCtlEvent(qtractorCtlEvent(iChannel, data1, data2));
+			m_proxy.notifyCtlEvent(qtractorCtlEvent(
+				qtractorMidiControl::CONTROLLER, iChannel, data1, data2));
 		}
 		break;
 	case SND_SEQ_EVENT_PGMCHANGE:

@@ -203,7 +203,7 @@ qtractorMidiControl::findEvent ( const qtractorCtlEvent& ctle ) const
 	ControlMap::ConstIterator it = m_controlMap.constBegin();
 	for ( ; it != m_controlMap.constEnd(); ++it) {
 		const MapKey& key = it.key();
-		if (key.match(CONTROLLER, ctle.channel(), ctle.controller()))
+		if (key.match(ctle.type(), ctle.channel(), ctle.param()))
 			break;
 	}
 	return it;
@@ -213,7 +213,6 @@ qtractorMidiControl::findEvent ( const qtractorCtlEvent& ctle ) const
 // Process incoming controller event.
 bool qtractorMidiControl::processEvent ( const qtractorCtlEvent& ctle ) const
 {
-
 	// Find incoming controller event map tuple.
 	ControlMap::ConstIterator it = findEvent(ctle);
 	// Is there one mapped, indeed?
@@ -231,8 +230,8 @@ bool qtractorMidiControl::processEvent ( const qtractorCtlEvent& ctle ) const
 	else
 	if (key.isParamTrack()) {
 		unsigned short iParam = key.param() & TrackParamMask;
-		if (int(ctle.controller()) >= iParam)
-			iTrack = int(ctle.controller()) - iParam;
+		if (int(ctle.param()) >= iParam)
+			iTrack = int(ctle.param()) - iParam;
 	}
 //	else iTrack = key.param();
 
