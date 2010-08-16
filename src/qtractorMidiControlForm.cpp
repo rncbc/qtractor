@@ -43,14 +43,13 @@ static struct
 
 } g_aControlTypes[] = {
 
-//	{ qtractorMidiControl::MMC,          QT_TR_NOOP("MMC") },
-	{ qtractorMidiControl::NOTE_ON,      QT_TR_NOOP("Note On") },
-	{ qtractorMidiControl::NOTE_OFF,     QT_TR_NOOP("Note Off") },
-	{ qtractorMidiControl::KEY_PRESS,    QT_TR_NOOP("Key Press") },
-	{ qtractorMidiControl::CONTROLLER,   QT_TR_NOOP("Controller") },
-	{ qtractorMidiControl::PGM_CHANGE,   QT_TR_NOOP("Pgm Change") },
-	{ qtractorMidiControl::CHAN_PRESS,   QT_TR_NOOP("Chan Press") },
-	{ qtractorMidiControl::PITCH_BEND,   QT_TR_NOOP("Pitch Bend") },
+	{ qtractorMidiEvent::NOTEON,     QT_TR_NOOP("Note On")    },
+	{ qtractorMidiEvent::NOTEOFF,    QT_TR_NOOP("Note Off")   },
+	{ qtractorMidiEvent::KEYPRESS,   QT_TR_NOOP("Key Press")  },
+	{ qtractorMidiEvent::CONTROLLER, QT_TR_NOOP("Controller") },
+	{ qtractorMidiEvent::PGMCHANGE,  QT_TR_NOOP("Pgm Change") },
+	{ qtractorMidiEvent::CHANPRESS,  QT_TR_NOOP("Chan Press") },
+	{ qtractorMidiEvent::PITCHBEND,  QT_TR_NOOP("Pitch Bend") },
 
 	{ qtractorMidiControl::ControlType(0), NULL }
 };
@@ -80,12 +79,12 @@ static struct
 
 } g_aCommandNames[] = {
 
-	{ qtractorMidiControl::TRACK_GAIN,    QT_TR_NOOP("Track Gain") },
+	{ qtractorMidiControl::TRACK_GAIN,    QT_TR_NOOP("Track Gain")    },
 	{ qtractorMidiControl::TRACK_PANNING, QT_TR_NOOP("Track Panning") },
 	{ qtractorMidiControl::TRACK_MONITOR, QT_TR_NOOP("Track Monitor") },
-	{ qtractorMidiControl::TRACK_RECORD,  QT_TR_NOOP("Track Record") },
-	{ qtractorMidiControl::TRACK_MUTE,    QT_TR_NOOP("Track Mute") },
-	{ qtractorMidiControl::TRACK_SOLO,    QT_TR_NOOP("Track Solo") },
+	{ qtractorMidiControl::TRACK_RECORD,  QT_TR_NOOP("Track Record")  },
+	{ qtractorMidiControl::TRACK_MUTE,    QT_TR_NOOP("Track Mute")    },
+	{ qtractorMidiControl::TRACK_SOLO,    QT_TR_NOOP("Track Solo")    },
 
 	{ qtractorMidiControl::Command(0), NULL }
 };
@@ -135,15 +134,27 @@ qtractorMidiControlForm::qtractorMidiControlForm (
 	pHeader->setDefaultAlignment(Qt::AlignLeft);
 	pHeader->setMovable(false);
 
+//	m_ui.TypeComboBox->clear();
+	m_ui.TypeComboBox->addItem(
+		textFromType(qtractorMidiEvent::NOTEON));
+	m_ui.TypeComboBox->addItem(
+		textFromType(qtractorMidiEvent::NOTEOFF));
+	m_ui.TypeComboBox->addItem(
+		textFromType(qtractorMidiEvent::KEYPRESS));
+	m_ui.TypeComboBox->addItem(
+		textFromType(qtractorMidiEvent::CONTROLLER));
+	m_ui.TypeComboBox->addItem(
+		textFromType(qtractorMidiEvent::PGMCHANGE));
+	m_ui.TypeComboBox->addItem(
+		textFromType(qtractorMidiEvent::CHANPRESS));
+	m_ui.TypeComboBox->addItem(
+		textFromType(qtractorMidiEvent::PITCHBEND));
+	m_ui.TypeComboBox->setCurrentIndex(3); // Controller.
+
 //	m_ui.ChannelComboBox->clear();
 	m_ui.ChannelComboBox->addItem("*");
 	for (unsigned short iChannel = 0; iChannel < 16; ++iChannel)
 		m_ui.ChannelComboBox->addItem(textFromChannel(iChannel));
-
-//	m_ui.ParamComboBox->clear();
-//	m_ui.ParamComboBox->addItem("*");
-	for (unsigned short iController = 0; iController < 128; ++iController)
-		m_ui.ParamComboBox->addItem(textFromController(iController));
 
 //	m_ui.CommandComboBox->clear();
 	m_ui.CommandComboBox->addItem(
@@ -158,6 +169,8 @@ qtractorMidiControlForm::qtractorMidiControlForm (
 		textFromCommand(qtractorMidiControl::TRACK_MUTE));
 	m_ui.CommandComboBox->addItem(
 		textFromCommand(qtractorMidiControl::TRACK_SOLO));
+
+	stabilizeTypeChange();
 
 	refreshFiles();
 	adjustSize();
@@ -181,6 +194,9 @@ qtractorMidiControlForm::qtractorMidiControlForm (
 	QObject::connect(m_ui.MoveDownPushButton,
 		SIGNAL(clicked()),
 		SLOT(moveDownSlot()));
+	QObject::connect(m_ui.TypeComboBox,
+		SIGNAL(activated(int)),
+		SLOT(typeChangedSlot()));
 	QObject::connect(m_ui.ChannelComboBox,
 		SIGNAL(activated(int)),
 		SLOT(keyChangedSlot()));
@@ -373,19 +389,21 @@ void qtractorMidiControlForm::mapSlot (void)
 	if (pMidiControl == NULL)
 		return;
 
+	qtractorMidiControl::ControlType ctype = typeFromText(
+		m_ui.TypeComboBox->currentText());
 	unsigned short iChannel = channelFromText(
 		m_ui.ChannelComboBox->currentText());
-	unsigned short iController = controllerFromText(
+	unsigned short iParam = paramFromText(ctype,
 		m_ui.ParamComboBox->currentText());
 	if (m_ui.TrackCheckBox->isChecked()
 		&& (iChannel & qtractorMidiControl::TrackParam) == 0)
-		iController |= qtractorMidiControl::TrackParam;
+		iParam |= qtractorMidiControl::TrackParam;
 	qtractorMidiControl::Command command = commandFromText(
 		m_ui.CommandComboBox->currentText());
 	bool bFeedback = m_ui.FeedbackCheckBox->isChecked();
 
-	pMidiControl->mapChannelParam(qtractorMidiControl::CONTROLLER,
-		iChannel, iController, command, bFeedback);
+	pMidiControl->mapChannelParam(
+		ctype, iChannel, iParam, command, bFeedback);
 
 	m_iDirtyCount = 0;
 	m_iDirtyMap++;
@@ -401,16 +419,17 @@ void qtractorMidiControlForm::unmapSlot (void)
 	if (pMidiControl == NULL)
 		return;
 
+	qtractorMidiControl::ControlType ctype = typeFromText(
+		m_ui.TypeComboBox->currentText());
 	unsigned short iChannel = channelFromText(
 		m_ui.ChannelComboBox->currentText());
-	unsigned short iController = controllerFromText(
+	unsigned short iParam = paramFromText(ctype,
 		m_ui.ParamComboBox->currentText());
 	if (m_ui.TrackCheckBox->isChecked()
 		&& (iChannel & qtractorMidiControl::TrackParam) == 0)
-		iController |= qtractorMidiControl::TrackParam;
+		iParam |= qtractorMidiControl::TrackParam;
 
-	pMidiControl->unmapChannelParam(
-		qtractorMidiControl::CONTROLLER, iChannel, iController);
+	pMidiControl->unmapChannelParam(ctype, iChannel, iParam);
 
 	m_iDirtyCount = 0;
 	m_iDirtyMap++;
@@ -549,6 +568,29 @@ void qtractorMidiControlForm::reloadSlot (void)
 }
 
 
+// Mapping type field have changed..
+void qtractorMidiControlForm::typeChangedSlot (void)
+{
+	if (m_iUpdating > 0)
+		return;
+
+	m_iDirtyCount++;
+
+	stabilizeTypeChange();
+	stabilizeKeyChange();
+}
+
+void qtractorMidiControlForm::stabilizeTypeChange (void)
+{
+	m_ui.ParamComboBox->clear();
+//	m_ui.ParamComboBox->addItem("*");
+	qtractorMidiControl::ControlType ctype = typeFromText(
+		m_ui.TypeComboBox->currentText());
+	for (unsigned short iParam = 0; iParam < 128; ++iParam)
+		m_ui.ParamComboBox->addItem(textFromParam(ctype, iParam));
+}
+
+
 // Mapping key fields have changed..
 void qtractorMidiControlForm::keyChangedSlot (void)
 {
@@ -566,24 +608,26 @@ void qtractorMidiControlForm::stabilizeKeyChange (void)
 	if (pMidiControl == NULL)
 		return;
 
-	const QString& sChannel    = m_ui.ChannelComboBox->currentText();
-	const QString& sController = m_ui.ParamComboBox->currentText();
-	unsigned short iChannel    = channelFromText(sChannel);
-	unsigned short iController = controllerFromText(sController);
+	const QString& sType    = m_ui.TypeComboBox->currentText();
+	const QString& sChannel = m_ui.ChannelComboBox->currentText();
+	const QString& sParam   = m_ui.ParamComboBox->currentText();
+
+	qtractorMidiControl::ControlType ctype = typeFromText(sType);
+	unsigned short iChannel = channelFromText(sChannel);
+	unsigned short iParam = paramFromText(ctype, sParam);
 	if (m_ui.TrackCheckBox->isChecked()
 		&& (iChannel & qtractorMidiControl::TrackParam) == 0)
-		iController |= qtractorMidiControl::TrackParam;
+		iParam |= qtractorMidiControl::TrackParam;
 
-	bool bMapped = pMidiControl->isChannelParamMapped(
-		qtractorMidiControl::CONTROLLER, iChannel, iController);
+	bool bMapped = pMidiControl->isChannelParamMapped(ctype, iChannel, iParam);
 
 	if (bMapped) {
 		QList<QTreeWidgetItem *> items
-			=  m_ui.ControlMapListView->findItems(sChannel, Qt::MatchExactly, 0);
+			=  m_ui.ControlMapListView->findItems(sType, Qt::MatchExactly, 0);
 		QListIterator<QTreeWidgetItem *> iter(items);
 		while (iter.hasNext()) {
 			QTreeWidgetItem *pItem = iter.next();
-			if (pItem->text(1) == sController) {
+			if (pItem->text(1) == sChannel && pItem->text(2) == sParam) {
 				m_iUpdating++;
 				m_ui.ControlMapListView->setCurrentItem(pItem);
 				m_iUpdating--;
@@ -617,23 +661,25 @@ void qtractorMidiControlForm::stabilizeValueChange (void)
 	if (pMidiControl == NULL)
 		return;
 
-	const QString& sChannel    = m_ui.ChannelComboBox->currentText();
-	const QString& sController = m_ui.ParamComboBox->currentText();
-	unsigned short iChannel    = channelFromText(sChannel);
-	unsigned short iController = controllerFromText(sController);
+	const QString& sType    = m_ui.TypeComboBox->currentText();
+	const QString& sChannel = m_ui.ChannelComboBox->currentText();
+	const QString& sParam   = m_ui.ParamComboBox->currentText();
+
+	qtractorMidiControl::ControlType ctype = typeFromText(sType);
+	unsigned short iChannel = channelFromText(sChannel);
+	unsigned short iParam = paramFromText(ctype, sParam);
 	if (m_ui.TrackCheckBox->isChecked()
 		&& (iChannel & qtractorMidiControl::TrackParam) == 0)
-		iController |= qtractorMidiControl::TrackParam;
+		iParam |= qtractorMidiControl::TrackParam;
 
-	bool bMapped = pMidiControl->isChannelParamMapped(
-		qtractorMidiControl::CONTROLLER, iChannel, iController);
+	bool bMapped = pMidiControl->isChannelParamMapped(ctype, iChannel, iParam);
 
 	if (bMapped) {
 		qtractorMidiControl::Command command = commandFromText(
 			m_ui.CommandComboBox->currentText());
 		bool bFeedback = m_ui.FeedbackCheckBox->isChecked();
-		pMidiControl->mapChannelParam(qtractorMidiControl::CONTROLLER,
-			iChannel, iController, command, bFeedback);
+		pMidiControl->mapChannelParam(
+			ctype, iChannel, iParam, command, bFeedback);
 		m_iDirtyCount = 0;
 		m_iDirtyMap++;
 		refreshControlMap();
@@ -665,14 +711,17 @@ void qtractorMidiControlForm::stabilizeForm (void)
 	pItem = m_ui.ControlMapListView->currentItem();
 	if (pItem) {
 		m_iUpdating++;
+		m_ui.TypeComboBox->setCurrentIndex(
+			m_ui.TypeComboBox->findText(pItem->text(0)));
+		stabilizeTypeChange();
 		m_ui.ChannelComboBox->setCurrentIndex(
-			m_ui.ChannelComboBox->findText(pItem->text(0)));
+			m_ui.ChannelComboBox->findText(pItem->text(1)));
 		m_ui.ParamComboBox->setCurrentIndex(
-			m_ui.ParamComboBox->findText(pItem->text(1)));
-		m_ui.TrackCheckBox->setChecked(pItem->text(2) == tr("Yes"));
+			m_ui.ParamComboBox->findText(pItem->text(2)));
+		m_ui.TrackCheckBox->setChecked(pItem->text(3) == tr("Yes"));
 		m_ui.CommandComboBox->setCurrentIndex(
-			m_ui.CommandComboBox->findText(pItem->text(3)));
-		m_ui.FeedbackCheckBox->setChecked(pItem->text(4) == tr("Yes"));
+			m_ui.CommandComboBox->findText(pItem->text(4)));
+		m_ui.FeedbackCheckBox->setChecked(pItem->text(5) == tr("Yes"));
 		m_iUpdating--;
 	}
 
@@ -742,11 +791,12 @@ void qtractorMidiControlForm::refreshControlMap (void)
 		const qtractorMidiControl::MapVal& val = it.value();
 		QTreeWidgetItem *pItem = new QTreeWidgetItem();
 		pItem->setIcon(0, QIcon(":/images/itemControllers.png"));
-		pItem->setText(0, textFromChannel(key.channel()));
-		pItem->setText(1, textFromController(key.param()));
-		pItem->setText(2, key.isParamTrack() ? tr("Yes") : tr("No"));
-		pItem->setText(3, textFromCommand(val.command()));
-		pItem->setText(4, val.isFeedback() ? tr("Yes") : tr("No"));
+		pItem->setText(0, textFromType(key.type()));
+		pItem->setText(1, textFromChannel(key.channel()));
+		pItem->setText(2, textFromParam(key.type(), key.param()));
+		pItem->setText(3, key.isParamTrack() ? tr("Yes") : tr("No"));
+		pItem->setText(4, textFromCommand(val.command()));
+		pItem->setText(5, val.isFeedback() ? tr("Yes") : tr("No"));
 		items.append(pItem);
 	}
 	m_ui.ControlMapListView->addTopLevelItems(items);
@@ -803,19 +853,33 @@ QString qtractorMidiControlForm::textFromChannel (
 }
 
 
-// Controller text conversion helpers.
-unsigned short qtractorMidiControlForm::controllerFromText (
-	const QString& sText ) const
+// Controller parameter text conversion helpers.
+unsigned short qtractorMidiControlForm::paramFromText (
+	qtractorMidiControl::ControlType /*ctype*/, const QString& sText ) const
 {
-	return qtractorMidiControl::keyFromText(sText.section(' ', 0, 0));
+	return sText.section(' ', 0, 0).toUShort();	
 }
 
-QString qtractorMidiControlForm::textFromController (
-	unsigned short iController ) const
+QString qtractorMidiControlForm::textFromParam (
+	qtractorMidiControl::ControlType ctype, unsigned short iParam ) const
 {
-	iController &= qtractorMidiControl::TrackParamMask;
-	return QString::number(iController) + " - "
-		+ qtractorMidiEditor::defaultControllerName(iController);
+	iParam &= qtractorMidiControl::TrackParamMask;
+
+	QString sText = QString::number(iParam);
+	switch (ctype) {
+	case qtractorMidiEvent::NOTEON:
+	case qtractorMidiEvent::NOTEOFF:
+	case qtractorMidiEvent::KEYPRESS:
+		sText += " - "	+ qtractorMidiEditor::defaultNoteName(iParam);
+		break;
+	case qtractorMidiEvent::CONTROLLER:
+		sText += " - "	+ qtractorMidiEditor::defaultControllerName(iParam);
+		break;
+	default:
+		break;
+	}
+
+	return sText;
 }
 
 

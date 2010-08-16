@@ -23,6 +23,8 @@
 #ifndef __qtractorMidiControl_h
 #define __qtractorMidiControl_h
 
+#include "qtractorCtlEvent.h"
+
 #include <QHash>
 
 // Forward declarations.
@@ -42,17 +44,7 @@ class qtractorMidiControl
 public:
 
 	// Controller types.
-	enum ControlType
-	{
-		MMC        = 1,
-		NOTE_ON    = 2,
-		NOTE_OFF   = 3,
-		KEY_PRESS  = 4,
-		CONTROLLER = 5,
-		PGM_CHANGE = 6,
-		CHAN_PRESS = 7,
-		PITCH_BEND = 8
-	};
+	typedef qtractorMidiEvent::EventType ControlType;
 
 	// Controller command types.
 	enum Command {
@@ -73,7 +65,7 @@ public:
 	public:
 
 		// Constructor.
-		MapKey(ControlType ctype = CONTROLLER,
+		MapKey(ControlType ctype = qtractorMidiEvent::CONTROLLER,
 			unsigned short iChannel = 0, unsigned short iParam = 0)
 			: m_ctype(ctype), m_iChannel(iChannel), m_iParam(iParam) {}
 

@@ -54,6 +54,7 @@ protected slots:
     void reloadSlot();
     void exportSlot();
 
+	void typeChangedSlot();
 	void keyChangedSlot();
 	void valueChangedSlot();
 
@@ -61,6 +62,7 @@ protected slots:
 
 protected:
 
+    void stabilizeTypeChange();
     void stabilizeKeyChange();
     void stabilizeValueChange();
 
@@ -73,8 +75,10 @@ protected:
 	unsigned short channelFromText(const QString& sText) const;
 	QString textFromChannel(unsigned short iChannel) const;
 
-	unsigned short controllerFromText(const QString& sText) const;
-	QString textFromController(unsigned short iController) const;
+	unsigned short paramFromText(
+		qtractorMidiControl::ControlType ctype, const QString& sText) const;
+	QString textFromParam(
+		qtractorMidiControl::ControlType ctype, unsigned short iParam) const;
 
 	qtractorMidiControl::Command commandFromText(const QString& sText) const;
 	QString textFromCommand(qtractorMidiControl::Command command) const;

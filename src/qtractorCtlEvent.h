@@ -22,7 +22,7 @@
 #ifndef __qtractorCtlEvent_h
 #define __qtractorCtlEvent_h
 
-#include "qtractorMidiControl.h"
+#include "qtractorMidiEvent.h"
 
 
 //----------------------------------------------------------------------
@@ -34,8 +34,8 @@ class qtractorCtlEvent
 public:
 
 	// Contructor.
-	qtractorCtlEvent(qtractorMidiControl::ControlType ctype
-		= qtractorMidiControl::CONTROLLER, unsigned short iChannel = 0,
+	qtractorCtlEvent(qtractorMidiEvent::EventType ctype
+		= qtractorMidiEvent::CONTROLLER, unsigned short iChannel = 0,
 		unsigned char param = 0, unsigned char value = 0)
 		: m_ctype(ctype), m_channel(iChannel),
 			m_param(param), m_value(value) {}
@@ -47,7 +47,7 @@ public:
 
 
 	// Accessors.
-	qtractorMidiControl::ControlType type() const { return m_ctype; }
+	qtractorMidiEvent::EventType type() const { return m_ctype; }
 	unsigned short channel() const { return m_channel; }
 	unsigned char  param() const { return m_param; }
 	unsigned char  value() const { return m_value; }
@@ -55,7 +55,7 @@ public:
 private:
 
 	// Instance variables.
-	qtractorMidiControl::ControlType m_ctype;
+	qtractorMidiEvent::EventType m_ctype;
 	unsigned short m_channel;
 	unsigned char  m_param;
 	unsigned char  m_value;

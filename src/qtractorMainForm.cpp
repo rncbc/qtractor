@@ -4985,9 +4985,9 @@ void qtractorMainForm::midiMmcNotify ( const qtractorMmcEvent& mmce )
 void qtractorMainForm::midiCtlNotify ( const qtractorCtlEvent& ctle )
 {
 	QString sCtlText("CTL: ");
-	sCtlText += tr("MIDI channel %1, %2 Param %3, Value %4")
+	sCtlText += tr("MIDI Channel %1, %2, Param %3, Value %4")
+		.arg(ctle.channel() + 1)
 		.arg(qtractorMidiControl::textFromType(ctle.type()))
-		.arg(ctle.channel())
 		.arg(ctle.param())
 		.arg(ctle.value());
 
@@ -4999,7 +4999,7 @@ void qtractorMainForm::midiCtlNotify ( const qtractorCtlEvent& ctle )
 		return;
 	}
 
-	if (ctle.type() == qtractorMidiControl::CONTROLLER) {
+	if (ctle.type() == qtractorMidiEvent::CONTROLLER) {
 		/* FIXME: JLCooper faders (as from US-224)...
 		if (ctle.channel() == 15) {
 			// Event translation...

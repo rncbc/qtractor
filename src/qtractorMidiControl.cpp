@@ -336,9 +336,8 @@ void qtractorMidiControl::sendTrackController (
 	for ( ; it != m_controlMap.constEnd(); ++it) {
 		const MapKey& key = it.key();
 		const MapVal& val = it.value();
-		if (key.type() == CONTROLLER &&
-			val.command() == command &&
-			val.isFeedback()) {
+		if (key.type() == qtractorMidiEvent::CONTROLLER &&
+			val.command() == command && val.isFeedback()) {
 			// Now send the message out...
 			unsigned short iParam = (key.param() & TrackParamMask);
 			if (key.isChannelTrack())
@@ -464,7 +463,7 @@ bool qtractorMidiControl::loadElement (
 			unsigned short iParam = 0;
 			bool bOldMap = (ctype == ControlType(0));
 			if (bOldMap) {
-				ctype  = CONTROLLER;
+				ctype  = qtractorMidiEvent::CONTROLLER;
 				iParam = keyFromText(eItem.attribute("controller"));
 			} else {
 				iParam = eItem.attribute("param").toUShort();
@@ -545,29 +544,26 @@ bool qtractorMidiControl::saveDocument ( const QString& sFilename )
 qtractorMidiControl::ControlType qtractorMidiControl::typeFromText (
 	const QString& sText )
 {
-	if (sText == "MMC")
-		return MMC;
+	if (sText == "NOTEON")
+		return qtractorMidiEvent::NOTEON;
 	else
-	if (sText == "NOTE_ON")
-		return NOTE_ON;
+	if (sText == "NOTEOFF")
+		return qtractorMidiEvent::NOTEOFF;
 	else
-	if (sText == "NOTE_OFF")
-		return NOTE_OFF;
-	else
-	if (sText == "KEY_PRESS")
-		return KEY_PRESS;
+	if (sText == "KEYPRESS")
+		return qtractorMidiEvent::KEYPRESS;
 	else
 	if (sText == "CONTROLLER")
-		return CONTROLLER;
+		return qtractorMidiEvent::CONTROLLER;
 	else
-	if (sText == "PGM_CHANGE")
-		return PGM_CHANGE;
+	if (sText == "PGMCHANGE")
+		return qtractorMidiEvent::PGMCHANGE;
 	else
-	if (sText == "CHAN_PRESS")
-		return CHAN_PRESS;
+	if (sText == "CHANPRESS")
+		return qtractorMidiEvent::CHANPRESS;
 	else
-	if (sText == "PITCH_BEND")
-		return PITCH_BEND;
+	if (sText == "PITCHBEND")
+		return qtractorMidiEvent::PITCHBEND;
 	else
 		return ControlType(0);
 }
@@ -578,29 +574,28 @@ QString qtractorMidiControl::textFromType (
 	QString sText;
 
 	switch (ctype) {
-	case MMC:
-		sText = "MMC";
+	case qtractorMidiEvent::NOTEON:
+		sText = "NOTEON";
 		break;
-	case NOTE_ON:
-		sText = "NOTE_ON";
+	case qtractorMidiEvent::NOTEOFF:
+		sText = "NOTEOFF";
 		break;
-	case NOTE_OFF:
-		sText = "NOTE_OFF";
+	case qtractorMidiEvent::KEYPRESS:
+		sText = "KEYPRESS";
 		break;
-	case KEY_PRESS:
-		sText = "KEY_PRESS";
-		break;
-	case CONTROLLER:
+	case qtractorMidiEvent::CONTROLLER:
 		sText = "CONTROLLER";
 		break;
-	case PGM_CHANGE:
-		sText = "PGM_CHANGE";
+	case qtractorMidiEvent::PGMCHANGE:
+		sText = "PGMCHANGE";
 		break;
-	case CHAN_PRESS:
-		sText = "CHAN_PRESS";
+	case qtractorMidiEvent::CHANPRESS:
+		sText = "CHANPRESS";
 		break;
-	case PITCH_BEND:
-		sText = "PITCH_BEND";
+	case qtractorMidiEvent::PITCHBEND:
+		sText = "PITCHBEND";
+		break;
+	default:
 		break;
 	}
 
@@ -610,7 +605,7 @@ QString qtractorMidiControl::textFromType (
 
 unsigned short qtractorMidiControl::keyFromText ( const QString& sText )
 {
-	if (sText == "TrackParam" || sText == "*" || sText.isEmpty())
+	if (sText == "*" || sText.isEmpty())
 		return TrackParam;
 	else
 		return sText.toUShort();

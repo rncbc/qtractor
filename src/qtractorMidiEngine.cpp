@@ -903,15 +903,6 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 		iChannel = pEv->data.control.channel;
 		data1    = pEv->data.control.param;
 		data2    = pEv->data.control.value;
-		// Trap controller commands...
-		if (m_pIControlBus && m_pIControlBus->alsaPort() == iAlsaPort) {
-			// FIXME: Avoid some extraneous events...
-			if (data1 > 0x7f || data2 > 0x7f)
-				return;
-			// Post the stuffed event...
-			m_proxy.notifyCtlEvent(qtractorCtlEvent(
-				qtractorMidiControl::CONTROLLER, iChannel, data1, data2));
-		}
 		break;
 	case SND_SEQ_EVENT_PGMCHANGE:
 		type     = qtractorMidiEvent::PGMCHANGE;
@@ -984,7 +975,6 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 	}
 
 	// Now check which bus and track we're into...
-//	int iDrainOutput = 0;
 	bool bRecording = (pSession->isRecording() && isPlaying());
 	for (qtractorTrack *pTrack = pSession->tracks().first();
 			pTrack; pTrack = pTrack->next()) {
@@ -1029,7 +1019,6 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 						snd_seq_ev_set_subs(pEv);
 						snd_seq_ev_set_direct(pEv);
 						snd_seq_event_output_direct(m_pAlsaSeq, pEv);
-					//	iDrainOutput++;
 						// Done with MIDI-thru.
 						pMidiBus->midiMonitor_out()->enqueue(type, data2);
 						// Do it for the MIDI plugins too...
@@ -1075,8 +1064,20 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 		}
 	}
 
-//	if (iDrainOutput > 0)
-//		snd_seq_drain_output(m_pAlsaSeq);
+	// Trap controller commands...
+	if (type == qtractorMidiEvent::SYSEX)
+		return;
+
+	if (m_pIControlBus && m_pIControlBus->alsaPort() == iAlsaPort) {
+		// Post the stuffed event...
+		if (type == qtractorMidiEvent::PITCHBEND) {
+			m_proxy.notifyCtlEvent(
+				qtractorCtlEvent(type, iChannel, 0, iSysex));
+		} else {
+			m_proxy.notifyCtlEvent(
+				qtractorCtlEvent(type, iChannel, data1, data2));			
+		}
+	}
 }
 
 
