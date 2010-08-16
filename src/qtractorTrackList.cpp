@@ -38,6 +38,7 @@
 #include "qtractorRubberBand.h"
 
 #include "qtractorMainForm.h"
+#include "qtractorMixer.h"
 
 #include <QHeaderView>
 
@@ -140,16 +141,21 @@ qtractorTrackItemWidget::qtractorTrackItemWidget (
 	pHBoxLayout->addWidget(m_pSoloButton);
 	QWidget::setLayout(pHBoxLayout);
 
-	qtractorTracks *pTracks = pTrackList->tracks();
-	QObject::connect(m_pRecordButton,
-		SIGNAL(trackButtonToggled(qtractorTrackButton *, bool)),
-		pTracks, SLOT(trackButtonToggledSlot(qtractorTrackButton *, bool)));
-	QObject::connect(m_pMuteButton,
-		SIGNAL(trackButtonToggled(qtractorTrackButton *, bool)),
-		pTracks, SLOT(trackButtonToggledSlot(qtractorTrackButton *, bool)));
-	QObject::connect(m_pSoloButton,
-		SIGNAL(trackButtonToggled(qtractorTrackButton *, bool)),
-		pTracks, SLOT(trackButtonToggledSlot(qtractorTrackButton *, bool)));
+	qtractorMixer *pMixer = NULL;
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm)
+		pMixer = pMainForm->mixer();
+	if (pMixer) {
+		QObject::connect(m_pRecordButton,
+			SIGNAL(trackButtonToggled(qtractorTrackButton *, bool)),
+			pMixer, SLOT(trackButtonToggledSlot(qtractorTrackButton *, bool)));
+		QObject::connect(m_pMuteButton,
+			SIGNAL(trackButtonToggled(qtractorTrackButton *, bool)),
+			pMixer, SLOT(trackButtonToggledSlot(qtractorTrackButton *, bool)));
+		QObject::connect(m_pSoloButton,
+			SIGNAL(trackButtonToggled(qtractorTrackButton *, bool)),
+			pMixer, SLOT(trackButtonToggledSlot(qtractorTrackButton *, bool)));
+	}
 }
 
 
