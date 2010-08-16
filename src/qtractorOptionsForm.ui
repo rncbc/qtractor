@@ -485,7 +485,7 @@
           <property name="spacing" >
            <number>6</number>
           </property>
-          <item row="0" column="0" colspan="3" >
+          <item row="0" column="0" colspan="5" >
            <widget class="QCheckBox" name="AudioMetronomeCheckBox" >
             <property name="font" >
              <font>
@@ -575,6 +575,56 @@
             </property>
            </widget>
           </item>
+          <item row="1" column="3" >
+           <widget class="QLabel" name="MetroBarGainTextLabel" >
+            <property name="font" >
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="text" >
+             <string>&amp;Gain (bar):</string>
+            </property>
+            <property name="buddy" >
+             <cstring>MetroBarGainSpinBox</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="4" >
+           <widget class="QDoubleSpinBox" name="MetroBarGainSpinBox" >
+            <property name="font" >
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="minimumSize" >
+             <size>
+              <width>66</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="toolTip" >
+             <string>Metronome gain (bar)</string>
+            </property>
+            <property name="decimals" >
+             <number>1</number>
+            </property>
+            <property name="suffix" >
+             <string> dB</string>
+            </property>
+            <property name="maximum" >
+             <double>12.0</double>
+            </property>
+            <property name="minimum" >
+             <double>-60.0</double>
+            </property>
+            <property name="value" >
+             <double>0.0</double>
+            </property>
+           </widget>
+          </item>
           <item row="2" column="0" >
            <widget class="QLabel" name="MetroBeatFilenameTextLabel" >
             <property name="font" >
@@ -646,7 +696,57 @@
             </property>
            </widget>
           </item>
-          <item row="3" column="0" colspan="3" >
+          <item row="2" column="3" >
+           <widget class="QLabel" name="MetroBeatGainTextLabel" >
+            <property name="font" >
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="text" >
+             <string>&amp;Gain (beat):</string>
+            </property>
+            <property name="buddy" >
+             <cstring>MetroBeatGainSpinBox</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="4" >
+           <widget class="QDoubleSpinBox" name="MetroBeatGainSpinBox" >
+            <property name="font" >
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="minimumSize" >
+             <size>
+              <width>66</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="toolTip" >
+             <string>Metronome gain (beat)</string>
+            </property>
+            <property name="decimals" >
+             <number>1</number>
+            </property>
+            <property name="suffix" >
+             <string> dB</string>
+            </property>
+            <property name="maximum" >
+             <double>12.0</double>
+            </property>
+            <property name="minimum" >
+             <double>-60.0</double>
+            </property>
+            <property name="value" >
+             <double>0.0</double>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0" colspan="5" >
            <widget class="QCheckBox" name="AudioMetroBusCheckBox" >
             <property name="font" >
              <font>
@@ -1881,6 +1981,14 @@
           </item>
           <item>
            <widget class="QComboBox" name="SessionTemplatePathComboBox" >
+            <property name="sizePolicy" >
+             <sizepolicy>
+              <hsizetype>7</hsizetype>
+              <vsizetype>0</vsizetype>
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
             <property name="minimumSize" >
              <size>
               <width>320</width>
@@ -2833,8 +2941,10 @@
   <tabstop>AudioMetronomeCheckBox</tabstop>
   <tabstop>MetroBarFilenameComboBox</tabstop>
   <tabstop>MetroBarFilenameToolButton</tabstop>
+  <tabstop>MetroBarGainSpinBox</tabstop>
   <tabstop>MetroBeatFilenameComboBox</tabstop>
   <tabstop>MetroBeatFilenameToolButton</tabstop>
+  <tabstop>MetroBeatGainSpinBox</tabstop>
   <tabstop>AudioMetroBusCheckBox</tabstop>
   <tabstop>MidiCaptureFormatComboBox</tabstop>
   <tabstop>MidiCaptureQuantizeComboBox</tabstop>

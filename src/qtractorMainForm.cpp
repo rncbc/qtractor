@@ -2929,6 +2929,8 @@ void qtractorMainForm::viewOptions (void)
 	int     iOldMidiQueueTimer     = m_pOptions->iMidiQueueTimer;
 	QString sOldMetroBarFilename   = m_pOptions->sMetroBarFilename;
 	QString sOldMetroBeatFilename  = m_pOptions->sMetroBeatFilename;
+	float   fOldMetroBarGain       = m_pOptions->fMetroBarGain;
+	float   fOldMetroBeatGain      = m_pOptions->fMetroBeatGain;
 	bool    bOldAudioMetroBus      = m_pOptions->bAudioMetroBus;
 	bool    bOldMidiControlBus     = m_pOptions->bMidiControlBus;
 	bool    bOldMidiMetronome      = m_pOptions->bMidiMetronome;
@@ -3050,6 +3052,8 @@ void qtractorMainForm::viewOptions (void)
 			(!bOldAudioMetronome   &&  m_pOptions->bAudioMetronome)   ||
 			(sOldMetroBarFilename  != m_pOptions->sMetroBarFilename)  ||
 			(sOldMetroBeatFilename != m_pOptions->sMetroBeatFilename) ||
+			(fOldMetroBarGain      != m_pOptions->fMetroBarGain)      ||
+			(fOldMetroBeatGain     != m_pOptions->fMetroBeatGain)     ||
 			( bOldAudioMetroBus    && !m_pOptions->bAudioMetroBus)    ||
 			(!bOldAudioMetroBus    &&  m_pOptions->bAudioMetroBus))
 			updateAudioMetronome();
@@ -4308,6 +4312,9 @@ void qtractorMainForm::updateAudioMetronome (void)
 	pAudioEngine->setMetroBarFilename(m_pOptions->sMetroBarFilename);
 	pAudioEngine->setMetroBeatFilename(m_pOptions->sMetroBeatFilename);
 
+	pAudioEngine->setMetroBarGain(m_pOptions->fMetroBarGain);
+	pAudioEngine->setMetroBeatGain(m_pOptions->fMetroBeatGain);
+	
 	bool bAudioMetronome = m_pOptions->bAudioMetronome;
 	pAudioEngine->setMetroBus(
 		bAudioMetronome && m_pOptions->bAudioMetroBus);

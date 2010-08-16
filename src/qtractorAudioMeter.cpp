@@ -67,12 +67,12 @@ static inline float log10f2_opt ( float x )
 
 static inline float log10f2 ( float x )
 {
-	return (x > 0.0f ? 20.0f * ::log10f(x) : QTRACTOR_AUDIO_METER_MINDB);	
+	return (x > 0.0f ? 20.0f * ::log10f(x) : QTRACTOR_AUDIO_METER_MINDB);
 }
 
 static inline float pow10f2 ( float x )
 {
-	return ::powf(10.0f, x / 20.0f);
+	return ::powf(10.0f, 0.05f * x);
 }
 
 

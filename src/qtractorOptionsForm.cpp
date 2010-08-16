@@ -41,6 +41,15 @@
 #include <QHeaderView>
 #include <QUrl>
 
+// Needed for fabs(), logf() and powf()
+#include <math.h>
+
+static inline float log10f2 ( float x )
+	{ return (x > 0.0f ? 20.0f * ::log10f(x) : -60.0f); }
+
+static inline float pow10f2 ( float x )
+	{ return ::powf(10.0f, 0.05f * x); }
+
 
 //----------------------------------------------------------------------------
 // qtractorOptionsForm -- UI wrapper form.
@@ -162,12 +171,18 @@ qtractorOptionsForm::qtractorOptionsForm (
 	QObject::connect(m_ui.MetroBarFilenameToolButton,
 		SIGNAL(clicked()),
 		SLOT(chooseMetroBarFilename()));
+	QObject::connect(m_ui.MetroBarGainSpinBox,
+		SIGNAL(valueChanged(double)),
+		SLOT(changed()));
 	QObject::connect(m_ui.MetroBeatFilenameComboBox,
 		SIGNAL(editTextChanged(const QString&)),
 		SLOT(changed()));
 	QObject::connect(m_ui.MetroBeatFilenameToolButton,
 		SIGNAL(clicked()),
 		SLOT(chooseMetroBeatFilename()));
+	QObject::connect(m_ui.MetroBeatGainSpinBox,
+		SIGNAL(valueChanged(double)),
+		SLOT(changed()));
 	QObject::connect(m_ui.AudioMetroBusCheckBox,
 		SIGNAL(stateChanged(int)),
 		SLOT(changed()));
@@ -393,7 +408,9 @@ void qtractorOptionsForm::setOptions ( qtractorOptions *pOptions )
 	// Audio metronome options.
 	m_ui.AudioMetronomeCheckBox->setChecked(m_pOptions->bAudioMetronome);
 	m_ui.MetroBarFilenameComboBox->setEditText(m_pOptions->sMetroBarFilename);
+	m_ui.MetroBarGainSpinBox->setValue(log10f2(m_pOptions->fMetroBarGain));
 	m_ui.MetroBeatFilenameComboBox->setEditText(m_pOptions->sMetroBeatFilename);
+	m_ui.MetroBeatGainSpinBox->setValue(log10f2(m_pOptions->fMetroBeatGain));
 	m_ui.AudioMetroBusCheckBox->setChecked(m_pOptions->bAudioMetroBus);
 
 	// MIDI capture/export options.
@@ -533,7 +550,9 @@ void qtractorOptionsForm::accept (void)
 		// Audio metronome options.
 		m_pOptions->bAudioMetronome      = m_ui.AudioMetronomeCheckBox->isChecked();
 		m_pOptions->sMetroBarFilename    = m_ui.MetroBarFilenameComboBox->currentText();
+		m_pOptions->fMetroBarGain        = pow10f2(m_ui.MetroBarGainSpinBox->value());
 		m_pOptions->sMetroBeatFilename   = m_ui.MetroBeatFilenameComboBox->currentText();
+		m_pOptions->fMetroBeatGain       = pow10f2(m_ui.MetroBeatGainSpinBox->value());
 		m_pOptions->bAudioMetroBus       = m_ui.AudioMetroBusCheckBox->isChecked();
 		// MIDI options...
 		m_pOptions->iMidiCaptureFormat   = m_ui.MidiCaptureFormatComboBox->currentIndex();
@@ -1195,9 +1214,13 @@ void qtractorOptionsForm::stabilizeForm (void)
 	m_ui.MetroBarFilenameTextLabel->setEnabled(bAudioMetronome);
 	m_ui.MetroBarFilenameComboBox->setEnabled(bAudioMetronome);
 	m_ui.MetroBarFilenameToolButton->setEnabled(bAudioMetronome);
+	m_ui.MetroBarGainTextLabel->setEnabled(bAudioMetronome);
+	m_ui.MetroBarGainSpinBox->setEnabled(bAudioMetronome);
 	m_ui.MetroBeatFilenameTextLabel->setEnabled(bAudioMetronome);
 	m_ui.MetroBeatFilenameComboBox->setEnabled(bAudioMetronome);
 	m_ui.MetroBeatFilenameToolButton->setEnabled(bAudioMetronome);
+	m_ui.MetroBeatGainTextLabel->setEnabled(bAudioMetronome);
+	m_ui.MetroBeatGainSpinBox->setEnabled(bAudioMetronome);
 	m_ui.AudioMetroBusCheckBox->setEnabled(bAudioMetronome);
 
 	bool bMmcMode =(m_ui.MidiMmcModeComboBox->currentIndex() > 0);

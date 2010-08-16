@@ -42,6 +42,12 @@
 // Needed for fabs(), logf() and powf()
 #include <math.h>
 
+static inline float log10f2 ( float x )
+	{ return (x > 0.0f ? 20.0f * ::log10f(x) : -60.0f); }
+
+static inline float pow10f2 ( float x )
+	{ return ::powf(10.0f, 0.05f * x); }
+
 
 //----------------------------------------------------------------------------
 // qtractorClipForm -- UI wrapper form.
@@ -207,10 +213,7 @@ void qtractorClipForm::setClip ( qtractorClip *pClip, bool bClipNew )
 		m_ui.ClipGainTextLabel->setText(tr("&Gain:"));
 		m_ui.ClipGainSpinBox->setSuffix(tr(" dB"));
 		m_ui.ClipGainSpinBox->setRange(-60.0f, +12.0f);
-		float fClipGain = m_pClip->clipGain();
-		if (fClipGain < 0.001f || fClipGain > 4.0f)
-			fClipGain = 1.0f;
-		m_ui.ClipGainSpinBox->setValue(20.0f * ::log10f(fClipGain));
+		m_ui.ClipGainSpinBox->setValue(log10f2(m_pClip->clipGain()));
 		qtractorAudioClip *pAudioClip
 			= static_cast<qtractorAudioClip *> (m_pClip);
 		if (pAudioClip) {
@@ -233,10 +236,7 @@ void qtractorClipForm::setClip ( qtractorClip *pClip, bool bClipNew )
 		m_ui.ClipGainTextLabel->setText(tr("&Volume:"));
 		m_ui.ClipGainSpinBox->setSuffix(tr(" %"));
 		m_ui.ClipGainSpinBox->setRange(0.0f, 1200.0f);
-		float fClipGain = m_pClip->clipGain();
-		if (fClipGain < 1.0f)
-			fClipGain = 1.0f;
-		m_ui.ClipGainSpinBox->setValue(100.0f * fClipGain);
+		m_ui.ClipGainSpinBox->setValue(100.0f * m_pClip->clipGain());
 		qtractorMidiClip *pMidiClip
 			= static_cast<qtractorMidiClip *> (m_pClip);
 		if (pMidiClip)
@@ -306,7 +306,7 @@ void qtractorClipForm::accept (void)
 		float fClipGain = 1.0f;
 		switch (clipType) {
 		case qtractorTrack::Audio:
-			fClipGain = ::powf(10.f, 0.05f * m_ui.ClipGainSpinBox->value());
+			fClipGain = pow10f2(m_ui.ClipGainSpinBox->value());
 			break;
 		case qtractorTrack::Midi:
 			fClipGain = 0.01f * m_ui.ClipGainSpinBox->value();

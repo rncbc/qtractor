@@ -113,7 +113,9 @@ public:
 
 	// Audio metronome parameters.
 	QString sMetroBarFilename;
+	float   fMetroBarGain;
 	QString sMetroBeatFilename;
+	float   fMetroBeatGain;
 
 	// MIDI options...
 	int  iMidiCaptureFormat;

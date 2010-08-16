@@ -5,6 +5,8 @@ ChangeLog
 
 SVN TRUNK
 
+- New audio metronome bar and beat sample gain options.
+
 - MIDI controller mapping finally refactored to support
   some other MIDI event types than just CC (0xBn) ones
   (EXPERIMENTAL).

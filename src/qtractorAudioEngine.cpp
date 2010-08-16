@@ -329,6 +329,8 @@ qtractorAudioEngine::qtractorAudioEngine ( qtractorSession *pSession )
 	m_pMetroBus       = NULL;
 	m_pMetroBarBuff   = NULL;
 	m_pMetroBeatBuff  = NULL;
+	m_fMetroBarGain   = 1.0f;
+	m_fMetroBeatGain  = 1.0f;
 	m_iMetroBeatStart = 0;
 	m_iMetroBeat      = 0;
 
@@ -809,16 +811,22 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 	qtractorTimeScale::Cursor& cursor = pSession->timeScale()->cursor();
 	qtractorTimeScale::Node *pNode = cursor.seekFrame(iFrameStart);
 	if (m_bMetronome && m_pMetroBus && iFrameEnd > m_iMetroBeatStart) {
-		qtractorAudioBuffer *pMetroBuff
-			= (pNode->beatIsBar(m_iMetroBeat)
-				? m_pMetroBarBuff : m_pMetroBeatBuff);
+		qtractorAudioBuffer *pMetroBuff = NULL;
+		float fMetroGain = 1.0f;
+		if (pNode->beatIsBar(m_iMetroBeat)) {
+			pMetroBuff = m_pMetroBarBuff;
+			fMetroGain = m_fMetroBarGain;
+		} else {
+			pMetroBuff = m_pMetroBeatBuff;
+			fMetroGain = m_fMetroBeatGain;
+		}
 		if (iFrameStart < m_iMetroBeatStart) {
 			pMetroBuff->readMix(m_pMetroBus->out(),
 				iFrameEnd - m_iMetroBeatStart, m_pMetroBus->channels(),
-				m_iMetroBeatStart - iFrameStart, 1.0f);
+				m_iMetroBeatStart - iFrameStart, fMetroGain);
 		} else if (iFrameStart < m_iMetroBeatStart + pMetroBuff->length()) {
 			pMetroBuff->readMix(m_pMetroBus->out(),
-				nframes, m_pMetroBus->channels(), 0, 1.0f);
+				nframes, m_pMetroBus->channels(), 0, fMetroGain);
 		} else {
 			m_iMetroBeatStart = pNode->frameFromBeat(++m_iMetroBeat);
 			pMetroBuff->reset(false);
@@ -1269,6 +1277,18 @@ const QString& qtractorAudioEngine::metroBarFilename (void) const
 }
 
 
+// Metronome bar audio sample gain.
+void qtractorAudioEngine::setMetroBarGain ( float fGain )
+{
+	m_fMetroBarGain = fGain;
+}
+
+float qtractorAudioEngine::metroBarGain (void) const
+{
+	return m_fMetroBarGain;
+}
+
+
 // Metronome beat audio sample.
 void qtractorAudioEngine::setMetroBeatFilename ( const QString& sFilename )
 {
@@ -1283,6 +1303,18 @@ void qtractorAudioEngine::setMetroBeatFilename ( const QString& sFilename )
 const QString& qtractorAudioEngine::metroBeatFilename() const
 {
 	return m_sMetroBeatFilename;
+}
+
+
+// Metronome beat audio sample gain.
+void qtractorAudioEngine::setMetroBeatGain ( float fGain )
+{
+	m_fMetroBeatGain = fGain;
+}
+
+float qtractorAudioEngine::metroBeatGain (void) const
+{
+	return m_fMetroBeatGain;
 }
 
 

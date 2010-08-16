@@ -155,9 +155,17 @@ public:
 	void setMetroBarFilename(const QString& sFilename);
 	const QString& metroBarFilename() const;
 
+	// Metronome bar audio sample gain.
+	void setMetroBarGain(float fGain);
+	float metroBarGain() const;
+
 	// Metronome beat audio sample.
 	void setMetroBeatFilename(const QString& sFilename);
 	const QString& metroBeatFilename() const;
+
+	// Metronome beat audio sample gain.
+	void setMetroBeatGain(float fGain);
+	float metroBeatGain() const;
 
 	void resetMetro();
 
@@ -238,6 +246,8 @@ private:
 	qtractorAudioBuffer *m_pMetroBeatBuff;
 	QString              m_sMetroBarFilename;
 	QString              m_sMetroBeatFilename;
+	float                m_fMetroBarGain;
+	float                m_fMetroBeatGain;
 	unsigned long        m_iMetroBeatStart;
 	unsigned int         m_iMetroBeat;
 
