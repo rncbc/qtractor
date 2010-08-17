@@ -43,7 +43,7 @@ qtractorObserverCheckBox::qtractorObserverCheckBox ( QWidget *pParent )
 // Visitors overload.
 void qtractorObserverCheckBox::updateValue ( float fValue )
 {
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	qDebug("qtractorObserverCheckBox[%p]::updateValue(%g)", this, fValue);
 #endif
 	QCheckBox::setChecked(bool(scaleFromValue(fValue)));
@@ -57,7 +57,7 @@ void qtractorObserverCheckBox::checkBoxChanged ( bool bValue )
 		return;
 
 	float fValue = valueFromScale(bValue ? 1.0f : 0.0f);
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	qDebug("qtractorObserverCheckBox[%p]::checkBoxChanged(%g)", this, fValue);
 #endif
 	observer()->setValue(fValue);
@@ -81,7 +81,7 @@ qtractorObserverSpinBox::qtractorObserverSpinBox ( QWidget *pParent )
 // Visitors overload.
 void qtractorObserverSpinBox::updateValue ( float fValue )
 {
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	qDebug("qtractorObserverSpinBox[%p]::updateValue(%g)", this, fValue);
 #endif
 	QDoubleSpinBox::setValue(scaleFromValue(fValue));
@@ -95,7 +95,7 @@ void qtractorObserverSpinBox::spinBoxChanged ( double value )
 		return;
 
 	float fValue = valueFromScale(float(value));
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	qDebug("qtractorObserverSpinBox[%p]::spinBoxChanged(%g)", this, fValue);
 #endif
 	observer()->setValue(fValue);
@@ -167,7 +167,7 @@ void qtractorObserverSlider::wheelEvent ( QWheelEvent *pWheelEvent )
 // Visitors overload.
 void qtractorObserverSlider::updateValue ( float fValue )
 {
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	qDebug("qtractorObserverSlider[%p]::updateValue(%g)", this, fValue);
 #endif
 	QSlider::setValue(int(scaleFromValue(fValue)));
@@ -181,7 +181,7 @@ void qtractorObserverSlider::sliderChanged ( int iValue )
 		return;
 
 	float fValue = valueFromScale(float(iValue));
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	qDebug("qtractorObserverSlider[%p]::sliderChanged(%g)", this, fValue);
 #endif
 	observer()->setValue(fValue);

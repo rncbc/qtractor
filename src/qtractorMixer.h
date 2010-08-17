@@ -269,8 +269,6 @@ private:
 
 class qtractorMixer : public QWidget
 {
-	Q_OBJECT
-
 public:
 
 	// Constructor.
@@ -300,11 +298,6 @@ public:
 
 	// Complete mixer recycle.
 	void clear();
-
-public slots:
-
-	// Track button notification.
-	void trackButtonToggledSlot(qtractorTrackButton *pTrackButton, bool bOn);
 
 protected:
 

@@ -125,6 +125,11 @@ public:
 	void zoomOut(int iZoomMode = ZoomAll);
 	void zoomReset(int iZoomMode = ZoomAll);
 
+public slots:
+
+	// Track button notification.
+	void trackButtonSlot(qtractorTrackButton *pTrackButton, bool bOn);
+
 protected:
 
 	// Zoom factor constants.

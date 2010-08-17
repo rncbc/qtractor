@@ -141,20 +141,17 @@ qtractorTrackItemWidget::qtractorTrackItemWidget (
 	pHBoxLayout->addWidget(m_pSoloButton);
 	QWidget::setLayout(pHBoxLayout);
 
-	qtractorMixer *pMixer = NULL;
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm)
-		pMixer = pMainForm->mixer();
-	if (pMixer) {
+	qtractorTracks *pTracks = pTrackList->tracks();
+	if (pTracks) {
 		QObject::connect(m_pRecordButton,
 			SIGNAL(trackButtonToggled(qtractorTrackButton *, bool)),
-			pMixer, SLOT(trackButtonToggledSlot(qtractorTrackButton *, bool)));
+			pTracks, SLOT(trackButtonSlot(qtractorTrackButton *, bool)));
 		QObject::connect(m_pMuteButton,
 			SIGNAL(trackButtonToggled(qtractorTrackButton *, bool)),
-			pMixer, SLOT(trackButtonToggledSlot(qtractorTrackButton *, bool)));
+			pTracks, SLOT(trackButtonSlot(qtractorTrackButton *, bool)));
 		QObject::connect(m_pSoloButton,
 			SIGNAL(trackButtonToggled(qtractorTrackButton *, bool)),
-			pMixer, SLOT(trackButtonToggledSlot(qtractorTrackButton *, bool)));
+			pTracks, SLOT(trackButtonSlot(qtractorTrackButton *, bool)));
 	}
 }
 

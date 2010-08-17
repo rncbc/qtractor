@@ -219,16 +219,21 @@ void qtractorMixerStrip::initMixerStrip (void)
 		m_pButtonLayout->addWidget(m_pRecordButton);
 		m_pButtonLayout->addWidget(m_pMuteButton);
 		m_pButtonLayout->addWidget(m_pSoloButton);
-		qtractorMixer *pMixer = m_pRack->mixer();
-		QObject::connect(m_pRecordButton,
-			SIGNAL(trackButtonToggled(qtractorTrackButton *, bool)),
-			pMixer, SLOT(trackButtonToggledSlot(qtractorTrackButton *, bool)));
-		QObject::connect(m_pMuteButton,
-			SIGNAL(trackButtonToggled(qtractorTrackButton *, bool)),
-			pMixer, SLOT(trackButtonToggledSlot(qtractorTrackButton *, bool)));
-		QObject::connect(m_pSoloButton,
-			SIGNAL(trackButtonToggled(qtractorTrackButton *, bool)),
-			pMixer, SLOT(trackButtonToggledSlot(qtractorTrackButton *, bool)));
+		qtractorTracks *pTracks = NULL;
+		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+		if (pMainForm)
+			pTracks = pMainForm->tracks();
+		if (pTracks) {
+			QObject::connect(m_pRecordButton,
+				SIGNAL(trackButtonToggled(qtractorTrackButton *, bool)),
+				pTracks, SLOT(trackButtonSlot(qtractorTrackButton *, bool)));
+			QObject::connect(m_pMuteButton,
+				SIGNAL(trackButtonToggled(qtractorTrackButton *, bool)),
+				pTracks, SLOT(trackButtonSlot(qtractorTrackButton *, bool)));
+			QObject::connect(m_pSoloButton,
+				SIGNAL(trackButtonToggled(qtractorTrackButton *, bool)),
+				pTracks, SLOT(trackButtonSlot(qtractorTrackButton *, bool)));
+		}
 		m_pMonitorButton->setToolTip(tr("Monitor (rec)"));
 		m_pBusButton = NULL;
 	} else {
@@ -1390,21 +1395,6 @@ void qtractorMixer::clear (void)
 	m_pInputRack->clear();
 	m_pTrackRack->clear();
 	m_pOutputRack->clear();
-}
-
-
-// Track button notification.
-void qtractorMixer::trackButtonToggledSlot (
-	qtractorTrackButton *pTrackButton, bool bOn )
-{
-	// Put it in the form of an undoable command...
-	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
-		return;
-
-	pSession->execute(
-		new qtractorTrackStateCommand(
-			pTrackButton->track(), pTrackButton->toolType(), bOn));
 }
 
 

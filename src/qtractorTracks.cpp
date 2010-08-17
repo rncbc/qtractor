@@ -1978,4 +1978,19 @@ void qtractorTracks::clear(void)
 }
 
 
+// Track button notification.
+void qtractorTracks::trackButtonSlot (
+	qtractorTrackButton *pTrackButton, bool bOn )
+{
+	// Put it in the form of an undoable command...
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return;
+
+	pSession->execute(
+		new qtractorTrackStateCommand(
+			pTrackButton->track(), pTrackButton->toolType(), bOn));
+}
+
+
 // end of qtractorTracks.cpp
