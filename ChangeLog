@@ -5,6 +5,10 @@ ChangeLog
 
 SVN TRUNK
 
+- libX11 is now being added explicitly to the build link
+  phase, as seen necessary on some bleeding-edge distros
+  eg. Fedora 13, Debian 6. (fixing bug #3050944).
+
 - New audio metronome bar and beat sample gain options.
 
 - MIDI controller mapping finally refactored to support

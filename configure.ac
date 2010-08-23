@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(Qtractor, 0.4.6.52, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.4.6.53, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractor.cpp)
 AC_CONFIG_HEADERS(src/config.h)
@@ -497,6 +497,9 @@ fi
 if test "x$ac_jack_session" = "xyes"; then
    AC_CHECK_LIB(jack, jack_set_session_callback, [ac_jack_session="yes"], [ac_jack_session="no"])
 fi
+
+# Some recent distros (eg. fedora, debian) require this.
+ac_libs="$ac_libs -lX11"
 
 AC_SUBST(ac_libs)
 
