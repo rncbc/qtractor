@@ -215,7 +215,7 @@ public:
 private:
 
 	// Instance variables.
-	bool m_bReset;
+	QString m_sPreset;
 	QStringList m_vlist;
 };
 
@@ -230,7 +230,7 @@ public:
 
 	// Constructor.
 	qtractorPresetPluginCommand(qtractorPlugin *pPlugin,
-		const QStringList& vlist);
+		const QString& sPreset, const QStringList& vlist);
 
 	// Plugin-preset command methods.
 	bool redo();
@@ -239,6 +239,7 @@ public:
 private:
 
 	// Instance variables.
+	QString     m_sPreset;
 	QStringList m_vlist;
 };
 

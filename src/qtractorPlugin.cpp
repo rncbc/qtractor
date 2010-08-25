@@ -733,7 +733,6 @@ qtractorPluginForm *qtractorPlugin::form (void)
 		}
 		// Do it...
 		m_pForm = new qtractorPluginForm(pParent, wflags);
-		m_pForm->setPreset(m_sPreset);
 		m_pForm->setPlugin(this);
 	}
 
@@ -750,11 +749,8 @@ void qtractorPlugin::setPreset ( const QString& sPreset )
 		m_pForm->setPreset(sPreset);
 }
 
-const QString& qtractorPlugin::preset (void)
+const QString& qtractorPlugin::preset (void) const
 {
-	if (m_pForm)
-		m_sPreset = m_pForm->preset();
-
 	return m_sPreset;
 }
 

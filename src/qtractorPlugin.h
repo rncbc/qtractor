@@ -381,8 +381,8 @@ public:
 	qtractorPluginForm *form();
 
 	// Plugin default preset name accessor (informational)
-	void setPreset(const QString& sName);
-	const QString& preset();
+	void setPreset(const QString& sPreset);
+	const QString& preset() const;
 
 	// Plugin preset group - common identification prefix.
 	QString presetGroup() const;

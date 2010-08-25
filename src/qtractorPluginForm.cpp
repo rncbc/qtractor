@@ -200,6 +200,9 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 	m_ui.SendsToolButton->setVisible(bInsertPlugin);
 	m_ui.ReturnsToolButton->setVisible(bInsertPlugin);
 
+	// Set initial plugin preset name...
+	setPreset(m_pPlugin->preset());
+	
 	// Set plugin name as title...
 	updateCaption();
 
@@ -264,11 +267,14 @@ qtractorPlugin *qtractorPluginForm::plugin (void) const
 // Plugin preset accessors.
 void qtractorPluginForm::setPreset ( const QString& sPreset )
 {
-	if (!sPreset.isEmpty()) {
-		m_iUpdate++;
-		m_ui.PresetComboBox->setEditText(sPreset);
-		m_iUpdate--;
-	}
+	QString sEditText = sPreset;
+
+	if (sEditText.isEmpty())
+		sEditText = g_sDefPreset;
+
+	m_iUpdate++;
+	m_ui.PresetComboBox->setEditText(sEditText);
+	m_iUpdate--;
 }
 
 QString qtractorPluginForm::preset (void) const
@@ -391,7 +397,7 @@ void qtractorPluginForm::loadPresetSlot ( const QString& sPreset )
 	} else {
 		// An existing preset is about to be loaded...
 		QSettings& settings = pOptions->settings();
-		// Should it be load from know file?...
+		// Should it be load from known file?...
 		if ((m_pPlugin->type())->isConfigure()) {
 			settings.beginGroup(m_pPlugin->presetGroup());
 			m_pPlugin->loadPreset(settings.value(sPreset).toString());
@@ -404,7 +410,7 @@ void qtractorPluginForm::loadPresetSlot ( const QString& sPreset )
 			settings.endGroup();
 			if (!vlist.isEmpty()) {
 				pSession->execute(
-					new qtractorPresetPluginCommand(m_pPlugin, vlist));
+					new qtractorPresetPluginCommand(m_pPlugin, sPreset, vlist));
 			}
 		}
 	}

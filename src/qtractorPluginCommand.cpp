@@ -355,9 +355,10 @@ bool qtractorActivatePluginCommand::undo (void)
 
 // Constructor.
 qtractorPresetPluginCommand::qtractorPresetPluginCommand (
-	qtractorPlugin *pPlugin, const QStringList& vlist )
+	qtractorPlugin *pPlugin, const QString& sPreset, const QStringList& vlist )
 	: qtractorPluginCommand(QObject::tr("preset plugin"), pPlugin)
 {
+	m_sPreset = sPreset;
 	m_vlist = vlist;
 }
 
@@ -370,10 +371,13 @@ bool qtractorPresetPluginCommand::redo (void)
 		return false;
 
 	// Save the current toggled state alright...
+	QString sPreset = pPlugin->preset();
 	QStringList vlist = pPlugin->valueList();
+	pPlugin->setPreset(m_sPreset);
 	pPlugin->setValueList(m_vlist);
 	pPlugin->realizeValues();
 	// Swap it nice, finally.
+	m_sPreset = sPreset;
 	m_vlist = vlist;
 
 	// Update the form, showing it up as necessary...
@@ -398,7 +402,6 @@ qtractorResetPluginCommand::qtractorResetPluginCommand (
 	qtractorPlugin *pPlugin )
 	: qtractorPluginCommand(QObject::tr("reset plugin"), pPlugin)
 {
-	m_bReset = false;
 }
 
 
@@ -410,14 +413,18 @@ bool qtractorResetPluginCommand::redo (void)
 		return false;
 
 	// Toggle/swap it nice...
-	m_bReset = !m_bReset;
-	if (m_bReset) {
-		m_vlist = pPlugin->valueList();
+	QString sPreset = pPlugin->preset();
+	QStringList vlist = pPlugin->valueList();
+	pPlugin->setPreset(m_sPreset);
+	if (m_sPreset.isEmpty() || m_vlist.isEmpty()) {
 		pPlugin->reset();
 	} else {
 		pPlugin->setValueList(m_vlist);
 		pPlugin->realizeValues();
 	}
+	// Swap it nice.
+	m_sPreset = sPreset;
+	m_vlist = vlist;
 
 	// Update the form, showing it up as necessary...
 	pPlugin->form()->refresh();
