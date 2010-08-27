@@ -5,6 +5,10 @@ ChangeLog
 
 SVN TRUNK
 
+- MIDI controller mapping finally refactored to support
+  some other MIDI event types than just CC (0xBn) ones
+  (EXPERIMENTAL).
+
 - Nitpicking fix: corrected main track-list (left pane)
   display when no track is currently selected.
 
@@ -13,10 +17,6 @@ SVN TRUNK
   eg. Fedora 13, Debian 6. (fixing bug #3050944).
 
 - New audio metronome bar and beat sample gain options.
-
-- MIDI controller mapping finally refactored to support
-  some other MIDI event types than just CC (0xBn) ones
-  (EXPERIMENTAL).
 
 - Progressively, the observer pattern is being finally
   introduced, targeting all potentially automatable

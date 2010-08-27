@@ -128,14 +128,20 @@ public:
 	public:
 
 		// Constructor.
-		MapVal(Command command = Command(0), bool bFeedback = false)
-			: m_command(command), m_bFeedback(bFeedback) {}
+		MapVal(Command command = Command(0), int iTrack = 0, bool bFeedback = false)
+			: m_command(command), m_iTrack(iTrack), m_bFeedback(bFeedback) {}
 
 		// Command accessors
 		void setCommand(Command command)
 			{ m_command = command; }
 		Command command() const
 			{ return m_command; }
+
+		// Track offset accessor.
+		void setTrack(int iTrack)
+			{ m_iTrack = iTrack; }
+		int track() const
+			{ return m_iTrack; }
 
 		// Feedback flag accessor.
 		void setFeedback(bool bFeedback)
@@ -147,6 +153,7 @@ public:
 
 		// Instance (value) member variables.
 		Command m_command;
+		int     m_iTrack;
 		bool    m_bFeedback;
 	};
 
@@ -167,12 +174,12 @@ public:
 	// Insert new controller mappings.
 	void mapChannelParam(ControlType ctype,
 		unsigned short iChannel, unsigned short iParam,
-		Command command, bool bFeedback = false);
+		Command command, int iTrack = 0, bool bFeedback = false);
 	void mapChannelTrack(ControlType ctype, unsigned short iParam,
-		Command command, bool bFeedback = false);
+		Command command, int iTrack = 0, bool bFeedback = false);
 	void mapChannelParamTrack(ControlType ctype,
 		unsigned short iChannel, unsigned short iParam,
-		Command command, bool bFeedback = false);
+		Command command, int iTrack = 0, bool bFeedback = false);
 
 	// Remove existing controller mapping.
 	void unmapChannelParam(ControlType ctype,

@@ -206,6 +206,9 @@ qtractorMidiControlForm::qtractorMidiControlForm (
 	QObject::connect(m_ui.TrackCheckBox,
 		SIGNAL(toggled(bool)),
 		SLOT(keyChangedSlot()));
+	QObject::connect(m_ui.TrackSpinBox,
+		SIGNAL(valueChanged(int)),
+		SLOT(valueChangedSlot()));
 	QObject::connect(m_ui.CommandComboBox,
 		SIGNAL(activated(int)),
 		SLOT(valueChangedSlot()));
@@ -398,12 +401,14 @@ void qtractorMidiControlForm::mapSlot (void)
 	if (m_ui.TrackCheckBox->isChecked()
 		&& (iChannel & qtractorMidiControl::TrackParam) == 0)
 		iParam |= qtractorMidiControl::TrackParam;
+
 	qtractorMidiControl::Command command = commandFromText(
 		m_ui.CommandComboBox->currentText());
+	int iTrack = m_ui.TrackSpinBox->value();
 	bool bFeedback = m_ui.FeedbackCheckBox->isChecked();
 
 	pMidiControl->mapChannelParam(
-		ctype, iChannel, iParam, command, bFeedback);
+		ctype, iChannel, iParam, command, iTrack, bFeedback);
 
 	m_iDirtyCount = 0;
 	m_iDirtyMap++;
@@ -677,14 +682,13 @@ void qtractorMidiControlForm::stabilizeValueChange (void)
 	if (bMapped) {
 		qtractorMidiControl::Command command = commandFromText(
 			m_ui.CommandComboBox->currentText());
+		int iTrack = m_ui.TrackSpinBox->value();
 		bool bFeedback = m_ui.FeedbackCheckBox->isChecked();
 		pMidiControl->mapChannelParam(
-			ctype, iChannel, iParam, command, bFeedback);
+			ctype, iChannel, iParam, command, iTrack, bFeedback);
 		m_iDirtyCount = 0;
 		m_iDirtyMap++;
 		refreshControlMap();
-	} else {
-		stabilizeForm();
 	}
 }
 
@@ -718,7 +722,9 @@ void qtractorMidiControlForm::stabilizeForm (void)
 			m_ui.ChannelComboBox->findText(pItem->text(1)));
 		m_ui.ParamComboBox->setCurrentIndex(
 			m_ui.ParamComboBox->findText(pItem->text(2)));
-		m_ui.TrackCheckBox->setChecked(pItem->text(3) == tr("Yes"));
+		const QString& sText = pItem->text(3);
+		m_ui.TrackCheckBox->setChecked(sText[0] == '+');
+		m_ui.TrackSpinBox->setValue(sText.toInt());
 		m_ui.CommandComboBox->setCurrentIndex(
 			m_ui.CommandComboBox->findText(pItem->text(4)));
 		m_ui.FeedbackCheckBox->setChecked(pItem->text(5) == tr("Yes"));
@@ -794,7 +800,10 @@ void qtractorMidiControlForm::refreshControlMap (void)
 		pItem->setText(0, textFromType(key.type()));
 		pItem->setText(1, textFromChannel(key.channel()));
 		pItem->setText(2, textFromParam(key.type(), key.param()));
-		pItem->setText(3, key.isParamTrack() ? tr("Yes") : tr("No"));
+		QString sText;
+		if (key.isParamTrack())
+			sText += "+ ";
+		pItem->setText(3, sText + QString::number(val.track()));
 		pItem->setText(4, textFromCommand(val.command()));
 		pItem->setText(5, val.isFeedback() ? tr("Yes") : tr("No"));
 		items.append(pItem);

@@ -106,27 +106,27 @@ void qtractorMidiControl::clear (void)
 // Insert new controller mappings.
 void qtractorMidiControl::mapChannelParam (
 	ControlType ctype, unsigned short iChannel, unsigned short iParam,
-	Command command, bool bFeedback )
+	Command command, int iTrack, bool bFeedback )
 {
 	m_controlMap.insert(
 		MapKey(ctype, iChannel, iParam),
-		MapVal(command, bFeedback));
+		MapVal(command, iTrack, bFeedback));
 }
 
 void qtractorMidiControl::mapChannelTrack (
 	ControlType ctype, unsigned short iParam,
-	Command command, bool bFeedback )
+	Command command, int iTrack, bool bFeedback )
 {
 	mapChannelParam(
-		ctype, TrackParam, iParam, command, bFeedback);
+		ctype, TrackParam, iParam, command, iTrack, bFeedback);
 }
 
 void qtractorMidiControl::mapChannelParamTrack (
 	ControlType ctype, unsigned short iChannel, unsigned short iParam,
-	Command command, bool bFeedback )
+	Command command, int iTrack, bool bFeedback )
 {
 	mapChannelParam(
-		ctype, iChannel, iParam | TrackParam, command, bFeedback);
+		ctype, iChannel, iParam | TrackParam, command, iTrack, bFeedback);
 }
 
 
@@ -182,7 +182,7 @@ void qtractorMidiControl::sendAllControllers ( int iFirstTrack ) const
 					else if (key.isParamTrack())
 						sendTrackController(pTrack,
 							val.command(), iChannel, iParam + iTrack);
-					else /* if (iParam == iTrack) */ {
+					else if (val.track() == iTrack) {
 						sendTrackController(pTrack,
 							val.command(), iChannel, iParam);
 						break; // Bail out from inner track loop.
@@ -223,17 +223,16 @@ bool qtractorMidiControl::processEvent ( const qtractorCtlEvent& ctle ) const
 	const MapKey& key = it.key();
 	const MapVal& val = it.value();
 
-	int iTrack = -1;	
+	int iTrack = val.track();
 	if (key.isChannelTrack()) {
-		iTrack = int(ctle.channel());
+		iTrack += int(ctle.channel());
 	}
 	else
 	if (key.isParamTrack()) {
 		unsigned short iParam = key.param() & TrackParamMask;
 		if (int(ctle.param()) >= iParam)
-			iTrack = int(ctle.param()) - iParam;
+			iTrack += int(ctle.param()) - iParam;
 	}
-//	else iTrack = key.param();
 
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
@@ -345,9 +344,9 @@ void qtractorMidiControl::sendTrackController (
 			else
 			if (key.isParamTrack())
 				sendController(key.channel(), iParam + iTrack, iValue);
-		//	else
-		//	if (iParam == iTrack)
-		//		sendController(key.channel(), iParam, iValue);
+			else
+			if (val.track() == iTrack)
+				sendController(key.channel(), iParam, iValue);
 		}
 	}
 }
@@ -462,15 +461,18 @@ bool qtractorMidiControl::loadElement (
 				= keyFromText(eItem.attribute("channel"));
 			unsigned short iParam = 0;
 			bool bOldMap = (ctype == ControlType(0));
+			bool bOldTrackParam = false;
 			if (bOldMap) {
 				ctype  = qtractorMidiEvent::CONTROLLER;
 				iParam = keyFromText(eItem.attribute("controller"));
+				bOldTrackParam = bool(iParam & TrackParam);
 			} else {
 				iParam = eItem.attribute("param").toUShort();
 				if (pDocument->boolFromText(eItem.attribute("track")))
 					iParam |= TrackParam;
 			}
 			Command command = Command(0);
+			int iTrack = 0;
 			bool bFeedback = false;
 			for (QDomNode nVal = eItem.firstChild();
 					!nVal.isNull();
@@ -482,15 +484,23 @@ bool qtractorMidiControl::loadElement (
 				if (eVal.tagName() == "command")
 					command = commandFromText(eVal.text());
 				else
-				if (eVal.tagName() == "param" && bOldMap)
-					iParam |= eVal.text().toUShort();
+				if (eVal.tagName() == "track")
+					iTrack = eVal.text().toInt();
 				else
 				if (eVal.tagName() == "feedback")
 					bFeedback = pDocument->boolFromText(eVal.text());
+				else
+				if (eVal.tagName() == "param" && bOldMap) {
+					iTrack = eVal.text().toInt();
+					if (bOldTrackParam) {
+						iParam += iTrack;
+						iTrack  = 0;
+					}
+				}
 			}
 			m_controlMap.insert(
 				MapKey(ctype, iChannel, iParam),
-				MapVal(command, bFeedback));
+				MapVal(command, iTrack, bFeedback));
 		}
 	}
 
@@ -517,6 +527,8 @@ bool qtractorMidiControl::saveElement (
 			pDocument->textFromBool(key.isParamTrack()));
 		pDocument->saveTextElement("command",
 			textFromCommand(val.command()), &eItem);
+		pDocument->saveTextElement("track",
+			QString::number(val.track()), &eItem);
 		pDocument->saveTextElement("feedback",
 			pDocument->textFromBool(val.isFeedback()), &eItem);
 		pElement->appendChild(eItem);
@@ -605,7 +617,7 @@ QString qtractorMidiControl::textFromType (
 
 unsigned short qtractorMidiControl::keyFromText ( const QString& sText )
 {
-	if (sText == "*" || sText.isEmpty())
+	if (sText == "*" || sText == "TrackParam" || sText.isEmpty())
 		return TrackParam;
 	else
 		return sText.toUShort();
