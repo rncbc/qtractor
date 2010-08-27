@@ -632,6 +632,9 @@ void qtractorMidiControlForm::stabilizeKeyChange (void)
 		QListIterator<QTreeWidgetItem *> iter(items);
 		while (iter.hasNext()) {
 			QTreeWidgetItem *pItem = iter.next();
+			if ((iParam & qtractorMidiControl::TrackParam) == 0
+				&& pItem->text(3)[0] == '+')
+				continue;
 			if (pItem->text(1) == sChannel && pItem->text(2) == sParam) {
 				m_iUpdating++;
 				m_ui.ControlMapListView->setCurrentItem(pItem);
