@@ -465,11 +465,11 @@ qtractorTrack *qtractorTrackList::track ( int iTrack ) const
 // Retrive the given track row rectangular (in viewport coordinates).
 QRect qtractorTrackList::trackRect ( int iTrack ) const
 {
-	QRect rect(0, 0,
-		qtractorScrollView::viewport()->width(),
-		qtractorTrack::HeightBase);
+	QRect rect;
 
 	if (iTrack >= 0 && iTrack < m_items.count()) {
+		rect.setX(0);
+		rect.setWidth(qtractorScrollView::viewport()->width());
 		int y1, y2;
 		y1 = y2 = m_pHeader->sizeHint().height();
 		QListIterator<Item *> iter(m_items);
@@ -1051,6 +1051,9 @@ void qtractorTrackList::moveRubberBand ( const QPoint& posDrag )
 // Make sure the given (track) rectangle is visible.
 bool qtractorTrackList::ensureVisibleRect ( const QRect& rect )
 {
+	if (!rect.isValid())
+		return false;
+		
 	int hh = m_pHeader->sizeHint().height();
 	int cx = qtractorScrollView::contentsX();
 	int cy = qtractorScrollView::contentsY();

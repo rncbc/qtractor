@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- Nitpicking fix: corrected main track-list (left pane)
+  display when no track is currently selected.
+
 - libX11 is now being added explicitly to the build link
   phase, as seen necessary on some bleeding-edge distros
   eg. Fedora 13, Debian 6. (fixing bug #3050944).
