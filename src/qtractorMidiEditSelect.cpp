@@ -87,7 +87,7 @@ void qtractorMidiEditSelect::update ( bool bCommit )
 	int iUpdate = 0;
 
 	ItemList::Iterator iter = m_items.begin();
-	for ( ; iter != m_items.end(); ++iter) {
+	while (iter != m_items.end()) {
 		Item *pItem = iter.value();
 		if (bCommit) {
 			if (pItem->flags & 1)
@@ -96,10 +96,11 @@ void qtractorMidiEditSelect::update ( bool bCommit )
 				pItem->flags &= ~2;
 		}
 		if ((pItem->flags & 3) == 0) {
-			m_items.erase(iter);
 			delete pItem;
+			iter = m_items.erase(iter);
 			iUpdate++;
 		}
+		else ++iter;
 	}
 
 	// Did we remove any?
