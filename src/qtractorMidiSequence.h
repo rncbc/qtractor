@@ -27,6 +27,9 @@
 #include <QString>
 #include <QHash>
 
+// typedef unsigned long long uint64_t;
+#include <stdint.h>
+
 
 //----------------------------------------------------------------------
 // class qtractorMidiSequence -- The generic MIDI event sequence buffer.
@@ -99,15 +102,11 @@ public:
 	void unlinkEvent (qtractorMidiEvent *pEvent);
 	void removeEvent (qtractorMidiEvent *pEvent);
 
-	// Fastest rounding-from-float helper.
-	static unsigned long uroundf(float x)
-		{ return (unsigned long) (x >= 0.0f ? x + 0.5f : x - 0.5f); }
-
-	// Adjust time resolutions (inline rounded for speed).
+	// Adjust time resolutions (64bit).
 	unsigned long timep(unsigned long iTime, unsigned short p) const
-		{ return uroundf(float(iTime * p) / float(m_iTicksPerBeat)); }
+		{ return uint64_t(iTime) * p / m_iTicksPerBeat; }
 	unsigned long timeq(unsigned long iTime, unsigned short q) const
-		{ return uroundf(float(iTime * m_iTicksPerBeat) / float(q)); }
+		{ return uint64_t(iTime) * m_iTicksPerBeat / q; }
 
 	// Replace events from another sequence in given range.
 	void replaceEvents(qtractorMidiSequence *pSeq,

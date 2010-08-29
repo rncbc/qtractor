@@ -5,6 +5,11 @@ ChangeLog
 
 SVN TRUNK
 
+- A nasty and deadly MIDI resolution overflow has been
+  finally fixed, allowing for long MIDI sequences (1h+)
+  to laod correctly on 32bit machines from now on (was
+  perfectly fine on 64bit though). (TESTING)
+
 - MIDI editor selection hash optimization in face of
   reasonably huge event sequences. (TESTING)
 
