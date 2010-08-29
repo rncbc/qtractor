@@ -1099,11 +1099,12 @@ void qtractorMidiEditor::cutClipboard (void)
 	qtractorMidiEditCommand *pEditCommand
 		= new qtractorMidiEditCommand(m_pMidiClip, tr("cut"));
 
-	QListIterator<qtractorMidiEditSelect::Item *> iter(m_select.items());
-	while (iter.hasNext()) {
-		qtractorMidiEditSelect::Item *pItem = iter.next();
-		g_clipboard.items.append(new qtractorMidiEvent(*(pItem->event)));
-		pEditCommand->removeEvent(pItem->event);
+	const qtractorMidiEditSelect::ItemList& items = m_select.items();
+	qtractorMidiEditSelect::ItemList::ConstIterator iter = items.constBegin();
+	for ( ; iter != items.constEnd(); ++iter) {
+		qtractorMidiEvent *pEvent = iter.key();
+		g_clipboard.items.append(new qtractorMidiEvent(*pEvent));
+		pEditCommand->removeEvent(pEvent);
 	}
 
 	// Make it as an undoable command...
@@ -1122,10 +1123,11 @@ void qtractorMidiEditor::copyClipboard (void)
 
 	g_clipboard.clear();
 
-	QListIterator<qtractorMidiEditSelect::Item *> iter(m_select.items());
-	while (iter.hasNext()) {
-		qtractorMidiEditSelect::Item *pItem = iter.next();
-		g_clipboard.items.append(new qtractorMidiEvent(*(pItem->event)));
+	const qtractorMidiEditSelect::ItemList& items = m_select.items();
+	qtractorMidiEditSelect::ItemList::ConstIterator iter = items.constBegin();
+	for ( ; iter != items.constEnd(); ++iter) {
+		qtractorMidiEvent *pEvent = iter.key();
+		g_clipboard.items.append(new qtractorMidiEvent(*pEvent));
 	}
 
 	selectionChangeNotify();
@@ -1284,10 +1286,11 @@ void qtractorMidiEditor::deleteSelect (void)
 	qtractorMidiEditCommand *pEditCommand
 		= new qtractorMidiEditCommand(m_pMidiClip, tr("delete"));
 
-	QListIterator<qtractorMidiEditSelect::Item *> iter(m_select.items());
-	while (iter.hasNext()) {
-		qtractorMidiEditSelect::Item *pItem = iter.next();
-		pEditCommand->removeEvent(pItem->event);
+	const qtractorMidiEditSelect::ItemList& items = m_select.items();
+	qtractorMidiEditSelect::ItemList::ConstIterator iter = items.constBegin();
+	for ( ; iter != items.constEnd(); ++iter) {
+		qtractorMidiEvent *pEvent = iter.key();
+		pEditCommand->removeEvent(pEvent);
 	}
 
 	m_pCommands->exec(pEditCommand);
@@ -1362,9 +1365,12 @@ QList<qtractorMidiEvent *> qtractorMidiEditor::selectedEvents (void) const
 {
 	QList<qtractorMidiEvent *> list;
 
-	QListIterator<qtractorMidiEditSelect::Item *> iter(m_select.items());
-	while (iter.hasNext())
-		list.append(iter.next()->event);
+	const qtractorMidiEditSelect::ItemList& items = m_select.items();
+	qtractorMidiEditSelect::ItemList::ConstIterator iter = items.constBegin();
+	for ( ; iter != items.constEnd(); ++iter) {
+		qtractorMidiEvent *pEvent = iter.key();
+		list.append(pEvent);
+	}
 
 	return list;
 }
@@ -1397,10 +1403,11 @@ void qtractorMidiEditor::updateSelect ( bool bSelectReset )
 	if (m_pEditEvent->eventType() == qtractorMidiEvent::PITCHBEND)
 		y0 = ((y0 >> 3) << 2);
 
-	QListIterator<qtractorMidiEditSelect::Item *> iter(m_select.items());
-	while (iter.hasNext()) {
-		qtractorMidiEditSelect::Item *pItem = iter.next();
-		qtractorMidiEvent *pEvent = pItem->event;
+	const qtractorMidiEditSelect::ItemList& items = m_select.items();
+	qtractorMidiEditSelect::ItemList::ConstIterator iter = items.constBegin();
+	for ( ; iter != items.constEnd(); ++iter) {
+		qtractorMidiEvent *pEvent = iter.key();
+		qtractorMidiEditSelect::Item *pItem = iter.value();
 		// Common event coords...
 		int y;
 		unsigned long t1 = t0 + pEvent->time();
@@ -1676,10 +1683,11 @@ qtractorMidiEvent *qtractorMidiEditor::dragEditEvent (
 
 	// Check for time/onset changes and whether it's already drawn...
 	if (m_bEventDragEdit && m_pEventDrag) {
-		QListIterator<qtractorMidiEditSelect::Item *> iter(m_select.items());
-		while (iter.hasNext()) {
-			qtractorMidiEditSelect::Item *pItem = iter.next();
-			qtractorMidiEvent *pEvent = pItem->event;
+		const qtractorMidiEditSelect::ItemList& items = m_select.items();
+		qtractorMidiEditSelect::ItemList::ConstIterator iter = items.constBegin();
+		for ( ; iter != items.constEnd(); ++iter) {
+			qtractorMidiEvent *pEvent = iter.key();
+			qtractorMidiEditSelect::Item *pItem = iter.value();
 			if (bEditView && pEvent->type() == qtractorMidiEvent::NOTEON) {
 				if (pEvent->note() == note) {
 					if (t1 >= pEvent->time() &&
@@ -2654,10 +2662,11 @@ void qtractorMidiEditor::executeDragMove (
 	qtractorMidiEditCommand *pEditCommand
 		= new qtractorMidiEditCommand(m_pMidiClip, tr("move"));
 
-	QListIterator<qtractorMidiEditSelect::Item *> iter(m_select.items());
-	while (iter.hasNext()) {
-		qtractorMidiEditSelect::Item *pItem = iter.next();
-		qtractorMidiEvent *pEvent = pItem->event;
+	const qtractorMidiEditSelect::ItemList& items = m_select.items();
+	qtractorMidiEditSelect::ItemList::ConstIterator iter = items.constBegin();
+	for ( ; iter != items.constEnd(); ++iter) {
+		qtractorMidiEvent *pEvent = iter.key();
+		qtractorMidiEditSelect::Item *pItem = iter.value();
 		int iNote = int(pEvent->note()) + iNoteDelta;
 		if (iNote < 0)
 			iNote = 0;
@@ -2691,10 +2700,10 @@ void qtractorMidiEditor::executeDragResize (
 		= new qtractorMidiEditCommand(m_pMidiClip,
 			m_bEventDragEdit ? tr("edit") : tr("resize"));
 
-	QListIterator<qtractorMidiEditSelect::Item *> iter(m_select.items());
-	while (iter.hasNext()) {
-		qtractorMidiEditSelect::Item *pItem = iter.next();
-		qtractorMidiEvent *pEvent = pItem->event;
+	const qtractorMidiEditSelect::ItemList& items = m_select.items();
+	qtractorMidiEditSelect::ItemList::ConstIterator iter = items.constBegin();
+	for ( ; iter != items.constEnd(); ++iter) {
+		qtractorMidiEvent *pEvent = iter.key();
 		if (!m_bEventDragEdit || m_pEventDrag == pEvent)
 			resizeEvent(pEvent, iTimeDelta, iValueDelta, pEditCommand);
 		else
@@ -2729,10 +2738,11 @@ void qtractorMidiEditor::executeDragPaste (
 	qtractorMidiEditCommand *pEditCommand
 		= new qtractorMidiEditCommand(m_pMidiClip, tr("paste"));
 
-	QListIterator<qtractorMidiEditSelect::Item *> iter(m_select.items());
-	while (iter.hasNext()) {
-		qtractorMidiEditSelect::Item *pItem = iter.next();
-		qtractorMidiEvent *pEvent = new qtractorMidiEvent(*(pItem->event));
+	const qtractorMidiEditSelect::ItemList& items = m_select.items();
+	qtractorMidiEditSelect::ItemList::ConstIterator iter = items.constBegin();
+	for ( ; iter != items.constEnd(); ++iter) {
+		qtractorMidiEditSelect::Item *pItem = iter.value();
+		qtractorMidiEvent *pEvent = new qtractorMidiEvent(*iter.key());
 		int iNote = int(pEvent->note()) + iNoteDelta;
 		if (iNote < 0)
 			iNote = 0;
@@ -2770,14 +2780,16 @@ void qtractorMidiEditor::paintDragState (
 		= (static_cast<qtractorScrollView *> (m_pEditView) == pScrollView);
 
 	int x1, y1;
-	QListIterator<qtractorMidiEditSelect::Item *> iter(m_select.items());
-	while (iter.hasNext()) {
-		qtractorMidiEditSelect::Item *pItem = iter.next();
+	const qtractorMidiEditSelect::ItemList& items = m_select.items();
+	qtractorMidiEditSelect::ItemList::ConstIterator iter = items.constBegin();
+	for ( ; iter != items.constEnd(); ++iter) {
+		qtractorMidiEvent *pEvent = iter.key();
+		qtractorMidiEditSelect::Item *pItem = iter.value();
 		if ((pItem->flags & 1) == 0)
 			continue;
-		int c = (pItem->event == m_pEventDrag ? 64 : 0);
+		int c = (pEvent == m_pEventDrag ? 64 : 0);
 		QRect rect = (bEditView ? pItem->rectView : pItem->rectEvent);
-		if (!m_bEventDragEdit || pItem->event == m_pEventDrag) {
+		if (!m_bEventDragEdit || pEvent == m_pEventDrag) {
 			if (m_dragState == DragResize) {
 				switch (m_resizeMode) {
 				case ResizeNoteLeft:
@@ -2855,9 +2867,12 @@ void qtractorMidiEditor::paintDragState (
 void qtractorMidiEditor::resetDragState ( qtractorScrollView *pScrollView )
 {
 	if (m_bEventDragEdit) {
-		QListIterator<qtractorMidiEditSelect::Item *> iter(m_select.items());
-		while (iter.hasNext())
-			delete iter.next()->event;
+		const qtractorMidiEditSelect::ItemList& items = m_select.items();
+		qtractorMidiEditSelect::ItemList::ConstIterator iter = items.constBegin();
+		for ( ; iter != items.constEnd(); ++iter) {
+			qtractorMidiEvent *pEvent = iter.key();
+			delete pEvent;
+		}
 		m_select.clear();
 	}
 
@@ -3353,8 +3368,10 @@ bool qtractorMidiEditor::keyStep ( int iKey )
 		return false;
 
 	// Make sure we've a anchor...
-	if (m_pEventDrag == NULL)
-		m_pEventDrag = m_select.items().first()->event;
+	if (m_pEventDrag == NULL) {
+		const qtractorMidiEditSelect::ItemList& items = m_select.items();
+		m_pEventDrag = items.constBegin().key();
+	}
 
 	// Determine vertical step...
 	if (iKey == Qt::Key_Up || iKey == Qt::Key_Down)  {

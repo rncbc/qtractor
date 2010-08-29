@@ -44,14 +44,7 @@ qtractorMidiEditSelect::Item *qtractorMidiEditSelect::findItem (
 	qtractorMidiEvent *pEvent )
 {
 	// Check if this very event already exists...
-	QListIterator<Item *> iter(m_items);
-	while (iter.hasNext()) {
-		Item *pItem = iter.next();
-		if (pItem->event == pEvent)
-			return pItem;
-	}
-	// Not found.
-	return NULL;
+	return m_items.value(pEvent, NULL);
 }
 
 
@@ -59,7 +52,7 @@ qtractorMidiEditSelect::Item *qtractorMidiEditSelect::findItem (
 void qtractorMidiEditSelect::addItem ( qtractorMidiEvent *pEvent,
 	const QRect& rectEvent, const QRect& rectView, unsigned long iDeltaTime )
 {
-	m_items.append(new Item(pEvent, rectEvent, rectView, iDeltaTime));
+	m_items.insert(pEvent, new Item(rectEvent, rectView, iDeltaTime));
 
 	m_rectEvent = m_rectEvent.unite(rectEvent);
 	m_rectView = m_rectView.unite(rectView);
@@ -92,9 +85,10 @@ void qtractorMidiEditSelect::update ( bool bCommit )
 {
 	// Remove unselected...
 	int iUpdate = 0;
-	QMutableListIterator<Item *> iter(m_items);
-	while (iter.hasNext()) {
-		Item *pItem = iter.next();
+
+	ItemList::Iterator iter = m_items.begin();
+	for ( ; iter != m_items.end(); ++iter) {
+		Item *pItem = iter.value();
 		if (bCommit) {
 			if (pItem->flags & 1)
 				pItem->flags |=  2;
@@ -102,7 +96,7 @@ void qtractorMidiEditSelect::update ( bool bCommit )
 				pItem->flags &= ~2;
 		}
 		if ((pItem->flags & 3) == 0) {
-			iter.remove();
+			m_items.erase(iter);
 			delete pItem;
 			iUpdate++;
 		}
@@ -121,9 +115,9 @@ void qtractorMidiEditSelect::commit (void)
 	m_rectEvent.setRect(0, 0, 0, 0);
 	m_rectView.setRect(0, 0, 0, 0);
 
-	QListIterator<Item *> iter(m_items);
-	while (iter.hasNext()) {
-		Item *pItem = iter.next();
+	ItemList::ConstIterator iter = m_items.constBegin();
+	for ( ; iter != m_items.constEnd(); ++iter) {
+		Item *pItem = iter.value();
 		m_rectEvent = m_rectEvent.unite(pItem->rectEvent);
 		m_rectView = m_rectView.unite(pItem->rectView);
 	}

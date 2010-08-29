@@ -552,28 +552,29 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::editCommand (
 		tools.append(tr("resize"));
 	pEditCommand->setName(tools.join(", "));
 
-	QListIterator<qtractorMidiEditSelect::Item *> iter(pSelect->items());
+	const qtractorMidiEditSelect::ItemList& items = pSelect->items();
+	qtractorMidiEditSelect::ItemList::ConstIterator iter = items.constBegin();
 
 	// First scan pass for the normalize tool:
 	// find maximum value from the selection...
 	int iMaxValue = 0;
 	if (m_ui.NormalizeCheckBox->isChecked()) {
 		// Make it through one time...
-		while (iter.hasNext()) {
-			qtractorMidiEvent *pEvent = iter.next()->event;
+		for ( ; iter != items.constEnd(); ++iter) {
+			qtractorMidiEvent *pEvent = iter.key();
 			bool bPitchBend = (pEvent->type() == qtractorMidiEvent::PITCHBEND);
 			int iValue = (bPitchBend ? pEvent->pitchBend() : pEvent->value());
 			if (iMaxValue < iValue)
 				iMaxValue = iValue;
 		}
 		// Get it back to front...
-		iter.toFront();
+		iter = items.constBegin();
 	}
 
 	qtractorTimeScale::Cursor cursor(m_pTimeScale);
 
-	while (iter.hasNext()) {
-		qtractorMidiEvent *pEvent = iter.next()->event;
+	for ( ; iter != items.constEnd(); ++iter) {
+		qtractorMidiEvent *pEvent = iter.key();
 		long iTime = pEvent->time();
 		long iDuration = pEvent->duration();
 		bool bPitchBend = (pEvent->type() == qtractorMidiEvent::PITCHBEND);

@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- MIDI editor selection hash optimization in face of
+  reasonably huge event sequences. (TESTING)
+
 - MIDI controller mapping finally refactored to support
   some other MIDI event types than just CC (0xBn) ones
   (EXPERIMENTAL).

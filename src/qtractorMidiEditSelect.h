@@ -22,7 +22,7 @@
 #ifndef __qtractorMidiEditSelect_h
 #define __qtractorMidiEditSelect_h
 
-#include <QList>
+#include <QHash>
 #include <QRect>
 
 // Forward declarations.
@@ -46,17 +46,16 @@ public:
 	struct Item
 	{
 		// Item constructor.
-		Item(qtractorMidiEvent *pEvent,
-			const QRect& re, const QRect& rv,
-			unsigned long dt = 0) : event(pEvent),
-			rectEvent(re), rectView(rv), delta(dt), flags(1) {}
+		Item(const QRect& re, const QRect& rv, unsigned long dt = 0)
+			: rectEvent(re), rectView(rv), delta(dt), flags(1) {}
 		// Item members.
-		qtractorMidiEvent *event;
 		QRect rectEvent;
 		QRect rectView;
 		unsigned long delta;
 		unsigned int flags;
 	};
+
+	typedef QHash<qtractorMidiEvent *, Item *> ItemList;
 
 	// Event selection item lookup.
 	Item *findItem(qtractorMidiEvent *pEvent);
@@ -83,7 +82,7 @@ public:
 	const QRect& rectView()  const { return m_rectView;  }
 
 	// Selection list accessor.
-	const QList<Item *>& items() const { return m_items; }
+	const ItemList& items() const { return m_items; }
 
 	// Selection update method.
 	void update(bool bCommit);
@@ -97,7 +96,7 @@ public:
 private:
 
 	// The clip selection list.
-	QList<Item *> m_items;
+	ItemList m_items;
 
 	// The united selection rectangle.
 	QRect m_rectEvent;
