@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- Picking nits: unselect current track when clicking
+  on any gray empty area.
+
 - A nasty and deadly MIDI resolution overflow has been
   finally fixed, allowing for long MIDI sequences (1h+)
   to laod correctly on 32bit machines from now on (was

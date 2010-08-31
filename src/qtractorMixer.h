@@ -243,6 +243,9 @@ protected:
 	// Context menu request event handler.
 	void contextMenuEvent(QContextMenuEvent *);
 
+	// Mouse click event handler.
+	void mousePressEvent(QMouseEvent *);
+
 private:
 
 	// Instance properties.

@@ -5214,13 +5214,12 @@ void qtractorMainForm::mixerSelectionChanged (void)
 #endif
 
 	// Select sync to tracks...
-	if (m_pTracks && m_pMixer) {
+	if (m_pTracks && m_pMixer && m_pMixer->trackRack()) {
+		int iTrack = -1;
 		qtractorMixerStrip *pStrip = (m_pMixer->trackRack())->selectedStrip();
-		if (pStrip && pStrip->track()) {
-			int iTrack = (m_pTracks->trackList())->trackRow(pStrip->track());
-			if (iTrack >= 0)
-				(m_pTracks->trackList())->setCurrentTrackRow(iTrack);
-		}
+		if (pStrip && pStrip->track())
+			iTrack = (m_pTracks->trackList())->trackRow(pStrip->track());
+		(m_pTracks->trackList())->setCurrentTrackRow(iTrack);
 	}
 
 	stabilizeForm();

@@ -983,14 +983,13 @@ bool qtractorMixerRack::isSelectEnabled (void) const
 
 void qtractorMixerRack::setSelectedStrip ( qtractorMixerStrip *pStrip )
 {
-	if (m_pSelectedStrip != pStrip) {
-		if (m_bSelectEnabled && m_pSelectedStrip)
+	if (m_bSelectEnabled && m_pSelectedStrip != pStrip) {
+		if (m_pSelectedStrip)
 			m_pSelectedStrip->setSelected(false);
 		m_pSelectedStrip = pStrip;
-		if (m_bSelectEnabled && m_pSelectedStrip) {
+		if (m_pSelectedStrip)
 			m_pSelectedStrip->setSelected(true);
-			emit selectionChanged();
-		}
+		emit selectionChanged();
 	}
 }
 
@@ -1109,6 +1108,15 @@ void qtractorMixerRack::contextMenuEvent ( QContextMenuEvent *pContextMenuEvent 
 	menu.exec(pContextMenuEvent->globalPos());
 }
 
+
+// Mouse click event handler.
+void qtractorMixerRack::mousePressEvent ( QMouseEvent *pMouseEvent )
+{
+	if (!m_pWorkspace->rect().contains(pMouseEvent->pos()))
+		setSelectedStrip(NULL);
+
+	QScrollArea::mousePressEvent(pMouseEvent);
+}
 
 
 // Show/edit bus input connections.
