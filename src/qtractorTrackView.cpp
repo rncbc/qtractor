@@ -3093,25 +3093,7 @@ void qtractorTrackView::pasteClipSelect ( qtractorTrack *pTrack )
 				iClipStart = 0;
 			}
 			// Now, its imperative to make a proper copy of those clips...
-			qtractorClip *pNewClip = NULL;
-			switch (pTrack->trackType()) {
-			case qtractorTrack::Audio: {
-				qtractorAudioClip *pAudioClip
-					= static_cast<qtractorAudioClip *> (pClip);
-				if (pAudioClip)
-					pNewClip = new qtractorAudioClip(*pAudioClip);
-				break;
-			}
-			case qtractorTrack::Midi: {
-				qtractorMidiClip *pMidiClip
-					= static_cast<qtractorMidiClip *> (pClip);
-				if (pMidiClip)
-					pNewClip = new qtractorMidiClip(*pMidiClip);
-				break;
-			}
-			default:
-				break;
-			}
+			qtractorClip *pNewClip = cloneClip(pClip);
 			// Add the new pasted clip...
 			if (pNewClip) {
 				pNewClip->setClipStart(iClipStart);

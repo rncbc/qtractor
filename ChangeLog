@@ -6,7 +6,8 @@ ChangeLog
 SVN TRUNK
 
 - Picking nits: unselect current track when clicking
-  on any gray empty area.
+  on any gray empty area, also accessible from a new
+  menu item: Track/Navigate/None.
 
 - A nasty and deadly MIDI resolution overflow has been
   finally fixed, allowing for long MIDI sequences (1h+)

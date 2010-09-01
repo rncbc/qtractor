@@ -182,6 +182,8 @@
      <addaction name="trackNavigatePrevAction" />
      <addaction name="trackNavigateNextAction" />
      <addaction name="trackNavigateLastAction" />
+     <addaction name="separator" />
+     <addaction name="trackNavigateNoneAction" />
     </widget>
     <widget class="QMenu" name="trackMoveMenu" >
      <property name="title" >
@@ -1116,6 +1118,20 @@
    </property>
    <property name="statusTip" >
     <string>Make current the last track</string>
+   </property>
+  </action>
+  <action name="trackNavigateNoneAction" >
+   <property name="text" >
+    <string>N&amp;one</string>
+   </property>
+   <property name="iconText" >
+    <string>None Track</string>
+   </property>
+   <property name="toolTip" >
+    <string>None track</string>
+   </property>
+   <property name="statusTip" >
+    <string>None current track</string>
    </property>
   </action>
   <action name="trackMoveTopAction" >

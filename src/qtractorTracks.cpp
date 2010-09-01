@@ -338,11 +338,8 @@ qtractorTrack *qtractorTracks::currentTrack (void) const
 	qtractorTrack *pTrack = m_pTrackList->currentTrack();
 	if (pTrack == NULL) {
 		qtractorClip *pClip = m_pTrackView->currentClip();
-		if (pClip) {
+		if (pClip)
 			pTrack = pClip->track();
-		} else {
-			pTrack = pSession->tracks().first();
-		}
 	}
 
 	return pTrack;

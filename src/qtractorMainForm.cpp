@@ -673,6 +673,9 @@ qtractorMainForm::qtractorMainForm (
 	QObject::connect(m_ui.trackNavigateLastAction,
 		SIGNAL(triggered(bool)),
 		SLOT(trackNavigateLast()));
+	QObject::connect(m_ui.trackNavigateNoneAction,
+		SIGNAL(triggered(bool)),
+		SLOT(trackNavigateNone()));
 	QObject::connect(m_ui.trackMoveTopAction,
 		SIGNAL(triggered(bool)),
 		SLOT(trackMoveTop()));
@@ -2390,6 +2393,14 @@ void qtractorMainForm::trackNavigateLast (void)
 }
 
 
+// Make none current track on list.
+void qtractorMainForm::trackNavigateNone (void)
+{
+	if (m_pTracks && m_pTracks->trackList())
+		(m_pTracks->trackList())->setCurrentTrackRow(-1);
+}
+
+
 // Move current track to top of list.
 void qtractorMainForm::trackMoveTop (void)
 {
@@ -3788,14 +3799,16 @@ void qtractorMainForm::stabilizeForm (void)
 
 	unsigned long iPlayHead = m_pSession->playHead();
 	unsigned long iSessionLength = m_pSession->sessionLength();
+
 	qtractorTrack *pTrack = NULL;
 	qtractorClip  *pClip  = NULL;
-	if (m_pTracks) {
+	bool bTracks = (m_pTracks && m_pSession->tracks().count() > 0);
+	if (bTracks) {
 		pTrack = m_pTracks->currentTrack();
 		pClip  = m_pTracks->currentClip();
 	}
 
-	bool bEnabled    = (m_pTracks && pTrack != NULL);
+	bool bEnabled    = (pTrack != NULL);
 	bool bSelected   = (m_pTracks && m_pTracks->isClipSelected())
 		|| (m_pFiles && m_pFiles->hasFocus() && m_pFiles->isFileSelected());
 	bool bSelectable = (m_pSession->editHead() < m_pSession->editTail());
@@ -3832,7 +3845,7 @@ void qtractorMainForm::stabilizeForm (void)
 		&& pTrack && pTrack->trackType() == qtractorTrack::Midi
 		&& m_pSession->snapPerBeat() > 0);
 	m_ui.editClipTempoAction->setEnabled(pClip != NULL || bSelectable);
-	m_ui.editClipImportAction->setEnabled(m_pTracks != NULL);
+	m_ui.editClipImportAction->setEnabled(bTracks);
 		// pTrack && pTrack->trackType() == qtractorTrack::Audio);
 	m_ui.editClipExportAction->setEnabled(bSingleTrackSelected);
 
@@ -3846,11 +3859,12 @@ void qtractorMainForm::stabilizeForm (void)
 	m_ui.trackOutputsAction->setEnabled(
 		bEnabled && pTrack->outputBus() != NULL);
 	m_ui.trackStateMenu->setEnabled(bEnabled);
-	m_ui.trackNavigateMenu->setEnabled(m_pSession->tracks().count() > 0);
-//	m_ui.trackNavigateFirstAction->setEnabled(bEnabled);
-//	m_ui.trackNavigatePrevAction->setEnabled(bEnabled && pTrack->prev() != NULL);
-//	m_ui.trackNavigateNextAction->setEnabled(bEnabled && pTrack->next() != NULL);
-//	m_ui.trackNavigateLastAction->setEnabled(bEnabled);
+	m_ui.trackNavigateMenu->setEnabled(bTracks);
+	m_ui.trackNavigateFirstAction->setEnabled(bTracks);
+	m_ui.trackNavigatePrevAction->setEnabled(bEnabled && pTrack->prev() != NULL);
+	m_ui.trackNavigateNextAction->setEnabled(bEnabled && pTrack->next() != NULL);
+	m_ui.trackNavigateLastAction->setEnabled(bTracks);
+	m_ui.trackNavigateNoneAction->setEnabled(bEnabled);
 	m_ui.trackMoveMenu->setEnabled(bEnabled);
 	m_ui.trackMoveTopAction->setEnabled(bEnabled && pTrack->prev() != NULL);
 	m_ui.trackMoveUpAction->setEnabled(bEnabled && pTrack->prev() != NULL);

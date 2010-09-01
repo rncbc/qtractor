@@ -154,6 +154,7 @@ public slots:
 	void trackNavigatePrev();
 	void trackNavigateNext();
 	void trackNavigateLast();
+	void trackNavigateNone();
 	void trackMoveTop();
 	void trackMoveUp();
 	void trackMoveDown();
