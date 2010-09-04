@@ -357,6 +357,10 @@ void qtractorPluginForm::updateParamWidget ( unsigned long iIndex )
 			break;
 		}
 	}
+
+	// Sure is dirty...
+	m_iDirtyCount++;
+	stabilize();
 }
 
 
@@ -682,35 +686,6 @@ void qtractorPluginForm::activateSlot ( bool bOn )
 			new qtractorActivatePluginCommand(m_pPlugin, bOn));
 
 	m_iUpdate--;
-}
-
-
-// Something has changed.
-void qtractorPluginForm::valueChangeSlot (
-	qtractorPluginParam *pParam, float fValue, bool bUpdate )
-{
-	if (m_pPlugin == NULL)
-		return;
-
-	if (m_iUpdate > 0)
-		return;
-
-#ifdef CONFIG_DEBUG
-	qDebug("qtractorPluginForm[%p]::valueChangeSlot(%p, %g, %d)",
-		this, pParam, fValue, int(bUpdate));
-#endif
-	m_iUpdate++;
-
-	// Make it a undoable command...
-	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession)
-		pSession->execute(
-			new qtractorPluginParamCommand(pParam, fValue, bUpdate));
-
-	m_iUpdate--;
-
-	m_iDirtyCount++;
-	stabilize();
 }
 
 

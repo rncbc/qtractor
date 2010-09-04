@@ -85,8 +85,6 @@ protected slots:
 	void sendsSlot();
 	void returnsSlot();
 	void activateSlot(bool bOn);
-	void valueChangeSlot(
-		qtractorPluginParam *pParam, float fValue, bool bUpdate);
 
 protected:
 
