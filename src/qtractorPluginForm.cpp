@@ -179,7 +179,7 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 			qtractorPluginParam *pParam = iter.next();
 			qtractorPluginParamWidget *pParamWidget
 				= new qtractorPluginParamWidget(pParam, this);
-			m_paramWidgets.append(pParamWidget);
+			m_paramWidgets.insert(pParam->index(), pParamWidget);
 			m_pGridLayout->addWidget(pParamWidget, iRow, iCol);
 			if (++iRow >= iRows) {
 				iRow = 0;
@@ -349,14 +349,10 @@ void qtractorPluginForm::updateParamWidget ( unsigned long iIndex )
 	qDebug("qtractorPluginForm[%p]::updateParamWidget(%lu)", this, iIndex);
 #endif
 
-	QListIterator<qtractorPluginParamWidget *> iter(m_paramWidgets);
-	while (iter.hasNext()) {
-		qtractorPluginParamWidget *pParamWidget = iter.next();
-		if ((pParamWidget->param())->index() == iIndex) {
-			pParamWidget->refresh();
-			break;
-		}
-	}
+	qtractorPluginParamWidget *pParamWidget
+		= m_paramWidgets.value(iIndex, NULL);
+	if (pParamWidget)
+		pParamWidget->refresh();
 
 	// Sure is dirty...
 	m_iDirtyCount++;
@@ -717,9 +713,9 @@ void qtractorPluginForm::refresh (void)
 	m_ui.PresetComboBox->addItem(g_sDefPreset);
 	m_ui.PresetComboBox->setEditText(sOldPreset);
 
-	QListIterator<qtractorPluginParamWidget *> iter(m_paramWidgets);
-	while (iter.hasNext())
-		iter.next()->refresh();
+	ParamWidgets::ConstIterator iter = m_paramWidgets.constBegin();
+	for ( ; iter != m_paramWidgets.constEnd(); ++iter)
+		iter.value()->refresh();
 
 	m_pPlugin->idleEditor();
 
@@ -978,7 +974,6 @@ int qtractorPluginParamWidget::paramDecimals (void) const
 		iDecimals = 1;
 
 	return iDecimals;
-
 }
 
 

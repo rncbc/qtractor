@@ -101,7 +101,10 @@ private:
 	// Instance variables...
 	qtractorPlugin *m_pPlugin;
 	QGridLayout *m_pGridLayout;
-	QList<qtractorPluginParamWidget *> m_paramWidgets;
+
+	typedef QHash<unsigned long, qtractorPluginParamWidget *> ParamWidgets;
+	ParamWidgets m_paramWidgets;
+
 	int m_iDirtyCount;
 	int m_iUpdate;
 };
