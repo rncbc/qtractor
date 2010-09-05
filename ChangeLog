@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- Escape key now closes generic plugin widgets as ever
+  found usual elsewhere.
+
 - Picking nits: unselect current track when clicking
   on any gray empty area, also accessible from a new
   menu item: Track/Navigate/None.

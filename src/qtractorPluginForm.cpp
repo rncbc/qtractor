@@ -42,6 +42,8 @@
 #include <QFileDialog>
 #include <QUrl>
 
+#include <QKeyEvent>
+
 #include <math.h>
 
 // This shall hold the default preset name.
@@ -763,6 +765,27 @@ void qtractorPluginForm::clear (void)
 
 	qDeleteAll(m_paramWidgets);
 	m_paramWidgets.clear();
+}
+
+
+// Keyboard event handler.
+void qtractorPluginForm::keyPressEvent ( QKeyEvent *pKeyEvent )
+{
+#ifdef CONFIG_DEBUG_0
+	qDebug("qtractorPluginForm::keyPressEvent(%d)", pKeyEvent->key());
+#endif
+	int iKey = pKeyEvent->key();
+	switch (iKey) {
+	case Qt::Key_Escape:
+		close();
+		break;
+	default:
+		QWidget::keyPressEvent(pKeyEvent);
+		break;
+	}
+
+	// Make sure we've get focus back...
+	QWidget::setFocus();
 }
 
 

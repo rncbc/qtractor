@@ -93,6 +93,9 @@ protected:
 	// Show insert pseudo-plugin audio bus connections.
 	void insertPluginBus(int iBusMode);
 
+	// Keyboard event handler.
+	void keyPressEvent(QKeyEvent *);
+
 private:
 
 	// The Qt-designer UI struct...
