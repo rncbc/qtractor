@@ -1,7 +1,7 @@
 // qtractorSessionDocument.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -23,10 +23,10 @@
 #define __qtractorSessionDocument_h
 
 #include "qtractorDocument.h"
-#include "qtractorEngine.h"
-#include "qtractorTrack.h"
-#include "qtractorFiles.h"
-#include "qtractorClip.h"
+
+// Forward declarations.
+class qtractorSession;
+class qtractorFiles;
 
 
 //-------------------------------------------------------------------------
@@ -44,20 +44,8 @@ public:
 	~qtractorSessionDocument();
 
 	// Property accessors.
-	qtractorSession *session();
-	qtractorFiles   *files();
-
-	// Track type helper methods.
-	qtractorTrack::TrackType loadTrackType(const QString& sTrackType) const; 
-	QString saveTrackType(qtractorTrack::TrackType trackType) const;
-
-	// Audio bus mode helper methods.
-	qtractorBus::BusMode loadBusMode(const QString& sBusMode) const;
-	QString saveBusMode(qtractorBus::BusMode busMode) const;
-
-	// Clip fade type helper methods.
-	qtractorClip::FadeType loadFadeType(const QString& sFadeType) const;
-	QString saveFadeType(qtractorClip::FadeType fadeType) const;
+	qtractorSession *session() const;
+	qtractorFiles   *files() const;
 
 	// Elemental loader/savers...
 	bool loadElement(QDomElement *pElement);

@@ -246,6 +246,10 @@ public:
 	// Alternate properties accessor.
 	Properties& properties();
 
+	// Track type textual helper methods.
+	static TrackType trackTypeFromText (const QString& sText);
+	static QString   textFromTrackType (TrackType trackType);
+
 private:
 
 	qtractorSession *m_pSession;    // Session reference.

@@ -42,6 +42,8 @@
 
 #include <QPainter>
 
+#include <QDomDocument>
+
 
 //-------------------------------------------------------------------------
 // qtractorTrack::Properties -- Track properties structure.
@@ -994,7 +996,7 @@ bool qtractorTrack::loadElement ( qtractorSessionDocument *pDocument,
 {
 	qtractorTrack::setTrackName(pElement->attribute("name"));
 	qtractorTrack::setTrackType(
-		pDocument->loadTrackType(pElement->attribute("type")));
+		qtractorTrack::trackTypeFromText(pElement->attribute("type")));
 
 	// Load track children...
 	for (QDomNode nChild = pElement->firstChild();
@@ -1020,7 +1022,8 @@ bool qtractorTrack::loadElement ( qtractorSessionDocument *pDocument,
 				else if (eProp.tagName() == "output-bus")
 					qtractorTrack::setOutputBusName(eProp.text());
 				else if (eProp.tagName() == "midi-omni")
-					qtractorTrack::setMidiOmni(pDocument->boolFromText(eProp.text()));
+					qtractorTrack::setMidiOmni(
+						qtractorDocument::boolFromText(eProp.text()));
 				else if (eProp.tagName() == "midi-channel")
 					qtractorTrack::setMidiChannel(eProp.text().toUShort());
 				else if (eProp.tagName() == "midi-bank-sel-method")
@@ -1042,13 +1045,17 @@ bool qtractorTrack::loadElement ( qtractorSessionDocument *pDocument,
 				if (eState.isNull())
 					continue;
 				if (eState.tagName() == "mute")
-					qtractorTrack::setMute(pDocument->boolFromText(eState.text()));
+					qtractorTrack::setMute(
+						qtractorDocument::boolFromText(eState.text()));
 				else if (eState.tagName() == "solo")
-					qtractorTrack::setSolo(pDocument->boolFromText(eState.text()));
+					qtractorTrack::setSolo(
+						qtractorDocument::boolFromText(eState.text()));
 				else if (eState.tagName() == "record")
-					qtractorTrack::setRecord(pDocument->boolFromText(eState.text()));
+					qtractorTrack::setRecord(
+						qtractorDocument::boolFromText(eState.text()));
 				else if (eState.tagName() == "monitor")
-					qtractorTrack::setMonitor(pDocument->boolFromText(eState.text()));
+					qtractorTrack::setMonitor(
+						qtractorDocument::boolFromText(eState.text()));
 				else if (eState.tagName() == "gain")
 					qtractorTrack::setGain(eState.text().toFloat());
 				else if (eState.tagName() == "panning")
@@ -1121,7 +1128,7 @@ bool qtractorTrack::saveElement ( qtractorSessionDocument *pDocument,
 {
 	pElement->setAttribute("name", qtractorTrack::trackName());
 	pElement->setAttribute("type",
-		pDocument->saveTrackType(qtractorTrack::trackType()));
+		qtractorTrack::textFromTrackType(qtractorTrack::trackType()));
 
 	// Save track properties...
 	QDomElement eProps = pDocument->document()->createElement("properties");
@@ -1131,7 +1138,7 @@ bool qtractorTrack::saveElement ( qtractorSessionDocument *pDocument,
 		qtractorTrack::outputBusName(), &eProps);
 	if (qtractorTrack::trackType() == qtractorTrack::Midi) {
 		pDocument->saveTextElement("midi-omni",
-			pDocument->textFromBool(qtractorTrack::isMidiOmni()), &eProps);
+			qtractorDocument::textFromBool(qtractorTrack::isMidiOmni()), &eProps);
 		pDocument->saveTextElement("midi-channel",
 			QString::number(qtractorTrack::midiChannel()), &eProps);
 		if (qtractorTrack::midiBankSelMethod() >= 0) {
@@ -1152,13 +1159,13 @@ bool qtractorTrack::saveElement ( qtractorSessionDocument *pDocument,
 	// Save track state...
 	QDomElement eState = pDocument->document()->createElement("state");
 	pDocument->saveTextElement("mute",
-		pDocument->textFromBool(qtractorTrack::isMute()), &eState);
+		qtractorDocument::textFromBool(qtractorTrack::isMute()), &eState);
 	pDocument->saveTextElement("solo",
-		pDocument->textFromBool(qtractorTrack::isSolo()), &eState);
+		qtractorDocument::textFromBool(qtractorTrack::isSolo()), &eState);
 	pDocument->saveTextElement("record",
-		pDocument->textFromBool(qtractorTrack::isRecord()), &eState);
+		qtractorDocument::textFromBool(qtractorTrack::isRecord()), &eState);
 	pDocument->saveTextElement("monitor",
-		pDocument->textFromBool(qtractorTrack::isMonitor()), &eState);
+		qtractorDocument::textFromBool(qtractorTrack::isMonitor()), &eState);
 	pDocument->saveTextElement("gain",
 		QString::number(qtractorTrack::gain()), &eState);
 	pDocument->saveTextElement("panning",
@@ -1197,6 +1204,37 @@ bool qtractorTrack::saveElement ( qtractorSessionDocument *pDocument,
 	pElement->appendChild(ePlugins);
 
 	return true;
+}
+
+
+// Track type textual helper methods.
+qtractorTrack::TrackType qtractorTrack::trackTypeFromText (
+	const QString& sText )
+{
+	TrackType trackType = None;
+	if (sText == "audio")
+		trackType = Audio;
+	else if (sText == "midi")
+		trackType = Midi;
+	return trackType;
+}
+
+QString qtractorTrack::textFromTrackType ( TrackType trackType )
+{
+	QString sText;
+	switch (trackType) {
+	case Audio:
+		sText = "audio";
+		break;
+	case Midi:
+		sText = "midi";
+		break;
+	case None:
+	default:
+		sText = "none";
+		break;
+	}
+	return sText;
 }
 
 

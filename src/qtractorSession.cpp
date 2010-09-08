@@ -39,11 +39,15 @@
 #include "qtractorInstrument.h"
 #include "qtractorCommand.h"
 
+#include "qtractorFiles.h"
+
 #include <QApplication>
 #include <QDateTime>
 #include <QFileInfo>
 #include <QRegExp>
 #include <QDir>
+
+#include <QDomDocument>
 
 #include <stdlib.h>
 

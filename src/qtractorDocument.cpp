@@ -1,7 +1,7 @@
 // qtractorDocument.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -20,6 +20,8 @@
 *****************************************************************************/
 
 #include "qtractorDocument.h"
+
+#include <QDomDocument>
 
 #include <QFileInfo>
 #include <QTextStream>
@@ -63,21 +65,6 @@ void qtractorDocument::setTemplate ( bool bTemplate )
 bool qtractorDocument::isTemplate (void) const
 {
 	return m_bTemplate;
-}
-
-
-//-------------------------------------------------------------------------
-// qtractorDocument -- helpers.
-//
-
-bool qtractorDocument::boolFromText ( const QString& s ) const
-{
-	return (s == "true" || s == "on" || s == "yes" || s == "1");
-}
-
-QString qtractorDocument::textFromBool ( bool b ) const
-{
-	return QString::number(b ? 1 : 0);
 }
 
 
@@ -148,6 +135,21 @@ bool qtractorDocument::save ( const QString& sFilename, bool bTemplate )
 	file.close();
 
 	return true;
+}
+
+
+//-------------------------------------------------------------------------
+// qtractorDocument -- helpers.
+//
+
+bool qtractorDocument::boolFromText ( const QString& sText )
+{
+	return (sText == "true" || sText == "on" || sText == "yes" || sText == "1");
+}
+
+QString qtractorDocument::textFromBool ( bool bBool )
+{
+	return QString::number(bBool ? 1 : 0);
 }
 
 

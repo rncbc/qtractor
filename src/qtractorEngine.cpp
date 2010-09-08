@@ -26,6 +26,8 @@
 #include "qtractorSessionCursor.h"
 #include "qtractorSessionDocument.h"
 
+#include <QDomDocument>
+
 
 //----------------------------------------------------------------------
 // class qtractorEngine -- Abstract device engine instance (singleton).
@@ -467,6 +469,41 @@ bool qtractorBus::saveConnects ( ConnectList& connects,
 	}
 
 	return true;
+}
+
+
+// Bus mode textual helper methods.
+qtractorBus::BusMode qtractorBus::busModeFromText ( const QString& sText )
+{
+	BusMode busMode = None;
+	if (sText == "input")
+		busMode = Input;
+	else if (sText == "output")
+		busMode = Output;
+	else if (sText == "duplex")
+		busMode = Duplex;
+	return busMode;
+}
+
+QString qtractorBus::textFromBusMode ( BusMode busMode )
+{
+	QString sText;
+	switch (busMode) {
+	case Input:
+		sText = "input";
+		break;
+	case Output:
+		sText = "output";
+		break;
+	case Duplex:
+		sText = "duplex";
+		break;
+	case None:
+	default:
+		sText = "none";
+		break;
+	}
+	return sText;
 }
 
 

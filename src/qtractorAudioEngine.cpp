@@ -41,6 +41,8 @@
 
 #include <QApplication>
 
+#include <QDomDocument>
+
 
 #if defined(__SSE__)
 
@@ -952,14 +954,14 @@ bool qtractorAudioEngine::loadElement ( qtractorSessionDocument *pDocument,
 					continue;
 				if (eProp.tagName() == "transport-mode") {
 					qtractorAudioEngine::setTransportMode(
-						pDocument->loadBusMode(eProp.text()));
+						qtractorBus::busModeFromText(eProp.text()));
 				}
 			}
 		}
 		else if (eChild.tagName() == "audio-bus") {
 			QString sBusName = eChild.attribute("name");
 			qtractorBus::BusMode busMode
-				= pDocument->loadBusMode(eChild.attribute("mode"));
+				= qtractorBus::busModeFromText(eChild.attribute("mode"));
 			qtractorAudioBus *pAudioBus
 				= new qtractorAudioBus(this, sBusName, busMode);
 			if (!pAudioBus->loadElement(pDocument, &eChild))
@@ -991,7 +993,8 @@ bool qtractorAudioEngine::saveElement ( qtractorSessionDocument *pDocument,
 	QDomElement eControl
 		= pDocument->document()->createElement("audio-control");
 	pDocument->saveTextElement("transport-mode",
-		pDocument->saveBusMode(qtractorAudioEngine::transportMode()), &eControl);
+		qtractorBus::textFromBusMode(
+			qtractorAudioEngine::transportMode()), &eControl);
 	pElement->appendChild(eControl);
 
 	// Save audio buses...
@@ -2371,12 +2374,12 @@ bool qtractorAudioBus::loadElement ( qtractorSessionDocument *pDocument,
 			continue;
 		if (eProp.tagName() == "pass-through") {
 			qtractorAudioBus::setPassthru(
-				pDocument->boolFromText(eProp.text()));
+				qtractorDocument::boolFromText(eProp.text()));
 		} else if (eProp.tagName() == "channels") {
 			qtractorAudioBus::setChannels(eProp.text().toUShort());
 		} else if (eProp.tagName() == "auto-connect") {
 			qtractorAudioBus::setAutoConnect(
-				pDocument->boolFromText(eProp.text()));
+				qtractorDocument::boolFromText(eProp.text()));
 		} else if (eProp.tagName() == "input-gain") {
 			if (qtractorAudioBus::monitor_in())
 				qtractorAudioBus::monitor_in()->setGain(
@@ -2420,14 +2423,16 @@ bool qtractorAudioBus::saveElement ( qtractorSessionDocument *pDocument,
 	pElement->setAttribute("name",
 		qtractorAudioBus::busName());
 	pElement->setAttribute("mode",
-		pDocument->saveBusMode(qtractorAudioBus::busMode()));
+		qtractorBus::textFromBusMode(qtractorAudioBus::busMode()));
 
 	pDocument->saveTextElement("pass-through",
-		pDocument->textFromBool(qtractorAudioBus::isPassthru()), pElement);
+		qtractorDocument::textFromBool(
+			qtractorAudioBus::isPassthru()), pElement);
 	pDocument->saveTextElement("channels",
 		QString::number(qtractorAudioBus::channels()), pElement);
 	pDocument->saveTextElement("auto-connect",
-		pDocument->textFromBool(qtractorAudioBus::isAutoConnect()), pElement);
+		qtractorDocument::textFromBool(
+			qtractorAudioBus::isAutoConnect()), pElement);
 
 	if (qtractorAudioBus::busMode() & qtractorBus::Input) {
 		if (qtractorAudioBus::monitor_in()) {

@@ -42,6 +42,8 @@
 #include <QApplication>
 #include <QFileInfo>
 
+#include <QDomDocument>
+
 #include <QThread>
 #include <QMutex>
 #include <QWaitCondition>
@@ -2172,7 +2174,7 @@ bool qtractorMidiEngine::loadElement ( qtractorSessionDocument *pDocument,
 					continue;
 				if (eProp.tagName() == "mmc-mode") {
 					qtractorMidiEngine::setMmcMode(
-						pDocument->loadBusMode(eProp.text()));
+						qtractorBus::busModeFromText(eProp.text()));
 				}
 				else if (eProp.tagName() == "mmc-device") {
 					qtractorMidiEngine::setMmcDevice(
@@ -2180,18 +2182,18 @@ bool qtractorMidiEngine::loadElement ( qtractorSessionDocument *pDocument,
 				}
 				else if (eProp.tagName() == "spp-mode") {
 					qtractorMidiEngine::setSppMode(
-						pDocument->loadBusMode(eProp.text()));
+						qtractorBus::busModeFromText(eProp.text()));
 				}
 				else if (eProp.tagName() == "clock-mode") {
 					qtractorMidiEngine::setClockMode(
-						pDocument->loadBusMode(eProp.text()));
+						qtractorBus::busModeFromText(eProp.text()));
 				}
 			}
 		}
 		else if (eChild.tagName() == "midi-bus") {
 			QString sBusName = eChild.attribute("name");
 			qtractorMidiBus::BusMode busMode
-				= pDocument->loadBusMode(eChild.attribute("mode"));
+				= qtractorBus::busModeFromText(eChild.attribute("mode"));
 			qtractorMidiBus *pMidiBus
 				= new qtractorMidiBus(this, sBusName, busMode);
 			if (!pMidiBus->loadElement(pDocument, &eChild))
@@ -2229,13 +2231,16 @@ bool qtractorMidiEngine::saveElement ( qtractorSessionDocument *pDocument,
 	QDomElement eControl
 		= pDocument->document()->createElement("midi-control");
 	pDocument->saveTextElement("mmc-mode",
-		pDocument->saveBusMode(qtractorMidiEngine::mmcMode()), &eControl);
+		qtractorBus::textFromBusMode(
+			qtractorMidiEngine::mmcMode()), &eControl);
 	pDocument->saveTextElement("mmc-device",
 		QString::number(int(qtractorMidiEngine::mmcDevice())), &eControl);
 	pDocument->saveTextElement("spp-mode",
-		pDocument->saveBusMode(qtractorMidiEngine::sppMode()), &eControl);
+		qtractorBus::textFromBusMode(
+			qtractorMidiEngine::sppMode()), &eControl);
 	pDocument->saveTextElement("clock-mode",
-		pDocument->saveBusMode(qtractorMidiEngine::clockMode()), &eControl);
+		qtractorBus::textFromBusMode(
+			qtractorMidiEngine::clockMode()), &eControl);
 	pElement->appendChild(eControl);
 
 	// Save MIDI buses...
@@ -3420,7 +3425,7 @@ bool qtractorMidiBus::loadElement ( qtractorSessionDocument *pDocument,
 		if (eProp.tagName() == "pass-through" ||
 			eProp.tagName() == "midi-thru") { // Legacy compat.
 			qtractorMidiBus::setPassthru(
-				pDocument->boolFromText(eProp.text()));
+				qtractorDocument::boolFromText(eProp.text()));
 		} else if (eProp.tagName() == "midi-sysex-list") {
 			qtractorMidiBus::loadSysexList(pDocument, &eProp);
 		} else if (eProp.tagName() == "midi-map") {
@@ -3470,10 +3475,11 @@ bool qtractorMidiBus::saveElement ( qtractorSessionDocument *pDocument,
 	pElement->setAttribute("name",
 		qtractorMidiBus::busName());
 	pElement->setAttribute("mode",
-		pDocument->saveBusMode(qtractorMidiBus::busMode()));
+		qtractorBus::textFromBusMode(qtractorMidiBus::busMode()));
 
 	pDocument->saveTextElement("pass-through",
-		pDocument->textFromBool(qtractorMidiBus::isPassthru()), pElement);
+		qtractorDocument::textFromBool(
+			qtractorMidiBus::isPassthru()), pElement);
 
 	if (qtractorMidiBus::busMode() & qtractorBus::Input) {
 		pDocument->saveTextElement("input-gain",

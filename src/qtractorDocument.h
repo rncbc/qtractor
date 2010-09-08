@@ -1,7 +1,7 @@
 // qtractorDocument.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -22,7 +22,11 @@
 #ifndef __qtractorDocument_h
 #define __qtractorDocument_h
 
-#include <QDomDocument>
+#include <QString>
+
+// Forward declartions.
+class QDomDocument;
+class QDomElement;
 
 
 //-------------------------------------------------------------------------
@@ -46,10 +50,6 @@ public:
 	void setTemplate(bool bTemplate);
 	bool isTemplate() const;
 
-	// Helper methods.
-	bool    boolFromText (const QString& s) const;
-	QString textFromBool (bool b) const;
-
 	void saveTextElement (const QString& sTagName, const QString& sText,
 		QDomElement *pElement);
 
@@ -60,6 +60,10 @@ public:
 	// External storage element pure virtual methods.
 	virtual bool loadElement (QDomElement *pElement) = 0;
 	virtual bool saveElement (QDomElement *pElement) = 0;
+
+	// Helper methods.
+	static bool    boolFromText (const QString& sText);
+	static QString textFromBool (bool bBool);
 
 private:
 

@@ -1,7 +1,7 @@
 // qtractorSessionDocument.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -23,8 +23,6 @@
 #include "qtractorSessionDocument.h"
 
 #include "qtractorSession.h"
-
-#include "qtractorAudioClip.h"
 
 
 //-------------------------------------------------------------------------
@@ -48,118 +46,16 @@ qtractorSessionDocument::~qtractorSessionDocument (void)
 
 
 // Session accessor.
-qtractorSession *qtractorSessionDocument::session (void)
+qtractorSession *qtractorSessionDocument::session (void) const
 {
 	return m_pSession;
 }
 
 
 // File list accessor.
-qtractorFiles *qtractorSessionDocument::files (void)
+qtractorFiles *qtractorSessionDocument::files (void) const
 {
 	return m_pFiles;
-}
-
-
-// Track type helpers.
-qtractorTrack::TrackType qtractorSessionDocument::loadTrackType (
-	const QString& sTrackType ) const
-{
-	qtractorTrack::TrackType trackType = qtractorTrack::None;
-	if (sTrackType == "audio")
-		trackType = qtractorTrack::Audio;
-	else if (sTrackType == "midi")
-		trackType = qtractorTrack::Midi;
-	return trackType;
-}
-
-
-QString qtractorSessionDocument::saveTrackType (
-	qtractorTrack::TrackType trackType ) const
-{
-	QString sTrackType;
-	switch (trackType) {
-	case qtractorTrack::Audio:
-		sTrackType = "audio";
-		break;
-	case qtractorTrack::Midi:
-		sTrackType = "midi";
-		break;
-	case qtractorTrack::None:
-	default:
-		sTrackType = "none";
-		break;
-	}
-	return sTrackType;
-}
-
-
-// Device bus mode helpers.
-qtractorBus::BusMode qtractorSessionDocument::loadBusMode (
-	const QString& sBusMode ) const
-{
-	qtractorBus::BusMode busMode = qtractorBus::None;
-	if (sBusMode == "input")
-		busMode = qtractorBus::Input;
-	else if (sBusMode == "output")
-		busMode = qtractorBus::Output;
-	else if (sBusMode == "duplex")
-		busMode = qtractorBus::Duplex;
-	return busMode;
-}
-
-
-QString qtractorSessionDocument::saveBusMode (
-	qtractorBus::BusMode busMode ) const
-{
-	QString sBusMode;
-	switch (busMode) {
-	case qtractorBus::Input:
-		sBusMode = "input";
-		break;
-	case qtractorBus::Output:
-		sBusMode = "output";
-		break;
-	case qtractorBus::Duplex:
-		sBusMode = "duplex";
-		break;
-	case qtractorBus::None:
-	default:
-		sBusMode = "none";
-		break;
-	}
-	return sBusMode;
-}
-
-
-// Clip fade type helper methods.
-qtractorClip::FadeType qtractorSessionDocument::loadFadeType (
-	const QString& sFadeType ) const
-{
-	qtractorClip::FadeType fadeType = qtractorClip::Quadratic;
-	if (sFadeType == "cubic")
-		fadeType = qtractorClip::Cubic;
-	else if (sFadeType == "linear")
-		fadeType = qtractorClip::Linear;
-	return fadeType;
-}
-
-QString qtractorSessionDocument::saveFadeType (
-	qtractorClip::FadeType fadeType ) const
-{
-	QString sFadeType;
-	switch (fadeType) {
-	case qtractorClip::Cubic:
-		sFadeType = "cubic";
-		break;
-	case qtractorClip::Linear:
-		sFadeType = "linear";
-		break;
-	default:
-		sFadeType = "quadratic";
-		break;
-	}
-	return sFadeType;
 }
 
 

@@ -251,6 +251,10 @@ public:
 	static bool saveConnects(ConnectList& connects,
 		qtractorSessionDocument *pDocument, QDomElement *pElement);
 
+	// Bus mode textual helper methods.
+	static BusMode busModeFromText (const QString& sText);
+	static QString textFromBusMode (BusMode busMode);
+
 protected:
 
 	// Bus mode change event.

@@ -28,6 +28,8 @@
 #include "qtractorOptions.h"
 #include "qtractorSession.h"
 
+#include <QDomDocument>
+
 #include <QMessageBox>
 #include <QApplication>
 #include <QHeaderView>
@@ -1261,7 +1263,7 @@ bool qtractorFileListView::loadListElement ( qtractorDocument *pDocument,
 			if (!loadListElement(pDocument, &eChild, pGroupItem))
 				return false;
 			pGroupItem->setOpen(
-				pDocument->boolFromText(eChild.attribute("open")));
+				qtractorDocument::boolFromText(eChild.attribute("open")));
 		}
 		else
 		if (eChild.tagName() == "file") {
@@ -1302,7 +1304,8 @@ bool qtractorFileListView::saveListElement ( qtractorDocument *pDocument,
 			= static_cast<qtractorFileGroupItem *> (pItem);
 		QDomElement eGroup = pDocument->document()->createElement("group");
 		eGroup.setAttribute("name",	pGroupItem->text(0));
-		eGroup.setAttribute("open",	pDocument->textFromBool(pGroupItem->isOpen()));
+		eGroup.setAttribute("open",
+			qtractorDocument::textFromBool(pGroupItem->isOpen()));
 		int iChildCount = pItem->childCount();
 		for (int i = 0; i < iChildCount; ++i)
 			saveListElement(pDocument, &eGroup, pGroupItem->child(i));

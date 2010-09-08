@@ -97,6 +97,8 @@
 #include <QRegExp>
 #include <QUrl>
 
+#include <QDomDocument>
+
 #include <QSocketNotifier>
 #include <QActionGroup>
 #include <QStatusBar>

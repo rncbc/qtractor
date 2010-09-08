@@ -154,6 +154,10 @@ public:
 	bool saveElement(qtractorSessionDocument *pDocument,
 		QDomElement *pElement);
 
+	// Clip fade type textual helper methods.
+	static FadeType fadeTypeFromText(const QString& sText);
+	static QString textFromFadeType(FadeType fadeType);
+
 protected:
 
 	// Update fade-in/out coefficients.

@@ -33,6 +33,8 @@
 #include <QPolygon>
 #include <QDir>
 
+#include <QDomDocument>
+
 #ifdef CONFIG_GRADIENT
 #include <QLinearGradient>
 #endif
@@ -640,12 +642,12 @@ bool qtractorClip::loadElement ( qtractorSessionDocument *pDocument,
 					qtractorClip::setClipGain(eProp.text().toFloat());
 				else if (eProp.tagName() == "fade-in") {
 					qtractorClip::setFadeInType(
-						pDocument->loadFadeType(eProp.attribute("type")));
+						qtractorClip::fadeTypeFromText(eProp.attribute("type")));
 					qtractorClip::setFadeInLength(eProp.text().toULong());
 				}
 				else if (eProp.tagName() == "fade-out") {
 					qtractorClip::setFadeOutType(
-						pDocument->loadFadeType(eProp.attribute("type")));
+						qtractorClip::fadeTypeFromText(eProp.attribute("type")));
 					qtractorClip::setFadeOutLength(eProp.text().toULong());
 				}
 			}
@@ -682,14 +684,14 @@ bool qtractorClip::saveElement ( qtractorSessionDocument *pDocument,
 
     QDomElement eFadeIn = pDocument->document()->createElement("fade-in");
 	eFadeIn.setAttribute("type",
-		pDocument->saveFadeType(qtractorClip::fadeInType()));
+		qtractorClip::textFromFadeType(qtractorClip::fadeInType()));
     eFadeIn.appendChild(pDocument->document()->createTextNode(
 		QString::number(qtractorClip::fadeInLength())));
 	eProps.appendChild(eFadeIn);
 
     QDomElement eFadeOut = pDocument->document()->createElement("fade-out");
 	eFadeOut.setAttribute("type",
-		pDocument->saveFadeType(qtractorClip::fadeOutType()));
+		qtractorClip::textFromFadeType(qtractorClip::fadeOutType()));
     eFadeOut.appendChild(pDocument->document()->createTextNode(
 		QString::number(qtractorClip::fadeOutLength())));
 	eProps.appendChild(eFadeOut);
@@ -698,6 +700,35 @@ bool qtractorClip::saveElement ( qtractorSessionDocument *pDocument,
 
 	// Save clip derivative properties...
 	return saveClipElement(pDocument, pElement);
+}
+
+
+// Clip fade type textual helper methods.
+qtractorClip::FadeType qtractorClip::fadeTypeFromText ( const QString& sText )
+{
+	FadeType fadeType = Quadratic;
+	if (sText == "cubic")
+		fadeType = Cubic;
+	else if (sText == "linear")
+		fadeType = Linear;
+	return fadeType;
+}
+
+QString qtractorClip::textFromFadeType ( FadeType fadeType )
+{
+	QString sText;
+	switch (fadeType) {
+	case Cubic:
+		sText = "cubic";
+		break;
+	case Linear:
+		sText = "linear";
+		break;
+	default:
+		sText = "quadratic";
+		break;
+	}
+	return sText;
 }
 
 

@@ -33,6 +33,8 @@
 #include <QPainter>
 #include <QPolygon>
 
+#include <QDomDocument>
+
 #if QT_VERSION < 0x040300
 #define lighter(x)	light(x)
 #define darker(x)	dark(x)

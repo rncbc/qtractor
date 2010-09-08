@@ -48,10 +48,11 @@
 
 #include "qtractorInsertPlugin.h"
 
-#include <QDomDocument>
 #include <QTextStream>
 #include <QFileInfo>
 #include <QDir>
+
+#include <QDomDocument>
 
 #if QT_VERSION < 0x040500
 namespace Qt {
@@ -1430,7 +1431,7 @@ bool qtractorPluginList::loadElement ( qtractorSessionDocument *pDocument,
 					vlist = eParam.text().split(',');
 				else
 				if (eParam.tagName() == "activated")
-					bActivated = pDocument->boolFromText(eParam.text());
+					bActivated = qtractorDocument::boolFromText(eParam.text());
 				else
 				if (eParam.tagName() == "configs" || eParam.tagName() == "configure") {
 					// Load plugin configuration stuff (CLOB)...
@@ -1467,7 +1468,7 @@ bool qtractorPluginList::loadElement ( qtractorSessionDocument *pDocument,
 		else
 		// Load audio output bus flag...
 		if (ePlugin.tagName() == "audio-output-bus") {
-			setAudioOutputBus(pDocument->boolFromText(ePlugin.text()));
+			setAudioOutputBus(qtractorDocument::boolFromText(ePlugin.text()));
 		}
 		else
 		// Load audio output connections...
@@ -1518,7 +1519,7 @@ bool qtractorPluginList::saveElement ( qtractorSessionDocument *pDocument,
 	//	pDocument->saveTextElement("values",
 	//		pPlugin->valueList().join(","), &ePlugin);
 		pDocument->saveTextElement("activated",
-			pDocument->textFromBool(pPlugin->isActivated()), &ePlugin);
+			qtractorDocument::textFromBool(pPlugin->isActivated()), &ePlugin);
 		// Plugin configuration stuff (CLOB)...
 		QDomElement eConfigs = pDocument->document()->createElement("configs");
 		pPlugin->saveConfigs(pDocument->document(), &eConfigs);
@@ -1537,7 +1538,8 @@ bool qtractorPluginList::saveElement ( qtractorSessionDocument *pDocument,
 	// Save audio output-bus connects...
 	if (m_pMidiManager) {
 		pDocument->saveTextElement("audio-output-bus",
-			pDocument->textFromBool(m_pMidiManager->isAudioOutputBus()), pElement);
+			qtractorDocument::textFromBool(
+				m_pMidiManager->isAudioOutputBus()), pElement);
 		if (m_pMidiManager->isAudioOutputBus()) {
 			qtractorAudioBus *pAudioBus = m_pMidiManager->audioOutputBus();
 			if (pAudioBus) {

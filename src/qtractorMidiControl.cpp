@@ -30,6 +30,8 @@
 
 #include <QFile>
 
+#include <QDomDocument>
+
 #include <math.h>
 
 // Possible cube roor optimization.
@@ -468,7 +470,7 @@ bool qtractorMidiControl::loadElement (
 				bOldTrackParam = bool(iParam & TrackParam);
 			} else {
 				iParam = eItem.attribute("param").toUShort();
-				if (pDocument->boolFromText(eItem.attribute("track")))
+				if (qtractorDocument::boolFromText(eItem.attribute("track")))
 					iParam |= TrackParam;
 			}
 			Command command = Command(0);
@@ -488,7 +490,7 @@ bool qtractorMidiControl::loadElement (
 					iTrack = eVal.text().toInt();
 				else
 				if (eVal.tagName() == "feedback")
-					bFeedback = pDocument->boolFromText(eVal.text());
+					bFeedback = qtractorDocument::boolFromText(eVal.text());
 				else
 				if (eVal.tagName() == "param" && bOldMap) {
 					iTrack = eVal.text().toInt();
@@ -524,13 +526,13 @@ bool qtractorMidiControl::saveElement (
 		eItem.setAttribute("param",
 			QString::number(key.param() & TrackParamMask));
 		eItem.setAttribute("track",
-			pDocument->textFromBool(key.isParamTrack()));
+			qtractorDocument::textFromBool(key.isParamTrack()));
 		pDocument->saveTextElement("command",
 			textFromCommand(val.command()), &eItem);
 		pDocument->saveTextElement("track",
 			QString::number(val.track()), &eItem);
 		pDocument->saveTextElement("feedback",
-			pDocument->textFromBool(val.isFeedback()), &eItem);
+			qtractorDocument::textFromBool(val.isFeedback()), &eItem);
 		pElement->appendChild(eItem);
 	}
 
