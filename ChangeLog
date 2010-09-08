@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- Clip fade-in/out non-linear slopes are now shown as
+  actual quadratic or cubic curves (wysiwyg).
+
 - Escape key now closes generic plugin widgets as ever
   found usual elsewhere.
 

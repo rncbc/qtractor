@@ -511,13 +511,41 @@ void qtractorClip::drawClip ( QPainter *pPainter, const QRect& clipRect,
 	int y = rect.top();
 	int x = rect.left();
 	int w = pSession->pixelFromFrame(m_iFadeInLength);
+	int h = rect.bottom();
 	QRect rectFadeIn(x + w, y, 8, 8);
 	if (w > 0 && x + w > clipRect.left()) {
+	#if 0
 		QPolygon polyg(3);
 		polyg.setPoint(0, x, y);
-		polyg.setPoint(1, x, rect.bottom());
+		polyg.setPoint(1, x, h);
 		polyg.setPoint(2, x + w, y);
 		pPainter->drawPolygon(polyg);
+	#else
+		QPolygon polyg(5);
+		polyg.setPoint(0, x, y);
+		polyg.setPoint(1, x, h);
+		switch (m_fadeIn.fadeType) {
+		case Linear:
+			polyg.setPoint(2, x, h);
+			polyg.setPoint(3, x, h);
+			break;
+		case Quadratic:	// InQuad
+			polyg.setPoint(2, x + (w >> 1), h);
+			polyg.setPoint(3, x + w, y);
+			break;
+		case Cubic: // InCubic
+			polyg.setPoint(2, x + w - (w >> 2), h);
+			polyg.setPoint(3, x + w, y);
+			break;
+		}
+		polyg.setPoint(4, x + w, y);
+		QPainterPath path;
+		path.moveTo(polyg.at(0));
+		path.lineTo(polyg.at(1));
+		path.cubicTo(polyg.at(2), polyg.at(3), polyg.at(4));
+		path.lineTo(polyg.at(0));
+		pPainter->drawPath(path);
+	#endif
 	}
 
 	// Fade-out slope...
@@ -525,11 +553,38 @@ void qtractorClip::drawClip ( QPainter *pPainter, const QRect& clipRect,
 	w = pSession->pixelFromFrame(m_iFadeOutLength);
 	QRect rectFadeOut(x - w - 8, y, 8, 8);
 	if (w > 0 && x - w < clipRect.right()) {
+	#if 0
 		QPolygon polyg(3);
 		polyg.setPoint(0, x, y);
-		polyg.setPoint(1, x, rect.bottom());
+		polyg.setPoint(1, x, h);
 		polyg.setPoint(2, x - w, y);
 		pPainter->drawPolygon(polyg);
+	#else
+		QPolygon polyg(5);
+		polyg.setPoint(0, x, y);
+		polyg.setPoint(1, x, h);
+		switch (m_fadeOut.fadeType) {
+		case Linear:
+			polyg.setPoint(2, x, h);
+			polyg.setPoint(3, x, h);
+			break;
+		case Quadratic:	// OutQuad
+			polyg.setPoint(2, x - (w >> 1), h);
+			polyg.setPoint(3, x - w, y);
+			break;
+		case Cubic: // OutCubic
+			polyg.setPoint(2, x - w + (w >> 2), h);
+			polyg.setPoint(3, x - w, y);
+			break;
+		}		
+		polyg.setPoint(4, x - w, y);
+		QPainterPath path;
+		path.moveTo(polyg.at(0));
+		path.lineTo(polyg.at(1));
+		path.cubicTo(polyg.at(2), polyg.at(3), polyg.at(4));
+		path.lineTo(polyg.at(0));
+		pPainter->drawPath(path);
+	#endif
 	}
 
 	// Fade in/out handles...
