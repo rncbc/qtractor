@@ -22,6 +22,7 @@ headers = \
 	src/qtractorAudioSndFile.h \
 	src/qtractorAudioVorbisFile.h \
 	src/qtractorClip.h \
+	src/qtractorClipFadeFunctor.h \
 	src/qtractorClipCommand.h \
 	src/qtractorClipSelect.h \
 	src/qtractorCommand.h \
@@ -133,6 +134,7 @@ sources = \
 	src/qtractorAudioVorbisFile.cpp \
 	src/qtractorClip.cpp \
 	src/qtractorClipCommand.cpp \
+	src/qtractorClipFadeFunctor.cpp \
 	src/qtractorClipSelect.cpp \
 	src/qtractorCommand.cpp \
 	src/qtractorConnect.cpp \

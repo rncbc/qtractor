@@ -5,6 +5,10 @@ ChangeLog
 
 SVN TRUNK
 
+- New clip fade-in/out slopes (curves) are introduced,
+  partially adapted and refactored from those easing
+  equations of Robert Penner's fame (EXPERIMENTAL).
+
 - Clip fade-in/out non-linear slopes are now shown as
   actual quadratic or cubic curves (wysiwyg).
 

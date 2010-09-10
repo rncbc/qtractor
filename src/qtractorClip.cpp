@@ -53,6 +53,9 @@ qtractorClip::qtractorClip ( qtractorTrack *pTrack )
 {
 	m_pTrack = pTrack;
 
+	m_pFadeInFunctor  = NULL;
+	m_pFadeOutFunctor = NULL;
+
 	clear();
 }
 
@@ -60,6 +63,10 @@ qtractorClip::qtractorClip ( qtractorTrack *pTrack )
 // Default constructor.
 qtractorClip::~qtractorClip (void)
 {
+	if (m_pFadeInFunctor)
+		delete m_pFadeInFunctor;
+	if (m_pFadeOutFunctor)
+		delete m_pFadeOutFunctor;
 }
 
 
@@ -93,13 +100,9 @@ void qtractorClip::clear (void)
 
 	m_iFadeInTime     = 0;
 	m_iFadeOutTime    = 0;
-#if 0
-	// This seems a need trade-off between speed and effect.
-	if (m_pTrack && m_pTrack->trackType() == qtractorTrack::Audio) {
-		m_fadeIn.fadeType  = Quadratic;
-		m_fadeOut.fadeType = Quadratic;
-	}
-#endif
+
+	setFadeInType(InQuad);
+	setFadeOutType(OutQuad);
 
 	m_bDirty = false;
 }
@@ -295,12 +298,16 @@ float qtractorClip::clipGain (void) const
 // Clip fade-in accessors
 void qtractorClip::setFadeInType ( qtractorClip::FadeType fadeType )
 {
-	m_fadeIn.fadeType = fadeType;
+	if (m_pFadeInFunctor)
+		delete m_pFadeInFunctor;
+
+	m_fadeInType = fadeType;
+	m_pFadeInFunctor = createFadeFunctor(FadeIn, fadeType);
 }
 
 qtractorClip::FadeType qtractorClip::fadeInType (void) const
 {
-	return m_fadeIn.fadeType;
+	return m_fadeInType;
 }
 
 
@@ -313,8 +320,6 @@ void qtractorClip::setFadeInLength ( unsigned long iFadeInLength )
 
 	if (m_pTrack && m_pTrack->session())
 		m_iFadeInTime = m_pTrack->session()->tickFromFrame(iFadeInLength);
-
-	updateFadeInCoeffs();
 }
 
 unsigned long qtractorClip::fadeInLength (void) const
@@ -322,25 +327,20 @@ unsigned long qtractorClip::fadeInLength (void) const
 	return m_iFadeInLength;
 }
 
-void qtractorClip::updateFadeInCoeffs (void)
-{
-	if (m_iFadeInLength > 0) {
-		float a = 1.0f / float(m_iFadeInLength);
-		float b = 0.0f;
-		m_fadeIn.setFadeCoeffs(a, b);
-	}
-}
-
 
 // Clip fade-out accessors
 void qtractorClip::setFadeOutType ( qtractorClip::FadeType fadeType )
 {
-	m_fadeOut.fadeType = fadeType;
+	if (m_pFadeOutFunctor)
+		delete m_pFadeOutFunctor;
+
+	m_fadeOutType = fadeType;
+	m_pFadeOutFunctor = createFadeFunctor(FadeOut, fadeType);
 }
 
 qtractorClip::FadeType qtractorClip::fadeOutType (void) const
 {
-	return m_fadeOut.fadeType;
+	return m_fadeOutType;
 }
 
 
@@ -353,8 +353,6 @@ void qtractorClip::setFadeOutLength ( unsigned long iFadeOutLength )
 
 	if (m_pTrack && m_pTrack->session())
 		m_iFadeOutTime = m_pTrack->session()->tickFromFrame(iFadeOutLength);
-
-	updateFadeOutCoeffs();
 }
 
 unsigned long qtractorClip::fadeOutLength (void) const
@@ -362,39 +360,6 @@ unsigned long qtractorClip::fadeOutLength (void) const
 	return m_iFadeOutLength;
 }
 
-void qtractorClip::updateFadeOutCoeffs (void)
-{
-	if (m_iFadeOutLength > 0) {
-		float a = -1.0f / float(m_iFadeOutLength);
-		float b = float(m_iClipLength) / float(m_iFadeOutLength);
-		m_fadeOut.setFadeCoeffs(a, b);
-	}
-}
-
-
-// Fade in/ou interpolation coefficients settler.
-void qtractorClip::FadeMode::setFadeCoeffs ( float a, float b )
-{
-	switch (fadeType) {
-	case Linear:
-		c1 = a;
-		c0 = b;
-		break;
-	case Quadratic:
-		c2 = a * a;
-		c1 = 2.0f * a * b;
-		c0 = b * b;
-		break;
-	case Cubic:
-		float a2 = a * a;
-		float b2 = b * b;
-		c3 = a * a2;
-		c2 = 3.0f * a2 * b;
-		c1 = 3.0f * a * b2;
-		c0 = b * b2;
-		break;
-	}
-}
 
 // Compute clip gain, given current fade-in/out slopes.
 float qtractorClip::gain ( unsigned long iOffset ) const
@@ -405,37 +370,14 @@ float qtractorClip::gain ( unsigned long iOffset ) const
 	float fGain = m_fGain;
 
 	if (m_iFadeInLength > 0 && iOffset < m_iFadeInLength) {
-		float f  = float(iOffset);
-		float f2 = f * f;
-		switch (m_fadeIn.fadeType) {
-		case Linear:
-			fGain *= m_fadeIn.c1 * f + m_fadeIn.c0;
-			break;
-		case Quadratic:
-			fGain *= m_fadeIn.c2 * f2 + m_fadeIn.c1 * f + m_fadeIn.c0;
-			break;
-		case Cubic:
-			fGain *= m_fadeIn.c3 * f2 * f + m_fadeIn.c2 * f2
-				+ m_fadeIn.c1 * f + m_fadeIn.c0;
-			break;
-		}
+		fGain *= (*m_pFadeInFunctor)(
+			float(iOffset) / float(m_iFadeInLength));
 	}
 
 	if (m_iFadeOutLength > 0 && iOffset > m_iClipLength - m_iFadeOutLength) {
-		float f  = float(iOffset);
-		float f2 = f * f;
-		switch (m_fadeOut.fadeType) {
-		case Linear:
-			fGain *= m_fadeOut.c1 * f + m_fadeOut.c0;
-			break;
-		case Quadratic:
-			fGain *= m_fadeOut.c2 * f2 + m_fadeOut.c1 * f + m_fadeOut.c0;
-			break;
-		case Cubic:
-			fGain *= m_fadeOut.c3 * f2 * f + m_fadeOut.c2 * f2
-				+ m_fadeOut.c1 * f + m_fadeOut.c0;
-			break;
-		}
+		fGain *= (*m_pFadeOutFunctor)(
+			float(iOffset - (m_iClipLength - m_iFadeOutLength))
+				/ float(m_iFadeOutLength));
 	}
 
 	return fGain;
@@ -456,11 +398,8 @@ void qtractorClip::updateClipTime (void)
 	m_iClipOffset = pSession->frameFromTick(m_iClipOffsetTime);
 	m_iClipLength = pSession->frameFromTick(m_iClipLengthTime);
 
-	m_iFadeInLength = pSession->frameFromTick(m_iFadeInTime);
-	updateFadeInCoeffs();
-
+	m_iFadeInLength  = pSession->frameFromTick(m_iFadeInTime);
 	m_iFadeOutLength = pSession->frameFromTick(m_iFadeOutTime);
-	updateFadeOutCoeffs();
 }
 
 
@@ -521,21 +460,39 @@ void qtractorClip::drawClip ( QPainter *pPainter, const QRect& clipRect,
 		polyg.setPoint(2, x + w, y);
 		pPainter->drawPolygon(polyg);
 	#else
+		const int w2 = (w >> 1);
+		const int w4 = (w >> 2);
 		QPolygon polyg(5);
 		polyg.setPoint(0, x, y);
 		polyg.setPoint(1, x, h);
-		switch (m_fadeIn.fadeType) {
+		switch (m_fadeInType) {
 		case Linear:
-			polyg.setPoint(2, x, h);
-			polyg.setPoint(3, x, h);
+			polyg.setPoint(2, x,          h);
+			polyg.setPoint(3, x,          h);
 			break;
-		case Quadratic:	// InQuad
-			polyg.setPoint(2, x + (w >> 1), h);
-			polyg.setPoint(3, x + w, y);
+		case InQuad:
+			polyg.setPoint(2, x + w2,     h);
+			polyg.setPoint(3, x + w,      y);
 			break;
-		case Cubic: // InCubic
-			polyg.setPoint(2, x + w - (w >> 2), h);
-			polyg.setPoint(3, x + w, y);
+		case OutQuad:
+			polyg.setPoint(2, x + w2,     y);
+			polyg.setPoint(3, x + w,      y);
+			break;
+		case InOutQuad:
+			polyg.setPoint(2, x + w2,     h);
+			polyg.setPoint(3, x + w2,     y);
+			break;
+		case InCubic:
+			polyg.setPoint(2, x + w - w4, h);
+			polyg.setPoint(3, x + w,      y);
+			break;
+		case OutCubic:
+			polyg.setPoint(2, x + w2,     y);
+			polyg.setPoint(3, x + w - w4, y);
+			break;
+		case InOutCubic:
+			polyg.setPoint(2, x + w - w4, h);
+			polyg.setPoint(3, x + w4,     y);
 			break;
 		}
 		polyg.setPoint(4, x + w, y);
@@ -560,23 +517,41 @@ void qtractorClip::drawClip ( QPainter *pPainter, const QRect& clipRect,
 		polyg.setPoint(2, x - w, y);
 		pPainter->drawPolygon(polyg);
 	#else
+		const int w2 = (w >> 1);
+		const int w4 = (w >> 2);
 		QPolygon polyg(5);
 		polyg.setPoint(0, x, y);
 		polyg.setPoint(1, x, h);
-		switch (m_fadeOut.fadeType) {
+		switch (m_fadeOutType) {
 		case Linear:
-			polyg.setPoint(2, x, h);
-			polyg.setPoint(3, x, h);
+			polyg.setPoint(2, x,          h);
+			polyg.setPoint(3, x,          h);
 			break;
-		case Quadratic:	// OutQuad
-			polyg.setPoint(2, x - (w >> 1), h);
-			polyg.setPoint(3, x - w, y);
+		case InQuad:
+			polyg.setPoint(2, x - w2,     y);
+			polyg.setPoint(3, x - w,      y);
 			break;
-		case Cubic: // OutCubic
-			polyg.setPoint(2, x - w + (w >> 2), h);
-			polyg.setPoint(3, x - w, y);
+		case OutQuad:
+			polyg.setPoint(2, x - w2,     h);
+			polyg.setPoint(3, x - w,      y);
 			break;
-		}		
+		case InOutQuad:
+			polyg.setPoint(2, x - w2,     h);
+			polyg.setPoint(3, x - w2,     y);
+			break;
+		case InCubic:
+			polyg.setPoint(2, x - w2,     y);
+			polyg.setPoint(3, x - w + w4, y);
+			break;
+		case OutCubic:
+			polyg.setPoint(2, x - w + w4, h);
+			polyg.setPoint(3, x - w,      y);
+			break;
+		case InOutCubic:
+			polyg.setPoint(2, x - w + w4, h);
+			polyg.setPoint(3, x - w4,     y);
+			break;
+		}
 		polyg.setPoint(4, x - w, y);
 		QPainterPath path;
 		path.moveTo(polyg.at(0));
@@ -697,12 +672,12 @@ bool qtractorClip::loadElement ( qtractorSessionDocument *pDocument,
 					qtractorClip::setClipGain(eProp.text().toFloat());
 				else if (eProp.tagName() == "fade-in") {
 					qtractorClip::setFadeInType(
-						qtractorClip::fadeTypeFromText(eProp.attribute("type")));
+						qtractorClip::fadeInTypeFromText(eProp.attribute("type")));
 					qtractorClip::setFadeInLength(eProp.text().toULong());
 				}
 				else if (eProp.tagName() == "fade-out") {
 					qtractorClip::setFadeOutType(
-						qtractorClip::fadeTypeFromText(eProp.attribute("type")));
+						qtractorClip::fadeOutTypeFromText(eProp.attribute("type")));
 					qtractorClip::setFadeOutLength(eProp.text().toULong());
 				}
 			}
@@ -759,30 +734,84 @@ bool qtractorClip::saveElement ( qtractorSessionDocument *pDocument,
 
 
 // Clip fade type textual helper methods.
-qtractorClip::FadeType qtractorClip::fadeTypeFromText ( const QString& sText )
+qtractorClip::FadeType qtractorClip::fadeInTypeFromText ( const QString& sText )
 {
-	FadeType fadeType = Quadratic;
-	if (sText == "cubic")
-		fadeType = Cubic;
-	else if (sText == "linear")
+	FadeType fadeType = InQuad;
+
+	if (sText == "Linear" || sText == "linear")
 		fadeType = Linear;
+	else 
+	if (sText == "InCubic" || sText == "cubic")
+		fadeType = InCubic;
+	else 
+	if (sText == "OutQuad")
+		fadeType = OutQuad;
+	else 
+	if (sText == "InOutQuad")
+		fadeType = InOutQuad;
+	else 
+	if (sText == "OutCubic")
+		fadeType = OutCubic;
+	else 
+	if (sText == "InOutCubic")
+		fadeType = InOutCubic;
+
+	return fadeType;
+}
+
+qtractorClip::FadeType qtractorClip::fadeOutTypeFromText ( const QString& sText )
+{
+	FadeType fadeType = OutQuad;
+
+	if (sText == "Linear" || sText == "linear")
+		fadeType = Linear;
+	else 
+	if (sText == "OutCubic" || sText == "cubic")
+		fadeType = OutCubic;
+	else 
+	if (sText == "InQuad")
+		fadeType = InQuad;
+	else 
+	if (sText == "InOutQuad")
+		fadeType = InOutQuad;
+	else 
+	if (sText == "InCubic")
+		fadeType = InCubic;
+	else 
+	if (sText == "InOutCubic")
+		fadeType = InOutCubic;
+
 	return fadeType;
 }
 
 QString qtractorClip::textFromFadeType ( FadeType fadeType )
 {
 	QString sText;
+
 	switch (fadeType) {
-	case Cubic:
-		sText = "cubic";
-		break;
 	case Linear:
-		sText = "linear";
+		sText = "Linear";
 		break;
-	default:
-		sText = "quadratic";
+	case InQuad:
+		sText = "InQuad";
+		break;
+	case OutQuad:
+		sText = "OutQuad";
+		break;
+	case InOutQuad:
+		sText = "InOutQuad";
+		break;
+	case InCubic:
+		sText = "InCubic";
+		break;
+	case OutCubic:
+		sText = "OutCubic";
+		break;
+	case InOutCubic:
+		sText = "InOutCubic";
 		break;
 	}
+
 	return sText;
 }
 

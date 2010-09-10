@@ -111,8 +111,8 @@ private:
 			: command(cmd), clip(pClip), track(pTrack),
 				autoDelete(false), trackChannel(0),
 				clipStart(0), clipOffset(0), clipLength(0), clipGain(0.0f),
-				fadeInLength(0), fadeInType(qtractorClip::Quadratic), 
-				fadeOutLength(0), fadeOutType(qtractorClip::Quadratic),
+				fadeInLength(0), fadeInType(qtractorClip::InQuad), 
+				fadeOutLength(0), fadeOutType(qtractorClip::OutQuad),
 				timeStretch(0.0f), pitchShift(0.0f), editCommand(NULL) {}
 		// Item members.
 		CommandType    command;

@@ -86,10 +86,24 @@ public:
 	void setClipGain(float fGain);
 	float clipGain() const;
 
-	// Fade types.
-	enum FadeType { Linear, Quadratic, Cubic };
+	// Fade modes.
+	enum FadeMode {
+		FadeIn = 0,
+		FadeOut
+	};
 
-	// Clip fade-in accessors
+	// Fade types.
+	enum FadeType {
+		Linear = 0,
+		InQuad,
+		OutQuad,
+		InOutQuad,
+		InCubic,
+		OutCubic,
+		InOutCubic
+	};
+
+	// Clip fade-in type accessors
 	void setFadeInType(FadeType fadeType);
 	FadeType fadeInType() const;
 
@@ -155,14 +169,25 @@ public:
 		QDomElement *pElement);
 
 	// Clip fade type textual helper methods.
-	static FadeType fadeTypeFromText(const QString& sText);
+	static FadeType fadeInTypeFromText(const QString& sText);
+	static FadeType fadeOutTypeFromText(const QString& sText);
 	static QString textFromFadeType(FadeType fadeType);
 
 protected:
 
-	// Update fade-in/out coefficients.
-	void updateFadeInCoeffs();
-	void updateFadeOutCoeffs();
+	// Fade functor (pure abstract) class.
+	//
+	class FadeFunctor
+	{
+	public:
+
+		virtual float operator() (float t) const = 0;
+	};
+
+	// Fade functor factory method.
+	//
+	static FadeFunctor *createFadeFunctor(
+		FadeMode fadeMode, FadeType fadeType);
 
 	// Virtual document element methods.
 	virtual bool loadClipElement(qtractorSessionDocument *pDocument,
@@ -204,22 +229,12 @@ private:
 	unsigned long m_iFadeInTime;    // Fade-in length (in ticks).
 	unsigned long m_iFadeOutTime;   // Fade-out length (in ticks).
 
-	// Aproximations to exponential fade interpolation.
-	struct FadeMode
-	{
-		// Constructor.
-		FadeMode() : fadeType(Quadratic),
-			c3(0.0f), c2(0.0f), c1(0.0f), c0(0.0f) {}
-		// Interpolation coefficients settler.
-		void setFadeCoeffs(float a, float b);
-		// Fade-type descriminator.
-		FadeType fadeType;
-		// Fade coefficient members.
-		float c3, c2, c1, c0;
-	};
+	FadeType m_fadeInType;          // Fade-in curve type.
+	FadeType m_fadeOutType;         // Fade-out curve type.
 
-	FadeMode m_fadeIn;
-	FadeMode m_fadeOut;
+	// Aproximations to exponential fade interpolation.
+	FadeFunctor *m_pFadeInFunctor;
+	FadeFunctor *m_pFadeOutFunctor;
 
 	// Local dirty flag.
 	bool m_bDirty;

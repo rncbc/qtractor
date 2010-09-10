@@ -377,12 +377,32 @@
         </item>
         <item>
          <property name="text" >
-          <string>Quadratic</string>
+          <string>InQuad</string>
          </property>
         </item>
         <item>
          <property name="text" >
-          <string>Cubic</string>
+          <string>OutQuad</string>
+         </property>
+        </item>
+        <item>
+         <property name="text" >
+          <string>InOutQuad</string>
+         </property>
+        </item>
+        <item>
+         <property name="text" >
+          <string>InCubic</string>
+         </property>
+        </item>
+        <item>
+         <property name="text" >
+          <string>OutCubic</string>
+         </property>
+        </item>
+        <item>
+         <property name="text" >
+          <string>InOutCubic</string>
          </property>
         </item>
        </widget>
@@ -441,12 +461,32 @@
         </item>
         <item>
          <property name="text" >
-          <string>Quadratic</string>
+          <string>InQuad</string>
          </property>
         </item>
         <item>
          <property name="text" >
-          <string>Cubic</string>
+          <string>OutQuad</string>
+         </property>
+        </item>
+        <item>
+         <property name="text" >
+          <string>InOutQuad</string>
+         </property>
+        </item>
+        <item>
+         <property name="text" >
+          <string>InCubic</string>
+         </property>
+        </item>
+        <item>
+         <property name="text" >
+          <string>OutCubic</string>
+         </property>
+        </item>
+        <item>
+         <property name="text" >
+          <string>InOutCubic</string>
          </property>
         </item>
        </widget>

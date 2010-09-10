@@ -551,38 +551,12 @@ void qtractorClipForm::stabilizeForm (void)
 // Fade type index converters.
 qtractorClip::FadeType qtractorClipForm::fadeTypeFromIndex ( int iIndex ) const
 {
-	qtractorClip::FadeType fadeType = qtractorClip::Linear;
-
-	switch (iIndex) {
-	case 1:
-		fadeType = qtractorClip::Quadratic;
-		break;
-	case 2:
-		fadeType = qtractorClip::Cubic;
-		break;
-	default:
-		break;
-	}
-
-	return fadeType;
+	return qtractorClip::FadeType(iIndex);
 }
 
 int qtractorClipForm::indexFromFadeType ( qtractorClip::FadeType fadeType ) const
 {
-	int iIndex = 0;	// qtractorClip::Linear
-
-	switch (fadeType) {
-	case qtractorClip::Quadratic:
-		iIndex = 1;
-		break;
-	case qtractorClip::Cubic:
-		iIndex = 2;
-		break;
-	default:
-		break;
-	}
-
-	return iIndex;
+	return int(fadeType);
 }
 
 

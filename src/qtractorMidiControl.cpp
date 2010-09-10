@@ -447,7 +447,7 @@ private:
 
 // Load controller rules.
 bool qtractorMidiControl::loadElement (
-	qtractorDocument *pDocument, QDomElement *pElement )
+	qtractorDocument * /*pDocument*/, QDomElement *pElement )
 {
 	for (QDomNode nItem = pElement->firstChild();
 			!nItem.isNull();
