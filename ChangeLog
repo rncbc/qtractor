@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- Audio clip merge processing might have been skipping 
+  a few initial frame blocks, now fixed.
+
 - Clip selection hash optimization. (TESTING)
 
 - Anti-glitch audio clip macro fade-in/out fixed again.

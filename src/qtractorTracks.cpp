@@ -1142,19 +1142,19 @@ bool qtractorTracks::mergeExportAudioClips ( qtractorClipCommand *pClipCommand )
 			unsigned long iClipEnd   = iClipStart + pClip->clipLength();
 			if (iFrameStart < iClipStart && iFrameEnd > iClipStart) {
 				unsigned long iOffset = iFrameEnd - iClipStart;
-				if (pBuff->inSync(0, iOffset)) {
-					pBuff->readMix(ppFrames, iOffset,
-						iChannels, iClipStart - iFrameStart,
-						pClip->gain(iOffset));
-				}
+				while (!pBuff->inSync(0, iOffset))
+					pBuff->syncExport();
+				pBuff->readMix(ppFrames, iOffset,
+					iChannels, iClipStart - iFrameStart,
+					pClip->gain(iOffset));
 			}
 			else
 			if (iFrameStart >= iClipStart && iFrameStart < iClipEnd) {
 				unsigned long iOffset = iFrameEnd - iClipStart;
-				if (pBuff->inSync(iFrameStart - iClipStart, iOffset)) {
-					pBuff->readMix(ppFrames, iFrameEnd - iFrameStart,
-						iChannels, 0, pClip->gain(iOffset));
-				}
+				while (!pBuff->inSync(iFrameStart - iClipStart, iOffset))
+					pBuff->syncExport();
+				pBuff->readMix(ppFrames, iFrameEnd - iFrameStart,
+					iChannels, 0, pClip->gain(iOffset));
 			}
 		}
 		// Actually write to merge audio file;

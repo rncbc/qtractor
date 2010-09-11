@@ -377,32 +377,32 @@
         </item>
         <item>
          <property name="text" >
-          <string>InQuad</string>
+          <string>Quadratic 1</string>
          </property>
         </item>
         <item>
          <property name="text" >
-          <string>OutQuad</string>
+          <string>Quadratic 2</string>
          </property>
         </item>
         <item>
          <property name="text" >
-          <string>InOutQuad</string>
+          <string>Quadratic 3</string>
          </property>
         </item>
         <item>
          <property name="text" >
-          <string>InCubic</string>
+          <string>Cubic 1</string>
          </property>
         </item>
         <item>
          <property name="text" >
-          <string>OutCubic</string>
+          <string>Cubic 2</string>
          </property>
         </item>
         <item>
          <property name="text" >
-          <string>InOutCubic</string>
+          <string>Cubic 3</string>
          </property>
         </item>
        </widget>
@@ -461,32 +461,32 @@
         </item>
         <item>
          <property name="text" >
-          <string>InQuad</string>
+          <string>Quadratic 1</string>
          </property>
         </item>
         <item>
          <property name="text" >
-          <string>OutQuad</string>
+          <string>Quadratic 2</string>
          </property>
         </item>
         <item>
          <property name="text" >
-          <string>InOutQuad</string>
+          <string>Quadratic 3</string>
          </property>
         </item>
         <item>
          <property name="text" >
-          <string>InCubic</string>
+          <string>Cubic 1</string>
          </property>
         </item>
         <item>
          <property name="text" >
-          <string>OutCubic</string>
+          <string>Cubic 2</string>
          </property>
         </item>
         <item>
          <property name="text" >
-          <string>InOutCubic</string>
+          <string>Cubic 3</string>
          </property>
         </item>
        </widget>

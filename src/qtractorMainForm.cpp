@@ -2044,7 +2044,7 @@ void qtractorMainForm::editSelectTrack (void)
 
 	// Select Track...
 	if (m_pTracks)
-		m_pTracks->selectCurrentTrack();
+		m_pTracks->selectCurrentTrack(true);
 
 	stabilizeForm();
 }
