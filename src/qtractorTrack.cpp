@@ -718,7 +718,7 @@ void qtractorTrack::unlinkClip ( qtractorClip *pClip )
 void qtractorTrack::removeClip ( qtractorClip *pClip )
 {
 //	pClip->setTrack(NULL);
-	pClip->close(false);
+	pClip->close();
 
 	unlinkClip(pClip);
 }

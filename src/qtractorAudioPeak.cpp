@@ -1,7 +1,7 @@
 // qtractorAudioPeak.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -780,13 +780,7 @@ qtractorAudioPeakFactory::qtractorAudioPeakFactory ( QObject *pParent )
 // Default destructor.
 qtractorAudioPeakFactory::~qtractorAudioPeakFactory (void)
 {
-	QMutableHashIterator<QString, qtractorAudioPeakFile *> iter(m_peaks);
-	while (iter.hasNext()) {
-		qtractorAudioPeakFile *pPeakFile = iter.next().value();
-		iter.remove();
-		delete pPeakFile;
-	}
-
+	qDeleteAll(m_peaks);
 	m_peaks.clear();
 }
 

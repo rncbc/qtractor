@@ -1,7 +1,7 @@
 // qtractorClipSelect.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2007, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -50,32 +50,27 @@ void qtractorClipSelect::selectClip ( qtractorClip *pClip,
 {
 	// Add/remove clip selection...
 	Item *pClipItem = NULL;
-	QMutableListIterator<Item *> iter(m_items);
-	while (iter.hasNext()) {
-		Item *p = iter.next();
-		if (p->clip == pClip) {
-			pClipItem = p;
-			break;
-		}
-	}
+
+	ItemList::Iterator iter = m_items.find(pClip);
+	if (iter != m_items.end())
+		pClipItem = iter.value();
 
 	if (pClipItem && !bSelect) {
-	    iter.remove();
+	    iter = m_items.erase(iter);
 		delete pClipItem;
 		pClip->setClipSelected(false);
 		m_bTrackSingle = false;
 		// Reset united selection rectangle...
 		m_rect.setRect(0, 0, 0, 0);
-		iter.toFront();
-		while (iter.hasNext())
-			m_rect = m_rect.unite(iter.next()->rectClip);
+		for (iter = m_items.begin(); iter != m_items.end(); ++iter)
+			m_rect = m_rect.unite(iter.value()->rectClip);
 		// Done with clip deselection.
 	} else if (bSelect) {
 		pClip->setClipSelected(true);
 		if (pClipItem)
 			pClipItem->rectClip = rect;
 		else
-			m_items.append(new Item(pClip, rect));
+			m_items.insert(pClip, new Item(rect));
 		// Special optimization: no need to recache
 		// our single track reference if we add some outsider clip...
 		if (m_bTrackSingle && m_pTrackSingle
@@ -90,7 +85,7 @@ void qtractorClipSelect::selectClip ( qtractorClip *pClip,
 // Clip addition (no actual selection).
 void qtractorClipSelect::addClip ( qtractorClip *pClip, const QRect& rect )
 {
-	m_items.append(new Item(pClip, rect));
+	m_items.insert(pClip, new Item(rect));
 	m_rect = m_rect.unite(rect);
 }
 
@@ -109,12 +104,12 @@ qtractorTrack *qtractorClipSelect::singleTrack (void)
 	// Check if predicate is already cached...
 	if (!m_bTrackSingle) {
 		m_pTrackSingle = NULL;
-		QListIterator<Item *> iter(m_items);
-		while (iter.hasNext()) {
-			Item *pClipItem = iter.next();
+		ItemList::ConstIterator iter = m_items.constBegin();
+		for ( ; iter != m_items.constEnd(); ++iter) {
+			qtractorClip *pClip = iter.key();
 			if (m_pTrackSingle == NULL)
-				m_pTrackSingle = (pClipItem->clip)->track();
-			else if (m_pTrackSingle != (pClipItem->clip)->track()) {
+				m_pTrackSingle = pClip->track();
+			else if (m_pTrackSingle != pClip->track()) {
 				m_pTrackSingle = NULL;
 				break;
 			}
@@ -128,24 +123,16 @@ qtractorTrack *qtractorClipSelect::singleTrack (void)
 
 
 // Selection list accessor.
-const QList<qtractorClipSelect::Item *>& qtractorClipSelect::items (void) const
+const qtractorClipSelect::ItemList& qtractorClipSelect::items (void) const
 {
 	return m_items;
 }
 
 
 // Clip selection item lookup.
-qtractorClipSelect::Item *qtractorClipSelect::findClipItem ( qtractorClip *pClip )
+qtractorClipSelect::Item *qtractorClipSelect::findClipItem ( qtractorClip *pClip ) const
 {
-	// Check if this very clip already exists...
-	QListIterator<Item *> iter(m_items);
-	while (iter.hasNext()) {
-		Item *pClipItem = iter.next();
-		if (pClipItem->clip == pClip)
-			return pClipItem;
-	}
-	// Not found.
-	return NULL;
+	return m_items.value(pClip, NULL);
 }
 
 
@@ -165,9 +152,9 @@ void qtractorClipSelect::reset (void)
 // Clear clip selection.
 void qtractorClipSelect::clear (void)
 {
-	QListIterator<Item *> iter(m_items);
-	while (iter.hasNext())
-		(iter.next()->clip)->setClipSelected(false);
+	ItemList::ConstIterator iter = m_items.constBegin();
+	for ( ; iter != m_items.constEnd(); ++iter)
+		iter.key()->setClipSelected(false);
 
 	reset();
 }

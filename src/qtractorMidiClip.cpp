@@ -99,7 +99,7 @@ qtractorMidiClip::qtractorMidiClip ( const qtractorMidiClip& clip )
 // Destructor.
 qtractorMidiClip::~qtractorMidiClip (void)
 {
-	close(true);
+	close();
 
 	if (m_pMidiEditorForm) {
 		m_pMidiEditorForm->close();
@@ -409,10 +409,10 @@ void qtractorMidiClip::set_loop ( unsigned long /* iLoopStart */,
 
 
 // Clip close-commit (record specific)
-void qtractorMidiClip::close ( bool bForce )
+void qtractorMidiClip::close (void)
 {
 #ifdef CONFIG_DEBUG_0
-	qDebug("qtractorMidiClip[%p]::close(%d)\n", this, int(bForce));
+	qDebug("qtractorMidiClip[%p]::close(%d)\n", this);
 #endif
 
 	qtractorTrack *pTrack = track();
@@ -458,7 +458,7 @@ void qtractorMidiClip::close ( bool bForce )
 	m_pSeq->clear();
 
 	// If proven empty, remove the file.
-	if (bForce && bNewFile && iClipLength < 1)
+	if (bNewFile && iClipLength < 1)
 		QFile::remove(filename());
 
 	// Get rid of editor form, if any.

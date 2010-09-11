@@ -227,7 +227,7 @@ bool qtractorClipCommand::addClipRecord ( qtractorTrack *pTrack )
 
 	// Time to close the clip...
 	pClip->setClipLength(iClipEnd - iClipStart);
-	pClip->close(true);
+	pClip->close();
 
 	// Actual clip length might have changed on close.
 	unsigned long iClipLength = pClip->clipLength();
@@ -396,7 +396,7 @@ bool qtractorClipCommand::execute ( bool bRedo )
 				iOldTrackChannel = pMidiClip->trackChannel();
 				pMidiClip->setTrackChannel(pItem->trackChannel);
 			}
-			pClip->close(true);	// Scrap peak file (audio).
+			pClip->close();	// Scrap peak file (audio).
 			pClip->open();
 			pItem->filename = sOldFilename;
 			if (pMidiClip)
@@ -446,17 +446,14 @@ bool qtractorClipCommand::execute ( bool bRedo )
 			if (pTrack->trackType() == qtractorTrack::Audio) {
 				pAudioClip = static_cast<qtractorAudioClip *> (pClip);
 				if (pAudioClip) {
-					if (pItem->timeStretch > 0.0f) {
+					if (pItem->timeStretch > 0.0f)
 						fOldTimeStretch = pAudioClip->timeStretch();
-						pAudioClip->close(true); // Scrap peak file.
-					} else {
-						pAudioClip->close(false);
-					}
+					pAudioClip->close(); // Scrap peak file.
 				}
 			}
 			else
 			if (pItem->editCommand == NULL)
-				pClip->close(true);
+				pClip->close();
 			if (iOldStart != pItem->clipStart)
 				pTrack->unlinkClip(pClip);
 			pClip->setClipStart(pItem->clipStart);
@@ -516,7 +513,7 @@ bool qtractorClipCommand::execute ( bool bRedo )
 			if (pAudioClip) {
 				float fOldTimeStretch = pAudioClip->timeStretch();
 				pAudioClip->setTimeStretch(pItem->timeStretch);
-				pAudioClip->close(true);		// Scrap peak file.
+				pAudioClip->close();			// Scrap peak file.
 				pAudioClip->updateClipTime();	// Care of tempo change.
 				pAudioClip->open();
 				pItem->timeStretch = fOldTimeStretch;

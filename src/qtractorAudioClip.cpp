@@ -80,7 +80,7 @@ qtractorAudioClip::qtractorAudioClip ( const qtractorAudioClip& clip )
 // Destructor.
 qtractorAudioClip::~qtractorAudioClip (void)
 {
-	close(true);
+	close();
 
 	if (m_pBuff)
 		delete m_pBuff;
@@ -231,10 +231,10 @@ void qtractorAudioClip::set_loop ( unsigned long iLoopStart,
 
 
 // Clip close-commit (record specific)
-void qtractorAudioClip::close ( bool bForce )
+void qtractorAudioClip::close (void)
 {
 #ifdef CONFIG_DEBUG_0
-	qDebug("qtractorAudioClip[%p]::close(%d)", this, int(bForce));
+	qDebug("qtractorAudioClip[%p]::close()", this);
 #endif
 
 	if (m_pBuff == NULL)
@@ -246,7 +246,7 @@ void qtractorAudioClip::close ( bool bForce )
 	else
 	// Shall we ditch the current peak file?
 	// (don't if closing from recording)
-	if (bForce && m_pPeak && m_pBuff->peak() == NULL) {
+	if (m_pPeak && m_pBuff->peak() == NULL) {
 		delete m_pPeak;
 		m_pPeak = NULL;
 	}
@@ -256,7 +256,7 @@ void qtractorAudioClip::close ( bool bForce )
 	m_pBuff = NULL;
 
 	// If proven empty, remove the file.
-	if (bForce && clipLength() < 1)
+	if (clipLength() < 1)
 		QFile::remove(filename());
 }
 

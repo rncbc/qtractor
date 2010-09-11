@@ -115,7 +115,7 @@ qtractorAudioBuffer::qtractorAudioBuffer ( unsigned short iChannels,
 
 	m_pTimeStretcher = NULL;
 
-	m_fPrevGain      = 1.0f;
+	m_fPrevGain      = 0.0f;
 	m_fNextGain      = 1.0f;
 	m_iRampGain      = 1;
 
@@ -344,7 +344,7 @@ void qtractorAudioBuffer::close (void)
 	m_iSeekOffset  = 0;
 	ATOMIC_SET(&m_seekPending, 0);
 
-	m_fPrevGain = 1.0f;
+	m_fPrevGain = 0.0f;
 	m_fNextGain = 1.0f;
 	m_iRampGain = 1;
 
@@ -580,7 +580,7 @@ bool qtractorAudioBuffer::seek ( unsigned long iFrame )
 		return false;
 
 	// Reset running gain...
-	m_fPrevGain = 1.0f;
+	m_fPrevGain = 0.0f;
 	m_fNextGain = 1.0f;
 	m_iRampGain = 1;
 
@@ -661,7 +661,7 @@ bool qtractorAudioBuffer::initSync (void)
 	ATOMIC_SET(&m_seekPending, 0);
 
 	// Reset running gain...
-	m_fPrevGain = 1.0f;
+	m_fPrevGain = 0.0f;
 	m_fNextGain = 1.0f;
 	m_iRampGain = 1;
 
@@ -1058,18 +1058,12 @@ int qtractorAudioBuffer::readMixFrames (
 	// Reset running gain...
 	m_fNextGain = fGain;
 
-	// HACK: Case of clip ramp out-set or initial fade-in...
-	if (m_fNextGain < (1.0f - 1E-6f) && m_fPrevGain > (1.0f - 1E-6f)) {
-		if (m_iReadOffset < (m_iOffset + iFrames)) {
-			// Initial macro fade-in...
-			// (no anti-glitch in-set ramp)
-			m_fPrevGain = 0.0f;
-		} else if (m_fNextGain < 1E-6f) {
-			// Final micro fade-out...
-			// (anti-glitch out-set ramp)
-			m_fPrevGain = m_fNextGain = 1.0f;
-			m_iRampGain = -1;
-		}
+	// HACK: Case of clip ramp out-set...
+	if (m_fNextGain < 1E-6f && m_fPrevGain > (1.0f - 1E-6f)) {
+		// Final micro fade-out...
+		// (anti-glitch out-set ramp)
+		m_fPrevGain = m_fNextGain = 1.0f;
+		m_iRampGain = -1;
 	}
 
 	float fGainStep = (m_fNextGain - m_fPrevGain) / float(iFrames);

@@ -1759,6 +1759,8 @@ void qtractorTrackView::selectAll ( bool bSelect )
 		return;
 
 	if (bSelect) {
+		// Reset selection...
+		m_pClipSelect->clear();
 		// Select all clips on all tracks...
 		int iUpdate = 0;
 		int y1, y2 = 0;
@@ -1802,7 +1804,7 @@ qtractorClip *qtractorTrackView::currentClip (void) const
 	qtractorClip *pClip = m_pClipDrag;
 
 	if (pClip == NULL && isClipSelected())
-		pClip = m_pClipSelect->items().first()->clip;
+		pClip = m_pClipSelect->items().constBegin().key();
 
 	return pClip;
 }
@@ -1851,18 +1853,20 @@ void qtractorTrackView::updateClipSelect (void)
 // Draw/hide the whole current clip selection.
 void qtractorTrackView::showClipSelect (void) const
 {
-	QListIterator<qtractorClipSelect::Item *> iter(m_pClipSelect->items());
-	while (iter.hasNext()) {
-		qtractorClipSelect::Item *pClipItem = iter.next();
+	const qtractorClipSelect::ItemList& items = m_pClipSelect->items();
+	qtractorClipSelect::ItemList::ConstIterator iter = items.constBegin();
+	for ( ; iter != items.constEnd(); ++iter) {
+		qtractorClipSelect::Item *pClipItem = iter.value();
 		moveRubberBand(&(pClipItem->rubberBand), pClipItem->rectClip, 3);
 	}
 }
 
 void qtractorTrackView::hideClipSelect (void) const
 {
-	QListIterator<qtractorClipSelect::Item *> iter(m_pClipSelect->items());
-	while (iter.hasNext()) {
-		qtractorRubberBand *pRubberBand = iter.next()->rubberBand;
+	const qtractorClipSelect::ItemList& items = m_pClipSelect->items();
+	qtractorClipSelect::ItemList::ConstIterator iter = items.constBegin();
+	for ( ; iter != items.constEnd(); ++iter) {
+		qtractorRubberBand *pRubberBand = iter.value()->rubberBand;
 		if (pRubberBand && pRubberBand->isVisible())
 			pRubberBand->hide();
 	}
@@ -1872,9 +1876,10 @@ void qtractorTrackView::hideClipSelect (void) const
 // Update single track clip selection.
 void qtractorTrackView::updateSingleTrack ( int y, int h ) const
 {
-	QListIterator<qtractorClipSelect::Item *> iter(m_pClipSelect->items());
-	while (iter.hasNext()) {
-		qtractorClipSelect::Item *pClipItem	= iter.next();
+	const qtractorClipSelect::ItemList& items = m_pClipSelect->items();
+	qtractorClipSelect::ItemList::ConstIterator iter = items.constBegin();
+	for ( ; iter != items.constEnd(); ++iter) {
+		qtractorClipSelect::Item *pClipItem = iter.value();
 		pClipItem->rectClip.setY(y);
 		pClipItem->rectClip.setHeight(h);
 	}
@@ -2669,9 +2674,10 @@ bool qtractorTrackView::queryClipSelect (void)
 		return false;
 
 	// Just ask whether any target clips have pending editors...
-	QListIterator<qtractorClipSelect::Item *> iter(m_pClipSelect->items());
-	while (iter.hasNext()) {
-		if (!(iter.next()->clip)->queryEditor())
+	const qtractorClipSelect::ItemList& items = m_pClipSelect->items();
+	qtractorClipSelect::ItemList::ConstIterator iter = items.constBegin();
+	for ( ; iter != items.constEnd(); ++iter) {
+		if (!iter.key()->queryEditor())
 			return false;
 	}
 
@@ -2707,10 +2713,11 @@ void qtractorTrackView::executeClipSelect ( qtractorTrackView::Command cmd )
 			tr("%1 clip").arg(cmd == Cut ? tr("cut") : tr("delete")));
 	}
 
-	QListIterator<qtractorClipSelect::Item *> iter(m_pClipSelect->items());
-	while (iter.hasNext()) {
-		qtractorClipSelect::Item *pClipItem	= iter.next();
-		qtractorClip  *pClip  = pClipItem->clip;
+	const qtractorClipSelect::ItemList& items = m_pClipSelect->items();
+	qtractorClipSelect::ItemList::ConstIterator iter = items.constBegin();
+	for ( ; iter != items.constEnd(); ++iter) {
+		qtractorClipSelect::Item *pClipItem = iter.value();
+		qtractorClip  *pClip  = iter.key();
 		qtractorTrack *pTrack = pClip->track();
 		// Clip parameters.
 		unsigned long iClipStart    = pClip->clipStart();
@@ -2954,10 +2961,11 @@ void qtractorTrackView::moveClipSelect ( qtractorTrack *pTrack )
 
 	// We'll build a composite command...
 
-	QListIterator<qtractorClipSelect::Item *> iter(m_pClipSelect->items());
-	while (iter.hasNext()) {
-		qtractorClipSelect::Item *pClipItem	= iter.next();
-		qtractorClip *pClip = pClipItem->clip;
+	const qtractorClipSelect::ItemList& items = m_pClipSelect->items();
+	qtractorClipSelect::ItemList::ConstIterator iter = items.constBegin();
+	for ( ; iter != items.constEnd(); ++iter) {
+		qtractorClipSelect::Item *pClipItem = iter.value();
+		qtractorClip *pClip = iter.key();
 		if (pSingleTrack == NULL)
 			pTrack = pClip->track();
 		// Clip parameters.

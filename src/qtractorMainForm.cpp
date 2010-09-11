@@ -3811,8 +3811,7 @@ void qtractorMainForm::stabilizeForm (void)
 	}
 
 	bool bEnabled    = (pTrack != NULL);
-	bool bSelected   = (m_pTracks && m_pTracks->isClipSelected())
-		|| (m_pFiles && m_pFiles->hasFocus() && m_pFiles->isFileSelected());
+	bool bSelected   = (m_pTracks && m_pTracks->isClipSelected());
 	bool bSelectable = (m_pSession->editHead() < m_pSession->editTail());
 	bool bPlaying    = m_pSession->isPlaying();
 	bool bRecording  = m_pSession->isRecording();
@@ -3822,8 +3821,11 @@ void qtractorMainForm::stabilizeForm (void)
 	bool bBumped     = (!bRolling && (iPlayHead > 0 || bPlaying));
 
 	bool bSingleTrackSelected = ((pClip != NULL || bSelected)
-		&& pTrack != NULL && m_pTracks->singleTrackSelected() == pTrack);
-
+		&& (pTrack == NULL || m_pTracks->singleTrackSelected() == pTrack));
+#if 0
+	if (m_pFiles && m_pFiles->hasFocus() && m_pFiles->isFileSelected())
+		bSelected = true;
+#endif
 	m_ui.editCutAction->setEnabled(bSelected);
 	m_ui.editCopyAction->setEnabled(bSelected);
 	m_ui.editPasteAction->setEnabled(qtractorTrackView::isClipboard()

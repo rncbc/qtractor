@@ -5,12 +5,16 @@ ChangeLog
 
 SVN TRUNK
 
+- Clip selection hash optimization. (TESTING)
+
+- Anti-glitch audio clip macro fade-in/out fixed again.
+
 - New clip fade-in/out slopes (curves) are introduced,
   partially adapted and refactored from those easing
-  equations of Robert Penner's fame (EXPERIMENTAL).
+  equations of Robert Penner's fame. (EXPERIMENTAL)
 
 - Clip fade-in/out non-linear slopes are now shown as
-  actual quadratic or cubic curves (wysiwyg).
+  actual WYSIWYG curves. (EXPERIMENTAL)
 
 - Escape key now closes generic plugin widgets as ever
   found usual elsewhere.
@@ -22,10 +26,10 @@ SVN TRUNK
 - A nasty and deadly MIDI resolution overflow has been
   finally fixed, allowing for long MIDI sequences (1h+)
   to laod correctly on 32bit machines from now on (was
-  perfectly fine on 64bit though). (TESTING)
+  perfectly fine on 64bit though).
 
 - MIDI editor selection hash optimization in face of
-  reasonably huge event sequences. (TESTING)
+  reasonably huge event sequences.
 
 - MIDI controller mapping finally refactored to support
   some other MIDI event types than just CC (0xBn) ones
@@ -57,7 +61,7 @@ SVN TRUNK
   same track is later un-muted on any other preceding
   clip. Now hopefully fixed.
 
-- MIDI Clock support makes its first appearence. (TESTING)
+- MIDI Clock support makes its first appearence.
 
 - All tempo (BPM) calculations are now compliant to the
   MIDI conventional equivalence between beat and quarter
@@ -94,10 +98,10 @@ SVN TRUNK
   while honoring MIDI track properties. Interleaved SysEx
   events are now also preserved on their original sequence
   positions instead of squashing a duplicate into the MIDI
-  bus SysEx setup. (EXPERIMENTAL)
+  bus SysEx setup.
 
 - Attempt to include the VeSTige header by default for minimal
-  VST plugin support (EXPERIMENTAL)
+  VST plugin support.
 
 - JACK transport support has been slightly rewritten, in fact
   the sync callback is now in effect for repositioning.
@@ -106,7 +110,7 @@ SVN TRUNK
   a tool window anymore.
 
 - A tempo adjustment tool is making inroads from the menu as
-  Edit/Clip/Tempo... (factory shortcut: F7) (EXPERIMENTAL).
+  Edit/Clip/Tempo... (factory shortcut: F7).
 
 - Audio tracks auto-monitoring is now effective on playback.
 

@@ -77,7 +77,7 @@ public:
 	void set_loop(unsigned long iLoopStart, unsigned long iLoopEnd);
 
 	// Clip close-commit (record specific)
-	void close(bool bForce);
+	void close();
 
 	// Audio clip special process cycle executive.
 	void process(unsigned long iFrameStart, unsigned long iFrameEnd);

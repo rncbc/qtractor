@@ -682,7 +682,7 @@ void qtractorSession::updateTimeResolution (void)
 		for (qtractorClip *pClip = pTrack->clips().first();
 				pClip; pClip = pClip->next()) {
 			if (pTrack->trackType() == qtractorTrack::Midi)
-				pClip->close(false);
+				pClip->close();
 			pClip->setClipStart(pClip->clipStart());
 			pClip->setClipOffset(pClip->clipOffset());
 			pClip->setClipLength(pClip->clipLength());
@@ -721,7 +721,7 @@ void qtractorSession::updateSampleRate ( unsigned int iOldSampleRate )
 			pTrack; pTrack = pTrack->next()) {
 		for (qtractorClip *pClip = pTrack->clips().first();
 				pClip; pClip = pClip->next()) {
-			pClip->close(true);
+			pClip->close();
 		}
 	}
 
