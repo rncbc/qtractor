@@ -70,6 +70,16 @@ qtractorClipForm::qtractorClipForm (
 	m_iDirtyCount = 0;
 	m_iDirtySetup = 0;
 
+	const QPixmap fadeIn(":/images/fadeIn.png");
+	for (int i = 0; i < m_ui.FadeInTypeComboBox->count(); ++i)
+		m_ui.FadeInTypeComboBox->setItemIcon(
+			i, QIcon(fadeIn.copy(i << 4, 0, 16, 16)));
+
+	const QPixmap fadeOut(":/images/fadeOut.png");
+	for (int i = 0; i < m_ui.FadeOutTypeComboBox->count(); ++i)
+		m_ui.FadeOutTypeComboBox->setItemIcon(
+			i, QIcon(fadeOut.copy(i << 4, 0, 16, 16)));
+
 	// Try to set minimal window positioning.
 	m_ui.TrackChannelTextLabel->hide();
 	m_ui.TrackChannelSpinBox->hide();
