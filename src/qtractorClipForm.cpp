@@ -54,7 +54,7 @@ static inline float pow10f2 ( float x )
 
 const char *g_aFadeTypeNames[] = {
 
-	QT_TR_NOOP("Linear"),		// Linear (obvious, hello!)
+	QT_TR_NOOP("Linear"),		// Linear (obvious:)
 	QT_TR_NOOP("Quadratic 1"),	// InQuad
 	QT_TR_NOOP("Quadratic 2"),	// OutQuad
 	QT_TR_NOOP("Quadratic 3"),	// InOutQuad
