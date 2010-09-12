@@ -50,6 +50,47 @@ static inline float pow10f2 ( float x )
 
 
 //----------------------------------------------------------------------------
+// Fade types curves.
+
+const char *g_aFadeTypeNames[] = {
+
+	QT_TR_NOOP("Linear"),		// Linear (obvious, hello!)
+	QT_TR_NOOP("Quadratic 1"),	// InQuad
+	QT_TR_NOOP("Quadratic 2"),	// OutQuad
+	QT_TR_NOOP("Quadratic 3"),	// InOutQuad
+	QT_TR_NOOP("Cubic 1"),		// InCubic
+	QT_TR_NOOP("Cubic 2"),		// OutCubic
+	QT_TR_NOOP("Cubic 3"),		// InOutCubic
+
+	NULL
+};
+
+struct FadeTypeInfo
+{
+	QString name;
+	QIcon iconFadeIn;
+	QIcon iconFadeOut;
+};
+
+static QHash<int, FadeTypeInfo> g_fadeTypes;
+
+
+static void initFadeTypes (void)
+{
+	if (g_fadeTypes.isEmpty()) {
+		const QPixmap pmFadeIn(":/images/fadeIn.png");
+		const QPixmap pmFadeOut(":/images/fadeOut.png");
+		for (int i = 0; g_aFadeTypeNames[i]; ++i) {
+			FadeTypeInfo& info = g_fadeTypes[i];
+			info.name = QObject::tr(g_aFadeTypeNames[i]);
+			info.iconFadeIn  = pmFadeIn.copy(i << 4, 0, 16, 16);
+			info.iconFadeOut = pmFadeOut.copy(i << 4, 0, 16, 16);
+		}
+	}
+}
+
+
+//----------------------------------------------------------------------------
 // qtractorClipForm -- UI wrapper form.
 
 // Constructor.
@@ -70,15 +111,14 @@ qtractorClipForm::qtractorClipForm (
 	m_iDirtyCount = 0;
 	m_iDirtySetup = 0;
 
-	const QPixmap fadeIn(":/images/fadeIn.png");
-	for (int i = 0; i < m_ui.FadeInTypeComboBox->count(); ++i)
-		m_ui.FadeInTypeComboBox->setItemIcon(
-			i, QIcon(fadeIn.copy(i << 4, 0, 16, 16)));
-
-	const QPixmap fadeOut(":/images/fadeOut.png");
-	for (int i = 0; i < m_ui.FadeOutTypeComboBox->count(); ++i)
-		m_ui.FadeOutTypeComboBox->setItemIcon(
-			i, QIcon(fadeOut.copy(i << 4, 0, 16, 16)));
+	initFadeTypes();
+	m_ui.FadeInTypeComboBox->clear();
+	m_ui.FadeOutTypeComboBox->clear();
+	for (int i = 0; i < g_fadeTypes.count(); ++i) {
+		const FadeTypeInfo& info = g_fadeTypes.value(i);
+		m_ui.FadeInTypeComboBox->addItem(info.iconFadeIn, info.name);
+		m_ui.FadeOutTypeComboBox->addItem(info.iconFadeOut, info.name);
+	}
 
 	// Try to set minimal window positioning.
 	m_ui.TrackChannelTextLabel->hide();

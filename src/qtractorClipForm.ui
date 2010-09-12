@@ -370,41 +370,6 @@
         <property name="toolTip" >
          <string>Clip fade-in type</string>
         </property>
-        <item>
-         <property name="text" >
-          <string>Linear</string>
-         </property>
-        </item>
-        <item>
-         <property name="text" >
-          <string>Quadratic 1</string>
-         </property>
-        </item>
-        <item>
-         <property name="text" >
-          <string>Quadratic 2</string>
-         </property>
-        </item>
-        <item>
-         <property name="text" >
-          <string>Quadratic 3</string>
-         </property>
-        </item>
-        <item>
-         <property name="text" >
-          <string>Cubic 1</string>
-         </property>
-        </item>
-        <item>
-         <property name="text" >
-          <string>Cubic 2</string>
-         </property>
-        </item>
-        <item>
-         <property name="text" >
-          <string>Cubic 3</string>
-         </property>
-        </item>
        </widget>
       </item>
       <item rowspan="2" row="0" column="3" >
@@ -454,41 +419,6 @@
         <property name="toolTip" >
          <string>Clip fade-out type</string>
         </property>
-        <item>
-         <property name="text" >
-          <string>Linear</string>
-         </property>
-        </item>
-        <item>
-         <property name="text" >
-          <string>Quadratic 1</string>
-         </property>
-        </item>
-        <item>
-         <property name="text" >
-          <string>Quadratic 2</string>
-         </property>
-        </item>
-        <item>
-         <property name="text" >
-          <string>Quadratic 3</string>
-         </property>
-        </item>
-        <item>
-         <property name="text" >
-          <string>Cubic 1</string>
-         </property>
-        </item>
-        <item>
-         <property name="text" >
-          <string>Cubic 2</string>
-         </property>
-        </item>
-        <item>
-         <property name="text" >
-          <string>Cubic 3</string>
-         </property>
-        </item>
        </widget>
       </item>
      </layout>
