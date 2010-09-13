@@ -354,9 +354,13 @@ void qtractorClipForm::accept (void)
 		unsigned short iTrackChannel = m_ui.TrackChannelSpinBox->value();
 		const QString& sClipName  = m_ui.ClipNameLineEdit->text();
 		float fClipGain = 1.0f;
+		float fTimeStretch = 0.0f;
+		float fPitchShift = 0.0f;
 		switch (clipType) {
 		case qtractorTrack::Audio:
 			fClipGain = pow10f2(m_ui.ClipGainSpinBox->value());
+			fTimeStretch = 0.01f * m_ui.TimeStretchSpinBox->value();
+			fPitchShift = ::powf(2.0f, m_ui.PitchShiftSpinBox->value() / 12.0f);
 			break;
 		case qtractorTrack::Midi:
 			fClipGain = 0.01f * m_ui.ClipGainSpinBox->value();
@@ -373,8 +377,6 @@ void qtractorClipForm::accept (void)
 		unsigned long iFadeOutLength = m_ui.FadeOutLengthSpinBox->value();
 		qtractorClip::FadeType fadeOutType
 			= fadeTypeFromIndex(m_ui.FadeOutTypeComboBox->currentIndex());
-		float fTimeStretch = 0.01f * m_ui.TimeStretchSpinBox->value();
-		float fPitchShift = ::powf(2.0f, m_ui.PitchShiftSpinBox->value() / 12.0f);
 		int iFileChange = 0;
 		// It depends whether we're adding a new clip or not...
 		if (m_bClipNew) {
