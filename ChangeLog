@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- MMC DEFERRED PLAY doesn't cause transport state to
+  stop if currently rolling (mitigating bug #3067264).
+
 - Audio clip merge processing might have been skipping 
   a few initial frame blocks, now fixed.
 
