@@ -231,12 +231,13 @@ protected:
 	ControlMap::ConstIterator findEvent(const qtractorCtlEvent& ctle) const;
 
 	// Overloaded controller value senders.
-	void sendTrackController(qtractorTrack *pTrack, Command command,
-		unsigned short iChannel, unsigned short iController) const;
+	void sendTrackController(
+		ControlType ctype, qtractorTrack *pTrack, Command command,
+		unsigned short iChannel, unsigned short iParam) const;
 	void sendTrackController(int iTrack, Command command, int iValue) const;
 
-	void sendController(
-		unsigned short iChannel, unsigned short iController, int iValue) const;
+	void sendController(ControlType ctype,
+		unsigned short iChannel, unsigned short iParam, int iValue) const;
 
 private:
 

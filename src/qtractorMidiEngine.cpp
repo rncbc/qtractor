@@ -2924,6 +2924,88 @@ void qtractorMidiBus::setControllerEx ( unsigned short iChannel,
 }
 
 
+// Direct MIDI channel event helper.
+void qtractorMidiBus::sendEvent ( qtractorMidiEvent::EventType etype,
+	unsigned short iChannel, unsigned short iParam, unsigned short iValue ) const
+{
+	// We always need our MIDI engine reference...
+	qtractorMidiEngine *pMidiEngine
+		= static_cast<qtractorMidiEngine *> (engine());
+	if (pMidiEngine == NULL)
+		return;
+
+	// Don't do anything else if engine
+	// has not been activated...
+	if (pMidiEngine->alsaSeq() == NULL)
+		return;
+
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMidiBus[%p]::sendEvent(0x%02x, %u, %u, %u)",
+		this, int(etype), iChannel, iParam, iValue);
+#endif
+
+	// Initialize sequencer event...
+	snd_seq_event_t ev;
+	snd_seq_ev_clear(&ev);
+
+	// Addressing...
+	snd_seq_ev_set_source(&ev, m_iAlsaPort);
+	snd_seq_ev_set_subs(&ev);
+
+	// The event will be direct...
+	snd_seq_ev_set_direct(&ev);
+
+	// Set controller parameters...
+	switch (etype) {
+	case qtractorMidiEvent::NOTEON:
+		ev.type = SND_SEQ_EVENT_NOTEON;
+		ev.data.note.channel  = iChannel;
+		ev.data.note.note     = iParam;
+		ev.data.note.velocity = iValue;
+		break;
+	case qtractorMidiEvent::NOTEOFF:
+		ev.type = SND_SEQ_EVENT_NOTEOFF;
+		ev.data.note.channel  = iChannel;
+		ev.data.note.note     = iParam;
+		ev.data.note.velocity = iValue;
+		break;
+	case qtractorMidiEvent::KEYPRESS:
+		ev.type = SND_SEQ_EVENT_KEYPRESS;
+		ev.data.control.channel = iChannel;
+		ev.data.control.param   = iParam;
+		ev.data.control.value   = iValue;
+		break;
+	case qtractorMidiEvent::CONTROLLER:
+	default:
+		ev.type = SND_SEQ_EVENT_CONTROLLER;
+		ev.data.control.channel = iChannel;
+		ev.data.control.param   = iParam;
+		ev.data.control.value   = iValue;
+		break;
+	case qtractorMidiEvent::PGMCHANGE:
+		ev.type = SND_SEQ_EVENT_PGMCHANGE;
+		ev.data.control.channel = iChannel;
+		ev.data.control.param   = 0;
+		ev.data.control.value   = iValue;
+		break;
+	case qtractorMidiEvent::CHANPRESS:
+		ev.type = SND_SEQ_EVENT_CHANPRESS;
+		ev.data.control.channel = iChannel;
+		ev.data.control.param   = 0;
+		ev.data.control.value   = iValue;
+		break;
+	case qtractorMidiEvent::PITCHBEND:
+		ev.type = SND_SEQ_EVENT_PITCHBEND;
+		ev.data.control.channel = iChannel;
+		ev.data.control.param   = 0;
+		ev.data.control.value   = iValue;
+		break;
+	}
+
+	snd_seq_event_output_direct(pMidiEngine->alsaSeq(), &ev);
+}
+
+
 // Direct MIDI note on/off helper.
 void qtractorMidiBus::sendNote ( qtractorTrack *pTrack,
 	int iNote, int iVelocity ) const

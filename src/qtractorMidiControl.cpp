@@ -179,14 +179,14 @@ void qtractorMidiControl::sendAllControllers ( int iFirstTrack ) const
 					pTrack; pTrack = pTrack->next()) {
 				if (iTrack >= iFirstTrack) {
 					if (key.isChannelTrack())
-						sendTrackController(pTrack,
-							val.command(), iTrack, iParam);
+						sendTrackController(key.type(),
+							pTrack, val.command(), iTrack, iParam);
 					else if (key.isParamTrack())
-						sendTrackController(pTrack,
-							val.command(), iChannel, iParam + iTrack);
+						sendTrackController(key.type(),
+							pTrack, val.command(), iChannel, iParam + iTrack);
 					else if (val.track() == iTrack) {
-						sendTrackController(pTrack,
-							val.command(), iChannel, iParam);
+						sendTrackController(key.type(),
+							pTrack, val.command(), iChannel, iParam);
 						break; // Bail out from inner track loop.
 					}
 				}
@@ -337,25 +337,25 @@ void qtractorMidiControl::sendTrackController (
 	for ( ; it != m_controlMap.constEnd(); ++it) {
 		const MapKey& key = it.key();
 		const MapVal& val = it.value();
-		if (key.type() == qtractorMidiEvent::CONTROLLER &&
-			val.command() == command && val.isFeedback()) {
+		if (val.command() == command && val.isFeedback()) {
 			// Now send the message out...
 			unsigned short iParam = (key.param() & TrackParamMask);
 			if (key.isChannelTrack())
-				sendController(iTrack, iParam, iValue);
+				sendController(key.type(), iTrack, iParam, iValue);
 			else
 			if (key.isParamTrack())
-				sendController(key.channel(), iParam + iTrack, iValue);
+				sendController(key.type(), key.channel(), iParam + iTrack, iValue);
 			else
 			if (val.track() == iTrack)
-				sendController(key.channel(), iParam, iValue);
+				sendController(key.type(), key.channel(), iParam, iValue);
 		}
 	}
 }
 
 
-void qtractorMidiControl::sendTrackController ( qtractorTrack *pTrack,
-	Command command, unsigned short iChannel, unsigned short iController ) const
+void qtractorMidiControl::sendTrackController (
+	ControlType ctype, qtractorTrack *pTrack,
+	Command command, unsigned short iChannel, unsigned short iParam ) const
 {
 	int iValue = 0;
 
@@ -385,13 +385,13 @@ void qtractorMidiControl::sendTrackController ( qtractorTrack *pTrack,
 		break;
 	}
 
-	sendController(iChannel, iController, iValue);
+	sendController(ctype, iChannel, iParam, iValue);
 }
 
 
 // Send this value out to midi bus.
-void qtractorMidiControl::sendController (
-	unsigned short iChannel, unsigned short iController, int iValue ) const
+void qtractorMidiControl::sendController ( ControlType ctype,
+	unsigned short iChannel, unsigned short iParam, int iValue ) const
 {
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
@@ -411,11 +411,11 @@ void qtractorMidiControl::sendController (
 		iValue = 127;
 
 #ifdef CONFIG_DEBUG
-	qDebug("qtractorMidiControl::sendController(%u, %u, %d)",
-		iChannel, iController, iValue);
+	qDebug("qtractorMidiControl::sendController(0x%02x, %u, %u, %d)",
+		int(ctype), iChannel, iParam, iValue);
 #endif
 
-	pMidiBus->setController(iChannel, iController, iValue);
+	pMidiBus->sendEvent(ctype, iChannel, iParam, iValue);
 }
 
 

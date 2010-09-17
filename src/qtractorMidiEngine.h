@@ -385,6 +385,11 @@ public:
 	void setController(unsigned short iChannel,
 		int iController, int iValue = 0) const;
 
+	// Direct MIDI channel event helper.
+	void sendEvent(qtractorMidiEvent::EventType etype,
+		unsigned short iChannel, unsigned short iParam,
+		unsigned short iValue) const;
+
 	// Direct MIDI note helper.
 	void sendNote(qtractorTrack *pTrack,
 		int iNote, int iVelocity = 0) const;
