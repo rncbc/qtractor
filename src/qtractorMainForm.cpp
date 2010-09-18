@@ -543,6 +543,11 @@ qtractorMainForm::qtractorMainForm (
 	// shortcuts firmly attached...
 	addAction(m_ui.viewMenubarAction);
 
+	const QList<QAction *>& actions = findChildren<QAction *> ();
+	QListIterator<QAction *> iter(actions);
+	while (iter.hasNext())
+		iter.next()->setShortcutContext(Qt::ApplicationShortcut);
+			
 	// Ah, make it stand right.
 	setFocus();
 
