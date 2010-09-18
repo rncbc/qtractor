@@ -720,9 +720,9 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 	}
 
 	// The owned buses too, if any...
-	if (m_bMetroBus)
+	if (m_bMetroBus && m_pMetroBus)
 		m_pMetroBus->process_prepare(nframes);
-	if (m_bPlayerBus)
+	if (m_bPlayerBus && m_pPlayerBus)
 		m_pPlayerBus->process_prepare(nframes);
 
 	// Process audition/pre-listening...
@@ -731,7 +731,7 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 			m_pPlayerBus->channels(), 0, 1.0f);
 		m_bPlayerOpen = (m_iPlayerFrame < m_pPlayerBuff->length());
 		m_iPlayerFrame += nframes;
-		if (m_bPlayerBus)
+		if (m_bPlayerBus && m_pPlayerBus)
 			m_pPlayerBus->process_commit(nframes);
 		else
 			iOutputBus++;
@@ -790,7 +790,7 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 			}
 		}
 		// Process audition/pre-listening bus...
-		if (m_pPlayerBus && m_bPlayerBus)
+		if (m_bPlayerBus && m_pPlayerBus)
 			m_pPlayerBus->process_commit(nframes);
 		// Pass-thru current audio buses...
 		for (qtractorBus *pBus = buses().first();
@@ -833,7 +833,7 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 			m_iMetroBeatStart = pNode->frameFromBeat(++m_iMetroBeat);
 			pMetroBuff->reset(false);
 		}
-		if (m_bMetroBus)
+		if (m_bMetroBus && m_pMetroBus)
 			m_pMetroBus->process_commit(nframes);
 	}
 
@@ -1241,7 +1241,7 @@ void qtractorAudioEngine::setMetroBus ( bool bMetroBus )
 
 	if (isActivated()) {
 		openMetroBus();
-		if (m_pMetroBus && m_bMetroBus)
+		if (m_bMetroBus && m_pMetroBus)
 			m_pMetroBus->autoConnect();
 	}
 }
@@ -1398,7 +1398,7 @@ void qtractorAudioEngine::closeMetroBus (void)
 		m_pMetroBeatBuff = NULL;
 	}
 
-	if (m_pMetroBus && m_bMetroBus) {
+	if (m_bMetroBus && m_pMetroBus) {
 		removeBusEx(m_pMetroBus);
 		m_pMetroBus->close();
 	}
@@ -1413,7 +1413,7 @@ void qtractorAudioEngine::deleteMetroBus (void)
 {
 	closeMetroBus();
 
-	if (m_pMetroBus && m_bMetroBus)
+	if (m_bMetroBus && m_pMetroBus)
 		delete m_pMetroBus;
 
 	m_pMetroBus = NULL;
@@ -1479,7 +1479,7 @@ void qtractorAudioEngine::setPlayerBus ( bool bPlayerBus )
 
 	if (isActivated()) {
 		openPlayerBus();
-		if (m_pPlayerBus && m_bPlayerBus)
+		if (m_bPlayerBus && m_pPlayerBus)
 			m_pPlayerBus->autoConnect();
 	}
 }
@@ -1563,7 +1563,7 @@ void qtractorAudioEngine::closePlayerBus (void)
 		m_pPlayerBuff = NULL;
 	}
 
-	if (m_pPlayerBus && m_bPlayerBus) {
+	if (m_bPlayerBus && m_pPlayerBus) {
 		removeBusEx(m_pPlayerBus);
 		m_pPlayerBus->close();
 	}
@@ -1575,7 +1575,7 @@ void qtractorAudioEngine::deletePlayerBus (void)
 {
 	closePlayerBus();
 
-	if (m_pPlayerBus && m_bPlayerBus)
+	if (m_bPlayerBus && m_pPlayerBus)
 		delete m_pPlayerBus;
 
 	m_pPlayerBus = NULL;
