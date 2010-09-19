@@ -262,7 +262,7 @@ void qtractorClipForm::setClip ( qtractorClip *pClip, bool bClipNew )
 		m_ui.FilenameComboBox->setObjectName("Audio" + sSuffix);
 		m_ui.ClipGainTextLabel->setText(tr("&Gain:"));
 		m_ui.ClipGainSpinBox->setSuffix(tr(" dB"));
-		m_ui.ClipGainSpinBox->setRange(-60.0f, +12.0f);
+		m_ui.ClipGainSpinBox->setRange(-60.0f, +24.0f);
 		m_ui.ClipGainSpinBox->setValue(log10f2(m_pClip->clipGain()));
 		qtractorAudioClip *pAudioClip
 			= static_cast<qtractorAudioClip *> (m_pClip);
