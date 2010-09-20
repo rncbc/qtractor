@@ -542,12 +542,17 @@ qtractorMainForm::qtractorMainForm (
 	// Some actions surely need those
 	// shortcuts firmly attached...
 	addAction(m_ui.viewMenubarAction);
-
+#if 0
 	const QList<QAction *>& actions = findChildren<QAction *> ();
 	QListIterator<QAction *> iter(actions);
 	while (iter.hasNext())
 		iter.next()->setShortcutContext(Qt::ApplicationShortcut);
-			
+#else
+	m_ui.viewFilesAction->setShortcutContext(Qt::ApplicationShortcut);
+	m_ui.viewConnectionsAction->setShortcutContext(Qt::ApplicationShortcut);
+	m_ui.viewMixerAction->setShortcutContext(Qt::ApplicationShortcut);
+	m_ui.viewMessagesAction->setShortcutContext(Qt::ApplicationShortcut);
+#endif
 	// Ah, make it stand right.
 	setFocus();
 

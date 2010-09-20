@@ -172,6 +172,7 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	// Some actions surely need those
 	// shortcuts firmly attached...
 	addAction(m_ui.viewMenubarAction);
+
 	// Special integration ones.
 	addAction(m_ui.editSelectRangeAction);
 	addAction(m_ui.transportBackwardAction);
