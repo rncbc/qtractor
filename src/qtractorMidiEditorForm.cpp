@@ -107,7 +107,7 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 
 	const QIcon iconEventType(":/images/itemProperty.png");
 	m_pEventTypeComboBox->addItem(iconEventType,
-		tr("Note On"), int(qtractorMidiEvent::NOTEON));
+		tr("Note Velocity"), int(qtractorMidiEvent::NOTEON));
 	m_pEventTypeComboBox->addItem(iconEventType,
 		tr("Key Press"), int(qtractorMidiEvent::KEYPRESS));
 	m_pEventTypeComboBox->addItem(iconEventType,
