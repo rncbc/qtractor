@@ -69,9 +69,6 @@ protected:
     void refreshFiles();
     void refreshControlMap();
 
-	qtractorMidiControl::ControlType typeFromText(const QString& sText) const;
-	QString textFromType(qtractorMidiControl::ControlType ctype) const;
-
 	unsigned short channelFromText(const QString& sText) const;
 	QString textFromChannel(unsigned short iChannel) const;
 
@@ -79,9 +76,6 @@ protected:
 		qtractorMidiControl::ControlType ctype, const QString& sText) const;
 	QString textFromParam(
 		qtractorMidiControl::ControlType ctype, unsigned short iParam) const;
-
-	qtractorMidiControl::Command commandFromText(const QString& sText) const;
-	QString textFromCommand(qtractorMidiControl::Command command) const;
 
 private:
 

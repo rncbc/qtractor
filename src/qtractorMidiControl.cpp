@@ -554,69 +554,6 @@ bool qtractorMidiControl::saveDocument ( const QString& sFilename )
 }
 
 
-// Document textual helpers.
-qtractorMidiControl::ControlType qtractorMidiControl::typeFromText (
-	const QString& sText )
-{
-	if (sText == "NOTEON")
-		return qtractorMidiEvent::NOTEON;
-	else
-	if (sText == "NOTEOFF")
-		return qtractorMidiEvent::NOTEOFF;
-	else
-	if (sText == "KEYPRESS")
-		return qtractorMidiEvent::KEYPRESS;
-	else
-	if (sText == "CONTROLLER")
-		return qtractorMidiEvent::CONTROLLER;
-	else
-	if (sText == "PGMCHANGE")
-		return qtractorMidiEvent::PGMCHANGE;
-	else
-	if (sText == "CHANPRESS")
-		return qtractorMidiEvent::CHANPRESS;
-	else
-	if (sText == "PITCHBEND")
-		return qtractorMidiEvent::PITCHBEND;
-	else
-		return ControlType(0);
-}
-
-QString qtractorMidiControl::textFromType (
-	qtractorMidiControl::ControlType ctype )
-{
-	QString sText;
-
-	switch (ctype) {
-	case qtractorMidiEvent::NOTEON:
-		sText = "NOTEON";
-		break;
-	case qtractorMidiEvent::NOTEOFF:
-		sText = "NOTEOFF";
-		break;
-	case qtractorMidiEvent::KEYPRESS:
-		sText = "KEYPRESS";
-		break;
-	case qtractorMidiEvent::CONTROLLER:
-		sText = "CONTROLLER";
-		break;
-	case qtractorMidiEvent::PGMCHANGE:
-		sText = "PGMCHANGE";
-		break;
-	case qtractorMidiEvent::CHANPRESS:
-		sText = "CHANPRESS";
-		break;
-	case qtractorMidiEvent::PITCHBEND:
-		sText = "PITCHBEND";
-		break;
-	default:
-		break;
-	}
-
-	return sText;
-}
-
-
 unsigned short qtractorMidiControl::keyFromText ( const QString& sText )
 {
 	if (sText == "*" || sText == "TrackParam" || sText.isEmpty())
@@ -634,9 +571,160 @@ QString qtractorMidiControl::textFromKey ( unsigned short iKey )
 }
 
 
+//----------------------------------------------------------------------------
+// MIDI Controller Type Text/Names - Default control types hash maps.
+
+static struct
+{
+	qtractorMidiControl::ControlType ctype;
+	const char *text;
+	const char *name;
+
+} g_aControlTypes[] = {
+
+	{ qtractorMidiEvent::NOTEON,     "NOTEON",     QT_TR_NOOP("Note On")    },
+	{ qtractorMidiEvent::NOTEOFF,    "NOTEOFF",    QT_TR_NOOP("Note Off")   },
+	{ qtractorMidiEvent::KEYPRESS,   "KEYPRESS",   QT_TR_NOOP("Key Press")  },
+	{ qtractorMidiEvent::CONTROLLER, "CONTROLLER", QT_TR_NOOP("Controller") },
+	{ qtractorMidiEvent::PGMCHANGE,  "PGMCHANGE",  QT_TR_NOOP("Pgm Change") },
+	{ qtractorMidiEvent::CHANPRESS,  "CHANPRESS",  QT_TR_NOOP("Chan Press") },
+	{ qtractorMidiEvent::PITCHBEND,  "PITCHBEND",  QT_TR_NOOP("Pitch Bend") },
+
+	{ qtractorMidiControl::ControlType(0), NULL, NULL }
+};
+
+static QHash<qtractorMidiControl::ControlType, QString> g_controlTypeTexts;
+static QHash<QString, qtractorMidiControl::ControlType> g_textControlTypes;
+
+static void initControlTypeTexts (void)
+{
+	if (g_controlTypeTexts.isEmpty()) {
+		// Pre-load ontrol-types hash table...
+		for (int i = 0; g_aControlTypes[i].text; ++i) {
+			qtractorMidiControl::ControlType ctype = g_aControlTypes[i].ctype;
+			const QString& sText = QString(g_aControlTypes[i].text);
+			g_controlTypeTexts.insert(ctype, sText);
+			g_textControlTypes.insert(sText, ctype);
+		}
+	}
+}
+
+
+static QHash<qtractorMidiControl::ControlType, QString> g_controlTypeNames;
+static QHash<QString, qtractorMidiControl::ControlType> g_nameControlTypes;
+
+static void initControlTypeNames (void)
+{
+	if (g_controlTypeNames.isEmpty()) {
+		// Pre-load ontrol-types hash table...
+		for (int i = 0; g_aControlTypes[i].name; ++i) {
+			qtractorMidiControl::ControlType ctype = g_aControlTypes[i].ctype;
+			const QString& sName = QObject::tr(g_aControlTypes[i].name);
+			g_controlTypeNames.insert(ctype, sName);
+			g_nameControlTypes.insert(sName, ctype);
+		}
+	}
+}
+
+
+// Control type text (translatable) conversion helpers.
+qtractorMidiControl::ControlType qtractorMidiControl::typeFromText (
+	const QString& sText )
+{
+	initControlTypeTexts();
+
+	return g_textControlTypes[sText];
+}
+
+const QString& qtractorMidiControl::textFromType (
+	qtractorMidiControl::ControlType ctype )
+{
+	initControlTypeTexts();
+
+	return g_controlTypeTexts[ctype];
+}
+
+
+// Control type name (label) conversion helpers.
+qtractorMidiControl::ControlType qtractorMidiControl::typeFromName (
+	const QString& sName )
+{
+	initControlTypeNames();
+
+	return g_nameControlTypes[sName];
+}
+
+const QString& qtractorMidiControl::nameFromType (
+	qtractorMidiControl::ControlType ctype )
+{
+	initControlTypeNames();
+
+	return g_controlTypeNames[ctype];
+}
+
+
+//----------------------------------------------------------------------------
+// MIDI Controller Command Text/Names - Default command names hash map.
+
+static struct
+{
+	qtractorMidiControl::Command command;
+	const char *text;
+	const char *name;
+
+} g_aCommandNames[] = {
+
+	{ qtractorMidiControl::TRACK_GAIN,    "TRACK_GAIN",    QT_TR_NOOP("Track Gain")    },
+	{ qtractorMidiControl::TRACK_PANNING, "TRACK_PANNING", QT_TR_NOOP("Track Panning") },
+	{ qtractorMidiControl::TRACK_MONITOR, "TRACK_MONITOR", QT_TR_NOOP("Track Monitor") },
+	{ qtractorMidiControl::TRACK_RECORD,  "TRACK_RECORD",  QT_TR_NOOP("Track Record")  },
+	{ qtractorMidiControl::TRACK_MUTE,    "TRACK_MUTE",    QT_TR_NOOP("Track Mute")    },
+	{ qtractorMidiControl::TRACK_SOLO,    "TRACK_SOLO",    QT_TR_NOOP("Track Solo")    },
+
+	{ qtractorMidiControl::Command(0), NULL }
+};
+
+static QHash<qtractorMidiControl::Command, QString> g_commandTexts;
+static QHash<QString, qtractorMidiControl::Command> g_textCommands;
+
+static void initCommandTexts (void)
+{
+	if (g_commandTexts.isEmpty()) {
+		// Pre-load command-names hash table...
+		for (int i = 0; g_aCommandNames[i].text; ++i) {
+			qtractorMidiControl::Command command = g_aCommandNames[i].command;
+			const QString& sText = QString(g_aCommandNames[i].text);
+			g_commandTexts.insert(command, sText);
+			g_textCommands.insert(sText, command);
+		}
+	}
+}
+
+static QHash<qtractorMidiControl::Command, QString> g_commandNames;
+static QHash<QString, qtractorMidiControl::Command> g_nameCommands;
+
+static void initCommandNames (void)
+{
+	if (g_commandNames.isEmpty()) {
+		// Pre-load command-names hash table...
+		for (int i = 0; g_aCommandNames[i].name; ++i) {
+			qtractorMidiControl::Command command = g_aCommandNames[i].command;
+			const QString& sName = QObject::tr(g_aCommandNames[i].name);
+			g_commandNames.insert(command, sName);
+			g_nameCommands.insert(sName, command);
+		}
+	}
+}
+
+
 qtractorMidiControl::Command qtractorMidiControl::commandFromText (
 	const QString& sText )
 {
+#if 0
+	initCommandTexts();
+
+	return g_textCommands[sText];
+#else
 	if (sText == "TRACK_GAIN" || sText == "TrackGain")
 		return TRACK_GAIN;
 	else
@@ -656,37 +744,30 @@ qtractorMidiControl::Command qtractorMidiControl::commandFromText (
 		return TRACK_SOLO;
 	else
 		return Command(0);
+#endif
 }
 
-QString qtractorMidiControl::textFromCommand (
-	qtractorMidiControl::Command command )
+const QString& qtractorMidiControl::textFromCommand ( Command command )
 {
-	QString sText;
+	initCommandTexts();
 
-	switch (command) {
-	case TRACK_GAIN:
-		sText = "TRACK_GAIN";
-		break;
-	case TRACK_PANNING:
-		sText = "TRACK_PANNING";
-		break;
-	case TRACK_MONITOR:
-		sText = "TRACK_MONITOR";
-		break;
-	case TRACK_RECORD:
-		sText = "TRACK_RECORD";
-		break;
-	case TRACK_MUTE:
-		sText = "TRACK_MUTE";
-		break;
-	case TRACK_SOLO:
-		sText = "TRACK_SOLO";
-		break;
-	default:
-		break;
-	}
+	return g_commandTexts[command];
+}
 
-	return sText;
+
+qtractorMidiControl::Command qtractorMidiControl::commandFromName (
+	const QString& sName )
+{
+	initCommandNames();
+
+	return g_nameCommands[sName];
+}
+
+const QString& qtractorMidiControl::nameFromCommand ( Command command )
+{
+	initCommandNames();
+
+	return g_commandNames[command];
 }
 
 

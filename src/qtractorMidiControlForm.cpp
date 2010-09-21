@@ -33,77 +33,6 @@
 #include <QUrl>
 
 
-//----------------------------------------------------------------------------
-// MIDI Controller Type Names - Default control types hash map.
-
-static struct
-{
-	qtractorMidiControl::ControlType ctype;
-	const char *name;
-
-} g_aControlTypes[] = {
-
-	{ qtractorMidiEvent::NOTEON,     QT_TR_NOOP("Note On")    },
-	{ qtractorMidiEvent::NOTEOFF,    QT_TR_NOOP("Note Off")   },
-	{ qtractorMidiEvent::KEYPRESS,   QT_TR_NOOP("Key Press")  },
-	{ qtractorMidiEvent::CONTROLLER, QT_TR_NOOP("Controller") },
-	{ qtractorMidiEvent::PGMCHANGE,  QT_TR_NOOP("Pgm Change") },
-	{ qtractorMidiEvent::CHANPRESS,  QT_TR_NOOP("Chan Press") },
-	{ qtractorMidiEvent::PITCHBEND,  QT_TR_NOOP("Pitch Bend") },
-
-	{ qtractorMidiControl::ControlType(0), NULL }
-};
-
-static QHash<qtractorMidiControl::ControlType, QString> g_controlTypes;
-
-static void initControlTypes (void)
-{
-	if (g_controlTypes.isEmpty()) {
-		// Pre-load ontrol-types hash table...
-		for (int i = 0; g_aControlTypes[i].name; ++i) {
-			g_controlTypes.insert(
-				g_aControlTypes[i].ctype,
-				QObject::tr(g_aControlTypes[i].name));
-		}
-	}
-}
-
-
-//----------------------------------------------------------------------------
-// MIDI Controller Command Names - Default command names hash map.
-
-static struct
-{
-	qtractorMidiControl::Command command;
-	const char *name;
-
-} g_aCommandNames[] = {
-
-	{ qtractorMidiControl::TRACK_GAIN,    QT_TR_NOOP("Track Gain")    },
-	{ qtractorMidiControl::TRACK_PANNING, QT_TR_NOOP("Track Panning") },
-	{ qtractorMidiControl::TRACK_MONITOR, QT_TR_NOOP("Track Monitor") },
-	{ qtractorMidiControl::TRACK_RECORD,  QT_TR_NOOP("Track Record")  },
-	{ qtractorMidiControl::TRACK_MUTE,    QT_TR_NOOP("Track Mute")    },
-	{ qtractorMidiControl::TRACK_SOLO,    QT_TR_NOOP("Track Solo")    },
-
-	{ qtractorMidiControl::Command(0), NULL }
-};
-
-static QHash<qtractorMidiControl::Command, QString> g_commandNames;
-
-static void initCommandNames (void)
-{
-	if (g_commandNames.isEmpty()) {
-		// Pre-load command-names hash table...
-		for (int i = 0; g_aCommandNames[i].name; ++i) {
-			g_commandNames.insert(
-				g_aCommandNames[i].command,
-				QObject::tr(g_aCommandNames[i].name));
-		}
-	}
-}
-
-
 //----------------------------------------------------------------------
 // class qtractorMidiControlForm -- MIDI controller file manager form.
 //
@@ -136,19 +65,19 @@ qtractorMidiControlForm::qtractorMidiControlForm (
 
 //	m_ui.TypeComboBox->clear();
 	m_ui.TypeComboBox->addItem(
-		textFromType(qtractorMidiEvent::NOTEON));
+		qtractorMidiControl::nameFromType(qtractorMidiEvent::NOTEON));
 	m_ui.TypeComboBox->addItem(
-		textFromType(qtractorMidiEvent::NOTEOFF));
+		qtractorMidiControl::nameFromType(qtractorMidiEvent::NOTEOFF));
 	m_ui.TypeComboBox->addItem(
-		textFromType(qtractorMidiEvent::KEYPRESS));
+		qtractorMidiControl::nameFromType(qtractorMidiEvent::KEYPRESS));
 	m_ui.TypeComboBox->addItem(
-		textFromType(qtractorMidiEvent::CONTROLLER));
+		qtractorMidiControl::nameFromType(qtractorMidiEvent::CONTROLLER));
 	m_ui.TypeComboBox->addItem(
-		textFromType(qtractorMidiEvent::PGMCHANGE));
+		qtractorMidiControl::nameFromType(qtractorMidiEvent::PGMCHANGE));
 	m_ui.TypeComboBox->addItem(
-		textFromType(qtractorMidiEvent::CHANPRESS));
+		qtractorMidiControl::nameFromType(qtractorMidiEvent::CHANPRESS));
 	m_ui.TypeComboBox->addItem(
-		textFromType(qtractorMidiEvent::PITCHBEND));
+		qtractorMidiControl::nameFromType(qtractorMidiEvent::PITCHBEND));
 	m_ui.TypeComboBox->setCurrentIndex(3); // Controller.
 
 //	m_ui.ChannelComboBox->clear();
@@ -158,17 +87,17 @@ qtractorMidiControlForm::qtractorMidiControlForm (
 
 //	m_ui.CommandComboBox->clear();
 	m_ui.CommandComboBox->addItem(
-		textFromCommand(qtractorMidiControl::TRACK_GAIN));
+		qtractorMidiControl::nameFromCommand(qtractorMidiControl::TRACK_GAIN));
 	m_ui.CommandComboBox->addItem(
-		textFromCommand(qtractorMidiControl::TRACK_PANNING));
+		qtractorMidiControl::nameFromCommand(qtractorMidiControl::TRACK_PANNING));
 	m_ui.CommandComboBox->addItem(
-		textFromCommand(qtractorMidiControl::TRACK_MONITOR));
+		qtractorMidiControl::nameFromCommand(qtractorMidiControl::TRACK_MONITOR));
 	m_ui.CommandComboBox->addItem(
-		textFromCommand(qtractorMidiControl::TRACK_RECORD));
+		qtractorMidiControl::nameFromCommand(qtractorMidiControl::TRACK_RECORD));
 	m_ui.CommandComboBox->addItem(
-		textFromCommand(qtractorMidiControl::TRACK_MUTE));
+		qtractorMidiControl::nameFromCommand(qtractorMidiControl::TRACK_MUTE));
 	m_ui.CommandComboBox->addItem(
-		textFromCommand(qtractorMidiControl::TRACK_SOLO));
+		qtractorMidiControl::nameFromCommand(qtractorMidiControl::TRACK_SOLO));
 
 	stabilizeTypeChange();
 
@@ -392,8 +321,9 @@ void qtractorMidiControlForm::mapSlot (void)
 	if (pMidiControl == NULL)
 		return;
 
-	qtractorMidiControl::ControlType ctype = typeFromText(
-		m_ui.TypeComboBox->currentText());
+	qtractorMidiControl::ControlType ctype
+		= qtractorMidiControl::typeFromName(
+			m_ui.TypeComboBox->currentText());
 	unsigned short iChannel = channelFromText(
 		m_ui.ChannelComboBox->currentText());
 	unsigned short iParam = paramFromText(ctype,
@@ -402,8 +332,9 @@ void qtractorMidiControlForm::mapSlot (void)
 		&& (iChannel & qtractorMidiControl::TrackParam) == 0)
 		iParam |= qtractorMidiControl::TrackParam;
 
-	qtractorMidiControl::Command command = commandFromText(
-		m_ui.CommandComboBox->currentText());
+	qtractorMidiControl::Command command
+		= qtractorMidiControl::commandFromName(
+			m_ui.CommandComboBox->currentText());
 	int iTrack = m_ui.TrackSpinBox->value();
 	bool bFeedback = m_ui.FeedbackCheckBox->isChecked();
 
@@ -424,8 +355,9 @@ void qtractorMidiControlForm::unmapSlot (void)
 	if (pMidiControl == NULL)
 		return;
 
-	qtractorMidiControl::ControlType ctype = typeFromText(
-		m_ui.TypeComboBox->currentText());
+	qtractorMidiControl::ControlType ctype
+		= qtractorMidiControl::typeFromName(
+			m_ui.TypeComboBox->currentText());
 	unsigned short iChannel = channelFromText(
 		m_ui.ChannelComboBox->currentText());
 	unsigned short iParam = paramFromText(ctype,
@@ -589,8 +521,9 @@ void qtractorMidiControlForm::stabilizeTypeChange (void)
 {
 	m_ui.ParamComboBox->clear();
 //	m_ui.ParamComboBox->addItem("*");
-	qtractorMidiControl::ControlType ctype = typeFromText(
-		m_ui.TypeComboBox->currentText());
+	qtractorMidiControl::ControlType ctype
+		= qtractorMidiControl::typeFromName(
+			m_ui.TypeComboBox->currentText());
 	for (unsigned short iParam = 0; iParam < 128; ++iParam)
 		m_ui.ParamComboBox->addItem(textFromParam(ctype, iParam));
 }
@@ -617,7 +550,8 @@ void qtractorMidiControlForm::stabilizeKeyChange (void)
 	const QString& sChannel = m_ui.ChannelComboBox->currentText();
 	const QString& sParam   = m_ui.ParamComboBox->currentText();
 
-	qtractorMidiControl::ControlType ctype = typeFromText(sType);
+	qtractorMidiControl::ControlType ctype
+		= qtractorMidiControl::typeFromName(sType);
 	unsigned short iChannel = channelFromText(sChannel);
 	unsigned short iParam = paramFromText(ctype, sParam);
 	if (m_ui.TrackCheckBox->isChecked()
@@ -673,7 +607,8 @@ void qtractorMidiControlForm::stabilizeValueChange (void)
 	const QString& sChannel = m_ui.ChannelComboBox->currentText();
 	const QString& sParam   = m_ui.ParamComboBox->currentText();
 
-	qtractorMidiControl::ControlType ctype = typeFromText(sType);
+	qtractorMidiControl::ControlType ctype
+		= qtractorMidiControl::typeFromName(sType);
 	unsigned short iChannel = channelFromText(sChannel);
 	unsigned short iParam = paramFromText(ctype, sParam);
 	if (m_ui.TrackCheckBox->isChecked()
@@ -683,8 +618,9 @@ void qtractorMidiControlForm::stabilizeValueChange (void)
 	bool bMapped = pMidiControl->isChannelParamMapped(ctype, iChannel, iParam);
 
 	if (bMapped) {
-		qtractorMidiControl::Command command = commandFromText(
-			m_ui.CommandComboBox->currentText());
+		qtractorMidiControl::Command command
+			= qtractorMidiControl::commandFromName(
+				m_ui.CommandComboBox->currentText());
 		int iTrack = m_ui.TrackSpinBox->value();
 		bool bFeedback = m_ui.FeedbackCheckBox->isChecked();
 		pMidiControl->mapChannelParam(
@@ -800,14 +736,14 @@ void qtractorMidiControlForm::refreshControlMap (void)
 		const qtractorMidiControl::MapVal& val = it.value();
 		QTreeWidgetItem *pItem = new QTreeWidgetItem();
 		pItem->setIcon(0, QIcon(":/images/itemControllers.png"));
-		pItem->setText(0, textFromType(key.type()));
+		pItem->setText(0, qtractorMidiControl::nameFromType(key.type()));
 		pItem->setText(1, textFromChannel(key.channel()));
 		pItem->setText(2, textFromParam(key.type(), key.param()));
 		QString sText;
 		if (key.isParamTrack())
 			sText += "+ ";
 		pItem->setText(3, sText + QString::number(val.track()));
-		pItem->setText(4, textFromCommand(val.command()));
+		pItem->setText(4, qtractorMidiControl::nameFromCommand(val.command()));
 		pItem->setText(5, val.isFeedback() ? tr("Yes") : tr("No"));
 		items.append(pItem);
 	}
@@ -817,31 +753,6 @@ void qtractorMidiControlForm::refreshControlMap (void)
 	m_ui.ControlMapListView->setUpdatesEnabled(true);
 
 	stabilizeForm();
-}
-
-
-// Control type text conversion helpers.
-qtractorMidiControl::ControlType qtractorMidiControlForm::typeFromText (
-	const QString& sText ) const
-{
-	initControlTypes();
-
-	QHashIterator<qtractorMidiControl::ControlType, QString> iter(g_controlTypes);
-	while (iter.hasNext()) {
-		iter.next();
-		if (iter.value() == sText)
-			return iter.key();
-	}
-
-	return qtractorMidiControl::ControlType(0);
-}
-
-QString qtractorMidiControlForm::textFromType (
-	qtractorMidiControl::ControlType ctype ) const
-{
-	initControlTypes();
-
-	return g_controlTypes[ctype];
 }
 
 
@@ -892,31 +803,6 @@ QString qtractorMidiControlForm::textFromParam (
 	}
 
 	return sText;
-}
-
-
-// Command text conversion helpers.
-qtractorMidiControl::Command qtractorMidiControlForm::commandFromText (
-	const QString& sText ) const
-{
-	initCommandNames();
-
-	QHashIterator<qtractorMidiControl::Command, QString> iter(g_commandNames);
-	while (iter.hasNext()) {
-		iter.next();
-		if (iter.value() == sText)
-			return iter.key();
-	}
-
-	return qtractorMidiControl::Command(0);
-}
-
-QString qtractorMidiControlForm::textFromCommand (
-	qtractorMidiControl::Command command ) const
-{
-	initCommandNames();
-
-	return g_commandNames[command];
 }
 
 

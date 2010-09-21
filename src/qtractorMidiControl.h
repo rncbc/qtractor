@@ -217,13 +217,19 @@ public:
 
 	// Document textual helpers.
 	static ControlType typeFromText(const QString& sText);
-	static QString textFromType(ControlType ctype);
+	static const QString& textFromType(ControlType ctype);
+
+	static ControlType typeFromName(const QString& sName);
+	static const QString& nameFromType(ControlType ctype);
 
 	static unsigned short keyFromText(const QString& sText);
 	static QString textFromKey(unsigned short iKey);
 
 	static Command commandFromText(const QString& sText);
-	static QString textFromCommand(Command command);
+	static const QString& textFromCommand(Command command);
+
+	static Command commandFromName(const QString& sName);
+	static const QString& nameFromCommand(Command command);
 
 protected:
 
