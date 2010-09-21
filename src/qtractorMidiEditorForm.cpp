@@ -107,19 +107,19 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 
 	const QIcon iconEventType(":/images/itemProperty.png");
 	m_pEventTypeComboBox->addItem(iconEventType,
-		tr("Note Velocity"), int(qtractorMidiEvent::NOTEON));
+		tr("Note On"), int(qtractorMidiEvent::NOTEON));
 	m_pEventTypeComboBox->addItem(iconEventType,
-		tr("Key Pressure"), int(qtractorMidiEvent::KEYPRESS));
+		tr("Key Press"), int(qtractorMidiEvent::KEYPRESS));
 	m_pEventTypeComboBox->addItem(iconEventType,
 		tr("Controller"), int(qtractorMidiEvent::CONTROLLER));
 	m_pEventTypeComboBox->addItem(iconEventType,
-		tr("Program Change"), int(qtractorMidiEvent::PGMCHANGE));
+		tr("Pgm Change"), int(qtractorMidiEvent::PGMCHANGE));
 	m_pEventTypeComboBox->addItem(iconEventType,
-		tr("Channel Pressure"), int(qtractorMidiEvent::CHANPRESS));
+		tr("Chan Press"), int(qtractorMidiEvent::CHANPRESS));
 	m_pEventTypeComboBox->addItem(iconEventType,
 		tr("Pitch Bend"), int(qtractorMidiEvent::PITCHBEND));
 	m_pEventTypeComboBox->addItem(iconEventType,
-		tr("System Exclusive"), int(qtractorMidiEvent::SYSEX));
+		tr("Sys Ex"), int(qtractorMidiEvent::SYSEX));
 
 //	updateInstrumentNames();
 

@@ -131,7 +131,7 @@
     </widget>
    </item>
    <item row="4" column="0">
-    <widget class="QLabel" name="TypeTextLabel">
+    <widget class="QLabel" name="ControlTypeTextLabel">
      <property name="text">
       <string>&amp;Type</string>
      </property>
@@ -139,7 +139,7 @@
       <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
      </property>
      <property name="buddy">
-      <cstring>TypeComboBox</cstring>
+      <cstring>ControlTypeComboBox</cstring>
      </property>
     </widget>
    </item>
@@ -209,7 +209,7 @@
     </spacer>
    </item>
    <item row="5" column="0">
-    <widget class="QComboBox" name="TypeComboBox">
+    <widget class="QComboBox" name="ControlTypeComboBox">
      <property name="toolTip">
       <string>MIDI Event type</string>
      </property>
@@ -423,7 +423,7 @@
   <tabstop>RemovePushButton</tabstop>
   <tabstop>MoveUpPushButton</tabstop>
   <tabstop>MoveDownPushButton</tabstop>
-  <tabstop>TypeComboBox</tabstop>
+  <tabstop>ControlTypeComboBox</tabstop>
   <tabstop>ChannelComboBox</tabstop>
   <tabstop>ParamComboBox</tabstop>
   <tabstop>TrackCheckBox</tabstop>

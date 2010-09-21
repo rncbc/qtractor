@@ -63,22 +63,23 @@ qtractorMidiControlForm::qtractorMidiControlForm (
 	pHeader->setDefaultAlignment(Qt::AlignLeft);
 	pHeader->setMovable(false);
 
-//	m_ui.TypeComboBox->clear();
-	m_ui.TypeComboBox->addItem(
+	const QIcon iconControlType(":/images/itemProperty.png");
+//	m_ui.ControlTypeComboBox->clear();
+	m_ui.ControlTypeComboBox->addItem(iconControlType,
 		qtractorMidiControl::nameFromType(qtractorMidiEvent::NOTEON));
-	m_ui.TypeComboBox->addItem(
+	m_ui.ControlTypeComboBox->addItem(iconControlType,
 		qtractorMidiControl::nameFromType(qtractorMidiEvent::NOTEOFF));
-	m_ui.TypeComboBox->addItem(
+	m_ui.ControlTypeComboBox->addItem(iconControlType,
 		qtractorMidiControl::nameFromType(qtractorMidiEvent::KEYPRESS));
-	m_ui.TypeComboBox->addItem(
+	m_ui.ControlTypeComboBox->addItem(iconControlType,
 		qtractorMidiControl::nameFromType(qtractorMidiEvent::CONTROLLER));
-	m_ui.TypeComboBox->addItem(
+	m_ui.ControlTypeComboBox->addItem(iconControlType,
 		qtractorMidiControl::nameFromType(qtractorMidiEvent::PGMCHANGE));
-	m_ui.TypeComboBox->addItem(
+	m_ui.ControlTypeComboBox->addItem(iconControlType,
 		qtractorMidiControl::nameFromType(qtractorMidiEvent::CHANPRESS));
-	m_ui.TypeComboBox->addItem(
+	m_ui.ControlTypeComboBox->addItem(iconControlType,
 		qtractorMidiControl::nameFromType(qtractorMidiEvent::PITCHBEND));
-	m_ui.TypeComboBox->setCurrentIndex(3); // Controller.
+	m_ui.ControlTypeComboBox->setCurrentIndex(3); // Controller.
 
 //	m_ui.ChannelComboBox->clear();
 	m_ui.ChannelComboBox->addItem("*");
@@ -123,7 +124,7 @@ qtractorMidiControlForm::qtractorMidiControlForm (
 	QObject::connect(m_ui.MoveDownPushButton,
 		SIGNAL(clicked()),
 		SLOT(moveDownSlot()));
-	QObject::connect(m_ui.TypeComboBox,
+	QObject::connect(m_ui.ControlTypeComboBox,
 		SIGNAL(activated(int)),
 		SLOT(typeChangedSlot()));
 	QObject::connect(m_ui.ChannelComboBox,
@@ -323,7 +324,7 @@ void qtractorMidiControlForm::mapSlot (void)
 
 	qtractorMidiControl::ControlType ctype
 		= qtractorMidiControl::typeFromName(
-			m_ui.TypeComboBox->currentText());
+			m_ui.ControlTypeComboBox->currentText());
 	unsigned short iChannel = channelFromText(
 		m_ui.ChannelComboBox->currentText());
 	unsigned short iParam = paramFromText(ctype,
@@ -357,7 +358,7 @@ void qtractorMidiControlForm::unmapSlot (void)
 
 	qtractorMidiControl::ControlType ctype
 		= qtractorMidiControl::typeFromName(
-			m_ui.TypeComboBox->currentText());
+			m_ui.ControlTypeComboBox->currentText());
 	unsigned short iChannel = channelFromText(
 		m_ui.ChannelComboBox->currentText());
 	unsigned short iParam = paramFromText(ctype,
@@ -523,7 +524,7 @@ void qtractorMidiControlForm::stabilizeTypeChange (void)
 //	m_ui.ParamComboBox->addItem("*");
 	qtractorMidiControl::ControlType ctype
 		= qtractorMidiControl::typeFromName(
-			m_ui.TypeComboBox->currentText());
+			m_ui.ControlTypeComboBox->currentText());
 	for (unsigned short iParam = 0; iParam < 128; ++iParam)
 		m_ui.ParamComboBox->addItem(textFromParam(ctype, iParam));
 }
@@ -546,7 +547,7 @@ void qtractorMidiControlForm::stabilizeKeyChange (void)
 	if (pMidiControl == NULL)
 		return;
 
-	const QString& sType    = m_ui.TypeComboBox->currentText();
+	const QString& sType    = m_ui.ControlTypeComboBox->currentText();
 	const QString& sChannel = m_ui.ChannelComboBox->currentText();
 	const QString& sParam   = m_ui.ParamComboBox->currentText();
 
@@ -603,7 +604,7 @@ void qtractorMidiControlForm::stabilizeValueChange (void)
 	if (pMidiControl == NULL)
 		return;
 
-	const QString& sType    = m_ui.TypeComboBox->currentText();
+	const QString& sType    = m_ui.ControlTypeComboBox->currentText();
 	const QString& sChannel = m_ui.ChannelComboBox->currentText();
 	const QString& sParam   = m_ui.ParamComboBox->currentText();
 
@@ -654,8 +655,8 @@ void qtractorMidiControlForm::stabilizeForm (void)
 	pItem = m_ui.ControlMapListView->currentItem();
 	if (pItem) {
 		m_iUpdating++;
-		m_ui.TypeComboBox->setCurrentIndex(
-			m_ui.TypeComboBox->findText(pItem->text(0)));
+		m_ui.ControlTypeComboBox->setCurrentIndex(
+			m_ui.ControlTypeComboBox->findText(pItem->text(0)));
 		stabilizeTypeChange();
 		m_ui.ChannelComboBox->setCurrentIndex(
 			m_ui.ChannelComboBox->findText(pItem->text(1)));
