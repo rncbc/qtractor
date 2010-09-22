@@ -24,6 +24,9 @@
 #include "qtractorMidiControl.h"
 #include "qtractorMidiEngine.h"
 
+#include "qtractorMidiControlObserver.h"
+#include "qtractorMidiControlObserverForm.h"
+
 #include "qtractorTrackCommand.h"
 
 #include "qtractorDocument.h"
@@ -215,6 +218,18 @@ qtractorMidiControl::findEvent ( const qtractorCtlEvent& ctle ) const
 // Process incoming controller event.
 bool qtractorMidiControl::processEvent ( const qtractorCtlEvent& ctle ) const
 {
+	// Find whether there's any observer assigned...
+	qtractorMidiControlObserver *pMidiObserver
+		= findMidiObserver(ctle.type(), ctle.channel(), ctle.param());
+	if (pMidiObserver)
+		pMidiObserver->setMidiValue(ctle.value());
+	else {
+		qtractorMidiControlObserverForm *pMidiObserverForm
+			= qtractorMidiControlObserverForm::getInstance();
+		if (pMidiObserverForm)
+			pMidiObserverForm->processEvent(ctle);
+	}
+
 	// Find incoming controller event map tuple.
 	ControlMap::ConstIterator it = findEvent(ctle);
 	// Is there one mapped, indeed?
@@ -416,6 +431,48 @@ void qtractorMidiControl::sendController ( ControlType ctype,
 #endif
 
 	pMidiBus->sendEvent(ctype, iChannel, iParam, iValue);
+}
+
+
+// Insert/remove observer mappings.
+void qtractorMidiControl::mapMidiObserver (
+	qtractorMidiControlObserver *pMidiObserver )
+{
+	MapKey key(
+		pMidiObserver->type(),
+		pMidiObserver->channel(),
+		pMidiObserver->param());
+
+	m_observerMap.insert(key, pMidiObserver);
+}
+
+void qtractorMidiControl::unmapMidiObserver (
+	qtractorMidiControlObserver *pMidiObserver )
+{
+	MapKey key(
+		pMidiObserver->type(),
+		pMidiObserver->channel(),
+		pMidiObserver->param());
+
+	m_observerMap.remove(key);
+}
+
+// Observer map predicate.
+bool qtractorMidiControl::isMidiObserverMapped (
+	qtractorMidiControlObserver *pMidiObserver ) const
+{
+	return (findMidiObserver(
+		pMidiObserver->type(),
+		pMidiObserver->channel(),
+		pMidiObserver->param()) == pMidiObserver);
+}
+
+
+// Observer finder.
+qtractorMidiControlObserver *qtractorMidiControl::findMidiObserver (
+	ControlType ctype, unsigned short iChannel, unsigned short iParam) const
+{
+	return m_observerMap.value(MapKey(ctype, iChannel, iParam), NULL);
 }
 
 

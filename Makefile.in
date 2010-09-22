@@ -47,6 +47,7 @@ headers = \
 	src/qtractorMidiClip.h \
 	src/qtractorMidiConnect.h \
 	src/qtractorMidiControl.h \
+	src/qtractorMidiControlObserver.h \
 	src/qtractorMidiCursor.h \
 	src/qtractorMidiEditor.h \
 	src/qtractorMidiEditCommand.h \
@@ -106,6 +107,7 @@ headers = \
 	src/qtractorInstrumentForm.h \
 	src/qtractorMainForm.h \
 	src/qtractorMidiControlForm.h \
+	src/qtractorMidiControlObserverForm.h \
 	src/qtractorMidiEditorForm.h \
 	src/qtractorMidiSysexForm.h \
 	src/qtractorMidiToolsForm.h \
@@ -155,6 +157,7 @@ sources = \
 	src/qtractorMidiClip.cpp \
 	src/qtractorMidiConnect.cpp \
 	src/qtractorMidiControl.cpp \
+	src/qtractorMidiControlObserver.cpp \
 	src/qtractorMidiCursor.cpp \
 	src/qtractorMidiEditor.cpp \
 	src/qtractorMidiEditCommand.cpp \
@@ -209,6 +212,7 @@ sources = \
 	src/qtractorInstrumentForm.cpp \
 	src/qtractorMainForm.cpp \
 	src/qtractorMidiControlForm.cpp \
+	src/qtractorMidiControlObserverForm.cpp \
 	src/qtractorMidiEditorForm.cpp \
 	src/qtractorMidiSysexForm.cpp \
 	src/qtractorMidiToolsForm.cpp \
@@ -229,6 +233,7 @@ forms = \
 	src/qtractorInstrumentForm.ui \
 	src/qtractorMainForm.ui \
 	src/qtractorMidiControlForm.ui \
+	src/qtractorMidiControlObserverForm.ui \
 	src/qtractorMidiEditorForm.ui \
 	src/qtractorMidiSysexForm.ui \
 	src/qtractorMidiToolsForm.ui \

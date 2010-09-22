@@ -86,18 +86,19 @@ qtractorMidiControlForm::qtractorMidiControlForm (
 	for (unsigned short iChannel = 0; iChannel < 16; ++iChannel)
 		m_ui.ChannelComboBox->addItem(textFromChannel(iChannel));
 
+	const QIcon iconCommand(":/images/itemChannel.png");
 //	m_ui.CommandComboBox->clear();
-	m_ui.CommandComboBox->addItem(
+	m_ui.CommandComboBox->addItem(iconCommand,
 		qtractorMidiControl::nameFromCommand(qtractorMidiControl::TRACK_GAIN));
-	m_ui.CommandComboBox->addItem(
+	m_ui.CommandComboBox->addItem(iconCommand,
 		qtractorMidiControl::nameFromCommand(qtractorMidiControl::TRACK_PANNING));
-	m_ui.CommandComboBox->addItem(
+	m_ui.CommandComboBox->addItem(iconCommand,
 		qtractorMidiControl::nameFromCommand(qtractorMidiControl::TRACK_MONITOR));
-	m_ui.CommandComboBox->addItem(
+	m_ui.CommandComboBox->addItem(iconCommand,
 		qtractorMidiControl::nameFromCommand(qtractorMidiControl::TRACK_RECORD));
-	m_ui.CommandComboBox->addItem(
+	m_ui.CommandComboBox->addItem(iconCommand,
 		qtractorMidiControl::nameFromCommand(qtractorMidiControl::TRACK_MUTE));
-	m_ui.CommandComboBox->addItem(
+	m_ui.CommandComboBox->addItem(iconCommand,
 		qtractorMidiControl::nameFromCommand(qtractorMidiControl::TRACK_SOLO));
 
 	stabilizeTypeChange();
@@ -525,8 +526,9 @@ void qtractorMidiControlForm::stabilizeTypeChange (void)
 	qtractorMidiControl::ControlType ctype
 		= qtractorMidiControl::typeFromName(
 			m_ui.ControlTypeComboBox->currentText());
+	const QIcon iconParam(":/images/itemControllers.png");
 	for (unsigned short iParam = 0; iParam < 128; ++iParam)
-		m_ui.ParamComboBox->addItem(textFromParam(ctype, iParam));
+		m_ui.ParamComboBox->addItem(iconParam, textFromParam(ctype, iParam));
 }
 
 
@@ -732,18 +734,23 @@ void qtractorMidiControlForm::refreshControlMap (void)
 	QList<QTreeWidgetItem *> items;
 	const qtractorMidiControl::ControlMap& controlMap = pMidiControl->controlMap();
 	qtractorMidiControl::ControlMap::ConstIterator it = controlMap.constBegin();
+	const QIcon	iconControlType(":/images/itemProperty.png");
+	const QIcon	iconParam(":/images/itemControllers.png");
+	const QIcon	iconCommand(":/images/itemChannel.png");
 	for ( ; it != controlMap.constEnd(); ++it) {
 		const qtractorMidiControl::MapKey& key = it.key();
 		const qtractorMidiControl::MapVal& val = it.value();
 		QTreeWidgetItem *pItem = new QTreeWidgetItem();
-		pItem->setIcon(0, QIcon(":/images/itemControllers.png"));
+		pItem->setIcon(0, iconControlType);
 		pItem->setText(0, qtractorMidiControl::nameFromType(key.type()));
 		pItem->setText(1, textFromChannel(key.channel()));
+		pItem->setIcon(2, iconParam);
 		pItem->setText(2, textFromParam(key.type(), key.param()));
 		QString sText;
 		if (key.isParamTrack())
 			sText += "+ ";
 		pItem->setText(3, sText + QString::number(val.track()));
+		pItem->setIcon(4, iconCommand);
 		pItem->setText(4, qtractorMidiControl::nameFromCommand(val.command()));
 		pItem->setText(5, val.isFeedback() ? tr("Yes") : tr("No"));
 		items.append(pItem);

@@ -32,6 +32,8 @@ class qtractorTrack;
 class qtractorDocument;
 class qtractorCtlEvent;
 
+class qtractorMidiControlObserver;
+
 class QDomElement;
 
 
@@ -192,6 +194,9 @@ public:
 	// Re-send all (track) controllers.
 	void sendAllControllers(int iFirstTrack = 0) const;
 
+	void sendController(ControlType ctype,
+		unsigned short iChannel, unsigned short iParam, int iValue) const;
+
 	// Process incoming controller messages.
 	bool processEvent(const qtractorCtlEvent& ctle) const;
 
@@ -203,6 +208,20 @@ public:
 
 	// Control map accessor.
 	const ControlMap& controlMap() const { return m_controlMap; }
+
+	// Insert/remove observer mappings.
+	void mapMidiObserver(qtractorMidiControlObserver *pMidiObserver);
+	void unmapMidiObserver(qtractorMidiControlObserver *pMidiObserver);
+
+	// Observer map predicate.
+	bool isMidiObserverMapped(qtractorMidiControlObserver *pMidiObserver) const;
+
+	// Observer finder.
+	qtractorMidiControlObserver *findMidiObserver(
+		ControlType ctype,
+		unsigned short iChannel,
+		unsigned short iParam) const;
+
 
 	// Forward declaration.
 	class Document;
@@ -242,13 +261,16 @@ protected:
 		unsigned short iChannel, unsigned short iParam) const;
 	void sendTrackController(int iTrack, Command command, int iValue) const;
 
-	void sendController(ControlType ctype,
-		unsigned short iChannel, unsigned short iParam, int iValue) const;
-
 private:
 
 	// MIDI control map.
 	ControlMap m_controlMap;
+
+	// MIDI observer map.
+	typedef QHash<MapKey, qtractorMidiControlObserver *> ObserverMap;
+
+	// MIDI observer map.
+	ObserverMap m_observerMap;
 
 	// Pseudo-singleton instance.
 	static qtractorMidiControl *g_pMidiControl;
