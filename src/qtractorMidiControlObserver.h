@@ -78,7 +78,7 @@ public:
 protected:
 
 	// Updater.
-	void update();
+	virtual void update();
 
 private:
 

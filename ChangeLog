@@ -9,7 +9,7 @@ SVN TRUNK
   sneaking in, getting ready for the so-called and
   long-awaited "MIDI Learn" feature and arbitrary
   MIDI controller assignment for plugin parameters
-  in particular.
+  in particular. (EXPERIMENTAL)
 
 - MMC DEFERRED PLAY doesn't cause transport state to
   stop if currently rolling (mitigating bug #3067264).

@@ -24,7 +24,7 @@
 
 #include "qtractorEngine.h"
 
-#include "qtractorObserver.h"
+#include "qtractorMidiControlObserver.h"
 
 #include <QStringList>
 #include <QLibrary>
@@ -38,7 +38,6 @@ class qtractorPluginPath;
 class qtractorPluginFile;
 class qtractorPluginList;
 class qtractorPluginParam;
-class qtractorPluginParamObserver;
 class qtractorPluginForm;
 class qtractorPlugin;
 
@@ -443,6 +442,28 @@ public:
 	void saveConfigs(QDomDocument *pDocument, QDomElement *pElement);
 	void saveValues(QDomDocument *pDocument, QDomElement *pElement);
 
+	// Parameter controllers (MIDI).
+	struct Controller
+	{
+		unsigned long index;
+		qtractorMidiControl::ControlType ctype;
+		unsigned short channel;
+		unsigned short param;
+		bool logarithmic;
+		bool feedback;
+	};
+
+	typedef QList<Controller *> Controllers;
+
+	// Load plugin parameter controllers (MIDI).
+	static void loadControllers(QDomElement *pElement, Controllers& controllers);
+
+	// Save plugin parameter controllers (MIDI).
+	void saveControllers(qtractorSessionDocument *pDocument, QDomElement *pElement);
+
+	// Map/realize plugin parameter controllers (MIDI).
+	void mapControllers(Controllers& controllers);
+
 protected:
 
 	// Instance number settler.
@@ -631,7 +652,6 @@ public:
 	// Constructor.
 	qtractorPluginParam(qtractorPlugin *pPlugin, unsigned long iIndex)
 		: m_pPlugin(pPlugin), m_iIndex(iIndex),
-			m_fMinValue(0.0f), m_fMaxValue(0.0f),
 			m_fDefaultValue(0.0f), m_subject(0.0f),
 			m_observer(&m_subject, this) {}
 
@@ -661,14 +681,14 @@ public:
 	
 	// Bounding range values.
 	void setMinValue(float fMinValue)
-		{ m_fMinValue = fMinValue; }
+		{ m_observer.setMinValue(fMinValue); }
 	float minValue() const
-		{ return m_fMinValue; }
+		{ return m_observer.minValue(); }
 
 	void setMaxValue(float fMaxValue)
-		{ m_fMaxValue = fMaxValue; }
+		{ m_observer.setMaxValue(fMaxValue); }
 	float maxValue() const
-		{ return m_fMaxValue; }
+		{ return m_observer.maxValue(); }
 	
 	// Default value
 	void setDefaultValue(float fDefaultValue);
@@ -678,18 +698,22 @@ public:
 	//------------------------------------------------------------------------
 	// Observer -- Local dedicated observer.
 	
-	class Observer : public qtractorObserver
+	class Observer : public qtractorMidiControlObserver
 	{
 	public:
 	
 		// Constructor.
 		Observer(qtractorSubject *pSubject, qtractorPluginParam *pParam)
-			: qtractorObserver(pSubject), m_pParam(pParam) {}
+			: qtractorMidiControlObserver(pSubject), m_pParam(pParam) {}
 	
 	protected:
 	
 		// Update feedback.
-		void update() { m_pParam->updateValue(value(), true); }
+		void update()
+		{
+			m_pParam->updateValue(value(), true);
+			qtractorMidiControlObserver::update();
+		}
 	
 	private:
 	
@@ -710,8 +734,11 @@ public:
 	// Reset-to-default method.
 	void reset() { setValue(m_fDefaultValue, true); }
 
-	// Direct parameter value.
+	// Direct parameter subject value.
 	qtractorSubject *subject() { return &m_subject; }
+
+	// Specialized observer value.
+	Observer *observer() { return &m_observer; }
 
 private:
 
@@ -722,9 +749,7 @@ private:
 	// Parameter name/label.
 	QString m_sName;
 
-	// Port value limits.
-	float m_fMinValue;
-	float m_fMaxValue;
+	// Port default value.
 	float m_fDefaultValue;
 	
 	// Port subject value.

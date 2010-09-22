@@ -32,6 +32,8 @@ class qtractorPlugin;
 class qtractorPluginParam;
 class qtractorPluginParamWidget;
 
+class qtractorMidiControlObserver;
+
 class qtractorObserverCheckBox;
 class qtractorObserverSlider;
 class qtractorObserverSpinBox;
@@ -85,6 +87,7 @@ protected slots:
 	void sendsSlot();
 	void returnsSlot();
 	void activateSlot(bool bOn);
+	void midiControlActionSlot();
 
 protected:
 
@@ -92,6 +95,10 @@ protected:
 
 	// Show insert pseudo-plugin audio bus connections.
 	void insertPluginBus(int iBusMode);
+
+	// MIDI controller/observer attachement (context menu)
+	void addMidiControlAction(
+		QWidget *pWidget, qtractorMidiControlObserver *pObserver);
 
 	// Keyboard event handler.
 	void keyPressEvent(QKeyEvent *);

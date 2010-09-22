@@ -28,6 +28,8 @@
 
 #include "qtractorObserverWidget.h"
 
+#include "qtractorMidiControlObserverForm.h"
+
 #include "qtractorOptions.h"
 #include "qtractorSession.h"
 #include "qtractorEngine.h"
@@ -183,6 +185,7 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 				= new qtractorPluginParamWidget(pParam, this);
 			m_paramWidgets.insert(pParam->index(), pParamWidget);
 			m_pGridLayout->addWidget(pParamWidget, iRow, iCol);
+			addMidiControlAction(pParamWidget, pParam->observer());
 			if (++iRow >= iRows) {
 				iRow = 0;
 				iCol++;
@@ -786,6 +789,44 @@ void qtractorPluginForm::keyPressEvent ( QKeyEvent *pKeyEvent )
 
 	// Make sure we've get focus back...
 	QWidget::setFocus();
+}
+
+
+// MIDI controller/observer attachement (context menu)
+//
+Q_DECLARE_METATYPE(qtractorMidiControlObserver *);
+
+void qtractorPluginForm::addMidiControlAction (
+	QWidget *pWidget, qtractorMidiControlObserver *pMidiObserver )
+{
+	QAction *pAction = new QAction(
+		QIcon(":/images/itemControllers.png"),
+		tr("MIDI Controller..."), pWidget);
+
+	pAction->setData(
+		qVariantFromValue<qtractorMidiControlObserver *> (pMidiObserver));
+
+	QObject::connect(pAction,
+		SIGNAL(triggered(bool)),
+		SLOT(midiControlActionSlot()));
+
+	pWidget->addAction(pAction);
+	pWidget->setContextMenuPolicy(Qt::ActionsContextMenu);
+}
+
+
+void qtractorPluginForm::midiControlActionSlot (void)
+{
+	QAction *pAction = qobject_cast<QAction *> (sender());
+	if (pAction) {
+		qtractorMidiControlObserver *pMidiObserver
+			= qVariantValue<qtractorMidiControlObserver *> (pAction->data());
+		if (pMidiObserver) {
+			qtractorMidiControlObserverForm form(this);
+			form.setMidiObserver(pMidiObserver);
+			form.exec();
+		}
+	}
 }
 
 

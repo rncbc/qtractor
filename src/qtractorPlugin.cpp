@@ -1405,6 +1405,7 @@ bool qtractorPluginList::loadElement ( qtractorSessionDocument *pDocument,
 			bool bActivated = false;
 			qtractorPlugin::Configs configs;
 			qtractorPlugin::Values values;
+			qtractorPlugin::Controllers controllers;
 			qtractorPluginType::Hint typeHint
 				= qtractorPluginType::hintFromText(
 					ePlugin.attribute("type"));
@@ -1442,6 +1443,11 @@ bool qtractorPluginList::loadElement ( qtractorSessionDocument *pDocument,
 					// Load plugin parameter values...
 					qtractorPlugin::loadValues(&eParam, values);
 				}
+				else
+				if (eParam.tagName() == "controllers") {
+					// Load plugin parameter controllers...
+					qtractorPlugin::loadControllers(&eParam, controllers);
+				}
 			}
 			qtractorPlugin *pPlugin
 				= qtractorPluginFile::createPlugin(this,
@@ -1462,8 +1468,12 @@ bool qtractorPluginList::loadElement ( qtractorSessionDocument *pDocument,
 				if (!values.isEmpty())
 					pPlugin->setValues(values);
 				append(pPlugin);
+				pPlugin->mapControllers(controllers);
 				pPlugin->setActivated(bActivated); // Later's better!
 			}
+			// Cleanup.
+			qDeleteAll(controllers);
+			controllers.clear();
 		}
 		else
 		// Load audio output bus flag...
@@ -1528,6 +1538,10 @@ bool qtractorPluginList::saveElement ( qtractorSessionDocument *pDocument,
 		QDomElement eParams = pDocument->document()->createElement("params");
 		pPlugin->saveValues(pDocument->document(), &eParams);
 		ePlugin.appendChild(eParams);
+		QDomElement eControllers
+			= pDocument->document()->createElement("controllers");
+		pPlugin->saveControllers(pDocument, &eControllers);
+		ePlugin.appendChild(eControllers);
 		// Add this plugin...
 		pElement->appendChild(ePlugin);
 
@@ -1557,6 +1571,110 @@ bool qtractorPluginList::saveElement ( qtractorSessionDocument *pDocument,
 }
 
 
+// Load plugin parameter controllers (MIDI).
+void qtractorPlugin::loadControllers (
+	QDomElement *pElement, Controllers& controllers )
+{
+	qDeleteAll(controllers);
+	controllers.clear();
+
+	qtractorMidiControl *pMidiControl = qtractorMidiControl::getInstance();
+	if (pMidiControl == NULL)
+		return;
+
+	for (QDomNode nController = pElement->firstChild();
+			!nController.isNull(); nController = nController.nextSibling()) {
+		// Convert node to element, if any.
+		QDomElement eController = nController.toElement();
+		if (eController.isNull())
+			continue;
+		// Check for controller item...
+		if (eController.tagName() == "controller") {
+			unsigned long iIndex = eController.attribute("index").toULong();
+			Controller *pController = new Controller;
+			pController->index = iIndex;
+			for (QDomNode nProp = eController.firstChild();
+					!nProp.isNull(); nProp = nProp.nextSibling()) {
+				// Convert node to element, if any.
+				QDomElement eProp = nProp.toElement();
+				if (eProp.isNull())
+					continue;
+				// Check for property item...
+				if (eProp.tagName() == "type")
+					pController->ctype = qtractorMidiControl::typeFromText(eProp.text());
+				else
+				if (eProp.tagName() == "channel")
+					pController->channel = eProp.text().toUShort();
+				else
+				if (eProp.tagName() == "param")
+					pController->param = eProp.text().toUShort();
+				else
+				if (eProp.tagName() == "logarithmic")
+					pController->logarithmic = qtractorDocument::boolFromText(eProp.text());
+				else
+				if (eProp.tagName() == "feedback")
+					pController->feedback = qtractorDocument::boolFromText(eProp.text());
+			}
+			controllers.append(pController);
+		}
+	}
+}
+
+
+// Save plugin parameter controllers (MIDI).
+void qtractorPlugin::saveControllers (
+	qtractorSessionDocument *pDocument, QDomElement *pElement )
+{
+	qtractorMidiControl *pMidiControl = qtractorMidiControl::getInstance();
+	if (pMidiControl == NULL)
+		return;
+
+	QListIterator<qtractorPluginParam *> param(m_params);
+	while (param.hasNext()) {
+		qtractorPluginParam *pParam = param.next();
+		qtractorPluginParam::Observer *pObserver = pParam->observer();
+		if (!pMidiControl->isMidiObserverMapped(pObserver))
+			continue;
+		QDomElement eController = pDocument->document()->createElement("controller");
+		eController.setAttribute("index", QString::number(pParam->index()));
+		pDocument->saveTextElement("type",
+			qtractorMidiControl::textFromType(pObserver->type()), &eController);
+		pDocument->saveTextElement("channel",
+			QString::number(pObserver->channel()), &eController);
+		pDocument->saveTextElement("param",
+			QString::number(pObserver->param()), &eController);
+		pDocument->saveTextElement("logarithmic",
+			qtractorDocument::textFromBool(pObserver->isLogarithmic()), &eController);
+		pDocument->saveTextElement("feedback",
+			qtractorDocument::textFromBool(pObserver->isFeedback()), &eController);
+		pElement->appendChild(eController);
+	}
+}
+
+
+// Map/realize plugin parameter controllers (MIDI).
+void qtractorPlugin::mapControllers ( Controllers& controllers )
+{
+	qtractorMidiControl *pMidiControl = qtractorMidiControl::getInstance();
+	if (pMidiControl) {
+		QListIterator<Controller *> iter(controllers);
+		while (iter.hasNext()) {
+			Controller *pController = iter.next();
+			qtractorPluginParam *pParam = findParam(pController->index);
+			if (pParam == NULL)
+				continue;
+			qtractorPluginParam::Observer *pObserver = pParam->observer();
+			pObserver->setType(pController->ctype);
+			pObserver->setChannel(pController->channel);
+			pObserver->setParam(pController->param);
+			pObserver->setLogarithmic(pController->logarithmic);
+			pObserver->setFeedback(pController->feedback);
+			pMidiControl->mapMidiObserver(pObserver);
+		}
+	}
+}
+
+
 //----------------------------------------------------------------------------
 // qtractorPluginParam -- Plugin parameter (control input port) instance.
 //
@@ -1567,11 +1685,11 @@ void qtractorPluginParam::setDefaultValue ( float fDefaultValue )
 //	if (!isDefaultValue())
 //		return;
 
-	if (isBoundedAbove() && fDefaultValue > m_fMaxValue)
-		fDefaultValue = m_fMaxValue;
+	if (isBoundedAbove() && fDefaultValue > maxValue())
+		fDefaultValue = maxValue();
 	else
-	if (isBoundedBelow() && fDefaultValue < m_fMinValue)
-		fDefaultValue = m_fMinValue;
+	if (isBoundedBelow() && fDefaultValue < minValue())
+		fDefaultValue = minValue();
 
 	m_fDefaultValue = fDefaultValue;
 }
@@ -1580,11 +1698,11 @@ void qtractorPluginParam::setDefaultValue ( float fDefaultValue )
 // Current port value.
 void qtractorPluginParam::setValue ( float fValue, bool bUpdate )
 {
-	if (isBoundedAbove() && fValue > m_fMaxValue)
-		fValue = m_fMaxValue;
+	if (isBoundedAbove() && fValue > maxValue())
+		fValue = maxValue();
 	else
-	if (isBoundedBelow() && fValue < m_fMinValue)
-		fValue = m_fMinValue;
+	if (isBoundedBelow() && fValue < minValue())
+		fValue = minValue();
 
 	m_observer.setValue(fValue);
 
