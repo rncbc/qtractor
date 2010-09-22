@@ -174,7 +174,7 @@ void qtractorMidiControlObserverForm::processEvent ( const qtractorCtlEvent& ctl
 void qtractorMidiControlObserverForm::activateControlType (
 	const QString& sControlType )
 {
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	qDebug("qtractorMidiControlObserverForm::activateControlType(\"%s\")",
 		sControlType.toUtf8().constData());
 #endif
@@ -184,7 +184,7 @@ void qtractorMidiControlObserverForm::activateControlType (
 	if (!ctype)
 		return;
 
-	const QIcon icon(":/images/itemController.png");
+	const QIcon icon(":/images/itemControllers.png");
 	m_ui.ParamComboBox->clear();
 	switch (ctype) {
 	case qtractorMidiEvent::CHANPRESS:
@@ -238,7 +238,7 @@ void qtractorMidiControlObserverForm::change (void)
 	if (m_iDirtySetup > 0)
 		return;
 
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	qDebug("qtractorMidiControlObserverForm::change()");
 #endif
 
@@ -250,7 +250,7 @@ void qtractorMidiControlObserverForm::change (void)
 // Reset settings (action button slot).
 void qtractorMidiControlObserverForm::click ( QAbstractButton *pButton )
 {
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	qDebug("qtractorMidiControlObserverForm::buttonClick(%p)", pButton);
 #endif
 
@@ -269,7 +269,7 @@ void qtractorMidiControlObserverForm::accept (void)
 	if (pMidiControl == NULL)
 		return;
 
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	qDebug("qtractorMidiControlObserverForm::accept()");
 #endif
 
@@ -323,7 +323,7 @@ void qtractorMidiControlObserverForm::accept (void)
 // Reject settings (Cancel button slot).
 void qtractorMidiControlObserverForm::reject (void)
 {
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	qDebug("qtractorMidiControlObserverForm::reject()");
 #endif
 
@@ -353,7 +353,7 @@ void qtractorMidiControlObserverForm::reject (void)
 // Reset settings (Reset button slot).
 void qtractorMidiControlObserverForm::reset (void)
 {
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	qDebug("qtractorMidiControlObserverForm::reset()");
 #endif
 
@@ -363,7 +363,7 @@ void qtractorMidiControlObserverForm::reset (void)
 		pMidiControl->unmapMidiObserver(m_pMidiObserver);
 
 	// Bail out...
-	QDialog::reject();
+	QDialog::accept();
 }
 
 

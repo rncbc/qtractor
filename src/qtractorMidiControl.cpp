@@ -738,7 +738,7 @@ static struct
 	{ qtractorMidiControl::TRACK_MUTE,    "TRACK_MUTE",    QT_TR_NOOP("Track Mute")    },
 	{ qtractorMidiControl::TRACK_SOLO,    "TRACK_SOLO",    QT_TR_NOOP("Track Solo")    },
 
-	{ qtractorMidiControl::Command(0), NULL }
+	{ qtractorMidiControl::Command(0), NULL, NULL }
 };
 
 static QHash<qtractorMidiControl::Command, QString> g_commandTexts;

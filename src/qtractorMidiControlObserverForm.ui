@@ -26,17 +26,17 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>264</width>
-    <height>161</height>
+    <width>360</width>
+    <height>120</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>MIDI Controller - Qtractor</string>
   </property>
   <property name="windowIcon">
-   <iconset>:/images/itemControllers.png</iconset>
+   <iconset resource="qtractor.qrc">:/images/itemControllers.png</iconset>
   </property>
-  <layout class="QVBoxLayout">
+  <layout class="QHBoxLayout">
    <item>
     <layout class="QGridLayout">
      <item row="0" column="0">
@@ -49,10 +49,20 @@
        </property>
       </widget>
      </item>
-     <item row="0" column="1" colspan="2">
-      <widget class="QComboBox" name="ControlTypeComboBox"/>
+     <item row="0" column="1">
+      <widget class="QComboBox" name="ControlTypeComboBox">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="toolTip">
+        <string>MIDI event type</string>
+       </property>
+      </widget>
      </item>
-     <item row="1" column="0">
+     <item row="0" column="2">
       <widget class="QLabel" name="ChannelTextLabel">
        <property name="text">
         <string>Cha&amp;nnel:</string>
@@ -62,8 +72,11 @@
        </property>
       </widget>
      </item>
-     <item row="1" column="1">
+     <item row="0" column="3">
       <widget class="QSpinBox" name="ChannelSpinBox">
+       <property name="toolTip">
+        <string>MIDI channel</string>
+       </property>
        <property name="specialValueText">
         <string>(Any)</string>
        </property>
@@ -75,7 +88,7 @@
        </property>
       </widget>
      </item>
-     <item row="2" column="0">
+     <item row="1" column="0">
       <widget class="QLabel" name="ParamTextLabel">
        <property name="text">
         <string>&amp;Parameter:</string>
@@ -85,17 +98,27 @@
        </property>
       </widget>
      </item>
-     <item row="2" column="1" colspan="3">
-      <widget class="QComboBox" name="ParamComboBox"/>
+     <item row="1" column="1" colspan="3">
+      <widget class="QComboBox" name="ParamComboBox">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="toolTip">
+        <string>MIDI parameter</string>
+       </property>
+      </widget>
      </item>
-     <item row="3" column="1" colspan="2">
+     <item row="2" column="1" colspan="2">
       <widget class="QCheckBox" name="LogarithmicCheckBox">
        <property name="text">
         <string>&amp;Logarithmic</string>
        </property>
       </widget>
      </item>
-     <item row="3" column="3">
+     <item row="3" column="1" colspan="2">
       <widget class="QCheckBox" name="FeedbackCheckBox">
        <property name="text">
         <string>&amp;Feedback</string>
@@ -106,6 +129,9 @@
    </item>
    <item>
     <widget class="QDialogButtonBox" name="DialogButtonBox">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
      <property name="standardButtons">
       <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok|QDialogButtonBox::Reset</set>
      </property>
@@ -113,15 +139,17 @@
    </item>
   </layout>
  </widget>
- <layoutdefault spacing="4" margin="4"/>
+ <layoutdefault spacing="4" margin="8"/>
  <tabstops>
   <tabstop>ControlTypeComboBox</tabstop>
   <tabstop>ChannelSpinBox</tabstop>
   <tabstop>ParamComboBox</tabstop>
-  <tabstop>FeedbackCheckBox</tabstop>
   <tabstop>LogarithmicCheckBox</tabstop>
+  <tabstop>FeedbackCheckBox</tabstop>
   <tabstop>DialogButtonBox</tabstop>
  </tabstops>
- <resources/>
+ <resources>
+  <include location="qtractor.qrc"/>
+ </resources>
  <connections/>
 </ui>

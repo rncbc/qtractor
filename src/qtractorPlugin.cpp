@@ -1590,9 +1590,9 @@ void qtractorPlugin::loadControllers (
 			continue;
 		// Check for controller item...
 		if (eController.tagName() == "controller") {
-			unsigned long iIndex = eController.attribute("index").toULong();
 			Controller *pController = new Controller;
-			pController->index = iIndex;
+			pController->index = eController.attribute("index").toULong();
+			pController->ctype = qtractorMidiControl::typeFromText(eController.attribute("type"));
 			for (QDomNode nProp = eController.firstChild();
 					!nProp.isNull(); nProp = nProp.nextSibling()) {
 				// Convert node to element, if any.
@@ -1600,9 +1600,6 @@ void qtractorPlugin::loadControllers (
 				if (eProp.isNull())
 					continue;
 				// Check for property item...
-				if (eProp.tagName() == "type")
-					pController->ctype = qtractorMidiControl::typeFromText(eProp.text());
-				else
 				if (eProp.tagName() == "channel")
 					pController->channel = eProp.text().toUShort();
 				else
@@ -1637,8 +1634,7 @@ void qtractorPlugin::saveControllers (
 			continue;
 		QDomElement eController = pDocument->document()->createElement("controller");
 		eController.setAttribute("index", QString::number(pParam->index()));
-		pDocument->saveTextElement("type",
-			qtractorMidiControl::textFromType(pObserver->type()), &eController);
+		eController.setAttribute("type", qtractorMidiControl::textFromType(pObserver->type()));
 		pDocument->saveTextElement("channel",
 			QString::number(pObserver->channel()), &eController);
 		pDocument->saveTextElement("param",
