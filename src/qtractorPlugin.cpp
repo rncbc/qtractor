@@ -1688,6 +1688,9 @@ void qtractorPluginParam::setDefaultValue ( float fDefaultValue )
 		fDefaultValue = minValue();
 
 	m_fDefaultValue = fDefaultValue;
+
+	// FIXME: Not the best place, but here it goes...
+	m_observer.setLogarithmic(isLogarithmic());
 }
 
 

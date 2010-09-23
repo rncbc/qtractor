@@ -854,40 +854,10 @@ public:
 
 	// Formerly Pure virtuals.
 	float scaleFromValue ( float fValue ) const
-	{
-		float fScale = 0.0f;
-	
-		if (m_pParam->isLogarithmic() && m_pParam->minValue() > 1E-6f) {
-			if (fValue > 1E-6f) {
-				float fLogMaxValue = ::logf(m_pParam->maxValue());
-				float fLogMinValue = ::logf(m_pParam->minValue());
-				fScale = (10000.0f * (::logf(fValue) - fLogMinValue))
-					/ (fLogMaxValue - fLogMinValue);
-			}
-		} else {
-			float fDelta = m_pParam->maxValue() - m_pParam->minValue();
-			if (fDelta > 1E-6f)
-				fScale = (10000.0f * (fValue - m_pParam->minValue())) / fDelta;
-		}
-	
-		return fScale;		
-	}
+		{ return 10000.0f * m_pParam->observer()->scaleFromValue(fValue); }
 
 	float valueFromScale ( float fScale ) const
-	{
-		float fValue = 0.0f;
-	
-		if (m_pParam->isLogarithmic() && m_pParam->minValue() > 1E-6f) {
-			float fRatio = m_pParam->maxValue() / m_pParam->minValue();
-			fValue = m_pParam->minValue() * ::powf(fRatio, (fScale / 10000.0f));
-		} else {
-			float fDelta = m_pParam->maxValue() - m_pParam->minValue();
-			fValue = m_pParam->minValue() + (fScale * fDelta) / 10000.0f;
-		}
-	
-		return fValue;
-
-	}
+		{ return m_pParam->observer()->valueFromScale(fScale / 10000.0f); }
 
 private:
 

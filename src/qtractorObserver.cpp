@@ -1,7 +1,7 @@
 // qtractorObserver.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2010, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -21,28 +21,6 @@
 
 #include "qtractorAbout.h"
 #include "qtractorObserver.h"
-
-#include <math.h>
-
-// Possible cube root optimization.
-// (borrowed from metamerist.com)
-static inline float cbrtf2 ( float x )
-{
-#ifdef CONFIG_FLOAT32
-	// Avoid strict-aliasing optimization (gcc -O2).
-	union { float f; int i; } u;
-	u.f = x;
-	u.i = (u.i / 3) + 710235478;
-	return u.f;
-#else
-	return cbrtf(x);
-#endif
-}
-
-static inline float cubef2 ( float x )
-{
-	return x * x * x;
-}
 
 
 //---------------------------------------------------------------------------
@@ -259,7 +237,7 @@ void qtractorSubject::resetQueue (void)
 
 // Constructor.
 qtractorObserver::qtractorObserver ( qtractorSubject *pSubject )
-	: m_pSubject(pSubject), m_bLogarithmic(false)
+	: m_pSubject(pSubject)
 {
 	if (m_pSubject) m_pSubject->attach(this);
 }
@@ -289,55 +267,21 @@ qtractorSubject *qtractorObserver::subject (void) const
 }
 
 
-// Logarithmic scale accessor.
-void qtractorObserver::setLogarithmic ( bool bLogarithmic )
-{
-	m_bLogarithmic = bLogarithmic;
-}
-
-bool qtractorObserver::isLogarithmic (void) const
-{
-	return m_bLogarithmic;
-}
-
-
 // Indirect value accessors.
 void qtractorObserver::setValue ( float fValue )
 {
-	if (m_pSubject == NULL)
-		return;
-
-	if (m_bLogarithmic)
-		fValue = cubef2(fValue);
-
-	m_pSubject->setValue(fValue, this);
+	if (m_pSubject) m_pSubject->setValue(fValue, this);
 }
 
 float qtractorObserver::value (void) const
 {
-	if (m_pSubject == NULL)
-		return 0.0f;
-
-	float fValue = m_pSubject->value();
-
-	if (m_bLogarithmic)
-		fValue = cbrtf2(fValue);
-
-	return fValue;
+	return (m_pSubject ? m_pSubject->value() : 0.0f);
 }
 
 
 float qtractorObserver::prevValue (void) const
 {
-	if (m_pSubject == NULL)
-		return 0.0f;
-
-	float fPrevValue = m_pSubject->prevValue();
-
-	if (m_bLogarithmic)
-		fPrevValue = cbrtf2(fPrevValue);
-
-	return fPrevValue;
+	return (m_pSubject ? m_pSubject->prevValue() : 0.0f);
 }
 
 

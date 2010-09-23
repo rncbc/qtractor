@@ -55,6 +55,11 @@ public:
 		{ return m_iParam; }
 
 	// Properties accessors.
+	void setLogarithmic(bool bLogarithmic)
+		{ m_bLogarithmic = bLogarithmic; }
+	bool isLogarithmic() const
+		{ return m_bLogarithmic; }
+
 	void setFeedback(bool bFeedback)
 		{ m_bFeedback = bFeedback; }
 	bool isFeedback() const
@@ -71,9 +76,19 @@ public:
 	float minValue() const
 		{ return m_fMinValue; }
 
+	// Normalized scale accessors.
+	void setScaleValue ( float fScale )
+		{ setValue(valueFromScale(fScale)); }
+	float scaleValue (void) const
+		{ return scaleFromValue(value()); }
+
 	// MIDI mapped value converters.
 	void setMidiValue(unsigned short iMidiValue);
 	unsigned short midiValue() const;
+
+	// Normalized scale convertors.
+	float valueFromScale(float fScale) const;
+	float scaleFromValue(float fValue) const;
 
 protected:
 
@@ -82,10 +97,13 @@ protected:
 
 private:
 
-	// Members.
+	// Key members.
 	qtractorMidiControl::ControlType m_ctype;
 	unsigned short m_iChannel;
 	unsigned short m_iParam;
+
+	// Property members.
+	bool m_bLogarithmic;
 	bool m_bFeedback;
 
 	// Value mapping limits.
