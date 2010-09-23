@@ -145,9 +145,8 @@ public:
 	enum BusMode { None = 0, Input = 1, Output = 2, Duplex = 3 };
 
 	// Constructor.
-	qtractorBus(qtractorEngine *pEngine,
-		const QString& sBusName, BusMode busMode = Duplex,
-		bool bPassthru = false);
+	qtractorBus(qtractorEngine *pEngine, const QString& sBusName,
+		BusMode busMode = Duplex, bool bMonitor = false);
 
 	// Destructor.
 	virtual ~qtractorBus();
@@ -167,8 +166,8 @@ public:
 	BusMode busMode() const;
 
 	// Pass-thru mode accessor.
-	void setPassthru(bool bPassthru);
-	bool isPassthru() const;
+	void setMonitor(bool bMonitor);
+	bool isMonitor() const;
 
 	// Pure virtual activation methods.
 	virtual bool open() = 0;
@@ -267,7 +266,7 @@ private:
 
 	QString m_sBusName;
 	BusMode m_busMode;
-	bool m_bPassthru;
+	bool m_bMonitor;
 
 	// Connections stuff.
 	ConnectList m_inputs;

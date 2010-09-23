@@ -797,7 +797,7 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 				pBus; pBus = pBus->next()) {
 			qtractorAudioBus *pAudioBus
 				= static_cast<qtractorAudioBus *> (pBus);
-			if (pAudioBus && (iOutputBus > 0 || pAudioBus->isPassthru()))
+			if (pAudioBus && (iOutputBus > 0 || pAudioBus->isMonitor()))
 				pAudioBus->process_commit(nframes);
 		}
 		// Done as idle...
@@ -1123,12 +1123,12 @@ bool qtractorAudioEngine::fileExport ( const QString& sExportPath,
 	unsigned long iPlayHead  = pSession->playHead();
 	unsigned long iLoopStart = pSession->loopStart();
 	unsigned long iLoopEnd   = pSession->loopEnd();
-	bool bPassthru = pExportBus->isPassthru();
+	bool bMonitor = pExportBus->isMonitor();
 
 	// Because we'll have to set the export conditions...
 	pSession->setLoop(0, 0);
 	pSession->setPlayHead(m_iExportStart);
-	pExportBus->setPassthru(false);
+	pExportBus->setMonitor(false);
 
 	// Force initial full-sync...
 	syncExport(m_iExportStart, m_iExportEnd);
@@ -1152,7 +1152,7 @@ bool qtractorAudioEngine::fileExport ( const QString& sExportPath,
 	// Restore session at ease...
 	pSession->setLoop(iLoopStart, iLoopEnd);
 	pSession->setPlayHead(iPlayHead);
-	pExportBus->setPassthru(bPassthru);
+	pExportBus->setMonitor(bMonitor);
 
 	// Check user cancellation...
 	bool bResult = m_bExporting;
@@ -2043,7 +2043,7 @@ void qtractorAudioBus::process_prepare ( unsigned int nframes )
 		for (i = 0; i < m_iChannels; ++i) {
 			m_ppOBuffer[i] = static_cast<float *>
 				(jack_port_get_buffer(m_ppOPorts[i], nframes));
-			if (isPassthru() && (busMode() & qtractorBus::Input)) {
+			if (isMonitor() && (busMode() & qtractorBus::Input)) {
 				::memcpy(m_ppOBuffer[i], m_ppIBuffer[i], nframes * sizeof(float));
 			} else {
 				::memset(m_ppOBuffer[i], 0, nframes * sizeof(float));
@@ -2372,8 +2372,10 @@ bool qtractorAudioBus::loadElement ( qtractorSessionDocument *pDocument,
 		QDomElement eProp = nProp.toElement();
 		if (eProp.isNull())
 			continue;
-		if (eProp.tagName() == "pass-through") {
-			qtractorAudioBus::setPassthru(
+		if (eProp.tagName() == "pass-through" || // Legacy compat.
+			eProp.tagName() == "audio-thru"   ||
+			eProp.tagName() == "monitor") {
+			qtractorAudioBus::setMonitor(
 				qtractorDocument::boolFromText(eProp.text()));
 		} else if (eProp.tagName() == "channels") {
 			qtractorAudioBus::setChannels(eProp.text().toUShort());
@@ -2425,9 +2427,9 @@ bool qtractorAudioBus::saveElement ( qtractorSessionDocument *pDocument,
 	pElement->setAttribute("mode",
 		qtractorBus::textFromBusMode(qtractorAudioBus::busMode()));
 
-	pDocument->saveTextElement("pass-through",
+	pDocument->saveTextElement("monitor",
 		qtractorDocument::textFromBool(
-			qtractorAudioBus::isPassthru()), pElement);
+			qtractorAudioBus::isMonitor()), pElement);
 	pDocument->saveTextElement("channels",
 		QString::number(qtractorAudioBus::channels()), pElement);
 	pDocument->saveTextElement("auto-connect",

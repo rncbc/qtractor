@@ -100,7 +100,7 @@ public:
 
 	// Special bus dispatchers.
 	void busConnections(qtractorBus::BusMode busMode);
-	void busPassthru(bool bPassthru);
+	void busMonitor(bool bMonitor);
 
 	// Track monitor dispatcher.
 	void trackMonitor(bool bMonitor);
@@ -227,7 +227,7 @@ public slots:
 	// Bus context menu slots.
 	void busInputsSlot();
 	void busOutputsSlot();
-	void busPassthruSlot();
+	void busMonitorSlot();
 	void busPropertiesSlot();
 
 signals:

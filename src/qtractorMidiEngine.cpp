@@ -1047,7 +1047,7 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 				&& (pMidiBus->pluginList_in())->midiManager())
 				((pMidiBus->pluginList_in())->midiManager())->direct(pEv);
 			// Output monitoring on passthru...
-			if (pMidiBus->isPassthru()) {
+			if (pMidiBus->isMonitor()) {
 				// Do it for the MIDI output plugins too...
 				if (pMidiBus->pluginList_out()
 					&& (pMidiBus->pluginList_out())->midiManager())
@@ -2554,8 +2554,8 @@ qtractorBus::BusMode qtractorMidiEngine::clockMode (void) const
 
 // Constructor.
 qtractorMidiBus::qtractorMidiBus ( qtractorMidiEngine *pMidiEngine,
-	const QString& sBusName, BusMode busMode, bool bPassthru )
-	: qtractorBus(pMidiEngine, sBusName, busMode, bPassthru)
+	const QString& sBusName, BusMode busMode, bool bMonitor )
+	: qtractorBus(pMidiEngine, sBusName, busMode, bMonitor)
 {
 	m_iAlsaPort = -1;
 
@@ -3504,9 +3504,10 @@ bool qtractorMidiBus::loadElement ( qtractorSessionDocument *pDocument,
 			continue;
 
 		// Load map elements (non-critical)...
-		if (eProp.tagName() == "pass-through" ||
-			eProp.tagName() == "midi-thru") { // Legacy compat.
-			qtractorMidiBus::setPassthru(
+		if (eProp.tagName() == "pass-through" || // Legacy compat.
+			eProp.tagName() == "midi-thru"    ||
+			eProp.tagName() == "monitor") {
+			qtractorMidiBus::setMonitor(
 				qtractorDocument::boolFromText(eProp.text()));
 		} else if (eProp.tagName() == "midi-sysex-list") {
 			qtractorMidiBus::loadSysexList(pDocument, &eProp);
@@ -3559,9 +3560,9 @@ bool qtractorMidiBus::saveElement ( qtractorSessionDocument *pDocument,
 	pElement->setAttribute("mode",
 		qtractorBus::textFromBusMode(qtractorMidiBus::busMode()));
 
-	pDocument->saveTextElement("pass-through",
+	pDocument->saveTextElement("monitor",
 		qtractorDocument::textFromBool(
-			qtractorMidiBus::isPassthru()), pElement);
+			qtractorMidiBus::isMonitor()), pElement);
 
 	if (qtractorMidiBus::busMode() & qtractorBus::Input) {
 		pDocument->saveTextElement("input-gain",

@@ -985,7 +985,7 @@ qtractorPluginParamWidget::qtractorPluginParamWidget (
 // Refreshner-loader method.
 void qtractorPluginParamWidget::refresh (void)
 {
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	qDebug("qtractorPluginParamWidget[%p]::refresh()", this);
 #endif
 

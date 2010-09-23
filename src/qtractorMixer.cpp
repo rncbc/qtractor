@@ -453,7 +453,7 @@ void qtractorMixerStrip::updateMonitorButton (void)
 
 	bool bOn = false;
 	if (m_pBus) {
-		bOn = m_pBus->isPassthru();
+		bOn = m_pBus->isMonitor();
 		m_pMonitorButton->setEnabled(
 			(m_pBus->busMode() & qtractorBus::Duplex) == qtractorBus::Duplex);
 	} 
@@ -728,7 +728,7 @@ void qtractorMixerStrip::busConnections ( qtractorBus::BusMode busMode )
 
 
 // Bus pass-through dispatcher.
-void qtractorMixerStrip::busPassthru ( bool bPassthru )
+void qtractorMixerStrip::busMonitor ( bool bMonitor )
 {
 	if (m_pBus == NULL)
 		return;
@@ -739,7 +739,7 @@ void qtractorMixerStrip::busPassthru ( bool bPassthru )
 
 	// Here we go...
 	pSession->execute(
-		new qtractorBusPassthruCommand(m_pBus, bPassthru));
+		new qtractorBusMonitorCommand(m_pBus, bMonitor));
 }
 
 
@@ -773,7 +773,7 @@ void qtractorMixerStrip::monitorButtonSlot ( bool bOn )
 		return;
 
 	if (m_pBus)
-		busPassthru(bOn);
+		busMonitor(bOn);
 	else
 	if (m_pTrack)
 		trackMonitor(bOn);
@@ -983,11 +983,11 @@ bool qtractorMixerRack::isSelectEnabled (void) const
 
 void qtractorMixerRack::setSelectedStrip ( qtractorMixerStrip *pStrip )
 {
-	if (m_bSelectEnabled && m_pSelectedStrip != pStrip) {
-		if (m_pSelectedStrip)
+	if (m_pSelectedStrip != pStrip) {
+		if (m_bSelectEnabled && m_pSelectedStrip)
 			m_pSelectedStrip->setSelected(false);
 		m_pSelectedStrip = pStrip;
-		if (m_pSelectedStrip)
+		if (m_bSelectEnabled && m_pSelectedStrip)
 			m_pSelectedStrip->setSelected(true);
 		emit selectionChanged();
 	}
@@ -1094,11 +1094,11 @@ void qtractorMixerRack::contextMenuEvent ( QContextMenuEvent *pContextMenuEvent 
 	menu.addSeparator();
 
 	pAction = menu.addAction(
-		tr("&Pass-through"), this, SLOT(busPassthruSlot()));
+		tr("&Monitor"), this, SLOT(busMonitorSlot()));
 	pAction->setEnabled(
 		(pBus->busMode() & qtractorBus::Duplex) == qtractorBus::Duplex);
 	pAction->setCheckable(true);
-	pAction->setChecked(pBus->isPassthru());
+	pAction->setChecked(pBus->isMonitor());
 
 	menu.addSeparator();
 
@@ -1138,11 +1138,11 @@ void qtractorMixerRack::busOutputsSlot (void)
 
 
 // Toggle bus passthru flag.
-void qtractorMixerRack::busPassthruSlot (void)
+void qtractorMixerRack::busMonitorSlot (void)
 {
 	qtractorMixerStrip *pStrip = m_pSelectedStrip;
 	if (pStrip && pStrip->bus())
-		pStrip->busPassthru(!(pStrip->bus())->isPassthru());
+		pStrip->busMonitor(!(pStrip->bus())->isMonitor());
 }
 
 

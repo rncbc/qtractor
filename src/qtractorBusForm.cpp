@@ -155,7 +155,7 @@ qtractorBusForm::qtractorBusForm (
 	QObject::connect(m_ui.BusModeComboBox,
 		SIGNAL(activated(int)),
 		SLOT(changed()));
-	QObject::connect(m_ui.PassthruCheckBox,
+	QObject::connect(m_ui.MonitorCheckBox,
 		SIGNAL(clicked()),
 		SLOT(changed()));
 	QObject::connect(m_ui.AudioChannelsSpinBox,
@@ -348,7 +348,7 @@ void qtractorBusForm::showBus ( qtractorBus *pBus )
 		m_ui.BusTitleTextLabel->setText(sBusTitle + tr("Bus"));
 		m_ui.BusNameLineEdit->setText(pBus->busName());
 		m_ui.BusModeComboBox->setCurrentIndex(int(pBus->busMode()) - 1);
-		m_ui.PassthruCheckBox->setChecked(pBus->isPassthru());
+		m_ui.MonitorCheckBox->setChecked(pBus->isMonitor());
 	}
 
 	// Reset dirty flag...
@@ -545,9 +545,9 @@ bool qtractorBusForm::updateBusEx ( qtractorBus *pBus )
 	pUpdateBusCommand->setBusType(busType);
 	pUpdateBusCommand->setBusName(sBusName);
 	pUpdateBusCommand->setBusMode(busMode);
-	pUpdateBusCommand->setPassthru(
+	pUpdateBusCommand->setMonitor(
 		(busMode & qtractorBus::Duplex) == qtractorBus::Duplex
-		&& m_ui.PassthruCheckBox->isChecked());
+		&& m_ui.MonitorCheckBox->isChecked());
 
 	// Specialties for bus types...
 	switch (busType) {
@@ -609,9 +609,9 @@ void qtractorBusForm::createBus (void)
 	pCreateBusCommand->setBusType(busType);
 	pCreateBusCommand->setBusName(sBusName);
 	pCreateBusCommand->setBusMode(busMode);	
-	pCreateBusCommand->setPassthru(
+	pCreateBusCommand->setMonitor(
 		(busMode & qtractorBus::Duplex) == qtractorBus::Duplex
-		&& m_ui.PassthruCheckBox->isChecked());
+		&& m_ui.MonitorCheckBox->isChecked());
 
 	// Specialties for bus types...
 	switch (busType) {
@@ -775,7 +775,7 @@ void qtractorBusForm::stabilizeForm (void)
 		m_ui.MidiBusGroup->setEnabled(false);
 	}
 
-	m_ui.PassthruCheckBox->setEnabled(
+	m_ui.MonitorCheckBox->setEnabled(
 		m_pBus && m_ui.BusModeComboBox->currentIndex() == 2);
 
 	unsigned int iFlags = flags();

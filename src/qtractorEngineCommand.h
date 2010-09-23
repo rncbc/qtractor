@@ -63,10 +63,10 @@ public:
 	const QString& busName() const
 		{ return m_sBusName; }
 
-	void setPassthru(bool bPassthru)
-		{ m_bPassthru = bPassthru; }
-	bool isPassthru() const
-		{ return m_bPassthru; }
+	void setMonitor(bool bMonitor)
+		{ m_bMonitor = bMonitor; }
+	bool isMonitor() const
+		{ return m_bMonitor; }
 
 	// Special Audio bus properties accessors.
 	void setChannels(unsigned short iChannels)
@@ -102,7 +102,7 @@ private:
 	qtractorBus::BusMode     m_busMode;
 	qtractorTrack::TrackType m_busType;
 	QString                  m_sBusName;
-	bool                     m_bPassthru;
+	bool                     m_bMonitor;
 	unsigned short           m_iChannels;
 	bool                     m_bAutoConnect;
 	QString                  m_sInstrumentName;
@@ -161,15 +161,15 @@ public:
 
 
 //----------------------------------------------------------------------
-// class qtractorBusPassthruCommand - declaration.
+// class qtractorBusMonitorCommand - declaration.
 //
 
-class qtractorBusPassthruCommand : public qtractorBusCommand
+class qtractorBusMonitorCommand : public qtractorBusCommand
 {
 public:
 
 	// Constructor.
-	qtractorBusPassthruCommand(qtractorBus *pBus, bool bPassthru);
+	qtractorBusMonitorCommand(qtractorBus *pBus, bool bMonitor);
 
 	// Bus-gain command methods.
 	bool redo();

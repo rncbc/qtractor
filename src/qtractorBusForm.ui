@@ -199,15 +199,15 @@
                </widget>
               </item>
               <item row="2" column="0" colspan="3">
-               <widget class="QCheckBox" name="PassthruCheckBox">
+               <widget class="QCheckBox" name="MonitorCheckBox">
                 <property name="toolTip">
                  <string>Bus monitor (pass-through)</string>
                 </property>
                 <property name="text">
-                 <string>&amp;Pass-through (monitor)</string>
+                 <string>M&amp;onitor (pass-through)</string>
                 </property>
                 <property name="shortcut">
-                 <string>Alt+P</string>
+                 <string>Alt+O</string>
                 </property>
                </widget>
               </item>
@@ -715,7 +715,7 @@
   <tabstop>BusTabWidget</tabstop>
   <tabstop>BusNameLineEdit</tabstop>
   <tabstop>BusModeComboBox</tabstop>
-  <tabstop>PassthruCheckBox</tabstop>
+  <tabstop>MonitorCheckBox</tabstop>
   <tabstop>AudioChannelsSpinBox</tabstop>
   <tabstop>AudioAutoConnectCheckBox</tabstop>
   <tabstop>InputPluginListView</tabstop>

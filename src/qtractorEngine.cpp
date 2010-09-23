@@ -323,12 +323,12 @@ int qtractorEngine::updateConnects ( qtractorBus *pBus )
 
 // Constructor.
 qtractorBus::qtractorBus ( qtractorEngine *pEngine,
-	const QString& sBusName, BusMode busMode, bool bPassthru )
+	const QString& sBusName, BusMode busMode, bool bMonitor )
 {
-	m_pEngine   = pEngine;
-	m_sBusName  = sBusName;
-	m_busMode   = busMode;
-	m_bPassthru = bPassthru;
+	m_pEngine  = pEngine;
+	m_sBusName = sBusName;
+	m_busMode  = busMode;
+	m_bMonitor = bMonitor;
 }
 
 // Destructor.
@@ -378,14 +378,14 @@ qtractorBus::BusMode qtractorBus::busMode (void) const
 
 
 // Pass-thru mode accessor.
-void qtractorBus::setPassthru ( bool bPassthru )
+void qtractorBus::setMonitor ( bool bMonitor )
 {
-	m_bPassthru = bPassthru;
+	m_bMonitor = bMonitor;
 }
 
-bool qtractorBus::isPassthru (void) const
+bool qtractorBus::isMonitor (void) const
 {
-	return m_bPassthru;
+	return m_bMonitor;
 }
 
 
