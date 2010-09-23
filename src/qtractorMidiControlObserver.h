@@ -77,18 +77,18 @@ public:
 		{ return m_fMinValue; }
 
 	// Normalized scale accessors.
-	void setScaleValue ( float fScale )
-		{ setValue(valueFromScale(fScale)); }
-	float scaleValue (void) const
-		{ return scaleFromValue(value()); }
+	void setScaleValue(float fScale)
+		{ setValue(valueFromScale(fScale, m_bLogarithmic)); }
+	float scaleValue() const
+		{ return scaleFromValue(value(), m_bLogarithmic); }
 
 	// MIDI mapped value converters.
 	void setMidiValue(unsigned short iMidiValue);
 	unsigned short midiValue() const;
 
 	// Normalized scale convertors.
-	float valueFromScale(float fScale) const;
-	float scaleFromValue(float fValue) const;
+	float valueFromScale(float fScale, bool bCubic) const;
+	float scaleFromValue(float fValue, bool bCubic) const;
 
 protected:
 

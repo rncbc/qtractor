@@ -854,10 +854,12 @@ public:
 
 	// Formerly Pure virtuals.
 	float scaleFromValue ( float fValue ) const
-		{ return 10000.0f * m_pParam->observer()->scaleFromValue(fValue); }
+		{ return 10000.0f * m_pParam->observer()->scaleFromValue(fValue,
+			m_pParam->isLogarithmic()); }
 
 	float valueFromScale ( float fScale ) const
-		{ return m_pParam->observer()->valueFromScale(fScale / 10000.0f); }
+		{ return m_pParam->observer()->valueFromScale((fScale / 10000.0f),
+			m_pParam->isLogarithmic()); }
 
 private:
 
