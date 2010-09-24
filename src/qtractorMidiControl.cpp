@@ -166,7 +166,7 @@ void qtractorMidiControl::sendAllControllers ( int iFirstTrack ) const
 	qDebug("qtractorMidiControl::sendAllControllers(%d)", iFirstTrack);
 #endif
 
-	// Walk through midi controller map...
+	// 1. Walk through midi controller map...
 	// FIXME: should only be sent if command ask for feedback.
 	ControlMap::ConstIterator it = m_controlMap.constBegin();
 	for ( ; it != m_controlMap.constEnd(); ++it) {
@@ -194,6 +194,22 @@ void qtractorMidiControl::sendAllControllers ( int iFirstTrack ) const
 					}
 				}
 				++iTrack;
+			}
+		}
+	}
+
+	// 2. Walk through midi observer map...
+	// FIXME: should only be sent if observer ask for feedback.
+	if (iFirstTrack == 0) {
+		ObserverMap::ConstIterator iter = m_observerMap.constBegin();
+		for ( ; iter != m_observerMap.constEnd(); ++iter) {
+			qtractorMidiControlObserver *pMidiObserver = iter.value();
+			if (pMidiObserver->isFeedback()) {
+				sendController(
+					pMidiObserver->type(),
+					pMidiObserver->channel(),
+					pMidiObserver->param(),
+					pMidiObserver->midiValue());
 			}
 		}
 	}
