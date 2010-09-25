@@ -51,6 +51,7 @@ HEADERS += config.h \
 	qtractorMidiClip.h \
 	qtractorMidiConnect.h \
 	qtractorMidiControl.h \
+	qtractorMidiControlCommand.h \
 	qtractorMidiControlObserver.h \
 	qtractorMidiCursor.h \
 	qtractorMidiEditor.h \
@@ -163,6 +164,7 @@ SOURCES += \
 	qtractorMidiClip.cpp \
 	qtractorMidiConnect.cpp \
 	qtractorMidiControl.cpp \
+	qtractorMidiControlCommand.cpp \
 	qtractorMidiControlObserver.cpp \
 	qtractorMidiCursor.cpp \
 	qtractorMidiEditor.cpp \

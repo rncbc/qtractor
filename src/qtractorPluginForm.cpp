@@ -30,8 +30,6 @@
 
 #include "qtractorMidiControlObserverForm.h"
 
-#include "qtractorMainForm.h"
-
 #include "qtractorOptions.h"
 #include "qtractorSession.h"
 #include "qtractorEngine.h"
@@ -826,12 +824,7 @@ void qtractorPluginForm::midiControlActionSlot (void)
 		if (pMidiObserver) {
 			qtractorMidiControlObserverForm form(this);
 			form.setMidiObserver(pMidiObserver);
-			if (form.exec()) {
-				// TODO; Make it an undoable command?
-				qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-				if (pMainForm)
-					pMainForm->contentsChanged();
-			}
+			form.exec();
 		}
 	}
 }

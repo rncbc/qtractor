@@ -22,8 +22,11 @@
 #include "qtractorAbout.h"
 #include "qtractorMidiControlObserverForm.h"
 #include "qtractorMidiControlObserver.h"
+#include "qtractorMidiControlCommand.h"
 
 #include "qtractorMidiEditor.h"
+
+#include "qtractorSession.h"
 
 #include <QMessageBox>
 #include <QPushButton>
@@ -310,7 +313,13 @@ void qtractorMidiControlObserverForm::accept (void)
 	m_pMidiObserver->setParam(iParam);
 	m_pMidiObserver->setLogarithmic(bLogarithmic);
 	m_pMidiObserver->setFeedback(bFeedback);
+#if 0
 	pMidiControl->mapMidiObserver(m_pMidiObserver);
+#else
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession)
+		pSession->execute(new qtractorMidiControlObserverMapCommand(m_pMidiObserver));
+#endif
 
 	// Aint't dirty no more...
 	m_iDirtyCount = 0;
@@ -357,10 +366,16 @@ void qtractorMidiControlObserverForm::reset (void)
 	qDebug("qtractorMidiControlObserverForm::reset()");
 #endif
 
+#if 0
 	qtractorMidiControl *pMidiControl
 		= qtractorMidiControl::getInstance();
 	if (pMidiControl)
 		pMidiControl->unmapMidiObserver(m_pMidiObserver);
+#else
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession)
+		pSession->execute(new qtractorMidiControlObserverUnmapCommand(m_pMidiObserver));
+#endif
 
 	// Bail out...
 	QDialog::accept();
