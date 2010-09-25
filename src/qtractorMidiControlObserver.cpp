@@ -73,7 +73,8 @@ qtractorMidiControlObserver::~qtractorMidiControlObserver (void)
 // MIDI mapped value converters.
 void qtractorMidiControlObserver::setMidiValue ( unsigned short iValue )
 {
-	setScaleValue(float(iValue) / 127.0f);
+//	setScaleValue(float(iValue) / 127.0f);
+	subject()->setValue(valueFromScale((float(iValue) / 127.0f), m_bLogarithmic));
 }
 
 unsigned short qtractorMidiControlObserver::midiValue (void) const
