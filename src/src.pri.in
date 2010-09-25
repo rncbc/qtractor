@@ -1,10 +1,9 @@
 # qtractor.pri
 #
-PREFIX   = @ac_prefix@
-
-CONFIG  += @ac_debug@
-LIBS    += @ac_libs@
-INCPATH += @ac_incpath@
+PREFIX  = @ac_prefix@
+CONFIG += @ac_debug@
+INCLUDEPATH += @ac_incpath@
+LIBS += @ac_libs@
 
 # Extra optimization flags
 QMAKE_CXXFLAGS += @ac_cflags@
