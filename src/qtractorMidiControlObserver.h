@@ -38,6 +38,9 @@ public:
 	// Constructor.
 	qtractorMidiControlObserver(qtractorSubject *pSubject);
 
+	// Destructor.
+	virtual ~qtractorMidiControlObserver();
+
 	// Key accessors.
 	void setType(qtractorMidiControl::ControlType ctype)
 		{ m_ctype = ctype; }

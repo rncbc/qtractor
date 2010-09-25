@@ -105,6 +105,8 @@ void qtractorMidiControl::clear (void)
 	mapChannelParamController(10, TrackPanning, 0, true);
 	mapChannelParamController(20, TrackMute, 0, true);
 #endif
+
+	m_observerMap.clear();
 }
 
 
@@ -167,7 +169,6 @@ void qtractorMidiControl::sendAllControllers ( int iFirstTrack ) const
 #endif
 
 	// 1. Walk through midi controller map...
-	// FIXME: should only be sent if command ask for feedback.
 	ControlMap::ConstIterator it = m_controlMap.constBegin();
 	for ( ; it != m_controlMap.constEnd(); ++it) {
 		const MapVal& val = it.value();
@@ -199,7 +200,6 @@ void qtractorMidiControl::sendAllControllers ( int iFirstTrack ) const
 	}
 
 	// 2. Walk through midi observer map...
-	// FIXME: should only be sent if observer ask for feedback.
 	if (iFirstTrack == 0) {
 		ObserverMap::ConstIterator iter = m_observerMap.constBegin();
 		for ( ; iter != m_observerMap.constEnd(); ++iter) {

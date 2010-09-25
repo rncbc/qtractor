@@ -61,6 +61,15 @@ qtractorMidiControlObserver::qtractorMidiControlObserver (
 }
 
 
+// Destructor (virtual).
+qtractorMidiControlObserver::~qtractorMidiControlObserver (void)
+{
+	qtractorMidiControl *pMidiControl = qtractorMidiControl::getInstance();
+	if (pMidiControl && pMidiControl->isMidiObserverMapped(this))
+		pMidiControl->unmapMidiObserver(this);
+}
+
+
 // MIDI mapped value converters.
 void qtractorMidiControlObserver::setMidiValue ( unsigned short iValue )
 {

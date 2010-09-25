@@ -335,7 +335,7 @@ void qtractorPluginForm::updateParamValue (
 	if (m_pPlugin == NULL)
 		return;
 
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	qDebug("qtractorPluginForm[%p]::updateParamValue(%lu, %g, %d)",
 		this, iIndex, fValue, int(bUpdate));
 #endif
@@ -352,7 +352,7 @@ void qtractorPluginForm::updateParamWidget ( unsigned long iIndex )
 	if (m_pPlugin == NULL)
 		return;
 
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	qDebug("qtractorPluginForm[%p]::updateParamWidget(%lu)", this, iIndex);
 #endif
 
@@ -1015,6 +1015,9 @@ int qtractorPluginParamWidget::paramDecimals (void) const
 		iDecimals = 2;
 	else if (fDecimals < 6.0f)
 		iDecimals = 1;
+
+	if (m_pParam->isLogarithmic())
+		++iDecimals;
 
 	return iDecimals;
 }
