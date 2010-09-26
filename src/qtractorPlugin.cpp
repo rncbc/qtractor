@@ -657,21 +657,34 @@ void qtractorPlugin::setActivated ( bool bActivated )
 // Plugin state serialization methods.
 void qtractorPlugin::setValueList ( const QStringList& vlist )
 {
+//	qSort(m_params); -- does not work with QHash...
+	QMap<unsigned long, qtractorPluginParam *> params;
+	Params::ConstIterator param = m_params.constBegin();
+	for ( ; param != m_params.constEnd(); ++param)
+		params.insert(param.key(), param.value());
+
 	// Split it up...
 	m_values.clear();
 	QStringListIterator val(vlist);
-	QListIterator<qtractorPluginParam *> param(m_params);
-	while (val.hasNext() && param.hasNext())
-		m_values[param.next()->index()] = val.next().toFloat();
+	QMapIterator<unsigned long, qtractorPluginParam *> iter(params);
+	while (val.hasNext() && iter.hasNext())
+		m_values[iter.next().key()] = val.next().toFloat();
 }
 
 QStringList qtractorPlugin::valueList (void) const
 {
+//	qSort(m_params); -- does not work with QHash...
+	QMap<unsigned long, qtractorPluginParam *> params;
+	Params::ConstIterator param = m_params.constBegin();
+	for ( ; param != m_params.constEnd(); ++param)
+		params.insert(param.key(), param.value());
+
 	// Join it up...
 	QStringList vlist;
-	QListIterator<qtractorPluginParam *> param(m_params);
-	while (param.hasNext())
-		vlist.append(QString::number(param.next()->value()));
+	QStringListIterator val(vlist);
+	QMapIterator<unsigned long, qtractorPluginParam *> iter(params);
+	while (val.hasNext() && iter.hasNext())
+		vlist.append(QString::number(iter.next().value()->value()));
 
 	return vlist;
 }
@@ -680,9 +693,9 @@ QStringList qtractorPlugin::valueList (void) const
 // Reset-to-default method.
 void qtractorPlugin::reset (void)
 {
-	QListIterator<qtractorPluginParam *> iter(m_params);
-	while (iter.hasNext())
-		iter.next()->reset();
+	Params::ConstIterator param = m_params.constBegin();
+	for ( ; param != m_params.constEnd(); ++param)
+		param.value()->reset();
 }
 
 
@@ -867,16 +880,8 @@ bool qtractorPlugin::savePreset ( const QString& sFilename )
 // Plugin parameter lookup.
 qtractorPluginParam *qtractorPlugin::findParam ( unsigned long iIndex ) const
 {
-	QListIterator<qtractorPluginParam *> iter(m_params);
-	while (iter.hasNext()) {
-		qtractorPluginParam *pParam = iter.next();
-		if (pParam->index() == iIndex)
-			return pParam;
-	}
-
-	return NULL;
+	return m_params.value(iIndex, NULL);
 }
-
 
 
 // Plugin parameter/state snapshot.
@@ -888,9 +893,9 @@ void qtractorPlugin::freezeValues (void)
 
 	clearValues();
 
-	QListIterator<qtractorPluginParam *> iter(m_params);
-	while (iter.hasNext()) {
-		qtractorPluginParam *pParam = iter.next();
+	Params::ConstIterator param = m_params.constBegin();
+	for ( ; param != m_params.constEnd(); ++param) {
+		qtractorPluginParam *pParam = param.value();
 		setValue(pParam->index(), pParam->value());
 	}
 }
@@ -998,9 +1003,9 @@ void qtractorPlugin::saveConfigs (
 void qtractorPlugin::saveValues (
 	QDomDocument *pDocument, QDomElement *pElement )
 {
-	QListIterator<qtractorPluginParam *> param(m_params);
-	while (param.hasNext()) {
-		qtractorPluginParam *pParam = param.next();
+	Params::ConstIterator param = m_params.constBegin();
+	for ( ; param != m_params.constEnd(); ++param) {
+		qtractorPluginParam *pParam = param.value();
 		QDomElement eParam = pDocument->createElement("param");
 		eParam.setAttribute("name", pParam->name());
 		eParam.setAttribute("index", QString::number(pParam->index()));
@@ -1626,9 +1631,9 @@ void qtractorPlugin::saveControllers (
 	if (pMidiControl == NULL)
 		return;
 
-	QListIterator<qtractorPluginParam *> param(m_params);
-	while (param.hasNext()) {
-		qtractorPluginParam *pParam = param.next();
+	Params::ConstIterator param = m_params.constBegin();
+	for ( ; param != m_params.constEnd(); ++param) {
+		qtractorPluginParam *pParam = param.value();
 		qtractorPluginParam::Observer *pObserver = pParam->observer();
 		if (!pMidiControl->isMidiObserverMapped(pObserver))
 			continue;

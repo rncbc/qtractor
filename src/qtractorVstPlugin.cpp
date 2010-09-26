@@ -779,9 +779,10 @@ void qtractorVstPlugin::selectProgram ( int iBank, int iProg )
 	// Reset parameters default value...
 	AEffect *pVstEffect = vst_effect(0);
 	if (pVstEffect) {
-		QListIterator<qtractorPluginParam *> param(params());
-		while (param.hasNext()) {
-			qtractorPluginParam *pParam = param.next();
+		const qtractorPlugin::Params& params = qtractorPlugin::params();
+		qtractorPlugin::Params::ConstIterator param = params.constBegin();
+		for ( ; param != params.constEnd(); ++param) {
+			qtractorPluginParam *pParam = param.value();
 			float *pfValue = pParam->subject()->data();
 			*pfValue = pVstEffect->getParameter(pVstEffect, pParam->index());
 			pParam->setDefaultValue(*pfValue);

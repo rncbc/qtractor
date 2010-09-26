@@ -614,9 +614,10 @@ void qtractorLv2Plugin::setChannels ( unsigned short iChannels )
 			for (unsigned long k = 0; k < iNumPorts; ++k)
 				slv2_instance_connect_port(instance, k, NULL);
 			// Connect all existing input control ports...
-			QListIterator<qtractorPluginParam *> param(params());
-			while (param.hasNext()) {
-				qtractorPluginParam *pParam = param.next();
+			const qtractorPlugin::Params& params = qtractorPlugin::params();
+			qtractorPlugin::Params::ConstIterator param = params.constBegin();
+			for ( ; param != params.constEnd(); ++param) {
+				qtractorPluginParam *pParam = param.value();
 				slv2_instance_connect_port(instance,
 					pParam->index(), pParam->subject()->data());
 			}
@@ -820,9 +821,10 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 	if (ui_descriptor && ui_descriptor->port_event) {
 		LV2UI_Handle ui_handle = lv2_ui_handle();
 		if (ui_handle) {
-			QListIterator<qtractorPluginParam *> iter(params());
-			while (iter.hasNext()) {
-				qtractorPluginParam *pParam = iter.next();
+			const qtractorPlugin::Params& params = qtractorPlugin::params();
+			qtractorPlugin::Params::ConstIterator param = params.constBegin();
+			for ( ; param != params.constEnd(); ++param) {
+				qtractorPluginParam *pParam = param.value();
 				float fValue = pParam->value();
 				(*ui_descriptor->port_event)(ui_handle,
 					pParam->index(), 4, 0, &fValue);

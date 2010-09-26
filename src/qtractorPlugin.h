@@ -257,6 +257,125 @@ private:
 
 
 //----------------------------------------------------------------------------
+// qtractorPluginParam -- Plugin paramater (control input port) instance.
+//
+
+class qtractorPluginParam
+{
+public:
+
+	// Constructor.
+	qtractorPluginParam(qtractorPlugin *pPlugin, unsigned long iIndex)
+		: m_pPlugin(pPlugin), m_iIndex(iIndex),
+			m_fDefaultValue(0.0f), m_subject(0.0f),
+			m_observer(&m_subject, this) {}
+
+	// Main properties accessors.
+	qtractorPlugin *plugin() const { return m_pPlugin; }
+	unsigned long   index()  const { return m_iIndex;  }
+
+	// Parameter name accessors.
+	void setName(const QString& sName)
+		{ m_sName = sName.trimmed(); }
+	const QString& name() const
+		{ return m_sName; }
+
+	// Parameter range hints predicate methods.
+	virtual bool isBoundedBelow() const = 0;
+	virtual bool isBoundedAbove() const = 0;
+	virtual bool isDefaultValue() const = 0;
+	virtual bool isLogarithmic()  const = 0;
+	virtual bool isSampleRate()   const = 0;
+	virtual bool isInteger()      const = 0;
+	virtual bool isToggled()      const = 0;
+	virtual bool isDisplay()      const = 0;
+
+	// Current display value.
+	virtual QString display() const
+		{ return QString::number(value()); }
+	
+	// Bounding range values.
+	void setMinValue(float fMinValue)
+		{ m_observer.setMinValue(fMinValue); }
+	float minValue() const
+		{ return m_observer.minValue(); }
+
+	void setMaxValue(float fMaxValue)
+		{ m_observer.setMaxValue(fMaxValue); }
+	float maxValue() const
+		{ return m_observer.maxValue(); }
+	
+	// Default value
+	void setDefaultValue(float fDefaultValue);
+	float defaultValue() const
+		{ return m_fDefaultValue; }
+	
+	//------------------------------------------------------------------------
+	// Observer -- Local dedicated observer.
+	
+	class Observer : public qtractorMidiControlObserver
+	{
+	public:
+	
+		// Constructor.
+		Observer(qtractorSubject *pSubject, qtractorPluginParam *pParam)
+			: qtractorMidiControlObserver(pSubject), m_pParam(pParam) {}
+	
+	protected:
+	
+		// Update feedback.
+		void update()
+		{
+			m_pParam->updateValue(value(), true);
+			qtractorMidiControlObserver::update();
+		}
+	
+	private:
+	
+		// Members.
+		qtractorPluginParam *m_pParam;
+	};
+
+	// Current parameter value.
+	void setValue(float fValue, bool bUpdate);
+	float value() const
+		{ return m_observer.value(); }
+	float prevValue() const
+		{ return m_observer.prevValue(); }
+
+	// Parameter update method.
+	void updateValue(float fValue, bool bUpdate);
+
+	// Reset-to-default method.
+	void reset() { setValue(m_fDefaultValue, true); }
+
+	// Direct parameter subject value.
+	qtractorSubject *subject() { return &m_subject; }
+
+	// Specialized observer value.
+	Observer *observer() { return &m_observer; }
+
+private:
+
+	// Instance variables.
+	qtractorPlugin *m_pPlugin;
+	unsigned long m_iIndex;
+
+	// Parameter name/label.
+	QString m_sName;
+
+	// Port default value.
+	float m_fDefaultValue;
+	
+	// Port subject value.
+	qtractorSubject m_subject;
+
+	// Port observer manager.
+	Observer m_observer;
+};
+
+
+//----------------------------------------------------------------------------
 // qtractorPlugin -- Plugin instance.
 //
 
@@ -291,10 +410,11 @@ public:
 
 	// Parameter list accessor.
 	void addParam(qtractorPluginParam *pParam)
-		{ m_params.append(pParam); }
+		{ m_params.insert(pParam->index(), pParam); }
 
 	// An accessible list of parameters.
-	const QList<qtractorPluginParam *>& params() const
+	typedef QHash<unsigned long, qtractorPluginParam *> Params;
+	const Params& params() const
 		{ return m_params; }
 
 	// Instance capped number of audio ports.
@@ -480,7 +600,7 @@ private:
 	bool m_bActivated;
 
 	// List of input control ports (parameters).
-	QList<qtractorPluginParam *> m_params;
+	Params m_params;
 
 	// An accessible list of observers.
 	QList<qtractorPluginListItem *> m_items;
@@ -638,125 +758,6 @@ private:
 
 	// Internal running buffer chain references.
 	float **m_pppBuffers[2];
-};
-
-
-//----------------------------------------------------------------------------
-// qtractorPluginParam -- Plugin paramater (control input port) instance.
-//
-
-class qtractorPluginParam
-{
-public:
-
-	// Constructor.
-	qtractorPluginParam(qtractorPlugin *pPlugin, unsigned long iIndex)
-		: m_pPlugin(pPlugin), m_iIndex(iIndex),
-			m_fDefaultValue(0.0f), m_subject(0.0f),
-			m_observer(&m_subject, this) {}
-
-	// Main properties accessors.
-	qtractorPlugin *plugin() const { return m_pPlugin; }
-	unsigned long   index()  const { return m_iIndex;  }
-
-	// Parameter name accessors.
-	void setName(const QString& sName)
-		{ m_sName = sName.trimmed(); }
-	const QString& name() const
-		{ return m_sName; }
-
-	// Parameter range hints predicate methods.
-	virtual bool isBoundedBelow() const = 0;
-	virtual bool isBoundedAbove() const = 0;
-	virtual bool isDefaultValue() const = 0;
-	virtual bool isLogarithmic()  const = 0;
-	virtual bool isSampleRate()   const = 0;
-	virtual bool isInteger()      const = 0;
-	virtual bool isToggled()      const = 0;
-	virtual bool isDisplay()      const = 0;
-
-	// Current display value.
-	virtual QString display() const
-		{ return QString::number(value()); }
-	
-	// Bounding range values.
-	void setMinValue(float fMinValue)
-		{ m_observer.setMinValue(fMinValue); }
-	float minValue() const
-		{ return m_observer.minValue(); }
-
-	void setMaxValue(float fMaxValue)
-		{ m_observer.setMaxValue(fMaxValue); }
-	float maxValue() const
-		{ return m_observer.maxValue(); }
-	
-	// Default value
-	void setDefaultValue(float fDefaultValue);
-	float defaultValue() const
-		{ return m_fDefaultValue; }
-	
-	//------------------------------------------------------------------------
-	// Observer -- Local dedicated observer.
-	
-	class Observer : public qtractorMidiControlObserver
-	{
-	public:
-	
-		// Constructor.
-		Observer(qtractorSubject *pSubject, qtractorPluginParam *pParam)
-			: qtractorMidiControlObserver(pSubject), m_pParam(pParam) {}
-	
-	protected:
-	
-		// Update feedback.
-		void update()
-		{
-			m_pParam->updateValue(value(), true);
-			qtractorMidiControlObserver::update();
-		}
-	
-	private:
-	
-		// Members.
-		qtractorPluginParam *m_pParam;
-	};
-
-	// Current parameter value.
-	void setValue(float fValue, bool bUpdate);
-	float value() const
-		{ return m_observer.value(); }
-	float prevValue() const
-		{ return m_observer.prevValue(); }
-
-	// Parameter update method.
-	void updateValue(float fValue, bool bUpdate);
-
-	// Reset-to-default method.
-	void reset() { setValue(m_fDefaultValue, true); }
-
-	// Direct parameter subject value.
-	qtractorSubject *subject() { return &m_subject; }
-
-	// Specialized observer value.
-	Observer *observer() { return &m_observer; }
-
-private:
-
-	// Instance variables.
-	qtractorPlugin *m_pPlugin;
-	unsigned long m_iIndex;
-
-	// Parameter name/label.
-	QString m_sName;
-
-	// Port default value.
-	float m_fDefaultValue;
-	
-	// Port subject value.
-	qtractorSubject m_subject;
-
-	// Port observer manager.
-	Observer m_observer;
 };
 
 

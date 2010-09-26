@@ -165,7 +165,7 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 #if QT_VERSION >= 0x040300
 	m_pGridLayout->setHorizontalSpacing(16);
 #endif
-	const QList<qtractorPluginParam *>& params = m_pPlugin->params();
+	const qtractorPlugin::Params& params = m_pPlugin->params();
 	int iRows = params.count();
 	bool bEditor = (m_pPlugin->type())->isEditor();
 	// FIXME: Couldn't stand more than a hundred widgets?
@@ -178,9 +178,9 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 			iRows++;
 		int iRow = 0;
 		int iCol = 0;
-		QListIterator<qtractorPluginParam *> iter(params);
-		while (iter.hasNext()) {
-			qtractorPluginParam *pParam = iter.next();
+		qtractorPlugin::Params::ConstIterator param = params.constBegin();
+		for ( ; param != params.constEnd(); ++param) {
+			qtractorPluginParam *pParam = param.value();
 			qtractorPluginParamWidget *pParamWidget
 				= new qtractorPluginParamWidget(pParam, this);
 			m_paramWidgets.insert(pParam->index(), pParamWidget);

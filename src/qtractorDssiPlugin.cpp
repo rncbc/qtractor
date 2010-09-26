@@ -285,9 +285,10 @@ static int osc_update ( DssiEditor *pDssiEditor,
 	}
 
 	// Update control params...
-	QListIterator<qtractorPluginParam *> param(pDssiPlugin->params());
-	while (param.hasNext()) {
-		qtractorPluginParam *pParam = param.next();
+	const qtractorPlugin::Params& params = pDssiPlugin->params();
+	qtractorPlugin::Params::ConstIterator param = params.constBegin();
+	for ( ; param != params.constEnd(); ++param) {
+		qtractorPluginParam *pParam = param.value();
 		osc_send_control(pDssiEditor,
 			pParam->index(),
 			pParam->value());
@@ -960,9 +961,10 @@ void qtractorDssiPlugin::resetChannels (void)
 		&& pDssiDescriptor->get_midi_controller_for_port) {
 		// Only the first one instance should matter...
 		LADSPA_Handle handle = m_phInstances[0];
-		QListIterator<qtractorPluginParam *> param(params());
-		while (param.hasNext()) {
-			qtractorPluginParam *pParam = param.next();
+		const qtractorPlugin::Params& params = qtractorPlugin::params();
+		qtractorPlugin::Params::ConstIterator param = params.constBegin();
+		for ( ; param != params.constEnd(); ++param) {
+			qtractorPluginParam *pParam = param.value();
 			int iController
 				= (*pDssiDescriptor->get_midi_controller_for_port)(
 					handle, pParam->index());
@@ -1201,9 +1203,10 @@ void qtractorDssiPlugin::selectProgram ( int iBank, int iProg )
 #endif
 
 	// Reset parameters default value...
-	QListIterator<qtractorPluginParam *> param(params());
-	while (param.hasNext()) {
-		qtractorPluginParam *pParam = param.next();
+	const qtractorPlugin::Params& params = qtractorPlugin::params();
+	qtractorPlugin::Params::ConstIterator param = params.constBegin();
+	for ( ; param != params.constEnd(); ++param) {
+		qtractorPluginParam *pParam = param.value();
 		pParam->setDefaultValue(pParam->value());
 	}
 }

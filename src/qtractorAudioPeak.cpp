@@ -246,8 +246,7 @@ qtractorAudioPeakFile::qtractorAudioPeakFile (
 	if (pSession)
 		dir.setPath(pSession->sessionDir());
 	m_peakFile.setFileName(
-		QFileInfo(dir,
-			QFileInfo(sFilename).fileName()).filePath()
+		QFileInfo(dir, QFileInfo(sFilename).fileName()).filePath()
 			+ '_' + QString::number(fTimeStretch) + c_sPeakFileExt);
 }
 
@@ -792,7 +791,7 @@ qtractorAudioPeak* qtractorAudioPeakFactory::createPeak (
 	QMutexLocker locker(&m_mutex);
 
 	const QString sKey = sFilename + '_' + QString::number(fTimeStretch);
-	qtractorAudioPeakFile* pPeakFile = m_peaks.value(sKey, NULL);
+	qtractorAudioPeakFile *pPeakFile = m_peaks.value(sKey, NULL);
 	if (pPeakFile == NULL) {
 		pPeakFile = new qtractorAudioPeakFile(this, sFilename, fTimeStretch);
 		m_peaks.insert(sKey, pPeakFile);

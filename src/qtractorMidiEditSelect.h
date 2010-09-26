@@ -92,6 +92,8 @@ public:
 
 	// Reset event selection.
 	void clear();
+
+	qtractorMidiEvent *anchorEvent() const { return m_pAnchorEvent; }
 	
 private:
 
@@ -101,6 +103,9 @@ private:
 	// The united selection rectangle.
 	QRect m_rectEvent;
 	QRect m_rectView;
+
+	// The most probable anchor event.
+	qtractorMidiEvent *m_pAnchorEvent;
 };
 
 

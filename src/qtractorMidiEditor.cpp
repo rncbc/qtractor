@@ -3361,7 +3361,7 @@ bool qtractorMidiEditor::keyStep ( int iKey )
 
 	// Make sure we've a anchor...
 	if (m_pEventDrag == NULL)
-		m_pEventDrag = m_select.items().constBegin().key();
+		m_pEventDrag = m_select.anchorEvent();
 
 	// Determine vertical step...
 	if (iKey == Qt::Key_Up || iKey == Qt::Key_Down)  {

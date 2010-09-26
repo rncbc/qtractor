@@ -5,6 +5,14 @@ ChangeLog
 
 SVN TRUNK
 
+- While moving multi-selected MIDI events around the
+  clip editor (aka piano-roll), with help of keyboard
+  arrow keys, that is, was not clear which one was the
+  so-called "anchor" event, the one which positioning
+  gets honored for snap-to-beat business. Not anymore:
+  the anchor event now defaults to the earliest in time
+  or the one the user's last point(-click)ed.
+
 - MIDI control observer pattern implementation is
   sneaking in, getting ready for the so-called and
   long-awaited "MIDI Learn" feature and arbitrary

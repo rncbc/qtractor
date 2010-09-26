@@ -29,6 +29,7 @@
 // Constructor.
 qtractorMidiEditSelect::qtractorMidiEditSelect (void)
 {
+	m_pAnchorEvent = NULL;
 }
 
 
@@ -56,6 +57,9 @@ void qtractorMidiEditSelect::addItem ( qtractorMidiEvent *pEvent,
 
 	m_rectEvent = m_rectEvent.unite(rectEvent);
 	m_rectView = m_rectView.unite(rectView);
+	
+	if (m_pAnchorEvent && m_pAnchorEvent->time() > pEvent->time())
+		m_pAnchorEvent = pEvent;
 }
 
 
@@ -133,6 +137,8 @@ void qtractorMidiEditSelect::clear (void)
 
 	qDeleteAll(m_items);
 	m_items.clear();
+
+	m_pAnchorEvent = NULL;
 }
 
 

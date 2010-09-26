@@ -8,7 +8,7 @@ find critical in the application field. All is not lost,
 as the following are among the ones planned to be worked
 on in the times to come (not in any particular order):
 
-- Automation and MIDI controller mapping.
+- Automation.
 - Loop recording (takes).
 - Audio clip cross-fading.
 - Clip locking, muting and plug-ins.
