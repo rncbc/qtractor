@@ -3832,10 +3832,10 @@ void qtractorMainForm::stabilizeForm (void)
 
 	bool bSingleTrackSelected = ((pClip != NULL || bSelected)
 		&& (pTrack == NULL || m_pTracks->singleTrackSelected() == pTrack));
-#if 0
+
 	if (m_pFiles && m_pFiles->hasFocus() && m_pFiles->isFileSelected())
 		bSelected = true;
-#endif
+
 	m_ui.editCutAction->setEnabled(bSelected);
 	m_ui.editCopyAction->setEnabled(bSelected);
 	m_ui.editPasteAction->setEnabled(qtractorTrackView::isClipboard()
