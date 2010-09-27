@@ -5022,9 +5022,9 @@ void qtractorMainForm::midiMmcNotify ( const qtractorMmcEvent& mmce )
 void qtractorMainForm::midiCtlNotify ( const qtractorCtlEvent& ctle )
 {
 	QString sCtlText("CTL: ");
-	sCtlText += tr("MIDI Channel %1, %2, Param %3, Value %4")
-		.arg(ctle.channel() + 1)
+	sCtlText += tr("MIDI %1 channel %2, param %3, value %4")
 		.arg(qtractorMidiControl::textFromType(ctle.type()))
+		.arg(ctle.channel() + 1)
 		.arg(ctle.param())
 		.arg(ctle.value());
 
@@ -5062,6 +5062,7 @@ void qtractorMainForm::midiCtlNotify ( const qtractorCtlEvent& ctle )
 					pTrack->midiChannel() == ctle.channel()) {
 					m_pSession->execute(
 						new qtractorTrackGainCommand(pTrack, fGain, true));
+					sCtlText += ' ';
 					sCtlText += tr("(track %1, gain %2)")
 						.arg(iTrack).arg(fGain);
 				}
@@ -5079,6 +5080,7 @@ void qtractorMainForm::midiCtlNotify ( const qtractorCtlEvent& ctle )
 					pTrack->midiChannel() == ctle.channel()) {
 					m_pSession->execute(
 						new qtractorTrackPanningCommand(pTrack, fPanning, true));
+					sCtlText += ' ';
 					sCtlText += tr("(track %1, panning %2)")
 						.arg(iTrack).arg(fPanning);
 				}
