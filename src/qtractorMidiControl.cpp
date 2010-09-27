@@ -438,8 +438,10 @@ void qtractorMidiControl::sendController ( ControlType ctype,
 
 	if (iValue < 0)
 		iValue = 0;
-	else if (iValue > 127)
-		iValue = 127;
+	else if (ctype == qtractorMidiEvent::PITCHBEND && iValue > 0x3fff)
+		iValue = 0x3fff;
+	else if (iValue > 0x7f)
+		iValue = 0x7f;
 
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorMidiControl::sendController(0x%02x, %u, %u, %d)",

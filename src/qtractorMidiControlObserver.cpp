@@ -73,13 +73,17 @@ qtractorMidiControlObserver::~qtractorMidiControlObserver (void)
 // MIDI mapped value converters.
 void qtractorMidiControlObserver::setMidiValue ( unsigned short iValue )
 {
-//	setScaleValue(float(iValue) / 127.0f);
-	subject()->setValue(valueFromScale((float(iValue) / 127.0f), m_bLogarithmic));
+	const float fRatio
+		= float(m_ctype == qtractorMidiEvent::PITCHBEND ? 0x3fff : 0x7f);
+//	setScaleValue(float(iValue) / fRatio);
+	subject()->setValue(valueFromScale((float(iValue) / fRatio), m_bLogarithmic));
 }
 
 unsigned short qtractorMidiControlObserver::midiValue (void) const
 {
-	return 127.0f * scaleValue();
+	const float fRatio
+		= float(m_ctype == qtractorMidiEvent::PITCHBEND ? 0x3fff : 0x7f);
+	return fRatio * scaleValue();
 }
 
 

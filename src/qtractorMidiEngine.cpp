@@ -2998,7 +2998,7 @@ void qtractorMidiBus::sendEvent ( qtractorMidiEvent::EventType etype,
 		ev.type = SND_SEQ_EVENT_PITCHBEND;
 		ev.data.control.channel = iChannel;
 		ev.data.control.param   = 0;
-		ev.data.control.value   = iValue;
+		ev.data.control.value   = int(iValue) - 0x2000;
 		break;
 	}
 
