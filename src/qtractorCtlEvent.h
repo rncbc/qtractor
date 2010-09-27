@@ -36,9 +36,9 @@ public:
 	// Contructor.
 	qtractorCtlEvent(qtractorMidiEvent::EventType ctype
 		= qtractorMidiEvent::CONTROLLER, unsigned short iChannel = 0,
-		unsigned char param = 0, unsigned char value = 0)
+		unsigned short iParam = 0, unsigned short iValue = 0)
 		: m_ctype(ctype), m_channel(iChannel),
-			m_param(param), m_value(value) {}
+			m_param(iParam), m_value(iValue) {}
 
 	// Copy constructor.
 	qtractorCtlEvent(const qtractorCtlEvent& ctle)
@@ -49,16 +49,16 @@ public:
 	// Accessors.
 	qtractorMidiEvent::EventType type() const { return m_ctype; }
 	unsigned short channel() const { return m_channel; }
-	unsigned char  param() const { return m_param; }
-	unsigned char  value() const { return m_value; }
+	unsigned short param() const { return m_param; }
+	unsigned short value() const { return m_value; }
 
 private:
 
 	// Instance variables.
 	qtractorMidiEvent::EventType m_ctype;
 	unsigned short m_channel;
-	unsigned char  m_param;
-	unsigned char  m_value;
+	unsigned short m_param;
+	unsigned short m_value;
 };
 
 
