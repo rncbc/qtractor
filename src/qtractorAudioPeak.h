@@ -31,7 +31,6 @@
 
 // Forward declarations.
 class qtractorAudioPeakThread;
-class qtractorAudioPeakFactory;
 
 
 //----------------------------------------------------------------------
@@ -43,8 +42,7 @@ class qtractorAudioPeakFile
 public:
 
 	// Constructor.
-	qtractorAudioPeakFile(qtractorAudioPeakFactory *pFactory,
-		const QString& sFilename, float fTimeStretch);
+	qtractorAudioPeakFile(const QString& sFilename, float fTimeStretch);
 
 	// Default destructor.
 	~qtractorAudioPeakFile();
@@ -83,10 +81,7 @@ public:
 	void closeWrite();
 
 	// Auto-delete property.
-	bool isAutoRemove() const;
-
-	// Event notifier widget settings.
-	void notifyPeakEvent();
+	//bool isAutoRemove() const;
 
 	// Reference count methods.
 	void addRef();
@@ -102,9 +97,6 @@ protected:
 		unsigned long iPeakOffset, unsigned int iPeakFrames);
 
 private:
-
-	// Reference to master peak manager.
-	qtractorAudioPeakFactory *m_pFactory;
 
 	// Instance variables.
 	QString        m_sFilename;
@@ -147,29 +139,38 @@ class qtractorAudioPeak
 public:
 
 	// Constructor.
-	qtractorAudioPeak(qtractorAudioPeakFile *pPeakFile);
+	qtractorAudioPeak(qtractorAudioPeakFile *pPeakFile)
+		{ m_pPeakFile = pPeakFile; m_pPeakFile->addRef(); }
 	// Copy consructor.
-	qtractorAudioPeak(const qtractorAudioPeak& peak);
+	qtractorAudioPeak(const qtractorAudioPeak& peak)
+		{ m_pPeakFile = peak.m_pPeakFile; m_pPeakFile->addRef(); }
+
 	// Default destructor.
-	~qtractorAudioPeak();
+	~qtractorAudioPeak() { m_pPeakFile->removeRef(); }
 
 	// Peak file accessors.
-	const QString& filename() const;
+	const QString& filename() const
+		{ return m_pPeakFile->filename(); }
 
 	// Peak cache properties.
-	unsigned short period() const;
-	unsigned short channels() const;
+	unsigned short period() const
+		{ return m_pPeakFile->period(); }
+	unsigned short channels() const
+		{ return m_pPeakFile->channels(); }
 
 	// Peak cache file methods.
-	bool openRead();
+	bool openRead() { return m_pPeakFile->openRead(); }
 	qtractorAudioPeakFile::Frame *read(
-		unsigned long iPeakOffset, unsigned int iPeakFrames);
-	void closeRead();
+		unsigned long iPeakOffset, unsigned int iPeakFrames)
+		{ return m_pPeakFile->read(iPeakOffset, iPeakFrames); }
+	void closeRead() { m_pPeakFile->closeRead(); }
 
 	// Write peak from audio frame methods.
-	bool openWrite(unsigned short iChannels, unsigned int iSampleRate);
-	void write(float **ppAudioFrames, unsigned int iAudioFrames);
-	void closeWrite();
+	bool openWrite(unsigned short iChannels, unsigned int iSampleRate)
+		{ return m_pPeakFile->openWrite(iChannels, iSampleRate); }
+	void write(float **ppAudioFrames, unsigned int iAudioFrames)
+		{ m_pPeakFile->write(ppAudioFrames, iAudioFrames); }
+	void closeWrite() { m_pPeakFile->closeWrite(); }
 
 private:
 
