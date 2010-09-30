@@ -3,7 +3,7 @@ Qtractor - An Audio/MIDI multi-track sequencer
 
 ChangeLog
 
-SVN TRUNK
+0.4.7  2010-09-30  The Furious Desertrix
 
 - While moving multi-selected MIDI events around the
   clip editor (aka piano-roll), with help of keyboard
@@ -13,11 +13,11 @@ SVN TRUNK
   the anchor event now defaults to the earliest in time
   or the one the user's last point(-click)ed.
 
-- MIDI control observer pattern implementation is
-  sneaking in, getting ready for the so-called and
+- MIDI control observer pattern implementation has
+  sneaked in, making it ready for the so-called and
   long-awaited "MIDI Learn" feature and arbitrary
-  MIDI controller assignment for plugin parameters
-  in particular. (EXPERIMENTAL)
+  MIDI controller assignment, for plugin parameters
+  in particular.
 
 - MMC DEFERRED PLAY doesn't cause transport state to
   stop if currently rolling (mitigating bug #3067264).
@@ -25,16 +25,16 @@ SVN TRUNK
 - Audio clip merge processing might have been skipping 
   a few initial frame blocks, now fixed.
 
-- Clip selection hash optimization. (TESTING)
+- Clip selection and plugin parameter hash optimization.
 
 - Anti-glitch audio clip macro fade-in/out fixed again.
 
 - New clip fade-in/out slopes (curves) are introduced,
   partially adapted and refactored from those easing
-  equations of Robert Penner's fame. (EXPERIMENTAL)
+  equations of Robert Penner's fame.
 
 - Clip fade-in/out non-linear slopes are now shown as
-  actual WYSIWYG curves. (EXPERIMENTAL)
+  actual WYSIWYG curves.
 
 - Escape key now closes generic plugin widgets as ever
   found usual elsewhere.
@@ -45,15 +45,14 @@ SVN TRUNK
 
 - A nasty and deadly MIDI resolution overflow has been
   finally fixed, allowing for long MIDI sequences (1h+)
-  to laod correctly on 32bit machines from now on (was
+  to load correctly on 32bit machines from now on (was
   perfectly fine on 64bit though).
 
 - MIDI editor selection hash optimization in face of
   reasonably huge event sequences.
 
 - MIDI controller mapping finally refactored to support
-  some other MIDI event types than just CC (0xBn) ones
-  (EXPERIMENTAL).
+  some other MIDI event types than just CC (0xBn) ones.
 
 - Nitpicking fix: corrected main track-list (left pane)
   display when no track is currently selected.
@@ -65,9 +64,9 @@ SVN TRUNK
 - New audio metronome bar and beat sample gain options.
 
 - Progressively, the observer pattern is being finally
-  introduced, targeting all potentially automatable
+  introduced, targeting all potentially automation
   controls and widgets as plain ground-zero for the
-  (ultra-)long overdue automation feature (EXPERIMENTAL).
+  (ultra-)long overdue automation feature.
 
 - MIDI controller mapping of still non-existing tracks
   were being implicitly assigned to the last, highly
@@ -81,7 +80,7 @@ SVN TRUNK
   same track is later un-muted on any other preceding
   clip. Now hopefully fixed.
 
-- MIDI Clock support makes its first appearence.
+- MIDI Clock support makes its first appearance.
 
 - All tempo (BPM) calculations are now compliant to the
   MIDI conventional equivalence between beat and quarter
@@ -120,17 +119,17 @@ SVN TRUNK
   positions instead of squashing a duplicate into the MIDI
   bus SysEx setup.
 
-- Attempt to include the VeSTige header by default for minimal
-  VST plugin support.
+- Attempt to include the VeSTige header by default, as for
+  minimal VST plugin support.
 
-- JACK transport support has been slightly rewritten, in fact
-  the sync callback is now in effect for repositioning.
+- JACK transport support has been slightly rewritten, in
+  fact the sync callback is now in effect for repositioning.
 
-- The MIDI clip editor (piano roll) widget won't be flagged as
-  a tool window anymore.
+- The MIDI clip editor (piano roll) widget won't be flagged
+  as a tool window anymore.
 
-- A tempo adjustment tool is making inroads from the menu as
-  Edit/Clip/Tempo... (factory shortcut: F7).
+- A tempo adjustment tool is making inroads from the menu,
+  as Edit/Clip/Tempo... (factory shortcut: F7).
 
 - Audio tracks auto-monitoring is now effective on playback.
 
@@ -170,7 +169,7 @@ SVN TRUNK
 - LV2 UI Instance and Data Access extension support added;
   reduce LV2 external UI parameter value update flickering.
 
-- JACK session infrastructure support. (EXPERIMENTAL)
+- JACK session infrastructure support.
 
 - Initial widget geometry and visibility persistence logic
   has been slightly revised as much to avoid crash failures

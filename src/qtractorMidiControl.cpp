@@ -234,12 +234,15 @@ qtractorMidiControl::findEvent ( const qtractorCtlEvent& ctle ) const
 // Process incoming controller event.
 bool qtractorMidiControl::processEvent ( const qtractorCtlEvent& ctle ) const
 {
+	bool bResult = false;
+
 	// Find whether there's any observer assigned...
 	qtractorMidiControlObserver *pMidiObserver
 		= findMidiObserver(ctle.type(), ctle.channel(), ctle.param());
-	if (pMidiObserver)
+	if (pMidiObserver) {
 		pMidiObserver->setMidiValue(ctle.value());
-	else {
+		bResult = true;
+	} else {
 		qtractorMidiControlObserverForm *pMidiObserverForm
 			= qtractorMidiControlObserverForm::getInstance();
 		if (pMidiObserverForm)
@@ -250,7 +253,7 @@ bool qtractorMidiControl::processEvent ( const qtractorCtlEvent& ctle ) const
 	ControlMap::ConstIterator it = findEvent(ctle);
 	// Is there one mapped, indeed?
 	if (it == m_controlMap.end())
-		return false;
+		return bResult;
 
 	// Find the track by number...
 	const MapKey& key = it.key();
@@ -269,15 +272,15 @@ bool qtractorMidiControl::processEvent ( const qtractorCtlEvent& ctle ) const
 
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
-		return false;
+		return bResult;
 
 	qtractorTrack *pTrack = pSession->tracks().at(iTrack);
 	if (pTrack == NULL)
-		return false;
+		return bResult;
 
 	switch (val.command()) {
 	case TRACK_GAIN:
-		pSession->execute(
+		bResult = pSession->execute(
 			new qtractorTrackGainCommand(pTrack,
 				(pTrack->trackType() == qtractorTrack::Audio
 					? cubef2(float(ctle.value()) / 127.0f)
@@ -285,33 +288,33 @@ bool qtractorMidiControl::processEvent ( const qtractorCtlEvent& ctle ) const
 				true));
 		break;
 	case TRACK_PANNING:
-		pSession->execute(
+		bResult = pSession->execute(
 			new qtractorTrackPanningCommand(pTrack,
 				(float(ctle.value()) - 64.0f) / 63.0f,
 				true));
 		break;
 	case TRACK_MONITOR:
-		pSession->execute(
+		bResult = pSession->execute(
 			new qtractorTrackMonitorCommand(pTrack,
 				bool(ctle.value() > 0),
 				true));
 		break;
 	case TRACK_RECORD:
-		pSession->execute(
+		bResult = pSession->execute(
 			new qtractorTrackStateCommand(pTrack,
 				qtractorTrack::Record,
 				bool(ctle.value()> 0),
 				true));
 		break;
 	case TRACK_MUTE:
-		pSession->execute(
+		bResult = pSession->execute(
 			new qtractorTrackStateCommand(pTrack,
 				qtractorTrack::Mute,
 				bool(ctle.value() > 0),
 				true));
 		break;
 	case TRACK_SOLO:
-		pSession->execute(
+		bResult = pSession->execute(
 			new qtractorTrackStateCommand(pTrack,
 				qtractorTrack::Solo,
 				bool(ctle.value() > 0),
@@ -321,7 +324,7 @@ bool qtractorMidiControl::processEvent ( const qtractorCtlEvent& ctle ) const
 		break;
 	}
 
-	return true;
+	return bResult;
 }
 
 
@@ -438,9 +441,13 @@ void qtractorMidiControl::sendController ( ControlType ctype,
 
 	if (iValue < 0)
 		iValue = 0;
-	else if (ctype == qtractorMidiEvent::PITCHBEND && iValue > 0x3fff)
-		iValue = 0x3fff;
-	else if (iValue > 0x7f)
+	else
+	if (ctype == qtractorMidiEvent::PITCHBEND) {
+		if (iValue > 0x3fff)
+			iValue = 0x3fff;
+	}
+	else
+	if (iValue > 0x7f)
 		iValue = 0x7f;
 
 #ifdef CONFIG_DEBUG

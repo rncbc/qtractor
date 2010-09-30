@@ -1624,9 +1624,8 @@ bool qtractorMainForm::loadSessionFile (
 	const QString& sFilename, bool bTemplate )
 {
 #ifdef CONFIG_DEBUG
-	appendMessages(
-		QString("qtractorMainForm::loadSessionFile(\"%1\", %2)")
-		.arg(sFilename).arg(int(bTemplate)));
+	qDebug("qtractorMainForm::loadSessionFile(\"%s\", %d)",
+		sFilename.toUtf8().constData(), int(bTemplate));
 #endif
 
 	// Tell the world we'll take some time...
@@ -1700,9 +1699,8 @@ bool qtractorMainForm::saveSessionFile (
 	const QString& sFilename, bool bTemplate )
 {
 #ifdef CONFIG_DEBUG
-	appendMessages(
-		QString("qtractorMainForm::saveSessionFile(\"%1\", %2)")
-		.arg(sFilename).arg(int(bTemplate)));
+	qDebug("qtractorMainForm::saveSessionFile(\"%s\", %d)",
+		sFilename.toUtf8().constData(), int(bTemplate));
 #endif
 
 	// Tell the world we'll take some time...
@@ -1840,7 +1838,7 @@ void qtractorMainForm::fileSaveAs (void)
 void qtractorMainForm::fileProperties (void)
 {
 #ifdef CONFIG_DEBUG
-	appendMessages("qtractorMainForm::fileProperties()");
+	qDebug("qtractorMainForm::fileProperties()");
 #endif
 
 	// Session Properties...
@@ -1863,7 +1861,7 @@ void qtractorMainForm::fileExit (void)
 void qtractorMainForm::editUndo (void)
 {
 #ifdef CONFIG_DEBUG
-	appendMessages("qtractorMainForm::editUndo()");
+	qDebug("qtractorMainForm::editUndo()");
 #endif
 
 	(m_pSession->commands())->undo();
@@ -1874,7 +1872,7 @@ void qtractorMainForm::editUndo (void)
 void qtractorMainForm::editRedo (void)
 {
 #ifdef CONFIG_DEBUG
-	appendMessages("qtractorMainForm::editRedo()");
+	qDebug("qtractorMainForm::editRedo()");
 #endif
 
 	(m_pSession->commands())->redo();
@@ -1885,7 +1883,7 @@ void qtractorMainForm::editRedo (void)
 void qtractorMainForm::editCut (void)
 {
 #ifdef CONFIG_DEBUG
-	appendMessages("qtractorMainForm::editCut()");
+	qDebug("qtractorMainForm::editCut()");
 #endif
 
 	// Cut from files...
@@ -1902,7 +1900,7 @@ void qtractorMainForm::editCut (void)
 void qtractorMainForm::editCopy (void)
 {
 #ifdef CONFIG_DEBUG
-	appendMessages("qtractorMainForm::editCopy()");
+	qDebug("qtractorMainForm::editCopy()");
 #endif
 
 	// Copy from files...
@@ -1921,7 +1919,7 @@ void qtractorMainForm::editCopy (void)
 void qtractorMainForm::editPaste (void)
 {
 #ifdef CONFIG_DEBUG
-	appendMessages("qtractorMainForm::editPaste()");
+	qDebug("qtractorMainForm::editPaste()");
 #endif
 
 	// Paste to files...
@@ -1938,7 +1936,7 @@ void qtractorMainForm::editPaste (void)
 void qtractorMainForm::editPasteRepeat (void)
 {
 #ifdef CONFIG_DEBUG
-	appendMessages("qtractorMainForm::editPasteRepeat()");
+	qDebug("qtractorMainForm::editPasteRepeat()");
 #endif
 
 	// Paste/repeat selection...
@@ -1951,7 +1949,7 @@ void qtractorMainForm::editPasteRepeat (void)
 void qtractorMainForm::editDelete (void)
 {
 #ifdef CONFIG_DEBUG
-	appendMessages("qtractorMainForm::editDelete()");
+	qDebug("qtractorMainForm::editDelete()");
 #endif
 
 	// Delete from files...
@@ -1968,7 +1966,7 @@ void qtractorMainForm::editDelete (void)
 void qtractorMainForm::editSelectModeClip (void)
 {
 #ifdef CONFIG_DEBUG
-	appendMessages("qtractorMainForm::editSelectModeClip()");
+	qDebug("qtractorMainForm::editSelectModeClip()");
 #endif
 
 	// Select clip mode...
@@ -1985,7 +1983,7 @@ void qtractorMainForm::editSelectModeClip (void)
 void qtractorMainForm::editSelectModeRange (void)
 {
 #ifdef CONFIG_DEBUG
-	appendMessages("qtractorMainForm::editSelectModeRange()");
+	qDebug("qtractorMainForm::editSelectModeRange()");
 #endif
 
 	// Select clip mode...
@@ -2002,7 +2000,7 @@ void qtractorMainForm::editSelectModeRange (void)
 void qtractorMainForm::editSelectModeRect (void)
 {
 #ifdef CONFIG_DEBUG
-	appendMessages("qtractorMainForm::editSelectModeRect()");
+	qDebug("qtractorMainForm::editSelectModeRect()");
 #endif
 
 	// Select clip mode...
@@ -2019,7 +2017,7 @@ void qtractorMainForm::editSelectModeRect (void)
 void qtractorMainForm::editSelectNone (void)
 {
 #ifdef CONFIG_DEBUG
-	appendMessages("qtractorMainForm::editSelectNone()");
+	qDebug("qtractorMainForm::editSelectNone()");
 #endif
 
 	// Select Track...
@@ -2034,7 +2032,7 @@ void qtractorMainForm::editSelectNone (void)
 void qtractorMainForm::editSelectRange (void)
 {
 #ifdef CONFIG_DEBUG
-	appendMessages("qtractorMainForm::editSelectRange()");
+	qDebug("qtractorMainForm::editSelectRange()");
 #endif
 
 	// Select Track...
@@ -2049,7 +2047,7 @@ void qtractorMainForm::editSelectRange (void)
 void qtractorMainForm::editSelectTrack (void)
 {
 #ifdef CONFIG_DEBUG
-	appendMessages("qtractorMainForm::editSelectTrack()");
+	qDebug("qtractorMainForm::editSelectTrack()");
 #endif
 
 	// Select Track...
@@ -2064,7 +2062,7 @@ void qtractorMainForm::editSelectTrack (void)
 void qtractorMainForm::editSelectAll (void)
 {
 #ifdef CONFIG_DEBUG
-	appendMessages("qtractorMainForm::editSelectAll()");
+	qDebug("qtractorMainForm::editSelectAll()");
 #endif
 
 	// Select All...
@@ -2079,7 +2077,7 @@ void qtractorMainForm::editSelectAll (void)
 void qtractorMainForm::editClipNew (void)
 {
 #ifdef CONFIG_DEBUG
-	appendMessages("qtractorMainForm::editClipNew()");
+	qDebug("qtractorMainForm::editClipNew()");
 #endif
 
 	// New clip: we must have a session name...
@@ -2096,7 +2094,7 @@ void qtractorMainForm::editClipNew (void)
 void qtractorMainForm::editClipEdit (void)
 {
 #ifdef CONFIG_DEBUG
-	appendMessages("qtractorMainForm::editClipEdit()");
+	qDebug("qtractorMainForm::editClipEdit()");
 #endif
 
 	// Start editing the current clip, if any...
@@ -2109,7 +2107,7 @@ void qtractorMainForm::editClipEdit (void)
 void qtractorMainForm::editClipSplit (void)
 {
 #ifdef CONFIG_DEBUG
-	appendMessages("qtractorMainForm::editClipSplit()");
+	qDebug("qtractorMainForm::editClipSplit()");
 #endif
 
 	// Split current clip, if any...
@@ -2122,7 +2120,7 @@ void qtractorMainForm::editClipSplit (void)
 void qtractorMainForm::editClipMerge (void)
 {
 #ifdef CONFIG_DEBUG
-	appendMessages("qtractorMainForm::editClipMerge()");
+	qDebug("qtractorMainForm::editClipMerge()");
 #endif
 
 	// Merge clip selection, if any...
@@ -2135,7 +2133,7 @@ void qtractorMainForm::editClipMerge (void)
 void qtractorMainForm::editClipNormalize (void)
 {
 #ifdef CONFIG_DEBUG
-	appendMessages("qtractorMainForm::editClipNormalize()");
+	qDebug("qtractorMainForm::editClipNormalize()");
 #endif
 
 	// Export current clip, if any...
@@ -2148,7 +2146,7 @@ void qtractorMainForm::editClipNormalize (void)
 void qtractorMainForm::editClipQuantize (void)
 {
 #ifdef CONFIG_DEBUG
-	appendMessages("qtractorMainForm::editClipQuantize()");
+	qDebug("qtractorMainForm::editClipQuantize()");
 #endif
 
 	// Export current clip, if any...
@@ -2161,7 +2159,7 @@ void qtractorMainForm::editClipQuantize (void)
 void qtractorMainForm::editClipTempo (void)
 {
 #ifdef CONFIG_DEBUG
-	appendMessages("qtractorMainForm::editClipTempo()");
+	qDebug("qtractorMainForm::editClipTempo()");
 #endif
 
 	qtractorTempoAdjustForm form(this);
@@ -2197,7 +2195,7 @@ void qtractorMainForm::editClipTempo (void)
 void qtractorMainForm::editClipImport (void)
 {
 #ifdef CONFIG_DEBUG
-	appendMessages("qtractorMainForm::editClipImport()");
+	qDebug("qtractorMainForm::editClipImport()");
 #endif
 
 	// Import (audio) clip(s)...
@@ -2222,7 +2220,7 @@ void qtractorMainForm::editClipImport (void)
 void qtractorMainForm::editClipExport (void)
 {
 #ifdef CONFIG_DEBUG
-	appendMessages("qtractorMainForm::editClipExport()");
+	qDebug("qtractorMainForm::editClipExport()");
 #endif
 
 	// Export current clip, if any...
@@ -2239,7 +2237,7 @@ void qtractorMainForm::editClipExport (void)
 void qtractorMainForm::trackAdd (void)
 {
 #ifdef CONFIG_DEBUG
-	appendMessages("qtractorMainForm::trackAdd()");
+	qDebug("qtractorMainForm::trackAdd()");
 #endif
 
 	// Add Track...
@@ -2252,7 +2250,7 @@ void qtractorMainForm::trackAdd (void)
 void qtractorMainForm::trackRemove (void)
 {
 #ifdef CONFIG_DEBUG
-	appendMessages("qtractorMainForm::trackRemove()");
+	qDebug("qtractorMainForm::trackRemove()");
 #endif
 
 	// Remove Track...
@@ -2265,7 +2263,7 @@ void qtractorMainForm::trackRemove (void)
 void qtractorMainForm::trackProperties (void)
 {
 #ifdef CONFIG_DEBUG
-	appendMessages("qtractorMainForm::trackProperties()");
+	qDebug("qtractorMainForm::trackProperties()");
 #endif
 
 	// Track Properties...
@@ -2484,7 +2482,7 @@ void qtractorMainForm::trackMoveBottom (void)
 void qtractorMainForm::trackAutoMonitor ( bool bOn )
 {
 #ifdef CONFIG_DEBUG
-	appendMessages("qtractorMainForm::trackAutoMonitor()");
+	qDebug("qtractorMainForm::trackAutoMonitor()");
 #endif
 
 	qtractorTrack *pTrack = NULL;
@@ -2498,7 +2496,7 @@ void qtractorMainForm::trackAutoMonitor ( bool bOn )
 void qtractorMainForm::trackImportAudio (void)
 {
 #ifdef CONFIG_DEBUG
-	appendMessages("qtractorMainForm::trackImportAudio()");
+	qDebug("qtractorMainForm::trackImportAudio()");
 #endif
 
 	// Import Audio files into tracks...
@@ -2515,7 +2513,7 @@ void qtractorMainForm::trackImportAudio (void)
 void qtractorMainForm::trackImportMidi (void)
 {
 #ifdef CONFIG_DEBUG
-	appendMessages("qtractorMainForm::trackImportMidi()");
+	qDebug("qtractorMainForm::trackImportMidi()");
 #endif
 
 	// Import MIDI files into tracks...
@@ -2532,7 +2530,7 @@ void qtractorMainForm::trackImportMidi (void)
 void qtractorMainForm::trackExportAudio (void)
 {
 #ifdef CONFIG_DEBUG
-	appendMessages("qtractorMainForm::trackExportAudio()");
+	qDebug("qtractorMainForm::trackExportAudio()");
 #endif
 
 	qtractorExportForm exportForm(this);
@@ -2545,7 +2543,7 @@ void qtractorMainForm::trackExportAudio (void)
 void qtractorMainForm::trackExportMidi (void)
 {
 #ifdef CONFIG_DEBUG
-	appendMessages("qtractorMainForm::trackExportMidi()");
+	qDebug("qtractorMainForm::trackExportMidi()");
 #endif
 
 	qtractorExportForm exportForm(this);
@@ -2839,7 +2837,7 @@ void qtractorMainForm::viewSnap (void)
 void qtractorMainForm::viewRefresh (void)
 {
 #ifdef CONFIG_DEBUG
-	appendMessages("qtractorMainForm::viewRefresh()");
+	qDebug("qtractorMainForm::viewRefresh()");
 #endif
 
 	// Tell the world we'll take some time...
@@ -3124,7 +3122,7 @@ void qtractorMainForm::viewOptions (void)
 void qtractorMainForm::transportBackward (void)
 {
 #ifdef CONFIG_DEBUG
-	appendMessages("qtractorMainForm::transportBackward()");
+	qDebug("qtractorMainForm::transportBackward()");
 #endif
 
 	// Make sure session is activated...
@@ -3174,7 +3172,7 @@ void qtractorMainForm::transportBackward (void)
 void qtractorMainForm::transportRewind (void)
 {
 #ifdef CONFIG_DEBUG
-	appendMessages("qtractorMainForm::transportRewind()");
+	qDebug("qtractorMainForm::transportRewind()");
 #endif
 
 	// Make sure session is activated...
@@ -3206,7 +3204,7 @@ void qtractorMainForm::transportRewind (void)
 void qtractorMainForm::transportFastForward (void)
 {
 #ifdef CONFIG_DEBUG
-	appendMessages("qtractorMainForm::transportFastForward()");
+	qDebug("qtractorMainForm::transportFastForward()");
 #endif
 
 	// Make sure session is activated...
@@ -3238,7 +3236,7 @@ void qtractorMainForm::transportFastForward (void)
 void qtractorMainForm::transportForward (void)
 {
 #ifdef CONFIG_DEBUG
-	appendMessages("qtractorMainForm::transportForward()");
+	qDebug("qtractorMainForm::transportForward()");
 #endif
 
 	// Make sure session is activated...
@@ -3287,7 +3285,7 @@ void qtractorMainForm::transportForward (void)
 void qtractorMainForm::transportLoop (void)
 {
 #ifdef CONFIG_DEBUG
-	appendMessages("qtractorMainForm::transportLoop()");
+	qDebug("qtractorMainForm::transportLoop()");
 #endif
 
 	// Make sure session is activated...
@@ -3312,7 +3310,7 @@ void qtractorMainForm::transportLoop (void)
 void qtractorMainForm::transportLoopSet (void)
 {
 #ifdef CONFIG_DEBUG
-	appendMessages("qtractorMainForm::transportLoopSet()");
+	qDebug("qtractorMainForm::transportLoopSet()");
 #endif
 
 	// Make sure session is activated...
@@ -3329,7 +3327,7 @@ void qtractorMainForm::transportLoopSet (void)
 void qtractorMainForm::transportPlay (void)
 {
 #ifdef CONFIG_DEBUG
-	appendMessages("qtractorMainForm::transportPlay()");
+	qDebug("qtractorMainForm::transportPlay()");
 #endif
 
 	// Make sure session is activated...
@@ -3361,7 +3359,7 @@ void qtractorMainForm::transportPlay (void)
 void qtractorMainForm::transportRecord (void)
 {
 #ifdef CONFIG_DEBUG
-	appendMessages("qtractorMainForm::transportRecord()");
+	qDebug("qtractorMainForm::transportRecord()");
 #endif
 
 	// Make sure session is activated...
@@ -3384,7 +3382,7 @@ void qtractorMainForm::transportRecord (void)
 void qtractorMainForm::transportPunch (void)
 {
 #ifdef CONFIG_DEBUG
-	appendMessages("qtractorMainForm::transportPunch()");
+	qDebug("qtractorMainForm::transportPunch()");
 #endif
 
 	// Make sure session is activated...
@@ -3409,7 +3407,7 @@ void qtractorMainForm::transportPunch (void)
 void qtractorMainForm::transportPunchSet (void)
 {
 #ifdef CONFIG_DEBUG
-	appendMessages("qtractorMainForm::transportPunchSet()");
+	qDebug("qtractorMainForm::transportPunchSet()");
 #endif
 
 	// Make sure session is activated...
@@ -3426,7 +3424,7 @@ void qtractorMainForm::transportPunchSet (void)
 void qtractorMainForm::transportMetro (void)
 {
 #ifdef CONFIG_DEBUG
-	appendMessages("qtractorMainForm::transportMetro()");
+	qDebug("qtractorMainForm::transportMetro()");
 #endif
 
 	// Toggle Audio metronome...
@@ -3451,7 +3449,7 @@ void qtractorMainForm::transportMetro (void)
 void qtractorMainForm::transportFollow (void)
 {
 #ifdef CONFIG_DEBUG
-	appendMessages("qtractorMainForm::transportFollow()");
+	qDebug("qtractorMainForm::transportFollow()");
 #endif
 
 	// Toggle follow-playhead...
@@ -3463,7 +3461,7 @@ void qtractorMainForm::transportFollow (void)
 void qtractorMainForm::transportAutoBackward (void)
 {
 #ifdef CONFIG_DEBUG
-	appendMessages("qtractorMainForm::transportAutoBackward()");
+	qDebug("qtractorMainForm::transportAutoBackward()");
 #endif
 
 	// Toggle auto-backward...
@@ -3475,7 +3473,7 @@ void qtractorMainForm::transportAutoBackward (void)
 void qtractorMainForm::transportContinue (void)
 {
 #ifdef CONFIG_DEBUG
-	appendMessages("qtractorMainForm::transportContinue()");
+	qDebug("qtractorMainForm::transportContinue()");
 #endif
 
 	// Toggle continue-past-end...
@@ -3791,8 +3789,8 @@ void qtractorMainForm::updateTransportTime ( unsigned long iPlayHead )
 
 void qtractorMainForm::stabilizeForm (void)
 {
-#ifdef CONFIG_DEBUG_0
-	appendMessages("qtractorMainForm::stabilizeForm()");
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::stabilizeForm()");
 #endif
 
 	// Update the main application caption...
@@ -4083,7 +4081,7 @@ bool qtractorMainForm::checkRestartSession (void)
 void qtractorMainForm::updateSession (void)
 {
 #ifdef CONFIG_DEBUG
-	appendMessages("qtractorMainForm::updateSession()");
+	qDebug("qtractorMainForm::updateSession()");
 #endif
 
 	// Initialize toolbar widgets...
@@ -4934,7 +4932,7 @@ void qtractorMainForm::audioSyncNotify ( unsigned long iPlayHead )
 // Custom MMC event handler.
 void qtractorMainForm::midiMmcNotify ( const qtractorMmcEvent& mmce )
 {
-	QString sMmcText("MMC: ");
+	QString sMmcText("MIDI MMC: ");
 	switch (mmce.cmd()) {
 	case qtractorMmcEvent::STOP:
 	case qtractorMmcEvent::PAUSE:
@@ -5021,18 +5019,19 @@ void qtractorMainForm::midiMmcNotify ( const qtractorMmcEvent& mmce )
 // Custom controller event handler.
 void qtractorMainForm::midiCtlNotify ( const qtractorCtlEvent& ctle )
 {
-	QString sCtlText("CTL: ");
-	sCtlText += tr("MIDI %1 channel %2, param %3, value %4")
-		.arg(qtractorMidiControl::textFromType(ctle.type()))
+	QString sCtlText(tr("MIDI CTL: %1, Channel %2, Param %3, Value %4")
+		.arg(qtractorMidiControl::nameFromType(ctle.type()))
 		.arg(ctle.channel() + 1)
 		.arg(ctle.param())
-		.arg(ctle.value());
+		.arg(ctle.value()));
 
-	// TODO: Check if controller is used as MIDI controller...
+#ifdef CONFIG_DEBUG
+	qDebug(sCtlText.toUtf8().constData());
+#endif
+
+	// Check if controller is used as MIDI controller...
 	if (m_pMidiControl->processEvent(ctle)) {
-	#ifdef CONFIG_DEBUG
 		appendMessages(sCtlText);
-	#endif
 		return;
 	}
 
@@ -5047,8 +5046,10 @@ void qtractorMainForm::midiCtlNotify ( const qtractorCtlEvent& ctle )
 			if (pTrack) {
 				m_pSession->execute(
 					new qtractorTrackGainCommand(pTrack, fGain, true));
+				sCtlText += ' ';
 				sCtlText += tr("(track %1, gain %2)")
 					.arg(iTrack).arg(fGain);
+				appendMessages(sCtlText);
 			}
 		}
 		else */
@@ -5065,6 +5066,7 @@ void qtractorMainForm::midiCtlNotify ( const qtractorCtlEvent& ctle )
 					sCtlText += ' ';
 					sCtlText += tr("(track %1, gain %2)")
 						.arg(iTrack).arg(fGain);
+					appendMessages(sCtlText);
 				}
 				++iTrack;
 			}
@@ -5083,20 +5085,19 @@ void qtractorMainForm::midiCtlNotify ( const qtractorCtlEvent& ctle )
 					sCtlText += ' ';
 					sCtlText += tr("(track %1, panning %2)")
 						.arg(iTrack).arg(fPanning);
+					appendMessages(sCtlText);
 				}
 				++iTrack;
 			}
 		}
 	}
-
-	appendMessages(sCtlText);
 }
 
 
 // Custom MIDI SPP  event handler.
 void qtractorMainForm::midiSppNotify ( int iSppCmd, unsigned short iSongPos )
 {
-	QString sSppText("SPP: ");
+	QString sSppText("MIDI SPP: ");
 	switch (iSppCmd) {
 	case SND_SEQ_EVENT_START:
 		sSppText += tr("START");
@@ -5128,7 +5129,7 @@ void qtractorMainForm::midiSppNotify ( int iSppCmd, unsigned short iSongPos )
 // Custom MIDI Clock event handler.
 void qtractorMainForm::midiClkNotify ( float fTempo )
 {
-	QString sClkText("CLK: ");
+	QString sClkText("MIDI CLK: ");
 	sClkText += tr("%1 BPM").arg(fTempo);
 	appendMessages(sClkText);
 
@@ -5212,8 +5213,8 @@ void qtractorMainForm::activateMidiFile ( const QString& /* sFilename */ )
 // Tracks view selection change slot.
 void qtractorMainForm::trackSelectionChanged (void)
 {
-#ifdef CONFIG_DEBUG_0
-	appendMessages("qtractorMainForm::trackSelectionChanged()");
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::trackSelectionChanged()");
 #endif
 
 	// Select sync to mixer...
@@ -5241,8 +5242,8 @@ void qtractorMainForm::trackSelectionChanged (void)
 // Mixer view selection change slot.
 void qtractorMainForm::mixerSelectionChanged (void)
 {
-#ifdef CONFIG_DEBUG_0
-	appendMessages("qtractorMainForm::mixerSelectionChanged()");
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::mixerSelectionChanged()");
 #endif
 
 	// Select sync to tracks...
@@ -5261,8 +5262,8 @@ void qtractorMainForm::mixerSelectionChanged (void)
 // Tracks view selection change slot.
 void qtractorMainForm::selectionNotifySlot ( qtractorMidiEditor *pMidiEditor )
 {
-#ifdef CONFIG_DEBUG_0
-	appendMessages("qtractorMainForm::selectionNotifySlot()");
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::selectionNotifySlot()");
 #endif
 
 	// Read session edit-head/tails...
@@ -5295,8 +5296,8 @@ void qtractorMainForm::selectionNotifySlot ( qtractorMidiEditor *pMidiEditor )
 // Clip editors update helper.
 void qtractorMainForm::changeNotifySlot ( qtractorMidiEditor *pMidiEditor )
 {
-#ifdef CONFIG_DEBUG_0
-	appendMessages("qtractorMainForm::changeNotifySlot()");
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::changeNotifySlot()");
 #endif
 
 	updateContents(pMidiEditor, true);
@@ -5306,8 +5307,8 @@ void qtractorMainForm::changeNotifySlot ( qtractorMidiEditor *pMidiEditor )
 // Command update helper.
 void qtractorMainForm::updateNotifySlot ( bool bRefresh )
 {
-#ifdef CONFIG_DEBUG_0
-	appendMessages("qtractorMainForm::updateNotifySlot()");
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::updateNotifySlot()");
 #endif
 
 	// Always reset any track view selection...
@@ -5350,8 +5351,8 @@ void qtractorMainForm::updateContents (
 // Tracks view contents change slot.
 void qtractorMainForm::contentsChanged (void)
 {
-#ifdef CONFIG_DEBUG_0
-	appendMessages("qtractorMainForm::contentsChanged()");
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::contentsChanged()");
 #endif
 
 	// HACK: Force play-head position update...
@@ -5377,8 +5378,8 @@ void qtractorMainForm::transportTempoChanged (
 	float fTempo, unsigned short iBeatsPerBar, unsigned short iBeatDivisor )
 {
 #ifdef CONFIG_DEBUG
-	appendMessages(QString("qtractorMainForm::transportTempoChanged(%1, %2, %3)")
-		.arg(fTempo).arg(iBeatsPerBar).arg(iBeatDivisor));
+	qDebug("qtractorMainForm::transportTempoChanged(%g, %u, %u)",
+		fTempo, iBeatsPerBar, iBeatDivisor);
 #endif
 
 	// Find appropriate node...
@@ -5407,7 +5408,7 @@ void qtractorMainForm::transportTempoFinished (void)
 		return;
 
 #ifdef CONFIG_DEBUG
-	appendMessages("qtractorMainForm::transportTempoFinished()");
+	qDebug("qtractorMainForm::transportTempoFinished()");
 #endif
 
 	s_iTempoFinished++;
@@ -5427,8 +5428,7 @@ void qtractorMainForm::snapPerBeatChanged ( int iSnap )
 		return;
 
 #ifdef CONFIG_DEBUG
-	appendMessages("qtractorMainForm::snapPerBeatChanged("
-		+ QString::number(iSnapPerBeat) + ")");
+	qDebug("qtractorMainForm::snapPerBeatChanged(%u)", iSnapPerBeat);
 #endif
 
 	// No need to express this change as a undoable command...
@@ -5443,8 +5443,7 @@ void qtractorMainForm::transportTimeChanged ( unsigned long iPlayHead )
 		return;
 
 #ifdef CONFIG_DEBUG
-	appendMessages("qtractorMainForm::transportTimeChanged("
-		+ QString::number(iPlayHead) + ")");
+	qDebug("qtractorMainForm::transportTimeChanged(%lu)", iPlayHead);
 #endif
 
 	m_pSession->setPlayHead(iPlayHead);
@@ -5460,7 +5459,7 @@ void qtractorMainForm::transportTimeFinished (void)
 		return;
 
 #ifdef CONFIG_DEBUG
-	appendMessages("qtractorMainForm::transportTimeFinished()");
+	qDebug("qtractorMainForm::transportTimeFinished()");
 #endif
 
 	s_iTimeFinished++;

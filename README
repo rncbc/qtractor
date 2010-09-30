@@ -62,8 +62,10 @@ Features
 - MIDI clip editor (matrix/piano roll).
 - MIDI instrument definitions (a-la Cakewalk(tm) [17]).
 - MIDI controller mapping (mixer).
+- MIDI controller learn/assignment (plug-in parameters).
 - MIDI system exclusive (SysEx) setups.
-- JACK transport sync master.
+- JACK transport sync master/slave.
+- JACK session support.
 - MMC control surface enabled.
 - MIDI Song Position cueing support.
 - Configurable keyboard shortcuts.
@@ -143,8 +145,8 @@ and optionally as root:
 This procedure will end installing the following couple of files:
 
     ${prefix}/bin/qtractor
-    ${prefix}/share/pixmaps/qtractor.png
     ${prefix}/share/applications/qtractor.desktop
+    ${prefix}/share/icons/hicolor/32x32/apps/qtractor.png
 
 Just launch ${prefix}/bin/qtractor and you're off (hopefully).
 
