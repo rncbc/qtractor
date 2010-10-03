@@ -353,7 +353,7 @@ qtractorMainForm::qtractorMainForm (
 	// Editable toolbar widgets special palette.
 	QPalette pal;
 	// Outrageous HACK: GTK+ ppl won't see green on black thing...
-#if defined(Q_WS_X11) && QT_VERSION >= 0x040600
+#if defined(Q_WS_X11) && QT_VERSION >= 0x040500
 	if (qobject_cast<QGtkStyle *> (style()) == NULL) {
 #endif
 	//	pal.setColor(QPalette::Window, Qt::black);
