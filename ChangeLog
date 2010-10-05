@@ -3,6 +3,12 @@ Qtractor - An Audio/MIDI multi-track sequencer
 
 ChangeLog
 
+SVN TRUNK
+
+- Attempt to mitigate audio clip sequencing glitches
+  on single-core/single-thread machines. (TESTING)
+
+
 0.4.7  2010-09-30  The Furious Desertrix
 
 - While moving multi-selected MIDI events around the

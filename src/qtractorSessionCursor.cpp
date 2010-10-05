@@ -1,7 +1,7 @@
 // qtractorSessionCursor.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -96,9 +96,8 @@ void qtractorSessionCursor::seek ( unsigned long iFrame, bool bSync )
 		// Set fine position within target clip...
 		if (bSync && pClip && pTrack->trackType() == m_syncType) {
 			// Now care for old/previous clip...
-			bool bLooping = m_pSession->isLooping();
 			if (pClipLast && pClipLast != pClip)
-				pClipLast->reset(bLooping);
+				pClipLast->reset(m_pSession->isLooping());
 			// Take care of overlapping clips...
 			unsigned long iClipEnd = pClip->clipStart() + pClip->clipLength();
 			while (pClip) {
@@ -109,7 +108,7 @@ void qtractorSessionCursor::seek ( unsigned long iFrame, bool bSync )
 					iFrame <  iClipStart + pClip->clipLength()) {
 					pClip->seek(iFrame - iClipStart);
 				} else {
-					pClip->reset(bLooping);
+					pClip->reset(m_pSession->isLooping());
 				}
 				pClip = pClip->next();
 			}
@@ -171,6 +170,9 @@ qtractorClip *qtractorSessionCursor::seekClip (
 
 	if (pClip == NULL)
 		pClip = pTrack->clips().last();
+	else
+	if (pClip->next() && pTrack->trackType() == m_syncType)
+		pClip->next()->reset(m_pSession->isLooping());
 
 	return pClip;
 }
