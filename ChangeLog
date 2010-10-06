@@ -5,6 +5,11 @@ ChangeLog
 
 SVN TRUNK
 
+- A new MIDI editor (piano-roll) tool has been added:
+  Rescale event times, durations and/or values by a
+  percentage between 1 and 1000% (adapted thanks to
+  patch #3081954, by Jesse Lucas).
+
 - Attempt to mitigate audio clip sequencing glitches
   on single-core/single-thread machines. (TESTING)
 

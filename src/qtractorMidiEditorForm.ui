@@ -89,6 +89,7 @@
     <addaction name="toolsNormalizeAction" />
     <addaction name="toolsRandomizeAction" />
     <addaction name="toolsResizeAction" />
+    <addaction name="toolsRescaleAction" />
    </widget>
    <widget class="QMenu" name="editMenu" >
     <property name="title" >
@@ -717,7 +718,7 @@
   </action>
   <action name="toolsResizeAction" >
    <property name="text" >
-    <string>Re&amp;size...</string>
+    <string>Resi&amp;ze...</string>
    </property>
    <property name="iconText" >
     <string>Resize</string>
@@ -727,6 +728,20 @@
    </property>
    <property name="statusTip" >
     <string>Resize selection</string>
+   </property>
+  </action>
+  <action name="toolsRescaleAction" >
+   <property name="text" >
+    <string>Re&amp;scale...</string>
+   </property>
+   <property name="iconText" >
+    <string>Rescale</string>
+   </property>
+   <property name="toolTip" >
+    <string>Rescale</string>
+   </property>
+   <property name="statusTip" >
+    <string>Rescale selection</string>
    </property>
   </action>
   <action name="viewMenubarAction" >

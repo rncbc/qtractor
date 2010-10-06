@@ -108,7 +108,7 @@ qtractorMidiToolsForm::qtractorMidiToolsForm (
 	refreshPresets();
 	
 	// Try to restore old window positioning.
-	adjustSize();
+	// adjustSize();
 
 	// UI signal/slot connections...
 	QObject::connect(m_ui.PresetNameComboBox,
@@ -230,10 +230,33 @@ qtractorMidiToolsForm::qtractorMidiToolsForm (
 	QObject::connect(m_ui.ResizeFormatComboBox,
 		SIGNAL(activated(int)),
 		SLOT(formatChanged(int)));
+
 	QObject::connect(m_ui.ResizeValueCheckBox,
 		SIGNAL(toggled(bool)),
 		SLOT(changed()));
 	QObject::connect(m_ui.ResizeValueSpinBox,
+		SIGNAL(valueChanged(int)),
+		SLOT(changed()));
+
+	QObject::connect(m_ui.RescaleCheckBox,
+		SIGNAL(toggled(bool)),
+		SLOT(stabilizeForm()));
+	QObject::connect(m_ui.RescaleTimeCheckBox,
+		SIGNAL(toggled(bool)),
+		SLOT(changed()));
+	QObject::connect(m_ui.RescaleTimeSpinBox,
+		SIGNAL(valueChanged(int)),
+		SLOT(changed()));
+	QObject::connect(m_ui.RescaleDurationCheckBox,
+		SIGNAL(toggled(bool)),
+		SLOT(changed()));
+	QObject::connect(m_ui.RescaleDurationSpinBox,
+		SIGNAL(valueChanged(int)),
+		SLOT(changed()));
+	QObject::connect(m_ui.RescaleValueCheckBox,
+		SIGNAL(toggled(bool)),
+		SLOT(changed()));
+	QObject::connect(m_ui.RescaleValueSpinBox,
 		SIGNAL(valueChanged(int)),
 		SLOT(changed()));
 
@@ -275,6 +298,9 @@ void qtractorMidiToolsForm::setToolIndex ( int iToolIndex )
 		break;
 	case qtractorMidiEditor::Resize:
 		m_ui.ResizeCheckBox->setChecked(true);
+		break;
+	case qtractorMidiEditor::Rescale:
+		m_ui.RescaleCheckBox->setChecked(true);
 		break;
 	default:
 		break;
@@ -360,6 +386,17 @@ void qtractorMidiToolsForm::loadPreset ( const QString& sPreset )
 			m_ui.ResizeDurationCheckBox->setChecked(vlist[3].toBool());
 			m_ui.ResizeDurationSpinBox->setValue(vlist[4].toUInt());
 		}
+		// Rescale tool...
+		vlist = settings.value("/Rescale").toList();
+		if (vlist.count() > 6) {
+		//	m_ui.RescaleCheckBox->setChecked(vlist[0].toBool());
+			m_ui.RescaleTimeCheckBox->setChecked(vlist[1].toBool());
+			m_ui.RescaleTimeSpinBox->setValue(vlist[2].toInt());
+			m_ui.RescaleDurationCheckBox->setChecked(vlist[3].toBool());
+			m_ui.RescaleDurationSpinBox->setValue(vlist[4].toInt());
+			m_ui.RescaleValueCheckBox->setChecked(vlist[5].toBool());
+			m_ui.RescaleValueSpinBox->setValue(vlist[6].toInt());
+		}
 		// All loaded.
 		if (!sPreset.isEmpty() && sPreset != g_sDefPreset)
 			settings.endGroup();
@@ -427,6 +464,16 @@ void qtractorMidiToolsForm::savePreset ( const QString& sPreset )
 		vlist.append(m_ui.ResizeDurationCheckBox->isChecked());
 		vlist.append((unsigned int) m_ui.ResizeDurationSpinBox->value());
 		settings.setValue("/Resize", vlist);
+		// Rescale tool...
+		vlist.clear();
+		vlist.append(m_ui.RescaleCheckBox->isChecked());
+		vlist.append(m_ui.RescaleTimeCheckBox->isChecked());
+		vlist.append(m_ui.RescaleTimeSpinBox->value());
+		vlist.append(m_ui.RescaleDurationCheckBox->isChecked());
+		vlist.append(m_ui.RescaleDurationSpinBox->value());
+		vlist.append(m_ui.RescaleValueCheckBox->isChecked());
+		vlist.append(m_ui.RescaleValueSpinBox->value());
+		settings.setValue("/Rescale", vlist);
 		// All saved.
 		if (!sPreset.isEmpty() && sPreset != g_sDefPreset)
 			settings.endGroup();
@@ -550,6 +597,8 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::editCommand (
 		tools.append(tr("randomize"));
 	if (m_ui.ResizeCheckBox->isChecked())
 		tools.append(tr("resize"));
+	if (m_ui.RescaleCheckBox->isChecked())
+		tools.append(tr("rescale"));
 	pEditCommand->setName(tools.join(", "));
 
 	const qtractorMidiEditSelect::ItemList& items = pSelect->items();
@@ -570,6 +619,11 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::editCommand (
 		// Get it back to front...
 		iter = items.constBegin();
 	}
+
+	// Seed minimum-time with a value from the list of selected events.
+	long iMinTime = 0;
+	if (pSelect->anchorEvent())
+		iMinTime = pSelect->anchorEvent()->time();
 
 	qtractorTimeScale::Cursor cursor(m_pTimeScale);
 
@@ -752,6 +806,43 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::editCommand (
 				pEditCommand->resizeEventValue(pEvent, iValue);
 			}
 		}
+		// Rescale tool...
+		if (m_ui.RescaleCheckBox->isChecked()) {
+			tools.append(tr("rescale"));
+			int p;
+			if (m_ui.RescaleTimeCheckBox->isChecked()) {
+				p = m_ui.RescaleTimeSpinBox->value();
+				iTime = iMinTime + ((iTime - iMinTime) * p) / 100;
+				if (iTime < 0)
+					iTime = 0;
+				pEditCommand->moveEvent(pEvent, pEvent->note(), iTime);
+			}
+			if (m_ui.RescaleDurationCheckBox->isChecked()) {
+				p = m_ui.RescaleDurationSpinBox->value();
+				iDuration = (iDuration * p) / 100;
+				if (iDuration < 0)
+					iDuration = 0;
+				pEditCommand->resizeEventTime(pEvent, iTime, iDuration);
+			}
+			if (m_ui.RescaleValueCheckBox->isChecked()) {
+				p = m_ui.RescaleValueSpinBox->value();
+				iValue = (iValue * p) / 100;
+				if (bPitchBend) {
+					if (iValue > +8191)
+						iValue = +8191;
+					else
+					if (iValue < -8191)
+						iValue = -8191;
+				} else {
+					if (iValue > 127)
+						iValue = 127;
+					else
+					if (iValue < 0)
+						iValue = 0;
+				}
+				pEditCommand->resizeEventValue(pEvent, iValue);
+			}
+		}
 	}
 
 	// Done.
@@ -927,6 +1018,28 @@ void qtractorMidiToolsForm::stabilizeForm (void)
 	if (bEnabled2)
 		iEnabled++;
 	m_ui.ResizeValueSpinBox->setEnabled(bEnabled2);
+
+	// Rescale tool...
+
+	bEnabled = m_ui.RescaleCheckBox->isChecked();
+
+	m_ui.RescaleTimeCheckBox->setEnabled(bEnabled);
+	bEnabled2 = bEnabled && m_ui.RescaleTimeCheckBox->isChecked();
+	if (bEnabled2)
+		iEnabled++;
+	m_ui.RescaleTimeSpinBox->setEnabled(bEnabled2);
+
+	m_ui.RescaleDurationCheckBox->setEnabled(bEnabled);
+	bEnabled2 = bEnabled && m_ui.RescaleDurationCheckBox->isChecked();
+	if (bEnabled2)
+		iEnabled++;
+	m_ui.RescaleDurationSpinBox->setEnabled(bEnabled2);
+
+	m_ui.RescaleValueCheckBox->setEnabled(bEnabled);
+	bEnabled2 = bEnabled && m_ui.RescaleValueCheckBox->isChecked();
+	if (bEnabled2)
+		iEnabled++;
+	m_ui.RescaleValueSpinBox->setEnabled(bEnabled2);
 
 	m_ui.DialogButtonBox->button(QDialogButtonBox::Ok)->setEnabled(iEnabled > 0);
 }

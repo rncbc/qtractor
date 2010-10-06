@@ -297,7 +297,8 @@ public:
 		Transpose = 1,
 		Normalize = 2,
 		Randomize = 3,
-		Resize    = 4
+		Resize    = 4,
+		Rescale   = 5
 	};
 
 	// Edit tools form page selector.

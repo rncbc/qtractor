@@ -268,6 +268,9 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	QObject::connect(m_ui.toolsResizeAction,
 		SIGNAL(triggered(bool)),
 		SLOT(toolsResize()));
+	QObject::connect(m_ui.toolsRescaleAction,
+		SIGNAL(triggered(bool)),
+		SLOT(toolsRescale()));
 
 	QObject::connect(m_ui.viewMenubarAction,
 		SIGNAL(triggered(bool)),
@@ -1071,10 +1074,17 @@ void qtractorMidiEditorForm::toolsRandomize (void)
 }
 
 
-// Rezize tool.
+// Resize tool.
 void qtractorMidiEditorForm::toolsResize (void)
 {
 	m_pMidiEditor->executeTool(qtractorMidiEditor::Resize);
+}
+
+
+// Rescale tool.
+void qtractorMidiEditorForm::toolsRescale (void)
+{
+	m_pMidiEditor->executeTool(qtractorMidiEditor::Rescale);
 }
 
 
@@ -1378,6 +1388,7 @@ void qtractorMidiEditorForm::stabilizeForm (void)
 	m_ui.toolsNormalizeAction->setEnabled(bSelected);
 	m_ui.toolsRandomizeAction->setEnabled(bSelected);
 	m_ui.toolsResizeAction->setEnabled(bSelected);
+	m_ui.toolsRescaleAction->setEnabled(bSelected);
 #endif
 	// Just having a non-null sequence will indicate
 	// that we're editing a legal MIDI clip...
