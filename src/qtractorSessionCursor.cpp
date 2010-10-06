@@ -170,9 +170,6 @@ qtractorClip *qtractorSessionCursor::seekClip (
 
 	if (pClip == NULL)
 		pClip = pTrack->clips().last();
-	else
-	if (pClip->next() && pTrack->trackType() == m_syncType)
-		pClip->next()->reset(m_pSession->isLooping());
 
 	return pClip;
 }
