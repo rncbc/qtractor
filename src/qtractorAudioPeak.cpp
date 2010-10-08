@@ -248,9 +248,16 @@ qtractorAudioPeakFile::qtractorAudioPeakFile (
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession)
 		dir.setPath(pSession->sessionDir());
-	m_peakFile.setFileName(
-		QFileInfo(dir, QFileInfo(sFilename).fileName()).filePath()
-			+ '_' + QString::number(fTimeStretch) + c_sPeakFileExt);
+	const QString sPeakFilePrefix
+		= QFileInfo(dir, QFileInfo(sFilename).fileName()).filePath();
+		+ '_' + QString::number(fTimeStretch);
+	QFileInfo peakInfo(sPeakFilePrefix + c_sPeakFileExt);
+	// Avoid duplicates, as much as psssible...
+	for (int i = 1; peakInfo.exists(); ++i) {
+		peakInfo.setFile(sPeakFilePrefix
+			+ '-' + QString::number(i) + c_sPeakFileExt);
+	}
+	m_peakFile.setFileName(peakInfo.absoluteFilePath());
 }
 
 

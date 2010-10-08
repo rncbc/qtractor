@@ -5,6 +5,10 @@ ChangeLog
 
 SVN TRUNK
 
+- Avoid audio peak file clashing when deriving from
+  audio sample files with distinct absolute paths but
+  the very same file (base)name.
+
 - A new MIDI editor (piano-roll) tool has been added:
   Rescale event times, durations and/or values by a
   percentage between 1 and 1000% (adapted thanks to
