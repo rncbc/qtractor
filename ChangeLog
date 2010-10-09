@@ -5,6 +5,11 @@ ChangeLog
 
 SVN TRUNK
 
+- Internal audio buffer loop points were not being set
+  properly for non-zero clip offsets, leaving some as
+  severely out-of-sync while rolling over loop turns.
+  Now fixed again, hopefully.
+
 - Avoid audio peak file clashing when deriving from
   audio sample files with distinct absolute paths but
   the very same file (base)name.

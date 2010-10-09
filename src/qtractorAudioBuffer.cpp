@@ -597,14 +597,16 @@ bool qtractorAudioBuffer::seek ( unsigned long iFrame )
 		return true;
 	}
 
-	// Adjust to logical offset...
-	iFrame += m_iOffset;
-	if (iFrame >= m_iOffset + m_iLength)
+	// Are we off-limits?
+	if (iFrame >= m_iLength)
 		return false;
 
 #ifdef DEBUG
 	dump_state(QString(">seek(%1)").arg(iFrame));
 #endif
+
+	// Adjust to logical offset...
+	iFrame += m_iOffset;
 
 	// Check if target is already cached...
 	unsigned int  rs = m_pRingBuffer->readable();
@@ -1288,8 +1290,8 @@ void qtractorAudioBuffer::setLoop ( unsigned long iLoopStart,
 	if (iLoopStart == m_iLoopStart && iLoopEnd == m_iLoopEnd)
 		return;
 
-	if (iLoopStart < iLoopEnd && // Buffer-looping magic check!
-		iLoopStart >= m_iOffset && m_iOffset + m_iLength >= iLoopEnd) {
+	// Buffer-looping magic check!
+	if (iLoopStart < iLoopEnd && m_iLength >= m_iLoopEnd) {
 		m_iLoopStart = iLoopStart;
 		m_iLoopEnd   = iLoopEnd;
 	} else {
