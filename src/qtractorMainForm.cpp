@@ -4847,7 +4847,10 @@ void qtractorMainForm::audioPortNotify (void)
 // Custom audio buffer size change event handler.
 void qtractorMainForm::audioBuffNotify (void)
 {
-	audioShutNotify();
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::audioBuffNotify()");
+#endif
+//	audioShutNotify();
 }
 
 
