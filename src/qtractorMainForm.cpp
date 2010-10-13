@@ -4850,7 +4850,8 @@ void qtractorMainForm::audioBuffNotify (void)
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorMainForm::audioBuffNotify()");
 #endif
-//	audioShutNotify();
+
+	audioShutNotify();
 }
 
 

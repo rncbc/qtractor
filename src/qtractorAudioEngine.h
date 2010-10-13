@@ -223,6 +223,9 @@ private:
 	// JACK Session UUID.
 	QString m_sSessionId;
 
+	// Initial buffer size;
+	unsigned int m_iBufferSize;
+
 	// Partial buffer offset state;
 	// careful for proper loop concatenation.
 	unsigned int m_iBufferOffset;

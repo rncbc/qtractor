@@ -233,12 +233,13 @@ static void qtractorAudioEngine_graph_port ( jack_port_id_t, int, void *pvArg )
 // qtractorAudioEngine_buffer_size -- JACK buffer-size change callback.
 //
 
-static int qtractorAudioEngine_buffer_size ( jack_nframes_t, void *pvArg )
+static int qtractorAudioEngine_buffer_size ( jack_nframes_t nframes, void *pvArg )
 {
 	qtractorAudioEngine *pAudioEngine
 		= static_cast<qtractorAudioEngine *> (pvArg);
 
-	pAudioEngine->notifyBuffEvent();
+	if (pAudioEngine->bufferSize() < (unsigned int) nframes)
+		pAudioEngine->notifyBuffEvent();
 
 	return 0;
 }
@@ -311,6 +312,8 @@ qtractorAudioEngine::qtractorAudioEngine ( qtractorSession *pSession )
 	: qtractorEngine(pSession, qtractorTrack::Audio)
 {
 	m_pJackClient = NULL;
+
+	m_iBufferSize = 0;
 
 	m_iBufferOffset = 0;
 
@@ -408,7 +411,7 @@ unsigned int qtractorAudioEngine::sampleRate (void) const
 // Buffer size accessor.
 unsigned int qtractorAudioEngine::bufferSize (void) const
 {
-	return (m_pJackClient ? jack_get_buffer_size(m_pJackClient) : 0);
+	return m_iBufferSize;
 }
 
 
@@ -452,6 +455,9 @@ bool qtractorAudioEngine::init (void)
 
 	if (m_pJackClient == NULL)
 		return false;
+
+	// ATTN: First thing to remember is get initial buffer size.
+	m_iBufferSize = jack_get_buffer_size(m_pJackClient);
 
 	// ATTN: First thing to remember to set session sample rate.
 	pSession->setClientName(
@@ -628,6 +634,9 @@ void qtractorAudioEngine::clean (void)
 		m_pJackClient = NULL;
 	}
 
+	// Null period.
+	m_iBufferSize = 0;
+	
 	// Ramping playback spin-lock off.
 	ATOMIC_SET(&m_ramping, 0);
 	ATOMIC_SET(&m_ramping_off, 0);
