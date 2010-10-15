@@ -5,6 +5,10 @@ ChangeLog
 
 SVN TRUNK
 
+- LV2 GTK UI plug-in hosting is now roaring its ugly
+  head (EXTREMELY EXPERIMENTAL, SUBJECT TO IMMEDIATE
+  REGRESSION WITHOUT PRIOR NOTICE).
+
 - Ignore all initial and decremental notifications of
   audio engine's buffer-size changes (EXPERIMENTAL).
 

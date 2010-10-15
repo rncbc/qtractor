@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(Qtractor, 0.4.7.6, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.4.7.7, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractor.cpp)
 AC_CONFIG_HEADERS(src/config.h)
@@ -100,6 +100,11 @@ AC_ARG_ENABLE(lv2-event,
   AC_HELP_STRING([--enable-lv2-event], [enable LV2 plug-in event/MIDI support (default=yes)]),
   [ac_lv2_event="$enableval"],
   [ac_lv2_event="yes"])
+
+AC_ARG_ENABLE(lv2-gtk-ui,
+  AC_HELP_STRING([--enable-lv2-gtk-ui], [enable LV2 plug-in GTK UI support (default=yes)]),
+  [ac_lv2_gtk_ui="$enableval"],
+  [ac_lv2_gtk_ui="yes"])
 
 AC_ARG_ENABLE(lv2-external-ui,
   AC_HELP_STRING([--enable-lv2-external-ui], [enable LV2 plug-in external UI support (default=yes)]),
@@ -352,6 +357,13 @@ fi
 AC_SUBST(ac_uic)
 
 
+# Check for pkg-config utility (needed for LV2 GTK UI support).
+AC_PATH_PROG(ac_pkg_config, pkg-config, [no], $ac_path)
+if test "x$ac_pkg_config" = "xno"; then
+   ac_lv2_gtk_ui = "no"
+fi
+
+
 # Checks for libraries.
 AC_CHECK_LIB(m, main)
 AC_CHECK_LIB(X11, main)
@@ -489,6 +501,7 @@ else
    AC_MSG_WARN([*** slv2 library not found.])
    AC_MSG_WARN([*** LV2 plugin support will be disabled.])
    ac_lv2_event="no"
+   ac_lv2_gtk_ui="no"
    ac_lv2_external_ui="no"
    ac_lv2_saverestore="no"
 fi
@@ -688,6 +701,7 @@ else
    AC_MSG_WARN([*** LV2 header files not found.])
    AC_MSG_WARN([*** LV2 plug-in support will be disabled.])
    ac_lv2_event="no"
+   ac_lv2_gtk_ui="no"
    ac_lv2_external_ui="no"
    ac_lv2_saverestore="no"
 fi
@@ -698,6 +712,18 @@ if test "x$ac_lv2_event" = "xyes"; then
       AC_DEFINE(CONFIG_LV2_EVENT, 1, [Define if LV2 event/MIDI extension is available.])
    else
       AC_MSG_WARN([*** LV2 event extension will be disabled.])
+   fi
+fi
+if test "x$ac_lv2_gtk_ui" = "xyes"; then
+   ac_gtk_cflags=`$ac_pkg_config --cflags gtk+-2.0 2>/dev/null`
+   ac_gtk_libs=`$ac_pkg_config --libs gtk+-2.0 2>/dev/null`
+   if test -n "$ac_gtk_cflags" -a -n "$ac_gtk_libs"; then
+      ac_cflags="$ac_cflags $ac_gtk_cflags"
+      ac_libs="$ac_libs $ac_gtk_libs"
+      AC_DEFINE(CONFIG_LV2_GTK_UI, 1, [Define if LV2 GTK UI extension is available.])
+   else
+      AC_MSG_WARN([*** LV2 GTK UI extension will be disabled.])
+      ac_lv2_gtk_ui = "no"
    fi
 fi
 if test "x$ac_lv2_external_ui" = "xyes"; then
@@ -789,6 +815,7 @@ echo "  DSSI Plug-in support . . . . . . . . . . . . . . .: $ac_dssi"
 echo "  VST Plug-in support  . . . . . . . . . . . . . . .: $ac_vst"
 echo "  LV2 Plug-in support (libslv2)  . . . . . . . . . .: $ac_lv2"
 echo "  LV2 Plug-in Event/MIDI support . . . . . . . . . .: $ac_lv2_event"
+echo "  LV2 Plug-in GTK UI support . . . . . . . . . . . .: $ac_lv2_gtk_ui"
 echo "  LV2 Plug-in External UI support  . . . . . . . . .: $ac_lv2_external_ui"
 echo "  LV2 Plug-in Save/Restore support . . . . . . . . .: $ac_lv2_saverestore"
 echo

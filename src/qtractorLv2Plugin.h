@@ -33,12 +33,16 @@
 #define  QTRACTOR_LV2_MIDI_EVENT_ID 1
 #endif
 
-#ifdef CONFIG_LV2_EXTERNAL_UI
-// LV2 External UI support.
-#include "lv2_external_ui.h"
+#if defined(CONFIG_LV2_GTK_UI) || defined(CONFIG_LV2_EXTERNAL_UI)
+#define CONFIG_LV2_UI 1
 // LV2 UI data/instance access support.
 #include "lv2_data_access.h"
 #include "lv2_instance_access.h"
+#endif
+
+#ifdef CONFIG_LV2_EXTERNAL_UI
+// LV2 External UI support.
+#include "lv2_external_ui.h"
 #endif
 
 #ifdef CONFIG_LV2_SAVERESTORE
@@ -46,6 +50,11 @@
 #include "lv2_saverestore.h"
 #endif
 
+#ifdef CONFIG_LV2_GTK_UI
+// Forward declarations.
+class QX11EmbedContainer;
+#endif
+ 
 
 //----------------------------------------------------------------------------
 // qtractorLv2PluginType -- LV2 plugin type instance.
@@ -135,7 +144,7 @@ public:
 	unsigned long audioOut(unsigned short i)
 		{ return m_piAudioOuts[i]; }
 
-#ifdef CONFIG_LV2_EXTERNAL_UI
+#ifdef CONFIG_LV2_UI
 
 	// GUI Editor stuff.
 	void openEditor(QWidget *pParent);
@@ -165,6 +174,10 @@ public:
 		{ m_bEditorClosed = bClosed; }
 	bool isEditorClosed() const
 		{ return m_bEditorClosed; }
+
+#ifdef CONFIG_LV2_GTK_UI
+	void closeEditorEx();
+#endif
 
 #endif
 
@@ -205,7 +218,9 @@ protected:
 	unsigned long *m_piMidiIns;
 #endif
 
-#ifdef CONFIG_LV2_EXTERNAL_UI
+#ifdef CONFIG_LV2_UI
+
+	int            m_lv2_ui_type;
 
 	QByteArray     m_aEditorTitle;
 	bool           m_bEditorVisible;
@@ -215,8 +230,6 @@ protected:
 	SLV2UI         m_slv2_ui;
 	SLV2UIInstance m_slv2_ui_instance;
 
-	lv2_external_ui_host m_lv2_ui_external;
-
 	LV2_Extension_Data_Feature m_lv2_data_access;
 
 	LV2_Feature    m_lv2_data_access_feature;
@@ -225,6 +238,17 @@ protected:
 	LV2_Feature    m_lv2_ui_feature;
 	LV2_Feature  **m_lv2_ui_features;
 	LV2UI_Widget   m_lv2_ui_widget;
+
+#ifdef CONFIG_LV2_EXTERNAL_UI
+	// Our own external UI host context.
+	lv2_external_ui_host m_lv2_ui_external;
+#endif
+
+#ifdef CONFIG_LV2_GTK_UI
+	// Our own GTK UI widget (parent frame).
+	struct _GtkWidget *m_pGtkWindow;
+	QX11EmbedContainer *m_pX11EmbedContainer;
+#endif
 
 #endif
 };
