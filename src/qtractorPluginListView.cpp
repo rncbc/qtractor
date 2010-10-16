@@ -656,7 +656,22 @@ void qtractorPluginListView::moveDownPlugin (void)
 // Show/hide an existing plugin form slot.
 void qtractorPluginListView::editPlugin (void)
 {
-	itemActivatedSlot(QListWidget::currentItem());
+	if (m_pPluginList == NULL)
+		return;
+
+	qtractorPluginListItem *pItem
+		= static_cast<qtractorPluginListItem *> (QListWidget::currentItem());
+	if (pItem == NULL)
+		return;
+
+	qtractorPlugin *pPlugin = pItem->plugin();
+	if (pPlugin == NULL)
+		return;
+
+	if (pPlugin->isFormVisible())
+		(pPlugin->form())->hide();
+	else
+		(pPlugin->form())->activateForm();
 }
 
 

@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(Qtractor, 0.4.7.7, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.4.7.8, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractor.cpp)
 AC_CONFIG_HEADERS(src/config.h)
@@ -360,7 +360,7 @@ AC_SUBST(ac_uic)
 # Check for pkg-config utility (needed for LV2 GTK UI support).
 AC_PATH_PROG(ac_pkg_config, pkg-config, [no], $ac_path)
 if test "x$ac_pkg_config" = "xno"; then
-   ac_lv2_gtk_ui = "no"
+   ac_lv2 = "no"
 fi
 
 
@@ -495,15 +495,19 @@ if test "x$ac_lv2" = "xyes"; then
    AC_CHECK_LIB(slv2, main, [ac_lv2="yes"], [ac_lv2="no"])
 fi
 if test "x$ac_lv2" = "xyes"; then
-   AC_DEFINE(CONFIG_LIBSLV2, 1, [Define if libslv2 is available.])
-   ac_libs="$ac_libs -lslv2"
-else
-   AC_MSG_WARN([*** slv2 library not found.])
-   AC_MSG_WARN([*** LV2 plugin support will be disabled.])
-   ac_lv2_event="no"
-   ac_lv2_gtk_ui="no"
-   ac_lv2_external_ui="no"
-   ac_lv2_saverestore="no"
+   ac_lv2_libs=`$ac_pkg_config --libs slv2 2>/dev/null`
+   if test -n "$ac_lv2_libs"; then
+      ac_libs="$ac_libs $ac_lv2_libs"
+      AC_DEFINE(CONFIG_LIBSLV2, 1, [Define if libslv2 is available.])
+   else
+      AC_MSG_WARN([*** slv2 library not found.])
+      AC_MSG_WARN([*** LV2 plugin support will be disabled.])
+      ac_lv2="no"
+      ac_lv2_event="no"
+      ac_lv2_gtk_ui="no"
+      ac_lv2_external_ui="no"
+      ac_lv2_saverestore="no"
+   fi
 fi
 
 # Check for JACK session event callback availability.
@@ -673,20 +677,18 @@ if test -n "$ac_with_lv2"; then
    ac_lv2="yes"
 fi
 if test "x$ac_lv2" = "xyes"; then
-   # Check for LV2 related headers (eg. slv2, librdf).
-   for X in $ac_with_paths; do
-      if test -d $X/include; then
-         for Y in slv2 redland rdf; do
-            if test -d $X/include/$Y; then
-               CFLAGS="-I$X/include/$Y $CFLAGS"
-               CPPFLAGS="-I$X/include/$Y $CPPFLAGS"
-               ac_incpath="$X/include/$Y $ac_incpath"
-            fi
-         done
+   ac_lv2_cflags=`$ac_pkg_config --cflags slv2 2>/dev/null`
+   if test -n "$ac_lv2_cflags"; then
+      # Check for proper headers.
+      CFLAGS="$ac_lv2_cflags $CFLAGS"
+      CPPFLAGS="$ac_lv2_cflags $CPPFLAGS"
+      AC_CHECK_HEADERS(lv2.h slv2/slv2.h, [ac_lv2="yes"], [ac_lv2="no"])
+      if test "x$ac_lv2" = "xyes"; then
+         ac_cflags="$ac_cflags $ac_lv2_cflags"
       fi
-   done
-   # Check for proper headers.
-   AC_CHECK_HEADERS(lv2.h slv2.h, [ac_lv2="yes"], [ac_lv2="no"])
+   else
+      ac_lv2="no"
+   fi
 fi
 if test "x$ac_lv2" = "xyes"; then
    AC_DEFINE(CONFIG_LV2, 1, [Define if LV2 headers are available.])
