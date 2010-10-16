@@ -141,13 +141,34 @@ void qtractorThumbView::updateContents (void)
 
 	// Draw the loop-bound lines, if any...
 	if (pSession->isLooping()) {
+		const QBrush shade(QColor(0, 0, 0, 60));
 		painter.setPen(Qt::darkCyan);
 		x2 = int(pSession->loopStart() / f2);
-		if (x2 < w)
+		if (x2 < w) {
+			painter.fillRect(QRect(0, 0, x2, h), shade);
 			painter.drawLine(x2, 0, x2, h);
+		}
 		x2 = int(pSession->loopEnd() / f2);
-		if (x2 < w)
+		if (x2 < w) {
+			painter.fillRect(QRect(x2, 0, w - x2, h), shade);
 			painter.drawLine(x2, 0, x2, h);
+		}
+	}
+	else
+	// Don't forget the punch-in/out ones too...
+	if (pSession->isPunching()) {
+		const QBrush shade(QColor(0, 0, 0, 60));
+		painter.setPen(Qt::darkMagenta);
+		x2 = int(pSession->punchIn() / f2);
+		if (x2 < w) {
+			painter.fillRect(QRect(0, 0, x2, h), shade);
+			painter.drawLine(x2, 0, x2, h);
+		}
+		x2 = int(pSession->punchOut() / f2);
+		if (x2 < w) {
+			painter.fillRect(QRect(x2, 0, w - x2, h), shade);
+			painter.drawLine(x2, 0, x2, h);
+		}
 	}
 
 	// May trigger an update now.

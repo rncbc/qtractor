@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- Add that to eye-candy: either loop or punch-in/out
+  outter ranges are now shaded on main track-view.
+
 - LV2 GTK UI plug-in hosting is now roaring its ugly
   head (EXTREMELY EXPERIMENTAL, SUBJECT TO IMMEDIATE
   REGRESSION WITHOUT PRIOR NOTICE).

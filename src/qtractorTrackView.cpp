@@ -602,24 +602,46 @@ void qtractorTrackView::updatePixmap ( int cx, int cy )
 
 	// Draw loop boundaries, if applicable...
 	if (pSession->isLooping()) {
+		const QBrush shade(QColor(0, 0, 0, 60));
 		painter.setPen(Qt::darkCyan);
 		x = pSession->pixelFromFrame(pSession->loopStart()) - cx;
-		if (x >= 0 && x < w)
+		if (x >= w)
+			painter.fillRect(QRect(0, 0, w, h), shade);
+		else
+		if (x >= 0) {
+			painter.fillRect(QRect(0, 0, x, h), shade);
 			painter.drawLine(x, 0, x, h);
+		}
 		x = pSession->pixelFromFrame(pSession->loopEnd()) - cx;
-		if (x >= 0 && x < w)
+		if (x < 0)
+			painter.fillRect(QRect(0, 0, w, h), shade);
+		else
+		if (x < w) {
+			painter.fillRect(QRect(x, 0, w - x, h), shade);
 			painter.drawLine(x, 0, x, h);
+		}
 	}
 
 	// Draw punch boundaries, if applicable...
 	if (pSession->isPunching()) {
+		const QBrush shade(QColor(0, 0, 0, 60));
 		painter.setPen(Qt::darkMagenta);
 		x = pSession->pixelFromFrame(pSession->punchIn()) - cx;
-		if (x >= 0 && x < w)
+		if (x >= w)
+			painter.fillRect(QRect(0, 0, w, h), shade);
+		else
+		if (x >= 0) {
+			painter.fillRect(QRect(0, 0, x, h), shade);
 			painter.drawLine(x, 0, x, h);
+		}
 		x = pSession->pixelFromFrame(pSession->punchOut()) - cx;
-		if (x >= 0 && x < w)
+		if (x < 0)
+			painter.fillRect(QRect(0, 0, w, h), shade);
+		else
+		if (x < w) {
+			painter.fillRect(QRect(x, 0, w - x, h), shade);
 			painter.drawLine(x, 0, x, h);
+		}
 	}
 }
 
