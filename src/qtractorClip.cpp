@@ -136,8 +136,12 @@ const QString& qtractorClip::filename (void) const
 	return m_sFilename;
 }
 
-QString qtractorClip::relativeFilename (void) const
+QString qtractorClip::relativeFilename (
+	qtractorSessionDocument *pDocument ) const
 {
+	if (pDocument && pDocument->isArchive())
+		return pDocument->addFile(m_sFilename);
+
 	QDir dir;
 
 	if (m_pTrack && m_pTrack->session())

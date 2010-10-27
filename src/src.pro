@@ -106,6 +106,7 @@ HEADERS += config.h \
 	qtractorTrackView.h \
 	qtractorTracks.h \
 	qtractorVstPlugin.h \
+	qtractorZipFile.h \
 	qtractorBusForm.h \
 	qtractorClipForm.h \
 	qtractorConnectForm.h \
@@ -214,6 +215,7 @@ SOURCES += \
 	qtractorTrackView.cpp \
 	qtractorTracks.cpp \
 	qtractorVstPlugin.cpp \
+	qtractorZipFile.cpp \
 	qtractorBusForm.cpp \
 	qtractorClipForm.cpp \
 	qtractorConnectForm.cpp \

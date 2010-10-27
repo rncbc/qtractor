@@ -5,6 +5,11 @@ ChangeLog
 
 SVN TRUNK
 
+- After too many a user request, a brand new session
+  archive file type is being introduced (.qtz) which
+  tries to bundle in one single zip archive all the
+  media and contents of a session (EXPERIMENTAL).
+
 - Add that to eye-candy: either loop or punch-in/out
   outter ranges are now shaded on main track-view.
 

@@ -1317,17 +1317,21 @@ bool qtractorFileListView::saveListElement ( qtractorDocument *pDocument,
 			= static_cast<qtractorFileListItem *> (pItem);
 		QDomElement eFile = pDocument->document()->createElement("file");
 		eFile.setAttribute("name", pFileItem->text(0));
-		// Make it all relative to session directory...
-		QDir dir;
-		qtractorSession *pSession = qtractorSession::getInstance();
-		if (pSession)
-			dir.setPath(pSession->sessionDir());
-		eFile.appendChild(pDocument->document()->createTextNode(
-			dir.relativeFilePath(pFileItem->path())));
+		// Make it all relative to archive or session directory...
+		QString sPath;
+		if (pDocument->isArchive()) {
+			sPath = pDocument->addFile(pFileItem->path());
+		} else {
+			QDir dir;
+			qtractorSession *pSession = qtractorSession::getInstance();
+			if (pSession)
+				dir.setPath(pSession->sessionDir());
+			sPath = dir.relativeFilePath(pFileItem->path());
+		}
+		eFile.appendChild(pDocument->document()->createTextNode(sPath));
 		pElement->appendChild(eFile);
 		break;
-	}
-	}
+	}}
 
 	return true;
 }

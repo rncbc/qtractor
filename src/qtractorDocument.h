@@ -28,6 +28,8 @@
 class QDomDocument;
 class QDomElement;
 
+class qtractorZipFile;
+
 
 //-------------------------------------------------------------------------
 // qtractorDocument -- Document file import/export abstract class.
@@ -37,25 +39,36 @@ class qtractorDocument
 {
 public:
 
+	// Document flags.
+	enum Flags { Default = 0, Template = 1, Archive = 2 };
+
 	// Constructor.
 	qtractorDocument(QDomDocument *pDocument,
-		const QString& sTagName = QString(), bool bTemplate = false);
+		const QString& sTagName = QString(), Flags = Default);
 	// Default destructor.
 	virtual ~qtractorDocument();
 
 	// Accessors.
 	QDomDocument *document() const;
+	const QString& name() const;
 
-	// Template mode property.
-	void setTemplate(bool bTemplate);
-	bool isTemplate() const;
-
+	// Regular text element factory method.
 	void saveTextElement (const QString& sTagName, const QString& sText,
 		QDomElement *pElement);
 
+	// Document flags property.
+	void setFlags(Flags flags);
+	Flags flags() const;
+
+	bool isTemplate() const;
+	bool isArchive() const;
+
+	// Archive filename filter.
+	QString addFile (const QString& sFilename) const;
+
 	// External storage simple methods.
-	bool load (const QString& sFilename, bool bTemplate = false);
-	bool save (const QString& sFilename, bool bTemplate = false);
+	bool load (const QString& sFilename, Flags flags = Default);
+	bool save (const QString& sFilename, Flags flags = Default);
 
 	// External storage element pure virtual methods.
 	virtual bool loadElement (QDomElement *pElement) = 0;
@@ -65,12 +78,32 @@ public:
 	static bool    boolFromText (const QString& sText);
 	static QString textFromBool (bool bBool);
 
+	// Filename extensions (suffix) accessors.
+	static void setDefaultExt  (const QString& sDefaultExt);
+	static void setTemplateExt (const QString& sTemplateExt);
+	static void setArchiveExt  (const QString& sArchiveExt);
+
+	static const QString& defaultExt();
+	static const QString& templateExt();
+	static const QString& archiveExt();
+
 private:
 
 	// Instance variables.
 	QDomDocument *m_pDocument;
 	QString m_sTagName;
-	bool m_bTemplate;
+	Flags m_flags;
+
+	// Base document name (derived from filename).
+	QString m_sName;
+
+	// Archive stuff.
+	qtractorZipFile *m_pZipFile;
+
+	// Filename extensions (file suffixes).
+	static QString g_sDefaultExt;
+	static QString g_sTemplateExt;
+	static QString g_sArchiveExt;
 };
 
 

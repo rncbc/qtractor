@@ -736,7 +736,7 @@ bool qtractorMidiClip::saveClipElement (
 {
 	QDomElement eMidiClip = pDocument->document()->createElement("midi-clip");
 	pDocument->saveTextElement("filename",
-		qtractorMidiClip::relativeFilename(), &eMidiClip);
+		qtractorMidiClip::relativeFilename(pDocument), &eMidiClip);
 	pDocument->saveTextElement("track-channel",
 		QString::number(qtractorMidiClip::trackChannel()), &eMidiClip);
 	pDocument->saveTextElement("revision",

@@ -1865,8 +1865,10 @@ bool qtractorSession::saveElement (
 
 	// Save session properties...
 	QDomElement eProps = pDocument->document()->createElement("properties");
-	pDocument->saveTextElement("directory",
-		qtractorSession::sessionDir(), &eProps);
+	if (!pDocument->isArchive()) {
+		pDocument->saveTextElement("directory",
+			qtractorSession::sessionDir(), &eProps);
+	}
 	pDocument->saveTextElement("description",
 		qtractorSession::description(), &eProps);
 	pDocument->saveTextElement("sample-rate",

@@ -161,9 +161,6 @@ static void qtractor_sigusr1_handler ( int /* signo */ )
 
 #include <math.h>
 
-// New default session/template file extensions...
-static const char *s_pszSessionExt   = "qts";
-static const char *s_pszTemplateExt  = "qtt";
 
 // Timer constant (magic) stuff.
 #define QTRACTOR_TIMER_MSECS    66
@@ -1391,9 +1388,12 @@ bool qtractorMainForm::openSession (void)
 
 	QString sExt("qtr");
 	QStringList filters;
-	filters.append(tr("Session files (*.%1 *.%2)").arg(sExt)
-		.arg(s_pszSessionExt));
-	filters.append(tr("Template files (*.%1)").arg(s_pszTemplateExt));
+	filters.append(tr("Session files (*.%1 *.%2)")
+		.arg(sExt).arg(qtractorDocument::defaultExt()));
+	filters.append(tr("Template files (*.%1)")
+		.arg(qtractorDocument::templateExt()));
+	filters.append(tr("Archive files (*.%1)")
+		.arg(qtractorDocument::archiveExt()));
 	const QString& sTitle  = tr("Open Session") + " - " QTRACTOR_TITLE;
 	const QString& sFilter = filters.join(";;");
 #if QT_VERSION < 0x040400
@@ -1417,9 +1417,6 @@ bool qtractorMainForm::openSession (void)
 		return false;
 	// Have the open-file name...
 	sFilename = fileDialog.selectedFiles().first();
-	// Check whether we're on the template filter...
-	if (filters.indexOf(fileDialog.selectedNameFilter()) > 0)
-		sExt = s_pszTemplateExt;;
 #endif
 
 	// Have we cancelled?
@@ -1459,9 +1456,12 @@ bool qtractorMainForm::saveSession ( bool bPrompt )
 		// Prompt the guy...
 		QString sExt("qtr");
 		QStringList filters;
-		filters.append(tr("Session files (*.%1 *.%2)").arg(sExt)
-			.arg(s_pszSessionExt));
-		filters.append(tr("Template files (*.%1)").arg(s_pszTemplateExt));
+		filters.append(tr("Session files (*.%1 *.%2)")
+			.arg(sExt).arg(qtractorDocument::defaultExt()));
+		filters.append(tr("Template files (*.%1)")
+			.arg(qtractorDocument::templateExt()));
+		filters.append(tr("Archive files (*.%1)")
+			.arg(qtractorDocument::archiveExt()));
 		const QString& sTitle  = tr("Save Session") + " - " QTRACTOR_TITLE;
 		const QString& sFilter = filters.join(";;");
 	#if QT_VERSION < 0x040400
@@ -1485,9 +1485,15 @@ bool qtractorMainForm::saveSession ( bool bPrompt )
 			return false;
 		// Have the save-file name...
 		sFilename = fileDialog.selectedFiles().first();
-		// Check whether we're on the template filter...
-		if (filters.indexOf(fileDialog.selectedNameFilter()) > 0)
-			sExt = s_pszTemplateExt;;
+		// Check whether we're on the template or archive filter...
+		switch (filters.indexOf(fileDialog.selectedNameFilter())) {
+		case 1:
+			sExt = qtractorDocument::templateExt();
+			break;
+		case 2:
+			sExt = qtractorDocument::archiveExt();
+			break;
+		}
 	#endif
 		// Have we cancelled it?
 		if (sFilename.isEmpty())
@@ -1509,11 +1515,8 @@ bool qtractorMainForm::saveSession ( bool bPrompt )
 		}
 	}
 
-	// Flag whether we're about to save as template...
-	bool bTemplate = (QFileInfo(sFilename).suffix() == s_pszTemplateExt);
-
 	// Save it right away.
-	return saveSessionFile(sFilename, bTemplate);
+	return saveSessionFile(sFilename);
 }
 
 
@@ -1639,10 +1642,20 @@ bool qtractorMainForm::loadSessionFile (
 	const QString& sSessionDir = QFileInfo(sFilename).absolutePath();
 	m_pSession->setSessionDir(sSessionDir);
 
+	// Flag whether we're about to save as template or archive...
+	int iFlags = qtractorDocument::Default;
+	const QString& sSuffix = QFileInfo(sFilename).suffix();
+	if (sSuffix == qtractorDocument::templateExt() || bTemplate) {
+		iFlags |= qtractorDocument::Template;
+		bTemplate = true;
+	}
+	if (sSuffix == qtractorDocument::archiveExt())
+		iFlags |= qtractorDocument::Archive;
+
 	// Read the file.
 	QDomDocument doc("qtractorSession");
-	bool bResult = qtractorSessionDocument(
-		&doc, m_pSession, m_pFiles).load(sFilename, bTemplate);
+	bool bResult = qtractorSessionDocument(&doc, m_pSession, m_pFiles)
+		.load(sFilename, qtractorDocument::Flags(iFlags));
 
 	// We're formerly done.
 	QApplication::restoreOverrideCursor();
@@ -1742,10 +1755,20 @@ bool qtractorMainForm::saveSessionFile (
 		}
 	}
 
+	// Flag whether we're about to save as template or archive...
+	int iFlags = qtractorDocument::Default;
+	const QString& sSuffix = QFileInfo(sFilename).suffix();
+	if (sSuffix == qtractorDocument::templateExt() || bTemplate) {
+		iFlags |= qtractorDocument::Template;
+		bTemplate = true;
+	}
+	if (sSuffix == qtractorDocument::archiveExt())
+		iFlags |= qtractorDocument::Archive;
+
 	// Have we any errors?
 	QDomDocument doc("qtractorSession");
-	bool bResult = qtractorSessionDocument(
-		&doc, m_pSession, m_pFiles).save(sFilename, bTemplate);
+	bool bResult = qtractorSessionDocument(&doc, m_pSession, m_pFiles)
+		.save(sFilename, qtractorDocument::Flags(iFlags));
 
 	// We're formerly done.
 	QApplication::restoreOverrideCursor();

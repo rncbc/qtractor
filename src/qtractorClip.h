@@ -51,7 +51,8 @@ public:
 	// Filename properties accessors.
 	void setFilename(const QString&  sFilename);
 	const QString& filename() const;
-	QString relativeFilename() const;
+
+	QString relativeFilename(qtractorSessionDocument *pDocument) const;
 
 	// Clip label accessors.
 	void setClipName(const QString& sClipName);

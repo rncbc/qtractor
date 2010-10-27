@@ -100,6 +100,7 @@ headers = \
 	src/qtractorTrackView.h \
 	src/qtractorTracks.h \
 	src/qtractorVstPlugin.h \
+	src/qtractorZipFile.h \
 	src/qtractorBusForm.h \
 	src/qtractorClipForm.h \
 	src/qtractorConnectForm.h \
@@ -205,6 +206,7 @@ sources = \
 	src/qtractorTrackView.cpp \
 	src/qtractorTracks.cpp \
 	src/qtractorVstPlugin.cpp \
+	src/qtractorZipFile.cpp \
 	src/qtractorBusForm.cpp \
 	src/qtractorClipForm.cpp \
 	src/qtractorConnectForm.cpp \
