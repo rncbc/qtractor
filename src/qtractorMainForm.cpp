@@ -4923,10 +4923,10 @@ void qtractorMainForm::audioSessNotify ( void *pvSessionArg )
 	
 	const QString sSessionDir
 		= QString::fromUtf8(pJackSessionEvent->session_dir);
-	const QString sSessionExt
-		= (bTemplate ? s_pszTemplateExt : s_pszSessionExt);
-	const QString sSessionFile
-		= sSessionName + '.' + sSessionExt;
+	const QString sSessionFile = sSessionName + '.'
+		+ (bTemplate
+			? qtractorDocument::templateExt()
+			: qtractorDocument::defaultExt());
 
 	QStringList args;
 	args << QApplication::applicationFilePath();
