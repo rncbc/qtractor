@@ -1635,13 +1635,6 @@ bool qtractorMainForm::loadSessionFile (
 		sFilename.toUtf8().constData(), int(bTemplate));
 #endif
 
-	// Tell the world we'll take some time...
-	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-
-#ifdef CONFIG_LV2
-	qtractorLv2PluginType::slv2_open();
-#endif
-
 	// Set default session dir...
 	const QString& sSessionDir = QFileInfo(sFilename).absolutePath();
 	m_pSession->setSessionDir(sSessionDir);
@@ -1656,7 +1649,33 @@ bool qtractorMainForm::loadSessionFile (
 #ifdef CONFIG_LIBZ
 	if (sSuffix == qtractorDocument::archiveExt())
 		iFlags |= qtractorDocument::Archive;
+		// Take special precaution for already
+		// existing archive directory...
+		QFileInfo info(sFilename);
+		if (info.suffix() == qtractorDocument::archiveExt()) {
+			// Check if archive directory already exists...
+			info.setFile(info.path() + '/' + info.completeBaseName());
+			if (info.exists() && info.isDir()) {
+				if (QMessageBox::warning(this,
+					tr("Warning") + " - " QTRACTOR_TITLE,
+					tr("The directory already exists:\n\n"
+					"\"%1\"\n\n"
+					"Do you want to replace it?")
+					.arg(info.filePath()),
+					QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+					return false;
+			}
+		}
 #endif
+
+	// Tell the world we'll take some time...
+	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+	appendMessages(tr("Opening \"%1\"...").arg(sFilename));
+
+#ifdef CONFIG_LV2
+	qtractorLv2PluginType::slv2_open();
+#endif
+		
 	// Read the file.
 	QDomDocument doc("qtractorSession");
 	bool bResult = qtractorSessionDocument(&doc, m_pSession, m_pFiles)
@@ -1721,9 +1740,22 @@ bool qtractorMainForm::saveSessionFile (
 		sFilename.toUtf8().constData(), int(bTemplate));
 #endif
 
+	// Flag whether we're about to save as template or archive...
+	int iFlags = qtractorDocument::Default;
+	const QString& sSuffix = QFileInfo(sFilename).suffix();
+	if (sSuffix == qtractorDocument::templateExt() || bTemplate) {
+		iFlags |= qtractorDocument::Template;
+		bTemplate = true;
+	}
+#ifdef CONFIG_LIBZ
+	if (sSuffix == qtractorDocument::archiveExt())
+		iFlags |= qtractorDocument::Archive;
+#endif
+
 	// Tell the world we'll take some time...
 	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-
+	appendMessages(tr("Saving \"%1\"...").arg(sFilename));
+	
 	// Trap dirty clips (only MIDI at this time...)
 	for (qtractorTrack *pTrack = m_pSession->tracks().first();
 			pTrack; pTrack = pTrack->next()) {
@@ -1760,18 +1792,7 @@ bool qtractorMainForm::saveSessionFile (
 		}
 	}
 
-	// Flag whether we're about to save as template or archive...
-	int iFlags = qtractorDocument::Default;
-	const QString& sSuffix = QFileInfo(sFilename).suffix();
-	if (sSuffix == qtractorDocument::templateExt() || bTemplate) {
-		iFlags |= qtractorDocument::Template;
-		bTemplate = true;
-	}
-#ifdef CONFIG_LIBZ
-	if (sSuffix == qtractorDocument::archiveExt())
-		iFlags |= qtractorDocument::Archive;
-#endif
-	// Have we any errors?
+	// Write the file...
 	QDomDocument doc("qtractorSession");
 	bool bResult = qtractorSessionDocument(&doc, m_pSession, m_pFiles)
 		.save(sFilename, qtractorDocument::Flags(iFlags));

@@ -19,8 +19,8 @@
 
 *****************************************************************************/
 
-/* This code was originally borrowed, stirred, mangled and finally
- * adapted from the Qt 4.6 source code (LGPL).
+/* Most of this code was originally borrowed, stirred, mangled
+ * and finally adapted from the Qt 4.6 source code (LGPL).
  *
  * Copyright (C) 2010 Nokia Corporation and/or its subsidiary(ies).
  * All rights reserved.

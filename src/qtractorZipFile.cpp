@@ -19,17 +19,17 @@
 
 *****************************************************************************/
 
-/* This code was originally borrowed, stirred, mangled and finally
- * adapted from the Qt 4.6 source code (LGPL).
+#include "qtractorAbout.h"
+
+#ifdef CONFIG_LIBZ
+
+/* Most of this code was originally borrowed, stirred, mangled
+ * and finally adapted from the Qt 4.6 source code (LGPL).
  *
  * Copyright (C) 2010 Nokia Corporation and/or its subsidiary(ies).
  * All rights reserved.
  * Contact: Nokia Corporation (qt-info@nokia.com)
  */
-
-#include "qtractorAbout.h"
-
-#ifdef CONFIG_LIBZ
 
 #include "qtractorZipFile.h"
 
@@ -532,14 +532,14 @@ bool qtractorZipDevice::extractEntry (
 			}
 			while (zstream.avail_out == 0);
 		#ifdef CONFIG_DEBUG
-			printf("qtractorZipDevice::extractEntry: inflate(%3.0f%%) %s (%.0f%%)\r",
+			fprintf(stderr, "qtractorZipDevice::inflate(%3.0f%%) %s (%.0f%%)\r",
 				(100.0f * float(total_processed)) / float(total_uncompressed),
 				fh.file_name.data(),
 				(100.0f * float(n_file_write)) / float(uncompressed_size));
 		#endif
 		}
 	#ifdef CONFIG_DEBUG
-		printf("\n");
+		fprintf(stderr, "\n");
 	#endif
 	//	uncompressed_size = n_file_write;
 		::inflateEnd(&zstream);
@@ -552,7 +552,7 @@ bool qtractorZipDevice::extractEntry (
 		pFile->write(data);
 	}
 
-	pFile->setPermissions(permissions_from_mode(mode));
+	pFile->setPermissions(permissions_from_mode(S_IRUSR | S_IWUSR | mode));
 	pFile->close();
 	delete pFile;
 
@@ -746,14 +746,14 @@ bool qtractorZipDevice::processEntry ( const QString& sFilename, FileHeader& fh 
 			}
 			while (zstream.avail_out == 0);
 		#ifdef CONFIG_DEBUG
-			printf("qtractorZipDevice::processEntry: deflate(%3.0f%%) %s (%.0f%%)\r",
+			fprintf(stderr, "qtractorZipDevice::deflate(%3.0f%%) %s (%.0f%%)\r",
 				(100.0f * float(total_processed)) / float(total_uncompressed),
 				fh.file_name.data(),
 				(100.0f * float(n_file_read)) / float(uncompressed_size));
 		#endif
 		}
 	#ifdef CONFIG_DEBUG
-		printf("\n");
+		fprintf(stderr, "\n");
 	#endif
 		compressed_size = n_file_write;
 		::deflateEnd(&zstream);
