@@ -28,6 +28,9 @@
  */
 
 #include "qtractorAbout.h"
+
+#ifdef CONFIG_LIBZ
+
 #include "qtractorZipFile.h"
 
 #include <QDateTime>
@@ -970,5 +973,7 @@ unsigned int qtractorZipFile::totalProcessed (void) const
 	return m_pZip->total_processed;
 }
 
+
+#endif	// CONFIG_LIBZ
 
 // end of qtractorZipFile.cpp

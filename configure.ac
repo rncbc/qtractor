@@ -61,6 +61,12 @@ AC_ARG_ENABLE(liblo,
   [ac_liblo="$enableval"],
   [ac_liblo="yes"])
 
+# Enable libz availability.
+AC_ARG_ENABLE(libz,
+  AC_HELP_STRING([--enable-libz], [enable libz interface (default=yes)]),
+  [ac_libz="$enableval"],
+  [ac_libz="yes"])
+
 # Enable SSE optimization.
 AC_ARG_ENABLE(sse,
   AC_HELP_STRING([--enable-sse], [enable SSE optimization (default=yes)]),
@@ -201,6 +207,11 @@ AC_ARG_WITH(librubberband,
 # Set for alternate liblo installation dir.
 AC_ARG_WITH(liblo,
   AC_HELP_STRING([--with-liblo=PATH], [use alternate liblo path]),
+  [ac_with_paths="$ac_with_paths $withval"])
+
+# Set for alternate libz installation dir.
+AC_ARG_WITH(libz,
+  AC_HELP_STRING([--with-libz=PATH], [use alternate libz path]),
   [ac_with_paths="$ac_with_paths $withval"])
 
 # Set for alternate libslv2 installation dir.
@@ -490,6 +501,18 @@ if test "x$ac_liblo" = "xyes"; then
    fi
 fi
 
+# Check for optional libz library.
+if test "x$ac_libz" = "xyes"; then
+   AC_CHECK_LIB(z, main, [ac_libz="yes"], [ac_libz="no"])
+   if test "x$ac_libz" = "xyes"; then
+	  AC_DEFINE(CONFIG_LIBZ, 1, [Define if libz is available.])
+	  ac_libs="$ac_libs -lz"
+   else
+	  AC_MSG_WARN([*** z library not found.])
+	  AC_MSG_WARN([*** Archive/Zip file support will be disabled.])
+   fi
+fi
+
 # Check for optional libslv2 library.
 if test "x$ac_lv2" = "xyes"; then
    AC_CHECK_LIB(slv2, main, [ac_lv2="yes"], [ac_lv2="no"])
@@ -585,6 +608,14 @@ if test "x$ac_liblo" = "xyes"; then
    AC_CHECK_HEADER(lo/lo.h, [ac_lo_h="yes"], [ac_lo_h="no"])
    if test "x$ac_lo_h" = "xno"; then
       AC_MSG_ERROR([lo.h header file not found.])
+   fi
+fi
+
+# Check for zlib headers.
+if test "x$ac_libz" = "xyes"; then
+   AC_CHECK_HEADER(zlib.h, [ac_zlib_h="yes"], [ac_zlib_h="no"])
+   if test "x$ac_zlib_h" = "xno"; then
+	  AC_MSG_ERROR([zlib.h header file not found.])
    fi
 fi
 
@@ -810,6 +841,7 @@ echo "  MPEG-1 Audio Layer 3 file support (libmad) . . . .: $ac_libmad"
 echo "  Sample-rate conversion support (libsamplerate) . .: $ac_libsamplerate"
 echo "  Pitch-shifting support (librubberband) . . . . . .: $ac_librubberband"
 echo "  OSC service support (liblo)  . . . . . . . . . . .: $ac_liblo"
+echo "  Archive/Zip file support (zlib)  . . . . . . . . .: $ac_libz"
 echo "  IEEE 32bit float optimizations . . . . . . . . . .: $ac_float32"
 echo "  SSE optimization support (x86) . . . . . . . . . .: $ac_sse"
 echo "  LADSPA Plug-in support . . . . . . . . . . . . . .: $ac_ladspa"

@@ -1392,8 +1392,10 @@ bool qtractorMainForm::openSession (void)
 		.arg(sExt).arg(qtractorDocument::defaultExt()));
 	filters.append(tr("Template files (*.%1)")
 		.arg(qtractorDocument::templateExt()));
+#ifdef CONFIG_LIBZ
 	filters.append(tr("Archive files (*.%1)")
 		.arg(qtractorDocument::archiveExt()));
+#endif
 	const QString& sTitle  = tr("Open Session") + " - " QTRACTOR_TITLE;
 	const QString& sFilter = filters.join(";;");
 #if QT_VERSION < 0x040400
@@ -1460,8 +1462,10 @@ bool qtractorMainForm::saveSession ( bool bPrompt )
 			.arg(sExt).arg(qtractorDocument::defaultExt()));
 		filters.append(tr("Template files (*.%1)")
 			.arg(qtractorDocument::templateExt()));
+	#ifdef CONFIG_LIBZ
 		filters.append(tr("Archive files (*.%1)")
 			.arg(qtractorDocument::archiveExt()));
+	#endif
 		const QString& sTitle  = tr("Save Session") + " - " QTRACTOR_TITLE;
 		const QString& sFilter = filters.join(";;");
 	#if QT_VERSION < 0x040400
@@ -1649,9 +1653,10 @@ bool qtractorMainForm::loadSessionFile (
 		iFlags |= qtractorDocument::Template;
 		bTemplate = true;
 	}
+#ifdef CONFIG_LIBZ
 	if (sSuffix == qtractorDocument::archiveExt())
 		iFlags |= qtractorDocument::Archive;
-
+#endif
 	// Read the file.
 	QDomDocument doc("qtractorSession");
 	bool bResult = qtractorSessionDocument(&doc, m_pSession, m_pFiles)
@@ -1762,9 +1767,10 @@ bool qtractorMainForm::saveSessionFile (
 		iFlags |= qtractorDocument::Template;
 		bTemplate = true;
 	}
+#ifdef CONFIG_LIBZ
 	if (sSuffix == qtractorDocument::archiveExt())
 		iFlags |= qtractorDocument::Archive;
-
+#endif
 	// Have we any errors?
 	QDomDocument doc("qtractorSession");
 	bool bResult = qtractorSessionDocument(&doc, m_pSession, m_pFiles)

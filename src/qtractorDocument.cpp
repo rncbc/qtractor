@@ -19,9 +19,12 @@
 
 *****************************************************************************/
 
+#include "qtractorAbout.h"
 #include "qtractorDocument.h"
 
+#ifdef CONFIG_LIBZ
 #include "qtractorZipFile.h"
+#endif
 
 #include <QDomDocument>
 
@@ -51,7 +54,9 @@ qtractorDocument::qtractorDocument ( QDomDocument *pDocument,
 // Default destructor.
 qtractorDocument::~qtractorDocument (void)
 {
+#ifdef CONFIG_LIBZ
 	if (m_pZipFile) delete m_pZipFile;
+#endif
 }
 
 
@@ -113,17 +118,21 @@ bool qtractorDocument::load ( const QString& sFilename, Flags flags )
 	// Hold template mode.
 	setFlags(flags);
 
+#ifdef CONFIG_LIBZ
 	// Was it an archive previously?
 	if (m_pZipFile) {
 		delete m_pZipFile;
 		m_pZipFile = NULL;
 	}
+#endif
 
 	// Is it an archive about to stuff?
 	const QFileInfo info(sFilename);
 	m_sName = info.completeBaseName();
 	QString sDocname = info.filePath();
 	QIODevice::OpenMode mode = QIODevice::ReadOnly;
+
+#ifdef CONFIG_LIBZ
 	if (isArchive()) {
 		QDir::setCurrent(info.path());
 		m_pZipFile = new qtractorZipFile(sDocname, mode);
@@ -135,6 +144,7 @@ bool qtractorDocument::load ( const QString& sFilename, Flags flags )
 		// ATTN: Archived sub-directory must exist!
 		QDir::setCurrent(m_sName);
 	}
+#endif
 
 	// Open file...
 	QFile file(sDocname);
@@ -169,21 +179,26 @@ bool qtractorDocument::save ( const QString& sFilename, Flags flags )
 	if (m_sTagName.isEmpty())
 		return false;
 
+#ifdef CONFIG_LIBZ
 	// Was it an archive previously?
 	if (m_pZipFile) {
 		delete m_pZipFile;
 		m_pZipFile = NULL;
 	}
+#endif
 
 	// Is it an archive about to stuff?
 	const QFileInfo info(sFilename);
 	m_sName = info.completeBaseName();
 	QString sDocname = info.filePath();
 	QIODevice::OpenMode mode = QIODevice::WriteOnly | QIODevice::Truncate;
+
+#ifdef CONFIG_LIBZ
 	if (isArchive()) {
 		m_pZipFile = new qtractorZipFile(sDocname, mode);
 		sDocname = m_sName + '.' + g_sDefaultExt;
 	}
+#endif
 
 	// Save spec...
 	QDomElement elem = m_pDocument->createElement(m_sTagName);
@@ -199,6 +214,7 @@ bool qtractorDocument::save ( const QString& sFilename, Flags flags )
 	ts << m_pDocument->toString() << endl;
 	file.close();
 
+#ifdef CONFIG_LIBZ
 	// Commit to archive.
 	if (m_pZipFile) {
 		m_pZipFile->addFile(sDocname, m_sName + '/' + sDocname);
@@ -209,6 +225,7 @@ bool qtractorDocument::save ( const QString& sFilename, Flags flags )
 		// Kill temporary.
 		file.remove();
 	}
+#endif
 
 	return true;
 }
@@ -217,11 +234,13 @@ bool qtractorDocument::save ( const QString& sFilename, Flags flags )
 // Archive filename filter.
 QString qtractorDocument::addFile ( const QString& sFilename ) const
 {
+#ifdef CONFIG_LIBZ
 	if (isArchive() && m_pZipFile) {
 		const QString sAlias = m_pZipFile->alias(sFilename);
 		m_pZipFile->addFile(sFilename, m_sName + '/' + sAlias);
 		return sAlias;
 	}
+#endif
 
 	return sFilename;
 }
