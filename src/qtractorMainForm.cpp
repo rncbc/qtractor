@@ -1680,7 +1680,7 @@ bool qtractorMainForm::loadSessionFile (
 	QDomDocument doc("qtractorSession");
 	bool bResult = qtractorSessionDocument(&doc, m_pSession, m_pFiles)
 		.load(sFilename, qtractorDocument::Flags(iFlags));
-qDebug("DEBUG> sessionDir=\"%s\"", m_pSession->sessionDir().toUtf8().constData());
+
 	// We're formerly done.
 	QApplication::restoreOverrideCursor();
 
