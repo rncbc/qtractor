@@ -573,12 +573,15 @@ bool qtractorZipDevice::extractAll (void)
 {
 	scanFiles();
 
+	int iExtracted = 0;
+
 	QHash<QString, FileHeader>::ConstIterator iter = file_headers.constBegin();
 	for ( ; iter != file_headers.constEnd(); ++iter) {
-		if (!extractEntry(iter.key(), iter.value()))
-			return false;
+		if (extractEntry(iter.key(), iter.value()))
+			++iExtracted;
 	}
-	return true;
+
+	return (iExtracted == file_headers.count());
 }
 
 

@@ -132,9 +132,11 @@ bool qtractorDocument::load ( const QString& sFilename, Flags flags )
 	QString sDocname = info.filePath();
 	QIODevice::OpenMode mode = QIODevice::ReadOnly;
 
+	// ATTN: Always move to session file's directory first...
+	QDir::setCurrent(info.path());
+
 #ifdef CONFIG_LIBZ
 	if (isArchive()) {
-		QDir::setCurrent(info.path());
 		m_pZipFile = new qtractorZipFile(sDocname, mode);
 		sDocname = m_sName + '.' + g_sDefaultExt;
 		m_pZipFile->extractAll();
