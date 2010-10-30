@@ -1438,7 +1438,7 @@ void qtractorSession::trackRecord ( qtractorTrack *pTrack, bool bRecord )
 		// MIDI adjust to playing queue start
 		// iif armed while already playing ...
 		if (isPlaying()) {
-			unsigned long iTime = tickFromFrame(iClipStart);
+			unsigned long iTime = pMidiClip->clipStartTime();
 			unsigned long iTimeStart = m_pMidiEngine->timeStart();
 			if (iTime > iTimeStart)
 				pMidiClip->sequence()->setTimeOffset(iTime - iTimeStart);
