@@ -45,8 +45,10 @@ public:
 	void clear();
 
 	// Track accessor.
-	void setTrack(qtractorTrack *pTrack);
-	qtractorTrack *track() const;
+	void setTrack(qtractorTrack *pTrack)
+		{ m_pTrack = pTrack; }
+	qtractorTrack *track() const
+		{ return m_pTrack; }
 
 	// Filename properties accessors.
 	void setFilename(const QString&  sFilename);
@@ -55,37 +57,53 @@ public:
 	QString relativeFilename(qtractorSessionDocument *pDocument) const;
 
 	// Clip label accessors.
-	void setClipName(const QString& sClipName);
-	const QString& clipName() const;
+	void setClipName(const QString& sClipName)
+		{ m_sClipName = sClipName; }
+	const QString& clipName() const
+		{ return m_sClipName; }
 
 	// Clip start frame accessors.
 	void setClipStart(unsigned long iClipStart);
-	unsigned long clipStart() const;
+	unsigned long clipStart() const
+		{ return m_iClipStart; }
+	unsigned long clipStartTime() const
+		{ return m_iClipStartTime; }
 
 	// Clip frame length accessors.
 	void setClipLength(unsigned long iClipLength);
-	unsigned long clipLength() const;
+	unsigned long clipLength() const
+		{ return m_iClipLength; }
+	unsigned long clipLengthTime() const
+		{ return m_iClipLengthTime; }
 
 	// Clip offset frame accessors.
 	void setClipOffset(unsigned long iClipOffset);
-	unsigned long clipOffset() const;
+	unsigned long clipOffset() const
+		{ return m_iClipOffset; }
+	unsigned long clipOffsetTime() const
+		{ return m_iClipOffsetTime; }
 
 	// Clip selection accessors.
 	void setClipSelected(bool bClipSelected);
 	bool isClipSelected() const;
 
 	void setClipSelect(unsigned long iSelectStart, unsigned long iSelectEnd);
-	unsigned long clipSelectStart() const;
-	unsigned long clipSelectEnd() const;
+	unsigned long clipSelectStart() const
+		{ return m_iSelectStart; }
+	unsigned long clipSelectEnd() const
+		{ return m_iSelectEnd; }
 
 	// Clip loop point accessors.
 	void setClipLoop(unsigned long iLoopStart, unsigned long iLoopEnd);
-	unsigned long clipLoopStart() const;
-	unsigned long clipLoopEnd() const;
+	unsigned long clipLoopStart() const
+		{ return m_iLoopStart; }
+	unsigned long clipLoopEnd() const
+		{ return m_iLoopEnd; }
 
 	// Clip gain/volume accessors.
 	void setClipGain(float fGain);
-	float clipGain() const;
+	float clipGain() const
+		{ return m_fGain; }
 
 	// Fade modes.
 	enum FadeMode {
@@ -106,17 +124,21 @@ public:
 
 	// Clip fade-in type accessors
 	void setFadeInType(FadeType fadeType);
-	FadeType fadeInType() const;
+	FadeType fadeInType() const
+		{ return m_fadeInType; }
 
 	void setFadeInLength(unsigned long iFadeInLength);
-	unsigned long fadeInLength() const;
-	
+	unsigned long fadeInLength() const
+		{ return m_iFadeInLength; }
+
 	// Clip fade-out accessors
 	void setFadeOutType(FadeType fadeType);
-	FadeType fadeOutType() const;
+	FadeType fadeOutType() const
+		{ return m_fadeOutType; }
 
 	void setFadeOutLength(unsigned long iFadeOutLength);
-	unsigned long fadeOutLength() const;
+	unsigned long fadeOutLength() const
+		{ return m_iFadeOutLength; }
 
 	// Clip time reference settler method.
 	void updateClipTime();
@@ -157,8 +179,10 @@ public:
 	virtual QString toolTip() const;
 
 	// Local dirty flag.
-	void setDirty(bool bDirty);
-	bool isDirty() const;
+	void setDirty(bool bDirty)
+		{ m_bDirty = bDirty; }
+	bool isDirty() const
+		{ return m_bDirty; }
 
 	// Compute clip gain, given current fade-in/out slopes.
 	float gain(unsigned long iOffset) const;

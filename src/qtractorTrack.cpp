@@ -467,7 +467,6 @@ float qtractorTrack::prevGain (void) const
 }
 
 
-
 // Track stereo-panning accessor.
 void qtractorTrack::setPanning ( float fPanning )
 {

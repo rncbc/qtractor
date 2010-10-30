@@ -53,6 +53,7 @@
 #include <QLabel>
 #include <QUrl>
 
+
 //-------------------------------------------------------------------------
 // qtractorMidiEditorForm -- Main window form implementation.
 

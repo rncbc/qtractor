@@ -108,18 +108,6 @@ void qtractorClip::clear (void)
 }
 
 
-// Track accessors.
-void qtractorClip::setTrack ( qtractorTrack *pTrack )
-{
-	m_pTrack = pTrack;
-}
-
-qtractorTrack *qtractorClip::track (void) const
-{
-	return m_pTrack;
-}
-
-
 // Clip filename properties accessors.
 void qtractorClip::setFilename ( const QString& sFilename )
 {
@@ -151,24 +139,7 @@ QString qtractorClip::relativeFilename (
 }
 
 
-// Clip label accessors.
-const QString& qtractorClip::clipName (void) const
-{
-	return m_sClipName;
-}
-
-void qtractorClip::setClipName ( const QString& sClipName )
-{
-	m_sClipName = sClipName;
-}
-
-
-// Clip start frame accessors.
-unsigned long qtractorClip::clipStart (void) const
-{
-	return m_iClipStart;
-}
-
+// Clip start frame accessor.
 void qtractorClip::setClipStart ( unsigned long iClipStart )
 {
 	m_iClipStart = iClipStart;
@@ -178,12 +149,7 @@ void qtractorClip::setClipStart ( unsigned long iClipStart )
 }
 
 
-// Clip frame length accessors.
-unsigned long qtractorClip::clipLength (void) const
-{
-	return m_iClipLength;
-}
-
+// Clip frame length accessor.
 void qtractorClip::setClipLength ( unsigned long iClipLength )
 {
 	m_iClipLength = iClipLength;
@@ -193,12 +159,7 @@ void qtractorClip::setClipLength ( unsigned long iClipLength )
 }
 
 
-// Clip frame offset accessors.
-unsigned long qtractorClip::clipOffset (void) const
-{
-	return m_iClipOffset;
-}
-
+// Clip frame offset accessor.
 void qtractorClip::setClipOffset ( unsigned long iClipOffset )
 {
 	m_iClipOffset = iClipOffset;
@@ -242,16 +203,6 @@ void qtractorClip::setClipSelect ( unsigned long iSelectStart,
 	}
 }
 
-unsigned long qtractorClip::clipSelectStart (void) const
-{
-	return m_iSelectStart;
-}
-
-unsigned long qtractorClip::clipSelectEnd (void) const
-{
-	return m_iSelectEnd;
-}
-
 
 // Clip-loop points accessors.
 void qtractorClip::setClipLoop ( unsigned long iLoopStart,
@@ -266,16 +217,6 @@ void qtractorClip::setClipLoop ( unsigned long iLoopStart,
 	}
 
 	set_loop(m_iLoopStart, m_iLoopEnd);
-}
-
-unsigned long qtractorClip::clipLoopStart (void) const
-{
-	return m_iLoopStart;
-}
-
-unsigned long qtractorClip::clipLoopEnd (void) const
-{
-	return m_iLoopEnd;
 }
 
 
@@ -293,11 +234,6 @@ void qtractorClip::setClipGain ( float fGain )
 	m_fractGain.num = int(fGain);
 }
 
-float qtractorClip::clipGain (void) const
-{
-	return m_fGain;
-}
-
 
 // Clip fade-in accessors
 void qtractorClip::setFadeInType ( qtractorClip::FadeType fadeType )
@@ -307,11 +243,6 @@ void qtractorClip::setFadeInType ( qtractorClip::FadeType fadeType )
 
 	m_fadeInType = fadeType;
 	m_pFadeInFunctor = createFadeFunctor(FadeIn, fadeType);
-}
-
-qtractorClip::FadeType qtractorClip::fadeInType (void) const
-{
-	return m_fadeInType;
 }
 
 
@@ -326,11 +257,6 @@ void qtractorClip::setFadeInLength ( unsigned long iFadeInLength )
 		m_iFadeInTime = m_pTrack->session()->tickFromFrame(iFadeInLength);
 }
 
-unsigned long qtractorClip::fadeInLength (void) const
-{
-	return m_iFadeInLength;
-}
-
 
 // Clip fade-out accessors
 void qtractorClip::setFadeOutType ( qtractorClip::FadeType fadeType )
@@ -340,11 +266,6 @@ void qtractorClip::setFadeOutType ( qtractorClip::FadeType fadeType )
 
 	m_fadeOutType = fadeType;
 	m_pFadeOutFunctor = createFadeFunctor(FadeOut, fadeType);
-}
-
-qtractorClip::FadeType qtractorClip::fadeOutType (void) const
-{
-	return m_fadeOutType;
 }
 
 
@@ -357,11 +278,6 @@ void qtractorClip::setFadeOutLength ( unsigned long iFadeOutLength )
 
 	if (m_pTrack && m_pTrack->session())
 		m_iFadeOutTime = m_pTrack->session()->tickFromFrame(iFadeOutLength);
-}
-
-unsigned long qtractorClip::fadeOutLength (void) const
-{
-	return m_iFadeOutLength;
 }
 
 
@@ -624,18 +540,6 @@ QString qtractorClip::toolTip (void) const
 	sToolTip += QObject::tr("File:\t%1").arg(QFileInfo(m_sFilename).fileName());
 
 	return sToolTip;
-}
-
-
-// Local dirty flag.
-void qtractorClip::setDirty ( bool bDirty )
-{
-	m_bDirty = bDirty;
-}
-
-bool qtractorClip::isDirty (void) const
-{
-	return m_bDirty;
 }
 
 

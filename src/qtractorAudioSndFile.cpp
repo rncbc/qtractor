@@ -142,7 +142,7 @@ bool qtractorAudioSndFile::seek ( unsigned long iOffset )
 #ifdef DEBUG_0
 	qDebug("qtractorAudioSndFile::seek(%d)", iOffset);
 #endif
-	return (::sf_seek(m_pSndFile, iOffset, SEEK_SET) == iOffset);
+	return (::sf_seek(m_pSndFile, iOffset, SEEK_SET) == long(iOffset));
 }
 
 

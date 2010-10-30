@@ -978,6 +978,7 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 
 	// Now check which bus and track we're into...
 	bool bRecording = (pSession->isRecording() && isPlaying());
+	unsigned long tick = m_iTimeStart + pEv->time.tick;
 	for (qtractorTrack *pTrack = pSession->tracks().first();
 			pTrack; pTrack = pTrack->next()) {
 		// Must be a MIDI track in capture/passthru
@@ -993,9 +994,10 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 				if (pTrack->isRecord() && bRecording) {
 					qtractorMidiClip *pMidiClip
 						= static_cast<qtractorMidiClip *> (pTrack->clipRecord());
-					if (pMidiClip && (!pSession->isPunching()
-						|| ((pEv->time.tick + m_iTimeStart >= pSession->punchInTime())
-						&&  (pEv->time.tick + m_iTimeStart <  pSession->punchOutTime())))) {
+					if (pMidiClip // && tick >= pMidiClip->clipStartTime()
+						&& (!pSession->isPunching()
+							|| ((tick >= pSession->punchInTime())
+							&&  (tick <  pSession->punchOutTime())))) {
 						// Yep, we got a new MIDI event...
 						qtractorMidiEvent *pEvent = new qtractorMidiEvent(
 							pEv->time.tick, type, data1, data2, duration);
