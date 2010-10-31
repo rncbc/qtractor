@@ -1640,32 +1640,30 @@ bool qtractorMainForm::loadSessionFile (
 	m_pSession->setSessionDir(sSessionDir);
 
 	// Flag whether we're about to save as template or archive...
+	QFileInfo info(sFilename);
 	int iFlags = qtractorDocument::Default;
-	const QString& sSuffix = QFileInfo(sFilename).suffix();
+	const QString& sSuffix = info.suffix();
 	if (sSuffix == qtractorDocument::templateExt() || bTemplate) {
 		iFlags |= qtractorDocument::Template;
 		bTemplate = true;
 	}
 #ifdef CONFIG_LIBZ
-	if (sSuffix == qtractorDocument::archiveExt())
+	if (sSuffix == qtractorDocument::archiveExt()) {
 		iFlags |= qtractorDocument::Archive;
 		// Take special precaution for already
 		// existing archive directory...
-		QFileInfo info(sFilename);
-		if (info.suffix() == qtractorDocument::archiveExt()) {
-			// Check if archive directory already exists...
-			info.setFile(info.path() + '/' + info.completeBaseName());
-			if (info.exists() && info.isDir()) {
-				if (QMessageBox::warning(this,
-					tr("Warning") + " - " QTRACTOR_TITLE,
-					tr("The directory already exists:\n\n"
-					"\"%1\"\n\n"
-					"Do you want to replace it?")
-					.arg(info.filePath()),
-					QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
-					return false;
-			}
+		info.setFile(info.path() + '/' + info.completeBaseName());
+		if (info.exists() && info.isDir()) {
+			if (QMessageBox::warning(this,
+				tr("Warning") + " - " QTRACTOR_TITLE,
+				tr("The directory already exists:\n\n"
+				"\"%1\"\n\n"
+				"Do you want to replace it?")
+				.arg(info.filePath()),
+				QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+				return false;
 		}
+	}
 #endif
 
 	// Tell the world we'll take some time...
