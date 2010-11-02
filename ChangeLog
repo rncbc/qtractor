@@ -11,7 +11,8 @@ SVN TRUNK
   media and contents of a session (EXPERIMENTAL).
 
 - Add that to eye-candy: either loop or punch-in/out
-  outter ranges are now shaded on main track-view.
+  outer ranges are now shaded on the main track-view,
+  thumb-view and MIDI clip editor (piano-roll) views.
 
 - LV2 GTK UI plug-in hosting is now roaring its ugly
   head (EXTREMELY EXPERIMENTAL, SUBJECT TO IMMEDIATE

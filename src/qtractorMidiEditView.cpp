@@ -400,16 +400,52 @@ void qtractorMidiEditView::updatePixmap ( int cx, int cy )
 		pEvent = pEvent->next();
 	}
 
-	// Draw loop boundaries, if applicable...
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession && pSession->isLooping()) {
+	if (pSession == NULL)
+		return;
+
+	// Draw loop boundaries, if applicable...
+	if (pSession->isLooping()) {
+		const QBrush shade(QColor(0, 0, 0, 60));
 		p.setPen(Qt::darkCyan);
 		x = pTimeScale->pixelFromFrame(pSession->loopStart()) - dx;
-		if (x >= 0 && x < w)
+		if (x >= w)
+			p.fillRect(QRect(0, 0, w, h), shade);
+		else
+		if (x >= 0) {
+			p.fillRect(QRect(0, 0, x, h), shade);
 			p.drawLine(x, 0, x, h);
+		}
 		x = pTimeScale->pixelFromFrame(pSession->loopEnd()) - dx;
-		if (x >= 0 && x < w)
+		if (x < 0)
+			p.fillRect(QRect(0, 0, w, h), shade);
+		else
+		if (x < w) {
+			p.fillRect(QRect(x, 0, w - x, h), shade);
 			p.drawLine(x, 0, x, h);
+		}
+	}
+
+	// Draw punch boundaries, if applicable...
+	if (pSession->isPunching()) {
+		const QBrush shade(QColor(0, 0, 0, 60));
+		p.setPen(Qt::darkMagenta);
+		x = pTimeScale->pixelFromFrame(pSession->punchIn()) - dx;
+		if (x >= w)
+			p.fillRect(QRect(0, 0, w, h), shade);
+		else
+		if (x >= 0) {
+			p.fillRect(QRect(0, 0, x, h), shade);
+			p.drawLine(x, 0, x, h);
+		}
+		x = pTimeScale->pixelFromFrame(pSession->punchOut()) - dx;
+		if (x < 0)
+			p.fillRect(QRect(0, 0, w, h), shade);
+		else
+		if (x < w) {
+			p.fillRect(QRect(x, 0, w - x, h), shade);
+			p.drawLine(x, 0, x, h);
+		}
 	}
 }
 
