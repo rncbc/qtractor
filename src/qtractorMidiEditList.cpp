@@ -244,8 +244,8 @@ void qtractorMidiEditList::drawContents ( QPainter *pPainter, const QRect& rect 
 		pPainter->fillRect(QRect(
 			contentsToViewport(m_rectNote.topLeft()),
 			m_rectNote.size()),	m_iNoteVel > 0
-				? QColor(255, 0, 120, 120)
-				: QColor(120, 0, 255, 120));
+				? QColor(255,   0, 120, 120)
+				: QColor(220, 220, 220, 120));
 	}
 }
 
@@ -262,7 +262,7 @@ void qtractorMidiEditList::contentsYMovingSlot ( int /*cx*/, int cy )
 void qtractorMidiEditList::dragNoteOn ( int iNote, int iVelocity )
 {
 	// If it ain't changed we won't change it ;)
-	if (iNote == m_iNoteOn && iVelocity < m_iNoteVel)
+	if (iNote == m_iNoteOn && m_iNoteVel >= iVelocity)
 		return;
 
 	// Were we pending on some sounding note?
@@ -309,17 +309,6 @@ void qtractorMidiEditList::dragNoteOn ( int iNote, int iVelocity )
 
 void qtractorMidiEditList::dragNoteOn ( const QPoint& pos, int iVelocity )
 {
-#if 0
-	// This stands for the keyboard area...
-	QWidget *pViewport = qtractorScrollView::viewport();
-	int w = pViewport->width();
-	int x = w - ((w << 1) / 3);
-
-	// Are we on it?
-	if (pos.x() < x || pos.x() > w)
-		return;
-#endif
-
 	// Compute new key cordinates...
 	int ch = qtractorScrollView::contentsHeight();
 	dragNoteOn((ch - pos.y()) / m_iItemHeight, iVelocity);
