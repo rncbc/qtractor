@@ -1,7 +1,7 @@
 // qtractorMidiEditList.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2009, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -245,7 +245,7 @@ void qtractorMidiEditList::drawContents ( QPainter *pPainter, const QRect& rect 
 			contentsToViewport(m_rectNote.topLeft()),
 			m_rectNote.size()),	m_iNoteVel > 0
 				? QColor(255,   0, 120, 120)
-				: QColor(220, 220, 220, 120));
+				: QColor(120, 120, 255, 120));
 	}
 }
 
