@@ -283,6 +283,7 @@ void qtractorMidiEditList::dragNoteOn ( int iNote, int iVelocity )
 		int w  = pViewport->width();
 		int wk = (w << 1) / 3;
 		int xk = w - wk;
+	#if 0
 		float yk, hk;
 		int k  = (iNote % 12);
 		if (k >= 5) ++k;
@@ -294,10 +295,18 @@ void qtractorMidiEditList::dragNoteOn ( int iNote, int iVelocity )
 			yk = ((127 - iNote) * hk) + 1;
 			wk = (wk * 6) / 10;
 		}
+	#else
+		int hk = m_iItemHeight;
+		int k  = (iNote % 12);
+		if (k >= 5) ++k;
+		if (k % 2)
+			wk = (wk * 6) / 10;
+		int yk = ((127 - iNote) * hk) + 1;
+	#endif
 		// This is the new note on...
 		m_iNoteOn = iNote;
 		m_iNoteVel = iVelocity;
-		m_rectNote.setRect(xk, int(yk), wk, int(hk));
+		m_rectNote.setRect(xk, yk, wk, hk);
 		if (m_iNoteVel > 0)
 			m_pEditor->sendNote(m_iNoteOn, m_iNoteVel);
 		// Otherwise, reset any pending note...
