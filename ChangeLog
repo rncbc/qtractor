@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- New MIDI clip editor (piano-roll) mouse hovering
+  effect (++eye-candy).
+
 - After too many a user request, a brand new session
   archive file type is being introduced (.qtz) which
   tries to bundle in one single zip archive all the

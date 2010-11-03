@@ -51,7 +51,8 @@ qtractorMidiEditList::qtractorMidiEditList (
 
 	m_iItemHeight = ItemHeightBase;
 	m_dragState = DragNone;
-	m_iNoteOn = -1;
+	m_iNoteOn  = -1;
+	m_iNoteVel = -1;
 
 	qtractorScrollView::setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 	qtractorScrollView::setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -61,6 +62,7 @@ qtractorMidiEditList::qtractorMidiEditList (
 //	qtractorScrollView::viewport()->setFocusProxy(this);
 //	qtractorScrollView::viewport()->setAcceptDrops(true);
 //	qtractorScrollView::setDragAutoScroll(false);
+	qtractorScrollView::setMouseTracking(true);
 
 	const QFont& font = qtractorScrollView::font();
 	qtractorScrollView::setFont(QFont(font.family(), font.pointSize() - 2));
@@ -241,7 +243,9 @@ void qtractorMidiEditList::drawContents ( QPainter *pPainter, const QRect& rect 
 	if (m_iNoteOn >= 0) {
 		pPainter->fillRect(QRect(
 			contentsToViewport(m_rectNote.topLeft()),
-			m_rectNote.size()), QColor(255, 0, 120, 120));
+			m_rectNote.size()),	m_iNoteVel > 0
+				? QColor(255, 0, 120, 120)
+				: QColor(120, 0, 255, 120));
 	}
 }
 
@@ -258,14 +262,15 @@ void qtractorMidiEditList::contentsYMovingSlot ( int /*cx*/, int cy )
 void qtractorMidiEditList::dragNoteOn ( int iNote, int iVelocity )
 {
 	// If it ain't changed we won't change it ;)
-	if (iNote == m_iNoteOn)
+	if (iNote == m_iNoteOn && iVelocity < m_iNoteVel)
 		return;
 
 	// Were we pending on some sounding note?
 	if (m_iNoteOn >= 0) {
 		// Turn off old note...
-		m_pEditor->sendNote(m_iNoteOn, 0);
-		m_iNoteOn = -1;
+		if (m_iNoteVel > 0)
+			m_pEditor->sendNote(m_iNoteOn, 0);
+		m_iNoteOn = m_iNoteVel = -1;
 		qtractorScrollView::viewport()->update(
 			QRect(contentsToViewport(m_rectNote.topLeft()),
 			m_rectNote.size()));
@@ -291,17 +296,20 @@ void qtractorMidiEditList::dragNoteOn ( int iNote, int iVelocity )
 		}
 		// This is the new note on...
 		m_iNoteOn = iNote;
+		m_iNoteVel = iVelocity;
 		m_rectNote.setRect(xk, int(yk), wk, int(hk));
-		m_pEditor->sendNote(m_iNoteOn, iVelocity);
+		if (m_iNoteVel > 0)
+			m_pEditor->sendNote(m_iNoteOn, m_iNoteVel);
+		// Otherwise, reset any pending note...
 		qtractorScrollView::viewport()->update(
 			QRect(contentsToViewport(m_rectNote.topLeft()),
 			m_rectNote.size()));
-		// Otherwise, reset any pending note...
 	}
 }
 
 void qtractorMidiEditList::dragNoteOn ( const QPoint& pos, int iVelocity )
 {
+#if 0
 	// This stands for the keyboard area...
 	QWidget *pViewport = qtractorScrollView::viewport();
 	int w = pViewport->width();
@@ -310,9 +318,11 @@ void qtractorMidiEditList::dragNoteOn ( const QPoint& pos, int iVelocity )
 	// Are we on it?
 	if (pos.x() < x || pos.x() > w)
 		return;
+#endif
 
 	// Compute new key cordinates...
-	dragNoteOn(127 - ((pos.y() - 1) / m_iItemHeight), iVelocity);
+	int ch = qtractorScrollView::contentsHeight();
+	dragNoteOn((ch - pos.y()) / m_iItemHeight, iVelocity);
 }
 
 
@@ -379,6 +389,8 @@ void qtractorMidiEditList::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 		// Fall thru...
 	case DragNone:
 	default:
+		// Are we hovering in some keyboard?
+		dragNoteOn(pos, -1);
 		break;
 	}
 
@@ -453,23 +465,24 @@ void qtractorMidiEditList::resetDragState (void)
 // Trap for help/tool-tip events.
 bool qtractorMidiEditList::eventFilter ( QObject *pObject, QEvent *pEvent )
 {
-	QWidget *pViewport = qtractorScrollView::viewport();
-	if (static_cast<QWidget *> (pObject) == pViewport
-		&& pEvent->type() == QEvent::ToolTip) {
-		QHelpEvent *pHelpEvent = static_cast<QHelpEvent *> (pEvent);
-		if (pHelpEvent) {
-			const QPoint& pos
-				= qtractorScrollView::viewportToContents(pHelpEvent->pos());
-			int w = pViewport->width();
-			int x = w - ((w << 1) / 3);
-			if (pos.x() >= x && pos.x() < w && m_iItemHeight > 0) {
+	if (static_cast<QWidget *> (pObject) == qtractorScrollView::viewport()) {
+		if (pEvent->type() == QEvent::ToolTip) {
+			QHelpEvent *pHelpEvent = static_cast<QHelpEvent *> (pEvent);
+			if (pHelpEvent) {
+				const QPoint& pos
+					= qtractorScrollView::viewportToContents(pHelpEvent->pos());
 				const QString sToolTip("%1 (%2)");
-				int note = 127 - ((pos.y() - 1) / m_iItemHeight);
+				int ch = qtractorScrollView::contentsHeight();
+				int note = (ch - pos.y()) / m_iItemHeight;
 				QToolTip::showText(pHelpEvent->globalPos(),
-					sToolTip.arg(m_pEditor->noteName(note)).arg(note),
-					pViewport);
+					sToolTip.arg(m_pEditor->noteName(note)).arg(note));
 				return true;
 			}
+		}
+		else
+		if (pEvent->type() == QEvent::Leave) {
+			dragNoteOn(-1);
+			return true;
 		}
 	}
 

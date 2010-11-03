@@ -2010,6 +2010,9 @@ void qtractorMidiEditor::dragMoveUpdate (
 		dragMoveEvent(pScrollView, pos, modifiers);
 		break;
 	}
+
+	// Let note hovering shine...
+	m_pEditList->dragNoteOn(pos, -1);
 }
 
 
@@ -2091,6 +2094,17 @@ bool qtractorMidiEditor::dragMoveFilter (
 					QToolTip::showText(pHelpEvent->globalPos(),
 						eventToolTip(pMidiEvent));
 					return true;
+				} else {
+					const QString sToolTip("%1 (%2)");
+					int note = m_last.note;
+					if (pScrollView
+						== static_cast<qtractorScrollView *> (m_pEditView)) {
+						int ch = m_pEditList->contentsHeight();
+						note = (ch - pos.y()) / m_pEditList->itemHeight();
+					}
+					QToolTip::showText(pHelpEvent->globalPos(),
+						sToolTip.arg(noteName(note)).arg(note));
+					return true;
 				}
 			}
 		}
@@ -2099,6 +2113,7 @@ bool qtractorMidiEditor::dragMoveFilter (
 			m_dragState != DragPaste &&
 			m_dragState != DragStep) {
 			pScrollView->unsetCursor();
+			m_pEditList->dragNoteOn(-1);
 			return true;
 		}
 	}
