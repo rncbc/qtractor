@@ -92,6 +92,9 @@ protected:
 	void mouseMoveEvent(QMouseEvent *pMouseEvent);
 	void mouseReleaseEvent(QMouseEvent *pMouseEvent);
 
+	// Handle zoom with mouse wheel.
+	void wheelEvent(QWheelEvent *pWheelEvent);
+
 	// Trap for help/tool-tip and leave events.
 	bool eventFilter(QObject *pObject, QEvent *pEvent);
 

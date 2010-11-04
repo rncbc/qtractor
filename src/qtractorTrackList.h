@@ -167,6 +167,9 @@ protected:
 	void mouseMoveEvent(QMouseEvent *pMouseEvent);
 	void mouseReleaseEvent(QMouseEvent *pMouseEvent);
 
+	// Handle zoom with mouse wheel.
+	void wheelEvent(QWheelEvent *pWheelEvent);
+
 	// Show and move rubber-band item.
 	void moveRubberBand(const QPoint& posDrag);
 

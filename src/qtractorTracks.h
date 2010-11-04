@@ -117,13 +117,16 @@ public:
 	// Overall contents reset.
 	void clear();
 
-	// Zoom modes.
+	// Zoom (view) modes.
 	enum { ZoomNone = 0, ZoomHorizontal = 1, ZoomVertical = 2, ZoomAll = 3 };
 
+	void setZoomMode(int iZoomMode);
+	int zoomMode() const;
+
 	// Zoom view actuators.
-	void zoomIn(int iZoomMode = ZoomAll);
-	void zoomOut(int iZoomMode = ZoomAll);
-	void zoomReset(int iZoomMode = ZoomAll);
+	void zoomIn();
+	void zoomOut();
+	void zoomReset();
 
 public slots:
 
@@ -171,6 +174,9 @@ private:
 	qtractorTrackList *m_pTrackList;
 	qtractorTrackTime *m_pTrackTime;
 	qtractorTrackView *m_pTrackView;
+
+	// Zoom mode flag.
+	int m_iZoomMode;
 };
 
 

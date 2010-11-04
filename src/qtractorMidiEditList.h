@@ -81,6 +81,9 @@ protected:
 	// Draw the time scale.
 	void drawContents(QPainter *pPainter, const QRect& rect);
 
+	// Reset drag/select/move state.
+	void resetDragState();
+
 	// Handle item selection with mouse.
 	void mousePressEvent(QMouseEvent *pMouseEvent);
 	void mouseMoveEvent(QMouseEvent *pMouseEvent);
@@ -89,8 +92,8 @@ protected:
 	// Keyboard event handler.
 	void keyPressEvent(QKeyEvent *pKeyEvent);
 
-	// Reset drag/select/move state.
-	void resetDragState();
+	// Handle zoom with mouse wheel.
+	void wheelEvent(QWheelEvent *pWheelEvent);
 
 	// Trap for help/tool-tip events.
 	bool eventFilter(QObject *pObject, QEvent *pEvent);

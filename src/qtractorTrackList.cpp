@@ -1025,6 +1025,20 @@ void qtractorTrackList::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 }
 
 
+// Handle zoom with mouse wheel.
+void qtractorTrackList::wheelEvent ( QWheelEvent *pWheelEvent )
+{
+	if (pWheelEvent->modifiers() & Qt::ControlModifier) {
+		int delta = pWheelEvent->delta();
+		if (delta > 0)
+			m_pTracks->zoomIn();
+		else
+			m_pTracks->zoomOut();
+	}
+	else qtractorScrollView::wheelEvent(pWheelEvent);
+}
+
+
 // Draw a dragging separator line.
 void qtractorTrackList::moveRubberBand ( const QPoint& posDrag )
 {

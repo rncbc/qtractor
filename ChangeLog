@@ -5,6 +5,12 @@ ChangeLog
 
 SVN TRUNK
 
+- Ctrl+mouse-wheel is now set for zooming in/out, on
+  main track-view and all applicable MIDI clip editor
+  views (piano-roll), according to current zoom mode
+  (see View/Zoom Horizontal, Vertical or All for both
+  ways simultaneously).
+
 - New MIDI clip editor (piano-roll) mouse hovering
   effect (eye-candy++).
 

@@ -1508,6 +1508,20 @@ void qtractorTrackView::mouseDoubleClickEvent ( QMouseEvent *pMouseEvent )
 }
 
 
+// Handle zoom with mouse wheel.
+void qtractorTrackView::wheelEvent ( QWheelEvent *pWheelEvent )
+{
+	if (pWheelEvent->modifiers() & Qt::ControlModifier) {
+		int delta = pWheelEvent->delta();
+		if (delta > 0)
+			m_pTracks->zoomIn();
+		else
+			m_pTracks->zoomOut();
+	}
+	else qtractorScrollView::wheelEvent(pWheelEvent);
+}
+
+
 // Focus lost event.
 void qtractorTrackView::focusOutEvent ( QFocusEvent *pFocusEvent )
 {

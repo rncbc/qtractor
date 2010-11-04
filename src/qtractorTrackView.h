@@ -217,6 +217,9 @@ protected:
 	// Handle item/clip editing from mouse.
 	void mouseDoubleClickEvent(QMouseEvent *pMouseEvent);
 
+	// Handle zoom with mouse wheel.
+	void wheelEvent(QWheelEvent *pWheelEvent);
+
 	// Focus lost event.
 	void focusOutEvent(QFocusEvent *pFocusEvent);
 

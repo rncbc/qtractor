@@ -420,6 +420,20 @@ void qtractorMidiEditList::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 }
 
 
+// Handle zoom with mouse wheel.
+void qtractorMidiEditList::wheelEvent ( QWheelEvent *pWheelEvent )
+{
+	if (pWheelEvent->modifiers() & Qt::ControlModifier) {
+		int delta = pWheelEvent->delta();
+		if (delta > 0)
+			m_pEditor->zoomIn();
+		else
+			m_pEditor->zoomOut();
+	}
+	else qtractorScrollView::wheelEvent(pWheelEvent);
+}
+
+
 // Keyboard event handler.
 void qtractorMidiEditList::keyPressEvent ( QKeyEvent *pKeyEvent )
 {
