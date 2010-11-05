@@ -5,6 +5,11 @@ ChangeLog
 
 SVN TRUNK
 
+- Newly extracted archive/zip session directories are
+  now removed automatically from the file-system on
+  session close, prompting the user for confirmation
+  (cf. View/Options.../Display/Confirm Removals).
+
 - Ctrl+mouse-wheel is now set for zooming in/out, on
   main track-view and all applicable MIDI clip editor
   views (piano-roll), according to current zoom mode

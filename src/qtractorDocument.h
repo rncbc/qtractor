@@ -87,6 +87,10 @@ public:
 	static const QString& templateExt();
 	static const QString& archiveExt();
 
+	// Extracted archive paths simple management.
+	static const QStringList& extractedArchives();
+	static void clearExtractedArchives(bool bRemove = false);
+
 private:
 
 	// Instance variables.
@@ -104,6 +108,9 @@ private:
 	static QString g_sDefaultExt;
 	static QString g_sTemplateExt;
 	static QString g_sArchiveExt;
+
+	// Extracted archive paths.
+	static QStringList g_extractedArchives;
 };
 
 

@@ -33,6 +33,42 @@
 #include <QDir>
 
 
+// Local prototypes.
+static void remove_dir_list(const QList<QFileInfo>& list);
+static void remove_dir(const QString& sDir);
+
+// Remove specific file path.
+static void remove_dir ( const QString& sDir )
+{
+	const QDir dir(sDir);
+
+	remove_dir_list(
+		dir.entryInfoList(QDir::AllEntries | QDir::NoDotAndDotDot));
+
+	QDir cwd = QDir::current();
+	if (cwd.absolutePath() == dir.absolutePath()) {
+		cwd.cdUp();
+		QDir::setCurrent(cwd.path());
+	}
+
+	dir.rmdir(sDir);
+}
+
+static void remove_dir_list ( const QList<QFileInfo>& list )
+{
+	QListIterator<QFileInfo> iter(list);
+	while (iter.hasNext()) {
+		const QFileInfo& info = iter.next();
+		const QString& sPath = info.absoluteFilePath();
+		if (info.isDir()) {
+			remove_dir(sPath);
+		} else {
+			QFile::remove(sPath);
+		}
+	}
+}
+
+
 //-------------------------------------------------------------------------
 // qtractorDocument -- Session file import/export helper class.
 //
@@ -41,6 +77,9 @@
 QString qtractorDocument::g_sDefaultExt  = "qts";
 QString qtractorDocument::g_sTemplateExt = "qtt";
 QString qtractorDocument::g_sArchiveExt  = "qtz";
+
+// Extracted archive paths (static).
+QStringList qtractorDocument::g_extractedArchives;
 
 
 // Constructor.
@@ -144,7 +183,8 @@ bool qtractorDocument::load ( const QString& sFilename, Flags flags )
 		delete m_pZipFile;
 		m_pZipFile = NULL;
 		// ATTN: Archived sub-directory must exist!
-		QDir::setCurrent(m_sName);
+		if (QDir::setCurrent(m_sName))
+			g_extractedArchives.append(QDir::currentPath());
 	}
 #endif
 
@@ -296,6 +336,27 @@ const QString& qtractorDocument::templateExt (void)
 const QString& qtractorDocument::archiveExt (void)
 {
 	return g_sArchiveExt;
+}
+
+
+//-------------------------------------------------------------------------
+// qtractorDocument -- extracted archive paths simple management.
+//
+
+const QStringList& qtractorDocument::extractedArchives (void)
+{
+	return g_extractedArchives;
+}
+
+void qtractorDocument::clearExtractedArchives ( bool bRemove )
+{
+	if (bRemove) {
+		QStringListIterator iter(g_extractedArchives);
+		while (iter.hasNext())
+			remove_dir(iter.next());
+	}
+
+	g_extractedArchives.clear();
 }
 
 

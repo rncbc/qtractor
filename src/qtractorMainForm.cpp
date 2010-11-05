@@ -1596,7 +1596,7 @@ bool qtractorMainForm::closeSession (void)
 		}
 	}
 
-	// If we may close it, dot it.
+	// If we may close it, do it!
 	if (bClose) {
 		// Just in case we were in the middle of something...
 		setPlaying(false);
@@ -1614,6 +1614,24 @@ bool qtractorMainForm::closeSession (void)
 		m_iPlayHead = 0;
 	#ifdef CONFIG_LV2
 		qtractorLv2PluginType::slv2_close();
+	#endif
+	#ifdef CONFIG_LIBZ
+		// Is it time to cleanup extracted archives?
+		const QStringList& paths = qtractorDocument::extractedArchives();
+		if (!paths.isEmpty()) {
+			bool bRemove = true;
+			if (m_pOptions && m_pOptions->bConfirmRemove) {
+				if (QMessageBox::warning(this,
+					tr("Warning") + " - " QTRACTOR_TITLE,
+					tr("About to remove archive directory:\n\n"
+					"\"%1\"\n\n"
+					"Are you sure?")
+					.arg(paths.join("\",\n\"")),
+					QMessageBox::Ok | QMessageBox::Cancel) == QMessageBox::Cancel)
+					bRemove = false;
+			}
+			qtractorDocument::clearExtractedArchives(bRemove);
+		}
 	#endif
 		// Some defaults are due...
 		if (m_pOptions) {
