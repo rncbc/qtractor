@@ -204,6 +204,9 @@ qtractorTrackForm::qtractorTrackForm (
 	QObject::connect(m_ui.PluginListView,
 		SIGNAL(currentRowChanged(int)),
 		SLOT(stabilizeForm()));
+	QObject::connect(m_ui.PluginListView,
+		SIGNAL(contentsChanged()),
+		SLOT(pluginListChanged()));
 	QObject::connect(m_ui.AddPluginToolButton,
 		SIGNAL(clicked()),
 		SLOT(addPlugin()));
@@ -1001,6 +1004,13 @@ void qtractorTrackForm::backgroundColorChanged ( const QString& sText )
 }
 
 
+void qtractorTrackForm::pluginListChanged (void)
+{
+	updateInstruments();
+	changed();
+}
+
+
 void qtractorTrackForm::changed (void)
 {
 	if (m_iDirtySetup > 0)
@@ -1271,27 +1281,21 @@ void qtractorTrackForm::selectBackgroundColor (void)
 void qtractorTrackForm::addPlugin (void)
 {
 	m_ui.PluginListView->addPlugin();
-	updateInstruments();
-	changed();
 }
 
 void qtractorTrackForm::removePlugin (void)
 {
 	m_ui.PluginListView->removePlugin();
-	updateInstruments();
-	changed();
 }
 
 void qtractorTrackForm::moveUpPlugin (void)
 {
 	m_ui.PluginListView->moveUpPlugin();
-	changed();
 }
 
 void qtractorTrackForm::moveDownPlugin (void)
 {
 	m_ui.PluginListView->moveDownPlugin();
-	changed();
 }
 
 

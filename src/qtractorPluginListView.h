@@ -103,6 +103,11 @@ public:
 	// Show insert pseudo-plugin audio bus connections.
 	static void insertPluginBus(qtractorPlugin *pPlugin, int iBusMode);
 
+signals:
+
+	// Plugin chain changed somehow.
+	void contentsChanged();
+
 public slots:
 
 	// User interaction slots.

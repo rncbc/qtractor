@@ -174,6 +174,9 @@ qtractorBusForm::qtractorBusForm (
 	QObject::connect(m_ui.InputPluginListView,
 		SIGNAL(currentRowChanged(int)),
 		SLOT(stabilizeForm()));
+	QObject::connect(m_ui.InputPluginListView,
+		SIGNAL(contentsChanged()),
+		SLOT(stabilizeForm()));
 	QObject::connect(m_ui.AddInputPluginToolButton,
 		SIGNAL(clicked()),
 		SLOT(addInputPlugin()));
@@ -189,6 +192,9 @@ qtractorBusForm::qtractorBusForm (
 
 	QObject::connect(m_ui.OutputPluginListView,
 		SIGNAL(currentRowChanged(int)),
+		SLOT(stabilizeForm()));
+	QObject::connect(m_ui.OutputPluginListView,
+		SIGNAL(contentsChanged()),
 		SLOT(stabilizeForm()));
 	QObject::connect(m_ui.AddOutputPluginToolButton,
 		SIGNAL(clicked()),
@@ -988,25 +994,21 @@ void qtractorBusForm::updateMidiSysex (void)
 void qtractorBusForm::addInputPlugin (void)
 {
 	m_ui.InputPluginListView->addPlugin();
-	stabilizeForm();
 }
 
 void qtractorBusForm::removeInputPlugin (void)
 {
 	m_ui.InputPluginListView->removePlugin();
-	stabilizeForm();
 }
 
 void qtractorBusForm::moveUpInputPlugin (void)
 {
 	m_ui.InputPluginListView->moveUpPlugin();
-	stabilizeForm();
 }
 
 void qtractorBusForm::moveDownInputPlugin (void)
 {
 	m_ui.InputPluginListView->moveDownPlugin();
-	stabilizeForm();
 }
 
 
@@ -1014,25 +1016,21 @@ void qtractorBusForm::moveDownInputPlugin (void)
 void qtractorBusForm::addOutputPlugin (void)
 {
 	m_ui.OutputPluginListView->addPlugin();
-	stabilizeForm();
 }
 
 void qtractorBusForm::removeOutputPlugin (void)
 {
 	m_ui.OutputPluginListView->removePlugin();
-	stabilizeForm();
 }
 
 void qtractorBusForm::moveUpOutputPlugin (void)
 {
 	m_ui.OutputPluginListView->moveUpPlugin();
-	stabilizeForm();
 }
 
 void qtractorBusForm::moveDownOutputPlugin (void)
 {
 	m_ui.OutputPluginListView->moveDownPlugin();
-	stabilizeForm();
 }
 
 

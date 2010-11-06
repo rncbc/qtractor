@@ -5,6 +5,10 @@ ChangeLog
 
 SVN TRUNK
 
+- All plugin chain changes over the track properties
+  dialog now sure counts as a dirty action (possibly
+  fixing bug #3104129).
+
 - Newly extracted archive/zip session directories are
   now removed automatically from the file-system on
   session close, prompting the user for confirmation

@@ -359,6 +359,8 @@ void qtractorPluginListView::moveItem (
 
 	pSession->execute(
 		new qtractorMovePluginCommand(pPlugin, pNextPlugin, m_pPluginList));
+
+	emit contentsChanged();
 }
 
 
@@ -393,6 +395,8 @@ void qtractorPluginListView::copyItem (
 	pSession->execute(
 		new qtractorInsertPluginCommand(
 			tr("copy plugin"), pPlugin, pNextPlugin));
+
+	emit contentsChanged();
 }
 
 
@@ -438,6 +442,8 @@ void qtractorPluginListView::addPlugin (void)
 
 	// We're formerly done.
 	QApplication::restoreOverrideCursor();
+
+	emit contentsChanged();
 }
 
 
@@ -469,6 +475,8 @@ void qtractorPluginListView::addInsertPlugin (void)
 
 	// We're formerly done.
 	QApplication::restoreOverrideCursor();
+
+	emit contentsChanged();
 }
 
 
@@ -492,8 +500,9 @@ void qtractorPluginListView::removePlugin (void)
 	if (pSession == NULL)
 		return;
 
-	pSession->execute(
-		new qtractorRemovePluginCommand(pPlugin));
+	pSession->execute(new qtractorRemovePluginCommand(pPlugin));
+
+	emit contentsChanged();
 }
 
 
@@ -602,6 +611,8 @@ void qtractorPluginListView::removeAllPlugins (void)
 	}
 
 	pSession->execute(pRemoveAllCommand);
+
+	emit contentsChanged();
 }
 
 

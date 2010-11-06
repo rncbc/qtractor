@@ -64,6 +64,8 @@ protected slots:
 	void stabilizeForm();
 	void changed();
 
+	void pluginListChanged();
+
 	void trackTypeChanged();
 	void inputBusNameChanged(const QString& sBusName);
 	void outputBusNameChanged(const QString& sBusName);
