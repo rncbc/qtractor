@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- Help/Shortcuts... dialog window position and sizes
+  are now preserved.
+
 - All plugin chain changes over the track properties
   dialog now sure counts as a dirty action (possibly
   fixing bug #3104129).

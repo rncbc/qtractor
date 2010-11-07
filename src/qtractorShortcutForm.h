@@ -125,6 +125,10 @@ public:
 
 	// Constructor.
 	qtractorShortcutForm(QList<QAction *> actions, QWidget *pParent = NULL);
+	
+	// Destructor.
+	
+	~qtractorShortcutForm();
 
 protected slots:
 

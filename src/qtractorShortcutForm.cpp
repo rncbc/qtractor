@@ -21,6 +21,8 @@
 
 #include "qtractorShortcutForm.h"
 
+#include "qtractorOptions.h"
+
 #include <QAction>
 #include <QMessageBox>
 #include <QPushButton>
@@ -290,6 +292,11 @@ qtractorShortcutForm::qtractorShortcutForm ( QList<QAction *> actions,
 		++iRow;
 	}
 
+	// Restore last seen form position and extents...
+	qtractorOptions *pOptions = qtractorOptions::getInstance();
+	if (pOptions)
+		pOptions->loadWidgetGeometry(this, true);
+	
 	QObject::connect(m_ui.ShortcutTable,
 		SIGNAL(itemActivated(QTableWidgetItem *)),
 		SLOT(actionActivated(QTableWidgetItem *)));
@@ -304,6 +311,15 @@ qtractorShortcutForm::qtractorShortcutForm ( QList<QAction *> actions,
 	QObject::connect(m_ui.DialogButtonBox,
 		SIGNAL(rejected()),
 		SLOT(reject()));
+}
+
+
+qtractorShortcutForm::~qtractorShortcutForm (void)
+{
+	// Store form position and extents...
+	qtractorOptions *pOptions = qtractorOptions::getInstance();
+	if (pOptions)
+		pOptions->saveWidgetGeometry(this, true);
 }
 
 
