@@ -130,6 +130,8 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	m_ui.editEventToolbar->addSeparator();
 	m_ui.editEventToolbar->addWidget(m_pControllerComboBox);
 
+	QStatusBar *pStatusBar = statusBar();
+
 	const QSize pad(4, 0);
 	const QString spc(4, ' ');
 
@@ -138,21 +140,21 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	m_pTrackNameLabel->setAlignment(Qt::AlignLeft);
 	m_pTrackNameLabel->setToolTip(tr("MIDI clip name"));
 	m_pTrackNameLabel->setAutoFillBackground(true);
-	statusBar()->addWidget(m_pTrackNameLabel, 1);
+	pStatusBar->addWidget(m_pTrackNameLabel, 1);
 
 	// Status filename...
 	m_pFileNameLabel = new QLabel(spc);
 	m_pFileNameLabel->setAlignment(Qt::AlignLeft);
 	m_pFileNameLabel->setToolTip(tr("MIDI file name"));
 	m_pFileNameLabel->setAutoFillBackground(true);
-	statusBar()->addWidget(m_pFileNameLabel, 2);
+	pStatusBar->addWidget(m_pFileNameLabel, 2);
 
 	// Status track/channel number...
 	m_pTrackChannelLabel = new QLabel(spc);
 	m_pTrackChannelLabel->setAlignment(Qt::AlignHCenter);
 	m_pTrackChannelLabel->setToolTip(tr("MIDI track/channel"));
 	m_pTrackChannelLabel->setAutoFillBackground(true);
-	statusBar()->addWidget(m_pTrackChannelLabel);
+	pStatusBar->addWidget(m_pTrackChannelLabel);
 
 	// Status modification status.
 	m_pStatusModLabel = new QLabel(tr("MOD"));
@@ -160,7 +162,7 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	m_pStatusModLabel->setMinimumSize(m_pStatusModLabel->sizeHint() + pad);
 	m_pStatusModLabel->setToolTip(tr("MIDI modification state"));
 	m_pStatusModLabel->setAutoFillBackground(true);
-	statusBar()->addWidget(m_pStatusModLabel);
+	pStatusBar->addPermanentWidget(m_pStatusModLabel);
 
 	// Sequence duration status.
 	m_pDurationLabel = new QLabel(tr("00:00:00.000"));
@@ -168,7 +170,7 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	m_pDurationLabel->setMinimumSize(m_pDurationLabel->sizeHint() + pad);
 	m_pDurationLabel->setToolTip(tr("MIDI clip duration"));
 	m_pDurationLabel->setAutoFillBackground(true);
-	statusBar()->addWidget(m_pDurationLabel);
+	pStatusBar->addPermanentWidget(m_pDurationLabel);
 
 	// Some actions surely need those
 	// shortcuts firmly attached...

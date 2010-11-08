@@ -33,6 +33,10 @@
 
 #include "qtractorZipFile.h"
 
+#include "qtractorMainForm.h"
+
+#include <QProgressBar>
+
 #include <QDateTime>
 #include <QDir>
 #include <QHash>
@@ -296,7 +300,11 @@ public:
 			total_processed(0),
 			buff_read(new unsigned char [BUFF_SIZE]),
 			buff_write(new unsigned char [BUFF_SIZE]),
-			write_offset(0) {}
+			write_offset(0)
+	{
+		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+		progress_bar = (pMainForm ? pMainForm->progressBar() : NULL);
+	}
 
 	~qtractorZipDevice()
 	{
@@ -333,13 +341,13 @@ public:
 	unsigned char *buff_read;
 	unsigned char *buff_write;
 	unsigned int write_offset;
+	QProgressBar *progress_bar;
 };
 
 
 //----------------------------------------------------------------------------
 // qtractorZipDevice -- Common ZIP I/O device class.
 //
-
 
 // Scans and reads zip archive entry directory (read-only).
 void qtractorZipDevice::scanFiles (void)
@@ -537,6 +545,8 @@ bool qtractorZipDevice::extractEntry (
 				fh.file_name.data(),
 				(100.0f * float(n_file_write)) / float(uncompressed_size));
 		#endif
+			if (progress_bar) progress_bar->setValue(
+				(100.0f * float(total_processed)) / float(total_uncompressed));
 		}
 	#ifdef CONFIG_DEBUG
 		fprintf(stderr, "\n");
@@ -573,6 +583,12 @@ bool qtractorZipDevice::extractAll (void)
 {
 	scanFiles();
 
+	if (progress_bar) {
+		progress_bar->setRange(0, 100);
+		progress_bar->reset();
+		progress_bar->show();
+	}
+
 	int iExtracted = 0;
 
 	QHash<QString, FileHeader>::ConstIterator iter = file_headers.constBegin();
@@ -580,6 +596,9 @@ bool qtractorZipDevice::extractAll (void)
 		if (extractEntry(iter.key(), iter.value()))
 			++iExtracted;
 	}
+
+	if (progress_bar)
+		progress_bar->hide();
 
 	return (iExtracted == file_headers.count());
 }
@@ -754,6 +773,8 @@ bool qtractorZipDevice::processEntry ( const QString& sFilename, FileHeader& fh 
 				fh.file_name.data(),
 				(100.0f * float(n_file_read)) / float(uncompressed_size));
 		#endif
+			if (progress_bar) progress_bar->setValue(
+				(100.0f * float(total_processed)) / float(total_uncompressed));		
 		}
 	#ifdef CONFIG_DEBUG
 		fprintf(stderr, "\n");
@@ -786,12 +807,25 @@ bool qtractorZipDevice::processEntry ( const QString& sFilename, FileHeader& fh 
 // Process the full contents of the zip file (write-only).
 bool qtractorZipDevice::processAll (void)
 {
+	if (progress_bar) {
+		progress_bar->setRange(0, 100);
+		progress_bar->reset();
+		progress_bar->show();
+	}
+
+	int iProcessed = 0;
+
 	QHash<QString, FileHeader>::Iterator iter = file_headers.begin();
 	for ( ; iter != file_headers.end(); ++iter) {
 		if (!processEntry(iter.key(), iter.value()))
-			return false;
+			break;
+		++iProcessed;
 	}
-	return true;
+
+	if (progress_bar)
+		progress_bar->hide();
+	
+	return (iProcessed == file_headers.count());
 }
 
 
@@ -800,7 +834,8 @@ bool qtractorZipDevice::processAll (void)
 //
 
 // Constructors.
-qtractorZipFile::qtractorZipFile ( const QString& sFilename, QIODevice::OpenMode mode )
+qtractorZipFile::qtractorZipFile (
+	const QString& sFilename, QIODevice::OpenMode mode )
 {
 	QFile *pFile = new QFile(sFilename);
 	pFile->open(mode);
@@ -960,7 +995,6 @@ void qtractorZipFile::close (void)
 
 
 // Statistical accessors.
-//
 unsigned int qtractorZipFile::totalUncompressed (void) const
 {
 	return m_pZip->total_uncompressed;

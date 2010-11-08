@@ -427,23 +427,25 @@ qtractorMainForm::qtractorMainForm (
 		SLOT(snapPerBeatChanged(int)));
 
 	// Create some statusbar labels...
+	QStatusBar *pStatusBar = statusBar();
+
 	QLabel *pLabel;
 	QPalette *pPalette = new QPalette(statusBar()->palette());
 	m_paletteItems[PaletteNone] = pPalette;
 
-	pPalette = new QPalette(statusBar()->palette());
+	pPalette = new QPalette(pStatusBar->palette());
 	pPalette->setColor(QPalette::Window, Qt::red);
 	m_paletteItems[PaletteRed] = pPalette;
 
-	pPalette = new QPalette(statusBar()->palette());
+	pPalette = new QPalette(pStatusBar->palette());
 	pPalette->setColor(QPalette::Window, Qt::yellow);
 	m_paletteItems[PaletteYellow] = pPalette;
 
-	pPalette = new QPalette(statusBar()->palette());
+	pPalette = new QPalette(pStatusBar->palette());
 	pPalette->setColor(QPalette::Window, Qt::cyan);
 	m_paletteItems[PaletteCyan] = pPalette;
 
-	pPalette = new QPalette(statusBar()->palette());
+	pPalette = new QPalette(pStatusBar->palette());
 	pPalette->setColor(QPalette::Window, Qt::green);
 	m_paletteItems[PaletteGreen] = pPalette;
 
@@ -453,13 +455,13 @@ qtractorMainForm::qtractorMainForm (
 	pLabel->setToolTip(tr("Current track name"));
 	pLabel->setAutoFillBackground(true);
 	m_statusItems[StatusName] = pLabel;
-	statusBar()->addWidget(pLabel, 2);
+	pStatusBar->addWidget(pLabel, 2);
 
 	// Hideous progress bar...
 	m_pProgressBar = new QProgressBar();
 	m_pProgressBar->setFixedHeight(pLabel->sizeHint().height());
 	m_pProgressBar->setMinimumWidth(120);
-	statusBar()->addWidget(m_pProgressBar);
+	pStatusBar->addPermanentWidget(m_pProgressBar);
 	m_pProgressBar->hide();
 
 	// Session modification status.
@@ -469,7 +471,7 @@ qtractorMainForm::qtractorMainForm (
 	pLabel->setToolTip(tr("Session modification state"));
 	pLabel->setAutoFillBackground(true);
 	m_statusItems[StatusMod] = pLabel;
-	statusBar()->addWidget(pLabel);
+	pStatusBar->addPermanentWidget(pLabel);
 
 	// Session recording status.
 	pLabel = new QLabel(tr("REC"));
@@ -478,7 +480,7 @@ qtractorMainForm::qtractorMainForm (
 	pLabel->setToolTip(tr("Session record state"));
 	pLabel->setAutoFillBackground(true);
 	m_statusItems[StatusRec] = pLabel;
-	statusBar()->addWidget(pLabel);
+	pStatusBar->addPermanentWidget(pLabel);
 
 	// Session muting status.
 	pLabel = new QLabel(tr("MUTE"));
@@ -487,7 +489,7 @@ qtractorMainForm::qtractorMainForm (
 	pLabel->setToolTip(tr("Session muting state"));
 	pLabel->setAutoFillBackground(true);
 	m_statusItems[StatusMute] = pLabel;
-	statusBar()->addWidget(pLabel);
+	pStatusBar->addPermanentWidget(pLabel);
 
 	// Session soloing status.
 	pLabel = new QLabel(tr("SOLO"));
@@ -496,7 +498,7 @@ qtractorMainForm::qtractorMainForm (
 	pLabel->setToolTip(tr("Session soloing state"));
 	pLabel->setAutoFillBackground(true);
 	m_statusItems[StatusSolo] = pLabel;
-	statusBar()->addWidget(pLabel);
+	pStatusBar->addPermanentWidget(pLabel);
 
 	// Session looping status.
 	pLabel = new QLabel(tr("LOOP"));
@@ -505,7 +507,7 @@ qtractorMainForm::qtractorMainForm (
 	pLabel->setToolTip(tr("Session looping state"));
 	pLabel->setAutoFillBackground(true);
 	m_statusItems[StatusLoop] = pLabel;
-	statusBar()->addWidget(pLabel);
+	pStatusBar->addPermanentWidget(pLabel);
 
 	// Session length time.
 	const QString sTime("00:00:00.000");
@@ -515,7 +517,7 @@ qtractorMainForm::qtractorMainForm (
 	pLabel->setToolTip(tr("Session total time"));
 	pLabel->setAutoFillBackground(true);
 	m_statusItems[StatusTime] = pLabel;
-	statusBar()->addWidget(pLabel);
+	pStatusBar->addPermanentWidget(pLabel);
 
 	// Session sample rate.
 	const QString sRate("44100 Hz");
@@ -525,7 +527,7 @@ qtractorMainForm::qtractorMainForm (
 	pLabel->setAutoFillBackground(true);
 	pLabel->setToolTip(tr("Session sample rate"));
 	m_statusItems[StatusRate] = pLabel;
-	statusBar()->addWidget(pLabel);
+	pStatusBar->addPermanentWidget(pLabel);
 
 #if QT_VERSION >= 0x040200
 	m_ui.transportLoopAction->setAutoRepeat(false);
