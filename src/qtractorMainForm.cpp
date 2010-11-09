@@ -1396,8 +1396,14 @@ bool qtractorMainForm::openSession (void)
 
 	QString sExt("qtr");
 	QStringList filters;
+#ifdef CONFIG_LIBZ
+	filters.append(tr("Session files (*.%1 *.%2 *.%3)")
+		.arg(sExt).arg(qtractorDocument::defaultExt())
+		.arg(qtractorDocument::archiveExt()));
+#else
 	filters.append(tr("Session files (*.%1 *.%2)")
 		.arg(sExt).arg(qtractorDocument::defaultExt()));
+#endif
 	filters.append(tr("Template files (*.%1)")
 		.arg(qtractorDocument::templateExt()));
 #ifdef CONFIG_LIBZ
@@ -1466,8 +1472,14 @@ bool qtractorMainForm::saveSession ( bool bPrompt )
 		// Prompt the guy...
 		QString sExt("qtr");
 		QStringList filters;
+	#ifdef CONFIG_LIBZ
+		filters.append(tr("Session files (*.%1 *.%2 *.%3)")
+			.arg(sExt).arg(qtractorDocument::defaultExt())
+			.arg(qtractorDocument::archiveExt()));
+	#else
 		filters.append(tr("Session files (*.%1 *.%2)")
 			.arg(sExt).arg(qtractorDocument::defaultExt()));
+	#endif
 		filters.append(tr("Template files (*.%1)")
 			.arg(qtractorDocument::templateExt()));
 	#ifdef CONFIG_LIBZ
