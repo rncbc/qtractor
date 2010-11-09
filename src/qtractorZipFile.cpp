@@ -33,9 +33,11 @@
 
 #include "qtractorZipFile.h"
 
+#define QTRACTOR_PROGRESS_BAR
+#ifdef  QTRACTOR_PROGRESS_BAR
 #include "qtractorMainForm.h"
-
 #include <QProgressBar>
+#endif
 
 #include <QDateTime>
 #include <QDir>
@@ -302,8 +304,10 @@ public:
 			buff_write(new unsigned char [BUFF_SIZE]),
 			write_offset(0)
 	{
+	#ifdef QTRACTOR_PROGRESS_BAR
 		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 		progress_bar = (pMainForm ? pMainForm->progressBar() : NULL);
+	#endif
 	}
 
 	~qtractorZipDevice()
@@ -341,7 +345,9 @@ public:
 	unsigned char *buff_read;
 	unsigned char *buff_write;
 	unsigned int write_offset;
+#ifdef QTRACTOR_PROGRESS_BAR
 	QProgressBar *progress_bar;
+#endif
 };
 
 
@@ -545,8 +551,10 @@ bool qtractorZipDevice::extractEntry (
 				fh.file_name.data(),
 				(100.0f * float(n_file_write)) / float(uncompressed_size));
 		#endif
+		#ifdef QTRACTOR_PROGRESS_BAR
 			if (progress_bar) progress_bar->setValue(
 				(100.0f * float(total_processed)) / float(total_uncompressed));
+		#endif
 		}
 	#ifdef CONFIG_DEBUG
 		fprintf(stderr, "\n");
@@ -583,11 +591,13 @@ bool qtractorZipDevice::extractAll (void)
 {
 	scanFiles();
 
+#ifdef QTRACTOR_PROGRESS_BAR
 	if (progress_bar) {
 		progress_bar->setRange(0, 100);
 		progress_bar->reset();
 		progress_bar->show();
 	}
+#endif
 
 	int iExtracted = 0;
 
@@ -597,8 +607,10 @@ bool qtractorZipDevice::extractAll (void)
 			++iExtracted;
 	}
 
+#ifdef QTRACTOR_PROGRESS_BAR
 	if (progress_bar)
 		progress_bar->hide();
+#endif
 
 	return (iExtracted == file_headers.count());
 }
@@ -773,8 +785,10 @@ bool qtractorZipDevice::processEntry ( const QString& sFilename, FileHeader& fh 
 				fh.file_name.data(),
 				(100.0f * float(n_file_read)) / float(uncompressed_size));
 		#endif
+		#ifdef QTRACTOR_PROGRESS_BAR
 			if (progress_bar) progress_bar->setValue(
-				(100.0f * float(total_processed)) / float(total_uncompressed));		
+				(100.0f * float(total_processed)) / float(total_uncompressed));
+		#endif
 		}
 	#ifdef CONFIG_DEBUG
 		fprintf(stderr, "\n");
@@ -807,11 +821,13 @@ bool qtractorZipDevice::processEntry ( const QString& sFilename, FileHeader& fh 
 // Process the full contents of the zip file (write-only).
 bool qtractorZipDevice::processAll (void)
 {
+#ifdef QTRACTOR_PROGRESS_BAR
 	if (progress_bar) {
 		progress_bar->setRange(0, 100);
 		progress_bar->reset();
 		progress_bar->show();
 	}
+#endif
 
 	int iProcessed = 0;
 
@@ -822,9 +838,11 @@ bool qtractorZipDevice::processAll (void)
 		++iProcessed;
 	}
 
+#ifdef QTRACTOR_PROGRESS_BAR
 	if (progress_bar)
 		progress_bar->hide();
-	
+#endif
+
 	return (iProcessed == file_headers.count());
 }
 
