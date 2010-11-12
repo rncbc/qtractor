@@ -96,7 +96,7 @@ qtractorPluginSelectForm::qtractorPluginSelectForm (
 	m_ui.PluginListView->resizeColumnToContents(1);		// Audio.
 	m_ui.PluginListView->resizeColumnToContents(2);		// MIDI.
 	m_ui.PluginListView->resizeColumnToContents(3);		// Controls.
-	m_ui.PluginListView->resizeColumnToContents(4);		// Mode.
+	m_ui.PluginListView->resizeColumnToContents(4);		// Modes.
 	pHeader->resizeSection(5, 120);						// Path.
 	m_ui.PluginListView->resizeColumnToContents(6);		// Index
 	m_ui.PluginListView->resizeColumnToContents(7);		// Instances
@@ -336,10 +336,17 @@ void qtractorPluginSelectForm::refresh (void)
 			cols << QString("%1:%2").arg(iAudioIns).arg(iAudioOuts);
 			cols << QString("%1:%2").arg(iMidiIns).arg(iMidiOuts);
 			cols << QString("%1:%2").arg(iControlIns).arg(iControlOuts);
+			QStringList modes;
+			if (pType->isEditor())
+				modes << tr("GUI");
+			if (pType->isConfigure())
+				modes << tr("EXT");
 			if (pType->isRealtime())
-				cols << tr("RT");
-			else
+				modes << tr("RT");
+			if (modes.isEmpty())
 				cols << "-";
+			else
+				cols << modes.join(",");
 			cols << sFilename;
 			cols << QString::number(pType->index());
 			cols << QString::number(iInstances);
@@ -356,7 +363,7 @@ void qtractorPluginSelectForm::refresh (void)
 			pItem->setTextAlignment(1, Qt::AlignHCenter);	// Audio
 			pItem->setTextAlignment(2, Qt::AlignHCenter);	// MIDI
 			pItem->setTextAlignment(3, Qt::AlignHCenter);	// Controls
-			pItem->setTextAlignment(4, Qt::AlignHCenter);	// Mode
+			pItem->setTextAlignment(4, Qt::AlignHCenter);	// Modes
 			items.append(pItem);
 		}
 	}

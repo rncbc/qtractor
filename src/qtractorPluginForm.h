@@ -25,6 +25,7 @@
 #include "ui_qtractorPluginForm.h"
 
 #include <QFrame>
+#include <QHash>
 
 
 // Forward declarations...

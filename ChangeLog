@@ -5,6 +5,13 @@ ChangeLog
 
 SVN TRUNK
 
+- Default session file format saved on JACK session
+  demand is now the bundle archive/zip one (.qtz).
+
+- Plugin selection dialog now shows whether a plugin
+  features its own editor (GUI) and/or external state
+  configuration (EXT).
+
 - Help/Shortcuts... window positioning and sizing are
   now preserved.
 

@@ -163,7 +163,7 @@
      </column>
      <column>
       <property name="text" >
-       <string>Mode</string>
+	   <string>Modes</string>
       </property>
      </column>
      <column>
