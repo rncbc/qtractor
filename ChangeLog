@@ -5,6 +5,10 @@ ChangeLog
 
 SVN TRUNK
 
+- Plugin parameter name/label now a proper attribute
+  of its respective MIDI Controller observer instance,
+  allowing to be shown on dialog title (MIDI learn).
+
 - Default session file format saved on JACK session
   demand is now the bundle archive/zip one (.qtz).
 

@@ -276,9 +276,9 @@ public:
 
 	// Parameter name accessors.
 	void setName(const QString& sName)
-		{ m_sName = sName.trimmed(); }
+		{ m_observer.setName(sName); }
 	const QString& name() const
-		{ return m_sName; }
+		{ return m_observer.name(); }
 
 	// Parameter range hints predicate methods.
 	virtual bool isBoundedBelow() const = 0;
@@ -360,9 +360,6 @@ private:
 	// Instance variables.
 	qtractorPlugin *m_pPlugin;
 	unsigned long m_iIndex;
-
-	// Parameter name/label.
-	QString m_sName;
 
 	// Port default value.
 	float m_fDefaultValue;

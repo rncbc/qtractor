@@ -93,6 +93,12 @@ public:
 	float valueFromScale(float fScale, bool bCubic) const;
 	float scaleFromValue(float fValue, bool bCubic) const;
 
+	// Parameter name accessors.
+	void setName(const QString& sName)
+		{ m_sName = sName.trimmed(); }
+	const QString& name() const
+		{ return m_sName; }
+
 protected:
 
 	// Updater.
@@ -112,6 +118,9 @@ private:
 	// Value mapping limits.
 	float m_fMinValue;
 	float m_fMaxValue;
+
+	// Human readable name/label.
+	QString m_sName;
 };
 
 

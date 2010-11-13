@@ -131,6 +131,9 @@ void qtractorMidiControlObserverForm::setMidiObserver (
 
 	m_iDirtySetup++;
 
+	QDialog::setWindowTitle(
+		m_pMidiObserver->name() + " - " + tr("MIDI Controller"));
+
 	const QString& sControlType
 		= qtractorMidiControl::nameFromType(m_pMidiObserver->type());
 	m_ui.ControlTypeComboBox->setCurrentIndex(
