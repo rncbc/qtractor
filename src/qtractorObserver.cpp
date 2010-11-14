@@ -48,27 +48,23 @@ public:
 
 	bool push ( qtractorSubject *pSubject, qtractorObserver *pSender )
 	{
-		unsigned int iIndex = m_iQueueIndex;
-		if (iIndex >= m_iQueueSize)
+		if (m_iQueueIndex >= m_iQueueSize)
 			return false;
 		pSubject->setQueued(true);
-		QueueItem *pItem = &m_pQueueItems[iIndex++];
+		QueueItem *pItem = &m_pQueueItems[m_iQueueIndex++];
 		pItem->subject = pSubject;
 		pItem->sender  = pSender;
-		m_iQueueIndex  = iIndex;
 		return true;
 	}
 
 	bool pop ()
 	{
-		unsigned int iIndex = m_iQueueIndex;
-		if (iIndex == 0)
+		if (m_iQueueIndex == 0)
 			return false;
-		QueueItem *pItem = &m_pQueueItems[--iIndex];
+		QueueItem *pItem = &m_pQueueItems[--m_iQueueIndex];
 		qtractorSubject *pSubject = pItem->subject;
 		pSubject->setQueued(false);
 		pSubject->notify(pItem->sender);
-		m_iQueueIndex = iIndex;
 		return true;
 	}
 
@@ -77,11 +73,9 @@ public:
 
 	void reset ()
 	{
-		unsigned int iIndex = m_iQueueIndex;
-		while (iIndex > 0) {
-			QueueItem *pItem = &m_pQueueItems[--iIndex];
-			if ((pItem->subject)->isQueued())
-				(pItem->subject)->setQueued(false);
+		while (m_iQueueIndex > 0) {
+			QueueItem *pItem = &m_pQueueItems[--m_iQueueIndex];
+			(pItem->subject)->setQueued(false);
 		}
 		clear();
 	}

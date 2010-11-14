@@ -1576,6 +1576,7 @@ static VstIntPtr VSTCALLBACK qtractorVstPlugin_HostCallback ( AEffect* effect,
 
 	case audioMasterEndEdit:
 		VST_HC_DEBUG("audioMasterEndEdit");
+	#if 0
 		pVstPlugin = qtractorVstPlugin::findPlugin(effect);
 		if (pVstPlugin) {
 			qtractorPluginForm *pForm = pVstPlugin->form();
@@ -1585,6 +1586,7 @@ static VstIntPtr VSTCALLBACK qtractorVstPlugin_HostCallback ( AEffect* effect,
 			}
 		//	QApplication::processEvents();
 		}
+	#endif
 		break;
 
 #ifndef CONFIG_VESTIGE
