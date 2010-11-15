@@ -354,10 +354,12 @@ void qtractorPluginForm::updateParamWidget ( unsigned long iIndex )
 	qDebug("qtractorPluginForm[%p]::updateParamWidget(%lu)", this, iIndex);
 #endif
 
+#if 0
 	qtractorPluginParamWidget *pParamWidget
 		= m_paramWidgets.value(iIndex, NULL);
 	if (pParamWidget)
 		pParamWidget->refresh();
+#endif
 
 	// Sure is dirty...
 	m_iDirtyCount++;
