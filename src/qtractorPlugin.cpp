@@ -681,9 +681,8 @@ QStringList qtractorPlugin::valueList (void) const
 
 	// Join it up...
 	QStringList vlist;
-	QStringListIterator val(vlist);
 	QMapIterator<unsigned long, qtractorPluginParam *> iter(params);
-	while (val.hasNext() && iter.hasNext())
+	while (iter.hasNext())
 		vlist.append(QString::number(iter.next().value()->value()));
 
 	return vlist;
