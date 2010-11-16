@@ -67,7 +67,7 @@ public:
 	void updateActivated();
 
 	void updateParamValue(unsigned long iIndex, float fValue, bool bUpdate);
-	void updateParamWidget(unsigned long iIndex);
+	void changeParamValue(unsigned long iIndex);
 
 	void activateForm();
 
@@ -75,6 +75,11 @@ public:
 	void clear();
 
 	void toggleEditor(bool bOn);
+
+signals:
+
+	void updateParamSignal(unsigned long iIndex, float fValue, bool bUpdate);
+	void changeParamSignal(unsigned long iIndex);
 
 protected slots:
 
@@ -89,6 +94,9 @@ protected slots:
 	void returnsSlot();
 	void activateSlot(bool bOn);
 	void midiControlActionSlot();
+
+	void updateParamSlot(unsigned long iIndex, float fValue, bool bUpdate);
+	void changeParamSlot(unsigned long iIndex);
 
 protected:
 

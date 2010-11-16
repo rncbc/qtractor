@@ -127,6 +127,13 @@ qtractorPluginForm::qtractorPluginForm (
 	QObject::connect(m_ui.ActivateToolButton,
 		SIGNAL(toggled(bool)),
 		SLOT(activateSlot(bool)));
+
+	QObject::connect(this,
+		SIGNAL(updateParamSignal(unsigned long, float, bool)),
+		SLOT(updateParamSlot(unsigned long, float, bool)));
+	QObject::connect(this,
+		SIGNAL(changeParamSignal(unsigned long)),
+		SLOT(changeParamSlot(unsigned long)));
 }
 
 
@@ -330,11 +337,17 @@ void qtractorPluginForm::updateActivated (void)
 void qtractorPluginForm::updateParamValue (
 	unsigned long iIndex, float fValue, bool bUpdate )
 {
+	emit updateParamSignal(iIndex, fValue, bUpdate);
+}
+
+void qtractorPluginForm::updateParamSlot (
+	unsigned long iIndex, float fValue, bool bUpdate )
+{
 	if (m_pPlugin == NULL)
 		return;
 
 #ifdef CONFIG_DEBUG_0
-	qDebug("qtractorPluginForm[%p]::updateParamValue(%lu, %g, %d)",
+	qDebug("qtractorPluginForm[%p]::updateParamSlot(%lu, %g, %d)",
 		this, iIndex, fValue, int(bUpdate));
 #endif
 
@@ -345,13 +358,16 @@ void qtractorPluginForm::updateParamValue (
 
 
 // Update port widget state.
-void qtractorPluginForm::updateParamWidget ( unsigned long iIndex )
+void qtractorPluginForm::changeParamValue ( unsigned long iIndex )
 {
-	if (m_pPlugin == NULL)
-		return;
+	emit changeParamSignal(iIndex);
+}
 
+
+void qtractorPluginForm::changeParamSlot ( unsigned long iIndex )
+{
 #ifdef CONFIG_DEBUG_0
-	qDebug("qtractorPluginForm[%p]::updateParamWidget(%lu)", this, iIndex);
+	qDebug("qtractorPluginForm[%p]::changeParamSlot(%lu)", this, iIndex);
 #endif
 
 #if 0
