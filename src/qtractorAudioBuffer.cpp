@@ -819,9 +819,7 @@ void qtractorAudioBuffer::readSyncIn (void)
 				m_iWriteOffset = ls;
 			ntotal += nread;
 			nahead = (ws > ntotal ? ws - ntotal : 0);
-		}
-		else
-		if (nread < 0) {
+		} else {
 			// Think of end-of-file...
 			nahead = 0;
 			// But we can re-cache, if not an integral fit...

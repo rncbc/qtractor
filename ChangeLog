@@ -5,6 +5,11 @@ ChangeLog
 
 SVN TRUNK
 
+- Yet another off-by-one (frame) audio buffer bug got
+  squashed away: rare symptom was that some audio clips
+  were being left dead silent right after playback of
+  their first looping period.
+
 - Plugin parameter name/label now a proper attribute
   of its respective MIDI Controller observer instance,
   allowing to be shown on dialog title (MIDI learn).
