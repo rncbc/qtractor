@@ -172,7 +172,8 @@
     <addaction name="transportLoopAction" />
     <addaction name="transportLoopSetAction" />
     <addaction name="separator" />
-    <addaction name="transportPlayAction" />
+	<addaction name="transportStopAction" />
+	<addaction name="transportPlayAction" />
     <addaction name="transportRecordAction" />
     <addaction name="separator" />
     <addaction name="transportPunchAction" />
@@ -261,6 +262,7 @@
    <addaction name="separator" />
    <addaction name="transportLoopAction" />
    <addaction name="separator" />
+   <addaction name="transportStopAction" />
    <addaction name="transportPlayAction" />
    <addaction name="transportRecordAction" />
    <addaction name="separator" />
@@ -1241,6 +1243,23 @@
    </property>
    <property name="shortcut" >
     <string>Ctrl+L</string>
+   </property>
+  </action>
+  <action name="transportStopAction" >
+   <property name="icon" >
+	<iconset resource="qtractor.qrc" >:/images/transportStop.png</iconset>
+   </property>
+   <property name="text" >
+	<string>&amp;Stop</string>
+   </property>
+   <property name="iconText" >
+	<string>Stop</string>
+   </property>
+   <property name="toolTip" >
+	<string>Stop</string>
+   </property>
+   <property name="statusTip" >
+	<string>Transport stop</string>
    </property>
   </action>
   <action name="transportPlayAction" >

@@ -181,6 +181,7 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	addAction(m_ui.transportBackwardAction);
 	addAction(m_ui.transportLoopAction);
 	addAction(m_ui.transportLoopSetAction);
+	addAction(m_ui.transportStopAction);
 	addAction(m_ui.transportPlayAction);
 	addAction(m_ui.transportPunchAction);
 	addAction(m_ui.transportPunchSetAction);
@@ -460,6 +461,9 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 		QObject::connect(m_ui.transportLoopSetAction,
 			SIGNAL(triggered(bool)),
 			pMainForm, SLOT(transportLoopSet()));
+		QObject::connect(m_ui.transportStopAction,
+			SIGNAL(triggered(bool)),
+			pMainForm, SLOT(transportStop()));
 		QObject::connect(m_ui.transportPlayAction,
 			SIGNAL(triggered(bool)),
 			pMainForm, SLOT(transportPlay()));
@@ -1460,6 +1464,7 @@ void qtractorMidiEditorForm::stabilizeForm (void)
 			!bRolling && (bLooping || bSelectable));
 		m_ui.transportLoopSetAction->setEnabled(
 			!bRolling && bSelectable);
+		m_ui.transportStopAction->setEnabled(bPlaying);
 		m_ui.transportRecordAction->setEnabled(
 			(!bLooping || !bPunching) && pSession->recordTracks() > 0);
 		m_ui.transportPunchAction->setEnabled(bPunching || bSelectable);

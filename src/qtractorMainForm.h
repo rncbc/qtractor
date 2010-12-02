@@ -200,6 +200,7 @@ public slots:
 	void transportForward();
 	void transportLoop();
 	void transportLoopSet();
+	void transportStop();
 	void transportPlay();
 	void transportRecord();
 	void transportPunch();

@@ -815,6 +815,9 @@ qtractorMainForm::qtractorMainForm (
 	QObject::connect(m_ui.transportLoopSetAction,
 		SIGNAL(triggered(bool)),
 		SLOT(transportLoopSet()));
+	QObject::connect(m_ui.transportStopAction,
+		SIGNAL(triggered(bool)),
+		SLOT(transportStop()));
 	QObject::connect(m_ui.transportPlayAction,
 		SIGNAL(triggered(bool)),
 		SLOT(transportPlay()));
@@ -3422,6 +3425,31 @@ void qtractorMainForm::transportLoopSet (void)
 }
 
 
+// Transport stop.
+void qtractorMainForm::transportStop (void)
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::transportStop()");
+#endif
+
+	// Make sure session is activated...
+	if (!checkRestartSession())
+		return;
+
+	// Stop playing...
+	if (setPlaying(false)) {
+		qtractorMidiEngine *pMidiEngine = m_pSession->midiEngine();
+		if (pMidiEngine) {
+			// Send MMC PLAY/STOP command...
+			pMidiEngine->sendMmcCommand(qtractorMmcEvent::STOP);
+			pMidiEngine->sendSppCommand(SND_SEQ_EVENT_STOP);
+		}
+	}
+
+	stabilizeForm();
+}
+
+
 // Transport play.
 void qtractorMainForm::transportPlay (void)
 {
@@ -4073,6 +4101,7 @@ void qtractorMainForm::stabilizeForm (void)
 		!bRolling && (bLooping || bSelectable));
 	m_ui.transportLoopSetAction->setEnabled(
 		!bRolling && bSelectable);
+	m_ui.transportStopAction->setEnabled(bPlaying);
 	m_ui.transportRecordAction->setEnabled(
 		(!bLooping || !bPunching) && m_pSession->recordTracks() > 0);
 	m_ui.transportPunchAction->setEnabled(bPunching || bSelectable);
