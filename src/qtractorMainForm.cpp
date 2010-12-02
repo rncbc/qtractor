@@ -1650,7 +1650,7 @@ bool qtractorMainForm::closeSession (void)
 					"\"%1\"\n\n"
 					"Are you sure?")
 					.arg(paths.join("\",\n\"")),
-					QMessageBox::Ok | QMessageBox::Cancel) == QMessageBox::Cancel)
+					QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
 					bRemove = false;
 			}
 			qtractorDocument::clearExtractedArchives(bRemove);
