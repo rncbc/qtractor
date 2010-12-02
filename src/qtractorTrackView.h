@@ -173,6 +173,10 @@ public:
 	void setDropSpan(bool bDropSpan);
 	bool isDropSpan() const;
 
+	// Snap-to-beat grid mode.
+	void setSnapGrid(bool bSnapGrid);
+	bool isSnapGrid() const;
+
 protected:
 
 	// Resize event handler.
@@ -350,6 +354,9 @@ private:
 
 	// The multi-item drop mode.
 	bool m_bDropSpan;
+
+	// Snap-to-beat grid mode.
+	bool m_bSnapGrid;
 
 	// The local clipboard item.
 	struct ClipItem

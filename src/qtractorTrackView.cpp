@@ -89,6 +89,7 @@ qtractorTrackView::qtractorTrackView ( qtractorTracks *pTracks,
 	m_selectMode = SelectClip;
 
 	m_bDropSpan = true;
+	m_bSnapGrid = true;
 
 	clear();
 
@@ -567,7 +568,7 @@ void qtractorTrackView::updatePixmap ( int cx, int cy )
 	}
 
 	// Draw vertical grid lines...
-	if (cy < y2) {
+	if (m_bSnapGrid && cy < y2) {
 		qtractorTimeScale::Cursor cursor(pSession->timeScale());
 		qtractorTimeScale::Node *pNode = cursor.seekPixel(cx);
 		unsigned short iPixelsPerBeat = pNode->pixelsPerBeat();
@@ -3208,6 +3209,20 @@ void qtractorTrackView::setDropSpan ( bool bDropSpan )
 bool qtractorTrackView::isDropSpan (void) const
 {
 	return m_bDropSpan;
+}
+
+
+// Snap-to-beat grid mode.
+void qtractorTrackView::setSnapGrid ( bool bSnapGrid )
+{
+	m_bSnapGrid = bSnapGrid;
+
+	updateContents();
+}
+
+bool qtractorTrackView::isSnapGrid (void) const
+{
+	return m_bSnapGrid;
 }
 
 

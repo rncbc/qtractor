@@ -1097,7 +1097,7 @@
     <string>Grid</string>
    </property>
    <property name="statusTip" >
-    <string>Snap grid mode</string>
+	<string>Snap grid view mode</string>
    </property>
   </action>
   <action name="viewRefreshAction" >

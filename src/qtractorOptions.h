@@ -190,6 +190,7 @@ public:
 	// Tracks view options...
 	int  iTrackViewSelectMode;
 	bool bTrackViewDropSpan;
+	bool bTrackViewSnapGrid;
 
 	// MIDI Editor options...
 	bool bMidiMenubar;

@@ -251,6 +251,7 @@ void qtractorOptions::loadOptions (void)
 	m_settings.beginGroup("/Tracks");
 	iTrackViewSelectMode = m_settings.value("/TrackViewSelectMode", 0).toInt();
 	bTrackViewDropSpan   = m_settings.value("/TrackViewDropSpan", false).toBool();
+	bTrackViewSnapGrid   = m_settings.value("/TrackViewSnapGrid", true).toBool();
 	m_settings.endGroup();
 
 	// MIDI options group.
@@ -459,6 +460,7 @@ void qtractorOptions::saveOptions (void)
 	m_settings.beginGroup("/Tracks");
 	m_settings.setValue("/TrackViewSelectMode", iTrackViewSelectMode);
 	m_settings.setValue("/TrackViewDropSpan", bTrackViewDropSpan);
+	m_settings.setValue("/TrackViewSnapGrid", bTrackViewSnapGrid);
 	m_settings.endGroup();
 
 	// MIDI Editor options group.

@@ -775,6 +775,9 @@ qtractorMainForm::qtractorMainForm (
 	QObject::connect(m_ui.viewZoomAllAction,
 		SIGNAL(triggered(bool)),
 		SLOT(viewZoomAll()));
+	QObject::connect(m_ui.viewSnapGridAction,
+		SIGNAL(triggered(bool)),
+		SLOT(viewSnapGrid(bool)));
 	QObject::connect(m_ui.viewRefreshAction,
 		SIGNAL(triggered(bool)),
 		SLOT(viewRefresh()));
@@ -986,6 +989,7 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 	}
 	m_pTracks->trackView()->setSelectMode(selectMode);
 	m_pTracks->trackView()->setDropSpan(m_pOptions->bTrackViewDropSpan);
+	m_pTracks->trackView()->setSnapGrid(m_pOptions->bTrackViewSnapGrid);
 
 	// Initial zoom mode...
 	m_pTracks->setZoomMode(m_pOptions->iZoomMode);
@@ -1004,6 +1008,7 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 	m_ui.viewToolbarTransportAction->setChecked(m_pOptions->bTransportToolbar);
 	m_ui.viewToolbarTimeAction->setChecked(m_pOptions->bTimeToolbar);
 	m_ui.viewToolbarThumbAction->setChecked(m_pOptions->bThumbToolbar);
+	m_ui.viewSnapGridAction->setChecked(pOptions->bTrackViewSnapGrid);
 
 	m_ui.transportMetroAction->setChecked(m_pOptions->bMetronome);
 	m_ui.transportFollowAction->setChecked(m_pOptions->bFollowPlayhead);
@@ -1207,6 +1212,7 @@ bool qtractorMainForm::queryClose (void)
 			m_pOptions->bTransportToolbar = m_ui.transportToolbar->isVisible();
 			m_pOptions->bTimeToolbar = m_ui.timeToolbar->isVisible();
 			m_pOptions->bThumbToolbar = m_ui.thumbToolbar->isVisible();
+			m_pOptions->bTrackViewSnapGrid = m_ui.viewSnapGridAction->isChecked();
 			m_pOptions->bMetronome = m_ui.transportMetroAction->isChecked();
 			m_pOptions->bFollowPlayhead = m_ui.transportFollowAction->isChecked();
 			m_pOptions->bAutoBackward = m_ui.transportAutoBackwardAction->isChecked();
@@ -2903,6 +2909,14 @@ void qtractorMainForm::viewZoomAll (void)
 }
 
 
+// Set grid mode
+void qtractorMainForm::viewSnapGrid ( bool bOn )
+{
+	if (m_pTracks)
+		m_pTracks->trackView()->setSnapGrid(bOn);
+}
+
+
 // Change snap-per-beat setting via menu.
 void qtractorMainForm::viewSnap (void)
 {
@@ -4499,6 +4513,9 @@ void qtractorMainForm::updateSnapMenu (void)
 		pAction->setChecked(iSnap == iSnapCurrent);
 		pAction->setData(iSnap++);
 	}
+
+	m_ui.viewSnapMenu->addSeparator();
+	m_ui.viewSnapMenu->addAction(m_ui.viewSnapGridAction);
 }
 
 

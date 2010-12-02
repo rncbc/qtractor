@@ -5,6 +5,8 @@ ChangeLog
 
 SVN TRUNK
 
+- Main tracks grid visibility option (View/Snap/Grid).
+
 - Yet another off-by-one (frame) audio buffer bug got
   squashed away: rare symptom was that some audio clips
   were being left dead silent right after playback of
