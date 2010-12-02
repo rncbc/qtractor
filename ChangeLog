@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- Finally indulged, the genuine transport stop button
+  makes its appearance on main toolbar and menu.
+
 - Main tracks grid visibility option (View/Snap/Grid).
 
 - Yet another off-by-one (frame) audio buffer bug got
