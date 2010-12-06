@@ -1167,15 +1167,9 @@ void qtractorMidiEditor::pasteClipboard (
 	if (!isClipboard())
 		return;
 
-	// Formally ellect this one as the target view...
-	qtractorScrollView *pScrollView = m_pEditView;
-	// That's right :)
-	bool bEditView
-		= (static_cast<qtractorScrollView *> (m_pEditView) == pScrollView);
-
 	// Reset any current selection, whatsoever...
 	m_select.clear();
-	resetDragState(pScrollView);
+	resetDragState(NULL);
 
 	// Multi-paste period...
 	if (iPastePeriod < 1)
@@ -1236,10 +1230,6 @@ void qtractorMidiEditor::pasteClipboard (
 					rectEvent.setRect(x - x0, y0 - 2, w1, 4);
 			}
 			m_select.addItem(pEvent, rectEvent, rectView, t0 - d0);
-			if (m_pEventDrag == NULL) {
-				m_pEventDrag = pEvent;
-				m_rectDrag = (bEditView ? rectView : rectEvent);
-			}
 			if (x1 > x || k == 0)
 				x1 = x;
 			++k;
@@ -1250,6 +1240,31 @@ void qtractorMidiEditor::pasteClipboard (
 		t0 -= pNode->tickFromPixel(x1);
 	}
 
+	// Make sure we've a anchor...
+	if (m_pEventDrag == NULL)
+		m_pEventDrag = m_select.anchorEvent();
+
+	// Formally ellect this one as the target view...
+	qtractorScrollView *pScrollView = NULL;
+	qtractorMidiEditSelect::Item *pItem = m_select.findItem(m_pEventDrag);
+	if (pItem) {
+		if (m_pEventDrag->type() == m_pEditView->eventType()) {
+			m_rectDrag  = pItem->rectView;
+			pScrollView = m_pEditView;
+		} else {
+			m_rectDrag  = pItem->rectEvent;
+			pScrollView = m_pEditEvent;
+		}
+	}
+
+	// That's right :)
+	if (pScrollView == NULL) {
+		m_dragState = DragStep; // HACK: Force selection clearance!
+		m_select.clear();
+		resetDragState(NULL);
+		return;
+	}
+	
 	// We'll start a brand new floating state...
 	m_dragState = DragPaste;
 	m_posDrag   = m_rectDrag.topLeft();
@@ -2741,8 +2756,11 @@ void qtractorMidiEditor::executeDragPaste (
 
 	updateDragMove(pScrollView, pos + m_posStep);
 
+	bool bEditView
+		= (static_cast<qtractorScrollView *> (m_pEditView) == pScrollView);
+
 	long iTimeDelta = timeDelta(pScrollView);
-	int  iNoteDelta = noteDelta(pScrollView);
+	int  iNoteDelta = (bEditView ? noteDelta(pScrollView) : 0);
 
 	qtractorMidiEditCommand *pEditCommand
 		= new qtractorMidiEditCommand(m_pMidiClip, tr("paste"));
@@ -2752,16 +2770,21 @@ void qtractorMidiEditor::executeDragPaste (
 	for ( ; iter != items.constEnd(); ++iter) {
 		qtractorMidiEvent *pEvent = new qtractorMidiEvent(*iter.key());
 		qtractorMidiEditSelect::Item *pItem = iter.value();
-		int iNote = int(pEvent->note()) + iNoteDelta;
-		if (iNote < 0)
-			iNote = 0;
-		if (iNote > 127)
-			iNote = 127;
-		pEvent->setNote(iNote);
 		long iTime = long(pEvent->time() + pItem->delta) + iTimeDelta;
 	//	if (pEvent == m_pEventDrag)
 	//		iTime = timeSnap(iTime);
 		pEvent->setTime(iTime);
+		if (bEditView) {
+			int iNote = int(pEvent->note()) + iNoteDelta;
+			if (iNote < 0)
+				iNote = 0;
+			if (iNote > 127)
+				iNote = 127;
+			pEvent->setNote(iNote);
+		}
+		else
+		if (m_pEditEvent->eventType() == qtractorMidiEvent::CONTROLLER)
+			pEvent->setController(m_pEditEvent->controller());
 		pEditCommand->insertEvent(pEvent);
 	}
 
@@ -3255,6 +3278,7 @@ bool qtractorMidiEditor::keyPress ( qtractorScrollView *pScrollView,
 		// Fall thru...
 	case Qt::Key_Escape:
 		m_dragState = DragStep; // HACK: Force selection clearance!
+		m_select.clear();
 		resetDragState(pScrollView);
 		break;
 	case Qt::Key_Home:

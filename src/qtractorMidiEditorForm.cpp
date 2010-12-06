@@ -1486,6 +1486,9 @@ void qtractorMidiEditorForm::updateInstrumentNames (void)
 	m_pMidiEditor->updateInstrumentNames();
 
 	// Update the controller names...
+	int iOldController = m_pControllerComboBox->currentIndex();
+	if (iOldController < 0)
+		iOldController = 0;
 	const QIcon iconController(":/images/itemControllers.png");
 	m_pControllerComboBox->clear();
 	for (int i = 0; i < 128; ++i) {
@@ -1493,6 +1496,7 @@ void qtractorMidiEditorForm::updateInstrumentNames (void)
 			QString::number(i) + " - "
 			+ m_pMidiEditor->controllerName(i), i);
 	}
+	m_pControllerComboBox->setCurrentIndex(iOldController);
 }
 
 

@@ -214,7 +214,8 @@ void qtractorMidiEditEvent::setEventType (
 {
 	m_eventType = eventType;
 
-	m_pEditor->updateContents();
+	m_pEditor->selectAll(false);
+//	m_pEditor->updateContents();
 }
 
 qtractorMidiEvent::EventType qtractorMidiEditEvent::eventType (void) const
@@ -227,7 +228,8 @@ void qtractorMidiEditEvent::setController ( unsigned char controller )
 {
 	m_controller = controller;
 
-	m_pEditor->updateContents();
+	m_pEditor->selectAll(false);
+//	m_pEditor->updateContents();
 }
 
 unsigned char qtractorMidiEditEvent::controller (void) const

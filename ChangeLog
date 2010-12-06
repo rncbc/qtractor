@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- Copy-pasting across controller event types is now
+  possible on the MIDI clip editor (aka piano-roll).
+
 - Finally indulged, the genuine transport stop button
   makes its appearance on main toolbar and menu.
 
