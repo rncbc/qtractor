@@ -129,10 +129,15 @@ void qtractorMidiControlObserverForm::setMidiObserver (
 {
 	m_pMidiObserver = pMidiObserver;
 
+	if (m_pMidiObserver == NULL)
+		return;
+	if (m_pMidiObserver->subject() == NULL)
+		return;
+
 	m_iDirtySetup++;
 
 	QDialog::setWindowTitle(
-		m_pMidiObserver->name() + " - " + tr("MIDI Controller"));
+		m_pMidiObserver->subject()->name() + " - " + tr("MIDI Controller"));
 
 	const QString& sControlType
 		= qtractorMidiControl::nameFromType(m_pMidiObserver->type());

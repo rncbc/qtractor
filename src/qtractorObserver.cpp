@@ -116,7 +116,8 @@ static qtractorSubjectQueue g_subjectQueue;
 
 // Constructor.
 qtractorSubject::qtractorSubject ( float fValue )
-	: m_fValue(fValue), m_bBusy(false), m_bQueued(false), m_fPrevValue(fValue)
+	: m_fValue(fValue), m_bBusy(false), m_bQueued(false), m_fPrevValue(fValue),
+		m_fMinValue(0.0f), m_fMaxValue(1.0f)
 {
 }
 
@@ -223,66 +224,6 @@ void qtractorSubject::flushQueue (void)
 void qtractorSubject::resetQueue (void)
 {
 	g_subjectQueue.reset();
-}
-
-
-//---------------------------------------------------------------------------
-// qtractorObserver - Scalar parameter value control/view.
-
-// Constructor.
-qtractorObserver::qtractorObserver ( qtractorSubject *pSubject )
-	: m_pSubject(pSubject)
-{
-	if (m_pSubject) m_pSubject->attach(this);
-}
-
-// Virtual destructor.
-qtractorObserver::~qtractorObserver (void)
-{
-	if (m_pSubject) m_pSubject->detach(this);
-}
-
-
-// Subject value accessor.
-void qtractorObserver::setSubject ( qtractorSubject *pSubject )
-{
-	if (m_pSubject /* && pSubject*/)
-		m_pSubject->detach(this);
-	
-	m_pSubject = pSubject;
-
-	if (m_pSubject)
-		m_pSubject->attach(this);
-}
-
-qtractorSubject *qtractorObserver::subject (void) const
-{
-	return m_pSubject;
-}
-
-
-// Indirect value accessors.
-void qtractorObserver::setValue ( float fValue )
-{
-	if (m_pSubject) m_pSubject->setValue(fValue, this);
-}
-
-float qtractorObserver::value (void) const
-{
-	return (m_pSubject ? m_pSubject->value() : 0.0f);
-}
-
-
-float qtractorObserver::prevValue (void) const
-{
-	return (m_pSubject ? m_pSubject->prevValue() : 0.0f);
-}
-
-
-// Busy flag predicate.
-bool qtractorObserver::isBusy (void) const
-{
-	return (m_pSubject ? m_pSubject->isBusy() : true);
 }
 
 

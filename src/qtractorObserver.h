@@ -68,6 +68,23 @@ public:
 	// Direct address accessor.
 	float *data() { return &m_fValue; }
 
+	// Parameter name accessors.
+	void setName(const QString& sName)
+		{ m_sName = sName.trimmed(); }
+	const QString& name() const
+		{ return m_sName; }
+
+	// Value limits accessors.
+	void setMaxValue(float fMaxValue)
+		{ m_fMaxValue = fMaxValue; }
+	float maxValue() const
+		{ return m_fMaxValue; }
+
+	void setMinValue(float fMinValue)
+		{ m_fMinValue = fMinValue; }
+	float minValue() const
+		{ return m_fMinValue; }
+
 	// Queue flush (singleton) -- notify all pending observers.
 	static void flushQueue();
 	
@@ -83,6 +100,13 @@ private:
 
 	float   m_fPrevValue;
 
+	// Human readable name/label.
+	QString m_sName;
+
+	// Value limits.
+	float   m_fMinValue;
+	float   m_fMaxValue;
+
 	QList<qtractorObserver *> m_observers;
 };
 
@@ -95,23 +119,46 @@ class qtractorObserver
 public:
 
 	// Constructor.
-	qtractorObserver(qtractorSubject *pSubject = NULL);
+	qtractorObserver(qtractorSubject *pSubject = NULL) : m_pSubject(pSubject)
+		{ if (m_pSubject) m_pSubject->attach(this); }
 
 	// Virtual destructor.
-	virtual ~qtractorObserver();
+	virtual ~qtractorObserver()
+		{ if (m_pSubject) m_pSubject->detach(this); }
 
 	// Subject value accessor.
-	void setSubject(qtractorSubject *pSubject);
-	qtractorSubject *subject() const;
+	void setSubject(qtractorSubject *pSubject)
+	{
+		if (m_pSubject /* && pSubject*/)
+			m_pSubject->detach(this);
+
+		m_pSubject = pSubject;
+
+		if (m_pSubject)
+			m_pSubject->attach(this);
+	}
+
+	qtractorSubject *subject() const
+		{ return m_pSubject; }
 
 	// Indirect value accessors.
-	void setValue(float fValue);
-	float value() const;
+	void setValue(float fValue)
+		{ if (m_pSubject) m_pSubject->setValue(fValue, this); }
+	float value() const
+		{ return (m_pSubject ? m_pSubject->value() : 0.0f); }
 
-	float prevValue() const;
-	
+	float prevValue() const
+		{ return (m_pSubject ? m_pSubject->prevValue() : 0.0f); }
+
+	// Value limits accessors.
+	float maxValue() const
+		{ return (m_pSubject ? m_pSubject->maxValue() : 1.0f); }
+	float minValue() const
+		{ return (m_pSubject ? m_pSubject->minValue() : 0.0f); }
+
 	// Busy flag predicate.
-	bool isBusy() const;
+	bool isBusy() const
+		{ return (m_pSubject ? m_pSubject->isBusy() : true); }
 
 	// Pure virtual view updater.
 	virtual void update() = 0;

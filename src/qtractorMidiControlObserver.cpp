@@ -55,8 +55,7 @@ static inline float cubef2 ( float x )
 qtractorMidiControlObserver::qtractorMidiControlObserver (
 	qtractorSubject *pSubject ) : qtractorObserver(pSubject),
 		m_ctype(qtractorMidiEvent::CONTROLLER), m_iChannel(0), m_iParam(0),
-		m_bLogarithmic(false), m_bFeedback(false),
-		m_fMinValue(0.0f), m_fMaxValue(1.0f)
+		m_bLogarithmic(false), m_bFeedback(false)
 {
 }
 
@@ -93,16 +92,16 @@ float qtractorMidiControlObserver::valueFromScale (	float fScale, bool bCubic ) 
 	if (bCubic)
 		fScale = ::cubef2(fScale);
 
-	return m_fMinValue + fScale * (m_fMaxValue - m_fMinValue);
+	return minValue() + fScale * (maxValue() - minValue());
 }
 
 float qtractorMidiControlObserver::scaleFromValue ( float fValue, bool bCubic ) const
 {
 	float fScale = 0.0f;
 
-	float fDelta = (m_fMaxValue - m_fMinValue);
+	float fDelta = (maxValue() - minValue());
 	if (fDelta > +1E-6f || fDelta < -1E-6f)
-		fScale = (fValue - m_fMinValue) / fDelta;
+		fScale = (fValue - minValue()) / fDelta;
 
 	if (bCubic)
 		fScale = ::cbrtf2(fScale);

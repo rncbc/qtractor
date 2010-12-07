@@ -68,17 +68,6 @@ public:
 	bool isFeedback() const
 		{ return m_bFeedback; }
 
-	// Value mapping limits.
-	void setMaxValue(float fMaxValue)
-		{ m_fMaxValue = fMaxValue; }
-	float maxValue() const
-		{ return m_fMaxValue; }
-
-	void setMinValue(float fMinValue)
-		{ m_fMinValue = fMinValue; }
-	float minValue() const
-		{ return m_fMinValue; }
-
 	// Normalized scale accessors.
 	void setScaleValue(float fScale)
 		{ setValue(valueFromScale(fScale, m_bLogarithmic)); }
@@ -92,12 +81,6 @@ public:
 	// Normalized scale convertors.
 	float valueFromScale(float fScale, bool bCubic) const;
 	float scaleFromValue(float fValue, bool bCubic) const;
-
-	// Parameter name accessors.
-	void setName(const QString& sName)
-		{ m_sName = sName.trimmed(); }
-	const QString& name() const
-		{ return m_sName; }
 
 protected:
 
@@ -114,13 +97,6 @@ private:
 	// Property members.
 	bool m_bLogarithmic;
 	bool m_bFeedback;
-
-	// Value mapping limits.
-	float m_fMinValue;
-	float m_fMaxValue;
-
-	// Human readable name/label.
-	QString m_sName;
 };
 
 

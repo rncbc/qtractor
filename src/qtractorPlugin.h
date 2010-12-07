@@ -276,9 +276,9 @@ public:
 
 	// Parameter name accessors.
 	void setName(const QString& sName)
-		{ m_observer.setName(sName); }
+		{ m_subject.setName(sName); }
 	const QString& name() const
-		{ return m_observer.name(); }
+		{ return m_subject.name(); }
 
 	// Parameter range hints predicate methods.
 	virtual bool isBoundedBelow() const = 0;
@@ -296,14 +296,14 @@ public:
 	
 	// Bounding range values.
 	void setMinValue(float fMinValue)
-		{ m_observer.setMinValue(fMinValue); }
+		{ m_subject.setMinValue(fMinValue); }
 	float minValue() const
-		{ return m_observer.minValue(); }
+		{ return m_subject.minValue(); }
 
 	void setMaxValue(float fMaxValue)
-		{ m_observer.setMaxValue(fMaxValue); }
+		{ m_subject.setMaxValue(fMaxValue); }
 	float maxValue() const
-		{ return m_observer.maxValue(); }
+		{ return m_subject.maxValue(); }
 	
 	// Default value
 	void setDefaultValue(float fDefaultValue);
