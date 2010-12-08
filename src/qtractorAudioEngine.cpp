@@ -848,7 +848,7 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 
 	// Had ramping been turned off.
 	if (ATOMIC_GET(&m_ramping_off)) {
-		pAudioCursor->seek(iFrameEnd);
+		pAudioCursor->seek(iFrameEnd, true);
 		pAudioCursor->process(nframes);
 		pSession->release();
 		return 0;

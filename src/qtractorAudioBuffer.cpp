@@ -587,19 +587,17 @@ bool qtractorAudioBuffer::seek ( unsigned long iFrame )
 	// Force (premature) out-of-sync...
 	m_bReadSync = false;
 
+	// Are we off-limits?
+	if (iFrame >= m_iLength)
+		return false;
+
 	// Special case on integral cached files...
 	if (m_bIntegral) {
-		if (iFrame >= m_iLength)
-			return false;
 		m_pRingBuffer->setReadIndex(iFrame);
 	//	m_iWriteOffset = m_iOffset + iFrame;
 		m_iReadOffset  = m_iOffset + iFrame;
 		return true;
 	}
-
-	// Are we off-limits?
-	if (iFrame >= m_iLength)
-		return false;
 
 #ifdef DEBUG
 	dump_state(QString(">seek(%1)").arg(iFrame));
@@ -612,7 +610,7 @@ bool qtractorAudioBuffer::seek ( unsigned long iFrame )
 	unsigned int  rs = m_pRingBuffer->readable();
 	unsigned int  ri = m_pRingBuffer->readIndex();
 	unsigned long ro = m_iReadOffset;
-	if (iFrame >= ro && ro + rs >= iFrame) {
+	if (iFrame >= ro && iFrame < ro + rs) {
 		m_pRingBuffer->setReadIndex(ri + iFrame - ro);
 	//	m_iWriteOffset += iFrame - ro;
 		m_iReadOffset  += iFrame - ro;

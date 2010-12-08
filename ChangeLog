@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- Make sure all audio clip buffers are in sync upon
+  smooth-ramping going off and playback is rolling.
+
 - Copy-pasting across controller event types is now
   possible on the MIDI clip editor (aka piano-roll).
 
