@@ -4475,6 +4475,7 @@ void qtractorMainForm::updateAudioMetronome (void)
 	bool bAudioMetronome = m_pOptions->bAudioMetronome;
 	pAudioEngine->setMetroBus(
 		bAudioMetronome && m_pOptions->bAudioMetroBus);
+	pAudioEngine->setMetroEnabled(bAudioMetronome);
 	pAudioEngine->setMetronome(
 		bAudioMetronome && m_ui.transportMetroAction->isChecked());
 }
@@ -4504,6 +4505,7 @@ void qtractorMainForm::updateMidiMetronome (void)
 	bool bMidiMetronome = m_pOptions->bMidiMetronome;
 	pMidiEngine->setMetroBus(
 		bMidiMetronome && m_pOptions->bMidiMetroBus);
+	pMidiEngine->setMetroEnabled(bMidiMetronome);
 	pMidiEngine->setMetronome(
 		bMidiMetronome && m_ui.transportMetroAction->isChecked());
 }

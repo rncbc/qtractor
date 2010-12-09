@@ -146,6 +146,10 @@ public:
 	void setMetronome(bool bMetronome);
 	bool isMetronome() const;
 
+	// Metronome enabled accessors.
+	void setMetroEnabled(bool bMetroEnabled);
+	bool isMetroEnabled() const;
+
 	// Metronome bus mode accessors.
 	void setMetroBus(bool bMetroBus);
 	bool isMetroBus() const;
@@ -253,6 +257,7 @@ private:
 	float                m_fMetroBeatGain;
 	unsigned long        m_iMetroBeatStart;
 	unsigned int         m_iMetroBeat;
+	bool                 m_bMetroEnabled;
 
 	// Audition/pre-listening player stuff.
 	qtractorAtomic       m_playerLock;

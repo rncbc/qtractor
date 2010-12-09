@@ -5,6 +5,9 @@ ChangeLog
 
 SVN TRUNK
 
+- Metronome bus/ports are now created at engine start
+  and not when user switches it on anymore.
+
 - Make sure all audio clip buffers are in sync upon
   smooth-ramping going off and playback is rolling.
 

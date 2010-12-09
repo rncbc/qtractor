@@ -585,6 +585,7 @@ qtractorMidiEngine::qtractorMidiEngine ( qtractorSession *pSession )
 	m_iMetroBeatNote     = 77;	// GM Low-wood stick
 	m_iMetroBeatVelocity = 64;
 	m_iMetroBeatDuration = 24;
+	m_bMetroEnabled      = false;
 
 	// Time-scale cursor (tempo/time-signature map)
 	m_pMetroCursor = NULL;
@@ -1603,6 +1604,12 @@ void qtractorMidiEngine::trackMute ( qtractorTrack *pTrack, bool bMute )
 // Immediate metronome mute.
 void qtractorMidiEngine::metroMute ( bool bMute )
 {
+	if (!m_bMetroEnabled)
+		return;
+
+	if (!m_bMetronome)
+		return;
+
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorMidiEngine::metroMute(%d)\n", int(bMute));
 #endif
@@ -1715,8 +1722,8 @@ bool qtractorMidiEngine::openControlBus (void)
 void qtractorMidiEngine::closeControlBus (void)
 {
 	if (m_pOControlBus && m_bControlBus) {
-		removeBusEx(m_pOControlBus);
 		m_pOControlBus->close();
+		removeBusEx(m_pOControlBus);
 	}
 }
 
@@ -1869,6 +1876,18 @@ bool qtractorMidiEngine::isMetronome (void) const
 }
 
 
+// Metronome enabled accessors.
+void qtractorMidiEngine::setMetroEnabled ( bool bMetroEnabled )
+{
+	m_bMetroEnabled = bMetroEnabled;
+}
+
+bool qtractorMidiEngine::isMetroEnabled (void) const
+{
+	return m_bMetroEnabled;
+}
+
+
 // Metronome bus accessors.
 void qtractorMidiEngine::setMetroBus ( bool bMetroBus )
 {
@@ -1901,6 +1920,9 @@ void qtractorMidiEngine::createMetroBus (void)
 {
 	deleteMetroBus();
 
+	if (!m_bMetroEnabled)
+		return;
+
 	// Whether metronome bus is here owned, or...
 	if (m_bMetroBus) {
 		m_pMetroBus = new qtractorMidiBus(this,
@@ -1923,6 +1945,9 @@ bool qtractorMidiEngine::openMetroBus (void)
 {
 	closeMetroBus();
 
+	if (!m_bMetroEnabled)
+		return false;
+
 	// Is there any?
 	if (m_pMetroBus == NULL)
 		createMetroBus();
@@ -1943,8 +1968,8 @@ bool qtractorMidiEngine::openMetroBus (void)
 void qtractorMidiEngine::closeMetroBus (void)
 {
 	if (m_pMetroBus && m_bMetroBus) {
-		removeBusEx(m_pMetroBus);
 		m_pMetroBus->close();
+		removeBusEx(m_pMetroBus);
 	}
 }
 

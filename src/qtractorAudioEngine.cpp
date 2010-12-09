@@ -338,6 +338,7 @@ qtractorAudioEngine::qtractorAudioEngine ( qtractorSession *pSession )
 	m_fMetroBeatGain  = 1.0f;
 	m_iMetroBeatStart = 0;
 	m_iMetroBeat      = 0;
+	m_bMetroEnabled   = false;
 
 	// Audition/pre-listening player stuff.
 	ATOMIC_SET(&m_playerLock, 0);
@@ -1227,8 +1228,6 @@ void qtractorAudioEngine::setMetronome ( bool bMetronome )
 {
 	m_bMetronome = bMetronome;
 
-	openMetroBus();
-
 	if (isPlaying())
 		resetMetro();
 }
@@ -1236,6 +1235,20 @@ void qtractorAudioEngine::setMetronome ( bool bMetronome )
 bool qtractorAudioEngine::isMetronome (void) const
 {
 	return m_bMetronome;
+}
+
+
+// Metronome enabled accessors.
+void qtractorAudioEngine::setMetroEnabled ( bool bMetroEnabled )
+{
+	m_bMetroEnabled = bMetroEnabled;
+
+	openMetroBus();
+}
+
+bool qtractorAudioEngine::isMetroEnabled (void) const
+{
+	return m_bMetroEnabled;
 }
 
 
@@ -1335,7 +1348,7 @@ void qtractorAudioEngine::createMetroBus (void)
 {
 	deleteMetroBus();
 
-	if (!m_bMetronome)
+	if (!m_bMetroEnabled)
 		return;
 
 	// Whether metronome bus is here owned, or...
@@ -1360,7 +1373,7 @@ bool qtractorAudioEngine::openMetroBus (void)
 {
 	closeMetroBus();
 
-	if (!m_bMetronome)
+	if (!m_bMetroEnabled)
 		return false;
 
 	// Is there any?
@@ -1408,8 +1421,8 @@ void qtractorAudioEngine::closeMetroBus (void)
 	}
 
 	if (m_bMetroBus && m_pMetroBus) {
-		removeBusEx(m_pMetroBus);
 		m_pMetroBus->close();
+		removeBusEx(m_pMetroBus);
 	}
 
 	m_iMetroBeatStart = 0;
@@ -1432,6 +1445,9 @@ void qtractorAudioEngine::deleteMetroBus (void)
 // Reset Audio metronome.
 void qtractorAudioEngine::resetMetro (void)
 {
+	if (!m_bMetroEnabled)
+		return;
+
 	if (!m_bMetronome)
 		return;
 
@@ -1573,8 +1589,8 @@ void qtractorAudioEngine::closePlayerBus (void)
 	}
 
 	if (m_bPlayerBus && m_pPlayerBus) {
-		removeBusEx(m_pPlayerBus);
 		m_pPlayerBus->close();
+		removeBusEx(m_pPlayerBus);
 	}
 }
 

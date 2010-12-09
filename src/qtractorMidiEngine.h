@@ -148,6 +148,10 @@ public:
 	void setMetronome(bool bMetronome);
 	bool isMetronome() const;
 
+	// Metronome enabled accessors.
+	void setMetroEnabled(bool bMetroEnabled);
+	bool isMetroEnabled() const;
+
 	// Metronome bus accessors.
 	void setMetroBus(bool bMetroBus);
 	bool isMetroBus() const;
@@ -295,6 +299,7 @@ private:
 	int              m_iMetroBeatNote;
 	int              m_iMetroBeatVelocity;
 	unsigned long    m_iMetroBeatDuration;
+	bool             m_bMetroEnabled;
 
 	// Time-scale cursor (tempo/time-signature map)
 	qtractorTimeScale::Cursor *m_pMetroCursor;
