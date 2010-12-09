@@ -170,7 +170,32 @@
          </property>
         </widget>
        </item>
-       <item row="1" column="3" rowspan="2" colspan="3">
+       <item row="1" column="3">
+        <widget class="QSpinBox" name="QuantizeTimeSpinBox">
+         <property name="minimumSize">
+          <size>
+           <width>60</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="toolTip">
+          <string>Quantize time percent</string>
+         </property>
+         <property name="suffix">
+          <string> %</string>
+         </property>
+         <property name="minimum">
+          <number>0</number>
+         </property>
+         <property name="maximum">
+          <number>100</number>
+         </property>
+         <property name="value">
+          <number>100</number>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="4" rowspan="2" colspan="2">
         <spacer>
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
@@ -194,6 +219,31 @@
         <widget class="QComboBox" name="QuantizeDurationComboBox">
          <property name="toolTip">
           <string>Quantize duration</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="3">
+        <widget class="QSpinBox" name="QuantizeDurationSpinBox">
+         <property name="minimumSize">
+          <size>
+           <width>60</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="toolTip">
+          <string>Quantize duration percent</string>
+         </property>
+         <property name="suffix">
+          <string> %</string>
+         </property>
+         <property name="minimum">
+          <number>0</number>
+         </property>
+         <property name="maximum">
+          <number>100</number>
+         </property>
+         <property name="value">
+          <number>100</number>
          </property>
         </widget>
        </item>
@@ -1054,8 +1104,10 @@
   <tabstop>QuantizeCheckBox</tabstop>
   <tabstop>QuantizeTimeCheckBox</tabstop>
   <tabstop>QuantizeTimeComboBox</tabstop>
+  <tabstop>QuantizeTimeSpinBox</tabstop>
   <tabstop>QuantizeDurationCheckBox</tabstop>
   <tabstop>QuantizeDurationComboBox</tabstop>
+  <tabstop>QuantizeDurationSpinBox</tabstop>
   <tabstop>QuantizeSwingCheckBox</tabstop>
   <tabstop>QuantizeSwingComboBox</tabstop>
   <tabstop>QuantizeSwingSpinBox</tabstop>

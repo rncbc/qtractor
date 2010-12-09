@@ -133,11 +133,17 @@ qtractorMidiToolsForm::qtractorMidiToolsForm (
 	QObject::connect(m_ui.QuantizeTimeComboBox,
 		SIGNAL(activated(int)),
 		SLOT(changed()));
+	QObject::connect(m_ui.QuantizeTimeSpinBox,
+		SIGNAL(valueChanged(int)),
+		SLOT(changed()));
 	QObject::connect(m_ui.QuantizeDurationCheckBox,
 		SIGNAL(toggled(bool)),
 		SLOT(changed()));
 	QObject::connect(m_ui.QuantizeDurationComboBox,
 		SIGNAL(activated(int)),
+		SLOT(changed()));
+	QObject::connect(m_ui.QuantizeDurationSpinBox,
+		SIGNAL(valueChanged(int)),
 		SLOT(changed()));
 	QObject::connect(m_ui.QuantizeSwingCheckBox,
 		SIGNAL(toggled(bool)),
@@ -346,6 +352,11 @@ void qtractorMidiToolsForm::loadPreset ( const QString& sPreset )
 			m_ui.QuantizeSwingSpinBox->setValue(vlist[7].toInt());
 			m_ui.QuantizeSwingTypeComboBox->setCurrentIndex(vlist[8].toInt());
 		}
+		// Percent-quantize tool...
+		if (vlist.count() > 10) {
+			m_ui.QuantizeTimeSpinBox->setValue(vlist[9].toInt());
+			m_ui.QuantizeDurationSpinBox->setValue(vlist[10].toInt());
+		}
 		// Transpose tool...
 		vlist = settings.value("/Transpose").toList();
 		if (vlist.count() > 4) {
@@ -427,6 +438,8 @@ void qtractorMidiToolsForm::savePreset ( const QString& sPreset )
 		vlist.append(m_ui.QuantizeSwingComboBox->currentIndex());
 		vlist.append(m_ui.QuantizeSwingSpinBox->value());
 		vlist.append(m_ui.QuantizeSwingTypeComboBox->currentIndex());
+		vlist.append(m_ui.QuantizeTimeSpinBox->value());
+		vlist.append(m_ui.QuantizeDurationSpinBox->value());
 		settings.setValue("/Quantize", vlist);
 		// Transpose tool...
 		vlist.clear();
@@ -637,6 +650,7 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::editCommand (
 		// Quantize tool...
 		if (m_ui.QuantizeCheckBox->isChecked()) {
 			tools.append(tr("quantize"));
+			// Swing quantize...
 			if (m_ui.QuantizeSwingCheckBox->isChecked()) {
 				unsigned short p = qtractorTimeScale::snapFromIndex(
 					m_ui.QuantizeSwingComboBox->currentIndex() + 1);
@@ -662,18 +676,28 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::editCommand (
 					}
 				}
 			}
+			// Time quantize...
 			if (m_ui.QuantizeTimeCheckBox->isChecked()) {
 				unsigned short p = qtractorTimeScale::snapFromIndex(
 					m_ui.QuantizeTimeComboBox->currentIndex() + 1);
 				unsigned long q = pNode->ticksPerBeat / p;
 				iTime = q * ((iTime + (q >> 1)) / q);
+				// Time percent quantize...
+				p = 100 - m_ui.QuantizeTimeSpinBox->value();
+				iTime += ((long(pEvent->time()) - iTime) * p) / 100;
+				if (iTime < 0) iTime = 0;
 			}
+			// Duration quantize...
 			if (m_ui.QuantizeDurationCheckBox->isChecked()
 				&& pEvent->type() == qtractorMidiEvent::NOTEON) {
 				unsigned short p = qtractorTimeScale::snapFromIndex(
 					m_ui.QuantizeDurationComboBox->currentIndex() + 1);
 				unsigned long q = pNode->ticksPerBeat / p;
 				iDuration = q * ((iDuration + q - 1) / q);
+				// Duration percent quantize...
+				p = 100 - m_ui.QuantizeDurationSpinBox->value();
+				iDuration += ((long(pEvent->duration()) - iDuration) * p) / 100;
+				if (iDuration < 0) iDuration = 0;
 			}
 			pEditCommand->resizeEventTime(pEvent, iTime, iDuration);
 		}
@@ -695,8 +719,7 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::editCommand (
 					pNode->frameFromTick(iTime + iTimeOffset)
 						+ m_ui.TransposeTimeSpinBox->value())
 							- (iTime + iTimeOffset);
-				if (iTime < 0)
-					iTime = 0;
+				if (iTime < 0) iTime = 0;
 			}
 			pEditCommand->moveEvent(pEvent, iNote, iTime);
 		}
@@ -753,8 +776,7 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::editCommand (
 				q = pNode->ticksPerBeat;
 				if (p > 0) {
 					iTime += (p * (q - (::rand() % (q << 1)))) / 100;
-					if (iTime < 0)
-						iTime = 0;
+					if (iTime < 0) iTime = 0;
 					pEditCommand->resizeEventTime(pEvent, iTime, iDuration);
 				}
 			}
@@ -763,8 +785,7 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::editCommand (
 				q = pNode->ticksPerBeat;
 				if (p > 0) {
 					iDuration += (p * (q - (::rand() % (q << 1)))) / 100;
-					if (iDuration < 0)
-						iDuration = 0;
+					if (iDuration < 0) iDuration = 0;
 					pEditCommand->resizeEventTime(pEvent, iTime, iDuration);
 				}
 			}
@@ -813,15 +834,13 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::editCommand (
 			if (m_ui.RescaleTimeCheckBox->isChecked()) {
 				p = m_ui.RescaleTimeSpinBox->value();
 				iTime = iMinTime + ((iTime - iMinTime) * p) / 100;
-				if (iTime < 0)
-					iTime = 0;
+				if (iTime < 0) iTime = 0;
 				pEditCommand->moveEvent(pEvent, pEvent->note(), iTime);
 			}
 			if (m_ui.RescaleDurationCheckBox->isChecked()) {
 				p = m_ui.RescaleDurationSpinBox->value();
 				iDuration = (iDuration * p) / 100;
-				if (iDuration < 0)
-					iDuration = 0;
+				if (iDuration < 0) iDuration = 0;
 				pEditCommand->resizeEventTime(pEvent, iTime, iDuration);
 			}
 			if (m_ui.RescaleValueCheckBox->isChecked()) {
@@ -924,12 +943,14 @@ void qtractorMidiToolsForm::stabilizeForm (void)
 	if (bEnabled2)
 		iEnabled++;
 	m_ui.QuantizeTimeComboBox->setEnabled(bEnabled2);
+	m_ui.QuantizeTimeSpinBox->setEnabled(bEnabled2);
 
 	m_ui.QuantizeDurationCheckBox->setEnabled(bEnabled);
 	bEnabled2 = bEnabled && m_ui.QuantizeDurationCheckBox->isChecked();
 	if (bEnabled2)
 		iEnabled++;
 	m_ui.QuantizeDurationComboBox->setEnabled(bEnabled2);
+	m_ui.QuantizeDurationSpinBox->setEnabled(bEnabled2);
 
 //	if (bEnabled)
 //		bEnabled = m_ui.QuantizeTimeCheckBox->isChecked();

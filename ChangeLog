@@ -5,6 +5,11 @@ ChangeLog
 
 SVN TRUNK
 
+- A quantize percentage has been added to MIDI clip
+  editor quantize tool (Tool/Quantize...) for time
+  and duration quantization (0% for none; 100% for
+  full regular quantization). (EXPERIMENTAL)
+
 - Metronome bus/ports are now created at engine start
   and not when user switches it on anymore.
 
