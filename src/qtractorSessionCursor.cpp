@@ -163,8 +163,8 @@ qtractorClip *qtractorSessionCursor::seekClip (
 		pClip = pTrack->clips().first();
 
 	while (pClip && iFrame > pClip->clipStart() + pClip->clipLength()) {
-		if (pTrack->trackType() == m_syncType)
-			pClip->reset(m_pSession->isLooping());
+	//	if (pTrack->trackType() == m_syncType)
+	//		pClip->reset(m_pSession->isLooping());
 		pClip = pClip->next();
 	}
 
