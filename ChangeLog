@@ -5,6 +5,10 @@ ChangeLog
 
 SVN TRUNK
 
+- Prevent old rounding error when resetting to plugin
+  parameter default value with the mouse middle-button
+  click while hovering a slider widget (observer).
+
 - A quantize percentage has been added to MIDI clip
   editor quantize tool (Tool/Quantize...) for time
   and duration quantization (0% for none; 100% for

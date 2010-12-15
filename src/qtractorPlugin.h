@@ -267,8 +267,7 @@ public:
 	// Constructor.
 	qtractorPluginParam(qtractorPlugin *pPlugin, unsigned long iIndex)
 		: m_pPlugin(pPlugin), m_iIndex(iIndex),
-			m_fDefaultValue(0.0f), m_subject(0.0f),
-			m_observer(&m_subject, this) {}
+			m_subject(0.0f), m_observer(&m_subject, this) {}
 
 	// Main properties accessors.
 	qtractorPlugin *plugin() const { return m_pPlugin; }
@@ -306,9 +305,10 @@ public:
 		{ return m_subject.maxValue(); }
 	
 	// Default value
-	void setDefaultValue(float fDefaultValue);
+	void setDefaultValue(float fDefaultValue)
+		{ m_subject.setDefaultValue(fDefaultValue); }
 	float defaultValue() const
-		{ return m_fDefaultValue; }
+		{ return m_subject.defaultValue(); }
 	
 	//------------------------------------------------------------------------
 	// Observer -- Local dedicated observer.
@@ -347,7 +347,7 @@ public:
 	void updateValue(float fValue, bool bUpdate);
 
 	// Reset-to-default method.
-	void reset() { setValue(m_fDefaultValue, true); }
+	void reset() { setValue(defaultValue(), true); }
 
 	// Direct parameter subject value.
 	qtractorSubject *subject() { return &m_subject; }
@@ -361,9 +361,6 @@ private:
 	qtractorPlugin *m_pPlugin;
 	unsigned long m_iIndex;
 
-	// Port default value.
-	float m_fDefaultValue;
-	
 	// Port subject value.
 	qtractorSubject m_subject;
 

@@ -240,7 +240,6 @@ qtractorMeter::qtractorMeter ( QWidget *pParent )
 	m_pPanSlider->setMaximum(+100);
 	m_pPanSlider->setPageStep(10);
 	m_pPanSlider->setSingleStep(1);
-	m_pPanSlider->setDefault(0);
 
 	m_pPanSpinBox->setDecimals(1);
 	m_pPanSpinBox->setMinimum(-1.0f);
@@ -257,7 +256,6 @@ qtractorMeter::qtractorMeter ( QWidget *pParent )
 	m_pGainSlider->setMaximum(10000);
 	m_pGainSlider->setPageStep(1000);
 	m_pGainSlider->setSingleStep(100);
-	m_pGainSlider->setDefault(10000);
 
 	m_pGainSpinBox->setDecimals(1);
 //	m_pGainSpinBox->setSingleStep(0.1f);

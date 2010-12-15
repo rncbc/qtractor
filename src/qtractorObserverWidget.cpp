@@ -108,31 +108,11 @@ void qtractorObserverSpinBox::spinBoxChanged ( double value )
 
 // Constructor.
 qtractorObserverSlider::qtractorObserverSlider ( QWidget *pParent ) 
-	: qtractorObserverWidget<QSlider> (pParent), m_iDefault(0)
+	: qtractorObserverWidget<QSlider> (pParent)
 {
 	QObject::connect(this,
 		SIGNAL(valueChanged(int)),
 		SLOT(sliderChanged(int)));
-}
-
-
-// Get default (mid) value.
-int qtractorObserverSlider::getDefault (void) const
-{
-	return m_iDefault;
-}
-
-
-// Set default (mid) value.
-void qtractorObserverSlider::setDefault ( int iDefault )
-{
-	if (iDefault < minimum())
-		iDefault = minimum();
-	else
-	if (iDefault > maximum())
-		iDefault = maximum();
-
-	m_iDefault = iDefault;
 }
 
 
@@ -141,7 +121,7 @@ void qtractorObserverSlider::mousePressEvent ( QMouseEvent *pMouseEvent )
 {
 	// Reset to default value...
 	if (pMouseEvent->button() == Qt::MidButton)
-		setValue(m_iDefault);
+		subject()->resetValue();
 	else
 		qtractorObserverWidget<QSlider>::mousePressEvent(pMouseEvent);
 }

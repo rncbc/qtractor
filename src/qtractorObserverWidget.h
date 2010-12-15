@@ -192,14 +192,6 @@ public:
 	// Constructor.
 	qtractorObserverSlider(QWidget *pParent = 0);
 
-	// Get default (mid) value.
-	int getDefault() const;
-
-public slots:
-
-	// Set default (mid) value.
-	void setDefault(int iDefault);
-
 protected:
 
 	// Alternate mouse behavior event handlers.
@@ -212,11 +204,6 @@ protected:
 protected slots:
 
 	void sliderChanged(int iValue);
-
-private:
-
-	// Default (mid) value.
-	int m_iDefault;	
 };
 
 

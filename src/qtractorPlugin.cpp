@@ -1679,22 +1679,6 @@ void qtractorPlugin::mapControllers ( Controllers& controllers )
 // qtractorPluginParam -- Plugin parameter (control input port) instance.
 //
 
-// Default value
-void qtractorPluginParam::setDefaultValue ( float fDefaultValue )
-{
-//	if (!isDefaultValue())
-//		return;
-
-	if (isBoundedAbove() && fDefaultValue > maxValue())
-		fDefaultValue = maxValue();
-	else
-	if (isBoundedBelow() && fDefaultValue < minValue())
-		fDefaultValue = minValue();
-
-	m_fDefaultValue = fDefaultValue;
-}
-
-
 // Current port value.
 void qtractorPluginParam::setValue ( float fValue, bool bUpdate )
 {

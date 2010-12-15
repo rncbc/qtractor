@@ -85,6 +85,15 @@ public:
 	float minValue() const
 		{ return m_fMinValue; }
 
+	// Default value accessor.
+	void setDefaultValue(float fDefaultValue)
+		{ m_fDefaultValue = fDefaultValue; }
+	float defaultValue() const
+		{ return m_fDefaultValue; }
+
+	void resetValue(qtractorObserver *pSender = NULL)
+		{ setValue(m_fDefaultValue, pSender); }
+	
 	// Queue flush (singleton) -- notify all pending observers.
 	static void flushQueue();
 	
@@ -107,6 +116,9 @@ private:
 	float   m_fMinValue;
 	float   m_fMaxValue;
 
+	// Default value.
+	float   m_fDefaultValue;
+	
 	QList<qtractorObserver *> m_observers;
 };
 
@@ -155,6 +167,15 @@ public:
 		{ return (m_pSubject ? m_pSubject->maxValue() : 1.0f); }
 	float minValue() const
 		{ return (m_pSubject ? m_pSubject->minValue() : 0.0f); }
+
+	// Default value accessor.
+	void setDefaultValue(float fDefaultValue)
+		{ if (m_pSubject) m_pSubject->setDefaultValue(fDefaultValue); }
+	float defaultValue() const
+		{ return (m_pSubject ? m_pSubject->defaultValue() : 0.0f); }
+
+	void resetValue()
+		{ if (m_pSubject) m_pSubject->resetValue(this); }
 
 	// Busy flag predicate.
 	bool isBusy() const

@@ -957,7 +957,6 @@ qtractorPluginParamWidget::qtractorPluginParamWidget (
 		m_pSlider->setMaximum(10000);
 		m_pSlider->setPageStep(1000);
 		m_pSlider->setSingleStep(100);
-		m_pSlider->setDefault(m_pSlider->scaleFromValue(m_pParam->defaultValue()));
 		m_pSlider->setSubject(m_pParam->subject());
 	//	m_pSlider->setValue(m_pSlider->scaleFromValue(m_pParam->value()));
 		if (m_pParam->isDisplay()) {
