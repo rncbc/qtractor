@@ -1,4 +1,5 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <author>rncbc aka Rui Nuno Capela</author>
  <comment>qtractor - An Audio/MIDI multi-track sequencer.
 
@@ -19,18 +20,17 @@
    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
  </comment>
- <exportmacro></exportmacro>
  <class>qtractorPluginForm</class>
- <widget class="QWidget" name="qtractorPluginForm" >
-  <property name="geometry" >
+ <widget class="QWidget" name="qtractorPluginForm">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>240</width>
-    <height>48</height>
+    <width>480</width>
+    <height>120</height>
    </rect>
   </property>
-  <property name="font" >
+  <property name="font">
    <font>
     <family>Sans Serif</family>
     <pointsize>8</pointsize>
@@ -41,100 +41,94 @@
     <strikeout>false</strikeout>
    </font>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>qtractorPluginForm</string>
   </property>
-  <property name="windowIcon" >
-   <iconset resource="qtractor.qrc" >:/images/qtractorTracks.png</iconset>
+  <property name="windowIcon">
+   <iconset resource="qtractor.qrc">:/images/qtractorTracks.png</iconset>
   </property>
-  <layout class="QVBoxLayout" >
-   <property name="margin" >
+  <layout class="QVBoxLayout">
+   <property name="margin">
     <number>4</number>
    </property>
-   <property name="spacing" >
+   <property name="spacing">
     <number>4</number>
    </property>
    <item>
-    <layout class="QHBoxLayout" >
-     <property name="margin" >
-      <number>2</number>
-     </property>
-     <property name="spacing" >
-      <number>2</number>
-     </property>
+    <layout class="QHBoxLayout">
      <item>
-      <widget class="QToolButton" name="OpenPresetToolButton" >
-       <property name="focusPolicy" >
+      <widget class="QToolButton" name="OpenPresetToolButton">
+       <property name="focusPolicy">
         <enum>Qt::TabFocus</enum>
        </property>
-       <property name="toolTip" >
+       <property name="toolTip">
         <string>Open preset</string>
        </property>
-       <property name="text" >
+       <property name="text">
         <string/>
        </property>
-       <property name="icon" >
-        <iconset resource="qtractor.qrc" >:/images/formOpen.png</iconset>
+       <property name="icon">
+        <iconset resource="qtractor.qrc">:/images/formOpen.png</iconset>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QComboBox" name="PresetComboBox" >
-       <property name="minimumSize" >
+      <widget class="QComboBox" name="PresetComboBox">
+       <property name="minimumSize">
         <size>
          <width>160</width>
          <height>0</height>
         </size>
        </property>
-       <property name="toolTip" >
+       <property name="toolTip">
         <string>Preset name</string>
        </property>
-       <property name="editable" >
+       <property name="editable">
         <bool>true</bool>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QToolButton" name="SavePresetToolButton" >
-       <property name="focusPolicy" >
+      <widget class="QToolButton" name="SavePresetToolButton">
+       <property name="focusPolicy">
         <enum>Qt::TabFocus</enum>
        </property>
-       <property name="toolTip" >
+       <property name="toolTip">
         <string>Save preset</string>
        </property>
-       <property name="text" >
+       <property name="text">
         <string/>
        </property>
-       <property name="icon" >
-        <iconset resource="qtractor.qrc" >:/images/formSave.png</iconset>
+       <property name="icon">
+        <iconset resource="qtractor.qrc">:/images/formSave.png</iconset>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QToolButton" name="DeletePresetToolButton" >
-       <property name="focusPolicy" >
+      <widget class="QToolButton" name="DeletePresetToolButton">
+       <property name="focusPolicy">
         <enum>Qt::TabFocus</enum>
        </property>
-       <property name="toolTip" >
+       <property name="toolTip">
         <string>Delete preset</string>
        </property>
-       <property name="text" >
+       <property name="text">
         <string/>
        </property>
-       <property name="icon" >
-        <iconset resource="qtractor.qrc" >:/images/formRemove.png</iconset>
+       <property name="icon">
+        <iconset resource="qtractor.qrc">:/images/formRemove.png</iconset>
        </property>
       </widget>
      </item>
      <item>
       <spacer>
-       <property name="orientation" >
+       <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
-       <property name="sizeType" >
+       <property name="sizeType">
         <enum>QSizePolicy::Expanding</enum>
        </property>
-       <property name="sizeHint" >
+       <property name="sizeHint">
         <size>
          <width>20</width>
          <height>20</height>
@@ -143,105 +137,67 @@
       </spacer>
      </item>
      <item>
-      <widget class="QToolButton" name="ParamsToolButton" >
-       <property name="focusPolicy" >
+      <widget class="QToolButton" name="ParamsToolButton">
+       <property name="focusPolicy">
         <enum>Qt::TabFocus</enum>
        </property>
-       <property name="toolTip" >
+       <property name="toolTip">
         <string>Plugin parameters</string>
        </property>
-       <property name="text" >
+       <property name="text">
         <string>Params</string>
        </property>
-       <property name="icon" >
-        <iconset resource="qtractor.qrc" >:/images/formParamsOff.png</iconset>
+       <property name="icon">
+        <iconset resource="qtractor.qrc">:/images/formParamsOff.png</iconset>
        </property>
-       <property name="toolButtonStyle" >
-        <enum>Qt::ToolButtonTextBesideIcon</enum>
-       </property>
-       <property name="checkable" >
+       <property name="checkable">
         <bool>true</bool>
+       </property>
+       <property name="toolButtonStyle">
+        <enum>Qt::ToolButtonTextBesideIcon</enum>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QToolButton" name="EditToolButton" >
-       <property name="focusPolicy" >
+      <widget class="QToolButton" name="EditToolButton">
+       <property name="focusPolicy">
         <enum>Qt::TabFocus</enum>
        </property>
-       <property name="toolTip" >
+       <property name="toolTip">
         <string>Edit plugin</string>
        </property>
-       <property name="text" >
+       <property name="text">
         <string>Edit</string>
        </property>
-       <property name="icon" >
-        <iconset resource="qtractor.qrc" >:/images/formEdit.png</iconset>
+       <property name="icon">
+        <iconset resource="qtractor.qrc">:/images/formEdit.png</iconset>
        </property>
-       <property name="checkable" >
+       <property name="checkable">
         <bool>true</bool>
        </property>
-       <property name="toolButtonStyle" >
+       <property name="toolButtonStyle">
         <enum>Qt::ToolButtonTextBesideIcon</enum>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QToolButton" name="SendsToolButton" >
-       <property name="focusPolicy" >
+      <widget class="QToolButton" name="ActivateToolButton">
+       <property name="focusPolicy">
         <enum>Qt::TabFocus</enum>
        </property>
-       <property name="toolTip" >
-        <string>Outputs (Sends)</string>
-       </property>
-       <property name="text" >
-        <string>Sends</string>
-       </property>
-       <property name="icon" >
-        <iconset resource="qtractor.qrc" >:/images/itemAudioPortOut.png</iconset>
-       </property>
-       <property name="toolButtonStyle" >
-        <enum>Qt::ToolButtonTextBesideIcon</enum>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QToolButton" name="ReturnsToolButton" >
-       <property name="focusPolicy" >
-        <enum>Qt::TabFocus</enum>
-       </property>
-       <property name="toolTip" >
-        <string>Inputs (Returns)</string>
-       </property>
-       <property name="text" >
-        <string>Returns</string>
-       </property>
-       <property name="icon" >
-        <iconset resource="qtractor.qrc" >:/images/itemAudioPortIn.png</iconset>
-       </property>
-       <property name="toolButtonStyle" >
-        <enum>Qt::ToolButtonTextBesideIcon</enum>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QToolButton" name="ActivateToolButton" >
-       <property name="focusPolicy" >
-        <enum>Qt::TabFocus</enum>
-       </property>
-       <property name="toolTip" >
+       <property name="toolTip">
         <string>Activate plugin</string>
        </property>
-       <property name="text" >
+       <property name="text">
         <string>Active</string>
        </property>
-       <property name="icon" >
-        <iconset resource="qtractor.qrc" >:/images/itemLedOff.png</iconset>
+       <property name="icon">
+        <iconset resource="qtractor.qrc">:/images/itemLedOff.png</iconset>
        </property>
-       <property name="checkable" >
+       <property name="checkable">
         <bool>true</bool>
        </property>
-       <property name="toolButtonStyle" >
+       <property name="toolButtonStyle">
         <enum>Qt::ToolButtonTextBesideIcon</enum>
        </property>
       </widget>
@@ -250,6 +206,64 @@
    </item>
    <item>
     <widget class="QWidget" name="ParamsGridWidget" />
+   </item>
+   <item>
+    <layout class="QHBoxLayout">
+     <item>
+      <widget class="QToolButton" name="SendsToolButton">
+       <property name="focusPolicy">
+        <enum>Qt::TabFocus</enum>
+       </property>
+       <property name="toolTip">
+        <string>Outputs (Sends)</string>
+       </property>
+       <property name="text">
+        <string>Sends</string>
+       </property>
+       <property name="icon">
+        <iconset resource="qtractor.qrc">:/images/itemAudioPortOut.png</iconset>
+       </property>
+       <property name="toolButtonStyle">
+        <enum>Qt::ToolButtonTextBesideIcon</enum>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="ReturnsToolButton">
+       <property name="focusPolicy">
+        <enum>Qt::TabFocus</enum>
+       </property>
+       <property name="toolTip">
+        <string>Inputs (Returns)</string>
+       </property>
+       <property name="text">
+        <string>Returns</string>
+       </property>
+       <property name="icon">
+        <iconset resource="qtractor.qrc">:/images/itemAudioPortIn.png</iconset>
+       </property>
+       <property name="toolButtonStyle">
+        <enum>Qt::ToolButtonTextBesideIcon</enum>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeType">
+        <enum>QSizePolicy::Expanding</enum>
+       </property>
+       <property name="sizeHint">
+        <size>
+         <width>20</width>
+         <height>0</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
    </item>
   </layout>
  </widget>
@@ -261,9 +275,11 @@
   <tabstop>ParamsToolButton</tabstop>
   <tabstop>EditToolButton</tabstop>
   <tabstop>ActivateToolButton</tabstop>
+  <tabstop>SendsToolButton</tabstop>
+  <tabstop>ReturnsToolButton</tabstop>
  </tabstops>
  <resources>
-  <include location="qtractor.qrc" />
+  <include location="qtractor.qrc"/>
  </resources>
  <connections/>
 </ui>

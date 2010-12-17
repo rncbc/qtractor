@@ -27,6 +27,7 @@
 
 // Forward declarations.
 class qtractorAudioBus;
+class qtractorInsertPluginParam;
 
 
 //----------------------------------------------------------------------------
@@ -108,6 +109,39 @@ private:
 
 	// Instance variables.
 	qtractorAudioBus *m_pAudioBus;
+
+	qtractorInsertPluginParam *m_pSendGainParam;
+	qtractorInsertPluginParam *m_pDryWetParam;
+
+	// Custom optimized processors.
+	void (*m_pfnProcessSendGain)(float **, unsigned int,
+		unsigned short, float);
+	void (*m_pfnProcessDryWet)(float **, float **, unsigned int,
+		unsigned short, float);
+};
+
+
+//----------------------------------------------------------------------------
+// qtractorInsertPluginParam -- Insert plugin control input port instance.
+//
+
+class qtractorInsertPluginParam : public qtractorPluginParam
+{
+public:
+
+	// Constructors.
+	qtractorInsertPluginParam(qtractorInsertPlugin *pInsertPlugin,
+		unsigned long iIndex) : qtractorPluginParam(pInsertPlugin, iIndex) {}
+
+	// Port range hints predicate methods.
+	bool isBoundedBelow() const { return true; }
+	bool isBoundedAbove() const { return true; }
+	bool isDefaultValue() const { return true; }
+	bool isLogarithmic() const { return true; }
+	bool isSampleRate() const { return false; }
+	bool isInteger() const { return false; }
+	bool isToggled() const { return false; }
+	bool isDisplay() const { return false; }
 };
 
 

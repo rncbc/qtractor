@@ -237,6 +237,9 @@ public:
 	void setClockMode(qtractorBus::BusMode clockMode);
 	qtractorBus::BusMode clockMode() const;
 
+	// Free overriden SysEx queued events.
+	void clearSysexCache();
+
 protected:
 
 	// Concrete device (de)activation methods.
@@ -326,6 +329,9 @@ private:
 	// MIDI Clock tempo tracking.
 	unsigned short m_iClockCount;
 	float          m_fClockTempo;
+
+	// Overriden SysEx queued events.
+	QList<qtractorMidiEvent *> m_sysexCache;
 };
 
 

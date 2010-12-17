@@ -27,6 +27,117 @@
 #include "qtractorAudioEngine.h"
 
 
+
+#if defined(__SSE__)
+
+#include <xmmintrin.h>
+
+// SSE detection.
+static inline bool sse_enabled (void)
+{
+#if defined(__GNUC__)
+	unsigned int eax, ebx, ecx, edx;
+#if defined(__x86_64__) || (!defined(PIC) && !defined(__PIC__))
+	__asm__ __volatile__ (
+		"cpuid\n\t" \
+		: "=a" (eax), "=b" (ebx), "=c" (ecx), "=d" (edx) \
+		: "a" (1) : "cc");
+#else
+	__asm__ __volatile__ (
+		"push %%ebx\n\t" \
+		"cpuid\n\t" \
+		"movl %%ebx,%1\n\t" \
+		"pop %%ebx\n\t" \
+		: "=a" (eax), "=r" (ebx), "=c" (ecx), "=d" (edx) \
+		: "a" (1) : "cc");
+#endif
+	return (edx & (1 << 25));
+#else
+	return false;
+#endif
+}
+
+// SSE enabled processor versions.
+static inline void sse_process_send_gain (
+	float **ppFrames, unsigned int iFrames,
+	unsigned short iChannels, float fGain )
+{
+	__m128 v0 = _mm_load_ps1(&fGain);
+
+	for (unsigned short i = 0; i < iChannels; ++i) {
+		float *pFrames = ppFrames[i];
+		unsigned int nframes = iFrames;
+		for (; (long(pFrames) & 15) && (nframes > 0); --nframes)
+			*pFrames++ *= fGain;	
+		for (; nframes >= 4; nframes -= 4) {
+			_mm_store_ps(pFrames,
+				_mm_mul_ps(
+					_mm_loadu_ps(pFrames), v0
+				)
+			);
+			pFrames += 4;
+		}
+		for (; nframes > 0; --nframes)
+			*pFrames++ *= fGain;
+	}
+}
+
+static inline void sse_process_dry_wet (
+	float **ppIFrames, float **ppOFrames, unsigned int iFrames,
+	unsigned short iChannels, float fGain )
+{
+	__m128 v0 = _mm_load_ps1(&fGain);
+
+	for (unsigned short i = 0; i < iChannels; ++i) {
+		float *pIFrames = ppIFrames[i];
+		float *pOFrames = ppOFrames[i];
+		unsigned int nframes = iFrames;
+		for (; (long(pOFrames) & 15) && (nframes > 0); --nframes)
+			*pOFrames++ = fGain * *pIFrames++;	
+		for (; nframes >= 4; nframes -= 4) {
+			_mm_store_ps(pOFrames,
+				_mm_add_ps(
+					_mm_loadu_ps(pOFrames),
+					_mm_mul_ps(
+						_mm_loadu_ps(pIFrames), v0)
+					)
+			);
+			pIFrames += 4;
+			pOFrames += 4;
+		}
+		for (; nframes > 0; --nframes)
+			*pOFrames++ = fGain * *pIFrames++;	
+	}
+}
+
+#endif
+
+
+// Standard processor versions.
+static inline void std_process_send_gain (
+	float **ppFrames, unsigned int iFrames,
+	unsigned short iChannels, float fGain )
+{
+	for (unsigned short i = 0; i < iChannels; ++i) {
+		float *pFrames = ppFrames[i];
+		for (unsigned int n = 0; n < iFrames; ++n)
+			*pFrames++ *= fGain;
+	}
+}
+
+static inline void std_process_dry_wet (
+	float **ppIFrames, float **ppOFrames, unsigned int iFrames,
+	unsigned short iChannels, float fGain )
+{
+	for (unsigned short i = 0; i < iChannels; ++i) {
+		float *pIFrames = ppIFrames[i];
+		float *pOFrames = ppOFrames[i];
+		for (unsigned int n = 0; n < iFrames; ++n)
+			*pOFrames++ += fGain * *pIFrames++;
+	}
+}
+
+
 //----------------------------------------------------------------------------
 // qtractorInsertPluginType -- Insert pseudo-plugin type instance.
 //
@@ -52,7 +163,7 @@ bool qtractorInsertPluginType::open (void)
 	m_iUniqueID = iChannels;
 
 	// Pseudo-plugin port counts...
-	m_iControlIns  = 0;
+	m_iControlIns  = 2;
 	m_iControlOuts = 0;
 	m_iAudioIns    = iChannels;
 	m_iAudioOuts   = iChannels;
@@ -99,6 +210,36 @@ qtractorInsertPlugin::qtractorInsertPlugin (
 	qDebug("qtractorInsertPlugin[%p] channels=%u",
 		this, pInsertType->channels());
 #endif
+
+	// Custom optimized processors.
+#if defined(__SSE__)
+	if (sse_enabled()) {
+		m_pfnProcessSendGain = sse_process_send_gain;
+		m_pfnProcessDryWet = sse_process_dry_wet;
+	} else {
+#endif
+	m_pfnProcessSendGain = std_process_send_gain;
+	m_pfnProcessDryWet = std_process_dry_wet;
+#if defined(__SSE__)
+	}
+#endif
+
+	// Create and attach the custom parameters...
+	m_pSendGainParam = new qtractorInsertPluginParam(this, 0);
+	m_pSendGainParam->setName(QObject::tr("Send Gain"));
+	m_pSendGainParam->setMinValue(0.0f);
+	m_pSendGainParam->setMaxValue(2.0f);
+	m_pSendGainParam->setDefaultValue(1.0f);
+	m_pSendGainParam->setValue(1.0f, false);
+	addParam(m_pSendGainParam);
+
+	m_pDryWetParam = new qtractorInsertPluginParam(this, 1);
+	m_pDryWetParam->setName(QObject::tr("Dry / Wet"));
+	m_pDryWetParam->setMinValue(0.0f);
+	m_pDryWetParam->setMaxValue(1.0f);
+	m_pDryWetParam->setDefaultValue(0.0f);
+	m_pDryWetParam->setValue(0.0f, false);
+	addParam(m_pDryWetParam);
 
 	// Setup plugin instance...
 	setChannels(channels());
@@ -219,12 +360,19 @@ void qtractorInsertPlugin::process (
 	float **ppOut = m_pAudioBus->out(); // Sends.
 	float **ppIn  = m_pAudioBus->in();  // Returns.
 
-	unsigned short iChannels = channels();
+	const unsigned short iChannels = channels();
 
 	for (unsigned short i = 0; i < iChannels; ++i) {
 		::memcpy(ppOut[i], ppIBuffer[i], nframes * sizeof(float));
 		::memcpy(ppOBuffer[i], ppIn[i], nframes * sizeof(float));
 	}
+
+	const float fSendGain = m_pSendGainParam->value();
+	(*m_pfnProcessSendGain)(ppOut, nframes, iChannels, fSendGain);
+
+	const float fDryWet = m_pDryWetParam->value();
+	if (fDryWet > 0.001f)
+		(*m_pfnProcessDryWet)(ppIBuffer, ppOBuffer, nframes, iChannels, fDryWet);
 
 //	m_pAudioBus->process_commit(nframes);
 }

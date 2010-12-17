@@ -380,6 +380,9 @@ void qtractorMidiOutputThread::process (void)
 	if (pMidiCursor == NULL)
 		return;
 
+	// Free overriden SysEx queued events.
+	pMidiEngine->clearSysexCache();
+
 	// Now for the next readahead bunch...
 	unsigned long iFrameStart = pMidiCursor->frame();
 	unsigned long iFrameEnd   = iFrameStart + m_iReadAhead;
@@ -1158,17 +1161,21 @@ void qtractorMidiEngine::enqueue ( qtractorTrack *pTrack,
 			ev.type = SND_SEQ_EVENT_CONTROLLER;
 			ev.data.control.channel = pTrack->midiChannel();
 			ev.data.control.param   = pEvent->controller();
-			ev.data.control.value   = pEvent->value();
-			// HACK: Track properties override...
-			if (pTrack->midiBank() >= 0) {
-				switch (pEvent->controller()) {
-				case BANK_SELECT_MSB:
+			// Track properties override...
+			switch (pEvent->controller()) {
+			case BANK_SELECT_MSB:
+				if (pTrack->midiBank() >= 0)
 					ev.data.control.value = (pTrack->midiBank() & 0x3f80) >> 7;
-					break;
-				case BANK_SELECT_LSB:
-					ev.data.control.value = (pTrack->midiBank() & 0x007f);
-					break;
-				}
+				break;
+			case BANK_SELECT_LSB:
+				if (pTrack->midiBank() >= 0)
+					ev.data.control.value = (pTrack->midiBank() & 0x7f);
+				break;
+			case CHANNEL_VOLUME:
+				ev.data.control.value = int(pTrack->gain() * float(pEvent->value())) & 0x7f;
+				break;
+			default:
+				ev.data.control.value = pEvent->value();
 			}
 			break;
 		case qtractorMidiEvent::PGMCHANGE:
@@ -1191,6 +1198,21 @@ void qtractorMidiEngine::enqueue ( qtractorTrack *pTrack,
 			break;
 		case qtractorMidiEvent::SYSEX: {
 			ev.type = SND_SEQ_EVENT_SYSEX;
+			if (pMidiBus->midiMonitor_out()) {
+				// HACK: Master volume hack...
+				unsigned char *data = pEvent->sysex();
+				if (data[1] == 0x7f &&
+					data[2] == 0x7f &&
+					data[3] == 0x04 &&
+					data[4] == 0x01) {
+					// Make a copy, update and cache it while queued...
+					pEvent = new qtractorMidiEvent(*pEvent);
+					data = pEvent->sysex();
+					data[5] = 0;
+					data[6] = int(pMidiBus->midiMonitor_out()->gain() * float(data[6])) & 0x7f;
+					m_sysexCache.append(pEvent);
+				}
+			}
 			snd_seq_ev_set_sysex(&ev, pEvent->sysex_len(), pEvent->sysex());
 			break;
 		}
@@ -1520,6 +1542,9 @@ void qtractorMidiEngine::clean (void)
 		m_iAlsaClient = -1;
 		m_pAlsaSeq    = NULL;
 	}
+
+	// Clean any other left-overs...
+	clearSysexCache();
 }
 
 
@@ -2572,6 +2597,14 @@ void qtractorMidiEngine::setClockMode ( qtractorBus::BusMode clockMode )
 qtractorBus::BusMode qtractorMidiEngine::clockMode (void) const
 {
 	return m_clockMode;
+}
+
+
+// Free overriden SysEx queued events.
+void qtractorMidiEngine::clearSysexCache (void)
+{
+	qDeleteAll(m_sysexCache);
+	m_sysexCache.clear();
 }
 
 
