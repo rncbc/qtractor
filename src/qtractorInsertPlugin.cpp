@@ -93,7 +93,7 @@ static inline void sse_process_dry_wet (
 		float *pOFrames = ppOFrames[i];
 		unsigned int nframes = iFrames;
 		for (; (long(pOFrames) & 15) && (nframes > 0); --nframes)
-			*pOFrames++ = fGain * *pIFrames++;	
+			*pOFrames++ += fGain * *pIFrames++;	
 		for (; nframes >= 4; nframes -= 4) {
 			_mm_store_ps(pOFrames,
 				_mm_add_ps(
@@ -106,7 +106,7 @@ static inline void sse_process_dry_wet (
 			pOFrames += 4;
 		}
 		for (; nframes > 0; --nframes)
-			*pOFrames++ = fGain * *pIFrames++;	
+			*pOFrames++ += fGain * *pIFrames++;	
 	}
 }
 
@@ -228,7 +228,7 @@ qtractorInsertPlugin::qtractorInsertPlugin (
 	m_pSendGainParam = new qtractorInsertPluginParam(this, 0);
 	m_pSendGainParam->setName(QObject::tr("Send Gain"));
 	m_pSendGainParam->setMinValue(0.0f);
-	m_pSendGainParam->setMaxValue(2.0f);
+	m_pSendGainParam->setMaxValue(5.0f);
 	m_pSendGainParam->setDefaultValue(1.0f);
 	m_pSendGainParam->setValue(1.0f, false);
 	addParam(m_pSendGainParam);
