@@ -58,6 +58,7 @@ static inline bool sse_enabled (void)
 }
 
 // SSE enabled processor versions.
+// SSE enabled processor versions.
 static inline void sse_process_send_gain (
 	float **ppFrames, unsigned int iFrames,
 	unsigned short iChannels, float fGain )
@@ -83,30 +84,30 @@ static inline void sse_process_send_gain (
 }
 
 static inline void sse_process_dry_wet (
-	float **ppIFrames, float **ppOFrames, unsigned int iFrames,
+	float **ppBuffer, float **ppFrames, unsigned int iFrames,
 	unsigned short iChannels, float fGain )
 {
 	__m128 v0 = _mm_load_ps1(&fGain);
 
 	for (unsigned short i = 0; i < iChannels; ++i) {
-		float *pIFrames = ppIFrames[i];
-		float *pOFrames = ppOFrames[i];
+		float *pBuffer = ppBuffer[i];
+		float *pFrames = ppFrames[i];
 		unsigned int nframes = iFrames;
-		for (; (long(pOFrames) & 15) && (nframes > 0); --nframes)
-			*pOFrames++ += fGain * *pIFrames++;	
+		for (; (long(pBuffer) & 15) && (nframes > 0); --nframes)
+			*pBuffer++ += fGain * *pFrames++;	
 		for (; nframes >= 4; nframes -= 4) {
-			_mm_store_ps(pOFrames,
+			_mm_store_ps(pBuffer,
 				_mm_add_ps(
-					_mm_loadu_ps(pOFrames),
+					_mm_loadu_ps(pBuffer),
 					_mm_mul_ps(
-						_mm_loadu_ps(pIFrames), v0)
+						_mm_loadu_ps(pFrames), v0)
 					)
 			);
-			pIFrames += 4;
-			pOFrames += 4;
+			pFrames += 4;
+			pBuffer += 4;
 		}
 		for (; nframes > 0; --nframes)
-			*pOFrames++ += fGain * *pIFrames++;	
+			*pBuffer++ += fGain * *pFrames++;	
 	}
 }
 
@@ -126,14 +127,14 @@ static inline void std_process_send_gain (
 }
 
 static inline void std_process_dry_wet (
-	float **ppIFrames, float **ppOFrames, unsigned int iFrames,
+	float **ppBuffer, float **ppFrames, unsigned int iFrames,
 	unsigned short iChannels, float fGain )
 {
 	for (unsigned short i = 0; i < iChannels; ++i) {
-		float *pIFrames = ppIFrames[i];
-		float *pOFrames = ppOFrames[i];
+		float *pBuffer = ppBuffer[i];
+		float *pFrames = ppFrames[i];
 		for (unsigned int n = 0; n < iFrames; ++n)
-			*pOFrames++ += fGain * *pIFrames++;
+			*pBuffer++ += fGain * *pFrames++;
 	}
 }
 
@@ -372,7 +373,7 @@ void qtractorInsertPlugin::process (
 
 	const float fDryWet = m_pDryWetParam->value();
 	if (fDryWet > 0.001f)
-		(*m_pfnProcessDryWet)(ppIBuffer, ppOBuffer, nframes, iChannels, fDryWet);
+		(*m_pfnProcessDryWet)(ppOBuffer, ppIBuffer, nframes, iChannels, fDryWet);
 
 //	m_pAudioBus->process_commit(nframes);
 }
