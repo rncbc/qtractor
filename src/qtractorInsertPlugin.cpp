@@ -229,7 +229,7 @@ qtractorInsertPlugin::qtractorInsertPlugin (
 	m_pSendGainParam = new qtractorInsertPluginParam(this, 0);
 	m_pSendGainParam->setName(QObject::tr("Send Gain"));
 	m_pSendGainParam->setMinValue(0.0f);
-	m_pSendGainParam->setMaxValue(5.0f);
+	m_pSendGainParam->setMaxValue(2.0f);
 	m_pSendGainParam->setDefaultValue(1.0f);
 	m_pSendGainParam->setValue(1.0f, false);
 	addParam(m_pSendGainParam);
@@ -237,7 +237,7 @@ qtractorInsertPlugin::qtractorInsertPlugin (
 	m_pDryWetParam = new qtractorInsertPluginParam(this, 1);
 	m_pDryWetParam->setName(QObject::tr("Dry / Wet"));
 	m_pDryWetParam->setMinValue(0.0f);
-	m_pDryWetParam->setMaxValue(1.0f);
+	m_pDryWetParam->setMaxValue(2.0f);
 	m_pDryWetParam->setDefaultValue(0.0f);
 	m_pDryWetParam->setValue(0.0f, false);
 	addParam(m_pDryWetParam);
