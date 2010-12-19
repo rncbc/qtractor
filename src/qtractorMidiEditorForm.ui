@@ -32,6 +32,9 @@
   <property name="windowTitle" >
    <string>MIDI Editor</string>
   </property>
+  <property name="windowIcon" >
+   <iconset resource="qtractor.qrc" >:/images/qtractor.png</iconset>
+  </property>
   <widget class="QMenuBar" name="menuBar" >
    <property name="geometry" >
     <rect>
