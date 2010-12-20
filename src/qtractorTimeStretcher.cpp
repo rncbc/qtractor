@@ -1,7 +1,7 @@
 // qtractorTimeStretcher.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2008, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -118,11 +118,17 @@ unsigned int qtractorTimeStretcher::retrieve (
 // Returns number of frames currently available.
 unsigned int qtractorTimeStretcher::available (void) const
 {
+	int iAvailable = 0;
+
 #ifdef CONFIG_LIBRUBBERBAND
 	if (m_pRubberBandStretcher)
-		return m_pRubberBandStretcher->available();
+		iAvailable = m_pRubberBandStretcher->available();
+	else
 #endif
-	return (m_pTimeStretch ? m_pTimeStretch->frames() : 0);
+	if (m_pTimeStretch)
+		iAvailable = m_pTimeStretch->frames();
+
+	return (iAvailable > 0 ? iAvailable : 0);
 }
 
 

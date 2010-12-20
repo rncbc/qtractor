@@ -914,13 +914,25 @@ int qtractorAudioBuffer::writeFrames (
 	// Time-stretch processing...
 	if (m_pTimeStretcher) {
 		int nread = 0;
-		unsigned int nahead = iFrames;
+		int nahead = iFrames;
 		m_pTimeStretcher->process(ppFrames, nahead);
+	#if 0
 		while (nahead > 0 && nread < int(iFrames)) {
 			nahead = m_pTimeStretcher->retrieve(ppFrames, iFrames - nread);
 			if (nahead > 0)
 				nread += m_pRingBuffer->write(ppFrames, nahead);
 		}
+	#else
+		while ((nahead = m_pTimeStretcher->available()) > 0
+				&& nread < int(iFrames)) {
+			if (nahead > int(iFrames))
+				nahead = iFrames;
+			if (nahead > 0)
+				nahead = m_pTimeStretcher->retrieve(ppFrames, nahead);
+			if (nahead > 0)
+				nread += m_pRingBuffer->write(ppFrames, nahead);
+		}
+	#endif
 		// Done with time-stretching...
 		return nread;
 	}
@@ -937,19 +949,32 @@ int qtractorAudioBuffer::flushFrames ( unsigned int iFrames )
 
 	// Flush time-stretch processing...
 	if (m_pTimeStretcher) {
-		unsigned int nahead = iFrames;
+	//	iFrames = m_pTimeStretcher->available();
+		int nahead = iFrames;
 		m_pTimeStretcher->flush();
+	#if 0
 		while (nahead > 0 && nread < int(iFrames)) {
 			nahead = m_pTimeStretcher->retrieve(m_ppFrames, iFrames - nread);
 			if (nahead > 0)
 				nread += m_pRingBuffer->write(m_ppFrames, nahead);
 		}
+	#else
+		while ((nahead = m_pTimeStretcher->available()) > 0
+				&& nread < int(iFrames)) {
+			if (nahead > int(iFrames))
+				nahead = iFrames;
+			if (nahead > 0)
+				nahead = m_pTimeStretcher->retrieve(m_ppFrames, nahead);
+			if (nahead > 0)
+				nread += m_pRingBuffer->write(m_ppFrames, nahead);
+		}
+	#endif
 	}
 
 	// Zero-flush till known end-of-clip (avoid sure drifting)...
 	if (nread < int(iFrames)
 		&& m_iWriteOffset + nread < m_iOffset + m_iLength) {
-		unsigned int nahead = iFrames - nread;
+		int nahead = iFrames - nread;
 		for (unsigned int i = 0; i < m_pRingBuffer->channels(); ++i)
 			::memset(m_ppFrames[i], 0, nahead * sizeof(float));
 		nread += m_pRingBuffer->write(m_ppFrames, nahead);
