@@ -5,6 +5,10 @@ ChangeLog
 
 SVN TRUNK
 
+- Audio clip/buffer pitch-shifting fixes with regard
+  to latency correction due on the RubberBand library
+  one-pass (real-time) processing mode. (EXPERIMENTAL)
+
 - New Send Gain and Dry/Wet control parameters have
   been implemented for audio Inserts pseudo-plugins.
   (EXPERIMENTAL)

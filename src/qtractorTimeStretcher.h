@@ -76,6 +76,7 @@ private:
 #ifdef CONFIG_LIBRUBBERBAND
 	RubberBand::RubberBandStretcher *m_pRubberBandStretcher;
 	unsigned short m_iRubberBandChannels;
+	unsigned int m_iRubberBandLatency;
 	float **m_ppRubberBandFrames;
 	bool m_bRubberBandFlush;
 #endif

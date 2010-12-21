@@ -34,6 +34,7 @@ qtractorTimeStretcher::qtractorTimeStretcher (
 #ifdef CONFIG_LIBRUBBERBAND
 	, m_pRubberBandStretcher(NULL)
 	, m_iRubberBandChannels(iChannels)
+	, m_iRubberBandLatency(0)
 	, m_ppRubberBandFrames(NULL)
 	, m_bRubberBandFlush(false)
 #endif
@@ -56,6 +57,7 @@ qtractorTimeStretcher::qtractorTimeStretcher (
 				RubberBand::RubberBandStretcher::OptionProcessRealTime,
 				fTimeStretch, fPitchShift);
 		m_ppRubberBandFrames = new float * [m_iRubberBandChannels];
+		m_iRubberBandLatency = m_pRubberBandStretcher->getLatency();
 	}
 #endif
 }
@@ -108,8 +110,24 @@ unsigned int qtractorTimeStretcher::retrieve (
 	float **ppFrames, unsigned int iFrames )
 {
 #ifdef CONFIG_LIBRUBBERBAND
-	if (m_pRubberBandStretcher)
-		return m_pRubberBandStretcher->retrieve(ppFrames, iFrames);
+	if (m_pRubberBandStretcher) {
+		unsigned int nread = m_pRubberBandStretcher->retrieve(ppFrames, iFrames);
+		if (nread > 0 && m_iRubberBandLatency > 0) {
+			if (m_iRubberBandLatency > nread) {
+				m_iRubberBandLatency -= nread;
+				nread = 0;
+			} else {
+				nread -= m_iRubberBandLatency;
+				m_iRubberBandLatency = 0;
+				unsigned int n = iFrames - nread;
+				for (unsigned int i = 0; i < m_iRubberBandChannels; ++i) {
+					float *pFrames = ppFrames[i];
+					::memmove(pFrames, pFrames + nread, n * sizeof(float));
+				}
+			}
+		}
+		return nread;
+	}
 #endif
 	return (m_pTimeStretch ? m_pTimeStretch->receiveFrames(ppFrames, iFrames) : 0);
 }
@@ -146,6 +164,7 @@ void qtractorTimeStretcher::flush (void)
 		for (unsigned short i = 0; i < m_iRubberBandChannels; ++i)
 			m_ppRubberBandFrames[i] = &dummy[0];
 		m_pRubberBandStretcher->process(m_ppRubberBandFrames, 256, true);
+		m_iRubberBandLatency = 0;
 		m_bRubberBandFlush = true;
 	}
 #endif
@@ -160,6 +179,7 @@ void qtractorTimeStretcher::reset (void)
 #ifdef CONFIG_LIBRUBBERBAND
 	if (m_pRubberBandStretcher) {
 		m_pRubberBandStretcher->reset();
+		m_iRubberBandLatency = m_pRubberBandStretcher->getLatency();
 		m_bRubberBandFlush = false;
 	}
 #endif
