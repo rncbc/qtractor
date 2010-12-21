@@ -35,7 +35,9 @@ qtractorTimeStretcher::qtractorTimeStretcher (
 	, m_pRubberBandStretcher(NULL)
 	, m_iRubberBandChannels(iChannels)
 	, m_iRubberBandLatency(0)
+	, m_iRubberBandFrames(0)
 	, m_ppRubberBandFrames(NULL)
+	, m_ppRubberBandBuffer(NULL)
 	, m_bRubberBandFlush(false)
 #endif
 {
@@ -56,8 +58,16 @@ qtractorTimeStretcher::qtractorTimeStretcher (
 				iSampleRate, iChannels,
 				RubberBand::RubberBandStretcher::OptionProcessRealTime,
 				fTimeStretch, fPitchShift);
-		m_ppRubberBandFrames = new float * [m_iRubberBandChannels];
+		m_ppRubberBandBuffer = new float * [m_iRubberBandChannels];
 		m_iRubberBandLatency = m_pRubberBandStretcher->getLatency();
+		m_iRubberBandFrames = m_iRubberBandLatency;
+		if (m_iRubberBandFrames > 0) {
+			m_ppRubberBandFrames = new float * [m_iRubberBandChannels];
+			m_ppRubberBandFrames[0] = new float [m_iRubberBandFrames];
+			::memset(m_ppRubberBandFrames[0], 0, m_iRubberBandFrames * sizeof(float));
+			for (unsigned short i = 1; i < m_iRubberBandChannels; ++i)
+				m_ppRubberBandFrames[i] = m_ppRubberBandFrames[0];
+		}
 	}
 #endif
 }
@@ -68,8 +78,12 @@ qtractorTimeStretcher::~qtractorTimeStretcher()
 	if (m_pTimeStretch)
 		delete m_pTimeStretch;
 #ifdef CONFIG_LIBRUBBERBAND
-	if (m_ppRubberBandFrames)
+	if (m_ppRubberBandBuffer)
+		delete [] m_ppRubberBandBuffer;
+	if (m_ppRubberBandFrames) {
+		delete [] m_ppRubberBandFrames[0];
 		delete [] m_ppRubberBandFrames;
+	}
 	if (m_pRubberBandStretcher)
 		delete m_pRubberBandStretcher;
 #endif
@@ -88,9 +102,9 @@ void qtractorTimeStretcher::process (
 			unsigned int nread = iFrames;
 			while (nread > 0 && noffs < iFrames) {
 				for (unsigned short i = 0; i < m_iRubberBandChannels; ++i)
-					m_ppRubberBandFrames[i] = ppFrames[i] + noffs;
+					m_ppRubberBandBuffer[i] = ppFrames[i] + noffs;
 				nread = m_pTimeStretch->receiveFrames(
-					m_ppRubberBandFrames, iFrames - noffs);
+					m_ppRubberBandBuffer, iFrames - noffs);
 				noffs += nread;
 			}
 			iFrames = noffs;
@@ -117,12 +131,12 @@ unsigned int qtractorTimeStretcher::retrieve (
 				m_iRubberBandLatency -= nread;
 				nread = 0;
 			} else {
+				unsigned int noffs = m_iRubberBandLatency;
 				nread -= m_iRubberBandLatency;
 				m_iRubberBandLatency = 0;
-				unsigned int n = iFrames - nread;
 				for (unsigned int i = 0; i < m_iRubberBandChannels; ++i) {
 					float *pFrames = ppFrames[i];
-					::memmove(pFrames, pFrames + nread, n * sizeof(float));
+					::memmove(pFrames, pFrames + noffs, nread * sizeof(float));
 				}
 			}
 		}
@@ -158,12 +172,11 @@ void qtractorTimeStretcher::flush (void)
 		m_pTimeStretch->flushInput();
 #ifdef CONFIG_LIBRUBBERBAND
 	if (m_pRubberBandStretcher && !m_bRubberBandFlush) {
-		// Prepare a dummy empty buffer...
-		float dummy[256];
-		::memset(&dummy[0], 0, sizeof(dummy));
-		for (unsigned short i = 0; i < m_iRubberBandChannels; ++i)
-			m_ppRubberBandFrames[i] = &dummy[0];
-		m_pRubberBandStretcher->process(m_ppRubberBandFrames, 256, true);
+		// Process a last dummy empty buffer...
+		if (m_iRubberBandFrames > 0) {
+			m_pRubberBandStretcher->process(
+				m_ppRubberBandFrames, m_iRubberBandFrames, true);
+		}
 		m_iRubberBandLatency = 0;
 		m_bRubberBandFlush = true;
 	}
@@ -180,6 +193,18 @@ void qtractorTimeStretcher::reset (void)
 	if (m_pRubberBandStretcher) {
 		m_pRubberBandStretcher->reset();
 		m_iRubberBandLatency = m_pRubberBandStretcher->getLatency();
+		m_iRubberBandFrames = m_iRubberBandLatency;
+		if (m_iRubberBandFrames > 0) {
+			if (m_ppRubberBandFrames) {
+				delete [] m_ppRubberBandFrames[0];
+			//	delete [] m_ppRubberBandFrames;
+			}
+		//	m_ppRubberBandFrames = new float * [m_iRubberBandChannels];
+			m_ppRubberBandFrames[0] = new float [m_iRubberBandFrames];
+			::memset(m_ppRubberBandFrames[0], 0, m_iRubberBandFrames * sizeof(float));
+			for (unsigned short i = 1; i < m_iRubberBandChannels; ++i)
+				m_ppRubberBandFrames[i] = m_ppRubberBandFrames[0];
+		}
 		m_bRubberBandFlush = false;
 	}
 #endif
