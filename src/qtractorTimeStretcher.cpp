@@ -42,12 +42,16 @@ qtractorTimeStretcher::qtractorTimeStretcher (
 	, m_bRubberBandFlush(false)
 #endif
 {
-	if (fTimeStretch > 0.0f && (iFlags & WsolaTimeStretch)) {
-		m_pTimeStretch = new qtractorTimeStretch(iChannels, iSampleRate);
-		m_pTimeStretch->setTempo(1.0f / fTimeStretch);
-		m_pTimeStretch->setQuickSeek(iFlags & WsolaQuickSeek);
-		fTimeStretch = 0.0f;
+	if ((fTimeStretch > 0.1f && fTimeStretch < 1.0f - 1e-3f) ||
+		(fTimeStretch > 1.0f + 1e-3f && fTimeStretch < 4.0f)) {
+		if (iFlags & WsolaTimeStretch) {
+			m_pTimeStretch = new qtractorTimeStretch(iChannels, iSampleRate);
+			m_pTimeStretch->setTempo(1.0f / fTimeStretch);
+			m_pTimeStretch->setQuickSeek(iFlags & WsolaQuickSeek);
+			fTimeStretch = 0.0f;
+		}
 	}
+	else fTimeStretch = 0.0f;
 #ifdef CONFIG_LIBRUBBERBAND
 	if (fTimeStretch > 0.0f ||
 		(fPitchShift > 0.1f && fPitchShift < 1.0f - 1e-3f) ||

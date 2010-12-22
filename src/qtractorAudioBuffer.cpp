@@ -915,20 +915,12 @@ int qtractorAudioBuffer::writeFrames (
 	if (m_pTimeStretcher) {
 		int nread = 0;
 		m_pTimeStretcher->process(ppFrames, iFrames);
-	#if 0
-		int nahead = iFrames;
-		while (nahead > 0 && nread < int(iFrames)) {
-			nahead = m_pTimeStretcher->retrieve(ppFrames, iFrames - nread);
-			if (nahead > 0)
-				nread += m_pRingBuffer->write(ppFrames, nahead);
-		}
-	#else
 		unsigned int nwrite = m_pRingBuffer->writable();
-		int nahead = m_pTimeStretcher->available();
+		unsigned int nahead = m_pTimeStretcher->available();
 		while (nahead > 0) {
-			if (nahead > int(m_iBufferSize))
+			if (nahead > m_iBufferSize)
 				nahead = m_iBufferSize;
-			if (nahead > int(nwrite))
+			if (nahead > nwrite)
 				nahead = nwrite;
 			if (nahead > 0)
 				nahead = m_pTimeStretcher->retrieve(ppFrames, nahead);
@@ -938,7 +930,6 @@ int qtractorAudioBuffer::writeFrames (
 				nahead = m_pTimeStretcher->available();
 			}
 		}
-	#endif
 		// Done with time-stretching...
 		return nread;
 	}
@@ -956,20 +947,12 @@ int qtractorAudioBuffer::flushFrames ( unsigned int iFrames )
 	// Flush time-stretch processing...
 	if (m_pTimeStretcher) {
 		m_pTimeStretcher->flush();
-	#if 0
-		int nahead = iFrames;
-		while (nahead > 0 && nread < int(iFrames)) {
-			nahead = m_pTimeStretcher->retrieve(m_ppFrames, iFrames - nread);
-			if (nahead > 0)
-				nread += m_pRingBuffer->write(m_ppFrames, nahead);
-		}
-	#else
 		unsigned int nwrite = m_pRingBuffer->writable();
-		int nahead = m_pTimeStretcher->available();
+		unsigned int nahead = m_pTimeStretcher->available();
 		while (nahead > 0) {
-			if (nahead > int(m_iBufferSize))
+			if (nahead > m_iBufferSize)
 				nahead = m_iBufferSize;
-			if (nahead > int(nwrite))
+			if (nahead > nwrite)
 				nahead = nwrite;
 			if (nahead > 0)
 				nahead = m_pTimeStretcher->retrieve(m_ppFrames, nahead);
@@ -979,13 +962,11 @@ int qtractorAudioBuffer::flushFrames ( unsigned int iFrames )
 				nahead = m_pTimeStretcher->available();
 			}
 		}
-	#endif
 	}
 
 	// Zero-flush till known end-of-clip (avoid sure drifting)...
-	if (nread < int(iFrames)
-		&& m_iWriteOffset + nread < m_iOffset + m_iLength) {
-		int nahead = iFrames - nread;
+	if ((nread < 1) && (m_iWriteOffset + iFrames > m_iOffset + m_iLength)) {
+		unsigned int nahead = (m_iOffset + m_iLength) - m_iWriteOffset;
 		for (unsigned int i = 0; i < m_pRingBuffer->channels(); ++i)
 			::memset(m_ppFrames[i], 0, nahead * sizeof(float));
 		nread += m_pRingBuffer->write(m_ppFrames, nahead);
