@@ -45,7 +45,7 @@ public:
 	qtractorTimeStretcher(
 		unsigned short iChannels = 2, unsigned int iSampleRate = 44100,
 		float fTimeStretch = 1.0f, float fPitchShift = 1.0f,
-		unsigned int iFlags = None);
+		unsigned int iFlags = None, unsigned int iBufferSize = 4096);
 
 	// Destructor.
 	~qtractorTimeStretcher();

@@ -29,7 +29,8 @@
 // Constructor.
 qtractorTimeStretcher::qtractorTimeStretcher (
 	unsigned short iChannels, unsigned int iSampleRate,
-	float fTimeStretch, float fPitchShift, unsigned int iFlags )
+	float fTimeStretch, float fPitchShift,
+	unsigned int iFlags, unsigned int iBufferSize )
 	: m_pTimeStretch(NULL)
 #ifdef CONFIG_LIBRUBBERBAND
 	, m_pRubberBandStretcher(NULL)
@@ -58,6 +59,7 @@ qtractorTimeStretcher::qtractorTimeStretcher (
 				iSampleRate, iChannels,
 				RubberBand::RubberBandStretcher::OptionProcessRealTime,
 				fTimeStretch, fPitchShift);
+		m_pRubberBandStretcher->setMaxProcessSize(iBufferSize);
 		m_ppRubberBandBuffer = new float * [m_iRubberBandChannels];
 		m_iRubberBandLatency = m_pRubberBandStretcher->getLatency();
 		m_iRubberBandFrames = m_iRubberBandLatency;

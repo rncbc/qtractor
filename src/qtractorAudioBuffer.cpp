@@ -226,17 +226,6 @@ bool qtractorAudioBuffer::open ( const QString& sFilename, int iMode )
 	}
 #endif
 
-	// ALlocate time-stretch engine whether needed...
-	if (m_bTimeStretch || m_bPitchShift) {
-		unsigned int iFlags = qtractorTimeStretcher::None;
-		if (g_bWsolaTimeStretch)
-			iFlags |= qtractorTimeStretcher::WsolaTimeStretch;
-		if (g_bWsolaQuickSeek)
-			iFlags |= qtractorTimeStretcher::WsolaQuickSeek;
-		m_pTimeStretcher = new qtractorTimeStretcher(iChannels, m_iSampleRate,
-			m_fTimeStretch, m_fPitchShift, iFlags);
-	}
-
 	// FIXME: default logical length gets it total...
 	if (m_iLength == 0) {
 		m_iLength = frames();
@@ -262,6 +251,17 @@ bool qtractorAudioBuffer::open ( const QString& sFilename, int iMode )
 	m_ppFrames = new float * [iChannels];
 	for (unsigned short i = 0; i < iChannels; ++i)
 		m_ppFrames[i] = new float [m_iBufferSize];
+
+	// Allocate time-stretch engine whether needed...
+	if (m_bTimeStretch || m_bPitchShift) {
+		unsigned int iFlags = qtractorTimeStretcher::None;
+		if (g_bWsolaTimeStretch)
+			iFlags |= qtractorTimeStretcher::WsolaTimeStretch;
+		if (g_bWsolaQuickSeek)
+			iFlags |= qtractorTimeStretcher::WsolaQuickSeek;
+		m_pTimeStretcher = new qtractorTimeStretcher(iChannels, m_iSampleRate,
+			m_fTimeStretch, m_fPitchShift, iFlags, m_iBufferSize);
+	}
 
 #ifdef CONFIG_LIBSAMPLERATE
 	// Sample rate converter stuff, whether needed...
@@ -914,23 +914,29 @@ int qtractorAudioBuffer::writeFrames (
 	// Time-stretch processing...
 	if (m_pTimeStretcher) {
 		int nread = 0;
-		int nahead = iFrames;
-		m_pTimeStretcher->process(ppFrames, nahead);
+		m_pTimeStretcher->process(ppFrames, iFrames);
 	#if 0
+		int nahead = iFrames;
 		while (nahead > 0 && nread < int(iFrames)) {
 			nahead = m_pTimeStretcher->retrieve(ppFrames, iFrames - nread);
 			if (nahead > 0)
 				nread += m_pRingBuffer->write(ppFrames, nahead);
 		}
 	#else
-		while ((nahead = m_pTimeStretcher->available()) > 0
-				&& nread < int(iFrames)) {
-			if (nahead > int(iFrames))
-				nahead = iFrames;
+		unsigned int nwrite = m_pRingBuffer->writable();
+		int nahead = m_pTimeStretcher->available();
+		while (nahead > 0) {
+			if (nahead > int(m_iBufferSize))
+				nahead = m_iBufferSize;
+			if (nahead > int(nwrite))
+				nahead = nwrite;
 			if (nahead > 0)
 				nahead = m_pTimeStretcher->retrieve(ppFrames, nahead);
-			if (nahead > 0)
+			if (nahead > 0) {
 				nread += m_pRingBuffer->write(ppFrames, nahead);
+				nwrite = m_pRingBuffer->writable();
+				nahead = m_pTimeStretcher->available();
+			}
 		}
 	#endif
 		// Done with time-stretching...
@@ -949,24 +955,29 @@ int qtractorAudioBuffer::flushFrames ( unsigned int iFrames )
 
 	// Flush time-stretch processing...
 	if (m_pTimeStretcher) {
-	//	iFrames = m_pTimeStretcher->available();
-		int nahead = iFrames;
 		m_pTimeStretcher->flush();
 	#if 0
+		int nahead = iFrames;
 		while (nahead > 0 && nread < int(iFrames)) {
 			nahead = m_pTimeStretcher->retrieve(m_ppFrames, iFrames - nread);
 			if (nahead > 0)
 				nread += m_pRingBuffer->write(m_ppFrames, nahead);
 		}
 	#else
-		while ((nahead = m_pTimeStretcher->available()) > 0
-				&& nread < int(iFrames)) {
-			if (nahead > int(iFrames))
-				nahead = iFrames;
+		unsigned int nwrite = m_pRingBuffer->writable();
+		int nahead = m_pTimeStretcher->available();
+		while (nahead > 0) {
+			if (nahead > int(m_iBufferSize))
+				nahead = m_iBufferSize;
+			if (nahead > int(nwrite))
+				nahead = nwrite;
 			if (nahead > 0)
 				nahead = m_pTimeStretcher->retrieve(m_ppFrames, nahead);
-			if (nahead > 0)
+			if (nahead > 0) {
 				nread += m_pRingBuffer->write(m_ppFrames, nahead);
+				nwrite = m_pRingBuffer->writable();
+				nahead = m_pTimeStretcher->available();
+			}
 		}
 	#endif
 	}
