@@ -1542,7 +1542,7 @@ bool qtractorMainForm::saveSession ( bool bPrompt )
 					"\"%1\"\n\n"
 					"Do you want to replace it?")
 					.arg(sFilename),
-					QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+					QMessageBox::Ok | QMessageBox::Cancel) == QMessageBox::Cancel)
 					return false;
 			}
 		}
@@ -1707,7 +1707,7 @@ bool qtractorMainForm::loadSessionFile (
 				"\"%1\"\n\n"
 				"Do you want to replace it?")
 				.arg(info.filePath()),
-				QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+				QMessageBox::Ok | QMessageBox::Cancel) == QMessageBox::Cancel)
 				return false;
 		}
 	}

@@ -315,7 +315,7 @@ void qtractorMidiSysexForm::exportSlot (void)
 				"\"%1\"\n\n"
 				"Do you want to replace it?")
 				.arg(sPath),
-				QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+				QMessageBox::Ok | QMessageBox::Cancel) == QMessageBox::Cancel)
 				return;
 		}
 	}

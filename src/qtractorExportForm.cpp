@@ -221,7 +221,7 @@ void qtractorExportForm::accept (void)
 			"\"%1\"\n\n"
 			"Do you want to replace it?")
 			.arg(sExportPath),
-			QMessageBox::Yes | QMessageBox::No) == QMessageBox::No) {
+			QMessageBox::Ok | QMessageBox::Cancel) == QMessageBox::Cancel) {
 			m_ui.ExportPathComboBox->setFocus();
 			return;
 		}

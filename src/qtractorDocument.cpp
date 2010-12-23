@@ -250,6 +250,9 @@ bool qtractorDocument::save ( const QString& sFilename, Flags flags )
 
 	// Finally, we're ready to save to external file.
 	QFile file(sDocname);
+#ifdef CONFIG_LIBZ
+	bool bRemove = !file.exists();
+#endif
 	if (!file.open(mode))
 		return false;
 	QTextStream ts(&file);
@@ -264,8 +267,8 @@ bool qtractorDocument::save ( const QString& sFilename, Flags flags )
 		m_pZipFile->close();
 		delete m_pZipFile;
 		m_pZipFile = NULL;
-		// Kill temporary.
-		file.remove();
+		// Kill temporary, if didn't exist...
+		if (bRemove) file.remove();
 	}
 #endif
 
