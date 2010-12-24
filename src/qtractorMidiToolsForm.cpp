@@ -896,31 +896,35 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::editCommand (
 			tools.append(tr("timeshift"));
 			qtractorSession *pSession = qtractorSession::getInstance();
 			unsigned long iEditHeadTime
-				= pSession->tickFromFrame(pSession->editHead());
+				= pSession->tickFromFrame(pSession->editHead()) - iTimeOffset;
 			unsigned long iEditTailTime
-				= pSession->tickFromFrame(pSession->editTail());
+				= pSession->tickFromFrame(pSession->editTail()) - iTimeOffset;
 			unsigned long d = iEditTailTime - iEditHeadTime;
 			double p = m_ui.TimeshiftSpinBox->value();
 			if ((p < -1e-6 || p > 1e-6) && (d > 0)) {
 				long t = iTime - iEditHeadTime;
 				double t1 = (double) t / (double) d;
-				t = iTime + iDuration - iEditHeadTime;
-				double t2 = (double) t / (double) d;
+				double t2 = (double) (t + iDuration) / (double) d;
+				fprintf(stderr, "DEBUG> p=%g t1=%g", p, t1);
 				if (p > 0.0) {
-					if (t1 > 0 && t1 < 1)
+					if (t1 > 0.0 && t1 < 1.0)
 						t1 = ::sqrt(t1 * ::pow((-1.0 / p) * ::log(t1) + 1.0, p));
-					if (m_ui.TimeshiftDurationCheckBox->isChecked() && (t2 > 0 && t2 < 1))
+					if (m_ui.TimeshiftDurationCheckBox->isChecked() && (t2 > 0.0 && t2 < 1.0))
 						t2 = ::sqrt(t2 * ::pow((-1.0 / p) * ::log(t2) + 1.0, p));
 				} else {
-					if (t1 > 0 && t1 < 1)
-						t1 = ::sqrt(-((1.0 - t1) * ::pow((1.0 / p) * ::log(1.0 - t1) + 1.0, -p)) + 1.0);
-					if (m_ui.TimeshiftDurationCheckBox->isChecked() && (t2 > 0 && t2 < 1))
-						t2 = ::sqrt(-((1.0 - t2) * ::pow((1.0 / p) * ::log(1.0 - t2) + 1.0, -p)) + 1.0);
+					if (t1 > 0.0 && t1 < 1.0)
+						t1 = ::sqrt(((t1 - 1.0) * ::pow((1.0 / p) * ::log(1.0 - t1) + 1.0, -p)) + 1.0);
+					if (m_ui.TimeshiftDurationCheckBox->isChecked() && (t2 > 0.0 && t2 < 1.0))
+						t2 = ::sqrt(((t2 - 1.0) * ::pow((1.0 / p) * ::log(1.0 - t2) + 1.0, -p)) + 1.0);
 				}
+				fprintf(stderr, " -> %g\n", t1);
 				t1 = t1 * d + iEditHeadTime;
-				pEditCommand->moveEvent(pEvent, pEvent->note(), t1);
-				if (m_ui.TimeshiftDurationCheckBox->isChecked())
-					pEditCommand->resizeEventTime(pEvent, t1, t2 * d - t1 + iEditHeadTime);
+				if (m_ui.TimeshiftDurationCheckBox->isChecked()) {
+					t2 = t2 * d + iEditHeadTime;
+					pEditCommand->resizeEventTime(pEvent, t1, t2 - t1);
+				} else {
+					pEditCommand->moveEvent(pEvent, pEvent->note(), t1);
+				}
 			}
 		}
 	}
