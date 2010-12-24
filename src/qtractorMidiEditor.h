@@ -298,7 +298,8 @@ public:
 		Normalize = 2,
 		Randomize = 3,
 		Resize    = 4,
-		Rescale   = 5
+		Rescale   = 5,
+		Timeshift = 6
 	};
 
 	// Edit tools form page selector.

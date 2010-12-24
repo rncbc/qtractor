@@ -93,6 +93,7 @@
     <addaction name="toolsRandomizeAction" />
     <addaction name="toolsResizeAction" />
     <addaction name="toolsRescaleAction" />
+    <addaction name="toolsTimeshiftAction" />
    </widget>
    <widget class="QMenu" name="editMenu" >
     <property name="title" >
@@ -747,6 +748,20 @@
    </property>
    <property name="statusTip" >
     <string>Rescale selection</string>
+   </property>
+  </action>
+  <action name="toolsTimeshiftAction" >
+   <property name="text" >
+    <string>T&amp;imeshift...</string>
+   </property>
+   <property name="iconText" >
+    <string>Timeshift</string>
+   </property>
+   <property name="toolTip" >
+    <string>Timeshift</string>
+   </property>
+   <property name="statusTip" >
+    <string>Timeshift selection</string>
    </property>
   </action>
   <action name="viewMenubarAction" >

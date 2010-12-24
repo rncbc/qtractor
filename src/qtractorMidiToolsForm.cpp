@@ -34,6 +34,7 @@
 #include <QPushButton>
 
 #include <time.h>
+#include <math.h>
 
 
 // This shall hold the default preset name.
@@ -266,6 +267,16 @@ qtractorMidiToolsForm::qtractorMidiToolsForm (
 		SIGNAL(valueChanged(int)),
 		SLOT(changed()));
 
+	QObject::connect(m_ui.TimeshiftCheckBox,
+		SIGNAL(toggled(bool)),
+		SLOT(stabilizeForm()));
+	QObject::connect(m_ui.TimeshiftSpinBox,
+		SIGNAL(valueChanged(double)),
+		SLOT(changed()));
+	QObject::connect(m_ui.TimeshiftDurationCheckBox,
+		SIGNAL(toggled(bool)),
+		SLOT(changed()));
+
 	QObject::connect(m_ui.DialogButtonBox,
 		SIGNAL(accepted()),
 		SLOT(accept()));
@@ -307,6 +318,9 @@ void qtractorMidiToolsForm::setToolIndex ( int iToolIndex )
 		break;
 	case qtractorMidiEditor::Rescale:
 		m_ui.RescaleCheckBox->setChecked(true);
+		break;
+	case qtractorMidiEditor::Timeshift:
+		m_ui.TimeshiftCheckBox->setChecked(true);
 		break;
 	default:
 		break;
@@ -408,6 +422,13 @@ void qtractorMidiToolsForm::loadPreset ( const QString& sPreset )
 			m_ui.RescaleValueCheckBox->setChecked(vlist[5].toBool());
 			m_ui.RescaleValueSpinBox->setValue(vlist[6].toInt());
 		}
+		// Timeshift tool...
+		vlist = settings.value("/Timeshift").toList();
+		if (vlist.count() > 2) {
+		//	m_ui.TimeshiftCheckBox->setChecked(vlist[0].toBool());
+			m_ui.TimeshiftSpinBox->setValue(vlist[1].toDouble());
+			m_ui.TimeshiftDurationCheckBox->setChecked(vlist[2].toBool());
+		}
 		// All loaded.
 		if (!sPreset.isEmpty() && sPreset != g_sDefPreset)
 			settings.endGroup();
@@ -487,6 +508,12 @@ void qtractorMidiToolsForm::savePreset ( const QString& sPreset )
 		vlist.append(m_ui.RescaleValueCheckBox->isChecked());
 		vlist.append(m_ui.RescaleValueSpinBox->value());
 		settings.setValue("/Rescale", vlist);
+		// Timeshift tool...
+		vlist.clear();
+		vlist.append(m_ui.TimeshiftCheckBox->isChecked());
+		vlist.append(m_ui.TimeshiftSpinBox->value());
+		vlist.append(m_ui.TimeshiftDurationCheckBox->isChecked());
+		settings.setValue("/Timeshift", vlist);
 		// All saved.
 		if (!sPreset.isEmpty() && sPreset != g_sDefPreset)
 			settings.endGroup();
@@ -612,6 +639,8 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::editCommand (
 		tools.append(tr("resize"));
 	if (m_ui.RescaleCheckBox->isChecked())
 		tools.append(tr("rescale"));
+	if (m_ui.TimeshiftCheckBox->isChecked())
+		tools.append(tr("timeshift"));
 	pEditCommand->setName(tools.join(", "));
 
 	const qtractorMidiEditSelect::ItemList& items = pSelect->items();
@@ -862,6 +891,38 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::editCommand (
 				pEditCommand->resizeEventValue(pEvent, iValue);
 			}
 		}
+		// Timeshift tool...
+		if (m_ui.TimeshiftCheckBox->isChecked()) {
+			tools.append(tr("timeshift"));
+			qtractorSession *pSession = qtractorSession::getInstance();
+			unsigned long iEditHeadTime
+				= pSession->tickFromFrame(pSession->editHead());
+			unsigned long iEditTailTime
+				= pSession->tickFromFrame(pSession->editTail());
+			unsigned long d = iEditTailTime - iEditHeadTime;
+			double p = m_ui.TimeshiftSpinBox->value();
+			if ((p < -1e-6 || p > 1e-6) && (d > 0)) {
+				long t = iTime - iEditHeadTime;
+				double t1 = (double) t / (double) d;
+				t = iTime + iDuration - iEditHeadTime;
+				double t2 = (double) t / (double) d;
+				if (p > 0.0) {
+					if (t1 > 0 && t1 < 1)
+						t1 = ::sqrt(t1 * ::pow((-1.0 / p) * ::log(t1) + 1.0, p));
+					if (m_ui.TimeshiftDurationCheckBox->isChecked() && (t2 > 0 && t2 < 1))
+						t2 = ::sqrt(t2 * ::pow((-1.0 / p) * ::log(t2) + 1.0, p));
+				} else {
+					if (t1 > 0 && t1 < 1)
+						t1 = ::sqrt(-((1.0 - t1) * ::pow((1.0 / p) * ::log(1.0 - t1) + 1.0, -p)) + 1.0);
+					if (m_ui.TimeshiftDurationCheckBox->isChecked() && (t2 > 0 && t2 < 1))
+						t2 = ::sqrt(-((1.0 - t2) * ::pow((1.0 / p) * ::log(1.0 - t2) + 1.0, -p)) + 1.0);
+				}
+				t1 = t1 * d + iEditHeadTime;
+				pEditCommand->moveEvent(pEvent, pEvent->note(), t1);
+				if (m_ui.TimeshiftDurationCheckBox->isChecked())
+					pEditCommand->resizeEventTime(pEvent, t1, t2 * d - t1 + iEditHeadTime);
+			}
+		}
 	}
 
 	// Done.
@@ -1061,6 +1122,15 @@ void qtractorMidiToolsForm::stabilizeForm (void)
 	if (bEnabled2)
 		iEnabled++;
 	m_ui.RescaleValueSpinBox->setEnabled(bEnabled2);
+
+	// Timeshift tool...
+
+	bEnabled = m_ui.TimeshiftCheckBox->isChecked();
+	if (bEnabled)
+		iEnabled++;
+	m_ui.TimeshiftLabel->setEnabled(bEnabled);
+	m_ui.TimeshiftSpinBox->setEnabled(bEnabled);
+	m_ui.TimeshiftDurationCheckBox->setEnabled(bEnabled);
 
 	m_ui.DialogButtonBox->button(QDialogButtonBox::Ok)->setEnabled(iEnabled > 0);
 }

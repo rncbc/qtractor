@@ -1074,6 +1074,123 @@
        </item>
       </layout>
      </widget>
+     <widget class="QWidget" name="Timeshift">
+      <attribute name="title">
+       <string>T&amp;imeshift</string>
+      </attribute>
+      <layout class="QGridLayout">
+       <item row="0" column="0" colspan="4">
+        <widget class="QCheckBox" name="TimeshiftCheckBox">
+         <property name="font">
+          <font>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="toolTip">
+          <string>Timeshift selected events</string>
+         </property>
+         <property name="text">
+          <string>Timeshift</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <spacer>
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeType">
+          <enum>QSizePolicy::Fixed</enum>
+         </property>
+         <property name="sizeHint">
+          <size>
+           <width>16</width>
+           <height>19</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="1" column="1">
+        <widget class="QLabel" name="TimeshiftLabel">
+         <property name="text">
+          <string>P:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="2">
+        <widget class="QDoubleSpinBox" name="TimeshiftSpinBox">
+         <property name="minimumSize">
+          <size>
+           <width>60</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="toolTip">
+          <string>Timeshift parameter</string>
+         </property>
+		 <property name="decimals" >
+		  <number>3</number>
+		 </property>
+		 <property name="singleStep" >
+		  <double>0.1</double>
+		 </property>
+         <property name="minimum">
+          <double>-1000.0</double>
+         </property>
+         <property name="maximum">
+          <double>1000.0</double>
+         </property>
+         <property name="value">
+          <double>0.001</double>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="3" >
+        <spacer>
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint">
+          <size>
+           <width>224</width>
+           <height>19</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="2" column="2" colspan="2">
+        <widget class="QLabel" name="TimeshiftText">
+         <property name="text">
+             <string>P = 0 : no change.
+P &gt; 0 : accelerating shift.
+P &lt; 0 : slowing down shift.
+Edit head/tail (blue) markers define the shift range.</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="1" colspan="3">
+        <widget class="QCheckBox" name="TimeshiftDurationCheckBox">
+         <property name="text">
+          <string>Timeshift duration</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="1" colspan="3">
+        <spacer>
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint">
+          <size>
+           <width>358</width>
+           <height>38</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
     </widget>
    </item>
    <item>
@@ -1145,6 +1262,9 @@
   <tabstop>RescaleDurationSpinBox</tabstop>
   <tabstop>RescaleValueCheckBox</tabstop>
   <tabstop>RescaleValueSpinBox</tabstop>
+  <tabstop>TimeshiftCheckBox</tabstop>
+  <tabstop>TimeshiftPLineEdit</tabstop>
+  <tabstop>TimeshiftDurationCheckBox</tabstop>
   <tabstop>DialogButtonBox</tabstop>
  </tabstops>
  <resources>

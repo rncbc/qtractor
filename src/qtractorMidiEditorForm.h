@@ -123,6 +123,7 @@ protected slots:
 	void toolsRandomize();
 	void toolsResize();
 	void toolsRescale();
+	void toolsTimeshift();
 
 	void viewMenubar(bool bOn);
 	void viewStatusbar(bool bOn);

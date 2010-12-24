@@ -5,6 +5,13 @@ ChangeLog
 
 SVN TRUNK
 
+- A new timeshift MIDI tool has been added, after
+  an awesome patch by Jiri Prochaszka aka Anchakor;
+  applies to selected events between edit markers,
+  distorting their time and duration (optionally),
+  either slowing down and accelerating, based on
+  a given parameter P value. (EXPERIMENTAL)
+
 - Audio clip/buffer pitch-shifting fixes with regard
   to latency correction due on the RubberBand library
   one-pass (real-time) processing mode. (EXPERIMENTAL)
